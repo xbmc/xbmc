@@ -22,18 +22,18 @@
 #include "system.h"
 #ifdef HAVE_LIBVDPAU
 #include <dlfcn.h>
-#include "WindowingFactory.h"
+#include "windowing/WindowingFactory.h"
 #include "VDPAU.h"
-#include "TextureManager.h"
+#include "guilib/TextureManager.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "DVDClock.h"
-#include "Settings.h"
-#include "GUISettings.h"
-#include "AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 #include "Application.h"
-#include "MathUtils.h"
-#include "DVDCodecUtils.h"
+#include "utils/MathUtils.h"
+#include "DVDCodecs/DVDCodecUtils.h"
 
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 

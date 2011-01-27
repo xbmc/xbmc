@@ -21,7 +21,6 @@
 
 #pragma once
 #include "ICodec.h"
-#include "FileSystem/File.h"
 #include "CachingCodec.h"
 #include "ADPCMCodec.h"
 

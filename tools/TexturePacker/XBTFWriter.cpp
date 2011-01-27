@@ -20,9 +20,10 @@
  */
 
 #include "XBTFWriter.h"
-#include "EndianSwap.h"
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
+#include "guilib/XBTF.h"
+#include "utils/EndianSwap.h"
 #ifndef __APPLE__
 #include <malloc.h>
 #endif

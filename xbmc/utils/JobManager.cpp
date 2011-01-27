@@ -21,7 +21,7 @@
 
 #include "JobManager.h"
 #include <algorithm>
-#include "SingleLock.h"
+#include "threads/SingleLock.h"
 
 using namespace std;
 

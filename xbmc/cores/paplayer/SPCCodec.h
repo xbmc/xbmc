@@ -23,7 +23,7 @@
  */
 
 #include "ICodec.h"
-#include "spc/Types.h"
+#include "snesapu/Types.h"
 #include "../DllLoader/LibraryLoader.h"
 
 class SPCCodec : public ICodec

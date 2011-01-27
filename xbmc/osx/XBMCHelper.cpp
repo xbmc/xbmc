@@ -28,12 +28,12 @@
 #include "PlatformDefs.h"
 #include "Util.h"
 
-#include "log.h"
+#include "utils/log.h"
 #include "system.h"
-#include "GUISettings.h"
-#include "SystemInfo.h"
+#include "settings/GUISettings.h"
+#include "utils/SystemInfo.h"
 
-#include "Atomics.h"
+#include "threads/Atomics.h"
 
 static long sg_singleton_lock_variable = 0;
 XBMCHelper* XBMCHelper::smp_instance = 0;

@@ -25,7 +25,7 @@
 #include "dll_tracker.h"
 #include "dll_util.h"
 #include <climits>
-#include "FileSystem/SpecialProtocol.h"
+#include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
 
 #define DEFAULT_DLLPATH "special://xbmc/system/players/mplayer/codecs/"

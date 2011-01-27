@@ -1,0 +1,17 @@
+ARCH=@ARCH@
+
+SRCS=alpha.cpp clusterfit.cpp colourblock.cpp colourfit.cpp colourset.cpp maths.cpp rangefit.cpp singlecolourfit.cpp squish.cpp
+
+ifeq ($(findstring powerpc,$(ARCH)),powerpc)
+CXXFLAGS+=-I. -DSQUISH_USE_ALTIVEC=1 -maltivec
+else
+ifeq ($(ARCH),arm)
+CXXFLAGS+=-I.
+else
+CXXFLAGS+=-I. -DSQUISH_USE_SSE=2 -msse2
+endif
+endif
+LIB=libsquish-@ARCH@.a
+
+include ../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

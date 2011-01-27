@@ -28,8 +28,8 @@
   #include <FLAC/stream_encoder.h>
   #include <FLAC/metadata.h>
 #else
-  #include "../cores/paplayer/FLACCodec/flac-1.2.1/include/FLAC/stream_encoder.h"
-  #include "../cores/paplayer/FLACCodec/flac-1.2.1/include/FLAC/metadata.h"
+  #include "libflac/flac-1.2.1/include/FLAC/stream_encoder.h"
+  #include "libflac/flac-1.2.1/include/FLAC/metadata.h"
 #endif
 
 #include "DynamicDll.h"

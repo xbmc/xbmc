@@ -22,7 +22,7 @@
  */
 
 #include "DVDVideoCodec.h"
-#include "Codecs/DllPostProc.h"
+#include "DllPostProc.h"
 
 class CDVDVideoPPFFmpeg
 {

@@ -31,8 +31,8 @@
   #include "LinuxRenderer.h"
 #endif
 
-#include "utils/SharedSection.h"
-#include "utils/Thread.h"
+#include "threads/SharedSection.h"
+#include "threads/Thread.h"
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 

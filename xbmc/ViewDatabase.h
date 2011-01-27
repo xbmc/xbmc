@@ -19,7 +19,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "Database.h"
+#include "dbwrappers/Database.h"
 
 class CViewState;
 

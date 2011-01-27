@@ -1,6 +1,8 @@
-INCLUDES=-I. -I../../../ -I../../../linux -I../../../../guilib
-
-SRCS=emu_dummy.cpp emu_kernel32.cpp emu_msvcrt.cpp exports_python_linux.cpp wrapper.c
+SRCS=emu_dummy.cpp \
+     emu_kernel32.cpp \
+     emu_msvcrt.cpp \
+     exports_python_linux.cpp \
+     wrapper.c
 
 LIB=exports.a
 

@@ -21,12 +21,12 @@
  
 #include "system.h"
 #include "DummyVideoPlayer.h"
-#include "GUIFontManager.h"
-#include "GUITextLayout.h"
-#include "GUIFont.h" // for XBFONT_* defines
+#include "guilib/GUIFontManager.h"
+#include "guilib/GUITextLayout.h"
+#include "guilib/GUIFont.h" // for XBFONT_* defines
 #include "Application.h"
-#include "AdvancedSettings.h"
-#include "WindowingFactory.h"
+#include "settings/AdvancedSettings.h"
+#include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 

@@ -21,8 +21,8 @@
  *
  */
 
-#include "Resolution.h"
-#include "Geometry.h"
+#include "guilib/Resolution.h"
+#include "guilib/Geometry.h"
 
 #define MAX_PLANES 3
 #define MAX_FIELDS 3

@@ -22,7 +22,7 @@
  */
 
 #include "DllLibass.h"
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 /** Wrapper for Libass **/
 

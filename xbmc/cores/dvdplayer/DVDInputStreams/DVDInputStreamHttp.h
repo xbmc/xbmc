@@ -22,8 +22,12 @@
  */
 
 #include "DVDInputStream.h"
-#include "../../../FileSystem/FileCurl.h"
-#include "../../../utils/HttpHeader.h"
+#include "utils/HttpHeader.h"
+
+namespace XFILE
+{
+  class CFileCurl;
+}
 
 class CDVDInputStreamHttp : public CDVDInputStream
 {

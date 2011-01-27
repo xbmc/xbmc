@@ -19,7 +19,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "IStorageProvider.h"
+#include "storage/IStorageProvider.h"
 
 class CPosixMountProvider : public IStorageProvider
 {

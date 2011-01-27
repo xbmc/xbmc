@@ -1,6 +1,18 @@
-INCLUDES=-I../ -I../../guilib -I../linux
-
-SRCS=VideoSettings.cpp
+SRCS=AdvancedSettings.cpp \
+     GUIDialogContentSettings.cpp \
+     GUIDialogLockSettings.cpp \
+     GUIDialogProfileSettings.cpp \
+     GUIDialogSettings.cpp \
+     GUISettings.cpp \
+     GUIWindowSettings.cpp \
+     GUIWindowSettingsCategory.cpp \
+     GUIWindowSettingsProfile.cpp \
+     GUIWindowSettingsScreenCalibration.cpp \
+     GUIWindowTestPattern.cpp \
+     Profile.cpp \
+     SettingsControls.cpp \
+     Settings.cpp \
+     VideoSettings.cpp \
 
 LIB=settings.a
 

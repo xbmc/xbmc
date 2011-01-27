@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;..\..\..\xbmc\win32;..\..\..\guilib;..\..\..\xbmc\utils;..\..\..\xbmc\;..\..\..\xbmc\lib\libsquish"
+				AdditionalIncludeDirectories=".;..\..\..\xbmc\win32;..\..\..\xbmc\guilib;..\..\..\xbmc\utils;..\..\..\xbmc\;..\..\..\xbmc\lib\libsquish"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDL_image.lib ..\..\..\xbmc\lib\libsquish\lib\squishd.lib ..\..\..\xbmc\lib\liblzo\lzo.lib"
+				AdditionalDependencies="SDL.lib SDL_image.lib ..\..\..\xbmc\lib\libsquish\lib\squishd.lib ..\..\..\lib\win32\liblzo\lzo.lib"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libc.lib"
 				GenerateDebugInformation="true"
@@ -117,7 +117,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories=".;..\..\..\xbmc\win32;..\..\..\guilib;..\..\..\xbmc\utils;..\..\..\xbmc\;..\..\..\xbmc\lib\libsquish;..\..\..\project\BuildDependencies\include"
+				AdditionalIncludeDirectories=".;..\..\..\xbmc\win32;..\..\..\xbmc\guilib;..\..\..\xbmc\utils;..\..\..\xbmc\;..\..\..\xbmc\lib\libsquish;..\..\..\project\BuildDependencies\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -136,7 +136,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDL_image.lib ..\..\..\xbmc\lib\libsquish\lib\squish.lib ..\..\..\xbmc\lib\liblzo\lzo.lib"
+				AdditionalDependencies="SDL.lib SDL_image.lib ..\..\..\xbmc\lib\libsquish\lib\squish.lib ..\..\..\lib\win32\liblzo\lzo.lib"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc.lib"
 				GenerateDebugInformation="true"
@@ -193,7 +193,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\guilib\XBTF.cpp"
+				RelativePath="..\..\..\xbmc\guilib\XBTF.cpp"
 				>
 			</File>
 			<File
@@ -223,7 +223,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\guilib\XBTF.h"
+				RelativePath="..\..\..\xbmc\guilib\XBTF.h"
 				>
 			</File>
 			<File

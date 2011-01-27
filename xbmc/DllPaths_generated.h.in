@@ -62,7 +62,6 @@
 #define DLL_PATH_SPC_CODEC     "special://xbmcbin/system/players/paplayer/SNESAPU-@ARCH@.so"
 #define DLL_PATH_VGM_CODEC     "special://xbmcbin/system/players/paplayer/vgmstream-@ARCH@.so"
 #define DLL_PATH_WAVPACK_CODEC "special://xbmcbin/system/players/paplayer/wavpack-@ARCH@.so"
-#define DLL_PATH_WMA_CODEC     "special://xbmcbin/system/players/paplayer/wma-@ARCH@.so"
 #define DLL_PATH_YM_CODEC      "special://xbmcbin/system/players/paplayer/stsoundlibrary-@ARCH@.so"
 #define DLL_PATH_SHN_CODEC     "special://xbmcbin/system/players/paplayer/libshnplay-@ARCH@.so"
 #if defined(_LINUX) && !defined(__APPLE__)

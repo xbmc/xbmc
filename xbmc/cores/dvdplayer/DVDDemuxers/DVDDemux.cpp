@@ -21,7 +21,7 @@
 
 #include "DVDDemux.h"
 #include "DVDCodecs/DVDCodecs.h"
-#include "../../../LangCodeExpander.h"
+#include "utils/LangCodeExpander.h"
 
 void CDemuxStreamTeletext::GetStreamInfo(std::string& strInfo)
 {

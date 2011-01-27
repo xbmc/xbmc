@@ -27,504 +27,504 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum\Platinum.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Platinum\Platinum.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltAction.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltAction.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltArgument.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltArgument.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltConstants.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltConstants.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltCtrlPoint.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltCtrlPoint.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltCtrlPointTask.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltCtrlPointTask.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltDatagramStream.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDatagramStream.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltDeviceData.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDeviceData.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltDeviceHost.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDeviceHost.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltDownloader.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDownloader.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltEvent.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltEvent.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltHttp.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttp.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltHttpClientTask.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpClientTask.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltHttpServer.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpServer.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltHttpServerListener.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpServerListener.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltHttpServerTask.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpServerTask.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltLeaks.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltLeaks.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltMetadataHandler.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltMetadataHandler.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltService.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltService.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltSsdp.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltSsdp.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltSsdpListener.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltSsdpListener.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltStateVariable.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltStateVariable.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltStreamPump.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltStreamPump.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum\PltSvnVersion.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Platinum\PltSvnVersion.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltTaskManager.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltTaskManager.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltThreadTask.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltThreadTask.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltUPnP.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltUPnP.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltUPnPHelper.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltUPnPHelper.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum\PltVersion.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Platinum\PltVersion.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltXmlHelper.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Core\PltXmlHelper.h">
       <Filter>Platinum\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltDidl.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltDidl.h">
       <Filter>Platinum\MediaServer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltFileMediaServer.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltFileMediaServer.h">
       <Filter>Platinum\MediaServer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaBrowser.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaBrowser.h">
       <Filter>Platinum\MediaServer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaCache.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaCache.h">
       <Filter>Platinum\MediaServer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaItem.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaItem.h">
       <Filter>Platinum\MediaServer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaServer.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaServer.h">
       <Filter>Platinum\MediaServer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltSyncMediaBrowser.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltSyncMediaBrowser.h">
       <Filter>Platinum\MediaServer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\PltMediaController.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\PltMediaController.h">
       <Filter>Platinum\MediaRenderer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\PltMediaRenderer.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\PltMediaRenderer.h">
       <Filter>Platinum\MediaRenderer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect\PltMediaConnect.h">
+    <ClInclude Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect\PltMediaConnect.h">
       <Filter>Platinum\MediaConnect</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\Neptune.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\Neptune.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptArray.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptArray.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptBase64.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptBase64.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptBufferedStreams.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptBufferedStreams.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptCommon.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptCommon.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptConfig.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptConfig.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptConsole.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptConsole.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptConstants.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptConstants.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDataBuffer.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptDataBuffer.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDebug.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptDebug.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDefs.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptDefs.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDynamicCast.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptDynamicCast.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDynamicLibraries.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptDynamicLibraries.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptFile.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptFile.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptHttp.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptHttp.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptInterfaces.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptInterfaces.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptList.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptList.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptLogging.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptLogging.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptMap.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptMap.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptMessaging.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptMessaging.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptNetwork.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptNetwork.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptQueue.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptQueue.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptReferences.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptReferences.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptResults.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptResults.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptRingBuffer.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptRingBuffer.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSelectableMessageQueue.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptSelectableMessageQueue.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSerialPort.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptSerialPort.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSimpleMessageQueue.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptSimpleMessageQueue.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSockets.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptSockets.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptStack.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptStack.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptStreams.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptStreams.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptStrings.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptStrings.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSystem.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptSystem.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptThreads.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptThreads.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptTime.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptTime.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptTls.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptTls.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptTypes.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptTypes.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptUri.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptUri.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptUtils.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptUtils.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptVersion.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptVersion.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptXml.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptXml.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptZip.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\Core\NptZip.h">
       <Filter>Neptune\Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32MessageQueue.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32MessageQueue.h">
       <Filter>Neptune\System</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Network.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Network.h">
       <Filter>Neptune\System</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Threads.h">
+    <ClInclude Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Threads.h">
       <Filter>Neptune\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltAction.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltAction.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltArgument.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltArgument.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltConstants.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltConstants.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltCtrlPoint.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltCtrlPoint.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltCtrlPointTask.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltCtrlPointTask.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltDatagramStream.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDatagramStream.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltDeviceData.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDeviceData.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltDeviceHost.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDeviceHost.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltDownloader.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltDownloader.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltEvent.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltEvent.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltHttp.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttp.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltHttpClientTask.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpClientTask.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltHttpServer.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpServer.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltHttpServerTask.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltHttpServerTask.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltIconsData.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltIconsData.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltLeaks.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltLeaks.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltMetadataHandler.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltMetadataHandler.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltService.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltService.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltSsdp.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltSsdp.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltStateVariable.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltStateVariable.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltStreamPump.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltStreamPump.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltTaskManager.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltTaskManager.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltThreadTask.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltThreadTask.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltUPnP.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Core\PltUPnP.cpp">
       <Filter>Platinum\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\ConnectionManagerSCPD.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\ConnectionManagerSCPD.cpp">
       <Filter>Platinum\MediaServer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\ContentDirectorywSearchSCPD.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\ContentDirectorywSearchSCPD.cpp">
       <Filter>Platinum\MediaServer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltDidl.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltDidl.cpp">
       <Filter>Platinum\MediaServer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltFileMediaServer.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltFileMediaServer.cpp">
       <Filter>Platinum\MediaServer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaBrowser.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaBrowser.cpp">
       <Filter>Platinum\MediaServer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaCache.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaCache.cpp">
       <Filter>Platinum\MediaServer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaItem.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaItem.cpp">
       <Filter>Platinum\MediaServer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaServer.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaServer.cpp">
       <Filter>Platinum\MediaServer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltSyncMediaBrowser.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltSyncMediaBrowser.cpp">
       <Filter>Platinum\MediaServer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\AVTransportSCPD.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\AVTransportSCPD.cpp">
       <Filter>Platinum\MediaRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\PltMediaController.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\PltMediaController.cpp">
       <Filter>Platinum\MediaRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\PltMediaRenderer.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\PltMediaRenderer.cpp">
       <Filter>Platinum\MediaRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\RdrConnectionManagerSCPD.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\RdrConnectionManagerSCPD.cpp">
       <Filter>Platinum\MediaRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\RenderingControlSCPD.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\RenderingControlSCPD.cpp">
       <Filter>Platinum\MediaRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect\PltMediaConnect.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect\PltMediaConnect.cpp">
       <Filter>Platinum\MediaConnect</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect\X_MS_MediaReceiverRegistrarSCPD.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect\X_MS_MediaReceiverRegistrarSCPD.cpp">
       <Filter>Platinum\MediaConnect</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\Neptune.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\Neptune.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptBase64.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptBase64.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptBufferedStreams.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptBufferedStreams.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptCommon.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptCommon.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptConsole.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptConsole.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDataBuffer.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptDataBuffer.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDebug.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptDebug.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDynamicLibraries.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptDynamicLibraries.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptFile.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptFile.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptHttp.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptHttp.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptList.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptList.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptLogging.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptLogging.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptMessaging.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptMessaging.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptNetwork.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptNetwork.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptQueue.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptQueue.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptResults.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptResults.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptRingBuffer.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptRingBuffer.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSimpleMessageQueue.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptSimpleMessageQueue.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSockets.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptSockets.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptStreams.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptStreams.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptStrings.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptStrings.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSystem.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptSystem.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptThreads.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptThreads.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptTime.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptTime.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptTls.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptTls.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptUri.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptUri.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptUtils.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptUtils.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptXml.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptXml.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptZip.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\Core\NptZip.cpp">
       <Filter>Neptune\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Bsd\NptBsdSockets.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Bsd\NptBsdSockets.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Posix\NptPosixFile.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Posix\NptPosixFile.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\StdC\NptStdcEnvironment.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\StdC\NptStdcEnvironment.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\StdC\NptStdcFile.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\StdC\NptStdcFile.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Debug.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Debug.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32DynamicLibraries.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32DynamicLibraries.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32File.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32File.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32MessageQueue.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32MessageQueue.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Network.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Network.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Queue.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Queue.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32System.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32System.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Threads.cpp">
+    <ClCompile Include="..\..\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Threads.cpp">
       <Filter>Neptune\System</Filter>
     </ClCompile>
   </ItemGroup>

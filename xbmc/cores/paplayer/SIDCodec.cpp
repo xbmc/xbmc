@@ -21,9 +21,9 @@
 
 #include "SIDCodec.h"
 #include "cores/DllLoader/DllLoader.h"
-#include "Util.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 
 using namespace MUSIC_INFO;
 
@@ -50,20 +50,20 @@ bool SIDCodec::Init(const CStdString &strFile, unsigned int filecache)
   CStdString strFileToLoad = strFile;
   m_iTrack = 0;
   CStdString strExtension;
-  CUtil::GetExtension(strFile,strExtension);
+  URIUtils::GetExtension(strFile,strExtension);
   strExtension.MakeLower();
   if (strExtension==".sidstream")
   {
     //  Extract the track to play
-    CStdString strFileName=CUtil::GetFileName(strFile);
+    CStdString strFileName=URIUtils::GetFileName(strFile);
     int iStart=strFileName.ReverseFind('-')+1;
     m_iTrack = atoi(strFileName.substr(iStart, strFileName.size()-iStart-10).c_str());
     //  The directory we are in, is the file
     //  that contains the bitstream to play,
     //  so extract it
     CStdString strPath=strFile;
-    CUtil::GetDirectory(strPath, strFileToLoad);
-    CUtil::RemoveSlashAtEnd(strFileToLoad); // we want the filename
+    URIUtils::GetDirectory(strPath, strFileToLoad);
+    URIUtils::RemoveSlashAtEnd(strFileToLoad); // we want the filename
   }
 
   m_sid = m_dll.LoadSID(strFileToLoad.c_str());

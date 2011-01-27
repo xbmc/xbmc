@@ -19,14 +19,14 @@
  *
  */
 
-#include "Settings.h"
+#include "DVDPlayerTeletext.h"
+#include "settings/Settings.h"
 #include "DVDPlayer.h"
 #include "DVDStreamInfo.h"
-#include "DVDPlayerTeletext.h"
 #include "Application.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "utils/log.h"
-#include "utils/SingleLock.h"
+#include "threads/SingleLock.h"
 
 using namespace std;
 

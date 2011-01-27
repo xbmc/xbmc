@@ -21,12 +21,14 @@
  *
  */
 
+#include "system.h" // until we get sane int types used here
 #include "IAudioCallback.h"
-#include "Key.h"
+#include "utils/StdString.h"
 
 struct TextCacheStruct_t;
 class TiXmlElement;
 class CStreamDetails;
+class CAction;
 
 class IPlayerCallback
 {

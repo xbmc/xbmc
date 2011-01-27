@@ -23,12 +23,12 @@
 
 #include <algorithm>
 #include "BaseRenderer.h"
-#include "Settings.h"
-#include "GUISettings.h"
-#include "GraphicContext.h"
+#include "settings/Settings.h"
+#include "settings/GUISettings.h"
+#include "guilib/GraphicContext.h"
 #include "utils/log.h"
-#include "MathUtils.h"
-#include "AdvancedSettings.h"
+#include "utils/MathUtils.h"
+#include "settings/AdvancedSettings.h"
 
 
 CBaseRenderer::CBaseRenderer()

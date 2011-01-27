@@ -1,231 +1,43 @@
-INCLUDES+=-I../ -I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem -I/usr/include/freetype2 -Icores/dvdplayer
-
-ifneq (@USE_EXTERNAL_FFMPEG@,1)
-  INCLUDES+=-Icores/dvdplayer/Codecs/ffmpeg
-endif
-
-INCLUDES+=-Ilib/libUPnP/Platinum/Source/Core \
-          -Ilib/libUPnP/Platinum/Source/Platinum \
-          -Ilib/libUPnP/Platinum/Source/Devices/MediaServer \
-          -Ilib/libUPnP/Platinum/Source/Devices/MediaConnect \
-          -Ilib/libUPnP/Platinum/Source/Devices/MediaRenderer \
-          -Ilib/libUPnP/Neptune/Source/System/Posix \
-          -Ilib/libUPnP/Neptune/Source/Core
-
-INCLUDES+=-Ilib/libcdio/libcdio/include
-
-INCLUDES+=-I../lib/jsoncpp/jsoncpp/include
-
-INCLUDES+=-Ilib/cpluff/libcpluff
-
 SRCS=Application.cpp \
-     CueDocument.cpp \
-     GUISettings.cpp \
-     GUIWindowAddonBrowser.cpp \
-     GUIWindowSettings.cpp \
-     GUIWindowSettingsCategory.cpp \
-     GUIWindowSettingsProfile.cpp \
-     GUIWindowSettingsScreenCalibration.cpp \
-     Settings.cpp \
-     SettingsControls.cpp \
-     GUIDialogMusicScan.cpp \
-     GUIViewControl.cpp \
-     GUIViewState.cpp \
-     GUIViewStateAddonBrowser.cpp \
-     GUIViewStateMusic.cpp \
-     GUIWindowMusicBase.cpp \
-     GUIWindowMusicInfo.cpp \
-     GUIWindowMusicNav.cpp \
-     GUIWindowMusicOverlay.cpp \
-     GUIWindowMusicPlaylist.cpp \
-     GUIWindowMusicPlaylistEditor.cpp \
-     GUIWindowMusicSongs.cpp \
-     SmartPlaylist.cpp \
-     GUIDialogVideoScan.cpp \
-     GUIViewStateVideo.cpp \
-     GUIWindowVideoBase.cpp \
-     GUIWindowVideoFiles.cpp \
-     GUIWindowVideoInfo.cpp \
-     GUIWindowVideoNav.cpp \
-     GUIWindowVideoOverlay.cpp \
-     GUIWindowVideoPlaylist.cpp \
-     VideoInfoScanner.cpp \
-     PlayList.cpp \
-     PlayListB4S.cpp \
-     PlayListFactory.cpp \
-     PlayListM3U.cpp \
-     PlayListPlayer.cpp \
-     PlayListPLS.cpp \
-     PlayListWPL.cpp \
-     PlayListURL.cpp \
-     PlayListXML.cpp \
-     APEv2Tag.cpp \
-     FlacTag.cpp \
-     Id3Tag.cpp \
-     MusicInfoLoader.cpp \
-     MusicInfoScanner.cpp \
-     MusicInfoTag.cpp \
-     MusicInfoTagLoaderAAC.cpp \
-     MusicInfoTagLoaderApe.cpp \
-     MusicInfoTagLoaderCDDA.cpp \
-     MusicInfoTagLoaderDatabase.cpp \
-     MusicInfoTagLoaderFactory.cpp \
-     MusicInfoTagLoaderFlac.cpp \
-     MusicInfoTagLoaderMidi.cpp \
-     MusicInfoTagLoaderMod.cpp \
-     MusicInfoTagLoaderMP3.cpp \
-     MusicInfoTagLoaderMP4.cpp \
-     MusicInfoTagLoaderMPC.cpp \
-     MusicInfoTagLoaderNSF.cpp \
-     MusicInfoTagLoaderOgg.cpp \
-     MusicInfoTagLoaderShn.cpp \
-     MusicInfoTagLoaderSPC.cpp \
-     MusicInfoTagLoaderWav.cpp \
-     MusicInfoTagLoaderWavPack.cpp \
-     MusicInfoTagLoaderWMA.cpp \
-     MusicInfoTagLoaderYM.cpp \
-     OggTag.cpp \
-     VorbisTag.cpp \
-     AutoSwitch.cpp \
-     ButtonTranslator.cpp \
-     Crc32.cpp \
-     DateTime.cpp \
-     DetectDVDType.cpp \
-     DNSNameCache.cpp \
-     DynamicDll.cpp \
-     FileItem.cpp \
-     GUIPassword.cpp \
-     LangCodeExpander.cpp \
-     LangInfo.cpp \
-     AutorunMediaJob.cpp \
-     MediaManager.cpp \
-     NfoFile.cpp \
-     PartyModeManager.cpp \
-     Picture.cpp \
-     Profile.cpp \
-     SectionLoader.cpp \
-     Shortcut.cpp \
-     SortFileItem.cpp \
-     StringUtils.cpp \
-     Temperature.cpp \
-     ThumbnailCache.cpp \
-     URL.cpp \
-     VideoInfoTag.cpp \
-     Database.cpp \
-     MusicDatabase.cpp \
-     ProgramDatabase.cpp \
-     Song.cpp \
-     VideoDatabase.cpp \
-     ViewDatabase.cpp \
-     GUIDialogAddonInfo.cpp \
-     GUIDialogAddonSettings.cpp \
-     GUIDialogAudioSubtitleSettings.cpp \
-     GUIDialogBoxBase.cpp \
-     GUIDialogButtonMenu.cpp \
-     GUIDialogContentSettings.cpp \
-     GUIDialogContextMenu.cpp \
-     GUIDialogFileBrowser.cpp \
-     GUIDialogFileStacking.cpp \
-     GUIDialogGamepad.cpp \
-     GUIDialogKeyboard.cpp \
-     GUIDialogLockSettings.cpp \
-     GUIDialogMediaSource.cpp \
-     GUIDialogMusicOSD.cpp \
-     GUIDialogMuteBug.cpp \
-     GUIDialogNetworkSetup.cpp \
-     GUIDialogNumeric.cpp \
-     GUIDialogOK.cpp \
-     GUIDialogPlayerControls.cpp \
-     GUIDialogProfileSettings.cpp \
-     GUIDialogProgress.cpp \
-     GUIDialogSeekBar.cpp \
-     GUIDialogSelect.cpp \
-     GUIDialogSettings.cpp \
-     GUIDialogSubMenu.cpp \
-     GUIDialogTeletext.cpp \
-     GUIDialogTextViewer.cpp \
-     GUIDialogVideoBookmarks.cpp \
-     GUIDialogVideoSettings.cpp \
-     GUIDialogVisualisationPresetList.cpp \
-     GUIDialogVolumeBar.cpp \
-     GUIDialogSlider.cpp \
-     GUIDialogYesNo.cpp \
-     GUIMediaWindow.cpp \
-     GUIWindowFileManager.cpp \
-     GUIWindowFullScreen.cpp \
-     GUIWindowHome.cpp \
-     GUIWindowLoginScreen.cpp \
-     GUIWindowOSD.cpp \
-     GUIWindowPictures.cpp \
-     GUIWindowPointer.cpp \
-     GUIWindowPrograms.cpp \
-     GUIWindowScreensaver.cpp \
-     GUIWindowSystemInfo.cpp \
-     GUIWindowVisualisation.cpp \
-     GUIWindowWeather.cpp \
-     BackgroundInfoLoader.cpp \
-     PictureThumbLoader.cpp \
-     ThumbLoader.cpp \
      ApplicationMessenger.cpp \
      Autorun.cpp \
-     Util.cpp \
-     GUIWindowSlideShow.cpp \
-     XBApplicationEx.cpp \
-     xbmc.cpp \
-     GUIDialogFavourites.cpp \
-     GUIDialogSongInfo.cpp \
+     AutoSwitch.cpp \
+     BackgroundInfoLoader.cpp \
+     CueDocument.cpp \
+     DateTime.cpp \
+     DynamicDll.cpp \
      Favourites.cpp \
-     GUIDialogSmartPlaylistEditor.cpp \
-     GUIDialogSmartPlaylistRule.cpp \
-     SlideShowPicture.cpp \
-     GUIDialogBusy.cpp \
-     GUIWindowStartup.cpp \
-     UPnP.cpp \
-     PictureInfoLoader.cpp \
-     GUIDialogPictureInfo.cpp \
-     LastFmManager.cpp \
-     PictureInfoTag.cpp \
+     FileItem.cpp \
+     LangInfo.cpp \
+     GUIInfoManager.cpp \
      GUILargeTextureManager.cpp \
-     GUIDialogKaiToast.cpp \
-     KeyboardLayoutConfiguration.cpp \
-     GUIDialogAccessPoints.cpp \
-     Artist.cpp \
-     Album.cpp \
+     GUIPassword.cpp \
+     GUIViewControl.cpp \
+     GUIViewState.cpp \
      MediaSource.cpp \
-     MusicInfoTagLoaderASAP.cpp \
-     GUIWindowTestPattern.cpp \
-     GUIViewStatePrograms.cpp \
-     GUIViewStatePictures.cpp \
-     GUIDialogFullScreenInfo.cpp \
-     PowerManager.cpp \
-     Zeroconf.cpp \
-     ZeroconfBrowser.cpp \
-     VideoReferenceClock.cpp \
-     DPMSSupport.cpp \
-     GUIWindowTestPatternGL.cpp \
-     RenderSystem.cpp \
-     RenderSystemGL.cpp \
-     RenderSystemGLES.cpp \
-     KeyboardStat.cpp \
-     MouseStat.cpp \
-     WinSystem.cpp \
-     WinSystemX11.cpp \
-     WinSystemX11GL.cpp \
-     WinSystemEGL.cpp \
-     WinEventsSDL.cpp \
-     AdvancedSettings.cpp \
-     Bookmark.cpp \
+     NfoFile.cpp \
+     PasswordManager.cpp \
+     PlayListPlayer.cpp \
+     PartyModeManager.cpp \
+     SectionLoader.cpp \
+     SortFileItem.cpp \
+     SystemGlobals.cpp \
+     Temperature.cpp \
      TextureCache.cpp \
      TextureDatabase.cpp \
-     AddonDatabase.cpp \
-     URIUtils.cpp \
-     SystemGlobals.cpp \
+     ThumbLoader.cpp \
+     ThumbnailCache.cpp \
+     URL.cpp \
+     ViewDatabase.cpp \
+     Util.cpp \
+     XBApplicationEx.cpp \
+     xbmc.cpp \
 
 LIB=xbmc.a
 
 DISTCLEAN_FILES=DllPaths_generated.h
 
-include ../Makefile.include
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
 

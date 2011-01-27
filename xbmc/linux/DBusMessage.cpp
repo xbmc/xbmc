@@ -20,7 +20,7 @@
  */
 #include "DBusMessage.h"
 #ifdef HAS_DBUS
-#include "log.h"
+#include "utils/log.h"
 
 CDBusMessage::CDBusMessage(const char *destination, const char *object, const char *interface, const char *method)
 {

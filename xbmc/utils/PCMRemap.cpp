@@ -29,7 +29,7 @@
 #include "MathUtils.h"
 #include "PCMRemap.h"
 #include "utils/log.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #ifdef _WIN32
 #include "../win32/PlatformDefs.h"
 #endif

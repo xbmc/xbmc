@@ -19,8 +19,8 @@
  *
  */
 
-#include "../lib/libPython/XBPythonDll.h"
-#include "../../cores/DllLoader/DllLoader.h"
+#include "interfaces/python/XBPythonDll.h"
+#include "cores/DllLoader/DllLoader.h"
 
 template<byte count>
 struct SVaPassNext{

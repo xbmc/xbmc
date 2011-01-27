@@ -20,10 +20,10 @@
  */
 
 #include "OGGcodec.h"
-#include "OggTag.h"
+#include "music/tags/OggTag.h"
 #include "FileItem.h"
-#include "Util.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 
 using namespace MUSIC_INFO;
 
@@ -57,21 +57,21 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   m_CurrentStream=0;
 
   CStdString strExtension;
-  CUtil::GetExtension(strFile, strExtension);
+  URIUtils::GetExtension(strFile, strExtension);
 
   //  A bitstream inside a ogg file?
   if (strExtension==".oggstream")
   {
     //  Extract the bitstream to play
-    CStdString strFileName=CUtil::GetFileName(strFile);
+    CStdString strFileName=URIUtils::GetFileName(strFile);
     int iStart=strFileName.ReverseFind('-')+1;
     m_CurrentStream = atoi(strFileName.substr(iStart, strFileName.size()-iStart-10).c_str())-1;
     //  The directory we are in, is the file
     //  that contains the bitstream to play,
     //  so extract it
     CStdString strPath=strFile;
-    CUtil::GetDirectory(strPath, strFile);
-    CUtil::RemoveSlashAtEnd(strFile); // we want the filename
+    URIUtils::GetDirectory(strPath, strFile);
+    URIUtils::RemoveSlashAtEnd(strFile); // we want the filename
   }
 
   CFileItem item(strFile, false);

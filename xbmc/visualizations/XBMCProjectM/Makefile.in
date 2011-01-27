@@ -1,8 +1,7 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I../../addons/include
 OBJS=Main.o
-SLIB=../../../addons/visualization.projectm/projectM.vis
-PRESETS=../../../addons/visualization.projectm/resources/presets.zip
+SLIB=@abs_top_srcdir@/addons/visualization.projectm/projectM.vis
+PRESETS=@abs_top_srcdir@/addons/visualization.projectm/resources/presets.zip
 DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 CXXFLAGS=-fPIC
 DIRS=libprojectM
@@ -14,14 +13,14 @@ $(SLIB): $(OBJS) libprojectM/libprojectM.dylib
 	$(CXX) -bundle -shared -undefined suppress -flat_namespace $(CFLAGS) -o $(SLIB) \
 		./libprojectM/CMakeFiles/projectM.dir/*.o \
 		$(OBJS)
-	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	@abs_top_srcdir@/tools/Mach5/wrapper.rb $@;mv output.so $@
 	$(MAKE) $(PRESETS)
 
 libprojectM/libprojectM.dylib:
 	$(MAKE) -C libprojectM
 else
 $(SLIB): $(OBJS) libprojectM/libprojectM.so
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -o $(SLIB) $(OBJS) `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -o $(SLIB) $(OBJS) `cat @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.def` @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
 	$(MAKE) $(PRESETS)
 
 libprojectM/libprojectM.so: 
@@ -45,4 +44,4 @@ DISTCLEAN_FILES=	\
 	libprojectM/libprojectM.pc \
 	$(PRESETS)
 
-include ../../../Makefile.include
+include @abs_top_srcdir@/Makefile.include

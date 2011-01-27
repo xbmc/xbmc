@@ -54,7 +54,8 @@ d4rk@xbmc.org
 
 */
 
-#include "xbmc_vis_dll.h"
+#include "addons/include/xbmc_vis_dll.h"
+#include "addons/include/xbmc_addon_cpp_dll.h"
 #include <GL/glew.h>
 #include "libprojectM/projectM.hpp"
 #include <string>

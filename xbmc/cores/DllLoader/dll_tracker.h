@@ -22,7 +22,7 @@
  *
  */
 
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 #ifdef _WIN32
 #include "system.h" // for SOCKET
 #endif

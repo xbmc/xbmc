@@ -38,14 +38,14 @@
 
 #include "DVDFileInfo.h"
 
-#include "Util.h"
-#include "utils/GUIInfoManager.h"
-#include "GUIWindowManager.h"
+#include "utils/URIUtils.h"
+#include "GUIInfoManager.h"
+#include "guilib/GUIWindowManager.h"
 #include "Application.h"
 #include "DVDPerformanceCounter.h"
-#include "FileSystem/File.h"
-#include "Picture.h"
-#include "Codecs/DllSwScale.h"
+#include "filesystem/File.h"
+#include "pictures/Picture.h"
+#include "DllSwScale.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -54,18 +54,16 @@
 #else
 #define MEASURE_FUNCTION
 #endif
-#include "AdvancedSettings.h"
+#include "settings/AdvancedSettings.h"
 #include "FileItem.h"
-#include "MouseStat.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #include "GUIUserMessages.h"
-#include "Settings.h"
-#include "LocalizeStrings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "utils/StreamDetails.h"
-#include "MediaManager.h"
-#include "GUIDialogBusy.h"
+#include "storage/MediaManager.h"
+#include "dialogs/GUIDialogBusy.h"
 
 using namespace std;
 
@@ -481,7 +479,7 @@ retry:
     {
       CLog::Log(LOGERROR, "test subs Amet [%s]", filenames[i].c_str());
       // if vobsub subtitle:		
-      if ( CUtil::GetExtension(filenames[i]) == ".idx" ) 
+      if (URIUtils::GetExtension(filenames[i]) == ".idx")
       {
         CStdString strSubFile;
         if ( CUtil::FindVobSubPair( filenames, filenames[i], strSubFile ) )
@@ -3399,12 +3397,12 @@ int CDVDPlayer::GetSourceBitrate()
 
 int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename, CDemuxStream::EFlags flags)
 {
-  std::string ext = CUtil::GetExtension(filename);
+  std::string ext = URIUtils::GetExtension(filename);
   std::string vobsubfile = subfilename;
   if(ext == ".idx")
   {
     if (vobsubfile.empty())
-      vobsubfile = CUtil::ReplaceExtension(filename, ".sub");
+      vobsubfile = URIUtils::ReplaceExtension(filename, ".sub");
    
     CDVDDemuxVobsub v;
     if(!v.Open(filename, vobsubfile))
@@ -3416,7 +3414,7 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
   }
   if(ext == ".sub")
   {
-    CStdString strReplace(CUtil::ReplaceExtension(filename,".idx"));
+    CStdString strReplace(URIUtils::ReplaceExtension(filename,".idx"));
     if (XFILE::CFile::Exists(strReplace))
       return -1;
   }
@@ -3425,7 +3423,7 @@ int CDVDPlayer::AddSubtitleFile(const std::string& filename, const std::string& 
   s.type     = STREAM_SUBTITLE;
   s.id       = 0;
   s.filename = filename;
-  s.name     = CUtil::GetFileName(filename);
+  s.name     = URIUtils::GetFileName(filename);
   s.flags    = flags;
   m_SelectionStreams.Update(s);
   return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.id);

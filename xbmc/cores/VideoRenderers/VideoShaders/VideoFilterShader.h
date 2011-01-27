@@ -24,7 +24,7 @@
 
 #if defined(HAS_GL) || HAS_GLES == 2
 
-#include "../../../../guilib/Shader.h"
+#include "guilib/Shader.h"
 #include "../../../settings/VideoSettings.h"
 
 using namespace Shaders;

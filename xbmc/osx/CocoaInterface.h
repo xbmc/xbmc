@@ -22,7 +22,7 @@
 #define _OSX_INTERFACE_H_
 
 #include <string>
-#include "StdString.h"
+#include "utils/StdString.h"
 #include <Carbon/Carbon.h>
 
 class CCocoaAutoPool

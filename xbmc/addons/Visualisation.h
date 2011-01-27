@@ -20,7 +20,7 @@
  */
 #pragma once
 
-#include "Key.h"
+#include "guilib/Key.h"
 #include "AddonDll.h"
 #include "cores/IAudioCallback.h"
 #include "include/xbmc_vis_types.h"

@@ -21,8 +21,8 @@
 
 #include "DVDInputStreamStack.h"
 #include "FileItem.h"
-#include "FileSystem/File.h"
-#include "FileSystem/StackDirectory.h"
+#include "filesystem/File.h"
+#include "filesystem/StackDirectory.h"
 #include "utils/log.h"
 
 #include <limits.h>

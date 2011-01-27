@@ -24,20 +24,20 @@
 //
 
 #include "TuxBoxUtil.h"
-#include "Util.h"
-#include "FileSystem/FileCurl.h"
-#include "GUIDialogContextMenu.h"
+#include "URIUtils.h"
+#include "filesystem/FileCurl.h"
+#include "dialogs/GUIDialogContextMenu.h"
 #include "Application.h"
 #include "GUIInfoManager.h"
-#include "VideoInfoTag.h"
-#include "GUIWindowManager.h"
-#include "GUIDialogOK.h"
-#include "GUIDialogYesNo.h"
-#include "FileSystem/File.h"
+#include "video/VideoInfoTag.h"
+#include "guilib/GUIWindowManager.h"
+#include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "filesystem/File.h"
 #include "URL.h"
-#include "AdvancedSettings.h"
+#include "settings/AdvancedSettings.h"
 #include "FileItem.h"
-#include "LocalizeStrings.h"
+#include "guilib/LocalizeStrings.h"
 #include "StringUtils.h"
 #include "tinyXML/tinyxml.h"
 #include "log.h"
@@ -98,7 +98,7 @@ void CTuxBoxService::Process()
   while(!CThread::m_bStop && g_application.IsPlaying())
   {
     strURL = g_application.CurrentFileItem().m_strPath;
-    if(!CUtil::IsTuxBox(strURL))
+    if(!URIUtils::IsTuxBox(strURL))
       break;
 
     int iRequestTimer = g_advancedSettings.m_iTuxBoxEpgRequestTime *1000; //seconds

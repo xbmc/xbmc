@@ -20,7 +20,7 @@
  */
 #include "PluginSource.h"
 #include "AddonManager.h"
-#include "StringUtils.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 

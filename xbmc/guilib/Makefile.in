@@ -1,0 +1,96 @@
+SRCS=AnimatedGif.cpp \
+     AudioContext.cpp \
+     DDSImage.cpp \
+     DirectXGraphics.cpp \
+     FrameBufferObject.cpp \
+     GraphicContext.cpp \
+     GUIAudioManager.cpp \
+     GUIBaseContainer.cpp \
+     GUIBorderedImage.cpp \
+     GUIButtonControl.cpp \
+     GUIButtonScroller.cpp \
+     GUICheckMarkControl.cpp \
+     GUIColorManager.cpp \
+     GUIControl.cpp \
+     GUIControlFactory.cpp \
+     GUIControlGroup.cpp \
+     GUIControlGroupList.cpp \
+     GUIControlProfiler.cpp \
+     GUIDialog.cpp \
+     GUIEditControl.cpp \
+     GUIFadeLabelControl.cpp \
+     GUIFixedListContainer.cpp \
+     GUIFont.cpp \
+     GUIFontManager.cpp \
+     GUIFontTTF.cpp \
+     GUIImage.cpp \
+     GUIIncludes.cpp \
+     GUIInfoTypes.cpp \
+     GUILabel.cpp \
+     GUILabelControl.cpp \
+     GUIListContainer.cpp \
+     GUIListGroup.cpp \
+     GUIListItem.cpp \
+     GUIListItemLayout.cpp \
+     GUIListLabel.cpp \
+     GUIMessage.cpp \
+     GUIMoverControl.cpp \
+     GUIMultiImage.cpp \
+     GUIMultiSelectText.cpp \
+     GUIPanelContainer.cpp \
+     GUIProgressControl.cpp \
+     GUIRadioButtonControl.cpp \
+     GUIResizeControl.cpp \
+     GUIRenderingControl.cpp \
+     GUIRSSControl.cpp \
+     GUIScrollBarControl.cpp \
+     GUISelectButtonControl.cpp \
+     GUISettingsSliderControl.cpp \
+     GUIShader.cpp \
+     GUISliderControl.cpp \
+     GUISound.cpp \
+     GUISpinControl.cpp \
+     GUISpinControlEx.cpp \
+     GUIStandardWindow.cpp \
+     GUIStaticItem.cpp \
+     GUITextBox.cpp \
+     GUITextLayout.cpp \
+     GUITexture.cpp \
+     GUIToggleButtonControl.cpp \
+     GUIVideoControl.cpp \
+     GUIVisualisationControl.cpp \
+     GUIWindow.cpp \
+     GUIWindowManager.cpp \
+     GUIWrappingListContainer.cpp \
+     IWindowManagerCallback.cpp \
+     Key.cpp \
+     LocalizeStrings.cpp \
+     Shader.cpp \
+     Texture.cpp \
+     TextureBundleXPR.cpp \
+     TextureBundleXBT.cpp \
+     TextureBundle.cpp \
+     TextureManager.cpp \
+     VisibleEffect.cpp \
+     XBTF.cpp \
+     XBTFReader.cpp \
+
+ifeq (@USE_OPENGL@,1)
+SRCS+=TextureGL.cpp \
+      GUIFontTTFGL.cpp \
+      GUITextureGL.cpp
+endif
+ifeq (@USE_OPENGLES@,1)
+SRCS+=GUITextureGLES.cpp \
+      MatrixGLES.cpp
+endif
+
+LIB=guilib.a
+
+include @abs_top_srcdir@/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+
+try : try.o TextureBundle.o DirectXGraphics.o GUIFontTTF.o
+	g++ -o try try.o TextureBundle.o DirectXGraphics.o GraphicContext.o GUIIncludes.o ../utils/CriticalSection.o ../XBVideoConfig.o SkinInfo.o ../../lib/tinyXML/tinyxml.a ../linux/CriticalSection.o GUIFontTTF.o GUIFontBase.o GUIFontManager.o GUIFont.o ../utils/XMLUtils.o GUIImage.o GUIControl.o TextureManager.o GUIMessage.o ../utils/SingleLock.o VisibleEffect.o GUIWindowManager.o AnimatedGif.o -lSDL_image -lSDL_gfx -lSDL -llzo -lfreetype
+
+

@@ -1,0 +1,211 @@
+CC=@CC@
+CXX=@CXX@
+SHELL=/bin/bash
+LDFLAGS=-shared -fPIC -rdynamic
+ARCH=@ARCH@
+SYSDIR=@abs_top_srcdir@/system/players/dvdplayer
+WRAPPER=@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
+WRAPPER_OSX=@abs_top_srcdir@/tools/Mach5/wrapper.rb
+DIRS=
+ifneq (@USE_EXTERNAL_FFMPEG@,1)
+  DIRS+=ffmpeg
+endif
+ifeq (@USE_INTERNAL_LIBA52@,1)
+  DIRS+=liba52
+endif
+ifeq (@USE_INTERNAL_LIBDTS@,1)
+  DIRS+=libdts
+endif
+
+LIBS=
+ifneq (@USE_EXTERNAL_FFMPEG@,1)
+  LIBS+=avutil-50-$(ARCH).so \
+	avcodec-52-$(ARCH).so \
+	avformat-52-$(ARCH).so \
+	postproc-51-$(ARCH).so \
+	swscale-0.6.1-$(ARCH).so
+endif
+ifeq (@USE_INTERNAL_LIBA52@,1)
+  LIBS+=liba52-$(ARCH).so \
+	libao-$(ARCH).so
+endif
+ifeq (@USE_INTERNAL_LIBDTS@,1)
+  LIBS+=libdts-$(ARCH).so
+endif
+
+ifeq ($(findstring osx,$(ARCH)),osx)
+	DIRS+=libmad
+ 	DIRS+=libfaad2
+	LIBS+=libmad-$(ARCH).so
+ 	LIBS+=libfaad-$(ARCH).so
+endif
+
+ifneq (,$(findstring powerpc,$(ARCH)))
+  ARCH_DIR=ppc
+else
+ifeq ($(ARCH), arm)
+  ARCH_DIR=arm
+else
+  ARCH_DIR=x86
+endif
+endif
+
+.PHONY: $(DIRS) codecs
+
+codecs: $(addprefix $(SYSDIR)/, $(LIBS));
+
+
+ifeq ($(findstring osx,$(ARCH)), osx)
+# Add -lbundle1.o for powerpc-osx
+ifeq ($(ARCH), powerpc-osx)
+BUNDLE1_O = -lbundle1.o
+endif
+
+$(SYSDIR)/avutil-50-$(ARCH).so: ffmpeg/libavutil/libavutil.dylib
+	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
+		ffmpeg/libavutil/*.o
+	$(WRAPPER_OSX) $@;mv output.so $@
+	chmod +x $@
+
+$(SYSDIR)/avcodec-52-$(ARCH).so: ffmpeg/libavcodec/libavcodec.dylib
+	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
+		ffmpeg/libavcodec/*.o \
+		ffmpeg/libavcodec/$(ARCH_DIR)/*.o
+	$(WRAPPER_OSX) $@;mv output.so $@
+	chmod +x $@
+
+$(SYSDIR)/avformat-52-$(ARCH).so: ffmpeg/libavformat/libavformat.dylib
+	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
+		ffmpeg/libavformat/*.o
+	$(WRAPPER_OSX) $@;mv output.so $@
+	chmod +x $@
+
+$(SYSDIR)/swscale-0.6.1-$(ARCH).so: ffmpeg/libswscale/libswscale.dylib
+	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
+		ffmpeg/libswscale/*.o ffmpeg/libswscale/$(ARCH_DIR)/*.o
+	$(WRAPPER_OSX) $@;mv output.so $@
+	chmod +x $@
+
+$(SYSDIR)/postproc-51-$(ARCH).so: ffmpeg/libpostproc/libpostproc.dylib
+	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
+		ffmpeg/libpostproc/*.o
+	$(WRAPPER_OSX) $@;mv output.so $@
+	chmod +x $@
+
+ffmpeg/libavutil/libavutil.dylib     : ffmpeg;
+ffmpeg/libavcodec/libavcodec.dylib   : ffmpeg;
+ffmpeg/libavformat/libavformat.dylib : ffmpeg;
+ffmpeg/libswscale/libswscale.dylib   : ffmpeg;
+ffmpeg/libpostproc/libpostproc.dylib : ffmpeg;
+ffmpeg:
+	$(MAKE) -C $@
+
+$(SYSDIR)/libdts-$(ARCH).so:  $(WRAPPER_OSX) libdts/libdts/libdts.a
+	$(CC) -bundle -flat_namespace -undefined suppress \
+		-o $@ libdts/libdts/bitstream.o \
+		libdts/libdts/downmix.o \
+		libdts/libdts/parse.o
+	$(WRAPPER_OSX) $@;mv output.so $@
+	chmod +x $@
+
+$(SYSDIR)/libfaad-$(ARCH).so:  $(WRAPPER_OSX) libfaad2/libfaad/libfaad.la
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		libfaad2/libfaad/*.o $(BUNDLE1_O)
+	$(WRAPPER_OSX) $@;mv output.so $@
+
+$(SYSDIR)/libmad-$(ARCH).so: $(WRAPPER_OSX) libmad/libmad.la
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		libmad/.libs/*.o $(BUNDLE1_O)
+	$(WRAPPER_OSX) $@;mv output.so $@
+
+$(SYSDIR)/liba52-$(ARCH).so: $(WRAPPER_OSX) liba52/liba52/liba52.la
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		liba52/liba52/.libs/*.o $(BUNDLE1_O)
+	$(WRAPPER_OSX) $@;mv output.so $@
+
+$(SYSDIR)/libao-$(ARCH).so: $(WRAPPER_OSX) liba52/libao/libao.a
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		liba52/libao/libao.a $(BUNDLE1_O)
+	#$(WRAPPER_OSX) $@;mv output.so $@
+
+libdts/libdts/libdts.a : libdts;
+libdts:
+	$(MAKE) -C $@
+
+libfaad2/libfaad/libfaad.la: libfaad2;
+libfaad2:
+	$(MAKE) -C $@
+
+libmad/libmad.la: libmad;
+libmad:
+	$(MAKE) -C $@
+
+liba52/liba52/liba52.la: liba52
+liba52/libao/libao.a: liba52
+liba52:
+	$(MAKE) -C $@
+
+else
+
+$(SYSDIR)/avutil-50-$(ARCH).so: ffmpeg/libavutil/libavutil.so
+	cp ffmpeg/libavutil/libavutil.so $@
+
+$(SYSDIR)/avcodec-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavcodec/libavcodec.so
+	cp ffmpeg/libavcodec/libavcodec.so $@
+
+$(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.so
+	cp ffmpeg/libavformat/libavformat.so $@
+
+ifneq ($(ARCH), arm)
+$(SYSDIR)/swscale-0.6.1-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
+	cp ffmpeg/libswscale/libswscale.so $@
+else # No ARM version of swscale available yet.
+$(SYSDIR)/swscale-0.6.1-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ -Wl,-Bsymbolic \
+		ffmpeg/libswscale/*.o \
+		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
+endif
+
+$(SYSDIR)/postproc-51-$(ARCH).so: $(WRAPPER) ffmpeg/libpostproc/libpostproc.so
+	cp ffmpeg/libpostproc/libpostproc.so $@
+
+ffmpeg/libavutil/libavutil.so     : ffmpeg;
+ffmpeg/libavcodec/libavcodec.so   : ffmpeg;
+ffmpeg/libavformat/libavformat.so : ffmpeg;
+ffmpeg/libswscale/libswscale.so   : ffmpeg;
+ffmpeg/libpostproc/libpostproc.so : ffmpeg;
+ffmpeg:
+	$(MAKE) -C $@
+
+$(SYSDIR)/libdts-$(ARCH).so: $(WRAPPER) libdts/libdts/libdts.a
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ \
+		libdts/libdts/bitstream.o \
+		libdts/libdts/downmix.o libdts/libdts/parse.o \
+		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
+
+$(SYSDIR)/liba52-$(ARCH).so: $(WRAPPER) liba52/liba52/liba52.la
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ liba52/liba52/.libs/*.o \
+		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
+
+$(SYSDIR)/libao-$(ARCH).so: $(WRAPPER) liba52/libao/libao.a
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ liba52/libao/libao.a \
+		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
+
+libdts/libdts/libdts.a : libdts;
+libdts:
+	$(MAKE) -C $@
+
+liba52/liba52/liba52.la: liba52
+liba52/libao/libao.a: liba52
+liba52:
+	$(MAKE) -C $@
+
+endif
+
+clean:
+	rm -f $(addprefix $(SYSDIR)/, $(LIBS))
+	for d in $(DIRS); do (if test -f "$$d/Makefile"; then ($(MAKE) -C "$$d" clean); fi ); done
+
+distclean:
+	rm -f $(addprefix $(SYSDIR)/, $(LIBS))
+	for d in $(DIRS); do (if test -f "$$d/Makefile"; then ($(MAKE) -C "$$d" distclean || $(MAKE) -C "$$d" clean); fi ); done

@@ -21,14 +21,14 @@
 
 #include "DVDInputStreamNavigator.h"
 #include "Util.h"
-#include "LangCodeExpander.h"
-#include "DVDDemuxSPU.h"
+#include "utils/LangCodeExpander.h"
+#include "../DVDDemuxSPU.h"
 #include "DVDStateSerializer.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #include "LangInfo.h"
 #include "utils/log.h"
-#include "Geometry.h"
-#include "FileSystem/IFile.h"
+#include "guilib/Geometry.h"
+#include "filesystem/IFile.h"
 #ifdef __APPLE__
 #include "CocoaInterface.h"
 #endif

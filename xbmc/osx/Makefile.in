@@ -1,11 +1,8 @@
 abs_top_srcdir=@abs_top_srcdir@
 
 INCLUDES=-I$(abs_top_srcdir) \
-	 -I$(abs_top_srcdir)/guilib \
 	 -I$(abs_top_srcdir)/xbmc \
 	 -I$(abs_top_srcdir)/xbmc/linux \
-	 -I$(abs_top_srcdir)/xbmc/utils \
-	 -I$(abs_top_srcdir)/xbmc/FileSystem \
 	 -I$(abs_top_srcdir)/lib/libportaudio
 
 .SUFFIXES : .m .mm
@@ -16,14 +13,7 @@ SRCS = \
 	XBMCHelper.m \
 	CocoaInterface.mm \
 	CoreAudio.cpp \
-	DarwinStorageProvider.cpp \
-	CocoaPowerSyscall.cpp \
 	OSXGNUReplacements.c \
-	ZeroconfOSX.cpp \
-	ZeroconfBrowserOSX.cpp \
-	WinSystemOSX.mm \
-	WinSystemOSXGL.mm \
-	SemaphoreDarwin.cpp \
 	posix-realtime-stub.c
 	
 LIB=osx.a

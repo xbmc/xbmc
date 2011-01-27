@@ -24,7 +24,7 @@
 
 #include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
-#include <StdString.h>
+#include <utils/StdString.h>
 #include <list>
 #include <vector>
 

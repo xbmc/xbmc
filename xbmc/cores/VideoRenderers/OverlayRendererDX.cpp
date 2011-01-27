@@ -26,8 +26,8 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "Application.h"
-#include "WindowingFactory.h"
-#include "Settings.h"
+#include "windowing/WindowingFactory.h"
+#include "settings/Settings.h"
 #include "MathUtils.h"
 
 #ifdef HAS_DX

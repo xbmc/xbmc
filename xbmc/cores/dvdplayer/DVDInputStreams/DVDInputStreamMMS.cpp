@@ -25,8 +25,8 @@
 
 #include "FileItem.h"
 #include "DVDInputStreamMMS.h"
-#include "FileSystem/IFile.h"
-#include "GUISettings.h"
+#include "filesystem/IFile.h"
+#include "settings/GUISettings.h"
 
 #ifndef _WIN32
 // work around for braindead usage of "this" keyword as parameter name in libmms headers
@@ -40,7 +40,7 @@
 #include <libmms/mmsx.h>
 #undef this
 #else
-#include "libmms/libmms_win32/src/mmsx.h"
+#include "win32/libmms_win32/src/mmsx.h"
 #endif
 
 using namespace XFILE;

@@ -28,9 +28,9 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "Application.h"
-#include "WindowingFactory.h"
-#include "../../Settings.h"
-#include "SingleLock.h"
+#include "windowing/WindowingFactory.h"
+#include "settings/Settings.h"
+#include "threads/SingleLock.h"
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "OverlayRendererGL.h"
 #elif defined(HAS_DX)

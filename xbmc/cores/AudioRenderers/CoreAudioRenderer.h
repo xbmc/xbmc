@@ -24,7 +24,7 @@
 
 #include <osx/CoreAudio.h>
 #include "IAudioRenderer.h"
-#include <utils/LockFree.h>
+#include <threads/LockFree.h>
 
 struct audio_slice
 {

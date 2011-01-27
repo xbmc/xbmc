@@ -23,7 +23,7 @@
 #include "emu_dummy.h"
 #include "utils/log.h"
 
-#include "utils/IoSupport.h"
+#include "storage/IoSupport.h"
 
 #ifndef _LINUX
 #include <process.h>
@@ -31,7 +31,7 @@
 #endif
 
 #include "../dll_tracker.h"
-#include "FileSystem/SpecialProtocol.h"
+#include "filesystem/SpecialProtocol.h"
 
 #ifdef _LINUX
 #include "../../../linux/PlatformInclude.h"

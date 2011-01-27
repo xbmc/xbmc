@@ -22,7 +22,7 @@
 #include "system.h"
 #ifdef HAS_DBUS
 #include "DBusMessage.h"
-#include "Variant.h"
+#include "utils/Variant.h"
 
 class CDBusUtil
 {

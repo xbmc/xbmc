@@ -19,11 +19,10 @@
  *
  */
 
-#include "AdvancedSettings.h"
 #include "SortFileItem.h"
-#include "StringUtils.h"
-#include "VideoInfoTag.h"
-#include "MusicInfoTag.h"
+#include "settings/AdvancedSettings.h"
+#include "utils/StringUtils.h"
+#include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
 #include "URL.h"
 #include "utils/log.h"

@@ -20,13 +20,13 @@
 */
 #include "WINFileSMB.h"
 #include "URL.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 
 #include <sys/stat.h>
 #include <io.h>
 #include "log.h"
 #include "CharsetConverter.h"
-#include "Util.h"
+#include "utils/URIUtils.h"
 #include "WINSMBDirectory.h"
 
 using namespace XFILE;
@@ -143,8 +143,8 @@ int CWINFileSMB::Stat(const CURL& url, struct __stat64* buffer)
   CStdString strFile = GetLocal(url);
   /* _wstat64 calls FindFirstFileEx. According to MSDN, the path should not end in a trailing backslash.
     Remove it before calling _wstat64 */
-  if (strFile.length() > 3 && CUtil::HasSlashAtEnd(strFile))
-    CUtil::RemoveSlashAtEnd(strFile);
+  if (strFile.length() > 3 && URIUtils::HasSlashAtEnd(strFile))
+    URIUtils::RemoveSlashAtEnd(strFile);
   CStdStringW strWFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
   if(_wstat64(strWFile.c_str(), buffer) == 0)

@@ -23,10 +23,10 @@
 
 #include "DVDInputStreamBluray.h"
 #include "DynamicDll.h"
-#include "Util.h"
 #include "utils/log.h"
-#include "FileSystem/File.h"
-#include "FileSystem/Directory.h"
+#include "utils/URIUtils.h"
+#include "filesystem/File.h"
+#include "filesystem/Directory.h"
 
 #define LIBBLURAY_BYTESEEK 0
 
@@ -190,7 +190,7 @@ static BD_FILE_H *file_open(const char* filename, const char *mode)
 
     if(is_udf_iso_path(filename))
     {
-      CUtil::URLEncode(strFilename);
+      CURL::Encode(strFilename);
       strFilename.Format("udf://%s", strFilename);
       CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening file udf iso file %s... (%p)", strFilename.c_str(), file);
     }
@@ -264,7 +264,7 @@ static BD_DIR_H *dir_open(const char* dirname)
     CStdString strDirname(dirname);
     if(is_udf_iso_path(dirname))
     {
-      CUtil::URLEncode(strDirname);
+      CURL::Encode(strDirname);
       strDirname.Format("udf://%s", strDirname);
       CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening udf dir %s...", strDirname.c_str());
     }
@@ -307,19 +307,19 @@ bool CDVDInputStreamBluray::IsEOF()
 bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content)
 {
   CStdString strPath;
-  CUtil::GetDirectory(strFile,strPath);
-  CUtil::RemoveSlashAtEnd(strPath);
+  URIUtils::GetDirectory(strFile,strPath);
+  URIUtils::RemoveSlashAtEnd(strPath);
 
-  if(CUtil::GetFileName(strPath) == "PLAYLIST")
+  if(URIUtils::GetFileName(strPath) == "PLAYLIST")
   {
-    CUtil::GetDirectory(strPath,strPath);
-    CUtil::RemoveSlashAtEnd(strPath);
+    URIUtils::GetDirectory(strPath,strPath);
+    URIUtils::RemoveSlashAtEnd(strPath);
   }
 
-  if(CUtil::GetFileName(strPath) == "BDMV")
+  if(URIUtils::GetFileName(strPath) == "BDMV")
   {
-    CUtil::GetDirectory(strPath,strPath);
-    CUtil::RemoveSlashAtEnd(strPath);
+    URIUtils::GetDirectory(strPath,strPath);
+    URIUtils::RemoveSlashAtEnd(strPath);
   }
 
   m_dll->bd_register_dir(dir_open);
@@ -334,7 +334,7 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
     return false;
   }
 
-  CStdString filename = CUtil::GetFileName(strFile);
+  CStdString filename = URIUtils::GetFileName(strFile);
   if(filename.Equals("index.bdmv"))
   {
     int titles = m_dll->bd_get_titles(m_bd, TITLES_RELEVANT);
@@ -356,7 +356,7 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
     }
     m_title = s;
   }
-  else if(CUtil::GetExtension(filename).Equals(".mpls"))
+  else if(URIUtils::GetExtension(filename).Equals(".mpls"))
   {
     int titles = m_dll->bd_get_titles(m_bd, TITLES_ALL);
     do

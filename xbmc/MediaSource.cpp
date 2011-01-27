@@ -20,17 +20,18 @@
  */
 
 #include "MediaSource.h"
-#include "AdvancedSettings.h"
+#include "settings/AdvancedSettings.h"
 #include "Util.h"
 #include "URL.h"
-#include "FileSystem/MultiPathDirectory.h"
+#include "filesystem/MultiPathDirectory.h"
+#include "utils/URIUtils.h"
 
 using namespace std;
 using namespace XFILE;
 
 bool CMediaSource::IsWritable() const
 {
-  return CUtil::IsWritable(strPath);
+  return CUtil::SupportsFileOperations(strPath);
 }
 
 void CMediaSource::FromNameAndPaths(const CStdString &category, const CStdString &name, const vector<CStdString> &paths)
@@ -58,26 +59,26 @@ void CMediaSource::FromNameAndPaths(const CStdString &category, const CStdString
   m_iBadPwdCount = 0;
   m_iHasLock = 0;
 
-  if (CUtil::IsVirtualPath(strPath) || CUtil::IsMultiPath(strPath))
+  if (URIUtils::IsVirtualPath(strPath) || URIUtils::IsMultiPath(strPath))
     m_iDriveType = SOURCE_TYPE_VPATH;
   else if (strPath.Left(4).Equals("udf:"))
   {
     m_iDriveType = SOURCE_TYPE_VIRTUAL_DVD;
     strPath = "D:\\";
   }
-  else if (CUtil::IsISO9660(strPath))
+  else if (URIUtils::IsISO9660(strPath))
     m_iDriveType = SOURCE_TYPE_VIRTUAL_DVD;
-  else if (CUtil::IsDVD(strPath))
+  else if (URIUtils::IsDVD(strPath))
     m_iDriveType = SOURCE_TYPE_DVD;
-  else if (CUtil::IsRemote(strPath))
+  else if (URIUtils::IsRemote(strPath))
     m_iDriveType = SOURCE_TYPE_REMOTE;
-  else if (CUtil::IsHD(strPath))
+  else if (URIUtils::IsHD(strPath))
     m_iDriveType = SOURCE_TYPE_LOCAL;
   else
     m_iDriveType = SOURCE_TYPE_UNKNOWN;
   // check - convert to url and back again to make sure strPath is accurate
   // in terms of what we expect
-  CUtil::AddSlashAtEnd(strPath);
+  URIUtils::AddSlashAtEnd(strPath);
   strPath = CURL(strPath).Get();
 }
 

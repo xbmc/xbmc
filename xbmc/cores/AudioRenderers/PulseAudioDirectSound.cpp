@@ -22,12 +22,12 @@
 #include "system.h"
 #ifdef HAS_PULSEAUDIO
 #include "PulseAudioDirectSound.h"
-#include "AudioContext.h"
-#include "AdvancedSettings.h"
-#include "GUISettings.h"
+#include "guilib/AudioContext.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
 #include "Util.h"
-#include "LocalizeStrings.h"
+#include "guilib/LocalizeStrings.h"
 
 static const char *ContextStateToString(pa_context_state s)
 {

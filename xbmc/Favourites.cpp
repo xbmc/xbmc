@@ -19,16 +19,16 @@
  *
  */
 
-#include "File.h"
 #include "Favourites.h"
+#include "filesystem/File.h"
 #include "Util.h"
-#include "Key.h"
-#include "Settings.h"
+#include "guilib/Key.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
-#include "VideoInfoTag.h"
 #include "tinyXML/tinyxml.h"
 #include "utils/log.h"
-#include "AdvancedSettings.h"
+#include "utils/URIUtils.h"
+#include "settings/AdvancedSettings.h"
 
 bool CFavourites::Load(CFileItemList &items)
 {
@@ -40,7 +40,7 @@ bool CFavourites::Load(CFileItemList &items)
     CFavourites::LoadFavourites(favourites, items);
   else
     CLog::Log(LOGDEBUG, "CFavourites::Load - no system favourites found, skipping");
-  CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "favourites.xml", favourites);
+  URIUtils::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "favourites.xml", favourites);
   if(XFILE::CFile::Exists(favourites))
     CFavourites::LoadFavourites(favourites, items);
   else
@@ -108,7 +108,7 @@ bool CFavourites::Save(const CFileItemList &items)
     rootNode->InsertEndChild(favNode);
   }
 
-  CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "favourites.xml", favourites);
+  URIUtils::AddFileToFolder(g_settings.GetProfileUserDataFolder(), "favourites.xml", favourites);
   return doc.SaveFile(favourites);
 }
 

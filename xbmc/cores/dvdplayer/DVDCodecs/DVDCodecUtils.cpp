@@ -24,8 +24,8 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "utils/log.h"
 #include "utils/fastmemcpy.h"
-#include "../Codecs/DllSwScale.h"
-#include "../Codecs/DllAvCodec.h"
+#include "DllSwScale.h"
+#include "DllAvCodec.h"
 
 // allocate a new picture (PIX_FMT_YUV420P)
 DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)

@@ -27,8 +27,7 @@
 #endif // _MSC_VER > 1000
 
 #include "IAudioRenderer.h"
-#include "IAudioCallback.h"
-#include "../ssrc.h"
+#include "cores/IAudioCallback.h"
 
 #include <pulse/pulseaudio.h>
 

@@ -21,9 +21,9 @@
  *
  */
 
-#include "utils/Thread.h"
+#include "threads/Thread.h"
 #include "IProgressCallback.h"
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 #include <vector>
 #include "boost/shared_ptr.hpp"

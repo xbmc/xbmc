@@ -21,7 +21,7 @@
  *
  */
 
-#include "utils/Thread.h"
+#include "threads/Thread.h"
 
 class CWHelper: public CThread
 {

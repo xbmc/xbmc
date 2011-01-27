@@ -20,7 +20,7 @@
  */
 #include "DBusUtil.h"
 #ifdef HAS_DBUS
-#include "log.h"
+#include "utils/log.h"
 
 CVariant CDBusUtil::GetVariant(const char *destination, const char *object, const char *interface, const char *property)
 {

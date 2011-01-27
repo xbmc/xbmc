@@ -22,8 +22,6 @@
  *
  */
 
-#include "../Settings.h"
-
 class CPCMAmplifier {
 public:
   CPCMAmplifier();

@@ -21,8 +21,8 @@
 
 #include "AlarmClock.h"
 #include "Application.h"
-#include "LocalizeStrings.h"
-#include "SingleLock.h"
+#include "guilib/LocalizeStrings.h"
+#include "threads/SingleLock.h"
 #include "log.h"
 
 using namespace std;

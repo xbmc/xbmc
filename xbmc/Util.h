@@ -67,54 +67,17 @@ class CUtil
 public:
   CUtil(void);
   virtual ~CUtil(void);
-  static const CStdString GetExtension(const CStdString& strFileName);
-  static void RemoveExtension(CStdString& strFileName);
   static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
   static void CleanString(const CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bRemoveExtension = false, bool bCleanChars = true);
-  static const CStdString GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
-  static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
-  static bool IsDOSPath(const CStdString &path);
-  static bool IsHD(const CStdString& strFileName);
-  static CStdString GetParentPath(const CStdString& strPath);
-  static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static void RunShortcut(const char* szPath);
-  static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
   static void GetHomePath(CStdString& strPath, const CStdString& strTarget = "XBMC_HOME");
-  static CStdString ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension);
-  static void GetExtension(const CStdString& strFile, CStdString& strExtension);
-  static bool HasSlashAtEnd(const CStdString& strFile);
-  static bool IsRemote(const CStdString& strFile);
-  static bool IsOnDVD(const CStdString& strFile);
-  static bool IsOnLAN(const CStdString& strFile);
-  static bool IsDVD(const CStdString& strFile);
-  static bool IsVirtualPath(const CStdString& strFile);
-  static bool IsMultiPath(const CStdString& strPath);
-  static bool IsStack(const CStdString& strFile);
-  static bool IsRAR(const CStdString& strFile);
-  static bool IsInRAR(const CStdString& strFile);
-  static bool IsZIP(const CStdString& strFile);
-  static bool IsInZIP(const CStdString& strFile);
-  static bool IsInArchive(const CStdString& strFile);
-  static bool IsSpecial(const CStdString& strFile);
-  static bool IsPlugin(const CStdString& strFile);
-  static bool IsAddonsPath(const CStdString& strFile);
-  static bool IsCDDA(const CStdString& strFile);
-  static bool IsTuxBox(const CStdString& strFile);
-  static bool IsMythTV(const CStdString& strFile);
-  static bool IsHDHomeRun(const CStdString& strFile);
-  static bool IsVTP(const CStdString& strFile);
-  static bool IsHTSP(const CStdString& strFile);
-  static bool IsLiveTV(const CStdString& strFile);
-  static bool IsMusicDb(const CStdString& strFile);
-  static bool IsVideoDb(const CStdString& strFile);
-  static bool IsLastFM(const CStdString& strFile);
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
-  static void URLDecode(CStdString& strURLData);
-  static void URLEncode(CStdString& strURLData);
+
+  static bool IsPicture(const CStdString& strFile);
 
   /*! \brief retrieve MD5sum of a file
    \param strPath - path to the file to MD5sum
@@ -122,16 +85,6 @@ public:
    */
   static CStdString GetFileMD5(const CStdString& strPath);
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
-  static bool IsISO9660(const CStdString& strFile);
-  static bool IsSmb(const CStdString& strFile);
-  static bool IsXBMS(const CStdString& strFile);
-  static bool IsURL(const CStdString& strFile);
-  static bool IsFTP(const CStdString& strFile);
-  static bool IsInternetStream(const CURL& url, bool bStrictCheck = false);
-  static bool IsDAAP(const CStdString& strFile);
-  static bool IsUPnP(const CStdString& strFile);
-  static bool IsWritable(const CStdString& strFile);
-  static bool IsPicture(const CStdString& strFile);
   static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
   static void RemoveTempFiles();
 
@@ -141,18 +94,6 @@ public:
   static bool FindVobSubPair( const std::vector<CStdString>& vecSubtitles, const CStdString& strIdxPath, CStdString& strSubPath );
   static bool IsVobSub( const std::vector<CStdString>& vecSubtitles, const CStdString& strSubPath );  
   static int64_t ToInt64(uint32_t high, uint32_t low);
-  static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
-  static CStdString AddFileToFolder(const CStdString &strFolder, const CStdString &strFile)
-  {
-    CStdString result;
-    AddFileToFolder(strFolder, strFile, result);
-    return result;
-  }
-  static void AddSlashAtEnd(CStdString& strFolder);
-  static void RemoveSlashAtEnd(CStdString& strFolder);
-  static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
-  static void CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, const CStdString& strArchivePath,
-  const CStdString& strFilePathInArchive, const CStdString& strPwd="");
   static bool ThumbExists(const CStdString& strFileName, bool bAddCache = false);
   static bool ThumbCached(const CStdString& strFileName);
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
@@ -197,8 +138,6 @@ public:
   static void GetSkinThemes(std::vector<CStdString>& vecTheme);
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories=false);
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
-  static void WipeDir(const CStdString& strPath);
-  static void CopyDirRecursive(const CStdString& strSrcPath, const CStdString& strDstPath);
   static void ForceForwardSlashes(CStdString& strPath);
 
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);

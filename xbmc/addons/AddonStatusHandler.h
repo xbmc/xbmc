@@ -20,10 +20,10 @@
  *
  */
 
-#include "Thread.h"
+#include "threads/Thread.h"
 #include "IAddon.h"
 #include "include/xbmc_addon_dll.h"
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 namespace ADDON
 {

@@ -21,6 +21,8 @@
  *
  */
 
+#include "utils/StdString.h"
+
 class CFileItemList;
 class CFileItem;
 

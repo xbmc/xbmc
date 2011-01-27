@@ -21,9 +21,9 @@
  *
  */
 
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 #include "utils/Job.h"
-#include "TextureManager.h"
+#include "guilib/TextureManager.h"
 
 /*!
  \ingroup textures,jobs

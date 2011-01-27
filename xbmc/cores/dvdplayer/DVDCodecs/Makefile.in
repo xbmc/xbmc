@@ -1,21 +1,10 @@
-abs_top_srcdir=@abs_top_srcdir@
-
-INCLUDES=-I$(abs_top_srcdir) \
-	 -I$(abs_top_srcdir)/xbmc/cores/dvdplayer \
-	 -I$(abs_top_srcdir)/xbmc/cores \
-	 -I$(abs_top_srcdir)/xbmc/linux \
-	 -I$(abs_top_srcdir)/xbmc \
-	 -I$(abs_top_srcdir)/guilib \
-
-ifneq (@USE_EXTERNAL_FFMPEG@,1)
-  INCLUDES+=-I$(abs_top_srcdir)/xbmc/cores/dvdplayer/Codecs/ffmpeg
-endif
+INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
 
 SRCS=	DVDCodecUtils.cpp \
 	DVDFactoryCodec.cpp \
 
 LIB=	DVDCodecs.a
 
-include $(abs_top_srcdir)/Makefile.include
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 

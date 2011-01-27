@@ -20,7 +20,7 @@
  */
 
 #include "Archive.h"
-#include "FileSystem/File.h"
+#include "filesystem/File.h"
 
 using namespace XFILE;
 
