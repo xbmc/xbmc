@@ -305,7 +305,8 @@ int CPVRChannelGroup::GetHiddenChannels(CFileItemList* results)
 
 void CPVRChannelGroup::SearchMissingChannelIcons()
 {
-  CLog::Log(LOGINFO,"PVR: Manual Channel Icon search started...");
+  CLog::Log(LOGINFO, "PVRChannelGroup - %s - Manual Channel Icon search started...",
+      __FUNCTION__);
   g_PVRChannelGroups.GetGroupAllTV()->SearchAndSetChannelIcons(true);
   g_PVRChannelGroups.GetGroupAllRadio()->SearchAndSetChannelIcons(true);
   // TODO: Add Process dialog here
@@ -505,7 +506,7 @@ void CPVRChannelGroup::RemoveInvalidChannels(void)
 
     if (at(ptr)->ClientChannelNumber() <= 0)
     {
-      CLog::Log(LOGERROR, "%s - removing invalid channel '%s' from client '%i': no valid channel number",
+      CLog::Log(LOGERROR, "PVRChannelGroup - %s - removing invalid channel '%s' from client '%i': no valid channel number",
           __FUNCTION__, at(ptr)->ChannelName().c_str(), at(ptr)->ClientID());
       erase(begin() + ptr);
       ptr--;
@@ -514,7 +515,7 @@ void CPVRChannelGroup::RemoveInvalidChannels(void)
 
     if (at(ptr)->UniqueID() <= 0)
     {
-      CLog::Log(LOGERROR, "%s - removing invalid channel '%s' from client '%i': no valid unique ID",
+      CLog::Log(LOGERROR, "PVRChannelGroup - %s - removing invalid channel '%s' from client '%i': no valid unique ID",
           __FUNCTION__, at(ptr)->ChannelName().c_str(), at(ptr)->ClientID());
       erase(begin() + ptr);
       ptr--;

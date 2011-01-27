@@ -51,6 +51,9 @@ CPVRChannelGroups::~CPVRChannelGroups(void)
 
 void CPVRChannelGroups::Clear(void)
 {
+  CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - clearing %s channel groups",
+      __FUNCTION__, m_bRadio ? "radio" : "TV");
+
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
     delete at(iGroupPtr);
 
@@ -64,11 +67,17 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group)
 
   if (iIndex < 0)
   {
+    CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - new %s channel group '%s'",
+        __FUNCTION__, m_bRadio ? "radio" : "TV", group.GroupName().c_str());
+
     updateGroup = new CPVRChannelGroup(m_bRadio);
     push_back(updateGroup);
   }
   else
   {
+    CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - updating %s channel group '%s'",
+        __FUNCTION__, m_bRadio ? "radio" : "TV", group.GroupName().c_str());
+
     updateGroup = at(iIndex);
   }
 
@@ -96,6 +105,9 @@ int CPVRChannelGroups::GetIndexForGroupID(int iGroupId)
 
 bool CPVRChannelGroups::Load(void)
 {
+  CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - loading all %s channel groups",
+      __FUNCTION__, m_bRadio ? "radio" : "TV");
+
   Clear();
 
   /* create internal channel group */
@@ -109,6 +121,10 @@ bool CPVRChannelGroups::Load(void)
 
   database->GetChannelGroupList(*this, m_bRadio);
   database->Close();
+
+  CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d %s channel groups loaded",
+      __FUNCTION__, size(), m_bRadio ? "radio" : "TV");
+
   return true;
 }
 
