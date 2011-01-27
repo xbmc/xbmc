@@ -40,11 +40,7 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) : CPVRChannelGro
 
 int CPVRChannelGroupInternal::Load()
 {
-  /* make sure this container is empty before loading */
-  Unload();
-
-  /* load all channels from the database */
-  int iChannelCount = LoadFromDb();
+  int iChannelCount = CPVRChannelGroup::Load();
 
   /* try to get the channels from clients if there are none in the database */
   if (iChannelCount <= 0)
