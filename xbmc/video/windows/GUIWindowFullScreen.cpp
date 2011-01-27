@@ -711,9 +711,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
           // for all channels is used.
           for (int i = 0; i < (int) groups->size(); ++i)
           {
-            if (strLabel == groups->at(i).GroupName())
+            if (strLabel == groups->at(i)->GroupName())
             {
-              iNewGroup = groups->at(i).GroupID();
+              iNewGroup = groups->at(i)->GroupID();
               break;
             }
           }
@@ -1136,11 +1136,11 @@ void CGUIWindowFullScreen::FillInTVGroups()
   }
   for (int i = 0; i < (int) groups->size(); ++i)
   {
-    if (groups->at(i).GroupID() == g_PVRManager.GetPlayingGroup())
+    if (groups->at(i)->GroupID() == g_PVRManager.GetPlayingGroup())
       iCurrentGroup = iGroup;
 
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_GROUP_CHOOSER, iGroup++);
-    msg.SetLabel(groups->at(i).GroupName());
+    msg.SetLabel(groups->at(i)->GroupName());
     g_windowManager.SendMessage(msg);
   }
   CGUIMessage msgSel(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_GROUP_CHOOSER, iCurrentGroup);

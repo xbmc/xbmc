@@ -418,7 +418,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
 
           CPVRChannelGroups *groups = (CPVRChannelGroups *) g_PVRChannelGroups.Get(m_bIsRadio);
           for (unsigned int iGroupPtr = 0; iGroupPtr < groups->size(); iGroupPtr++)
-            pSpin->AddLabel(groups->at(iGroupPtr).GroupName(), groups->at(iGroupPtr).GroupID());
+            pSpin->AddLabel(groups->at(iGroupPtr)->GroupName(), groups->at(iGroupPtr)->GroupID());
 
           pSpin->SetValue(m_channelItems->Get(m_iSelected)->GetPropertyInt("GroupId"));
         }
@@ -697,7 +697,7 @@ void CGUIDialogPVRChannelManager::Update()
 
     CPVRChannelGroups *groups = (CPVRChannelGroups *) g_PVRChannelGroups.Get(m_bIsRadio);
     for (unsigned int iGroupPtr = 0; iGroupPtr < groups->size(); iGroupPtr++)
-      pSpin->AddLabel(groups->at(iGroupPtr).GroupName(), groups->at(iGroupPtr).GroupID());
+      pSpin->AddLabel(groups->at(iGroupPtr)->GroupName(), groups->at(iGroupPtr)->GroupID());
   }
 
   pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);

@@ -46,6 +46,36 @@ CPVRChannelGroups::CPVRChannelGroups(bool bRadio)
 
 CPVRChannelGroups::~CPVRChannelGroups(void)
 {
+  Clear();
+}
+
+void CPVRChannelGroups::Clear(void)
+{
+  for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
+    delete at(iGroupPtr);
+
+  clear();
+}
+
+bool CPVRChannelGroups::Update(const CPVRChannelGroup &group)
+{
+  int iIndex = GetIndexForGroupID(group.GroupID());
+  CPVRChannelGroup *updateGroup = NULL;
+
+  if (iIndex < 0)
+  {
+    updateGroup = new CPVRChannelGroup(m_bRadio);
+    push_back(updateGroup);
+  }
+  else
+  {
+    updateGroup = at(iIndex);
+  }
+
+  updateGroup->SetGroupName(group.GroupName());
+  updateGroup->SetSortOrder(group.SortOrder());
+
+  return true;
 }
 
 int CPVRChannelGroups::GetIndexForGroupID(int iGroupId)
@@ -54,7 +84,7 @@ int CPVRChannelGroups::GetIndexForGroupID(int iGroupId)
 
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
-    if (at(iGroupPtr).GroupID() == iGroupId)
+    if (at(iGroupPtr)->GroupID() == iGroupId)
     {
       iReturn = iGroupPtr;
       break;
@@ -66,14 +96,14 @@ int CPVRChannelGroups::GetIndexForGroupID(int iGroupId)
 
 bool CPVRChannelGroups::Load(void)
 {
-  Unload();
+  Clear();
 
   /* create internal channel group */
   CPVRChannelGroup *internalChannels = new CPVRChannelGroupInternal(m_bRadio);
   push_back(internalChannels);
   internalChannels->Load();
 
-  /* load the other groups froom the database */
+  /* load the other groups from the database */
   CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
@@ -82,18 +112,10 @@ bool CPVRChannelGroups::Load(void)
   return true;
 }
 
-void CPVRChannelGroups::Unload(void)
-{
-  for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
-    delete &at(iGroupPtr);
-
-  clear();
-}
-
 CPVRChannelGroup *CPVRChannelGroups::GetGroupAll(void)
 {
   if (size() > 0)
-    return &at(0);
+    return at(0);
   else
     return NULL;
 }
@@ -104,9 +126,9 @@ int CPVRChannelGroups::GetGroupList(CFileItemList* results)
 
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
-    CFileItemPtr group(new CFileItem(at(iGroupPtr).GroupName()));
-    group->m_strTitle = at(iGroupPtr).GroupName();
-    group->m_strPath.Format("%i", at(iGroupPtr).GroupID());
+    CFileItemPtr group(new CFileItem(at(iGroupPtr)->GroupName()));
+    group->m_strTitle = at(iGroupPtr)->GroupName();
+    group->m_strPath.Format("%i", at(iGroupPtr)->GroupID());
     results->Add(group);
     ++iReturn;
   }
@@ -126,7 +148,7 @@ CPVRChannelGroup *CPVRChannelGroups::GetGroupById(int iGroupId)
   {
     int iGroupIndex = GetIndexForGroupID(iGroupId);
     if (iGroupIndex != -1)
-      group = &at(iGroupIndex);
+      group = at(iGroupIndex);
   }
 
   return group;
@@ -159,7 +181,7 @@ int CPVRChannelGroups::GetPreviousGroupID(int iGroupId)
     int iGroupIndex = iCurrentGroupIndex - 1;
     if (iGroupIndex < 0) iGroupIndex = size() - 1;
 
-    iReturn = at(iGroupIndex).GroupID();
+    iReturn = at(iGroupIndex)->GroupID();
   }
 
   return iReturn;
@@ -175,7 +197,7 @@ int CPVRChannelGroups::GetNextGroupID(int iGroupId)
     int iGroupIndex = iCurrentGroupIndex + 1;
     if (iGroupIndex == (int) size()) iGroupIndex = 0;
 
-    iReturn = at(iGroupIndex).GroupID();
+    iReturn = at(iGroupIndex)->GroupID();
   }
 
   return iReturn;
@@ -186,7 +208,7 @@ void CPVRChannelGroups::AddGroup(const CStdString &strName)
   CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
-  Unload();
+  Clear();
   database->AddChannelGroup(strName, -1, m_bRadio);
   database->GetChannelGroupList(*this, m_bRadio);
 
@@ -198,9 +220,11 @@ bool CPVRChannelGroups::RenameGroup(int iGroupId, const CStdString &strNewName)
   CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
-  Unload();
+  Clear();
   database->SetChannelGroupName(iGroupId, strNewName, m_bRadio);
-  database->GetChannelGroupList(*this, m_bRadio);  database->Close();
+  database->GetChannelGroupList(*this, m_bRadio);
+
+  database->Close();
   return true;
 }
 
@@ -209,7 +233,7 @@ bool CPVRChannelGroups::DeleteGroup(int iGroupId)
   CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
-  Unload();
+  Clear();
 
   const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(m_bRadio);
 
@@ -238,8 +262,8 @@ CStdString CPVRChannelGroups::GetGroupName(int iGroupId)
   {
     for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
     {
-      if (iGroupId == at(iGroupPtr).GroupID())
-        return at(iGroupPtr).GroupName();
+      if (iGroupId == at(iGroupPtr)->GroupID())
+        return at(iGroupPtr)->GroupName();
     }
   }
 
@@ -253,8 +277,8 @@ int CPVRChannelGroups::GetGroupId(CStdString strGroupName)
 
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
-    if (strGroupName == at(iGroupPtr).GroupName())
-      return at(iGroupPtr).GroupID();
+    if (strGroupName == at(iGroupPtr)->GroupName())
+      return at(iGroupPtr)->GroupID();
   }
   return -1;
 }

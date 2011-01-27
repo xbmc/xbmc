@@ -30,7 +30,7 @@
 
 /** A container class for channel groups */
 
-class CPVRChannelGroups : public std::vector<CPVRChannelGroup>
+class CPVRChannelGroups : public std::vector<CPVRChannelGroup *>
 {
 private:
   bool  m_bRadio; /*!< true if this is a container for radio channels, false if it is for tv channels */
@@ -51,15 +51,22 @@ public:
   virtual ~CPVRChannelGroups(void);
 
   /*!
+   * @brief Remove all channels from this group.
+   */
+  void Clear(void);
+
+  /*!
    * @brief Load this container's contents from the database or PVR clients.
    * @return True if it was loaded successfully, false if not.
    */
   bool Load(void);
 
   /*!
-   * @brief Unload this container's contents.
+   * @brief Update a group or add it if it's not in here yet.
+   * @param group The group to update.
+   * @return True if the group was added or update successfully, false otherwise.
    */
-  void Unload(void);
+  bool Update(const CPVRChannelGroup &group);
 
   /*!
    * @brief Get the group that contains all channels.

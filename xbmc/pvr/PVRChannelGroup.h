@@ -34,6 +34,8 @@ class CPVREpg;
 
 class CPVRChannelGroup : public std::vector<CPVRChannel *>
 {
+  friend class CPVRChannelGroups;
+
 private:
   /*!
    * @brief Get the groups list for a directory.

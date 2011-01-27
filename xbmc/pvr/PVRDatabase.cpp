@@ -517,7 +517,7 @@ bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results)
       data.SetGroupName(m_pDS->fv("sName").get_asString());
       data.SetSortOrder(m_pDS->fv("iSortOrder").get_asInt());
 
-      results.push_back(data);
+      results.Update(data);
       m_pDS->next();
     }
     bReturn = true;
@@ -546,7 +546,7 @@ bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results, bool bRadio)
       data.SetGroupName(m_pDS->fv("sName").get_asString());
       data.SetSortOrder(m_pDS->fv("iSortOrder").get_asInt());
 
-      results.push_back(data);
+      results.Update(data);
       m_pDS->next();
     }
     bReturn = true;
