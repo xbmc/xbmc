@@ -90,10 +90,10 @@ private:
   unsigned long long m_idleTicks;
   unsigned long long m_ioTicks;
 
-  int m_lastUsedPercentage;
-  time_t m_lastReadTime;
-  std::string m_cpuModel;
-  int m_cpuCount;
+  int          m_lastUsedPercentage;
+  time_t       m_lastReadTime;
+  std::string  m_cpuModel;
+  int          m_cpuCount;
   unsigned int m_cpuFeatures;
 
   std::map<int, CoreInfo> m_cores;
