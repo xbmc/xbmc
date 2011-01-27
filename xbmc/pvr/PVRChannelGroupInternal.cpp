@@ -45,14 +45,19 @@ int CPVRChannelGroupInternal::Load()
   /* try to get the channels from clients if there are none in the database */
   if (iChannelCount <= 0)
   {
-    CLog::Log(LOGNOTICE, "%s - No %s channels stored in the database. Reading channels from clients",
-        __FUNCTION__, m_bRadio ? "Radio" : "TV");
+    CLog::Log(LOGDEBUG, "PVRChannelGroupInternal - %s - no %s channels stored in the database. Reading channels from clients",
+        __FUNCTION__, m_bRadio ? "radio" : "TV");
 
     iChannelCount = LoadFromClients();
-  }
 
-  CLog::Log(LOGNOTICE, "%s - %d channels loaded",
-      __FUNCTION__, iChannelCount);
+    CLog::Log(LOGNOTICE, "PVRChannelGroupInternal - %s - %d %s channels added from clients",
+        __FUNCTION__, iChannelCount, m_bRadio ? "radio" : "TV");
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "PVRChannelGroupInternal - %s - %d %s channels loaded from the database",
+        __FUNCTION__, iChannelCount, m_bRadio ? "radio" : "TV");
+  }
 
   return iChannelCount;
 }
@@ -138,7 +143,7 @@ bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldIndex, unsigned int 
   else
     bReturn = true;
 
-  CLog::Log(LOGNOTICE, "%s - %s channel '%d' moved to position '%d'",
+  CLog::Log(LOGNOTICE, "PVRChannelGroupInternal - %s - %s channel '%d' moved to position '%d'",
       __FUNCTION__, (m_bRadio ? "radio" : "tv"), iOldIndex, iNewIndex);
 
   return bReturn;
@@ -301,7 +306,7 @@ bool CPVRChannelGroupInternal::Update(CPVRChannelGroup *channels)
       if (channel->UpdateFromClient(*existingChannel))
       {
         channel->Persist(true);
-        CLog::Log(LOGINFO,"%s - updated %s channel '%s'",
+        CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - updated %s channel '%s'",
             __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str());
       }
 
@@ -311,7 +316,7 @@ bool CPVRChannelGroupInternal::Update(CPVRChannelGroup *channels)
     else
     {
       /* channel is no longer present */
-      CLog::Log(LOGINFO,"%s - removing %s channel '%s'",
+      CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - removing %s channel '%s'",
           __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str());
       database->RemoveChannel(*channel);
       erase(begin() + ptr);
@@ -327,7 +332,7 @@ bool CPVRChannelGroupInternal::Update(CPVRChannelGroup *channels)
     channel->Persist(true);
     push_back(channel);
 
-    CLog::Log(LOGINFO,"%s - added %s channel '%s'",
+    CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - added %s channel '%s'",
         __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str());
   }
 

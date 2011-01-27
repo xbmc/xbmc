@@ -127,7 +127,7 @@ bool CPVRChannelGroups::Load(void)
   Clear();
 
   /* create internal channel group */
-  CPVRChannelGroup *internalChannels = new CPVRChannelGroupInternal(m_bRadio);
+  CPVRChannelGroupInternal *internalChannels = new CPVRChannelGroupInternal(m_bRadio);
   push_back(internalChannels);
   internalChannels->Load();
 

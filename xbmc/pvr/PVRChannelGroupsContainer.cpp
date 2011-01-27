@@ -41,8 +41,8 @@ bool CPVRChannelGroupsContainer::Load(void)
   m_groupsRadio = new CPVRChannelGroups(true);
   m_groupsTV    = new CPVRChannelGroups(false);
 
-  bReturn = m_groupsRadio->Load() || bReturn;
-  bReturn = m_groupsTV->Load() || bReturn;
+  bReturn = m_groupsRadio->Load() && bReturn;
+  bReturn = m_groupsTV->Load() && bReturn;
 
   return bReturn;
 }
