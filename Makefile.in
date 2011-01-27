@@ -300,8 +300,8 @@ xbmc/rendering/gles/rendering_gles.a: force
 	$(MAKE) -C xbmc/rendering/gles
 xbmc/windowing/windowing.a: force
 	$(MAKE) -C xbmc/windowing
-xbmc/windowing/gles/windowing_gles.a: force
-	$(MAKE) -C xbmc/windowing/gles
+xbmc/windowing/gles/windowing_egl.a: force
+	$(MAKE) -C xbmc/windowing/egl
 xbmc/windowing/X11/windowing_X11.a: force
 	$(MAKE) -C xbmc/windowing/X11
 xbmc/windowing/osx/windowing_osx.a: force
@@ -512,7 +512,6 @@ OBJSXBMC=	\
 	xbmc/cores/paplayer/paplayer.a \
 	xbmc/cores/VideoRenderers/VideoRenderer.a \
 	xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a \
-	xbmc/guilib/guilib.a \
 	lib/tinyXML/tinyxml.a \
 	xbmc/cores/cores.a \
 	xbmc/interfaces/python/python.a \
@@ -569,7 +568,7 @@ endif
 ifeq (@USE_OPENGLES@,1)
 OBJSXBMC+= \
 	xbmc/rendering/gles/rendering_gles.a \
-	xbmc/windowing/gles/windowing_gles.a
+	xbmc/windowing/egl/windowing_egl.a
 endif
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
@@ -622,6 +621,7 @@ DYNOBJSXBMC= \
 	xbmc/cores/DllLoader/exports/exports.a \
 	xbmc/settings/settings.a \
 	xbmc/video/video.a \
+	xbmc/guilib/guilib.a \ # must be dynamic to avoid linker errors
 
 ifeq (arm, $(ARCH))
 # Force external python2.5 for now!
