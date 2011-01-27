@@ -387,8 +387,7 @@ private:
   bool                m_hasTimers;
 
   /*--- Thread Update Timers ---*/
-  int                 m_LastTVChannelCheck;
-  int                 m_LastRadioChannelCheck;
+  int                 m_LastChannelCheck;
   int                 m_LastRecordingsCheck;
   int                 m_LastTimersCheck;
   int                 m_LastEPGUpdate;

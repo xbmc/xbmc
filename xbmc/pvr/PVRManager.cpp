@@ -447,30 +447,21 @@ void CPVRManager::Process()
     ContinueLastChannel();
 
   int Now = CTimeUtils::GetTimeMS()/1000;
-  m_LastTVChannelCheck     = Now;
-  m_LastRadioChannelCheck  = Now+CHANNELCHECKDELTA/2;
-  m_LastRecordingsCheck    = Now;
-  m_LastTimersCheck        = Now;
+  m_LastChannelCheck    = Now;
+  m_LastRecordingsCheck = Now;
+  m_LastTimersCheck     = Now;
 
   /* main loop */
   while (!m_bStop)
   {
     Now = CTimeUtils::GetTimeMS()/1000;
 
-    /* Check for new or updated TV Channels */
-    if (Now - m_LastTVChannelCheck > CHANNELCHECKDELTA) // don't do this too often
+    /* Check for new or updated channels or groups */
+    if (Now - m_LastChannelCheck > CHANNELCHECKDELTA)
     {
-      CLog::Log(LOGDEBUG,"PVR: Updating TV Channel list");
-      ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAllTV())->Update();
-      m_LastTVChannelCheck = Now;
-    }
-
-    /* Check for new or updated Radio Channels */
-    if (Now - m_LastRadioChannelCheck > CHANNELCHECKDELTA) // don't do this too often
-    {
-      CLog::Log(LOGDEBUG,"PVR: Updating Radio Channel list");
-      ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAllRadio())->Update();
-      m_LastRadioChannelCheck = Now;
+      CLog::Log(LOGDEBUG,"PVR: Updating channel list");
+      if (g_PVRChannelGroups.Update())
+        m_LastChannelCheck = Now;
     }
 
     /* Check for new or updated Recordings */

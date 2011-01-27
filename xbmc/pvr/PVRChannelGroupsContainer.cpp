@@ -32,19 +32,21 @@ CPVRChannelGroupsContainer::~CPVRChannelGroupsContainer(void)
   Unload();
 }
 
+bool CPVRChannelGroupsContainer::Update(void)
+{
+  return m_groupsRadio->Update() &&
+         m_groupsTV->Update();
+}
+
 bool CPVRChannelGroupsContainer::Load(void)
 {
-  bool bReturn = true;
-
   Unload();
 
   m_groupsRadio = new CPVRChannelGroups(true);
   m_groupsTV    = new CPVRChannelGroups(false);
 
-  bReturn = m_groupsRadio->Load() && bReturn;
-  bReturn = m_groupsTV->Load() && bReturn;
-
-  return bReturn;
+  return m_groupsRadio->Load() &&
+         m_groupsTV->Load();
 }
 
 void CPVRChannelGroupsContainer::Unload(void)

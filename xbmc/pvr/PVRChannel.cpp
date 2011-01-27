@@ -705,7 +705,7 @@ void CPVRChannel::UpdateEPGPointers(void)
 
   CPVREpg *epg = GetEPG();
 
-  if (epg == NULL)
+  if (!epg)
   {
     CLog::Log(LOGDEBUG, "PVR - %s - could not get EPG reference", __FUNCTION__);
     return;

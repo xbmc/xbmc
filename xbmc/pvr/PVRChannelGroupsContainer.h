@@ -23,17 +23,32 @@
 
 #include "PVRChannelGroups.h"
 
+class CPVRManager;
+
 class CPVRChannelGroupsContainer
 {
+  friend class CPVRManager;
+
 private:
   CPVRChannelGroups *m_groupsRadio; /*!< all radio channel groups */
   CPVRChannelGroups *m_groupsTV;    /*!< all TV channel groups */
+
+protected:
+  /*!
+   * @brief Update the contents of all the groups in this container.
+   * @return True if the update was successful, false otherwise.
+   */
+  bool Update(void);
 
 public:
   /*!
    * @brief Create a new container for all channel groups
    */
   CPVRChannelGroupsContainer(void);
+
+  /*!
+   * @brief Destroy this container.
+   */
   ~CPVRChannelGroupsContainer(void);
 
   /*!

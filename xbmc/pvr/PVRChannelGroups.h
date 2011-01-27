@@ -28,10 +28,14 @@
 #include "PVRChannelGroup.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
+class CPVRChannelGroupsContainer;
+
 /** A container class for channel groups */
 
 class CPVRChannelGroups : public std::vector<CPVRChannelGroup *>
 {
+  friend class CPVRChannelGroupsContainer;
+
 private:
   bool  m_bRadio; /*!< true if this is a container for radio channels, false if it is for tv channels */
 
@@ -41,6 +45,13 @@ private:
    * @return The index or -1 if it wasn't found.
    */
   int GetIndexForGroupID(int iGroupId);
+
+protected:
+  /*!
+   * @brief Update the contents of the groups in this container.
+   * @return True if the update was successful, false otherwise.
+   */
+  bool Update(void);
 
 public:
   /*!

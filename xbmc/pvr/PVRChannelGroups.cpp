@@ -119,6 +119,16 @@ int CPVRChannelGroups::GetIndexForGroupID(int iGroupId)
   return iReturn;
 }
 
+bool CPVRChannelGroups::Update(void)
+{
+  bool bReturn = true;
+
+  for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
+    bReturn = at(iGroupPtr)->Update() && bReturn;
+
+  return bReturn;
+}
+
 bool CPVRChannelGroups::Load(void)
 {
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - loading all %s channel groups",
