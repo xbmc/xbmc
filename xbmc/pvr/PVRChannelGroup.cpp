@@ -79,6 +79,14 @@ bool CPVRChannelGroup::Update()
   return (Load() >= 0);
 }
 
+bool CPVRChannelGroup::Update(const CPVRChannelGroup &group)
+{
+  m_strGroupName = group.GroupName();
+  m_iSortOrder   = group.SortOrder();
+
+  return true;
+}
+
 void CPVRChannelGroup::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex)
 {
   // TODO non-system groups. need a mapping table first
@@ -677,7 +685,7 @@ bool CPVRChannelGroup::Persist(bool bQueueWrite /* = false */)
   if (database)
   {
     database->Open();
-    database->UpdateChannelGroup(*this, bQueueWrite);
+    database->Persist(*this, bQueueWrite);
     database->Close();
 
     return true;

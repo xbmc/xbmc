@@ -107,6 +107,13 @@ public:
   CPVRChannelGroup *GetGroupById(int iGroupId);
 
   /*!
+   * @brief Get a group given it's name.
+   * @param strName The name.
+   * @return The group or NULL if it wan't found.
+   */
+  CPVRChannelGroup *GetGroupByName(const CStdString &strName);
+
+  /*!
    * @brief Get the ID of the first channel in a group.
    * @param iGroupId The ID of the group.
    * @return The ID of the first channel or 1 if it wasn't found.

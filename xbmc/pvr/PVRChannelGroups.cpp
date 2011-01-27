@@ -196,6 +196,22 @@ CPVRChannelGroup *CPVRChannelGroups::GetGroupById(int iGroupId)
   return group;
 }
 
+CPVRChannelGroup *CPVRChannelGroups::GetGroupByName(const CStdString &strName)
+{
+  CPVRChannelGroup *group = NULL;
+
+  for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
+  {
+    if (at(iGroupPtr)->GroupName() == strName)
+    {
+      group = at(iGroupPtr);
+      break;
+    }
+  }
+
+  return group;
+}
+
 int CPVRChannelGroups::GetFirstChannelForGroupID(int iGroupId)
 {
   int iReturn = 1;
@@ -248,22 +264,20 @@ int CPVRChannelGroups::GetNextGroupID(int iGroupId)
 bool CPVRChannelGroups::AddGroup(const CStdString &strName)
 {
   bool bReturn = false;
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
 
-  if (!database->Open())
-    return bReturn;
-
-  int iNewId = database->AddChannelGroup(strName, -1, m_bRadio);
-
-  if (iNewId > 0)
+  CPVRChannelGroup *group = GetGroupByName(strName);
+  if (!group)
   {
-    CPVRChannelGroup *newGroup = new CPVRChannelGroup(m_bRadio, iNewId, strName, -1);
-    push_back(newGroup);
+    group = new CPVRChannelGroup(m_bRadio);
+    group->SetGroupName(strName);
+    push_back(group);
 
+    bReturn = group->Persist();
+  }
+  else
+  {
     bReturn = true;
   }
-
-  database->Close();
 
   return bReturn;
 }

@@ -126,6 +126,13 @@ public:
   virtual bool Update();
 
   /*!
+   * @brief Update the information in this group with the passed group's info.
+   * @param group The new info.
+   * @return True if this group was updated, false otherwise.
+   */
+  virtual bool Update(const CPVRChannelGroup &group);
+
+  /*!
    * @brief Remove a channel.
    * @param iUniqueID The ID of the channel to delete.
    * @return True if the channel was found and removed, false otherwise.

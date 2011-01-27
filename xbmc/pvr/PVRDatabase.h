@@ -159,15 +159,6 @@ public:
   bool EraseChannelGroups(bool bRadio = false);
 
   /*!
-   * @brief Add a channel group to the database
-   * @param strGroupName The name of the group.
-   * @param iSortOrder The sort order of the group.
-   * @param bRadio True if it's a radio channel group, false if it's a TV channel group.
-   * @return The database ID of the group that was added or -1 if an error occured.
-   */
-  int AddChannelGroup(const CStdString &strGroupName, int iSortOrder, bool bRadio = false);
-
-  /*!
    * @brief Delete a channel group from the database.
    * @param iGroupId The id of the group to delete.
    * @param bRadio True if it's a radio channel group, false otherwise.
@@ -203,7 +194,7 @@ public:
    * @param bQueueWrite If true, don't write directly.
    * @return The database ID of the group.
    */
-  long UpdateChannelGroup(const CPVRChannelGroup &group, bool bQueueWrite = false);
+  long Persist(const CPVRChannelGroup &group, bool bQueueWrite = false);
 
 protected:
   /*!

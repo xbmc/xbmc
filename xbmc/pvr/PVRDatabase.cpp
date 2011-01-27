@@ -463,30 +463,6 @@ bool CPVRDatabase::EraseChannelGroups(bool bRadio /* = false */)
   return DeleteValues("channelgroups", strWhereClause);
 }
 
-int CPVRDatabase::AddChannelGroup(const CStdString &strGroupName, int iSortOrder, bool bRadio /* = false */)
-{
-  int iReturn = -1;
-
-  /* invalid group name */
-  if (strGroupName.IsEmpty())
-  {
-    CLog::Log(LOGERROR, "PVRDB - %s - invalid group name", __FUNCTION__);
-    return iReturn;
-  }
-
-  iReturn = GetChannelGroupId(strGroupName, bRadio);
-  if (iReturn <= 0)
-  {
-    CStdString strQuery = FormatSQL("INSERT INTO channelgroups (sName, iSortOrder, bIsRadio) VALUES ('%s', %i, %i);",
-        strGroupName.c_str(), iSortOrder, (bRadio ? 1 : 0));
-
-    if (ExecuteQuery(strQuery))
-      iReturn = m_pDS->lastinsertid();
-  }
-
-  return iReturn;
-}
-
 bool CPVRDatabase::DeleteChannelGroup(int iGroupId, bool bRadio /* = false */)
 {
   /* invalid group id */
@@ -601,7 +577,7 @@ long CPVRDatabase::GetChannelGroupId(const CStdString &strGroupName, bool bRadio
   return atoi(strReturn);
 }
 
-long CPVRDatabase::UpdateChannelGroup(const CPVRChannelGroup &group, bool bQueueWrite /* = false */)
+long CPVRDatabase::Persist(const CPVRChannelGroup &group, bool bQueueWrite /* = false */)
 {
   long iReturn = -1;
 
