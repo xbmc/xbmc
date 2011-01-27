@@ -283,7 +283,7 @@ bool CPVRDatabase::RemoveChannel(const CPVRChannel &channel)
 
 int CPVRDatabase::GetChannels(CPVRChannelGroupInternal &results, bool bIsRadio)
 {
-  int iReturn = -1;
+  int iReturn = 0;
 
   CStdString strQuery = FormatSQL("SELECT * FROM channels WHERE bIsRadio = %u ORDER BY iChannelNumber;", bIsRadio);
   int iNumRows = ResultQuery(strQuery);
