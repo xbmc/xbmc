@@ -463,9 +463,9 @@ bool CPVRDatabase::EraseChannelGroups(bool bRadio /* = false */)
   return DeleteValues("channelgroups", strWhereClause);
 }
 
-long CPVRDatabase::AddChannelGroup(const CStdString &strGroupName, int iSortOrder, bool bRadio /* = false */)
+int CPVRDatabase::AddChannelGroup(const CStdString &strGroupName, int iSortOrder, bool bRadio /* = false */)
 {
-  long iReturn = -1;
+  int iReturn = -1;
 
   /* invalid group name */
   if (strGroupName.IsEmpty())
@@ -481,7 +481,7 @@ long CPVRDatabase::AddChannelGroup(const CStdString &strGroupName, int iSortOrde
         strGroupName.c_str(), iSortOrder, (bRadio ? 1 : 0));
 
     if (ExecuteQuery(strQuery))
-      iReturn = (long) m_pDS->lastinsertid();
+      iReturn = m_pDS->lastinsertid();
   }
 
   return iReturn;

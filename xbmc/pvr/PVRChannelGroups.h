@@ -119,8 +119,9 @@ public:
   /*!
    * @brief Add a group to this container.
    * @param strName The name of the group.
+   * @return True if the group was added, false otherwise.
    */
-  void AddGroup(const CStdString &strName);
+  bool AddGroup(const CStdString &strName);
 
   /*!
    * @brief Delete a group in this container.

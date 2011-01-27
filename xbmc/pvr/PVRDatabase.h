@@ -163,9 +163,9 @@ public:
    * @param strGroupName The name of the group.
    * @param iSortOrder The sort order of the group.
    * @param bRadio True if it's a radio channel group, false if it's a TV channel group.
-   * @return True if the group was stored successfully, false otherwise.
+   * @return The database ID of the group that was added or -1 if an error occured.
    */
-  long AddChannelGroup(const CStdString &strGroupName, int iSortOrder, bool bRadio = false);
+  int AddChannelGroup(const CStdString &strGroupName, int iSortOrder, bool bRadio = false);
 
   /*!
    * @brief Delete a channel group from the database.
