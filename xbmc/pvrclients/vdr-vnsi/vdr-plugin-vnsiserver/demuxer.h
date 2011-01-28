@@ -31,6 +31,7 @@
 #define PRIVATE_STREAM1   0xBD
 #define PADDING_STREAM    0xBE
 #define PRIVATE_STREAM2   0xBF
+#define PRIVATE_STREAM3   0xFD
 #define AUDIO_STREAM_S    0xC0      /* 1100 0000 */
 #define AUDIO_STREAM_E    0xDF      /* 1101 1111 */
 #define VIDEO_STREAM_S    0xE0      /* 1110 0000 */
@@ -69,7 +70,7 @@ inline bool PesIsMPEGAudioPacket(const uchar *p)
 
 inline bool PesIsPS1Packet(const uchar *p)
 {
-  return ((p)[3] == PRIVATE_STREAM1);
+  return ((p)[3] == PRIVATE_STREAM1 || (p)[3] == PRIVATE_STREAM3 );
 }
 
 inline bool PesIsPaddingPacket(const uchar *p)
