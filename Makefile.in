@@ -79,7 +79,7 @@ BIN_DIRS += xbmc/rendering/gl
 endif
 ifeq (@USE_OPENGLES@,1)
 BIN_DIRS += xbmc/rendering/gles
-BIN_DIRS += xbmc/windowing/gles
+BIN_DIRS += xbmc/windowing/egl
 endif
 
 ifeq ($(findstring osx,$(ARCH)),osx)
@@ -300,7 +300,7 @@ xbmc/rendering/gles/rendering_gles.a: force
 	$(MAKE) -C xbmc/rendering/gles
 xbmc/windowing/windowing.a: force
 	$(MAKE) -C xbmc/windowing
-xbmc/windowing/gles/windowing_egl.a: force
+xbmc/windowing/egl/windowing_egl.a: force
 	$(MAKE) -C xbmc/windowing/egl
 xbmc/windowing/X11/windowing_X11.a: force
 	$(MAKE) -C xbmc/windowing/X11
