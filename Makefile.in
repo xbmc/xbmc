@@ -621,11 +621,11 @@ DYNOBJSXBMC= \
 	xbmc/cores/DllLoader/exports/exports.a \
 	xbmc/settings/settings.a \
 	xbmc/video/video.a \
-	xbmc/guilib/guilib.a \ # must be dynamic to avoid linker errors
+	xbmc/guilib/guilib.a # must be dynamic to avoid linker errors
 
 ifeq (arm, $(ARCH))
-# Force external python2.5 for now!
-LIBS +=-lpython2.5
+# Force external python2.6 for now!
+LIBS +=-lpython2.6
 endif
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
