@@ -220,8 +220,11 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
   {
     if (bCompress)
       database->Compress(true);
-
-    Update();
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "PVRChannelGroupInternal - %s - no channels in the database",
+        __FUNCTION__);
   }
 
   database->Close();
