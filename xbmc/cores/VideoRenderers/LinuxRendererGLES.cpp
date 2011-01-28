@@ -27,20 +27,20 @@
 
 #if HAS_GLES == 2
 #include <locale.h>
-#include "MatrixGLES.h"
+#include "guilib/MatrixGLES.h"
 #include "LinuxRendererGLES.h"
 #include "Application.h"
-#include "MathUtils.h"
-#include "Settings.h"
-#include "AdvancedSettings.h"
-#include "GUISettings.h"
-#include "FrameBufferObject.h"
+#include "utils/MathUtils.h"
+#include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/GUISettings.h"
+#include "guilib/FrameBufferObject.h"
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"
-#include "WindowingFactory.h"
-#include "Texture.h"
-#include "../dvdplayer/Codecs/DllSwScale.h"
-#include "../dvdplayer/Codecs/DllAvCodec.h"
+#include "windowing/WindowingFactory.h"
+#include "guilib/Texture.h"
+#include "lib/DllSwScale.h"
+#include "lib/DllAvCodec.h"
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
 
 using namespace Shaders;

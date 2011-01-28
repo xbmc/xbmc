@@ -22,9 +22,9 @@
 
 #if defined(HAVE_LIBOPENMAX)
 
-#include "DVDStreamInfo.h"
+#include "cores/dvdplayer/DVDStreamInfo.h"
 #include "DVDVideoCodec.h"
-#include "utils/Event.h"
+#include "threads/Event.h"
 
 #include <queue>
 #include <semaphore.h>

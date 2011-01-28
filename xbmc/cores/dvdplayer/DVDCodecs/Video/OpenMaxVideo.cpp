@@ -29,7 +29,7 @@
 
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
-#include "WindowingFactory.h"
+#include "windowing/WindowingFactory.h"
 #include "DVDVideoCodec.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"

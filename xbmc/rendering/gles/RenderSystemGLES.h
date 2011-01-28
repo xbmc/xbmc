@@ -24,8 +24,8 @@
 
 #pragma once
 
-#include "RenderSystem.h"
-#include "GUIShader.h"
+#include "rendering/RenderSystem.h"
+#include "xbmc/guilib/GUIShader.h"
 
 enum ESHADERMETHOD
 {

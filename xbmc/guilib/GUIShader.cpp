@@ -22,7 +22,9 @@
 
 #include "system.h"
 
+#pragma message("msg1")
 #if HAS_GLES == 2
+#pragma message("msg2")
 
 #include "GUIShader.h"
 #include "MatrixGLES.h"

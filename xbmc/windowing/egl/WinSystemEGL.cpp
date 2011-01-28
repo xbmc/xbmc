@@ -25,10 +25,10 @@
 #include "WinSystemEGL.h"
 #include "utils/log.h"
 #include <SDL/SDL_syswm.h>
-#include "SpecialProtocol.h"
-#include "Settings.h"
-#include "Texture.h"
-#include "linux/XRandR.h"
+#include "filesystem/SpecialProtocol.h"
+#include "settings/Settings.h"
+#include "guilib/Texture.h"
+#include "windowing/X11/XRandR.h"
 #include <vector>
 
 using namespace std;

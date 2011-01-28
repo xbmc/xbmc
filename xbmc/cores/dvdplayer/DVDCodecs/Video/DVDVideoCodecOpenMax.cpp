@@ -27,7 +27,7 @@
 
 #if defined(HAVE_LIBOPENMAX)
 #include "DVDClock.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodecOpenMax.h"
 #include "OpenMaxVideo.h"

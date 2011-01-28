@@ -24,11 +24,11 @@
 
 #if HAS_GLES == 2
 
-#include "../../../guilib/FrameBufferObject.h"
-#include "../../../guilib/Shader.h"
+#include "xbmc/guilib/FrameBufferObject.h"
+#include "xbmc/guilib/Shader.h"
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
-#include "GraphicContext.h"
+#include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 #include "../dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 

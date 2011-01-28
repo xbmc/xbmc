@@ -23,10 +23,10 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "WinSystem.h"
+#include "windowing/WinSystem.h"
 #include <EGL/egl.h>
 #include <X11/Xlib.h>
-#include "RenderSystemGLES.h"
+#include "rendering/gles/RenderSystemGLES.h"
 
 class CWinSystemEGL : public CWinSystemBase, public CRenderSystemGLES
 {

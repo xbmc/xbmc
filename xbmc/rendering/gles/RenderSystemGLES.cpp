@@ -24,10 +24,10 @@
 
 #if HAS_GLES == 2
 
-#include "GraphicContext.h"
-#include "AdvancedSettings.h"
+#include "guilib/GraphicContext.h"
+#include "settings/AdvancedSettings.h"
 #include "RenderSystemGLES.h"
-#include "MatrixGLES.h"
+#include "guilib/MatrixGLES.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "utils/SystemInfo.h"
