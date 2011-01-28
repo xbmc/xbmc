@@ -23,10 +23,14 @@
 
 #include "PVRChannelGroup.h"
 
+class CPVRChannelGroups;
+
 /** XBMC's internal group, the group containing all channels */
 
 class CPVRChannelGroupInternal : public CPVRChannelGroup
 {
+  friend class CPVRChannelGroups;
+
 private:
   int m_iHiddenChannels; /*!< the amount of hidden channels in this container */
 
@@ -71,13 +75,6 @@ private:
    */
   void ReNumberAndCheck(void);
 
-public:
-  /*!
-   * @brief Create a new internal channel group.
-   * @param bRadio True if this group holds radio channels.
-   */
-  CPVRChannelGroupInternal(bool bRadio);
-
   /*!
    * @brief Load the channels from the database.
    *
@@ -92,6 +89,13 @@ public:
    * @brief Clear this channel list and destroy all channel instances in it.
    */
   void Unload();
+
+public:
+  /*!
+   * @brief Create a new internal channel group.
+   * @param bRadio True if this group holds radio channels.
+   */
+  CPVRChannelGroupInternal(bool bRadio);
 
   /*!
    * @brief Move a channel from position iOldIndex to iNewIndex.

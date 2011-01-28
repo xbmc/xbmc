@@ -91,6 +91,31 @@ private:
    */
   bool PersistChannels(void);
 
+  /*!
+   * @brief Load the channels from the database.
+   * @return The amount of channels that were added.
+   */
+  virtual int Load();
+
+  /*!
+   * @brief Clear this channel list.
+   */
+  virtual void Unload();
+
+  /*!
+   * @brief Remove a channel.
+   * @param iUniqueID The ID of the channel to delete.
+   * @return True if the channel was found and removed, false otherwise.
+   */
+  bool RemoveByUniqueID(long iUniqueID);
+
+  /*!
+   * @brief Load the channels from the clients.
+   * @param bAddToDb If true, add the new channels to the database too.
+   * @return The amount of channels that were added.
+   */
+  virtual int LoadFromClients(bool bAddToDb = true);
+
 public:
   /*!
    * Create a new channel group instance.
@@ -107,18 +132,10 @@ public:
    */
   CPVRChannelGroup(bool bRadio) { m_bRadio = bRadio; }
 
+  /*!
+   * @brief Destruct this channel group.
+   */
   virtual ~CPVRChannelGroup(void);
-
-  /*!
-   * @brief Load the channels from the database.
-   * @return The amount of channels that were added.
-   */
-  virtual int Load();
-
-  /*!
-   * @brief Clear this channel list.
-   */
-  virtual void Unload();
 
   /*!
    * @brief Refresh the channel list from the clients.
@@ -131,13 +148,6 @@ public:
    * @return True if this group was updated, false otherwise.
    */
   virtual bool Update(const CPVRChannelGroup &group);
-
-  /*!
-   * @brief Remove a channel.
-   * @param iUniqueID The ID of the channel to delete.
-   * @return True if the channel was found and removed, false otherwise.
-   */
-  bool RemoveByUniqueID(long iUniqueID);
 
   /*!
    * @brief Move a channel from position iOldIndex to iNewIndex.
@@ -159,13 +169,6 @@ public:
    * @param bUpdateDb If true, update the changed values in the database.
    */
   void SearchAndSetChannelIcons(bool bUpdateDb = false);
-
-  /*!
-   * @brief Load the channels from the clients.
-   * @param bAddToDb If true, add the new channels to the database too.
-   * @return The amount of channels that were added.
-   */
-  virtual int LoadFromClients(bool bAddToDb = true);
 
   /*!
    * @brief Remove a channel from this container.
