@@ -31,6 +31,7 @@ cVNSIServerConfig::cVNSIServerConfig()
 {
   listen_port         = LISTEN_PORT;
   ConfigDirectory     = NULL;
+  stream_timeout      = 10;
 }
 
 /* Global instance */

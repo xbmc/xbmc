@@ -6,6 +6,7 @@
  * $Id$
  */
 
+#include <getopt.h>
 #include <vdr/plugin.h>
 #include "server.h"
 
@@ -51,13 +52,26 @@ cPluginVNSIServer::~cPluginVNSIServer()
 
 const char *cPluginVNSIServer::CommandLineHelp(void)
 {
-  // Return a string that describes all known command line options.
-  return NULL;
+    return "  -t n, --timeout=n      stream data timeout in seconds (default: 10)\n";
 }
 
 bool cPluginVNSIServer::ProcessArgs(int argc, char *argv[])
 {
   // Implement command line argument processing here if applicable.
+  static struct option long_options[] = {
+       { "timeout",  required_argument, NULL, 't' },
+       { NULL,       no_argument,       NULL,  0  }
+     };
+
+  int c;
+
+  while ((c = getopt_long(argc, argv, "t:", long_options, NULL)) != -1) {
+        switch (c) {
+          case 't': if(optarg != NULL) VNSIServerConfig.stream_timeout = atoi(optarg);
+                    break;
+          default:  return false;
+          }
+        }
   return true;
 }
 

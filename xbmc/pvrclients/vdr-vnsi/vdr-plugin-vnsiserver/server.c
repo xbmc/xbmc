@@ -105,6 +105,7 @@ cServer::cServer(int listenPort) : cThread("VDR VNSI Server")
   Start();
 
   isyslog("VNSI: VNSI Server started");
+  isyslog("VNSI: Channel streaming timeout: %i seconds", VNSIServerConfig.stream_timeout);
   return;
 }
 

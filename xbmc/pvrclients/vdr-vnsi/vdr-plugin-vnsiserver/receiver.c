@@ -624,7 +624,7 @@ void cLiveStreamer::Action(void)
     {
       uint64_t tick = get_ticks();
       // timeout
-      if(tick - last_data >= 10*1000) {
+      if(tick - last_data >= (uint64_t)(VNSIServerConfig.stream_timeout*1000)) {
         isyslog("VNSI: returning from streamer thread, timout on reading data");
         break;
       }
