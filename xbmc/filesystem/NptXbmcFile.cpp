@@ -37,18 +37,7 @@
 #include "utils/log.h"
 #include "Util.h"
 #include "URL.h"
-
-#ifdef max
-#undef max
-#endif
-
-#ifdef min
-#undef min
-#endif
-
 #include <limits>
-
-
 #include "NptUtils.h"
 #include "NptFile.h"
 #include "NptThreads.h"
