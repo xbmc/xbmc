@@ -241,6 +241,11 @@ CCPUInfo::CCPUInfo(void)
 
   readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks, m_ioTicks);
 #endif
+
+  // Set MMX2 when SSE is present as SSE is a superset of MMX2 and Intel doesn't set the MMX2 cap
+  if (m_cpuFeatures & CPU_FEATURE_SSE)
+    m_cpuFeatures |= CPU_FEATURE_MMX2;
+
 }
 
 CCPUInfo::~CCPUInfo()
@@ -545,10 +550,6 @@ void CCPUInfo::ReadCPUFeatures()
     if (CPUInfo[CPUINFO_EDX] & CPUID_80000001_EDX_3DNOWEXT)
       m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
   }
-
-  // Set MMX2 when SSE is present as SSE is a superset of MMX2 and Intel doesn't set the MMX2 cap
-  if (m_cpuFeatures & CPU_FEATURE_SSE)
-    m_cpuFeatures |= CPU_FEATURE_MMX2;
 
 #elif !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__)
   m_cpuFeatures |= CPU_FEATURE_MMX;
