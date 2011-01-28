@@ -22,6 +22,7 @@
 #include "system.h"
 #include "URL.h"
 #include "FileItem.h"
+#include "DllHDHomeRun.h"
 #include "HDHomeRun.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -67,17 +68,19 @@ public:
 
 CDirectoryHomeRun::CDirectoryHomeRun()
 {
-  m_dll.Load();
+  m_pdll = new DllHdHomeRun;
+  m_pdll->Load();
 }
 
 CDirectoryHomeRun::~CDirectoryHomeRun()
 {
-  m_dll.Unload();
+  m_pdll->Unload();
+  delete m_pdll;
 }
 
 bool CDirectoryHomeRun::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  if(!m_dll.IsLoaded())
+  if(!m_pdll->IsLoaded())
     return false;
 
   CURL url(strPath);
@@ -87,7 +90,7 @@ bool CDirectoryHomeRun::GetDirectory(const CStdString& strPath, CFileItemList &i
     // no hostname, list all available devices
     int target_ip = 0;
     struct hdhomerun_discover_device_t result_list[64];
-    int count = m_dll.discover_find_devices_custom(target_ip, HDHOMERUN_DEVICE_TYPE_TUNER, HDHOMERUN_DEVICE_ID_WILDCARD, result_list, 64);
+    int count = m_pdll->discover_find_devices_custom(target_ip, HDHOMERUN_DEVICE_TYPE_TUNER, HDHOMERUN_DEVICE_ID_WILDCARD, result_list, 64);
     if (count < 0)
       return false;
 
@@ -116,16 +119,16 @@ bool CDirectoryHomeRun::GetDirectory(const CStdString& strPath, CFileItemList &i
   }
   else
   {
-    hdhomerun_device_t* device = m_dll.device_create_from_str(url.GetHostName().c_str(), NULL);
+    hdhomerun_device_t* device = m_pdll->device_create_from_str(url.GetHostName().c_str(), NULL);
     if(!device)
       return false;
 
-    m_dll.device_set_tuner_from_str(device, url.GetFileName().c_str());
+    m_pdll->device_set_tuner_from_str(device, url.GetFileName().c_str());
 
     hdhomerun_tuner_status_t status;
-    if(!m_dll.device_get_tuner_status(device, NULL, &status))
+    if(!m_pdll->device_get_tuner_status(device, NULL, &status))
     {
-      m_dll.device_destroy(device);
+      m_pdll->device_destroy(device);
       return true;
     }
 
@@ -141,7 +144,7 @@ bool CDirectoryHomeRun::GetDirectory(const CStdString& strPath, CFileItemList &i
     item->SetLabelPreformated(true);
     items.Add(item);
 
-    m_dll.device_destroy(device);
+    m_pdll->device_destroy(device);
     return true;
   }
 
@@ -155,12 +158,14 @@ bool CDirectoryHomeRun::GetDirectory(const CStdString& strPath, CFileItemList &i
 CFileHomeRun::CFileHomeRun()
 {
   m_device = NULL;
-  m_dll.Load();
+  m_pdll = new DllHdHomeRun;
+  m_pdll->Load();
 }
 
 CFileHomeRun::~CFileHomeRun()
 {
   Close();
+  delete m_pdll;
 }
 
 bool CFileHomeRun::Exists(const CURL& url)
@@ -202,26 +207,26 @@ int64_t CFileHomeRun::GetLength()
 
 bool CFileHomeRun::Open(const CURL &url)
 {
-  if(!m_dll.IsLoaded())
+  if(!m_pdll->IsLoaded())
     return false;
 
-  m_device = m_dll.device_create_from_str(url.GetHostName().c_str(), NULL);
+  m_device = m_pdll->device_create_from_str(url.GetHostName().c_str(), NULL);
   if(!m_device)
     return false;
 
-  m_dll.device_set_tuner_from_str(m_device, url.GetFileName().c_str());
+  m_pdll->device_set_tuner_from_str(m_device, url.GetFileName().c_str());
 
   CUrlOptions options(url.GetOptions().Mid(1));
   CUrlOptions::iterator it;
 
   if( (it = options.find("channel")) != options.end() )
-    m_dll.device_set_tuner_channel(m_device, it->second.c_str());
+    m_pdll->device_set_tuner_channel(m_device, it->second.c_str());
 
   if( (it = options.find("program")) != options.end() )
-    m_dll.device_set_tuner_program(m_device, it->second.c_str());
+    m_pdll->device_set_tuner_program(m_device, it->second.c_str());
 
   // start streaming from selected device and tuner
-  if( m_dll.device_stream_start(m_device) <= 0 )
+  if( m_pdll->device_stream_start(m_device) <= 0 )
     return false;
 
   return true;
@@ -242,7 +247,7 @@ unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
   while(1)
   {
     datasize = (size_t) uiBufSize;
-    uint8_t* ptr = m_dll.device_stream_recv(m_device, datasize, &datasize);
+    uint8_t* ptr = m_pdll->device_stream_recv(m_device, datasize, &datasize);
     if(ptr)
     {
       memcpy(lpBuf, ptr, datasize);
@@ -261,8 +266,8 @@ void CFileHomeRun::Close()
 {
   if(m_device)
   {
-    m_dll.device_stream_stop(m_device);
-    m_dll.device_destroy(m_device);
+    m_pdll->device_stream_stop(m_device);
+    m_pdll->device_destroy(m_device);
     m_device = NULL;
   }
 }
