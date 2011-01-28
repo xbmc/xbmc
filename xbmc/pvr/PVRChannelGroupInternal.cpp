@@ -240,7 +240,9 @@ int CPVRChannelGroupInternal::LoadFromClients(bool bAddToDb /* = true */)
   if (GetFromClients() == -1)
     return iReturn;
 
-  SortByClientChannelNumber();
+  if (iCurSize == 0)
+    SortByClientChannelNumber();
+
   ReNumberAndCheck();
   SearchAndSetChannelIcons();
 
