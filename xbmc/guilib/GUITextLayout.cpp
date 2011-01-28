@@ -456,7 +456,7 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
     vecText::const_iterator pos = line.m_text.begin();
     unsigned int lastSpaceInLine = 0;
     vecText curLine;
-    while (pos != line.m_text.end() && (nMaxLines <= 0 || m_lines.size() < (size_t)nMaxLines))
+    while (pos != line.m_text.end())
     {
       // Get the current letter in the string
       character_t letter = *pos;
@@ -470,6 +470,9 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
           {
             CGUIString string(curLine.begin(), curLine.begin() + lastSpaceInLine, false);
             m_lines.push_back(string);
+            // check for exceeding our number of lines
+            if (nMaxLines > 0 && m_lines.size() >= (size_t)nMaxLines)
+              return;
             // skip over spaces
             pos = lastSpace;
             while (pos != line.m_text.end() && IsSpace(*pos))
@@ -495,6 +498,9 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
       {
         CGUIString string(curLine.begin(), curLine.begin() + lastSpaceInLine, false);
         m_lines.push_back(string);
+        // check for exceeding our number of lines
+        if (nMaxLines > 0 && m_lines.size() >= (size_t)nMaxLines)
+          return;
         curLine.erase(curLine.begin(), curLine.begin() + lastSpaceInLine);
         while (curLine.size() && IsSpace(curLine.at(0)))
           curLine.erase(curLine.begin());
@@ -502,6 +508,9 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
     }
     CGUIString string(curLine.begin(), curLine.end(), true);
     m_lines.push_back(string);
+    // check for exceeding our number of lines
+    if (nMaxLines > 0 && m_lines.size() >= (size_t)nMaxLines)
+      return;
   }
 }
 

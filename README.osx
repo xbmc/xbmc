@@ -35,7 +35,7 @@ character itself should NOT be typed as part of the command.
 -----------------------------------------------------------------------------
 
  $ cd $HOME
- $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk
+ $ git clone git://github.com/xbmc/xbmc.git xbmc
 
 -----------------------------------------------------------------------------
 3.0 Install XCODE
@@ -158,7 +158,7 @@ first. This is a simple step and involves the following:
 The configure operation will setup the build environment for codecs and
 internal libraries that are used by XBMC. This step is required for both Xcode
 and command-line building. The "make clean" ensures that there are no stale
-binaries from svn that might cause problems The last step will pre-build
+binaries from git that might cause problems. The last step will pre-build
 the majority of the codecs and libs:
 
 

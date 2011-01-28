@@ -23,11 +23,11 @@ character itself should NOT be typed as part of the command.
 2. Getting the source code
 -----------------------------------------------------------------------------
 
-You will have to grab the source code of course. First install the subversion
+You will have to grab the source code of course. First install the git
 package provided by your distribution. Then from a terminal, type:
 
    $ cd $HOME
-   $ svn checkout http://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk xbmc
+   $ git clone git://github.com/xbmc/xbmc.git xbmc
 
 -----------------------------------------------------------------------------
 3. Installing the required libraries and headers

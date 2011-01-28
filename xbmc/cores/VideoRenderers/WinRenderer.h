@@ -199,10 +199,10 @@ public:
 
 protected:
   virtual void Render(DWORD flags);
-  void         RenderSW(DWORD flags);
-  void         RenderPS(DWORD flags);
-  void         Stage1(DWORD flags);
-  void         Stage2(DWORD flags);
+  void         RenderSW();
+  void         RenderPS();
+  void         Stage1();
+  void         Stage2();
   void         ScaleFixedPipeline();
   void         CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();

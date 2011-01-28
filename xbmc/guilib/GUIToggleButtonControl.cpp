@@ -115,6 +115,7 @@ void CGUIToggleButtonControl::SetHeight(float height)
 void CGUIToggleButtonControl::UpdateColors()
 {
   CGUIButtonControl::UpdateColors();
+  m_selectButton.SetColorDiffuse(m_diffuseColor);
   m_selectButton.UpdateColors();
 }
 
