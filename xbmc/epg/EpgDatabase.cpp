@@ -303,7 +303,7 @@ int CEpgDatabase::Get(CEpg *epg, const CDateTime &start /* = NULL */, const CDat
         newTag.m_strEpisodeName     = m_pDS->fv("sEpisodeName").get_asString().c_str();
         newTag.m_strSeriesNum       = m_pDS->fv("sSeriesId").get_asString().c_str();
 
-        if (epg->UpdateEntry(newTag, false))
+        if (epg->UpdateEntry(newTag, false, false))
           ++iReturn;
 
         m_pDS->next();

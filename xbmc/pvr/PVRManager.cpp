@@ -465,11 +465,11 @@ void CPVRManager::Process()
     }
 
     /* Check for new or updated Recordings */
-    if (Now - m_LastRecordingsCheck > RECORDINGCHECKDELTA) // don't do this too often
+    if (Now - m_LastRecordingsCheck > RECORDINGCHECKDELTA)
     {
       CLog::Log(LOGDEBUG,"PVR: Updating Recordings list");
-      PVRRecordings.Update(true);
-      m_LastRecordingsCheck = Now;
+      if (PVRRecordings.Update(true))
+        m_LastRecordingsCheck = Now;
     }
 
     /* Check for new or updated Timers */

@@ -23,6 +23,8 @@
 
 #include "FileItem.h"
 
+#include "threads/CriticalSection.h"
+
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
 
@@ -38,13 +40,15 @@ class CEpg : public std::vector<CEpgInfoTag*>
   friend class CPVREpg;
 
 private:
-  bool          m_bUpdateRunning; /*!< true if EPG is currently being updated */
-  bool          m_bIsSorted;      /*!< remember if we're sorted or not */
-  CStdString    m_strName;        /*!< the name of this table */
-  CStdString    m_strScraperName; /*!< the name of the scraper to use */
-  int           m_iEpgID;         /*!< the database ID of this table */
+  bool             m_bUpdateRunning; /*!< true if EPG is currently being updated */
+  bool             m_bIsSorted;      /*!< remember if we're sorted or not */
+  CStdString       m_strName;        /*!< the name of this table */
+  CStdString       m_strScraperName; /*!< the name of the scraper to use */
+  int              m_iEpgID;         /*!< the database ID of this table */
 
-  CPVRChannel * m_Channel;  /*!< the channel this EPG belongs to */
+  CRITICAL_SECTION m_critSection;    /*!< critical section for changes in this table */
+
+  CPVRChannel *    m_Channel;        /*!< the channel this EPG belongs to */
 
   /*!
    * @brief Update the EPG from a scraper set in the channel tag.
@@ -60,6 +64,13 @@ private:
    * @return True if all tags were persisted, false otherwise.
    */
   bool PersistTags(void);
+
+  /*!
+   * @brief Fix overlapping events from the tables.
+   * @param bStore Store in the database if true.
+   * @return True if the events were fixed successfully, false otherwise.
+   */
+  virtual bool FixOverlappingEvents(bool bStore = true);
 
 protected:
   /*!
@@ -199,16 +210,10 @@ public:
    * @brief Update an entry in this EPG.
    * @param tag The tag to update.
    * @param bUpdateDatabase If set to true, this event will be persisted in the database.
+   * @param bEnterCriticalSection If set to false, don't EnterCriticalSection().
    * @return True if it was updated successfully, false otherwise.
    */
-  virtual bool UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase = false);
-
-  /*!
-   * @brief Fix overlapping events from the tables.
-   * @param bStore Store in the database if true.
-   * @return True if the events were fixed successfully, false otherwise.
-   */
-  virtual bool FixOverlappingEvents(bool bStore = true);
+  virtual bool UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase = false, bool bEnterCriticalSection = true);
 
   /*!
    * @brief Update the EPG from 'start' till 'end'.
