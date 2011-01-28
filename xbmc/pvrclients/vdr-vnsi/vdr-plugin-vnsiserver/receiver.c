@@ -529,13 +529,16 @@ cLiveStreamer::cLiveStreamer()
   m_IsMPEGPS        = false;
   m_streamChangeSendet = false;
 
+  m_packetEmpty = new cResponsePacket;
+  m_packetEmpty->initStream(VDR_STREAM_MUXPKT, 0, 0, 0, 0);
+
   memset(&m_FrontendInfo, 0, sizeof(m_FrontendInfo));
   for (int idx = 0; idx < MAXRECEIVEPIDS; ++idx)
   {
     m_Streams[idx] = NULL;
     m_Pids[idx]    = 0;
   }
-  
+
   SetTimeouts(0, 100);
 }
 
@@ -595,6 +598,8 @@ cLiveStreamer::~cLiveStreamer()
     m_Frontend = -1;
   }
 
+  delete m_packetEmpty;
+
   LOGCONSOLE("Finished to delete live streamer");
 }
 
@@ -631,7 +636,7 @@ void cLiveStreamer::Action(void)
       }
       // keep client going
       else if(tick - last_tick >= 500 && !IsReady()) {
-        sendEmptyPacket();
+        m_Socket->write(m_packetEmpty->getPtr(), m_packetEmpty->getLen());
         last_tick = tick;
       }
       continue;
@@ -878,20 +883,6 @@ void cLiveStreamer::Detach(void)
     if (m_Receiver)
       m_Device->Detach(m_Receiver);
   }
-}
-
-void cLiveStreamer::sendEmptyPacket()
-{
-  uint32_t bufferLength = sizeof(uint32_t) * 5 + sizeof(int64_t) * 2;
-  uint8_t buffer[bufferLength];
-  *(uint32_t*)&buffer[0]  = htonl(CHANNEL_STREAM);        // stream channel
-  *(uint32_t*)&buffer[4]  = htonl(VDR_STREAM_MUXPKT);     // Stream packet operation code
-  *(uint32_t*)&buffer[8]  = htonl(0);               // Stream ID
-  *(uint32_t*)&buffer[12] = htonl(0);         // Duration
-  *(int64_t*) &buffer[16] = __cpu_to_be64(0);      // DTS
-  *(int64_t*) &buffer[24] = __cpu_to_be64(0);      // PTS
-  *(uint32_t*)&buffer[32] = htonl(0);             // Data length
-  m_Socket->write(&buffer, bufferLength);
 }
 
 void cLiveStreamer::sendStreamPacket(sStreamPacket *pkt)

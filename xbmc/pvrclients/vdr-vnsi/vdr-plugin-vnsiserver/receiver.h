@@ -50,7 +50,6 @@ private:
   void Attach(void);
   cTSDemuxer *FindStreamDemuxer(int Pid);
 
-  void sendEmptyPacket();
   void sendStreamPacket(sStreamPacket *pkt);
   void sendStreamChange();
   void sendSignalInfo();
@@ -73,6 +72,7 @@ private:
   bool              m_streamReady;                  /*!> Set by the video demuxer after we got video information */
   bool              m_IsAudioOnly;                  /*!> Set to true if streams contains only audio */
   bool              m_IsMPEGPS;                     /*!> TS Stream contains MPEG PS data like from pvrinput */
+  cResponsePacket*  m_packetEmpty;                  /*!> Empty stream packet */
 
 protected:
   virtual void Action(void);
