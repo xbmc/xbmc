@@ -1742,7 +1742,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdread], [
       --enable-static \
       --disable-shared \
       --cc="$CC" &&
-    make dvdread-config &&
+    $MAKE dvdread-config &&
     mkdir -p `pwd`/../includes/dvdread
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   else
@@ -1757,7 +1757,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdread], [
       --disable-strip \
       --disable-opts \
       --cc="$CC" &&
-    make dvdread-config &&
+    $MAKE dvdread-config &&
     mkdir -p `pwd`/../includes/dvdread
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   fi
