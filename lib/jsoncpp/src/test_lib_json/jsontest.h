@@ -1,3 +1,8 @@
+// Copyright 2007-2010 Baptiste Lepilleur
+// Distributed under MIT license, or public domain if desired and
+// recognized in your jurisdiction.
+// See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
+
 #ifndef JSONTEST_H_INCLUDED
 # define JSONTEST_H_INCLUDED
 
@@ -110,6 +115,8 @@ namespace JsonTest {
    public:
       TestCase();
 
+      virtual ~TestCase();
+
       void run( TestResult &result );
 
       virtual const char *testName() const = 0;
@@ -192,7 +199,7 @@ namespace JsonTest {
 /// JSONTEST_ASSERT( x == y ) << "x=" << x << ", y=" << y;
 /// JSONTEST_ASSERT( x == y );
 #define JSONTEST_ASSERT( expr )                                               \
-   if ( condition )                                                           \
+   if ( expr )                                                                \
    {                                                                          \
    }                                                                          \
    else                                                                       \

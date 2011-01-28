@@ -1,4 +1,10 @@
+// Copyright 2007-2010 Baptiste Lepilleur
+// Distributed under MIT license, or public domain if desired and
+// recognized in your jurisdiction.
+// See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
+
 #include <json/writer.h>
+#include "json_tool.h"
 #include <utility>
 #include <assert.h>
 #include <stdio.h>
@@ -13,11 +19,6 @@
 
 namespace Json {
 
-static bool isControlCharacter(char ch)
-{
-   return ch > 0 && ch <= 0x1F;
-}
-
 static bool containsControlCharacter( const char* str )
 {
    while ( *str ) 
@@ -27,26 +28,16 @@ static bool containsControlCharacter( const char* str )
    }
    return false;
 }
-static void uintToString( unsigned int value, 
-                          char *&current )
-{
-   *--current = 0;
-   do
-   {
-      *--current = (value % 10) + '0';
-      value /= 10;
-   }
-   while ( value != 0 );
-}
 
-std::string valueToString( Value::Int value )
+
+std::string valueToString( LargestInt value )
 {
-   char buffer[32];
+   UIntToStringBuffer buffer;
    char *current = buffer + sizeof(buffer);
    bool isNegative = value < 0;
    if ( isNegative )
       value = -value;
-   uintToString( Value::UInt(value), current );
+   uintToString( LargestUInt(value), current );
    if ( isNegative )
       *--current = '-';
    assert( current >= buffer );
@@ -54,14 +45,30 @@ std::string valueToString( Value::Int value )
 }
 
 
-std::string valueToString( Value::UInt value )
+std::string valueToString( LargestUInt value )
 {
-   char buffer[32];
+   UIntToStringBuffer buffer;
    char *current = buffer + sizeof(buffer);
    uintToString( value, current );
    assert( current >= buffer );
    return current;
 }
+
+#if defined(JSON_HAS_INT64)
+
+std::string valueToString( Int value )
+{
+   return valueToString( LargestInt(value) );
+}
+
+
+std::string valueToString( UInt value )
+{
+   return valueToString( LargestUInt(value) );
+}
+
+#endif // # if defined(JSON_HAS_INT64)
+
 
 std::string valueToString( double value )
 {
@@ -71,17 +78,7 @@ std::string valueToString( double value )
 #else	
    sprintf(buffer, "%#.16g", value); 
 #endif
-   char* ch = buffer;
-   // Incase sprintf have written ',' as decimal point switch it to '.'
-   while (*ch != '\0'){
-     if (*ch == ','){
-       *ch = '.';
-       break;
-     }
-     ch++;
-   }
-
-   ch = buffer + strlen(buffer) - 1;
+   char* ch = buffer + strlen(buffer) - 1;
    if (*ch != '0') return buffer; // nothing to truncate, so save time
    while(ch > buffer && *ch == '0'){
      --ch;
@@ -126,7 +123,7 @@ std::string valueToQuotedString( const char *value )
    // We have to walk value and escape any special characters.
    // Appending to std::string is not efficient, but this should be rare.
    // (Note: forward slashes are *not* rare, but I am not escaping them.)
-   unsigned maxsize = strlen(value)*2 + 3; // allescaped+quotes+NULL
+   std::string::size_type maxsize = strlen(value)*2 + 3; // allescaped+quotes+NULL
    std::string result;
    result.reserve(maxsize); // to avoid lots of mallocs
    result += "\"";
@@ -223,10 +220,10 @@ FastWriter::writeValue( const Value &value )
       document_ += "null";
       break;
    case intValue:
-      document_ += valueToString( value.asInt() );
+      document_ += valueToString( value.asLargestInt() );
       break;
    case uintValue:
-      document_ += valueToString( value.asUInt() );
+      document_ += valueToString( value.asLargestUInt() );
       break;
    case realValue:
       document_ += valueToString( value.asDouble() );
@@ -306,10 +303,10 @@ StyledWriter::writeValue( const Value &value )
       pushValue( "null" );
       break;
    case intValue:
-      pushValue( valueToString( value.asInt() ) );
+      pushValue( valueToString( value.asLargestInt() ) );
       break;
    case uintValue:
-      pushValue( valueToString( value.asUInt() ) );
+      pushValue( valueToString( value.asLargestUInt() ) );
       break;
    case realValue:
       pushValue( valueToString( value.asDouble() ) );
@@ -582,10 +579,10 @@ StyledStreamWriter::writeValue( const Value &value )
       pushValue( "null" );
       break;
    case intValue:
-      pushValue( valueToString( value.asInt() ) );
+      pushValue( valueToString( value.asLargestInt() ) );
       break;
    case uintValue:
-      pushValue( valueToString( value.asUInt() ) );
+      pushValue( valueToString( value.asLargestUInt() ) );
       break;
    case realValue:
       pushValue( valueToString( value.asDouble() ) );

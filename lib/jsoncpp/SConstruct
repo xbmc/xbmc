@@ -1,86 +1,24 @@
 """
-Build system can be clean-up by sticking to a few core production factory, with automatic dependencies resolution.
-4 basic project productions:
-- library
-- binary
-- documentation
-- tests
+Notes: 
+- shared library support is buggy: it assumes that a static and dynamic library can be build from the same object files. This is not true on many platforms. For this reason it is only enabled on linux-gcc at the current time.
 
-* Library:
-  Input:
-    - dependencies (other libraries)
-    - headers: include path & files
-    - sources
-    - generated sources
-    - resources
-    - generated resources
-  Production:
-    - Static library
-    - Dynamic library
-    - Naming rule
-  Life-cycle:
-    - Library compilation
-    - Compilation as a dependencies
-    - Run-time
-    - Packaging
-  Identity:
-    - Name
-    - Version
-* Binary:
-  Input:
-    - dependencies (other libraries)
-    - headers: include path & files (usually empty)
-    - sources
-    - generated sources
-    - resources
-    - generated resources
-    - supported variant (optimized/debug, dll/static...)
-  Production:
-    - Binary executable
-    - Manifest [on some platforms]
-    - Debug symbol [on some platforms]
-  Life-cycle:
-    - Compilation
-    - Run-time
-    - Packaging
-  Identity:
-    - Name
-    - Version
-* Documentation:
-  Input:
-    - dependencies (libraries, binaries)
-    - additional sources
-    - generated sources
-    - resources
-    - generated resources
-    - supported variant (public/internal)
-  Production:
-    - HTML documentation
-    - PDF documentation
-    - CHM documentation
-  Life-cycle:
-    - Documentation
-    - Packaging
-    - Test
-  Identity:
-    - Name
-    - Version
+To add a platform:
+- add its name in options allowed_values below
+- add tool initialization for this platform. Search for "if platform == 'suncc'" as an example.
 """
-
-
 
 import os
 import os.path
 import sys
 
-JSONCPP_VERSION = '0.2'
+JSONCPP_VERSION = open(File('#version').abspath,'rt').read().strip()
 DIST_DIR = '#dist'
 
 options = Variables()
 options.Add( EnumVariable('platform',
                         'Platform (compiler/stl) used to build the project',
                         'msvc71',
-                        allowed_values='suncc vacpp mingw msvc6 msvc7 msvc71 msvc80 linux-gcc'.split(),
+                        allowed_values='suncc vacpp mingw msvc6 msvc7 msvc71 msvc80 msvc90 linux-gcc'.split(),
                         ignorecase=2) )
 
 try:
@@ -119,8 +57,9 @@ def make_environ_vars():
 	"""Returns a dictionnary with environment variable to use when compiling."""
 	# PATH is required to find the compiler
 	# TEMP is required for at least mingw
+    # LD_LIBRARY_PATH & co is required on some system for the compiler
 	vars = {}
-	for name in ('PATH', 'TEMP', 'TMP'):
+	for name in ('PATH', 'TEMP', 'TMP', 'LD_LIBRARY_PATH', 'LIBRARY_PATH'):
 		if name in os.environ:
 			vars[name] = os.environ[name]
 	return vars
@@ -163,6 +102,18 @@ elif platform == 'msvc80':
     for tool in ['msvc', 'msvs', 'mslink', 'masm', 'mslib']:
         env.Tool( tool )
     env['CXXFLAGS']='-GR -EHsc /nologo /MT'
+elif platform == 'msvc90':
+    env['MSVS_VERSION']='9.0'
+    # Scons 1.2 fails to detect the correct location of the platform SDK.
+    # So we propagate those from the environment. This requires that the
+    # user run vcvars32.bat before compiling.
+    if 'INCLUDE' in os.environ:
+        env['ENV']['INCLUDE'] = os.environ['INCLUDE']
+    if 'LIB' in os.environ:
+        env['ENV']['LIB'] = os.environ['LIB']
+    for tool in ['msvc', 'msvs', 'mslink', 'masm', 'mslib']:
+        env.Tool( tool )
+    env['CXXFLAGS']='-GR -EHsc /nologo /MT'
 elif platform == 'mingw':
     env.Tool( 'mingw' )
     env.Append( CPPDEFINES=[ "WIN32", "NDEBUG", "_MT" ] )
@@ -174,8 +125,6 @@ else:
     print "UNSUPPORTED PLATFORM."
     env.Exit(1)
 
-env.Tool('doxygen')
-env.Tool('substinfile')
 env.Tool('targz')
 env.Tool('srcdist')
 env.Tool('globtool')
@@ -295,6 +244,5 @@ env.Alias( 'src-dist', srcdist_cmd )
 buildProjectInDirectory( 'src/jsontestrunner' )
 buildProjectInDirectory( 'src/lib_json' )
 buildProjectInDirectory( 'src/test_lib_json' )
-buildProjectInDirectory( 'doc' )
 #print env.Dump()
 
