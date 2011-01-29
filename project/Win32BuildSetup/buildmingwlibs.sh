@@ -1,6 +1,6 @@
-
+# compile our mingw dlls
 echo "##### building ffmpeg dlls #####"
-#sh /xbmc/lib/ffmpeg/build_xbmc_win32.sh
+sh /xbmc/lib/ffmpeg/build_xbmc_win32.sh
 echo "##### building of ffmpeg dlls done #####"
 
 echo "##### building libdvd dlls #####"
