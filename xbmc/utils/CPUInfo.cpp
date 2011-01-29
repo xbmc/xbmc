@@ -551,6 +551,38 @@ void CCPUInfo::ReadCPUFeatures()
       m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
   }
 
+#elif defined(__APPLE__)
+  #if defined(__ppc__)
+    m_cpuFeatures |= CPU_FEATURE_ALTIVEC;
+  #elif defined(__arm__)
+  #else
+    len = 512;
+    char buffer[512];
+
+    if (sysctlbyname("machdep.cpu.features", &buffer, &len, NULL, 0) == 0)
+    {
+      if (strstr(buffer,"MMX"))
+        m_cpuFeatures |= CPU_FEATURE_MMX;
+      if (strstr(buffer,"SSE "))
+        m_cpuFeatures |= CPU_FEATURE_SSE;
+      if (strstr(buffer,"SSE2"))
+        m_cpuFeatures |= CPU_FEATURE_SSE2;
+      if (strstr(buffer,"SSE3"))
+        m_cpuFeatures |= CPU_FEATURE_SSE3;
+      if (strstr(buffer,"SSSE3"))
+        m_cpuFeatures |= CPU_FEATURE_SSSE3;
+      if (strstr(buffer,"SSE4.1"))
+        m_cpuFeatures |= CPU_FEATURE_SSE4;
+      if (strstr(buffer,"SSE4.2"))
+        m_cpuFeatures |= CPU_FEATURE_SSE42;
+      if (strstr(buffer,"3DNOW"))
+        m_cpuFeatures |= CPU_FEATURE_3DNOW;
+      if (strstr(buffer,"3DNOWEXT"))
+       m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
+    }
+    else
+      m_cpuFeatures |= CPU_FEATURE_MMX;
+  #endif
 #elif !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__)
   m_cpuFeatures |= CPU_FEATURE_MMX;
 #elif defined(__powerpc__) || defined(__ppc__)
