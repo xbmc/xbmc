@@ -100,14 +100,6 @@ private:
   CEpg *GetById(int iEpgId);
 
   /*!
-   * @brief Update an entry in this container.
-   * @param tag The table to update.
-   * @param bUpdateDatabase If set to true, this table will be persisted in the database.
-   * @return True if it was updated successfully, false otherwise.
-   */
-  virtual bool UpdateEntry(const CEpg &entry, bool bUpdateDatabase = false);
-
-  /*!
    * @brief A hook that will be called on every update thread iteration.
    */
   virtual void ProcessHook(const CDateTime &time) {};
@@ -165,6 +157,15 @@ public:
    * @param msg The update message.
    */
   virtual void Notify(const Observable &obs, const CStdString& msg);
+
+
+  /*!
+   * @brief Update an entry in this container.
+   * @param tag The table to update.
+   * @param bUpdateDatabase If set to true, this table will be persisted in the database.
+   * @return True if it was updated successfully, false otherwise.
+   */
+  virtual bool UpdateEntry(const CEpg &entry, bool bUpdateDatabase = false);
 
   /*!
    * @brief Get all EPG tables and apply a filter.

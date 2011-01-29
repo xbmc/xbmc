@@ -173,6 +173,13 @@ CEpg *CEpgContainer::GetById(int iEpgId)
 
 bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = false */)
 {
+  bool bReturn = false;
+
+  /* make sure the update thread is stopped */
+  bool bThreadRunning = !m_bStop;
+  if (bThreadRunning && !Stop())
+    return bReturn;
+
   CEpg *epg = GetById(entry.EpgID());
 
   if (!epg)
@@ -181,7 +188,12 @@ bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = fal
     push_back(epg);
   }
 
-  return epg->Update(entry, bUpdateDatabase);
+  bReturn = epg->Update(entry, bUpdateDatabase);
+
+  if (bThreadRunning)
+    Start();
+
+  return bReturn;
 }
 
 bool CEpgContainer::LoadSettings(void)
