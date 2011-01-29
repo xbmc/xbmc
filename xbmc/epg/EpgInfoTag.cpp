@@ -205,7 +205,7 @@ void CEpgInfoTag::SetEnd(const CDateTime &end)
   }
 }
 
-CStdString CEpgInfoTag::Title(void) const
+const CStdString CEpgInfoTag::Title(void) const
 {
   if (m_strTitle.IsEmpty())
     return g_localizeStrings.Get(19055);

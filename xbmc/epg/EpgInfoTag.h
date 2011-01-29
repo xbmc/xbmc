@@ -156,7 +156,7 @@ public:
    * @brief Get the event's start time.
    * @return The new start time.
    */
-  CDateTime Start(void) const { return m_startTime; }
+  const CDateTime Start(void) const { return m_startTime; }
 
   /*!
    * @brief Change the event's start time.
@@ -168,7 +168,7 @@ public:
    * @brief Get the event's end time.
    * @return The new start time.
    */
-  CDateTime End(void) const { return m_endTime; }
+  const CDateTime End(void) const { return m_endTime; }
 
   /*!
    * @brief Change the event's end time.
@@ -186,7 +186,7 @@ public:
    * @brief Get the title of this event.
    * @return The title.
    */
-  CStdString Title(void) const;
+  const CStdString Title(void) const;
 
   /*!
    * @brief Change the title of this event.
@@ -198,7 +198,7 @@ public:
    * @brief Get the plot outline of this event.
    * @return The plot outline.
    */
-  CStdString PlotOutline(void) const { return m_strPlotOutline; }
+  const CStdString PlotOutline(void) const { return m_strPlotOutline; }
 
   /*!
    * @brief Change the plot outline of this event.
@@ -210,7 +210,7 @@ public:
    * @brief Get the plot of this event.
    * @return The plot.
    */
-  CStdString Plot(void) const { return m_strPlot; }
+  const CStdString Plot(void) const { return m_strPlot; }
 
   /*!
    * @brief Change the plot of this event.
@@ -235,7 +235,7 @@ public:
    * @brief Get the genre as human readable string.
    * @return The genre.
    */
-  CStdString Genre(void) const { return m_strGenre; }
+  const CStdString Genre(void) const { return m_strGenre; }
 
   /*!
    * @brief Change the genre of this event.
@@ -248,7 +248,7 @@ public:
    * @brief Get the first air date of this event.
    * @return The first air date.
    */
-  CDateTime FirstAired(void) const { return m_firstAired; }
+  const CDateTime FirstAired(void) const { return m_firstAired; }
 
   /*!
    * @brief Change the first air date of this event.
@@ -296,7 +296,7 @@ public:
    * @brief The series number of this event.
    * @return The series number.
    */
-  CStdString SeriesNum(void) const { return m_strSeriesNum; }
+  const CStdString SeriesNum(void) const { return m_strSeriesNum; }
 
   /*!
    * @brief Change the series number of this event.
@@ -308,7 +308,7 @@ public:
    * @brief The episode number of this event.
    * @return The episode number.
    */
-  CStdString EpisodeNum(void) const { return m_strEpisodeNum; }
+  const CStdString EpisodeNum(void) const { return m_strEpisodeNum; }
 
   /*!
    * @brief Change the episode number of this event.
@@ -320,7 +320,7 @@ public:
    * @brief The episode part number of this event.
    * @return The episode part number.
    */
-  CStdString EpisodePart(void) const { return m_strEpisodePart; }
+  const CStdString EpisodePart(void) const { return m_strEpisodePart; }
 
   /*!
    * @brief Change the episode part number of this event.
@@ -332,7 +332,7 @@ public:
    * @brief The episode name of this event.
    * @return The episode name.
    */
-  CStdString EpisodeName(void) const { return m_strEpisodeName; }
+  const CStdString EpisodeName(void) const { return m_strEpisodeName; }
 
   /*!
    * @brief Change the episode name of this event.
@@ -344,7 +344,7 @@ public:
    * @brief Get the path to the icon for this event.
    * @return The path to the icon
    */
-  CStdString Icon(void) const { return m_strIconPath; }
+  const CStdString Icon(void) const { return m_strIconPath; }
 
   /*!
    * @brief Change the path to the icon for this event.
@@ -356,7 +356,7 @@ public:
    * @brief The path to this event.
    * @return The path.
    */
-  CStdString Path(void) const { return m_strFileNameAndPath; }
+  const CStdString Path(void) const { return m_strFileNameAndPath; }
 
   /*!
    * @brief Change the path to this event.
