@@ -38,6 +38,7 @@ config.log
 *.vcxproj.*.user
 *.vcxproj.user
 *.obj
+*ReSharper*
 
 # osx specifics
 /build/
@@ -535,6 +536,7 @@ config.log
 
 # /lib/liba52/vc++/
 /lib/liba52/vc++/Makefile
+/lib/liba52/vc++/Debug
 
 # /lib/libdvd/
 /lib/libdvd/Makefile
@@ -781,6 +783,7 @@ config.log
 
 # /lib/xbadpcm/
 /lib/xbadpcm/Makefile
+/lib/xbadpcm/adpcm.lib
 
 # /lib/libflac/flac-1.2.1/
 /lib/libflac/flac-1.2.1/Makefilee
