@@ -363,7 +363,13 @@ void CScraperParser::ParseNext(TiXmlElement* element)
       }
 
       if (bExecute)
-        ParseExpression(strInput, m_param[iDest-1],pReg,bAppend);
+      {
+        if (iDest-1 < MAX_SCRAPER_BUFFERS && iDest-1 > -1)
+          ParseExpression(strInput, m_param[iDest-1],pReg,bAppend);
+        else
+          CLog::Log(LOGERROR,"CScraperParser::ParseNext: destination buffer "
+                             "out of bounds, skipping expression");
+      }
 
       pReg = pReg->NextSiblingElement("RegExp");
   }
@@ -496,7 +502,11 @@ void CScraperParser::GetBufferParams(bool* result, const char* attribute, bool d
     vector<CStdString> vecBufs;
     CUtil::Tokenize(attribute,vecBufs,",");
     for (size_t nToken=0; nToken < vecBufs.size(); nToken++)
-      result[atoi(vecBufs[nToken].c_str())-1] = !defvalue;
+    {
+      int index = atoi(vecBufs[nToken].c_str())-1;
+      if (index < MAX_SCRAPER_BUFFERS)
+        result[index] = !defvalue;
+    }
   }
 }
 
@@ -509,8 +519,8 @@ void CScraperParser::InsertToken(CStdString& strOutput, int buf, const char* tok
   {
     strOutput.Insert(i2,token);
     i2 += strlen(token);
-    strOutput.Insert(i2+2,token);
-    i2 += 2;
+    strOutput.Insert(i2+strlen(temp),token);
+    i2 += strlen(temp);
   }
 }
 

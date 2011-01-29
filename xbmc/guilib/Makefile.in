@@ -47,7 +47,6 @@ SRCS=AnimatedGif.cpp \
      GUIScrollBarControl.cpp \
      GUISelectButtonControl.cpp \
      GUISettingsSliderControl.cpp \
-     GUIShader.cpp \
      GUISliderControl.cpp \
      GUISound.cpp \
      GUISpinControl.cpp \
@@ -83,8 +82,12 @@ SRCS+=TextureGL.cpp \
       GUITextureGL.cpp
 endif
 ifeq (@USE_OPENGLES@,1)
-SRCS+=GUITextureGLES.cpp \
-      MatrixGLES.cpp
+SRCS+=TextureGL.cpp \
+      GUIFontTTFGL.cpp \
+      GUITextureGLES.cpp \
+      MatrixGLES.cpp \
+      GUIShader.cpp \
+
 endif
 
 LIB=guilib.a

@@ -1991,8 +1991,6 @@
     <ClInclude Include="..\..\xbmc\addons\AddonManager.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonStatusHandler.h" />
     <ClInclude Include="..\..\xbmc\addons\DllAddon.h" />
-    <ClInclude Include="..\..\xbmc\addons\DllScreenSaver.h" />
-    <ClInclude Include="..\..\xbmc\addons\DllVisualisation.h" />
     <ClInclude Include="..\..\xbmc\addons\IAddon.h" />
     <ClInclude Include="..\..\xbmc\addons\Scraper.h" />
     <ClInclude Include="..\..\xbmc\addons\ScreenSaver.h" />

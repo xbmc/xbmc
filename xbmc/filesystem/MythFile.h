@@ -25,9 +25,6 @@
 #include "MythSession.h"
 #include "DateTime.h"
 #include "video/VideoInfoTag.h"
-
-#undef max
-
 #include <queue>
 
 extern "C" {

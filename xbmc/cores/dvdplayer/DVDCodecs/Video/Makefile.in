@@ -23,6 +23,7 @@ SRCS+=  DVDVideoCodecVDA.cpp \
 endif
 ifeq (@USE_OPENMAX@,1)
 SRCS += OpenMax.cpp \
+        OpenMaxVideo.cpp \
         DVDVideoCodecOpenMax.cpp \
 
 endif

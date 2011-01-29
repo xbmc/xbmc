@@ -289,6 +289,8 @@ class CAdvancedSettings
     DatabaseSettings m_databaseEpg;   /*!< advanced EPG database setup */
 
     unsigned int m_cacheMemBufferSize;
+
+    bool m_jsonOutputCompact;
 };
 
 extern CAdvancedSettings g_advancedSettings;

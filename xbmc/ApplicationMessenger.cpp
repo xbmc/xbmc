@@ -722,6 +722,11 @@ case TMSG_POWERDOWN:
         g_mediaManager.RemoveAutoSource(share);
       }
       break;
+    case TMSG_CALLBACK:
+      {
+        ThreadMessageCallback *callback = (ThreadMessageCallback*)pMsg->lpVoid;
+        callback->callback(callback->userptr);
+      }
 #endif
   }
 }

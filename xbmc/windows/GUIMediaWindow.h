@@ -95,6 +95,7 @@ protected:
   void SetHistoryForPath(const CStdString& strDirectory);
   virtual void LoadPlayList(const CStdString& strFileName) {}
   virtual bool OnPlayMedia(int iItem);
+  virtual bool OnPlayAndQueueMedia(const CFileItemPtr &item);
   void UpdateFileList();
   virtual void OnDeleteItem(int iItem);
   void OnRenameItem(int iItem);

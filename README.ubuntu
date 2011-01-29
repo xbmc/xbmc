@@ -22,9 +22,9 @@ character itself should NOT be typed as part of the command.
 2. Getting the source code
 -----------------------------------------------------------------------------
 
-   # sudo apt-get install subversion
+   # sudo apt-get install git-core
    # cd $HOME
-   # svn checkout http://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk xbmc
+   # git clone git://github.com/xbmc/xbmc.git xbmc
 
 -----------------------------------------------------------------------------
 3. Installing the required Ubuntu packages

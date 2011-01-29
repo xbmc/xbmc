@@ -28,7 +28,7 @@
 #include "gui3d.h"
 #include "utils/log.h"
 #if HAS_GLES == 2
-#include "WindowingFactory.h"
+#include "windowing/WindowingFactory.h"
 #endif
 
 // stuff for freetype

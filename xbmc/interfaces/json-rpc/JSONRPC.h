@@ -35,6 +35,7 @@ namespace JSONRPC
   {
     OK = 0,
     ACK = -1,
+    InvalidRequest = -32600,
     MethodNotFound = -32601,
     InvalidParams = -32602,
     InternalError = -32603,
@@ -83,9 +84,11 @@ namespace JSONRPC
     static JSON_STATUS SetAnnouncementFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS Announce(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
   private:
+    static bool HandleMethodCall(Json::Value& request, Json::Value& response, ITransportLayer *transport, IClient *client);
     static JSON_STATUS InternalMethodCall(const CStdString& method, Json::Value& o, Json::Value &result, ITransportLayer *transport, IClient *client);
     static inline bool IsProperJSONRPC(const Json::Value& inputroot);
 
+    inline static void BuildResponse(const Json::Value& request, JSON_STATUS code, const Json::Value& result, Json::Value& response);
     inline static const char *PermissionToString(const OperationPermission &permission);
     inline static const char *AnnouncementFlagToString(const ANNOUNCEMENT::EAnnouncementFlag &announcement);
 

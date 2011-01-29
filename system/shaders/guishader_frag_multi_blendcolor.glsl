@@ -21,14 +21,13 @@
 
 precision mediump   float;
 uniform   sampler2D m_samp0;
+uniform   sampler2D m_samp1;
 varying   vec4      m_cord0;
+varying   vec4      m_cord1;
 varying   vec4      m_colour;
 
-// SM_FONTS shader
+// SM_MULTI shader
 void main ()
 {
-  gl_FragColor.r   = m_colour.r;
-  gl_FragColor.g   = m_colour.g;
-  gl_FragColor.b   = m_colour.b;
-  gl_FragColor.a   = m_colour.a * texture2D(m_samp0, m_cord0.xy).a;
+  gl_FragColor.rgba = (texture2D(m_samp0, m_cord0.xy) * texture2D(m_samp1, m_cord1.xy)).bgra * m_colour;
 }

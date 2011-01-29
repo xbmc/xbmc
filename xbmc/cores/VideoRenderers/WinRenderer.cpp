@@ -665,18 +665,18 @@ void CWinRenderer::Render(DWORD flags)
   CSingleLock lock(g_graphicsContext);
 
   if (m_renderMethod == RENDER_SW)
-    RenderSW(flags);
+    RenderSW();
   else if (m_renderMethod == RENDER_PS)
-    RenderPS(flags);
+    RenderPS();
 }
 
-void CWinRenderer::RenderSW(DWORD flags)
+void CWinRenderer::RenderSW()
 {
   // 1. convert yuv to rgb
   m_sw_scale_ctx = m_dllSwScale->sws_getCachedContext(m_sw_scale_ctx,
                                                       m_sourceWidth, m_sourceHeight, PIX_FMT_YUV420P,
                                                       m_sourceWidth, m_sourceHeight, PIX_FMT_BGRA,
-                                                      SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                                                      SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
 
   YUVBuffer* buf = (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
 
@@ -851,20 +851,20 @@ void CWinRenderer::ScaleFixedPipeline()
   pD3DDev->SetTexture(0, NULL);
 }
 
-void CWinRenderer::RenderPS(DWORD flags)
+void CWinRenderer::RenderPS()
 {
   if (!m_bUseHQScaler)
   {
-    Stage1(flags);
+    Stage1();
   }
   else
   {
-    Stage1(flags);
-    Stage2(flags);
+    Stage1();
+    Stage2();
   }
 }
 
-void CWinRenderer::Stage1(DWORD flags)
+void CWinRenderer::Stage1()
 {
   if (!m_bUseHQScaler)
   {
@@ -900,7 +900,7 @@ void CWinRenderer::Stage1(DWORD flags)
   }
 }
 
-void CWinRenderer::Stage2(DWORD flags)
+void CWinRenderer::Stage2()
 {
   m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_destRect);
 }

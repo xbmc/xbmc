@@ -8,6 +8,11 @@ SRCS+=  DbusServer.cpp \
 
 endif
 
+ifeq ($(findstring arm,$(ARCH)), arm)
+SRCS+=  DbusServer.cpp \
+
+endif
+
 LIB=interfaces.a
 
 include @abs_top_srcdir@/Makefile.include

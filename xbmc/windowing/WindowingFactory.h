@@ -43,7 +43,7 @@ extern CWinSystemX11GL g_Windowing;
 #endif
 
 #if defined(HAS_EGL)
-#include "gles/WinSystemEGL.h"
+#include "egl/WinSystemEGL.h"
 extern CWinSystemEGL g_Windowing;
 #endif
 

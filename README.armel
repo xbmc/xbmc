@@ -135,9 +135,9 @@ If you dont succeed, or want to do it manually, follow the next step instead.
 3. Getting the source code
 -----------------------------------------------------------------------------
 
-   $ sudo apt-get install subversion
+   $ sudo apt-get install git-core
    $ cd /scratchbox/users/<username>/home/<username>/
-   $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/xbmc_on_arm
+   $ git clone git://github.com/xbmc/xbmc.git
 
    
 -----------------------------------------------------------------------------
