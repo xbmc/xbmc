@@ -30,6 +30,7 @@
 #include "VideoLibrary.h"
 #include "SystemOperations.h"
 #include "XBMCOperations.h"
+#include "settings/AdvancedSettings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -355,10 +356,18 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *
     hasResponse = true;
   }
 
-  StyledWriter writer;
   CStdString str;
   if (hasResponse)
-    str = writer.write(outputroot);
+  {
+    Writer *writer;
+    if (g_advancedSettings.m_jsonOutputCompact)
+      writer = new FastWriter();
+    else
+      writer = new StyledWriter();
+
+    str = writer->write(outputroot);
+    delete writer;
+  }
   return str;
 }
 
