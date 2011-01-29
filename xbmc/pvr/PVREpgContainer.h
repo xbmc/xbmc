@@ -115,14 +115,14 @@ public:
    * @param bRadio Get radio items if true and TV items if false.
    * @return The start time.
    */
-  CDateTime GetFirstEPGDate(bool bRadio = false);
+  const CDateTime GetFirstEPGDate(bool bRadio = false);
 
   /*!
     * @brief Get the end time of the last entry.
     * @param bRadio Get radio items if true and TV items if false.
     * @return The end time.
     */
-  CDateTime GetLastEPGDate(bool bRadio = false);
+  const CDateTime GetLastEPGDate(bool bRadio = false);
 };
 
 extern CPVREpgContainer g_PVREpgContainer; /*!< The container for all EPG tables */
