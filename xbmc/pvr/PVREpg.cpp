@@ -76,16 +76,8 @@ bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = fa
   if (bEnterCriticalSection)
     EnterCriticalSection(&m_critSection);
 
-  CPVREpgInfoTag *InfoTag = (CPVREpgInfoTag *) this->InfoTag(data->uid, data->starttime, bEnterCriticalSection);
-
-  if (InfoTag == NULL)
-  {
-    InfoTag = new CPVREpgInfoTag(*data);
-    InfoTag->m_Epg = this;
-    push_back(InfoTag);
-  }
-
-  bReturn = CEpg::UpdateEntry(*InfoTag, bUpdateDatabase, false);
+  CPVREpgInfoTag tag(*data);
+  bReturn = CEpg::UpdateEntry(tag, bUpdateDatabase, false);
 
   if (bEnterCriticalSection)
     LeaveCriticalSection(&m_critSection);

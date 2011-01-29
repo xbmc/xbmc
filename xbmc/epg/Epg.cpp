@@ -314,7 +314,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
     InfoTag = new CEpgInfoTag();
     if (!InfoTag)
     {
-      CLog::Log(LOGERROR, "%s - Couldn't create new infotag", __FUNCTION__);
+      CLog::Log(LOGERROR, "EPG - %s - couldn't create new infotag", __FUNCTION__);
       return bReturn;
     }
     push_back(InfoTag);
@@ -346,7 +346,7 @@ bool CEpg::Load()
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
   if (!database || !database->Open())
   {
-    CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
+    CLog::Log(LOGERROR, "EPG - %s - could not open the database", __FUNCTION__);
     return bReturn;
   }
 
@@ -490,7 +490,7 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
 
     if (!database || !database->Open())
     {
-      CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
+      CLog::Log(LOGERROR, "EPG - %s - could not open the database", __FUNCTION__);
       return bReturn;
     }
   }
@@ -512,10 +512,10 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
 
     CEpgInfoTag *currentTag = at(ptr);
 
-    if (previousTag->End() > currentTag->End())
+    if (previousTag->End() >= currentTag->End())
     {
       /* previous tag completely overlaps current tag; delete the current tag */
-      CLog::Log(LOGNOTICE, "%s - Removing EPG event '%s' at '%s' to '%s': overlaps with '%s' at '%s' to '%s'",
+      CLog::Log(LOGNOTICE, "EPG - %s - removing EPG event '%s' at '%s' to '%s': overlaps with '%s' at '%s' to '%s'",
           __FUNCTION__, currentTag->Title().c_str(),
           currentTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
           currentTag->End().GetAsLocalizedDateTime(false, false).c_str(),
@@ -536,7 +536,7 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
       int iDiffSeconds = diff.GetSeconds() + diff.GetMinutes() * 60 + diff.GetHours() * 3600 + diff.GetDays() * 86400;
       CDateTime newTime = previousTag->End() - CDateTimeSpan(0, 0, 0, (int) (iDiffSeconds / 2));
 
-      CLog::Log(LOGNOTICE, "%s - Mediating start and end times of EPG events '%s' at '%s' to '%s' and '%s' at '%s' to '%s': using '%s'",
+      CLog::Log(LOGNOTICE, "EPG - %s - mediating start and end times of EPG events '%s' at '%s' to '%s' and '%s' at '%s' to '%s': using '%s'",
           __FUNCTION__, currentTag->Title().c_str(),
           currentTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
           currentTag->End().GetAsLocalizedDateTime(false, false).c_str(),
@@ -569,12 +569,12 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
 
   if (m_strScraperName.IsEmpty()) /* no grabber defined */
   {
-    CLog::Log(LOGERROR, "%s - no EPG grabber defined for table '%d'",
+    CLog::Log(LOGERROR, "EPG - %s - no EPG grabber defined for table '%d'",
         __FUNCTION__, m_iEpgID);
   }
   else
   {
-    CLog::Log(LOGINFO, "%s - updating EPG table '%d' with scraper '%s'",
+    CLog::Log(LOGINFO, "EPG - %s - updating EPG table '%d' with scraper '%s'",
         __FUNCTION__, m_iEpgID, m_strScraperName.c_str());
     CLog::Log(LOGERROR, "loading the EPG via scraper has not been implemented yet");
     // TODO: Add Support for Web EPG Scrapers here
@@ -590,7 +590,7 @@ bool CEpg::PersistTags(void)
 
   if (!database || !database->Open())
   {
-    CLog::Log(LOGERROR, "%s - could not load the database", __FUNCTION__);
+    CLog::Log(LOGERROR, "EPG - %s - could not load the database", __FUNCTION__);
     return bReturn;
   }
 

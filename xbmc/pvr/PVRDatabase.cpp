@@ -271,11 +271,7 @@ bool CPVRDatabase::DeleteChannel(const CPVRChannel &channel)
 {
   /* invalid channel */
   if (channel.ChannelID() <= 0)
-  {
-    CLog::Log(LOGERROR, "PVRDB - %s - invalid channel id: %li",
-        __FUNCTION__, channel.ChannelID());
     return false;
-  }
 
   CStdString strWhereClause = FormatSQL("idChannel = %u", channel.ChannelID());
   return DeleteValues("channels", strWhereClause);
