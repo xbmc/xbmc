@@ -50,6 +50,7 @@
 class CLog
 {
   static FILE*       m_file;
+  static int         m_logLevel;
   static int         m_repeatCount;
   static int         m_repeatLogLevel;
   static CStdString* m_repeatLine;
@@ -60,5 +61,7 @@ public:
   static void Log(int loglevel, const char *format, ... ) ATTRIB_LOG_FORMAT;
   static void MemDump(char *pData, int length);
   static bool Init(const char* path);
+  static void SetLogLevel(int level);
+  static int  GetLogLevel();
 };
 

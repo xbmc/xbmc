@@ -27,13 +27,13 @@
 #endif
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
-#include "settings/AdvancedSettings.h"
 #include "threads/Thread.h"
 
 FILE*       CLog::m_file            = NULL;
 int         CLog::m_repeatCount     = 0;
 int         CLog::m_repeatLogLevel  = -1;
 CStdString* CLog::m_repeatLine      = NULL;
+int         CLog::m_logLevel        = LOG_LEVEL_DEBUG;
 
 static CCriticalSection critSec;
 
@@ -68,10 +68,10 @@ void CLog::Close()
 
 void CLog::Log(int loglevel, const char *format, ... )
 {
-  if (g_advancedSettings.m_logLevel > LOG_LEVEL_NORMAL ||
-     (g_advancedSettings.m_logLevel > LOG_LEVEL_NONE && loglevel >= LOGNOTICE))
+  CSingleLock waitLock(critSec);
+  if (m_logLevel > LOG_LEVEL_NORMAL ||
+     (m_logLevel > LOG_LEVEL_NONE && loglevel >= LOGNOTICE))
   {
-    CSingleLock waitLock(critSec);
     if (!m_file)
       return;
 
@@ -246,5 +246,17 @@ void CLog::MemDump(char *pData, int length)
     }
     Log(LOGDEBUG, "%s", strLine.c_str());
   }
+}
+
+void CLog::SetLogLevel(int level)
+{
+  CSingleLock waitLock(critSec);
+  m_logLevel = level;
+  CLog::Log(LOGNOTICE, "Log level changed to %d", m_logLevel);
+}
+
+int CLog::GetLogLevel()
+{
+  return m_logLevel;
 }
 
