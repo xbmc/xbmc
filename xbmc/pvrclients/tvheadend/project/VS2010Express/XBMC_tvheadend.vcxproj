@@ -35,7 +35,7 @@
     <ClInclude Include="..\..\windows\os_windows.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\lib\libhts\Win32\libhts_2010.vcxproj">
+    <ProjectReference Include="..\..\..\..\..\lib\libhts\Win32\libhts_2010.vcxproj">
       <Project>{00700e12-a63b-4e54-b962-4011a90584bd}</Project>
     </ProjectReference>
   </ItemGroup>
@@ -89,7 +89,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;_WINSOCKAPI_;USE_DEMUX;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\..\cores\dvdplayer\Codecs\ffmpeg;..\..\..\..\cores\dvdplayer\Codecs\ffmpeg\include;..\..\;..\..\pthread_win32;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\xbmc\lib;..\..\..\..\..\xbmc\lib\libhts\Win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\lib\ffmpeg;..\..\..\..\..\lib\ffmpeg\include;..\..\;..\..\pthread_win32;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\lib;..\..\..\..\..\lib\libhts\Win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -105,7 +105,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\..\..\cores\dvdplayer\Codecs\ffmpeg;..\..\..\..\cores\dvdplayer\Codecs\ffmpeg\include;..\..\;..\..\pthread_win32;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\xbmc\lib;..\..\..\..\..\xbmc\lib\libhts\Win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\cores\dvdplayer\Codecs\ffmpeg;..\..\..\..\cores\dvdplayer\Codecs\ffmpeg\include;..\..\;..\..\pthread_win32;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\lib;..\..\..\..\..\lib\ffmpeg;..\..\..\..\..\lib\libhts\Win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;_WINSOCKAPI_;USE_DEMUX;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
