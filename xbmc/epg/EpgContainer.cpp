@@ -40,7 +40,7 @@ CEpgContainer g_EpgContainer;
 CEpgContainer::CEpgContainer(void)
 {
   m_bStop = true;
-  Reset();
+  Clear(false);
 }
 
 CEpgContainer::~CEpgContainer(void)
@@ -50,6 +50,11 @@ CEpgContainer::~CEpgContainer(void)
 
 void CEpgContainer::Clear(bool bClearDb /* = false */)
 {
+  /* make sure the update thread is stopped */
+  bool bThreadRunning = !m_bStop;
+  if (bThreadRunning && !Stop())
+    return;
+
   /* clear all epg tables and remove pointers to epg tables on channels */
   for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
   {
@@ -67,13 +72,20 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
   /* clear the database entries */
   if (bClearDb)
   {
-    m_database.Open();
-    m_database.DeleteEpg();
-    m_database.Close();
+    if (m_database.Open())
+    {
+      m_database.DeleteEpg();
+      m_database.Close();
+    }
   }
 
   m_iLastEpgUpdate  = 0;
   m_bDatabaseLoaded = false;
+  m_First           = CDateTime::GetCurrentDateTime();
+  m_Last            = m_First;
+
+  if (bThreadRunning)
+    Start();
 }
 
 void CEpgContainer::Start(void)
@@ -96,30 +108,6 @@ bool CEpgContainer::Stop(void)
   g_guiSettings.RemoveObserver(this);
 
   return true;
-}
-
-bool CEpgContainer::Reset(bool bClearDb /* = false */)
-{
-  bool bThreadRunning = !m_bStop;
-
-  if (bThreadRunning && !Stop())
-    return false;
-
-  Clear(bClearDb);
-
-  m_bDatabaseLoaded = false;
-  m_First           = CDateTime::GetCurrentDateTime();
-  m_Last            = m_First;
-
-  if (bThreadRunning)
-    Start();
-
-  return true;
-}
-
-bool CEpgContainer::Erase(void)
-{
-  return m_database.DeleteEpg();
 }
 
 void CEpgContainer::Notify(const Observable &obs, const CStdString& msg)
@@ -377,9 +365,7 @@ int CEpgContainer::GetEPGAll(CFileItemList* results)
   int iInitialSize = results->Size();
 
   for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
-  {
     at(iEpgPtr)->Get(results);
-  }
 
   return results->Size() - iInitialSize;
 }
@@ -395,9 +381,7 @@ void CEpgContainer::UpdateFirstAndLastEPGDates(const CEpgInfoTag &tag)
 int CEpgContainer::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &filter)
 {
   for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
-  {
     at(iEpgPtr)->Get(results, filter);
-  }
 
   /* remove duplicate entries */
   if (filter.m_bPreventRepeats)

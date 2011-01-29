@@ -49,12 +49,6 @@ private:
   bool UpdateAllChannelEPGPointers();
 
   /*!
-   * @brief Clear all EPG entries.
-   * @param bClearDb Clear the database too if true.
-   */
-  void Clear(bool bClearDb = false);
-
-  /*!
    * @brief Create an EPG table for each channel.
    * @return True if all tables were created successfully, false otherwise.
    */
@@ -77,6 +71,12 @@ public:
    * @brief Start the EPG update thread.
    */
   void Start();
+
+  /*!
+   * @brief Clear all EPG entries.
+   * @param bClearDb Clear the database too if true.
+   */
+  void Clear(bool bClearDb = false);
 
   /*!
    * @brief Get all EPG tables and apply a filter.

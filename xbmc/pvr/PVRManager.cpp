@@ -436,11 +436,9 @@ bool CPVRManager::ContinueLastChannel()
 void CPVRManager::Process()
 {
   g_PVRChannelGroups.Load();    /* Load all channels and groups */
-  g_PVREpgContainer.Load(true); /* Load all EPG tables */
+  g_PVREpgContainer.Start();    /* Start the EPG thread */
   PVRTimers.Load();             /* Get timers from the backends */
   PVRRecordings.Load();         /* Get recordings from the backend */
-
-  g_PVREpgContainer.Start();    /* Start the EPG thread */
 
   /* Continue last watched channel after first startup */
   if (m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
@@ -960,7 +958,7 @@ void CPVRManager::ResetDatabase()
   pDlgProgress->SetPercentage(20);
 
   m_database.Open();
-  g_PVREpgContainer.Erase();
+  g_PVREpgContainer.Clear(true);
   pDlgProgress->SetPercentage(30);
 
   m_database.DeleteChannelGroups(false);
@@ -988,7 +986,7 @@ void CPVRManager::ResetDatabase()
 
 void CPVRManager::ResetEPG()
 {
-  g_PVREpgContainer.Reset(true);
+  g_PVREpgContainer.Clear(true);
 }
 
 bool CPVRManager::IsPlayingTV()

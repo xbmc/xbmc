@@ -43,7 +43,7 @@ class CEpgContainer : public std::vector<CEpg *>,
   friend class CPVREpg;
   friend class CPVREpgContainer;
 
-protected:
+private:
   CEpgDatabase m_database;           /*!< the EPG database */
 
   /** @name Configuration */
@@ -93,18 +93,6 @@ protected:
   virtual bool UpdateEPG(bool bShowProgress = false);
 
   /*!
-   * @brief Clear all EPG entries.
-   * @param bClearDb Clear the database too if true.
-   */
-  virtual void Clear(bool bClearDb = false);
-
-protected:
-  /*!
-   * @brief EPG update thread
-   */
-  virtual void Process(void);
-
-  /*!
    * @brief Get an EPG table given it's ID.
    * @param iEpgId The database ID of the table.
    * @return The table or NULL if it wasn't found.
@@ -124,7 +112,6 @@ protected:
    */
   virtual void ProcessHook(const CDateTime &time) {};
 
-public:
   /*!
    * @brief Load all EPG entries from the database.
    * @param bShowProgress Show a progress bar if true.
@@ -132,12 +119,13 @@ public:
    */
   virtual bool Load(bool bShowProgress = false);
 
+protected:
   /*!
-   * @brief Get a pointer to the database instance.
-   * @return A pointer to the database instance.
+   * @brief EPG update thread
    */
-  CEpgDatabase *GetDatabase() { return &m_database; }
+  virtual void Process(void);
 
+public:
   /*!
    * @brief Create a new EPG table container.
    */
@@ -147,6 +135,12 @@ public:
    * @brief Destroy this instance.
    */
   virtual ~CEpgContainer(void);
+
+  /*!
+   * @brief Get a pointer to the database instance.
+   * @return A pointer to the database instance.
+   */
+  CEpgDatabase *GetDatabase() { return &m_database; }
 
   /*!
    * @brief Start the EPG update thread.
@@ -160,17 +154,10 @@ public:
   virtual bool Stop(void);
 
   /*!
-   * @brief Reset all EPG tables.
-   * @param bClearDb If true, clear the database too.
-   * @return True if all tables were reset, false otherwise.
+   * @brief Clear all EPG entries.
+   * @param bClearDb Clear the database too if true.
    */
-  virtual bool Reset(bool bClearDb = false);
-
-  /*!
-   * @brief Erase this EPG table.
-   * @return True if it was erased, false otherwise.
-   */
-  virtual bool Erase(void);
+  virtual void Clear(bool bClearDb = false);
 
   /*!
    * @brief Process a notification from an observable.

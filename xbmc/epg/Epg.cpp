@@ -56,6 +56,9 @@ CEpg::~CEpg(void)
   DeleteCriticalSection(&m_critSection);
 }
 
+/** @name Public methods */
+//@{
+
 bool CEpg::HasValidEntries(void) const
 {
   ((CEpg *) this)->Sort();
@@ -336,6 +339,146 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   return bReturn;
 }
 
+bool CEpg::Load()
+{
+  bool bReturn = false;
+
+  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+  if (!database || !database->Open())
+  {
+    CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
+    return bReturn;
+  }
+
+  EnterCriticalSection(&m_critSection);
+
+  /* delete any present entries */
+  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+    delete at(iTagPtr);
+  erase(begin(), end());
+
+  /* request the entries for this table from the database */
+  bReturn = (database->Get(this) > 0);
+
+  LeaveCriticalSection(&m_critSection);
+
+  return bReturn;
+}
+
+bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */)
+{
+  bool bGrabSuccess = true;
+
+  /* mark the EPG as being updated */
+  m_bUpdateRunning = true;
+
+  bGrabSuccess = UpdateFromScraper(start, end);
+
+  /* store the loaded EPG entries in the database */
+  if (bGrabSuccess)
+  {
+    FixOverlappingEvents(bStoreInDb);
+
+    if (bStoreInDb)
+      Persist(true);
+  }
+
+  m_bUpdateRunning = false;
+
+  return bGrabSuccess;
+}
+
+int CEpg::Get(CFileItemList *results) const
+{
+  int iInitialSize = results->Size();
+
+  if (!HasValidEntries() || m_bUpdateRunning)
+    return -1;
+
+  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+  {
+    CFileItemPtr entry(new CFileItem(*at(iTagPtr)));
+    entry->SetLabel2(at(iTagPtr)->Start().GetAsLocalizedDateTime(false, false));
+    results->Add(entry);
+  }
+
+  return size() - iInitialSize;
+}
+
+int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter) const
+{
+  int iInitialSize = results->Size();
+
+  if (!HasValidEntries() || m_bUpdateRunning)
+    return -1;
+
+  EnterCriticalSection(&((CEpg *) this)->m_critSection);
+
+  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+  {
+    if (filter.FilterEntry(*at(iTagPtr)))
+    {
+      CFileItemPtr entry(new CFileItem(*at(iTagPtr)));
+      entry->SetLabel2(at(iTagPtr)->Start().GetAsLocalizedDateTime(false, false));
+      results->Add(entry);
+    }
+  }
+
+  LeaveCriticalSection(&((CEpg *) this)->m_critSection);
+
+  return size() - iInitialSize;
+}
+
+bool CEpg::Persist(bool bPersistTags /* = false */)
+{
+  bool bReturn = false;
+  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+
+  if (!database || !database->Open())
+  {
+    CLog::Log(LOGERROR, "%s - could not load the database", __FUNCTION__);
+    return bReturn;
+  }
+
+  int iId = database->Persist(*this);
+  if (iId > 0)
+  {
+    m_iEpgID = iId;
+
+    if (bPersistTags)
+      bReturn = PersistTags();
+    else
+      bReturn = true;
+  }
+
+  database->Close();
+
+  return bReturn;
+}
+
+//@}
+
+/** @name Protected methods */
+//@{
+
+bool CEpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
+{
+  bool bReturn = true;
+
+  m_strName = epg.m_strName;
+  m_strScraperName = epg.m_strScraperName;
+
+  if (bUpdateDb)
+    bReturn = Persist(false);
+
+  return bReturn;
+}
+
+//@}
+
+/** @name Private methods */
+//@{
+
 bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
 {
   bool bReturn = false;
@@ -440,136 +583,6 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
   return bGrabSuccess;
 }
 
-bool CEpg::Load()
-{
-  bool bReturn = false;
-
-  CEpgDatabase *database = g_EpgContainer.GetDatabase();
-  if (!database || !database->Open())
-  {
-    CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
-    return bReturn;
-  }
-
-  EnterCriticalSection(&m_critSection);
-
-  /* delete any present entries */
-  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
-    delete at(iTagPtr);
-  erase(begin(), end());
-
-  /* request the entries for this table from the database */
-  bReturn = (database->Get(this) > 0);
-
-  LeaveCriticalSection(&m_critSection);
-
-  return bReturn;
-}
-
-bool CEpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
-{
-  bool bReturn = true;
-
-  m_strName = epg.m_strName;
-  m_strScraperName = epg.m_strScraperName;
-
-  if (bUpdateDb)
-    bReturn = Persist(false);
-
-  return bReturn;
-}
-
-bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */)
-{
-  bool bGrabSuccess = true;
-
-  /* mark the EPG as being updated */
-  m_bUpdateRunning = true;
-
-  bGrabSuccess = UpdateFromScraper(start, end);
-
-  /* store the loaded EPG entries in the database */
-  if (bGrabSuccess)
-  {
-    FixOverlappingEvents(bStoreInDb);
-
-    if (bStoreInDb)
-      Persist(true);
-  }
-
-  m_bUpdateRunning = false;
-
-  return bGrabSuccess;
-}
-
-int CEpg::Get(CFileItemList *results)
-{
-  int iInitialSize = results->Size();
-
-  if (!HasValidEntries() || m_bUpdateRunning)
-    return -1;
-
-  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
-  {
-    CFileItemPtr entry(new CFileItem(*at(iTagPtr)));
-    entry->SetLabel2(at(iTagPtr)->Start().GetAsLocalizedDateTime(false, false));
-    results->Add(entry);
-  }
-
-  return size() - iInitialSize;
-}
-
-int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter)
-{
-  int iInitialSize = results->Size();
-
-  if (!HasValidEntries() || m_bUpdateRunning)
-    return -1;
-
-  EnterCriticalSection(&m_critSection);
-
-  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
-  {
-    if (filter.FilterEntry(*at(iTagPtr)))
-    {
-      CFileItemPtr entry(new CFileItem(*at(iTagPtr)));
-      entry->SetLabel2(at(iTagPtr)->Start().GetAsLocalizedDateTime(false, false));
-      results->Add(entry);
-    }
-  }
-
-  LeaveCriticalSection(&m_critSection);
-
-  return size() - iInitialSize;
-}
-
-bool CEpg::Persist(bool bPersistTags /* = false */)
-{
-  bool bReturn = false;
-  CEpgDatabase *database = g_EpgContainer.GetDatabase();
-
-  if (!database || !database->Open())
-  {
-    CLog::Log(LOGERROR, "%s - could not load the database", __FUNCTION__);
-    return bReturn;
-  }
-
-  int iId = database->Persist(*this);
-  if (iId > 0)
-  {
-    m_iEpgID = iId;
-
-    if (bPersistTags)
-      bReturn = PersistTags();
-    else
-      bReturn = true;
-  }
-
-  database->Close();
-
-  return bReturn;
-}
-
 bool CEpg::PersistTags(void)
 {
   bool bReturn = false;
@@ -589,3 +602,5 @@ bool CEpg::PersistTags(void)
 
   return bReturn;
 }
+
+//@}
