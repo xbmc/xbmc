@@ -58,7 +58,6 @@ public:
   virtual ~CLog(void);
   static void Close();
   static void Log(int loglevel, const char *format, ... ) ATTRIB_LOG_FORMAT;
-  static void DebugLog(const char *format, ...);
   static void MemDump(char *pData, int length);
   static bool Init(const char* path);
 };

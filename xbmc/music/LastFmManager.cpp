@@ -152,7 +152,7 @@ bool CLastFmManager::RadioHandShake()
     CLog::Log(LOGERROR, "Connect to Last.fm radio failed.");
     return false;
   }
-  //CLog::DebugLog("Handshake: %s", html.c_str());
+  //CLog::Log(LOGDEBUG, "Handshake: %s", html.c_str());
 
   Parameter("session",    html, m_RadioSession);
   Parameter("base_url",   html, m_RadioBaseUrl);
@@ -232,7 +232,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
     CloseProgressDialog();
     return false;
   }
-  //CLog::DebugLog("ChangeStation: %s", html.c_str());
+  //CLog::Log(LOGDEBUG, "ChangeStation: %s", html.c_str());
 
   CStdString strErrorCode;
   Parameter("error", html,  strErrorCode);
@@ -282,7 +282,7 @@ bool CLastFmManager::RequestRadioTracks()
       return false;
     }
   }
-  //CLog::DebugLog("RequestRadioTracks: %s", html.c_str());
+  //CLog::Log(LOGDEBUG, "RequestRadioTracks: %s", html.c_str());
 
   //parse playlist
   TiXmlDocument xmlDoc;

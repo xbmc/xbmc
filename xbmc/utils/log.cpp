@@ -216,25 +216,6 @@ bool CLog::Init(const char* path)
   return m_file != NULL;
 }
 
-void CLog::DebugLog(const char *format, ... )
-{
-#ifdef _DEBUG
-  CSingleLock waitLock(critSec);
-
-  CStdString strData;
-  strData.reserve(16384);
-
-  va_list va;
-  va_start(va, format);
-  strData.FormatV(format, va);
-  va_end(va);
-
-  OutputDebugString(strData.c_str());
-  if( strData.Right(1) != "\n" )
-    OutputDebugString("\n");
-#endif
-}
-
 void CLog::MemDump(char *pData, int length)
 {
   Log(LOGDEBUG, "MEM_DUMP: Dumping from %p", pData);
@@ -267,7 +248,6 @@ void CLog::MemDump(char *pData, int length)
     Log(LOGDEBUG, "%s", strLine.c_str());
   }
 }
-
 
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
 #if defined(HAS_GL) && defined(_DEBUG)
