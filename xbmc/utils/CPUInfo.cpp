@@ -121,8 +121,6 @@ CCPUInfo::CCPUInfo(void)
     m_cores[core.m_id] = core;
   }
 
-  ReadCPUFeatures();
-
 #elif defined(_WIN32)
   char rgValue [128];
   HKEY hKey;
@@ -143,8 +141,6 @@ CCPUInfo::CCPUInfo(void)
 
   CoreInfo core;
   m_cores[0] = core;
-
-  ReadCPUFeatures();
 
 #else
   m_fProcStat = fopen("/proc/stat", "r");
@@ -241,6 +237,8 @@ CCPUInfo::CCPUInfo(void)
 
   readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks, m_ioTicks);
 #endif
+
+  ReadCPUFeatures();
 
   // Set MMX2 when SSE is present as SSE is a superset of MMX2 and Intel doesn't set the MMX2 cap
   if (m_cpuFeatures & CPU_FEATURE_SSE)
@@ -583,6 +581,8 @@ void CCPUInfo::ReadCPUFeatures()
     else
       m_cpuFeatures |= CPU_FEATURE_MMX;
   #endif
+#elif defined(LINUX)
+// empty on purpose, the implementation is in the constructor
 #elif !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__)
   m_cpuFeatures |= CPU_FEATURE_MMX;
 #elif defined(__powerpc__) || defined(__ppc__)
