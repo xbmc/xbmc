@@ -134,7 +134,7 @@ LibraryLoader *CSectionLoader::LoadDLL(const CStdString &dllname, bool bDelayUnl
   }
 
   // ok, now load the dll
-  CLog::DebugLog("SECTION:LoadDLL(%s)\n", dllname.c_str());
+  CLog::Log(LOGDEBUG, "SECTION:LoadDLL(%s)\n", dllname.c_str());
   LibraryLoader* pDll = DllLoaderContainer::LoadModule(dllname.c_str(), NULL, bLoadSymbols);
   if (!pDll)
     return NULL;
