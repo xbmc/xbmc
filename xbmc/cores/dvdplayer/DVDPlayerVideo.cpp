@@ -47,17 +47,6 @@
 
 using namespace std;
 
-#include <time.h>
-#include <stdint.h>
-
-inline int64_t getTimeInMillis()
-{
-  timespec time;
-  clock_gettime(CLOCK_REALTIME, &time);
-  return time.tv_sec * 1000L + time.tv_nsec / 1000000L;
-}
-
-
 class CPulldownCorrection
 {
 public:
@@ -322,8 +311,6 @@ void CDVDPlayerVideo::Process()
 
   while (!m_bStop)
   {
-    int64_t start = getTimeInMillis();
-
     int iQueueTimeOut = (int)(m_stalled ? frametime / 4 : frametime * 10) / 1000;
     int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE && m_started) ? 1 : 0;
 
@@ -718,9 +705,6 @@ void CDVDPlayerVideo::Process()
       }
     }
 
-    int64_t end = getTimeInMillis();
-    //printf("Process: %d\n", int(end - start));
-
     // all data is used by the decoder, we can safely free it now
     pMsg->Release();
   }
@@ -875,10 +859,8 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     }
     else
     {
-#if 0
       AutoCrop(pSource);
       CDVDCodecUtils::CopyPicture(pDest, pSource);
-#endif
     }
   }
 
