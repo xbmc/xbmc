@@ -235,21 +235,6 @@ void CLog::DebugLog(const char *format, ... )
 #endif
 }
 
-void CLog::DebugLogMemory()
-{
-  CSingleLock waitLock(critSec);
-  MEMORYSTATUS stat;
-  CStdString strData;
-
-  GlobalMemoryStatus(&stat);
-#ifdef __APPLE__
-  strData.Format("%ju bytes free\n", stat.dwAvailPhys);
-#else
-  strData.Format("%lu bytes free\n", stat.dwAvailPhys);
-#endif
-  OutputDebugString(strData.c_str());
-}
-
 void CLog::MemDump(char *pData, int length)
 {
   Log(LOGDEBUG, "MEM_DUMP: Dumping from %p", pData);
