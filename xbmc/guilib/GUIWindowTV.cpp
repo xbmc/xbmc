@@ -1606,8 +1606,8 @@ void CGUIWindowTV::UpdateGuide()
     if (g_PVREpgContainer.GetEPGAll(m_vecItems, CurrentChannel.IsRadio()) > 0)
     {
       CDateTime now = CDateTime::GetCurrentDateTime();
-      CDateTime m_gridStart = now - CDateTimeSpan(0, 0, 0, (now.GetMinute() % 30) * 60 + now.GetSecond()) - CDateTimeSpan(0, g_guiSettings.GetInt("pvrmenu.lingertime") / 60, g_guiSettings.GetInt("pvrmenu.lingertime") % 60, 0);
-      CDateTime m_gridEnd = m_gridStart + CDateTimeSpan(g_guiSettings.GetInt("pvrmenu.daystodisplay"), 0, 0, 0);
+      CDateTime m_gridStart = now - CDateTimeSpan(0, 0, 0, (now.GetMinute() % 30) * 60 + now.GetSecond()) - CDateTimeSpan(0, g_guiSettings.GetInt("epg.lingertime") / 60, g_guiSettings.GetInt("epg.lingertime") % 60, 0);
+      CDateTime m_gridEnd = m_gridStart + CDateTimeSpan(g_guiSettings.GetInt("epg.daystodisplay"), 0, 0, 0);
       m_guideGrid = (CGUIEPGGridContainer*)GetControl(CONTROL_LIST_TIMELINE);
       m_guideGrid->SetStartEnd(m_gridStart, m_gridEnd);
       m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
