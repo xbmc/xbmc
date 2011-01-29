@@ -57,7 +57,7 @@ bool CPVREpgContainer::UpdateAllChannelEPGPointers()
 {
   for (unsigned int epgPtr = 0; epgPtr < g_PVREpgContainer.size(); epgPtr++)
   {
-    CPVRChannel *channel = g_PVREpgContainer.at(epgPtr)->Channel();
+    CPVRChannel *channel = (CPVRChannel *) g_PVREpgContainer.at(epgPtr)->Channel();
     if (channel)
       channel->UpdateEPGPointers();
   }
@@ -88,7 +88,7 @@ int CPVREpgContainer::GetEPGAll(CFileItemList* results, bool bRadio /* = false *
   for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
   {
     CPVREpg *epg = (CPVREpg *) at(iEpgPtr);
-    CPVRChannel *channel = epg->Channel();
+    CPVRChannel *channel = (CPVRChannel *) epg->Channel();
     if (!channel || channel->IsRadio() != bRadio)
       continue;
 

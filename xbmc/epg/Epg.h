@@ -106,19 +106,19 @@ public:
    * @brief The channel this EPG belongs to.
    * @return The channel this EPG belongs to
    */
-  CPVRChannel *Channel(void) const { return m_Channel; }
+  const CPVRChannel *Channel(void) const { return m_Channel; }
 
   /*!
    * @brief Get the name of the scraper to use for this table.
    * @return The name of the scraper to use for this table.
    */
-  CStdString ScraperName(void) const { return m_strScraperName; }
+  const CStdString ScraperName(void) const { return m_strScraperName; }
 
   /*!
    * @brief Get the name of this table.
    * @return The name of this table.
    */
-  CStdString Name(void) const { return m_strName; }
+  const CStdString Name(void) const { return m_strName; }
 
   /*!
    * @brief Get the database ID of this table.
