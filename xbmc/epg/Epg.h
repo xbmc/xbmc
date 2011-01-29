@@ -201,12 +201,6 @@ public:
   virtual bool IsUpdateRunning(void) const { return m_bUpdateRunning; }
 
   /*!
-   * @brief Mark the EPG as being update or no longer being updated.
-   * @param bUpdateRunning The new value.
-   */
-  virtual void SetUpdateRunning(bool bUpdateRunning) { m_bUpdateRunning = bUpdateRunning; }
-
-  /*!
    * @brief Update an entry in this EPG.
    * @param tag The tag to update.
    * @param bUpdateDatabase If set to true, this event will be persisted in the database.

@@ -443,7 +443,7 @@ bool CEpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
   return bReturn;
 }
 
-bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // XXX add locking
+bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */)
 {
   bool bGrabSuccess = true;
 
@@ -452,7 +452,7 @@ bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */) // XXX
   /* mark the EPG as being updated */
   m_bUpdateRunning = true;
 
-  bGrabSuccess = UpdateFromScraper(start, end) || bGrabSuccess;
+  bGrabSuccess = UpdateFromScraper(start, end);
 
   /* store the loaded EPG entries in the database */
   if (bGrabSuccess)
