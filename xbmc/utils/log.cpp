@@ -105,7 +105,7 @@ void CLog::Log(int loglevel, const char *format, ... )
       strData2.Format("Previous line repeats %d times." LINE_ENDING, m_repeatCount);
       fwrite(strPrefix2.c_str(),strPrefix2.size(),1,m_file);
       fwrite(strData2.c_str(),strData2.size(),1,m_file);
-#if !defined(_LINUX) && (defined(_DEBUG) || defined(PROFILE))
+#if (defined(_DEBUG) || defined(PROFILE))
       OutputDebugString(strData2.c_str());
 #endif
       m_repeatCount = 0;
@@ -126,7 +126,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     if (!length)
       return;
 
-#if !defined(_LINUX) && (defined(_DEBUG) || defined(PROFILE))
+#if (defined(_DEBUG) || defined(PROFILE))
     OutputDebugString(strData.c_str());
     OutputDebugString("\n");
 #endif
