@@ -62,9 +62,6 @@ public:
   static void MemDump(char *pData, int length);
   static void DebugLogMemory();
   static bool Init(const char* path);
-#ifdef _WIN32
-  static bool InitW(const char* path);
-#endif
 };
 
 // GL Error checking macro
