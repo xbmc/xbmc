@@ -48,26 +48,35 @@ bool CPVREpg::HasValidEntries(void) const
 
 void CPVREpg::Cleanup(const CDateTime Time)
 {
+  EnterCriticalSection(&m_critSection);
+
   m_bUpdateRunning = true;
   for (unsigned int i = 0; i < size(); i++)
   {
     CPVREpgInfoTag *tag = (CPVREpgInfoTag *) at(i);
     if ( tag && /* valid tag */
-        !tag->HasTimer() && /* no time set */
+        !tag->HasTimer() && /* no timer set */
         (tag->End() + CDateTimeSpan(0, g_PVREpgContainer.m_iLingerTime / 60 + 1, g_PVREpgContainer.m_iLingerTime % 60, 0) < Time)) /* adding one hour for safety */
     {
       DeleteInfoTag(tag);
     }
   }
   m_bUpdateRunning = false;
+
+  LeaveCriticalSection(&m_critSection);
 }
 
-bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = false */)
+bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = false */, bool bEnterCriticalSection /* = true */)
 {
-  if (!data)
-    return false;
+  bool bReturn = false;
 
-  CPVREpgInfoTag *InfoTag = (CPVREpgInfoTag *) this->InfoTag(data->uid, data->starttime);
+  if (!data)
+    return bReturn;
+
+  if (bEnterCriticalSection)
+    EnterCriticalSection(&m_critSection);
+
+  CPVREpgInfoTag *InfoTag = (CPVREpgInfoTag *) this->InfoTag(data->uid, data->starttime, bEnterCriticalSection);
 
   if (InfoTag == NULL)
   {
@@ -76,7 +85,12 @@ bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = fa
     push_back(InfoTag);
   }
 
-  return CEpg::UpdateEntry(*InfoTag, bUpdateDatabase);
+  bReturn = CEpg::UpdateEntry(*InfoTag, bUpdateDatabase, false);
+
+  if (bEnterCriticalSection)
+    LeaveCriticalSection(&m_critSection);
+
+  return bReturn;
 }
 
 bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
@@ -104,7 +118,7 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
   return bGrabSuccess;
 }
 
-bool CPVREpg::LoadFromDb()
+bool CPVREpg::Load()
 {
   /* check if this channel is marked for grabbing */
   if (!m_Channel || !m_Channel->EPGEnabled())
@@ -120,7 +134,7 @@ bool CPVREpg::IsRadio(void) const
 
 bool CPVREpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
 {
-  bool bReturn = CEpg::Update(epg, false);
+  bool bReturn = CEpg::Update(epg, false); // don't update the db yet
 
   m_Channel = epg.m_Channel;
 

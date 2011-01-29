@@ -60,17 +60,23 @@ private:
    */
   bool CreateChannelEpgs(void);
 
-public:
-  /*!
-   * @brief Start the EPG update thread.
-   */
-  void Start();
-
   /*!
    * @brief A hook that will be called by the update thread
    * @param time The start timestamp
    */
   void ProcessHook(const CDateTime &time);
+
+  /*!
+   * @brief Update the last and first EPG date cache after changing or inserting a tag.
+   * @param tag The tag that was changed or added.
+   */
+  void UpdateFirstAndLastEPGDates(const CPVREpgInfoTag &tag);
+
+public:
+  /*!
+   * @brief Start the EPG update thread.
+   */
+  void Start();
 
   /*!
    * @brief Get all EPG tables and apply a filter.
@@ -117,12 +123,6 @@ public:
     * @return The end time.
     */
   CDateTime GetLastEPGDate(bool bRadio = false);
-
-  /*!
-   * @brief Update the last and first EPG date cache after changing or inserting a tag.
-   * @param tag The tag that was changed or added.
-   */
-  void UpdateFirstAndLastEPGDates(const CPVREpgInfoTag &tag);
 };
 
 extern CPVREpgContainer g_PVREpgContainer; /*!< The container for all EPG tables */

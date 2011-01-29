@@ -359,6 +359,12 @@ void CEpgInfoTag::Update(const CEpgInfoTag &tag)
   SetEpisodeName(tag.EpisodeName());
 }
 
+bool CEpgInfoTag::IsActive(void) const
+{
+  CDateTime now = CDateTime::GetCurrentDateTime();
+  return (m_startTime <= now && m_endTime > now);
+}
+
 bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */, bool bLastUpdate /* = false */)
 {
   bool bReturn = false;

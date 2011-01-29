@@ -44,6 +44,7 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = CStdString() */, const CSt
   m_iEpgID         = iEpgID;
   m_strName        = strName;
   m_strScraperName = strScraperName;
+  m_nowActive      = NULL;
   m_Channel        = NULL;
 
   InitializeCriticalSection(&m_critSection);
@@ -94,10 +95,14 @@ bool CEpg::DeleteInfoTag(CEpgInfoTag *tag)
 
 void CEpg::Sort(void)
 {
-  /* no need to sort twice */
-  if (m_bIsSorted) return;
-
   EnterCriticalSection(&m_critSection);
+
+  /* no need to sort twice */
+  if (m_bIsSorted)
+  {
+    LeaveCriticalSection(&m_critSection);
+    return;
+  }
 
   /* sort the EPG */
   sort(begin(), end(), sortEPGbyDate());
@@ -173,18 +178,31 @@ void CEpg::Cleanup(const CDateTime Time)
 const CEpgInfoTag *CEpg::InfoTagNow(void) const
 {
   CEpgInfoTag *returnTag = NULL;
-  CDateTime now = CDateTime::GetCurrentDateTime();
 
-  /* one of the first items will always match */
-  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+  EnterCriticalSection(&((CEpg *) this)->m_critSection);
+
+  if (m_nowActive && m_nowActive->IsActive())
   {
-    CEpgInfoTag *tag = at(iTagPtr);
-    if (tag->Start() <= now && tag->End() > now)
+    returnTag = (CEpgInfoTag *) m_nowActive;
+  }
+  else
+  {
+    CDateTime now = CDateTime::GetCurrentDateTime();
+    /* one of the first items will always match if the list is sorted */
+    ((CEpg *) this)->Sort();
+    for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
     {
-      returnTag = tag;
-      break;
+      CEpgInfoTag *tag = at(iTagPtr);
+      if (tag->Start() <= now && tag->End() > now)
+      {
+        returnTag = tag;
+        m_nowActive = tag;
+        break;
+      }
     }
   }
+
+  LeaveCriticalSection(&((CEpg *) this)->m_critSection);
 
   return returnTag;
 }
@@ -196,9 +214,12 @@ const CEpgInfoTag *CEpg::InfoTagNext(void) const
   return nowTag ? nowTag->GetNextEvent() : NULL;
 }
 
-const CEpgInfoTag *CEpg::InfoTag(long uniqueID, CDateTime StartTime) const
+const CEpgInfoTag *CEpg::InfoTag(long uniqueID, CDateTime StartTime, bool bEnterCriticalSection /* = true */) const
 {
   CEpgInfoTag *returnTag = NULL;
+
+  if (bEnterCriticalSection)
+    EnterCriticalSection(&((CEpg *) this)->m_critSection);
 
   /* try to find the tag by UID */
   if (uniqueID > 0)
@@ -228,12 +249,17 @@ const CEpgInfoTag *CEpg::InfoTag(long uniqueID, CDateTime StartTime) const
     }
   }
 
+  if (bEnterCriticalSection)
+    LeaveCriticalSection(&((CEpg *) this)->m_critSection);
+
   return returnTag;
 }
 
 const CEpgInfoTag *CEpg::InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) const
 {
   CEpgInfoTag *returnTag = NULL;
+
+  EnterCriticalSection(&((CEpg *) this)->m_critSection);
 
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
@@ -245,12 +271,16 @@ const CEpgInfoTag *CEpg::InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) 
     }
   }
 
+  LeaveCriticalSection(&((CEpg *) this)->m_critSection);
+
   return returnTag;
 }
 
 const CEpgInfoTag *CEpg::InfoTagAround(CDateTime Time) const
 {
   CEpgInfoTag *returnTag = NULL;
+
+  EnterCriticalSection(&((CEpg *) this)->m_critSection);
 
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
@@ -262,6 +292,8 @@ const CEpgInfoTag *CEpg::InfoTagAround(CDateTime Time) const
     }
   }
 
+  LeaveCriticalSection(&((CEpg *) this)->m_critSection);
+
   return returnTag;
 }
 
@@ -272,7 +304,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   if (bEnterCriticalSection)
     EnterCriticalSection(&m_critSection);
 
-  CEpgInfoTag *InfoTag = (CEpgInfoTag *) this->InfoTag(tag.UniqueBroadcastID(), tag.Start());
+  CEpgInfoTag *InfoTag = (CEpgInfoTag *) this->InfoTag(tag.UniqueBroadcastID(), tag.Start(), bEnterCriticalSection);
   /* create a new tag if no tag with this ID exists */
   if (!InfoTag)
   {
@@ -324,6 +356,8 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
 
   bReturn = true;
   CEpgInfoTag *previousTag = NULL;
+
+  EnterCriticalSection(&m_critSection);
 
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
@@ -381,6 +415,8 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
     previousTag = at(ptr);
   }
 
+  LeaveCriticalSection(&m_critSection);
+
   return bReturn;
 }
 
@@ -395,7 +431,7 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
   }
   else
   {
-    CLog::Log(LOGINFO, "%s - the database contains no EPG data for table '%d', loading with scraper '%s'",
+    CLog::Log(LOGINFO, "%s - updating EPG table '%d' with scraper '%s'",
         __FUNCTION__, m_iEpgID, m_strScraperName.c_str());
     CLog::Log(LOGERROR, "loading the EPG via scraper has not been implemented yet");
     // TODO: Add Support for Web EPG Scrapers here
@@ -447,8 +483,6 @@ bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */)
 {
   bool bGrabSuccess = true;
 
-  EnterCriticalSection(&m_critSection);
-
   /* mark the EPG as being updated */
   m_bUpdateRunning = true;
 
@@ -465,8 +499,6 @@ bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */)
 
   m_bUpdateRunning = false;
 
-  LeaveCriticalSection(&m_critSection);
-
   return bGrabSuccess;
 }
 
@@ -474,7 +506,7 @@ int CEpg::Get(CFileItemList *results)
 {
   int iInitialSize = results->Size();
 
-  if (!HasValidEntries() || IsUpdateRunning())
+  if (!HasValidEntries() || m_bUpdateRunning)
     return -1;
 
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
@@ -491,7 +523,7 @@ int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter)
 {
   int iInitialSize = results->Size();
 
-  if (!HasValidEntries() || IsUpdateRunning())
+  if (!HasValidEntries() || m_bUpdateRunning)
     return -1;
 
   EnterCriticalSection(&m_critSection);

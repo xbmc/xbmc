@@ -119,6 +119,11 @@ protected:
    */
   virtual bool UpdateEntry(const CEpg &entry, bool bUpdateDatabase = false);
 
+  /*!
+   * @brief A hook that will be called on every update thread iteration.
+   */
+  virtual void ProcessHook(const CDateTime &time) {};
+
 public:
   /*!
    * @brief Load all EPG entries from the database.
@@ -126,11 +131,6 @@ public:
    * @return True if the update was successful, false otherwise.
    */
   virtual bool Load(bool bShowProgress = false);
-
-  /*!
-   * @brief A hook that will be called on every update thread iteration.
-   */
-  virtual void ProcessHook(const CDateTime &time) {};
 
   /*!
    * @brief Get a pointer to the database instance.

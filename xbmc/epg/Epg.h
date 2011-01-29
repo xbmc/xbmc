@@ -40,15 +40,16 @@ class CEpg : public std::vector<CEpgInfoTag*>
   friend class CPVREpg;
 
 private:
-  bool             m_bUpdateRunning; /*!< true if EPG is currently being updated */
-  bool             m_bIsSorted;      /*!< remember if we're sorted or not */
-  CStdString       m_strName;        /*!< the name of this table */
-  CStdString       m_strScraperName; /*!< the name of the scraper to use */
-  int              m_iEpgID;         /*!< the database ID of this table */
+  bool                       m_bUpdateRunning; /*!< true if EPG is currently being updated */
+  bool                       m_bIsSorted;      /*!< remember if we're sorted or not */
+  CStdString                 m_strName;        /*!< the name of this table */
+  CStdString                 m_strScraperName; /*!< the name of the scraper to use */
+  int                        m_iEpgID;         /*!< the database ID of this table */
+  mutable const CEpgInfoTag *m_nowActive;      /*!< the tag that is currently active */
 
-  CRITICAL_SECTION m_critSection;    /*!< critical section for changes in this table */
+  CRITICAL_SECTION           m_critSection;    /*!< critical section for changes in this table */
 
-  CPVRChannel *    m_Channel;        /*!< the channel this EPG belongs to */
+  CPVRChannel *              m_Channel;        /*!< the channel this EPG belongs to */
 
   /*!
    * @brief Update the EPG from a scraper set in the channel tag.
@@ -175,9 +176,10 @@ public:
    *
    * @param uniqueID The unique ID of the event to find.
    * @param StartTime The start time of the event to find if it wasn't found by it's unique ID.
+   * @param bEnterCriticalSection If set to false, don't EnterCriticalSection().
    * @return The found tag or NULL if it wasn't found.
    */
-  virtual const CEpgInfoTag *InfoTag(long uniqueID, CDateTime StartTime) const;
+  virtual const CEpgInfoTag *InfoTag(long uniqueID, CDateTime StartTime, bool bEnterCriticalSection = true) const;
 
   /*!
    * @brief Get the event that occurs at the given time.

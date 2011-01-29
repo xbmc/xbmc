@@ -75,7 +75,13 @@ private:
    */
   CStdString ConvertGenreIdToString(int iID, int iSubID) const;
 
-protected:
+
+  /*!
+   * @brief Hook that is called when the start date changed.
+   * XXX should do this on every change.
+   */
+  virtual void UpdatePath() {}
+
   /*!
    * @brief Change the pointer to the next event.
    * @param event The next event.
@@ -359,12 +365,6 @@ public:
   void SetPath(const CStdString &strFileNameAndPath);
 
   /*!
-   * @brief Hook that is called when the start date changed.
-   * XXX should do this on every change.
-   */
-  virtual void UpdatePath() {}
-
-  /*!
    * @brief Get a pointer to the next event. Set by CEpg in a call to Sort()
    * @return A pointer to the next event or NULL if it's not set.
    */
@@ -381,6 +381,12 @@ public:
    * @param tag The new info.
    */
   virtual void Update(const CEpgInfoTag &tag);
+
+  /*!
+   * @brief Check if this event is currently active.
+   * @return True if it's active, false otherwise.
+   */
+  bool IsActive(void) const;
 
   /*!
    * @brief Persist this tag in the database.
