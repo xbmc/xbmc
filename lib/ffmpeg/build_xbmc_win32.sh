@@ -1,4 +1,5 @@
-#!/bin/bash 
+#!/bin/bash
+
 if [ -d .libs ]
 then
 rm -r .libs
@@ -16,7 +17,6 @@ OPTIONS="
 --enable-w32threads \
 --enable-postproc \
 --enable-zlib \
---enable-libfaad \
 --disable-static \
 --disable-altivec \
 --disable-muxers \
@@ -34,7 +34,7 @@ OPTIONS="
 --enable-runtime-cpudetect \
 --disable-debug"
 
-./configure --extra-cflags="-fno-common -I../libfaad2/include -Iinclude/dxva2" --extra-ldflags="-L../../../../../system/players/dvdplayer" ${OPTIONS} &&
+./configure --extra-cflags="-fno-common -Iinclude/dxva2" --extra-ldflags="-L../../../../../system/players/dvdplayer" ${OPTIONS} &&
  
 make -j3 && 
 mkdir .libs &&
@@ -46,4 +46,3 @@ cp .libs/avutil-50.dll ../../../../../system/players/dvdplayer/ &&
 cp .libs/postproc-51.dll ../../../../../system/players/dvdplayer/ &&
 cp .libs/swscale-0.6.1.dll ../../../../../system/players/dvdplayer/ &&
 cp libavutil/avconfig.h include/libavutil/
-
