@@ -40,6 +40,12 @@ private:
    */
   bool UpdateFromScraper(time_t start, time_t end);
 
+  /*!
+   * @brief Create a new tag.
+   * @return The new tag.
+   */
+  CEpgInfoTag *CreateTag(void);
+
 protected:
   /*!
    * @brief Update this table's info with the given info. Doesn't change the EpgID.
@@ -89,4 +95,10 @@ public:
    * @return True if this is a table for a radio channel, false if it's for TV.
    */
   bool IsRadio(void) const;
+
+  /*!
+   * @brief Get the event that is occurring now.
+   * @return The current event.
+   */
+  const CEpgInfoTag *InfoTagNow(void) const;
 };

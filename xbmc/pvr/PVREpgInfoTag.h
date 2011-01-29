@@ -42,7 +42,7 @@ public:
   /*!
    * @brief Create a new empty EPG infotag.
    */
-  CPVREpgInfoTag(void) {};
+  CPVREpgInfoTag(void) { Reset(); };
 
   /*!
    * @brief Create a new EPG infotag with 'data' as content.

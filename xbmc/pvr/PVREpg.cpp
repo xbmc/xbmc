@@ -135,3 +135,21 @@ bool CPVREpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
 
   return bReturn;
 }
+
+CEpgInfoTag *CPVREpg::CreateTag(void)
+{
+  CEpgInfoTag *newTag = new CPVREpgInfoTag();
+  if (!newTag)
+  {
+    CLog::Log(LOGERROR, "PVREPG - %s - couldn't create new infotag",
+        __FUNCTION__);
+  }
+
+  return newTag;
+}
+
+const CEpgInfoTag *CPVREpg::InfoTagNow(void) const
+{
+  return (CPVREpgInfoTag *) CEpg::InfoTagNow();
+}
+

@@ -180,15 +180,11 @@ void CEpg::Cleanup(const CDateTime Time)
 
 const CEpgInfoTag *CEpg::InfoTagNow(void) const
 {
-  CEpgInfoTag *returnTag = NULL;
+  const CEpgInfoTag *returnTag = NULL;
 
   EnterCriticalSection(&((CEpg *) this)->m_critSection);
 
-  if (m_nowActive && m_nowActive->IsActive())
-  {
-    returnTag = (CEpgInfoTag *) m_nowActive;
-  }
-  else
+  if (!m_nowActive || !m_nowActive->IsActive())
   {
     CDateTime now = CDateTime::GetCurrentDateTime();
     /* one of the first items will always match if the list is sorted */
@@ -198,12 +194,13 @@ const CEpgInfoTag *CEpg::InfoTagNow(void) const
       CEpgInfoTag *tag = at(iTagPtr);
       if (tag->Start() <= now && tag->End() > now)
       {
-        returnTag = tag;
         m_nowActive = tag;
         break;
       }
     }
   }
+
+  returnTag = m_nowActive;
 
   LeaveCriticalSection(&((CEpg *) this)->m_critSection);
 
@@ -311,12 +308,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   /* create a new tag if no tag with this ID exists */
   if (!InfoTag)
   {
-    InfoTag = new CEpgInfoTag();
-    if (!InfoTag)
-    {
-      CLog::Log(LOGERROR, "EPG - %s - couldn't create new infotag", __FUNCTION__);
-      return bReturn;
-    }
+    InfoTag = CreateTag();
     push_back(InfoTag);
   }
 
@@ -395,12 +387,16 @@ int CEpg::Get(CFileItemList *results) const
   if (!HasValidEntries() || m_bUpdateRunning)
     return -1;
 
+  EnterCriticalSection(&((CEpg *) this)->m_critSection);
+
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
     CFileItemPtr entry(new CFileItem(*at(iTagPtr)));
     entry->SetLabel2(at(iTagPtr)->Start().GetAsLocalizedDateTime(false, false));
     results->Add(entry);
   }
+
+  LeaveCriticalSection(&((CEpg *) this)->m_critSection);
 
   return size() - iInitialSize;
 }
@@ -601,6 +597,18 @@ bool CEpg::PersistTags(void)
   bReturn = database->CommitInsertQueries();
 
   return bReturn;
+}
+
+CEpgInfoTag *CEpg::CreateTag(void)
+{
+  CEpgInfoTag *newTag = new CEpgInfoTag();
+  if (!newTag)
+  {
+    CLog::Log(LOGERROR, "EPG - %s - couldn't create new infotag",
+        __FUNCTION__);
+  }
+
+  return newTag;
 }
 
 //@}

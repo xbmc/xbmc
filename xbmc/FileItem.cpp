@@ -150,6 +150,8 @@ CFileItem::CFileItem(const CPVREpgInfoTag& tag)
   m_bIsFolder = false;
   *GetEPGInfoTag() = tag;
   *GetPVRChannelInfoTag() = *tag.ChannelTag();
+  if (tag.Timer())
+    *GetPVRTimerInfoTag() = *tag.Timer();
   SetLabel(tag.Title());
   SetThumbnailImage(tag.Icon());
   m_strLabel2 = tag.Plot();

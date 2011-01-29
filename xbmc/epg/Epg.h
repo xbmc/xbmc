@@ -73,6 +73,12 @@ private:
    */
   virtual bool FixOverlappingEvents(bool bStore = true);
 
+  /*!
+   * @brief Create a new tag.
+   * @return The new tag.
+   */
+  virtual CEpgInfoTag *CreateTag(void);
+
 protected:
   /*!
    * @brief Update this table's info with the given info. Doesn't change the EpgID.
