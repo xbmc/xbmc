@@ -40,38 +40,37 @@ private:
   /*! @name XBMC related channel data
    */
   //@{
-  long                           m_iChannelId;              /*!< the identifier given to this channel by the TV database */
-  int                            m_iChannelNumber;          /*!< the channel number used by XBMC */
-  int                            m_iChannelGroupId;         /*!< the identifier of the group where this channel belongs to */
-  bool                           m_bIsRadio;                /*!< true if this channel is a radio channel, false if not */
-  bool                           m_bIsHidden;               /*!< true if this channel is hidden, false if not */
-  bool                           m_bClientIsRecording;      /*!< true if a recording is currently running on this channel, false if not */
-  CStdString                     m_strIconPath;             /*!< the path to the icon for this channel */
-  CStdString                     m_strChannelName;          /*!< the name for this channel used by XBMC */
-  bool                           m_bIsVirtual;              /*!< true if this channel is marked as virtual, false if not */
+  long       m_iChannelId;              /*!< the identifier given to this channel by the TV database */
+  int        m_iChannelNumber;          /*!< the channel number used by XBMC */
+  int        m_iChannelGroupId;         /*!< the identifier of the group where this channel belongs to */
+  bool       m_bIsRadio;                /*!< true if this channel is a radio channel, false if not */
+  bool       m_bIsHidden;               /*!< true if this channel is hidden, false if not */
+  bool       m_bClientIsRecording;      /*!< true if a recording is currently running on this channel, false if not */
+  CStdString m_strIconPath;             /*!< the path to the icon for this channel */
+  CStdString m_strChannelName;          /*!< the name for this channel used by XBMC */
+  bool       m_bIsVirtual;              /*!< true if this channel is marked as virtual, false if not */
   //@}
 
   /*! @name EPG related channel data
    */
   //@{
-  CPVREpg *                      m_EPG;                     /*!< the EPG table for this channel */
-  mutable const CPVREpgInfoTag * m_EPGNow;                  /*!< the EPG tag that is active on this channel now */
-  bool                           m_bEPGEnabled;             /*!< don't use an EPG for this channel if set to false */
-  CStdString                     m_strEPGScraper;           /*!< the name of the scraper to be used for this channel */
+  CPVREpg *  m_EPG;                     /*!< the EPG table for this channel */
+  bool       m_bEPGEnabled;             /*!< don't use an EPG for this channel if set to false */
+  CStdString m_strEPGScraper;           /*!< the name of the scraper to be used for this channel */
   //@}
 
   /*! @name Client related channel data
    */
   //@{
-  int                            m_iUniqueId;               /*!< the unique identifier for this channel */
-  int                            m_iClientId;               /*!< the identifier of the client that serves this channel */
-  int                            m_iClientChannelNumber;    /*!< the channel number on the client */
-  CStdString                     m_strClientChannelName;    /*!< the name of this channel on the client */
-  CStdString                     m_strInputFormat;          /*!< the stream input type based on ffmpeg/libavformat/allformats.c */
-  CStdString                     m_strStreamURL;            /*!< URL of the stream. Use the client to read stream if this is empty */
-  CStdString                     m_strFileNameAndPath;      /*!< the filename to be used by PVRManager to open and read the stream */
-  int                            m_iClientEncryptionSystem; /*!< the encryption system used by this channel. 0 for FreeToAir, -1 for unknown */
-  CStdString                     m_strClientEncryptionName; /*!< the name of the encryption system used by this channel */
+  int        m_iUniqueId;               /*!< the unique identifier for this channel */
+  int        m_iClientId;               /*!< the identifier of the client that serves this channel */
+  int        m_iClientChannelNumber;    /*!< the channel number on the client */
+  CStdString m_strClientChannelName;    /*!< the name of this channel on the client */
+  CStdString m_strInputFormat;          /*!< the stream input type based on ffmpeg/libavformat/allformats.c */
+  CStdString m_strStreamURL;            /*!< URL of the stream. Use the client to read stream if this is empty */
+  CStdString m_strFileNameAndPath;      /*!< the filename to be used by PVRManager to open and read the stream */
+  int        m_iClientEncryptionSystem; /*!< the encryption system used by this channel. 0 for FreeToAir, -1 for unknown */
+  CStdString m_strClientEncryptionName; /*!< the name of the encryption system used by this channel */
   //@}
 
 public:
@@ -495,10 +494,5 @@ public:
    */
   bool SetEPGScraper(const CStdString &strScraper, bool bSaveInDb = false);
 
-private:
-  /*!
-   * @brief Update the EPG "now" and "next" pointers.
-   */
-  void UpdateEPGPointers();
   //@}
 };

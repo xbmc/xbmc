@@ -25,8 +25,6 @@
 #include "PVREpg.h"
 #include "PVREpgSearchFilter.h"
 
-#define NOWPLAYINGUPDATEINTERVAL 30  /* update "now playing" tags every 30 seconds */
-
 class CPVREpgContainer : public CEpgContainer
 {
   friend class CPVREpg;
@@ -40,25 +38,11 @@ private:
   CDateTime m_TVLast;             /*!< the latest EPG TV date in our tables */
   //@}
 
-  time_t    m_iLastPointerUpdate; /*!< the time the EPG "now playing" pointers were updated */
-
-  /*!
-   * @brief Update the EPG "now playing" pointers for all channels.
-   * @return True if the pointers were updated successfully, false otherwise.
-   */
-  bool UpdateAllChannelEPGPointers();
-
   /*!
    * @brief Create an EPG table for each channel.
    * @return True if all tables were created successfully, false otherwise.
    */
   bool CreateChannelEpgs(void);
-
-  /*!
-   * @brief A hook that will be called by the update thread
-   * @param time The start timestamp
-   */
-  void ProcessHook(const CDateTime &time);
 
   /*!
    * @brief Update the last and first EPG date cache after changing or inserting a tag.

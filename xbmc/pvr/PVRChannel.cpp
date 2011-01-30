@@ -79,7 +79,6 @@ CPVRChannel::CPVRChannel()
   m_bIsVirtual              = false;
 
   m_EPG                     = NULL;
-  m_EPGNow                  = NULL;
   m_bEPGEnabled             = true;
   m_strEPGScraper           = "client";
 
@@ -642,32 +641,30 @@ int CPVRChannel::GetEPG(CFileItemList *results)
 
 bool CPVRChannel::ClearEPG()
 {
-  if (m_EPG != NULL)
-  {
+  if (m_EPG)
     GetEPG()->Clear();
-    m_EPGNow = NULL;
-  }
 
   return true;
 }
 
 const CPVREpgInfoTag* CPVRChannel::GetEPGNow(void) const
 {
-  if (m_bIsHidden || !m_bEPGEnabled || m_EPGNow == NULL)
-    return m_EmptyEpgInfoTag;
+  const CPVREpgInfoTag *tag = NULL;
 
-  return m_EPGNow;
+  if (!m_bIsHidden && m_bEPGEnabled && m_EPG)
+    tag = (CPVREpgInfoTag *) m_EPG->InfoTagNow();
+
+  return !tag ? m_EmptyEpgInfoTag : tag;
 }
 
 const CPVREpgInfoTag* CPVRChannel::GetEPGNext(void) const
 {
-  if (m_bIsHidden || !m_bEPGEnabled || m_EPGNow == NULL)
-    return m_EmptyEpgInfoTag;
+  const CPVREpgInfoTag *tag = NULL;
 
-  const CPVREpgInfoTag *nextTag = (CPVREpgInfoTag*) m_EPGNow->GetNextEvent();
-  return nextTag == NULL ?
-      m_EmptyEpgInfoTag :
-      nextTag;
+  if (!m_bIsHidden && m_bEPGEnabled && m_EPG)
+    tag = (CPVREpgInfoTag *) m_EPG->InfoTagNext();
+
+  return !tag ? m_EmptyEpgInfoTag : tag;
 }
 
 bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled /* = true */, bool bSaveInDb /* = false */)
@@ -718,38 +715,4 @@ bool CPVRChannel::SetEPGScraper(const CStdString &strScraper, bool bSaveInDb /* 
   }
 
   return bReturn;
-}
-
-void CPVRChannel::UpdateEPGPointers(void)
-{
-  if (m_bIsHidden || !m_bEPGEnabled || m_iChannelId == 0 || m_iChannelNumber == 0)
-    return;
-
-  CPVREpg *epg = GetEPG();
-
-  if (!epg)
-  {
-    CLog::Log(LOGDEBUG, "PVR - %s - could not get EPG reference", __FUNCTION__);
-    return;
-  }
-
-  if (!epg->IsUpdateRunning() &&
-      (m_EPGNow == NULL ||
-       m_EPGNow->End() <= CDateTime::GetCurrentDateTime()))
-  {
-    SetChanged();
-    m_EPGNow  = (CPVREpgInfoTag*) epg->InfoTagNow();
-    if (m_EPGNow)
-    {
-      CLog::Log(LOGDEBUG, "%s - EPG now pointer for channel '%s' updated to '%s'",
-          __FUNCTION__, m_strChannelName.c_str(), m_EPGNow->Title().c_str());
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "%s - no EPG now pointer for channel '%s'",
-          __FUNCTION__, m_strChannelName.c_str());
-    }
-  }
-
-  NotifyObservers("epg");
 }

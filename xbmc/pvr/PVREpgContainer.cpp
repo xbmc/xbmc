@@ -46,26 +46,6 @@ void CPVREpgContainer::Start()
   CEpgContainer::Start();
 }
 
-void CPVREpgContainer::ProcessHook(const CDateTime &time)
-{
-  if (!m_bStop && time > m_iLastPointerUpdate + NOWPLAYINGUPDATEINTERVAL)
-    UpdateAllChannelEPGPointers();
-}
-
-bool CPVREpgContainer::UpdateAllChannelEPGPointers()
-{
-  for (unsigned int epgPtr = 0; epgPtr < g_PVREpgContainer.size(); epgPtr++)
-  {
-    CPVRChannel *channel = (CPVRChannel *) g_PVREpgContainer.at(epgPtr)->Channel();
-    if (channel)
-      channel->UpdateEPGPointers();
-  }
-
-  CDateTime::GetCurrentDateTime().GetAsTime(m_iLastPointerUpdate);
-
-  return true;
-}
-
 bool CPVREpgContainer::CreateChannelEpgs(void)
 {
   for (int radio = 0; radio <= 1; radio++)
