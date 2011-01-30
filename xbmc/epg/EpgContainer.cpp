@@ -247,6 +247,7 @@ bool CEpgContainer::Load(bool bShowProgress /* = false */)
     return m_bDatabaseLoaded;
 
   bool bReturn = false;
+  bool bUpdate = false;
 
   /* show the progress bar */
   CGUIDialogPVRUpdateProgressBar *scanner = NULL;
@@ -267,12 +268,18 @@ bool CEpgContainer::Load(bool bShowProgress /* = false */)
   /* load all EPG tables */
   m_database.Get(this);
 
+  /* create tables for channels that don't have a table yet */
+  AutoCreateTablesHook();
+
   /* load all entries in the EPG tables */
   unsigned int iSize = size();
   for (unsigned int iEpgPtr = 0; iEpgPtr < iSize; iEpgPtr++)
   {
     CEpg *epg = at(iEpgPtr);
-    bReturn = epg->Load() || bReturn;
+    if (epg->Load())
+      bReturn = true;
+    else
+      bUpdate = true;
 
     if (bShowProgress)
     {
@@ -288,6 +295,10 @@ bool CEpgContainer::Load(bool bShowProgress /* = false */)
 
   if (bShowProgress)
     scanner->Close();
+
+  /* one or more tables couldn't be loaded. force an update */
+  if (bUpdate)
+    UpdateEPG(bShowProgress);
 
   /* only try to load the database once */
   m_bDatabaseLoaded = true;

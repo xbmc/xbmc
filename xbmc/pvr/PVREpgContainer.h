@@ -66,6 +66,12 @@ private:
    */
   void UpdateFirstAndLastEPGDates(const CPVREpgInfoTag &tag);
 
+  /*!
+   * @brief A hook that is called after the tables have been loaded from the database.
+   * @return True if the hook was executed successfully, false otherwise.
+   */
+  bool AutoCreateTablesHook(void);
+
 public:
   /*!
    * @brief Start the EPG update thread.

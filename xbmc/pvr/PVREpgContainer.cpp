@@ -43,7 +43,6 @@ void CPVREpgContainer::Start()
   /* make sure the EPG is loaded before starting the thread */
   Load(true /* show progress */);
 
-  CreateChannelEpgs();
   CEpgContainer::Start();
 }
 
@@ -119,6 +118,11 @@ void CPVREpgContainer::UpdateFirstAndLastEPGDates(const CPVREpgInfoTag &tag)
     if (tag.End() > m_Last)
       m_TVLast = tag.End();
   }
+}
+
+bool CPVREpgContainer::AutoCreateTablesHook(void)
+{
+  return CreateChannelEpgs();
 }
 
 const CDateTime &CPVREpgContainer::GetFirstEPGDate(bool bRadio /* = false */)

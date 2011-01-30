@@ -549,6 +549,8 @@ bool CPVRChannelGroup::PersistChannels(void)
   /* refresh the channel list if needed */
   if (bRefreshChannelList)
   {
+    CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - reloading the channels list to get channel IDs",
+        __FUNCTION__);
     Unload();
     bReturn = LoadFromDb(true) > 0;
   }

@@ -237,15 +237,21 @@ int CPVRChannelGroupInternal::LoadFromClients(bool bAddToDb /* = true */)
   int iReturn = -1;
   int iCurSize = size();
 
+  /* no channels returned */
   if (GetFromClients() == -1)
     return iReturn;
 
+  /* sort by client channel number if this is the first time */
   if (iCurSize == 0)
     SortByClientChannelNumber();
 
+  /* remove invalid channels and set channel numbers */
   ReNumberAndCheck();
+
+  /* try to find channel icons */
   SearchAndSetChannelIcons();
 
+  /* persist */
   if (bAddToDb)
     PersistChannels();
 

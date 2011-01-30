@@ -496,6 +496,7 @@ bool CPVRChannel::SetEncryptionSystem(int iClientEncryptionSystem, bool bSaveInD
   {
     /* update the client encryption system */
     m_iClientEncryptionSystem = iClientEncryptionSystem;
+    UpdateEncryptionName();
     SetChanged();
 
     /* persist the changes */
@@ -508,7 +509,7 @@ bool CPVRChannel::SetEncryptionSystem(int iClientEncryptionSystem, bool bSaveInD
   return bReturn;
 }
 
-const CStdString &CPVRChannel::EncryptionName() const
+void CPVRChannel::UpdateEncryptionName(void)
 {
   // http://www.dvb.org/index.php?id=174
   // http://en.wikipedia.org/wiki/Conditional_access_system
@@ -608,7 +609,7 @@ const CStdString &CPVRChannel::EncryptionName() const
   else
     strName.Format("%s (%X)", g_localizeStrings.Get(19499).c_str(), m_iClientEncryptionSystem); /* Unknown */
 
-  return strName;
+  m_strClientEncryptionName = strName;
 }
 
 /********** EPG methods **********/

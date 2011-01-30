@@ -71,6 +71,7 @@ private:
   CStdString                     m_strStreamURL;            /*!< URL of the stream. Use the client to read stream if this is empty */
   CStdString                     m_strFileNameAndPath;      /*!< the filename to be used by PVRManager to open and read the stream */
   int                            m_iClientEncryptionSystem; /*!< the encryption system used by this channel. 0 for FreeToAir, -1 for unknown */
+  CStdString                     m_strClientEncryptionName; /*!< the name of the encryption system used by this channel */
   //@}
 
 public:
@@ -366,6 +367,11 @@ private:
    */
   void UpdatePath(void);
 
+  /*!
+   * @brief Update the encryption name after SetEncryptionSystem() has been called.
+   */
+  void UpdateEncryptionName(void);
+
 public:
   /*!
    * @brief Return true if this channel is encrypted.
@@ -399,7 +405,7 @@ public:
   /*!
    * @return A friendly name for the used encryption system.
    */
-  const CStdString &EncryptionName() const;
+  const CStdString &EncryptionName() const { return m_strClientEncryptionName; }
   //@}
 
   /*! @name EPG methods
