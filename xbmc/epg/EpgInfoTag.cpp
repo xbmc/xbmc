@@ -73,15 +73,11 @@ int CEpgInfoTag::GetDuration() const
 
 const CEpgInfoTag *CEpgInfoTag::GetNextEvent() const
 {
-  m_Epg->Sort();
-
   return m_nextEvent;
 }
 
 const CEpgInfoTag *CEpgInfoTag::GetPreviousEvent() const
 {
-  m_Epg->Sort();
-
   return m_previousEvent;
 }
 

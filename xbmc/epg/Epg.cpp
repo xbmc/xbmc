@@ -40,7 +40,6 @@ struct sortEPGbyDate
 CEpg::CEpg(int iEpgID, const CStdString &strName /* = CStdString() */, const CStdString &strScraperName /* = CStdString() */)
 {
   m_bUpdateRunning = false;
-  m_bIsSorted      = false;
   m_iEpgID         = iEpgID;
   m_strName        = strName;
   m_strScraperName = strScraperName;
@@ -53,6 +52,7 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = CStdString() */, const CSt
 CEpg::~CEpg(void)
 {
   Clear();
+
   DeleteCriticalSection(&m_critSection);
 }
 
@@ -61,8 +61,6 @@ CEpg::~CEpg(void)
 
 bool CEpg::HasValidEntries(void) const
 {
-  ((CEpg *) this)->Sort();
-
   return (m_iEpgID > 0 && /* valid EPG ID */
           size() > 0 && /* contains at least 1 tag */
           at(size()-1)->m_endTime >= CDateTime::GetCurrentDateTime()); /* the last end time hasn't passed yet */
@@ -79,13 +77,20 @@ bool CEpg::DeleteInfoTag(CEpgInfoTag *tag)
   EnterCriticalSection(&m_critSection);
 
   /* remove the tag */
-  for (unsigned int i = 0; i < size(); i++)
+  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
-    CEpgInfoTag *entry = at(i);
+    CEpgInfoTag *entry = at(iTagPtr);
     if (entry == tag)
     {
-      erase(begin()+i);
-      m_bIsSorted = false;
+      /* fix previous and next pointers */
+      const CEpgInfoTag *previousTag = (iTagPtr > 0) ? at(iTagPtr - 1) : NULL;
+      const CEpgInfoTag *nextTag = (iTagPtr < size() - 2) ? at(iTagPtr + 1) : NULL;
+      if (previousTag)
+        previousTag->m_nextEvent = nextTag;
+      if (nextTag)
+        nextTag->m_previousEvent = previousTag;
+
+      erase(begin() + iTagPtr);
       bReturn = true;
       break;
     }
@@ -98,15 +103,6 @@ bool CEpg::DeleteInfoTag(CEpgInfoTag *tag)
 
 void CEpg::Sort(void)
 {
-  EnterCriticalSection(&m_critSection);
-
-  /* no need to sort twice */
-  if (m_bIsSorted)
-  {
-    LeaveCriticalSection(&m_critSection);
-    return;
-  }
-
   /* sort the EPG */
   sort(begin(), end(), sortEPGbyDate());
 
@@ -133,9 +129,6 @@ void CEpg::Sort(void)
       tag->SetNextEvent(NULL);
     }
   }
-  m_bIsSorted = true;
-
-  LeaveCriticalSection(&m_critSection);
 }
 
 void CEpg::Clear(void)
@@ -188,7 +181,6 @@ const CEpgInfoTag *CEpg::InfoTagNow(void) const
   {
     CDateTime now = CDateTime::GetCurrentDateTime();
     /* one of the first items will always match if the list is sorted */
-    ((CEpg *) this)->Sort();
     for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
     {
       CEpgInfoTag *tag = at(iTagPtr);
@@ -318,7 +310,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   /* update the cached first and last date in the table */
   g_EpgContainer.UpdateFirstAndLastEPGDates(*InfoTag);
 
-  m_bIsSorted = false;
+  Sort();
 
   if (bEnterCriticalSection)
     LeaveCriticalSection(&m_critSection);
@@ -352,6 +344,8 @@ bool CEpg::Load()
   /* request the entries for this table from the database */
   bReturn = (database->Get(this) > 0);
 
+  Sort();
+
   LeaveCriticalSection(&m_critSection);
 
   return bReturn;
@@ -374,6 +368,8 @@ bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */)
     if (bStoreInDb)
       Persist(true);
   }
+
+  Sort();
 
   m_bUpdateRunning = false;
 
@@ -490,8 +486,6 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
       return bReturn;
     }
   }
-
-  Sort();
 
   bReturn = true;
   CEpgInfoTag *previousTag = NULL;

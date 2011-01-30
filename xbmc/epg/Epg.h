@@ -41,7 +41,6 @@ class CEpg : public std::vector<CEpgInfoTag*>
 
 private:
   bool                       m_bUpdateRunning; /*!< true if EPG is currently being updated */
-  bool                       m_bIsSorted;      /*!< remember if we're sorted or not */
   CStdString                 m_strName;        /*!< the name of this table */
   CStdString                 m_strScraperName; /*!< the name of the scraper to use */
   int                        m_iEpgID;         /*!< the database ID of this table */
@@ -78,6 +77,11 @@ private:
    * @return The new tag.
    */
   virtual CEpgInfoTag *CreateTag(void);
+
+  /*!
+   * @brief Sort all entries in this EPG by date.
+   */
+  virtual void Sort(void);
 
 protected:
   /*!
@@ -156,11 +160,6 @@ public:
    * @brief Remove all entries from this EPG.
    */
   virtual void Clear(void);
-
-  /*!
-   * @brief Sort all entries in this EPG by date.
-   */
-  virtual void Sort(void);
 
   /*!
    * @brief Get the event that is occurring now.
