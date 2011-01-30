@@ -147,9 +147,3 @@ CEpgInfoTag *CPVREpg::CreateTag(void)
 
   return newTag;
 }
-
-const CEpgInfoTag *CPVREpg::InfoTagNow(void) const
-{
-  return (CPVREpgInfoTag *) CEpg::InfoTagNow();
-}
-
