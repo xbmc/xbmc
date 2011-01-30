@@ -108,7 +108,7 @@ bool CPVRChannel::Delete(void)
     delete m_EPG;
   }
 
-  bReturn = database->DeleteChannel(*this);
+  bReturn = database->Delete(*this);
 
   database->Close();
 

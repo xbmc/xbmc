@@ -88,7 +88,7 @@ public:
    * @param channel The channel to remove.
    * @return True if the channel was removed, false otherwise.
    */
-  bool DeleteChannel(const CPVRChannel &channel);
+  bool Delete(const CPVRChannel &channel);
 
   /*!
    * @brief Get the list of channels from the database

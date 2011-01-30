@@ -73,7 +73,7 @@ public:
    *        and that have no timers set.
    * @param Time Delete entries with an end time before this time.
    */
-  void Cleanup(const CDateTime Time);
+  void Cleanup(const CDateTime &Time);
 
   /*!
    * @brief Update an entry in this EPG.

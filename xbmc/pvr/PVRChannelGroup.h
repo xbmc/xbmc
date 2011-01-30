@@ -130,7 +130,7 @@ public:
    * @brief Create a new channel group.
    * @param bRadio True if this group holds radio channels.
    */
-  CPVRChannelGroup(bool bRadio) { m_bRadio = bRadio; }
+  CPVRChannelGroup(bool bRadio);
 
   /*!
    * @brief Destruct this channel group.

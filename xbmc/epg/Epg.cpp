@@ -160,7 +160,7 @@ void CEpg::Cleanup(void)
   Cleanup(CDateTime::GetCurrentDateTime());
 }
 
-void CEpg::Cleanup(const CDateTime Time)
+void CEpg::Cleanup(const CDateTime &Time)
 {
   CSingleLock lock(m_critSection);
 

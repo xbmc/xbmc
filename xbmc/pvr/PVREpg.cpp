@@ -42,7 +42,7 @@ bool CPVREpg::HasValidEntries(void) const
   return m_Channel->ChannelID() > 0 && CEpg::HasValidEntries();
 }
 
-void CPVREpg::Cleanup(const CDateTime Time)
+void CPVREpg::Cleanup(const CDateTime &Time)
 {
   CSingleLock lock(m_critSection);
 

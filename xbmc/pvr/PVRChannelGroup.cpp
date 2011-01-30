@@ -40,11 +40,20 @@ using namespace MUSIC_INFO;
 
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder)
 {
-  m_bRadio          = bRadio;
-  m_bIsSorted       = false;
-  m_iGroupId        = iGroupId;
-  m_strGroupName    = strGroupName;
-  m_iSortOrder      = iSortOrder;
+  m_bRadio       = bRadio;
+  m_bIsSorted    = false;
+  m_iGroupId     = iGroupId;
+  m_strGroupName = strGroupName;
+  m_iSortOrder   = iSortOrder;
+}
+
+CPVRChannelGroup::CPVRChannelGroup(bool bRadio)
+{
+  m_bRadio       = bRadio;
+  m_bIsSorted    = false;
+  m_iGroupId     = -1;
+  m_strGroupName = NULL;
+  m_iSortOrder   = -1;
 }
 
 CPVRChannelGroup::~CPVRChannelGroup(void)

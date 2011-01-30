@@ -166,7 +166,7 @@ public:
    *        and that have no timers set.
    * @param Time Delete entries with an end time before this time.
    */
-  virtual void Cleanup(const CDateTime Time);
+  virtual void Cleanup(const CDateTime &Time);
 
   /*!
    * @brief Remove all entries from this EPG that finished before the given time

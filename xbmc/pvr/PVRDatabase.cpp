@@ -267,7 +267,7 @@ long CPVRDatabase::Persist(const CPVRChannel &channel, bool bQueueWrite /* = fal
   return iReturn;
 }
 
-bool CPVRDatabase::DeleteChannel(const CPVRChannel &channel)
+bool CPVRDatabase::Delete(const CPVRChannel &channel)
 {
   /* invalid channel */
   if (channel.ChannelID() <= 0)
