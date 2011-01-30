@@ -79,8 +79,6 @@ void CLog::Log(int loglevel, const char *format, ... )
 
     CStdString strPrefix, strData;
 
-    strPrefix.Format(prefixFormat, time.wHour, time.wMinute, time.wSecond, (uint64_t)CThread::GetCurrentThreadId(), (uint64_t)stat.dwAvailPhys, levelNames[loglevel]);
-
     strData.reserve(16384);
     va_list va;
     va_start(va, format);
@@ -94,12 +92,12 @@ void CLog::Log(int loglevel, const char *format, ... )
     }
     else if (m_repeatCount)
     {
-      CStdString strPrefix2, strData2;
-      strPrefix2.Format(prefixFormat, time.wHour, time.wMinute, time.wSecond, (uint64_t)CThread::GetCurrentThreadId(), (uint64_t)stat.dwAvailPhys, levelNames[m_repeatLogLevel]);
+      CStdString strData2;
+      strPrefix.Format(prefixFormat, time.wHour, time.wMinute, time.wSecond, (uint64_t)CThread::GetCurrentThreadId(), (uint64_t)stat.dwAvailPhys, levelNames[m_repeatLogLevel]);
 
       strData2.Format("Previous line repeats %d times." LINE_ENDING, m_repeatCount);
       OutputDebugString(strData2);
-      fputs(strPrefix2.c_str(), m_file);
+      fputs(strPrefix.c_str(), m_file);
       fputs(strData2.c_str(), m_file);
       m_repeatCount = 0;
     }
@@ -124,6 +122,8 @@ void CLog::Log(int loglevel, const char *format, ... )
     /* fixup newline alignment, number of spaces should equal prefix length */
     strData.Replace("\n", LINE_ENDING"                                            ");
     strData += LINE_ENDING;
+
+    strPrefix.Format(prefixFormat, time.wHour, time.wMinute, time.wSecond, (uint64_t)CThread::GetCurrentThreadId(), (uint64_t)stat.dwAvailPhys, levelNames[loglevel]);
 
     fputs(strPrefix.c_str(), m_file);
     fputs(strData.c_str(), m_file);
