@@ -119,6 +119,7 @@ void CEpgContainer::Notify(const Observable &obs, const CStdString& msg)
 
 void CEpgContainer::Process(void)
 {
+  bool bFirstUpdate    = true;
   time_t iNow          = 0;
   m_iLastEpgCleanup    = 0;
   m_iLastEpgUpdate     = 0;
@@ -142,7 +143,11 @@ void CEpgContainer::Process(void)
 
     /* update the EPG */
     if (!m_bStop && (iNow > m_iLastEpgUpdate + m_iUpdateTime || !m_bDatabaseLoaded))
-      UpdateEPG(!m_bDatabaseLoaded);
+    {
+      UpdateEPG(bFirstUpdate);
+      if (bFirstUpdate)
+        bFirstUpdate = false;
+    }
 
     /* clean up old entries */
     if (!m_bStop && iNow > m_iLastEpgCleanup + EPGCLEANUPINTERVAL)
