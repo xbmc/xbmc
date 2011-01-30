@@ -28,11 +28,12 @@
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
+#include "utils/StdString.h"
 
 FILE*       CLog::m_file            = NULL;
 int         CLog::m_repeatCount     = 0;
 int         CLog::m_repeatLogLevel  = -1;
-CStdString* CLog::m_repeatLine      = NULL;
+std::string CLog::m_repeatLine;
 int         CLog::m_logLevel        = LOG_LEVEL_DEBUG;
 
 static CCriticalSection critSec;
@@ -54,8 +55,7 @@ void CLog::Close()
     fclose(m_file);
     m_file = NULL;
   }
-  delete m_repeatLine;
-  m_repeatLine = NULL;
+  m_repeatLine.clear();
 }
 
 
@@ -84,7 +84,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     strData.FormatV(format,va);
     va_end(va);
 
-    if (m_repeatLogLevel == loglevel && *m_repeatLine == strData)
+    if (m_repeatLogLevel == loglevel && m_repeatLine == strData)
     {
       m_repeatCount++;
       return;
@@ -103,7 +103,7 @@ void CLog::Log(int loglevel, const char *format, ... )
       m_repeatCount = 0;
     }
     
-    *m_repeatLine     = strData;
+    m_repeatLine      = strData;
     m_repeatLogLevel  = loglevel;
 
     unsigned int length = 0;
@@ -201,9 +201,6 @@ bool CLog::Init(const char* path)
     unsigned char BOM[3] = {0xEF, 0xBB, 0xBF};
     fwrite(BOM, sizeof(BOM), 1, m_file);
   }
-
-  if (!m_repeatLine)
-    m_repeatLine = new CStdString;
 
   return m_file != NULL;
 }
