@@ -58,7 +58,6 @@ void CLog::Close()
   m_repeatLine.clear();
 }
 
-
 void CLog::Log(int loglevel, const char *format, ... )
 {
   static const char* prefixFormat = "%02.2d:%02.2d:%02.2d T:%"PRIu64" M:%9"PRIu64" %7s: ";
@@ -96,9 +95,9 @@ void CLog::Log(int loglevel, const char *format, ... )
       strPrefix.Format(prefixFormat, time.wHour, time.wMinute, time.wSecond, (uint64_t)CThread::GetCurrentThreadId(), (uint64_t)stat.dwAvailPhys, levelNames[m_repeatLogLevel]);
 
       strData2.Format("Previous line repeats %d times." LINE_ENDING, m_repeatCount);
-      OutputDebugString(strData2);
       fputs(strPrefix.c_str(), m_file);
       fputs(strData2.c_str(), m_file);
+      OutputDebugString(strData2);
       m_repeatCount = 0;
     }
     
