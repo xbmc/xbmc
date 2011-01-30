@@ -46,7 +46,7 @@ private:
   int                        m_iEpgID;         /*!< the database ID of this table */
   mutable const CEpgInfoTag *m_nowActive;      /*!< the tag that is currently active */
 
-  mutable CRITICAL_SECTION   m_critSection;    /*!< critical section for changes in this table */
+  mutable CCriticalSection   m_critSection;    /*!< critical section for changes in this table */
 
   CPVRChannel *              m_Channel;        /*!< the channel this EPG belongs to */
 
@@ -82,6 +82,18 @@ private:
    * @brief Sort all entries in this EPG by date.
    */
   virtual void Sort(void);
+
+  /*!
+   * @brief Get the infotag with the given ID.
+   *
+   * Get the infotag with the given ID.
+   * If it wasn't found, try finding the event with the given start time
+   *
+   * @param uniqueID The unique ID of the event to find.
+   * @param StartTime The start time of the event to find if it wasn't found by it's unique ID.
+   * @return The found tag or NULL if it wasn't found.
+   */
+  virtual const CEpgInfoTag *InfoTag(long uniqueID, CDateTime StartTime) const;
 
 protected:
   /*!
@@ -180,19 +192,6 @@ public:
   virtual const CEpgInfoTag *InfoTagNext(void) const;
 
   /*!
-   * @brief Get the infotag with the given ID.
-   *
-   * Get the infotag with the given ID.
-   * If it wasn't found, try finding the event with the given start time
-   *
-   * @param uniqueID The unique ID of the event to find.
-   * @param StartTime The start time of the event to find if it wasn't found by it's unique ID.
-   * @param bEnterCriticalSection If set to false, don't EnterCriticalSection().
-   * @return The found tag or NULL if it wasn't found.
-   */
-  virtual const CEpgInfoTag *InfoTag(long uniqueID, CDateTime StartTime, bool bEnterCriticalSection = true) const;
-
-  /*!
    * @brief Get the event that occurs at the given time.
    * @param Time The time to find the event for.
    * @return The found tag or NULL if it wasn't found.
@@ -217,10 +216,9 @@ public:
    * @brief Update an entry in this EPG.
    * @param tag The tag to update.
    * @param bUpdateDatabase If set to true, this event will be persisted in the database.
-   * @param bEnterCriticalSection If set to false, don't EnterCriticalSection().
    * @return True if it was updated successfully, false otherwise.
    */
-  virtual bool UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase = false, bool bEnterCriticalSection = true);
+  virtual bool UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase = false);
 
   /*!
    * @brief Update the EPG from 'start' till 'end'.

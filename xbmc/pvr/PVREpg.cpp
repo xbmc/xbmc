@@ -20,6 +20,7 @@
  */
 
 #include "settings/GUISettings.h"
+#include "threads/SingleLock.h"
 #include "log.h"
 #include "TimeUtils.h"
 
@@ -43,7 +44,7 @@ bool CPVREpg::HasValidEntries(void) const
 
 void CPVREpg::Cleanup(const CDateTime Time)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   m_bUpdateRunning = true;
   for (unsigned int i = 0; i < size(); i++)
@@ -58,26 +59,16 @@ void CPVREpg::Cleanup(const CDateTime Time)
   }
   m_bUpdateRunning = false;
 
-  LeaveCriticalSection(&m_critSection);
+  lock.Leave();
 }
 
-bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = false */, bool bEnterCriticalSection /* = true */)
+bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = false */)
 {
-  bool bReturn = false;
-
   if (!data)
-    return bReturn;
-
-  if (bEnterCriticalSection)
-    EnterCriticalSection(&m_critSection);
+    return false;
 
   CPVREpgInfoTag tag(*data);
-  bReturn = CEpg::UpdateEntry(tag, bUpdateDatabase, false);
-
-  if (bEnterCriticalSection)
-    LeaveCriticalSection(&m_critSection);
-
-  return bReturn;
+  return CEpg::UpdateEntry(tag, bUpdateDatabase);
 }
 
 bool CPVREpg::UpdateFromScraper(time_t start, time_t end)

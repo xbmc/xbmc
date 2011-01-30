@@ -20,6 +20,7 @@
  */
 
 #include "settings/GUISettings.h"
+#include "threads/SingleLock.h"
 #include "log.h"
 #include "TimeUtils.h"
 
@@ -45,15 +46,11 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = CStdString() */, const CSt
   m_strScraperName = strScraperName;
   m_nowActive      = NULL;
   m_Channel        = NULL;
-
-  InitializeCriticalSection(&m_critSection);
 }
 
 CEpg::~CEpg(void)
 {
   Clear();
-
-  DeleteCriticalSection(&m_critSection);
 }
 
 /** @name Public methods */
@@ -88,7 +85,7 @@ bool CEpg::DeleteInfoTag(CEpgInfoTag *tag)
   if (tag->m_Epg != this)
     return bReturn;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   /* remove the tag */
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
@@ -110,7 +107,7 @@ bool CEpg::DeleteInfoTag(CEpgInfoTag *tag)
     }
   }
 
-  LeaveCriticalSection(&m_critSection);
+  lock.Leave();
 
   return bReturn;
 }
@@ -147,7 +144,7 @@ void CEpg::Sort(void)
 
 void CEpg::Clear(void)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
@@ -155,7 +152,7 @@ void CEpg::Clear(void)
   }
   erase(begin(), end());
 
-  LeaveCriticalSection(&m_critSection);
+  lock.Leave();
 }
 
 void CEpg::Cleanup(void)
@@ -165,7 +162,7 @@ void CEpg::Cleanup(void)
 
 void CEpg::Cleanup(const CDateTime Time)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   m_bUpdateRunning = true;
   unsigned int iSize = size();
@@ -182,14 +179,14 @@ void CEpg::Cleanup(const CDateTime Time)
   }
   m_bUpdateRunning = false;
 
-  LeaveCriticalSection(&m_critSection);
+  lock.Leave();
 }
 
 const CEpgInfoTag *CEpg::InfoTagNow(void) const
 {
   const CEpgInfoTag *returnTag = NULL;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   if (!m_nowActive || !m_nowActive->IsActive())
   {
@@ -208,7 +205,7 @@ const CEpgInfoTag *CEpg::InfoTagNow(void) const
 
   returnTag = m_nowActive;
 
-  LeaveCriticalSection(&m_critSection);
+  lock.Leave();
 
   return returnTag;
 }
@@ -220,12 +217,9 @@ const CEpgInfoTag *CEpg::InfoTagNext(void) const
   return nowTag ? nowTag->GetNextEvent() : NULL;
 }
 
-const CEpgInfoTag *CEpg::InfoTag(long uniqueID, CDateTime StartTime, bool bEnterCriticalSection /* = true */) const
+const CEpgInfoTag *CEpg::InfoTag(long uniqueID, CDateTime StartTime) const
 {
   CEpgInfoTag *returnTag = NULL;
-
-  if (bEnterCriticalSection)
-    EnterCriticalSection(&m_critSection);
 
   /* try to find the tag by UID */
   if (uniqueID > 0)
@@ -255,9 +249,6 @@ const CEpgInfoTag *CEpg::InfoTag(long uniqueID, CDateTime StartTime, bool bEnter
     }
   }
 
-  if (bEnterCriticalSection)
-    LeaveCriticalSection(&m_critSection);
-
   return returnTag;
 }
 
@@ -265,7 +256,7 @@ const CEpgInfoTag *CEpg::InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) 
 {
   CEpgInfoTag *returnTag = NULL;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
@@ -277,7 +268,7 @@ const CEpgInfoTag *CEpg::InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) 
     }
   }
 
-  LeaveCriticalSection(&m_critSection);
+  lock.Leave();
 
   return returnTag;
 }
@@ -286,7 +277,7 @@ const CEpgInfoTag *CEpg::InfoTagAround(CDateTime Time) const
 {
   CEpgInfoTag *returnTag = NULL;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
@@ -298,19 +289,18 @@ const CEpgInfoTag *CEpg::InfoTagAround(CDateTime Time) const
     }
   }
 
-  LeaveCriticalSection(&m_critSection);
+  lock.Leave();
 
   return returnTag;
 }
 
-bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false */, bool bEnterCriticalSection /* = true */)
+bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false */)
 {
   bool bReturn = false;
 
-  if (bEnterCriticalSection)
-    EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
-  CEpgInfoTag *InfoTag = (CEpgInfoTag *) this->InfoTag(tag.UniqueBroadcastID(), tag.Start(), bEnterCriticalSection);
+  CEpgInfoTag *InfoTag = (CEpgInfoTag *) this->InfoTag(tag.UniqueBroadcastID(), tag.Start());
   /* create a new tag if no tag with this ID exists */
   if (!InfoTag)
   {
@@ -326,8 +316,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
 
   Sort();
 
-  if (bEnterCriticalSection)
-    LeaveCriticalSection(&m_critSection);
+  lock.Leave();
 
   if (bUpdateDatabase)
     bReturn = InfoTag->Persist();
@@ -348,7 +337,7 @@ bool CEpg::Load()
     return bReturn;
   }
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   /* delete any present entries */
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
@@ -360,7 +349,7 @@ bool CEpg::Load()
 
   Sort();
 
-  LeaveCriticalSection(&m_critSection);
+  lock.Leave();
 
   return bReturn;
 }
@@ -397,7 +386,7 @@ int CEpg::Get(CFileItemList *results) const
   if (!HasValidEntries() || m_bUpdateRunning)
     return -1;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
@@ -406,7 +395,7 @@ int CEpg::Get(CFileItemList *results) const
     results->Add(entry);
   }
 
-  LeaveCriticalSection(&m_critSection);
+  lock.Leave();
 
   return size() - iInitialSize;
 }
@@ -418,7 +407,7 @@ int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter) const
   if (!HasValidEntries() || m_bUpdateRunning)
     return -1;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
@@ -430,7 +419,7 @@ int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter) const
     }
   }
 
-  LeaveCriticalSection(&m_critSection);
+  lock.Leave();
 
   return size() - iInitialSize;
 }
@@ -504,7 +493,7 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
   bReturn = true;
   CEpgInfoTag *previousTag = NULL;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
@@ -562,7 +551,7 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
     previousTag = at(ptr);
   }
 
-  LeaveCriticalSection(&m_critSection);
+  lock.Leave();
 
   return bReturn;
 }

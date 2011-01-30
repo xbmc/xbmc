@@ -79,10 +79,9 @@ public:
    * @brief Update an entry in this EPG.
    * @param data The tag to update.
    * @param bUpdateDatabase If set to true, this event will be persisted in the database.
-   * @param bEnterCriticalSection If set to false, don't EnterCriticalSection().
    * @return True if it was updated successfully, false otherwise.
    */
-  bool UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase = false, bool bEnterCriticalSection = true);
+  bool UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase = false);
 
   /*!
    * @brief Load all entries from the database.
