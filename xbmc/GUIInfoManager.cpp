@@ -3318,30 +3318,28 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)",item.m_strPath.c_str());
   *m_currentFile = item;
 
-  if (!m_currentFile->HasVideoInfoTag() || m_currentFile->GetVideoInfoTag()->IsEmpty())
-  { // attempt to get some information
-    CVideoDatabase dbs;
-    dbs.Open();
-    if (dbs.HasMovieInfo(item.m_strPath))
-    {
-      dbs.GetMovieInfo(item.m_strPath, *m_currentFile->GetVideoInfoTag());
-      CLog::Log(LOGDEBUG,"%s, got movie info!", __FUNCTION__);
-      CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile->GetVideoInfoTag()->m_strTitle.c_str());
-    }
-    else if (dbs.HasEpisodeInfo(item.m_strPath))
-    {
-      dbs.GetEpisodeInfo(item.m_strPath, *m_currentFile->GetVideoInfoTag());
-      CLog::Log(LOGDEBUG,"%s, got episode info!", __FUNCTION__);
-      CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile->GetVideoInfoTag()->m_strTitle.c_str());
-    }
-    else if (dbs.HasMusicVideoInfo(item.m_strPath))
-    {
-      dbs.GetMusicVideoInfo(item.m_strPath, *m_currentFile->GetVideoInfoTag());
-      CLog::Log(LOGDEBUG,"%s, got music video info!", __FUNCTION__);
-      CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile->GetVideoInfoTag()->m_strTitle.c_str());
-    }
-    dbs.Close();
+  CVideoDatabase dbs;
+  dbs.Open();
+  if (dbs.HasMovieInfo(item.m_strPath))
+  {
+    dbs.GetMovieInfo(item.m_strPath, *m_currentFile->GetVideoInfoTag());
+    CLog::Log(LOGDEBUG,"%s, got movie info!", __FUNCTION__);
+    CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile->GetVideoInfoTag()->m_strTitle.c_str());
   }
+  else if (dbs.HasEpisodeInfo(item.m_strPath))
+  {
+    dbs.GetEpisodeInfo(item.m_strPath, *m_currentFile->GetVideoInfoTag());
+    CLog::Log(LOGDEBUG,"%s, got episode info!", __FUNCTION__);
+    CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile->GetVideoInfoTag()->m_strTitle.c_str());
+  }
+  else if (dbs.HasMusicVideoInfo(item.m_strPath))
+  {
+    dbs.GetMusicVideoInfo(item.m_strPath, *m_currentFile->GetVideoInfoTag());
+    CLog::Log(LOGDEBUG,"%s, got music video info!", __FUNCTION__);
+    CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile->GetVideoInfoTag()->m_strTitle.c_str());
+  }
+  dbs.Close();
+
   // Find a thumb for this file.
   item.SetVideoThumb();
   if (!item.HasThumbnail())
