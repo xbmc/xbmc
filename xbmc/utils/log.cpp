@@ -95,9 +95,7 @@ void CLog::Log(int loglevel, const char *format, ... )
       strPrefix2.Format("%02.2d:%02.2d:%02.2d T:%"PRIu64" M:%9"PRIu64" %7s: ", time.wHour, time.wMinute, time.wSecond, (uint64_t)CThread::GetCurrentThreadId(), (uint64_t)stat.dwAvailPhys, levelNames[m_repeatLogLevel]);
 
       strData2.Format("Previous line repeats %d times." LINE_ENDING, m_repeatCount);
-#if (defined(_DEBUG) || defined(PROFILE))
-      OutputDebugString(strData2.c_str());
-#endif
+      OutputDebugString(strData2);
       fputs(strPrefix2.c_str(), m_file);
       fputs(strData2.c_str(), m_file);
       m_repeatCount = 0;
@@ -117,11 +115,8 @@ void CLog::Log(int loglevel, const char *format, ... )
 
     if (!length)
       return;
-
-#if (defined(_DEBUG) || defined(PROFILE))
-    OutputDebugString(strData.c_str());
-    OutputDebugString("\n");
-#endif
+    
+    OutputDebugString(strData);
 
     /* fixup newline alignment, number of spaces should equal prefix length */
     strData.Replace("\n", LINE_ENDING"                                            ");
@@ -250,3 +245,10 @@ int CLog::GetLogLevel()
   return m_logLevel;
 }
 
+void CLog::OutputDebugString(const std::string& line)
+{
+#if defined(_DEBUG) || defined(PROFILE)
+  ::OutputDebugString(line.c_str());
+  ::OutputDebugString("\n");
+#endif
+}
