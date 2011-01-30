@@ -62,8 +62,10 @@ void CLog::Close()
 void CLog::Log(int loglevel, const char *format, ... )
 {
   CSingleLock waitLock(critSec);
+#if !(defined(_DEBUG) || defined(PROFILE))
   if (m_logLevel > LOG_LEVEL_NORMAL ||
      (m_logLevel > LOG_LEVEL_NONE && loglevel >= LOGNOTICE))
+#endif
   {
     if (!m_file)
       return;
@@ -126,27 +128,6 @@ void CLog::Log(int loglevel, const char *format, ... )
     fputs(strData.c_str(), m_file);
     fflush(m_file);
   }
-#ifndef _LINUX
-#if defined(_DEBUG) || defined(PROFILE)
-  else
-  {
-    // In debug mode dump everything to devstudio regardless of level
-    CSingleLock waitLock(critSec);
-    CStdString strData;
-    strData.reserve(16384);
-
-    va_list va;
-    va_start(va, format);
-    strData.FormatV(format, va);
-    va_end(va);
-
-    OutputDebugString(strData.c_str());
-    if( strData.Right(1) != "\n" )
-      OutputDebugString("\n");
-
-  }
-#endif
-#endif
 }
 
 bool CLog::Init(const char* path)
