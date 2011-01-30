@@ -52,7 +52,7 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio)
   m_bRadio       = bRadio;
   m_bIsSorted    = false;
   m_iGroupId     = -1;
-  m_strGroupName = NULL;
+  m_strGroupName.clear();
   m_iSortOrder   = -1;
 }
 
