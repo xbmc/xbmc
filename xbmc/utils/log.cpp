@@ -95,11 +95,11 @@ void CLog::Log(int loglevel, const char *format, ... )
       strPrefix2.Format("%02.2d:%02.2d:%02.2d T:%"PRIu64" M:%9"PRIu64" %7s: ", time.wHour, time.wMinute, time.wSecond, (uint64_t)CThread::GetCurrentThreadId(), (uint64_t)stat.dwAvailPhys, levelNames[m_repeatLogLevel]);
 
       strData2.Format("Previous line repeats %d times." LINE_ENDING, m_repeatCount);
-      fwrite(strPrefix2.c_str(),strPrefix2.size(),1,m_file);
-      fwrite(strData2.c_str(),strData2.size(),1,m_file);
 #if (defined(_DEBUG) || defined(PROFILE))
       OutputDebugString(strData2.c_str());
 #endif
+      fputs(strPrefix2.c_str(), m_file);
+      fputs(strData2.c_str(), m_file);
       m_repeatCount = 0;
     }
     
@@ -127,8 +127,8 @@ void CLog::Log(int loglevel, const char *format, ... )
     strData.Replace("\n", LINE_ENDING"                                            ");
     strData += LINE_ENDING;
 
-    fwrite(strPrefix.c_str(),strPrefix.size(),1,m_file);
-    fwrite(strData.c_str(),strData.size(),1,m_file);
+    fputs(strPrefix.c_str(), m_file);
+    fputs(strData.c_str(), m_file);
     fflush(m_file);
   }
 #ifndef _LINUX
