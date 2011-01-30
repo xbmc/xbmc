@@ -35,13 +35,135 @@
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include <string.h>
+#include "ServiceDescription.h"
 
 using namespace ANNOUNCEMENT;
 using namespace JSONRPC;
 using namespace Json;
 using namespace std;
 
-Command CJSONRPC::m_commands[] = {
+bool CJSONRPC::m_initialized = false;
+
+JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
+// JSON-RPC
+  { "JSONRPC.Introspect",                           CJSONRPC::Introspect },
+  { "JSONRPC.Version",                              CJSONRPC::Version },
+  { "JSONRPC.Permission",                           CJSONRPC::Permission },
+  { "JSONRPC.Ping",                                 CJSONRPC::Ping },
+  { "JSONRPC.GetAnnouncementFlags",                 CJSONRPC::GetAnnouncementFlags },
+  { "JSONRPC.SetAnnouncementFlags",                 CJSONRPC::SetAnnouncementFlags },
+  { "JSONRPC.Announce",                             CJSONRPC::Announce },
+
+// Player
+//  { "Player.GetActivePlayers",                      CPlayerOperations::GetActivePlayers },
+
+// Music player
+//  { "AudioPlayer.State",                            CAVPlayerOperations::State },
+//  { "AudioPlayer.PlayPause",                        CAVPlayerOperations::PlayPause },
+//  { "AudioPlayer.Stop",                             CAVPlayerOperations::Stop },
+//  { "AudioPlayer.SkipPrevious",                     CAVPlayerOperations::SkipPrevious },
+//  { "AudioPlayer.SkipNext",                         CAVPlayerOperations::SkipNext },
+//
+//  { "AudioPlayer.BigSkipBackward",                  CAVPlayerOperations::BigSkipBackward },
+//  { "AudioPlayer.BigSkipForward",                   CAVPlayerOperations::BigSkipForward },
+//  { "AudioPlayer.SmallSkipBackward",                CAVPlayerOperations::SmallSkipBackward },
+//  { "AudioPlayer.SmallSkipForward",                 CAVPlayerOperations::SmallSkipForward },
+//
+//  { "AudioPlayer.Rewind",                           CAVPlayerOperations::Rewind },
+//  { "AudioPlayer.Forward",                          CAVPlayerOperations::Forward },
+//
+//  { "AudioPlayer.GetTime",                          CAVPlayerOperations::GetTime },
+//  { "AudioPlayer.GetTimeMS",                        CAVPlayerOperations::GetTimeMS },
+//  { "AudioPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage },
+//  { "AudioPlayer.SeekTime",                         CAVPlayerOperations::SeekTime },
+//  { "AudioPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage },
+//
+//  { "AudioPlayer.Record",                           CAVPlayerOperations::Record },
+
+// Video player
+//  { "VideoPlayer.State",                            CAVPlayerOperations::State },
+//  { "VideoPlayer.PlayPause",                        CAVPlayerOperations::PlayPause },
+//  { "VideoPlayer.Stop",                             CAVPlayerOperations::Stop },
+//  { "VideoPlayer.SkipPrevious",                     CAVPlayerOperations::SkipPrevious },
+//  { "VideoPlayer.SkipNext",                         CAVPlayerOperations::SkipNext },
+//
+//  { "VideoPlayer.BigSkipBackward",                  CAVPlayerOperations::BigSkipBackward },
+//  { "VideoPlayer.BigSkipForward",                   CAVPlayerOperations::BigSkipForward },
+//  { "VideoPlayer.SmallSkipBackward",                CAVPlayerOperations::SmallSkipBackward },
+//  { "VideoPlayer.SmallSkipForward",                 CAVPlayerOperations::SmallSkipForward },
+//
+//  { "VideoPlayer.Rewind",                           CAVPlayerOperations::Rewind },
+//  { "VideoPlayer.Forward",                          CAVPlayerOperations::Forward },
+//
+//  { "VideoPlayer.GetTime",                          CAVPlayerOperations::GetTime },
+//  { "VideoPlayer.GetTimeMS",                        CAVPlayerOperations::GetTimeMS },
+//  { "VideoPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage },
+//  { "VideoPlayer.SeekTime",                         CAVPlayerOperations::SeekTime },
+//  { "VideoPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage },
+
+// Picture player
+//  { "PicturePlayer.PlayPause",                      CPicturePlayerOperations::PlayPause },
+//  { "PicturePlayer.Stop",                           CPicturePlayerOperations::Stop },
+//  { "PicturePlayer.SkipPrevious",                   CPicturePlayerOperations::SkipPrevious },
+//  { "PicturePlayer.SkipNext",                       CPicturePlayerOperations::SkipNext },
+//
+//  { "PicturePlayer.MoveLeft",                       CPicturePlayerOperations::MoveLeft },
+//  { "PicturePlayer.MoveRight",                      CPicturePlayerOperations::MoveRight },
+//  { "PicturePlayer.MoveDown",                       CPicturePlayerOperations::MoveDown },
+//  { "PicturePlayer.MoveUp",                         CPicturePlayerOperations::MoveUp },
+//
+//  { "PicturePlayer.ZoomOut",                        CPicturePlayerOperations::ZoomOut },
+//  { "PicturePlayer.ZoomIn",                         CPicturePlayerOperations::ZoomIn },
+//  { "PicturePlayer.Zoom",                           CPicturePlayerOperations::Zoom },
+//  { "PicturePlayer.Rotate",                         CPicturePlayerOperations::Rotate },
+
+// Video Playlist
+  // TODO
+
+// Audio Playlist
+  // TODO
+
+// Playlist
+//  { "Playlist.Create",                              CPlaylistOperations::Create },
+//  { "Playlist.Destroy",                             CPlaylistOperations::Destroy },
+//
+//  { "Playlist.GetItems",                            CPlaylistOperations::GetItems },
+//  { "Playlist.Add",                                 CPlaylistOperations::Add },
+//  { "Playlist.Remove",                              CPlaylistOperations::Remove },
+//  { "Playlist.Swap",                                CPlaylistOperations::Swap },
+//  { "Playlist.Shuffle",                             CPlaylistOperations::Shuffle },
+//  { "Playlist.UnShuffle",                           CPlaylistOperations::UnShuffle },
+
+// Files
+//  { "Files.GetSources",                             CFileOperations::GetRootDirectory },
+//  { "Files.Download",                               CFileOperations::Download },
+//  { "Files.GetDirectory",                           CFileOperations::GetDirectory },
+
+// Music Library
+  // TODO
+
+// Video Library
+  // TODO
+
+// System operations
+//  { "System.Shutdown",                              CSystemOperations::Shutdown },
+//  { "System.Suspend",                               CSystemOperations::Suspend },
+//  { "System.Hibernate",                             CSystemOperations::Hibernate },
+//  { "System.Reboot",                                CSystemOperations::Reboot },
+//  { "System.GetInfoLabels",                         CSystemOperations::GetInfoLabels },
+//  { "System.GetInfoBooleans",                       CSystemOperations::GetInfoBooleans },
+
+// XBMC operations
+//  { "XBMC.GetVolume",                               CXBMCOperations::GetVolume },
+//  { "XBMC.SetVolume",                               CXBMCOperations::SetVolume },
+//  { "XBMC.ToggleMute",                              CXBMCOperations::ToggleMute },
+//  { "XBMC.Play",                                    CXBMCOperations::Play },
+//  { "XBMC.StartSlideshow",                          CXBMCOperations::StartSlideshow },
+//  { "XBMC.Log",                                     CXBMCOperations::Log },
+//  { "XBMC.Quit",                                    CXBMCOperations::Quit }
+};
+
+/*Command CJSONRPC::m_commands[] = {
 // JSON-RPC
   { "JSONRPC.Introspect",                           CJSONRPC::Introspect,                                Response,     ReadData,        "Enumerates all actions and descriptions. Parameter example {\"getdescriptions\": true, \"getpermissions\": true, \"filterbytransport\": true }. All parameters optional" },
   { "JSONRPC.Version",                              CJSONRPC::Version,                                   Response,     ReadData,        "Retrieve the jsonrpc protocol version" },
@@ -205,45 +327,36 @@ Command CJSONRPC::m_commands[] = {
   { "XBMC.Log",                                     CXBMCOperations::Log,                                Response,     Logging,         "Logs a line in the xbmc.log. Parameter example {\"message\": \"foo\", \"level\": \"info\"} or just a string to log message with level debug" },
 
   { "XBMC.Quit",                                    CXBMCOperations::Quit,                               Response,     ControlPower,    "Quit xbmc" }
-};
+};*/
 
-CJSONRPC::CActionMap CJSONRPC::m_actionMap(m_commands, sizeof(m_commands) / sizeof(m_commands[0]) );
+void CJSONRPC::Initialize()
+{
+  if (m_initialized)
+    return;
+
+  unsigned int size = sizeof(m_methodMaps) / sizeof(JsonRpcMethodMap);
+  if (!CJSONServiceDescription::Parse(m_methodMaps, size))
+    CLog::Log(LOGSEVERE, "JSONRPC: Error while parsing the json rpc service description");
+  else
+    CLog::Log(LOGINFO, "JSONRPC: json rpc service description successfully loaded");
+  
+  m_initialized = true;
+}
 
 JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  if (!(parameterObject.isObject() || parameterObject.isNull()))
-    return InvalidParams;
+  bool getDescriptions = parameterObject["getdescriptions"].asBool();
+  bool getMetadata = parameterObject["getmetadata"].asBool();
+  bool filterByTransport = parameterObject["filterbytransport"].asBool();
 
-  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
-  bool getDescriptions = param.get("getdescriptions", true).asBool();
-  bool getPermissions = param.get("getpermissions", true).asBool();
-  bool filterByTransport = param.get("filterbytransport", true).asBool();
-
-  int length = sizeof(m_commands) / sizeof(Command);
-  int clientflags = client->GetPermissionFlags();
-  for (int i = 0; i < length; i++)
-  {
-    if ((transport->GetCapabilities() & m_commands[i].transportneed) == 0 && filterByTransport)
-      continue;
-
-    Value val;
-
-    val["command"] = m_commands[i].command;
-    val["executable"] = (clientflags & m_commands[i].permission) > 0 ? true : false;
-    if (getDescriptions && m_commands[i].description)
-      val["description"] = m_commands[i].description;
-    if (getPermissions)
-      val["permission"] = PermissionToString(m_commands[i].permission);
-
-    result["commands"].append(val);
-  }
+  CJSONServiceDescription::Print(result, transport, client, getDescriptions, getMetadata, filterByTransport);
 
   return OK;
 }
 
 JSON_STATUS CJSONRPC::Version(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  result["version"] = 3;
+  result["version"] = CJSONServiceDescription::GetVersion();
 
   return OK;
 }
@@ -277,20 +390,17 @@ JSON_STATUS CJSONRPC::GetAnnouncementFlags(const CStdString &method, ITransportL
 
 JSON_STATUS CJSONRPC::SetAnnouncementFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  if (!parameterObject.isObject())
-    return InvalidParams;
-
   int flags = 0;
 
-  if (parameterObject.get("Playback", false).asBool())
+  if (parameterObject["Playback"].asBool())
     flags |= Playback;
-  if (parameterObject.get("GUI", false).asBool())
+  if (parameterObject["GUI"].asBool())
     flags |= GUI;
-  if (parameterObject.get("System", false).asBool())
+  if (parameterObject["System"].asBool())
     flags |= System;
-  if (parameterObject.get("Library", false).asBool())
+  if (parameterObject["Library"].asBool())
     flags |= Library;
-  if (parameterObject.get("Other", false).asBool())
+  if (parameterObject["Other"].asBool())
     flags |= Other;
 
   if (client->SetAnnouncementFlags(flags))
@@ -301,15 +411,14 @@ JSON_STATUS CJSONRPC::SetAnnouncementFlags(const CStdString &method, ITransportL
 
 JSON_STATUS CJSONRPC::Announce(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  if (!parameterObject.isObject() || !parameterObject.isMember("sender") || !parameterObject.isMember("message"))
-    return InvalidParams;
-
-  if (!parameterObject.isMember("data"))
-    CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(), parameterObject["message"].asString().c_str());
+  if (parameterObject["data"].isNull())
+    CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(),  
+      parameterObject["message"].asString().c_str());
   else
   {
     CVariant data(parameterObject["data"].asString());
-    CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(), parameterObject["message"].asString().c_str(), data);
+    CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(),  
+      parameterObject["message"].asString().c_str(), data);
   }
 
   return ACK;
@@ -381,9 +490,16 @@ bool CJSONRPC::HandleMethodCall(Value& request, Value& response, ITransportLayer
   {
     isAnnouncement = !request.isMember("id");
 
-    CStdString method = request.get("method", "").asString();
-    method = method.ToLower();
-    errorCode = InternalMethodCall(method, request, result, transport, client);
+    CStdString methodName = request.get("method", "").asString();
+    methodName = methodName.ToLower();
+
+    JSONRPC::MethodCall method;
+    Json::Value params;
+
+    if ((errorCode = CJSONServiceDescription::CheckCall(methodName, request["params"], client, isAnnouncement, method, params)) == OK)
+      errorCode = method(methodName, transport, client, params, result);
+    else
+      result = params;
   }
   else
   {
@@ -397,23 +513,9 @@ bool CJSONRPC::HandleMethodCall(Value& request, Value& response, ITransportLayer
   return !isAnnouncement;
 }
 
-JSON_STATUS CJSONRPC::InternalMethodCall(const CStdString& method, Value& o, Value &result, ITransportLayer *transport, IClient *client)
-{
-  CActionMap::const_iterator iter = m_actionMap.find(method);
-  if( iter != m_actionMap.end() )
-  {
-    if (client->GetPermissionFlags() & iter->second.permission)
-      return iter->second.method(method, transport, client, o["params"], result);
-    else
-      return BadPermission;
-  }
-  else
-    return MethodNotFound;
-}
-
 inline bool CJSONRPC::IsProperJSONRPC(const Json::Value& inputroot)
 {
-  return inputroot.isObject() && inputroot.isMember("jsonrpc") && inputroot["jsonrpc"].isString() && inputroot.get("jsonrpc", "-1").asString() == "2.0" && inputroot.isMember("method") && inputroot["method"].isString();
+  return inputroot.isObject() && inputroot.isMember("jsonrpc") && inputroot["jsonrpc"].isString() && inputroot.get("jsonrpc", "-1").asString() == "2.0" && inputroot.isMember("method") && inputroot["method"].isString() && (!inputroot.isMember("params") || inputroot["params"].isArray() || inputroot["params"].isObject());
 }
 
 inline void CJSONRPC::BuildResponse(const Value& request, JSON_STATUS code, const Value& result, Value& response)
@@ -436,6 +538,8 @@ inline void CJSONRPC::BuildResponse(const Value& request, JSON_STATUS code, cons
     case InvalidParams:
       response["error"]["code"] = InvalidParams;
       response["error"]["message"] = "Invalid params.";
+      if (!result.isNull())
+        response["error"]["data"] = result;
       break;
     case MethodNotFound:
       response["error"]["code"] = MethodNotFound;
@@ -458,64 +562,4 @@ inline void CJSONRPC::BuildResponse(const Value& request, JSON_STATUS code, cons
       response["error"]["message"] = "Internal error.";
       break;
   }
-}
-
-inline const char *CJSONRPC::PermissionToString(const OperationPermission &permission)
-{
-  switch (permission)
-  {
-  case ReadData:
-    return "ReadData";
-  case ControlPlayback:
-    return "ControlPlayback";
-  case ControlAnnounce:
-    return "ControlAnnounce";
-  case ControlPower:
-    return "ControlPower";
-  case Logging:
-    return "Logging";
-  case ScanLibrary:
-    return "ScanLibrary";
-  default:
-    return "Unknown";
-  }
-}
-
-inline const char *CJSONRPC::AnnouncementFlagToString(const EAnnouncementFlag &announcement)
-{
-  switch (announcement)
-  {
-  case Playback:
-    return "Playback";
-  case GUI:
-    return "GUI";
-  case System:
-    return "System";
-  case Library:
-    return "Library";
-  case Other:
-    return "Other";
-  default:
-    return "Unknown";
-  }
-}
-
-CJSONRPC::CActionMap::CActionMap(const Command commands[], int length)
-{
-  for (int i = 0; i < length; i++)
-  {
-    CStdString command = commands[i].command;
-    command = command.ToLower();
-    m_actionmap[command] = commands[i];
-  }
-}
-
-CJSONRPC::CActionMap::const_iterator CJSONRPC::CActionMap::find(const CStdString& key) const
-{
-  return m_actionmap.find(key);
-}
-
-CJSONRPC::CActionMap::const_iterator CJSONRPC::CActionMap::end() const
-{
-  return m_actionmap.end();
 }

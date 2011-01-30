@@ -129,11 +129,10 @@ JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer 
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
 
-  const Value param = ForceObject(parameterObject);
-  if (!ParameterIntOrNull(param, "tvshowid"))
-    return InvalidParams;
+  //if (!ParameterIntOrNull(parameterObject, "tvshowid"))
+  //  return InvalidParams;
 
-  int tvshowID = ParameterAsInt(param, -1, "tvshowid");
+  int tvshowID = parameterObject.get("tvshowid", -1).asInt();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -141,7 +140,7 @@ JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer 
 
   CFileItemList items;
   if (videodatabase.GetSeasonsNav("videodb://", items, -1, -1, -1, -1, tvshowID))
-    HandleFileItemList(NULL, false, "seasons", items, param, result);
+    HandleFileItemList(NULL, false, "seasons", items, parameterObject, result);
 
   videodatabase.Close();
   return OK;
@@ -152,12 +151,11 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
 
-  const Value param = ForceObject(parameterObject);
-  if (!(ParameterIntOrNull(param, "tvshowid") || ParameterIntOrNull(param, "season")))
-    return InvalidParams;
+  //if (!(ParameterIntOrNull(parameterObject, "tvshowid") || ParameterIntOrNull(parameterObject, "season")))
+  //  return InvalidParams;
 
-  int tvshowID = ParameterAsInt(param, -1, "tvshowid");
-  int season   = ParameterAsInt(param, -1, "season");
+  int tvshowID = parameterObject.get("tvshowid", -1).asInt();
+  int season   = parameterObject.get("season", -1).asInt();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -165,7 +163,7 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
 
   CFileItemList items;
   if (videodatabase.GetEpisodesNav("videodb://", items, -1, -1, -1, -1, tvshowID, season))
-    HandleFileItemList("episodeid", true, "episodes", items, param, result);
+    HandleFileItemList("episodeid", true, "episodes", items, parameterObject, result);
 
   videodatabase.Close();
   return OK;
@@ -205,12 +203,11 @@ JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLa
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
 
-  const Value param = ForceObject(parameterObject);
-  if (!(ParameterIntOrNull(param, "artistid") || ParameterIntOrNull(param, "albumid")))
-    return InvalidParams;
+  //if (!(ParameterIntOrNull(parameterObject, "artistid") || ParameterIntOrNull(parameterObject, "albumid")))
+  //  return InvalidParams;
 
-  int artistID = ParameterAsInt(param, -1, "artistid");
-  int albumID  = ParameterAsInt(param, -1, "albumid");
+  int artistID = parameterObject.get("artistid", -1).asInt();
+  int albumID  = parameterObject.get("albumid", -1).asInt();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -218,7 +215,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLa
 
   CFileItemList items;
   if (videodatabase.GetMusicVideosNav("videodb://", items, -1, -1, artistID, -1, -1, albumID))
-    HandleFileItemList("musicvideoid", true, "musicvideos", items, param, result);
+    HandleFileItemList("musicvideoid", true, "musicvideos", items, parameterObject, result);
 
   videodatabase.Close();
   return OK;
@@ -306,9 +303,9 @@ bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
   CVideoDatabase videodatabase;
   if ((parameterObject["movieid"].isInt() || parameterObject["episodeid"].isInt() || parameterObject["musicvideoid"].isInt()) && videodatabase.Open())
   {
-    int movieID       = ParameterAsInt(parameterObject, -1, "movieid");
-    int episodeID     = ParameterAsInt(parameterObject, -1, "episodeid");
-    int musicVideoID  = ParameterAsInt(parameterObject, -1, "musicvideoid");
+    int movieID       = parameterObject.get("movieid", -1).asInt();
+    int episodeID     = parameterObject.get("episodeid", -1).asInt();
+    int musicVideoID  = parameterObject.get("musicvideoid", -1).asInt();
 
     bool success = true;
     if (movieID > 0)

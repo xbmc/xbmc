@@ -158,22 +158,20 @@ void CFileItemHandler::HandleFileItem(const char *id, bool allowFile, const char
 
 bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
-  Value param = ForceObject(parameterObject);
+  //if (parameterObject.isString())
+  //  parameterObject["file"] = parameterObject.asString();
 
-  if (parameterObject.isString())
-    param["file"] = parameterObject.asString();
-
-  if (param["file"].isString())
+  if (parameterObject["file"].isString())
   {
-    CStdString file = param["file"].asString();
+    CStdString file = parameterObject["file"].asString();
     CFileItemPtr item = CFileItemPtr(new CFileItem(file, URIUtils::HasSlashAtEnd(file)));
     list.Add(item);
   }
 
-  CPlaylistOperations::FillFileItemList(param, list);
-  CAudioLibrary::FillFileItemList(param, list);
-  CVideoLibrary::FillFileItemList(param, list);
-  CFileOperations::FillFileItemList(param, list);
+  CPlaylistOperations::FillFileItemList(parameterObject, list);
+  CAudioLibrary::FillFileItemList(parameterObject, list);
+  CVideoLibrary::FillFileItemList(parameterObject, list);
+  CFileOperations::FillFileItemList(parameterObject, list);
 
   return true;
 }

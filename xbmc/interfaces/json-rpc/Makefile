@@ -4,6 +4,7 @@ SRCS=AudioLibrary.cpp \
      FileItemHandler.cpp \
      FileOperations.cpp \
      JSONRPC.cpp \
+     JSONServiceDescription.cpp \
      PicturePlayerOperations.cpp \
      PlayerOperations.cpp \
      PlaylistOperations.cpp \
