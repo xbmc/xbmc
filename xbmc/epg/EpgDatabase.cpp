@@ -385,15 +385,15 @@ int CEpgDatabase::Persist(const CEpg &epg, bool bSingleUpdate /* = true */, bool
   return iReturn;
 }
 
-bool CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true */, bool bLastUpdate /* = false */)
+int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true */, bool bLastUpdate /* = false */)
 {
-  int bReturn = false;
+  int iReturn = -1;
 
-  CEpg *epg = tag.GetTable();
+  const CEpg *epg = tag.GetTable();
   if (!epg || epg->EpgID() <= 0)
   {
     CLog::Log(LOGERROR, "%s - tag '%s' does not have a valid table", __FUNCTION__, tag.Title().c_str());
-    return bReturn;
+    return iReturn;
   }
 
   time_t iStartTime, iEndTime, iFirstAired;
@@ -453,17 +453,18 @@ bool CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true 
 
   if (bSingleUpdate)
   {
-    bReturn = ExecuteQuery(strQuery);
+    if (ExecuteQuery(strQuery))
+      iReturn = m_pDS->lastinsertid();
   }
   else
   {
     QueueInsertQuery(strQuery);
 
     if (bLastUpdate)
-      bReturn = CommitInsertQueries();
-    else
-      bReturn = true;
+      CommitInsertQueries();
+
+    iReturn = 0;
   }
 
-  return bReturn;
+  return iReturn;
 }

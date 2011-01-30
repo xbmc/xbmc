@@ -126,7 +126,7 @@ public:
    * @brief The table this event belongs to
    * @return The table this event belongs to
    */
-  virtual CEpg *GetTable() const { return m_Epg; }
+  virtual const CEpg *GetTable() const { return m_Epg; }
 
   /*!
    * @brief Change the unique broadcast ID of this event.

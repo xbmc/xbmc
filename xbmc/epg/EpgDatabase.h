@@ -138,9 +138,9 @@ public:
    * @param tag The tag to persist.
    * @param bSingleUpdate If true, this is a single update and the query will be executed immediately.
    * @param bLastUpdate If multiple updates were sent, set this to true on the last update to execute the queries.
-   * @return True if the query or queries were executed successfully, false otherwise.
+   * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
    */
-  bool Persist(const CEpgInfoTag &tag, bool bSingleUpdate = true, bool bLastUpdate = false);
+  int Persist(const CEpgInfoTag &tag, bool bSingleUpdate = true, bool bLastUpdate = false);
 
   //@}
 

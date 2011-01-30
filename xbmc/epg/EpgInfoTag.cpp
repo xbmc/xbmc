@@ -376,11 +376,15 @@ bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */, bool bLastUpdate /* =
   }
 
   int iId = database->Persist(*this, bSingleUpdate, bLastUpdate);
-  if (iId > 0)
+  if (iId >= 0)
   {
-    m_iBroadcastId = iId;
     bReturn = true;
-    m_bChanged = false;
+
+    if (iId > 0)
+    {
+      m_iBroadcastId = iId;
+      m_bChanged = false;
+    }
   }
 
   database->Close();
