@@ -59,6 +59,20 @@ CEpg::~CEpg(void)
 /** @name Public methods */
 //@{
 
+bool CEpg::Delete(void)
+{
+  bool bReturn = false;
+  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+  if (!database || !database->Open())
+    return bReturn;
+
+  bReturn = database->Delete(*this);
+
+  database->Close();
+
+  return bReturn;
+}
+
 bool CEpg::HasValidEntries(void) const
 {
   return (m_iEpgID > 0 && /* valid EPG ID */

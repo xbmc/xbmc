@@ -95,6 +95,27 @@ CPVRChannel::CPVRChannel()
 
 /********** XBMC related channel methods **********/
 
+bool CPVRChannel::Delete(void)
+{
+  bool bReturn = false;
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  if (!database || !database->Open())
+    return bReturn;
+
+  /* delete the EPG table */
+  if (m_EPG)
+  {
+    m_EPG->Delete();
+    delete m_EPG;
+  }
+
+  bReturn = database->DeleteChannel(*this);
+
+  database->Close();
+
+  return bReturn;
+}
+
 bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
 {
   bool bChanged = false;

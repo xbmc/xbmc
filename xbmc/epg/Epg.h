@@ -107,6 +107,12 @@ public:
   virtual ~CEpg(void);
 
   /*!
+   * @brief Delete this EPG table from the database.
+   * @return True if it was deleted successfully, false otherwise.
+   */
+  bool Delete(void);
+
+  /*!
    * @brief The channel this EPG belongs to.
    * @return The channel this EPG belongs to
    */
