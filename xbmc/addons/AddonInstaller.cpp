@@ -359,6 +359,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom)
   }
 
   // resolve dependencies
+  CAddonMgr::Get().FindAddons(); // needed as GetDeps() grabs directly from c-pluff via the addon manager
   ADDONDEPS deps = addon->GetDeps();
   CStdString referer;
   referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().str.c_str());
