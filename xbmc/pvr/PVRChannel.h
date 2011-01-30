@@ -203,7 +203,7 @@ public:
    * @brief The name for this channel used by XBMC.
    * @return The name for this channel used by XBMC.
    */
-  CStdString ChannelName(void) const { return m_strChannelName; }
+  const CStdString ChannelName(void) const { return m_strChannelName; }
 
   /*!
    * @brief Set the name for this channel used by XBMC.
@@ -292,7 +292,7 @@ public:
    * @brief The name of this channel on the client.
    * @return The name of this channel on the client.
    */
-  CStdString ClientChannelName(void) const { return m_strClientChannelName; }
+  const CStdString ClientChannelName(void) const { return m_strClientChannelName; }
 
   /*!
    * @brief Set the name of this channel on the client.
@@ -316,7 +316,7 @@ public:
    *
    * @return The stream input type
    */
-  CStdString InputFormat(void) const { return m_strInputFormat; }
+  const CStdString InputFormat(void) const { return m_strInputFormat; }
 
   /*!
    * @brief Set the stream input type
@@ -334,7 +334,7 @@ public:
    *
    * @return The stream URL to access this channel.
    */
-  CStdString StreamURL(void) const { return m_strStreamURL; }
+  const CStdString StreamURL(void) const { return m_strStreamURL; }
 
   /*!
    * @brief Set the stream URL to access this channel.
@@ -352,7 +352,7 @@ public:
    * @brief The path in the XBMC VFS to be used by PVRManager to open and read the stream.
    * @return The path in the XBMC VFS to be used by PVRManager to open and read the stream.
    */
-  CStdString Path(void) const { return m_strFileNameAndPath; }
+  const CStdString Path(void) const { return m_strFileNameAndPath; }
 
 private:
   /*!
@@ -393,7 +393,7 @@ public:
   /*!
    * @return A friendly name for the used encryption system.
    */
-  CStdString EncryptionName() const;
+  const CStdString EncryptionName() const;
   //@}
 
   /*! @name EPG methods
@@ -469,7 +469,7 @@ public:
    *
    * @return The name of the scraper to be used for this channel.
    */
-  CStdString EPGScraper(void) const { return m_strEPGScraper; }
+  const CStdString EPGScraper(void) const { return m_strEPGScraper; }
 
   /*!
    * @brief Set the name of the scraper to be used for this channel.

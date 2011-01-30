@@ -173,16 +173,16 @@ bool CPVRChannel::SetGroupID(int iChannelGroupId, bool bSaveInDb /* = false */)
 
   if (m_iChannelGroupId != iChannelGroupId)
   {
-    CPVRChannelGroups *groups = g_PVRChannelGroups.Get(IsRadio());
+    const CPVRChannelGroups *groups = g_PVRChannelGroups.Get(IsRadio());
 
     if (bRemoveFromOldGroup)
     {
-      CPVRChannelGroup *oldGroup = groups->GetGroupById(m_iChannelGroupId);
+      CPVRChannelGroup *oldGroup = (CPVRChannelGroup *) groups->GetGroupById(m_iChannelGroupId);
       if (oldGroup)
         oldGroup->RemoveFromGroup(this);
     }
 
-    CPVRChannelGroup *newGroup = groups->GetGroupById(iChannelGroupId);
+    CPVRChannelGroup *newGroup = (CPVRChannelGroup *) groups->GetGroupById(iChannelGroupId);
     if (newGroup)
       newGroup->AddToGroup(this);
 
@@ -487,7 +487,7 @@ bool CPVRChannel::SetEncryptionSystem(int iClientEncryptionSystem, bool bSaveInD
   return bReturn;
 }
 
-CStdString CPVRChannel::EncryptionName() const
+const CStdString CPVRChannel::EncryptionName() const
 {
   // http://www.dvb.org/index.php?id=174
   // http://en.wikipedia.org/wiki/Conditional_access_system

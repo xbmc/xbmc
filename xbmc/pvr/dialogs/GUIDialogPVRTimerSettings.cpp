@@ -226,7 +226,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
   }
   else if (setting.id == CONTROL_TMR_RADIO)
   {
-    CPVRChannel* channeltag = NULL;
+    const CPVRChannel* channeltag = NULL;
     if (!tag->IsRadio())
     {
       EnableSettings(CONTROL_TMR_CHNAME_TV, true);
@@ -250,7 +250,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
   }
   else if (setting.id == CONTROL_TMR_CHNAME_TV || setting.id == CONTROL_TMR_CHNAME_RADIO)
   {
-    CPVRChannel* channeltag = ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(tag->IsRadio()))->GetByChannelNumber(tag->Number());
+    const CPVRChannel* channeltag = ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(tag->IsRadio()))->GetByChannelNumber(tag->Number());
 
     if (channeltag)
     {

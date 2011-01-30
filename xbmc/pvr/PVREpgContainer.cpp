@@ -191,7 +191,7 @@ int CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
   {
-    CPVRChannel *channel = channels->GetByIndex(iChannelPtr);
+    CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
     CPVREpg *epg = channel->GetEPG();
     if (!epg->HasValidEntries() || epg->IsUpdateRunning())
       continue;
@@ -219,7 +219,7 @@ int CPVREpgContainer::GetEPGNext(CFileItemList* results, bool bRadio)
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
   {
-    CPVRChannel *channel = channels->GetByIndex(iChannelPtr);
+    CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
     CPVREpg *epg = channel->GetEPG();
     if (!epg->HasValidEntries() || epg->IsUpdateRunning())
       continue;

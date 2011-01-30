@@ -95,7 +95,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
         {
           if (strDescription != "")
           {
-            g_PVRChannelGroups.Get(m_bIsRadio)->AddGroup(strDescription);
+            ((CPVRChannelGroups *) g_PVRChannelGroups.Get(m_bIsRadio))->AddGroup(strDescription);
             Update();
           }
         }
@@ -120,7 +120,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
 
           if (pDialog->IsConfirmed())
           {
-            g_PVRChannelGroups.Get(m_bIsRadio)->DeleteGroup(atoi(pItemGroup->m_strPath.c_str()));
+            ((CPVRChannelGroups *) g_PVRChannelGroups.Get(m_bIsRadio))->DeleteGroup(atoi(pItemGroup->m_strPath.c_str()));
             Update();
           }
         }
@@ -132,7 +132,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
         {
           if (m_CurrentGroupName != "")
           {
-            CPVRChannelGroup *group = g_PVRChannelGroups.Get(m_bIsRadio)->GetById(atoi(m_channelGroupItems->Get(m_iSelectedGroup)->m_strPath.c_str()));
+            CPVRChannelGroup *group = (CPVRChannelGroup *) g_PVRChannelGroups.Get(m_bIsRadio)->GetById(atoi(m_channelGroupItems->Get(m_iSelectedGroup)->m_strPath.c_str()));
             if (group)
               group->SetGroupName(m_CurrentGroupName, true);
 
@@ -155,7 +155,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
           {
             CFileItemPtr pItemGroup   = m_channelGroupItems->Get(m_iSelectedGroup);
             CFileItemPtr pItemChannel = m_channelLeftItems->Get(m_iSelectedLeft);
-            g_PVRChannelGroups.Get(m_bIsRadio)->AddChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), atoi(pItemGroup->m_strPath.c_str()));
+            ((CPVRChannelGroups *) g_PVRChannelGroups.Get(m_bIsRadio))->AddChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), atoi(pItemGroup->m_strPath.c_str()));
             Update();
           }
           return true;
@@ -171,7 +171,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
           if (m_channelRightItems->GetFileCount() > 0)
           {
             CFileItemPtr pItemChannel = m_channelRightItems->Get(m_iSelectedRight);
-            g_PVRChannelGroups.Get(m_bIsRadio)->AddChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), 0);
+            ((CPVRChannelGroups *) g_PVRChannelGroups.Get(m_bIsRadio))->AddChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), 0);
             Update();
           }
           return true;

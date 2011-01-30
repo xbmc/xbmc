@@ -182,7 +182,7 @@ const CEpgInfoTag *CEpg::InfoTagNow(void) const
 {
   const CEpgInfoTag *returnTag = NULL;
 
-  EnterCriticalSection(&((CEpg *) this)->m_critSection);
+  EnterCriticalSection(&m_critSection);
 
   if (!m_nowActive || !m_nowActive->IsActive())
   {
@@ -202,7 +202,7 @@ const CEpgInfoTag *CEpg::InfoTagNow(void) const
 
   returnTag = m_nowActive;
 
-  LeaveCriticalSection(&((CEpg *) this)->m_critSection);
+  LeaveCriticalSection(&m_critSection);
 
   return returnTag;
 }
@@ -219,7 +219,7 @@ const CEpgInfoTag *CEpg::InfoTag(long uniqueID, CDateTime StartTime, bool bEnter
   CEpgInfoTag *returnTag = NULL;
 
   if (bEnterCriticalSection)
-    EnterCriticalSection(&((CEpg *) this)->m_critSection);
+    EnterCriticalSection(&m_critSection);
 
   /* try to find the tag by UID */
   if (uniqueID > 0)
@@ -250,7 +250,7 @@ const CEpgInfoTag *CEpg::InfoTag(long uniqueID, CDateTime StartTime, bool bEnter
   }
 
   if (bEnterCriticalSection)
-    LeaveCriticalSection(&((CEpg *) this)->m_critSection);
+    LeaveCriticalSection(&m_critSection);
 
   return returnTag;
 }
@@ -259,7 +259,7 @@ const CEpgInfoTag *CEpg::InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) 
 {
   CEpgInfoTag *returnTag = NULL;
 
-  EnterCriticalSection(&((CEpg *) this)->m_critSection);
+  EnterCriticalSection(&m_critSection);
 
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
@@ -271,7 +271,7 @@ const CEpgInfoTag *CEpg::InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) 
     }
   }
 
-  LeaveCriticalSection(&((CEpg *) this)->m_critSection);
+  LeaveCriticalSection(&m_critSection);
 
   return returnTag;
 }
@@ -280,7 +280,7 @@ const CEpgInfoTag *CEpg::InfoTagAround(CDateTime Time) const
 {
   CEpgInfoTag *returnTag = NULL;
 
-  EnterCriticalSection(&((CEpg *) this)->m_critSection);
+  EnterCriticalSection(&m_critSection);
 
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
@@ -292,7 +292,7 @@ const CEpgInfoTag *CEpg::InfoTagAround(CDateTime Time) const
     }
   }
 
-  LeaveCriticalSection(&((CEpg *) this)->m_critSection);
+  LeaveCriticalSection(&m_critSection);
 
   return returnTag;
 }
@@ -387,7 +387,7 @@ int CEpg::Get(CFileItemList *results) const
   if (!HasValidEntries() || m_bUpdateRunning)
     return -1;
 
-  EnterCriticalSection(&((CEpg *) this)->m_critSection);
+  EnterCriticalSection(&m_critSection);
 
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
@@ -396,7 +396,7 @@ int CEpg::Get(CFileItemList *results) const
     results->Add(entry);
   }
 
-  LeaveCriticalSection(&((CEpg *) this)->m_critSection);
+  LeaveCriticalSection(&m_critSection);
 
   return size() - iInitialSize;
 }
@@ -408,7 +408,7 @@ int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter) const
   if (!HasValidEntries() || m_bUpdateRunning)
     return -1;
 
-  EnterCriticalSection(&((CEpg *) this)->m_critSection);
+  EnterCriticalSection(&m_critSection);
 
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
@@ -420,7 +420,7 @@ int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter) const
     }
   }
 
-  LeaveCriticalSection(&((CEpg *) this)->m_critSection);
+  LeaveCriticalSection(&m_critSection);
 
   return size() - iInitialSize;
 }

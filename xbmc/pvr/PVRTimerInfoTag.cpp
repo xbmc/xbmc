@@ -326,7 +326,7 @@ void CPVRTimerInfoTag::SetEpgInfoTag(const CPVREpgInfoTag *tag)
 
 int CPVRTimerInfoTag::ChannelNumber() const
 {
-  CPVRChannel *channeltag = CPVRChannelGroup::GetByClientFromAll(m_iClientNumber, m_iClientID);
+  const CPVRChannel *channeltag = CPVRChannelGroup::GetByClientFromAll(m_iClientNumber, m_iClientID);
   if (channeltag)
     return channeltag->ChannelNumber();
   else
@@ -335,7 +335,7 @@ int CPVRTimerInfoTag::ChannelNumber() const
 
 CStdString CPVRTimerInfoTag::ChannelName() const
 {
-  CPVRChannel *channeltag = CPVRChannelGroup::GetByClientFromAll(m_iClientNumber, m_iClientID);
+  const CPVRChannel *channeltag = CPVRChannelGroup::GetByClientFromAll(m_iClientNumber, m_iClientID);
   if (channeltag)
     return channeltag->ChannelName();
   else
@@ -364,7 +364,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::InstantTimer()
   }
 
   CFileItem *curPlayingChannel = g_PVRManager.GetCurrentPlayingItem();
-  CPVRChannel *channel = (curPlayingChannel) ? curPlayingChannel->GetPVRChannelInfoTag(): NULL;
+  const CPVRChannel *channel = (curPlayingChannel) ? curPlayingChannel->GetPVRChannelInfoTag(): NULL;
   if (!channel)
   {
     CLog::Log(LOGDEBUG, "%s - couldn't find current playing channel", __FUNCTION__);

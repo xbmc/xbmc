@@ -47,7 +47,7 @@ private:
   int                        m_iEpgID;         /*!< the database ID of this table */
   mutable const CEpgInfoTag *m_nowActive;      /*!< the tag that is currently active */
 
-  CRITICAL_SECTION           m_critSection;    /*!< critical section for changes in this table */
+  mutable CRITICAL_SECTION   m_critSection;    /*!< critical section for changes in this table */
 
   CPVRChannel *              m_Channel;        /*!< the channel this EPG belongs to */
 

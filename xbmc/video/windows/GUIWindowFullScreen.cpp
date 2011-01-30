@@ -697,7 +697,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       {
         int iNewGroup = -1; // All Channels
 
-        CPVRChannelGroups *groups = g_PVRChannelGroups.Get(g_PVRManager.IsPlayingRadio());
+        const CPVRChannelGroups *groups = g_PVRChannelGroups.Get(g_PVRManager.IsPlayingRadio());
 
         // Get the currently selected label of the Select button
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
@@ -1124,7 +1124,7 @@ void CGUIWindowFullScreen::FillInTVGroups()
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_GROUP_CHOOSER);
   g_windowManager.SendMessage(msgReset);
 
-  CPVRChannelGroups *groups = g_PVRChannelGroups.Get(g_PVRManager.IsPlayingRadio());
+  const CPVRChannelGroups *groups = g_PVRChannelGroups.Get(g_PVRManager.IsPlayingRadio());
 
   int iGroup        = 0;
   int iCurrentGroup = 0;

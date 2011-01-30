@@ -204,13 +204,13 @@ public:
    * @param channel The channel to find.
    * @return True if the channel was found, false otherwise.
    */
-  bool IsGroupMember(const CPVRChannel *channel);
+  bool IsGroupMember(const CPVRChannel *channel) const;
 
   /*!
    * @brief Get the first channel in this group.
    * @return The first channel.
    */
-  CPVRChannel *GetFirstChannel(void);
+  const CPVRChannel *GetFirstChannel(void) const;
 
   /*!
    * @brief True if this group holds radio channels, false if it holds TV channels.
@@ -234,7 +234,7 @@ public:
    * @brief The name of this group.
    * @return The name of this group.
    */
-  CStdString GroupName(void) const { return m_strGroupName; }
+  const CStdString GroupName(void) const { return m_strGroupName; }
 
   /*!
    * @brief The sort order of this group.
@@ -274,49 +274,49 @@ public:
    * @param iClientID The ID of the client.
    * @return The channel or NULL if it wasn't found.
    */
-  CPVRChannel *GetByClient(int iClientChannelNumber, int iClientID);
+  const CPVRChannel *GetByClient(int iClientChannelNumber, int iClientID) const;
 
   /*!
    * @brief Get a channel given it's channel ID.
    * @param iChannelID The channel ID.
    * @return The channel or NULL if it wasn't found.
    */
-  CPVRChannel *GetByChannelID(long iChannelID);
+  const CPVRChannel *GetByChannelID(long iChannelID) const;
 
   /*!
    * @brief Get a channel given it's unique ID.
    * @param iUniqueID The unique ID.
    * @return The channel or NULL if it wasn't found.
    */
-  CPVRChannel *GetByUniqueID(int iUniqueID);
+  const CPVRChannel *GetByUniqueID(int iUniqueID) const;
 
   /*!
    * @brief Get a channel given it's channel number.
    * @param iChannelNumber The channel number.
    * @return The channel or NULL if it wasn't found.
    */
-  CPVRChannel *GetByChannelNumber(int iChannelNumber);
+  const CPVRChannel *GetByChannelNumber(int iChannelNumber) const;
 
   /*!
    * @brief Get the next channel given it's channel number.
    * @param iChannelNumber The channel number.
    * @return The channel or NULL if it wasn't found.
    */
-  CPVRChannel *GetByChannelNumberUp(int iChannelNumber);
+  const CPVRChannel *GetByChannelNumberUp(int iChannelNumber) const;
 
   /*!
    * @brief Get the previous channel given it's channel number.
    * @param iChannelNumber The channel number.
    * @return The channel or NULL if it wasn't found.
    */
-  CPVRChannel *GetByChannelNumberDown(int iChannelNumber);
+  const CPVRChannel *GetByChannelNumberDown(int iChannelNumber) const;
 
   /*!
    * @brief Get a channel given it's index in this container.
    * @param index The index in this container.
    * @return The channel or NULL if it wasn't found.
    */
-  CPVRChannel *GetByIndex(unsigned int index);
+  const CPVRChannel *GetByIndex(unsigned int index) const;
 
   /*!
    * @brief Get the list of channels in a group.
@@ -325,7 +325,7 @@ public:
    * @param bHidden Get hidden channels or not.
    * @return The amount of channels that were added to the list.
    */
-  int GetChannels(CFileItemList* results, int iGroupID = -1, bool bHidden = false);
+  int GetChannels(CFileItemList* results, int iGroupID = -1, bool bHidden = false) const;
 
   /*!
    * @brief The amount of channels in this container.
@@ -338,7 +338,7 @@ public:
    * @param results The file list to store the results in.
    * @return The amount of channels that were added to the list.
    */
-  int GetHiddenChannels(CFileItemList* results);
+  int GetHiddenChannels(CFileItemList* results) const;
 
   /*!
    * @brief The amount of hidden channels in this container.
@@ -368,7 +368,7 @@ public:
    * @param strPath The path.
    * @return The channel or NULL if it wasn't found.
    */
-  static CPVRChannel *GetByPath(const CStdString &strPath);
+  static const CPVRChannel *GetByPath(const CStdString &strPath);
 
   /*!
    * @brief Get the directory for a path.
@@ -390,21 +390,21 @@ public:
    * @param iClientID The ID of the client.
    * @return The channel or NULL if it wasn't found.
    */
-  static CPVRChannel *GetByClientFromAll(int iClientChannelNumber, int iClientID);
+  static const CPVRChannel *GetByClientFromAll(int iClientChannelNumber, int iClientID);
 
   /*!
    * @brief Get a channel given it's channel ID from all containers.
    * @param iChannelID The channel ID.
    * @return The channel or NULL if it wasn't found.
    */
-  static CPVRChannel *GetByChannelIDFromAll(long iChannelID);
+  static const CPVRChannel *GetByChannelIDFromAll(long iChannelID);
 
   /*!
    * @brief Get a channel given it's unique ID.
    * @param iUniqueID The unique ID of the channel.
    * @return The channel or NULL if it wasn't found.
    */
-  static CPVRChannel *GetByUniqueIDFromAll(int iUniqueID);
+  static const CPVRChannel *GetByUniqueIDFromAll(int iUniqueID);
 
   //@}
 };

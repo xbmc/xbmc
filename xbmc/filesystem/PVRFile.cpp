@@ -45,7 +45,7 @@ bool CPVRFile::Open(const CURL& url)
 
   if (strURL.Left(18) == "pvr://channels/tv/")
   {
-    CPVRChannel *tag = CPVRChannelGroup::GetByPath(strURL);
+    const CPVRChannel *tag = CPVRChannelGroup::GetByPath(strURL);
     if (tag)
     {
       if (!g_PVRManager.OpenLiveStream(tag))
@@ -62,7 +62,7 @@ bool CPVRFile::Open(const CURL& url)
   }
   else if (strURL.Left(21) == "pvr://channels/radio/")
   {
-    CPVRChannel *tag = CPVRChannelGroup::GetByPath(strURL);
+    const CPVRChannel *tag = CPVRChannelGroup::GetByPath(strURL);
     if (tag)
     {
       if (!g_PVRManager.OpenLiveStream(tag))
@@ -247,7 +247,7 @@ CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
 
   if (FileName.substr(0, 14) == "pvr://channels")
   {
-    CPVRChannel *tag = CPVRChannelGroup::GetByPath(FileName);
+    const CPVRChannel *tag = CPVRChannelGroup::GetByPath(FileName);
     if (tag)
     {
       CStdString stream = tag->StreamURL();

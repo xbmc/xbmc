@@ -96,7 +96,7 @@ bool CPVRChannelGroupInternal::UpdateTimers(void)
   for (unsigned int ptr = 0; ptr < PVRTimers.size(); ptr++)
   {
     CPVRTimerInfoTag timer = PVRTimers[ptr];
-    CPVRChannel *tag = GetByClient(timer.Number(), timer.ClientID());
+    const CPVRChannel *tag = GetByClient(timer.Number(), timer.ClientID());
     if (tag)
       timer.SetNumber(tag->ChannelNumber());
   }
@@ -304,7 +304,7 @@ bool CPVRChannelGroupInternal::Update(CPVRChannelGroup *channels)
       continue;
 
     /* check if this channel is still present */
-    CPVRChannel *existingChannel = channels->GetByUniqueID(channel->UniqueID());
+    const CPVRChannel *existingChannel = channels->GetByUniqueID(channel->UniqueID());
     if (existingChannel)
     {
       /* if it's present, update the current tag */

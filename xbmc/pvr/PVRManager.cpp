@@ -402,7 +402,7 @@ bool CPVRManager::ContinueLastChannel()
 
   if (lastChannel > 0)
   {
-    CPVRChannel *tag = CPVRChannelGroup::GetByChannelIDFromAll(lastChannel);
+    const CPVRChannel *tag = CPVRChannelGroup::GetByChannelIDFromAll(lastChannel);
     if (!tag)
       return false;
 

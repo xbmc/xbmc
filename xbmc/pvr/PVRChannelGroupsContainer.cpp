@@ -64,16 +64,16 @@ void CPVRChannelGroupsContainer::Unload(void)
   }
 }
 
-CPVRChannelGroups *CPVRChannelGroupsContainer::Get(bool bRadio)
+const CPVRChannelGroups *CPVRChannelGroupsContainer::Get(bool bRadio) const
 {
   return bRadio ? m_groupsRadio : m_groupsTV;
 }
 
-CPVRChannelGroup *CPVRChannelGroupsContainer::GetGroupAll(bool bRadio)
+const CPVRChannelGroup *CPVRChannelGroupsContainer::GetGroupAll(bool bRadio) const
 {
-  CPVRChannelGroup *group = NULL;
+  const CPVRChannelGroup *group = NULL;
 
-  CPVRChannelGroups *groups = Get(bRadio);
+  const CPVRChannelGroups *groups = Get(bRadio);
   if (groups)
     group = groups->GetGroupAll();
 

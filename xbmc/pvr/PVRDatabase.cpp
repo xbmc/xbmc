@@ -536,7 +536,7 @@ int CPVRDatabase::GetChannelsInGroup(CPVRChannelGroup *group)
 
     while (!m_pDS->eof())
     {
-      CPVRChannel *channel = g_PVRChannelGroups.GetGroupAll(group->IsRadio())->GetByChannelIDFromAll(m_pDS->fv("idChannel").get_asInt());
+      CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups.GetGroupAll(group->IsRadio())->GetByChannelIDFromAll(m_pDS->fv("idChannel").get_asInt());
 
       if (channel && group->AddToGroup(channel))
         ++iReturn;
