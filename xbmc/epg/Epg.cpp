@@ -84,7 +84,7 @@ bool CEpg::DeleteInfoTag(CEpgInfoTag *tag)
     {
       /* fix previous and next pointers */
       const CEpgInfoTag *previousTag = (iTagPtr > 0) ? at(iTagPtr - 1) : NULL;
-      const CEpgInfoTag *nextTag = (iTagPtr < size() - 2) ? at(iTagPtr + 1) : NULL;
+      const CEpgInfoTag *nextTag = (iTagPtr < size() - 1) ? at(iTagPtr + 1) : NULL;
       if (previousTag)
         previousTag->m_nextEvent = nextTag;
       if (nextTag)
