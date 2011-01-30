@@ -39,7 +39,7 @@ class CEpgInfoTag
   friend class CPVREpgInfoTag;
 
 private:
-  CEpg *                     m_Epg;                /*!< the schedule this event belongs to */
+  const CEpg *               m_Epg;                /*!< the schedule this event belongs to */
 
   int                        m_iBroadcastId;       /*!< database ID */
   CStdString                 m_strTitle;           /*!< title */

@@ -354,7 +354,7 @@ bool CEpgDatabase::PersistLastEpgScanTime(void)
 
 int CEpgDatabase::Persist(const CEpg &epg, bool bSingleUpdate /* = true */, bool bLastUpdate /* = false */)
 {
-  bool iReturn = -1;
+  int iReturn = -1;
 
   CStdString strQuery;
   if (epg.EpgID() > 0)
@@ -371,12 +371,12 @@ int CEpgDatabase::Persist(const CEpg &epg, bool bSingleUpdate /* = true */, bool
   if (bSingleUpdate)
   {
     if (ExecuteQuery(strQuery))
-      iReturn = m_pDS->lastinsertid();
+      iReturn = epg.EpgID() <= 0 ? m_pDS->lastinsertid() : epg.EpgID();
   }
   else
   {
     if (QueueInsertQuery(strQuery))
-      iReturn = 0;
+      iReturn = epg.EpgID() <= 0 ? 0 : epg.EpgID();
 
     if (bLastUpdate)
       CommitInsertQueries();
