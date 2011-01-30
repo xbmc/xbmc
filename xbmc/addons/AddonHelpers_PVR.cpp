@@ -145,9 +145,9 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
     return;
   }
 
-  CPVRTimers *xbmcTimers = (CPVRTimers*) handle->DATA_ADDRESS;
-  CPVRClient* client     = (CPVRClient*) handle->CALLER_ADDRESS;
-  CPVRChannel *channel   = CPVRChannelGroup::GetByClientFromAll(timer->channelNum, client->GetClientID());
+  CPVRTimers *xbmcTimers     = (CPVRTimers*) handle->DATA_ADDRESS;
+  CPVRClient* client         = (CPVRClient*) handle->CALLER_ADDRESS;
+  const CPVRChannel *channel = CPVRChannelGroup::GetByClientFromAll(timer->channelNum, client->GetClientID());
 
   if (channel == NULL)
   {

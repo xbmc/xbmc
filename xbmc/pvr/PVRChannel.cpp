@@ -508,7 +508,7 @@ bool CPVRChannel::SetEncryptionSystem(int iClientEncryptionSystem, bool bSaveInD
   return bReturn;
 }
 
-const CStdString CPVRChannel::EncryptionName() const
+const CStdString &CPVRChannel::EncryptionName() const
 {
   // http://www.dvb.org/index.php?id=174
   // http://en.wikipedia.org/wiki/Conditional_access_system

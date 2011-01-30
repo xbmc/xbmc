@@ -186,13 +186,13 @@ public:
    * @brief Get the start time of the first entry.
    * @return The start time.
    */
-  virtual const CDateTime GetFirstEPGDate(void) { return m_First; }
+  virtual const CDateTime &GetFirstEPGDate(void) { return m_First; }
 
   /*!
     * @brief Get the end time of the last entry.
     * @return The end time.
     */
-  virtual const CDateTime GetLastEPGDate(void) { return m_Last; }
+  virtual const CDateTime &GetLastEPGDate(void) { return m_Last; }
 };
 
 extern CEpgContainer g_EpgContainer; /*!< The container for all EPG tables */

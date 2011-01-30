@@ -161,7 +161,7 @@ public:
    * @param iGroupId The ID of the group.
    * @return The name of the group or localized string 953 if it wasn't found.
    */
-  const CStdString GetGroupName(int iGroupId) const;
+  const CStdString &GetGroupName(int iGroupId) const;
 
   /*!
    * @brief Get the ID of a group given it's name.

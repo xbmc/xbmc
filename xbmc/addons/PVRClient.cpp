@@ -498,7 +498,7 @@ PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecordingInfoTag &recinfo)
   return ret;
 }
 
-PVR_ERROR CPVRClient::RenameRecording(const CPVRRecordingInfoTag &recinfo, CStdString &newname)
+PVR_ERROR CPVRClient::RenameRecording(const CPVRRecordingInfoTag &recinfo, const CStdString &newname)
 {
   CSingleLock lock(m_critSection);
 

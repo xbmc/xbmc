@@ -116,13 +116,13 @@ time_t CPVRTimerInfoTag::FirstDayTime(void) const
   return firstday;
 }
 
-void CPVRTimerInfoTag::SetStart(CDateTime Start)
+void CPVRTimerInfoTag::SetStart(const CDateTime &Start)
 {
   m_StartTime = Start;
   m_bValidSummary = false;
 }
 
-void CPVRTimerInfoTag::SetStop(CDateTime Start)
+void CPVRTimerInfoTag::SetStop(const CDateTime &Start)
 {
   m_StopTime = Start;
   m_bValidSummary = false;
@@ -186,7 +186,7 @@ void CPVRTimerInfoTag::UpdateSummary(void)
 /**
  * Get the status string of this Timer, is used by the GUIInfoManager
  */
-const CStdString CPVRTimerInfoTag::GetStatus() const
+const CStdString &CPVRTimerInfoTag::GetStatus() const
 {
   if (m_strFileNameAndPath == "pvr://timers/add.timer")
     return g_localizeStrings.Get(19026);

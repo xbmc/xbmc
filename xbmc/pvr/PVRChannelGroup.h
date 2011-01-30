@@ -234,7 +234,7 @@ public:
    * @brief The name of this group.
    * @return The name of this group.
    */
-  const CStdString GroupName(void) const { return m_strGroupName; }
+  const CStdString &GroupName(void) const { return m_strGroupName; }
 
   /*!
    * @brief The sort order of this group.

@@ -99,23 +99,23 @@ public:
 
   void Reset();
 
-  const CStdString GetStatus() const;
+  const CStdString &GetStatus() const;
 
-  CDateTime Start(void) const { return m_StartTime; }
+  const CDateTime &Start(void) const { return m_StartTime; }
   time_t StartTime(void) const;
-  void SetStart(CDateTime Start);
+  void SetStart(const CDateTime &Start);
 
-  CDateTime Stop(void) const { return m_StopTime; }
+  const CDateTime &Stop(void) const { return m_StopTime; }
   time_t StopTime(void) const;
-  void SetStop(CDateTime Stop);
+  void SetStop(const CDateTime &Stop);
 
   bool SetDuration(int iDuration);
 
-  CStdString Title(void) const { return m_strTitle; }
-  void SetTitle(CStdString name) { m_strTitle = name; }
+  const CStdString &Title(void) const { return m_strTitle; }
+  void SetTitle(const CStdString &name) { m_strTitle = name; }
 
-  CStdString Dir(void) const { return m_strDir; }
-  void SetDir(CStdString dir) { m_strDir = dir; }
+  const CStdString &Dir(void) const { return m_strDir; }
+  void SetDir(const CStdString &dir) { m_strDir = dir; }
 
   int Number(void) const { return m_iChannelNumber; }
   void SetNumber(int Number) { m_iChannelNumber = Number; }
@@ -150,15 +150,15 @@ public:
   int Weekdays(void) const { return m_iWeekdays; }
   void SetWeekdays(int Weekdays);
 
-  CDateTime FirstDay(void) const { return m_FirstDay; }
+  const CDateTime &FirstDay(void) const { return m_FirstDay; }
   time_t FirstDayTime(void) const;
-  void SetFirstDay(CDateTime FirstDay) { m_FirstDay = FirstDay; }
+  void SetFirstDay(const CDateTime &FirstDay) { m_FirstDay = FirstDay; }
 
-  CStdString Summary(void) const { return m_strSummary; }
-  void SetSummary(CStdString Summary) { m_strSummary = Summary; }
+  const CStdString &Summary(void) const { return m_strSummary; }
+  void SetSummary(const CStdString &Summary) { m_strSummary = Summary; }
 
-  CStdString Path(void) const { return m_strFileNameAndPath; }
-  void SetPath(CStdString path) { m_strFileNameAndPath = path; }
+  const CStdString &Path(void) const { return m_strFileNameAndPath; }
+  void SetPath(const CStdString &path) { m_strFileNameAndPath = path; }
 
   static CPVRTimerInfoTag *InstantTimer();
   static CPVRTimerInfoTag *CreateFromEpg(const CPVREpgInfoTag &tag);

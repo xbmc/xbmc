@@ -195,7 +195,7 @@ public:
    * @brief The path to the icon for this channel.
    * @return The path to the icon for this channel.
    */
-  CStdString IconPath(void) const { return m_strIconPath; }
+  const CStdString &IconPath(void) const { return m_strIconPath; }
 
   /*!
    * @brief Set the path to the icon for this channel.
@@ -209,7 +209,7 @@ public:
    * @brief The name for this channel used by XBMC.
    * @return The name for this channel used by XBMC.
    */
-  const CStdString ChannelName(void) const { return m_strChannelName; }
+  const CStdString &ChannelName(void) const { return m_strChannelName; }
 
   /*!
    * @brief Set the name for this channel used by XBMC.
@@ -298,7 +298,7 @@ public:
    * @brief The name of this channel on the client.
    * @return The name of this channel on the client.
    */
-  const CStdString ClientChannelName(void) const { return m_strClientChannelName; }
+  const CStdString &ClientChannelName(void) const { return m_strClientChannelName; }
 
   /*!
    * @brief Set the name of this channel on the client.
@@ -322,7 +322,7 @@ public:
    *
    * @return The stream input type
    */
-  const CStdString InputFormat(void) const { return m_strInputFormat; }
+  const CStdString &InputFormat(void) const { return m_strInputFormat; }
 
   /*!
    * @brief Set the stream input type
@@ -340,7 +340,7 @@ public:
    *
    * @return The stream URL to access this channel.
    */
-  const CStdString StreamURL(void) const { return m_strStreamURL; }
+  const CStdString &StreamURL(void) const { return m_strStreamURL; }
 
   /*!
    * @brief Set the stream URL to access this channel.
@@ -358,7 +358,7 @@ public:
    * @brief The path in the XBMC VFS to be used by PVRManager to open and read the stream.
    * @return The path in the XBMC VFS to be used by PVRManager to open and read the stream.
    */
-  const CStdString Path(void) const { return m_strFileNameAndPath; }
+  const CStdString &Path(void) const { return m_strFileNameAndPath; }
 
 private:
   /*!
@@ -399,7 +399,7 @@ public:
   /*!
    * @return A friendly name for the used encryption system.
    */
-  const CStdString EncryptionName() const;
+  const CStdString &EncryptionName() const;
   //@}
 
   /*! @name EPG methods
@@ -475,7 +475,7 @@ public:
    *
    * @return The name of the scraper to be used for this channel.
    */
-  const CStdString EPGScraper(void) const { return m_strEPGScraper; }
+  const CStdString &EPGScraper(void) const { return m_strEPGScraper; }
 
   /*!
    * @brief Set the name of the scraper to be used for this channel.

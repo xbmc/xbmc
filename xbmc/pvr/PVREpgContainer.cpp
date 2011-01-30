@@ -121,12 +121,12 @@ void CPVREpgContainer::UpdateFirstAndLastEPGDates(const CPVREpgInfoTag &tag)
   }
 }
 
-const CDateTime CPVREpgContainer::GetFirstEPGDate(bool bRadio /* = false */)
+const CDateTime &CPVREpgContainer::GetFirstEPGDate(bool bRadio /* = false */)
 {
   return bRadio ? m_RadioFirst : m_TVFirst;
 }
 
-const CDateTime CPVREpgContainer::GetLastEPGDate(bool bRadio /* = false */)
+const CDateTime &CPVREpgContainer::GetLastEPGDate(bool bRadio /* = false */)
 {
   return bRadio ? m_RadioLast : m_TVLast;
 }

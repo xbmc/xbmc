@@ -133,7 +133,7 @@ bool CPVRRecordingInfoTag::Delete(void) const
   return false;
 }
 
-bool CPVRRecordingInfoTag::Rename(CStdString &newName) const
+bool CPVRRecordingInfoTag::Rename(const CStdString &newName) const
 {
   try
   {

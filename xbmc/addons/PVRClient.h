@@ -80,7 +80,7 @@ public:
   int GetNumRecordings(void);
   PVR_ERROR GetAllRecordings(CPVRRecordings *results);
   PVR_ERROR DeleteRecording(const CPVRRecordingInfoTag &recinfo);
-  PVR_ERROR RenameRecording(const CPVRRecordingInfoTag &recinfo, CStdString &newname);
+  PVR_ERROR RenameRecording(const CPVRRecordingInfoTag &recinfo, const CStdString &newname);
 
   /* Timers */
   int GetNumTimers(void);

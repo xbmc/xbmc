@@ -310,7 +310,7 @@ bool CPVRChannelGroups::DeleteGroup(int iGroupId)
   return bReturn;
 }
 
-const CStdString CPVRChannelGroups::GetGroupName(int iGroupId) const
+const CStdString &CPVRChannelGroups::GetGroupName(int iGroupId) const
 {
   if (iGroupId != XBMC_INTERNAL_GROUPID)
   {
