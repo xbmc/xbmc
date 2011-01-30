@@ -22,7 +22,7 @@
  */
 
 #include <stdio.h>
-#include "StdString.h"
+#include <string>
 
 #define LOG_LEVEL_NONE         -1 // nothing at all is logged
 #define LOG_LEVEL_NORMAL        0 // shows notice, error, severe and fatal
@@ -53,7 +53,7 @@ class CLog
   static int         m_logLevel;
   static int         m_repeatCount;
   static int         m_repeatLogLevel;
-  static CStdString* m_repeatLine;
+  static std::string m_repeatLine;
 public:
   CLog();
   virtual ~CLog(void);
