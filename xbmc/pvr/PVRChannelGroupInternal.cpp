@@ -82,7 +82,7 @@ bool CPVRChannelGroupInternal::Update()
     CPVRChannelGroupInternal PVRChannels_tmp(m_bRadio);
 
     PVRChannels_tmp.LoadFromClients(false);
-    bReturn = Update(&PVRChannels_tmp);
+    bReturn = UpdateGroupEntries(&PVRChannels_tmp);
 
     database->Close();
   }
@@ -289,7 +289,7 @@ int CPVRChannelGroupInternal::GetFromClients(void)
   return size() - iCurSize;
 }
 
-bool CPVRChannelGroupInternal::Update(CPVRChannelGroup *channels)
+bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
 {
   /* the database has already been opened */
   CPVRDatabase *database = g_PVRManager.GetTVDatabase();

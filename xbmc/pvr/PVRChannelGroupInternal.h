@@ -63,7 +63,7 @@ private:
    * @param channels The channels to use to update this list.
    * @return True if everything went well, false otherwise.
    */
-  bool Update(CPVRChannelGroup *channels);
+  bool UpdateGroupEntries(CPVRChannelGroup *channels);
 
   /*!
    * @brief Refresh the channel list from the clients.

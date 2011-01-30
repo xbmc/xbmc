@@ -491,7 +491,7 @@ bool CPVRChannelGroup::RemoveByUniqueID(long iUniqueID)
   return false;
 }
 
-bool CPVRChannelGroup::Update(CPVRChannelGroup *channels)
+bool CPVRChannelGroup::UpdateGroupEntries(CPVRChannelGroup *channels)
 {
   // TODO
   return false;

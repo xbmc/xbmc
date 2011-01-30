@@ -78,7 +78,7 @@ private:
    * @param channels The channels to use to update this list.
    * @return True if everything went well, false otherwise.
    */
-  virtual bool Update(CPVRChannelGroup *channels);
+  virtual bool UpdateGroupEntries(CPVRChannelGroup *channels);
 
   /*!
    * @brief Remove invalid channels from this container.
