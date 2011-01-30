@@ -63,5 +63,7 @@ public:
   static bool Init(const char* path);
   static void SetLogLevel(int level);
   static int  GetLogLevel();
+private:
+  static void OutputDebugString(const std::string& line);
 };
 
