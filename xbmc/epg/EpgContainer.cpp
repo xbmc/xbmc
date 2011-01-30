@@ -145,8 +145,7 @@ void CEpgContainer::Process(void)
     if (!m_bStop && (iNow > m_iLastEpgUpdate + m_iUpdateTime || !m_bDatabaseLoaded))
     {
       UpdateEPG(bFirstUpdate);
-      if (bFirstUpdate)
-        bFirstUpdate = false;
+      bFirstUpdate = false;
     }
 
     /* clean up old entries */
