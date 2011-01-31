@@ -45,7 +45,6 @@ using namespace std;
 cVNSISession::cVNSISession()
   : m_fd(INVALID_SOCKET)
   , m_protocol(0)
-  , m_queue_size(1000)
 {
 }
 
@@ -340,44 +339,22 @@ bool cVNSISession::SendMessage(cRequestPacket* vrp)
 
 cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp, bool sequence)
 {
-  cResponsePacket *pkt = NULL;
-
   if(!SendMessage(vrp))
     return NULL;
 
-  std::deque<cResponsePacket*> queue;
-  m_queue.swap(queue);
+  cResponsePacket *pkt = ReadMessage();
 
-  while((pkt = ReadMessage()))
+  if (!pkt)
+    return NULL;
+
+  /* Discard everything other as response packets until it is received */
+  if (pkt->getChannelID() == CHANNEL_REQUEST_RESPONSE || sequence)
   {
-    if (!pkt)
-      return NULL;
-
-    /* Discard everything other as response packets until it is received */
-    if (pkt->getChannelID() != CHANNEL_REQUEST_RESPONSE)
-    {
-      delete pkt;
-      continue;
-    }
-
-    if(!sequence)
-      break;
-
-    if (pkt->getRequestID() == vrp->getSerial())
-      break;
-
-    queue.push_back(pkt);
-    if(queue.size() >= m_queue_size)
-    {
-      XBMC->Log(LOG_ERROR, "cVNSISession::ReadResult - maximum queue size (%u) reached", m_queue_size);
-      m_queue.swap(queue);
-      return NULL;
-    }
+    return pkt;
   }
 
-  m_queue.swap(queue);
-
-  return pkt;
+  delete pkt;
+  return NULL;
 }
 
 bool cVNSISession::ReadSuccess(cRequestPacket* vrp, bool sequence, std::string action)
