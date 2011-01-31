@@ -74,6 +74,16 @@ private:
   bool              m_IsMPEGPS;                     /*!> TS Stream contains MPEG PS data like from pvrinput */
   cResponsePacket*  m_packetEmpty;                  /*!> Empty stream packet */
 
+  struct {
+    uint32_t channel;
+    uint32_t opcode;
+    uint32_t id;
+    uint32_t duration;
+    int64_t dts;
+    int64_t pts;
+    uint32_t length;
+  } m_streamHeader;
+
 protected:
   virtual void Action(void);
 

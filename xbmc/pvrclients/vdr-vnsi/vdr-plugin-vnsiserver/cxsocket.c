@@ -57,7 +57,7 @@ void cxSocket::close() {
   }
 }
 
-ssize_t cxSocket::write(const void *buffer, size_t size, int timeout_ms)
+ssize_t cxSocket::write(const void *buffer, size_t size, int timeout_ms, bool more_data)
 {
   cMutexLock CmdLock((cMutex*)&m_MutexWrite);
 
@@ -74,7 +74,7 @@ ssize_t cxSocket::write(const void *buffer, size_t size, int timeout_ms)
       return written-size;
     }
 
-    ssize_t p = ::send(m_fd, ptr, size, MSG_NOSIGNAL);
+    ssize_t p = ::send(m_fd, ptr, size, MSG_NOSIGNAL | (more_data ? MSG_MORE : 0));
 
     if (p <= 0)
     {
