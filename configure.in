@@ -465,6 +465,14 @@ case $host in
      ARCH="x86_64-linux"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
      ;;
+  i386-*-freebsd*)
+     ARCH="x86-freebsd"
+     MAKE="gmake"
+     ;;
+  amd64-*-freebsd*)
+     ARCH="x86_64-freebsd"
+     MAKE="gmake"
+     ;;
   arm-apple-darwin*)
      use_joystick=no
      use_neon=yes
