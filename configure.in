@@ -1081,7 +1081,7 @@ if test "$HAVE_ZIP" = "no" ; then
   AC_MSG_ERROR($missing_program)
 fi
 
-if test "$ARCH" = "i486-linux"; then
+if test "$ARCH" = "i486-linux" || test "$ARCH" = "x86-freebsd"; then
   AC_CHECK_PROG(HAVE_NASM,nasm,"yes","no",)
   if test "$HAVE_NASM" = "no" ; then
     AC_MSG_ERROR($missing_program)
