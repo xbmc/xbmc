@@ -98,6 +98,8 @@ std::vector<CStdString> CPosixMountProvider::GetDiskUsage()
 
 #ifdef __APPLE__
   FILE* pipe = popen("df -hT ufs,cd9660,hfs,udf", "r");
+#elif defined(__FreeBSD__)
+  FILE* pipe = popen("df -h -t ufs,cd9660,hfs,udf,zfs", "r");
 #else
   FILE* pipe = popen("df -hx tmpfs", "r");
 #endif
