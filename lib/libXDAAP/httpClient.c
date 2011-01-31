@@ -61,6 +61,11 @@ typedef int SOCKET;
 #include <netinet/in.h>
 #endif
 
+#if defined(__FreeBSD__)
+#include <sys/types.h>
+#include <sys/socket.h>
+#endif
+
 struct HTTP_ConnectionTAG
 {
     char *host;
