@@ -535,6 +535,10 @@ void CWinRenderer::UpdatePSVideoFilter()
 {
   SAFE_RELEASE(m_scalerShader)
 
+  BufferFormat format;
+  if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_YV12)      format = YV12;
+  else if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_NV12) format = NV12;
+
   if (m_bUseHQScaler)
   {
     m_scalerShader = new CConvolutionShader();
@@ -560,7 +564,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   if (m_bUseHQScaler)
   {
     m_colorShader = new CYUV2RGBShader();
-    if (!m_colorShader->Create(false, m_sourceWidth, m_sourceHeight))
+    if (!m_colorShader->Create(false, m_sourceWidth, m_sourceHeight, format))
     {
       m_IntermediateTarget.Release();
       SAFE_RELEASE(m_scalerShader)
@@ -572,7 +576,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   if (!m_bUseHQScaler) //fallback from HQ scalers and multipass creation above
   {
     m_colorShader = new CYUV2RGBShader();
-    if (!m_colorShader->Create(true, m_sourceWidth, m_sourceHeight))
+    if (!m_colorShader->Create(true, m_sourceWidth, m_sourceHeight, format))
       SAFE_RELEASE(m_colorShader);
     // we're in big trouble - should fallback on D3D accelerated or sw method
   }
@@ -682,35 +686,46 @@ void CWinRenderer::Render(DWORD flags)
 
 void CWinRenderer::RenderSW()
 {
+  enum PixelFormat format;
+
+  if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_YV12)      format = PIX_FMT_YUV420P;
+  else if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_NV12) format = PIX_FMT_NV12;
+
   // 1. convert yuv to rgb
   m_sw_scale_ctx = m_dllSwScale->sws_getCachedContext(m_sw_scale_ctx,
-                                                      m_sourceWidth, m_sourceHeight, PIX_FMT_YUV420P,
+                                                      m_sourceWidth, m_sourceHeight, format,
                                                       m_sourceWidth, m_sourceHeight, PIX_FMT_BGRA,
                                                       SWS_FAST_BILINEAR | SwScaleCPUFlags(), NULL, NULL, NULL);
 
   YUVBuffer* buf = (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
 
-  D3DLOCKED_RECT srclr[3];
-  if(!(buf->planes[0].texture.LockRect(0, &srclr[0], NULL, D3DLOCK_READONLY))
-  || !(buf->planes[1].texture.LockRect(0, &srclr[1], NULL, D3DLOCK_READONLY))
-  || !(buf->planes[2].texture.LockRect(0, &srclr[2], NULL, D3DLOCK_READONLY)))
-    CLog::Log(LOGERROR, __FUNCTION__" - failed to lock yuv textures into memory");
+  D3DLOCKED_RECT   srclr[MAX_PLANES];
+  uint8_t         *src[MAX_PLANES];
+  int              srcStride[MAX_PLANES];
+
+  for (unsigned int idx = 0; idx < buf->GetActivePlanes(); idx++)
+  {
+    if(!(buf->planes[idx].texture.LockRect(0, &srclr[idx], NULL, D3DLOCK_READONLY)))
+      CLog::Log(LOGERROR, __FUNCTION__" - failed to lock yuv textures into memory");
+    else
+    {
+      src[idx] = (uint8_t*)srclr[idx].pBits;
+      srcStride[idx] = srclr[idx].Pitch;
+    }
+  }
   
   D3DLOCKED_RECT destlr = {0,0};
   if (!m_SWTarget.LockRect(0, &destlr, NULL, D3DLOCK_DISCARD))
     CLog::Log(LOGERROR, __FUNCTION__" - failed to lock swtarget texture into memory");
 
-  uint8_t *src[]  = { (uint8_t*)srclr[0].pBits, (uint8_t*)srclr[1].pBits, (uint8_t*)srclr[2].pBits, 0 };
-  int srcStride[] = { srclr[0].Pitch, srclr[1].Pitch, srclr[2].Pitch, 0 };
   uint8_t *dst[]  = { (uint8_t*) destlr.pBits, 0, 0, 0 };
   int dstStride[] = { destlr.Pitch, 0, 0, 0 };
 
   m_dllSwScale->sws_scale(m_sw_scale_ctx, src, srcStride, 0, m_sourceHeight, dst, dstStride);
 
-  if(!(buf->planes[0].texture.UnlockRect(0))
-  || !(buf->planes[1].texture.UnlockRect(0))
-  || !(buf->planes[2].texture.UnlockRect(0)))
-    CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock yuv textures");
+  for (unsigned int idx = 0; idx < buf->GetActivePlanes(); idx++)
+    if(!(buf->planes[idx].texture.UnlockRect(0)))
+      CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock yuv textures");
 
   if (!m_SWTarget.UnlockRect(0))
     CLog::Log(LOGERROR, __FUNCTION__" - failed to unlock swtarget texture");
@@ -998,7 +1013,11 @@ bool CWinRenderer::CreateYV12Texture(int index)
   {
     YUVBuffer *buf = new YUVBuffer();
 
-    if (!buf->Create(m_sourceWidth, m_sourceHeight))
+    BufferFormat format;
+    if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_YV12)      format = YV12;
+    else if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_NV12) format = NV12;
+
+    if (!buf->Create(format, m_sourceWidth, m_sourceHeight))
     {
       CLog::Log(LOGERROR, __FUNCTION__" - Unable to create YV12 video texture %i", index);
       return false;
@@ -1093,8 +1112,9 @@ YUVBuffer::~YUVBuffer()
   Release();
 }
 
-bool YUVBuffer::Create(unsigned int width, unsigned int height)
+bool YUVBuffer::Create(BufferFormat format, unsigned int width, unsigned int height)
 {
+  m_format = format;
   m_width = width;
   m_height = height;
 
@@ -1103,17 +1123,36 @@ bool YUVBuffer::Create(unsigned int width, unsigned int height)
   // - Dynamic + D3DPOOL_DEFAULT caused trouble for Intel i3 and some IGP. Bad sync/locking in the driver  I suppose
   // and Present failed every second time for the second video played.
   // - this is what D3D9 does behind the scenes anyway
-  if ( !planes[PLANE_Y].texture.Create(m_width    , m_height    , 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
-    || !planes[PLANE_U].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
-    || !planes[PLANE_V].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM))
+  switch(m_format)
+  {
+  case YV12:
+    {
+      if ( !planes[PLANE_Y].texture.Create(m_width    , m_height    , 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
+        || !planes[PLANE_U].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
+        || !planes[PLANE_V].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM))
+        return false;
+      m_activeplanes = 3;
+      break;
+    }
+  case NV12:
+    {
+      if ( !planes[PLANE_Y].texture.Create(m_width    , m_height    , 1, 0, D3DFMT_L8, D3DPOOL_SYSTEMMEM)
+        || !planes[PLANE_UV].texture.Create(m_width / 2, m_height / 2, 1, 0, D3DFMT_A8L8, D3DPOOL_SYSTEMMEM))
+        return false;
+      m_activeplanes = 2;
+      break;
+    }
+  default:
+    m_activeplanes = 0;
     return false;
+  }
 
   return true;
 }
 
 void YUVBuffer::Release()
 {
-  for(unsigned i = 0; i < MAX_PLANES; i++)
+  for(unsigned i = 0; i < m_activeplanes; i++)
   {
     planes[i].texture.Release();
     memset(&planes[i].rect, 0, sizeof(planes[i].rect));
@@ -1122,7 +1161,7 @@ void YUVBuffer::Release()
 
 void YUVBuffer::StartRender()
 {
-  for(unsigned i = 0; i < MAX_PLANES; i++)
+  for(unsigned i = 0; i < m_activeplanes; i++)
   {
     if(planes[i].texture.Get() && planes[i].rect.pBits)
       if (!planes[i].texture.UnlockRect(0))
@@ -1133,7 +1172,7 @@ void YUVBuffer::StartRender()
 
 void YUVBuffer::StartDecode()
 {
-  for(unsigned i = 0; i < MAX_PLANES; i++)
+  for(unsigned i = 0; i < m_activeplanes; i++)
   {
     if(planes[i].texture.Get()
     && planes[i].texture.LockRect(0, &planes[i].rect, NULL, D3DLOCK_DISCARD) == false)
@@ -1146,9 +1185,22 @@ void YUVBuffer::StartDecode()
 
 void YUVBuffer::Clear()
 {
-    memset(planes[PLANE_Y].rect.pBits, 0,   planes[PLANE_Y].rect.Pitch *  m_height);
-    memset(planes[PLANE_U].rect.pBits, 128, planes[PLANE_U].rect.Pitch * (m_height/2));
-    memset(planes[PLANE_V].rect.pBits, 128, planes[PLANE_V].rect.Pitch * (m_height/2));
+  switch(m_format)
+  {
+  case YV12:
+    {
+      memset(planes[PLANE_Y].rect.pBits, 0,   planes[PLANE_Y].rect.Pitch *  m_height);
+      memset(planes[PLANE_U].rect.pBits, 128, planes[PLANE_U].rect.Pitch * (m_height/2));
+      memset(planes[PLANE_V].rect.pBits, 128, planes[PLANE_V].rect.Pitch * (m_height/2));
+      break;
+    }
+  case NV12:
+    {
+      memset(planes[PLANE_Y].rect.pBits, 0,   planes[PLANE_Y].rect.Pitch *  m_height);
+      memset(planes[PLANE_UV].rect.pBits, 128, planes[PLANE_U].rect.Pitch * (m_height/2));
+      break;
+    }
+  }
 }
 
 //==================================

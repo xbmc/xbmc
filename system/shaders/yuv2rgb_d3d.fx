@@ -87,10 +87,16 @@ struct PS_OUTPUT
 PS_OUTPUT YUV2RGB( VS_OUTPUT In)
 {
   PS_OUTPUT OUT;
+#if defined(XBMC_YV12)
   float4 YUV = float4(tex2D (YSampler, In.TextureY).x
                     , tex2D (USampler, In.TextureU).x
                     , tex2D (VSampler, In.TextureV).x
                     , 1.0);
+#elif defined(XBMC_NV12)
+  float4 YUV = float4(tex2D (YSampler, In.TextureY).x
+                    , tex2D (USampler, In.TextureU).ra
+                    , 1.0);
+#endif
   OUT.RGBColor = mul(YUV, g_ColorMatrix);
   OUT.RGBColor.a = 1.0;
   return OUT;

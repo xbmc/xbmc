@@ -76,7 +76,7 @@ private:
 class CYUV2RGBShader : public CWinShader
 {
 public:
-  virtual bool Create(bool singlepass, unsigned int sourceWidth, unsigned int sourceHeight);
+  virtual bool Create(bool singlepass, unsigned int sourceWidth, unsigned int sourceHeight, BufferFormat fmt);
   virtual void Render(CRect sourceRect,
                       CRect destRect,
                       float contrast,
@@ -90,7 +90,7 @@ protected:
                                  float contrast,
                                  float brightness,
                                  unsigned int flags);
-  virtual void SetShaderParameters();
+  virtual void SetShaderParameters(YUVBuffer* YUVbuf);
   virtual void ReleaseInternal();
   virtual bool UploadToGPU(YUVBuffer* YUVbuf);
 

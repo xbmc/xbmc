@@ -115,10 +115,19 @@ enum RenderMethod
 #define PLANE_Y 0
 #define PLANE_U 1
 #define PLANE_V 2
+#define PLANE_UV 1
 
 #define FIELD_FULL 0
 #define FIELD_TOP 1
 #define FIELD_BOT 2
+
+enum BufferFormat
+{
+  YV12,
+  NV12,
+  YUY2,
+  UYVY
+};
 
 struct SVideoBuffer
 {
@@ -139,17 +148,20 @@ struct SVideoPlane
 struct YUVBuffer : SVideoBuffer
 {
   ~YUVBuffer();
-  bool Create(unsigned int width, unsigned int height);
+  bool Create(BufferFormat format, unsigned int width, unsigned int height);
   virtual void Release();
   virtual void StartDecode();
   virtual void StartRender();
   virtual void Clear();
+  unsigned int GetActivePlanes() { return m_activeplanes; }
 
   SVideoPlane planes[MAX_PLANES];
 
 private:
   unsigned int     m_width;
   unsigned int     m_height;
+  BufferFormat     m_format;
+  unsigned int     m_activeplanes;
 };
 
 struct DXVABuffer : SVideoBuffer
