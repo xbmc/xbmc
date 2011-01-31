@@ -805,7 +805,10 @@ else
   case $host_os in
     linux*) AC_CHECK_LIB([dl], [main],, AC_MSG_ERROR($missing_library)) ;;
   esac
-  AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
+  case $host_os in
+    freebsd*) ;;
+    *) AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library)) ;;
+  esac
   AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
   AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
 
