@@ -110,7 +110,7 @@ void cVNSIDemux::Abort()
 DemuxPacket* cVNSIDemux::Read()
 {
   cResponsePacket *resp;
-  while ((resp = m_session.ReadMessage(3)))
+  while ((resp = m_session.ReadMessage(15)))
   {
     if (resp->getChannelID() == CHANNEL_STREAM)
     {

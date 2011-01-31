@@ -29,6 +29,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #include "utils/log.h"
+#include "threads/SingleLock.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/File.h"
 #include "StringUtils.h"
@@ -67,7 +68,6 @@ using namespace ADDON;
  ********************************************************************/
 CPVRManager::CPVRManager()
 {
-  InitializeCriticalSection(&m_critSection);
   m_bFirstStart = true;
   CLog::Log(LOGDEBUG,"PVR: created");
 }
@@ -83,7 +83,6 @@ CPVRManager::~CPVRManager()
   if (!m_clients.empty())
     Stop();
 
-  DeleteCriticalSection(&m_critSection);
   CLog::Log(LOGDEBUG,"PVR: destroyed");
 }
 
@@ -482,14 +481,14 @@ void CPVRManager::Process()
       m_LastTimersCheck = Now;
     }
 
-    EnterCriticalSection(&m_critSection);
+    CSingleLock lock(m_critSection);
 
     /* Get Signal information of the current playing channel */
     if (m_currentPlayingChannel && g_guiSettings.GetBool("pvrplayback.signalquality") && !m_currentPlayingChannel->GetPVRChannelInfoTag()->IsVirtual())
     {
       m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->SignalQuality(m_qualityInfo);
     }
-    LeaveCriticalSection(&m_critSection);
+    lock.Leave();
 
     Sleep(1000);
   }
@@ -519,7 +518,7 @@ void CPVRManager::Process()
  ********************************************************************/
 void CPVRManager::UpdateRecordingsCache()
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   PVRRecordings.GetNumRecordings() > 0 ? m_hasRecordings = true : m_hasRecordings = false;
   PVRTimers.GetNumTimers()         > 0 ? m_hasTimers     = true : m_hasTimers = false;
@@ -545,8 +544,6 @@ void CPVRManager::UpdateRecordingsCache()
       }
     }
   }
-
-  LeaveCriticalSection(&m_critSection);
 }
 
 /********************************************************************
@@ -1438,7 +1435,7 @@ bool CPVRManager::OpenLiveStream(const CPVRChannel* tag)
   if (tag == NULL)
     return false;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   CLog::Log(LOGDEBUG,"PVR: opening live stream on channel '%s'", tag->ChannelName().c_str());
 
@@ -1462,15 +1459,12 @@ bool CPVRManager::OpenLiveStream(const CPVRChannel* tag)
     {
       delete m_currentPlayingChannel;
       m_currentPlayingChannel = NULL;
-      LeaveCriticalSection(&m_critSection);
       return false;
     }
   }
 
   /* Load now the new channel settings from Database */
   LoadCurrentChannelSettings();
-
-  LeaveCriticalSection(&m_critSection);
   return true;
 }
 
@@ -1479,7 +1473,7 @@ bool CPVRManager::OpenRecordedStream(const CPVRRecordingInfoTag* tag)
   if (tag == NULL)
     return false;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   /* Check if a channel or recording is already opened and clear it if yes */
   if (m_currentPlayingChannel)
@@ -1494,17 +1488,14 @@ bool CPVRManager::OpenRecordedStream(const CPVRRecordingInfoTag* tag)
   m_playingClientName       = m_clients[tag->ClientID()]->GetBackendName() + ":" + m_clients[tag->ClientID()]->GetConnectionString();
 
   /* Open the recording stream on the Client */
-  bool ret = m_clients[tag->ClientID()]->OpenRecordedStream(*tag);
-
-  LeaveCriticalSection(&m_critSection);
-  return ret;
+  return m_clients[tag->ClientID()]->OpenRecordedStream(*tag);
 }
 
 CStdString CPVRManager::GetLiveStreamURL(const CPVRChannel* tag)
 {
   CStdString stream_url;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   /* Check if a channel or recording is already opened and clear it if yes */
   if (m_currentPlayingChannel)
@@ -1524,18 +1515,15 @@ CStdString CPVRManager::GetLiveStreamURL(const CPVRChannel* tag)
   {
     delete m_currentPlayingChannel;
     m_currentPlayingChannel = NULL;
-    LeaveCriticalSection(&m_critSection);
     return "";
   }
-
-  LeaveCriticalSection(&m_critSection);
 
   return stream_url;
 }
 
 void CPVRManager::CloseStream()
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   if (m_currentPlayingChannel)
   {
@@ -1565,14 +1553,11 @@ void CPVRManager::CloseStream()
     delete m_currentPlayingRecording;
     m_currentPlayingRecording = NULL;
   }
-
-  LeaveCriticalSection(&m_critSection);
-  return;
 }
 
 int CPVRManager::ReadStream(void* lpBuf, int64_t uiBufSize)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   int bytesReaded = 0;
 
@@ -1583,7 +1568,6 @@ int CPVRManager::ReadStream(void* lpBuf, int64_t uiBufSize)
     if (CTimeUtils::GetTimeMS() - m_scanStart > (unsigned int) g_guiSettings.GetInt("pvrplayback.scantime")*1000)
     {
       CLog::Log(LOGERROR,"PVR: No video or audio data available after %i seconds, playback stopped", g_guiSettings.GetInt("pvrplayback.scantime"));
-      LeaveCriticalSection(&m_critSection);
       return 0;
     }
     else if (g_application.IsPlayingVideo() || g_application.IsPlayingAudio())
@@ -1601,44 +1585,38 @@ int CPVRManager::ReadStream(void* lpBuf, int64_t uiBufSize)
     bytesReaded = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->ReadRecordedStream(lpBuf, uiBufSize);
   }
 
-  LeaveCriticalSection(&m_critSection);
   return bytesReaded;
 }
 
 void CPVRManager::DemuxReset()
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   if (m_currentPlayingChannel)
     m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->DemuxReset();
-  LeaveCriticalSection(&m_critSection);
 }
 
 void CPVRManager::DemuxAbort()
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   if (m_currentPlayingChannel)
     m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->DemuxAbort();
-  LeaveCriticalSection(&m_critSection);
 }
 
 void CPVRManager::DemuxFlush()
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   if (m_currentPlayingChannel)
     m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->DemuxFlush();
-  LeaveCriticalSection(&m_critSection);
 }
 
 DemuxPacket* CPVRManager::ReadDemuxStream()
 {
   DemuxPacket* packet = NULL;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   if (m_currentPlayingChannel)
-  {
     packet = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->DemuxRead();
-  }
-  LeaveCriticalSection(&m_critSection);
+
   return packet;
 }
 
@@ -1646,7 +1624,7 @@ int64_t CPVRManager::LengthStream(void)
 {
   int64_t streamLength = 0;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   if (m_currentPlayingChannel)
   {
@@ -1657,7 +1635,6 @@ int64_t CPVRManager::LengthStream(void)
     streamLength = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->LengthRecordedStream();
   }
 
-  LeaveCriticalSection(&m_critSection);
   return streamLength;
 }
 
@@ -1665,7 +1642,7 @@ int64_t CPVRManager::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*
 {
   int64_t streamNewPos = 0;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   if (m_currentPlayingChannel)
   {
@@ -1676,7 +1653,6 @@ int64_t CPVRManager::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*
     streamNewPos = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->SeekRecordedStream(iFilePosition, iWhence);
   }
 
-  LeaveCriticalSection(&m_critSection);
   return streamNewPos;
 }
 
@@ -1684,7 +1660,7 @@ int64_t CPVRManager::GetStreamPosition()
 {
   int64_t streamPos = 0;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   if (m_currentPlayingChannel)
   {
@@ -1695,7 +1671,6 @@ int64_t CPVRManager::GetStreamPosition()
     streamPos = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->PositionRecordedStream();
   }
 
-  LeaveCriticalSection(&m_critSection);
   return streamPos;
 }
 
@@ -1766,7 +1741,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
     return false;
   }
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   const CPVRChannel* tag = channels->at(iChannel-1);
 
@@ -1777,7 +1752,6 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   if (tag->StreamURL().IsEmpty() && !m_clients[tag->ClientID()]->SwitchChannel(*tag))
   {
     CGUIDialogOK::ShowAndGetInput(19033,0,19136,0);
-    LeaveCriticalSection(&m_critSection);
     return false;
   }
 
@@ -1794,7 +1768,6 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   /* Set quality data to undefined defaults */
   ResetQualityData();
 
-  LeaveCriticalSection(&m_critSection);
   return true;
 }
 
@@ -1804,7 +1777,7 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
    {
      const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio());
 
-    EnterCriticalSection(&m_critSection);
+     CSingleLock lock(m_critSection);
 
     /* Store current settings inside Database */
     SaveCurrentChannelSettings();
@@ -1834,7 +1807,6 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
         LoadCurrentChannelSettings();
 
         *newchannel = currentTVChannel;
-        LeaveCriticalSection(&m_critSection);
         return true;
       }
       else if (!tag->StreamURL().IsEmpty() || m_clients[tag->ClientID()]->SwitchChannel(*tag))
@@ -1851,11 +1823,9 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
         ResetQualityData();
 
         *newchannel = currentTVChannel;
-        LeaveCriticalSection(&m_critSection);
         return true;
       }
     }
-    LeaveCriticalSection(&m_critSection);
   }
 
   return false;
@@ -1867,7 +1837,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/
   {
     const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio());
 
-    EnterCriticalSection(&m_critSection);
+    CSingleLock lock(m_critSection);
 
     /* Store current settings inside Database */
     SaveCurrentChannelSettings();
@@ -1897,7 +1867,6 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/
         LoadCurrentChannelSettings();
 
         *newchannel = currentTVChannel;
-        LeaveCriticalSection(&m_critSection);
         return true;
       }
       else if (!tag->StreamURL().IsEmpty() || m_clients[tag->ClientID()]->SwitchChannel(*tag))
@@ -1914,11 +1883,9 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/
         ResetQualityData();
 
         *newchannel = currentTVChannel;
-        LeaveCriticalSection(&m_critSection);
         return true;
       }
     }
-    LeaveCriticalSection(&m_critSection);
   }
   return false;
 }
@@ -1944,9 +1911,8 @@ int CPVRManager::GetStartTime()
   const CPVREpgInfoTag* tag = m_currentPlayingChannel->GetPVRChannelInfoTag()->GetEPGNow();
   if (tag && (tag->End() < CDateTime::GetCurrentDateTime() || tag->Title().IsEmpty()))
   {
-    EnterCriticalSection(&m_critSection);
+    CSingleLock lock(m_critSection);
     UpdateItem(*m_currentPlayingChannel);
-    LeaveCriticalSection(&m_critSection);
   }
 
   /* Calculate here the position we have of the running live TV event.

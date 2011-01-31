@@ -357,8 +357,8 @@ private:
   CLIENTMAP           m_clients;                /* pointer to each enabled client's interface */
   CLIENTPROPS         m_clientsProps;           /* store the properties of each client locally */
   STREAMPROPS         m_streamProps;
-  CPVRDatabase         m_database;
-  CRITICAL_SECTION    m_critSection;
+  CPVRDatabase        m_database;
+  CCriticalSection    m_critSection;
   bool                m_bFirstStart;            /* Is set if this is first startup of PVRManager */
   bool                m_bChannelScanRunning;    /* Is set if a channel scan is running */
 

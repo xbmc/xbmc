@@ -179,6 +179,7 @@ int cLivePatFilter::GetPid(SI::PMT::Stream& stream, eStreamType *type, char *lan
   {
     case 0x01: // ISO/IEC 11172 Video
     case 0x02: // ISO/IEC 13818-2 Video
+    case 0x80: // ATSC Video MPEG2 (ATSC DigiCipher QAM)
       LOGCONSOLE("cStreamdevPatFilter PMT scanner adding PID %d (%s)\n", stream.getPid(), psStreamTypes[stream.getStreamType()]);
       *type = stMPEG2VIDEO;
       return stream.getPid();
@@ -280,11 +281,11 @@ int cLivePatFilter::GetPid(SI::PMT::Stream& stream, eStreamType *type, char *lan
       break;
     default:
       /* This following section handles all the cases where the audio track
-       * info is stored in PMT user info with stream id >= 0x80
+       * info is stored in PMT user info with stream id >= 0x81
        * we check the registration format identifier to see if it
        * holds "AC-3"
        */
-      if (stream.getStreamType() >= 0x80)
+      if (stream.getStreamType() >= 0x81)
       {
         bool found = false;
         for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); )

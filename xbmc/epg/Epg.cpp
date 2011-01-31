@@ -107,8 +107,6 @@ bool CEpg::DeleteInfoTag(CEpgInfoTag *tag)
     }
   }
 
-  lock.Leave();
-
   return bReturn;
 }
 
@@ -151,8 +149,6 @@ void CEpg::Clear(void)
     delete at(iTagPtr);
   }
   erase(begin(), end());
-
-  lock.Leave();
 }
 
 void CEpg::Cleanup(void)
@@ -178,8 +174,6 @@ void CEpg::Cleanup(const CDateTime &Time)
     }
   }
   m_bUpdateRunning = false;
-
-  lock.Leave();
 }
 
 const CEpgInfoTag *CEpg::InfoTagNow(void) const
@@ -203,11 +197,7 @@ const CEpgInfoTag *CEpg::InfoTagNow(void) const
     }
   }
 
-  returnTag = m_nowActive;
-
-  lock.Leave();
-
-  return returnTag;
+  return (returnTag = m_nowActive);
 }
 
 const CEpgInfoTag *CEpg::InfoTagNext(void) const
@@ -268,8 +258,6 @@ const CEpgInfoTag *CEpg::InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) 
     }
   }
 
-  lock.Leave();
-
   return returnTag;
 }
 
@@ -288,8 +276,6 @@ const CEpgInfoTag *CEpg::InfoTagAround(CDateTime Time) const
       break;
     }
   }
-
-  lock.Leave();
 
   return returnTag;
 }
@@ -315,8 +301,6 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   g_EpgContainer.UpdateFirstAndLastEPGDates(*InfoTag);
 
   Sort();
-
-  lock.Leave();
 
   if (bUpdateDatabase)
     bReturn = InfoTag->Persist();
@@ -348,8 +332,6 @@ bool CEpg::Load()
   bReturn = (database->Get(this) > 0);
 
   Sort();
-
-  lock.Leave();
 
   return bReturn;
 }
@@ -395,8 +377,6 @@ int CEpg::Get(CFileItemList *results) const
     results->Add(entry);
   }
 
-  lock.Leave();
-
   return size() - iInitialSize;
 }
 
@@ -418,8 +398,6 @@ int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter) const
       results->Add(entry);
     }
   }
-
-  lock.Leave();
 
   return size() - iInitialSize;
 }
@@ -550,8 +528,6 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
 
     previousTag = at(ptr);
   }
-
-  lock.Leave();
 
   return bReturn;
 }
