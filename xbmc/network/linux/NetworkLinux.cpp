@@ -30,7 +30,7 @@
 #endif
 #include <errno.h>
 #include <resolv.h>
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
   #include <sys/sockio.h>
   #include <net/if.h>
   #include <net/if_dl.h>
@@ -64,7 +64,7 @@ CStdString& CNetworkInterfaceLinux::GetName(void)
 
 bool CNetworkInterfaceLinux::IsWireless()
 {
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
   return false;
 #else
   struct iwreq wrq;
@@ -183,7 +183,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
     }
     pclose(pipe);
   }
-#else
+#elif !defined(TARGET_FREEBSD)
    FILE* fp = fopen("/proc/net/route", "r");
    if (!fp)
    {
@@ -350,7 +350,7 @@ void CNetworkLinux::queryInterfaceList()
   CStdString macAddr = "";
   m_interfaces.clear();
 
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
 
    // Query the list of interfaces.
    struct ifaddrs *list;
