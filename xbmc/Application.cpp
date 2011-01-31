@@ -2712,7 +2712,7 @@ void CApplication::FrameMove()
 bool CApplication::ProcessGamepad(float frameTime)
 {
 #ifdef HAS_SDL_JOYSTICK
-  if (!m_AppFocused)
+  if (!g_advancedSettings.m_bControllerIgnoresFocus && !m_AppFocused)
     return false;
   int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
   if (g_windowManager.HasModalDialog())
