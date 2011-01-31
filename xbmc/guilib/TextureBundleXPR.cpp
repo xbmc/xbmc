@@ -283,7 +283,7 @@ bool CTextureBundleXPR::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
     GlobalMemoryStatus(&stat);
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes, have %lu bytes)", name.c_str(),
               file->second.UnpackedSize + file->second.PackedSize, stat.dwAvailPhys);
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) || defined(__FreeBSD__)
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes)", name.c_str(),
               file->second.UnpackedSize + file->second.PackedSize);
 #else
