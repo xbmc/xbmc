@@ -104,7 +104,6 @@ bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
 int numdigits(int n);
 bool IsNumber(const char *s);
-CStdString AddDirectory(const char *DirName, const char *FileName);
 char *ReadLink(const char *FileName); ///< returns a new string allocated on the heap, which the caller must delete (or NULL in case of an error)
 
 class cTimeMs

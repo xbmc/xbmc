@@ -72,7 +72,6 @@ protected:
 private:
   bool readData(uint8_t* buffer, int totalBytes, int TimeOut = 2);
   bool sendKA(uint32_t timeStamp);
-  void ScanVideoDir(PVRHANDLE handle, const char *DirName, const char *DirBase, bool Deleted = false, int LinkLevel = 0);
 
   struct SMessage
   {
@@ -87,5 +86,5 @@ private:
   SMessages       m_queue;
   RecordPaths     m_RecordsPaths;
   CStdString      m_videodir;
-	int             m_recIndex;
+  int             m_recIndex;
 };

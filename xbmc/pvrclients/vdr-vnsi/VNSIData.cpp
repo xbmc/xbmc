@@ -23,7 +23,6 @@
 #include "responsepacket.h"
 #include "requestpacket.h"
 #include "vdrcommand.h"
-#include "recordings.h"
 #include "tools.h"
 
 #define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
@@ -632,119 +631,84 @@ int cVNSIData::GetRecordingsCount()
 PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
 {
   m_recIndex = 1;
-  if (g_bUseRecordingsDir && g_szRecordingsDir != "")
+  m_RecordsPaths.clear();
+
+  cRequestPacket vrp;
+  if (!vrp.init(VDR_RECORDINGS_GETLIST))
   {
-    ScanVideoDir(handle, g_szRecordingsDir.c_str(), g_szRecordingsDir.c_str());
+    XBMC->Log(LOG_ERROR, "cVNSIData::GetRecordingsList - Can't init cRequestPacket");
+    return PVR_ERROR_UNKOWN;
   }
-  else
+
+  cResponsePacket* vresp = ReadResult(&vrp);
+  if (!vresp)
   {
-    bool haveCheckedLocalAccess = true /*false*/;
-    m_RecordsPaths.clear();
-
-    cRequestPacket vrp;
-    if (!vrp.init(VDR_RECORDINGS_GETLIST))
-    {
-      XBMC->Log(LOG_ERROR, "cVNSIData::GetRecordingsList - Can't init cRequestPacket");
-      return PVR_ERROR_UNKOWN;
-    }
-
-    cResponsePacket* vresp = ReadResult(&vrp);
-    if (!vresp)
-    {
-      XBMC->Log(LOG_ERROR, "cVNSIData::GetRecordingsList - Can't get response packed");
-      return PVR_ERROR_UNKOWN;
-    }
-
-    char* videodir = vresp->extract_String();
-    m_videodir = videodir;
-    delete[] videodir;
-
-    while (!vresp->end())
-    {
-      CStdString title;
-
-      PVR_RECORDINGINFO tag;
-      tag.index           = m_recIndex++;
-      tag.recording_time  = vresp->extract_U32();
-      tag.duration        = vresp->extract_U32();
-      tag.priority        = vresp->extract_U32();
-      tag.lifetime        = vresp->extract_U32();
-      tag.channel_name    = vresp->extract_String();
-      char* name = vresp->extract_String();
-      title = name;
-      tag.subtitle        = vresp->extract_String();
-      tag.description     = vresp->extract_String();
-
-      char* fileName  = vresp->extract_String();
-
-      /* Save the given path name for later to translate the
-         index numbers to the path name. */
-      m_RecordsPaths.push_back(fileName);
-
-      /* Cleanup now the path name and remove VDR's 2 top
-         directories and the strip the base path */
-      CStdString path = fileName+m_videodir.size()+1;
-      path = path.substr(0, path.find_last_of("/\\"));
-
-      size_t found = path.find_last_of("/\\");
-      if (found != CStdString::npos)
-      {
-        /* If no title is present use recording dir name
-           as title */
-        if (title.IsEmpty())
-          title = path.substr(found+1);
-        path = path.substr(0, found);
-      }
-      else
-      {
-        /* If no title is present use recording dir name
-           as title */
-        if (title.IsEmpty())
-          title = path;
-        path = "";
-      }
-
-      tag.title           = title.c_str();
-      tag.directory       = path.c_str();
-      tag.stream_url      = "";
-
-      /* Check if we can open the first given recording dir on
-         local filesystem, if yes, scan the files itself and
-         ignore VNSI server for access them */
-      if (!haveCheckedLocalAccess)
-      {
-        XBMC->Log(LOG_NOTICE, "Trying to open '%s'", fileName);
-        DIR *vdrrecdir = opendir(fileName);
-        if (vdrrecdir)
-        {
-          closedir(vdrrecdir);
-          delete[] tag.channel_name;
-          delete[] tag.subtitle;
-          delete[] tag.description;
-          delete[] name;
-          delete[] fileName;
-          delete vresp;
-
-          XBMC->Log(LOG_NOTICE, "Found recordings on local disk, ignoring VNSI Server and scanning directories byself");
-
-          ScanVideoDir(handle, m_videodir.c_str(), m_videodir.c_str());
-          return PVR_ERROR_NO_ERROR;
-        }
-
-        haveCheckedLocalAccess = true;
-      }
-
-      PVR->TransferRecordingEntry(handle, &tag);
-
-      delete[] tag.channel_name;
-      delete[] tag.subtitle;
-      delete[] tag.description;
-      delete[] name;
-      delete[] fileName;
-    }
-
-    delete vresp;
+    XBMC->Log(LOG_ERROR, "cVNSIData::GetRecordingsList - Can't get response packed");
+    return PVR_ERROR_UNKOWN;
   }
+
+  char* videodir = vresp->extract_String();
+  m_videodir = videodir;
+  delete[] videodir;
+
+  while (!vresp->end())
+  {
+    CStdString title;
+
+    PVR_RECORDINGINFO tag;
+    tag.index           = m_recIndex++;
+    tag.recording_time  = vresp->extract_U32();
+    tag.duration        = vresp->extract_U32();
+    tag.priority        = vresp->extract_U32();
+    tag.lifetime        = vresp->extract_U32();
+    tag.channel_name    = vresp->extract_String();
+    char* name = vresp->extract_String();
+    title = name;
+    tag.subtitle        = vresp->extract_String();
+    tag.description     = vresp->extract_String();
+    char* fileName  = vresp->extract_String();
+
+    /* Save the given path name for later to translate the
+       index numbers to the path name. */
+    m_RecordsPaths.push_back(fileName);
+
+    /* Cleanup now the path name and remove VDR's 2 top
+       directories and the strip the base path */
+    CStdString path = fileName+m_videodir.size()+1;
+    path = path.substr(0, path.find_last_of("/\\"));
+
+    size_t found = path.find_last_of("/\\");
+    if (found != CStdString::npos)
+    {
+      /* If no title is present use recording dir name
+         as title */
+      if (title.IsEmpty())
+        title = path.substr(found+1);
+      path = path.substr(0, found);
+    }
+    else
+    {
+      /* If no title is present use recording dir name
+         as title */
+      if (title.IsEmpty())
+        title = path;
+      path = "";
+    }
+
+    tag.title           = title.c_str();
+    tag.directory       = path.c_str();
+    tag.stream_url      = "";
+
+    PVR->TransferRecordingEntry(handle, &tag);
+
+    delete[] tag.channel_name;
+    delete[] tag.subtitle;
+    delete[] tag.description;
+    delete[] name;
+    delete[] fileName;
+  }
+
+  delete vresp;
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -984,67 +948,4 @@ CStdString cVNSIData::GetRecordingPath(int index)
     return "";
 
   return m_RecordsPaths[index-1];
-}
-
-#define MAX_LINK_LEVEL  6
-void cVNSIData::ScanVideoDir(PVRHANDLE handle, const char *DirName, const char *DirBase, bool Deleted, int LinkLevel)
-{
-  cReadDir d(DirName);
-  struct dirent *e;
-  while ((e = d.Next()) != NULL)
-  {
-    if (strcmp(e->d_name, ".") && strcmp(e->d_name, ".."))
-    {
-      char *buffer = strdup(AddDirectory(DirName, e->d_name));
-      struct stat st;
-      if (stat(buffer, &st) == 0)
-      {
-        int Link = 0;
-        if (S_ISLNK(st.st_mode))
-        {
-          if (LinkLevel > MAX_LINK_LEVEL)
-          {
-            XBMC->Log(LOG_ERROR, "max link level exceeded - not scanning %s", buffer);
-            continue;
-          }
-          Link = 1;
-          char *old = buffer;
-          buffer = ReadLink(old);
-          free(old);
-          if (!buffer)
-            continue;
-          if (stat(buffer, &st) != 0)
-          {
-            free(buffer);
-            continue;
-          }
-        }
-        if (S_ISDIR(st.st_mode))
-        {
-          if (endswith(buffer, Deleted ? DELEXT : RECEXT))
-          {
-            cRecording recording(buffer, DirBase);
-
-            PVR_RECORDINGINFO tag;
-            tag.index           = m_recIndex++;
-            tag.channel_name    = recording.ChannelName();
-            tag.lifetime        = recording.Lifetime();
-            tag.priority        = recording.Priority();
-            tag.recording_time  = recording.StartTime();
-            tag.duration        = recording.Duration();
-            tag.subtitle        = recording.ShortText();
-            tag.description     = recording.Description();
-            tag.title           = recording.Title();
-            tag.directory       = recording.Directory();
-            tag.stream_url      = recording.StreamURL();
-
-            PVR->TransferRecordingEntry(handle, &tag);
-          }
-          else
-            ScanVideoDir(handle, buffer, DirBase, Deleted, LinkLevel + Link);
-        }
-      }
-      free(buffer);
-    }
-  }
 }

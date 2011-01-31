@@ -20,7 +20,6 @@
  */
 
 #pragma once
-#include <deque>
 #include "pvrclient-vdrVNSI_os.h"
 #include "StdString.h"
 

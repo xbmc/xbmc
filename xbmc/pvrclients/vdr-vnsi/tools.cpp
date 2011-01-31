@@ -242,13 +242,6 @@ bool IsNumber(const char *s)
   return true;
 }
 
-CStdString AddDirectory(const char *DirName, const char *FileName)
-{
-  CStdString ret;
-  ret.Format("%s/%s", DirName && *DirName ? DirName : ".", FileName);
-  return ret;
-}
-
 char *ReadLink(const char *FileName)
 {
 #if defined(__WINDOWS__)

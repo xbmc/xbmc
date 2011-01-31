@@ -50,8 +50,6 @@ extern CStdString   g_szClientPath;
 extern int          g_iPriority;          ///< The Priority this client have in response to other clients
 extern bool         g_bCharsetConv;       ///< Convert VDR's incoming strings to UTF8 character set
 extern bool         g_bHandleMessages;    ///< Send VDR's OSD status messages to XBMC OSD
-extern bool         g_bUseRecordingsDir;  ///< Use a normal directory if true for recordings
-extern CStdString   g_szRecordingsDir;    ///< The path to the recordings directory
 extern cHelper_libXBMC_addon *XBMC;
 extern cHelper_libXBMC_gui   *GUI;
 extern cHelper_libXBMC_pvr   *PVR;

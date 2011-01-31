@@ -15,7 +15,6 @@ SRCS   = client.cpp \
 	VNSIDemux.cpp \
 	VNSIRecording.cpp \
 	VNSISession.cpp \
-	recordings.cpp \
 	requestpacket.cpp \
 	responsepacket.cpp \
 	thread.cpp \
