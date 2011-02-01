@@ -165,6 +165,11 @@ public:
   virtual void Clear(bool bClearDb = false);
 
   /*!
+   * @brief Clear the EPG and all it's database entries.
+   */
+  virtual void Reset(void) { Clear(true); }
+
+  /*!
    * @brief Process a notification from an observable.
    * @param obs The observable that sent the update.
    * @param msg The update message.

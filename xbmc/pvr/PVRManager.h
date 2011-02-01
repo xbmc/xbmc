@@ -44,25 +44,76 @@ class CPVRManager : IPVRClientCallback
                   , private CThread
 {
 public:
+  /*!
+   * @brief Create a new CPVRManager instance, which handles all PVR related operations in XBMC.
+   */
   CPVRManager();
+
+  /*!
+   * @brief Stop the PVRManager and destroy all objects it created.
+   */
   ~CPVRManager();
 
-  /*! \name Startup functions
+  /** @name Startup function */
+  //@{
+
+  /*!
+   * @brief Start the PVRManager
    */
   void Start();
-  void Stop();
-  void Restart(void);
 
-  /*! \name External Client access functions
+  /*!
+   * @brief Stop the PVRManager and destroy all objects it created.
+   */
+  void Stop();
+
+  /*!
+   * @brief Restart the PVRManager.
+   */
+  void Restart(void);
+  //@}
+
+  /** @name External client access functions */
+  //@{
+
+  /*!
+   * @brief Get the ID of the first client.
+   * @return The ID of the first client.
    */
   unsigned int GetFirstClientID();
-  CLIENTMAP* Clients() { return &m_clients; }
+
+  /*!
+   * @brief Get a pointer to the clients.
+   * @return The clients.
+   */
+  CLIENTMAP *Clients() { return &m_clients; }
+
+  /*!
+   * @brief Get the TV database.
+   * @return The TV database.
+   */
   CPVRDatabase *GetTVDatabase() { return &m_database; }
+
+  //@}
 
   /*! \name Addon related functions
    */
-  bool RequestRestart(ADDON::AddonPtr addon, bool datachanged);
+
+  /*!
+   * @brief Restart a single client addon.
+   * @param addon The addon to restart.
+   * @param bDataChanged True if the client's data changed, false otherwise (unused).
+   * @return True if the client was found and restarted, false otherwise.
+   */
+  bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged);
+
+  /*!
+   * @brief Remove a single client addon.
+   * @param addon The addon to remove.
+   * @return True if the client was found and removed, false otherwise.
+   */
   bool RequestRemoval(ADDON::AddonPtr addon);
+
   void OnClientMessage(const int clientID, const PVR_EVENT clientEvent, const char* msg);
 
   /*! \name GUIInfoManager functions
@@ -341,28 +392,45 @@ protected:
   virtual void Process();
 
 private:
-  /*--- Handling functions ---*/
+  /*!
+   * @brief Reset all properties.
+   */
+  void ResetProperties(void);
+
+  /*!
+   * @brief Load and initialise all clients.
+   * @return True if any clients were loaded, false otherwise.
+   */
   bool LoadClients();
-  void GetClientProperties();                   /*! \brief call GetClientProperties(long clientID) for each client connected */
-  void GetClientProperties(int clientID);      /*! \brief request the PVR_SERVERPROPS struct from each client */
+
+  /*!
+   * @brief Stop a client.
+   * @param addon The client to stop.
+   * @param bRestart If true, restart the client.
+   * @return True if the client was found, false otherwise.
+   */
+  bool StopClient(ADDON::AddonPtr client, bool bRestart);
+
   void SaveCurrentChannelSettings();            /*! \brief Write the current Video and Audio settings of
                                                  playing channel to the TV Database */
   void LoadCurrentChannelSettings();            /*! \brief Read and set the Video and Audio settings of
                                                  playing channel from the TV Database */
   void ResetQualityData();                      /*! \brief Reset the Signal Quality data structure to initial values */
   bool ContinueLastChannel();
-  void Reset(void);
 
-  /*--- General PVRManager data ---*/
-  CLIENTMAP           m_clients;                /* pointer to each enabled client's interface */
-  CLIENTPROPS         m_clientsProps;           /* store the properties of each client locally */
-  STREAMPROPS         m_streamProps;
-  CPVRDatabase        m_database;
-  CCriticalSection    m_critSection;
-  bool                m_bFirstStart;            /* Is set if this is first startup of PVRManager */
-  bool                m_bChannelScanRunning;    /* Is set if a channel scan is running */
+  /** @name General PVRManager data */
+  //@{
+  CLIENTMAP           m_clients;                /*!< pointer to each enabled client */
+  CLIENTPROPS         m_clientsProps;           /*!< store the properties of each client locally */
+  STREAMPROPS         m_streamProps;            /*!< the current stream's properties */
+  CPVRDatabase        m_database;               /*!< the database for all PVR related data */
+  CCriticalSection    m_critSection;            /*!< critical section for all changes to this class */
+  bool                m_bFirstStart;            /*!< true when the PVR manager was started first, false otherwise */
+  bool                m_bChannelScanRunning;    /*!< true if a channel scan is currently running, false otherwise */
+  //@}
 
-  /*--- GUIInfoManager information data ---*/
+  /** @name GUIInfoManager data */
+  //@{
   DWORD               m_infoToggleStart;        /* Time to toogle pvr infos like in System info */
   unsigned int        m_infoToggleCurrent;      /* The current item showed by the GUIInfoManager */
   DWORD               m_recordingToggleStart;   /* Time to toogle currently running pvr recordings */
@@ -385,6 +453,7 @@ private:
   bool                m_isRecording;
   bool                m_hasRecordings;
   bool                m_hasTimers;
+  //@}
 
   /*--- Thread Update Timers ---*/
   int                 m_LastChannelCheck;
