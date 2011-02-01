@@ -289,14 +289,17 @@ bool CEpgContainer::Load(bool bShowProgress /* = false */)
     }
   }
 
+  /* reset m_bStop (set to true before so Clear() doesn't restart the thread */
+  m_bStop = false;
+
   /* close the database */
   m_database.Close();
 
   if (bShowProgress)
     scanner->Close();
 
-  /* one or more tables couldn't be loaded. force an update */
-  if (bUpdate)
+  /* one or more tables couldn't be loaded or IgnoreDbForClient is set. force an update */
+  if (bUpdate || m_bIgnoreDbForClient)
     UpdateEPG(bShowProgress);
 
   /* only try to load the database once */
