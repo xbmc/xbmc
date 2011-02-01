@@ -99,6 +99,7 @@ private:
   unsigned int   m_sourceWidth, m_sourceHeight;
   CRect          m_sourceRect, m_destRect;
   CD3DTexture    m_YUVPlanes[3];
+  float          m_texSteps[2];
 
   struct CUSTOMVERTEX {
       FLOAT x, y, z;

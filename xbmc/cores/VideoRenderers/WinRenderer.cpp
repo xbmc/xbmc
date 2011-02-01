@@ -553,8 +553,6 @@ void CWinRenderer::UpdatePSVideoFilter()
 {
   SAFE_RELEASE(m_scalerShader)
 
-  BufferFormat format = BufferFormatFromFlags(m_flags);
-
   if (m_bUseHQScaler)
   {
     m_scalerShader = new CConvolutionShader();
@@ -576,6 +574,8 @@ void CWinRenderer::UpdatePSVideoFilter()
   }
 
   SAFE_RELEASE(m_colorShader)
+
+  BufferFormat format = BufferFormatFromFlags(m_flags);
 
   if (m_bUseHQScaler)
   {
@@ -1154,6 +1154,20 @@ bool YUVBuffer::Create(BufferFormat format, unsigned int width, unsigned int hei
       m_activeplanes = 2;
       break;
     }
+  case YUY2:
+    {
+      if ( !planes[PLANE_Y].texture.Create(m_width >> 1    , m_height    , 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM))
+        return false;
+      m_activeplanes = 1;
+      break;
+    }
+  case UYVY:
+    {
+      if ( !planes[PLANE_Y].texture.Create(m_width >> 1    , m_height    , 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM))
+        return false;
+      m_activeplanes = 1;
+      break;
+    }
   default:
     m_activeplanes = 0;
     return false;
@@ -1197,6 +1211,8 @@ void YUVBuffer::StartDecode()
 
 void YUVBuffer::Clear()
 {
+  // Set Y to 0 and U,V to 128 (RGB 0,0,0) to avoid visual artifacts at the start of playback
+
   switch(m_format)
   {
   case YV12:
@@ -1212,6 +1228,18 @@ void YUVBuffer::Clear()
       memset(planes[PLANE_UV].rect.pBits, 128, planes[PLANE_U].rect.Pitch * (m_height/2));
       break;
     }
+  // YUY2, UYVY: wmemset to set a 16bit pattern, byte-swapped because x86 is LE
+  case YUY2:
+    {
+      wmemset((wchar_t*)planes[PLANE_Y].rect.pBits, 0x8000, planes[PLANE_Y].rect.Pitch / 2 * m_height);
+      break;
+    }
+  case UYVY:
+    {
+      wmemset((wchar_t*)planes[PLANE_Y].rect.pBits, 0x0080, planes[PLANE_Y].rect.Pitch / 2 * m_height);
+      break;
+    }
+
   }
 }
 

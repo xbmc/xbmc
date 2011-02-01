@@ -198,14 +198,65 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
 
   CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX3, 4, sizeof(CUSTOMVERTEX), 2);
 
+  m_sourceWidth = sourceWidth;
+  m_sourceHeight = sourceHeight;
+
+  unsigned int texWidth;
+
   DefinesMap defines;
 
   if (fmt == YV12)
+  {
     defines["XBMC_YV12"] = "";
+    texWidth = sourceWidth;
+
+    if(!m_YUVPlanes[0].Create(texWidth    , m_sourceHeight    , 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
+    || !m_YUVPlanes[1].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
+    || !m_YUVPlanes[2].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to create YV12 planes.");
+      return false;
+    }
+  }
   else if (fmt == NV12)
+  {
     defines["XBMC_NV12"] = "";
+    texWidth = sourceWidth;
+
+    if(!m_YUVPlanes[0].Create(texWidth    , m_sourceHeight    , 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
+    || !m_YUVPlanes[1].Create(texWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_A8L8, D3DPOOL_DEFAULT))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to create NV12 planes.");
+      return false;
+    }
+  }
+  else if (fmt == YUY2)
+  {
+    defines["XBMC_YUY2"] = "";
+    texWidth = sourceWidth >> 1;
+
+    if(!m_YUVPlanes[0].Create(texWidth    , m_sourceHeight    , 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to create YUY2 planes.");
+      return false;
+    }
+  }
+  else if (fmt == UYVY)
+  {
+    defines["XBMC_UYVY"] = "";
+    texWidth = sourceWidth >> 1;
+
+    if(!m_YUVPlanes[0].Create(texWidth    , m_sourceHeight    , 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to create UYVY planes.");
+      return false;
+    }
+  }
   else
     return false;
+
+  m_texSteps[0] = 1.0f/(float)texWidth;
+  m_texSteps[1] = 1.0f/(float)sourceHeight;
 
   CStdString effectString = "special://xbmc/system/shaders/yuv2rgb_d3d.fx";
 
@@ -213,29 +264,6 @@ bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight,
   {
     CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
     return false;
-  }
-
-  m_sourceWidth = sourceWidth;
-  m_sourceHeight = sourceHeight;
-
-  if (fmt == YV12)
-  {
-    if(!m_YUVPlanes[0].Create(m_sourceWidth    , m_sourceHeight    , 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
-    || !m_YUVPlanes[1].Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
-    || !m_YUVPlanes[2].Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create YUV planes.");
-      return false;
-    }
-  }
-  else if (fmt == NV12)
-  {
-    if(!m_YUVPlanes[0].Create(m_sourceWidth    , m_sourceHeight    , 1, 0, D3DFMT_L8, D3DPOOL_DEFAULT)
-    || !m_YUVPlanes[1].Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_A8L8, D3DPOOL_DEFAULT))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create YUV planes.");
-      return false;
-    }
   }
 
   return true;
@@ -318,12 +346,14 @@ void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
 
 void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
 {
-  m_effect.SetMatrix( "g_ColorMatrix", m_matrix.Matrix());
-  m_effect.SetTechnique( "YUV2RGB_T" );
-  m_effect.SetTexture( "g_YTexture",  m_YUVPlanes[0] ) ;
-  m_effect.SetTexture( "g_UTexture",  m_YUVPlanes[1] ) ;
-  if (YUVbuf->GetActivePlanes() == 3)
-    m_effect.SetTexture( "g_VTexture",  m_YUVPlanes[2] ) ;
+  m_effect.SetMatrix("g_ColorMatrix", m_matrix.Matrix());
+  m_effect.SetTechnique("YUV2RGB_T");
+  m_effect.SetTexture("g_YTexture", m_YUVPlanes[0]);
+  if (YUVbuf->GetActivePlanes() > 1)
+    m_effect.SetTexture("g_UTexture", m_YUVPlanes[1]);
+  if (YUVbuf->GetActivePlanes() > 2)
+    m_effect.SetTexture("g_VTexture", m_YUVPlanes[2]);
+  m_effect.SetFloatArray("g_StepXY", m_texSteps, sizeof(m_texSteps)/sizeof(m_texSteps[0]));
 }
 
 void CYUV2RGBShader::ReleaseInternal()
@@ -337,19 +367,18 @@ void CYUV2RGBShader::ReleaseInternal()
 
 bool CYUV2RGBShader::UploadToGPU(YUVBuffer* YUVbuf)
 {
-  const RECT rect = { 0, 0, m_sourceWidth, m_sourceHeight };
-  const RECT recthalf = { 0, 0, m_sourceWidth / 2, m_sourceHeight / 2};
   const POINT point = { 0, 0 };
 
   for (unsigned int i = 0; i<YUVbuf->GetActivePlanes(); i++)
   {
+    const RECT rect = { 0, 0, YUVbuf->planes[i].texture.GetWidth(), YUVbuf->planes[i].texture.GetHeight() };
     IDirect3DSurface9 *src, *dest;
     if(FAILED(YUVbuf->planes[i].texture.Get()->GetSurfaceLevel(0, &src)))
       CLog::Log(LOGERROR, __FUNCTION__": Failed to retrieve level 0 surface for source YUV plane %d", i);
     if (FAILED(m_YUVPlanes[i].Get()->GetSurfaceLevel(0, &dest)))
       CLog::Log(LOGERROR, __FUNCTION__": Failed to retrieve level 0 surface for destination YUV plane %d", i);
 
-    if (FAILED(g_Windowing.Get3DDevice()->UpdateSurface(src, i == 0 ? &rect : &recthalf, dest, &point)))
+    if (FAILED(g_Windowing.Get3DDevice()->UpdateSurface(src, &rect, dest, &point)))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Failed to copy plane %d from sysmem to vidmem.", i);
       src->Release();
