@@ -90,6 +90,8 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
 
 void CEpgContainer::Start(void)
 {
+  LoadSettings();
+
   /* make sure the EPG is loaded before starting the thread */
   Load(true /* show progress */);
 
@@ -134,8 +136,6 @@ void CEpgContainer::Process(void)
   /* get the last EPG update time from the database */
   m_database.GetLastEpgScanTime().GetAsTime(m_iLastEpgUpdate);
   m_database.Close();
-
-  LoadSettings();
 
   while (!m_bStop)
   {
