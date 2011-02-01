@@ -21,7 +21,7 @@
 -->		</control>
 
 		<control type="group">
-			<visible>Player.ShowInfo + ![Window.IsVisible(VisualisationSettings) | Window.IsVisible(VisualisationPresetList)]</visible>
+			<visible>Player.ShowInfo + ![Window.IsVisible(VisualisationSettings) | Window.IsVisible(VisualisationPresetList) | Window.IsVisible(MusicOSD)]</visible>
 			<animation effect="fade" start="0" end="100" time="300" tween="quadratic" easing="out">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="300" delay="150" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="fade" start="0" end="100" time="300" tween="quadratic" easing="out">visible</animation>
