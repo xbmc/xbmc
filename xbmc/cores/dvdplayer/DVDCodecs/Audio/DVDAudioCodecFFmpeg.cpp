@@ -59,7 +59,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   AVCodec* pCodec;
   m_bOpenedCodec = false;
 
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load())
+  if (!m_dllAvCore.Load() || !m_dllAvUtil.Load() || !m_dllAvCodec.Load())
     return false;
 
   m_dllAvCodec.avcodec_register_all();
@@ -186,7 +186,7 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
 
     const void *ibuf[6] = { m_pBuffer1 };
     void       *obuf[6] = { m_pBuffer2 };
-    int         istr[6] = { m_dllAvCodec.av_get_bits_per_sample_format(m_pCodecContext->sample_fmt)/8 };
+    int         istr[6] = { m_dllAvCore.av_get_bits_per_sample_fmt(m_pCodecContext->sample_fmt)/8 };
     int         ostr[6] = { 2 };
     int         len     = m_iBufferSize1 / istr[0];
     if(m_dllAvCodec.av_audio_convert(m_pConvert, obuf, ostr, ibuf, istr, len) < 0)

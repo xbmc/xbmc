@@ -23,6 +23,7 @@
 
 #include "DVDAudioCodec.h"
 #include "DllAvCodec.h"
+#include "DllAvCore.h"
 #include "DllAvFormat.h"
 #include "DllAvUtil.h"
 
@@ -62,6 +63,7 @@ protected:
   int64_t m_layout;
 
   DllAvCodec m_dllAvCodec;
+  DllAvCore m_dllAvCore;
   DllAvUtil m_dllAvUtil;
 
   void BuildChannelMap();
