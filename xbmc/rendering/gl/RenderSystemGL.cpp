@@ -260,12 +260,14 @@ bool CRenderSystemGL::IsExtSupported(const char* extension)
   return m_RenderExtensions.find(name) != std::string::npos;;
 }
 
+#ifndef _WIN32
 static int64_t abs(int64_t a)
 {
   if(a < 0)
     return -a;
   return a;
 }
+#endif
 
 bool CRenderSystemGL::PresentRender()
 {
