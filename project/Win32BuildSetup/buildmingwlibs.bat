@@ -1,6 +1,5 @@
 @ECHO OFF
 rem batch file to compile mingw libs via BuildSetup
-rem currently only working on x86 (see msys.bat)
 
 rem set M$ env
 call "%VS100COMNTOOLS%..\..\VC\bin\vcvars32.bat"
