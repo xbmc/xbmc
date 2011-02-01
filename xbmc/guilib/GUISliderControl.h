@@ -36,6 +36,14 @@
 #define SPIN_CONTROL_TYPE_FLOAT     2
 #define SPIN_CONTROL_TYPE_TEXT      3
 
+typedef struct
+{
+  const char *action;
+  const char *formatString;
+  int         infoCode;
+  bool        fireOnDrag;
+} SliderAction;
+
 /*!
  \ingroup controls
  \brief
@@ -69,6 +77,7 @@ public:
   void SetType(int iType) { m_iType = iType; };
   virtual CStdString GetDescription() const;
   void SetTextValue(const CStdString &textValue) { m_textValue = textValue; };
+  void SetAction(const CStdString &action);
 protected:
   virtual bool HitTest(const CPoint &point) const;
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
@@ -79,6 +88,10 @@ protected:
    \return slider position in the range [0,1]
    */
   float GetProportion() const;
+  
+  /*! \brief Send a click message (and/or action) to the app in response to a slider move
+   */
+  void SendClick();
 
   CGUITexture m_guiBackground;
   CGUITexture m_guiMid;
@@ -99,5 +112,7 @@ protected:
 
   int m_iInfoCode;
   CStdString m_textValue; ///< Allows overriding of the text value to be displayed (parent must update when the slider updates)
+  const SliderAction *m_action; ///< Allows the skin to configure the action of a click on the slider \sa SendClick
+  bool m_dragging; ///< Whether we're in a (mouse/touch) drag operation or not - some actions are sent only on release.
 };
 #endif
