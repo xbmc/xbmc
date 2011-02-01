@@ -141,11 +141,14 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
   m_iBufferSize1 = AVCODEC_MAX_AUDIO_FRAME_SIZE ;
   m_iBufferSize2 = 0;
 
-  iBytesUsed = m_dllAvCodec.avcodec_decode_audio2( m_pCodecContext
+  AVPacket avpkt;
+  m_dllAvCodec.av_init_packet(&avpkt);
+  avpkt.data = pData;
+  avpkt.size = iSize;
+  iBytesUsed = m_dllAvCodec.avcodec_decode_audio3( m_pCodecContext
                                                  , (int16_t*)m_pBuffer1
                                                  , &m_iBufferSize1
-                                                 , pData
-                                                 , iSize);
+                                                 , &avpkt);
 
   /* some codecs will attempt to consume more data than what we gave */
   if (iBytesUsed > iSize)

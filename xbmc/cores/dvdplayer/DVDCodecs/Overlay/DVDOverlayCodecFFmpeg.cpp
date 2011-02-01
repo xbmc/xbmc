@@ -162,9 +162,14 @@ int CDVDOverlayCodecFFmpeg::Decode(BYTE* data, int size, double pts, double dura
 
   FreeSubtitle(m_Subtitle);
 
+  AVPacket avpkt;
+  m_dllAvCodec.av_init_packet(&avpkt);
+  avpkt.data = data;
+  avpkt.size = size;
+
   try
   {
-    len = m_dllAvCodec.avcodec_decode_subtitle(m_pCodecContext, &m_Subtitle, &gotsub, data, size);
+    len = m_dllAvCodec.avcodec_decode_subtitle2(m_pCodecContext, &m_Subtitle, &gotsub, &avpkt);
   }
   catch (win32_exception e)
   {
