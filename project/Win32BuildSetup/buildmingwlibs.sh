@@ -14,6 +14,22 @@ function throwerror ()
   fi
 }
 
+function setfilepath ()
+{
+  FILEPATH=$1
+}
+
+function checkfiles ()
+{
+  for i in $@; do
+  FILE=$FILEPATH/$i
+  if [ ! -f $FILE ]; then
+    throwerror "$FILE"
+    exit 1
+  fi
+  done
+}
+
 # cleanup
 if [ -f $ERRORFILE ]; then
   $RM $ERRORFILE
@@ -28,25 +44,14 @@ fi
 # compile our mingw dlls
 echo "##### building ffmpeg dlls #####"
 sh /xbmc/lib/ffmpeg/build_xbmc_win32.sh
-# check if dlls are build
-for i in avcodec-52.dll avformat-52.dll avutil-50.dll postproc-51.dll swscale-0.6.1.dll; do
-FILE=/xbmc/system/players/dvdplayer/$i
-if [ ! -f $FILE ]; then
-  throwerror "$FILE"
-  exit 1
-fi
-done
+setfilepath /xbmc/system/players/dvdplayer
+checkfiles avcodec-52.dll avformat-52.dll avutil-50.dll postproc-51.dll swscale-0.6.1.dll
 echo "##### building of ffmpeg dlls done #####"
 
 echo "##### building libdvd dlls #####"
 sh /xbmc/lib/libdvd/build-xbmc-win32.sh
-
-for i in libdvdcss-2.dll libdvdnav.dll; do
-  FILE=/xbmc/system/players/dvdplayer/$i
-  if [ ! -f $FILE ]; then
-    throwerror "$FILE"
-    exit 1
-fi
+setfilepath /xbmc/system/players/dvdplayer
+checkfiles libdvdcss-2.dll libdvdnav.dll
 done
 echo "##### building of libdvd dlls done #####"
 
