@@ -48,6 +48,10 @@ static void flush_packet_queue(AVFormatContext *s)
     }
     s->packet_buffer_end=
     s->raw_packet_buffer_end= NULL;
+#ifdef RAW_PACKET_BUFFER_SIZE
+    // Added on: 2009-06-25
+    s->raw_packet_buffer_remaining_size = RAW_PACKET_BUFFER_SIZE;
+#endif
 }
 
 /* Taken from libavformat/utils.c */
