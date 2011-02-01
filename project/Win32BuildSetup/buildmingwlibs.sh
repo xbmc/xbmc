@@ -1,5 +1,6 @@
 
 ERRORFILE=/xbmc/project/Win32BuildSetup/errormingw
+NOPFILE=/xbmc/project/Win32BuildSetup/noprompt
 TOUCH=/bin/touch
 RM=/bin/rm
 NOPROMPT=0
@@ -18,9 +19,15 @@ if [ -f $ERRORFILE ]; then
   $RM $ERRORFILE
 fi
 
+# check for noprompt
+if [ -f $NOPFILE ]; then
+  $RM $NOPFILE
+  NOPROMPT=1
+fi
+
 # compile our mingw dlls
 echo "##### building ffmpeg dlls #####"
-#sh /xbmc/lib/ffmpeg/build_xbmc_win32.sh
+sh /xbmc/lib/ffmpeg/build_xbmc_win32.sh
 # check if dlls are build
 for i in avcodec-52.dll avformat-52.dll avutil-50.dll postproc-51.dll swscale-0.6.1.dll; do
 FILE=/xbmc/system/players/dvdplayer/$i
