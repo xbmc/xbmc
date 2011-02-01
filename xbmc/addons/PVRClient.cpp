@@ -67,7 +67,7 @@ CPVRClient::~CPVRClient()
 {
 }
 
-bool CPVRClient::Create(long clientID, IPVRClientCallback *pvrCB)
+bool CPVRClient::Create(int clientID, IPVRClientCallback *pvrCB)
 {
   CLog::Log(LOGDEBUG, "PVR: %s - Creating PVR-Client AddOn", Name().c_str());
 
@@ -149,7 +149,7 @@ bool CPVRClient::ReCreate()
   return Create(clientID, pvrCB);
 }
 
-long CPVRClient::GetID()
+int CPVRClient::GetID()
 {
   return m_pInfo->clientID;
 }

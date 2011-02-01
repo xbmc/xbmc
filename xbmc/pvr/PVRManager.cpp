@@ -174,7 +174,7 @@ bool CPVRManager::LoadClients()
     /* Add client to TV-Database to identify different backend types,
      * if client is already added his id is given.
      */
-    long clientID = m_database.AddClient(clientAddon->Name(), clientAddon->ID());
+    int clientID = m_database.AddClient(clientAddon->Name(), clientAddon->ID());
     if (clientID == -1)
     {
       CLog::Log(LOGERROR, "PVR: Can't Add/Get PVR Client '%s' to to TV Database", clientAddon->Name().c_str());
@@ -221,7 +221,7 @@ void CPVRManager::GetClientProperties()
  * Load the client Properties for the given client ID in the
  * Properties list
  ********************************************************************/
-void CPVRManager::GetClientProperties(long clientID)
+void CPVRManager::GetClientProperties(int clientID)
 {
   PVR_SERVERPROPS props;
   if (m_clients[clientID]->GetProperties(&props) == PVR_ERROR_NO_ERROR)
@@ -236,7 +236,7 @@ void CPVRManager::GetClientProperties(long clientID)
  *
  * Returns the first loaded client ID
  ********************************************************************/
-unsigned long CPVRManager::GetFirstClientID()
+unsigned int CPVRManager::GetFirstClientID()
 {
   CLIENTMAPITR itr = m_clients.begin();
   return m_clients[(*itr).first]->GetID();
@@ -248,7 +248,7 @@ unsigned long CPVRManager::GetFirstClientID()
  * Callback function from Client driver to inform about changed
  * timers, channels, recordings or epg.
  ********************************************************************/
-void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg)
+void CPVRManager::OnClientMessage(const int clientID, const PVR_EVENT clientEvent, const char* msg)
 {
   /* here the manager reacts to messages sent from any of the clients via the IPVRClientCallback */
   CStdString clientName = m_clients[clientID]->GetBackendName() + ":" + m_clients[clientID]->GetConnectionString();
@@ -866,7 +866,7 @@ bool CPVRManager::TranslateBoolInfo(DWORD dwInfo)
 void CPVRManager::StartChannelScan()
 {
   std::vector<long> clients;
-  long scanningClientID = -1;
+  int scanningClientID = -1;
   m_bChannelScanRunning = true;
 
   CLIENTMAPITR itr = m_clients.begin();
@@ -1020,7 +1020,7 @@ PVR_SERVERPROPS *CPVRManager::GetCurrentClientProps()
     return NULL;
 }
 
-long CPVRManager::GetCurrentPlayingClientID()
+int CPVRManager::GetCurrentPlayingClientID()
 {
   if (m_currentPlayingChannel)
     return m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID();
@@ -1113,7 +1113,7 @@ bool CPVRManager::HaveActiveClients()
   return ready > 0 ? true : false;
 }
 
-bool CPVRManager::HaveMenuHooks(long clientID)
+bool CPVRManager::HaveMenuHooks(int clientID)
 {
   if (clientID < 0)
     clientID = GetCurrentPlayingClientID();
@@ -1122,7 +1122,7 @@ bool CPVRManager::HaveMenuHooks(long clientID)
   return m_clients[clientID]->HaveMenuHooks();
 }
 
-void CPVRManager::ProcessMenuHooks(long clientID)
+void CPVRManager::ProcessMenuHooks(int clientID)
 {
   if (m_clients[clientID]->HaveMenuHooks())
   {

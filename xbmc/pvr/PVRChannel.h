@@ -40,7 +40,7 @@ private:
   /*! @name XBMC related channel data
    */
   //@{
-  long       m_iChannelId;              /*!< the identifier given to this channel by the TV database */
+  int        m_iChannelId;              /*!< the identifier given to this channel by the TV database */
   int        m_iChannelNumber;          /*!< the channel number used by XBMC */
   int        m_iChannelGroupId;         /*!< the identifier of the group where this channel belongs to */
   bool       m_bIsRadio;                /*!< true if this channel is a radio channel, false if not */
@@ -108,7 +108,7 @@ public:
    * @brief The identifier given to this channel by the TV database.
    * @return The identifier given to this channel by the TV database.
    */
-  long ChannelID(void) const { return m_iChannelId; }
+  int ChannelID(void) const { return m_iChannelId; }
 
   /*!
    * @brief Set the identifier for this channel.
@@ -116,7 +116,7 @@ public:
    * @param bSaveInDb Save in the database or not.
    * @return True if the something changed, false otherwise.
    */
-  bool SetChannelID(long iDatabaseId, bool bSaveInDb = false);
+  bool SetChannelID(int iDatabaseId, bool bSaveInDb = false);
 
   /*!
    * @brief The channel number used by XBMC.

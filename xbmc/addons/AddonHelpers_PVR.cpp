@@ -158,7 +158,7 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
   CPVRTimerInfoTag tag;
   tag.SetClientID(client->GetClientID());
   tag.SetClientIndex(timer->index);
-  tag.SetActive(timer->active);
+  tag.SetActive(timer->active == 1);
   tag.SetTitle(timer->title);
   tag.SetDir(timer->directory);
   tag.SetClientNumber(timer->channelNum);
@@ -167,8 +167,8 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
   tag.SetFirstDay((time_t) (timer->firstday+client->GetTimeCorrection()));
   tag.SetPriority(timer->priority);
   tag.SetLifetime(timer->lifetime);
-  tag.SetRecording(timer->recording);
-  tag.SetRepeating(timer->repeat);
+  tag.SetRecording(timer->recording == 1);
+  tag.SetRepeating(timer->repeat == 1);
   tag.SetWeekdays(timer->repeatflags);
   tag.SetNumber(channel->ChannelNumber());
   tag.SetRadio(channel->IsRadio());

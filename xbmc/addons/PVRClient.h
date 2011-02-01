@@ -34,7 +34,7 @@ typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
 class IPVRClientCallback
 {
 public:
-  virtual void OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg)=0;
+  virtual void OnClientMessage(const int clientID, const PVR_EVENT clientEvent, const char* msg)=0;
 };
 
 class CPVRClient : public ADDON::CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>
@@ -44,7 +44,7 @@ public:
   CPVRClient(const cp_extension_t *ext);
   ~CPVRClient();
 
-  bool Create(long clientID, IPVRClientCallback *pvrCB);
+  bool Create(int clientID, IPVRClientCallback *pvrCB);
   void Destroy();
   bool ReCreate();
 
@@ -53,7 +53,7 @@ public:
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
 
   /* Server */
-  long GetID();
+  int GetID();
   PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
 
   /* General */

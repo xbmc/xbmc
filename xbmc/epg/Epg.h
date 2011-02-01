@@ -94,7 +94,7 @@ private:
    * @param StartTime The start time of the event to find if it wasn't found by it's unique ID.
    * @return The found tag or NULL if it wasn't found.
    */
-  virtual const CEpgInfoTag *InfoTag(long uniqueID, CDateTime StartTime) const;
+  virtual const CEpgInfoTag *InfoTag(int uniqueID, CDateTime StartTime) const;
 
 protected:
   /*!

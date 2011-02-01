@@ -36,12 +36,12 @@ class CPVRChannelGroup : public std::vector<CPVRChannel *>
   friend class CPVRChannelGroupInternal;
 
 private:
-  bool          m_bRadio;       /*!< true if this container holds radio channels, false if it holds TV channels */
-  bool          m_bIsSorted;    /*!< true if this container is sorted by channel number, false if not */
+  bool       m_bRadio;       /*!< true if this container holds radio channels, false if it holds TV channels */
+  bool       m_bIsSorted;    /*!< true if this container is sorted by channel number, false if not */
 
-  unsigned long m_iGroupId;     /*!< The ID of this group in the database */
-  CStdString    m_strGroupName; /*!< The name of this group */
-  int           m_iSortOrder;   /*!< The sort order to use */
+  int        m_iGroupId;     /*!< The ID of this group in the database */
+  CStdString m_strGroupName; /*!< The name of this group */
+  int        m_iSortOrder;   /*!< The sort order to use */
 
   /*!
    * @brief Get the groups list for a directory.
@@ -107,7 +107,7 @@ private:
    * @param iUniqueID The ID of the channel to delete.
    * @return True if the channel was found and removed, false otherwise.
    */
-  bool RemoveByUniqueID(long iUniqueID);
+  bool RemoveByUniqueID(int iUniqueID);
 
   /*!
    * @brief Load the channels from the clients.
@@ -222,13 +222,13 @@ public:
    * @brief The database ID of this group.
    * @return The database ID of this group.
    */
-  long GroupID(void) const { return m_iGroupId; }
+  int GroupID(void) const { return m_iGroupId; }
 
   /*!
    * @brief Set the database ID of this group.
    * @param iGroupId The new database ID.
    */
-  void SetGroupID(long iGroupId) { m_iGroupId = iGroupId; }
+  void SetGroupID(int iGroupId) { m_iGroupId = iGroupId; }
 
   /*!
    * @brief The name of this group.
@@ -240,13 +240,13 @@ public:
    * @brief The sort order of this group.
    * @return The sort order of this group.
    */
-  long SortOrder(void) const { return m_iSortOrder; }
+  int SortOrder(void) const { return m_iSortOrder; }
 
   /*!
    * @brief Change the sort order of this group.
    * @param iSortOrder The new sort order of this group.
    */
-  void SetSortOrder(long iSortOrder) { m_iSortOrder = iSortOrder; }
+  void SetSortOrder(int iSortOrder) { m_iSortOrder = iSortOrder; }
 
   /*! @name Sort methods
    */
@@ -281,7 +281,7 @@ public:
    * @param iChannelID The channel ID.
    * @return The channel or NULL if it wasn't found.
    */
-  const CPVRChannel *GetByChannelID(long iChannelID) const;
+  const CPVRChannel *GetByChannelID(int iChannelID) const;
 
   /*!
    * @brief Get a channel given it's unique ID.
@@ -397,7 +397,7 @@ public:
    * @param iChannelID The channel ID.
    * @return The channel or NULL if it wasn't found.
    */
-  static const CPVRChannel *GetByChannelIDFromAll(long iChannelID);
+  static const CPVRChannel *GetByChannelIDFromAll(int iChannelID);
 
   /*!
    * @brief Get a channel given it's unique ID.

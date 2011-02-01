@@ -207,7 +207,7 @@ const CEpgInfoTag *CEpg::InfoTagNext(void) const
   return nowTag ? nowTag->GetNextEvent() : NULL;
 }
 
-const CEpgInfoTag *CEpg::InfoTag(long uniqueID, CDateTime StartTime) const
+const CEpgInfoTag *CEpg::InfoTag(int uniqueID, CDateTime StartTime) const
 {
   CEpgInfoTag *returnTag = NULL;
 

@@ -129,10 +129,10 @@ public:
   int ClientNumber(void) const { return m_iClientNumber; }
   void SetClientNumber(int Number) { m_iClientNumber = Number; }
 
-  long ClientIndex(void) const { return m_iClientIndex; }
+  int ClientIndex(void) const { return m_iClientIndex; }
   void SetClientIndex(int ClientIndex) { m_iClientIndex = ClientIndex; }
 
-  long ClientID(void) const { return m_iClientID; }
+  int ClientID(void) const { return m_iClientID; }
   void SetClientID(int ClientId) { m_iClientID = ClientId; }
 
   bool IsRecording(void) const { return m_bIsRecording; }

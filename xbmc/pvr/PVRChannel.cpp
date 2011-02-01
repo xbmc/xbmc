@@ -144,7 +144,7 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
   return false;
 }
 
-bool CPVRChannel::SetChannelID(long iChannelId, bool bSaveInDb /* = false */)
+bool CPVRChannel::SetChannelID(int iChannelId, bool bSaveInDb /* = false */)
 {
   bool bReturn = false;
 

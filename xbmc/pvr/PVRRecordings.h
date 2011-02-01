@@ -73,9 +73,9 @@ public:
   const CStdString &Path(void) const { return m_strFileNameAndPath; }
   void SetPath(const CStdString &path) { m_strFileNameAndPath = path; }
 
-  long ClientID(void) const { return m_clientID; }
+  int ClientID(void) const { return m_clientID; }
   void SetClientID(int ClientId) { m_clientID = ClientId; }
-  long ClientIndex(void) const { return m_clientIndex; }
+  int ClientIndex(void) const { return m_clientIndex; }
   void SetClientIndex(int ClientIndex) { m_clientIndex = ClientIndex; }
   const CStdString StreamURL(void) const { return m_strStreamURL; }
   void SetStreamURL(const CStdString &stream) { m_strStreamURL = stream; }

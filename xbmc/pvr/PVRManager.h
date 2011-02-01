@@ -55,7 +55,7 @@ public:
 
   /*! \name External Client access functions
    */
-  unsigned long GetFirstClientID();
+  unsigned int GetFirstClientID();
   CLIENTMAP* Clients() { return &m_clients; }
   CPVRDatabase *GetTVDatabase() { return &m_database; }
 
@@ -63,7 +63,7 @@ public:
    */
   bool RequestRestart(ADDON::AddonPtr addon, bool datachanged);
   bool RequestRemoval(ADDON::AddonPtr addon);
-  void OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
+  void OnClientMessage(const int clientID, const PVR_EVENT clientEvent, const char* msg);
 
   /*! \name GUIInfoManager functions
    */
@@ -118,7 +118,7 @@ public:
   /*! \brief Return the current playing client identifier
    \return the identifier or -1 if no playing item ist present
    */
-  long GetCurrentPlayingClientID();
+  int GetCurrentPlayingClientID();
 
   /*! \brief Returns the properties of the given client identifier
    \param clientID The identifier of the client
@@ -159,12 +159,12 @@ public:
    \param clientID identifier of the client to ask or < 0 for playing channel
    \return true if menu hooks are present
    */
-  bool HaveMenuHooks(long clientID);
+  bool HaveMenuHooks(int clientID);
 
    /*! \brief Open selection and progress pvr actions
    \param clientID identifier to process
    */
-  void ProcessMenuHooks(long clientID);
+  void ProcessMenuHooks(int clientID);
 
   /*! \brief Returns the previous selected channel
    \return the number of the previous channel or -1 if no channel was selected before
@@ -344,7 +344,7 @@ private:
   /*--- Handling functions ---*/
   bool LoadClients();
   void GetClientProperties();                   /*! \brief call GetClientProperties(long clientID) for each client connected */
-  void GetClientProperties(long clientID);      /*! \brief request the PVR_SERVERPROPS struct from each client */
+  void GetClientProperties(int clientID);      /*! \brief request the PVR_SERVERPROPS struct from each client */
   void SaveCurrentChannelSettings();            /*! \brief Write the current Video and Audio settings of
                                                  playing channel to the TV Database */
   void LoadCurrentChannelSettings();            /*! \brief Read and set the Video and Audio settings of

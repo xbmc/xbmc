@@ -198,7 +198,7 @@ bool CPVRDatabase::DeleteChannels()
   return DeleteValues("channels");
 }
 
-bool CPVRDatabase::DeleteClientChannels(long iClientId)
+bool CPVRDatabase::DeleteClientChannels(int iClientId)
 {
   /* invalid client Id */
   if (iClientId <= 0)
@@ -215,9 +215,9 @@ bool CPVRDatabase::DeleteClientChannels(long iClientId)
   return DeleteValues("channels", strWhereClause);
 }
 
-long CPVRDatabase::Persist(const CPVRChannel &channel, bool bQueueWrite /* = false */)
+int CPVRDatabase::Persist(const CPVRChannel &channel, bool bQueueWrite /* = false */)
 {
-  long iReturn = -1;
+  int iReturn = -1;
 
   /* invalid channel */
   if (channel.UniqueID() <= 0)
@@ -261,7 +261,7 @@ long CPVRDatabase::Persist(const CPVRChannel &channel, bool bQueueWrite /* = fal
   }
   else if (ExecuteQuery(strQuery))
   {
-    iReturn = (channel.ChannelID() <= 0) ? (long) m_pDS->lastinsertid() : channel.ChannelID();
+    iReturn = (channel.ChannelID() <= 0) ? (int) m_pDS->lastinsertid() : channel.ChannelID();
   }
 
   return iReturn;
@@ -548,7 +548,7 @@ int CPVRDatabase::GetChannelsInGroup(CPVRChannelGroup *group)
   return iReturn;
 }
 
-long CPVRDatabase::GetChannelGroupId(const CStdString &strGroupName, bool bRadio /* = false */)
+int CPVRDatabase::GetChannelGroupId(const CStdString &strGroupName, bool bRadio /* = false */)
 {
   CStdString strWhereClause = FormatSQL("sName LIKE '%s' AND bIsRadio = %u", strGroupName.c_str(), (bRadio ? 1 : 0));
   CStdString strReturn = GetSingleValue("channelgroups", "idGroup", strWhereClause);
@@ -558,9 +558,9 @@ long CPVRDatabase::GetChannelGroupId(const CStdString &strGroupName, bool bRadio
   return atoi(strReturn);
 }
 
-long CPVRDatabase::Persist(const CPVRChannelGroup &group, bool bQueueWrite /* = false */)
+int CPVRDatabase::Persist(const CPVRChannelGroup &group, bool bQueueWrite /* = false */)
 {
-  long iReturn = -1;
+  int iReturn = -1;
 
   CStdString strQuery;
 
@@ -588,7 +588,7 @@ long CPVRDatabase::Persist(const CPVRChannelGroup &group, bool bQueueWrite /* = 
   }
   else if (ExecuteQuery(strQuery))
   {
-    iReturn = (group.GroupID() < 0) ? (long) m_pDS->lastinsertid() : group.GroupID();
+    iReturn = (group.GroupID() < 0) ? (int) m_pDS->lastinsertid() : group.GroupID();
   }
 
   return iReturn;
@@ -604,9 +604,9 @@ bool CPVRDatabase::DeleteClients()
       DeleteValues("map_channels_clients");
 }
 
-long CPVRDatabase::AddClient(const CStdString &strClientName, const CStdString &strClientUid)
+int CPVRDatabase::AddClient(const CStdString &strClientName, const CStdString &strClientUid)
 {
-  long iReturn = -1;
+  int iReturn = -1;
 
   /* invalid client uid or name */
   if (strClientName.IsEmpty() || strClientUid.IsEmpty())
@@ -624,7 +624,7 @@ long CPVRDatabase::AddClient(const CStdString &strClientName, const CStdString &
 
     if (ExecuteQuery(strQuery))
     {
-      iReturn = (long) m_pDS->lastinsertid();
+      iReturn = (int) m_pDS->lastinsertid();
     }
   }
 
@@ -644,7 +644,7 @@ bool CPVRDatabase::DeleteClient(const CStdString &strClientUid)
   return DeleteValues("clients", strWhereClause);
 }
 
-long CPVRDatabase::GetClientId(const CStdString &strClientUid)
+int CPVRDatabase::GetClientId(const CStdString &strClientUid)
 {
   CStdString strWhereClause = FormatSQL("sUid = '%s'", strClientUid.c_str());
   CStdString strValue = GetSingleValue("clients", "idClient", strWhereClause);

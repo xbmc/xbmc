@@ -73,7 +73,7 @@ public:
    * @param iClientId The ID of the client to delete the channels for.
    * @return True if the channels were deleted, false otherwise.
    */
-  bool DeleteClientChannels(long iClientId);
+  bool DeleteClientChannels(int iClientId);
 
   /*!
    * @brief Add or update a channel entry in the database
@@ -81,7 +81,7 @@ public:
    * @param bQueueWrite If true, don't write immediately
    * @return The database ID of the channel.
    */
-  long Persist(const CPVRChannel &channel, bool bQueueWrite = false);
+  int Persist(const CPVRChannel &channel, bool bQueueWrite = false);
 
   /*!
    * @brief Remove a channel entry from the database
@@ -186,7 +186,7 @@ public:
    * @param bQueueWrite If true, don't write directly.
    * @return The database ID of the group.
    */
-  long Persist(const CPVRChannelGroup &group, bool bQueueWrite = false);
+  int Persist(const CPVRChannelGroup &group, bool bQueueWrite = false);
 
 protected:
   /*!
@@ -195,7 +195,7 @@ protected:
    * @param bRadio True if it's a radio channel group, false otherwise.
    * @return
    */
-  long GetChannelGroupId(const CStdString &strGroupName, bool bRadio = false);
+  int GetChannelGroupId(const CStdString &strGroupName, bool bRadio = false);
   //@}
 
   /*! @name Client methods */
@@ -213,7 +213,7 @@ public:
    * @param strGuid The unique ID of the client.
    * @return The database ID of the client.
    */
-  long AddClient(const CStdString &strClientName, const CStdString &strGuid);
+  int AddClient(const CStdString &strClientName, const CStdString &strGuid);
 
   /*!
    * @brief Remove a client from the database
@@ -228,7 +228,7 @@ protected:
    * @param strClientUid The unique ID of the client.
    * @return The database ID of the client or -1 if it wasn't found.
    */
-  long GetClientId(const CStdString &strClientUid);
+  int GetClientId(const CStdString &strClientUid);
 
   //@}
 
