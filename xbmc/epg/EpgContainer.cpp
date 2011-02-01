@@ -186,7 +186,7 @@ bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = fal
 
   if (!epg)
   {
-    epg = new CEpg(entry.EpgID());
+    epg = CreateEpg(entry.EpgID());
     push_back(epg);
   }
 
@@ -304,6 +304,11 @@ bool CEpgContainer::Load(bool bShowProgress /* = false */)
   m_bDatabaseLoaded = true;
 
   return bReturn;
+}
+
+CEpg *CEpgContainer::CreateEpg(int iEpgId)
+{
+  return new CEpg(iEpgId);
 }
 
 bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)

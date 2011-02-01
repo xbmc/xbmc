@@ -53,7 +53,14 @@ bool CPVREpgContainer::CreateChannelEpgs(void)
     const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(radio == 1);
     for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
     {
-      channels->at(iChannelPtr)->GetEPG();
+      CEpg *epg = GetById(channels->at(iChannelPtr)->ChannelID());
+      if (!epg)
+        channels->at(iChannelPtr)->GetEPG();
+      else
+      {
+        channels->at(iChannelPtr)->m_EPG = (CPVREpg *) epg;
+        epg->m_Channel = channels->at(iChannelPtr);
+      }
     }
   }
 
@@ -103,6 +110,18 @@ void CPVREpgContainer::UpdateFirstAndLastEPGDates(const CPVREpgInfoTag &tag)
 bool CPVREpgContainer::AutoCreateTablesHook(void)
 {
   return CreateChannelEpgs();
+}
+
+CEpg* CPVREpgContainer::CreateEpg(int iEpgId)
+{
+  CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups.GetChannelById(iEpgId);
+  if (channel)
+    return new CPVREpg(channel);
+  else
+  {
+    CLog::Log(LOGERROR, "vage fout!");
+    return NULL;
+  }
 }
 
 const CDateTime &CPVREpgContainer::GetFirstEPGDate(bool bRadio /* = false */)

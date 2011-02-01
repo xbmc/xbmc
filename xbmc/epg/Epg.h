@@ -29,13 +29,14 @@
 #include "EpgSearchFilter.h"
 
 class CEpgContainer;
-
+class CPVREpgContainer;
 class CPVREpg;
 
 /** EPG container for CEpgInfoTag instances */
 
 class CEpg : public std::vector<CEpgInfoTag*>
 {
+  friend class CPVREpgContainer;
   friend class CEpgContainer;
   friend class CPVREpg;
 

@@ -56,6 +56,13 @@ private:
    */
   bool AutoCreateTablesHook(void);
 
+  /*!
+   * @brief Create a new EPG table.
+   * @param iEpgId The table ID or -1 to create a new one.
+   * @return The new table.
+   */
+  CEpg *CreateEpg(int iEpgId);
+
 public:
   /*!
    * @brief Start the EPG update thread.

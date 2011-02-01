@@ -117,6 +117,13 @@ private:
    */
   virtual bool AutoCreateTablesHook(void) { return true; }
 
+  /*!
+   * @brief Create a new EPG table.
+   * @param iEpgId The table ID or -1 to create a new one.
+   * @return The new table.
+   */
+  virtual CEpg *CreateEpg(int iEpgId);
+
 protected:
   /*!
    * @brief EPG update thread
