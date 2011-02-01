@@ -134,9 +134,9 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
 
   switch(iInBits)
   {
-    case  8: m_CodecCtx->sample_fmt = SAMPLE_FMT_U8 ; break;
-    case 16: m_CodecCtx->sample_fmt = SAMPLE_FMT_S16; break;
-    case 32: m_CodecCtx->sample_fmt = SAMPLE_FMT_S32; break;
+    case  8: m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_U8 ; break;
+    case 16: m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_S16; break;
+    case 32: m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_S32; break;
     default:
       m_dllAvUtil.av_freep(&m_Stream);
       m_dllAvUtil.av_freep(&m_Format->pb);

@@ -47,7 +47,7 @@ public:
 protected:
   AVCodecContext* m_pCodecContext;
   AVAudioConvert* m_pConvert;;
-  enum SampleFormat m_iSampleFormat;
+  enum AVSampleFormat m_iSampleFormat;
   enum PCMChannels m_channelMap[PCM_MAX_CH + 1];
 
   BYTE *m_pBuffer1;

@@ -52,13 +52,13 @@ bool CDVDAudioEncoderFFmpeg::Initialize(unsigned int channels, enum PCMChannels 
   m_CodecCtx->bit_rate       = AC3_ENCODE_BITRATE;
   m_CodecCtx->sample_rate    = sampleRate;
   m_CodecCtx->channels       = 6;
-  m_CodecCtx->channel_layout = CH_LAYOUT_5POINT1_BACK;
+  m_CodecCtx->channel_layout = AV_CH_LAYOUT_5POINT1_BACK;
 
   switch(bitsPerSample)
   {
-    case  8: m_CodecCtx->sample_fmt = SAMPLE_FMT_U8 ; break;
-    case 16: m_CodecCtx->sample_fmt = SAMPLE_FMT_S16; break;
-    case 32: m_CodecCtx->sample_fmt = SAMPLE_FMT_S32; break;
+    case  8: m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_U8 ; break;
+    case 16: m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_S16; break;
+    case 32: m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_S32; break;
     default:
       m_dllAvUtil.av_freep(&m_CodecCtx);
       return false;
@@ -72,24 +72,24 @@ bool CDVDAudioEncoderFFmpeg::Initialize(unsigned int channels, enum PCMChannels 
 
   /* remap the channels according to the specified channel layout */
   int index = 0;
-  if (m_CodecCtx->channel_layout & CH_FRONT_LEFT           ) m_ChannelMap[index++] = PCM_FRONT_LEFT           ;
-  if (m_CodecCtx->channel_layout & CH_FRONT_RIGHT          ) m_ChannelMap[index++] = PCM_FRONT_RIGHT          ;
-  if (m_CodecCtx->channel_layout & CH_FRONT_CENTER         ) m_ChannelMap[index++] = PCM_FRONT_CENTER         ;
-  if (m_CodecCtx->channel_layout & CH_LOW_FREQUENCY        ) m_ChannelMap[index++] = PCM_LOW_FREQUENCY        ;
-  if (m_CodecCtx->channel_layout & CH_BACK_LEFT            ) m_ChannelMap[index++] = PCM_BACK_LEFT            ;
-  if (m_CodecCtx->channel_layout & CH_BACK_RIGHT           ) m_ChannelMap[index++] = PCM_BACK_RIGHT           ;
-  if (m_CodecCtx->channel_layout & CH_FRONT_LEFT_OF_CENTER ) m_ChannelMap[index++] = PCM_FRONT_LEFT_OF_CENTER ;
-  if (m_CodecCtx->channel_layout & CH_FRONT_RIGHT_OF_CENTER) m_ChannelMap[index++] = PCM_FRONT_RIGHT_OF_CENTER;
-  if (m_CodecCtx->channel_layout & CH_BACK_CENTER          ) m_ChannelMap[index++] = PCM_BACK_CENTER          ;
-  if (m_CodecCtx->channel_layout & CH_SIDE_LEFT            ) m_ChannelMap[index++] = PCM_SIDE_LEFT            ;
-  if (m_CodecCtx->channel_layout & CH_SIDE_RIGHT           ) m_ChannelMap[index++] = PCM_SIDE_RIGHT           ;
-  if (m_CodecCtx->channel_layout & CH_TOP_CENTER           ) m_ChannelMap[index++] = PCM_TOP_CENTER           ;
-  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_LEFT       ) m_ChannelMap[index++] = PCM_TOP_FRONT_LEFT       ;
-  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_CENTER     ) m_ChannelMap[index++] = PCM_TOP_FRONT_CENTER     ;
-  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_RIGHT      ) m_ChannelMap[index++] = PCM_TOP_FRONT_RIGHT      ;
-  if (m_CodecCtx->channel_layout & CH_TOP_BACK_LEFT        ) m_ChannelMap[index++] = PCM_TOP_BACK_LEFT        ;
-  if (m_CodecCtx->channel_layout & CH_TOP_BACK_CENTER      ) m_ChannelMap[index++] = PCM_TOP_BACK_CENTER      ;
-  if (m_CodecCtx->channel_layout & CH_TOP_BACK_RIGHT       ) m_ChannelMap[index++] = PCM_TOP_BACK_RIGHT       ;
+  if (m_CodecCtx->channel_layout & AV_CH_FRONT_LEFT           ) m_ChannelMap[index++] = PCM_FRONT_LEFT           ;
+  if (m_CodecCtx->channel_layout & AV_CH_FRONT_RIGHT          ) m_ChannelMap[index++] = PCM_FRONT_RIGHT          ;
+  if (m_CodecCtx->channel_layout & AV_CH_FRONT_CENTER         ) m_ChannelMap[index++] = PCM_FRONT_CENTER         ;
+  if (m_CodecCtx->channel_layout & AV_CH_LOW_FREQUENCY        ) m_ChannelMap[index++] = PCM_LOW_FREQUENCY        ;
+  if (m_CodecCtx->channel_layout & AV_CH_BACK_LEFT            ) m_ChannelMap[index++] = PCM_BACK_LEFT            ;
+  if (m_CodecCtx->channel_layout & AV_CH_BACK_RIGHT           ) m_ChannelMap[index++] = PCM_BACK_RIGHT           ;
+  if (m_CodecCtx->channel_layout & AV_CH_FRONT_LEFT_OF_CENTER ) m_ChannelMap[index++] = PCM_FRONT_LEFT_OF_CENTER ;
+  if (m_CodecCtx->channel_layout & AV_CH_FRONT_RIGHT_OF_CENTER) m_ChannelMap[index++] = PCM_FRONT_RIGHT_OF_CENTER;
+  if (m_CodecCtx->channel_layout & AV_CH_BACK_CENTER          ) m_ChannelMap[index++] = PCM_BACK_CENTER          ;
+  if (m_CodecCtx->channel_layout & AV_CH_SIDE_LEFT            ) m_ChannelMap[index++] = PCM_SIDE_LEFT            ;
+  if (m_CodecCtx->channel_layout & AV_CH_SIDE_RIGHT           ) m_ChannelMap[index++] = PCM_SIDE_RIGHT           ;
+  if (m_CodecCtx->channel_layout & AV_CH_TOP_CENTER           ) m_ChannelMap[index++] = PCM_TOP_CENTER           ;
+  if (m_CodecCtx->channel_layout & AV_CH_TOP_FRONT_LEFT       ) m_ChannelMap[index++] = PCM_TOP_FRONT_LEFT       ;
+  if (m_CodecCtx->channel_layout & AV_CH_TOP_FRONT_CENTER     ) m_ChannelMap[index++] = PCM_TOP_FRONT_CENTER     ;
+  if (m_CodecCtx->channel_layout & AV_CH_TOP_FRONT_RIGHT      ) m_ChannelMap[index++] = PCM_TOP_FRONT_RIGHT      ;
+  if (m_CodecCtx->channel_layout & AV_CH_TOP_BACK_LEFT        ) m_ChannelMap[index++] = PCM_TOP_BACK_LEFT        ;
+  if (m_CodecCtx->channel_layout & AV_CH_TOP_BACK_CENTER      ) m_ChannelMap[index++] = PCM_TOP_BACK_CENTER      ;
+  if (m_CodecCtx->channel_layout & AV_CH_TOP_BACK_RIGHT       ) m_ChannelMap[index++] = PCM_TOP_BACK_RIGHT       ;
 
   m_Remap.SetInputFormat (channels, channelMap, bitsPerSample / 8);
   m_Remap.SetOutputFormat(index, m_ChannelMap, true);

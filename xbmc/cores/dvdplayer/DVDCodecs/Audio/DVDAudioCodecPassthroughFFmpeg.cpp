@@ -143,7 +143,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   codec->codec_type     = CODEC_TYPE_AUDIO;
   codec->codec_id       = hints.codec;
   codec->sample_rate    = m_SampleRate;
-  codec->sample_fmt     = SAMPLE_FMT_S16;
+  codec->sample_fmt     = AV_SAMPLE_FMT_S16;
   codec->channels       = hints.channels;
   codec->bit_rate       = hints.bitrate;
   codec->extradata      = new uint8_t[hints.extrasize];
