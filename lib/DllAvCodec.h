@@ -54,8 +54,18 @@ extern "C" {
       #include <ffmpeg/avformat.h>
     #endif
   #endif
-  /* We'll just inlude this header in our project for now */
-  #include "ffmpeg/libavcodec/audioconvert.h"
+
+  /* From non-public audioconvert.h */
+  int64_t avcodec_guess_channel_layout(int nb_channels, enum CodecID codec_id, const char *fmt_name);
+  struct AVAudioConvert;
+  typedef struct AVAudioConvert AVAudioConvert;
+  AVAudioConvert *av_audio_convert_alloc(enum AVSampleFormat out_fmt, int out_channels,
+                                         enum AVSampleFormat in_fmt, int in_channels,
+                                         const float *matrix, int flags);
+  void av_audio_convert_free(AVAudioConvert *ctx);
+  int av_audio_convert(AVAudioConvert *ctx,
+                             void * const out[6], const int out_stride[6],
+                       const void * const  in[6], const int  in_stride[6], int len);
 #else
   #include "libavcodec/avcodec.h"
   #include "libavcodec/audioconvert.h"
