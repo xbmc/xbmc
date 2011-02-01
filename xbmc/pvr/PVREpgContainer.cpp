@@ -118,10 +118,7 @@ CEpg* CPVREpgContainer::CreateEpg(int iEpgId)
   if (channel)
     return new CPVREpg(channel);
   else
-  {
-    CLog::Log(LOGERROR, "vage fout!");
     return NULL;
-  }
 }
 
 const CDateTime &CPVREpgContainer::GetFirstEPGDate(bool bRadio /* = false */)
