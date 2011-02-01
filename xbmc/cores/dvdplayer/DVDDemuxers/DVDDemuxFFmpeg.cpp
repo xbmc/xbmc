@@ -1048,7 +1048,12 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         {
           std::string fileName = "special://temp/fonts/";
           XFILE::CDirectory::Create(fileName);
-          fileName += pStream->filename;
+          AVMetadataTag *nameTag = m_dllAvFormat.av_metadata_get(pStream->metadata, "filename", NULL, 0);
+          if (!nameTag) {
+            CLog::Log(LOGERROR, "%s: TTF attachment has no name", __FUNCTION__);
+            break;
+          }
+          fileName += nameTag->value;
           XFILE::CFile file;
           if(pStream->codec->extradata && file.OpenForWrite(fileName))
           {
@@ -1088,7 +1093,16 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     m_streams[iId]->pPrivate = pStream;
     m_streams[iId]->flags = (CDemuxStream::EFlags)pStream->disposition;
 
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,83,0)
+    // API added on: 2010-10-15
+    // (Note that while the function was available earlier, the generic
+    // metadata tags were not populated by default)
+    AVMetadataTag *langTag = m_dllAvFormat.av_metadata_get(pStream->metadata, "language", NULL, 0);
+    if (langTag)
+      strncpy(m_streams[iId]->language, langTag->value, 3);
+#else
     strcpy( m_streams[iId]->language, pStream->language );
+#endif
 
     if( pStream->codec->extradata && pStream->codec->extradata_size > 0 )
     {
@@ -1187,8 +1201,20 @@ void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName)
   {
     #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,14,0)
       int chapterIdx = GetChapter();
-      if(chapterIdx > 0 && m_pFormatContext->chapters[chapterIdx-1]->title)
+      if(chapterIdx <= 0)
+        return;
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,83,0)
+      // API added on: 2010-10-15
+      // (Note that while the function was available earlier, the generic
+      // metadata tags were not populated by default)
+      AVMetadataTag *titleTag = m_dllAvFormat.av_metadata_get(m_pFormatContext->chapters[chapterIdx-1]->metadata,
+                                                              "title", NULL, 0);
+      if (titleTag)
+        strChapterName = titleTag->value;
+#else
+      if (m_pFormatContext->chapters[chapterIdx-1]->title)
         strChapterName = m_pFormatContext->chapters[chapterIdx-1]->title;
+#endif
     #endif
   }
 }
