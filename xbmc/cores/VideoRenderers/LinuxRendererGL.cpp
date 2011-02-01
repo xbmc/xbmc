@@ -38,7 +38,6 @@
 #include "guilib/Texture.h"
 #include "threads/SingleLock.h"
 #include "DllSwScale.h"
-#include "DllAvCodec.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
@@ -155,8 +154,6 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_context = NULL;
   m_rgbPbo = 0;
 
-  m_dllAvUtil = new DllAvUtil;
-  m_dllAvCodec = new DllAvCodec;
   m_dllSwScale = new DllSwScale;
 }
 
@@ -192,8 +189,6 @@ CLinuxRendererGL::~CLinuxRendererGL()
   }
 
   delete m_dllSwScale;
-  delete m_dllAvCodec;
-  delete m_dllAvUtil;
 }
 
 void CLinuxRendererGL::ManageTextures()
@@ -753,7 +748,7 @@ unsigned int CLinuxRendererGL::PreInit()
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
 
-  if (!m_dllAvUtil->Load() || !m_dllAvCodec->Load() || !m_dllSwScale->Load())
+  if (!m_dllSwScale->Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
 
   #if (! defined USE_EXTERNAL_FFMPEG)

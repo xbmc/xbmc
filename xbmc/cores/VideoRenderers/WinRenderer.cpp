@@ -36,7 +36,6 @@
 #include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
 #include "VideoShaders/WinVideoFilter.h"
 #include "DllSwScale.h"
-#include "DllAvCodec.h"
 #include "guilib/LocalizeStrings.h"
 
 typedef struct {
@@ -80,9 +79,6 @@ CWinRenderer::CWinRenderer()
     m_VideoBuffers[i] = NULL;
 
   m_sw_scale_ctx = NULL;
-  // All three load together
-  m_dllAvUtil = NULL;
-  m_dllAvCodec = NULL;
   m_dllSwScale = NULL;
 }
 
@@ -168,11 +164,9 @@ bool CWinRenderer::UpdateRenderMethod()
 
   if (m_renderMethod == RENDER_SW)
   {
-    m_dllAvUtil  = new DllAvUtil();
-    m_dllAvCodec = new DllAvCodec();
     m_dllSwScale = new DllSwScale();
 
-    if (!m_dllAvUtil->Load() || !m_dllAvCodec->Load() || !m_dllSwScale->Load())
+    if (!m_dllSwScale->Load())
       CLog::Log(LOGERROR,"CDVDDemuxFFmpeg::Open - failed to load ffmpeg libraries");
 
     m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
@@ -434,8 +428,6 @@ void CWinRenderer::UnInit()
     m_sw_scale_ctx = NULL;
   }
   SAFE_DELETE(m_dllSwScale);
-  SAFE_DELETE(m_dllAvCodec);
-  SAFE_DELETE(m_dllAvUtil);
 }
 
 bool CWinRenderer::CreateIntermediateRenderTarget()

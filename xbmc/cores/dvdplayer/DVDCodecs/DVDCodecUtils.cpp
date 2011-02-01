@@ -25,7 +25,6 @@
 #include "utils/log.h"
 #include "utils/fastmemcpy.h"
 #include "DllSwScale.h"
-#include "DllAvCodec.h"
 
 // allocate a new picture (PIX_FMT_YUV420P)
 DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
@@ -243,11 +242,9 @@ DVDVideoPicture* CDVDCodecUtils::ConvertToYUV422PackedPicture(DVDVideoPicture *p
       pPicture->format = format;
 
       //if this is going to be used for anything else than testing the renderer
-      //the libraries should not be loaded on every function call
-      DllAvUtil   dllAvUtil;
-      DllAvCodec  dllAvCodec;
+      //the library should not be loaded on every function call
       DllSwScale  dllSwScale;
-      if (!dllAvUtil.Load() || !dllAvCodec.Load() || !dllSwScale.Load())
+      if (!dllSwScale.Load())
       {
         CLog::Log(LOGERROR,"CDVDCodecUtils::ConvertToYUY2Picture - failed to load rescale libraries!");
       }
