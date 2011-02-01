@@ -105,9 +105,9 @@ public:
   virtual void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)=0;
   virtual void avcodec_get_context_defaults(AVCodecContext *s)=0;
   virtual AVCodecParserContext *av_parser_init(int codec_id)=0;
-  virtual int av_parser_parse(AVCodecParserContext *s,AVCodecContext *avctx, uint8_t **poutbuf, int *poutbuf_size,
+  virtual int av_parser_parse2(AVCodecParserContext *s,AVCodecContext *avctx, uint8_t **poutbuf, int *poutbuf_size,
                     const uint8_t *buf, int buf_size,
-                    int64_t pts, int64_t dts)=0;
+                    int64_t pts, int64_t dts, int64_t pos)=0;
   virtual void av_parser_close(AVCodecParserContext *s)=0;
   virtual void avpicture_free(AVPicture *picture)=0;
   virtual void av_free_packet(AVPacket *pkt)=0;
@@ -181,9 +181,17 @@ public:
   virtual void avcodec_get_context_defaults(AVCodecContext *s) { ::avcodec_get_context_defaults(s); }
 
   virtual AVCodecParserContext *av_parser_init(int codec_id) { return ::av_parser_init(codec_id); }
-  virtual int av_parser_parse(AVCodecParserContext *s,AVCodecContext *avctx, uint8_t **poutbuf, int *poutbuf_size,
+  virtual int av_parser_parse2(AVCodecParserContext *s,AVCodecContext *avctx, uint8_t **poutbuf, int *poutbuf_size,
                     const uint8_t *buf, int buf_size,
-                    int64_t pts, int64_t dts) { return ::av_parser_parse(s, avctx, poutbuf, poutbuf_size, buf, buf_size, pts, dts); }
+                    int64_t pts, int64_t dts, int64_t pos)
+  {
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,21,0)
+    // API added on : 2009-03-05
+    return ::av_parser_parse2(s, avctx, poutbuf, poutbuf_size, buf, buf_size, pts, dts, pos);
+#else
+    return ::av_parser_parse(s, avctx, poutbuf, poutbuf_size, buf, buf_size, pts, dts);
+#endif
+  }
   virtual void av_parser_close(AVCodecParserContext *s) { ::av_parser_close(s); }
 
   virtual void avpicture_free(AVPicture *picture) { ::avpicture_free(picture); }
@@ -234,7 +242,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_encode_audio, AVCodecContext*, uint8_t*, int, const short*)
   DEFINE_FUNC_ALIGNED0(AVCodecContext*, __cdecl, avcodec_alloc_context)
   DEFINE_FUNC_ALIGNED1(AVCodecParserContext*, __cdecl, av_parser_init, int)
-  DEFINE_FUNC_ALIGNED8(int, __cdecl, av_parser_parse, AVCodecParserContext*,AVCodecContext*, uint8_t**, int*, const uint8_t*, int, int64_t, int64_t)
+  DEFINE_FUNC_ALIGNED9(int, __cdecl, av_parser_parse2, AVCodecParserContext*,AVCodecContext*, uint8_t**, int*, const uint8_t*, int, int64_t, int64_t, int64_t)
 #else
   DEFINE_METHOD1(void, avcodec_flush_buffers, (AVCodecContext* p1))
   DEFINE_METHOD2(int, avcodec_open_dont_call, (AVCodecContext* p1, AVCodec *p2))
@@ -244,7 +252,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD4(int, avcodec_encode_audio, (AVCodecContext* p1, uint8_t *p2, int p3, const short *p4))
   DEFINE_METHOD0(AVCodecContext*, avcodec_alloc_context)
   DEFINE_METHOD1(AVCodecParserContext*, av_parser_init, (int p1))
-  DEFINE_METHOD8(int, av_parser_parse, (AVCodecParserContext* p1, AVCodecContext* p2, uint8_t** p3, int* p4, const uint8_t* p5, int p6, int64_t p7, int64_t p8))
+  DEFINE_METHOD9(int, av_parser_parse2, (AVCodecParserContext* p1, AVCodecContext* p2, uint8_t** p3, int* p4, const uint8_t* p5, int p6, int64_t p7, int64_t p8, int64_t p9))
 #endif
   DEFINE_METHOD1(int, av_dup_packet, (AVPacket *p1))
   DEFINE_METHOD1(void, av_init_packet, (AVPacket *p1))
@@ -298,7 +306,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avcodec_string)
     RESOLVE_METHOD(avcodec_get_context_defaults)
     RESOLVE_METHOD(av_parser_init)
-    RESOLVE_METHOD(av_parser_parse)
+    RESOLVE_METHOD(av_parser_parse2)
     RESOLVE_METHOD(av_parser_close)
     RESOLVE_METHOD(avpicture_free)
     RESOLVE_METHOD(avpicture_alloc)
