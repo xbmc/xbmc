@@ -300,6 +300,10 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(av_init_packet)
     RESOLVE_METHOD(avcodec_guess_channel_layout)
   END_METHOD_RESOLVE()
+
+  /* dependency of libavcodec */
+  DllAvUtil m_dllAvUtil;
+
 public:
     static CCriticalSection m_critSection;
     int avcodec_open(AVCodecContext *avctx, AVCodec *codec)
@@ -316,6 +320,12 @@ public:
     {
       CSingleLock lock(DllAvCodec::m_critSection);
       avcodec_register_all_dont_call();
+    }
+    virtual bool Load()
+    {
+      if (!m_dllAvUtil.Load())
+	return false;
+      return DllDynamic::Load();
     }
 };
 

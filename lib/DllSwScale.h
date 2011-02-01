@@ -158,6 +158,17 @@ class DllSwScale : public DllDynamic, public DllSwScaleInterface
     RESOLVE_METHOD(sws_rgb2rgb_init)
     RESOLVE_METHOD(sws_freeContext)
   END_METHOD_RESOLVE()
+
+  /* dependency of libswscale */
+  DllAvUtil m_dllAvUtil;
+
+public:
+  virtual bool Load()
+  {
+    if (!m_dllAvUtil.Load())
+      return false;
+    return DllDynamic::Load();
+  }
 };
 
 #endif
