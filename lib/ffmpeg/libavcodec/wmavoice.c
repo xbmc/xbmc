@@ -256,7 +256,7 @@ typedef struct {
     /**
      * @}
      * @defgroup post_filter Postfilter values
-     * Varibales used for postfilter implementation, mostly history for
+     * Variables used for postfilter implementation, mostly history for
      * smoothing and so on, and context variables for FFT/iFFT.
      * @{
      */
@@ -425,7 +425,7 @@ static av_cold int wmavoice_decode_init(AVCodecContext *ctx)
                                   2 * (s->block_conv_table[1] - 2 * s->min_pitch_val);
     s->block_pitch_nbits        = av_ceil_log2(s->block_pitch_range);
 
-    ctx->sample_fmt             = SAMPLE_FMT_FLT;
+    ctx->sample_fmt             = AV_SAMPLE_FMT_FLT;
 
     return 0;
 }
@@ -582,14 +582,14 @@ static void calc_input_response(WMAVoiceContext *s, float *lpcs,
                                                           (5.0 / 14.7));
     angle_mul = gain_mul * (8.0 * M_LN10 / M_PI);
     for (n = 0; n <= 64; n++) {
-        float pow;
+        float pwr;
 
         idx = FFMAX(0, lrint((max - lpcs[n]) * irange) - 1);
-        pow = wmavoice_denoise_power_table[s->denoise_strength][idx];
-        lpcs[n] = angle_mul * pow;
+        pwr = wmavoice_denoise_power_table[s->denoise_strength][idx];
+        lpcs[n] = angle_mul * pwr;
 
         /* 70.57 =~ 1/log10(1.0331663) */
-        idx = (pow * gain_mul - 0.0295) * 70.570526123;
+        idx = (pwr * gain_mul - 0.0295) * 70.570526123;
         if (idx > 127) { // fallback if index falls outside table range
             coeffs[n] = wmavoice_energy_table[127] *
                         powf(1.0331663, idx - 127);
@@ -1033,7 +1033,8 @@ static void aw_parse_coords(WMAVoiceContext *s, GetBitContext *gb,
 static void aw_pulse_set2(WMAVoiceContext *s, GetBitContext *gb,
                           int block_idx, AMRFixed *fcb)
 {
-    uint16_t use_mask[7]; // only 5 are used, rest is padding
+    uint16_t use_mask_mem[9]; // only 5 are used, rest is padding
+    uint16_t *use_mask = use_mask_mem + 2;
     /* in this function, idx is the index in the 80-bit (+ padding) use_mask
      * bit-array. Since use_mask consists of 16-bit values, the lower 4 bits
      * of idx are the position of the bit within a particular item in the
@@ -1065,6 +1066,7 @@ static void aw_pulse_set2(WMAVoiceContext *s, GetBitContext *gb,
     /* aw_pulse_set1() already applies pulses around pulse_off (to be exactly,
      * in the range of [pulse_off, pulse_off + s->aw_pulse_range], and thus
      * we exclude that range from being pulsed again in this function. */
+    memset(&use_mask[-2], 0, 2 * sizeof(use_mask[0]));
     memset( use_mask,   -1, 5 * sizeof(use_mask[0]));
     memset(&use_mask[5], 0, 2 * sizeof(use_mask[0]));
     if (s->aw_n_pulses[block_idx] > 0)
@@ -2016,7 +2018,7 @@ static av_cold void wmavoice_flush(AVCodecContext *ctx)
     }
 }
 
-AVCodec wmavoice_decoder = {
+AVCodec ff_wmavoice_decoder = {
     "wmavoice",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_WMAVOICE,

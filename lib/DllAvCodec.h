@@ -24,7 +24,7 @@
   #include "config.h"
 #endif
 #include "DynamicDll.h"
-#include "DllAvUtil.h"
+#include "DllAvCore.h"
 #include "utils/log.h"
 
 extern "C" {
@@ -326,8 +326,9 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avcodec_guess_channel_layout)
   END_METHOD_RESOLVE()
 
-  /* dependency of libavcodec */
-  DllAvUtil m_dllAvUtil;
+  /* dependencies of libavcodec */
+  DllAvCore m_dllAvCore;
+  // DllAvUtil loaded implicitely by m_dllAvCore
 
 public:
     static CCriticalSection m_critSection;
@@ -348,7 +349,7 @@ public:
     }
     virtual bool Load()
     {
-      if (!m_dllAvUtil.Load())
+      if (!m_dllAvCore.Load())
 	return false;
       return DllDynamic::Load();
     }

@@ -1,0 +1,27 @@
+From d4a0766af6b82ab3c99a56c726ec66cada0da6de Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Fri, 9 Jul 2010 15:21:10 -0400
+Subject: [PATCH 19/36] changed: check for seek error when attempting to read timestamp in rm demuxer
+
+---
+ libavformat/rmdec.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/libavformat/rmdec.c b/libavformat/rmdec.c
+index da7e6b2..94bfc43 100644
+--- a/libavformat/rmdec.c
++++ b/libavformat/rmdec.c
+@@ -904,7 +904,9 @@ static int64_t rm_read_dts(AVFormatContext *s, int stream_index,
+     if(rm->old_format)
+         return AV_NOPTS_VALUE;
+ 
+-    url_fseek(s->pb, pos, SEEK_SET);
++    if (url_fseek(s->pb, pos, SEEK_SET) < 0)
++        return AV_NOPTS_VALUE;
++
+     rm->remaining_len=0;
+     for(;;){
+         int seq=1;
+-- 
+1.7.3
+

@@ -68,6 +68,12 @@ static void flv_set_audio_codec(AVFormatContext *s, AVStream *astream, int flv_c
         case FLV_CODECID_MP3  : acodec->codec_id = CODEC_ID_MP3      ; astream->need_parsing = AVSTREAM_PARSE_FULL; break;
         case FLV_CODECID_NELLYMOSER_8KHZ_MONO:
             acodec->sample_rate = 8000; //in case metadata does not otherwise declare samplerate
+            acodec->codec_id = CODEC_ID_NELLYMOSER;
+            break;
+        case FLV_CODECID_NELLYMOSER_16KHZ_MONO:
+            acodec->sample_rate = 16000;
+            acodec->codec_id = CODEC_ID_NELLYMOSER;
+            break;
         case FLV_CODECID_NELLYMOSER:
             acodec->codec_id = CODEC_ID_NELLYMOSER;
             break;
@@ -418,7 +424,7 @@ static int flv_read_packet(AVFormatContext *s, AVPacket *pkt)
                     st->codec->sample_rate = cfg.ext_sample_rate;
                 else
                     st->codec->sample_rate = cfg.sample_rate;
-                dprintf(s, "mp4a config channels %d sample rate %d\n",
+                av_dlog(s, "mp4a config channels %d sample rate %d\n",
                         st->codec->channels, st->codec->sample_rate);
             }
 
@@ -485,7 +491,7 @@ static int flv_read_seek2(AVFormatContext *s, int stream_index,
 }
 #endif
 
-AVInputFormat flv_demuxer = {
+AVInputFormat ff_flv_demuxer = {
     "flv",
     NULL_IF_CONFIG_SMALL("FLV format"),
     sizeof(FLVContext),

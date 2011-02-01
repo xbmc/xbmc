@@ -25,10 +25,10 @@
  * IFF PBM/ILBM bitmap decoder
  */
 
+#include "libavcore/imgutils.h"
 #include "bytestream.h"
 #include "avcodec.h"
 #include "get_bits.h"
-#include "iff.h"
 
 typedef struct {
     AVFrame frame;
@@ -119,7 +119,7 @@ static av_always_inline uint32_t gray2rgb(const uint32_t x) {
 /**
  * Convert CMAP buffer (stored in extradata) to lavc palette format
  */
-int ff_cmap_read_palette(AVCodecContext *avctx, uint32_t *pal)
+static int ff_cmap_read_palette(AVCodecContext *avctx, uint32_t *pal)
 {
     int count, i;
 
@@ -160,7 +160,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
         return AVERROR_INVALIDDATA;
     }
 
-    if ((err = avcodec_check_dimensions(avctx, avctx->width, avctx->height)))
+    if ((err = av_image_check_size(avctx->width, avctx->height, 0, avctx)))
         return err;
     s->planesize = FFALIGN(avctx->width, 16) >> 3; // Align plane size in bits to word-boundary
     s->planebuf = av_malloc(s->planesize + FF_INPUT_BUFFER_PADDING_SIZE);
@@ -367,7 +367,7 @@ static av_cold int decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec iff_ilbm_decoder = {
+AVCodec ff_iff_ilbm_decoder = {
     "iff_ilbm",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_IFF_ILBM,
@@ -380,7 +380,7 @@ AVCodec iff_ilbm_decoder = {
     .long_name = NULL_IF_CONFIG_SMALL("IFF ILBM"),
 };
 
-AVCodec iff_byterun1_decoder = {
+AVCodec ff_iff_byterun1_decoder = {
     "iff_byterun1",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_IFF_BYTERUN1,

@@ -1,0 +1,25 @@
+From f532df8280652147a86c12ce3701060b1d130d45 Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Mon, 28 Jun 2010 22:45:32 -0400
+Subject: [PATCH 16/36] changed: only require first packet to be known for all audio and video streams
+
+---
+ libavformat/utils.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/libavformat/utils.c b/libavformat/utils.c
+index 9fffaef..ddb0ae3 100644
+--- a/libavformat/utils.c
++++ b/libavformat/utils.c
+@@ -2263,7 +2263,7 @@ int av_find_stream_info(AVFormatContext *ic)
+                 break;
+             if(st->parser && st->parser->parser->split && !st->codec->extradata)
+                 break;
+-            if(st->first_dts == AV_NOPTS_VALUE)
++            if(st->first_dts == AV_NOPTS_VALUE && (st->codec->codec_type == AVMEDIA_TYPE_VIDEO || st->codec->codec_type == AVMEDIA_TYPE_AUDIO))
+                 break;
+         }
+         if (i == ic->nb_streams) {
+-- 
+1.7.3
+

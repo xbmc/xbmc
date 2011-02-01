@@ -49,7 +49,7 @@ static av_cold int libgsm_init(AVCodecContext *avctx) {
         if(!avctx->sample_rate)
             avctx->sample_rate= 8000;
 
-        avctx->sample_fmt = SAMPLE_FMT_S16;
+        avctx->sample_fmt = AV_SAMPLE_FMT_S16;
     }else{
         if (avctx->sample_rate != 8000) {
             av_log(avctx, AV_LOG_ERROR, "Sample rate 8000Hz required for GSM, got %dHz\n",
@@ -112,7 +112,7 @@ static int libgsm_encode_frame(AVCodecContext *avctx,
 }
 
 
-AVCodec libgsm_encoder = {
+AVCodec ff_libgsm_encoder = {
     "libgsm",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_GSM,
@@ -120,11 +120,11 @@ AVCodec libgsm_encoder = {
     libgsm_init,
     libgsm_encode_frame,
     libgsm_close,
-    .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .sample_fmts = (const enum AVSampleFormat[]){AV_SAMPLE_FMT_S16,AV_SAMPLE_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("libgsm GSM"),
 };
 
-AVCodec libgsm_ms_encoder = {
+AVCodec ff_libgsm_ms_encoder = {
     "libgsm_ms",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_GSM_MS,
@@ -132,7 +132,7 @@ AVCodec libgsm_ms_encoder = {
     libgsm_init,
     libgsm_encode_frame,
     libgsm_close,
-    .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .sample_fmts = (const enum AVSampleFormat[]){AV_SAMPLE_FMT_S16,AV_SAMPLE_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("libgsm GSM Microsoft variant"),
 };
 
@@ -156,7 +156,7 @@ static int libgsm_decode_frame(AVCodecContext *avctx,
     return avctx->block_align;
 }
 
-AVCodec libgsm_decoder = {
+AVCodec ff_libgsm_decoder = {
     "libgsm",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_GSM,
@@ -168,7 +168,7 @@ AVCodec libgsm_decoder = {
     .long_name = NULL_IF_CONFIG_SMALL("libgsm GSM"),
 };
 
-AVCodec libgsm_ms_decoder = {
+AVCodec ff_libgsm_ms_decoder = {
     "libgsm_ms",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_GSM_MS,

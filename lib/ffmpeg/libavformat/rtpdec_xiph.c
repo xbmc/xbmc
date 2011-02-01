@@ -34,7 +34,7 @@
 #include <assert.h>
 
 #include "rtpdec.h"
-#include "rtpdec_xiph.h"
+#include "rtpdec_formats.h"
 
 /**
  * RTP/Xiph specific private data.
@@ -43,6 +43,9 @@ struct PayloadContext {
     unsigned ident;             ///< 24-bit stream configuration identifier
     uint32_t timestamp;
     ByteIOContext* fragment;    ///< buffer for split payloads
+    uint8_t *split_buf;
+    int split_pos, split_buf_len, split_buf_size;
+    int split_pkts;
 };
 
 static PayloadContext *xiph_new_context(void)
@@ -63,6 +66,7 @@ static inline void free_fragment_if_needed(PayloadContext * data)
 static void xiph_free_context(PayloadContext * data)
 {
     free_fragment_if_needed(data);
+    av_free(data->split_buf);
     av_free(data);
 }
 
@@ -76,6 +80,29 @@ static int xiph_handle_packet(AVFormatContext * ctx,
 
     int ident, fragmented, tdt, num_pkts, pkt_len;
 
+    if (!buf) {
+        if (!data->split_buf || data->split_pos + 2 > data->split_buf_len ||
+            data->split_pkts <= 0) {
+            av_log(ctx, AV_LOG_ERROR, "No more data to return\n");
+            return AVERROR_INVALIDDATA;
+        }
+        pkt_len = AV_RB16(data->split_buf + data->split_pos);
+        data->split_pos += 2;
+        if (data->split_pos + pkt_len > data->split_buf_len) {
+            av_log(ctx, AV_LOG_ERROR, "Not enough data to return\n");
+            return AVERROR_INVALIDDATA;
+        }
+        if (av_new_packet(pkt, pkt_len)) {
+            av_log(ctx, AV_LOG_ERROR, "Out of memory.\n");
+            return AVERROR(ENOMEM);
+        }
+        pkt->stream_index = st->index;
+        memcpy(pkt->data, data->split_buf + data->split_pos, pkt_len);
+        data->split_pos += pkt_len;
+        data->split_pkts--;
+        return data->split_pkts > 0;
+    }
+
     if (len < 6) {
         av_log(ctx, AV_LOG_ERROR, "Invalid %d byte packet\n", len);
         return AVERROR_INVALIDDATA;
@@ -85,7 +112,7 @@ static int xiph_handle_packet(AVFormatContext * ctx,
     ident       = AV_RB24(buf);
     fragmented  = buf[3] >> 6;
     tdt         = (buf[3] >> 4) & 3;
-    num_pkts    = buf[3] & 7;
+    num_pkts    = buf[3] & 0xf;
     pkt_len     = AV_RB16(buf + 4);
 
     if (pkt_len > len - 6) {
@@ -112,41 +139,33 @@ static int xiph_handle_packet(AVFormatContext * ctx,
     len -= 6;
 
     if (fragmented == 0) {
-        // whole frame(s)
-        int i, data_len, write_len;
-        buf -= 2;
-        len += 2;
-
-        // fast first pass to calculate total length
-        for (i = 0, data_len = 0;  (i < num_pkts) && (len >= 2);  i++) {
-            int off   = data_len + (i << 1);
-            pkt_len   = AV_RB16(buf + off);
-            data_len += pkt_len;
-            len      -= pkt_len + 2;
-        }
-
-        if (len < 0 || i < num_pkts) {
-            av_log(ctx, AV_LOG_ERROR,
-                   "Bad packet: %d bytes left at frame %d of %d\n",
-                   len, i, num_pkts);
-            return AVERROR_INVALIDDATA;
-        }
-
-        if (av_new_packet(pkt, data_len)) {
+        if (av_new_packet(pkt, pkt_len)) {
             av_log(ctx, AV_LOG_ERROR, "Out of memory.\n");
             return AVERROR(ENOMEM);
         }
         pkt->stream_index = st->index;
+        memcpy(pkt->data, buf, pkt_len);
+        buf += pkt_len;
+        len -= pkt_len;
+        num_pkts--;
 
-        // concatenate frames
-        for (i = 0, write_len = 0; write_len < data_len; i++) {
-            pkt_len = AV_RB16(buf);
-            buf += 2;
-            memcpy(pkt->data + write_len, buf, pkt_len);
-            write_len += pkt_len;
-            buf += pkt_len;
+        if (num_pkts > 0) {
+            if (len > data->split_buf_size || !data->split_buf) {
+                av_freep(&data->split_buf);
+                data->split_buf_size = 2 * len;
+                data->split_buf = av_malloc(data->split_buf_size);
+                if (!data->split_buf) {
+                    av_log(ctx, AV_LOG_ERROR, "Out of memory.\n");
+                    av_free_packet(pkt);
+                    return AVERROR(ENOMEM);
+                }
+            }
+            memcpy(data->split_buf, buf, len);
+            data->split_buf_len = len;
+            data->split_pos = 0;
+            data->split_pkts = num_pkts;
+            return 1;
         }
-        assert(write_len == data_len);
 
         return 0;
 
@@ -172,30 +191,29 @@ static int xiph_handle_packet(AVFormatContext * ctx,
             av_log(ctx, AV_LOG_ERROR, "RTP timestamps don't match!\n");
             return AVERROR_INVALIDDATA;
         }
+        if (!data->fragment) {
+            av_log(ctx, AV_LOG_WARNING,
+                   "Received packet without a start fragment; dropping.\n");
+            return AVERROR(EAGAIN);
+        }
 
         // copy data to fragment buffer
         put_buffer(data->fragment, buf, pkt_len);
 
         if (fragmented == 3) {
             // end of xiph data packet
-            uint8_t* xiph_data;
-            int frame_size = url_close_dyn_buf(data->fragment, &xiph_data);
+            av_init_packet(pkt);
+            pkt->size = url_close_dyn_buf(data->fragment, &pkt->data);
 
-            if (frame_size < 0) {
+            if (pkt->size < 0) {
                 av_log(ctx, AV_LOG_ERROR,
                        "Error occurred when getting fragment buffer.");
-                return frame_size;
+                return pkt->size;
             }
 
-            if (av_new_packet(pkt, frame_size)) {
-                av_log(ctx, AV_LOG_ERROR, "Out of memory.\n");
-                return AVERROR(ENOMEM);
-            }
-
-            memcpy(pkt->data, xiph_data, frame_size);
             pkt->stream_index = st->index;
+            pkt->destruct = av_destruct_packet;
 
-            av_free(xiph_data);
             data->fragment = NULL;
 
             return 0;
@@ -294,7 +312,17 @@ static int xiph_parse_fmtp_pair(AVStream* stream,
     int result = 0;
 
     if (!strcmp(attr, "sampling")) {
-        return AVERROR_PATCHWELCOME;
+        if (!strcmp(value, "YCbCr-4:2:0")) {
+            codec->pix_fmt = PIX_FMT_YUV420P;
+        } else if (!strcmp(value, "YCbCr-4:4:2")) {
+            codec->pix_fmt = PIX_FMT_YUV422P;
+        } else if (!strcmp(value, "YCbCr-4:4:4")) {
+            codec->pix_fmt = PIX_FMT_YUV444P;
+        } else {
+            av_log(codec, AV_LOG_ERROR,
+                   "Unsupported pixel format %s\n", attr);
+            return AVERROR_INVALIDDATA;
+        }
     } else if (!strcmp(attr, "width")) {
         /* This is an integer between 1 and 1048561
          * and MUST be in multiples of 16. */

@@ -22,6 +22,7 @@
 #include "flv.h"
 #include "internal.h"
 #include "avc.h"
+#include "metadata.h"
 
 #undef NDEBUG
 #include <assert.h>
@@ -54,6 +55,7 @@ typedef struct FLVContext {
     int64_t filesize_offset;
     int64_t duration;
     int delay; ///< first dts delay for AVC
+    int64_t last_video_ts;
 } FLVContext;
 
 static int get_audio_flags(AVCodecContext *enc){
@@ -144,6 +146,18 @@ static void put_amf_string(ByteIOContext *pb, const char *str)
     put_buffer(pb, str, len);
 }
 
+static void put_avc_eos_tag(ByteIOContext *pb, unsigned ts) {
+    put_byte(pb, FLV_TAG_TYPE_VIDEO);
+    put_be24(pb, 5);  /* Tag Data Size */
+    put_be24(pb, ts);  /* lower 24 bits of timestamp in ms*/
+    put_byte(pb, (ts >> 24) & 0x7F);  /* MSB of ts in ms*/
+    put_be24(pb, 0);  /* StreamId = 0 */
+    put_byte(pb, 23);  /* ub[4] FrameType = 1, ub[4] CodecId = 7 */
+    put_byte(pb, 2);  /* AVC end of sequence */
+    put_be24(pb, 0);  /* Always 0 for AVC EOS. */
+    put_be32(pb, 16);  /* Size of FLV tag */
+}
+
 static void put_amf_double(ByteIOContext *pb, double d)
 {
     put_byte(pb, AMF_DATA_TYPE_NUMBER);
@@ -163,6 +177,7 @@ static int flv_write_header(AVFormatContext *s)
     int i;
     double framerate = 0.0;
     int metadata_size_pos, data_size;
+    AVMetadataTag *tag = NULL;
 
     for(i=0; i<s->nb_streams; i++){
         AVCodecContext *enc = s->streams[i]->codec;
@@ -201,6 +216,8 @@ static int flv_write_header(AVFormatContext *s)
             flv->reserved=5;
         }
     }
+
+    flv->last_video_ts = -1;
 
     /* write meta_tag */
     put_byte(pb, 18);         // tag type META
@@ -257,6 +274,12 @@ static int flv_write_header(AVFormatContext *s)
         put_amf_double(pb, audio_enc->codec_tag);
     }
 
+    while ((tag = av_metadata_get(s->metadata, "", tag, AV_METADATA_IGNORE_SUFFIX))) {
+        put_amf_string(pb, tag->key);
+        put_byte(pb, AMF_DATA_TYPE_STRING);
+        put_amf_string(pb, tag->value);
+    }
+
     put_amf_string(pb, "filesize");
     flv->filesize_offset= url_ftell(pb);
     put_amf_double(pb, 0); // delayed write
@@ -309,6 +332,16 @@ static int flv_write_trailer(AVFormatContext *s)
 
     ByteIOContext *pb = s->pb;
     FLVContext *flv = s->priv_data;
+    int i;
+
+    /* Add EOS tag */
+    for (i = 0; i < s->nb_streams; i++) {
+        AVCodecContext *enc = s->streams[i]->codec;
+        if (enc->codec_type == AVMEDIA_TYPE_VIDEO &&
+                enc->codec_id == CODEC_ID_H264) {
+            put_avc_eos_tag(pb, flv->last_video_ts);
+        }
+    }
 
     file_size = url_ftell(pb);
 
@@ -372,6 +405,10 @@ static int flv_write_packet(AVFormatContext *s, AVPacket *pkt)
     }
 
     ts = pkt->dts + flv->delay; // add delay to force positive dts
+    if (enc->codec_type == AVMEDIA_TYPE_VIDEO) {
+        if (flv->last_video_ts < ts)
+            flv->last_video_ts = ts;
+    }
     put_be24(pb,size + flags_size);
     put_be24(pb,ts);
     put_byte(pb,(ts >> 24) & 0x7F); // timestamps are 32bits _signed_
@@ -400,7 +437,7 @@ static int flv_write_packet(AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-AVOutputFormat flv_muxer = {
+AVOutputFormat ff_flv_muxer = {
     "flv",
     NULL_IF_CONFIG_SMALL("FLV format"),
     "video/x-flv",

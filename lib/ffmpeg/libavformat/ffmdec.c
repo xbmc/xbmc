@@ -252,6 +252,17 @@ static void adjust_write_index(AVFormatContext *s)
 }
 
 
+static int ffm_close(AVFormatContext *s)
+{
+    int i;
+
+    for (i = 0; i < s->nb_streams; i++)
+        av_freep(&s->streams[i]->codec->rc_eq);
+
+    return 0;
+}
+
+
 static int ffm_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
     FFMContext *ffm = s->priv_data;
@@ -381,12 +392,7 @@ static int ffm_read_header(AVFormatContext *s, AVFormatParameters *ap)
     ffm->first_packet = 1;
     return 0;
  fail:
-    for(i=0;i<s->nb_streams;i++) {
-        st = s->streams[i];
-        if (st) {
-            av_free(st);
-        }
-    }
+    ffm_close(s);
     return -1;
 }
 
@@ -402,7 +408,7 @@ static int ffm_read_packet(AVFormatContext *s, AVPacket *pkt)
         if ((ret = ffm_is_avail_data(s, FRAME_HEADER_SIZE+4)) < 0)
             return ret;
 
-        dprintf(s, "pos=%08"PRIx64" spos=%"PRIx64", write_index=%"PRIx64" size=%"PRIx64"\n",
+        av_dlog(s, "pos=%08"PRIx64" spos=%"PRIx64", write_index=%"PRIx64" size=%"PRIx64"\n",
                url_ftell(s->pb), s->pb->pos, ffm->write_index, ffm->file_size);
         if (ffm_read_data(s, ffm->header, FRAME_HEADER_SIZE, 1) !=
             FRAME_HEADER_SIZE)
@@ -512,17 +518,7 @@ static int ffm_probe(AVProbeData *p)
     return 0;
 }
 
-static int ffm_close(AVFormatContext *s)
-{
-    int i;
-
-    for (i = 0; i < s->nb_streams; i++)
-        av_freep(&s->streams[i]->codec->rc_eq);
-
-    return 0;
-}
-
-AVInputFormat ffm_demuxer = {
+AVInputFormat ff_ffm_demuxer = {
     "ffm",
     NULL_IF_CONFIG_SMALL("FFM (FFserver live feed) format"),
     sizeof(FFMContext),

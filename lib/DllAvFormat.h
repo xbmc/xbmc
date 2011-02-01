@@ -325,6 +325,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
 
   /* dependencies of libavformat */
   DllAvCodec m_dllAvCodec;
+  // DllAvCore loaded implicitely by m_dllAvCodec
   // DllAvUtil loaded implicitely by m_dllAvCodec
 
 public:
