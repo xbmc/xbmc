@@ -94,13 +94,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   m_Format->bit_rate = g_guiSettings.GetInt("audiocds.bitrate") * 1000;
 
   /* setup the muxer */
-  AVFormatParameters params;
-  memset(&params, 0, sizeof(params));
-  params.channels       = iInChannels;
-  params.sample_rate    = iInRate;
-  params.audio_codec_id = codec->id;
-  params.channel        = 0;
-  if (m_dllAvFormat.av_set_parameters(m_Format, &params) != 0)
+  if (m_dllAvFormat.av_set_parameters(m_Format, NULL) != 0)
   {
     m_dllAvUtil.av_freep(&m_Format->pb);
     m_dllAvUtil.av_freep(&m_Format);
