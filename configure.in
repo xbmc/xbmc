@@ -349,6 +349,7 @@ CFLAGS="$PASSED_CFLAGS $DEFAULT_COMPILE_FLAGS"
 AC_PROG_AWK
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
+MAKE="${MAKE:-make}"
 
 # host detection and setup
 case $host in
