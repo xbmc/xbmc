@@ -112,11 +112,6 @@ void CPVRManager::Stop()
   StopThread();
 }
 
-/********************************************************************
- * CPVRManager LoadClients
- *
- * Load the client drivers and doing the startup.
- ********************************************************************/
 bool CPVRManager::LoadClients()
 {
   CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
@@ -272,13 +267,8 @@ void CPVRManager::OnClientMessage(const int clientID, const PVR_EVENT clientEven
   }
 }
 
-/*************************************************************/
-/** INTERNAL FUNCTIONS                                      **/
-/*************************************************************/
-
 void CPVRManager::ResetProperties(void)
 {
-  /* Reset Member variables and System Info swap counters */
   m_hasRecordings           = false;
   m_isRecording             = false;
   m_hasTimers               = false;
@@ -298,38 +288,30 @@ void CPVRManager::ResetProperties(void)
 
 bool CPVRManager::ContinueLastChannel()
 {
-  CLog::Log(LOGNOTICE,"PVR: Try to continue last channel");
   m_bFirstStart = false;
   bool bReturn = false;
 
-  m_database.Open();
-  int lastChannel = m_database.GetLastChannel();
-  m_database.Close();
-
-  if (lastChannel > 0)
+  if (m_database.Open())
   {
-    const CPVRChannel *tag = CPVRChannelGroup::GetByChannelIDFromAll(lastChannel);
-    if (!tag)
-      return false;
+    int iLastChannel = m_database.GetLastChannel();
+    m_database.Close();
 
-    const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(tag->IsRadio());
-
-    if (g_guiSettings.GetInt("pvrplayback.startlast") == START_LAST_CHANNEL_MIN)
-      g_settings.m_bStartVideoWindowed = true;
-
-    if (g_application.PlayFile(CFileItem(*channels->at(tag->ChannelNumber()-1))))
+    if (iLastChannel > 0)
     {
-      CLog::Log(LOGNOTICE,"PVR: Continuing channel '%s'", tag->ChannelName().c_str());
-      bReturn = true;
+      const CPVRChannel *channel = CPVRChannelGroup::GetByChannelIDFromAll(iLastChannel);
+
+      if (channel)
+      {
+        CLog::Log(LOGNOTICE, "PVRManager - %s - continue playback on channel '%s'",
+            __FUNCTION__, channel->ChannelName().c_str());
+        bReturn = StartPlayback(channel, (g_guiSettings.GetInt("pvrplayback.startlast") == START_LAST_CHANNEL_MIN));
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "PVRManager - %s - cannot continue playback on channel: channel '%d' not found",
+            __FUNCTION__, iLastChannel);
+      }
     }
-    else
-    {
-      CLog::Log(LOGERROR,"PVR: Can't continue playback on channel '%s'", tag->ChannelName().c_str());
-    }
-  }
-  else
-  {
-    CLog::Log(LOGNOTICE,"PVR: Can't find channel (ID=%i) to continue playback on at startup", lastChannel);
   }
 
   return bReturn;
@@ -1641,199 +1623,135 @@ bool CPVRManager::UpdateItem(CFileItem& item)
 
 bool CPVRManager::ChannelSwitch(unsigned int iChannel)
 {
-  if (!m_currentPlayingChannel)
-    return false;
+  return PerformChannelSwitch(m_currentPlayingChannel->GetPVRChannelInfoTag(), false);
+}
 
-  const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio());
+bool CPVRManager::ChannelUp(unsigned int *iNewChannelNumber, bool bPreview /* = false*/)
+{
+  return ChannelUpDown(iNewChannelNumber, bPreview, true);
+}
 
-  if (iChannel > channels->size()+1)
+bool CPVRManager::ChannelDown(unsigned int *iNewChannelNumber, bool bPreview /* = false*/)
+{
+  return ChannelUpDown(iNewChannelNumber, bPreview, false);
+}
+
+bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp)
+{
+  bool bReturn = false;
+
+  if (m_currentPlayingChannel)
   {
-    CGUIDialogOK::ShowAndGetInput(19033,19136,0,0);
-    return false;
+    const CPVRChannel *currentChannel = m_currentPlayingChannel->GetPVRChannelInfoTag();
+    const CPVRChannelGroup *group = g_PVRChannelGroups.GetById(currentChannel->IsRadio(), currentChannel->GroupID());
+    if (group)
+    {
+      const CPVRChannel *newChannel = bUp ? group->GetByChannelUp(currentChannel) : group->GetByChannelDown(currentChannel);
+      if (PerformChannelSwitch(newChannel, bPreview))
+      {
+        *iNewChannelNumber = newChannel->ChannelNumber();
+        bReturn = true;
+      }
+    }
   }
 
+  return bReturn;
+}
+
+bool CPVRManager::StartPlayback(const CPVRChannel *channel, bool bPreview /* = false */)
+{
+  bool bReturn = false;
+  g_settings.m_bStartVideoWindowed = bPreview;
+
+  if (g_application.PlayFile(CFileItem(*channel)))
+  {
+    CLog::Log(LOGNOTICE, "PVRManager - %s - started playback on channel '%s'",
+        __FUNCTION__, channel->ChannelName().c_str());
+    bReturn = true;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "PVRManager - %s - failed to start playback on channel '%s'",
+        __FUNCTION__, channel ? channel->ChannelName().c_str() : "NULL");
+  }
+
+  return bReturn;
+}
+
+bool CPVRManager::PerformChannelSwitch(const CPVRChannel *channel, bool bPreview)
+{
   CSingleLock lock(m_critSection);
 
-  const CPVRChannel* tag = channels->at(iChannel-1);
-
-  /* Store current settings inside Database */
-  SaveCurrentChannelSettings();
-
-  /* Perform Channelswitch */
-  if (tag->StreamURL().IsEmpty() && !m_clients[tag->ClientID()]->SwitchChannel(*tag))
+  if (!channel || channel->StreamURL().IsEmpty() || !m_clients[channel->ClientID()]->SwitchChannel(*channel))
   {
+    CLog::Log(LOGERROR, "PVRManager - %s - failed to switch to channel '%s'",
+        __FUNCTION__, channel ? channel->ChannelName().c_str() : "NULL");
     CGUIDialogOK::ShowAndGetInput(19033,0,19136,0);
     return false;
   }
 
-  /* Update the Playing channel data and the current epg data if it was not previewed */
+  if (!bPreview)
+  {
+    m_scanStart = CTimeUtils::GetTimeMS();
+    ResetQualityData();
+  }
+
+  SaveCurrentChannelSettings();
+
   delete m_currentPlayingChannel;
-  m_currentPlayingChannel = new CFileItem(*tag);
+  m_currentPlayingChannel = new CFileItem(*channel);
 
-  /* Reset the Audio/Video detection counter */
-  m_scanStart = CTimeUtils::GetTimeMS();
-
-  /* Load now the new channel settings from Database */
   LoadCurrentChannelSettings();
 
-  /* Set quality data to undefined defaults */
-  ResetQualityData();
+  CLog::Log(LOGNOTICE, "PVRManager - %s - switched to channel '%s'",
+      __FUNCTION__, channel->ChannelName().c_str());
 
   return true;
 }
 
-bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
+const CPVREpgInfoTag *CPVRManager::GetPlayingTag(void)
 {
-   if (m_currentPlayingChannel)
-   {
-     const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio());
+  const CPVREpgInfoTag *tag = NULL;
 
-     CSingleLock lock(m_critSection);
-
-    /* Store current settings inside Database */
-    SaveCurrentChannelSettings();
-
-    unsigned int currentTVChannel = m_currentPlayingChannel->GetPVRChannelInfoTag()->ChannelNumber();
-    const CPVRChannel* tag;
-    for (unsigned int i = 1; i < channels->size(); i++)
-    {
-      currentTVChannel += 1;
-
-      if (currentTVChannel > channels->size())
-        currentTVChannel = 1;
-
-      tag = channels->at(currentTVChannel-1);
-
-      if ((m_CurrentGroupID != -1) && (m_CurrentGroupID != tag->GroupID()))
-        continue;
-
-      /* Perform Channelswitch */
-      if (preview)
-      {
-        /* Update the Playing channel data and the current epg data */
-        delete m_currentPlayingChannel;
-        m_currentPlayingChannel = new CFileItem(*tag);
-
-        /* Load now the new channel settings from Database */
-        LoadCurrentChannelSettings();
-
-        *newchannel = currentTVChannel;
-        return true;
-      }
-      else if (!tag->StreamURL().IsEmpty() || m_clients[tag->ClientID()]->SwitchChannel(*tag))
-      {
-        /* Update the Playing channel data and the current epg data */
-        delete m_currentPlayingChannel;
-        m_currentPlayingChannel = new CFileItem(*tag);
-        m_scanStart             = CTimeUtils::GetTimeMS();
-
-        /* Load now the new channel settings from Database */
-        LoadCurrentChannelSettings();
-
-        /* Set quality data to undefined defaults */
-        ResetQualityData();
-
-        *newchannel = currentTVChannel;
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/)
-{
   if (m_currentPlayingChannel)
   {
-    const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio());
-
-    CSingleLock lock(m_critSection);
-
-    /* Store current settings inside Database */
-    SaveCurrentChannelSettings();
-
-    int currentTVChannel = m_currentPlayingChannel->GetPVRChannelInfoTag()->ChannelNumber();
-    const CPVRChannel* tag;
-    for (unsigned int i = 1; i < channels->size(); i++)
+    tag = m_currentPlayingChannel->GetPVRChannelInfoTag()->GetEPGNow();
+    if (tag && !tag->IsActive())
     {
-      currentTVChannel -= 1;
-
-      if (currentTVChannel <= 0)
-        currentTVChannel = channels->size();
-
-      tag = channels->at(currentTVChannel-1);
-
-      if ((m_CurrentGroupID != -1) && (m_CurrentGroupID != tag->GroupID()))
-        continue;
-
-      /* Perform Channelswitch */
-      if (preview)
-      {
-        /* Update the Playing channel data and the current epg data */
-        delete m_currentPlayingChannel;
-        m_currentPlayingChannel = new CFileItem(*tag);
-
-        /* Load now the new channel settings from Database */
-        LoadCurrentChannelSettings();
-
-        *newchannel = currentTVChannel;
-        return true;
-      }
-      else if (!tag->StreamURL().IsEmpty() || m_clients[tag->ClientID()]->SwitchChannel(*tag))
-      {
-        /* Update the Playing channel data and the current epg data */
-        delete m_currentPlayingChannel;
-        m_currentPlayingChannel = new CFileItem(*tag);
-        m_scanStart             = CTimeUtils::GetTimeMS();
-
-        /* Load now the new channel settings from Database */
-        LoadCurrentChannelSettings();
-
-        /* Set quality data to undefined defaults */
-        ResetQualityData();
-
-        *newchannel = currentTVChannel;
-        return true;
-      }
+      CSingleLock lock(m_critSection);
+      UpdateItem(*m_currentPlayingChannel);
     }
   }
-  return false;
+
+  return tag;
 }
 
 int CPVRManager::GetTotalTime()
 {
-  if (m_currentPlayingChannel)
-    return m_currentPlayingChannel->GetPVRChannelInfoTag()->GetEPGNow()->GetDuration() * 1000;
+  const CPVREpgInfoTag *tag = GetPlayingTag();
 
-  return 0;
+  return tag ? tag->GetDuration() * 1000 : 0;
 }
 
 int CPVRManager::GetStartTime()
 {
-  /* If it is called without a opened TV channel return with NULL */
-  if (!m_currentPlayingChannel)
-    return 0;
+  const CPVREpgInfoTag *tag = GetPlayingTag();
 
-  /* GetStartTime() is frequently called by DVDPlayer during playback of Live TV, so we
-   * check here if the end of the current running event is reached, if yes update the
-   * playing file item with the newest EPG data of the now running event.
-   */
-  const CPVREpgInfoTag* tag = m_currentPlayingChannel->GetPVRChannelInfoTag()->GetEPGNow();
-  if (tag && (tag->End() < CDateTime::GetCurrentDateTime() || tag->Title().IsEmpty()))
+  if (tag)
   {
-    CSingleLock lock(m_critSection);
-    UpdateItem(*m_currentPlayingChannel);
+    /* Calculate here the position we have of the running live TV event.
+     * "position in ms" = ("current local time" - "event start local time") * 1000
+     */
+    CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->Start();
+    return time.GetDays()    * 1000 * 60 * 60 * 24
+         + time.GetHours()   * 1000 * 60 * 60
+         + time.GetMinutes() * 1000 * 60
+         + time.GetSeconds() * 1000;
   }
-
-  /* Calculate here the position we have of the running live TV event.
-   * "position in ms" = ("current local time" - "event start local time") * 1000
-   */
-  CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->Start();
-  return time.GetDays()    * 1000 * 60 * 60 * 24
-       + time.GetHours()   * 1000 * 60 * 60
-       + time.GetMinutes() * 1000 * 60
-       + time.GetSeconds() * 1000;
+  else
+  {
+    return 0;
+  }
 }
 
 CPVRManager g_PVRManager;

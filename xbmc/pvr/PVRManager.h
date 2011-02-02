@@ -388,6 +388,20 @@ public:
    */
   int GetStartTime();
 
+  /*!
+   * @brief Start playback on a channel.
+   * @param channel The channel to start to play.
+   * @param bPreview If true, open minimised.
+   * @return True if playback was started, false otherwise.
+   */
+  bool StartPlayback(const CPVRChannel *channel, bool bPreview = false);
+
+  /*!
+   * @brief Get the currently playing EPG tag and update it if needed.
+   * @return The currently playing EPG tag or NULL if there is none.
+   */
+  const CPVREpgInfoTag *GetPlayingTag(void);
+
 protected:
   virtual void Process();
 
@@ -410,6 +424,23 @@ private:
    * @return True if the client was found, false otherwise.
    */
   bool StopClient(ADDON::AddonPtr client, bool bRestart);
+
+  /*!
+   * @brief Switch to the given channel.
+   * @param channel The new channel.
+   * @param bPreview Don't reset quality data if true.
+   * @return True if the switch was successful, false otherwise.
+   */
+  bool PerformChannelSwitch(const CPVRChannel *channel, bool bPreview);
+
+  /*!
+   * @brief Called by ChannelUp() and ChannelDown() to perform a channel switch.
+   * @param iNewChannelNumber The new channel number after the switch.
+   * @param bPreview Preview window if true.
+   * @param bUp Go one channel up if true, one channel down if false.
+   * @return True if the switch was successful, false otherwise.
+   */
+  bool ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp);
 
   void SaveCurrentChannelSettings();            /*! \brief Write the current Video and Audio settings of
                                                  playing channel to the TV Database */

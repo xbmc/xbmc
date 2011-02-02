@@ -101,6 +101,14 @@ public:
   const CPVRChannelGroup *GetGroupAll(bool bRadio) const;
 
   /*!
+   * @brief Get a group given it's ID.
+   * @param bRadio If true, search the radio channel container. Search the TV channels otherwise.
+   * @param iGroupId The ID of the group.
+   * @return The requested group or NULL if it wasn't found.
+   */
+  const CPVRChannelGroup *GetById(bool bRadio, int iGroupId) const;
+
+  /*!
    * @brief Get a channel given it's database ID.
    * @param iChannelId The ID of the channel.
    * @return The channel or NULL if it wasn't found.

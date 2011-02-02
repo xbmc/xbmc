@@ -298,18 +298,18 @@ public:
   const CPVRChannel *GetByChannelNumber(int iChannelNumber) const;
 
   /*!
-   * @brief Get the next channel given it's channel number.
-   * @param iChannelNumber The channel number.
+   * @brief Get the next channel in this group.
+   * @param channel The current channel.
    * @return The channel or NULL if it wasn't found.
    */
-  const CPVRChannel *GetByChannelNumberUp(int iChannelNumber) const;
+  const CPVRChannel *GetByChannelUp(const CPVRChannel *channel) const;
 
   /*!
-   * @brief Get the previous channel given it's channel number.
-   * @param iChannelNumber The channel number.
+   * @brief Get the previous channel in this group.
+   * @param channel The current channel.
    * @return The channel or NULL if it wasn't found.
    */
-  const CPVRChannel *GetByChannelNumberDown(int iChannelNumber) const;
+  const CPVRChannel *GetByChannelDown(const CPVRChannel *channel) const;
 
   /*!
    * @brief Get a channel given it's index in this container.

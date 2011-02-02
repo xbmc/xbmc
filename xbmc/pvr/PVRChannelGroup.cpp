@@ -246,18 +246,18 @@ const CPVRChannel *CPVRChannelGroup::GetByChannelNumber(int iChannelNumber) cons
   return channel;
 }
 
-const CPVRChannel *CPVRChannelGroup::GetByChannelNumberUp(int iChannelNumber) const
+const CPVRChannel *CPVRChannelGroup::GetByChannelUp(const CPVRChannel *channel) const
 {
-  int iGetChannel = iChannelNumber + 1;
+  int iGetChannel = channel->ChannelNumber() + 1; // XXX
   if (iGetChannel > (int) size())
     iGetChannel = 1;
 
   return GetByChannelNumber(iGetChannel - 1);
 }
 
-const CPVRChannel *CPVRChannelGroup::GetByChannelNumberDown(int iChannelNumber) const
+const CPVRChannel *CPVRChannelGroup::GetByChannelDown(const CPVRChannel *channel) const
 {
-  int iGetChannel = iChannelNumber - 1;
+  int iGetChannel = channel->ChannelNumber() - 1; // XXX
   if (iGetChannel <= 0)
     iGetChannel = size();
 
