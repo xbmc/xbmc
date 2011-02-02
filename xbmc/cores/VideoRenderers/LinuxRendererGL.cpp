@@ -36,6 +36,7 @@
 #include "VideoShaders/VideoFilterShader.h"
 #include "windowing/WindowingFactory.h"
 #include "guilib/Texture.h"
+#include "threads/SingleLock.h"
 #include "DllSwScale.h"
 #include "DllAvCodec.h"
 
