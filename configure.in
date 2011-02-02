@@ -18,7 +18,13 @@ tolower(){
 # check for library basenames
 AC_DEFUN([XB_FIND_SONAME],
 [
-  if [[ "$host_vendor" != "apple" ]]; then
+  if echo "$host" | grep -q freebsd ; then
+    AC_MSG_CHECKING([for lib$2 soname])
+    $1_SONAME=[`ldconfig -r | sed -n "s;.* \(/.*lib$2\.so.*\)$;\1;p" | head -n 1`]
+    if test x$$1_SONAME != x ; then
+      $1_SONAME=[`basename $$1_SONAME`]
+    fi
+  elif [[ "$host_vendor" != "apple" ]]; then
     AC_MSG_CHECKING([for lib$2 soname])
     $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS -l$2 -Wl,-M 2>/dev/null | grep "^LOAD.*$2" | awk '{V=2; print $V}')
     if [[ ! -z $$1_FILENAME ]]; then
