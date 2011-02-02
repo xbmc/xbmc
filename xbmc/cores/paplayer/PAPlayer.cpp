@@ -999,8 +999,14 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
     while (m_bufferPos[stream] >= (int)m_pAudioDecoder[stream]->GetChunkLen())
     {
       int rtn = m_pAudioDecoder[stream]->AddPackets(m_pcmBuffer[stream], m_bufferPos[stream]);
+      if (rtn == 0) //no pcm data added
+      {
+        Sleep(1);
+        continue;
+      }
+
       m_bufferPos[stream] -= rtn;
-      memcpy(m_pcmBuffer[stream], m_pcmBuffer[stream] + rtn, m_bufferPos[stream]);
+      memmove(m_pcmBuffer[stream], m_pcmBuffer[stream] + rtn, m_bufferPos[stream]);
     }
 
     // something done
