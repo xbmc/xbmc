@@ -65,8 +65,6 @@ bool WINAPI SetEvent(HANDLE hEvent)
   for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
     DuplicateHandle(GetCurrentProcess(), *it, GetCurrentProcess(), NULL, 0, FALSE, DUPLICATE_SAME_ACCESS);
 
-  SDL_mutexV(hEvent->m_hMutex);
-
   for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
   {
     SetEvent(*it);
@@ -79,6 +77,8 @@ bool WINAPI SetEvent(HANDLE hEvent)
     SDL_CondBroadcast(hEvent->m_hCond);
   else
     SDL_CondSignal(hEvent->m_hCond);
+
+  SDL_mutexV(hEvent->m_hMutex);
 
   CloseHandle(hEvent);
 
@@ -132,12 +132,13 @@ bool WINAPI PulseEvent(HANDLE hEvent)
   // we should always unset the event on pulse
   SDL_mutexP(hEvent->m_hMutex);
   hEvent->m_bEventSet = false;
-  SDL_mutexV(hEvent->m_hMutex);
 
   if (hEvent->m_bManualEvent == true)
     SDL_CondBroadcast(hEvent->m_hCond);
   else
     SDL_CondSignal(hEvent->m_hCond);
+
+  SDL_mutexV(hEvent->m_hMutex);
 
   return true;
 }
