@@ -59,6 +59,7 @@ using namespace ADDON;
 CPVRManager::CPVRManager()
 {
   m_bFirstStart = true;
+  m_bLoaded     = false;
 }
 
 CPVRManager::~CPVRManager()
@@ -90,27 +91,17 @@ void CPVRManager::Start()
   if (!LoadClients())
   {
     CLog::Log(LOGERROR, "PVRManager - couldn't load any clients");
-    return;
+
   }
-
-  /* load all channels and groups */
-  g_PVRChannelGroups.Load();
-
-  /* start the EPG thread */
-  g_PVREpgContainer.Start();
-
-  /* get timers from the backends */
-  PVRTimers.Load();
-
-  /* get recordings from the backend */
-  PVRRecordings.Load();
-
-  /* create the supervisor thread to do all background activities */
-  Create();
-  SetName("XBMC PVRManager");
-  SetPriority(-15);
-  CLog::Log(LOGNOTICE, "PVRManager - started with %u active clients",
-      m_clients.size());
+  else
+  {
+    /* create the supervisor thread to do all background activities */
+    Create();
+    SetName("XBMC PVRManager");
+    SetPriority(-15);
+    CLog::Log(LOGNOTICE, "PVRManager - started with %u active clients",
+        m_clients.size());
+  }
 }
 
 void CPVRManager::Stop()
@@ -358,6 +349,23 @@ bool CPVRManager::ContinueLastChannel()
 
 void CPVRManager::Process()
 {
+  if (!m_bLoaded)
+  {
+    /* load all channels and groups */
+    g_PVRChannelGroups.Load();
+
+    /* start the EPG thread */
+    g_PVREpgContainer.Start();
+
+    /* get timers from the backends */
+    PVRTimers.Load();
+
+    /* get recordings from the backend */
+    PVRRecordings.Load();
+
+    m_bLoaded = true;
+  }
+
   /* Continue last watched channel after first startup */
   if (m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
     ContinueLastChannel();
@@ -424,6 +432,7 @@ void CPVRManager::Cleanup(void)
   PVRRecordings.Unload();
   PVRTimers.Unload();
   g_PVRChannelGroups.Unload();
+  m_bLoaded = false;
 
   /* destroy addons */
   for (CLIENTMAPITR itr = m_clients.begin(); itr != m_clients.end(); itr++)
@@ -1057,7 +1066,7 @@ bool CPVRManager::HasActiveClients(void)
 {
   bool bReturn = false;
 
-  if (m_clients.empty())
+  if (!m_clients.empty())
   {
     CLIENTMAPITR itr = m_clients.begin();
     while (itr != m_clients.end())

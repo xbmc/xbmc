@@ -240,11 +240,10 @@ bool CEpgContainer::RemoveOldEntries(void)
 
 bool CEpgContainer::Load(bool bShowProgress /* = false */)
 {
-  if (m_bDatabaseLoaded)
-    return m_bDatabaseLoaded;
+  if (m_bDatabaseLoaded && m_bAllDbEntriesLoaded)
+    return true;
 
   bool bReturn = false;
-  bool bUpdate = false;
 
   /* show the progress bar */
   CGUIDialogPVRUpdateProgressBar *scanner = NULL;
@@ -268,15 +267,22 @@ bool CEpgContainer::Load(bool bShowProgress /* = false */)
   /* create tables for channels that don't have a table yet */
   AutoCreateTablesHook();
 
+  int iGetHours = !m_bDatabaseLoaded ? 3 : 0;
+  time_t start;
+  time_t end;
+  CDateTime::GetCurrentDateTime().GetAsTime(start);
+  end = start;
+  start -= m_iLingerTime;
+  end += 60 * iGetHours;
+
   /* load all entries in the EPG tables */
   unsigned int iSize = size();
   for (unsigned int iEpgPtr = 0; iEpgPtr < iSize; iEpgPtr++)
   {
     CEpg *epg = at(iEpgPtr);
-    if (epg->Load())
+    if (epg->Load(iGetHours) ||
+        epg->Update(start, end, !m_bIgnoreDbForClient))
       bReturn = true;
-    else
-      bUpdate = true;
 
     if (bShowProgress)
     {
@@ -296,12 +302,15 @@ bool CEpgContainer::Load(bool bShowProgress /* = false */)
   if (bShowProgress)
     scanner->Close();
 
-  /* one or more tables couldn't be loaded or IgnoreDbForClient is set. force an update */
-  if (bUpdate || m_bIgnoreDbForClient)
+  /* IgnoreDbForClient is set. force an update */
+  if (m_bIgnoreDbForClient)
     UpdateEPG(bShowProgress);
 
   /* only try to load the database once */
-  m_bDatabaseLoaded = true;
+  if (m_bDatabaseLoaded || m_bIgnoreDbForClient)
+    m_bAllDbEntriesLoaded = true;
+  else
+    m_bDatabaseLoaded = true;
 
   return bReturn;
 }

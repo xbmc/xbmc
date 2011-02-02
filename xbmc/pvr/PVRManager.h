@@ -463,6 +463,7 @@ private:
   CPVRDatabase        m_database;               /*!< the database for all PVR related data */
   CCriticalSection    m_critSection;            /*!< critical section for all changes to this class */
   bool                m_bFirstStart;            /*!< true when the PVR manager was started first, false otherwise */
+  bool                m_bLoaded;
   bool                m_bChannelScanRunning;    /*!< true if a channel scan is currently running, false otherwise */
   //@}
 

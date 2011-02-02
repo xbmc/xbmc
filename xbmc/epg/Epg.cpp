@@ -310,7 +310,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   return bReturn;
 }
 
-bool CEpg::Load()
+bool CEpg::Load(int iGetHours /* = 0 */)
 {
   bool bReturn = false;
 
@@ -329,7 +329,8 @@ bool CEpg::Load()
   erase(begin(), end());
 
   /* request the entries for this table from the database */
-  bReturn = (database->Get(this) > 0);
+  CDateTime endDate = iGetHours > 0 ? CDateTime::GetCurrentDateTime() + CDateTimeSpan(0, iGetHours, 0, 0) : NULL;
+  bReturn = (database->Get(this, NULL, endDate) > 0);
 
   Sort();
 

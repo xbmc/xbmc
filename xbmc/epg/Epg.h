@@ -232,9 +232,10 @@ public:
 
   /*!
    * @brief Load all entries from the database.
+   * @param iGetHours The hours of EPG data to get. 0 to get them all.
    * @return True if the entries were loaded successfully, false otherwise.
    */
-  virtual bool Load();
+  virtual bool Load(int iGetHours = 0);
 
   /*!
    * @brief Get all EPG entries.

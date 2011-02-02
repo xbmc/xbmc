@@ -65,6 +65,7 @@ private:
   /** @name Class state properties */
   //@{
   bool         m_bDatabaseLoaded;    /*!< true if we already loaded the EPG from the database */
+  bool         m_bAllDbEntriesLoaded;/*!< true if all entries were loaded */
   time_t       m_iLastEpgCleanup;    /*!< the time the EPG was cleaned up */
   time_t       m_iLastEpgUpdate;     /*!< the time the EPG was updated */
   //@}
