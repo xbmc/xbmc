@@ -983,7 +983,6 @@ void cLiveStreamer::sendStreamChange()
   delete resp;
 }
 
-#define MINSIGNALSTRENGTH       16383
 void cLiveStreamer::sendSignalInfo()
 {
   /* If no frontend is found m_Frontend is set to -2, in this case
@@ -1050,32 +1049,10 @@ void cLiveStreamer::sendSignalInfo()
         delete resp;
         return;
       }
-/*
-      memset(&tuner, 0, sizeof(tuner));
-      tuner.index = 0;
-      tuner.type  = V4L2_TUNER_ANALOG_TV;
-
-      if (ioctl(m_Frontend, VIDIOC_G_TUNER, &tuner) == 0)
-      {
-        int timeout = 1000;
-        while (timeout > 0)
-        {
-          cCondWait::SleepMs(10);
-          timeout -= 10;
-          ioctl(m_Frontend, VIDIOC_G_TUNER, &tuner);
-          if (tuner.signal > MINSIGNALSTRENGTH)
-          {
-            break;
-          }
-        }
-      }
-*/
       resp->add_String(*cString::sprintf("Analog #%s - %s (%s)", *m_DeviceString, (char *) m_vcap.card, m_vcap.driver));
-//      resp->add_String(*cString::sprintf("%s", (tuner.signal > MINSIGNALSTRENGTH) ? "LOCKED" : "-"));
       resp->add_String("");
       resp->add_U32(0);
       resp->add_U32(0);
-//      resp->add_U32(tuner.signal);
       resp->add_U32(0);
       resp->add_U32(0);
 
