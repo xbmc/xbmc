@@ -896,20 +896,6 @@ void cLiveStreamer::sendStreamPacket(sStreamPacket *pkt)
   if(pkt == NULL)
     return;
 
-/*#if 0
-    LOGCONSOLE("sendet: %d %d %10lu %10lu %10d %10d", pkt->id, pkt->frametype, pkt->dts, pkt->pts, pkt->duration, pkt->size);
-#endif                                                 
-    uint32_t bufferLength = sizeof(uint32_t) * 5 + sizeof(int64_t) * 2;
-    uint8_t buffer[bufferLength];
-    *(uint32_t*)&buffer[0]  = htonl(CHANNEL_STREAM);        // stream channel
-    *(uint32_t*)&buffer[4]  = htonl(VDR_STREAM_MUXPKT);     // Stream packet operation code
-    *(uint32_t*)&buffer[8]  = htonl(pkt->id);               // Stream ID
-    *(uint32_t*)&buffer[12] = htonl(pkt->duration);         // Duration
-    *(int64_t*) &buffer[16] = __cpu_to_be64(pkt->dts);      // DTS
-    *(int64_t*) &buffer[24] = __cpu_to_be64(pkt->pts);      // PTS
-    *(uint32_t*)&buffer[32] = htonl(pkt->size);             // Data length
-    m_Socket->write(&buffer, bufferLength, -1, true);*/
-
   m_streamHeader.channel  = htonl(CHANNEL_STREAM);        // stream channel
   m_streamHeader.opcode   = htonl(VDR_STREAM_MUXPKT);     // Stream packet operation code
   m_streamHeader.id       = htonl(pkt->id);               // Stream ID
