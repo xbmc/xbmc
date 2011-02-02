@@ -19,7 +19,6 @@
  *
  */
 
-#define __STDC_CONSTANT_MACROS
 #include <stdint.h>
 #include <limits.h>
 #include <libavcodec/avcodec.h> // For codec id's
@@ -143,30 +142,24 @@ DemuxPacket* cVNSIDemux::Read()
       }
       else if (resp->getOpCodeID() == VDR_STREAM_MUXPKT)
       {
-        void   *bin       = resp->getUserData();
-        size_t  binlen    = resp->getUserDataLength();
+        DemuxPacket* p = (DemuxPacket*)resp->getUserData();
 
-        DemuxPacket* pkt = PVR->AllocateDemuxPacket(binlen);
-
-        memcpy(pkt->pData, bin, binlen);
-
-        pkt->iSize      = binlen;
-        pkt->duration   = (double)resp->getDuration() * DVD_TIME_BASE / 1000000;
-        pkt->dts        = (double)resp->getDTS() * DVD_TIME_BASE / 1000000;
-        pkt->pts        = (double)resp->getPTS() * DVD_TIME_BASE / 1000000;
-        pkt->iStreamId  = -1;
+        p->iSize      = resp->getUserDataLength();
+        p->duration   = (double)resp->getDuration() * DVD_TIME_BASE / 1000000;
+        p->dts        = (double)resp->getDTS() * DVD_TIME_BASE / 1000000;
+        p->pts        = (double)resp->getPTS() * DVD_TIME_BASE / 1000000;
+        p->iStreamId  = -1;
         for(int i = 0; i < m_Streams.nstreams; i++)
         {
           if(m_Streams.stream[i].physid == (int)resp->getStreamID())
           {
-            pkt->iStreamId = i;
-            break;
+                p->iStreamId = i;
+                break;
           }
         }
 
-        free(bin);
         delete resp;
-        return pkt;
+        return p;
       }
     }
 
