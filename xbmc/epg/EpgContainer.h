@@ -32,6 +32,7 @@
 class CFileItemList;
 class CPVREpg;
 class CPVREpgContainer;
+class CPVRManager;
 
 class CEpgContainer : public std::vector<CEpg *>,
                  public Observer,
@@ -42,6 +43,7 @@ class CEpgContainer : public std::vector<CEpg *>,
 
   friend class CPVREpg;
   friend class CPVREpgContainer;
+  friend class CPVRManager;
 
 private:
   CEpgDatabase m_database;           /*!< the EPG database */

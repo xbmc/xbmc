@@ -680,7 +680,7 @@ void CGUIWindowTV::OnInitWindow()
   /* Make sure we have active running clients, otherwise return to
    * Previous Window.
    */
-  if (!g_PVRManager.HaveActiveClients())
+  if (!g_PVRManager.HasActiveClients())
   {
     g_windowManager.PreviousWindow();
     CGUIDialogOK::ShowAndGetInput(19033,0,19045,19044);

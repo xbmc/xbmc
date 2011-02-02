@@ -139,7 +139,7 @@ public:
   /*! \brief Set the TV Database to it's initial state and delete all
    the data inside.
    */
-  void ResetDatabase();
+  void ResetDatabase(bool bShowProgress = true);
 
   /*! \brief Set the EPG data inside TV Database to it's initial state
    and reload it from Clients.
@@ -149,17 +149,19 @@ public:
   /*! \brief Returns true if a tv channel is playing
    \return true during TV playback
    */
-  bool IsPlayingTV();
+  bool IsPlayingTV(void);
 
   /*! \brief Returns true if a radio channel is playing
    \return true during radio playback
    */
-  bool IsPlayingRadio();
+  bool IsPlayingRadio(void);
 
   /*! \brief Returns true if a recording is playing over the client
    \return true during recording playback
    */
-  bool IsPlayingRecording();
+  bool IsPlayingRecording(void);
+
+  bool IsPlaying(void);
 
   /*! \brief Returns the properties of the current playing client
    \return pointer to properties (NULL if no stream is playing)
@@ -204,7 +206,7 @@ public:
    /*! \brief Returns if a minimum one client is active
    \return true if minimum one client is started
    */
-  bool HaveActiveClients();
+  bool HasActiveClients(void);
 
    /*! \brief Returns the presence of PVR specific Menu entries
    \param clientID identifier of the client to ask or < 0 for playing channel
@@ -442,12 +444,16 @@ private:
    */
   bool ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp);
 
+  void StopThreads(void);
+  void StartThreads(void);
+
   void SaveCurrentChannelSettings();            /*! \brief Write the current Video and Audio settings of
                                                  playing channel to the TV Database */
   void LoadCurrentChannelSettings();            /*! \brief Read and set the Video and Audio settings of
                                                  playing channel from the TV Database */
   void ResetQualityData();                      /*! \brief Reset the Signal Quality data structure to initial values */
   bool ContinueLastChannel();
+  void Cleanup(void);
 
   /** @name General PVRManager data */
   //@{

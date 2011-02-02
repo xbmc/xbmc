@@ -93,6 +93,18 @@ void CPVRManager::Start()
     return;
   }
 
+  /* load all channels and groups */
+  g_PVRChannelGroups.Load();
+
+  /* start the EPG thread */
+  g_PVREpgContainer.Start();
+
+  /* get timers from the backends */
+  PVRTimers.Load();
+
+  /* get recordings from the backend */
+  PVRRecordings.Load();
+
   /* create the supervisor thread to do all background activities */
   Create();
   SetName("XBMC PVRManager");
@@ -108,8 +120,15 @@ void CPVRManager::Stop()
     return;
 
   CLog::Log(LOGNOTICE, "PVRManager - stopping");
-  g_PVREpgContainer.Stop();
-  StopThread();
+  if (m_currentPlayingRecording || m_currentPlayingChannel)
+  {
+    CLog::Log(LOGNOTICE,"PVRManager - %s - stopping PVR playback",
+        __FUNCTION__);
+    g_application.StopPlaying();
+  }
+
+  StopThreads();
+  Cleanup();
 }
 
 bool CPVRManager::LoadClients()
@@ -193,12 +212,12 @@ bool CPVRManager::StopClient(AddonPtr client, bool bRestart)
           __FUNCTION__, bRestart ? "restarting" : "removing", m_clients[(*itr).first]->Name().c_str());
 
       // XXX make sure everything goes through this manager and use a lock here so we don't have to recreate everything
-      StopThread();
+      StopThreads();
       if (bRestart)
         m_clients[(*itr).first]->ReCreate();
       else
         m_clients[(*itr).first]->Destroy();
-      Create();
+      StartThreads();
 
       bReturn = true;
       break;
@@ -207,6 +226,22 @@ bool CPVRManager::StopClient(AddonPtr client, bool bRestart)
   }
 
   return bReturn;
+}
+
+void CPVRManager::StartThreads()
+{
+  if (g_PVREpgContainer)
+    g_PVREpgContainer.Create();
+
+  Create();
+}
+
+void CPVRManager::StopThreads()
+{
+  if (g_PVREpgContainer)
+    g_PVREpgContainer.StopThread();
+
+  StopThread();
 }
 
 /********************************************************************
@@ -323,11 +358,6 @@ bool CPVRManager::ContinueLastChannel()
 
 void CPVRManager::Process()
 {
-  g_PVRChannelGroups.Load();    /* Load all channels and groups */
-  g_PVREpgContainer.Start();    /* Start the EPG thread */
-  PVRTimers.Load();             /* Get timers from the backends */
-  PVRRecordings.Load();         /* Get recordings from the backend */
-
   /* Continue last watched channel after first startup */
   if (m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
     ContinueLastChannel();
@@ -382,12 +412,13 @@ void CPVRManager::Process()
     Sleep(1000);
   }
 
-  /* if a channel or recording is playing stop it first */
-  // this will result in seg fault because this is not the rendering thread
-  if (m_currentPlayingChannel || m_currentPlayingRecording)
-    g_application.StopPlaying();
+  g_PVREpgContainer.StopThread();
+}
 
-  g_PVREpgContainer.Stop(); /* Stop the EPG thread */
+void CPVRManager::Cleanup(void)
+{
+  /* stop and clean up the EPG thread */
+  g_PVREpgContainer.Stop();
 
   /* unload the rest */
   PVRRecordings.Unload();
@@ -815,71 +846,95 @@ void CPVRManager::StartChannelScan()
   CLog::Log(LOGNOTICE,"PVR: Starting to scan for channels on client %s:%s", m_clients[scanningClientID]->GetBackendName().c_str(), m_clients[scanningClientID]->GetConnectionString().c_str());
   long perfCnt = CTimeUtils::GetTimeMS();
 
-  if (m_currentPlayingRecording || m_currentPlayingChannel)
-  {
-    CLog::Log(LOGNOTICE,"PVR: Is playing data, stopping playback");
-    g_application.StopPlaying();
-  }
-  /* Stop the supervisor thread */
-  StopThread();
+  /* stop the supervisor thread */
+  StopThreads();
 
+  /* an error occured */
   if (m_clients[scanningClientID]->StartChannelScan() != PVR_ERROR_NO_ERROR)
-  {
     CGUIDialogOK::ShowAndGetInput(19111,0,19193,0);
-  }
 
-  /* Create the supervisor thread again */
-  Create();
+  /* restart the supervisor thread */
+  StartThreads();
+
   CLog::Log(LOGNOTICE, "PVR: Channel scan finished after %li.%li seconds", (CTimeUtils::GetTimeMS()-perfCnt)/1000, (CTimeUtils::GetTimeMS()-perfCnt)%1000);
   m_bChannelScanRunning = false;
 }
 
-void CPVRManager::ResetDatabase()
+void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
 {
-  CLog::Log(LOGNOTICE,"PVR: TV Database is now set to it's initial state");
+  CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the PVR database",
+      __FUNCTION__);
 
-  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  pDlgProgress->SetLine(0, "");
-  pDlgProgress->SetLine(1, g_localizeStrings.Get(19186));
-  pDlgProgress->SetLine(2, "");
-  pDlgProgress->StartModal();
-  pDlgProgress->Progress();
+  CGUIDialogProgress* pDlgProgress = NULL;
+
+  if (bShowProgress)
+  {
+    pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    pDlgProgress->SetLine(0, "");
+    pDlgProgress->SetLine(1, g_localizeStrings.Get(19186));
+    pDlgProgress->SetLine(2, "");
+    pDlgProgress->StartModal();
+    pDlgProgress->Progress();
+  }
 
   if (m_currentPlayingRecording || m_currentPlayingChannel)
   {
     CLog::Log(LOGNOTICE,"PVR: Is playing data, stopping playback");
     g_application.StopPlaying();
   }
-  pDlgProgress->SetPercentage(10);
 
+  if (bShowProgress)
+    pDlgProgress->SetPercentage(10);
+
+  /* stop the thread */
   Stop();
-  pDlgProgress->SetPercentage(20);
+  if (bShowProgress)
+    pDlgProgress->SetPercentage(20);
 
-  m_database.Open();
-  g_PVREpgContainer.Clear(true);
-  pDlgProgress->SetPercentage(30);
+  if (m_database.Open())
+  {
+    /* clean the EPG database */
+    g_PVREpgContainer.Clear(true);
+    if (bShowProgress)
+      pDlgProgress->SetPercentage(30);
 
-  m_database.DeleteChannelGroups(false);
-  pDlgProgress->SetPercentage(50);
+    /* delete all TV channel groups */
+    m_database.DeleteChannelGroups(false);
+    if (bShowProgress)
+      pDlgProgress->SetPercentage(50);
 
-  m_database.DeleteChannelGroups(true);
-  pDlgProgress->SetPercentage(60);
+    /* delete all radio channel groups */
+    m_database.DeleteChannelGroups(true);
+    if (bShowProgress)
+      pDlgProgress->SetPercentage(60);
 
-  m_database.DeleteChannels();
-  pDlgProgress->SetPercentage(70);
+    /* delete all channels */
+    m_database.DeleteChannels();
+    if (bShowProgress)
+      pDlgProgress->SetPercentage(70);
 
-  m_database.DeleteChannelSettings();
-  pDlgProgress->SetPercentage(80);
+    /* delete all channel settings */
+    m_database.DeleteChannelSettings();
+    if (bShowProgress)
+      pDlgProgress->SetPercentage(80);
 
-  m_database.DeleteClients();
-  pDlgProgress->SetPercentage(90);
+    /* delete all client information */
+    m_database.DeleteClients();
+    if (bShowProgress)
+      pDlgProgress->SetPercentage(90);
 
-  m_database.Close();
-  CLog::Log(LOGNOTICE,"PVR: TV Database reset finished, starting PVR Subsystem again");
+    m_database.Close();
+  }
+
+  CLog::Log(LOGNOTICE,"PVRManager - %s - PVR database cleared. restarting the PVRManager",
+      __FUNCTION__);
   Start();
-  g_PVREpgContainer.Start();
-  pDlgProgress->SetPercentage(100);
-  pDlgProgress->Close();
+
+  if (bShowProgress)
+  {
+    pDlgProgress->SetPercentage(100);
+    pDlgProgress->Close();
+  }
 }
 
 void CPVRManager::ResetEPG()
@@ -887,23 +942,28 @@ void CPVRManager::ResetEPG()
   g_PVREpgContainer.Reset();
 }
 
-bool CPVRManager::IsPlayingTV()
+bool CPVRManager::IsPlayingTV(void)
 {
   return m_currentPlayingChannel ?
       !m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio() :
       false;
 }
 
-bool CPVRManager::IsPlayingRadio()
+bool CPVRManager::IsPlayingRadio(void)
 {
   return m_currentPlayingChannel ?
       m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio() :
       false;
 }
 
-bool CPVRManager::IsPlayingRecording()
+bool CPVRManager::IsPlayingRecording(void)
 {
   return m_currentPlayingRecording;
+}
+
+bool CPVRManager::IsPlaying(void)
+{
+  return (m_currentPlayingChannel || m_currentPlayingRecording);
 }
 
 PVR_SERVERPROPS *CPVRManager::GetCurrentClientProps()
@@ -993,20 +1053,25 @@ bool CPVRManager::GetCurrentChannel(int *number, bool *radio)
   }
 }
 
-bool CPVRManager::HaveActiveClients()
+bool CPVRManager::HasActiveClients(void)
 {
-  if (m_clients.empty())
-    return false;
+  bool bReturn = false;
 
-  int ready = 0;
-  CLIENTMAPITR itr = m_clients.begin();
-  while (itr != m_clients.end())
+  if (m_clients.empty())
   {
-    if (m_clients[(*itr).first]->ReadyToUse())
-      ready++;
-    itr++;
+    CLIENTMAPITR itr = m_clients.begin();
+    while (itr != m_clients.end())
+    {
+      if (m_clients[(*itr).first]->ReadyToUse())
+      {
+        bReturn = true;
+        break;
+      }
+      itr++;
+    }
   }
-  return ready > 0 ? true : false;
+
+  return bReturn;
 }
 
 bool CPVRManager::HaveMenuHooks(int clientID)
@@ -1047,33 +1112,47 @@ void CPVRManager::ProcessMenuHooks(int clientID)
 
 int CPVRManager::GetPreviousChannel()
 {
-  if (m_currentPlayingChannel == NULL)
-    return -1;
+  //XXX this must be the craziest way to store the last channel
+  int iReturn = -1;
 
-  int LastChannel = m_currentPlayingChannel->GetPVRChannelInfoTag()->ChannelNumber();
+  if (m_currentPlayingChannel)
+  {
+    int iLastChannel = m_currentPlayingChannel->GetPVRChannelInfoTag()->ChannelNumber();
 
-  if ((m_PreviousChannel[m_PreviousChannelIndex ^ 1] == LastChannel || LastChannel != m_PreviousChannel[0]) && LastChannel != m_PreviousChannel[1])
-    m_PreviousChannelIndex ^= 1;
+    if ((m_PreviousChannel[m_PreviousChannelIndex ^ 1] == iLastChannel || iLastChannel != m_PreviousChannel[0]) &&
+        iLastChannel != m_PreviousChannel[1])
+      m_PreviousChannelIndex ^= 1;
 
-  return m_PreviousChannel[m_PreviousChannelIndex ^= 1];
+    iReturn = m_PreviousChannel[m_PreviousChannelIndex ^= 1];
+  }
+
+  return iReturn;
 }
 
 bool CPVRManager::CanRecordInstantly()
 {
-  if (!m_currentPlayingChannel)
-    return false;
+  bool bReturn = false;
 
-  const CPVRChannel* tag = m_currentPlayingChannel->GetPVRChannelInfoTag();
-  return (m_clientsProps[tag->ClientID()].SupportTimers);
+  if (m_currentPlayingChannel)
+  {
+    const CPVRChannel* tag = m_currentPlayingChannel->GetPVRChannelInfoTag();
+    bReturn = tag ? (m_clientsProps[tag->ClientID()].SupportTimers) : false;
+  }
+
+  return bReturn;
 }
 
 bool CPVRManager::IsRecordingOnPlayingChannel()
 {
-  if (!m_currentPlayingChannel)
-    return false;
+  bool bReturn = false;
 
-  const CPVRChannel* tag = m_currentPlayingChannel->GetPVRChannelInfoTag();
-  return tag->IsRecording();
+  if (m_currentPlayingChannel)
+  {
+    const CPVRChannel* tag = m_currentPlayingChannel->GetPVRChannelInfoTag();
+    bReturn = tag ? tag->IsRecording() : false;
+  }
+
+  return bReturn;
 }
 
 bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
@@ -1126,104 +1205,49 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
 
 void CPVRManager::SaveCurrentChannelSettings()
 {
-  if (m_currentPlayingChannel)
+  if (m_currentPlayingChannel &&
+      /* only save settings if they differ from the default settings */
+      g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings &&
+      m_database.Open())
   {
-    // save video settings
-    if (g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings)
-    {
-      m_database.Open();
-      m_database.PersistChannelSettings(*m_currentPlayingChannel->GetPVRChannelInfoTag(), g_settings.m_currentVideoSettings);
-      m_database.Close();
-    }
+    m_database.PersistChannelSettings(*m_currentPlayingChannel->GetPVRChannelInfoTag(), g_settings.m_currentVideoSettings);
+    m_database.Close();
   }
 }
 
 void CPVRManager::LoadCurrentChannelSettings()
 {
-  if (m_currentPlayingChannel)
+  if (m_currentPlayingChannel && g_application.m_pPlayer)
   {
     CVideoSettings loadedChannelSettings;
 
-    // Switch to default options
+    /* set the default settings first */
     g_settings.m_currentVideoSettings = g_settings.m_defaultVideoSettings;
 
-    m_database.Open();
-    if (m_database.GetChannelSettings(*m_currentPlayingChannel->GetPVRChannelInfoTag(), loadedChannelSettings))
+    if (m_database.Open() &&
+        m_database.GetChannelSettings(*m_currentPlayingChannel->GetPVRChannelInfoTag(), loadedChannelSettings))
     {
-      if (loadedChannelSettings.m_AudioDelay != g_settings.m_currentVideoSettings.m_AudioDelay)
-      {
-        g_settings.m_currentVideoSettings.m_AudioDelay = loadedChannelSettings.m_AudioDelay;
+      g_settings.m_currentVideoSettings.m_Brightness          = loadedChannelSettings.m_Brightness;
+      g_settings.m_currentVideoSettings.m_Contrast            = loadedChannelSettings.m_Contrast;
+      g_settings.m_currentVideoSettings.m_Gamma               = loadedChannelSettings.m_Gamma;
+      g_settings.m_currentVideoSettings.m_Crop                = loadedChannelSettings.m_Crop;
+      g_settings.m_currentVideoSettings.m_CropLeft            = loadedChannelSettings.m_CropLeft;
+      g_settings.m_currentVideoSettings.m_CropRight           = loadedChannelSettings.m_CropRight;
+      g_settings.m_currentVideoSettings.m_CropTop             = loadedChannelSettings.m_CropTop;
+      g_settings.m_currentVideoSettings.m_CropBottom          = loadedChannelSettings.m_CropBottom;
+      g_settings.m_currentVideoSettings.m_CustomPixelRatio    = loadedChannelSettings.m_CustomPixelRatio;
+      g_settings.m_currentVideoSettings.m_CustomZoomAmount    = loadedChannelSettings.m_CustomZoomAmount;
+      g_settings.m_currentVideoSettings.m_NoiseReduction      = loadedChannelSettings.m_NoiseReduction;
+      g_settings.m_currentVideoSettings.m_Sharpness           = loadedChannelSettings.m_Sharpness;
+      g_settings.m_currentVideoSettings.m_InterlaceMethod     = loadedChannelSettings.m_InterlaceMethod;
+      g_settings.m_currentVideoSettings.m_OutputToAllSpeakers = loadedChannelSettings.m_OutputToAllSpeakers;
+      g_settings.m_currentVideoSettings.m_AudioDelay          = loadedChannelSettings.m_AudioDelay;
+      g_settings.m_currentVideoSettings.m_AudioStream         = loadedChannelSettings.m_AudioStream;
+      g_settings.m_currentVideoSettings.m_SubtitleOn          = loadedChannelSettings.m_SubtitleOn;
+      g_settings.m_currentVideoSettings.m_SubtitleDelay       = loadedChannelSettings.m_SubtitleDelay;
 
-        if (g_application.m_pPlayer)
-          g_application.m_pPlayer->SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
-      }
-
-      if (loadedChannelSettings.m_AudioStream != g_settings.m_currentVideoSettings.m_AudioStream)
-      {
-        g_settings.m_currentVideoSettings.m_AudioStream = loadedChannelSettings.m_AudioStream;
-
-        // only change the audio stream if a different one has been asked for
-        if (g_application.m_pPlayer->GetAudioStream() != g_settings.m_currentVideoSettings.m_AudioStream)
-        {
-          g_application.m_pPlayer->SetAudioStream(g_settings.m_currentVideoSettings.m_AudioStream);    // Set the audio stream to the one selected
-        }
-      }
-
-      if (loadedChannelSettings.m_Brightness != g_settings.m_currentVideoSettings.m_Brightness)
-      {
-        g_settings.m_currentVideoSettings.m_Brightness = loadedChannelSettings.m_Brightness;
-      }
-
-      if (loadedChannelSettings.m_Contrast != g_settings.m_currentVideoSettings.m_Contrast)
-      {
-        g_settings.m_currentVideoSettings.m_Contrast = loadedChannelSettings.m_Contrast;
-      }
-
-      if (loadedChannelSettings.m_Gamma != g_settings.m_currentVideoSettings.m_Gamma)
-      {
-        g_settings.m_currentVideoSettings.m_Gamma = loadedChannelSettings.m_Gamma;
-      }
-
-      if (loadedChannelSettings.m_Crop != g_settings.m_currentVideoSettings.m_Crop)
-      {
-        g_settings.m_currentVideoSettings.m_Crop = loadedChannelSettings.m_Crop;
-        // AutoCrop changes will get picked up automatically by dvdplayer
-      }
-
-      if (loadedChannelSettings.m_CropLeft != g_settings.m_currentVideoSettings.m_CropLeft)
-      {
-        g_settings.m_currentVideoSettings.m_CropLeft = loadedChannelSettings.m_CropLeft;
-      }
-
-      if (loadedChannelSettings.m_CropRight != g_settings.m_currentVideoSettings.m_CropRight)
-      {
-        g_settings.m_currentVideoSettings.m_CropRight = loadedChannelSettings.m_CropRight;
-      }
-
-      if (loadedChannelSettings.m_CropTop != g_settings.m_currentVideoSettings.m_CropTop)
-      {
-        g_settings.m_currentVideoSettings.m_CropTop = loadedChannelSettings.m_CropTop;
-      }
-
-      if (loadedChannelSettings.m_CropBottom != g_settings.m_currentVideoSettings.m_CropBottom)
-      {
-        g_settings.m_currentVideoSettings.m_CropBottom = loadedChannelSettings.m_CropBottom;
-      }
-
-      if (loadedChannelSettings.m_VolumeAmplification != g_settings.m_currentVideoSettings.m_VolumeAmplification)
-      {
-        g_settings.m_currentVideoSettings.m_VolumeAmplification = loadedChannelSettings.m_VolumeAmplification;
-
-        if (g_application.m_pPlayer)
-          g_application.m_pPlayer->SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
-      }
-
-      if (loadedChannelSettings.m_OutputToAllSpeakers != g_settings.m_currentVideoSettings.m_OutputToAllSpeakers)
-      {
-        g_settings.m_currentVideoSettings.m_OutputToAllSpeakers = loadedChannelSettings.m_OutputToAllSpeakers;
-      }
-
-      if (loadedChannelSettings.m_ViewMode != g_settings.m_currentVideoSettings.m_ViewMode)
+      /* only change the view mode if it's different */
+      if (g_settings.m_currentVideoSettings.m_ViewMode != loadedChannelSettings.m_ViewMode)
       {
         g_settings.m_currentVideoSettings.m_ViewMode = loadedChannelSettings.m_ViewMode;
 
@@ -1232,53 +1256,25 @@ void CPVRManager::LoadCurrentChannelSettings()
         g_settings.m_currentVideoSettings.m_CustomPixelRatio = g_settings.m_fPixelRatio;
       }
 
-      if (loadedChannelSettings.m_CustomPixelRatio != g_settings.m_currentVideoSettings.m_CustomPixelRatio)
-      {
-        g_settings.m_currentVideoSettings.m_CustomPixelRatio = loadedChannelSettings.m_CustomPixelRatio;
-      }
-
-      if (loadedChannelSettings.m_CustomZoomAmount != g_settings.m_currentVideoSettings.m_CustomZoomAmount)
-      {
-        g_settings.m_currentVideoSettings.m_CustomZoomAmount = loadedChannelSettings.m_CustomZoomAmount;
-      }
-
-      if (loadedChannelSettings.m_NoiseReduction != g_settings.m_currentVideoSettings.m_NoiseReduction)
-      {
-        g_settings.m_currentVideoSettings.m_NoiseReduction = loadedChannelSettings.m_NoiseReduction;
-      }
-
-      if (loadedChannelSettings.m_Sharpness != g_settings.m_currentVideoSettings.m_Sharpness)
-      {
-        g_settings.m_currentVideoSettings.m_Sharpness = loadedChannelSettings.m_Sharpness;
-      }
-
-      if (loadedChannelSettings.m_SubtitleDelay != g_settings.m_currentVideoSettings.m_SubtitleDelay)
-      {
-        g_settings.m_currentVideoSettings.m_SubtitleDelay = loadedChannelSettings.m_SubtitleDelay;
-
-        g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
-      }
-
-      if (loadedChannelSettings.m_SubtitleOn != g_settings.m_currentVideoSettings.m_SubtitleOn)
-      {
-        g_settings.m_currentVideoSettings.m_SubtitleOn = loadedChannelSettings.m_SubtitleOn;
-
-        g_application.m_pPlayer->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
-      }
-
-      if (loadedChannelSettings.m_SubtitleStream != g_settings.m_currentVideoSettings.m_SubtitleStream)
+      /* only change the subtitle strea, if it's different */
+      if (g_settings.m_currentVideoSettings.m_SubtitleStream != loadedChannelSettings.m_SubtitleStream)
       {
         g_settings.m_currentVideoSettings.m_SubtitleStream = loadedChannelSettings.m_SubtitleStream;
 
         g_application.m_pPlayer->SetSubtitle(g_settings.m_currentVideoSettings.m_SubtitleStream);
       }
 
-      if (loadedChannelSettings.m_InterlaceMethod != g_settings.m_currentVideoSettings.m_InterlaceMethod)
-      {
-        g_settings.m_currentVideoSettings.m_InterlaceMethod = loadedChannelSettings.m_InterlaceMethod;
-      }
+      /* only change the audio stream if it's different */
+      if (g_application.m_pPlayer->GetAudioStream() != g_settings.m_currentVideoSettings.m_AudioStream)
+        g_application.m_pPlayer->SetAudioStream(g_settings.m_currentVideoSettings.m_AudioStream);
+
+      g_application.m_pPlayer->SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
+      g_application.m_pPlayer->SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
+      g_application.m_pPlayer->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
+      g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
+
+      m_database.Close();
     }
-    m_database.Close();
   }
 }
 
