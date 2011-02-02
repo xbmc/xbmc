@@ -115,7 +115,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   /* set the stream's parameters */
   m_CodecCtx                 = m_Stream->codec;
   m_CodecCtx->codec_id       = codec->id;
-  m_CodecCtx->codec_type     = CODEC_TYPE_AUDIO;
+  m_CodecCtx->codec_type     = AVMEDIA_TYPE_AUDIO;
   m_CodecCtx->bit_rate       = m_Format->bit_rate;
   m_CodecCtx->sample_rate    = iInRate;
   m_CodecCtx->channels       = iInChannels;

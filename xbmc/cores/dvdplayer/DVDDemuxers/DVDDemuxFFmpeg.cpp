@@ -703,7 +703,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         if(pkt.pts == 0)
           pkt.pts = AV_NOPTS_VALUE;
 
-        if(m_bMatroska && stream->codec && stream->codec->codec_type == CODEC_TYPE_VIDEO)
+        if(m_bMatroska && stream->codec && stream->codec->codec_type == AVMEDIA_TYPE_VIDEO)
         { // matroska can store different timestamps
           // for different formats, for native stored
           // stuff it is pts, but for ms compatibility
@@ -720,7 +720,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         if(m_bMatroska && stream->codec->codec_id == CODEC_ID_TEXT && pkt.convergence_duration != 0)
             pkt.duration = pkt.convergence_duration;
 
-        if(m_bAVI && stream->codec && stream->codec->codec_type == CODEC_TYPE_VIDEO)
+        if(m_bAVI && stream->codec && stream->codec->codec_type == AVMEDIA_TYPE_VIDEO)
         {
           // AVI's always have borked pts, specially if m_pFormatContext->flags includes
           // AVFMT_FLAG_GENPTS so always use dts
@@ -943,7 +943,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
     switch (pStream->codec->codec_type)
     {
-    case CODEC_TYPE_AUDIO:
+    case AVMEDIA_TYPE_AUDIO:
       {
         CDemuxStreamAudioFFmpeg* st = new CDemuxStreamAudioFFmpeg(this, pStream);
         m_streams[iId] = st;
@@ -958,7 +958,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
         break;
       }
-    case CODEC_TYPE_VIDEO:
+    case AVMEDIA_TYPE_VIDEO:
       {
         CDemuxStreamVideoFFmpeg* st = new CDemuxStreamVideoFFmpeg(this, pStream);
         m_streams[iId] = st;
@@ -1012,13 +1012,13 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         }
         break;
       }
-    case CODEC_TYPE_DATA:
+    case AVMEDIA_TYPE_DATA:
       {
         m_streams[iId] = new CDemuxStream();
         m_streams[iId]->type = STREAM_DATA;
         break;
       }
-    case CODEC_TYPE_SUBTITLE:
+    case AVMEDIA_TYPE_SUBTITLE:
       {
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,38,1)
         if (pStream->codec->codec_id == CODEC_ID_DVB_TELETEXT && g_guiSettings.GetBool("videoplayer.teletextenabled"))
@@ -1042,7 +1042,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
           break;
         }
       }
-    case CODEC_TYPE_ATTACHMENT:
+    case AVMEDIA_TYPE_ATTACHMENT:
       { //mkv attachments. Only bothering with fonts for now.
         if(pStream->codec->codec_id == CODEC_ID_TTF)
         {

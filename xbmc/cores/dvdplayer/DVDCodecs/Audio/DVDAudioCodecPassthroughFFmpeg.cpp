@@ -140,7 +140,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
     m_SampleRate = 48000;
 
   AVCodecContext *codec = muxer.m_pStream->codec;
-  codec->codec_type     = CODEC_TYPE_AUDIO;
+  codec->codec_type     = AVMEDIA_TYPE_AUDIO;
   codec->codec_id       = hints.codec;
   codec->sample_rate    = m_SampleRate;
   codec->sample_fmt     = AV_SAMPLE_FMT_S16;

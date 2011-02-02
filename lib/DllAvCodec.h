@@ -82,6 +82,18 @@ extern "C" {
                                            CH_FRONT_LEFT_OF_CENTER|CH_FRONT_RIGHT_OF_CENTER)
 #endif
 
+#if LIBAVCORE_VERSION_INT < AV_VERSION_INT(52,64,0)
+// API added on: 2010-03-31
+#define AVMediaType		CodecType
+#define AVMEDIA_TYPE_UNKNOWN    CODEC_TYPE_UNKNOWN
+#define AVMEDIA_TYPE_VIDEO      CODEC_TYPE_VIDEO
+#define AVMEDIA_TYPE_AUDIO      CODEC_TYPE_AUDIO
+#define AVMEDIA_TYPE_DATA       CODEC_TYPE_DATA
+#define AVMEDIA_TYPE_SUBTITLE   CODEC_TYPE_SUBTITLE
+#define AVMEDIA_TYPE_ATTACHMENT CODEC_TYPE_ATTACHMENT
+#define AVMEDIA_TYPE_NB         CODEC_TYPE_NB
+#endif
+
 #include "threads/SingleLock.h"
 
 class DllAvCodecInterface
