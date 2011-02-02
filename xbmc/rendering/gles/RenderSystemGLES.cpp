@@ -24,10 +24,10 @@
 
 #if HAS_GLES == 2
 
-#include "GraphicContext.h"
-#include "AdvancedSettings.h"
+#include "guilib/GraphicContext.h"
+#include "settings/AdvancedSettings.h"
 #include "RenderSystemGLES.h"
-#include "MatrixGLES.h"
+#include "guilib/MatrixGLES.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "utils/SystemInfo.h"
@@ -37,7 +37,11 @@ static const char* ShaderNames[SM_ESHADERCOUNT] =
      "guishader_frag_texture.glsl",
      "guishader_frag_multi.glsl",
      "guishader_frag_fonts.glsl",
-     "guishader_frag_texture_noblend.glsl"};
+     "guishader_frag_texture_noblend.glsl",
+     "guishader_frag_multi_blendcolor.glsl",
+     "guishader_frag_rgba.glsl",
+     "guishader_frag_rgba_blendcolor.glsl"
+    };
 
 CRenderSystemGLES::CRenderSystemGLES()
  : CRenderSystemBase()

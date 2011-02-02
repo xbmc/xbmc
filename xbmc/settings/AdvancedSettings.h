@@ -283,6 +283,8 @@ class CAdvancedSettings
     DatabaseSettings m_databaseVideo; // advanced video database setup
 
     unsigned int m_cacheMemBufferSize;
+
+    bool m_jsonOutputCompact;
 };
 
 extern CAdvancedSettings g_advancedSettings;

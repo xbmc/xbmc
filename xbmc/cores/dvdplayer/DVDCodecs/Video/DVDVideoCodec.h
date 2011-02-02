@@ -35,6 +35,9 @@
 namespace DXVA { class CProcessor; }
 namespace VAAPI { struct CHolder; }
 class CVDPAU;
+class COpenMax;
+class COpenMaxVideo;
+struct OpenMaxVideoBuffer;
 
 // should be entirely filled by all codecs
 struct DVDVideoPicture
@@ -57,6 +60,11 @@ struct DVDVideoPicture
     };
     struct {
       VAAPI::CHolder* vaapi;
+    };
+
+    struct {
+      COpenMax *openMax;
+      OpenMaxVideoBuffer *openMaxBuffer;
     };
   };
 
@@ -86,6 +94,7 @@ struct DVDVideoPicture
     FMT_YUY2,
     FMT_DXVA,
     FMT_VAAPI,
+    FMT_OMXEGL
   } format;
 };
 

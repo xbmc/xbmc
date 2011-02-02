@@ -664,10 +664,20 @@ void CWinRenderer::Render(DWORD flags)
     */
   CSingleLock lock(g_graphicsContext);
 
+  // Don't need a stencil/depth buffer and a buffer smaller than the render target causes D3D complaints and nVidia issues
+  // Save & restore when we're done.
+  LPDIRECT3DSURFACE9 pZBuffer;
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  pD3DDevice->GetDepthStencilSurface(&pZBuffer);
+  pD3DDevice->SetDepthStencilSurface(NULL);
+
   if (m_renderMethod == RENDER_SW)
     RenderSW();
   else if (m_renderMethod == RENDER_PS)
     RenderPS();
+
+  pD3DDevice->SetDepthStencilSurface(pZBuffer);
+  pZBuffer->Release();
 }
 
 void CWinRenderer::RenderSW()

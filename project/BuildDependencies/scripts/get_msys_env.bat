@@ -8,6 +8,7 @@ CALL dlextract.bat msys_env %FILES%
 cd %TMP_PATH%
 
 xcopy bin\* "%MSYS_INSTALL_PATH%\bin" /E /Q /I /Y
+xcopy lib\* "%MSYS_INSTALL_PATH%\lib" /E /Q /I /Y
 xcopy etc\* "%MSYS_INSTALL_PATH%\etc" /E /Q /I /Y
 xcopy share\* "%MSYS_INSTALL_PATH%\share" /E /Q /I /Y
 copy *.ico "%MSYS_INSTALL_PATH%" /Y

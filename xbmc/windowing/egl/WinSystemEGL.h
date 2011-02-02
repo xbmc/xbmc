@@ -23,10 +23,10 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "WinSystem.h"
+#include "windowing/WinSystem.h"
 #include <EGL/egl.h>
 #include <X11/Xlib.h>
-#include "RenderSystemGLES.h"
+#include "rendering/gles/RenderSystemGLES.h"
 
 class CWinSystemEGL : public CWinSystemBase, public CRenderSystemGLES
 {
@@ -53,12 +53,17 @@ public:
 
   virtual bool IsExtSupported(const char* extension);
 
+  virtual bool makeOMXCurrent();
+
+  EGLContext GetEGLContext() const;
+  EGLDisplay GetEGLDisplay() const;
 protected:
   bool RefreshEGLContext();
 
   SDL_Surface* m_SDLSurface;
   EGLDisplay   m_eglDisplay;
   EGLContext   m_eglContext;
+  EGLContext   m_eglOMXContext;
   EGLSurface   m_eglSurface;
   Window       m_eglWindow;
   Window       m_wmWindow;

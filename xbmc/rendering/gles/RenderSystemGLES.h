@@ -24,8 +24,8 @@
 
 #pragma once
 
-#include "RenderSystem.h"
-#include "GUIShader.h"
+#include "rendering/RenderSystem.h"
+#include "xbmc/guilib/GUIShader.h"
 
 enum ESHADERMETHOD
 {
@@ -34,6 +34,9 @@ enum ESHADERMETHOD
   SM_MULTI,
   SM_FONTS,
   SM_TEXTURE_NOBLEND,
+  SM_MULTI_BLENDCOLOR,
+  SM_TEXTURE_RGBA,
+  SM_TEXTURE_RGBA_BLENDCOLOR,
   SM_ESHADERCOUNT
 };
 

@@ -18,7 +18,6 @@ xcopy doc\* "%MINGW_INSTALL_PATH%\doc" /E /Q /I /Y
 xcopy include\* "%MINGW_INSTALL_PATH%\include" /E /Q /I /Y
 xcopy lib\* "%MINGW_INSTALL_PATH%\lib" /E /Q /I /Y
 xcopy share\* "%MINGW_INSTALL_PATH%\share" /E /Q /I /Y
-xcopy dist\* "%MINGW_INSTALL_PATH%\dist" /E /Q /I /Y
 xcopy libexec\* "%MINGW_INSTALL_PATH%\libexec" /E /Q /I /Y
 xcopy mingw32\* "%MINGW_INSTALL_PATH%\mingw32" /E /Q /I /Y
 copy yasm-1.1.0-win32.exe "%MINGW_INSTALL_PATH%\bin\yasm.exe" /Y

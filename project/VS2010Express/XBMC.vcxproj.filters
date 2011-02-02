@@ -2716,28 +2716,28 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.h">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllAvCodec.h">
+    <ClInclude Include="..\..\lib\DllAvCodec.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllAvFormat.h">
+    <ClInclude Include="..\..\lib\DllAvFormat.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllPostProc.h">
+    <ClInclude Include="..\..\lib\DllPostProc.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllSwScale.h">
+    <ClInclude Include="..\..\lib\DllSwScale.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include\libavutil\avconfig.h">
+    <ClInclude Include="..\..\lib\ffmpeg\include\libavutil\avconfig.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avformat.h">
+    <ClInclude Include="..\..\lib\ffmpeg\libavformat\avformat.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavutil\common.h">
+    <ClInclude Include="..\..\lib\ffmpeg\libavutil\common.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avio.h">
+    <ClInclude Include="..\..\lib\ffmpeg\libavformat\avio.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_types.h">
@@ -2827,40 +2827,40 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\CodecFactory.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllAc3codec.h">
+    <ClInclude Include="..\..\lib\DllAc3codec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllAdpcm.h">
+    <ClInclude Include="..\..\lib\DllAdpcm.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllASAP.h">
+    <ClInclude Include="..\..\lib\DllASAP.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllDCACodec.h">
+    <ClInclude Include="..\..\lib\DllDCACodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllLibFlac.h">
+    <ClInclude Include="..\..\lib\DllLibFlac.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllNosefart.h">
+    <ClInclude Include="..\..\lib\DllNosefart.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllSidplay2.h">
+    <ClInclude Include="..\..\lib\DllSidplay2.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllStSound.h">
+    <ClInclude Include="..\..\lib\DllStSound.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllTimidity.h">
+    <ClInclude Include="..\..\lib\DllTimidity.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllVorbisfile.h">
+    <ClInclude Include="..\..\lib\DllVorbisfile.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllWAVPack.h">
+    <ClInclude Include="..\..\lib\DllWAVPack.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllWMA.h">
+    <ClInclude Include="..\..\lib\DllWMA.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DTSCDDACodec.h">
@@ -3398,12 +3398,6 @@
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\DllAddon.h">
-      <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\DllScreenSaver.h">
-      <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\DllVisualisation.h">
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\IAddon.h">
