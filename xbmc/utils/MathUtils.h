@@ -20,6 +20,7 @@
  *
  */
 
+#include <stdint.h>
 #include <cassert>
 #include <climits>
 #include <cmath>
