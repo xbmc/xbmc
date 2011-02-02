@@ -527,7 +527,7 @@ cLiveStreamer::cLiveStreamer()
   m_streamReady     = false;
   m_IsAudioOnly     = false;
   m_IsMPEGPS        = false;
-  m_streamChangeSendet = false;
+  m_streamchangeSent= false;
 
   m_packetEmpty = new cResponsePacket;
   m_packetEmpty->initStream(VDR_STREAM_MUXPKT, 0, 0, 0, 0);
@@ -852,7 +852,7 @@ inline void cLiveStreamer::Activate(bool On)
   if (On)
   {
     LOGCONSOLE("VDR active, sending stream start message");
-    m_streamChangeSendet = false;
+    m_streamchangeSent = false;
     Start();
   }
   else
@@ -887,10 +887,10 @@ void cLiveStreamer::Detach(void)
 
 void cLiveStreamer::sendStreamPacket(sStreamPacket *pkt)
 {
-  if (!m_streamChangeSendet)
+  if (!m_streamchangeSent)
   {
     sendStreamChange();
-    m_streamChangeSendet = true;
+    m_streamchangeSent = true;
   }
 
   if(pkt == NULL)
