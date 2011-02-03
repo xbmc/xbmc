@@ -1,18 +1,20 @@
 XBMC MediaPortal TV-client ('MPTV') PVR Add-on
 ----------------------------------------------
-Supported platforms (pvrclient): Windows
-(Linux, OSX: work in progress)
+Supported platforms (pvrclient):
+- Windows
+- Linux
+- OSX (should work, not tested by me)
+
 Dependencies:
-- MediaPortal TVServer 1.1.0 beta1 or higher
-- TVServerXBMC v1.0.7.0 or higher
+- MediaPortal TVServer 1.1.0 or higher
+- TVServerXBMC v1.1.0.90 or higher
 
 THIS IS A PRELIMINARY README AND IS SUBJECT TO CHANGE!!!
 
 Written by:                  Marcel Groothuis
 
 Project's homepage:          http://www.scintilla.utwente.nl/~marcelg/xbmc/
-
-Latest version available at: XBMC's pvr-testing2 branch
+Latest version available at: project homepage
 
 The MediaPortal TV-Server plugin "TVServerXMBC", status updates, screenshots, 
 last-minute patches can be found at:
@@ -56,7 +58,7 @@ Detailed instructions:
 
 (Preliminary...)
 
-1. Install MediaPortal & MediaPortal TV Server (1.1.0 beta1 or daily build 01-08-2010)
+1. Install MediaPortal & MediaPortal TV Server (1.1.0)
    (for older versions, you will need to recompile the TVServerXBMC plugin from source)
 2. Use MediaPortal to make sure that the TV Server is working fine
 3. Download the TVServerXBMC plugin for the TV Server (see my website)
@@ -117,10 +119,10 @@ radiogroup: "Import only Radio Channels from group"
   group. E.g. you can create a "XBMC" group at the TVServer side that contains
   only the radio channels that you want to appear at the XBMC side. 
   Default: <empty>
-resolvertsphostname: "Convert hostname to IP-adress"
+resolvertsphostname: "Convert hostname to IP-address"
   Resolve the TVServer hostname in the rtsp:// streaming URLs to an ip-address
   at the TVServerXBMC side. May help you with connection problems.
-  Default: false
+  Default: true
 readgenre: "EPG: Read genre strings (slow)"
   Try to translate the EPG genre strings from MediaPortal into XBMC compatible
   genre id's. However, depending on your EPG source, MediaPortal may return
@@ -129,19 +131,29 @@ readgenre: "EPG: Read genre strings (slow)"
   The current implementation translates only English strings as workaround for
   the mismatch between XBMC's genre ids and MediaPortals genre strings.
   Default: false (= don't read and translate the genre strings)
-sleeponurl: "Wait after tuning a channel (ms)"
+sleeponrtspurl: "Wait after tuning a channel (ms)"
   Adds an additional waiting time between the request to start a timeshift for
   the selected channel and opening the rtsp:// stream in XBMC. You may need this
   in case XBMC tries to open the returned rtsp:// stream before it is really
   available. Typical symptom: the channel doesn't play the first time, but it
   does play the second time.
   Default: 0 (milliseconds)
-
+userecordingsdir: "Play recordings directly (no streaming)"
+  By default, the recordings are played via rtsp:// streaming, which is not
+  needed when the TV Server and XBMC are running on the same machine.
+  When you enable this option, XBMC will use the filename of the recording
+  for playback instead of the rtsp::// url.
+  Default: false
+recordingsdir: "Mediaportal recordings directory"
+  The previous setting can also be used on a different pc by sharing the
+  recordings directory over the network. You can use this option to specify
+  where XBMC can find the recordings.
+  Default: <empty>
 ----------------------------------------------
 Troubleshooting:
 TODO...
-
-
+  You can reach me on the XBMC forum, user: margro or via
+  IRC: #xbmc, #xbmc-pvr user: margro
 ----------------------------------------------
 Links:
 

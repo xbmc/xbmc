@@ -1,0 +1,36 @@
+v1.1.2.101:
+- Fixed: "Include radio" setting
+- Changed: cleanup unused settings
+
+v1.1.0.100
+- Rewrite: timer code
+- Changed: BackendName
+- Fixed: Retrieve more details for timers (repeat, lifetime, ...)
+- Fixed: Playback of radio channels with a webstream URL (added via the MediaPortal TV-server)
+- Fixed: "Free-to-air only" setting
+- Support for TVServerXBMC v1.1.0.100
+
+v1.1.0.98
+- Log more information on socket related problems
+
+v1.1.0.97
+- Fixed: Use uri decode for ip-address in hostname field
+
+v1.1.0.96
+- Fixed: allow spaces in groupnames, recording names and timer titles
+- Fixed: GetTimerInfo
+- Add debug messages for empty channel list
+
+v1.1.0.95
+- Fix time mismatch between XBMC and MediaPortal TV Server for new timers (scheduled recordings)
+- Send genre strings to XBMC for unrecognised genres. No colors in EPG, but at least the text is now ok.
+
+v1.1.0.90
+- Faster channel switching (around 2 sec faster)
+- Decrease CPU uage when a buffer underrun occurs
+
+v1.1.0.75
+- PVR client should abort connection when the TVServerXBMC version is too old
+
+v1.1.0.60
+- Fix PVR client destroy

@@ -131,14 +131,14 @@
     <ClInclude Include="..\..\client.h" />
     <ClInclude Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.h" />
     <ClInclude Include="..\..\epg.h" />
+    <ClInclude Include="..\..\os-dependent.h" />
     <ClInclude Include="..\..\pvrclient-mediaportal.h" />
-    <ClInclude Include="..\..\pvrclient-mediaportal_os.h" />
-    <ClInclude Include="..\..\windows\pvrclient-mediaportal_os_windows.h" />
     <ClInclude Include="..\..\recordings.h" />
     <ClInclude Include="..\..\Socket.h" />
     <ClInclude Include="..\..\StdString.h" />
     <ClInclude Include="..\..\timers.h" />
     <ClInclude Include="..\..\utils.h" />
+    <ClInclude Include="..\..\windows\os_windows.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\README" />

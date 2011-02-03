@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,7 +23,6 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-//#include <string>
 #include "StdString.h"
 #include "pvrclient-mediaportal.h"
 #include "libXBMC_addon.h"
@@ -33,33 +32,41 @@
 #define DEFAULT_PORT                  9596
 #define DEFAULT_FTA_ONLY              false
 #define DEFAULT_RADIO                 true
-#define DEFAULT_CHARCONV              false
-#define DEFAULT_TIMEOUT               3
-#define DEFAULT_BADCHANNELS           true
+#define DEFAULT_TIMEOUT               6
 #define DEFAULT_HANDLE_MSG            false
 #define DEFAULT_RESOLVE_RTSP_HOSTNAME true
 #define DEFAULT_READ_GENRE            false
 #define DEFAULT_SLEEP_RTSP_URL        0
+#define DEFAULT_USE_REC_DIR           false
+#define DEFAULT_REC_DIR               ""
+#define DEFAULT_TVGROUP               ""
+#define DEFAULT_RADIOGROUP            ""
+#define DEFAULT_DIRECT_TS_FR          false
 
-extern bool         m_bCreated;
-extern std::string  m_sHostname;
-extern int          m_iPort;
-extern bool         m_bOnlyFTA;
-extern bool         m_bRadioEnabled;
-extern bool         m_bCharsetConv;
-extern int          m_iConnectTimeout;
-extern bool         m_bNoBadChannels;
-extern bool         m_bHandleMessages;
-extern int          g_clientID;
-extern std::string  g_szUserPath;
-extern std::string  g_szClientPath;
-extern std::string  g_sTVGroup;
-extern std::string  g_sRadioGroup;
-extern bool         m_bResolveRTSPHostname;
-extern bool         m_bReadGenre;
-extern int          m_iSleepOnRTSPurl;
+extern bool         g_bCreated;           ///< Shows that the Create function was successfully called
+extern int          g_iClientID;          ///< The PVR client ID used by XBMC for this driver
+extern std::string  g_szUserPath;         ///< The Path to the user directory inside user profile
+extern std::string  g_szClientPath;       ///< The Path where this driver is located
+
+/* Client Settings */
+extern std::string  g_szHostname;
+extern int          g_iPort;
+extern int          g_iConnectTimeout;
+extern int          g_iSleepOnRTSPurl;
+extern bool         g_bOnlyFTA;
+extern bool         g_bRadioEnabled;
+extern bool         g_bHandleMessages;
+extern bool         g_bResolveRTSPHostname;
+extern bool         g_bReadGenre;
+extern bool         g_bUseRecordingsDir;
+extern bool         g_bDirectTSFileRead;
+extern std::string  g_szRecordingsDir;
+extern std::string  g_szTVGroup;
+extern std::string  g_szRadioGroup;
 
 extern cHelper_libXBMC_addon *XBMC;
 extern cHelper_libXBMC_pvr   *PVR;
+
+extern int          g_iTVServerXBMCBuild;
 
 #endif /* CLIENT_H */

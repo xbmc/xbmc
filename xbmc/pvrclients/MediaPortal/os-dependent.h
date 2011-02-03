@@ -14,26 +14,18 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
-#ifndef PVRCLIENT_MEDIAPORTAL_OS_H
-#define PVRCLIENT_MEDIAPORTAL_OS_H
 
 #if defined(_WIN32) || defined(_WIN64)
 #define __WINDOWS__
 #endif
 
 #if defined(__WINDOWS__)
-#ifndef _WINSOCKAPI_
-#define _WINSOCKAPI_
-#endif
-#include "windows/pvrclient-mediaportal_os_windows.h"
+#include "windows/os_windows.h"
 #else
-#include "linux/pvrclient-mediaportal_os_posix.h"
+#include "linux/os_posix.h"
 #endif
 
 #if !defined(TRUE)
@@ -42,6 +34,4 @@
 
 #if !defined(FALSE)
 #define FALSE 0
-#endif
-
 #endif

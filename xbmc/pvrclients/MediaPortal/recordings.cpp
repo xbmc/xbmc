@@ -2,20 +2,18 @@
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
- *  This Program is free software; you can redistribute it and/or modify
+ *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
+ *  the Free Software Foundation, either version 2 of the License, or
+ *  (at your option) any later version.
  *
- *  This Program is distributed in the hope that it will be useful,
+ *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -51,12 +49,13 @@ bool cRecording::ParseLine(const std::string& data)
   int year, month ,day;
   int hour, minute, second;
   int count;
+  string filePath;
 
   vector<string> fields;
 
   Tokenize(data, fields, "|");
 
-  if( fields.size() == 9 )
+  if( fields.size() >= 9 )
   {
     //[0] index / mediaportal recording id
     //[1] start time
@@ -64,9 +63,10 @@ bool cRecording::ParseLine(const std::string& data)
     //[3] channel name
     //[4] title
     //[5] description
-    //[6] stream_url
+    //[6] stream_url (resolved hostname if requested)
     //[7] filename (we can bypass rtsp streaming when XBMC and the TV server are on the same machine)
     //[8] lifetime (mediaportal keep until?)
+    //[9] (optional) original stream_url when resolve hostnames is enabled
 
     m_Index = atoi(fields[0].c_str());
 
@@ -118,8 +118,48 @@ bool cRecording::ParseLine(const std::string& data)
     m_title = fields[4];
     m_description = fields[5];
     m_stream = fields[6];
-    m_fileName = fields[7];
+    m_filePath = fields[7];
+
+    // TODO: fill lifetime with data from MP TV Server
+    // From the VDR documentation (VDR is used by Alwinus as basis for the XBMC
+    // PVR framework:
+    // "The lifetime (int) value corresponds to the the number of days (0..99)
+    // a recording made through this timer is guaranteed to remain on disk
+    // before it is automatically removed to free up space for a new recording.
+    // Note that setting this parameter to very high values for all recordings
+    // may soon fill up the entire disk and cause new recordings to fail due to
+    // low disk space. The special value 99 means that this recording will live
+    // forever, and a value of 0 means that this recording can be deleted any
+    // time if a recording with a higher priority needs disk space."
     m_lifetime = fields[8];
+
+    if( m_filePath.length() > 0 )
+    {
+      size_t found = m_filePath.find_last_of("/\\");
+      if (found != string::npos)
+      {
+        m_fileName = m_filePath.substr(found+1);
+        m_directory = m_filePath.substr(0, found+1);
+      }
+      else
+      {
+        m_fileName = m_filePath;
+        m_directory = "";
+      }
+    }
+    else
+    {
+      m_fileName = "";
+      m_directory = "";
+    }
+
+
+    if (fields.size() == 10) // Since 1.0.8.0
+    {
+      m_originalurl = fields[9];
+    } else {
+      m_originalurl = fields[6];
+    }
 
     return true;
   }
@@ -127,4 +167,10 @@ bool cRecording::ParseLine(const std::string& data)
   {
     return false;
   }
+}
+
+void cRecording::SetDirectory( string& directory )
+{
+  m_directory = directory;
+  m_filePath = m_directory + m_fileName;
 }

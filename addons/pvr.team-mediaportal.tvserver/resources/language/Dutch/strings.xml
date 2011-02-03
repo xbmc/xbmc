@@ -3,12 +3,15 @@
     <!-- settings labels -->
     <string id="30000">Mediaportal hostnaam</string>
     <string id="30001">Mediaportal XBMC plugin poort</string>
-    <string id="30002">Alleen vrij te ontvangen kanalen</string>
+    <string id="30002">Toon alleen vrij te ontvangen kanalen</string>
     <string id="30003">Toon radio</string>
-    <string id="30004">Tekenset conversie (UTF-8)</string>
+
     <string id="30005">Verbindingstimeout (s)</string>
     <string id="30006">Importeer alleen TV kanalen uit groep</string>
     <string id="30007">Importeer alleen radio kanalen uit groep</string>
     <string id="30008">Converteer hostnaam naar IP adres</string>
     <string id="30009">EPG: Genre tekst inlezen (traag)</string>
+    <string id="30010">Wachttijd na kanaal tunen(ms)</string>
+    <string id="30011">Opnames direct afspelen (niet streamen)</string>
+    <string id="30012">Mediaportal directory met opnames</string>
 </strings>

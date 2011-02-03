@@ -20,9 +20,6 @@
  *
  */
 
-#ifndef __CHANNELS_H
-#define __CHANNELS_H
-
 #include "libXBMC_pvr.h"
 #include <string>
 
@@ -33,9 +30,10 @@ private:
   int uid;
   int external_id;
   bool encrypted;
+  bool iswebstream;
+  std::string url;
 
 public:
-  cChannel(const PVR_CHANNEL *Channel);
   cChannel();
   virtual ~cChannel();
 
@@ -44,6 +42,7 @@ public:
   int UID(void) const { return uid; }
   int ExternalID(void) const { return external_id; }
   bool Encrypted(void) const { return encrypted; }
+  bool IsWebstream(void) const { return iswebstream; }
+  const char* URL(void) const { return url.c_str(); }
 };
 
-#endif //__TIMERS_H

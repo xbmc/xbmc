@@ -2,20 +2,18 @@
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
- *  This Program is free software; you can redistribute it and/or modify
+ *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
+ *  the Free Software Foundation, either version 2 of the License, or
+ *  (at your option) any later version.
  *
- *  This Program is distributed in the hope that it will be useful,
+ *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -145,7 +143,7 @@ bool cEpg::ParseLine(string& data)
 
     if( epgfields.size() == 5 )
     {
-      XBMC->Log(LOG_DEBUG, "%s: %s", epgfields[0].c_str(), epgfields[2].c_str());
+      //XBMC->Log(LOG_DEBUG, "%s: %s", epgfields[0].c_str(), epgfields[2].c_str());
       // field 0 = start date + time
       // field 1 = end   date + time
       // field 2 = title
@@ -164,7 +162,7 @@ bool cEpg::ParseLine(string& data)
       timeinfo.tm_mon = month - 1;
       timeinfo.tm_mday = day;
       // Make the other fields empty:
-      timeinfo.tm_isdst = 0;
+      timeinfo.tm_isdst = -1;
       timeinfo.tm_wday = 0;
       timeinfo.tm_yday = 0;
 
@@ -188,7 +186,7 @@ bool cEpg::ParseLine(string& data)
       timeinfo.tm_mon = month - 1;
       timeinfo.tm_mday = day;
       // Make the other fields empty:
-      timeinfo.tm_isdst = 0;
+      timeinfo.tm_isdst = -1;
       timeinfo.tm_wday = 0;
       timeinfo.tm_yday = 0;
 
@@ -221,15 +219,16 @@ bool cEpg::ParseLine(string& data)
 
 void cEpg::SetGenre(string& Genre, int genreType, int genreSubType)
 {
-  //TODO: The xmltv plugin may return genre strings in local language
+  //TODO: The xmltv plugin from the MediaPortal TV Server can return genre
+  //      strings in local language (depending on the external TV guide source).
   //      The only way to solve this at the XMBC side is to transfer the
   //      genre string to XBMC or to let this plugin (or the TVServerXBMC
   //      plugin) translate it into XBMC compatible (numbered) genre types
   m_genre = Genre;
   m_genre_subtype = 0;
 
-  if(m_bReadGenre && m_genre.length() > 0) {
-
+  if(g_bReadGenre && m_genre.length() > 0)
+  {
     if(m_genre.compare("news/current affairs (general)") == 0) {
       m_genre_type = EVCONTENTMASK_NEWSCURRENTAFFAIRS;
     } else if (m_genre.compare("magazines/reports/documentary") == 0) {
