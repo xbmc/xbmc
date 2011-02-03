@@ -155,7 +155,7 @@ void *CAudioDecoder::GetData(unsigned int size)
   if (m_gaplessBufferSize > size)
   {
     memcpy(m_outputBuffer, m_gaplessBuffer, size*sizeof(float));
-    memcpy(m_gaplessBuffer, m_gaplessBuffer + size, (m_gaplessBufferSize - size)*sizeof(float));
+    memmove(m_gaplessBuffer, m_gaplessBuffer + size, (m_gaplessBufferSize - size)*sizeof(float));
     m_gaplessBufferSize -= size;
     return m_outputBuffer;
   }
