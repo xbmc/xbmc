@@ -169,8 +169,8 @@ void cParser::SendPacket(sStreamPacket *pkt)
   if (!m_Streamer->IsReady())
     return;
 
-  assert(pkt->dts != DVD_NOPTS_VALUE);
-  assert(pkt->pts != DVD_NOPTS_VALUE);
+  if(pkt->dts == DVD_NOPTS_VALUE) return;
+  if(pkt->pts == DVD_NOPTS_VALUE) return;
 
   int64_t dts = pkt->dts;
   int64_t pts = pkt->pts;
