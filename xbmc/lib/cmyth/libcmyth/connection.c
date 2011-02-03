@@ -43,7 +43,7 @@
 #include <signal.h>
 #include <cmyth_local.h>
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
 
 typedef struct {
 	int version;
