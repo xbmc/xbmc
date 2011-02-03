@@ -38,6 +38,7 @@ config.log
 *.vcxproj.*.user
 *.vcxproj.user
 *.obj
+*.idb
 *ReSharper*
 
 # osx specifics
@@ -99,6 +100,7 @@ autom4te.cache
 /addons/script.module.pysqlite/
 /addons/pvr.*/*.pvr
 
+
 # /xbmc/guilib/
 /xbmc/guilib/Makefile
 /xbmc/guilib/*.obj
@@ -129,6 +131,12 @@ autom4te.cache
 /lib/addons/library.xbmc.addon/Makefile
 /lib/addons/library.xbmc.gui/Makefile
 /lib/addons/library.xbmc.pvr/Makefile
+/lib/addons/library.xbmc.addon/project/VS2010Express/Release
+/lib/addons/library.xbmc.addon/project/VS2010Express/Debug
+/lib/addons/library.xbmc.gui/project/VS2010Express/Release
+/lib/addons/library.xbmc.gui/project/VS2010Express/Debug
+/lib/addons/library.xbmc.pvr/project/VS2010Express/Release
+/lib/addons/library.xbmc.pvr/project/VS2010Express/Debug
 
 # /lib/cpluff/
 /lib/cpluff/ABOUT-NLS
@@ -1189,6 +1197,9 @@ autom4te.cache
 
 # /xbmc/osx/
 /xbmc/osx/Makefile
+
+# /portable_data
+/portable_data
 
 # /xbmc/pvrclients
 /xbmc/pvrclients/Makefile.include
