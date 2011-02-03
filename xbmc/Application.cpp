@@ -3555,7 +3555,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
     OutputDebugString("new file set audiostream:0\n");
     // Switch to default options
-    g_settings.m_currentVideoSettings = g_settings.m_defaultVideoSettings;
+    // PVR channel settings are stored later
+    // default settings would overwrite changed settings for pvr channels
+    if (!item.IsPVR())
+      g_settings.m_currentVideoSettings = g_settings.m_defaultVideoSettings;
     // see if we have saved options in the database
 
     m_iPlaySpeed = 1;
@@ -5333,7 +5336,8 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
 
 void CApplication::SaveCurrentFileSettings()
 {
-  if (m_itemCurrentFile->IsVideo())
+  // don't store settings for PVR in video database
+  if (m_itemCurrentFile->IsVideo() && !m_itemCurrentFile->IsPVR())
   {
     // save video settings
     if (g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings)

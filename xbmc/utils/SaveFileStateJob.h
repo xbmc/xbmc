@@ -27,7 +27,8 @@ bool CSaveFileStateJob::DoWork()
 
   if (progressTrackingFile != "")
   {
-    if (m_item.IsVideo())
+	// do not store PVR settings in video database
+    if (m_item.IsVideo() && !m_item.IsPVR())
     {
       CLog::Log(LOGDEBUG, "%s - Saving file state for video item %s", __FUNCTION__, progressTrackingFile.c_str());
 
