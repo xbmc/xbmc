@@ -13,12 +13,13 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 #pragma once
+
+namespace MPTV //Prevent name clash with Live555 Socket
+{
 
 //Include platform specific datatypes, header files, defines and constants:
 #if defined __WINDOWS__ || defined WIN32 || defined _WINDOWS
@@ -232,7 +233,7 @@ class Socket
      * \param sendcompletebuffer    If 'true': do not return until the complete buffer is transmitted
      * \return    Number of bytes send or -1 in case of an error
      */
-    int sendto ( const char* data, unsigned int size, bool sendcompletebuffer = false) const;
+    int sendto ( const char* data, unsigned int size, bool sendcompletebuffer = false);
     // Data Receive
 
     /*!
@@ -292,8 +293,13 @@ class Socket
 
     #ifdef _WINDOWS
       WSADATA _wsaData;                 ///< Windows Socket data
+      static int win_usage_count;       ///< Internal Windows usage counter used to prevent a global WSACleanup when more than one Socket object is used
     #endif
 
     void errormessage( int errornum, const char* functionname = NULL) const;
+    int getLastError(void) const;
+    bool osInit();
+    void osCleanup();
 };
 
+} //namespace MPTV

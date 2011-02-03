@@ -1,11 +1,7 @@
 #pragma once
-
-#ifndef __PVRCLIENT_MEDIAPORTAL_H__
-#define __PVRCLIENT_MEDIAPORTAL_H__
-
 /*
  *      Copyright (C) 2005-2010 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,9 +14,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -28,12 +22,12 @@
 * for DESCRIPTION see 'PVRClient-MediaPortal.cpp'
 */
 
-#include "pvrclient-mediaportal_os.h"
+#include "os-dependent.h"
 
 #include <vector>
 
 /* Master defines for client control */
-#ifndef _WINSOCKAPI_
+#ifndef _WINSOCKAPI_ //Prevent redefine warnings
 #define _WINSOCKAPI_ //Needed here to prevent inclusion of <winsock.h> via the header below
 #endif
 #include "../../addons/include/xbmc_pvr_types.h"
@@ -104,20 +98,10 @@ public:
   const char* GetLiveStreamURL(const PVR_CHANNEL &channelinfo);
 
 protected:
-  Socket           *m_tcpclient;
+  MPTV::Socket           *m_tcpclient;
 
 private:
   bool GetChannel(unsigned int number, PVR_CHANNEL &channeldata);
-  /* MediaPortal to XBMC Callback functions; Not yet supported */
-  //static void* CallbackRcvThread(void* arg);
-  //bool VDRToXBMCCommand(char *Cmd);
-  //bool CallBackMODT(const char *Option);
-  //bool CallBackDELT(const char *Option);
-  //bool CallBackADDT(const char *Option);
-  //bool CallBackSMSG(const char *Option);
-  //bool CallBackIMSG(const char *Option);
-  //bool CallBackWMSG(const char *Option);
-  //bool CallBackEMSG(const char *Option);
 
   int                     m_iCurrentChannel;
   bool                    m_bConnected;
@@ -131,9 +115,7 @@ private:
 
   void Close();
 
-  //MG: Added for TVServer communication:
+  //Used for TV Server communication:
   std::string SendCommand(std::string command);
   bool SendCommand2(std::string command, int& code, std::vector<std::string>& lines);
 };
-
-#endif // __PVRCLIENT_MEDIAPORTAL_H__

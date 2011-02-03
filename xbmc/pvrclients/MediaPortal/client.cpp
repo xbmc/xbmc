@@ -2,20 +2,18 @@
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
- *  This Program is free software; you can redistribute it and/or modify
+ *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
+ *  the Free Software Foundation, either version 2 of the License, or
+ *  (at your option) any later version.
  *
- *  This Program is distributed in the hope that it will be useful,
+ *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -26,33 +24,34 @@
 
 using namespace std;
 
-cPVRClientMediaPortal *g_client = NULL;
-bool m_bCreated         = false;
-ADDON_STATUS curStatus  = STATUS_UNKNOWN;
-int g_clientID          = -1;
-
 /* User adjustable settings are saved here.
  * Default values are defined inside client.h
  * and exported to the other source files.
  */
-std::string m_sHostname     = DEFAULT_HOST;
-int m_iPort                 = DEFAULT_PORT;
-bool m_bOnlyFTA             = DEFAULT_FTA_ONLY;
-bool m_bRadioEnabled        = DEFAULT_RADIO;
-bool m_bCharsetConv         = DEFAULT_CHARCONV;
-int m_iConnectTimeout       = DEFAULT_TIMEOUT;
-bool m_bNoBadChannels       = DEFAULT_BADCHANNELS;
-bool m_bHandleMessages      = DEFAULT_HANDLE_MSG;
-std::string g_szUserPath    = "";
-std::string g_szClientPath  = "";
-std::string g_sTVGroup      = "";
-std::string g_sRadioGroup   = "";
-bool m_bResolveRTSPHostname = DEFAULT_RESOLVE_RTSP_HOSTNAME;
-bool m_bReadGenre           = DEFAULT_READ_GENRE;
-int m_iSleepOnRTSPurl       = DEFAULT_SLEEP_RTSP_URL;
+std::string g_szHostname           = DEFAULT_HOST;         ///< The Host name or IP of the MediaPortal TV Server
+int         g_iPort                = DEFAULT_PORT;         ///< The TVServerXBMC listening port (default: 9596)
+int         g_iConnectTimeout      = DEFAULT_TIMEOUT;      ///< The Socket connection timeout
+int         g_iSleepOnRTSPurl      = DEFAULT_SLEEP_RTSP_URL; ///< An optional delay between tuning a channel and opening the corresponding RTSP stream in XBMC (default: 0)
+bool        g_bOnlyFTA             = DEFAULT_FTA_ONLY;     ///< Send only Free-To-Air Channels inside Channel list to XBMC
+bool        g_bRadioEnabled        = DEFAULT_RADIO;        ///< Send also Radio channels list to XBMC
+bool        g_bHandleMessages      = DEFAULT_HANDLE_MSG;   ///< Send VDR's OSD status messages to XBMC OSD
+bool        g_bResolveRTSPHostname = DEFAULT_RESOLVE_RTSP_HOSTNAME; ///< Resolve the server hostname in the rtsp URLs to an IP at the TV Server side (default: false)
+bool        g_bReadGenre           = DEFAULT_READ_GENRE;   ///< Read the genre strings from MediaPortal and translate them into XBMC DVB genre id's (only English)
+bool        g_bUseRecordingsDir    = DEFAULT_USE_REC_DIR;  ///< Use a normal directory if true for recordings
+std::string g_szRecordingsDir      = DEFAULT_REC_DIR;      ///< The path to the recordings directory
+std::string g_szTVGroup            = DEFAULT_TVGROUP;      ///< Import only TV channels from this TV Server TV group
+std::string g_szRadioGroup         = DEFAULT_RADIOGROUP;   ///< Import only radio channels from this TV Server radio group
+bool        g_bDirectTSFileRead    = DEFAULT_DIRECT_TS_FR; ///< Open the Live-TV timeshift buffer directly (skip RTSP streaming)
 
-cHelper_libXBMC_addon *XBMC = NULL;
-cHelper_libXBMC_pvr   *PVR  = NULL;
+/* Client member variables */
+ADDON_STATUS           m_CurStatus    = STATUS_UNKNOWN;
+cPVRClientMediaPortal *g_client       = NULL;
+bool                   g_bCreated     = false;
+int                    g_iClientID    = -1;
+std::string            g_szUserPath   = "";
+std::string            g_szClientPath = "";
+cHelper_libXBMC_addon *XBMC           = NULL;
+cHelper_libXBMC_pvr   *PVR            = NULL;
 
 extern "C" {
 
@@ -79,11 +78,11 @@ ADDON_STATUS Create(void* hdl, void* props)
   if (!PVR->RegisterMe(hdl))
     return STATUS_UNKNOWN;
 
-  XBMC->Log(LOG_DEBUG, "Creating MediaPortal PVR-Client");
+  XBMC->Log(LOG_DEBUG, "Creating MediaPortal PVR-Client (ffmpeg rtsp version)");
 
-  curStatus      = STATUS_UNKNOWN;
+  m_CurStatus    = STATUS_UNKNOWN;
   g_client       = new cPVRClientMediaPortal();
-  g_clientID     = pvrprops->clientID;
+  g_iClientID    = pvrprops->clientID;
   g_szUserPath   = pvrprops->userpath;
   g_szClientPath = pvrprops->clientpath;
 
@@ -91,52 +90,47 @@ ADDON_STATUS Create(void* hdl, void* props)
   char buffer[1024];
 
   if (XBMC->GetSetting("host", &buffer))
-    m_sHostname = buffer;
+  {
+    g_szHostname = buffer;
+    uri::decode(g_szHostname);
+  }
   else
   {
     /* If setting is unknown fallback to defaults */
     XBMC->Log(LOG_ERROR, "Couldn't get 'host' setting, falling back to '127.0.0.1' as default");
-    m_sHostname = DEFAULT_HOST;
+    g_szHostname = DEFAULT_HOST;
   }
 
   /* Read setting "port" from settings.xml */
-  if (!XBMC->GetSetting("port", &m_iPort))
+  if (!XBMC->GetSetting("port", &g_iPort))
   {
     /* If setting is unknown fallback to defaults */
     XBMC->Log(LOG_ERROR, "Couldn't get 'port' setting, falling back to '9596' as default");
-    m_iPort = DEFAULT_PORT;
+    g_iPort = DEFAULT_PORT;
   }
 
   /* Read setting "ftaonly" from settings.xml */
-  if (!XBMC->GetSetting("ftaonly", &m_bOnlyFTA))
+  if (!XBMC->GetSetting("ftaonly", &g_bOnlyFTA))
   {
     /* If setting is unknown fallback to defaults */
     XBMC->Log(LOG_ERROR, "Couldn't get 'ftaonly' setting, falling back to 'false' as default");
-    m_bOnlyFTA = DEFAULT_FTA_ONLY;
+    g_bOnlyFTA = DEFAULT_FTA_ONLY;
   }
 
   /* Read setting "useradio" from settings.xml */
-  if (!XBMC->GetSetting("useradio", &m_bRadioEnabled))
+  if (!XBMC->GetSetting("useradio", &g_bRadioEnabled))
   {
     /* If setting is unknown fallback to defaults */
     XBMC->Log(LOG_ERROR, "Couldn't get 'useradio' setting, falling back to 'true' as default");
-    m_bRadioEnabled = DEFAULT_RADIO;
-  }
-
-  /* Read setting "convertchar" from settings.xml */
-  if (!XBMC->GetSetting("convertchar", &m_bCharsetConv))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'convertchar' setting, falling back to 'false' as default");
-    m_bCharsetConv = DEFAULT_CHARCONV;
+    g_bRadioEnabled = DEFAULT_RADIO;
   }
 
   /* Read setting "timeout" from settings.xml */
-  if (!XBMC->GetSetting("timeout", &m_iConnectTimeout))
+  if (!XBMC->GetSetting("timeout", &g_iConnectTimeout))
   {
     /* If setting is unknown fallback to defaults */
     XBMC->Log(LOG_ERROR, "Couldn't get 'timeout' setting, falling back to %i seconds as default", DEFAULT_TIMEOUT);
-    m_iConnectTimeout = DEFAULT_TIMEOUT;
+    g_iConnectTimeout = DEFAULT_TIMEOUT;
   }
 
   if (!XBMC->GetSetting("tvgroup", &buffer))
@@ -144,7 +138,7 @@ ADDON_STATUS Create(void* hdl, void* props)
     /* If setting is unknown fallback to defaults */
     XBMC->Log(LOG_ERROR, "Couldn't get 'tvgroup' setting, falling back to '' as default");
   } else {
-    g_sTVGroup = buffer;
+    g_szTVGroup = buffer;
   }
 
   if (!XBMC->GetSetting("radiogroup", &buffer))
@@ -152,46 +146,62 @@ ADDON_STATUS Create(void* hdl, void* props)
     /* If setting is unknown fallback to defaults */
     XBMC->Log(LOG_ERROR, "Couldn't get 'tvgroup' setting, falling back to '' as default");
   } else {
-    g_sRadioGroup = buffer;
+    g_szRadioGroup = buffer;
   }
 
   /* Read setting "resolvertsphostname" from settings.xml */
-  if (!XBMC->GetSetting("resolvertsphostname", &m_bResolveRTSPHostname))
+  if (!XBMC->GetSetting("resolvertsphostname", &g_bResolveRTSPHostname))
   {
     /* If setting is unknown fallback to defaults */
     XBMC->Log(LOG_ERROR, "Couldn't get 'resolvertsphostname' setting, falling back to 'true' as default");
-    m_bRadioEnabled = DEFAULT_RESOLVE_RTSP_HOSTNAME;
+    g_bResolveRTSPHostname = DEFAULT_RESOLVE_RTSP_HOSTNAME;
   }
 
   /* Read setting "readgenre" from settings.xml */
-  if (!XBMC->GetSetting("readgenre", &m_bReadGenre))
+  if (!XBMC->GetSetting("readgenre", &g_bReadGenre))
   {
     /* If setting is unknown fallback to defaults */
     XBMC->Log(LOG_ERROR, "Couldn't get 'resolvertsphostname' setting, falling back to 'true' as default");
-    m_bReadGenre = DEFAULT_READ_GENRE;
+    g_bReadGenre = DEFAULT_READ_GENRE;
   }
 
   /* Read setting "sleeponrtspurl" from settings.xml */
-  if (!XBMC->GetSetting("sleeponrtspurl", &m_iSleepOnRTSPurl))
+  if (!XBMC->GetSetting("sleeponrtspurl", &g_iSleepOnRTSPurl))
   {
     /* If setting is unknown fallback to defaults */
     XBMC->Log(LOG_ERROR, "Couldn't get 'sleeponrtspurl' setting, falling back to %i seconds as default", DEFAULT_SLEEP_RTSP_URL);
-    m_iSleepOnRTSPurl = DEFAULT_SLEEP_RTSP_URL;
+    g_iSleepOnRTSPurl = DEFAULT_SLEEP_RTSP_URL;
   }
 
+  /* Read setting "userecordingsdir" from settings.xml */
+  if (!XBMC->GetSetting("userecordingsdir", &g_bUseRecordingsDir))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'userecordingsdir' setting, falling back to 'false' as default");
+    g_bReadGenre = DEFAULT_USE_REC_DIR;
+  }
+
+  if (!XBMC->GetSetting("recordingsdir", &buffer))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'recordingsdir' setting, falling back to '%s' as default", DEFAULT_REC_DIR);
+  } else {
+    g_szRecordingsDir = buffer;
+  }
+  g_bDirectTSFileRead = false;
   /* Create connection to MediaPortal XBMC TV client */
   if (!g_client->Connect())
   {
-    curStatus = STATUS_LOST_CONNECTION;
+    m_CurStatus = STATUS_LOST_CONNECTION;
   }
   else
   {
-    curStatus = STATUS_OK;
+    m_CurStatus = STATUS_OK;
   }
 
-  m_bCreated = true;
+  g_bCreated = true;
 
-  return curStatus;
+  return m_CurStatus;
 }
 
 //-- Destroy ------------------------------------------------------------------
@@ -200,12 +210,12 @@ ADDON_STATUS Create(void* hdl, void* props)
 //-----------------------------------------------------------------------------
 void Destroy()
 {
-  if (m_bCreated)
+  if ((g_bCreated) && (g_client))
   {
     g_client->Disconnect();
     delete_null(g_client);
 
-    m_bCreated = false;
+    g_bCreated = false;
   }
 
   if (PVR)
@@ -217,8 +227,7 @@ void Destroy()
     delete_null(XBMC);
   }
 
-
-  curStatus = STATUS_UNKNOWN;
+  m_CurStatus = STATUS_UNKNOWN;
 }
 
 //-- GetStatus ----------------------------------------------------------------
@@ -226,7 +235,7 @@ void Destroy()
 //-----------------------------------------------------------------------------
 ADDON_STATUS GetStatus()
 {
-  return curStatus;
+  return m_CurStatus;
 }
 
 //-- HasSettings --------------------------------------------------------------
@@ -249,93 +258,87 @@ unsigned int GetSettings(StructSetting ***sSet)
 ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
 {
   string str = settingName;
+
+  // SetSetting can occur when the addon is enabled, but TV support still
+  // disabled. In that case the addon is not loaded, so we should not try
+  // to change its settings.
+  if (!g_bCreated)
+    return STATUS_OK;
+
   if (str == "host")
   {
     string tmp_sHostname;
-    XBMC->Log(LOG_INFO, "Changed Setting 'host' from %s to %s", m_sHostname.c_str(), (const char*) settingValue);
-    tmp_sHostname = m_sHostname;
-    m_sHostname = (const char*) settingValue;
-    if (tmp_sHostname != m_sHostname)
+    XBMC->Log(LOG_INFO, "Changed Setting 'host' from %s to %s", g_szHostname.c_str(), (const char*) settingValue);
+    tmp_sHostname = g_szHostname;
+    g_szHostname = (const char*) settingValue;
+    if (tmp_sHostname != g_szHostname)
       return STATUS_NEED_RESTART;
   }
   else if (str == "port")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'port' from %u to %u", m_iPort, *(int*) settingValue);
-    if (m_iPort != *(int*) settingValue)
+    XBMC->Log(LOG_INFO, "Changed Setting 'port' from %u to %u", g_iPort, *(int*) settingValue);
+    if (g_iPort != *(int*) settingValue)
     {
-      m_iPort = *(int*) settingValue;
+      g_iPort = *(int*) settingValue;
       return STATUS_NEED_RESTART;
     }
   }
   else if (str == "ftaonly")
   {
-    XBMC->Log(LOG_INFO, "Changed setting 'ftaonly' from %u to %u", m_bOnlyFTA, *(bool*) settingValue);
-    m_bOnlyFTA = *(bool*) settingValue;
+    XBMC->Log(LOG_INFO, "Changed setting 'ftaonly' from %u to %u", g_bOnlyFTA, *(bool*) settingValue);
+    g_bOnlyFTA = *(bool*) settingValue;
   }
   else if (str == "useradio")
   {
-    XBMC->Log(LOG_INFO, "Changed setting 'useradio' from %u to %u", m_bRadioEnabled, *(bool*) settingValue);
-    m_bRadioEnabled = *(bool*) settingValue;
-  }
-  else if (str == "convertchar")
-  {
-    XBMC->Log(LOG_INFO, "Changed setting 'convertchar' from %u to %u", m_bCharsetConv, *(bool*) settingValue);
-    m_bCharsetConv = *(bool*) settingValue;
+    XBMC->Log(LOG_INFO, "Changed setting 'useradio' from %u to %u", g_bRadioEnabled, *(bool*) settingValue);
+    g_bRadioEnabled = *(bool*) settingValue;
   }
   else if (str == "timeout")
   {
-    XBMC->Log(LOG_INFO, "Changed setting 'timeout' from %u to %u", m_iConnectTimeout, *(int*) settingValue);
-    m_iConnectTimeout = *(int*) settingValue;
+    XBMC->Log(LOG_INFO, "Changed setting 'timeout' from %u to %u", g_iConnectTimeout, *(int*) settingValue);
+    g_iConnectTimeout = *(int*) settingValue;
   }
   else if (str == "tvgroup")
   {
-    XBMC->Log(LOG_INFO, "Changed setting 'tvgroup' from %s to %s", g_sTVGroup.c_str(), (const char*) settingValue);
-    g_sTVGroup = (const char*) settingValue;
+    XBMC->Log(LOG_INFO, "Changed setting 'tvgroup' from %s to %s", g_szTVGroup.c_str(), (const char*) settingValue);
+    g_szTVGroup = (const char*) settingValue;
   }
   else if (str == "radiogroup")
   {
-    XBMC->Log(LOG_INFO, "Changed setting 'radiogroup' from %s to %s", g_sTVGroup.c_str(), (const char*) settingValue);
-    g_sTVGroup = (const char*) settingValue;
+    XBMC->Log(LOG_INFO, "Changed setting 'radiogroup' from %s to %s", g_szRadioGroup.c_str(), (const char*) settingValue);
+    g_szRadioGroup = (const char*) settingValue;
   }
   else if (str == "resolvertsphostname")
   {
-    XBMC->Log(LOG_INFO, "Changed setting 'resolvertsphostname' from %u to %u", m_bResolveRTSPHostname, *(bool*) settingValue);
-    m_bResolveRTSPHostname = *(bool*) settingValue;
+    XBMC->Log(LOG_INFO, "Changed setting 'resolvertsphostname' from %u to %u", g_bResolveRTSPHostname, *(bool*) settingValue);
+    g_bResolveRTSPHostname = *(bool*) settingValue;
   }
   else if (str == "readgenre")
   {
-    XBMC->Log(LOG_INFO, "Changed setting 'readgenre' from %u to %u",m_bReadGenre, *(bool*) settingValue);
-    m_bReadGenre = *(bool*) settingValue;
+    XBMC->Log(LOG_INFO, "Changed setting 'readgenre' from %u to %u", g_bReadGenre, *(bool*) settingValue);
+    g_bReadGenre = *(bool*) settingValue;
   }
   else if (str == "sleeponrtspurl")
   {
-    XBMC->Log(LOG_INFO, "Changed setting 'sleeponrtspurl' from %u to %u", m_iSleepOnRTSPurl, *(int*) settingValue);
-    m_iSleepOnRTSPurl = *(int*) settingValue;
+    XBMC->Log(LOG_INFO, "Changed setting 'sleeponrtspurl' from %u to %u", g_iSleepOnRTSPurl, *(int*) settingValue);
+    g_iSleepOnRTSPurl = *(int*) settingValue;
   }
-
-  return STATUS_OK;
-}
-
-//-- Remove ------------------------------------------------------------------
-// Used during destruction of the client, all steps to do clean and safe Create
-// again must be done.
-//-----------------------------------------------------------------------------
-void Remove()
-{
-  if (m_bCreated)
+  else if (str == "userecordingsdir")
   {
-    g_client->Disconnect();
-
-    delete g_client;
-    g_client = NULL;
-
-    m_bCreated = false;
+    XBMC->Log(LOG_INFO, "Changed setting 'userecordingsdir' from %u to %u", g_bUseRecordingsDir, *(bool*) settingValue);
+    g_bUseRecordingsDir = *(bool*) settingValue;
   }
-  curStatus = STATUS_UNKNOWN;
+  else if (str == "recordingsdir")
+  {
+    XBMC->Log(LOG_INFO, "Changed setting 'recordingsdir' from %s to %s", g_szRecordingsDir.c_str(), (const char*) settingValue);
+    g_szRecordingsDir = (const char*) settingValue;
+  }
+  return STATUS_OK;
 }
 
 void Stop()
 {
+  Destroy();
 }
 
 void FreeSettings()
@@ -360,7 +363,7 @@ PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
   props->SupportRecordings         = true;
   props->SupportTimers             = true;
   props->SupportTV                 = true;
-  props->SupportRadio              = m_bRadioEnabled;
+  props->SupportRadio              = g_bRadioEnabled;
   props->SupportChannelSettings    = true;
   props->SupportDirector           = false;
   props->SupportBouquets           = false;
@@ -590,21 +593,6 @@ int ReadLiveStream(unsigned char* buf, int buf_size)
   return g_client->ReadLiveStream(buf, buf_size);
 }
 
-long long SeekLiveStream(long long pos, int whence)
-{
-  return -1;
-}
-
-long long PositionLiveStream(void)
-{
-  return -1;
-}
-
-long long LengthLiveStream(void)
-{
-  return -1;
-}
-
 int GetCurrentClientChannel()
 {
   return g_client->GetCurrentClientChannel();
@@ -638,35 +626,30 @@ int ReadRecordedStream(unsigned char* buf, int buf_size)
   return g_client->ReadRecordedStream(buf, buf_size);
 }
 
-long long SeekRecordedStream(long long pos, int whence)
-{
-  return g_client->SeekRecordedStream(pos, whence);
-}
-
-long long PositionRecordedStream(void)
-{
-  return -1;
-}
-
-long long LengthRecordedStream(void)
-{
-  return g_client->LengthRecordedStream();
-}
-
-// MG: added for Mediaportal
 const char * GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
 {
   return g_client->GetLiveStreamURL(channelinfo);
 }
 
 /** UNUSED API FUNCTIONS */
-DemuxPacket* DemuxRead(){return NULL;}
-void DemuxAbort(){}
-void DemuxReset(){}
-void DemuxFlush(){}
+DemuxPacket* DemuxRead() { return NULL; }
+void DemuxAbort() {}
+void DemuxReset() {}
+void DemuxFlush() {}
+
+long long SeekRecordedStream(long long pos, int whence) { return -1; }
+long long PositionRecordedStream(void) { return -1; }
+long long LengthRecordedStream(void) { return -1; }
+
+long long SeekLiveStream(long long pos, int whence) { return -1; }
+long long PositionLiveStream(void) { return -1; }
+long long LengthLiveStream(void) { return -1 ; }
+
+/*******************************************/
+/** PVR Secondary Stream Functions        **/
 bool SwapLiveTVSecondaryStream() { return false; }
 bool OpenSecondaryStream(const PVR_CHANNEL &channelinfo) { return false; }
 void CloseSecondaryStream() {}
-int ReadSecondaryStream(unsigned char* buf, int buf_size) { return 0; }
+int ReadSecondaryStream(unsigned char* buf, int buf_size) { return -1; }
 
-} //extern "C"
+} //end extern "C"

@@ -26,8 +26,9 @@
 #include "libXBMC_pvr.h"
 #include <stdlib.h>
 #include <string>
+#include <ctime>
 
-/*
+/* VDR:
 enum eTimerFlags { tfNone      = 0x0000,
                    tfActive    = 0x0001,
                    tfInstant   = 0x0002,
@@ -36,29 +37,89 @@ enum eTimerFlags { tfNone      = 0x0000,
                    tfAll       = 0xFFFF,
                  };
 */
+
+// From MediaPortal: TvDatabase.ScheduleRecordingType
+enum ScheduleRecordingType
+{
+  Once = 0,
+  Daily = 1,
+  Weekly = 2,
+  EveryTimeOnThisChannel = 3,
+  EveryTimeOnEveryChannel = 4,
+  Weekends = 5,
+  WorkingDays = 6
+};
+
+enum KeepMethodType
+{
+  UntilSpaceNeeded = 0,
+  UntilWatched = 1,
+  UntilKeepDate = 2,
+  Forever = 3
+};
+
 class cTimer
 {
-private:
-  time_t m_starttime, m_stoptime;
-  int m_priority;
-  int m_channel;
-  string m_title;
-  string m_directory;
-  int m_index;
-  time_t m_UTCdiff;
+  public:
+    cTimer();
+    cTimer(const PVR_TIMERINFO &timerinfo);
+    virtual ~cTimer();
 
-public:
-  cTimer();
-  virtual ~cTimer();
+    void GetPVRtimerinfo(PVR_TIMERINFO &tag);
+    int Index(void) const { return m_index; }
+    unsigned int Channel(void) const { return m_channel; }
+    int Priority(void) { return Mepo2XBMCPriority(m_priority); }
+    const char* Title(void) const { return m_title.c_str(); }
+    const char* Dir(void) const { return m_directory.c_str(); }
+    time_t StartTime(void) const;
+    time_t EndTime(void) const;
+    bool ParseLine(const char *s);
+    int PreRecordInterval(void) const { return m_prerecordinterval; }
+    int PostRecordInterval(void) const { return m_postrecordinterval; }
+    int RepeatFlags() { return SchedRecType2RepeatFlags(m_schedtype); };
+    bool Repeat() const { return (m_schedtype == Once ? false : true); };
+    bool Done() const { return m_done; };
+    bool IsManual() const { return m_ismanual; };
+    bool IsActive() const { return !m_canceled; };
+    bool IsRecording() const { return m_isrecording; };
+    ScheduleRecordingType cTimer::RepeatFlags2SchedRecType(int repeatflags);
+    std::string AddScheduleCommand();
+    std::string UpdateScheduleCommand();
 
-  int Index(void) const { return m_index; }
-  unsigned int Channel(void) const { return m_channel; }
-  int Priority(void) const { return m_priority; }
-  const char* Title(void) const { return m_title.c_str(); }
-  const char* Dir(void) const { return m_directory.c_str(); }
-  time_t StartTime(void) const;
-  time_t StopTime(void) const;
-  bool ParseLine(const char *s);
+  private:
+    int SchedRecType2RepeatFlags(ScheduleRecordingType schedtype);
+    void SetKeepMethod(int lifetime);
+    int GetLifetime(void);
+    int XBMC2MepoPriority(int xbmcprio);
+    int Mepo2XBMCPriority(int mepoprio);
+
+    time_t      m_UTCdiff;
+
+    // MediaPortal database fields:
+    int         m_index;               ///> MediaPortal id_Schedule
+    int         m_channel;             ///> MediaPortal idChannel
+    ScheduleRecordingType m_schedtype; ///> MediaPortal scheduleType
+    std::string m_title;               ///> MediaPortal programName
+    time_t      m_starttime;           ///> MediaPortal startTime
+    time_t      m_endtime;             ///> MediaPortal endTime
+    //                                      skipped: maxAirings field
+    int         m_priority;            ///> MediaPortal priority (not the XBMC one!!!)
+    std::string m_directory;           ///> MediaPortal directory
+    //                                      skipped:  quality field
+    KeepMethodType m_keepmethod;       ///> MediaPortal keepMethod
+    time_t      m_keepdate;            ///> MediaPortal keepDate
+    int         m_prerecordinterval;   ///> MediaPortal preRecordInterval
+    int         m_postrecordinterval;  ///> MediaPortal postRecordInterval
+    time_t      m_canceled;            ///> MediaPortal canceled (date + time)
+    //                                      skipped: recommendedCard
+    bool        m_series;              ///> MediaPortal series
+    //                                      skipped: idParentSchedule: not yet supported in XBMC
+
+    // XBMC asks for these fields:
+    int         m_active;
+    bool        m_done;
+    bool        m_ismanual;
+    bool        m_isrecording;
 };
 
 #endif //__TIMERS_H

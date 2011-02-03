@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "pvrclient-mediaportal_os.h"
+#include "os-dependent.h"
 
 // =============================================================================
 //  FILE:  StdString.h

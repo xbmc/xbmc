@@ -14,15 +14,12 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
-
-#ifndef PVRCLIENT_MEDIAPORTAL_OS_WIN_H
-#define PVRCLIENT_MEDIAPORTAL_OS_WIN_H
+#define WIN32_LEAN_AND_MEAN           // Enable LEAN_AND_MEAN support
+#include <windows.h>
 
 #ifndef _WINSOCKAPI_
 #define _WINSOCKAPI_
@@ -57,6 +54,8 @@ typedef unsigned __int32 uint32_t;
 typedef unsigned __int64 uint64_t;
 typedef HANDLE pthread_t;
 typedef HANDLE pthread_mutex_t;
+typedef HANDLE wait_event_t;
+typedef CRITICAL_SECTION criticalsection_t;
 typedef unsigned __int32 uint;
 
 #ifndef va_copy
@@ -65,6 +64,7 @@ typedef unsigned __int32 uint;
 
 #define snprintf _snprintf
 
+#define PATH_SEPARATOR_CHAR '\\'
 static inline void pthread_mutex_init(pthread_mutex_t *mutex, void *attr)
 {
 	*mutex = CreateMutex(NULL, FALSE, NULL);
@@ -84,4 +84,3 @@ static inline void usleep(unsigned long usec)
 {
   Sleep(usec/1000);
 }
-#endif
