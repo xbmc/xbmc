@@ -363,6 +363,22 @@ bool CPVRDatabase::DeleteChannelSettings()
   return DeleteValues("channelsettings");
 }
 
+bool CPVRDatabase::DeleteChannelSettings(const CPVRChannel &channel)
+{
+  bool bReturn = false;
+
+  /* invalid channel */
+  if (channel.ChannelID() <= 0)
+  {
+	CLog::Log(LOGERROR, "PVRDB - %s - invalid channel id: %i",
+		__FUNCTION__, channel.ChannelID());
+	return bReturn;
+  }
+  CStdString strWhereClause;
+    strWhereClause = FormatSQL("idChannel = %u", channel.ChannelID());
+  return DeleteValues("channelsettings", strWhereClause);
+}
+
 bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings &settings)
 {
   bool bReturn = false;

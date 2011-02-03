@@ -1186,6 +1186,14 @@ void CPVRManager::SaveCurrentChannelSettings()
     m_database.PersistChannelSettings(*m_currentPlayingChannel->GetPVRChannelInfoTag(), g_settings.m_currentVideoSettings);
     m_database.Close();
   }
+  else if (m_currentPlayingChannel &&
+      /* delete record which might differ from the default settings */
+      !(g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings) &&
+      m_database.Open())
+  {
+    m_database.DeleteChannelSettings(*m_currentPlayingChannel->GetPVRChannelInfoTag());
+    m_database.Close();
+  }
 }
 
 void CPVRManager::LoadCurrentChannelSettings()

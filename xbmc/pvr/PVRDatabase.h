@@ -123,6 +123,12 @@ public:
   bool DeleteChannelSettings();
 
   /*!
+   * @brief Remove channel settings from the database.
+   * @return True if channel were removed successfully, false if not.
+   */
+  bool DeleteChannelSettings(const CPVRChannel &channel);
+
+  /*!
    * @brief Get the channel settings from the database.
    * @param channel The channel to get the settings for.
    * @param settings Store the settings in here.
