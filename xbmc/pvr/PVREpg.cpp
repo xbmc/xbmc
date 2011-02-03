@@ -75,7 +75,7 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
 {
   bool bGrabSuccess = false;
 
-  if (m_Channel && ScraperName() == "client")
+  if (m_Channel && m_Channel->EPGEnabled() && ScraperName() == "client")
   {
     if (g_PVRManager.GetClientProps(m_Channel->ClientID())->SupportEPG &&
         g_PVRManager.Clients()->find(m_Channel->ClientID())->second->ReadyToUse())
@@ -94,15 +94,6 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
   }
 
   return bGrabSuccess;
-}
-
-bool CPVREpg::Load()
-{
-  /* check if this channel is marked for grabbing */
-  if (!m_Channel || !m_Channel->EPGEnabled())
-    return false;
-
-  return CEpg::Load();
 }
 
 bool CPVREpg::IsRadio(void) const

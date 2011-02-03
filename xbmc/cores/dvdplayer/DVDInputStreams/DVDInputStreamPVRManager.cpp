@@ -222,10 +222,9 @@ bool CDVDInputStreamPVRManager::SelectChannel(unsigned int channel)
 
 int CDVDInputStreamPVRManager::GetSelectedChannel()
 {
-  int number = -1;
-  bool radio = false;
-  g_PVRManager.GetCurrentChannel(&number, &radio);
-  return number;
+  CPVRChannel channel;
+  g_PVRManager.GetCurrentChannel(&channel);
+  return channel.ChannelNumber();
 }
 
 bool CDVDInputStreamPVRManager::UpdateItem(CFileItem& item)

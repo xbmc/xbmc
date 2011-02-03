@@ -109,15 +109,14 @@ void CGUIDialogPVRChannelsOSD::Update()
   // empty the list ready for population
   Clear();
 
-  bool RadioPlaying;
-  int CurrentChannel;
-  g_PVRManager.GetCurrentChannel(&CurrentChannel, &RadioPlaying);
+  CPVRChannel channel;
+  g_PVRManager.GetCurrentChannel(&channel);
 
-  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(RadioPlaying);
+  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(channel.IsRadio());
   channels->GetChannels(m_vecItems, g_PVRManager.GetPlayingGroup());
 
   m_viewControl.SetItems(*m_vecItems);
-  m_viewControl.SetSelectedItem(CurrentChannel-1);
+  m_viewControl.SetSelectedItem(channel.ChannelNumber() - 1);
   g_graphicsContext.Unlock();
 }
 

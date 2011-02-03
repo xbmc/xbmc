@@ -84,12 +84,6 @@ public:
   bool UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase = false);
 
   /*!
-   * @brief Load all entries from the database.
-   * @return True if the entries were loaded successfully, false otherwise.
-   */
-  bool Load();
-
-  /*!
    * @brief True if this is a table for a radio channel, false if it's for TV.
    * @return True if this is a table for a radio channel, false if it's for TV.
    */

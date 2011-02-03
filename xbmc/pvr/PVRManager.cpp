@@ -202,7 +202,6 @@ bool CPVRManager::StopClient(AddonPtr client, bool bRestart)
       CLog::Log(LOGINFO, "PVRManager - %s - %s client '%s'",
           __FUNCTION__, bRestart ? "restarting" : "removing", m_clients[(*itr).first]->Name().c_str());
 
-      // XXX make sure everything goes through this manager and use a lock here so we don't have to recreate everything
       StopThreads();
       if (bRestart)
         m_clients[(*itr).first]->ReCreate();
@@ -342,10 +341,6 @@ bool CPVRManager::ContinueLastChannel()
 
   return bReturn;
 }
-
-/*************************************************************/
-/** PVRManager Update and control thread                    **/
-/*************************************************************/
 
 void CPVRManager::Process()
 {
@@ -1042,26 +1037,6 @@ bool CPVRManager::GetCurrentChannel(const CPVRChannel *channel)
   }
 }
 
-bool CPVRManager::GetCurrentChannel(int *number, bool *radio)
-{
-  if (m_currentPlayingChannel)
-  {
-    if (number)
-      *number = m_currentPlayingChannel->GetPVRChannelInfoTag()->ChannelNumber();
-    if (radio)
-      *radio  = m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio();
-    return true;
-  }
-  else
-  {
-    if (number)
-      *number = 1;
-    if (radio)
-      *radio  = false;
-    return false;
-  }
-}
-
 bool CPVRManager::HasActiveClients(void)
 {
   bool bReturn = false;
@@ -1083,7 +1058,7 @@ bool CPVRManager::HasActiveClients(void)
   return bReturn;
 }
 
-bool CPVRManager::HaveMenuHooks(int clientID)
+bool CPVRManager::HasMenuHooks(int clientID)
 {
   if (clientID < 0)
     clientID = GetCurrentPlayingClientID();

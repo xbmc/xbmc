@@ -751,7 +751,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
 
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
 
-      if (g_PVRManager.HaveMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID()))
+      if (g_PVRManager.HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID()))
         buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);        /* PVR client specific action */
     }
   }
@@ -801,7 +801,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       buttons.Add(CONTEXT_BUTTON_DELETE, 117);            /* Delete Timer */
       buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* Sort by Name */
       buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* Sort by Date */
-      if (g_PVRManager.HaveMenuHooks(pItem->GetPVRTimerInfoTag()->ClientID()))
+      if (g_PVRManager.HasMenuHooks(pItem->GetPVRTimerInfoTag()->ClientID()))
         buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);    /* PVR client specific action */
     }
   }
@@ -841,7 +841,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       buttons.Add(CONTEXT_BUTTON_BEGIN, 19063);          /* Go to begin */
       buttons.Add(CONTEXT_BUTTON_END, 19064);            /* Go to end */
     }
-    if (g_PVRManager.HaveMenuHooks(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ClientID()))
+    if (g_PVRManager.HasMenuHooks(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ClientID()))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);        /* PVR client specific action */
   }
   else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
@@ -871,7 +871,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* Sort by Name */
       buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* Sort by Date */
       buttons.Add(CONTEXT_BUTTON_CLEAR, 20375);           /* Clear search results */
-      if (g_PVRManager.HaveMenuHooks(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ClientID()))
+      if (g_PVRManager.HasMenuHooks(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ClientID()))
         buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);        /* PVR client specific action */
     }
   }

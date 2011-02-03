@@ -423,13 +423,13 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     {
       if (g_application.CurrentFileItem().IsLiveTV())
       {
-        int channelNr = -1;
-        int currentChannelNr;
-        g_PVRManager.GetCurrentChannel(&currentChannelNr, NULL);
+        CPVRChannel channel;
+        int iChannelNumber = -1;
+        g_PVRManager.GetCurrentChannel(&channel);
 
         if (action.GetID() == REMOTE_0)
         {
-          channelNr = g_PVRManager.GetPreviousChannel();
+          iChannelNumber = g_PVRManager.GetPreviousChannel();
         }
         else
         {
@@ -437,11 +437,11 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
           CStdString strChannel;
           strChannel.Format("%i", action.GetID() - REMOTE_0);
           if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
-            channelNr = atoi(strChannel.c_str());
+            iChannelNumber = atoi(strChannel.c_str());
         }
 
-        if (channelNr > 0 && channelNr != currentChannelNr)
-          OnAction(CAction(ACTION_CHANNEL_SWITCH, (float)channelNr));
+        if (iChannelNumber > 0 && iChannelNumber != channel.ChannelNumber())
+          OnAction(CAction(ACTION_CHANNEL_SWITCH, (float)iChannelNumber));
       }
       else
       {
