@@ -35,7 +35,6 @@ public:
 
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void FrameMove();
 
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void OnInfo(CFileItem* pItem, ADDON::ScraperPtr &info);
@@ -58,9 +57,5 @@ protected:
 
   virtual CStdString GetQuickpathName(const CStdString& strPath) const;
 
-  void DisplayEmptyDatabaseMessage(bool bDisplay);
-
   VECSOURCES m_shares;
-
-  bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
 };

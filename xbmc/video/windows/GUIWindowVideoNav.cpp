@@ -77,7 +77,6 @@ CGUIWindowVideoNav::CGUIWindowVideoNav(void)
     : CGUIWindowVideoBase(WINDOW_VIDEO_NAV, "MyVideoNav.xml")
 {
   m_vecItems->m_strPath = "?";
-  m_bDisplayEmptyDatabaseMessage = false;
   m_thumbLoader.SetObserver(this);
 }
 
@@ -120,8 +119,6 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       if (m_vecItems->m_strPath == "?" && message.GetStringParam().IsEmpty())
         message.SetStringParam(g_settings.m_defaultVideoLibSource);
 
-      DisplayEmptyDatabaseMessage(false); // reset message state
-
       SetProperty("flattened", g_settings.m_bMyVideoNavFlatten);
       
       if (!CGUIWindowVideoBase::OnMessage(message))
@@ -129,12 +126,9 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
       //  base class has opened the database, do our check
       m_database.Open();
-      DisplayEmptyDatabaseMessage(!m_database.HasContent());
 
-      if (m_bDisplayEmptyDatabaseMessage)
-      {
-        // no library - make sure we focus on a known control, and default to the root.
-        SET_CONTROL_FOCUS(CONTROL_BTNTYPE, 0);
+      if (!m_database.HasContent() && m_vecItems->IsVideoDb())
+      { // no library - make sure we default to the root.
         m_vecItems->m_strPath = "";
         SetHistoryForPath("");
         Update("");
@@ -283,9 +277,6 @@ void CGUIWindowVideoNav::OnItemLoaded(CFileItem* pItem)
 
 bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
-  if (m_bDisplayEmptyDatabaseMessage)
-    return true;
-
   CFileItem directory(strDirectory, true);
 
   if (m_thumbLoader.IsLoading())
@@ -554,20 +545,6 @@ void CGUIWindowVideoNav::PlayItem(int iItem)
   CGUIWindowVideoBase::PlayItem(iItem);
 }
 
-void CGUIWindowVideoNav::DisplayEmptyDatabaseMessage(bool bDisplay)
-{
-  m_bDisplayEmptyDatabaseMessage = bDisplay;
-}
-
-void CGUIWindowVideoNav::FrameMove()
-{
-  if (m_bDisplayEmptyDatabaseMessage)
-    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746));
-  else
-    SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"");
-  CGUIWindowVideoBase::FrameMove();
-}
-
 void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
 {
   m_database.Open(); // since we can be called from the music library without being inited
@@ -663,7 +640,6 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
-  DisplayEmptyDatabaseMessage(!m_database.HasContent());
 }
 
 bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = false */)
