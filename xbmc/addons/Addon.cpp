@@ -29,6 +29,9 @@
 #ifdef __APPLE__
 #include "../osx/OSXGNUReplacements.h"
 #endif
+#ifdef __FreeBSD__
+#include "FreeBSDGNUReplacements.h"
+#endif
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include <vector>
