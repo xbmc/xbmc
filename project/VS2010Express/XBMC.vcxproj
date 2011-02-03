@@ -966,6 +966,7 @@
     <ClCompile Include="..\..\xbmc\FileSystem\SpecialProtocol.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SpecialProtocolDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\StackDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\FileSystem\SourcesDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\UPnPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VirtualDirectory.cpp" />
@@ -1817,6 +1818,7 @@
     <ClInclude Include="..\..\xbmc\FileSystem\SpecialProtocol.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\SpecialProtocolDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\StackDirectory.h" />
+    <ClInclude Include="..\..\xbmc\FileSystem\SourcesDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\UPnPDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VirtualPathDirectory.h" />
