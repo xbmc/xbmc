@@ -91,6 +91,24 @@ CWinRenderer::~CWinRenderer()
   UnInit();
 }
 
+static BufferFormat BufferFormatFromFlags(unsigned int flags)
+{
+  if      (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_YV12) return YV12;
+  else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_NV12) return NV12;
+  else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_YUY2) return YUY2;
+  else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_UYVY) return UYVY;
+  else return Invalid;
+}
+
+static enum PixelFormat PixelFormatFromFlags(unsigned int flags)
+{
+  if      (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_YV12) return PIX_FMT_YUV420P;
+  else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_NV12) return PIX_FMT_NV12;
+  else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_UYVY) return PIX_FMT_UYVY422;
+  else if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_YUY2) return PIX_FMT_YUYV422;
+  else return PIX_FMT_NONE;
+}
+
 void CWinRenderer::ManageTextures()
 {
   int neededbuffers = 2;
@@ -535,9 +553,7 @@ void CWinRenderer::UpdatePSVideoFilter()
 {
   SAFE_RELEASE(m_scalerShader)
 
-  BufferFormat format;
-  if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_YV12)      format = YV12;
-  else if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_NV12) format = NV12;
+  BufferFormat format = BufferFormatFromFlags(m_flags);
 
   if (m_bUseHQScaler)
   {
@@ -686,10 +702,7 @@ void CWinRenderer::Render(DWORD flags)
 
 void CWinRenderer::RenderSW()
 {
-  enum PixelFormat format;
-
-  if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_YV12)      format = PIX_FMT_YUV420P;
-  else if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_NV12) format = PIX_FMT_NV12;
+  enum PixelFormat format = PixelFormatFromFlags(m_flags);
 
   // 1. convert yuv to rgb
   m_sw_scale_ctx = m_dllSwScale->sws_getCachedContext(m_sw_scale_ctx,
@@ -1013,9 +1026,7 @@ bool CWinRenderer::CreateYV12Texture(int index)
   {
     YUVBuffer *buf = new YUVBuffer();
 
-    BufferFormat format;
-    if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_YV12)      format = YV12;
-    else if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_NV12) format = NV12;
+    BufferFormat format = BufferFormatFromFlags(m_flags);
 
     if (!buf->Create(format, m_sourceWidth, m_sourceHeight))
     {

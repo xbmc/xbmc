@@ -123,6 +123,7 @@ enum RenderMethod
 
 enum BufferFormat
 {
+  Invalid,
   YV12,
   NV12,
   YUY2,
