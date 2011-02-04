@@ -22,7 +22,6 @@
 #include "Application.h"
 #include "settings/GUISettings.h"
 #include "Util.h"
-#include "guilib/GUIWindowTV.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIInfoManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
@@ -58,8 +57,11 @@ using namespace ADDON;
 
 CPVRManager::CPVRManager()
 {
-  m_bFirstStart = true;
-  m_bLoaded     = false;
+  m_bFirstStart              = true;
+  m_bLoaded                  = false;
+  m_bTriggerChannelsUpdate   = false;
+  m_bTriggerRecordingsUpdate = false;
+  m_bTriggerTimersUpdate     = false;
 }
 
 CPVRManager::~CPVRManager()
@@ -234,87 +236,110 @@ void CPVRManager::StopThreads()
   StopThread();
 }
 
-/********************************************************************
- * CPVRManager OnClientMessage
- *
- * Callback function from Client driver to inform about changed
- * timers, channels, recordings or epg.
- ********************************************************************/
-void CPVRManager::OnClientMessage(const int clientID, const PVR_EVENT clientEvent, const char* msg)
+void CPVRManager::UpdateWindow(TVWindow window)
+{
+  CGUIWindowTV *pTVWin = (CGUIWindowTV *) g_windowManager.GetWindow(WINDOW_TV);
+  if (pTVWin)
+    pTVWin->UpdateData(window);
+}
+
+void CPVRManager::OnClientMessage(const int iClientId, const PVR_EVENT clientEvent, const char* msg)
 {
   /* here the manager reacts to messages sent from any of the clients via the IPVRClientCallback */
-  CStdString clientName = m_clients[clientID]->GetBackendName() + ":" + m_clients[clientID]->GetConnectionString();
+  CStdString clientName = m_clients[iClientId]->GetBackendName() + ":" + m_clients[iClientId]->GetConnectionString();
   switch (clientEvent)
   {
-    case PVR_EVENT_UNKNOWN:
-      CLog::Log(LOGDEBUG, "%s - PVR: client %d unknown event : %s", __FUNCTION__, clientID, msg);
-      break;
-
     case PVR_EVENT_TIMERS_CHANGE:
-      {
-        CLog::Log(LOGDEBUG, "%s - PVR: client %d timers changed", __FUNCTION__, clientID);
-        PVRTimers.Update();
-        UpdateRecordingsCache();
-
-        CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
-        if (pTVWin)
-        pTVWin->UpdateData(TV_WINDOW_TIMERS);
-      }
-      break;
+    {
+      CLog::Log(LOGDEBUG, "PVRManager - %s - timers changed on client '%d'",
+          __FUNCTION__, iClientId);
+      UpdateTimers();
+    }
+    break;
 
     case PVR_EVENT_RECORDINGS_CHANGE:
-      {
-        CLog::Log(LOGDEBUG, "%s - PVR: client %d recording list changed", __FUNCTION__, clientID);
-        UpdateRecordingsCache();
-
-        CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
-        if (pTVWin)
-        pTVWin->UpdateData(TV_WINDOW_RECORDINGS);
-      }
-      break;
+    {
+      CLog::Log(LOGDEBUG, "PVRManager - %s - recording list changed on client '%d'",
+          __FUNCTION__, iClientId);
+      UpdateRecordings();
+    }
+    break;
 
     case PVR_EVENT_CHANNELS_CHANGE:
-      {
-        CLog::Log(LOGDEBUG, "%s - PVR: client %d channel list changed", __FUNCTION__, clientID);
-        UpdateRecordingsCache();
-
-        CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
-        if (pTVWin)
-        {
-          pTVWin->UpdateData(TV_WINDOW_CHANNELS_TV);
-          pTVWin->UpdateData(TV_WINDOW_CHANNELS_RADIO);
-        }
-      }
-      break;
+    {
+      CLog::Log(LOGDEBUG, "PVRManager - %s - channel list changed on client '%d'",
+          __FUNCTION__, iClientId);
+      UpdateChannels();
+    }
+    break;
 
     default:
+      CLog::Log(LOGWARNING, "PVRManager - %s - client '%d' sent unknown event '%s'",
+          __FUNCTION__, iClientId, msg);
       break;
   }
 }
 
 void CPVRManager::ResetProperties(void)
 {
-  m_hasRecordings           = false;
-  m_isRecording             = false;
-  m_hasTimers               = false;
-  m_CurrentGroupID          = -1;
-  m_currentPlayingChannel   = NULL;
-  m_currentPlayingRecording = NULL;
-  m_PreviousChannel[0]      = -1;
-  m_PreviousChannel[1]      = -1;
-  m_PreviousChannelIndex    = 0;
-  m_infoToggleStart         = NULL;
-  m_infoToggleCurrent       = 0;
-  m_recordingToggleStart    = NULL;
-  m_recordingToggleCurrent  = 0;
-  m_LastChannel             = 0;
-  m_bChannelScanRunning     = false;
+  m_hasRecordings            = false;
+  m_isRecording              = false;
+  m_hasTimers                = false;
+  m_bTriggerChannelsUpdate   = false;
+  m_bTriggerRecordingsUpdate = false;
+  m_bTriggerTimersUpdate     = false;
+  m_CurrentGroupID           = -1;
+  m_currentPlayingChannel    = NULL;
+  m_currentPlayingRecording  = NULL;
+  m_PreviousChannel[0]       = -1;
+  m_PreviousChannel[1]       = -1;
+  m_PreviousChannelIndex     = 0;
+  m_infoToggleStart          = NULL;
+  m_infoToggleCurrent        = 0;
+  m_recordingToggleStart     = NULL;
+  m_recordingToggleCurrent   = 0;
+  m_LastChannel              = 0;
+  m_bChannelScanRunning      = false;
+}
+
+void CPVRManager::UpdateTimers(void)
+{
+  CLog::Log(LOGDEBUG, "PVRManager - %s - updating timers", __FUNCTION__);
+
+  PVRTimers.Update();
+  UpdateRecordingsCache();
+  UpdateWindow(TV_WINDOW_TIMERS);
+
+  m_bTriggerTimersUpdate = false;
+}
+
+void CPVRManager::UpdateRecordings(void)
+{
+  CLog::Log(LOGDEBUG, "PVRManager - %s - updating recordings list", __FUNCTION__);
+
+  PVRRecordings.Update(true);
+  UpdateRecordingsCache();
+  UpdateWindow(TV_WINDOW_RECORDINGS);
+
+  m_bTriggerRecordingsUpdate = false;
+}
+
+void CPVRManager::UpdateChannels(void)
+{
+  CLog::Log(LOGDEBUG, "PVRManager - %s - updating channel list", __FUNCTION__);
+
+  g_PVRChannelGroups.Update();
+  UpdateRecordingsCache();
+  UpdateWindow(TV_WINDOW_CHANNELS_TV);
+  UpdateWindow(TV_WINDOW_CHANNELS_RADIO);
+
+  m_bTriggerChannelsUpdate = false;
 }
 
 bool CPVRManager::ContinueLastChannel()
 {
-  m_bFirstStart = false;
   bool bReturn = false;
+  m_bFirstStart = false;
 
   if (m_database.Open())
   {
@@ -365,57 +390,26 @@ void CPVRManager::Process()
   if (m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
     ContinueLastChannel();
 
-  int Now = CTimeUtils::GetTimeMS()/1000;
-  m_LastChannelCheck    = Now;
-  m_LastRecordingsCheck = Now;
-  m_LastTimersCheck     = Now;
-
   /* main loop */
   while (!m_bStop)
   {
-    Now = CTimeUtils::GetTimeMS()/1000;
+    if (m_bTriggerChannelsUpdate)
+      UpdateChannels();
 
-    /* Check for new or updated channels or groups */
-    if (Now - m_LastChannelCheck > CHANNELCHECKDELTA)
-    {
-      CLog::Log(LOGDEBUG,"PVR: Updating channel list");
-      if (g_PVRChannelGroups.Update())
-        m_LastChannelCheck = Now;
-    }
+    if (m_bTriggerRecordingsUpdate)
+      UpdateRecordings();
 
-    /* Check for new or updated Recordings */
-    if (Now - m_LastRecordingsCheck > RECORDINGCHECKDELTA)
-    {
-      CLog::Log(LOGDEBUG,"PVR: Updating Recordings list");
-      if (PVRRecordings.Update(true))
-        m_LastRecordingsCheck = Now;
-    }
-
-    /* Check for new or updated Timers */
-    if (Now - m_LastTimersCheck > TIMERCHECKDELTA) // don't do this too often
-    {
-      CLog::Log(LOGDEBUG,"PVR: Updating Timers list");
-      PVRTimers.Update();
-      UpdateRecordingsCache();
-      CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
-      if (pTVWin)
-        pTVWin->UpdateData(TV_WINDOW_TIMERS);
-      m_LastTimersCheck = Now;
-    }
+    if (m_bTriggerTimersUpdate)
+      UpdateTimers();
 
     CSingleLock lock(m_critSection);
-
     /* Get Signal information of the current playing channel */
     if (m_currentPlayingChannel && g_guiSettings.GetBool("pvrplayback.signalquality") && !m_currentPlayingChannel->GetPVRChannelInfoTag()->IsVirtual())
-    {
       m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->SignalQuality(m_qualityInfo);
-    }
     lock.Leave();
 
     Sleep(1000);
   }
-
-  g_PVREpgContainer.StopThread();
 }
 
 void CPVRManager::Cleanup(void)
@@ -805,16 +799,17 @@ void CPVRManager::StartChannelScan()
   int scanningClientID = -1;
   m_bChannelScanRunning = true;
 
+  /* get clients that support channel scanning */
   CLIENTMAPITR itr = m_clients.begin();
   while (itr != m_clients.end())
   {
     if (m_clients[(*itr).first]->ReadyToUse() && GetClientProps(m_clients[(*itr).first]->GetID())->SupportChannelScan)
-    {
       clients.push_back(m_clients[(*itr).first]->GetID());
-    }
+
     itr++;
   }
 
+  /* multiple clients found */
   if (clients.size() > 1)
   {
     CGUIDialogSelect* pDialog= (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -823,38 +818,36 @@ void CPVRManager::StartChannelScan()
     pDialog->SetHeading(19119);
 
     for (unsigned int i = 0; i < clients.size(); i++)
-    {
       pDialog->Add(m_clients[clients[i]]->GetBackendName() + ":" + m_clients[clients[i]]->GetConnectionString());
-    }
 
     pDialog->DoModal();
 
     int selection = pDialog->GetSelectedLabel();
     if (selection >= 0)
-    {
       scanningClientID = clients[selection];
-    }
-
   }
+  /* one client found */
   else if (clients.size() == 1)
   {
     scanningClientID = clients[0];
   }
-
-  if (scanningClientID < 0)
+  /* no clients found */
+  else if (scanningClientID < 0)
   {
     CGUIDialogOK::ShowAndGetInput(19033,0,19192,0);
     return;
   }
 
+  /* start the channel scan */
   CLog::Log(LOGNOTICE,"PVR: Starting to scan for channels on client %s:%s", m_clients[scanningClientID]->GetBackendName().c_str(), m_clients[scanningClientID]->GetConnectionString().c_str());
   long perfCnt = CTimeUtils::GetTimeMS();
 
   /* stop the supervisor thread */
   StopThreads();
 
-  /* an error occured */
+  /* do the scan */
   if (m_clients[scanningClientID]->StartChannelScan() != PVR_ERROR_NO_ERROR)
+    /* an error occured */
     CGUIDialogOK::ShowAndGetInput(19111,0,19193,0);
 
   /* restart the supervisor thread */
@@ -1293,14 +1286,19 @@ int CPVRManager::GetPlayingGroup()
   return m_CurrentGroupID;
 }
 
-void CPVRManager::TriggerRecordingsUpdate(bool force)
+void CPVRManager::TriggerRecordingsUpdate()
 {
-  m_LastRecordingsCheck = CTimeUtils::GetTimeMS()/1000-RECORDINGCHECKDELTA + (force ? 0 : 5);
+  m_bTriggerRecordingsUpdate = true;
 }
 
-void CPVRManager::TriggerTimersUpdate(bool force)
+void CPVRManager::TriggerTimersUpdate()
 {
-  m_LastTimersCheck = CTimeUtils::GetTimeMS()/1000-TIMERCHECKDELTA + (force ? 0 : 5);
+  m_bTriggerTimersUpdate = true;
+}
+
+void CPVRManager::TriggerChannelsUpdate()
+{
+  m_bTriggerChannelsUpdate = true;
 }
 
 bool CPVRManager::OpenLiveStream(const CPVRChannel* tag)

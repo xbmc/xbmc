@@ -210,7 +210,7 @@ bool CPVRTimerInfoTag::AddToClient() const
       throw err;
 
     if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
-      g_PVRManager.TriggerRecordingsUpdate(false);
+      g_PVRManager.TriggerRecordingsUpdate();
 
     return true;
   }
@@ -285,7 +285,7 @@ bool CPVRTimerInfoTag::UpdateOnClient() const
       throw err;
 
     if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
-      g_PVRManager.TriggerRecordingsUpdate(false);
+      g_PVRManager.TriggerRecordingsUpdate();
 
     return true;
   }

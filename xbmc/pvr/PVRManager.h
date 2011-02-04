@@ -26,6 +26,7 @@
 #include "addons/PVRClient.h"
 #include "addons/AddonManager.h"
 #include "threads/Thread.h"
+#include "guilib/GUIWindowTV.h"
 
 #include <vector>
 #include <deque>
@@ -114,6 +115,12 @@ public:
    */
   bool RequestRemoval(ADDON::AddonPtr addon);
 
+  /*!
+   * @brief Callback function from Client driver to inform about changed timers, channels, recordings or epg.
+   * @param clientID The ID of the client that sends an update.
+   * @param clientEvent The event that just happened.
+   * @param msg The passed message.
+   */
   void OnClientMessage(const int clientID, const PVR_EVENT clientEvent, const char* msg);
 
   /*! \name GUIInfoManager functions
@@ -259,14 +266,20 @@ public:
    */
   int GetPlayingGroup();
 
-  /*! \brief Trigger a recordings list update
+  /*!
+   * @brief Let the background thread update the recordings list.
    */
-  void TriggerRecordingsUpdate(bool force=true);
+  void TriggerRecordingsUpdate(void);
 
-  /*! \brief Trigger a timer list update
+  /*!
+   * @brief Let the background thread update the timer list.
    */
-  void TriggerTimersUpdate(bool force=true);
+  void TriggerTimersUpdate(void);
 
+  /*!
+   * @brief Let the background thread update the channel list.
+   */
+  void TriggerChannelsUpdate(void);
 
   /*! \name Stream reading functions
    PVR Client internal input stream access, is used if
@@ -408,6 +421,8 @@ protected:
    */
   virtual void Process();
 
+  void UpdateWindow(TVWindow window);
+
 private:
   /*!
    * @brief Reset all properties.
@@ -481,16 +496,35 @@ private:
    */
   void Cleanup(void);
 
+  /*!
+   * @brief Update all channels.
+   */
+  void UpdateChannels(void);
+
+  /*!
+   * @brief Update all recordings.
+   */
+  void UpdateRecordings(void);
+
+  /*!
+   * @brief Update all timers.
+   */
+  void UpdateTimers(void);
+
   /** @name General PVRManager data */
   //@{
-  CLIENTMAP           m_clients;                /*!< pointer to each enabled client */
-  CLIENTPROPS         m_clientsProps;           /*!< store the properties of each client locally */
-  STREAMPROPS         m_streamProps;            /*!< the current stream's properties */
-  CPVRDatabase        m_database;               /*!< the database for all PVR related data */
-  CCriticalSection    m_critSection;            /*!< critical section for all changes to this class */
-  bool                m_bFirstStart;            /*!< true when the PVR manager was started first, false otherwise */
+  CLIENTMAP           m_clients;                  /*!< pointer to each enabled client */
+  CLIENTPROPS         m_clientsProps;             /*!< store the properties of each client locally */
+  STREAMPROPS         m_streamProps;              /*!< the current stream's properties */
+  CPVRDatabase        m_database;                 /*!< the database for all PVR related data */
+  CCriticalSection    m_critSection;              /*!< critical section for all changes to this class */
+  bool                m_bFirstStart;              /*!< true when the PVR manager was started first, false otherwise */
   bool                m_bLoaded;
-  bool                m_bChannelScanRunning;    /*!< true if a channel scan is currently running, false otherwise */
+  bool                m_bChannelScanRunning;      /*!< true if a channel scan is currently running, false otherwise */
+
+  bool                m_bTriggerChannelsUpdate;   /*!< set to true to let the background thread update the channels list */
+  bool                m_bTriggerRecordingsUpdate; /*!< set to true to let the background thread update the recordings list */
+  bool                m_bTriggerTimersUpdate;     /*!< set to true to let the background thread update the timer list */
   //@}
 
   /** @name GUIInfoManager data */
@@ -518,13 +552,6 @@ private:
   bool                m_hasRecordings;
   bool                m_hasTimers;
   //@}
-
-  /*--- Thread Update Timers ---*/
-  int                 m_LastChannelCheck;
-  int                 m_LastRecordingsCheck;
-  int                 m_LastTimersCheck;
-  int                 m_LastEPGUpdate;
-  int                 m_LastEPGScan;
 
   /*--- Previous Channel data ---*/
   int                 m_PreviousChannel[2];
