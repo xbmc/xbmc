@@ -379,6 +379,10 @@ void CPVRManager::Process()
     /* get recordings from the backend */
     PVRRecordings.Load();
 
+    /* notify window that all channels and epg are loaded */
+    UpdateWindow(TV_WINDOW_CHANNELS_TV);
+    UpdateWindow(TV_WINDOW_CHANNELS_RADIO);
+
     m_bLoaded = true;
   }
 
