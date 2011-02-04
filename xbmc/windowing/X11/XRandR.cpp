@@ -30,6 +30,11 @@
 #include "utils/XBMCTinyXML.h"
 #include "../xbmc/utils/log.h"
 
+#if defined(__FreeBSD__)
+#include <sys/types.h>
+#include <sys/wait.h>
+#endif
+
 using namespace std;
 
 CXRandR::CXRandR(bool query)
