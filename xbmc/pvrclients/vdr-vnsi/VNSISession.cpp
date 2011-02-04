@@ -418,7 +418,6 @@ int cVNSISession::readData(uint8_t* buffer, int totalBytes, int TimeOut)
 {
   int bytesRead = 0;
   int thisRead;
-  int readTries = 0;
   int success;
   fd_set readSet;
   struct timeval timeout;
@@ -452,14 +451,6 @@ int cVNSISession::readData(uint8_t* buffer, int totalBytes, int TimeOut)
     if (bytesRead == totalBytes)
     {
       return 1;
-    }
-    else
-    {
-      if (++readTries == 100)
-      {
-        XBMC->Log(LOG_ERROR, "cVNSISession::readData - Too many reads");
-        // return 0;
-      }
     }
   }
 }
