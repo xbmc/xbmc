@@ -46,10 +46,6 @@
 #include "PVREpgInfoTag.h"
 #include "PVRTimerInfoTag.h"
 
-#define CHANNELCHECKDELTA     600 // seconds before checking for changes inside channels list
-#define RECORDINGCHECKDELTA   450 // seconds before checking for changes inside recordings list
-#define TIMERCHECKDELTA       60  // seconds before checking for changes inside timers list
-
 using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
@@ -253,7 +249,7 @@ void CPVRManager::OnClientMessage(const int iClientId, const PVR_EVENT clientEve
     {
       CLog::Log(LOGDEBUG, "PVRManager - %s - timers changed on client '%d'",
           __FUNCTION__, iClientId);
-      UpdateTimers();
+      m_bTriggerTimersUpdate = true;
     }
     break;
 
@@ -261,7 +257,7 @@ void CPVRManager::OnClientMessage(const int iClientId, const PVR_EVENT clientEve
     {
       CLog::Log(LOGDEBUG, "PVRManager - %s - recording list changed on client '%d'",
           __FUNCTION__, iClientId);
-      UpdateRecordings();
+      m_bTriggerRecordingsUpdate = true;
     }
     break;
 
@@ -269,7 +265,7 @@ void CPVRManager::OnClientMessage(const int iClientId, const PVR_EVENT clientEve
     {
       CLog::Log(LOGDEBUG, "PVRManager - %s - channel list changed on client '%d'",
           __FUNCTION__, iClientId);
-      UpdateChannels();
+      m_bTriggerChannelsUpdate = true;
     }
     break;
 
