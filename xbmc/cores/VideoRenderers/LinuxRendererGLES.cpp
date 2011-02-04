@@ -62,7 +62,9 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   for (int i = 0; i < NUM_BUFFERS; i++)
   {
     m_eventTexturesDone[i] = CreateEvent(NULL,FALSE,TRUE,NULL);
+#if defined(HAVE_LIBOPENMAX)
     m_buffers[i].openMaxBuffer = 0;
+#endif
   }
 
   m_renderMethod = RENDER_GLSL;
@@ -350,7 +352,11 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
   YUVFIELDS& fields =  buf.fields;
 
 
+#if defined(HAVE_LIBOPENMAX)
   if (!(im->flags&IMAGE_FLAG_READY) || m_buffers[source].openMaxBuffer)
+#else
+  if (!(im->flags&IMAGE_FLAG_READY))
+#endif
   {
     SetEvent(m_eventTexturesDone[source]);
     return;
@@ -1235,9 +1241,7 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
 
 void CLinuxRendererGLES::RenderOpenMax(int renderBuffer, int field)
 {
-#if 1
-  //printf("Texture: %d\n", m_buffers[renderBuffer].openMaxBuffer->texture_id);
-
+#if defined(HAVE_LIBOPENMAX)
   GLuint textureId = m_buffers[renderBuffer].openMaxBuffer->texture_id;
 
   glDisable(GL_DEPTH_TEST);
@@ -1296,9 +1300,6 @@ void CLinuxRendererGLES::RenderOpenMax(int renderBuffer, int field)
 
   glDisable(m_textureTarget);
   VerifyGLState();
-
-  // ensure that image had been rendered
-  //glFinish();
 #endif
 }
 
