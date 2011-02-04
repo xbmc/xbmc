@@ -24,10 +24,6 @@ texture g_UTexture;
 texture g_VTexture;
 float4x4 g_ColorMatrix;
 
-#ifdef SINGLEPASS
-
-// Color conversion + bilinear resize in one pass
-
 sampler YSampler =
   sampler_state {
     Texture = <g_YTexture>;
@@ -36,21 +32,6 @@ sampler YSampler =
     MinFilter = LINEAR;
     MagFilter = LINEAR;
   };
-
-#else
-
-// Color conversion only
-
-sampler YSampler =
-  sampler_state {
-    Texture = <g_YTexture>;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MinFilter = POINT;
-    MagFilter = POINT;
-  };
-
-#endif
 
 sampler USampler =
   sampler_state {

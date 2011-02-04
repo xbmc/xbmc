@@ -192,15 +192,13 @@ bool CWinShader::Execute()
 
 //==================================================================================
 
-bool CYUV2RGBShader::Create(bool singlepass, unsigned int sourceWidth, unsigned int sourceHeight, BufferFormat fmt)
+bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight, BufferFormat fmt)
 {
   ReleaseInternal();
 
   CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX3, 4, sizeof(CUSTOMVERTEX), 2);
 
   DefinesMap defines;
-  if (singlepass)
-    defines["SINGLEPASS"] = "";
 
   if (fmt == YV12)
     defines["XBMC_YV12"] = "";
