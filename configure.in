@@ -2269,6 +2269,9 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
     --disable-hyperspace \
     --disable-lattice \
     --disable-skyrocket
+  if echo "$ARCH" | grep -q freebsd ; then
+    sed -i.back "s;\(STDBOOL_H = \)stdbool.h;\1;" lib/Makefile
+  fi
 ], [$DISABLE_RSXS])
 
 XB_CONFIG_MODULE([lib/libapetag], [
