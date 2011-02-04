@@ -572,8 +572,9 @@ void CWinRenderer::UpdatePSVideoFilter()
   if (m_bUseHQScaler)
   {
     m_colorShader = new CYUV2RGBShader();
-    if (!m_colorShader->Create(false, m_sourceWidth, m_sourceHeight, format))
+    if (!m_colorShader->Create(m_sourceWidth, m_sourceHeight, format))
     {
+      // Try again after disabling the HQ scaler and freeing its resources
       m_IntermediateTarget.Release();
       SAFE_RELEASE(m_scalerShader)
       SAFE_RELEASE(m_colorShader);
@@ -584,7 +585,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   if (!m_bUseHQScaler) //fallback from HQ scalers and multipass creation above
   {
     m_colorShader = new CYUV2RGBShader();
-    if (!m_colorShader->Create(true, m_sourceWidth, m_sourceHeight, format))
+    if (!m_colorShader->Create(m_sourceWidth, m_sourceHeight, format))
       SAFE_RELEASE(m_colorShader);
     // we're in big trouble - should fallback on D3D accelerated or sw method
   }
