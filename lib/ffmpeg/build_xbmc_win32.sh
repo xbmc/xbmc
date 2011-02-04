@@ -40,7 +40,7 @@ OPTIONS="
 --enable-runtime-cpudetect \
 --disable-debug"
 
-./configure --extra-cflags="-fno-common -Iinclude/dxva2" --extra-ldflags="-L../../../../../system/players/dvdplayer" ${OPTIONS} &&
+./configure --extra-cflags="-fno-common -Iinclude-xbmc-win32/dxva2" --extra-ldflags="-L../../../../../system/players/dvdplayer" ${OPTIONS} &&
  
 make -j3 && 
 mkdir .libs &&
