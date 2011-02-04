@@ -125,7 +125,12 @@ public:
 
   /*! \name GUIInfoManager functions
    */
-  void UpdateRecordingsCache();
+
+  /*!
+   * @brief updates the recordings and the "now" and "next" timers.
+   */
+  void UpdateRecordingsCache(void);
+
   const char* TranslateCharInfo(DWORD dwInfo);
   int TranslateIntInfo(DWORD dwInfo);
   bool TranslateBoolInfo(DWORD dwInfo);

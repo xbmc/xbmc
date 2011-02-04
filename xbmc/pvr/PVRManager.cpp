@@ -441,17 +441,12 @@ void CPVRManager::Cleanup(void)
 /** GUIInfoManager FUNCTIONS                                **/
 /*************************************************************/
 
-/********************************************************************
- * CPVRManager UpdateRecordingsCache
- *
- * Updates the recordings and the "now" and "next" timers
- ********************************************************************/
-void CPVRManager::UpdateRecordingsCache()
+void CPVRManager::UpdateRecordingsCache(void)
 {
   CSingleLock lock(m_critSection);
 
-  PVRRecordings.GetNumRecordings() > 0 ? m_hasRecordings = true : m_hasRecordings = false;
-  PVRTimers.GetNumTimers()         > 0 ? m_hasTimers     = true : m_hasTimers = false;
+  m_hasRecordings = PVRRecordings.GetNumRecordings() > 0;
+  m_hasTimers = PVRTimers.GetNumTimers() > 0;
   m_isRecording = false;
   m_NowRecording.clear();
   m_NextRecording = NULL;
@@ -459,18 +454,20 @@ void CPVRManager::UpdateRecordingsCache()
   if (m_hasTimers)
   {
     CDateTime now = CDateTime::GetCurrentDateTime();
-    for (unsigned int i = 0; i < PVRTimers.size(); ++i)
+    for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
     {
-      CPVRTimerInfoTag *timerTag = &PVRTimers[i];
-      if (timerTag->Active() && timerTag->Start() <= now && timerTag->Stop() > now)
+      CPVRTimerInfoTag *timerTag = &PVRTimers[iTimerPtr];
+      if (timerTag->Active())
       {
-        m_NowRecording.push_back(timerTag);
-        m_isRecording = true;
-      }
-      else if (timerTag->Active())
-      {
+        if (timerTag->Start() <= now && timerTag->Stop() > now)
+        {
+          m_NowRecording.push_back(timerTag);
+          m_isRecording = true;
+        }
         if (!m_NextRecording || m_NextRecording->Start() > timerTag->Start())
+        {
           m_NextRecording = timerTag;
+        }
       }
     }
   }
