@@ -580,9 +580,11 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   if (m_vecItems->IsParentFolder())
     return;
 
-  if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
+  if (!m_vecItems->IsVideoDb())
   {
-    if (!pItem->m_strPath.Equals("newsmartplaylist://video"))
+    if (!pItem->m_strPath.Equals("newsmartplaylist://video") &&
+        !pItem->m_strPath.Equals("special://videoplaylists/") &&
+        !pItem->m_strPath.Equals("sources://video/"))
       CGUIWindowVideoBase::OnDeleteItem(pItem);
   }
   else if (pItem->m_strPath.Left(14).Equals("videodb://1/7/") &&
@@ -748,14 +750,10 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
   ||  node == NODE_TYPE_RECENTLY_ADDED_MOVIES
   ||  node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
     filterWatched = true;
-  if (items.IsPlugin())
+  if (!items.IsVideoDb())
     filterWatched = true;
-  if (items.IsSmartPlayList())
-  {
-    if (items.GetContent() == "tvshows")
-      node = NODE_TYPE_TITLE_TVSHOWS; // so that the check below works
-    filterWatched = true;
-  }
+  if (items.IsSmartPlayList() && items.GetContent() == "tvshows")
+    node = NODE_TYPE_TITLE_TVSHOWS; // so that the check below works
 
   int watchMode = g_settings.GetWatchMode(m_vecItems->GetContent());
 
@@ -804,6 +802,36 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
     else
       buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653);
+  }
+  else if (m_vecItems->m_strPath.Equals("sources://video/"))
+  {
+    // get the usual shares
+    CGUIDialogContextMenu::GetContextButtons("video", item, buttons);
+    // add scan button somewhere here
+    CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (pScanDlg && pScanDlg->IsScanning())
+      buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);  // Stop Scanning
+    if (!item->IsDVD() && item->m_strPath != "add" &&
+        (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+    {
+      CVideoDatabase database;
+      database.Open();
+      ADDON::ScraperPtr info = database.GetScraperForPath(item->m_strPath);
+
+      if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+      {
+        if (!item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath())
+        {
+          if (info && info->Content() != CONTENT_NONE)
+            buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
+          else
+            buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+        }
+      }
+
+      if (info && (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning())))
+        buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
+    }
   }
   else
   {
@@ -858,19 +886,31 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           else
             buttons.Add(CONTEXT_BUTTON_UPDATE_TVSHOW, 13349);
         }
-        if ((info && info->Content() == CONTENT_TVSHOWS && item->m_bIsFolder) ||
+        if (!item->IsPlugin() && !item->IsLiveTV() && !item->IsAddonsPath() &&
+             item->m_strPath != "sources://video/" && item->m_strPath != "special://videoplaylists/")
+        {
+          if (item->m_bIsFolder)
+          {
+            // Have both options for folders since we don't know whether all childs are watched/unwatched
+            buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
+            buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
+          }
+          else
+          {
+            if (item->GetOverlayImage().Equals("OverlayWatched.png"))
+              buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
+            else
+              buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
+          }
+        }
+        if ((node == NODE_TYPE_TITLE_TVSHOWS) ||
             (item->IsVideoDb() && item->HasVideoInfoTag() && !item->m_bIsFolder))
         {
-          if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount > 0)
-            buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-          if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount == 0)
-            buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
-          if (node != NODE_TYPE_SEASONS)
-            buttons.Add(CONTEXT_BUTTON_EDIT, 16105); //Edit Title
+          buttons.Add(CONTEXT_BUTTON_EDIT, 16105); //Edit Title
         }
         if (m_database.HasContent(VIDEODB_CONTENT_TVSHOWS) && item->HasVideoInfoTag() &&
            !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode == -1 &&
-            item->GetVideoInfoTag()->m_strArtist.IsEmpty()) // movie entry
+            item->GetVideoInfoTag()->m_strArtist.IsEmpty() && item->GetVideoInfoTag()->m_iDbId >= 0) // movie entry
         {
           if (m_database.IsLinkedToTvshow(item->GetVideoInfoTag()->m_iDbId))
             buttons.Add(CONTEXT_BUTTON_UNLINK_MOVIE,20385);
@@ -934,19 +974,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
       }
 
-      if ((CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath) == NODE_TYPE_TITLE_MOVIES ||
-           CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath) == NODE_TYPE_TITLE_MUSICVIDEOS ||
-           item->m_strPath.Equals("videodb://1/") ||
-           item->m_strPath.Equals("videodb://4/") ||
-           item->m_strPath.Equals("videodb://6/")) &&
-           nodetype != NODE_TYPE_RECENTLY_ADDED_MOVIES)
-      {
-        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
-        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-      }
-
-      if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
-      { // video playlists, file operations are allowed
+      if (!m_vecItems->IsVideoDb() && !m_vecItems->IsVirtualDirectoryRoot())
+      { // non-video db items, file operations are allowed
         if (!item->IsReadOnly())
         {
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
@@ -965,6 +994,17 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   CFileItemPtr item;
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
+  if (CGUIDialogContextMenu::OnContextButton("video", item, button))
+  {
+    //TODO should we search DB for entries from plugins?
+    if (button == CONTEXT_BUTTON_REMOVE_SOURCE && !item->IsPlugin()
+        && !item->IsLiveTV() &&!item->IsRSS())
+    {
+      CGUIWindowVideoFiles::OnUnAssignContent(item->m_strPath,20375,20340,20341);
+    }
+    Update(m_vecItems->m_strPath);
+    return true;
+  }
   switch (button)
   {
   case CONTEXT_BUTTON_SET_DEFAULT:

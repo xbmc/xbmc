@@ -1066,8 +1066,8 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
 
-        if (GetID() != WINDOW_VIDEO_NAV || (!m_vecItems->m_strPath.IsEmpty() &&
-           !item->m_strPath.Left(19).Equals("newsmartplaylist://")))
+        if (!m_vecItems->m_strPath.IsEmpty() && !item->m_strPath.Left(19).Equals("newsmartplaylist://")
+            && !m_vecItems->m_strPath.Left(10).Equals("sources://"))
         {
           buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
         }
@@ -1131,6 +1131,13 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     item = m_vecItems->Get(itemNumber);
   switch (button)
   {
+  case CONTEXT_BUTTON_SET_CONTENT:
+    {
+      SScanSettings settings;
+      ADDON::ScraperPtr info = m_database.GetScraperForPath(item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strPath : item->m_strPath, settings);
+      CGUIWindowVideoFiles::OnAssignContent(item->m_strPath,0, info, settings);
+      return true;
+    }
   case CONTEXT_BUTTON_PLAY_PART:
     {
       CFileItemList items;
@@ -1491,17 +1498,7 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
     if (item->m_bIsFolder)
     {
       CStdString strPath = item->m_strPath;
-      if (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES)
-      {
-        CDirectory::GetDirectory(strPath, items);
-      }
-      else
-      {
-        CVideoDatabaseDirectory dir;
-        if (dir.GetDirectoryChildType(strPath) == NODE_TYPE_SEASONS)
-          strPath += "-1/";
-        dir.GetDirectory(strPath,items);
-      }
+      CDirectory::GetDirectory(strPath, items);
     }
     else
       items.Add(item);
@@ -1510,13 +1507,10 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
     {
       CFileItemPtr pItem=items[i];
 
-      if (pItem->IsVideoDb())
-      {
-        if (pItem->HasVideoInfoTag() &&
-            (( bMark && pItem->GetVideoInfoTag()->m_playCount) ||
-             (!bMark && !(pItem->GetVideoInfoTag()->m_playCount))))
-          continue;
-      }
+      if (pItem->HasVideoInfoTag() &&
+          (( bMark && pItem->GetVideoInfoTag()->m_playCount) ||
+           (!bMark && !(pItem->GetVideoInfoTag()->m_playCount))))
+        continue;
 
       // Clear resume bookmark
       if (bMark)

@@ -554,14 +554,6 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     CGUIDialogContextMenu::SwitchMedia("video", m_vecItems->m_strPath);
     return true;
 
-  case CONTEXT_BUTTON_SET_CONTENT:
-    {
-      SScanSettings settings;
-      ADDON::ScraperPtr info = m_database.GetScraperForPath(item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strPath : item->m_strPath, settings);
-      OnAssignContent(item->m_strPath,0, info, settings);
-      return true;
-    }
-
   case CONTEXT_BUTTON_ADD_TO_LIBRARY:
     AddToDatabase(itemNumber);
     return true;
