@@ -191,7 +191,7 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
   if (button == CONTEXT_BUTTON_SCAN)
   {
     RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addon);
-    CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo,false),this);
+    CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo,false),&CAddonInstaller::Get());
     return true;
   }
 
@@ -377,13 +377,4 @@ CStdString CGUIWindowAddonBrowser::GetStartFolder(const CStdString &dir)
   if (dir.Left(9).Equals("addons://"))
     return dir;
   return CGUIMediaWindow::GetStartFolder(dir);
-}
-
-void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID, bool success, CJob* job)
-{
-  if (success)
-  { // repository update is finished - refresh listing
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-    g_windowManager.SendThreadMessage(msg);    
-  }
 }

@@ -49,6 +49,7 @@ void CGUIBorderedImage::Render()
     m_borderImage.SetPosition(rect.x1 - m_borderSize.x1, rect.y1 - m_borderSize.y1);
     m_borderImage.SetWidth(rect.Width() + m_borderSize.x1 + m_borderSize.x2);
     m_borderImage.SetHeight(rect.Height() + m_borderSize.y1 + m_borderSize.y2);
+    m_borderImage.SetDiffuseColor(m_diffuseColor);
     m_borderImage.Render();
   }
   CGUIImage::Render();

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
+#include "settings/AdvancedSettings.h"
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "jsoncpp/include/json/json.h"
 #include "interfaces/AnnouncementManager.h"
@@ -149,8 +150,14 @@ void CTCPServer::Announce(EAnnouncementFlag flag, const char *sender, const char
   if (!data.isNull())
     data.toJsonValue(root["params"]["data"]);
 
-  StyledWriter writer;
-  std::string str = writer.write(root);
+  Writer *writer;
+  if (g_advancedSettings.m_jsonOutputCompact)
+    writer = new FastWriter();
+  else
+    writer = new StyledWriter();
+
+  std::string str = writer->write(root);
+  delete writer;
 
   for (unsigned int i = 0; i < m_connections.size(); i++)
   {

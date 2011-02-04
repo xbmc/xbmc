@@ -274,6 +274,8 @@ void CAdvancedSettings::Initialize()
   m_measureRefreshrate = false;
 
   m_cacheMemBufferSize = (1048576 * 5);
+
+  m_jsonOutputCompact = true;
 }
 
 bool CAdvancedSettings::Load()
@@ -584,6 +586,12 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
     XMLUtils::GetBoolean(pElement,"disableipv6", m_curlDisableIPV6);
     XMLUtils::GetUInt(pElement, "cachemembuffersize", m_cacheMemBufferSize);
+  }
+
+  pElement = pRootElement->FirstChildElement("jsonrpc");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "compactoutput", m_jsonOutputCompact);
   }
 
   pElement = pRootElement->FirstChildElement("samba");

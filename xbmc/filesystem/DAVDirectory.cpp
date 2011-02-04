@@ -173,6 +173,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
   dav.SetCustomRequest(strRequest);
   dav.SetMimeType("text/xml; charset=\"utf-8\"");
+  dav.SetRequestHeader("content-type", "text/xml");
   dav.SetRequestHeader("depth", 1);
   dav.SetPostData(
     "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
@@ -192,73 +193,52 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     return false;
   }
 
-  char buffer[MAX_PATH + 1024];
   CStdString strResponse;
-  CStdString strHeader;
-  while (dav.ReadString(buffer, sizeof(buffer)))
+  dav.ReadData(strResponse);
+
+  TiXmlDocument davResponse;
+  davResponse.Parse(strResponse.c_str());
+
+  if (!davResponse.Parse(strResponse))
   {
-    if (strstr(buffer, "<D:response") != NULL)
-    {
-      // The header should contain the xml version/utf encoding line
-      // followed by the <multistatus> tag
-      if (strHeader.IsEmpty())
-        strHeader = strResponse;
-      
-      strResponse = strHeader;
-    }
-    strResponse.append(buffer, strlen(buffer));
+    CLog::Log(LOGERROR, "%s - Unable to process dav directory (%s)", __FUNCTION__, strPath.c_str());
+    dav.Close();
+    return false;
+  }
 
-    if (strstr(buffer, "</D:response") != NULL)
+  TiXmlNode *pChild;
+  // Iterate over all responses
+  for (pChild = davResponse.RootElement()->FirstChild(); pChild != 0; pChild = pChild->NextSibling())
+  {
+    if (ValueWithoutNamespace(pChild, "response"))
     {
-      // Close the multistatus tag from the header
-      if (strHeader.Find("<D:multistatus"))
-        strResponse+="</D:multistatus>\n";
-      
-      TiXmlDocument davResponse;
+      CFileItem item;
+      ParseResponse(pChild->ToElement(), item);
+      CURL url2(strPath);
+      CURL url3(item.m_strPath);
 
-      if (!davResponse.Parse(strResponse))
+      URIUtils::AddFileToFolder(url2.GetWithoutFilename(), url3.GetFileName(), item.m_strPath);
+
+      if (item.GetLabel().IsEmpty())
       {
-        CLog::Log(LOGERROR, "%s - Unable to process dav directory (%s)", __FUNCTION__, strPath.c_str());
-        dav.Close();
-        return false;
+        CStdString name(item.m_strPath);
+        URIUtils::RemoveSlashAtEnd(name);
+        CURL::Decode(name);
+        item.SetLabel(URIUtils::GetFileName(name));
       }
 
-      TiXmlNode *pChild;
-      // Iterate over all responses
-      for (pChild = davResponse.RootElement()->FirstChild(); pChild != 0; pChild = pChild->NextSibling())
+      if (item.m_bIsFolder)
+        URIUtils::AddSlashAtEnd(item.m_strPath);
+
+      // Add back protocol options
+      if (!url2.GetProtocolOptions().IsEmpty())
+        item.m_strPath += "|" + url2.GetProtocolOptions();
+
+      if (!item.m_strPath.Equals(strPath))
       {
-        if (ValueWithoutNamespace(pChild, "response"))
-        {
-          CFileItem item;
-          ParseResponse(pChild->ToElement(), item);
-          CURL url2(strPath);
-          CURL url3(item.m_strPath);
-
-          URIUtils::AddFileToFolder(url2.GetWithoutFilename(), url3.GetFileName(), item.m_strPath);
-
-          if (item.GetLabel().IsEmpty())
-          {
-            CStdString name(item.m_strPath);
-            URIUtils::RemoveSlashAtEnd(name);
-            CURL::Decode(name);
-            item.SetLabel(URIUtils::GetFileName(name));
-          }
-
-          if (item.m_bIsFolder)
-            URIUtils::AddSlashAtEnd(item.m_strPath);
-
-          // Add back protocol options
-          if (!url2.GetProtocolOptions().IsEmpty())
-            item.m_strPath += "|" + url2.GetProtocolOptions();
-
-          if (!item.m_strPath.Equals(strPath))
-          {
-            CFileItemPtr pItem(new CFileItem(item));
-            items.Add(pItem);
-          }
-        }
+        CFileItemPtr pItem(new CFileItem(item));
+        items.Add(pItem);
       }
-      strResponse.clear();
     }
   }
 

@@ -31,6 +31,40 @@
 #endif
 #endif
 
+#ifdef _WIN32
+#include <intrin.h>
+
+// Defines to help with calls to CPUID
+#define CPUID_INFOTYPE_STANDARD 0x00000001
+#define CPUID_INFOTYPE_EXTENDED 0x80000001
+
+// Standard Features
+// Bitmasks for the values returned by a call to cpuid with eax=0x00000001
+#define CPUID_00000001_ECX_SSE3  (1<<0)
+#define CPUID_00000001_ECX_SSSE3 (1<<9)
+#define CPUID_00000001_ECX_SSE4  (1<<19)
+#define CPUID_00000001_ECX_SSE42 (1<<20)
+
+#define CPUID_00000001_EDX_MMX   (1<<23)
+#define CPUID_00000001_EDX_SSE   (1<<25)
+#define CPUID_00000001_EDX_SSE2  (1<<26)
+
+// Extended Features
+// Bitmasks for the values returned by a call to cpuid with eax=0x80000001
+#define CPUID_80000001_EDX_MMX2     (1<<22)
+#define CPUID_80000001_EDX_MMX      (1<<23)
+#define CPUID_80000001_EDX_3DNOWEXT (1<<30)
+#define CPUID_80000001_EDX_3DNOW    (1<<31)
+
+
+// Help with the __cpuid intrinsic of MSVC
+#define CPUINFO_EAX 0
+#define CPUINFO_EBX 1
+#define CPUINFO_ECX 2
+#define CPUINFO_EDX 3
+
+#endif
+
 #include "log.h"
 #include "settings/AdvancedSettings.h"
 
@@ -57,6 +91,7 @@ CCPUInfo::CCPUInfo(void)
 {
   m_fProcStat = m_fProcTemperature = m_fCPUInfo = NULL;
   m_lastUsedPercentage = 0;
+  m_cpuFeatures = 0;
 
 #ifdef __APPLE__
   size_t len = 4;
@@ -85,6 +120,7 @@ CCPUInfo::CCPUInfo(void)
     core.m_id = i;
     m_cores[core.m_id] = core;
   }
+
 #elif defined(_WIN32)
   char rgValue [128];
   HKEY hKey;
@@ -158,6 +194,39 @@ CCPUInfo::CCPUInfo(void)
           m_cores[nCurrId].m_strModel.Trim();
         }
       }
+      else if (strncmp(buffer, "flags", 5) == 0)
+      {
+        char* needle = strchr(buffer, ':');
+        if (needle)
+        {
+          char* tok = NULL,
+              * save;
+          needle++;
+          tok = strtok_r(needle, " ", &save);
+          while (tok)
+          {
+            if (0 == strcmp(tok, "mmx"))
+              m_cpuFeatures |= CPU_FEATURE_MMX;
+            else if (0 == strcmp(tok, "mmxext"))
+              m_cpuFeatures |= CPU_FEATURE_MMX2;
+            else if (0 == strcmp(tok, "sse"))
+              m_cpuFeatures |= CPU_FEATURE_SSE;
+            else if (0 == strcmp(tok, "sse2"))
+              m_cpuFeatures |= CPU_FEATURE_SSE2;
+            else if (0 == strcmp(tok, "ssse3"))
+              m_cpuFeatures |= CPU_FEATURE_SSE3;
+            else if (0 == strcmp(tok, "sse4_1"))
+              m_cpuFeatures |= CPU_FEATURE_SSE4;
+            else if (0 == strcmp(tok, "sse4_2"))
+              m_cpuFeatures |= CPU_FEATURE_SSE42;
+            else if (0 == strcmp(tok, "3dnow"))
+              m_cpuFeatures |= CPU_FEATURE_3DNOW;
+            else if (0 == strcmp(tok, "3dnowext"))
+              m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
+            tok = strtok_r(NULL, " ", &save);
+          }
+        }
+      }
     }
   }
   else
@@ -168,6 +237,13 @@ CCPUInfo::CCPUInfo(void)
 
   readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks, m_ioTicks);
 #endif
+
+  ReadCPUFeatures();
+
+  // Set MMX2 when SSE is present as SSE is a superset of MMX2 and Intel doesn't set the MMX2 cap
+  if (m_cpuFeatures & CPU_FEATURE_SSE)
+    m_cpuFeatures |= CPU_FEATURE_MMX2;
+
 }
 
 CCPUInfo::~CCPUInfo()
@@ -426,6 +502,93 @@ CStdString CCPUInfo::GetCoresUsageString() const
     iter++;
   }
   return strCores;
+}
+
+void CCPUInfo::ReadCPUFeatures()
+{
+#ifdef _WIN32
+
+  int CPUInfo[4]; // receives EAX, EBX, ECD and EDX in that order
+
+  __cpuid(CPUInfo, 0);
+  int MaxStdInfoType = CPUInfo[0];
+
+  if (MaxStdInfoType >= CPUID_INFOTYPE_STANDARD)
+  {
+    __cpuid(CPUInfo, CPUID_INFOTYPE_STANDARD);
+    if (CPUInfo[CPUINFO_EDX] & CPUID_00000001_EDX_MMX)
+      m_cpuFeatures |= CPU_FEATURE_MMX;
+    if (CPUInfo[CPUINFO_EDX] & CPUID_00000001_EDX_SSE)
+      m_cpuFeatures |= CPU_FEATURE_SSE;
+    if (CPUInfo[CPUINFO_EDX] & CPUID_00000001_EDX_SSE2)
+      m_cpuFeatures |= CPU_FEATURE_SSE2;
+    if (CPUInfo[CPUINFO_ECX] & CPUID_00000001_ECX_SSE3)
+      m_cpuFeatures |= CPU_FEATURE_SSE3;
+    if (CPUInfo[CPUINFO_ECX] & CPUID_00000001_ECX_SSSE3)
+      m_cpuFeatures |= CPU_FEATURE_SSSE3;
+    if (CPUInfo[CPUINFO_ECX] & CPUID_00000001_ECX_SSE4)
+      m_cpuFeatures |= CPU_FEATURE_SSE4;
+    if (CPUInfo[CPUINFO_ECX] & CPUID_00000001_ECX_SSE42)
+      m_cpuFeatures |= CPU_FEATURE_SSE42;
+  }
+
+  __cpuid(CPUInfo, 0x80000000);
+  int MaxExtInfoType = CPUInfo[0];
+
+  if (MaxExtInfoType >= CPUID_INFOTYPE_EXTENDED)
+  {
+    __cpuid(CPUInfo, CPUID_INFOTYPE_EXTENDED);
+
+    if (CPUInfo[CPUINFO_EDX] & CPUID_80000001_EDX_MMX)
+      m_cpuFeatures |= CPU_FEATURE_MMX;
+    if (CPUInfo[CPUINFO_EDX] & CPUID_80000001_EDX_MMX2)
+      m_cpuFeatures |= CPU_FEATURE_MMX2;
+    if (CPUInfo[CPUINFO_EDX] & CPUID_80000001_EDX_3DNOW)
+      m_cpuFeatures |= CPU_FEATURE_3DNOW;
+    if (CPUInfo[CPUINFO_EDX] & CPUID_80000001_EDX_3DNOWEXT)
+      m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
+  }
+
+#elif defined(__APPLE__)
+  #if defined(__ppc__)
+    m_cpuFeatures |= CPU_FEATURE_ALTIVEC;
+  #elif defined(__arm__)
+  #else
+    size_t len = 512;
+    char buffer[512] ={0};
+
+    if (sysctlbyname("machdep.cpu.features", &buffer, &len, NULL, 0) == 0)
+    {
+      strcat(buffer, " ");
+      if (strstr(buffer,"MMX"))
+        m_cpuFeatures |= CPU_FEATURE_MMX;
+      if (strstr(buffer,"SSE "))
+        m_cpuFeatures |= CPU_FEATURE_SSE;
+      if (strstr(buffer,"SSE2"))
+        m_cpuFeatures |= CPU_FEATURE_SSE2;
+      if (strstr(buffer,"SSE3 "))
+        m_cpuFeatures |= CPU_FEATURE_SSE3;
+      if (strstr(buffer,"SSSE3"))
+        m_cpuFeatures |= CPU_FEATURE_SSSE3;
+      if (strstr(buffer,"SSE4.1"))
+        m_cpuFeatures |= CPU_FEATURE_SSE4;
+      if (strstr(buffer,"SSE4.2"))
+        m_cpuFeatures |= CPU_FEATURE_SSE42;
+      if (strstr(buffer,"3DNOW "))
+        m_cpuFeatures |= CPU_FEATURE_3DNOW;
+      if (strstr(buffer,"3DNOWEXT"))
+       m_cpuFeatures |= CPU_FEATURE_3DNOWEXT;
+    }
+    else
+      m_cpuFeatures |= CPU_FEATURE_MMX;
+  #endif
+#elif defined(LINUX)
+// empty on purpose, the implementation is in the constructor
+#elif !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__)
+  m_cpuFeatures |= CPU_FEATURE_MMX;
+#elif defined(__powerpc__) || defined(__ppc__)
+  m_cpuFeatures |= CPU_FEATURE_ALTIVEC;
+#endif
 }
 
 CCPUInfo g_cpuInfo;

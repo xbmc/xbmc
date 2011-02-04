@@ -664,13 +664,23 @@ void CWinRenderer::Render(DWORD flags)
     */
   CSingleLock lock(g_graphicsContext);
 
+  // Don't need a stencil/depth buffer and a buffer smaller than the render target causes D3D complaints and nVidia issues
+  // Save & restore when we're done.
+  LPDIRECT3DSURFACE9 pZBuffer;
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+  pD3DDevice->GetDepthStencilSurface(&pZBuffer);
+  pD3DDevice->SetDepthStencilSurface(NULL);
+
   if (m_renderMethod == RENDER_SW)
-    RenderSW(flags);
+    RenderSW();
   else if (m_renderMethod == RENDER_PS)
-    RenderPS(flags);
+    RenderPS();
+
+  pD3DDevice->SetDepthStencilSurface(pZBuffer);
+  pZBuffer->Release();
 }
 
-void CWinRenderer::RenderSW(DWORD flags)
+void CWinRenderer::RenderSW()
 {
   // 1. convert yuv to rgb
   m_sw_scale_ctx = m_dllSwScale->sws_getCachedContext(m_sw_scale_ctx,
@@ -851,20 +861,20 @@ void CWinRenderer::ScaleFixedPipeline()
   pD3DDev->SetTexture(0, NULL);
 }
 
-void CWinRenderer::RenderPS(DWORD flags)
+void CWinRenderer::RenderPS()
 {
   if (!m_bUseHQScaler)
   {
-    Stage1(flags);
+    Stage1();
   }
   else
   {
-    Stage1(flags);
-    Stage2(flags);
+    Stage1();
+    Stage2();
   }
 }
 
-void CWinRenderer::Stage1(DWORD flags)
+void CWinRenderer::Stage1()
 {
   if (!m_bUseHQScaler)
   {
@@ -900,7 +910,7 @@ void CWinRenderer::Stage1(DWORD flags)
   }
 }
 
-void CWinRenderer::Stage2(DWORD flags)
+void CWinRenderer::Stage2()
 {
   m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_destRect);
 }

@@ -23,20 +23,17 @@
 
 #include "addons/Addon.h"
 #include "windows/GUIMediaWindow.h"
-#include "utils/Job.h"
 #include "pictures/PictureThumbLoader.h"
 
 class CFileItem;
 class CFileItemList;
 
-class CGUIWindowAddonBrowser : public CGUIMediaWindow, IJobCallback
+class CGUIWindowAddonBrowser : public CGUIMediaWindow
 {
 public:
   CGUIWindowAddonBrowser(void);
   virtual ~CGUIWindowAddonBrowser(void);
   virtual bool OnMessage(CGUIMessage& message);
-  
-  void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 
   /*! \brief Popup a selection dialog with a list of addons of the given type
    \param type the type of addon wanted

@@ -28,7 +28,6 @@ sampler RGBSampler =
     Texture = <g_Texture>;
     AddressU = CLAMP;
     AddressV = CLAMP;
-    MipFilter = LINEAR;
     MinFilter = POINT;
     MagFilter = POINT;
   };
@@ -39,7 +38,6 @@ sampler KernelSampler =
     Texture = <g_KernelTexture>;
     AddressU = CLAMP;
     AddressV = CLAMP;
-    MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
   };

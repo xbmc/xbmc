@@ -33,7 +33,6 @@ sampler YSampler =
     Texture = <g_YTexture>;
     AddressU = CLAMP;
     AddressV = CLAMP;
-    MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
   };
@@ -47,7 +46,6 @@ sampler YSampler =
     Texture = <g_YTexture>;
     AddressU = CLAMP;
     AddressV = CLAMP;
-    MipFilter = LINEAR;
     MinFilter = POINT;
     MagFilter = POINT;
   };
@@ -59,7 +57,6 @@ sampler USampler =
     Texture = <g_UTexture>;
     AddressU = CLAMP;
     AddressV = CLAMP;
-    MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
   };
@@ -70,7 +67,6 @@ sampler VSampler =
     Texture = <g_VTexture>;
     AddressU = CLAMP;
     AddressV = CLAMP;
-    MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
   };

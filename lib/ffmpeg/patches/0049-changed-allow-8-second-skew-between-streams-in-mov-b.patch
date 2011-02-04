@@ -1,0 +1,28 @@
+From e4d7cdb22b65aaf53ae7d617f0d6c64eee68374a Mon Sep 17 00:00:00 2001
+From: elupus <elupus@svn>
+Date: Wed, 8 Dec 2010 14:03:43 +0000
+Subject: [PATCH] changed: allow 8 second skew between streams in mov before attempting to seek
+
+git-svn-id: https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk@35598 568bbfeb-2a22-0410-94d2-cc84cf5bfa90
+---
+ .../dvdplayer/Codecs/ffmpeg/libavformat/mov.c      |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git ag/libavformat/mov.c b/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/mov.c
+index bf986b3..6228861 100644
+--- ag/libavformat/mov.c
++++ bg/libavformat/mov.c
+@@ -2408,8 +2408,8 @@ static AVIndexEntry *mov_find_next_sample(AVFormatContext *s, AVStream **st)
+             if (!sample || (url_is_streamed(s->pb) && current_sample->pos < sample->pos) ||
+                 (!url_is_streamed(s->pb) &&
+                  ((msc->pb != s->pb && dts < best_dts) || (msc->pb == s->pb &&
+-                 ((FFABS(best_dts - dts) <= AV_TIME_BASE && current_sample->pos < sample->pos) ||
+-                  (FFABS(best_dts - dts) > AV_TIME_BASE && dts < best_dts)))))) {
++                 ((FFABS(best_dts - dts) <= 8*AV_TIME_BASE && current_sample->pos < sample->pos) ||
++                  (FFABS(best_dts - dts) > 8*AV_TIME_BASE && dts < best_dts)))))) {
+                 sample = current_sample;
+                 best_dts = dts;
+                 *st = avst;
+-- 
+1.7.3
+
