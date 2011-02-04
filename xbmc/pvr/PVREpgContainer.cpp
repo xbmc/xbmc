@@ -116,9 +116,15 @@ CEpg* CPVREpgContainer::CreateEpg(int iEpgId)
 {
   CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups.GetChannelById(iEpgId);
   if (channel)
+  {
     return new CPVREpg(channel);
+  }
   else
+  {
+    CLog::Log(LOGERROR, "PVREpgContainer - %s - cannot find channel '%d'. not creating an EPG table.",
+        __FUNCTION__, iEpgId);
     return NULL;
+  }
 }
 
 const CDateTime &CPVREpgContainer::GetFirstEPGDate(bool bRadio /* = false */)
