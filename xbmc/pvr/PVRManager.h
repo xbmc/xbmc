@@ -67,11 +67,6 @@ public:
    * @brief Stop the PVRManager and destroy all objects it created.
    */
   void Stop();
-
-  /*!
-   * @brief Restart the PVRManager.
-   */
-  void Restart(void);
   //@}
 
   /** @name External client access functions */
@@ -97,43 +92,64 @@ public:
 
   //@}
 
-  /*! \name Addon related functions
-   */
+  /** @name Add-on functions */
+  //@{
 
   /*!
-   * @brief Restart a single client addon.
-   * @param addon The addon to restart.
+   * @brief Restart a single client add-on.
+   * @param addon The add-on to restart.
    * @param bDataChanged True if the client's data changed, false otherwise (unused).
    * @return True if the client was found and restarted, false otherwise.
    */
   bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged);
 
   /*!
-   * @brief Remove a single client addon.
-   * @param addon The addon to remove.
+   * @brief Remove a single client add-on.
+   * @param addon The add-on to remove.
    * @return True if the client was found and removed, false otherwise.
    */
   bool RequestRemoval(ADDON::AddonPtr addon);
 
   /*!
-   * @brief Callback function from Client driver to inform about changed timers, channels, recordings or epg.
+   * @brief Callback function from client to inform about changed timers, channels, recordings or epg.
    * @param clientID The ID of the client that sends an update.
    * @param clientEvent The event that just happened.
-   * @param msg The passed message.
+   * @param strMessage The passed message.
    */
-  void OnClientMessage(const int clientID, const PVR_EVENT clientEvent, const char* msg);
+  void OnClientMessage(const int iClientId, const PVR_EVENT clientEvent, const char* strMessage);
 
-  /*! \name GUIInfoManager functions
-   */
+  //@}
+
+  /** @name GUIInfoManager functions */
+  //@{
 
   /*!
-   * @brief updates the recordings and the "now" and "next" timers.
+   * @brief Updates the recordings and the "now" and "next" timers.
    */
   void UpdateRecordingsCache(void);
 
+  /*!
+   * @brief Get a GUIInfoManager character string.
+   * @param dwInfo The string to get.
+   * @return The requested string or an empty one if it wasn't found.
+   */
   const char* TranslateCharInfo(DWORD dwInfo);
+
+  /*!
+   * @brief Get a GUIInfoManager integer.
+   * @param dwInfo The integer to get.
+   * @return The requested integer or 0 if it wasn't found.
+   */
   int TranslateIntInfo(DWORD dwInfo);
+
+  /*!
+   * @brief Get a GUIInfoManager boolean.
+   * @param dwInfo The boolean to get.
+   * @return The requested boolean or false if it wasn't found.
+   */
   bool TranslateBoolInfo(DWORD dwInfo);
+
+  //@}
 
   /*! \name General functions
    */

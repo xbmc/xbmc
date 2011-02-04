@@ -51,6 +51,8 @@ using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace ADDON;
 
+#define INFO_TOGGLE_TIME 1500
+
 CPVRManager::CPVRManager()
 {
   m_bFirstStart              = true;
@@ -64,12 +66,6 @@ CPVRManager::~CPVRManager()
 {
   Stop();
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
-}
-
-void CPVRManager::Restart(void)
-{
-  Stop();
-  Start();
 }
 
 void CPVRManager::Start()
@@ -130,7 +126,9 @@ bool CPVRManager::LoadClients()
     return false;
 
   /* load and initialise the clients */
-  m_database.Open();
+  if (!m_database.Open())
+    return false;
+
   m_clientsProps.clear();
   for (unsigned iClientPtr = 0; iClientPtr < addons.size(); iClientPtr++)
   {
@@ -239,7 +237,7 @@ void CPVRManager::UpdateWindow(TVWindow window)
     pTVWin->UpdateData(window);
 }
 
-void CPVRManager::OnClientMessage(const int iClientId, const PVR_EVENT clientEvent, const char* msg)
+void CPVRManager::OnClientMessage(const int iClientId, const PVR_EVENT clientEvent, const char *strMessage)
 {
   /* here the manager reacts to messages sent from any of the clients via the IPVRClientCallback */
   CStdString clientName = m_clients[iClientId]->GetBackendName() + ":" + m_clients[iClientId]->GetConnectionString();
@@ -271,7 +269,7 @@ void CPVRManager::OnClientMessage(const int iClientId, const PVR_EVENT clientEve
 
     default:
       CLog::Log(LOGWARNING, "PVRManager - %s - client '%d' sent unknown event '%s'",
-          __FUNCTION__, iClientId, msg);
+          __FUNCTION__, iClientId, strMessage);
       break;
   }
 }
@@ -426,20 +424,16 @@ void CPVRManager::Cleanup(void)
   /* destroy addons */
   for (CLIENTMAPITR itr = m_clients.begin(); itr != m_clients.end(); itr++)
   {
-    CLog::Log(LOGDEBUG,
-        "PVR: sending destroy to addon:%s, GUID:%s",
-        m_clients[(*itr).first]->Name().c_str(), m_clients[(*itr).first]->ID().c_str());
+    boost::shared_ptr<CPVRClient> client = m_clients[(*itr).first];
+    CLog::Log(LOGDEBUG, "PVRManager - %s - destroying addon '%s' (%s)",
+        __FUNCTION__, client->Name().c_str(), client->ID().c_str());
 
-    m_clients[(*itr).first]->Destroy();
+    client->Destroy();
   }
+
   m_clients.clear();
   m_clientsProps.clear();
 }
-
-
-/*************************************************************/
-/** GUIInfoManager FUNCTIONS                                **/
-/*************************************************************/
 
 void CPVRManager::UpdateRecordingsCache(void)
 {
@@ -473,12 +467,6 @@ void CPVRManager::UpdateRecordingsCache(void)
   }
 }
 
-/********************************************************************
- * CPVRManager TranslateCharInfo
- *
- * Returns a GUIInfoManager Character String
- ********************************************************************/
-#define INFO_TOGGLE_TIME    1500
 const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
 {
   if      (dwInfo == PVR_NOW_RECORDING_TITLE)
@@ -737,52 +725,38 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
   return "";
 }
 
-/********************************************************************
- * CPVRManager TranslateIntInfo
- *
- * Returns a GUIInfoManager integer value
- ********************************************************************/
 int CPVRManager::TranslateIntInfo(DWORD dwInfo)
 {
+  int iReturn = 0;
+
   if (dwInfo == PVR_PLAYING_PROGRESS)
-  {
-    return (float)(((float)GetStartTime() / GetTotalTime()) * 100);
-  }
+    iReturn = (float) GetStartTime() / GetTotalTime() * 100;
   else if (dwInfo == PVR_ACTUAL_STREAM_SIG_PROGR)
-  {
-    return (float)(((float)m_qualityInfo.signal / 0xFFFF) * 100);
-  }
+    iReturn = (float) m_qualityInfo.signal / 0xFFFF * 100;
   else if (dwInfo == PVR_ACTUAL_STREAM_SNR_PROGR)
-  {
-    return (float)(((float)m_qualityInfo.snr / 0xFFFF) * 100);
-  }
-  return 0;
+    iReturn = (float) m_qualityInfo.snr / 0xFFFF * 100;
+
+  return iReturn;
 }
 
-/********************************************************************
- * CPVRManager TranslateBoolInfo
- *
- * Returns a GUIInfoManager boolean value
- ********************************************************************/
 bool CPVRManager::TranslateBoolInfo(DWORD dwInfo)
 {
-  if (dwInfo == PVR_IS_RECORDING)
-    return m_isRecording;
-  else if (dwInfo == PVR_HAS_TIMER)
-    return m_hasTimers;
-  else if (dwInfo == PVR_IS_PLAYING_TV)
-    return IsPlayingTV();
-  else if (dwInfo == PVR_IS_PLAYING_RADIO)
-    return IsPlayingRadio();
-  else if (dwInfo == PVR_IS_PLAYING_RECORDING)
-    return IsPlayingRecording();
-  else if (dwInfo == PVR_ACTUAL_STREAM_ENCRYPTED)
-  {
-    if (m_currentPlayingChannel)
-      return m_currentPlayingChannel->GetPVRChannelInfoTag()->IsEncrypted();
-  }
+  bool bReturn = false;
 
-  return false;
+  if (dwInfo == PVR_IS_RECORDING)
+    bReturn = m_isRecording;
+  else if (dwInfo == PVR_HAS_TIMER)
+    bReturn = m_hasTimers;
+  else if (dwInfo == PVR_IS_PLAYING_TV)
+    bReturn = IsPlayingTV();
+  else if (dwInfo == PVR_IS_PLAYING_RADIO)
+    bReturn = IsPlayingRadio();
+  else if (dwInfo == PVR_IS_PLAYING_RECORDING)
+    bReturn = IsPlayingRecording();
+  else if (dwInfo == PVR_ACTUAL_STREAM_ENCRYPTED)
+    bReturn = (m_currentPlayingChannel && m_currentPlayingChannel->GetPVRChannelInfoTag()->IsEncrypted());
+
+  return bReturn;
 }
 
 
@@ -962,45 +936,53 @@ bool CPVRManager::IsPlaying(void)
 
 PVR_SERVERPROPS *CPVRManager::GetCurrentClientProps()
 {
+  PVR_SERVERPROPS * props = NULL;
+
   if (m_currentPlayingChannel)
-    return &m_clientsProps[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()];
+    props = &m_clientsProps[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()];
   else if (m_currentPlayingRecording)
-    return &m_clientsProps[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()];
-  else
-    return NULL;
+    props = &m_clientsProps[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()];
+
+  return props;
 }
 
 int CPVRManager::GetCurrentPlayingClientID()
 {
+  int iReturn = -1;
+
   if (m_currentPlayingChannel)
-    return m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID();
+    iReturn = m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID();
   else if (m_currentPlayingRecording)
-    return m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID();
-  else
-    return -1;
+    iReturn = m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID();
+
+  return iReturn;
 }
 
 PVR_STREAMPROPS *CPVRManager::GetCurrentStreamProps()
 {
+  PVR_STREAMPROPS *props = NULL;
+
   if (m_currentPlayingChannel)
   {
     int cid = m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID();
     m_clients[cid]->GetStreamProperties(&m_streamProps[cid]);
 
-    return &m_streamProps[cid];
+    props = &m_streamProps[cid];
   }
-  else
-    return NULL;
+
+  return props;
 }
 
 CFileItem *CPVRManager::GetCurrentPlayingItem()
 {
+  CFileItem *item = NULL;
+
   if (m_currentPlayingChannel)
-    return m_currentPlayingChannel;
+    item = m_currentPlayingChannel;
   else if (m_currentPlayingRecording)
-    return m_currentPlayingRecording;
-  else
-    return NULL;
+    item = m_currentPlayingRecording;
+
+  return item;
 }
 
 CStdString CPVRManager::GetCurrentInputFormat()
@@ -1048,20 +1030,19 @@ bool CPVRManager::HasActiveClients(void)
   return bReturn;
 }
 
-bool CPVRManager::HasMenuHooks(int clientID)
+bool CPVRManager::HasMenuHooks(int iClientID)
 {
-  if (clientID < 0)
-    clientID = GetCurrentPlayingClientID();
-  if (clientID < 0)
-    return false;
-  return m_clients[clientID]->HaveMenuHooks();
+  if (iClientID < 0)
+    iClientID = GetCurrentPlayingClientID();
+
+  return (iClientID < 0) ? false : m_clients[iClientID]->HaveMenuHooks();
 }
 
-void CPVRManager::ProcessMenuHooks(int clientID)
+void CPVRManager::ProcessMenuHooks(int iClientID)
 {
-  if (m_clients[clientID]->HaveMenuHooks())
+  if (m_clients[iClientID]->HaveMenuHooks())
   {
-    PVR_MENUHOOKS *hooks = m_clients[clientID]->GetMenuHooks();
+    PVR_MENUHOOKS *hooks = m_clients[iClientID]->GetMenuHooks();
     std::vector<long> hookIDs;
 
     CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -1071,7 +1052,7 @@ void CPVRManager::ProcessMenuHooks(int clientID)
 
     for (unsigned int i = 0; i < hooks->size(); i++)
     {
-      pDialog->Add(m_clients[clientID]->GetString(hooks->at(i).string_id));
+      pDialog->Add(m_clients[iClientID]->GetString(hooks->at(i).string_id));
     }
 
     pDialog->DoModal();
@@ -1079,7 +1060,7 @@ void CPVRManager::ProcessMenuHooks(int clientID)
     int selection = pDialog->GetSelectedLabel();
     if (selection >= 0)
     {
-      m_clients[clientID]->CallMenuHook(hooks->at(selection));
+      m_clients[iClientID]->CallMenuHook(hooks->at(selection));
     }
   }
 }
