@@ -20,6 +20,7 @@
  */
 
 #include "FileItem.h"
+#include "settings/GUISettings.h"
 #include "dialogs/GUIDialogOK.h"
 #include "threads/SingleLock.h"
 
@@ -44,6 +45,8 @@ int CPVRTimers::Load()
 
 void CPVRTimers::Unload()
 {
+  for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
+    delete at(iTimerPtr);
   clear();
 }
 
@@ -59,7 +62,7 @@ int CPVRTimers::Update()
   /* clear channel timers */
   for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
   {
-    CPVRTimerInfoTag *timerTag = &at(iTimerPtr);
+    CPVRTimerInfoTag *timerTag = at(iTimerPtr);
     if (!timerTag || !timerTag->Active())
       continue;
 
@@ -95,7 +98,7 @@ int CPVRTimers::Update()
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
     /* get the timer tag */
-    CPVRTimerInfoTag *timerTag = &at(ptr);
+    CPVRTimerInfoTag *timerTag = at(ptr);
     if (!timerTag || !timerTag->Active())
       continue;
 
@@ -120,8 +123,29 @@ int CPVRTimers::Update()
 
 bool CPVRTimers::Update(const CPVRTimerInfoTag &timer)
 {
-  // TODO currently just adds the timer to this container
-  push_back(timer);
+  CPVRTimerInfoTag *newTag = NULL;
+  if (true) // TODO check if we already have a matching timer
+  {
+    newTag = new CPVRTimerInfoTag();
+    push_back(newTag);
+  }
+
+  newTag->m_iClientID      = timer.m_iClientID;
+  newTag->m_iClientIndex   = timer.m_iClientIndex;
+  newTag->m_bIsActive      = timer.m_bIsActive;
+  newTag->m_strTitle       = timer.m_strTitle;
+  newTag->m_strDir         = timer.m_strDir;
+  newTag->m_iClientNumber  = timer.m_iClientNumber;
+  newTag->m_StartTime      = timer.m_StartTime;
+  newTag->m_StopTime       = timer.m_StopTime;
+  newTag->m_FirstDay       = timer.m_FirstDay;
+  newTag->m_iPriority      = timer.m_iPriority;
+  newTag->m_iLifetime      = timer.m_iLifetime;
+  newTag->m_bIsRecording   = timer.m_bIsRecording;
+  newTag->m_bIsRepeating   = timer.m_bIsRepeating;
+  newTag->m_iWeekdays      = timer.m_iWeekdays;
+  newTag->m_iChannelNumber = timer.m_iChannelNumber;
+  newTag->m_bIsRadio       = timer.m_bIsRadio;
 
   return true;
 }
@@ -134,7 +158,7 @@ int CPVRTimers::GetTimers(CFileItemList* results)
 
   for (unsigned int i = 0; i < size(); ++i)
   {
-    CFileItemPtr timer(new CFileItem(at(i)));
+    CFileItemPtr timer(new CFileItem(*at(i)));
     results->Add(timer);
   }
 
@@ -147,9 +171,9 @@ CPVRTimerInfoTag *CPVRTimers::GetNextActiveTimer(void)
   CPVRTimerInfoTag *t0 = NULL;
   for (unsigned int i = 0; i < size(); i++)
   {
-    if ((at(i).Active()) && (!t0 || (at(i).Stop() > CDateTime::GetCurrentDateTime() && at(i).Compare(*t0) < 0)))
+    if ((at(i)->Active()) && (!t0 || (at(i)->Stop() > CDateTime::GetCurrentDateTime() && at(i)->Compare(*t0) < 0)))
     {
-      t0 = &at(i);
+      t0 = at(i);
     }
   }
   return t0;
@@ -182,7 +206,7 @@ bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
     for (unsigned int i = 0; i < size(); ++i)
     {
-      item.reset(new CFileItem(at(i)));
+      item.reset(new CFileItem(*at(i)));
       items.Add(item);
     }
 
@@ -197,9 +221,9 @@ bool CPVRTimers::ChannelHasTimers(const CPVRChannel &channel)
 {
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    CPVRTimerInfoTag timer = at(ptr);
+    CPVRTimerInfoTag *timer = at(ptr);
 
-    if (timer.ChannelNumber() == channel.ChannelNumber() && timer.IsRadio() == channel.IsRadio())
+    if (timer->ChannelNumber() == channel.ChannelNumber() && timer->IsRadio() == channel.IsRadio())
       return true;
   }
 
@@ -207,23 +231,94 @@ bool CPVRTimers::ChannelHasTimers(const CPVRChannel &channel)
 }
 
 
-bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bForce /* = false */)
+bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteRepeating /* = true */, bool bCurrentlyActiveOnly /* = false */)
 {
-  bool bReturn = true;
+  bool bReturn = false;
 
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
-    CPVRTimerInfoTag timer = at(ptr);
+    CPVRTimerInfoTag *timer = at(ptr);
 
-    if (timer.ChannelNumber() == channel.ChannelNumber() && timer.IsRadio() == channel.IsRadio())
+    if (bCurrentlyActiveOnly &&
+        (CDateTime::GetCurrentDateTime() < timer->Start() ||
+         CDateTime::GetCurrentDateTime() > timer->Stop()))
+      continue;
+
+    if (!bDeleteRepeating && timer->IsRepeating())
+      continue;
+
+    if (timer->ChannelNumber() == channel.ChannelNumber() && timer->IsRadio() == channel.IsRadio())
     {
-      bReturn = timer.DeleteFromClient(bForce) && bReturn;
+      bReturn = timer->DeleteFromClient(true) || bReturn;
       erase(begin() + ptr);
       ptr--;
     }
   }
 
   return bReturn;
+}
+
+CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTimer /* = true */)
+{
+  if (!channel)
+  {
+    if (!g_PVRManager.GetCurrentChannel(channel))
+      return NULL;
+  }
+
+  CPVRTimerInfoTag *newTimer = new CPVRTimerInfoTag();
+
+  int iDuration = g_guiSettings.GetInt("pvrrecord.instantrecordtime");
+  if (!iDuration)
+    iDuration   = 180; /* default to 180 minutes */
+
+  int iPriority = g_guiSettings.GetInt("pvrrecord.defaultpriority");
+  if (!iPriority)
+    iPriority   = 50;  /* default to 50 */
+
+  int iLifetime = g_guiSettings.GetInt("pvrrecord.defaultlifetime");
+  if (!iLifetime)
+    iLifetime   = 30;  /* default to 30 days */
+
+  /* set the timer data */
+  newTimer->m_iClientIndex   = -1;
+  newTimer->m_bIsActive      = true;
+  newTimer->SetTitle(channel->ChannelName());
+  newTimer->m_strTitle       = g_localizeStrings.Get(19056);
+  newTimer->m_iChannelNumber = channel->ChannelNumber();
+  newTimer->m_iClientNumber  = channel->ClientChannelNumber();
+  newTimer->m_iClientID      = channel->ClientID();
+  newTimer->m_bIsRadio       = channel->IsRadio();
+  newTimer->m_StartTime      = CDateTime::GetCurrentDateTime();
+  newTimer->SetDuration(iDuration);
+  newTimer->m_iPriority      = iPriority;
+  newTimer->m_iLifetime      = iLifetime;
+
+  /* generate summary string */
+  newTimer->m_strSummary.Format("%s %s %s %s %s",
+      newTimer->m_StartTime.GetAsLocalizedDate(),
+      g_localizeStrings.Get(19159),
+      newTimer->m_StartTime.GetAsLocalizedTime("", false),
+      g_localizeStrings.Get(19160),
+      newTimer->m_StopTime.GetAsLocalizedTime("", false));
+
+  /* unused only for reference */
+  newTimer->m_strFileNameAndPath = "pvr://timers/new";
+
+  if (!bStartTimer || !newTimer->AddToClient())
+  {
+    CLog::Log(LOGERROR, "PVRTimers - %s - unable to add an instant timer on the client", __FUNCTION__);
+    delete newTimer;
+    newTimer = NULL;
+  }
+  else
+  {
+    push_back(newTimer);
+    if (bStartTimer)
+      channel->SetRecording(true);
+  }
+
+  return newTimer;
 }
 
 /********** static methods **********/

@@ -450,7 +450,7 @@ void CPVRManager::UpdateRecordingsCache(void)
     CDateTime now = CDateTime::GetCurrentDateTime();
     for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
     {
-      CPVRTimerInfoTag *timerTag = &PVRTimers[iTimerPtr];
+      CPVRTimerInfoTag *timerTag = PVRTimers.at(iTimerPtr);
       if (timerTag->Active())
       {
         if (timerTag->Start() <= now && timerTag->Stop() > now)
@@ -1152,50 +1152,31 @@ bool CPVRManager::IsRecordingOnPlayingChannel(void)
 
 bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
 {
+  bool bReturn = false;
+
   if (!m_currentPlayingChannel)
-    return false;
+    return bReturn;
 
   CPVRChannel *channel = (CPVRChannel *) m_currentPlayingChannel->GetPVRChannelInfoTag();
   if (m_clientsProps[channel->ClientID()].SupportTimers)
   {
     /* timers are supported on this channel */
-
     if (bOnOff && !channel->IsRecording())
     {
-      /* add a new timer */
-      CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::InstantTimer();
-      newtimer->SetTitle(channel->ChannelName());
-      CFileItem *item = new CFileItem(*newtimer);
-
-      if (!CPVRTimers::AddTimer(*item))
-      {
+      CPVRTimerInfoTag *newTimer = PVRTimers.InstantTimer(channel);
+      if (!newTimer)
         CGUIDialogOK::ShowAndGetInput(19033,0,19164,0);
-        return false;
-      }
-
-      channel->SetRecording(true);
-      return true;
+      else
+        bReturn = true;
     }
     else if (!bOnOff && channel->IsRecording())
     {
-      for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
-      {
-        // XXX move to the timer class
-        if (!PVRTimers[iTimerPtr].IsRepeating() && PVRTimers[iTimerPtr].Active() &&
-            (PVRTimers[iTimerPtr].Number() == channel->ChannelNumber()) &&
-            (PVRTimers[iTimerPtr].Start() <= CDateTime::GetCurrentDateTime()) &&
-            (PVRTimers[iTimerPtr].Stop() >= CDateTime::GetCurrentDateTime()))
-        {
-          if (CPVRTimers::DeleteTimer(PVRTimers[iTimerPtr], true))
-          {
-            channel->SetRecording(false);
-            return true;
-          }
-        }
-      }
+      /* delete active timers */
+      bReturn = PVRTimers.DeleteTimersOnChannel(*channel, false, true);
     }
   }
-  return false;
+
+  return bReturn;
 }
 
 void CPVRManager::SaveCurrentChannelSettings()
