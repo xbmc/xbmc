@@ -57,6 +57,7 @@ using namespace std;
 
 CSoftAE::CSoftAE():
   m_thread             (NULL ),
+  m_reopen             (0    ),
   m_running            (false),
   m_reOpened           (false),
   m_sink               (NULL ),
@@ -443,7 +444,7 @@ void CSoftAE::OnSettingsChange(CStdString setting)
 	CLog::Log(LOGINFO, "CSoftAE::OnSettingsChange - Transcode Enabled");
 
   if (!setting.IsEmpty())
-    OpenSink();
+    m_reopen = CTimeUtils::GetTimeMS() + 500;
 }
 
 void CSoftAE::Deinitialize()
@@ -600,6 +601,11 @@ void CSoftAE::FreeSound(IAESound *sound)
 
 void CSoftAE::GarbageCollect()
 {
+  if (m_reopen && m_reopen < CTimeUtils::GetTimeMS())
+  {
+    m_reopen = 0;
+    OpenSink();
+  }
 }
 
 unsigned int CSoftAE::GetSampleRate()

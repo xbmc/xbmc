@@ -100,6 +100,7 @@ public:
 
 private:
   CThread *m_thread;
+  unsigned int m_reopen; /* reopen timeout for on setting change */
 
   bool OpenSink(unsigned int sampleRate = 44100, bool forceRaw = false);
   bool SetupEncoder(AEAudioFormat &format);
