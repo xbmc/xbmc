@@ -82,7 +82,7 @@ class cTimer
     bool IsManual() const { return m_ismanual; };
     bool IsActive() const { return !m_canceled; };
     bool IsRecording() const { return m_isrecording; };
-    ScheduleRecordingType cTimer::RepeatFlags2SchedRecType(int repeatflags);
+    ScheduleRecordingType RepeatFlags2SchedRecType(int repeatflags);
     std::string AddScheduleCommand();
     std::string UpdateScheduleCommand();
 

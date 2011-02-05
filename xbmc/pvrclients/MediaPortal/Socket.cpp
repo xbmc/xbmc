@@ -17,9 +17,9 @@
  *
  */
 
+#include "os-dependent.h"
 #include "xbmc_pvr_types.h"
 #include "libXBMC_addon.h"
-#include "os-dependent.h"
 #include "utils.h"
 #include "client.h"
 #include "Socket.h"
@@ -659,7 +659,7 @@ bool Socket::set_non_blocking ( const bool b )
   return true;
 }
 
-void Socket::errorMessage( int errnum, const char* functionname) const
+void Socket::errormessage( int errnum, const char* functionname) const
 {
   const char* errmsg = NULL;
 

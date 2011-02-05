@@ -41,6 +41,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <pthread.h>
+#include <semaphore.h>
 
 typedef int bool_t;
 //
