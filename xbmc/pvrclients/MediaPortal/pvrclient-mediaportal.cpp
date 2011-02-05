@@ -905,7 +905,6 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 
     XBMC->Log(LOG_INFO, "Channel stream URL: %s, timeshift buffer: %s", timeshiftfields[0].c_str(), timeshiftfields[2].c_str());
     m_iCurrentChannel = channel;
-    m_ConnectionString = timeshiftfields[0];
 
     // Check the returned stream URL. When the URL is an rtsp stream, we need
     // to close it again after watching to stop the timeshift.
@@ -1059,9 +1058,8 @@ const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelin
 
     Tokenize(result, timeshiftfields, "|");
 
-    XBMC->Log(LOG_INFO, "Channel stream URL: %s", timeshiftfields[0].c_str());
+    XBMC->Log(LOG_INFO, "Sending channel stream URL '%s' to XBMC for playback", timeshiftfields[0].c_str());
     m_iCurrentChannel = channel;
-    m_ConnectionString = timeshiftfields[0];
 
     // Check the returned stream URL. When the URL is an rtsp stream, we need
     // to close it again after watching to stop the timeshift.
@@ -1071,6 +1069,6 @@ const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelin
     {
       m_bTimeShiftStarted = true;
     }
-    return m_ConnectionString.c_str();
+    return timeshiftfields[0].c_str();
   }
 }
