@@ -4977,6 +4977,16 @@ bool CVideoDatabase::GetNextItemsByChannel(int channelID, bool isSkipShow, CFile
 
 	if(byOrder)
 	{
+		/* 
+		order by
+					case when c12>0 then			cast(c12 as integer) * 100 + cast(c13 as integer) 
+					else case when c16<>4096 then	cast(c15 as integer) * 100 + cast(c16 as integer)
+						 else					    (cast(c15 as integer) + 1) * 100 - 1 + (cast (c13 as real) / 1000)
+						 end
+					end
+		limit 1
+		*/
+
 		if(previousEpisodeID > 0)
 		{
 			CFileItemList previousItems;
@@ -4986,26 +4996,26 @@ bool CVideoDatabase::GetNextItemsByChannel(int channelID, bool isSkipShow, CFile
 
 			// try next episode for current season 
 			strFirstTry = strSQL + PrepareSQL(" and episodeview.c12=%i and episodeview.c13>%i ", numSeason, numEpisode)
-				        + " order by cast(episodeview.c13 as integer) + (cast(episodeview.c12 as integer) * 100) limit 1";
+				        + " order by case when c12>0 then cast(c12 as integer) * 100 + cast(c13 as integer) else case when c16<>4096 then  cast(c15 as integer) * 100 + cast(c16 as integer) else (cast(c15 as integer) + 1) * 100 - 1 + (cast (c13 as real) / 1000) end end limit 1 ";
 
 			m_pDS->query(strFirstTry);
 			if (m_pDS->num_rows() == 0)
 			{
 				// try next season or later
 				strSecondTry = strSQL + PrepareSQL(" and episodeview.c12>%i ", numSeason)
-							 + " order by cast(episodeview.c13 as integer) + (cast(episodeview.c12 as integer) * 100) limit 1";
+							 + " order by case when c12>0 then cast(c12 as integer) * 100 + cast(c13 as integer) else case when c16<>4096 then  cast(c15 as integer) * 100 + cast(c16 as integer) else (cast(c15 as integer) + 1) * 100 - 1 + (cast (c13 as real) / 1000) end end limit 1 ";
 
 				m_pDS->query(strSecondTry);
 				if (m_pDS->num_rows() == 0)
 				{
-					strSQL += " order by cast(episodeview.c13 as integer) + (cast(episodeview.c12 as integer) * 100) limit 1";
+					strSQL += " order by case when c12>0 then cast(c12 as integer) * 100 + cast(c13 as integer) else case when c16<>4096 then  cast(c15 as integer) * 100 + cast(c16 as integer) else (cast(c15 as integer) + 1) * 100 - 1 + (cast (c13 as real) / 1000) end end limit 1 ";
 					m_pDS->query(strSQL);
 				}
 			}
 		}
 		else
 		{
-			strSQL += " order by cast(episodeview.c13 as integer) + (cast(episodeview.c12 as integer) * 100) limit 1";
+			strSQL += " order by case when c12>0 then cast(c12 as integer) * 100 + cast(c13 as integer) else case when c16<>4096 then  cast(c15 as integer) * 100 + cast(c16 as integer) else (cast(c15 as integer) + 1) * 100 - 1 + (cast (c13 as real) / 1000) end end limit 1 ";
 			m_pDS->query(strSQL);
 		}
 	}
