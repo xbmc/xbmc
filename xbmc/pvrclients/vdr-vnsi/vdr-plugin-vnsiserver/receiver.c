@@ -527,7 +527,7 @@ cLiveStreamer::cLiveStreamer()
   m_streamReady     = false;
   m_IsAudioOnly     = false;
   m_IsMPEGPS        = false;
-  m_streamChangeSendet = false;
+  m_streamchangeSent= false;
 
   m_packetEmpty = new cResponsePacket;
   m_packetEmpty->initStream(VDR_STREAM_MUXPKT, 0, 0, 0, 0);
@@ -852,7 +852,7 @@ inline void cLiveStreamer::Activate(bool On)
   if (On)
   {
     LOGCONSOLE("VDR active, sending stream start message");
-    m_streamChangeSendet = false;
+    m_streamchangeSent = false;
     Start();
   }
   else
@@ -887,28 +887,14 @@ void cLiveStreamer::Detach(void)
 
 void cLiveStreamer::sendStreamPacket(sStreamPacket *pkt)
 {
-  if (!m_streamChangeSendet)
+  if (!m_streamchangeSent)
   {
     sendStreamChange();
-    m_streamChangeSendet = true;
+    m_streamchangeSent = true;
   }
 
   if(pkt == NULL)
     return;
-
-/*#if 0
-    LOGCONSOLE("sendet: %d %d %10lu %10lu %10d %10d", pkt->id, pkt->frametype, pkt->dts, pkt->pts, pkt->duration, pkt->size);
-#endif                                                 
-    uint32_t bufferLength = sizeof(uint32_t) * 5 + sizeof(int64_t) * 2;
-    uint8_t buffer[bufferLength];
-    *(uint32_t*)&buffer[0]  = htonl(CHANNEL_STREAM);        // stream channel
-    *(uint32_t*)&buffer[4]  = htonl(VDR_STREAM_MUXPKT);     // Stream packet operation code
-    *(uint32_t*)&buffer[8]  = htonl(pkt->id);               // Stream ID
-    *(uint32_t*)&buffer[12] = htonl(pkt->duration);         // Duration
-    *(int64_t*) &buffer[16] = __cpu_to_be64(pkt->dts);      // DTS
-    *(int64_t*) &buffer[24] = __cpu_to_be64(pkt->pts);      // PTS
-    *(uint32_t*)&buffer[32] = htonl(pkt->size);             // Data length
-    m_Socket->write(&buffer, bufferLength, -1, true);*/
 
   m_streamHeader.channel  = htonl(CHANNEL_STREAM);        // stream channel
   m_streamHeader.opcode   = htonl(VDR_STREAM_MUXPKT);     // Stream packet operation code
@@ -997,7 +983,6 @@ void cLiveStreamer::sendStreamChange()
   delete resp;
 }
 
-#define MINSIGNALSTRENGTH       16383
 void cLiveStreamer::sendSignalInfo()
 {
   /* If no frontend is found m_Frontend is set to -2, in this case
@@ -1064,32 +1049,10 @@ void cLiveStreamer::sendSignalInfo()
         delete resp;
         return;
       }
-/*
-      memset(&tuner, 0, sizeof(tuner));
-      tuner.index = 0;
-      tuner.type  = V4L2_TUNER_ANALOG_TV;
-
-      if (ioctl(m_Frontend, VIDIOC_G_TUNER, &tuner) == 0)
-      {
-        int timeout = 1000;
-        while (timeout > 0)
-        {
-          cCondWait::SleepMs(10);
-          timeout -= 10;
-          ioctl(m_Frontend, VIDIOC_G_TUNER, &tuner);
-          if (tuner.signal > MINSIGNALSTRENGTH)
-          {
-            break;
-          }
-        }
-      }
-*/
       resp->add_String(*cString::sprintf("Analog #%s - %s (%s)", *m_DeviceString, (char *) m_vcap.card, m_vcap.driver));
-//      resp->add_String(*cString::sprintf("%s", (tuner.signal > MINSIGNALSTRENGTH) ? "LOCKED" : "-"));
       resp->add_String("");
       resp->add_U32(0);
       resp->add_U32(0);
-//      resp->add_U32(tuner.signal);
       resp->add_U32(0);
       resp->add_U32(0);
 

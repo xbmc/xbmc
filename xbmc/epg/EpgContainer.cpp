@@ -187,10 +187,11 @@ bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = fal
   if (!epg)
   {
     epg = CreateEpg(entry.EpgID());
-    push_back(epg);
+    if (epg)
+      push_back(epg);
   }
 
-  bReturn = epg->Update(entry, bUpdateDatabase);
+  bReturn = epg ? epg->Update(entry, bUpdateDatabase) : false;
 
   if (bThreadRunning)
     Start();

@@ -61,6 +61,7 @@ class CPVRTimerInfoTag
 {
 private:
   friend class CGUIDialogPVRTimerSettings;
+  friend class CPVRTimers;
 
   CStdString      m_strTitle;           /* name of this timer */
   CStdString      m_strDir;             /* directory where the recording must be stored */
@@ -160,7 +161,6 @@ public:
   const CStdString &Path(void) const { return m_strFileNameAndPath; }
   void SetPath(const CStdString &path) { m_strFileNameAndPath = path; }
 
-  static CPVRTimerInfoTag *InstantTimer();
   static CPVRTimerInfoTag *CreateFromEpg(const CPVREpgInfoTag &tag);
 
   const CPVREpgInfoTag *EpgInfoTag() const { return m_EpgInfo;}

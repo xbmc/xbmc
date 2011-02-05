@@ -154,9 +154,13 @@ int cParser::ParsePESHeader(uint8_t *buf, size_t len)
   int64_t dts = PesGetDTS(buf, len);
   if (dts == DVD_NOPTS_VALUE)
     dts = pts;
-
-  m_curDTS = dts & PTS_MASK;
-  m_curPTS = pts & PTS_MASK;
+  
+  dts = dts & PTS_MASK;
+  pts = pts & PTS_MASK;
+  
+  if(pts != 0) m_curDTS = dts;
+  if(dts != 0) m_curPTS = pts;
+  
   return hdr_len;
 }
 
@@ -165,8 +169,8 @@ void cParser::SendPacket(sStreamPacket *pkt)
   if (!m_Streamer->IsReady())
     return;
 
-  assert(pkt->dts != DVD_NOPTS_VALUE);
-  assert(pkt->pts != DVD_NOPTS_VALUE);
+  if(pkt->dts == DVD_NOPTS_VALUE) return;
+  if(pkt->pts == DVD_NOPTS_VALUE) return;
 
   int64_t dts = pkt->dts;
   int64_t pts = pkt->pts;

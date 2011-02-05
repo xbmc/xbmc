@@ -28,7 +28,7 @@ class CPVREpgInfoTag;
 class CGUIDialogPVRTimerSettings;
 class CPVRTimerInfoTag;
 
-class CPVRTimers : public std::vector<CPVRTimerInfoTag>
+class CPVRTimers : public std::vector<CPVRTimerInfoTag *>
 {
 private:
   CCriticalSection m_critSection;
@@ -88,10 +88,22 @@ public:
    */
   bool ChannelHasTimers(const CPVRChannel &channel);
 
-  /**
-   * Delete all active timers on a channel.
+  /*!
+   * @brief Delete all timers on a channel.
+   * @param channel The channel to delete the timers for.
+   * @param bDeleteRepeating True to delete repeating events too, false otherwise.
+   * @param bCurrentlyActiveOnly True to delete timers that are currently running only.
+   * @return True if timers any were deleted, false otherwise.
    */
-  bool DeleteTimersOnChannel(const CPVRChannel &channel, bool bForce = false);
+  bool DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteRepeating = true, bool bCurrentlyActiveOnly = false);
+
+  /*!
+   * @brief Create a new instant timer on a channel.
+   * @param channel The channel to create the timer on.
+   * @param bStartTimer True to start the timer instantly, false otherwise.
+   * @return The new timer or NULL if it couldn't be created.
+   */
+  CPVRTimerInfoTag *InstantTimer(CPVRChannel *channel, bool bStartTimer = true);
 
   /********** static methods **********/
 
@@ -149,4 +161,4 @@ public:
   CPVRTimerInfoTag *GetMatch(const CPVREpgInfoTag *Epg, int *Match = NULL);
 };
 
-extern CPVRTimers PVRTimers;
+extern CPVRTimers g_PVRTimers;

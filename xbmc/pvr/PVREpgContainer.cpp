@@ -32,8 +32,8 @@ void CPVREpgContainer::Clear(bool bClearDb /* = false */)
 {
   // XXX stop the timers from being updated while clearing tags
   /* remove all pointers to epg tables on timers */
-  for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
-    PVRTimers[iTimerPtr].SetEpgInfoTag(NULL);
+  for (unsigned int iTimerPtr = 0; iTimerPtr < g_PVRTimers.size(); iTimerPtr++)
+    g_PVRTimers.at(iTimerPtr)->SetEpgInfoTag(NULL);
 
   CEpgContainer::Clear(bClearDb);
 }
@@ -116,9 +116,15 @@ CEpg* CPVREpgContainer::CreateEpg(int iEpgId)
 {
   CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups.GetChannelById(iEpgId);
   if (channel)
+  {
     return new CPVREpg(channel);
+  }
   else
+  {
+    CLog::Log(LOGERROR, "PVREpgContainer - %s - cannot find channel '%d'. not creating an EPG table.",
+        __FUNCTION__, iEpgId);
     return NULL;
+  }
 }
 
 const CDateTime &CPVREpgContainer::GetFirstEPGDate(bool bRadio /* = false */)
@@ -159,14 +165,14 @@ int CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFil
   }
 
   /* filter timers */
-  if (filter.m_bIgnorePresentTimers && PVRTimers.size() > 0)
+  if (filter.m_bIgnorePresentTimers && g_PVRTimers.size() > 0)
   {
-    for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
+    for (unsigned int iTimerPtr = 0; iTimerPtr < g_PVRTimers.size(); iTimerPtr++)
     {
       for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
       {
         const CPVREpgInfoTag *epgentry = (CPVREpgInfoTag *) results->Get(iResultPtr)->GetEPGInfoTag();
-        CPVRTimerInfoTag *timer        = &PVRTimers[iTimerPtr];
+        CPVRTimerInfoTag *timer        = g_PVRTimers.at(iTimerPtr);
         if (epgentry)
         {
           if (epgentry->ChannelTag()->ChannelNumber() != timer->ChannelNumber() ||

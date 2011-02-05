@@ -77,7 +77,7 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
 
   if (m_Channel && m_Channel->EPGEnabled() && ScraperName() == "client")
   {
-    if (g_PVRManager.GetClientProps(m_Channel->ClientID())->SupportEPG &&
+    if (g_PVRManager.GetClientProperties(m_Channel->ClientID())->SupportEPG &&
         g_PVRManager.Clients()->find(m_Channel->ClientID())->second->ReadyToUse())
     {
       bGrabSuccess = g_PVRManager.Clients()->find(m_Channel->ClientID())->second->GetEPGForChannel(*m_Channel, this, start, end) == PVR_ERROR_NO_ERROR;

@@ -663,6 +663,8 @@ void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings)
       , recording.description.c_str());
 
   recordings[recording.id] = recording;
+
+  PVR->TriggerTimerUpdate();
 }
 
 void cHTSPSession::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings)
@@ -679,4 +681,6 @@ void cHTSPSession::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings)
   XBMC->Log(LOG_DEBUG, "%s - Recording %i was deleted", __FUNCTION__, id);
 
   recordings.erase(id);
+
+  PVR->TriggerTimerUpdate();
 }

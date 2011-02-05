@@ -91,7 +91,7 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
   else if (fileName.Left(6) == "timers")
   {
-    return PVRTimers.GetDirectory(strPath, items) > 0;
+    return g_PVRTimers.GetDirectory(strPath, items) > 0;
   }
 
   return false;

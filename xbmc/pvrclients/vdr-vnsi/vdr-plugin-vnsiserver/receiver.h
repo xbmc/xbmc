@@ -68,7 +68,7 @@ private:
   dvb_frontend_info m_FrontendInfo;                 /*!> DVB Information about the receiving device (DVB only) */
   v4l2_capability   m_vcap;                         /*!> PVR Information about the receiving device (pvrinput only) */
   cString           m_DeviceString;                 /*!> The name of the receiving device */
-  bool              m_streamChangeSendet;           /*!> Is false until the stream change message is sendet (no packets are sendet until this is set) */
+  bool              m_streamchangeSent;             /*!> Is false until the stream change message is sendet (no packets are sendet until this is set) */
   bool              m_streamReady;                  /*!> Set by the video demuxer after we got video information */
   bool              m_IsAudioOnly;                  /*!> Set to true if streams contains only audio */
   bool              m_IsMPEGPS;                     /*!> TS Stream contains MPEG PS data like from pvrinput */

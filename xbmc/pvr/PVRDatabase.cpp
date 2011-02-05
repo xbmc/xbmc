@@ -203,12 +203,12 @@ bool CPVRDatabase::DeleteClientChannels(int iClientId)
   /* invalid client Id */
   if (iClientId <= 0)
   {
-    CLog::Log(LOGERROR, "PVRDB - %s - invalid client id: %li",
+    CLog::Log(LOGERROR, "PVRDB - %s - invalid client id: %i",
         __FUNCTION__, iClientId);
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all channels from client '%li' from the database",
+  CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all channels from client '%i' from the database",
       __FUNCTION__, iClientId);
 
   CStdString strWhereClause = FormatSQL("iClientId = %u", iClientId);
@@ -343,7 +343,7 @@ bool CPVRDatabase::PersistLastChannel(const CPVRChannel &channel)
   /* invalid channel */
   if (channel.ChannelID() <= 0)
   {
-    CLog::Log(LOGERROR, "PVRDB - %s - invalid channel id: %li",
+    CLog::Log(LOGERROR, "PVRDB - %s - invalid channel id: %i",
         __FUNCTION__, channel.ChannelID());
     return false;
   }
@@ -363,6 +363,22 @@ bool CPVRDatabase::DeleteChannelSettings()
   return DeleteValues("channelsettings");
 }
 
+bool CPVRDatabase::DeleteChannelSettings(const CPVRChannel &channel)
+{
+  bool bReturn = false;
+
+  /* invalid channel */
+  if (channel.ChannelID() <= 0)
+  {
+    CLog::Log(LOGERROR, "PVRDB - %s - invalid channel id: %i",
+        __FUNCTION__, channel.ChannelID());
+    return bReturn;
+  }
+
+  CStdString strWhereClause = FormatSQL("idChannel = %u", channel.ChannelID());
+  return DeleteValues("channelsettings", strWhereClause);
+}
+
 bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings &settings)
 {
   bool bReturn = false;
@@ -370,7 +386,7 @@ bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings
   /* invalid channel */
   if (channel.ChannelID() <= 0)
   {
-    CLog::Log(LOGERROR, "PVRDB - %s - invalid channel id: %li",
+    CLog::Log(LOGERROR, "PVRDB - %s - invalid channel id: %i",
         __FUNCTION__, channel.ChannelID());
     return bReturn;
   }
@@ -414,7 +430,7 @@ bool CPVRDatabase::PersistChannelSettings(const CPVRChannel &channel, const CVid
   /* invalid channel */
   if (channel.ChannelID() <= 0)
   {
-    CLog::Log(LOGERROR, "PVRDB - %s - invalid channel id: %li",
+    CLog::Log(LOGERROR, "PVRDB - %s - invalid channel id: %i",
         __FUNCTION__, channel.ChannelID());
     return false;
   }

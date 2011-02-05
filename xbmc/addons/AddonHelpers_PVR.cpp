@@ -239,7 +239,7 @@ void CAddonHelpers_PVR::PVRTriggerTimerUpdate(void *addonData)
 
   CAddonHelpers_PVR* addonHelper = addon->GetHelperPVR();
 
-  g_PVRManager.TriggerTimersUpdate(false);
+  g_PVRManager.TriggerTimersUpdate();
   CLog::Log(LOGDEBUG, "%s: %s-%s - Triggered Timer Update", __FUNCTION__, TranslateType(addonHelper->m_addon->Type()).c_str(), addonHelper->m_addon->Name().c_str());
 }
 
@@ -254,7 +254,7 @@ void CAddonHelpers_PVR::PVRTriggerRecordingUpdate(void *addonData)
 
   CAddonHelpers_PVR* addonHelper = addon->GetHelperPVR();
 
-  g_PVRManager.TriggerRecordingsUpdate(false);
+  g_PVRManager.TriggerRecordingsUpdate();
   CLog::Log(LOGDEBUG, "%s: %s-%s - Triggered Recording Update", __FUNCTION__, TranslateType(addonHelper->m_addon->Type()).c_str(), addonHelper->m_addon->Name().c_str());
 }
 

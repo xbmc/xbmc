@@ -210,7 +210,7 @@ bool CPVRTimerInfoTag::AddToClient() const
       throw err;
 
     if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
-      g_PVRManager.TriggerRecordingsUpdate(false);
+      g_PVRManager.TriggerRecordingsUpdate();
 
     return true;
   }
@@ -285,7 +285,7 @@ bool CPVRTimerInfoTag::UpdateOnClient() const
       throw err;
 
     if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
-      g_PVRManager.TriggerRecordingsUpdate(false);
+      g_PVRManager.TriggerRecordingsUpdate();
 
     return true;
   }
@@ -351,69 +351,6 @@ bool CPVRTimerInfoTag::SetDuration(int iDuration)
   }
 
   return false;
-}
-
-CPVRTimerInfoTag *CPVRTimerInfoTag::InstantTimer()
-{
-  /* create a new timer */
-  CPVRTimerInfoTag *newTag = new CPVRTimerInfoTag();
-  if (!newTag)
-  {
-    CLog::Log(LOGERROR, "%s - couldn't create new timer", __FUNCTION__);
-    return NULL;
-  }
-
-  CFileItem *curPlayingChannel = g_PVRManager.GetCurrentPlayingItem();
-  const CPVRChannel *channel = (curPlayingChannel) ? curPlayingChannel->GetPVRChannelInfoTag(): NULL;
-  if (!channel)
-  {
-    CLog::Log(LOGDEBUG, "%s - couldn't find current playing channel", __FUNCTION__);
-    channel = g_PVRChannelGroups.GetGroupAllTV()->GetByChannelNumber(1);
-
-    if (!channel)
-    {
-      CLog::Log(LOGERROR, "%s - cannot find any channels",
-          __FUNCTION__);
-    }
-  }
-
-  int iDuration = g_guiSettings.GetInt("pvrrecord.instantrecordtime");
-  if (!iDuration)
-    iDuration   = 180; /* default to 180 minutes */
-
-  int iPriority = g_guiSettings.GetInt("pvrrecord.defaultpriority");
-  if (!iPriority)
-    iPriority   = 50;  /* default to 50 */
-
-  int iLifetime = g_guiSettings.GetInt("pvrrecord.defaultlifetime");
-  if (!iLifetime)
-    iLifetime   = 30;  /* default to 30 days */
-
-  /* set the timer data */
-  newTag->m_iClientIndex   = -1;
-  newTag->m_bIsActive      = true;
-  newTag->m_strTitle       = g_localizeStrings.Get(19056);
-  newTag->m_iChannelNumber = channel->ChannelNumber();
-  newTag->m_iClientNumber  = channel->ClientChannelNumber();
-  newTag->m_iClientID      = channel->ClientID();
-  newTag->m_bIsRadio       = channel->IsRadio();
-  newTag->m_StartTime      = CDateTime::GetCurrentDateTime();
-  newTag->SetDuration(iDuration);
-  newTag->m_iPriority      = iPriority;
-  newTag->m_iLifetime      = iLifetime;
-
-  /* generate summary string */
-  newTag->m_strSummary.Format("%s %s %s %s %s",
-      newTag->m_StartTime.GetAsLocalizedDate(),
-      g_localizeStrings.Get(19159),
-      newTag->m_StartTime.GetAsLocalizedTime("", false),
-      g_localizeStrings.Get(19160),
-      newTag->m_StopTime.GetAsLocalizedTime("", false));
-
-  /* unused only for reference */
-  newTag->m_strFileNameAndPath = "pvr://timers/new";
-
-  return newTag;
 }
 
 CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)

@@ -132,7 +132,7 @@ CDemuxStream* CDVDDemuxPVRClient::GetStream(int iStreamId)
 
 void CDVDDemuxPVRClient::RequestStreams()
 {
-  PVR_STREAMPROPS *props = g_PVRManager.GetCurrentStreamProps();
+  PVR_STREAMPROPS *props = g_PVRManager.GetCurrentStreamProperties();
 
   for (int i = 0; i < props->nstreams; ++i)
   {
