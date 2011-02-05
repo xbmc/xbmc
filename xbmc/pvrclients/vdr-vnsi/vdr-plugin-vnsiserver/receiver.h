@@ -79,8 +79,8 @@ private:
     uint32_t opcode;
     uint32_t id;
     uint32_t duration;
-    int64_t dts;
     int64_t pts;
+    int64_t dts;
     uint32_t length;
   } m_streamHeader;
 
