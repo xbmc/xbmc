@@ -300,7 +300,7 @@ void CPVRManager::UpdateTimers(void)
 {
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating timers", __FUNCTION__);
 
-  PVRTimers.Update();
+  g_PVRTimers.Update();
   UpdateRecordingsCache();
   UpdateWindow(TV_WINDOW_TIMERS);
 
@@ -372,7 +372,7 @@ void CPVRManager::Process()
     g_PVREpgContainer.Start();
 
     /* get timers from the backends */
-    PVRTimers.Load();
+    g_PVRTimers.Load();
 
     /* get recordings from the backend */
     PVRRecordings.Load();
@@ -417,7 +417,7 @@ void CPVRManager::Cleanup(void)
 
   /* unload the rest */
   PVRRecordings.Unload();
-  PVRTimers.Unload();
+  g_PVRTimers.Unload();
   g_PVRChannelGroups.Unload();
   m_bLoaded = false;
 
@@ -440,7 +440,7 @@ void CPVRManager::UpdateRecordingsCache(void)
   CSingleLock lock(m_critSection);
 
   m_hasRecordings = PVRRecordings.GetNumRecordings() > 0;
-  m_hasTimers = PVRTimers.GetNumTimers() > 0;
+  m_hasTimers = g_PVRTimers.GetNumTimers() > 0;
   m_isRecording = false;
   m_NowRecording.clear();
   m_NextRecording = NULL;
@@ -448,9 +448,9 @@ void CPVRManager::UpdateRecordingsCache(void)
   if (m_hasTimers)
   {
     CDateTime now = CDateTime::GetCurrentDateTime();
-    for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
+    for (unsigned int iTimerPtr = 0; iTimerPtr < g_PVRTimers.size(); iTimerPtr++)
     {
-      CPVRTimerInfoTag *timerTag = PVRTimers.at(iTimerPtr);
+      CPVRTimerInfoTag *timerTag = g_PVRTimers.at(iTimerPtr);
       if (timerTag->Active())
       {
         if (timerTag->Start() <= now && timerTag->Stop() > now)
@@ -627,7 +627,7 @@ const char *CPVRManager::CharInfoTotalDiskSpace(void)
 const char *CPVRManager::CharInfoNextTimer(void)
 {
   static CStdString strReturn = "";
-  CPVRTimerInfoTag *next = PVRTimers.GetNextActiveTimer();
+  CPVRTimerInfoTag *next = g_PVRTimers.GetNextActiveTimer();
   if (next != NULL)
   {
     m_nextTimer.Format("%s %s %s %s", g_localizeStrings.Get(19106),
@@ -1163,7 +1163,7 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
     /* timers are supported on this channel */
     if (bOnOff && !channel->IsRecording())
     {
-      CPVRTimerInfoTag *newTimer = PVRTimers.InstantTimer(channel);
+      CPVRTimerInfoTag *newTimer = g_PVRTimers.InstantTimer(channel);
       if (!newTimer)
         CGUIDialogOK::ShowAndGetInput(19033,0,19164,0);
       else
@@ -1172,7 +1172,7 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
     else if (!bOnOff && channel->IsRecording())
     {
       /* delete active timers */
-      bReturn = PVRTimers.DeleteTimersOnChannel(*channel, false, true);
+      bReturn = g_PVRTimers.DeleteTimersOnChannel(*channel, false, true);
     }
   }
 

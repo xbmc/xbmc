@@ -93,9 +93,9 @@ bool CPVRChannelGroupInternal::Update()
 bool CPVRChannelGroupInternal::UpdateTimers(void)
 {
   /* update the timers with the new channel numbers */
-  for (unsigned int ptr = 0; ptr < PVRTimers.size(); ptr++)
+  for (unsigned int ptr = 0; ptr < g_PVRTimers.size(); ptr++)
   {
-    CPVRTimerInfoTag *timer = PVRTimers.at(ptr);
+    CPVRTimerInfoTag *timer = g_PVRTimers.at(ptr);
     const CPVRChannel *tag = GetByClient(timer->Number(), timer->ClientID());
     if (tag)
       timer->SetNumber(tag->ChannelNumber());
@@ -157,7 +157,7 @@ bool CPVRChannelGroupInternal::HideChannel(CPVRChannel *channel, bool bShowDialo
     return bReturn;
 
   /* check if there are active timers on this channel if we are hiding it */
-  if (!channel->IsHidden() && PVRTimers.ChannelHasTimers(*channel))
+  if (!channel->IsHidden() && g_PVRTimers.ChannelHasTimers(*channel))
   {
     if (bShowDialog)
     {
@@ -176,7 +176,7 @@ bool CPVRChannelGroupInternal::HideChannel(CPVRChannel *channel, bool bShowDialo
     }
 
     /* delete the timers */
-    PVRTimers.DeleteTimersOnChannel(*channel);
+    g_PVRTimers.DeleteTimersOnChannel(*channel);
   }
 
   /* check if this channel is currently playing if we are hiding it */

@@ -161,4 +161,4 @@ public:
   CPVRTimerInfoTag *GetMatch(const CPVREpgInfoTag *Epg, int *Match = NULL);
 };
 
-extern CPVRTimers PVRTimers;
+extern CPVRTimers g_PVRTimers;

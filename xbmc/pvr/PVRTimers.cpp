@@ -30,7 +30,7 @@
 #include "PVRManager.h"
 #include "PVREpgInfoTag.h"
 
-CPVRTimers PVRTimers;
+CPVRTimers g_PVRTimers;
 
 CPVRTimers::CPVRTimers(void)
 {

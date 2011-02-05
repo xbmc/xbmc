@@ -62,9 +62,9 @@ bool CPVREpgInfoTag::HasTimer(void) const
 
   if (m_Timer == NULL)
   {
-    for (unsigned int i = 0; i < PVRTimers.size(); ++i)
+    for (unsigned int i = 0; i < g_PVRTimers.size(); ++i)
     {
-      if (PVRTimers.at(i)->EpgInfoTag() == this)
+      if (g_PVRTimers.at(i)->EpgInfoTag() == this)
       {
         bReturn = true;
         break;

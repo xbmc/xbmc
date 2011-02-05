@@ -247,7 +247,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
     }
     else if (iControl == CONTROL_BTNTIMERS)
     {
-      PVRTimers.Update();
+      g_PVRTimers.Update();
       UpdateTimers();
       return true;
     }
@@ -304,8 +304,8 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
             CFileItem *item = new CFileItem(*newtimer);
 
-            if (PVRTimers.AddTimer(*item))
-              PVRTimers.Update();
+            if (g_PVRTimers.AddTimer(*item))
+              g_PVRTimers.Update();
           }
           else
           {
@@ -486,7 +486,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
            open settings for selected timer entry */
         if (pItem->m_strPath == "pvr://timers/add.timer")
         {
-          CPVRTimerInfoTag *newtimer = PVRTimers.InstantTimer(NULL, false);
+          CPVRTimerInfoTag *newtimer = g_PVRTimers.InstantTimer(NULL, false);
           if (!newtimer)
           {
             CLog::Log(LOGWARNING,"%s - could not create instant timer",
@@ -498,7 +498,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
           if (ShowTimerSettings(item))
           {
             /* Add timer to backend */
-            PVRTimers.AddTimer(*item);
+            g_PVRTimers.AddTimer(*item);
             UpdateTimers();
           }
         }
@@ -509,7 +509,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
           if (ShowTimerSettings(&fileitem))
           {
             /* Update timer on pvr backend */
-            PVRTimers.UpdateTimer(fileitem);
+            g_PVRTimers.UpdateTimer(fileitem);
             UpdateTimers();
           }
         }
@@ -540,7 +540,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
           if (pDialog->IsConfirmed())
           {
-            PVRTimers.DeleteTimer(*pItem);
+            g_PVRTimers.DeleteTimer(*pItem);
             UpdateTimers();
           }
           return true;
@@ -602,8 +602,8 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*epgTag);
             CFileItem *item = new CFileItem(*newtimer);
 
-            if (PVRTimers.AddTimer(*item))
-              PVRTimers.Update();
+            if (g_PVRTimers.AddTimer(*item))
+              g_PVRTimers.Update();
           }
           else
             CGUIDialogOK::ShowAndGetInput(19033,19034,0,0);
@@ -1039,7 +1039,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (ShowTimerSettings(&fileitem))
       {
-        PVRTimers.UpdateTimer(fileitem);
+        g_PVRTimers.UpdateTimer(fileitem);
         UpdateTimers();
       }
     }
@@ -1055,12 +1055,12 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_TIMERS)
     {
-      CPVRTimerInfoTag *newtimer = PVRTimers.InstantTimer(NULL, false);
+      CPVRTimerInfoTag *newtimer = g_PVRTimers.InstantTimer(NULL, false);
       CFileItem *item = new CFileItem(*newtimer);
 
       if (ShowTimerSettings(item))
       {
-        PVRTimers.AddTimer(*item);
+        g_PVRTimers.AddTimer(*item);
         UpdateTimers();
       }
 
@@ -1084,7 +1084,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
     CGUIDialogOK::ShowAndGetInput(19033, 19040, 0, return_str_id);
 
-    PVRTimers.UpdateTimer(*pItem);
+    g_PVRTimers.UpdateTimer(*pItem);
     UpdateTimers(); /** Force list update **/
     return true;
   }
@@ -1095,7 +1095,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString strNewName = pItem->GetPVRTimerInfoTag()->Title();
       if (CGUIDialogKeyboard::ShowAndGetInput(strNewName, g_localizeStrings.Get(19042), false))
       {
-        PVRTimers.RenameTimer(*pItem, strNewName);
+        g_PVRTimers.RenameTimer(*pItem, strNewName);
         UpdateTimers();
       }
 
@@ -1130,7 +1130,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
         if (!pDialog->IsConfirmed()) return false;
 
-        PVRTimers.DeleteTimer(*pItem);
+        g_PVRTimers.DeleteTimer(*pItem);
 
         UpdateTimers();
       }
@@ -1202,8 +1202,8 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
               CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
               CFileItem *item = new CFileItem(*newtimer);
 
-              if (PVRTimers.AddTimer(*item))
-                PVRTimers.Update();
+              if (g_PVRTimers.AddTimer(*item))
+                g_PVRTimers.Update();
             }
           }
         }
@@ -1226,7 +1226,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         {
           CFileItemList timerlist;
 
-          if (PVRTimers.GetTimers(&timerlist) > 0)
+          if (g_PVRTimers.GetTimers(&timerlist) > 0)
           {
             for (int i = 0; i < timerlist.Size(); ++i)
             {
@@ -1235,8 +1235,8 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
                   (timerlist[i]->GetPVRTimerInfoTag()->Stop() >= pItem->GetEPGInfoTag()->End()) &&
                   (timerlist[i]->GetPVRTimerInfoTag()->IsRepeating() != true))
               {
-                if (PVRTimers.DeleteTimer(*timerlist[i]))
-                  PVRTimers.Update();
+                if (g_PVRTimers.DeleteTimer(*timerlist[i]))
+                  g_PVRTimers.Update();
               }
             }
           }
