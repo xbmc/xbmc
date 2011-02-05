@@ -467,57 +467,278 @@ void CPVRManager::UpdateRecordingsCache(void)
   }
 }
 
-const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
+const char *CPVRManager::CharInfoNowRecordingTitle(void)
 {
-  if      (dwInfo == PVR_NOW_RECORDING_TITLE)
+  if (m_recordingToggleStart == 0)
   {
-    if (m_recordingToggleStart == 0)
+    UpdateRecordingsCache();
+    m_recordingToggleStart = CTimeUtils::GetTimeMS();
+    m_recordingToggleCurrent = 0;
+  }
+  else
+  {
+    if (CTimeUtils::GetTimeMS() - m_recordingToggleStart > INFO_TOGGLE_TIME)
     {
       UpdateRecordingsCache();
-      m_recordingToggleStart = CTimeUtils::GetTimeMS();
-      m_recordingToggleCurrent = 0;
-    }
-    else
-    {
-      if (CTimeUtils::GetTimeMS() - m_recordingToggleStart > INFO_TOGGLE_TIME)
+      if (m_NowRecording.size() > 0)
       {
-        UpdateRecordingsCache();
-        if (m_NowRecording.size() > 0)
-        {
-          m_recordingToggleCurrent++;
-          if (m_recordingToggleCurrent > m_NowRecording.size()-1)
-            m_recordingToggleCurrent = 0;
+        m_recordingToggleCurrent++;
+        if (m_recordingToggleCurrent > m_NowRecording.size()-1)
+          m_recordingToggleCurrent = 0;
 
-          m_recordingToggleStart = CTimeUtils::GetTimeMS();
-        }
+        m_recordingToggleStart = CTimeUtils::GetTimeMS();
       }
     }
+  }
 
-    if (m_NowRecording.size() >= m_recordingToggleCurrent + 1)
-      return m_NowRecording[m_recordingToggleCurrent]->Title();
-    else
-      return "";
-  }
-  else if (dwInfo == PVR_NOW_RECORDING_CHANNEL)
+  return (m_NowRecording.size() >= m_recordingToggleCurrent + 1) ?
+    m_NowRecording[m_recordingToggleCurrent]->Title() :
+    "";
+}
+
+const char *CPVRManager::CharInfoNowRecordingChannel(void)
+{
+  static CStdString strReturn = "";
+
+  if (m_NowRecording.size() > 0)
   {
-    if (m_NowRecording.size() > 0)
-    {
-      CPVRTimerInfoTag * timerTag = m_NowRecording[m_recordingToggleCurrent];
-      return timerTag ? timerTag->ChannelName() : "";
-    }
-    else
-      return "";
+    CPVRTimerInfoTag * timerTag = m_NowRecording[m_recordingToggleCurrent];
+    strReturn = timerTag ? timerTag->ChannelName() : "";
   }
-  else if (dwInfo == PVR_NOW_RECORDING_DATETIME)
+
+  return strReturn;
+}
+
+const char *CPVRManager::CharInfoNowRecordingDateTime(void)
+{
+  static CStdString strReturn = "";
+
+  if (m_NowRecording.size() > 0)
   {
-    if (m_NowRecording.size() > 0)
-    {
-      CPVRTimerInfoTag *timerTag = m_NowRecording[m_recordingToggleCurrent];
-      return timerTag ? timerTag->Start().GetAsLocalizedDateTime(false, false) : "";
-    }
-    else
-      return "";
+    CPVRTimerInfoTag *timerTag = m_NowRecording[m_recordingToggleCurrent];
+    strReturn = timerTag ? timerTag->Start().GetAsLocalizedDateTime(false, false) : "";
   }
+
+  return strReturn;
+}
+
+const char *CPVRManager::CharInfoBackendNumber(void)
+{
+  if (m_infoToggleStart == 0)
+  {
+    m_infoToggleStart = CTimeUtils::GetTimeMS();
+    m_infoToggleCurrent = 0;
+  }
+  else
+  {
+    if (CTimeUtils::GetTimeMS() - m_infoToggleStart > INFO_TOGGLE_TIME)
+    {
+      if (m_clients.size() > 0)
+      {
+        m_infoToggleCurrent++;
+        if (m_infoToggleCurrent > m_clients.size()-1)
+          m_infoToggleCurrent = 0;
+
+        CLIENTMAPITR itr = m_clients.begin();
+        for (unsigned int i = 0; i < m_infoToggleCurrent; i++)
+          itr++;
+
+        long long kBTotal = 0;
+        long long kBUsed  = 0;
+        if (m_clients[(*itr).first]->GetDriveSpace(&kBTotal, &kBUsed) == PVR_ERROR_NO_ERROR)
+        {
+          kBTotal /= 1024; // Convert to MBytes
+          kBUsed /= 1024;  // Convert to MBytes
+          m_backendDiskspace.Format("%s %.1f GByte - %s: %.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
+        }
+        else
+        {
+          m_backendDiskspace = g_localizeStrings.Get(19055);
+        }
+
+        int NumChannels = m_clients[(*itr).first]->GetNumChannels();
+        if (NumChannels >= 0)
+          m_backendChannels.Format("%i", NumChannels);
+        else
+          m_backendChannels = g_localizeStrings.Get(161);
+
+        int NumTimers = m_clients[(*itr).first]->GetNumTimers();
+        if (NumTimers >= 0)
+          m_backendTimers.Format("%i", NumTimers);
+        else
+          m_backendTimers = g_localizeStrings.Get(161);
+
+        int NumRecordings = m_clients[(*itr).first]->GetNumRecordings();
+        if (NumRecordings >= 0)
+          m_backendRecordings.Format("%i", NumRecordings);
+        else
+          m_backendRecordings = g_localizeStrings.Get(161);
+
+        m_backendName         = m_clients[(*itr).first]->GetBackendName();
+        m_backendVersion      = m_clients[(*itr).first]->GetBackendVersion();
+        m_backendHost         = m_clients[(*itr).first]->GetConnectionString();
+      }
+      else
+      {
+        m_backendName         = "";
+        m_backendVersion      = "";
+        m_backendHost         = "";
+        m_backendDiskspace    = "";
+        m_backendTimers       = "";
+        m_backendRecordings   = "";
+        m_backendChannels     = "";
+      }
+      m_infoToggleStart = CTimeUtils::GetTimeMS();
+    }
+  }
+
+  static CStdString backendClients;
+  if (m_clients.size() > 0)
+    backendClients.Format("%u %s %u", m_infoToggleCurrent+1, g_localizeStrings.Get(20163), m_clients.size());
+  else
+    backendClients = g_localizeStrings.Get(14023);
+
+  return backendClients;
+}
+
+const char *CPVRManager::CharInfoTotalDiskSpace(void)
+{
+  long long kBTotal = 0;
+  long long kBUsed  = 0;
+  CLIENTMAPITR itr = m_clients.begin();
+  while (itr != m_clients.end())
+  {
+    long long clientKBTotal = 0;
+    long long clientKBUsed  = 0;
+
+    if (m_clients[(*itr).first]->GetDriveSpace(&clientKBTotal, &clientKBUsed) == PVR_ERROR_NO_ERROR)
+    {
+      kBTotal += clientKBTotal;
+      kBUsed += clientKBUsed;
+    }
+    itr++;
+  }
+  kBTotal /= 1024; // Convert to MBytes
+  kBUsed /= 1024;  // Convert to MBytes
+  m_totalDiskspace.Format("%s %0.1f GByte - %s: %0.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
+  return m_totalDiskspace;
+}
+
+const char *CPVRManager::CharInfoNextTimer(void)
+{
+  static CStdString strReturn = "";
+  CPVRTimerInfoTag *next = PVRTimers.GetNextActiveTimer();
+  if (next != NULL)
+  {
+    m_nextTimer.Format("%s %s %s %s", g_localizeStrings.Get(19106),
+        next->Start().GetAsLocalizedDate(true),
+        g_localizeStrings.Get(19107),
+        next->Start().GetAsLocalizedTime("HH:mm", false));
+    strReturn = m_nextTimer;
+  }
+
+  return strReturn;
+}
+
+const char *CPVRManager::CharInfoPlayingDuration(void)
+{
+  m_playingDuration = StringUtils::SecondsToTimeString(GetTotalTime()/1000, TIME_FORMAT_GUESS);
+  return m_playingDuration.c_str();
+}
+
+const char *CPVRManager::CharInfoPlayingTime(void)
+{
+  m_playingTime = StringUtils::SecondsToTimeString(GetStartTime()/1000, TIME_FORMAT_GUESS);
+  return m_playingTime.c_str();
+}
+
+const char *CPVRManager::CharInfoVideoBR(void)
+{
+  static CStdString strReturn = "";
+  if (m_qualityInfo.video_bitrate > 0)
+    strReturn.Format("%.2f Mbit/s", m_qualityInfo.video_bitrate);
+  return strReturn;
+}
+
+const char *CPVRManager::CharInfoAudioBR(void)
+{
+  static CStdString strReturn = "";
+  if (m_qualityInfo.audio_bitrate > 0)
+    strReturn.Format("%.0f kbit/s", m_qualityInfo.audio_bitrate);
+  return strReturn;
+}
+
+const char *CPVRManager::CharInfoDolbyBR(void)
+{
+  static CStdString strReturn = "";
+  if (m_qualityInfo.dolby_bitrate > 0)
+    strReturn.Format("%.0f kbit/s", m_qualityInfo.dolby_bitrate);
+  return strReturn;
+}
+
+const char *CPVRManager::CharInfoSignal(void)
+{
+  static CStdString strReturn = "";
+  if (m_qualityInfo.signal > 0)
+    strReturn.Format("%d %%", m_qualityInfo.signal / 655);
+  return strReturn;
+}
+
+const char *CPVRManager::CharInfoSNR(void)
+{
+  static CStdString strReturn = "";
+  if (m_qualityInfo.snr > 0)
+    strReturn.Format("%d %%", m_qualityInfo.snr / 655);
+  return strReturn;
+}
+
+const char *CPVRManager::CharInfoBER(void)
+{
+  static CStdString strReturn;
+  strReturn.Format("%08X", m_qualityInfo.ber);
+  return strReturn;
+}
+
+const char *CPVRManager::CharInfoUNC(void)
+{
+  static CStdString strReturn;
+  strReturn.Format("%08X", m_qualityInfo.unc);
+  return strReturn;
+}
+
+const char *CPVRManager::CharInfoFrontendName(void)
+{
+  static CStdString strReturn = m_qualityInfo.frontend_name;
+  if (strReturn == "")
+    strReturn = g_localizeStrings.Get(13205);
+
+  return strReturn;
+}
+
+const char *CPVRManager::CharInfoFrontendStatus(void)
+{
+  static CStdString strReturn = m_qualityInfo.frontend_status;
+  if (strReturn == "")
+    strReturn = g_localizeStrings.Get(13205);
+
+  return strReturn;
+}
+
+const char *CPVRManager::CharInfoEncryption(void)
+{
+  static CStdString strReturn = "";
+
+  if (m_currentPlayingChannel)
+    strReturn = m_currentPlayingChannel->GetPVRChannelInfoTag()->EncryptionName();
+
+  return strReturn;
+}
+
+const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
+{
+  if      (dwInfo == PVR_NOW_RECORDING_TITLE)     return CharInfoNowRecordingTitle();
+  else if (dwInfo == PVR_NOW_RECORDING_CHANNEL)   return CharInfoNowRecordingChannel();
+  else if (dwInfo == PVR_NOW_RECORDING_DATETIME)  return CharInfoNowRecordingDateTime();
   else if (dwInfo == PVR_NEXT_RECORDING_TITLE)    return m_NextRecording ? m_NextRecording->Title() : "";
   else if (dwInfo == PVR_NEXT_RECORDING_CHANNEL)  return m_NextRecording ? m_NextRecording->ChannelName() : "";
   else if (dwInfo == PVR_NEXT_RECORDING_DATETIME) return m_NextRecording ? m_NextRecording->Start().GetAsLocalizedDateTime(false, false) : "";
@@ -528,200 +749,22 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
   else if (dwInfo == PVR_BACKEND_CHANNELS)        return m_backendChannels;
   else if (dwInfo == PVR_BACKEND_TIMERS)          return m_backendTimers;
   else if (dwInfo == PVR_BACKEND_RECORDINGS)      return m_backendRecordings;
-  else if (dwInfo == PVR_BACKEND_NUMBER)
-  {
-    if (m_infoToggleStart == 0)
-    {
-      m_infoToggleStart = CTimeUtils::GetTimeMS();
-      m_infoToggleCurrent = 0;
-    }
-    else
-    {
-      if (CTimeUtils::GetTimeMS() - m_infoToggleStart > INFO_TOGGLE_TIME)
-      {
-        if (m_clients.size() > 0)
-        {
-          m_infoToggleCurrent++;
-          if (m_infoToggleCurrent > m_clients.size()-1)
-            m_infoToggleCurrent = 0;
-
-          CLIENTMAPITR itr = m_clients.begin();
-          for (unsigned int i = 0; i < m_infoToggleCurrent; i++)
-            itr++;
-
-          long long kBTotal = 0;
-          long long kBUsed  = 0;
-          if (m_clients[(*itr).first]->GetDriveSpace(&kBTotal, &kBUsed) == PVR_ERROR_NO_ERROR)
-          {
-            kBTotal /= 1024; // Convert to MBytes
-            kBUsed /= 1024;  // Convert to MBytes
-            m_backendDiskspace.Format("%s %.1f GByte - %s: %.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
-          }
-          else
-          {
-            m_backendDiskspace = g_localizeStrings.Get(19055);
-          }
-
-          int NumChannels = m_clients[(*itr).first]->GetNumChannels();
-          if (NumChannels >= 0)
-            m_backendChannels.Format("%i", NumChannels);
-          else
-            m_backendChannels = g_localizeStrings.Get(161);
-
-          int NumTimers = m_clients[(*itr).first]->GetNumTimers();
-          if (NumTimers >= 0)
-            m_backendTimers.Format("%i", NumTimers);
-          else
-            m_backendTimers = g_localizeStrings.Get(161);
-
-          int NumRecordings = m_clients[(*itr).first]->GetNumRecordings();
-          if (NumRecordings >= 0)
-            m_backendRecordings.Format("%i", NumRecordings);
-          else
-            m_backendRecordings = g_localizeStrings.Get(161);
-
-          m_backendName         = m_clients[(*itr).first]->GetBackendName();
-          m_backendVersion      = m_clients[(*itr).first]->GetBackendVersion();
-          m_backendHost         = m_clients[(*itr).first]->GetConnectionString();
-        }
-        else
-        {
-          m_backendName         = "";
-          m_backendVersion      = "";
-          m_backendHost         = "";
-          m_backendDiskspace    = "";
-          m_backendTimers       = "";
-          m_backendRecordings   = "";
-          m_backendChannels     = "";
-        }
-        m_infoToggleStart = CTimeUtils::GetTimeMS();
-      }
-    }
-
-    static CStdString backendClients;
-    if (m_clients.size() > 0)
-      backendClients.Format("%u %s %u", m_infoToggleCurrent+1, g_localizeStrings.Get(20163), m_clients.size());
-    else
-      backendClients = g_localizeStrings.Get(14023);
-
-    return backendClients;
-  }
-  else if (dwInfo == PVR_TOTAL_DISKSPACE)
-  {
-    long long kBTotal = 0;
-    long long kBUsed  = 0;
-    CLIENTMAPITR itr = m_clients.begin();
-    while (itr != m_clients.end())
-    {
-      long long clientKBTotal = 0;
-      long long clientKBUsed  = 0;
-
-      if (m_clients[(*itr).first]->GetDriveSpace(&clientKBTotal, &clientKBUsed) == PVR_ERROR_NO_ERROR)
-      {
-        kBTotal += clientKBTotal;
-        kBUsed += clientKBUsed;
-      }
-      itr++;
-    }
-    kBTotal /= 1024; // Convert to MBytes
-    kBUsed /= 1024;  // Convert to MBytes
-    m_totalDiskspace.Format("%s %0.1f GByte - %s: %0.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
-    return m_totalDiskspace;
-  }
-  else if (dwInfo == PVR_NEXT_TIMER)
-  {
-    CPVRTimerInfoTag *next = PVRTimers.GetNextActiveTimer();
-    if (next != NULL)
-    {
-      m_nextTimer.Format("%s %s %s %s", g_localizeStrings.Get(19106)
-                         , next->Start().GetAsLocalizedDate(true)
-                         , g_localizeStrings.Get(19107)
-                         , next->Start().GetAsLocalizedTime("HH:mm", false));
-      return m_nextTimer;
-    }
-  }
-  else if (dwInfo == PVR_PLAYING_DURATION)
-  {
-    m_playingDuration = StringUtils::SecondsToTimeString(GetTotalTime()/1000, TIME_FORMAT_GUESS);
-    return m_playingDuration.c_str();
-  }
-  else if (dwInfo == PVR_PLAYING_TIME)
-  {
-    m_playingTime = StringUtils::SecondsToTimeString(GetStartTime()/1000, TIME_FORMAT_GUESS);
-    return m_playingTime.c_str();
-  }
-  else if (dwInfo == PVR_ACTUAL_STREAM_VIDEO_BR)
-  {
-    static CStdString strBitrate = "";
-    if (m_qualityInfo.video_bitrate > 0)
-      strBitrate.Format("%.2f Mbit/s", m_qualityInfo.video_bitrate);
-    return strBitrate;
-  }
-  else if (dwInfo == PVR_ACTUAL_STREAM_AUDIO_BR)
-  {
-    CStdString strBitrate = "";
-    if (m_qualityInfo.audio_bitrate > 0)
-      strBitrate.Format("%.0f kbit/s", m_qualityInfo.audio_bitrate);
-    return strBitrate;
-  }
-  else if (dwInfo == PVR_ACTUAL_STREAM_DOLBY_BR)
-  {
-    CStdString strBitrate = "";
-    if (m_qualityInfo.dolby_bitrate > 0)
-      strBitrate.Format("%.0f kbit/s", m_qualityInfo.dolby_bitrate);
-    return strBitrate;
-  }
-  else if (dwInfo == PVR_ACTUAL_STREAM_SIG)
-  {
-    CStdString strSignal = "";
-    if (m_qualityInfo.signal > 0)
-      strSignal.Format("%d %%", m_qualityInfo.signal / 655);
-    return strSignal;
-  }
-  else if (dwInfo == PVR_ACTUAL_STREAM_SNR)
-  {
-    CStdString strSNR = "";
-    if (m_qualityInfo.snr > 0)
-      strSNR.Format("%d %%", m_qualityInfo.snr / 655);
-    return strSNR;
-  }
-  else if (dwInfo == PVR_ACTUAL_STREAM_BER)
-  {
-    CStdString strBER;
-    strBER.Format("%08X", m_qualityInfo.ber);
-    return strBER;
-  }
-  else if (dwInfo == PVR_ACTUAL_STREAM_UNC)
-  {
-    CStdString strUNC;
-    strUNC.Format("%08X", m_qualityInfo.unc);
-    return strUNC;
-  }
-  else if (dwInfo == PVR_ACTUAL_STREAM_CLIENT)
-  {
-    return m_playingClientName;
-  }
-  else if (dwInfo == PVR_ACTUAL_STREAM_DEVICE)
-  {
-    CStdString string = m_qualityInfo.frontend_name;
-    if (string == "")
-      return g_localizeStrings.Get(13205);
-    else
-      return string;
-  }
-  else if (dwInfo == PVR_ACTUAL_STREAM_STATUS)
-  {
-    CStdString string = m_qualityInfo.frontend_status;
-    if (string == "")
-      return g_localizeStrings.Get(13205);
-    else
-      return string;
-  }
-  else if (dwInfo == PVR_ACTUAL_STREAM_CRYPTION)
-  {
-    if (m_currentPlayingChannel)
-      return m_currentPlayingChannel->GetPVRChannelInfoTag()->EncryptionName();
-  }
+  else if (dwInfo == PVR_BACKEND_NUMBER)          return CharInfoBackendNumber();
+  else if (dwInfo == PVR_TOTAL_DISKSPACE)         return CharInfoTotalDiskSpace();
+  else if (dwInfo == PVR_NEXT_TIMER)              return CharInfoNextTimer();
+  else if (dwInfo == PVR_PLAYING_DURATION)        return CharInfoPlayingDuration();
+  else if (dwInfo == PVR_PLAYING_TIME)            return CharInfoPlayingTime();
+  else if (dwInfo == PVR_ACTUAL_STREAM_VIDEO_BR)  return CharInfoVideoBR();
+  else if (dwInfo == PVR_ACTUAL_STREAM_AUDIO_BR)  return CharInfoAudioBR();
+  else if (dwInfo == PVR_ACTUAL_STREAM_DOLBY_BR)  return CharInfoDolbyBR();
+  else if (dwInfo == PVR_ACTUAL_STREAM_SIG)       return CharInfoSignal();
+  else if (dwInfo == PVR_ACTUAL_STREAM_SNR)       return CharInfoSNR();
+  else if (dwInfo == PVR_ACTUAL_STREAM_BER)       return CharInfoBER();
+  else if (dwInfo == PVR_ACTUAL_STREAM_UNC)       return CharInfoUNC();
+  else if (dwInfo == PVR_ACTUAL_STREAM_CLIENT)    return m_playingClientName;
+  else if (dwInfo == PVR_ACTUAL_STREAM_DEVICE)    return CharInfoFrontendName();
+  else if (dwInfo == PVR_ACTUAL_STREAM_STATUS)    return CharInfoFrontendStatus();
+  else if (dwInfo == PVR_ACTUAL_STREAM_CRYPTION)  return CharInfoEncryption();
   return "";
 }
 
@@ -759,12 +802,7 @@ bool CPVRManager::TranslateBoolInfo(DWORD dwInfo)
   return bReturn;
 }
 
-
-/*************************************************************/
-/** GENERAL FUNCTIONS                                       **/
-/*************************************************************/
-
-void CPVRManager::StartChannelScan()
+void CPVRManager::StartChannelScan(void)
 {
   std::vector<long> clients;
   int scanningClientID = -1;
@@ -774,7 +812,7 @@ void CPVRManager::StartChannelScan()
   CLIENTMAPITR itr = m_clients.begin();
   while (itr != m_clients.end())
   {
-    if (m_clients[(*itr).first]->ReadyToUse() && GetClientProps(m_clients[(*itr).first]->GetID())->SupportChannelScan)
+    if (m_clients[(*itr).first]->ReadyToUse() && GetClientProperties(m_clients[(*itr).first]->GetID())->SupportChannelScan)
       clients.push_back(m_clients[(*itr).first]->GetID());
 
     itr++;
@@ -905,9 +943,11 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   }
 }
 
-void CPVRManager::ResetEPG()
+void CPVRManager::ResetEPG(void)
 {
+  StopThreads();
   g_PVREpgContainer.Reset();
+  StartThreads();
 }
 
 bool CPVRManager::IsPlayingTV(void)
@@ -934,7 +974,7 @@ bool CPVRManager::IsPlaying(void)
   return (m_currentPlayingChannel || m_currentPlayingRecording);
 }
 
-PVR_SERVERPROPS *CPVRManager::GetCurrentClientProps()
+PVR_SERVERPROPS *CPVRManager::GetCurrentClientProperties(void)
 {
   PVR_SERVERPROPS * props = NULL;
 
@@ -946,7 +986,7 @@ PVR_SERVERPROPS *CPVRManager::GetCurrentClientProps()
   return props;
 }
 
-int CPVRManager::GetCurrentPlayingClientID()
+int CPVRManager::GetCurrentPlayingClientID(void)
 {
   int iReturn = -1;
 
@@ -958,7 +998,7 @@ int CPVRManager::GetCurrentPlayingClientID()
   return iReturn;
 }
 
-PVR_STREAMPROPS *CPVRManager::GetCurrentStreamProps()
+PVR_STREAMPROPS *CPVRManager::GetCurrentStreamProperties(void)
 {
   PVR_STREAMPROPS *props = NULL;
 
@@ -973,7 +1013,7 @@ PVR_STREAMPROPS *CPVRManager::GetCurrentStreamProps()
   return props;
 }
 
-CFileItem *CPVRManager::GetCurrentPlayingItem()
+CFileItem *CPVRManager::GetCurrentPlayingItem(void)
 {
   CFileItem *item = NULL;
 
@@ -985,7 +1025,7 @@ CFileItem *CPVRManager::GetCurrentPlayingItem()
   return item;
 }
 
-CStdString CPVRManager::GetCurrentInputFormat()
+CStdString CPVRManager::GetCurrentInputFormat(void)
 {
   if (m_currentPlayingChannel)
     return m_currentPlayingChannel->GetPVRChannelInfoTag()->InputFormat();
@@ -1065,7 +1105,7 @@ void CPVRManager::ProcessMenuHooks(int iClientID)
   }
 }
 
-int CPVRManager::GetPreviousChannel()
+int CPVRManager::GetPreviousChannel(void)
 {
   //XXX this must be the craziest way to store the last channel
   int iReturn = -1;
@@ -1084,7 +1124,7 @@ int CPVRManager::GetPreviousChannel()
   return iReturn;
 }
 
-bool CPVRManager::CanRecordInstantly()
+bool CPVRManager::CanRecordInstantly(void)
 {
   bool bReturn = false;
 
@@ -1097,7 +1137,7 @@ bool CPVRManager::CanRecordInstantly()
   return bReturn;
 }
 
-bool CPVRManager::IsRecordingOnPlayingChannel()
+bool CPVRManager::IsRecordingOnPlayingChannel(void)
 {
   bool bReturn = false;
 
@@ -1115,15 +1155,16 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
   if (!m_currentPlayingChannel)
     return false;
 
-  CPVRChannel* tag = m_currentPlayingChannel->GetPVRChannelInfoTag();
-  if (m_clientsProps[tag->ClientID()].SupportTimers)
+  CPVRChannel *channel = (CPVRChannel *) m_currentPlayingChannel->GetPVRChannelInfoTag();
+  if (m_clientsProps[channel->ClientID()].SupportTimers)
   {
-    const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio());
+    /* timers are supported on this channel */
 
-    if (bOnOff && tag->IsRecording() == false)
+    if (bOnOff && !channel->IsRecording())
     {
+      /* add a new timer */
       CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::InstantTimer();
-      newtimer->SetTitle(tag->ChannelName());
+      newtimer->SetTitle(channel->ChannelName());
       CFileItem *item = new CFileItem(*newtimer);
 
       if (!CPVRTimers::AddTimer(*item))
@@ -1132,23 +1173,22 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
         return false;
       }
 
-      channels->at(tag->ChannelNumber()-1)->SetRecording(true); /* Set in channel list */
-      tag->SetRecording(true);                          /* and also in current playing item */
+      channel->SetRecording(true);
       return true;
     }
-    else if (tag->IsRecording() == true)
+    else if (!bOnOff && channel->IsRecording())
     {
-      for (unsigned int i = 0; i < PVRTimers.size(); ++i)
+      for (unsigned int iTimerPtr = 0; iTimerPtr < PVRTimers.size(); iTimerPtr++)
       {
-        if (!PVRTimers[i].IsRepeating() && PVRTimers[i].Active() &&
-            (PVRTimers[i].Number() == tag->ChannelNumber()) &&
-            (PVRTimers[i].Start() <= CDateTime::GetCurrentDateTime()) &&
-            (PVRTimers[i].Stop() >= CDateTime::GetCurrentDateTime()))
+        // XXX move to the timer class
+        if (!PVRTimers[iTimerPtr].IsRepeating() && PVRTimers[iTimerPtr].Active() &&
+            (PVRTimers[iTimerPtr].Number() == channel->ChannelNumber()) &&
+            (PVRTimers[iTimerPtr].Start() <= CDateTime::GetCurrentDateTime()) &&
+            (PVRTimers[iTimerPtr].Stop() >= CDateTime::GetCurrentDateTime()))
         {
-          if (CPVRTimers::DeleteTimer(PVRTimers[i], true))
+          if (CPVRTimers::DeleteTimer(PVRTimers[iTimerPtr], true))
           {
-            channels->at(tag->ChannelNumber()-1)->SetRecording(false);  /* Set in channel list */
-            tag->SetRecording(false);                           /* and also in current playing item */
+            channel->SetRecording(false);
             return true;
           }
         }
@@ -1348,7 +1388,7 @@ bool CPVRManager::OpenRecordedStream(const CPVRRecordingInfoTag* tag)
   return m_clients[tag->ClientID()]->OpenRecordedStream(*tag);
 }
 
-CStdString CPVRManager::GetLiveStreamURL(const CPVRChannel* tag)
+CStdString CPVRManager::GetLiveStreamURL(const CPVRChannel *channel)
 {
   CStdString stream_url;
 
@@ -1361,13 +1401,13 @@ CStdString CPVRManager::GetLiveStreamURL(const CPVRChannel* tag)
     delete m_currentPlayingRecording;
 
   /* Set the new channel information */
-  m_currentPlayingChannel   = new CFileItem(*tag);
+  m_currentPlayingChannel   = new CFileItem(*channel);
   m_currentPlayingRecording = NULL;
   m_scanStart               = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
   ResetQualityData();
 
   /* Retrieve the dynamily generated stream URL from the Client */
-  stream_url = m_clients[tag->ClientID()]->GetLiveStreamURL(*tag);
+  stream_url = m_clients[channel->ClientID()]->GetLiveStreamURL(*channel);
   if (stream_url.IsEmpty())
   {
     delete m_currentPlayingChannel;
@@ -1559,7 +1599,6 @@ bool CPVRManager::UpdateItem(CFileItem& item)
       musictag->SetDuration(epgTagNow->GetDuration());
       musictag->SetURL(channelTag->Path());
       musictag->SetArtist(channelTag->ChannelName());
-    //    musictag->SetAlbum(epgTagNow->m_strBouquet);
       musictag->SetAlbumArtist(channelTag->ChannelName());
       musictag->SetLoaded(true);
       musictag->SetComment("");

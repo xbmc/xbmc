@@ -78,7 +78,7 @@ int CPVRTimers::Update()
   CLIENTMAPITR itr = clients->begin();
   while (itr != clients->end())
   {
-    if (g_PVRManager.GetClientProps((*itr).second->GetID())->SupportTimers)
+    if (g_PVRManager.GetClientProperties((*itr).second->GetID())->SupportTimers)
     {
       if ((*itr).second->GetNumTimers() > 0)
       {
@@ -246,7 +246,7 @@ bool CPVRTimers::AddTimer(const CFileItem &item)
 
 bool CPVRTimers::AddTimer(const CPVRTimerInfoTag &item)
 {
-  if (!g_PVRManager.GetClientProps(item.ClientID())->SupportTimers)
+  if (!g_PVRManager.GetClientProperties(item.ClientID())->SupportTimers)
   {
     CGUIDialogOK::ShowAndGetInput(19033,0,19215,0);
     return false;

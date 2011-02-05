@@ -86,7 +86,7 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
     /* Use PVR demuxer only for live streams */
     if (filename.substr(0, 14) == "pvr://channels")
     {
-      PVR_SERVERPROPS *pProps = g_PVRManager.GetCurrentClientProps();
+      PVR_SERVERPROPS *pProps = g_PVRManager.GetCurrentClientProperties();
       if (pProps && pProps->HandleDemuxing)
       {
         auto_ptr<CDVDDemuxPVRClient> demuxer(new CDVDDemuxPVRClient());
