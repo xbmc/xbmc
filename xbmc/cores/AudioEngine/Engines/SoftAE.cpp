@@ -239,6 +239,10 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
     m_buffer = NULL;
   }
 
+  /* setup the standard output layout & format */
+  m_chLayout     = CAEUtil::GetStdChLayout  (stdChLayout);
+  m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout );
+
   /* create the new sink */
   m_sink = GetSink(newFormat, m_passthrough || m_rawPassthrough, device);
   if (!m_sink)
@@ -253,15 +257,11 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
     newFormat.m_frameSize     = (CAEUtil::DataFormatToBits(newFormat.m_dataFormat) >> 3) * newFormat.m_channelCount;
   }
 
+  /* if raw passthrough correct the layout and channel count */
   if (m_rawPassthrough)
   {
     m_chLayout     = newFormat.m_channelLayout;
     m_channelCount = newFormat.m_channelCount;
-  }
-  else
-  {
-    m_chLayout     = CAEUtil::GetStdChLayout  (stdChLayout);
-    m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout );
   }
 
   m_sinkFormat = newFormat;
