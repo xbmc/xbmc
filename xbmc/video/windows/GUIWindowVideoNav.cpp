@@ -401,13 +401,45 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         items.SetContent("");
     }
     else
-    { // see whether we have content set for this path in the database
-      CStdString content = m_database.GetContentForPath(items.m_strPath);
-      items.SetContent(content);
+    { // load info from the database
+      LoadVideoInfo(items);
     }
   }
-
   return bResult;
+}
+
+void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
+{
+  // TODO: this could possibly be threaded as per the music info loading,
+  //       we could also cache the info
+  CStdString content = m_database.GetContentForPath(items.m_strPath);
+  items.SetContent(content);
+  if (!content.IsEmpty())
+  {
+    for (int i = 0; i < items.Size(); i++)
+    {
+      CFileItemPtr pItem = items[i];
+      CFileItem item;
+      if (m_database.GetItemForPath(content, pItem->m_strPath, item))
+      { // copy info across
+        pItem->UpdateInfo(item);
+        // TODO: we may wish to use a playable_url parameter here rather than
+        //       switching the path of the item (eg movie as a folder)
+        pItem->m_strPath = item.m_strPath;
+        pItem->m_bIsFolder = item.m_bIsFolder;
+      }
+    }
+  }
+  else
+  {
+    for (int i = 0; i < items.Size(); i++)
+    {
+      CFileItemPtr pItem = items[i];
+      int playCount = m_database.GetPlayCount(*pItem);
+      if (playCount >= 0)
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, playCount > 0);
+    }
+  }
 }
 
 void CGUIWindowVideoNav::UpdateButtons()

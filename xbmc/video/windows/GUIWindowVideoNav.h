@@ -42,6 +42,12 @@ public:
   static bool DeleteItem(CFileItem* pItem, bool bUnavailable=false);
 
 protected:
+  /*! \brief Load video information from the database for these items
+   Useful for grabbing information for file listings, from watched status to full metadata
+   \param items the items to load information for.
+   */
+  void LoadVideoInfo(CFileItemList &items);
+
   virtual void OnItemLoaded(CFileItem* pItem);
   void OnLinkMovieToTvShow(int itemnumber, bool bRemove);
   // override base class methods
