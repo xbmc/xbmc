@@ -16,7 +16,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#if defined(__WINDOWS__)
 #pragma warning(disable:4244) //wchar to char = loss of data
+#endif
 
 #include "utils.h"
 #include <string>

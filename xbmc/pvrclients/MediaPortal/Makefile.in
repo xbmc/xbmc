@@ -15,7 +15,8 @@ SRCS   = channels.cpp \
 	pvrclient-mediaportal.cpp \
 	recordings.cpp \
 	timers.cpp \
-	utils.cpp \
-	Socket.cpp
+	Socket.cpp \
+	uri.cpp \
+	utils.cpp
 
 include ../Makefile.include
