@@ -54,7 +54,6 @@ cd /xbmc/lib/libdvd/
 sh ./build-xbmc-win32.sh
 setfilepath /xbmc/system/players/dvdplayer
 checkfiles libdvdcss-2.dll libdvdnav.dll
-done
 echo "##### building of libdvd dlls done #####"
 
 # wait for key press
@@ -62,5 +61,3 @@ if [ $NOPROMPT == 0 ]; then
   echo press a key to close the window
   read
 fi
-
-
