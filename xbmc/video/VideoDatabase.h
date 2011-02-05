@@ -412,7 +412,16 @@ public:
            scraper or no scraper is found.
    */
   ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath, VIDEO::SScanSettings& settings, bool& foundDirectly);
-  CONTENT_TYPE GetContentForPath(const CStdString& strPath);
+
+  /*! \brief Retrieve the content type of videos in the given path
+   If content is set on the folder, we return the given content type, except in the case of tvshows,
+   where we first check for whether we have episodes directly in the path (thus return episodes) or whether
+   we've found a scraper directly (shows).  Any folders inbetween are treated as seasons (regardless of whether
+   they actually are seasons). Note that any subfolders in movies will be treated as movies.
+   \param strPath path to start searching in.
+   \return A content type string for the current path.
+   */
+  CStdString GetContentForPath(const CStdString& strPath);
   
   /*! \brief Check whether a given scraper is in use.
    \param scraperID the scraper to check for.

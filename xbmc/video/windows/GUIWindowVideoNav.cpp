@@ -400,6 +400,11 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       else
         items.SetContent("");
     }
+    else
+    { // see whether we have content set for this path in the database
+      CStdString content = m_database.GetContentForPath(items.m_strPath);
+      items.SetContent(content);
+    }
   }
 
   return bResult;
