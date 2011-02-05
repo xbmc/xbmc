@@ -16,7 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#if defined(__WINDOWS__)
+#if defined(_WIN32) || defined(_WIN64)
 #pragma warning(disable:4244) //wchar to char = loss of data
 #endif
 
