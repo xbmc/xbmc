@@ -398,41 +398,42 @@ PVR_ERROR cPVRClientMediaPortal::RequestEPGForChannel(const PVR_CHANNEL &channel
 
   if(result.compare(0,5, "ERROR") != 0)
   {
-    Tokenize(result, lines, ",");
-
-    XBMC->Log(LOG_DEBUG, "Found %i EPG items for channel %i\n", lines.size(), channel.number);
-
-    for (vector<string>::iterator it = lines.begin(); it < lines.end(); it++)
+    if( result.length() != 0)
     {
-      string& data(*it);
+      Tokenize(result, lines, ",");
 
-      //CStdString str_result = data;
-      //
-      //if (m_bCharsetConv)
-      //  XBMC_unknown_to_utf8(str_result);
+      XBMC->Log(LOG_DEBUG, "Found %i EPG items for channel %i\n", lines.size(), channel.number);
 
-      if( data.length() > 0) {
-        uri::decode(data);
+      for (vector<string>::iterator it = lines.begin(); it < lines.end(); it++)
+      {
+        string& data(*it);
 
-        bool isEnd = epg.ParseLine(data);
-
-        if (isEnd && epg.StartTime() != 0)
+        if( data.length() > 0)
         {
-          broadcast.channum         = channel.number;
-          broadcast.uid             = epg.UniqueId();
-          broadcast.title           = epg.Title();
-          broadcast.subtitle        = epg.ShortText();
-          broadcast.description     = epg.Description();
-          broadcast.starttime       = epg.StartTime();
-          broadcast.endtime         = epg.EndTime();
-          broadcast.genre_type      = epg.GenreType();
-          broadcast.genre_sub_type  = epg.GenreSubType();
-          //broadcast.genre_text      = epg.Genre();
-          broadcast.parental_rating = 0;
-          PVR->TransferEpgEntry(handle, &broadcast);
+          uri::decode(data);
+
+          bool isEnd = epg.ParseLine(data);
+
+          if (isEnd && epg.StartTime() != 0)
+          {
+            broadcast.channum         = channel.number;
+            broadcast.uid             = epg.UniqueId();
+            broadcast.title           = epg.Title();
+            broadcast.subtitle        = epg.ShortText();
+            broadcast.description     = epg.Description();
+            broadcast.starttime       = epg.StartTime();
+            broadcast.endtime         = epg.EndTime();
+            broadcast.genre_type      = epg.GenreType();
+            broadcast.genre_sub_type  = epg.GenreSubType();
+            //broadcast.genre_text      = epg.Genre();
+            broadcast.parental_rating = 0;
+            PVR->TransferEpgEntry(handle, &broadcast);
+          }
+          epg.Reset();
         }
-        epg.Reset();
       }
+    } else {
+      XBMC->Log(LOG_DEBUG, "No EPG items found for channel %i", channel.number);
     }
   } else {
     XBMC->Log(LOG_DEBUG, "RequestEPGForChannel(%i) %s", channel.number, result.c_str());
