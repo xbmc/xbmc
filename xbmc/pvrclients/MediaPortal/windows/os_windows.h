@@ -24,7 +24,9 @@
 #ifndef _WINSOCKAPI_
 #define _WINSOCKAPI_
 #endif
+#pragma warning(disable:4005) // Disable "warning C4005: '_WINSOCKAPI_' : macro redefinition"
 #include <winsock2.h>
+#pragma warning(default:4005)
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
