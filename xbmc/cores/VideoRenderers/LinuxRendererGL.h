@@ -114,8 +114,6 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-class DllAvUtil;
-class DllAvCodec;
 class DllSwScale;
 
 class CLinuxRendererGL : public CBaseRenderer
@@ -284,9 +282,7 @@ protected:
   // clear colour for "black" bars
   float m_clearColour;
 
-  // software scale libraries (fallback if required gl version is not available)
-  DllAvUtil         *m_dllAvUtil;
-  DllAvCodec        *m_dllAvCodec;
+  // software scale library (fallback if required gl version is not available)
   DllSwScale        *m_dllSwScale;
   BYTE              *m_rgbBuffer;  // if software scale is used, this will hold the result image
   unsigned int       m_rgbBufferSize;

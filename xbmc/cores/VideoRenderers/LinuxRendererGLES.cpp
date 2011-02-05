@@ -40,7 +40,6 @@
 #include "windowing/WindowingFactory.h"
 #include "guilib/Texture.h"
 #include "lib/DllSwScale.h"
-#include "lib/DllAvCodec.h"
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
 
 using namespace Shaders;
@@ -88,8 +87,6 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_rgbBuffer = NULL;
   m_rgbBufferSize = 0;
 
-  m_dllAvUtil = new DllAvUtil;
-  m_dllAvCodec = new DllAvCodec;
   m_dllSwScale = new DllSwScale;
 }
 
@@ -112,8 +109,6 @@ CLinuxRendererGLES::~CLinuxRendererGLES()
   }
 
   delete m_dllSwScale;
-  delete m_dllAvCodec;
-  delete m_dllAvUtil;
 }
 
 void CLinuxRendererGLES::ManageTextures()
@@ -651,7 +646,7 @@ unsigned int CLinuxRendererGLES::PreInit()
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
 
-  if (!m_dllAvUtil->Load() || !m_dllAvCodec->Load() || !m_dllSwScale->Load())
+  if (!m_dllSwScale->Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
 
   #if (! defined USE_EXTERNAL_FFMPEG)

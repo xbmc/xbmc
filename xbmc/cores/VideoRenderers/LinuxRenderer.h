@@ -190,8 +190,6 @@ protected:
   // clear colour for "black" bars
   DWORD m_clearColour;
 
-  DllAvUtil   *m_dllAvUtil;
-  DllAvCodec  *m_dllAvCodec;
   DllSwScale  *m_dllSwScale;
 };
 

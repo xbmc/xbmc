@@ -47,7 +47,7 @@
 #include <assert.h>
 
 #include "rtpdec.h"
-#include "rtpdec_h264.h"
+#include "rtpdec_formats.h"
 
 /**
     RTP/H264 specific private data.
@@ -187,10 +187,7 @@ static int h264_handle_packet(AVFormatContext *ctx,
     if (type >= 1 && type <= 23)
         type = 1;              // simplify the case. (these are all the nal types used internally by the h264 codec)
     switch (type) {
-    case 0:                    // undefined;
-        result= -1;
-        break;
-
+    case 0:                    // undefined, but pass them through
     case 1:
         av_new_packet(pkt, len+sizeof(start_sequence));
         memcpy(pkt->data, start_sequence, sizeof(start_sequence));

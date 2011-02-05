@@ -358,8 +358,14 @@ static av_cold int dvbsub_init_decoder(AVCodecContext *avctx)
     int i, r, g, b, a = 0;
     DVBSubContext *ctx = avctx->priv_data;
 
-    ctx->composition_id = avctx->sub_id & 0xffff;
-    ctx->ancillary_id = avctx->sub_id >> 16;
+    if (!avctx->extradata || avctx->extradata_size != 4) {
+        av_log(avctx, AV_LOG_WARNING, "Invalid extradata, subtitle streams may be combined!\n");
+        ctx->composition_id = -1;
+        ctx->ancillary_id   = -1;
+    } else {
+        ctx->composition_id = AV_RB16(avctx->extradata);
+        ctx->ancillary_id   = AV_RB16(avctx->extradata + 2);
+    }
 
     default_clut.id = -1;
     default_clut.next = NULL;
@@ -743,7 +749,7 @@ static void dvbsub_parse_pixel_data_block(AVCodecContext *avctx, DVBSubObjectDis
                          0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff};
     uint8_t *map_table;
 
-    dprintf(avctx, "DVB pixel block size %d, %s field:\n", buf_size,
+    av_dlog(avctx, "DVB pixel block size %d, %s field:\n", buf_size,
             top_bottom ? "bottom" : "top");
 
 #ifdef DEBUG_PACKET_CONTENTS
@@ -978,7 +984,7 @@ static void dvbsub_parse_clut_segment(AVCodecContext *avctx,
         YUV_TO_RGB1_CCIR(cb, cr);
         YUV_TO_RGB2_CCIR(r, g, b, y);
 
-        dprintf(avctx, "clut %d := (%d,%d,%d,%d)\n", entry_id, r, g, b, alpha);
+        av_dlog(avctx, "clut %d := (%d,%d,%d,%d)\n", entry_id, r, g, b, alpha);
 
         if (depth & 0x80)
             clut->clut4[entry_id] = RGBA(r,g,b,255 - alpha);
@@ -1054,11 +1060,11 @@ static void dvbsub_parse_region_segment(AVCodecContext *avctx,
             region->bgcolor = (((*buf++) >> 2) & 3);
     }
 
-    dprintf(avctx, "Region %d, (%dx%d)\n", region_id, region->width, region->height);
+    av_dlog(avctx, "Region %d, (%dx%d)\n", region_id, region->width, region->height);
 
     if (fill) {
         memset(region->pbuf, region->bgcolor, region->buf_size);
-        dprintf(avctx, "Fill region (%d)\n", region->bgcolor);
+        av_dlog(avctx, "Fill region (%d)\n", region->bgcolor);
     }
 
     delete_region_display_list(ctx, region);
@@ -1119,7 +1125,7 @@ static void dvbsub_parse_page_segment(AVCodecContext *avctx,
     ctx->time_out = *buf++;
     page_state = ((*buf++) >> 2) & 3;
 
-    dprintf(avctx, "Page time out %ds, state %d\n", ctx->time_out, page_state);
+    av_dlog(avctx, "Page time out %ds, state %d\n", ctx->time_out, page_state);
 
     if (page_state == 2) {
         delete_state(ctx);
@@ -1157,7 +1163,7 @@ static void dvbsub_parse_page_segment(AVCodecContext *avctx,
         ctx->display_list = display;
         ctx->display_list_size++;
 
-        dprintf(avctx, "Region %d, (%d,%d)\n", region_id, display->x_pos, display->y_pos);
+        av_dlog(avctx, "Region %d, (%d,%d)\n", region_id, display->x_pos, display->y_pos);
     }
 
     while (tmp_display_list) {
@@ -1434,7 +1440,8 @@ static int dvbsub_decode(AVCodecContext *avctx,
         segment_length = AV_RB16(p);
         p += 2;
 
-        if (page_id == ctx->composition_id || page_id == ctx->ancillary_id) {
+        if (page_id == ctx->composition_id || page_id == ctx->ancillary_id ||
+            ctx->composition_id == -1 || ctx->ancillary_id == -1) {
             switch (segment_type) {
             case DVBSUB_PAGE_SEGMENT:
                 dvbsub_parse_page_segment(avctx, p, segment_length);
@@ -1454,7 +1461,7 @@ static int dvbsub_decode(AVCodecContext *avctx,
                 *data_size = dvbsub_display_end_segment(avctx, p, segment_length, sub);
                 break;
             default:
-                dprintf(avctx, "Subtitling segment type 0x%x, page id %d, length %d\n",
+                av_dlog(avctx, "Subtitling segment type 0x%x, page id %d, length %d\n",
                         segment_type, page_id, segment_length);
                 break;
             }
@@ -1464,7 +1471,7 @@ static int dvbsub_decode(AVCodecContext *avctx,
     }
 
     if (p != p_end) {
-        dprintf(avctx, "Junk at end of packet\n");
+        av_dlog(avctx, "Junk at end of packet\n");
         return -1;
     }
 
@@ -1472,7 +1479,7 @@ static int dvbsub_decode(AVCodecContext *avctx,
 }
 
 
-AVCodec dvbsub_decoder = {
+AVCodec ff_dvbsub_decoder = {
     "dvbsub",
     AVMEDIA_TYPE_SUBTITLE,
     CODEC_ID_DVB_SUBTITLE,

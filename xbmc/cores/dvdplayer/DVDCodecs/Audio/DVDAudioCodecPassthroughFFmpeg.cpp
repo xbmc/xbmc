@@ -115,13 +115,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   muxer.m_pFormat->bit_rate          = hints.bitrate;
 
   /* setup the muxer */
-  AVFormatParameters params;
-  memset(&params, 0, sizeof(params));
-  params.channels       = hints.channels;
-  params.sample_rate    = hints.samplerate;
-  params.audio_codec_id = hints.codec;
-  params.channel        = 0;
-  if (m_dllAvFormat.av_set_parameters(muxer.m_pFormat, &params) != 0)
+  if (m_dllAvFormat.av_set_parameters(muxer.m_pFormat, NULL) != 0)
   {
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Failed to set the %s muxer parameters", muxerName.c_str());
     Dispose();
@@ -146,10 +140,10 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
     m_SampleRate = 48000;
 
   AVCodecContext *codec = muxer.m_pStream->codec;
-  codec->codec_type     = CODEC_TYPE_AUDIO;
+  codec->codec_type     = AVMEDIA_TYPE_AUDIO;
   codec->codec_id       = hints.codec;
   codec->sample_rate    = m_SampleRate;
-  codec->sample_fmt     = SAMPLE_FMT_S16;
+  codec->sample_fmt     = AV_SAMPLE_FMT_S16;
   codec->channels       = hints.channels;
   codec->bit_rate       = hints.bitrate;
   codec->extradata      = new uint8_t[hints.extrasize];

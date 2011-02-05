@@ -22,6 +22,7 @@
 
 //#define DEBUG
 
+#include "libavcore/imgutils.h"
 #include "avcodec.h"
 #include "bytestream.h"
 #include "lzw.h"
@@ -75,9 +76,8 @@ static int gif_read_image(GifState *s)
     is_interleaved = flags & 0x40;
     has_local_palette = flags & 0x80;
     bits_per_pixel = (flags & 0x07) + 1;
-#ifdef DEBUG
-    dprintf(s->avctx, "gif: image x=%d y=%d w=%d h=%d\n", left, top, width, height);
-#endif
+
+    av_dlog(s->avctx, "gif: image x=%d y=%d w=%d h=%d\n", left, top, width, height);
 
     if (has_local_palette) {
         bytestream_get_buffer(&s->bytestream, s->local_palette, 3 * (1 << bits_per_pixel));
@@ -162,9 +162,9 @@ static int gif_read_extension(GifState *s)
     /* extension */
     ext_code = bytestream_get_byte(&s->bytestream);
     ext_len = bytestream_get_byte(&s->bytestream);
-#ifdef DEBUG
-    dprintf(s->avctx, "gif: ext_code=0x%x len=%d\n", ext_code, ext_len);
-#endif
+
+    av_dlog(s->avctx, "gif: ext_code=0x%x len=%d\n", ext_code, ext_len);
+
     switch(ext_code) {
     case 0xf9:
         if (ext_len != 4)
@@ -178,11 +178,11 @@ static int gif_read_extension(GifState *s)
         else
             s->transparent_color_index = -1;
         s->gce_disposal = (gce_flags >> 2) & 0x7;
-#ifdef DEBUG
-        dprintf(s->avctx, "gif: gce_flags=%x delay=%d tcolor=%d disposal=%d\n",
+
+        av_dlog(s->avctx, "gif: gce_flags=%x delay=%d tcolor=%d disposal=%d\n",
                gce_flags, s->gce_delay,
                s->transparent_color_index, s->gce_disposal);
-#endif
+
         ext_len = bytestream_get_byte(&s->bytestream);
         break;
     }
@@ -193,9 +193,8 @@ static int gif_read_extension(GifState *s)
         for (i = 0; i < ext_len; i++)
             bytestream_get_byte(&s->bytestream);
         ext_len = bytestream_get_byte(&s->bytestream);
-#ifdef DEBUG
-        dprintf(s->avctx, "gif: ext_len1=%d\n", ext_len);
-#endif
+
+        av_dlog(s->avctx, "gif: ext_len1=%d\n", ext_len);
     }
     return 0;
 }
@@ -231,11 +230,11 @@ static int gif_read_header1(GifState *s)
     s->bits_per_pixel = (v & 0x07) + 1;
     s->background_color_index = bytestream_get_byte(&s->bytestream);
     bytestream_get_byte(&s->bytestream);                /* ignored */
-#ifdef DEBUG
-    dprintf(s->avctx, "gif: screen_w=%d screen_h=%d bpp=%d global_palette=%d\n",
+
+    av_dlog(s->avctx, "gif: screen_w=%d screen_h=%d bpp=%d global_palette=%d\n",
            s->screen_width, s->screen_height, s->bits_per_pixel,
            has_global_palette);
-#endif
+
     if (has_global_palette) {
         n = 1 << s->bits_per_pixel;
         if (s->bytestream_end < s->bytestream + n * 3)
@@ -249,9 +248,9 @@ static int gif_parse_next_image(GifState *s)
 {
     while (s->bytestream < s->bytestream_end) {
         int code = bytestream_get_byte(&s->bytestream);
-#ifdef DEBUG
-        dprintf(s->avctx, "gif: code=%02x '%c'\n", code, code);
-#endif
+
+        av_dlog(s->avctx, "gif: code=%02x '%c'\n", code, code);
+
         switch (code) {
         case ',':
             return gif_read_image(s);
@@ -296,7 +295,7 @@ static int gif_decode_frame(AVCodecContext *avctx, void *data, int *data_size, A
         return -1;
 
     avctx->pix_fmt = PIX_FMT_PAL8;
-    if (avcodec_check_dimensions(avctx, s->screen_width, s->screen_height))
+    if (av_image_check_size(s->screen_width, s->screen_height, 0, avctx))
         return -1;
     avcodec_set_dimensions(avctx, s->screen_width, s->screen_height);
 
@@ -326,7 +325,7 @@ static av_cold int gif_decode_close(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec gif_decoder = {
+AVCodec ff_gif_decoder = {
     "gif",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_GIF,

@@ -128,7 +128,12 @@ public:
   virtual void av_register_all_dont_call() { *(int* )0x0 = 0; } 
   virtual AVInputFormat *av_find_input_format(const char *short_name) { return ::av_find_input_format(short_name); }
   virtual int url_feof(ByteIOContext *s) { return ::url_feof(s); }
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,31,0)
+  // API added on: 2009-03-01
   virtual AVMetadataTag *av_metadata_get(AVMetadata *m, const char *key, const AVMetadataTag *prev, int flags){ return ::av_metadata_get(m, key, prev, flags); }
+#else
+  virtual AVMetadataTag *av_metadata_get(AVMetadata *m, const char *key, const AVMetadataTag *prev, int flags){ return NULL; }
+#endif
   virtual void av_close_input_file(AVFormatContext *s) { ::av_close_input_file(s); }
   virtual void av_close_input_stream(AVFormatContext *s) { ::av_close_input_stream(s); }
   virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt) { return ::av_read_frame(s, pkt); }
@@ -178,10 +183,14 @@ public:
   virtual int av_write_header (AVFormatContext *s) { return ::av_write_header (s); }
   virtual int av_write_trailer(AVFormatContext *s) { return ::av_write_trailer(s); }
   virtual int av_write_frame  (AVFormatContext *s, AVPacket *pkt) { return ::av_write_frame(s, pkt); }
-#if LIBAVFORMAT_VERSION_INT <= (52<<16 | 31<<8)
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,43,0)
+  // API added on: 2009-12-13
+  virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags) { return ::av_metadata_set2(pm, key, value, flags); }
+#elif LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,31,0)
+  // API added on: 2009-03-01
   virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags) { return ::av_metadata_set(pm, key, value); }
 #else
-  virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags) { return ::av_metadata_set2(pm, key, value, flags); }
+  virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags) { return -1; }
 #endif
 
   // DLL faking.
@@ -313,6 +322,12 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_write_frame)
     RESOLVE_METHOD(av_metadata_set2)
   END_METHOD_RESOLVE()
+
+  /* dependencies of libavformat */
+  DllAvCodec m_dllAvCodec;
+  // DllAvCore loaded implicitely by m_dllAvCodec
+  // DllAvUtil loaded implicitely by m_dllAvCodec
+
 public:
   void av_register_all()
   {
@@ -323,6 +338,13 @@ public:
   {
     CSingleLock lock(DllAvCodec::m_critSection);
     return(av_find_stream_info_dont_call(ic));
+  }
+
+  virtual bool Load()
+  {
+    if (!m_dllAvCodec.Load())
+      return false;
+    return DllDynamic::Load();
   }
 };
 

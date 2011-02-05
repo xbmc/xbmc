@@ -24,6 +24,7 @@
   #include "config.h"
 #endif
 #include "DynamicDll.h"
+#include "DllAvUtil.h"
 #include "utils/log.h"
 
 extern "C" {
@@ -44,11 +45,6 @@ extern "C" {
 #endif
 
 #if (defined USE_EXTERNAL_FFMPEG)
-  #if (defined HAVE_LIBAVUTIL_AVUTIL_H)
-    #include <libavutil/avutil.h>
-  #elif (defined HAVE_FFMPEG_AVUTIL_H)
-    #include <ffmpeg/avutil.h>
-  #endif
   #if (defined HAVE_LIBSWSCALE_SWSCALE_H)
     #include <libswscale/swscale.h>
   #elif (defined HAVE_FFMPEG_SWSCALE_H)
@@ -60,7 +56,6 @@ extern "C" {
     #include <ffmpeg/rgb2rgb.h>
   #endif
 #else
-  #include "libavutil/avutil.h"
   #include "libswscale/swscale.h"
   #include "libswscale/rgb2rgb.h"
 #endif
@@ -163,6 +158,17 @@ class DllSwScale : public DllDynamic, public DllSwScaleInterface
     RESOLVE_METHOD(sws_rgb2rgb_init)
     RESOLVE_METHOD(sws_freeContext)
   END_METHOD_RESOLVE()
+
+  /* dependency of libswscale */
+  DllAvUtil m_dllAvUtil;
+
+public:
+  virtual bool Load()
+  {
+    if (!m_dllAvUtil.Load())
+      return false;
+    return DllDynamic::Load();
+  }
 };
 
 #endif

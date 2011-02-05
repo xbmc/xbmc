@@ -1,0 +1,24 @@
+From d4fac342fd23faeb47a3f9c453a7af14c28de158 Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Fri, 9 Jul 2010 16:49:01 -0400
+Subject: [PATCH 25/36] include stdint.h
+
+---
+ libavutil/common.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/libavutil/common.h b/libavutil/common.h
+index 6404076..b5cd8df 100644
+--- a/libavutil/common.h
++++ b/libavutil/common.h
+@@ -29,6 +29,7 @@
+ #include <ctype.h>
+ #include <errno.h>
+ #include <inttypes.h>
++#include <stdint.h>
+ #include <limits.h>
+ #include <math.h>
+ #include <stdio.h>
+-- 
+1.7.3
+

@@ -87,7 +87,7 @@ static int decode_ext_header(Wmv2Context *w){
 
     if(s->avctx->extradata_size<4) return -1;
 
-    init_get_bits(&gb, s->avctx->extradata, s->avctx->extradata_size*8);
+    init_get_bits(&gb, s->avctx->extradata, 32);
 
     fps                = get_bits(&gb, 5);
     s->bit_rate        = get_bits(&gb, 11)*1024;
@@ -484,7 +484,7 @@ static av_cold int wmv2_decode_end(AVCodecContext *avctx)
     return ff_h263_decode_end(avctx);
 }
 
-AVCodec wmv2_decoder = {
+AVCodec ff_wmv2_decoder = {
     "wmv2",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_WMV2,

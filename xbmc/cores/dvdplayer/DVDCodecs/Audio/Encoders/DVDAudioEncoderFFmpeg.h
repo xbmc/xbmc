@@ -23,6 +23,7 @@
 #include "IDVDAudioEncoder.h"
 #include "DllAvCodec.h"
 #include "DllAvFormat.h"
+#include "DllAvUtil.h"
 
 class CDVDAudioEncoderFFmpeg: public IDVDAudioEncoder
 {

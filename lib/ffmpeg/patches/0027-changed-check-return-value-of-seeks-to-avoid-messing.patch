@@ -1,0 +1,62 @@
+From 470e2804c01b609532d95539c66ebb6d13c7f805 Mon Sep 17 00:00:00 2001
+From: Cory Fields <theuni-nospam-@xbmc.org>
+Date: Fri, 9 Jul 2010 17:36:00 -0400
+Subject: [PATCH 27/36] changed: check return value of seeks to avoid messing up current stream location
+
+---
+ libavformat/avidec.c |   16 ++++++++++++----
+ 1 files changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/libavformat/avidec.c b/libavformat/avidec.c
+index 3d223b7..45ed8be 100644
+--- a/libavformat/avidec.c
++++ b/libavformat/avidec.c
+@@ -206,13 +206,18 @@ static int read_braindead_odml_indx(AVFormatContext *s, int frame_num){
+                 return -1;
+             }
+ 
+-            url_fseek(pb, offset+8, SEEK_SET);
++            if(url_fseek(pb, offset+8, SEEK_SET) < 0)
++                return -1;
+             avi->odml_depth++;
+             read_braindead_odml_indx(s, frame_num);
+             avi->odml_depth--;
+             frame_num += duration;
+ 
+-            url_fseek(pb, pos, SEEK_SET);
++            if(url_fseek(pb, pos, SEEK_SET) < 0) {
++                av_log(s, AV_LOG_ERROR, "Failed to restore position after reading index");
++                return -1;
++            }
++
+         }
+     }
+     avi->index_loaded=1;
+@@ -1287,11 +1292,13 @@ static int avi_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp
+         /* the av_index_search_timestamp call above.                     */
+         assert(stream_index == 0);
+ 
++        if(url_fseek(s->pb, pos, SEEK_SET) < 0)
++            return -1;
++
+         /* Feed the DV video stream version of the timestamp to the */
+         /* DV demux so it can synthesize correct timestamps.        */
+         dv_offset_reset(avi->dv_demux, timestamp);
+ 
+-        url_fseek(s->pb, pos, SEEK_SET);
+         avi->stream_index= -1;
+         return 0;
+     }
+@@ -1333,7 +1340,8 @@ static int avi_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp
+     }
+ 
+     /* do the seek */
+-    url_fseek(s->pb, pos, SEEK_SET);
++    if(url_fseek(s->pb, pos, SEEK_SET) < 0)
++        return -1;
+     avi->stream_index= -1;
+     return 0;
+ }
+-- 
+1.7.3
+

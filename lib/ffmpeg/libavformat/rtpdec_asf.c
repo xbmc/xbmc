@@ -25,11 +25,11 @@
  * @author Ronald S. Bultje <rbultje@ronald.bitfreak.net>
  */
 
-#include <libavutil/base64.h>
-#include <libavutil/avstring.h>
-#include <libavutil/intreadwrite.h>
+#include "libavutil/base64.h"
+#include "libavutil/avstring.h"
+#include "libavutil/intreadwrite.h"
 #include "rtp.h"
-#include "rtpdec_asf.h"
+#include "rtpdec_formats.h"
 #include "rtsp.h"
 #include "asf.h"
 
@@ -109,9 +109,10 @@ int ff_wms_parse_sdp_a_line(AVFormatContext *s, const char *p)
             av_close_input_stream(rt->asf_ctx);
             rt->asf_ctx = NULL;
         }
-        ret = av_open_input_stream(&rt->asf_ctx, &pb, "", &asf_demuxer, NULL);
+        ret = av_open_input_stream(&rt->asf_ctx, &pb, "", &ff_asf_demuxer, NULL);
         if (ret < 0)
             return ret;
+        av_metadata_copy(&s->metadata, rt->asf_ctx->metadata, 0);
         rt->asf_pb_pos = url_ftell(&pb);
         av_free(buf);
         rt->asf_ctx->pb = NULL;
@@ -168,64 +169,72 @@ static int asfrtp_parse_packet(AVFormatContext *s, PayloadContext *asf,
         return -1;
 
     if (len > 0) {
-        int off, out_len;
+        int off, out_len = 0;
 
         if (len < 4)
             return -1;
 
-        init_put_byte(pb, buf, len, 0, NULL, NULL, NULL, NULL);
-        mflags = get_byte(pb);
-        if (mflags & 0x80)
-            flags |= RTP_FLAG_KEY;
-        len_off = get_be24(pb);
-        if (mflags & 0x20)   /**< relative timestamp */
-            url_fskip(pb, 4);
-        if (mflags & 0x10)   /**< has duration */
-            url_fskip(pb, 4);
-        if (mflags & 0x8)    /**< has location ID */
-            url_fskip(pb, 4);
-        off = url_ftell(pb);
-
         av_freep(&asf->buf);
-        if (!(mflags & 0x40)) {
-            /**
-             * If 0x40 is not set, the len_off field specifies an offset of this
-             * packet's payload data in the complete (reassembled) ASF packet.
-             * This is used to spread one ASF packet over multiple RTP packets.
-             */
-            if (asf->pktbuf && len_off != url_ftell(asf->pktbuf)) {
-                uint8_t *p;
-                url_close_dyn_buf(asf->pktbuf, &p);
-                asf->pktbuf = NULL;
-                av_free(p);
-            }
-            if (!len_off && !asf->pktbuf &&
-                (res = url_open_dyn_buf(&asf->pktbuf)) < 0)
-                return res;
-            if (!asf->pktbuf)
-                return AVERROR(EIO);
 
-            put_buffer(asf->pktbuf, buf + off, len - off);
-            if (!(flags & RTP_FLAG_MARKER))
-                return -1;
-            out_len     = url_close_dyn_buf(asf->pktbuf, &asf->buf);
-            asf->pktbuf = NULL;
-        } else {
-            /**
-             * If 0x40 is set, the len_off field specifies the length of the
-             * next ASF packet that can be read from this payload data alone.
-             * This is commonly the same as the payload size, but could be
-             * less in case of packet splitting (i.e. multiple ASF packets in
-             * one RTP packet).
-             */
-            if (len_off != len) {
-                av_log_missing_feature(s,
-                    "RTSP-MS packet splitting", 1);
-                return -1;
+        init_put_byte(pb, buf, len, 0, NULL, NULL, NULL, NULL);
+
+        while (url_ftell(pb) + 4 < len) {
+            int start_off = url_ftell(pb);
+
+            mflags = get_byte(pb);
+            if (mflags & 0x80)
+                flags |= RTP_FLAG_KEY;
+            len_off = get_be24(pb);
+            if (mflags & 0x20)   /**< relative timestamp */
+                url_fskip(pb, 4);
+            if (mflags & 0x10)   /**< has duration */
+                url_fskip(pb, 4);
+            if (mflags & 0x8)    /**< has location ID */
+                url_fskip(pb, 4);
+            off = url_ftell(pb);
+
+            if (!(mflags & 0x40)) {
+                /**
+                 * If 0x40 is not set, the len_off field specifies an offset
+                 * of this packet's payload data in the complete (reassembled)
+                 * ASF packet. This is used to spread one ASF packet over
+                 * multiple RTP packets.
+                 */
+                if (asf->pktbuf && len_off != url_ftell(asf->pktbuf)) {
+                    uint8_t *p;
+                    url_close_dyn_buf(asf->pktbuf, &p);
+                    asf->pktbuf = NULL;
+                    av_free(p);
+                }
+                if (!len_off && !asf->pktbuf &&
+                    (res = url_open_dyn_buf(&asf->pktbuf)) < 0)
+                    return res;
+                if (!asf->pktbuf)
+                    return AVERROR(EIO);
+
+                put_buffer(asf->pktbuf, buf + off, len - off);
+                url_fskip(pb, len - off);
+                if (!(flags & RTP_FLAG_MARKER))
+                    return -1;
+                out_len     = url_close_dyn_buf(asf->pktbuf, &asf->buf);
+                asf->pktbuf = NULL;
+            } else {
+                /**
+                 * If 0x40 is set, the len_off field specifies the length of
+                 * the next ASF packet that can be read from this payload
+                 * data alone. This is commonly the same as the payload size,
+                 * but could be less in case of packet splitting (i.e.
+                 * multiple ASF packets in one RTP packet).
+                 */
+
+                int cur_len = start_off + len_off - off;
+                int prev_len = out_len;
+                out_len += cur_len;
+                asf->buf = av_realloc(asf->buf, out_len);
+                memcpy(asf->buf + prev_len, buf + off,
+                       FFMIN(cur_len, len - off));
+                url_fskip(pb, cur_len);
             }
-            asf->buf = av_malloc(len - off);
-            out_len  = len - off;
-            memcpy(asf->buf, buf + off, len - off);
         }
 
         init_packetizer(pb, asf->buf, out_len);

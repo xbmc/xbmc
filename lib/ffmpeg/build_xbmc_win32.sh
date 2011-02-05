@@ -17,7 +17,6 @@ OPTIONS="
 --enable-w32threads \
 --enable-postproc \
 --enable-zlib \
---enable-libfaad \
 --disable-static \
 --disable-altivec \
 --disable-muxers \
@@ -35,13 +34,14 @@ OPTIONS="
 --enable-runtime-cpudetect \
 --disable-debug"
 
-./configure --extra-cflags="-fno-common -I../libfaad2/include -Iinclude/dxva2" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
+./configure --extra-cflags="-fno-common -Iinclude-xbmc-win32/dxva2" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
  
 make -j3 && 
 mkdir .libs &&
 cp lib*/*.dll .libs/ &&
 mv .libs/swscale-0.dll .libs/swscale-0.6.1.dll &&
 cp .libs/avcodec-52.dll /xbmc/system/players/dvdplayer/ &&
+cp .libs/avcore-0.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/avformat-52.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/avutil-50.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/postproc-51.dll /xbmc/system/players/dvdplayer/ &&

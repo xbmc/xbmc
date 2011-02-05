@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "libavcore/imgutils.h"
 #include "avcodec.h"
 #include "dsputil.h"
 #include "get_bits.h"
@@ -1321,12 +1322,11 @@ static void vp3_draw_horiz_band(Vp3DecodeContext *s, int y)
         return;
 
     h= y - s->last_slice_end;
+    s->last_slice_end= y;
     y -= h;
 
     if (!s->flipped_image) {
-        if (y == 0)
-            h -= s->height - s->avctx->height;  // account for non-mod16
-        y = s->height - y - h;
+        y = s->avctx->height - y - h;
     }
 
     cy = y >> s->chroma_y_shift;
@@ -1337,7 +1337,6 @@ static void vp3_draw_horiz_band(Vp3DecodeContext *s, int y)
 
     emms_c();
     s->avctx->draw_horiz_band(s->avctx, &s->current_frame, offset, y, 3, h);
-    s->last_slice_end= y + h;
 }
 
 /*
@@ -1433,7 +1432,7 @@ static void render_slice(Vp3DecodeContext *s, int slice)
                             if(stride<0) temp -= 9*stride;
                             else temp += 9*stride;
 
-                            ff_emulated_edge_mc(temp, motion_source, stride, 9, 9, src_x, src_y, plane_width, plane_height);
+                            s->dsp.emulated_edge_mc(temp, motion_source, stride, 9, 9, src_x, src_y, plane_width, plane_height);
                             motion_source= temp;
                         }
                     }
@@ -1508,7 +1507,7 @@ static void render_slice(Vp3DecodeContext *s, int slice)
       *     dispatch (slice - 1);
       */
 
-    vp3_draw_horiz_band(s, FFMIN(64*slice + 64-16, s->height-16));
+    vp3_draw_horiz_band(s, FFMIN((32 << s->chroma_y_shift) * (slice + 1) -16, s->height-16));
 }
 
 /*
@@ -1722,7 +1721,6 @@ static int vp3_decode_frame(AVCodecContext *avctx,
     int buf_size = avpkt->size;
     Vp3DecodeContext *s = avctx->priv_data;
     GetBitContext gb;
-    static int counter = 0;
     int i;
 
     init_get_bits(&gb, buf, buf_size * 8);
@@ -1748,8 +1746,7 @@ static int vp3_decode_frame(AVCodecContext *avctx,
 
     if (s->avctx->debug & FF_DEBUG_PICT_INFO)
         av_log(s->avctx, AV_LOG_INFO, " VP3 %sframe #%d: Q index = %d\n",
-            s->keyframe?"key":"", counter, s->qps[0]);
-    counter++;
+            s->keyframe?"key":"", avctx->frame_number+1, s->qps[0]);
 
     s->skip_loop_filter = !s->filter_limit_values[s->qps[0]] ||
         avctx->skip_loop_filter >= (s->keyframe ? AVDISCARD_ALL : AVDISCARD_NONKEY);
@@ -1782,7 +1779,7 @@ static int vp3_decode_frame(AVCodecContext *avctx,
             if (s->version)
             {
                 s->version = get_bits(&gb, 5);
-                if (counter == 1)
+                if (avctx->frame_number == 0)
                     av_log(s->avctx, AV_LOG_DEBUG, "VP version: %d\n", s->version);
             }
         }
@@ -1850,7 +1847,7 @@ static int vp3_decode_frame(AVCodecContext *avctx,
         int row = (s->height >> (3+(i && s->chroma_y_shift))) - 1;
         apply_loop_filter(s, i, row, row+1);
     }
-    vp3_draw_horiz_band(s, s->height);
+    vp3_draw_horiz_band(s, s->avctx->height);
 
     *data_size=sizeof(AVFrame);
     *(AVFrame*)data= s->current_frame;
@@ -1965,7 +1962,7 @@ static int theora_decode_header(AVCodecContext *avctx, GetBitContext *gb)
     Vp3DecodeContext *s = avctx->priv_data;
     int visible_width, visible_height, colorspace;
     int offset_x = 0, offset_y = 0;
-    AVRational fps;
+    AVRational fps, aspect;
 
     s->theora = get_bits_long(gb, 24);
     av_log(avctx, AV_LOG_DEBUG, "Theora bitstream version %X\n", s->theora);
@@ -1981,7 +1978,7 @@ static int theora_decode_header(AVCodecContext *avctx, GetBitContext *gb)
     visible_width  = s->width  = get_bits(gb, 16) << 4;
     visible_height = s->height = get_bits(gb, 16) << 4;
 
-    if(avcodec_check_dimensions(avctx, s->width, s->height)){
+    if(av_image_check_size(s->width, s->height, 0, avctx)){
         av_log(avctx, AV_LOG_ERROR, "Invalid dimensions (%dx%d)\n", s->width, s->height);
         s->width= s->height= 0;
         return -1;
@@ -2002,8 +1999,13 @@ static int theora_decode_header(AVCodecContext *avctx, GetBitContext *gb)
                   fps.den, fps.num, 1<<30);
     }
 
-    avctx->sample_aspect_ratio.num = get_bits_long(gb, 24);
-    avctx->sample_aspect_ratio.den = get_bits_long(gb, 24);
+    aspect.num = get_bits_long(gb, 24);
+    aspect.den = get_bits_long(gb, 24);
+    if (aspect.num && aspect.den) {
+        av_reduce(&avctx->sample_aspect_ratio.num,
+                  &avctx->sample_aspect_ratio.den,
+                  aspect.num, aspect.den, 1<<30);
+    }
 
     if (s->theora < 0x030200)
         skip_bits(gb, 5); /* keyframe frequency force */
@@ -2049,13 +2051,9 @@ static int theora_decode_tables(AVCodecContext *avctx, GetBitContext *gb)
     if (s->theora >= 0x030200) {
         n = get_bits(gb, 3);
         /* loop filter limit values table */
-        for (i = 0; i < 64; i++) {
-            s->filter_limit_values[i] = get_bits(gb, n);
-            if (s->filter_limit_values[i] > 127) {
-                av_log(avctx, AV_LOG_ERROR, "filter limit value too large (%i > 127), clamping\n", s->filter_limit_values[i]);
-                s->filter_limit_values[i] = 127;
-            }
-        }
+        if (n)
+            for (i = 0; i < 64; i++)
+                s->filter_limit_values[i] = get_bits(gb, n);
     }
 
     if (s->theora >= 0x030200)
@@ -2215,7 +2213,7 @@ static av_cold int theora_decode_init(AVCodecContext *avctx)
     return vp3_decode_init(avctx);
 }
 
-AVCodec theora_decoder = {
+AVCodec ff_theora_decoder = {
     "theora",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_THEORA,
@@ -2230,7 +2228,7 @@ AVCodec theora_decoder = {
 };
 #endif
 
-AVCodec vp3_decoder = {
+AVCodec ff_vp3_decoder = {
     "vp3",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_VP3,

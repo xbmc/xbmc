@@ -115,6 +115,21 @@ static int read_kuki_chunk(AVFormatContext *s, int64_t size)
             return AVERROR_INVALIDDATA;
         }
         url_fskip(pb, skip);
+    } else if (st->codec->codec_id == CODEC_ID_ALAC) {
+#define ALAC_PREAMBLE 12
+#define ALAC_HEADER   36
+        if (size < ALAC_PREAMBLE + ALAC_HEADER) {
+            av_log(s, AV_LOG_ERROR, "invalid ALAC magic cookie\n");
+            url_fskip(pb, size);
+            return AVERROR_INVALIDDATA;
+        }
+        url_fskip(pb, ALAC_PREAMBLE);
+        st->codec->extradata = av_mallocz(ALAC_HEADER + FF_INPUT_BUFFER_PADDING_SIZE);
+        if (!st->codec->extradata)
+            return AVERROR(ENOMEM);
+        get_buffer(pb, st->codec->extradata, ALAC_HEADER);
+        st->codec->extradata_size = ALAC_HEADER;
+        url_fskip(pb, size - ALAC_PREAMBLE - ALAC_HEADER);
     } else {
         st->codec->extradata = av_mallocz(size + FF_INPUT_BUFFER_PADDING_SIZE);
         if (!st->codec->extradata)
@@ -366,7 +381,7 @@ static int read_seek(AVFormatContext *s, int stream_index,
     return 0;
 }
 
-AVInputFormat caf_demuxer = {
+AVInputFormat ff_caf_demuxer = {
     "caf",
     NULL_IF_CONFIG_SMALL("Apple Core Audio Format"),
     sizeof(CaffContext),

@@ -2,11 +2,12 @@
 
 @settitle FFmpeg FAQ
 @titlepage
-@sp 7
 @center @titlefont{FFmpeg FAQ}
-@sp 3
 @end titlepage
 
+@top
+
+@contents
 
 @chapter General Questions
 
@@ -20,10 +21,11 @@ request more timely and/or frequent releases unless you are willing to
 help out creating them.
 
 @section I have a problem with an old version of FFmpeg; where should I report it?
-Nowhere. Upgrade to the latest release or if there is no recent release upgrade
-to Subversion HEAD. You could also try to report it. Maybe you will get lucky and
-become the first person in history to get an answer different from "upgrade
-to Subversion HEAD".
+Nowhere. We do not support old FFmpeg versions in any way, we simply lack
+the time, motivation and manpower to do so. If you have a problem with an
+old version of FFmpeg, upgrade to the latest Subversion snapshot. If you
+still experience the problem, then you can report it according to the
+guidelines in @url{http://ffmpeg.org/bugreports.html}.
 
 @section Why doesn't FFmpeg support feature [xyz]?
 
@@ -44,7 +46,7 @@ Likely reasons
 @itemize
 @item We are busy and haven't had time yet to read your report or
 investigate the issue.
-@item You didn't follow bugreports.html.
+@item You didn't follow @url{http://ffmpeg.org/bugreports.html}.
 @item You didn't use Subversion HEAD.
 @item You reported a segmentation fault without gdb output.
 @item You describe a problem but not how to reproduce it.
@@ -195,19 +197,6 @@ quite logical that there is a small reduction of quality. This is not a bug.
 
 Use @file{-} as file name.
 
-@section Why does the chrominance data seem to be sampled at a different time from the luminance data on bt8x8 captures on Linux?
-
-This is a well-known bug in the bt8x8 driver. For 2.4.26 there is a patch at
-(@url{http://svn.ffmpeg.org/michael/trunk/patches/bttv-420-2.4.26.patch?view=co}). This may also
-apply cleanly to other 2.4-series kernels.
-
-@section How do I avoid the ugly aliasing artifacts in bt8x8 captures on Linux?
-
-Pass 'combfilter=1 lumafilter=1' to the bttv driver. Note though that 'combfilter=1'
-will cause somewhat too strong filtering. A fix is to apply (@url{http://svn.ffmpeg.org/michael/trunk/patches/bttv-comb-2.4.26.patch?view=co})
-or (@url{http://svn.ffmpeg.org/michael/trunk/patches/bttv-comb-2.6.6.patch?view=co})
-and pass 'combfilter=2'.
-
 @section -f jpeg doesn't work.
 
 Try '-f image2 test%d.jpg'.
@@ -233,11 +222,11 @@ default.
 @item needed stuff
 -acodec libfaac -vcodec mpeg4 width<=320 height<=240
 @item working stuff
-4mv, title
+mv4, title
 @item non-working stuff
 B-frames
 @item example command line
-ffmpeg -i input -acodec libfaac -ab 128kb -vcodec mpeg4 -b 1200kb -mbd 2 -flags +4mv -trellis 2 -aic 2 -cmp 2 -subcmp 2 -s 320x180 -metadata title=X output.mp4
+ffmpeg -i input -acodec libfaac -ab 128kb -vcodec mpeg4 -b 1200kb -mbd 2 -flags +mv4 -trellis 2 -aic 2 -cmp 2 -subcmp 2 -s 320x180 -metadata title=X output.mp4
 @end table
 
 @section How do I encode videos which play on the PSP?
@@ -246,11 +235,11 @@ ffmpeg -i input -acodec libfaac -ab 128kb -vcodec mpeg4 -b 1200kb -mbd 2 -flags 
 @item needed stuff
 -acodec libfaac -vcodec mpeg4 width*height<=76800 width%16=0 height%16=0 -ar 24000 -r 30000/1001 or 15000/1001 -f psp
 @item working stuff
-4mv, title
+mv4, title
 @item non-working stuff
 B-frames
 @item example command line
-ffmpeg -i input -acodec libfaac -ab 128kb -vcodec mpeg4 -b 1200kb -ar 24000 -mbd 2 -flags +4mv -trellis 2 -aic 2 -cmp 2 -subcmp 2 -s 368x192 -r 30000/1001 -metadata title=X -f psp output.mp4
+ffmpeg -i input -acodec libfaac -ab 128kb -vcodec mpeg4 -b 1200kb -ar 24000 -mbd 2 -flags +mv4 -trellis 2 -aic 2 -cmp 2 -subcmp 2 -s 368x192 -r 30000/1001 -metadata title=X -f psp output.mp4
 @item needed stuff for H.264
 -acodec libfaac -vcodec libx264 width*height<=76800 width%16=0? height%16=0? -ar 48000 -coder 1 -r 30000/1001 or 15000/1001 -f psp
 @item working stuff for H.264
@@ -267,7 +256,7 @@ ffmpeg -i input -acodec libfaac -ab 128kb -ac 2 -ar 48000 -vcodec libx264 -level
 
 @section Which are good parameters for encoding high quality MPEG-4?
 
-'-mbd rd -flags +4mv+aic -trellis 2 -cmp 2 -subcmp 2 -g 300 -pass 1/2',
+'-mbd rd -flags +mv4+aic -trellis 2 -cmp 2 -subcmp 2 -g 300 -pass 1/2',
 things to try: '-bf 2', '-flags qprd', '-flags mv0', '-flags skiprd'.
 
 @section Which are good parameters for encoding high quality MPEG-1/MPEG-2?
@@ -460,8 +449,8 @@ See @url{http://www.parashift.com/c++-faq-lite/mixing-c-and-cpp.html#faq-32.3}
 
 @section I have a file in memory / a API different from *open/*read/ libc how do I use it with libavformat?
 
-You have to implement a URLProtocol, see libavformat/file.c in FFmpeg
-and libmpdemux/demux_lavf.c in MPlayer sources.
+You have to implement a URLProtocol, see @file{libavformat/file.c} in
+FFmpeg and @file{libmpdemux/demux_lavf.c} in MPlayer sources.
 
 @section I get "No compatible shell script interpreter found." in MSys.
 
@@ -471,18 +460,13 @@ The standard MSys bash (2.04) is broken. You need to install 2.05 or later.
 
 The standard MSys install doesn't come with pr. You need to get it from the coreutils package.
 
-@section I tried to pass RTP packets into a decoder, but it doesn't work.
-
-RTP is a container format like any other, you must first depacketize the
-codec frames/samples stored in RTP and then feed to the decoder.
-
 @section Where can I find libav* headers for Pascal/Delphi?
 
 see @url{http://www.iversenit.dk/dev/ffmpeg-headers/}
 
 @section Where is the documentation about ffv1, msmpeg4, asv1, 4xm?
 
-see @url{http://svn.ffmpeg.org/michael/trunk/docs/}
+see @url{http://www.ffmpeg.org/~michael/}
 
 @section How do I feed H.263-RTP (and other codecs in RTP) to libavcodec?
 

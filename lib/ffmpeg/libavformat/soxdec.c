@@ -31,7 +31,7 @@
 
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
-#include "raw.h"
+#include "pcm.h"
 #include "sox.h"
 
 static int sox_probe(AVProbeData *p)
@@ -140,7 +140,7 @@ static int sox_read_packet(AVFormatContext *s,
     return 0;
 }
 
-AVInputFormat sox_demuxer = {
+AVInputFormat ff_sox_demuxer = {
     "sox",
     NULL_IF_CONFIG_SMALL("SoX native format"),
     0,

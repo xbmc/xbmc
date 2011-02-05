@@ -1,5 +1,5 @@
 /*
- * copyright (c) 2007 Bobby Bingham
+ * Copyright (c) 2007 Bobby Bingham
  *
  * This file is part of FFmpeg.
  *
@@ -49,16 +49,16 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
     const char *p;
 
     scale->flags = SWS_BILINEAR;
-    if (args){
+    if (args) {
         sscanf(args, "%d:%d", &scale->w, &scale->h);
-        p= strstr(args,"flags=");
-        if(p) scale->flags= strtoul(p+6, NULL, 0);
+        p = strstr(args,"flags=");
+        if (p) scale->flags = strtoul(p+6, NULL, 0);
     }
 
     /* sanity check params */
     if (scale->w <  -1 || scale->h <  -1) {
         av_log(ctx, AV_LOG_ERROR, "Size values less than -1 are not acceptable.\n");
-        return -1;
+        return AVERROR(EINVAL);
     }
     if (scale->w == -1 && scale->h == -1)
         scale->w = scale->h = 0;
@@ -83,7 +83,7 @@ static int query_formats(AVFilterContext *ctx)
         formats = NULL;
         for (pix_fmt = 0; pix_fmt < PIX_FMT_NB; pix_fmt++)
             if (   sws_isSupportedInput(pix_fmt)
-                && (ret = avfilter_add_colorspace(&formats, pix_fmt)) < 0) {
+                && (ret = avfilter_add_format(&formats, pix_fmt)) < 0) {
                 avfilter_formats_unref(&formats);
                 return ret;
             }
@@ -93,7 +93,7 @@ static int query_formats(AVFilterContext *ctx)
         formats = NULL;
         for (pix_fmt = 0; pix_fmt < PIX_FMT_NB; pix_fmt++)
             if (    sws_isSupportedOutput(pix_fmt)
-                && (ret = avfilter_add_colorspace(&formats, pix_fmt)) < 0) {
+                && (ret = avfilter_add_format(&formats, pix_fmt)) < 0) {
                 avfilter_formats_unref(&formats);
                 return ret;
             }
@@ -138,38 +138,42 @@ static int config_props(AVFilterLink *outlink)
     scale->sws = sws_getContext(inlink ->w, inlink ->h, inlink ->format,
                                 outlink->w, outlink->h, outlink->format,
                                 scale->flags, NULL, NULL, NULL);
+    if (!scale->sws)
+        return AVERROR(EINVAL);
 
-    return !scale->sws;
+    return 0;
 }
 
-static void start_frame(AVFilterLink *link, AVFilterPicRef *picref)
+static void start_frame(AVFilterLink *link, AVFilterBufferRef *picref)
 {
     ScaleContext *scale = link->dst->priv;
     AVFilterLink *outlink = link->dst->outputs[0];
-    AVFilterPicRef *outpicref;
+    AVFilterBufferRef *outpicref;
 
     scale->hsub = av_pix_fmt_descriptors[link->format].log2_chroma_w;
     scale->vsub = av_pix_fmt_descriptors[link->format].log2_chroma_h;
 
     outpicref = avfilter_get_video_buffer(outlink, AV_PERM_WRITE, outlink->w, outlink->h);
-    avfilter_copy_picref_props(outpicref, picref);
+    avfilter_copy_buffer_ref_props(outpicref, picref);
+    outpicref->video->w = outlink->w;
+    outpicref->video->h = outlink->h;
 
-    outlink->outpic = outpicref;
+    outlink->out_buf = outpicref;
 
-    av_reduce(&outpicref->pixel_aspect.num, &outpicref->pixel_aspect.den,
-              (int64_t)picref->pixel_aspect.num * outlink->h * link->w,
-              (int64_t)picref->pixel_aspect.den * outlink->w * link->h,
+    av_reduce(&outpicref->video->pixel_aspect.num, &outpicref->video->pixel_aspect.den,
+              (int64_t)picref->video->pixel_aspect.num * outlink->h * link->w,
+              (int64_t)picref->video->pixel_aspect.den * outlink->w * link->h,
               INT_MAX);
 
     scale->slice_y = 0;
-    avfilter_start_frame(outlink, avfilter_ref_pic(outpicref, ~0));
+    avfilter_start_frame(outlink, avfilter_ref_buffer(outpicref, ~0));
 }
 
 static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
 {
     ScaleContext *scale = link->dst->priv;
     int out_h;
-    AVFilterPicRef *cur_pic = link->cur_pic;
+    AVFilterBufferRef *cur_pic = link->cur_buf;
     const uint8_t *data[4];
 
     if (scale->slice_y == 0 && slice_dir == -1)
@@ -183,8 +187,8 @@ static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
     data[3] = cur_pic->data[3] +  y               * cur_pic->linesize[3];
 
     out_h = sws_scale(scale->sws, data, cur_pic->linesize, y, h,
-                      link->dst->outputs[0]->outpic->data,
-                      link->dst->outputs[0]->outpic->linesize);
+                      link->dst->outputs[0]->out_buf->data,
+                      link->dst->outputs[0]->out_buf->linesize);
 
     if (slice_dir == -1)
         scale->slice_y -= out_h;
@@ -195,7 +199,7 @@ static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
 
 AVFilter avfilter_vf_scale = {
     .name      = "scale",
-    .description = "Scale the input video to width:height size and/or convert the image format.",
+    .description = NULL_IF_CONFIG_SMALL("Scale the input video to width:height size and/or convert the image format."),
 
     .init      = init,
     .uninit    = uninit,
