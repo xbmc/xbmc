@@ -114,6 +114,7 @@ private:
   std::list<IAEPostProc*> m_postProc;      /* post processing objects */
   bool                    m_ownsPostProc;  /* true if the stream should free post-proc filters */
   unsigned int            m_waterLevel;    /* the fill level to fall below before calling the data callback */
+  unsigned int            m_refillBuffer;  /* how many frames that need to be buffered before we return any frames */
 
   CAEConvert::AEConvertToFn m_convertFn;
 

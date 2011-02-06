@@ -48,6 +48,7 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_delete          (false),
   m_volume          (1.0f ),
   m_rgain           (1.0f ),
+  m_refillBuffer    (0    ),
   m_convertFn       (NULL ),
   m_frameBuffer     (NULL ),
   m_frameBufferSize (0    ),
@@ -420,13 +421,18 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
     }
   }
 
+  if (m_refillBuffer)
+    m_refillBuffer = std::max((unsigned int)m_refillBuffer - frames, (unsigned int)0);
+
   return consumed;
 }
 
 uint8_t* CSoftAEStream::GetFrame()
 {
   CSingleLock lock(m_critSection);
-  if (m_delete) return NULL;
+
+  /* if we have been deleted or are refilling but not draining */
+  if (m_delete || (m_refillBuffer && !m_draining)) return NULL;
 
   /* if the packet is empty, advance to the next one */
   if(!m_packet.samples)
@@ -463,7 +469,11 @@ uint8_t* CSoftAEStream::GetFrame()
             return NULL;
         }
         else
+        {
+          /* underrun, we need to refill our buffers */
+          m_refillBuffer = m_waterLevel;
           return NULL;
+        }
       }
     }
 
@@ -534,7 +544,7 @@ uint8_t* CSoftAEStream::GetFrame()
 float CSoftAEStream::GetDelay()
 {
   if (m_delete) return 0.0f;
-  return AE.GetDelay() + ((float)m_framesBuffered / (float)AE.GetSampleRate());
+  return AE.GetDelay() + ((float)(m_framesBuffered + m_refillBuffer) / (float)AE.GetSampleRate());
 }
 
 void CSoftAEStream::Drain()
