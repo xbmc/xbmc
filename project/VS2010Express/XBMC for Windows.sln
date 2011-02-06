@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
+# Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMC", "XBMC.vcxproj", "{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B} = {78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}
@@ -10,10 +10,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnrarXLib", "UnrarXLib.vcxproj", "{FE0A91C0-E30A-47CD-8A92-A508C9292452}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libhts", "..\..\lib\libhts\Win32\libhts_2010.vcxproj", "{00700E12-A63B-4E54-B962-4011A90584BD}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmms", "..\..\lib\win32\libmms_win32\msvc++\libmms.vcxproj", "{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glib", "..\..\lib\win32\glib-2.20.4\build\win32\vs10\glib.vcxproj", "{12BCA020-EABF-429E-876A-A476BC9C10C0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libass_dll", "..\..\lib\libass\xbmc\libass_win32\libass_win32_vs2010.vcxproj", "{BA5B08FC-2ECB-4571-9F25-F8054522FC65}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -108,21 +104,21 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cpluff", "..\..\lib\cpluff\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmp3lame_dll", "..\..\lib\liblame\vc_solution\vc10_libmp3lame_dll.vcxproj", "{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python_make_versioninfo", "..\..\lib\Python\PCbuild\make_versioninfo.vcxproj", "{FC7EBFE5-233C-4608-A4D9-5EF512BA96BF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python_make_versioninfo", "..\..\lib\python\PCbuild\make_versioninfo.vcxproj", "{FC7EBFE5-233C-4608-A4D9-5EF512BA96BF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pythoncore_dll", "..\..\lib\Python\PCbuild\pythoncore.vcxproj", "{9E417A6D-50DE-4969-8542-F58EA1163376}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pythoncore_dll", "..\..\lib\python\PCbuild\pythoncore.vcxproj", "{9E417A6D-50DE-4969-8542-F58EA1163376}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python_zlib.pyd", "..\..\lib\Python\PCbuild\zlib_python.vcxproj", "{680CDC79-9CCA-4282-9A8D-927CB0DB55B2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python_zlib.pyd", "..\..\lib\python\PCbuild\zlib_python.vcxproj", "{680CDC79-9CCA-4282-9A8D-927CB0DB55B2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python__socket.pyd", "..\..\lib\Python\PCbuild\_socket.vcxproj", "{324F66C2-44D0-4D50-B979-F9DAE7FD36DB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python__socket.pyd", "..\..\lib\python\PCbuild\_socket.vcxproj", "{324F66C2-44D0-4D50-B979-F9DAE7FD36DB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python_pyexpat.pyd", "..\..\lib\Python\PCbuild\pyexpat.vcxproj", "{7E551393-3C43-47F8-9F3F-5BC368A6C487}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python_pyexpat.pyd", "..\..\lib\python\PCbuild\pyexpat.vcxproj", "{7E551393-3C43-47F8-9F3F-5BC368A6C487}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python_select.pyd", "..\..\lib\Python\PCbuild\select.vcxproj", "{97239A56-DBC0-41D2-BC14-C87D9B97D63B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python_select.pyd", "..\..\lib\python\PCbuild\select.vcxproj", "{97239A56-DBC0-41D2-BC14-C87D9B97D63B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python_unicodedata.pyd", "..\..\lib\Python\PCbuild\unicodedata.vcxproj", "{FA5FC7EB-C72F-415F-AE42-91DD605ABDDA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python_unicodedata.pyd", "..\..\lib\python\PCbuild\unicodedata.vcxproj", "{FA5FC7EB-C72F-415F-AE42-91DD605ABDDA}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python_bz2.pyd", "..\..\lib\Python\PCbuild\bz2.vcxproj", "{62C61EDD-FDC6-4F2C-9ED6-0FEC3C07D616}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python_bz2.pyd", "..\..\lib\python\PCbuild\bz2.vcxproj", "{62C61EDD-FDC6-4F2C-9ED6-0FEC3C07D616}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libhdhomerun_dll", "..\..\lib\libhdhomerun\hdhomerun\hdhomerun.vcxproj", "{1E2FB608-3DD2-4021-A598-90008FA6DE85}"
 EndProject
@@ -166,22 +162,6 @@ Global
 		{00700E12-A63B-4E54-B962-4011A90584BD}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{00700E12-A63B-4E54-B962-4011A90584BD}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{00700E12-A63B-4E54-B962-4011A90584BD}.Release (OpenGL)|Win32.Build.0 = Release|Win32
-		{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
-		{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
-		{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
-		{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
-		{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
-		{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}.Release (DirectX)|Win32.Build.0 = Release|Win32
-		{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
-		{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}.Release (OpenGL)|Win32.Build.0 = Release|Win32
-		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
-		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
-		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
-		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
-		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
-		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Release (DirectX)|Win32.Build.0 = Release|Win32
-		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
-		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32

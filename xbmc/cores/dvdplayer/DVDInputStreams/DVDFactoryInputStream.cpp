@@ -37,9 +37,6 @@
 #ifdef ENABLE_DVDINPUTSTREAM_STACK
 #include "DVDInputStreamStack.h"
 #endif
-#ifdef HAS_FILESYSTEM_MMS
-#include "DVDInputStreamMMS.h"
-#endif
 #include "FileItem.h"
 #include "storage/MediaManager.h"
 
@@ -63,7 +60,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
        || file.substr(0, 7) == "rtsp://"
        || file.substr(0, 6) == "sdp://"
        || file.substr(0, 6) == "udp://"
-       || file.substr(0, 6) == "tcp://")
+       || file.substr(0, 6) == "tcp://"
+       || file.substr(0, 6) == "mms://"
+       || file.substr(0, 6) == "mmst://"
+       || file.substr(0, 7) == "mmsh://")
     return new CDVDInputStreamFFmpeg();
   else if(file.substr(0, 7) == "myth://"
        || file.substr(0, 8) == "cmyth://"
@@ -85,10 +85,6 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
 #ifdef HAS_FILESYSTEM_HTSP
   else if(file.substr(0, 7) == "htsp://")
     return new CDVDInputStreamHTSP();
-#endif
-#ifdef HAS_FILESYSTEM_MMS
-  else if(file.substr(0,6) == "mms://" || file.substr(0,7) == "mmsh://")
-    return new CDVDInputStreamMMS();
 #endif
 
   // our file interface handles all these types of streams
