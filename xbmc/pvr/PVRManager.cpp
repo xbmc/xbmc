@@ -85,7 +85,6 @@ void CPVRManager::Start()
   if (!LoadClients())
   {
     CLog::Log(LOGERROR, "PVRManager - couldn't load any clients");
-
   }
   else
   {
@@ -93,8 +92,7 @@ void CPVRManager::Start()
     Create();
     SetName("XBMC PVRManager");
     SetPriority(-15);
-    CLog::Log(LOGNOTICE, "PVRManager - started with %u active clients",
-        m_clients.size());
+    CLog::Log(LOGNOTICE, "PVRManager - started with %u active clients", m_clients.size());
   }
 }
 
@@ -107,8 +105,7 @@ void CPVRManager::Stop()
   CLog::Log(LOGNOTICE, "PVRManager - stopping");
   if (m_currentPlayingRecording || m_currentPlayingChannel)
   {
-    CLog::Log(LOGNOTICE,"PVRManager - %s - stopping PVR playback",
-        __FUNCTION__);
+    CLog::Log(LOGNOTICE,"PVRManager - %s - stopping PVR playback", __FUNCTION__);
     g_application.StopPlaying();
   }
 
@@ -848,7 +845,8 @@ void CPVRManager::StartChannelScan(void)
   }
 
   /* start the channel scan */
-  CLog::Log(LOGNOTICE,"PVR: Starting to scan for channels on client %s:%s", m_clients[scanningClientID]->GetBackendName().c_str(), m_clients[scanningClientID]->GetConnectionString().c_str());
+  CLog::Log(LOGNOTICE,"PVRManager - %s - starting to scan for channels on client %s:%s",
+      __FUNCTION__, m_clients[scanningClientID]->GetBackendName().c_str(), m_clients[scanningClientID]->GetConnectionString().c_str());
   long perfCnt = CTimeUtils::GetTimeMS();
 
   /* stop the supervisor thread */
@@ -862,14 +860,14 @@ void CPVRManager::StartChannelScan(void)
   /* restart the supervisor thread */
   StartThreads();
 
-  CLog::Log(LOGNOTICE, "PVR: Channel scan finished after %li.%li seconds", (CTimeUtils::GetTimeMS()-perfCnt)/1000, (CTimeUtils::GetTimeMS()-perfCnt)%1000);
+  CLog::Log(LOGNOTICE, "PVRManager - %s - channel scan finished after %li.%li seconds",
+      __FUNCTION__, (CTimeUtils::GetTimeMS()-perfCnt)/1000, (CTimeUtils::GetTimeMS()-perfCnt)%1000);
   m_bChannelScanRunning = false;
 }
 
 void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
 {
-  CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the PVR database",
-      __FUNCTION__);
+  CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the PVR database", __FUNCTION__);
 
   CGUIDialogProgress* pDlgProgress = NULL;
 
@@ -885,7 +883,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
 
   if (m_currentPlayingRecording || m_currentPlayingChannel)
   {
-    CLog::Log(LOGNOTICE,"PVR: Is playing data, stopping playback");
+    CLog::Log(LOGNOTICE,"PVRManager - %s - stopping playback", __FUNCTION__);
     g_application.StopPlaying();
   }
 
@@ -932,8 +930,8 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
     m_database.Close();
   }
 
-  CLog::Log(LOGNOTICE,"PVRManager - %s - PVR database cleared. restarting the PVRManager",
-      __FUNCTION__);
+  CLog::Log(LOGNOTICE,"PVRManager - %s - PVR database cleared. restarting the PVRManager", __FUNCTION__);
+
   Start();
 
   if (bShowProgress)
@@ -1035,18 +1033,22 @@ CStdString CPVRManager::GetCurrentInputFormat(void)
 
 bool CPVRManager::GetCurrentChannel(const CPVRChannel *channel)
 {
+  bool bReturn = false;
+
   if (m_currentPlayingChannel)
   {
     channel = m_currentPlayingChannel->GetPVRChannelInfoTag();
-    CLog::Log(LOGDEBUG,"%s - current channel '%s'", __FUNCTION__, channel->ChannelName().c_str());
-    return true;
+    CLog::Log(LOGDEBUG,"PVRManager - %s - current channel '%s'",
+        __FUNCTION__, channel->ChannelName().c_str());
+    bReturn = true;
   }
   else
   {
-    CLog::Log(LOGDEBUG,"%s - no current channel set", __FUNCTION__);
+    CLog::Log(LOGDEBUG,"PVRManager - %s - no current channel set", __FUNCTION__);
     channel = NULL;
-    return false;
   }
+
+  return bReturn;
 }
 
 bool CPVRManager::HasActiveClients(void)
@@ -1315,7 +1317,8 @@ bool CPVRManager::OpenLiveStream(const CPVRChannel* tag)
 
   CSingleLock lock(m_critSection);
 
-  CLog::Log(LOGDEBUG,"PVR: opening live stream on channel '%s'", tag->ChannelName().c_str());
+  CLog::Log(LOGDEBUG,"PVRManager - %s - opening live stream on channel '%s'",
+      __FUNCTION__, tag->ChannelName().c_str());
 
   /* Check if a channel or recording is already opened and clear it if yes */
   if (m_currentPlayingChannel)
@@ -1437,7 +1440,7 @@ int CPVRManager::ReadStream(void* lpBuf, int64_t uiBufSize)
 {
   CSingleLock lock(m_critSection);
 
-  int bytesReaded = 0;
+  int bytesRead = 0;
 
   /* Check stream for available video or audio data, if after the scantime no stream
      is present playback is canceled and returns to the window */
@@ -1445,25 +1448,20 @@ int CPVRManager::ReadStream(void* lpBuf, int64_t uiBufSize)
   {
     if (CTimeUtils::GetTimeMS() - m_scanStart > (unsigned int) g_guiSettings.GetInt("pvrplayback.scantime")*1000)
     {
-      CLog::Log(LOGERROR,"PVR: No video or audio data available after %i seconds, playback stopped", g_guiSettings.GetInt("pvrplayback.scantime"));
+      CLog::Log(LOGERROR,"PVRManager - %s - no video or audio data available after %i seconds, playback stopped",
+          __FUNCTION__, g_guiSettings.GetInt("pvrplayback.scantime"));
       return 0;
     }
     else if (g_application.IsPlayingVideo() || g_application.IsPlayingAudio())
       m_scanStart = NULL;
   }
 
-  /* Process LiveTV Reading */
   if (m_currentPlayingChannel)
-  {
-    bytesReaded = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->ReadLiveStream(lpBuf, uiBufSize);
-  }
-  /* Process Recording Reading */
+    bytesRead = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->ReadLiveStream(lpBuf, uiBufSize);
   else if (m_currentPlayingRecording)
-  {
-    bytesReaded = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->ReadRecordedStream(lpBuf, uiBufSize);
-  }
+    bytesRead = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->ReadRecordedStream(lpBuf, uiBufSize);
 
-  return bytesReaded;
+  return bytesRead;
 }
 
 void CPVRManager::DemuxReset()
@@ -1505,13 +1503,9 @@ int64_t CPVRManager::LengthStream(void)
   CSingleLock lock(m_critSection);
 
   if (m_currentPlayingChannel)
-  {
     streamLength = 0;
-  }
   else if (m_currentPlayingRecording)
-  {
     streamLength = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->LengthRecordedStream();
-  }
 
   return streamLength;
 }
@@ -1523,13 +1517,9 @@ int64_t CPVRManager::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*
   CSingleLock lock(m_critSection);
 
   if (m_currentPlayingChannel)
-  {
     streamNewPos = 0;
-  }
   else if (m_currentPlayingRecording)
-  {
     streamNewPos = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->SeekRecordedStream(iFilePosition, iWhence);
-  }
 
   return streamNewPos;
 }
@@ -1541,13 +1531,9 @@ int64_t CPVRManager::GetStreamPosition()
   CSingleLock lock(m_critSection);
 
   if (m_currentPlayingChannel)
-  {
     streamPos = 0;
-  }
   else if (m_currentPlayingRecording)
-  {
     streamPos = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->PositionRecordedStream();
-  }
 
   return streamPos;
 }
@@ -1560,7 +1546,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
 
   if (!item.IsPVRChannel())
   {
-    CLog::Log(LOGERROR, "CPVRManager: UpdateItem no TVChannelTag given!");
+    CLog::Log(LOGERROR, "CPVRManager - %s - no channel tag provided", __FUNCTION__);
     return false;
   }
 
