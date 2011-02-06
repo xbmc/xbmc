@@ -1,4 +1,126 @@
 <includes>
+	<include name="Search_Label">
+		<posx>3</posx>
+		<font>MediaPreviewDetailsHeader</font>
+		<textcolor>HomeMain</textcolor>
+		<shadowcolor>FF222222</shadowcolor>
+		<width>278</width>
+		<height>30</height>
+	</include>
+	
+	<include name="Search_Result">
+		<posx>0</posx>
+		<posy>0</posy>
+		<width>700</width>
+		<height>200</height>
+		<itemlayout width="140" height="200">
+			<control type="image">
+				<posx>15</posx>
+				<posy>10</posy>
+				<width>128</width>
+				<height>150</height>
+				<info>ListItem.Thumb</info>
+				<aspectratio aligny="bottom">keep</aspectratio>
+			</control>
+			<control type="label">
+				<visible>Container.Content(episodes)</visible>
+				<posx>81</posx>
+				<posy>160</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.tvshowtitle]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FF999999</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+			<control type="label">
+				<posx>81</posx>
+				<posy>180</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.Title]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FF999999</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+		</itemlayout>
+
+		<focusedlayout width="140" height="200">
+			<control type="image">
+				<posx>15</posx>
+				<posy>10</posy>
+				<width>128</width>
+				<height>150</height>
+				<info>ListItem.Thumb</info>
+			</control>
+			<control type="label">
+				<visible>Container.Content(episodes)</visible>
+				<posx>81</posx>
+				<posy>160</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.tvshowtitle]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FF999999</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+			<control type="label">
+				<posx>81</posx>
+				<posy>180</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.Title]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+		</focusedlayout>
+	</include>
+	<include name="Search_Keyboard_Button">
+		<width>36</width>
+		<height>36</height>
+		<font>LargeDefaultFont</font>
+		<textcolor>HomeMain</textcolor>
+		<focusedcolor>Focused</focusedcolor>
+		<align>center</align>
+		<aligny>center</aligny>
+		<texturenofocus border="10" diffuse="grey.png">button_keyboard.png</texturenofocus>
+		<texturefocus border="10" diffuse="masks/10b9f2.png">button_keyboard.png</texturefocus>
+		<textureclick border="10">-</textureclick>
+	</include>
+	<include name="Search_Keyboard_ToggleButton">
+		<width>36</width>
+		<height>36</height>
+		<font>LargeDefaultFont</font>
+		<textcolor>HomeMain</textcolor>
+		<focusedcolor>Focused</focusedcolor>
+		<align>center</align>
+		<aligny>center</aligny>
+		<texturenofocus border="18" diffuse="grey.png">button_keyboard.png</texturenofocus>
+		<texturefocus border="18" diffuse="masks/10b9f2.png">button_keyboard.png</texturefocus>
+		<textureclick border="18">-</textureclick>
+	</include>
+	<include name="Search_Keyboard_Big_Button">
+		<width>80</width>
+		<height>80</height>
+		<font>LargeDefaultFont</font>
+		<textcolor>HomeMain</textcolor>
+		<focusedcolor>Focused</focusedcolor>
+		<align>center</align>
+		<aligny>center</aligny>
+		<texturenofocus>button_kb.png</texturenofocus>
+		<texturefocus>button_kb_on.png</texturefocus>
+		<textureclick>button_kb_click.png</textureclick>
+	</include>
+
 	<include file="Defaults.xml"/>
 	<include file="IncludesDims.xml"/>
 	<include file="revision.xml"/>

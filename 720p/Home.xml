@@ -1208,6 +1208,11 @@
 						<label> $LOCALIZE[31955] </label>
 						<onclick>SetFocus(506)</onclick>
 					</item>
+					<item id="6">
+						<description>Search Menu</description>
+						<label> Search </label>
+						<onclick>Plex.ActivateWindow(10051)</onclick>
+					</item>
 					<item id="111">
 						<description>Quit Button</description>
 						<label> $LOCALIZE[31007] </label>
