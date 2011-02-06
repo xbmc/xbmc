@@ -594,47 +594,6 @@ config.log
 /lib/libdvd/libdvdread/autom4te.cache
 /lib/libdvd/libdvdread/config.h.in~
 
-# /lib/libdts/
-/lib/libdts/config.log
-/lib/libdts/config.h
-/lib/libdts/Makefile
-/lib/libdts/config.status
-/lib/libdts/stamp-h1
-/lib/libdts/configure.lineno
-
-# /lib/libdts/autotools/
-/lib/libdts/autotools/Makefile
-
-# /lib/libdts/debian/
-/lib/libdts/debian/Makefile
-
-# /lib/libdts/doc/
-/lib/libdts/doc/Makefile
-
-# /lib/libdts/include/
-/lib/libdts/include/Makefile
-
-# /lib/libdts/libao/
-/lib/libdts/libao/Makefile
-
-# /lib/libdts/libdts/
-/lib/libdts/libdts/Makefile
-
-# /lib/libdts/src/
-/lib/libdts/src/extract_dts
-/lib/libdts/src/dtsdec
-/lib/libdts/src/Makefile
-
-# /lib/libdts/test/
-/lib/libdts/test/compare
-/lib/libdts/test/Makefile
-
-# /lib/libdts/vc++/
-/lib/libdts/vc++/Makefile
-/lib/libdts/vc++/libdts.lib
-/lib/libdts/vc++/Debug
-/lib/libdts/vc++/Release
-
 # /lib/libfaad2/
 /lib/libfaad2/config.log
 /lib/libfaad2/config.h
