@@ -20,6 +20,7 @@
  *
  */
 
+#include <stdint.h>
 #include <cassert>
 #include <climits>
 #include <cmath>
@@ -134,6 +135,11 @@ namespace MathUtils
     return (i);
   }
 
+  inline int64_t abs(int64_t a)
+  {
+    return (a < 0) ? -a : a;
+  }
+
   inline void hack()
   {
     // stupid hack to keep compiler from dropping these
@@ -141,6 +147,7 @@ namespace MathUtils
     MathUtils::round_int(0.0);
     MathUtils::truncate_int(0.0);
     MathUtils::ceil_int(0.0);
+    MathUtils::abs(0);
   }
 } // namespace MathUtils
 

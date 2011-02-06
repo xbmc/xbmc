@@ -54,6 +54,11 @@ static int decode_frame(AVCodecContext *avctx,
     if(p->data[0])
         avctx->release_buffer(avctx, p);
 
+    if(buf_size/avctx->height < avctx->width) {
+        av_log(avctx, AV_LOG_ERROR, "Resolution larger than buffer size. Invalid header?\n");
+        return -1;
+    }
+
     p->reference= 0;
     if(avctx->get_buffer(avctx, p) < 0){
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
@@ -135,7 +140,7 @@ static av_cold int encode_init(AVCodecContext *avctx){
 }
 #endif
 
-AVCodec cljr_decoder = {
+AVCodec ff_cljr_decoder = {
     "cljr",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_CLJR,
@@ -149,7 +154,7 @@ AVCodec cljr_decoder = {
 };
 
 #if CONFIG_CLJR_ENCODER
-AVCodec cljr_encoder = {
+AVCodec ff_cljr_encoder = {
     "cljr",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_CLJR,

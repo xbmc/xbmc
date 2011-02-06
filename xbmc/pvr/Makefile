@@ -14,7 +14,7 @@ SRCS=PVRChannel.cpp \
 	PVRTimerInfoTag.cpp \
 	PVRTimers.cpp \
 	PVRDatabase.cpp \
-	GUIViewStateTV.cpp
+	GUIViewStatePVR.cpp
 
 LIB=pvr.a
 

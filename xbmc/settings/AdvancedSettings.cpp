@@ -238,6 +238,7 @@ void CAdvancedSettings::Initialize()
                                   //with ipv6.
 
   m_fullScreen = m_startFullScreen = false;
+  m_splashImage = true;
 
   m_playlistRetries = 100;
   m_playlistTimeout = 20; // 20 seconds timeout
@@ -634,6 +635,7 @@ bool CAdvancedSettings::Load()
 #ifdef HAS_SDL
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif
+  XMLUtils::GetBoolean(pRootElement, "splash", m_splashImage);
 
   XMLUtils::GetInt(pRootElement, "songinfoduration", m_songInfoDuration, 0, INT_MAX);
   XMLUtils::GetInt(pRootElement, "busydialogdelay", m_busyDialogDelay, 0, 5000);

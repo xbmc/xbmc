@@ -696,7 +696,8 @@ livedatas:
 	$(MAKE) -C tools/XBMCLive
 
 install-bin: xbmc.bin # developement convenience target
-	sudo install -D xbmc.bin $(DESTDIR)$(libdir)/xbmc
+	sudo install -d $(DESTDIR)$(libdir)
+	sudo install xbmc.bin $(DESTDIR)$(libdir)/xbmc
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 	# TODO: add osx install
@@ -705,45 +706,71 @@ install: install-binaries install-arch install-datas
 
 install-binaries: install-scripts
 	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/xbmc.bin"
-	@install -D xbmc.bin $(DESTDIR)$(libdir)/xbmc/xbmc.bin
-	@install -D xbmc-xrandr $(DESTDIR)$(libdir)/xbmc/xbmc-xrandr
+	@install -d $(DESTDIR)$(libdir)/xbmc
+	@install xbmc.bin $(DESTDIR)$(libdir)/xbmc/xbmc.bin
+	@install xbmc-xrandr $(DESTDIR)$(libdir)/xbmc/xbmc-xrandr
 	@echo "You can run XBMC with the command 'xbmc'"
 endif
 
 install-arch:
 	@# Arch dependent files
-	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*script\.module\..*" -iregex ".*$(ARCH).*|.*\.pvr|.*\.vis|.*\.xbs|.*\.so|.*python.*\.zip" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+ifeq ($(findstring freebsd,$(ARCH)), freebsd)
+	@find -E system addons -type f -not -iregex ".*svn.*|.*script\.module\..*" \
+		-iregex ".*$(ARCH).*|.*\.pvr|.*\.vis|.*\.xbs|.*python.*\.zip" \
+		-exec sh -c "install -d \"$(DESTDIR)$(libdir)/xbmc/\`dirname '{}'\`\"" \; \
+		-and \
+		-exec install "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; \
+		-exec printf " -- %-75.75s\r" "{}" \;
+else
+	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*script\.module\..*" -iregex ".*$(ARCH).*|.*\.pvr|.*\.vis|.*\.xbs|.*python.*\.zip" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+endif
 	@cp -r addons/script.module.pil $(DESTDIR)$(libdir)/xbmc/addons/
 	@cp -r addons/script.module.pysqlite $(DESTDIR)$(libdir)/xbmc/addons/
 
 install-scripts:
-	@install -D tools/Linux/xbmc.sh $(DESTDIR)$(bindir)/xbmc
-	@install -D tools/Linux/xbmc-standalone.sh $(DESTDIR)$(bindir)/xbmc-standalone
-	@install -D -m 0644 tools/Linux/FEH.py $(DESTDIR)$(datarootdir)/xbmc/FEH.py
-	@install -D -m 0644 tools/Linux/xbmc-xsession.desktop $(DESTDIR)$(datarootdir)/xsessions/XBMC.desktop
+	@install -d $(DESTDIR)$(bindir)
+	@install tools/Linux/xbmc.sh $(DESTDIR)$(bindir)/xbmc
+	@install tools/Linux/xbmc-standalone.sh $(DESTDIR)$(bindir)/xbmc-standalone
+	@install -d $(DESTDIR)$(datarootdir)/xbmc
+	@install -m 0644 tools/Linux/FEH.py $(DESTDIR)$(datarootdir)/xbmc/FEH.py
+	@install -d $(DESTDIR)$(datarootdir)/xsessions
+	@install -m 0644 tools/Linux/xbmc-xsession.desktop $(DESTDIR)$(datarootdir)/xsessions/XBMC.desktop
 
 install-datas: install-scripts
 	@echo "Copying support and legal files..."
+	@install -d $(DESTDIR)$(docdir)
 	@for FILE in `ls README.linux LICENSE.GPL *.txt`; do \
-		install -D -m 0644 "$$FILE" "$(DESTDIR)$(docdir)/$$FILE"; done
+		install -m 0644 "$$FILE" "$(DESTDIR)$(docdir)/$$FILE"; done
 	@echo "Done!"
 	@echo "Copying system files to $(DESTDIR)$(datarootdir)/xbmc"
+	@install -d $(DESTDIR)$(datarootdir)/xbmc
 	@# Arch independent files
+ifeq ($(findstring bsd,$(ARCH)), bsd)
+	@find -E addons language media sounds userdata system -type f \
+		-not -iregex ".*script\.module\..*|.*$(ARCH).*|.*\.pvr|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python.*\.zip" \
+		-exec sh -c "install -d \"$(DESTDIR)$(datarootdir)/xbmc/\`dirname '{}'\`\"" \; \
+		-and \
+		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; \
+		-exec printf " -- %-75.75s\r" "{}" \;
+else
 	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*script\.module\..*|.*$(ARCH).*|.*\.pvr|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python.*\.zip" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+endif	
 	@# Icons and links
-	@mkdir -p $(DESTDIR)$(datarootdir)/applications
-	@cp -a tools/Linux/xbmc.desktop $(DESTDIR)$(datarootdir)/applications/
-	@install -D -m 0644 tools/Linux/xbmc-48x48.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/xbmc.png
-	@install -D -m 0644 media/icon.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/xbmc.png
+	@install -d $(DESTDIR)$(datarootdir)/applications
+	@install tools/Linux/xbmc.desktop $(DESTDIR)$(datarootdir)/applications/xbmc.desktop
+	@install -d $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps
+	@install -m 0644 tools/Linux/xbmc-48x48.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/xbmc.png
+	@install -d $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps
+	@install -m 0644 media/icon.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/xbmc.png
 	@test -z "$(DESTDIR)" && gtk-update-icon-cache -f -q -t $(datadir)/icons/hicolor || :
 
 install-livedatas: livedatas
 	@echo "Install Live CD datas..."
-	@mkdir -p $(DESTDIR)$(bindir)
-	@install -D tools/XBMCLive/diskmounter $(DESTDIR)$(bindir)/diskmounter
-	@install -D tools/XBMCLive/installXBMC $(DESTDIR)$(bindir)/installXBMC
-	@install -D tools/XBMCLive/runXBMC $(DESTDIR)$(bindir)/runXBMC
-	@install -D tools/XBMCLive/setAlsaVolumes $(DESTDIR)$(bindir)/setAlsaVolumes
+	@install -d $(DESTDIR)$(bindir)
+	@install tools/XBMCLive/diskmounter $(DESTDIR)$(bindir)/diskmounter
+	@install tools/XBMCLive/installXBMC $(DESTDIR)$(bindir)/installXBMC
+	@install tools/XBMCLive/runXBMC $(DESTDIR)$(bindir)/runXBMC
+	@install tools/XBMCLive/setAlsaVolumes $(DESTDIR)$(bindir)/setAlsaVolumes
 
 uninstall:
 	@echo "Removing XBMC..."

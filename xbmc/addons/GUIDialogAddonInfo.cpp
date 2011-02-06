@@ -167,7 +167,7 @@ void CGUIDialogAddonInfo::OnUninstall()
   CFileItemList list;
   list.Add(CFileItemPtr(new CFileItem(m_localAddon->Path(),true)));
   list[0]->Select(true);
-  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),NULL);
+  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""), &CAddonInstaller::Get());
   CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
   Close();
 }

@@ -19,6 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavcore/imgutils.h"
 #include "avcodec.h"
 #include "dsputil.h"
 #include "binkdata.h"
@@ -118,7 +119,7 @@ static void init_lengths(BinkContext *c, int width, int bw)
 
     c->bundle[BINK_SRC_SUB_BLOCK_TYPES].len = av_log2((width >> 4) + 511) + 1;
 
-    c->bundle[BINK_SRC_COLORS].len = av_log2((width >> 3)*64 + 511) + 1;
+    c->bundle[BINK_SRC_COLORS].len = av_log2(bw*64 + 511) + 1;
 
     c->bundle[BINK_SRC_INTRA_DC].len =
     c->bundle[BINK_SRC_INTER_DC].len =
@@ -127,7 +128,7 @@ static void init_lengths(BinkContext *c, int width, int bw)
 
     c->bundle[BINK_SRC_PATTERN].len = av_log2((bw << 3) + 511) + 1;
 
-    c->bundle[BINK_SRC_RUN].len = av_log2((width >> 3)*48 + 511) + 1;
+    c->bundle[BINK_SRC_RUN].len = av_log2(bw*48 + 511) + 1;
 }
 
 /**
@@ -324,7 +325,7 @@ static int read_motion_values(AVCodecContext *avctx, GetBitContext *gb, Bundle *
     return 0;
 }
 
-const uint8_t bink_rlelens[4] = { 4, 8, 12, 32 };
+static const uint8_t bink_rlelens[4] = { 4, 8, 12, 32 };
 
 static int read_block_types(AVCodecContext *avctx, GetBitContext *gb, Bundle *b)
 {
@@ -971,7 +972,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
     c->pic.data[0] = NULL;
 
-    if (avcodec_check_dimensions(avctx, avctx->width, avctx->height) < 0) {
+    if (av_image_check_size(avctx->width, avctx->height, 0, avctx) < 0) {
         return 1;
     }
 
@@ -999,7 +1000,7 @@ static av_cold int decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec bink_decoder = {
+AVCodec ff_bink_decoder = {
     "binkvideo",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_BINKVIDEO,

@@ -33,6 +33,8 @@
 #include "libavutil/common.h"
 #include "libavutil/log.h"
 
+#include "libavformat/version.h"
+
 /* unbuffered I/O */
 
 /**
@@ -43,7 +45,7 @@
  * sizeof(URLContext) must not be used outside libav*.
  */
 typedef struct URLContext {
-#if LIBAVFORMAT_VERSION_MAJOR >= 53
+#if FF_API_URL_CLASS
     const AVClass *av_class; ///< information for av_log(). Set by url_open().
 #endif
     struct URLProtocol *prot;
@@ -132,7 +134,21 @@ int url_read(URLContext *h, unsigned char *buf, int size);
  * certain there was either an error or the end of file was reached.
  */
 int url_read_complete(URLContext *h, unsigned char *buf, int size);
+
+/**
+ * Write size bytes from buf to the resource accessed by h.
+ *
+ * @return the number of bytes actually written, or a negative value
+ * corresponding to an AVERROR code in case of failure
+ */
 int url_write(URLContext *h, const unsigned char *buf, int size);
+
+/**
+ * Passing this as the "whence" parameter to a seek function causes it to
+ * return the filesize without seeking anywhere. Supporting this is optional.
+ * If it is not supported then the seek function will return <0.
+ */
+#define AVSEEK_SIZE 0x10000
 
 /**
  * Change the position that will be used by the next read/write
@@ -165,12 +181,16 @@ int url_close(URLContext *h);
  */
 int url_exist(const char *url);
 
+/**
+ * Return the filesize of the resource accessed by h, AVERROR(ENOSYS)
+ * if the operation is not supported by h, or another negative value
+ * corresponding to an AVERROR error code in case of failure.
+ */
 int64_t url_filesize(URLContext *h);
 
 /**
  * Return the file descriptor associated with this URL. For RTP, this
  * will return only the RTP file descriptor, not the RTCP file descriptor.
- * To get both, use rtp_get_file_handles().
  *
  * @return the file descriptor associated with this URL, or <0 on error.
  */
@@ -185,6 +205,12 @@ int url_get_file_handle(URLContext *h);
  * @return maximum packet size in bytes
  */
 int url_get_max_packet_size(URLContext *h);
+
+/**
+ * Copy the filename of the resource accessed by h to buf.
+ *
+ * @param buf_size size in bytes of buf
+ */
 void url_get_filename(URLContext *h, char *buf, int buf_size);
 
 /**
@@ -226,13 +252,6 @@ int64_t av_url_read_seek(URLContext *h, int stream_index,
                          int64_t timestamp, int flags);
 
 /**
- * Passing this as the "whence" parameter to a seek function causes it to
- * return the filesize without seeking anywhere. Supporting this is optional.
- * If it is not supported then the seek function will return <0.
- */
-#define AVSEEK_SIZE 0x10000
-
-/**
  * Oring this flag as into the "whence" parameter to a seek function causes it to
  * seek by any means (like reopening and linear reading) or other normally unreasonble
  * means that can be extreemly slow.
@@ -256,7 +275,7 @@ typedef struct URLProtocol {
     const AVClass *priv_data_class;
 } URLProtocol;
 
-#if LIBAVFORMAT_VERSION_MAJOR < 53
+#if FF_API_REGISTER_PROTOCOL
 extern URLProtocol *first_protocol;
 #endif
 
@@ -269,7 +288,7 @@ extern URLInterruptCB *url_interrupt_cb;
  */
 URLProtocol *av_protocol_next(URLProtocol *p);
 
-#if LIBAVFORMAT_VERSION_MAJOR < 53
+#if FF_API_REGISTER_PROTOCOL
 /**
  * @deprecated Use av_register_protocol() instead.
  */
@@ -336,6 +355,7 @@ ByteIOContext *av_alloc_put_byte(
                   int64_t (*seek)(void *opaque, int64_t offset, int whence));
 
 void put_byte(ByteIOContext *s, int b);
+void put_nbyte(ByteIOContext *s, int b, int count);
 void put_buffer(ByteIOContext *s, const unsigned char *buf, int size);
 void put_le64(ByteIOContext *s, uint64_t val);
 void put_be64(ByteIOContext *s, uint64_t val);
@@ -347,7 +367,21 @@ void put_le16(ByteIOContext *s, unsigned int val);
 void put_be16(ByteIOContext *s, unsigned int val);
 void put_tag(ByteIOContext *s, const char *tag);
 
-void put_strz(ByteIOContext *s, const char *buf);
+#if FF_API_OLD_AVIO
+attribute_deprecated void put_strz(ByteIOContext *s, const char *buf);
+#endif
+
+/**
+ * Write a NULL-terminated string.
+ * @return number of bytes written.
+ */
+int avio_put_str(ByteIOContext *s, const char *str);
+
+/**
+ * Convert an UTF-8 string to UTF-16LE and write it.
+ * @return number of bytes written.
+ */
+int avio_put_str16le(ByteIOContext *s, const char *str);
 
 /**
  * fseek() equivalent for ByteIOContext.
@@ -358,8 +392,9 @@ int64_t url_fseek(ByteIOContext *s, int64_t offset, int whence);
 /**
  * Skip given number of bytes forward.
  * @param offset number of bytes
+ * @return 0 on success, <0 on error
  */
-void url_fskip(ByteIOContext *s, int64_t offset);
+int url_fskip(ByteIOContext *s, int64_t offset);
 
 /**
  * ftell() equivalent for ByteIOContext.
@@ -425,6 +460,15 @@ unsigned int get_le32(ByteIOContext *s);
 uint64_t get_le64(ByteIOContext *s);
 unsigned int get_le16(ByteIOContext *s);
 
+/**
+ * Read a UTF-16 string from pb and convert it to UTF-8.
+ * The reading will terminate when either a null or invalid character was
+ * encountered or maxlen bytes have been read.
+ * @return number of bytes read (is always <= maxlen)
+ */
+int avio_get_str16le(ByteIOContext *pb, int maxlen, char *buf, int buflen);
+int avio_get_str16be(ByteIOContext *pb, int maxlen, char *buf, int buflen);
+
 char *get_strz(ByteIOContext *s, char *buf, int maxlen);
 unsigned int get_be16(ByteIOContext *s);
 unsigned int get_be24(ByteIOContext *s);
@@ -453,7 +497,7 @@ int url_fdopen(ByteIOContext **s, URLContext *h);
 
 /** @warning must be called before any I/O */
 int url_setbufsize(ByteIOContext *s, int buf_size);
-#if LIBAVFORMAT_VERSION_MAJOR < 53
+#if FF_API_URL_RESETBUF
 /** Reset the buffer for reading or writing.
  * @note Will drop any data currently in the buffer without transmitting it.
  * @param flags URL_RDONLY to set up the buffer for reading, or URL_WRONLY
@@ -550,7 +594,7 @@ void init_checksum(ByteIOContext *s,
 /* udp.c */
 int udp_set_remote_url(URLContext *h, const char *uri);
 int udp_get_local_port(URLContext *h);
-#if (LIBAVFORMAT_VERSION_MAJOR <= 52)
+#if FF_API_UDP_GET_FILE
 int udp_get_file_handle(URLContext *h);
 #endif
 

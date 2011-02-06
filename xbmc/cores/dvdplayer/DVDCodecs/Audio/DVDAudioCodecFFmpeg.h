@@ -23,7 +23,9 @@
 
 #include "DVDAudioCodec.h"
 #include "DllAvCodec.h"
+#include "DllAvCore.h"
 #include "DllAvFormat.h"
+#include "DllAvUtil.h"
 
 class CDVDAudioCodecFFmpeg : public CDVDAudioCodec
 {
@@ -45,7 +47,7 @@ public:
 protected:
   AVCodecContext* m_pCodecContext;
   AVAudioConvert* m_pConvert;;
-  enum SampleFormat m_iSampleFormat;
+  enum AVSampleFormat m_iSampleFormat;
   enum PCMChannels m_channelMap[PCM_MAX_CH + 1];
 
   BYTE *m_pBuffer1;
@@ -61,6 +63,7 @@ protected:
   int64_t m_layout;
 
   DllAvCodec m_dllAvCodec;
+  DllAvCore m_dllAvCore;
   DllAvUtil m_dllAvUtil;
 
   void BuildChannelMap();

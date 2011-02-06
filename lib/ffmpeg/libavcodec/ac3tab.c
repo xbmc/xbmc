@@ -24,6 +24,7 @@
  * tables taken directly from the AC-3 spec.
  */
 
+#include "libavcore/audioconvert.h"
 #include "avcodec.h"
 #include "ac3tab.h"
 
@@ -84,14 +85,14 @@ const uint8_t ff_ac3_channels_tab[8] = {
  * Map audio coding mode (acmod) to channel layout mask.
  */
 const uint16_t ff_ac3_channel_layout_tab[8] = {
-    CH_LAYOUT_STEREO,
-    CH_LAYOUT_MONO,
-    CH_LAYOUT_STEREO,
-    CH_LAYOUT_SURROUND,
-    CH_LAYOUT_2_1,
-    CH_LAYOUT_4POINT0,
-    CH_LAYOUT_2_2,
-    CH_LAYOUT_5POINT0
+    AV_CH_LAYOUT_STEREO,
+    AV_CH_LAYOUT_MONO,
+    AV_CH_LAYOUT_STEREO,
+    AV_CH_LAYOUT_SURROUND,
+    AV_CH_LAYOUT_2_1,
+    AV_CH_LAYOUT_4POINT0,
+    AV_CH_LAYOUT_2_2,
+    AV_CH_LAYOUT_5POINT0
 };
 
 #define COMMON_CHANNEL_MAP \
@@ -131,10 +132,16 @@ const uint16_t ff_ac3_bitrate_tab[19] = {
     160, 192, 224, 256, 320, 384, 448, 512, 576, 640
 };
 
+/**
+ * Table of bin locations for rematrixing bands
+ * reference: Section 7.5.2 Rematrixing : Frequency Band Definitions
+ */
+const uint8_t ff_ac3_rematrix_band_tab[5] = { 13, 25, 37, 61, 253 };
+
 /* AC-3 MDCT window */
 
 /* MDCT window */
-const int16_t ff_ac3_window[256] = {
+const int16_t ff_ac3_window[AC3_WINDOW_SIZE/2] = {
     4,    7,   12,   16,   21,   28,   34,   42,
    51,   61,   72,   84,   97,  111,  127,  145,
   164,  184,  207,  231,  257,  285,  315,  347,
@@ -198,7 +205,7 @@ const uint8_t ff_ac3_log_add_tab[260]= {
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 };
 
-const uint16_t ff_ac3_hearing_threshold_tab[50][3]= {
+const uint16_t ff_ac3_hearing_threshold_tab[AC3_CRITICAL_BANDS][3]= {
 { 0x04d0,0x04f0,0x0580 },
 { 0x04d0,0x04f0,0x0580 },
 { 0x0440,0x0460,0x04b0 },
@@ -285,11 +292,6 @@ const uint16_t ff_ac3_fast_gain_tab[8]= {
     0x080, 0x100, 0x180, 0x200, 0x280, 0x300, 0x380, 0x400,
 };
 
-const uint8_t ff_ac3_critical_band_size_tab[50]={
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3,
-    3, 6, 6, 6, 6, 6, 6, 12, 12, 12, 12, 24, 24, 24, 24, 24
-};
 /**
  * Default channel map for a dependent substream defined by acmod
  */

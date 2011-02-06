@@ -77,16 +77,15 @@ static int write_trailer(AVFormatContext *s)
     return 0;
 }
 
-AVOutputFormat ass_muxer = {
-    "ass",
-    NULL_IF_CONFIG_SMALL("Advanced SubStation Alpha subtitle format"),
-    NULL,
-    "ass,ssa",
-    sizeof(ASSContext),
-    CODEC_ID_NONE,
-    CODEC_ID_NONE,
-    write_header,
-    write_packet,
-    write_trailer,
-    .flags = AVFMT_GLOBALHEADER | AVFMT_NOTIMESTAMPS
+AVOutputFormat ff_ass_muxer = {
+    .name           = "ass",
+    .long_name      = NULL_IF_CONFIG_SMALL("Advanced SubStation Alpha subtitle format"),
+    .mime_type      = "text/x-ssa",
+    .extensions     = "ass,ssa",
+    .priv_data_size = sizeof(ASSContext),
+    .subtitle_codec = CODEC_ID_SSA,
+    .write_header   = write_header,
+    .write_packet   = write_packet,
+    .write_trailer  = write_trailer,
+    .flags          = AVFMT_GLOBALHEADER | AVFMT_NOTIMESTAMPS,
 };

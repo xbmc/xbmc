@@ -28,6 +28,7 @@
 #include "URL.h"
 #include "utils/Job.h"
 #include "IStorageProvider.h"
+#include "threads/CriticalSection.h"
 
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;

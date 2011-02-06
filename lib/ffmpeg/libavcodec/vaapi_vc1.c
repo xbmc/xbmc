@@ -138,7 +138,7 @@ static int vaapi_vc1_start_frame(AVCodecContext *avctx, av_unused const uint8_t 
     struct vaapi_context * const vactx = avctx->hwaccel_context;
     VAPictureParameterBufferVC1 *pic_param;
 
-    dprintf(avctx, "vaapi_vc1_start_frame()\n");
+    av_dlog(avctx, "vaapi_vc1_start_frame()\n");
 
     vactx->slice_param_size = sizeof(VASliceParameterBufferVC1);
 
@@ -308,7 +308,7 @@ static int vaapi_vc1_decode_slice(AVCodecContext *avctx, const uint8_t *buffer, 
     MpegEncContext * const s = &v->s;
     VASliceParameterBufferVC1 *slice_param;
 
-    dprintf(avctx, "vaapi_vc1_decode_slice(): buffer %p, size %d\n", buffer, size);
+    av_dlog(avctx, "vaapi_vc1_decode_slice(): buffer %p, size %d\n", buffer, size);
 
     /* Current bit buffer is beyond any marker for VC-1, so skip it */
     if (avctx->codec_id == CODEC_ID_VC1 && IS_MARKER(AV_RB32(buffer))) {
@@ -326,7 +326,7 @@ static int vaapi_vc1_decode_slice(AVCodecContext *avctx, const uint8_t *buffer, 
 }
 
 #if CONFIG_WMV3_VAAPI_HWACCEL
-AVHWAccel wmv3_vaapi_hwaccel = {
+AVHWAccel ff_wmv3_vaapi_hwaccel = {
     .name           = "wmv3_vaapi",
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = CODEC_ID_WMV3,
@@ -339,7 +339,7 @@ AVHWAccel wmv3_vaapi_hwaccel = {
 };
 #endif
 
-AVHWAccel vc1_vaapi_hwaccel = {
+AVHWAccel ff_vc1_vaapi_hwaccel = {
     .name           = "vc1_vaapi",
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = CODEC_ID_VC1,

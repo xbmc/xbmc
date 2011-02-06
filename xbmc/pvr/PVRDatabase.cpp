@@ -540,7 +540,7 @@ int CPVRDatabase::GetChannelsInGroup(CPVRChannelGroup *group)
   /* invalid group id */
   if (group->GroupID() < 0)
   {
-    CLog::Log(LOGERROR, "PVRDB - %s - invalid group id: %ld",
+    CLog::Log(LOGERROR, "PVRDB - %s - invalid group id: %d",
         __FUNCTION__, group->GroupID());
     return -1;
   }

@@ -1209,7 +1209,8 @@ static void qdm2_decode_super_block (QDM2Context *q)
     init_get_bits(&gb, header.data, header.size*8);
 
     if (header.type == 2 || header.type == 4 || header.type == 5) {
-        int csum = 257 * get_bits(&gb, 8) + 2 * get_bits(&gb, 8);
+        int csum  = 257 * get_bits(&gb, 8);
+            csum +=   2 * get_bits(&gb, 8);
 
         csum = qdm2_packet_checksum(q->compressed_data, q->checksum_size, csum);
 
@@ -1865,7 +1866,7 @@ static av_cold int qdm2_decode_init(AVCodecContext *avctx)
 
     qdm2_init(s);
 
-    avctx->sample_fmt = SAMPLE_FMT_S16;
+    avctx->sample_fmt = AV_SAMPLE_FMT_S16;
 
 //    dump_context(s);
     return 0;
@@ -1882,7 +1883,7 @@ static av_cold int qdm2_decode_close(AVCodecContext *avctx)
 }
 
 
-static void qdm2_decode (QDM2Context *q, const uint8_t *in, int16_t *out)
+static int qdm2_decode (QDM2Context *q, const uint8_t *in, int16_t *out)
 {
     int ch, i;
     const int frame_size = (q->frame_size * q->channels);
@@ -1918,7 +1919,7 @@ static void qdm2_decode (QDM2Context *q, const uint8_t *in, int16_t *out)
 
         if (!q->has_errors && q->sub_packet_list_C[0].packet != NULL) {
             SAMPLES_NEEDED_2("has errors, and C list is not empty")
-            return;
+            return -1;
         }
     }
 
@@ -1939,6 +1940,8 @@ static void qdm2_decode (QDM2Context *q, const uint8_t *in, int16_t *out)
 
         out[i] = value;
     }
+
+    return 0;
 }
 
 
@@ -1949,28 +1952,29 @@ static int qdm2_decode_frame(AVCodecContext *avctx,
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
     QDM2Context *s = avctx->priv_data;
+    int16_t *out = data;
+    int i;
 
     if(!buf)
         return 0;
     if(buf_size < s->checksum_size)
         return -1;
 
-    *data_size = s->channels * s->frame_size * sizeof(int16_t);
-
     av_log(avctx, AV_LOG_DEBUG, "decode(%d): %p[%d] -> %p[%d]\n",
        buf_size, buf, s->checksum_size, data, *data_size);
 
-    qdm2_decode(s, buf, data);
-
-    // reading only when next superblock found
-    if (s->sub_packet == 0) {
-        return s->checksum_size;
+    for (i = 0; i < 16; i++) {
+        if (qdm2_decode(s, buf, out) < 0)
+            return -1;
+        out += s->channels * s->frame_size;
     }
 
-    return 0;
+    *data_size = (uint8_t*)out - (uint8_t*)data;
+
+    return s->checksum_size;
 }
 
-AVCodec qdm2_decoder =
+AVCodec ff_qdm2_decoder =
 {
     .name = "qdm2",
     .type = AVMEDIA_TYPE_AUDIO,

@@ -25,6 +25,7 @@
 #include "../../../guilib/Surface.h"
 #include "../ffmpeg/DllSwScale.h"
 #include "../ffmpeg/DllAvCodec.h"
+#include "../ffmpeg/DllAvUtil.h"
 #include "LinuxRendererGL.h"
 
 #ifdef HAS_SDL_OPENGL

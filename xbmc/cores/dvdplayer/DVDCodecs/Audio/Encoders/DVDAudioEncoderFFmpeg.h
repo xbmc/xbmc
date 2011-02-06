@@ -23,6 +23,7 @@
 #include "IDVDAudioEncoder.h"
 #include "DllAvCodec.h"
 #include "DllAvFormat.h"
+#include "DllAvUtil.h"
 
 class CDVDAudioEncoderFFmpeg: public IDVDAudioEncoder
 {
@@ -42,16 +43,21 @@ public:
   virtual int GetData(uint8_t **data);
 private:
   DllAvCodec m_dllAvCodec;
+  DllAvCore  m_dllAvCore;
   DllAvUtil  m_dllAvUtil;
 
   AVCodecContext   *m_CodecCtx;
+  AVAudioConvert   *m_AudioConvert;
   enum PCMChannels  m_ChannelMap[PCM_MAX_CH];
   CPCMRemap         m_Remap;
   uint8_t          *m_Buffer;
+  uint8_t          *m_TmpBuffer;
+  uint8_t          *m_TmpBuffer2;
   int               m_BufferSize;
 
   unsigned int      m_NeededFrames;
   unsigned int      m_NeededBytes;
   unsigned int      m_OutputBytes;
+  unsigned int      m_BitsPerSample;
 };
 

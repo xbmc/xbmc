@@ -25,7 +25,7 @@
 
 #include "libavutil/bswap.h"
 #include "avformat.h"
-#include "raw.h"
+#include "pcm.h"
 
 /* if we don't know the size in advance */
 #define AU_UNKNOWN_SIZE ((uint32_t)(~0))
@@ -141,7 +141,7 @@ static int sol_read_packet(AVFormatContext *s,
     return 0;
 }
 
-AVInputFormat sol_demuxer = {
+AVInputFormat ff_sol_demuxer = {
     "sol",
     NULL_IF_CONFIG_SMALL("Sierra SOL format"),
     0,

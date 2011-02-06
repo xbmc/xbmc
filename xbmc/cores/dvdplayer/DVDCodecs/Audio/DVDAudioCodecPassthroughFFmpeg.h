@@ -25,6 +25,7 @@
 #include "system.h"
 #include "DllAvFormat.h"
 #include "DllAvCodec.h"
+#include "DllAvUtil.h"
 
 #include "../DVDFactoryCodec.h"
 #include "DVDAudioCodec.h"

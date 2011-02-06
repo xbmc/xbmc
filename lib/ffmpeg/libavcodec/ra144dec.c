@@ -37,7 +37,7 @@ static av_cold int ra144_decode_init(AVCodecContext * avctx)
     ractx->lpc_coef[0] = ractx->lpc_tables[0];
     ractx->lpc_coef[1] = ractx->lpc_tables[1];
 
-    avctx->sample_fmt = SAMPLE_FMT_S16;
+    avctx->sample_fmt = AV_SAMPLE_FMT_S16;
     return 0;
 }
 
@@ -114,7 +114,7 @@ static int ra144_decode_frame(AVCodecContext * avctx, void *vdata,
     return 20;
 }
 
-AVCodec ra_144_decoder =
+AVCodec ff_ra_144_decoder =
 {
     "real_144",
     AVMEDIA_TYPE_AUDIO,

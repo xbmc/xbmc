@@ -26,6 +26,7 @@
 
 #include <vorbis/vorbisenc.h>
 
+#include "libavutil/opt.h"
 #include "avcodec.h"
 #include "bytestream.h"
 #include "vorbis.h"
@@ -38,6 +39,7 @@
 #define BUFFER_SIZE (1024*64)
 
 typedef struct OggVorbisContext {
+    AVClass *av_class;
     vorbis_info vi ;
     vorbis_dsp_state vd ;
     vorbis_block vb ;
@@ -48,10 +50,18 @@ typedef struct OggVorbisContext {
     /* decoder */
     vorbis_comment vc ;
     ogg_packet op;
+
+    double iblock;
 } OggVorbisContext ;
 
+static const AVOption options[]={
+{"iblock", "Sets the impulse block bias", offsetof(OggVorbisContext, iblock), FF_OPT_TYPE_DOUBLE, 0, -15, 0, AV_OPT_FLAG_AUDIO_PARAM|AV_OPT_FLAG_ENCODING_PARAM},
+{NULL}
+};
+static const AVClass class = { "libvorbis", av_default_item_name, options, LIBAVUTIL_VERSION_INT };
 
 static av_cold int oggvorbis_init_encoder(vorbis_info *vi, AVCodecContext *avccontext) {
+    OggVorbisContext *context = avccontext->priv_data ;
     double cfreq;
 
     if(avccontext->flags & CODEC_FLAG_QSCALE) {
@@ -82,14 +92,21 @@ static av_cold int oggvorbis_init_encoder(vorbis_info *vi, AVCodecContext *avcco
             return -1;
     }
 
+    if(context->iblock){
+        vorbis_encode_ctl(vi, OV_ECTL_IBLOCK_SET, &context->iblock);
+    }
+
     return vorbis_encode_setup_init(vi);
 }
+
+/* How many bytes are needed for a buffer of length 'l' */
+static int xiph_len(int l) { return (1 + l / 255 + l); }
 
 static av_cold int oggvorbis_encode_init(AVCodecContext *avccontext) {
     OggVorbisContext *context = avccontext->priv_data ;
     ogg_packet header, header_comm, header_code;
     uint8_t *p;
-    unsigned int offset, len;
+    unsigned int offset;
 
     vorbis_info_init(&context->vi) ;
     if(oggvorbis_init_encoder(&context->vi, avccontext) < 0) {
@@ -105,9 +122,11 @@ static av_cold int oggvorbis_encode_init(AVCodecContext *avccontext) {
     vorbis_analysis_headerout(&context->vd, &context->vc, &header,
                                 &header_comm, &header_code);
 
-    len = header.bytes + header_comm.bytes +  header_code.bytes;
-    avccontext->extradata_size= 64 + len + len/255;
-    p = avccontext->extradata= av_mallocz(avccontext->extradata_size);
+    avccontext->extradata_size=
+        1 + xiph_len(header.bytes) + xiph_len(header_comm.bytes) +
+        header_code.bytes;
+    p = avccontext->extradata =
+      av_malloc(avccontext->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
     p[0] = 2;
     offset = 1;
     offset += av_xiphlacing(&p[offset], header.bytes);
@@ -118,8 +137,7 @@ static av_cold int oggvorbis_encode_init(AVCodecContext *avccontext) {
     offset += header_comm.bytes;
     memcpy(&p[offset], header_code.packet, header_code.bytes);
     offset += header_code.bytes;
-    avccontext->extradata_size = offset;
-    avccontext->extradata= av_realloc(avccontext->extradata, avccontext->extradata_size);
+    assert(offset == avccontext->extradata_size);
 
 /*    vorbis_block_clear(&context->vb);
     vorbis_dsp_clear(&context->vd);
@@ -225,7 +243,7 @@ static av_cold int oggvorbis_encode_close(AVCodecContext *avccontext) {
 }
 
 
-AVCodec libvorbis_encoder = {
+AVCodec ff_libvorbis_encoder = {
     "libvorbis",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_VORBIS,
@@ -234,6 +252,7 @@ AVCodec libvorbis_encoder = {
     oggvorbis_encode_frame,
     oggvorbis_encode_close,
     .capabilities= CODEC_CAP_DELAY,
-    .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .sample_fmts = (const enum AVSampleFormat[]){AV_SAMPLE_FMT_S16,AV_SAMPLE_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("libvorbis Vorbis"),
+    .priv_class= &class,
 } ;
