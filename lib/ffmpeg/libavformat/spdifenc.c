@@ -49,6 +49,7 @@
 #include "libavcodec/ac3.h"
 #include "libavcodec/dca.h"
 #include "libavcodec/aacadtsdec.h"
+#include "libavutil/opt.h"
 
 typedef struct IEC61937Context {
     enum IEC61937DataType data_type;///< burst info - reference to type of payload of the data-burst
@@ -68,11 +69,22 @@ typedef struct IEC61937Context {
     int hd_buf_count;               ///< number of frames in the hd audio buffer
     int hd_buf_filled;              ///< amount of bytes in the hd audio buffer
 
+    /* AVOptions: */
+#define SPDIF_FLAG_BIGENDIAN    0x01
+    int spdif_flags;
+
     /// function, which generates codec dependent header information.
     /// Sets data_type and pkt_offset, and length_code, out_bytes, out_buf if necessary
     int (*header_info) (AVFormatContext *s, AVPacket *pkt);
 } IEC61937Context;
 
+static const AVOption options[] = {
+{ "spdif_flags", "IEC 61937 encapsulation flags", offsetof(IEC61937Context, spdif_flags), FF_OPT_TYPE_FLAGS, 0, 0, INT_MAX, AV_OPT_FLAG_ENCODING_PARAM, "spdif_flags" },
+{ "be", "output in big-endian format (for use as s16be)", 0, FF_OPT_TYPE_CONST, SPDIF_FLAG_BIGENDIAN, 0, INT_MAX, AV_OPT_FLAG_ENCODING_PARAM, "spdif_flags" },
+{ NULL },
+};
+
+static const AVClass class = { "spdif", av_default_item_name, options, LIBAVUTIL_VERSION_INT };
 
 static int spdif_header_ac3(AVFormatContext *s, AVPacket *pkt)
 {
@@ -330,6 +342,15 @@ static int spdif_write_trailer(AVFormatContext *s)
     return 0;
 }
 
+static void spdif_put_16(struct AVFormatContext *s, unsigned int val)
+{
+    IEC61937Context *ctx = s->priv_data;
+    if (ctx->spdif_flags & SPDIF_FLAG_BIGENDIAN)
+        put_be16(s->pb, val);
+    else
+        put_le16(s->pb, val);
+}
+
 static int spdif_write_packet(struct AVFormatContext *s, AVPacket *pkt)
 {
     IEC61937Context *ctx = s->priv_data;
@@ -354,13 +375,13 @@ static int spdif_write_packet(struct AVFormatContext *s, AVPacket *pkt)
     }
 
     if (ctx->use_preamble) {
-        put_le16(s->pb, SYNCWORD1);       //Pa
-        put_le16(s->pb, SYNCWORD2);       //Pb
-        put_le16(s->pb, ctx->data_type);  //Pc
-        put_le16(s->pb, ctx->length_code);//Pd
+        spdif_put_16(s, SYNCWORD1);       //Pa
+        spdif_put_16(s, SYNCWORD2);       //Pb
+        spdif_put_16(s, ctx->data_type);  //Pc
+        spdif_put_16(s, ctx->length_code);//Pd
     }
 
-    if (HAVE_BIGENDIAN ^ ctx->extra_bswap) {
+    if (ctx->extra_bswap ^ (ctx->spdif_flags & SPDIF_FLAG_BIGENDIAN)) {
     put_buffer(s->pb, ctx->out_buf, ctx->out_bytes & ~1);
     } else {
     av_fast_malloc(&ctx->buffer, &ctx->buffer_size, ctx->out_bytes + FF_INPUT_BUFFER_PADDING_SIZE);
@@ -370,8 +391,9 @@ static int spdif_write_packet(struct AVFormatContext *s, AVPacket *pkt)
     put_buffer(s->pb, ctx->buffer, ctx->out_bytes & ~1);
     }
 
+    /* a final lone byte has to be MSB aligned */
     if (ctx->out_bytes & 1)
-        put_be16(s->pb, ctx->out_buf[ctx->out_bytes - 1]);
+        spdif_put_16(s, ctx->out_buf[ctx->out_bytes - 1] << 8);
 
     put_nbyte(s->pb, 0, padding);
 
@@ -393,4 +415,5 @@ AVOutputFormat ff_spdif_muxer = {
     spdif_write_header,
     spdif_write_packet,
     spdif_write_trailer,
+    .priv_class = &class,
 };
