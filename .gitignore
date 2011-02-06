@@ -356,7 +356,6 @@ config.log
 /system/players/paplayer/libsidplay2.dll
 /system/players/paplayer/adpcm.dll
 /system/players/dvdplayer/libmad.dll
-/system/players/dvdplayer/libdts.dll
 
 # /system/players/dsplayer
 /system/players/dsplayer/libsubs.dll

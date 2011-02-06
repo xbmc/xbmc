@@ -75,7 +75,6 @@
 
 /* dvdplayer */
 #define DLL_PATH_LIBASS        "special://xbmcbin/system/players/dvdplayer/libass-@ARCH@.so"
-#define DLL_PATH_LIBDTS        "special://xbmcbin/system/players/dvdplayer/libdts-@ARCH@.so"
 #define DLL_PATH_LIBMPEG2      "special://xbmcbin/system/players/dvdplayer/libmpeg2-@ARCH@.so"
 #define DLL_PATH_LIBDVDNAV     "special://xbmcbin/system/players/dvdplayer/libdvdnav-@ARCH@.so"
 #if defined(_LINUX) && !defined(__APPLE__)

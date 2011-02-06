@@ -43,10 +43,6 @@
 #endif
 #include "URL.h"
 #include "DVDPlayerCodec.h"
-#ifdef USE_LIBDTS_DECODER
-#include "DTSCodec.h"
-#include "DTSCDDACodec.h"
-#endif
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -64,15 +60,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new FLACCodec();
   else if (strFileType.Equals("wav"))
     return new DVDPlayerCodec();
-  else if (strFileType.Equals("dts"))
-#ifdef USE_LIBDTS_DECODER
-    return new DTSCodec();
-#else
-    return new DVDPlayerCodec();
-#endif
-  else if (strFileType.Equals("ac3"))
-    return new DVDPlayerCodec();
-  else if (strFileType.Equals("m4a") || strFileType.Equals("aac"))
+  else if (strFileType.Equals("dts") || strFileType.Equals("ac3") ||
+           strFileType.Equals("m4a") || strFileType.Equals("aac"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("wv"))
     return new WAVPackCodec();
@@ -149,18 +138,10 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   if (urlFile.GetFileType().Equals("wav"))
   {
     ICodec* codec;
-#ifdef USE_LIBDTS_DECODER
     //lets see what it contains...
     //this kinda sucks 'cause if it's a plain wav file the file
     //will be opened, sniffed and closed 2 times before it is opened *again* for wav
     //would be better if the papcodecs could work with bitstreams instead of filenames.
-    codec = new DTSCodec();
-    if (codec->Init(strFile, filecache))
-    {
-      return codec;
-    }
-    delete codec;
-#endif
     DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
     dvdcodec->SetContentType("audio/x-spdif-compressed");
     if (dvdcodec->Init(strFile, filecache))
@@ -184,21 +165,10 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   }
   if (urlFile.GetFileType().Equals("cdda"))
   {
-#if defined(USE_LIBDTS_DECODER)
-    ICodec* codec;
-#endif
-#ifdef USE_LIBDTS_DECODER
     //lets see what it contains...
     //this kinda sucks 'cause if it's plain cdda the file
-    //will be opened, sniffed and closed 2 times before it is opened *again* for cdda
+    //will be opened, sniffed and closed before it is opened *again* for cdda
     //would be better if the papcodecs could work with bitstreams instead of filenames.
-    codec = new DTSCDDACodec();
-    if (codec->Init(strFile, filecache))
-    {
-      return codec;
-    }
-    delete codec;
-#endif
     DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
     dvdcodec->SetContentType("audio/x-spdif-compressed");
     if (dvdcodec->Init(strFile, filecache))

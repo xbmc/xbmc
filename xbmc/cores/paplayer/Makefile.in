@@ -9,8 +9,6 @@ SRCS=ADPCMCodec.cpp \
      AudioDecoder.cpp \
      CDDAcodec.cpp \
      CodecFactory.cpp \
-     DTSCDDACodec.cpp \
-     DTSCodec.cpp \
      DVDPlayerCodec.cpp \
      FLACcodec.cpp \
      ModplugCodec.cpp \

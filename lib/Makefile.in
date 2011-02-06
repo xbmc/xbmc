@@ -10,9 +10,6 @@ DIRS=
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
   DIRS+=ffmpeg
 endif
-ifeq (@USE_INTERNAL_LIBDTS@,1)
-  DIRS+=libdts
-endif
 
 LIBS=
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
@@ -22,9 +19,6 @@ ifneq (@USE_EXTERNAL_FFMPEG@,1)
 	avformat-52-$(ARCH).so \
 	postproc-51-$(ARCH).so \
 	swscale-0.6.1-$(ARCH).so
-endif
-ifeq (@USE_INTERNAL_LIBDTS@,1)
-  LIBS+=libdts-$(ARCH).so
 endif
 
 ifeq ($(findstring osx,$(ARCH)),osx)
@@ -101,14 +95,6 @@ ffmpeg/libpostproc/libpostproc.dylib : ffmpeg;
 ffmpeg:
 	$(MAKE) -C $@
 
-$(SYSDIR)/libdts-$(ARCH).so:  $(WRAPPER_OSX) libdts/libdts/libdts.a
-	$(CC) -bundle -flat_namespace -undefined suppress \
-		-o $@ libdts/libdts/bitstream.o \
-		libdts/libdts/downmix.o \
-		libdts/libdts/parse.o
-	$(WRAPPER_OSX) $@;mv output.so $@
-	chmod +x $@
-
 $(SYSDIR)/libfaad-$(ARCH).so:  $(WRAPPER_OSX) libfaad2/libfaad/libfaad.la
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
 		libfaad2/libfaad/*.o $(BUNDLE1_O)
@@ -118,10 +104,6 @@ $(SYSDIR)/libmad-$(ARCH).so: $(WRAPPER_OSX) libmad/libmad.la
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
 		libmad/.libs/*.o $(BUNDLE1_O)
 	$(WRAPPER_OSX) $@;mv output.so $@
-
-libdts/libdts/libdts.a : libdts;
-libdts:
-	$(MAKE) -C $@
 
 libfaad2/libfaad/libfaad.la: libfaad2;
 libfaad2:
@@ -165,16 +147,6 @@ ffmpeg/libavformat/libavformat.so : ffmpeg;
 ffmpeg/libswscale/libswscale.so   : ffmpeg;
 ffmpeg/libpostproc/libpostproc.so : ffmpeg;
 ffmpeg:
-	$(MAKE) -C $@
-
-$(SYSDIR)/libdts-$(ARCH).so: $(WRAPPER) libdts/libdts/libdts.a
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ \
-		libdts/libdts/bitstream.o \
-		libdts/libdts/downmix.o libdts/libdts/parse.o \
-		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
-
-libdts/libdts/libdts.a : libdts;
-libdts:
 	$(MAKE) -C $@
 
 endif

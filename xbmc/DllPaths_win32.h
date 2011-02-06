@@ -54,7 +54,6 @@
 
 /* dvdplayer */
 #define DLL_PATH_LIBASS        "special://xbmcbin/system/players/dvdplayer/libass.dll"
-#define DLL_PATH_LIBDTS        "special://xbmcbin/system/players/dvdplayer/libdts.dll"
 #define DLL_PATH_LIBFAAD       "special://xbmcbin/system/players/dvdplayer/libfaad.dll"
 #define DLL_PATH_LIBMAD        "special://xbmcbin/system/players/dvdplayer/libmad.dll"
 #define DLL_PATH_LIBMPEG2      "special://xbmcbin/system/players/dvdplayer/libmpeg2.dll"

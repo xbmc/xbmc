@@ -3,7 +3,6 @@ INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
 CXXFLAGS+=-DHAVE_MMX
 
 SRCS=	DVDAudioCodecFFmpeg.cpp \
-	DVDAudioCodecLibDts.cpp \
 	DVDAudioCodecLibFaad.cpp \
 	DVDAudioCodecLibMad.cpp \
 	DVDAudioCodecLPcm.cpp \
