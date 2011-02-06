@@ -3558,7 +3558,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   *m_currentFile = item;
 
   if (!m_currentFile->HasPVRChannelInfoTag() && (!m_currentFile->HasVideoInfoTag() || m_currentFile->GetVideoInfoTag()->IsEmpty()))
-  { // attempt to get some information
+  {
     CVideoDatabase dbs;
     dbs.Open();
     if (dbs.HasMovieInfo(item.m_strPath))
@@ -3581,6 +3581,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     }
     dbs.Close();
   }
+
   // Find a thumb for this file.
   item.SetVideoThumb();
   if (!item.HasThumbnail())

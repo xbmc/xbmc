@@ -28,7 +28,7 @@
 #include "LinuxRendererGL.h"
 #elif HAS_GLES == 2
 #include "LinuxRendererGLES.h"
-#include "MatrixGLES.h"
+#include "guilib/MatrixGLES.h"
 #endif
 #include "RenderManager.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"

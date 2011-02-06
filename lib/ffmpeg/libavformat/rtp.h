@@ -76,4 +76,19 @@ enum CodecID ff_rtp_codec_id(const char *buf, enum AVMediaType codec_type);
 #define RTCP_TX_RATIO_NUM 5
 #define RTCP_TX_RATIO_DEN 1000
 
+/* An arbitrary id value for RTP Xiph streams - only relevant to indicate
+ * the the configuration has changed within a stream (by changing the
+ * ident value sent).
+ */
+#define RTP_XIPH_IDENT 0xfecdba
+
+/* RTCP packet types */
+enum RTCPType {
+    RTCP_SR     = 200,
+    RTCP_RR,   // 201
+    RTCP_SDES, // 202
+    RTCP_BYE,  // 203
+    RTCP_APP   // 204
+};
+
 #endif /* AVFORMAT_RTP_H */

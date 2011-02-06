@@ -1,0 +1,29 @@
+From ab91f9fecf9ac6e38dbf5d9ed65a5bd123a4c031 Mon Sep 17 00:00:00 2001
+From: elupus <elupus@568bbfeb-2a22-0410-94d2-cc84cf5bfa90>
+Date: Tue, 19 Oct 2010 21:07:10 +0000
+Subject: [PATCH 29/36] fixed: if container doesn't contain timestamps for all dts packets, lavf used wrong duration of packet to fill in the blanks
+
+The issue was discussed here: http://forum.xbmc.org/showthread.php?t=82896
+
+Ps. The DTS parser is really lacking. It doesn't fill in anything, it only slices up the frames. So if this value changes mid stream, we will start calculating this wrong again. I'm pondering if we should just stop trying to fill in the blanks.
+
+git-svn-id: https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk@34863 568bbfeb-2a22-0410-94d2-cc84cf5bfa90
+---
+ libavcodec/dca.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/libavcodec/dca.c b/libavcodec/dca.c
+index 63ea329..2e2b37f 100644
+--- a/libavcodec/dca.c
++++ b/libavcodec/dca.c
+@@ -1642,6 +1642,7 @@ static int dca_decode_frame(AVCodecContext * avctx,
+     //set AVCodec values with parsed data
+     avctx->sample_rate = s->sample_rate;
+     avctx->bit_rate = s->bit_rate;
++    avctx->frame_size = s->sample_blocks * 32;
+ 
+     s->profile = FF_PROFILE_DTS;
+ 
+-- 
+1.7.3
+

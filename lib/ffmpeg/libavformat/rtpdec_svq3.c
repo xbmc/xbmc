@@ -27,15 +27,14 @@
  */
 
 #include <string.h>
-#include <libavcodec/get_bits.h>
+#include "libavutil/intreadwrite.h"
 #include "rtp.h"
 #include "rtpdec.h"
-#include "rtpdec_svq3.h"
+#include "rtpdec_formats.h"
 
 struct PayloadContext {
     ByteIOContext *pktbuf;
     int64_t        timestamp;
-    int            is_keyframe;
 };
 
 /** return 0 on packet, <0 on partial packet or error... */
@@ -90,7 +89,6 @@ static int svq3_parse_packet (AVFormatContext *s, PayloadContext *sv,
         if ((res = url_open_dyn_buf(&sv->pktbuf)) < 0)
             return res;
         sv->timestamp   = *timestamp;
-        sv->is_keyframe = flags & RTP_FLAG_KEY;
     }
 
     if (!sv->pktbuf)
@@ -101,8 +99,7 @@ static int svq3_parse_packet (AVFormatContext *s, PayloadContext *sv,
     if (end_packet) {
         av_init_packet(pkt);
         pkt->stream_index = st->index;
-        pkt->pts          = sv->timestamp;
-        pkt->flags        = sv->is_keyframe ? AV_PKT_FLAG_KEY : 0;
+        *timestamp        = sv->timestamp;
         pkt->size         = url_close_dyn_buf(sv->pktbuf, &pkt->data);
         pkt->destruct     = av_destruct_packet;
         sv->pktbuf        = NULL;
@@ -128,11 +125,10 @@ static void svq3_extradata_free(PayloadContext *sv)
 }
 
 RTPDynamicProtocolHandler ff_svq3_dynamic_handler = {
-    "X-SV3V-ES",
-    CODEC_TYPE_VIDEO,
-    CODEC_ID_NONE,          // see if (config_packet) above
-    NULL,                   // parse sdp line
-    svq3_extradata_new,
-    svq3_extradata_free,
-    svq3_parse_packet,
+    .enc_name         = "X-SV3V-ES",
+    .codec_type       = AVMEDIA_TYPE_VIDEO,
+    .codec_id         = CODEC_ID_NONE,      // see if (config_packet) above
+    .open             = svq3_extradata_new,
+    .close            = svq3_extradata_free,
+    .parse_packet     = svq3_parse_packet,
 };

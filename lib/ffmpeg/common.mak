@@ -31,11 +31,12 @@ $(foreach VAR,$(SILENT),$(eval override $(VAR) = @$($(VAR))))
 $(eval INSTALL = @$(call ECHO,INSTALL,$$(^:$(SRC_DIR)/%=%)); $(INSTALL))
 endif
 
-ALLFFLIBS = avcodec avdevice avfilter avformat avutil postproc swscale
+ALLFFLIBS = avcodec avcore avdevice avfilter avformat avutil postproc swscale
 
 IFLAGS   := -I$(BUILD_ROOT_REL) -I$(SRC_PATH)
 CPPFLAGS := $(IFLAGS) $(CPPFLAGS)
 CFLAGS   += $(ECFLAGS)
+YASMFLAGS += $(IFLAGS) -Pconfig.asm
 
 HOSTCFLAGS += $(IFLAGS)
 
@@ -106,11 +107,8 @@ $(HOSTOBJS): %.o: %.c
 $(HOSTPROGS): %$(HOSTEXESUF): %.o
 	$(HOSTCC) $(HOSTLDFLAGS) -o $@ $< $(HOSTLIBS)
 
-DEPS := $(OBJS:.o=.d)
-depend dep: $(DEPS)
-
 CLEANSUFFIXES     = *.d *.o *~ *.ho *.map *.ver
 DISTCLEANSUFFIXES = *.pc
 LIBSUFFIXES       = *.a *.lib *.so *.so.* *.dylib *.dll *.def *.dll.a *.exp
 
--include $(wildcard $(DEPS))
+-include $(wildcard $(OBJS:.o=.d))

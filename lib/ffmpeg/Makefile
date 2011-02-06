@@ -9,19 +9,20 @@ PROGS-$(CONFIG_FFPLAY)   += ffplay
 PROGS-$(CONFIG_FFPROBE)  += ffprobe
 PROGS-$(CONFIG_FFSERVER) += ffserver
 
-PROGS      := $(addsuffix   $(EXESUF), $(PROGS-yes))
-PROGS_G     = $(addsuffix _g$(EXESUF), $(PROGS-yes))
-OBJS        = $(addsuffix .o,          $(PROGS-yes)) cmdutils.o
-MANPAGES    = $(addprefix doc/, $(addsuffix .1, $(PROGS-yes)))
-HTMLPAGES   = $(addprefix doc/, $(addsuffix -doc.html, $(PROGS-yes)))
+PROGS      := $(PROGS-yes:%=%$(EXESUF))
+PROGS_G     = $(PROGS-yes:%=%_g$(EXESUF))
+OBJS        = $(PROGS-yes:%=%.o) cmdutils.o
+MANPAGES    = $(PROGS-yes:%=doc/%.1)
+PODPAGES    = $(PROGS-yes:%=doc/%.pod)
+HTMLPAGES   = $(PROGS-yes:%=doc/%.html)
 TOOLS       = $(addprefix tools/, $(addsuffix $(EXESUF), cws2fws pktdumper probetest qt-faststart trasher))
-HOSTPROGS   = $(addprefix tests/, audiogen videogen rotozoom tiny_psnr)
+TESTTOOLS   = audiogen videogen rotozoom tiny_psnr base64
+HOSTPROGS  := $(TESTTOOLS:%=tests/%)
 
 BASENAMES   = ffmpeg ffplay ffprobe ffserver
-ALLPROGS    = $(addsuffix   $(EXESUF), $(BASENAMES))
-ALLPROGS_G  = $(addsuffix _g$(EXESUF), $(BASENAMES))
-ALLMANPAGES = $(addsuffix .1, $(BASENAMES))
-ALLHTMLPAGES= $(addsuffix -doc.html, $(BASENAMES))
+ALLPROGS    = $(BASENAMES:%=%$(EXESUF))
+ALLPROGS_G  = $(BASENAMES:%=%_g$(EXESUF))
+ALLMANPAGES = $(BASENAMES:%=%.1)
 
 FFLIBS-$(CONFIG_AVDEVICE) += avdevice
 FFLIBS-$(CONFIG_AVFILTER) += avfilter
@@ -29,6 +30,7 @@ FFLIBS-$(CONFIG_AVFORMAT) += avformat
 FFLIBS-$(CONFIG_AVCODEC)  += avcodec
 FFLIBS-$(CONFIG_POSTPROC) += postproc
 FFLIBS-$(CONFIG_SWSCALE)  += swscale
+FFLIBS-$(CONFIG_AVCORE)   += avcore
 
 FFLIBS := avutil
 
@@ -55,6 +57,12 @@ all: $(FF_DEP_LIBS) $(PROGS) $(ALL_TARGETS-yes)
 $(PROGS): %$(EXESUF): %_g$(EXESUF)
 	$(CP) $< $@
 	$(STRIP) $@
+
+config.h: .config
+.config: $(wildcard $(FFLIBS:%=$(SRC_DIR)/lib%/all*.c))
+	@-tput bold 2>/dev/null
+	@-printf '\nWARNING: $(?F) newer than config.h, rerun configure\n\n'
+	@-tput sgr0 2>/dev/null
 
 SUBDIR_VARS := OBJS FFLIBS CLEANFILES DIRS TESTPROGS EXAMPLES SKIPHEADERS \
                ALTIVEC-OBJS MMX-OBJS NEON-OBJS X86-OBJS YASM-OBJS-FFT YASM-OBJS \
@@ -83,9 +91,9 @@ tools/%$(EXESUF): tools/%.o
 	$(LD) $(FF_LDFLAGS) -o $@ $< $(FF_EXTRALIBS)
 
 tools/%.o: tools/%.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(CC_O) $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(CC_O) $<
 
-ffplay.o ffplay.d: CFLAGS += $(SDL_CFLAGS)
+ffplay.o: CFLAGS += $(SDL_CFLAGS)
 
 VERSION_SH  = $(SRC_PATH_BARE)/version.sh
 GIT_LOG     = $(SRC_PATH_BARE)/.git/logs/HEAD
@@ -103,20 +111,22 @@ version.h .version:
 
 alltools: $(TOOLS)
 
-documentation: $(addprefix doc/, developer.html faq.html general.html libavfilter.html \
-                                 $(ALLHTMLPAGES) $(ALLMANPAGES))
+DOCS = $(addprefix doc/, developer.html faq.html general.html libavfilter.html) $(HTMLPAGES) $(MANPAGES) $(PODPAGES)
 
-$(HTMLPAGES) $(MANPAGES): doc/fftools-common-opts.texi
+documentation: $(DOCS)
 
-doc/ffmpeg.pod doc/ffmpeg-doc.html: doc/filters.texi
-doc/ffplay.pod doc/ffplay-doc.html: doc/filters.texi
+-include $(wildcard $(DOCS:%=%.d))
+
+TEXIDEP = awk '/^@include/ { printf "$@: $(@D)/%s\n", $$2 }' <$< >$(@:%=%.d)
 
 doc/%.html: TAG = HTML
-doc/%.html: doc/%.texi
-	$(M)cd doc && texi2html -monolithic -number $(<:doc/%=%)
+doc/%.html: doc/%.texi $(SRC_PATH_BARE)/doc/t2h.init
+	$(Q)$(TEXIDEP)
+	$(M)cd doc && texi2html -monolithic --init-file $(SRC_PATH_BARE)/doc/t2h.init $(<:doc/%=%)
 
 doc/%.pod: TAG = POD
-doc/%.pod: doc/%-doc.texi
+doc/%.pod: doc/%.texi
+	$(Q)$(TEXIDEP)
 	$(M)doc/texi2pod.pl $< $@
 
 doc/%.1: TAG = MAN
@@ -152,7 +162,7 @@ testclean:
 	$(RM) -r tests/vsynth1 tests/vsynth2 tests/data
 	$(RM) $(addprefix tests/,$(CLEANSUFFIXES))
 	$(RM) tests/seek_test$(EXESUF) tests/seek_test.o
-	$(RM) $(addprefix tests/,$(addsuffix $(HOSTEXESUF),audiogen videogen rotozoom tiny_psnr))
+	$(RM) $(TESTTOOLS:%=tests/%$(HOSTEXESUF))
 
 clean:: testclean
 	$(RM) $(ALLPROGS) $(ALLPROGS_G)
@@ -171,85 +181,28 @@ config:
 
 check: test checkheaders
 
-fulltest test: codectest lavftest seektest
+fulltest test: codectest lavftest lavfitest seektest
 
 FFSERVER_REFFILE = $(SRC_PATH)/tests/ffserver.regression.ref
 SEEK_REFFILE     = $(SRC_PATH)/tests/seek.regression.ref
 
-LAVFI_TESTS =           \
-    crop                \
-    crop_scale          \
-    crop_scale_vflip    \
-    crop_vflip          \
-    null                \
-    scale200            \
-    scale500            \
-    vflip               \
-    vflip_crop          \
-    vflip_vflip         \
-    lavfi_pixdesc       \
-#   lavfi_pix_fmts      \
-
-ACODEC_TESTS := $(addprefix regtest-, $(ACODEC_TESTS) $(ACODEC_TESTS-yes))
-VCODEC_TESTS := $(addprefix regtest-, $(VCODEC_TESTS) $(VCODEC_TESTS-yes))
-LAVF_TESTS  := $(addprefix regtest-, $(LAVF_TESTS)  $(LAVF_TESTS-yes))
-LAVFI_TESTS := $(addprefix regtest-, $(LAVFI_TESTS) $(LAVFI_TESTS-yes))
-
-CODEC_TESTS = $(VCODEC_TESTS) $(ACODEC_TESTS)
-
-codectest: $(CODEC_TESTS)
-lavftest:  $(LAVF_TESTS)
-lavfitest: $(LAVFI_TESTS)
+codectest: fate-codec
+lavftest:  fate-lavf
+lavfitest: fate-lavfi
+seektest:  fate-seek
 
 AREF = tests/data/acodec.ref.wav
 VREF = tests/data/vsynth1.ref.yuv
 REFS = $(AREF) $(VREF)
 
-$(ACODEC_TESTS): $(AREF)
-$(VCODEC_TESTS): $(VREF)
-$(LAVF_TESTS) $(LAVFI_TESTS): $(REFS)
-
-REFFILE = $(SRC_PATH)/tests/ref/$(1)/$(2:regtest-%=%)
-RESFILE = tests/data/regression/$(1)/$(2:regtest-%=%)
-
-define VCODECTEST
-	@echo "TEST VCODEC $(1:regtest-%=%)"
-	$(SRC_PATH)/tests/codec-regression.sh $(1) vsynth1 tests/vsynth1 "$(TARGET_EXEC)" "$(TARGET_PATH)"
-	$(SRC_PATH)/tests/codec-regression.sh $(1) vsynth2 tests/vsynth2 "$(TARGET_EXEC)" "$(TARGET_PATH)"
-endef
-
-define ACODECTEST
-	@echo "TEST ACODEC $(1:regtest-%=%)"
-	$(SRC_PATH)/tests/codec-regression.sh $(1) acodec tests/acodec "$(TARGET_EXEC)" "$(TARGET_PATH)"
-endef
+$(REFS): TAG = GEN
 
 $(VREF): ffmpeg$(EXESUF) tests/vsynth1/00.pgm tests/vsynth2/00.pgm
-	@$(call VCODECTEST,vref)
+	$(M)$(SRC_PATH)/tests/codec-regression.sh vref vsynth1 tests/vsynth1 "$(TARGET_EXEC)" "$(TARGET_PATH)"
+	$(Q)$(SRC_PATH)/tests/codec-regression.sh vref vsynth2 tests/vsynth2 "$(TARGET_EXEC)" "$(TARGET_PATH)"
 
 $(AREF): ffmpeg$(EXESUF) tests/data/asynth1.sw
-	@$(call ACODECTEST,aref)
-
-$(VCODEC_TESTS): tests/tiny_psnr$(HOSTEXESUF)
-	@$(call VCODECTEST,$@)
-	@diff -u -w $(call REFFILE,vsynth1,$@) $(call RESFILE,vsynth1,$@)
-	@diff -u -w $(call REFFILE,vsynth2,$@) $(call RESFILE,vsynth2,$@)
-
-$(ACODEC_TESTS): tests/tiny_psnr$(HOSTEXESUF)
-	@$(call ACODECTEST,$@)
-	@diff -u -w $(call REFFILE,acodec,$@) $(call RESFILE,acodec,$@)
-
-$(LAVF_TESTS):
-	@echo "TEST LAVF  $(@:regtest-%=%)"
-	@$(SRC_PATH)/tests/lavf-regression.sh $@ lavf tests/vsynth1 "$(TARGET_EXEC)" "$(TARGET_PATH)"
-	@diff -u -w $(call REFFILE,lavf,$@) $(call RESFILE,lavf,$@)
-
-$(LAVFI_TESTS): tools/lavfi-showfiltfmts$(EXESUF)
-	@echo "TEST LAVFI $(@:regtest-%=%)"
-	@$(SRC_PATH)/tests/lavfi-regression.sh $@ lavfi tests/vsynth1 "$(TARGET_EXEC)" "$(TARGET_PATH)"
-	@diff -u -w $(call REFFILE,lavfi,$@) $(call RESFILE,lavfi,$@)
-
-seektest: codectest lavftest tests/seek_test$(EXESUF)
-	$(SRC_PATH)/tests/seek-regression.sh $(SRC_PATH) "$(TARGET_EXEC)" "$(TARGET_PATH)"
+	$(M)$(SRC_PATH)/tests/codec-regression.sh aref acodec tests/acodec "$(TARGET_EXEC)" "$(TARGET_PATH)"
 
 ffservertest: ffserver$(EXESUF) tests/vsynth1/00.pgm tests/data/asynth1.sw
 	@echo
@@ -275,20 +228,70 @@ tests/data/asynth1.sw tests/vsynth%/00.pgm: TAG = GEN
 tests/seek_test$(EXESUF): tests/seek_test.o $(FF_DEP_LIBS)
 	$(LD) $(FF_LDFLAGS) -o $@ $< $(FF_EXTRALIBS)
 
+tools/lavfi-showfiltfmts$(EXESUF): tools/lavfi-showfiltfmts.o $(FF_DEP_LIBS)
+	$(LD) $(FF_LDFLAGS) -o $@ $< $(FF_EXTRALIBS)
+
 include $(SRC_PATH_BARE)/tests/fate.mak
 include $(SRC_PATH_BARE)/tests/fate2.mak
 
-FATE_TESTS += $(FATE2_TESTS)
+include $(SRC_PATH_BARE)/tests/fate/aac.mak
+include $(SRC_PATH_BARE)/tests/fate/als.mak
+include $(SRC_PATH_BARE)/tests/fate/fft.mak
+include $(SRC_PATH_BARE)/tests/fate/h264.mak
+include $(SRC_PATH_BARE)/tests/fate/mp3.mak
+include $(SRC_PATH_BARE)/tests/fate/vorbis.mak
+include $(SRC_PATH_BARE)/tests/fate/vp8.mak
+
+FATE_ACODEC  = $(ACODEC_TESTS:%=fate-acodec-%)
+FATE_VSYNTH1 = $(VCODEC_TESTS:%=fate-vsynth1-%)
+FATE_VSYNTH2 = $(VCODEC_TESTS:%=fate-vsynth2-%)
+FATE_VCODEC  = $(FATE_VSYNTH1) $(FATE_VSYNTH2)
+FATE_LAVF    = $(LAVF_TESTS:%=fate-lavf-%)
+FATE_LAVFI   = $(LAVFI_TESTS:%=fate-lavfi-%)
+FATE_SEEK    = $(SEEK_TESTS:seek_%=fate-seek-%)
+
+FATE = $(FATE_ACODEC)                                                   \
+       $(FATE_VCODEC)                                                   \
+       $(FATE_LAVF)                                                     \
+       $(FATE_LAVFI)                                                    \
+       $(FATE_SEEK)                                                     \
+
+$(FATE_ACODEC): $(AREF)
+$(FATE_VCODEC): $(VREF)
+$(FATE_LAVF):   $(REFS)
+$(FATE_LAVFI):  $(REFS) tools/lavfi-showfiltfmts$(EXESUF)
+$(FATE_SEEK):   fate-codec fate-lavf tests/seek_test$(EXESUF)
+
+$(FATE_ACODEC):  CMD = codectest acodec
+$(FATE_VSYNTH1): CMD = codectest vsynth1
+$(FATE_VSYNTH2): CMD = codectest vsynth2
+$(FATE_LAVF):    CMD = lavftest
+$(FATE_LAVFI):   CMD = lavfitest
+$(FATE_SEEK):    CMD = seektest
+
+fate-codec:  fate-acodec fate-vcodec
+fate-acodec: $(FATE_ACODEC)
+fate-vcodec: $(FATE_VCODEC)
+fate-lavf:   $(FATE_LAVF)
+fate-lavfi:  $(FATE_LAVFI)
+fate-seek:   $(FATE_SEEK)
 
 ifdef SAMPLES
-fate: $(FATE_TESTS)
-fate2: $(FATE2_TESTS)
-$(FATE_TESTS): ffmpeg$(EXESUF) tests/tiny_psnr$(HOSTEXESUF)
-	@echo "TEST FATE   $(@:fate-%=%)"
-	@$(SRC_PATH)/tests/fate-run.sh $@ "$(SAMPLES)" "$(TARGET_EXEC)" "$(TARGET_PATH)" '$(CMD)' '$(CMP)' '$(REF)' '$(FUZZ)'
+FATE += $(FATE_TESTS)
 else
-fate fate2 $(FATE_TESTS):
+$(FATE_TESTS):
 	@echo "SAMPLES not specified, cannot run FATE"
 endif
+
+FATE_UTILS = base64 tiny_psnr
+
+fate: $(FATE)
+
+$(FATE): ffmpeg$(EXESUF) $(FATE_UTILS:%=tests/%$(HOSTEXESUF))
+	@echo "TEST    $(@:fate-%=%)"
+	$(Q)$(SRC_PATH)/tests/fate-run.sh $@ "$(SAMPLES)" "$(TARGET_EXEC)" "$(TARGET_PATH)" '$(CMD)' '$(CMP)' '$(REF)' '$(FUZZ)'
+
+fate-list:
+	@printf '%s\n' $(sort $(FATE))
 
 .PHONY: documentation *test regtest-* alltools check config

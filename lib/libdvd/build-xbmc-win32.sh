@@ -16,7 +16,7 @@ strip -S src/.libs/libdvdcss-2.dll
 cd ..
 mkdir -p includes/dvdcss
 cp libdvdcss/src/dvdcss/dvdcss.h includes/dvdcss
-cp libdvdcss/src/.libs/libdvdcss-2.dll ../../../../../system/players/dvdplayer/
+cp libdvdcss/src/.libs/libdvdcss-2.dll /xbmc/system/players/dvdplayer/
 
 #libdvdread
 cd libdvdread
@@ -55,5 +55,5 @@ gcc \
 
 strip -S obj/libdvdnav.dll
 cd ..
-cp libdvdnav/obj/libdvdnav.dll ../../../../../system/players/dvdplayer/
+cp libdvdnav/obj/libdvdnav.dll /xbmc/system/players/dvdplayer/
 echo "***** Done *****"

@@ -22,7 +22,7 @@ AC_DEFUN([XB_FIND_SONAME],
     $1_SONAME=$( $CC -print-file-name=lib$2.so | \
       while read output; do objdump -p $output | \
         grep "SONAME" | \
-        sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
+        sed -e 's/  *SONAME  *//'; done 2> /dev/null )
   else
     AC_MSG_CHECKING([for lib$2 dylib])
     gcc_lib_path=[`$CC -print-search-dirs 2>/dev/null | fgrep libraries: | sed 's/[^=]*=\(.*\)/\1/' | sed 's/:/ /g'`]
@@ -349,6 +349,7 @@ CFLAGS="$PASSED_CFLAGS $DEFAULT_COMPILE_FLAGS"
 AC_PROG_AWK
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
+MAKE="${MAKE:-make}"
 
 # host detection and setup
 case $host in
@@ -827,7 +828,12 @@ fi
 ### External libraries checks
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
-  PKG_CHECK_MODULES([FFMPEG], [libavcodec libavformat libavutil libpostproc libswscale],
+  FFMPEG_LIBNAMES="libavcodec libavformat libavutil libpostproc libswscale"
+
+  # libavcore is optional
+  PKG_CHECK_EXISTS([libavcore], FFMPEG_LIBNAMES="$FFMPEG_LIBNAMES libavcore")
+
+  PKG_CHECK_MODULES([FFMPEG], [$FFMPEG_LIBNAMES],
                     [INCLUDES="$INCLUDES $FFMPEG_CFLAGS"; LIBS="$LIBS $FFMPEG_LIBS"],
                     AC_MSG_ERROR($missing_library))
 
@@ -846,6 +852,9 @@ if test "$use_external_ffmpeg" = "yes"; then
   AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
   [AC_CHECK_HEADERS([ffmpeg/avcodec.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h],,
   [AC_MSG_ERROR($missing_headers)])])
+
+  # libavcore is optional
+  AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h])
 
   # We'll support the use of rgb2rgb.h if it exists.
   AC_CHECK_HEADERS([libswscale/rgb2rgb.h],,)
@@ -1687,7 +1696,6 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --enable-gpl \
       `if test "x$use_vdpau" != "xno"; then echo --enable-vdpau; else echo --disable-vdpau; fi` \
       `if test "x$use_vaapi" != "xno"; then echo --enable-vaapi; else echo --disable-vaapi; fi` \
-      --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \
       --enable-runtime-cpudetect \
@@ -1748,7 +1756,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdread], [
       --enable-static \
       --disable-shared \
       --cc="$CC" &&
-    make dvdread-config &&
+    $MAKE dvdread-config &&
     mkdir -p `pwd`/../includes/dvdread
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   else
@@ -1763,7 +1771,7 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdread], [
       --disable-strip \
       --disable-opts \
       --cc="$CC" &&
-    make dvdread-config &&
+    $MAKE dvdread-config &&
     mkdir -p `pwd`/../includes/dvdread
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   fi

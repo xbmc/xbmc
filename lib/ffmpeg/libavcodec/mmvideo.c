@@ -78,6 +78,10 @@ static void mm_decode_pal(MmContext *s, const uint8_t *buf, const uint8_t *buf_e
     }
 }
 
+/**
+ * @param half_horiz Half horizontal resolution (0 or 1)
+ * @param half_vert Half vertical resolution (0 or 1)
+ */
 static void mm_decode_intra(MmContext * s, int half_horiz, int half_vert, const uint8_t *buf, int buf_size)
 {
     int i, x, y;
@@ -85,6 +89,9 @@ static void mm_decode_intra(MmContext * s, int half_horiz, int half_vert, const 
 
     while(i<buf_size) {
         int run_length, color;
+
+        if (y >= s->avctx->height)
+            return;
 
         if (buf[i] & 0x80) {
             run_length = 1;
@@ -108,11 +115,15 @@ static void mm_decode_intra(MmContext * s, int half_horiz, int half_vert, const 
 
         if (x >= s->avctx->width) {
             x=0;
-            y += half_vert ? 2 : 1;
+            y += 1 + half_vert;
         }
     }
 }
 
+/*
+ * @param half_horiz Half horizontal resolution (0 or 1)
+ * @param half_vert Half vertical resolution (0 or 1)
+ */
 static void mm_decode_inter(MmContext * s, int half_horiz, int half_vert, const uint8_t *buf, int buf_size)
 {
     const int data_ptr = 2 + AV_RL16(&buf[0]);
@@ -130,6 +141,9 @@ static void mm_decode_inter(MmContext * s, int half_horiz, int half_vert, const 
             continue;
         }
 
+        if (y + half_vert >= s->avctx->height)
+            return;
+
         for(i=0; i<length; i++) {
             for(j=0; j<8; j++) {
                 int replace = (buf[r+i] >> (7-j)) & 1;
@@ -145,12 +159,12 @@ static void mm_decode_inter(MmContext * s, int half_horiz, int half_vert, const 
                     }
                     d++;
                 }
-                x += half_horiz ? 2 : 1;
+                x += 1 + half_horiz;
             }
         }
 
         r += length;
-        y += half_vert ? 2 : 1;
+        y += 1 + half_vert;
     }
 }
 
@@ -198,7 +212,7 @@ static av_cold int mm_decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec mmvideo_decoder = {
+AVCodec ff_mmvideo_decoder = {
     "mmvideo",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MMVIDEO,

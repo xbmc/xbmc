@@ -55,6 +55,10 @@ const ff_asf_guid ff_asf_video_stream = {
     0xC0, 0xEF, 0x19, 0xBC, 0x4D, 0x5B, 0xCF, 0x11, 0xA8, 0xFD, 0x00, 0x80, 0x5F, 0x5C, 0x44, 0x2B
 };
 
+const ff_asf_guid ff_asf_jfif_media = {
+    0x00, 0xE1, 0x1B, 0xB6, 0x4E, 0x5B, 0xCF, 0x11, 0xA8, 0xFD, 0x00, 0x80, 0x5F, 0x5C, 0x44, 0x2B
+};
+
 const ff_asf_guid ff_asf_video_conceal_none = {
     0x00, 0x57, 0xFB, 0x20, 0x55, 0x5B, 0xCF, 0x11, 0xA8, 0xFD, 0x00, 0x80, 0x5F, 0x5C, 0x44, 0x2B
 };
@@ -149,23 +153,8 @@ const AVMetadataConv ff_asf_metadata_conv[] = {
     { "WM/Tool"            , "encoder"     },
     { "WM/TrackNumber"     , "track"       },
     { "WM/Track"           , "track"       },
+    { "WM/MediaStationCallSign", "service_provider" },
+    { "WM/MediaStationName", "service_name" },
 //  { "Year"               , "date"        }, TODO: conversion year<->date
     { 0 }
 };
-
-int ff_put_str16_nolen(ByteIOContext *s, const char *tag)
-{
-    const uint8_t *q = tag;
-    int ret = 0;
-
-    while (*q) {
-        uint32_t ch;
-        uint16_t tmp;
-
-        GET_UTF8(ch, *q++, break;)
-        PUT_UTF16(ch, tmp, put_le16(s, tmp);ret += 2;)
-    }
-    put_le16(s, 0);
-    ret += 2;
-    return ret;
-}

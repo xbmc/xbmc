@@ -1667,10 +1667,10 @@ bool CCrystalHD::extract_sps_pps_from_avcc(int extradata_size, void *extradata)
     if (data_size < nal_size)
 			return false;
 
-    m_chd_params.sps_pps_buf[0] = 0;
-    m_chd_params.sps_pps_buf[1] = 0;
-    m_chd_params.sps_pps_buf[2] = 0;
-    m_chd_params.sps_pps_buf[3] = 1;
+    m_chd_params.sps_pps_buf[m_chd_params.sps_pps_size + 0] = 0;
+    m_chd_params.sps_pps_buf[m_chd_params.sps_pps_size + 1] = 0;
+    m_chd_params.sps_pps_buf[m_chd_params.sps_pps_size + 2] = 0;
+    m_chd_params.sps_pps_buf[m_chd_params.sps_pps_size + 3] = 1;
 
     m_chd_params.sps_pps_size += 4;
 

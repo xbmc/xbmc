@@ -24,10 +24,12 @@
 //-------------------------------------------------------------------------------------
 
 #include <math.h>
+#include <algorithm>
 #include <string.h>
 
 #include "ssrc.h" 
 #include "system.h"
+#include "utils/MathUtils.h"
 //#include "SRand.h"
 
 //--------------------------------------------------------------------------------------
@@ -4140,15 +4142,8 @@ int Cssrc::PutFloatData(float *pInData, int numSamples)
       short *pShort = (short *)m_pResampleBuffer;
       float *pInput = (float *)pInData;
       for (int i = 0; i < numSamples; i++)
-      {
-        float result = 32767.0f * pInput[i] + 0.5f;
-        if (result > 32767.0f)
-          *pShort++ = 32767;
-        else if (result < -32768.0f)
-          *pShort++ = -32768;
-        else
-          *pShort++ = (short)result;
-      }
+        *(pShort++) = MathUtils::round_int(std::max(std::min(32767.0f * *(pInput++), 32767.0f), -32768.0f));
+
       m_iResampleBufferPos += numSamples * dbps;
     }
     else  // unimplemented

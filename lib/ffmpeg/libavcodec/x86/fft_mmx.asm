@@ -2,6 +2,9 @@
 ;* FFT transform with SSE/3DNow optimizations
 ;* Copyright (c) 2008 Loren Merritt
 ;*
+;* This algorithm (though not any of the implementation details) is
+;* based on libdjbfft by D. J. Bernstein.
+;*
 ;* This file is part of FFmpeg.
 ;*
 ;* FFmpeg is free software; you can redistribute it and/or
@@ -25,6 +28,23 @@
 ; i.e. {4x real, 4x imaginary, 4x real, ...} (or 2x respectively)
 
 %include "x86inc.asm"
+
+%ifdef ARCH_X86_64
+%define pointer resq
+%else
+%define pointer resd
+%endif
+
+struc FFTContext
+    .nbits:    resd 1
+    .reverse:  resd 1
+    .revtab:   pointer 1
+    .tmpbuf:   pointer 1
+    .mdctsize: resd 1
+    .mdctbits: resd 1
+    .tcos:     pointer 1
+    .tsin:     pointer 1
+endstruc
 
 SECTION_RODATA
 
@@ -134,9 +154,9 @@ IF%1 mova    m5, Z(5)
     mova     m1, %3 ; wim
     mova     m3, m5
     mulps    m2, m0 ; r2*wre
-IF%1 mova    m6, Z(6)
+IF%1 mova    m6, Z2(6)
     mulps    m3, m1 ; i2*wim
-IF%1 mova    m7, Z(7)
+IF%1 mova    m7, Z2(7)
     mulps    m4, m1 ; r2*wim
     mulps    m5, m0 ; i2*wre
     addps    m2, m3 ; r2*wre + i2*wim
@@ -163,14 +183,14 @@ IF%1 mova    m7, Z(7)
     mova     m4, m6
     subps    m6, m5 ; r3
     addps    m5, m4 ; r1
-    mova   Z(6), m6
+    mova  Z2(6), m6
     mova   Z(2), m5
     mova     m2, Z(3)
     addps    m3, m0 ; t6
     subps    m2, m1 ; i3
     mova     m7, Z(1)
     addps    m1, Z(3) ; i1
-    mova   Z(7), m2
+    mova  Z2(7), m2
     mova   Z(3), m1
     mova     m4, m7
     subps    m7, m3 ; i2
@@ -188,9 +208,9 @@ IF%1 mova    m7, Z(7)
     mova     m3, m5
     mova     m1, [wq+o1q] ; wim
     mulps    m2, m0 ; r2*wre
-    mova     m6, Z(6) ; r3
+    mova     m6, Z2(6) ; r3
     mulps    m3, m1 ; i2*wim
-    mova     m7, Z(7) ; i3
+    mova     m7, Z2(7) ; i3
     mulps    m4, m1 ; r2*wim
     mulps    m5, m0 ; i2*wre
     addps    m2, m3 ; r2*wre + i2*wim
@@ -217,14 +237,14 @@ IF%1 mova    m7, Z(7)
     mova     m4, m6
     subps    m6, m5 ; r3
     addps    m5, m4 ; r1
-IF%1 mova  Z(6), m6
+IF%1 mova Z2(6), m6
 IF%1 mova  Z(2), m5
     mova     m2, Z(3)
     addps    m3, m0 ; t6
     subps    m2, m1 ; i3
     mova     m7, Z(1)
     addps    m1, Z(3) ; i1
-IF%1 mova  Z(7), m2
+IF%1 mova Z2(7), m2
 IF%1 mova  Z(3), m1
     mova     m4, m7
     subps    m7, m3 ; i2
@@ -242,8 +262,8 @@ IF%1 mova  Z(1), m3
     mova     m2, Z(4)
     mova   Z(2), m5
     mova   Z(3), m4
-    mova   Z(6), m6
-    mova   Z(7), m0
+    mova  Z2(6), m6
+    mova  Z2(7), m0
     mova     m5, m1 ; r0
     mova     m4, m2 ; r2
     unpcklps m1, m3
@@ -267,6 +287,7 @@ INIT_XMM
 %define mova movaps
 
 %define Z(x) [r0+mmsize*x]
+%define Z2(x) [r0+mmsize*x]
 
 align 16
 fft4_sse:
@@ -306,8 +327,8 @@ fft16_sse:
     mova   Z(2), m2
     mova   Z(3), m3
     T4_SSE   m4, m5, m6
-    mova     m6, Z(6)
-    mova     m7, Z(7)
+    mova     m6, Z2(6)
+    mova     m7, Z2(7)
     T4_SSE   m6, m7, m0
     PASS_SMALL 0, [cos_16], [cos_16+16]
     ret
@@ -338,8 +359,8 @@ fft8%1:
     T4_3DN   m0, m1, m2, m3, m4, m5
     mova   Z(0), m0
     mova   Z(2), m2
-    T2_3DN   m4, m5, Z(4), Z(5)
-    T2_3DN   m6, m7, Z(6), Z(7)
+    T2_3DN   m4, m5,  Z(4),  Z(5)
+    T2_3DN   m6, m7, Z2(6), Z2(7)
     pswapd   m0, m5
     pswapd   m2, m7
     pxor     m0, [ps_m1p1]
@@ -350,7 +371,7 @@ fft8%1:
     pfmul    m7, [ps_root2]
     T4_3DN   m1, m3, m5, m7, m0, m2
     mova   Z(5), m5
-    mova   Z(7), m7
+    mova  Z2(7), m7
     mova     m0, Z(0)
     mova     m2, Z(2)
     T4_3DN   m0, m2, m4, m6, m5, m7
@@ -360,12 +381,12 @@ fft8%1:
     mova   Z(1), m5
     mova   Z(2), m2
     mova   Z(3), m7
-    PUNPCK   m4, Z(5), m5
-    PUNPCK   m6, Z(7), m7
+    PUNPCK   m4,  Z(5), m5
+    PUNPCK   m6, Z2(7), m7
     mova   Z(4), m4
     mova   Z(5), m5
-    mova   Z(6), m6
-    mova   Z(7), m7
+    mova  Z2(6), m6
+    mova  Z2(7), m7
     ret
 %endmacro
 
@@ -385,7 +406,8 @@ FFT48_3DN _3dn2
 FFT48_3DN _3dn
 
 
-%define Z(x) [zq + o1q*(x&6)*((x/6)^1) + o3q*(x/6) + mmsize*(x&1)]
+%define Z(x) [zq + o1q*(x&6) + mmsize*(x&1)]
+%define Z2(x) [zq + o3q + mmsize*(x&1)]
 
 %macro DECL_PASS 2+ ; name, payload
 align 16
@@ -425,6 +447,16 @@ DECL_PASS pass_interleave_3dn, PASS_BIG 0
 %define SECTION_REL
 %endif
 
+%macro FFT_DISPATCH 2; clobbers 5 GPRs, 8 XMMs
+    lea r2, [dispatch_tab%1]
+    mov r2, [r2 + (%2q-2)*gprsize]
+%ifdef PIC
+    lea r3, [$$]
+    add r2, r3
+%endif
+    call r2
+%endmacro ; FFT_DISPATCH
+
 %macro DECL_FFT 2-3 ; nbits, cpu, suffix
 %xdefine list_of_fft fft4%2 SECTION_REL, fft8%2 SECTION_REL
 %if %1==5
@@ -461,13 +493,7 @@ section .text
 ; On x86_32, this function does the register saving and restoring for all of fft.
 ; The others pass args in registers and don't spill anything.
 cglobal fft_dispatch%3%2, 2,5,8, z, nbits
-    lea r2, [dispatch_tab%3%2]
-    mov r2, [r2 + (nbitsq-2)*gprsize]
-%ifdef PIC
-    lea r3, [$$]
-    add r2, r3
-%endif
-    call r2
+    FFT_DISPATCH %3%2, nbits
     RET
 %endmacro ; DECL_FFT
 
@@ -478,3 +504,165 @@ DECL_FFT 4, _3dn, _interleave
 DECL_FFT 4, _3dn2
 DECL_FFT 4, _3dn2, _interleave
 
+INIT_XMM
+%undef mulps
+%undef addps
+%undef subps
+%undef unpcklps
+%undef unpckhps
+
+%macro PREROTATER 5 ;-2*k, 2*k, input+n4, tcos+n8, tsin+n8
+    movaps   xmm0, [%3+%2*4]
+    movaps   xmm1, [%3+%1*4-0x10]
+    movaps   xmm2, xmm0
+    shufps   xmm0, xmm1, 0x88
+    shufps   xmm1, xmm2, 0x77
+    movlps   xmm4, [%4+%2*2]
+    movlps   xmm5, [%5+%2*2+0x0]
+    movhps   xmm4, [%4+%1*2-0x8]
+    movhps   xmm5, [%5+%1*2-0x8]
+    movaps   xmm2, xmm0
+    movaps   xmm3, xmm1
+    mulps    xmm0, xmm5
+    mulps    xmm1, xmm4
+    mulps    xmm2, xmm4
+    mulps    xmm3, xmm5
+    subps    xmm1, xmm0
+    addps    xmm2, xmm3
+    movaps   xmm0, xmm1
+    unpcklps xmm1, xmm2
+    unpckhps xmm0, xmm2
+%endmacro
+
+%macro CMUL 6 ;j, xmm0, xmm1, 3, 4, 5
+    movaps   xmm6, [%4+%1*2]
+    movaps   %2,   [%4+%1*2+0x10]
+    movaps   %3,   xmm6
+    movaps   xmm7, %2
+    mulps    xmm6, [%5+%1]
+    mulps    %2,   [%6+%1]
+    mulps    %3,   [%6+%1]
+    mulps    xmm7, [%5+%1]
+    subps    %2,   xmm6
+    addps    %3,   xmm7
+%endmacro
+
+%macro POSROTATESHUF 5 ;j, k, z+n8, tcos+n8, tsin+n8
+.post:
+    CMUL     %1,   xmm0, xmm1, %3, %4, %5
+    CMUL     %2,   xmm4, xmm5, %3, %4, %5
+    shufps   xmm1, xmm1, 0x1b
+    shufps   xmm5, xmm5, 0x1b
+    movaps   xmm6, xmm4
+    unpckhps xmm4, xmm1
+    unpcklps xmm6, xmm1
+    movaps   xmm2, xmm0
+    unpcklps xmm0, xmm5
+    unpckhps xmm2, xmm5
+    movaps   [%3+%2*2],      xmm6
+    movaps   [%3+%2*2+0x10], xmm4
+    movaps   [%3+%1*2],      xmm0
+    movaps   [%3+%1*2+0x10], xmm2
+    sub      %2,   0x10
+    add      %1,   0x10
+    jl       .post
+%endmacro
+
+cglobal imdct_half_sse, 3,7,8; FFTContext *s, FFTSample *output, const FFTSample *input
+%ifdef ARCH_X86_64
+%define rrevtab r10
+%define rtcos   r11
+%define rtsin   r12
+    push  r12
+    push  r13
+    push  r14
+%else
+%define rrevtab r6
+%define rtsin   r6
+%define rtcos   r5
+%endif
+    mov   r3d, [r0+FFTContext.mdctsize]
+    add   r2, r3
+    shr   r3, 1
+    mov   rtcos, [r0+FFTContext.tcos]
+    mov   rtsin, [r0+FFTContext.tsin]
+    add   rtcos, r3
+    add   rtsin, r3
+%ifndef ARCH_X86_64
+    push  rtcos
+    push  rtsin
+%endif
+    shr   r3, 1
+    mov   rrevtab, [r0+FFTContext.revtab]
+    add   rrevtab, r3
+%ifndef ARCH_X86_64
+    push  rrevtab
+%endif
+
+    sub   r3, 4
+%ifdef ARCH_X86_64
+    xor   r4, r4
+    sub   r4, r3
+%endif
+.pre:
+%ifndef ARCH_X86_64
+;unspill
+    xor   r4, r4
+    sub   r4, r3
+    mov   rtsin, [esp+4]
+    mov   rtcos, [esp+8]
+%endif
+
+    PREROTATER r4, r3, r2, rtcos, rtsin
+%ifdef ARCH_X86_64
+    movzx  r5,  word [rrevtab+r4-4]
+    movzx  r6,  word [rrevtab+r4-2]
+    movzx  r13, word [rrevtab+r3]
+    movzx  r14, word [rrevtab+r3+2]
+    movlps [r1+r5 *8], xmm0
+    movhps [r1+r6 *8], xmm0
+    movlps [r1+r13*8], xmm1
+    movhps [r1+r14*8], xmm1
+    add    r4, 4
+%else
+    mov    r6, [esp]
+    movzx  r5, word [r6+r4-4]
+    movzx  r4, word [r6+r4-2]
+    movlps [r1+r5*8], xmm0
+    movhps [r1+r4*8], xmm0
+    movzx  r5, word [r6+r3]
+    movzx  r4, word [r6+r3+2]
+    movlps [r1+r5*8], xmm1
+    movhps [r1+r4*8], xmm1
+%endif
+    sub    r3, 4
+    jns    .pre
+
+    mov  r5, r0
+    mov  r6, r1
+    mov  r0, r1
+    mov  r1d, [r5+FFTContext.nbits]
+
+    FFT_DISPATCH _sse, r1
+
+    mov  r0d, [r5+FFTContext.mdctsize]
+    add  r6, r0
+    shr  r0, 1
+%ifndef ARCH_X86_64
+%define rtcos r2
+%define rtsin r3
+    mov  rtcos, [esp+8]
+    mov  rtsin, [esp+4]
+%endif
+    neg  r0
+    mov  r1, -16
+    sub  r1, r0
+    POSROTATESHUF r0, r1, r6, rtcos, rtsin
+%ifdef ARCH_X86_64
+    pop  r14
+    pop  r13
+    pop  r12
+%else
+    add esp, 12
+%endif
+    RET

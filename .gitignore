@@ -549,6 +549,7 @@ autom4te.cache
 # /lib/liba52/vc++/
 /lib/liba52/vc++/Makefile
 /lib/liba52/vc++/Debug
+/lib/liba52/vc++/Release
 
 # /lib/libdvd/
 /lib/libdvd/Makefile
