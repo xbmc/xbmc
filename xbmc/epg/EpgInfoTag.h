@@ -73,12 +73,11 @@ private:
    * @param iSubID The genre sub ID.
    * @return A human readable name.
    */
-  CStdString ConvertGenreIdToString(int iID, int iSubID) const;
+  const CStdString &ConvertGenreIdToString(int iID, int iSubID) const;
 
 
   /*!
    * @brief Hook that is called when the start date changed.
-   * XXX should do this on every change.
    */
   virtual void UpdatePath() {}
 
@@ -115,7 +114,7 @@ public:
    * @brief Check whether this tag has changed and unsaved values.
    * @return True if it has unsaved values, false otherwise.
    */
-  bool Changed(void) { return m_bChanged; }
+  bool Changed(void) const { return m_bChanged; }
 
   /*!
    * @brief Clear this event.
@@ -186,7 +185,7 @@ public:
    * @brief Get the title of this event.
    * @return The title.
    */
-  const CStdString &Title(void) const;
+  const CStdString &Title(void) const { return (m_strTitle.IsEmpty()) ? g_localizeStrings.Get(19055) : m_strTitle; }
 
   /*!
    * @brief Change the title of this event.
@@ -223,7 +222,6 @@ public:
    * @return The genre type ID.
    */
   int GenreType(void) const { return m_iGenreType; }
-
 
   /*!
    * @brief Get the genre subtype ID of this event.
@@ -379,8 +377,9 @@ public:
   /*!
    * @brief Update the information in this tag with the info in the given tag.
    * @param tag The new info.
+   * @return True if something changed, false otherwise.
    */
-  virtual void Update(const CEpgInfoTag &tag);
+  virtual bool Update(const CEpgInfoTag &tag);
 
   /*!
    * @brief Check if this event is currently active.

@@ -157,7 +157,7 @@ void CEpgContainer::Process(void)
   }
 }
 
-CEpg *CEpgContainer::GetById(int iEpgId)
+CEpg *CEpgContainer::GetById(int iEpgId) const
 {
   CEpg *epg = NULL;
 

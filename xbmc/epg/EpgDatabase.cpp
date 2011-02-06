@@ -38,12 +38,12 @@ CEpgDatabase::~CEpgDatabase(void)
 {
 }
 
-bool CEpgDatabase::Open()
+bool CEpgDatabase::Open(void)
 {
   return CDatabase::Open(g_advancedSettings.m_databaseEpg);
 }
 
-bool CEpgDatabase::CreateTables()
+bool CEpgDatabase::CreateTables(void)
 {
   bool bReturn = false;
 
@@ -116,7 +116,7 @@ bool CEpgDatabase::UpdateOldVersion(int iVersion)
   return true;
 }
 
-bool CEpgDatabase::DeleteEpg()
+bool CEpgDatabase::DeleteEpg(void)
 {
   bool bReturn = false;
   CLog::Log(LOGDEBUG, "EpgDB - %s - deleting all EPG data from the database", __FUNCTION__);
@@ -162,7 +162,7 @@ bool CEpgDatabase::Delete(const CEpg &table, const CDateTime &start /* = NULL */
   return DeleteValues("epgtags", strWhereClause);
 }
 
-bool CEpgDatabase::DeleteOldEpgEntries()
+bool CEpgDatabase::DeleteOldEpgEntries(void)
 {
   time_t iYesterday;
   CDateTime yesterday = CDateTime::GetCurrentDateTime() - CDateTimeSpan(1, 0, 0, 0);
@@ -317,7 +317,7 @@ int CEpgDatabase::Get(CEpg *epg, const CDateTime &start /* = NULL */, const CDat
   return iReturn;
 }
 
-CDateTime CEpgDatabase::GetLastEpgScanTime()
+const CDateTime &CEpgDatabase::GetLastEpgScanTime(void)
 {
   if (lastScanTime.IsValid())
     return lastScanTime;

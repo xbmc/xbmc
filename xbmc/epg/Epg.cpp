@@ -178,8 +178,6 @@ void CEpg::Cleanup(const CDateTime &Time)
 
 const CEpgInfoTag *CEpg::InfoTagNow(void) const
 {
-  const CEpgInfoTag *returnTag = NULL;
-
   CSingleLock lock(m_critSection);
 
   if (!m_nowActive || !m_nowActive->IsActive())
@@ -197,7 +195,7 @@ const CEpgInfoTag *CEpg::InfoTagNow(void) const
     }
   }
 
-  return (returnTag = m_nowActive);
+  return m_nowActive;
 }
 
 const CEpgInfoTag *CEpg::InfoTagNext(void) const
@@ -207,9 +205,9 @@ const CEpgInfoTag *CEpg::InfoTagNext(void) const
   return nowTag ? nowTag->GetNextEvent() : NULL;
 }
 
-const CEpgInfoTag *CEpg::InfoTag(int uniqueID, CDateTime StartTime) const
+const CEpgInfoTag *CEpg::InfoTag(int uniqueID, const CDateTime &StartTime) const
 {
-  CEpgInfoTag *returnTag = NULL;
+  static CEpgInfoTag *returnTag = NULL;
 
   /* try to find the tag by UID */
   if (uniqueID > 0)
@@ -244,7 +242,7 @@ const CEpgInfoTag *CEpg::InfoTag(int uniqueID, CDateTime StartTime) const
 
 const CEpgInfoTag *CEpg::InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) const
 {
-  CEpgInfoTag *returnTag = NULL;
+  static CEpgInfoTag *returnTag = NULL;
 
   CSingleLock lock(m_critSection);
 
@@ -263,7 +261,7 @@ const CEpgInfoTag *CEpg::InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) 
 
 const CEpgInfoTag *CEpg::InfoTagAround(CDateTime Time) const
 {
-  CEpgInfoTag *returnTag = NULL;
+  static CEpgInfoTag *returnTag = NULL;
 
   CSingleLock lock(m_critSection);
 
@@ -528,7 +526,7 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
   return bGrabSuccess;
 }
 
-bool CEpg::PersistTags(void)
+bool CEpg::PersistTags(void) const
 {
   bool bReturn = false;
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
