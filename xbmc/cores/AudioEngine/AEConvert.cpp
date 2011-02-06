@@ -39,11 +39,6 @@
 #include <emmintrin.h>
 #endif
 
-// Hack until gnif removes isnan calls
-#ifdef _WIN32
-#define isnan(a) _isnan(a)
-#endif
-
 #define CLAMP(x) std::min(-1.0f, std::max(1.0f, (float)(x)))
 
 #ifndef INT24_MAX
@@ -55,8 +50,7 @@ float *CAEConvert::m_LookupS16 = NULL;
 
 static inline int safeRound(double f)
 {
-  /* if the value is invalid, or larger then we can handle, then clamp it */
-  if (isnan(f)    ) return 0;
+  /* if the value is larger then we can handle, then clamp it */
   if (f >= INT_MAX) return INT_MAX;
   if (f <= INT_MIN) return INT_MIN;
 
