@@ -4,7 +4,7 @@ rem Copyright (C) 2005-2008 Team XBMC
 rem http://xbmc.org
 
 rem Script by chadoe
-rem This script generates nullsoft installer include files for xbmc's languages, skins, scripts and plugins
+rem This script generates nullsoft installer include files for xbmc's languages
 
 rem languages
 IF EXIST languages.nsi del languages.nsi > NUL
