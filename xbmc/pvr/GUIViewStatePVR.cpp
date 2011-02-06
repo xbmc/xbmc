@@ -19,7 +19,7 @@
  *
  */
 
-#include "GUIViewStateTV.h"
+#include "GUIViewStatePVR.h"
 #include "PlayListPlayer.h"
 #include "guilib/GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "video/VideoDatabase.h"
@@ -32,7 +32,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 
-CGUIViewStateWindowTV::CGUIViewStateWindowTV(const CFileItemList& items) : CGUIViewState(items)
+CGUIViewStateWindowPVR::CGUIViewStateWindowPVR(const CFileItemList& items) : CGUIViewState(items)
 {
   if (items.m_strPath.Left(17) == "pvr://recordings/")
   {
@@ -51,7 +51,7 @@ CGUIViewStateWindowTV::CGUIViewStateWindowTV(const CFileItemList& items) : CGUIV
   LoadViewState(items.m_strPath, WINDOW_TV);
 }
 
-bool CGUIViewStateWindowTV::AutoPlayNextItem()
+bool CGUIViewStateWindowPVR::AutoPlayNextItem()
 {
   return false;
 }
@@ -61,12 +61,12 @@ bool CGUIViewStateWindowTV::AutoPlayNextItem()
 //  return  ".pvr|.timer"";
 //}
 
-bool CGUIViewStateWindowTV::HideParentDirItems()
+bool CGUIViewStateWindowPVR::HideParentDirItems()
 {
   return false;
 }
 
-void CGUIViewStateWindowTV::SaveViewState()
+void CGUIViewStateWindowPVR::SaveViewState()
 {
 
 }

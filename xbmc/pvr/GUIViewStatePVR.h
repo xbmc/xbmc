@@ -24,10 +24,10 @@
 #include "GUIViewState.h"
 
 
-class CGUIViewStateWindowTV : public CGUIViewState
+class CGUIViewStateWindowPVR : public CGUIViewState
 {
 public:
-  CGUIViewStateWindowTV(const CFileItemList& items);
+  CGUIViewStateWindowPVR(const CFileItemList& items);
 protected:
   virtual bool AutoPlayNextItem();
   virtual bool HideParentDirItems();
