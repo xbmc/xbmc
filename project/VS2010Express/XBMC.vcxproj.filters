@@ -2468,9 +2468,6 @@
     <ClCompile Include="..\..\xbmc\addons\AddonInstaller.cpp">
       <Filter>addons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\GUIViewStateTV.cpp">
-      <Filter>pvr</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\PVRChannel.cpp">
       <Filter>pvr</Filter>
     </ClCompile>
@@ -2599,6 +2596,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUIEPGGridContainer.cpp">
       <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\GUIViewStatePVR.cpp">
+      <Filter>pvr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5079,9 +5079,6 @@
     <ClInclude Include="..\..\xbmc\pvr\PVRTimers.h">
       <Filter>pvr</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\GUIViewStateTV.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\PVRChannel.h">
       <Filter>pvr</Filter>
     </ClInclude>
@@ -5210,6 +5207,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIEPGGridContainer.h">
       <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\GUIViewStatePVR.h">
+      <Filter>pvr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

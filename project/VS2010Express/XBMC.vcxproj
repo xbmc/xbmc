@@ -631,7 +631,7 @@
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRecordingInfo.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRTimerSettings.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRUpdateProgressBar.cpp" />
-    <ClCompile Include="..\..\xbmc\pvr\GUIViewStateTV.cpp" />
+    <ClCompile Include="..\..\xbmc\pvr\GUIViewStatePVR.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\PVRChannel.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\PVRChannelGroup.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\PVRChannelGroupInternal.cpp" />
@@ -1507,7 +1507,7 @@
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRecordingInfo.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRTimerSettings.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRUpdateProgressBar.h" />
-    <ClInclude Include="..\..\xbmc\pvr\GUIViewStateTV.h" />
+    <ClInclude Include="..\..\xbmc\pvr\GUIViewStatePVR.h" />
     <ClInclude Include="..\..\xbmc\pvr\PVRChannel.h" />
     <ClInclude Include="..\..\xbmc\pvr\PVRChannelGroup.h" />
     <ClInclude Include="..\..\xbmc\pvr\PVRChannelGroupInternal.h" />
