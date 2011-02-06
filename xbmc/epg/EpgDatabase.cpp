@@ -184,34 +184,12 @@ bool CEpgDatabase::Delete(const CEpgInfoTag &tag)
   return DeleteValues("epgtags", strWhereClause);
 }
 
-int CEpgDatabase::Get(CEpgContainer *container, const CDateTime &start /* = NULL */, const CDateTime &end /* = NULL */)
+int CEpgDatabase::Get(CEpgContainer *container)
 {
   int iReturn = -1;
 
-  CStdString strWhereClause;
-
-  if (start != NULL)
-  {
-    time_t iStartTime;
-    start.GetAsTime(iStartTime);
-    strWhereClause.append(FormatSQL(" AND iStartTime < %u", iStartTime).c_str());
-  }
-
-  if (end != NULL)
-  {
-    time_t iEndTime;
-    end.GetAsTime(iEndTime);
-    strWhereClause.append(FormatSQL(" AND iEndTime > %u", iEndTime).c_str());
-  }
-
-  CStdString strQuery;
-  if (!strWhereClause.IsEmpty())
-    strQuery.Format("SELECT * FROM epg WHERE %s ORDER BY idEpg ASC;", strWhereClause.c_str());
-  else
-    strQuery.Format("SELECT * FROM epg ORDER BY idEpg ASC;");
-
+  CStdString strQuery = FormatSQL("SELECT idEpg, sName, sScraperName FROM epg;");
   int iNumRows = ResultQuery(strQuery);
-
   if (iNumRows > 0)
   {
     iReturn = 0;

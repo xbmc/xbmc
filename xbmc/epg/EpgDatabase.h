@@ -95,13 +95,11 @@ public:
   virtual bool Delete(const CEpgInfoTag &tag);
 
   /*!
-   * @brief Get all EPG tables from the database.
+   * @brief Get all EPG tables from the database. Does not get the EPG tables' entries.
    * @param container The container to fill.
-   * @param start Get entries after this time if set.
-   * @param end Get entries before this time if set.
    * @return The amount of entries that was added.
    */
-  virtual int Get(CEpgContainer *container, const CDateTime &start = NULL, const CDateTime &end = NULL);
+  virtual int Get(CEpgContainer *container);
 
   /*!
    * @brief Get all EPG entries for a table.

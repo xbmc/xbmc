@@ -105,6 +105,12 @@ protected:
    */
   virtual bool Update(const CEpg &epg, bool bUpdateDb = false);
 
+  /*!
+   * @brief Load all entries for this table from the database.
+   * @return True if any entries were loaded, false otherwise.
+   */
+  bool Load(void);
+
 public:
   /*!
    * @brief Create a new EPG instance.

@@ -308,6 +308,52 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   return bReturn;
 }
 
+bool CEpg::Load(void)
+{
+  bool bReturn = false;
+
+  /* mark the EPG as being updated */
+  m_bUpdateRunning = true;
+
+  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+
+  if (!database || !database->Open())
+  {
+    CLog::Log(LOGERROR, "%s - could not load the database", __FUNCTION__);
+    return bReturn;
+  }
+
+  int iEntriesLoaded = database->Get(this);
+  if (iEntriesLoaded <= 0)
+  {
+    CLog::Log(LOGNOTICE, "Epg - %s - no entries found in the database for table %d. trying to load 3 hours from clients.",
+        __FUNCTION__, m_iEpgID);
+
+    time_t start;
+    time_t end;
+    CDateTime::GetCurrentDateTime().GetAsTime(start); // NOTE: XBMC stores the EPG times as local time
+    end = start;
+    start -= 60 * 60;
+    end += 60 * 60 * 3;
+
+    bReturn = Update(start, end, true);
+  }
+  else
+  {
+    CLog::Log(LOGNOTICE, "Epg - %s - %d entries found in the database for table %d.",
+        __FUNCTION__, iEntriesLoaded, m_iEpgID);
+    bReturn = true;
+  }
+
+  database->Close();
+
+  Sort();
+
+  m_bUpdateRunning = false;
+
+  return bReturn;
+}
+
 bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */)
 {
   bool bGrabSuccess = true;

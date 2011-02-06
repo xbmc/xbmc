@@ -64,10 +64,6 @@ private:
   CEpg *CreateEpg(int iEpgId);
 
 public:
-  /*!
-   * @brief Start the EPG update thread.
-   */
-  void Start();
 
   /*!
    * @brief Clear all EPG entries.

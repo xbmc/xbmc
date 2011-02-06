@@ -65,7 +65,6 @@ private:
   /** @name Class state properties */
   //@{
   bool         m_bDatabaseLoaded;    /*!< true if we already loaded the EPG from the database */
-  bool         m_bAllDbEntriesLoaded;/*!< true if all entries were loaded */
   time_t       m_iLastEpgCleanup;    /*!< the time the EPG was cleaned up */
   time_t       m_iLastEpgUpdate;     /*!< the time the EPG was updated */
   //@}
@@ -106,13 +105,6 @@ private:
    * @brief A hook that will be called on every update thread iteration.
    */
   virtual void ProcessHook(const CDateTime &time) {};
-
-  /*!
-   * @brief Load all EPG entries from the database.
-   * @param bShowProgress Show a progress bar if true.
-   * @return True if the update was successful, false otherwise.
-   */
-  virtual bool Load(bool bShowProgress = false);
 
   /*!
    * @brief A hook that is called after the tables have been loaded from the database.

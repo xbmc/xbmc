@@ -38,14 +38,6 @@ void CPVREpgContainer::Clear(bool bClearDb /* = false */)
   CEpgContainer::Clear(bClearDb);
 }
 
-void CPVREpgContainer::Start()
-{
-  /* make sure the EPG is loaded before starting the thread */
-  Load(true /* show progress */);
-
-  CEpgContainer::Start();
-}
-
 bool CPVREpgContainer::CreateChannelEpgs(void)
 {
   for (int radio = 0; radio <= 1; radio++)
