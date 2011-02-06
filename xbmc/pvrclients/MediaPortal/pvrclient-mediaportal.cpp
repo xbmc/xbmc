@@ -1059,7 +1059,8 @@ const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelin
 
     Tokenize(result, timeshiftfields, "|");
 
-    XBMC->Log(LOG_INFO, "Sending channel stream URL '%s' to XBMC for playback", timeshiftfields[0].c_str());
+    m_PlaybackURL = timeshiftfields[0];
+    XBMC->Log(LOG_INFO, "Sending channel stream URL '%s' to XBMC for playback", m_PlaybackURL.c_str());
     m_iCurrentChannel = channel;
 
     // Check the returned stream URL. When the URL is an rtsp stream, we need
@@ -1070,6 +1071,6 @@ const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelin
     {
       m_bTimeShiftStarted = true;
     }
-    return timeshiftfields[0].c_str();
+    return m_PlaybackURL.c_str();
   }
 }
