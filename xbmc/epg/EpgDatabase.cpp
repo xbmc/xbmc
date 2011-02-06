@@ -325,13 +325,17 @@ const CDateTime &CEpgDatabase::GetLastEpgScanTime(void)
   CStdString strValue = GetSingleValue("lastepgscan", "iLastScan", "idEpg = 0");
 
   if (strValue.IsEmpty())
-    return -1;
+  {
+    lastScanTime = -1;
+  }
+  else
+  {
+    time_t iLastScan = atoi(strValue.c_str());
+    CDateTime lastScan(iLastScan);
+    lastScanTime = lastScan;
+  }
 
-  time_t iLastScan = atoi(strValue.c_str());
-  CDateTime lastScan(iLastScan);
-  lastScanTime = lastScan;
-
-  return lastScan;
+  return lastScanTime;
 }
 
 bool CEpgDatabase::PersistLastEpgScanTime(void)
