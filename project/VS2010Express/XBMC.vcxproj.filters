@@ -423,9 +423,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMemory.cpp">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMMS.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.cpp">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClCompile>
@@ -2702,9 +2699,6 @@
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMemory.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMMS.h">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h">
