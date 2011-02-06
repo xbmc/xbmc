@@ -232,11 +232,6 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
 
   if (passthrough)
   {
-#if 0 && !defined(WIN32)
-    pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
-    if( pCodec ) return pCodec;
-#endif
-
     pCodec = OpenCodec( new CDVDAudioCodecPassthroughFFmpeg(), hint, options);
     if ( pCodec ) return pCodec;
   }
