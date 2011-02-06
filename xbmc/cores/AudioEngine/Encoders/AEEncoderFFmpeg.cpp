@@ -56,7 +56,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
   m_CodecCtx->bit_rate       = AC3_ENCODE_BITRATE;
   m_CodecCtx->sample_rate    = format.m_sampleRate;
   m_CodecCtx->channel_layout = AV_CH_LAYOUT_5POINT1_BACK;
-  m_CodecCtx->sample_fmt     = SAMPLE_FMT_S16;
+  m_CodecCtx->sample_fmt     = AV_SAMPLE_FMT_S16;
 
   /* build the channel layout and count the channels */
   m_CodecCtx->channels = 0;
