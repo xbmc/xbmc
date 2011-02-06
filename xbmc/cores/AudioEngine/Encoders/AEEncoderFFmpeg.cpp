@@ -55,29 +55,29 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
   m_CodecCtx = m_dllAvCodec.avcodec_alloc_context();
   m_CodecCtx->bit_rate       = AC3_ENCODE_BITRATE;
   m_CodecCtx->sample_rate    = format.m_sampleRate;
-  m_CodecCtx->channel_layout = CH_LAYOUT_5POINT1_BACK;
+  m_CodecCtx->channel_layout = AV_CH_LAYOUT_5POINT1_BACK;
   m_CodecCtx->sample_fmt     = SAMPLE_FMT_S16;
 
   /* build the channel layout and count the channels */
   m_CodecCtx->channels = 0;
-  if (m_CodecCtx->channel_layout & CH_FRONT_LEFT           ) m_Layout[m_CodecCtx->channels++] = AE_CH_FL  ;
-  if (m_CodecCtx->channel_layout & CH_FRONT_RIGHT          ) m_Layout[m_CodecCtx->channels++] = AE_CH_FR  ;
-  if (m_CodecCtx->channel_layout & CH_FRONT_CENTER         ) m_Layout[m_CodecCtx->channels++] = AE_CH_FC  ;
-  if (m_CodecCtx->channel_layout & CH_LOW_FREQUENCY        ) m_Layout[m_CodecCtx->channels++] = AE_CH_LFE ;
-  if (m_CodecCtx->channel_layout & CH_BACK_LEFT            ) m_Layout[m_CodecCtx->channels++] = AE_CH_BL  ;
-  if (m_CodecCtx->channel_layout & CH_BACK_RIGHT           ) m_Layout[m_CodecCtx->channels++] = AE_CH_BR  ;
-  if (m_CodecCtx->channel_layout & CH_FRONT_LEFT_OF_CENTER ) m_Layout[m_CodecCtx->channels++] = AE_CH_FLOC;
-  if (m_CodecCtx->channel_layout & CH_FRONT_RIGHT_OF_CENTER) m_Layout[m_CodecCtx->channels++] = AE_CH_FROC;
-  if (m_CodecCtx->channel_layout & CH_BACK_CENTER          ) m_Layout[m_CodecCtx->channels++] = AE_CH_BC  ;
-  if (m_CodecCtx->channel_layout & CH_SIDE_LEFT            ) m_Layout[m_CodecCtx->channels++] = AE_CH_SL  ;
-  if (m_CodecCtx->channel_layout & CH_SIDE_RIGHT           ) m_Layout[m_CodecCtx->channels++] = AE_CH_SR  ;
-  if (m_CodecCtx->channel_layout & CH_TOP_CENTER           ) m_Layout[m_CodecCtx->channels++] = AE_CH_TC  ;
-  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_LEFT       ) m_Layout[m_CodecCtx->channels++] = AE_CH_TFL ;
-  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_CENTER     ) m_Layout[m_CodecCtx->channels++] = AE_CH_TFC ;
-  if (m_CodecCtx->channel_layout & CH_TOP_FRONT_RIGHT      ) m_Layout[m_CodecCtx->channels++] = AE_CH_TFR ;
-  if (m_CodecCtx->channel_layout & CH_TOP_BACK_LEFT        ) m_Layout[m_CodecCtx->channels++] = AE_CH_TBL ;
-  if (m_CodecCtx->channel_layout & CH_TOP_BACK_CENTER      ) m_Layout[m_CodecCtx->channels++] = AE_CH_TBC ;
-  if (m_CodecCtx->channel_layout & CH_TOP_BACK_RIGHT       ) m_Layout[m_CodecCtx->channels++] = AE_CH_TBR ;
+  if (m_CodecCtx->channel_layout & AV_CH_FRONT_LEFT           ) m_Layout[m_CodecCtx->channels++] = AE_CH_FL  ;
+  if (m_CodecCtx->channel_layout & AV_CH_FRONT_RIGHT          ) m_Layout[m_CodecCtx->channels++] = AE_CH_FR  ;
+  if (m_CodecCtx->channel_layout & AV_CH_FRONT_CENTER         ) m_Layout[m_CodecCtx->channels++] = AE_CH_FC  ;
+  if (m_CodecCtx->channel_layout & AV_CH_LOW_FREQUENCY        ) m_Layout[m_CodecCtx->channels++] = AE_CH_LFE ;
+  if (m_CodecCtx->channel_layout & AV_CH_BACK_LEFT            ) m_Layout[m_CodecCtx->channels++] = AE_CH_BL  ;
+  if (m_CodecCtx->channel_layout & AV_CH_BACK_RIGHT           ) m_Layout[m_CodecCtx->channels++] = AE_CH_BR  ;
+  if (m_CodecCtx->channel_layout & AV_CH_FRONT_LEFT_OF_CENTER ) m_Layout[m_CodecCtx->channels++] = AE_CH_FLOC;
+  if (m_CodecCtx->channel_layout & AV_CH_FRONT_RIGHT_OF_CENTER) m_Layout[m_CodecCtx->channels++] = AE_CH_FROC;
+  if (m_CodecCtx->channel_layout & AV_CH_BACK_CENTER          ) m_Layout[m_CodecCtx->channels++] = AE_CH_BC  ;
+  if (m_CodecCtx->channel_layout & AV_CH_SIDE_LEFT            ) m_Layout[m_CodecCtx->channels++] = AE_CH_SL  ;
+  if (m_CodecCtx->channel_layout & AV_CH_SIDE_RIGHT           ) m_Layout[m_CodecCtx->channels++] = AE_CH_SR  ;
+  if (m_CodecCtx->channel_layout & AV_CH_TOP_CENTER           ) m_Layout[m_CodecCtx->channels++] = AE_CH_TC  ;
+  if (m_CodecCtx->channel_layout & AV_CH_TOP_FRONT_LEFT       ) m_Layout[m_CodecCtx->channels++] = AE_CH_TFL ;
+  if (m_CodecCtx->channel_layout & AV_CH_TOP_FRONT_CENTER     ) m_Layout[m_CodecCtx->channels++] = AE_CH_TFC ;
+  if (m_CodecCtx->channel_layout & AV_CH_TOP_FRONT_RIGHT      ) m_Layout[m_CodecCtx->channels++] = AE_CH_TFR ;
+  if (m_CodecCtx->channel_layout & AV_CH_TOP_BACK_LEFT        ) m_Layout[m_CodecCtx->channels++] = AE_CH_TBL ;
+  if (m_CodecCtx->channel_layout & AV_CH_TOP_BACK_CENTER      ) m_Layout[m_CodecCtx->channels++] = AE_CH_TBC ;
+  if (m_CodecCtx->channel_layout & AV_CH_TOP_BACK_RIGHT       ) m_Layout[m_CodecCtx->channels++] = AE_CH_TBR ;
   m_Layout[m_CodecCtx->channels] = AE_CH_NULL;
   
   /* open the codec */
