@@ -1083,6 +1083,7 @@
     <ClCompile Include="..\..\xbmc\xbmc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\lib\ffmpeg\libavutil\avconfig.h" />
     <ClInclude Include="..\..\lib\tinyXML\tinystr.h" />
     <ClInclude Include="..\..\lib\tinyXML\tinyxml.h" />
     <ClInclude Include="..\..\lib\win32\sqlite\sqlite3.h" />
@@ -1657,7 +1658,6 @@
     <ClInclude Include="..\..\lib\DllAvFormat.h" />
     <ClInclude Include="..\..\lib\DllPostProc.h" />
     <ClInclude Include="..\..\lib\DllSwScale.h" />
-    <ClInclude Include="..\..\lib\ffmpeg\include\libavutil\avconfig.h" />
     <ClInclude Include="..\..\lib\ffmpeg\libavformat\avformat.h" />
     <ClInclude Include="..\..\lib\ffmpeg\libavformat\avio.h" />
     <ClInclude Include="..\..\lib\ffmpeg\libavutil\common.h" />
@@ -1703,7 +1703,6 @@
     <ClInclude Include="..\..\lib\DllTimidity.h" />
     <ClInclude Include="..\..\lib\DllVorbisfile.h" />
     <ClInclude Include="..\..\lib\DllWAVPack.h" />
-    <ClInclude Include="..\..\lib\DllWMA.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DTSCDDACodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DTSCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.h" />

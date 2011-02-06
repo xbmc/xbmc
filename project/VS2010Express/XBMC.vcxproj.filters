@@ -2728,9 +2728,6 @@
     <ClInclude Include="..\..\lib\DllSwScale.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\ffmpeg\include\libavutil\avconfig.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\ffmpeg\libavformat\avformat.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
@@ -2858,9 +2855,6 @@
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\DllWAVPack.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\DllWMA.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DTSCDDACodec.h">
@@ -4934,6 +4928,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\AddonInstaller.h">
       <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\ffmpeg\libavutil\avconfig.h">
+      <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
