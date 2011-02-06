@@ -29,8 +29,6 @@
 #include "WAVPackcodec.h"
 #include "ModplugCodec.h"
 #include "NSFCodec.h"
-#include "AC3Codec.h"
-#include "AC3CDDACodec.h"
 #ifdef HAS_SPC_CODEC
 #include "SPCCodec.h"
 #endif
@@ -73,11 +71,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new DVDPlayerCodec();
 #endif
   else if (strFileType.Equals("ac3"))
-#ifdef USE_LIBA52_DECODER
-    return new AC3Codec();
-#else
     return new DVDPlayerCodec();
-#endif
   else if (strFileType.Equals("m4a") || strFileType.Equals("aac"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("wv"))
@@ -167,15 +161,6 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     }
     delete codec;
 #endif
-#ifdef USE_LIBA52_DECODER
-    codec = new AC3Codec();
-    if (codec->Init(strFile, filecache))
-    {
-      return codec;
-    }
-    delete codec;
-#endif
-#if !defined(USE_LIBDTS_DECODER) || !defined(USE_LIBA52_DECODER)
     DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
     dvdcodec->SetContentType("audio/x-spdif-compressed");
     if (dvdcodec->Init(strFile, filecache))
@@ -183,7 +168,6 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
       return dvdcodec;
     }
     delete dvdcodec;
-#endif
     codec = new ADPCMCodec();
     if (codec->Init(strFile, filecache))
     {
@@ -200,7 +184,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   }
   if (urlFile.GetFileType().Equals("cdda"))
   {
-#if defined(USE_LIBDTS_DECODER) || defined(HAS_AC3_CDDA_CODEC)
+#if defined(USE_LIBDTS_DECODER)
     ICodec* codec;
 #endif
 #ifdef USE_LIBDTS_DECODER
@@ -215,15 +199,6 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     }
     delete codec;
 #endif
-#ifdef HAS_AC3_CDDA_CODEC
-    codec = new AC3CDDACodec();
-    if (codec->Init(strFile, filecache))
-    {
-      return codec;
-    }
-    delete codec;
-#endif
-#if !defined(USE_LIBDTS_DECODER) || !defined(HAS_AC3_CDDA_CODEC)
     DVDPlayerCodec *dvdcodec = new DVDPlayerCodec();
     dvdcodec->SetContentType("audio/x-spdif-compressed");
     if (dvdcodec->Init(strFile, filecache))
@@ -231,7 +206,6 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
       return dvdcodec;
     }
     delete dvdcodec;
-#endif
   }
   else if (urlFile.GetFileType().Equals("ogg") || urlFile.GetFileType().Equals("oggstream") || urlFile.GetFileType().Equals("oga"))
     return CreateOGGCodec(strFile,filecache);

@@ -353,7 +353,6 @@ config.log
 /system/players/paplayer/vorbisfile.dll
 /system/players/paplayer/vgmstream.dll
 /system/players/paplayer/NoseFart.dll
-/system/players/paplayer/AC3Codec.dll
 /system/players/paplayer/libsidplay2.dll
 /system/players/paplayer/adpcm.dll
 /system/players/dvdplayer/libmad.dll

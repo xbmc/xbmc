@@ -94,8 +94,6 @@ external_libraries_enabled="== Use of all supported external libraries enabled. 
 external_libraries_disabled="== Use of all supported external libraries disabled. =="
 external_ffmpeg_enabled="== Use of external ffmpeg enabled. =="
 external_ffmpeg_disabled="== Use of external ffmpeg disabled. =="
-external_liba52_enabled="== Use of external liba52 enabled. =="
-external_liba52_disabled="== Use of external liba52 disabled. =="
 external_libdts_enabled="== Use of external libdts enabled. =="
 external_libdts_disabled="== Use of external libdts disabled. =="
 external_python_enabled="== Use of external python enabled. =="
@@ -280,12 +278,6 @@ AC_ARG_ENABLE([libdts],
   [use_libdts=$enableval],
   [use_libdts=no])
 
-AC_ARG_ENABLE([liba52],
-  [AS_HELP_STRING([--enable-liba52],
-  [enable deprecated liba52 support])],
-  [use_liba52=$enableval],
-  [use_liba52=no])
-
 AC_ARG_ENABLE([libbluray],
   [AS_HELP_STRING([--enable-libbluray],
   [enable libbluray support])],
@@ -311,12 +303,6 @@ AC_ARG_ENABLE([external-ffmpeg],
   [enable use of external ffmpeg libraries (default is no) 'Linux only'])],
   [use_external_ffmpeg=$enableval],
   [use_external_ffmpeg=$use_external_libraries])
-
-AC_ARG_ENABLE([external-liba52],
-  [AS_HELP_STRING([--enable-external-liba52],
-  [enable use of external liba52 library (default is no) 'Linux only'])],
-  [use_external_liba52=$enableval],
-  [use_external_liba52=$use_external_libraries])
 
 AC_ARG_ENABLE([external-libdts],
   [AS_HELP_STRING([--enable-external-libdts],
@@ -890,20 +876,6 @@ else
   AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
 fi
 
-# External liba52 if deprecated a52 support is enabled
-if test "$use_liba52" = "yes" && "$use_external_liba52" = "yes"; then
-  AC_CHECK_LIB([a52],          [main],, AC_MSG_ERROR($missing_library))
-
-  AC_MSG_NOTICE($external_liba52_enabled)
-  USE_EXTERNAL_LIBA52=1
-  AC_DEFINE([USE_EXTERNAL_LIBA52], [1], [Whether to use external liba52 library.])
-  USE_INTERNAL_LIBA52=0
-  SKIP_CONFIG_LIBA52=1
-else
-  AC_MSG_NOTICE($external_liba52_disabled)
-  USE_EXTERNAL_LIBA52=0
-fi
-
 # External libdts if deprecated dts support enabled
 if test "$use_libdts" = "yes" && "$use_external_libdts" = "yes"; then
   AC_CHECK_LIB([dts],          [main],, AC_MSG_ERROR($missing_library))
@@ -1364,32 +1336,11 @@ else
   final_message="$final_message\n  Deprecated libdts:\tNo"
 fi
 
-if test "$use_liba52" = "yes"; then
-  USE_LIBA52_DECODER=1
-  AC_DEFINE([USE_LIBA52_DECODER], [1], [Define to 1 to enable deprecated liba52 support])
-  if ! test "$USE_EXTERNAL_LIBA52" = "1"; then
-    USE_INTERNAL_LIBA52=1
-    SKIP_CONFIG_LIBA52=0
-  fi
-  final_message="$final_message\n  Deprecated liba52:\tYes"
-else
-  USE_INTERNAL_LIBA52=0
-  SKIP_CONFIG_LIBA52=1
-  final_message="$final_message\n  Deprecated liba52:\tNo"
-fi
-
 ### External libraries messages
 if test "$use_external_ffmpeg" = "yes"; then
   final_message="$final_message\n  External FFmpeg:\tYes"
 else
   final_message="$final_message\n  External FFmpeg:\tNo"
-fi
-if test "$use_liba52" = "yes"; then
-  if test "$use_external_liba52" = "yes"; then
-    final_message="$final_message\n  External liba52:\tYes"
-  else
-    final_message="$final_message\n  External liba52:\tNo"
-  fi
 fi
 if test "$use_libdts" = "yes"; then
   if test "$use_external_libdts" = "yes"; then
@@ -1491,8 +1442,6 @@ AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(BUILD_GOOM)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
-AC_SUBST(USE_EXTERNAL_LIBA52)
-AC_SUBST(USE_INTERNAL_LIBA52)
 AC_SUBST(USE_EXTERNAL_LIBASS)
 AC_SUBST(USE_EXTERNAL_LIBDTS)
 AC_SUBST(USE_INTERNAL_LIBDTS)
@@ -1802,33 +1751,6 @@ XB_CONFIG_MODULE([lib/libfaad2], [
       --with-pic
   fi
 ], [$HOST_NOT_APPLE])
-
-XB_CONFIG_MODULE([lib/liba52], [
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="$CFLAGS -fno-common" \
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
-      --with-pic \
-      --disable-static \
-      --enable-shared \
-      --disable-oss \
-      --disable-solaris-audio \
-      --disable-win \
-      --disable-al-audio
-  else
-    ./configure \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \      
-      --with-pic \
-      --disable-static \
-      --enable-shared \
-      --disable-oss \
-      --disable-solaris-audio \
-      --disable-win \
-      --disable-al-audio \
-      CFLAGS="$CFLAGS"
-  fi
-], [$SKIP_CONFIG_LIBA52])
 
 XB_CONFIG_MODULE([lib/libmad], [
   if test "$host_vendor" = "apple" ; then
