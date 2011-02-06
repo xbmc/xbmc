@@ -1,9 +1,0 @@
-AC_SUBST([A52DEC_CFLAGS])
-
-A52DEC_CFLAGS="$CFLAGS"
-
-AC_ARG_ENABLE([gprof],[  --enable-gprof          make a version using gprof])
-if test x"$enable_gprof" = x"yes"; then
-    A52DEC_CFLAGS=`echo "$A52DEC_CFLAGS"|sed "s/-fomit-frame-pointer//g"`
-    A52DEC_CFLAGS="$A52DEC_CFLAGS -p"
-fi

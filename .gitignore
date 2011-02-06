@@ -498,46 +498,6 @@ config.log
 /lib/ffmpeg/doc/*.html
 /lib/ffmpeg/doc/*.1
 
-# /lib/liba52/
-/lib/liba52/config.log
-/lib/liba52/config.status
-/lib/liba52/libtool
-/lib/liba52/Makefile
-/lib/liba52/include/stamp-h1
-/lib/liba52/src/a52dec
-/lib/liba52/src/extract_a52
-/lib/liba52/test/compare
-
-# /lib/liba52/autotools/
-/lib/liba52/autotools/Makefile
-
-# /lib/liba52/doc/
-/lib/liba52/doc/Makefile
-
-# /lib/liba52/include/
-/lib/liba52/include/stamp-h
-/lib/liba52/include/config.h
-/lib/liba52/include/Makefile
-
-# /lib/liba52/liba52/
-/lib/liba52/liba52/Makefile
-
-# /lib/liba52/libao/
-/lib/liba52/libao/Makefil
-/lib/liba52/libao/Makefile
-
-# /lib/liba52/src/
-/lib/liba52/src/Makefi
-/lib/liba52/src/Makefile
-
-# /lib/liba52/test/
-/lib/liba52/test/Makefile
-
-# /lib/liba52/vc++/
-/lib/liba52/vc++/Makefile
-/lib/liba52/vc++/Debug
-/lib/liba52/vc++/Release
-
 # /lib/libdvd/
 /lib/libdvd/Makefile
 
