@@ -332,7 +332,12 @@ static av_cold int g726_init(AVCodecContext * avctx)
     avctx->coded_frame->key_frame = 1;
 
     if (avctx->codec->decode)
-        avctx->sample_fmt = SAMPLE_FMT_S16;
+        avctx->sample_fmt = AV_SAMPLE_FMT_S16;
+
+    /* select a frame size that will end on a byte boundary and have a size of
+       approximately 1024 bytes */
+    if (avctx->codec->encode)
+        avctx->frame_size = ((int[]){ 4096, 2736, 2048, 1640 })[index];
 
     return 0;
 }
@@ -348,12 +353,13 @@ static int g726_encode_frame(AVCodecContext *avctx,
                             uint8_t *dst, int buf_size, void *data)
 {
     G726Context *c = avctx->priv_data;
-    short *samples = data;
+    const short *samples = data;
     PutBitContext pb;
+    int i;
 
     init_put_bits(&pb, dst, 1024*1024);
 
-    for (; buf_size; buf_size--)
+    for (i = 0; i < avctx->frame_size; i++)
         put_bits(&pb, c->code_size, g726_encode(c, *samples++));
 
     flush_put_bits(&pb);
@@ -385,7 +391,7 @@ static int g726_decode_frame(AVCodecContext *avctx,
 }
 
 #if CONFIG_ADPCM_G726_ENCODER
-AVCodec adpcm_g726_encoder = {
+AVCodec ff_adpcm_g726_encoder = {
     "g726",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_ADPCM_G726,
@@ -394,12 +400,13 @@ AVCodec adpcm_g726_encoder = {
     g726_encode_frame,
     g726_close,
     NULL,
-    .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .capabilities = CODEC_CAP_SMALL_LAST_FRAME,
+    .sample_fmts = (const enum AVSampleFormat[]){AV_SAMPLE_FMT_S16,AV_SAMPLE_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("G.726 ADPCM"),
 };
 #endif
 
-AVCodec adpcm_g726_decoder = {
+AVCodec ff_adpcm_g726_decoder = {
     "g726",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_ADPCM_G726,

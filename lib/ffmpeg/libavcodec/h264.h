@@ -39,8 +39,8 @@
 #define interlaced_dct interlaced_dct_is_a_bad_name
 #define mb_intra mb_intra_is_not_initialized_see_mb_type
 
-#define LUMA_DC_BLOCK_INDEX   25
-#define CHROMA_DC_BLOCK_INDEX 26
+#define LUMA_DC_BLOCK_INDEX   24
+#define CHROMA_DC_BLOCK_INDEX 25
 
 #define CHROMA_DC_COEFF_TOKEN_VLC_BITS 8
 #define COEFF_TOKEN_VLC_BITS           8
@@ -209,6 +209,7 @@ typedef struct SPS{
     int bit_depth_luma;                ///< bit_depth_luma_minus8 + 8
     int bit_depth_chroma;              ///< bit_depth_chroma_minus8 + 8
     int residual_color_transform_flag; ///< residual_colour_transform_flag
+    int constraint_set_flags;          ///< constraint_set[0-3]_flag
 }SPS;
 
 /**
@@ -406,6 +407,7 @@ typedef struct H264Context{
     GetBitContext *inter_gb_ptr;
 
     DECLARE_ALIGNED(16, DCTELEM, mb)[16*24];
+    DECLARE_ALIGNED(16, DCTELEM, mb_luma_dc)[16];
     DCTELEM mb_padding[256];        ///< as mb is addressed by scantable[i] and scantable is uint8_t we can either check that i is not too large or ensure that there is some unused stuff after mb
 
     /**
@@ -600,10 +602,6 @@ typedef struct H264Context{
 
 extern const uint8_t ff_h264_chroma_qp[52];
 
-void ff_svq3_luma_dc_dequant_idct_c(DCTELEM *block, int qp);
-
-void ff_svq3_add_idct_c(uint8_t *dst, DCTELEM *block, int stride, int qp, int dc);
-
 /**
  * Decode SEI
  */
@@ -613,6 +611,11 @@ int ff_h264_decode_sei(H264Context *h);
  * Decode SPS
  */
 int ff_h264_decode_seq_parameter_set(H264Context *h);
+
+/**
+ * compute profile from sps
+ */
+int ff_h264_get_profile(SPS *sps);
 
 /**
  * Decode PPS
@@ -627,12 +630,6 @@ int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length);
  * @return decoded bytes, might be src+1 if no escapes
  */
 const uint8_t *ff_h264_decode_nal(H264Context *h, const uint8_t *src, int *dst_length, int *consumed, int length);
-
-/**
- * Identify the exact end of the bitstream
- * @return the length of the trailing, or 0 if damaged
- */
-int ff_h264_decode_rbsp_trailing(H264Context *h, const uint8_t *src);
 
 /**
  * Free any data that may have been allocated in the H264 context like SPS, PPS etc.
@@ -725,8 +722,20 @@ o-o o-o
  / / /
 o-o o-o
 */
+
+/* Scan8 organization:
+ *   0 1 2 3 4 5 6 7
+ * 0   u u y y y y y
+ * 1 u U U y Y Y Y Y
+ * 2 u U U y Y Y Y Y
+ * 3   v v y Y Y Y Y
+ * 4 v V V y Y Y Y Y
+ * 5 v V V   DYDUDV
+ * DY/DU/DV are for luma/chroma DC.
+ */
+
 //This table must be here because scan8[constant] must be known at compiletime
-static const uint8_t scan8[16 + 2*4]={
+static const uint8_t scan8[16 + 2*4 + 3]={
  4+1*8, 5+1*8, 4+2*8, 5+2*8,
  6+1*8, 7+1*8, 6+2*8, 7+2*8,
  4+3*8, 5+3*8, 4+4*8, 5+4*8,
@@ -735,6 +744,7 @@ static const uint8_t scan8[16 + 2*4]={
  1+2*8, 2+2*8,
  1+4*8, 2+4*8,
  1+5*8, 2+5*8,
+ 4+5*8, 5+5*8, 6+5*8
 };
 
 static av_always_inline uint32_t pack16to32(int a, int b){

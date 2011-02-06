@@ -12,6 +12,7 @@ endif
 
 ifeq (@USE_OPENGLES@,1)
 SRCS+= LinuxRendererGLES.cpp \
+       OverlayRendererGL.cpp \
 
 endif
 

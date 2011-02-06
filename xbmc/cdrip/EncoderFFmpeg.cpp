@@ -94,13 +94,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   m_Format->bit_rate = g_guiSettings.GetInt("audiocds.bitrate") * 1000;
 
   /* setup the muxer */
-  AVFormatParameters params;
-  memset(&params, 0, sizeof(params));
-  params.channels       = iInChannels;
-  params.sample_rate    = iInRate;
-  params.audio_codec_id = codec->id;
-  params.channel        = 0;
-  if (m_dllAvFormat.av_set_parameters(m_Format, &params) != 0)
+  if (m_dllAvFormat.av_set_parameters(m_Format, NULL) != 0)
   {
     m_dllAvUtil.av_freep(&m_Format->pb);
     m_dllAvUtil.av_freep(&m_Format);
@@ -121,7 +115,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   /* set the stream's parameters */
   m_CodecCtx                 = m_Stream->codec;
   m_CodecCtx->codec_id       = codec->id;
-  m_CodecCtx->codec_type     = CODEC_TYPE_AUDIO;
+  m_CodecCtx->codec_type     = AVMEDIA_TYPE_AUDIO;
   m_CodecCtx->bit_rate       = m_Format->bit_rate;
   m_CodecCtx->sample_rate    = iInRate;
   m_CodecCtx->channels       = iInChannels;
@@ -140,9 +134,9 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
 
   switch(iInBits)
   {
-    case  8: m_CodecCtx->sample_fmt = SAMPLE_FMT_U8 ; break;
-    case 16: m_CodecCtx->sample_fmt = SAMPLE_FMT_S16; break;
-    case 32: m_CodecCtx->sample_fmt = SAMPLE_FMT_S32; break;
+    case  8: m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_U8 ; break;
+    case 16: m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_S16; break;
+    case 32: m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_S32; break;
     default:
       m_dllAvUtil.av_freep(&m_Stream);
       m_dllAvUtil.av_freep(&m_Format->pb);

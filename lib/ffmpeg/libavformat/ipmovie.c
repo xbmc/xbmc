@@ -271,7 +271,7 @@ static int process_ipmovie_chunk(IPMVEContext *s, ByteIOContext *pb,
     while ((chunk_size > 0) && (chunk_type != CHUNK_BAD)) {
 
         /* read the next chunk, wherever the file happens to be pointing */
-       if (url_feof(pb)) {
+        if (url_feof(pb)) {
             chunk_type = CHUNK_EOF;
             break;
         }
@@ -620,7 +620,7 @@ static int ipmovie_read_packet(AVFormatContext *s,
     return ret;
 }
 
-AVInputFormat ipmovie_demuxer = {
+AVInputFormat ff_ipmovie_demuxer = {
     "ipmovie",
     NULL_IF_CONFIG_SMALL("Interplay MVE format"),
     sizeof(IPMVEContext),

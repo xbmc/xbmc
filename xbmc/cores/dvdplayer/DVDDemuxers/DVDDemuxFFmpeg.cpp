@@ -703,7 +703,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         if(pkt.pts == 0)
           pkt.pts = AV_NOPTS_VALUE;
 
-        if(m_bMatroska && stream->codec && stream->codec->codec_type == CODEC_TYPE_VIDEO)
+        if(m_bMatroska && stream->codec && stream->codec->codec_type == AVMEDIA_TYPE_VIDEO)
         { // matroska can store different timestamps
           // for different formats, for native stored
           // stuff it is pts, but for ms compatibility
@@ -720,7 +720,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         if(m_bMatroska && stream->codec->codec_id == CODEC_ID_TEXT && pkt.convergence_duration != 0)
             pkt.duration = pkt.convergence_duration;
 
-        if(m_bAVI && stream->codec && stream->codec->codec_type == CODEC_TYPE_VIDEO)
+        if(m_bAVI && stream->codec && stream->codec->codec_type == AVMEDIA_TYPE_VIDEO)
         {
           // AVI's always have borked pts, specially if m_pFormatContext->flags includes
           // AVFMT_FLAG_GENPTS so always use dts
@@ -943,7 +943,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
     switch (pStream->codec->codec_type)
     {
-    case CODEC_TYPE_AUDIO:
+    case AVMEDIA_TYPE_AUDIO:
       {
         CDemuxStreamAudioFFmpeg* st = new CDemuxStreamAudioFFmpeg(this, pStream);
         m_streams[iId] = st;
@@ -958,7 +958,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
         break;
       }
-    case CODEC_TYPE_VIDEO:
+    case AVMEDIA_TYPE_VIDEO:
       {
         CDemuxStreamVideoFFmpeg* st = new CDemuxStreamVideoFFmpeg(this, pStream);
         m_streams[iId] = st;
@@ -1012,13 +1012,13 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         }
         break;
       }
-    case CODEC_TYPE_DATA:
+    case AVMEDIA_TYPE_DATA:
       {
         m_streams[iId] = new CDemuxStream();
         m_streams[iId]->type = STREAM_DATA;
         break;
       }
-    case CODEC_TYPE_SUBTITLE:
+    case AVMEDIA_TYPE_SUBTITLE:
       {
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,38,1)
         if (pStream->codec->codec_id == CODEC_ID_DVB_TELETEXT && g_guiSettings.GetBool("videoplayer.teletextenabled"))
@@ -1042,13 +1042,18 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
           break;
         }
       }
-    case CODEC_TYPE_ATTACHMENT:
+    case AVMEDIA_TYPE_ATTACHMENT:
       { //mkv attachments. Only bothering with fonts for now.
         if(pStream->codec->codec_id == CODEC_ID_TTF)
         {
           std::string fileName = "special://temp/fonts/";
           XFILE::CDirectory::Create(fileName);
-          fileName += pStream->filename;
+          AVMetadataTag *nameTag = m_dllAvFormat.av_metadata_get(pStream->metadata, "filename", NULL, 0);
+          if (!nameTag) {
+            CLog::Log(LOGERROR, "%s: TTF attachment has no name", __FUNCTION__);
+            break;
+          }
+          fileName += nameTag->value;
           XFILE::CFile file;
           if(pStream->codec->extradata && file.OpenForWrite(fileName))
           {
@@ -1088,7 +1093,16 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     m_streams[iId]->pPrivate = pStream;
     m_streams[iId]->flags = (CDemuxStream::EFlags)pStream->disposition;
 
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,83,0)
+    // API added on: 2010-10-15
+    // (Note that while the function was available earlier, the generic
+    // metadata tags were not populated by default)
+    AVMetadataTag *langTag = m_dllAvFormat.av_metadata_get(pStream->metadata, "language", NULL, 0);
+    if (langTag)
+      strncpy(m_streams[iId]->language, langTag->value, 3);
+#else
     strcpy( m_streams[iId]->language, pStream->language );
+#endif
 
     if( pStream->codec->extradata && pStream->codec->extradata_size > 0 )
     {
@@ -1149,7 +1163,7 @@ int CDVDDemuxFFmpeg::GetChapterCount()
 
   if(m_pFormatContext == NULL)
     return 0;
-  #if (LIBAVFORMAT_VERSION_MAJOR == 52) && (LIBAVFORMAT_VERSION_MINOR >= 14)
+  #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,14,0)
     return m_pFormatContext->nb_chapters;
   #else
     return 0;
@@ -1166,7 +1180,7 @@ int CDVDDemuxFFmpeg::GetChapter()
   || m_iCurrentPts == DVD_NOPTS_VALUE)
     return 0;
 
-  #if (LIBAVFORMAT_VERSION_MAJOR == 52) && (LIBAVFORMAT_VERSION_MINOR >= 14)
+  #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,14,0)
     for(unsigned i = 0; i < m_pFormatContext->nb_chapters; i++)
     {
       AVChapter *chapter = m_pFormatContext->chapters[i];
@@ -1185,10 +1199,22 @@ void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName)
     ich->GetChapterName(strChapterName);
   else
   {
-    #if (LIBAVFORMAT_VERSION_MAJOR == 52) && (LIBAVFORMAT_VERSION_MINOR >= 14)
+    #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,14,0)
       int chapterIdx = GetChapter();
-      if(chapterIdx > 0 && m_pFormatContext->chapters[chapterIdx-1]->title)
+      if(chapterIdx <= 0)
+        return;
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,83,0)
+      // API added on: 2010-10-15
+      // (Note that while the function was available earlier, the generic
+      // metadata tags were not populated by default)
+      AVMetadataTag *titleTag = m_dllAvFormat.av_metadata_get(m_pFormatContext->chapters[chapterIdx-1]->metadata,
+                                                              "title", NULL, 0);
+      if (titleTag)
+        strChapterName = titleTag->value;
+#else
+      if (m_pFormatContext->chapters[chapterIdx-1]->title)
         strChapterName = m_pFormatContext->chapters[chapterIdx-1]->title;
+#endif
     #endif
   }
 }
@@ -1215,7 +1241,7 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   if(m_pFormatContext == NULL)
     return false;
 
-    #if (LIBAVFORMAT_VERSION_MAJOR == 52) && (LIBAVFORMAT_VERSION_MINOR >= 14)
+    #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,14,0)
         if(chapter < 1 || chapter > (int)m_pFormatContext->nb_chapters)
             return false;
 

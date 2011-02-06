@@ -24,6 +24,7 @@
 #include "DVDVideoCodec.h"
 #include "DllAvCodec.h"
 #include "DllAvFormat.h"
+#include "DllAvUtil.h"
 #include "DllSwScale.h"
 
 class CVDPAU;

@@ -127,12 +127,13 @@ IF %comp%==vs2010 (
   GOTO MAKE_BUILD_EXE
 
 :MAKE_BUILD_EXE
-  rem ECHO Compiling mingw libs
-  rem call buildmingwlibs.bat
-  rem IF EXIST errormingw (
-  rem 	set DIETEXT="failed to build mingw libs"
-  rem 	goto DIE
-  rem )
+  ECHO Compiling mingw libs
+  ECHO bla>noprompt
+  call buildmingwlibs.bat
+  IF EXIST errormingw (
+  	set DIETEXT="failed to build mingw libs"
+  	goto DIE
+  )
   
   ECHO Copying files...
   IF EXIST BUILD_WIN32 rmdir BUILD_WIN32 /S /Q

@@ -1,11 +1,5 @@
 #!/bin/sh
 
-START_PATH=`pwd`
-if [ $START_PATH != "/xbmc/lib/libdvd" ]
-then
-cd /xbmc/lib/libdvd
-fi
-
 #libdvdcss
 cd libdvdcss
 echo "***** Cleaning libdvdcss *****"
@@ -63,5 +57,3 @@ strip -S obj/libdvdnav.dll
 cd ..
 cp libdvdnav/obj/libdvdnav.dll /xbmc/system/players/dvdplayer/
 echo "***** Done *****"
-
-cd $START_PATH

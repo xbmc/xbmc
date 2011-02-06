@@ -54,7 +54,7 @@ typedef struct {
 
 static av_cold int ra288_decode_init(AVCodecContext *avctx)
 {
-    avctx->sample_fmt = SAMPLE_FMT_FLT;
+    avctx->sample_fmt = AV_SAMPLE_FMT_FLT;
     return 0;
 }
 
@@ -203,7 +203,7 @@ static int ra288_decode_frame(AVCodecContext * avctx, void *data,
     return avctx->block_align;
 }
 
-AVCodec ra_288_decoder =
+AVCodec ff_ra_288_decoder =
 {
     "real_288",
     AVMEDIA_TYPE_AUDIO,

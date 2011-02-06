@@ -538,8 +538,8 @@ static int ebml_level_end(MatroskaDemuxContext *matroska)
 static int ebml_read_num(MatroskaDemuxContext *matroska, ByteIOContext *pb,
                          int max_size, uint64_t *number)
 {
-    int len_mask = 0x80, read = 1, n = 1;
-    int64_t total = 0;
+    int read = 1, n = 1;
+    uint64_t total = 0;
 
     /* The first byte tells us the length in bytes - get_byte() can normally
      * return 0, but since that's not a valid first ebmlID byte, we can
@@ -556,10 +556,7 @@ static int ebml_read_num(MatroskaDemuxContext *matroska, ByteIOContext *pb,
     }
 
     /* get the length of the EBML number */
-    while (read <= max_size && !(total & len_mask)) {
-        read++;
-        len_mask >>= 1;
-    }
+    read = 8 - ff_log2_tab[total];
     if (read > max_size) {
         int64_t pos = url_ftell(pb) - 1;
         av_log(matroska->ctx, AV_LOG_ERROR,
@@ -569,13 +566,27 @@ static int ebml_read_num(MatroskaDemuxContext *matroska, ByteIOContext *pb,
     }
 
     /* read out length */
-    total &= ~len_mask;
+    total ^= 1 << ff_log2_tab[total];
     while (n++ < read)
         total = (total << 8) | get_byte(pb);
 
     *number = total;
 
     return read;
+}
+
+/**
+ * Read a EBML length value.
+ * This needs special handling for the "unknown length" case which has multiple
+ * encodings.
+ */
+static int ebml_read_length(MatroskaDemuxContext *matroska, ByteIOContext *pb,
+                            uint64_t *number)
+{
+    int res = ebml_read_num(matroska, pb, 8, number);
+    if (res > 0 && *number + 1 == 1ULL << (7 * res))
+        *number = 0xffffffffffffffULL;
+    return res;
 }
 
 /*
@@ -586,7 +597,7 @@ static int ebml_read_uint(ByteIOContext *pb, int size, uint64_t *num)
 {
     int n = 0;
 
-    if (size < 1 || size > 8)
+    if (size > 8)
         return AVERROR_INVALIDDATA;
 
     /* big-endian ordering; build up number */
@@ -603,7 +614,9 @@ static int ebml_read_uint(ByteIOContext *pb, int size, uint64_t *num)
  */
 static int ebml_read_float(ByteIOContext *pb, int size, double *num)
 {
-    if (size == 4) {
+    if (size == 0) {
+        *num = 0;
+    } else if (size == 4) {
         *num= av_int2flt(get_be32(pb));
     } else if(size==8){
         *num= av_int2dbl(get_be64(pb));
@@ -783,7 +796,7 @@ static int ebml_parse_elem(MatroskaDemuxContext *matroska,
 
     if (syntax->type != EBML_PASS && syntax->type != EBML_STOP) {
         matroska->current_id = 0;
-        if ((res = ebml_read_num(matroska, pb, 8, &length)) < 0)
+        if ((res = ebml_read_length(matroska, pb, &length)) < 0)
             return res;
     }
 
@@ -901,6 +914,9 @@ static int matroska_decode_buffer(uint8_t** buf, int* buf_size,
     int result = 0;
     int olen;
 
+    if (pkt_size >= 10000000)
+        return -1;
+
     switch (encodings[0].compression.algo) {
     case MATROSKA_TRACK_ENCODING_COMP_HEADERSTRIP:
         return encodings[0].compression.settings.size;
@@ -1017,6 +1033,11 @@ static void matroska_convert_tag(AVFormatContext *s, EbmlList *list,
 
     for (i=0; i < list->nb_elem; i++) {
         const char *lang = strcmp(tags[i].lang, "und") ? tags[i].lang : NULL;
+
+        if (!tags[i].name) {
+            av_log(s, AV_LOG_WARNING, "Skipping invalid tag with no TagName.\n");
+            continue;
+        }
         if (prefix)  snprintf(key, sizeof(key), "%s/%s", prefix, tags[i].name);
         else         av_strlcpy(key, tags[i].name, sizeof(key));
         if (tags[i].def || !lang) {
@@ -1032,6 +1053,7 @@ static void matroska_convert_tag(AVFormatContext *s, EbmlList *list,
                 matroska_convert_tag(s, &tags[i].sub, metadata, key);
         }
     }
+    ff_metadata_conv(metadata, NULL, ff_mkv_metadata_conv);
 }
 
 static void matroska_convert_tags(AVFormatContext *s)
@@ -1435,10 +1457,6 @@ static int matroska_read_header(AVFormatContext *s, AVFormatParameters *ap)
             st->codec->channels = track->audio.channels;
             if (st->codec->codec_id != CODEC_ID_AAC)
             st->need_parsing = AVSTREAM_PARSE_HEADERS;
-            if (st->codec->codec_id == CODEC_ID_DTS) {
-                st->need_parsing = AVSTREAM_PARSE_FULL;
-                st->codec->channels = 0;
-            }
         } else if (track->type == MATROSKA_TRACK_TYPE_SUBTITLE) {
             st->codec->codec_type = AVMEDIA_TYPE_SUBTITLE;
         }
@@ -1735,7 +1753,7 @@ static int matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data,
                 int offset = 0, pkt_size = lace_size[n];
                 uint8_t *pkt_data = data;
 
-                if (lace_size[n] > size) {
+                if (pkt_size > size) {
                     av_log(matroska->ctx, AV_LOG_ERROR, "Invalid packet size\n");
                     break;
                 }
@@ -1902,14 +1920,13 @@ static int matroska_read_close(AVFormatContext *s)
     return 0;
 }
 
-AVInputFormat matroska_demuxer = {
-    "matroska",
-    NULL_IF_CONFIG_SMALL("Matroska file format"),
+AVInputFormat ff_matroska_demuxer = {
+    "matroska,webm",
+    NULL_IF_CONFIG_SMALL("Matroska/WebM file format"),
     sizeof(MatroskaDemuxContext),
     matroska_probe,
     matroska_read_header,
     matroska_read_packet,
     matroska_read_close,
     matroska_read_seek,
-    .metadata_conv = ff_mkv_metadata_conv,
 };

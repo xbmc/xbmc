@@ -54,7 +54,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   AVCodec* pCodec;
   m_bOpenedCodec = false;
 
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load())
+  if (!m_dllAvCore.Load() || !m_dllAvUtil.Load() || !m_dllAvCodec.Load())
     return false;
 
   m_dllAvCodec.avcodec_register_all();
@@ -92,9 +92,6 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
   }
 
-  // set acceleration
-  m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
-
   if (m_dllAvCodec.avcodec_open(m_pCodecContext, pCodec) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDAudioCodecFFmpeg::Open() Unable to open codec");
@@ -129,11 +126,15 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
   if (!m_pCodecContext) return -1;
 
   m_iBufferSize1 = AVCODEC_MAX_AUDIO_FRAME_SIZE ;
-  iBytesUsed = m_dllAvCodec.avcodec_decode_audio2( m_pCodecContext
+
+  AVPacket avpkt;
+  m_dllAvCodec.av_init_packet(&avpkt);
+  avpkt.data = pData;
+  avpkt.size = iSize;
+  iBytesUsed = m_dllAvCodec.avcodec_decode_audio3( m_pCodecContext
                                                  , (int16_t*)m_pBuffer1
                                                  , &m_iBufferSize1
-                                                 , pData
-                                                 , iSize);
+                                                 , &avpkt);
 
   /* some codecs will attempt to consume more data than what we gave */
   if (iBytesUsed > iSize)
@@ -220,24 +221,24 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
   }
 
   int index = 0;
-  if (layout & CH_FRONT_LEFT           ) m_channelLayout[index++] = AE_CH_FL  ;
-  if (layout & CH_FRONT_RIGHT          ) m_channelLayout[index++] = AE_CH_FR  ;
-  if (layout & CH_FRONT_CENTER         ) m_channelLayout[index++] = AE_CH_FC  ;
-  if (layout & CH_LOW_FREQUENCY        ) m_channelLayout[index++] = AE_CH_LFE ;
-  if (layout & CH_BACK_LEFT            ) m_channelLayout[index++] = AE_CH_BL  ;
-  if (layout & CH_BACK_RIGHT           ) m_channelLayout[index++] = AE_CH_BR  ;
-  if (layout & CH_FRONT_LEFT_OF_CENTER ) m_channelLayout[index++] = AE_CH_FLOC;
-  if (layout & CH_FRONT_RIGHT_OF_CENTER) m_channelLayout[index++] = AE_CH_FROC;
-  if (layout & CH_BACK_CENTER          ) m_channelLayout[index++] = AE_CH_BC  ;
-  if (layout & CH_SIDE_LEFT            ) m_channelLayout[index++] = AE_CH_SL  ;
-  if (layout & CH_SIDE_RIGHT           ) m_channelLayout[index++] = AE_CH_SR  ;
-  if (layout & CH_TOP_CENTER           ) m_channelLayout[index++] = AE_CH_TC  ;
-  if (layout & CH_TOP_FRONT_LEFT       ) m_channelLayout[index++] = AE_CH_TFL ;
-  if (layout & CH_TOP_FRONT_CENTER     ) m_channelLayout[index++] = AE_CH_TFC ;
-  if (layout & CH_TOP_FRONT_RIGHT      ) m_channelLayout[index++] = AE_CH_TFR ;
-  if (layout & CH_TOP_BACK_LEFT        ) m_channelLayout[index++] = AE_CH_BL  ;
-  if (layout & CH_TOP_BACK_CENTER      ) m_channelLayout[index++] = AE_CH_BC  ;
-  if (layout & CH_TOP_BACK_RIGHT       ) m_channelLayout[index++] = AE_CH_BR  ;
+  if (layout & AV_CH_FRONT_LEFT           ) m_channelLayout[index++] = AE_CH_FL  ;
+  if (layout & AV_CH_FRONT_RIGHT          ) m_channelLayout[index++] = AE_CH_FR  ;
+  if (layout & AV_CH_FRONT_CENTER         ) m_channelLayout[index++] = AE_CH_FC  ;
+  if (layout & AV_CH_LOW_FREQUENCY        ) m_channelLayout[index++] = AE_CH_LFE ;
+  if (layout & AV_CH_BACK_LEFT            ) m_channelLayout[index++] = AE_CH_BL  ;
+  if (layout & AV_CH_BACK_RIGHT           ) m_channelLayout[index++] = AE_CH_BR  ;
+  if (layout & AV_CH_FRONT_LEFT_OF_CENTER ) m_channelLayout[index++] = AE_CH_FLOC;
+  if (layout & AV_CH_FRONT_RIGHT_OF_CENTER) m_channelLayout[index++] = AE_CH_FROC;
+  if (layout & AV_CH_BACK_CENTER          ) m_channelLayout[index++] = AE_CH_BC  ;
+  if (layout & AV_CH_SIDE_LEFT            ) m_channelLayout[index++] = AE_CH_SL  ;
+  if (layout & AV_CH_SIDE_RIGHT           ) m_channelLayout[index++] = AE_CH_SR  ;
+  if (layout & AV_CH_TOP_CENTER           ) m_channelLayout[index++] = AE_CH_TC  ;
+  if (layout & AV_CH_TOP_FRONT_LEFT       ) m_channelLayout[index++] = AE_CH_TFL ;
+  if (layout & AV_CH_TOP_FRONT_CENTER     ) m_channelLayout[index++] = AE_CH_TFC ;
+  if (layout & AV_CH_TOP_FRONT_RIGHT      ) m_channelLayout[index++] = AE_CH_TFR ;
+  if (layout & AV_CH_TOP_BACK_LEFT        ) m_channelLayout[index++] = AE_CH_BL  ;
+  if (layout & AV_CH_TOP_BACK_CENTER      ) m_channelLayout[index++] = AE_CH_BC  ;
+  if (layout & AV_CH_TOP_BACK_RIGHT       ) m_channelLayout[index++] = AE_CH_BR  ;
   m_channelLayout[index] = AE_CH_NULL;
 
   m_channels = m_pCodecContext->channels;

@@ -87,7 +87,7 @@ static int gif_image_write_image(AVCodecContext *avctx,
                                  const uint8_t *buf, int linesize)
 {
     GIFContext *s = avctx->priv_data;
-    int len, height;
+    int len = 0, height;
     const uint8_t *ptr;
     /* image block */
 
@@ -166,7 +166,7 @@ static int gif_encode_close(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec gif_encoder = {
+AVCodec ff_gif_encoder = {
     "gif",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_GIF,

@@ -691,18 +691,21 @@ bool CApplication::Create()
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
 
-  CStdString strUserSplash = "special://home/media/Splash.png";
-  if (CFile::Exists(strUserSplash))
+  if (g_advancedSettings.m_splashImage)
   {
-    CLog::Log(LOGINFO, "load user splash image: %s", CSpecialProtocol::TranslatePath(strUserSplash).c_str());
-    m_splash = new CSplash(strUserSplash);
+    CStdString strUserSplash = "special://home/media/Splash.png";
+    if (CFile::Exists(strUserSplash))
+    {
+      CLog::Log(LOGINFO, "load user splash image: %s", CSpecialProtocol::TranslatePath(strUserSplash).c_str());
+      m_splash = new CSplash(strUserSplash);
+    }
+    else
+    {
+      CLog::Log(LOGINFO, "load default splash image: %s", CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png").c_str());
+      m_splash = new CSplash("special://xbmc/media/Splash.png");
+    }
+    m_splash->Show();
   }
-  else
-  {
-    CLog::Log(LOGINFO, "load default splash image: %s", CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png").c_str());
-    m_splash = new CSplash("special://xbmc/media/Splash.png");
-  }
-  m_splash->Show();
 
   CLog::Log(LOGINFO, "load keymapping");
   if (!CButtonTranslator::GetInstance().Load())
@@ -1100,7 +1103,8 @@ bool CApplication::Initialize()
       FatalErrorHandler(true, true, true);
   }
 
-  SAFE_DELETE(m_splash);
+  if (g_advancedSettings.m_splashImage)
+    SAFE_DELETE(m_splash);
 
   if (g_guiSettings.GetBool("masterlock.startuplock") &&
       g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&

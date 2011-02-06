@@ -125,22 +125,18 @@ static const uint32_t svq3_dequant_coeff[32] = {
     61694, 68745, 77615, 89113,100253,109366,126635,141533
 };
 
-
-void ff_svq3_luma_dc_dequant_idct_c(DCTELEM *block, int qp)
-{
+void ff_svq3_luma_dc_dequant_idct_c(DCTELEM *output, DCTELEM *input, int qp){
     const int qmul = svq3_dequant_coeff[qp];
 #define stride 16
     int i;
     int temp[16];
-    static const int x_offset[4] = {0, 1*stride, 4* stride,  5*stride};
-    static const int y_offset[4] = {0, 2*stride, 8* stride, 10*stride};
+    static const uint8_t x_offset[4]={0, 1*stride, 4*stride, 5*stride};
 
-    for (i = 0; i < 4; i++){
-        const int offset = y_offset[i];
-        const int z0 = 13*(block[offset+stride*0] +    block[offset+stride*4]);
-        const int z1 = 13*(block[offset+stride*0] -    block[offset+stride*4]);
-        const int z2 =  7* block[offset+stride*1] - 17*block[offset+stride*5];
-        const int z3 = 17* block[offset+stride*1] +  7*block[offset+stride*5];
+    for(i=0; i<4; i++){
+        const int z0 = 13*(input[4*i+0] +    input[4*i+2]);
+        const int z1 = 13*(input[4*i+0] -    input[4*i+2]);
+        const int z2 =  7* input[4*i+1] - 17*input[4*i+3];
+        const int z3 = 17* input[4*i+1] +  7*input[4*i+3];
 
         temp[4*i+0] = z0+z3;
         temp[4*i+1] = z1+z2;
@@ -148,17 +144,17 @@ void ff_svq3_luma_dc_dequant_idct_c(DCTELEM *block, int qp)
         temp[4*i+3] = z0-z3;
     }
 
-    for (i = 0; i < 4; i++){
-        const int offset = x_offset[i];
-        const int z0 = 13*(temp[4*0+i] +    temp[4*2+i]);
-        const int z1 = 13*(temp[4*0+i] -    temp[4*2+i]);
-        const int z2 =  7* temp[4*1+i] - 17*temp[4*3+i];
-        const int z3 = 17* temp[4*1+i] +  7*temp[4*3+i];
+    for(i=0; i<4; i++){
+        const int offset= x_offset[i];
+        const int z0= 13*(temp[4*0+i] +    temp[4*2+i]);
+        const int z1= 13*(temp[4*0+i] -    temp[4*2+i]);
+        const int z2=  7* temp[4*1+i] - 17*temp[4*3+i];
+        const int z3= 17* temp[4*1+i] +  7*temp[4*3+i];
 
-        block[stride*0 +offset] = ((z0 + z3)*qmul + 0x80000) >> 20;
-        block[stride*2 +offset] = ((z1 + z2)*qmul + 0x80000) >> 20;
-        block[stride*8 +offset] = ((z1 - z2)*qmul + 0x80000) >> 20;
-        block[stride*10+offset] = ((z0 - z3)*qmul + 0x80000) >> 20;
+        output[stride* 0+offset] = ((z0 + z3)*qmul + 0x80000) >> 20;
+        output[stride* 2+offset] = ((z1 + z2)*qmul + 0x80000) >> 20;
+        output[stride* 8+offset] = ((z1 - z2)*qmul + 0x80000) >> 20;
+        output[stride*10+offset] = ((z0 - z3)*qmul + 0x80000) >> 20;
     }
 }
 #undef stride
@@ -287,7 +283,7 @@ static inline void svq3_mc_dir_part(MpegEncContext *s,
     src  = pic->data[0] + mx + my*s->linesize;
 
     if (emu) {
-        ff_emulated_edge_mc(s->edge_emu_buffer, src, s->linesize, (width + 1), (height + 1),
+        s->dsp.emulated_edge_mc(s->edge_emu_buffer, src, s->linesize, (width + 1), (height + 1),
                             mx, my, s->h_edge_pos, s->v_edge_pos);
         src = s->edge_emu_buffer;
     }
@@ -308,7 +304,7 @@ static inline void svq3_mc_dir_part(MpegEncContext *s,
             src  = pic->data[i] + mx + my*s->uvlinesize;
 
             if (emu) {
-                ff_emulated_edge_mc(s->edge_emu_buffer, src, s->uvlinesize, (width + 1), (height + 1),
+                s->dsp.emulated_edge_mc(s->edge_emu_buffer, src, s->uvlinesize, (width + 1), (height + 1),
                                     mx, my, (s->h_edge_pos >> 1), (s->v_edge_pos >> 1));
                 src = s->edge_emu_buffer;
             }
@@ -648,7 +644,9 @@ static int svq3_decode_mb(H264Context *h, unsigned int mb_type)
         }
     }
     if (IS_INTRA16x16(mb_type)) {
-        if (svq3_decode_block(&s->gb, h->mb, 0, 0)){
+        AV_ZERO128(h->mb_luma_dc+0);
+        AV_ZERO128(h->mb_luma_dc+8);
+        if (svq3_decode_block(&s->gb, h->mb_luma_dc, 0, 1)){
             av_log(h->s.avctx, AV_LOG_ERROR, "error while decoding intra luma dc\n");
             return -1;
         }
@@ -795,11 +793,6 @@ static av_cold int svq3_decode_init(AVCodecContext *avctx)
     int m;
     unsigned char *extradata;
     unsigned int size;
-
-    if(avctx->thread_count > 1){
-        av_log(avctx, AV_LOG_ERROR, "SVQ3 does not support multithreaded decoding, patch welcome! (check latest SVN too)\n");
-        return -1;
-    }
 
     if (ff_h264_decode_init(avctx) < 0)
         return -1;
@@ -1069,7 +1062,7 @@ static int svq3_decode_frame(AVCodecContext *avctx,
 }
 
 
-AVCodec svq3_decoder = {
+AVCodec ff_svq3_decoder = {
     "svq3",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_SVQ3,

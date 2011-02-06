@@ -20,15 +20,9 @@
  */
 
 #include "libavutil/intreadwrite.h"
+#include "libavcore/imgutils.h"
 #include "avcodec.h"
-
-enum TargaCompr{
-    TGA_NODATA = 0, // no image data
-    TGA_PAL    = 1, // palettized
-    TGA_RGB    = 2, // true-color
-    TGA_BW     = 3, // black & white or grayscale
-    TGA_RLE    = 8, // flag pointing that data is RLE-coded
-};
+#include "targa.h"
 
 typedef struct TargaContext {
     AVFrame picture;
@@ -145,7 +139,7 @@ static int decode_frame(AVCodecContext *avctx,
     if(s->picture.data[0])
         avctx->release_buffer(avctx, &s->picture);
 
-    if(avcodec_check_dimensions(avctx, w, h))
+    if(av_image_check_size(w, h, 0, avctx))
         return -1;
     if(w != avctx->width || h != avctx->height)
         avcodec_set_dimensions(avctx, w, h);
@@ -241,7 +235,7 @@ static av_cold int targa_end(AVCodecContext *avctx){
     return 0;
 }
 
-AVCodec targa_decoder = {
+AVCodec ff_targa_decoder = {
     "targa",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_TARGA,

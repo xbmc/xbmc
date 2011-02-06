@@ -1,11 +1,5 @@
 #!/bin/bash
 
-START_PATH=`pwd`
-if [ $START_PATH != "/xbmc/lib/ffmpeg" ]
-then
-cd /xbmc/lib/ffmpeg
-fi
-
 if [ -d .libs ]
 then
 rm -r .libs
@@ -40,16 +34,15 @@ OPTIONS="
 --enable-runtime-cpudetect \
 --disable-debug"
 
-./configure --extra-cflags="-fno-common -Iinclude/dxva2" --extra-ldflags="-L../../../../../system/players/dvdplayer" ${OPTIONS} &&
+./configure --extra-cflags="-fno-common -Iinclude-xbmc-win32/dxva2" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
  
 make -j3 && 
 mkdir .libs &&
 cp lib*/*.dll .libs/ &&
 mv .libs/swscale-0.dll .libs/swscale-0.6.1.dll &&
 cp .libs/avcodec-52.dll /xbmc/system/players/dvdplayer/ &&
+cp .libs/avcore-0.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/avformat-52.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/avutil-50.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/postproc-51.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/swscale-0.6.1.dll /xbmc/system/players/dvdplayer/
-
-cd $START_PATH

@@ -21,6 +21,10 @@
 
 #ifdef HAS_DX
 
+// setting that here because otherwise SampleFormat is defined to AVSampleFormat
+// which we don't use here
+#define FF_API_OLD_SAMPLE_FMT 0
+
 #include <windows.h>
 #include <d3d9.h>
 #include <Initguid.h>
