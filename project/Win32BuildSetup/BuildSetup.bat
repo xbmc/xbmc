@@ -129,6 +129,7 @@ IF %comp%==vs2010 (
 :MAKE_BUILD_EXE
   ECHO Compiling mingw libs
   ECHO bla>noprompt
+  IF EXIST errormingw del errormingw > NUL
   call buildmingwlibs.bat
   IF EXIST errormingw (
   	set DIETEXT="failed to build mingw libs"
