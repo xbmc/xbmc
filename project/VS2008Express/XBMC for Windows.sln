@@ -81,7 +81,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLib_jasper", "..\..\xb
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLib_jbig", "..\..\xbmc\lib\cximage-6.0\jbig\jbig.vcproj", "{88E7E431-3752-4D58-BCD2-A7E6A1B74247}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLib_jpeg", "..\..\xbmc\lib\cximage-6.0\jpeg\Jpeg.vcproj", "{145287C8-24EA-42FE-8D7D-C13D5E4B054C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLib_jpeg", "..\..\xbmc\lib\cximage-6.0\jpeg\jpeg.vcproj", "{145287C8-24EA-42FE-8D7D-C13D5E4B054C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLib_libdcr", "..\..\xbmc\lib\cximage-6.0\raw\libdcr.vcproj", "{8E5F7DBE-2E8B-4FD2-BFFE-1960CE7EDC09}"
 EndProject
@@ -675,8 +675,8 @@ Global
 		{62C61EDD-FDC6-4F2C-9ED6-0FEC3C07D616}.Debug (OpenGL)|Win32.Build.0 = Release|Win32
 		{62C61EDD-FDC6-4F2C-9ED6-0FEC3C07D616}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
 		{62C61EDD-FDC6-4F2C-9ED6-0FEC3C07D616}.Release (DirectX)|Win32.Build.0 = Release|Win32
-		{62C61EDD-FDC6-4F2C-9ED6-0FEC3C07D616}.Release (OpenGL)|Win32.ActiveCfg = ReleaseItanium|Win32
-		{62C61EDD-FDC6-4F2C-9ED6-0FEC3C07D616}.Release (OpenGL)|Win32.Build.0 = ReleaseItanium|Win32
+		{62C61EDD-FDC6-4F2C-9ED6-0FEC3C07D616}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{62C61EDD-FDC6-4F2C-9ED6-0FEC3C07D616}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{BE0618A0-8043-433D-8F65-869267318CF7}.Debug (DirectX)|Win32.ActiveCfg = Release|Win32
 		{BE0618A0-8043-433D-8F65-869267318CF7}.Debug (DirectX)|Win32.Build.0 = Release|Win32
 		{BE0618A0-8043-433D-8F65-869267318CF7}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32

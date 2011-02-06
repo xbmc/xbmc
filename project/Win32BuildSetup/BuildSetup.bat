@@ -18,7 +18,7 @@ rem Config
 rem If you get an error that Visual studio was not found, SET your path for VSNET main executable.
 rem -------------------------------------------------------------
 rem	CONFIG START
-SET comp=vs2010
+SET comp=vs2008
 SET target=dx
 SET buildmode=ask
 SET promptlevel=prompt

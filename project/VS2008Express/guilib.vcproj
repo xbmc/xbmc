@@ -1003,9 +1003,19 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="update_svn_rev.bat&#x0D;&#x0A;"
-						AdditionalDependencies="..\..\svn\entries"
-						Outputs="..\..\xbmc\win32\svn_rev.h"
+						CommandLine="update_git_rev.bat&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\.git\HEAD"
+						Outputs="..\..\xbmc\win32\git_rev.h"
+					/>
+				</FileConfiguration>
+                <FileConfiguration
+					Name="Release (OpenGL)|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="update_git_rev.bat&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\.git\HEAD"
+						Outputs="..\..\xbmc\win32\git_rev.h"
 					/>
 				</FileConfiguration>
 			</File>
