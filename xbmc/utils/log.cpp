@@ -24,6 +24,9 @@
 #ifndef _LINUX
 #include <share.h>
 #include "CharsetConverter.h"
+#else
+#include "stdio_utf8.h"
+#include "stat_utf8.h"
 #endif
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
@@ -161,14 +164,14 @@ bool CLog::Init(const char* path)
     strLogFileOld.Format("%sxbmc.old.log", path);
 
     struct stat64 info;
-    if (stat64(strLogFileOld.c_str(),&info) == 0 &&
-        remove(strLogFileOld.c_str()) != 0)
+    if (stat64_utf8(strLogFileOld.c_str(),&info) == 0 &&
+        remove_utf8(strLogFileOld.c_str()) != 0)
       return false;
-    if (stat64(strLogFile.c_str(),&info) == 0 &&
-        rename(strLogFile.c_str(),strLogFileOld.c_str()) != 0)
+    if (stat64_utf8(strLogFile.c_str(),&info) == 0 &&
+        rename_utf8(strLogFile.c_str(),strLogFileOld.c_str()) != 0)
       return false;
 
-    m_file = fopen(strLogFile.c_str(),"wb");
+    m_file = fopen64_utf8(strLogFile.c_str(),"wb");
 #endif
   }
 
