@@ -49,19 +49,19 @@ public:
    * @brief Open the database.
    * @return True if it was opened successfully, false otherwise.
    */
-  virtual bool Open();
+  virtual bool Open(void);
 
   /*!
    * @brief Get the minimal database version that is required to operate correctly.
    * @return The minimal database version.
    */
-  virtual int GetMinVersion() const { return 1; };
+  virtual int GetMinVersion(void) const { return 1; };
 
   /*!
    * @brief Get the default sqlite database filename.
    * @return The default filename.
    */
-  const char *GetDefaultDBName() const { return "MyEpg4.db"; };
+  const char *GetDefaultDBName(void) const { return "MyEpg4.db"; };
 
   /*! @name EPG methods */
   //@{
@@ -70,7 +70,7 @@ public:
    * @brief Remove all EPG information from the database
    * @return True if the EPG information was erased, false otherwise.
    */
-  bool DeleteEpg();
+  virtual bool DeleteEpg(void);
 
   /*!
    * @brief Erase all EPG entries for a table.
@@ -79,20 +79,20 @@ public:
    * @param end Remove entries before this time if set.
    * @return True if the entries were removed successfully, false otherwise.
    */
-  bool Delete(const CEpg &table, const CDateTime &start = NULL, const CDateTime &end = NULL);
+  virtual bool Delete(const CEpg &table, const CDateTime &start = NULL, const CDateTime &end = NULL);
 
   /*!
    * @brief Erase all EPG entries older than 1 day.
    * @return True if the entries were removed successfully, false otherwise.
    */
-  bool DeleteOldEpgEntries();
+  virtual bool DeleteOldEpgEntries(void);
 
   /*!
    * @brief Remove a single EPG entry.
    * @param tag The entry to remove.
    * @return True if it was removed successfully, false otherwise.
    */
-  bool Delete(const CEpgInfoTag &tag);
+  virtual bool Delete(const CEpgInfoTag &tag);
 
   /*!
    * @brief Get all EPG tables from the database.
@@ -101,7 +101,7 @@ public:
    * @param end Get entries before this time if set.
    * @return The amount of entries that was added.
    */
-  int Get(CEpgContainer *container, const CDateTime &start = NULL, const CDateTime &end = NULL);
+  virtual int Get(CEpgContainer *container, const CDateTime &start = NULL, const CDateTime &end = NULL);
 
   /*!
    * @brief Get all EPG entries for a table.
@@ -110,19 +110,19 @@ public:
    * @param end Get entries before this time if set.
    * @return The amount of entries that was added.
    */
-  int Get(CEpg *epg, const CDateTime &start = NULL, const CDateTime &end = NULL);
+  virtual int Get(CEpg *epg, const CDateTime &start = NULL, const CDateTime &end = NULL);
 
   /*!
    * @brief Get the last stored EPG scan time.
    * @return The last scan time or -1 if it wasn't found.
    */
-  CDateTime GetLastEpgScanTime();
+  virtual const CDateTime &GetLastEpgScanTime(void);
 
   /*!
    * @brief Update the last scan time.
    * @return True if it was updated successfully, false otherwise.
    */
-  bool PersistLastEpgScanTime(void);
+  virtual bool PersistLastEpgScanTime(void);
 
   /*!
    * @brief Persist an EPG table. It's entries are not persisted.
@@ -131,7 +131,7 @@ public:
    * @param bLastUpdate If multiple updates were sent, set this to true on the last update to execute the queries.
    * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
    */
-  int Persist(const CEpg &epg, bool bSingleUpdate = true, bool bLastUpdate = false);
+  virtual int Persist(const CEpg &epg, bool bSingleUpdate = true, bool bLastUpdate = false);
 
   /*!
    * @brief Persist an infotag.
@@ -140,7 +140,7 @@ public:
    * @param bLastUpdate If multiple updates were sent, set this to true on the last update to execute the queries.
    * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
    */
-  int Persist(const CEpgInfoTag &tag, bool bSingleUpdate = true, bool bLastUpdate = false);
+  virtual int Persist(const CEpgInfoTag &tag, bool bSingleUpdate = true, bool bLastUpdate = false);
 
   //@}
 
@@ -149,7 +149,7 @@ private:
    * @brief Create the EPG database tables.
    * @return True if the tables were created successfully, false otherwise.
    */
-  virtual bool CreateTables();
+  virtual bool CreateTables(void);
 
   /*!
    * @brief Update an old version of the database.

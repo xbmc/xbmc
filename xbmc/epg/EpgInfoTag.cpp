@@ -81,9 +81,9 @@ const CEpgInfoTag *CEpgInfoTag::GetPreviousEvent() const
   return m_previousEvent;
 }
 
-CStdString CEpgInfoTag::ConvertGenreIdToString(int iID, int iSubID) const
+const CStdString &CEpgInfoTag::ConvertGenreIdToString(int iID, int iSubID) const
 {
-  CStdString str = g_localizeStrings.Get(19499);
+  static CStdString str = g_localizeStrings.Get(19499);
   switch (iID)
   {
     case EVCONTENTMASK_MOVIEDRAMA:
@@ -170,6 +170,7 @@ void CEpgInfoTag::SetUniqueBroadcastID(int iUniqueBroadcastID)
   {
     m_iUniqueBroadcastID = iUniqueBroadcastID;
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -179,6 +180,7 @@ void CEpgInfoTag::SetBroadcastId(int iId)
   {
     m_iBroadcastId = iId;
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -198,15 +200,8 @@ void CEpgInfoTag::SetEnd(const CDateTime &end)
   {
     m_endTime = end;
     m_bChanged = true;
+    UpdatePath();
   }
-}
-
-const CStdString &CEpgInfoTag::Title(void) const
-{
-  if (m_strTitle.IsEmpty())
-    return g_localizeStrings.Get(19055);
-  else
-    return m_strTitle;
 }
 
 void CEpgInfoTag::SetTitle(const CStdString &strTitle)
@@ -215,6 +210,7 @@ void CEpgInfoTag::SetTitle(const CStdString &strTitle)
   {
     m_strTitle = strTitle;
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -224,6 +220,7 @@ void CEpgInfoTag::SetPlotOutline(const CStdString &strPlotOutline)
   {
     m_strPlotOutline = strPlotOutline;
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -233,6 +230,7 @@ void CEpgInfoTag::SetPlot(const CStdString &strPlot)
   {
     m_strPlot = strPlot;
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -244,6 +242,7 @@ void CEpgInfoTag::SetGenre(int iID, int iSubID)
     m_iGenreSubType = iSubID;
     m_strGenre      = ConvertGenreIdToString(iID, iSubID);
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -253,6 +252,7 @@ void CEpgInfoTag::SetFirstAired(const CDateTime &firstAired)
   {
     m_firstAired = firstAired;
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -262,6 +262,7 @@ void CEpgInfoTag::SetParentalRating(int iParentalRating)
   {
     m_iParentalRating = iParentalRating;
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -271,6 +272,7 @@ void CEpgInfoTag::SetStarRating(int iStarRating)
   {
     m_iStarRating = iStarRating;
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -280,6 +282,7 @@ void CEpgInfoTag::SetNotify(bool bNotify)
   {
     m_bNotify = bNotify;
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -289,6 +292,7 @@ void CEpgInfoTag::SetSeriesNum(const CStdString &strSeriesNum)
   {
     m_strSeriesNum = strSeriesNum;
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -298,6 +302,7 @@ void CEpgInfoTag::SetEpisodeNum(const CStdString &strEpisodeNum)
   {
     m_strEpisodeNum = strEpisodeNum;
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -307,6 +312,7 @@ void CEpgInfoTag::SetEpisodePart(const CStdString &strEpisodePart)
   {
     m_strEpisodePart = strEpisodePart;
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -316,6 +322,7 @@ void CEpgInfoTag::SetEpisodeName(const CStdString &strEpisodeName)
   {
     m_strEpisodeName = strEpisodeName;
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -325,6 +332,7 @@ void CEpgInfoTag::SetIcon(const CStdString &strIconPath)
   {
     m_strIconPath = strIconPath;
     m_bChanged = true;
+    UpdatePath();
   }
 }
 
@@ -337,22 +345,49 @@ void CEpgInfoTag::SetPath(const CStdString &strFileNameAndPath)
   }
 }
 
-void CEpgInfoTag::Update(const CEpgInfoTag &tag)
+bool CEpgInfoTag::Update(const CEpgInfoTag &tag)
 {
-  SetBroadcastId(tag.BroadcastId());
-  SetTitle(tag.Title());
-  SetPlotOutline(tag.PlotOutline());
-  SetPlot(tag.Plot());
-  SetStart(tag.Start());
-  SetEnd(tag.End());
-  SetGenre(tag.GenreType(), tag.GenreSubType());
-  SetFirstAired(tag.FirstAired());
-  SetParentalRating(tag.ParentalRating());
-  SetStarRating(tag.StarRating());
-  SetNotify(tag.Notify());
-  SetEpisodeNum(tag.EpisodeNum());
-  SetEpisodePart(tag.EpisodePart());
-  SetEpisodeName(tag.EpisodeName());
+  bool bChanged = (
+      m_iBroadcastId    != tag.m_iBroadcastId ||
+      m_strTitle        != tag.m_strTitle ||
+      m_strPlotOutline  != tag.m_strPlotOutline ||
+      m_strPlot         != tag.m_strPlot ||
+      m_startTime       != tag.m_startTime ||
+      m_endTime         != tag.m_endTime ||
+      m_iGenreType      != tag.m_iGenreType ||
+      m_iGenreSubType   != tag.m_iGenreSubType ||
+      m_firstAired      != tag.m_firstAired ||
+      m_iParentalRating != tag.m_iParentalRating ||
+      m_iStarRating     != tag.m_iStarRating ||
+      m_bNotify         != tag.m_bNotify ||
+      m_strEpisodeNum   != tag.m_strEpisodeNum ||
+      m_strEpisodePart  != tag.m_strEpisodePart ||
+      m_strEpisodeName  != tag.m_strEpisodeName
+  );
+
+  if (bChanged)
+  {
+    m_iBroadcastId    = tag.m_iBroadcastId;
+    m_strTitle        = tag.m_strTitle;
+    m_strPlotOutline  = tag.m_strPlotOutline;
+    m_strPlot         = tag.m_strPlot;
+    m_startTime       = tag.m_startTime;
+    m_endTime         = tag.m_endTime;
+    m_iGenreType      = tag.m_iGenreType;
+    m_iGenreSubType   = tag.m_iGenreSubType;
+    m_firstAired      = tag.m_firstAired;
+    m_iParentalRating = tag.m_iParentalRating;
+    m_iStarRating     = tag.m_iStarRating;
+    m_bNotify         = tag.m_bNotify;
+    m_strEpisodeNum   = tag.m_strEpisodeNum;
+    m_strEpisodePart  = tag.m_strEpisodePart;
+    m_strEpisodeName  = tag.m_strEpisodeName;
+
+    m_bChanged = true;
+    UpdatePath();
+  }
+
+  return bChanged;
 }
 
 bool CEpgInfoTag::IsActive(void) const
@@ -371,7 +406,7 @@ bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */, bool bLastUpdate /* =
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
   if (!database || !database->Open())
   {
-    CLog::Log(LOGERROR, "%s - could not load the database", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
     return bReturn;
   }
 
