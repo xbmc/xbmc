@@ -279,7 +279,20 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   {
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
-    if( m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile.c_str(), iformat, FFMPEG_FILE_BUFFER_SIZE, NULL) < 0 )
+    int result=-1;
+    if (strFile.substr(0,6) == "mms://")
+    {
+      // try mmsh, then mmst
+      CStdString strFile2;
+      strFile2.Format("mmsh://%s",strFile.substr(6,strFile.size()-6).c_str());
+      result = m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile2.c_str(), iformat, FFMPEG_FILE_BUFFER_SIZE, NULL);
+      if (result < 0)
+      {
+        strFile = "mmst://";
+        strFile += strFile2.Mid(7).c_str();
+      } 
+    }
+    if (result < 0 && m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile.c_str(), iformat, FFMPEG_FILE_BUFFER_SIZE, NULL) < 0 )
     {
       CLog::Log(LOGDEBUG, "Error, could not open file %s", strFile.c_str());
       Dispose();
