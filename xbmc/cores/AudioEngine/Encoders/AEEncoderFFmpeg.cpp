@@ -56,7 +56,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
   m_CodecCtx->bit_rate       = AC3_ENCODE_BITRATE;
   m_CodecCtx->sample_rate    = format.m_sampleRate;
   m_CodecCtx->channel_layout = AV_CH_LAYOUT_5POINT1_BACK;
-  m_CodecCtx->sample_fmt     = AV_SAMPLE_FMT_S16;
+  m_CodecCtx->sample_fmt     = AV_SAMPLE_FMT_FLT;
 
   /* build the channel layout and count the channels */
   m_CodecCtx->channels = 0;
@@ -87,7 +87,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
     return false;
   }  
 
-  format.m_dataFormat    = AE_FMT_S16NE;
+  format.m_dataFormat    = AE_FMT_FLOAT;
   format.m_frames        = m_CodecCtx->frame_size;
   format.m_frameSamples  = m_CodecCtx->frame_size * m_CodecCtx->channels;
   format.m_frameSize     = m_CodecCtx->channels * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
