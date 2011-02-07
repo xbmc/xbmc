@@ -17,12 +17,12 @@
 				<posx>15</posx>
 				<posy>10</posy>
 				<width>128</width>
-				<height>150</height>
+				<height>140</height>
 				<info>ListItem.Thumb</info>
 				<aspectratio aligny="bottom">keep</aspectratio>
 			</control>
 			<control type="label">
-				<visible>Container.Content(episodes)</visible>
+				<visible>ListItem.Type(episode)</visible>
 				<posx>81</posx>
 				<posy>160</posy>
 				<width>130</width>
@@ -30,6 +30,19 @@
 				<aligny>center</aligny>
 				<scroll>false</scroll>
 				<label>$INFO[ListItem.tvshowtitle]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FF999999</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+			<control type="label">
+				<visible>ListItem.Type(album)</visible>
+				<posx>81</posx>
+				<posy>160</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.artist]</label>
 				<font>MediumSmallTitleFont</font>
 				<textcolor>FF999999</textcolor>
 				<wrapmultiline>false</wrapmultiline>
@@ -53,11 +66,12 @@
 				<posx>15</posx>
 				<posy>10</posy>
 				<width>128</width>
-				<height>150</height>
+				<height>140</height>
 				<info>ListItem.Thumb</info>
+				<aspectratio aligny="bottom">keep</aspectratio>
 			</control>
 			<control type="label">
-				<visible>Container.Content(episodes)</visible>
+				<visible>ListItem.Type(episode)</visible>
 				<posx>81</posx>
 				<posy>160</posy>
 				<width>130</width>
@@ -66,7 +80,20 @@
 				<scroll>false</scroll>
 				<label>$INFO[ListItem.tvshowtitle]</label>
 				<font>MediumSmallTitleFont</font>
-				<textcolor>FF999999</textcolor>
+				<textcolor>FFFFFFFF</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+			<control type="label">
+				<visible>ListItem.Type(album)</visible>
+				<posx>81</posx>
+				<posy>160</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.artist]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FFFFFFFF</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 			</control>
 			<control type="label">
