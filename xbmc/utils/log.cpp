@@ -21,13 +21,8 @@
 
 #include "system.h"
 #include "log.h"
-#ifndef _LINUX
-#include <share.h>
-#include "CharsetConverter.h"
-#else
 #include "stdio_utf8.h"
 #include "stat_utf8.h"
-#endif
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
@@ -140,24 +135,6 @@ bool CLog::Init(const char* path)
   {
     // g_settings.m_logFolder is initialized in the CSettings constructor
     // and changed in CApplication::Create()
-#ifdef _WIN32
-    CStdStringW pathW;
-    g_charsetConverter.utf8ToW(path, pathW, false);
-    CStdStringW strLogFile, strLogFileOld;
-
-    strLogFile.Format(L"%sxbmc.log", pathW);
-    strLogFileOld.Format(L"%sxbmc.old.log", pathW);
-
-    struct __stat64 info;
-    if (_wstat64(strLogFileOld.c_str(),&info) == 0 &&
-        !::DeleteFileW(strLogFileOld.c_str()))
-      return false;
-    if (_wstat64(strLogFile.c_str(),&info) == 0 &&
-        !::MoveFileW(strLogFile.c_str(),strLogFileOld.c_str()))
-      return false;
-
-    m_file = _wfsopen(strLogFile.c_str(),L"wb", _SH_DENYWR);
-#else
     CStdString strLogFile, strLogFileOld;
 
     strLogFile.Format("%sxbmc.log", path);
@@ -172,7 +149,6 @@ bool CLog::Init(const char* path)
       return false;
 
     m_file = fopen64_utf8(strLogFile.c_str(),"wb");
-#endif
   }
 
   if (m_file)

@@ -732,6 +732,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\stat_utf8.cpp" />
+    <ClCompile Include="..\..\xbmc\win32\stdio_utf8.cpp" />
     <ClCompile Include="..\..\xbmc\win32\strverscmp.cpp" />
     <ClCompile Include="..\..\xbmc\win32\Win32DelayedDllLoad.cpp" />
     <ClCompile Include="..\..\xbmc\win32\WIN32Util.cpp" />
@@ -1570,6 +1572,8 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">..\..\xbmc\win32\git_rev.h;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">..\..\git\HEAD;..\..\xbmc\win32\git_rev.tmpl</AdditionalInputs>
     </CustomBuild>
+    <ClInclude Include="..\..\xbmc\win32\stat_utf8.h" />
+    <ClInclude Include="..\..\xbmc\win32\stdio_utf8.h" />
     <ClInclude Include="..\..\xbmc\win32\WIN32Util.h" />
     <ClInclude Include="..\..\xbmc\win32\WINDirectSound.h" />
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h" />

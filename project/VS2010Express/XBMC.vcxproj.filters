@@ -2456,6 +2456,12 @@
     <ClCompile Include="..\..\xbmc\addons\AddonInstaller.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\stdio_utf8.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\stat_utf8.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4925,6 +4931,12 @@
     </ClInclude>
     <ClInclude Include="..\..\lib\ffmpeg\include-xbmc-win32\libavutil\avconfig.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\win32\stdio_utf8.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\win32\stat_utf8.h">
+      <Filter>win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
