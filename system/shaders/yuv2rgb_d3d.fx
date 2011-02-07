@@ -23,10 +23,7 @@ texture g_YTexture;
 texture g_UTexture;
 texture g_VTexture;
 float4x4 g_ColorMatrix;
-
-#ifdef SINGLEPASS
-
-// Color conversion + bilinear resize in one pass
+float2  g_StepXY;
 
 sampler YSampler =
   sampler_state {
@@ -36,21 +33,6 @@ sampler YSampler =
     MinFilter = LINEAR;
     MagFilter = LINEAR;
   };
-
-#else
-
-// Color conversion only
-
-sampler YSampler =
-  sampler_state {
-    Texture = <g_YTexture>;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-    MinFilter = POINT;
-    MagFilter = POINT;
-  };
-
-#endif
 
 sampler USampler =
   sampler_state {
@@ -87,10 +69,44 @@ struct PS_OUTPUT
 PS_OUTPUT YUV2RGB( VS_OUTPUT In)
 {
   PS_OUTPUT OUT;
+#if defined(XBMC_YV12)
   float4 YUV = float4(tex2D (YSampler, In.TextureY).x
                     , tex2D (USampler, In.TextureU).x
                     , tex2D (VSampler, In.TextureV).x
                     , 1.0);
+#elif defined(XBMC_NV12)
+  float4 YUV = float4(tex2D (YSampler, In.TextureY).x
+                    , tex2D (USampler, In.TextureU).ra
+                    , 1.0);
+#elif defined(XBMC_YUY2) || defined(XBMC_UYVY)
+  // The HLSL compiler is smart enough to optimize away these redundant assignments.
+  // That way the code is almost identical to the OGL shader.
+  float2 stepxy = g_StepXY;
+  float2 pos    = In.TextureY;
+  pos           = float2(pos.x - (stepxy.x * 0.25), pos.y);
+  float2 f      = frac(pos / stepxy);
+
+  //y axis will be correctly interpolated by opengl
+  //x axis will not, so we grab two pixels at the center of two columns and interpolate ourselves
+  float4 c1 = tex2D(YSampler, float2(pos.x + ((0.5 - f.x) * stepxy.x), pos.y));
+  float4 c2 = tex2D(YSampler, float2(pos.x + ((1.5 - f.x) * stepxy.x), pos.y));
+
+  /* each pixel has two Y subpixels and one UV subpixel
+      YUV  Y  YUV
+      check if we're left or right of the middle Y subpixel and interpolate accordingly*/
+  #if defined(XBMC_YUY2) // BGRA = YUYV
+    float  leftY  = lerp(c1.b, c1.r, f.x * 2.0);
+    float  rightY = lerp(c1.r, c2.b, f.x * 2.0 - 1.0);
+    float2 outUV  = lerp(c1.ga, c2.ga, f.x);
+  #elif defined(XBMC_UYVY) // BGRA = UYVY
+    float  leftY  = lerp(c1.g, c1.a, f.x * 2.0);
+    float  rightY = lerp(c1.a, c2.g, f.x * 2.0 - 1.0);
+    float2 outUV  = lerp(c1.br, c2.br, f.x);
+  #endif
+    float  outY   = lerp(leftY, rightY, step(0.5, f.x));
+    float4 YUV    = float4(outY, outUV, 1.0);
+#endif
+
   OUT.RGBColor = mul(YUV, g_ColorMatrix);
   OUT.RGBColor.a = 1.0;
   return OUT;
