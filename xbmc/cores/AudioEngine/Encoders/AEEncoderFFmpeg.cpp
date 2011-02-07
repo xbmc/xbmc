@@ -24,9 +24,9 @@
 #include "AEEncoderFFmpeg.h"
 #include "AEUtil.h"
 #include "AEPackIEC958.h"
+#include "utils/log.h"
 #include <string.h>
 
-int fd;
 CAEEncoderFFmpeg::CAEEncoderFFmpeg():
   m_CodecCtx(NULL)
 {
@@ -56,7 +56,62 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
   m_CodecCtx->bit_rate       = AC3_ENCODE_BITRATE;
   m_CodecCtx->sample_rate    = format.m_sampleRate;
   m_CodecCtx->channel_layout = AV_CH_LAYOUT_5POINT1_BACK;
-  m_CodecCtx->sample_fmt     = AV_SAMPLE_FMT_FLT;
+
+  /* select a suitable data format */
+  if (codec->sample_fmts)
+  {
+    bool hasFloat  = false;
+    bool hasDouble = false;
+    bool hasS32    = false;
+    bool hasS16    = false;
+    bool hasU8     = false;
+
+    for(int i = 0; codec->sample_fmts[i] != AV_SAMPLE_FMT_NONE; ++i)
+    {
+      switch(codec->sample_fmts[i])
+      {
+        case AV_SAMPLE_FMT_FLT: hasFloat  = true; break;
+        case AV_SAMPLE_FMT_DBL: hasDouble = true; break;
+        case AV_SAMPLE_FMT_S32: hasS32    = true; break;
+        case AV_SAMPLE_FMT_S16: hasS16    = true; break;
+        case AV_SAMPLE_FMT_U8 : hasU8     = true; break;
+
+        default:
+          return false;
+      }
+    }
+
+    if (hasFloat)
+    {
+      m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_FLT;
+      format.m_dataFormat    = AE_FMT_FLOAT;
+    }
+    else if (hasDouble)
+    {
+      m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_DBL;
+      format.m_dataFormat    = AE_FMT_DOUBLE;
+    }
+    else if (hasS32)
+    {
+      m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_S32;
+      format.m_dataFormat    = AE_FMT_S32NE;
+    }
+    else if (hasS16)
+    {
+      m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_S16;
+      format.m_dataFormat    = AE_FMT_S16NE;
+    }
+    else if (hasU8)
+    {
+      m_CodecCtx->sample_fmt = AV_SAMPLE_FMT_U8;
+      format.m_dataFormat    = AE_FMT_U8;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Initialize - Unable to find a suitable data format for the codec");
+      return false;
+    }
+  }
 
   /* build the channel layout and count the channels */
   m_CodecCtx->channels = 0;
