@@ -261,7 +261,8 @@ void CDVDAudioCodecPassthroughFFmpeg::DisposeMuxer(Muxer &muxer)
     if (muxer.m_WroteHeader)
       m_dllAvFormat.av_write_trailer(muxer.m_pFormat);
     muxer.m_WroteHeader = false;
-    delete[] muxer.m_pStream->codec->extradata;
+    if (muxer.m_pStream)
+      delete[] muxer.m_pStream->codec->extradata;
     m_dllAvUtil.av_freep(&muxer.m_pFormat->pb);
     m_dllAvUtil.av_freep(&muxer.m_pFormat);
     m_dllAvUtil.av_freep(&muxer.m_pStream);
