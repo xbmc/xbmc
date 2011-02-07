@@ -1811,8 +1811,6 @@
 		F5D8D735102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */; };
 		F5D8EF5B103912A4004A11AB /* DVDSubtitleParserVplayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8EF59103912A4004A11AB /* DVDSubtitleParserVplayer.cpp */; };
 		F5D8EF5C103912A4004A11AB /* DVDSubtitleParserVplayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8EF59103912A4004A11AB /* DVDSubtitleParserVplayer.cpp */; };
-		F5D8F86C104CD1C0004A11AB /* DVDInputStreamMMS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8F86B104CD1C0004A11AB /* DVDInputStreamMMS.cpp */; };
-		F5D8F86D104CD1C0004A11AB /* DVDInputStreamMMS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8F86B104CD1C0004A11AB /* DVDInputStreamMMS.cpp */; };
 		F5D8F881104CD40B004A11AB /* liblzo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D8F880104CD40B004A11AB /* liblzo2.dylib */; };
 		F5D8F882104CD40B004A11AB /* liblzo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D8F880104CD40B004A11AB /* liblzo2.dylib */; };
 		F5D8F88C104CD47D004A11AB /* libmms.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D8F88B104CD47D004A11AB /* libmms.dylib */; };
@@ -3792,8 +3790,6 @@
 		F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRenderer.cpp; sourceTree = "<group>"; };
 		F5D8EF59103912A4004A11AB /* DVDSubtitleParserVplayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleParserVplayer.cpp; sourceTree = "<group>"; };
 		F5D8EF5A103912A4004A11AB /* DVDSubtitleParserVplayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserVplayer.h; sourceTree = "<group>"; };
-		F5D8F86A104CD1C0004A11AB /* DVDInputStreamMMS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamMMS.h; sourceTree = "<group>"; };
-		F5D8F86B104CD1C0004A11AB /* DVDInputStreamMMS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamMMS.cpp; sourceTree = "<group>"; };
 		F5D8F880104CD40B004A11AB /* liblzo2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo2.dylib; path = /opt/local/lib/liblzo2.dylib; sourceTree = "<absolute>"; };
 		F5D8F88B104CD47D004A11AB /* libmms.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmms.dylib; path = /opt/local/lib/libmms.dylib; sourceTree = "<absolute>"; };
 		F5DC87E0110A287400EE1B15 /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
@@ -5450,8 +5446,6 @@
 				E38E15620D25F9FA00618676 /* DVDInputStreamHttp.h */,
 				E38E15630D25F9FA00618676 /* DVDInputStreamMemory.cpp */,
 				E38E15640D25F9FA00618676 /* DVDInputStreamMemory.h */,
-				F5D8F86A104CD1C0004A11AB /* DVDInputStreamMMS.h */,
-				F5D8F86B104CD1C0004A11AB /* DVDInputStreamMMS.cpp */,
 				E38E15650D25F9FA00618676 /* DVDInputStreamNavigator.cpp */,
 				E38E15660D25F9FA00618676 /* DVDInputStreamNavigator.h */,
 				E38E15670D25F9FA00618676 /* dvdnav */,
@@ -7899,7 +7893,6 @@
 				7C779E3E104A57E500F444C4 /* WinSystemOSX.mm in Sources */,
 				7C779E3F104A57E500F444C4 /* WinSystemOSXGL.mm in Sources */,
 				7C779E54104A58F900F444C4 /* GUIWindowTestPatternGL.cpp in Sources */,
-				F5D8F86C104CD1C0004A11AB /* DVDInputStreamMMS.cpp in Sources */,
 				7C62F24210505BC7002AD2C1 /* Bookmark.cpp in Sources */,
 				7C62F45E1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */,
 				7CCF7E721067643800992676 /* DirectoryNodeSets.cpp in Sources */,
@@ -8778,7 +8771,6 @@
 				7C779E49104A57E500F444C4 /* WinSystemOSX.mm in Sources */,
 				7C779E4A104A57E500F444C4 /* WinSystemOSXGL.mm in Sources */,
 				7C779E56104A58F900F444C4 /* GUIWindowTestPatternGL.cpp in Sources */,
-				F5D8F86D104CD1C0004A11AB /* DVDInputStreamMMS.cpp in Sources */,
 				7C62F24310505BC7002AD2C1 /* Bookmark.cpp in Sources */,
 				7C62F45F1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */,
 				7CCF7E731067643800992676 /* DirectoryNodeSets.cpp in Sources */,

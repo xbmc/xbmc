@@ -238,6 +238,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_speed = DVD_PLAYSPEED_NORMAL;
   g_demuxer = this;
+  m_program = UINT_MAX;
 
   if (!pInput) return false;
 
@@ -278,7 +279,20 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   {
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
-    if( m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile.c_str(), iformat, FFMPEG_FILE_BUFFER_SIZE, NULL) < 0 )
+    int result=-1;
+    if (strFile.substr(0,6) == "mms://")
+    {
+      // try mmsh, then mmst
+      CStdString strFile2;
+      strFile2.Format("mmsh://%s",strFile.substr(6,strFile.size()-6).c_str());
+      result = m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile2.c_str(), iformat, FFMPEG_FILE_BUFFER_SIZE, NULL);
+      if (result < 0)
+      {
+        strFile = "mmst://";
+        strFile += strFile2.Mid(7).c_str();
+      } 
+    }
+    if (result < 0 && m_dllAvFormat.av_open_input_file(&m_pFormatContext, strFile.c_str(), iformat, FFMPEG_FILE_BUFFER_SIZE, NULL) < 0 )
     {
       CLog::Log(LOGDEBUG, "Error, could not open file %s", strFile.c_str());
       Dispose();
@@ -460,7 +474,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   // add the ffmpeg streams to our own stream array
   if (m_pFormatContext->nb_programs)
   {
-    m_program = UINT_MAX;
     // look for first non empty stream and discard nonselected programs
     for (unsigned int i = 0; i < m_pFormatContext->nb_programs; i++)
     {
@@ -470,14 +483,15 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       if(i != m_program)
         m_pFormatContext->programs[i]->discard = AVDISCARD_ALL;
     }
-    if(m_program == UINT_MAX)
-      m_program = 0;
-
-    // add streams from selected program
-    for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
-      AddStream(m_pFormatContext->programs[m_program]->stream_index[i]);
+    if(m_program != UINT_MAX)
+    {
+      // add streams from selected program
+      for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
+        AddStream(m_pFormatContext->programs[m_program]->stream_index[i]);
+    }
   }
-  else
+  // if there were no programs or they were all empty, add all streams
+  if (m_program == UINT_MAX)
   {
     for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
       AddStream(i);
@@ -675,7 +689,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     {
       AVStream *stream = m_pFormatContext->streams[pkt.stream_index];
 
-      if (m_pFormatContext->nb_programs)
+      if (m_program != UINT_MAX)
       {
         /* check so packet belongs to selected program */
         for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)

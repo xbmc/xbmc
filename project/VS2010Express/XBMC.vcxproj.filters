@@ -423,9 +423,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMemory.cpp">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMMS.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.cpp">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClCompile>
@@ -2704,9 +2701,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMemory.h">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMMS.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClInclude>
@@ -2726,9 +2720,6 @@
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\DllSwScale.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\ffmpeg\include\libavutil\avconfig.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\ffmpeg\libavformat\avformat.h">
@@ -2858,9 +2849,6 @@
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\DllWAVPack.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\DllWMA.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DTSCDDACodec.h">
@@ -4934,6 +4922,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\AddonInstaller.h">
       <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\ffmpeg\libavutil\avconfig.h">
+      <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

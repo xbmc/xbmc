@@ -110,7 +110,6 @@ Then install the following port packages (order is very important):
  $ sudo port install libvorbis +universal
  $ sudo port install libmad macosx_deployment_target=10.4
  $ sudo port install fribidi +universal
- $ sudo port install libmms +universal
  $ sudo port install wavpack +universal
  $ sudo port install libmpeg2 +no_sdl +no_x11 +universal
 

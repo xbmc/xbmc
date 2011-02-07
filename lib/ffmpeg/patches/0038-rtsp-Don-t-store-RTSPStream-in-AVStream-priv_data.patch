@@ -1,0 +1,108 @@
+From b1eb9860a582ec9459e871c00f23b5fc2500aaf4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Martin=20Storsj=C3=B6?= <martin@martin.st>
+Date: Wed, 2 Feb 2011 11:08:01 +0200
+Subject: [PATCH] rtsp: Don't store RTSPStream in AVStream->priv_data
+
+For mpegts in RTP, there isn't a direct mapping between RTSPStreams
+and AVStreams, and the RTSPStream isn't ever stored in
+AVStream->priv_data, which was earlier leaked. The fix for this
+leak, in ea7f080749d68a431226ce196014da38761a0d82, lead to
+double frees for other, normal RTP streams.
+
+This patch avoids storing RTSPStreams in AVStream->priv_data, thus
+avoiding the double free. The RTSPStreams are always available via
+RTSPState->rtsp_streams anyway.
+
+Tested with MS-RTSP, RealRTSP, DSS and mpegts/RTP.
+
+Signed-off-by: Luca Barbato <lu_zero@gentoo.org>
+(cherry picked from commit d9c0510e22821baa364306d867ffac45da0620c8)
+---
+ libavformat/rtsp.c    |   16 ++++++----------
+ libavformat/rtspenc.c |    2 --
+ 2 files changed, 6 insertions(+), 12 deletions(-)
+
+diff --git a/libavformat/rtsp.c b/libavformat/rtsp.c
+index 09e2f1e..e1d7503 100644
+--- a/libavformat/rtsp.c
++++ b/libavformat/rtsp.c
+@@ -273,8 +273,7 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
+             s1->default_ip = sdp_ip;
+             s1->default_ttl = ttl;
+         } else {
+-            st = s->streams[s->nb_streams - 1];
+-            rtsp_st = st->priv_data;
++            rtsp_st = rt->rtsp_streams[rt->nb_rtsp_streams - 1];
+             rtsp_st->sdp_ip = sdp_ip;
+             rtsp_st->sdp_ttl = ttl;
+         }
+@@ -326,7 +325,6 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
+             st = av_new_stream(s, 0);
+             if (!st)
+                 return;
+-            st->priv_data = rtsp_st;
+             rtsp_st->stream_index = st->index;
+             st->codec->codec_type = codec_type;
+             if (rtsp_st->sdp_payload_type < RTP_PT_PRIVATE) {
+@@ -355,8 +353,7 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
+             } else {
+                 char proto[32];
+                 /* get the control url */
+-                st = s->streams[s->nb_streams - 1];
+-                rtsp_st = st->priv_data;
++                rtsp_st = rt->rtsp_streams[rt->nb_rtsp_streams - 1];
+ 
+                 /* XXX: may need to add full url resolution */
+                 av_url_split(proto, sizeof(proto), NULL, 0, NULL, 0,
+@@ -377,7 +374,7 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
+             get_word(buf1, sizeof(buf1), &p);
+             payload_type = atoi(buf1);
+             st = s->streams[s->nb_streams - 1];
+-            rtsp_st = st->priv_data;
++            rtsp_st = rt->rtsp_streams[rt->nb_rtsp_streams - 1];
+             sdp_parse_rtpmap(s, st, rtsp_st, payload_type, p);
+         } else if (av_strstart(p, "fmtp:", &p) ||
+                    av_strstart(p, "framesize:", &p)) {
+@@ -385,9 +382,8 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
+             // let dynamic protocol handlers have a stab at the line.
+             get_word(buf1, sizeof(buf1), &p);
+             payload_type = atoi(buf1);
+-            for (i = 0; i < s->nb_streams; i++) {
+-                st      = s->streams[i];
+-                rtsp_st = st->priv_data;
++            for (i = 0; i < rt->nb_rtsp_streams; i++) {
++                rtsp_st = rt->rtsp_streams[i];
+                 if (rtsp_st->sdp_payload_type == payload_type &&
+                     rtsp_st->dynamic_handler &&
+                     rtsp_st->dynamic_handler->parse_sdp_a_line)
+@@ -417,7 +413,7 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
+                 if (rt->server_type == RTSP_SERVER_REAL)
+                     ff_real_parse_sdp_a_line(s, s->nb_streams - 1, p);
+ 
+-                rtsp_st = s->streams[s->nb_streams - 1]->priv_data;
++                rtsp_st = rt->rtsp_streams[rt->nb_rtsp_streams - 1];
+                 if (rtsp_st->dynamic_handler &&
+                     rtsp_st->dynamic_handler->parse_sdp_a_line)
+                     rtsp_st->dynamic_handler->parse_sdp_a_line(s,
+diff --git a/libavformat/rtspenc.c b/libavformat/rtspenc.c
+index d54be1a..34deeeb 100644
+--- a/libavformat/rtspenc.c
++++ b/libavformat/rtspenc.c
+@@ -79,14 +79,12 @@ int ff_rtsp_setup_output_streams(AVFormatContext *s, const char *addr)
+     /* Set up the RTSPStreams for each AVStream */
+     for (i = 0; i < s->nb_streams; i++) {
+         RTSPStream *rtsp_st;
+-        AVStream *st = s->streams[i];
+ 
+         rtsp_st = av_mallocz(sizeof(RTSPStream));
+         if (!rtsp_st)
+             return AVERROR(ENOMEM);
+         dynarray_add(&rt->rtsp_streams, &rt->nb_rtsp_streams, rtsp_st);
+ 
+-        st->priv_data = rtsp_st;
+         rtsp_st->stream_index = i;
+ 
+         av_strlcpy(rtsp_st->control_url, rt->control_uri, sizeof(rtsp_st->control_url));
+-- 
+1.7.3
+
