@@ -98,20 +98,20 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "VideoPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage },
 
 // Picture player
-//  { "PicturePlayer.PlayPause",                      CPicturePlayerOperations::PlayPause },
-//  { "PicturePlayer.Stop",                           CPicturePlayerOperations::Stop },
-//  { "PicturePlayer.SkipPrevious",                   CPicturePlayerOperations::SkipPrevious },
-//  { "PicturePlayer.SkipNext",                       CPicturePlayerOperations::SkipNext },
-//
-//  { "PicturePlayer.MoveLeft",                       CPicturePlayerOperations::MoveLeft },
-//  { "PicturePlayer.MoveRight",                      CPicturePlayerOperations::MoveRight },
-//  { "PicturePlayer.MoveDown",                       CPicturePlayerOperations::MoveDown },
-//  { "PicturePlayer.MoveUp",                         CPicturePlayerOperations::MoveUp },
-//
-//  { "PicturePlayer.ZoomOut",                        CPicturePlayerOperations::ZoomOut },
-//  { "PicturePlayer.ZoomIn",                         CPicturePlayerOperations::ZoomIn },
-//  { "PicturePlayer.Zoom",                           CPicturePlayerOperations::Zoom },
-//  { "PicturePlayer.Rotate",                         CPicturePlayerOperations::Rotate },
+  { "PicturePlayer.PlayPause",                      CPicturePlayerOperations::PlayPause },
+  { "PicturePlayer.Stop",                           CPicturePlayerOperations::Stop },
+  { "PicturePlayer.SkipPrevious",                   CPicturePlayerOperations::SkipPrevious },
+  { "PicturePlayer.SkipNext",                       CPicturePlayerOperations::SkipNext },
+
+  { "PicturePlayer.MoveLeft",                       CPicturePlayerOperations::MoveLeft },
+  { "PicturePlayer.MoveRight",                      CPicturePlayerOperations::MoveRight },
+  { "PicturePlayer.MoveDown",                       CPicturePlayerOperations::MoveDown },
+  { "PicturePlayer.MoveUp",                         CPicturePlayerOperations::MoveUp },
+
+  { "PicturePlayer.ZoomOut",                        CPicturePlayerOperations::ZoomOut },
+  { "PicturePlayer.ZoomIn",                         CPicturePlayerOperations::ZoomIn },
+  { "PicturePlayer.Zoom",                           CPicturePlayerOperations::Zoom },
+  { "PicturePlayer.Rotate",                         CPicturePlayerOperations::Rotate },
 
 // Video Playlist
   // TODO
