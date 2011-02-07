@@ -853,6 +853,9 @@ if test "$use_external_ffmpeg" = "yes"; then
   # libavcore is optional
   AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h])
 
+  # old FFmpeg have this in libavcodec/opt.h instead:
+  AC_CHECK_HEADERS([libavutil/opt.h])
+
   # We'll support the use of rgb2rgb.h if it exists.
   AC_CHECK_HEADERS([libswscale/rgb2rgb.h],,)
   AC_CHECK_HEADERS([ffmpeg/rgb2rgb.h],,)
