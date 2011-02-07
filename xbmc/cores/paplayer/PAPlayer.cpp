@@ -139,24 +139,7 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
   StreamInfo *si  = (StreamInfo*)arg;
   PAPlayer   *pap = si->m_player;
 
-  CSingleLock lock(pap->m_critSection);
-
-  while(si->m_decoder.GetDataSize() == 0)
-  {
-    int status = si->m_decoder.GetStatus();
-    if (status == STATUS_ENDED || status == STATUS_NO_FILE || si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
-    {
-      if (!si->m_triggered)
-      {
-        si->m_triggered = true;
-        pap->PlayNextStream();
-      }
-      if (!si->m_stream->IsDraining())
-        si->m_stream->Drain();
-      
-      return;
-    }
-  }
+  CSingleLock lock(pap->m_critSection);  
 
   /* convert needed frames to needed samples */
   needed *= sender->GetChannelCount();
@@ -199,23 +182,39 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
   }
 
   /* if it is time to prepare the next stream */
-  int status = si->m_decoder.GetStatus();
-  if (si->m_prepare > 0 && (si->m_sent >= si->m_prepare || status == STATUS_ENDING || status == STATUS_ENDED))
+  bool queueNext = false;
+  bool playNext  = false;
+  if (si->m_prepare && si->m_sent >= si->m_prepare)
   {
     si->m_prepare = 0;
-    lock.Leave();
-    pap->m_callback.OnQueueNextItem();
-    return;
+    queueNext     = true;
   }
 
   /* if it is time to move to the next stream */
-  if (!si->m_triggered && (si->m_sent >= si->m_change || status == STATUS_ENDING || status == STATUS_ENDED))
+  if (!si->m_triggered && si->m_sent >= si->m_change)
   {
     si->m_triggered = true;
-    lock.Leave();
-    pap->PlayNextStream();
-    return;
+    playNext        = true;
   }
+
+  int status = si->m_decoder.GetStatus();
+  if (status == STATUS_ENDED || status == STATUS_NO_FILE || si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
+  {
+    if ( si->m_prepare  ) queueNext = true;
+    if (!si->m_triggered) playNext  = true;
+    si->m_stream->Drain();
+  }
+
+  lock.Leave();
+
+  if (queueNext)
+  {
+    if (playNext)
+      pap->m_playOnQueue = true;
+    pap->m_callback.OnQueueNextItem();
+  }
+  else if (playNext)
+    pap->PlayNextStream();
 }
 
 void PAPlayer::StaticStreamOnDrain(IAEStream *sender, void *arg, unsigned int unused)
@@ -223,6 +222,7 @@ void PAPlayer::StaticStreamOnDrain(IAEStream *sender, void *arg, unsigned int un
   StreamInfo *si = (StreamInfo*)arg;
   si->m_stream->UnRegisterAudioCallback();
   PAPlayer *player = si->m_player;
+
   CSingleLock lock(player->m_critSection);
   player->FreeStreamInfo(si);
 }
@@ -269,7 +269,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
     sampleRate,
     channels,
     NULL, /* FIXME: channelLayout */
-    AESTREAM_FREE_ON_DRAIN | AESTREAM_OWNS_POST_PROC
+    AESTREAM_FREE_ON_DRAIN | AESTREAM_OWNS_POST_PROC | AESTREAM_PAUSED
   );
 
   if (!si->m_stream)
@@ -278,8 +278,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
     return false;
   }
 
-  /* pause the stream and set the callbacks */
-  si->m_stream->Pause();
+  /* set the callbacks */
   si->m_stream->SetDataCallback (StaticStreamOnData , si);
   si->m_stream->SetDrainCallback(StaticStreamOnDrain, si);
   si->m_stream->SetReplayGain   (si->m_decoder.GetReplayGain());
