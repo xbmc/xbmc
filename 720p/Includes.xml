@@ -11,8 +11,7 @@
 	<include name="Search_Result">
 		<posx>0</posx>
 		<posy>0</posy>
-		<width>700</width>
-		<height>200</height>
+		<width>880</width>
 		<itemlayout width="140" height="200">
 			<control type="image">
 				<posx>15</posx>

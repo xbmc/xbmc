@@ -629,6 +629,7 @@
 						<onright>65</onright>
 						<onleft>70</onleft>
 						<include>Search_Result</include>
+						<height>200</height>
 					</control>
 					
 					<!-- TV Shows -->
@@ -645,6 +646,7 @@
 						<onright>-</onright>
 						<onleft>70</onleft>
 						<include>Search_Result</include>						
+						<height>200</height>
 					</control>
 
 					<!-- TV Episodes -->
@@ -660,7 +662,8 @@
 						<onup>9001</onup>
 						<onright>-</onright>
 						<onleft>70</onleft>
-						<include>Search_Result</include>						
+						<include>Search_Result</include>	
+						<height>200</height>					
 					</control>
 
 					<!-- Artists -->
@@ -676,7 +679,8 @@
 						<onup>9002</onup>
 						<onright>-</onright>
 						<onleft>70</onleft>
-						<include>Search_Result</include>						
+						<include>Search_Result</include>
+						<height>200</height>					
 					</control>
 
 					<!-- Albums -->
@@ -692,7 +696,8 @@
 						<onup>9008</onup>
 						<onright>-</onright>
 						<onleft>70</onleft>
-						<include>Search_Result</include>						
+						<include>Search_Result</include>	
+						<height>200</height>					
 					</control>
 
 					<!-- Tracks -->
@@ -709,6 +714,7 @@
 						<onright>-</onright>
 						<onleft>70</onleft>
 						<include>Search_Result</include>
+						<height>200</height>
 					</control>
 					
 					<!-- Clips -->
@@ -717,14 +723,15 @@
 						<label>VIDEO CLIPS ($INFO[container(9012).numitems])</label>
 						<visible allowhiddenfocus="false">true</visible>
 					</control>
-					<control type="list" id="9012">
+					<control type="panel" id="9012">
+						<include>Search_Result</include>
+						<height>600</height>
 						<visible allowhiddenfocus="false">true</visible>
-						<orientation>horizontal</orientation>
+						<orientation>vertical</orientation>
 						<ondown>9001</ondown>
 						<onup>9010</onup>
 						<onright>-</onright>
 						<onleft>70</onleft>
-						<include>Search_Result</include>
 					</control>
 					
 				</control>
