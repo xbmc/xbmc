@@ -142,12 +142,12 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   // TODO
 
 // System operations
-//  { "System.Shutdown",                              CSystemOperations::Shutdown },
-//  { "System.Suspend",                               CSystemOperations::Suspend },
-//  { "System.Hibernate",                             CSystemOperations::Hibernate },
-//  { "System.Reboot",                                CSystemOperations::Reboot },
-//  { "System.GetInfoLabels",                         CSystemOperations::GetInfoLabels },
-//  { "System.GetInfoBooleans",                       CSystemOperations::GetInfoBooleans },
+  { "System.Shutdown",                              CSystemOperations::Shutdown },
+  { "System.Suspend",                               CSystemOperations::Suspend },
+  { "System.Hibernate",                             CSystemOperations::Hibernate },
+  { "System.Reboot",                                CSystemOperations::Reboot },
+  { "System.GetInfoLabels",                         CSystemOperations::GetInfoLabels },
+  { "System.GetInfoBooleans",                       CSystemOperations::GetInfoBooleans },
 
 // XBMC operations
 //  { "XBMC.GetVolume",                               CXBMCOperations::GetVolume },
