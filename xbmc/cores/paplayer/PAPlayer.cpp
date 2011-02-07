@@ -197,12 +197,16 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
     playNext        = true;
   }
 
-  int status = si->m_decoder.GetStatus();
-  if (status == STATUS_ENDED || status == STATUS_NO_FILE || si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
+  while(si->m_decoder.GetDataSize() == 0)
   {
-    if ( si->m_prepare  ) queueNext = true;
-    if (!si->m_triggered) playNext  = true;
-    si->m_stream->Drain();
+    int status = si->m_decoder.GetStatus();
+    if (status == STATUS_ENDED || status == STATUS_NO_FILE || si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
+    {
+      if ( si->m_prepare  ) queueNext = true;
+      if (!si->m_triggered) playNext  = true;
+      si->m_stream->Drain();
+      break;
+    }
   }
 
   lock.Leave();
