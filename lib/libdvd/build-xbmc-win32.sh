@@ -3,7 +3,10 @@
 #libdvdcss
 cd libdvdcss
 echo "***** Cleaning libdvdcss *****"
+if [ -f Makefile ]
+then
 make distclean
+fi
 echo "***** Building libdvdcss *****"
 sh bootstrap
 ./configure \
@@ -21,7 +24,10 @@ cp libdvdcss/src/.libs/libdvdcss-2.dll /xbmc/system/players/dvdplayer/
 #libdvdread
 cd libdvdread
 echo "***** Cleaning libdvdread *****"
+if [ -f config.mak ]
+then
 make distclean
+fi
 echo "***** Building libdvdread *****"
 ./configure2 \
       --disable-shared \
@@ -36,7 +42,10 @@ cd ..
 #libdvdnav
 cd libdvdnav
 echo "***** Cleaning libdvdnav *****"
+if [ -f config.mak ]
+then
 make distclean
+fi
 echo "***** Building libdvdnav *****"
 ./configure2 \
       --disable-shared \
