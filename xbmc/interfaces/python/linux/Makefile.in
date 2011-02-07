@@ -3,7 +3,7 @@ ARCH=@ARCH@
 CC=@CC@
 CFLAGS=@CFLAGS@
 LDFLAGS=@LDFLAGS@
-SHELL=/bin/bash
+SHELL=@SHELL@
 SYSDIR=$(abs_top_srcdir)/system/python
 
 ifeq (@USE_PYTHON2_6@,1)
