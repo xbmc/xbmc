@@ -199,7 +199,8 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
   }
 
   /* if it is time to prepare the next stream */
-  if (si->m_prepare > 0 && si->m_sent >= si->m_prepare)
+  int status = si->m_decoder.GetStatus();
+  if (si->m_prepare > 0 && (si->m_sent >= si->m_prepare || status == STATUS_ENDING || status == STATUS_ENDED))
   {
     si->m_prepare = 0;
     lock.Leave();
@@ -208,7 +209,7 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
   }
 
   /* if it is time to move to the next stream */
-  if (!si->m_triggered && si->m_sent >= si->m_change)
+  if (!si->m_triggered && (si->m_sent >= si->m_change || status == STATUS_ENDING || status == STATUS_ENDED))
   {
     si->m_triggered = true;
     lock.Leave();
