@@ -22,11 +22,11 @@
 
 #include "guilib/GUIDialog.h"
 
-class CGUIDialogPVRUpdateProgressBar : public CGUIDialog
+class CGUIDialogExtendedProgressBar : public CGUIDialog
 {
 public:
-  CGUIDialogPVRUpdateProgressBar(void);
-  virtual ~CGUIDialogPVRUpdateProgressBar(void) {}
+  CGUIDialogExtendedProgressBar(void);
+  virtual ~CGUIDialogExtendedProgressBar(void) {}
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
   void SetProgress(int currentItem, int itemCount);

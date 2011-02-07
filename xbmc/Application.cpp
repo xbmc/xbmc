@@ -195,6 +195,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "video/dialogs/GUIDialogFileStacking.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -228,7 +229,6 @@
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
-#include "pvr/dialogs/GUIDialogPVRUpdateProgressBar.h"
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "video/dialogs/GUIDialogTeletext.h"
 #include "dialogs/GUIDialogSlider.h"
@@ -1045,6 +1045,7 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowAddonBrowser);          // window id = 40
   g_windowManager.Add(new CGUIDialogYesNo);              // window id = 100
   g_windowManager.Add(new CGUIDialogProgress);           // window id = 101
+  g_windowManager.Add(new CGUIDialogExtendedProgressBar);     // window id = 148
   g_windowManager.Add(new CGUIDialogKeyboard);           // window id = 103
   g_windowManager.Add(&m_guiDialogVolumeBar);          // window id = 104
   g_windowManager.Add(&m_guiDialogSeekBar);            // window id = 115
@@ -1099,7 +1100,6 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogPVRGroupManager);          // window id = 604
   g_windowManager.Add(new CGUIDialogPVRChannelManager);        // window id = 605
   g_windowManager.Add(new CGUIDialogPVRGuideSearch);           // window id = 606
-  g_windowManager.Add(new CGUIDialogPVRUpdateProgressBar);     // window id = 608
   g_windowManager.Add(new CGUIDialogPVRChannelsOSD);           // window id = 609
   g_windowManager.Add(new CGUIDialogPVRGuideOSD);              // window id = 610
   g_windowManager.Add(new CGUIDialogPVRDirectorOSD);           // window id = 611

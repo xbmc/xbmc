@@ -19,7 +19,7 @@
  *
  */
 
-#include "GUIDialogPVRUpdateProgressBar.h"
+#include "GUIDialogExtendedProgressBar.h"
 #include "guilib/GUIProgressControl.h"
 #include "guilib/GUISliderControl.h"
 #include "threads/SingleLock.h"
@@ -28,13 +28,13 @@
 #define CONTROL_LABELTITLE        31
 #define CONTROL_PROGRESS          32
 
-CGUIDialogPVRUpdateProgressBar::CGUIDialogPVRUpdateProgressBar(void)
-  : CGUIDialog(WINDOW_DIALOG_EPG_SCAN, "DialogPVRUpdateProgressBar.xml")
+CGUIDialogExtendedProgressBar::CGUIDialogExtendedProgressBar(void)
+  : CGUIDialog(WINDOW_DIALOG_EXT_PROGRESS, "DialogExtendedProgressBar.xml")
 {
   m_loadOnDemand = false;
 }
 
-bool CGUIDialogPVRUpdateProgressBar::OnMessage(CGUIMessage& message)
+bool CGUIDialogExtendedProgressBar::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
@@ -55,7 +55,7 @@ bool CGUIDialogPVRUpdateProgressBar::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogPVRUpdateProgressBar::Render()
+void CGUIDialogExtendedProgressBar::Render()
 {
   if (m_bRunning)
     UpdateState();
@@ -63,21 +63,21 @@ void CGUIDialogPVRUpdateProgressBar::Render()
   CGUIDialog::Render();
 }
 
-void CGUIDialogPVRUpdateProgressBar::SetHeader(const CStdString& strHeader)
+void CGUIDialogExtendedProgressBar::SetHeader(const CStdString& strHeader)
 {
   CSingleLock lock (m_critical);
 
   m_strHeader = strHeader;
 }
 
-void CGUIDialogPVRUpdateProgressBar::SetTitle(const CStdString& strTitle)
+void CGUIDialogExtendedProgressBar::SetTitle(const CStdString& strTitle)
 {
   CSingleLock lock (m_critical);
 
   m_strTitle = strTitle;
 }
 
-void CGUIDialogPVRUpdateProgressBar::SetProgress(int currentItem, int itemCount)
+void CGUIDialogExtendedProgressBar::SetProgress(int currentItem, int itemCount)
 {
   CSingleLock lock (m_critical);
 
@@ -86,7 +86,7 @@ void CGUIDialogPVRUpdateProgressBar::SetProgress(int currentItem, int itemCount)
     m_fPercentDone = 100.0F;
 }
 
-void CGUIDialogPVRUpdateProgressBar::UpdateState()
+void CGUIDialogExtendedProgressBar::UpdateState()
 {
   CSingleLock lock (m_critical);
 

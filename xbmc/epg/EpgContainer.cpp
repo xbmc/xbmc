@@ -20,7 +20,7 @@
  */
 
 #include "settings/GUISettings.h"
-#include "pvr/dialogs/GUIDialogPVRUpdateProgressBar.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
 #include "log.h"
@@ -254,7 +254,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   long iStartTime                         = CTimeUtils::GetTimeMS();
   unsigned int iEpgCount                  = size();
   bool bUpdateSuccess                     = true;
-  CGUIDialogPVRUpdateProgressBar *scanner = NULL;
+  CGUIDialogExtendedProgressBar *progress = NULL;
 
   if (!m_bDatabaseLoaded)
     CLog::Log(LOGNOTICE, "EpgContainer - %s - loading EPG entries for %i tables from the database",
@@ -281,9 +281,9 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   /* show the progress bar */
   if (bShowProgress)
   {
-    scanner = (CGUIDialogPVRUpdateProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EPG_SCAN);
-    scanner->Show();
-    scanner->SetHeader(g_localizeStrings.Get(19004));
+    progress = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+    progress->Show();
+    progress->SetHeader(g_localizeStrings.Get(19004));
   }
 
   /* load or update all EPG tables */
@@ -303,9 +303,9 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     if (bShowProgress)
     {
       /* update the progress bar */
-      scanner->SetProgress(iEpgPtr, iEpgCount);
-      scanner->SetTitle(at(iEpgPtr)->Name());
-      scanner->UpdateState();
+      progress->SetProgress(iEpgPtr, iEpgCount);
+      progress->SetTitle(at(iEpgPtr)->Name());
+      progress->UpdateState();
     }
   }
 
@@ -319,7 +319,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   m_database.Close();
 
   if (bShowProgress)
-    scanner->Close();
+    progress->Close();
 
   long lUpdateTime = CTimeUtils::GetTimeMS() - iStartTime;
   CLog::Log(LOGINFO, "EpgContainer - %s - finished %s the EPG after %li.%li seconds",

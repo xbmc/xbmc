@@ -7,8 +7,7 @@ SRCS=GUIDialogPVRChannelManager.cpp \
 	GUIDialogPVRGuideOSD.cpp \
 	GUIDialogPVRGuideSearch.cpp \
 	GUIDialogPVRRecordingInfo.cpp \
-	GUIDialogPVRTimerSettings.cpp \
-	GUIDialogPVRUpdateProgressBar.cpp
+	GUIDialogPVRTimerSettings.cpp
 
 LIB=pvrdialogs.a
 
