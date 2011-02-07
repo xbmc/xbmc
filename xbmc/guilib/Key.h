@@ -374,7 +374,7 @@
 #define WINDOW_MUSIC_PLAYLIST_EDITOR      10503
 
 // PVR related Window and Dialog ID's
-#define WINDOW_TV                         10600
+#define WINDOW_PVR                        10600
 #define WINDOW_DIALOG_PVR_GUIDE_INFO      10601
 #define WINDOW_DIALOG_PVR_RECORDING_INFO  10602
 #define WINDOW_DIALOG_PVR_TIMER_SETTING   10603

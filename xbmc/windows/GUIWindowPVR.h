@@ -21,7 +21,7 @@
  *
  */
 
-#include "windows/GUIMediaWindow.h"
+#include "GUIMediaWindow.h"
 #include "pvr/PVREpgSearchFilter.h"
 #include "pvr/PVREpgContainer.h"
 
@@ -38,11 +38,11 @@ enum TVWindow
   TV_WINDOW_SEARCH          = 6
 };
 
-class CGUIWindowTV : public CGUIMediaWindow
+class CGUIWindowPVR : public CGUIMediaWindow
 {
 public:
-  CGUIWindowTV(void);
-  virtual ~CGUIWindowTV(void);
+  CGUIWindowPVR(void);
+  virtual ~CGUIWindowPVR(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
   virtual void OnWindowLoaded();

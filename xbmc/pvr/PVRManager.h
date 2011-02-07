@@ -26,7 +26,7 @@
 #include "addons/PVRClient.h"
 #include "addons/AddonManager.h"
 #include "threads/Thread.h"
-#include "guilib/GUIWindowTV.h"
+#include "windows/GUIWindowPVR.h"
 
 #include <vector>
 #include <deque>

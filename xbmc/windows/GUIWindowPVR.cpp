@@ -24,8 +24,8 @@
 #include "filesystem/File.h"
 #include "filesystem/StackDirectory.h"
 #include "settings/GUISettings.h"
-#include "GUIWindowManager.h"
-#include "LocalizeStrings.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
 #include "pictures/Picture.h"
 #include "settings/Settings.h"
@@ -46,10 +46,10 @@
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "GUIUserMessages.h"
-#include "GUIEPGGridContainer.h"
+#include "guilib/GUIEPGGridContainer.h"
 
 /* self include */
-#include "GUIWindowTV.h"
+#include "GUIWindowPVR.h"
 
 /* TV control */
 #include "pvr/PVRManager.h"
@@ -85,7 +85,7 @@ using namespace std;
 /**
  * \brief Class constructor
  */
-CGUIWindowTV::CGUIWindowTV(void) : CGUIMediaWindow(WINDOW_TV, "MyTV.xml")
+CGUIWindowPVR::CGUIWindowPVR(void) : CGUIMediaWindow(WINDOW_PVR, "MyTV.xml")
 {
   m_iCurrSubTVWindow              = TV_WINDOW_UNKNOWN;
   m_iSavedSubTVWindow             = TV_WINDOW_UNKNOWN;
@@ -109,11 +109,11 @@ CGUIWindowTV::CGUIWindowTV(void) : CGUIMediaWindow(WINDOW_TV, "MyTV.xml")
   m_iSortMethod_TIMERS            = SORT_METHOD_DATE;
 }
 
-CGUIWindowTV::~CGUIWindowTV()
+CGUIWindowPVR::~CGUIWindowPVR()
 {
 }
 
-bool CGUIWindowTV::OnMessage(CGUIMessage& message)
+bool CGUIWindowPVR::OnMessage(CGUIMessage& message)
 {
   unsigned int iControl = 0;
   unsigned int iMessage = message.GetMessage();
@@ -614,7 +614,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
-bool CGUIWindowTV::OnAction(const CAction &action)
+bool CGUIWindowPVR::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_PREVIOUS_MENU)
   {
@@ -633,7 +633,7 @@ bool CGUIWindowTV::OnAction(const CAction &action)
   return CGUIMediaWindow::OnAction(action);
 }
 
-void CGUIWindowTV::OnWindowLoaded()
+void CGUIWindowPVR::OnWindowLoaded()
 {
   CGUIMediaWindow::OnWindowLoaded();
   m_viewControl.Reset();
@@ -648,7 +648,7 @@ void CGUIWindowTV::OnWindowLoaded()
   m_viewControl.AddView(GetControl(CONTROL_LIST_SEARCH));
 }
 
-void CGUIWindowTV::OnWindowUnload()
+void CGUIWindowPVR::OnWindowUnload()
 {
   /* Save current Subwindow selected list position */
   if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
@@ -675,7 +675,7 @@ void CGUIWindowTV::OnWindowUnload()
   return;
 }
 
-void CGUIWindowTV::OnInitWindow()
+void CGUIWindowPVR::OnInitWindow()
 {
   /* Make sure we have active running clients, otherwise return to
    * Previous Window.
@@ -714,7 +714,7 @@ void CGUIWindowTV::OnInitWindow()
   return;
 }
 
-void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
+void CGUIWindowPVR::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   /* Check file item is in list range and get his pointer */
   if (itemNumber < 0 || itemNumber >= (int)m_vecItems->Size()) return;
@@ -877,7 +877,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
   }
 }
 
-bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
+bool CGUIWindowPVR::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   /* Check file item is in list range and get his pointer */
   if (itemNumber < 0 || itemNumber >= (int)m_vecItems->Size()) return false;
@@ -1404,7 +1404,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
-void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
+void CGUIWindowPVR::ShowEPGInfo(CFileItem *item)
 {
   /* Check item is TV epg or channel information tag */
   if (item->IsEPG())
@@ -1444,15 +1444,15 @@ void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
     pDlgInfo->DoModal();
   }
   else
-    CLog::Log(LOGERROR, "CGUIWindowTV: Can't open programme info dialog, no epg or channel info tag!");
+    CLog::Log(LOGERROR, "CGUIWindowPVR: Can't open programme info dialog, no epg or channel info tag!");
 }
 
-void CGUIWindowTV::ShowRecordingInfo(CFileItem *item)
+void CGUIWindowPVR::ShowRecordingInfo(CFileItem *item)
 {
   /* Check item is TV record information tag */
   if (!item->IsPVRRecording())
   {
-    CLog::Log(LOGERROR, "CGUIWindowTV: Can't open recording info dialog, no record info tag!");
+    CLog::Log(LOGERROR, "CGUIWindowPVR: Can't open recording info dialog, no record info tag!");
     return;
   }
 
@@ -1472,12 +1472,12 @@ void CGUIWindowTV::ShowRecordingInfo(CFileItem *item)
   return;
 }
 
-bool CGUIWindowTV::ShowTimerSettings(CFileItem *item)
+bool CGUIWindowPVR::ShowTimerSettings(CFileItem *item)
 {
   /* Check item is TV timer information tag */
   if (!item->IsPVRTimer())
   {
-    CLog::Log(LOGERROR, "CGUIWindowTV: Can't open timer settings dialog, no timer info tag!");
+    CLog::Log(LOGERROR, "CGUIWindowPVR: Can't open timer settings dialog, no timer info tag!");
     return false;
   }
 
@@ -1497,7 +1497,7 @@ bool CGUIWindowTV::ShowTimerSettings(CFileItem *item)
   return pDlgInfo->GetOK();
 }
 
-void CGUIWindowTV::ShowGroupManager(bool IsRadio)
+void CGUIWindowPVR::ShowGroupManager(bool IsRadio)
 {
   /* Load group manager dialog */
   CGUIDialogPVRGroupManager* pDlgInfo = (CGUIDialogPVRGroupManager*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GROUP_MANAGER);
@@ -1513,7 +1513,7 @@ void CGUIWindowTV::ShowGroupManager(bool IsRadio)
   return;
 }
 
-void CGUIWindowTV::ShowSearchResults()
+void CGUIWindowPVR::ShowSearchResults()
 {
   /* Load timer settings dialog */
   CGUIDialogPVRGuideSearch* pDlgInfo = (CGUIDialogPVRGuideSearch*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_SEARCH);
@@ -1535,7 +1535,7 @@ void CGUIWindowTV::ShowSearchResults()
   return;
 }
 
-void CGUIWindowTV::UpdateGuide()
+void CGUIWindowPVR::UpdateGuide()
 {
   CPVRChannel CurrentChannel;
   g_PVRManager.GetCurrentChannel(&CurrentChannel);
@@ -1619,7 +1619,7 @@ void CGUIWindowTV::UpdateGuide()
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, g_localizeStrings.Get(19029));
 }
 
-void CGUIWindowTV::UpdateChannelsTV()
+void CGUIWindowPVR::UpdateChannelsTV()
 {
   m_vecItems->Clear();
   m_viewControl.SetCurrentView(CONTROL_LIST_CHANNELS_TV);
@@ -1654,7 +1654,7 @@ void CGUIWindowTV::UpdateChannelsTV()
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_PVRChannelGroups.GetTV()->GetGroupName(m_iCurrentTVGroup));
 }
 
-void CGUIWindowTV::UpdateChannelsRadio()
+void CGUIWindowPVR::UpdateChannelsRadio()
 {
   m_vecItems->Clear();
   m_viewControl.SetCurrentView(CONTROL_LIST_CHANNELS_RADIO);
@@ -1689,7 +1689,7 @@ void CGUIWindowTV::UpdateChannelsRadio()
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_PVRChannelGroups.GetRadio()->GetGroupName(m_iCurrentRadioGroup));
 }
 
-void CGUIWindowTV::UpdateRecordings()
+void CGUIWindowPVR::UpdateRecordings()
 {
   m_vecItems->Clear();
   m_viewControl.SetCurrentView(CONTROL_LIST_RECORDINGS);
@@ -1701,7 +1701,7 @@ void CGUIWindowTV::UpdateRecordings()
   SET_CONTROL_LABEL(CONTROL_LABELGROUP, "");
 }
 
-void CGUIWindowTV::UpdateTimers()
+void CGUIWindowPVR::UpdateTimers()
 {
   m_vecItems->Clear();
   m_viewControl.SetCurrentView(CONTROL_LIST_TIMERS);
@@ -1715,7 +1715,7 @@ void CGUIWindowTV::UpdateTimers()
   SET_CONTROL_LABEL(CONTROL_LABELGROUP, "");
 }
 
-void CGUIWindowTV::UpdateSearch()
+void CGUIWindowPVR::UpdateSearch()
 {
   m_vecItems->Clear();
   m_viewControl.SetCurrentView(CONTROL_LIST_SEARCH);
@@ -1764,7 +1764,7 @@ void CGUIWindowTV::UpdateSearch()
   SET_CONTROL_LABEL(CONTROL_LABELGROUP, "");
 }
 
-void CGUIWindowTV::UpdateButtons()
+void CGUIWindowPVR::UpdateButtons()
 {
   if (m_iGuideView == GUIDE_VIEW_CHANNEL)
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029));
@@ -1776,7 +1776,7 @@ void CGUIWindowTV::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19032));
 }
 
-void CGUIWindowTV::UpdateData(TVWindow update)
+void CGUIWindowPVR::UpdateData(TVWindow update)
 {
   if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM && update == TV_WINDOW_TV_PROGRAM)
   {
@@ -1794,7 +1794,7 @@ void CGUIWindowTV::UpdateData(TVWindow update)
   UpdateButtons();
 }
 
-bool CGUIWindowTV::PlayFile(CFileItem *item, bool playMinimized)
+bool CGUIWindowPVR::PlayFile(CFileItem *item, bool playMinimized)
 {
   if (playMinimized)
   {
@@ -1857,7 +1857,7 @@ bool CGUIWindowTV::PlayFile(CFileItem *item, bool playMinimized)
       }
       else
       {
-        CLog::Log(LOGERROR, "CGUIWindowTV: Can't open recording, no valid filename!");
+        CLog::Log(LOGERROR, "CGUIWindowPVR: Can't open recording, no valid filename!");
         CGUIDialogOK::ShowAndGetInput(19033,0,19036,0);
         return false;
       }

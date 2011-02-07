@@ -117,7 +117,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId==WINDOW_VIDEO_PLAYLIST)
     return new CGUIViewStateWindowVideoPlaylist(items);
 
-  if (windowId==WINDOW_TV)
+  if (windowId==WINDOW_PVR)
     return new CGUIViewStateWindowPVR(items);
 
   if (windowId==WINDOW_PICTURES)

@@ -48,7 +48,7 @@ CGUIViewStateWindowPVR::CGUIViewStateWindowPVR(const CFileItemList& items) : CGU
     SetViewAsControl(g_settings.m_viewStateVideoFiles.m_viewMode);
     SetSortOrder(g_settings.m_viewStateVideoFiles.m_sortOrder);
   }
-  LoadViewState(items.m_strPath, WINDOW_TV);
+  LoadViewState(items.m_strPath, WINDOW_PVR);
 }
 
 bool CGUIViewStateWindowPVR::AutoPlayNextItem()

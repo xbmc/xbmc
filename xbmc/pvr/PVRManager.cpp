@@ -229,7 +229,7 @@ void CPVRManager::StopThreads()
 
 void CPVRManager::UpdateWindow(TVWindow window)
 {
-  CGUIWindowTV *pTVWin = (CGUIWindowTV *) g_windowManager.GetWindow(WINDOW_TV);
+  CGUIWindowPVR *pTVWin = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
   if (pTVWin)
     pTVWin->UpdateData(window);
 }
