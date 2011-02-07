@@ -73,6 +73,7 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_freeOnDrain       = (options & AESTREAM_FREE_ON_DRAIN) != 0;
   m_ownsPostProc      = (options & AESTREAM_OWNS_POST_PROC) != 0;
   m_forceResample     = (options & AESTREAM_FORCE_RESAMPLE) != 0;
+  m_paused            = (options & AESTREAM_PAUSED) != 0;
 
   Initialize();
 }

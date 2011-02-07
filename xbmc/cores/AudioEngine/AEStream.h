@@ -30,7 +30,8 @@
 enum AEStreamOptions {
   AESTREAM_FREE_ON_DRAIN  = 0x01, /* auto free the stream when it has drained */
   AESTREAM_OWNS_POST_PROC = 0x02, /* free postproc filters on stream free */
-  AESTREAM_FORCE_RESAMPLE = 0x04  /* force resample even if rates match */
+  AESTREAM_FORCE_RESAMPLE = 0x04, /* force resample even if rates match */
+  AESTREAM_PAUSED         = 0x08  /* create the stream paused */
 };
 
 class IAEPostProc;
