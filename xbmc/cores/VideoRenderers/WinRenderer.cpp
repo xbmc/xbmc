@@ -187,8 +187,6 @@ bool CWinRenderer::UpdateRenderMethod()
     if (!m_dllSwScale->Load())
       CLog::Log(LOGERROR,"CDVDDemuxFFmpeg::Open - failed to load ffmpeg libraries");
 
-    m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-
     if(!m_SWTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_DYNAMIC, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT))
     {
       CLog::Log(LOGNOTICE, __FUNCTION__": Failed to create sw render target.");
