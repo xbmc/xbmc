@@ -503,7 +503,7 @@ void CSoftAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 bool CSoftAE::SupportsRaw()
 {
   /* if we are going to encode, we dont do raw */
-  if (m_passthrough)
+  if (m_passthrough && !m_streams.empty())
     return false;
 
   return true;
