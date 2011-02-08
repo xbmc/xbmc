@@ -838,6 +838,7 @@ void CSoftAE::Run()
         m_playing_sounds.pop_front();
         ss->owner->ReleaseSamples();
       }
+      lock.Leave();
 
       /* re-open the sink, and drop the frame */
       OpenSink();
