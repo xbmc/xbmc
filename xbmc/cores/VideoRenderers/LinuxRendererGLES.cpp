@@ -41,6 +41,7 @@
 #include "guilib/Texture.h"
 #include "lib/DllSwScale.h"
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
+#include "threads/SingleLock.h"
 
 using namespace Shaders;
 
