@@ -21,6 +21,7 @@
 
 
 #include "AEWrapper.h"
+#include "AESoundWrapper.h"
 
 CAEWrapper AE;
 
@@ -47,12 +48,20 @@ bool CAEWrapper::SetEngine(IAE *ae)
   /* shutdown the old engine */
   if (m_ae)
   {
+    /* unload any sounds */
+    for(std::list<CAESoundWrapper*>::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
+      (*itt)->UnLoad();
+
     delete m_ae;
     m_ae = NULL;
   }
 
   if (ae && ae->Initialize())
       m_ae = ae;
+
+  /* reload any sounds */
+  for(std::list<CAESoundWrapper*>::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
+    (*itt)->Load();
   
   m_lock.LeaveExclusive();  
   return (m_ae != NULL);
@@ -109,9 +118,11 @@ IAEStream* CAEWrapper::AlterStream(IAEStream *stream, enum AEDataFormat dataForm
 
 IAESound* CAEWrapper::GetSound(CStdString file)
 {
-  IAESound *s = NULL;
+  CAESoundWrapper *s = NULL;
+
   m_lock.EnterShared();
-  if (m_ae) s = m_ae->GetSound(file);
+  s = new CAESoundWrapper(file);
+  m_sounds.push_back(s);
   m_lock.LeaveShared();
 
   return s;
@@ -120,7 +131,16 @@ IAESound* CAEWrapper::GetSound(CStdString file)
 void CAEWrapper::FreeSound(IAESound *sound)
 {
   m_lock.EnterShared();
-  if (m_ae) m_ae->FreeSound(sound);
+
+  ((CAESoundWrapper*)sound)->UnLoad();
+  for(std::list<CAESoundWrapper*>::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
+    if (*itt == sound)
+    {
+      m_sounds.erase(itt);
+      break;
+    }
+  delete (CAESoundWrapper*)sound;
+
   m_lock.LeaveShared();
 }
 

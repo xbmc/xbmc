@@ -21,20 +21,12 @@
  */
 
 #include <list>
-#include <map>
 
 #include "system.h"
 #include "threads/SharedSection.h"
 
 #include "AE.h"
-#include "AEAudioFormat.h"
-#include "AEStream.h"
-#include "AESound.h"
-
-/* forward declarations */
-class IAEStream;
-class IAESound;
-class IAEPacketizer;
+#include "AESoundWrapper.h"
 
 /**
  * CAEWrapper class
@@ -69,6 +61,8 @@ public:
 private:
   CSharedSection m_lock;
   IAE *m_ae;
+
+  std::list<CAESoundWrapper*> m_sounds;
 };
 
 extern CAEWrapper AE;
