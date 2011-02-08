@@ -30,8 +30,8 @@
 #include "utils/log.h"
 #include "Application.h"
 
-#include "pvr/PVREpg.h"
-#include "pvr/PVREpgInfoTag.h"
+#include "pvr/epg/PVREpg.h"
+#include "pvr/epg/PVREpgInfoTag.h"
 
 using namespace std;
 

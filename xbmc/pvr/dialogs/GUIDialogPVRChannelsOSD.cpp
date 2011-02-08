@@ -29,7 +29,7 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/PVRChannelGroupsContainer.h"
-#include "pvr/PVREpg.h"
+#include "pvr/epg/PVREpg.h"
 #include "pvr/PVRTimerInfoTag.h"
 
 using namespace std;

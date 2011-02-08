@@ -77,7 +77,7 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/PVRChannelGroupsContainer.h"
-#include "pvr/PVREpgInfoTag.h"
+#include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/PVRTimerInfoTag.h"
 
 #include "addons/AddonManager.h"

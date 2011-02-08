@@ -29,7 +29,7 @@
 #include "GUIInfoManager.h"
 #include "LocalizeStrings.h"
 
-#include "pvr/PVREpgInfoTag.h"
+#include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/PVRChannel.h"
 
 #define SHORTGAP     5 // how many blocks is considered a short-gap in nav logic

@@ -20,9 +20,9 @@
  */
 
 #include "PVREpgContainer.h"
-#include "PVRManager.h"
-#include "PVRChannelGroupsContainer.h"
-#include "PVRTimerInfoTag.h"
+#include "pvr/PVRManager.h"
+#include "pvr/PVRChannelGroupsContainer.h"
+#include "pvr/PVRTimerInfoTag.h"
 
 using namespace std;
 

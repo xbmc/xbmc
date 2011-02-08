@@ -27,9 +27,9 @@
 #include "music/tags/MusicInfoTag.h"
 
 #include "PVRChannelGroupsContainer.h"
-#include "PVREpgContainer.h"
-#include "PVREpg.h"
-#include "PVREpgInfoTag.h"
+#include "epg/PVREpgContainer.h"
+#include "epg/PVREpg.h"
+#include "epg/PVREpgInfoTag.h"
 #include "PVRDatabase.h"
 #include "PVRManager.h"
 

@@ -20,11 +20,11 @@
  */
 
 #include "guilib/LocalizeStrings.h"
-#include "TextSearch.h"
+#include "utils/TextSearch.h"
 
 #include "PVREpgSearchFilter.h"
 #include "PVREpgInfoTag.h"
-#include "PVRChannel.h"
+#include "pvr/PVRChannel.h"
 
 using namespace std;
 

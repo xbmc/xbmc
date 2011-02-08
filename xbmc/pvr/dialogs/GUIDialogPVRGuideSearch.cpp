@@ -27,7 +27,7 @@
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
 
-#include "pvr/PVREpgSearchFilter.h"
+#include "pvr/epg/PVREpgSearchFilter.h"
 #include "pvr/PVRChannelGroupsContainer.h"
 
 using namespace std;

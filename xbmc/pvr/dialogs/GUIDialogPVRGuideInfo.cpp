@@ -26,7 +26,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 
 #include "pvr/PVRChannelGroupsContainer.h"
-#include "pvr/PVREpgInfoTag.h"
+#include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/PVRTimers.h"
 #include "pvr/PVRTimerInfoTag.h"
 

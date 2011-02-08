@@ -21,12 +21,12 @@
 
 #include "settings/GUISettings.h"
 #include "threads/SingleLock.h"
-#include "log.h"
-#include "TimeUtils.h"
+#include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 #include "PVREpg.h"
-#include "PVRChannel.h"
-#include "PVRManager.h"
+#include "pvr/PVRChannel.h"
+#include "pvr/PVRManager.h"
 
 #include "epg/EpgContainer.h"
 #include "epg/EpgDatabase.h"

@@ -5,10 +5,6 @@ SRCS=PVRChannel.cpp \
 	PVRChannelGroupInternal.cpp \
 	PVRChannelGroups.cpp \
 	PVRChannelGroupsContainer.cpp \
-	PVREpg.cpp \
-	PVREpgInfoTag.cpp \
-	PVREpgContainer.cpp \
-	PVREpgSearchFilter.cpp \
 	PVRManager.cpp \
 	PVRRecordings.cpp \
 	PVRTimerInfoTag.cpp \

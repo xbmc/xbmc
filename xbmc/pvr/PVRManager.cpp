@@ -43,7 +43,7 @@
 
 #include "PVRManager.h"
 #include "PVRChannelGroupsContainer.h"
-#include "PVREpgInfoTag.h"
+#include "epg/PVREpgInfoTag.h"
 #include "PVRTimerInfoTag.h"
 
 using namespace std;
