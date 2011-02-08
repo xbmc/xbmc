@@ -580,6 +580,7 @@ OBJSXBMC=	\
 	xbmc/powermanagement/powermanagement.a \
 	xbmc/storage/storage.a \
 	xbmc/threads/threads.a \
+	xbmc/windows/windows.a \
 	xbmc/interfaces/python/xbmcmodule/xbmcmodule.a \
 	xbmc/network/libscrobbler/scrobbler.a \
 	lib/libRTV/librtv-@ARCH@.a \
@@ -657,7 +658,6 @@ DYNOBJSXBMC= \
 	xbmc/cores/DllLoader/exports/exports.a \
 	xbmc/settings/settings.a \
 	xbmc/video/video.a \
-	xbmc/windows/windows.a \
 	xbmc/guilib/guilib.a # must be dynamic to avoid linker errors
 
 ifeq (arm, $(ARCH))
