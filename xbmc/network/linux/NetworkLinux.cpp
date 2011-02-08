@@ -30,11 +30,17 @@
 #endif
 #include <errno.h>
 #include <resolv.h>
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
+#if defined(TARGET_DARWIN)
   #include <sys/sockio.h>
   #include <net/if.h>
   #include <net/if_dl.h>
   #include <ifaddrs.h>
+#elif defined(TARGET_FREEBSD)
+  #include <sys/sockio.h>
+  #include <net/if.h>
+  #include <net/if_dl.h>
+  #include <ifaddrs.h>
+  #include <net/route.h>
 #else
   #include <net/if_arp.h>
 #endif
@@ -183,7 +189,48 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
     }
     pclose(pipe);
   }
-#elif !defined(TARGET_FREEBSD)
+#elif defined(TARGET_FREEBSD)
+   size_t needed;
+   int mib[6];
+   char *buf, *next, *lim;
+   char line[16];
+   struct rt_msghdr *rtm;
+   struct sockaddr *sa;
+   struct sockaddr_in *sockin;
+
+   mib[0] = CTL_NET;
+   mib[1] = PF_ROUTE;
+   mib[2] = 0;
+   mib[3] = 0;
+   mib[4] = NET_RT_DUMP;
+   mib[5] = 0;
+   if (sysctl(mib, 6, NULL, &needed, NULL, 0) < 0)
+      return result;
+
+   if ((buf = (char *)malloc(needed)) == NULL)
+      return result;
+
+   if (sysctl(mib, 6, buf, &needed, NULL, 0) < 0) {
+      free(buf);
+      return result;
+   }
+
+   lim  = buf + needed;
+   for (next = buf; next < lim; next += rtm->rtm_msglen) {
+      rtm = (struct rt_msghdr *)next;
+      sa = (struct sockaddr *)(rtm + 1);
+      sa = (struct sockaddr *)(SA_SIZE(sa) + (char *)sa);	
+      sockin = (struct sockaddr_in *)sa;
+      if (inet_ntop(AF_INET, &sockin->sin_addr.s_addr,
+         line, sizeof(line)) == NULL) {
+            free(buf);
+            return result;
+	  }
+	  result = line;
+      break;
+   }
+   free(buf);
+#else
    FILE* fp = fopen("/proc/net/route", "r");
    if (!fp)
    {
