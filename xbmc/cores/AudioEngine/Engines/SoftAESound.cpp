@@ -41,8 +41,8 @@
 #include "SoftAE.h"
 #include "SoftAESound.h"
 
-/* typecast the global AE to CSoftAE */
-#define AE (*((CSoftAE*)&AE))
+/* typecast AE to CSoftAE */
+#define AE (*(CSoftAE*)AE.GetEngine())
 
 typedef struct
 {

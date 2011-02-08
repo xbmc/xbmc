@@ -1093,7 +1093,7 @@ bool CApplication::Initialize()
   /* window id's 3000 - 3100 are reserved for python */
 
   /* start the audio engine */
-  CAEFactory::Start();
+  CAEFactory::LoadEngine(AE_ENGINE_SOFT);
   SetHardwareVolume(AE.GetVolume());
 
   // Make sure we have at least the default skin
@@ -3295,7 +3295,7 @@ void CApplication::Stop()
     g_Windowing.DestroyWindowSystem();
 
     // shutdown the AudioEngine
-    CAEFactory::Shutdown();
+    CAEFactory::LoadEngine(AE_ENGINE_NULL);
 
     CLog::Log(LOGNOTICE, "stopped");
   }

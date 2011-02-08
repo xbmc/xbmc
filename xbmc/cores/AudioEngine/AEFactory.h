@@ -20,23 +20,21 @@
  *
  */
 
-#include "AE.h"
+#include "AEWrapper.h"
 #include "threads/Thread.h"
 
-class IAE;
+enum AEEngine
+{
+  AE_ENGINE_NULL ,
+  AE_ENGINE_SOFT ,
+  AE_ENGINE_PULSE
+};
+
+class CAEWrapper;
 class CAEFactory
 {
 public:
-  static IAE &GetAE();
-  static bool Start();
-  static void Shutdown();
-
-  /* use this to restart the engine (eg, switch from CSoftAE to CPulseAE) */
-  static bool Restart();
+  static bool LoadEngine(enum AEEngine engine);
 private:
-  static IAE *m_ae;
-  static bool m_ready;
 };
-
-static IAE &AE = CAEFactory::GetAE();
 

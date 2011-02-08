@@ -22,58 +22,15 @@
 #include "Engines/SoftAE.h"
 #include "Engines/PulseAE.h"
 
-IAE     *CAEFactory::m_ae       = NULL;
-bool     CAEFactory::m_ready    = false;
-
-IAE& CAEFactory::GetAE()
+bool CAEFactory::LoadEngine(enum AEEngine engine)
 {
-  if (m_ae)
-    return *m_ae;
-
-#ifdef HAS_PULSEAUDIO
-  //m_ae = (IAE*)new CPulseAE();
-#endif
-
-  /* CSoftAE - this should always be the fallback */
-  if (m_ae == NULL)
-    m_ae = (IAE*)new CSoftAE();
-
-  return *m_ae;
-}
-
-/*
-  We cant just initialize instantly as guisettings need loading first
-  CApplication will call this when its ready 
-*/
-bool CAEFactory::Start()
-{
-  m_ready = true;
-  if (!AE.Initialize())
+  switch(engine)
   {
-    Shutdown();
-    return false;
+    case AE_ENGINE_NULL : return AE.SetEngine(NULL);
+    case AE_ENGINE_SOFT : return AE.SetEngine(new CSoftAE ());
+    case AE_ENGINE_PULSE: return AE.SetEngine(new CPulseAE());
   }
 
-  return true;
-}
-
-void CAEFactory::Shutdown()
-{
-  if (!m_ae)
-    return;
-
-  /* destruct the engine */
-  delete m_ae;
-  m_ae = NULL;
-}
-
-bool CAEFactory::Restart()
-{
-  Shutdown();
-  GetAE();
-  if (m_ready)
-    return Start();
-
-  return true;
+  return false;
 }
 
