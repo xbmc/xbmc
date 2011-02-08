@@ -6,11 +6,56 @@
       <posy>0</posy>
       <width>1280</width>
       <height>720</height>
-      <texture>NowPlayingBG.png</texture>  
+      <texture>TemporarySearchBackground.png</texture>  
     </control>
+    
+    <!-- Background & overlays -->
+    <include>Background</include>
+    <control type="group">
+      <include>BackgroundOverlayFade</include>
+      <control type="image">
+  			<description>Background Overlay</description>
+  			<include>FullScreenOverlayDims</include>
+  			<texture>FullScreenOverlay.png</texture>
+  		</control>
+    </control>
+
+    <!-- Top title -->
+    <control type="group">
+      <include>TopOverlayTitlePos</include>
+      <include>TopOverlayFirstTitleAreaBG</include>
+      <control type="label">
+        <description>Videos label</description>
+        <include>TopOverlayFirstTitleAreaText</include>
+        <label>Search</label>
+      </control>
+    </control>
+    
+    <!-- Clock -->
+    <control type="group">
+      <include>Clock</include>
+    </control>
+    
+    <!-- Loading indicator -->
+    <control type="group">
+      <posx>32</posx>
+      <posy>656</posy>
+      <control type="image">
+        <texture>ActivityIndicator.gif</texture>
+        <width>32</width>
+        <height>32</height>
+      </control>
+      <control type="label">
+        <label>Searching...</label>
+        <posx>48</posx>
+        <posy>6</posy>
+      </control>
+    </control>
+    
+    <!-- Keyboard & text field -->
 		<control type="group">
 			<posx>20</posx>
-			<posy>20</posy>
+			<posy>50</posy>
 			<control type="label" id="310">
 				<posx>10</posx>
 				<posy>0</posy>
@@ -586,9 +631,9 @@
 			<control type="group" id="5000">
 				<visible>true</visible>
 				<posx>350</posx>
-				<posy>10</posy>
+				<posy>50</posy>
 				<width>880</width>
-				<height>660</height>
+				<height>640</height>
 				
 				<control type="image">
 					<visible>false</visible>
