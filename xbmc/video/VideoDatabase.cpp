@@ -3453,6 +3453,18 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
         }
       }
     }
+    if (iVersion < 45)
+    {
+      m_pDS->exec("ALTER table movie add c22 text");
+      m_pDS->exec("ALTER table episode add c22 text");
+      m_pDS->exec("ALTER table musicvideo add c22 text");
+      m_pDS->exec("ALTER table tvshow add c22 text");
+      // Now update our tables
+      UpdateBasePath("movie", "idMovie", VIDEODB_ID_BASEPATH);
+      UpdateBasePath("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH);
+      UpdateBasePath("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH);
+      UpdateBasePath("tvshow", "idShow", VIDEODB_ID_TV_BASEPATH, true);
+    }
   }
   catch (...)
   {
@@ -3462,6 +3474,45 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
   }
   CommitTransaction();
   return true;
+}
+
+void CVideoDatabase::UpdateBasePath(const char *table, const char *id, int column, bool shows)
+{
+  CStdString query;
+  if (shows)
+    query = PrepareSQL("SELECT idShow,path.strPath from tvshowlinkpath join path on tvshowlinkpath.idPath=path.idPath");
+  else
+    query = PrepareSQL("SELECT %s.%s,path.strPath,files.strFileName from %s join files on %s.idFile=files.idFile join path on files.idPath=path.idPath", table, id, table, table);
+
+  map<CStdString, bool> paths;
+  m_pDS2->query(query.c_str());
+  while (!m_pDS2->eof())
+  {
+    CStdString path(m_pDS2->fv(1).get_asString());
+    map<CStdString, bool>::iterator i = paths.find(path);
+    if (i == paths.end())
+    {
+      SScanSettings settings;
+      bool foundDirectly = false;
+      ScraperPtr scraper = GetScraperForPath(path, settings, foundDirectly);
+      if (scraper && scraper->Content() == CONTENT_TVSHOWS && !shows)
+        paths.insert(make_pair(path, false)); // episodes
+      else
+        paths.insert(make_pair(path, settings.parent_name_root)); // shows, movies, musicvids
+      i = paths.find(path);
+    }
+    CStdString filename;
+    if (!shows)
+      ConstructPath(filename, path, m_pDS2->fv(2).get_asString());
+    else
+      filename = path;
+    CFileItem item(filename, shows);
+    path = item.GetBaseMoviePath(i->second);
+    CStdString sql = PrepareSQL("UPDATE %s set c%02d='%s' where %s.%s=%i", table, column, path.c_str(), table, id, m_pDS2->fv(0).get_asInt());
+    m_pDS->exec(sql.c_str());
+    m_pDS2->next();
+  }
+  m_pDS2->close();
 }
 
 int CVideoDatabase::GetPlayCount(const CFileItem &item)
@@ -7361,7 +7412,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
           CVideoInfoTag info;
           info.Load(episode);
           CFileItem item(info);
-          scanner.AddVideo(&item,CONTENT_TVSHOWS,showID);
+          scanner.AddVideo(&item,CONTENT_TVSHOWS,false,showID);
           SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
           CStdString file;
           file.Format("s%02ie%02i.tbn", info.m_iSeason, info.m_iEpisode);
