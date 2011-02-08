@@ -285,6 +285,7 @@ CAddon::CAddon(const cp_extension_t *ext)
   BuildProfilePath();
   URIUtils::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_enabled = true;
+  m_hasSettings = true;
   m_hasStrings = false;
   m_checkedStrings = false;
   m_settingsLoaded = false;
@@ -300,6 +301,7 @@ CAddon::CAddon(const AddonProps &props)
   BuildProfilePath();
   URIUtils::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_enabled = true;
+  m_hasSettings = true;
   m_hasStrings = false;
   m_checkedStrings = false;
   m_settingsLoaded = false;
@@ -314,6 +316,7 @@ CAddon::CAddon(const CAddon &rhs, const AddonPtr &parent)
   m_addonXmlDoc = rhs.m_addonXmlDoc;
   m_settingsLoaded = rhs.m_settingsLoaded;
   m_userSettingsLoaded = rhs.m_userSettingsLoaded;
+  m_hasSettings = rhs.m_hasSettings;
   BuildProfilePath();
   URIUtils::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_strLibName  = rhs.m_strLibName;
@@ -450,13 +453,15 @@ bool CAddon::LoadSettings()
 {
   if (m_settingsLoaded)
     return true;
-
+  if (!m_hasSettings)
+    return false;
   CStdString addonFileName = URIUtils::AddFileToFolder(m_props.path, "resources/settings.xml");
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
     if (CFile::Exists(addonFileName))
       CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", addonFileName.c_str(), m_addonXmlDoc.ErrorRow(), m_addonXmlDoc.ErrorDesc());
+    m_hasSettings = false;
     return false;
   }
 

@@ -1650,6 +1650,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --disable-ffserver \
       --disable-ffmpeg \
       --enable-shared \
+      --disable-doc \
       --disable-decoder=mpeg_xvmc \
       --enable-postproc \
       --enable-gpl \
@@ -1686,6 +1687,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --disable-ffserver \
       --disable-ffmpeg \
       --enable-shared \
+      --disable-doc \
       --enable-postproc \
       --enable-gpl \
       `if test "x$use_vdpau" != "xno"; then echo --enable-vdpau; else echo --disable-vdpau; fi` \

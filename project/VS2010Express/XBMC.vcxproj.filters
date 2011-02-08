@@ -4923,7 +4923,7 @@
     <ClInclude Include="..\..\xbmc\addons\AddonInstaller.h">
       <Filter>addons</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\ffmpeg\libavutil\avconfig.h">
+    <ClInclude Include="..\..\lib\ffmpeg\include-xbmc-win32\libavutil\avconfig.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
   </ItemGroup>
