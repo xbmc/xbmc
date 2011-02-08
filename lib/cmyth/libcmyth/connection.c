@@ -365,7 +365,13 @@ cmyth_conn_connect(char *server, unsigned short port, unsigned buflen,
 		tmp_ver = conn->conn_version;
 	conn->conn_version = tmp_ver;
 
-	if (tmp_ver >= 62) {
+	/*
+	 * Myth 0.23.1 (Myth 0.23 + fixes) introduced an out of sequence protocol version number (23056)
+	 * due to the next protocol version number having already been bumped in trunk.
+	 *
+	 * http://www.mythtv.org/wiki/Myth_Protocol
+	 */
+	if (tmp_ver >= 62 && tmp_ver != 23056) { // Treat protocol version number 23056 the same as protocol 56
 		myth_protomap_t *map = protomap;
 		while (map->version != 0 && map->version != tmp_ver)
 			map++;
@@ -420,6 +426,19 @@ cmyth_conn_connect(char *server, unsigned short port, unsigned buflen,
 			  __FUNCTION__);
 		goto shut;
 	}
+
+	/*
+	 * All of the downstream code in libcmyth assumes a monotonically increasing version number.
+	 * This was not the case for Myth 0.23.1 (0.23 + fixes) where protocol version number 23056
+	 * was used since 57 had already been used in trunk.
+	 *
+	 * Convert from protocol version number 23056 to version number 56 so subsequent code within
+	 * libcmyth uses the same logic for the 23056 protocol as would be used for protocol version 56.
+	 */
+	if (conn->conn_version == 23056) {
+		conn->conn_version = 56;
+	}
+
 	return conn;
 
     shut:
