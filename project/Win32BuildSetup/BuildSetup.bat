@@ -270,7 +270,7 @@ IF %comp%==vs2010 (
   IF %promptlevel%==noprompt (
   goto END
   )
-  SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\BuildLog.htm"
+  SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
   IF NOT EXIST %log% goto END
   
   copy %log% ./buildlog.html > NUL
@@ -278,7 +278,7 @@ IF %comp%==vs2010 (
   set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
   if /I %XBMC_BUILD_ANSWER% NEQ y goto END
   
-  SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\" BuildLog.htm
+  SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\" XBMC.log
   
   start /D%log%
   goto END
