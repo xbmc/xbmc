@@ -248,26 +248,29 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   if (!m_sink)
   {
     /* we failed, set the data format to defaults so the thread does not block */
-    newFormat.m_dataFormat    = (m_rawPassthrough || m_passthrough) ? AE_FMT_U8 : AE_FMT_FLOAT;
-    newFormat.m_channelLayout = m_chLayout;
-    newFormat.m_channelCount  = m_channelCount;
+    newFormat.m_dataFormat    = (m_rawPassthrough || m_passthrough) ? AE_FMT_S16NE : AE_FMT_FLOAT;
+    newFormat.m_channelLayout = CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0);
+    newFormat.m_channelCount  = (m_rawPassthrough || m_passthrough) ? 2 : m_channelCount;
     newFormat.m_sampleRate    = sampleRate;
     newFormat.m_frames        = (sampleRate / 1000) * DELAY_FRAME_TIME;
     newFormat.m_frameSamples  = newFormat.m_frames * newFormat.m_channelCount;
     newFormat.m_frameSize     = (CAEUtil::DataFormatToBits(newFormat.m_dataFormat) >> 3) * newFormat.m_channelCount;
   }
 
-  /* if raw passthrough correct the layout and channel count */
+  /* if raw passthrough correct the layout and channel count and ensure there is no encoder */
   if (m_rawPassthrough)
   {
     m_chLayout     = newFormat.m_channelLayout;
     m_channelCount = newFormat.m_channelCount;
+
+    delete m_encoder;
+    m_encoder = NULL;
   }
 
   m_sinkFormat = newFormat;
 
   CLog::Log(LOGINFO, "CSoftAE::Initialize - %s Initialized:", m_sink ? m_sink->GetName() : "NULL");
-  CLog::Log(LOGINFO, "  Output Device : %s", device.c_str());
+  CLog::Log(LOGINFO, "  Output Device : %s", m_sink ? device.c_str() : "NULL");
   CLog::Log(LOGINFO, "  Sample Rate   : %d", newFormat.m_sampleRate);
   CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(newFormat.m_dataFormat));
   CLog::Log(LOGINFO, "  Channel Count : %d", newFormat.m_channelCount);
@@ -279,8 +282,10 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   m_bufferSamples = 0;
   if (m_rawPassthrough)
   {
-    m_convertFn = NULL;
-    m_buffer    = _aligned_malloc(newFormat.m_frames * newFormat.m_frameSize, 16);     
+    m_convertFn      = NULL;
+    m_buffer         = _aligned_malloc(newFormat.m_frames * newFormat.m_frameSize, 16);
+    m_bytesPerSample = CAEUtil::DataFormatToBits(newFormat.m_dataFormat) >> 3;  
+    m_frameSize      = newFormat.m_frameSize;
   }
   else
   {
@@ -309,10 +314,10 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
       
       CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(stdChLayout));
     }
+
+    m_bytesPerSample = CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3;
+    m_frameSize      = m_bytesPerSample * m_channelCount;
   }
-  
-  m_frameSize      = sizeof(float) * m_channelCount;
-  m_bytesPerSample = CAEUtil::DataFormatToBits(m_rawPassthrough ? newFormat.m_dataFormat : AE_FMT_FLOAT) >> 3;  
   
   /* initialize the final stage remapper */
   m_remap.Initialize(m_chLayout, newFormat.m_channelLayout, true);
