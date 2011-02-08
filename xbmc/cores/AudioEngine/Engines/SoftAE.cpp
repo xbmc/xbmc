@@ -830,6 +830,15 @@ void CSoftAE::Run()
     /* if we are told to restart */
     if (restart)
     {
+      /* stop all playing sounds so that we can re-open */
+      CSingleLock lock(m_soundSampleLock);
+      while(!m_playing_sounds.empty())
+      {
+        SoundState *ss = &(*m_playing_sounds.begin());
+        m_playing_sounds.pop_front();
+        ss->owner->ReleaseSamples();
+      }
+
       /* re-open the sink, and drop the frame */
       OpenSink();
     }
