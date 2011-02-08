@@ -32,7 +32,8 @@ OPTIONS="
 --enable-encoder=ac3 \
 --enable-encoder=aac \
 --enable-runtime-cpudetect \
---disable-debug"
+--disable-debug \
+--disable-doc"
 
 ./configure --extra-cflags="-fno-common -Iinclude-xbmc-win32/dxva2" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
  

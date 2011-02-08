@@ -845,7 +845,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamHTSP.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamHttp.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMemory.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMMS.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.cpp" />
@@ -1127,6 +1126,7 @@
     <ClCompile Include="..\..\xbmc\xbmc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\lib\ffmpeg\include-xbmc-win32\libavutil\avconfig.h" />
     <ClInclude Include="..\..\lib\tinyXML\tinystr.h" />
     <ClInclude Include="..\..\lib\tinyXML\tinyxml.h" />
     <ClInclude Include="..\..\lib\win32\sqlite\sqlite3.h" />
@@ -1738,7 +1738,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamHTSP.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamHttp.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMemory.h" />
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMMS.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.h" />
@@ -1746,7 +1745,6 @@
     <ClInclude Include="..\..\lib\DllAvFormat.h" />
     <ClInclude Include="..\..\lib\DllPostProc.h" />
     <ClInclude Include="..\..\lib\DllSwScale.h" />
-    <ClInclude Include="..\..\lib\ffmpeg\include\libavutil\avconfig.h" />
     <ClInclude Include="..\..\lib\ffmpeg\libavformat\avformat.h" />
     <ClInclude Include="..\..\lib\ffmpeg\libavformat\avio.h" />
     <ClInclude Include="..\..\lib\ffmpeg\libavutil\common.h" />
@@ -1792,7 +1790,6 @@
     <ClInclude Include="..\..\lib\DllTimidity.h" />
     <ClInclude Include="..\..\lib\DllVorbisfile.h" />
     <ClInclude Include="..\..\lib\DllWAVPack.h" />
-    <ClInclude Include="..\..\lib\DllWMA.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DTSCDDACodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DTSCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.h" />
@@ -2048,10 +2045,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\lib\libhts\Win32\libhts_2010.vcxproj">
       <Project>{00700e12-a63b-4e54-b962-4011a90584bd}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\..\lib\win32\libmms_win32\msvc++\libmms.vcxproj">
-      <Project>{3a575cf0-45b3-41cc-85e2-9f9ce8c56b38}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\..\lib\libRTV\libRTV.vcxproj">

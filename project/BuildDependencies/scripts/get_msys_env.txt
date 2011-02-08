@@ -24,3 +24,5 @@ autoconf-2.67-1-msys-1.0.15-bin.tar.lzma				http://downloads.sourceforge.net/pro
 m4-1.4.14-1-msys-1.0.13-bin.tar.lzma					http://downloads.sourceforge.net/project/mingw/MSYS/m4/m4-1.4.14-1/
 ; to get pr.exe
 coreutils-5.97-MSYS-1.0.11-snapshot.tar.bz2				http://www.finalmediaplayer.com/downloads/3rdparty/
+; for xargs.exe
+findutils-4.4.2-2-msys-1.0.13-bin.tar.lzma				http://downloads.sourceforge.net/project/mingw/MSYS/findutils/findutils-4.4.2-2/

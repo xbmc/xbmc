@@ -47,22 +47,18 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
     return false;
 
   char line[1024];
-  char* pLineStart;
+  CStdString strLine;
 
   while (m_pStream->ReadLine(line, sizeof(line)))
   {
-    if ((strlen(line) > 0) && (line[strlen(line) - 1] == '\r'))
-      line[strlen(line) - 1] = 0;
-    pLineStart = line;
+    strLine = line;
+    strLine.Trim();
 
-    // trim
-    while (pLineStart[0] == ' ') pLineStart++;
-
-    if (strlen(pLineStart) > 0)
+    if (strLine.length() > 0)
     {
       char sep;
       int hh1, mm1, ss1, ms1, hh2, mm2, ss2, ms2;
-      int c = sscanf(line, "%d%c%d%c%d%c%d --> %d%c%d%c%d%c%d\n",
+      int c = sscanf(strLine.c_str(), "%d%c%d%c%d%c%d --> %d%c%d%c%d%c%d\n",
                      &hh1, &sep, &mm1, &sep, &ss1, &sep, &ms1,
                      &hh2, &sep, &mm2, &sep, &ss2, &sep, &ms2);
 
@@ -80,18 +76,13 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
 
         while (m_pStream->ReadLine(line, sizeof(line)))
         {
-
-          if ((strlen(line) > 0) && (line[strlen(line) - 1] == '\r'))
-            line[strlen(line) - 1] = 0;
-
-          pLineStart = line;
-          // trim
-          while (pLineStart[0] == ' ') pLineStart++;
+          strLine = line;
+          strLine.Trim();
 
           // empty line, next subtitle is about to start
-          if (strlen(pLineStart) <= 0) break;
+          if (strLine.length() <= 0) break;
 
-          TagConv.ConvertLine(pOverlay, line, strlen(line));
+          TagConv.ConvertLine(pOverlay, strLine.c_str(), strLine.length());
         }
         TagConv.CloseTag(pOverlay);
         m_collection.Add(pOverlay);

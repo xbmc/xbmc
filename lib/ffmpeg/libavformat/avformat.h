@@ -667,7 +667,7 @@ typedef struct AVChapter {
 } AVChapter;
 
 #if FF_API_MAX_STREAMS
-#define MAX_STREAMS 20
+#define MAX_STREAMS 100
 #endif
 
 /**

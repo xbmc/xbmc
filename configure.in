@@ -581,9 +581,6 @@ PKG_CHECK_MODULES([CDIO],       [libcdio],
 PKG_CHECK_MODULES([SAMPLERATE], [samplerate],
   [INCLUDES="$INCLUDES $SAMPLERATE_CFLAGS"; LIBS="$LIBS $SAMPLERATE_LIBS"],
   AC_MSG_ERROR($missing_library))
-PKG_CHECK_MODULES([MMS],        [libmms],
-  [INCLUDES="$INCLUDES $MMS_CFLAGS"; LIBS="$LIBS $MMS_LIBS"],
-  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
   [INCLUDES="$INCLUDES $FREETYPE2_CFLAGS"; LIBS="$LIBS $FREETYPE2_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -855,6 +852,9 @@ if test "$use_external_ffmpeg" = "yes"; then
 
   # libavcore is optional
   AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h])
+
+  # old FFmpeg have this in libavcodec/opt.h instead:
+  AC_CHECK_HEADERS([libavutil/opt.h])
 
   # We'll support the use of rgb2rgb.h if it exists.
   AC_CHECK_HEADERS([libswscale/rgb2rgb.h],,)
@@ -1656,6 +1656,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --disable-ffserver \
       --disable-ffmpeg \
       --enable-shared \
+      --disable-doc \
       --disable-decoder=mpeg_xvmc \
       --enable-postproc \
       --enable-gpl \
@@ -1692,6 +1693,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --disable-ffserver \
       --disable-ffmpeg \
       --enable-shared \
+      --disable-doc \
       --enable-postproc \
       --enable-gpl \
       `if test "x$use_vdpau" != "xno"; then echo --enable-vdpau; else echo --disable-vdpau; fi` \
