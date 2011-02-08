@@ -35,7 +35,7 @@
 				<wrapmultiline>false</wrapmultiline>
 			</control>
 			<control type="label">
-				<visible>ListItem.Type(album)</visible>
+				<visible>ListItem.Type(album) | ListItem.Type(track)</visible>
 				<posx>81</posx>
 				<posy>160</posy>
 				<width>130</width>
@@ -84,7 +84,7 @@
 				<wrapmultiline>false</wrapmultiline>
 			</control>
 			<control type="label">
-				<visible>ListItem.Type(album)</visible>
+				<visible>ListItem.Type(album) | ListItem.Type(track)</visible>
 				<posx>81</posx>
 				<posy>160</posy>
 				<width>130</width>

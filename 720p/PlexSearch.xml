@@ -607,8 +607,8 @@
 					<height>660</height>
 					<ondown>5200</ondown>
 					<onup>310</onup>
-					<onright>65</onright>
-					<onleft>70</onleft>
+					<onright>350</onright>
+					<onleft>350</onleft>
 					<orientation>vertical</orientation>
 
 					<!-- Movies -->
@@ -627,7 +627,7 @@
 						<ondown>9002</ondown>
 						<onup>9010</onup>
 						<onright>65</onright>
-						<onleft>70</onleft>
+						<onleft>350</onleft>
 						<include>Search_Result</include>
 						<height>200</height>
 					</control>
@@ -644,7 +644,7 @@
 						<ondown>9008</ondown>
 						<onup>9001</onup>
 						<onright>-</onright>
-						<onleft>70</onleft>
+						<onleft>350</onleft>
 						<include>Search_Result</include>						
 						<height>200</height>
 					</control>
@@ -661,7 +661,7 @@
 						<ondown>9008</ondown>
 						<onup>9001</onup>
 						<onright>-</onright>
-						<onleft>70</onleft>
+						<onleft>350</onleft>
 						<include>Search_Result</include>	
 						<height>200</height>					
 					</control>
@@ -678,7 +678,7 @@
 						<ondown>9010</ondown>
 						<onup>9002</onup>
 						<onright>-</onright>
-						<onleft>70</onleft>
+						<onleft>350</onleft>
 						<include>Search_Result</include>
 						<height>200</height>					
 					</control>
@@ -695,7 +695,7 @@
 						<ondown>9010</ondown>
 						<onup>9008</onup>
 						<onright>-</onright>
-						<onleft>70</onleft>
+						<onleft>350</onleft>
 						<include>Search_Result</include>	
 						<height>200</height>					
 					</control>
@@ -712,7 +712,7 @@
 						<ondown>9012</ondown>
 						<onup>9009</onup>
 						<onright>-</onright>
-						<onleft>70</onleft>
+						<onleft>350</onleft>
 						<include>Search_Result</include>
 						<height>200</height>
 					</control>
@@ -731,7 +731,7 @@
 						<ondown>9001</ondown>
 						<onup>9010</onup>
 						<onright>-</onright>
-						<onleft>70</onleft>
+						<onleft>350</onleft>
 					</control>
 					
 				</control>
