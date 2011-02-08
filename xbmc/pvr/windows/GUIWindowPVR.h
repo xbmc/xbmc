@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@
  *
  */
 
-#include "GUIMediaWindow.h"
+#include "windows/GUIMediaWindow.h"
 #include "pvr/PVREpgSearchFilter.h"
 #include "pvr/PVREpgContainer.h"
 

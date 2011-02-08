@@ -3,7 +3,6 @@ SRCS=GUIMediaWindow.cpp \
      GUIWindowHome.cpp \
      GUIWindowLoginScreen.cpp \
      GUIWindowPointer.cpp \
-     GUIWindowPVR.cpp \
      GUIWindowScreensaver.cpp \
      GUIWindowStartup.cpp \
      GUIWindowSystemInfo.cpp \

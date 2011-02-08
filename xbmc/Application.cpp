@@ -218,7 +218,7 @@
 
 /* PVR related include Files */
 #include "pvr/PVRManager.h"
-#include "windows/GUIWindowPVR.h"
+#include "pvr/windows/GUIWindowPVR.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
 #include "pvr/dialogs/GUIDialogPVRCutterOSD.h"

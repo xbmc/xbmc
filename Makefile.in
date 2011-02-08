@@ -66,6 +66,8 @@ BIN_DIRS=	\
 	xbmc/visualizations \
 	xbmc/screensavers \
 	xbmc/pvr \
+	xbmc/pvr/dialogs \
+	xbmc/pvr/windows \
 	xbmc/pvrclients \
 	xbmc/utils \
 	xbmc/settings \
@@ -402,6 +404,8 @@ xbmc/pvr/pvr.a: force
 	$(MAKE) -C xbmc/pvr
 xbmc/pvr/dialogs/pvrdialogs.a: force
 	$(MAKE) -C xbmc/pvr/dialogs
+xbmc/pvr/windows/pvrwindows.a: force
+	$(MAKE) -C xbmc/pvr/windows
 xbmc/pvrclients/pvrclient.a: force
 	$(MAKE) -C xbmc/pvrclients
 xbmc/osx/osx.a: force
@@ -658,6 +662,7 @@ DYNOBJSXBMC= \
 	xbmc/cores/DllLoader/exports/exports.a \
 	xbmc/settings/settings.a \
 	xbmc/video/video.a \
+	xbmc/pvr/windows/pvrwindows.a \
 	xbmc/guilib/guilib.a # must be dynamic to avoid linker errors
 
 ifeq (arm, $(ARCH))
