@@ -44,7 +44,7 @@
   if (sink->Initialize(tmpFormat, tmpDevice)) \
   { \
     if (rawPassthrough && tmpFormat.m_sampleRate != desiredFormat.m_sampleRate) \
-      CLog::Log(LOGERROR, "CAESinkFactory::Create " #SINK " failed to open at the desired sample rate (%dHz)", tmpFormat.m_sampleRate); \
+      CLog::Log(LOGERROR, "CAESinkFactory::Create " #SINK " failed to open at the desired sample rate of %dHz, got %dHz instead", desiredFormat.m_sampleRate, tmpFormat.m_sampleRate); \
     else \
     { \
       desiredFormat = tmpFormat; \
