@@ -48,6 +48,10 @@ bool CAEWrapper::SetEngine(IAE *ae)
   /* shutdown the old engine */
   if (m_ae)
   {
+     /* unload any streams */
+    for(std::list<CAEStreamWrapper*>::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+      (*itt)->UnInitialize();
+   
     /* unload any sounds */
     for(std::list<CAESoundWrapper*>::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
       (*itt)->UnLoad();
@@ -58,6 +62,10 @@ bool CAEWrapper::SetEngine(IAE *ae)
 
   if (ae && ae->Initialize())
       m_ae = ae;
+
+  /* reload any streams */
+  for(std::list<CAEStreamWrapper*>::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+    (*itt)->Initialize();
 
   /* reload any sounds */
   for(std::list<CAESoundWrapper*>::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
