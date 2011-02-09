@@ -27,6 +27,7 @@
 
 #include "AE.h"
 #include "AESoundWrapper.h"
+#include "AEStreamWrapper.h"
 
 /**
  * CAEWrapper class
@@ -62,7 +63,8 @@ private:
   CSharedSection m_lock;
   IAE *m_ae;
 
-  std::list<CAESoundWrapper*> m_sounds;
+  std::list<CAESoundWrapper *> m_sounds;
+  std::list<CAEStreamWrapper*> m_streams;
 };
 
 extern CAEWrapper AE;

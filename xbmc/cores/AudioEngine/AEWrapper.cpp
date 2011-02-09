@@ -98,22 +98,21 @@ void CAEWrapper::SetVolume(float volume)
 
 IAEStream* CAEWrapper::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
 {
-  IAEStream *s = NULL;
   m_lock.EnterShared();
-  if (m_ae) s = m_ae->GetStream(dataFormat, sampleRate, channelCount, channelLayout, options);
+  CAEStreamWrapper *wrapper = new CAEStreamWrapper(dataFormat, sampleRate, channelCount, channelLayout, options);
+  m_streams.push_back(wrapper);
   m_lock.LeaveShared();
 
-  return s;
+  return wrapper;
 }
 
 IAEStream* CAEWrapper::AlterStream(IAEStream *stream, enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
 {
-  IAEStream *s = NULL;
   m_lock.EnterShared();
-  if (m_ae) s = m_ae->AlterStream(stream, dataFormat, sampleRate, channelCount, channelLayout, options);
+  CAEStreamWrapper *wrapper = (CAEStreamWrapper*)stream;
+  wrapper->AlterStream(dataFormat, sampleRate, channelCount, channelLayout, options);
   m_lock.LeaveShared();
-
-  return s;
+  return wrapper;
 }
 
 IAESound* CAEWrapper::GetSound(CStdString file)

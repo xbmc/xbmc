@@ -38,21 +38,21 @@ public:
   CSoftAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options);
   virtual ~CSoftAEStream();
 
-  virtual void Initialize();
-  virtual void InitializeRemap();
+  void Initialize();
+  void InitializeRemap();
   virtual void Destroy();
   virtual void SetDataCallback (AECBFunc *cbFunc, void *arg); /* called when the buffer < 50% full */
   virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg); /* called when the buffer has been drained */
 
   virtual unsigned int GetFrameSize() {return m_format.m_frameSize;}
   virtual unsigned int AddData(void *data, unsigned int size);
-  virtual uint8_t* GetFrame();
+  uint8_t* GetFrame();
   virtual float GetDelay();
 
-  virtual bool IsPaused     () { return m_paused;      }
+  bool IsPaused     () { return m_paused;      }
   virtual bool IsDraining   () { return m_draining;    }
-  virtual bool IsFreeOnDrain() { return m_freeOnDrain; }
-  virtual bool IsDestroyed  () { return m_delete;      }
+  bool IsFreeOnDrain() { return m_freeOnDrain; }
+  bool IsDestroyed  () { return m_delete;      }
   bool IsValid() { return m_valid; }
 
   virtual void Pause   () {m_paused = true; }
@@ -69,7 +69,7 @@ public:
   virtual void PrependPostProc(IAEPostProc *pp);
   virtual void RemovePostProc (IAEPostProc *pp);
 
-  virtual unsigned int      GetFrameSamples() { return m_format.m_frameSamples;        }
+  unsigned int      GetFrameSamples() { return m_format.m_frameSamples;        }
   virtual unsigned int      GetChannelCount() { return m_initChannelCount;             }
   virtual unsigned int      GetSampleRate()   { return m_initSampleRate;               }
   virtual enum AEDataFormat GetDataFormat()   { return m_initDataFormat;               }

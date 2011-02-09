@@ -23,6 +23,7 @@ SRCS = \
 	PostProc/AEPPAnimationFade.cpp \
 	\
 	AEWrapper.cpp \
+	AEStreamWrapper.cpp \
 	AESoundWrapper.cpp \
 	Engines/SoftAE.cpp \
 	Engines/SoftAEStream.cpp \
