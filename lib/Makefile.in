@@ -1,6 +1,6 @@
 CC=@CC@
 CXX=@CXX@
-SHELL=/bin/bash
+SHELL=@SHELL@
 LDFLAGS=-shared -fPIC -rdynamic
 ARCH=@ARCH@
 SYSDIR=@abs_top_srcdir@/system/players/dvdplayer
