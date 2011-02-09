@@ -480,7 +480,7 @@ protected:
    */
   virtual void Process();
 
-  void UpdateWindow(TVWindow window);
+  void UpdateWindow(PVRWindow window);
 
 private:
 

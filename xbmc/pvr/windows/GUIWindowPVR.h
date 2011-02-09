@@ -27,15 +27,15 @@
 
 class CGUIEPGGridContainer;
 
-enum TVWindow
+enum PVRWindow
 {
-  TV_WINDOW_UNKNOWN         = 0,
-  TV_WINDOW_TV_PROGRAM      = 1,
-  TV_WINDOW_CHANNELS_TV     = 2,
-  TV_WINDOW_CHANNELS_RADIO  = 3,
-  TV_WINDOW_RECORDINGS      = 4,
-  TV_WINDOW_TIMERS          = 5,
-  TV_WINDOW_SEARCH          = 6
+  PVR_WINDOW_UNKNOWN         = 0,
+  PVR_WINDOW_EPG             = 1,
+  PVR_WINDOW_CHANNELS_TV     = 2,
+  PVR_WINDOW_CHANNELS_RADIO  = 3,
+  PVR_WINDOW_RECORDINGS      = 4,
+  PVR_WINDOW_TIMERS          = 5,
+  PVR_WINDOW_SEARCH          = 6
 };
 
 class CGUIWindowPVR : public CGUIMediaWindow
@@ -49,7 +49,7 @@ public:
   virtual void OnWindowUnload();
   virtual void OnInitWindow();
 
-  void UpdateData(TVWindow update);
+  void UpdateData(PVRWindow update);
 
 protected:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
@@ -79,8 +79,8 @@ private:
   bool ActionShowSearch(CFileItem *item);
   bool ActionShowTimer(CFileItem *item);
 
-  TVWindow m_iCurrSubTVWindow;    /* Active subwindow */
-  TVWindow m_iSavedSubTVWindow;   /* Last subwindow, required if main window is shown again */
+  PVRWindow m_iCurrSubTVWindow;    /* Active subwindow */
+  PVRWindow m_iSavedSubTVWindow;   /* Last subwindow, required if main window is shown again */
   bool m_bShowHiddenChannels;
   bool m_bSearchStarted;
   bool m_bSearchConfirmed;
