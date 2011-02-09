@@ -57,6 +57,18 @@ protected:
   virtual void UpdateButtons();
 
 private:
+  bool OnMessageFocus(CGUIMessage &message);
+  bool OnMessageClick(CGUIMessage &message);
+
+  bool OnClickListGuide(CGUIMessage &message);
+  bool OnClickButton(unsigned int iControl);
+  bool OnClickListChannels(CGUIMessage &message);
+
+  bool ActionPlay(CFileItem *item);
+  bool ActionRecord(CFileItem *item);
+  bool ActionOpenChannel(unsigned int iControl, CFileItem *item);
+  bool ActionDeleteChannel(CFileItem *item);
+
   TVWindow m_iCurrSubTVWindow;    /* Active subwindow */
   TVWindow m_iSavedSubTVWindow;   /* Last subwindow, required if main window is shown again */
   bool m_bShowHiddenChannels;
