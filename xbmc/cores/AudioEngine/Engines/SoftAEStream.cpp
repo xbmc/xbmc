@@ -74,8 +74,6 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_ownsPostProc      = (options & AESTREAM_OWNS_POST_PROC) != 0;
   m_forceResample     = (options & AESTREAM_FORCE_RESAMPLE) != 0;
   m_paused            = (options & AESTREAM_PAUSED) != 0;
-
-  Initialize();
 }
 
 void CSoftAEStream::InitializeRemap()
@@ -433,7 +431,7 @@ uint8_t* CSoftAEStream::GetFrame()
   CSingleLock lock(m_critSection);
 
   /* if we have been deleted or are refilling but not draining */
-  if (m_delete || (m_refillBuffer && !m_draining)) return NULL;
+  if (!m_valid || m_delete || (m_refillBuffer && !m_draining)) return NULL;
 
   /* if the packet is empty, advance to the next one */
   if(!m_packet.samples)

@@ -53,6 +53,7 @@ public:
   virtual bool IsDraining   () { return m_draining;    }
   virtual bool IsFreeOnDrain() { return m_freeOnDrain; }
   virtual bool IsDestroyed  () { return m_delete;      }
+  bool IsValid() { return m_valid; }
 
   virtual void Pause   () {m_paused = true; }
   virtual void Resume  () {m_paused = false;}
@@ -68,10 +69,10 @@ public:
   virtual void PrependPostProc(IAEPostProc *pp);
   virtual void RemovePostProc (IAEPostProc *pp);
 
-  virtual unsigned int      GetFrameSamples() { return m_format.m_frameSamples; }
-  virtual unsigned int      GetChannelCount() { return m_format.m_channelCount; }
-  virtual unsigned int      GetSampleRate()   { return m_format.m_sampleRate;   }
-  virtual enum AEDataFormat GetDataFormat()   { return m_format.m_dataFormat;   }
+  virtual unsigned int      GetFrameSamples() { return m_format.m_frameSamples;        }
+  virtual unsigned int      GetChannelCount() { return m_initChannelCount;             }
+  virtual unsigned int      GetSampleRate()   { return m_initSampleRate;               }
+  virtual enum AEDataFormat GetDataFormat()   { return m_initDataFormat;               }
   virtual bool              IsRaw()           { return m_initDataFormat == AE_FMT_RAW; }
 
   /* for dynamic sample rate changes (smoothvideo) */

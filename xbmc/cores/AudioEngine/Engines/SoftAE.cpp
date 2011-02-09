@@ -397,7 +397,7 @@ void CSoftAE::OnSettingsChange(CStdString setting)
   if (setting == "audiooutput.dontnormalizelevels")
   {
     /* re-init streams reampper */
-    CSingleLock stremLock(m_streamLock);
+    CSingleLock streamLock(m_streamLock);
     list<CSoftAEStream*>::iterator itt;
     for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
       (*itt)->InitializeRemap();
@@ -542,16 +542,20 @@ IAEStream *CSoftAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleR
     CAEUtil::GetChLayoutStr(channelLayout).c_str()
   );
 
-  CSoftAEStream *stream;
+  CSingleLock streamLock(m_streamLock);
+  bool wasEmpty = m_streams.empty();
+  CSoftAEStream *stream = new CSoftAEStream(dataFormat, sampleRate, channelCount, channelLayout, options);
+  m_streams.push_back(stream);
+  streamLock.Leave();
+
   if (dataFormat == AE_FMT_RAW)
     OpenSink(sampleRate, true);
-  else
-    if (m_streams.size() == 0)
-      OpenSink(sampleRate);
+  else if (wasEmpty)
+    OpenSink(sampleRate);
 
-  CSingleLock streamLock(m_streamLock);
-  stream = new CSoftAEStream(dataFormat, sampleRate, channelCount, channelLayout, options);
-  m_streams.push_back(stream);
+  /* if the stream was not initialized, do it now */
+  if (!stream->IsValid())
+    stream->Initialize();
 
   return stream;
 }
@@ -856,7 +860,7 @@ void CSoftAE::Run()
     }
 
     /* re-lock the sink for the next loop */
-   m_sinkLock.EnterShared();
+    m_sinkLock.EnterShared();
 
     /* update the save values */
     channelCount = m_channelCount;
