@@ -167,8 +167,8 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   else
     m_rawPassthrough = !m_streams.empty() && m_streams.front()->IsRaw();
 
-  /* choose a sample rate based on the oldest stream or if none, the requested sample rate */
-  if (!m_rawPassthrough && !m_streams.empty())
+  /* override the sample rate based on the oldest stream if there is one */
+  if (!m_streams.empty())
     sampleRate = m_streams.front()->GetSampleRate();
 
   streamLock.Leave();
