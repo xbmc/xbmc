@@ -27,7 +27,7 @@
 #include "pvr/PVRChannelGroup.h"
 #include "pvr/PVRTimers.h"
 #include "pvr/PVRTimerInfoTag.h"
-#include "pvr/PVRRecordings.h"
+#include "pvr/recordings/PVRRecordings.h"
 
 typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
 

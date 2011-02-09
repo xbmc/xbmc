@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -19,42 +20,30 @@
  *
  */
 
-#include "GUIDialogPVRRecordingInfo.h"
-#include "guilib/GUIWindowManager.h"
-#include "FileItem.h"
+#include "PVRRecording.h"
+#include "threads/Thread.h"
+#include "DateTime.h"
 
-using namespace std;
-
-#define CONTROL_BTN_OK  10
-
-CGUIDialogPVRRecordingInfo::CGUIDialogPVRRecordingInfo(void)
-  : CGUIDialog(WINDOW_DIALOG_PVR_RECORDING_INFO, "DialogPVRRecordingInfo.xml")
-  , m_recordItem(new CFileItem)
+class CPVRRecordings : public std::vector<CPVRRecordingInfoTag>
+                     , private CThread
 {
-}
+private:
+  CCriticalSection  m_critSection;
+  virtual void Process();
 
-bool CGUIDialogPVRRecordingInfo::OnMessage(CGUIMessage& message)
-{
-  if (message.GetMessage() == GUI_MSG_CLICKED)
-  {
-    int iControl = message.GetSenderId();
+public:
+  CPVRRecordings(void);
+  bool Load() { return Update(true); }
+  void Unload();
+  bool Update(bool Wait = false);
+  int GetNumRecordings();
+  int GetRecordings(CFileItemList* results);
+  static bool DeleteRecording(const CFileItem &item);
+  static bool RenameRecording(CFileItem &item, CStdString &newname);
+  bool RemoveRecording(const CFileItem &item);
+  bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+  CPVRRecordingInfoTag *GetByPath(CStdString &path);
+  void Clear();
+};
 
-    if (iControl == CONTROL_BTN_OK)
-    {
-      Close();
-      return true;
-    }
-  }
-
-  return CGUIDialog::OnMessage(message);
-}
-
-void CGUIDialogPVRRecordingInfo::SetRecording(const CFileItem *item)
-{
-  *m_recordItem = *item;
-}
-
-CFileItemPtr CGUIDialogPVRRecordingInfo::GetCurrentListItem(int offset)
-{
-  return m_recordItem;
-}
+extern CPVRRecordings g_PVRRecordings;

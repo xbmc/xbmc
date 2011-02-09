@@ -28,7 +28,6 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/PVRChannelGroup.h"
-#include "pvr/PVRRecordings.h"
 #include "pvr/PVRTimers.h"
 
 using namespace std;

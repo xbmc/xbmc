@@ -22,6 +22,7 @@
 #include "PVRFile.h"
 #include "Util.h"
 #include "pvr/PVRManager.h"
+#include "pvr/recordings/PVRRecording.h"
 #include "utils/log.h"
 
 using namespace XFILE;

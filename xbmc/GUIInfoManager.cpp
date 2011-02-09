@@ -79,6 +79,7 @@
 #include "pvr/PVRChannelGroupsContainer.h"
 #include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/PVRTimerInfoTag.h"
+#include "pvr/recordings/PVRRecording.h"
 
 #include "addons/AddonManager.h"
 

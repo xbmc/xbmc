@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,14 +21,24 @@
  */
 
 /*
- * for DESCRIPTION see 'TVRecordInfoTag.cpp'
+ * DESCRIPTION:
+ *
+ * CPVRRecordingInfoTag is part of the XBMC PVR system to support recording entrys,
+ * stored on a other Backend like VDR or MythTV.
+ *
+ * The recording information tag holds data about name, length, recording time
+ * and so on of recorded stream stored on the backend.
+ *
+ * The filename string is used to by the PVRManager and passed to DVDPlayer
+ * to stream data from the backend to XBMC.
+ *
+ * It is a also CVideoInfoTag and some of his variables must be set!
+ *
  */
 
+#include "addons/include/xbmc_pvr_types.h"
 #include "video/VideoInfoTag.h"
-#include "threads/Thread.h"
 #include "DateTime.h"
-#include "settings/VideoSettings.h"
-#include "../addons/include/xbmc_pvr_types.h"
 
 class CPVRRecordingInfoTag : public CVideoInfoTag
 {
@@ -84,28 +94,3 @@ public:
   bool Rename(const CStdString &newName) const;
 
 };
-
-
-class CPVRRecordings : public std::vector<CPVRRecordingInfoTag>
-                     , private CThread
-{
-private:
-  CCriticalSection  m_critSection;
-  virtual void Process();
-
-public:
-  CPVRRecordings(void);
-  bool Load() { return Update(true); }
-  void Unload();
-  bool Update(bool Wait = false);
-  int GetNumRecordings();
-  int GetRecordings(CFileItemList* results);
-  static bool DeleteRecording(const CFileItem &item);
-  static bool RenameRecording(CFileItem &item, CStdString &newname);
-  bool RemoveRecording(const CFileItem &item);
-  bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  CPVRRecordingInfoTag *GetByPath(CStdString &path);
-  void Clear();
-};
-
-extern CPVRRecordings g_PVRRecordings;

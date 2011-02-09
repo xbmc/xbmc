@@ -43,7 +43,7 @@
 #include "pvr/epg/PVREpg.h"
 #include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/PVRChannel.h"
-#include "pvr/PVRRecordings.h"
+#include "pvr/recordings/PVRRecording.h"
 #include "pvr/PVRTimerInfoTag.h"
 #include "utils/Observer.h"
 #include "video/VideoInfoTag.h"
