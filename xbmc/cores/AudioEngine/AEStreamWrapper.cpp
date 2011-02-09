@@ -296,34 +296,31 @@ unsigned int CAEStreamWrapper::GetFrameSize()
 unsigned int CAEStreamWrapper::GetChannelCount()
 {
   m_lock.EnterShared();
-  unsigned int ret = 0;
   if (m_stream)
-    m_stream->GetChannelCount();
+    m_channelCount = m_stream->GetChannelCount();
   m_lock.LeaveShared();
 
-  return ret;
+  return m_channelCount;
 }
 
 unsigned int CAEStreamWrapper::GetSampleRate()
 {
   m_lock.EnterShared();
-  unsigned int ret = 0;
   if (m_stream)
-    ret = m_stream->GetSampleRate();
+    m_sampleRate = m_stream->GetSampleRate();
   m_lock.LeaveShared();
 
-  return ret;
+  return m_sampleRate;
 }
 
 enum AEDataFormat CAEStreamWrapper::GetDataFormat()
 {
   m_lock.EnterShared();
-  enum AEDataFormat ret = AE_FMT_INVALID;
   if (m_stream)
-    m_stream->GetDataFormat();
+    m_dataFormat = m_stream->GetDataFormat();
   m_lock.LeaveShared();
 
-  return ret;
+  return m_dataFormat;
 }
 
 double CAEStreamWrapper::GetResampleRatio()
