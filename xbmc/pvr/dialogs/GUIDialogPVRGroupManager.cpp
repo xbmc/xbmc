@@ -28,7 +28,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 
-#include "pvr/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace std;
 

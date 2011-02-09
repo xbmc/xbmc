@@ -21,7 +21,7 @@
 
 #include "SortFileItem.h"
 #include "video/VideoInfoTag.h"
-#include "pvr/PVRChannel.h"
+#include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/PVREpg.h"
 #include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/timers/PVRTimerInfoTag.h"

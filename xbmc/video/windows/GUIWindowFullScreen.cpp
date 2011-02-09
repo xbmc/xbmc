@@ -53,7 +53,7 @@
 #include "input/ButtonTranslator.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 #include <stdio.h>
 

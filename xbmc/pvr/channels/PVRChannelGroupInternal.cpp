@@ -23,11 +23,11 @@
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
-#include "log.h"
+#include "utils/log.h"
 
 #include "PVRChannelGroupInternal.h"
-#include "PVRDatabase.h"
-#include "PVRManager.h"
+#include "pvr/PVRDatabase.h"
+#include "pvr/PVRManager.h"
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) : CPVRChannelGroup(bRadio)
 {

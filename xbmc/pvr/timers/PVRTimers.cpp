@@ -26,7 +26,7 @@
 
 #include "PVRTimers.h"
 #include "PVRTimerInfoTag.h"
-#include "pvr/PVRChannel.h"
+#include "pvr/channels/PVRChannel.h"
 #include "pvr/PVRManager.h"
 #include "pvr/epg/PVREpgInfoTag.h"
 

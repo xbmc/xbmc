@@ -1,11 +1,6 @@
 INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix -I../utils -I../epg
 
-SRCS=PVRChannel.cpp \
-	PVRChannelGroup.cpp \
-	PVRChannelGroupInternal.cpp \
-	PVRChannelGroups.cpp \
-	PVRChannelGroupsContainer.cpp \
-	PVRManager.cpp \
+SRCS=PVRManager.cpp \
 	PVRDatabase.cpp \
 	GUIViewStatePVR.cpp
 

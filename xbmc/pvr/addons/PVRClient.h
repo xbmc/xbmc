@@ -24,7 +24,7 @@
 #include "addons/AddonDll.h"
 #include "addons/DllPVRClient.h"
 #include "pvr/epg/PVREpgContainer.h"
-#include "pvr/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/recordings/PVRRecordings.h"

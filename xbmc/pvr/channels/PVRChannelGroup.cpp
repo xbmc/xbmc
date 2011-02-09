@@ -29,12 +29,12 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
 #include "music/tags/MusicInfoTag.h"
-#include "log.h"
+#include "utils/log.h"
 
 #include "PVRChannelGroupsContainer.h"
-#include "PVRDatabase.h"
-#include "PVRManager.h"
-#include "epg/PVREpgInfoTag.h"
+#include "pvr/PVRDatabase.h"
+#include "pvr/PVRManager.h"
+#include "pvr/epg/PVREpgInfoTag.h"
 
 using namespace MUSIC_INFO;
 

@@ -42,7 +42,7 @@
 #include "dialogs/GUIDialogSelect.h"
 
 #include "PVRManager.h"
-#include "PVRChannelGroupsContainer.h"
+#include "channels/PVRChannelGroupsContainer.h"
 #include "epg/PVREpgInfoTag.h"
 #include "recordings/PVRRecording.h"
 #include "timers/PVRTimerInfoTag.h"

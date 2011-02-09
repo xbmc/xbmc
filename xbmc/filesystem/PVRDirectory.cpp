@@ -27,7 +27,7 @@
 #include "guilib/LocalizeStrings.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/timers/PVRTimers.h"
 
 using namespace std;

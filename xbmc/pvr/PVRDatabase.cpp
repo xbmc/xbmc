@@ -24,8 +24,8 @@
 #include "settings/VideoSettings.h"
 #include "utils/log.h"
 
-#include "PVRChannelGroupsContainer.h"
-#include "PVRChannelGroupInternal.h"
+#include "channels/PVRChannelGroupsContainer.h"
+#include "channels/PVRChannelGroupInternal.h"
 
 using namespace std;
 using namespace dbiplus;

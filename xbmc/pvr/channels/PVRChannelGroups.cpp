@@ -33,8 +33,8 @@
 
 #include "PVRChannelGroupInternal.h"
 #include "PVRChannelGroupsContainer.h"
-#include "PVRDatabase.h"
-#include "PVRManager.h"
+#include "pvr/PVRDatabase.h"
+#include "pvr/PVRManager.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;

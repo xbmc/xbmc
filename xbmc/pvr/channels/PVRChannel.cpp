@@ -27,11 +27,11 @@
 #include "music/tags/MusicInfoTag.h"
 
 #include "PVRChannelGroupsContainer.h"
-#include "epg/PVREpgContainer.h"
-#include "epg/PVREpg.h"
-#include "epg/PVREpgInfoTag.h"
-#include "PVRDatabase.h"
-#include "PVRManager.h"
+#include "pvr/epg/PVREpgContainer.h"
+#include "pvr/epg/PVREpg.h"
+#include "pvr/epg/PVREpgInfoTag.h"
+#include "pvr/PVRDatabase.h"
+#include "pvr/PVRManager.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;

@@ -28,7 +28,7 @@
 #include "ViewState.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/PVREpg.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 

@@ -42,7 +42,7 @@
 #include "utils/TuxBoxUtil.h"
 #include "pvr/epg/PVREpg.h"
 #include "pvr/epg/PVREpgInfoTag.h"
-#include "pvr/PVRChannel.h"
+#include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "utils/Observer.h"

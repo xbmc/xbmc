@@ -79,7 +79,7 @@
 #include "CoreAudio.h"
 #include "XBMCHelper.h"
 #endif
-#include "pvr/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/PVRManager.h"
 #include "network/GUIDialogAccessPoints.h"
 #include "filesystem/Directory.h"

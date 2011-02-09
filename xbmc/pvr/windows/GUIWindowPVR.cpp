@@ -55,7 +55,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
-#include "pvr/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace std;
 

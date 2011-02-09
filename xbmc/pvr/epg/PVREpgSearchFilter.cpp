@@ -24,7 +24,7 @@
 
 #include "PVREpgSearchFilter.h"
 #include "PVREpgInfoTag.h"
-#include "pvr/PVRChannel.h"
+#include "pvr/channels/PVRChannel.h"
 
 using namespace std;
 
