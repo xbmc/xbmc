@@ -60,14 +60,24 @@ private:
   bool OnMessageFocus(CGUIMessage &message);
   bool OnMessageClick(CGUIMessage &message);
 
-  bool OnClickListGuide(CGUIMessage &message);
-  bool OnClickButton(unsigned int iControl);
+  bool OnClickButton(CGUIMessage &message);
+  bool OnClickListEpg(CGUIMessage &message);
   bool OnClickListChannels(CGUIMessage &message);
+  bool OnClickListRecordings(CGUIMessage &message);
+  bool OnClickListTimers(CGUIMessage &message);
+  bool OnClickListSearch(CGUIMessage &message);
 
-  bool ActionPlay(CFileItem *item);
-  bool ActionRecord(CFileItem *item);
-  bool ActionOpenChannel(unsigned int iControl, CFileItem *item);
   bool ActionDeleteChannel(CFileItem *item);
+  bool ActionDeleteRecording(CFileItem *item);
+  bool ActionDeleteTimer(CFileItem *timer);
+
+  bool ActionPlayChannel(unsigned int iControl, CFileItem *item);
+  bool ActionPlayEpg(CFileItem *item);
+
+  bool ActionRecord(CFileItem *item);
+
+  bool ActionShowSearch(CFileItem *item);
+  bool ActionShowTimer(CFileItem *item);
 
   TVWindow m_iCurrSubTVWindow;    /* Active subwindow */
   TVWindow m_iSavedSubTVWindow;   /* Last subwindow, required if main window is shown again */
