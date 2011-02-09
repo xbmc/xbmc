@@ -24,7 +24,7 @@
 #include "pvr/PVRChannel.h"
 #include "pvr/epg/PVREpg.h"
 #include "pvr/epg/PVREpgInfoTag.h"
-#include "pvr/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 #include "music/tags/MusicInfoTag.h"

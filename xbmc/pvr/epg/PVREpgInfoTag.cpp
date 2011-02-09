@@ -23,8 +23,8 @@
 
 #include "PVREpg.h"
 #include "PVREpgInfoTag.h"
-#include "pvr/PVRTimers.h"
-#include "pvr/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimers.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/PVRChannel.h"
 
 using namespace std;

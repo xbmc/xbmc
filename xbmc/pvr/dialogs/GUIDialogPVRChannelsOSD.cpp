@@ -30,7 +30,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/PVRChannelGroupsContainer.h"
 #include "pvr/epg/PVREpg.h"
-#include "pvr/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 
 using namespace std;
 

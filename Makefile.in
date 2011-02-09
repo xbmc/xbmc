@@ -70,6 +70,7 @@ BIN_DIRS=	\
 	xbmc/pvr/dialogs \
 	xbmc/pvr/epg \
 	xbmc/pvr/recordings \
+	xbmc/pvr/timers \
 	xbmc/pvr/windows \
 	xbmc/pvrclients \
 	xbmc/utils \
@@ -413,6 +414,8 @@ xbmc/pvr/epg/pvrepg.a: force
 	$(MAKE) -C xbmc/pvr/epg
 xbmc/pvr/recordings/pvrrecordings.a: force
 	$(MAKE) -C xbmc/pvr/recordings
+xbmc/pvr/timers/pvrtimers.a: force
+	$(MAKE) -C xbmc/pvr/timers
 xbmc/pvr/windows/pvrwindows.a: force
 	$(MAKE) -C xbmc/pvr/windows
 xbmc/pvrclients/pvrclient.a: force
@@ -588,6 +591,7 @@ OBJSXBMC=	\
 	xbmc/pvr/dialogs/pvrdialogs.a \
 	xbmc/pvr/epg/pvrepg.a \
 	xbmc/pvr/recordings/pvrrecordings.a \
+	xbmc/pvr/timers/pvrtimers.a \
 	xbmc/video/dialogs/videodialogs.a \
 	xbmc/pictures/pictures.a \
 	xbmc/playlists/playlists.a \

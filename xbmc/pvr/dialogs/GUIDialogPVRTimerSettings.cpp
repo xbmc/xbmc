@@ -25,7 +25,7 @@
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
 
-#include "pvr/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/PVRChannelGroupsContainer.h"
 
 using namespace std;

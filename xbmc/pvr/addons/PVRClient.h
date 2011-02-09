@@ -25,8 +25,8 @@
 #include "addons/DllPVRClient.h"
 #include "pvr/epg/PVREpgContainer.h"
 #include "pvr/PVRChannelGroup.h"
-#include "pvr/PVRTimers.h"
-#include "pvr/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimers.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/recordings/PVRRecordings.h"
 
 typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;

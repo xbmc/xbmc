@@ -26,9 +26,9 @@
 
 #include "PVRTimers.h"
 #include "PVRTimerInfoTag.h"
-#include "PVRChannel.h"
-#include "PVRManager.h"
-#include "epg/PVREpgInfoTag.h"
+#include "pvr/PVRChannel.h"
+#include "pvr/PVRManager.h"
+#include "pvr/epg/PVREpgInfoTag.h"
 
 CPVRTimers g_PVRTimers;
 

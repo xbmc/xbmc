@@ -54,7 +54,7 @@
 /* TV control */
 #include "pvr/PVRManager.h"
 #include "pvr/epg/PVREpgInfoTag.h"
-#include "pvr/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/PVRChannelGroupsContainer.h"
 
 using namespace std;

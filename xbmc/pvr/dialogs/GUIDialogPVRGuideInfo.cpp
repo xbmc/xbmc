@@ -27,8 +27,8 @@
 
 #include "pvr/PVRChannelGroupsContainer.h"
 #include "pvr/epg/PVREpgInfoTag.h"
-#include "pvr/PVRTimers.h"
-#include "pvr/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimers.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 
 using namespace std;
 

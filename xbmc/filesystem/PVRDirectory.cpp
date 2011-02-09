@@ -28,7 +28,7 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/PVRChannelGroup.h"
-#include "pvr/PVRTimers.h"
+#include "pvr/timers/PVRTimers.h"
 
 using namespace std;
 using namespace XFILE;
