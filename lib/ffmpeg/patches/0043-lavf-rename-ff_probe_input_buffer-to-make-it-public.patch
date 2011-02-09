@@ -1,0 +1,100 @@
+From 90a931ab9378be64cdffb33f8490b6891ebb9ad8 Mon Sep 17 00:00:00 2001
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Date: Tue, 8 Feb 2011 00:46:53 +0200
+Subject: [PATCH 43/43] lavf: rename ff_probe_input_buffer to make it public
+
+It is useful for applications that hand input data directly to lavf via
+a ByteIOContext.
+
+Signed-off-by: Ronald S. Bultje <rsbultje@gmail.com>
+---
+ libavformat/avformat.h |   19 +++++++++++++++++++
+ libavformat/internal.h |   19 -------------------
+ libavformat/utils.c    |    4 ++--
+ 3 files changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/libavformat/avformat.h b/libavformat/avformat.h
+index dec8091..a08d843 100644
+--- a/libavformat/avformat.h
++++ b/libavformat/avformat.h
+@@ -1039,6 +1039,25 @@ AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened);
+ AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max);
+ 
+ /**
++ * Probe a bytestream to determine the input format. Each time a probe returns
++ * with a score that is too low, the probe buffer size is increased and another
++ * attempt is made. When the maximum probe size is reached, the input format
++ * with the highest score is returned.
++ *
++ * @param pb the bytestream to probe
++ * @param fmt the input format is put here
++ * @param filename the filename of the stream
++ * @param logctx the log context
++ * @param offset the offset within the bytestream to probe from
++ * @param max_probe_size the maximum probe buffer size (zero for default)
++ * @return 0 in case of success, a negative value corresponding to an
++ * AVERROR code otherwise
++ */
++int av_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt,
++                          const char *filename, void *logctx,
++                          unsigned int offset, unsigned int max_probe_size);
++
++/**
+  * Allocate all the structures needed to read an input stream.
+  *        This does not open the needed codecs for decoding the stream[s].
+  */
+diff --git a/libavformat/internal.h b/libavformat/internal.h
+index f2f3ddc..738b59d 100644
+--- a/libavformat/internal.h
++++ b/libavformat/internal.h
+@@ -82,25 +82,6 @@ void ff_read_frame_flush(AVFormatContext *s);
+ /** Get the current time since NTP epoch in microseconds. */
+ uint64_t ff_ntp_time(void);
+ 
+-/**
+- * Probe a bytestream to determine the input format. Each time a probe returns
+- * with a score that is too low, the probe buffer size is increased and another
+- * attempt is made. When the maximum probe size is reached, the input format
+- * with the highest score is returned.
+- *
+- * @param pb the bytestream to probe
+- * @param fmt the input format is put here
+- * @param filename the filename of the stream
+- * @param logctx the log context
+- * @param offset the offset within the bytestream to probe from
+- * @param max_probe_size the maximum probe buffer size (zero for default)
+- * @return 0 in case of success, a negative value corresponding to an
+- * AVERROR code otherwise
+- */
+-int ff_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt,
+-                          const char *filename, void *logctx,
+-                          unsigned int offset, unsigned int max_probe_size);
+-
+ #if FF_API_URL_SPLIT
+ /**
+  * @deprecated use av_url_split() instead
+diff --git a/libavformat/utils.c b/libavformat/utils.c
+index f5b22a2..bee0475 100644
+--- a/libavformat/utils.c
++++ b/libavformat/utils.c
+@@ -524,7 +524,7 @@ int av_open_input_stream(AVFormatContext **ic_ptr,
+ #define PROBE_BUF_MIN 2048
+ #define PROBE_BUF_MAX (1<<20)
+ 
+-int ff_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt,
++int av_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt,
+                           const char *filename, void *logctx,
+                           unsigned int offset, unsigned int max_probe_size)
+ {
+@@ -622,7 +622,7 @@ int av_open_input_file(AVFormatContext **ic_ptr, const char *filename,
+         if (buf_size > 0) {
+             url_setbufsize(pb, buf_size);
+         }
+-        if (!fmt && (err = ff_probe_input_buffer(pb, &fmt, filename, logctx, 0, logctx ? (*ic_ptr)->probesize : 0)) < 0) {
++        if (!fmt && (err = av_probe_input_buffer(pb, &fmt, filename, logctx, 0, logctx ? (*ic_ptr)->probesize : 0)) < 0) {
+             goto fail;
+         }
+     }
+-- 
+1.7.3
+
