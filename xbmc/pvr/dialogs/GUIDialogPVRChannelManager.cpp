@@ -694,6 +694,11 @@ void CGUIDialogPVRChannelManager::Update()
   Clear();
 
   const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(m_bIsRadio);
+
+  // No channels available, nothing to do.
+  if( !channels )
+    return;
+
   for (unsigned int i = 0; i < channels->size(); i++)
   {
     CPVRChannel *channel = channels->at(i);
