@@ -179,7 +179,7 @@ bool CGUIWindowPVR::ActionDeleteRecording(CFileItem *item)
   /* delete the recording */
   if (CPVRRecordings::DeleteRecording(*item))
   {
-    PVRRecordings.Update(true);
+    g_PVRRecordings.Update(true);
     UpdateRecordings();
     bReturn = true;
   }
@@ -1220,7 +1220,7 @@ bool CGUIWindowPVR::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
         if (CPVRRecordings::DeleteRecording(*pItem))
         {
-          PVRRecordings.Update(true);
+          g_PVRRecordings.Update(true);
           UpdateRecordings();
         }
       }

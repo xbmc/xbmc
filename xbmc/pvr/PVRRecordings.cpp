@@ -123,7 +123,7 @@ bool CPVRRecordingInfoTag::Delete(void) const
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
 
-    PVRRecordings.Update();
+    g_PVRRecordings.Update();
     return true;
   }
   catch (PVR_ERROR err)
@@ -145,7 +145,7 @@ bool CPVRRecordingInfoTag::Rename(const CStdString &newName) const
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
 
-    PVRRecordings.Update();
+    g_PVRRecordings.Update();
     return true;
   }
   catch (PVR_ERROR err)
@@ -172,7 +172,7 @@ void CPVRRecordingInfoTag::DisplayError(PVR_ERROR err) const
 
 // --- CPVRRecordings ---------------------------------------------------------------
 
-CPVRRecordings PVRRecordings;
+CPVRRecordings g_PVRRecordings;
 
 CPVRRecordings::CPVRRecordings(void)
 {

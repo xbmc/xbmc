@@ -108,4 +108,4 @@ public:
   void Clear();
 };
 
-extern CPVRRecordings PVRRecordings;
+extern CPVRRecordings g_PVRRecordings;

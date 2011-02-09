@@ -83,7 +83,7 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
   else if (fileName.Left(10) == "recordings")
   {
-    return PVRRecordings.GetDirectory(strPath, items) > 0;
+    return g_PVRRecordings.GetDirectory(strPath, items) > 0;
   }
   else if (fileName.Left(8) == "channels")
   {
@@ -103,10 +103,8 @@ bool CPVRDirectory::SupportsFileOperations(const CStdString& strPath)
   CStdString filename = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(filename);
 
-  if (filename.Left(11) == "recordings/" && filename.Right(4) == ".pvr")
-     return true;
-
-  return false;
+  return filename.Left(11) == "recordings/" &&
+         filename.Right(4) == ".pvr";
 }
 
 bool CPVRDirectory::IsLiveTV(const CStdString& strPath)
@@ -117,5 +115,5 @@ bool CPVRDirectory::IsLiveTV(const CStdString& strPath)
 
 bool CPVRDirectory::HasRecordings()
 {
-  return PVRRecordings.GetNumRecordings() > 0;
+  return g_PVRRecordings.GetNumRecordings() > 0;
 }
