@@ -150,13 +150,13 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "System.GetInfoBooleans",                       CSystemOperations::GetInfoBooleans },
 
 // XBMC operations
-//  { "XBMC.GetVolume",                               CXBMCOperations::GetVolume },
-//  { "XBMC.SetVolume",                               CXBMCOperations::SetVolume },
-//  { "XBMC.ToggleMute",                              CXBMCOperations::ToggleMute },
-//  { "XBMC.Play",                                    CXBMCOperations::Play },
-//  { "XBMC.StartSlideshow",                          CXBMCOperations::StartSlideshow },
-//  { "XBMC.Log",                                     CXBMCOperations::Log },
-//  { "XBMC.Quit",                                    CXBMCOperations::Quit }
+  { "XBMC.GetVolume",                               CXBMCOperations::GetVolume },
+  { "XBMC.SetVolume",                               CXBMCOperations::SetVolume },
+  { "XBMC.ToggleMute",                              CXBMCOperations::ToggleMute },
+  { "XBMC.Play",                                    CXBMCOperations::Play },
+  { "XBMC.StartSlideshow",                          CXBMCOperations::StartSlideshow },
+  { "XBMC.Log",                                     CXBMCOperations::Log },
+  { "XBMC.Quit",                                    CXBMCOperations::Quit }
 };
 
 /*Command CJSONRPC::m_commands[] = {

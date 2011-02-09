@@ -158,9 +158,6 @@ void CFileItemHandler::HandleFileItem(const char *id, bool allowFile, const char
 
 bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
-  //if (parameterObject.isString())
-  //  parameterObject["file"] = parameterObject.asString();
-
   if (parameterObject["file"].isString())
   {
     CStdString file = parameterObject["file"].asString();
