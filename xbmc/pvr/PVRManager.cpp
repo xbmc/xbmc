@@ -63,11 +63,13 @@ CPVRManager::CPVRManager()
   m_bTriggerChannelsUpdate   = false;
   m_bTriggerRecordingsUpdate = false;
   m_bTriggerTimersUpdate     = false;
+  m_channelGroups            = new CPVRChannelGroupsContainer();
 }
 
 CPVRManager::~CPVRManager()
 {
   Stop();
+  delete m_channelGroups;
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
 
@@ -79,11 +81,15 @@ CPVRManager *CPVRManager::Get(void)
   return m_instance;
 }
 
+CPVRChannelGroupsContainer *CPVRManager::GetChannelGroups(void)
+{
+  return Get()->m_channelGroups;
+}
+
 void CPVRManager::Destroy(void)
 {
   if (m_instance)
   {
-    m_instance->Stop();
     delete m_instance;
     m_instance = NULL;
   }
@@ -340,7 +346,7 @@ void CPVRManager::UpdateChannels(void)
 {
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating channel list", __FUNCTION__);
 
-  g_PVRChannelGroups.Update();
+  m_channelGroups->Update();
   UpdateRecordingsCache();
   UpdateWindow(PVR_WINDOW_CHANNELS_TV);
   UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
@@ -384,7 +390,7 @@ void CPVRManager::Process()
   if (!m_bLoaded)
   {
     /* load all channels and groups */
-    g_PVRChannelGroups.Load();
+    m_channelGroups->Load();
 
     /* start the EPG thread */
     g_PVREpgContainer.Start();
@@ -436,7 +442,7 @@ void CPVRManager::Cleanup(void)
   /* unload the rest */
   g_PVRRecordings.Unload();
   g_PVRTimers.Unload();
-  g_PVRChannelGroups.Unload();
+  m_channelGroups->Unload();
   m_bLoaded = false;
 
   /* destroy addons */
@@ -1634,7 +1640,7 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
   if (m_currentPlayingChannel)
   {
     const CPVRChannel *currentChannel = m_currentPlayingChannel->GetPVRChannelInfoTag();
-    const CPVRChannelGroup *group = g_PVRChannelGroups.GetById(currentChannel->IsRadio(), currentChannel->GroupID());
+    const CPVRChannelGroup *group = m_channelGroups->GetById(currentChannel->IsRadio(), currentChannel->GroupID());
     if (group)
     {
       const CPVRChannel *newChannel = bUp ? group->GetByChannelUp(currentChannel) : group->GetByChannelDown(currentChannel);

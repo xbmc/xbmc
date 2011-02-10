@@ -184,7 +184,7 @@ const CPVRChannelGroup *CPVRChannelGroups::GetGroupById(int iGroupId) const
 
   if (iGroupId == XBMC_INTERNAL_GROUPID)
   {
-    group = g_PVRChannelGroups.GetGroupAll(m_bRadio);
+    group = CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio);
   }
   else if (iGroupId > -1)
   {
@@ -290,7 +290,7 @@ bool CPVRChannelGroups::DeleteGroup(int iGroupId)
   if (!database->Open())
     return bReturn;
 
-  const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(m_bRadio);
+  const CPVRChannelGroup *channels = CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio);
 
   /* Delete the group inside Database */
   database->DeleteChannelGroup(iGroupId, m_bRadio);
@@ -339,7 +339,7 @@ int CPVRChannelGroups::GetGroupId(CStdString strGroupName) const
 
 bool CPVRChannelGroups::AddChannelToGroup(const CPVRChannel &channel, int iGroupId)
 {
-  const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(channel.IsRadio());
+  const CPVRChannelGroup *channels = CPVRManager::GetChannelGroups()->GetGroupAll(channel.IsRadio());
   channels->at(channel.ChannelNumber()-1)->SetGroupID(iGroupId);
   return channels->at(channel.ChannelNumber()-1)->Persist();
 }

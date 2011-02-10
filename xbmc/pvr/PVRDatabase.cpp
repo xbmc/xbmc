@@ -24,6 +24,7 @@
 #include "settings/VideoSettings.h"
 #include "utils/log.h"
 
+#include "PVRManager.h"
 #include "channels/PVRChannelGroupsContainer.h"
 #include "channels/PVRChannelGroupInternal.h"
 
@@ -552,7 +553,7 @@ int CPVRDatabase::GetChannelsInGroup(CPVRChannelGroup *group)
 
     while (!m_pDS->eof())
     {
-      CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups.GetGroupAll(group->IsRadio())->GetByChannelIDFromAll(m_pDS->fv("idChannel").get_asInt());
+      CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetGroupAll(group->IsRadio())->GetByChannelIDFromAll(m_pDS->fv("idChannel").get_asInt());
 
       if (channel && group->AddToGroup(channel))
         ++iReturn;

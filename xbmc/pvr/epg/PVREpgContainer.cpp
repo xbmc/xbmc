@@ -43,7 +43,7 @@ bool CPVREpgContainer::CreateChannelEpgs(void)
 {
   for (int radio = 0; radio <= 1; radio++)
   {
-    const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(radio == 1);
+    const CPVRChannelGroup *channels = CPVRManager::GetChannelGroups()->GetGroupAll(radio == 1);
     for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
     {
       CEpg *epg = GetById(channels->at(iChannelPtr)->ChannelID());
@@ -107,7 +107,7 @@ bool CPVREpgContainer::AutoCreateTablesHook(void)
 
 CEpg* CPVREpgContainer::CreateEpg(int iEpgId)
 {
-  CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups.GetChannelById(iEpgId);
+  CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetChannelById(iEpgId);
   if (channel)
   {
     return new CPVREpg(channel);
@@ -185,7 +185,7 @@ int CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFil
 
 int CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
 {
-  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(bRadio);
+  CPVRChannelGroup *channels = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(bRadio);
   int iInitialSize           = results->Size();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
@@ -213,7 +213,7 @@ int CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
 
 int CPVREpgContainer::GetEPGNext(CFileItemList* results, bool bRadio)
 {
-  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(bRadio);
+  CPVRChannelGroup *channels = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(bRadio);
   int iInitialSize           = results->Size();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)

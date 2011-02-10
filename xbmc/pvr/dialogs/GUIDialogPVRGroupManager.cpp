@@ -28,6 +28,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 
+#include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace std;
@@ -95,7 +96,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
         {
           if (strDescription != "")
           {
-            ((CPVRChannelGroups *) g_PVRChannelGroups.Get(m_bIsRadio))->AddGroup(strDescription);
+            ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->AddGroup(strDescription);
             Update();
           }
         }
@@ -110,7 +111,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
         if (pDialog)
         {
           CStdString groupName;
-          g_PVRChannelGroups.Get(m_bIsRadio)->GetGroupName(atoi(pItemGroup->m_strPath.c_str()));
+          CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetGroupName(atoi(pItemGroup->m_strPath.c_str()));
 
           pDialog->SetHeading(117);
           pDialog->SetLine(0, "");
@@ -120,7 +121,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
 
           if (pDialog->IsConfirmed())
           {
-            ((CPVRChannelGroups *) g_PVRChannelGroups.Get(m_bIsRadio))->DeleteGroup(atoi(pItemGroup->m_strPath.c_str()));
+            ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->DeleteGroup(atoi(pItemGroup->m_strPath.c_str()));
             Update();
           }
         }
@@ -132,7 +133,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
         {
           if (m_CurrentGroupName != "")
           {
-            CPVRChannelGroup *group = (CPVRChannelGroup *) g_PVRChannelGroups.Get(m_bIsRadio)->GetById(atoi(m_channelGroupItems->Get(m_iSelectedGroup)->m_strPath.c_str()));
+            CPVRChannelGroup *group = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetById(atoi(m_channelGroupItems->Get(m_iSelectedGroup)->m_strPath.c_str()));
             if (group)
               group->SetGroupName(m_CurrentGroupName, true);
 
@@ -155,7 +156,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
           {
             CFileItemPtr pItemGroup   = m_channelGroupItems->Get(m_iSelectedGroup);
             CFileItemPtr pItemChannel = m_channelLeftItems->Get(m_iSelectedLeft);
-            ((CPVRChannelGroups *) g_PVRChannelGroups.Get(m_bIsRadio))->AddChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), atoi(pItemGroup->m_strPath.c_str()));
+            ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->AddChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), atoi(pItemGroup->m_strPath.c_str()));
             Update();
           }
           return true;
@@ -171,7 +172,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
           if (m_channelRightItems->GetFileCount() > 0)
           {
             CFileItemPtr pItemChannel = m_channelRightItems->Get(m_iSelectedRight);
-            ((CPVRChannelGroups *) g_PVRChannelGroups.Get(m_bIsRadio))->AddChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), 0);
+            ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->AddChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), 0);
             Update();
           }
           return true;
@@ -233,12 +234,12 @@ void CGUIDialogPVRGroupManager::Update()
   // empty the lists ready for population
   Clear();
 
-  int groups = g_PVRChannelGroups.Get(m_bIsRadio)->GetGroupList(m_channelGroupItems);
+  int groups = CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetGroupList(m_channelGroupItems);
 
   m_viewControlGroup.SetItems(*m_channelGroupItems);
   m_viewControlGroup.SetSelectedItem(m_iSelectedGroup);
 
-  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(m_bIsRadio);
+  CPVRChannelGroup *channels = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(m_bIsRadio);
   channels->GetChannels(m_channelLeftItems, 0);
   m_viewControlLeft.SetItems(*m_channelLeftItems);
   m_viewControlLeft.SetSelectedItem(m_iSelectedLeft);

@@ -21,15 +21,17 @@
 
 #include "PVRChannelGroupsContainer.h"
 
-CPVRChannelGroupsContainer g_PVRChannelGroups;
-
 CPVRChannelGroupsContainer::CPVRChannelGroupsContainer(void)
 {
+
+  m_groupsRadio = new CPVRChannelGroups(true);
+  m_groupsTV    = new CPVRChannelGroups(false);
 }
 
 CPVRChannelGroupsContainer::~CPVRChannelGroupsContainer(void)
 {
-  Unload();
+  delete m_groupsRadio;
+  delete m_groupsTV;
 }
 
 bool CPVRChannelGroupsContainer::Update(void)
@@ -42,26 +44,14 @@ bool CPVRChannelGroupsContainer::Load(void)
 {
   Unload();
 
-  m_groupsRadio = new CPVRChannelGroups(true);
-  m_groupsTV    = new CPVRChannelGroups(false);
-
   return m_groupsRadio->Load() &&
          m_groupsTV->Load();
 }
 
 void CPVRChannelGroupsContainer::Unload(void)
 {
-  if (m_groupsRadio)
-  {
-    delete m_groupsRadio;
-    m_groupsRadio = NULL;
-  }
-
-  if (m_groupsTV)
-  {
-    delete m_groupsTV;
-    m_groupsTV = NULL;
-  }
+  m_groupsRadio->Clear();
+  m_groupsTV->Clear();
 }
 
 const CPVRChannelGroups *CPVRChannelGroupsContainer::Get(bool bRadio) const

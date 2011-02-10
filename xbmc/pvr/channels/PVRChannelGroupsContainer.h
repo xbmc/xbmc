@@ -116,4 +116,3 @@ public:
   const CPVRChannel *GetChannelById(int iChannelId) const;
 };
 
-extern CPVRChannelGroupsContainer g_PVRChannelGroups; /*!< The channel groups container, containing all TV and radio channel groups. */

@@ -3238,7 +3238,7 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
     {
       CPVRChannel* channeltag = m_currentFile->GetPVRChannelInfoTag();
       if (channeltag && channeltag->IsRadio())
-        return g_PVRChannelGroups.GetRadio()->GetGroupName(CPVRManager::Get()->GetPlayingGroup());
+        return CPVRManager::GetChannelGroups()->GetRadio()->GetGroupName(CPVRManager::Get()->GetPlayingGroup());
     }
     break;
   }
@@ -3336,7 +3336,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_CHANNEL_GROUP:
       {
         if (tag && !tag->IsRadio())
-          return g_PVRChannelGroups.GetTV()->GetGroupName(CPVRManager::Get()->GetPlayingGroup());
+          return CPVRManager::GetChannelGroups()->GetTV()->GetGroupName(CPVRManager::Get()->GetPlayingGroup());
       }
     }
   }

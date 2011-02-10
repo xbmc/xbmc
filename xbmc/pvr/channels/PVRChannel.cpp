@@ -193,7 +193,7 @@ bool CPVRChannel::SetGroupID(int iChannelGroupId, bool bSaveInDb /* = false */)
 
   if (m_iChannelGroupId != iChannelGroupId)
   {
-    const CPVRChannelGroups *groups = g_PVRChannelGroups.Get(IsRadio());
+    const CPVRChannelGroups *groups = CPVRManager::GetChannelGroups()->Get(IsRadio());
 
     if (bRemoveFromOldGroup)
     {

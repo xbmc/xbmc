@@ -374,7 +374,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_GROUP_SELECTION);
         if (pSpin)
         {
-          if (g_PVRChannelGroups.Get(m_bIsRadio)->size() == 0)
+          if (CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->size() == 0)
             return true;
 
           CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
@@ -436,7 +436,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
           pSpin->Clear();
           pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
 
-          CPVRChannelGroups *groups = (CPVRChannelGroups *) g_PVRChannelGroups.Get(m_bIsRadio);
+          CPVRChannelGroups *groups = (CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio);
           for (unsigned int iGroupPtr = 0; iGroupPtr < groups->size(); iGroupPtr++)
             pSpin->AddLabel(groups->at(iGroupPtr)->GroupName(), groups->at(iGroupPtr)->GroupID());
 
@@ -693,7 +693,7 @@ void CGUIDialogPVRChannelManager::Update()
   // empty the lists ready for population
   Clear();
 
-  const CPVRChannelGroup *channels = g_PVRChannelGroups.GetGroupAll(m_bIsRadio);
+  const CPVRChannelGroup *channels = CPVRManager::GetChannelGroups()->GetGroupAll(m_bIsRadio);
 
   // No channels available, nothing to do.
   if( !channels )
@@ -734,7 +734,7 @@ void CGUIDialogPVRChannelManager::Update()
     pSpin->Clear();
     pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
 
-    CPVRChannelGroups *groups = (CPVRChannelGroups *) g_PVRChannelGroups.Get(m_bIsRadio);
+    CPVRChannelGroups *groups = (CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio);
     for (unsigned int iGroupPtr = 0; iGroupPtr < groups->size(); iGroupPtr++)
       pSpin->AddLabel(groups->at(iGroupPtr)->GroupName(), groups->at(iGroupPtr)->GroupID());
   }

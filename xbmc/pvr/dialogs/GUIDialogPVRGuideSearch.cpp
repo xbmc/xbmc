@@ -28,6 +28,7 @@
 #include "guilib/GUIWindowManager.h"
 
 #include "addons/include/xbmc_pvr_types.h"
+#include "pvr/PVRManager.h"
 #include "pvr/epg/PVREpgSearchFilter.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
@@ -107,7 +108,7 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
         if (pSpin)
         {
           CFileItemList channelslist_tv;
-          g_PVRChannelGroups.GetGroupAllTV()->GetChannels(&channelslist_tv, m_searchfilter->m_iChannelGroup);
+          CPVRManager::GetChannelGroups()->GetGroupAllTV()->GetChannels(&channelslist_tv, m_searchfilter->m_iChannelGroup);
 
           pSpin->Clear();
           pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
@@ -318,7 +319,7 @@ void CGUIDialogPVRGuideSearch::Update()
   if (pSpin)
   {
     CFileItemList channelslist_tv;
-    ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAllTV())->GetChannels(&channelslist_tv, m_searchfilter->m_iChannelGroup);
+    ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAllTV())->GetChannels(&channelslist_tv, m_searchfilter->m_iChannelGroup);
 
     pSpin->Clear();
     pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
@@ -340,7 +341,7 @@ void CGUIDialogPVRGuideSearch::Update()
   if (pSpin)
   {
     CFileItemList grouplist;
-    g_PVRChannelGroups.GetTV()->GetGroupList(&grouplist);
+    CPVRManager::GetChannelGroups()->GetTV()->GetGroupList(&grouplist);
 
     pSpin->Clear();
     pSpin->AddLabel(g_localizeStrings.Get(593), -1);

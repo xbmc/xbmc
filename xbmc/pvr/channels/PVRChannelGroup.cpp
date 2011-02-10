@@ -325,8 +325,8 @@ void CPVRChannelGroup::SearchMissingChannelIcons()
 {
   CLog::Log(LOGINFO, "PVRChannelGroup - %s - Manual Channel Icon search started...",
       __FUNCTION__);
-  ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAllTV())->SearchAndSetChannelIcons(true);
-  ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAllRadio())->SearchAndSetChannelIcons(true);
+  ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAllTV())->SearchAndSetChannelIcons(true);
+  ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAllRadio())->SearchAndSetChannelIcons(true);
   // TODO: Add Process dialog here
   CGUIDialogOK::ShowAndGetInput(19103,0,20177,0);
 }
@@ -347,13 +347,13 @@ const CPVRChannel *CPVRChannelGroup::GetByPath(const CStdString &strPath)
   {
     strFileName.erase(0,16);
     iChannelNumber = atoi(strFileName.c_str());
-    channels = g_PVRChannelGroups.GetGroupAllTV();
+    channels = CPVRManager::GetChannelGroups()->GetGroupAllTV();
   }
   else if (strFileName.Left(19) == "channels/radio/all/")
   {
     strFileName.erase(0,19);
     iChannelNumber = atoi(strFileName.c_str());
-    channels = g_PVRChannelGroups.GetGroupAllRadio();
+    channels = CPVRManager::GetChannelGroups()->GetGroupAllRadio();
   }
 
   return channels ? channels->GetByChannelNumber(iChannelNumber) : NULL;
@@ -399,12 +399,12 @@ bool CPVRChannelGroup::GetDirectory(const CStdString& strPath, CFileItemList &re
   {
     if (fileName.substr(12) == ".hidden")
     {
-      g_PVRChannelGroups.GetGroupAllTV()->GetChannels(&results, -1, true);
+      CPVRManager::GetChannelGroups()->GetGroupAllTV()->GetChannels(&results, -1, true);
     }
     else
     {
-      int iGroupID = g_PVRChannelGroups.GetTV()->GetGroupId(fileName.substr(12));
-      g_PVRChannelGroups.GetGroupAllTV()->GetChannels(&results, iGroupID, false);
+      int iGroupID = CPVRManager::GetChannelGroups()->GetTV()->GetGroupId(fileName.substr(12));
+      CPVRManager::GetChannelGroups()->GetGroupAllTV()->GetChannels(&results, iGroupID, false);
     }
     return true;
   }
@@ -412,12 +412,12 @@ bool CPVRChannelGroup::GetDirectory(const CStdString& strPath, CFileItemList &re
   {
     if (fileName.substr(15) == ".hidden")
     {
-      g_PVRChannelGroups.GetGroupAllRadio()->GetChannels(&results, -1, true);
+      CPVRManager::GetChannelGroups()->GetGroupAllRadio()->GetChannels(&results, -1, true);
     }
     else
     {
-      int iGroupID = g_PVRChannelGroups.GetRadio()->GetGroupId(fileName.substr(15));
-      g_PVRChannelGroups.GetGroupAllRadio()->GetChannels(&results, iGroupID, false);
+      int iGroupID = CPVRManager::GetChannelGroups()->GetRadio()->GetGroupId(fileName.substr(15));
+      CPVRManager::GetChannelGroups()->GetGroupAllRadio()->GetChannels(&results, iGroupID, false);
     }
     return true;
   }
@@ -427,7 +427,7 @@ bool CPVRChannelGroup::GetDirectory(const CStdString& strPath, CFileItemList &re
 
 int CPVRChannelGroup::GetNumChannelsFromAll()
 {
-  return g_PVRChannelGroups.GetGroupAllTV()->GetNumChannels() + g_PVRChannelGroups.GetGroupAllRadio()->GetNumChannels();
+  return CPVRManager::GetChannelGroups()->GetGroupAllTV()->GetNumChannels() + CPVRManager::GetChannelGroups()->GetGroupAllRadio()->GetNumChannels();
 }
 
 
@@ -435,10 +435,10 @@ const CPVRChannel *CPVRChannelGroup::GetByClientFromAll(int iClientChannelNumber
 {
   const CPVRChannel *channel = NULL;
 
-  channel = g_PVRChannelGroups.GetGroupAllTV()->GetByClient(iClientChannelNumber, iClientID);
+  channel = CPVRManager::GetChannelGroups()->GetGroupAllTV()->GetByClient(iClientChannelNumber, iClientID);
 
   if (channel == NULL)
-    channel = g_PVRChannelGroups.GetGroupAllRadio()->GetByClient(iClientChannelNumber, iClientID);
+    channel = CPVRManager::GetChannelGroups()->GetGroupAllRadio()->GetByClient(iClientChannelNumber, iClientID);
 
   return channel;
 }
@@ -447,10 +447,10 @@ const CPVRChannel *CPVRChannelGroup::GetByChannelIDFromAll(int iChannelID)
 {
   const CPVRChannel *channel = NULL;
 
-  channel = g_PVRChannelGroups.GetGroupAllTV()->GetByChannelID(iChannelID);
+  channel = CPVRManager::GetChannelGroups()->GetGroupAllTV()->GetByChannelID(iChannelID);
 
   if (channel == NULL)
-    channel = g_PVRChannelGroups.GetGroupAllRadio()->GetByChannelID(iChannelID);
+    channel = CPVRManager::GetChannelGroups()->GetGroupAllRadio()->GetByChannelID(iChannelID);
 
   return channel;
 }
@@ -459,10 +459,10 @@ const CPVRChannel *CPVRChannelGroup::GetByUniqueIDFromAll(int iUniqueID)
 {
   const CPVRChannel *channel;
 
-  channel = g_PVRChannelGroups.GetGroupAllTV()->GetByUniqueID(iUniqueID);
+  channel = CPVRManager::GetChannelGroups()->GetGroupAllTV()->GetByUniqueID(iUniqueID);
 
   if (channel == NULL)
-    channel = g_PVRChannelGroups.GetGroupAllRadio()->GetByUniqueID(iUniqueID);
+    channel = CPVRManager::GetChannelGroups()->GetGroupAllRadio()->GetByUniqueID(iUniqueID);
 
   return NULL;
 }
@@ -571,8 +571,8 @@ bool CPVRChannelGroup::PersistChannels(void)
 
 bool CPVRChannelGroup::GetGroupsDirectory(const CStdString &strBase, CFileItemList *results, bool bRadio)
 {
-  const CPVRChannelGroup * channels = g_PVRChannelGroups.GetGroupAll(bRadio);
-  const CPVRChannelGroups *channelGroups  = g_PVRChannelGroups.Get(bRadio);
+  const CPVRChannelGroup * channels = CPVRManager::GetChannelGroups()->GetGroupAll(bRadio);
+  const CPVRChannelGroups *channelGroups  = CPVRManager::GetChannelGroups()->Get(bRadio);
   CFileItemPtr item;
 
   item.reset(new CFileItem(strBase + "/all/", true));
