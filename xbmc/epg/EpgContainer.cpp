@@ -292,13 +292,20 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     /* interrupt the update on exit */
     if (m_bStop)
     {
+      CLog::Log(LOGNOTICE, "EpgContainer - %s - EPG load/update interrupted", __FUNCTION__);
       bUpdateSuccess = false;
       break;
     }
 
-    bUpdateSuccess = m_bDatabaseLoaded ?
-        (at(iEpgPtr)->Update(start, end, !m_bIgnoreDbForClient) && bUpdateSuccess) :
-        (at(iEpgPtr)->Load() && bUpdateSuccess);
+    bool bCurrent = m_bDatabaseLoaded ?
+        at(iEpgPtr)->Update(start, end, !m_bIgnoreDbForClient) :
+        at(iEpgPtr)->Load() && bUpdateSuccess;
+
+    if (!bCurrent)
+      CLog::Log(LOGERROR, "EpgContainer - %s - failed to update table %d",
+          __FUNCTION__, iEpgPtr);
+
+    bUpdateSuccess = bCurrent && bUpdateSuccess;
 
     if (bShowProgress)
     {
@@ -322,8 +329,8 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     progress->Close();
 
   long lUpdateTime = CTimeUtils::GetTimeMS() - iStartTime;
-  CLog::Log(LOGINFO, "EpgContainer - %s - finished %s the EPG after %li.%li seconds",
-      __FUNCTION__, m_bDatabaseLoaded ? "updating" : "loading", lUpdateTime / 1000, lUpdateTime % 1000);
+  CLog::Log(LOGINFO, "EpgContainer - %s - finished %s %d EPG tables after %li.%li seconds",
+      __FUNCTION__, m_bDatabaseLoaded ? "updating" : "loading", iEpgCount, lUpdateTime / 1000, lUpdateTime % 1000);
 
   /* only try to load the database once */
   m_bDatabaseLoaded = true;

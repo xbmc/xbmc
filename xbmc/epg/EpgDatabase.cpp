@@ -205,6 +205,15 @@ int CEpgDatabase::Get(CEpgContainer *container)
         CEpg newEpg(iEpgID, strName, strScraperName);
         if (container->UpdateEntry(newEpg))
           ++iReturn;
+        else
+        {
+          CLog::Log(LOGERROR, "%s - deleting EPG table %d from the database",
+              __FUNCTION__, iEpgID);
+
+          CStdString strWhereClause = FormatSQL("idEpg = %u", iEpgID);
+          DeleteValues("epgtags", strWhereClause);
+          DeleteValues("epg", strWhereClause);
+        }
 
         m_pDS->next();
       }
