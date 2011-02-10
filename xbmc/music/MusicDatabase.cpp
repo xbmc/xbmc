@@ -736,7 +736,6 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
   item->GetMusicInfoTag()->SetReleaseDate(stTime);
   item->GetMusicInfoTag()->SetTitle(m_pDS->fv(song_strTitle).get_asString());
   item->SetLabel(m_pDS->fv(song_strTitle).get_asString());
-  //song.iTimesPlayed = m_pDS->fv(song_iTimesPlayed).get_asInt();
   item->m_lStartOffset = m_pDS->fv(song_iStartOffset).get_asInt();
   item->m_lEndOffset = m_pDS->fv(song_iEndOffset).get_asInt();
   item->GetMusicInfoTag()->SetMusicBrainzTrackID(m_pDS->fv(song_strMusicBrainzTrackID).get_asString());
@@ -746,6 +745,7 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
   item->GetMusicInfoTag()->SetMusicBrainzTRMID(m_pDS->fv(song_strMusicBrainzTRMID).get_asString());
   item->GetMusicInfoTag()->SetRating(m_pDS->fv(song_rating).get_asChar());
   item->GetMusicInfoTag()->SetComment(m_pDS->fv(song_comment).get_asString());
+  item->GetMusicInfoTag()->SetPlayCount(m_pDS->fv(song_iTimesPlayed).get_asInt());
   CStdString strRealPath;
   URIUtils::AddFileToFolder(m_pDS->fv(song_strPath).get_asString(), m_pDS->fv(song_strFileName).get_asString(), strRealPath);
   item->GetMusicInfoTag()->SetURL(strRealPath);

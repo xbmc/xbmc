@@ -981,6 +981,7 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
   else if (info.Equals("exists")) return MUSICPLAYER_EXISTS;
   else if (info.Equals("hasprevious")) return MUSICPLAYER_HASPREVIOUS;
   else if (info.Equals("hasnext")) return MUSICPLAYER_HASNEXT;
+  else if (info.Equals("playcount")) return MUSICPLAYER_PLAYCOUNT;
   return 0;
 }
 
@@ -1129,6 +1130,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case MUSICPLAYER_RATING:
   case MUSICPLAYER_COMMENT:
   case MUSICPLAYER_LYRICS:
+  case MUSICPLAYER_PLAYCOUNT:
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
@@ -3076,6 +3078,8 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
     return GetItemLabel(item, LISTITEM_COMMENT);
   case MUSICPLAYER_DURATION:
     return GetItemLabel(item, LISTITEM_DURATION);
+  case MUSICPLAYER_PLAYCOUNT:
+    return GetItemLabel(item, LISTITEM_PLAYCOUNT);
   }
   return "";
 }
@@ -3740,6 +3744,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       CStdString strPlayCount;
       if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_playCount > 0)
         strPlayCount.Format("%i", item->GetVideoInfoTag()->m_playCount);
+      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetPlayCount() > 0)
+        strPlayCount.Format("%i", item->GetMusicInfoTag()->GetPlayCount());
       return strPlayCount;
     }
   case LISTITEM_LASTPLAYED:
