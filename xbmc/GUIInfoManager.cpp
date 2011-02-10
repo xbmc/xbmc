@@ -1143,7 +1143,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case PVR_ACTUAL_STREAM_CRYPTION:
   case PVR_ACTUAL_STREAM_SIG:
   case PVR_ACTUAL_STREAM_SNR:
-    strLabel = g_PVRManager.TranslateCharInfo(info);
+    strLabel = CPVRManager::Get()->TranslateCharInfo(info);
     break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
@@ -1829,7 +1829,7 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
     case PVR_PLAYING_PROGRESS:
     case PVR_ACTUAL_STREAM_SIG_PROGR:
     case PVR_ACTUAL_STREAM_SNR_PROGR:
-      return g_PVRManager.TranslateIntInfo(info);
+      return CPVRManager::Get()->TranslateIntInfo(info);
   }
   return 0;
 }
@@ -1954,7 +1954,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (condition >= PVR_IS_RECORDING && condition <= PVR_IS_RECORDING+20)
-    bReturn = g_PVRManager.TranslateBoolInfo(condition);
+    bReturn = CPVRManager::Get()->TranslateBoolInfo(condition);
 
   else if (condition == SYSTEM_INTERNET_STATE)
   {
@@ -3238,7 +3238,7 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
     {
       CPVRChannel* channeltag = m_currentFile->GetPVRChannelInfoTag();
       if (channeltag && channeltag->IsRadio())
-        return g_PVRChannelGroups.GetRadio()->GetGroupName(g_PVRManager.GetPlayingGroup());
+        return g_PVRChannelGroups.GetRadio()->GetGroupName(CPVRManager::Get()->GetPlayingGroup());
     }
     break;
   }
@@ -3336,7 +3336,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_CHANNEL_GROUP:
       {
         if (tag && !tag->IsRadio())
-          return g_PVRChannelGroups.GetTV()->GetGroupName(g_PVRManager.GetPlayingGroup());
+          return g_PVRChannelGroups.GetTV()->GetGroupName(CPVRManager::Get()->GetPlayingGroup());
       }
     }
   }

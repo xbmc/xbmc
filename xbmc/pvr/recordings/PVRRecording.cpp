@@ -65,7 +65,7 @@ bool CPVRRecordingInfoTag::operator !=(const CPVRRecordingInfoTag& right) const
 void CPVRRecordingInfoTag::Reset(void)
 {
   m_clientIndex           = -1;
-  m_clientID              = g_PVRManager.GetFirstClientID(); // Temporary until we support multiple backends
+  m_clientID              = CPVRManager::Get()->GetFirstClientID(); // Temporary until we support multiple backends
   m_strChannel            = "";
   m_strDirectory          = "";
   m_recordingTime         = NULL;
@@ -92,7 +92,7 @@ bool CPVRRecordingInfoTag::Delete(void) const
 {
   try
   {
-    CLIENTMAP *clients = g_PVRManager.Clients();
+    CLIENTMAP *clients = CPVRManager::Get()->Clients();
 
     /* and write it to the backend */
     PVR_ERROR err = clients->find(m_clientID)->second->DeleteRecording(*this);
@@ -114,7 +114,7 @@ bool CPVRRecordingInfoTag::Rename(const CStdString &newName) const
 {
   try
   {
-    CLIENTMAP *clients = g_PVRManager.Clients();
+    CLIENTMAP *clients = CPVRManager::Get()->Clients();
 
     /* and write it to the backend */
     PVR_ERROR err = clients->find(m_clientID)->second->RenameRecording(*this, newName);

@@ -42,7 +42,7 @@ CPVRRecordings::CPVRRecordings(void)
 void CPVRRecordings::Process()
 {
   CSingleLock lock(m_critSection);
-  CLIENTMAP *clients = g_PVRManager.Clients();
+  CLIENTMAP *clients = CPVRManager::Get()->Clients();
 
   Clear();
 

@@ -1918,17 +1918,17 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("pvrmanager.resetdb"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
-      g_PVRManager.ResetDatabase();
+      CPVRManager::Get()->ResetDatabase();
   }
   else if (strSetting.Equals("pvrepg.resetepg"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188, 750, 0))
-      g_PVRManager.ResetEPG();
+      CPVRManager::Get()->ResetEPG();
   }
   else if (strSetting.Equals("pvrmanager.channelscan"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19118, 19194, 0))
-      g_PVRManager.StartChannelScan();
+      CPVRManager::Get()->StartChannelScan();
   }
   else if (strSetting.Equals("pvrmanager.channelmanager"))
   {

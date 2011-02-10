@@ -483,7 +483,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         {
           if (pItem->GetPropertyBOOL("Virtual"))
           {
-            CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+            CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
             database->Open();
             database->Delete(*pItem->GetPVRChannelInfoTag());
             database->Close();
@@ -509,7 +509,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         pDlgSelect->Add(g_localizeStrings.Get(19209));
         clients.push_back(999);
         CLIENTMAPITR itr;
-        for (itr = g_PVRManager.Clients()->begin() ; itr != g_PVRManager.Clients()->end(); itr++)
+        for (itr = CPVRManager::Get()->Clients()->begin() ; itr != CPVRManager::Get()->Clients()->end(); itr++)
         {
           CStdString strClient = (*itr).second->GetBackendName() + ":" + (*itr).second->GetConnectionString();
           clients.push_back((*itr).first);
@@ -537,7 +537,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
                 newchannel.SetStreamURL(strURL);
                 newchannel.SetClientID(999);
 
-                CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+                CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
                 database->Open();
                 database->Persist(newchannel);
                 database->Close();
@@ -722,7 +722,7 @@ void CGUIDialogPVRChannelManager::Update()
     if (channel->ClientID() == 999) /* XBMC internal */
       clientName = g_localizeStrings.Get(19209);
     else
-      clientName = g_PVRManager.Clients()->find(channel->ClientID())->second->GetBackendName() + ":" + g_PVRManager.Clients()->find(channel->ClientID())->second->GetConnectionString();
+      clientName = CPVRManager::Get()->Clients()->find(channel->ClientID())->second->GetBackendName() + ":" + CPVRManager::Get()->Clients()->find(channel->ClientID())->second->GetConnectionString();
     channelFile->SetProperty("ClientName", clientName);
 
     m_channelItems->Add(channelFile);
@@ -765,7 +765,7 @@ void CGUIDialogPVRChannelManager::SaveList() // XXX investigate: renumbering doe
   if (!m_bContainsChanges)
    return;
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
   database->Open();
 
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
@@ -842,7 +842,7 @@ void CGUIDialogPVRChannelManager::SaveList() // XXX investigate: renumbering doe
   if (bHasChangedItems)
   {
     database->CommitInsertQueries();
-    g_PVRManager.Start(); // XXX not a nice way to refresh the channels, but works for now
+    CPVRManager::Get()->Start(); // XXX not a nice way to refresh the channels, but works for now
   }
 
   database->Close();

@@ -97,7 +97,7 @@ CPVRChannel::CPVRChannel()
 bool CPVRChannel::Delete(void)
 {
   bool bReturn = false;
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
   if (!database || !database->Open())
     return bReturn;
 
@@ -131,7 +131,7 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
 
 bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
 {
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
   if (database)
   {
     database->Open();

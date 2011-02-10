@@ -36,7 +36,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag()
   m_bValidSummary      = false;
   m_bIsActive          = false;
   m_iChannelNumber     = -1;
-  m_iClientID          = g_PVRManager.GetFirstClientID();
+  m_iClientID          = CPVRManager::Get()->GetFirstClientID();
   m_iClientIndex       = -1;
   m_iClientNumber      = -1;
   m_bIsRadio           = false;
@@ -202,7 +202,7 @@ bool CPVRTimerInfoTag::AddToClient() const
 {
   try
   {
-    CLIENTMAP *clients = g_PVRManager.Clients();
+    CLIENTMAP *clients = CPVRManager::Get()->Clients();
 
     /* and write it to the backend */
     PVR_ERROR err = clients->find(m_iClientID)->second->AddTimer(*this);
@@ -210,7 +210,7 @@ bool CPVRTimerInfoTag::AddToClient() const
       throw err;
 
     if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
-      g_PVRManager.TriggerRecordingsUpdate();
+      CPVRManager::Get()->TriggerRecordingsUpdate();
 
     return true;
   }
@@ -225,7 +225,7 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool force) const
 {
   try
   {
-    CLIENTMAP *clients = g_PVRManager.Clients();
+    CLIENTMAP *clients = CPVRManager::Get()->Clients();
 
     /* and write it to the backend */
     PVR_ERROR err = clients->find(m_iClientID)->second->DeleteTimer(*this, force);
@@ -252,7 +252,7 @@ bool CPVRTimerInfoTag::RenameOnClient(const CStdString &newname) const
 {
   try
   {
-    CLIENTMAP *clients = g_PVRManager.Clients();
+    CLIENTMAP *clients = CPVRManager::Get()->Clients();
 
     /* and write it to the backend */
     PVR_ERROR err = clients->find(m_iClientID)->second->RenameTimer(*this, newname);
@@ -277,7 +277,7 @@ bool CPVRTimerInfoTag::UpdateOnClient() const
 {
   try
   {
-    CLIENTMAP *clients = g_PVRManager.Clients();
+    CLIENTMAP *clients = CPVRManager::Get()->Clients();
 
     /* and write it to the backend */
     PVR_ERROR err = clients->find(m_iClientID)->second->UpdateTimer(*this);
@@ -285,7 +285,7 @@ bool CPVRTimerInfoTag::UpdateOnClient() const
       throw err;
 
     if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
-      g_PVRManager.TriggerRecordingsUpdate();
+      CPVRManager::Get()->TriggerRecordingsUpdate();
 
     return true;
   }

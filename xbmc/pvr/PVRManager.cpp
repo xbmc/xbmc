@@ -54,6 +54,8 @@ using namespace ADDON;
 
 #define INFO_TOGGLE_TIME 1500
 
+CPVRManager *CPVRManager::m_instance = NULL;
+
 CPVRManager::CPVRManager()
 {
   m_bFirstStart              = true;
@@ -67,6 +69,24 @@ CPVRManager::~CPVRManager()
 {
   Stop();
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
+}
+
+CPVRManager *CPVRManager::Get(void)
+{
+  if (!m_instance)
+    m_instance = new CPVRManager();
+
+  return m_instance;
+}
+
+void CPVRManager::Destroy(void)
+{
+  if (m_instance)
+  {
+    m_instance->Stop();
+    delete m_instance;
+    m_instance = NULL;
+  }
 }
 
 void CPVRManager::Start()
@@ -1725,4 +1745,3 @@ int CPVRManager::GetStartTime()
   }
 }
 
-CPVRManager g_PVRManager;

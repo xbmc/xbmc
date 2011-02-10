@@ -142,7 +142,7 @@ bool CPVRChannelGroups::Load(void)
   internalChannels->Load();
 
   /* load the other groups from the database */
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
   database->Open();
 
   database->GetChannelGroupList(*this, m_bRadio);
@@ -286,7 +286,7 @@ bool CPVRChannelGroups::DeleteGroup(int iGroupId)
 {
   bool bReturn = false;
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
   if (!database->Open())
     return bReturn;
 

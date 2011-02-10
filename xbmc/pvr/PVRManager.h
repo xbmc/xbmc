@@ -44,16 +44,28 @@ class CPVRManager : IPVRClientCallback
                   , public ADDON::IAddonMgrCallback
                   , private CThread
 {
-public:
+private:
   /*!
    * @brief Create a new CPVRManager instance, which handles all PVR related operations in XBMC.
    */
   CPVRManager(void);
 
+public:
   /*!
    * @brief Stop the PVRManager and destroy all objects it created.
    */
-  ~CPVRManager(void);
+  virtual ~CPVRManager(void);
+
+  /*!
+   * @brief Get the instance of the PVRManager.
+   * @return The PVRManager instance.
+   */
+  static CPVRManager *Get(void);
+
+  /*!
+   * @brief Clean up and destroy the PVRManager.
+   */
+  static void Destroy(void);
 
   /** @name Startup function */
   //@{
@@ -63,11 +75,15 @@ public:
    */
   void Start(void);
 
+private:
+
   /*!
    * @brief Stop the PVRManager and destroy all objects it created.
    */
   void Stop(void);
   //@}
+
+public:
 
   /** @name External client access functions */
   //@{
@@ -592,6 +608,7 @@ private:
 
   /** @name General PVRManager data */
   //@{
+  static CPVRManager *m_instance;                 /*!< singleton instance */
   CLIENTMAP           m_clients;                  /*!< pointer to each enabled client */
   CLIENTPROPS         m_clientsProps;             /*!< store the properties of each client locally */
   STREAMPROPS         m_streamProps;              /*!< the current stream's properties */
@@ -645,5 +662,3 @@ private:
   DWORD               m_scanStart;                /* Scan start time to check for non present streams */
   PVR_SIGNALQUALITY   m_qualityInfo;              /* Stream quality information */
 };
-
-extern CPVRManager g_PVRManager;

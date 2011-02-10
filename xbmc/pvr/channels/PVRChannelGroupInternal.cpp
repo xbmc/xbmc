@@ -75,7 +75,7 @@ void CPVRChannelGroupInternal::Unload()
 bool CPVRChannelGroupInternal::Update()
 {
   bool          bReturn  = false;
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
 
   if (database && database->Open())
   {
@@ -181,8 +181,8 @@ bool CPVRChannelGroupInternal::HideChannel(CPVRChannel *channel, bool bShowDialo
 
   /* check if this channel is currently playing if we are hiding it */
   if (!channel->IsHidden() &&
-      (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
-      (g_PVRManager.GetCurrentPlayingItem()->GetPVRChannelInfoTag() == channel))
+      (CPVRManager::Get()->IsPlayingTV() || CPVRManager::Get()->IsPlayingRadio()) &&
+      (CPVRManager::Get()->GetCurrentPlayingItem()->GetPVRChannelInfoTag() == channel))
   {
     CGUIDialogOK::ShowAndGetInput(19098,19101,0,19102);
     return bReturn;
@@ -210,7 +210,7 @@ bool CPVRChannelGroupInternal::HideChannel(CPVRChannel *channel, bool bShowDialo
 
 int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 {
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
   if (!database || !database->Open())
     return -1;
 
@@ -276,7 +276,7 @@ void CPVRChannelGroupInternal::ReNumberAndCheck(void)
 
 int CPVRChannelGroupInternal::GetFromClients(void)
 {
-  CLIENTMAP *clients = g_PVRManager.Clients();
+  CLIENTMAP *clients = CPVRManager::Get()->Clients();
   if (!clients)
     return 0;
 
@@ -298,7 +298,7 @@ int CPVRChannelGroupInternal::GetFromClients(void)
 bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
 {
   /* the database has already been opened */
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
 
   int iSize = size();
   for (int ptr = 0; ptr < iSize; ptr++)

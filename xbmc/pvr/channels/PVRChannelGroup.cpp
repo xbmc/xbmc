@@ -68,7 +68,7 @@ int CPVRChannelGroup::Load(void)
 
   int iReturn = 0;
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
   database->Open();
 
   iReturn = database->GetChannelsInGroup(this);
@@ -111,7 +111,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   if (g_guiSettings.GetString("pvrmenu.iconpath") == "")
     return;
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
   database->Open();
 
   for (unsigned int ptr = 0; ptr < size(); ptr++)
@@ -537,7 +537,7 @@ bool CPVRChannelGroup::PersistChannels(void)
 {
   bool bReturn = false;
   bool bRefreshChannelList = false;
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
 
   if (!database->Open())
     return bReturn;
@@ -684,7 +684,7 @@ bool CPVRChannelGroup::SetGroupName(const CStdString &strGroupName, bool bSaveIn
 
 bool CPVRChannelGroup::Persist(bool bQueueWrite /* = false */)
 {
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
   if (database)
   {
     database->Open();

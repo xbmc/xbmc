@@ -425,11 +425,11 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       {
         CPVRChannel channel;
         int iChannelNumber = -1;
-        g_PVRManager.GetCurrentChannel(&channel);
+        CPVRManager::Get()->GetCurrentChannel(&channel);
 
         if (action.GetID() == REMOTE_0)
         {
-          iChannelNumber = g_PVRManager.GetPreviousChannel();
+          iChannelNumber = CPVRManager::Get()->GetPreviousChannel();
         }
         else
         {
@@ -697,7 +697,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       {
         int iNewGroup = -1; // All Channels
 
-        const CPVRChannelGroups *groups = g_PVRChannelGroups.Get(g_PVRManager.IsPlayingRadio());
+        const CPVRChannelGroups *groups = g_PVRChannelGroups.Get(CPVRManager::Get()->IsPlayingRadio());
 
         // Get the currently selected label of the Select button
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
@@ -721,9 +721,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
         // Switch to the first channel of the new group if the new group ID is
         // different from the current one.
-        if (iNewGroup != g_PVRManager.GetPlayingGroup())
+        if (iNewGroup != CPVRManager::Get()->GetPlayingGroup())
         {
-          g_PVRManager.SetPlayingGroup(iNewGroup);
+          CPVRManager::Get()->SetPlayingGroup(iNewGroup);
           OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) groups->GetFirstChannelForGroupID(iNewGroup)));
         }
 
@@ -1124,7 +1124,7 @@ void CGUIWindowFullScreen::FillInTVGroups()
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_GROUP_CHOOSER);
   g_windowManager.SendMessage(msgReset);
 
-  const CPVRChannelGroups *groups = g_PVRChannelGroups.Get(g_PVRManager.IsPlayingRadio());
+  const CPVRChannelGroups *groups = g_PVRChannelGroups.Get(CPVRManager::Get()->IsPlayingRadio());
 
   int iGroup        = 0;
   int iCurrentGroup = 0;
@@ -1136,7 +1136,7 @@ void CGUIWindowFullScreen::FillInTVGroups()
   }
   for (int i = 0; i < (int) groups->size(); ++i)
   {
-    if (groups->at(i)->GroupID() == g_PVRManager.GetPlayingGroup())
+    if (groups->at(i)->GroupID() == CPVRManager::Get()->GetPlayingGroup())
       iCurrentGroup = iGroup;
 
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_GROUP_CHOOSER, iGroup++);

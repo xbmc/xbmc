@@ -1457,7 +1457,7 @@ void CApplication::StartPVRManager()
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
   {
     CLog::Log(LOGINFO, "starting PVRManager");
-    g_PVRManager.Start();
+    CPVRManager::Get()->Start();
   }
 }
 
@@ -1465,7 +1465,7 @@ void CApplication::StopPVRManager()
 {
   CLog::Log(LOGINFO, "stopping PVRManager");
   StopPlaying();
-  g_PVRManager.Stop();
+  CPVRManager::Destroy();
 }
 
 void CApplication::DimLCDOnPlayback(bool dim)
@@ -4359,7 +4359,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   if (!forceType)
   {
     // set to Dim in the case of a dialog on screen or playing video
-    if (g_windowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")) || g_PVRManager.ChannelScanRunning())
+    if (g_windowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")) || CPVRManager::Get()->ChannelScanRunning())
     {
       if (!CAddonMgr::Get().GetAddon("screensaver.xbmc.builtin.dim", m_screenSaver))
         m_screenSaver.reset(new CScreenSaver(""));
