@@ -70,6 +70,12 @@ public:
   static CPVRChannelGroupsContainer *GetChannelGroups(void);
 
   /*!
+   * @brief Get the EPG container.
+   * @return The EPG container.
+   */
+  static CPVREpgContainer *GetEpg(void);
+
+  /*!
    * @brief Clean up and destroy the PVRManager.
    */
   static void Destroy(void);
@@ -617,6 +623,7 @@ private:
   //@{
   static CPVRManager *            m_instance;                 /*!< singleton instance */
   CPVRChannelGroupsContainer *    m_channelGroups;            /*!< pointer to the channel groups container */
+  CPVREpgContainer *              m_epg;                      /*!< pointer to the EPG container */
   CLIENTMAP                       m_clients;                  /*!< pointer to each enabled client */
   CLIENTPROPS                     m_clientsProps;             /*!< store the properties of each client locally */
   STREAMPROPS                     m_streamProps;              /*!< the current stream's properties */

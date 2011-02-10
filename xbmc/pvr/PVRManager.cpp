@@ -64,12 +64,14 @@ CPVRManager::CPVRManager()
   m_bTriggerRecordingsUpdate = false;
   m_bTriggerTimersUpdate     = false;
   m_channelGroups            = new CPVRChannelGroupsContainer();
+  m_epg                      = new CPVREpgContainer();
 }
 
 CPVRManager::~CPVRManager()
 {
   Stop();
   delete m_channelGroups;
+  delete m_epg;
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
 
@@ -84,6 +86,11 @@ CPVRManager *CPVRManager::Get(void)
 CPVRChannelGroupsContainer *CPVRManager::GetChannelGroups(void)
 {
   return Get()->m_channelGroups;
+}
+
+CPVREpgContainer *CPVRManager::GetEpg(void)
+{
+  return Get()->m_epg;
 }
 
 void CPVRManager::Destroy(void)
@@ -240,16 +247,14 @@ bool CPVRManager::StopClient(AddonPtr client, bool bRestart)
 
 void CPVRManager::StartThreads()
 {
-  if (g_PVREpgContainer)
-    g_PVREpgContainer.Create();
+  m_epg->Create();
 
   Create();
 }
 
 void CPVRManager::StopThreads()
 {
-  if (g_PVREpgContainer)
-    g_PVREpgContainer.StopThread();
+  m_epg->StopThread();
 
   StopThread();
 }
@@ -393,7 +398,7 @@ void CPVRManager::Process()
     m_channelGroups->Load();
 
     /* start the EPG thread */
-    g_PVREpgContainer.Start();
+    m_epg->Start();
 
     /* get timers from the backends */
     g_PVRTimers.Load();
@@ -437,7 +442,7 @@ void CPVRManager::Process()
 void CPVRManager::Cleanup(void)
 {
   /* stop and clean up the EPG thread */
-  g_PVREpgContainer.Stop();
+  m_epg->Stop();
 
   /* unload the rest */
   g_PVRRecordings.Unload();
@@ -925,7 +930,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   if (m_database.Open())
   {
     /* clean the EPG database */
-    g_PVREpgContainer.Clear(true);
+    m_epg->Clear(true);
     if (bShowProgress)
       pDlgProgress->SetPercentage(30);
 
@@ -971,7 +976,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
 void CPVRManager::ResetEPG(void)
 {
   StopThreads();
-  g_PVREpgContainer.Reset();
+  m_epg->Reset();
   StartThreads();
 }
 

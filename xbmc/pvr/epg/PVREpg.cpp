@@ -52,7 +52,7 @@ void CPVREpg::Cleanup(const CDateTime &Time)
     CPVREpgInfoTag *tag = (CPVREpgInfoTag *) at(i);
     if ( tag && /* valid tag */
         !tag->HasTimer() && /* no timer set */
-        (tag->End() + CDateTimeSpan(0, g_PVREpgContainer.m_iLingerTime / 60 + 1, g_PVREpgContainer.m_iLingerTime % 60, 0) < Time)) /* adding one hour for safety */
+        (tag->End() + CDateTimeSpan(0, CPVRManager::GetEpg()->m_iLingerTime / 60 + 1, CPVRManager::GetEpg()->m_iLingerTime % 60, 0) < Time)) /* adding one hour for safety */
     {
       DeleteInfoTag(tag);
     }

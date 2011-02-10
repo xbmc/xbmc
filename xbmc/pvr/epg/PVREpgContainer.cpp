@@ -27,8 +27,6 @@
 
 using namespace std;
 
-CPVREpgContainer g_PVREpgContainer;
-
 void CPVREpgContainer::Clear(bool bClearDb /* = false */)
 {
   // XXX stop the timers from being updated while clearing tags

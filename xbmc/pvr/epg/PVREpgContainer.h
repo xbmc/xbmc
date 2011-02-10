@@ -117,5 +117,3 @@ public:
     */
   const CDateTime &GetLastEPGDate(bool bRadio = false);
 };
-
-extern CPVREpgContainer g_PVREpgContainer; /*!< The container for all EPG tables */

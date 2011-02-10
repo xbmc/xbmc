@@ -1636,7 +1636,7 @@ void CGUIWindowPVR::UpdateGuide()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19030));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19030));
 
-    if (g_PVREpgContainer.GetEPGNow(m_vecItems, CurrentChannel.IsRadio()) == 0)
+    if (CPVRManager::GetEpg()->GetEPGNow(m_vecItems, CurrentChannel.IsRadio()) == 0)
     {
       CFileItemPtr item;
       item.reset(new CFileItem("pvr://guide/now/empty.epg", false));
@@ -1655,7 +1655,7 @@ void CGUIWindowPVR::UpdateGuide()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19031));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19031));
 
-    if (g_PVREpgContainer.GetEPGNext(m_vecItems, CurrentChannel.IsRadio()) == 0)
+    if (CPVRManager::GetEpg()->GetEPGNext(m_vecItems, CurrentChannel.IsRadio()) == 0)
     {
       CFileItemPtr item;
       item.reset(new CFileItem("pvr://guide/next/empty.epg", false));
@@ -1670,7 +1670,7 @@ void CGUIWindowPVR::UpdateGuide()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19032));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
 
-    if (g_PVREpgContainer.GetEPGAll(m_vecItems, CurrentChannel.IsRadio()) > 0)
+    if (CPVRManager::GetEpg()->GetEPGAll(m_vecItems, CurrentChannel.IsRadio()) > 0)
     {
       CDateTime now = CDateTime::GetCurrentDateTime();
       CDateTime m_gridStart = now - CDateTimeSpan(0, 0, 0, (now.GetMinute() % 30) * 60 + now.GetSecond()) - CDateTimeSpan(0, g_guiSettings.GetInt("epg.lingertime") / 60, g_guiSettings.GetInt("epg.lingertime") % 60, 0);
@@ -1800,7 +1800,7 @@ void CGUIWindowPVR::UpdateSearch()
       dlgProgress->Progress();
     }
 
-    g_PVREpgContainer.GetEPGSearch(m_vecItems, m_searchfilter);
+    CPVRManager::GetEpg()->GetEPGSearch(m_vecItems, m_searchfilter);
     if (dlgProgress)
       dlgProgress->Close();
 
