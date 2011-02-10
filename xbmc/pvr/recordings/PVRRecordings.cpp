@@ -180,161 +180,54 @@ bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
 
   if (fileName == "recordings")
   {
-//    if (g_PVRManager.Clients()->size() > 1)
+    for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
     {
-      CLIENTMAPITR itr = g_PVRManager.Clients()->begin();
-      while (itr != g_PVRManager.Clients()->end())
-      {
-        CFileItemPtr item;
-        CStdString dirName;
-        CStdString clientName;
-
-        int clientID = g_PVRManager.Clients()->find((*itr).first)->second->GetID();
-        clientName.Format(g_localizeStrings.Get(19016), clientID, g_PVRManager.Clients()->find((*itr).first)->second->GetBackendName());
-        dirName.Format("%s/client_%04i/", base, clientID);
-        item.reset(new CFileItem(dirName, true));
-        item->SetLabel(clientName);
-        item->SetLabelPreformated(true);
-        items.Add(item);
-
-        itr++;
-      }
-      return true;
-    }
-  }
-  else if (fileName.Left(18) == "recordings/client_")
-  {
-    fileName.erase(0,18);
-    int clientID = atoi(fileName.c_str());
-    CStdString curDir = url.GetFileName();
-    URIUtils::AddSlashAtEnd(curDir);
-
-    CStdString strBuffer;
-    CStdString strSkip;
-    std::vector<CStdString> baseTokens;
-    if (!curDir.IsEmpty())
-      CUtil::Tokenize(curDir, baseTokens, "/");
-
-    for (unsigned int i = 0; i < size(); ++i)
-    {
-      if (clientID != at(i).ClientID())
-        continue;
-
-      CStdString strEntryName;
-      CStdString strTitle = at(i).Title();
-      strEntryName.Format("recordings/client_%04i/%s", clientID, at(i).Directory());
-      URIUtils::AddSlashAtEnd(strEntryName);
-
-      strTitle.Replace('/','-');
-      strEntryName += strTitle;
-      strEntryName.Replace('\\','/');
-      CStdString strOrginalName = strEntryName;
-
-      if (strEntryName == curDir) // skip the listed dir
-        continue;
-
-      std::vector<CStdString> pathTokens;
-      CUtil::Tokenize(strEntryName, pathTokens, "/");
-      if (pathTokens.size() < baseTokens.size()+1)
-        continue;
-
-      bool bAdd = true;
-      strEntryName = "";
-      for (unsigned int j = 0; j < baseTokens.size(); ++j)
-      {
-        if (pathTokens[j] != baseTokens[j])
-        {
-          bAdd = false;
-          break;
-        }
-        strEntryName += pathTokens[j] + "/";
-      }
-      if (!bAdd)
-        continue;
-
-      strEntryName += pathTokens[baseTokens.size()];
-      char c=strOrginalName[strEntryName.size()];
-      if (c == '/' || c == '\\')
-        strEntryName += '/';
-
-      CFileItemPtr pFileItem;
-      bool bIsFolder = false;
-      if (strEntryName[strEntryName.size()-1] != '/') // this is a file
-      {
-        pFileItem.reset(new CFileItem(at(i)));
-        pFileItem->SetLabel(pathTokens[baseTokens.size()]);
-        pFileItem->SetLabel2(at(i).RecordingTime().GetAsLocalizedDateTime(true, false));
-        pFileItem->m_dateTime = at(i).RecordingTime();
-        pFileItem->m_strPath.Format("pvr://%s-%05i.pvr", strEntryName, at(i).ClientIndex());
-      }
-      else
-      { // this is new folder. add if not already added
-        bIsFolder = true;
-        strBuffer = "pvr://" + strEntryName;
-        if (items.Contains(strBuffer)) // already added
-          continue;
-
-        pFileItem.reset(new CFileItem(strBuffer, true));
-        pFileItem->SetLabel(pathTokens[baseTokens.size()]);
-      }
-      pFileItem->SetLabelPreformated(true);
+      CPVRRecordingInfoTag *recording = &at(iRecordingPtr);
+      CFileItemPtr pFileItem(new CFileItem(*recording));
+      pFileItem->SetLabel2(recording->RecordingTime().GetAsLocalizedDateTime(true, false));
+      pFileItem->m_dateTime = recording->RecordingTime();
+      pFileItem->m_strPath.Format("pvr://recordings/%05i-%05i.pvr", recording->ClientID(), recording->ClientIndex());
       items.Add(pFileItem);
     }
     return true;
   }
+
   return false;
 }
 
 CPVRRecordingInfoTag *CPVRRecordings::GetByPath(CStdString &path)
 {
+  CPVRRecordingInfoTag *tag = NULL;
   CSingleLock lock(m_critSection);
 
   CURL url(path);
   CStdString fileName = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(fileName);
 
-  if (fileName.Left(18) == "recordings/client_")
+  if (fileName.Left(11) == "recordings/")
   {
-    fileName.erase(0,18);
-    int clientID = atoi(fileName.c_str());
+    fileName.erase(0,11);
+    int iClientID = atoi(fileName.c_str());
     fileName.erase(0,5);
 
     if (fileName.IsEmpty())
-      return NULL;
+      return tag;
 
-    CStdString title;
-    CStdString dir;
-    size_t found = fileName.find_last_of("/");
-    if (found != CStdString::npos)
-    {
-      title = fileName.substr(found+1);
-      dir = fileName.substr(0, found);
-    }
-    else
-    {
-      title = fileName;
-      dir = "";
-    }
-    URIUtils::RemoveExtension(title);
-    int index = atoi(title.substr(title.size()-5).c_str());
-    title.erase(title.size()-6);
+    int iClientIndex = atoi(fileName.c_str());
 
-    for (unsigned int i = 0; i < size(); ++i)
+    for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
     {
-      if (index > 0)
+      CPVRRecordingInfoTag *recording = &at(iRecordingPtr);
+
+      if (recording->ClientID() == iClientID && recording->ClientIndex() == iClientIndex)
       {
-        if (index == at(i).ClientIndex())
-          return &at(i);
-      }
-      else
-      {
-        if ((title == at(i).Title()) && (dir == at(i).Directory()) && (clientID == at(i).ClientID()))
-          return &at(i);
+        tag = &at(iRecordingPtr);
+        break;
       }
     }
   }
 
-  return NULL;
+  return tag;
 }
 
 void CPVRRecordings::Clear()
