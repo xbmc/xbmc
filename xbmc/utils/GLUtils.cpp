@@ -20,6 +20,7 @@
  */
 
 #include "log.h"
+#include "system.h"
 #include "settings/AdvancedSettings.h"
 #include "windowing/WindowingFactory.h"
 
