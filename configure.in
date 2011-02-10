@@ -765,14 +765,14 @@ else
   if test "$use_avahi" = "yes"; then
     AC_CHECK_LIB([avahi-common], [main],,
       use_avahi=no;AC_MSG_RESULT($avahi_not_found))
-	if test "$use_avahi" = "yes"; then
-		#either both libs or none
-    AC_CHECK_LIB([avahi-client], [main],,
-      use_avahi=no;AC_MSG_RESULT($avahi_not_found))
-	fi
-    else
-     AC_MSG_RESULT($avahi_disabled)
-   fi
+    if test "$use_avahi" = "yes"; then
+      #either both libs or none
+      AC_CHECK_LIB([avahi-client], [main],,
+        use_avahi=no;AC_MSG_RESULT($avahi_not_found))
+    fi
+  else
+    AC_MSG_RESULT($avahi_disabled)
+  fi
 fi
 
 # XRandR
@@ -1597,7 +1597,7 @@ XB_CONFIG_MODULE([lib/python], [
     sed -i bak -e "s/define _XOPEN_SOURCE 600/undef _XOPEN_SOURCE/" pyconfig.h &&
     sed -i bak -e "s/define _XOPEN_SOURCE_EXTENDED 1/undef _XOPEN_SOURCE_EXTENDED/" pyconfig.h &&
     echo "#define   SETPGRP_HAVE_ARG 1" >> pyconfig.h &&
-    cp pyconfig.h Include	
+    cp pyconfig.h Include
   else
     ./configure \
       --host=$host_alias \
