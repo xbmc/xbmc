@@ -23,7 +23,7 @@
 
 #include "epg/Epg.h"
 #include "PVREpgInfoTag.h"
-#include "../addons/include/xbmc_pvr_types.h"
+#include "addons/include/xbmc_pvr_types.h"
 
 class CPVREpgContainer;
 

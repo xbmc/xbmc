@@ -23,7 +23,7 @@
 
 #include "DateTime.h"
 #include "epg/EpgInfoTag.h"
-#include "../addons/include/xbmc_pvr_types.h"
+#include "addons/include/xbmc_pvr_types.h"
 
 class CPVREpg;
 class CPVRTimerInfoTag;
