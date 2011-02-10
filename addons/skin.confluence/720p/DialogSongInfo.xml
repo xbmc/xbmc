@@ -186,7 +186,7 @@
 				<aligny>center</aligny>
 				<font>font13</font>
 				<textcolor>white</textcolor>
-				<label fallback="161">$INFO[ListItem.LastPlayed]</label>
+				<label fallback="161">$INFO[ListItem.Year]</label>
 			</control>
 			<control type="label">
 				<description>Track Number Title</description>
