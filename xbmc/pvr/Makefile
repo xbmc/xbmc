@@ -1,5 +1,3 @@
-INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix -I../utils -I../epg
-
 SRCS=PVRManager.cpp \
 	PVRDatabase.cpp \
 	GUIViewStatePVR.cpp

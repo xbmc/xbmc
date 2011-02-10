@@ -31,7 +31,7 @@
 #include "threads/SingleLock.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/File.h"
-#include "StringUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/Settings.h"
