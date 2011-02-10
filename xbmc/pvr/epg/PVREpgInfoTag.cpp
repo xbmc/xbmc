@@ -23,6 +23,7 @@
 
 #include "PVREpg.h"
 #include "PVREpgInfoTag.h"
+#include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/channels/PVRChannel.h"
@@ -62,9 +63,10 @@ bool CPVREpgInfoTag::HasTimer(void) const
 
   if (m_Timer == NULL)
   {
-    for (unsigned int i = 0; i < g_PVRTimers.size(); ++i)
+    CPVRTimers *timers = CPVRManager::GetTimers();
+    for (unsigned int iTimerPtr = 0; iTimerPtr < timers->size(); iTimerPtr++)
     {
-      if (g_PVRTimers.at(i)->EpgInfoTag() == this)
+      if (timers->at(iTimerPtr)->EpgInfoTag() == this)
       {
         bReturn = true;
         break;

@@ -66,6 +66,7 @@ CPVRManager::CPVRManager()
   m_channelGroups            = new CPVRChannelGroupsContainer();
   m_epg                      = new CPVREpgContainer();
   m_recordings               = new CPVRRecordings();
+  m_timers                   = new CPVRTimers();
 }
 
 CPVRManager::~CPVRManager()
@@ -73,6 +74,7 @@ CPVRManager::~CPVRManager()
   Stop();
   delete m_epg;
   delete m_recordings;
+  delete m_timers;
   delete m_channelGroups;
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
@@ -98,6 +100,11 @@ CPVREpgContainer *CPVRManager::GetEpg(void)
 CPVRRecordings *CPVRManager::GetRecordings(void)
 {
   return Get()->m_recordings;
+}
+
+CPVRTimers *CPVRManager::GetTimers(void)
+{
+  return Get()->m_timers;
 }
 
 void CPVRManager::Destroy(void)
@@ -336,7 +343,7 @@ void CPVRManager::UpdateTimers(void)
 {
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating timers", __FUNCTION__);
 
-  g_PVRTimers.Update();
+  m_timers->Update();
   UpdateRecordingsCache();
   UpdateWindow(PVR_WINDOW_TIMERS);
 
@@ -408,7 +415,7 @@ void CPVRManager::Process()
     m_epg->Start();
 
     /* get timers from the backends */
-    g_PVRTimers.Load();
+    m_timers->Load();
 
     /* get recordings from the backend */
     m_recordings->Load();
@@ -453,7 +460,7 @@ void CPVRManager::Cleanup(void)
 
   /* unload the rest */
   m_recordings->Unload();
-  g_PVRTimers.Unload();
+  m_timers->Unload();
   m_channelGroups->Unload();
   m_bLoaded = false;
 
@@ -476,7 +483,7 @@ void CPVRManager::UpdateRecordingsCache(void)
   CSingleLock lock(m_critSection);
 
   m_hasRecordings = m_recordings->GetNumRecordings() > 0;
-  m_hasTimers = g_PVRTimers.GetNumTimers() > 0;
+  m_hasTimers = m_timers->GetNumTimers() > 0;
   m_isRecording = false;
   m_NowRecording.clear();
   m_NextRecording = NULL;
@@ -484,9 +491,9 @@ void CPVRManager::UpdateRecordingsCache(void)
   if (m_hasTimers)
   {
     CDateTime now = CDateTime::GetCurrentDateTime();
-    for (unsigned int iTimerPtr = 0; iTimerPtr < g_PVRTimers.size(); iTimerPtr++)
+    for (unsigned int iTimerPtr = 0; iTimerPtr < m_timers->size(); iTimerPtr++)
     {
-      CPVRTimerInfoTag *timerTag = g_PVRTimers.at(iTimerPtr);
+      CPVRTimerInfoTag *timerTag = m_timers->at(iTimerPtr);
       if (timerTag->Active())
       {
         if (timerTag->Start() <= now && timerTag->Stop() > now)
@@ -663,7 +670,7 @@ const char *CPVRManager::CharInfoTotalDiskSpace(void)
 const char *CPVRManager::CharInfoNextTimer(void)
 {
   static CStdString strReturn = "";
-  CPVRTimerInfoTag *next = g_PVRTimers.GetNextActiveTimer();
+  CPVRTimerInfoTag *next = m_timers->GetNextActiveTimer();
   if (next != NULL)
   {
     m_nextTimer.Format("%s %s %s %s", g_localizeStrings.Get(19106),
@@ -1204,7 +1211,7 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
     /* timers are supported on this channel */
     if (bOnOff && !channel->IsRecording())
     {
-      CPVRTimerInfoTag *newTimer = g_PVRTimers.InstantTimer(channel);
+      CPVRTimerInfoTag *newTimer = m_timers->InstantTimer(channel);
       if (!newTimer)
         CGUIDialogOK::ShowAndGetInput(19033,0,19164,0);
       else
@@ -1213,7 +1220,7 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
     else if (!bOnOff && channel->IsRecording())
     {
       /* delete active timers */
-      bReturn = g_PVRTimers.DeleteTimersOnChannel(*channel, false, true);
+      bReturn = m_timers->DeleteTimersOnChannel(*channel, false, true);
     }
   }
 

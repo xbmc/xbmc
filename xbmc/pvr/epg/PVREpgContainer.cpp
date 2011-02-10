@@ -31,8 +31,9 @@ void CPVREpgContainer::Clear(bool bClearDb /* = false */)
 {
   // XXX stop the timers from being updated while clearing tags
   /* remove all pointers to epg tables on timers */
-  for (unsigned int iTimerPtr = 0; iTimerPtr < g_PVRTimers.size(); iTimerPtr++)
-    g_PVRTimers.at(iTimerPtr)->SetEpgInfoTag(NULL);
+  CPVRTimers *timers = CPVRManager::GetTimers();
+  for (unsigned int iTimerPtr = 0; iTimerPtr < timers->size(); iTimerPtr++)
+    timers->at(iTimerPtr)->SetEpgInfoTag(NULL);
 
   CEpgContainer::Clear(bClearDb);
 }
@@ -156,14 +157,15 @@ int CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFil
   }
 
   /* filter timers */
-  if (filter.m_bIgnorePresentTimers && g_PVRTimers.size() > 0)
+  if (filter.m_bIgnorePresentTimers)
   {
-    for (unsigned int iTimerPtr = 0; iTimerPtr < g_PVRTimers.size(); iTimerPtr++)
+    CPVRTimers *timers = CPVRManager::GetTimers();
+    for (unsigned int iTimerPtr = 0; iTimerPtr < timers->size(); iTimerPtr++)
     {
       for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
       {
         const CPVREpgInfoTag *epgentry = (CPVREpgInfoTag *) results->Get(iResultPtr)->GetEPGInfoTag();
-        CPVRTimerInfoTag *timer        = g_PVRTimers.at(iTimerPtr);
+        CPVRTimerInfoTag *timer        = timers->at(iTimerPtr);
         if (epgentry)
         {
           if (epgentry->ChannelTag()->ChannelNumber() != timer->ChannelNumber() ||

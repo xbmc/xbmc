@@ -82,6 +82,12 @@ public:
   static CPVRRecordings *GetRecordings(void);
 
   /*!
+   * @brief Get the timers container.
+   * @return The timers container.
+   */
+  static CPVRTimers *GetTimers(void);
+
+  /*!
    * @brief Clean up and destroy the PVRManager.
    */
   static void Destroy(void);
@@ -631,6 +637,7 @@ private:
   CPVRChannelGroupsContainer *    m_channelGroups;            /*!< pointer to the channel groups container */
   CPVREpgContainer *              m_epg;                      /*!< pointer to the EPG container */
   CPVRRecordings *                m_recordings;               /*!< pointer to the recordings container */
+  CPVRTimers *                    m_timers;                   /*!< pointer to the timers container */
   CLIENTMAP                       m_clients;                  /*!< pointer to each enabled client */
   CLIENTPROPS                     m_clientsProps;             /*!< store the properties of each client locally */
   STREAMPROPS                     m_streamProps;              /*!< the current stream's properties */

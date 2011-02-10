@@ -21,7 +21,7 @@
  */
 
 #include "DateTime.h"
-#include "../addons/include/xbmc_pvr_types.h"
+#include "addons/include/xbmc_pvr_types.h"
 
 class CFileItem;
 class CPVREpgInfoTag;
@@ -160,5 +160,3 @@ public:
   CPVRTimerInfoTag *GetMatch(time_t t);
   CPVRTimerInfoTag *GetMatch(const CPVREpgInfoTag *Epg, int *Match = NULL);
 };
-
-extern CPVRTimers g_PVRTimers;
