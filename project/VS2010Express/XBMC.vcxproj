@@ -671,6 +671,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">CompileAsCpp</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">CompileAsCpp</CompileAs>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\GLUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\HTMLTable.cpp" />
     <ClCompile Include="..\..\xbmc\utils\HTMLUtil.cpp" />
     <ClCompile Include="..\..\xbmc\utils\HttpHeader.cpp" />
@@ -732,6 +733,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\stat_utf8.cpp" />
+    <ClCompile Include="..\..\xbmc\win32\stdio_utf8.cpp" />
     <ClCompile Include="..\..\xbmc\win32\strverscmp.cpp" />
     <ClCompile Include="..\..\xbmc\win32\Win32DelayedDllLoad.cpp" />
     <ClCompile Include="..\..\xbmc\win32\WIN32Util.cpp" />
@@ -1498,6 +1501,7 @@
     <ClInclude Include="..\..\xbmc\utils\FileOperationJob.h" />
     <ClInclude Include="..\..\xbmc\utils\FileUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\fstrcmp.h" />
+    <ClInclude Include="..\..\xbmc\utils\GLUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\HTMLTable.h" />
     <ClInclude Include="..\..\xbmc\utils\HTMLUtil.h" />
     <ClInclude Include="..\..\xbmc\utils\HttpHeader.h" />
@@ -1570,6 +1574,8 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">..\..\xbmc\win32\git_rev.h;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">..\..\git\HEAD;..\..\xbmc\win32\git_rev.tmpl</AdditionalInputs>
     </CustomBuild>
+    <ClInclude Include="..\..\xbmc\win32\stat_utf8.h" />
+    <ClInclude Include="..\..\xbmc\win32\stdio_utf8.h" />
     <ClInclude Include="..\..\xbmc\win32\WIN32Util.h" />
     <ClInclude Include="..\..\xbmc\win32\WINDirectSound.h" />
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h" />

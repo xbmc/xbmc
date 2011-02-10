@@ -23,6 +23,7 @@
 #include "TextureGL.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
+#include "utils/GLUtils.h"
 
 #if defined(HAS_GL) || defined(HAS_GLES)
 

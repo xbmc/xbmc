@@ -23,6 +23,7 @@
 #include "GUIUserMessages.h"
 #include "addons/Visualisation.h"
 #include "threads/SingleLock.h"
+#include "utils/GLUtils.h"
 
 using namespace std;
 using namespace ADDON;

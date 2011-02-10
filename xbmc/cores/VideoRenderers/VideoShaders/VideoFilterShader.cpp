@@ -21,6 +21,7 @@
 #include "system.h"
 #include "VideoFilterShader.h"
 #include "utils/log.h"
+#include "utils/GLUtils.h"
 #include "ConvolutionKernels.h"
 
 #include <string>

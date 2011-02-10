@@ -62,7 +62,6 @@ char *itoa(int i, char *a, int r)
 
 void OutputDebugString(LPCTSTR lpOuputString)
 {
-  CLog::Log(LOGDEBUG, "%s", lpOuputString);
 }
 
 void strlwr( char* string )

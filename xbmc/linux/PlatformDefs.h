@@ -24,6 +24,8 @@
 
 #ifdef _LINUX
 
+#define LINE_ENDING "\n"
+
 #ifndef _LARGEFILE64_SOURCE
 #define _LARGEFILE64_SOURCE
 #endif
