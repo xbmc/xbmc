@@ -23,7 +23,6 @@
 
 #include "FileItem.h"
 #include "PVRChannel.h"
-#include "../addons/include/xbmc_pvr_types.h"
 
 #define XBMC_INTERNAL_GROUPID 0
 

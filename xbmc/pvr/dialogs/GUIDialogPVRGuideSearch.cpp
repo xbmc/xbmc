@@ -27,6 +27,7 @@
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIWindowManager.h"
 
+#include "addons/include/xbmc_pvr_types.h"
 #include "pvr/epg/PVREpgSearchFilter.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 

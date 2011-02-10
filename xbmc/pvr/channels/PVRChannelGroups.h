@@ -24,9 +24,7 @@
 #include "video/VideoInfoTag.h"
 #include "DateTime.h"
 #include "FileItem.h"
-
 #include "PVRChannelGroup.h"
-#include "../addons/include/xbmc_pvr_types.h"
 
 class CPVRChannelGroupsContainer;
 
