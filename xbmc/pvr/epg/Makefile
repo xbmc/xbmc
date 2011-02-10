@@ -1,7 +1,7 @@
 SRCS=PVREpg.cpp \
-	PVREpgInfoTag.cpp \
-	PVREpgContainer.cpp \
-	PVREpgSearchFilter.cpp
+     PVREpgInfoTag.cpp \
+     PVREpgContainer.cpp \
+     PVREpgSearchFilter.cpp
 
 LIB=pvrepg.a
 

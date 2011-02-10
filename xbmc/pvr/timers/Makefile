@@ -1,5 +1,5 @@
 SRCS=PVRTimerInfoTag.cpp \
-	PVRTimers.cpp
+     PVRTimers.cpp
 
 LIB=pvrtimers.a
 
