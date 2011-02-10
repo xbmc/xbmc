@@ -29,6 +29,8 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoScanner.h"
 #include "GUISettings.h"
+#include "interfaces/Builtins.h"
+#include "filesystem/AddonsDirectory.h"
 
 #define CONTROL_CONTENT_TYPE        3
 #define CONTROL_SCRAPER_LIST        4
@@ -79,6 +81,17 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(), CONTROL_SCRAPER_LIST);
       g_windowManager.SendMessage(msg);
       int iSelected = msg.GetParam1();
+      if (iSelected == m_vecItems->Size() - 1)
+      { // Get More... item.
+        // This is tricky - ideally we want to completely save the state of this dialog,
+        // close it while linking to the addon manager, then reopen it on return.
+        // For now, we just close the dialog + send the message to open the addons window
+        CStdString content = m_vecItems->Get(iSelected)->m_strPath.Mid(14);
+        OnCancel();
+        Close();
+        CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.metadata.scraper." + content + ",return)");
+        return true;
+      }
       AddonPtr last = m_scraper;
       m_scraper = m_scrapers[m_content][iSelected];
       m_lastSelected[m_content] = m_scraper;
@@ -304,9 +317,6 @@ void CGUIDialogContentSettings::FillListControl()
   int selectedIndex = 0;
   m_vecItems->Clear();
 
-  if (m_scrapers.size() == 0 || m_scrapers.find(m_content) == m_scrapers.end())
-    return;
-
   if (m_lastSelected.find(m_content) != m_lastSelected.end())
     m_scraper = m_lastSelected[m_content];
   else
@@ -325,6 +335,10 @@ void CGUIDialogContentSettings::FillListControl()
     m_vecItems->Add(item);
     iIndex++;
   }
+
+  // add the "Get More..." item
+  m_vecItems->Add(XFILE::CAddonsDirectory::GetMoreItem(TranslateContent(m_content)));
+
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_SCRAPER_LIST, 0, 0, m_vecItems);
   OnMessage(msg);
   CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_SCRAPER_LIST, selectedIndex);
