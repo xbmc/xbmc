@@ -33,14 +33,14 @@ public:
   cVNSIData();
   ~cVNSIData();
 
-  bool Open(CStdString hostname, int port, long timeout);
+  bool Open(const CStdString& hostname, int port, long timeout);
   void Close();
   bool CheckConnection();
 
   cResponsePacket*  ReadResult(cRequestPacket* vrp);
   int         GetProtocol()   { return m_session.GetProtocol(); }
-  CStdString  GetServerName() { return m_session.GetServerName(); }
-  CStdString  GetVersion()    { return m_session.GetVersion(); }
+  const CStdString& GetServerName() { return m_session.GetServerName(); }
+  const CStdString& GetVersion()    { return m_session.GetVersion(); }
   bool        SupportChannelScan();
   bool        EnableStatusInterface(bool onOff);
   bool        EnableOSDInterface(bool onOff);
@@ -62,8 +62,8 @@ public:
 
   int         GetRecordingsCount();
   PVR_ERROR   GetRecordingsList(PVRHANDLE handle);
-  CStdString  GetRecordingPath(int index);
-  PVR_ERROR   DeleteRecording(CStdString path);
+  const CStdString& GetRecordingPath(int index);
+  PVR_ERROR   DeleteRecording(const CStdString& path);
 
 
 protected:

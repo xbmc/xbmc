@@ -36,7 +36,7 @@ cVNSIData::~cVNSIData()
   Close();
 }
 
-bool cVNSIData::Open(CStdString hostname, int port, long timeout)
+bool cVNSIData::Open(const CStdString& hostname, int port, long timeout)
 {
   if(!m_session.Open(hostname, port, timeout))
     return false;
@@ -713,7 +713,7 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cVNSIData::DeleteRecording(CStdString path)
+PVR_ERROR cVNSIData::DeleteRecording(const CStdString& path)
 {
   cRequestPacket vrp;
   if (!vrp.init(VDR_RECORDINGS_DELETE))
@@ -942,10 +942,12 @@ bool cVNSIData::readData(uint8_t* buffer, int totalBytes, int TimeOut)
   return false;
 }
 
-CStdString cVNSIData::GetRecordingPath(int index)
+const CStdString& cVNSIData::GetRecordingPath(int index)
 {
+  static CStdString empty;
+
   if (index <= 0 || index > m_RecordsPaths.size())
-    return "";
+    return empty;
 
   return m_RecordsPaths[index-1];
 }

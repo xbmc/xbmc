@@ -36,7 +36,7 @@ public:
   cVNSISession();
   ~cVNSISession();
 
-  bool              Open(CStdString hostname, int port, long timeout, const char *name = "");
+  bool              Open(const CStdString& hostname, int port, long timeout, const char *name = NULL);
   void              Close();
   void              Abort();
 
@@ -46,10 +46,10 @@ public:
   int               readData(uint8_t* buffer, int totalBytes, int TimeOut = 2);
 
   cResponsePacket*  ReadResult(cRequestPacket* vrp, bool sequence = true);
-  bool              ReadSuccess(cRequestPacket* m, bool sequence = true, std::string action = "");
+  bool              ReadSuccess(cRequestPacket* m, bool sequence = true);
   int               GetProtocol()   { return m_protocol; }
-  CStdString        GetServerName() { return m_server; }
-  CStdString        GetVersion()    { return m_version; }
+  const CStdString& GetServerName() { return m_server; }
+  const CStdString& GetVersion()    { return m_version; }
 
 private:
   SOCKET      m_fd;

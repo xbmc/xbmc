@@ -67,7 +67,7 @@ void cVNSISession::Close()
   }
 }
 
-bool cVNSISession::Open(CStdString hostname, int port, long timeout, const char *name)
+bool cVNSISession::Open(const CStdString& hostname, int port, long timeout, const char *name)
 {
   struct hostent hostbuf, *hp;
   int herr, fd, r, res, err;
@@ -368,12 +368,12 @@ cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp, bool sequence)
   return NULL;
 }
 
-bool cVNSISession::ReadSuccess(cRequestPacket* vrp, bool sequence, std::string action)
+bool cVNSISession::ReadSuccess(cRequestPacket* vrp, bool sequence)
 {
   cResponsePacket *pkt = NULL;
   if((pkt = ReadResult(vrp, sequence)) == NULL)
   {
-    DEVDBG("cVNSISession::ReadSuccess - failed to %s", action.c_str());
+    DEVDBG("cVNSISession::ReadSuccess - failed");
     return false;
   }
   uint32_t retCode = pkt->extract_U32();
@@ -381,7 +381,7 @@ bool cVNSISession::ReadSuccess(cRequestPacket* vrp, bool sequence, std::string a
 
   if(retCode != VDR_RET_OK)
   {
-    XBMC->Log(LOG_ERROR, "cVNSISession::ReadSuccess - failed with error code '%i' to %s", retCode, action.c_str());
+    XBMC->Log(LOG_ERROR, "cVNSISession::ReadSuccess - failed with error code '%i'", retCode);
     return false;
   }
   return true;

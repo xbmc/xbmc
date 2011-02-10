@@ -34,8 +34,6 @@
 #define DEFAULT_HANDLE_MSG    true
 #define DEFAULT_PRIORITY      99
 #define DEFAULT_TIMEOUT       3
-#define DEFAULT_USE_REC_DIR   false
-#define DEFAULT_REC_DIR       ""
 
 extern bool IsClientConnected(bool forceReconnect = false);
 extern void SetClientConnected(bool yesNo);

@@ -37,7 +37,7 @@ cVNSIRecording::~cVNSIRecording()
   Close();
 }
 
-bool cVNSIRecording::Open(CStdString path)
+bool cVNSIRecording::Open(const CStdString& path)
 {
   bool ret = false;
 
