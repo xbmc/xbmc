@@ -65,13 +65,15 @@ CPVRManager::CPVRManager()
   m_bTriggerTimersUpdate     = false;
   m_channelGroups            = new CPVRChannelGroupsContainer();
   m_epg                      = new CPVREpgContainer();
+  m_recordings               = new CPVRRecordings();
 }
 
 CPVRManager::~CPVRManager()
 {
   Stop();
-  delete m_channelGroups;
   delete m_epg;
+  delete m_recordings;
+  delete m_channelGroups;
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
 
@@ -91,6 +93,11 @@ CPVRChannelGroupsContainer *CPVRManager::GetChannelGroups(void)
 CPVREpgContainer *CPVRManager::GetEpg(void)
 {
   return Get()->m_epg;
+}
+
+CPVRRecordings *CPVRManager::GetRecordings(void)
+{
+  return Get()->m_recordings;
 }
 
 void CPVRManager::Destroy(void)
@@ -340,7 +347,7 @@ void CPVRManager::UpdateRecordings(void)
 {
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating recordings list", __FUNCTION__);
 
-  g_PVRRecordings.Update(true);
+  m_recordings->Update(true);
   UpdateRecordingsCache();
   UpdateWindow(PVR_WINDOW_RECORDINGS);
 
@@ -404,7 +411,7 @@ void CPVRManager::Process()
     g_PVRTimers.Load();
 
     /* get recordings from the backend */
-    g_PVRRecordings.Load();
+    m_recordings->Load();
 
     /* notify window that all channels and epg are loaded */
     UpdateWindow(PVR_WINDOW_CHANNELS_TV);
@@ -445,7 +452,7 @@ void CPVRManager::Cleanup(void)
   m_epg->Stop();
 
   /* unload the rest */
-  g_PVRRecordings.Unload();
+  m_recordings->Unload();
   g_PVRTimers.Unload();
   m_channelGroups->Unload();
   m_bLoaded = false;
@@ -468,7 +475,7 @@ void CPVRManager::UpdateRecordingsCache(void)
 {
   CSingleLock lock(m_critSection);
 
-  m_hasRecordings = g_PVRRecordings.GetNumRecordings() > 0;
+  m_hasRecordings = m_recordings->GetNumRecordings() > 0;
   m_hasTimers = g_PVRTimers.GetNumTimers() > 0;
   m_isRecording = false;
   m_NowRecording.clear();

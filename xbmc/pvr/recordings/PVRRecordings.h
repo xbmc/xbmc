@@ -46,4 +46,3 @@ public:
   void Clear();
 };
 
-extern CPVRRecordings g_PVRRecordings;

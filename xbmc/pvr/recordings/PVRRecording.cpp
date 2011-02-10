@@ -100,7 +100,7 @@ bool CPVRRecordingInfoTag::Delete(void) const
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
 
-    g_PVRRecordings.Update();
+    CPVRManager::GetRecordings()->Update();
     return true;
   }
   catch (PVR_ERROR err)
@@ -122,7 +122,7 @@ bool CPVRRecordingInfoTag::Rename(const CStdString &newName) const
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
 
-    g_PVRRecordings.Update();
+    CPVRManager::GetRecordings()->Update();
     return true;
   }
   catch (PVR_ERROR err)

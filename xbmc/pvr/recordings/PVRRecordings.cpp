@@ -32,8 +32,6 @@
 #include "pvr/PVRManager.h"
 #include "PVRRecordings.h"
 
-CPVRRecordings g_PVRRecordings;
-
 CPVRRecordings::CPVRRecordings(void)
 {
 

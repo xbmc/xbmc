@@ -82,7 +82,7 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
   else if (fileName.Left(10) == "recordings")
   {
-    return g_PVRRecordings.GetDirectory(strPath, items) > 0;
+    return CPVRManager::GetRecordings()->GetDirectory(strPath, items) > 0;
   }
   else if (fileName.Left(8) == "channels")
   {
@@ -114,5 +114,5 @@ bool CPVRDirectory::IsLiveTV(const CStdString& strPath)
 
 bool CPVRDirectory::HasRecordings()
 {
-  return g_PVRRecordings.GetNumRecordings() > 0;
+  return CPVRManager::GetRecordings()->GetNumRecordings() > 0;
 }
