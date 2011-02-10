@@ -57,6 +57,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_strMusicBrainzTRMID = tag.m_strMusicBrainzTRMID;
   m_strComment = tag.m_strComment;
   m_strLyrics = tag.m_strLyrics;
+  m_strLastPlayed = tag.m_strLastPlayed;
   m_iDuration = tag.m_iDuration;
   m_iTrack = tag.m_iTrack;
   m_bLoaded = tag.m_bLoaded;
@@ -178,6 +179,11 @@ int CMusicInfoTag::GetPlayCount() const
   return m_iTimesPlayed;
 }
 
+const CStdString &CMusicInfoTag::GetLastPlayed() const
+{
+  return m_strLastPlayed;
+}
+
 void CMusicInfoTag::SetURL(const CStdString& strURL)
 {
   m_strURL = strURL;
@@ -269,6 +275,11 @@ void CMusicInfoTag::SetPlayCount(int playcount)
   m_iTimesPlayed = playcount;
 }
 
+void CMusicInfoTag::SetLastPlayed(const CStdString& lastplayed)
+{
+  m_strLastPlayed = lastplayed;
+}
+
 void CMusicInfoTag::SetLoaded(bool bOnOff)
 {
   m_bLoaded = bOnOff;
@@ -357,6 +368,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetMusicBrainzTRMID(song.strMusicBrainzTRMID);
   SetComment(song.strComment);
   SetPlayCount(song.iTimesPlayed);
+  SetLastPlayed(song.lastPlayed);
   m_rating = song.rating;
   m_strURL = song.strFileName;
   SYSTEMTIME stTime;
@@ -409,6 +421,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_strMusicBrainzAlbumID;
     ar << m_strMusicBrainzAlbumArtistID;
     ar << m_strMusicBrainzTRMID;
+    ar << m_strLastPlayed;
     ar << m_strComment;
     ar << m_rating;
     ar << m_iTimesPlayed;
@@ -430,6 +443,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_strMusicBrainzAlbumID;
     ar >> m_strMusicBrainzAlbumArtistID;
     ar >> m_strMusicBrainzTRMID;
+    ar >> m_strLastPlayed;
     ar >> m_strComment;
     ar >> m_rating;
     ar >> m_iTimesPlayed;
@@ -452,6 +466,7 @@ void CMusicInfoTag::Clear()
   m_iDuration = 0;
   m_iTrack = 0;
   m_bLoaded = false;
+  m_strLastPlayed.Empty();
   m_strComment.Empty();
   m_rating = '0';
   m_iDbId = -1;
