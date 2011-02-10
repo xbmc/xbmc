@@ -62,7 +62,7 @@ public:
 
   int         GetRecordingsCount();
   PVR_ERROR   GetRecordingsList(PVRHANDLE handle);
-  const CStdString& GetRecordingPath(int index);
+  const CStdString& GetRecordingPath(uint32_t index);
   PVR_ERROR   DeleteRecording(const CStdString& path);
 
 
@@ -72,6 +72,11 @@ protected:
 private:
   bool readData(uint8_t* buffer, int totalBytes, int TimeOut = 2);
   bool sendKA(uint32_t timeStamp);
+
+  struct {
+	  uint32_t channel;
+	  uint32_t timestamp;
+  } m_headerKA;
 
   struct SMessage
   {

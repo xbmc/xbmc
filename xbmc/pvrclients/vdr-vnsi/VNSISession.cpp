@@ -216,9 +216,13 @@ bool cVNSISession::Open(const CStdString& hostname, int port, long timeout, cons
     if (!vrp.add_U32(VNSIProtocolVersion))    throw "Can't add protocol version to RequestPacket";
     if (!vrp.add_U8(false))                   throw "Can't add netlog flag";
     if (name && strlen(name) > 0)
+    {
       if (!vrp.add_String(name))                throw "Can't add client name to RequestPacket";
+    }
     else
+    {
       if (!vrp.add_String("XBMC Media Center")) throw "Can't add client name to RequestPacket";
+    }
 
     // read welcome
     cResponsePacket* vresp = ReadResult(&vrp);
