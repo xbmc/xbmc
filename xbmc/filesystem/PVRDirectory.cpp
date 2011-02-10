@@ -27,6 +27,7 @@
 #include "guilib/LocalizeStrings.h"
 
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/timers/PVRTimers.h"
 
@@ -86,7 +87,7 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
   else if (fileName.Left(8) == "channels")
   {
-    return CPVRChannelGroup::GetDirectory(strPath, items) > 0;
+    return CPVRManager::GetChannelGroups()->GetDirectory(strPath, items) > 0;
   }
   else if (fileName.Left(6) == "timers")
   {

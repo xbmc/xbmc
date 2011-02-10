@@ -385,7 +385,7 @@ bool CPVRManager::ContinueLastChannel()
 
     if (iLastChannel > 0)
     {
-      const CPVRChannel *channel = CPVRChannelGroup::GetByChannelIDFromAll(iLastChannel);
+      const CPVRChannel *channel = CPVRManager::GetChannelGroups()->GetByChannelIDFromAll(iLastChannel);
 
       if (channel)
       {

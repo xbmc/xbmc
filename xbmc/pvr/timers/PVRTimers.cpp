@@ -26,6 +26,7 @@
 
 #include "PVRTimers.h"
 #include "PVRTimerInfoTag.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/PVRManager.h"
 #include "pvr/epg/PVREpgInfoTag.h"
@@ -101,7 +102,7 @@ int CPVRTimers::Update()
       continue;
 
     /* try to get the channel */
-    CPVRChannel *channel = (CPVRChannel *) CPVRChannelGroup::GetByClientFromAll(timerTag->Number(), timerTag->ClientID());
+    CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByClientFromAll(timerTag->Number(), timerTag->ClientID());
     if (!channel)
       continue;
 

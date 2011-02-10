@@ -326,7 +326,7 @@ void CPVRTimerInfoTag::SetEpgInfoTag(const CPVREpgInfoTag *tag)
 
 int CPVRTimerInfoTag::ChannelNumber() const
 {
-  const CPVRChannel *channeltag = CPVRChannelGroup::GetByClientFromAll(m_iClientNumber, m_iClientID);
+  const CPVRChannel *channeltag = CPVRManager::GetChannelGroups()->GetByClientFromAll(m_iClientNumber, m_iClientID);
   if (channeltag)
     return channeltag->ChannelNumber();
   else
@@ -335,7 +335,7 @@ int CPVRTimerInfoTag::ChannelNumber() const
 
 CStdString CPVRTimerInfoTag::ChannelName() const
 {
-  const CPVRChannel *channeltag = CPVRChannelGroup::GetByClientFromAll(m_iClientNumber, m_iClientID);
+  const CPVRChannel *channeltag = CPVRManager::GetChannelGroups()->GetByClientFromAll(m_iClientNumber, m_iClientID);
   if (channeltag)
     return channeltag->ChannelName();
   else

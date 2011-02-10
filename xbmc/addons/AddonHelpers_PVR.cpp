@@ -25,6 +25,7 @@
 
 #include "pvr/epg/PVREpg.h"
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/addons/PVRClient.h"
 
 namespace ADDON
@@ -147,7 +148,7 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
 
   CPVRTimers *xbmcTimers     = (CPVRTimers*) handle->DATA_ADDRESS;
   CPVRClient* client         = (CPVRClient*) handle->CALLER_ADDRESS;
-  const CPVRChannel *channel = CPVRChannelGroup::GetByClientFromAll(timer->channelNum, client->GetClientID());
+  const CPVRChannel *channel = CPVRManager::GetChannelGroups()->GetByClientFromAll(timer->channelNum, client->GetClientID());
 
   if (channel == NULL)
   {

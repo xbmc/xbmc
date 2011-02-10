@@ -79,6 +79,7 @@
 #include "CoreAudio.h"
 #include "XBMCHelper.h"
 #endif
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/PVRManager.h"
 #include "network/GUIDialogAccessPoints.h"
@@ -1913,7 +1914,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("pvrmenu.searchicons"))
   {
-    CPVRChannelGroup::SearchMissingChannelIcons();
+    CPVRManager::GetChannelGroups()->SearchMissingChannelIcons();
   }
   else if (strSetting.Equals("pvrmanager.resetdb"))
   {

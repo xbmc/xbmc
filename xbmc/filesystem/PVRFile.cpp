@@ -22,6 +22,7 @@
 #include "PVRFile.h"
 #include "Util.h"
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "utils/log.h"
 
@@ -46,7 +47,7 @@ bool CPVRFile::Open(const CURL& url)
 
   if (strURL.Left(18) == "pvr://channels/tv/")
   {
-    const CPVRChannel *tag = CPVRChannelGroup::GetByPath(strURL);
+    const CPVRChannel *tag = CPVRManager::GetChannelGroups()->GetByPath(strURL);
     if (tag)
     {
       if (!CPVRManager::Get()->OpenLiveStream(tag))
@@ -63,7 +64,7 @@ bool CPVRFile::Open(const CURL& url)
   }
   else if (strURL.Left(21) == "pvr://channels/radio/")
   {
-    const CPVRChannel *tag = CPVRChannelGroup::GetByPath(strURL);
+    const CPVRChannel *tag = CPVRManager::GetChannelGroups()->GetByPath(strURL);
     if (tag)
     {
       if (!CPVRManager::Get()->OpenLiveStream(tag))
@@ -248,7 +249,7 @@ CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
 
   if (FileName.substr(0, 14) == "pvr://channels")
   {
-    const CPVRChannel *tag = CPVRChannelGroup::GetByPath(FileName);
+    const CPVRChannel *tag = CPVRManager::GetChannelGroups()->GetByPath(FileName);
     if (tag)
     {
       CStdString stream = tag->StreamURL();
