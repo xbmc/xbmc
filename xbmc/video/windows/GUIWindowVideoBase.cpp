@@ -807,10 +807,8 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
   m_database.Open();
   long startoffset = 0;
 
-  if (item->IsStack() && (!g_guiSettings.GetBool("myvideos.treatstackasfile") ||
-                          CFileItem(CStackDirectory::GetFirstStackedFile(item->m_strPath),false).IsDVDImage()) )
-  {
-
+  if (item->IsStack() && CFileItem(CStackDirectory::GetFirstStackedFile(item->m_strPath),false).IsDVDImage()) )
+  { // TODO: why don't we support stacked dvd images??
     CStdStringArray movies;
     GetStackedFiles(item->m_strPath, movies);
 
@@ -1352,9 +1350,8 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
   int selectedFile = 1;
   long startoffset = item->m_lStartOffset;
 
-  if (item->IsStack() && (!g_guiSettings.GetBool("myvideos.treatstackasfile") ||
-                          CFileItem(CStackDirectory::GetFirstStackedFile(item->m_strPath),false).IsDVDImage()) )
-  {
+  if (item->IsStack() && CFileItem(CStackDirectory::GetFirstStackedFile(item->m_strPath),false).IsDVDImage() )
+  { // TODO: why don't we allow stacked dvd images?
     CStdStringArray movies;
     GetStackedFiles(item->m_strPath, movies);
 
