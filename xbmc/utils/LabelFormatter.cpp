@@ -91,11 +91,12 @@ using namespace MUSIC_INFO;
  *  %O - mpaa rating
  *  %Q - file time
  *  %U - studio
+ *  %V - Playcount
  *  %X - Bitrate
  *  %W - Listeners
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUXW"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXW"
 
 CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2)
 {
@@ -291,6 +292,12 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     {// MPAA Rating
       value = movie ->m_strStudio;
     }
+    break;
+  case 'V': // Playcount
+    if (music)
+      value.Format("%i", music->GetPlayCount());
+    if (movie)
+      value.Format("%i", movie->m_playCount);
     break;
   case 'X': // Bitrate
     if( !item->m_bIsFolder && item->m_dwSize != 0 )

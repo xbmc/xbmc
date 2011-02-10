@@ -147,6 +147,19 @@ void SSortFileItem::ByLastPlayed(CFileItemPtr &item)
     item->SetSortLabel(item->GetLabel());
 }
 
+void SSortFileItem::ByPlayCount(CFileItemPtr &item)
+{
+  if (!item) return;
+
+  CStdString label;
+  if (item->HasVideoInfoTag())
+    label.Format("%i %s", item->GetVideoInfoTag()->m_playCount, item->GetLabel().c_str());
+  if (item->HasMusicInfoTag())
+    label.Format("%i %s", item->GetMusicInfoTag()->GetPlayCount(), item->GetLabel().c_str());
+
+  item->SetSortLabel(label);
+}
+
 void SSortFileItem::ByDate(CFileItemPtr &item)
 {
   if (!item) return;
