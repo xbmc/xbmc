@@ -1823,6 +1823,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_LASTPLAYED:
     FillSortFields(SSortFileItem::ByLastPlayed);
     break;
+  case SORT_METHOD_PLAYCOUNT:
+    FillSortFields(SSortFileItem::ByPlayCount);
+    break;
   case SORT_METHOD_LISTENERS:
     FillSortFields(SSortFileItem::ByListeners);
     break;    

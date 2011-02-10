@@ -625,6 +625,7 @@ bool CAdvancedSettings::Load()
         setting->SetAdvanced();
     }
     g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
+    CLog::SetLogLevel(g_advancedSettings.m_logLevel);
   }
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
 

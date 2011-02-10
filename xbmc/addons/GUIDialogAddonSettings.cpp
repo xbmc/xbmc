@@ -876,6 +876,8 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
     if (!TranslateSingleString(conditionVec[i], condVec)) continue;
 
     const CGUIControl* control2 = GetControl(controlId + atoi(condVec[1]));
+    if (!control2)
+      continue;
 
     CStdString value;
     switch (control2->GetControlType())

@@ -9,5 +9,5 @@ IF EXIST "%XBMC_PATH%\system\python\Lib" rmdir "%XBMC_PATH%\system\python\Lib" /
 echo .svn>py_exclude.txt
 echo test>>py_exclude.txt
 echo plat->>py_exclude.txt
-xcopy "%XBMC_PATH%\lib\libPython\Python\Lib" "%XBMC_PATH%\system\python\Lib" /E /Q /I /Y /EXCLUDE:py_exclude.txt > NUL
+xcopy "%XBMC_PATH%\lib\Python\Lib" "%XBMC_PATH%\system\python\Lib" /E /Q /I /Y /EXCLUDE:py_exclude.txt > NUL
 del py_exclude.txt

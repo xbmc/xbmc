@@ -38,6 +38,8 @@
 #include "guilib/Texture.h"
 #include "threads/SingleLock.h"
 #include "DllSwScale.h"
+#include "utils/log.h"
+#include "utils/GLUtils.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
