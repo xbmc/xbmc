@@ -287,7 +287,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
       break;
     }
 
-    bool bCurrent = m_bDatabaseLoaded ?
+    bool bCurrent = m_bDatabaseLoaded || m_bIgnoreDbForClient ?
         at(iEpgPtr)->Update(start, end, m_iUpdateTime, !m_bIgnoreDbForClient) :
         at(iEpgPtr)->Load() && bUpdateSuccess;
 
@@ -307,7 +307,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   }
 
   /* update the last scan time if the update was successful and if we did a full update */
-  if (bUpdateSuccess && m_bDatabaseLoaded)
+  if (bUpdateSuccess && (m_bDatabaseLoaded || m_bIgnoreDbForClient))
   {
     m_database.PersistLastEpgScanTime();
     CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgUpdate);
