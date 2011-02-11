@@ -31,6 +31,7 @@
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
 
+#define EPGUPDATE                60  /* check if tables need to be updated every minute */
 #define EPGCLEANUPINTERVAL       900 /* remove old entries from the EPG every 15 minutes */
 
 using namespace std;
@@ -132,23 +133,12 @@ void CEpgContainer::Process(void)
   m_iLastEpgCleanup    = 0;
   m_iLastEpgUpdate     = 0;
 
-  if (!m_database.Open())
-  {
-    CLog::Log(LOGERROR, "EpgContainer - %s - cannot open the database",
-        __FUNCTION__);
-    return;
-  }
-
-  /* get the last EPG update time from the database */
-  m_database.GetLastEpgScanTime().GetAsTime(m_iLastEpgUpdate);
-  m_database.Close();
-
   while (!m_bStop)
   {
     CDateTime::GetCurrentDateTime().GetAsTime(iNow);
 
     /* load or update the EPG */
-    if (!m_bStop && (iNow > m_iLastEpgUpdate + m_iUpdateTime || !m_bDatabaseLoaded))
+    if (!m_bStop && (iNow > m_iLastEpgUpdate + EPGUPDATE || !m_bDatabaseLoaded))
       UpdateEPG(false);
 
     /* clean up old entries */
@@ -298,7 +288,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     }
 
     bool bCurrent = m_bDatabaseLoaded ?
-        at(iEpgPtr)->Update(start, end, !m_bIgnoreDbForClient) :
+        at(iEpgPtr)->Update(start, end, m_iUpdateTime, !m_bIgnoreDbForClient) :
         at(iEpgPtr)->Load() && bUpdateSuccess;
 
     if (!bCurrent)

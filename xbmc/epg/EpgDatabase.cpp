@@ -31,7 +31,6 @@ using namespace dbiplus;
 
 CEpgDatabase::CEpgDatabase(void)
 {
-  lastScanTime.SetValid(false);
 }
 
 CEpgDatabase::~CEpgDatabase(void)
@@ -91,7 +90,6 @@ bool CEpgDatabase::CreateTables(void)
     m_pDS->exec("CREATE INDEX idx_epg_iStartTime on epgtags(iStartTime);");
     m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epgtags(iEndTime);");
 
-    // TODO keep separate value per epg table collection
     CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'lastepgscan'", __FUNCTION__);
     m_pDS->exec("CREATE TABLE lastepgscan ("
           "idEpg integer primary key, "
@@ -124,7 +122,6 @@ bool CEpgDatabase::DeleteEpg(void)
   bReturn = DeleteValues("epg") || bReturn;
   bReturn = DeleteValues("epgtags") || bReturn;
   bReturn = DeleteValues("lastepgscan") || bReturn;
-  lastScanTime.SetValid(false);
 
   return bReturn;
 }
@@ -304,39 +301,36 @@ int CEpgDatabase::Get(CEpg *epg, const CDateTime &start /* = NULL */, const CDat
   return iReturn;
 }
 
-const CDateTime &CEpgDatabase::GetLastEpgScanTime(void)
+bool CEpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
 {
-  if (lastScanTime.IsValid())
-    return lastScanTime;
+  bool bReturn = false;
+  CStdString strWhereClause = FormatSQL("idEpg = %u", iEpgId);
+  CStdString strValue = GetSingleValue("lastepgscan", "iLastScan", strWhereClause);
 
-  CStdString strValue = GetSingleValue("lastepgscan", "iLastScan", "idEpg = 0");
-
-  if (strValue.IsEmpty())
+  if (!strValue.IsEmpty())
   {
-    lastScanTime = -1;
+    lastScan->SetFromDBDateTime(strValue.c_str());
+    bReturn = true;
   }
   else
   {
-    time_t iLastScan = atoi(strValue.c_str());
-    CDateTime lastScan(iLastScan);
-    lastScanTime = lastScan;
+    lastScan->SetValid(false);
   }
 
-  return lastScanTime;
+  return bReturn;
 }
 
-bool CEpgDatabase::PersistLastEpgScanTime(void)
+bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */)
 {
   CDateTime now = CDateTime::GetCurrentDateTime();
-  CLog::Log(LOGDEBUG, "EpgDB - %s - updating last scan time to '%s'",
-      __FUNCTION__, now.GetAsDBDateTime().c_str());
-  lastScanTime = now;
+  CLog::Log(LOGDEBUG, "EpgDB - %s - updating last scan time of table %d to '%s'",
+      __FUNCTION__, iEpgId, now.GetAsDBDateTime().c_str());
 
   bool bReturn = true;
   time_t iLastScan;
   now.GetAsTime(iLastScan);
-  CStdString strQuery = FormatSQL("REPLACE INTO lastepgscan(idEpg, iLastScan) VALUES (0, %u);",
-      iLastScan);
+  CStdString strQuery = FormatSQL("REPLACE INTO lastepgscan(idEpg, iLastScan) VALUES (%u, %u);",
+      iEpgId, iLastScan);
 
   bReturn = ExecuteQuery(strQuery);
 

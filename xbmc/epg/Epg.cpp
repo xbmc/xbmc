@@ -46,6 +46,7 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = CStdString() */, const CSt
   m_strScraperName = strScraperName;
   m_nowActive      = NULL;
   m_Channel        = NULL;
+  m_lastScanTime.SetValid(false);
 }
 
 CEpg::~CEpg(void)
@@ -72,6 +73,8 @@ bool CEpg::Delete(void)
 
 bool CEpg::HasValidEntries(void) const
 {
+  CSingleLock lock(m_critSection);
+
   return (m_iEpgID > 0 && /* valid EPG ID */
           size() > 0 && /* contains at least 1 tag */
           at(size()-1)->m_endTime >= CDateTime::GetCurrentDateTime()); /* the last end time hasn't passed yet */
@@ -112,6 +115,8 @@ bool CEpg::DeleteInfoTag(CEpgInfoTag *tag)
 
 void CEpg::Sort(void)
 {
+  CSingleLock lock(m_critSection);
+
   /* sort the EPG */
   sort(begin(), end(), sortEPGbyDate());
 
@@ -161,6 +166,7 @@ void CEpg::Cleanup(const CDateTime &Time)
   CSingleLock lock(m_critSection);
 
   m_bUpdateRunning = true;
+
   unsigned int iSize = size();
   for (unsigned int iTagPtr = 0; iTagPtr < iSize; iTagPtr++)
   {
@@ -173,6 +179,7 @@ void CEpg::Cleanup(const CDateTime &Time)
       --iTagPtr;
     }
   }
+
   m_bUpdateRunning = false;
 }
 
@@ -208,6 +215,7 @@ const CEpgInfoTag *CEpg::InfoTagNext(void) const
 const CEpgInfoTag *CEpg::InfoTag(int uniqueID, const CDateTime &StartTime) const
 {
   static CEpgInfoTag *returnTag = NULL;
+  CSingleLock locka(m_critSection);
 
   /* try to find the tag by UID */
   if (uniqueID > 0)
@@ -282,8 +290,6 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
 {
   bool bReturn = false;
 
-  CSingleLock lock(m_critSection);
-
   CEpgInfoTag *InfoTag = (CEpgInfoTag *) this->InfoTag(tag.UniqueBroadcastID(), tag.Start());
   /* create a new tag if no tag with this ID exists */
   if (!InfoTag)
@@ -319,7 +325,7 @@ bool CEpg::Load(void)
 
   if (!database || !database->Open())
   {
-    CLog::Log(LOGERROR, "%s - could not load the database", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
     return bReturn;
   }
 
@@ -354,27 +360,68 @@ bool CEpg::Load(void)
   return bReturn;
 }
 
-bool CEpg::Update(time_t start, time_t end, bool bStoreInDb /* = true */)
+bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* = true */)
 {
   bool bGrabSuccess = true;
+  bool bUpdate = false;
 
-  /* mark the EPG as being updated */
-  m_bUpdateRunning = true;
+  CSingleLock lock(m_critSection);
 
-  bGrabSuccess = UpdateFromScraper(start, end);
+  /* already updating */
+  if (m_bUpdateRunning)
+    return bGrabSuccess;
 
-  /* store the loaded EPG entries in the database */
-  if (bGrabSuccess)
+  /* get the last update time from the database */
+  if (!m_lastScanTime.IsValid())
   {
-    FixOverlappingEvents(bStoreInDb);
+    CEpgDatabase *database = g_EpgContainer.GetDatabase();
+    if (database && database->Open())
+    {
+      database->GetLastEpgScanTime(m_iEpgID, &m_lastScanTime);
+      database->Close();
+    }
+  }
 
-    if (bStoreInDb)
-      Persist(true);
+  /* check if we have to update */
+  time_t iNow;
+  CDateTime::GetCurrentDateTime().GetAsTime(iNow);
+  time_t iLastUpdate;
+  m_lastScanTime.GetAsTime(iLastUpdate);
+  if (iNow > iLastUpdate + iUpdateTime) //FIXME iLastUpdate is always -1 here
+  {
+    m_bUpdateRunning = true;
+    bUpdate = true;
+  }
+
+  lock.Leave();
+
+  if (bUpdate)
+  {
+    bGrabSuccess = UpdateFromScraper(start, end);
+
+    /* store the loaded EPG entries in the database */
+    if (bGrabSuccess)
+    {
+      CSingleLock lock(m_critSection);
+
+      FixOverlappingEvents(bStoreInDb);
+
+      if (bStoreInDb)
+      {
+        CEpgDatabase *database = g_EpgContainer.GetDatabase();
+        if (database && database->Open())
+        {
+          database->PersistLastEpgScanTime(m_iEpgID);
+          Persist(true);
+          database->Close();
+        }
+      }
+
+      m_bUpdateRunning = false;
+    }
   }
 
   Sort();
-
-  m_bUpdateRunning = false;
 
   return bGrabSuccess;
 }

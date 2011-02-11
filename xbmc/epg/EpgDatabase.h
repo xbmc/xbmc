@@ -31,9 +31,6 @@ class CEpgContainer;
 
 class CEpgDatabase : public CDatabase
 {
-private:
-  CDateTime lastScanTime; /*!< the last time the EPG has been updated */
-
 public:
   /*!
    * @brief Create a new instance of the EPG database.
@@ -112,15 +109,18 @@ public:
 
   /*!
    * @brief Get the last stored EPG scan time.
-   * @return The last scan time or -1 if it wasn't found.
+   * @param iEpgId The table to update the time for. Use 0 for a global value.
+   * @param lastScan The last scan time or -1 if it wasn't found.
+   * @return True if the time was fetched successfully, false otherwise.
    */
-  virtual const CDateTime &GetLastEpgScanTime(void);
+  virtual bool GetLastEpgScanTime(int iEpgId, CDateTime *lastScan);
 
   /*!
    * @brief Update the last scan time.
+   * @param iEpgId The table to update the time for. Use 0 for a global value.
    * @return True if it was updated successfully, false otherwise.
    */
-  virtual bool PersistLastEpgScanTime(void);
+  virtual bool PersistLastEpgScanTime(int iEpgId = 0);
 
   /*!
    * @brief Persist an EPG table. It's entries are not persisted.
