@@ -142,14 +142,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetCast(InfoTagVideo *self, PyObject *args)
   {
-    CStdString cast = self->infoTag.GetCast(true);
-    /*for (CVideoInfoTag::iCast it = self->infoTag.m_cast.begin(); it != self->infoTag.m_cast.end(); ++it)
-    {
-      CStdString character;
-      character.Format("%s %s %s\n", it->first.c_str(), g_localizeStrings.Get(20347).c_str(), it->second.c_str());
-      cast += character;
-    }*/
-    return Py_BuildValue((char*)"s", cast.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.GetCast(true).c_str());
   }
 
   // InfoTagVideo_GetFile
@@ -170,16 +163,6 @@ namespace PYXBMC
     return Py_BuildValue((char*)"s", self->infoTag.m_strPath.c_str());
   }
 
-  /*// InfoTagVideo_GetDVDLabel
-  PyDoc_STRVAR(getDVDLabel__doc__,
-    "getDVDLabel() -- returns a string.\n");
-
-  PyObject* InfoTagVideo_GetDVDLabel(InfoTagVideo *self, PyObject *args)
-  {
-    return Py_BuildValue((char*)"s", self->infoTag.m_strDVDLabel.c_str());
-  }
-  */
-
   // InfoTagVideo_GetIMDBNumber
   PyDoc_STRVAR(getIMDBNumber__doc__,
     "getIMDBNumber() -- returns a string.\n");
@@ -189,7 +172,7 @@ namespace PYXBMC
     return Py_BuildValue((char*)"s", self->infoTag.m_strIMDBNumber.c_str());
   }
 
-  // InfoTagVideo_GetIMDBNumber
+  // InfoTagVideo_GetYear
   PyDoc_STRVAR(getYear__doc__,
     "getYear() -- returns a integer.\n");
 
@@ -198,13 +181,31 @@ namespace PYXBMC
     return Py_BuildValue((char*)"i", self->infoTag.m_iYear);
   }
 
-  // InfoTagVideo_GetIMDBNumber
+  // InfoTagVideo_GetRating
   PyDoc_STRVAR(getRating__doc__,
     "getRating() -- returns a float.\n");
 
   PyObject* InfoTagVideo_GetRating(InfoTagVideo *self, PyObject *args)
   {
     return Py_BuildValue((char*)"f", self->infoTag.m_fRating);
+  }
+
+  // InfoTagVideo_GetPlayCount
+  PyDoc_STRVAR(getPlayCount__doc__,
+    "getPlayCount() -- returns a integer.\n");
+
+  PyObject* InfoTagVideo_GetPlayCount(InfoTagVideo *self, PyObject *args)
+  {
+    return Py_BuildValue((char*)"i", self->infoTag.m_playCount);
+  }
+
+  // InfoTagVideo_GetLastPlayed
+  PyDoc_STRVAR(getLastPlayed__doc__,
+    "getLastPlayed() -- returns a string.\n");
+
+  PyObject* InfoTagVideo_GetLastPlayed(InfoTagVideo *self, PyObject *args)
+  {
+    return Py_BuildValue((char*)"s", self->infoTag.m_lastPlayed.c_str());
   }
 
   PyMethodDef InfoTagVideo_methods[] = {
@@ -220,10 +221,11 @@ namespace PYXBMC
     {(char*)"getCast", (PyCFunction)InfoTagVideo_GetCast, METH_VARARGS, getCast__doc__},
     {(char*)"getFile", (PyCFunction)InfoTagVideo_GetFile, METH_VARARGS, getFile__doc__},
     {(char*)"getPath", (PyCFunction)InfoTagVideo_GetPath, METH_VARARGS, getPath__doc__},
-    //{"(char*)getDVDLabel", (PyCFunction)InfoTagVideo_GetDVDLabel, METH_VARARGS, getDVDLabel__doc__},
     {(char*)"getIMDBNumber", (PyCFunction)InfoTagVideo_GetIMDBNumber, METH_VARARGS, getIMDBNumber__doc__},
     {(char*)"getYear", (PyCFunction)InfoTagVideo_GetYear, METH_VARARGS, getYear__doc__},
     {(char*)"getRating", (PyCFunction)InfoTagVideo_GetRating, METH_VARARGS, getRating__doc__},
+    {(char*)"getPlayCount", (PyCFunction)InfoTagVideo_GetPlayCount, METH_VARARGS, getPlayCount__doc__},
+    {(char*)"getLastPlayed", (PyCFunction)InfoTagVideo_GetLastPlayed, METH_VARARGS, getLastPlayed__doc__},
     {NULL, NULL, 0, NULL}
   };
 
