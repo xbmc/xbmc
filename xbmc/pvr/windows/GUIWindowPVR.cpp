@@ -675,9 +675,11 @@ bool CGUIWindowPVR::OnMessageClick(CGUIMessage &message)
 
 bool CGUIWindowPVR::OnMessage(CGUIMessage& message)
 {
-  OnMessageFocus(message) || OnMessageClick(message);
+  bool bReturn = OnMessageFocus(message) || OnMessageClick(message);
 
-  return CGUIMediaWindow::OnMessage(message);
+  bReturn = bReturn ? bReturn : CGUIMediaWindow::OnMessage(message);
+
+  return bReturn;
 }
 
 bool CGUIWindowPVR::OnAction(const CAction &action)
