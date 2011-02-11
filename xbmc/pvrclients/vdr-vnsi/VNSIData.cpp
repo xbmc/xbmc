@@ -927,7 +927,7 @@ bool cVNSIData::sendKA(uint32_t timeStamp)
 {
   m_headerKA.channel = htonl(CHANNEL_KEEPALIVE);
   m_headerKA.timestamp = htonl(timeStamp);
-  return (m_session.sendData(&m_headerKA, sizeof(m_headerKA)) != sizeof(m_headerKA));
+  return (m_session.sendData(&m_headerKA, sizeof(m_headerKA)) == sizeof(m_headerKA));
 }
 
 bool cVNSIData::readData(uint8_t* buffer, int totalBytes, int TimeOut)
