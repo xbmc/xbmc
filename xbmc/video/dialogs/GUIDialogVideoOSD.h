@@ -35,5 +35,4 @@ public:
   virtual bool OnAction(const CAction &action);
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual void OnWindowLoaded();
 };
