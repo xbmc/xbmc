@@ -45,18 +45,10 @@ protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual bool OnPlayMedia(int iItem);
   virtual void AddFileToDatabase(const CFileItem* pItem);
-  virtual void OnPrepareFileItems(CFileItemList &items);
-  virtual void UpdateButtons();
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual CStdString GetStartFolder(const CStdString &dir);
 
-  virtual void OnQueueItem(int iItem);
-
   virtual void LoadPlayList(const CStdString& strFileName);
   void PlayFolder(const CFileItem* pItem);
-
-private:
-  bool m_stackingAvailable;
-  bool m_cleaningAvailable;
 };

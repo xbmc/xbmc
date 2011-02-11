@@ -78,7 +78,7 @@ void CSettings::Initialize()
     g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);
   }
 
-  m_iMyVideoStack = STACK_NONE;
+  m_videoStacking = false;
 
   m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
@@ -631,7 +631,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   if (pElement)
   {
     GetInteger(pElement, "startwindow", m_iVideoStartWindow, WINDOW_VIDEO_FILES, WINDOW_VIDEO_FILES, WINDOW_VIDEO_NAV);
-    GetInteger(pElement, "stackvideomode", m_iMyVideoStack, STACK_NONE, STACK_NONE, STACK_SIMPLE);
+    XMLUtils::GetBoolean(pElement, "stackvideos", m_videoStacking);
 
     GetPath(pElement, "defaultlibview", m_defaultVideoLibSource);
 
@@ -804,7 +804,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
 
   XMLUtils::SetInt(pNode, "startwindow", m_iVideoStartWindow);
 
-  XMLUtils::SetInt(pNode, "stackvideomode", m_iMyVideoStack);
+  XMLUtils::SetBoolean(pNode, "stackvideos", m_videoStacking);
 
   XMLUtils::SetPath(pNode, "defaultlibview", m_defaultVideoLibSource);
 

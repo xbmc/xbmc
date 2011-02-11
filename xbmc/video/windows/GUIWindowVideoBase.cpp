@@ -86,6 +86,7 @@ CGUIWindowVideoBase::CGUIWindowVideoBase(int id, const CStdString &xmlFile)
 {
   m_thumbLoader.SetObserver(this);
   m_thumbLoader.SetStreamDetailsObserver(this);
+  m_stackingAvailable = true;
 }
 
 CGUIWindowVideoBase::~CGUIWindowVideoBase()
@@ -136,7 +137,14 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_PLAY_DVD)
+      if (iControl == CONTROL_STACK)
+      {
+        g_settings.m_videoStacking = !g_settings.m_videoStacking;
+        g_settings.Save();
+        UpdateButtons();
+        Update( m_vecItems->m_strPath );
+      }
+      else if (iControl == CONTROL_PLAY_DVD)
       {
         // play movie...
         CUtil::PlayDVD();
@@ -240,6 +248,10 @@ void CGUIWindowVideoBase::UpdateButtons()
 
   CONTROL_ENABLE(CONTROL_BTNSCAN);
 
+  SET_CONTROL_LABEL(CONTROL_STACK, 14000);  // Stack
+  SET_CONTROL_SELECTED(GetID(), CONTROL_STACK, g_settings.m_videoStacking);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_STACK, m_stackingAvailable);
+  
   CGUIMediaWindow::UpdateButtons();
 }
 
@@ -1685,6 +1697,19 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
     items.Add(newPlaylist);
   }
 
+  m_stackingAvailable = !(items.IsTuxBox() || items.IsPlugin() ||
+                          items.IsAddonsPath() || items.IsRSS() ||
+                          items.IsInternetStream() || items.IsVideoDb());
+  // we may also be in a tvshow files listing
+  // (ideally this should be removed, and our stack regexps tidied up if necessary
+  // No "normal" episodes should stack, and multi-parts should be supported)
+  ADDON::ScraperPtr info = m_database.GetScraperForPath(strDirectory);
+  if (info && info->Content() == CONTENT_TVSHOWS)
+    m_stackingAvailable = false;
+
+  if (m_stackingAvailable && !items.IsStack() && g_settings.m_videoStacking)
+    items.Stack();
+
   return bResult;
 }
 
@@ -1704,6 +1729,17 @@ void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)
         if (CFile::Exists(art))
           item->SetProperty("fanart_image", art);
       }
+    }
+  }
+  if (!items.IsVideoDb() && items.GetContent().IsEmpty() &&
+      g_guiSettings.GetBool("myvideos.cleanstrings") && !items.IsVirtualDirectoryRoot())
+  {
+    for (int i = 0; i < (int)items.Size(); ++i)
+    {
+      CFileItemPtr item = items[i];
+      // TODO: Find why this code is as it is - why do we always clean non-archived folders??
+      if ((item->m_bIsFolder && !URIUtils::IsInArchive(item->m_strPath)) || m_stackingAvailable)
+        item->CleanString();
     }
   }
 }

@@ -55,8 +55,6 @@ using namespace VIDEO;
 CGUIWindowVideoFiles::CGUIWindowVideoFiles()
 : CGUIWindowVideoBase(WINDOW_VIDEO_FILES, "MyVideo.xml")
 {
-  m_stackingAvailable = true;
-  m_cleaningAvailable = true;
 }
 
 CGUIWindowVideoFiles::~CGUIWindowVideoFiles()
@@ -80,25 +78,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      //if (iControl == CONTROL_BTNSCAN)
-      //{
-      //  OnScan();
-     // }
-      /*else*/ if (iControl == CONTROL_STACK)
-      {
-        // toggle between the following states:
-        //   0 : no stacking
-        //   1 : stacking
-        g_settings.m_iMyVideoStack++;
-
-        if (g_settings.m_iMyVideoStack > STACK_SIMPLE)
-          g_settings.m_iMyVideoStack = STACK_NONE;
-
-        g_settings.Save();
-        UpdateButtons();
-        Update( m_vecItems->m_strPath );
-      }
-      else if (iControl == CONTROL_BTNPLAYLISTS)
+      if (iControl == CONTROL_BTNPLAYLISTS)
       {
         if (!m_vecItems->m_strPath.Equals("special://videoplaylists/"))
         {
@@ -159,56 +139,12 @@ bool CGUIWindowVideoFiles::OnAction(const CAction &action)
   return CGUIWindowVideoBase::OnAction(action);
 }
 
-void CGUIWindowVideoFiles::UpdateButtons()
-{
-  CGUIWindowVideoBase::UpdateButtons();
-  const CGUIControl *stack = GetControl(CONTROL_STACK);
-  if (stack)
-  {
-    if (m_stackingAvailable)
-    {
-      CONTROL_ENABLE(CONTROL_STACK);
-      if (stack->GetControlType() == CGUIControl::GUICONTROL_RADIO)
-      {
-        SET_CONTROL_SELECTED(GetID(), CONTROL_STACK, g_settings.m_iMyVideoStack == STACK_SIMPLE);
-        SET_CONTROL_LABEL(CONTROL_STACK, 14000);  // Stack
-      }
-      else
-      {
-        SET_CONTROL_LABEL(CONTROL_STACK, g_settings.m_iMyVideoStack + 14000);
-      }
-    }
-    else
-    {
-      if (stack->GetControlType() == CGUIControl::GUICONTROL_RADIO)
-      {
-        SET_CONTROL_LABEL(CONTROL_STACK, 14000);  // Stack
-      }
-
-      CONTROL_DISABLE(CONTROL_STACK);
-    }
-  }
-}
-
 bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   if (!CGUIWindowVideoBase::GetDirectory(strDirectory, items))
     return false;
 
   ADDON::ScraperPtr info2 = m_database.GetScraperForPath(strDirectory);
-
-  m_stackingAvailable = true;
-  m_cleaningAvailable = true;
-
-
-  if ((info2 && info2->Content() == CONTENT_TVSHOWS) || items.IsTuxBox() || items.IsPlugin() || items.IsAddonsPath() || items.IsRSS() || items.IsInternetStream())
-  { // dont stack or clean strings in tv dirs
-    m_stackingAvailable = false;
-    m_cleaningAvailable = false;
-  }
-  else if (!items.IsStack() && g_settings.m_iMyVideoStack != STACK_NONE)
-    items.Stack();
-
   if (info2 && info2->Content() != CONTENT_NONE)
     items.SetContent(ADDON::TranslateContent(info2->Content()));
   else if (items.GetContent().IsEmpty())
@@ -218,20 +154,6 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   items.SetVideoThumb();
 
   return true;
-}
-
-void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
-{
-  CGUIWindowVideoBase::OnPrepareFileItems(items);
-  if (g_guiSettings.GetBool("myvideos.cleanstrings") && !items.IsVirtualDirectoryRoot())
-  {
-    for (int i = 0; i < (int)items.Size(); ++i)
-    {
-      CFileItemPtr item = items[i];
-      if ((item->m_bIsFolder && !URIUtils::IsInArchive(item->m_strPath)) || m_cleaningAvailable)
-        item->CleanString();
-    }
-  }
 }
 
 bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
@@ -562,11 +484,6 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     break;
   }
   return CGUIWindowVideoBase::OnContextButton(itemNumber, button);
-}
-
-void CGUIWindowVideoFiles::OnQueueItem(int iItem)
-{
-  CGUIWindowVideoBase::OnQueueItem(iItem);
 }
 
 CStdString CGUIWindowVideoFiles::GetStartFolder(const CStdString &dir)
