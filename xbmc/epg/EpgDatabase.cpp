@@ -93,7 +93,7 @@ bool CEpgDatabase::CreateTables(void)
     CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'lastepgscan'", __FUNCTION__);
     m_pDS->exec("CREATE TABLE lastepgscan ("
           "idEpg integer primary key, "
-          "iLastScan integer"
+          "sLastScan text"
         ")"
     );
 
@@ -111,6 +111,27 @@ bool CEpgDatabase::CreateTables(void)
 
 bool CEpgDatabase::UpdateOldVersion(int iVersion)
 {
+  if (iVersion == 1)
+  {
+    BeginTransaction();
+
+    try
+    {
+      m_pDS->exec("DROP TABLE lastepgscan;");
+      m_pDS->exec("CREATE TABLE lastepgscan ("
+          "idEpg integer primary key, "
+          "sLastScan text"
+          ")"
+      );
+    }
+    catch(...)
+    {
+      RollbackTransaction();
+      return false;
+    }
+
+    CommitTransaction();
+  }
   return true;
 }
 
@@ -305,7 +326,7 @@ bool CEpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
 {
   bool bReturn = false;
   CStdString strWhereClause = FormatSQL("idEpg = %u", iEpgId);
-  CStdString strValue = GetSingleValue("lastepgscan", "iLastScan", strWhereClause);
+  CStdString strValue = GetSingleValue("lastepgscan", "sLastScan", strWhereClause);
 
   if (!strValue.IsEmpty())
   {
@@ -322,15 +343,12 @@ bool CEpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
 
 bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */)
 {
-  CDateTime now = CDateTime::GetCurrentDateTime();
-  CLog::Log(LOGDEBUG, "EpgDB - %s - updating last scan time of table %d to '%s'",
-      __FUNCTION__, iEpgId, now.GetAsDBDateTime().c_str());
+  CLog::Log(LOGDEBUG, "EpgDB - %s - updating last scan time of table %d",
+      __FUNCTION__, iEpgId);
 
   bool bReturn = true;
-  time_t iLastScan;
-  now.GetAsTime(iLastScan);
-  CStdString strQuery = FormatSQL("REPLACE INTO lastepgscan(idEpg, iLastScan) VALUES (%u, %u);",
-      iEpgId, iLastScan);
+  CStdString strQuery = FormatSQL("REPLACE INTO lastepgscan(idEpg, sLastScan) VALUES (%u, '%s');",
+      iEpgId, CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str());
 
   bReturn = ExecuteQuery(strQuery);
 
