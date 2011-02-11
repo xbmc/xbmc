@@ -81,6 +81,7 @@
 #include "windowing/WindowingFactory.h"
 #include "powermanagement/PowerManager.h"
 #include "powermanagement/DPMSSupport.h"
+#include "bluetooth/BluetoothManager.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
@@ -155,6 +156,7 @@
 #include "video/windows/GUIWindowVideoFiles.h"
 #include "video/windows/GUIWindowVideoNav.h"
 #include "settings/GUIWindowSettingsProfile.h"
+#include "settings/GUIWindowSettingsBluetooth.h"
 #ifdef HAS_GL
 #include "rendering/gl/GUIWindowTestPatternGL.h"
 #endif
@@ -596,6 +598,8 @@ bool CApplication::Create()
 
   g_powerManager.Initialize();
 
+  g_bluetoothManager.Initialize();
+
   CLog::Log(LOGNOTICE, "load settings...");
 
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
@@ -1028,6 +1032,7 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowVideoPlaylist);            // window id = 28
   g_windowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
   g_windowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
+  g_windowManager.Add(new CGUIWindowSettingsBluetooth);          // window id = 35
   g_windowManager.Add(new CGUIWindowAddonBrowser);          // window id = 40
   g_windowManager.Add(new CGUIDialogYesNo);              // window id = 100
   g_windowManager.Add(new CGUIDialogProgress);           // window id = 101
@@ -4759,6 +4764,8 @@ void CApplication::ProcessSlow()
 #endif
 
   g_mediaManager.ProcessEvents();
+
+  g_bluetoothManager.ProcessEvents();
 
 #ifdef HAS_LIRC
   if (g_RemoteControl.IsInUse() && !g_RemoteControl.IsInitialized())

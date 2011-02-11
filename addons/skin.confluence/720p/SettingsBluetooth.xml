@@ -1,0 +1,274 @@
+<window id="35">
+	<defaultcontrol always="true">2</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>CommonSettingsBackground</include>
+		<include>CommonMediaPlayingBackground</include>
+		<control type="group">
+			<posx>90</posx>
+			<posy>50</posy>
+			<animation type="WindowOpen" reversible="false">
+				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
+				<effect type="fade" start="0" end="100" time="300" />
+			</animation>
+			<animation type="WindowClose" reversible="false">
+				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300" />
+				<effect type="fade" start="100" end="0" time="300" />
+			</animation>			
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1100</width>
+				<height>640</height>
+				<texture border="20">DialogBack.png</texture>
+			</control>
+			<control type="image">
+				<description>LOGO</description>
+				<posx>30</posx>
+				<posy>15</posy>
+				<width>220</width>
+				<height>80</height>
+				<aspectratio>keep</aspectratio>
+				<texture>Confluence_Logo.png</texture>
+			</control>
+			<control type="button" id ="4">
+				<description>Enable Bluetooth audio</description>
+				<posx>10</posx>
+				<posy>90</posy>
+				<width>250</width>
+				<height>80</height>
+				<textoffsety>13</textoffsety>
+				<label>16501</label>
+				<font>font24_title</font>
+				<align>right</align>
+				<aligny>top</aligny>
+				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<texturefocus border="5">MenuItemFO.png</texturefocus>
+				<onleft>2</onleft>
+				<onright>2</onright>
+				<onup>4</onup>
+				<ondown>4</ondown>
+				<enable>!Window.IsVisible(BluetoothSettings)</enable>
+			</control>
+			<control type="label">
+				<posx>250</posx>
+				<posy>135</posy>
+				<width>240</width>
+				<height>25</height>
+				<font>font13caps</font>
+				<textcolor>grey2</textcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>305</label>
+				<visible>System.HasLoginScreen</visible>
+			</control>
+			<control type="label">
+				<posx>250</posx>
+				<posy>135</posy>
+				<width>240</width>
+				<height>25</height>
+				<font>font13caps</font>
+				<textcolor>grey2</textcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>1223</label>
+				<visible>!System.HasLoginScreen</visible>
+			</control>
+			<control type="group">
+				<posx>20</posx>
+				<posy>210</posy>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>240</width>
+					<height>200</height>
+					<aspectratio>keep</aspectratio>
+					<bordertexture border="12">ThumbBorder.png</bordertexture>
+					<bordersize>10</bordersize>
+					<texture fallback="Bluetooth.png">Device$INFO[Container(2).ListItem.Property(type)].png</texture>
+				</control>
+				<control type="label">
+					<posx>0</posx>
+					<posy>220</posy>
+					<width>240</width>
+					<height>20</height>
+					<font>font12_title</font>
+					<textcolor>blue</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[31331]</label>
+				</control>
+				<control type="label">
+					<posx>0</posx>
+					<posy>245</posy>
+					<width>240</width>
+					<height>20</height>
+					<font>font13caps</font>
+					<textcolor>white</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$INFO[Container(2).ListItem.Label]</label>
+				</control>
+				<control type="label">
+					<posx>0</posx>
+					<posy>280</posy>
+					<width>240</width>
+					<height>30</height>
+					<font>font12_title</font>
+					<textcolor>blue</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[31332]</label>
+				</control>
+				<control type="label">
+					<posx>0</posx>
+					<posy>305</posy>
+					<width>240</width>
+					<height>30</height>
+					<font>font13caps</font>
+					<textcolor>white</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label fallback="13205">$INFO[Container(2).ListItem.Label2]</label>
+				</control>
+			</control>
+			<control type="image">
+				<posx>268</posx>
+				<posy>10</posy>
+				<width>790</width>
+				<height>618</height>
+				<texture border="5">black-back2.png</texture>
+			</control>
+			<control type="image">
+				<posx>268</posx>
+				<posy>10</posy>
+				<width>804</width>
+				<height>70</height>
+				<aspectratio>stretch</aspectratio>
+				<texture>GlassTitleBar.png</texture>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>300</posx>
+				<posy>20</posy>
+				<width>740</width>
+				<height>30</height>
+				<font>font30_title</font>
+				<label>$LOCALIZE[16502]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="panel" id="2">
+				<posx>283</posx>
+				<posy>70</posy>
+				<width>760</width>
+				<height>540</height>
+				<onleft>4</onleft>
+				<onright>60</onright>
+				<onup>53</onup>
+				<ondown>53</ondown>
+				<viewtype label="21371">list</viewtype>
+				<pagecontrol>60</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="180" width="190">
+					<control type="image">
+						<posx>1</posx>
+						<posy>0</posy>
+						<width>188</width>
+						<height>145</height>
+						<bordertexture border="5">button-nofocus.png</bordertexture>
+						<bordersize>5</bordersize>
+						<texture fallback="DeviceUnknown.png">Device$INFO[ListItem.Property(type)].png</texture>
+					</control>
+                                        <control type="image">
+                                                <posx>110</posx>
+                                                <posy>81</posy>
+                                                <width>64</width>
+                                                <height>64</height>
+                                                <texture>Overlay$INFO[ListItem.Property(status)].png</texture>
+                                        </control>
+					<control type="label">
+						<posx>94</posx>
+						<posy>145</posy>
+						<width>178</width>
+						<height>25</height>
+						<font>font11</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="180" width="190">
+					<control type="image">
+						<posx>1</posx>
+						<posy>0</posy>
+						<width>188</width>
+						<height>145</height>
+						<bordertexture border="5">folder-focus.png</bordertexture>
+						<bordersize>5</bordersize>
+						<texture fallback="DeviceUnknown.png">Device$INFO[ListItem.Property(type)].png</texture>
+					</control>
+                                        <control type="image">
+                                                <posx>110</posx>
+                                                <posy>81</posy>
+                                                <width>64</width>
+                                                <height>64</height>
+                                                <texture>Overlay$INFO[ListItem.Property(status)].png</texture>
+                                        </control>
+					<control type="label">
+						<posx>94</posx>
+						<posy>145</posy>
+						<width>178</width>
+						<height>25</height>
+						<font>font11</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="60">
+				<posx>1060</posx>
+				<posy>60</posy>
+				<width>25</width>
+				<height>530</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>2</onleft>
+				<onright>4</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+		</control>
+		<include>BehindDialogFadeOut</include>
+		<control type="group">
+			<posx>60</posx>
+			<posy>0</posy>
+			<animation effect="slide" end="-310,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="-310,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>250</width>
+				<height>35</height>
+				<texture border="0,0,32,0">header.png</texture>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<posx>220</posx>
+				<label>$LOCALIZE[16500]</label>
+			</control>
+		</control>
+		<include>WindowTitleHomeButton</include>
+		<include>Clock</include>
+	</controls>
+</window>

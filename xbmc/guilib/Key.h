@@ -320,6 +320,7 @@
 
 #define WINDOW_LOGIN_SCREEN               10029
 #define WINDOW_SETTINGS_PROFILES          10034
+#define WINDOW_SETTINGS_BLUETOOTH         10035
 
 #define WINDOW_ADDON_BROWSER              10040
 

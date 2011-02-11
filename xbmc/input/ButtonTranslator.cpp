@@ -221,6 +221,7 @@ static const ActionMapping windows[] =
         {"videoplaylist"            , WINDOW_VIDEO_PLAYLIST},
         {"loginscreen"              , WINDOW_LOGIN_SCREEN},
         {"profiles"                 , WINDOW_SETTINGS_PROFILES},
+        {"bluetooth"                , WINDOW_SETTINGS_BLUETOOTH},
         {"addonbrowser"             , WINDOW_ADDON_BROWSER},
         {"yesnodialog"              , WINDOW_DIALOG_YES_NO},
         {"progressdialog"           , WINDOW_DIALOG_PROGRESS},

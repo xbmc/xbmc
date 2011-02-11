@@ -146,15 +146,20 @@
 		</control>
 		<control type="button" id="90143">
 			<include>ButtonHomeSubCommonValues</include>
+			<label>16500</label>
+			<onclick>ActivateWindow(Bluetooth)</onclick>
+		</control>
+		<control type="button" id="90144">
+			<include>ButtonHomeSubCommonValues</include>
 			<label>13200</label>
 			<onclick>ActivateWindow(Profiles)</onclick>
 		</control>
-		<control type="button" id="90144">
+		<control type="button" id="90145">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>130</label>
 			<onclick>ActivateWindow(SystemInfo)</onclick>
 		</control>
-		<control type="button" id="90145">
+		<control type="button" id="90146">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>Credits</label>
 			<onclick>ActivateWindow(Credits)</onclick>

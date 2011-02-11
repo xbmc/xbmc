@@ -43,6 +43,8 @@ BIN_DIRS=	\
 	xbmc/playlists \
 	xbmc/powermanagement \
         xbmc/powermanagement/linux \
+	xbmc/bluetooth \
+	xbmc/bluetooth/linux \
 	xbmc/storage \
 	xbmc/storage/linux \
 	xbmc/storage/osx \
@@ -292,6 +294,10 @@ xbmc/powermanagement/linux/powermanagement_linux.a: force
 	$(MAKE) -C xbmc/powermanagement/linux
 xbmc/powermanagement/osx/powermanagement.a: force
 	$(MAKE) -C xbmc/powermanagement/osx
+xbmc/bluetooth/bluetooth.a: force
+	$(MAKE) -C xbmc/bluetooth
+xbmc/bluetooth/linux/bluetooth_linux.a: force
+	$(MAKE) -C xbmc/bluetooth/linux
 xbmc/rendering/rendering.a: force
 	$(MAKE) -C xbmc/rendering
 xbmc/rendering/gl/rendering_gl.a: force
@@ -541,6 +547,7 @@ OBJSXBMC=	\
 	xbmc/playlists/playlists.a \
 	xbmc/programs/programs.a \
 	xbmc/powermanagement/powermanagement.a \
+	xbmc/bluetooth/bluetooth.a \
 	xbmc/storage/storage.a \
 	xbmc/threads/threads.a \
 	xbmc/windows/windows.a \
@@ -603,6 +610,7 @@ OBJSXBMC += \
 	xbmc/input/linux/input_linux.a \
 	xbmc/network/linux/network_linux.a \
 	xbmc/powermanagement/linux/powermanagement_linux.a \
+	xbmc/bluetooth/linux/bluetooth_linux.a \
 	xbmc/storage/linux/storage_linux.a
 ifeq (@USE_OPENGL@,1)
 OBJSXBMC+= \

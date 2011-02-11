@@ -128,3 +128,7 @@
 
 // Sent from filesystem if a path is known to have changed
 #define GUI_MSG_UPDATE_PATH           GUI_MSG_USER + 33
+
+// Message sent to tell the GUI to remove a single item
+#define GUI_MSG_REMOVE_ITEM           GUI_MSG_USER + 34
+

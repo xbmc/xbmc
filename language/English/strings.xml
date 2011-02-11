@@ -1517,6 +1517,17 @@
 
   <string id="16400">Post-processing</string>
 
+  <string id="16500">Bluetooth</string>
+  <string id="16501">Bluetooth audio</string>
+  <string id="16502">Settings - Bluetooth</string>
+  <string id="16503">Connect</string>
+  <string id="16504">Disconnect</string>
+  <string id="16505">Do you want to pair with this device?</string>
+  <string id="16506">Please enter the PIN</string>
+  <string id="16507">Please enter the PIN on the remote device</string>
+  <string id="16508">and press Enter key</string>
+  <string id="16509">Disconnected</string>
+
   <string id="17500">Display sleep timeout</string>
 
   <string id="19000">Switch to channel</string>
