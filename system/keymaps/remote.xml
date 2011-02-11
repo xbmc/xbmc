@@ -145,8 +145,8 @@
       <title>CodecInfo</title>
       <info>Info</info>
       <teletext>XBMC.ActivateWindow(Teletext)</teletext>
-      <subtitle>ShowSubtitles</subtitle>
-      <star>ShowSubtitles</star>
+      <subtitle>NextSubtitle</subtitle>
+      <star>NextSubtitle</star>
       <language>AudioNextLanguage</language>
       <hash>AudioNextLanguage</hash>
     </remote>
