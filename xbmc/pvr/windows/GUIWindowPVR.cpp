@@ -1654,20 +1654,10 @@ bool CGUIWindowPVR::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIWindowPVR::ShowEPGInfo(CFileItem *item)
 {
-  /* Check item is TV epg or channel information tag */
+  CFileItem *tag = NULL;
   if (item->IsEPG())
   {
-    /* Load programme info dialog */
-    CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
-    if (!pDlgInfo)
-      return;
-
-    /* inform dialog about the file item */
-    pDlgInfo->SetProgInfo(item);
-//    PVREpgs.SetVariableData(m_vecItems);
-
-    /* Open dialog window */
-    pDlgInfo->DoModal();
+    tag = item;
   }
   else if (item->IsPVRChannel())
   {
@@ -1677,22 +1667,18 @@ void CGUIWindowPVR::ShowEPGInfo(CFileItem *item)
       CGUIDialogOK::ShowAndGetInput(19033,0,19055,0);
       return;
     }
+    tag = new CFileItem(*epgnow);
+  }
 
-    CFileItem *itemNow  = new CFileItem(*epgnow);
-
-    /* Load programme info dialog */
+  if (tag)
+  {
     CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
     if (!pDlgInfo)
       return;
 
-    /* inform dialog about the file item */
-    pDlgInfo->SetProgInfo(itemNow);
-
-    /* Open dialog window */
+    pDlgInfo->SetProgInfo(tag);
     pDlgInfo->DoModal();
   }
-  else
-    CLog::Log(LOGERROR, "CGUIWindowPVR: Can't open programme info dialog, no epg or channel info tag!");
 }
 
 void CGUIWindowPVR::ShowRecordingInfo(CFileItem *item)
