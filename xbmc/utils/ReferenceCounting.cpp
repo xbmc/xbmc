@@ -31,9 +31,11 @@ namespace xbmcutil
 {
   Referenced::~Referenced() 
   {
-#ifdef LOG_LIFECYCLE_EVENTS
-    CLog::Log(LOGDEBUG,"REFCNT deleting 0x%lx", (long)(((void*)this)));
-#endif
+// Cannot use the log from the destructor of Referenced because the
+//  log uses Referenced and in the destructor it's uninitialized.
+//#ifdef LOG_LIFECYCLE_EVENTS
+//    CLog::Log(LOGDEBUG,"REFCNT deleting 0x%lx", (long)(((void*)this)));
+//#endif
   }
 
   void Referenced::Release() const
