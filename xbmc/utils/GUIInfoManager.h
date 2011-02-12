@@ -433,7 +433,7 @@ class CDateTime;
 
 // Version string MUST NOT contain spaces.  It is used
 // in the HTTP request user agent.
-#define VERSION_STRING "10.0"
+#define VERSION_STRING "10.1"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
