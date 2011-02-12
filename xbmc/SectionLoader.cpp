@@ -28,7 +28,10 @@
 
 using namespace std;
 
-class CSectionLoader g_sectionLoader;
+// explicit template instantiation
+template class xbmcutil::Singleton<CSectionLoader>;
+
+#define g_sectionLoader (*(xbmcutil::Singleton<CSectionLoader>::getInstance()))
 
 //  delay for unloading dll's
 #define UNLOAD_DELAY 30*1000 // 30 sec.
