@@ -117,7 +117,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId==WINDOW_VIDEO_PLAYLIST)
     return new CGUIViewStateWindowVideoPlaylist(items);
 
-  if (windowId==WINDOW_TV)
+  if (windowId==WINDOW_PVR)
     return new CGUIViewStateWindowPVR(items);
 
   if (windowId==WINDOW_PICTURES)
@@ -151,7 +151,7 @@ SORT_ORDER CGUIViewState::GetDisplaySortOrder() const
   // and descending for the views which should be usually descending.
   // default sort order for date, size, program count + rating is reversed
   SORT_METHOD sortMethod = GetSortMethod();
-  if (sortMethod == SORT_METHOD_DATE || sortMethod == SORT_METHOD_SIZE ||
+  if (sortMethod == SORT_METHOD_DATE || sortMethod == SORT_METHOD_SIZE || sortMethod == SORT_METHOD_PLAYCOUNT ||
       sortMethod == SORT_METHOD_VIDEO_RATING || sortMethod == SORT_METHOD_PROGRAM_COUNT ||
       sortMethod == SORT_METHOD_SONG_RATING || sortMethod == SORT_METHOD_BITRATE || sortMethod == SORT_METHOD_LISTENERS)
   {

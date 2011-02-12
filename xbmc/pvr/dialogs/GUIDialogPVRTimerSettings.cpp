@@ -25,8 +25,9 @@
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
 
-#include "pvr/PVRTimerInfoTag.h"
-#include "pvr/PVRChannelGroupsContainer.h"
+#include "pvr/PVRManager.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace std;
 
@@ -66,7 +67,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
     // For TV
     CFileItemList channelslist_tv;
     SETTINGSTRINGS channelstrings_tv;
-    ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(false))->GetChannels(&channelslist_tv, -1);
+    ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(false))->GetChannels(&channelslist_tv, -1);
 
     channelstrings_tv.push_back("0 dummy");
 
@@ -84,7 +85,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
     // For Radio
     CFileItemList channelslist_radio;
     SETTINGSTRINGS channelstrings_radio;
-    ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(true))->GetChannels(&channelslist_radio, -1);
+    ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(true))->GetChannels(&channelslist_radio, -1);
 
     channelstrings_radio.push_back("0 dummy");
 
@@ -231,13 +232,13 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
     {
       EnableSettings(CONTROL_TMR_CHNAME_TV, true);
       EnableSettings(CONTROL_TMR_CHNAME_RADIO, false);
-      channeltag = ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(false))->GetByChannelNumber(tag->Number());
+      channeltag = ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(false))->GetByChannelNumber(tag->Number());
     }
     else
     {
       EnableSettings(CONTROL_TMR_CHNAME_TV, false);
       EnableSettings(CONTROL_TMR_CHNAME_RADIO, true);
-      channeltag = ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(true))->GetByChannelNumber(tag->Number());
+      channeltag = ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(true))->GetByChannelNumber(tag->Number());
     }
 
     if (channeltag)
@@ -250,7 +251,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
   }
   else if (setting.id == CONTROL_TMR_CHNAME_TV || setting.id == CONTROL_TMR_CHNAME_RADIO)
   {
-    const CPVRChannel* channeltag = ((CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(tag->IsRadio()))->GetByChannelNumber(tag->Number());
+    const CPVRChannel* channeltag = ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(tag->IsRadio()))->GetByChannelNumber(tag->Number());
 
     if (channeltag)
     {
@@ -376,5 +377,5 @@ void CGUIDialogPVRTimerSettings::OnOkay()
   m_cancelled = false;
   CPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
   if (tag->Title() == g_localizeStrings.Get(19056))
-    tag->SetTitle(CPVRChannelGroup::GetByClientFromAll(tag->ClientNumber(), tag->ClientID())->ChannelName());
+    tag->SetTitle(CPVRManager::GetChannelGroups()->GetByClientFromAll(tag->ClientNumber(), tag->ClientID())->ChannelName());
 }

@@ -28,9 +28,9 @@
 #include "ViewState.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/PVRChannelGroupsContainer.h"
-#include "pvr/PVREpg.h"
-#include "pvr/PVRTimerInfoTag.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/PVREpg.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 
 using namespace std;
 
@@ -60,7 +60,7 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       /* Close dialog immediately if now TV or radio channel is playing */
-      if (!g_PVRManager.IsPlayingTV() && !g_PVRManager.IsPlayingRadio())
+      if (!CPVRManager::Get()->IsPlayingTV() && !CPVRManager::Get()->IsPlayingRadio())
       {
         Close();
         return true;
@@ -110,10 +110,10 @@ void CGUIDialogPVRChannelsOSD::Update()
   Clear();
 
   CPVRChannel channel;
-  g_PVRManager.GetCurrentChannel(&channel);
+  CPVRManager::Get()->GetCurrentChannel(&channel);
 
-  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannelGroups.GetGroupAll(channel.IsRadio());
-  channels->GetChannels(m_vecItems, g_PVRManager.GetPlayingGroup());
+  CPVRChannelGroup *channels = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(channel.IsRadio());
+  channels->GetChannels(m_vecItems, CPVRManager::Get()->GetPlayingGroup());
 
   m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(channel.ChannelNumber() - 1);

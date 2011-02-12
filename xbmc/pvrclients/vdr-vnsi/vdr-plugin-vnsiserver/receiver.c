@@ -900,8 +900,10 @@ void cLiveStreamer::sendStreamPacket(sStreamPacket *pkt)
   m_streamHeader.opcode   = htonl(VDR_STREAM_MUXPKT);     // Stream packet operation code
   m_streamHeader.id       = htonl(pkt->id);               // Stream ID
   m_streamHeader.duration = htonl(pkt->duration);         // Duration
-  m_streamHeader.dts      = __cpu_to_be64(pkt->dts);      // DTS
-  m_streamHeader.pts      = __cpu_to_be64(pkt->pts);      // PTS
+
+  *(int64_t*)&m_streamHeader.dts = __cpu_to_be64(pkt->dts); // DTS
+  *(int64_t*)&m_streamHeader.pts = __cpu_to_be64(pkt->pts); // PTS
+
   m_streamHeader.length   = htonl(pkt->size);             // Data length
   m_Socket->write(&m_streamHeader, sizeof(m_streamHeader), -1, true);
 

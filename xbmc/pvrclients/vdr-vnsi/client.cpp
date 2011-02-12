@@ -558,7 +558,7 @@ bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 
   CloseRecordedStream();
 
-  CStdString name = VNSIData->GetRecordingPath(recinfo.index);
+  const CStdString& name = VNSIData->GetRecordingPath(recinfo.index);
   VNSIRecording = new cVNSIRecording;
   return VNSIRecording->Open(name);
 }

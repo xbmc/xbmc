@@ -1,14 +1,13 @@
 SRCS=GUIDialogPVRChannelManager.cpp \
-	GUIDialogPVRChannelsOSD.cpp \
-	GUIDialogPVRCutterOSD.cpp \
-	GUIDialogPVRDirectorOSD.cpp \
-	GUIDialogPVRGroupManager.cpp \
-	GUIDialogPVRGuideInfo.cpp \
-	GUIDialogPVRGuideOSD.cpp \
-	GUIDialogPVRGuideSearch.cpp \
-	GUIDialogPVRRecordingInfo.cpp \
-	GUIDialogPVRTimerSettings.cpp \
-	GUIDialogPVRUpdateProgressBar.cpp
+     GUIDialogPVRChannelsOSD.cpp \
+     GUIDialogPVRCutterOSD.cpp \
+     GUIDialogPVRDirectorOSD.cpp \
+     GUIDialogPVRGroupManager.cpp \
+     GUIDialogPVRGuideInfo.cpp \
+     GUIDialogPVRGuideOSD.cpp \
+     GUIDialogPVRGuideSearch.cpp \
+     GUIDialogPVRRecordingInfo.cpp \
+     GUIDialogPVRTimerSettings.cpp
 
 LIB=pvrdialogs.a
 

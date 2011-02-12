@@ -122,6 +122,28 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
     return false;
   }
 
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,92,0)
+  // API added on: 2011-01-02
+
+  /* While this is strictly only needed on big-endian systems, we do it on
+   * both to avoid as much dead code as possible. */
+#ifdef WORDS_BIGENDIAN
+  const char *spdifFlags = "+be";
+#else
+  const char *spdifFlags = "-be";
+#endif
+
+  /* request big-endian output */
+  if (!fOut->priv_class || m_dllAvUtil.av_set_string3(muxer.m_pFormat->priv_data, "spdif_flags", spdifFlags, 0, NULL) != 0)
+#endif
+  {
+#ifdef WORDS_BIGENDIAN
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Unable to set big-endian stream mode (FFmpeg too old?), disabling passthrough");
+    Dispose();
+    return false;
+#endif
+  }
+
   /* add a stream to it */
   muxer.m_pStream = m_dllAvFormat.av_new_stream(muxer.m_pFormat, 1);
   if (!muxer.m_pStream)
@@ -261,7 +283,8 @@ void CDVDAudioCodecPassthroughFFmpeg::DisposeMuxer(Muxer &muxer)
     if (muxer.m_WroteHeader)
       m_dllAvFormat.av_write_trailer(muxer.m_pFormat);
     muxer.m_WroteHeader = false;
-    delete[] muxer.m_pStream->codec->extradata;
+    if (muxer.m_pStream)
+      delete[] muxer.m_pStream->codec->extradata;
     m_dllAvUtil.av_freep(&muxer.m_pFormat->pb);
     m_dllAvUtil.av_freep(&muxer.m_pFormat);
     m_dllAvUtil.av_freep(&muxer.m_pStream);

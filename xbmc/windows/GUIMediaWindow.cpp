@@ -647,7 +647,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   }
 
   int iWindow = GetID();
-  if (iWindow == WINDOW_TV && (items.m_strPath == "pvr://recordings/" ||
+  if (iWindow == WINDOW_PVR && (items.m_strPath == "pvr://recordings/" ||
                                items.m_strPath.Left(15) == "pvr://channels/" ||
                                items.m_strPath.Left(13) == "pvr://timers/"))
     return true;
@@ -795,7 +795,7 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   if (!bSelectedFound)
     m_viewControl.SetSelectedItem(0);
 
-  if (iWindow != WINDOW_TV || (iWindow == WINDOW_TV && m_vecItems->m_strPath.Left(17) == "pvr://recordings/"))
+  if (iWindow != WINDOW_PVR || (iWindow == WINDOW_PVR && m_vecItems->m_strPath.Left(17) == "pvr://recordings/"))
     m_history.AddPath(m_vecItems->m_strPath);
 
   //m_history.DumpPathHistory();

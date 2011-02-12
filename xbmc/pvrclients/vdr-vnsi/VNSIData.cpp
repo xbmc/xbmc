@@ -36,7 +36,7 @@ cVNSIData::~cVNSIData()
   Close();
 }
 
-bool cVNSIData::Open(CStdString hostname, int port, long timeout)
+bool cVNSIData::Open(const CStdString& hostname, int port, long timeout)
 {
   if(!m_session.Open(hostname, port, timeout))
     return false;
@@ -274,7 +274,7 @@ bool cVNSIData::GetGroupsList(PVRHANDLE handle, bool radio)
     uint32_t    count = vresp->extract_U32();
     const char *name  = vresp->extract_String();
 
-//    LOGDBG("Have added a group to list. %lu %lu %s", index, count, name);
+    XBMC->Log(LOG_DEBUG, "New Group: %lu %lu %s", index, count, name);
     delete[] name;
   }
 
@@ -314,7 +314,7 @@ bool cVNSIData::GetChannelsList(PVRHANDLE handle, bool radio)
     tag.uid           = vresp->extract_U32();
     tag.bouquet       = vresp->extract_U32();
     tag.encryption    = vresp->extract_U32();
-    uint32_t vtype    = vresp->extract_U32();
+                        vresp->extract_U32(); // uint32_t vtype - currently unused
     tag.radio         = radio;
     tag.input_format  = "";
     tag.stream_url    = "";
@@ -425,8 +425,8 @@ PVR_ERROR cVNSIData::GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &tag)
 
   tag.index       = vresp->extract_U32();
   tag.active      = vresp->extract_U32();
-  uint32_t recording      = vresp->extract_U32();
-  uint32_t pending        = vresp->extract_U32();
+                    vresp->extract_U32(); // uint32_t recording - currently unused
+                    vresp->extract_U32(); // uint32_t pending - currently unused
   tag.priority    = vresp->extract_U32();
   tag.lifetime    = vresp->extract_U32();
   tag.channelNum  = vresp->extract_U32();
@@ -468,8 +468,8 @@ bool cVNSIData::GetTimersList(PVRHANDLE handle)
       PVR_TIMERINFO tag;
       tag.index       = vresp->extract_U32();
       tag.active      = vresp->extract_U32();
-      uint32_t recording      = vresp->extract_U32();
-      uint32_t pending        = vresp->extract_U32();
+                        vresp->extract_U32(); // uint32_t recording - currently unused
+                        vresp->extract_U32(); // uint32_t pending - currently unused
       tag.priority    = vresp->extract_U32();
       tag.lifetime    = vresp->extract_U32();
       tag.channelNum  = vresp->extract_U32();
@@ -713,7 +713,7 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cVNSIData::DeleteRecording(CStdString path)
+PVR_ERROR cVNSIData::DeleteRecording(const CStdString& path)
 {
   cRequestPacket vrp;
   if (!vrp.init(VDR_RECORDINGS_DELETE))
@@ -863,7 +863,8 @@ void cVNSIData::Action()
       }
       else if (requestID == VDR_STATUS_RECORDING)
       {
-        uint32_t device = ntohl(*(uint32_t*)&userData[0]);
+    	// this one is currently unused
+        //uint32_t device = ntohl(*(uint32_t*)&userData[0]);
         uint32_t on     = ntohl(*(uint32_t*)&userData[4]);
 
         int length = strlen((char*)&userData[8]);
@@ -890,7 +891,8 @@ void cVNSIData::Action()
       }
       else if (requestID == VDR_STATUS_TIMERCHANGE)
       {
-        uint32_t status = ntohl(*(uint32_t*)&userData[0]);
+      	// this one is currently unused
+        //uint32_t status = ntohl(*(uint32_t*)&userData[0]);
         int length = strlen((char*)&userData[4]);
         char* str = new char[length + 1];
         strcpy(str, (char*)&userData[4]);
@@ -923,11 +925,9 @@ void cVNSIData::Action()
 
 bool cVNSIData::sendKA(uint32_t timeStamp)
 {
-  char buffer[8];
-  *(uint32_t*)&buffer[0] = htonl(CHANNEL_KEEPALIVE);
-  *(uint32_t*)&buffer[4] = htonl(timeStamp);
-  if ((uint32_t)m_session.sendData(buffer, 8) != 8) return false;
-  return true;
+  m_headerKA.channel = htonl(CHANNEL_KEEPALIVE);
+  m_headerKA.timestamp = htonl(timeStamp);
+  return (m_session.sendData(&m_headerKA, sizeof(m_headerKA)) == sizeof(m_headerKA));
 }
 
 bool cVNSIData::readData(uint8_t* buffer, int totalBytes, int TimeOut)
@@ -942,10 +942,12 @@ bool cVNSIData::readData(uint8_t* buffer, int totalBytes, int TimeOut)
   return false;
 }
 
-CStdString cVNSIData::GetRecordingPath(int index)
+const CStdString& cVNSIData::GetRecordingPath(uint32_t index)
 {
-  if (index <= 0 || index > m_RecordsPaths.size())
-    return "";
+  static CStdString empty;
+
+  if (index == 0 || index > m_RecordsPaths.size())
+    return empty;
 
   return m_RecordsPaths[index-1];
 }

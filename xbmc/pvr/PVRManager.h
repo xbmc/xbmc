@@ -26,11 +26,12 @@
 #include "addons/PVRClient.h"
 #include "addons/AddonManager.h"
 #include "threads/Thread.h"
-#include "guilib/GUIWindowTV.h"
+#include "windows/GUIWindowPVR.h"
 
 #include <vector>
 #include <deque>
 
+class CPVRChannelGroupsContainer;
 class CPVRChannelGroup;
 class CPVRRecordings;
 class CPVRTimers;
@@ -44,16 +45,52 @@ class CPVRManager : IPVRClientCallback
                   , public ADDON::IAddonMgrCallback
                   , private CThread
 {
-public:
+private:
   /*!
    * @brief Create a new CPVRManager instance, which handles all PVR related operations in XBMC.
    */
   CPVRManager(void);
 
+public:
   /*!
    * @brief Stop the PVRManager and destroy all objects it created.
    */
-  ~CPVRManager(void);
+  virtual ~CPVRManager(void);
+
+  /*!
+   * @brief Get the instance of the PVRManager.
+   * @return The PVRManager instance.
+   */
+  static CPVRManager *Get(void);
+
+  /*!
+   * @brief Get the channel groups container.
+   * @return The groups container.
+   */
+  static CPVRChannelGroupsContainer *GetChannelGroups(void);
+
+  /*!
+   * @brief Get the EPG container.
+   * @return The EPG container.
+   */
+  static CPVREpgContainer *GetEpg(void);
+
+  /*!
+   * @brief Get the recordings container.
+   * @return The recordings container.
+   */
+  static CPVRRecordings *GetRecordings(void);
+
+  /*!
+   * @brief Get the timers container.
+   * @return The timers container.
+   */
+  static CPVRTimers *GetTimers(void);
+
+  /*!
+   * @brief Clean up and destroy the PVRManager.
+   */
+  static void Destroy(void);
 
   /** @name Startup function */
   //@{
@@ -63,11 +100,15 @@ public:
    */
   void Start(void);
 
+private:
+
   /*!
    * @brief Stop the PVRManager and destroy all objects it created.
    */
   void Stop(void);
   //@}
+
+public:
 
   /** @name External client access functions */
   //@{
@@ -480,7 +521,7 @@ protected:
    */
   virtual void Process();
 
-  void UpdateWindow(TVWindow window);
+  void UpdateWindow(PVRWindow window);
 
 private:
 
@@ -592,58 +633,61 @@ private:
 
   /** @name General PVRManager data */
   //@{
-  CLIENTMAP           m_clients;                  /*!< pointer to each enabled client */
-  CLIENTPROPS         m_clientsProps;             /*!< store the properties of each client locally */
-  STREAMPROPS         m_streamProps;              /*!< the current stream's properties */
-  CPVRDatabase        m_database;                 /*!< the database for all PVR related data */
-  CCriticalSection    m_critSection;              /*!< critical section for all changes to this class */
-  bool                m_bFirstStart;              /*!< true when the PVR manager was started first, false otherwise */
-  bool                m_bLoaded;
-  bool                m_bChannelScanRunning;      /*!< true if a channel scan is currently running, false otherwise */
+  static CPVRManager *            m_instance;                 /*!< singleton instance */
+  CPVRChannelGroupsContainer *    m_channelGroups;            /*!< pointer to the channel groups container */
+  CPVREpgContainer *              m_epg;                      /*!< pointer to the EPG container */
+  CPVRRecordings *                m_recordings;               /*!< pointer to the recordings container */
+  CPVRTimers *                    m_timers;                   /*!< pointer to the timers container */
+  CLIENTMAP                       m_clients;                  /*!< pointer to each enabled client */
+  CLIENTPROPS                     m_clientsProps;             /*!< store the properties of each client locally */
+  STREAMPROPS                     m_streamProps;              /*!< the current stream's properties */
+  CPVRDatabase                    m_database;                 /*!< the database for all PVR related data */
+  CCriticalSection                m_critSection;              /*!< critical section for all changes to this class */
+  bool                            m_bFirstStart;              /*!< true when the PVR manager was started first, false otherwise */
+  bool                            m_bLoaded;
+  bool                            m_bChannelScanRunning;      /*!< true if a channel scan is currently running, false otherwise */
 
-  bool                m_bTriggerChannelsUpdate;   /*!< set to true to let the background thread update the channels list */
-  bool                m_bTriggerRecordingsUpdate; /*!< set to true to let the background thread update the recordings list */
-  bool                m_bTriggerTimersUpdate;     /*!< set to true to let the background thread update the timer list */
+  bool                            m_bTriggerChannelsUpdate;   /*!< set to true to let the background thread update the channels list */
+  bool                            m_bTriggerRecordingsUpdate; /*!< set to true to let the background thread update the recordings list */
+  bool                            m_bTriggerTimersUpdate;     /*!< set to true to let the background thread update the timer list */
   //@}
 
   /** @name GUIInfoManager data */
   //@{
-  DWORD               m_infoToggleStart;        /* Time to toogle pvr infos like in System info */
-  unsigned int        m_infoToggleCurrent;      /* The current item showed by the GUIInfoManager */
-  DWORD               m_recordingToggleStart;   /* Time to toogle currently running pvr recordings */
-  unsigned int        m_recordingToggleCurrent; /* The current item showed by the GUIInfoManager */
+  DWORD                           m_infoToggleStart;        /* Time to toogle pvr infos like in System info */
+  unsigned int                    m_infoToggleCurrent;      /* The current item showed by the GUIInfoManager */
+  DWORD                           m_recordingToggleStart;   /* Time to toogle currently running pvr recordings */
+  unsigned int                    m_recordingToggleCurrent; /* The current item showed by the GUIInfoManager */
 
   std::vector<CPVRTimerInfoTag *> m_NowRecording;
-  CPVRTimerInfoTag *  m_NextRecording;
-  CStdString          m_backendName;
-  CStdString          m_backendVersion;
-  CStdString          m_backendHost;
-  CStdString          m_backendDiskspace;
-  CStdString          m_backendTimers;
-  CStdString          m_backendRecordings;
-  CStdString          m_backendChannels;
-  CStdString          m_totalDiskspace;
-  CStdString          m_nextTimer;
-  CStdString          m_playingDuration;
-  CStdString          m_playingTime;
-  CStdString          m_playingClientName;
-  bool                m_isRecording;
-  bool                m_hasRecordings;
-  bool                m_hasTimers;
+  CPVRTimerInfoTag *              m_NextRecording;
+  CStdString                      m_backendName;
+  CStdString                      m_backendVersion;
+  CStdString                      m_backendHost;
+  CStdString                      m_backendDiskspace;
+  CStdString                      m_backendTimers;
+  CStdString                      m_backendRecordings;
+  CStdString                      m_backendChannels;
+  CStdString                      m_totalDiskspace;
+  CStdString                      m_nextTimer;
+  CStdString                      m_playingDuration;
+  CStdString                      m_playingTime;
+  CStdString                      m_playingClientName;
+  bool                            m_isRecording;
+  bool                            m_hasRecordings;
+  bool                            m_hasTimers;
   //@}
 
   /*--- Previous Channel data ---*/
-  int                 m_PreviousChannel[2];
-  int                 m_PreviousChannelIndex;
-  int                 m_LastChannel;
-  unsigned int        m_LastChannelChanged;
+  int                             m_PreviousChannel[2];
+  int                             m_PreviousChannelIndex;
+  int                             m_LastChannel;
+  unsigned int                    m_LastChannelChanged;
 
   /*--- Stream playback data ---*/
-  CFileItem          *m_currentPlayingChannel;    /* The current playing channel or NULL */
-  CFileItem          *m_currentPlayingRecording;  /* The current playing recording or NULL */
-  int                 m_CurrentGroupID;           /* The current selected Channel group list */
-  DWORD               m_scanStart;                /* Scan start time to check for non present streams */
-  PVR_SIGNALQUALITY   m_qualityInfo;              /* Stream quality information */
+  CFileItem          *            m_currentPlayingChannel;    /* The current playing channel or NULL */
+  CFileItem          *            m_currentPlayingRecording;  /* The current playing recording or NULL */
+  int                             m_CurrentGroupID;           /* The current selected Channel group list */
+  DWORD                           m_scanStart;                /* Scan start time to check for non present streams */
+  PVR_SIGNALQUALITY               m_qualityInfo;              /* Stream quality information */
 };
-
-extern CPVRManager g_PVRManager;

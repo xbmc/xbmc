@@ -129,6 +129,7 @@ IF %comp%==vs2010 (
 :MAKE_BUILD_EXE
   ECHO Compiling mingw libs
   ECHO bla>noprompt
+  IF EXIST errormingw del errormingw > NUL
   call buildmingwlibs.bat
   IF EXIST errormingw (
   	set DIETEXT="failed to build mingw libs"
@@ -205,7 +206,7 @@ IF %comp%==vs2010 (
   call genNsisIncludes.bat
   ECHO ------------------------------------------------------------
   CALL extract_git_rev.bat
-  SET GIT_REV=#%GIT_REV%
+  SET GIT_REV=_%GIT_REV%
   SET XBMC_SETUPFILE=XBMCSetup-Rev%GIT_REV%-%target%.exe
   ECHO Creating installer %XBMC_SETUPFILE%...
   IF EXIST %XBMC_SETUPFILE% del %XBMC_SETUPFILE% > NUL
@@ -269,7 +270,7 @@ IF %comp%==vs2010 (
   IF %promptlevel%==noprompt (
   goto END
   )
-  SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\BuildLog.htm"
+  SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
   IF NOT EXIST %log% goto END
   
   copy %log% ./buildlog.html > NUL
@@ -277,7 +278,7 @@ IF %comp%==vs2010 (
   set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
   if /I %XBMC_BUILD_ANSWER% NEQ y goto END
   
-  SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\" BuildLog.htm
+  SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\" XBMC.log
   
   start /D%log%
   goto END

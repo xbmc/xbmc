@@ -79,7 +79,8 @@
 #include "CoreAudio.h"
 #include "XBMCHelper.h"
 #endif
-#include "pvr/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/PVRManager.h"
 #include "network/GUIDialogAccessPoints.h"
 #include "filesystem/Directory.h"
@@ -1182,6 +1183,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     {
       int level = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
       g_advancedSettings.m_logLevel = level;
+      CLog::SetLogLevel(level);
       CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting. Level %d.", level);
     }
     else
@@ -1189,6 +1191,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       int level = std::min(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
       CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", level);
       g_advancedSettings.m_logLevel = level;
+      CLog::SetLogLevel(level);
     }
   }
   /*else if (strSetting.Equals("musicfiles.repeat"))
@@ -1913,22 +1916,22 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("pvrmenu.searchicons"))
   {
-    CPVRChannelGroup::SearchMissingChannelIcons();
+    CPVRManager::GetChannelGroups()->SearchMissingChannelIcons();
   }
   else if (strSetting.Equals("pvrmanager.resetdb"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
-      g_PVRManager.ResetDatabase();
+      CPVRManager::Get()->ResetDatabase();
   }
   else if (strSetting.Equals("pvrepg.resetepg"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188, 750, 0))
-      g_PVRManager.ResetEPG();
+      CPVRManager::Get()->ResetEPG();
   }
   else if (strSetting.Equals("pvrmanager.channelscan"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19118, 19194, 0))
-      g_PVRManager.StartChannelScan();
+      CPVRManager::Get()->StartChannelScan();
   }
   else if (strSetting.Equals("pvrmanager.channelmanager"))
   {

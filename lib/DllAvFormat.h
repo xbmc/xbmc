@@ -86,6 +86,7 @@ public:
                             offset_t (*seek)(void *opaque, offset_t offset, int whence))=0;
   virtual AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened)=0;
   virtual AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max)=0;
+  virtual int av_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt, const char *filename, void *logctx, unsigned int offset, unsigned int max_probe_size)=0;
   virtual void dump_format(AVFormatContext *ic, int index, const char *url, int is_output)=0;
   virtual int url_fdopen(ByteIOContext **s, URLContext *h)=0;
   virtual int url_fopen(ByteIOContext **s, const char *filename, int flags)=0;
@@ -155,6 +156,12 @@ public:
                             offset_t (*seek)(void *opaque, offset_t offset, int whence)) { return ::init_put_byte(s, buffer, buffer_size, write_flag, opaque, read_packet, write_packet, seek); }
   virtual AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened) {return ::av_probe_input_format(pd, is_opened); }
   virtual AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max) {*score_max = 100; return ::av_probe_input_format(pd, is_opened); } // Use av_probe_input_format, this is not exported by ffmpeg's headers
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,98,0)
+  // API added on: 2010-02-08
+  virtual int av_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt, const char *filename, void *logctx, unsigned int offset, unsigned int max_probe_size) { return ::av_probe_input_buffer(pb, fmt, filename, logctx, offset, max_probe_size); }
+#else
+  virtual int av_probe_input_buffer(ByteIOContext *pb, AVInputFormat **fmt, const char *filename, void *logctx, unsigned int offset, unsigned int max_probe_size) { return -1; }
+#endif
   virtual void dump_format(AVFormatContext *ic, int index, const char *url, int is_output) { ::dump_format(ic, index, url, is_output); }
   virtual int url_fdopen(ByteIOContext **s, URLContext *h) { return ::url_fdopen(s, h); }
   virtual int url_fopen(ByteIOContext **s, const char *filename, int flags) { return ::url_fopen(s, filename, flags); }
@@ -227,6 +234,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_FUNC_ALIGNED5(int,__cdecl, av_open_input_stream, AVFormatContext **, ByteIOContext *, const char *, AVInputFormat *, AVFormatParameters *)
   DEFINE_FUNC_ALIGNED2(AVInputFormat*, __cdecl, av_probe_input_format, AVProbeData*, int)
   DEFINE_FUNC_ALIGNED3(AVInputFormat*, __cdecl, av_probe_input_format2, AVProbeData*, int, int*)
+  DEFINE_FUNC_ALIGNED6(int, __cdecl, av_probe_input_buffer, ByteIOContext *, AVInputFormat **, const char *, void *, unsigned int, unsigned int)
   DEFINE_FUNC_ALIGNED3(int, __cdecl, get_buffer, ByteIOContext*, unsigned char *, int)
   DEFINE_FUNC_ALIGNED3(int, __cdecl, get_partial_buffer, ByteIOContext*, unsigned char *, int)
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_byte, ByteIOContext*, int)
@@ -241,6 +249,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD5(int, av_open_input_stream, (AVFormatContext **p1, ByteIOContext *p2, const char *p3, AVInputFormat *p4, AVFormatParameters *p5))
   DEFINE_METHOD2(AVInputFormat*, av_probe_input_format, (AVProbeData* p1 , int p2))
   DEFINE_METHOD3(AVInputFormat*, av_probe_input_format2, (AVProbeData* p1 , int p2, int *p3))
+  DEFINE_METHOD6(int, av_probe_input_buffer, (ByteIOContext *p1, AVInputFormat **p2, const char *p3, void *p4, unsigned int p5, unsigned int p6))
   DEFINE_METHOD3(int, get_buffer, (ByteIOContext* p1, unsigned char *p2, int p3))
   DEFINE_METHOD3(int, get_partial_buffer, (ByteIOContext* p1, unsigned char *p2, int p3))
   DEFINE_METHOD2(void, put_byte, (ByteIOContext* p1, int p2))
@@ -295,6 +304,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(init_put_byte)
     RESOLVE_METHOD(av_probe_input_format)
     RESOLVE_METHOD(av_probe_input_format2)
+    RESOLVE_METHOD(av_probe_input_buffer)
     RESOLVE_METHOD(dump_format)
     RESOLVE_METHOD(url_fdopen)
     RESOLVE_METHOD(url_fopen)

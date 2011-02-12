@@ -1,20 +1,6 @@
-INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix -I../utils -I../epg
-
-SRCS=PVRChannel.cpp \
-	PVRChannelGroup.cpp \
-	PVRChannelGroupInternal.cpp \
-	PVRChannelGroups.cpp \
-	PVRChannelGroupsContainer.cpp \
-	PVREpg.cpp \
-	PVREpgInfoTag.cpp \
-	PVREpgContainer.cpp \
-	PVREpgSearchFilter.cpp \
-	PVRManager.cpp \
-	PVRRecordings.cpp \
-	PVRTimerInfoTag.cpp \
-	PVRTimers.cpp \
-	PVRDatabase.cpp \
-	GUIViewStatePVR.cpp
+SRCS=PVRManager.cpp \
+     PVRDatabase.cpp \
+     GUIViewStatePVR.cpp
 
 LIB=pvr.a
 

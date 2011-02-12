@@ -31,9 +31,6 @@ class CEpgContainer;
 
 class CEpgDatabase : public CDatabase
 {
-private:
-  CDateTime lastScanTime; /*!< the last time the EPG has been updated */
-
 public:
   /*!
    * @brief Create a new instance of the EPG database.
@@ -55,7 +52,7 @@ public:
    * @brief Get the minimal database version that is required to operate correctly.
    * @return The minimal database version.
    */
-  virtual int GetMinVersion(void) const { return 1; };
+  virtual int GetMinVersion(void) const { return 2; };
 
   /*!
    * @brief Get the default sqlite database filename.
@@ -95,13 +92,11 @@ public:
   virtual bool Delete(const CEpgInfoTag &tag);
 
   /*!
-   * @brief Get all EPG tables from the database.
+   * @brief Get all EPG tables from the database. Does not get the EPG tables' entries.
    * @param container The container to fill.
-   * @param start Get entries after this time if set.
-   * @param end Get entries before this time if set.
    * @return The amount of entries that was added.
    */
-  virtual int Get(CEpgContainer *container, const CDateTime &start = NULL, const CDateTime &end = NULL);
+  virtual int Get(CEpgContainer *container);
 
   /*!
    * @brief Get all EPG entries for a table.
@@ -114,15 +109,18 @@ public:
 
   /*!
    * @brief Get the last stored EPG scan time.
-   * @return The last scan time or -1 if it wasn't found.
+   * @param iEpgId The table to update the time for. Use 0 for a global value.
+   * @param lastScan The last scan time or -1 if it wasn't found.
+   * @return True if the time was fetched successfully, false otherwise.
    */
-  virtual const CDateTime &GetLastEpgScanTime(void);
+  virtual bool GetLastEpgScanTime(int iEpgId, CDateTime *lastScan);
 
   /*!
    * @brief Update the last scan time.
+   * @param iEpgId The table to update the time for. Use 0 for a global value.
    * @return True if it was updated successfully, false otherwise.
    */
-  virtual bool PersistLastEpgScanTime(void);
+  virtual bool PersistLastEpgScanTime(int iEpgId = 0);
 
   /*!
    * @brief Persist an EPG table. It's entries are not persisted.

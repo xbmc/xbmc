@@ -32,11 +32,11 @@ public:
   cVNSIRecording();
   ~cVNSIRecording();
 
-  bool Open(CStdString path);
+  bool Open(const CStdString& path);
   void Close();
 
-  int Read(unsigned char* buf, int buf_size);
-  long long Seek(long long pos, int whence);
+  int Read(unsigned char* buf, uint32_t buf_size);
+  long long Seek(long long pos, uint32_t whence);
   long long Position(void);
   long long Length(void);
 

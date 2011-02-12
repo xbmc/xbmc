@@ -39,7 +39,7 @@
 #endif
 #ifdef HAS_PVRCLIENTS
 #include "DllPVRClient.h"
-#include "PVRClient.h"
+#include "pvr/addons/PVRClient.h"
 #endif
 //#ifdef HAS_SCRAPERS
 #include "Scraper.h"

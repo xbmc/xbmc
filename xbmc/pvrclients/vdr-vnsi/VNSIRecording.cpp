@@ -37,7 +37,7 @@ cVNSIRecording::~cVNSIRecording()
   Close();
 }
 
-bool cVNSIRecording::Open(CStdString path)
+bool cVNSIRecording::Open(const CStdString& path)
 {
   bool ret = false;
 
@@ -82,7 +82,7 @@ void cVNSIRecording::Close()
   m_session.Close();
 }
 
-int cVNSIRecording::Read(unsigned char* buf, int buf_size)
+int cVNSIRecording::Read(unsigned char* buf, uint32_t buf_size)
 {
   if (m_currentPlayingRecordPosition >= m_currentPlayingRecordBytes)
     return 0;
@@ -119,9 +119,9 @@ int cVNSIRecording::Read(unsigned char* buf, int buf_size)
   return length;
 }
 
-long long cVNSIRecording::Seek(long long pos, int whence)
+long long cVNSIRecording::Seek(long long pos, uint32_t whence)
 {
-  int64_t nextPos = m_currentPlayingRecordPosition;
+  uint64_t nextPos = m_currentPlayingRecordPosition;
 
   switch (whence)
   {

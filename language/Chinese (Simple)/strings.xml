@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Date of translation: 01/06/2011-->
+<!--Date of translation: 02/09/2011-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -194,7 +194,7 @@
   <string id="221">网络未连接</string>
   <string id="222">取消</string>
   <string id="224">速度</string>
-
+  <string id="225">纵向偏移</string>
   <string id="226">测试图案...</string>
   <string id="227">从 freedb.org 获取音乐 CD 信息</string>
   <string id="228">载入播放列表时打乱顺序</string>
@@ -214,7 +214,7 @@
   <string id="242">窗口</string>
   <string id="243">刷新率</string>
   <string id="244">全屏</string>
-  <string id="245">屏幕调整：(%i,%i)->(%i,%i) (缩放 x%2.2f) 宽高比：%2.2f:1 (像素比：%2.2f:1)</string>
+  <string id="245">屏幕调整：(%i,%i)->(%i,%i) (缩放 x%2.2f) 宽高比：%2.2f:1 (像素比：%2.2f:1) (纵向偏移：%2.2f)</string>
 
   <string id="247">脚本</string>
   <string id="248">语言</string>
@@ -1199,7 +1199,7 @@
   <string id="13409">排行榜前 250：</string>
   <string id="13410">收听 last.fm 电台</string>
   <string id="13411">风扇最低转速</string>
-
+  <string id="13412">由此连续播放</string>
   <string id="13413">正在下载</string>
   <string id="13414">包含只在合辑中出现的艺术家</string>
   <string id="13415">渲染模式</string>

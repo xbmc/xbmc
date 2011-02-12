@@ -56,7 +56,7 @@ bool CGUIDialogPVRGuideOSD::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       /* Close dialog immediately if now TV or radio channel is playing */
-      if (!g_PVRManager.IsPlayingTV() && !g_PVRManager.IsPlayingRadio())
+      if (!CPVRManager::Get()->IsPlayingTV() && !CPVRManager::Get()->IsPlayingRadio())
       {
         Close();
         return true;
@@ -99,7 +99,7 @@ void CGUIDialogPVRGuideOSD::Update()
   Clear();
 
   CPVRChannel CurrentChannel;
-  if (g_PVRManager.GetCurrentChannel(&CurrentChannel))
+  if (CPVRManager::Get()->GetCurrentChannel(&CurrentChannel))
     CurrentChannel.GetEPG(m_vecItems);
 
   m_viewControl.SetItems(*m_vecItems);

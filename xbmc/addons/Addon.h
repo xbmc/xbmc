@@ -226,6 +226,7 @@ private:
   virtual void ClearStrings();
   bool m_hasStrings;
   bool m_checkedStrings;
+  bool m_hasSettings;
 
   CStdString  m_profile;
   bool        m_enabled;

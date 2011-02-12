@@ -24,6 +24,8 @@
 
 #ifdef _WIN32
 
+#define LINE_ENDING "\r\n"
+
 #define __STDC_FORMAT_MACROS
 #include "inttypes.h"
 

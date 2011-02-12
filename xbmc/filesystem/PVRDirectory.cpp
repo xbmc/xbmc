@@ -27,9 +27,9 @@
 #include "guilib/LocalizeStrings.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/PVRChannelGroup.h"
-#include "pvr/PVRRecordings.h"
-#include "pvr/PVRTimers.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/timers/PVRTimers.h"
 
 using namespace std;
 using namespace XFILE;
@@ -83,15 +83,15 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
   else if (fileName.Left(10) == "recordings")
   {
-    return PVRRecordings.GetDirectory(strPath, items) > 0;
+    return CPVRManager::GetRecordings()->GetDirectory(strPath, items) > 0;
   }
   else if (fileName.Left(8) == "channels")
   {
-    return CPVRChannelGroup::GetDirectory(strPath, items) > 0;
+    return CPVRManager::GetChannelGroups()->GetDirectory(strPath, items) > 0;
   }
   else if (fileName.Left(6) == "timers")
   {
-    return g_PVRTimers.GetDirectory(strPath, items) > 0;
+    return CPVRManager::GetTimers()->GetDirectory(strPath, items) > 0;
   }
 
   return false;
@@ -103,10 +103,8 @@ bool CPVRDirectory::SupportsFileOperations(const CStdString& strPath)
   CStdString filename = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(filename);
 
-  if (filename.Left(11) == "recordings/" && filename.Right(4) == ".pvr")
-     return true;
-
-  return false;
+  return filename.Left(11) == "recordings/" &&
+         filename.Right(4) == ".pvr";
 }
 
 bool CPVRDirectory::IsLiveTV(const CStdString& strPath)
@@ -117,5 +115,5 @@ bool CPVRDirectory::IsLiveTV(const CStdString& strPath)
 
 bool CPVRDirectory::HasRecordings()
 {
-  return PVRRecordings.GetNumRecordings() > 0;
+  return CPVRManager::GetRecordings()->GetNumRecordings() > 0;
 }

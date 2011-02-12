@@ -21,10 +21,10 @@
 
 #include "SortFileItem.h"
 #include "video/VideoInfoTag.h"
-#include "pvr/PVRChannel.h"
-#include "pvr/PVREpg.h"
-#include "pvr/PVREpgInfoTag.h"
-#include "pvr/PVRTimerInfoTag.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/epg/PVREpg.h"
+#include "pvr/epg/PVREpgInfoTag.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 #include "music/tags/MusicInfoTag.h"
@@ -150,6 +150,19 @@ void SSortFileItem::ByLastPlayed(CFileItemPtr &item)
     item->SetSortLabel(item->GetMusicInfoTag()->GetTitle());
   else
     item->SetSortLabel(item->GetLabel());
+}
+
+void SSortFileItem::ByPlayCount(CFileItemPtr &item)
+{
+  if (!item) return;
+
+  CStdString label;
+  if (item->HasVideoInfoTag())
+    label.Format("%i %s", item->GetVideoInfoTag()->m_playCount, item->GetLabel().c_str());
+  if (item->HasMusicInfoTag())
+    label.Format("%i %s", item->GetMusicInfoTag()->GetPlayCount(), item->GetLabel().c_str());
+
+  item->SetSortLabel(label);
 }
 
 void SSortFileItem::ByDate(CFileItemPtr &item)

@@ -1,0 +1,28 @@
+From 03e5595ec1d5a87d61a67443634b0c56af7cd22c Mon Sep 17 00:00:00 2001
+From: theuni <theuni-nospam-@xbmc.org>
+Date: Mon, 7 Feb 2011 16:00:50 -0500
+Subject: [PATCH] Add our MAX_STREAMS hack back, it was lost after the ffmpeg update.
+
+Fixes playback of some streams (one of my test mkvs).
+
+This should be removed on ffmpeg major version bump.
+---
+ lib/ffmpeg/libavformat/avformat.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/ffmpeg/libavformat/avformat.h b/lib/ffmpeg/libavformat/avformat.h
+index f9f9be5..dec8091 100644
+--- a/lib/ffmpeg/libavformat/avformat.h
++++ b/lib/ffmpeg/libavformat/avformat.h
+@@ -667,7 +667,7 @@ typedef struct AVChapter {
+ } AVChapter;
+ 
+ #if FF_API_MAX_STREAMS
+-#define MAX_STREAMS 20
++#define MAX_STREAMS 100
+ #endif
+ 
+ /**
+-- 
+1.7.3
+

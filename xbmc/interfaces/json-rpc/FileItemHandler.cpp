@@ -236,6 +236,8 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ig
     sortmethod = SORT_METHOD_FULLPATH;
   else if (method.Equals("lastplayed"))
     sortmethod = SORT_METHOD_LASTPLAYED;
+  else if (method.Equals("playcount"))
+    sortmethod = SORT_METHOD_PLAYCOUNT;
   else if (method.Equals("unsorted"))
     sortmethod = SORT_METHOD_UNSORTED;
   else if (method.Equals("max"))

@@ -67,7 +67,7 @@ void cVNSISession::Close()
   }
 }
 
-bool cVNSISession::Open(CStdString hostname, int port, long timeout, const char *name)
+bool cVNSISession::Open(const CStdString& hostname, int port, long timeout, const char *name)
 {
   struct hostent hostbuf, *hp;
   int herr, fd, r, res, err;
@@ -216,9 +216,13 @@ bool cVNSISession::Open(CStdString hostname, int port, long timeout, const char 
     if (!vrp.add_U32(VNSIProtocolVersion))    throw "Can't add protocol version to RequestPacket";
     if (!vrp.add_U8(false))                   throw "Can't add netlog flag";
     if (name && strlen(name) > 0)
+    {
       if (!vrp.add_String(name))                throw "Can't add client name to RequestPacket";
+    }
     else
+    {
       if (!vrp.add_String("XBMC Media Center")) throw "Can't add client name to RequestPacket";
+    }
 
     // read welcome
     cResponsePacket* vresp = ReadResult(&vrp);
@@ -253,15 +257,15 @@ bool cVNSISession::Open(CStdString hostname, int port, long timeout, const char 
 
 cResponsePacket* cVNSISession::ReadMessage(int timeout)
 {
-  uint32_t channelID;
+  uint32_t channelID = 0;
   uint32_t requestID;
-  uint32_t userDataLength;
-  uint8_t* userData;
+  uint32_t userDataLength = 0;
+  uint8_t* userData = NULL;
   uint32_t streamID;
   uint32_t duration;
   uint32_t opCodeID;
-  int64_t  dts;
-  int64_t  pts;
+  int64_t  dts = 0;
+  int64_t  pts = 0;
 
   cResponsePacket* vresp = NULL;
 
@@ -274,17 +278,21 @@ cResponsePacket* cVNSISession::ReadMessage(int timeout)
   channelID = ntohl(channelID);
   if (channelID == CHANNEL_REQUEST_RESPONSE)
   {
-    if (!readData((uint8_t*)&requestID, sizeof(uint32_t))) return vresp;
-    requestID = ntohl(requestID);
-    if (!readData((uint8_t*)&userDataLength, sizeof(uint32_t))) return vresp;
-    userDataLength = ntohl(userDataLength);
-    if (userDataLength > 5000000) return vresp; // how big can these packets get?
+    if (!readData((uint8_t*)&m_responsePacketHeader, sizeof(m_responsePacketHeader))) return NULL;
+
+    requestID = ntohl(m_responsePacketHeader.requestID);
+    userDataLength = ntohl(m_responsePacketHeader.userDataLength);
+
+    if (userDataLength > 5000000) return NULL; // how big can these packets get?
     userData = NULL;
     if (userDataLength > 0)
     {
       userData = (uint8_t*)malloc(userDataLength);
-      if (!userData) return vresp;
-      if (!readData(userData, userDataLength)) return vresp;
+      if (!userData) return NULL;
+      if (!readData(userData, userDataLength)) {
+        free(userData);
+        return NULL;
+      }
     }
 
     vresp = new cResponsePacket();
@@ -293,29 +301,36 @@ cResponsePacket* cVNSISession::ReadMessage(int timeout)
   }
   else if (channelID == CHANNEL_STREAM)
   {
-    if (!readData((uint8_t*)&opCodeID, sizeof(uint32_t))) return vresp;
-    opCodeID = ntohl(opCodeID);
+    if (!readData((uint8_t*)&m_streamPacketHeader, sizeof(m_streamPacketHeader))) return NULL;
 
-    if (!readData((uint8_t*)&streamID, sizeof(uint32_t))) return vresp;
-    streamID = ntohl(streamID);
+    opCodeID = ntohl(m_streamPacketHeader.opCodeID);
+    streamID = ntohl(m_streamPacketHeader.streamID);
+    duration = ntohl(m_streamPacketHeader.duration);
+    pts = ntohll(*(int64_t*)m_streamPacketHeader.pts);
+    dts = ntohll(*(int64_t*)m_streamPacketHeader.dts);
+    userDataLength = ntohl(m_streamPacketHeader.userDataLength);
 
-    if (!readData((uint8_t*)&duration, sizeof(uint32_t))) return vresp;
-    duration = ntohl(duration);
-
-    if (!readData((uint8_t*)&pts, sizeof(int64_t))) return vresp;
-    pts = ntohll(pts);
-
-    if (!readData((uint8_t*)&dts, sizeof(int64_t))) return vresp;
-    dts = ntohll(dts);
-
-    if (!readData((uint8_t*)&userDataLength, sizeof(uint32_t))) return vresp;
-    userDataLength = ntohl(userDataLength);
-    userData = NULL;
-    if (userDataLength > 0)
-    {
+    if(opCodeID == VDR_STREAM_MUXPKT) {
+      DemuxPacket* p = PVR->AllocateDemuxPacket(userDataLength);
+      userData = (uint8_t*)p;
+      if (userDataLength > 0)
+      {
+        if (!userData) return NULL;
+        if (!readData(p->pData, userDataLength))
+        {
+          PVR->FreeDemuxPacket(p);
+          return NULL;
+        }
+      }
+    }
+    else if (userDataLength > 0) {
       userData = (uint8_t*)malloc(userDataLength);
-      if (!userData)  return vresp;
-      if (!readData(userData, userDataLength)) return vresp;
+      if (!userData) return NULL;
+      if (!readData(userData, userDataLength))
+      {
+        free(userData);
+        return NULL;
+      }
     }
 
     vresp = new cResponsePacket();
@@ -357,12 +372,12 @@ cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp, bool sequence)
   return NULL;
 }
 
-bool cVNSISession::ReadSuccess(cRequestPacket* vrp, bool sequence, std::string action)
+bool cVNSISession::ReadSuccess(cRequestPacket* vrp, bool sequence)
 {
   cResponsePacket *pkt = NULL;
   if((pkt = ReadResult(vrp, sequence)) == NULL)
   {
-    DEVDBG("cVNSISession::ReadSuccess - failed to %s", action.c_str());
+    DEVDBG("cVNSISession::ReadSuccess - failed");
     return false;
   }
   uint32_t retCode = pkt->extract_U32();
@@ -370,7 +385,7 @@ bool cVNSISession::ReadSuccess(cRequestPacket* vrp, bool sequence, std::string a
 
   if(retCode != VDR_RET_OK)
   {
-    XBMC->Log(LOG_ERROR, "cVNSISession::ReadSuccess - failed with error code '%i' to %s", retCode, action.c_str());
+    XBMC->Log(LOG_ERROR, "cVNSISession::ReadSuccess - failed with error code '%i'", retCode);
     return false;
   }
   return true;
@@ -412,7 +427,6 @@ int cVNSISession::readData(uint8_t* buffer, int totalBytes, int TimeOut)
 {
   int bytesRead = 0;
   int thisRead;
-  int readTries = 0;
   int success;
   fd_set readSet;
   struct timeval timeout;
@@ -446,14 +460,6 @@ int cVNSISession::readData(uint8_t* buffer, int totalBytes, int TimeOut)
     if (bytesRead == totalBytes)
     {
       return 1;
-    }
-    else
-    {
-      if (++readTries == 100)
-      {
-        XBMC->Log(LOG_ERROR, "cVNSISession::readData - Too many reads");
-        // return 0;
-      }
     }
   }
 }

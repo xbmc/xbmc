@@ -52,8 +52,8 @@ void CRGBRendererV2::FlipPage(int source)
 void CRGBRendererV2::Delete444PTexture()
 {
   CSingleLock lock(g_graphicsContext);
-  SAFE_RELEASE(m_444PTextureFull)
-  SAFE_RELEASE(m_444PTextureField)
+  SAFE_RELEASE(m_444PTextureFull);
+  SAFE_RELEASE(m_444PTextureField);
   CLog::Log(LOGDEBUG, "Deleted 444P video textures");
 }
 

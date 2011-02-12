@@ -11,7 +11,6 @@ SRCS=Addon.cpp \
      GUIDialogAddonSettings.cpp \
      GUIViewStateAddonBrowser.cpp \
      GUIWindowAddonBrowser.cpp \
-     PVRClient.cpp \
      PluginSource.cpp \
      Repository.cpp \
      Scraper.cpp \

@@ -55,6 +55,7 @@ int main(int argc, char* argv[])
   g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
   g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
 #endif
+  CLog::SetLogLevel(g_advancedSettings.m_logLevel);
 
   CFileItemList playlist;
 #ifdef _LINUX
@@ -138,6 +139,7 @@ int main(int argc, char* argv[])
       {
         g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
         g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
+        CLog::SetLogLevel(g_advancedSettings.m_logLevel);
       }
       else if (strlen(argv[i]) != 0 && argv[i][0] != '-')
       {

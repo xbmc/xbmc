@@ -172,8 +172,6 @@ CStdString CFavourites::GetExecutePath(const CFileItem *item, int contextWindow)
   if (item->m_bIsFolder && (g_advancedSettings.m_playlistAsFolders ||
                             !(item->IsSmartPlayList() || item->IsPlayList())))
     execute.Format("ActivateWindow(%i,%s)", contextWindow, Paramify(item->m_strPath));
-  else if (item->m_strPath.Left(9).Equals("plugin://"))
-    execute.Format("RunPlugin(%s)", Paramify(item->m_strPath));
   else if (item->m_strPath.Left(9).Equals("script://"))
     execute.Format("RunScript(%s)", Paramify(item->m_strPath.Mid(9)));
   else if (contextWindow == WINDOW_PROGRAMS)

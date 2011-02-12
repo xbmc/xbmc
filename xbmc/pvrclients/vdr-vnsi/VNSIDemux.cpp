@@ -19,7 +19,6 @@
  *
  */
 
-#define __STDC_CONSTANT_MACROS
 #include <stdint.h>
 #include <limits.h>
 #include <libavcodec/avcodec.h> // For codec id's
@@ -109,76 +108,73 @@ void cVNSIDemux::Abort()
 
 DemuxPacket* cVNSIDemux::Read()
 {
-  cResponsePacket *resp;
-  while ((resp = m_session.ReadMessage(15)))
+  cResponsePacket *resp = m_session.ReadMessage(15);
+
+  if(resp == NULL)
   {
-    if (resp->getChannelID() == CHANNEL_STREAM)
-    {
-      if (resp->getOpCodeID() == VDR_STREAM_CHANGE)
-      {
-        StreamChange(resp);
-        if (!m_startup)
-        {
-          DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
-          pkt->iStreamId    = DMX_SPECIALID_STREAMCHANGE;
-          delete resp;
-          return pkt;
-        }
-        else
-          m_startup = false;
-      }
-      else if (resp->getOpCodeID() == VDR_STREAM_STATUS)
-        StreamStatus(resp);
-      else if (resp->getOpCodeID() == VDR_STREAM_SIGNALINFO)
-        StreamSignalInfo(resp);
-      else if (resp->getOpCodeID() == VDR_STREAM_CONTENTINFO)
-      {
-        StreamContentInfo(resp);
-        DemuxPacket* pkt = PVR->AllocateDemuxPacket(sizeof(PVR_STREAMPROPS));
-        memcpy(pkt->pData, &m_Streams, sizeof(PVR_STREAMPROPS));
-        pkt->iStreamId  = DMX_SPECIALID_STREAMINFO;
-        pkt->iSize      = sizeof(PVR_STREAMPROPS);
-        delete resp;
-        return pkt;
-      }
-      else if (resp->getOpCodeID() == VDR_STREAM_MUXPKT)
-      {
-        void   *bin       = resp->getUserData();
-        size_t  binlen    = resp->getUserDataLength();
-
-        DemuxPacket* pkt = PVR->AllocateDemuxPacket(binlen);
-
-        memcpy(pkt->pData, bin, binlen);
-
-        pkt->iSize      = binlen;
-        pkt->duration   = (double)resp->getDuration() * DVD_TIME_BASE / 1000000;
-        pkt->dts        = (double)resp->getDTS() * DVD_TIME_BASE / 1000000;
-        pkt->pts        = (double)resp->getPTS() * DVD_TIME_BASE / 1000000;
-        pkt->iStreamId  = -1;
-        for(int i = 0; i < m_Streams.nstreams; i++)
-        {
-          if(m_Streams.stream[i].physid == (int)resp->getStreamID())
-          {
-            pkt->iStreamId = i;
-            break;
-          }
-        }
-
-        free(bin);
-        delete resp;
-        return pkt;
-      }
-    }
-
-    break;
+    return NULL;
   }
 
-  if (resp)
+  if (resp->getChannelID() != CHANNEL_STREAM)
   {
     delete resp;
-    return PVR->AllocateDemuxPacket(0);
+    return NULL;
   }
-  return NULL;
+
+  if (resp->getOpCodeID() == VDR_STREAM_CHANGE)
+  {
+    StreamChange(resp);
+    if (!m_startup)
+    {
+      DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
+      pkt->iStreamId    = DMX_SPECIALID_STREAMCHANGE;
+      delete resp;
+      return pkt;
+    }
+    else
+      m_startup = false;
+  }
+  else if (resp->getOpCodeID() == VDR_STREAM_STATUS)
+  {
+    StreamStatus(resp);
+  }
+  else if (resp->getOpCodeID() == VDR_STREAM_SIGNALINFO)
+  {
+    StreamSignalInfo(resp);
+  }
+  else if (resp->getOpCodeID() == VDR_STREAM_CONTENTINFO)
+  {
+    StreamContentInfo(resp);
+    DemuxPacket* pkt = PVR->AllocateDemuxPacket(sizeof(PVR_STREAMPROPS));
+    memcpy(pkt->pData, &m_Streams, sizeof(PVR_STREAMPROPS));
+    pkt->iStreamId  = DMX_SPECIALID_STREAMINFO;
+    pkt->iSize      = sizeof(PVR_STREAMPROPS);
+    delete resp;
+    return pkt;
+  }
+  else if (resp->getOpCodeID() == VDR_STREAM_MUXPKT)
+  {
+    DemuxPacket* p = (DemuxPacket*)resp->getUserData();
+
+    p->iSize      = resp->getUserDataLength();
+    p->duration   = (double)resp->getDuration() * DVD_TIME_BASE / 1000000;
+    p->dts        = (double)resp->getDTS() * DVD_TIME_BASE / 1000000;
+    p->pts        = (double)resp->getPTS() * DVD_TIME_BASE / 1000000;
+    p->iStreamId  = -1;
+    for(int i = 0; i < m_Streams.nstreams; i++)
+    {
+      if(m_Streams.stream[i].physid == (int)resp->getStreamID())
+      {
+            p->iStreamId = i;
+            break;
+      }
+    }
+    delete resp;
+    return p;
+  }
+
+  delete resp;
+  return PVR->AllocateDemuxPacket(0);
 }
 
 bool cVNSIDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
@@ -441,7 +437,7 @@ void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
 {
   for (int i = 0; i < m_Streams.nstreams && !resp->end(); i++)
   {
-    uint32_t index = resp->extract_U32();
+    int32_t index = resp->extract_U32();
     if (index == m_Streams.stream[i].physid)
     {
       if (m_Streams.stream[i].codec_type == CODEC_TYPE_AUDIO)

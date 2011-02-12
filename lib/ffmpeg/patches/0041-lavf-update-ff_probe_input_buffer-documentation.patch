@@ -1,0 +1,29 @@
+From acdac292f7c1691d21e19c1e9a993e501883fd6b Mon Sep 17 00:00:00 2001
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Date: Tue, 8 Feb 2011 00:46:51 +0200
+Subject: [PATCH 41/43] lavf: update ff_probe_input_buffer documentation
+
+It never reopens the bytestream anymore.
+
+Signed-off-by: Ronald S. Bultje <rsbultje@gmail.com>
+(cherry picked from commit 4d016dd4e5b288b3c0c7396935326cb07a289ac2)
+---
+ libavformat/internal.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/libavformat/internal.h b/libavformat/internal.h
+index b401d35..a17d9c6 100644
+--- a/libavformat/internal.h
++++ b/libavformat/internal.h
+@@ -88,7 +88,7 @@ uint64_t ff_ntp_time(void);
+  * attempt is made. When the maximum probe size is reached, the input format
+  * with the highest score is returned.
+  *
+- * @param pb the bytestream to probe, it may be closed and opened again
++ * @param pb the bytestream to probe
+  * @param fmt the input format is put here
+  * @param filename the filename of the stream
+  * @param logctx the log context
+-- 
+1.7.3
+

@@ -49,6 +49,10 @@ config.log
 .libs/
 .deps/
 
+# Eclipse project files. Not needed as they are generated in two clicks if needed.
+.project
+.cproject
+
 # /
 /.dummy
 /.dummy.in
@@ -359,12 +363,20 @@ autom4te.cache
 /system/cdrip/lame_enc.dll
 
 # /system/players/dvdplayer
+/system/players/dvdplayer/avcodec-52.dll
+/system/players/dvdplayer/avcore-0.dll
+/system/players/dvdplayer/avformat-52.dll
+/system/players/dvdplayer/avutil-50.dll
 /system/players/dvdplayer/freetype6.dll
 /system/players/dvdplayer/libass.dll
+/system/players/dvdplayer/libdvdcss-2.dll
+/system/players/dvdplayer/libdvdnav.dll
 /system/players/dvdplayer/libexpat-1.dll
 /system/players/dvdplayer/libfaad.dll
 /system/players/dvdplayer/libfontconfig-1.dll
 /system/players/dvdplayer/librtmp.dll
+/system/players/dvdplayer/postproc-51.dll
+/system/players/dvdplayer/swscale-0.6.1.dll
 
 # /system/players/paplayer
 /system/players/paplayer/wavpack.dll

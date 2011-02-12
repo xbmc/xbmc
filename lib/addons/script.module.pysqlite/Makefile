@@ -10,7 +10,7 @@ RETRIEVE_TOOL_FLAGS=-Ls --output $(ARCHIVE)
 ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
-PYTHONDIR=$(abs_top_srcdir)/xbmc/lib/libPython/Python
+PYTHONDIR=$(abs_top_srcdir)/lib/python
 ifeq ($(OSTYPE),Darwin)
 PYTHON=$(PYTHONDIR)/python.exe
 else

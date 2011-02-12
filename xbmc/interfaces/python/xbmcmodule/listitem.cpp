@@ -393,6 +393,8 @@ namespace PYXBMC
     "    title       : string (American Pie)\n"
     "    rating      : string (3) - single character between 0 and 5\n"
     "    lyrics      : string (On a dark desert highway...)\n"
+    "    playcount   : integer (2) - number of times this item has been played\n"
+    "    lastplayed  : string (%Y-%m-%d %h:%m:%s = 2009-04-05 23:16:04)\n"
     "\n"
     "Picture Values:\n"
     "    title       : string (In the last summer-1)\n"
@@ -539,7 +541,6 @@ namespace PYXBMC
       }
       else if (strcmpi(cType, "music") == 0)
       {
-        // TODO: add the rest of the infolabels
         if (strcmpi(PyString_AsString(key), "tracknumber") == 0)
           self->item->GetMusicInfoTag()->SetTrackNumber(PyInt_AsLong(value));
         else if (strcmpi(PyString_AsString(key), "count") == 0)
@@ -551,7 +552,9 @@ namespace PYXBMC
         else if (strcmpi(PyString_AsString(key), "year") == 0)
           self->item->GetMusicInfoTag()->SetYear(PyInt_AsLong(value));
         else if (strcmpi(PyString_AsString(key), "listeners") == 0)
-         self->item->GetMusicInfoTag()->SetListeners(PyInt_AsLong(value));       
+          self->item->GetMusicInfoTag()->SetListeners(PyInt_AsLong(value));
+        else if (strcmpi(PyString_AsString(key), "playcount") == 0)
+          self->item->GetMusicInfoTag()->SetPlayCount(PyInt_AsLong(value));
         else
         {
           if (!PyXBMCGetUnicodeString(tmp, value, 1)) continue;
@@ -566,7 +569,21 @@ namespace PYXBMC
           else if (strcmpi(PyString_AsString(key), "rating") == 0)
             self->item->GetMusicInfoTag()->SetRating(*tmp);
           else if (strcmpi(PyString_AsString(key), "lyrics") == 0)
-            self->item->SetProperty("lyrics", tmp);
+            self->item->GetMusicInfoTag()->SetLyrics(tmp);
+          else if (strcmpi(PyString_AsString(key), "lastplayed") == 0)
+            self->item->GetMusicInfoTag()->SetLastPlayed(tmp);
+          else if (strcmpi(PyString_AsString(key), "musicbrainztrackid") == 0)
+            self->item->GetMusicInfoTag()->SetMusicBrainzTrackID(tmp);
+          else if (strcmpi(PyString_AsString(key), "musicbrainzartistid") == 0)
+            self->item->GetMusicInfoTag()->SetMusicBrainzArtistID(tmp);
+          else if (strcmpi(PyString_AsString(key), "musicbrainzalbumid") == 0)
+            self->item->GetMusicInfoTag()->SetMusicBrainzAlbumID(tmp);
+          else if (strcmpi(PyString_AsString(key), "musicbrainzalbumartistid") == 0)
+            self->item->GetMusicInfoTag()->SetMusicBrainzAlbumArtistID(tmp);
+          else if (strcmpi(PyString_AsString(key), "musicbrainztrmid") == 0)
+            self->item->GetMusicInfoTag()->SetMusicBrainzTRMID(tmp);
+          else if (strcmpi(PyString_AsString(key), "comment") == 0)
+            self->item->GetMusicInfoTag()->SetComment(tmp);
           else if (strcmpi(PyString_AsString(key), "date") == 0)
           {
             if (strlen(tmp) == 10)

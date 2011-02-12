@@ -1,6 +1,6 @@
 CC=@CC@
 CXX=@CXX@
-SHELL=/bin/bash
+SHELL=@SHELL@
 LDFLAGS=-shared -fPIC -rdynamic
 ARCH=@ARCH@
 SYSDIR=@abs_top_srcdir@/system/players/dvdplayer
@@ -64,7 +64,8 @@ endif
 
 $(SYSDIR)/avutil-50-$(ARCH).so: ffmpeg/libavutil/libavutil.dylib
 	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
-		ffmpeg/libavutil/*.o
+		ffmpeg/libavutil/*.o \
+		ffmpeg/libavutil/$(ARCH_DIR)/*.o
 	$(WRAPPER_OSX) $@;mv output.so $@
 	chmod +x $@
 

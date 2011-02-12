@@ -32,13 +32,25 @@ extern "C" {
   #if (defined HAVE_LIBAVUTIL_AVUTIL_H)
     #include <libavutil/avutil.h>
     #include <libavutil/crc.h>
+    // for LIBAVCODEC_VERSION_INT:
+    #include <libavcodec/avcodec.h>
   #elif (defined HAVE_FFMPEG_AVUTIL_H)
     #include <ffmpeg/avutil.h>
     #include <ffmpeg/crc.h>
+    // for LIBAVCODEC_VERSION_INT:
+    #include <ffmpeg/avcodec.h>
+  #endif
+  #if defined(HAVE_LIBAVUTIL_OPT_H)
+    #include <libavutil/opt.h>
+  #elif defined(HAVE_LIBAVCODEC_AVCODEC_H)
+    #include <libavcodec/opt.h>
+  #else
+    #include <ffmpeg/opt.h>
   #endif
 #else
   #include "libavutil/avutil.h"
   #include "libavutil/crc.h"
+  #include "libavutil/opt.h"
 #endif
 }
 
@@ -59,6 +71,7 @@ public:
   virtual int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq)=0;
   virtual const AVCRC* av_crc_get_table(AVCRCId crc_id)=0;
   virtual uint32_t av_crc(const AVCRC *ctx, uint32_t crc, const uint8_t *buffer, size_t length)=0;
+  virtual int av_set_string3(void *obj, const char *name, const char *val, int alloc, const AVOption **o_out)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -79,6 +92,12 @@ public:
    virtual int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq) { return ::av_rescale_q(a, bq, cq); }
    virtual const AVCRC* av_crc_get_table(AVCRCId crc_id) { return ::av_crc_get_table(crc_id); }
    virtual uint32_t av_crc(const AVCRC *ctx, uint32_t crc, const uint8_t *buffer, size_t length) { return ::av_crc(ctx, crc, buffer, length); }
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,7,0)
+   // API added on: 2008-12-16
+   virtual int av_set_string3(void *obj, const char *name, const char *val, int alloc, const AVOption **o_out) { return ::av_set_string3(obj, name, val, alloc, o_out); }
+#else
+   virtual int av_set_string3(void *obj, const char *name, const char *val, int alloc, const AVOption **o_out) { return AVERROR(ENOENT); }
+#endif
 
    // DLL faking.
    virtual bool ResolveExports() { return true; }
@@ -107,6 +126,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
   DEFINE_METHOD3(int64_t, av_rescale_q, (int64_t p1, AVRational p2, AVRational p3));
   DEFINE_METHOD1(const AVCRC*, av_crc_get_table, (AVCRCId p1))
   DEFINE_METHOD4(uint32_t, av_crc, (const AVCRC *p1, uint32_t p2, const uint8_t *p3, size_t p4));
+  DEFINE_METHOD5(int, av_set_string3, (void *p1, const char *p2, const char *p3, int p4, const AVOption **p5));
 
   public:
   BEGIN_METHOD_RESOLVE()
@@ -120,6 +140,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
     RESOLVE_METHOD(av_rescale_q)
     RESOLVE_METHOD(av_crc_get_table)
     RESOLVE_METHOD(av_crc)
+    RESOLVE_METHOD(av_set_string3)
   END_METHOD_RESOLVE()
 };
 

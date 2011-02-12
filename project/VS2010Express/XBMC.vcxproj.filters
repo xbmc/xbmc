@@ -238,6 +238,24 @@
     <Filter Include="epg">
       <UniqueIdentifier>{ef8e21c9-b588-4255-ba38-57c6ae82d0aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="pvr\windows">
+      <UniqueIdentifier>{43455925-2158-4eff-97ce-1fa3f6597a3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pvr\timers">
+      <UniqueIdentifier>{14af7c50-6457-48ec-87b2-4efb3986bdd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pvr\recordings">
+      <UniqueIdentifier>{eab084ef-b5b5-4a61-b2a5-eac88bbcc73a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pvr\epg">
+      <UniqueIdentifier>{42772157-07b9-49a8-b108-1b5fd27fc9c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pvr\channels">
+      <UniqueIdentifier>{7be58f63-0e53-4a26-9894-e52c2bd78709}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pvr\addons">
+      <UniqueIdentifier>{dbfd4898-7df3-4393-8b04-ab0cc1265c33}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -430,9 +448,6 @@
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMemory.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMMS.cpp">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.cpp">
@@ -2468,47 +2483,89 @@
     <ClCompile Include="..\..\xbmc\addons\AddonInstaller.cpp">
       <Filter>addons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\PVRChannel.cpp">
-      <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\epg\Epg.cpp">
+      <Filter>epg</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\PVRChannelGroup.cpp">
-      <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\epg\EpgContainer.cpp">
+      <Filter>epg</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\PVRChannelGroupInternal.cpp">
-      <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\epg\EpgDatabase.cpp">
+      <Filter>epg</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\PVRChannelGroups.cpp">
-      <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\epg\EpgInfoTag.cpp">
+      <Filter>epg</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\PVRChannelGroupsContainer.cpp">
-      <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\epg\EpgSearchFilter.cpp">
+      <Filter>epg</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\PVRDatabase.cpp">
-      <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_Addon.cpp">
+      <Filter>addons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\PVREpg.cpp">
-      <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_GUI.cpp">
+      <Filter>addons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\PVREpgContainer.cpp">
-      <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_local.cpp">
+      <Filter>addons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\PVREpgInfoTag.cpp">
-      <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_PVR.cpp">
+      <Filter>addons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\PVREpgSearchFilter.cpp">
-      <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\filesystem\PVRDirectory.cpp">
+      <Filter>filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\PVRManager.cpp">
-      <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\filesystem\PVRFile.cpp">
+      <Filter>filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\PVRRecordings.cpp">
-      <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\utils\Observer.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\PVRTimerInfoTag.cpp">
-      <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamPVRManager.cpp">
+      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\PVRTimers.cpp">
-      <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPVRClient.cpp">
+      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\TextSearch.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUIEPGGridContainer.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\GLUtils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\stdio_utf8.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\stat_utf8.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVR.cpp">
+      <Filter>pvr\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\timers\PVRTimerInfoTag.cpp">
+      <Filter>pvr\timers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\timers\PVRTimers.cpp">
+      <Filter>pvr\timers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\recordings\PVRRecording.cpp">
+      <Filter>pvr\recordings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\recordings\PVRRecordings.cpp">
+      <Filter>pvr\recordings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\epg\PVREpg.cpp">
+      <Filter>pvr\epg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\epg\PVREpgContainer.cpp">
+      <Filter>pvr\epg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\epg\PVREpgInfoTag.cpp">
+      <Filter>pvr\epg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\epg\PVREpgSearchFilter.cpp">
+      <Filter>pvr\epg</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelManager.cpp">
       <Filter>pvr\dialogs</Filter>
@@ -2540,64 +2597,34 @@
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRTimerSettings.cpp">
       <Filter>pvr\dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRUpdateProgressBar.cpp">
-      <Filter>pvr\dialogs</Filter>
+    <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannel.cpp">
+      <Filter>pvr\channels</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\epg\Epg.cpp">
-      <Filter>epg</Filter>
+    <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannelGroup.cpp">
+      <Filter>pvr\channels</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\epg\EpgContainer.cpp">
-      <Filter>epg</Filter>
+    <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannelGroupInternal.cpp">
+      <Filter>pvr\channels</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\epg\EpgDatabase.cpp">
-      <Filter>epg</Filter>
+    <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannelGroups.cpp">
+      <Filter>pvr\channels</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\epg\EpgInfoTag.cpp">
-      <Filter>epg</Filter>
+    <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannelGroupsContainer.cpp">
+      <Filter>pvr\channels</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\epg\EpgSearchFilter.cpp">
-      <Filter>epg</Filter>
+    <ClCompile Include="..\..\xbmc\pvr\addons\PVRClient.cpp">
+      <Filter>pvr\addons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUIWindowTV.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_Addon.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_GUI.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_local.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_PVR.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\PVRClient.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\PVRDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\PVRFile.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\Observer.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamPVRManager.cpp">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPVRClient.cpp">
-      <Filter>cores\dvdplayer\DVDDemuxers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\TextSearch.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUIEPGGridContainer.cpp">
-      <Filter>guilib</Filter>
+    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogExtendedProgressBar.cpp">
+      <Filter>dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\GUIViewStatePVR.cpp">
+      <Filter>pvr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\PVRDatabase.cpp">
+      <Filter>pvr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\PVRManager.cpp">
       <Filter>pvr</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2845,9 +2872,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMemory.h">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMMS.h">
-      <Filter>cores\dvdplayer\DVDInputStreams</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClInclude>
@@ -2867,9 +2891,6 @@
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\DllSwScale.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\ffmpeg\include\libavutil\avconfig.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\ffmpeg\libavformat\avformat.h">
@@ -2999,9 +3020,6 @@
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\DllWAVPack.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\DllWMA.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DTSCDDACodec.h">
@@ -5076,81 +5094,6 @@
     <ClInclude Include="..\..\xbmc\addons\AddonInstaller.h">
       <Filter>addons</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\PVRTimers.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\PVRChannel.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\PVRChannelGroup.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\PVRChannelGroupInternal.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\PVRChannelGroups.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\PVRChannelGroupsContainer.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\PVRDatabase.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\PVREpg.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\PVREpgContainer.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\PVREpgInfoTag.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\PVREpgSearchFilter.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\PVRManager.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\PVRRecordings.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\PVRTimerInfoTag.h">
-      <Filter>pvr</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRUpdateProgressBar.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelManager.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelsOSD.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRCutterOSD.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRDirectorOSD.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGroupManager.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideInfo.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideOSD.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideSearch.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRecordingInfo.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRTimerSettings.h">
-      <Filter>pvr\dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\epg\EpgSearchFilter.h">
       <Filter>epg</Filter>
     </ClInclude>
@@ -5165,12 +5108,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\epg\EpgInfoTag.h">
       <Filter>epg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUIWindowTV.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\PVRClient.h">
-      <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\AddonHelpers_Addon.h">
       <Filter>addons</Filter>
@@ -5208,7 +5145,101 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIEPGGridContainer.h">
       <Filter>guilib</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\GLUtils.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\win32\stdio_utf8.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\win32\stat_utf8.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\ffmpeg\include-xbmc-win32\libavutil\avconfig.h" />
+    <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVR.h">
+      <Filter>pvr\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\timers\PVRTimers.h">
+      <Filter>pvr\timers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\timers\PVRTimerInfoTag.h">
+      <Filter>pvr\timers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\recordings\PVRRecordings.h">
+      <Filter>pvr\recordings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\recordings\PVRRecording.h">
+      <Filter>pvr\recordings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\epg\PVREpgSearchFilter.h">
+      <Filter>pvr\epg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\epg\PVREpg.h">
+      <Filter>pvr\epg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\epg\PVREpgContainer.h">
+      <Filter>pvr\epg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\epg\PVREpgInfoTag.h">
+      <Filter>pvr\epg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRTimerSettings.h">
+      <Filter>pvr\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelManager.h">
+      <Filter>pvr\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelsOSD.h">
+      <Filter>pvr\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRCutterOSD.h">
+      <Filter>pvr\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRDirectorOSD.h">
+      <Filter>pvr\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGroupManager.h">
+      <Filter>pvr\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideInfo.h">
+      <Filter>pvr\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideOSD.h">
+      <Filter>pvr\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideSearch.h">
+      <Filter>pvr\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRecordingInfo.h">
+      <Filter>pvr\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannelGroupsContainer.h">
+      <Filter>pvr\channels</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannel.h">
+      <Filter>pvr\channels</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannelGroup.h">
+      <Filter>pvr\channels</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannelGroupInternal.h">
+      <Filter>pvr\channels</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannelGroups.h">
+      <Filter>pvr\channels</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\addons\PVRClient.h">
+      <Filter>pvr\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogExtendedProgressBar.h">
+      <Filter>dialogs</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\GUIViewStatePVR.h">
+      <Filter>pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\PVRDatabase.h">
+      <Filter>pvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\PVRManager.h">
       <Filter>pvr</Filter>
     </ClInclude>
   </ItemGroup>

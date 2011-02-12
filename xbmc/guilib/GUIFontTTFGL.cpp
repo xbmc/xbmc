@@ -27,6 +27,7 @@
 #include "GraphicContext.h"
 #include "gui3d.h"
 #include "utils/log.h"
+#include "utils/GLUtils.h"
 #if HAS_GLES == 2
 #include "windowing/WindowingFactory.h"
 #endif

@@ -60,7 +60,6 @@ SRCS=AnimatedGif.cpp \
      GUIVideoControl.cpp \
      GUIVisualisationControl.cpp \
      GUIWindow.cpp \
-     GUIWindowTV.cpp \
      GUIWindowManager.cpp \
      GUIWrappingListContainer.cpp \
      IWindowManagerCallback.cpp \

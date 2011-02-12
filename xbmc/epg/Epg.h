@@ -45,6 +45,7 @@ private:
   CStdString                 m_strName;        /*!< the name of this table */
   CStdString                 m_strScraperName; /*!< the name of the scraper to use */
   int                        m_iEpgID;         /*!< the database ID of this table */
+  CDateTime                  m_lastScanTime;   /*!< the last time the EPG has been updated */
   mutable const CEpgInfoTag *m_nowActive;      /*!< the tag that is currently active */
 
   mutable CCriticalSection   m_critSection;    /*!< critical section for changes in this table */
@@ -104,6 +105,12 @@ protected:
    * @return True if the update was successful, false otherwise.
    */
   virtual bool Update(const CEpg &epg, bool bUpdateDb = false);
+
+  /*!
+   * @brief Load all entries for this table from the database.
+   * @return True if any entries were loaded, false otherwise.
+   */
+  bool Load(void);
 
 public:
   /*!
@@ -225,10 +232,11 @@ public:
    * @brief Update the EPG from 'start' till 'end'.
    * @param start The start time.
    * @param end The end time.
+   * @param iUpdateTime Update the table after the given amount of time has passed.
    * @param bStoreInDb Store in the database if true.
    * @return True if the update was successful, false otherwise.
    */
-  virtual bool Update(time_t start, time_t end, bool bStoreInDb = true);
+  virtual bool Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb = true);
 
   /*!
    * @brief Get all EPG entries.

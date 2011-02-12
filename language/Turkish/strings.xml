@@ -1,11 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: NFA (necipfazil)-->
 <!--Email: necipfazil@gmail.com-->
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 01/01/2011-->
-<!--Based on English strings revision 35715-->
+<!--Date of translation: 12/02/2011-->
+<!--Based on English strings commit c8bd047-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -199,7 +199,7 @@
   <string id="221">Ağ bağlantısı yok</string>
   <string id="222">İptal</string>
   <string id="224">Hız</string>
-
+  <string id="225">Dikey Kaydırma</string>
   <string id="226">Desenleri test et...</string>
   <string id="227">Ses CD'lerinin parça isimlerini freedb.org'da ara</string>
   <string id="228">Çalma listesini karıştır</string>
@@ -219,7 +219,7 @@
   <string id="242">Pencere</string>
   <string id="243">Yenileme Hızı</string>
   <string id="244">Tam ekran</string>
-  <string id="245">Boyutlandırma: (%i,%i)->(%i,%i) (Yakınlaştırma  x%2.2f) AR:%2.2f:1 (Pikseller: %2.2f:1)</string>
+  <string id="245">Boyutlandırma: (%i,%i)->(%i,%i) (Yakınlaştırma  x%2.2f) AR:%2.2f:1 (Pikseller: %2.2f:1) (DKaydırma: %2.2f)</string>
 
   <string id="247">Betikler</string>
   <string id="248">Dil</string>
@@ -531,6 +531,7 @@
   <string id="573">Yol</string>
   <string id="574">Ülke</string>
   <string id="575">İşlem sürüyor</string>
+  <string id="576">Yürütme sayısı</string>
 
   <string id="580">Sıralama yönü</string>
   <string id="581">Sıralama yöntemi</string>
@@ -1204,7 +1205,7 @@
   <string id="13409">En İyi 250</string>
   <string id="13410">Last.fm'de bul</string>
   <string id="13411">Asgari fan hızı</string>
-
+  <string id="13412">Buradan oynat</string>
   <string id="13413">Karşıdan yükleniyor</string>
   <string id="13414">Sadece derlemelerde görünen sanatçıları dahil et</string>
   <string id="13415">İzleyici yöntemi</string>

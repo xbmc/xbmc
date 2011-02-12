@@ -40,11 +40,11 @@
 #include "music/MusicDatabase.h"
 #include "SortFileItem.h"
 #include "utils/TuxBoxUtil.h"
-#include "pvr/PVREpg.h"
-#include "pvr/PVREpgInfoTag.h"
-#include "pvr/PVRChannel.h"
-#include "pvr/PVRRecordings.h"
-#include "pvr/PVRTimerInfoTag.h"
+#include "pvr/epg/PVREpg.h"
+#include "pvr/epg/PVREpgInfoTag.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/recordings/PVRRecording.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 #include "utils/Observer.h"
 #include "video/VideoInfoTag.h"
 #include "threads/SingleLock.h"
@@ -1822,6 +1822,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
     break;
   case SORT_METHOD_LASTPLAYED:
     FillSortFields(SSortFileItem::ByLastPlayed);
+    break;
+  case SORT_METHOD_PLAYCOUNT:
+    FillSortFields(SSortFileItem::ByPlayCount);
     break;
   case SORT_METHOD_LISTENERS:
     FillSortFields(SSortFileItem::ByListeners);

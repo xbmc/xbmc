@@ -738,7 +738,7 @@ bool CDecoder::OpenTarget(const GUID &guid)
 
 bool CDecoder::OpenDecoder()
 {
-  SAFE_RELEASE(m_decoder)
+  SAFE_RELEASE(m_decoder);
 
   m_context->surface_count = m_refs + 1 + 1 + m_processor->Size(); // refs + 1 decode + 1 libavcodec safety + processor buffer
 

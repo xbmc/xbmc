@@ -195,6 +195,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "video/dialogs/GUIDialogFileStacking.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -217,7 +218,7 @@
 
 /* PVR related include Files */
 #include "pvr/PVRManager.h"
-#include "guilib/GUIWindowTV.h"
+#include "pvr/windows/GUIWindowPVR.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
 #include "pvr/dialogs/GUIDialogPVRCutterOSD.h"
@@ -228,7 +229,7 @@
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
-#include "pvr/dialogs/GUIDialogPVRUpdateProgressBar.h"
+
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "video/dialogs/GUIDialogTeletext.h"
 #include "dialogs/GUIDialogSlider.h"
@@ -1045,6 +1046,7 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowAddonBrowser);          // window id = 40
   g_windowManager.Add(new CGUIDialogYesNo);              // window id = 100
   g_windowManager.Add(new CGUIDialogProgress);           // window id = 101
+  g_windowManager.Add(new CGUIDialogExtendedProgressBar);     // window id = 148
   g_windowManager.Add(new CGUIDialogKeyboard);           // window id = 103
   g_windowManager.Add(&m_guiDialogVolumeBar);          // window id = 104
   g_windowManager.Add(&m_guiDialogSeekBar);            // window id = 115
@@ -1092,14 +1094,13 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);    // window id = 503
 
   /* Load PVR related Windows and Dialogs */
-  g_windowManager.Add(new CGUIWindowTV);                       // window id = 600
+  g_windowManager.Add(new CGUIWindowPVR);                      // window id = 600
   g_windowManager.Add(new CGUIDialogPVRGuideInfo);             // window id = 601
   g_windowManager.Add(new CGUIDialogPVRRecordingInfo);         // window id = 602
   g_windowManager.Add(new CGUIDialogPVRTimerSettings);         // window id = 603
   g_windowManager.Add(new CGUIDialogPVRGroupManager);          // window id = 604
   g_windowManager.Add(new CGUIDialogPVRChannelManager);        // window id = 605
   g_windowManager.Add(new CGUIDialogPVRGuideSearch);           // window id = 606
-  g_windowManager.Add(new CGUIDialogPVRUpdateProgressBar);     // window id = 608
   g_windowManager.Add(new CGUIDialogPVRChannelsOSD);           // window id = 609
   g_windowManager.Add(new CGUIDialogPVRGuideOSD);              // window id = 610
   g_windowManager.Add(new CGUIDialogPVRDirectorOSD);           // window id = 611
@@ -1456,7 +1457,7 @@ void CApplication::StartPVRManager()
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
   {
     CLog::Log(LOGINFO, "starting PVRManager");
-    g_PVRManager.Start();
+    CPVRManager::Get()->Start();
   }
 }
 
@@ -1464,7 +1465,7 @@ void CApplication::StopPVRManager()
 {
   CLog::Log(LOGINFO, "stopping PVRManager");
   StopPlaying();
-  g_PVRManager.Stop();
+  CPVRManager::Destroy();
 }
 
 void CApplication::DimLCDOnPlayback(bool dim)
@@ -3152,7 +3153,7 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_SLIDER);
 
     /* Delete PVR related windows and dialogs */
-    g_windowManager.Delete(WINDOW_TV);
+    g_windowManager.Delete(WINDOW_PVR);
     g_windowManager.Delete(WINDOW_DIALOG_PVR_GUIDE_INFO);
     g_windowManager.Delete(WINDOW_DIALOG_PVR_RECORDING_INFO);
     g_windowManager.Delete(WINDOW_DIALOG_PVR_TIMER_SETTING);
@@ -4358,7 +4359,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   if (!forceType)
   {
     // set to Dim in the case of a dialog on screen or playing video
-    if (g_windowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")) || g_PVRManager.ChannelScanRunning())
+    if (g_windowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")) || CPVRManager::Get()->ChannelScanRunning())
     {
       if (!CAddonMgr::Get().GetAddon("screensaver.xbmc.builtin.dim", m_screenSaver))
         m_screenSaver.reset(new CScreenSaver(""));

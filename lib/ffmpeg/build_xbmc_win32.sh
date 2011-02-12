@@ -32,11 +32,12 @@ OPTIONS="
 --enable-encoder=ac3 \
 --enable-encoder=aac \
 --enable-runtime-cpudetect \
---disable-debug"
+--disable-debug \
+--disable-doc"
 
 ./configure --extra-cflags="-fno-common -Iinclude-xbmc-win32/dxva2" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
  
-make -j3 && 
+make && 
 mkdir .libs &&
 cp lib*/*.dll .libs/ &&
 mv .libs/swscale-0.dll .libs/swscale-0.6.1.dll &&

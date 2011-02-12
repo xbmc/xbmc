@@ -61,7 +61,8 @@
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 #include "interfaces/AnnouncementManager.h"
-#include "pvr/PVRRecordings.h"
+#include "pvr/PVRManager.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "utils/URIUtils.h"
 
 #include "addons/Skin.h"
@@ -1334,7 +1335,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
   if (item.m_strPath.Left(17) == "pvr://recordings/")
   {
     /* For recordings we check here for a available stream URL */
-    CPVRRecordingInfoTag *tag = PVRRecordings.GetByPath(item.m_strPath);
+    CPVRRecordingInfoTag *tag = CPVRManager::GetRecordings()->GetByPath(item.m_strPath);
     if (tag && !tag->StreamURL().IsEmpty())
     {
       CStdString stream = tag->StreamURL();

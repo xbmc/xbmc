@@ -366,6 +366,7 @@
 #define WINDOW_DIALOG_SLIDER              10145
 #define WINDOW_DIALOG_ADDON_INFO          10146
 #define WINDOW_DIALOG_TEXT_VIEWER         10147
+#define WINDOW_DIALOG_EXT_PROGRESS        10148
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501
@@ -373,7 +374,7 @@
 #define WINDOW_MUSIC_PLAYLIST_EDITOR      10503
 
 // PVR related Window and Dialog ID's
-#define WINDOW_TV                         10600
+#define WINDOW_PVR                        10600
 #define WINDOW_DIALOG_PVR_GUIDE_INFO      10601
 #define WINDOW_DIALOG_PVR_RECORDING_INFO  10602
 #define WINDOW_DIALOG_PVR_TIMER_SETTING   10603
@@ -387,7 +388,6 @@
 #define WINDOW_DIALOG_PVR_OSD_DIRECTOR    10611
 #define WINDOW_DIALOG_PVR_OSD_CUTTER      10612
 #define WINDOW_DIALOG_OSD_TELETEXT        10613
-#define WINDOW_DIALOG_EPG_SCAN            10614
 
 //#define WINDOW_VIRTUAL_KEYBOARD           11000
 #define WINDOW_DIALOG_SELECT              12000
