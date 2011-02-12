@@ -68,7 +68,6 @@ even if they're a different size
 
 */
 
-#include "system.h"
 #include "utils/log.h"
 #include "RenderCapture.h"
 #include "windowing/WindowingFactory.h"

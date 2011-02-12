@@ -21,9 +21,9 @@
  *
  */
 
-#ifdef HAS_GL
-  #include <GL/gl.h>
-#elif HAS_DX
+#include "system.h"
+
+#ifdef HAS_DX
   #include "guilib/D3DResource.h"
 #endif
 
