@@ -151,8 +151,8 @@
       <info>Info</info>
       <guide>XBMC.ActivateWindow(PVROSDGuide)</guide>
       <teletext>XBMC.ActivateWindow(Teletext)</teletext>
-      <subtitle>ShowSubtitles</subtitle>
-      <star>ShowSubtitles</star>
+      <subtitle>NextSubtitle</subtitle>
+      <star>NextSubtitle</star>
       <language>AudioNextLanguage</language>
       <playlist>Playlist</playlist>
       <language>Language</language>

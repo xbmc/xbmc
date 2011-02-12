@@ -108,6 +108,11 @@ public:
   bool AcceptsData()                                    { return !m_messageQueue.IsFull(); }
   void SendMessage(CDVDMsg* pMsg, int priority = 0)     { m_messageQueue.Put(pMsg, priority); }
 
+  //! Try to start passthrough. Called when we get sample rate from the codec.
+  //! Note that normally sample rate is got from the demuxer directly before
+  //! even opening the codec, so this is not called.
+  bool StartPassthroughIfEnabled();
+
   void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
 

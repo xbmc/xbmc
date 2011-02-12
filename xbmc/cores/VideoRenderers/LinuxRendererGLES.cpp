@@ -650,12 +650,6 @@ unsigned int CLinuxRendererGLES::PreInit()
   if (!m_dllSwScale->Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
 
-  #if (! defined USE_EXTERNAL_FFMPEG)
-    m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-  #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
-    m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-  #endif
-
   return true;
 }
 

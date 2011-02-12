@@ -187,8 +187,6 @@ bool CWinRenderer::UpdateRenderMethod()
     if (!m_dllSwScale->Load())
       CLog::Log(LOGERROR,"CDVDDemuxFFmpeg::Open - failed to load ffmpeg libraries");
 
-    m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-
     if(!m_SWTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_DYNAMIC, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT))
     {
       CLog::Log(LOGNOTICE, __FUNCTION__": Failed to create sw render target.");
@@ -429,8 +427,8 @@ void CWinRenderer::UnInit()
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 
-  SAFE_RELEASE(m_colorShader)
-  SAFE_RELEASE(m_scalerShader)
+  SAFE_RELEASE(m_colorShader);
+  SAFE_RELEASE(m_scalerShader);
   
   m_bConfigured = false;
   m_bFilterInitialized = false;
@@ -543,7 +541,7 @@ void CWinRenderer::SelectPSVideoFilter()
 
 void CWinRenderer::UpdatePSVideoFilter()
 {
-  SAFE_RELEASE(m_scalerShader)
+  SAFE_RELEASE(m_scalerShader);
 
   if (m_bUseHQScaler)
   {
@@ -561,11 +559,11 @@ void CWinRenderer::UpdatePSVideoFilter()
 
   if (m_bUseHQScaler && !CreateIntermediateRenderTarget())
   {
-    SAFE_RELEASE(m_scalerShader)
+    SAFE_RELEASE(m_scalerShader);
     m_bUseHQScaler = false;
   }
 
-  SAFE_RELEASE(m_colorShader)
+  SAFE_RELEASE(m_colorShader);
 
   BufferFormat format = BufferFormatFromFlags(m_flags);
 
@@ -576,7 +574,7 @@ void CWinRenderer::UpdatePSVideoFilter()
     {
       // Try again after disabling the HQ scaler and freeing its resources
       m_IntermediateTarget.Release();
-      SAFE_RELEASE(m_scalerShader)
+      SAFE_RELEASE(m_scalerShader);
       SAFE_RELEASE(m_colorShader);
       m_bUseHQScaler = false;
     }

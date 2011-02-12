@@ -6587,12 +6587,14 @@ void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
   // get all tvshows
   CFileItemList items;
   GetTvShowsByWhere("videodb://2/2/", "", items);
+  CStdString showPath = URIUtils::AddFileToFolder(path, "shows");
+  CDirectory::Create(showPath);
   for (int i = 0; i < items.Size(); i++)
   {
     // create a folder in this directory
     CStdString showName = CUtil::MakeLegalFileName(items[i]->GetVideoInfoTag()->m_strShowTitle);
     CStdString TVFolder;
-    URIUtils::AddFileToFolder(path, showName, TVFolder);
+    URIUtils::AddFileToFolder(showPath, showName, TVFolder);
     if (CDirectory::Create(TVFolder))
     { // right - grab the episodes and dump them as well
       CFileItemList episodes;
@@ -6611,6 +6613,20 @@ void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
           file.Close();
       }
     }
+  }
+  // get all movies
+  items.Clear();
+  GetMoviesByWhere("videodb://1/2/", "", "", items);
+  CStdString moviePath = URIUtils::AddFileToFolder(path, "movies");
+  CDirectory::Create(moviePath);
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CVideoInfoTag *tag = items[i]->GetVideoInfoTag();
+    CStdString movie;
+    movie.Format("%s.avi", tag->m_strTitle.c_str());
+    CFile file;
+    if (file.OpenForWrite(URIUtils::AddFileToFolder(moviePath, movie)))
+      file.Close();
   }
 }
 
