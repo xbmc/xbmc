@@ -283,9 +283,7 @@ int CPVRDatabase::GetChannels(CPVRChannelGroupInternal &results, bool bIsRadio)
   int iReturn = 0;
 
   CStdString strQuery = FormatSQL("SELECT * FROM channels WHERE bIsRadio = %u ORDER BY iChannelNumber;", bIsRadio);
-  int iNumRows = ResultQuery(strQuery);
-
-  if (iNumRows > 0)
+  if (ResultQuery(strQuery))
   {
     try
     {
@@ -318,6 +316,7 @@ int CPVRDatabase::GetChannels(CPVRChannelGroupInternal &results, bool bIsRadio)
         m_pDS->next();
         ++iReturn;
       }
+      m_pDS->close();
     }
     catch (...)
     {
@@ -396,32 +395,40 @@ bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings
 
   if (ResultQuery(strQuery))
   {
-    settings.m_AudioDelay           = m_pDS->fv("fAudioDelay").get_asFloat();
-    settings.m_AudioStream          = m_pDS->fv("iAudioStream").get_asInt();
-    settings.m_Brightness           = m_pDS->fv("fBrightness").get_asFloat();
-    settings.m_Contrast             = m_pDS->fv("fContrast").get_asFloat();
-    settings.m_CustomPixelRatio     = m_pDS->fv("fPixelRatio").get_asFloat();
-    settings.m_NoiseReduction       = m_pDS->fv("fNoiseReduction").get_asFloat();
-    settings.m_Sharpness            = m_pDS->fv("fSharpness").get_asFloat();
-    settings.m_CustomZoomAmount     = m_pDS->fv("fCustomZoomAmount").get_asFloat();
-    settings.m_Gamma                = m_pDS->fv("fGamma").get_asFloat();
-    settings.m_SubtitleDelay        = m_pDS->fv("fSubtitleDelay").get_asFloat();
-    settings.m_SubtitleOn           = m_pDS->fv("bSubtitles").get_asBool();
-    settings.m_SubtitleStream       = m_pDS->fv("iSubtitleStream").get_asInt();
-    settings.m_ViewMode             = m_pDS->fv("iViewMode").get_asInt();
-    settings.m_Crop                 = m_pDS->fv("bCrop").get_asBool();
-    settings.m_CropLeft             = m_pDS->fv("iCropLeft").get_asInt();
-    settings.m_CropRight            = m_pDS->fv("iCropRight").get_asInt();
-    settings.m_CropTop              = m_pDS->fv("iCropTop").get_asInt();
-    settings.m_CropBottom           = m_pDS->fv("iCropBottom").get_asInt();
-    settings.m_InterlaceMethod      = (EINTERLACEMETHOD)m_pDS->fv("iInterlaceMethod").get_asInt();
-    settings.m_VolumeAmplification  = m_pDS->fv("fVolumeAmplification").get_asFloat();
-    settings.m_OutputToAllSpeakers  = m_pDS->fv("bOutputToAllSpeakers").get_asBool();
-    settings.m_SubtitleCached       = false;
+    try
+    {
+      settings.m_AudioDelay           = m_pDS->fv("fAudioDelay").get_asFloat();
+      settings.m_AudioStream          = m_pDS->fv("iAudioStream").get_asInt();
+      settings.m_Brightness           = m_pDS->fv("fBrightness").get_asFloat();
+      settings.m_Contrast             = m_pDS->fv("fContrast").get_asFloat();
+      settings.m_CustomPixelRatio     = m_pDS->fv("fPixelRatio").get_asFloat();
+      settings.m_NoiseReduction       = m_pDS->fv("fNoiseReduction").get_asFloat();
+      settings.m_Sharpness            = m_pDS->fv("fSharpness").get_asFloat();
+      settings.m_CustomZoomAmount     = m_pDS->fv("fCustomZoomAmount").get_asFloat();
+      settings.m_Gamma                = m_pDS->fv("fGamma").get_asFloat();
+      settings.m_SubtitleDelay        = m_pDS->fv("fSubtitleDelay").get_asFloat();
+      settings.m_SubtitleOn           = m_pDS->fv("bSubtitles").get_asBool();
+      settings.m_SubtitleStream       = m_pDS->fv("iSubtitleStream").get_asInt();
+      settings.m_ViewMode             = m_pDS->fv("iViewMode").get_asInt();
+      settings.m_Crop                 = m_pDS->fv("bCrop").get_asBool();
+      settings.m_CropLeft             = m_pDS->fv("iCropLeft").get_asInt();
+      settings.m_CropRight            = m_pDS->fv("iCropRight").get_asInt();
+      settings.m_CropTop              = m_pDS->fv("iCropTop").get_asInt();
+      settings.m_CropBottom           = m_pDS->fv("iCropBottom").get_asInt();
+      settings.m_InterlaceMethod      = (EINTERLACEMETHOD)m_pDS->fv("iInterlaceMethod").get_asInt();
+      settings.m_VolumeAmplification  = m_pDS->fv("fVolumeAmplification").get_asFloat();
+      settings.m_OutputToAllSpeakers  = m_pDS->fv("bOutputToAllSpeakers").get_asBool();
+      settings.m_SubtitleCached       = false;
 
-    bReturn = true;
+      m_pDS->close();
+      bReturn = true;
+    }
+    catch(...)
+    {
+      CLog::Log(LOGERROR, "PVRDB - %s - failed to get channel settings for channel '%s'",
+          __FUNCTION__, channel.ChannelName().c_str());
+    }
   }
-  m_pDS->close();
 
   return bReturn;
 }
@@ -479,26 +486,29 @@ bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results)
 {
   bool bReturn = false;
   CStdString strQuery = FormatSQL("SELECT * from channelgroups ORDER BY idGroup;");
-  ResultQuery(strQuery);
 
-  try
+  if (ResultQuery(strQuery))
   {
-    while (!m_pDS->eof())
+    try
     {
-      CPVRChannelGroup data(m_pDS->fv("bIsRadio").get_asBool());
+      while (!m_pDS->eof())
+      {
+        CPVRChannelGroup data(m_pDS->fv("bIsRadio").get_asBool());
 
-      data.SetGroupID(m_pDS->fv("idGroup").get_asInt());
-      data.SetGroupName(m_pDS->fv("sName").get_asString());
-      data.SetSortOrder(m_pDS->fv("iSortOrder").get_asInt());
+        data.SetGroupID(m_pDS->fv("idGroup").get_asInt());
+        data.SetGroupName(m_pDS->fv("sName").get_asString());
+        data.SetSortOrder(m_pDS->fv("iSortOrder").get_asInt());
 
-      results.Update(data);
-      m_pDS->next();
+        results.Update(data);
+        m_pDS->next();
+      }
+      m_pDS->close();
+      bReturn = true;
     }
-    bReturn = true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s - couldn't load channels from the database", __FUNCTION__);
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "%s - couldn't load channels from the database", __FUNCTION__);
+    }
   }
 
   return bReturn;
@@ -508,29 +518,31 @@ bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results, bool bRadio)
 {
   bool bReturn = false;
   CStdString strQuery = FormatSQL("SELECT * from channelgroups WHERE bIsRadio = %u ORDER BY idGroup;", bRadio);
-  ResultQuery(strQuery);
 
-  try
+  if (ResultQuery(strQuery))
   {
-    while (!m_pDS->eof())
+    try
     {
-      CPVRChannelGroup data(m_pDS->fv("bIsRadio").get_asBool());
+      while (!m_pDS->eof())
+      {
+        CPVRChannelGroup data(m_pDS->fv("bIsRadio").get_asBool());
 
-      data.SetGroupID(m_pDS->fv("idGroup").get_asInt());
-      data.SetGroupName(m_pDS->fv("sName").get_asString());
-      data.SetSortOrder(m_pDS->fv("iSortOrder").get_asInt());
+        data.SetGroupID(m_pDS->fv("idGroup").get_asInt());
+        data.SetGroupName(m_pDS->fv("sName").get_asString());
+        data.SetSortOrder(m_pDS->fv("iSortOrder").get_asInt());
 
-      results.Update(data);
-      m_pDS->next();
+        results.Update(data);
+        m_pDS->next();
+      }
+      m_pDS->close();
+      bReturn = true;
     }
-    bReturn = true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s - couldn't load channels from the database", __FUNCTION__);
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "%s - couldn't load channels from the database", __FUNCTION__);
+    }
   }
 
-  m_pDS->close();
   return bReturn;
 }
 
@@ -551,14 +563,22 @@ int CPVRDatabase::GetChannelsInGroup(CPVRChannelGroup *group)
   {
     iReturn = 0;
 
-    while (!m_pDS->eof())
+    try
     {
-      CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByChannelIDFromAll(m_pDS->fv("idChannel").get_asInt());
+      while (!m_pDS->eof())
+      {
+        CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByChannelIDFromAll(m_pDS->fv("idChannel").get_asInt());
 
-      if (channel && group->AddToGroup(channel))
-        ++iReturn;
+        if (channel && group->AddToGroup(channel))
+          ++iReturn;
 
-      m_pDS->next();
+        m_pDS->next();
+      }
+      m_pDS->close();
+    }
+    catch(...)
+    {
+      CLog::Log(LOGERROR, "PVRDB - %s - failed to get channels", __FUNCTION__);
     }
   }
 

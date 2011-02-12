@@ -207,8 +207,7 @@ int CEpgDatabase::Get(CEpgContainer *container)
   int iReturn = -1;
 
   CStdString strQuery = FormatSQL("SELECT idEpg, sName, sScraperName FROM epg;");
-  int iNumRows = ResultQuery(strQuery);
-  if (iNumRows > 0)
+  if (ResultQuery(strQuery))
   {
     iReturn = 0;
 
@@ -235,6 +234,7 @@ int CEpgDatabase::Get(CEpgContainer *container)
 
         m_pDS->next();
       }
+      m_pDS->close();
     }
     catch (...)
     {
@@ -269,9 +269,7 @@ int CEpgDatabase::Get(CEpg *epg, const CDateTime &start /* = NULL */, const CDat
   CStdString strQuery;
   strQuery.Format("SELECT * FROM epgtags WHERE %s ORDER BY iStartTime ASC;", strWhereClause.c_str());
 
-  int iNumRows = ResultQuery(strQuery);
-
-  if (iNumRows > 0)
+  if (ResultQuery(strQuery))
   {
     iReturn = 0;
     try
@@ -313,6 +311,7 @@ int CEpgDatabase::Get(CEpg *epg, const CDateTime &start /* = NULL */, const CDat
 
         m_pDS->next();
       }
+      m_pDS->close();
     }
     catch (...)
     {

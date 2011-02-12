@@ -165,8 +165,8 @@ bool CDatabase::ExecuteQuery(const CStdString &strQuery)
 
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (NULL == m_pDB.get()) return bReturn;
+    if (NULL == m_pDS.get()) return bReturn;
     m_pDS->exec(strQuery.c_str());
     bReturn = true;
   }
@@ -179,19 +179,18 @@ bool CDatabase::ExecuteQuery(const CStdString &strQuery)
   return bReturn;
 }
 
-int CDatabase::ResultQuery(const CStdString &strQuery)
+bool CDatabase::ResultQuery(const CStdString &strQuery)
 {
-  int iReturn = -1;
+  bool bReturn = false;
 
   try
   {
-    if (NULL == m_pDB.get()) return iReturn;
-    if (NULL == m_pDS.get()) return iReturn;
+    if (NULL == m_pDB.get()) return bReturn;
+    if (NULL == m_pDS.get()) return bReturn;
 
     CStdString strPreparedQuery = PrepareSQL(strQuery.c_str());
 
-    if (m_pDS->query(strPreparedQuery.c_str()))
-      iReturn = m_pDS->num_rows();
+    bReturn = m_pDS->query(strPreparedQuery.c_str());
   }
   catch (...)
   {
@@ -199,29 +198,26 @@ int CDatabase::ResultQuery(const CStdString &strQuery)
         __FUNCTION__, strQuery.c_str());
   }
 
-  return iReturn;
+  return bReturn;
 }
 
 bool CDatabase::QueueInsertQuery(const CStdString &strQuery)
 {
-  bool bReturn = false;
-
   if (strQuery.IsEmpty())
-    return bReturn;
+    return false;
 
   if (!m_bMultiWrite)
   {
-    if (NULL == m_pDB.get()) return bReturn;
-    if (NULL == m_pDS2.get()) return bReturn;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS2.get()) return false;
 
     m_bMultiWrite = true;
     m_pDS2->insert();
   }
 
   m_pDS2->add_insert_sql(strQuery);
-  bReturn = true;
 
-  return bReturn;
+  return true;
 }
 
 bool CDatabase::CommitInsertQueries()

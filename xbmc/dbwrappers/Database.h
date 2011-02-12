@@ -51,6 +51,7 @@ public:
 
   /*!
    * @brief Get a single value from a table.
+   * @remarks The values of the strWhereClause and strOrderBy parameters have to be FormatSQL'ed when used.
    * @param strTable The table to get the value from.
    * @param strColumn The column to get.
    * @param strWhereClause If set, use this WHERE clause.
@@ -61,6 +62,7 @@ public:
 
   /*!
    * @brief Delete values from a table.
+   * @remarks The value of the strWhereClause parameter has to be FormatSQL'ed when used.
    * @param strTable The table to delete the values from.
    * @param strWhereClause If set, use this WHERE clause.
    * @return True if the query was executed successfully, false otherwise.
@@ -76,10 +78,11 @@ public:
 
   /*!
    * @brief Execute a query that returns a result.
+   * @remarks Call m_pDS->close(); to clean up the dataset when done.
    * @param strQuery The query to execute.
-   * @return The number of rows that were returned by the query or -1 if it didn't execute successfully.
+   * @return True if the query was executed successfully, false otherwise.
    */
-  int ResultQuery(const CStdString &strQuery);
+  bool ResultQuery(const CStdString &strQuery);
 
   /*!
    * @brief Open a new dataset.
