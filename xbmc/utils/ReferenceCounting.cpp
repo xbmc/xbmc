@@ -21,7 +21,7 @@
 
 #include "ReferenceCounting.h"
 
-#define LOG_LIFECYCLE_EVENTS
+//#define LOG_LIFECYCLE_EVENTS
 
 #ifdef LOG_LIFECYCLE_EVENTS
 #include "utils/log.h"

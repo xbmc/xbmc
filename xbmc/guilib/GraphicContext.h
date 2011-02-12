@@ -46,6 +46,7 @@
 #include "gui3d.h"
 #include "utils/StdString.h"
 #include "Resolution.h"
+#include "utils/ReferenceCounting.h"
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
@@ -60,7 +61,7 @@ enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_MAX };
 
 
-class CGraphicContext : public CCriticalSection
+class CGraphicContext : public CCriticalSection, public virtual xbmcutil::Referenced
 {
 public:
   CGraphicContext(void);
@@ -92,7 +93,7 @@ public:
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetOverscan(RESOLUTION_INFO &resinfo);
   void ResetScreenParameters(RESOLUTION res);
-  void Lock() { EnterCriticalSection(*this);  }
+  void Lock() { EnterCriticalSection(*this); }
   void Unlock() { LeaveCriticalSection(*this); }
   float GetPixelRatio(RESOLUTION iRes) const;
   void CaptureStateBlock();
@@ -188,5 +189,15 @@ private:
  \ingroup graphics
  \brief
  */
-extern CGraphicContext g_graphicsContext;
+/**
+ * This is a hack. There will be an instance of a ref to this "global" statically in each
+ *  file that includes this header. This is so that the reference couting will
+ *  work correctly from the data segment.
+ */
+static xbmcutil::Referenced::ref<CGraphicContext> g_graphicsContextRef(xbmcutil::Singleton<CGraphicContext>::getInstance);
+// this works and performs better (than the #define solution) when there are 
+//  no static methods, at the cost of some data segment space per compilation
+//  unit.
+static CGraphicContext& g_graphicsContext = g_graphicsContextRef.getRef();
+
 #endif

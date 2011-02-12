@@ -20,7 +20,6 @@
  */
 #include "system.h"
 #include "cores/VideoRenderers/RenderManager.h"
-#include "guilib/GraphicContext.h"
 #include "input/MouseStat.h"
 #include "Application.h"
 #include "GUILargeTextureManager.h"
@@ -54,7 +53,6 @@
   CLocalizeStrings   g_localizeStrings;
   CLocalizeStrings   g_localizeStringsTemp;
 
-  CGraphicContext    g_graphicsContext;
   CGUIWindowManager  g_windowManager;
   XFILE::CDirectoryCache g_directoryCache;
 

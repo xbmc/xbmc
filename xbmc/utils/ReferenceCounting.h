@@ -71,6 +71,8 @@ namespace xbmcutil
       inline operator const T*() const { return ac; }
       inline const T* get() const { return ac; }
       inline T* get() { return ac; }
+      inline T& getRef() { return *ac; }
+      inline const T& getRef() const { return *ac; }
 
       inline ~ref() { if (ac) ac->Release(); }
       inline bool isNull() const { return ac == NULL; }

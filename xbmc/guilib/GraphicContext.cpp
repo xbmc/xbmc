@@ -41,17 +41,13 @@ extern bool g_fullScreen;
 /* quick access to a skin setting, fine unless we starts clearing video settings */
 static CSettingInt* g_guiSkinzoom = NULL;
 
-CGraphicContext::CGraphicContext(void)
+CGraphicContext::CGraphicContext(void) :
+  m_iScreenHeight(576), m_iScreenWidth(720), m_iScreenId(0), m_strMediaDir(""), 
+  /*m_videoRect,*/ m_bFullScreenRoot(false), m_bFullScreenVideo(false),
+  m_bCalibrating(false), m_Resolution(RES_INVALID), m_windowResolution(RES_INVALID),
+  m_guiScaleX(1.0f), m_guiScaleY(1.0f) /*,m_cameras, m_origins, m_clipRegions,*/
+  /*m_guiTransform, m_finalTransform, m_groupTransform*/
 {
-  m_iScreenWidth = 720;
-  m_iScreenHeight = 576;
-  m_iScreenId = 0;
-  m_strMediaDir = "";
-  m_bCalibrating = false;
-  m_Resolution = RES_INVALID;
-  m_guiScaleX = m_guiScaleY = 1.0f;
-  m_windowResolution = RES_INVALID;
-  m_bFullScreenRoot = false;
 }
 
 CGraphicContext::~CGraphicContext(void)
