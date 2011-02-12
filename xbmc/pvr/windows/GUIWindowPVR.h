@@ -79,6 +79,32 @@ private:
   bool ActionShowSearch(CFileItem *item);
   bool ActionShowTimer(CFileItem *item);
 
+  bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonMove(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonHide(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonShowHidden(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonEdit(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonGroupManager(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonResumeItem(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonSortAsc(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonSortBy(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonSortByChannel(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonSortByName(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonSortByDate(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonEnd(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON button);
+  bool OnContextButtonMenuHooks(CFileItem *item, CONTEXT_BUTTON button);
+
   PVRWindow m_iCurrSubTVWindow;    /* Active subwindow */
   PVRWindow m_iSavedSubTVWindow;   /* Last subwindow, required if main window is shown again */
   bool m_bShowHiddenChannels;
