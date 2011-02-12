@@ -111,8 +111,7 @@ private:
   void ShowSearchResults();
 
   void UpdateGuide();
-  void UpdateChannelsTV();
-  void UpdateChannelsRadio();
+  void UpdateChannels(bool bRadio);
   void UpdateRecordings();
   void UpdateTimers();
   void UpdateSearch();
