@@ -53,7 +53,7 @@ class CRenderCaptureBase
     void SetUserState(ECAPTURESTATE state)      { m_userState = state; }
     ECAPTURESTATE GetUserState()                { return m_userState;  }
 
-    CEvent& GetEvent()                          { return m_event;    }
+    CEvent& GetEvent()                          { return m_event; }
 
     void         SetFlags(int flags)            { m_flags = flags; }
     int          GetFlags()                     { return m_flags;  }
@@ -64,11 +64,7 @@ class CRenderCaptureBase
     unsigned int GetHeight()                    { return m_height;   }
     uint8_t*     GetPixels()                    { return m_pixels;   }
 
-    virtual void BeginRender() {}
-    virtual void EndRender()   {}
-
-    virtual void ReadOut() {}
-    virtual bool IsAsync() { return m_asyncSupported; }
+    bool         IsAsync()                      { return m_asyncSupported; }
 
   protected:
     ECAPTURESTATE    m_state;     //state for the rendermanager
@@ -94,11 +90,11 @@ class CRenderCaptureGL : public CRenderCaptureBase
     CRenderCaptureGL();
     ~CRenderCaptureGL();
 
-    virtual void BeginRender();
-    virtual void EndRender();
-    void*        GetRenderBuffer();
+    void  BeginRender();
+    void  EndRender();
+    void  ReadOut();
 
-    virtual void ReadOut();
+    void* GetRenderBuffer();
 
   private:
     void   PboToBuffer();
@@ -116,10 +112,9 @@ class CRenderCaptureDX : public CRenderCaptureBase, public ID3DResource
     CRenderCaptureDX();
     ~CRenderCaptureDX();
 
-    virtual void BeginRender();
-    virtual void EndRender();
-
-    virtual void ReadOut();
+    void BeginRender();
+    void EndRender();
+    void ReadOut();
     
     virtual void OnDestroyDevice();
     virtual void OnLostDevice();
