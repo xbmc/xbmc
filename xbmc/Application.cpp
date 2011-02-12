@@ -191,6 +191,7 @@
 #include "settings/GUIDialogContentSettings.h"
 #include "video/dialogs/GUIDialogVideoScan.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKeyboard.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
@@ -1068,6 +1069,7 @@ bool CApplication::Initialize()
 #ifdef HAS_LINUX_NETWORK
   g_windowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
 #endif
+  g_windowManager.Add(new CGUIDialogExtendedProgressBar);     // window id = 148
 
   g_windowManager.Add(new CGUIDialogLockSettings); // window id = 131
 
