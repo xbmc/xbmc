@@ -49,6 +49,60 @@ public:
   static CStdString FormatSQL(CStdString strStmt, ...);
   CStdString PrepareSQL(CStdString strStmt, ...) const;
 
+  /*!
+   * @brief Get a single value from a table.
+   * @remarks The values of the strWhereClause and strOrderBy parameters have to be FormatSQL'ed when used.
+   * @param strTable The table to get the value from.
+   * @param strColumn The column to get.
+   * @param strWhereClause If set, use this WHERE clause.
+   * @param strOrderBy If set, use this ORDER BY clause.
+   * @return The requested value or an empty string if it wasn't found.
+   */
+  CStdString GetSingleValue(const CStdString &strTable, const CStdString &strColumn, const CStdString &strWhereClause = CStdString(), const CStdString &strOrderBy = CStdString());
+
+  /*!
+   * @brief Delete values from a table.
+   * @remarks The value of the strWhereClause parameter has to be FormatSQL'ed when used.
+   * @param strTable The table to delete the values from.
+   * @param strWhereClause If set, use this WHERE clause.
+   * @return True if the query was executed successfully, false otherwise.
+   */
+  bool DeleteValues(const CStdString &strTable, const CStdString &strWhereClause = CStdString());
+
+  /*!
+   * @brief Execute a query that does not return any result.
+   * @param strQuery The query to execute.
+   * @return True if the query was executed successfully, false otherwise.
+   */
+  bool ExecuteQuery(const CStdString &strQuery);
+
+  /*!
+   * @brief Execute a query that returns a result.
+   * @remarks Call m_pDS->close(); to clean up the dataset when done.
+   * @param strQuery The query to execute.
+   * @return True if the query was executed successfully, false otherwise.
+   */
+  bool ResultQuery(const CStdString &strQuery);
+
+  /*!
+   * @brief Open a new dataset.
+   * @return True if the dataset was created successfully, false otherwise.
+   */
+  bool OpenDS();
+
+  /*!
+   * @brief Put an INSERT or REPLACE query in the queue.
+   * @param strQuery The query to queue.
+   * @return True if the query was added successfully, false otherwise.
+   */
+  bool QueueInsertQuery(const CStdString &strQuery);
+
+  /*!
+   * @brief Commit all queries in the queue.
+   * @return True if all queries were executed successfully, false otherwise.
+   */
+  bool CommitInsertQueries();
+
 protected:
   void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   uint32_t ComputeCRC(const CStdString &text);
@@ -70,5 +124,6 @@ protected:
 private:
   bool UpdateVersionNumber();
 
+  bool m_bMultiWrite; /*!< True if there are any queries in the queue, false otherwise */
   int m_iRefCount;
 };
