@@ -26,6 +26,7 @@ using namespace std;
 
 CWinSystemBase::CWinSystemBase()
 {
+  m_eWindowSystem = WINDOW_SYSTEM_WIN32; // this is the 0 value enum
   m_nWidth = 0;
   m_nHeight = 0;
   m_nTop = 0;

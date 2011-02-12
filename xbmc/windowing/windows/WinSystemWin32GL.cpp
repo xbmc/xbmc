@@ -40,6 +40,7 @@
 
 CWinSystemWin32GL::CWinSystemWin32GL()
 {
+  m_hglrc = NULL;
   m_wglSwapIntervalEXT = NULL;
 }
 
