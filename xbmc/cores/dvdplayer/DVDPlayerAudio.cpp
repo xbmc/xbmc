@@ -213,6 +213,11 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   m_streaminfo.channels = m_pAudioCodec->GetChannels();
   m_streaminfo.samplerate = m_pAudioCodec->GetSampleRate();
 
+  /* check if we only just got sample rate, in which case the previous call
+   * to CreateAudioCodec() couldn't have started passthrough */
+  if (!hints.samplerate && m_streaminfo.samplerate)
+    StartPassthroughIfEnabled();
+
   m_droptime = 0;
   m_audioClock = 0;
   m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
@@ -331,6 +336,19 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
       if (audioframe.size <= 0)
         continue;
+
+      if (!m_streaminfo.samplerate && audioframe.sample_rate)
+      {
+        // We just got sample rate for the first time for this stream. Try
+        // passthrough again, as it couldn't have worked before.
+        m_streaminfo.samplerate = audioframe.sample_rate;
+        if (StartPassthroughIfEnabled()) {
+          // passthrough has been enabled, reprocess the packet
+          m_decode.data -= len;
+          m_decode.size += len;
+          continue;
+        }
+      }
 
       // compute duration.
       int n = (audioframe.channels * audioframe.bits_per_sample * audioframe.sample_rate)>>3;
@@ -844,6 +862,26 @@ void CDVDPlayerAudio::WaitForBuffers()
   double delay = m_dvdAudio.GetCacheTime();
   if(delay > 0.5)
     Sleep((int)(1000 * (delay - 0.5)));
+}
+
+bool CDVDPlayerAudio::StartPassthroughIfEnabled()
+{
+  // check if passthrough is already active or disabled
+  if (m_pAudioCodec->NeedPassthrough() ||
+    !AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")))
+    return false;
+
+  CLog::Log(LOGDEBUG, "CDVDPlayerAudio: Got sample rate, rechecking possibility of passthough");
+  CDVDAudioCodec *codec = CDVDFactoryCodec::CreateAudioCodec(m_streaminfo, true);
+  if (!codec || !codec->NeedPassthrough()) {
+    // passthrough still not possible
+    delete codec;
+    return false;
+  }
+
+  delete m_pAudioCodec;
+  m_pAudioCodec = codec;
+  return true;
 }
 
 string CDVDPlayerAudio::GetPlayerInfo()
