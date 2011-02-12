@@ -19,7 +19,6 @@
  *
  */
 #include "system.h"
-#include "windowing/WindowingFactory.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "guilib/GraphicContext.h"
 #include "input/MouseStat.h"
@@ -47,22 +46,6 @@
 
   CGUISettings       g_guiSettings;
   CSettings          g_settings;
-
-#if defined(_WIN32) && defined(HAS_GL)
-  CWinSystemWin32GL  g_Windowing;
-#endif
-
-#if defined(_WIN32) && defined(HAS_DX)
-  CWinSystemWin32DX  g_Windowing;
-#endif
-
-#if defined(__APPLE__)
-  CWinSystemOSXGL    g_Windowing;
-#endif
-
-#if defined(HAS_GLX)
-  CWinSystemX11GL    g_Windowing;
-#endif
 
   CXBMCRenderManager g_renderManager;
   CAudioContext      g_audioContext;
