@@ -427,8 +427,8 @@ void CWinRenderer::UnInit()
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 
-  SAFE_RELEASE(m_colorShader)
-  SAFE_RELEASE(m_scalerShader)
+  SAFE_RELEASE(m_colorShader);
+  SAFE_RELEASE(m_scalerShader);
   
   m_bConfigured = false;
   m_bFilterInitialized = false;
@@ -541,7 +541,7 @@ void CWinRenderer::SelectPSVideoFilter()
 
 void CWinRenderer::UpdatePSVideoFilter()
 {
-  SAFE_RELEASE(m_scalerShader)
+  SAFE_RELEASE(m_scalerShader);
 
   if (m_bUseHQScaler)
   {
@@ -559,11 +559,11 @@ void CWinRenderer::UpdatePSVideoFilter()
 
   if (m_bUseHQScaler && !CreateIntermediateRenderTarget())
   {
-    SAFE_RELEASE(m_scalerShader)
+    SAFE_RELEASE(m_scalerShader);
     m_bUseHQScaler = false;
   }
 
-  SAFE_RELEASE(m_colorShader)
+  SAFE_RELEASE(m_colorShader);
 
   BufferFormat format = BufferFormatFromFlags(m_flags);
 
@@ -574,7 +574,7 @@ void CWinRenderer::UpdatePSVideoFilter()
     {
       // Try again after disabling the HQ scaler and freeing its resources
       m_IntermediateTarget.Release();
-      SAFE_RELEASE(m_scalerShader)
+      SAFE_RELEASE(m_scalerShader);
       SAFE_RELEASE(m_colorShader);
       m_bUseHQScaler = false;
     }
