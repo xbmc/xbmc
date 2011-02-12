@@ -21,6 +21,7 @@
 
 #include "ReferenceCounting.h"
 
+// Comment in this #define in order to see REFCNT events in the log.
 //#define LOG_LIFECYCLE_EVENTS
 
 #ifdef LOG_LIFECYCLE_EVENTS
@@ -29,20 +30,12 @@
 
 namespace xbmcutil
 {
-  Referenced::~Referenced() 
-  {
-// Cannot use the log from the destructor of Referenced because the
-//  log uses Referenced and in the destructor it's uninitialized.
-//#ifdef LOG_LIFECYCLE_EVENTS
-//    CLog::Log(LOGDEBUG,"REFCNT deleting 0x%lx", (long)(((void*)this)));
-//#endif
-  }
+  Referenced::~Referenced() { /* place for the vtab */  }
 
   void Referenced::Release() const
   {
     long ct = InterlockedDecrement((long*)&refs);
 #ifdef LOG_LIFECYCLE_EVENTS
-//    CLog::Log(LOGDEBUG,"REFCNT decrementing to %ld on %s 0x%lx", ct,classname.c_str(), (long)(((void*)this)));
     CLog::Log(LOGDEBUG,"REFCNT decrementing to %ld on 0x%lx", ct, (long)(((void*)this)));
 #endif
     if(ct == 0)
@@ -52,8 +45,6 @@ namespace xbmcutil
   void Referenced::Acquire() const
   {
 #ifdef LOG_LIFECYCLE_EVENTS
-//    CLog::Log(LOGDEBUG,"REFCNT incrementing to %ld on %s 0x%lx",
-//              InterlockedIncrement((long*)&refs),classname.c_str(), (long)(((void*)this)));
     CLog::Log(LOGDEBUG,"REFCNT incrementing to %ld on 0x%lx",
               InterlockedIncrement((long*)&refs), (long)(((void*)this)));
 #else

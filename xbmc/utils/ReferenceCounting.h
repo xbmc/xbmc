@@ -33,10 +33,8 @@ namespace xbmcutil
   {
   private:
     long   refs;
-//    std::string classname;
 
   public:
-//    Referenced(const char* _classname) : refs(0), classname(_classname) {}
     Referenced() : refs(0) {}
     virtual ~Referenced();
 
@@ -92,6 +90,10 @@ namespace xbmcutil
    *
    * Therefore this hack depends on the fact that compilation unit global/static 
    *  initialization is done in a single thread.
+   *
+   * In the spirit of making changes incrementally I've opted to not add Atomic*
+   *  locking to this class yet. It doesn't need it (yet) as it's only called
+   *  from the static initialization thread prior to main.
    */
   template <class T> class Singleton
   {
