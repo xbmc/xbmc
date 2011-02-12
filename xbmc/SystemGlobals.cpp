@@ -29,7 +29,6 @@
 #include "guilib/AudioContext.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
-#include "settings/AdvancedSettings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/AlarmClock.h"
 #include "utils/DownloadQueueManager.h"
@@ -48,7 +47,6 @@
 #endif
 
   CGUISettings       g_guiSettings;
-  CAdvancedSettings  g_advancedSettings;
   CSettings          g_settings;
 
 #if defined(_WIN32) && defined(HAS_GL)
