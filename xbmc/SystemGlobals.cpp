@@ -29,7 +29,6 @@
 #include "guilib/AudioContext.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
-#include "utils/CharsetConverter.h"
 #include "utils/AlarmClock.h"
 #include "utils/DownloadQueueManager.h"
 #include "GUIInfoManager.h"
@@ -67,7 +66,6 @@
 
   CXBMCRenderManager g_renderManager;
   CAudioContext      g_audioContext;
-  CCharsetConverter  g_charsetConverter;
   CLangInfo          g_langInfo;
   CLangCodeExpander  g_LangCodeExpander;
   CLocalizeStrings   g_localizeStrings;
