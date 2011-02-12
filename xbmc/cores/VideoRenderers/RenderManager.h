@@ -37,7 +37,8 @@
 #include "threads/Thread.h"
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
-#include "RenderCapture.h"
+
+class CRenderCapture;
 
 namespace DXVA { class CProcessor; }
 namespace VAAPI { class CSurfaceHolder; }

@@ -102,7 +102,13 @@ class CRenderCaptureGL : public CRenderCaptureBase
     GLuint m_query;
 };
 
-typedef CRenderCaptureGL CRenderCapture;
+//used instead of typedef CRenderCaptureGL CRenderCapture
+//since C++ doesn't allow you to forward declare a typedef
+class CRenderCapture : public CRenderCaptureGL
+{
+  public:
+    CRenderCapture() {};
+};
 
 #elif HAS_DX /*HAS_GL*/
 
@@ -132,6 +138,10 @@ class CRenderCaptureDX : public CRenderCaptureBase, public ID3DResource
     unsigned int       m_surfaceHeight;
 };
 
-typedef CRenderCaptureDX CRenderCapture;
+class CRenderCapture : public CRenderCaptureDX
+{
+  public:
+    CRenderCapture() {};
+};
 
 #endif

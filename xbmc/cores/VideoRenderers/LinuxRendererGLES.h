@@ -31,7 +31,8 @@
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 #include "../dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
-#include "RenderCapture.h"
+
+class CRenderCapture;
 
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }

@@ -42,6 +42,7 @@
 #include "lib/DllSwScale.h"
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
 #include "threads/SingleLock.h"
+#include "RenderCapture.h"
 
 using namespace Shaders;
 

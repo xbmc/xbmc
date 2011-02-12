@@ -30,7 +30,8 @@
 #include "RenderFlags.h"
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
-#include "RenderCapture.h"
+
+class CRenderCapture;
 
 class CVDPAU;
 class CBaseTexture;

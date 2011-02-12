@@ -25,6 +25,7 @@
 #include "Application.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
+#include "cores/VideoRenderers/RenderCapture.h"
 #endif
 #include "pictures/Picture.h"
 #include "dialogs/GUIDialogContextMenu.h"

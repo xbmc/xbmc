@@ -40,6 +40,7 @@
 #include "DllSwScale.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "RenderCapture.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"

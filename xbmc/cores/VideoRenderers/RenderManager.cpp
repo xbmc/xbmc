@@ -45,6 +45,8 @@
   #include "LinuxRenderer.h"
 #endif
 
+#include "RenderCapture.h"
+
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
 
