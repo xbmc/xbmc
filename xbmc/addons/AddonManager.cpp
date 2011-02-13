@@ -37,6 +37,7 @@
 #ifdef HAS_SCREENSAVER
 #include "ScreenSaver.h"
 #endif
+#include "AudioCodec.h"
 //#ifdef HAS_SCRAPERS
 #include "Scraper.h"
 //#endif
@@ -95,6 +96,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_SCRAPER_LIBRARY:
       return AddonPtr(new CScraper(props));
     case ADDON_VIZ:
+    case ADDON_AUDIOCODEC:
     case ADDON_SCREENSAVER:
       { // begin temporary platform handling for Dlls
         // ideally platforms issues will be handled by C-Pluff
@@ -122,6 +124,10 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 #if defined(HAS_VISUALISATION)
           return AddonPtr(new CVisualisation(props));
 #endif
+        }
+        else if (type == ADDON_AUDIOCODEC)
+        {
+          return AddonPtr(new CAudioCodec(props));
         }
         else
           return AddonPtr(new CScreenSaver(props));
@@ -495,6 +501,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
 #endif
     case ADDON_SCREENSAVER:
       return AddonPtr(new CScreenSaver(addonProps));
+    case ADDON_AUDIOCODEC:
+      return AddonPtr(new CAudioCodec(addonProps));
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(addonProps));
     case ADDON_REPOSITORY:

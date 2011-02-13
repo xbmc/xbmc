@@ -21,6 +21,9 @@
 
 #include "system.h"
 #include "CodecFactory.h"
+#include "addons/Addon.h"
+#include "addons/AddonManager.h"
+#include "AddonCodec.h"
 #include "MP3codec.h"
 #include "CDDAcodec.h"
 #include "OGGcodec.h"
@@ -107,6 +110,14 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 #endif
   else if (strFileType.Equals("tta"))
     return new DVDPlayerCodec();
+  else
+  {
+    ADDON::VECADDONS addons;
+    ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_AUDIOCODEC,addons);
+    for (unsigned int i=0;i<addons.size();++i)
+      if (boost::static_pointer_cast<ADDON::CAudioCodec>(addons[i])->Supports(strFileType))
+        return new AddonCodec(boost::static_pointer_cast<ADDON::CAudioCodec>(addons[i]));
+  }
 
   return NULL;
 }

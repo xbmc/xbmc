@@ -5,6 +5,7 @@ ARCH=@ARCH@
 CFLAGS+=-DHAS_ALSA
 
 SRCS=ADPCMCodec.cpp \
+     AddonCodec.cpp \
      AIFFcodec.cpp \
      AudioDecoder.cpp \
      CDDAcodec.cpp \

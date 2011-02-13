@@ -139,6 +139,7 @@ static const TypeMapping types[] =
    {"xbmc.metadata.scraper.library",     ADDON_SCRAPER_LIBRARY,         0, "" },
    {"xbmc.ui.screensaver",               ADDON_SCREENSAVER,         24008, "DefaultAddonScreensaver.png" },
    {"xbmc.player.musicviz",              ADDON_VIZ,                 24010, "DefaultAddonVisualization.png" },
+   {"xbmc.player.audiocodec",            ADDON_AUDIOCODEC,          24019, "DefaultAddonAudioCodec.png" },
    {"visualization-library",             ADDON_VIZ_LIBRARY,             0, "" },
    {"xbmc.python.pluginsource",          ADDON_PLUGIN,              24005, "" },
    {"xbmc.python.script",                ADDON_SCRIPT,              24009, "" },
@@ -420,6 +421,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
   {
     switch (m_props.type)
     {
+      case ADDON_AUDIOCODEC:
       case ADDON_SCREENSAVER:
       case ADDON_SCRIPT:
       case ADDON_SCRIPT_LIBRARY:
