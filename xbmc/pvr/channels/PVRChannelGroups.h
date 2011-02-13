@@ -134,10 +134,10 @@ public:
 
   /*!
    * @brief Delete a group in this container.
-   * @param iGroupId The ID of the group.
+   * @param group The group to delete.
    * @return True if it was deleted successfully, false if not.
    */
-  bool DeleteGroup(int iGroupId);
+  bool DeleteGroup(const CPVRChannelGroup &group);
 
   /*!
    * @brief Add a channel to the group with the given ID.

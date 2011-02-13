@@ -261,7 +261,7 @@ bool CPVRChannelGroups::AddGroup(const CStdString &strName)
   return bReturn;
 }
 
-bool CPVRChannelGroups::DeleteGroup(int iGroupId)
+bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
 {
   bool bReturn = false;
 
@@ -271,20 +271,27 @@ bool CPVRChannelGroups::DeleteGroup(int iGroupId)
 
   const CPVRChannelGroup *channels = GetGroupAll();
 
-  /* Delete the group inside Database */
-  database->DeleteChannelGroup(iGroupId, m_bRadio);
+  /* delete the group from the database */
+  bReturn = database->DeleteChannelGroup(group.GroupID(), m_bRadio);
 
-  /* Set all channels with this group to undefined */
+  /* set all channels with this group to undefined */
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
   {
-    if (channels->at(iChannelPtr)->GroupID() == iGroupId)
-    {
+    if (channels->at(iChannelPtr)->GroupID() == group.GroupID())
       channels->at(iChannelPtr)->SetGroupID(0, true);
-      bReturn = true;
-    }
   }
 
   database->Close();
+
+  /* delete the group */
+  for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
+  {
+    if (at(iGroupPtr)->GroupID() == group.GroupID())
+    {
+      delete at(iGroupPtr);
+      break;
+    }
+  }
 
   return bReturn;
 }

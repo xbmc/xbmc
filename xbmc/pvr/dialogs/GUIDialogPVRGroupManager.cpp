@@ -79,10 +79,12 @@ bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(CGUIMessage &message)
   if (iControl == BUTTON_NEWGROUP)
   {
     CStdString strDescription = "";
+    /* prompt for a group name */
     if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(19139), false))
     {
       if (strDescription != "")
       {
+        /* add the group if it doesn't already exist */
         ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->AddGroup(strDescription);
         Update();
       }
@@ -98,30 +100,32 @@ bool CGUIDialogPVRGroupManager::ActionButtonDeleteGroup(CGUIMessage &message)
   bool bReturn = false;
   unsigned int iControl = message.GetSenderId();
 
-  if (iControl == BUTTON_DELGROUP && m_channelGroupItems->GetFileCount() != 0)
+  if (iControl == BUTTON_DELGROUP)
   {
-    m_iSelectedGroup        = m_viewControlGroup.GetSelectedItem();
-    CFileItemPtr pItemGroup = m_channelGroupItems->Get(m_iSelectedGroup);
+    m_iSelectedGroup              = m_viewControlGroup.GetSelectedItem();
+    CFileItemPtr pItemGroup       = m_channelGroupItems->Get(m_iSelectedGroup);
+    int iGroupId                  = atoi(pItemGroup->m_strPath.c_str());
+    const CPVRChannelGroup *group = CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetById(iGroupId);
 
-    // prompt user for confirmation of channel record
+    if (!group)
+      return bReturn;
+
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    if (pDialog)
+    if (!pDialog)
+      return bReturn;
+
+    pDialog->SetHeading(117);
+    pDialog->SetLine(0, "");
+    pDialog->SetLine(1, group->GroupName());
+    pDialog->SetLine(2, "");
+    pDialog->DoModal();
+
+    if (pDialog->IsConfirmed())
     {
-      CStdString groupName;
-      CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetGroupName(atoi(pItemGroup->m_strPath.c_str()));
-
-      pDialog->SetHeading(117);
-      pDialog->SetLine(0, "");
-      pDialog->SetLine(1, groupName);
-      pDialog->SetLine(2, "");
-      pDialog->DoModal();
-
-      if (pDialog->IsConfirmed())
-      {
-        ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->DeleteGroup(atoi(pItemGroup->m_strPath.c_str()));
-        Update();
-      }
+      ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->DeleteGroup(*group);
+      Update();
     }
+
     bReturn = true;
   }
 
@@ -133,19 +137,25 @@ bool CGUIDialogPVRGroupManager::ActionButtonRenameGroup(CGUIMessage &message)
   bool bReturn = false;
   unsigned int iControl = message.GetSenderId();
 
-  if (iControl == BUTTON_RENAMEGROUP && m_channelGroupItems->GetFileCount() != 0)
+  if (iControl == BUTTON_RENAMEGROUP)
   {
+    m_iSelectedGroup        = m_viewControlGroup.GetSelectedItem();
+    CFileItemPtr pItemGroup = m_channelGroupItems->Get(m_iSelectedGroup);
+    int iGroupId            = atoi(pItemGroup->m_strPath.c_str());
+    CPVRChannelGroup *group = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetById(iGroupId);
+
+    if (!group)
+      return bReturn;
+
     if (CGUIDialogKeyboard::ShowAndGetInput(m_CurrentGroupName, g_localizeStrings.Get(19139), false))
     {
       if (m_CurrentGroupName != "")
       {
-        CPVRChannelGroup *group = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetById(atoi(m_channelGroupItems->Get(m_iSelectedGroup)->m_strPath.c_str()));
-        if (group)
-          group->SetGroupName(m_CurrentGroupName, true);
-
+        group->SetGroupName(m_CurrentGroupName, true);
         Update();
       }
     }
+
     bReturn = true;
   }
 
