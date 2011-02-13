@@ -120,6 +120,9 @@ extern "C" {
   void InitAddonModule(void);
   void InitAddonTypes(void);
   void DeinitAddonModule(void);
+  void InitVFSModule(void);
+  void InitVFSTypes(void);
+  void DeinitVFSModule(void);
 }
 
 XBPython::XBPython()
@@ -298,7 +301,8 @@ void XBPython::InitializeInterpreter()
   InitPluginModule(); // init xbmcplugin modules
   InitGUIModule(); // init xbmcgui modules
   InitAddonModule(); // init xbmcaddon modules
-
+  InitVFSModule(); // init xbmcvfs modules
+  
   // redirecting default output to debug console
   if (PyRun_SimpleString(""
         "import xbmc\n"
@@ -326,6 +330,7 @@ void XBPython::DeInitializeInterpreter()
   DeinitPluginModule();
   DeinitGUIModule();
   DeinitAddonModule();
+  DeinitVFSModule();
 }
 
 /**
@@ -408,6 +413,7 @@ void XBPython::Initialize()
       InitGUITypes();
       InitPluginTypes();
       InitAddonTypes();
+      InitVFSTypes();
 
       if (!(m_mainThreadState = PyThreadState_Get()))
         CLog::Log(LOGERROR, "Python threadstate is NULL.");

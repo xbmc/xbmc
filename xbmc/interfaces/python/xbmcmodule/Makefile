@@ -33,6 +33,7 @@ SRCS=action.cpp \
      xbmcguimodule.cpp \
      xbmcmodule.cpp \
      xbmcplugin.cpp \
+     xbmcvfsmodule.cpp \
 
 LIB=xbmcmodule.a
 
