@@ -425,6 +425,13 @@ public:
   bool GetPaths(std::set<CStdString> &paths);
   bool GetPathsForTvShow(int idShow, std::vector<int>& paths);
 
+  /*! \brief retrieve subpaths of a given path.  Assumes a heirarchical folder structure
+   \param basepath the root path to retrieve subpaths for
+   \param subpaths the returned subpaths
+   \return true if we successfully retrieve subpaths (may be zero), false on error
+   */
+  bool GetSubPaths(const CStdString& basepath, std::vector<int>& subpaths);
+
   // for music + musicvideo linkups - if no album and title given it will return the artist id, else the id of the matching video
   int GetMatchingMusicVideo(const CStdString& strArtist, const CStdString& strAlbum = "", const CStdString& strTitle = "");
 
