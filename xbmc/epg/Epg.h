@@ -36,6 +36,7 @@ class CPVREpg;
 
 class CEpg : public std::vector<CEpgInfoTag*>
 {
+  friend class CEpgDatabase;
   friend class CPVREpgContainer;
   friend class CEpgContainer;
   friend class CPVREpg;
@@ -84,6 +85,12 @@ private:
    * @brief Sort all entries in this EPG by date.
    */
   virtual void Sort(void);
+
+  /*!
+   * @brief Add an infotag to this container.
+   * @param tag The tag to add.
+   */
+  virtual void AddEntry(const CEpgInfoTag &tag);
 
   /*!
    * @brief Get the infotag with the given ID.

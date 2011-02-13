@@ -286,10 +286,24 @@ const CEpgInfoTag *CEpg::InfoTagAround(CDateTime Time) const
   return returnTag;
 }
 
+void CEpg::AddEntry(const CEpgInfoTag &tag)
+{
+  CEpgInfoTag *newTag = CreateTag();
+  if (newTag)
+  {
+    push_back(newTag);
+
+    newTag->m_Epg = this;
+    newTag->Update(tag);
+    g_EpgContainer.UpdateFirstAndLastEPGDates(*newTag);
+  }
+}
+
 bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false */)
 {
   bool bReturn = false;
 
+  /* XXX tags aren't always fetched correctly here */
   CEpgInfoTag *InfoTag = (CEpgInfoTag *) this->InfoTag(tag.UniqueBroadcastID(), tag.Start());
   /* create a new tag if no tag with this ID exists */
   if (!InfoTag)
