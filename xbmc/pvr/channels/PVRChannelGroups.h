@@ -85,6 +85,13 @@ public:
   const CPVRChannelGroup *GetById(int iGroupId) const;
 
   /*!
+   * @brief Get a group given it's name.
+   * @param strName The name.
+   * @return The group or NULL if it wan't found.
+   */
+  const CPVRChannelGroup *GetByName(const CStdString &strName) const;
+
+  /*!
    * @brief Get the group that contains all channels.
    * @return The group that contains all channels.
    */
@@ -96,20 +103,6 @@ public:
    * @return The amount of items that were added.
    */
   int GetGroupList(CFileItemList* results) const;
-
-  /*!
-   * @brief Get a group given it's database ID.
-   * @param iGroupId The database ID.
-   * @return The group or NULL if it wan't found.
-   */
-  const CPVRChannelGroup *GetGroupById(int iGroupId) const;
-
-  /*!
-   * @brief Get a group given it's name.
-   * @param strName The name.
-   * @return The group or NULL if it wan't found.
-   */
-  const CPVRChannelGroup *GetGroupByName(const CStdString &strName) const;
 
   /*!
    * @brief Get the ID of the first channel in a group.

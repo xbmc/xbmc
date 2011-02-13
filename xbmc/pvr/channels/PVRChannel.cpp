@@ -197,12 +197,12 @@ bool CPVRChannel::SetGroupID(int iChannelGroupId, bool bSaveInDb /* = false */)
 
     if (bRemoveFromOldGroup)
     {
-      CPVRChannelGroup *oldGroup = (CPVRChannelGroup *) groups->GetGroupById(m_iChannelGroupId);
+      CPVRChannelGroup *oldGroup = (CPVRChannelGroup *) groups->GetById(m_iChannelGroupId);
       if (oldGroup)
         oldGroup->RemoveFromGroup(this);
     }
 
-    CPVRChannelGroup *newGroup = (CPVRChannelGroup *) groups->GetGroupById(iChannelGroupId);
+    CPVRChannelGroup *newGroup = (CPVRChannelGroup *) groups->GetById(iChannelGroupId);
     if (newGroup)
       newGroup->AddToGroup(this);
 

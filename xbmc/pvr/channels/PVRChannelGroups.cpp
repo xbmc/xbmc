@@ -89,18 +89,36 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group)
 
 const CPVRChannelGroup *CPVRChannelGroups::GetById(int iGroupId) const
 {
-  CPVRChannelGroup *channel = NULL;
+  const CPVRChannelGroup *group = NULL;
+
+  if (iGroupId == XBMC_INTERNAL_GROUPID)
+  {
+    group = GetGroupAll();
+  }
+  else if (iGroupId > -1)
+  {
+    int iGroupIndex = GetIndexForGroupID(iGroupId);
+    if (iGroupIndex != -1)
+      group = at(iGroupIndex);
+  }
+
+  return group;
+}
+
+const CPVRChannelGroup *CPVRChannelGroups::GetByName(const CStdString &strName) const
+{
+  CPVRChannelGroup *group = NULL;
 
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
-    if (at(iGroupPtr)->GroupID() == iGroupId)
+    if (at(iGroupPtr)->GroupName() == strName)
     {
-      channel = at(iGroupPtr);
+      group = at(iGroupPtr);
       break;
     }
   }
 
-  return channel;
+  return group;
 }
 
 int CPVRChannelGroups::GetIndexForGroupID(int iGroupId) const
@@ -178,50 +196,11 @@ int CPVRChannelGroups::GetGroupList(CFileItemList* results) const
   return iReturn;
 }
 
-const CPVRChannelGroup *CPVRChannelGroups::GetGroupById(int iGroupId) const
-{
-  const CPVRChannelGroup *group = NULL;
-
-  if (iGroupId == XBMC_INTERNAL_GROUPID)
-  {
-    group = CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio);
-  }
-  else if (iGroupId > -1)
-  {
-    int iGroupIndex = GetIndexForGroupID(iGroupId);
-    if (iGroupIndex != -1)
-      group = at(iGroupIndex);
-  }
-
-  return group;
-}
-
-const CPVRChannelGroup *CPVRChannelGroups::GetGroupByName(const CStdString &strName) const
-{
-  CPVRChannelGroup *group = NULL;
-
-  for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
-  {
-    if (at(iGroupPtr)->GroupName() == strName)
-    {
-      group = at(iGroupPtr);
-      break;
-    }
-  }
-
-  return group;
-}
-
 int CPVRChannelGroups::GetFirstChannelForGroupID(int iGroupId) const
 {
   int iReturn = 1;
 
-  const CPVRChannelGroup *group;
-
-  if (iGroupId == -1 || iGroupId == XBMC_INTERNAL_GROUPID)
-    group = GetGroupAll();
-  else
-    group = GetGroupById(iGroupId);
+  const CPVRChannelGroup *group = GetById(iGroupId);
 
   if (group)
     iReturn = group->GetFirstChannel()->ChannelID();
@@ -265,7 +244,7 @@ bool CPVRChannelGroups::AddGroup(const CStdString &strName)
 {
   bool bReturn = false;
 
-  CPVRChannelGroup *group = (CPVRChannelGroup *) GetGroupByName(strName);
+  CPVRChannelGroup *group = (CPVRChannelGroup *) GetByName(strName);
   if (!group)
   {
     group = new CPVRChannelGroup(m_bRadio);
@@ -290,7 +269,7 @@ bool CPVRChannelGroups::DeleteGroup(int iGroupId)
   if (!database->Open())
     return bReturn;
 
-  const CPVRChannelGroup *channels = CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio);
+  const CPVRChannelGroup *channels = GetGroupAll();
 
   /* Delete the group inside Database */
   database->DeleteChannelGroup(iGroupId, m_bRadio);
@@ -339,7 +318,8 @@ int CPVRChannelGroups::GetGroupId(CStdString strGroupName) const
 
 bool CPVRChannelGroups::AddChannelToGroup(const CPVRChannel &channel, int iGroupId)
 {
-  const CPVRChannelGroup *channels = CPVRManager::GetChannelGroups()->GetGroupAll(channel.IsRadio());
+  // XXX
+  const CPVRChannelGroup *channels = GetGroupAll();
   channels->at(channel.ChannelNumber()-1)->SetGroupID(iGroupId);
   return channels->at(channel.ChannelNumber()-1)->Persist();
 }
