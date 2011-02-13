@@ -255,6 +255,15 @@ public:
   void SetExtraInfo(const CStdString& info) { m_extrainfo = info; };
   const CStdString& GetExtraInfo() const { return m_extrainfo; };
 
+  /*! \brief Update an item with information from another item
+   We take metadata information from the given item and supplement the current item
+   with that info.  If tags exist in the new item we use the entire tag information.
+   Properties are appended, and labels, thumbnail and icon are updated if non-empty
+   in the given item.
+   \param item the item used to supplement information
+   */
+  void UpdateInfo(const CFileItem &item);
+
   bool IsSamePath(const CFileItem *item) const;
 
   bool IsAlbum() const;

@@ -408,4 +408,7 @@ double CGUIListItem::GetPropertyDouble(const CStdString &strKey) const
   return atof(GetProperty(strKey).c_str()) ;
 }
 
-
+void CGUIListItem::AppendProperties(const CGUIListItem &item)
+{
+  m_mapProperties.insert(item.m_mapProperties.begin(), item.m_mapProperties.end());
+}
