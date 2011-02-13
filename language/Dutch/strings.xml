@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<<<<<<< HEAD
 <!--Translator: Lars Op den Kamp-->
 <!--Email: lars@opdenkamp.eu-->
 <!--Date of translation: 11/15/2010-->
-=======
-<!--Translator: idioteque-->
-<!--Email: ronaldloggen@gmail.com-->
-<!--Date of translation: 12/28/2010-->
->>>>>>> upstream/master
 <!--$Revision$-->
 <!--Based on english strings version 32586-->
 <strings>
@@ -1262,21 +1256,14 @@
   <string id="13506">Laag (snel)</string>
   <string id="13507">Medium</string>
   <string id="13508">Hoog</string>
-<<<<<<< HEAD
-  <string id="13509">Echt hoog</string>
-  <string id="13510">Afspelen video naar beeldscherm synchroniseren</string>
+  <string id="13509">Echt hoog (traag!)</string>
+  <string id="13510">Synchroniseer video met beeldschermfrequentie</string>
   <string id="13550">Pauzeer tijdens aanpassen verversingssnelheid</string>
   <string id="13551">Uit</string>
   <string id="13552">%.1f Seconde</string>
   <string id="13553">%.1f Seconden</string>
-  <string id="13600">Apple afstandsbediening</string>
-  <string id="13602">Altijd actief</string>
-=======
-  <string id="13509">Echt hoog (traag!)</string>
-  <string id="13510">Synchroniseer video met beeldschermfrequentie</string>
   <string id="13600">Type Apple afstandsbediening</string>
   <string id="13602">Gebruik afstandsbediening om XBMC zelf op te staren</string>
->>>>>>> upstream/master
   <string id="13603">Ondertitel eerder/later starten</string>
   <string id="13610">Uitgeschakeld</string>
   <string id="13611">Standaard</string>
@@ -1539,12 +1526,8 @@
   <string id="16317">Temporal (Half)</string>
   <string id="16318">Temporal/Spatial (Half)</string>
   <string id="16319">DXVA</string>
-<<<<<<< HEAD
   <string id="16320">Auto - ION geoptimaliseerd</string>
-  <string id="16400">Video post-processing</string>
-=======
   <string id="16400">Kwaliteitsverbetering video</string>
->>>>>>> upstream/master
   <string id="16401">Uitgeschakeld</string>
   <string id="16402">Ingeschakeld voor SD content</string>
   <string id="16403">Altijd ingeschakeld</string>
@@ -1553,7 +1536,6 @@
   <string id="17998">%i uren</string>
   <string id="17999">%i dagen</string>
   <string id="19000">Kanaal wijzigen</string>
-<<<<<<< HEAD
   <string id="19001">Scheid de zoekwoorden door middel van AND, OR en/of NOT om de zoekopdracht te specificeren.</string>
   <string id="19002">Of gebruik zinnen om op een tekst te zoeken, bijv. "Toen was geluk heel gewoon".</string>
   <string id="19003">Zoek vergelijkbaar programma</string>
@@ -2066,10 +2048,7 @@
   </string>
   <string id="19691">
   </string>
-  <string id="20000">Geimporteerde muziek map</string>
-=======
   <string id="20000">Opgeslagen muziek map...</string>
->>>>>>> upstream/master
   <string id="20001">Andere DVD-speler gebruiken</string>
   <string id="20002">- Locatie van de DVD-speler</string>
   <string id="20003">Trainersmap</string>
