@@ -197,9 +197,7 @@ int CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
 
     const CPVREpgInfoTag *epgNow = (CPVREpgInfoTag *) epg->InfoTagNow();
     if (!epgNow)
-    {
       continue;
-    }
 
     CFileItemPtr entry(new CFileItem(*epgNow));
     entry->SetLabel2(epgNow->Start().GetAsLocalizedTime("", false));

@@ -29,12 +29,13 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 
-CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) : CPVRChannelGroup(bRadio)
+CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
+  CPVRChannelGroup(bRadio)
 {
   m_iHiddenChannels = 0;
   m_bIsSorted       = false;
   m_iGroupId        = XBMC_INTERNAL_GROUPID;
-  m_strGroupName    = "";
+  m_strGroupName    = g_localizeStrings.Get(19140);
   m_iSortOrder      = 0;
 }
 
