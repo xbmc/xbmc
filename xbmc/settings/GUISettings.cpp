@@ -628,12 +628,10 @@ void CGUISettings::Initialize()
   AddInt(dvd, "dvds.playerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(dvd, "dvds.automenu", 21882, false);
 
-  CSettingsCategory* scp = AddCategory(5, "scrapers", 21412);
-  AddDefaultAddon(scp, "scrapers.moviesdefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
-  AddDefaultAddon(scp, "scrapers.tvshowsdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);
-  AddDefaultAddon(scp, "scrapers.musicvideosdefault", 21415, "metadata.mtv.com", ADDON_SCRAPER_MUSICVIDEOS);
-  AddSeparator(scp,"scrapers.sep2");
-  AddBool(scp, "scrapers.langfallback", 21416, false);
+  AddDefaultAddon(NULL, "scrapers.moviesdefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
+  AddDefaultAddon(NULL, "scrapers.tvshowsdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);
+  AddDefaultAddon(NULL, "scrapers.musicvideosdefault", 21415, "metadata.mtv.com", ADDON_SCRAPER_MUSICVIDEOS);
+  AddBool(NULL, "scrapers.langfallback", 21416, false);
 
   // network settings
   AddGroup(6, 705);
