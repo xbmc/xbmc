@@ -1004,7 +1004,8 @@ namespace VIDEO
   {
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
     // get & save fanart image
-    if (!useLocal || !pItem->CacheLocalFanart())
+    bool isEpisode = (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder);
+    if (!isEpisode && (!useLocal || !pItem->CacheLocalFanart()))
     {
       if (movieDetails.m_fanart.GetNumFanarts())
         DownloadImage(movieDetails.m_fanart.GetImageURL(), pItem->GetCachedFanart(), false, pDialog);
@@ -1012,7 +1013,7 @@ namespace VIDEO
 
     // get & save thumb image
     CStdString cachedThumb = pItem->GetCachedVideoThumb();
-    if (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder && CFile::Exists(cachedThumb))
+    if (isEpisode && CFile::Exists(cachedThumb))
     { // have an episode (??? and also a normal "cached" thumb that we're going to override now???)
       movieDetails.m_strFileNameAndPath = pItem->m_strPath;
       CFileItem item(movieDetails);
