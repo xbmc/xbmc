@@ -474,6 +474,7 @@ void CGUITextureManager::Cleanup()
   }
   for (int i = 0; i < 2; i++)
     m_TexBundle[i].Cleanup();
+  FreeUnusedTextures();
 }
 
 void CGUITextureManager::Dump() const

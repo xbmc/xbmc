@@ -176,36 +176,37 @@ void CGUITextBox::Render()
 
   int offset = (int)(m_scrollOffset / m_itemHeight);
 
-  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
-
-  // we offset our draw position to take into account scrolling and whether or not our focused
-  // item is offscreen "above" the list.
-  float posX = m_posX;
-  float posY = m_posY + offset * m_itemHeight - m_scrollOffset;
-
-  // alignment correction
-  if (m_label.align & XBFONT_CENTER_X)
-    posX += m_width * 0.5f;
-  if (m_label.align & XBFONT_RIGHT)
-    posX += m_width;
-
-  if (m_font)
+  if (g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
   {
-    m_font->Begin();
-    int current = offset;
-    while (posY < m_posY + m_height && current < (int)m_lines.size())
-    {
-      uint32_t align = m_label.align;
-      if (m_lines[current].m_text.size() && m_lines[current].m_carriageReturn)
-        align &= ~XBFONT_JUSTIFIED; // last line of a paragraph shouldn't be justified
-      m_font->DrawText(posX, posY + 2, m_colors, m_label.shadowColor, m_lines[current].m_text, align, m_width);
-      posY += m_itemHeight;
-      current++;
-    }
-    m_font->End();
-  }
+    // we offset our draw position to take into account scrolling and whether or not our focused
+    // item is offscreen "above" the list.
+    float posX = m_posX;
+    float posY = m_posY + offset * m_itemHeight - m_scrollOffset;
 
-  g_graphicsContext.RestoreClipRegion();
+    // alignment correction
+    if (m_label.align & XBFONT_CENTER_X)
+      posX += m_width * 0.5f;
+    if (m_label.align & XBFONT_RIGHT)
+      posX += m_width;
+
+    if (m_font)
+    {
+      m_font->Begin();
+      int current = offset;
+      while (posY < m_posY + m_height && current < (int)m_lines.size())
+      {
+        uint32_t align = m_label.align;
+        if (m_lines[current].m_text.size() && m_lines[current].m_carriageReturn)
+          align &= ~XBFONT_JUSTIFIED; // last line of a paragraph shouldn't be justified
+        m_font->DrawText(posX, posY + 2, m_colors, m_label.shadowColor, m_lines[current].m_text, align, m_width);
+        posY += m_itemHeight;
+        current++;
+      }
+      m_font->End();
+    }
+
+    g_graphicsContext.RestoreClipRegion();
+  }
 
   if (m_pageControl)
   {
