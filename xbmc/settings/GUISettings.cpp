@@ -411,8 +411,7 @@ void CGUISettings::Initialize()
   AddString(vs, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
 #endif
 #if defined(_LINUX) && !defined(__APPLE__)
-  AddSeparator(vs, "videoscreen.sep2");
-  AddBool(vs, "videoscreen.haslcd", 4501, false);
+  AddBool(NULL, "videoscreen.haslcd", 4501, false);
 #endif
 
   CSettingsCategory* ao = AddCategory(4, "audiooutput", 772);
