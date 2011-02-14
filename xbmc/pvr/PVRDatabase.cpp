@@ -393,7 +393,7 @@ bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings
 
   CStdString strQuery = FormatSQL("SELECT * FROM channelsettings WHERE idChannel = %u;", channel.ChannelID());
 
-  if (ResultQuery(strQuery))
+  if (ResultQuery(strQuery) && m_pDS->num_rows() > 0)
   {
     try
     {
