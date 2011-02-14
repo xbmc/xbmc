@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Date of translation: 02/09/2011-->
+<!--Date of translation: 02/14/2011-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -526,7 +526,8 @@
   <string id="573">路径</string> 
   <string id="574">国家</string>
   <string id="575">进行中</string>
-  
+  <string id="576">播放次数</string>
+
   <string id="580">排序方向</string>
   <string id="581">排序方法</string>
   <string id="582">显示模式</string>
