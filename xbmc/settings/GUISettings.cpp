@@ -600,8 +600,6 @@ void CGUISettings::Initialize()
 #endif
 #if defined(HAS_GL) || HAS_GLES == 2  // May need changing for GLES
   AddSeparator(vp, "videoplayer.sep1.5");
-  AddInt(NULL, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
-  AddInt(NULL, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
   AddBool(NULL, "videoplayer.vdpauUpscalingLevel", 13121, false);
   AddBool(vp, "videoplayer.vdpaustudiolevel", 13122, false);
@@ -1099,14 +1097,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     SetInt("videoscreen.vsync", VSYNC_ALWAYS);
   }
 #endif
-  // if AppleTV, trap any previous highqualityupscaling setting and set to zero
-  if (g_sysinfo.IsAppleTV())
-  {
-    if (GetInt("videoplayer.highqualityupscaling") != SOFTWARE_UPSCALING_DISABLED)
-    {
-      SetInt("videoplayer.highqualityupscaling", SOFTWARE_UPSCALING_DISABLED);
-    }
-  }
  // DXMERGE: This might have been useful?
  // g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
