@@ -125,6 +125,9 @@ void CGUIDialogContentSettings::OnWindowLoaded()
 
 void CGUIDialogContentSettings::SetupPage()
 {
+  CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SCRAPER_LIST);
+  OnMessage(msgReset);
+  m_vecItems->Clear();
   if (m_content == CONTENT_NONE)
   {
     m_bShowScanSettings = false;
@@ -311,11 +314,8 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
 
 void CGUIDialogContentSettings::FillListControl()
 {
-  CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SCRAPER_LIST);
-  OnMessage(msgReset);
   int iIndex=0;
   int selectedIndex = 0;
-  m_vecItems->Clear();
 
   if (m_lastSelected.find(m_content) != m_lastSelected.end())
     m_scraper = m_lastSelected[m_content];
