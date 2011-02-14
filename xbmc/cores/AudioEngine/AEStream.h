@@ -35,6 +35,7 @@ enum AEStreamOptions {
 };
 
 class IAEPostProc;
+class CAEStreamWrapper;
 
 /**
  * IAEStream Stream Interface for streaming audio

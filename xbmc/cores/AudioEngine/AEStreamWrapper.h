@@ -24,6 +24,8 @@
 #include "threads/SharedSection.h"
 #include <list>
 
+class IAEStream;
+
 class CAEStreamWrapper : public IAEStream
 {
 protected:
@@ -82,5 +84,8 @@ private:
   void                   *m_dataCallbackArg;
   AECBFunc               *m_drainCallback;
   void                   *m_drainCallbackArg;
+
+  static void StaticStreamOnData (IAEStream *sender, void *arg, unsigned int needed);
+  static void StaticStreamOnDrain(IAEStream *sender, void *arg, unsigned int unused);
 };
 

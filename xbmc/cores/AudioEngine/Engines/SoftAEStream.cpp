@@ -230,8 +230,8 @@ void CSoftAEStream::Initialize()
 void CSoftAEStream::Destroy()
 {
   CSingleLock lock(m_critSection);
-  m_valid  = false;
-  m_delete = true;
+  m_valid       = false;
+  m_delete      = true;
 }
 
 CSoftAEStream::~CSoftAEStream()
@@ -516,7 +516,7 @@ uint8_t* CSoftAEStream::GetFrame()
   {
     /* if the buffer is low, fill up again */ 
     if (m_cbDataFunc)
-      while(!m_draining && m_framesBuffered < m_waterLevel)
+      while(!m_delete && !m_draining && m_framesBuffered < m_waterLevel)
       {
         unsigned int space = ((m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize) / m_bytesPerFrame;
         lock.Leave();

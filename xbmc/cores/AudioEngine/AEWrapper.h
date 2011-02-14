@@ -58,7 +58,7 @@ public:
 
   /* THIS IS FOR INTERNAL ENGINE USE ONLY */
   IAE *GetEngine();
-
+  void RemoveStreamWrapper(CAEStreamWrapper *wrapper);
 private:
   CSharedSection m_lock;
   IAE *m_ae;

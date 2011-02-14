@@ -58,11 +58,8 @@ void CAEStreamWrapper::UnInitialize()
     if (m_callback)
       m_stream->UnRegisterAudioCallback();
 
-    if (m_dataCallback)
-      m_stream->SetDataCallback(NULL, NULL);
-
-    if (m_drainCallback)
-      m_stream->SetDrainCallback(NULL, NULL);
+    m_stream->SetDataCallback(NULL, NULL);
+    m_stream->SetDrainCallback(NULL, NULL);
   }
 
   m_stream = NULL;
@@ -86,14 +83,27 @@ void CAEStreamWrapper::Initialize()
     if (m_callback)
       m_stream->RegisterAudioCallback(m_callback);
 
-    if (m_dataCallback)
-      m_stream->SetDataCallback(m_dataCallback, m_dataCallbackArg);
-
-    if (m_drainCallback)
-      m_stream->SetDrainCallback(m_drainCallback, m_drainCallbackArg);
+    m_stream->SetDataCallback (StaticStreamOnData , this);
+    m_stream->SetDrainCallback(StaticStreamOnDrain, this);
   }
 
   m_lock.LeaveExclusive();
+}
+
+void CAEStreamWrapper::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int needed)
+{
+  CAEStreamWrapper *s = (CAEStreamWrapper*)arg;
+  s->m_lock.EnterShared();  
+  s->m_dataCallback(s, s->m_dataCallbackArg, needed);
+  s->m_lock.LeaveShared();
+}
+
+void CAEStreamWrapper::StaticStreamOnDrain(IAEStream *sender, void *arg, unsigned int unused)
+{
+  CAEStreamWrapper *s = (CAEStreamWrapper*)arg;
+  s->m_lock.EnterShared();
+  s->m_drainCallback(s, s->m_drainCallbackArg, unused);
+  s->m_lock.LeaveShared();
 }
 
 void CAEStreamWrapper::AlterStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
@@ -115,29 +125,45 @@ void CAEStreamWrapper::AlterStream(enum AEDataFormat dataFormat, unsigned int sa
 
 void CAEStreamWrapper::Destroy()
 {
-  m_lock.EnterShared();
-  if (m_stream) m_stream->Destroy();
-  m_lock.LeaveShared();
+  m_lock.EnterExclusive();
+  if (m_stream)
+  {
+    m_stream->Destroy();
+    m_stream = NULL;
+  }
+  m_lock.LeaveExclusive();
+
+  AE.RemoveStreamWrapper(this);
 }
 
 void CAEStreamWrapper::SetDataCallback(AECBFunc *cbFunc, void *arg)
 {
-  m_lock.EnterShared();
+  m_lock.EnterExclusive();
   m_dataCallback    = cbFunc;
   m_dataCallbackArg = arg;
   if (m_stream)
-    m_stream->SetDataCallback(cbFunc, arg);
-  m_lock.LeaveShared();
+  {
+    if (m_dataCallback)
+      m_stream->SetDataCallback(StaticStreamOnData, this);
+    else
+      m_stream->SetDataCallback(NULL, NULL);
+  }
+  m_lock.LeaveExclusive();
 }
 
 void CAEStreamWrapper::SetDrainCallback(AECBFunc *cbFunc, void *arg)
 {
-  m_lock.EnterShared();
+  m_lock.EnterExclusive();
   m_drainCallback    = cbFunc;
   m_drainCallbackArg = arg;
   if (m_stream)
-    m_stream->SetDrainCallback(cbFunc, arg);
-  m_lock.LeaveShared();
+  {
+    if (m_drainCallback)
+      m_stream->SetDrainCallback(StaticStreamOnDrain, this);
+    else
+      m_stream->SetDrainCallback(NULL, NULL);
+  }
+  m_lock.LeaveExclusive();
 }
 
 unsigned int CAEStreamWrapper::AddData(void *data, unsigned int size)

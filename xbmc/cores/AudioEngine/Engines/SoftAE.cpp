@@ -1127,6 +1127,7 @@ unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool 
       /* if the stream is drained and is set to free on drain */
       if (stream->IsDraining() && stream->IsFreeOnDrain())
       {
+        printf("%s\n", __PRETTY_FUNCTION__);
         itt = m_streams.erase(itt);
         delete stream;
         continue;

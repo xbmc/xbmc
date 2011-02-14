@@ -34,10 +34,12 @@
 class IAEPostProc;
 class CSoftAEStream : public IAEStream
 {
-public:
+protected:
+  friend class CSoftAE;
   CSoftAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options);
   virtual ~CSoftAEStream();
 
+public:
   void Initialize();
   void InitializeRemap();
   virtual void Destroy();

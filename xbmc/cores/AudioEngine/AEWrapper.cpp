@@ -80,6 +80,17 @@ IAE* CAEWrapper::GetEngine()
    return m_ae;
 }
 
+void CAEWrapper::RemoveStreamWrapper(CAEStreamWrapper *wrapper)
+{
+  for(std::list<CAEStreamWrapper*>::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+    if (*itt == wrapper)
+    {
+      m_streams.erase(itt);
+      delete wrapper;
+      break;
+    }
+}
+
 void CAEWrapper::OnSettingsChange(CStdString setting)
 {
   m_lock.EnterShared();
