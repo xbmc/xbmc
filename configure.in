@@ -2217,7 +2217,8 @@ XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
 
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   set -x
-  rm -f CMakeCache.txt && CC="$ORIGCC" CXX="$ORIGCXX" cmake    \
+  rm -f CMakeCache.txt &&                              \
+  CC="$ORIGCC" CXX="$ORIGCXX" LDFLAGS="$LDFLAGS" cmake \
     -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF        \
     -DCMAKE_C_FLAGS:STRING="${CPPFLAGS} ${CFLAGS}"     \
     -DCMAKE_CXX_FLAGS:STRING="${CPPFLAGS} ${CXXFLAGS}" \
