@@ -125,7 +125,37 @@ public:
   void RestoreOrigin();
   void SetCameraPosition(const CPoint &camera);
   void RestoreCameraPosition();
+  /*! \brief Set a region in which to clip all rendering
+   Anything that is rendered after setting a clip region will be clipped so that no part renders
+   outside of the clip region.  Successive calls to SetClipRegion intersect the clip region, which
+   means the clip region may eventually become an empty set.  In this case SetClipRegion returns false
+   to indicate that no rendering need be performed.
+
+   This call must be matched with a RestoreClipRegion call unless SetClipRegion returns false.
+
+   Usage should be of the form:
+
+     if (SetClipRegion(x, y, w, h))
+     {
+       ...
+       perform rendering
+       ...
+       RestoreClipRegion();
+     }
+
+   \param x the left-most coordinate of the clip region
+   \param y the top-most coordinate of the clip region
+   \param w the width of the clip region
+   \param h the height of the clip region
+   \returns true if the region is set and the result is non-empty. Returns false if the resulting region is empty.
+   \sa RestoreClipRegion
+   */
   bool SetClipRegion(float x, float y, float w, float h);
+
+   /*! \brief Restore a clip region to the previous clip region (if any) prior to the last SetClipRegion call
+    This function should be within an if (SetClipRegion(x,y,w,h)) block.
+    \sa SetClipRegion
+    */
   void RestoreClipRegion();
   void ApplyHardwareTransform();
   void RestoreHardwareTransform();
