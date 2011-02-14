@@ -577,10 +577,11 @@ fi
 
 # platform specific flags
 if echo "$ARCH" | grep -q "freebsd" ; then
-  CFLAGS="$CFLAGS -I/usr/local/include"
-  CXXFLAGS="$CXXFLAGS -I/usr/local/include"
-  CPPFLAGS="$CPPFLAGS -I/usr/local/include"
-  LDFLAGS="$LDFLAGS -L/usr/local/lib"
+  LOCALBASE="${LOCALBASE:-/usr/local}"
+  CFLAGS="$CFLAGS -I$LOCALBASE/include"
+  CXXFLAGS="$CXXFLAGS -I$LOCALBASE/include"
+  CPPFLAGS="$CPPFLAGS -I$LOCALBASE/include"
+  LDFLAGS="$LDFLAGS -L$LOCALBASE/lib"
 fi
 if test "$host_vendor" = "apple" ; then
   # standard xbmc paths
