@@ -697,6 +697,7 @@ void CGUISettings::Initialize()
   AddString(net, "network.httpproxyport", 730, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);
   AddString(net, "network.httpproxyusername", 1048, "", EDIT_CONTROL_INPUT);
   AddString(net, "network.httpproxypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
+  AddInt(net, "network.bandwidth", 14041, 0, 0, 512, 100*1024, SPIN_CONTROL_INT_PLUS, MASK_KBPS, TEXT_OFF);
 
   // appearance settings
   AddGroup(7, 480);
