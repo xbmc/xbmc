@@ -121,8 +121,8 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   if (!IsAuthenticated(server, connection)) 
     return AskForAuthentication(connection);
 
-  if (methodType != GET && methodType != POST) /* Only GET and POST supported, catch other method types here to avoid continual checking later on */
-    return CreateErrorResponse(connection, MHD_HTTP_NOT_IMPLEMENTED, methodType);
+//  if (methodType != GET && methodType != POST) /* Only GET and POST supported, catch other method types here to avoid continual checking later on */
+//    return CreateErrorResponse(connection, MHD_HTTP_NOT_IMPLEMENTED, methodType);
 
 #ifdef HAS_JSONRPC
   if (strURL.Equals("/jsonrpc"))
@@ -143,7 +143,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   {
     strURL = strURL.Right(strURL.length() - 5);
     CURL::Decode(strURL);
-    return CreateFileDownloadResponse(connection, strURL);
+    return CreateFileDownloadResponse(connection, strURL, methodType);
   }
 
 #ifdef HAS_WEB_INTERFACE
@@ -200,7 +200,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     else
       return CreateRedirect(connection, originalURL += "/");
   }
-  return CreateFileDownloadResponse(connection, strURL);
+  return CreateFileDownloadResponse(connection, strURL, methodType);
 
 #endif
 
@@ -294,7 +294,7 @@ int CWebServer::CreateRedirect(struct MHD_Connection *connection, const CStdStri
   return ret;
 }
 
-int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL)
+int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL, HTTPMethod methodType)
 {
   int ret = MHD_NO;
   CFile *file = new CFile();
@@ -302,10 +302,17 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
   if (file->Open(strURL, READ_NO_CACHE))
   {
     struct MHD_Response *response;
-    response = MHD_create_response_from_callback ( file->GetLength(),
-                                                   2048,
-                                                   &CWebServer::ContentReaderCallback, file,
-                                                   &CWebServer::ContentReaderFreeCallback); 
+    if (methodType != HEAD)
+    {
+      response = MHD_create_response_from_callback ( file->GetLength(),
+                                                     2048,
+                                                     &CWebServer::ContentReaderCallback, file,
+                                                     &CWebServer::ContentReaderFreeCallback); 
+    } else {
+      file->Close();
+      delete file;
+      response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+    }
 
     CStdString ext = URIUtils::GetExtension(strURL);
     ext = ext.ToLower();
