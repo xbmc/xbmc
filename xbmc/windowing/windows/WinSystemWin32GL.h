@@ -30,7 +30,7 @@
  */
 #include "WinSystemWin32.h"
 #include "rendering/gl/RenderSystemGL.h"
-#include "utils/Referenced.h"
+#include "utils/ReferenceCounting.h"
 
 class CWinSystemWin32GL : public CWinSystemWin32, public CRenderSystemGL, public virtual xbmcutil::Referenced
 {
@@ -49,6 +49,8 @@ protected:
   BOOL (APIENTRY *m_wglSwapIntervalEXT)( int );
 };
 
+#ifdef HAS_GL
+
 /**
  * This is a hack. There will be an instance of a ref to this "global" statically in each
  *  file that includes this header. This is so that the reference couting will
@@ -56,6 +58,7 @@ protected:
  */
 static xbmcutil::Referenced::ref<CWinSystemWin32GL> g_WindowingRef(xbmcutil::Singleton<CWinSystemWin32GL>::getInstance);
 #define g_Windowing (*(g_WindowingRef))
+#endif
 
 #endif // WINDOW_SYSTEM_H
 
