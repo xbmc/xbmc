@@ -25,6 +25,7 @@
 #include "pvr/epg/PVREpgSearchFilter.h"
 #include "pvr/epg/PVREpgContainer.h"
 
+class CPVRChannelGroup;
 class CGUIEPGGridContainer;
 
 enum PVRWindow
@@ -52,6 +53,7 @@ public:
   void UpdateData(PVRWindow update);
 
 protected:
+  virtual const CPVRChannelGroup *SelectedGroup(bool bRadio);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void UpdateButtons();
@@ -127,8 +129,8 @@ private:
   SORT_METHOD m_iSortMethod_SEARCH;
 
   int m_iGuideView;
-  int m_iCurrentTVGroup;
-  int m_iCurrentRadioGroup;
+  const CPVRChannelGroup *m_selectedGroupTV;
+  const CPVRChannelGroup *m_selectedGroupRadio;
 
   void ShowEPGInfo(CFileItem *item);
   void ShowRecordingInfo(CFileItem *item);

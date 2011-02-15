@@ -43,8 +43,6 @@ bool CPVRChannel::operator==(const CPVRChannel& right) const
   if (this == &right) return true;
 
   return (m_iChannelId              == right.m_iChannelId &&
-          m_iChannelNumber          == right.m_iChannelNumber &&
-          m_iChannelGroupId         == right.m_iChannelGroupId &&
           m_bIsRadio                == right.m_bIsRadio &&
           m_bIsHidden               == right.m_bIsHidden &&
           m_bClientIsRecording      == right.m_bClientIsRecording &&
@@ -66,12 +64,10 @@ bool CPVRChannel::operator!=(const CPVRChannel &right) const
   return !(*this == right);
 }
 
-CPVRChannel::CPVRChannel()
+CPVRChannel::CPVRChannel(bool bRadio /* = false */)
 {
   m_iChannelId              = -1;
-  m_iChannelNumber          = -1;
-  m_iChannelGroupId         = -1;
-  m_bIsRadio                = false;
+  m_bIsRadio                = bRadio;
   m_bIsHidden               = false;
   m_bClientIsRecording      = false;
   m_strIconPath             = "";
@@ -125,6 +121,19 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   bChanged = SetInputFormat(channel.InputFormat()) || bChanged;
   bChanged = SetStreamURL(channel.StreamURL()) || bChanged;
   bChanged = SetEncryptionSystem(channel.EncryptionSystem()) || bChanged;
+  bChanged = SetRecording(channel.IsRecording()) || bChanged;
+
+  if (m_strChannelName.IsEmpty())
+  {
+    m_strChannelName = channel.ClientChannelName();
+    bChanged = true;
+  }
+
+  if (m_strIconPath.IsEmpty())
+  {
+    m_strIconPath = channel.IconPath();
+    bChanged = true;
+  }
 
   return bChanged;
 }
@@ -134,11 +143,18 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
   CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
   if (database)
   {
-    database->Open();
-    database->Persist(*this, bQueueWrite);
-    database->Close();
-
-    return true;
+    if (!bQueueWrite)
+    {
+      database->Open();
+      m_iChannelId = database->Persist(*this, false);
+      database->Close();
+      return m_iChannelId > 0;
+    }
+    else
+    {
+      database->Persist(*this, false);
+      return true;
+    }
   }
 
   return false;
@@ -164,82 +180,14 @@ bool CPVRChannel::SetChannelID(int iChannelId, bool bSaveInDb /* = false */)
   return bReturn;
 }
 
-bool CPVRChannel::SetChannelNumber(int iChannelNumber, bool bSaveInDb /* = false */)
+int CPVRChannel::ChannelNumber(void) const
 {
-  bool bReturn = false;
+  int iReturn = -1;
+  const CPVRChannelGroup *group = CPVRManager::Get()->GetPlayingGroup();
+  if (group)
+    iReturn = group->GetChannelNumber(this);
 
-  if (m_iChannelNumber != iChannelNumber)
-  {
-    /* update the channel number */
-    m_iChannelNumber = iChannelNumber;
-    SetChanged();
-
-    /* persist the changes */
-    if (bSaveInDb)
-      Persist();
-
-    bReturn = true;
-  }
-
-  UpdatePath();
-
-  return bReturn;
-}
-
-bool CPVRChannel::SetGroupID(int iChannelGroupId, bool bSaveInDb /* = false */)
-{
-  bool bRemoveFromOldGroup = true; // TODO support multiple groups and make this a parameter
-  bool bReturn = false;
-
-  if (m_iChannelGroupId != iChannelGroupId)
-  {
-    const CPVRChannelGroups *groups = CPVRManager::GetChannelGroups()->Get(IsRadio());
-
-    if (bRemoveFromOldGroup)
-    {
-      CPVRChannelGroup *oldGroup = (CPVRChannelGroup *) groups->GetById(m_iChannelGroupId);
-      if (oldGroup)
-        oldGroup->RemoveFromGroup(this);
-    }
-
-    CPVRChannelGroup *newGroup = (CPVRChannelGroup *) groups->GetById(iChannelGroupId);
-    if (newGroup)
-      newGroup->AddToGroup(this);
-
-    /* update the group id */
-    m_iChannelGroupId = iChannelGroupId;
-    SetChanged();
-
-    /* persist the changes */
-    if (bSaveInDb)
-      Persist();
-
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
-bool CPVRChannel::SetRadio(bool bIsRadio, bool bSaveInDb /* = false */)
-{
-  bool bReturn = false;
-
-  if (m_bIsRadio != bIsRadio)
-  {
-    /* update the radio flag */
-    m_bIsRadio = bIsRadio;
-    SetChanged();
-
-    /* persist the changes */
-    if (bSaveInDb)
-      Persist();
-
-    bReturn = true;
-  }
-
-  UpdatePath();
-
-  return bReturn;
+  return iReturn;
 }
 
 bool CPVRChannel::SetHidden(bool bIsHidden, bool bSaveInDb /* = false */)
@@ -476,10 +424,10 @@ bool CPVRChannel::SetStreamURL(const CStdString &strStreamURL, bool bSaveInDb /*
   return bReturn;
 }
 
-void CPVRChannel::UpdatePath(void)
+void CPVRChannel::UpdatePath(unsigned int iNewChannelNumber)
 {
   CStdString strFileNameAndPath;
-  strFileNameAndPath.Format("pvr://channels/%s/all/%i.pvr", (m_bIsRadio ? "radio" : "tv"), m_iChannelNumber);
+  strFileNameAndPath.Format("pvr://channels/%s/all/%i.pvr", (m_bIsRadio ? "radio" : "tv"), iNewChannelNumber);
   if (m_strFileNameAndPath != strFileNameAndPath)
   {
     m_strFileNameAndPath = strFileNameAndPath;

@@ -1742,6 +1742,9 @@
   <string id="19214">Enter a valid URL for the new channel</string>
   <string id="19215">The PVR-Server don't support Timers!</string>
 
+  <string id="19216">All radio channels</string>
+  <string id="19217">All TV channels</string>
+
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>
   <string id="19501">Detective/Thriller</string>

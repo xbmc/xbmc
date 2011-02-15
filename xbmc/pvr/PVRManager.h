@@ -342,18 +342,16 @@ public:
   bool StartRecordingOnPlayingChannel(bool bOnOff);
 
   /*!
-   * XXX
-   * @brief Set the current playing group ID, used to load the right channel.
-   * @param iGroupId The new group ID.
+   * @brief Set the current playing group, used to load the right channel.
+   * @param group The new group.
    */
-  void SetPlayingGroup(int iGroupId);
+  void SetPlayingGroup(const CPVRChannelGroup *group) { m_currentGroup = group; }
 
   /*!
-   * XXX
-   * @brief Get the current playing group ID, used to load the right channel.
-   * @return The current group ID or -1 if there is none.
+   * @brief Get the current playing group, used to load the right channel.
+   * @return The current group or the group containing all channels if it's not set.
    */
-  int GetPlayingGroup();
+  const CPVRChannelGroup *GetPlayingGroup();
 
   /*!
    * @brief Let the background thread update the recordings list.
@@ -687,7 +685,7 @@ private:
   /*--- Stream playback data ---*/
   CFileItem          *            m_currentPlayingChannel;    /* The current playing channel or NULL */
   CFileItem          *            m_currentPlayingRecording;  /* The current playing recording or NULL */
-  int                             m_CurrentGroupID;           /* The current selected Channel group list */
+  const CPVRChannelGroup *        m_currentGroup;             /* The current selected Channel group list */
   DWORD                           m_scanStart;                /* Scan start time to check for non present streams */
   PVR_SIGNALQUALITY               m_qualityInfo;              /* Stream quality information */
 };

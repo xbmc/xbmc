@@ -995,8 +995,8 @@ void CDVDPlayer::Process()
       {
         m_ChannelEntryTimeOut = 0;
         CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
-        int channel = pStream->GetSelectedChannel();
-        if(channel > 0 && pStream->SelectChannel(channel))
+        CPVRChannel channel;
+        if(pStream->GetSelectedChannel(&channel) && pStream->SelectChannel(channel))
         {
           FlushBuffers(false);
           SAFE_DELETE(m_pDemuxer);
@@ -2044,7 +2044,7 @@ void CDVDPlayer::HandleMessages()
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
       {
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
-        if(input && input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value))
+        if(input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
 
           FlushBuffers(false);

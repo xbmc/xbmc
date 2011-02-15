@@ -67,7 +67,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
     // For TV
     CFileItemList channelslist_tv;
     SETTINGSTRINGS channelstrings_tv;
-    ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(false))->GetChannels(&channelslist_tv, -1);
+    CPVRManager::GetChannelGroups()->GetGroupAll(false)->GetMembers(&channelslist_tv);
 
     channelstrings_tv.push_back("0 dummy");
 
@@ -85,7 +85,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
     // For Radio
     CFileItemList channelslist_radio;
     SETTINGSTRINGS channelstrings_radio;
-    ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(true))->GetChannels(&channelslist_radio, -1);
+    CPVRManager::GetChannelGroups()->GetGroupAll(true)->GetMembers(&channelslist_radio);
 
     channelstrings_radio.push_back("0 dummy");
 

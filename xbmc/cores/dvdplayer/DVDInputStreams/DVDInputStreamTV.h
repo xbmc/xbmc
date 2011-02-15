@@ -47,11 +47,11 @@ public:
   virtual bool    NextStream();
   virtual int     GetBlockSize();
 
-
   bool            NextChannel(bool preview = false);
   bool            PrevChannel(bool preview = false);
-  bool            SelectChannel(unsigned int channel);
-  int             GetSelectedChannel() {return -1; }
+  bool            SelectChannelByNumber(unsigned int channel);
+  bool            SelectChannel(const CPVRChannel &channel);
+  bool            GetSelectedChannel(const CPVRChannel *channel) {return false; }
 
   int             GetTotalTime();
   int             GetStartTime();

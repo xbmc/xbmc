@@ -119,11 +119,25 @@ public:
   int GetPreviousGroupID(int iGroupId) const;
 
   /*!
+   * @brief Get the previous group in this container.
+   * @param group The current group.
+   * @return The previous group or the group containing all channels if it wasn't found.
+   */
+  const CPVRChannelGroup *GetPreviousGroup(const CPVRChannelGroup &group) const;
+
+  /*!
    * @brief Get the ID of the next group in this container.
    * @param iGroupId The ID of the current group.
    * @return The ID of the next group or the ID of the group containing all channels if it wasn't found.
    */
   int GetNextGroupID(int iGroupId) const;
+
+  /*!
+   * @brief Get the next group in this container.
+   * @param group The current group.
+   * @return The next group or the group containing all channels if it wasn't found.
+   */
+  const CPVRChannelGroup *GetNextGroup(const CPVRChannelGroup &group) const;
 
   /*!
    * @brief Add a group to this container.
@@ -145,7 +159,7 @@ public:
    * @param iGroupId The ID of the group to add the channel to.
    * @return True if the channel was added, false if not.
    */
-  bool AddChannelToGroup(const CPVRChannel &channel, int iGroupId);
+  bool AddChannelToGroup(CPVRChannel *channel, int iGroupId);
 
   /*!
    * @brief Get the name of a group.

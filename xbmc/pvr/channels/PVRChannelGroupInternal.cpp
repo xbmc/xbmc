@@ -33,10 +33,10 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
   CPVRChannelGroup(bRadio)
 {
   m_iHiddenChannels = 0;
-  m_bIsSorted       = false;
-  m_iGroupId        = XBMC_INTERNAL_GROUPID;
-  m_strGroupName    = g_localizeStrings.Get(19140);
+  m_iGroupId        = bRadio ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV;
+  m_strGroupName    = g_localizeStrings.Get(bRadio ? 19216 : 19217);
   m_iSortOrder      = 0;
+  m_bLoaded         = false;
 }
 
 int CPVRChannelGroupInternal::Load()
@@ -60,6 +60,8 @@ int CPVRChannelGroupInternal::Load()
         __FUNCTION__, iChannelCount, m_bRadio ? "radio" : "TV");
   }
 
+  m_bLoaded = true;
+
   return iChannelCount;
 }
 
@@ -67,7 +69,7 @@ void CPVRChannelGroupInternal::Unload()
 {
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
-    delete at(iChannelPtr);
+    delete at(iChannelPtr).channel;
   }
 
   CPVRChannelGroup::Unload();
@@ -110,43 +112,43 @@ bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldIndex, unsigned int 
 {
   bool bReturn = false;
 
-  if (iNewIndex == iOldIndex || iNewIndex == 0)
-    return bReturn;
-
-  /* make sure the list is sorted by channel number */
-  SortByChannelNumber();
-
-  /* get the channel at the old position */
-  CPVRChannel *channel = at(iOldIndex - 1);
-
-  /* remove channel at the old position */
-  erase(begin() + iOldIndex - 1);
-
-  if (iNewIndex < size())
-  {
-    /* insert somewhere in the vector */
-    insert(begin() + iNewIndex - 1, channel);
-    m_bIsSorted = false;
-  }
-  else
-  {
-    /* append */
-    push_back(channel);
-  }
-
-  /* update channel numbers */
-  ReNumberAndCheck();
-
-  /* update timer channel numbers */
-  UpdateTimers();
-
-  if (bSaveInDb)
-    bReturn = PersistChannels();
-  else
-    bReturn = true;
-
-  CLog::Log(LOGNOTICE, "PVRChannelGroupInternal - %s - %s channel '%d' moved to position '%d'",
-      __FUNCTION__, (m_bRadio ? "radio" : "tv"), iOldIndex, iNewIndex);
+// XXX
+//  if (iNewIndex == iOldIndex || iNewIndex == 0)
+//    return bReturn;
+//
+//  /* make sure the list is sorted by channel number */
+//  SortByChannelNumber();
+//
+//  /* get the channel at the old position */
+//  CPVRChannel *channel = at(iOldIndex - 1);
+//
+//  /* remove channel at the old position */
+//  erase(begin() + iOldIndex - 1);
+//
+//  if (iNewIndex < size())
+//  {
+//    /* insert somewhere in the vector */
+//    insert(begin() + iNewIndex - 1, channel);
+//  }
+//  else
+//  {
+//    /* append */
+//    push_back(channel);
+//  }
+//
+//  /* update channel numbers */
+//  ReNumberAndCheck();
+//
+//  /* update timer channel numbers */
+//  UpdateTimers();
+//
+//  if (bSaveInDb)
+//    bReturn = Persist();
+//  else
+//    bReturn = true;
+//
+//  CLog::Log(LOGNOTICE, "PVRChannelGroupInternal - %s - %s channel '%d' moved to position '%d'",
+//      __FUNCTION__, (m_bRadio ? "radio" : "tv"), iOldIndex, iNewIndex);
 
   return bReturn;
 }
@@ -218,7 +220,7 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 
   int iChannelCount = size();
 
-  if (database->GetChannels(*this, m_bRadio) > 0)
+  if (database->GetChannels(this, m_bRadio) > 0)
   {
     if (bCompress)
       database->Compress(true);
@@ -236,16 +238,17 @@ int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 
 int CPVRChannelGroupInternal::LoadFromClients(bool bAddToDb /* = true */)
 {
-  int iReturn = -1;
   int iCurSize = size();
 
   /* no channels returned */
   if (GetFromClients() == -1)
-    return iReturn;
+    return -1;
 
   /* sort by client channel number if this is the first time */
   if (iCurSize == 0)
     SortByClientChannelNumber();
+  else
+    SortByChannelNumber();
 
   /* remove invalid channels and set channel numbers */
   ReNumberAndCheck();
@@ -255,7 +258,7 @@ int CPVRChannelGroupInternal::LoadFromClients(bool bAddToDb /* = true */)
 
   /* persist */
   if (bAddToDb)
-    PersistChannels();
+    CPVRChannelGroupInternal::Persist();
 
   return size() - iCurSize;
 }
@@ -264,16 +267,20 @@ void CPVRChannelGroupInternal::ReNumberAndCheck(void)
 {
   RemoveInvalidChannels();
 
-  int iChannelNumber = 1;
+  int iChannelNumber = 0;
   m_iHiddenChannels = 0;
   for (unsigned int ptr = 0; ptr < size();  ptr++)
   {
-    if (at(ptr)->IsHidden())
+    if (at(ptr).channel->IsHidden())
+    {
       m_iHiddenChannels++;
+    }
     else
-      at(ptr)->SetChannelNumber(iChannelNumber++);
+    {
+      at(ptr).iChannelNumber = ++iChannelNumber;
+      at(ptr).channel->UpdatePath(iChannelNumber);
+    }
   }
-  m_bIsSorted = false;
 }
 
 int CPVRChannelGroupInternal::GetFromClients(void)
@@ -294,18 +301,37 @@ int CPVRChannelGroupInternal::GetFromClients(void)
     itrClients++;
   }
 
+  ReNumberAndCheck();
+
   return size() - iCurSize;
+}
+
+bool CPVRChannelGroupInternal::UpdateChannel(const CPVRChannel &channel)
+{
+  CPVRChannel *updateChannel = (CPVRChannel *) GetByUniqueID(channel.UniqueID());
+
+  if (!updateChannel)
+  {
+    updateChannel = new CPVRChannel(channel.IsRadio());
+    PVRChannelGroupMember newMember = { updateChannel, 0 };
+    push_back(newMember);
+    updateChannel->SetUniqueID(channel.UniqueID());
+  }
+  updateChannel->UpdateFromClient(channel);
+
+  return updateChannel->Persist(!m_bLoaded);
 }
 
 bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
 {
-  /* the database has already been opened */
   CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  if(!database && !database->Open())
+    return false;
 
   int iSize = size();
   for (int ptr = 0; ptr < iSize; ptr++)
   {
-    CPVRChannel *channel = at(ptr);
+    CPVRChannel *channel = at(ptr).channel;
 
     /* ignore virtual channels */
     if (channel->IsVirtual())
@@ -341,9 +367,11 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
   /* the temporary channel list only contains new channels now */
   for (unsigned int ptr = 0; ptr < channels->size(); ptr++)
   {
-    CPVRChannel *channel = channels->at(ptr);
+    CPVRChannel *channel = channels->at(ptr).channel;
     channel->Persist(true);
-    push_back(channel);
+
+    PVRChannelGroupMember member = { channel, size() };
+    push_back(member);
 
     CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - added %s channel '%s'",
         __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str());
@@ -356,10 +384,72 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
   m_iHiddenChannels = 0;
   for (unsigned int i = 0; i < size(); i++)
   {
-    if (at(i)->IsHidden())
+    if (at(i).channel->IsHidden())
       m_iHiddenChannels++;
   }
 
-  m_bIsSorted = false;
+  database->Close();
+
+  SortByChannelNumber();
   return true;
+}
+
+
+bool CPVRChannelGroupInternal::Persist(void)
+{
+  bool bReturn = false;
+  bool bRefreshChannelList = false;
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+
+  if (!database || !database->Open())
+    return bReturn;
+
+  CLog::Log(LOGDEBUG, "CPVRChannelGroupInternal - %s - persisting %d channels",
+      __FUNCTION__, size());
+  bReturn = true;
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    /* if this channel has an invalid ID, reload the list afterwards */
+    bRefreshChannelList = at(iChannelPtr).channel->ChannelID() <= 0;
+
+    /* don't queue queries here, as we need the channel IDs persist channels in a group */
+    bReturn = at(iChannelPtr).channel->Persist(false) && bReturn;
+  }
+
+  if (bReturn)
+  {
+    bReturn = CPVRChannelGroup::Persist();
+
+    /* refresh the channel list if needed */
+    if (bReturn && bRefreshChannelList)
+    {
+      CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - reloading the channels list to get channel IDs",
+          __FUNCTION__);
+      Unload();
+      bReturn = LoadFromDb(true) > 0;
+    }
+  }
+  database->Close();
+
+  return bReturn;
+}
+
+bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */)
+{
+  bool bReturn = false;
+
+  if (!IsGroupMember(channel))
+  {
+    if (iChannelNumber <= 0)
+      iChannelNumber = size() + 1;
+
+    PVRChannelGroupMember newMember = { channel, iChannelNumber };
+    // TODO notify observers
+    push_back(newMember);
+    SortByChannelNumber(); // XXX renumber
+    channel->UpdatePath(iChannelNumber);
+    bReturn = true;
+  }
+
+  return bReturn;
 }

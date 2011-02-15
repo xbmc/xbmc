@@ -32,7 +32,8 @@ class CPVRChannelGroupInternal : public CPVRChannelGroup
   friend class CPVRChannelGroups;
 
 private:
-  int m_iHiddenChannels; /*!< the amount of hidden channels in this container */
+  int  m_iHiddenChannels; /*!< the amount of hidden channels in this container */
+  bool m_bLoaded;
 
   /*!
    * @brief Load all channels from the database.
@@ -121,15 +122,29 @@ public:
   int GetNumHiddenChannels() const { return m_iHiddenChannels; }
 
   /*!
-   * @brief Persist changed or new data.
-   * @param bQueueWrite If true, don't execute the query directly.
-   * @return True if the channel was persisted, false otherwise.
-   */
-  bool Persist(bool bQueueWrite = false) { return true; }
-
-  /*!
    * @brief Update all channel numbers on timers.
    * @return True if the channel number were updated, false otherwise.
    */
   bool UpdateTimers(void);
+
+  /*!
+   * @brief Persist changed or new data.
+   * @return True if the channel was persisted, false otherwise.
+   */
+  bool Persist(void);
+
+  /*!
+   * @brief Add a channel to this container.
+   * @param channel The channel to add.
+   * @param iChannelNumber The channel number of the channel number to add. Use -1 to add it at the end.
+   * @return True if the channel was added, false otherwise.
+   */
+  bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0);
+
+  /*!
+   * @brief Add or update a channel in this table.
+   * @param channel The channel to update.
+   * @return True if the channel was updated and persisted.
+   */
+  bool UpdateChannel(const CPVRChannel &channel);
 };

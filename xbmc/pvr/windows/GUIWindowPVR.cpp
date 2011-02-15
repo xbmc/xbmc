@@ -96,8 +96,8 @@ CGUIWindowPVR::CGUIWindowPVR(void) : CGUIMediaWindow(WINDOW_PVR, "MyTV.xml")
   m_iSelected_RECORDINGS_Path     = "pvr://recordings/";
   m_iSelected_TIMERS              = 0;
   m_iSelected_SEARCH              = 0;
-  m_iCurrentTVGroup               = -1;
-  m_iCurrentRadioGroup            = -1;
+  m_selectedGroupTV               = NULL;
+  m_selectedGroupRadio            = NULL;
   m_bShowHiddenChannels           = false;
   m_bSearchStarted                = false;
   m_bSearchConfirmed              = false;
@@ -111,6 +111,15 @@ CGUIWindowPVR::CGUIWindowPVR(void) : CGUIMediaWindow(WINDOW_PVR, "MyTV.xml")
 
 CGUIWindowPVR::~CGUIWindowPVR()
 {
+}
+
+const CPVRChannelGroup *CGUIWindowPVR::SelectedGroup(bool bRadio)
+{
+  const CPVRChannelGroup *group = bRadio ? m_selectedGroupRadio : m_selectedGroupTV;
+  if (!group)
+    group = CPVRManager::GetChannelGroups()->GetGroupAll(bRadio);
+
+  return group;
 }
 
 bool CGUIWindowPVR::ActionDeleteChannel(CFileItem *item)
@@ -223,9 +232,9 @@ bool CGUIWindowPVR::ActionPlayChannel(unsigned int iControl, CFileItem *item)
   {
     /* open channel */
     if (iControl == CONTROL_LIST_CHANNELS_TV)
-      CPVRManager::Get()->SetPlayingGroup(m_iCurrentTVGroup);
+      CPVRManager::Get()->SetPlayingGroup(SelectedGroup(false));
     if (iControl == CONTROL_LIST_CHANNELS_RADIO)
-      CPVRManager::Get()->SetPlayingGroup(m_iCurrentRadioGroup);
+      CPVRManager::Get()->SetPlayingGroup(SelectedGroup(true));
 
     bReturn = PlayFile(item, g_guiSettings.GetBool("pvrplayback.playminimized"));
   }
@@ -460,12 +469,12 @@ bool CGUIWindowPVR::OnClickButton(CGUIMessage &message)
     bReturn = true;
     if (iControl == CONTROL_BTNCHANNELS_TV)
     {
-      m_iCurrentTVGroup = CPVRManager::GetChannelGroups()->GetTV()->GetNextGroupID(m_iCurrentTVGroup);
+      m_selectedGroupTV = CPVRManager::GetChannelGroups()->GetTV()->GetNextGroup(SelectedGroup(false));
       UpdateChannels(false);
     }
     else if (iControl == CONTROL_BTNCHANNELS_RADIO)
     {
-      m_iCurrentRadioGroup = CPVRManager::GetChannelGroups()->GetRadio()->GetNextGroupID(m_iCurrentRadioGroup);
+      m_selectedGroupRadio = CPVRManager::GetChannelGroups()->GetRadio()->GetNextGroup(SelectedGroup(true));
       UpdateChannels(true);
     }
     else if(iControl == CONTROL_BTNRECORDINGS)
@@ -950,8 +959,8 @@ bool CGUIWindowPVR::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button)
         m_iCurrSubTVWindow == PVR_WINDOW_CHANNELS_RADIO)
     {
       /* play channel */
-      int iCurrentGroup = (m_iCurrSubTVWindow == PVR_WINDOW_CHANNELS_RADIO) ? m_iCurrentRadioGroup : m_iCurrentTVGroup;
-      CPVRManager::Get()->SetPlayingGroup(iCurrentGroup);
+      const CPVRChannelGroup *currentGroup = SelectedGroup(m_iCurrSubTVWindow == PVR_WINDOW_CHANNELS_RADIO);
+      CPVRManager::Get()->SetPlayingGroup(currentGroup);
 
       bReturn = PlayFile(item, g_guiSettings.GetBool("pvrplayback.playminimized"));
     }
@@ -1857,11 +1866,11 @@ void CGUIWindowPVR::UpdateChannels(bool bRadio)
 {
   m_vecItems->Clear();
   m_viewControl.SetCurrentView(bRadio ? CONTROL_LIST_CHANNELS_RADIO : CONTROL_LIST_CHANNELS_TV);
-  int iCurrentGroup = bRadio ? m_iCurrentRadioGroup : m_iCurrentTVGroup;
+  const CPVRChannelGroup *currentGroup = SelectedGroup(bRadio);
 
   m_vecItems->m_strPath.Format("pvr://channels/%s/%s/",
       bRadio ? "radio" : "tv",
-      m_bShowHiddenChannels ? ".hidden" : CPVRManager::GetChannelGroups()->Get(bRadio)->GetGroupName(iCurrentGroup));
+      m_bShowHiddenChannels ? ".hidden" : currentGroup->GroupName());
 
   Update(m_vecItems->m_strPath);
 
@@ -1875,13 +1884,13 @@ void CGUIWindowPVR::UpdateChannels(bool bRadio)
       UpdateChannels(bRadio);
       return;
     }
-    else if (iCurrentGroup != -1)
+    else if (currentGroup->GroupID() != -1)
     {
       /* try the next group */
       if (bRadio)
-        m_iCurrentRadioGroup = CPVRManager::GetChannelGroups()->GetRadio()->GetNextGroupID(iCurrentGroup);
+        m_selectedGroupRadio = CPVRManager::GetChannelGroups()->GetRadio()->GetNextGroup(currentGroup);
       else
-        m_iCurrentTVGroup = CPVRManager::GetChannelGroups()->GetTV()->GetNextGroupID(iCurrentGroup);
+        m_selectedGroupTV = CPVRManager::GetChannelGroups()->GetTV()->GetNextGroup(currentGroup);
       UpdateChannels(bRadio);
       return;
     }
@@ -1893,7 +1902,7 @@ void CGUIWindowPVR::UpdateChannels(bool bRadio)
   if (m_bShowHiddenChannels)
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19022));
   else
-    SET_CONTROL_LABEL(CONTROL_LABELGROUP, CPVRManager::GetChannelGroups()->Get(bRadio)->GetGroupName(iCurrentGroup));
+    SET_CONTROL_LABEL(CONTROL_LABELGROUP, currentGroup->GroupName());
 }
 
 void CGUIWindowPVR::UpdateRecordings()

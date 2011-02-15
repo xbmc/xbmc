@@ -55,8 +55,9 @@ public:
     virtual ~IChannel() {};
     virtual bool NextChannel(bool preview = false) = 0;
     virtual bool PrevChannel(bool preview = false) = 0;
-    virtual bool SelectChannel(unsigned int channel) = 0;
-    virtual int GetSelectedChannel() = 0;
+    virtual bool SelectChannelByNumber(unsigned int channel) = 0;
+    virtual bool SelectChannel(const CPVRChannel &channel) = 0;
+    virtual bool GetSelectedChannel(const CPVRChannel *) = 0;
     virtual int GetTotalTime() = 0;
     virtual int GetStartTime() = 0;
     virtual bool UpdateItem(CFileItem& item) = 0;

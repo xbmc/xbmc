@@ -325,7 +325,7 @@ void CPVRManager::ResetProperties(void)
   m_bTriggerChannelsUpdate   = false;
   m_bTriggerRecordingsUpdate = false;
   m_bTriggerTimersUpdate     = false;
-  m_CurrentGroupID           = -1;
+  m_currentGroup             = NULL;
   m_currentPlayingChannel    = NULL;
   m_currentPlayingRecording  = NULL;
   m_PreviousChannel[0]       = -1;
@@ -1310,11 +1310,6 @@ void CPVRManager::LoadCurrentChannelSettings()
   }
 }
 
-void CPVRManager::SetPlayingGroup(int GroupId)
-{
-  m_CurrentGroupID = GroupId;
-}
-
 void CPVRManager::ResetQualityData()
 {
   if (g_guiSettings.GetBool("pvrplayback.signalquality"))
@@ -1336,9 +1331,11 @@ void CPVRManager::ResetQualityData()
   m_qualityInfo.dolby_bitrate = 0;
 }
 
-int CPVRManager::GetPlayingGroup()
+const CPVRChannelGroup *CPVRManager::GetPlayingGroup(void)
 {
-  return m_CurrentGroupID;
+  return m_currentGroup ?
+      m_currentGroup :
+      GetChannelGroups()->GetGroupAllTV();
 }
 
 void CPVRManager::TriggerRecordingsUpdate()
@@ -1659,10 +1656,9 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
   if (m_currentPlayingChannel)
   {
     const CPVRChannel *currentChannel = m_currentPlayingChannel->GetPVRChannelInfoTag();
-    const CPVRChannelGroup *group = m_channelGroups->GetById(currentChannel->IsRadio(), currentChannel->GroupID());
-    if (group)
+    if (m_currentGroup)
     {
-      const CPVRChannel *newChannel = bUp ? group->GetByChannelUp(currentChannel) : group->GetByChannelDown(currentChannel);
+      const CPVRChannel *newChannel = bUp ? m_currentGroup->GetByChannelUp(currentChannel) : m_currentGroup->GetByChannelDown(currentChannel);
       if (PerformChannelSwitch(newChannel, bPreview))
       {
         *iNewChannelNumber = newChannel->ChannelNumber();

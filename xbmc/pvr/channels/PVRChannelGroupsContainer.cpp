@@ -77,9 +77,7 @@ const CPVRChannelGroup *CPVRChannelGroupsContainer::GetById(bool bRadio, int iGr
   const CPVRChannelGroup *group = NULL;
   const CPVRChannelGroups *groups = Get(bRadio);
   if (groups)
-    group = (iGroupId == XBMC_INTERNAL_GROUPID) ?
-        groups->GetGroupAll() :
-        groups->GetById(iGroupId);
+    group = groups->GetById(iGroupId);
 
   return group;
 }
@@ -192,12 +190,20 @@ bool CPVRChannelGroupsContainer::GetDirectory(const CStdString& strPath, CFileIt
   }
   else if (fileName.Left(12) == "channels/tv/")
   {
-    GetGroupAllTV()->GetChannels(&results, (fileName.substr(12) == ".hidden") ? -1 : GetTV()->GetGroupId(fileName.substr(12)), false);
+    const CPVRChannelGroup *group = GetTV()->GetByName(fileName.substr(12));
+    if (!group)
+      group = GetGroupAllTV();
+    if (group)
+      group->GetMembers(&results, fileName.substr(12) != ".hidden");
     return true;
   }
   else if (fileName.Left(15) == "channels/radio/")
   {
-    GetGroupAllRadio()->GetChannels(&results, (fileName.substr(15) == ".hidden") ? -1 : GetRadio()->GetGroupId(fileName.substr(15)), false);
+    const CPVRChannelGroup *group = GetRadio()->GetByName(fileName.substr(15));
+    if (!group)
+      group = GetGroupAllRadio();
+    if (group)
+      group->GetMembers(&results, fileName.substr(15) != ".hidden");
     return true;
   }
 
