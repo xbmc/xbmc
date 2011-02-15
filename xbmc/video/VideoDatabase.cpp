@@ -330,6 +330,12 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE setlinkmovie ( idSet integer, idMovie integer)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_setlinkmovie_1 ON setlinkmovie ( idSet, idMovie)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_setlinkmovie_2 ON setlinkmovie ( idMovie, idSet)\n");
+
+    // create basepath indices
+    m_pDS->exec("CREATE index ixMovieBasePath on movie(c22)");
+    m_pDS->exec("CREATE index ixMusicVideoBasePath on musicvideo(c13)");
+    m_pDS->exec("CREATE index ixEpisodeBasePath on episode(c18)");
+    m_pDS->exec("CREATE index ixTVShowBasePath on tvshow(c16)");
   }
   catch (...)
   {
@@ -3464,6 +3470,13 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       UpdateBasePath("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH);
       UpdateBasePath("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH);
       UpdateBasePath("tvshow", "idShow", VIDEODB_ID_TV_BASEPATH, true);
+    }
+    if (iVersion < 46)
+    { // add indices for dir entry lookups
+      m_pDS->exec("CREATE index ixMovieBasePath on movie(c22)");
+      m_pDS->exec("CREATE index ixMusicVideoBasePath on musicvideo(c13)");
+      m_pDS->exec("CREATE index ixEpisodeBasePath on episode(c18)");
+      m_pDS->exec("CREATE index ixTVShowBasePath on tvshow(c16)");
     }
   }
   catch (...)
