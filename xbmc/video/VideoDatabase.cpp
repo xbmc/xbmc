@@ -463,6 +463,20 @@ bool CVideoDatabase::GetPathsForTvShow(int idShow, vector<int>& paths)
   return false;
 }
 
+int CVideoDatabase::RunQuery(const CStdString &sql)
+{
+  unsigned int time = CTimeUtils::GetTimeMS();
+  int rows = -1;
+  if (m_pDS->query(sql.c_str()))
+  {
+    rows = m_pDS->num_rows();
+    if (rows == 0)
+      m_pDS->close();
+  }
+  CLog::Log(LOGDEBUG, "%s took %d ms for %d items query: %s", __FUNCTION__, CTimeUtils::GetTimeMS() - time, rows, sql.c_str());
+  return rows;
+}
+
 bool CVideoDatabase::GetSubPaths(const CStdString &basepath, vector<int>& subpaths)
 {
   CStdString sql;
@@ -3664,15 +3678,9 @@ bool CVideoDatabase::GetNavCommon(const CStdString& strBaseDir, CFileItemList& i
                            type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str(), type.c_str());
     }
 
-    // run query
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return true;
-    }
+    int iRowsFound = RunQuery(strSQL);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
 
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
@@ -3772,15 +3780,9 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
       strSQL += group;
     }
 
-    // run query
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return true;
-    }
+    int iRowsFound = RunQuery(strSQL);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
 
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
@@ -3907,15 +3909,9 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
 
     strSQL += PrepareSQL(" group by musicvideo.c%02d",VIDEODB_ID_MUSICVIDEO_ALBUM);
 
-    // run query
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return true;
-    }
+    int iRowsFound = RunQuery(strSQL);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
 
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
@@ -4207,15 +4203,9 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
       strSQL += group;
     }
 
-    // run query
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return true;
-    }
+    int iRowsFound = RunQuery(strSQL);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
 
     if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
     {
@@ -4386,15 +4376,9 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
     }
     strSQL += extraJoins + joins + extraWhere + PrepareSQL(" group by episode.c%02d", VIDEODB_ID_EPISODE_SEASON);
 
-    // run query
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return true;
-    }
+    int iRowsFound = RunQuery(strSQL);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
 
     // show titles, studios and mpaa ratings will be the same
     CStdString showTitle = m_pDS->fv(2).get_asString();
@@ -4535,7 +4519,6 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
 {
   try
   {
-    DWORD time = CTimeUtils::GetTimeMS();
     movieTime = 0;
     castTime = 0;
 
@@ -4561,18 +4544,9 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
     if (order.size())
       strSQL += " " + order;
 
-    // run query
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return true;
-    }
-
-    CLog::Log(LOGDEBUG,"Time for actual SQL query = %d",
-              CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
+    int iRowsFound = RunQuery(strSQL);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
 
     // get data from returned rows
     items.Reserve(iRowsFound);
@@ -4590,9 +4564,6 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
       }
       m_pDS->next();
     }
-
-    CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
-              CTimeUtils::GetTimeMS() - time);
 
     // cleanup
     m_pDS->close();
@@ -4626,25 +4597,14 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
 {
   try
   {
-    DWORD time = CTimeUtils::GetTimeMS();
     movieTime = 0;
 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = VIDEO_DATABASE_VIEW_TVSHOW + where;
-    // run query
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return true;
-    }
-
-    CLog::Log(LOGDEBUG,"Time for actual SQL query = %d",
-              CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
+    int iRowsFound = RunQuery(VIDEO_DATABASE_VIEW_TVSHOW + where);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
 
     // get data from returned rows
     items.Reserve(iRowsFound);
@@ -4670,9 +4630,6 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
       }
       m_pDS->next();
     }
-
-    CLog::Log(LOGDEBUG,"Time to retrieve tvshows from dataset = %d",
-              CTimeUtils::GetTimeMS() - time);
 
     CStdString order(where);
     bool maintainOrder = order.ToLower().Find("order by") != -1;
@@ -4906,27 +4863,15 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
 {
   try
   {
-    DWORD time = CTimeUtils::GetTimeMS();
     movieTime = 0;
     castTime = 0;
 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = "select * from episodeview " + where;
-
-    // run query
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
-    if (!m_pDS->query(strSQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return true;
-    }
-
-    CLog::Log(LOGDEBUG,"Time for actual SQL query = %d",
-              CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
+    int iRowsFound = RunQuery("select * from episodeview " + where);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
 
     // get data from returned rows
     items.Reserve(iRowsFound);
@@ -4949,9 +4894,6 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
 
       m_pDS->next();
     }
-
-    CLog::Log(LOGDEBUG,"Time to retrieve episodes from dataset = %d",
-              CTimeUtils::GetTimeMS() - time);
 
     // cleanup
     m_pDS->close();

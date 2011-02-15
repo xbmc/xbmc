@@ -629,6 +629,14 @@ protected:
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
+
+  /*! \brief Run a query on the main dataset and return the number of rows
+   If no rows are found we close the dataset and return 0.
+   \param sql the sql query to run
+   \return the number of rows, -1 for an error.
+   */
+  int RunQuery(const CStdString &sql);
+
   virtual int GetMinVersion() const { return 44; };
   const char *GetDefaultDBName() const { return "MyVideos34.db"; };
 
