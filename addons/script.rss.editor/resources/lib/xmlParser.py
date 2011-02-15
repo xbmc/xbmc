@@ -43,7 +43,7 @@ class XMLParser:
 
     def __init__(self):
         if xbmc:
-            self.RssFeedsPath = 'special://userdata/RssFeeds.xml'
+            self.RssFeedsPath = xbmc.translatePath('special://userdata/RssFeeds.xml')
         else:
             self.RssFeedsPath = r'C:\Documents and Settings\Xerox\Application Data\XBMC\userdata\RssFeeds.xml'
         sane = self.checkRssFeedPathSanity()

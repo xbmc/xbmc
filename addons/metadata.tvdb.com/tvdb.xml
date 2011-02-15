@@ -166,7 +166,7 @@
 			</RegExp>
 			<!-- DVD order -->
 			<RegExp conditional="dvdorder" input="$$1" output="&lt;episode&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url cache=&quot;$$10.xml&quot;&gt;$$2&lt;/url&gt;&lt;epnum&gt;\2&lt;/epnum&gt;&lt;season&gt;\3&lt;/season&gt;&lt;id&gt;\1&lt;/id&gt;&lt;aired&gt;\5&lt;/aired&gt;&lt;/episode&gt;" dest="4">
-				<expression repeat="yes">&lt;Episode&gt;.*?&lt;id&gt;([0-9]+).*?&lt;Combined_episodenumber&gt;([0-9]+).*?&lt;Combined_season&gt;([0-9]+).*?&lt;EpisodeName&gt;([^&lt;]*).*?&lt;FirstAired&gt;([^&lt;]*)&lt;/FirstAired&gt;.*?&lt;/Episode&gt;</expression>
+				<expression repeat="yes">&lt;Episode&gt;.*?&lt;id&gt;([0-9]+).*?&lt;Combined_episodenumber&gt;([^&lt;]*).*?&lt;Combined_season&gt;([^&lt;]*).*?&lt;EpisodeName&gt;([^&lt;]*).*?&lt;FirstAired&gt;([^&lt;]*)&lt;/FirstAired&gt;.*?&lt;/Episode&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>

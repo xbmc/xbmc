@@ -44,7 +44,7 @@
 			<RegExp input="$$1" output="&lt;url cache=&quot;am-$$2-artist.html&quot; function=&quot;ParseAMGArtist&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;" dest="5+">
 				<expression>http://www.allmusic.com/artist/([^&amp;&quot;/]*)</expression>
 			</RegExp>
-			<RegExp input="$$2" conditional="lastfmartistthumbs" output="&lt;chain function=&quot;GetLastFMArtistThumbs&quot;&gt;\1&lt;/chain&gt;" dest="5+">
+			<RegExp input="$$2" conditional="lastfmartistthumbs" output="&lt;chain function=&quot;GetLastFMArtistThumbsByName&quot;&gt;\1&lt;/chain&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<RegExp input="$$2" conditional="htbfanart" output="&lt;chain function=&quot;GetHTBFanart&quot;&gt;\1&lt;/chain&gt;" dest="5+">
