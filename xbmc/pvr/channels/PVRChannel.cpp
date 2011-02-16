@@ -183,7 +183,7 @@ bool CPVRChannel::SetChannelID(int iChannelId, bool bSaveInDb /* = false */)
 int CPVRChannel::ChannelNumber(void) const
 {
   int iReturn = -1;
-  const CPVRChannelGroup *group = CPVRManager::Get()->GetPlayingGroup();
+  const CPVRChannelGroup *group = CPVRManager::GetChannelGroups()->GetGroupAll(m_bIsRadio);
   if (group)
     iReturn = group->GetChannelNumber(this);
 
