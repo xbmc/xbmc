@@ -43,6 +43,7 @@ CDVDAudio::CDVDAudio(volatile bool &bStop)
   m_iBitrate = 0;
   m_iChannels = 0;
   m_SecondsPerByte = 0.0;
+  m_bPaused = true;
 }
 
 CDVDAudio::~CDVDAudio()
@@ -120,6 +121,7 @@ void CDVDAudio::Destroy()
   m_iBitrate = 0;
   m_iBitsPerSample = 0;
   m_bPassthrough = false;
+  m_bPaused = true;
 }
 
 DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock)

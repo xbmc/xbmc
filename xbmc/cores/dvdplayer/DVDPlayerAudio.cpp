@@ -579,6 +579,12 @@ void CDVDPlayerAudio::Process()
     if (!m_dvdAudio.IsValidFormat(audioframe))
     {
       m_dvdAudio.Destroy();
+
+      if(m_speed)
+        m_dvdAudio.Resume();
+      else
+        m_dvdAudio.Pause();
+
       if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec))
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
     }
