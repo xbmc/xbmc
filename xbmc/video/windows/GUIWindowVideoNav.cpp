@@ -1018,6 +1018,18 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
+        // add "Set/Change content" to folders
+        if (item->m_bIsFolder && !item->IsPlayList() && !item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath())
+        {
+          CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+          if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
+          {
+            if (info && info->Content() != CONTENT_NONE)
+              buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
+            else
+              buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
+          }
+        }
       }
       if (item->IsPlugin() || item->m_strPath.Left(9).Equals("script://") || m_vecItems->IsPlugin())
         buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
