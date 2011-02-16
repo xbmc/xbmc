@@ -209,8 +209,6 @@ CStdString CSettings::GetDefaultSourceFromType(const CStdString &type)
     defaultShare = m_defaultFileSource;
   else if (type == "music")
     defaultShare = m_defaultMusicSource;
-  else if (type == "video")
-    defaultShare = m_defaultVideoSource;
   else if (type == "pictures")
     defaultShare = m_defaultPictureSource;
   return defaultShare;
@@ -633,8 +631,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "startwindow", m_iVideoStartWindow, WINDOW_VIDEO_FILES, WINDOW_VIDEO_FILES, WINDOW_VIDEO_NAV);
     XMLUtils::GetBoolean(pElement, "stackvideos", m_videoStacking);
 
-    GetPath(pElement, "defaultlibview", m_defaultVideoLibSource);
-
     // Read the watchmode settings for the various media views
     GetInteger(pElement, "watchmodemovies", m_watchMode["movies"], VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
     GetInteger(pElement, "watchmodetvshows", m_watchMode["tvshows"], VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
@@ -805,8 +801,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetInt(pNode, "startwindow", m_iVideoStartWindow);
 
   XMLUtils::SetBoolean(pNode, "stackvideos", m_videoStacking);
-
-  XMLUtils::SetPath(pNode, "defaultlibview", m_defaultVideoLibSource);
 
   XMLUtils::SetInt(pNode, "watchmodemovies", m_watchMode.find("movies")->second);
   XMLUtils::SetInt(pNode, "watchmodetvshows", m_watchMode.find("tvshows")->second);
@@ -1272,7 +1266,7 @@ bool CSettings::SaveSources()
 
   // ok, now run through and save each sources section
   SetSources(pRoot, "programs", m_programSources, m_defaultProgramSource);
-  SetSources(pRoot, "video", m_videoSources, m_defaultVideoSource);
+  SetSources(pRoot, "video", m_videoSources, "");
   SetSources(pRoot, "music", m_musicSources, m_defaultMusicSource);
   SetSources(pRoot, "pictures", m_pictureSources, m_defaultPictureSource);
   SetSources(pRoot, "files", m_fileSources, m_defaultFileSource);
@@ -1341,11 +1335,12 @@ void CSettings::LoadSources()
   // parse sources
   if (pRootElement)
   {
+    CStdString dummy;
     GetSources(pRootElement, "programs", m_programSources, m_defaultProgramSource);
     GetSources(pRootElement, "pictures", m_pictureSources, m_defaultPictureSource);
     GetSources(pRootElement, "files", m_fileSources, m_defaultFileSource);
     GetSources(pRootElement, "music", m_musicSources, m_defaultMusicSource);
-    GetSources(pRootElement, "video", m_videoSources, m_defaultVideoSource);
+    GetSources(pRootElement, "video", m_videoSources, dummy);
   }
 }
 

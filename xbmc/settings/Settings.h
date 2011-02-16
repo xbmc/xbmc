@@ -236,9 +236,7 @@ public:
   CStdString m_defaultMusicSource;
   CStdString m_defaultPictureSource;
   CStdString m_defaultFileSource;
-  CStdString m_defaultVideoSource;
   CStdString m_defaultMusicLibSource;
-  CStdString m_defaultVideoLibSource;
 
   CStdString m_UPnPUUIDServer;
   int        m_UPnPPortServer;
