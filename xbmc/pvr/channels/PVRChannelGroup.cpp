@@ -442,7 +442,7 @@ bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 
     PVRChannelGroupMember newMember = { channel, iChannelNumber };
     // TODO notify observers
     push_back(newMember);
-    SortByChannelNumber(); // XXX renumber
+    Renumber();
     bReturn = true;
   }
 
@@ -508,4 +508,13 @@ bool CPVRChannelGroup::Persist(void)
   }
 
   return false;
+}
+
+void CPVRChannelGroup::Renumber(void)
+{
+  int iChannelNumber = 0;
+  for (unsigned int ptr = 0; ptr < size();  ptr++)
+  {
+    at(ptr).iChannelNumber = ++iChannelNumber;
+  }
 }

@@ -105,6 +105,11 @@ private:
    */
   virtual int LoadFromClients(bool bAddToDb = true);
 
+  /*!
+   * @brief Remove invalid channels and updates the channel numbers.
+   */
+  void Renumber(void);
+
 public:
   /*!
    * Create a new channel group instance.

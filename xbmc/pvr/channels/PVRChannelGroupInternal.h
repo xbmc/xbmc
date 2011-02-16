@@ -74,7 +74,7 @@ private:
   /*!
    * @brief Remove invalid channels and updates the channel numbers.
    */
-  void ReNumberAndCheck(void);
+  void Renumber(void);
 
   /*!
    * @brief Load the channels from the database.
@@ -132,14 +132,6 @@ public:
    * @return True if the channel was persisted, false otherwise.
    */
   bool Persist(void);
-
-  /*!
-   * @brief Add a channel to this container.
-   * @param channel The channel to add.
-   * @param iChannelNumber The channel number of the channel number to add. Use -1 to add it at the end.
-   * @return True if the channel was added, false otherwise.
-   */
-  bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0);
 
   /*!
    * @brief Add or update a channel in this table.
