@@ -399,7 +399,8 @@ void CGUITextLayout::ParseText(const CStdStringW &text, uint32_t defaultStyle, v
         colorStack.pop();
         newColor = colorStack.top();
       }
-      pos = finish + 1;
+      if (finish != CStdString::npos)
+        pos = finish + 1;
     }
 
     if (newStyle || newColor != currentColor || newLine)
