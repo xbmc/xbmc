@@ -60,9 +60,20 @@ int CPVRChannelGroupInternal::Load()
         __FUNCTION__, iChannelCount, m_bRadio ? "radio" : "TV");
   }
 
+  UpdateChannelPaths();
+
   m_bLoaded = true;
 
   return iChannelCount;
+}
+
+void CPVRChannelGroupInternal::UpdateChannelPaths(void)
+{
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    PVRChannelGroupMember member = at(iChannelPtr);
+    member.channel->UpdatePath(member.iChannelNumber);
+  }
 }
 
 void CPVRChannelGroupInternal::Unload()

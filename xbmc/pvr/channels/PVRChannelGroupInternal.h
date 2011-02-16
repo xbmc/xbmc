@@ -86,6 +86,8 @@ private:
    */
   int Load();
 
+  void UpdateChannelPaths(void);
+
   /*!
    * @brief Clear this channel list and destroy all channel instances in it.
    */
