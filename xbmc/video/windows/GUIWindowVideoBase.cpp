@@ -56,6 +56,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "settings/GUIDialogContentSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -1147,7 +1148,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       SScanSettings settings;
       ADDON::ScraperPtr info = m_database.GetScraperForPath(item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strPath : item->m_strPath, settings);
-      CGUIWindowVideoFiles::OnAssignContent(item->m_strPath,0, info, settings);
+      OnAssignContent(item->m_strPath,0, info, settings);
       return true;
     }
   case CONTEXT_BUTTON_PLAY_PART:
@@ -1966,4 +1967,66 @@ void CGUIWindowVideoBase::AppendAndClearSearchItems(CFileItemList &searchItems, 
   results.Append(searchItems);
 
   searchItems.Clear();
+}
+
+bool CGUIWindowVideoBase::OnUnAssignContent(const CStdString &path, int label1, int label2, int label3)
+{
+  bool bCanceled;
+  CVideoDatabase db;
+  db.Open();
+  if (CGUIDialogYesNo::ShowAndGetInput(label1,label2,label3,20022,bCanceled))
+  {
+    db.RemoveContentForPath(path);
+    db.Close();
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    return true;
+  }
+  else
+  {
+    if (!bCanceled)
+    {
+      ADDON::ScraperPtr info;
+      SScanSettings settings;
+      settings.exclude = true;
+      db.SetScraperForPath(path,info,settings);
+    }
+  }
+  db.Close();
+  
+  return false;
+}
+
+void CGUIWindowVideoBase::OnAssignContent(const CStdString &path, int iFound, ADDON::ScraperPtr& info, SScanSettings& settings)
+{
+  bool bScan=false;
+  CVideoDatabase db;
+  db.Open();
+  if (iFound == 0)
+  {
+    info = db.GetScraperForPath(path, settings);
+  }
+  
+  ADDON::ScraperPtr info2(info);
+  
+  if (CGUIDialogContentSettings::Show(info, settings, bScan))
+  {
+    if(settings.exclude || (!info && info2))
+    {
+      OnUnAssignContent(path,20375,20340,20341);
+    }
+    else if (info != info2)
+    {
+      if (OnUnAssignContent(path,20442,20443,20444))
+        bScan = true;
+    }
+    
+    db.SetScraperForPath(path,info,settings);
+    
+    if (bScan)
+    {
+      CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+      if (pDialog)
+        pDialog->StartScanning(path, true);
+    }
+  }
 }

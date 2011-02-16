@@ -194,67 +194,6 @@ void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
   }
 }
 
-bool CGUIWindowVideoFiles::OnUnAssignContent(const CStdString &path, int label1, int label2, int label3)
-{
-  bool bCanceled;
-  CVideoDatabase db;
-  db.Open();
-  if (CGUIDialogYesNo::ShowAndGetInput(label1,label2,label3,20022,bCanceled))
-  {
-    db.RemoveContentForPath(path);
-    db.Close();
-    CUtil::DeleteVideoDatabaseDirectoryCache();
-    return true;
-  }
-  else
-  {
-    if (!bCanceled)
-    {
-      ADDON::ScraperPtr info;
-      SScanSettings settings;
-      settings.exclude = true;
-      db.SetScraperForPath(path,info,settings);
-    }
-  }
-  db.Close();
-
-  return false;
-}
-
-void CGUIWindowVideoFiles::OnAssignContent(const CStdString &path, int iFound, ADDON::ScraperPtr& info, SScanSettings& settings)
-{
-  bool bScan=false;
-  CVideoDatabase db;
-  db.Open();
-  if (iFound == 0)
-  {
-    info = db.GetScraperForPath(path, settings);
-  }
-
-  ADDON::ScraperPtr info2(info);
-
-  if (CGUIDialogContentSettings::Show(info, settings, bScan))
-  {
-    if(settings.exclude || (!info && info2))
-    {
-      OnUnAssignContent(path,20375,20340,20341);
-    }
-    else if (info != info2)
-    {
-      if (OnUnAssignContent(path,20442,20443,20444))
-        bScan = true;
-    }
-
-    db.SetScraperForPath(path,info,settings);
-
-    if (bScan)
-    {
-      CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      if (pDialog)
-        pDialog->StartScanning(path, true);
-    }
-  }
-}
 
 void CGUIWindowVideoFiles::GetStackedDirectory(const CStdString &strPath, CFileItemList &items)
 {

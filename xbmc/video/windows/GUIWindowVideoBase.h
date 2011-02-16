@@ -60,6 +60,8 @@ public:
    */
   static void AppendAndClearSearchItems(CFileItemList &searchItems, const CStdString &prependLabel, CFileItemList &results);
 
+  static void OnAssignContent(const CStdString &path, int iFound, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
+
 protected:
   void OnScan(const CStdString& strPath, bool scanAll = false);
   virtual void UpdateButtons();
@@ -110,6 +112,8 @@ protected:
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
   int GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &info, VIDEO::SScanSettings& settings);
+
+  static bool OnUnAssignContent(const CStdString &path, int label1, int label2, int label3);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
