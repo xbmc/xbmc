@@ -2465,6 +2465,9 @@
     <ClCompile Include="..\..\xbmc\win32\stat_utf8.cpp">
       <Filter>win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmcvfsmodule.cpp">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">

@@ -491,6 +491,7 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmcguimodule.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmcmodule.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmcplugin.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmcvfsmodule.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\python\XBPython.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\python\XBPyThread.cpp" />
     <ClCompile Include="..\..\xbmc\LangInfo.cpp" />
