@@ -113,7 +113,7 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
             group->GetMembers(&channelslist_tv);
 
           pSpin->Clear();
-          pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
+          pSpin->AddLabel(g_localizeStrings.Get(19217), -1);
           pSpin->AddLabel(g_localizeStrings.Get(19023), -2);
           pSpin->AddLabel(g_localizeStrings.Get(19024), -3);
 
@@ -326,7 +326,7 @@ void CGUIDialogPVRGuideSearch::Update()
       group->GetMembers(&channelslist_tv);
 
     pSpin->Clear();
-    pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
+    pSpin->AddLabel(g_localizeStrings.Get(19217), -1);
     pSpin->AddLabel(g_localizeStrings.Get(19023), -2);
     pSpin->AddLabel(g_localizeStrings.Get(19024), -3);
 

@@ -434,7 +434,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         if (pSpin)
         {
           pSpin->Clear();
-          pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
+          pSpin->AddLabel(g_localizeStrings.Get(m_bIsRadio ? 19216 : 19217), -1);
 
           CPVRChannelGroups *groups = (CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio);
           for (unsigned int iGroupPtr = 0; iGroupPtr < groups->size(); iGroupPtr++)
@@ -729,7 +729,7 @@ void CGUIDialogPVRChannelManager::Update()
   if (pSpin)
   {
     pSpin->Clear();
-    pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
+    pSpin->AddLabel(g_localizeStrings.Get(m_bIsRadio ? 19216 : 19217), -1);
 
     CPVRChannelGroups *groups = (CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio);
     for (unsigned int iGroupPtr = 0; iGroupPtr < groups->size(); iGroupPtr++)
