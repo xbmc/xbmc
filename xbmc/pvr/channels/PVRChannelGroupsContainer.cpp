@@ -115,10 +115,10 @@ bool CPVRChannelGroupsContainer::GetGroupsDirectory(const CStdString &strBase, C
   /* add all groups */
   for (unsigned int ptr = 0; ptr < channelGroups->size(); ptr++)
   {
-    const CPVRChannelGroup group = channelGroups->at(ptr);
-    CStdString strGroup = strBase + "/" + group.GroupName() + "/";
+    const CPVRChannelGroup *group = channelGroups->at(ptr);
+    CStdString strGroup = strBase + "/" + group->GroupName() + "/";
     item.reset(new CFileItem(strGroup, true));
-    item->SetLabel(group.GroupName());
+    item->SetLabel(group->GroupName());
     item->SetLabelPreformated(true);
     results->Add(item);
   }
