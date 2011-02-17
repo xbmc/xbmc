@@ -63,7 +63,7 @@
 #include "SectionLoader.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
-#include "FileUtils.h"
+#include "utils/FileUtils.h"
 
 // include for constants
 #include "pyutil.h"
