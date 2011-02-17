@@ -5,7 +5,6 @@ CXXFLAGS+=-DHAVE_MMX
 SRCS=	DVDAudioCodecFFmpeg.cpp \
 	DVDAudioCodecLiba52.cpp \
 	DVDAudioCodecLibDts.cpp \
-	DVDAudioCodecLibFaad.cpp \
 	DVDAudioCodecLibMad.cpp \
 	DVDAudioCodecLPcm.cpp \
 	DVDAudioCodecPassthrough.cpp \

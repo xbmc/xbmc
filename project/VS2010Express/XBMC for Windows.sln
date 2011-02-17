@@ -18,8 +18,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libass_dll", "..\..\lib\lib
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visMilkdrop", "..\..\xbmc\visualizations\Milkdrop\Plugin.vcxproj", "{5E479372-4F34-426D-AA1E-9879E94C105D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libfaad2_dll", "..\..\lib\libfaad2\libfaad\libfaad2_dll.vcxproj", "{482DA264-EE88-4575-B208-87C4CB80CD08}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcmyth_dll", "..\..\lib\cmyth\Win32\libcmyth.vcxproj", "{F9E6874D-60A8-49BA-9393-A2105E63ABCF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsamplerate", "..\..\lib\win32\libsamplerate\libsamplerate_win32\libsamplerate_win32.vcxproj", "{5013769A-0784-4CE8-9D9D-09AC7F731B4F}"

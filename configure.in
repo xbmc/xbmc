@@ -637,7 +637,6 @@ else
   # paths from mysql_config
   AC_CHECK_LIB([modplug],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([mysqlclient],[main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([faad],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient],  [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer],  [main],, AC_MSG_ERROR($missing_library))
@@ -687,7 +686,6 @@ if test "$host_vendor" != "apple"; then
   XB_FIND_SONAME([CURL],        [curl])
   XB_FIND_SONAME([FLAC],        [FLAC])
   XB_FIND_SONAME([MODPLUG],     [modplug])
-  XB_FIND_SONAME([FAAD],        [faad])
   XB_FIND_SONAME([MAD],         [mad])
 fi
 XB_FIND_SONAME([OGG],         [ogg])
@@ -1509,7 +1507,6 @@ AC_SUBST(LIBCURL_BASENAME)
 AC_SUBST(LIBFLAC_BASENAME)
 AC_SUBST(LIBVORBISFILE_BASENAME)
 AC_SUBST(LIBMODPLUG_BASENAME)
-AC_SUBST(LIBFAAD_BASENAME)
 AC_SUBST(LIBMAD_BASENAME)
 AC_SUBST(LIBOGG_BASENAME)
 AC_SUBST(LIBVORBISENC_BASENAME)
@@ -1796,14 +1793,6 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdnav], [
       --cc="$CC"
   fi
 ], [0])
-
-XB_CONFIG_MODULE([lib/libfaad2], [
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="$CFLAGS -O3 -fno-common" \
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
-      --with-pic
-  fi
-], [$HOST_NOT_APPLE])
 
 XB_CONFIG_MODULE([lib/liba52], [
   if test "$host_vendor" = "apple" ; then

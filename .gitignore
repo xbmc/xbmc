@@ -348,7 +348,6 @@ config.log
 /system/players/dvdplayer/libdvdcss-2.dll
 /system/players/dvdplayer/libdvdnav.dll
 /system/players/dvdplayer/libexpat-1.dll
-/system/players/dvdplayer/libfaad.dll
 /system/players/dvdplayer/libfontconfig-1.dll
 /system/players/dvdplayer/librtmp.dll
 /system/players/dvdplayer/postproc-51.dll
@@ -684,44 +683,6 @@ config.log
 /lib/libdts/vc++/libdts.lib
 /lib/libdts/vc++/Debug
 /lib/libdts/vc++/Release
-
-# /lib/libfaad2/
-/lib/libfaad2/config.log
-/lib/libfaad2/config.h
-/lib/libfaad2/Makefile
-/lib/libfaad2/config.status
-/lib/libfaad2/stamp-h1
-/lib/libfaad2/configure.lineno
-/lib/libfaad2/libtool
-/lib/libfaad2/faad2.spec
-/lib/libfaad2/libfaad/ReleaseDLL
-
-# /lib/libfaad2/common/
-/lib/libfaad2/common/Makefile
-
-# /lib/libfaad2/common/mp4ff/
-/lib/libfaad2/common/mp4ff/Makefile
-
-# /lib/libfaad2/frontend/
-/lib/libfaad2/frontend/Makefile
-/lib/libfaad2/frontend/faad
-
-# /lib/libfaad2/libfaad/
-/lib/libfaad2/libfaad/Makefile
-/lib/libfaad2/libfaad/DebugDLL
-/lib/libfaad2/libfaad/ReleaseDLL
-
-# /lib/libfaad2/plugins/
-/lib/libfaad2/plugins/Makefile
-
-# /lib/libfaad2/plugins/mpeg4ip/
-/lib/libfaad2/plugins/mpeg4ip/Makefile
-
-# /lib/libfaad2/plugins/xmms/
-/lib/libfaad2/plugins/xmms/Makefile
-
-# /lib/libfaad2/plugins/xmms/src/
-/lib/libfaad2/plugins/xmms/src/Makefile
 
 # /lib/libmad/
 /lib/libmad/config.h

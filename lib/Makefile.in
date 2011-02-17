@@ -36,9 +36,7 @@ endif
 
 ifeq ($(findstring osx,$(ARCH)),osx)
 	DIRS+=libmad
- 	DIRS+=libfaad2
 	LIBS+=libmad-$(ARCH).so
- 	LIBS+=libfaad-$(ARCH).so
 endif
 
 ifneq (,$(findstring powerpc,$(ARCH)))
@@ -117,11 +115,6 @@ $(SYSDIR)/libdts-$(ARCH).so:  $(WRAPPER_OSX) libdts/libdts/libdts.a
 	$(WRAPPER_OSX) $@;mv output.so $@
 	chmod +x $@
 
-$(SYSDIR)/libfaad-$(ARCH).so:  $(WRAPPER_OSX) libfaad2/libfaad/libfaad.la
-	ld -bundle -flat_namespace -undefined suppress -o $@ \
-		libfaad2/libfaad/*.o $(BUNDLE1_O)
-	$(WRAPPER_OSX) $@;mv output.so $@
-
 $(SYSDIR)/libmad-$(ARCH).so: $(WRAPPER_OSX) libmad/libmad.la
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
 		libmad/.libs/*.o $(BUNDLE1_O)
@@ -139,10 +132,6 @@ $(SYSDIR)/libao-$(ARCH).so: $(WRAPPER_OSX) liba52/libao/libao.a
 
 libdts/libdts/libdts.a : libdts;
 libdts:
-	$(MAKE) -C $@
-
-libfaad2/libfaad/libfaad.la: libfaad2;
-libfaad2:
 	$(MAKE) -C $@
 
 libmad/libmad.la: libmad;
