@@ -2626,6 +2626,8 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\PVRManager.cpp">
       <Filter>pvr</Filter>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmcvfsmodule.cpp">
+      <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

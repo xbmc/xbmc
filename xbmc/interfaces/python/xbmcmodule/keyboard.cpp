@@ -95,7 +95,6 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"|i", &autoClose)) return NULL;
 
     pKeyboard->Initialize();
-    pKeyboard->CenterWindow();
     pKeyboard->SetHeading(self->strHeading);
     CStdString strDefault(self->strDefault);
     pKeyboard->SetText(strDefault);

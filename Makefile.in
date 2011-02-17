@@ -191,12 +191,8 @@ CONFLUENCE_MEDIA=addons/skin.confluence/media
 SKIN_DIRS=\
 	$(CONFLUENCE_MEDIA)
 
-LIVE_DIRS=\
-	tools/XBMCLive
-
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
-	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(PVR_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS) \
-	$(LIVE_DIRS)
+	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(PVR_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS)
 
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
@@ -717,8 +713,6 @@ endif
 tools/TexturePacker/TexturePacker: xbmc/guilib/guilib.a lib/libsquish/libsquish-@ARCH@.a
 	$(MAKE) -C tools/TexturePacker/
 
-livedatas:
-	$(MAKE) -C tools/XBMCLive
 
 install-bin: xbmc.bin # developement convenience target
 	sudo install -d $(DESTDIR)$(libdir)
@@ -788,14 +782,6 @@ endif
 	@install -d $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps
 	@install -m 0644 media/icon.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/xbmc.png
 	@test -z "$(DESTDIR)" && gtk-update-icon-cache -f -q -t $(datadir)/icons/hicolor || :
-
-install-livedatas: livedatas
-	@echo "Install Live CD datas..."
-	@install -d $(DESTDIR)$(bindir)
-	@install tools/XBMCLive/diskmounter $(DESTDIR)$(bindir)/diskmounter
-	@install tools/XBMCLive/installXBMC $(DESTDIR)$(bindir)/installXBMC
-	@install tools/XBMCLive/runXBMC $(DESTDIR)$(bindir)/runXBMC
-	@install tools/XBMCLive/setAlsaVolumes $(DESTDIR)$(bindir)/setAlsaVolumes
 
 uninstall:
 	@echo "Removing XBMC..."

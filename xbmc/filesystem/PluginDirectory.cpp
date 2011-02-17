@@ -140,11 +140,12 @@ bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &res
   bool success = newDir->StartScript(strPath, false);
 
   if (success)
-  { // update the play path, saving the old one as needed
+  { // update the play path and metadata, saving the old one as needed
     if (!resultItem.HasProperty("original_listitem_url"))
       resultItem.SetProperty("original_listitem_url", resultItem.m_strPath);
     resultItem.m_strPath = newDir->m_fileResult->m_strPath;
     resultItem.SetMimeType(newDir->m_fileResult->GetMimeType(false));
+    resultItem.UpdateInfo(*newDir->m_fileResult);
   }
   delete newDir;
 

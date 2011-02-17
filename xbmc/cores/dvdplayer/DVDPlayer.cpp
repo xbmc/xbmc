@@ -3182,6 +3182,20 @@ bool CDVDPlayer::OnAction(const CAction &action)
     {
       switch (action.GetID())
       {
+      case ACTION_NEXT_ITEM:
+      case ACTION_PAGE_UP:
+        THREAD_ACTION(action);
+        CLog::Log(LOGDEBUG, " - pushed next in menu, stream will decide");
+        pStream->OnNext();
+        g_infoManager.SetDisplayAfterSeek();
+        return true;
+      case ACTION_PREV_ITEM:
+      case ACTION_PAGE_DOWN:
+        THREAD_ACTION(action);
+        CLog::Log(LOGDEBUG, " - pushed prev in menu, stream will decide");
+        pStream->OnPrevious();
+        g_infoManager.SetDisplayAfterSeek();
+        return true;
       case ACTION_PREVIOUS_MENU:
         {
           THREAD_ACTION(action);

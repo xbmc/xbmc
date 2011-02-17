@@ -226,6 +226,12 @@ static void GetFrameDisplayTimeFromDictionary(
    (((const uint8_t*)(x))[2] <<  8) |        \
    ((const uint8_t*)(x))[3])
 
+#define VDA_WB32(p, d) { \
+  ((uint8_t*)(p))[3] = (d); \
+  ((uint8_t*)(p))[2] = (d) >> 8; \
+  ((uint8_t*)(p))[1] = (d) >> 16; \
+  ((uint8_t*)(p))[0] = (d) >> 24; }
+
 static const uint8_t *avc_find_startcode_internal(const uint8_t *p, const uint8_t *end)
 {
   const uint8_t *a = p + 4 - ((intptr_t)p & 3);
@@ -397,6 +403,7 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
   pthread_mutex_init(&m_queue_mutex, NULL);
 
   m_convert_bytestream = false;
+  m_convert_3byteTo4byteNALSize = false;
   m_dllAvUtil = NULL;
   m_dllAvFormat = NULL;
   m_dllSwScale = NULL;
@@ -484,6 +491,18 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
         }
         else
         {
+          if (extradata[4] == 0xFE)
+          {
+            // video content is from so silly encoder that think 3 byte NAL sizes
+            // are valid, setup to convert 3 byte NAL sizes to 4 byte.
+            m_dllAvUtil = new DllAvUtil;
+            m_dllAvFormat = new DllAvFormat;
+            if (!m_dllAvUtil->Load() || !m_dllAvFormat->Load())
+              return false;
+
+            extradata[4] = 0xFF;
+            m_convert_3byteTo4byteNALSize = true;
+          }
           // CFDataCreate makes a copy of extradata contents
           avcCData = CFDataCreate(kCFAllocatorDefault, (const uint8_t*)extradata, extrasize);
         }
@@ -654,6 +673,30 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
       }
       demuxer_bytes = avc_parse_nal_units(m_dllAvFormat, pb, pData, iSize);
       demuxer_bytes = m_dllAvFormat->url_close_dyn_buf(pb, &demuxer_content);
+      avc_demux = CFDataCreate(kCFAllocatorDefault, demuxer_content, demuxer_bytes);
+      m_dllAvUtil->av_free(demuxer_content);
+    }
+    else if (m_convert_3byteTo4byteNALSize)
+    {
+      // convert demuxer packet from 3 byte NAL sizes to 4 byte
+      ByteIOContext *pb;
+      if (m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+        return VC_ERROR;
+
+      uint32_t nal_size;
+      uint8_t *end = pData + iSize;
+      uint8_t *nal_start = pData;
+      while (nal_start < end)
+      {
+        nal_size = VDA_RB24(nal_start);
+        m_dllAvFormat->put_be32(pb, nal_size);
+        nal_start += 3;
+        m_dllAvFormat->put_buffer(pb, nal_start, nal_size);
+        nal_start += nal_size;
+      }
+
+      uint8_t *demuxer_content;
+      int demuxer_bytes = m_dllAvFormat->url_close_dyn_buf(pb, &demuxer_content);
       avc_demux = CFDataCreate(kCFAllocatorDefault, demuxer_content, demuxer_bytes);
       m_dllAvUtil->av_free(demuxer_content);
     }

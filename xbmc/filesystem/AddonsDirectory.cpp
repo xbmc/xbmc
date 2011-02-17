@@ -274,17 +274,22 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
       items.Add(FileItemFromAddon(addons[i], "script://", false));
   }
 
-  CFileItemPtr item(new CFileItem("addons://more/"+content,false));
-  item->SetLabelPreformated(true);
-  item->SetLabel(g_localizeStrings.Get(21452));
-  item->SetIconImage("DefaultAddon.png");
-  item->SetSpecialSort(SORT_ON_BOTTOM);
-  items.Add(item);
+  items.Add(GetMoreItem(content));
 
   items.SetContent("addons");
 
   return items.Size() > 0;
 }
 
+CFileItemPtr CAddonsDirectory::GetMoreItem(const CStdString &content)
+{
+  CFileItemPtr item(new CFileItem("addons://more/"+content,false));
+  item->SetLabelPreformated(true);
+  item->SetLabel(g_localizeStrings.Get(21452));
+  item->SetIconImage("DefaultAddon.png");
+  item->SetSpecialSort(SORT_ON_BOTTOM);
+  return item;
+}
+  
 }
 
