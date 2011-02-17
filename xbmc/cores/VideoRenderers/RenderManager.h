@@ -257,6 +257,9 @@ protected:
   void RemoveCapture(CRenderCapture* capture);
   CCriticalSection           m_captCritSect;
   std::list<CRenderCapture*> m_captures;
+  //set to true when adding something to m_captures, set to false when m_captures is made empty
+  //std::list::empty() isn't thread safe, using an extra bool will save a lock per render when no captures are requested
+  bool                       m_hasCaptures; 
 };
 
 extern CXBMCRenderManager g_renderManager;

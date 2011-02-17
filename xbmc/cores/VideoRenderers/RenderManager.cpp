@@ -99,6 +99,7 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_presentsource = 0;
   m_presentmethod = VS_INTERLACEMETHOD_NONE;
   m_bReconfigured = false;
+  m_hasCaptures = false;
 }
 
 CXBMCRenderManager::~CXBMCRenderManager()
@@ -371,6 +372,9 @@ void CXBMCRenderManager::ReleaseRenderCapture(CRenderCapture* capture)
     capture->SetState(CAPTURESTATE_NEEDSDELETE);
     m_captures.push_back(capture);
   }
+
+  if (!m_captures.empty())
+    m_hasCaptures = true;
 }
 
 void CXBMCRenderManager::Capture(CRenderCapture* capture, unsigned int width, unsigned int height, int flags)
@@ -407,10 +411,17 @@ void CXBMCRenderManager::Capture(CRenderCapture* capture, unsigned int width, un
     //schedule this capture for a render and readout
     m_captures.push_back(capture);
   }
+
+  if (!m_captures.empty())
+    m_hasCaptures = true;
 }
 
 void CXBMCRenderManager::ManageCaptures()
 {
+  //no captures, return here so we don't do an unnecessary lock
+  if (!m_hasCaptures)
+    return;
+
   CSingleLock lock(m_captCritSect);
 
   std::list<CRenderCapture*>::iterator it = m_captures.begin();
@@ -456,6 +467,9 @@ void CXBMCRenderManager::ManageCaptures()
       it++;
     }
   }
+
+  if (m_captures.empty())
+    m_hasCaptures = false;
 }
 
 void CXBMCRenderManager::RenderCapture(CRenderCapture* capture)
