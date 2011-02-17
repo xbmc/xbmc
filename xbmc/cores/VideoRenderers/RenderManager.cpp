@@ -344,13 +344,6 @@ void CXBMCRenderManager::SetupScreenshot()
     m_pRenderer->SetupScreenshot();
 }
 
-void CXBMCRenderManager::CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height)
-{
-  CSharedLock lock(m_sharedSection);
-  if (m_pRenderer)
-    m_pRenderer->CreateThumbnail(texture, width, height);
-}
-
 CRenderCapture* CXBMCRenderManager::AllocRenderCapture()
 {
   return new CRenderCapture;

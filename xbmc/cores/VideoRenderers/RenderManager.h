@@ -59,8 +59,6 @@ public:
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
 
-  void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
-
   CRenderCapture* AllocRenderCapture();
   void ReleaseRenderCapture(CRenderCapture* capture);
   void Capture(CRenderCapture *capture, unsigned int width, unsigned int height, int flags);

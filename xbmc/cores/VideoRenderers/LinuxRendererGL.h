@@ -127,8 +127,6 @@ public:
   virtual void Update(bool bPauseDrawing);
   virtual void SetupScreenshot() {};
 
-  void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
-
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
