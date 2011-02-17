@@ -460,8 +460,7 @@ void CXBMCRenderManager::ManageCaptures()
 
 void CXBMCRenderManager::RenderCapture(CRenderCapture* capture)
 {
-  CSingleLock gfxLock(g_graphicsContext);
-  CSharedLock sharedLock(m_sharedSection);
+  CSharedLock lock(m_sharedSection);
   if (!m_pRenderer || !m_pRenderer->RenderCapture(capture))
     capture->SetState(CAPTURESTATE_FAILED);
 }
