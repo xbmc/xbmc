@@ -35,7 +35,7 @@ public:
   virtual bool OnAction(const CAction &action);
 
   void PlayMovie(const CFileItem *item);
-  int  GetResumeItemOffset(const CFileItem *item);
+  static int GetResumeItemOffset(const CFileItem *item);
 
   void AddToDatabase(int iItem);
   virtual void OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scraper);
@@ -107,7 +107,7 @@ protected:
   bool ShowIMDB(CFileItem *item, const ADDON::ScraperPtr& content);
 
   void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
-  void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
+  static void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
 
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);

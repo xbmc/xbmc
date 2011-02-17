@@ -725,7 +725,6 @@
     <ClCompile Include="..\..\xbmc\video\VideoReferenceClock.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowFullScreen.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoBase.cpp" />
-    <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoFiles.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoNav.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoPlaylist.cpp" />
     <ClCompile Include="..\..\xbmc\ViewDatabase.cpp" />
@@ -1560,7 +1559,6 @@
     <ClInclude Include="..\..\xbmc\video\VideoReferenceClock.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowFullScreen.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoBase.h" />
-    <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoFiles.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoNav.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoPlaylist.h" />
     <ClInclude Include="..\..\xbmc\ViewDatabase.h" />
