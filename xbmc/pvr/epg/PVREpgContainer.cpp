@@ -51,8 +51,9 @@ bool CPVREpgContainer::CreateChannelEpgs(void)
         channel->GetEPG();
       else
       {
-        channel->m_EPG = (CPVREpg *) epg;
-        epg->m_Channel = channel;
+        channel->m_EPG     = (CPVREpg *) epg;
+        epg->m_Channel     = channel;
+        epg->m_bHasChannel = true;
       }
     }
   }

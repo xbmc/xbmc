@@ -290,8 +290,8 @@ const CPVRChannel *CPVRChannelGroup::GetByChannelUp(const CPVRChannel *channel) 
 const CPVRChannel *CPVRChannelGroup::GetByChannelDown(const CPVRChannel *channel) const
 {
   int iChannelNumber = GetChannelNumber(channel) - 1;
-  if (iChannelNumber < 0)
-    iChannelNumber = size() - 1;
+  if (iChannelNumber <= 0)
+    iChannelNumber = size();
 
   return GetByChannelNumber(iChannelNumber);
 }

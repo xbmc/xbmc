@@ -47,6 +47,7 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = CStdString() */, const CSt
   m_nowActive       = NULL;
   m_Channel         = NULL;
   m_bInhibitSorting = false;
+  m_bHasChannel     = false;
   m_lastScanTime.SetValid(false);
 }
 

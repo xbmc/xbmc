@@ -53,6 +53,7 @@ private:
   mutable CCriticalSection   m_critSection;     /*!< critical section for changes in this table */
 
   CPVRChannel *              m_Channel;         /*!< the channel this EPG belongs to */
+  bool                       m_bHasChannel;     /*!< true if this table has a channel tag set, false otherwise */
 
   /*!
    * @brief Update the EPG from a scraper set in the channel tag.
@@ -144,7 +145,7 @@ public:
    * @brief The channel this EPG belongs to.
    * @return The channel this EPG belongs to
    */
-  const CPVRChannel *Channel(void) const { return m_Channel; }
+  const CPVRChannel *Channel(void) const { return m_bHasChannel ? m_Channel : NULL; }
 
   /*!
    * @brief Get the name of the scraper to use for this table.
