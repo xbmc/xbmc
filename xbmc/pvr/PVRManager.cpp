@@ -1694,7 +1694,7 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel *channel, bool bPreview
 {
   CSingleLock lock(m_critSection);
 
-  if (!channel || channel->StreamURL().IsEmpty() || !m_clients[channel->ClientID()]->SwitchChannel(*channel))
+  if (!channel || !m_clients[channel->ClientID()]->SwitchChannel(*channel))
   {
     CLog::Log(LOGERROR, "PVRManager - %s - failed to switch to channel '%s'",
         __FUNCTION__, channel ? channel->ChannelName().c_str() : "NULL");
