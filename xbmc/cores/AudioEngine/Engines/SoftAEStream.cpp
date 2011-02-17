@@ -55,12 +55,13 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_ssrc            (NULL ),
   m_framesBuffered  (0    ),
   m_vizPacketPos    (NULL ),
-  m_paused          (false),
   m_draining        (false),
   m_cbDataFunc      (NULL ),
   m_cbDrainFunc     (NULL ),
   m_cbDataArg       (NULL ),
   m_cbDrainArg      (NULL ),
+  m_inDataFunc      (false),
+  m_inDrainFunc     (false),
   m_vizBufferSamples(0    ),
   m_audioCallback   (NULL )
 {
@@ -449,9 +450,12 @@ uint8_t* CSoftAEStream::GetFrame()
         /* if we are draining trigger the callback function */
         if (m_cbDrainFunc)
         {
+          m_inDrainFunc = true;
           lock.Leave();
           m_cbDrainFunc(this, m_cbDrainArg, 0);
           m_cbDrainFunc = NULL;
+          lock.Enter();
+          m_inDrainFunc = false;
         }
         return NULL;
       }
@@ -460,10 +464,12 @@ uint8_t* CSoftAEStream::GetFrame()
         /* otherwise ask for more data */
         if (m_cbDataFunc)
         {
+          m_inDataFunc = true;
           unsigned int space = ((m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize) / m_bytesPerFrame;
           lock.Leave();
           m_cbDataFunc(this, m_cbDataArg, space);
           lock.Enter();
+          m_inDataFunc = false;
           if (m_outBuffer.empty())
             return NULL;
         }
@@ -506,10 +512,12 @@ uint8_t* CSoftAEStream::GetFrame()
     /* if we have drained trigger the callback function */
     if (m_framesBuffered == 0 && m_frameBufferSize == 0 && m_cbDrainFunc)
     {
+      m_inDrainFunc = true;
       lock.Leave();
       m_cbDrainFunc(this, m_cbDrainArg, 0);
       m_cbDrainFunc = NULL;
       lock.Enter();
+      m_inDrainFunc = false;
     }
   }
   else
@@ -518,10 +526,12 @@ uint8_t* CSoftAEStream::GetFrame()
     if (m_cbDataFunc)
       while(!m_delete && !m_draining && m_framesBuffered < m_waterLevel)
       {
+        m_inDataFunc = true;
         unsigned int space = ((m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize) / m_bytesPerFrame;
         lock.Leave();
         m_cbDataFunc(this, m_cbDataArg, space);
         lock.Enter();
+        m_inDrainFunc = false;
       }
   }
 
@@ -661,3 +671,8 @@ void CSoftAEStream::UnRegisterAudioCallback()
   m_vizBufferSamples = 0;
 }
 
+bool CSoftAEStream::IsBusy()
+{
+  CSingleLock lock(m_critSection);
+  return (m_inDataFunc || m_inDrainFunc);
+}

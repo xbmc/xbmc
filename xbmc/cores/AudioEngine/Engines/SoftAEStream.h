@@ -86,6 +86,9 @@ public:
 
   void SetFreeOnDrain() { m_freeOnDrain = true; }
 
+  /* returns true if the stream is in a callback function */
+  bool IsBusy();
+
 private:
   void InternalFlush();
 
@@ -143,6 +146,7 @@ private:
   /* callback hook for more data */
   AECBFunc     *m_cbDataFunc, *m_cbDrainFunc;
   void         *m_cbDataArg , *m_cbDrainArg;
+  bool          m_inDataFunc,  m_inDrainFunc;
 
   /* vizualization internals */
   CAERemap           m_vizRemap;
