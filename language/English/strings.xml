@@ -1665,7 +1665,6 @@
   <string id="19137">No Groups defined</string>
   <string id="19138">Please create first one</string>
   <string id="19139">New Group name</string>
-  <string id="19140">All Channels</string>
   <string id="19141">Group</string>
   <string id="19142">Search Guide</string>
   <string id="19143">Group Managment</string>
@@ -1741,7 +1740,6 @@
   <string id="19213">Select channel client</string>
   <string id="19214">Enter a valid URL for the new channel</string>
   <string id="19215">The PVR-Server don't support Timers!</string>
-
   <string id="19216">All radio channels</string>
   <string id="19217">All TV channels</string>
 

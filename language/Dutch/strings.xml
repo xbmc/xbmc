@@ -1675,7 +1675,6 @@
   <string id="19137">Geen groepen gedifinieerd</string>
   <string id="19138">Maak er eerst een aan</string>
   <string id="19139">Naam nieuwe groep</string>
-  <string id="19140">Alle kanalen</string>
   <string id="19141">Groep</string>
   <string id="19142">Zoek in gids</string>
   <string id="19143">Beheer groepen</string>
@@ -1751,6 +1750,9 @@
   <string id="19213">Selecteer client voor het kanaal</string>
   <string id="19214">Voer een geldige URL in voor het kanaal</string>
   <string id="19215">De PVR server ondersteunt geen timers!</string>
+  <string id="19216">Alle radio kanalen</string>
+  <string id="19217">Alle TV kanalen</string>
+
   <string id="19499">Anders/Onbekend</string>
   <string id="19500">Film/Drama</string>
   <string id="19501">Detective/Thriller</string>
