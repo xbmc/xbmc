@@ -69,6 +69,8 @@ private:
   time_t       m_iLastEpgUpdate;     /*!< the time the EPG was updated */
   //@}
 
+  CCriticalSection m_critSection;    /*!< a critical section for changes to this container */
+
   /*!
    * @brief Load the EPG settings.
    * @return True if the settings were loaded successfully, false otherwise.
@@ -100,6 +102,13 @@ private:
    * @return The table or NULL if it wasn't found.
    */
   virtual CEpg *GetById(int iEpgId) const;
+
+  /*!
+   * @brief Get an EPG table given it's index in this container.
+   * @param iIndex The index.
+   * @return The table or NULL if it wasn't found.
+   */
+  virtual CEpg *GetByIndex(int iIndex) const;
 
   /*!
    * @brief A hook that will be called on every update thread iteration.

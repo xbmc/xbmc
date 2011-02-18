@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SingleLock.h"
 #include "settings/GUISettings.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -51,10 +52,15 @@ CEpgContainer::~CEpgContainer(void)
 
 void CEpgContainer::Clear(bool bClearDb /* = false */)
 {
+  CSingleLock lock(m_critSection);
+
   /* make sure the update thread is stopped */
   bool bThreadRunning = !m_bStop;
   if (bThreadRunning && !Stop())
+  {
+    CLog::Log(LOGERROR, "%s - cannot stop the update thread", __FUNCTION__);
     return;
+  }
 
   /* clear all epg tables and remove pointers to epg tables on channels */
   for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
@@ -85,12 +91,16 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
   m_First           = CDateTime::GetCurrentDateTime();
   m_Last            = m_First;
 
+  lock.Leave();
+
   if (bThreadRunning)
     Start();
 }
 
 void CEpgContainer::Start(void)
 {
+  CSingleLock lock(m_critSection);
+
   m_bStop = false;
   LoadSettings();
   g_guiSettings.AddObserver(this);
@@ -102,6 +112,8 @@ void CEpgContainer::Start(void)
   }
 
   AutoCreateTablesHook();
+
+  lock.Leave();
 
   UpdateEPG(true);
 
@@ -156,6 +168,7 @@ CEpg *CEpgContainer::GetById(int iEpgId) const
 {
   CEpg *epg = NULL;
 
+  CSingleLock lock(m_critSection);
   for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
   {
     if (at(iEpgPtr)->EpgID() == iEpgId)
@@ -168,9 +181,21 @@ CEpg *CEpgContainer::GetById(int iEpgId) const
   return epg;
 }
 
+CEpg *CEpgContainer::GetByIndex(int iIndex) const
+{
+  CEpg *epg = NULL;
+
+  CSingleLock lock(m_critSection);
+  if (iIndex < size())
+    epg = at(iIndex);
+
+  return epg;
+}
+
 bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = false */)
 {
   bool bReturn = false;
+  CSingleLock lock(m_critSection);
 
   /* make sure the update thread is stopped */
   bool bThreadRunning = !m_bStop && m_bDatabaseLoaded;
@@ -187,6 +212,8 @@ bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = fal
   }
 
   bReturn = epg ? epg->Update(entry, bUpdateDatabase) : false;
+
+  lock.Leave();
 
   if (bThreadRunning)
     Start();
@@ -207,6 +234,8 @@ bool CEpgContainer::LoadSettings(void)
 bool CEpgContainer::RemoveOldEntries(void)
 {
   bool bReturn = false;
+  CSingleLock lock(m_critSection);
+
   CLog::Log(LOGINFO, "EpgContainer - %s - removing old EPG entries",
       __FUNCTION__);
 
@@ -242,6 +271,7 @@ CEpg *CEpgContainer::CreateEpg(int iEpgId)
 bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = false */)
 {
   bool bReturn = false;
+  CSingleLock lock(m_critSection);
 
   for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
   {
@@ -263,8 +293,11 @@ bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = fal
 
 bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 {
+  CSingleLock lock(m_critSection);
+  unsigned int iEpgCount = size();
+  lock.Leave();
+
   long iStartTime                         = CTimeUtils::GetTimeMS();
-  unsigned int iEpgCount                  = size();
   bool bUpdateSuccess                     = true;
   CGUIDialogExtendedProgressBar *progress = NULL;
 
@@ -308,6 +341,10 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
       bUpdateSuccess = false;
       break;
     }
+
+    CEpg *epg = GetByIndex(iEpgPtr);
+    if (!epg)
+      continue;
 
     bool bCurrent = m_bDatabaseLoaded || m_bIgnoreDbForClient ?
         at(iEpgPtr)->Update(start, end, m_iUpdateTime, !m_bIgnoreDbForClient) :
@@ -355,6 +392,7 @@ int CEpgContainer::GetEPGAll(CFileItemList* results)
 {
   int iInitialSize = results->Size();
 
+  CSingleLock lock(m_critSection);
   for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
     at(iEpgPtr)->Get(results);
 
@@ -371,8 +409,10 @@ void CEpgContainer::UpdateFirstAndLastEPGDates(const CEpgInfoTag &tag)
 
 int CEpgContainer::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &filter)
 {
+  CSingleLock lock(m_critSection);
   for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
     at(iEpgPtr)->Get(results, filter);
+  lock.Leave();
 
   /* remove duplicate entries */
   if (filter.m_bPreventRepeats)
