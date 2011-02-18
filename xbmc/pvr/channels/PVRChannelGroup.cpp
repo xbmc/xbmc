@@ -166,7 +166,7 @@ struct sortByClientChannelNumber
 {
   bool operator()(PVRChannelGroupMember channel1, PVRChannelGroupMember channel2)
   {
-    return channel1.channel->ClientChannelNumber() < channel2.channel->ClientChannelNumber();
+    return channel1.channel->ClientChannelNumber() > 0 && channel1.channel->ClientChannelNumber() < channel2.channel->ClientChannelNumber();
   }
 };
 
