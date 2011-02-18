@@ -578,144 +578,166 @@
 					<orientation>vertical</orientation>
 
 					<!-- Movies -->
-					<control type="label" id="8001">
-						<include>Search_Label</include>
-						<label>MOVIES ($INFO[container(9001).numitems])</label>
-						<visible allowhiddenfocus="false">true</visible>
-					</control>
-					<control type="list" id="9001">
-						<visible allowhiddenfocus="false">true</visible>
-						<orientation>horizontal</orientation>
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>880</width>
-						<height>200</height>
-						<ondown>9002</ondown>
-						<onup>9010</onup>
-						<onright>65</onright>
-						<onleft>350</onleft>
-						<include>Search_Result</include>
-						<height>200</height>
-					</control>
+					<control type="group" id="7001">
+					  <height>240</height>
+  					<control type="label" id="8001">
+  						<include>Search_Label</include>
+  						<label>MOVIES ($INFO[container(9001).numitems])</label>
+  						<visible allowhiddenfocus="false">true</visible>
+  					</control>
+  					<control type="list" id="9001">
+  					  <posy>30</posy>
+  						<visible allowhiddenfocus="false">true</visible>
+  						<orientation>horizontal</orientation>
+  						<ondown>7002</ondown>
+  						<onup>-</onup>
+  						<onright>65</onright>
+  						<onleft>350</onleft>
+  						<include>Search_Result</include>
+  						<height>200</height>
+  					</control>
+  				</control>
 					
 					<!-- TV Shows -->
-					<control type="label" id="8002">
-						<visible allowhiddenfocus="false">true</visible>						
-						<include>Search_Label</include>
-						<label>TV SHOWS ($INFO[container(9002).numitems])</label>
-					</control>
-					<control type="list" id="9002">
-						<visible allowhiddenfocus="false">true</visible>
-						<orientation>horizontal</orientation>
-						<ondown>9008</ondown>
-						<onup>9001</onup>
-						<onright>-</onright>
-						<onleft>350</onleft>
-						<include>Search_Result</include>						
-						<height>200</height>
+					<control type="group" id="7002">
+					  <height>240</height>
+    				<control type="label" id="8002">
+    					<include>Search_Label</include>
+    					<visible allowhiddenfocus="false">true</visible>						
+    					<label>TV SHOWS ($INFO[container(9002).numitems])</label>
+    				</control>
+    				<control type="list" id="9002">
+  					  <posy>30</posy>
+    					<visible allowhiddenfocus="false">true</visible>
+    					<orientation>horizontal</orientation>
+    					<ondown>9008</ondown>
+    					<onup>7001</onup>
+    					<onright>-</onright>
+    					<onleft>350</onleft>
+    					<include>Search_Result</include>						
+    					<height>200</height>
+    				</control>
 					</control>
 
 					<!-- TV Episodes -->
-					<control type="label" id="8004">
-						<visible allowhiddenfocus="false">true</visible>						
-						<include>Search_Label</include>
-						<label>TV EPISODES ($INFO[container(9004).numitems])</label>
-					</control>
-					<control type="list" id="9004">
-						<visible allowhiddenfocus="false">true</visible>
-						<orientation>horizontal</orientation>
-						<ondown>9008</ondown>
-						<onup>9001</onup>
-						<onright>-</onright>
-						<onleft>350</onleft>
-						<include>Search_Result</include>	
-						<height>200</height>					
-					</control>
+					<control type="group" id="7004">
+					  <height>240</height>
+  					<control type="label" id="8004">
+  						<visible allowhiddenfocus="false">true</visible>						
+  						<include>Search_Label</include>
+  						<label>TV EPISODES ($INFO[container(9004).numitems])</label>
+  					</control>
+  					<control type="list" id="9004">
+  						<visible allowhiddenfocus="false">true</visible>
+  						<orientation>horizontal</orientation>
+  						<ondown>9008</ondown>
+  						<onup>9001</onup>
+  						<onright>-</onright>
+  						<onleft>350</onleft>
+  						<include>Search_Result</include>	
+  						<height>200</height>					
+  					</control>
+  				</control>
 
 					<!-- Artists -->
-					<control type="label" id="8008">
-						<visible allowhiddenfocus="false">true</visible>
-						<include>Search_Label</include>
-						<label>ARTISTS ($INFO[container(9008).numitems])</label>
-					</control>
-					<control type="list" id="9008">
-						<visible allowhiddenfocus="false">true</visible>
-						<orientation>horizontal</orientation>
-						<ondown>9010</ondown>
-						<onup>9002</onup>
-						<onright>-</onright>
-						<onleft>350</onleft>
-						<include>Search_Result</include>
-						<height>200</height>					
-					</control>
+					<control type="group" id="7008">
+					  <height>240</height>
+  					<control type="label" id="8008">
+  						<visible allowhiddenfocus="false">true</visible>
+  						<include>Search_Label</include>
+  						<label>ARTISTS ($INFO[container(9008).numitems])</label>
+  					</control>
+  					<control type="list" id="9008">
+  						<visible allowhiddenfocus="false">true</visible>
+  						<orientation>horizontal</orientation>
+  						<ondown>9010</ondown>
+  						<onup>9002</onup>
+  						<onright>-</onright>
+  						<onleft>350</onleft>
+  						<include>Search_Result</include>
+  						<height>200</height>					
+  					</control>
+  				</control>
 
 					<!-- Albums -->
-					<control type="label" id="8009">
-						<include>Search_Label</include>
-						<label>ALBUMS ($INFO[container(9009).numitems])</label>
-						<visible allowhiddenfocus="false">true</visible>
-					</control>
-					<control type="list" id="9009">
-						<visible allowhiddenfocus="false">true</visible>
-						<orientation>horizontal</orientation>
-						<ondown>9010</ondown>
-						<onup>9008</onup>
-						<onright>-</onright>
-						<onleft>350</onleft>
-						<include>Search_Result</include>	
-						<height>200</height>					
-					</control>
+					<control type="group" id="7009">
+					  <height>240</height>
+  					<control type="label" id="8009">
+  						<include>Search_Label</include>
+  						<label>ALBUMS ($INFO[container(9009).numitems])</label>
+  						<visible allowhiddenfocus="false">true</visible>
+  					</control>
+  					<control type="list" id="9009">
+  						<visible allowhiddenfocus="false">true</visible>
+  						<orientation>horizontal</orientation>
+  						<ondown>9010</ondown>
+  						<onup>9008</onup>
+  						<onright>-</onright>
+  						<onleft>350</onleft>
+  						<include>Search_Result</include>	
+  						<height>200</height>					
+  					</control>
+  				</control>
 
 					<!-- Tracks -->
-					<control type="label" id="8010">
-						<include>Search_Label</include>
-						<label>TRACKS ($INFO[container(9010).numitems])</label>
-						<visible allowhiddenfocus="false">true</visible>
-					</control>
-					<control type="list" id="9010">
-						<visible allowhiddenfocus="false">true</visible>
-						<orientation>horizontal</orientation>
-						<ondown>9013</ondown>
-						<onup>9009</onup>
-						<onright>-</onright>
-						<onleft>350</onleft>
-						<include>Search_Result</include>
-						<height>200</height>
-					</control>
+					<control type="group" id="7010">
+					  <height>240</height>
+  					<control type="label" id="8010">
+  						<include>Search_Label</include>
+  						<label>TRACKS ($INFO[container(9010).numitems])</label>
+  						<visible allowhiddenfocus="false">true</visible>
+  					</control>
+  					<control type="list" id="9010">
+  						<visible allowhiddenfocus="false">true</visible>
+  						<orientation>horizontal</orientation>
+  						<ondown>9013</ondown>
+  						<onup>9009</onup>
+  						<onright>-</onright>
+  						<onleft>350</onleft>
+  						<include>Search_Result</include>
+  						<height>200</height>
+  					</control>
+  				</control>
 
 					<!-- People -->
-					<control type="label" id="8013">
-						<include>Search_Label</include>
-						<label>ACTORS ($INFO[container(9013).numitems])</label>
-						<visible allowhiddenfocus="false">true</visible>
-					</control>
-					<control type="list" id="9013">
-						<visible allowhiddenfocus="false">true</visible>
-						<orientation>horizontal</orientation>
-						<onup>9010</onup>
-						<ondown>9012</ondown>
-						<onright>-</onright>
-						<onleft>350</onleft>
-						<include>Search_Result</include>
-						<height>200</height>
-					</control>
+					<control type="group" id="7013">
+					  <height>240</height>
+  					<control type="label" id="8013">
+  						<include>Search_Label</include>
+  						<label>ACTORS ($INFO[container(9013).numitems])</label>
+  						<visible allowhiddenfocus="false">true</visible>
+  					</control>
+  					<control type="list" id="9013">
+  						<visible allowhiddenfocus="false">true</visible>
+  						<orientation>horizontal</orientation>
+  						<onup>9010</onup>
+  						<ondown>9012</ondown>
+  						<onright>-</onright>
+  						<onleft>350</onleft>
+  						<include>Search_Result</include>
+  						<height>200</height>
+  					</control>
+  				</control>
 					
 					<!-- Clips -->
-					<control type="label" id="8012">
-						<include>Search_Label</include>
-						<label>VIDEO CLIPS ($INFO[container(9012).numitems])</label>
-						<visible allowhiddenfocus="false">true</visible>
-					</control>
-					<control type="panel" id="9012">
-						<include>Search_Result</include>
-						<height>600</height>
-						<visible allowhiddenfocus="false">true</visible>
-						<orientation>vertical</orientation>
-						<ondown>9001</ondown>
-						<onup>9010</onup>
-						<onright>-</onright>
-						<onleft>350</onleft>
-					</control>
+					<control type="group" id="7012">
+					  <height>240</height>
+  					<control type="label" id="8012">
+  						<include>Search_Label</include>
+  						<label>VIDEO CLIPS ($INFO[container(9012).numitems])</label>
+  						<visible allowhiddenfocus="false">true</visible>
+  					</control>
+  					<control type="panel" id="9012">
+  						<include>Search_Result</include>
+  						<height>600</height>
+  						<visible allowhiddenfocus="false">true</visible>
+  						<orientation>vertical</orientation>
+  						<ondown>9001</ondown>
+  						<onup>9010</onup>
+  						<onright>-</onright>
+  						<onleft>350</onleft>
+  					</control>
+  				</control>
 					
 				</control>
 			</control>
