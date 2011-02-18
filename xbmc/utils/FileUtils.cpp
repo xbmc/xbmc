@@ -72,3 +72,32 @@ bool CFileUtils::RenameFile(const CStdString &strFile)
   }
   return false;
 }
+
+bool CFileUtils::SubtitleFileSizeAndHash(const CStdString &path, CStdString &strSize, CStdString &strHash)
+{
+  const size_t chksum_block_size = 8192;
+  
+  CFile file;
+  size_t i;
+  uint64_t hash = 0;
+  uint64_t buffer1[chksum_block_size*2];
+  uint64_t fileSize ;
+  // In natural language it calculates: size + 64k chksum of the first and last 64k
+  // (even if they overlap because the file is smaller than 128k).
+  file.Open(path, READ_NO_CACHE); //open file
+  file.Read(buffer1, chksum_block_size*sizeof(uint64_t)); //read first 64k
+  file.Seek(-(int64_t)chksum_block_size*sizeof(uint64_t), SEEK_END); //seek to the end of the file
+  file.Read(&buffer1[chksum_block_size], chksum_block_size*sizeof(uint64_t)); //read last 64k
+  
+  for (i=0;i<chksum_block_size*2;i++)
+    hash += buffer1[i];
+  
+  fileSize = file.GetLength();
+  
+  hash += fileSize; //add size
+  
+  file.Close(); //close file
+  strHash.Format("%"PRIx64"", hash); //format hash
+  strSize.Format("%d", fileSize);  // format size
+  return true;
+}

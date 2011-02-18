@@ -370,7 +370,7 @@ static CFile* file_open(const char *target)
 {
   CFile* fp = new CFile();
 
-  if(!fp->Open(target, READ_CHUNKED))
+  if(!fp->Open(target))
   {
     CLog::Log(LOGERROR,"file_open - Could not open input");
     delete fp;

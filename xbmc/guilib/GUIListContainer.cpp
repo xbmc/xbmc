@@ -118,15 +118,13 @@ bool CGUIListContainer::OnMessage(CGUIMessage& message)
     {
       SetCursor(0);
     }
-    else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
-    {
-      SelectItem(message.GetParam1());
-      return true;
-    }
     else if (message.GetMessage() == GUI_MSG_SETFOCUS)
     {
       if (message.GetParam1()) // subfocus item is specified, so set the offset appropriately
-        m_cursor = (int)message.GetParam1() - 1;
+      {
+        int item = std::min(m_offset + (int)message.GetParam1() - 1, (int)m_items.size() - 1);
+        SelectItem(item);
+      }
     }
   }
   return CGUIBaseContainer::OnMessage(message);

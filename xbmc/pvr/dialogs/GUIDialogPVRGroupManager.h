@@ -39,6 +39,16 @@ protected:
   void Clear();
   void Update();
 
+private:
+  bool ActionButtonOk(CGUIMessage &message);
+  bool ActionButtonNewGroup(CGUIMessage &message);
+  bool ActionButtonDeleteGroup(CGUIMessage &message);
+  bool ActionButtonRenameGroup(CGUIMessage &message);
+  bool ActionButtonControlLeft(CGUIMessage &message);
+  bool ActionButtonControlRight(CGUIMessage &message);
+  bool ActionButtonControlGroup(CGUIMessage &message);
+  bool OnMessageClick(CGUIMessage &message);
+
   CStdString      m_CurrentGroupName;
   bool            m_bIsRadio;
 

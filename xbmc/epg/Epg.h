@@ -42,16 +42,18 @@ class CEpg : public std::vector<CEpgInfoTag*>
   friend class CPVREpg;
 
 private:
-  bool                       m_bUpdateRunning; /*!< true if EPG is currently being updated */
-  CStdString                 m_strName;        /*!< the name of this table */
-  CStdString                 m_strScraperName; /*!< the name of the scraper to use */
-  int                        m_iEpgID;         /*!< the database ID of this table */
-  CDateTime                  m_lastScanTime;   /*!< the last time the EPG has been updated */
-  mutable const CEpgInfoTag *m_nowActive;      /*!< the tag that is currently active */
+  bool                       m_bUpdateRunning;  /*!< true if EPG is currently being updated */
+  CStdString                 m_strName;         /*!< the name of this table */
+  CStdString                 m_strScraperName;  /*!< the name of the scraper to use */
+  int                        m_iEpgID;          /*!< the database ID of this table */
+  CDateTime                  m_lastScanTime;    /*!< the last time the EPG has been updated */
+  bool                       m_bInhibitSorting; /*!< don't sort the table if this is true */
+  mutable const CEpgInfoTag *m_nowActive;       /*!< the tag that is currently active */
 
-  mutable CCriticalSection   m_critSection;    /*!< critical section for changes in this table */
+  mutable CCriticalSection   m_critSection;     /*!< critical section for changes in this table */
 
-  CPVRChannel *              m_Channel;        /*!< the channel this EPG belongs to */
+  CPVRChannel *              m_Channel;         /*!< the channel this EPG belongs to */
+  bool                       m_bHasChannel;     /*!< true if this table has a channel tag set, false otherwise */
 
   /*!
    * @brief Update the EPG from a scraper set in the channel tag.
@@ -143,7 +145,7 @@ public:
    * @brief The channel this EPG belongs to.
    * @return The channel this EPG belongs to
    */
-  const CPVRChannel *Channel(void) const { return m_Channel; }
+  const CPVRChannel *Channel(void) const { return m_bHasChannel ? m_Channel : NULL; }
 
   /*!
    * @brief Get the name of the scraper to use for this table.

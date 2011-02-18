@@ -1703,7 +1703,6 @@
   <string id="19137">Keine Gruppen definiert</string>
   <string id="19138">Bitte erstellen Sie zuerst eine</string>
   <string id="19139">Neuer Gruppenname</string>
-  <string id="19140">Alle Kanäle</string>
   <string id="19141">Gruppe</string>
   <string id="19142">EPG durchsuchen</string>
   <string id="19143">Gruppenverwaltung</string>
@@ -1779,6 +1778,9 @@
   <string id="19213">Wählen Sie die Kanalquelle</string>
   <string id="19214">Bitte geben Sie eine URL für den Kanal ein</string>
   <string id="19215">Der PVR-Server unterstützt keine Timer!</string>
+
+  <string id="19216">Alle Radio Kanäle</string>
+  <string id="19217">Alle TV Kanäle</string>
 
   <string id="19499">Andere/Unbekannt</string>
   <string id="19500">Movie/Drama</string>

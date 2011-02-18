@@ -113,6 +113,13 @@ public:
 
   void ClearProperties();
 
+  /*! \brief Append the properties of one CGUIListItem to another.
+   Any existing properties in the current item will be overridden if they
+   are set in the passed in item.
+   \param item the item containing the properties to append.
+   */
+  void AppendProperties(const CGUIListItem &item);
+
   void Archive(CArchive& ar);
   void Serialize(CVariant& value);
 

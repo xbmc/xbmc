@@ -93,6 +93,5 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
     items.Add(pItem);
   }
 
-  items.m_strPath = "";
   return true;
 }

@@ -51,7 +51,7 @@ public:
    * @brief Get the minimal database version that is required to operate correctly.
    * @return The minimal database version.
    */
-  virtual int GetMinVersion() const { return 8; };
+  virtual int GetMinVersion() const { return 9; };
 
   /*!
    * @brief Get the default sqlite database filename.
@@ -96,7 +96,7 @@ public:
    * @param bIsRadio Get the radio channels if true. Get the TV channels otherwise.
    * @return The amount of channels that were added.
    */
-  int GetChannels(CPVRChannelGroupInternal &results, bool bIsRadio);
+  int GetChannels(CPVRChannelGroupInternal *results, bool bIsRadio);
 
   /*!
    * @brief Get the ID of the channel that was played last
@@ -149,6 +149,8 @@ public:
   /*! @name Channel group methods */
   //@{
 
+  bool DeleteChannelsInGroups(int iGroupId);
+
   /*!
    * @brief Remove all channel groups from the database
    * @param bRadio Remove all radio channel groups if true. Remove TV channel groups otherwise.
@@ -189,10 +191,9 @@ public:
   /*!
    * @brief Add or update a channel group entry in the database.
    * @param group The group to persist.
-   * @param bQueueWrite If true, don't write directly.
    * @return The database ID of the group.
    */
-  int Persist(const CPVRChannelGroup &group, bool bQueueWrite = false);
+  int Persist(CPVRChannelGroup *group);
 
 protected:
   /*!

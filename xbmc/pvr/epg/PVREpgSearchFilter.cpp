@@ -24,7 +24,8 @@
 
 #include "PVREpgSearchFilter.h"
 #include "PVREpgInfoTag.h"
-#include "pvr/channels/PVRChannel.h"
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace std;
 
@@ -65,7 +66,8 @@ bool PVREpgSearchFilter::FilterEntry(const CPVREpgInfoTag &tag) const
     }
     if (m_iChannelGroup != -1)
     {
-      if (tag.ChannelTag()->GroupID() != m_iChannelGroup)
+      const CPVRChannelGroup *group = CPVRManager::GetChannelGroups()->GetById(tag.ChannelTag()->IsRadio(), m_iChannelGroup);
+      if (!group || !group->IsGroupMember(tag.ChannelTag()))
         bReturn = false;
     }
   }

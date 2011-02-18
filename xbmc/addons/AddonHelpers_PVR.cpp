@@ -26,6 +26,7 @@
 #include "pvr/epg/PVREpg.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/addons/PVRClient.h"
 
 namespace ADDON
@@ -82,28 +83,23 @@ void CAddonHelpers_PVR::PVRTransferChannelEntry(void *addonData, const PVRHANDLE
     return;
   }
 
-  CPVRClient* client         = (CPVRClient*) handle->CALLER_ADDRESS;
-  CPVRChannelGroup *xbmcChannels = (CPVRChannelGroup*) handle->DATA_ADDRESS;
-  CPVRChannel *tag           = new CPVRChannel();
+  CPVRClient* client = (CPVRClient*) handle->CALLER_ADDRESS;
+  CPVRChannelGroupInternal *xbmcChannels = (CPVRChannelGroupInternal*) handle->DATA_ADDRESS;
+  CPVRChannel channelTag(channel->radio);
 
-  tag->SetChannelID(-1);
-  tag->SetChannelNumber(-1);
-  tag->SetClientChannelNumber(channel->number);
-  tag->SetGroupID(0);
-  tag->SetClientID(client->GetClientID());
-  tag->SetUniqueID(channel->uid);
-  tag->SetChannelName(channel->name);
-  tag->SetClientChannelName(channel->callsign);
-  tag->SetIconPath(channel->iconpath);
-  tag->SetEncryptionSystem(channel->encryption);
-  tag->SetRadio(channel->radio);
-  tag->SetHidden(channel->hide);
-  tag->SetRecording(channel->recording);
-  tag->SetInputFormat(channel->input_format);
-  tag->SetStreamURL(channel->stream_url);
+  channelTag.SetClientChannelNumber(channel->number);
+  channelTag.SetClientID(client->GetClientID());
+  channelTag.SetUniqueID(channel->uid);
+  channelTag.SetChannelName(channel->name);
+  channelTag.SetClientChannelName(channel->callsign);
+  channelTag.SetIconPath(channel->iconpath);
+  channelTag.SetEncryptionSystem(channel->encryption);
+  channelTag.SetHidden(channel->hide);
+  channelTag.SetRecording(channel->recording);
+  channelTag.SetInputFormat(channel->input_format);
+  channelTag.SetStreamURL(channel->stream_url);
 
-  xbmcChannels->AddToGroup(tag);
-  return;
+  xbmcChannels->UpdateChannel(channelTag);
 }
 
 void CAddonHelpers_PVR::PVRTransferRecordingEntry(void *addonData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording)
@@ -171,8 +167,6 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
   tag.SetRecording(timer->recording == 1);
   tag.SetRepeating(timer->repeat == 1);
   tag.SetWeekdays(timer->repeatflags);
-  tag.SetNumber(channel->ChannelNumber());
-  tag.SetRadio(channel->IsRadio());
   CStdString path;
   path.Format("pvr://client%i/timers/%i", tag.ClientID(), tag.ClientIndex());
   tag.SetPath(path);

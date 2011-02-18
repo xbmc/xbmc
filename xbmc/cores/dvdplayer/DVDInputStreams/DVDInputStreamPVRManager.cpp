@@ -213,18 +213,23 @@ bool CDVDInputStreamPVRManager::PrevChannel(bool preview/* = false*/)
   return false;
 }
 
-bool CDVDInputStreamPVRManager::SelectChannel(unsigned int channel)
+bool CDVDInputStreamPVRManager::SelectChannelByNumber(unsigned int channel)
 {
   if (m_pLiveTV)
     return m_pLiveTV->SelectChannel(channel);
   return false;
 }
 
-int CDVDInputStreamPVRManager::GetSelectedChannel()
+bool CDVDInputStreamPVRManager::SelectChannel(const CPVRChannel &channel)
 {
-  CPVRChannel channel;
-  CPVRManager::Get()->GetCurrentChannel(&channel);
-  return channel.ChannelNumber();
+  if (m_pLiveTV)
+    return m_pLiveTV->SelectChannel(channel.ChannelNumber());
+  return false;
+}
+
+bool CDVDInputStreamPVRManager::GetSelectedChannel(const CPVRChannel *channel)
+{
+  return CPVRManager::Get()->GetCurrentChannel(channel);
 }
 
 bool CDVDInputStreamPVRManager::UpdateItem(CFileItem& item)

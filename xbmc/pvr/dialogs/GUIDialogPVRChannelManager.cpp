@@ -434,7 +434,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         if (pSpin)
         {
           pSpin->Clear();
-          pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
+          pSpin->AddLabel(g_localizeStrings.Get(m_bIsRadio ? 19216 : 19217), -1);
 
           CPVRChannelGroups *groups = (CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio);
           for (unsigned int iGroupPtr = 0; iGroupPtr < groups->size(); iGroupPtr++)
@@ -529,9 +529,8 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
             {
               if (!strURL.IsEmpty())
               {
-                CPVRChannel newchannel;
+                CPVRChannel newchannel(m_bIsRadio);
                 newchannel.SetChannelName(g_localizeStrings.Get(19204));
-                newchannel.SetRadio(m_bIsRadio);
                 newchannel.SetEPGEnabled(false);
                 newchannel.SetVirtual(true);
                 newchannel.SetStreamURL(strURL);
@@ -548,7 +547,6 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
                   channel->SetProperty("ActiveChannel", true);
                   channel->SetProperty("Name", g_localizeStrings.Get(19204));
                   channel->SetProperty("UseEPG", false);
-                  channel->SetProperty("GroupId", (int)newchannel.GroupID());
                   channel->SetProperty("Icon", newchannel.IconPath());
                   channel->SetProperty("EPGSource", (int)0);
                   channel->SetProperty("ClientName", g_localizeStrings.Get(19209));
@@ -699,14 +697,13 @@ void CGUIDialogPVRChannelManager::Update()
   if( !channels )
     return;
 
-  for (unsigned int i = 0; i < channels->size(); i++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < channels->Size(); iChannelPtr++)
   {
-    CPVRChannel *channel = channels->at(i);
+    const CPVRChannel *channel = channels->GetByIndex(iChannelPtr);
     CFileItemPtr channelFile(new CFileItem(*channel));
     channelFile->SetProperty("ActiveChannel", !channel->IsHidden());
     channelFile->SetProperty("Name", channel->ChannelName());
     channelFile->SetProperty("UseEPG", channel->EPGEnabled());
-    channelFile->SetProperty("GroupId", channel->GroupID());
     channelFile->SetProperty("Icon", channel->IconPath());
     channelFile->SetProperty("EPGSource", (int)0);
     CStdString number; number.Format("%i", channel->ChannelNumber());
@@ -732,7 +729,7 @@ void CGUIDialogPVRChannelManager::Update()
   if (pSpin)
   {
     pSpin->Clear();
-    pSpin->AddLabel(g_localizeStrings.Get(19140), -1);
+    pSpin->AddLabel(g_localizeStrings.Get(m_bIsRadio ? 19216 : 19217), -1);
 
     CPVRChannelGroups *groups = (CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio);
     for (unsigned int iGroupPtr = 0; iGroupPtr < groups->size(); iGroupPtr++)
@@ -766,7 +763,8 @@ void CGUIDialogPVRChannelManager::SaveList() // XXX investigate: renumbering doe
    return;
 
   CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
-  database->Open();
+  if (!database || !database->Open())
+    return;
 
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   pDlgProgress->SetHeading(190);
@@ -784,8 +782,8 @@ void CGUIDialogPVRChannelManager::SaveList() // XXX investigate: renumbering doe
       ++iActiveChannels;
   }
 
-  int iNextChannelNumber = 1;
-  int iNextHiddenChannelNumber = iActiveChannels + 1;
+//  int iNextChannelNumber = 1;
+//  int iNextHiddenChannelNumber = iActiveChannels + 1;
   bool bHasChangedItems = false;
 
   for (int iListPtr = 0; iListPtr < m_channelItems->Size(); iListPtr++)
@@ -806,21 +804,20 @@ void CGUIDialogPVRChannelManager::SaveList() // XXX investigate: renumbering doe
     bool bHidden              = !pItem->GetPropertyBOOL("ActiveChannel");
     bool bVirtual             = pItem->GetPropertyBOOL("Virtual");
     bool bEPGEnabled          = pItem->GetPropertyBOOL("UseEPG");
-    int iGroupId              = pItem->GetPropertyInt("GroupId");
     int iEPGSource            = pItem->GetPropertyInt("EPGSource");
     CStdString strChannelName = pItem->GetProperty("Name");
     CStdString strIconPath    = pItem->GetProperty("Icon");
     CStdString strStreamURL   = pItem->GetProperty("StreamURL");
 
     /* set new values in the channel tag */
-    if (bHidden)
-      bChanged = channel->SetChannelNumber(iNextHiddenChannelNumber++) || bChanged;
-    else
-      bChanged = channel->SetChannelNumber(iNextChannelNumber++) || bChanged;
+// TODO
+//    if (bHidden)
+//      bChanged = channel->SetChannelNumber(iNextHiddenChannelNumber++) || bChanged;
+//    else
+//      bChanged = channel->SetChannelNumber(iNextChannelNumber++) || bChanged;
     bChanged = channel->SetChannelName(strChannelName) || bChanged;
     bChanged = channel->SetHidden(bHidden) || bChanged;
     bChanged = channel->SetIconPath(strIconPath) || bChanged;
-    bChanged = channel->SetGroupID(iGroupId) || bChanged;
     if (bVirtual)
       bChanged = channel->SetStreamURL(strStreamURL) || bChanged;
 

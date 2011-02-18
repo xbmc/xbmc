@@ -46,7 +46,8 @@ void CPVREpgInfoTag::Reset()
 
 const CPVRChannel *CPVREpgInfoTag::ChannelTag(void) const
 {
-  return ((CPVREpg *) GetTable())->Channel();
+  const CPVREpg *table = (const CPVREpg *) GetTable();
+  return table ? table->Channel() : NULL;
 }
 
 void CPVREpgInfoTag::SetTimer(const CPVRTimerInfoTag *newTimer)

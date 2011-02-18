@@ -42,8 +42,8 @@ using namespace std;
 #define BUTTON_DELGROUP               28
 #define BUTTON_OK                     29
 
-CGUIDialogPVRGroupManager::CGUIDialogPVRGroupManager()
-  : CGUIDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER, "DialogPVRGroupManager.xml")
+CGUIDialogPVRGroupManager::CGUIDialogPVRGroupManager() :
+    CGUIDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER, "DialogPVRGroupManager.xml")
 {
   m_channelLeftItems  = new CFileItemList;
   m_channelRightItems = new CFileItemList;
@@ -57,9 +57,193 @@ CGUIDialogPVRGroupManager::~CGUIDialogPVRGroupManager()
   delete m_channelGroupItems;
 }
 
+bool CGUIDialogPVRGroupManager::ActionButtonOk(CGUIMessage &message)
+{
+  bool bReturn = false;
+  unsigned int iControl = message.GetSenderId();
+
+  if (iControl == BUTTON_OK)
+  {
+    Close();
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(CGUIMessage &message)
+{
+  bool bReturn = false;
+  unsigned int iControl = message.GetSenderId();
+
+  if (iControl == BUTTON_NEWGROUP)
+  {
+    CStdString strDescription = "";
+    /* prompt for a group name */
+    if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(19139), false))
+    {
+      if (strDescription != "")
+      {
+        /* add the group if it doesn't already exist */
+        ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->AddGroup(strDescription);
+        Update();
+      }
+    }
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGroupManager::ActionButtonDeleteGroup(CGUIMessage &message)
+{
+  bool bReturn = false;
+  unsigned int iControl = message.GetSenderId();
+
+  if (iControl == BUTTON_DELGROUP)
+  {
+    const CPVRChannelGroup *group = CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetByName(m_CurrentGroupName);
+
+    if (!group)
+      return bReturn;
+
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    if (!pDialog)
+      return bReturn;
+
+    pDialog->SetHeading(117);
+    pDialog->SetLine(0, "");
+    pDialog->SetLine(1, group->GroupName());
+    pDialog->SetLine(2, "");
+    pDialog->DoModal();
+
+    if (pDialog->IsConfirmed())
+    {
+      ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->DeleteGroup(*group);
+      Update();
+    }
+
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGroupManager::ActionButtonRenameGroup(CGUIMessage &message)
+{
+  bool bReturn = false;
+  unsigned int iControl = message.GetSenderId();
+
+  if (iControl == BUTTON_RENAMEGROUP)
+  {
+    CPVRChannelGroup *group = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetByName(m_CurrentGroupName);
+
+    if (!group)
+      return bReturn;
+
+    if (CGUIDialogKeyboard::ShowAndGetInput(m_CurrentGroupName, g_localizeStrings.Get(19139), false))
+    {
+      if (m_CurrentGroupName != "")
+      {
+        group->SetGroupName(m_CurrentGroupName, true);
+        Update();
+      }
+    }
+
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGroupManager::ActionButtonControlLeft(CGUIMessage &message)
+{
+  bool bReturn = false;
+  unsigned int iControl = message.GetSenderId();
+
+  if (m_viewControlLeft.HasControl(iControl))   // list/thumb control
+  {
+    m_iSelectedLeft = m_viewControlLeft.GetSelectedItem();
+    int iAction     = message.GetParam1();
+
+    if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+    {
+      if (m_channelGroupItems->GetFileCount() == 0)
+      {
+        CGUIDialogOK::ShowAndGetInput(19033,19137,0,19138);
+      }
+      else if (m_channelLeftItems->GetFileCount() > 0)
+      {
+        CFileItemPtr pItemGroup   = m_channelGroupItems->Get(m_iSelectedGroup);
+        CFileItemPtr pItemChannel = m_channelLeftItems->Get(m_iSelectedLeft);
+        ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->AddChannelToGroup(pItemChannel->GetPVRChannelInfoTag(), atoi(pItemGroup->m_strPath.c_str()));
+        Update();
+      }
+    }
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGroupManager::ActionButtonControlRight(CGUIMessage &message)
+{
+  bool bReturn = false;
+  unsigned int iControl = message.GetSenderId();
+
+  if (m_viewControlRight.HasControl(iControl))   // list/thumb control
+  {
+    m_iSelectedRight = m_viewControlRight.GetSelectedItem();
+    int iAction      = message.GetParam1();
+
+    if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+    {
+      if (m_channelRightItems->GetFileCount() > 0)
+      {
+        CFileItemPtr pItemChannel = m_channelRightItems->Get(m_iSelectedRight);
+        ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->AddChannelToGroup(pItemChannel->GetPVRChannelInfoTag(), 0);
+        Update();
+      }
+    }
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGroupManager::ActionButtonControlGroup(CGUIMessage &message)
+{
+  bool bReturn = false;
+  unsigned int iControl = message.GetSenderId();
+
+  if (m_viewControlGroup.HasControl(iControl))   // list/thumb control
+  {
+    int iAction = message.GetParam1();
+
+    if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+    {
+      m_iSelectedGroup = m_viewControlGroup.GetSelectedItem();
+      Update();
+    }
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGroupManager::OnMessageClick(CGUIMessage &message)
+{
+  return ActionButtonOk(message) ||
+      ActionButtonNewGroup(message) ||
+      ActionButtonDeleteGroup(message) ||
+      ActionButtonRenameGroup(message) ||
+      ActionButtonControlLeft(message) ||
+      ActionButtonControlRight(message) ||
+      ActionButtonControlGroup(message);
+}
+
 bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
 {
-  unsigned int iControl = 0;
   unsigned int iMessage = message.GetMessage();
 
   switch (iMessage)
@@ -83,112 +267,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_CLICKED:
     {
-      iControl = message.GetSenderId();
-
-      if (iControl == BUTTON_OK)
-      {
-        Close();
-      }
-      else if (iControl == BUTTON_NEWGROUP)
-      {
-        CStdString strDescription = "";
-        if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(19139), false))
-        {
-          if (strDescription != "")
-          {
-            ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->AddGroup(strDescription);
-            Update();
-          }
-        }
-      }
-      else if (iControl == BUTTON_DELGROUP && m_channelGroupItems->GetFileCount() != 0)
-      {
-        m_iSelectedGroup        = m_viewControlGroup.GetSelectedItem();
-        CFileItemPtr pItemGroup = m_channelGroupItems->Get(m_iSelectedGroup);
-
-        // prompt user for confirmation of channel record
-        CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-        if (pDialog)
-        {
-          CStdString groupName;
-          CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetGroupName(atoi(pItemGroup->m_strPath.c_str()));
-
-          pDialog->SetHeading(117);
-          pDialog->SetLine(0, "");
-          pDialog->SetLine(1, groupName);
-          pDialog->SetLine(2, "");
-          pDialog->DoModal();
-
-          if (pDialog->IsConfirmed())
-          {
-            ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->DeleteGroup(atoi(pItemGroup->m_strPath.c_str()));
-            Update();
-          }
-        }
-        return true;
-      }
-      else if (iControl == BUTTON_RENAMEGROUP && m_channelGroupItems->GetFileCount() != 0)
-      {
-        if (CGUIDialogKeyboard::ShowAndGetInput(m_CurrentGroupName, g_localizeStrings.Get(19139), false))
-        {
-          if (m_CurrentGroupName != "")
-          {
-            CPVRChannelGroup *group = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetById(atoi(m_channelGroupItems->Get(m_iSelectedGroup)->m_strPath.c_str()));
-            if (group)
-              group->SetGroupName(m_CurrentGroupName, true);
-
-            Update();
-          }
-        }
-      }
-      else if (m_viewControlLeft.HasControl(iControl))   // list/thumb control
-      {
-        m_iSelectedLeft = m_viewControlLeft.GetSelectedItem();
-        int iAction     = message.GetParam1();
-
-        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
-        {
-          if (m_channelGroupItems->GetFileCount() == 0)
-          {
-            CGUIDialogOK::ShowAndGetInput(19033,19137,0,19138);
-          }
-          else if (m_channelLeftItems->GetFileCount() > 0)
-          {
-            CFileItemPtr pItemGroup   = m_channelGroupItems->Get(m_iSelectedGroup);
-            CFileItemPtr pItemChannel = m_channelLeftItems->Get(m_iSelectedLeft);
-            ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->AddChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), atoi(pItemGroup->m_strPath.c_str()));
-            Update();
-          }
-          return true;
-        }
-      }
-      else if (m_viewControlRight.HasControl(iControl))   // list/thumb control
-      {
-        m_iSelectedRight = m_viewControlRight.GetSelectedItem();
-        int iAction      = message.GetParam1();
-
-        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
-        {
-          if (m_channelRightItems->GetFileCount() > 0)
-          {
-            CFileItemPtr pItemChannel = m_channelRightItems->Get(m_iSelectedRight);
-            ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->AddChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), 0);
-            Update();
-          }
-          return true;
-        }
-      }
-      else if (m_viewControlGroup.HasControl(iControl))   // list/thumb control
-      {
-        int iAction = message.GetParam1();
-
-        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
-        {
-          m_iSelectedGroup = m_viewControlGroup.GetSelectedItem();
-          Update();
-          return true;
-        }
-      }
+      OnMessageClick(message);
     }
     break;
   }
@@ -225,32 +304,33 @@ void CGUIDialogPVRGroupManager::Update()
 {
   m_CurrentGroupName = "";
 
-  // lock our display, as this window is rendered from the player thread
+  /* lock our display, as this window is rendered from the player thread */
   g_graphicsContext.Lock();
   m_viewControlLeft.SetCurrentView(CONTROL_LIST_CHANNELS_LEFT);
   m_viewControlRight.SetCurrentView(CONTROL_LIST_CHANNELS_RIGHT);
   m_viewControlGroup.SetCurrentView(CONTROL_LIST_CHANNEL_GROUPS);
 
-  // empty the lists ready for population
   Clear();
 
-  int groups = CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetGroupList(m_channelGroupItems);
-
+  /* get the groups list */
+  CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetGroupList(m_channelGroupItems);
   m_viewControlGroup.SetItems(*m_channelGroupItems);
   m_viewControlGroup.SetSelectedItem(m_iSelectedGroup);
 
-  CPVRChannelGroup *channels = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(m_bIsRadio);
-  channels->GetChannels(m_channelLeftItems, 0);
-  m_viewControlLeft.SetItems(*m_channelLeftItems);
-  m_viewControlLeft.SetSelectedItem(m_iSelectedLeft);
+  CFileItemPtr pItem = m_channelGroupItems->Get(m_viewControlGroup.GetSelectedItem());
+  m_CurrentGroupName = pItem->m_strTitle;
+  SET_CONTROL_LABEL(CONTROL_CURRENT_GROUP_LABEL, m_CurrentGroupName);
+  const CPVRChannelGroup *selectedGroup = CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetByName(m_CurrentGroupName);
 
-  if (groups > 0)
+  if (selectedGroup)
   {
-    CFileItemPtr pItem = m_channelGroupItems->Get(m_viewControlGroup.GetSelectedItem());
-    m_CurrentGroupName = pItem->m_strTitle;
-    SET_CONTROL_LABEL(CONTROL_CURRENT_GROUP_LABEL, m_CurrentGroupName);
+    /* get all channels that are not in this group for the center part */
+    selectedGroup->GetMembers(m_channelLeftItems, false);
+    m_viewControlLeft.SetItems(*m_channelLeftItems);
+    m_viewControlLeft.SetSelectedItem(m_iSelectedLeft);
 
-    channels->GetChannels(m_channelRightItems, atoi(pItem->m_strPath.c_str()));
+    /* get all channels in this group for the right side part */
+    selectedGroup->GetMembers(m_channelRightItems, true);
     m_viewControlRight.SetItems(*m_channelRightItems);
     m_viewControlRight.SetSelectedItem(m_iSelectedRight);
   }

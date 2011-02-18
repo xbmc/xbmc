@@ -27,12 +27,14 @@
 
 class CPVREpgInfoTag;
 class CPVREpg;
+class CPVRChannelGroupInternal;
 
 /** PVR Channel class */
 
 class CPVRChannel : public Observable
 {
   friend class CPVREpgContainer;
+  friend class CPVRChannelGroupInternal;
   friend class CPVRDatabase;
 
 private:
@@ -40,8 +42,6 @@ private:
    */
   //@{
   int        m_iChannelId;              /*!< the identifier given to this channel by the TV database */
-  int        m_iChannelNumber;          /*!< the channel number used by XBMC */
-  int        m_iChannelGroupId;         /*!< the identifier of the group where this channel belongs to */
   bool       m_bIsRadio;                /*!< true if this channel is a radio channel, false if not */
   bool       m_bIsHidden;               /*!< true if this channel is hidden, false if not */
   bool       m_bClientIsRecording;      /*!< true if a recording is currently running on this channel, false if not */
@@ -74,7 +74,7 @@ private:
 
 public:
   /*! @brief Create a new channel */
-  CPVRChannel();
+  CPVRChannel(bool bRadio = false);
 
   bool operator ==(const CPVRChannel &right) const;
   bool operator !=(const CPVRChannel &right) const;
@@ -118,47 +118,16 @@ public:
   bool SetChannelID(int iDatabaseId, bool bSaveInDb = false);
 
   /*!
-   * @brief The channel number used by XBMC.
+   * @brief The channel number used by XBMC by the currently active group.
    * @return The channel number used by XBMC.
    */
-  int ChannelNumber(void) const { return m_iChannelNumber; }
-
-  /*!
-   * @brief Change the channel number used by XBMC.
-   * @param iChannelNumber The new channel number.
-   * @param bSaveInDb Save in the database or not.
-   * @return True if the something changed, false otherwise.
-   */
-  bool SetChannelNumber(int iChannelNumber, bool bSaveInDb = false);
-
-  /*!
-   * @brief The identifier of the group this channel belongs to.
-   *        -1 for undefined.
-   * @return The identifier of the group this channel belongs to.
-   */
-  int GroupID(void) const { return m_iChannelGroupId; }
-
-  /*!
-   * @brief Set the identifier of the group this channel belongs to.
-   * @param iChannelGroupId The new group ID
-   * @param bSaveInDb Save in the database or not.
-   * @return True if the something changed, false otherwise.
-   */
-  bool SetGroupID(int iChannelGroupId, bool bSaveInDb = false);
+  int ChannelNumber(void) const;
 
   /*!
    * @brief True if this channel is a radio channel, false if not.
    * @return True if this channel is a radio channel, false if not.
    */
   bool IsRadio(void) const { return m_bIsRadio; }
-
-  /*!
-   * @brief Set to true if this channel is a radio channel. Set to false if not.
-   * @param bIsRadio The new value.
-   * @param bSaveInDb Save in the database or not.
-   * @return True if the something changed, false otherwise.
-   */
-  bool SetRadio(bool bIsRadio, bool bSaveInDb = false);
 
   /*!
    * @brief True if this channel is hidden. False if not.
@@ -361,9 +330,9 @@ public:
 
 private:
   /*!
-   * @brief Update the path after the channel number or radio flag has changed.
+   * @brief Update the path after the channel number in the internal group changed.
    */
-  void UpdatePath(void);
+  void UpdatePath(unsigned int iNewChannelNumber);
 
   /*!
    * @brief Update the encryption name after SetEncryptionSystem() has been called.

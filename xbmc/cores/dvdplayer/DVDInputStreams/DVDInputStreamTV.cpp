@@ -22,6 +22,7 @@
 #include "DVDInputStreamTV.h"
 #include "filesystem/MythFile.h"
 #include "filesystem/VTPFile.h"
+#include "pvr/channels/PVRChannel.h"
 #include "URL.h"
 
 using namespace XFILE;
@@ -142,10 +143,16 @@ bool CDVDInputStreamTV::PrevChannel(bool preview/* = false*/)
   return m_pLiveTV->PrevChannel();
 }
 
-bool CDVDInputStreamTV::SelectChannel(unsigned int channel)
+bool CDVDInputStreamTV::SelectChannelByNumber(unsigned int channel)
 {
   if(!m_pLiveTV) return false;
   return m_pLiveTV->SelectChannel(channel);
+}
+
+bool CDVDInputStreamTV::SelectChannel(const CPVRChannel &channel)
+{
+  if(!m_pLiveTV) return false;
+  return m_pLiveTV->SelectChannel(channel.ChannelNumber());
 }
 
 bool CDVDInputStreamTV::UpdateItem(CFileItem& item)

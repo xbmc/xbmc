@@ -40,12 +40,14 @@ struct sortEPGbyDate
 
 CEpg::CEpg(int iEpgID, const CStdString &strName /* = CStdString() */, const CStdString &strScraperName /* = CStdString() */)
 {
-  m_bUpdateRunning = false;
-  m_iEpgID         = iEpgID;
-  m_strName        = strName;
-  m_strScraperName = strScraperName;
-  m_nowActive      = NULL;
-  m_Channel        = NULL;
+  m_bUpdateRunning  = false;
+  m_iEpgID          = iEpgID;
+  m_strName         = strName;
+  m_strScraperName  = strScraperName;
+  m_nowActive       = NULL;
+  m_Channel         = NULL;
+  m_bInhibitSorting = false;
+  m_bHasChannel     = false;
   m_lastScanTime.SetValid(false);
 }
 
@@ -64,7 +66,9 @@ bool CEpg::Delete(void)
   if (!database || !database->Open())
     return bReturn;
 
+  CSingleLock lock(m_critSection);
   bReturn = database->Delete(*this);
+  lock.Leave();
 
   database->Close();
 
@@ -116,6 +120,9 @@ bool CEpg::DeleteInfoTag(CEpgInfoTag *tag)
 void CEpg::Sort(void)
 {
   CSingleLock lock(m_critSection);
+
+  if (m_bInhibitSorting)
+    return;
 
   /* sort the EPG */
   sort(begin(), end(), sortEPGbyDate());
@@ -411,7 +418,9 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
 
   if (bUpdate)
   {
+    m_bInhibitSorting = true;
     bGrabSuccess = UpdateFromScraper(start, end);
+    m_bInhibitSorting = false;
 
     /* store the loaded EPG entries in the database */
     if (bGrabSuccess)
@@ -431,6 +440,7 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
         }
       }
 
+      m_lastScanTime = CDateTime::GetCurrentDateTime();
       m_bUpdateRunning = false;
     }
   }

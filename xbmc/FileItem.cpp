@@ -1386,6 +1386,29 @@ bool CFileItem::IsAlbum() const
   return m_bIsAlbum;
 }
 
+void CFileItem::UpdateInfo(const CFileItem &item)
+{
+  if (item.HasVideoInfoTag())
+  { // copy info across (TODO: premiered info is normally stored in m_dateTime by the db)
+    *GetVideoInfoTag() = *item.GetVideoInfoTag();
+    SetOverlayImage(ICON_OVERLAY_UNWATCHED, GetVideoInfoTag()->m_playCount > 0);
+  }
+  if (item.HasMusicInfoTag())
+    *GetMusicInfoTag() = *item.GetMusicInfoTag();
+  if (item.HasPictureInfoTag())
+    *GetPictureInfoTag() = *item.GetPictureInfoTag();
+
+  if (!item.GetLabel().IsEmpty())
+    SetLabel(item.GetLabel());
+  if (!item.GetLabel2().IsEmpty())
+    SetLabel2(item.GetLabel2());
+  if (!item.GetThumbnailImage().IsEmpty())
+    SetThumbnailImage(item.GetThumbnailImage());
+  if (!item.GetIconImage().IsEmpty())
+    SetIconImage(item.GetIconImage());
+  AppendProperties(item);
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 /////
 ///// CFileItemList

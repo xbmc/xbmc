@@ -695,8 +695,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       unsigned int iControl = message.GetSenderId();
       if (iControl == CONTROL_GROUP_CHOOSER)
       {
-        int iNewGroup = -1; // All Channels
-
+        const CPVRChannelGroup *selectedGroup = NULL;
         const CPVRChannelGroups *groups = CPVRManager::GetChannelGroups()->Get(CPVRManager::Get()->IsPlayingRadio());
 
         // Get the currently selected label of the Select button
@@ -713,7 +712,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
           {
             if (strLabel == groups->at(i)->GroupName())
             {
-              iNewGroup = groups->at(i)->GroupID();
+              selectedGroup = groups->at(i);
               break;
             }
           }
@@ -721,10 +720,10 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
         // Switch to the first channel of the new group if the new group ID is
         // different from the current one.
-        if (iNewGroup != CPVRManager::Get()->GetPlayingGroup())
+        if (*selectedGroup != *CPVRManager::Get()->GetPlayingGroup())
         {
-          CPVRManager::Get()->SetPlayingGroup(iNewGroup);
-          OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) groups->GetFirstChannelForGroupID(iNewGroup)));
+          CPVRManager::Get()->SetPlayingGroup(selectedGroup);
+          OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) groups->GetFirstChannelForGroupID(selectedGroup->GroupID())));
         }
 
         // hide the control and reset focus
@@ -1134,9 +1133,10 @@ void CGUIWindowFullScreen::FillInTVGroups()
     msg.SetLabel(593);
     g_windowManager.SendMessage(msg);
   }
+  const CPVRChannelGroup *currentGroup = CPVRManager::Get()->GetPlayingGroup();
   for (int i = 0; i < (int) groups->size(); ++i)
   {
-    if (groups->at(i)->GroupID() == CPVRManager::Get()->GetPlayingGroup())
+    if (*groups->at(i) == *currentGroup)
       iCurrentGroup = iGroup;
 
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_GROUP_CHOOSER, iGroup++);

@@ -85,6 +85,13 @@ public:
   const CPVRChannelGroup *GetById(int iGroupId) const;
 
   /*!
+   * @brief Get a group given it's name.
+   * @param strName The name.
+   * @return The group or NULL if it wan't found.
+   */
+  const CPVRChannelGroup *GetByName(const CStdString &strName) const;
+
+  /*!
    * @brief Get the group that contains all channels.
    * @return The group that contains all channels.
    */
@@ -96,20 +103,6 @@ public:
    * @return The amount of items that were added.
    */
   int GetGroupList(CFileItemList* results) const;
-
-  /*!
-   * @brief Get a group given it's database ID.
-   * @param iGroupId The database ID.
-   * @return The group or NULL if it wan't found.
-   */
-  const CPVRChannelGroup *GetGroupById(int iGroupId) const;
-
-  /*!
-   * @brief Get a group given it's name.
-   * @param strName The name.
-   * @return The group or NULL if it wan't found.
-   */
-  const CPVRChannelGroup *GetGroupByName(const CStdString &strName) const;
 
   /*!
    * @brief Get the ID of the first channel in a group.
@@ -126,11 +119,25 @@ public:
   int GetPreviousGroupID(int iGroupId) const;
 
   /*!
+   * @brief Get the previous group in this container.
+   * @param group The current group.
+   * @return The previous group or the group containing all channels if it wasn't found.
+   */
+  const CPVRChannelGroup *GetPreviousGroup(const CPVRChannelGroup &group) const;
+
+  /*!
    * @brief Get the ID of the next group in this container.
    * @param iGroupId The ID of the current group.
    * @return The ID of the next group or the ID of the group containing all channels if it wasn't found.
    */
   int GetNextGroupID(int iGroupId) const;
+
+  /*!
+   * @brief Get the next group in this container.
+   * @param group The current group.
+   * @return The next group or the group containing all channels if it wasn't found.
+   */
+  const CPVRChannelGroup *GetNextGroup(const CPVRChannelGroup &group) const;
 
   /*!
    * @brief Add a group to this container.
@@ -141,10 +148,10 @@ public:
 
   /*!
    * @brief Delete a group in this container.
-   * @param iGroupId The ID of the group.
+   * @param group The group to delete.
    * @return True if it was deleted successfully, false if not.
    */
-  bool DeleteGroup(int iGroupId);
+  bool DeleteGroup(const CPVRChannelGroup &group);
 
   /*!
    * @brief Add a channel to the group with the given ID.
@@ -152,7 +159,7 @@ public:
    * @param iGroupId The ID of the group to add the channel to.
    * @return True if the channel was added, false if not.
    */
-  bool AddChannelToGroup(const CPVRChannel &channel, int iGroupId);
+  bool AddChannelToGroup(CPVRChannel *channel, int iGroupId);
 
   /*!
    * @brief Get the name of a group.

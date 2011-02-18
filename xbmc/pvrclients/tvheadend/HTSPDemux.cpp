@@ -48,7 +48,7 @@ cHTSPDemux::~cHTSPDemux()
 
 bool cHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
 {
-  m_channel = channelinfo.number;
+  m_channel = channelinfo.uid;
   m_tag     = channelinfo.bouquet;
 
   if(!m_session.Connect(g_szHostname, g_iPortHTSP))
