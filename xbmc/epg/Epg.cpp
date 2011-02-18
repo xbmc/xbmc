@@ -59,22 +59,6 @@ CEpg::~CEpg(void)
 /** @name Public methods */
 //@{
 
-bool CEpg::Delete(void)
-{
-  bool bReturn = false;
-  CEpgDatabase *database = g_EpgContainer.GetDatabase();
-  if (!database || !database->Open())
-    return bReturn;
-
-  CSingleLock lock(m_critSection);
-  bReturn = database->Delete(*this);
-  lock.Leave();
-
-  database->Close();
-
-  return bReturn;
-}
-
 bool CEpg::HasValidEntries(void) const
 {
   CSingleLock lock(m_critSection);
@@ -367,7 +351,7 @@ bool CEpg::Load(void)
   }
   else
   {
-    CLog::Log(LOGNOTICE, "Epg - %s - %d entries found in the database for table %d.",
+    CLog::Log(LOGDEBUG, "Epg - %s - %d entries found in the database for table %d.",
         __FUNCTION__, iEntriesLoaded, m_iEpgID);
     bReturn = true;
   }
@@ -598,7 +582,7 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
       int iDiffSeconds = diff.GetSeconds() + diff.GetMinutes() * 60 + diff.GetHours() * 3600 + diff.GetDays() * 86400;
       CDateTime newTime = previousTag->End() - CDateTimeSpan(0, 0, 0, (int) (iDiffSeconds / 2));
 
-      CLog::Log(LOGNOTICE, "EPG - %s - mediating start and end times of EPG events '%s' at '%s' to '%s' and '%s' at '%s' to '%s': using '%s'",
+      CLog::Log(LOGDEBUG, "EPG - %s - mediating start and end times of EPG events '%s' at '%s' to '%s' and '%s' at '%s' to '%s': using '%s'",
           __FUNCTION__, currentTag->Title().c_str(),
           currentTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
           currentTag->End().GetAsLocalizedDateTime(false, false).c_str(),

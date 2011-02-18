@@ -239,6 +239,28 @@ CEpg *CEpgContainer::CreateEpg(int iEpgId)
   return new CEpg(iEpgId);
 }
 
+bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = false */)
+{
+  bool bReturn = false;
+
+  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+  {
+    if (at(iEpgPtr)->m_iEpgID == epg.m_iEpgID)
+    {
+      if (bDeleteFromDatabase && m_database.Open())
+      {
+        m_database.Delete(*at(iEpgPtr));
+        m_database.Close();
+      }
+
+      delete at(iEpgPtr);
+      bReturn = true;
+    }
+  }
+
+  return bReturn;
+}
+
 bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 {
   long iStartTime                         = CTimeUtils::GetTimeMS();

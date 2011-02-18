@@ -100,8 +100,8 @@ bool CPVRChannel::Delete(void)
   /* delete the EPG table */
   if (m_EPG)
   {
-    m_EPG->Delete();
-    delete m_EPG;
+    CPVRManager::GetEpg()->DeleteEpg(*m_EPG, true);
+    m_EPG = NULL;
   }
 
   bReturn = database->Delete(*this);

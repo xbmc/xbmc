@@ -165,6 +165,14 @@ public:
   virtual void Reset(void) { Clear(true); }
 
   /*!
+   * @brief Delete an EPG table from this container.
+   * @param epg The table to delete.
+   * @param bDeleteFromDatabase Delete this table from the database too if true.
+   * @return
+   */
+  virtual bool DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase = false);
+
+  /*!
    * @brief Process a notification from an observable.
    * @param obs The observable that sent the update.
    * @param msg The update message.
