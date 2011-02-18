@@ -31,6 +31,7 @@ SRCS=AlarmClock.cpp \
      PCMRemap.cpp \
      PerformanceSample.cpp \
      PerformanceStats.cpp \
+     ReferenceCounting.cpp \
      RegExp.cpp \
      RingBuffer.cpp \
      RssReader.cpp \

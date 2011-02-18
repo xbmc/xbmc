@@ -1412,6 +1412,7 @@ OUTPUT_FILES="Makefile \
     xbmc/cores/dvdplayer/Makefile \
     lib/Makefile \
     lib/libdvd/Makefile \
+    xbmc/cores/DllLoader/Makefile \
     xbmc/cores/dvdplayer/DVDCodecs/Makefile \
     xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile \
     xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile \

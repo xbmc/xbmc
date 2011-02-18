@@ -9,10 +9,13 @@ SRCS=coff.cpp \
      dll_tracker_file.cpp \
      dll_tracker_library.cpp \
      dll_util.cpp \
-     ldt_keeper.c \
      LibraryLoader.cpp \
      mmap_anon.c \
      SoLoader.cpp \
+
+ifneq ($(findstring freebsd,@ARCH@),freebsd)
+SRCS += ldt_keeper.c
+endif
 
 LIB=dllloader.a
 

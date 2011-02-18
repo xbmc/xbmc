@@ -289,6 +289,8 @@ xbmc/powermanagement/linux/powermanagement_linux.a: force
 	$(MAKE) -C xbmc/powermanagement/linux
 xbmc/powermanagement/osx/powermanagement.a: force
 	$(MAKE) -C xbmc/powermanagement/osx
+xbmc/windowing/X11/windowing_X11.a: force
+	$(MAKE) -C xbmc/windowing/X11
 xbmc/rendering/rendering.a: force
 	$(MAKE) -C xbmc/rendering
 xbmc/rendering/gl/rendering_gl.a: force
@@ -299,8 +301,6 @@ xbmc/windowing/windowing.a: force
 	$(MAKE) -C xbmc/windowing
 xbmc/windowing/egl/windowing_egl.a: force
 	$(MAKE) -C xbmc/windowing/egl
-xbmc/windowing/X11/windowing_X11.a: force
-	$(MAKE) -C xbmc/windowing/X11
 xbmc/windowing/osx/windowing_osx.a: force
 	$(MAKE) -C xbmc/windowing/osx
 xbmc/storage/storage.a: force
@@ -629,7 +629,7 @@ xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
 else
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin -Wl,--whole-archive $(DYNOBJSXBMC) -Wl,--no-whole-archive $(OBJSXBMC) $(LIBS) -rdynamic
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive $(LIBS) -rdynamic
 endif
 
 xbmc-xrandr: xbmc-xrandr.c
