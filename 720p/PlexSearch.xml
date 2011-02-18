@@ -6,34 +6,7 @@
       <posy>0</posy>
       <width>1280</width>
       <height>720</height>
-      <texture>TemporarySearchBackground.png</texture>  
-    </control>
-    
-    <!-- Background & overlays -->
-    <include>Background</include>
-    <control type="group">
-      <include>BackgroundOverlayFade</include>
-      <control type="image">
-  			<description>Background Overlay</description>
-  			<include>FullScreenOverlayDims</include>
-  			<texture>FullScreenOverlay.png</texture>
-  		</control>
-    </control>
-
-    <!-- Top title -->
-    <control type="group">
-      <include>TopOverlayTitlePos</include>
-      <include>TopOverlayFirstTitleAreaBG</include>
-      <control type="label">
-        <description>Videos label</description>
-        <include>TopOverlayFirstTitleAreaText</include>
-        <label>Search</label>
-      </control>
-    </control>
-    
-    <!-- Clock -->
-    <control type="group">
-      <include>Clock</include>
+      <texture>plex-search-background.png</texture>  
     </control>
     
     <!-- Loading indicator -->
@@ -54,13 +27,19 @@
     
     <!-- Keyboard & text field -->
 		<control type="group">
-			<posx>20</posx>
-			<posy>50</posy>
+		  <animation effect="fade" start="0" end="100" time="30">WindowOpen</animation>
+			<posx>0</posx>
+			<posy>0</posy>
+			<control type="image">
+			  <posx>0</posx>
+        <posy>25</posy>
+        <texture>plex-search-input.png</texture>  
+		  </control>
 			<control type="label" id="310">
-				<posx>10</posx>
-				<posy>0</posy>
-				<font>LargeDefaultFont</font>
-				<textcolor>HomeMain</textcolor>
+				<posx>28</posx>
+				<posy>25</posy>
+				<font>LargeSearchFont</font>
+				<textcolor>VeryDark</textcolor>
 				<focusedcolor>Focused</focusedcolor>
 				<width>278</width>
 				<height>50</height>
@@ -77,9 +56,12 @@
 				<label></label>
 			</control>
 			<control type="group" id="4000">
+			  <posx>20</posx>
+			  <posy>50</posy>
+			  
 				<control type="grouplist" id="350">
 					<visible>true</visible>
-					<posx>10</posx>
+					<posx>5</posx>
 					<!--posy>194</posy-->
 					<posy>50</posy>
 					<width>348</width>
@@ -104,7 +86,7 @@
 							<ondown>71</ondown>
 							<posx>0</posx>
 							<posy>9</posy>
-							<label>a</label>
+							<label>A</label>
 						</control>
 						<control type="button" id="66">
 							<include>Search_Keyboard_Button</include>
@@ -115,7 +97,7 @@
 							<ondown>72</ondown>
 							<posx>54</posx>
 							<posy>9</posy>
-							<label>b</label>
+							<label>B</label>
 						</control>
 						<control type="button" id="67">
 							<include>Search_Keyboard_Button</include>
@@ -126,7 +108,7 @@
 							<ondown>73</ondown>
 							<posx>108</posx>
 							<posy>9</posy>
-							<label>c</label>
+							<label>C</label>
 						</control>
 						<control type="button" id="68">
 							<include>Search_Keyboard_Button</include>
@@ -137,7 +119,7 @@
 							<ondown>74</ondown>
 							<posx>162</posx>
 							<posy>9</posy>
-							<label>d</label>
+							<label>D</label>
 						</control>
 						<control type="button" id="69">
 							<include>Search_Keyboard_Button</include>
@@ -148,7 +130,7 @@
 							<ondown>75</ondown>
 							<posx>216</posx>
 							<posy>9</posy>
-							<label>e</label>
+							<label>E</label>
 						</control>
 						<control type="button" id="70">
 							<include>Search_Keyboard_Button</include>
@@ -159,7 +141,7 @@
 							<ondown>76</ondown>
 							<posx>270</posx>
 							<posy>9</posy>
-							<label>f</label>
+							<label>F</label>
 						</control>
 					</control>
 					<control type="group" id="352">
@@ -174,7 +156,7 @@
 							<ondown>77</ondown>
 							<posx>0</posx>
 							<posy>9</posy>
-							<label>g</label>
+							<label>G</label>
 						</control>
 						<control type="button" id="72">
 							<include>Search_Keyboard_Button</include>
@@ -185,7 +167,7 @@
 							<ondown>78</ondown>
 							<posx>54</posx>
 							<posy>9</posy>
-							<label>h</label>
+							<label>H</label>
 						</control>
 						<control type="button" id="73">
 							<include>Search_Keyboard_Button</include>
@@ -196,7 +178,7 @@
 							<ondown>79</ondown>
 							<posx>108</posx>
 							<posy>9</posy>
-							<label>i</label>
+							<label>I</label>
 						</control>
 						<control type="button" id="74">
 							<include>Search_Keyboard_Button</include>
@@ -207,7 +189,7 @@
 							<ondown>80</ondown>
 							<posx>162</posx>
 							<posy>9</posy>
-							<label>j</label>
+							<label>J</label>
 						</control>
 						<control type="button" id="75">
 							<include>Search_Keyboard_Button</include>
@@ -218,7 +200,7 @@
 							<ondown>81</ondown>
 							<posx>216</posx>
 							<posy>9</posy>
-							<label>k</label>
+							<label>K</label>
 						</control>
 						<control type="button" id="76">
 							<include>Search_Keyboard_Button</include>
@@ -229,7 +211,7 @@
 							<ondown>82</ondown>
 							<posx>270</posx>
 							<posy>9</posy>
-							<label>l</label>
+							<label>L</label>
 						</control>
 					</control>
 					<control type="group" id="353">
@@ -244,7 +226,7 @@
 							<ondown>83</ondown>
 							<posx>0</posx>
 							<posy>9</posy>
-							<label>m</label>
+							<label>M</label>
 						</control>
 						<control type="button" id="78">
 							<include>Search_Keyboard_Button</include>
@@ -255,7 +237,7 @@
 							<ondown>84</ondown>
 							<posx>54</posx>
 							<posy>9</posy>
-							<label>n</label>
+							<label>N</label>
 						</control>
 						<control type="button" id="79">
 							<include>Search_Keyboard_Button</include>
@@ -266,7 +248,7 @@
 							<ondown>85</ondown>
 							<posx>108</posx>
 							<posy>9</posy>
-							<label>o</label>
+							<label>O</label>
 						</control>
 						<control type="button" id="80">
 							<include>Search_Keyboard_Button</include>
@@ -277,7 +259,7 @@
 							<ondown>86</ondown>
 							<posx>162</posx>
 							<posy>9</posy>
-							<label>p</label>
+							<label>P</label>
 						</control>
 						<control type="button" id="81">
 							<include>Search_Keyboard_Button</include>
@@ -288,7 +270,7 @@
 							<ondown>87</ondown>
 							<posx>216</posx>
 							<posy>9</posy>
-							<label>q</label>
+							<label>Q</label>
 						</control>
 						<control type="button" id="82">
 							<include>Search_Keyboard_Button</include>
@@ -299,7 +281,7 @@
 							<ondown>88</ondown>
 							<posx>270</posx>
 							<posy>9</posy>
-							<label>r</label>
+							<label>R</label>
 						</control>
 					</control>
 					<control type="group" id="354">
@@ -314,7 +296,7 @@
 							<ondown>89</ondown>
 							<posx>0</posx>
 							<posy>9</posy>
-							<label>s</label>
+							<label>S</label>
 						</control>
 						<control type="button" id="84">
 							<include>Search_Keyboard_Button</include>
@@ -325,7 +307,7 @@
 							<ondown>90</ondown>
 							<posx>54</posx>
 							<posy>9</posy>
-							<label>t</label>
+							<label>T</label>
 						</control>
 						<control type="button" id="85">
 							<include>Search_Keyboard_Button</include>
@@ -336,7 +318,7 @@
 							<ondown>91</ondown>
 							<posx>108</posx>
 							<posy>9</posy>
-							<label>u</label>
+							<label>U</label>
 						</control>
 						<control type="button" id="86">
 							<include>Search_Keyboard_Button</include>
@@ -347,7 +329,7 @@
 							<ondown>92</ondown>
 							<posx>162</posx>
 							<posy>9</posy>
-							<label>v</label>
+							<label>V</label>
 						</control>
 						<control type="button" id="87">
 							<include>Search_Keyboard_Button</include>
@@ -358,7 +340,7 @@
 							<ondown>93</ondown>
 							<posx>216</posx>
 							<posy>9</posy>
-							<label>w</label>
+							<label>W</label>
 						</control>
 						<control type="button" id="88">
 							<include>Search_Keyboard_Button</include>
@@ -369,7 +351,7 @@
 							<ondown>94</ondown>
 							<posx>270</posx>
 							<posy>9</posy>
-							<label>x</label>
+							<label>X</label>
 						</control>
 					</control>
 					<control type="group" id="355">
@@ -384,7 +366,7 @@
 							<ondown>95</ondown>
 							<posx>0</posx>
 							<posy>9</posy>
-							<label>y</label>
+							<label>Y</label>
 						</control>
 						<control type="button" id="90">
 							<include>Search_Keyboard_Button</include>
@@ -395,7 +377,7 @@
 							<ondown>96</ondown>
 							<posx>54</posx>
 							<posy>9</posy>
-							<label>z</label>
+							<label>Z</label>
 						</control>
 						<control type="button" id="91">
 							<include>Search_Keyboard_Button</include>
@@ -451,7 +433,7 @@
 							<onleft>5100</onleft>
 							<onright>96</onright>
 							<onup>89</onup>
-							<ondown>4200</ondown>
+							<ondown>8</ondown>
 							<posx>0</posx>
 							<posy>9</posy>
 							<label>$LOCALIZE[12314]</label>
@@ -462,7 +444,7 @@
 							<onleft>95</onleft>
 							<onright>97</onright>
 							<onup>90</onup>
-							<ondown>33</ondown>
+							<ondown>8</ondown>
 							<posx>54</posx>
 							<posy>9</posy>
 							<label>$LOCALIZE[12315]</label>
@@ -495,7 +477,7 @@
 							<onleft>98</onleft>
 							<onright>100</onright>
 							<onup>93</onup>
-							<ondown>8</ondown>
+							<ondown>10</ondown>
 							<posx>216</posx>
 							<posy>9</posy>
 							<label>$LOCALIZE[12318]</label>
@@ -506,7 +488,7 @@
 							<onleft>99</onleft>
 							<onright>5100</onright>
 							<onup>94</onup>
-							<ondown>8</ondown>
+							<ondown>10</ondown>
 							<posx>270</posx>
 							<posy>9</posy>
 							<label>$LOCALIZE[12319]</label>
@@ -515,114 +497,61 @@
 					<control type="group" id="357">
 						<width>348</width>
 						<height>54</height>
-						<control type="togglebutton" id="4200">
-							<posx>0</posx>
-							<posy>9</posy>
-							<include>Search_Keyboard_Button</include>
-							<onleft>100</onleft>
-							<onright>33</onright>
-							<onup>95</onup>
-							<ondown>-</ondown>
-							<label>#</label>
-							<altlabel>#</altlabel>
-							<usealttexture>Button.IsSelected(4200)</usealttexture>
-							<onclick/>
-							<altclick/>
-							<alttexturenofocus border="18" diffuse="grey.png">button_keyboard_toggle_on.png</alttexturenofocus>
-							<alttexturefocus border="18" diffuse="masks/10b9f2.png">button_keyboard_toggle_on.png</alttexturefocus>
-						</control>
-						<control type="group">
-							<!-- language -->
-							<posx>54</posx>
-							<posy>9</posy>
-							<width>54</width>
-							<height>54</height>
-							<control type="button" id="33">
-								<description>language button</description>
-								<include>Search_Keyboard_Button</include>
-								<onleft>4200</onleft>
-								<onright>32</onright>
-								<onup>96</onup>
-								<ondown>-</ondown>
-								<label>-</label>
-								<onclick>ToggleKeyboard</onclick>
-							</control>
-							<control type="image">
-								<visible>!Control.HasFocus(33)</visible>
-								<posx>1</posx>
-								<posy>1</posy>
-								<width>34</width>
-								<height>34</height>
-								<texture>icons/icon_keyboard.png</texture>
-								<colordiffuse>F3FFFFFF</colordiffuse>
-							</control>
-							<control type="image">
-								<visible>Control.HasFocus(33)</visible>
-								<posx>1</posx>
-								<posy>1</posy>
-								<width>34</width>
-								<height>34</height>
-								<texture>icons/icon_keyboard.png</texture>
-								<colordiffuse>F3000000</colordiffuse>
-							</control>
-						</control>
-						<control type="button" id="32">
-							<posx>108</posx>
+						<!-- Delete button -->
+						<control type="button" id="8">
+							<font>MediumSearchFont</font>
+							<posx>13</posx>
 							<posy>9</posy>
 							<width>92</width>
-							<height>36</height>
-							<onleft>33</onleft>
-							<onright>8</onright>
-							<onup>97</onup>
+							<height>40</height>
+							<onleft>100</onleft>
+							<onright>32</onright>
+							<onup>95</onup>
 							<ondown>-</ondown>
-							<label>[LOWERCASE]$LOCALIZE[20182][/LOWERCASE]</label>
-							<align>center</align>
-							<aligny>center</aligny>
-							<textcolor>white</textcolor>
-							<focusedcolor>black</focusedcolor>
-							<onclick>-</onclick>
-							<texturenofocus border="10" diffuse="grey.png">button_keyboard.png</texturenofocus>
-							<texturefocus border="10" diffuse="masks/10b9f2.png">button_keyboard.png</texturefocus>
-							<textureclick border="10">-</textureclick>
+							<label>Delete</label>
+							<onclick/>
+							<texturefocus>plex-search-button-wide.png</texturefocus>
 						</control>
 						<control type="group">
-							<!-- backspace -->
+							<posx>120</posx>
+							<posy>9</posy>
+							<width>92</width>
+							<height>54</height>
+							<!-- Space -->
+							<control type="button" id="32">
+  							<font>MediumSearchFont</font>
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>92</width>
+								<height>40</height>
+								<onleft>8</onleft>
+								<onright>10</onright>
+								<onup>97</onup>
+								<ondown>-</ondown>
+								<label>Space</label>
+								<onclick/>
+								<texturefocus>plex-search-button-wide.png</texturefocus>
+							</control>
+						</control>
+						<control type="group">
+							<!-- Clear -->
 							<posx>216</posx>
 							<posy>9</posy>
 							<width>92</width>
 							<height>54</height>
-							<control type="button" id="8">
-								<description>Backspace button</description>
+							<control type="button" id="10">
+								<font>MediumSearchFont</font>
 								<posx>0</posx>
 								<posy>0</posy>
 								<width>92</width>
-								<height>36</height>
-								<texturenofocus border="10" diffuse="grey.png">button_keyboard.png</texturenofocus>
-								<texturefocus border="10" diffuse="masks/10b9f2.png">button_keyboard.png</texturefocus>
-								<textureclick border="10">-</textureclick>
+								<height>40</height>
 								<onleft>32</onleft>
 								<onright>9001</onright>
 								<onup>99</onup>
 								<ondown>-</ondown>
-								<label>DEL</label>
-							</control>
-							<control type="image">
-								<visible>!Control.HasFocus(8)</visible>
-								<posx>35</posx>
-								<posy>10</posy>
-								<width>22</width>
-								<height>16</height>
-								<texture>icons/icon_backspace.png</texture>
-								<colordiffuse>F3FFFFFF</colordiffuse>
-							</control>
-							<control type="image">
-								<visible>Control.HasFocus(8)</visible>
-								<posx>35</posx>
-								<posy>10</posy>
-								<width>22</width>
-								<height>16</height>
-								<texture>icons/icon_backspace.png</texture>
-								<colordiffuse>F3000000</colordiffuse>
+								<label>Clear</label>
+								<onclick/>
+								<texturefocus>plex-search-button-wide.png</texturefocus>
 							</control>
 						</control>
 					</control>
@@ -630,26 +559,18 @@
 			</control>
 			<control type="group" id="5000">
 				<visible>true</visible>
-				<posx>350</posx>
-				<posy>50</posy>
+				<posx>390</posx>
+				<posy>25</posy>
 				<width>880</width>
 				<height>640</height>
 				
-				<control type="image">
-					<visible>false</visible>
-					<texture border="20">menu_dialog_background_bottom.png</texture>
-					<colordiffuse>FF212121</colordiffuse>
-					<width>880</width>
-					<height>660</height>
-				</control>
-
 				<!-- Container for the result categories -->
 				<control type="grouplist" id="5100">
 					<visible>true</visible>
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>880</width>
-					<height>660</height>
+					<height>600</height>
 					<ondown>5200</ondown>
 					<onup>310</onup>
 					<onright>350</onright>
@@ -754,8 +675,25 @@
 					<control type="list" id="9010">
 						<visible allowhiddenfocus="false">true</visible>
 						<orientation>horizontal</orientation>
-						<ondown>9012</ondown>
+						<ondown>9013</ondown>
 						<onup>9009</onup>
+						<onright>-</onright>
+						<onleft>350</onleft>
+						<include>Search_Result</include>
+						<height>200</height>
+					</control>
+
+					<!-- People -->
+					<control type="label" id="8013">
+						<include>Search_Label</include>
+						<label>ACTORS ($INFO[container(9013).numitems])</label>
+						<visible allowhiddenfocus="false">true</visible>
+					</control>
+					<control type="list" id="9013">
+						<visible allowhiddenfocus="false">true</visible>
+						<orientation>horizontal</orientation>
+						<onup>9010</onup>
+						<ondown>9012</ondown>
 						<onright>-</onright>
 						<onleft>350</onleft>
 						<include>Search_Result</include>

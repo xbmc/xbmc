@@ -1,6 +1,21 @@
 <fonts>
   <fontset id="Default" unicode="false">
 
+<!-- Search fonts -->
+<font>
+	<name>LargeSearchFont</name>
+	<filename>HelveticaNeue</filename>
+	<variant>Condensed Bold</variant>
+	<size>35</size>
+</font>
+<font>
+	<name>MediumSearchFont</name>
+	<filename>HelveticaNeue</filename>
+	<variant>Condensed Bold</variant>
+	<size>30</size>
+</font>
+
+
 <!-- Jay's Fonts -->
 	<font>
 		<name>LargeTitleFont</name>

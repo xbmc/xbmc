@@ -5,6 +5,7 @@
   <color name="Selected">FFFCFCFC</color>
   <color name="Highlighted">FFFF9900</color>
   <color name="Disabled">FF000000</color>
+  <color name="VeryDark">FF141414</color>
 
   <color name="HomeShadow">FF101010</color>
   <color name="HomeMain">FFFFFFFF</color>

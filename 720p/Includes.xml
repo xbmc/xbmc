@@ -111,15 +111,14 @@
 		</focusedlayout>
 	</include>
 	<include name="Search_Keyboard_Button">
-		<width>36</width>
-		<height>36</height>
-		<font>LargeDefaultFont</font>
+		<width>45</width>
+		<height>40</height>
+		<font>LargeSearchFont</font>
 		<textcolor>HomeMain</textcolor>
 		<focusedcolor>Focused</focusedcolor>
 		<align>center</align>
 		<aligny>center</aligny>
-		<texturenofocus border="10" diffuse="grey.png">button_keyboard.png</texturenofocus>
-		<texturefocus border="10" diffuse="masks/10b9f2.png">button_keyboard.png</texturefocus>
+		<texturefocus>plex-search-button.png</texturefocus>
 		<textureclick border="10">-</textureclick>
 	</include>
 	<include name="Search_Keyboard_ToggleButton">
