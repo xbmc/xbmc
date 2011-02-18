@@ -46,6 +46,6 @@ protected:
  *  work correctly from the data segment.
  */
 static xbmcutil::Referenced::ref<CWinSystemOSXGL> g_WindowingRef(xbmcutil::Singleton<CWinSystemOSXGL>::getInstance);
-#define g_Windowing (*(g_WindowingRef))
+#define g_Windowing (*(xbmcutil::Singleton<CWinSystemOSXGL>::getInstance()))
 
-endif // WINDOW_SYSTEM_H
+#endif // WINDOW_SYSTEM_H
