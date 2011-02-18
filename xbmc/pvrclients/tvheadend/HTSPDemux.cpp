@@ -57,8 +57,6 @@ bool cHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
   if(!g_szUsername.IsEmpty())
     m_session.Auth(g_szUsername, g_szPassword);
 
-  m_session.SendEnableAsync();
-
   if(!m_session.SendSubscribe(m_subs, m_channel))
     return false;
 
