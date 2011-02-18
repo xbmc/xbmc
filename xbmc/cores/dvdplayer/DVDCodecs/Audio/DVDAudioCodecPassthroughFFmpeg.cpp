@@ -135,7 +135,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   const char *spdifFlags = "-be";
 #endif
 
-  /* request big-endian output */
+  /* request output of wanted endianness */
   if (!fOut->priv_class || m_dllAvUtil.av_set_string3(muxer.m_pFormat->priv_data, "spdif_flags", spdifFlags, 0, NULL) != 0)
 #endif
   {
