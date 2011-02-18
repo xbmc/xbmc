@@ -128,33 +128,26 @@ void CPVRManager::Start()
   CLog::Log(LOGNOTICE, "PVRManager - starting up");
 
   ResetProperties();
+  CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
 
-  /* discover, load and create chosen client addons */
-  if (!LoadClients())
-  {
-    CLog::Log(LOGERROR, "PVRManager - couldn't load any clients");
-  }
-  else
-  {
-    /* create the supervisor thread to do all background activities */
-    Create();
-    SetName("XBMC PVRManager");
-    SetPriority(-15);
-    CLog::Log(LOGNOTICE, "PVRManager - started with %u active clients", m_clients.size());
-  }
+  /* create the supervisor thread to do all background activities */
+  Create();
+  SetName("XBMC PVRManager");
+  SetPriority(-15);
+  CLog::Log(LOGNOTICE, "PVRManager - started with %u active clients", m_clients.size());
 }
 
 void CPVRManager::Stop()
 {
-  /* nothing to stop if we haven't started */
-  if (m_clients.empty())
-    return;
-
   CLog::Log(LOGNOTICE, "PVRManager - stopping");
-  if (m_currentPlayingRecording || m_currentPlayingChannel)
+
+  if (!m_clients.empty())
   {
-    CLog::Log(LOGNOTICE,"PVRManager - %s - stopping PVR playback", __FUNCTION__);
-    g_application.StopPlaying();
+    if (m_currentPlayingRecording || m_currentPlayingChannel)
+    {
+      CLog::Log(LOGNOTICE,"PVRManager - %s - stopping PVR playback", __FUNCTION__);
+      g_application.StopPlaying();
+    }
   }
 
   StopThreads();
@@ -163,7 +156,8 @@ void CPVRManager::Stop()
 
 bool CPVRManager::LoadClients()
 {
-  CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
+  if (m_bAllClientsLoaded)
+    return !m_clients.empty();
 
   /* get all PVR addons */
   VECADDONS addons;
@@ -174,9 +168,10 @@ bool CPVRManager::LoadClients()
   if (!m_database.Open())
     return false;
 
-  m_clientsProps.clear();
+  m_bAllClientsLoaded = true;
   for (unsigned iClientPtr = 0; iClientPtr < addons.size(); iClientPtr++)
   {
+    bool bStarted = false;
     const AddonPtr clientAddon = addons.at(iClientPtr);
     if (!clientAddon->Enabled())
       continue;
@@ -187,24 +182,47 @@ bool CPVRManager::LoadClients()
     {
       CLog::Log(LOGERROR, "PVRManager - %s - can't add client '%s' to the database",
           __FUNCTION__, clientAddon->Name().c_str());
+      // don't set "m_bAllClientsLoaded = false;" here because this will enter a neverending loop
       continue;
     }
+
+    /* check if this client isn't active already */
+    for (unsigned int iClientPtr = 0; iClientPtr < m_clients.size(); iClientPtr++)
+    {
+      if (m_clients.at(iClientPtr)->ID() == clientAddon->ID() && m_clients.at(iClientPtr)->ReadyToUse())
+      {
+        /* already started */
+        bStarted = true;
+        break;
+      }
+    }
+
+    if (bStarted)
+      continue;
 
     /* load and initialise the client libraries */
     boost::shared_ptr<CPVRClient> addon = boost::dynamic_pointer_cast<CPVRClient>(clientAddon);
     if (addon && addon->Create(iClientId, this))
     {
-      m_clients.insert(std::make_pair(iClientId, addon));
-
       /* get the client's properties */
       PVR_SERVERPROPS props;
       if (addon->GetProperties(&props) == PVR_ERROR_NO_ERROR)
+      {
+        m_clients.insert(std::make_pair(iClientId, addon));
         m_clientsProps.insert(std::make_pair(iClientId, props));
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "PVRManager - %s - can't get client properties from addon '%s'",
+            __FUNCTION__, clientAddon->Name().c_str());
+        m_bAllClientsLoaded = false;
+      }
     }
     else
     {
       CLog::Log(LOGERROR, "PVRManager - %s - can't initialise client '%s'",
           __FUNCTION__, clientAddon->Name().c_str());
+      m_bAllClientsLoaded = false;
     }
   }
 
@@ -337,6 +355,9 @@ void CPVRManager::ResetProperties(void)
   m_recordingToggleCurrent   = 0;
   m_LastChannel              = 0;
   m_bChannelScanRunning      = false;
+  m_bAllClientsLoaded        = false;
+  m_clientsProps.clear();
+  m_clients.clear();
 }
 
 void CPVRManager::UpdateTimers(void)
@@ -406,7 +427,13 @@ bool CPVRManager::ContinueLastChannel()
 
 void CPVRManager::Process()
 {
-  if (!m_bLoaded)
+  while (!m_bStop && !m_bAllClientsLoaded)
+  {
+    LoadClients();
+    Sleep(3000);
+  }
+
+  if (!m_bStop)
   {
     /* load all channels and groups */
     m_channelGroups->Load();
@@ -428,7 +455,7 @@ void CPVRManager::Process()
   }
 
   /* Continue last watched channel after first startup */
-  if (m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
+  if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
     ContinueLastChannel();
 
   /* main loop */

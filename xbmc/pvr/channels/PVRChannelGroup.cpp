@@ -21,7 +21,7 @@
 
 /**
  * TODO:
- * - use Observervable here, so we can use event driven operations later
+ * - use Observable here, so we can use event driven operations later
  */
 
 #include "settings/GUISettings.h"

@@ -644,6 +644,7 @@ private:
   bool                            m_bFirstStart;              /*!< true when the PVR manager was started first, false otherwise */
   bool                            m_bLoaded;
   bool                            m_bChannelScanRunning;      /*!< true if a channel scan is currently running, false otherwise */
+  bool                            m_bAllClientsLoaded;        /*!< true if all clients are loaded, false otherwise */
 
   bool                            m_bTriggerChannelsUpdate;   /*!< set to true to let the background thread update the channels list */
   bool                            m_bTriggerRecordingsUpdate; /*!< set to true to let the background thread update the recordings list */
