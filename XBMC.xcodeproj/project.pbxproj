@@ -1131,6 +1131,8 @@
 		F52B06BB1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */; };
 		F52BFFDB115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */; };
 		F52BFFDC115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */; };
+		F5475982130EEA4A00850A9A /* ReferenceCounting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5475980130EEA4A00850A9A /* ReferenceCounting.cpp */; };
+		F5475983130EEA4A00850A9A /* ReferenceCounting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5475980130EEA4A00850A9A /* ReferenceCounting.cpp */; };
 		F548786D0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
 		F548786E0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
 		F5487B4C0FE6F02700E506FD /* StreamDetails.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5487B4B0FE6F02700E506FD /* StreamDetails.cpp */; };
@@ -3670,6 +3672,8 @@
 		F52B06B91187CE18004B1D66 /* DVDVideoCodecVDA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDVideoCodecVDA.h; path = xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecVDA.h; sourceTree = SOURCE_ROOT; };
 		F52BFFD9115D5574004B1D66 /* AddonStatusHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonStatusHandler.h; sourceTree = "<group>"; };
 		F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonStatusHandler.cpp; sourceTree = "<group>"; };
+		F5475980130EEA4A00850A9A /* ReferenceCounting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReferenceCounting.cpp; sourceTree = "<group>"; };
+		F5475981130EEA4A00850A9A /* ReferenceCounting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReferenceCounting.h; sourceTree = "<group>"; };
 		F548786B0FE060FF00E506FD /* DVDSubtitleParserMPL2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMPL2.h; sourceTree = "<group>"; };
 		F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = DVDSubtitleParserMPL2.cpp; sourceTree = "<group>"; };
 		F5487B4A0FE6F02700E506FD /* StreamDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamDetails.h; sourceTree = "<group>"; };
@@ -6865,6 +6869,8 @@
 				E38E1E700D25F9FD00618676 /* PerformanceSample.h */,
 				E38E1E710D25F9FD00618676 /* PerformanceStats.cpp */,
 				E38E1E720D25F9FD00618676 /* PerformanceStats.h */,
+				F5475980130EEA4A00850A9A /* ReferenceCounting.cpp */,
+				F5475981130EEA4A00850A9A /* ReferenceCounting.h */,
 				E38E1E730D25F9FD00618676 /* RegExp.cpp */,
 				E38E1E740D25F9FD00618676 /* RegExp.h */,
 				F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */,
@@ -8177,6 +8183,7 @@
 				18C1D22D13033F6A00CFFE59 /* GLUtils.cpp in Sources */,
 				183C454D130C4D55006AA317 /* xbmcvfsmodule.cpp in Sources */,
 				F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */,
+				F5475982130EEA4A00850A9A /* ReferenceCounting.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9053,6 +9060,7 @@
 				433219DC12E4C6A500CD7486 /* UDFDirectory.cpp in Sources */,
 				7C4705AF12EF584C00369E51 /* AddonInstaller.cpp in Sources */,
 				18C1D22E13033F6A00CFFE59 /* GLUtils.cpp in Sources */,
+				F5475983130EEA4A00850A9A /* ReferenceCounting.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
