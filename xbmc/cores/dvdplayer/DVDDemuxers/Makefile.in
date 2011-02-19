@@ -3,11 +3,10 @@ INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
 SRCS=	DVDDemux.cpp \
 	DVDDemuxFFmpeg.cpp \
 	DVDDemuxHTSP.cpp \
+	DVDDemuxPVRClient.cpp \
 	DVDDemuxShoutcast.cpp \
 	DVDDemuxUtils.cpp \
 	DVDDemuxVobsub.cpp \
-	DVDDemuxHTSP.cpp \
-	DVDDemuxPVRClient.cpp \
 	DVDFactoryDemuxer.cpp \
 
 LIB=	DVDDemuxers.a

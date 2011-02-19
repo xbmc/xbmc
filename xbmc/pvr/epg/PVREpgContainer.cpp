@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SingleLock.h"
 #include "PVREpgContainer.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -29,6 +30,7 @@ using namespace std;
 
 void CPVREpgContainer::Clear(bool bClearDb /* = false */)
 {
+  CSingleLock lock(m_critSection);
   // XXX stop the timers from being updated while clearing tags
   /* remove all pointers to epg tables on timers */
   CPVRTimers *timers = CPVRManager::GetTimers();
@@ -65,6 +67,7 @@ int CPVREpgContainer::GetEPGAll(CFileItemList* results, bool bRadio /* = false *
 {
   int iInitialSize = results->Size();
 
+  CSingleLock lock(m_critSection);
   for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
   {
     CPVREpg *epg = (CPVREpg *) at(iEpgPtr);
@@ -188,13 +191,14 @@ int CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFil
 int CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
 {
   CPVRChannelGroup *channels = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(bRadio);
+  CSingleLock lock(m_critSection);
   int iInitialSize           = results->Size();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->Size(); iChannelPtr++)
   {
     CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
     CPVREpg *epg = channel->GetEPG();
-    if (!epg->HasValidEntries() || epg->IsUpdateRunning())
+    if (!epg->HasValidEntries())
       continue;
 
     const CPVREpgInfoTag *epgNow = (CPVREpgInfoTag *) epg->InfoTagNow();
@@ -214,20 +218,19 @@ int CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
 int CPVREpgContainer::GetEPGNext(CFileItemList* results, bool bRadio)
 {
   CPVRChannelGroup *channels = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(bRadio);
+  CSingleLock lock(m_critSection);
   int iInitialSize           = results->Size();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->Size(); iChannelPtr++)
   {
     CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
     CPVREpg *epg = channel->GetEPG();
-    if (!epg->HasValidEntries() || epg->IsUpdateRunning())
+    if (!epg->HasValidEntries())
       continue;
 
     const CPVREpgInfoTag *epgNext = (CPVREpgInfoTag *) epg->InfoTagNext();
     if (!epgNext)
-    {
       continue;
-    }
 
     CFileItemPtr entry(new CFileItem(*epgNext));
     entry->SetLabel2(epgNext->Start().GetAsLocalizedTime("", false));

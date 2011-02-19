@@ -1105,7 +1105,6 @@
 							<selectedcolor>grey</selectedcolor>
 							<align>left</align>
 							<aligny>center</aligny>
-							<visible>IsEmpty(Listitem.Icon)</visible>
 							<label>$INFO[ListItem.Title]</label>
 						</control>
 						<control type="label">
@@ -1118,7 +1117,6 @@
 							<selectedcolor>grey</selectedcolor>
 							<align>left</align>
 							<aligny>center</aligny>
-							<visible>!IsEmpty(Listitem.Icon)</visible>
 							<label>$INFO[ListItem.Title]</label>
 						</control>
 						<control type="image">

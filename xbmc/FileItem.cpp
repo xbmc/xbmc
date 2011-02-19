@@ -145,7 +145,9 @@ CFileItem::CFileItem(const CPVREpgInfoTag& tag)
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
+
   Reset();
+
   m_strPath = tag.Path();
   m_bIsFolder = false;
   *GetEPGInfoTag() = tag;
@@ -153,9 +155,18 @@ CFileItem::CFileItem(const CPVREpgInfoTag& tag)
   if (tag.Timer())
     *GetPVRTimerInfoTag() = *tag.Timer();
   SetLabel(tag.Title());
-  SetThumbnailImage(tag.Icon());
   m_strLabel2 = tag.Plot();
-  SetInvalid();
+
+  FillInDefaultIcon();
+  if (!tag.Icon().IsEmpty())
+  {
+    SetThumbnailImage(tag.Icon());
+    SetIconImage(tag.Icon());
+  }
+  else
+  {
+    SetInvalid();
+  }
 }
 
 CFileItem::CFileItem(const CEpgInfoTag& tag)
@@ -167,14 +178,25 @@ CFileItem::CFileItem(const CEpgInfoTag& tag)
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
+
   Reset();
+
   m_strPath = tag.Path();
   m_bIsFolder = false;
   *GetEPGInfoTag() = tag;
   SetLabel(tag.Title());
-  SetThumbnailImage(tag.Icon());
   m_strLabel2 = tag.Plot();
-  SetInvalid();
+
+  FillInDefaultIcon();
+  if (!tag.Icon().IsEmpty())
+  {
+    SetThumbnailImage(tag.Icon());
+    SetIconImage(tag.Icon());
+  }
+  else
+  {
+    SetInvalid();
+  }
 }
 
 CFileItem::CFileItem(const CPVRChannel& channel)
@@ -186,15 +208,25 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
+
   Reset();
+
   m_strPath = channel.Path();
   m_bIsFolder = false;
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
   m_strLabel2 = channel.GetEPGNow()->Title();
-  SetThumbnailImage(channel.IconPath());
 
-  SetInvalid();
+  FillInDefaultIcon();
+  if (!channel.IconPath().IsEmpty())
+  {
+    SetThumbnailImage(channel.IconPath());
+    SetIconImage(channel.IconPath());
+  }
+  else
+  {
+    SetInvalid();
+  }
 }
 
 CFileItem::CFileItem(const CPVRRecordingInfoTag& record)
@@ -206,12 +238,16 @@ CFileItem::CFileItem(const CPVRRecordingInfoTag& record)
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
+
   Reset();
+
   m_strPath = record.Path();
   m_bIsFolder = false;
   *GetPVRRecordingInfoTag() = record;
   SetLabel(record.m_strTitle);
   m_strLabel2 = record.Plot();
+
+  FillInDefaultIcon();
   SetInvalid();
 }
 
@@ -224,12 +260,16 @@ CFileItem::CFileItem(const CPVRTimerInfoTag& timer)
   m_pvrRecordingInfoTag = NULL;
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
+
   Reset();
+
   m_strPath = timer.Path();
   m_bIsFolder = false;
   *GetPVRTimerInfoTag() = timer;
   SetLabel(timer.Title());
   m_strLabel2 = timer.Summary();
+
+  FillInDefaultIcon();
   SetInvalid();
 }
 
@@ -1107,12 +1147,19 @@ void CFileItem::FillInDefaultIcon()
        * in mind the complexity of the code behind the check in the
        * case of IsWhatater() returns false.
        */
-      if ( IsLiveTV() )
+      if (IsPVRChannel())
+      {
+        if (GetPVRChannelInfoTag()->IsRadio())
+          SetIconImage("DefaultAudio.png");
+        else
+          SetIconImage("DefaultVideo.png");
+      }
+      else if ( IsLiveTV() )
       {
         // Live TV Channel
-        return;
+        SetIconImage("DefaultVideo.png");
       }
-      if ( IsAudio() )
+      else if ( IsAudio() )
       {
         // audio
         SetIconImage("DefaultAudio.png");
@@ -1120,6 +1167,14 @@ void CFileItem::FillInDefaultIcon()
       else if ( IsVideo() )
       {
         // video
+        SetIconImage("DefaultVideo.png");
+      }
+      else if (IsPVRRecording())
+      {
+        SetIconImage("DefaultVideo.png");
+      }
+      else if (IsPVRTimer())
+      {
         SetIconImage("DefaultVideo.png");
       }
       else if ( IsPicture() )

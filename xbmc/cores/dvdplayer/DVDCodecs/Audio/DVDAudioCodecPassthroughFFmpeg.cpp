@@ -128,18 +128,20 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   // API added on: 2011-01-02
 
   /* While this is strictly only needed on big-endian systems, we do it on
-   * both to avoid as much dead code as possible. */
-#ifdef WORDS_BIGENDIAN
+   * both to avoid as much dead code as possible.
+   * CoreAudio (at least on the cases we've seen) wants IEC 61937 in
+   * little-endian format even on big-endian systems. */
+#if defined(WORDS_BIGENDIAN) && !defined(__APPLE__)
   const char *spdifFlags = "+be";
 #else
   const char *spdifFlags = "-be";
 #endif
 
-  /* request big-endian output */
+  /* request output of wanted endianness */
   if (!fOut->priv_class || m_dllAvUtil.av_set_string3(muxer.m_pFormat->priv_data, "spdif_flags", spdifFlags, 0, NULL) != 0)
 #endif
   {
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) && !defined(__APPLE__)
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Unable to set big-endian stream mode (FFmpeg too old?), disabling passthrough");
     Dispose();
     return false;

@@ -42,7 +42,6 @@ class CEpg : public std::vector<CEpgInfoTag*>
   friend class CPVREpg;
 
 private:
-  bool                       m_bUpdateRunning;  /*!< true if EPG is currently being updated */
   CStdString                 m_strName;         /*!< the name of this table */
   CStdString                 m_strScraperName;  /*!< the name of the scraper to use */
   int                        m_iEpgID;          /*!< the database ID of this table */
@@ -66,9 +65,10 @@ private:
 
   /*!
    * @brief Persist all tags in this container.
+   * @param bQueueWrite Don't execute the query immediately but queue it if true.
    * @return True if all tags were persisted, false otherwise.
    */
-  virtual bool PersistTags(void) const;
+  virtual bool PersistTags(bool bQueueWrite = false) const;
 
   /*!
    * @brief Fix overlapping events from the tables.
@@ -134,12 +134,6 @@ public:
    * @brief Destroy this EPG instance.
    */
   virtual ~CEpg(void);
-
-  /*!
-   * @brief Delete this EPG table from the database.
-   * @return True if it was deleted successfully, false otherwise.
-   */
-  virtual bool Delete(void);
 
   /*!
    * @brief The channel this EPG belongs to.
@@ -224,12 +218,6 @@ public:
   virtual const CEpgInfoTag *InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) const;
 
   /*!
-   * @brief True if this EPG is currently being updated, false otherwise.
-   * @return True if this EPG is currently being updated, false otherwise.
-   */
-  virtual bool IsUpdateRunning(void) const { return m_bUpdateRunning; }
-
-  /*!
    * @brief Update an entry in this EPG.
    * @param tag The tag to update.
    * @param bUpdateDatabase If set to true, this event will be persisted in the database.
@@ -265,7 +253,8 @@ public:
   /*!
    * @brief Persist this table in the database.
    * @param bPersistTags Set to true to persist all changed tags in this container.
+   * @param bQueueWrite Don't execute the query immediately but queue it if true.
    * @return True if the table was persisted, false otherwise.
    */
-  virtual bool Persist(bool bPersistTags = false);
+  virtual bool Persist(bool bPersistTags = false, bool bQueueWrite = false);
 };

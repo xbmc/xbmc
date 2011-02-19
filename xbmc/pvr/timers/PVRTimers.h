@@ -155,8 +155,6 @@ public:
    */
   static bool UpdateTimer(const CPVRTimerInfoTag &item);
 
-  // TODO
-  CPVRTimerInfoTag *GetMatch(CDateTime t);
-  CPVRTimerInfoTag *GetMatch(time_t t);
-  CPVRTimerInfoTag *GetMatch(const CPVREpgInfoTag *Epg, int *Match = NULL);
+  CPVRTimerInfoTag *GetMatch(const CEpgInfoTag *Epg);
+  CPVRTimerInfoTag *GetMatch(const CFileItem *item);
 };

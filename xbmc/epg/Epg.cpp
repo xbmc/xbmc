@@ -40,7 +40,6 @@ struct sortEPGbyDate
 
 CEpg::CEpg(int iEpgID, const CStdString &strName /* = CStdString() */, const CStdString &strScraperName /* = CStdString() */)
 {
-  m_bUpdateRunning  = false;
   m_iEpgID          = iEpgID;
   m_strName         = strName;
   m_strScraperName  = strScraperName;
@@ -58,22 +57,6 @@ CEpg::~CEpg(void)
 
 /** @name Public methods */
 //@{
-
-bool CEpg::Delete(void)
-{
-  bool bReturn = false;
-  CEpgDatabase *database = g_EpgContainer.GetDatabase();
-  if (!database || !database->Open())
-    return bReturn;
-
-  CSingleLock lock(m_critSection);
-  bReturn = database->Delete(*this);
-  lock.Leave();
-
-  database->Close();
-
-  return bReturn;
-}
 
 bool CEpg::HasValidEntries(void) const
 {
@@ -172,8 +155,6 @@ void CEpg::Cleanup(const CDateTime &Time)
 {
   CSingleLock lock(m_critSection);
 
-  m_bUpdateRunning = true;
-
   unsigned int iSize = size();
   for (unsigned int iTagPtr = 0; iTagPtr < iSize; iTagPtr++)
   {
@@ -186,8 +167,6 @@ void CEpg::Cleanup(const CDateTime &Time)
       --iTagPtr;
     }
   }
-
-  m_bUpdateRunning = false;
 }
 
 const CEpgInfoTag *CEpg::InfoTagNow(void) const
@@ -338,45 +317,31 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
 bool CEpg::Load(void)
 {
   bool bReturn = false;
-
-  /* mark the EPG as being updated */
-  m_bUpdateRunning = true;
+  CSingleLock lock(m_critSection);
 
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
 
   if (!database || !database->Open())
   {
-    CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
+    CLog::Log(LOGERROR, "Epg - %s - could not open the database", __FUNCTION__);
     return bReturn;
   }
 
   int iEntriesLoaded = database->Get(this);
   if (iEntriesLoaded <= 0)
   {
-    CLog::Log(LOGNOTICE, "Epg - %s - no entries found in the database for table %d. trying to load 3 hours from clients.",
-        __FUNCTION__, m_iEpgID);
-
-    time_t start;
-    time_t end;
-    CDateTime::GetCurrentDateTime().GetAsTime(start); // NOTE: XBMC stores the EPG times as local time
-    end = start;
-    start -= 60 * 60;
-    end += 60 * 60 * 3;
-
-    bReturn = Update(start, end, true);
+    CLog::Log(LOGNOTICE, "Epg - %s - no database entries found for table '%s'.",
+        __FUNCTION__, m_strName.c_str());
   }
   else
   {
-    CLog::Log(LOGNOTICE, "Epg - %s - %d entries found in the database for table %d.",
-        __FUNCTION__, iEntriesLoaded, m_iEpgID);
+    CLog::Log(LOGDEBUG, "Epg - %s - %d entries loaded for table '%s'.",
+        __FUNCTION__, size(), m_strName.c_str());
+    Sort();
     bReturn = true;
   }
 
   database->Close();
-
-  Sort();
-
-  m_bUpdateRunning = false;
 
   return bReturn;
 }
@@ -385,34 +350,25 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
 {
   bool bGrabSuccess = true;
   bool bUpdate = false;
+  CEpgDatabase *database = g_EpgContainer.GetDatabase();
+  if (bStoreInDb && (!database || !database->Open()))
+  {
+    CLog::Log(LOGERROR, "Epg - %s - cannot open the database", __FUNCTION__);
+    return false;
+  }
 
   CSingleLock lock(m_critSection);
 
-  /* already updating */
-  if (m_bUpdateRunning)
-    return bGrabSuccess;
-
   /* get the last update time from the database */
   if (!m_lastScanTime.IsValid() && bStoreInDb)
-  {
-    CEpgDatabase *database = g_EpgContainer.GetDatabase();
-    if (database && database->Open())
-    {
-      database->GetLastEpgScanTime(m_iEpgID, &m_lastScanTime);
-      database->Close();
-    }
-  }
+    database->GetLastEpgScanTime(m_iEpgID, &m_lastScanTime);
 
   /* check if we have to update */
   time_t iNow = 0;
   time_t iLastUpdate = 0;
   CDateTime::GetCurrentDateTime().GetAsTime(iNow);
   m_lastScanTime.GetAsTime(iLastUpdate);
-  if (iNow > iLastUpdate + iUpdateTime) //FIXME iLastUpdate is always -1 here
-  {
-    m_bUpdateRunning = true;
-    bUpdate = true;
-  }
+  bUpdate = (iNow > iLastUpdate + iUpdateTime);
 
   lock.Leave();
 
@@ -423,27 +379,26 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
     m_bInhibitSorting = false;
 
     /* store the loaded EPG entries in the database */
-    if (bGrabSuccess)
+    CSingleLock lock(m_critSection);
+    if (bGrabSuccess && size() > 0)
     {
-      CSingleLock lock(m_critSection);
-
-      FixOverlappingEvents(bStoreInDb);
+      FixOverlappingEvents(false);
 
       if (bStoreInDb)
       {
-        CEpgDatabase *database = g_EpgContainer.GetDatabase();
-        if (database && database->Open())
-        {
-          database->PersistLastEpgScanTime(m_iEpgID);
-          Persist(true);
-          database->Close();
-        }
+        database->PersistLastEpgScanTime(m_iEpgID, true);
+        database->Persist(*this, true);
+        PersistTags(true);
+        database->CommitInsertQueries();
       }
 
       m_lastScanTime = CDateTime::GetCurrentDateTime();
-      m_bUpdateRunning = false;
     }
   }
+  lock.Leave();
+
+  if (bStoreInDb)
+    database->Close();
 
   Sort();
 
@@ -454,7 +409,7 @@ int CEpg::Get(CFileItemList *results) const
 {
   int iInitialSize = results->Size();
 
-  if (!HasValidEntries() || m_bUpdateRunning)
+  if (!HasValidEntries())
     return -1;
 
   CSingleLock lock(m_critSection);
@@ -473,7 +428,7 @@ int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter) const
 {
   int iInitialSize = results->Size();
 
-  if (!HasValidEntries() || m_bUpdateRunning)
+  if (!HasValidEntries())
     return -1;
 
   CSingleLock lock(m_critSection);
@@ -491,26 +446,27 @@ int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter) const
   return size() - iInitialSize;
 }
 
-bool CEpg::Persist(bool bPersistTags /* = false */)
+bool CEpg::Persist(bool bPersistTags /* = false */, bool bQueueWrite /* = false */)
 {
   bool bReturn = false;
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
 
   if (!database || !database->Open())
   {
-    CLog::Log(LOGERROR, "%s - could not load the database", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
     return bReturn;
   }
 
   CSingleLock lock(m_critSection);
 
-  int iId = database->Persist(*this);
-  if (iId > 0)
+  int iId = database->Persist(*this, bQueueWrite);
+  if (iId >= 0)
   {
-    m_iEpgID = iId;
+    if (iId > 0)
+      m_iEpgID = iId;
 
     if (bPersistTags)
-      bReturn = PersistTags();
+      bReturn = PersistTags(bQueueWrite);
     else
       bReturn = true;
   }
@@ -598,7 +554,7 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
       int iDiffSeconds = diff.GetSeconds() + diff.GetMinutes() * 60 + diff.GetHours() * 3600 + diff.GetDays() * 86400;
       CDateTime newTime = previousTag->End() - CDateTimeSpan(0, 0, 0, (int) (iDiffSeconds / 2));
 
-      CLog::Log(LOGNOTICE, "EPG - %s - mediating start and end times of EPG events '%s' at '%s' to '%s' and '%s' at '%s' to '%s': using '%s'",
+      CLog::Log(LOGDEBUG, "EPG - %s - mediating start and end times of EPG events '%s' at '%s' to '%s' and '%s' at '%s' to '%s': using '%s'",
           __FUNCTION__, currentTag->Title().c_str(),
           currentTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
           currentTag->End().GetAsLocalizedDateTime(false, false).c_str(),
@@ -629,13 +585,13 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
 
   if (m_strScraperName.IsEmpty()) /* no grabber defined */
   {
-    CLog::Log(LOGERROR, "EPG - %s - no EPG grabber defined for table '%d'",
-        __FUNCTION__, m_iEpgID);
+    CLog::Log(LOGERROR, "EPG - %s - no EPG grabber defined for table '%s'",
+        __FUNCTION__, m_strName.c_str());
   }
   else
   {
-    CLog::Log(LOGINFO, "EPG - %s - updating EPG table '%d' with scraper '%s'",
-        __FUNCTION__, m_iEpgID, m_strScraperName.c_str());
+    CLog::Log(LOGINFO, "EPG - %s - updating EPG table '%s' with scraper '%s'",
+        __FUNCTION__, m_strName.c_str(), m_strScraperName.c_str());
     CLog::Log(LOGERROR, "loading the EPG via scraper has not been implemented yet");
     // TODO: Add Support for Web EPG Scrapers here
   }
@@ -643,7 +599,7 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
   return bGrabSuccess;
 }
 
-bool CEpg::PersistTags(void) const
+bool CEpg::PersistTags(bool bQueueWrite /* = false */) const
 {
   bool bReturn = false;
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
@@ -658,7 +614,11 @@ bool CEpg::PersistTags(void) const
   {
     at(iTagPtr)->Persist(false);
   }
-  bReturn = database->CommitInsertQueries();
+
+  if (!bQueueWrite)
+    bReturn = database->CommitInsertQueries();
+  else
+    bReturn = true;
 
   return bReturn;
 }

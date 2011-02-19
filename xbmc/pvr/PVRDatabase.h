@@ -51,7 +51,7 @@ public:
    * @brief Get the minimal database version that is required to operate correctly.
    * @return The minimal database version.
    */
-  virtual int GetMinVersion() const { return 9; };
+  virtual int GetMinVersion() const { return 10; };
 
   /*!
    * @brief Get the default sqlite database filename.

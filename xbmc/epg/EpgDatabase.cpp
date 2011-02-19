@@ -50,14 +50,16 @@ bool CEpgDatabase::CreateTables(void)
   {
     CDatabase::CreateTables();
 
+    BeginTransaction();
+
     CLog::Log(LOGINFO, "EpgDB - %s - creating tables", __FUNCTION__);
 
     CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'epg'", __FUNCTION__);
     m_pDS->exec(
         "CREATE TABLE epg ("
           "idEpg           integer primary key, "
-          "sName           text,"
-          "sScraperName    text"
+          "sName           varchar(64),"
+          "sScraperName    varchar(32)"
         ")"
     );
 
@@ -67,7 +69,7 @@ bool CEpgDatabase::CreateTables(void)
           "idBroadcast     integer primary key, "
           "iBroadcastUid   integer, "
           "idEpg           integer, "
-          "sTitle          text, "
+          "sTitle          varchar(128), "
           "sPlotOutline    text, "
           "sPlot           text, "
           "iStartTime      integer, "
@@ -78,10 +80,10 @@ bool CEpgDatabase::CreateTables(void)
           "iParentalRating integer, "
           "iStarRating     integer, "
           "bNotify         bool, "
-          "sSeriesId       text, "
-          "sEpisodeId      text, "
-          "sEpisodePart    text, "
-          "sEpisodeName    text"
+          "iSeriesId       integer, "
+          "iEpisodeId      integer, "
+          "iEpisodePart    integer, "
+          "sEpisodeName    varchar(128)"
         ");"
     );
     m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idEpg_iStartTime on epgtags(idEpg, iStartTime desc);");
@@ -93,9 +95,11 @@ bool CEpgDatabase::CreateTables(void)
     CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'lastepgscan'", __FUNCTION__);
     m_pDS->exec("CREATE TABLE lastepgscan ("
           "idEpg integer primary key, "
-          "sLastScan text"
+          "sLastScan varchar(20)"
         ")"
     );
+
+    CommitTransaction();
 
     bReturn = true;
   }
@@ -103,6 +107,7 @@ bool CEpgDatabase::CreateTables(void)
   {
     CLog::Log(LOGERROR, "EpgDB - %s - unable to create EPG tables:%i",
         __FUNCTION__, (int)GetLastError());
+    RollbackTransaction();
     bReturn = false;
   }
 
@@ -111,27 +116,12 @@ bool CEpgDatabase::CreateTables(void)
 
 bool CEpgDatabase::UpdateOldVersion(int iVersion)
 {
-  if (iVersion == 1)
+  if (iVersion < GetMinVersion())
   {
-    BeginTransaction();
-
-    try
-    {
-      m_pDS->exec("DROP TABLE lastepgscan;");
-      m_pDS->exec("CREATE TABLE lastepgscan ("
-          "idEpg integer primary key, "
-          "sLastScan text"
-          ")"
-      );
-    }
-    catch(...)
-    {
-      RollbackTransaction();
-      return false;
-    }
-
-    CommitTransaction();
+    CLog::Log(LOGERROR, "EpgDB - %s - updating old table versions not supported. please delete '%s'", __FUNCTION__, GetDefaultDBName());
+    return false;
   }
+
   return true;
 }
 
@@ -301,10 +291,10 @@ int CEpgDatabase::Get(CEpg *epg, const CDateTime &start /* = NULL */, const CDat
         newTag.m_iParentalRating    = m_pDS->fv("iParentalRating").get_asInt();
         newTag.m_iStarRating        = m_pDS->fv("iStarRating").get_asInt();
         newTag.m_bNotify            = m_pDS->fv("bNotify").get_asBool();
-        newTag.m_strEpisodeNum      = m_pDS->fv("sEpisodeId").get_asString().c_str();
-        newTag.m_strEpisodePart     = m_pDS->fv("sEpisodePart").get_asString().c_str();
+        newTag.m_iEpisodeNum        = m_pDS->fv("iEpisodeId").get_asInt();
+        newTag.m_iEpisodePart       = m_pDS->fv("iEpisodePart").get_asInt();
         newTag.m_strEpisodeName     = m_pDS->fv("sEpisodeName").get_asString().c_str();
-        newTag.m_strSeriesNum       = m_pDS->fv("sSeriesId").get_asString().c_str();
+        newTag.m_iSeriesNum         = m_pDS->fv("iSeriesId").get_asInt();
 
         epg->AddEntry(newTag);
         ++iReturn;
@@ -340,21 +330,15 @@ bool CEpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
   return bReturn;
 }
 
-bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */)
+bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */, bool bQueueWrite /* = false */)
 {
-  CLog::Log(LOGDEBUG, "EpgDB - %s - updating last scan time of table %d",
-      __FUNCTION__, iEpgId);
-
-  bool bReturn = true;
   CStdString strQuery = FormatSQL("REPLACE INTO lastepgscan(idEpg, sLastScan) VALUES (%u, '%s');",
       iEpgId, CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str());
 
-  bReturn = ExecuteQuery(strQuery);
-
-  return bReturn;
+  return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
 }
 
-int CEpgDatabase::Persist(const CEpg &epg, bool bSingleUpdate /* = true */, bool bLastUpdate /* = false */)
+int CEpgDatabase::Persist(const CEpg &epg, bool bQueueWrite /* = false */)
 {
   int iReturn = -1;
 
@@ -370,18 +354,15 @@ int CEpgDatabase::Persist(const CEpg &epg, bool bSingleUpdate /* = true */, bool
         "VALUES ('%s', '%s');", epg.Name().c_str(), epg.ScraperName().c_str());
   }
 
-  if (bSingleUpdate)
-  {
-    if (ExecuteQuery(strQuery))
-      iReturn = epg.EpgID() <= 0 ? m_pDS->lastinsertid() : epg.EpgID();
-  }
-  else
+  if (bQueueWrite)
   {
     if (QueueInsertQuery(strQuery))
       iReturn = epg.EpgID() <= 0 ? 0 : epg.EpgID();
-
-    if (bLastUpdate)
-      CommitInsertQueries();
+  }
+  else
+  {
+    if (ExecuteQuery(strQuery))
+      iReturn = epg.EpgID() <= 0 ? m_pDS->lastinsertid() : epg.EpgID();
   }
 
   return iReturn;
@@ -430,26 +411,26 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   {
     strQuery = FormatSQL("INSERT INTO epgtags (idEpg, iStartTime, "
         "iEndTime, sTitle, sPlotOutline, sPlot, iGenreType, iGenreSubType, "
-        "iFirstAired, iParentalRating, iStarRating, bNotify, sSeriesId, "
-        "sEpisodeId, sEpisodePart, sEpisodeName, iBroadcastUid) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, '%s', '%s', '%s', '%s', %i);",
+        "iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
+        "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid) "
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, %i, %i, %i, '%s', %i);",
         iEpgId, iStartTime, iEndTime,
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(),
         iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
-        tag.SeriesNum().c_str(), tag.EpisodeNum().c_str(), tag.EpisodePart().c_str(), tag.EpisodeName().c_str(),
+        tag.SeriesNum(), tag.EpisodeNum(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.UniqueBroadcastID());
   }
   else
   {
     strQuery = FormatSQL("REPLACE INTO epgtags (idEpg, iStartTime, "
         "iEndTime, sTitle, sPlotOutline, sPlot, iGenreType, iGenreSubType, "
-        "iFirstAired, iParentalRating, iStarRating, bNotify, sSeriesId, "
-        "sEpisodeId, sEpisodePart, sEpisodeName, iBroadcastUid, idBroadcast) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, '%s', '%s', '%s', '%s', %i, %i);",
+        "iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
+        "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid, idBroadcast) "
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
         iEpgId, iStartTime, iEndTime,
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(),
         tag.FirstAired().GetAsDBDateTime().c_str(), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
-        tag.SeriesNum().c_str(), tag.EpisodeNum().c_str(), tag.EpisodePart().c_str(), tag.EpisodeName().c_str(),
+        tag.SeriesNum(), tag.EpisodeNum(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.UniqueBroadcastID(), iBroadcastId);
   }
 

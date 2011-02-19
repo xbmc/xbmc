@@ -24,6 +24,8 @@
 #include <stdio.h>
 #include <string>
 
+#include "utils/ReferenceCounting.h"
+
 #define LOG_LEVEL_NONE         -1 // nothing at all is logged
 #define LOG_LEVEL_NORMAL        0 // shows notice, error, severe and fatal
 #define LOG_LEVEL_DEBUG         1 // shows all
@@ -49,12 +51,20 @@
 
 class CLog
 {
-  static FILE*       m_file;
-  static int         m_logLevel;
-  static int         m_repeatCount;
-  static int         m_repeatLogLevel;
-  static std::string m_repeatLine;
 public:
+
+  class CLogGlobals : public xbmcutil::Referenced
+  {
+  public:
+    CLogGlobals() : m_file(NULL), m_repeatCount(0), m_repeatLogLevel(-1), m_logLevel(LOG_LEVEL_DEBUG) {}
+    FILE*       m_file;
+    int         m_repeatCount;
+    int         m_repeatLogLevel;
+    std::string m_repeatLine;
+    int         m_logLevel;
+    CCriticalSection critSec;
+  };
+
   CLog();
   virtual ~CLog(void);
   static void Close();
@@ -67,3 +77,9 @@ private:
   static void OutputDebugString(const std::string& line);
 };
 
+/**
+ * This is a hack. There will be an instance of a ref to this "global" statically in each
+ *  file that includes this header. This is so that the reference couting will
+ *  work correctly from the data segment.
+ */
+static xbmcutil::Referenced::ref<CLog::CLogGlobals> g_log_globals(xbmcutil::Singleton<CLog::CLogGlobals>::getInstance);

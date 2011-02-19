@@ -22,6 +22,7 @@
 
 #include <vector>
 #include "utils/StdString.h"
+#include "utils/ReferenceCounting.h"
 
 class TiXmlElement;
 
@@ -59,10 +60,12 @@ struct RefreshOverride
 
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
-class CAdvancedSettings
+class CAdvancedSettings : public virtual xbmcutil::Referenced
 {
   public:
     CAdvancedSettings();
+
+    static CAdvancedSettings* getInstance();
 
     void Initialize();
 
@@ -294,5 +297,10 @@ class CAdvancedSettings
     bool m_jsonOutputCompact;
 };
 
-extern CAdvancedSettings g_advancedSettings;
-
+/**
+ * This is a hack. There will be an instance of a ref to this "global" statically in each
+ *  file that includes this header. This is so that the reference couting will
+ *  work correctly from the data segment.
+ */
+static xbmcutil::Referenced::ref<CAdvancedSettings> g_advancedSettingsRef(xbmcutil::Singleton<CAdvancedSettings>::getInstance);
+#define g_advancedSettings (*(g_advancedSettingsRef.get()))

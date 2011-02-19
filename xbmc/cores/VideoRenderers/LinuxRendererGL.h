@@ -31,6 +31,8 @@
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 
+class CRenderCapture;
+
 class CVDPAU;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
@@ -125,7 +127,7 @@ public:
   virtual void Update(bool bPauseDrawing);
   virtual void SetupScreenshot() {};
 
-  void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
+  bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);

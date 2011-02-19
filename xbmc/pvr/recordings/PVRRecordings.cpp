@@ -206,7 +206,7 @@ CPVRRecordingInfoTag *CPVRRecordings::GetByPath(CStdString &path)
   {
     fileName.erase(0,11);
     int iClientID = atoi(fileName.c_str());
-    fileName.erase(0,5);
+    fileName.erase(0,6);
 
     if (fileName.IsEmpty())
       return tag;

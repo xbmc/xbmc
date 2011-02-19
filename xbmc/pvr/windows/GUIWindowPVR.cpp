@@ -876,7 +876,8 @@ void CGUIWindowPVR::GetContextButtons(int itemNumber, CContextButtons &buttons)
   {
     if (pItem->GetEPGInfoTag()->End() > CDateTime::GetCurrentDateTime())
     {
-      if (((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->Timer() == NULL)
+      CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(pItem->GetEPGInfoTag());
+      if (!timer)
       {
         if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
         {
@@ -1310,7 +1311,8 @@ bool CGUIWindowPVR::OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON b
       if (iChannel <= 0)
         return bReturn;
 
-      if (tag->Timer())
+      CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(item);
+      if (timer)
       {
         CGUIDialogOK::ShowAndGetInput(19033,19034,0,0);
         return bReturn;
@@ -1351,10 +1353,11 @@ bool CGUIWindowPVR::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON bu
       CPVREpgInfoTag *tag = (CPVREpgInfoTag *) item->GetEPGInfoTag();
       int iChannel = tag->ChannelTag()->ChannelNumber();
 
-      if (iChannel <= 0 || tag->Timer() == NULL || tag->Timer()->IsRepeating())
+      CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(item);
+      if (iChannel <= 0 || !timer || timer->IsRepeating())
         return bReturn;
 
-      if (CPVRManager::GetTimers()->DeleteTimer(*tag->Timer()))
+      if (CPVRManager::GetTimers()->DeleteTimer(*timer))
         CPVRManager::GetTimers()->Update();
     }
 
@@ -1868,10 +1871,14 @@ void CGUIWindowPVR::UpdateChannels(bool bRadio)
   m_viewControl.SetCurrentView(bRadio ? CONTROL_LIST_CHANNELS_RADIO : CONTROL_LIST_CHANNELS_TV);
   const CPVRChannelGroup *currentGroup = SelectedGroup(bRadio);
 
+  if (!currentGroup)
+    return;
+
   m_vecItems->m_strPath.Format("pvr://channels/%s/%s/",
       bRadio ? "radio" : "tv",
       m_bShowHiddenChannels ? ".hidden" : currentGroup->GroupName());
 
+  m_viewControl.SetSelectedItem(bRadio ? m_iSelected_CHANNELS_RADIO : m_iSelected_CHANNELS_TV);
   Update(m_vecItems->m_strPath);
 
   /* empty list */
@@ -1884,7 +1891,7 @@ void CGUIWindowPVR::UpdateChannels(bool bRadio)
       UpdateChannels(bRadio);
       return;
     }
-    else if (currentGroup->GroupID() != -1)
+    else if (currentGroup->GroupID() > 0)
     {
       /* try the next group */
       if (bRadio)
@@ -1895,8 +1902,6 @@ void CGUIWindowPVR::UpdateChannels(bool bRadio)
       return;
     }
   }
-
-  m_viewControl.SetSelectedItem(bRadio ? m_iSelected_CHANNELS_RADIO : m_iSelected_CHANNELS_TV);
 
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, g_localizeStrings.Get(bRadio ? 19024 : 19023));
   if (m_bShowHiddenChannels)

@@ -57,8 +57,6 @@ bool cHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
   if(!g_szUsername.IsEmpty())
     m_session.Auth(g_szUsername, g_szPassword);
 
-  m_session.SendEnableAsync();
-
   if(!m_session.SendSubscribe(m_subs, m_channel))
     return false;
 
@@ -214,12 +212,12 @@ DemuxPacket* cHTSPDemux::Read()
 
 bool cHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
-  XBMC->Log(LOG_DEBUG, "%s - changing to channel %d", __FUNCTION__, channelinfo.number);
+  XBMC->Log(LOG_DEBUG, "%s - changing to channel '%s'", __FUNCTION__, channelinfo.name);
 
   if (!m_session.SendUnsubscribe(m_subs))
     XBMC->Log(LOG_ERROR, "%s - failed to unsubscribe from previous channel", __FUNCTION__);
 
-  if (!m_session.SendSubscribe(m_subs+1, channelinfo.number))
+  if (!m_session.SendSubscribe(m_subs+1, channelinfo.uid))
     XBMC->Log(LOG_ERROR, "%s - failed to set channel", __FUNCTION__);
   else
   {

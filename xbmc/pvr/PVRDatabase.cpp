@@ -58,8 +58,8 @@ bool CPVRDatabase::CreateTables()
     m_pDS->exec(
         "CREATE TABLE clients ("
           "idClient integer primary key, "
-          "sName    text, "
-          "sUid     text"
+          "sName    varchar(64), "
+          "sUid     varchar(32)"
         ");"
     );
 
@@ -70,18 +70,18 @@ bool CPVRDatabase::CreateTables()
           "iUniqueId            integer, "
           "bIsRadio             bool, "
           "bIsHidden            bool, "
-          "sIconPath            text, "
-          "sChannelName         text, "
+          "sIconPath            varchar(255), "
+          "sChannelName         varchar(64), "
           "bIsVirtual           bool, "
           "bEPGEnabled          bool, "
-          "sEPGScraper          text, "
+          "sEPGScraper          varchar(32), "
           "iLastWatched         integer,"
 
           // TODO use mapping table
           "iClientId            integer, "
           "iClientChannelNumber integer, "
-          "sInputFormat         text, "
-          "sStreamURL           text, "
+          "sInputFormat         varchar(32), "
+          "sStreamURL           varchar(255), "
           "iEncryptionSystem    integer"
         ");"
     );
@@ -117,7 +117,7 @@ bool CPVRDatabase::CreateTables()
         "CREATE TABLE channelgroups ("
           "idGroup    integer primary key,"
           "bIsRadio   bool, "
-          "sName      text,"
+          "sName      varchar(64),"
           "iSortOrder integer"
         ");"
     );
@@ -178,9 +178,10 @@ bool CPVRDatabase::CreateTables()
 
 bool CPVRDatabase::UpdateOldVersion(int iVersion)
 {
-  if (iVersion < 9)
+  if (iVersion < GetMinVersion())
   {
-    CLog::Log(LOGERROR, "%s - Incompatible database version!", __FUNCTION__);
+    CLog::Log(LOGERROR, "PVRDB - %s - updating old table versions not supported. please delete '%s'",
+        __FUNCTION__, GetDefaultDBName());
     return false;
   }
 

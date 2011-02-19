@@ -42,22 +42,15 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
 int CPVRChannelGroupInternal::Load()
 {
   int iChannelCount = LoadFromDb();
-
-  /* try to get the channels from clients if there are none in the database */
-  if (iChannelCount <= 0)
-  {
-    CLog::Log(LOGDEBUG, "PVRChannelGroupInternal - %s - no %s channels stored in the database. Reading channels from clients",
-        __FUNCTION__, m_bRadio ? "radio" : "TV");
-
-    iChannelCount = LoadFromClients();
-
-    CLog::Log(LOGNOTICE, "PVRChannelGroupInternal - %s - %d %s channels added from clients",
+  CLog::Log(LOGDEBUG, "PVRChannelGroupInternal - %s - %d %s channels loaded from the database",
         __FUNCTION__, iChannelCount, m_bRadio ? "radio" : "TV");
-  }
-  else
+
+  int iClientChannelCount = LoadFromClients();
+  if (iClientChannelCount > 0)
   {
-    CLog::Log(LOGDEBUG, "PVRChannelGroupInternal - %s - %d %s channels loaded from the database",
-        __FUNCTION__, iChannelCount, m_bRadio ? "radio" : "TV");
+    CLog::Log(LOGDEBUG, "PVRChannelGroupInternal - %s - %d %s channels added from clients",
+        __FUNCTION__, iClientChannelCount, m_bRadio ? "radio" : "TV");
+    iChannelCount += iClientChannelCount;
   }
 
   UpdateChannelPaths();
@@ -417,22 +410,21 @@ bool CPVRChannelGroupInternal::Persist(void)
     /* if this channel has an invalid ID, reload the list afterwards */
     bRefreshChannelList = at(iChannelPtr).channel->ChannelID() <= 0;
 
-    /* don't queue queries here, as we need the channel IDs persist channels in a group */
-    bReturn = at(iChannelPtr).channel->Persist(false) && bReturn;
+    bReturn = at(iChannelPtr).channel->Persist(true) && bReturn;
   }
 
   if (bReturn)
   {
-    bReturn = CPVRChannelGroup::Persist();
-
-    /* refresh the channel list if needed */
-    if (bReturn && bRefreshChannelList)
+    if (bRefreshChannelList)
     {
-      CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - reloading the channels list to get channel IDs",
-          __FUNCTION__);
+      database->CommitInsertQueries();
+      CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - reloading the channels list to get channel IDs", __FUNCTION__);
       Unload();
       bReturn = LoadFromDb(true) > 0;
     }
+
+    if (bReturn)
+      bReturn = CPVRChannelGroup::Persist();
   }
   database->Close();
 

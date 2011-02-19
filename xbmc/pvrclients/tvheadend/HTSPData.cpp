@@ -51,9 +51,6 @@ bool cHTSPData::Open(CStdString hostname, int port, CStdString user, CStdString 
   if(!user.IsEmpty())
     m_session.Auth(user, pass);
 
-  if(!m_session.SendEnableAsync())
-    return false;
-
   SetDescription("HTSP Data Listener");
   Start();
 
@@ -493,6 +490,12 @@ void cHTSPData::Action()
   XBMC->Log(LOG_DEBUG, "%s - Starting", __FUNCTION__);
 
   htsmsg_t* msg;
+  if(!m_session.SendEnableAsync())
+  {
+    XBMC->Log(LOG_ERROR, "%s - couldn't send EnableAsync().", __FUNCTION__);
+    m_started.Signal();
+    return;
+  }
 
   while (Running())
   {

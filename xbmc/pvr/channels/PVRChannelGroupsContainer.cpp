@@ -94,23 +94,8 @@ const CPVRChannel *CPVRChannelGroupsContainer::GetChannelById(int iChannelId) co
 
 bool CPVRChannelGroupsContainer::GetGroupsDirectory(const CStdString &strBase, CFileItemList *results, bool bRadio)
 {
-  const CPVRChannelGroup * channels = GetGroupAll(bRadio);
   const CPVRChannelGroups *channelGroups = Get(bRadio);
   CFileItemPtr item;
-
-  item.reset(new CFileItem(strBase + "/all/", true));
-  item->SetLabel(g_localizeStrings.Get(593));
-  item->SetLabelPreformated(true);
-  results->Add(item);
-
-  /* container has hidden channels */
-  if (channels->GetNumHiddenChannels() > 0)
-  {
-    item.reset(new CFileItem(strBase + "/.hidden/", true));
-    item->SetLabel(g_localizeStrings.Get(19022));
-    item->SetLabelPreformated(true);
-    results->Add(item);
-  }
 
   /* add all groups */
   for (unsigned int ptr = 0; ptr < channelGroups->size(); ptr++)
@@ -136,17 +121,22 @@ const CPVRChannel *CPVRChannelGroupsContainer::GetByPath(const CStdString &strPa
   CStdString strFileName = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(strFileName);
 
-  if (strFileName.Left(16) == "channels/tv/all/")
+  CStdString strCheckPath;
+  for (unsigned int bRadio = 0; bRadio <= 1; bRadio++)
   {
-    strFileName.erase(0,16);
-    iChannelNumber = atoi(strFileName.c_str());
-    channels = GetGroupAllTV();
-  }
-  else if (strFileName.Left(19) == "channels/radio/all/")
-  {
-    strFileName.erase(0,19);
-    iChannelNumber = atoi(strFileName.c_str());
-    channels = GetGroupAllRadio();
+    for (unsigned int iGroupPtr = 0; iGroupPtr < Get(bRadio)->size(); iGroupPtr++)
+    {
+      const CPVRChannelGroup *group = Get(bRadio)->at(iGroupPtr);
+      strCheckPath.Format("channels/%s/%s/", group->IsRadio() ? "radio" : "tv", group->GroupName().c_str());
+
+      if (strFileName.Left(strCheckPath.length()) == strCheckPath)
+      {
+        strFileName.erase(0, strCheckPath.length());
+        channels = group;
+        iChannelNumber = atoi(strFileName.c_str());
+        break;
+      }
+    }
   }
 
   return channels ? channels->GetByChannelNumber(iChannelNumber) : NULL;
@@ -160,7 +150,6 @@ bool CPVRChannelGroupsContainer::GetDirectory(const CStdString& strPath, CFileIt
   /* get the filename from curl */
   CURL url(strPath);
   CStdString fileName = url.GetFileName();
-  URIUtils::RemoveSlashAtEnd(fileName);
 
   if (fileName == "channels")
   {
