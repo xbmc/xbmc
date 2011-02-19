@@ -505,6 +505,7 @@ autom4te.cache
 # /xbmc/cores/DllLoader/exports/
 /xbmc/cores/DllLoader/exports/build_wrapper.sh
 /xbmc/cores/DllLoader/exports/wrapper.def
+/xbmc/cores/DllLoader/Makefile
 
 /xbmc/cores/Makefile
 
