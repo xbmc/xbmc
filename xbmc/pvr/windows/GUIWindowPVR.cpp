@@ -876,7 +876,8 @@ void CGUIWindowPVR::GetContextButtons(int itemNumber, CContextButtons &buttons)
   {
     if (pItem->GetEPGInfoTag()->End() > CDateTime::GetCurrentDateTime())
     {
-      if (((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->Timer() == NULL)
+      CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(pItem->GetEPGInfoTag());
+      if (!timer)
       {
         if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
         {
@@ -1310,7 +1311,8 @@ bool CGUIWindowPVR::OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON b
       if (iChannel <= 0)
         return bReturn;
 
-      if (tag->Timer())
+      CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(item);
+      if (timer)
       {
         CGUIDialogOK::ShowAndGetInput(19033,19034,0,0);
         return bReturn;
@@ -1351,10 +1353,11 @@ bool CGUIWindowPVR::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON bu
       CPVREpgInfoTag *tag = (CPVREpgInfoTag *) item->GetEPGInfoTag();
       int iChannel = tag->ChannelTag()->ChannelNumber();
 
-      if (iChannel <= 0 || tag->Timer() == NULL || tag->Timer()->IsRepeating())
+      CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(item);
+      if (iChannel <= 0 || !timer || timer->IsRepeating())
         return bReturn;
 
-      if (CPVRManager::GetTimers()->DeleteTimer(*tag->Timer()))
+      if (CPVRManager::GetTimers()->DeleteTimer(*timer))
         CPVRManager::GetTimers()->Update();
     }
 

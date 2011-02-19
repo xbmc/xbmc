@@ -4558,7 +4558,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       }
       else if (pItem->HasEPGInfoTag())
       {
-        const CPVRTimerInfoTag *timer = ((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->Timer();
+        CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(pItem);
         if (timer)
         {
           CDateTime now = CDateTime::GetCurrentDateTime();
@@ -4578,7 +4578,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     {
       if (pItem->HasEPGInfoTag())
       {
-        const CPVRTimerInfoTag *timer = ((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->Timer();
+        CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(pItem);
         if (timer)
         {
           if (timer->Start() > CDateTime::GetCurrentDateTime() && timer->Active())
