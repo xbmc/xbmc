@@ -75,6 +75,7 @@ protected:
   int32_t           m_queue_depth;    // we will try to keep the queue depth around 16+1 frames
   
   bool              m_convert_bytestream;
+  bool              m_convert_3byteTo4byteNALSize;
   DllAvUtil         *m_dllAvUtil;
   DllAvFormat       *m_dllAvFormat;
 

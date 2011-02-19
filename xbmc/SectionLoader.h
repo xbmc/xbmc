@@ -22,11 +22,12 @@
 
 #include "utils/StdString.h"
 #include "threads/CriticalSection.h"
+#include "utils/ReferenceCounting.h"
 
 //  forward
 class LibraryLoader;
 
-class CSectionLoader
+class CSectionLoader : public virtual xbmcutil::Referenced
 {
 public:
   class CSection
@@ -61,4 +62,10 @@ protected:
   std::vector<CDll> m_vecLoadedDLLs;
   CCriticalSection m_critSection;
 };
-extern class CSectionLoader g_sectionLoader;
+
+/**
+ * This is a hack. There will be an instance of a ref to this "global" statically in each
+ *  file that includes this header. This is so that the reference couting will
+ *  work correctly from the data segment.
+ */
+static xbmcutil::Referenced::ref<CSectionLoader> g_sectionLoaderRef(xbmcutil::Singleton<CSectionLoader>::getInstance);

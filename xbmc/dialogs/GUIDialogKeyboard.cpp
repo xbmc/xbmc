@@ -534,7 +534,6 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CVariant
 
   // setup keyboard
   pKeyboard->Initialize();
-  pKeyboard->CenterWindow();
   pKeyboard->SetHeading(heading);
   pKeyboard->SetHiddenInput(hiddenInput);
   pKeyboard->SetText(aTextString);

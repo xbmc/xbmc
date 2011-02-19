@@ -312,64 +312,84 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
     if( iformat == NULL )
     {
+#if defined(USE_EXTERNAL_FFMPEG) && LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(52,98,0)
+      // API added on: 2011-02-09
+      // Old versions of ffmpeg do not have av_probe_input_format, so we need
+      // to always probe using the lower-level functions as well.
+      const bool legacyProbing = true;
+#else
+      const bool legacyProbing = false;
+#endif
       // let ffmpeg decide which demuxer we have to open
-      AVProbeData pd;
-      BYTE probe_buffer[FFMPEG_FILE_BUFFER_SIZE + AVPROBE_PADDING_SIZE];
-
-      // init probe data
-      pd.buf = probe_buffer;
-      pd.filename = strFile.c_str();
-
-      // read data using avformat's buffers
-      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size ? m_ioContext->max_packet_size : m_ioContext->buffer_size);
-      if (pd.buf_size <= 0)
-      {
-        CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
-        return false;
-      }
-      memset(pd.buf+pd.buf_size, 0, AVPROBE_PADDING_SIZE);
-
-      // restore position again
-      m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
 
       bool trySPDIFonly = (m_pInput->GetContent() == "audio/x-spdif-compressed");
 
       if (!trySPDIFonly)
-        iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
+        m_dllAvFormat.av_probe_input_buffer(m_ioContext, &iformat, strFile.c_str(), NULL, 0, 0);
 
-      // the advancedsetting is for allowing the user to force outputting the
-      // 44.1 kHz DTS wav file as PCM, so that an A/V receiver can decode
-      // it (this is temporary until we handle 44.1 kHz passthrough properly)
-      if (trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0 && !g_advancedSettings.m_dvdplayerIgnoreDTSinWAV))
+      // Use the more low-level code in case we have been built against an old
+      // FFmpeg without the above av_probe_input_buffer(), or in case we only
+      // want to probe for spdif (DTS or IEC 61937) compressed audio
+      // specifically, or in case the file is a wav which may contain DTS or
+      // IEC 61937 (e.g. ac3-in-wav) and we want to check for those formats.
+      if (legacyProbing || trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0))
       {
-        // check for spdif and dts
-        // This is used with wav files and audio CDs that may contain
-        // a DTS or AC3 track padded for S/PDIF playback. If neither of those
-        // is present, we assume it is PCM audio.
-        // AC3 is always wrapped in iec61937 (ffmpeg "spdif"), while DTS
-        // may be just padded.
-        AVInputFormat *iformat2;
-        iformat2 = m_dllAvFormat.av_find_input_format("spdif");
+        AVProbeData pd;
+        BYTE probe_buffer[FFMPEG_FILE_BUFFER_SIZE + AVPROBE_PADDING_SIZE];
 
-        if (iformat2 && iformat2->read_probe(&pd) > AVPROBE_SCORE_MAX / 4)
+        // init probe data
+        pd.buf = probe_buffer;
+        pd.filename = strFile.c_str();
+
+        // read data using avformat's buffers
+        pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size ? m_ioContext->max_packet_size : m_ioContext->buffer_size);
+        if (pd.buf_size <= 0)
         {
-          iformat = iformat2;
+          CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
+          return false;
         }
-        else
+        memset(pd.buf+pd.buf_size, 0, AVPROBE_PADDING_SIZE);
+
+        // restore position again
+        m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
+
+        if (legacyProbing && !trySPDIFonly)
+          iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
+
+        // the advancedsetting is for allowing the user to force outputting the
+        // 44.1 kHz DTS wav file as PCM, so that an A/V receiver can decode
+        // it (this is temporary until we handle 44.1 kHz passthrough properly)
+        if (trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0 && !g_advancedSettings.m_dvdplayerIgnoreDTSinWAV))
         {
-          // not spdif or no spdif demuxer, try dts
-          iformat2 = m_dllAvFormat.av_find_input_format("dts");
+          // check for spdif and dts
+          // This is used with wav files and audio CDs that may contain
+          // a DTS or AC3 track padded for S/PDIF playback. If neither of those
+          // is present, we assume it is PCM audio.
+          // AC3 is always wrapped in iec61937 (ffmpeg "spdif"), while DTS
+          // may be just padded.
+          AVInputFormat *iformat2;
+          iformat2 = m_dllAvFormat.av_find_input_format("spdif");
 
           if (iformat2 && iformat2->read_probe(&pd) > AVPROBE_SCORE_MAX / 4)
           {
             iformat = iformat2;
           }
-          else if (trySPDIFonly)
+          else
           {
-            // not dts either, return false in case we were explicitely
-            // requested to only check for S/PDIF padded compressed audio
-            CLog::Log(LOGDEBUG, "%s - not spdif or dts file, fallbacking", __FUNCTION__);
-            return false;
+            // not spdif or no spdif demuxer, try dts
+            iformat2 = m_dllAvFormat.av_find_input_format("dts");
+
+            if (iformat2 && iformat2->read_probe(&pd) > AVPROBE_SCORE_MAX / 4)
+            {
+              iformat = iformat2;
+            }
+            else if (trySPDIFonly)
+            {
+              // not dts either, return false in case we were explicitely
+              // requested to only check for S/PDIF padded compressed audio
+              CLog::Log(LOGDEBUG, "%s - not spdif or dts file, fallbacking", __FUNCTION__);
+              return false;
+            }
           }
         }
       }
@@ -389,22 +409,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
           iformat = m_dllAvFormat.av_find_input_format("flv");
       }
 
-      if (!iformat)
-      {
-        // av_probe_input_format failed, re-probe the ffmpeg/ffplay method.
-        // av_open_input_file uses av_probe_input_format2 for probing format,
-        // starting at 2048, up to max buffer size of 1048576. We just probe to
-        // the buffer size allocated above so as to avoid seeks on content that
-        // might not be seekable.
-        int max_buf_size = pd.buf_size;
-        for (int probe_size=std::min(2048, pd.buf_size); probe_size <= max_buf_size && !iformat; probe_size<<=1)
-        {
-          CLog::Log(LOGDEBUG, "%s - probing failed, re-probing with probe size [%d]", __FUNCTION__, probe_size);
-          int score= probe_size < max_buf_size ? AVPROBE_SCORE_MAX/4 : 0;
-          pd.buf_size = probe_size;
-          iformat = m_dllAvFormat.av_probe_input_format2(&pd, 1, &score);
-        }
-      }
       if (!iformat)
       {
         CLog::Log(LOGERROR, "%s - error probing input format, %s", __FUNCTION__, strFile.c_str());

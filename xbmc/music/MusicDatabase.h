@@ -214,7 +214,7 @@ protected:
   std::map<CStdString, CAlbumCache> m_albumCache;
 
   virtual bool CreateTables();
-  virtual int GetMinVersion() const { return 15; };
+  virtual int GetMinVersion() const { return 16; };
   const char *GetDefaultDBName() const { return "MyMusic7"; };
 
   int AddAlbum(const CStdString& strAlbum1, int idArtist, const CStdString &extraArtists, const CStdString &strArtist1, int idThumb, int idGenre, const CStdString &extraGenres, int year);

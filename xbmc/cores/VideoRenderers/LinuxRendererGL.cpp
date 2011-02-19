@@ -40,6 +40,7 @@
 #include "DllSwScale.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "RenderCapture.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
@@ -752,12 +753,6 @@ unsigned int CLinuxRendererGL::PreInit()
 
   if (!m_dllSwScale->Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
-
-  #if (! defined USE_EXTERNAL_FFMPEG)
-    m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-  #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
-    m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-  #endif
 
   return true;
 }
@@ -1647,31 +1642,36 @@ void CLinuxRendererGL::RenderSoftware(int index, int field)
   VerifyGLState();
 }
 
-void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width, unsigned int height)
+bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
 {
+  if (!m_bValidated)
+    return false;
+
   // get our screen rect
   const CRect rv = g_graphicsContext.GetViewWindow();
 
   // save current video rect
   CRect saveSize = m_destRect;
 
-  // new video rect is thumbnail size
-  m_destRect.SetRect(0, 0, (float)width, (float)height);
+  // new video rect is capture size
+  m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
 
-  // clear framebuffer and invert Y axis to get non-inverted image
-  glClearColor(0, 0, 0, 1);
-  glClear(GL_COLOR_BUFFER_BIT);
-  glClearColor(0, 0, 0, 0);
+  //invert Y axis to get non-inverted image
   glDisable(GL_BLEND);
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
-  glTranslatef(0, height, 0);
+  glTranslatef(0, capture->GetHeight(), 0);
   glScalef(1.0, -1.0f, 1.0f);
-  Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
 
+  capture->BeginRender();
+
+  Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
   // read pixels
-  glReadPixels(0, rv.y2-height, width, height, GL_BGRA, GL_UNSIGNED_BYTE, texture->GetPixels());
+  glReadPixels(0, rv.y2 - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
+               GL_BGRA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
+
+  capture->EndRender();
 
   // revert model view matrix
   glMatrixMode(GL_MODELVIEW);
@@ -1679,6 +1679,8 @@ void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width
 
   // restore original video rect
   m_destRect = saveSize;
+
+  return true;
 }
 
 //********************************************************************************************************

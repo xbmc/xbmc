@@ -163,12 +163,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   m_dllAvCodec.avcodec_register_all();
 
-  #if (! defined USE_EXTERNAL_FFMPEG)
-    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-  #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
-    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-  #endif
-
   m_bSoftware     = hints.software;
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
 
@@ -427,17 +421,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P
   && m_pHardware == NULL)
   {
-    if (!m_dllSwScale.IsLoaded())
-    {
-      if(!m_dllSwScale.Load())
+    if (!m_dllSwScale.IsLoaded() && !m_dllSwScale.Load())
         return VC_ERROR;
-
-        #if (! defined USE_EXTERNAL_FFMPEG)
-          m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-        #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
-          m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-        #endif
-    }
 
     if (!m_pConvertFrame)
     {

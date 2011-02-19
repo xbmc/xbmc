@@ -411,8 +411,7 @@ void CGUISettings::Initialize()
   AddString(vs, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
 #endif
 #if defined(_LINUX) && !defined(__APPLE__)
-  AddSeparator(vs, "videoscreen.sep2");
-  AddBool(vs, "videoscreen.haslcd", 4501, false);
+  AddBool(NULL, "videoscreen.haslcd", 4501, false);
 #endif
 
   CSettingsCategory* ao = AddCategory(4, "audiooutput", 772);
@@ -600,8 +599,6 @@ void CGUISettings::Initialize()
 #endif
 #if defined(HAS_GL) || HAS_GLES == 2  // May need changing for GLES
   AddSeparator(vp, "videoplayer.sep1.5");
-  AddInt(NULL, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
-  AddInt(NULL, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
   AddBool(NULL, "videoplayer.vdpauUpscalingLevel", 13121, false);
   AddBool(vp, "videoplayer.vdpaustudiolevel", 13122, false);
@@ -631,12 +628,10 @@ void CGUISettings::Initialize()
   AddInt(dvd, "dvds.playerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(dvd, "dvds.automenu", 21882, false);
 
-  CSettingsCategory* scp = AddCategory(5, "scrapers", 21412);
-  AddDefaultAddon(scp, "scrapers.moviesdefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
-  AddDefaultAddon(scp, "scrapers.tvshowsdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);
-  AddDefaultAddon(scp, "scrapers.musicvideosdefault", 21415, "metadata.mtv.com", ADDON_SCRAPER_MUSICVIDEOS);
-  AddSeparator(scp,"scrapers.sep2");
-  AddBool(scp, "scrapers.langfallback", 21416, false);
+  AddDefaultAddon(NULL, "scrapers.moviesdefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
+  AddDefaultAddon(NULL, "scrapers.tvshowsdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);
+  AddDefaultAddon(NULL, "scrapers.musicvideosdefault", 21415, "metadata.mtv.com", ADDON_SCRAPER_MUSICVIDEOS);
+  AddBool(NULL, "scrapers.langfallback", 21416, false);
 
   // network settings
   AddGroup(6, 705);
@@ -702,6 +697,7 @@ void CGUISettings::Initialize()
   AddString(net, "network.httpproxyport", 730, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);
   AddString(net, "network.httpproxyusername", 1048, "", EDIT_CONTROL_INPUT);
   AddString(net, "network.httpproxypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
+  AddInt(net, "network.bandwidth", 14041, 0, 0, 512, 100*1024, SPIN_CONTROL_INT_PLUS, MASK_KBPS, TEXT_OFF);
 
   // appearance settings
   AddGroup(7, 480);
@@ -1099,14 +1095,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     SetInt("videoscreen.vsync", VSYNC_ALWAYS);
   }
 #endif
-  // if AppleTV, trap any previous highqualityupscaling setting and set to zero
-  if (g_sysinfo.IsAppleTV())
-  {
-    if (GetInt("videoplayer.highqualityupscaling") != SOFTWARE_UPSCALING_DISABLED)
-    {
-      SetInt("videoplayer.highqualityupscaling", SOFTWARE_UPSCALING_DISABLED);
-    }
-  }
  // DXMERGE: This might have been useful?
  // g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);

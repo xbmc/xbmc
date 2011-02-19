@@ -202,11 +202,6 @@ bool CGUIPanelContainer::OnMessage(CGUIMessage& message)
       SetCursor(0);
       // fall through to base class
     }
-    else if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
-    {
-      SelectItem(message.GetParam1());
-      return true;
-    }
   }
   return CGUIBaseContainer::OnMessage(message);
 }

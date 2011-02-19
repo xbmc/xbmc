@@ -56,6 +56,13 @@ namespace XFILE
      \return true if more than one item is found, false otherwise.
      */
     static bool GetScriptsAndPlugins(const CStdString &content, CFileItemList &items);
+
+    /*! \brief return the "Get More..." link item for the current content type
+     \param content the content type for the link item
+     \return a CFileItemPtr to a new item for the link.
+     */
+    static CFileItemPtr GetMoreItem(const CStdString &content);
+
     static void GenerateListing(CURL &path, ADDON::VECADDONS& addons, CFileItemList &items, bool reposAsFolders = true);
     static CFileItemPtr FileItemFromAddon(ADDON::AddonPtr &addon, const CStdString &basePath, bool folder = false);
   };

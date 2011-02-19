@@ -2,6 +2,7 @@ SRCS=BaseRenderer.cpp \
      LinuxRenderer.cpp \
      OverlayRenderer.cpp \
      OverlayRendererUtil.cpp \
+     RenderCapture.cpp \
      RenderManager.cpp \
 
 ifeq (@USE_OPENGL@,1)

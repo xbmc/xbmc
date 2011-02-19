@@ -52,7 +52,6 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
   SetProperty("xmlfile", xmlFile);
   m_idRange = 1;
   m_lastControlID = 0;
-  m_bRelativeCoords = false;
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
   m_isDialog = false;
@@ -188,13 +187,6 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     }
     else if (strValue == "coordinates")
     {
-      TiXmlNode* pSystem = pChild->FirstChild("system");
-      if (pSystem)
-      {
-        int iCoordinateSystem = atoi(pSystem->FirstChild()->Value());
-        m_bRelativeCoords = (iCoordinateSystem == 1);
-      }
-
       XMLUtils::GetFloat(pChild, "posx", m_posX);
       XMLUtils::GetFloat(pChild, "posy", m_posY);
 
@@ -296,11 +288,8 @@ void CGUIWindow::OnWindowLoaded()
 
 void CGUIWindow::CenterWindow()
 {
-  if (m_bRelativeCoords)
-  {
-    m_posX = (g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth()) / 2;
-    m_posY = (g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight()) / 2;
-  }
+  m_posX = (g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth()) / 2;
+  m_posY = (g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight()) / 2;
 }
 
 void CGUIWindow::Render()
@@ -789,7 +778,6 @@ void CGUIWindow::SetDefaults()
   m_renderOrder = 0;
   m_defaultAlways = false;
   m_defaultControl = 0;
-  m_bRelativeCoords = false;
   m_posX = m_posY = m_width = m_height = 0;
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
   m_visibleCondition = 0;

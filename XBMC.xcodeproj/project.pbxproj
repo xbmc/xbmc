@@ -38,6 +38,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		183C454D130C4D55006AA317 /* xbmcvfsmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */; };
 		183FDF8A11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
 		183FDF8B11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
 		184C472F1296BC6E0006DB3E /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
@@ -624,12 +625,8 @@
 		E38E1F790D25F9FD00618676 /* DVDAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FC0D25F9F900618676 /* DVDAudio.cpp */; };
 		E38E1F7A0D25F9FD00618676 /* DVDClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FE0D25F9F900618676 /* DVDClock.cpp */; };
 		E38E1F7B0D25F9FD00618676 /* DVDAudioCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */; };
-		E38E1F7C0D25F9FD00618676 /* DVDAudioCodecLiba52.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15090D25F9F900618676 /* DVDAudioCodecLiba52.cpp */; };
-		E38E1F7D0D25F9FD00618676 /* DVDAudioCodecLibDts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150B0D25F9F900618676 /* DVDAudioCodecLibDts.cpp */; };
-		E38E1F7E0D25F9FD00618676 /* DVDAudioCodecLibFaad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150D0D25F9F900618676 /* DVDAudioCodecLibFaad.cpp */; };
 		E38E1F7F0D25F9FD00618676 /* DVDAudioCodecLibMad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150F0D25F9F900618676 /* DVDAudioCodecLibMad.cpp */; };
 		E38E1F800D25F9FD00618676 /* DVDAudioCodecLPcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15110D25F9F900618676 /* DVDAudioCodecLPcm.cpp */; };
-		E38E1F810D25F9FD00618676 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15130D25F9F900618676 /* DVDAudioCodecPassthrough.cpp */; };
 		E38E1F820D25F9FD00618676 /* DVDAudioCodecPcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15150D25F9F900618676 /* DVDAudioCodecPcm.cpp */; };
 		E38E1F840D25F9FD00618676 /* DVDCodecUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15220D25F9F900618676 /* DVDCodecUtils.cpp */; };
 		E38E1F850D25F9FD00618676 /* DVDFactoryCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15240D25F9F900618676 /* DVDFactoryCodec.cpp */; };
@@ -667,8 +664,6 @@
 		E38E1FAD0D25F9FD00618676 /* DVDSubtitleLineCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15910D25F9FA00618676 /* DVDSubtitleLineCollection.cpp */; };
 		E38E1FAE0D25F9FD00618676 /* DVDSubtitleParserSubrip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15940D25F9FA00618676 /* DVDSubtitleParserSubrip.cpp */; };
 		E38E1FAF0D25F9FD00618676 /* DVDSubtitleStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */; };
-		E38E1FBF0D25F9FD00618676 /* AC3CDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */; };
-		E38E1FC00D25F9FD00618676 /* AC3Codec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D90D25F9FA00618676 /* AC3Codec.cpp */; };
 		E38E1FC10D25F9FD00618676 /* ADPCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */; };
 		E38E1FC30D25F9FD00618676 /* AIFFcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */; };
 		E38E1FC50D25F9FD00618676 /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E30D25F9FA00618676 /* AudioDecoder.cpp */; };
@@ -1131,6 +1126,8 @@
 		F52B06BB1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */; };
 		F52BFFDB115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */; };
 		F52BFFDC115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */; };
+		F5475982130EEA4A00850A9A /* ReferenceCounting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5475980130EEA4A00850A9A /* ReferenceCounting.cpp */; };
+		F5475983130EEA4A00850A9A /* ReferenceCounting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5475980130EEA4A00850A9A /* ReferenceCounting.cpp */; };
 		F548786D0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
 		F548786E0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
 		F5487B4C0FE6F02700E506FD /* StreamDetails.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5487B4B0FE6F02700E506FD /* StreamDetails.cpp */; };
@@ -1150,6 +1147,7 @@
 		F551107F0F5C424700955236 /* htsmsg_binary.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110730F5C424700955236 /* htsmsg_binary.c */; };
 		F55110800F5C424700955236 /* htsstr.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110760F5C424700955236 /* htsstr.c */; };
 		F55110820F5C424700955236 /* net_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = F551107B0F5C424700955236 /* net_posix.c */; };
+		F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
 		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F57B6F811071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
@@ -1219,12 +1217,8 @@
 		F5A1C8E70F6B06CF00A96ABD /* DVDAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FC0D25F9F900618676 /* DVDAudio.cpp */; };
 		F5A1C8E80F6B06CF00A96ABD /* DVDClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FE0D25F9F900618676 /* DVDClock.cpp */; };
 		F5A1C8E90F6B06CF00A96ABD /* DVDAudioCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */; };
-		F5A1C8EA0F6B06CF00A96ABD /* DVDAudioCodecLiba52.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15090D25F9F900618676 /* DVDAudioCodecLiba52.cpp */; };
-		F5A1C8EB0F6B06CF00A96ABD /* DVDAudioCodecLibDts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150B0D25F9F900618676 /* DVDAudioCodecLibDts.cpp */; };
-		F5A1C8EC0F6B06CF00A96ABD /* DVDAudioCodecLibFaad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150D0D25F9F900618676 /* DVDAudioCodecLibFaad.cpp */; };
 		F5A1C8ED0F6B06CF00A96ABD /* DVDAudioCodecLibMad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150F0D25F9F900618676 /* DVDAudioCodecLibMad.cpp */; };
 		F5A1C8EE0F6B06CF00A96ABD /* DVDAudioCodecLPcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15110D25F9F900618676 /* DVDAudioCodecLPcm.cpp */; };
-		F5A1C8EF0F6B06CF00A96ABD /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15130D25F9F900618676 /* DVDAudioCodecPassthrough.cpp */; };
 		F5A1C8F00F6B06CF00A96ABD /* DVDAudioCodecPcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15150D25F9F900618676 /* DVDAudioCodecPcm.cpp */; };
 		F5A1C8F10F6B06CF00A96ABD /* DVDCodecUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15220D25F9F900618676 /* DVDCodecUtils.cpp */; };
 		F5A1C8F20F6B06CF00A96ABD /* DVDFactoryCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15240D25F9F900618676 /* DVDFactoryCodec.cpp */; };
@@ -1262,8 +1256,6 @@
 		F5A1C9120F6B06CF00A96ABD /* DVDSubtitleLineCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15910D25F9FA00618676 /* DVDSubtitleLineCollection.cpp */; };
 		F5A1C9130F6B06CF00A96ABD /* DVDSubtitleParserSubrip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15940D25F9FA00618676 /* DVDSubtitleParserSubrip.cpp */; };
 		F5A1C9140F6B06CF00A96ABD /* DVDSubtitleStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */; };
-		F5A1C9170F6B06CF00A96ABD /* AC3CDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */; };
-		F5A1C9180F6B06CF00A96ABD /* AC3Codec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D90D25F9FA00618676 /* AC3Codec.cpp */; };
 		F5A1C9190F6B06CF00A96ABD /* ADPCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */; };
 		F5A1C91B0F6B06CF00A96ABD /* AIFFcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */; };
 		F5A1C91D0F6B06CF00A96ABD /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E30D25F9FA00618676 /* AudioDecoder.cpp */; };
@@ -1724,8 +1716,6 @@
 		F5A1CB8F0F6B06CF00A96ABD /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		F5A1CB900F6B06CF00A96ABD /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
 		F5A1CB910F6B06CF00A96ABD /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
-		F5A1CB950F6B06CF00A96ABD /* DTSCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */; };
-		F5A1CB960F6B06CF00A96ABD /* DTSCDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */; };
 		F5A1CB970F6B06CF00A96ABD /* DVDDemuxHTSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55110440F5C3C0000955236 /* DVDDemuxHTSP.cpp */; };
 		F5A1CB980F6B06CF00A96ABD /* htsatomic.c in Sources */ = {isa = PBXBuildFile; fileRef = F551106D0F5C424700955236 /* htsatomic.c */; };
 		F5A1CB990F6B06CF00A96ABD /* htsbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = F551106F0F5C424700955236 /* htsbuf.c */; };
@@ -1798,8 +1788,6 @@
 		F5AACA690FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */; };
 		F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
 		F5AACA980FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
-		F5AC52890F58504F003EEAA4 /* DTSCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */; };
-		F5AC52910F58525B003EEAA4 /* DTSCDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */; };
 		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
 		F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB80D120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
@@ -1913,6 +1901,7 @@
 		183FDF8911AF0B0500B81E9C /* PluginSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginSource.h; sourceTree = "<group>"; };
 		184C472D1296BC6E0006DB3E /* Service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Service.cpp; sourceTree = "<group>"; };
 		184C472E1296BC6E0006DB3E /* Service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Service.h; sourceTree = "<group>"; };
+		189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xbmcvfsmodule.cpp; sourceTree = "<group>"; };
 		18B49FF11152BFA5001AF8A6 /* Addon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Addon.cpp; sourceTree = "<group>"; };
 		18B49FF21152BFA5001AF8A6 /* Addon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Addon.h; sourceTree = "<group>"; };
 		18B49FF31152BFA5001AF8A6 /* AddonDll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonDll.h; sourceTree = "<group>"; };
@@ -2609,29 +2598,16 @@
 		E38E14FD0D25F9F900618676 /* DVDAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudio.h; sourceTree = "<group>"; };
 		E38E14FE0D25F9F900618676 /* DVDClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDClock.cpp; sourceTree = "<group>"; };
 		E38E14FF0D25F9F900618676 /* DVDClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDClock.h; sourceTree = "<group>"; };
-		E38E15020D25F9F900618676 /* DllLiba52.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLiba52.h; sourceTree = "<group>"; };
-		E38E15030D25F9F900618676 /* DllLibDts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibDts.h; sourceTree = "<group>"; };
-		E38E15040D25F9F900618676 /* DllLibFaad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibFaad.h; sourceTree = "<group>"; };
 		E38E15050D25F9F900618676 /* DllLibMad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibMad.h; sourceTree = "<group>"; };
 		E38E15060D25F9F900618676 /* DVDAudioCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodec.h; sourceTree = "<group>"; };
 		E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecFFmpeg.cpp; sourceTree = "<group>"; };
 		E38E15080D25F9F900618676 /* DVDAudioCodecFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecFFmpeg.h; sourceTree = "<group>"; };
-		E38E15090D25F9F900618676 /* DVDAudioCodecLiba52.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecLiba52.cpp; sourceTree = "<group>"; };
-		E38E150A0D25F9F900618676 /* DVDAudioCodecLiba52.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecLiba52.h; sourceTree = "<group>"; };
-		E38E150B0D25F9F900618676 /* DVDAudioCodecLibDts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecLibDts.cpp; sourceTree = "<group>"; };
-		E38E150C0D25F9F900618676 /* DVDAudioCodecLibDts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecLibDts.h; sourceTree = "<group>"; };
-		E38E150D0D25F9F900618676 /* DVDAudioCodecLibFaad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecLibFaad.cpp; sourceTree = "<group>"; };
-		E38E150E0D25F9F900618676 /* DVDAudioCodecLibFaad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecLibFaad.h; sourceTree = "<group>"; };
 		E38E150F0D25F9F900618676 /* DVDAudioCodecLibMad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecLibMad.cpp; sourceTree = "<group>"; };
 		E38E15100D25F9F900618676 /* DVDAudioCodecLibMad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecLibMad.h; sourceTree = "<group>"; };
 		E38E15110D25F9F900618676 /* DVDAudioCodecLPcm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecLPcm.cpp; sourceTree = "<group>"; };
 		E38E15120D25F9F900618676 /* DVDAudioCodecLPcm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecLPcm.h; sourceTree = "<group>"; };
-		E38E15130D25F9F900618676 /* DVDAudioCodecPassthrough.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecPassthrough.cpp; sourceTree = "<group>"; };
-		E38E15140D25F9F900618676 /* DVDAudioCodecPassthrough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecPassthrough.h; sourceTree = "<group>"; };
 		E38E15150D25F9F900618676 /* DVDAudioCodecPcm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecPcm.cpp; sourceTree = "<group>"; };
 		E38E15160D25F9F900618676 /* DVDAudioCodecPcm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecPcm.h; sourceTree = "<group>"; };
-		E38E15180D25F9F900618676 /* a52.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = a52.h; sourceTree = "<group>"; };
-		E38E151A0D25F9F900618676 /* dts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dts.h; sourceTree = "<group>"; };
 		E38E151E0D25F9F900618676 /* mad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mad.h; sourceTree = "<group>"; };
 		E38E15210D25F9F900618676 /* DVDCodecs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDCodecs.h; sourceTree = "<group>"; };
 		E38E15220D25F9F900618676 /* DVDCodecUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDCodecUtils.cpp; sourceTree = "<group>"; };
@@ -2732,10 +2708,6 @@
 		E38E159A0D25F9FA00618676 /* IDVDPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDVDPlayer.h; sourceTree = "<group>"; };
 		E38E15B50D25F9FA00618676 /* IAudioCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAudioCallback.h; sourceTree = "<group>"; };
 		E38E15B60D25F9FA00618676 /* IPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPlayer.h; sourceTree = "<group>"; };
-		E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AC3CDDACodec.cpp; sourceTree = "<group>"; };
-		E38E15D80D25F9FA00618676 /* AC3CDDACodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AC3CDDACodec.h; sourceTree = "<group>"; };
-		E38E15D90D25F9FA00618676 /* AC3Codec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AC3Codec.cpp; sourceTree = "<group>"; };
-		E38E15DA0D25F9FA00618676 /* AC3Codec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AC3Codec.h; sourceTree = "<group>"; };
 		E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ADPCMCodec.cpp; sourceTree = "<group>"; };
 		E38E15DC0D25F9FA00618676 /* ADPCMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADPCMCodec.h; sourceTree = "<group>"; };
 		E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AIFFcodec.cpp; sourceTree = "<group>"; };
@@ -2747,9 +2719,7 @@
 		E38E15E70D25F9FA00618676 /* CDDAcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDAcodec.h; sourceTree = "<group>"; };
 		E38E15E80D25F9FA00618676 /* CodecFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CodecFactory.cpp; sourceTree = "<group>"; };
 		E38E15E90D25F9FA00618676 /* CodecFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CodecFactory.h; sourceTree = "<group>"; };
-		E38E15EE0D25F9FA00618676 /* DllAc3codec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAc3codec.h; sourceTree = "<group>"; };
 		E38E15EF0D25F9FA00618676 /* DllAdpcm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAdpcm.h; sourceTree = "<group>"; };
-		E38E15F20D25F9FA00618676 /* DllDCACodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllDCACodec.h; sourceTree = "<group>"; };
 		E38E15F50D25F9FA00618676 /* DllLibFlac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibFlac.h; sourceTree = "<group>"; };
 		E38E15FA0D25F9FA00618676 /* DllNosefart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllNosefart.h; sourceTree = "<group>"; };
 		E38E15FB0D25F9FA00618676 /* DllSidplay2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllSidplay2.h; sourceTree = "<group>"; };
@@ -3672,6 +3642,8 @@
 		F52B06B91187CE18004B1D66 /* DVDVideoCodecVDA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDVideoCodecVDA.h; path = xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecVDA.h; sourceTree = SOURCE_ROOT; };
 		F52BFFD9115D5574004B1D66 /* AddonStatusHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonStatusHandler.h; sourceTree = "<group>"; };
 		F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonStatusHandler.cpp; sourceTree = "<group>"; };
+		F5475980130EEA4A00850A9A /* ReferenceCounting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReferenceCounting.cpp; sourceTree = "<group>"; };
+		F5475981130EEA4A00850A9A /* ReferenceCounting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReferenceCounting.h; sourceTree = "<group>"; };
 		F548786B0FE060FF00E506FD /* DVDSubtitleParserMPL2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMPL2.h; sourceTree = "<group>"; };
 		F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = DVDSubtitleParserMPL2.cpp; sourceTree = "<group>"; };
 		F5487B4A0FE6F02700E506FD /* StreamDetails.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamDetails.h; sourceTree = "<group>"; };
@@ -3708,6 +3680,8 @@
 		F55110770F5C424700955236 /* htsstr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = htsstr.h; sourceTree = "<group>"; };
 		F551107A0F5C424700955236 /* net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = net.h; sourceTree = "<group>"; };
 		F551107B0F5C424700955236 /* net_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = net_posix.c; sourceTree = "<group>"; };
+		F56579AD13060D1E0085ED7F /* RenderCapture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderCapture.cpp; sourceTree = "<group>"; };
+		F56579AE13060D1E0085ED7F /* RenderCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderCapture.h; sourceTree = "<group>"; };
 		F56A08490F4A18FB003F9F87 /* karaokewindowbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokewindowbackground.h; sourceTree = "<group>"; };
 		F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = karaokewindowbackground.cpp; sourceTree = "<group>"; };
 		F57B6F7E1071B8B500079ACB /* JobManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JobManager.cpp; sourceTree = "<group>"; };
@@ -3776,10 +3750,6 @@
 		F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSelect.cpp; sourceTree = "<group>"; };
 		F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSlider.cpp; sourceTree = "<group>"; };
 		F5AACA960FB3E2B800DBB77C /* GUIDialogSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSlider.h; sourceTree = "<group>"; };
-		F5AC52870F58504F003EEAA4 /* DTSCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTSCodec.h; path = xbmc/cores/paplayer/DTSCodec.h; sourceTree = SOURCE_ROOT; };
-		F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DTSCodec.cpp; path = xbmc/cores/paplayer/DTSCodec.cpp; sourceTree = SOURCE_ROOT; };
-		F5AC528F0F58525B003EEAA4 /* DTSCDDACodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTSCDDACodec.h; path = xbmc/cores/paplayer/DTSCDDACodec.h; sourceTree = SOURCE_ROOT; };
-		F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DTSCDDACodec.cpp; path = xbmc/cores/paplayer/DTSCDDACodec.cpp; sourceTree = SOURCE_ROOT; };
 		F5ACB5370FC3DF3D00AAA056 /* eprintf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = eprintf.cpp; sourceTree = "<group>"; };
 		F5AD1EA60F488A1A0065EB5D /* GUIWindowKaraokeLyrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowKaraokeLyrics.h; sourceTree = "<group>"; };
 		F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowKaraokeLyrics.cpp; sourceTree = "<group>"; };
@@ -5284,59 +5254,22 @@
 		E38E15010D25F9F900618676 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
-				E38E15020D25F9F900618676 /* DllLiba52.h */,
-				E38E15030D25F9F900618676 /* DllLibDts.h */,
-				E38E15040D25F9F900618676 /* DllLibFaad.h */,
 				E38E15050D25F9F900618676 /* DllLibMad.h */,
 				E38E15060D25F9F900618676 /* DVDAudioCodec.h */,
 				E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */,
 				E38E15080D25F9F900618676 /* DVDAudioCodecFFmpeg.h */,
-				E38E15090D25F9F900618676 /* DVDAudioCodecLiba52.cpp */,
-				E38E150A0D25F9F900618676 /* DVDAudioCodecLiba52.h */,
-				E38E150B0D25F9F900618676 /* DVDAudioCodecLibDts.cpp */,
-				E38E150C0D25F9F900618676 /* DVDAudioCodecLibDts.h */,
-				E38E150D0D25F9F900618676 /* DVDAudioCodecLibFaad.cpp */,
-				E38E150E0D25F9F900618676 /* DVDAudioCodecLibFaad.h */,
 				E38E150F0D25F9F900618676 /* DVDAudioCodecLibMad.cpp */,
 				E38E15100D25F9F900618676 /* DVDAudioCodecLibMad.h */,
 				E38E15110D25F9F900618676 /* DVDAudioCodecLPcm.cpp */,
 				E38E15120D25F9F900618676 /* DVDAudioCodecLPcm.h */,
-				E38E15130D25F9F900618676 /* DVDAudioCodecPassthrough.cpp */,
-				E38E15140D25F9F900618676 /* DVDAudioCodecPassthrough.h */,
 				F5F245D81112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp */,
 				F5F245D91112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.h */,
 				E38E15150D25F9F900618676 /* DVDAudioCodecPcm.cpp */,
 				E38E15160D25F9F900618676 /* DVDAudioCodecPcm.h */,
 				F5F24E801123242B009126C6 /* Encoders */,
-				E38E15170D25F9F900618676 /* liba52 */,
-				E38E15190D25F9F900618676 /* libdts */,
-				E38E151B0D25F9F900618676 /* libfaad */,
 				E38E151D0D25F9F900618676 /* libmad */,
 			);
 			path = Audio;
-			sourceTree = "<group>";
-		};
-		E38E15170D25F9F900618676 /* liba52 */ = {
-			isa = PBXGroup;
-			children = (
-				E38E15180D25F9F900618676 /* a52.h */,
-			);
-			path = liba52;
-			sourceTree = "<group>";
-		};
-		E38E15190D25F9F900618676 /* libdts */ = {
-			isa = PBXGroup;
-			children = (
-				E38E151A0D25F9F900618676 /* dts.h */,
-			);
-			path = libdts;
-			sourceTree = "<group>";
-		};
-		E38E151B0D25F9F900618676 /* libfaad */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = libfaad;
 			sourceTree = "<group>";
 		};
 		E38E151D0D25F9F900618676 /* libmad */ = {
@@ -5519,10 +5452,6 @@
 				88ACB01D0DCF409E0083CFDF /* ASAPCodec.h */,
 				E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */,
 				E36578870D3AA7B40033CC1C /* DVDPlayerCodec.h */,
-				E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */,
-				E38E15D80D25F9FA00618676 /* AC3CDDACodec.h */,
-				E38E15D90D25F9FA00618676 /* AC3Codec.cpp */,
-				E38E15DA0D25F9FA00618676 /* AC3Codec.h */,
 				E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */,
 				E38E15DC0D25F9FA00618676 /* ADPCMCodec.h */,
 				E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */,
@@ -5534,10 +5463,6 @@
 				E38E15E70D25F9FA00618676 /* CDDAcodec.h */,
 				E38E15E80D25F9FA00618676 /* CodecFactory.cpp */,
 				E38E15E90D25F9FA00618676 /* CodecFactory.h */,
-				F5AC528F0F58525B003EEAA4 /* DTSCDDACodec.h */,
-				F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */,
-				F5AC52870F58504F003EEAA4 /* DTSCodec.h */,
-				F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */,
 				F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */,
 				F5F8E1D80E427E8000A8E96F /* VGMCodec.h */,
 				E38E160A0D25F9FA00618676 /* FLACcodec.cpp */,
@@ -5614,6 +5539,8 @@
 				F5D8D730102BB3B1004A11AB /* OverlayRenderer.h */,
 				431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */,
 				431AE5D8109C1A63007428C3 /* OverlayRendererUtil.h */,
+				F56579AD13060D1E0085ED7F /* RenderCapture.cpp */,
+				F56579AE13060D1E0085ED7F /* RenderCapture.h */,
 				E38E16650D25F9FA00618676 /* RenderManager.cpp */,
 				E38E16660D25F9FA00618676 /* RenderManager.h */,
 				E38E166B0D25F9FA00618676 /* VideoShaders */,
@@ -5925,10 +5852,8 @@
 		E38E185C0D25F9FA00618676 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				E38E15EE0D25F9FA00618676 /* DllAc3codec.h */,
 				E38E15EF0D25F9FA00618676 /* DllAdpcm.h */,
 				88ACB01E0DCF409E0083CFDF /* DllASAP.h */,
-				E38E15F20D25F9FA00618676 /* DllDCACodec.h */,
 				E38E15F50D25F9FA00618676 /* DllLibFlac.h */,
 				E38E15FA0D25F9FA00618676 /* DllNosefart.h */,
 				E38E15FB0D25F9FA00618676 /* DllSidplay2.h */,
@@ -5999,6 +5924,7 @@
 		E38E19DA0D25F9FB00618676 /* xbmcmodule */ = {
 			isa = PBXGroup;
 			children = (
+				189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */,
 				7CD2CCFE11B38B000009EFC1 /* PythonAddon.cpp */,
 				7CD2CCFF11B38B000009EFC1 /* PythonAddon.h */,
 				7CD2CD0011B38B000009EFC1 /* xbmcaddonmodule.cpp */,
@@ -6873,6 +6799,8 @@
 				E38E1E700D25F9FD00618676 /* PerformanceSample.h */,
 				E38E1E710D25F9FD00618676 /* PerformanceStats.cpp */,
 				E38E1E720D25F9FD00618676 /* PerformanceStats.h */,
+				F5475980130EEA4A00850A9A /* ReferenceCounting.cpp */,
+				F5475981130EEA4A00850A9A /* ReferenceCounting.h */,
 				E38E1E730D25F9FD00618676 /* RegExp.cpp */,
 				E38E1E740D25F9FD00618676 /* RegExp.h */,
 				F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */,
@@ -7259,7 +7187,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# Force TARGET_NAME on ppc (do not use XBMC_ppc.app)\nTARGET_NAME=XBMC.app\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude skin.confluence\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/osx\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/osx\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\n\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
+			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude skin.confluence\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/osx\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/osx\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\n\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
 		};
 		F5A1CBDF0F6B0B4700A96ABD /* copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -7274,7 +7202,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Force TARGET_NAME on ppc (do not use XBMC_ppc.app)\nTARGET_NAME=XBMC.app\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources\"\n\ncp -f \"$TARGET_BUILD_DIR/XBMC\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/\"\ncp -f \"$SRCROOT/media/xbmc.icns\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\ncp -f \"$SRCROOT/xbmc/osx/Info.plist\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/\"\n\n# start clean so we don't keep old dylibs\nrm -f \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/*\"\n\n# Copy all of XBMC's dynamic dependencies and rename their locations to inside the Framework\nfor a in $(otool -L \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/XBMC\"  | grep opt | awk ' { print $1 } ') ; do \n\techo \"Processing $a\"\n\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\tinstall_name_tool -change \"$a\" @executable_path/../Frameworks/$(basename $a) \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/XBMC\"\ndone\n\nREWIND=\"1\"\n# Copy all the *osx.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/system -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the system/python/Lib/*.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/system/python/Lib -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system/python/Lib/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the addon/*.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/addons -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$b\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the addon/*.xbs dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/addons -name \"*.xbs\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$b\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/\"*dylib ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\n";
+			shellScript = "mkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources\"\n\ncp -f \"$TARGET_BUILD_DIR/XBMC\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/\"\ncp -f \"$SRCROOT/media/xbmc.icns\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\ncp -f \"$SRCROOT/xbmc/osx/Info.plist\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/\"\n\n# start clean so we don't keep old dylibs\nrm -f \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/*\"\n\n# Copy all of XBMC's dynamic dependencies and rename their locations to inside the Framework\nfor a in $(otool -L \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/XBMC\"  | grep opt | awk ' { print $1 } ') ; do \n\techo \"Processing $a\"\n\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\tinstall_name_tool -change \"$a\" @executable_path/../Frameworks/$(basename $a) \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/XBMC\"\ndone\n\nREWIND=\"1\"\n# Copy all the *osx.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/system -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the system/python/Lib/*.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/system/python/Lib -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system/python/Lib/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the addon/*.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/addons -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$b\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the addon/*.xbs dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/addons -name \"*.xbs\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$b\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/\"*dylib ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\n";
 		};
 		F5A1CBE00F6B0B4700A96ABD /* update version info */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -7345,12 +7273,8 @@
 				E38E1F790D25F9FD00618676 /* DVDAudio.cpp in Sources */,
 				E38E1F7A0D25F9FD00618676 /* DVDClock.cpp in Sources */,
 				E38E1F7B0D25F9FD00618676 /* DVDAudioCodecFFmpeg.cpp in Sources */,
-				E38E1F7C0D25F9FD00618676 /* DVDAudioCodecLiba52.cpp in Sources */,
-				E38E1F7D0D25F9FD00618676 /* DVDAudioCodecLibDts.cpp in Sources */,
-				E38E1F7E0D25F9FD00618676 /* DVDAudioCodecLibFaad.cpp in Sources */,
 				E38E1F7F0D25F9FD00618676 /* DVDAudioCodecLibMad.cpp in Sources */,
 				E38E1F800D25F9FD00618676 /* DVDAudioCodecLPcm.cpp in Sources */,
-				E38E1F810D25F9FD00618676 /* DVDAudioCodecPassthrough.cpp in Sources */,
 				E38E1F820D25F9FD00618676 /* DVDAudioCodecPcm.cpp in Sources */,
 				E38E1F840D25F9FD00618676 /* DVDCodecUtils.cpp in Sources */,
 				E38E1F850D25F9FD00618676 /* DVDFactoryCodec.cpp in Sources */,
@@ -7388,8 +7312,6 @@
 				E38E1FAD0D25F9FD00618676 /* DVDSubtitleLineCollection.cpp in Sources */,
 				E38E1FAE0D25F9FD00618676 /* DVDSubtitleParserSubrip.cpp in Sources */,
 				E38E1FAF0D25F9FD00618676 /* DVDSubtitleStream.cpp in Sources */,
-				E38E1FBF0D25F9FD00618676 /* AC3CDDACodec.cpp in Sources */,
-				E38E1FC00D25F9FD00618676 /* AC3Codec.cpp in Sources */,
 				E38E1FC10D25F9FD00618676 /* ADPCMCodec.cpp in Sources */,
 				E38E1FC30D25F9FD00618676 /* AIFFcodec.cpp in Sources */,
 				E38E1FC50D25F9FD00618676 /* AudioDecoder.cpp in Sources */,
@@ -7850,8 +7772,6 @@
 				7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */,
 				F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */,
 				F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */,
-				F5AC52890F58504F003EEAA4 /* DTSCodec.cpp in Sources */,
-				F5AC52910F58525B003EEAA4 /* DTSCDDACodec.cpp in Sources */,
 				F55110450F5C3C0100955236 /* DVDDemuxHTSP.cpp in Sources */,
 				F551107C0F5C424700955236 /* htsatomic.c in Sources */,
 				F551107D0F5C424700955236 /* htsbuf.c in Sources */,
@@ -8184,6 +8104,9 @@
 				433219D912E4C6A500CD7486 /* UDFDirectory.cpp in Sources */,
 				7C4705AE12EF584C00369E51 /* AddonInstaller.cpp in Sources */,
 				18C1D22D13033F6A00CFFE59 /* GLUtils.cpp in Sources */,
+				183C454D130C4D55006AA317 /* xbmcvfsmodule.cpp in Sources */,
+				F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */,
+				F5475982130EEA4A00850A9A /* ReferenceCounting.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8224,12 +8147,8 @@
 				F5A1C8E70F6B06CF00A96ABD /* DVDAudio.cpp in Sources */,
 				F5A1C8E80F6B06CF00A96ABD /* DVDClock.cpp in Sources */,
 				F5A1C8E90F6B06CF00A96ABD /* DVDAudioCodecFFmpeg.cpp in Sources */,
-				F5A1C8EA0F6B06CF00A96ABD /* DVDAudioCodecLiba52.cpp in Sources */,
-				F5A1C8EB0F6B06CF00A96ABD /* DVDAudioCodecLibDts.cpp in Sources */,
-				F5A1C8EC0F6B06CF00A96ABD /* DVDAudioCodecLibFaad.cpp in Sources */,
 				F5A1C8ED0F6B06CF00A96ABD /* DVDAudioCodecLibMad.cpp in Sources */,
 				F5A1C8EE0F6B06CF00A96ABD /* DVDAudioCodecLPcm.cpp in Sources */,
-				F5A1C8EF0F6B06CF00A96ABD /* DVDAudioCodecPassthrough.cpp in Sources */,
 				F5A1C8F00F6B06CF00A96ABD /* DVDAudioCodecPcm.cpp in Sources */,
 				F5A1C8F10F6B06CF00A96ABD /* DVDCodecUtils.cpp in Sources */,
 				F5A1C8F20F6B06CF00A96ABD /* DVDFactoryCodec.cpp in Sources */,
@@ -8267,8 +8186,6 @@
 				F5A1C9120F6B06CF00A96ABD /* DVDSubtitleLineCollection.cpp in Sources */,
 				F5A1C9130F6B06CF00A96ABD /* DVDSubtitleParserSubrip.cpp in Sources */,
 				F5A1C9140F6B06CF00A96ABD /* DVDSubtitleStream.cpp in Sources */,
-				F5A1C9170F6B06CF00A96ABD /* AC3CDDACodec.cpp in Sources */,
-				F5A1C9180F6B06CF00A96ABD /* AC3Codec.cpp in Sources */,
 				F5A1C9190F6B06CF00A96ABD /* ADPCMCodec.cpp in Sources */,
 				F5A1C91B0F6B06CF00A96ABD /* AIFFcodec.cpp in Sources */,
 				F5A1C91D0F6B06CF00A96ABD /* AudioDecoder.cpp in Sources */,
@@ -8729,8 +8646,6 @@
 				F5A1CB8F0F6B06CF00A96ABD /* SpecialProtocol.cpp in Sources */,
 				F5A1CB900F6B06CF00A96ABD /* GUIWindowKaraokeLyrics.cpp in Sources */,
 				F5A1CB910F6B06CF00A96ABD /* karaokewindowbackground.cpp in Sources */,
-				F5A1CB950F6B06CF00A96ABD /* DTSCodec.cpp in Sources */,
-				F5A1CB960F6B06CF00A96ABD /* DTSCDDACodec.cpp in Sources */,
 				F5A1CB970F6B06CF00A96ABD /* DVDDemuxHTSP.cpp in Sources */,
 				F5A1CB980F6B06CF00A96ABD /* htsatomic.c in Sources */,
 				F5A1CB990F6B06CF00A96ABD /* htsbuf.c in Sources */,
@@ -9061,6 +8976,7 @@
 				433219DC12E4C6A500CD7486 /* UDFDirectory.cpp in Sources */,
 				7C4705AF12EF584C00369E51 /* AddonInstaller.cpp in Sources */,
 				18C1D22E13033F6A00CFFE59 /* GLUtils.cpp in Sources */,
+				F5475983130EEA4A00850A9A /* ReferenceCounting.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

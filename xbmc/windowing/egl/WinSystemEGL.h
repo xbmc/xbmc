@@ -27,8 +27,9 @@
 #include <EGL/egl.h>
 #include <X11/Xlib.h>
 #include "rendering/gles/RenderSystemGLES.h"
+#include "utils/ReferenceCounting.h"
 
-class CWinSystemEGL : public CWinSystemBase, public CRenderSystemGLES
+class CWinSystemEGL : public CWinSystemBase, public CRenderSystemGLES, public virtual xbmcutil::Referenced
 {
 public:
   CWinSystemEGL();
@@ -78,5 +79,13 @@ protected:
 
   int m_iVSyncErrors;
 };
+
+/**
+ * This is a hack. There will be an instance of a ref to this "global" statically in each
+ *  file that includes this header. This is so that the reference couting will
+ *  work correctly from the data segment.
+ */
+static xbmcutil::Referenced::ref<CWinSystemEGL> g_WindowingRef(xbmcutil::Singleton<CWinSystemEGL>::getInstance);
+#define g_Windowing (*(g_WindowingRef))
 
 #endif // WINDOW_SYSTEM_H

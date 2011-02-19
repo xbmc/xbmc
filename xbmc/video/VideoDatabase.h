@@ -425,6 +425,13 @@ public:
   bool GetPaths(std::set<CStdString> &paths);
   bool GetPathsForTvShow(int idShow, std::vector<int>& paths);
 
+  /*! \brief retrieve subpaths of a given path.  Assumes a heirarchical folder structure
+   \param basepath the root path to retrieve subpaths for
+   \param subpaths the returned subpaths
+   \return true if we successfully retrieve subpaths (may be zero), false on error
+   */
+  bool GetSubPaths(const CStdString& basepath, std::vector<int>& subpaths);
+
   // for music + musicvideo linkups - if no album and title given it will return the artist id, else the id of the matching video
   int GetMatchingMusicVideo(const CStdString& strArtist, const CStdString& strAlbum = "", const CStdString& strTitle = "");
 
@@ -622,7 +629,15 @@ protected:
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 43; };
+
+  /*! \brief Run a query on the main dataset and return the number of rows
+   If no rows are found we close the dataset and return 0.
+   \param sql the sql query to run
+   \return the number of rows, -1 for an error.
+   */
+  int RunQuery(const CStdString &sql);
+
+  virtual int GetMinVersion() const { return 44; };
   const char *GetDefaultDBName() const { return "MyVideos34.db"; };
 
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);
