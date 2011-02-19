@@ -103,6 +103,10 @@ public:
     fRefreshRate = 0;
     dwFlags = iSubtitles = iScreen = 0;
   }
+  float DisplayRatio() const
+  {
+    return iWidth * fPixelRatio / iHeight;
+  }
   RESOLUTION_INFO(const RESOLUTION_INFO& res)
   {
     Overscan = res.Overscan; bFullScreen = res.bFullScreen;

@@ -32,7 +32,6 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "windowing/WindowingFactory.h"
-#include "settings/Settings.h"
 
 using namespace std;
 
@@ -447,9 +446,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
 bool GUIFontManager::OpenFontFile(TiXmlDocument& xmlDoc)
 {
   // Get the file to load fonts from:
-  RESOLUTION resToUse;
-  CStdString strPath = g_SkinInfo->GetSkinPath("Font.xml", &resToUse);
-  m_skinResolution = g_settings.m_ResInfo[resToUse];
+  CStdString strPath = g_SkinInfo->GetSkinPath("Font.xml", &m_skinResolution);
   CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
 
   // first try our preferred file

@@ -24,7 +24,6 @@
 #include "GUIWindowManager.h"
 #include "Key.h"
 #include "LocalizeStrings.h"
-#include "settings/Settings.h"
 #include "GUIControlFactory.h"
 #include "GUIControlGroup.h"
 #include "GUIControlProfiler.h"
@@ -82,7 +81,6 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   int64_t start;
   start = CurrentHostCounter();
 #endif
-  RESOLUTION resToUse = RES_INVALID;
   CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
   
   // Find appropriate skin folder + resolution to load from
@@ -93,12 +91,9 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   else
   {
     // FIXME: strLowerPath needs to eventually go since resToUse can get incorrectly overridden
-    strLowerPath =  g_SkinInfo->GetSkinPath(CStdString(strFileName).ToLower(), &resToUse);
-    strPath = g_SkinInfo->GetSkinPath(strFileName, &resToUse);
+    strLowerPath =  g_SkinInfo->GetSkinPath(CStdString(strFileName).ToLower(), &m_coordsRes);
+    strPath = g_SkinInfo->GetSkinPath(strFileName, &m_coordsRes);
   }
-
-  if (!bContainsPath)
-    m_coordsRes = g_settings.m_ResInfo[resToUse];
 
   bool ret = LoadXML(strPath.c_str(), strLowerPath.c_str());
 
