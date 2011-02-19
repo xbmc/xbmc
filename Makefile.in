@@ -114,11 +114,6 @@ PAPCODECS_DIRS= \
 	lib/snesapu/SNES/SNESAPU \
 	lib/vgmstream \
 
-ifeq (@USE_INTERNAL_LIBA52@,1)
-PAPCODECS_DIRS+= \
-	xbmc/cores/paplayer/AC3Codec
-endif
-
 ifeq (@USE_ASAP_CODEC@,1)
 PAPCODEC_DIRS+= \
 	lib/asap
@@ -454,9 +449,6 @@ libhdhomerun: dllloader
 libid3tag: dllloader
 	$(MAKE) -C lib/libid3tag
 papcodecs: dllloader dvdpcodecs
-ifeq (@USE_INTERNAL_LIBA52@,1)
-	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
-endif
 	$(MAKE) -C lib/xbadpcm
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(MAKE) -C lib/libflac

@@ -459,12 +459,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.cpp">
       <Filter>cores\dvdplayer\DVDSubtitles</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\AC3CDDACodec.cpp">
-      <Filter>cores\paplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\AC3Codec.cpp">
-      <Filter>cores\paplayer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\ADPCMCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
@@ -481,12 +475,6 @@
       <Filter>cores\paplayer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\CodecFactory.cpp">
-      <Filter>cores\paplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\DTSCDDACodec.cpp">
-      <Filter>cores\paplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\DTSCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.cpp">
@@ -2581,12 +2569,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDFactoryCodec.h">
       <Filter>cores\dvdplayer\DVDCodecs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DllLiba52.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DllLibDts.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DllLibMad.h">
       <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
     </ClInclude>
@@ -2803,12 +2785,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.h">
       <Filter>cores\dvdplayer\DVDSubtitles</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\AC3CDDACodec.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\AC3Codec.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\ADPCMCodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
@@ -2827,16 +2803,10 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\CodecFactory.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\DllAc3codec.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\DllAdpcm.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\DllASAP.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\DllDCACodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\DllLibFlac.h">
@@ -2858,12 +2828,6 @@
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\DllWAVPack.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DTSCDDACodec.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DTSCodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.h">
