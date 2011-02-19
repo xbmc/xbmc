@@ -210,33 +210,15 @@ int CSkinInfo::GetStartWindow() const
 bool CSkinInfo::LoadStartupWindows(const cp_extension_t *ext)
 {
   m_startupWindows.clear();
-  /*{ // yay, run through and grab the startup windows
-    const TiXmlElement *window = startup->FirstChildElement("window");
-    while (window && window->FirstChild())
-    {
-      int id;
-      window->Attribute("id", &id);
-      CStdString name = window->FirstChild()->Value();
-      m_startupWindows.push_back(CStartupWindow(id + WINDOW_HOME, name));
-      window = window->NextSiblingElement("window");
-    }
-  }*/
-
-  // ok, now see if we have any startup windows
-  if (!m_startupWindows.size())
-  { // nope - add the default ones
-    m_startupWindows.push_back(CStartupWindow(WINDOW_HOME, "513"));
-    m_startupWindows.push_back(CStartupWindow(WINDOW_PROGRAMS, "0"));
-    m_startupWindows.push_back(CStartupWindow(WINDOW_PICTURES, "1"));
-    m_startupWindows.push_back(CStartupWindow(WINDOW_MUSIC, "2"));
-    m_startupWindows.push_back(CStartupWindow(WINDOW_VIDEOS, "3"));
-    m_startupWindows.push_back(CStartupWindow(WINDOW_FILES, "7"));
-    m_startupWindows.push_back(CStartupWindow(WINDOW_SETTINGS_MENU, "5"));
-    m_startupWindows.push_back(CStartupWindow(WINDOW_WEATHER, "8"));
-    m_onlyAnimateToHome = true;
-  }
-  else
-    m_onlyAnimateToHome = false;
+  m_startupWindows.push_back(CStartupWindow(WINDOW_HOME, "513"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_PROGRAMS, "0"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_PICTURES, "1"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_MUSIC, "2"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_VIDEOS, "3"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_FILES, "7"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_SETTINGS_MENU, "5"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_WEATHER, "8"));
+  m_onlyAnimateToHome = true;
   return true;
 }
 
