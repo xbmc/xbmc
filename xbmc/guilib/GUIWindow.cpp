@@ -53,7 +53,6 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
   m_idRange = 1;
   m_lastControlID = 0;
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
-  m_coordsRes = g_guiSettings.m_LookAndFeelResolution;
   m_isDialog = false;
   m_needsScaling = true;
   m_windowLoaded = false;
@@ -99,7 +98,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   }
 
   if (!bContainsPath)
-    m_coordsRes = resToUse;
+    m_coordsRes = g_settings.m_ResInfo[resToUse];
 
   bool ret = LoadXML(strPath.c_str(), strLowerPath.c_str());
 
@@ -176,7 +175,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     }
     else if (strValue == "animation" && pChild->FirstChild())
     {
-      CRect rect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
+      CRect rect(0, 0, (float)m_coordsRes.iWidth, (float)m_coordsRes.iHeight);
       CAnimation anim;
       anim.Create(pChild, rect);
       m_animations.push_back(anim);
@@ -241,7 +240,7 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
   // get control type
   CGUIControlFactory factory;
 
-  CRect rect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
+  CRect rect(0, 0, (float)m_coordsRes.iWidth, (float)m_coordsRes.iHeight);
   if (pGroup)
   {
     rect.x1 = pGroup->GetXPosition();
@@ -288,8 +287,8 @@ void CGUIWindow::OnWindowLoaded()
 
 void CGUIWindow::CenterWindow()
 {
-  m_posX = (g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth()) / 2;
-  m_posY = (g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight()) / 2;
+  m_posX = (m_coordsRes.iWidth - GetWidth()) / 2;
+  m_posY = (m_coordsRes.iHeight - GetHeight()) / 2;
 }
 
 void CGUIWindow::Render()
@@ -787,7 +786,7 @@ void CGUIWindow::SetDefaults()
   m_hasCamera = false;
   m_animationsEnabled = true;
   m_clearBackground = 0xff000000; // opaque black -> clear
-  m_hitRect.SetRect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
+  m_hitRect.SetRect(0, 0, (float)m_coordsRes.iWidth, (float)m_coordsRes.iHeight);
 }
 
 CRect CGUIWindow::GetScaledBounds() const

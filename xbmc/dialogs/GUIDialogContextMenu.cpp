@@ -152,11 +152,11 @@ void CGUIDialogContextMenu::SetupButtons()
 
 void CGUIDialogContextMenu::SetPosition(float posX, float posY)
 {
-  if (posY + GetHeight() > g_settings.m_ResInfo[m_coordsRes].iHeight)
-    posY = g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight();
+  if (posY + GetHeight() > m_coordsRes.iHeight)
+    posY = m_coordsRes.iHeight - GetHeight();
   if (posY < 0) posY = 0;
-  if (posX + GetWidth() > g_settings.m_ResInfo[m_coordsRes].iWidth)
-    posX = g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth();
+  if (posX + GetWidth() > m_coordsRes.iWidth)
+    posX = m_coordsRes.iWidth - GetWidth();
   if (posX < 0) posX = 0;
   // we currently hack the positioning of the buttons from y position 0, which
   // forces skinners to place the top image at a negative y value.  Thus, we offset
