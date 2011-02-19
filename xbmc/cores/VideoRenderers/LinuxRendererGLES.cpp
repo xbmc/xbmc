@@ -1306,13 +1306,13 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   CRect saveSize = m_destRect;
 
   // new video rect is thumbnail size
-  m_destRect.SetRect(0, 0, (float)width, (float)height);
+  m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
 
   // clear framebuffer and invert Y axis to get non-inverted image
   glDisable(GL_BLEND);
   g_matrices.MatrixMode(MM_MODELVIEW);
   g_matrices.PushMatrix();
-  g_matrices.Translatef(0, height, 0);
+  g_matrices.Translatef(0, capture->GetHeight(), 0);
   g_matrices.Scalef(1.0, -1.0f, 1.0f);
 
   capture->BeginRender();
