@@ -1878,6 +1878,7 @@ void CGUIWindowPVR::UpdateChannels(bool bRadio)
       bRadio ? "radio" : "tv",
       m_bShowHiddenChannels ? ".hidden" : currentGroup->GroupName());
 
+  m_viewControl.SetSelectedItem(bRadio ? m_iSelected_CHANNELS_RADIO : m_iSelected_CHANNELS_TV);
   Update(m_vecItems->m_strPath);
 
   /* empty list */
@@ -1890,7 +1891,7 @@ void CGUIWindowPVR::UpdateChannels(bool bRadio)
       UpdateChannels(bRadio);
       return;
     }
-    else if (currentGroup->GroupID() != -1)
+    else if (currentGroup->GroupID() > 0)
     {
       /* try the next group */
       if (bRadio)
@@ -1901,8 +1902,6 @@ void CGUIWindowPVR::UpdateChannels(bool bRadio)
       return;
     }
   }
-
-  m_viewControl.SetSelectedItem(bRadio ? m_iSelected_CHANNELS_RADIO : m_iSelected_CHANNELS_TV);
 
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, g_localizeStrings.Get(bRadio ? 19024 : 19023));
   if (m_bShowHiddenChannels)
