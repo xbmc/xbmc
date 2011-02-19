@@ -417,3 +417,39 @@ bool CPVRTimers::UpdateTimer(const CPVRTimerInfoTag &item)
 {
   return item.UpdateOnClient();
 }
+
+CPVRTimerInfoTag *CPVRTimers::GetMatch(const CEpgInfoTag *Epg)
+{
+  CPVRTimerInfoTag *returnTag = NULL;
+
+   for (unsigned int ptr = 0; ptr < size(); ptr++)
+   {
+     CPVRTimerInfoTag *timer = at(ptr);
+
+     if (!Epg || !Epg->GetTable() || !Epg->GetTable()->Channel())
+       continue;
+
+     const CPVRChannel *channel = Epg->GetTable()->Channel();
+     if (timer->ChannelNumber() != channel->ChannelNumber()
+         || timer->IsRadio() != channel->IsRadio())
+       continue;
+
+     if (timer->Start() > Epg->Start() || timer->Stop() < Epg->End())
+       continue;
+
+     returnTag = timer;
+     break;
+   }
+   return returnTag;
+}
+
+CPVRTimerInfoTag *CPVRTimers::GetMatch(const CFileItem *item)
+{
+  CPVRTimerInfoTag *returnTag = NULL;
+
+  if (item && item->HasEPGInfoTag())
+    returnTag = GetMatch(item->GetEPGInfoTag());
+
+  return returnTag;
+}
+
