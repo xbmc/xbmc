@@ -2611,6 +2611,7 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\PVRManager.cpp">
       <Filter>pvr</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmcvfsmodule.cpp">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
@@ -5117,7 +5118,6 @@
     <ClInclude Include="..\..\xbmc\win32\stat_utf8.h">
       <Filter>win32</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\..\lib\ffmpeg\include-xbmc-win32\libavutil\avconfig.h" />
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVR.h">
       <Filter>pvr\windows</Filter>
@@ -5205,6 +5205,7 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\PVRManager.h">
       <Filter>pvr</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.h">
       <Filter>cores\VideoRenderers</Filter>
     </ClInclude>
