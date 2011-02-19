@@ -55,7 +55,6 @@ namespace ADDON
 cp_log_severity_t clog_to_cp(int lvl);
 void cp_fatalErrorHandler(const char *msg);
 void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
-bool GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *base, const char *path);
 
 /**********************************************************
  * CAddonMgr
@@ -149,12 +148,11 @@ bool CAddonMgr::CheckUserDirs(const cp_cfg_element_t *settings)
   if (!userdirs)
     return false;
 
-  DEQUEELEMENTS elements;
-  bool status = GetExtElementDeque(elements, (cp_cfg_element_t *)userdirs, "userdir");
-  if (!status)
+  ELEMENTS elements;
+  if (!GetExtElements((cp_cfg_element_t *)userdirs, "userdir", elements))
     return false;
 
-  IDEQUEELEMENTS itr = elements.begin();
+  ELEMENTS::iterator itr = elements.begin();
   while (itr != elements.end())
   {
     CStdString path = GetExtValue(*itr++, "@path");
@@ -550,25 +548,19 @@ const cp_cfg_element_t *CAddonMgr::GetExtElement(cp_cfg_element_t *base, const c
   return element;
 }
 
-/* Returns all duplicate elements from a base element */
-bool GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *base, const char *path)
+bool CAddonMgr::GetExtElements(cp_cfg_element_t *base, const char *path, ELEMENTS &elements)
 {
-  if (!base)
+  if (!base || !path)
     return false;
 
-  unsigned int i = 0;
-  while (true)
+  for (unsigned int i = 0; i < base->num_children; i++)
   {
-    if (i >= base->num_children)
-      break;
-    CStdString temp = (base->children+i)->name;
+    CStdString temp = base->children[i].name;
     if (!temp.compare(path))
-      elements.push_back(base->children+i);
-    i++;
+      elements.push_back(&base->children[i]);
   }
 
-  if (elements.empty()) return false;
-  return true;
+  return !elements.empty();
 }
 
 const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, const char *extension) const
