@@ -11,6 +11,7 @@
     
     <!-- Loading indicator -->
     <control type="group">
+      <visible>System.SearchInProgress</visible>
       <posx>32</posx>
       <posy>656</posy>
       <control type="image">
@@ -36,7 +37,7 @@
         <texture>plex-search-input.png</texture>  
 		  </control>
 			<control type="label" id="310">
-				<posx>28</posx>
+				<posx>35</posx>
 				<posy>25</posy>
 				<font>LargeSearchFont</font>
 				<textcolor>VeryDark</textcolor>
@@ -721,7 +722,7 @@
 					
 					<!-- Clips -->
 					<control type="group" id="7012">
-					  <height>240</height>
+					  <height>600</height>
   					<control type="label" id="8012">
   						<include>Search_Label</include>
   						<label>VIDEO CLIPS ($INFO[container(9012).numitems])</label>
@@ -732,7 +733,7 @@
   						<height>600</height>
   						<visible allowhiddenfocus="false">true</visible>
   						<orientation>vertical</orientation>
-  						<ondown>9001</ondown>
+  						<ondown>-</ondown>
   						<onup>9010</onup>
   						<onright>-</onright>
   						<onleft>350</onleft>
