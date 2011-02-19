@@ -21,6 +21,7 @@
       </control>
       <control type="label">
         <label>Searching...</label>
+        <font>SearchResult</font>
         <posx>48</posx>
         <posy>6</posy>
       </control>
@@ -561,7 +562,7 @@
 			<control type="group" id="5000">
 				<visible>true</visible>
 				<posx>390</posx>
-				<posy>25</posy>
+				<posy>15</posy>
 				<width>880</width>
 				<height>640</height>
 				
@@ -570,8 +571,8 @@
 					<visible>true</visible>
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>880</width>
-					<height>600</height>
+					<width>900</width>
+					<height>690</height>
 					<ondown>5200</ondown>
 					<onup>310</onup>
 					<onright>350</onright>
@@ -581,162 +582,874 @@
 					<!-- Movies -->
 					<control type="group" id="7001">
 					  <height>240</height>
+					  <control type="image">
+					    <visible>Control.HasFocus(9001)</visible>
+              <texture>plex-search-header.png</texture>  
+				    </control>
+					  <control type="image">
+					    <visible>!Control.HasFocus(9001)</visible>
+              <texture>plex-search-header-disabled.png</texture>  
+				    </control>
   					<control type="label" id="8001">
+					    <visible>Control.HasFocus(9001)</visible>
   						<include>Search_Label</include>
-  						<label>MOVIES ($INFO[container(9001).numitems])</label>
-  						<visible allowhiddenfocus="false">true</visible>
+  						<posy>4</posy>
+  						<label>MOVIES</label>
   					</control>
+  					<control type="label" id="8001">
+					    <visible>!Control.HasFocus(9001)</visible>
+  						<include>Search_Label_Unfocused</include>
+  						<posy>4</posy>
+  						<label>MOVIES</label>
+  					</control>
+						<visible allowhiddenfocus="false">true</visible>
+  					<control type="image">
+  					  <posy>35</posy>
+  					  <animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+  		       	<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+					    <visible>Control.HasFocus(9001)</visible>
+  					  <texture>plex-search-active-section-background.png</texture>
+					  </control>
   					<control type="list" id="9001">
-  					  <posy>30</posy>
+  					  <posy>35</posy>
   						<visible allowhiddenfocus="false">true</visible>
   						<orientation>horizontal</orientation>
   						<ondown>7002</ondown>
   						<onup>-</onup>
   						<onright>65</onright>
   						<onleft>350</onleft>
-  						<include>Search_Result</include>
+          		<posx>0</posx>
+          		<posy>0</posy>
+          		<width>890</width>
+          		<itemlayout width="140" height="200">
+          			<control type="image">
+          				<posx>15</posx>
+          				<posy>15</posy>
+          				<width>128</width>
+          				<height>140</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="bottom">keep</aspectratio>
+          				<texture diffuse="list_movieicon_mask.png"></texture>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>170</posy>
+          				<width>122</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.Title]</label>
+          				<font>SearchResult</font>
+          				<textcolor>FFdddddd</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>190</posy>
+          				<width>130</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.Year]</label>
+          				<font>SearchResultSmaller</font>
+          				<textcolor>FF999999</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          		</itemlayout>
+          		<focusedlayout width="140" height="200">
+          			<control type="image">
+          				<posx>10</posx>
+          				<posy>10</posy>
+          				<width>138</width>
+          				<height>150</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="bottom">keep</aspectratio>
+          				<bordertexture>plugin-stream-highlight.png</bordertexture>
+    							<bordersize>5</bordersize>
+    							<texture diffuse="list_movieicon_mask.png"></texture>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>170</posy>
+          				<width>122</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.Title]</label>
+          				<font>SearchResult</font>
+          				<textcolor>FFFFFFFF</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>190</posy>
+          				<width>130</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.Year]</label>
+          				<font>SearchResultSmaller</font>
+          				<textcolor>FFFFFFFF</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          		</focusedlayout>
   						<height>200</height>
   					</control>
   				</control>
-					
+
 					<!-- TV Shows -->
 					<control type="group" id="7002">
-					  <height>240</height>
-    				<control type="label" id="8002">
-    					<include>Search_Label</include>
-    					<visible allowhiddenfocus="false">true</visible>						
-    					<label>TV SHOWS ($INFO[container(9002).numitems])</label>
-    				</control>
+					  <height>220</height>
+					  <control type="image">
+					    <visible>Control.HasFocus(9002)</visible>
+              <texture>plex-search-header.png</texture>  
+				    </control>
+					  <control type="image">
+					    <visible>!Control.HasFocus(9002)</visible>
+              <texture>plex-search-header-disabled.png</texture>  
+				    </control>
+  					<control type="label" id="8002">
+					    <visible>Control.HasFocus(9002)</visible>
+  						<include>Search_Label</include>
+  						<posy>4</posy>
+  						<label>TV SHOWS</label>
+  					</control>
+  					<control type="label" id="8002">
+					    <visible>!Control.HasFocus(9002)</visible>
+  						<include>Search_Label_Unfocused</include>
+  						<posy>4</posy>
+  						<label>TV SHOWS</label>
+  					</control>
+    				<control type="image">
+  					  <posy>35</posy>
+  					  <animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+  		       	<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+					    <visible>Control.HasFocus(9002)</visible>
+  					  <texture>plex-search-active-section-background.png</texture>
+					  </control>
     				<control type="list" id="9002">
   					  <posy>30</posy>
     					<visible allowhiddenfocus="false">true</visible>
     					<orientation>horizontal</orientation>
-    					<ondown>9008</ondown>
+    					<ondown>7004</ondown>
     					<onup>7001</onup>
     					<onright>-</onright>
     					<onleft>350</onleft>
-    					<include>Search_Result</include>						
+          		<posx>0</posx>
+          		<posy>0</posy>
+          		<width>880</width>
+          		<itemlayout width="140" height="200">
+          			<control type="image">
+          				<posx>15</posx>
+          				<posy>20</posy>
+          				<width>128</width>
+          				<height>130</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="bottom">keep</aspectratio>
+          				<texture diffuse="list_movieicon_mask.png"></texture>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>167</posy>
+          				<width>130</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.Title]</label>
+          				<font>MediumSmallTitleFont</font>
+          				<textcolor>FF999999</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          		</itemlayout>
+          		<focusedlayout width="140" height="200">
+          			<control type="image">
+          				<posx>10</posx>
+          				<posy>15</posy>
+          				<width>138</width>
+          				<height>140</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="bottom">keep</aspectratio>
+          				<bordertexture>plugin-stream-highlight.png</bordertexture>
+    							<bordersize>5</bordersize>
+    							<texture diffuse="list_movieicon_mask.png"></texture>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>167</posy>
+          				<width>130</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.Title]</label>
+          				<font>MediumSmallTitleFont</font>
+          				<textcolor>FFFFFFFF</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          		</focusedlayout>
     					<height>200</height>
     				</control>
 					</control>
 
-					<!-- TV Episodes -->
+					<!-- Episodes -->
 					<control type="group" id="7004">
-					  <height>240</height>
+					  <height>180</height>
+					  <control type="image">
+					    <visible>Control.HasFocus(9004)</visible>
+              <texture>plex-search-header.png</texture>  
+				    </control>
+					  <control type="image">
+					    <visible>!Control.HasFocus(9004)</visible>
+              <texture>plex-search-header-disabled.png</texture>  
+				    </control>
   					<control type="label" id="8004">
-  						<visible allowhiddenfocus="false">true</visible>						
+					    <visible>Control.HasFocus(9004)</visible>
   						<include>Search_Label</include>
-  						<label>TV EPISODES ($INFO[container(9004).numitems])</label>
+  						<posy>4</posy>
+  						<label>EPISODES</label>
   					</control>
+  					<control type="label" id="8004">
+					    <visible>!Control.HasFocus(9004)</visible>
+  						<include>Search_Label_Unfocused</include>
+  						<posy>4</posy>
+  						<label>EPISODES</label>
+  					</control>
+						<visible allowhiddenfocus="false">true</visible>
+  					<control type="image">
+  					  <posy>35</posy>
+  					  <height>180</height>
+  					  <animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+  		       	<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+					    <visible>Control.HasFocus(9004)</visible>
+  					  <texture>plex-search-active-section-background.png</texture>
+					  </control>
   					<control type="list" id="9004">
+  					  <posy>35</posy>
   						<visible allowhiddenfocus="false">true</visible>
   						<orientation>horizontal</orientation>
   						<ondown>9008</ondown>
   						<onup>9001</onup>
   						<onright>-</onright>
   						<onleft>350</onleft>
-  						<include>Search_Result</include>	
-  						<height>200</height>					
+          		<posx>0</posx>
+          		<posy>0</posy>
+          		<width>880</width>
+          		<itemlayout width="140" height="185">
+          			<control type="image">
+          				<posx>15</posx>
+          				<posy>20</posy>
+          				<width>128</width>
+          				<height>70</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="bottom">keep</aspectratio>
+          				<texture diffuse="plex-search-episode-mask.png"></texture>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>105</posy>
+          				<width>125</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.tvshowtitle]</label>
+          				<font>SearchResult</font>
+          				<textcolor>FFdddddd</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>125</posy>
+          				<width>120</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.title]</label>
+          				<font>SearchResultSmaller</font>
+          				<textcolor>FF999999</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          		</itemlayout>
+          		<focusedlayout width="140" height="185">
+          			<control type="image">
+          				<posx>10</posx>
+          				<posy>15</posy>
+          				<width>138</width>
+          				<height>80</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="bottom">keep</aspectratio>
+          				<bordertexture>plugin-stream-highlight.png</bordertexture>
+    							<bordersize>5</bordersize>
+    							<texture diffuse="plex-search-episode-mask.png"></texture>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>105</posy>
+          				<width>125</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.tvshowtitle]</label>
+          				<font>SearchResult</font>
+          				<textcolor>FFFFFFFF</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>125</posy>
+          				<width>120</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.title]</label>
+          				<font>SearchResultSmaller</font>
+          				<textcolor>FFFFFFFF</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          		</focusedlayout>
+  						<height>200</height>
   					</control>
   				</control>
 
 					<!-- Artists -->
 					<control type="group" id="7008">
-					  <height>240</height>
+					  <height>220</height>
+					  <control type="image">
+					    <visible>Control.HasFocus(9008)</visible>
+              <texture>plex-search-header.png</texture>  
+				    </control>
+					  <control type="image">
+					    <visible>!Control.HasFocus(9008)</visible>
+              <texture>plex-search-header-disabled.png</texture>  
+				    </control>
   					<control type="label" id="8008">
-  						<visible allowhiddenfocus="false">true</visible>
+					    <visible>Control.HasFocus(9008)</visible>
   						<include>Search_Label</include>
-  						<label>ARTISTS ($INFO[container(9008).numitems])</label>
+  						<posy>4</posy>
+  						<label>ARTISTS</label>
   					</control>
-  					<control type="list" id="9008">
-  						<visible allowhiddenfocus="false">true</visible>
-  						<orientation>horizontal</orientation>
-  						<ondown>9010</ondown>
-  						<onup>9002</onup>
-  						<onright>-</onright>
-  						<onleft>350</onleft>
-  						<include>Search_Result</include>
-  						<height>200</height>					
+  					<control type="label" id="8008">
+					    <visible>!Control.HasFocus(9008)</visible>
+  						<include>Search_Label_Unfocused</include>
+  						<posy>4</posy>
+  						<label>ARTISTS</label>
   					</control>
-  				</control>
+    				<control type="image">
+  					  <posy>35</posy>
+  					  <height>190</height>
+  					  <animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+  		       	<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+					    <visible>Control.HasFocus(9008)</visible>
+  					  <texture>plex-search-active-section-background.png</texture>
+					  </control>
+    				<control type="list" id="9008">
+  					  <posy>30</posy>
+    					<visible allowhiddenfocus="false">true</visible>
+    					<orientation>horizontal</orientation>
+    					<ondown>7009</ondown>
+    					<onup>7004</onup>
+    					<onright>-</onright>
+    					<onleft>350</onleft>
+          		<posx>0</posx>
+          		<posy>0</posy>
+          		<width>880</width>
+          		<itemlayout width="140" height="200">
+          			<control type="image">
+          				<posx>15</posx>
+          				<posy>20</posy>
+          				<width>128</width>
+          				<height>130</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="bottom">keep</aspectratio>
+          				<texture diffuse="plex-search-square-mask.png"></texture>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>167</posy>
+          				<width>130</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.Title]</label>
+          				<font>SearchResult</font>
+          				<textcolor>FFdddddd</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          		</itemlayout>
+          		<focusedlayout width="140" height="200">
+          			<control type="image">
+          				<posx>10</posx>
+          				<posy>15</posy>
+          				<width>138</width>
+          				<height>140</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="bottom">keep</aspectratio>
+          				<bordertexture>plugin-stream-highlight.png</bordertexture>
+    							<bordersize>5</bordersize>
+    							<texture diffuse="plex-search-square-mask.png"></texture>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>167</posy>
+          				<width>130</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.Title]</label>
+          				<font>SearchResult</font>
+          				<textcolor>FFFFFFFF</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          		</focusedlayout>
+    					<height>200</height>
+    				</control>
+					</control>
 
 					<!-- Albums -->
 					<control type="group" id="7009">
 					  <height>240</height>
+					  <control type="image">
+					    <visible>Control.HasFocus(9009)</visible>
+              <texture>plex-search-header.png</texture>  
+				    </control>
+					  <control type="image">
+					    <visible>!Control.HasFocus(9009)</visible>
+              <texture>plex-search-header-disabled.png</texture>  
+				    </control>
   					<control type="label" id="8009">
+					    <visible>Control.HasFocus(9009)</visible>
   						<include>Search_Label</include>
-  						<label>ALBUMS ($INFO[container(9009).numitems])</label>
-  						<visible allowhiddenfocus="false">true</visible>
+  						<posy>4</posy>
+  						<label>ALBUMS</label>
   					</control>
+  					<control type="label" id="8009">
+					    <visible>!Control.HasFocus(9009)</visible>
+  						<include>Search_Label_Unfocused</include>
+  						<posy>4</posy>
+  						<label>ALBUMS</label>
+  					</control>
+						<visible allowhiddenfocus="false">true</visible>
+  					<control type="image">
+  					  <posy>35</posy>
+  					  <animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+  		       	<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+					    <visible>Control.HasFocus(9009)</visible>
+  					  <texture>plex-search-active-section-background.png</texture>
+					  </control>
   					<control type="list" id="9009">
+  					  <posy>35</posy>
   						<visible allowhiddenfocus="false">true</visible>
   						<orientation>horizontal</orientation>
-  						<ondown>9010</ondown>
-  						<onup>9008</onup>
-  						<onright>-</onright>
+  						<ondown>7010</ondown>
+  						<onup>7008</onup>
+  						<onright>65</onright>
   						<onleft>350</onleft>
-  						<include>Search_Result</include>	
-  						<height>200</height>					
+          		<posx>0</posx>
+          		<posy>0</posy>
+          		<width>890</width>
+          		<itemlayout width="140" height="200">
+          			<control type="image">
+          				<posx>15</posx>
+          				<posy>10</posy>
+          				<width>128</width>
+          				<height>140</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="bottom">keep</aspectratio>
+          				<texture diffuse="list_movieicon_mask.png"></texture>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>165</posy>
+          				<width>122</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.artist]</label>
+          				<font>SearchResult</font>
+          				<textcolor>FFdddddd</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>185</posy>
+          				<width>130</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.title]</label>
+          				<font>SearchResultSmaller</font>
+          				<textcolor>FF999999</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          		</itemlayout>
+          		<focusedlayout width="140" height="200">
+          			<control type="image">
+          				<posx>10</posx>
+          				<posy>5</posy>
+          				<width>138</width>
+          				<height>150</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="bottom">keep</aspectratio>
+          				<bordertexture>plugin-stream-highlight.png</bordertexture>
+    							<bordersize>5</bordersize>
+    							<texture diffuse="list_movieicon_mask.png"></texture>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>165</posy>
+          				<width>122</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.artist]</label>
+          				<font>SearchResult</font>
+          				<textcolor>FFFFFFFF</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>185</posy>
+          				<width>130</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.title]</label>
+          				<font>SearchResultSmaller</font>
+          				<textcolor>FFFFFFFF</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          		</focusedlayout>
+  						<height>200</height>
   					</control>
   				</control>
 
 					<!-- Tracks -->
 					<control type="group" id="7010">
 					  <height>240</height>
+					  <control type="image">
+					    <visible>Control.HasFocus(9010)</visible>
+              <texture>plex-search-header.png</texture>  
+				    </control>
+					  <control type="image">
+					    <visible>!Control.HasFocus(9010)</visible>
+              <texture>plex-search-header-disabled.png</texture>  
+				    </control>
   					<control type="label" id="8010">
+					    <visible>Control.HasFocus(9010)</visible>
   						<include>Search_Label</include>
-  						<label>TRACKS ($INFO[container(9010).numitems])</label>
-  						<visible allowhiddenfocus="false">true</visible>
+  						<posy>4</posy>
+  						<label>TRACKS</label>
   					</control>
+  					<control type="label" id="8010">
+					    <visible>!Control.HasFocus(9010)</visible>
+  						<include>Search_Label_Unfocused</include>
+  						<posy>4</posy>
+  						<label>TRACKS</label>
+  					</control>
+						<visible allowhiddenfocus="false">true</visible>
+  					<control type="image">
+  					  <posy>35</posy>
+  					  <animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+  		       	<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+					    <visible>Control.HasFocus(9010)</visible>
+  					  <texture>plex-search-active-section-background.png</texture>
+					  </control>
   					<control type="list" id="9010">
+  					  <posy>35</posy>
   						<visible allowhiddenfocus="false">true</visible>
   						<orientation>horizontal</orientation>
-  						<ondown>9013</ondown>
-  						<onup>9009</onup>
-  						<onright>-</onright>
+  						<onup>7009</onup>
+  						<ondown>7013</ondown>
+  						<onright>65</onright>
   						<onleft>350</onleft>
-  						<include>Search_Result</include>
+          		<posx>0</posx>
+          		<posy>0</posy>
+          		<width>890</width>
+          		<itemlayout width="140" height="200">
+          			<control type="image">
+          				<posx>15</posx>
+          				<posy>10</posy>
+          				<width>128</width>
+          				<height>140</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="bottom">keep</aspectratio>
+          				<texture diffuse="list_movieicon_mask.png"></texture>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>165</posy>
+          				<width>122</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.artist]</label>
+          				<font>SearchResult</font>
+          				<textcolor>FFdddddd</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>185</posy>
+          				<width>130</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.title]</label>
+          				<font>SearchResultSmaller</font>
+          				<textcolor>FF999999</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          		</itemlayout>
+          		<focusedlayout width="140" height="200">
+          			<control type="image">
+          				<posx>10</posx>
+          				<posy>5</posy>
+          				<width>138</width>
+          				<height>150</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="bottom">keep</aspectratio>
+          				<bordertexture>plugin-stream-highlight.png</bordertexture>
+    							<bordersize>5</bordersize>
+    							<texture diffuse="list_movieicon_mask.png"></texture>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>165</posy>
+          				<width>122</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.artist]</label>
+          				<font>SearchResult</font>
+          				<textcolor>FFFFFFFF</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>185</posy>
+          				<width>130</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.title]</label>
+          				<font>SearchResultSmaller</font>
+          				<textcolor>FFFFFFFF</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          		</focusedlayout>
   						<height>200</height>
   					</control>
   				</control>
-
+  				
 					<!-- People -->
 					<control type="group" id="7013">
-					  <height>240</height>
+					  <height>220</height>
+					  <control type="image">
+					    <visible>Control.HasFocus(9013)</visible>
+              <texture>plex-search-header.png</texture>  
+				    </control>
+					  <control type="image">
+					    <visible>!Control.HasFocus(9013)</visible>
+              <texture>plex-search-header-disabled.png</texture>  
+				    </control>
   					<control type="label" id="8013">
+					    <visible>Control.HasFocus(9013)</visible>
   						<include>Search_Label</include>
-  						<label>ACTORS ($INFO[container(9013).numitems])</label>
-  						<visible allowhiddenfocus="false">true</visible>
+  						<posy>4</posy>
+  						<label>ACTORS</label>
   					</control>
-  					<control type="list" id="9013">
-  						<visible allowhiddenfocus="false">true</visible>
-  						<orientation>horizontal</orientation>
-  						<onup>9010</onup>
-  						<ondown>9012</ondown>
-  						<onright>-</onright>
-  						<onleft>350</onleft>
-  						<include>Search_Result</include>
-  						<height>200</height>
+  					<control type="label" id="8013">
+					    <visible>!Control.HasFocus(9013)</visible>
+  						<include>Search_Label_Unfocused</include>
+  						<posy>4</posy>
+  						<label>ACTORS</label>
   					</control>
-  				</control>
+    				<control type="image">
+  					  <posy>35</posy>
+  					  <animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+  		       	<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+					    <visible>Control.HasFocus(9013)</visible>
+  					  <texture>plex-search-active-section-background.png</texture>
+					  </control>
+    				<control type="list" id="9013">
+  					  <posy>30</posy>
+    					<visible allowhiddenfocus="false">true</visible>
+    					<orientation>horizontal</orientation>
+    					<onup>7010</onup>
+    					<ondown>7012</ondown>
+    					<onright>-</onright>
+    					<onleft>350</onleft>
+          		<posx>0</posx>
+          		<posy>0</posy>
+          		<width>880</width>
+          		<itemlayout width="140" height="200">
+          			<control type="image">
+          				<posx>15</posx>
+          				<posy>20</posy>
+          				<width>128</width>
+          				<height>130</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="bottom">keep</aspectratio>
+          				<texture diffuse="list_movieicon_mask.png"></texture>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>167</posy>
+          				<width>130</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.Title]</label>
+          				<font>MediumSmallTitleFont</font>
+          				<textcolor>FF999999</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          		</itemlayout>
+          		<focusedlayout width="140" height="200">
+          			<control type="image">
+          				<posx>10</posx>
+          				<posy>15</posy>
+          				<width>138</width>
+          				<height>140</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="bottom">keep</aspectratio>
+          				<bordertexture>plugin-stream-highlight.png</bordertexture>
+    							<bordersize>5</bordersize>
+    							<texture diffuse="list_movieicon_mask.png"></texture>
+          			</control>
+          			<control type="label">
+          				<posx>81</posx>
+          				<posy>167</posy>
+          				<width>130</width>
+          				<align>center</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.Title]</label>
+          				<font>MediumSmallTitleFont</font>
+          				<textcolor>FFFFFFFF</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          		</focusedlayout>
+    					<height>200</height>
+    				</control>
+					</control>
 					
 					<!-- Clips -->
 					<control type="group" id="7012">
-					  <height>600</height>
+					  <height>700</height>
+					  
+					  <control type="image">
+					    <visible>Control.HasFocus(9012)</visible>
+              <texture>plex-search-header.png</texture>  
+				    </control>
+					  <control type="image">
+					    <visible>!Control.HasFocus(9012)</visible>
+              <texture>plex-search-header-disabled.png</texture>  
+				    </control>
   					<control type="label" id="8012">
+					    <visible>Control.HasFocus(9012)</visible>
   						<include>Search_Label</include>
-  						<label>VIDEO CLIPS ($INFO[container(9012).numitems])</label>
-  						<visible allowhiddenfocus="false">true</visible>
+  						<posy>4</posy>
+  						<label>VIDEO CLIPS</label>
   					</control>
+  					<control type="label" id="8012">
+					    <visible>!Control.HasFocus(9012)</visible>
+  						<include>Search_Label_Unfocused</include>
+  						<posy>4</posy>
+  						<label>VIDEO CLIPS</label>
+  					</control>
+						<visible allowhiddenfocus="false">true</visible>
+  					<control type="image">
+  					  <posy>35</posy>
+  					  <height>820</height>
+  					  <animation effect="fade" end="100" time="300" delay="0">Visible</animation>
+  		       	<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+					    <visible>Control.HasFocus(9012)</visible>
+  					  <texture>plex-search-active-section-background.png</texture>
+					  </control>
   					<control type="panel" id="9012">
-  						<include>Search_Result</include>
-  						<height>600</height>
+          		<width>890</width>
+  						<height>675</height>
+  					  <posy>35</posy>
   						<visible allowhiddenfocus="false">true</visible>
   						<orientation>vertical</orientation>
-  						<ondown>-</ondown>
-  						<onup>9010</onup>
+  						<ondown>9008</ondown>
+  						<onup>9001</onup>
   						<onright>-</onright>
   						<onleft>350</onleft>
+          		<posx>0</posx>
+          		<posy>0</posy>
+          		
+          		<itemlayout width="295" height="120">
+          			<control type="label">
+          				<posx>15</posx>
+          				<posy>20</posy>
+          				<width>250</width>
+          				<align>left</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.title]</label>
+          				<font>SearchResult</font>
+          				<textcolor>FFdddddd</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          			<control type="image">
+          				<posx>0</posx>
+          				<posy>35</posy>
+          				<width>128</width>
+          				<height>70</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="top">keep</aspectratio>
+          				<texture diffuse="plex-search-episode-mask.png"></texture>
+          			</control>
+          			<control type="label" id="999">
+          				<posx>122</posx>
+          				<posy>32</posy>
+          				<width>160</width>
+          				<height>50</height>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.plot]</label>
+          				<font>SearchResultSmaller</font>
+          				<textcolor>FF999999</textcolor>
+        				  <wrapmultiline>true</wrapmultiline>
+          			</control>
+          		</itemlayout>
+          		
+          		<focusedlayout width="295" height="120">
+          			<control type="label">
+          				<posx>15</posx>
+          				<posy>20</posy>
+          				<width>250</width>
+          				<align>left</align>
+          				<aligny>center</aligny>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.title]</label>
+          				<font>SearchResult</font>
+          				<textcolor>FFdddddd</textcolor>
+          				<wrapmultiline>false</wrapmultiline>
+          			</control>
+          			<control type="image">
+          				<posx>-5</posx>
+          				<posy>30</posy>
+          				<width>138</width>
+          				<height>80</height>
+          				<info>ListItem.Thumb</info>
+          				<aspectratio aligny="top">keep</aspectratio>
+          				<bordertexture>plugin-stream-highlight.png</bordertexture>
+    							<bordersize>5</bordersize>
+    							<texture diffuse="plex-search-episode-mask.png"></texture>
+          			</control>
+          			<control type="label" id="999">
+          				<posx>122</posx>
+          				<posy>32</posy>
+          				<width>160</width>
+          				<height>50</height>
+          				<scroll>false</scroll>
+          				<label>$INFO[ListItem.plot]</label>
+          				<font>SearchResultSmaller</font>
+          				<textcolor>FF999999</textcolor>
+        				  <wrapmultiline>true</wrapmultiline>
+          			</control>
+          		</focusedlayout>
+          		
   					</control>
   				</control>
 					

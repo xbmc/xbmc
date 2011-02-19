@@ -15,6 +15,19 @@
 	<size>30</size>
 </font>
 
+<font>
+  <name>SearchResult</name>
+  <filename>HelveticaNeue</filename>
+	<variant>Condensed Bold</variant>
+  <size>16</size>
+</font>
+
+<font>
+  <name>SearchResultSmaller</name>
+  <filename>HelveticaNeue</filename>
+	<variant>Condensed Bold</variant>
+  <size>14</size>
+</font>
 
 <!-- Jay's Fonts -->
 	<font>

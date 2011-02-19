@@ -113,7 +113,7 @@
       </control>
 -->
 
-      <control type="label">
+      <control type="textbox">
         <description>Introduction</description>
         <posx>30</posx>
         <posy>380</posy>

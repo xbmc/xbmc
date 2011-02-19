@@ -1,8 +1,16 @@
 <includes>
 	<include name="Search_Label">
-		<posx>3</posx>
+		<posx>15</posx>
 		<font>MediaPreviewDetailsHeader</font>
 		<textcolor>HomeMain</textcolor>
+		<shadowcolor>FF222222</shadowcolor>
+		<width>278</width>
+		<height>30</height>
+	</include>
+	<include name="Search_Label_Unfocused">
+		<posx>15</posx>
+		<font>MediaPreviewDetailsHeader</font>
+		<textcolor>Unfocused</textcolor>
 		<shadowcolor>FF222222</shadowcolor>
 		<width>278</width>
 		<height>30</height>
