@@ -154,9 +154,4 @@ public:
    * True if it was requested correctly, false if not.
    */
   static bool UpdateTimer(const CPVRTimerInfoTag &item);
-
-  // TODO
-  CPVRTimerInfoTag *GetMatch(CDateTime t);
-  CPVRTimerInfoTag *GetMatch(time_t t);
-  CPVRTimerInfoTag *GetMatch(const CPVREpgInfoTag *Epg, int *Match = NULL);
 };

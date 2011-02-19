@@ -417,22 +417,3 @@ bool CPVRTimers::UpdateTimer(const CPVRTimerInfoTag &item)
 {
   return item.UpdateOnClient();
 }
-
-CPVRTimerInfoTag *CPVRTimers::GetMatch(CDateTime t)
-{
-  // TODO
-  return NULL;
-}
-
-CPVRTimerInfoTag *CPVRTimers::GetMatch(time_t t)
-{
-  // TODO
-  return NULL;
-}
-
-CPVRTimerInfoTag *CPVRTimers::GetMatch(const CPVREpgInfoTag *Epg, int *Match)
-{
-  // TODO
-  return NULL;
-}
-
