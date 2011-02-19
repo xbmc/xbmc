@@ -33,7 +33,6 @@
 #define DLL_PATH_LIBMICROHTTP  "special://xbmcbin/system/webserver/libmicrohttpd-5.dll"
 
 /* paplayer */
-#define DLL_PATH_AC3_CODEC     "special://xbmcbin/system/players/paplayer/ac3codec.dll"
 #define DLL_PATH_ADPCM_CODEC   "special://xbmcbin/system/players/paplayer/adpcm.dll"
 #define DLL_PATH_ADPLUG_CODEC  "special://xbmcbin/system/players/paplayer/adplug.dll"
 #define DLL_PATH_APE_CODEC     "special://xbmcbin/system/players/paplayer/MACDll.dll"
@@ -55,9 +54,6 @@
 
 /* dvdplayer */
 #define DLL_PATH_LIBASS        "special://xbmcbin/system/players/dvdplayer/libass.dll"
-#define DLL_PATH_LIBA52        "special://xbmcbin/system/players/dvdplayer/liba52.dll"
-#define DLL_PATH_LIBDTS        "special://xbmcbin/system/players/dvdplayer/libdts.dll"
-#define DLL_PATH_LIBFAAD       "special://xbmcbin/system/players/dvdplayer/libfaad.dll"
 #define DLL_PATH_LIBMAD        "special://xbmcbin/system/players/dvdplayer/libmad.dll"
 #define DLL_PATH_LIBMPEG2      "special://xbmcbin/system/players/dvdplayer/libmpeg2.dll"
 #define DLL_PATH_LIBDVDNAV     "special://xbmcbin/system/players/dvdplayer/libdvdnav.dll"
