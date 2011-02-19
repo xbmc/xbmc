@@ -83,85 +83,50 @@ const CEpgInfoTag *CEpgInfoTag::GetPreviousEvent() const
 
 const CStdString &CEpgInfoTag::ConvertGenreIdToString(int iID, int iSubID) const
 {
-  static CStdString str = g_localizeStrings.Get(19499);
+  unsigned int iLabelId = 19499;
   switch (iID)
   {
     case EVCONTENTMASK_MOVIEDRAMA:
-      if (iSubID <= 8)
-        str = g_localizeStrings.Get(19500 + iSubID);
-      else
-        str = g_localizeStrings.Get(19500) + " (undefined)";
+      iLabelId = (iSubID <= 8) ? 19500 + iSubID : 19500;
       break;
     case EVCONTENTMASK_NEWSCURRENTAFFAIRS:
-      if (iSubID <= 4)
-        str = g_localizeStrings.Get(19516 + iSubID);
-      else
-        str = g_localizeStrings.Get(19516) + " (undefined)";
+      iLabelId = (iSubID <= 4) ? 19516 + iSubID : 19516;
       break;
     case EVCONTENTMASK_SHOW:
-      if (iSubID <= 3)
-        str = g_localizeStrings.Get(19532 + iSubID);
-      else
-        str = g_localizeStrings.Get(19532) + " (undefined)";
+      iLabelId = (iSubID <= 3) ? 19532 + iSubID : 19532;
       break;
     case EVCONTENTMASK_SPORTS:
-      if (iSubID <= 0x0B)
-        str = g_localizeStrings.Get(19548 + iSubID);
-      else
-        str = g_localizeStrings.Get(19548) + " (undefined)";
+      iLabelId = (iSubID <= 11) ? 19548 + iSubID : 19548;
       break;
     case EVCONTENTMASK_CHILDRENYOUTH:
-      if (iSubID <= 5)
-        str = g_localizeStrings.Get(19564 + iSubID);
-      else
-        str = g_localizeStrings.Get(19564) + " (undefined)";
+      iLabelId = (iSubID <= 5) ? 19564 + iSubID : 19564;
       break;
     case EVCONTENTMASK_MUSICBALLETDANCE:
-      if (iSubID <= 6)
-        str = g_localizeStrings.Get(19580 + iSubID);
-      else
-        str = g_localizeStrings.Get(19580) + " (undefined)";
+      iLabelId = (iSubID <= 6) ? 19580 + iSubID : 19580;
       break;
     case EVCONTENTMASK_ARTSCULTURE:
-      if (iSubID <= 0x0B)
-        str = g_localizeStrings.Get(19596 + iSubID);
-      else
-        str = g_localizeStrings.Get(19596) + " (undefined)";
+      iLabelId = (iSubID <= 11) ? 19596 + iSubID : 19596;
       break;
     case EVCONTENTMASK_SOCIALPOLITICALECONOMICS:
-      if (iSubID <= 0x03)
-        str = g_localizeStrings.Get(19612 + iSubID);
-      else
-        str = g_localizeStrings.Get(19612) + " (undefined)";
+      iLabelId = (iSubID <= 3) ? 19612 + iSubID : 19612;
       break;
     case EVCONTENTMASK_EDUCATIONALSCIENCE:
-      if (iSubID <= 0x07)
-        str = g_localizeStrings.Get(19628 + iSubID);
-      else
-        str = g_localizeStrings.Get(19628) + " (undefined)";
+      iLabelId = (iSubID <= 7) ? 19628 + iSubID : 19628;
       break;
     case EVCONTENTMASK_LEISUREHOBBIES:
-      if (iSubID <= 0x07)
-        str = g_localizeStrings.Get(19644 + iSubID);
-      else
-        str = g_localizeStrings.Get(19644) + " (undefined)";
+      iLabelId = (iSubID <= 7) ? 19644 + iSubID : 19644;
       break;
     case EVCONTENTMASK_SPECIAL:
-      if (iSubID <= 0x03)
-        str = g_localizeStrings.Get(19660 + iSubID);
-      else
-        str = g_localizeStrings.Get(19660) + " (undefined)";
+      iLabelId = (iSubID <= 3) ? 19660 + iSubID : 19660;
       break;
     case EVCONTENTMASK_USERDEFINED:
-      if (iSubID <= 0x03)
-        str = g_localizeStrings.Get(19676 + iSubID);
-      else
-        str = g_localizeStrings.Get(19676) + " (undefined)";
+      iLabelId = (iSubID <= 3) ? 19676 + iSubID : 19676;
       break;
     default:
       break;
   }
-  return str;
+
+  return g_localizeStrings.Get(iLabelId);
 }
 
 void CEpgInfoTag::SetUniqueBroadcastID(int iUniqueBroadcastID)
