@@ -1868,6 +1868,9 @@ void CGUIWindowPVR::UpdateChannels(bool bRadio)
   m_viewControl.SetCurrentView(bRadio ? CONTROL_LIST_CHANNELS_RADIO : CONTROL_LIST_CHANNELS_TV);
   const CPVRChannelGroup *currentGroup = SelectedGroup(bRadio);
 
+  if (!currentGroup)
+    return;
+
   m_vecItems->m_strPath.Format("pvr://channels/%s/%s/",
       bRadio ? "radio" : "tv",
       m_bShowHiddenChannels ? ".hidden" : currentGroup->GroupName());
