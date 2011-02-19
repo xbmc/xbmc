@@ -42,22 +42,15 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
 int CPVRChannelGroupInternal::Load()
 {
   int iChannelCount = LoadFromDb();
-
-  /* try to get the channels from clients if there are none in the database */
-  if (iChannelCount <= 0)
-  {
-    CLog::Log(LOGDEBUG, "PVRChannelGroupInternal - %s - no %s channels stored in the database. Reading channels from clients",
-        __FUNCTION__, m_bRadio ? "radio" : "TV");
-
-    iChannelCount = LoadFromClients();
-
-    CLog::Log(LOGNOTICE, "PVRChannelGroupInternal - %s - %d %s channels added from clients",
+  CLog::Log(LOGDEBUG, "PVRChannelGroupInternal - %s - %d %s channels loaded from the database",
         __FUNCTION__, iChannelCount, m_bRadio ? "radio" : "TV");
-  }
-  else
+
+  int iClientChannelCount = LoadFromClients();
+  if (iClientChannelCount > 0)
   {
-    CLog::Log(LOGDEBUG, "PVRChannelGroupInternal - %s - %d %s channels loaded from the database",
-        __FUNCTION__, iChannelCount, m_bRadio ? "radio" : "TV");
+    CLog::Log(LOGDEBUG, "PVRChannelGroupInternal - %s - %d %s channels added from clients",
+        __FUNCTION__, iClientChannelCount, m_bRadio ? "radio" : "TV");
+    iChannelCount += iClientChannelCount;
   }
 
   UpdateChannelPaths();
