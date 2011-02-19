@@ -222,7 +222,7 @@ namespace PYXBMC
     "\n"
     "clear current playlist and copy items from the file to this Playlist\n"
     "filename can be like .pls or .m3u ...\n"
-    "returns False if unable to load playlist");
+    "returns False if unable to load playlist, True otherwise.");
 
   PyObject* PlayList_Load(PlayList *self, PyObject *args)
   {
@@ -270,8 +270,7 @@ namespace PYXBMC
       return NULL;
     }
 
-    Py_INCREF(Py_None);
-    return Py_None;
+    return Py_BuildValue((char*)"b", true);
   }
 
   PyDoc_STRVAR(remove__doc__,
