@@ -394,6 +394,10 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
 
       m_lastScanTime = CDateTime::GetCurrentDateTime();
     }
+    else
+    {
+      m_lastScanTime = CDateTime::GetCurrentDateTime() - iUpdateTime + 300; /* try again in 5 minutes */
+    }
   }
   lock.Leave();
 
@@ -408,9 +412,6 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
 int CEpg::Get(CFileItemList *results) const
 {
   int iInitialSize = results->Size();
-
-  if (!HasValidEntries())
-    return -1;
 
   CSingleLock lock(m_critSection);
 
