@@ -352,10 +352,11 @@ bool CEpg::Load(void)
   }
   else
   {
-    CLog::Log(LOGDEBUG, "Epg - %s - %d entries found in the database for table %d.",
-        __FUNCTION__, iEntriesLoaded, m_iEpgID);
     bReturn = true;
   }
+
+  CLog::Log(LOGDEBUG, "Epg - %s - %d entries loaded for table %d.",
+      __FUNCTION__, size(), m_iEpgID);
 
   database->Close();
 
@@ -412,7 +413,7 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
     {
       CSingleLock lock(m_critSection);
 
-      FixOverlappingEvents(bStoreInDb);
+      FixOverlappingEvents(false);
 
       if (bStoreInDb)
       {

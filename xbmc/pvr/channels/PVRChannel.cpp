@@ -152,7 +152,7 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
     }
     else
     {
-      database->Persist(*this, false);
+      database->Persist(*this, true);
       return true;
     }
   }
