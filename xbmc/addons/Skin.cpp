@@ -23,13 +23,15 @@
 #include "AddonManager.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
-#include "filesystem/Directory.h"
 #include "guilib/Key.h"
 #include "utils/URIUtils.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "settings/GUISettings.h"
+
+// fallback for new skin resolution code
+#include "filesystem/Directory.h"
 
 using namespace std;
 using namespace XFILE;
@@ -49,10 +51,36 @@ CSkinInfo::CSkinInfo(const AddonProps &props, const RESOLUTION_INFO &resolution)
 CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   : CAddon(ext)
 {
-  CStdString defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultwideresolution");
-  if (defaultWide.IsEmpty())
-    defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultresolution");
-  TranslateResolution(defaultWide, m_defaultRes);
+  ELEMENTS elements;
+  if (CAddonMgr::Get().GetExtElements(ext->configuration, "res", elements))
+  {
+    for (ELEMENTS::iterator i = elements.begin(); i != elements.end(); ++i)
+    {
+      float width = (float)atof(CAddonMgr::Get().GetExtValue(*i, "@width"));
+      float height = (float)atof(CAddonMgr::Get().GetExtValue(*i, "@height"));
+      bool defRes = CAddonMgr::Get().GetExtValue(*i, "@default").Equals("true");
+      CStdString folder = CAddonMgr::Get().GetExtValue(*i, "@folder");
+      float aspect = 0;
+      CStdStringArray fracs;
+      StringUtils::SplitString(CAddonMgr::Get().GetExtValue(*i, "@aspect"), ":", fracs);
+      if (fracs.size() == 2)
+        aspect = (float)atof(fracs[0].c_str())/atof(fracs[1].c_str());
+      if (width > 0 && height > 0)
+      {
+        RESOLUTION_INFO res(width, height, aspect, folder);
+        if (defRes)
+          m_defaultRes = res;
+        m_resolutions.push_back(res);
+      }
+    }
+  }
+  else
+  { // no resolutions specified -> backward compatibility
+    CStdString defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultwideresolution");
+    if (defaultWide.IsEmpty())
+      defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultresolution");
+    TranslateResolution(defaultWide, m_defaultRes);
+  }
 
   CStdString str = CAddonMgr::Get().GetExtValue(ext->configuration, "@effectslowdown");
   if (!str.IsEmpty())
@@ -74,13 +102,16 @@ CSkinInfo::~CSkinInfo()
 
 void CSkinInfo::Start(const CStdString &strBaseDir)
 {
-  CFileItemList items;
-  CDirectory::GetDirectory(Path(), items, "", false);
-  for (int i = 0; i < items.Size(); i++)
-  {
-    RESOLUTION_INFO res;
-    if (items[i]->m_bIsFolder && TranslateResolution(items[i]->GetLabel(), res))
-      m_resolutions.push_back(res);
+  if (!m_resolutions.size())
+  { // try falling back to whatever resolutions exist in the directory
+    CFileItemList items;
+    CDirectory::GetDirectory(Path(), items, "", false);
+    for (int i = 0; i < items.Size(); i++)
+    {
+      RESOLUTION_INFO res;
+      if (items[i]->m_bIsFolder && TranslateResolution(items[i]->GetLabel(), res))
+        m_resolutions.push_back(res);
+    }
   }
   LoadIncludes();
 }
