@@ -6,7 +6,6 @@ SRCS=	DVDDemux.cpp \
 	DVDDemuxShoutcast.cpp \
 	DVDDemuxUtils.cpp \
 	DVDDemuxVobsub.cpp \
-	DVDDemuxHTSP.cpp \
 	DVDDemuxPVRClient.cpp \
 	DVDFactoryDemuxer.cpp \
 
