@@ -56,9 +56,9 @@ void CEpgInfoTag::Reset()
   m_iParentalRating     = 0;
   m_iStarRating         = 0;
   m_bNotify             = false;
-  m_strSeriesNum        = "";
-  m_strEpisodeNum       = "";
-  m_strEpisodePart      = "";
+  m_iSeriesNum          = 0;
+  m_iEpisodeNum         = 0;
+  m_iEpisodePart        = 0;
   m_strEpisodeName      = "";
   m_bChanged            = false;
 }
@@ -286,31 +286,31 @@ void CEpgInfoTag::SetNotify(bool bNotify)
   }
 }
 
-void CEpgInfoTag::SetSeriesNum(const CStdString &strSeriesNum)
+void CEpgInfoTag::SetSeriesNum(int iSeriesNum)
 {
-  if (m_strSeriesNum != strSeriesNum)
+  if (m_iSeriesNum != iSeriesNum)
   {
-    m_strSeriesNum = strSeriesNum;
+    m_iSeriesNum = iSeriesNum;
     m_bChanged = true;
     UpdatePath();
   }
 }
 
-void CEpgInfoTag::SetEpisodeNum(const CStdString &strEpisodeNum)
+void CEpgInfoTag::SetEpisodeNum(int iEpisodeNum)
 {
-  if (m_strEpisodeNum != strEpisodeNum)
+  if (m_iEpisodeNum != iEpisodeNum)
   {
-    m_strEpisodeNum = strEpisodeNum;
+    m_iEpisodeNum = iEpisodeNum;
     m_bChanged = true;
     UpdatePath();
   }
 }
 
-void CEpgInfoTag::SetEpisodePart(const CStdString &strEpisodePart)
+void CEpgInfoTag::SetEpisodePart(int iEpisodePart)
 {
-  if (m_strEpisodePart != strEpisodePart)
+  if (m_iEpisodePart != iEpisodePart)
   {
-    m_strEpisodePart = strEpisodePart;
+    m_iEpisodePart = iEpisodePart;
     m_bChanged = true;
     UpdatePath();
   }
@@ -360,8 +360,9 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag)
       m_iParentalRating != tag.m_iParentalRating ||
       m_iStarRating     != tag.m_iStarRating ||
       m_bNotify         != tag.m_bNotify ||
-      m_strEpisodeNum   != tag.m_strEpisodeNum ||
-      m_strEpisodePart  != tag.m_strEpisodePart ||
+      m_iEpisodeNum     != tag.m_iEpisodeNum ||
+      m_iEpisodePart    != tag.m_iEpisodePart ||
+      m_iSeriesNum      != tag.m_iSeriesNum ||
       m_strEpisodeName  != tag.m_strEpisodeName
   );
 
@@ -379,8 +380,9 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag)
     m_iParentalRating = tag.m_iParentalRating;
     m_iStarRating     = tag.m_iStarRating;
     m_bNotify         = tag.m_bNotify;
-    m_strEpisodeNum   = tag.m_strEpisodeNum;
-    m_strEpisodePart  = tag.m_strEpisodePart;
+    m_iEpisodeNum     = tag.m_iEpisodeNum;
+    m_iEpisodePart    = tag.m_iEpisodePart;
+    m_iSeriesNum      = tag.m_iSeriesNum;
     m_strEpisodeName  = tag.m_strEpisodeName;
 
     m_bChanged = true;

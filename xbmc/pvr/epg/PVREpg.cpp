@@ -47,7 +47,6 @@ void CPVREpg::Cleanup(const CDateTime &Time)
 {
   CSingleLock lock(m_critSection);
 
-  m_bUpdateRunning = true;
   for (unsigned int i = 0; i < size(); i++)
   {
     CPVREpgInfoTag *tag = (CPVREpgInfoTag *) at(i);
@@ -58,7 +57,6 @@ void CPVREpg::Cleanup(const CDateTime &Time)
       DeleteInfoTag(tag);
     }
   }
-  m_bUpdateRunning = false;
 }
 
 bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = false */)

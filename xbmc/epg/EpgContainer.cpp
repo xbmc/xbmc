@@ -32,7 +32,7 @@
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
 
-#define EPGUPDATE                60  /* check if tables need to be updated every minute */
+#define EPGUPDATE                300  /* check if tables need to be updated every 5 minutes */
 #define EPGCLEANUPINTERVAL       900 /* remove old entries from the EPG every 15 minutes */
 
 using namespace std;
@@ -338,7 +338,6 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     if (m_bStop)
     {
       CLog::Log(LOGNOTICE, "EpgContainer - %s - EPG load/update interrupted", __FUNCTION__);
-      m_database.CommitInsertQueries();
       bUpdateSuccess = false;
       break;
     }
@@ -351,9 +350,9 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
         at(iEpgPtr)->Update(start, end, m_iUpdateTime, !m_bIgnoreDbForClient) :
         at(iEpgPtr)->Load() && bUpdateSuccess;
 
-    if (!bCurrent)
-      CLog::Log(LOGERROR, "EpgContainer - %s - failed to update table %d",
-          __FUNCTION__, iEpgPtr);
+    if (!bCurrent && m_bDatabaseLoaded)
+      CLog::Log(LOGERROR, "EpgContainer - %s - failed to update table '%s'",
+          __FUNCTION__, at(iEpgPtr)->Name().c_str());
 
     bUpdateSuccess = bCurrent && bUpdateSuccess;
 
@@ -370,9 +369,8 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   if (bUpdateSuccess && (m_bDatabaseLoaded || m_bIgnoreDbForClient))
   {
     if (!m_bIgnoreDbForClient)
-      m_database.PersistLastEpgScanTime(0, true);
+      m_database.PersistLastEpgScanTime(0);
 
-    m_database.CommitInsertQueries();
     CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgUpdate);
   }
 

@@ -42,7 +42,6 @@ class CEpg : public std::vector<CEpgInfoTag*>
   friend class CPVREpg;
 
 private:
-  bool                       m_bUpdateRunning;  /*!< true if EPG is currently being updated */
   CStdString                 m_strName;         /*!< the name of this table */
   CStdString                 m_strScraperName;  /*!< the name of the scraper to use */
   int                        m_iEpgID;          /*!< the database ID of this table */
@@ -217,12 +216,6 @@ public:
    * @return The found tag or NULL if it wasn't found.
    */
   virtual const CEpgInfoTag *InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) const;
-
-  /*!
-   * @brief True if this EPG is currently being updated, false otherwise.
-   * @return True if this EPG is currently being updated, false otherwise.
-   */
-  virtual bool IsUpdateRunning(void) const { return m_bUpdateRunning; }
 
   /*!
    * @brief Update an entry in this EPG.

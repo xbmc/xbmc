@@ -56,9 +56,9 @@ private:
   int                        m_iParentalRating;    /*!< parental rating */
   int                        m_iStarRating;        /*!< star rating */
   bool                       m_bNotify;            /*!< notify on start */
-  CStdString                 m_strSeriesNum;       /*!< series number */
-  CStdString                 m_strEpisodeNum;      /*!< episode number */
-  CStdString                 m_strEpisodePart;     /*!< episode part number */
+  int                        m_iSeriesNum;         /*!< series number */
+  int                        m_iEpisodeNum;        /*!< episode number */
+  int                        m_iEpisodePart;       /*!< episode part number */
   CStdString                 m_strEpisodeName;     /*!< episode name */
 
   mutable const CEpgInfoTag *m_nextEvent;          /*!< the event that will occur after this one */
@@ -294,37 +294,37 @@ public:
    * @brief The series number of this event.
    * @return The series number.
    */
-  const CStdString &SeriesNum(void) const { return m_strSeriesNum; }
+  int SeriesNum(void) const { return m_iSeriesNum; }
 
   /*!
    * @brief Change the series number of this event.
    * @param strSeriesNum The new series number.
    */
-  void SetSeriesNum(const CStdString &strSeriesNum);
+  void SetSeriesNum(int iSeriesNum);
 
   /*!
    * @brief The episode number of this event.
    * @return The episode number.
    */
-  const CStdString &EpisodeNum(void) const { return m_strEpisodeNum; }
+  int EpisodeNum(void) const { return m_iEpisodeNum; }
 
   /*!
    * @brief Change the episode number of this event.
    * @param strEpisodeNum The new episode number.
    */
-  void SetEpisodeNum(const CStdString &strEpisodeNum);
+  void SetEpisodeNum(int iEpisodeNum);
 
   /*!
    * @brief The episode part number of this event.
    * @return The episode part number.
    */
-  const CStdString &EpisodePart(void) const { return m_strEpisodePart; }
+  int EpisodePart(void) const { return m_iEpisodePart; }
 
   /*!
    * @brief Change the episode part number of this event.
    * @param strEpisodePart The new episode part number.
    */
-  void SetEpisodePart(const CStdString &strEpisodePart);
+  void SetEpisodePart(int iEpisodePart);
 
   /*!
    * @brief The episode name of this event.

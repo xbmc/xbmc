@@ -198,7 +198,7 @@ int CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
   {
     CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
     CPVREpg *epg = channel->GetEPG();
-    if (!epg->HasValidEntries() || epg->IsUpdateRunning())
+    if (!epg->HasValidEntries())
       continue;
 
     const CPVREpgInfoTag *epgNow = (CPVREpgInfoTag *) epg->InfoTagNow();
@@ -225,14 +225,12 @@ int CPVREpgContainer::GetEPGNext(CFileItemList* results, bool bRadio)
   {
     CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
     CPVREpg *epg = channel->GetEPG();
-    if (!epg->HasValidEntries() || epg->IsUpdateRunning())
+    if (!epg->HasValidEntries())
       continue;
 
     const CPVREpgInfoTag *epgNext = (CPVREpgInfoTag *) epg->InfoTagNext();
     if (!epgNext)
-    {
       continue;
-    }
 
     CFileItemPtr entry(new CFileItem(*epgNext));
     entry->SetLabel2(epgNext->Start().GetAsLocalizedTime("", false));
