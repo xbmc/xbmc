@@ -66,9 +66,10 @@ private:
 
   /*!
    * @brief Persist all tags in this container.
+   * @param bQueueWrite Don't execute the query immediately but queue it if true.
    * @return True if all tags were persisted, false otherwise.
    */
-  virtual bool PersistTags(void) const;
+  virtual bool PersistTags(bool bQueueWrite = false) const;
 
   /*!
    * @brief Fix overlapping events from the tables.
@@ -259,7 +260,8 @@ public:
   /*!
    * @brief Persist this table in the database.
    * @param bPersistTags Set to true to persist all changed tags in this container.
+   * @param bQueueWrite Don't execute the query immediately but queue it if true.
    * @return True if the table was persisted, false otherwise.
    */
-  virtual bool Persist(bool bPersistTags = false);
+  virtual bool Persist(bool bPersistTags = false, bool bQueueWrite = false);
 };

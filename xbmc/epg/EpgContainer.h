@@ -108,7 +108,7 @@ private:
    * @param iIndex The index.
    * @return The table or NULL if it wasn't found.
    */
-  virtual CEpg *GetByIndex(int iIndex) const;
+  virtual CEpg *GetByIndex(unsigned int iIndex) const;
 
   /*!
    * @brief A hook that will be called on every update thread iteration.

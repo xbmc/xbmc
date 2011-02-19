@@ -348,6 +348,7 @@ bool CEpg::Load(void)
     end += 60 * 60 * 3;
 
     bReturn = Update(start, end, true);
+    if (bReturn) g_EpgContainer.GetDatabase()->CommitInsertQueries();
   }
   else
   {
@@ -418,8 +419,8 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
         CEpgDatabase *database = g_EpgContainer.GetDatabase();
         if (database && database->Open())
         {
-          database->PersistLastEpgScanTime(m_iEpgID);
-          Persist(true);
+          database->PersistLastEpgScanTime(m_iEpgID, true);
+          Persist(true, true);
           database->Close();
         }
       }
@@ -475,26 +476,27 @@ int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter) const
   return size() - iInitialSize;
 }
 
-bool CEpg::Persist(bool bPersistTags /* = false */)
+bool CEpg::Persist(bool bPersistTags /* = false */, bool bQueueWrite /* = false */)
 {
   bool bReturn = false;
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
 
   if (!database || !database->Open())
   {
-    CLog::Log(LOGERROR, "%s - could not load the database", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
     return bReturn;
   }
 
   CSingleLock lock(m_critSection);
 
-  int iId = database->Persist(*this);
-  if (iId > 0)
+  int iId = database->Persist(*this, bQueueWrite);
+  if (iId >= 0)
   {
-    m_iEpgID = iId;
+    if (iId > 0)
+      m_iEpgID = iId;
 
     if (bPersistTags)
-      bReturn = PersistTags();
+      bReturn = PersistTags(bQueueWrite);
     else
       bReturn = true;
   }
@@ -627,7 +629,7 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
   return bGrabSuccess;
 }
 
-bool CEpg::PersistTags(void) const
+bool CEpg::PersistTags(bool bQueueWrite /* = false */) const
 {
   bool bReturn = false;
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
@@ -642,7 +644,11 @@ bool CEpg::PersistTags(void) const
   {
     at(iTagPtr)->Persist(false);
   }
-  bReturn = database->CommitInsertQueries();
+
+  if (!bQueueWrite)
+    bReturn = database->CommitInsertQueries();
+  else
+    bReturn = true;
 
   return bReturn;
 }

@@ -340,21 +340,18 @@ bool CEpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
   return bReturn;
 }
 
-bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */)
+bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */, bool bQueueWrite /* = false */)
 {
   CLog::Log(LOGDEBUG, "EpgDB - %s - updating last scan time of table %d",
       __FUNCTION__, iEpgId);
 
-  bool bReturn = true;
   CStdString strQuery = FormatSQL("REPLACE INTO lastepgscan(idEpg, sLastScan) VALUES (%u, '%s');",
       iEpgId, CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str());
 
-  bReturn = ExecuteQuery(strQuery);
-
-  return bReturn;
+  return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);
 }
 
-int CEpgDatabase::Persist(const CEpg &epg, bool bSingleUpdate /* = true */, bool bLastUpdate /* = false */)
+int CEpgDatabase::Persist(const CEpg &epg, bool bQueueWrite /* = false */)
 {
   int iReturn = -1;
 
@@ -370,18 +367,15 @@ int CEpgDatabase::Persist(const CEpg &epg, bool bSingleUpdate /* = true */, bool
         "VALUES ('%s', '%s');", epg.Name().c_str(), epg.ScraperName().c_str());
   }
 
-  if (bSingleUpdate)
-  {
-    if (ExecuteQuery(strQuery))
-      iReturn = epg.EpgID() <= 0 ? m_pDS->lastinsertid() : epg.EpgID();
-  }
-  else
+  if (bQueueWrite)
   {
     if (QueueInsertQuery(strQuery))
       iReturn = epg.EpgID() <= 0 ? 0 : epg.EpgID();
-
-    if (bLastUpdate)
-      CommitInsertQueries();
+  }
+  else
+  {
+    if (ExecuteQuery(strQuery))
+      iReturn = epg.EpgID() <= 0 ? m_pDS->lastinsertid() : epg.EpgID();
   }
 
   return iReturn;

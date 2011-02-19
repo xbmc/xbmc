@@ -118,18 +118,18 @@ public:
   /*!
    * @brief Update the last scan time.
    * @param iEpgId The table to update the time for. Use 0 for a global value.
+   * @param bQueueWrite Don't execute the query immediately but queue it if true.
    * @return True if it was updated successfully, false otherwise.
    */
-  virtual bool PersistLastEpgScanTime(int iEpgId = 0);
+  virtual bool PersistLastEpgScanTime(int iEpgId = 0, bool bQueueWrite = false);
 
   /*!
    * @brief Persist an EPG table. It's entries are not persisted.
    * @param epg The table to persist.
-   * @param bSingleUpdate If true, this is a single update and the query will be executed immediately.
-   * @param bLastUpdate If multiple updates were sent, set this to true on the last update to execute the queries.
+   * @param bQueueWrite Don't execute the query immediately but queue it if true.
    * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
    */
-  virtual int Persist(const CEpg &epg, bool bSingleUpdate = true, bool bLastUpdate = false);
+  virtual int Persist(const CEpg &epg, bool bQueueWrite = false);
 
   /*!
    * @brief Persist an infotag.

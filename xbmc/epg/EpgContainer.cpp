@@ -181,7 +181,7 @@ CEpg *CEpgContainer::GetById(int iEpgId) const
   return epg;
 }
 
-CEpg *CEpgContainer::GetByIndex(int iIndex) const
+CEpg *CEpgContainer::GetByIndex(unsigned int iIndex) const
 {
   CEpg *epg = NULL;
 
@@ -338,6 +338,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     if (m_bStop)
     {
       CLog::Log(LOGNOTICE, "EpgContainer - %s - EPG load/update interrupted", __FUNCTION__);
+      m_database.CommitInsertQueries();
       bUpdateSuccess = false;
       break;
     }
@@ -368,8 +369,10 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   /* update the last scan time if the update was successful and if we did a full update */
   if (bUpdateSuccess && (m_bDatabaseLoaded || m_bIgnoreDbForClient))
   {
-    if (m_bIgnoreDbForClient)
-      m_database.PersistLastEpgScanTime();
+    if (!m_bIgnoreDbForClient)
+      m_database.PersistLastEpgScanTime(0, true);
+
+    m_database.CommitInsertQueries();
     CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgUpdate);
   }
 
