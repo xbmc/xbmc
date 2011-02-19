@@ -40,7 +40,6 @@ GUIFontManager g_fontManager;
 
 GUIFontManager::GUIFontManager(void)
 {
-  m_skinResolution=RES_INVALID;
   m_fontsetUnicode=false;
   m_canReload = true;
 }
@@ -50,12 +49,12 @@ GUIFontManager::~GUIFontManager(void)
   Clear();
 }
 
-void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, RESOLUTION sourceRes, bool preserveAspect) const
+void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect) const
 {
   // set scaling resolution so that we can scale our font sizes correctly
   // as fonts aren't scaled at render time (due to aliasing) we must scale
   // the size of the fonts before they are drawn to bitmaps
-  g_graphicsContext.SetScalingResolution(g_settings.m_ResInfo[sourceRes], true);
+  g_graphicsContext.SetScalingResolution(sourceRes, true);
 
   if (preserveAspect)
   {
@@ -67,8 +66,7 @@ void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, RESOLU
     // font streched like the rest of the UI, aspect parameter being the original aspect
 
     // adjust aspect ratio
-    if (sourceRes == RES_PAL_16x9 || sourceRes == RES_PAL60_16x9 || sourceRes == RES_NTSC_16x9 || sourceRes == RES_HDTV_480p_16x9)
-      *aspect *= 0.75f;
+    *aspect *= sourceRes.fPixelRatio;
 
     *aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();
   }
@@ -76,7 +74,7 @@ void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, RESOLU
   *size /= g_graphicsContext.GetGUIScaleY();
 }
 
-CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, bool border, float lineSpacing, float aspect, RESOLUTION sourceRes, bool preserveAspect)
+CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, bool border, float lineSpacing, float aspect, const RESOLUTION_INFO *sourceRes, bool preserveAspect)
 {
   float originalAspect = aspect;
 
@@ -85,11 +83,11 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (pFont)
     return pFont;
 
-  if (sourceRes == RES_INVALID) // no source res specified, so assume the skin res
-    sourceRes = m_skinResolution;
+  if (!sourceRes) // no source res specified, so assume the skin res
+    sourceRes = &m_skinResolution;
 
   float newSize = (float)iSize;
-  RescaleFontSizeAndAspect(&newSize, &aspect, sourceRes, preserveAspect);
+  RescaleFontSizeAndAspect(&newSize, &aspect, *sourceRes, preserveAspect);
 
   // First try to load the font from the skin
   CStdString strPath;
@@ -152,7 +150,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   fontInfo.aspect = originalAspect;
   fontInfo.fontFilePath = strPath;
   fontInfo.fileName = strFilename;
-  fontInfo.sourceRes = sourceRes;
+  fontInfo.sourceRes = *sourceRes;
   fontInfo.preserveAspect = preserveAspect;
   fontInfo.border = border;
   m_vecFontInfo.push_back(fontInfo);
@@ -308,7 +306,7 @@ CGUIFont* GUIFontManager::GetDefaultFont(bool border)
     { // create it
       CGUIFont *font13 = m_vecFonts[font13index];
       OrigFontInfo fontInfo = m_vecFontInfo[font13index];
-      font13border = LoadTTF("__defaultborder__", fontInfo.fileName, 0xFF000000, 0, fontInfo.size, font13->GetStyle(), true, 1.0f, fontInfo.aspect, fontInfo.sourceRes, fontInfo.preserveAspect);
+      font13border = LoadTTF("__defaultborder__", fontInfo.fileName, 0xFF000000, 0, fontInfo.size, font13->GetStyle(), true, 1.0f, fontInfo.aspect, &fontInfo.sourceRes, fontInfo.preserveAspect);
     }
     return font13border;
   }
@@ -449,7 +447,9 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
 bool GUIFontManager::OpenFontFile(TiXmlDocument& xmlDoc)
 {
   // Get the file to load fonts from:
-  CStdString strPath = g_SkinInfo->GetSkinPath("Font.xml", &m_skinResolution);
+  RESOLUTION resToUse;
+  CStdString strPath = g_SkinInfo->GetSkinPath("Font.xml", &resToUse);
+  m_skinResolution = g_settings.m_ResInfo[resToUse];
   CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
 
   // first try our preferred file
