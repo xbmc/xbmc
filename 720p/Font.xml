@@ -29,6 +29,13 @@
   <size>14</size>
 </font>
 
+<font>
+  <name>SearchResultSmall</name>
+  <filename>HelveticaNeue</filename>
+  <variant>Medium</variant>
+  <size>13</size>
+</font>
+
 <!-- Jay's Fonts -->
 	<font>
 		<name>LargeTitleFont</name>
