@@ -396,7 +396,7 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
     }
     else
     {
-      m_lastScanTime = CDateTime::GetCurrentDateTime() - iUpdateTime + 300; /* try again in 5 minutes */
+      m_lastScanTime = CDateTime::GetCurrentDateTime() - CDateTimeSpan(0, 0, 0, iUpdateTime + 300); /* try again in 5 minutes */
     }
   }
   lock.Leave();
