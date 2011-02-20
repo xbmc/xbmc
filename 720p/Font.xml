@@ -1,40 +1,40 @@
 <fonts>
   <fontset id="Default" unicode="false">
 
-<!-- Search fonts -->
-<font>
-	<name>LargeSearchFont</name>
-	<filename>HelveticaNeue</filename>
-	<variant>Condensed Bold</variant>
-	<size>35</size>
-</font>
-<font>
-	<name>MediumSearchFont</name>
-	<filename>HelveticaNeue</filename>
-	<variant>Condensed Bold</variant>
-	<size>30</size>
-</font>
+  <!-- Search fonts -->
+  <font>
+  	<name>LargeSearchFont</name>
+  	<filename>HelveticaNeue</filename>
+  	<variant>Condensed Bold</variant>
+  	<size>35</size>
+  </font>
+  <font>
+  	<name>MediumSearchFont</name>
+  	<filename>HelveticaNeue</filename>
+  	<variant>Condensed Bold</variant>
+  	<size>30</size>
+  </font>
 
-<font>
-  <name>SearchResult</name>
-  <filename>HelveticaNeue</filename>
-	<variant>Condensed Bold</variant>
-  <size>16</size>
-</font>
+  <font>
+    <name>SearchResult</name>
+    <filename>HelveticaNeue</filename>
+  	<variant>Condensed Bold</variant>
+    <size>16</size>
+  </font>
 
-<font>
-  <name>SearchResultSmaller</name>
-  <filename>HelveticaNeue</filename>
-	<variant>Condensed Bold</variant>
-  <size>14</size>
-</font>
+  <font>
+    <name>SearchResultSmaller</name>
+    <filename>HelveticaNeue</filename>
+  	<variant>Condensed Bold</variant>
+    <size>14</size>
+  </font>
 
-<font>
-  <name>SearchResultSmall</name>
-  <filename>HelveticaNeue</filename>
-  <variant>Medium</variant>
-  <size>13</size>
-</font>
+  <font>
+    <name>SearchResultSmall</name>
+    <filename>HelveticaNeue</filename>
+    <variant>Medium</variant>
+    <size>13</size>
+  </font>
 
 <!-- Jay's Fonts -->
 	<font>
@@ -439,6 +439,40 @@
   </fontset>
 
   <fontset id="Unicode" unicode="true">
+
+    <!-- Search fonts -->
+    <font>
+    	<name>LargeSearchFont</name>
+      <filename>Arial.ttf</filename>
+    	<variant>Bold</variant>
+    	<size>35</size>
+    </font>
+    <font>
+    	<name>MediumSearchFont</name>
+      <filename>Arial.ttf</filename>
+    	<variant>Bold</variant>
+    	<size>30</size>
+    </font>
+
+    <font>
+      <name>SearchResult</name>
+      <filename>Arial.ttf</filename>
+    	<variant>Bold</variant>
+      <size>16</size>
+    </font>
+
+    <font>
+      <name>SearchResultSmaller</name>
+      <filename>Arial.ttf</filename>
+    	<variant>Bold</variant>
+      <size>14</size>
+    </font>
+
+    <font>
+      <name>SearchResultSmall</name>
+      <filename>Arial.ttf</filename>
+      <size>13</size>
+    </font>
 
 <!-- UNICODE fonts -->
     <font>

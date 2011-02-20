@@ -1407,7 +1407,7 @@
           				<align>left</align>
           				<aligny>center</aligny>
           				<scroll>false</scroll>
-          				<label>$INFO[ListItem.Property(originallyAvailableAt)] • $INFO[ListItem.duration]</label>
+          				<label>$INFO[ListItem.Property(originallyAvailableAt)] • $INFO[ListItem.duration] • $INFO[ListItem.Property(sourceTitle)]</label>
           				<font>SearchResultSmall</font>
           				<textcolor>FF777777</textcolor>
           				<wrapmultiline>false</wrapmultiline>
@@ -1456,7 +1456,7 @@
           				<align>left</align>
           				<aligny>center</aligny>
           				<scroll>false</scroll>
-          				<label>$INFO[ListItem.Property(originallyAvailableAt)] • $INFO[ListItem.duration]</label>
+          				<label>$INFO[ListItem.Property(originallyAvailableAt)] • $INFO[ListItem.duration] • $INFO[ListItem.Property(sourceTitle)]</label>
           				<font>SearchResultSmall</font>
           				<textcolor>FF777777</textcolor>
           				<wrapmultiline>false</wrapmultiline>
