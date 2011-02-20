@@ -97,20 +97,6 @@ private:
   virtual bool UpdateEPG(bool bShowProgress = false);
 
   /*!
-   * @brief Get an EPG table given it's ID.
-   * @param iEpgId The database ID of the table.
-   * @return The table or NULL if it wasn't found.
-   */
-  virtual CEpg *GetById(int iEpgId) const;
-
-  /*!
-   * @brief Get an EPG table given it's index in this container.
-   * @param iIndex The index.
-   * @return The table or NULL if it wasn't found.
-   */
-  virtual CEpg *GetByIndex(unsigned int iIndex) const;
-
-  /*!
    * @brief A hook that will be called on every update thread iteration.
    */
   virtual void ProcessHook(const CDateTime &time) {};
@@ -222,6 +208,20 @@ public:
     * @return The end time.
     */
   virtual const CDateTime &GetLastEPGDate(void) { return m_Last; }
+
+  /*!
+   * @brief Get an EPG table given it's ID.
+   * @param iEpgId The database ID of the table.
+   * @return The table or NULL if it wasn't found.
+   */
+  virtual CEpg *GetById(int iEpgId) const;
+
+  /*!
+   * @brief Get an EPG table given it's index in this container.
+   * @param iIndex The index.
+   * @return The table or NULL if it wasn't found.
+   */
+  virtual CEpg *GetByIndex(unsigned int iIndex) const;
 };
 
 extern CEpgContainer g_EpgContainer; /*!< The container for all EPG tables */

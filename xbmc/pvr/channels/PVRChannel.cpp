@@ -565,10 +565,15 @@ CPVREpg *CPVRChannel::GetEPG(void)
 {
   if (m_EPG == NULL)
   {
-    /* will be cleaned up by CPVREpgContainer on exit */
-    m_EPG = new CPVREpg(this);
-    m_EPG->Persist();
-    CPVRManager::GetEpg()->push_back(m_EPG);
+    m_EPG = (CPVREpg *) CPVRManager::GetEpg()->GetById(m_iChannelId);
+
+    if (m_EPG == NULL)
+    {
+      /* will be cleaned up by CPVREpgContainer on exit */
+      m_EPG = new CPVREpg(this);
+      m_EPG->Persist();
+      CPVRManager::GetEpg()->push_back(m_EPG);
+    }
   }
 
   return m_EPG;
