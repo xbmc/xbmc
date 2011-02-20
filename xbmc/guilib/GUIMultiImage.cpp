@@ -252,3 +252,8 @@ void CGUIMultiImage::SetInfo(const CGUIInfoLabel &info)
   if (m_texturePath.IsConstant())
     m_currentPath = m_texturePath.GetLabel(WINDOW_INVALID);
 }
+
+CStdString CGUIMultiImage::GetDescription() const
+{
+  return m_image.GetDescription();
+}
