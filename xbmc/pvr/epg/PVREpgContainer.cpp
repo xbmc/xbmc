@@ -66,16 +66,18 @@ bool CPVREpgContainer::CreateChannelEpgs(void)
 int CPVREpgContainer::GetEPGAll(CFileItemList* results, bool bRadio /* = false */)
 {
   int iInitialSize = results->Size();
+  const CPVRChannelGroup *group = CPVRManager::GetChannelGroups()->GetGroupAll(bRadio);
+  if (!group)
+    return -1;
 
   CSingleLock lock(m_critSection);
-  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < group->Size(); iChannelPtr++)
   {
-    CPVREpg *epg = (CPVREpg *) at(iEpgPtr);
-    CPVRChannel *channel = (CPVRChannel *) epg->Channel();
-    if (!channel || channel->IsRadio() != bRadio)
+    CPVRChannel *channel = (CPVRChannel *) group->GetByIndex(iChannelPtr);
+    if (!channel || !channel->GetEPG())
       continue;
 
-    epg->Get(results);
+    channel->GetEPG()->Get(results);
   }
 
   return results->Size() - iInitialSize;
