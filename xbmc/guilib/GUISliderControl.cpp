@@ -61,27 +61,21 @@ void CGUISliderControl::Render()
   m_guiBackground.SetWidth(m_width);
   m_guiBackground.Render();
 
-  float fWidth = (m_guiBackground.GetTextureWidth() - m_guiMid.GetTextureWidth())*fScaleX;
+  // we render the nib centered at the appropriate percentage, except where the nib
+  // would overflow the background image
+  CGUITexture &nib = (m_bHasFocus && !IsDisabled()) ? m_guiMidFocus : m_guiMid;
 
-  float fPos = m_guiBackground.GetXPosition() + GetProportion() * fWidth;
+  float offset = GetProportion() * m_guiBackground.GetTextureWidth() - nib.GetTextureWidth()/2;
+  if (offset > m_guiBackground.GetTextureWidth() - nib.GetTextureWidth())
+    offset = m_guiBackground.GetTextureWidth() - nib.GetTextureWidth();
+  if (offset < 0)
+    offset = 0;
 
-  if ((int)fWidth > 1)
-  {
-    if (m_bHasFocus && !IsDisabled())
-    {
-      m_guiMidFocus.SetPosition(fPos, m_guiBackground.GetYPosition() );
-      m_guiMidFocus.SetWidth(m_guiMidFocus.GetTextureWidth() * fScaleX);
-      m_guiMidFocus.SetHeight(m_guiMidFocus.GetTextureHeight() * fScaleY);
-      m_guiMidFocus.Render();
-    }
-    else
-    {
-      m_guiMid.SetPosition(fPos, m_guiBackground.GetYPosition() );
-      m_guiMid.SetWidth(m_guiMid.GetTextureWidth()*fScaleX);
-      m_guiMid.SetHeight(m_guiMid.GetTextureHeight()*fScaleY);
-      m_guiMid.Render();
-    }
-  }
+  nib.SetPosition(m_guiBackground.GetXPosition() + offset * fScaleX, m_guiBackground.GetYPosition() );
+  nib.SetWidth(nib.GetTextureWidth() * fScaleX);
+  nib.SetHeight(nib.GetTextureHeight() * fScaleY);
+  nib.Render();
+
   CGUIControl::Render();
 }
 
