@@ -127,6 +127,15 @@ namespace PYXBMC
     return Py_BuildValue((char*)"s", self->infoTag.m_strTitle.c_str());
   }
 
+  // InfoTagVideo_GetOriginalTitle
+  PyDoc_STRVAR(getOriginalTitle__doc__,
+    "getOriginalTitle() -- returns a string.\n");
+
+  PyObject* InfoTagVideo_GetOriginalTitle(InfoTagVideo *self, PyObject *args)
+  {
+    return Py_BuildValue((char*)"s", self->infoTag.m_strOriginalTitle.c_str());
+  }
+
   // InfoTagVideo_GetVotes
   PyDoc_STRVAR(getVotes__doc__,
     "getVotes() -- returns a string.\n");
@@ -217,6 +226,7 @@ namespace PYXBMC
     {(char*)"getPlot", (PyCFunction)InfoTagVideo_GetPlot, METH_VARARGS, getPlot__doc__},
     {(char*)"getPictureURL", (PyCFunction)InfoTagVideo_GetPictureURL, METH_VARARGS, getPictureURL__doc__},
     {(char*)"getTitle", (PyCFunction)InfoTagVideo_GetTitle, METH_VARARGS, getTitle__doc__},
+    {(char*)"getOriginalTitle", (PyCFunction)InfoTagVideo_GetOriginalTitle, METH_VARARGS, getOriginalTitle__doc__},
     {(char*)"getVotes", (PyCFunction)InfoTagVideo_GetVotes, METH_VARARGS, getVotes__doc__},
     {(char*)"getCast", (PyCFunction)InfoTagVideo_GetCast, METH_VARARGS, getCast__doc__},
     {(char*)"getFile", (PyCFunction)InfoTagVideo_GetFile, METH_VARARGS, getFile__doc__},
