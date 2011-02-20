@@ -1562,6 +1562,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
 
   else
     CFLAGS="" \
+    LDFLAGS="$(echo "$LDFLAGS" | sed "s/-Wl,-Bsymbolic-functions//g")" \
     ./configure \
       --extra-cflags="$PASSED_CFLAGS $FFMPEG_EXTRACFLAGS" \
       --disable-static \
