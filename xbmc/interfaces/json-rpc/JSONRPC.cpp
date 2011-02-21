@@ -136,7 +136,13 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "Files.GetDirectory",                           CFileOperations::GetDirectory },
 
 // Music Library
-  // TODO
+  { "AudioLibrary.GetArtists",                      CAudioLibrary::GetArtists },
+  { "AudioLibrary.GetAlbums",                       CAudioLibrary::GetAlbums },
+  { "AudioLibrary.GetAlbumDetails",                 CAudioLibrary::GetAlbumDetails },
+  { "AudioLibrary.GetSongs",                        CAudioLibrary::GetSongs },
+  { "AudioLibrary.GetSongDetails",                  CAudioLibrary::GetSongDetails },
+  { "AudioLibrary.GetGenres",                       CAudioLibrary::GetGenres },
+  { "AudioLibrary.ScanForContent",                  CAudioLibrary::ScanForContent },
 
 // Video Library
   // TODO
