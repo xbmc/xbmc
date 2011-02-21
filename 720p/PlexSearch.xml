@@ -572,7 +572,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>900</width>
-					<height>690</height>
+					<height>705</height>
 					<ondown>5200</ondown>
 					<onup>310</onup>
 					<onright>350</onright>
@@ -1367,7 +1367,7 @@
 					  </control>
   					<control type="panel" id="9012">
           		<width>890</width>
-  						<height>675</height>
+  						<height>680</height>
   					  <posy>35</posy>
   						<visible allowhiddenfocus="false">true</visible>
   						<orientation>vertical</orientation>
@@ -1425,7 +1425,7 @@
           			</control>
           		</itemlayout>
           		
-          		<focusedlayout width="295" height="120">
+          		<focusedlayout width="440" height="120">
           			<control type="image">
           				<posx>-5</posx>
           				<posy>10</posy>
