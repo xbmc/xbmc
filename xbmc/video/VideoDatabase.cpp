@@ -56,12 +56,13 @@ using namespace VIDEO;
 using namespace ADDON;
 
 #define VIDEO_DATABASE_VIEW_TVSHOW "SELECT tvshow.*,path.strPath AS strPath," \
-                                   "counts.totalcount AS totalCount,counts.watchedcount AS watchedCount," \
-                                   "counts.totalcount=counts.watchedcount AS watched FROM tvshow " \
+                                   "counts.totalcount AS totalCount," \
+                                   "counts.watchedcount AS watchedCount," \
+                                   "counts.totalseasons AS totalSeasons FROM tvshow " \
                                    "JOIN tvshowlinkpath ON tvshow.idShow=tvshowlinkpath.idShow " \
                                    "JOIN path ON path.idpath=tvshowlinkpath.idPath " \
                                    "LEFT OUTER join (" \
-                                   "    SELECT tvshow.idShow AS idShow,count(1) AS totalcount,count(files.playCount) AS watchedcount FROM tvshow " \
+                                   "    SELECT tvshow.idShow AS idShow,count(1) AS totalcount,count(files.playCount) AS watchedcount,episode.c12 AS totalSeasons FROM tvshow " \
                                    "    JOIN tvshowlinkepisode ON tvshow.idShow=tvshowlinkepisode.idShow " \
                                    "    JOIN episode ON episode.idEpisode=tvshowlinkepisode.idEpisode " \
                                    "    JOIN files ON files.idFile=episode.idFile " \
@@ -4612,6 +4613,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
     while (!m_pDS->eof())
     {
       int idShow = m_pDS->fv("tvshow.idShow").get_asInt();
+      int numSeasons = m_pDS->fv(VIDEODB_DETAILS_TVSHOW_NUM_SEASONS).get_asInt();
 
       CVideoInfoTag movie = GetDetailsForTvShow(m_pDS, false);
       if (!g_advancedSettings.m_bVideoLibraryHideEmptySeries || movie.m_iEpisode > 0)
@@ -4620,6 +4622,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
         pItem->m_strPath.Format("%s%ld/", strBaseDir.c_str(), idShow);
         pItem->m_dateTime.SetFromDateString(movie.m_strPremiered);
         pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+        pItem->SetProperty("totalseasons", numSeasons);
         pItem->SetProperty("totalepisodes", movie.m_iEpisode);
         pItem->SetProperty("numepisodes", movie.m_iEpisode); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", movie.m_playCount);
