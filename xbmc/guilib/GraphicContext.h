@@ -46,7 +46,7 @@
 #include "gui3d.h"
 #include "utils/StdString.h"
 #include "Resolution.h"
-#include "utils/ReferenceCounting.h"
+#include "utils/GlobalsHandling.h"
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
@@ -219,15 +219,7 @@ private:
  \ingroup graphics
  \brief
  */
-/**
- * This is a hack. There will be an instance of a ref to this "global" statically in each
- *  file that includes this header. This is so that the reference couting will
- *  work correctly from the data segment.
- */
-static xbmcutil::Referenced::ref<CGraphicContext> g_graphicsContextRef(xbmcutil::Singleton<CGraphicContext>::getInstance);
-// this works and performs better (than the #define solution) when there are 
-//  no static methods, at the cost of some data segment space per compilation
-//  unit.
-static CGraphicContext& g_graphicsContext = g_graphicsContextRef.getRef();
+
+XBMC_GLOBAL(CGraphicContext,g_graphicsContext);
 
 #endif

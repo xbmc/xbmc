@@ -24,7 +24,7 @@
 
 #include "threads/CriticalSection.h"
 #include "StdString.h"
-#include "utils/ReferenceCounting.h"
+#include "utils/GlobalsHandling.h"
 
 #include <vector>
 
@@ -80,13 +80,7 @@ public:
   void fromW(const CStdStringW& source, CStdStringA& dest, const CStdStringA& enc);
 };
 
-/**
- * This is a hack. There will be an instance of a ref to this "global" statically in each
- *  file that includes this header. This is so that the reference couting will
- *  work correctly from the data segment.
- */
-static xbmcutil::Referenced::ref<CCharsetConverter> g_charsetConverterRef(xbmcutil::Singleton<CCharsetConverter>::getInstance);
-#define g_charsetConverter (*(g_charsetConverterRef.get()))
+XBMC_GLOBAL(CCharsetConverter,g_charsetConverter);
 
 size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft, char* * outbuf, size_t *outbytesleft);
 

@@ -22,7 +22,7 @@
 
 #include "utils/StdString.h"
 #include "threads/CriticalSection.h"
-#include "utils/ReferenceCounting.h"
+#include "utils/GlobalsHandling.h"
 
 //  forward
 class LibraryLoader;
@@ -63,9 +63,5 @@ protected:
   CCriticalSection m_critSection;
 };
 
-/**
- * This is a hack. There will be an instance of a ref to this "global" statically in each
- *  file that includes this header. This is so that the reference couting will
- *  work correctly from the data segment.
- */
-static xbmcutil::Referenced::ref<CSectionLoader> g_sectionLoaderRef(xbmcutil::Singleton<CSectionLoader>::getInstance);
+XBMC_GLOBAL_REF(CSectionLoader,g_sectionLoader);
+
