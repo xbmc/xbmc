@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <string>
 
+#include "threads/CriticalSection.h"
 #include "utils/ReferenceCounting.h"
 
 #define LOG_LEVEL_NONE         -1 // nothing at all is logged
