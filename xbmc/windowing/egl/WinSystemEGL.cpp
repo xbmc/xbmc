@@ -73,8 +73,6 @@ static int contextAttributes[] =
   EGL_NONE
 };
 
-CWinSystemEGL g_Windowing;
-
 CWinSystemEGL::CWinSystemEGL() : CWinSystemBase()
 , m_eglOMXContext(0)
 {
