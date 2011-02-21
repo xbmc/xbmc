@@ -114,33 +114,4 @@ namespace xbmcutil
 
   };
 
-  /**
-   * Currently THIS IS NOT THREAD SAFE! Why not just add a lock you ask?
-   *  Because this singleton is used to initialize global variables and
-   *  there is an issue with having the lock used prior to its 
-   *  initialization. No matter what, if this class is used as a replacement
-   *  for global variables there's going to be a race condition if it's used
-   *  anywhere else. So currently this is the only prescribed use.
-   *
-   * Therefore this hack depends on the fact that compilation unit global/static 
-   *  initialization is done in a single thread.
-   *
-   * In the spirit of making changes incrementally I've opted to not add Atomic*
-   *  locking to this class yet. It doesn't need it (yet) as it's only called
-   *  from the static initialization thread prior to main.
-   */
-  template <class T> class Singleton
-  {
-    static T* instance;
-  public:
-    static T* getInstance()
-    {
-      if (instance == NULL)
-        instance = new T;
-      return instance;
-    }
-  };
-
-  template <class T> T* Singleton<T>::instance;
-
 }
