@@ -561,7 +561,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
       // are either no more schemas in the "items"
       // array or no more elements in the value's array
       unsigned int arrayIndex;
-      for (arrayIndex = 0; arrayIndex < min(type.items.size(), value.size()); arrayIndex++)
+      for (arrayIndex = 0; arrayIndex < min(type.items.size(), (size_t)value.size()); arrayIndex++)
       {
         JSON_STATUS status = checkType(value[arrayIndex], type.items.at(arrayIndex), outputValue[arrayIndex], errorData["property"]);
         if (status != OK)

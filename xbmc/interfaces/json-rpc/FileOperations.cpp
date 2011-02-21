@@ -106,8 +106,22 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
         filteredFiles.Add(items[i]);
     }
 
-    HandleFileItemList(NULL, true, "directories", filteredDirectories, parameterObject, result);
+    HandleFileItemList(NULL, true, "files", filteredDirectories, parameterObject, result);
+    for (unsigned int index = 0; index < result["files"].size(); index++)
+    {
+      result["files"][index]["filetype"] = "directory";
+    }
+    int count = result["limits"]["total"].asInt();
+
     HandleFileItemList(NULL, true, "files", filteredFiles, parameterObject, result);
+    for (unsigned int index = count; index < result["files"].size(); index++)
+    {
+      result["files"][index]["filetype"] = "file";
+    }
+    count += result["limits"]["total"].asInt();
+
+    result["limits"]["end"] = count;
+    result["limits"]["total"] = count;
 
     return OK;
   }

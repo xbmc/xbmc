@@ -52,13 +52,21 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
 
     if (item)
     {
-      if (item->IsAlbum() && item->HasProperty(field))
+      if (item->IsAlbum() && item->HasProperty("album_" + field))
       {
-        if (field == "album_rating")
-          result[field] = item->GetPropertyInt(field);
+        if (field == "rating")
+          result[field] = item->GetPropertyInt("album_rating");
+        else if (field == "label")
+          result["album_label"] = item->GetProperty("album_label");
         else
-          result[field] = item->GetProperty(field);
+          result[field] = item->GetProperty("album_" + field);
 
+        continue;
+      }
+
+      if (item->HasProperty("artist_" + field))
+      {
+        result[field] = item->GetProperty("artist_" + field);
         continue;
       }
 
@@ -68,17 +76,14 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
         if (!cachedFanArt.IsEmpty())
         {
           result["fanart"] = cachedFanArt.c_str();
-          continue;
         }
+
+        continue;
       }
     }
 
     if (serialization.isMember(field))
-    {
-      Value value = serialization[field];
-      if (!value.isString() || (value.isString() && !value.asString().empty()))
-        result[field] = value;
-    }
+      result[field] = serialization[field];
   }
 }
 
@@ -103,9 +108,9 @@ void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const 
 
   Sort(items, parameterObject["sort"]);
 
-  result["start"] = start;
-  result["end"]   = end;
-  result["total"] = size;
+  result["limits"]["start"] = start;
+  result["limits"]["end"]   = end;
+  result["limits"]["total"] = size;
 
   Json::Value validFields = Value(arrayValue);
   MakeFieldsList(parameterObject, validFields);
@@ -134,7 +139,9 @@ void CFileItemHandler::HandleFileItem(const char *id, bool allowFile, const char
 
   if (id)
   {
-    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
+    if (id == "genreid")
+      object[id] = atoi(item->m_strPath.TrimRight('/').c_str());
+    else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
       object[id] = (int)item->GetMusicInfoTag()->GetDatabaseId();
     else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
       object[id] = item->GetVideoInfoTag()->m_iDbId;
@@ -255,6 +262,6 @@ void CFileItemHandler::Sort(CFileItemList &items, const Value &parameterObject)
   SORT_METHOD sortmethod = SORT_METHOD_NONE;
   SORT_ORDER  sortorder  = SORT_ORDER_ASC;
 
-  if (ParseSortMethods(method, parameterObject["ignorethe"].asBool(), order, sortmethod, sortorder))
+  if (ParseSortMethods(method, parameterObject["ignorearticle"].asBool(), order, sortmethod, sortorder))
     items.Sort(sortmethod, sortorder);
 }
