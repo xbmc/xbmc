@@ -1382,10 +1382,10 @@
           			<control type="image">
           				<posx>0</posx>
           				<posy>15</posy>
-          				<width>170</width>
+          				<width>150</width>
           				<height>100</height>
           				<info>ListItem.Thumb</info>
-          				<aspectratio aligny="top">keep</aspectratio>
+          				<aspectratio align="right" aligny="top">keep</aspectratio>
           				<texture diffuse="plex-search-episode-mask.png"></texture>
           			</control>
           			<control type="label">
@@ -1429,10 +1429,10 @@
           			<control type="image">
           				<posx>-5</posx>
           				<posy>10</posy>
-          				<width>180</width>
-          				<height>110</height>
+          				<width>150</width>
+          				<height>100</height>
           				<info>ListItem.Thumb</info>
-          				<aspectratio aligny="top">keep</aspectratio>
+          				<aspectratio align="right" aligny="top">keep</aspectratio>
           				<bordertexture>plugin-stream-highlight.png</bordertexture>
     							<bordersize>5</bordersize>
     							<texture diffuse="plex-search-episode-mask.png"></texture>
