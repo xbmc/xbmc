@@ -175,6 +175,8 @@ extern "C" void __stdcall update_emu_environ()
 #ifdef _WIN32
     SetEnvironmentVariable("HTTP_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
     SetEnvironmentVariable("HTTPS_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
+    dll_putenv( "HTTP_PROXY=http://" + strProxyServer + ":" + strProxyPort );
+    dll_putenv( "HTTPS_PROXY=http://" + strProxyServer + ":" + strProxyPort );
 #else
     setenv( "HTTP_PROXY", "http://" + strProxyServer + ":" + strProxyPort, true );
     setenv( "HTTPS_PROXY", "http://" + strProxyServer + ":" + strProxyPort, true );
@@ -184,6 +186,8 @@ extern "C" void __stdcall update_emu_environ()
 #ifdef _WIN32
       SetEnvironmentVariable("PROXY_USER", g_guiSettings.GetString("network.httpproxyusername"));
       SetEnvironmentVariable("PROXY_PASS", g_guiSettings.GetString("network.httpproxypassword"));
+      dll_putenv("PROXY_USER=" + g_guiSettings.GetString("network.httpproxyusername"));
+      dll_putenv("PROXY_PASS=" + g_guiSettings.GetString("network.httpproxypassword"));
 #else
       setenv("PROXY_USER", g_guiSettings.GetString("network.httpproxyusername"), true);
       setenv("PROXY_PASS", g_guiSettings.GetString("network.httpproxypassword"), true);
