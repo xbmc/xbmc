@@ -289,6 +289,7 @@ class CAdvancedSettings : public virtual xbmcutil::Referenced
     unsigned int m_cacheMemBufferSize;
 
     bool m_jsonOutputCompact;
+    unsigned int m_jsonTcpPort;
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

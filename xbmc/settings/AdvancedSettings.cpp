@@ -276,6 +276,7 @@ void CAdvancedSettings::Initialize()
   m_cacheMemBufferSize = (1048576 * 5);
 
   m_jsonOutputCompact = true;
+  m_jsonTcpPort = 9090;
 }
 
 bool CAdvancedSettings::Load()
@@ -590,6 +591,7 @@ bool CAdvancedSettings::Load()
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "compactoutput", m_jsonOutputCompact);
+    XMLUtils::GetUInt(pElement, "tcpport", m_jsonTcpPort);
   }
 
   pElement = pRootElement->FirstChildElement("samba");
