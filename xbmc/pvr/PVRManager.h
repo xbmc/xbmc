@@ -26,7 +26,7 @@
 #include "addons/PVRClient.h"
 #include "addons/AddonManager.h"
 #include "threads/Thread.h"
-#include "windows/GUIWindowPVR.h"
+#include "windows/GUIWindowPVRCommon.h"
 
 #include <vector>
 #include <deque>
@@ -284,6 +284,12 @@ public:
    * @return True if a channel is playing, false otherwise.
    */
   bool GetCurrentChannel(const CPVRChannel *channel);
+
+  /*!
+   * @brief Check whether the PVRManager has fully started.
+   * @return True if started, false otherwise.
+   */
+  bool IsStarted(void) const { return m_bLoaded; }
 
   /*!
    * @brief Check whether there are any active clients.

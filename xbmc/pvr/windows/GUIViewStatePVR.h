@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,14 +23,13 @@
 
 #include "GUIViewState.h"
 
-
-class CGUIViewStateWindowPVR : public CGUIViewState
+class CGUIViewStatePVR : public CGUIViewState
 {
 public:
-  CGUIViewStateWindowPVR(const CFileItemList& items);
+  CGUIViewStatePVR(const CFileItemList& items);
+  virtual ~CGUIViewStatePVR(void) {}
 protected:
-  virtual bool AutoPlayNextItem();
-  virtual bool HideParentDirItems();
-//  virtual CStdString GetExtensions();
-  virtual void SaveViewState();
+  virtual bool AutoPlayNextItem(void);
+  virtual bool HideParentDirItems(void);
+  virtual void SaveViewState(void);
 };

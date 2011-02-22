@@ -23,6 +23,7 @@
 #include "settings/GUISettings.h"
 #include "Util.h"
 #include "guilib/GUIWindowManager.h"
+#include "windows/GUIWindowPVR.h"
 #include "GUIInfoManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
@@ -35,6 +36,7 @@
 #include "utils/TimeUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/Settings.h"
+#include "filesystem/StackDirectory.h"
 
 /* GUI Messages includes */
 #include "dialogs/GUIDialogOK.h"
@@ -128,7 +130,32 @@ void CPVRManager::Start()
   CLog::Log(LOGNOTICE, "PVRManager - starting up");
 
   ResetProperties();
+
+  /* load all addons */
   CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
+  while (!m_bAllClientsLoaded)
+  {
+    LoadClients();
+    Sleep(50);
+  }
+
+  /* load all channels and groups */
+  m_channelGroups->Load();
+
+  /* start the EPG thread */
+  m_epg->Start();
+
+  /* get timers from the backends */
+  m_timers->Load();
+
+  /* get recordings from the backend */
+  m_recordings->Load();
+
+  m_bLoaded = true;
+
+  /* continue last watched channel after first startup */
+  if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
+    ContinueLastChannel();
 
   /* create the supervisor thread to do all background activities */
   Create();
@@ -293,9 +320,9 @@ void CPVRManager::StopThreads()
 
 void CPVRManager::UpdateWindow(PVRWindow window)
 {
-  CGUIWindowPVR *pTVWin = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
-  if (pTVWin)
-    pTVWin->UpdateData(window);
+  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
+  if (pWindow)
+    pWindow->UpdateWindow(window);
 }
 
 void CPVRManager::OnClientMessage(const int iClientId, const PVR_EVENT clientEvent, const char *strMessage)
@@ -427,37 +454,6 @@ bool CPVRManager::ContinueLastChannel()
 
 void CPVRManager::Process()
 {
-  while (!m_bStop && !m_bAllClientsLoaded)
-  {
-    LoadClients();
-    Sleep(3000);
-  }
-
-  if (!m_bStop)
-  {
-    /* load all channels and groups */
-    m_channelGroups->Load();
-
-    /* start the EPG thread */
-    m_epg->Start();
-
-    /* get timers from the backends */
-    m_timers->Load();
-
-    /* get recordings from the backend */
-    m_recordings->Load();
-
-    /* notify window that all channels and epg are loaded */
-    UpdateWindow(PVR_WINDOW_CHANNELS_TV);
-    UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
-
-    m_bLoaded = true;
-  }
-
-  /* Continue last watched channel after first startup */
-  if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
-    ContinueLastChannel();
-
   /* main loop */
   while (!m_bStop)
   {
@@ -1792,4 +1788,3 @@ int CPVRManager::GetStartTime()
     return 0;
   }
 }
-

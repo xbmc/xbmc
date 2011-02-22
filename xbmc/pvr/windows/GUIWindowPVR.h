@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,130 +21,62 @@
  *
  */
 
-#include "windows/GUIMediaWindow.h"
-#include "pvr/epg/PVREpgSearchFilter.h"
-#include "pvr/epg/PVREpgContainer.h"
+#include "GUIWindowPVRCommon.h"
+#include "guilib/GUIEPGGridContainer.h"
+#include "threads/CriticalSection.h"
 
-class CPVRChannelGroup;
-class CGUIEPGGridContainer;
-
-enum PVRWindow
-{
-  PVR_WINDOW_UNKNOWN         = 0,
-  PVR_WINDOW_EPG             = 1,
-  PVR_WINDOW_CHANNELS_TV     = 2,
-  PVR_WINDOW_CHANNELS_RADIO  = 3,
-  PVR_WINDOW_RECORDINGS      = 4,
-  PVR_WINDOW_TIMERS          = 5,
-  PVR_WINDOW_SEARCH          = 6
-};
+class CGUIWindowPVRCommon;
+class CGUIWindowPVRChannels;
+class CGUIWindowPVRGuide;
+class CGUIWindowPVRRecordings;
+class CGUIWindowPVRSearch;
+class CGUIWindowPVRTimers;
 
 class CGUIWindowPVR : public CGUIMediaWindow
 {
+  friend class CGUIWindowPVRCommon;
+  friend class CGUIWindowPVRChannels;
+  friend class CGUIWindowPVRGuide;
+  friend class CGUIWindowPVRRecordings;
+  friend class CGUIWindowPVRSearch;
+  friend class CGUIWindowPVRTimers;
+
 public:
   CGUIWindowPVR(void);
   virtual ~CGUIWindowPVR(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
-  virtual void OnWindowLoaded();
-  virtual void OnWindowUnload();
-  virtual void OnInitWindow();
 
-  void UpdateData(PVRWindow update);
+  virtual CGUIWindowPVRCommon *GetActiveView(void) const;
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnAction(const CAction &action);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual void OnInitWindow(void);
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual void OnWindowLoaded(void);
+  virtual void OnWindowUnload(void);
+  virtual void UpdateWindow(PVRWindow window);
+
+  CGUIEPGGridContainer *m_guideGrid;
 
 protected:
-  virtual const CPVRChannelGroup *SelectedGroup(bool bRadio);
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual void UpdateButtons();
+  virtual void SetLabel(int iControl, const CStdString &strLabel);
+  virtual void SetLabel(int iControl, int iLabel);
 
 private:
-  bool OnMessageFocus(CGUIMessage &message);
-  bool OnMessageClick(CGUIMessage &message);
+  virtual bool OnMessageFocus(CGUIMessage &message);
+  virtual bool OnMessageClick(CGUIMessage &message);
 
-  bool OnClickButton(CGUIMessage &message);
-  bool OnClickListEpg(CGUIMessage &message);
-  bool OnClickListChannels(CGUIMessage &message);
-  bool OnClickListRecordings(CGUIMessage &message);
-  bool OnClickListTimers(CGUIMessage &message);
-  bool OnClickListSearch(CGUIMessage &message);
+  virtual void CreateViews(void);
 
-  bool ActionDeleteChannel(CFileItem *item);
-  bool ActionDeleteRecording(CFileItem *item);
-  bool ActionDeleteTimer(CFileItem *timer);
+  CGUIWindowPVRCommon *    m_currentSubwindow;
+  CGUIWindowPVRCommon *    m_savedSubwindow;
 
-  bool ActionPlayChannel(unsigned int iControl, CFileItem *item);
-  bool ActionPlayEpg(CFileItem *item);
+  CGUIWindowPVRChannels *  m_windowChannelsTV;
+  CGUIWindowPVRChannels *  m_windowChannelsRadio;
+  CGUIWindowPVRGuide    *  m_windowGuide;
+  CGUIWindowPVRRecordings *m_windowRecordings;
+  CGUIWindowPVRSearch *    m_windowSearch;
+  CGUIWindowPVRTimers *    m_windowTimers;
 
-  bool ActionRecord(CFileItem *item);
-
-  bool ActionShowSearch(CFileItem *item);
-  bool ActionShowTimer(CFileItem *item);
-
-  bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonMove(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonHide(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonShowHidden(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonEdit(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonGroupManager(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonResumeItem(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonSortAsc(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonSortBy(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonSortByChannel(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonSortByName(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonSortByDate(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonEnd(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON button);
-  bool OnContextButtonMenuHooks(CFileItem *item, CONTEXT_BUTTON button);
-
-  PVRWindow m_iCurrSubTVWindow;    /* Active subwindow */
-  PVRWindow m_iSavedSubTVWindow;   /* Last subwindow, required if main window is shown again */
-  bool m_bShowHiddenChannels;
-  bool m_bSearchStarted;
-  bool m_bSearchConfirmed;
-  PVREpgSearchFilter m_searchfilter;
-
-  /* Selected item in associated list, required for subwindow change */
-  int m_iSelected_GUIDE;
-  int m_iSelected_CHANNELS_TV;
-  int m_iSelected_CHANNELS_RADIO;
-  int m_iSelected_RECORDINGS;
-  CStdString m_iSelected_RECORDINGS_Path;
-  int m_iSelected_TIMERS;
-  int m_iSelected_SEARCH;
-
-  SORT_ORDER m_iSortOrder_TIMERS;
-  SORT_METHOD m_iSortMethod_TIMERS;
-  SORT_ORDER m_iSortOrder_SEARCH;
-  SORT_METHOD m_iSortMethod_SEARCH;
-
-  int m_iGuideView;
-  const CPVRChannelGroup *m_selectedGroupTV;
-  const CPVRChannelGroup *m_selectedGroupRadio;
-
-  void ShowEPGInfo(CFileItem *item);
-  void ShowRecordingInfo(CFileItem *item);
-  bool ShowTimerSettings(CFileItem *item);
-  void ShowGroupManager(bool IsRadio);
-  void ShowSearchResults();
-
-  void UpdateGuide();
-  void UpdateChannels(bool bRadio);
-  void UpdateRecordings();
-  void UpdateTimers();
-  void UpdateSearch();
-
-  bool PlayFile(CFileItem *item, bool playMinimized = false);
-
-  CGUIEPGGridContainer   *m_guideGrid;
+  bool                     m_bViewsCreated;
+  CCriticalSection         m_critSection;
 };

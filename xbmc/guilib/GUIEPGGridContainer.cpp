@@ -631,6 +631,8 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
       for (int i = 0; i < items->Size(); ++i)
       {
         const CPVREpgInfoTag* tag = (CPVREpgInfoTag *) items->Get(i)->GetEPGInfoTag();
+        if (!tag || !tag->ChannelTag())
+          return false;
         int ChannelNow = tag->ChannelTag()->ChannelNumber();
         if (ChannelNow != ChannelLast)
         {
@@ -1169,6 +1171,9 @@ bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint &point)
 
 int CGUIEPGGridContainer::GetSelectedItem() const
 {
+  if (!m_gridIndex)
+    return 0;
+
   CGUIListItemPtr currentItem = m_gridIndex[m_channelCursor + m_channelOffset][m_blockCursor + m_blockOffset].item; ///
   for (int i = 0; i < (int)m_programmeItems.size(); i++)
   {
