@@ -62,7 +62,9 @@ using namespace ADDON;
                                    "JOIN tvshowlinkpath ON tvshow.idShow=tvshowlinkpath.idShow " \
                                    "JOIN path ON path.idpath=tvshowlinkpath.idPath " \
                                    "LEFT OUTER join (" \
-                                   "    SELECT tvshow.idShow AS idShow,count(1) AS totalcount,count(files.playCount) AS watchedcount,episode.c12 AS totalSeasons FROM tvshow " \
+                                   "    SELECT tvshow.idShow AS idShow,count(1) AS totalcount," \
+                                   "    COUNT(files.playCount) AS watchedcount," \
+                                   "    COUNT(DISTINCT(episode.c12)) AS totalSeasons FROM tvshow " \
                                    "    JOIN tvshowlinkepisode ON tvshow.idShow=tvshowlinkepisode.idShow " \
                                    "    JOIN episode ON episode.idEpisode=tvshowlinkepisode.idEpisode " \
                                    "    JOIN files ON files.idFile=episode.idFile " \
