@@ -50,6 +50,8 @@ public:
   virtual unsigned int AddData(void *data, unsigned int size);
   uint8_t* GetFrame();
   virtual float GetDelay();
+  virtual float GetCacheTime();
+  virtual float GetCacheTotal();
 
   bool IsPaused     () { return m_paused;      }
   virtual bool IsDraining   () { return m_draining;    }

@@ -188,6 +188,28 @@ float CAEStreamWrapper::GetDelay()
   return ret;
 }
 
+float CAEStreamWrapper::GetCacheTime()
+{
+  m_lock.EnterShared();
+  float ret = 0;
+  if (m_stream)
+    ret = m_stream->GetCacheTime();
+  m_lock.LeaveShared();
+
+  return ret;
+}
+
+float CAEStreamWrapper::GetCacheTotal()
+{
+  m_lock.EnterShared();
+  float ret = 0;
+  if (m_stream)
+    ret = m_stream->GetCacheTotal();
+  m_lock.LeaveShared();
+
+  return ret;
+}
+
 void CAEStreamWrapper::Pause()
 {
   m_lock.EnterShared();

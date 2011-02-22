@@ -41,6 +41,8 @@ public:
 
   virtual unsigned int AddData(void *data, unsigned int size);
   virtual float GetDelay();
+  virtual float GetCacheTime () {return 0.0f;} /* FIXME */
+  virtual float GetCacheTotal() {return 0.0f;} /* FIXME */
   int GetSpace();
 
   virtual bool IsPaused     ();

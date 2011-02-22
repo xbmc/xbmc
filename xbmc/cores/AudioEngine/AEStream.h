@@ -92,6 +92,18 @@ public:
   virtual float GetDelay() = 0;
 
   /**
+   * Returns how long until playback will start
+   * @return The delay in seconds
+   */
+  virtual float GetCacheTime() = 0;
+
+  /**
+   * Returns the total length of the cache before playback will start
+   * @return The delay in seconds
+   */
+  virtual float GetCacheTotal() = 0;
+
+  /**
    * Pauses the stream playback
    */
   virtual void Pause() = 0;

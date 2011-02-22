@@ -553,7 +553,20 @@ uint8_t* CSoftAEStream::GetFrame()
 float CSoftAEStream::GetDelay()
 {
   if (m_delete) return 0.0f;
-  return AE.GetDelay() + ((float)(m_framesBuffered + m_refillBuffer) / (float)AE.GetSampleRate());
+  float delay = (float)m_framesBuffered / (float)AE.GetSampleRate();
+  return AE.GetDelay() + delay;
+}
+
+float CSoftAEStream::GetCacheTime()
+{
+  if (m_delete) return 0.0f;
+  return (float)std::max((int)m_waterLevel - (int)m_refillBuffer, 0) / (float)AE.GetSampleRate();
+}
+
+float CSoftAEStream::GetCacheTotal()
+{
+  if (m_delete) return 0.0f;
+  return (float)m_waterLevel / (float)AE.GetSampleRate();
 }
 
 void CSoftAEStream::Drain()

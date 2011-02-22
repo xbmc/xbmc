@@ -45,6 +45,8 @@ public:
   virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg);
   virtual unsigned int AddData(void *data, unsigned int size);
   virtual float GetDelay();
+  virtual float GetCacheTime();
+  virtual float GetCacheTotal();
   virtual void Pause();
   virtual void Resume();
   virtual void Drain();

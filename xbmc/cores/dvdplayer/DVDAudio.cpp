@@ -294,9 +294,7 @@ double CDVDAudio::GetCacheTime()
   CSingleLock lock (m_critSection);
   if(!m_pAudioStream)
     return 0.0;
-  // FIXME: whats this for?, doesn't GetDelay handle this
-  return 0.0;
-  //return m_pAudioStream->GetCacheTime();
+  return m_pAudioStream->GetCacheTime();
 }
 
 double CDVDAudio::GetCacheTotal()
@@ -304,7 +302,5 @@ double CDVDAudio::GetCacheTotal()
   CSingleLock lock (m_critSection);
   if(!m_pAudioStream)
     return 0.0;
-  // FIXME: whats this for?, doesn't GetDelay handle this
-  return 0.0;
-  //return m_pAudioDecoder->GetCacheTotal();
+  return m_pAudioStream->GetCacheTotal();
 }
