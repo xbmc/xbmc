@@ -75,21 +75,11 @@ namespace xbmcutil
        * operator= should work with either another smart pointer or a pointer since it will 
        *  be able to convert a pointer to a smart pointer using one of the above constuctors.
        *
-       * Note: There is a trick here. The temporary varialbe is necessary because otherwise the 
-       *  following code will fail:
-       *
-       *  ref<T> ptr = new T;
-       *  ptr = ptr;
-       *
-       * What happens without the tmp is the derefernce is called first so the object ends up
-       *  deleted and then the reference happens on a deleted object. The order is reversed
-       *  in the following.
-       *
        * Note: Operator= is ambiguous if you define both an operator=(ref<T>&) and an operator=(T*). I'm
-       *  opting for the route the boost took here figuring it has more history behind it.
+       *  opting for the route that boost took here figuring it has more history behind it.
        */
       inline ref<T>& operator=(ref<T> const & oref)  
-      { T* tmp = ac; ac=((T*)oref.get()); if (ac) ac->Acquire(); if (tmp) tmp->Release(); refcheck; return *this; }
+      { if (this != &oref) { if (ac) ac->Release(); ac=((T*)oref.get()); if (ac) ac->Acquire(); } refcheck; return *this; }
 
       inline T* operator->() const { refcheck; return ac; }
 
