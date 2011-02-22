@@ -51,7 +51,7 @@ protected:
 
 #ifdef HAS_GL
 
-XBMC_GLOBAL_REF(CWinSystemWin32GL,g_Windowing)
+XBMC_GLOBAL_REF(CWinSystemWin32GL,g_Windowing);
 #define g_Windowing XBMC_GLOBAL_USE(CWinSystemWin32GL)
 
 #endif
