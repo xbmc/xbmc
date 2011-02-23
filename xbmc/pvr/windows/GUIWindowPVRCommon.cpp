@@ -92,7 +92,6 @@ bool CGUIWindowPVRCommon::IsSelectedList(CGUIMessage &message) const
 
 void CGUIWindowPVRCommon::OnInitWindow()
 {
-  CLog::Log(LOGDEBUG, "setting view to %d", m_iControlList);
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
 }
 

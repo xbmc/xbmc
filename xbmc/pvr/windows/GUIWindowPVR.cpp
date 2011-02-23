@@ -215,7 +215,6 @@ bool CGUIWindowPVR::OnMessageFocus(CGUIMessage &message)
 
   if (message.GetMessage() == GUI_MSG_FOCUSED)
   {
-    CSingleLock lock(m_critSection);
     bReturn = m_windowChannelsRadio->OnMessageFocus(message) ||
         m_windowChannelsTV->OnMessageFocus(message) ||
         m_windowGuide->OnMessageFocus(message) ||
@@ -235,8 +234,6 @@ bool CGUIWindowPVR::OnMessageClick(CGUIMessage &message)
 
   if (message.GetMessage() == GUI_MSG_CLICKED)
   {
-    CSingleLock lock(m_critSection);
-
     bReturn = m_windowChannelsRadio->OnClickButton(message) ||
         m_windowChannelsTV->OnClickButton(message) ||
         m_windowGuide->OnClickButton(message) ||
