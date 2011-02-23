@@ -27,7 +27,7 @@
 #include "rendering/gl/RenderSystemGL.h"
 #include "utils/GlobalsHandling.h"
 
-class CWinSystemX11GL : public CWinSystemX11, public CRenderSystemGL, public virtual xbmcutil::Referenced
+class CWinSystemX11GL : public CWinSystemX11, public CRenderSystemGL
 {
 public:
   CWinSystemX11GL();

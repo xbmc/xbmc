@@ -60,7 +60,7 @@ struct RefreshOverride
 
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
-class CAdvancedSettings : public virtual xbmcutil::Referenced
+class CAdvancedSettings
 {
   public:
     CAdvancedSettings();

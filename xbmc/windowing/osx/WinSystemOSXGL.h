@@ -27,7 +27,7 @@
 #include "rendering/gl/RenderSystemGL.h"
 #include "utils/GlobalsHandling.h"
 
-class CWinSystemOSXGL : public CWinSystemOSX, public CRenderSystemGL, public virtual xbmcutil::Referenced
+class CWinSystemOSXGL : public CWinSystemOSX, public CRenderSystemGL
 {
 public:
   CWinSystemOSXGL();
