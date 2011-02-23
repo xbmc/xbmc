@@ -31,6 +31,7 @@
 #include "LinuxRendererGLES.h"
 #include "Application.h"
 #include "utils/MathUtils.h"
+#include "utils/GLUtils.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
