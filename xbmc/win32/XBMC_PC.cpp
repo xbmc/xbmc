@@ -112,6 +112,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
   g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
 #endif
+  CLog::SetLogLevel(g_advancedSettings.m_logLevel);
 
   // Initializes CreateMiniDump to handle exceptions.
   SetUnhandledExceptionFilter( CreateMiniDump );
@@ -174,6 +175,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
       {
         g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
         g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
+        CLog::SetLogLevel(g_advancedSettings.m_logLevel);
       }
     }
     LocalFree(szArglist);

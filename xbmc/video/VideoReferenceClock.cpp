@@ -112,6 +112,10 @@ CVideoReferenceClock::CVideoReferenceClock()
   m_TotalMissedVblanks = 0;
   m_UseVblank = false;
   m_Started.Reset();
+
+#if defined(HAS_GLX) && defined(HAS_XRANDR)
+  m_Dpy = NULL;
+#endif
 }
 
 void CVideoReferenceClock::Process()
@@ -217,18 +221,20 @@ bool CVideoReferenceClock::SetupGLX()
   unsigned int GlxTest;
   XSetWindowAttributes Swa;
 
-  m_Dpy = NULL;
   m_vInfo = NULL;
   m_Context = NULL;
   m_Window = NULL;
 
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up GLX");
 
-  m_Dpy = XOpenDisplay(NULL);
   if (!m_Dpy)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Unable to open display");
-    return false;
+    m_Dpy = XOpenDisplay(NULL);
+    if (!m_Dpy)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Unable to open display");
+      return false;
+    }
   }
 
   if (!glXQueryExtension(m_Dpy, NULL, NULL))
@@ -408,6 +414,19 @@ void CVideoReferenceClock::CleanupGLX()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cleaning up GLX");
 
+  bool AtiWorkaround = false;
+  const char* VendorPtr = (const char*)glGetString(GL_VENDOR);
+  if (VendorPtr)
+  {
+    CStdString Vendor = VendorPtr;
+    Vendor.ToLower();
+    if (Vendor.compare(0, 3, "ati") == 0)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: GL_VENDOR: %s, using ati dpy workaround", VendorPtr);
+      AtiWorkaround = true;
+    }
+  }
+
   if (m_vInfo)
   {
     XFree(m_vInfo);
@@ -424,7 +443,9 @@ void CVideoReferenceClock::CleanupGLX()
     XDestroyWindow(m_Dpy, m_Window);
     m_Window = NULL;
   }
-  if (m_Dpy)
+
+  //ati saves the Display* in their libGL, if we close it here, we crash
+  if (m_Dpy && !AtiWorkaround)
   {
     XCloseDisplay(m_Dpy);
     m_Dpy = NULL;

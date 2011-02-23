@@ -37,6 +37,8 @@
 static const uint16_t AC3Bitrates[] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
 static const uint16_t AC3FSCod   [] = {48000, 44100, 32000, 0};
 
+static const uint16_t DTSFSCod   [] = {0, 8000, 16000, 32000, 0, 0, 11025, 22050, 44100, 0, 0, 12000, 24000, 48000, 0, 0};
+
 #define NULL_MUXER(muxer) \
   muxer.m_pFormat    = NULL; \
   muxer.m_pStream    = NULL; \
@@ -126,18 +128,20 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   // API added on: 2011-01-02
 
   /* While this is strictly only needed on big-endian systems, we do it on
-   * both to avoid as much dead code as possible. */
-#ifdef WORDS_BIGENDIAN
+   * both to avoid as much dead code as possible.
+   * CoreAudio (at least on the cases we've seen) wants IEC 61937 in
+   * little-endian format even on big-endian systems. */
+#if defined(WORDS_BIGENDIAN) && !defined(__APPLE__)
   const char *spdifFlags = "+be";
 #else
   const char *spdifFlags = "-be";
 #endif
 
-  /* request big-endian output */
+  /* request output of wanted endianness */
   if (!fOut->priv_class || m_dllAvUtil.av_set_string3(muxer.m_pFormat->priv_data, "spdif_flags", spdifFlags, 0, NULL) != 0)
 #endif
   {
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN) && !defined(__APPLE__)
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Unable to set big-endian stream mode (FFmpeg too old?), disabling passthrough");
     Dispose();
     return false;
@@ -686,6 +690,7 @@ unsigned int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, unsigned int 
 unsigned int CDVDAudioCodecPassthroughFFmpeg::SyncDTS(BYTE* pData, unsigned int iSize, unsigned int *fSize)
 {
   unsigned int skip;
+  unsigned int srCode;
   bool littleEndian;
 
   for(skip = 0; iSize - skip > 8; ++skip, ++pData)
@@ -704,6 +709,7 @@ unsigned int CDVDAudioCodecPassthroughFFmpeg::SyncDTS(BYTE* pData, unsigned int 
 
       /* get the frame size */
       *fSize = ((((pData[5] & 0x3) << 8 | pData[6]) << 4) | ((pData[7] & 0xF0) >> 4)) + 1;
+      srCode = (pData[8] & 0x3C) >> 2;
    }
    else
    {
@@ -713,12 +719,14 @@ unsigned int CDVDAudioCodecPassthroughFFmpeg::SyncDTS(BYTE* pData, unsigned int 
 
       /* get the frame size */
       *fSize = ((((pData[4] & 0x3) << 8 | pData[7]) << 4) | ((pData[6] & 0xF0) >> 4)) + 1;
+      srCode = (pData[9] & 0x3C) >> 2;
    }
 
     /* make sure the framesize is sane */
     if (*fSize < 96 || *fSize > 16384)
       continue;
 
+    m_SampleRate = DTSFSCod[srCode];
     m_LostSync = false;
     return skip;
   }

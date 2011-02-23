@@ -309,9 +309,9 @@ bool CWin32WASAPI::Deinitialize()
 
     m_pAudioClient->Stop();
 
-    SAFE_RELEASE(m_pRenderClient)
-    SAFE_RELEASE(m_pAudioClient)
-    SAFE_RELEASE(m_pDevice)
+    SAFE_RELEASE(m_pRenderClient);
+    SAFE_RELEASE(m_pAudioClient);
+    SAFE_RELEASE(m_pDevice);
 
     m_CacheLen = 0;
     m_uiChunkSize = 0;
@@ -602,7 +602,7 @@ void CWin32WASAPI::EnumerateAudioSinks(AudioSinkList &vAudioSinks, bool passthro
     if(FAILED(hr))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Retrieval of WASAPI endpoint properties failed.");
-      SAFE_RELEASE(pDevice)
+      SAFE_RELEASE(pDevice);
 
       goto failed;
     }
@@ -611,8 +611,8 @@ void CWin32WASAPI::EnumerateAudioSinks(AudioSinkList &vAudioSinks, bool passthro
     if(FAILED(hr))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Retrieval of WASAPI endpoint device name failed.");
-      SAFE_RELEASE(pDevice)
-      SAFE_RELEASE(pProperty)
+      SAFE_RELEASE(pDevice);
+      SAFE_RELEASE(pProperty);
 
       goto failed;
     }
@@ -624,10 +624,10 @@ void CWin32WASAPI::EnumerateAudioSinks(AudioSinkList &vAudioSinks, bool passthro
     CLog::Log(LOGDEBUG, __FUNCTION__": found endpoint device: %s", strDevName.c_str());
     vAudioSinks.push_back(AudioSink(CStdString("WASAPI: ").append(strDevName), CStdString("wasapi:").append(strDevName)));
 
-    SAFE_RELEASE(pDevice)
+    SAFE_RELEASE(pDevice);
 
     PropVariantClear(&varName);
-    SAFE_RELEASE(pProperty)
+    SAFE_RELEASE(pProperty);
   }
 
 failed:

@@ -22,11 +22,12 @@
 
 #include "utils/StdString.h"
 #include "threads/CriticalSection.h"
+#include "utils/GlobalsHandling.h"
 
 //  forward
 class LibraryLoader;
 
-class CSectionLoader
+class CSectionLoader : public virtual xbmcutil::Referenced
 {
 public:
   class CSection
@@ -61,4 +62,6 @@ protected:
   std::vector<CDll> m_vecLoadedDLLs;
   CCriticalSection m_critSection;
 };
-extern class CSectionLoader g_sectionLoader;
+
+XBMC_GLOBAL_REF(CSectionLoader,g_sectionLoader);
+

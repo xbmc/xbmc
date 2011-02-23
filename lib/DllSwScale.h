@@ -50,14 +50,8 @@ extern "C" {
   #elif (defined HAVE_FFMPEG_SWSCALE_H)
     #include <ffmpeg/swscale.h>
   #endif
-  #if (defined HAVE_LIBSWSCALE_RGB2RGB_H)
-    #include <libswscale/rgb2rgb.h>
-  #elif (defined HAVE_FFMPEG_RGB2RGB_H)
-    #include <ffmpeg/rgb2rgb.h>
-  #endif
 #else
   #include "libswscale/swscale.h"
-  #include "libswscale/rgb2rgb.h"
 #endif
 }
 
@@ -94,11 +88,6 @@ public:
 
    virtual int sws_scale(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
                          int srcSliceH, uint8_t* dst[], int dstStride[])=0;
-    #if (! defined USE_EXTERNAL_FFMPEG)
-      virtual void sws_rgb2rgb_init(int flags)=0;
-    #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
-      virtual void sws_rgb2rgb_init(int flags)=0;
-    #endif
 
    virtual void sws_freeContext(struct SwsContext *context)=0;
 };
@@ -122,11 +111,6 @@ public:
   virtual int sws_scale(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
                 int srcSliceH, uint8_t* dst[], int dstStride[])  
     { return ::sws_scale(context, src, srcStride, srcSliceY, srcSliceH, dst, dstStride); }
-  #if (! defined USE_EXTERNAL_FFMPEG)
-    virtual void sws_rgb2rgb_init(int flags) { ::sws_rgb2rgb_init(flags); }
-  #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
-    virtual void sws_rgb2rgb_init(int flags) { ::sws_rgb2rgb_init(flags); }
-  #endif
   virtual void sws_freeContext(struct SwsContext *context) { ::sws_freeContext(context); }
   
   // DLL faking.
@@ -148,14 +132,12 @@ class DllSwScale : public DllDynamic, public DllSwScaleInterface
   DEFINE_METHOD10(struct SwsContext *, sws_getContext, ( int p1, int p2, int p3, int p4, int p5, int p6, int p7, 
 							 SwsFilter * p8, SwsFilter * p9, double * p10))
   DEFINE_METHOD7(int, sws_scale, (struct SwsContext *p1, uint8_t** p2, int *p3, int p4, int p5, uint8_t **p6, int *p7))
-  DEFINE_METHOD1(void, sws_rgb2rgb_init, (int p1))
   DEFINE_METHOD1(void, sws_freeContext, (struct SwsContext *p1))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(sws_getCachedContext)
     RESOLVE_METHOD(sws_getContext)
     RESOLVE_METHOD(sws_scale)
-    RESOLVE_METHOD(sws_rgb2rgb_init)
     RESOLVE_METHOD(sws_freeContext)
   END_METHOD_RESOLVE()
 

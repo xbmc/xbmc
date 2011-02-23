@@ -28,7 +28,7 @@
 
 using namespace std;
 
-class CSectionLoader g_sectionLoader;
+#define g_sectionLoader XBMC_GLOBAL_USE(CSectionLoader)
 
 //  delay for unloading dll's
 #define UNLOAD_DELAY 30*1000 // 30 sec.
@@ -134,7 +134,7 @@ LibraryLoader *CSectionLoader::LoadDLL(const CStdString &dllname, bool bDelayUnl
   }
 
   // ok, now load the dll
-  CLog::DebugLog("SECTION:LoadDLL(%s)\n", dllname.c_str());
+  CLog::Log(LOGDEBUG, "SECTION:LoadDLL(%s)\n", dllname.c_str());
   LibraryLoader* pDll = DllLoaderContainer::LoadModule(dllname.c_str(), NULL, bLoadSymbols);
   if (!pDll)
     return NULL;

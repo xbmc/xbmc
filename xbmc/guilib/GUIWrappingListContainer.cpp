@@ -91,12 +91,7 @@ bool CGUIWrappingListContainer::OnMessage(CGUIMessage& message)
 {
   if (message.GetControlId() == GetID() )
   {
-    if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
-    {
-      SelectItem(message.GetParam1());
-      return true;
-    }
-    else if (message.GetMessage() == GUI_MSG_PAGE_CHANGE)
+    if (message.GetMessage() == GUI_MSG_PAGE_CHANGE)
     {
       if (message.GetSenderId() == m_pageControl && IsVisible())
       { // offset by our cursor position

@@ -41,6 +41,8 @@ CDVDAudio::CDVDAudio(volatile bool &bStop)
   m_iBitsPerSample = 0;
   m_iBitrate = 0;
   m_iChannels = 0;
+  m_SecondsPerByte = 0.0;
+  m_bPaused = true;
 }
 
 CDVDAudio::~CDVDAudio()
@@ -79,6 +81,11 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
   m_bPassthrough   = audioframe.passthrough;
   m_dwPacketSize   = m_pAudioStream->GetFrameSize();
 
+  if(m_iChannels && m_iBitrate && m_iBitsPerSample)
+    m_SecondsPerByte = 1.0 / (m_iChannels * m_iBitrate * (m_iBitsPerSample>>3));
+  else
+    m_SecondsPerByte = 0.0;
+
   if (m_pBuffer) free(m_pBuffer);
   m_pBuffer = (BYTE*)malloc(m_dwPacketSize);
 
@@ -102,6 +109,7 @@ void CDVDAudio::Destroy()
   m_iBitrate = 0;
   m_iBitsPerSample = 0;
   m_bPassthrough = false;
+  m_bPaused = true;
 }
 
 DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock)
@@ -121,7 +129,7 @@ DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock 
 
   //Calculate a timeout when this definitely should be done
   double timeout;
-  timeout  = DVD_SEC_TO_TIME(m_pAudioStream->GetDelay() + (double)len / bps);
+  timeout  = DVD_SEC_TO_TIME(m_pAudioStream->GetDelay() + len * m_SecondsPerByte);
   timeout += DVD_SEC_TO_TIME(1.0);
   timeout += CDVDClock::GetAbsoluteClock();
 
@@ -253,9 +261,7 @@ double CDVDAudio::GetDelay()
   if(m_pAudioStream)
     delay = m_pAudioStream->GetDelay();
 
-  DWORD bps = m_iChannels * m_iBitrate * (m_iBitsPerSample>>3);
-  if(m_iBufferSize && bps)
-    delay += (double)m_iBufferSize / bps;
+  delay += m_SecondsPerByte * m_iBufferSize;
 
   return delay * DVD_TIME_BASE;
 }
@@ -294,7 +300,14 @@ double CDVDAudio::GetCacheTime()
   CSingleLock lock (m_critSection);
   if(!m_pAudioStream)
     return 0.0;
-  return m_pAudioStream->GetCacheTime();
+
+  double delay = 0.0;
+  if(m_pAudioStream)
+    delay = m_pAudioStream->GetCacheTime();
+
+  delay += m_SecondsPerByte * m_iBufferSize;
+
+  return delay;
 }
 
 double CDVDAudio::GetCacheTotal()

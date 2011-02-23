@@ -140,7 +140,7 @@ JSON_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer 
   if (!parameterObject.isString())
     return InvalidParams;
 
-  return transport->Download(parameterObject.asString().c_str(), &result) ? OK : BadPermission;
+  return transport->Download(parameterObject.asString().c_str(), &result) ? OK : InvalidParams;
 }
 
 bool CFileOperations::FillFileItemList(const Value &parameterObject, CFileItemList &list)

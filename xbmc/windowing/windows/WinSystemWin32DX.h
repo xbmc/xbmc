@@ -29,10 +29,11 @@
 #include <dxdiag.h>
 #include "windowing/windows/WinSystemWin32.h"
 #include "rendering/dx/RenderSystemDX.h"
+#include "utils/GlobalsHandling.h"
 
 #ifdef HAS_DX
 
-class CWinSystemWin32DX : public CWinSystemWin32, public CRenderSystemDX
+class CWinSystemWin32DX : public CWinSystemWin32, public CRenderSystemDX, public virtual xbmcutil::Referenced
 {
 public:
   CWinSystemWin32DX();
@@ -46,6 +47,9 @@ protected:
   virtual void UpdateMonitor();
   bool UseWindowedDX(bool fullScreen);
 };
+
+XBMC_GLOBAL_REF(CWinSystemWin32DX,g_Windowing);
+#define g_Windowing XBMC_GLOBAL_USE(CWinSystemWin32DX)
 
 #endif
 

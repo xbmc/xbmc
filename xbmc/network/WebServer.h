@@ -90,7 +90,7 @@ private:
   static int HttpApi(struct MHD_Connection *connection);
   static HTTPMethod GetMethod(const char *method);
   static int CreateRedirect(struct MHD_Connection *connection, const CStdString &strURL);
-  static int CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL);
+  static int CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL, HTTPMethod methodType);
   static int CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method);
   static int CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size);
   static int CreateAddonsListResponse(struct MHD_Connection *connection);

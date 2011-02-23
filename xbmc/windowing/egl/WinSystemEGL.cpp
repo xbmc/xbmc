@@ -73,18 +73,18 @@ static int contextAttributes[] =
   EGL_NONE
 };
 
-CWinSystemEGL g_Windowing;
-
 CWinSystemEGL::CWinSystemEGL() : CWinSystemBase()
 , m_eglOMXContext(0)
 {
   m_eWindowSystem = WINDOW_SYSTEM_EGL;
+  m_bWasFullScreenBeforeMinimize = false;
 
   m_SDLSurface = NULL;
   m_eglDisplay = NULL;
   m_eglContext = NULL;
   m_eglSurface = NULL;
   m_eglWindow  = NULL;
+  m_wmWindow   = NULL;
   m_dpy        = NULL;
   
   m_iVSyncErrors = 0;

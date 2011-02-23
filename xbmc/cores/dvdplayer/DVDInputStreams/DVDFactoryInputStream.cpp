@@ -62,7 +62,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
        || file.substr(0, 6) == "udp://"
        || file.substr(0, 6) == "tcp://"
        || file.substr(0, 6) == "mms://"
-       || file.substr(0, 6) == "mmst://"
+       || file.substr(0, 7) == "mmst://"
        || file.substr(0, 7) == "mmsh://")
     return new CDVDInputStreamFFmpeg();
   else if(file.substr(0, 7) == "myth://"

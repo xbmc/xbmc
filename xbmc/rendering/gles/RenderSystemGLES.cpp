@@ -29,6 +29,7 @@
 #include "RenderSystemGLES.h"
 #include "guilib/MatrixGLES.h"
 #include "utils/log.h"
+#include "utils/GLUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/SystemInfo.h"
 

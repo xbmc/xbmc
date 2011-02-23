@@ -111,6 +111,10 @@ public:
 
   void SetVolume(float volume)                          { m_dvdAudio.SetVolume(volume); }
 
+  //! Switch codec if needed. Called when the sample rate gotten from the
+  //! codec changes, in which case we may want to switch passthrough on/off.
+  bool SwitchCodecIfNeeded();
+
   std::string GetPlayerInfo();
   int GetAudioBitrate();
 

@@ -52,6 +52,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIInfoManager.h"
 #include "utils/TimeUtils.h"
+#include "utils/md5.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -268,6 +269,9 @@ public:
                                         bool                          with_count,
                                         const PLT_HttpRequestContext* context = NULL,
                                         CUPnPServer*                  upnp_server = NULL);
+    NPT_String BuildSafeResourceUri(const char*        host,
+                                    const char*        file_path);
+
     static const char* GetMimeTypeFromExtension(const char* extension, const PLT_HttpRequestContext* context = NULL);
     static NPT_String  GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* context = NULL);
     static NPT_String  GetMimeType(const char* filename, const PLT_HttpRequestContext* context = NULL);
@@ -298,12 +302,33 @@ private:
                                       const char* protocol,
                                       const PLT_HttpRequestContext* context = NULL);
 
+    NPT_Mutex                       m_FileMutex;
+    NPT_Map<NPT_String, NPT_String> m_FileMap;
+
 public:
     // class members
     static NPT_UInt32 m_MaxReturnedItems;
 };
 
 NPT_UInt32 CUPnPServer::m_MaxReturnedItems = 0;
+
+/*----------------------------------------------------------------------
+|   CUPnPServer::BuildSafeResourceUri
++---------------------------------------------------------------------*/
+NPT_String CUPnPServer::BuildSafeResourceUri(const char* host, 
+                                             const char* file_path)
+{
+    CStdString md5;
+    XBMC::XBMC_MD5 md5state;
+    md5state.append(file_path);
+    md5state.getDigest(md5);
+    md5 += "/" + URIUtils::GetFileName(file_path);
+    { NPT_AutoLock lock(m_FileMutex);
+      NPT_CHECK(m_FileMap.Put(md5.c_str(), file_path));
+    }
+    return PLT_FileMediaServer::BuildSafeResourceUri(m_FileBaseUri, host, md5);
+}
+
 
 /*----------------------------------------------------------------------
 |   CUPnPServer::GetMimeType
@@ -608,8 +633,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
             NPT_List<NPT_IpAddress>::Iterator ip = ips.GetFirstItem();
             while (ip) {
                 resource.m_ProtocolInfo = PLT_ProtocolInfo(GetProtocolInfo(item, "http", context));
-                resource.m_Uri = PLT_FileMediaServer::BuildSafeResourceUri(
-                    upnp_server->m_FileBaseUri, (*ip).ToString(), file_path);
+                resource.m_Uri = upnp_server->BuildSafeResourceUri((*ip).ToString(), file_path);
                 object->m_Resources.Add(resource);
                 ++ip;
             }
@@ -737,8 +761,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
     }
     // set a thumbnail if we have one
     if (item.HasThumbnail() && upnp_server) {
-        object->m_ExtraInfo.album_art_uri = PLT_FileMediaServer::BuildSafeResourceUri(
-            upnp_server->m_FileBaseUri,
+        object->m_ExtraInfo.album_art_uri = upnp_server->BuildSafeResourceUri(
             (*ips.GetFirstItem()).ToString(),
             item.GetThumbnailImage());
     }
@@ -1301,9 +1324,20 @@ NPT_Result
 CUPnPServer::ServeFile(NPT_HttpRequest&              request,
                        const NPT_HttpRequestContext& context,
                        NPT_HttpResponse&             response,
-                       const NPT_String&             file_path)
+                       const NPT_String&             md5)
 {
-    CLog::Log(LOGDEBUG, "Received request to serve '%s'", (const char*)file_path);
+    // Translate hash to filename
+    NPT_String file_path(md5), *file_path2;
+    { NPT_AutoLock lock(m_FileMutex);
+      if(NPT_SUCCEEDED(m_FileMap.Get(md5, file_path2))) {
+        file_path = *file_path2;
+        CLog::Log(LOGDEBUG, "Received request to serve '%s' = '%s'", (const char*)md5, (const char*)file_path);
+      } else {
+        CLog::Log(LOGDEBUG, "Received request to serve unknown md5 '%s'", (const char*)md5);
+        response.SetStatus(404, "File Not Found");
+        return NPT_SUCCESS;
+      }
+    }
 
     // File requested
     NPT_String path = m_FileBaseUri.GetPath();
@@ -1324,8 +1358,7 @@ CUPnPServer::ServeFile(NPT_HttpRequest&              request,
         for (;url;url++) {
             output += "#EXTINF:-1," + URIUtils::GetFileName((const char*)*url);
             output += "\r\n";
-            output += PLT_FileMediaServer::BuildSafeResourceUri(
-                          m_FileBaseUri,
+            output += BuildSafeResourceUri(
                           context.GetLocalAddress().GetIpAddress().ToString(),
                           *url);
             output += "\r\n";

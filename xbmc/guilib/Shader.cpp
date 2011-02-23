@@ -26,6 +26,7 @@
 #include "filesystem/File.h"
 #include "Shader.h"
 #include "utils/log.h"
+#include "utils/GLUtils.h"
 
 #define LOG_SIZE 1024
 

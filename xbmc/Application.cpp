@@ -1220,8 +1220,8 @@ void CApplication::StartJSONRPCServer()
 #ifdef HAS_JSONRPC
   if (g_guiSettings.GetBool("services.esenabled"))
   {
-    if (CTCPServer::StartServer(9090, g_guiSettings.GetBool("services.esallinterfaces")))
-      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", 9090);
+    if (CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, g_guiSettings.GetBool("services.esallinterfaces")))
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", g_advancedSettings.m_jsonTcpPort);
   }
 #endif
 }
@@ -2040,6 +2040,7 @@ void CApplication::Render()
   g_graphicsContext.Flip();
 
   g_renderManager.UpdateResolution();
+  g_renderManager.ManageCaptures();
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);

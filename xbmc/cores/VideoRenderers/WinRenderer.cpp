@@ -187,8 +187,6 @@ bool CWinRenderer::UpdateRenderMethod()
     if (!m_dllSwScale->Load())
       CLog::Log(LOGERROR,"CDVDDemuxFFmpeg::Open - failed to load ffmpeg libraries");
 
-    m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-
     if(!m_SWTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_DYNAMIC, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT))
     {
       CLog::Log(LOGNOTICE, __FUNCTION__": Failed to create sw render target.");
@@ -429,8 +427,8 @@ void CWinRenderer::UnInit()
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 
-  SAFE_RELEASE(m_colorShader)
-  SAFE_RELEASE(m_scalerShader)
+  SAFE_RELEASE(m_colorShader);
+  SAFE_RELEASE(m_scalerShader);
   
   m_bConfigured = false;
   m_bFilterInitialized = false;
@@ -543,7 +541,7 @@ void CWinRenderer::SelectPSVideoFilter()
 
 void CWinRenderer::UpdatePSVideoFilter()
 {
-  SAFE_RELEASE(m_scalerShader)
+  SAFE_RELEASE(m_scalerShader);
 
   if (m_bUseHQScaler)
   {
@@ -561,11 +559,11 @@ void CWinRenderer::UpdatePSVideoFilter()
 
   if (m_bUseHQScaler && !CreateIntermediateRenderTarget())
   {
-    SAFE_RELEASE(m_scalerShader)
+    SAFE_RELEASE(m_scalerShader);
     m_bUseHQScaler = false;
   }
 
-  SAFE_RELEASE(m_colorShader)
+  SAFE_RELEASE(m_colorShader);
 
   BufferFormat format = BufferFormatFromFlags(m_flags);
 
@@ -576,7 +574,7 @@ void CWinRenderer::UpdatePSVideoFilter()
     {
       // Try again after disabling the HQ scaler and freeing its resources
       m_IntermediateTarget.Release();
-      SAFE_RELEASE(m_scalerShader)
+      SAFE_RELEASE(m_scalerShader);
       SAFE_RELEASE(m_colorShader);
       m_bUseHQScaler = false;
     }
@@ -962,38 +960,38 @@ void CWinRenderer::RenderProcessor(DWORD flags)
   target->Release();
 }
 
-void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height)
+bool CWinRenderer::RenderCapture(CRenderCapture* capture)
 {
-  CSingleLock lock(g_graphicsContext);
+  if (!m_bConfigured || m_NumYV12Buffers == 0)
+    return false;
 
-  // create a new render surface to copy out of - note, this may be slow on some hardware
-  // due to the TRUE parameter - you're supposed to use GetRenderTargetData.
-  LPDIRECT3DSURFACE9 surface = NULL;
+  bool succeeded = false;
+
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-  if (D3D_OK == pD3DDevice->CreateRenderTarget(width, height, D3DFMT_LIN_A8R8G8B8, D3DMULTISAMPLE_NONE, 0, TRUE, &surface, NULL))
+
+  CRect saveSize = m_destRect;
+  m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
+
+  LPDIRECT3DSURFACE9 oldSurface;
+  pD3DDevice->GetRenderTarget(0, &oldSurface);
+
+  capture->BeginRender();
+  if (capture->GetState() != CAPTURESTATE_FAILED)
   {
-    LPDIRECT3DSURFACE9 oldRT;
-    CRect saveSize = m_destRect;
-    m_destRect.SetRect(0, 0, (float)width, (float)height);
-    pD3DDevice->GetRenderTarget(0, &oldRT);
-    pD3DDevice->SetRenderTarget(0, surface);
     pD3DDevice->BeginScene();
     Render(0);
     pD3DDevice->EndScene();
-    m_destRect = saveSize;
-    pD3DDevice->SetRenderTarget(0, oldRT);
-    oldRT->Release();
-
-    D3DLOCKED_RECT lockedRect;
-    if (D3D_OK == surface->LockRect(&lockedRect, NULL, D3DLOCK_READONLY))
-    {
-      texture->LoadFromMemory(width, height, lockedRect.Pitch, XB_FMT_A8R8G8B8, (unsigned char *)lockedRect.pBits);
-      surface->UnlockRect();
-    }
-    surface->Release();
+    capture->EndRender();
+    succeeded = true;
   }
-}
 
+  pD3DDevice->SetRenderTarget(0, oldSurface);
+  oldSurface->Release();
+
+  m_destRect = saveSize;
+
+  return succeeded;
+}
 
 //********************************************************************************************************
 // YV12 Texture creation, deletion, copying + clearing

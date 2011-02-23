@@ -31,6 +31,7 @@
 #include "../AudioRenderers/AudioRendererFactory.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "utils/MathUtils.h"
 
 #include "threads/SingleLock.h"
 

@@ -1058,7 +1058,8 @@ static int64_t asf_read_pts(AVFormatContext *s, int stream_index, int64_t *ppos,
     if (s->packet_size > 0)
         pos= (pos+s->packet_size-1-s->data_offset)/s->packet_size*s->packet_size+ s->data_offset;
     *ppos= pos;
-    url_fseek(s->pb, pos, SEEK_SET);
+    if (url_fseek(s->pb, pos, SEEK_SET) < 0)
+        return AV_NOPTS_VALUE;
 
 //printf("asf_read_pts\n");
     asf_reset_header(s);
@@ -1100,7 +1101,11 @@ static void asf_build_simple_index(AVFormatContext *s, int stream_index)
     int64_t current_pos= url_ftell(s->pb);
     int i;
 
-    url_fseek(s->pb, asf->data_object_offset + asf->data_object_size, SEEK_SET);
+    if(url_fseek(s->pb, asf->data_object_offset + asf->data_object_size, SEEK_SET) < 0) {
+      asf->index_read= -1;
+      return;
+    }
+
     ff_get_guid(s->pb, &g);
 
     /* the data object can be followed by other top-level objects,
@@ -1109,6 +1114,7 @@ static void asf_build_simple_index(AVFormatContext *s, int stream_index)
         int64_t gsize= get_le64(s->pb);
         if (gsize < 24 || url_feof(s->pb)) {
             url_fseek(s->pb, current_pos, SEEK_SET);
+            asf->index_read= -1;
             return;
         }
         url_fseek(s->pb, gsize-24, SEEK_CUR);
@@ -1149,7 +1155,18 @@ static int asf_read_seek(AVFormatContext *s, int stream_index, int64_t pts, int 
     int64_t pos;
     int index;
 
+    if (pts == 0) {
+      // this is a hack since av_gen_search searches the entire file in this case
+      av_log(s, AV_LOG_DEBUG, "SEEKTO: %"PRId64"\n", s->data_offset);
+      if (url_fseek(s->pb, s->data_offset, SEEK_SET) < 0)
+          return -1;
+      return 0;
+    }
+
     if (s->packet_size <= 0)
+        return -1;
+
+    if (st->codec->codec_type != AVMEDIA_TYPE_VIDEO)
         return -1;
 
     /* Try using the protocol's read_seek if available */
@@ -1198,7 +1215,8 @@ static int asf_read_seek(AVFormatContext *s, int stream_index, int64_t pts, int 
 
         /* do the seek */
         av_log(s, AV_LOG_DEBUG, "SEEKTO: %"PRId64"\n", pos);
-        url_fseek(s->pb, pos, SEEK_SET);
+        if(url_fseek(s->pb, pos, SEEK_SET)<0)
+            return -1;
     }
     asf_reset_header(s);
     return 0;

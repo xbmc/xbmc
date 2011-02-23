@@ -22,6 +22,7 @@
 
 #include <vector>
 #include "utils/StdString.h"
+#include "utils/GlobalsHandling.h"
 
 class TiXmlElement;
 
@@ -59,10 +60,12 @@ struct RefreshOverride
 
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
-class CAdvancedSettings
+class CAdvancedSettings : public virtual xbmcutil::Referenced
 {
   public:
     CAdvancedSettings();
+
+    static CAdvancedSettings* getInstance();
 
     void Initialize();
 
@@ -288,7 +291,7 @@ class CAdvancedSettings
     unsigned int m_cacheMemBufferSize;
 
     bool m_jsonOutputCompact;
+    unsigned int m_jsonTcpPort;
 };
 
-extern CAdvancedSettings g_advancedSettings;
-
+XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

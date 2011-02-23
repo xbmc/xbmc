@@ -354,6 +354,7 @@ namespace VIDEO
       g_infoManager.GetBool(i);
 
     bool FoundSomeInfo = false;
+    vector<int> seenPaths;
     for (int i = 0; i < (int)items.Size(); ++i)
     {
       m_nfoReader.Close();
@@ -405,8 +406,22 @@ namespace VIDEO
         FoundSomeInfo = true;
 
       pURL = NULL;
+
+      // Keep track of directories we've seen
+      if (pItem->m_bIsFolder)
+        seenPaths.push_back(m_database.GetPathId(pItem->m_strPath));
     }
 
+    if (content == CONTENT_TVSHOWS && ! seenPaths.empty())
+    {
+      vector<int> libPaths;
+      m_database.GetSubPaths(items.m_strPath, libPaths);
+      for (vector<int>::iterator i = libPaths.begin(); i < libPaths.end(); ++i)
+      {
+        if (find(seenPaths.begin(), seenPaths.end(), *i) == seenPaths.end())
+          m_pathsToClean.push_back(*i);
+      }
+    }
     if(pDlgProgress)
       pDlgProgress->ShowProgressBar(false);
 
@@ -1100,7 +1115,8 @@ namespace VIDEO
   {
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
     // get & save fanart image
-    if (!useLocal || !pItem->CacheLocalFanart())
+    bool isEpisode = (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder);
+    if (!isEpisode && (!useLocal || !pItem->CacheLocalFanart()))
     {
       if (movieDetails.m_fanart.GetNumFanarts())
         DownloadImage(movieDetails.m_fanart.GetImageURL(), pItem->GetCachedFanart(), false, pDialog);
@@ -1108,7 +1124,7 @@ namespace VIDEO
 
     // get & save thumb image
     CStdString cachedThumb = pItem->GetCachedVideoThumb();
-    if (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder && CFile::Exists(cachedThumb))
+    if (isEpisode && CFile::Exists(cachedThumb))
     { // have an episode (??? and also a normal "cached" thumb that we're going to override now???)
       movieDetails.m_strFileNameAndPath = pItem->m_strPath;
       CFileItem item(movieDetails);

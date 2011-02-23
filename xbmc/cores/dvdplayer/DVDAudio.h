@@ -82,6 +82,7 @@ protected:
   int m_iChannels;
   int m_iBitrate;
   int m_iBitsPerSample;
+  double m_SecondsPerByte;
   bool m_bPassthrough;
   bool m_bPaused;
 

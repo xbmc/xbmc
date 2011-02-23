@@ -45,6 +45,7 @@
 #include "settings/Settings.h"
 #include "GUIInfoManager.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace ADDON;
@@ -792,6 +793,11 @@ void CGUIDialogAddonSettings::CreateControls()
 
     setting = setting->NextSiblingElement("setting");
     controlId++;
+    if (controlId >= CONTROL_START_SECTION)
+    {
+      CLog::Log(LOGERROR, "%s - cannot have more than %d controls per category - simplify your addon!", __FUNCTION__, CONTROL_START_SECTION - CONTROL_START_SETTING);
+      break;
+    }
   }
   EnableControls();
 }
@@ -876,6 +882,8 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
     if (!TranslateSingleString(conditionVec[i], condVec)) continue;
 
     const CGUIControl* control2 = GetControl(controlId + atoi(condVec[1]));
+    if (!control2)
+      continue;
 
     CStdString value;
     switch (control2->GetControlType())

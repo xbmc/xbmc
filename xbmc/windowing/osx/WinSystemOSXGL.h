@@ -25,8 +25,9 @@
  */
 #include "WinSystemOSX.h"
 #include "rendering/gl/RenderSystemGL.h"
+#include "utils/GlobalsHandling.h"
 
-class CWinSystemOSXGL : public CWinSystemOSX, public CRenderSystemGL
+class CWinSystemOSXGL : public CWinSystemOSX, public CRenderSystemGL, public virtual xbmcutil::Referenced
 {
 public:
   CWinSystemOSXGL();
@@ -38,5 +39,8 @@ protected:
   virtual bool PresentRenderImpl();
   virtual void SetVSyncImpl(bool enable);  
 };
+
+XBMC_GLOBAL_REF(CWinSystemOSXGL,g_Windowing);
+#define g_Windowing XBMC_GLOBAL_USE(CWinSystemOSXGL)
 
 #endif // WINDOW_SYSTEM_H

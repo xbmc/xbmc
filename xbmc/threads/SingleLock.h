@@ -33,9 +33,6 @@
 class CSingleLock
 {
 public:
-  void Unlock();
-  void Lock();
-
   CSingleLock(CCriticalSection& cs);
   CSingleLock(const CCriticalSection& cs);
   virtual ~CSingleLock();

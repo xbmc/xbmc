@@ -22,7 +22,10 @@
  */
 
 #include <stdio.h>
-#include "StdString.h"
+#include <string>
+
+#include "threads/CriticalSection.h"
+#include "utils/GlobalsHandling.h"
 
 #define LOG_LEVEL_NONE         -1 // nothing at all is logged
 #define LOG_LEVEL_NORMAL        0 // shows notice, error, severe and fatal
@@ -49,42 +52,30 @@
 
 class CLog
 {
-  static FILE*       m_file;
-  static int         m_repeatCount;
-  static int         m_repeatLogLevel;
-  static CStdString* m_repeatLine;
 public:
+
+  class CLogGlobals : public xbmcutil::Referenced
+  {
+  public:
+    CLogGlobals() : m_file(NULL), m_repeatCount(0), m_repeatLogLevel(-1), m_logLevel(LOG_LEVEL_DEBUG) {}
+    FILE*       m_file;
+    int         m_repeatCount;
+    int         m_repeatLogLevel;
+    std::string m_repeatLine;
+    int         m_logLevel;
+    CCriticalSection critSec;
+  };
+
   CLog();
   virtual ~CLog(void);
   static void Close();
   static void Log(int loglevel, const char *format, ... ) ATTRIB_LOG_FORMAT;
-  static void DebugLog(const char *format, ...);
   static void MemDump(char *pData, int length);
-  static void DebugLogMemory();
   static bool Init(const char* path);
-#ifdef _WIN32
-  static bool InitW(const char* path);
-#endif
+  static void SetLogLevel(int level);
+  static int  GetLogLevel();
+private:
+  static void OutputDebugString(const std::string& line);
 };
 
-// GL Error checking macro
-// this function is useful for tracking down GL errors, which otherwise
-// just result in undefined behavior and can be difficult to track down.
-//
-// Just call it 'VerifyGLState()' after a sequence of GL calls
-//
-// if GL_DEBUGGING and HAS_GL are defined, the function checks
-// for GL errors and prints the current state of the various matrices;
-// if not it's just an empty inline stub, and thus won't affect performance
-// and will be optimized out.
-
-void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);
-#if defined(GL_DEBUGGING) && defined(HAS_GL)
-#define VerifyGLState() _VerifyGLState(__FILE__, __FUNCTION__, __LINE__)
-#else
-#define VerifyGLState()
-#endif
-
-void LogGraphicsInfo();
-
-
+XBMC_GLOBAL_REF(CLog::CLogGlobals,g_log_globals);

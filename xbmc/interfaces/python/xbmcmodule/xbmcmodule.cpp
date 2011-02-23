@@ -63,6 +63,7 @@
 #include "SectionLoader.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/FileUtils.h"
 
 // include for constants
 #include "pyutil.h"
@@ -957,6 +958,35 @@ namespace PYXBMC
 
     return Py_BuildValue((char*)"b", exists);
   }
+  
+  PyDoc_STRVAR(subHashAndFileSize__doc__,
+    "subHashAndFileSize(file)\n"
+    "\n"
+    "file        : file to calculate subtitle hash and size for"
+    "\n"
+    "example:\n"
+    " size,hash = xbmcvfs.subHashAndFileSize(file)\n"); 
+  PyObject* XBMC_subHashAndFileSize(PyObject *self, PyObject *args, PyObject *kwds)
+  {
+    PyObject *f_line;
+    if (!PyArg_ParseTuple(
+      args,
+      (char*)"O",
+      &f_line))
+    {
+      return NULL;
+    }
+    CStdString strSource;
+    if (!PyXBMCGetUnicodeString(strSource, f_line, 1)) return NULL;
+    
+    CStdString strSize;
+    CStdString strHash;
+    Py_BEGIN_ALLOW_THREADS
+    CFileUtils::SubtitleFileSizeAndHash(strSource, strSize, strHash);
+    Py_END_ALLOW_THREADS
+    
+    return Py_BuildValue((char*)"ss",strSize.c_str(), strHash.c_str());
+  } 
 
   // define c functions to be used in python here
   PyMethodDef xbmcMethods[] = {
@@ -1004,6 +1034,8 @@ namespace PYXBMC
     {(char*)"getCleanMovieTitle", (PyCFunction)XBMC_GetCleanMovieTitle, METH_VARARGS|METH_KEYWORDS, getCleanMovieTitle__doc__},
 
     {(char*)"skinHasImage", (PyCFunction)XBMC_SkinHasImage, METH_VARARGS|METH_KEYWORDS, skinHasImage__doc__},
+    {(char*)"subHashAndFileSize", (PyCFunction)XBMC_subHashAndFileSize, METH_VARARGS, subHashAndFileSize__doc__},
+
     {NULL, NULL, 0, NULL}
   };
 

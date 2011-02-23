@@ -318,6 +318,8 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       else
         SetSortMethod(g_settings.m_viewStateMusicNavSongs.m_sortMethod);
 
+      AddSortMethod(SORT_METHOD_PLAYCOUNT, 576, LABEL_MASKS("%T - %A", "%V"));  // Titel - Artist, PlayCount
+
       SetViewAsControl(g_settings.m_viewStateMusicNavSongs.m_viewMode);
 
       SetSortOrder(g_settings.m_viewStateMusicNavSongs.m_sortOrder);
@@ -325,8 +327,8 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     break;
   case NODE_TYPE_SONG_TOP100:
     {
-      AddSortMethod(SORT_METHOD_NONE, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined | empty, empty
-      SetSortMethod(SORT_METHOD_NONE);
+      AddSortMethod(SORT_METHOD_NONE, 576, LABEL_MASKS("%T - %A", "%V"));
+      SetSortMethod(SORT_METHOD_PLAYCOUNT);
 
       SetViewAsControl(g_settings.m_viewStateMusicNavSongs.m_viewMode);
 

@@ -23,6 +23,12 @@
 #include "GUIInfoManager.h"
 #include "Key.h"
 #include "utils/MathUtils.h"
+#include "GUIWindowManager.h"
+
+static const SliderAction actions[] = {
+  {"seek",    "PlayerControl(SeekPercentage(%2d))", PLAYER_PROGRESS, false},
+  {"volume",  "SetVolume(%2d)",                     PLAYER_VOLUME,   true}
+ };
 
 CGUISliderControl::CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, int iType)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
@@ -42,6 +48,8 @@ CGUISliderControl::CGUISliderControl(int parentID, int controlID, float posX, fl
   m_fValue = 0.0;
   ControlType = GUICONTROL_SLIDER;
   m_iInfoCode = 0;
+  m_dragging = false;
+  m_action = NULL;
 }
 
 CGUISliderControl::~CGUISliderControl(void)
@@ -51,8 +59,11 @@ CGUISliderControl::~CGUISliderControl(void)
 void CGUISliderControl::Render()
 {
   m_guiBackground.SetPosition( m_posX, m_posY );
-  if (m_iInfoCode)
-    SetIntValue(g_infoManager.GetInt(m_iInfoCode));
+  int infoCode = m_iInfoCode;
+  if (m_action && (!m_dragging || m_action->fireOnDrag))
+    infoCode = m_action->infoCode;
+  if (infoCode)
+    SetIntValue(g_infoManager.GetInt(infoCode));
 
   float fScaleX = m_width == 0 ? 1.0f : m_width / m_guiBackground.GetTextureWidth();
   float fScaleY = m_height == 0 ? 1.0f : m_height / m_guiBackground.GetTextureHeight();
@@ -61,27 +72,21 @@ void CGUISliderControl::Render()
   m_guiBackground.SetWidth(m_width);
   m_guiBackground.Render();
 
-  float fWidth = (m_guiBackground.GetTextureWidth() - m_guiMid.GetTextureWidth())*fScaleX;
+  // we render the nib centered at the appropriate percentage, except where the nib
+  // would overflow the background image
+  CGUITexture &nib = (m_bHasFocus && !IsDisabled()) ? m_guiMidFocus : m_guiMid;
 
-  float fPos = m_guiBackground.GetXPosition() + GetProportion() * fWidth;
+  float offset = GetProportion() * m_guiBackground.GetTextureWidth() - nib.GetTextureWidth()/2;
+  if (offset > m_guiBackground.GetTextureWidth() - nib.GetTextureWidth())
+    offset = m_guiBackground.GetTextureWidth() - nib.GetTextureWidth();
+  if (offset < 0)
+    offset = 0;
 
-  if ((int)fWidth > 1)
-  {
-    if (m_bHasFocus && !IsDisabled())
-    {
-      m_guiMidFocus.SetPosition(fPos, m_guiBackground.GetYPosition() );
-      m_guiMidFocus.SetWidth(m_guiMidFocus.GetTextureWidth() * fScaleX);
-      m_guiMidFocus.SetHeight(m_guiMidFocus.GetTextureHeight() * fScaleY);
-      m_guiMidFocus.Render();
-    }
-    else
-    {
-      m_guiMid.SetPosition(fPos, m_guiBackground.GetYPosition() );
-      m_guiMid.SetWidth(m_guiMid.GetTextureWidth()*fScaleX);
-      m_guiMid.SetHeight(m_guiMid.GetTextureHeight()*fScaleY);
-      m_guiMid.Render();
-    }
-  }
+  nib.SetPosition(m_guiBackground.GetXPosition() + offset * fScaleX, m_guiBackground.GetYPosition() );
+  nib.SetWidth(nib.GetTextureWidth() * fScaleX);
+  nib.SetHeight(nib.GetTextureHeight() * fScaleY);
+  nib.Render();
+
   CGUIControl::Render();
 }
 
@@ -150,7 +155,21 @@ void CGUISliderControl::Move(int iNumSteps)
     if (m_iPercent > 100) m_iPercent = 100;
     break;
   }
-  SEND_CLICK_MESSAGE(GetID(), GetParentID(), MathUtils::round_int(100*GetProportion()));
+  SendClick();
+}
+
+void CGUISliderControl::SendClick()
+{
+  int percent = MathUtils::round_int(100*GetProportion());
+  SEND_CLICK_MESSAGE(GetID(), GetParentID(), percent);
+  if (m_action && (!m_dragging || m_action->fireOnDrag))
+  {
+    CStdString action;
+    action.Format(m_action->formatString, percent);
+    CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
+    message.SetStringParam(action);
+    g_windowManager.SendMessage(message);    
+  }
 }
 
 void CGUISliderControl::SetPercentage(int iPercent)
@@ -301,13 +320,15 @@ void CGUISliderControl::SetFromPosition(const CPoint &point)
     m_iPercent = (int)(fPercent * 100 + 0.49f);
     break;
   }
-  SEND_CLICK_MESSAGE(GetID(), GetParentID(), MathUtils::round_int(fPercent));
+  SendClick();
 }
 
 EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
+  m_dragging = false;
   if (event.m_id == ACTION_MOUSE_DRAG)
   {
+    m_dragging = true;
     if (event.m_state == 1)
     { // grab exclusive access
       CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
@@ -315,6 +336,7 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEv
     }
     else if (event.m_state == 3)
     { // release exclusive access
+      m_dragging = false;
       CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
       SendWindowMessage(msg);
     }
@@ -373,4 +395,17 @@ float CGUISliderControl::GetProportion() const
   else if (m_iType == SPIN_CONTROL_TYPE_INT)
     return (float)(m_iValue - m_iStart) / (float)(m_iEnd - m_iStart);
   return 0.01f * m_iPercent;
+}
+
+void CGUISliderControl::SetAction(const CStdString &action)
+{
+  for (size_t i = 0; i < sizeof(actions)/sizeof(SliderAction); i++)
+  {
+    if (action.CompareNoCase(actions[i].action) == 0)
+    {
+      m_action = &actions[i];
+      return;
+    }
+  }
+  m_action = NULL;
 }

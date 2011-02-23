@@ -34,12 +34,6 @@ CGUIDialogVideoOSD::~CGUIDialogVideoOSD(void)
 {
 }
 
-void CGUIDialogVideoOSD::OnWindowLoaded()
-{
-  CGUIDialog::OnWindowLoaded();
-  m_bRelativeCoords = true;
-}
-
 void CGUIDialogVideoOSD::FrameMove()
 {
   if (m_autoClosing)

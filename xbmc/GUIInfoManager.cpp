@@ -584,6 +584,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.audiocodec")) return VIDEOPLAYER_AUDIO_CODEC;
     else if (strTest.Equals("videoplayer.audiochannels")) return VIDEOPLAYER_AUDIO_CHANNELS;
     else if (strTest.Equals("videoplayer.hasteletext")) return VIDEOPLAYER_HASTELETEXT;
+    else if (strTest.Equals("videoplayer.lastplayed")) return VIDEOPLAYER_LASTPLAYED;
+    else if (strTest.Equals("videoplayer.playcount")) return VIDEOPLAYER_PLAYCOUNT;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -924,6 +926,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("comment")) return LISTITEM_COMMENT;
   else if (info.Equals("path")) return LISTITEM_PATH;
   else if (info.Equals("foldername")) return LISTITEM_FOLDERNAME;
+  else if (info.Equals("folderpath")) return LISTITEM_FOLDERPATH;
   else if (info.Equals("picturepath")) return LISTITEM_PICTURE_PATH;
   else if (info.Equals("pictureresolution")) return LISTITEM_PICTURE_RESOLUTION;
   else if (info.Equals("picturedatetime")) return LISTITEM_PICTURE_DATETIME;
@@ -947,6 +950,8 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("subtitlelanguage")) return LISTITEM_SUBTITLE_LANGUAGE;
   else if (info.Equals("isfolder")) return LISTITEM_IS_FOLDER;
   else if (info.Equals("originaltitle")) return LISTITEM_ORIGINALTITLE;
+  else if (info.Equals("lastplayed")) return LISTITEM_LASTPLAYED;
+  else if (info.Equals("playcount")) return LISTITEM_PLAYCOUNT;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -977,6 +982,8 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
   else if (info.Equals("exists")) return MUSICPLAYER_EXISTS;
   else if (info.Equals("hasprevious")) return MUSICPLAYER_HASPREVIOUS;
   else if (info.Equals("hasnext")) return MUSICPLAYER_HASNEXT;
+  else if (info.Equals("playcount")) return MUSICPLAYER_PLAYCOUNT;
+  else if (info.Equals("lastplayed")) return MUSICPLAYER_LASTPLAYED;
   return 0;
 }
 
@@ -1125,6 +1132,8 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case MUSICPLAYER_RATING:
   case MUSICPLAYER_COMMENT:
   case MUSICPLAYER_LYRICS:
+  case MUSICPLAYER_PLAYCOUNT:
+  case MUSICPLAYER_LASTPLAYED:
     strLabel = GetMusicLabel(info);
   break;
   case VIDEOPLAYER_TITLE:
@@ -1153,6 +1162,8 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case VIDEOPLAYER_WRITER:
   case VIDEOPLAYER_TAGLINE:
   case VIDEOPLAYER_TRAILER:
+  case VIDEOPLAYER_PLAYCOUNT:
+  case VIDEOPLAYER_LASTPLAYED:
     strLabel = GetVideoLabel(info);
   break;
   case VIDEOPLAYER_VIDEO_CODEC:
@@ -3070,6 +3081,10 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
     return GetItemLabel(item, LISTITEM_COMMENT);
   case MUSICPLAYER_DURATION:
     return GetItemLabel(item, LISTITEM_DURATION);
+  case MUSICPLAYER_PLAYCOUNT:
+    return GetItemLabel(item, LISTITEM_PLAYCOUNT);
+  case MUSICPLAYER_LASTPLAYED:
+    return GetItemLabel(item, LISTITEM_LASTPLAYED);
   }
   return "";
 }
@@ -3205,6 +3220,15 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return m_currentFile->GetVideoInfoTag()->m_strWritingCredits;
     case VIDEOPLAYER_TAGLINE:
       return m_currentFile->GetVideoInfoTag()->m_strTagLine;
+    case VIDEOPLAYER_LASTPLAYED:
+      return m_currentFile->GetVideoInfoTag()->m_lastPlayed;
+    case VIDEOPLAYER_PLAYCOUNT:
+      {
+        CStdString strPlayCount;
+        if (m_currentFile->GetVideoInfoTag()->m_playCount > 0)
+          strPlayCount.Format("%i", m_currentFile->GetVideoInfoTag()->m_playCount);
+        return strPlayCount;
+      }
     }
   }
   return "";
@@ -3720,6 +3744,24 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strOriginalTitle;
     break;
+  case LISTITEM_PLAYCOUNT:
+    {
+      CStdString strPlayCount;
+      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_playCount > 0)
+        strPlayCount.Format("%i", item->GetVideoInfoTag()->m_playCount);
+      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetPlayCount() > 0)
+        strPlayCount.Format("%i", item->GetMusicInfoTag()->GetPlayCount());
+      return strPlayCount;
+    }
+  case LISTITEM_LASTPLAYED:
+    {
+      CStdString strLastPlayed;
+      if (item->HasVideoInfoTag())
+        return item->GetVideoInfoTag()->m_lastPlayed;
+      if (item->HasMusicInfoTag())
+        return item->GetMusicInfoTag()->GetLastPlayed();
+      break;
+    }
   case LISTITEM_TRACKNUMBER:
     {
       CStdString track;
@@ -3894,6 +3936,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     return item->GetOverlayImage();
   case LISTITEM_THUMB:
     return item->GetThumbnailImage();
+  case LISTITEM_FOLDERPATH:
+    return CURL(item->m_strPath).GetWithoutUserDetails();
   case LISTITEM_FOLDERNAME:
   case LISTITEM_PATH:
     {

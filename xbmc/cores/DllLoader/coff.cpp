@@ -31,7 +31,7 @@
 #endif
 
 #include "utils/log.h"
-#define printf CLog::DebugLog
+#define printf(format, ...) CLog::Log(LOGDEBUG, format , ##__VA_ARGS__)
 
 const char *DATA_DIR_NAME[16] =
   {

@@ -84,19 +84,6 @@ bool CGUIFixedListContainer::OnAction(const CAction &action)
   return CGUIBaseContainer::OnAction(action);
 }
 
-bool CGUIFixedListContainer::OnMessage(CGUIMessage& message)
-{
-  if (message.GetControlId() == GetID() )
-  {
-    if (message.GetMessage() == GUI_MSG_ITEM_SELECT)
-    {
-      SelectItem(message.GetParam1());
-      return true;
-    }
-  }
-  return CGUIBaseContainer::OnMessage(message);
-}
-
 bool CGUIFixedListContainer::MoveUp(bool wrapAround)
 {
   int item = GetSelectedItem();
