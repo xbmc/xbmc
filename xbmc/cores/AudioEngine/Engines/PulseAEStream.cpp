@@ -223,6 +223,13 @@ CPulseAEStream::~CPulseAEStream()
 
   printf("delete 3\n");
   pa_threaded_mainloop_unlock(m_MainLoop);
+
+  if (m_AudioFreeThread)
+  {
+    m_AudioFreeThread->Trigger();
+    delete m_AudioFreeThread;
+    m_AudioFreeThread = NULL;
+  }
 }
 
 /*
@@ -253,6 +260,13 @@ void CPulseAEStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
   if (!m_AudioDrainThread)
     m_AudioDrainThread = new CPulseAEEventThread(this);
   m_AudioDrainThread->SetCallback(cbFunc, arg);
+}
+
+void CPulseAEStream::SetFreeCallback(AECBFunc *cbFunc, void *arg)
+{
+  if (!m_AudioFreeThread)
+    m_AudioFreeThread = new CPulseAEEventThread(this);
+  m_AudioFreeThread->SetCallback(cbFunc, arg);
 }
 
 unsigned int CPulseAEStream::AddData(void *data, unsigned int size)

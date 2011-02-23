@@ -78,6 +78,13 @@ public:
   virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg) = 0;
 
   /**
+   * Set the callback function to call when the stream is about to be freed
+   * @param cbFunc The callback function
+   * @param arg Pointer to pass to the callback function (eg, this)
+   */
+  virtual void SetFreeCallback(AECBFunc *cbFunc, void *arg) = 0;
+
+  /**
    * Add interleaved PCM data to the stream
    * @param data The interleaved PCM data
    * @param size The size in bytes of data

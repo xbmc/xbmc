@@ -262,6 +262,10 @@ CSoftAEStream::~CSoftAEStream()
   }
 
   _aligned_free(m_newPacket.data);
+
+  if (m_cbFreeFunc)
+    m_cbFreeFunc(this, m_cbFreeArg, 0);
+
   CLog::Log(LOGDEBUG, "CSoftAEStream::~CSoftAEStream - Destructed");
 }
 
@@ -277,6 +281,13 @@ void CSoftAEStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
   CSingleLock lock(m_critSection);
   m_cbDrainFunc = cbFunc;
   m_cbDrainArg  = arg;
+}
+
+void CSoftAEStream::SetFreeCallback(AECBFunc *cbFunc, void *arg)
+{
+  CSingleLock lock(m_critSection);
+  m_cbFreeFunc = cbFunc;
+  m_cbFreeArg  = arg;
 }
 
 unsigned int CSoftAEStream::AddData(void *data, unsigned int size)

@@ -43,6 +43,7 @@ public:
   virtual void Destroy();
   virtual void SetDataCallback (AECBFunc *cbFunc, void *arg);
   virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg);
+  virtual void SetFreeCallback (AECBFunc *cbFunc, void *arg);
   virtual unsigned int AddData(void *data, unsigned int size);
   virtual float GetDelay();
   virtual float GetCacheTime();
@@ -86,8 +87,11 @@ private:
   void                   *m_dataCallbackArg;
   AECBFunc               *m_drainCallback;
   void                   *m_drainCallbackArg;
+  AECBFunc               *m_freeCallback;
+  void                   *m_freeCallbackArg;
 
   static void StaticStreamOnData (IAEStream *sender, void *arg, unsigned int needed);
   static void StaticStreamOnDrain(IAEStream *sender, void *arg, unsigned int unused);
+  static void StaticStreamOnFree (IAEStream *sender, void *arg, unsigned int unused);
 };
 

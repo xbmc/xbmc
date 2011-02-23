@@ -37,13 +37,18 @@ CAEStreamWrapper::CAEStreamWrapper(enum AEDataFormat dataFormat, unsigned int sa
   m_dataCallback    (NULL),
   m_dataCallbackArg (NULL),
   m_drainCallback   (NULL),
-  m_drainCallbackArg(NULL)
+  m_drainCallbackArg(NULL),
+  m_freeCallback    (NULL),
+  m_freeCallbackArg (NULL)
 {
   Initialize();
 }
 
 CAEStreamWrapper::~CAEStreamWrapper()
-{ 
+{
+  AE.RemoveStreamWrapper(this);
+  if (m_freeCallback)
+    m_freeCallback(this, m_freeCallbackArg, 0);
 }
 
 void CAEStreamWrapper::UnInitialize()
@@ -58,8 +63,9 @@ void CAEStreamWrapper::UnInitialize()
     if (m_callback)
       m_stream->UnRegisterAudioCallback();
 
-    m_stream->SetDataCallback(NULL, NULL);
+    m_stream->SetDataCallback (NULL, NULL);
     m_stream->SetDrainCallback(NULL, NULL);
+    m_stream->SetFreeCallback (NULL, NULL);
   }
 
   m_stream = NULL;
@@ -83,8 +89,14 @@ void CAEStreamWrapper::Initialize()
     if (m_callback)
       m_stream->RegisterAudioCallback(m_callback);
 
-    m_stream->SetDataCallback (StaticStreamOnData , this);
-    m_stream->SetDrainCallback(StaticStreamOnDrain, this);
+    if (m_dataCallback)
+      m_stream->SetDataCallback(StaticStreamOnData, this);
+
+    if (m_drainCallback)
+      m_stream->SetDrainCallback(StaticStreamOnDrain, this);
+
+    /* we need to know when the stream is freed as we need to free too */
+    m_stream->SetFreeCallback(StaticStreamOnFree, this);
   }
 
   m_lock.LeaveExclusive();
@@ -104,6 +116,13 @@ void CAEStreamWrapper::StaticStreamOnDrain(IAEStream *sender, void *arg, unsigne
   s->m_lock.EnterShared();
   s->m_drainCallback(s, s->m_drainCallbackArg, unused);
   s->m_lock.LeaveShared();
+}
+
+void CAEStreamWrapper::StaticStreamOnFree(IAEStream *sender, void *arg, unsigned int unused)
+{
+  /* delete ourself */
+  CAEStreamWrapper *s = (CAEStreamWrapper*)arg;
+  delete s;
 }
 
 void CAEStreamWrapper::AlterStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
@@ -132,8 +151,6 @@ void CAEStreamWrapper::Destroy()
     m_stream = NULL;
   }
   m_lock.LeaveExclusive();
-
-  AE.RemoveStreamWrapper(this);
 }
 
 void CAEStreamWrapper::SetDataCallback(AECBFunc *cbFunc, void *arg)
@@ -163,6 +180,14 @@ void CAEStreamWrapper::SetDrainCallback(AECBFunc *cbFunc, void *arg)
     else
       m_stream->SetDrainCallback(NULL, NULL);
   }
+  m_lock.LeaveExclusive();
+}
+
+void CAEStreamWrapper::SetFreeCallback(AECBFunc *cbFunc, void *arg)
+{
+  m_lock.EnterExclusive();
+  m_drainCallback    = cbFunc;
+  m_drainCallbackArg = arg;
   m_lock.LeaveExclusive();
 }
 

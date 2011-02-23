@@ -45,6 +45,7 @@ public:
   virtual void Destroy();
   virtual void SetDataCallback (AECBFunc *cbFunc, void *arg); /* called when the buffer < 50% full */
   virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg); /* called when the buffer has been drained */
+  virtual void SetFreeCallback (AECBFunc *cbFunc, void *arg); /* called when the stream is deleted */
 
   virtual unsigned int GetFrameSize() {return m_format.m_frameSize;}
   virtual unsigned int AddData(void *data, unsigned int size);
@@ -146,9 +147,9 @@ private:
   bool               m_draining;
 
   /* callback hook for more data */
-  AECBFunc     *m_cbDataFunc, *m_cbDrainFunc;
-  void         *m_cbDataArg , *m_cbDrainArg;
-  bool          m_inDataFunc,  m_inDrainFunc;
+  AECBFunc     *m_cbDataFunc, *m_cbDrainFunc, *m_cbFreeFunc;
+  void         *m_cbDataArg , *m_cbDrainArg , *m_cbFreeArg;
+  bool          m_inDataFunc,  m_inDrainFunc,  m_inFreeFunc;
 
   /* vizualization internals */
   CAERemap           m_vizRemap;

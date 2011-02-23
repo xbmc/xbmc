@@ -86,7 +86,6 @@ void CAEWrapper::RemoveStreamWrapper(CAEStreamWrapper *wrapper)
     if (*itt == wrapper)
     {
       m_streams.erase(itt);
-      delete wrapper;
       break;
     }
 }
