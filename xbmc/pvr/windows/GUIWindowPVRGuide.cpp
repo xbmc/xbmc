@@ -95,14 +95,14 @@ void CGUIWindowPVRGuide::OnInitWindow(void)
   switch (m_iGuideView)
   {
   case GUIDE_VIEW_CHANNEL:
-    m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
+    m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_CHANNEL);
     break;
   case GUIDE_VIEW_NOW:
   case GUIDE_VIEW_NEXT:
     m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
     break;
   case GUIDE_VIEW_TIMELINE:
-    m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
+    m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
     break;
   default:
     break;

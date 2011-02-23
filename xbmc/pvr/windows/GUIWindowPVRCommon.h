@@ -71,6 +71,7 @@ public:
 
   virtual PVRWindow GetWindowId(void) const { return m_window; }
   virtual bool IsActive(void) const;
+  virtual bool IsSavedView(void) const;
   virtual bool IsSelectedButton(CGUIMessage &message) const;
   virtual bool IsSelectedControl(CGUIMessage &message) const;
   virtual bool IsSelectedList(CGUIMessage &message) const;

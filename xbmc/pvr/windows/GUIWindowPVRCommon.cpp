@@ -69,6 +69,12 @@ bool CGUIWindowPVRCommon::IsActive(void) const
   return (window && *window == *this);
 }
 
+bool CGUIWindowPVRCommon::IsSavedView(void) const
+{
+  CGUIWindowPVRCommon *window = m_parent->GetSavedView();
+  return (window && *window == *this);
+}
+
 bool CGUIWindowPVRCommon::IsSelectedButton(CGUIMessage &message) const
 {
   return (message.GetSenderId() == (int) m_iControlButton);
@@ -86,6 +92,7 @@ bool CGUIWindowPVRCommon::IsSelectedList(CGUIMessage &message) const
 
 void CGUIWindowPVRCommon::OnInitWindow()
 {
+  CLog::Log(LOGDEBUG, "setting view to %d", m_iControlList);
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
 }
 
@@ -93,13 +100,15 @@ bool CGUIWindowPVRCommon::OnMessageFocus(CGUIMessage &message)
 {
   bool bReturn = false;
 
-  if (message.GetMessage() == GUI_MSG_FOCUSED && IsSelectedControl(message))
+  if (message.GetMessage() == GUI_MSG_FOCUSED &&
+      (IsSelectedControl(message) || IsSavedView()))
   {
     if (!IsActive() || m_bUpdateRequired)
       UpdateData();
     else
       m_iSelected = m_parent->m_viewControl.GetSelectedItem();
 
+    m_parent->m_currentSubwindow = this;
     bReturn = true;
   }
 

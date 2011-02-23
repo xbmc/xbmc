@@ -74,6 +74,15 @@ void CGUIWindowPVR::GetContextButtons(int itemNumber, CContextButtons &buttons)
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
 }
 
+CGUIWindowPVRCommon *CGUIWindowPVR::GetSavedView(void) const
+{
+  CSingleLock lock(m_critSection);
+  if (!m_bViewsCreated)
+    return NULL;
+
+  return m_savedSubwindow;
+}
+
 bool CGUIWindowPVR::OnAction(const CAction &action)
 {
   CGUIWindowPVRCommon *view = GetActiveView();
@@ -206,21 +215,13 @@ bool CGUIWindowPVR::OnMessageFocus(CGUIMessage &message)
 
   if (message.GetMessage() == GUI_MSG_FOCUSED)
   {
-    bReturn = true;
-
     CSingleLock lock(m_critSection);
-    if (m_windowChannelsTV->OnMessageFocus(message) || (m_savedSubwindow && m_savedSubwindow->m_window == PVR_WINDOW_CHANNELS_TV))
-      m_currentSubwindow = m_windowChannelsTV;
-    else if (m_windowChannelsRadio->OnMessageFocus(message) || (m_savedSubwindow && m_savedSubwindow->m_window == PVR_WINDOW_CHANNELS_RADIO))
-      m_currentSubwindow = m_windowChannelsRadio;
-    else if (m_windowGuide->OnMessageFocus(message) || (m_savedSubwindow && m_savedSubwindow->m_window == PVR_WINDOW_EPG))
-      m_currentSubwindow = m_windowGuide;
-    else if (m_windowRecordings->OnMessageFocus(message) || (m_savedSubwindow && m_savedSubwindow->m_window == PVR_WINDOW_RECORDINGS))
-      m_currentSubwindow = m_windowRecordings;
-    else if (m_windowSearch->OnMessageFocus(message) || (m_savedSubwindow && m_savedSubwindow->m_window == PVR_WINDOW_SEARCH))
-      m_currentSubwindow = m_windowSearch;
-    else if (m_windowTimers->OnMessageFocus(message) || (m_savedSubwindow && m_savedSubwindow->m_window == PVR_WINDOW_TIMERS))
-      m_currentSubwindow = m_windowTimers;
+    bReturn = m_windowChannelsRadio->OnMessageFocus(message) ||
+        m_windowChannelsTV->OnMessageFocus(message) ||
+        m_windowGuide->OnMessageFocus(message) ||
+        m_windowRecordings->OnMessageFocus(message) ||
+        m_windowSearch->OnMessageFocus(message) ||
+        m_windowTimers->OnMessageFocus(message);
 
     m_savedSubwindow = NULL;
   }

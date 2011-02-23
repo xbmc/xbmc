@@ -103,13 +103,13 @@ const CPVRChannelGroup *CGUIWindowPVRChannels::SelectedGroup(void)
 
 void CGUIWindowPVRChannels::UpdateData(void)
 {
-  const CPVRChannelGroup *currentGroup = SelectedGroup();
-  if (!currentGroup)
-    return;
-
   m_bUpdateRequired = false;
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
+
+  const CPVRChannelGroup *currentGroup = SelectedGroup();
+  if (!currentGroup)
+    return;
 
   m_parent->m_vecItems->m_strPath.Format("pvr://channels/%s/%s/",
       m_bRadio ? "radio" : "tv",

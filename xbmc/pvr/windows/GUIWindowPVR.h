@@ -47,6 +47,7 @@ public:
 
   virtual CGUIWindowPVRCommon *GetActiveView(void) const;
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual CGUIWindowPVRCommon *GetSavedView(void) const;
   virtual bool OnAction(const CAction &action);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void OnInitWindow(void);
