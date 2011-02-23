@@ -97,7 +97,7 @@ void CGUIEPGGridContainer::Render()
   if (m_bInvalidated)
     UpdateLayout();
 
-  if (!m_focusedChannelLayout || !m_channelLayout || !m_rulerLayout || !m_focusedProgrammeLayout || !m_programmeLayout)
+  if (!m_focusedChannelLayout || !m_channelLayout || !m_rulerLayout || !m_focusedProgrammeLayout || !m_programmeLayout || m_rulerItems.empty())
     return;
 
   UpdateScrollOffset();
@@ -903,6 +903,9 @@ bool CGUIEPGGridContainer::MoveChannel(bool direction)
 
 bool CGUIEPGGridContainer::MoveProgrammes(bool direction)
 {
+  if (!m_gridIndex)
+    return false;
+
   if (direction)
   {
     if (m_item->item != m_gridIndex[m_channelCursor + m_channelOffset][m_blockOffset].item)
@@ -1448,9 +1451,12 @@ CStdString CGUIEPGGridContainer::GetDescription() const
 
 void CGUIEPGGridContainer::Reset()
 {
-  for (unsigned int i = 0; i < m_channelItems.size(); i++)
-    free(m_gridIndex[i]);
-  free(m_gridIndex);
+  if (m_gridIndex)
+  {
+    for (unsigned int i = 0; i < m_channelItems.size(); i++)
+      free(m_gridIndex[i]);
+    free(m_gridIndex);
+  }
 
   m_wasReset = true;
   m_channelItems.clear();
@@ -1460,6 +1466,7 @@ void CGUIEPGGridContainer::Reset()
 
   m_lastItem    = NULL;
   m_lastChannel = NULL;
+  m_gridIndex   = NULL;
 }
 
 void CGUIEPGGridContainer::GoToBegin()
