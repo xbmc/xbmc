@@ -18,7 +18,7 @@ ifneq (@USE_EXTERNAL_FFMPEG@,1)
 	avcore-0-$(ARCH).so \
 	avformat-52-$(ARCH).so \
 	postproc-51-$(ARCH).so \
-	swscale-0.6.1-$(ARCH).so
+	swscale-0-$(ARCH).so
 endif
 
 ifeq ($(findstring osx,$(ARCH)),osx)
@@ -73,7 +73,7 @@ $(SYSDIR)/avformat-52-$(ARCH).so: ffmpeg/libavformat/libavformat.dylib
 	$(WRAPPER_OSX) $@;mv output.so $@
 	chmod +x $@
 
-$(SYSDIR)/swscale-0.6.1-$(ARCH).so: ffmpeg/libswscale/libswscale.dylib
+$(SYSDIR)/swscale-0-$(ARCH).so: ffmpeg/libswscale/libswscale.dylib
 	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
 		ffmpeg/libswscale/*.o ffmpeg/libswscale/$(ARCH_DIR)/*.o
 	$(WRAPPER_OSX) $@;mv output.so $@
@@ -118,10 +118,10 @@ $(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.so
 	cp ffmpeg/libavformat/libavformat.so $@
 
 ifneq ($(ARCH), arm)
-$(SYSDIR)/swscale-0.6.1-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
+$(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
 	cp ffmpeg/libswscale/libswscale.so $@
 else # No ARM version of swscale available yet.
-$(SYSDIR)/swscale-0.6.1-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
+$(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ -Wl,-Bsymbolic \
 		ffmpeg/libswscale/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
