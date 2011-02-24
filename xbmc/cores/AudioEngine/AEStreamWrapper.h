@@ -41,7 +41,7 @@ protected:
   void Initialize  ();
 public:
   virtual void Destroy();
-  virtual void DisableCallbacks();
+  virtual void DisableCallbacks(bool free = true);
   virtual void SetDataCallback (AECBFunc *cbFunc, void *arg);
   virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg);
   virtual void SetFreeCallback (AECBFunc *cbFunc, void *arg);

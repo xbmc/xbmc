@@ -147,10 +147,10 @@ void CAEStreamWrapper::Destroy()
   }
 }
 
-void CAEStreamWrapper::DisableCallbacks()
+void CAEStreamWrapper::DisableCallbacks(bool free /* = true */)
 {
   CSharedLock lock(m_lock);
-  m_stream->DisableCallbacks();
+  m_stream->DisableCallbacks(free);
 }
 
 void CAEStreamWrapper::SetDataCallback(AECBFunc *cbFunc, void *arg)

@@ -61,24 +61,21 @@ PAPlayer::~PAPlayer()
 {
   m_isPlaying = false;
   CloseFile();
+  Sleep(100);
 }
 
 bool PAPlayer::CloseFile()
 {
-  CSingleLock lock(m_critSection);
+  CExclusiveLock lock(m_lock);
 
   if (m_current)
-    FreeStreamInfo(m_current);
+    StopStream(m_current);
 
   while(!m_streams.empty())
-  {    
-    FreeStreamInfo(m_streams.front());
-    m_streams.pop_front();
-  }
+    StopStream(m_streams.front());
 
-  /* note: FreeStreamInfo removes the items from m_finishing */
   while(!m_finishing.empty())
-    FreeStreamInfo(m_finishing.front());
+    StopStream(m_finishing.front());
 
   m_iSpeed = 1;
   m_callback.OnPlayBackStopped();
@@ -89,27 +86,24 @@ void PAPlayer::OnExit()
 {
 }
 
-void PAPlayer::FreeStreamInfo(StreamInfo *si)
+void PAPlayer::StopStream(StreamInfo *si)
 {
+  m_streams  .remove(si);
   m_finishing.remove(si);
-
-  if (si->m_stream)
-  {
-    si->m_stream->UnRegisterAudioCallback();
-    si->m_stream->DisableCallbacks();
-    si->m_stream->Drain();
-    si->m_stream->Flush();
-  }
 
   if (m_current == si)
     m_current = NULL;
 
-  delete si;
+  si->m_player = NULL;
+  si->m_stream->UnRegisterAudioCallback();
+  si->m_stream->DisableCallbacks(false);
+  si->m_stream->Drain();
+  si->m_stream->Flush();
 }
 
 void PAPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
 {
-  CSingleLock lock(m_critSection);
+  CExclusiveLock lock(m_lock);
   m_audioCallback = pCallback;
   if (m_current)
   {
@@ -120,7 +114,7 @@ void PAPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
 
 void PAPlayer::UnRegisterAudioCallback()
 {
-  CSingleLock lock(m_critSection);
+  CExclusiveLock lock(m_lock);
   if (m_current)
     m_current->m_stream->UnRegisterAudioCallback();
 
@@ -135,7 +129,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   if (!QueueNextFile(file))
     return false;
 
-  CSingleLock lock(m_critSection);
+  CExclusiveLock lock(m_lock);
   return PlayNextStream();
 }
 
@@ -147,7 +141,7 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
   if (!pap->m_isPlaying)
     return;
 
-  CSingleLock lock(pap->m_critSection);  
+  CSharedLock lock(pap->m_lock);  
 
   /* convert needed frames to needed samples */
   needed *= sender->GetChannelCount();
@@ -212,7 +206,11 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
     {
       if ( si->m_prepare  ) queueNext = true;
       if (!si->m_triggered) playNext  = true;
+
+      if (pap->m_current == si)
+        pap->m_current = NULL;
       si->m_stream->Drain();
+
       break;
     }
   }
@@ -232,18 +230,23 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
 void PAPlayer::StaticStreamOnFree(IAEStream *sender, void *arg, unsigned int unused)
 {
   StreamInfo *si = (StreamInfo*)arg;
-  PAPlayer *player = si->m_player;
 
-  CSingleLock lock(player->m_critSection);
+  if (si->m_player)
+  {
+    CExclusiveLock lock(si->m_player->m_lock);
+    si->m_player->m_streams  .remove(si);
+    si->m_player->m_finishing.remove(si);
+  }
 
-  si->m_stream = NULL;
-  player->FreeStreamInfo(si);
+  delete si;
 }
 
 void PAPlayer::StaticFadeOnDone(CAEPPAnimationFade *sender, void *arg)
 {
   StreamInfo *si = (StreamInfo*)arg;
-  CSingleLock lock(si->m_player->m_critSection);
+
+  if (si->m_player->m_current == si)
+    si->m_player->m_current = NULL;
 
   /* the fadeout has completed rendering, so start draining */
   si->m_decoder.SetStatus(STATUS_ENDED);
@@ -291,7 +294,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
 
   if (!si->m_stream)
   {
-    FreeStreamInfo(si);
+    delete si;
     return false;
   }
 
@@ -310,7 +313,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
   si->m_decoder.ReadSamples(PACKET_SIZE);
 
   /* queue the stream */  
-  CSingleLock lock(m_critSection);
+  CExclusiveLock lock(m_lock);
   m_streams.push_back(si);
   lock.Leave();
 
@@ -329,7 +332,7 @@ bool PAPlayer::PlayNextStream()
   unsigned int crossFade = g_guiSettings.GetInt("musicplayer.crossfade") * 1000;
 
   /* if there is no more queued streams then flag to start on queue */
-  CSingleLock lock(m_critSection);
+  CExclusiveLock lock(m_lock);
   if (m_streams.empty())
   {
     if (!m_queueFailed) m_playOnQueue = true;
@@ -348,10 +351,13 @@ bool PAPlayer::PlayNextStream()
     m_current->m_stream->UnRegisterAudioCallback();
     if (!crossFade)
     {
-      if (!m_current->m_stream->IsDraining())
-        m_current->m_stream->Drain();
+      StreamInfo *si = m_current;
+      m_current = NULL;
 
-      if (m_fastOpen) m_current->m_stream->Flush();
+      si->m_stream->Drain();
+      if (m_fastOpen)
+        si->m_stream->Flush();
+
       m_fastOpen = false;
     }
     else
@@ -399,7 +405,7 @@ bool PAPlayer::PlayNextStream()
 void PAPlayer::Pause()
 {
   if (!IsPlaying()) return;
-  CSingleLock lock(m_critSection);
+  CExclusiveLock lock(m_lock);
 
   m_isPaused = !m_isPaused;
   if (m_isPaused)
@@ -437,7 +443,7 @@ void PAPlayer::Process()
 
 void PAPlayer::ToFFRW(int iSpeed)
 {
-  CSingleLock lock(m_critSection);
+  CExclusiveLock lock(m_lock);
   m_iSpeed = iSpeed;
   if (!m_current) return;
 
@@ -555,7 +561,7 @@ void PAPlayer::Seek(bool bPlus, bool bLargeStep)
 
 void PAPlayer::SeekTime(__int64 iTime /*=0*/)
 {
-  CSingleLock lock(m_critSection);
+  CExclusiveLock lock(m_lock);
   if (!CanSeek() || !m_current) return;
 
   int seekOffset  = (int)(iTime - GetTime());

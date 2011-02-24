@@ -65,8 +65,9 @@ public:
 
   /**
    * Disable the callbacks and block until they have finished
+   * @param free Disable the free callback too
    */
-  virtual void DisableCallbacks() = 0;  
+  virtual void DisableCallbacks(bool free = true) = 0;  
 
   /**
    * Set the callback function to call when more data is required, this is called when there is at-least one full frame of audio free.

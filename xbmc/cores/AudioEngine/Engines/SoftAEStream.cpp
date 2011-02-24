@@ -270,7 +270,7 @@ CSoftAEStream::~CSoftAEStream()
   CLog::Log(LOGDEBUG, "CSoftAEStream::~CSoftAEStream - Destructed");
 }
 
-void CSoftAEStream::DisableCallbacks()
+void CSoftAEStream::DisableCallbacks(bool free /* = true */)
 {
   m_disableCallbacks = true;
   while(IsBusy())
@@ -279,7 +279,8 @@ void CSoftAEStream::DisableCallbacks()
   CSingleLock lock(m_critSection);
   m_cbDataFunc  = NULL;
   m_cbDrainFunc = NULL;
-  m_cbFreeFunc  = NULL;
+  if (free)
+    m_cbFreeFunc = NULL;
 }
 
 void CSoftAEStream::SetDataCallback(AECBFunc *cbFunc, void *arg)

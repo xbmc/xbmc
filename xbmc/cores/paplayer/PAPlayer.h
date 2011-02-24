@@ -26,7 +26,7 @@
 #include "cores/IPlayer.h"
 #include "threads/Thread.h"
 #include "AudioDecoder.h"
-#include "threads/CriticalSection.h"
+#include "threads/SharedSection.h"
 
 #include "cores/IAudioCallback.h"
 #include "cores/AudioEngine/AEFactory.h"
@@ -103,7 +103,7 @@ protected:
 
 private:
   IAudioCallback    *m_audioCallback;
-  CCriticalSection   m_critSection;
+  CSharedSection     m_lock;
 
   typedef struct
   {
@@ -128,7 +128,7 @@ private:
   bool                    m_queueFailed;
   bool                    m_playOnQueue;
 
-  void FreeStreamInfo(StreamInfo *si);
+  void StopStream(StreamInfo *si);
   bool PlayNextStream();
 
   static void StaticStreamOnData(IAEStream *sender, void *arg, unsigned int needed);
