@@ -12,7 +12,7 @@ all: $(PKGFILE)
 
 $(PKGFILE):
 	mkdir -p $(PREFIX)/lib/pkgconfig
-	cp sqlite3.pc $(PREFIX)/lib/pkgconfig/sqlite3.pc
+	cp sqlite3.pc.in $(PREFIX)/lib/pkgconfig/sqlite3.pc
 	touch $@
 
 clean:
