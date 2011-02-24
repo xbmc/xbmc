@@ -38,62 +38,55 @@ CAESoundWrapper::~CAESoundWrapper()
 
 void CAESoundWrapper::UnLoad()
 {
-  m_lock.EnterExclusive();
+  CExclusiveLock lock(m_lock);
 
   if (!m_sound) return;
   IAE *ae = AE.GetEngine();
   if (ae) ae->FreeSound(m_sound);
   m_sound = NULL;
 
-  m_lock.LeaveExclusive();
 }
 
 void CAESoundWrapper::Load()
 {
-  m_lock.EnterExclusive();
+  CExclusiveLock lock(m_lock);
 
   IAE *ae = AE.GetEngine();
   if (ae     ) m_sound = ae->GetSound(m_filename);
   if (m_sound) m_sound->SetVolume(m_volume);
 
-  m_lock.LeaveExclusive();
 }
 
 void CAESoundWrapper::Play()
 {
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
   m_sound->Play();
-  m_lock.LeaveShared();
 }
 
 void CAESoundWrapper::Stop()
 {
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
   m_sound->Stop();
-  m_lock.LeaveShared();
 }
 
 bool CAESoundWrapper::IsPlaying()
 {
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
   bool play = m_sound->IsPlaying();
-  m_lock.LeaveShared();
   return play;
 }
 
 void CAESoundWrapper::SetVolume(float volume)
 {
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
   m_sound->SetVolume(volume);
   m_volume = volume;
-  m_lock.LeaveShared();
 }
 
 float CAESoundWrapper::GetVolume()
 {
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
   float volume = m_sound->GetVolume();
-  m_lock.LeaveShared();
   return volume;
 }
 

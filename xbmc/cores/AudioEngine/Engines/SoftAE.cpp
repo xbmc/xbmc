@@ -898,7 +898,7 @@ void CSoftAE::MixSounds(float *buffer, unsigned int samples)
 
     #ifdef __SSE__
       CSoftAE::SSEMulAddArray(buffer, ss->samples, volume, mixSamples);
-      CSoftAE::SSEMulArray   (buffer, 0.5f, mixSamples);
+   //   CSoftAE::SSEMulArray   (buffer, 0.5f, mixSamples);
     #else
       for(unsigned int i = 0; i < mixSamples; ++i)
         buffer[i] = (buffer[i] + (ss->samples[i] * volume)) * 0.5f;
@@ -1162,6 +1162,7 @@ unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool 
 
 inline void CSoftAE::RunNormalizeStage(unsigned int channelCount, void *out, unsigned int mixed)
 {
+  return;
   if (mixed <= 0) return;
 
   float *dst = (float*)out;

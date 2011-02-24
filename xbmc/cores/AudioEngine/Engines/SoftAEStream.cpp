@@ -56,6 +56,7 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_framesBuffered  (0    ),
   m_vizPacketPos    (NULL ),
   m_draining        (false),
+  m_disableCallbacks(false),
   m_cbDataFunc      (NULL ),
   m_cbDrainFunc     (NULL ),
   m_cbDataArg       (NULL ),
@@ -269,6 +270,18 @@ CSoftAEStream::~CSoftAEStream()
   CLog::Log(LOGDEBUG, "CSoftAEStream::~CSoftAEStream - Destructed");
 }
 
+void CSoftAEStream::DisableCallbacks()
+{
+  m_disableCallbacks = true;
+  while(IsBusy())
+    Sleep(100);
+
+  CSingleLock lock(m_critSection);
+  m_cbDataFunc  = NULL;
+  m_cbDrainFunc = NULL;
+  m_cbFreeFunc  = NULL;
+}
+
 void CSoftAEStream::SetDataCallback(AECBFunc *cbFunc, void *arg)
 {
   CSingleLock lock(m_critSection);
@@ -459,7 +472,7 @@ uint8_t* CSoftAEStream::GetFrame()
       if (m_draining)
       {
         /* if we are draining trigger the callback function */
-        if (m_cbDrainFunc)
+        if (m_cbDrainFunc && !m_disableCallbacks)
         {
           m_inDrainFunc = true;
           lock.Leave();
@@ -473,7 +486,7 @@ uint8_t* CSoftAEStream::GetFrame()
       else
       {
         /* otherwise ask for more data */
-        if (m_cbDataFunc)
+        if (m_cbDataFunc && !m_disableCallbacks)
         {
           m_inDataFunc = true;
           unsigned int space = ((m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize) / m_bytesPerFrame;
@@ -521,7 +534,7 @@ uint8_t* CSoftAEStream::GetFrame()
   if (m_draining)
   {
     /* if we have drained trigger the callback function */
-    if (m_framesBuffered == 0 && m_frameBufferSize == 0 && m_cbDrainFunc)
+    if (m_framesBuffered == 0 && m_frameBufferSize == 0 && m_cbDrainFunc && !m_disableCallbacks)
     {
       m_inDrainFunc = true;
       lock.Leave();
@@ -534,16 +547,15 @@ uint8_t* CSoftAEStream::GetFrame()
   else
   {
     /* if the buffer is low, fill up again */ 
-    if (m_cbDataFunc)
-      while(!m_delete && !m_draining && m_framesBuffered < m_waterLevel)
-      {
-        m_inDataFunc = true;
-        unsigned int space = ((m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize) / m_bytesPerFrame;
-        lock.Leave();
-        m_cbDataFunc(this, m_cbDataArg, space);
-        lock.Enter();
-        m_inDrainFunc = false;
-      }
+    if (m_cbDataFunc && !m_disableCallbacks && !m_delete && !m_draining && m_framesBuffered < m_waterLevel)
+    {
+      m_inDataFunc = true;
+      unsigned int space = ((m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize) / m_bytesPerFrame;
+      lock.Leave();
+      m_cbDataFunc(this, m_cbDataArg, space);
+      lock.Enter();
+      m_inDataFunc = false;
+    }
   }
 
   /* we have a frame, if we have a viz we need to hand the data to it */
@@ -697,6 +709,5 @@ void CSoftAEStream::UnRegisterAudioCallback()
 
 bool CSoftAEStream::IsBusy()
 {
-  CSingleLock lock(m_critSection);
   return (m_inDataFunc || m_inDrainFunc);
 }

@@ -71,16 +71,14 @@ bool PAPlayer::CloseFile()
     FreeStreamInfo(m_current);
 
   while(!m_streams.empty())
-  {
+  {    
     FreeStreamInfo(m_streams.front());
     m_streams.pop_front();
   }
 
+  /* note: FreeStreamInfo removes the items from m_finishing */
   while(!m_finishing.empty())
-  {
     FreeStreamInfo(m_finishing.front());
-    m_finishing.pop_front();
-  }
 
   m_iSpeed = 1;
   m_callback.OnPlayBackStopped();
@@ -98,8 +96,7 @@ void PAPlayer::FreeStreamInfo(StreamInfo *si)
   if (si->m_stream)
   {
     si->m_stream->UnRegisterAudioCallback();
-    si->m_stream->SetDataCallback(NULL, NULL);
-    si->m_stream->SetFreeCallback(NULL, NULL);
+    si->m_stream->DisableCallbacks();
     si->m_stream->Drain();
     si->m_stream->Flush();
   }
@@ -349,7 +346,6 @@ bool PAPlayer::PlayNextStream()
   if (m_current)
   {
     m_current->m_stream->UnRegisterAudioCallback();
-    m_finishing.push_back(m_current);
     if (!crossFade)
     {
       if (!m_current->m_stream->IsDraining())
@@ -363,6 +359,8 @@ bool PAPlayer::PlayNextStream()
       /* if the user is skipping tracks quickly, do a fast crossFade */
       if (!m_finishing.empty())
         crossFade = std::min((unsigned int)FAST_XFADE_TIME, crossFade);
+
+      m_finishing.push_back(m_current);
 
       fadeIn = true;
       CAEPPAnimationFade *fade = new CAEPPAnimationFade(1.0f, 0.0f, crossFade);

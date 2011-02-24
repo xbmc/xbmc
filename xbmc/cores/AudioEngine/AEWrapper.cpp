@@ -43,7 +43,7 @@ bool CAEWrapper::Initialize()
 
 bool CAEWrapper::SetEngine(IAE *ae)
 {
-  m_lock.EnterExclusive();
+  CExclusiveLock lock(m_lock);
 
   /* shutdown the old engine */
   if (m_ae)
@@ -71,7 +71,6 @@ bool CAEWrapper::SetEngine(IAE *ae)
   for(std::list<CAESoundWrapper*>::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
     (*itt)->Load();
   
-  m_lock.LeaveExclusive();  
   return (m_ae != NULL);
 }
 
@@ -92,44 +91,39 @@ void CAEWrapper::RemoveStreamWrapper(CAEStreamWrapper *wrapper)
 
 void CAEWrapper::OnSettingsChange(CStdString setting)
 {
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
   if (m_ae) m_ae->OnSettingsChange(setting);
-  m_lock.LeaveShared();
 }
 
 float CAEWrapper::GetVolume()
 {
   float vol = 0;
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
   if (m_ae) vol = m_ae->GetVolume();
-  m_lock.LeaveShared();
 
   return vol;
 }
 
 void CAEWrapper::SetVolume(float volume)
 {
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
   if (m_ae) m_ae->SetVolume(volume);
-  m_lock.LeaveShared();
 }
 
 IAEStream* CAEWrapper::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
 {
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
   CAEStreamWrapper *wrapper = new CAEStreamWrapper(dataFormat, sampleRate, channelCount, channelLayout, options);
   m_streams.push_back(wrapper);
-  m_lock.LeaveShared();
 
   return wrapper;
 }
 
 IAEStream* CAEWrapper::AlterStream(IAEStream *stream, enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
 {
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
   CAEStreamWrapper *wrapper = (CAEStreamWrapper*)stream;
   wrapper->AlterStream(dataFormat, sampleRate, channelCount, channelLayout, options);
-  m_lock.LeaveShared();
   return wrapper;
 }
 
@@ -137,17 +131,16 @@ IAESound* CAEWrapper::GetSound(CStdString file)
 {
   CAESoundWrapper *s = NULL;
 
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
   s = new CAESoundWrapper(file);
   m_sounds.push_back(s);
-  m_lock.LeaveShared();
 
   return s;
 }
 
 void CAEWrapper::FreeSound(IAESound *sound)
 {
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
 
   ((CAESoundWrapper*)sound)->UnLoad();
   for(std::list<CAESoundWrapper*>::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
@@ -158,29 +151,25 @@ void CAEWrapper::FreeSound(IAESound *sound)
     }
   delete (CAESoundWrapper*)sound;
 
-  m_lock.LeaveShared();
 }
 
 void CAEWrapper::GarbageCollect()
 {
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
   if (m_ae) m_ae->GarbageCollect();
-  m_lock.LeaveShared();
 }
 
 void CAEWrapper::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 {
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
   if (m_ae) m_ae->EnumerateOutputDevices(devices, passthrough);
-  m_lock.LeaveShared();
 }
 
 bool CAEWrapper::SupportsRaw()
 {
   bool raw = false;
-  m_lock.EnterShared();
+  CSharedLock lock(m_lock);
   if (m_ae) raw = m_ae->SupportsRaw();
-  m_lock.LeaveShared();
 
   return raw;
 }

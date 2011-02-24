@@ -64,6 +64,11 @@ public:
   virtual void Destroy() = 0;
 
   /**
+   * Disable the callbacks and block until they have finished
+   */
+  virtual void DisableCallbacks() = 0;  
+
+  /**
    * Set the callback function to call when more data is required, this is called when there is at-least one full frame of audio free.
    * @param cbFunc The callback function
    * @param arg Pointer to pass to the callback function (eg, this)   

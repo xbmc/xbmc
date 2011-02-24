@@ -36,6 +36,7 @@ public:
   virtual ~CPulseAEStream();
 
   virtual void Destroy();
+  virtual void DisableCallbacks() {}; /* FIXME */
   virtual void SetDataCallback (AECBFunc *cbFunc, void *arg); /* called when the buffer < 50% full */
   virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg); /* called when the buffer has been drained */
   virtual void SetFreeCallback (AECBFunc *cbFunc, void *arg); /* called when the stream is deleted */

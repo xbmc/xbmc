@@ -43,6 +43,7 @@ public:
   void Initialize();
   void InitializeRemap();
   virtual void Destroy();
+  virtual void DisableCallbacks(); /* disable all callbacks */
   virtual void SetDataCallback (AECBFunc *cbFunc, void *arg); /* called when the buffer < 50% full */
   virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg); /* called when the buffer has been drained */
   virtual void SetFreeCallback (AECBFunc *cbFunc, void *arg); /* called when the stream is deleted */
@@ -147,6 +148,7 @@ private:
   bool               m_draining;
 
   /* callback hook for more data */
+  bool          m_disableCallbacks;
   AECBFunc     *m_cbDataFunc, *m_cbDrainFunc, *m_cbFreeFunc;
   void         *m_cbDataArg , *m_cbDrainArg , *m_cbFreeArg;
   bool          m_inDataFunc,  m_inDrainFunc,  m_inFreeFunc;
