@@ -24,6 +24,8 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
+
+#if (!defined USE_EXTERNAL_PYTHON)
 #define DATA_OBJECT(data) unsigned long pointer_##data;
 
 #define _Py_NoneStruct (*((PyObject*)pointer__Py_NoneStruct))
@@ -96,3 +98,4 @@ class LibraryLoader;
 }
 #endif
 
+#endif

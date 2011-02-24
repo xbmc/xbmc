@@ -19,23 +19,14 @@
  *
  */
 
-// python.h should always be included first before any other includes
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/Python.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
-#else
-  #include "python/Include/Python.h"
-#endif
+
+// python.h should always be included first before any other includes
+#include <Python.h>
+
+#include "system.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIPassword.h"
 
@@ -363,6 +354,7 @@ void XBPython::Initialize()
   m_iDllScriptCounter++;
   if (!m_bInitialized)
   {
+#if (!(defined _LINUX && defined USE_EXTERNAL_PYTHON))
       m_pDll = DllLoaderContainer::LoadModule(PYTHON_DLL, NULL, true);
 
       if (!m_pDll || !python_load_dll(*m_pDll))
@@ -371,6 +363,7 @@ void XBPython::Initialize()
         Finalize();
         return;
       }
+#endif
 
       // first we check if all necessary files are installed
 #ifndef _LINUX
@@ -476,7 +469,7 @@ void XBPython::Finalize()
     CLog::Log(LOGINFO, "Python, unloading python24.dll because no scripts are running anymore");
 
     PyEval_AcquireLock();
-    PyThreadState_Swap(m_mainThreadState);
+    PyThreadState_Swap((PyThreadState*)m_mainThreadState);
 
     Py_Finalize();
     PyEval_ReleaseLock();
@@ -647,7 +640,7 @@ void XBPython::stopScript(int id)
   }
 }
 
-PyThreadState *XBPython::getMainThreadState()
+void* XBPython::getMainThreadState()
 {
   CSingleLock lock(m_critSection);
   return m_mainThreadState;
