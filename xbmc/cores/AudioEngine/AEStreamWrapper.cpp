@@ -144,18 +144,18 @@ void CAEStreamWrapper::AlterStream(enum AEDataFormat dataFormat, unsigned int sa
 
 void CAEStreamWrapper::Destroy()
 {
-  m_lock.EnterExclusive();
+  m_lock.EnterShared();
   if (m_stream)
   {
     m_stream->Destroy();
     m_stream = NULL;
   }
-  m_lock.LeaveExclusive();
+  m_lock.LeaveShared();
 }
 
 void CAEStreamWrapper::SetDataCallback(AECBFunc *cbFunc, void *arg)
 {
-  m_lock.EnterExclusive();
+  m_lock.EnterShared();
   m_dataCallback    = cbFunc;
   m_dataCallbackArg = arg;
   if (m_stream)
@@ -165,12 +165,12 @@ void CAEStreamWrapper::SetDataCallback(AECBFunc *cbFunc, void *arg)
     else
       m_stream->SetDataCallback(NULL, NULL);
   }
-  m_lock.LeaveExclusive();
+  m_lock.LeaveShared();
 }
 
 void CAEStreamWrapper::SetDrainCallback(AECBFunc *cbFunc, void *arg)
 {
-  m_lock.EnterExclusive();
+  m_lock.EnterShared();
   m_drainCallback    = cbFunc;
   m_drainCallbackArg = arg;
   if (m_stream)
@@ -180,15 +180,15 @@ void CAEStreamWrapper::SetDrainCallback(AECBFunc *cbFunc, void *arg)
     else
       m_stream->SetDrainCallback(NULL, NULL);
   }
-  m_lock.LeaveExclusive();
+  m_lock.LeaveShared();
 }
 
 void CAEStreamWrapper::SetFreeCallback(AECBFunc *cbFunc, void *arg)
 {
-  m_lock.EnterExclusive();
-  m_drainCallback    = cbFunc;
-  m_drainCallbackArg = arg;
-  m_lock.LeaveExclusive();
+  m_lock.EnterShared();
+  m_freeCallback    = cbFunc;
+  m_freeCallbackArg = arg;
+  m_lock.LeaveShared();
 }
 
 unsigned int CAEStreamWrapper::AddData(void *data, unsigned int size)

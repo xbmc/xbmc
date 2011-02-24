@@ -48,6 +48,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   IPlayer        (callback),
   m_audioCallback(NULL    ),
   m_current      (NULL    ),
+  m_isPlaying    (false   ),
   m_isPaused     (false   ),
   m_iSpeed       (1       ),
   m_fastOpen     (true    ),
@@ -58,6 +59,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
 
 PAPlayer::~PAPlayer()
 {
+  m_isPlaying = false;
   CloseFile();
 }
 
@@ -92,10 +94,15 @@ void PAPlayer::OnExit()
 void PAPlayer::FreeStreamInfo(StreamInfo *si)
 {
   m_finishing.remove(si);
-  si->m_decoder.Destroy();
 
   if (si->m_stream)
-    si->m_stream->Destroy();
+  {
+    si->m_stream->UnRegisterAudioCallback();
+    si->m_stream->SetDataCallback(NULL, NULL);
+    si->m_stream->SetFreeCallback(NULL, NULL);
+    si->m_stream->Drain();
+    si->m_stream->Flush();
+  }
 
   if (m_current == si)
     m_current = NULL;
@@ -140,11 +147,14 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
   StreamInfo *si  = (StreamInfo*)arg;
   PAPlayer   *pap = si->m_player;
 
+  if (!pap->m_isPlaying)
+    return;
+
   CSingleLock lock(pap->m_critSection);  
 
   /* convert needed frames to needed samples */
   needed *= sender->GetChannelCount();
-  while(needed > 0)
+  while(pap->m_isPlaying && needed > 0)
   {
     unsigned int samples = std::min(std::min(si->m_decoder.GetDataSize(), needed), (unsigned int)OUTPUT_SAMPLES);
     if (samples == 0) break;
@@ -198,7 +208,7 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
     playNext        = true;
   }
 
-  while(si->m_decoder.GetDataSize() == 0)
+  while(pap->m_isPlaying && si->m_decoder.GetDataSize() == 0)
   {
     int status = si->m_decoder.GetStatus();
     if (status == STATUS_ENDED || status == STATUS_NO_FILE || si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
@@ -222,13 +232,14 @@ void PAPlayer::StaticStreamOnData(IAEStream *sender, void *arg, unsigned int nee
     pap->PlayNextStream();
 }
 
-void PAPlayer::StaticStreamOnDrain(IAEStream *sender, void *arg, unsigned int unused)
+void PAPlayer::StaticStreamOnFree(IAEStream *sender, void *arg, unsigned int unused)
 {
   StreamInfo *si = (StreamInfo*)arg;
-  si->m_stream->UnRegisterAudioCallback();
   PAPlayer *player = si->m_player;
 
   CSingleLock lock(player->m_critSection);
+
+  si->m_stream = NULL;
   player->FreeStreamInfo(si);
 }
 
@@ -246,12 +257,16 @@ void PAPlayer::OnNothingToQueueNotify()
 {
   m_queueFailed = true;
   if (m_playOnQueue)
-    m_callback.OnPlayBackStopped();
+  {
+    m_isPlaying = false;
+    m_callback.OnPlayBackStopped();      
+  }
 }
 
 bool PAPlayer::QueueNextFile(const CFileItem &file)
 {
   StreamInfo *si = new StreamInfo();
+
   if (!si->m_decoder.Create(file, (file.m_lStartOffset * 1000) / 75))
   {
     delete si;
@@ -284,9 +299,9 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
   }
 
   /* set the callbacks */
-  si->m_stream->SetDataCallback (StaticStreamOnData , si);
-  si->m_stream->SetDrainCallback(StaticStreamOnDrain, si);
-  si->m_stream->SetReplayGain   (si->m_decoder.GetReplayGain());
+  si->m_stream->SetDataCallback(StaticStreamOnData, si);
+  si->m_stream->SetFreeCallback(StaticStreamOnFree, si);
+  si->m_stream->SetReplayGain  (si->m_decoder.GetReplayGain());
 
   unsigned int crossFade = g_guiSettings.GetInt("musicplayer.crossfade") * 1000;
   unsigned int cacheTime = (crossFade * 1000) + TIME_TO_CACHE_NEXT_FILE;
@@ -322,7 +337,10 @@ bool PAPlayer::PlayNextStream()
   {
     if (!m_queueFailed) m_playOnQueue = true;
     else
+    {
       m_callback.OnPlayBackStopped();
+      m_isPlaying = false;
+    }
 
     return false;
   }
@@ -372,6 +390,7 @@ bool PAPlayer::PlayNextStream()
   }
 
   m_isPaused  = false;
+  m_isPlaying = true;
 
   /* start playback */
   m_callback.OnPlayBackStarted();
