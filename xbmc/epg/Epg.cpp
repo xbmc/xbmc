@@ -200,7 +200,7 @@ const CEpgInfoTag *CEpg::InfoTagNext(void) const
 
 const CEpgInfoTag *CEpg::InfoTag(int uniqueID, const CDateTime &StartTime) const
 {
-  static CEpgInfoTag *returnTag = NULL;
+  CEpgInfoTag *returnTag = NULL;
   CSingleLock locka(m_critSection);
 
   /* try to find the tag by UID */
@@ -236,7 +236,7 @@ const CEpgInfoTag *CEpg::InfoTag(int uniqueID, const CDateTime &StartTime) const
 
 const CEpgInfoTag *CEpg::InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) const
 {
-  static CEpgInfoTag *returnTag = NULL;
+  CEpgInfoTag *returnTag = NULL;
 
   CSingleLock lock(m_critSection);
 
@@ -255,7 +255,7 @@ const CEpgInfoTag *CEpg::InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) 
 
 const CEpgInfoTag *CEpg::InfoTagAround(CDateTime Time) const
 {
-  static CEpgInfoTag *returnTag = NULL;
+  CEpgInfoTag *returnTag = NULL;
 
   CSingleLock lock(m_critSection);
 
@@ -294,7 +294,9 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   /* create a new tag if no tag with this ID exists */
   if (!InfoTag)
   {
+    CSingleLock lock(m_critSection);
     InfoTag = CreateTag();
+    InfoTag->SetUniqueBroadcastID(tag.UniqueBroadcastID());
     push_back(InfoTag);
   }
 
@@ -379,9 +381,10 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
     m_bInhibitSorting = false;
 
     /* store the loaded EPG entries in the database */
-    CSingleLock lock(m_critSection);
     if (bGrabSuccess && size() > 0)
     {
+      Sort();
+      lock.Enter();
       FixOverlappingEvents(false);
 
       if (bStoreInDb)
@@ -392,6 +395,7 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
         database->CommitInsertQueries();
       }
 
+      lock.Leave();
       m_lastScanTime = CDateTime::GetCurrentDateTime();
     }
     else
@@ -399,12 +403,9 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
       m_lastScanTime = CDateTime::GetCurrentDateTime() - CDateTimeSpan(0, 0, 0, iUpdateTime + 300); /* try again in 5 minutes */
     }
   }
-  lock.Leave();
 
   if (bStoreInDb)
     database->Close();
-
-  Sort();
 
   return bGrabSuccess;
 }
