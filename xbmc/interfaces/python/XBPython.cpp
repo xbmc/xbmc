@@ -56,11 +56,17 @@
 #endif
 #else
 #if defined(__APPLE__)
-#if defined(__POWERPC__)
-#define PYTHON_DLL "special://xbmcbin/system/python/python24-powerpc-osx.so"
-#else
-#define PYTHON_DLL "special://xbmcbin/system/python/python24-x86-osx.so"
-#endif
+  #if defined(__POWERPC__)
+    #define PYTHON_DLL "special://xbmcbin/system/python/python24-powerpc-osx.so"
+  #else
+    #if (defined HAVE_LIBPYTHON2_6)
+      #define PYTHON_DLL "special://xbmcbin/system/python/python26-x86-osx.so"
+    #elif (defined HAVE_LIBPYTHON2_5)
+      #define PYTHON_DLL "special://xbmcbin/system/python/python25-x86-osx.so"
+    #else
+      #define PYTHON_DLL "special://xbmcbin/system/python/python24-x86-osx.so"
+    #endif
+  #endif
 #elif defined(__x86_64__)
 #if (defined HAVE_LIBPYTHON2_6)
 #define PYTHON_DLL "special://xbmcbin/system/python/python26-x86_64-linux.so"
@@ -392,6 +398,14 @@ void XBPython::Initialize()
          Reason for this is because we cannot be sure what version of Python
          was used to compile the various Python object files (i.e. .pyo,
          .pyc, etc.). */
+      #if defined(__APPLE__) && defined(__arm__)
+          // using external python, it's build looking for xxx/lib/python2.6
+          // so point it to frameworks/usr which is where python2.6 is located
+          setenv("PYTHONHOME", _P("special://frameworks/usr").c_str(), 1);
+          setenv("PYTHONPATH", _P("special://frameworks/usr").c_str(), 1);
+          CLog::Log(LOGDEBUG, "PYTHONHOME -> %s", _P("special://frameworks/usr").c_str());
+          CLog::Log(LOGDEBUG, "PYTHONPATH -> %s", _P("special://frameworks/usr").c_str());
+      #endif
       setenv("PYTHONCASEOK", "1", 1); //This line should really be removed
       CLog::Log(LOGDEBUG, "Python wrapper library linked with system Python library");
 #endif /* USE_EXTERNAL_PYTHON */
@@ -400,11 +414,15 @@ void XBPython::Initialize()
       // If this is not the first time we initialize Python, the interpreter
       // lock already exists and we need to lock it as PyEval_InitThreads
       // would not do that in that case.
+#if defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON)
+      // grrr, we hang at PyEval_ThreadsInitialized after unloading/loading python
+      PyEval_InitThreads();
+#else
       if (PyEval_ThreadsInitialized())
         PyEval_AcquireLock();
       else
         PyEval_InitThreads();
-
+#endif
       char* python_argv[1] = { (char*)"" } ;
       PySys_SetArgv(1, python_argv);
 
@@ -446,14 +464,20 @@ void XBPython::Finalize()
     Py_Finalize();
     PyEval_ReleaseLock();
 
+#if !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
     UnloadExtensionLibs();
+#endif
 
     // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
+#if !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
     DllLoaderContainer::UnloadPythonDlls();
+#endif
 #ifdef _LINUX
     // we can't release it on windows, as this is done in UnloadPythonDlls() for win32 (see above).
     // The implementation for linux and os x needs looking at - UnloadPythonDlls() currently only searches for "python24.dll"
+#if !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
     DllLoaderContainer::ReleaseModule(m_pDll);
+#endif
 #endif
     m_hModule         = NULL;
     m_mainThreadState = NULL;

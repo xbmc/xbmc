@@ -423,7 +423,9 @@ endif
 endif
 screensavers: exports
 ifneq (arm, @ARCH@)
+ifneq ($(findstring osx,@ARCH@), osx)
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
+endif
 endif
 libpython: dllloader
 	$(MAKE) -C xbmc/interfaces/python
