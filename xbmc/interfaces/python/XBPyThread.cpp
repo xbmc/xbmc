@@ -410,14 +410,14 @@ void XBPyThread::stop()
   if (m_threadState)
   {
     PyEval_AcquireLock();
-    PyThreadState* old = PyThreadState_Swap(m_threadState);
+    PyThreadState* old = PyThreadState_Swap((PyThreadState*)m_threadState);
 
     PyObject *m;
     m = PyImport_AddModule((char*)"xbmc");
     if(!m || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
       CLog::Log(LOGERROR, "XBPyThread::stop - failed to set abortRequested");
 
-    for(PyThreadState* state = m_threadState->interp->tstate_head; state; state = state->next)
+    for(PyThreadState* state = ((PyThreadState*)m_threadState)->interp->tstate_head; state; state = state->next)
     {
       Py_XDECREF(state->async_exc);
       state->async_exc = PyExc_SystemExit;

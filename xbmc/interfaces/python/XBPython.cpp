@@ -459,7 +459,7 @@ void XBPython::Finalize()
     CLog::Log(LOGINFO, "Python, unloading python24.dll because no scripts are running anymore");
 
     PyEval_AcquireLock();
-    PyThreadState_Swap(m_mainThreadState);
+    PyThreadState_Swap((PyThreadState*)m_mainThreadState);
 
     Py_Finalize();
     PyEval_ReleaseLock();
@@ -631,7 +631,7 @@ void XBPython::stopScript(int id)
   }
 }
 
-PyThreadState *XBPython::getMainThreadState()
+void* XBPython::getMainThreadState()
 {
   CSingleLock lock(m_critSection);
   return m_mainThreadState;
