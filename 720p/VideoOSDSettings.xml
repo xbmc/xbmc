@@ -63,7 +63,12 @@
 
       <control type="spincontrolex" id="9">
         <description>default spincontrolex</description>
-        <include>VideoOSDSettingsSpinControlDims</include>
+        <font>LanguageString</font>
+    		<posx>0</posx>
+    		<posy>150</posy>
+    		<width>300</width>
+    		<textoffsetx>7</textoffsetx>
+    		<textoffsety>0</textoffsety>
         <include>DialogTextControl</include>
       </control>
 

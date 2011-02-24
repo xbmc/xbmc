@@ -1,6 +1,13 @@
 <fonts>
   <fontset id="Default" unicode="false">
 
+  <!-- -->
+  <font>
+    <name>LanguageString</name>
+    <filename>Arial.ttf</filename>
+    <size>18</size>
+  </font>
+
   <!-- Search fonts -->
   <font>
   	<name>LargeSearchFont</name>

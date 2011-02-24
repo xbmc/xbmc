@@ -1429,8 +1429,8 @@
           			<control type="image">
           				<posx>-5</posx>
           				<posy>10</posy>
-          				<width>150</width>
-          				<height>100</height>
+          				<width>160</width>
+          				<height>110</height>
           				<info>ListItem.Thumb</info>
           				<aspectratio align="right" aligny="top">keep</aspectratio>
           				<bordertexture>plugin-stream-highlight.png</bordertexture>
