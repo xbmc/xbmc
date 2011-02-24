@@ -41,11 +41,16 @@ public:
   virtual bool IsPlaying();
   virtual void SetVolume(float volume);
   virtual float GetVolume();
+  virtual void SetFreeCallback (AECBFunc *cbFunc, void *arg);
 
 private:
   CStdString     m_filename;
   CSharedSection m_lock;
   IAESound      *m_sound;
   float          m_volume;
+  AECBFunc      *m_freeCallback;
+  void          *m_freeCallbackArg;
+
+  static void StaticSoundOnFree (IAESound *sender, void *arg);
 };
 

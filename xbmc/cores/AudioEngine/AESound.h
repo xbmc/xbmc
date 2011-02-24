@@ -32,6 +32,14 @@ protected:
   virtual ~IAESound() {}
 
 public:
+  /**
+   * Callback prototye for Free callback
+   * @see SetFreeCallback()
+   * @param sound The calling sound
+   * @param arg The user supplied pointer
+   */
+  typedef void (AECBFunc)(IAESound *sound, void *arg);
+
   /* play the sound this object represents */
   virtual void Play() = 0;
 
@@ -46,5 +54,8 @@ public:
 
   /* get the current playback volume of this sound */
   virtual float GetVolume() = 0;
+
+  /* set the on free callback */
+  virtual void SetFreeCallback(AECBFunc *func, void *arg) = 0;
 };
 

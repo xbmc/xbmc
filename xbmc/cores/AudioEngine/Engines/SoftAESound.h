@@ -40,9 +40,11 @@ public:
   virtual void   Stop();
   virtual bool   IsPlaying();
 
-  virtual void         SetVolume     (float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
-  virtual float        GetVolume     ()             { return m_volume      ; }
-  virtual unsigned int GetSampleCount();
+  virtual void   SetVolume(float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
+  virtual float  GetVolume()             { return m_volume      ; }
+  virtual void   SetFreeCallback(AECBFunc *func, void *arg);
+
+  unsigned int GetSampleCount();
 
   /* must be called before initialize to be sure we have exclusive access to our samples */
   void Lock()   { m_sampleLock.EnterExclusive(); }
@@ -58,5 +60,7 @@ private:
   CAEWAVLoader     m_wavLoader;
   float            m_volume;
   int              m_inUse;
+  AECBFunc        *m_freeCallback;
+  void            *m_freeCallbackArg;
 };
 

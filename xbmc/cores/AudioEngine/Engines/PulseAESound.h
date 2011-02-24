@@ -43,6 +43,7 @@ public:
 
   virtual void  SetVolume(float volume);
   virtual float GetVolume();
+  virtual void  SetFreeCallback(AECBFunc *func, void *arg);
 private:
   static void StreamStateCallback(pa_stream *s, void *userdata);
   static void StreamWriteCallback(pa_stream *s, size_t length, void *userdata);
@@ -61,6 +62,9 @@ private:
   pa_operation         *m_op;
 
   float m_maxVolume, m_volume;
+
+  AECBFunc        *m_freeCallback;
+  void            *m_freeCallbackArg;
 };
 
 #endif

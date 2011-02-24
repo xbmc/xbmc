@@ -29,19 +29,24 @@
 #include "StringUtils.h"
 
 CPulseAESound::CPulseAESound(const CStdString &filename, pa_context *context, pa_threaded_mainloop *mainLoop) :
-  IAESound  (filename),
-  m_filename(filename),
-  m_dataSent(0       ),
-  m_context (context ),
-  m_mainLoop(mainLoop),
-  m_stream  (NULL    ),
-  m_op      (NULL    )
+  IAESound         (filename),
+  m_filename       (filename),
+  m_dataSent       (0       ),
+  m_context        (context ),
+  m_mainLoop       (mainLoop),
+  m_stream         (NULL    ),
+  m_op             (NULL    ),
+  m_freeCallback   (NULL    ),
+  m_freeCallbackArg(NULL    )
 {
   m_pulseName = StringUtils::CreateUUID();
 }
 
 CPulseAESound::~CPulseAESound()
 {
+  if (m_freeCallback)
+    m_freeCallback(this, m_freeCallbackArg);
+
   DeInitialize();
 }
 
@@ -170,6 +175,12 @@ void CPulseAESound::SetVolume(float volume)
 float CPulseAESound::GetVolume()
 {
   return 1.0f;
+}
+
+void CPulseAESound::SetFreeCallback(AECBFunc *callback, void *arg)
+{
+  m_freeCallback    = callback;
+  m_freeCallbackArg = arg;
 }
 
 void CPulseAESound::StreamStateCallback(pa_stream *s, void *userdata)
