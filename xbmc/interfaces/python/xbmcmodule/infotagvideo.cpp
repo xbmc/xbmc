@@ -127,6 +127,15 @@ namespace PYXBMC
     return Py_BuildValue((char*)"s", self->infoTag.m_strTitle.c_str());
   }
 
+  // InfoTagVideo_GetOriginalTitle
+  PyDoc_STRVAR(getOriginalTitle__doc__,
+    "getOriginalTitle() -- returns a string.\n");
+
+  PyObject* InfoTagVideo_GetOriginalTitle(InfoTagVideo *self, PyObject *args)
+  {
+    return Py_BuildValue((char*)"s", self->infoTag.m_strOriginalTitle.c_str());
+  }
+
   // InfoTagVideo_GetVotes
   PyDoc_STRVAR(getVotes__doc__,
     "getVotes() -- returns a string.\n");
@@ -181,6 +190,24 @@ namespace PYXBMC
     return Py_BuildValue((char*)"i", self->infoTag.m_iYear);
   }
 
+  // InfoTagVideo_GetPremiered
+  PyDoc_STRVAR(getPremiered__doc__,
+    "getPremiered() -- returns a string.\n");
+
+  PyObject* InfoTagVideo_GetPremiered(InfoTagVideo *self, PyObject *args)
+  {
+    return Py_BuildValue((char*)"s", self->infoTag.m_strPremiered.c_str());
+  }
+
+  // InfoTagVideo_GetFirstAired
+  PyDoc_STRVAR(getFirstAired__doc__,
+    "getFirstAired() -- returns a string.\n");
+
+  PyObject* InfoTagVideo_GetFirstAired(InfoTagVideo *self, PyObject *args)
+  {
+    return Py_BuildValue((char*)"s", self->infoTag.m_strFirstAired.c_str());
+  }
+
   // InfoTagVideo_GetRating
   PyDoc_STRVAR(getRating__doc__,
     "getRating() -- returns a float.\n");
@@ -217,12 +244,15 @@ namespace PYXBMC
     {(char*)"getPlot", (PyCFunction)InfoTagVideo_GetPlot, METH_VARARGS, getPlot__doc__},
     {(char*)"getPictureURL", (PyCFunction)InfoTagVideo_GetPictureURL, METH_VARARGS, getPictureURL__doc__},
     {(char*)"getTitle", (PyCFunction)InfoTagVideo_GetTitle, METH_VARARGS, getTitle__doc__},
+    {(char*)"getOriginalTitle", (PyCFunction)InfoTagVideo_GetOriginalTitle, METH_VARARGS, getOriginalTitle__doc__},
     {(char*)"getVotes", (PyCFunction)InfoTagVideo_GetVotes, METH_VARARGS, getVotes__doc__},
     {(char*)"getCast", (PyCFunction)InfoTagVideo_GetCast, METH_VARARGS, getCast__doc__},
     {(char*)"getFile", (PyCFunction)InfoTagVideo_GetFile, METH_VARARGS, getFile__doc__},
     {(char*)"getPath", (PyCFunction)InfoTagVideo_GetPath, METH_VARARGS, getPath__doc__},
     {(char*)"getIMDBNumber", (PyCFunction)InfoTagVideo_GetIMDBNumber, METH_VARARGS, getIMDBNumber__doc__},
     {(char*)"getYear", (PyCFunction)InfoTagVideo_GetYear, METH_VARARGS, getYear__doc__},
+    {(char*)"getPremiered", (PyCFunction)InfoTagVideo_GetPremiered, METH_VARARGS, getPremiered__doc__},
+    {(char*)"getFirstAired", (PyCFunction)InfoTagVideo_GetFirstAired, METH_VARARGS, getFirstAired__doc__},
     {(char*)"getRating", (PyCFunction)InfoTagVideo_GetRating, METH_VARARGS, getRating__doc__},
     {(char*)"getPlayCount", (PyCFunction)InfoTagVideo_GetPlayCount, METH_VARARGS, getPlayCount__doc__},
     {(char*)"getLastPlayed", (PyCFunction)InfoTagVideo_GetLastPlayed, METH_VARARGS, getLastPlayed__doc__},

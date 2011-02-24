@@ -1,0 +1,56 @@
+From 91861ce25c7f19c38afdb0f115bf90118fc19428 Mon Sep 17 00:00:00 2001
+From: Marton Balint <cus@passwd.hu>
+Date: Sat, 19 Feb 2011 17:33:15 +0100
+Subject: [PATCH] MMS: also discover streams in extended stream properties object
+
+Allows playback of nonprimary audio streams in multiple bitrate sources,
+such as mmsh://wmscr1.dr.dk/e02ch03m
+
+Signed-off-by: Ronald S. Bultje <rsbultje@gmail.com>
+(cherry picked from commit 74d6871d6244865b5863a01c3dab16a2f06a1706)
+---
+ libavformat/mms.c |   28 ++++++++++++++++++++++++++++
+ 1 files changed, 28 insertions(+), 0 deletions(-)
+
+diff --git a/lib/ffmpeg/libavformat/mms.c b/lib/ffmpeg/libavformat/mms.c
+index d995a43..b541208 100644
+--- a/lib/ffmpeg/libavformat/mms.c
++++ b/lib/ffmpeg/libavformat/mms.c
+@@ -115,6 +115,34 @@ int ff_mms_asf_header_parser(MMSContext *mms)
+                        "Corrupt stream (too many A/V streams)\n");
+                 return AVERROR_INVALIDDATA;
+             }
++        } else if (!memcmp(p, ff_asf_ext_stream_header, sizeof(ff_asf_guid))) {
++            if (end - p >= 88) {
++                int stream_count = AV_RL16(p + 84), ext_len_count = AV_RL16(p + 86);
++                uint64_t skip_bytes = 88;
++                while (stream_count--) {
++                    if (end - p < skip_bytes + 4) {
++                        av_log(NULL, AV_LOG_ERROR,
++                               "Corrupt stream (next stream name length is not in the buffer)\n");
++                        return AVERROR_INVALIDDATA;
++                    }
++                    skip_bytes += 4 + AV_RL16(p + skip_bytes + 2);
++                }
++                while (ext_len_count--) {
++                    if (end - p < skip_bytes + 22) {
++                        av_log(NULL, AV_LOG_ERROR,
++                               "Corrupt stream (next extension system info length is not in the buffer)\n");
++                        return AVERROR_INVALIDDATA;
++                    }
++                    skip_bytes += 22 + AV_RL32(p + skip_bytes + 18);
++                }
++                if (end - p < skip_bytes) {
++                    av_log(NULL, AV_LOG_ERROR,
++                           "Corrupt stream (the last extension system info length is invalid)\n");
++                    return AVERROR_INVALIDDATA;
++                }
++                if (chunksize - skip_bytes > 24)
++                    chunksize = skip_bytes;
++            }
+         } else if (!memcmp(p, ff_asf_head1_guid, sizeof(ff_asf_guid))) {
+             chunksize = 46; // see references [2] section 3.4. This should be set 46.
+         }
+-- 
+1.7.0.4
+

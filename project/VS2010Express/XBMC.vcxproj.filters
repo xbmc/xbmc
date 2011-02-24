@@ -5247,6 +5247,8 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\windows\GUIWindowPVRSearch.h">
       <Filter>pvr\windows</Filter>
+    <ClInclude Include="..\..\xbmc\utils\GlobalsHandling.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

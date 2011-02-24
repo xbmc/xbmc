@@ -29,7 +29,7 @@
 #include <dxdiag.h>
 #include "windowing/windows/WinSystemWin32.h"
 #include "rendering/dx/RenderSystemDX.h"
-#include "utils/ReferenceCounting.h"
+#include "utils/GlobalsHandling.h"
 
 #ifdef HAS_DX
 
@@ -48,13 +48,8 @@ protected:
   bool UseWindowedDX(bool fullScreen);
 };
 
-/**
- * This is a hack. There will be an instance of a ref to this "global" statically in each
- *  file that includes this header. This is so that the reference couting will
- *  work correctly from the data segment.
- */
-static xbmcutil::Referenced::ref<CWinSystemWin32DX> g_WindowingRef(xbmcutil::Singleton<CWinSystemWin32DX>::getInstance);
-#define g_Windowing (*(g_WindowingRef))
+XBMC_GLOBAL_REF(CWinSystemWin32DX,g_Windowing);
+#define g_Windowing XBMC_GLOBAL_USE(CWinSystemWin32DX)
 
 #endif
 

@@ -2,18 +2,25 @@
 	<defaultcontrol always="true">602</defaultcontrol>
 	<controls>
 		<control type="group">
-			<animation effect="slide" start="0,-145" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
-			<animation effect="slide" start="0,0" end="0,-145" time="300" delay="150" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="0,0" end="0,-145" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)">Conditional</animation>
-			
-			<!-- background image -->
+			<animation effect="fade" start="0" end="100" time="300" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="300" delay="150" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="fade" start="100" end="0" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(PVROSDGuide)">Conditional</animation>
 			<control type="image">
 				<description>media info background image</description>
 				<posx>0</posx>
-				<posy>-145</posy>
+				<posy>-20</posy>
 				<width>1280</width>
-				<height>256</height>
-				<texture>MediaInfoBackUpper.png</texture>
+				<height>160</height>
+				<texture flipy="true">HomeNowPlayingBack.png</texture>
+			</control>
+			<control type="image">
+				<description>media info background image</description>
+				<posx>0</posx>
+				<posy>-20</posy>
+				<width>1280</width>
+				<height>160</height>
+				<colordiffuse>88FFFFFF</colordiffuse>
+				<texture flipy="true">HomeNowPlayingBack.png</texture>
 			</control>
 			
 			<!-- bookmarks, audio, video -->
@@ -541,6 +548,117 @@
 				<textcolor>grey</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
+
+			<control type="group">
+				<posx>120r</posx>
+				<posy>40</posy>
+				<control type="image">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>80</width>
+					<height>50</height>
+					<texture>OSDSeekFrame.png</texture>
+					<visible>Player.Rewinding | Player.Forwarding</visible>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>3</posy>
+					<width>20</width>
+					<height>44</height>
+					<texture>OSDSeekRewind.png</texture>
+					<visible>Player.Rewinding</visible>
+				</control>
+				<control type="image">
+					<posx>80</posx>
+					<posy>3</posy>
+					<width>20</width>
+					<height>44</height>
+					<texture>OSDSeekForward.png</texture>
+					<visible>Player.Forwarding</visible>
+				</control>
+
+				<control type="image">
+					<posx>28</posx>
+					<posy>4</posy>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD2x.png</texture>
+					<visible>Player.Rewinding2x</visible>
+				</control>
+				<control type="image">
+					<posx>25</posx>
+					<posy>4</posy>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD4x.png</texture>
+					<visible>Player.Rewinding4x</visible>
+				</control>
+				<control type="image">
+					<posx>22</posx>
+					<posy>4</posy>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD8x.png</texture>
+					<visible>Player.Rewinding8x</visible>
+				</control>
+				<control type="image">
+					<posx>19</posx>
+					<posy>4</posy>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD16x.png</texture>
+					<visible>Player.Rewinding16x</visible>
+				</control>
+				<control type="image">
+					<posx>17</posx>
+					<posy>4</posy>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD32x.png</texture>
+					<visible>Player.Rewinding32x</visible>
+				</control>
+
+				<control type="image">
+					<posx>34</posx>
+					<posy>4</posy>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD2x.png</texture>
+					<visible>Player.Forwarding2x</visible>
+				</control>
+				<control type="image">
+					<posx>37</posx>
+					<posy>4</posy>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD4x.png</texture>
+					<visible>Player.Forwarding4x</visible>
+				</control>
+				<control type="image">
+					<posx>40</posx>
+					<posy>4</posy>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD8x.png</texture>
+					<visible>Player.Forwarding8x</visible>
+				</control>
+				<control type="image">
+					<posx>43</posx>
+					<posy>4</posy>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD16x.png</texture>
+					<visible>Player.Forwarding16x</visible>
+				</control>
+				<control type="image">
+					<posx>45</posx>
+					<posy>4</posy>
+					<width>40</width>
+					<height>40</height>
+					<texture>OSD32x.png</texture>
+					<visible>Player.Forwarding32x</visible>
+				</control>
+			</control>
 			
 			<!-- window title -->
 			<control type="group">
@@ -564,7 +682,70 @@
 			
 			<!-- clock -->
 			<include>Clock</include>
+			<control type="image">
+				<description>media info background image</description>
+				<posx>0</posx>
+				<posy>100r</posy>
+				<width>1280</width>
+				<height>150</height>
+				<texture>HomeNowPlayingBack.png</texture>
+			</control>
+			<control type="image">
+				<description>media info background image</description>
+				<posx>0</posx>
+				<posy>100r</posy>
+				<width>1280</width>
+				<height>150</height>
+				<colordiffuse>88FFFFFF</colordiffuse>
+				<texture>HomeNowPlayingBack.png</texture>
+			</control>
+			<control type="label">
+				<posx>220</posx>
+				<posy>50r</posy>
+				<width>200</width>
+				<height>25</height>
+				<label>$INFO[Player.Time]</label>
+				<scroll>true</scroll>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="progress">
+				<description>Progressbar</description>
+				<posx>230</posx>
+				<posy>40r</posy>
+				<width>820</width>
+				<height>14</height>
+				<info>Player.Progress</info>
+			</control>
+			<control type="slider" id="87">
+				<description>Seek Slider</description>
+				<posx>230</posx>
+				<posy>44r</posy>
+				<width>820</width>
+				<height>17</height>
+				<onup>702</onup>
+				<ondown>26</ondown>
+				<action>seek</action>
+				<texturesliderbar>seekslider2.png</texturesliderbar>
+				<textureslidernib>osd_slider_nibNF.png</textureslidernib>
+				<textureslidernibfocus>osd_slider_nib.png</textureslidernibfocus>
+			</control>
+			<control type="label">
+				<posx>220r</posx>
+				<posy>50r</posy>
+				<width>200</width>
+				<height>25</height>
+				<label>$INFO[Player.Duration]</label>
+				<scroll>true</scroll>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font24_title</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
 		</control>
 	</controls>
 </window>
-

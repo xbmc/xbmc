@@ -24,7 +24,8 @@
 #include <stdio.h>
 #include <string>
 
-#include "utils/ReferenceCounting.h"
+#include "threads/CriticalSection.h"
+#include "utils/GlobalsHandling.h"
 
 #define LOG_LEVEL_NONE         -1 // nothing at all is logged
 #define LOG_LEVEL_NORMAL        0 // shows notice, error, severe and fatal
@@ -77,9 +78,4 @@ private:
   static void OutputDebugString(const std::string& line);
 };
 
-/**
- * This is a hack. There will be an instance of a ref to this "global" statically in each
- *  file that includes this header. This is so that the reference couting will
- *  work correctly from the data segment.
- */
-static xbmcutil::Referenced::ref<CLog::CLogGlobals> g_log_globals(xbmcutil::Singleton<CLog::CLogGlobals>::getInstance);
+XBMC_GLOBAL_REF(CLog::CLogGlobals,g_log_globals);

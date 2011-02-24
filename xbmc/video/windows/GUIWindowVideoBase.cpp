@@ -740,6 +740,9 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     GetDirectory(pItem->m_strPath, items);
     FormatAndSort(items);
 
+    int watchedMode = g_settings.GetWatchMode(m_vecItems->GetContent());
+    bool unwatchedOnly = watchedMode == VIDEO_SHOW_UNWATCHED;
+    bool watchedOnly = watchedMode == VIDEO_SHOW_WATCHED;
     for (int i = 0; i < items.Size(); ++i)
     {
       if (items[i]->m_bIsFolder)
@@ -754,6 +757,11 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
             continue;
         }
       }
+      else if (items[i]->HasVideoInfoTag() &&
+       ((unwatchedOnly && items[i]->GetVideoInfoTag()->m_playCount > 0) ||
+        (watchedOnly && items[i]->GetVideoInfoTag()->m_playCount <= 0)))
+        continue;
+
       AddItemToPlayList(items[i], queuedItems);
     }
   }

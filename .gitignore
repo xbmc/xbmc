@@ -1024,6 +1024,8 @@ autom4te.cache
 
 # /lib/libid3tag/
 /lib/libid3tag/Makefile
+/lib/libid3tag/libid3tag/autom4te.cache
+/lib/libid3tag/libid3tag/configure
 /lib/libid3tag/libid3tag/Makefile
 /lib/libid3tag/libid3tag/compat.c
 /lib/libid3tag/libid3tag/config.h
@@ -1100,6 +1102,7 @@ autom4te.cache
 /xbmc/screensavers/Makefile
 
 /xbmc/screensavers/rsxs-0.9/Makefile
+/xbmc/screensavers/rsxs-0.9/configure
 /xbmc/screensavers/rsxs-0.9/config.h
 /xbmc/screensavers/rsxs-0.9/config.log
 /xbmc/screensavers/rsxs-0.9/config/Makefile

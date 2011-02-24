@@ -473,9 +473,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   UpdateCurrentPTS();
 
-  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_MMS)) // HACK: until we figure out how to detect which mms streams are active
-    return true;
-
   // add the ffmpeg streams to our own stream array
   if (m_pFormatContext->nb_programs)
   {
