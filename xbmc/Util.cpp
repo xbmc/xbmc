@@ -2185,6 +2185,26 @@ CStdString CUtil::ResolveExecutablePath()
   return strExecutablePath;
 }
 
+#if defined(__APPLE__)
+CStdString CUtil::GetFrameworksPath(void)
+{
+  CStdString strFrameworksPath;
+  int      result = -1;
+  char     given_path[2*MAXPATHLEN];
+  char     real_given_path[2*MAXPATHLEN];
+  uint32_t path_size = 2*MAXPATHLEN;
+
+  result = _NSGetExecutablePath(given_path, &path_size);
+
+  if (result == 0)
+    realpath(given_path, real_given_path);
+    
+  strFrameworksPath = real_given_path;
+
+  return strFrameworksPath;
+}
+#endif
+
 void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CStdString>& vecSubtitles )
 {
   unsigned int startTimer = CTimeUtils::GetTimeMS();

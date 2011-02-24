@@ -65,6 +65,7 @@ PYO=$(addsuffix o, $(PY))
 ifeq ($(findstring osx,$(ARCH)), osx)
 all: $(SLIB)
 
+ifneq (@USE_EXTERNAL_PYTHON@,1)
 $(SLIB): $(PYWRAP) $(abs_top_srcdir)/lib/python/libpython2.4.a $(PYO) $(abs_top_srcdir)/tools/Mach5/wrapper.rb
 	rm -rf $(SYSDIR)/Lib
 	rsync -a --exclude '.svn' -t $(abs_top_srcdir)/lib/python/build/$(PYLIBDIR)/*.so $(SYSDIR)/Lib
@@ -78,6 +79,11 @@ $(SLIB): $(PYWRAP) $(abs_top_srcdir)/lib/python/libpython2.4.a $(PYO) $(abs_top_
 	$(abs_top_srcdir)/tools/Mach5/wrapper.rb $@ libpython;mv output.so $@
 	$(abs_top_srcdir)/tools/Mach5/wrapper.rb $@;mv output.so $@
 	@rm -rf tmp
+else
+$(SLIB): $(PYWRAP)
+	$(CC) $(LDFLAGS) -bundle -undefined dynamic_lookup -o $@ \
+		-l$(PYVERSION) wrapper_python.o
+endif
 
 $(abs_top_srcdir)/lib/python/libpython2.4.a: compile
 	$(MAKE) -C $(abs_top_srcdir)/lib/python

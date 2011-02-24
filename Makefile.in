@@ -423,7 +423,9 @@ endif
 endif
 screensavers: exports
 ifneq (arm, @ARCH@)
+ifneq ($(findstring osx,@ARCH@), osx)
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
+endif
 endif
 libpython: dllloader
 	$(MAKE) -C xbmc/interfaces/python
@@ -642,7 +644,7 @@ else
 endif
 
 tools/TexturePacker/TexturePacker: xbmc/guilib/guilib.a lib/libsquish/libsquish-@ARCH@.a
-	$(MAKE) -C tools/TexturePacker/
+#	$(MAKE) -C tools/TexturePacker/
 
 
 install-bin: xbmc.bin # developement convenience target

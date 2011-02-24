@@ -39,7 +39,7 @@
 
 #ifndef DLL_PATH_LIBCURL
 #ifdef __APPLE__
-#define DLL_PATH_LIBCURL       "special://xbmcbin/system/libcurl-@ARCH@.so"
+#define DLL_PATH_LIBCURL       "@CURL_SONAME@"
 #else
 #define DLL_PATH_LIBCURL       "@CURL_SONAME@"
 #endif

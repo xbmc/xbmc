@@ -180,6 +180,9 @@ public:
   static bool RunCommandLine(const CStdString& cmdLine, bool waitExit = false);
 #endif
   static CStdString ResolveExecutablePath();
+#if defined(__APPLE__)
+  static CStdString GetFrameworksPath(void);
+#endif
 };
 
 
