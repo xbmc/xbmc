@@ -464,14 +464,20 @@ void XBPython::Finalize()
     Py_Finalize();
     PyEval_ReleaseLock();
 
+#if !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
     UnloadExtensionLibs();
+#endif
 
     // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
+#if !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
     DllLoaderContainer::UnloadPythonDlls();
+#endif
 #ifdef _LINUX
     // we can't release it on windows, as this is done in UnloadPythonDlls() for win32 (see above).
     // The implementation for linux and os x needs looking at - UnloadPythonDlls() currently only searches for "python24.dll"
+#if !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
     DllLoaderContainer::ReleaseModule(m_pDll);
+#endif
 #endif
     m_hModule         = NULL;
     m_mainThreadState = NULL;
