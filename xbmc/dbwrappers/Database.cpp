@@ -393,7 +393,7 @@ void CDatabase::Close()
     return ;
   }
 
-  m_iRefCount--;
+  m_iRefCount = 0;
   m_bOpen = false;
 
   if (NULL == m_pDB.get() ) return ;
