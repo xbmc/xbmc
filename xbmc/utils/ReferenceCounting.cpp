@@ -19,12 +19,13 @@
  *
  */
 
+#include "threads/Atomics.h"
 #include "ReferenceCounting.h"
 
 // Comment in this #define in order to see REFCNT events in the log.
 //#define LOG_LIFECYCLE_EVENTS
 
-#ifdef LOG_LIFECYCLE_EVENTS
+#if defined(LOG_LIFECYCLE_EVENTS) || defined(DEBUG_REFS)
 #include "utils/log.h"
 #endif
 
@@ -34,12 +35,16 @@ namespace xbmcutil
 
   void Referenced::Release() const
   {
-    long ct = InterlockedDecrement((long*)&refs);
+    long ct = AtomicDecrement((long*)&refs);
 #ifdef LOG_LIFECYCLE_EVENTS
     CLog::Log(LOGDEBUG,"REFCNT decrementing to %ld on 0x%lx", ct, (long)(((void*)this)));
 #endif
+
+#ifndef DEBUG_REFS
     if(ct == 0)
       delete this;
+#endif
+
   }
 
   void Referenced::Acquire() const
@@ -48,7 +53,19 @@ namespace xbmcutil
     CLog::Log(LOGDEBUG,"REFCNT incrementing to %ld on 0x%lx",
               InterlockedIncrement((long*)&refs), (long)(((void*)this)));
 #else
-    InterlockedIncrement((long*)&refs);
+    AtomicIncrement((long*)&refs);
 #endif
   }
+
+#ifdef DEBUG_REFS
+  void Referenced::check() const
+  {
+    long val = refs;
+    if (val <= 0)
+    {
+      CLog::Log(LOGERROR,"REFCNT: access of deleted Referenced. Count is %ld on 0x%lx",
+                val, (long)(((void*)this)));
+    }
+  }
+#endif
 }

@@ -22,7 +22,7 @@
 
 #include <vector>
 #include "utils/StdString.h"
-#include "utils/ReferenceCounting.h"
+#include "utils/GlobalsHandling.h"
 
 class TiXmlElement;
 
@@ -289,12 +289,7 @@ class CAdvancedSettings : public virtual xbmcutil::Referenced
     unsigned int m_cacheMemBufferSize;
 
     bool m_jsonOutputCompact;
+    unsigned int m_jsonTcpPort;
 };
 
-/**
- * This is a hack. There will be an instance of a ref to this "global" statically in each
- *  file that includes this header. This is so that the reference couting will
- *  work correctly from the data segment.
- */
-static xbmcutil::Referenced::ref<CAdvancedSettings> g_advancedSettingsRef(xbmcutil::Singleton<CAdvancedSettings>::getInstance);
-#define g_advancedSettings (*(g_advancedSettingsRef.get()))
+XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

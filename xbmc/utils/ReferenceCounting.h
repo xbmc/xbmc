@@ -21,8 +21,17 @@
 
 #pragma once
 
-#include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
+#include <stddef.h>
+
+// Comment in this #define in order to log REFCNT errors.
+// WARNING! defining DEBUG_REFS prevents the Referenced objects from EVER
+// being deleted. They will ALL LEAK! This is just for debugging.
+//#define DEBUG_REFS
+#ifdef DEBUG_REFS
+#define refcheck if (ac != NULL) ac->Referenced::check()
+#else
+#define refcheck
+#endif
 
 namespace xbmcutil
 {
@@ -41,6 +50,10 @@ namespace xbmcutil
     void Release() const;
     void Acquire() const;
 
+#ifdef DEBUG_REFS
+    void check() const;
+#endif
+
     /**
      * This class is a smart pointer for a Referenced class.
      */
@@ -50,63 +63,45 @@ namespace xbmcutil
     public:
       typedef T*(*factory)();
 
-      inline ref(factory factoryMethod) : ac( (*factoryMethod)() ) { if (ac) ac->Acquire(); }
+      inline ref(factory factoryMethod) : ac( (*factoryMethod)() ) { if (ac) ac->Acquire(); refcheck; }
       inline ref() : ac(NULL) {}
-      inline ref(const T* addonClass) : ac((T*)addonClass) { if (ac) ac->Acquire(); }
+      inline ref(const T* _ac) : ac((T*)_ac) { if (ac) ac->Acquire(); refcheck; }
 
       // copy semantics
-      inline ref(const ref<T>& oref) : ac((T*)(oref.get())) { if (ac) ac->Acquire(); }
-      inline ref<T>& operator=(const ref<T>& oref)  
-      { if (ac) ac->Release(); ac=((T*)oref.get()); if (ac) ac->Acquire(); return *this; }
+      inline ref(ref<T> const & oref) : ac((T*)(oref.get())) { if (ac) ac->Acquire(); refcheck; }
+      template<class O> inline ref(ref<O> const & oref) : ac(static_cast<T*>(oref.get())) { if (ac) ac->Acquire(); refcheck; }
 
-      inline ref<T>& operator=(T* addonClass) { if (ac) ac->Release(); ac = addonClass; if (ac) ac->Acquire(); return *this; }
-      inline ref<T>& operator=(const T* addonClass) const 
-      { if (ac) ac->Release(); ac = addonClass; if (ac) ac->Acquire(); return *this; }
+      /**
+       * operator= should work with either another smart pointer or a pointer since it will 
+       *  be able to convert a pointer to a smart pointer using one of the above constuctors.
+       *
+       * Note: Operator= is ambiguous if you define both an operator=(ref<T>&) and an operator=(T*). I'm
+       *  opting for the route that boost took here figuring it has more history behind it.
+       */
+      inline ref<T>& operator=(ref<T> const & oref)  
+      { if (this != &oref) { if (ac) ac->Release(); ac=((T*)oref.get()); if (ac) ac->Acquire(); } refcheck; return *this; }
 
-      inline T* operator->() { return ac; }
-      inline const T* operator->() const { return ac; }
-      inline operator T*() { return ac; }
-      inline operator const T*() const { return ac; }
-      inline const T* get() const { return ac; }
-      inline T* get() { return ac; }
-      inline T& getRef() { return *ac; }
-      inline const T& getRef() const { return *ac; }
+      inline T* operator->() const { refcheck; return ac; }
 
-      inline ~ref() { if (ac) ac->Release(); }
-      inline bool isNull() const { return ac == NULL; }
-      inline bool isNotNull() const { return ac; }
-      inline bool isSet() const { return ac; }
-      inline bool operator!() const { return ac != NULL; }
+      /**
+       * This operator doubles as the value in a boolean expression.
+       */
+      inline operator T*() const { refcheck; return ac; }
+      inline T* get() const { refcheck; return ac; }
+      inline T& getRef() const { refcheck; return *ac; }
+
+      inline ~ref() { refcheck; if (ac) ac->Release(); }
+      inline bool isNull() const { refcheck; return ac == NULL; }
+      inline bool isNotNull() const { refcheck; return ac; }
+      inline bool isSet() const { refcheck; return ac; }
+      inline bool operator!() const { refcheck; return ac == NULL; }
+
+      // This is there only for boost compatibility
+      template<class O> inline void reset(ref<O> const & oref) { refcheck; (*this) = static_cast<T*>(oref.get()); refcheck; }
+      template<class O> inline void reset(O * oref) { refcheck; (*this) = static_cast<T*>(oref); refcheck; }
+      inline void reset() { refcheck; if (ac) ac->Release(); ac = NULL; }
     };
-  };
 
-  /**
-   * Currently THIS IS NOT THREAD SAFE! Why not just add a lock you ask?
-   *  Because this singleton is used to initialize global variables and
-   *  there is an issue with having the lock used prior to its 
-   *  initialization. No matter what, if this class is used as a replacement
-   *  for global variables there's going to be a race condition if it's used
-   *  anywhere else. So currently this is the only prescribed use.
-   *
-   * Therefore this hack depends on the fact that compilation unit global/static 
-   *  initialization is done in a single thread.
-   *
-   * In the spirit of making changes incrementally I've opted to not add Atomic*
-   *  locking to this class yet. It doesn't need it (yet) as it's only called
-   *  from the static initialization thread prior to main.
-   */
-  template <class T> class Singleton
-  {
-    static T* instance;
-  public:
-    static T* getInstance()
-    {
-      if (instance == NULL)
-        instance = new T;
-      return instance;
-    }
   };
-
-  template <class T> T* Singleton<T>::instance;
 
 }
