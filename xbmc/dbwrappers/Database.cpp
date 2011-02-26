@@ -25,8 +25,10 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/Crc32.h"
 #include "filesystem/SpecialProtocol.h"
+#include "filesystem/File.h"
 #include "utils/AutoPtrHandle.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 
 using namespace AUTOPTR;
 using namespace dbiplus;
@@ -269,12 +271,53 @@ bool CDatabase::Open(DatabaseSettings &dbSettings)
       CLog::Log(LOGINFO, "essential mysql database information is missing (eg. host, name, user, pass)");
   }
 
-  // always safely fallback to sqlite3
+  // always safely fallback to sqlite3, and use separate, versioned database
   if (m_sqlite)
   {
     dbSettings.type = "sqlite3";
     dbSettings.host = _P(g_settings.GetDatabaseFolder());
-    dbSettings.name = GetDefaultDBName();
+
+    int version = GetMinVersion();
+    CStdString latestDb;
+    latestDb.Format("%s%d.db", GetBaseDBName(), version);
+    while (version >= 0)
+    {
+      if (version)
+        dbSettings.name.Format("%s%d.db", GetBaseDBName(), version);
+      else
+        dbSettings.name.Format("%s.db", GetBaseDBName());
+      if (Connect(dbSettings, false))
+      { 
+        // Database exists, take a copy for our current version (if needed) and reopen that one
+        if (version < GetMinVersion())
+        {
+          CLog::Log(LOGNOTICE, "Old database found - updating from version %i to %i", version, GetMinVersion());
+          Close();
+          CStdString currentDb = URIUtils::AddFileToFolder(dbSettings.host, dbSettings.name);
+          CStdString newPath = URIUtils::AddFileToFolder(dbSettings.host, latestDb);
+          if (!XFILE::CFile::Cache(currentDb, newPath))
+          {
+            CLog::Log(LOGERROR, "Unable to copy old database %s to new version %s", dbSettings.name.c_str(), latestDb.c_str());
+            return false;
+          }
+          dbSettings.name = latestDb;
+          if (!Connect(dbSettings, false))
+          {
+            CLog::Log(LOGERROR, "Unable to open freshly copied database %s", dbSettings.name.c_str());
+            return false;
+          }
+        }
+        // yay - we have a copy of our db, now do our worst with it
+        if (UpdateVersion(dbSettings.name))
+          return true;
+        // update failed - loop around and see if we have another one available
+        Close();
+      }
+      // drop back to the previous version and try that
+      version--;
+    }
+    // unable to open any version fall through to create a new one
+    dbSettings.name = latestDb;
   }
 
   if (Connect(dbSettings, true) && UpdateVersion(dbSettings.name))
