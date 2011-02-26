@@ -30,7 +30,6 @@
 #include <string>
 
 #include "sqlitedataset.h"
-#include "utils/log.h"
 #include "system.h" // for Sleep(), OutputDebugString() and GetLastError()
 
 using namespace std;
@@ -220,13 +219,10 @@ int SqliteDatabase::connect(bool create) {
       return DB_CONNECTION_OK;
     }
 
-    CLog::Log(LOGERROR, "Unable to open database: %s (%u)", db_fullpath.c_str(), GetLastError());
     return DB_CONNECTION_NONE;
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "Unable to open database: %s (%u)",
-              db_fullpath.c_str(), GetLastError());
   }
   return DB_CONNECTION_NONE;
 }
