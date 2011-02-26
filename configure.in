@@ -1346,7 +1346,6 @@ OUTPUT_FILES="Makefile \
     lib/cximage-6.0/Makefile \
     xbmc/interfaces/python/Makefile \
     xbmc/interfaces/python/xbmcmodule/Makefile \
-    xbmc/interfaces/python/linux/Makefile \
     lib/libUPnP/Makefile \
     xbmc/DllPaths_generated.h \
     xbmc/linux/Makefile \
@@ -1375,6 +1374,13 @@ if test "$use_external_libass" = "no"; then
 else
   AC_DEFINE([USE_EXTERNAL_LIBASS], [1], [Whether to use external libass library.])
   USE_EXTERNAL_LIBASS=1
+fi
+
+# if we're not using external python then we need to 
+#  buld the lib for linux
+if test "$use_external_python" = "no"; then
+   OUTPUT_FILES="$OUTPUT_FILES \
+    xbmc/interfaces/python/linux/Makefile"
 fi
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding

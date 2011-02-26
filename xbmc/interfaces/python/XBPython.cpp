@@ -338,6 +338,7 @@ void XBPython::Initialize()
   m_iDllScriptCounter++;
   if (!m_bInitialized)
   {
+#if (!(defined _LINUX && defined USE_EXTERNAL_PYTHON))
       m_pDll = DllLoaderContainer::LoadModule(PYTHON_DLL, NULL, true);
 
       if (!m_pDll || !python_load_dll(*m_pDll))
@@ -346,6 +347,7 @@ void XBPython::Initialize()
         Finalize();
         return;
       }
+#endif
 
       // first we check if all necessary files are installed
 #ifndef _LINUX

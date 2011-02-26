@@ -21,6 +21,7 @@
  *
  */
 
+#if (!defined USE_EXTERNAL_PYTHON)
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
@@ -96,3 +97,4 @@ class LibraryLoader;
 }
 #endif
 
+#endif
