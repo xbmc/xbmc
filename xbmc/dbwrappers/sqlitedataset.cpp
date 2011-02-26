@@ -30,7 +30,6 @@
 #include <string>
 
 #include "sqlitedataset.h"
-#include "utils/log.h"
 #include "system.h" // for Sleep(), OutputDebugString() and GetLastError()
 
 using namespace std;
@@ -166,7 +165,7 @@ const char *SqliteDatabase::getErrorMsg() {
    return error.c_str();
 }
 
-int SqliteDatabase::connect() {
+int SqliteDatabase::connect(bool create) {
   if (host.empty() || db.empty())
     return DB_CONNECTION_NONE;
   
@@ -205,7 +204,10 @@ int SqliteDatabase::connect() {
   {
 
     disconnect();
-    if (sqlite3_open(db_fullpath.c_str(), &conn)==SQLITE_OK)
+    int flags = SQLITE_OPEN_READWRITE;
+    if (create)
+      flags |= SQLITE_OPEN_CREATE;
+    if (sqlite3_open_v2(db_fullpath.c_str(), &conn, flags, NULL)==SQLITE_OK)
     {
       sqlite3_busy_handler(conn, busy_callback, NULL);
       char* err=NULL;
@@ -217,13 +219,10 @@ int SqliteDatabase::connect() {
       return DB_CONNECTION_OK;
     }
 
-    CLog::Log(LOGERROR, "Unable to open database: %s (%u)", db_fullpath.c_str(), GetLastError());
     return DB_CONNECTION_NONE;
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "Unable to open database: %s (%u)",
-              db_fullpath.c_str(), GetLastError());
   }
   return DB_CONNECTION_NONE;
 }
@@ -253,7 +252,7 @@ void SqliteDatabase::disconnect(void) {
 }
 
 int SqliteDatabase::create() {
-  return connect();
+  return connect(true);
 }
 
 int SqliteDatabase::drop() {
