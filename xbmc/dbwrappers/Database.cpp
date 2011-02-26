@@ -37,8 +37,7 @@ using namespace dbiplus;
 
 CDatabase::CDatabase(void)
 {
-  m_bOpen = false;
-  m_iRefCount = 0;
+  m_openCount = 0;
   m_sqlite = true;
   m_bMultiWrite = false;
 }
@@ -255,7 +254,7 @@ bool CDatabase::Open(DatabaseSettings &dbSettings)
 {
   if (IsOpen())
   {
-    m_iRefCount++;
+    m_openCount++;
     return true;
   }
 
@@ -385,9 +384,6 @@ bool CDatabase::Connect(DatabaseSettings &dbSettings, bool create)
     CreateTables();
   }
 
-  // Mark our db as open here to make our destructor to properly close the file handle
-  m_bOpen = true;
-
   // sqlite3 post connection operations
   if (dbSettings.type.Equals("sqlite3"))
   {
@@ -396,7 +392,7 @@ bool CDatabase::Connect(DatabaseSettings &dbSettings, bool create)
     m_pDS->exec("PRAGMA count_changes='OFF'\n");
   }
 
-  m_iRefCount++;
+  m_openCount = 1; // our database is open
   return true;
 }
 
@@ -428,22 +424,21 @@ bool CDatabase::UpdateVersion(const CStdString &dbName)
 
 bool CDatabase::IsOpen()
 {
-  return m_bOpen;
+  return m_openCount > 0;
 }
 
 void CDatabase::Close()
 {
-  if (!m_bOpen)
-    return ;
+  if (m_openCount == 0)
+    return;
 
-  if (m_iRefCount > 1)
+  if (m_openCount > 1)
   {
-    m_iRefCount--;
-    return ;
+    m_openCount--;
+    return;
   }
 
-  m_iRefCount = 0;
-  m_bOpen = false;
+  m_openCount = 0;
 
   if (NULL == m_pDB.get() ) return ;
   if (NULL != m_pDS.get()) m_pDS->close();

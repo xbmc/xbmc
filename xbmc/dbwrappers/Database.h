@@ -116,7 +116,6 @@ protected:
 
   bool UpdateVersion(const CStdString &dbName);
 
-  bool m_bOpen;
   bool m_sqlite; ///< \brief whether we use sqlite (defaults to true)
 
   std::auto_ptr<dbiplus::Database> m_pDB;
@@ -128,5 +127,5 @@ private:
   bool UpdateVersionNumber();
 
   bool m_bMultiWrite; /*!< True if there are any queries in the queue, false otherwise */
-  int m_iRefCount;
+  unsigned int m_openCount;
 };
