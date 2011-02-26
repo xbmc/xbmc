@@ -112,7 +112,7 @@ protected:
   virtual bool UpdateOldVersion(int version) { return true; };
 
   virtual int GetMinVersion() const=0;
-  virtual const char *GetDefaultDBName() const=0;
+  virtual const char *GetBaseDBName() const=0;
 
   bool UpdateVersion(const CStdString &dbName);
 
