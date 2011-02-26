@@ -258,7 +258,7 @@ bool CDatabase::Open(DatabaseSettings &dbSettings)
   }
 
   m_sqlite = true;
-  
+
   if ( dbSettings.type.Equals("mysql") )
   {
     // check we have all information before we cancel the fallback
@@ -279,6 +279,16 @@ bool CDatabase::Open(DatabaseSettings &dbSettings)
     dbSettings.host = _P(g_settings.GetDatabaseFolder());
   }
 
+  if (Connect(dbSettings, true) && UpdateVersion(dbSettings.name))
+    return true;
+  // failed to update or open the database
+  Close();
+  CLog::Log(LOGERROR, "Unable to open database %s", dbSettings.name.c_str());
+  return false;
+}
+
+bool CDatabase::Connect(DatabaseSettings &dbSettings, bool create)
+{
   // create the appropriate database structure
   if (dbSettings.type.Equals("sqlite3"))
   {
@@ -313,14 +323,11 @@ bool CDatabase::Open(DatabaseSettings &dbSettings)
   m_pDS.reset(m_pDB->CreateDataset());
   m_pDS2.reset(m_pDB->CreateDataset());
 
-  if (m_pDB->connect(true) != DB_CONNECTION_OK)
-  {
-    CLog::Log(LOGERROR, "Unable to open database at host: %s db: %s (old version?)", dbSettings.host.c_str(), dbSettings.name.c_str());
+  if (m_pDB->connect(create) != DB_CONNECTION_OK)
     return false;
-  }
 
   // test if db already exists, if not we need to create the tables
-  if (!m_pDB->exists())
+  if (!m_pDB->exists() && create)
   {
     if (dbSettings.type.Equals("sqlite3"))
     {
@@ -339,13 +346,6 @@ bool CDatabase::Open(DatabaseSettings &dbSettings)
 
   // Mark our db as open here to make our destructor to properly close the file handle
   m_bOpen = true;
-
-  // Database exists, check the version number
-  if (!UpdateVersion(dbSettings.name))
-  {
-    Close();
-    return false;
-  }
 
   // sqlite3 post connection operations
   if (dbSettings.type.Equals("sqlite3"))
