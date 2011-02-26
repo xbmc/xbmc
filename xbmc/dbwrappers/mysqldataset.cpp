@@ -793,11 +793,11 @@ void MysqlDatabase::mysqlVXPrintf(
           while( realvalue<1.0 ){ realvalue *= 10.0; exp--; }
           if( exp>350 ){
             if( prefix=='-' ){
-              bufpt = "-Inf";
+              bufpt = (char *)"-Inf";
             }else if( prefix=='+' ){
-              bufpt = "+Inf";
+              bufpt = (char *)"+Inf";
             }else{
-              bufpt = "Inf";
+              bufpt = (char *)"Inf";
             }
             length = strlen(bufpt);
             break;
@@ -929,7 +929,7 @@ void MysqlDatabase::mysqlVXPrintf(
       case etDYNSTRING:
         bufpt = va_arg(ap,char*);
         if( bufpt==0 ){
-          bufpt = "";
+          bufpt = (char *)"";
         }else if( xtype==etDYNSTRING ){
           zExtra = bufpt;
         }
