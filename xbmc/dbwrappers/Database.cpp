@@ -313,7 +313,7 @@ bool CDatabase::Open(DatabaseSettings &dbSettings)
   m_pDS.reset(m_pDB->CreateDataset());
   m_pDS2.reset(m_pDB->CreateDataset());
 
-  if (m_pDB->connect() != DB_CONNECTION_OK)
+  if (m_pDB->connect(true) != DB_CONNECTION_OK)
   {
     CLog::Log(LOGERROR, "Unable to open database at host: %s db: %s (old version?)", dbSettings.host.c_str(), dbSettings.name.c_str());
     return false;
