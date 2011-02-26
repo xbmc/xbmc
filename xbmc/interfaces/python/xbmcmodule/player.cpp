@@ -557,7 +557,7 @@ namespace PYXBMC
         g_LangCodeExpander.Lookup(FullLang, strName);
         if (FullLang.IsEmpty())
           g_application.m_pPlayer->GetAudioStreamName(iStream, FullLang);
-        PyList_Append(list, Py_BuildValue("s", FullLang.c_str()));
+        PyList_Append(list, Py_BuildValue((char*)"s", FullLang.c_str()));
       }
       return list;
     }
