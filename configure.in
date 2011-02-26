@@ -5,6 +5,7 @@ AC_PREREQ(2.59)
 AC_INIT([xbmc], [9.11], [http://trac.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
+m4_include([m4/ax_python_devel.m4])
 
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([foreign])
@@ -868,28 +869,19 @@ fi
 
 # External Python
 if test "$use_external_python" = "yes"; then
-  AC_CHECK_LIB([python2.6], [main],
-    [AC_DEFINE([HAVE_LIBPYTHON2_6], [1],
-    [Define to 1 if you have the 'python2.6' library.])
-    USE_PYTHON2_6=1],
-  [AC_CHECK_LIB([python2.5], [main],
-    [AC_DEFINE([HAVE_LIBPYTHON2_5], [1],
-    [Define to 1 if you have the 'python2.5' library.])
-    USE_PYTHON2_5=1],
-  [AC_CHECK_LIB([python2.4], [main],
-    [AC_DEFINE([HAVE_LIBPYTHON2_4], [1],
-    [Define to 1 if you have the 'python2.4' library.])
-    USE_PYTHON2_4=1],
-  [AC_MSG_ERROR($missing_library)] )] )] )
+  AX_PYTHON_DEVEL([>= 2.4])
+  PYTHON_VERSION=$ac_python_version
 
-  AC_MSG_NOTICE($external_python_enabled)
-  test "$USE_PYTHON2_6" && AC_MSG_NOTICE([Using Python 2.6])
-  test "$USE_PYTHON2_5" && AC_MSG_NOTICE([Using Python 2.5])
-  test "$USE_PYTHON2_4" && AC_MSG_NOTICE([Using Python 2.4])
-  USE_EXTERNAL_PYTHON=1
-  AC_DEFINE([USE_EXTERNAL_PYTHON], [1], [Whether to use external python library.])
+  if test -z "$PYTHON_VERSION"; then
+    AC_MSG_NOTICE($external_python_disabled)
+    USE_EXTERNAL_PYTHON=0
+  else
+    AC_MSG_NOTICE($external_python_enabled)
+    AC_MSG_NOTICE([Using Python $PYTHON_VERSION])
+    USE_EXTERNAL_PYTHON=1
+    AC_DEFINE([USE_EXTERNAL_PYTHON], [1], [Whether to use external python library.])
+  fi
 else
-  AC_MSG_NOTICE($external_python_disabled)
   USE_EXTERNAL_PYTHON=0
 fi
 
@@ -1352,6 +1344,8 @@ OUTPUT_FILES="Makefile \
     lib/libsquish/Makefile \
     lib/libid3tag/Makefile \
     lib/cximage-6.0/Makefile \
+    xbmc/interfaces/python/Makefile \
+    xbmc/interfaces/python/xbmcmodule/Makefile \
     xbmc/interfaces/python/linux/Makefile \
     lib/libUPnP/Makefile \
     xbmc/DllPaths_generated.h \
@@ -1403,9 +1397,7 @@ AC_SUBST(USE_EXTERNAL_LIBASS)
 AC_SUBST(USE_EXTERNAL_LIBMPEG2)
 AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
 AC_SUBST(USE_EXTERNAL_PYTHON)
-AC_SUBST(USE_PYTHON2_6)
-AC_SUBST(USE_PYTHON2_5)
-AC_SUBST(USE_PYTHON2_4)
+AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
 AC_SUBST(HAVE_XBMC_NONFREE)
 AC_SUBST(USE_ASAP_CODEC)

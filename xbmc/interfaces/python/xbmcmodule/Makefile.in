@@ -37,5 +37,7 @@ SRCS=action.cpp \
 
 LIB=xbmcmodule.a
 
-include ../../../../Makefile.include
+INCLUDES+= @PYTHON_CPPFLAGS@
+
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

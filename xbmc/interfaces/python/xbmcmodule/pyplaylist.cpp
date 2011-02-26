@@ -19,20 +19,14 @@
  *
  */
 
-#include "system.h"
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "PlayListPlayer.h"
 #include "utils/URIUtils.h"
 #include "pyplaylist.h"
 #if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/structmember.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
+#include <Python.h>
 #else
   #include "python/Include/structmember.h"
 #endif

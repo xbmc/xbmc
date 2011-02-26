@@ -1015,6 +1015,8 @@ config.log
 
 # /xbmc/interfaces/
 /xbmc/interfaces/Makefile
+/xbmc/interfaces/python/Makefile
+/xbmc/interfaces/python/xbmcmodule/Makefile
 /xbmc/interfaces/python/linux/Makefile
 /xbmc/interfaces/python/linux/wrapper_python.def
 
