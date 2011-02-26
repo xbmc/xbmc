@@ -27,3 +27,4 @@ coreutils-5.97-MSYS-1.0.11-snapshot.tar.bz2				http://www.finalmediaplayer.com/d
 ; for xargs.exe
 findutils-4.4.2-2-msys-1.0.13-bin.tar.lzma				http://downloads.sourceforge.net/project/mingw/MSYS/findutils/findutils-4.4.2-2/
 automake-1.11.1-1-msys-1.0.13-bin.tar.lzma				http://downloads.sourceforge.net/project/mingw/MSYS/automake/automake-1.11.1-1/
+mktemp-1.6-2-msys-1.0.13-bin.tar.lzma					http://downloads.sourceforge.net/project/mingw/MSYS/mktemp/mktemp-1.6-2/
