@@ -262,21 +262,19 @@ bool CDatabase::Open(DatabaseSettings &dbSettings)
   if ( dbSettings.type.Equals("mysql") )
   {
     // check we have all information before we cancel the fallback
-    if ( ! (dbSettings.host.IsEmpty() || dbSettings.user.IsEmpty() || dbSettings.pass.IsEmpty()) )
+    if ( ! (dbSettings.host.IsEmpty() || dbSettings.name.IsEmpty() ||
+            dbSettings.user.IsEmpty() || dbSettings.pass.IsEmpty()) )
       m_sqlite = false;
     else
-      CLog::Log(LOGINFO, "essential mysql database information is missing (eg. host, user, pass)");
+      CLog::Log(LOGINFO, "essential mysql database information is missing (eg. host, name, user, pass)");
   }
-
-  // set default database name if appropriate
-  if ( dbSettings.name.IsEmpty() )
-    dbSettings.name = GetDefaultDBName();
 
   // always safely fallback to sqlite3
   if (m_sqlite)
   {
     dbSettings.type = "sqlite3";
     dbSettings.host = _P(g_settings.GetDatabaseFolder());
+    dbSettings.name = GetDefaultDBName();
   }
 
   if (Connect(dbSettings, true) && UpdateVersion(dbSettings.name))
