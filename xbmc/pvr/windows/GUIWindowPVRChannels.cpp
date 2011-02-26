@@ -103,7 +103,11 @@ const CPVRChannelGroup *CGUIWindowPVRChannels::SelectedGroup(void)
 
 void CGUIWindowPVRChannels::UpdateData(void)
 {
+  if (m_bIsFocusing)
+    return;
+
   CLog::Log(LOGDEBUG, "CGUIWindowPVRChannels - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
+  m_bIsFocusing = true;
   m_bUpdateRequired = false;
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
@@ -116,7 +120,6 @@ void CGUIWindowPVRChannels::UpdateData(void)
       m_bRadio ? "radio" : "tv",
       m_bShowHiddenChannels ? ".hidden" : currentGroup->GroupName());
 
-  m_parent->m_viewControl.SetSelectedItem(m_iSelected);
   m_parent->Update(m_parent->m_vecItems->m_strPath);
 
   /* empty list */
@@ -142,11 +145,15 @@ void CGUIWindowPVRChannels::UpdateData(void)
     }
   }
 
+  m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
+  m_parent->m_viewControl.SetSelectedItem(m_iSelected);
+
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(m_bRadio ? 19024 : 19023));
   if (m_bShowHiddenChannels)
     m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19022));
   else
     m_parent->SetLabel(CONTROL_LABELGROUP, currentGroup->GroupName());
+  m_bIsFocusing = false;
 }
 
 bool CGUIWindowPVRChannels::OnClickButton(CGUIMessage &message)

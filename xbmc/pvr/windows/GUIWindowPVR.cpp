@@ -218,13 +218,17 @@ void CGUIWindowPVR::SetLabel(int iControl, int iLabel)
   SET_CONTROL_LABEL(iControl, iLabel);
 }
 
+void CGUIWindowPVR::UpdateButtons(void)
+{
+  m_windowGuide->UpdateButtons();
+}
+
 bool CGUIWindowPVR::OnMessageFocus(CGUIMessage &message)
 {
   bool bReturn = false;
 
   if (message.GetMessage() == GUI_MSG_FOCUSED)
   {
-    bReturn = true;
     m_windowChannelsRadio->OnMessageFocus(message) ||
         m_windowChannelsTV->OnMessageFocus(message) ||
         m_windowGuide->OnMessageFocus(message) ||

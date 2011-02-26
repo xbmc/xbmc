@@ -62,6 +62,7 @@ public:
 protected:
   virtual void SetLabel(int iControl, const CStdString &strLabel);
   virtual void SetLabel(int iControl, int iLabel);
+  virtual void UpdateButtons(void);
 
 private:
   virtual bool OnMessageFocus(CGUIMessage &message);

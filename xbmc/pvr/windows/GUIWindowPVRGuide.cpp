@@ -111,7 +111,10 @@ void CGUIWindowPVRGuide::OnInitWindow(void)
 
 void CGUIWindowPVRGuide::UpdateData(void)
 {
+  if (m_bIsFocusing)
+    return;
   CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
+  m_bIsFocusing = true;
   CPVRChannel CurrentChannel;
   bool bGotCurrentChannel = CPVRManager::Get()->GetCurrentChannel(&CurrentChannel);
 
@@ -197,6 +200,7 @@ void CGUIWindowPVRGuide::UpdateData(void)
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19029));
   UpdateButtons();
+  m_bIsFocusing = false;
 }
 
 bool CGUIWindowPVRGuide::IsSelectedButton(CGUIMessage &message) const
@@ -238,8 +242,11 @@ bool CGUIWindowPVRGuide::OnClickButton(CGUIMessage &message)
       m_iGuideView = GUIDE_VIEW_NEXT;
     else if (iControl == CONTROL_BTNGUIDE_TIMELINE)
       m_iGuideView = GUIDE_VIEW_TIMELINE;
+    else
+      bReturn = false;
 
-    UpdateData();
+    if (bReturn)
+      UpdateData();
   }
 
   return bReturn;

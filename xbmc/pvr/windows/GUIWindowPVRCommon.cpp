@@ -51,6 +51,7 @@ CGUIWindowPVRCommon::CGUIWindowPVRCommon(CGUIWindowPVR *parent, PVRWindow window
   m_iSelected       = 0;
   m_iSortOrder      = SORT_ORDER_ASC;
   m_iSortMethod     = SORT_METHOD_DATE;
+  m_bIsFocusing     = false;
 }
 
 bool CGUIWindowPVRCommon::operator ==(const CGUIWindowPVRCommon &right) const
@@ -124,7 +125,7 @@ bool CGUIWindowPVRCommon::OnMessageFocus(CGUIMessage &message)
       (IsSelectedControl(message) || IsSavedView()))
   {
     CLog::Log(LOGDEBUG, "CGUIWindowPVRCommon - %s - focus set to window '%s'", __FUNCTION__, GetName());
-    if (!IsActive() || m_bUpdateRequired)
+    if (!IsActive())
       UpdateData();
     else
       m_iSelected = m_parent->m_viewControl.GetSelectedItem();
