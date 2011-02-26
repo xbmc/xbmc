@@ -81,6 +81,7 @@ bool CGUIWindowPVRTimers::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIWindowPVRTimers::UpdateData(void)
 {
+  CLog::Log(LOGDEBUG, "CGUIWindowPVRTimers - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
   m_bUpdateRequired = false;
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);

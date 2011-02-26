@@ -111,8 +111,9 @@ void CGUIWindowPVRGuide::OnInitWindow(void)
 
 void CGUIWindowPVRGuide::UpdateData(void)
 {
+  CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
   CPVRChannel CurrentChannel;
-  CPVRManager::Get()->GetCurrentChannel(&CurrentChannel);
+  bool bGotCurrentChannel = CPVRManager::Get()->GetCurrentChannel(&CurrentChannel);
 
   m_bUpdateRequired = false;
   m_parent->m_vecItems->Clear();
@@ -122,9 +123,10 @@ void CGUIWindowPVRGuide::UpdateData(void)
     m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_CHANNEL);
 
     m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19029));
-    m_parent->SetLabel(CONTROL_LABELGROUP, CurrentChannel.ChannelName().c_str());
+    if (bGotCurrentChannel)
+      m_parent->SetLabel(CONTROL_LABELGROUP, CurrentChannel.ChannelName().c_str());
 
-    if (CurrentChannel.GetEPG(m_parent->m_vecItems) == 0)
+    if (!bGotCurrentChannel || CurrentChannel.GetEPG(m_parent->m_vecItems) == 0)
     {
       CFileItemPtr item;
       item.reset(new CFileItem("pvr://guide/" + CurrentChannel.ChannelName() + "/empty.epg", false));
@@ -136,13 +138,14 @@ void CGUIWindowPVRGuide::UpdateData(void)
   }
   else if (m_iGuideView == GUIDE_VIEW_NOW)
   {
+    bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
     m_parent->m_guideGrid = NULL;
     m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
 
     m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19030));
     m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19030));
 
-    if (CPVRManager::GetEpg()->GetEPGNow(m_parent->m_vecItems, CurrentChannel.IsRadio()) == 0)
+    if (CPVRManager::GetEpg()->GetEPGNow(m_parent->m_vecItems, bRadio) == 0)
     {
       CFileItemPtr item;
       item.reset(new CFileItem("pvr://guide/now/empty.epg", false));
@@ -154,13 +157,14 @@ void CGUIWindowPVRGuide::UpdateData(void)
   }
   else if (m_iGuideView == GUIDE_VIEW_NEXT)
   {
+    bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
     m_parent->m_guideGrid = NULL;
     m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
 
     m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19031));
     m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19031));
 
-    if (CPVRManager::GetEpg()->GetEPGNext(m_parent->m_vecItems, CurrentChannel.IsRadio()) == 0)
+    if (CPVRManager::GetEpg()->GetEPGNext(m_parent->m_vecItems, bRadio) == 0)
     {
       CFileItemPtr item;
       item.reset(new CFileItem("pvr://guide/next/empty.epg", false));
@@ -172,10 +176,11 @@ void CGUIWindowPVRGuide::UpdateData(void)
   }
   else if (m_iGuideView == GUIDE_VIEW_TIMELINE)
   {
+    bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
     m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19032));
     m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
 
-    if (CPVRManager::GetEpg()->GetEPGAll(m_parent->m_vecItems, CurrentChannel.IsRadio()) > 0)
+    if (CPVRManager::GetEpg()->GetEPGAll(m_parent->m_vecItems, bRadio) > 0)
     {
       CDateTime now = CDateTime::GetCurrentDateTime();
       CDateTime m_gridStart = now - CDateTimeSpan(0, 0, 0, (now.GetMinute() % 30) * 60 + now.GetSecond()) - CDateTimeSpan(0, g_guiSettings.GetInt("epg.lingertime") / 60, g_guiSettings.GetInt("epg.lingertime") % 60, 0);
@@ -194,6 +199,16 @@ void CGUIWindowPVRGuide::UpdateData(void)
   UpdateButtons();
 }
 
+bool CGUIWindowPVRGuide::IsSelectedButton(CGUIMessage &message) const
+{
+  unsigned int iControl = message.GetSenderId();
+  return (iControl == CONTROL_BTNGUIDE ||
+      iControl == CONTROL_BTNGUIDE_CHANNEL ||
+      iControl == CONTROL_BTNGUIDE_NOW ||
+      iControl == CONTROL_BTNGUIDE_NEXT ||
+      iControl == CONTROL_BTNGUIDE_TIMELINE);
+}
+
 bool CGUIWindowPVRGuide::IsSelectedList(CGUIMessage &message) const
 {
   return ((message.GetSenderId() == CONTROL_LIST_TIMELINE && m_iGuideView == GUIDE_VIEW_TIMELINE) ||
@@ -207,9 +222,23 @@ bool CGUIWindowPVRGuide::OnClickButton(CGUIMessage &message)
 
   if (IsSelectedButton(message))
   {
+    unsigned int iControl = message.GetSenderId();
     bReturn = true;
-    if (++m_iGuideView > GUIDE_VIEW_TIMELINE)
+
+    if (iControl == CONTROL_BTNGUIDE)
+    {
+      if (++m_iGuideView > GUIDE_VIEW_TIMELINE)
+        m_iGuideView = GUIDE_VIEW_CHANNEL;
+    }
+    else if (iControl == CONTROL_BTNGUIDE_CHANNEL)
       m_iGuideView = GUIDE_VIEW_CHANNEL;
+    else if (iControl == CONTROL_BTNGUIDE_NOW)
+      m_iGuideView = GUIDE_VIEW_NOW;
+    else if (iControl == CONTROL_BTNGUIDE_NEXT)
+      m_iGuideView = GUIDE_VIEW_NEXT;
+    else if (iControl == CONTROL_BTNGUIDE_TIMELINE)
+      m_iGuideView = GUIDE_VIEW_TIMELINE;
+
     UpdateData();
   }
 

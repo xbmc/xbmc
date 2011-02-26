@@ -103,6 +103,7 @@ const CPVRChannelGroup *CGUIWindowPVRChannels::SelectedGroup(void)
 
 void CGUIWindowPVRChannels::UpdateData(void)
 {
+  CLog::Log(LOGDEBUG, "CGUIWindowPVRChannels - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
   m_bUpdateRequired = false;
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
@@ -168,6 +169,7 @@ bool CGUIWindowPVRChannels::OnClickList(CGUIMessage &message)
 
   if (IsSelectedList(message))
   {
+    bReturn = true;
     int iAction = message.GetParam1();
     int iItem = m_parent->m_viewControl.GetSelectedItem();
 
@@ -176,7 +178,6 @@ bool CGUIWindowPVRChannels::OnClickList(CGUIMessage &message)
     CFileItemPtr pItem = m_parent->m_vecItems->Get(iItem);
 
     /* process actions */
-    bReturn = true;
     if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK || iAction == ACTION_PLAY)
     {
       if (ActionPlayChannel(pItem.get()))
