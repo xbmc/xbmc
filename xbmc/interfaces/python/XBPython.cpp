@@ -20,12 +20,12 @@
  */
 
 // python.h should always be included first before any other includes
-#include "system.h"
 #if (defined USE_EXTERNAL_PYTHON)
 #include <Python.h>
 #else
   #include "python/Include/Python.h"
 #endif
+#include "system.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIPassword.h"
 

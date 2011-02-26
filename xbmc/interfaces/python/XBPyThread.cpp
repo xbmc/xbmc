@@ -20,14 +20,13 @@
  */
 
 // python.h should always be included first before any other includes
-#include "system.h"
 #if (defined USE_EXTERNAL_PYTHON)
 #include <Python.h>
-#include <osdefs.h>
 #else
   #include "python/Include/Python.h"
   #include "python/Include/osdefs.h"
 #endif
+#include "system.h"
 #include "XBPythonDll.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"
@@ -169,7 +168,7 @@ void XBPyThread::Process()
   {
     // we want to use sys.path so it includes site-packages
     // if this fails, default to using Py_GetPath
-    PyObject *sysMod(PyImport_ImportModule("sys")); // must call Py_DECREF when finished
+    PyObject *sysMod(PyImport_ImportModule((char*)"sys")); // must call Py_DECREF when finished
     PyObject *sysModDict(PyModule_GetDict(sysMod)); // borrowed ref, no need to delete
     PyObject *pathObj(PyDict_GetItemString(sysModDict, "path")); // borrowed ref, no need to delete
 

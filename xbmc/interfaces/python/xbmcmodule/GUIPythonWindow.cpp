@@ -19,8 +19,8 @@
  *
  */
 
-#include "GUIPythonWindow.h"
 #include "pyutil.h"
+#include "GUIPythonWindow.h"
 #include "window.h"
 #include "control.h"
 #include "action.h"

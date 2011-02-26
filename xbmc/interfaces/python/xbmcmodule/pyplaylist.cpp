@@ -22,17 +22,17 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#include "PlayListPlayer.h"
-#include "utils/URIUtils.h"
-#include "pyplaylist.h"
 #if (defined USE_EXTERNAL_PYTHON)
 #include <Python.h>
 #else
   #include "python/Include/structmember.h"
 #endif
+#include "pyutil.h"
+#include "PlayListPlayer.h"
+#include "utils/URIUtils.h"
+#include "pyplaylist.h"
 #include "../XBPythonDll.h"
 #include "playlists/PlayListFactory.h"
-#include "pyutil.h"
 #include "listitem.h"
 #include "playlists/PlayList.h"
 #include "video/VideoInfoTag.h"
