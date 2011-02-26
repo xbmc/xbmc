@@ -228,7 +228,7 @@ namespace PYXBMC
       if (!result)
         return NULL;
 
-      for (int i = 0; i < valuelist.size(); i++)
+      for (unsigned int i = 0; i < valuelist.size(); i++)
         PyTuple_SetItem(result, i, PyString_FromString(valuelist.at(i).c_str()));
 
       return result;
