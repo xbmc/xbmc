@@ -1094,18 +1094,18 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);    // window id = 503
 
   /* Load PVR related Windows and Dialogs */
-  g_windowManager.Add(new CGUIWindowPVR);                      // window id = 600
-  g_windowManager.Add(new CGUIDialogPVRGuideInfo);             // window id = 601
-  g_windowManager.Add(new CGUIDialogPVRRecordingInfo);         // window id = 602
-  g_windowManager.Add(new CGUIDialogPVRTimerSettings);         // window id = 603
-  g_windowManager.Add(new CGUIDialogPVRGroupManager);          // window id = 604
-  g_windowManager.Add(new CGUIDialogPVRChannelManager);        // window id = 605
-  g_windowManager.Add(new CGUIDialogPVRGuideSearch);           // window id = 606
-  g_windowManager.Add(new CGUIDialogPVRChannelsOSD);           // window id = 609
-  g_windowManager.Add(new CGUIDialogPVRGuideOSD);              // window id = 610
-  g_windowManager.Add(new CGUIDialogPVRDirectorOSD);           // window id = 611
-  g_windowManager.Add(new CGUIDialogPVRCutterOSD);             // window id = 612
-  g_windowManager.Add(new CGUIDialogTeletext);                 // window id = 613
+  g_windowManager.Add(new CGUIWindowPVR);                    // window id = 600
+  g_windowManager.Add(new CGUIDialogPVRGuideInfo);           // window id = 601
+  g_windowManager.Add(new CGUIDialogPVRRecordingInfo);       // window id = 602
+  g_windowManager.Add(new CGUIDialogPVRTimerSettings);       // window id = 603
+  g_windowManager.Add(new CGUIDialogPVRGroupManager);        // window id = 604
+  g_windowManager.Add(new CGUIDialogPVRChannelManager);      // window id = 605
+  g_windowManager.Add(new CGUIDialogPVRGuideSearch);         // window id = 606
+  g_windowManager.Add(new CGUIDialogPVRChannelsOSD);         // window id = 609
+  g_windowManager.Add(new CGUIDialogPVRGuideOSD);            // window id = 610
+  g_windowManager.Add(new CGUIDialogPVRDirectorOSD);         // window id = 611
+  g_windowManager.Add(new CGUIDialogPVRCutterOSD);           // window id = 612
+  g_windowManager.Add(new CGUIDialogTeletext);               // window id = 613
 
   g_windowManager.Add(new CGUIDialogSelect);             // window id = 2000
   g_windowManager.Add(new CGUIDialogMusicInfo);          // window id = 2001
@@ -1259,8 +1259,8 @@ void CApplication::StartJSONRPCServer()
 #ifdef HAS_JSONRPC
   if (g_guiSettings.GetBool("services.esenabled"))
   {
-    if (CTCPServer::StartServer(9090, g_guiSettings.GetBool("services.esallinterfaces")))
-      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", 9090);
+    if (CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, g_guiSettings.GetBool("services.esallinterfaces")))
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", g_advancedSettings.m_jsonTcpPort);
   }
 #endif
 }
@@ -3168,8 +3168,8 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_DIRECTOR);
     g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_CUTTER);
     g_windowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
-    g_windowManager.Delete(WINDOW_DIALOG_TEXT_VIEWER);
 
+    g_windowManager.Delete(WINDOW_DIALOG_TEXT_VIEWER);
     g_windowManager.Delete(WINDOW_STARTUP_ANIM);
     g_windowManager.Delete(WINDOW_LOGIN_SCREEN);
     g_windowManager.Delete(WINDOW_VISUALISATION);

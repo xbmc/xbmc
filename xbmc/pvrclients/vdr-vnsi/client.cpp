@@ -207,7 +207,8 @@ ADDON_STATUS Create(void* hdl, void* props)
     return m_CurStatus;
   }
 
-  VNSIData->EnableStatusInterface(g_bHandleMessages);
+  if (!VNSIData->EnableStatusInterface(g_bHandleMessages))
+    return m_CurStatus;
 
   m_CurStatus = STATUS_OK;
   m_bCreated = true;

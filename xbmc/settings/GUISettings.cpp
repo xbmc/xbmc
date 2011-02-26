@@ -771,7 +771,7 @@ void CGUISettings::Initialize()
   AddString(pvrm, "pvrmenu.iconpath", 19018, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddString(pvrm, "pvrmenu.searchicons", 19167, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(pvrm, "pvrmenu.sep2");
-  AddInt(pvrm, "pvrmenu.defaultguideview", 19065, GUIDE_VIEW_CHANNEL, GUIDE_VIEW_CHANNEL, 1, GUIDE_VIEW_TIMELINE, SPIN_CONTROL_TEXT);
+  AddInt(pvrm, "pvrmenu.defaultguideview", 19065, GUIDE_VIEW_NOW, GUIDE_VIEW_CHANNEL, 1, GUIDE_VIEW_TIMELINE, SPIN_CONTROL_TEXT);
 
   CSettingsCategory* pvre = AddCategory(8, "epg", 19069);
   AddInt(pvre, "epg.daystodisplay", 19182, 2, 1, 1, 14, SPIN_CONTROL_INT_PLUS, MASK_DAYS);

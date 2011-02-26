@@ -35,6 +35,7 @@
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "filesystem/SpecialProtocol.h"
 
 using namespace XFILE;
 
@@ -278,6 +279,7 @@ void CAdvancedSettings::Initialize()
   m_cacheMemBufferSize = (1048576 * 5);
 
   m_jsonOutputCompact = true;
+  m_jsonTcpPort = 9090;
 }
 
 bool CAdvancedSettings::Load()
@@ -592,6 +594,7 @@ bool CAdvancedSettings::Load()
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "compactoutput", m_jsonOutputCompact);
+    XMLUtils::GetUInt(pElement, "tcpport", m_jsonTcpPort);
   }
 
   pElement = pRootElement->FirstChildElement("samba");
@@ -754,7 +757,7 @@ bool CAdvancedSettings::Load()
       CStdString strFrom, strTo;
       TiXmlNode* pFrom = pSubstitute->FirstChild("from");
       if (pFrom)
-        strFrom = pFrom->FirstChild()->Value();
+        strFrom = _P(pFrom->FirstChild()->Value()).c_str();
       TiXmlNode* pTo = pSubstitute->FirstChild("to");
       if (pTo)
         strTo = pTo->FirstChild()->Value();

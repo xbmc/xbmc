@@ -20,7 +20,7 @@
  */
 
 #include "GUIViewState.h"
-#include "pvr/GUIViewStatePVR.h"
+#include "pvr/windows/GUIViewStatePVR.h"
 #include "addons/GUIViewStateAddonBrowser.h"
 #include "music/GUIViewStateMusic.h"
 #include "video/GUIViewStateVideo.h"
@@ -118,7 +118,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
     return new CGUIViewStateWindowVideoPlaylist(items);
 
   if (windowId==WINDOW_PVR)
-    return new CGUIViewStateWindowPVR(items);
+    return new CGUIViewStatePVR(items);
 
   if (windowId==WINDOW_PICTURES)
     return new CGUIViewStateWindowPictures(items);

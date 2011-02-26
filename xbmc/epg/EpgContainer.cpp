@@ -115,8 +115,6 @@ void CEpgContainer::Start(void)
 
   lock.Leave();
 
-  UpdateEPG(true);
-
   Create();
   SetName("XBMC EPG thread");
   SetPriority(0);
@@ -144,6 +142,8 @@ void CEpgContainer::Process(void)
   time_t iNow          = 0;
   m_iLastEpgCleanup    = 0;
   m_iLastEpgUpdate     = 0;
+
+  UpdateEPG(true);
 
   while (!m_bStop)
   {

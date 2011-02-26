@@ -101,5 +101,6 @@ void CPVREpgInfoTag::Update(const PVR_PROGINFO &tag)
   SetPlot(tag.description);
   SetGenre(tag.genre_type, tag.genre_sub_type);
   SetParentalRating(tag.parental_rating);
+  SetUniqueBroadcastID(tag.uid);
 //  SetIcon(((CPVREpg *) m_Epg)->Channel()->IconPath());
 }

@@ -61,6 +61,7 @@ void CEpgInfoTag::Reset()
   m_iEpisodePart        = 0;
   m_strEpisodeName      = "";
   m_bChanged            = false;
+  m_iUniqueBroadcastID  = -1;
 }
 
 int CEpgInfoTag::GetDuration() const

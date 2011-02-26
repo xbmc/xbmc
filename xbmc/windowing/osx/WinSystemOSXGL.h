@@ -25,7 +25,7 @@
  */
 #include "WinSystemOSX.h"
 #include "rendering/gl/RenderSystemGL.h"
-#include "utils/ReferenceCounting.h"
+#include "utils/GlobalsHandling.h"
 
 class CWinSystemOSXGL : public CWinSystemOSX, public CRenderSystemGL, public virtual xbmcutil::Referenced
 {
@@ -40,12 +40,7 @@ protected:
   virtual void SetVSyncImpl(bool enable);  
 };
 
-/**
- * This is a hack. There will be an instance of a ref to this "global" statically in each
- *  file that includes this header. This is so that the reference couting will
- *  work correctly from the data segment.
- */
-static xbmcutil::Referenced::ref<CWinSystemOSXGL> g_WindowingRef(xbmcutil::Singleton<CWinSystemOSXGL>::getInstance);
-#define g_Windowing (*(xbmcutil::Singleton<CWinSystemOSXGL>::getInstance()))
+XBMC_GLOBAL_REF(CWinSystemOSXGL,g_Windowing);
+#define g_Windowing XBMC_GLOBAL_USE(CWinSystemOSXGL)
 
 #endif // WINDOW_SYSTEM_H

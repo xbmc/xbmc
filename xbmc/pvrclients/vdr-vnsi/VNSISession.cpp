@@ -357,18 +357,19 @@ cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp, bool sequence)
   if(!SendMessage(vrp))
     return NULL;
 
-  cResponsePacket *pkt = ReadMessage();
+  cResponsePacket *pkt = NULL;
 
-  if (!pkt)
-    return NULL;
-
-  /* Discard everything other as response packets until it is received */
-  if (pkt->getChannelID() == CHANNEL_REQUEST_RESPONSE || sequence)
+  while((pkt = ReadMessage()))
   {
-    return pkt;
+    /* Discard everything other as response packets until it is received */
+    if (pkt->getChannelID() == CHANNEL_REQUEST_RESPONSE
+        && (!sequence || pkt->getRequestID() == vrp->getSerial()))
+    {
+      return pkt;
+    }
+    else
+      delete pkt;
   }
-
-  delete pkt;
   return NULL;
 }
 

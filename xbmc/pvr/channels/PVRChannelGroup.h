@@ -345,4 +345,6 @@ public:
   virtual int GetNumHiddenChannels() const { return 0; }
 
   virtual unsigned int Size() const { return size(); }
+
+  int GetId(void) const { return m_iGroupId; }
 };

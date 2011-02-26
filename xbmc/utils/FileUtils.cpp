@@ -19,7 +19,7 @@ bool CFileUtils::DeleteItem(const CFileItemPtr &item, bool force)
     return false;
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (force || pDialog)
+  if (!force && pDialog)
   {
     pDialog->SetHeading(122);
     pDialog->SetLine(0, 125);

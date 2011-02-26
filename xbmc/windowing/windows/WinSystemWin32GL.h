@@ -30,7 +30,7 @@
  */
 #include "WinSystemWin32.h"
 #include "rendering/gl/RenderSystemGL.h"
-#include "utils/ReferenceCounting.h"
+#include "utils/GlobalsHandling.h"
 
 class CWinSystemWin32GL : public CWinSystemWin32, public CRenderSystemGL, public virtual xbmcutil::Referenced
 {
@@ -51,13 +51,9 @@ protected:
 
 #ifdef HAS_GL
 
-/**
- * This is a hack. There will be an instance of a ref to this "global" statically in each
- *  file that includes this header. This is so that the reference couting will
- *  work correctly from the data segment.
- */
-static xbmcutil::Referenced::ref<CWinSystemWin32GL> g_WindowingRef(xbmcutil::Singleton<CWinSystemWin32GL>::getInstance);
-#define g_Windowing (*(g_WindowingRef))
+XBMC_GLOBAL_REF(CWinSystemWin32GL,g_Windowing);
+#define g_Windowing XBMC_GLOBAL_USE(CWinSystemWin32GL)
+
 #endif
 
 #endif // WINDOW_SYSTEM_H

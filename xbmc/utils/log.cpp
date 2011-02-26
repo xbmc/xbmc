@@ -27,17 +27,13 @@
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/StdString.h"
-#include "utils/ReferenceCounting.h"
 
-// explicit template instantiation
-template class xbmcutil::Singleton<CLog::CLogGlobals>;
-
-#define critSec (xbmcutil::Singleton<CLog::CLogGlobals>::getInstance()->critSec)
-#define m_file (xbmcutil::Singleton<CLog::CLogGlobals>::getInstance()->m_file)
-#define m_repeatCount (xbmcutil::Singleton<CLog::CLogGlobals>::getInstance()->m_repeatCount)
-#define m_repeatLogLevel (xbmcutil::Singleton<CLog::CLogGlobals>::getInstance()->m_repeatLogLevel)
-#define m_repeatLine (xbmcutil::Singleton<CLog::CLogGlobals>::getInstance()->m_repeatLine)
-#define m_logLevel (xbmcutil::Singleton<CLog::CLogGlobals>::getInstance()->m_logLevel)
+#define critSec XBMC_GLOBAL_USE(CLog::CLogGlobals).critSec
+#define m_file XBMC_GLOBAL_USE(CLog::CLogGlobals).m_file
+#define m_repeatCount XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatCount
+#define m_repeatLogLevel XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatLogLevel
+#define m_repeatLine XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatLine
+#define m_logLevel XBMC_GLOBAL_USE(CLog::CLogGlobals).m_logLevel
 
 static char levelNames[][8] =
 {"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};

@@ -1,6 +1,5 @@
 SRCS=PVRManager.cpp \
-     PVRDatabase.cpp \
-     GUIViewStatePVR.cpp
+     PVRDatabase.cpp
 
 LIB=pvr.a
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,19 +20,11 @@
  */
 
 #include "GUIViewStatePVR.h"
-#include "PlayListPlayer.h"
-#include "guilib/GUIBaseContainer.h" // for VIEW_TYPE_*
-#include "video/VideoDatabase.h"
+#include "GUIWindowPVRCommon.h"
 #include "settings/GUISettings.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "FileItem.h"
-#include "guilib/Key.h"
-#include "Util.h"
-#include "guilib/LocalizeStrings.h"
-#include "utils/log.h"
 
-CGUIViewStateWindowPVR::CGUIViewStateWindowPVR(const CFileItemList& items) : CGUIViewState(items)
+CGUIViewStatePVR::CGUIViewStatePVR(const CFileItemList& items) : CGUIViewState(items)
 {
   if (items.m_strPath.Left(17) == "pvr://recordings/")
   {
@@ -48,25 +40,20 @@ CGUIViewStateWindowPVR::CGUIViewStateWindowPVR(const CFileItemList& items) : CGU
     SetViewAsControl(g_settings.m_viewStateVideoFiles.m_viewMode);
     SetSortOrder(g_settings.m_viewStateVideoFiles.m_sortOrder);
   }
+
   LoadViewState(items.m_strPath, WINDOW_PVR);
 }
 
-bool CGUIViewStateWindowPVR::AutoPlayNextItem()
+bool CGUIViewStatePVR::AutoPlayNextItem(void)
 {
   return false;
 }
 
-//CStdString CGUIViewStateWindowTV::GetExtensions()
-//{
-//  return  ".pvr|.timer"";
-//}
-
-bool CGUIViewStateWindowPVR::HideParentDirItems()
+bool CGUIViewStatePVR::HideParentDirItems(void)
 {
   return false;
 }
 
-void CGUIViewStateWindowPVR::SaveViewState()
+void CGUIViewStatePVR::SaveViewState(void)
 {
-
 }
