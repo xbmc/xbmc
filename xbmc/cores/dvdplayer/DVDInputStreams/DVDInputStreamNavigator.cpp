@@ -1061,7 +1061,7 @@ bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
   // therefore we just skip the request in case there are buttons and return false
   if (IsInMenu() && GetTotalButtons() > 0)
   {
-    CLog::Log(LOGDEBUG, "%s - Seeking chapter is not allowed in menu set with buttons");
+    CLog::Log(LOGDEBUG, "%s - Seeking chapter is not allowed in menu set with buttons", __FUNCTION__);
     return false;
   }
 
