@@ -8,10 +8,11 @@ include ../config.mk
 
 # lib name, version
 LIBNAME=fribidi
-VERSION=0.10.9
+VERSION=0.19.1
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
-BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
+#BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
+BASE_URL=http://fribidi.org/download
 ARCHIVE=$(SOURCE).tar.gz
 
 RETRIEVE_TOOL=/usr/bin/curl
