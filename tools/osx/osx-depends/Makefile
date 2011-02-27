@@ -1,7 +1,7 @@
 
 SUBDIRS = \
-	help2man autoconf automake pkg-config yasm cmake sqlite \
-	pcre expat gettext readline \
+	help2man autoconf automake pkg-config yasm cmake \
+	pcre expat gettext readline sqlite3 \
 	liblzo liblzo2 freetype2 fontconfig \
 	openssl libssh2 curl \
 	jpeg tiff libpng libogg \
@@ -10,7 +10,7 @@ SUBDIRS = \
 	libGLEW libsdl libsdl_mixer libsdl_image \
 	samba python26 mysqlclient boost \
 
-.PHONY: setup subdirs $(SUBDIRS)
+.PHONY: subdirs $(SUBDIRS)
 
 all: $(SUBDIRS)
 
