@@ -15,7 +15,7 @@ platform_bin_path=${platform_path}/usr/bin
 
 export platform_sdk_version
 export NM=/usr/bin/nm
-export CPP=/usr/bin/cpp
+export CPP=/usr/bin/cpp-4.0
 export CXXCPP=${CPP}
 export CPPFLAGS=-no-cpp-precomp -I${prefix_path}/include
 export CC=/usr/bin/gcc-4.0
