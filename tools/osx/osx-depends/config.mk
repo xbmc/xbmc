@@ -6,11 +6,10 @@ platform_sdk_version=10.4u
 platform_min_version=macosx-version-min=10.4
 platform_gcc_version=4.0.1
 platform_host=i386-apple-darwin8
-platform_host_gcc=i686-apple-darwin10
 platform_path=/Developer
 platform_os_cflags=-arch i386
 platform_os_ldflags=-arch i386
-prefix_path=$(shell cd $(TOP); pwd)/build
+prefix_path=/Users/Shared/xbmc-depends/osx-10.4_i386
 platform_sdk_path=${platform_path}/SDKs/${platform_os}${platform_sdk_version}.sdk
 platform_bin_path=${platform_path}/usr/bin
 

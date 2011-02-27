@@ -1,3 +1,4 @@
+BUILDDIR=/Users/Shared/xbmc-depends/osx-10.4_i386
 
 SUBDIRS = \
 	help2man autoconf automake pkg-config yasm cmake \
@@ -10,16 +11,16 @@ SUBDIRS = \
 	libGLEW libsdl libsdl_mixer libsdl_image \
 	samba python26 mysqlclient boost \
 
-.PHONY: subdirs $(SUBDIRS)
+.PHONY: setup $(SUBDIRS)
 
-all: $(SUBDIRS)
+all: setup $(SUBDIRS)
 
-subdirs:
-	mkdir -p $(CURDIR)/build/bin
-	mkdir -p $(CURDIR)/build/lib
-	mkdir -p $(CURDIR)/build/slib
-	mkdir -p $(CURDIR)/build/include
-	$(SUBDIRS)
+setup:
+	mkdir -p $(BUILDDIR)/bin
+	mkdir -p $(BUILDDIR)/lib
+	mkdir -p $(BUILDDIR)/slib
+	mkdir -p $(BUILDDIR)/share
+	mkdir -p $(BUILDDIR)/include
 
 $(SUBDIRS):
 	$(MAKE) -C $@
@@ -29,4 +30,4 @@ clean:
 
 distclean::
 	for d in $(SUBDIRS); do $(MAKE) -C $$d distclean; done
-	rm -rf build
+	rm -rf $(BUILDDIR)

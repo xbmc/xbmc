@@ -19,7 +19,7 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-PREFIX:=$(shell cd $(CURDIR)/../build; pwd;)
+PREFIX:=/Users/Shared/xbmc-depends/osx-10.4_i386
 CONFIGURE=./configure --prefix=$(PREFIX)
 
 LIBDYLIB=$(SOURCE)/bin/automake
