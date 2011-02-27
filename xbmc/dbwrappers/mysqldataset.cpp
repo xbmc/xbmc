@@ -104,7 +104,7 @@ const char *MysqlDatabase::getErrorMsg() {
    return error.c_str();
 }
 
-int MysqlDatabase::connect() {
+int MysqlDatabase::connect(bool create_new) {
   try
   {
     // don't reconnect if ping is ok
@@ -221,7 +221,7 @@ int MysqlDatabase::query_with_reconnect(const char* query) {
   {
     CLog::Log(LOGINFO,"MYSQL server has gone. Will try %d more attempt(s) to reconnect.", attempts);
     active = false;
-    connect();
+    connect(true);
   }
 
   // grab the latest error if not ok
@@ -299,7 +299,7 @@ void MysqlDatabase::rollback_transaction() {
 
 bool MysqlDatabase::exists() {
   // Uncorrect name, check if tables are present inside the db
-  connect();
+  connect(true);
   if (active && conn != NULL)
   {
     MYSQL_RES* res = mysql_list_dbs(conn, db.c_str());
@@ -793,11 +793,11 @@ void MysqlDatabase::mysqlVXPrintf(
           while( realvalue<1.0 ){ realvalue *= 10.0; exp--; }
           if( exp>350 ){
             if( prefix=='-' ){
-              bufpt = "-Inf";
+              bufpt = (char *)"-Inf";
             }else if( prefix=='+' ){
-              bufpt = "+Inf";
+              bufpt = (char *)"+Inf";
             }else{
-              bufpt = "Inf";
+              bufpt = (char *)"Inf";
             }
             length = strlen(bufpt);
             break;
@@ -929,7 +929,7 @@ void MysqlDatabase::mysqlVXPrintf(
       case etDYNSTRING:
         bufpt = va_arg(ap,char*);
         if( bufpt==0 ){
-          bufpt = "";
+          bufpt = (char *)"";
         }else if( xtype==etDYNSTRING ){
           zExtra = bufpt;
         }

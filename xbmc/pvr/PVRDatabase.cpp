@@ -181,7 +181,7 @@ bool CPVRDatabase::UpdateOldVersion(int iVersion)
   if (iVersion < GetMinVersion())
   {
     CLog::Log(LOGERROR, "PVRDB - %s - updating old table versions not supported. please delete '%s'",
-        __FUNCTION__, GetDefaultDBName());
+        __FUNCTION__, GetBaseDBName());
     return false;
   }
 

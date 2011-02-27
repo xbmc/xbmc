@@ -639,7 +639,7 @@ private:
   int RunQuery(const CStdString &sql);
 
   virtual int GetMinVersion() const { return 44; };
-  const char *GetDefaultDBName() const { return "MyVideos34.db"; };
+  const char *GetBaseDBName() const { return "MyVideos"; };
 
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);
   void SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
