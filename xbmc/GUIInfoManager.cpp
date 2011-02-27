@@ -1271,13 +1271,13 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 
   case SYSTEM_SCREEN_RESOLUTION:
     if (g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].bFullScreen)
-      strLabel.Format("%ix%i@%.2fHz - %s (%02.2fHz)",
+      strLabel.Format("%ix%i@%.2fHz - %s (%02.2f fps)",
         g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
         g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
         g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].fRefreshRate,
         g_localizeStrings.Get(244), GetFPS());
     else
-      strLabel.Format("%ix%i - %s (%02.2fHz)",
+      strLabel.Format("%ix%i - %s (%02.2f fps)",
         g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
         g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
         g_localizeStrings.Get(242), GetFPS());
