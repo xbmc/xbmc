@@ -1371,10 +1371,10 @@ void CGUIWindowMusicBase::SetupFanart(CFileItemList& items)
       continue;
     if (item->HasMusicInfoTag())
       strArtist = item->GetMusicInfoTag()->GetArtist();
-   if (item->HasVideoInfoTag())
-     strArtist = item->GetVideoInfoTag()->m_strArtist;
-   if (strArtist.IsEmpty())
-     continue;
+    if (item->HasVideoInfoTag())
+      strArtist = item->GetVideoInfoTag()->m_strArtist;
+    if (strArtist.IsEmpty())
+      continue;
     map<CStdString, CStdString>::iterator artist = artists.find(item->GetMusicInfoTag()->GetArtist());
     if (artist == artists.end())
     {
