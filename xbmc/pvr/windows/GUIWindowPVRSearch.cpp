@@ -224,7 +224,7 @@ bool CGUIWindowPVRSearch::OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON bu
     m_searchfilter.Reset();
     if (item->IsEPG())
       m_searchfilter.m_strSearchTerm = "\"" + item->GetEPGInfoTag()->Title() + "\"";
-    else if (item->IsPVRChannel())
+    else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
       m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRChannelInfoTag()->GetEPGNow()->Title() + "\"";
     else if (item->IsPVRRecording())
       m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRRecordingInfoTag()->Title() + "\"";

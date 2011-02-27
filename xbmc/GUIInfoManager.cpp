@@ -3268,7 +3268,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   if (item == VIDEOPLAYER_TITLE)
   {
     if (m_currentFile->HasPVRChannelInfoTag())
-      return m_currentFile->GetPVRChannelInfoTag()->GetEPGNow()->Title();
+      return m_currentFile->GetPVRChannelInfoTag()->GetEPGNow() ? m_currentFile->GetPVRChannelInfoTag()->GetEPGNow()->Title() : g_localizeStrings.Get(19055);
     if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strTitle.IsEmpty())
       return m_currentFile->GetVideoInfoTag()->m_strTitle;
     // don't have the title, so use dvdplayer, label, or drop down to title from path
@@ -3296,35 +3296,35 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     {
     /* Now playing infos */
     case VIDEOPLAYER_ORIGINALTITLE:
-      return tag->GetEPGNow()->Title();
+      return tag->GetEPGNow() ? tag->GetEPGNow()->Title() : g_localizeStrings.Get(19055);
     case VIDEOPLAYER_GENRE:
-      return tag->GetEPGNow()->Genre();
+      return tag->GetEPGNow() ? tag->GetEPGNow()->Genre() : "";
     case VIDEOPLAYER_PLOT:
-      return tag->GetEPGNow()->Plot();
+      return tag->GetEPGNow() ? tag->GetEPGNow()->Plot() : "";
     case VIDEOPLAYER_PLOT_OUTLINE:
-      return tag->GetEPGNow()->PlotOutline();
+      return tag->GetEPGNow() ? tag->GetEPGNow()->PlotOutline() : "";
     case VIDEOPLAYER_STARTTIME:
-      return tag->GetEPGNow()->Start().GetAsLocalizedTime("", false);
+      return tag->GetEPGNow() ? tag->GetEPGNow()->Start().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     case VIDEOPLAYER_ENDTIME:
-      return tag->GetEPGNow()->End().GetAsLocalizedTime("", false);
+      return tag->GetEPGNow() ? tag->GetEPGNow()->End().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
 
     /* Next playing infos */
     case VIDEOPLAYER_NEXT_TITLE:
-      return tag->GetEPGNext()->Title();
+      return tag->GetEPGNext() ? tag->GetEPGNext()->Title() : g_localizeStrings.Get(19055);
     case VIDEOPLAYER_NEXT_GENRE:
-      return tag->GetEPGNext()->Genre();
+      return tag->GetEPGNext() ? tag->GetEPGNext()->Genre() : "";
     case VIDEOPLAYER_NEXT_PLOT:
-      return tag->GetEPGNext()->Plot();
+      return tag->GetEPGNext() ? tag->GetEPGNext()->Plot() : "";
     case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
-      return tag->GetEPGNext()->PlotOutline();
+      return tag->GetEPGNext() ? tag->GetEPGNext()->PlotOutline() : "";
     case VIDEOPLAYER_NEXT_STARTTIME:
-      return tag->GetEPGNext()->Start().GetAsLocalizedTime("", false);
+      return tag->GetEPGNext() ? tag->GetEPGNext()->Start().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     case VIDEOPLAYER_NEXT_ENDTIME:
-      return tag->GetEPGNext()->End().GetAsLocalizedTime("", false);
+      return tag->GetEPGNext() ? tag->GetEPGNext()->End().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     case VIDEOPLAYER_NEXT_DURATION:
       {
         CStdString duration;
-        if (tag->GetEPGNext()->GetDuration() > 0)
+        if (tag->GetEPGNext() && tag->GetEPGNext()->GetDuration() > 0)
           duration = StringUtils::SecondsToTimeString(tag->GetEPGNext()->GetDuration());
 
         return duration;
@@ -3333,7 +3333,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_PARENTAL_RATING:
       {
         CStdString rating;
-        if (tag->GetEPGNow()->ParentalRating() > 0)
+        if (tag->GetEPGNow() && tag->GetEPGNow()->ParentalRating() > 0)
           rating.Format("%i", tag->GetEPGNow()->ParentalRating());
         return rating;
       }
@@ -3979,7 +3979,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     return item->GetLabel2();
   case LISTITEM_TITLE:
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->Title();
+      return item->GetPVRChannelInfoTag()->GetEPGNow() ? item->GetPVRChannelInfoTag()->GetEPGNow()->Title() : g_localizeStrings.Get(19055);
     if (item->HasPVRRecordingInfoTag())
       return item->GetPVRRecordingInfoTag()->m_strTitle;
     if (item->HasEPGInfoTag())
@@ -4066,7 +4066,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetGenre();
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->Genre();
+      return item->GetPVRChannelInfoTag()->GetEPGNow() ? item->GetPVRChannelInfoTag()->GetEPGNow()->Genre() : "";
     if (item->HasPVRRecordingInfoTag())
       return item->GetPVRRecordingInfoTag()->m_strGenre;
     if (item->HasEPGInfoTag())
@@ -4082,7 +4082,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->Start().GetAsLocalizedDateTime(false, false);
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->Start().GetAsLocalizedDateTime(false, false);
+      return item->GetPVRChannelInfoTag()->GetEPGNow() ? item->GetPVRChannelInfoTag()->GetEPGNow()->Start().GetAsLocalizedDateTime(false, false) : CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime(false, false);
     if (item->HasPVRRecordingInfoTag())
       return item->GetPVRRecordingInfoTag()->RecordingTime().GetAsLocalizedDateTime(false, false);
     if (item->HasPVRTimerInfoTag())
@@ -4129,7 +4129,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       CStdString duration;
       if (item->HasPVRChannelInfoTag())
       {
-        if (item->GetPVRChannelInfoTag()->GetEPGNow()->GetDuration() > 0)
+        if (item->GetPVRChannelInfoTag()->GetEPGNow() && item->GetPVRChannelInfoTag()->GetEPGNow()->GetDuration() > 0)
           duration = StringUtils::SecondsToTimeString(item->GetPVRChannelInfoTag()->GetEPGNow()->GetDuration());
       }
       else if (item->HasPVRRecordingInfoTag())
@@ -4159,7 +4159,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     }
   case LISTITEM_PLOT:
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->Plot();
+      return item->GetPVRChannelInfoTag()->GetEPGNow() ? item->GetPVRChannelInfoTag()->GetEPGNow()->Plot() : "";
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->Plot();
     if (item->HasPVRRecordingInfoTag())
@@ -4175,7 +4175,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_PLOT_OUTLINE:
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->PlotOutline();
+      return item->GetPVRChannelInfoTag()->GetEPGNow() ? item->GetPVRChannelInfoTag()->GetEPGNow()->PlotOutline() : "";
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->PlotOutline();
     if (item->HasPVRRecordingInfoTag())
@@ -4368,7 +4368,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_STARTTIME:
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->Start().GetAsLocalizedTime("", false);
+      return item->GetPVRChannelInfoTag()->GetEPGNow() ? item->GetPVRChannelInfoTag()->GetEPGNow()->Start().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->Start().GetAsLocalizedTime("", false);
     if (item->HasPVRTimerInfoTag())
@@ -4380,7 +4380,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_ENDTIME:
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->End().GetAsLocalizedTime("", false);
+      return item->GetPVRChannelInfoTag()->GetEPGNow() ? item->GetPVRChannelInfoTag()->GetEPGNow()->End().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->End().GetAsLocalizedTime("", false);
     if (item->HasPVRTimerInfoTag())
@@ -4388,7 +4388,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_STARTDATE:
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->Start().GetAsLocalizedDate(true);
+      return item->GetPVRChannelInfoTag()->GetEPGNow() ? item->GetPVRChannelInfoTag()->GetEPGNow()->Start().GetAsLocalizedDate(true) : CDateTime::GetCurrentDateTime().GetAsLocalizedDate(true);
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->Start().GetAsLocalizedDate(true);
     if (item->HasPVRTimerInfoTag())
@@ -4400,7 +4400,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_ENDDATE:
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNow()->End().GetAsLocalizedDate(true);
+      return item->GetPVRChannelInfoTag()->GetEPGNow() ? item->GetPVRChannelInfoTag()->GetEPGNow()->End().GetAsLocalizedDate(true) : CDateTime::GetCurrentDateTime().GetAsLocalizedDate(true);
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->End().GetAsLocalizedDate(true);
     if (item->HasPVRTimerInfoTag())
@@ -4431,34 +4431,34 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_NEXT_STARTTIME:
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNext()->Start().GetAsLocalizedTime("", false);
+      return item->GetPVRChannelInfoTag()->GetEPGNext() ? item->GetPVRChannelInfoTag()->GetEPGNext()->Start().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     break;
   case LISTITEM_NEXT_ENDTIME:
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNext()->End().GetAsLocalizedTime("", false);
+      return item->GetPVRChannelInfoTag()->GetEPGNext() ? item->GetPVRChannelInfoTag()->GetEPGNext()->End().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
     break;
   case LISTITEM_NEXT_STARTDATE:
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNext()->Start().GetAsLocalizedDate(true);
+      return item->GetPVRChannelInfoTag()->GetEPGNext() ? item->GetPVRChannelInfoTag()->GetEPGNext()->Start().GetAsLocalizedDate(true) : CDateTime::GetCurrentDateTime().GetAsLocalizedDate(true);
     break;
   case LISTITEM_NEXT_ENDDATE:
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNext()->End().GetAsLocalizedDate(true);
+      return item->GetPVRChannelInfoTag()->GetEPGNext() ? item->GetPVRChannelInfoTag()->GetEPGNext()->End().GetAsLocalizedDate(true) : CDateTime::GetCurrentDateTime().GetAsLocalizedDate(true);
     break;
   case LISTITEM_NEXT_PLOT:
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNext()->Plot();
+      return item->GetPVRChannelInfoTag()->GetEPGNext() ? item->GetPVRChannelInfoTag()->GetEPGNext()->Plot() : "";
     break;
   case LISTITEM_NEXT_PLOT_OUTLINE:
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNext()->PlotOutline();
+      return item->GetPVRChannelInfoTag()->GetEPGNext() ? item->GetPVRChannelInfoTag()->GetEPGNext()->PlotOutline() : "";
     break;
   case LISTITEM_NEXT_DURATION:
     {
       CStdString duration;
       if (item->HasPVRChannelInfoTag())
       {
-        if (item->GetPVRChannelInfoTag()->GetEPGNext()->GetDuration() > 0)
+        if (item->GetPVRChannelInfoTag()->GetEPGNext() && item->GetPVRChannelInfoTag()->GetEPGNext()->GetDuration() > 0)
           duration = StringUtils::SecondsToTimeString(item->GetPVRChannelInfoTag()->GetEPGNext()->GetDuration());
       }
       return duration;
@@ -4466,7 +4466,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_NEXT_GENRE:
     if (item->HasPVRChannelInfoTag())
-      return item->GetPVRChannelInfoTag()->GetEPGNext()->Genre();
+      return item->GetPVRChannelInfoTag()->GetEPGNext() ? item->GetPVRChannelInfoTag()->GetEPGNext()->Genre() : "";
     break;
   case LISTITEM_PARENTALRATING:
     {

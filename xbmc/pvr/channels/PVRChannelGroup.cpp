@@ -322,11 +322,11 @@ int CPVRChannelGroup::GetMembers(CFileItemList *results, bool bGroupMembers /* =
         {
           const CPVREpgInfoTag *epgNow = channel->GetEPGNow();
           musictag->SetURL(channel->Path());
-          musictag->SetTitle(epgNow->Title());
+          musictag->SetTitle(epgNow ? epgNow->Title() : g_localizeStrings.Get(19055));
           musictag->SetArtist(channel->ChannelName());
           musictag->SetAlbumArtist(channel->ChannelName());
-          musictag->SetGenre(epgNow->Genre());
-          musictag->SetDuration(epgNow->GetDuration());
+          musictag->SetGenre(epgNow ? epgNow->Genre() : "");
+          musictag->SetDuration(epgNow ? epgNow->GetDuration() : 3600);
           musictag->SetLoaded(true);
           musictag->SetComment("");
           musictag->SetLyrics("");

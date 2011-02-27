@@ -1627,9 +1627,9 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     CMusicInfoTag* musictag = item.GetMusicInfoTag();
     if (musictag)
     {
-      musictag->SetTitle(epgTagNow->Title());
-      musictag->SetGenre(epgTagNow->Genre());
-      musictag->SetDuration(epgTagNow->GetDuration());
+      musictag->SetTitle(epgTagNow ? epgTagNow->Title() : g_localizeStrings.Get(19055));
+      musictag->SetGenre(epgTagNow ? epgTagNow->Genre() : "");
+      musictag->SetDuration(epgTagNow ? epgTagNow->GetDuration() : 3600);
       musictag->SetURL(channelTag->Path());
       musictag->SetArtist(channelTag->ChannelName());
       musictag->SetAlbumArtist(channelTag->ChannelName());

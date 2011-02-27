@@ -414,7 +414,7 @@ public:
    *
    * @return The EPG tag that is active on this channel now.
    */
-  const CPVREpgInfoTag* GetEPGNow() const;
+  CPVREpgInfoTag* GetEPGNow() const;
 
   /*!
    * @brief Get the EPG tag that is active on this channel next.
@@ -424,7 +424,7 @@ public:
    *
    * @return The EPG tag that is active on this channel next.
    */
-  const CPVREpgInfoTag* GetEPGNext() const;
+  CPVREpgInfoTag* GetEPGNext() const;
 
   /*!
    * @brief Don't use an EPG for this channel if set to false.
