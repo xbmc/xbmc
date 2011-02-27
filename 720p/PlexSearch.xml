@@ -616,7 +616,7 @@
   						<orientation>horizontal</orientation>
   						<ondown>7002</ondown>
   						<onup>-</onup>
-  						<onright>65</onright>
+  						<onright>-</onright>
   						<onleft>350</onleft>
           		<posx>0</posx>
           		<posy>0</posy>
@@ -827,7 +827,7 @@
   						<visible allowhiddenfocus="false">true</visible>
   						<orientation>horizontal</orientation>
   						<ondown>9008</ondown>
-  						<onup>9001</onup>
+  						<onup>9002</onup>
   						<onright>-</onright>
   						<onleft>350</onleft>
           		<posx>0</posx>
@@ -1040,7 +1040,7 @@
   						<orientation>horizontal</orientation>
   						<ondown>7010</ondown>
   						<onup>7008</onup>
-  						<onright>65</onright>
+  						<onright>-</onright>
   						<onleft>350</onleft>
           		<posx>0</posx>
           		<posy>0</posy>
@@ -1158,7 +1158,7 @@
   						<orientation>horizontal</orientation>
   						<onup>7009</onup>
   						<ondown>7013</ondown>
-  						<onright>65</onright>
+  						<onright>-</onright>
   						<onleft>350</onleft>
           		<posx>0</posx>
           		<posy>0</posy>
