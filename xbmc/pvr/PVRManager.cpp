@@ -131,26 +131,6 @@ void CPVRManager::Start()
 
   ResetProperties();
 
-  /* try to load all addons, but don't hold up the main thread for more than 2 seconds */
-  CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
-  TryLoadClients(2);
-
-  if (HasActiveClients())
-  {
-    /* load all channels and groups */
-    m_channelGroups->Load();
-
-    /* get timers from the backends */
-    m_timers->Load();
-
-    /* get recordings from the backend */
-    m_recordings->Load();
-
-    /* continue last watched channel after first startup */
-    if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
-      ContinueLastChannel();
-  }
-
   /* create the supervisor thread to do all background activities */
   Create();
   SetName("XBMC PVRManager");
@@ -177,6 +157,7 @@ void CPVRManager::Stop()
 
 bool CPVRManager::TryLoadClients(int iMaxTime /* = 0 */)
 {
+  CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
   CDateTime start = CDateTime::GetCurrentDateTime();
 
   while (!m_bAllClientsLoaded)
@@ -477,10 +458,31 @@ bool CPVRManager::ContinueLastChannel()
 
 void CPVRManager::Process()
 {
-  /* start the EPG thread */
-  m_epg->Start();
+  while (!HasActiveClients())
+  {
+    TryLoadClients(1);
+
+    if (HasActiveClients())
+    {
+      /* load all channels and groups */
+      m_channelGroups->Load();
+
+      /* get timers from the backends */
+      m_timers->Load();
+
+      /* get recordings from the backend */
+      m_recordings->Load();
+
+      /* start the EPG thread */
+      m_epg->Start();
+    }
+  }
 
   m_bLoaded = true;
+
+  /* continue last watched channel after first startup */
+  if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
+    ContinueLastChannel();
 
   /* keep trying to load remaining clients */
   if (!m_bAllClientsLoaded)
