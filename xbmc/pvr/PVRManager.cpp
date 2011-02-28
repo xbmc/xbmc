@@ -131,31 +131,30 @@ void CPVRManager::Start()
 
   ResetProperties();
 
-  /* load all addons */
+  /* try to load all addons, but don't hold up the main thread for more than 2 seconds */
   CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
-  while (!m_bAllClientsLoaded)
+  TryLoadClients(2);
+
+  if (HasActiveClients())
   {
-    LoadClients();
-    Sleep(50);
+    /* load all channels and groups */
+    m_channelGroups->Load();
+
+    /* start the EPG thread */
+    m_epg->Start();
+
+    /* get timers from the backends */
+    m_timers->Load();
+
+    /* get recordings from the backend */
+    m_recordings->Load();
+
+    m_bLoaded = true;
+
+    /* continue last watched channel after first startup */
+    if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
+      ContinueLastChannel();
   }
-
-  /* load all channels and groups */
-  m_channelGroups->Load();
-
-  /* start the EPG thread */
-  m_epg->Start();
-
-  /* get timers from the backends */
-  m_timers->Load();
-
-  /* get recordings from the backend */
-  m_recordings->Load();
-
-  m_bLoaded = true;
-
-  /* continue last watched channel after first startup */
-  if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
-    ContinueLastChannel();
 
   /* create the supervisor thread to do all background activities */
   Create();
@@ -181,7 +180,36 @@ void CPVRManager::Stop()
   Cleanup();
 }
 
-bool CPVRManager::LoadClients()
+bool CPVRManager::TryLoadClients(int iMaxTime /* = 0 */)
+{
+  CDateTime start = CDateTime::GetCurrentDateTime();
+
+  while (!m_bAllClientsLoaded)
+  {
+    /* try to load clients */
+    LoadClients();
+
+    /* always break if the thread is stopped */
+    if (m_bStop)
+      break;
+
+    /* check whether iMaxTime has passed */
+    if (!m_bAllClientsLoaded && iMaxTime > 0)
+    {
+      CDateTimeSpan elapsed = CDateTime::GetCurrentDateTime() - start;
+      if (elapsed.GetSeconds() >= iMaxTime)
+        break;
+    }
+
+    Sleep(0);
+  }
+
+  CLog::Log(LOG_DEBUG, "PVRManager - %s - %s",
+      __FUNCTION__, m_bAllClientsLoaded ? "all clients loaded" : "couldn't load all clients. will keep trying in a separate thread.");
+  return m_bAllClientsLoaded;
+}
+
+bool CPVRManager::LoadClients(void)
 {
   if (m_bAllClientsLoaded)
     return !m_clients.empty();
@@ -454,9 +482,15 @@ bool CPVRManager::ContinueLastChannel()
 
 void CPVRManager::Process()
 {
+  /* keep trying to load remaining clients */
+  if (!m_bAllClientsLoaded)
+    TryLoadClients(0);
+
   /* main loop */
   while (!m_bStop)
   {
+    CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
+
     if (m_bTriggerChannelsUpdate)
       UpdateChannels();
 
