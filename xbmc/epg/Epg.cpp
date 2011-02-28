@@ -524,6 +524,7 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
 
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
+    /* skip the first entry or if previousTag is NULL */
     if (previousTag == NULL)
     {
       previousTag = at(ptr);
@@ -532,47 +533,20 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
 
     CEpgInfoTag *currentTag = at(ptr);
 
-    if (previousTag->End() >= currentTag->End())
+    /* the previous tag ends after the current tag starts.
+     * the start time of the current tag is leading, so change the time of the previous tag
+     */
+    if (previousTag->End() > currentTag->Start())
     {
-      /* previous tag completely overlaps current tag; delete the current tag */
-      CLog::Log(LOGNOTICE, "EPG - %s - removing EPG event '%s' at '%s' to '%s': overlaps with '%s' at '%s' to '%s'",
-          __FUNCTION__, currentTag->Title().c_str(),
-          currentTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
-          currentTag->End().GetAsLocalizedDateTime(false, false).c_str(),
-          previousTag->Title().c_str(),
-          previousTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
-          previousTag->End().GetAsLocalizedDateTime(false, false).c_str());
+      CLog::Log(LOGDEBUG, "EPG - %s - event '%s' ends after event '%s' starts. changing the end time of '%s' to the start time of '%s': '%s'",
+          __FUNCTION__, previousTag->Title().c_str(), currentTag->Title().c_str(),
+          previousTag->Title().c_str(), currentTag->Title().c_str(),
+          currentTag->Start().GetAsLocalizedDateTime(false, false).c_str());
+
+      previousTag->SetEnd(currentTag->Start());
 
       if (bStore)
-        database->Delete(*currentTag);
-
-      if (DeleteInfoTag(currentTag))
-        ptr--;
-    }
-    else if (previousTag->End() > currentTag->Start())
-    {
-      /* previous tag ends after the current tag starts; mediate */
-      CDateTimeSpan diff = previousTag->End() - currentTag->Start();
-      int iDiffSeconds = diff.GetSeconds() + diff.GetMinutes() * 60 + diff.GetHours() * 3600 + diff.GetDays() * 86400;
-      CDateTime newTime = previousTag->End() - CDateTimeSpan(0, 0, 0, (int) (iDiffSeconds / 2));
-
-      CLog::Log(LOGDEBUG, "EPG - %s - mediating start and end times of EPG events '%s' at '%s' to '%s' and '%s' at '%s' to '%s': using '%s'",
-          __FUNCTION__, currentTag->Title().c_str(),
-          currentTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
-          currentTag->End().GetAsLocalizedDateTime(false, false).c_str(),
-          previousTag->Title().c_str(),
-          previousTag->Start().GetAsLocalizedDateTime(false, false).c_str(),
-          previousTag->End().GetAsLocalizedDateTime(false, false).c_str(),
-          newTime.GetAsLocalizedDateTime(false, false).c_str());
-
-      previousTag->SetEnd(newTime);
-      currentTag->SetStart(newTime);
-
-      if (bStore)
-      {
         bReturn = previousTag->Persist(false, false) && bReturn;
-        bReturn = currentTag->Persist(false, true) && bReturn;
-      }
     }
 
     previousTag = at(ptr);
