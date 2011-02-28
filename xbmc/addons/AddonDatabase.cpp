@@ -22,7 +22,7 @@
 #include "AddonDatabase.h"
 #include "addons/AddonManager.h"
 #include "utils/log.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "addons/Service.h"
 
 using namespace ADDON;

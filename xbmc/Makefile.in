@@ -4,7 +4,7 @@ SRCS=Application.cpp \
      AutoSwitch.cpp \
      BackgroundInfoLoader.cpp \
      CueDocument.cpp \
-     DateTime.cpp \
+     XBDateTime.cpp \
      DynamicDll.cpp \
      Favourites.cpp \
      FileItem.cpp \

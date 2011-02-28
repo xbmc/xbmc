@@ -29,7 +29,7 @@
 #include "utils/XMLUtils.h"
 #include "video/VideoDatabase.h"
 #include "Util.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "guilib/LocalizeStrings.h"
 
 using namespace std;

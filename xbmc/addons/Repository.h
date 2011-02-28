@@ -22,7 +22,7 @@
 
 #include "Addon.h"
 #include "AddonManager.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "URL.h"
 #include "utils/Job.h"
 #include "threads/CriticalSection.h"

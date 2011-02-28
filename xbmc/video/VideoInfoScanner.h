@@ -24,7 +24,7 @@
 #include "addons/Scraper.h"
 #include "NfoFile.h"
 #include "VideoInfoDownloader.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 
 class CIMDB;
 class CRegExp;

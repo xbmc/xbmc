@@ -39,7 +39,7 @@
 #include "GUIUserMessages.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/Directory.h"
