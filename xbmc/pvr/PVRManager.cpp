@@ -140,16 +140,11 @@ void CPVRManager::Start()
     /* load all channels and groups */
     m_channelGroups->Load();
 
-    /* start the EPG thread */
-    m_epg->Start();
-
     /* get timers from the backends */
     m_timers->Load();
 
     /* get recordings from the backend */
     m_recordings->Load();
-
-    m_bLoaded = true;
 
     /* continue last watched channel after first startup */
     if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
@@ -482,6 +477,11 @@ bool CPVRManager::ContinueLastChannel()
 
 void CPVRManager::Process()
 {
+  /* start the EPG thread */
+  m_epg->Start();
+
+  m_bLoaded = true;
+
   /* keep trying to load remaining clients */
   if (!m_bAllClientsLoaded)
     TryLoadClients(0);
