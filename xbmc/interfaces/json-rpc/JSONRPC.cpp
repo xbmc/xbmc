@@ -145,7 +145,19 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "AudioLibrary.ScanForContent",                  CAudioLibrary::ScanForContent },
 
 // Video Library
-  // TODO
+  { "VideoLibrary.GetMovies",                       CVideoLibrary::GetMovies },
+  { "VideoLibrary.GetMovieDetails",                 CVideoLibrary::GetMovieDetails },
+  { "VideoLibrary.GetTVShows",                      CVideoLibrary::GetTVShows },
+  { "VideoLibrary.GetTVShowDetails",                CVideoLibrary::GetTVShowDetails },
+  { "VideoLibrary.GetSeasons",                      CVideoLibrary::GetSeasons },
+  { "VideoLibrary.GetEpisodes",                     CVideoLibrary::GetEpisodes },
+  { "VideoLibrary.GetEpisodeDetails",               CVideoLibrary::GetEpisodeDetails },
+  { "VideoLibrary.GetMusicVideos",                  CVideoLibrary::GetMusicVideos },
+  { "VideoLibrary.GetMusicVideoDetails",            CVideoLibrary::GetMusicVideoDetails },
+  { "VideoLibrary.GetRecentlyAddedMovies",          CVideoLibrary::GetRecentlyAddedMovies },
+  { "VideoLibrary.GetRecentlyAddedEpisodes",        CVideoLibrary::GetRecentlyAddedEpisodes },
+  { "VideoLibrary.GetRecentlyAddedMusicVideos",     CVideoLibrary::GetRecentlyAddedMusicVideos },
+  { "VideoLibrary.ScanForContent",                  CVideoLibrary::ScanForContent },
 
 // System operations
   { "System.Shutdown",                              CSystemOperations::Shutdown },
@@ -202,25 +214,6 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "Playlist.Swap",                                CPlaylistOperations::Swap,                           Response,     ControlPlayback, "Swap items in the playlist. Parameter example {\"playlist\": \"music\", \"item1\": 0, \"item2\": 1 }. playlist optional." },
   { "Playlist.Shuffle",                             CPlaylistOperations::Shuffle,                        Response,     ControlPlayback, "Shuffle playlist" },
   { "Playlist.UnShuffle",                           CPlaylistOperations::UnShuffle,                      Response,     ControlPlayback, "UnShuffle playlist" },
-
-// Video library
-  { "VideoLibrary.GetMovies",                       CVideoLibrary::GetMovies,                            Response,     ReadData,        "Retrieve all movies. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
-  { "VideoLibrary.GetMovieDetails",                 CVideoLibrary::GetMovieDetails,                      Response,     ReadData,        "Retrieve details about a specific movie. Parameter example { \"fields\": [\"plot\"], \"movieid\": 12}. fields is optional" },
-
-  { "VideoLibrary.GetTVShows",                      CVideoLibrary::GetTVShows,                           Response,     ReadData,        "Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"label\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
-  { "VideoLibrary.GetTVShowDetails",                CVideoLibrary::GetTVShowDetails,                     Response,     ReadData,        "Retrieve details about a specific tv show. Parameter example { \"fields\": [\"plot\"], \"tvshowid\": 12}. fields is optional" },
-  { "VideoLibrary.GetSeasons",                      CVideoLibrary::GetSeasons,                           Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"fields\": [\"season\"], \"sortmethod\": \"label\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
-  { "VideoLibrary.GetEpisodes",                     CVideoLibrary::GetEpisodes,                          Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"season\": 1, \"fields\": [\"plot\"], \"sortmethod\": \"episode\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
-  { "VideoLibrary.GetEpisodeDetails",               CVideoLibrary::GetEpisodeDetails,                    Response,     ReadData,        "Retrieve details about a specific tv show episode. Parameter example { \"fields\": [\"plot\"], \"episodeid\": 12}. fields is optional" },
-
-  { "VideoLibrary.GetMusicVideos",                  CVideoLibrary::GetMusicVideos,                       Response,     ReadData,        "Parameter example { \"artistid\": 0, \"albumid\": 0, \"fields\": [\"plot\"], \"sortmethod\": \"artistignorethe\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
-  { "VideoLibrary.GetMusicVideoDetails",            CVideoLibrary::GetMusicVideoDetails,                 Response,     ReadData,        "Retrieve details about a specific music video. Parameter example { \"fields\": [\"plot\"], \"musicvideoid\": 12}. fields is optional" },
-
-  { "VideoLibrary.GetRecentlyAddedMovies",          CVideoLibrary::GetRecentlyAddedMovies,               Response,     ReadData,        "Retrieve all recently added movies. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
-  { "VideoLibrary.GetRecentlyAddedEpisodes",        CVideoLibrary::GetRecentlyAddedEpisodes,             Response,     ReadData,        "Retrieve all recently added episodes. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
-  { "VideoLibrary.GetRecentlyAddedMusicVideos",     CVideoLibrary::GetRecentlyAddedMusicVideos,          Response,     ReadData,        "Retrieve all recently added music videos. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
-
-  { "VideoLibrary.ScanForContent",                  CVideoLibrary::ScanForContent,                       Response,     ScanLibrary,     "" },
 };*/
 
 void CJSONRPC::Initialize()

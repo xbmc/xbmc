@@ -30,18 +30,31 @@ using namespace JSONRPC;
 
 JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!(parameterObject.isObject() || parameterObject.isNull()))
-    return InvalidParams;
-
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
 
-//  int genreID = parameterObject.get("genreid", -1).asInt();
-
   CFileItemList items;
   if (videodatabase.GetMoviesByWhere("videodb://", "", "", items))
+  {
+    bool additionalInfo = false;
+    Json::ValueConstIterator it;
+    for (it = parameterObject["fields"].begin(); it != parameterObject["fields"].end(); it++)
+    {
+      CStdString fieldValue = parameterObject["fields"][it.index()].asString();
+      if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "showlink")
+        additionalInfo = true;
+    }
+
+    if (additionalInfo)
+    {
+      for (int index = 0; index < items.Size(); index++)
+      {
+        videodatabase.GetMovieInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+      }
+    }
     HandleFileItemList("movieid", true, "movies", items, parameterObject, result);
+  }
 
   videodatabase.Close();
   return OK;
@@ -49,12 +62,7 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
 
 JSON_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!(parameterObject.isObject() || parameterObject.isNull() || parameterObject.isMember("movieid")))
-    return InvalidParams;
-
-  int id = parameterObject.get("movieid", -1).asInt();
-  if (id < 0)
-    return InvalidParams;
+  int id = parameterObject["movieid"].asInt();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -78,18 +86,31 @@ JSON_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITransportL
 
 JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!(parameterObject.isObject() || parameterObject.isNull()))
-    return InvalidParams;
-
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
 
-//  int genreID = parameterObject.get("genreid", -1).asInt();
-
   CFileItemList items;
   if (videodatabase.GetTvShowsNav("videodb://", items))
+  {
+    bool additionalInfo = false;
+    Json::ValueConstIterator it;
+    for (it = parameterObject["fields"].begin(); it != parameterObject["fields"].end(); it++)
+    {
+      CStdString fieldValue = parameterObject["fields"][it.index()].asString();
+      if (fieldValue == "cast")
+        additionalInfo = true;
+    }
+
+    if (additionalInfo)
+    {
+      for (int index = 0; index < items.Size(); index++)
+      {
+        videodatabase.GetTvShowInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+      }
+    }
     HandleFileItemList("tvshowid", false, "tvshows", items, parameterObject, result);
+  }
 
   videodatabase.Close();
   return OK;
@@ -97,12 +118,7 @@ JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer 
 
 JSON_STATUS CVideoLibrary::GetTVShowDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!(parameterObject.isObject() || parameterObject.isNull() || parameterObject.isMember("tvshowid")))
-    return InvalidParams;
-
-  int id = parameterObject.get("tvshowid", -1).asInt();
-  if (id < 0)
-    return InvalidParams;
+  int id = parameterObject["tvshowid"].asInt();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -126,13 +142,7 @@ JSON_STATUS CVideoLibrary::GetTVShowDetails(const CStdString &method, ITransport
 
 JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!(parameterObject.isObject() || parameterObject.isNull()))
-    return InvalidParams;
-
-  //if (!ParameterIntOrNull(parameterObject, "tvshowid"))
-  //  return InvalidParams;
-
-  int tvshowID = parameterObject.get("tvshowid", -1).asInt();
+  int tvshowID = parameterObject["tvshowid"].asInt();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -148,14 +158,8 @@ JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer 
 
 JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!(parameterObject.isObject() || parameterObject.isNull()))
-    return InvalidParams;
-
-  //if (!(ParameterIntOrNull(parameterObject, "tvshowid") || ParameterIntOrNull(parameterObject, "season")))
-  //  return InvalidParams;
-
-  int tvshowID = parameterObject.get("tvshowid", -1).asInt();
-  int season   = parameterObject.get("season", -1).asInt();
+  int tvshowID = parameterObject["tvshowid"].asInt();
+  int season   = parameterObject["season"].asInt();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -163,7 +167,25 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
 
   CFileItemList items;
   if (videodatabase.GetEpisodesNav("videodb://", items, -1, -1, -1, -1, tvshowID, season))
+  {
+    bool additionalInfo = false;
+    Json::ValueConstIterator it;
+    for (it = parameterObject["fields"].begin(); it != parameterObject["fields"].end(); it++)
+    {
+      CStdString fieldValue = parameterObject["fields"][it.index()].asString();
+      if (fieldValue == "cast")
+        additionalInfo = true;
+    }
+
+    if (additionalInfo)
+    {
+      for (int index = 0; index < items.Size(); index++)
+      {
+        videodatabase.GetEpisodeInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+      }
+    }
     HandleFileItemList("episodeid", true, "episodes", items, parameterObject, result);
+  }
 
   videodatabase.Close();
   return OK;
@@ -171,12 +193,7 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
 
 JSON_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!(parameterObject.isObject() || parameterObject.isNull() || parameterObject.isMember("episodeid")))
-    return InvalidParams;
-
-  int id = parameterObject.get("episodeid", -1).asInt();
-  if (id < 0)
-    return InvalidParams;
+  int id = parameterObject["episodeid"].asInt();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -200,14 +217,8 @@ JSON_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITranspor
 
 JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!(parameterObject.isObject() || parameterObject.isNull()))
-    return InvalidParams;
-
-  //if (!(ParameterIntOrNull(parameterObject, "artistid") || ParameterIntOrNull(parameterObject, "albumid")))
-  //  return InvalidParams;
-
-  int artistID = parameterObject.get("artistid", -1).asInt();
-  int albumID  = parameterObject.get("albumid", -1).asInt();
+  int artistID = parameterObject["artistid"].asInt();
+  int albumID  = parameterObject["albumid"].asInt();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -223,12 +234,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLa
 
 JSON_STATUS CVideoLibrary::GetMusicVideoDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!(parameterObject.isObject() || parameterObject.isNull() || parameterObject.isMember("musicvideoid")))
-    return InvalidParams;
-
-  int id = parameterObject.get("musicvideoid", -1).asInt();
-  if (id < 0)
-    return InvalidParams;
+  int id = parameterObject["musicvideoid"].asInt();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -258,7 +264,25 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedMovies(const CStdString &method, ITra
 
   CFileItemList items;
   if (videodatabase.GetRecentlyAddedMoviesNav("videodb://", items))
+  {
+    bool additionalInfo = false;
+    Json::ValueConstIterator it;
+    for (it = parameterObject["fields"].begin(); it != parameterObject["fields"].end(); it++)
+    {
+      CStdString fieldValue = parameterObject["fields"][it.index()].asString();
+      if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "showlink")
+        additionalInfo = true;
+    }
+
+    if (additionalInfo)
+    {
+      for (int index = 0; index < items.Size(); index++)
+      {
+        videodatabase.GetMovieInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+      }
+    }
     HandleFileItemList("movieid", true, "movies", items, parameterObject, result);
+  }
 
   videodatabase.Close();
   return OK;
@@ -272,7 +296,25 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedEpisodes(const CStdString &method, IT
 
   CFileItemList items;
   if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://", items))
+  {
+    bool additionalInfo = false;
+    Json::ValueConstIterator it;
+    for (it = parameterObject["fields"].begin(); it != parameterObject["fields"].end(); it++)
+    {
+      CStdString fieldValue = parameterObject["fields"][it.index()].asString();
+      if (fieldValue == "cast")
+        additionalInfo = true;
+    }
+
+    if (additionalInfo)
+    {
+      for (int index = 0; index < items.Size(); index++)
+      {
+        videodatabase.GetEpisodeInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+      }
+    }
     HandleFileItemList("episodeid", true, "episodes", items, parameterObject, result);
+  }
 
   videodatabase.Close();
   return OK;
