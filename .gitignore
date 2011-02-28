@@ -50,6 +50,7 @@ config.log
 .deps/
 
 # Eclipse project files. Not needed as they are generated in two clicks if needed.
+.settings
 .project
 .cproject
 
