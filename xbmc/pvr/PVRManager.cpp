@@ -488,11 +488,11 @@ void CPVRManager::Process()
   if (!m_bAllClientsLoaded)
     TryLoadClients(0);
 
+  CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
+
   /* main loop */
   while (!m_bStop)
   {
-    CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
-
     if (m_bTriggerChannelsUpdate)
       UpdateChannels();
 
