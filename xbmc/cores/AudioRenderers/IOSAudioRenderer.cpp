@@ -159,9 +159,10 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
   m_BitsPerChannel = audioFormat.mBitsPerChannel;
   m_BytesPerSec = uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
   m_SamplesPerSec = uiSamplesPerSec;
-  m_PacketSize = m_BufferFrames;
+  //m_PacketSize = m_BufferFrames;
+  m_PacketSize = audioFormat.mBytesPerFrame;
   m_BufferLen = m_BytesPerSec;
-  if(m_BytesPerSec < m_BytesPerFrame || m_BufferLen == 0)
+  if(m_BytesPerSec < m_PacketSize || m_BufferLen == 0)
     m_BufferLen = m_PacketSize;
 
   m_Buffer = m_dllAvUtil->av_fifo_alloc(m_BufferLen);
