@@ -1,0 +1,2 @@
+; filename                        source of the file
+fribidi-0.19.2-lib.zip         http://xbmcwindeps.googlecode.com/files/
