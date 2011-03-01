@@ -695,41 +695,29 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       unsigned int iControl = message.GetSenderId();
       if (iControl == CONTROL_GROUP_CHOOSER)
       {
-        const CPVRChannelGroup *selectedGroup = NULL;
-        const CPVRChannelGroups *groups = CPVRManager::GetChannelGroups()->Get(CPVRManager::Get()->IsPlayingRadio());
-
         // Get the currently selected label of the Select button
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
         OnMessage(msg);
         CStdString strLabel = msg.GetLabel();
         if (msg.GetParam1() != 0)
         {
-          // Go with the currently selected Label String from the Select button
-          // thru all Group names, if one of this names match the label load
-          // the ID of this group, if no equal name is found the default group
-          // for all channels is used.
-          for (int i = 0; i < (int) groups->size(); ++i)
+          const CPVRChannelGroups *groups = CPVRManager::GetChannelGroups()->Get(CPVRManager::Get()->IsPlayingRadio());
+          const CPVRChannelGroup *selectedGroup = groups->GetByName(strLabel);
+
+          // Switch to the first channel of the new group if the new group ID is
+          // different from the current one.
+          if (selectedGroup && *selectedGroup != *CPVRManager::Get()->GetPlayingGroup())
           {
-            if (strLabel == groups->at(i)->GroupName())
-            {
-              selectedGroup = groups->at(i);
-              break;
-            }
+            CPVRManager::Get()->SetPlayingGroup(selectedGroup);
+            OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) groups->GetFirstChannelForGroupID(selectedGroup->GroupID())));
           }
-        }
 
-        // Switch to the first channel of the new group if the new group ID is
-        // different from the current one.
-        if (selectedGroup && *selectedGroup != *CPVRManager::Get()->GetPlayingGroup())
-        {
-          CPVRManager::Get()->SetPlayingGroup(selectedGroup);
-          OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) groups->GetFirstChannelForGroupID(selectedGroup->GroupID())));
-        }
-
-        // hide the control and reset focus
-        m_bGroupSelectShow = false;
-        SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
+          // hide the control and reset focus
+          m_bGroupSelectShow = false;
+          SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
 //        SET_CONTROL_FOCUS(0, 0);
+        }
+
         return true;
       }
       break;
@@ -1127,12 +1115,6 @@ void CGUIWindowFullScreen::FillInTVGroups()
 
   int iGroup        = 0;
   int iCurrentGroup = 0;
-  {
-    // First Group is All channels (ID = -1)
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_GROUP_CHOOSER, iGroup++);
-    msg.SetLabel(593);
-    g_windowManager.SendMessage(msg);
-  }
   const CPVRChannelGroup *currentGroup = CPVRManager::Get()->GetPlayingGroup();
   for (int i = 0; i < (int) groups->size(); ++i)
   {
