@@ -161,7 +161,6 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
   m_BitsPerChannel = audioFormat.mBitsPerChannel;
   m_BytesPerSec = uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
   m_SamplesPerSec = uiSamplesPerSec;
-  m_PacketSize = iChannels * (uiBitsPerSample / 8) * 512;
   m_BufferLen = m_PacketSize * 96;
   if(m_BufferLen < m_PacketSize || m_BufferLen == 0)
     m_BufferLen = m_PacketSize;
@@ -175,8 +174,10 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
 
   m_EnableVolumeControl = true;
 
+  /*
   if (!m_AudioDevice.SetSessionListener(kAudioSessionProperty_AudioRouteChange, PropertyChangeCallback, this))
     return false;
+  */
 
   // Start the audio device
   if (!m_AudioDevice.Open())

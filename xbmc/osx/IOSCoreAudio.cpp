@@ -197,13 +197,19 @@ bool CIOSCoreAudioDevice::Init(bool bPassthrough, AudioStreamBasicDescription* p
   m_MixerUnit = 0;
   m_Passthrough = bPassthrough;
   
-  AudioSessionInitialize(NULL, NULL, NULL, NULL);
+  /*
+  ret = AudioSessionInitialize(NULL, NULL, NULL, NULL);
+  if (ret) {
+    CLog::Log(LOGERROR, "CIOSCoreAudioHardware::Init: Unable to initialize session. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
+    return false;
+  }
   
   ret = AudioSessionSetActive(true);
   if (ret) {
-    CLog::Log(LOGERROR, "CIOSCoreAudioHardware::Init: Unable to set session. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
+    CLog::Log(LOGERROR, "CIOSCoreAudioHardware::Init: Unable to set session active. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
     return false;
   }
+  */
   
   // Describe audio component
   desc.componentType = kAudioUnitType_Output;
