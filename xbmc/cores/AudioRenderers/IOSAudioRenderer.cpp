@@ -148,21 +148,22 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
     return false;
   }
 
-  m_BufferFrames = m_AudioDevice.FramesPerSlice(4096);
+  m_PacketSize = iChannels * (uiBitsPerSample / 8) * 512;
+
+  m_BufferFrames = m_AudioDevice.FramesPerSlice(m_PacketSize);
   if(!m_BufferFrames) 
   {
     CLog::Log(LOGDEBUG, "CIOSAudioRenderer::FramesPerSlice bufferFrames == 0\n");
-    return false;
+    //return false;
   }
 
   m_BytesPerFrame = audioFormat.mBytesPerFrame;
   m_BitsPerChannel = audioFormat.mBitsPerChannel;
   m_BytesPerSec = uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
   m_SamplesPerSec = uiSamplesPerSec;
-  //m_PacketSize = m_BufferFrames;
-  m_PacketSize = audioFormat.mBytesPerFrame;
-  m_BufferLen = m_BytesPerSec;
-  if(m_BytesPerSec < m_PacketSize || m_BufferLen == 0)
+  m_PacketSize = iChannels * (uiBitsPerSample / 8) * 512;
+  m_BufferLen = m_PacketSize * 96;
+  if(m_BufferLen < m_PacketSize || m_BufferLen == 0)
     m_BufferLen = m_PacketSize;
 
   m_Buffer = m_dllAvUtil->av_fifo_alloc(m_BufferLen);
@@ -200,10 +201,11 @@ bool CIOSAudioRenderer::Deinitialize()
     WaitCompletion();
 
   // Stop rendering
+
   Stop();
 
   //m_AudioDevice.Close();
-  //Sleep(10);
+  Sleep(10);
   m_AudioDevice.Close();
   m_Initialized = false;
   m_BytesPerSec = 0;
@@ -330,8 +332,7 @@ float CIOSAudioRenderer::GetCacheTotal()
 
 unsigned int CIOSAudioRenderer::GetChunkLen()
 {
-  //return (m_PacketSize / m_Channels) * m_DataChannels;
-  return m_PacketSize;
+  return (m_PacketSize / m_Channels) * m_DataChannels;
 }
 
 void CIOSAudioRenderer::WaitCompletion()
