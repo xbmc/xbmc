@@ -40,7 +40,7 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
 //  int genreID = parameterObject.get("genreid", -1).asInt();
 
   CFileItemList items;
-  if (videodatabase.GetMoviesNav("videodb://", items))
+  if (videodatabase.GetMoviesByWhere("videodb://", "", "", items))
     HandleFileItemList("movieid", true, "movies", items, parameterObject, result);
 
   videodatabase.Close();
