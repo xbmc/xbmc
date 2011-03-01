@@ -720,7 +720,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
         // Switch to the first channel of the new group if the new group ID is
         // different from the current one.
-        if (*selectedGroup != *CPVRManager::Get()->GetPlayingGroup())
+        if (selectedGroup && *selectedGroup != *CPVRManager::Get()->GetPlayingGroup())
         {
           CPVRManager::Get()->SetPlayingGroup(selectedGroup);
           OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) groups->GetFirstChannelForGroupID(selectedGroup->GroupID())));
