@@ -1245,7 +1245,7 @@
   <string id="13409">Top 250</string>
   <string id="13410">Sintonizar en Last.fm</string>
   <string id="13411">Velocidad mínima de ventilador</string>
-
+  <string id="13412">Reproducir desde aquí</string>
   <string id="13413">Descargando</string>
   <string id="13414">Incluir artistas que sólo aparecen en recopilaciones</string>
   <string id="13415">Método de renderizado</string>
@@ -2348,25 +2348,7 @@
   <string id="33082">Ruta al script</string>
   <string id="33083">Habilitar el botón de scripts personalizado</string>
 
-  <!-- translators: no need to add these to your language files -->
-  <string id="34000">Lame</string>
-  <string id="34001">Vorbis</string>
-  <string id="34002">Wav</string>
-  <string id="34003">DXVA2</string>
-  <string id="34004">VAAPI</string>
-  <string id="34005">Flac</string>
-
   <string id="34100">Configuración de altavoces</string>
-  <string id="34101">2.0</string>
-  <string id="34102">2.1</string>
-  <string id="34103">3.0</string>
-  <string id="34104">3.1</string>
-  <string id="34105">4.0</string>
-  <string id="34106">4.1</string>
-  <string id="34107">5.0</string>
-  <string id="34108">5.1</string>
-  <string id="34109">7.0</string>
-  <string id="34110">7.1</string>
   <!-- 34112-34200 reserved for future use -->
 
 </strings>
