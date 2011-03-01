@@ -477,7 +477,6 @@ retry:
 
     for(unsigned int i=0;i<filenames.size();i++)
     {
-      CLog::Log(LOGERROR, "test subs Amet [%s]", filenames[i].c_str());
       // if vobsub subtitle:		
       if (URIUtils::GetExtension(filenames[i]) == ".idx")
       {
