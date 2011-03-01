@@ -321,7 +321,6 @@ void CGUIDialogPVRGroupManager::Update()
   m_CurrentGroupName = pItem->m_strTitle;
   SET_CONTROL_LABEL(CONTROL_CURRENT_GROUP_LABEL, m_CurrentGroupName);
   const CPVRChannelGroup *selectedGroup = CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetByName(m_CurrentGroupName);
-
   if (selectedGroup)
   {
     /* get all channels that are not in this group for the center part */

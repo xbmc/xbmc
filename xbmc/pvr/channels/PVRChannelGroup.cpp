@@ -480,7 +480,7 @@ bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 
     PVRChannelGroupMember newMember = { channel, iChannelNumber };
     // TODO notify observers
     push_back(newMember);
-    SortByClientChannelNumber();
+    SortByChannelNumber();
     bReturn = true;
   }
 
