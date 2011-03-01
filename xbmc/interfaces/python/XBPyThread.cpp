@@ -52,6 +52,7 @@
 #include "XBPython.h"
 
 #include "xbmcmodule/pyutil.h"
+#include "xbmcmodule/pysingleexit.h"
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
@@ -352,9 +353,11 @@ void XBPyThread::Process()
       CLog::Log(LOGINFO, "Scriptresult: Waiting on thread %"PRIu64, (uint64_t)s->thread_id);
       old = s;
     }
-    Py_BEGIN_ALLOW_THREADS
+
+    CPySingleExit pyExit;
     Sleep(100);
-    Py_END_ALLOW_THREADS
+    pyExit.Restore();
+
     s = state->interp->tstate_head;
   }
 

@@ -21,6 +21,7 @@
 
 #include "PythonAddon.h"
 #include "pyutil.h"
+#include "pysingleexit.h"
 #include "addons/AddonManager.h"
 #include "addons/GUIDialogAddonSettings.h"
 
@@ -172,10 +173,10 @@ namespace PYXBMC
     }
 
     AddonPtr addon(self->pAddon);
-    Py_BEGIN_ALLOW_THREADS
+    CPySingleExit pyExit;
     addon->UpdateSetting(id, value);
     addon->SaveSettings();
-    Py_END_ALLOW_THREADS
+    pyExit.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -191,9 +192,9 @@ namespace PYXBMC
   {
     // show settings dialog
     AddonPtr addon(self->pAddon);
-    Py_BEGIN_ALLOW_THREADS
+    CPySingleExit pyExit;
     CGUIDialogAddonSettings::ShowAndGetInput(addon);
-    Py_END_ALLOW_THREADS
+    pyExit.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
