@@ -112,51 +112,6 @@ bool CPVRChannelGroupInternal::UpdateTimers(void)
   return true;
 }
 
-bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex, bool bSaveInDb /* = true */)
-{
-  bool bReturn = false;
-
-// XXX
-//  if (iNewIndex == iOldIndex || iNewIndex == 0)
-//    return bReturn;
-//
-//  /* make sure the list is sorted by channel number */
-//  SortByChannelNumber();
-//
-//  /* get the channel at the old position */
-//  CPVRChannel *channel = at(iOldIndex - 1);
-//
-//  /* remove channel at the old position */
-//  erase(begin() + iOldIndex - 1);
-//
-//  if (iNewIndex < size())
-//  {
-//    /* insert somewhere in the vector */
-//    insert(begin() + iNewIndex - 1, channel);
-//  }
-//  else
-//  {
-//    /* append */
-//    push_back(channel);
-//  }
-//
-//  /* update channel numbers */
-//  ReNumberAndCheck();
-//
-//  /* update timer channel numbers */
-//  UpdateTimers();
-//
-//  if (bSaveInDb)
-//    bReturn = Persist();
-//  else
-//    bReturn = true;
-//
-//  CLog::Log(LOGNOTICE, "PVRChannelGroupInternal - %s - %s channel '%d' moved to position '%d'",
-//      __FUNCTION__, (m_bRadio ? "radio" : "tv"), iOldIndex, iNewIndex);
-
-  return bReturn;
-}
-
 bool CPVRChannelGroupInternal::RemoveFromGroup(CPVRChannel *channel)
 {
   bool bReturn = false;

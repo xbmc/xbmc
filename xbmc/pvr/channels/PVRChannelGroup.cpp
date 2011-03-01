@@ -108,9 +108,41 @@ bool CPVRChannelGroup::Update(const CPVRChannelGroup &group)
   return true;
 }
 
-void CPVRChannelGroup::MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex)
+bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb /* = true */)
 {
-  // TODO non-system groups. need a mapping table first
+  if (iOldChannelNumber == iNewChannelNumber)
+    return true;
+
+  bool bReturn = false;
+
+  /* make sure the list is sorted by channel number */
+  SortByChannelNumber();
+
+  /* old channel number out of range */
+  if (iOldChannelNumber > size())
+    return bReturn;
+
+  /* new channel number out of range */
+  if (iNewChannelNumber > size())
+    iNewChannelNumber = size();
+
+  /* move the channel in the list */
+  PVRChannelGroupMember entry = at(iOldChannelNumber - 1);
+  erase(begin() + iOldChannelNumber - 1);
+  insert(begin() + iNewChannelNumber - 1, entry);
+
+  /* renumber the list */
+  Renumber();
+
+  if (bSaveInDb)
+    bReturn = Persist();
+  else
+    bReturn = true;
+
+  CLog::Log(LOGNOTICE, "CPVRChannelGroup - %s - %s channel '%s' moved to channel number '%d'",
+      __FUNCTION__, (m_bRadio ? "radio" : "tv"), entry.channel->ChannelName().c_str(), iNewChannelNumber);
+
+  return true;
 }
 
 void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
