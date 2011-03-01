@@ -36,6 +36,8 @@ class CPVRChannelGroup;
 class CPVRRecordings;
 class CPVRTimers;
 
+#define XBMC_VIRTUAL_CLIENTID -1
+
 typedef std::map< long, boost::shared_ptr<CPVRClient> >           CLIENTMAP;
 typedef std::map< long, boost::shared_ptr<CPVRClient> >::iterator CLIENTMAPITR;
 typedef std::map< long, PVR_SERVERPROPS >       CLIENTPROPS;

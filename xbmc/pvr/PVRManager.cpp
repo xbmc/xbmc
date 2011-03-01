@@ -1680,7 +1680,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   {
     m_LastChannel         = tagPrev->ChannelNumber();
     m_LastChannelChanged  = CTimeUtils::GetTimeMS();
-    if (channelTag->ClientID() == 999)
+    if (channelTag->ClientID() == XBMC_VIRTUAL_CLIENTID)
       m_playingClientName = g_localizeStrings.Get(19209);
     else if (!channelTag->IsVirtual())
       m_playingClientName = m_clients[channelTag->ClientID()]->GetBackendName() + ":" + m_clients[channelTag->ClientID()]->GetConnectionString();
