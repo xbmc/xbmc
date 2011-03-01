@@ -1864,8 +1864,9 @@ MpegTSContext *ff_mpegts_parse_open(AVFormatContext *s)
     ts->raw_packet_size = TS_PACKET_SIZE;
     ts->stream = s;
     ts->auto_guess = 1;
-    mpegts_open_section_filter(ts, SDT_PID, sdt_cb, ts, 1);
-    mpegts_open_section_filter(ts, PAT_PID, pat_cb, ts, 1);
+    //margro: Causes segfaults under Linux (sometimes) and Windows (consequently) on RTSP playback of TV streams from Mediaportal
+    //mpegts_open_section_filter(ts, SDT_PID, sdt_cb, ts, 1);
+    //mpegts_open_section_filter(ts, PAT_PID, pat_cb, ts, 1);
 
     return ts;
 }
