@@ -554,10 +554,17 @@ private:
   void ResetProperties(void);
 
   /*!
+   * @brief Try to load and initialise all clients.
+   * @param iMaxTime Maximum time to try to load clients in seconds. Use 0 to keep trying until m_bStop becomes true.
+   * @return True if all clients were loaded, false otherwise.
+   */
+  bool TryLoadClients(int iMaxTime = 0);
+
+  /*!
    * @brief Load and initialise all clients.
    * @return True if any clients were loaded, false otherwise.
    */
-  bool LoadClients();
+  bool LoadClients(void);
 
   /*!
    * @brief Stop a client.

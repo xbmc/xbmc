@@ -52,13 +52,13 @@ public:
    * @brief Get the minimal database version that is required to operate correctly.
    * @return The minimal database version.
    */
-  virtual int GetMinVersion(void) const { return 3; };
+  virtual int GetMinVersion(void) const { return 4; };
 
   /*!
    * @brief Get the default sqlite database filename.
    * @return The default filename.
    */
-  const char *GetDefaultDBName(void) const { return "MyEpg4.db"; };
+  const char *GetBaseDBName(void) const { return "Epg"; };
 
   /*! @name EPG methods */
   //@{

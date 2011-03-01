@@ -51,13 +51,13 @@ public:
    * @brief Get the minimal database version that is required to operate correctly.
    * @return The minimal database version.
    */
-  virtual int GetMinVersion() const { return 10; };
+  virtual int GetMinVersion() const { return 11; };
 
   /*!
    * @brief Get the default sqlite database filename.
    * @return The default filename.
    */
-  const char *GetDefaultDBName() const { return "MyTV4.db"; };
+  const char *GetBaseDBName() const { return "TV"; };
 
   /*! @name Channel methods */
   //@{

@@ -815,7 +815,8 @@ void CGUIEPGGridContainer::UpdateItems()
 
   m_channels = (int)m_epgItemsPtr.size();
   m_item = GetItem(m_channelCursor);
-  m_blockCursor = GetBlock(m_item->item, m_channelCursor);
+  if (m_item)
+    m_blockCursor = GetBlock(m_item->item, m_channelCursor);
 
   SetInvalid();
 }
@@ -1174,10 +1175,13 @@ bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint &point)
 
 int CGUIEPGGridContainer::GetSelectedItem() const
 {
-  if (!m_gridIndex)
+  if (!m_gridIndex || !m_epgItemsPtr.size())
     return 0;
 
-  CGUIListItemPtr currentItem = m_gridIndex[m_channelCursor + m_channelOffset][m_blockCursor + m_blockOffset].item; ///
+  CGUIListItemPtr currentItem = m_gridIndex[m_channelCursor + m_channelOffset][m_blockCursor + m_blockOffset].item;
+  if (!currentItem)
+    return 0;
+
   for (int i = 0; i < (int)m_programmeItems.size(); i++)
   {
     if (currentItem == m_programmeItems[i])

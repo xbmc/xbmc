@@ -131,32 +131,6 @@ void CPVRManager::Start()
 
   ResetProperties();
 
-  /* load all addons */
-  CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
-  while (!m_bAllClientsLoaded)
-  {
-    LoadClients();
-    Sleep(50);
-  }
-
-  /* load all channels and groups */
-  m_channelGroups->Load();
-
-  /* start the EPG thread */
-  m_epg->Start();
-
-  /* get timers from the backends */
-  m_timers->Load();
-
-  /* get recordings from the backend */
-  m_recordings->Load();
-
-  m_bLoaded = true;
-
-  /* continue last watched channel after first startup */
-  if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
-    ContinueLastChannel();
-
   /* create the supervisor thread to do all background activities */
   Create();
   SetName("XBMC PVRManager");
@@ -181,7 +155,37 @@ void CPVRManager::Stop()
   Cleanup();
 }
 
-bool CPVRManager::LoadClients()
+bool CPVRManager::TryLoadClients(int iMaxTime /* = 0 */)
+{
+  CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
+  CDateTime start = CDateTime::GetCurrentDateTime();
+
+  while (!m_bAllClientsLoaded)
+  {
+    /* try to load clients */
+    LoadClients();
+
+    /* always break if the thread is stopped */
+    if (m_bStop)
+      break;
+
+    /* check whether iMaxTime has passed */
+    if (!m_bAllClientsLoaded && iMaxTime > 0)
+    {
+      CDateTimeSpan elapsed = CDateTime::GetCurrentDateTime() - start;
+      if (elapsed.GetSeconds() >= iMaxTime)
+        break;
+    }
+
+    Sleep(0);
+  }
+
+  CLog::Log(LOG_DEBUG, "PVRManager - %s - %s",
+      __FUNCTION__, m_bAllClientsLoaded ? "all clients loaded" : "couldn't load all clients. will keep trying in a separate thread.");
+  return m_bAllClientsLoaded;
+}
+
+bool CPVRManager::LoadClients(void)
 {
   if (m_bAllClientsLoaded)
     return !m_clients.empty();
@@ -454,6 +458,38 @@ bool CPVRManager::ContinueLastChannel()
 
 void CPVRManager::Process()
 {
+  while (!HasActiveClients())
+  {
+    TryLoadClients(1);
+
+    if (HasActiveClients())
+    {
+      /* load all channels and groups */
+      m_channelGroups->Load();
+
+      /* get timers from the backends */
+      m_timers->Load();
+
+      /* get recordings from the backend */
+      m_recordings->Load();
+
+      /* start the EPG thread */
+      m_epg->Start();
+    }
+  }
+
+  m_bLoaded = true;
+
+  /* continue last watched channel after first startup */
+  if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
+    ContinueLastChannel();
+
+  /* keep trying to load remaining clients */
+  if (!m_bAllClientsLoaded)
+    TryLoadClients(0);
+
+  CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
+
   /* main loop */
   while (!m_bStop)
   {
@@ -1627,9 +1663,9 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     CMusicInfoTag* musictag = item.GetMusicInfoTag();
     if (musictag)
     {
-      musictag->SetTitle(epgTagNow->Title());
-      musictag->SetGenre(epgTagNow->Genre());
-      musictag->SetDuration(epgTagNow->GetDuration());
+      musictag->SetTitle(epgTagNow ? epgTagNow->Title() : g_localizeStrings.Get(19055));
+      musictag->SetGenre(epgTagNow ? epgTagNow->Genre() : "");
+      musictag->SetDuration(epgTagNow ? epgTagNow->GetDuration() : 3600);
       musictag->SetURL(channelTag->Path());
       musictag->SetArtist(channelTag->ChannelName());
       musictag->SetAlbumArtist(channelTag->ChannelName());

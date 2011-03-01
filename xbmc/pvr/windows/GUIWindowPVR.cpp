@@ -65,6 +65,15 @@ CGUIWindowPVRCommon *CGUIWindowPVR::GetActiveView(void) const
   return m_currentSubwindow;
 }
 
+void CGUIWindowPVR::SetActiveView(CGUIWindowPVRCommon *window)
+{
+  CSingleLock lock(m_critSection);
+  if (!m_bViewsCreated)
+    return;
+
+  m_currentSubwindow = window;
+}
+
 void CGUIWindowPVR::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   CGUIWindowPVRCommon *view = GetActiveView();
@@ -86,19 +95,15 @@ CGUIWindowPVRCommon *CGUIWindowPVR::GetSavedView(void) const
 bool CGUIWindowPVR::OnAction(const CAction &action)
 {
   CGUIWindowPVRCommon *view = GetActiveView();
-  if (view && view->OnAction(action))
-    return true;
-
-  return CGUIMediaWindow::OnAction(action);
+  return (view && view->OnAction(action)) ||
+      CGUIMediaWindow::OnAction(action);
 }
 
 bool CGUIWindowPVR::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   CGUIWindowPVRCommon *view = GetActiveView();
-  if (view && view->OnContextButton(itemNumber, button))
-    return true;
-
-  return CGUIMediaWindow::OnContextButton(itemNumber, button);
+  return (view && view->OnContextButton(itemNumber, button)) ||
+      CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 void CGUIWindowPVR::OnInitWindow(void)
@@ -122,8 +127,8 @@ void CGUIWindowPVR::OnInitWindow(void)
 
 bool CGUIWindowPVR::OnMessage(CGUIMessage& message)
 {
-  return OnMessageFocus(message) || OnMessageClick(message) ||
-      CGUIMediaWindow::OnMessage(message);
+  return (OnMessageFocus(message) ||OnMessageClick(message) ||
+      CGUIMediaWindow::OnMessage(message));
 }
 
 void CGUIWindowPVR::OnWindowLoaded(void)
@@ -151,6 +156,10 @@ void CGUIWindowPVR::OnWindowUnload(void)
   {
     view->OnWindowUnload();
     m_savedSubwindow = view;
+  }
+  else
+  {
+    m_savedSubwindow = NULL;
   }
 
   m_currentSubwindow = NULL;
@@ -209,13 +218,18 @@ void CGUIWindowPVR::SetLabel(int iControl, int iLabel)
   SET_CONTROL_LABEL(iControl, iLabel);
 }
 
+void CGUIWindowPVR::UpdateButtons(void)
+{
+  m_windowGuide->UpdateButtons();
+}
+
 bool CGUIWindowPVR::OnMessageFocus(CGUIMessage &message)
 {
   bool bReturn = false;
 
   if (message.GetMessage() == GUI_MSG_FOCUSED)
   {
-    bReturn = m_windowChannelsRadio->OnMessageFocus(message) ||
+    m_windowChannelsRadio->OnMessageFocus(message) ||
         m_windowChannelsTV->OnMessageFocus(message) ||
         m_windowGuide->OnMessageFocus(message) ||
         m_windowRecordings->OnMessageFocus(message) ||

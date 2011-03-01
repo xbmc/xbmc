@@ -36,8 +36,6 @@
 using namespace XFILE;
 using namespace MUSIC_INFO;
 
-const CPVREpgInfoTag *m_EmptyEpgInfoTag = new CPVREpgInfoTag();
-
 bool CPVRChannel::operator==(const CPVRChannel& right) const
 {
   if (this == &right) return true;
@@ -600,24 +598,24 @@ bool CPVRChannel::ClearEPG()
   return true;
 }
 
-const CPVREpgInfoTag* CPVRChannel::GetEPGNow(void) const
+CPVREpgInfoTag* CPVRChannel::GetEPGNow(void) const
 {
-  const CPVREpgInfoTag *tag = NULL;
+  CPVREpgInfoTag *tag = NULL;
 
   if (!m_bIsHidden && m_bEPGEnabled && m_EPG)
     tag = (CPVREpgInfoTag *) m_EPG->InfoTagNow();
 
-  return !tag ? m_EmptyEpgInfoTag : tag;
+  return tag;
 }
 
-const CPVREpgInfoTag* CPVRChannel::GetEPGNext(void) const
+CPVREpgInfoTag* CPVRChannel::GetEPGNext(void) const
 {
-  const CPVREpgInfoTag *tag = NULL;
+  CPVREpgInfoTag *tag = NULL;
 
   if (!m_bIsHidden && m_bEPGEnabled && m_EPG)
     tag = (CPVREpgInfoTag *) m_EPG->InfoTagNext();
 
-  return !tag ? m_EmptyEpgInfoTag : tag;
+  return tag;
 }
 
 bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled /* = true */, bool bSaveInDb /* = false */)

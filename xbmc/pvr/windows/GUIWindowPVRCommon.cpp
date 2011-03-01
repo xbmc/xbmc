@@ -47,10 +47,11 @@ CGUIWindowPVRCommon::CGUIWindowPVRCommon(CGUIWindowPVR *parent, PVRWindow window
   m_window          = window;
   m_iControlButton  = iControlButton;
   m_iControlList    = iControlList;
-  m_bUpdateRequired = true;
+  m_bUpdateRequired = false;
   m_iSelected       = 0;
   m_iSortOrder      = SORT_ORDER_ASC;
   m_iSortMethod     = SORT_METHOD_DATE;
+  m_bIsFocusing     = false;
 }
 
 bool CGUIWindowPVRCommon::operator ==(const CGUIWindowPVRCommon &right) const
@@ -61,6 +62,27 @@ bool CGUIWindowPVRCommon::operator ==(const CGUIWindowPVRCommon &right) const
 bool CGUIWindowPVRCommon::operator !=(const CGUIWindowPVRCommon &right) const
 {
   return !(*this == right);
+}
+
+const char *CGUIWindowPVRCommon::GetName(void) const
+{
+  switch(m_window)
+  {
+  case PVR_WINDOW_EPG:
+    return "epg";
+  case PVR_WINDOW_CHANNELS_RADIO:
+    return "radio";
+  case PVR_WINDOW_CHANNELS_TV:
+    return "tv";
+  case PVR_WINDOW_RECORDINGS:
+    return "recordings";
+  case PVR_WINDOW_SEARCH:
+    return "search";
+  case PVR_WINDOW_TIMERS:
+    return "timers";
+  default:
+    return "unknown";
+  }
 }
 
 bool CGUIWindowPVRCommon::IsActive(void) const
@@ -102,12 +124,13 @@ bool CGUIWindowPVRCommon::OnMessageFocus(CGUIMessage &message)
   if (message.GetMessage() == GUI_MSG_FOCUSED &&
       (IsSelectedControl(message) || IsSavedView()))
   {
-    if (!IsActive() || m_bUpdateRequired)
+    CLog::Log(LOGDEBUG, "CGUIWindowPVRCommon - %s - focus set to window '%s'", __FUNCTION__, GetName());
+    if (!IsActive())
       UpdateData();
     else
       m_iSelected = m_parent->m_viewControl.GetSelectedItem();
 
-    m_parent->m_currentSubwindow = this;
+    m_parent->SetActiveView(this);
     bReturn = true;
   }
 

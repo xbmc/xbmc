@@ -65,7 +65,11 @@ bool CGUIWindowPVRRecordings::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_PARENT_DIR)
   {
-    m_parent->GoParentFolder();
+    if (m_parent->m_vecItems->m_strPath != "pvr://recordings/")
+      m_parent->GoParentFolder();
+    else
+      g_windowManager.PreviousWindow();
+
     return true;
   }
 
@@ -93,15 +97,22 @@ void CGUIWindowPVRRecordings::OnWindowUnload(void)
 
 void CGUIWindowPVRRecordings::UpdateData(void)
 {
+  if (m_bIsFocusing)
+    return;
+
+  CLog::Log(LOGDEBUG, "CGUIWindowPVRRecordings - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
+  m_bIsFocusing = true;
   m_bUpdateRequired = false;
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
   m_parent->m_vecItems->m_strPath = "pvr://recordings/";
   m_parent->Update(m_strSelectedPath);
+  m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
   m_parent->m_viewControl.SetSelectedItem(m_iSelected);
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19017));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
+  m_bIsFocusing = false;
 }
 
 bool CGUIWindowPVRRecordings::OnClickButton(CGUIMessage &message)
@@ -124,6 +135,7 @@ bool CGUIWindowPVRRecordings::OnClickList(CGUIMessage &message)
 
   if (IsSelectedList(message))
   {
+    bReturn = true;
     int iAction = message.GetParam1();
     int iItem = m_parent->m_viewControl.GetSelectedItem();
 
@@ -133,7 +145,6 @@ bool CGUIWindowPVRRecordings::OnClickList(CGUIMessage &message)
     CFileItemPtr pItem = m_parent->m_vecItems->Get(iItem);
 
     /* process actions */
-    bReturn = true;
     if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK || iAction == ACTION_PLAY)
       bReturn = PlayFile(pItem.get(), false);
     else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)

@@ -215,7 +215,7 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   m_bIsFolder = false;
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
-  m_strLabel2 = channel.GetEPGNow()->Title();
+  m_strLabel2 = channel.GetEPGNow() ? channel.GetEPGNow()->Title() : g_localizeStrings.Get(19055);
 
   FillInDefaultIcon();
   if (!channel.IconPath().IsEmpty())

@@ -101,6 +101,11 @@ void CGUIWindowPVRSearch::OnInitWindow(void)
 
 void CGUIWindowPVRSearch::UpdateData(void)
 {
+  if (m_bIsFocusing)
+    return;
+
+  CLog::Log(LOGDEBUG, "CGUIWindowPVRSearch - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
+  m_bIsFocusing = true;
   m_bUpdateRequired = false;
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
@@ -147,6 +152,7 @@ void CGUIWindowPVRSearch::UpdateData(void)
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(283));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
+  m_bIsFocusing = false;
 }
 
 bool CGUIWindowPVRSearch::OnClickButton(CGUIMessage &message)
@@ -218,7 +224,7 @@ bool CGUIWindowPVRSearch::OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON bu
     m_searchfilter.Reset();
     if (item->IsEPG())
       m_searchfilter.m_strSearchTerm = "\"" + item->GetEPGInfoTag()->Title() + "\"";
-    else if (item->IsPVRChannel())
+    else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
       m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRChannelInfoTag()->GetEPGNow()->Title() + "\"";
     else if (item->IsPVRRecording())
       m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRRecordingInfoTag()->Title() + "\"";
