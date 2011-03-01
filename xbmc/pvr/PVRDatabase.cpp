@@ -123,8 +123,6 @@ bool CPVRDatabase::CreateTables()
     );
     m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio);");
 
-    // TODO use a mapping table so multiple groups per channel can be implemented
-    // replaces idGroup in the channels table
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'map_channelgroups_channels'", __FUNCTION__);
     m_pDS->exec(
         "CREATE TABLE map_channelgroups_channels ("
@@ -489,38 +487,6 @@ bool CPVRDatabase::DeleteChannelGroup(int iGroupId, bool bRadio /* = false */)
   return DeleteValues("channelgroups", strWhereClause);
 }
 
-bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results)
-{
-  bool bReturn = false;
-  CStdString strQuery = FormatSQL("SELECT * from channelgroups ORDER BY idGroup;");
-
-  if (ResultQuery(strQuery))
-  {
-    try
-    {
-      while (!m_pDS->eof())
-      {
-        CPVRChannelGroup data(m_pDS->fv("bIsRadio").get_asBool());
-
-        data.SetGroupID(m_pDS->fv("idGroup").get_asInt());
-        data.SetGroupName(m_pDS->fv("sName").get_asString());
-        data.SetSortOrder(m_pDS->fv("iSortOrder").get_asInt());
-
-        results.Update(data);
-        m_pDS->next();
-      }
-      m_pDS->close();
-      bReturn = true;
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "%s - couldn't load channels from the database", __FUNCTION__);
-    }
-  }
-
-  return bReturn;
-}
-
 bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results, bool bRadio)
 {
   bool bReturn = false;
@@ -565,8 +531,7 @@ int CPVRDatabase::GetChannelsInGroup(CPVRChannelGroup *group)
     return -1;
   }
 
-  //XXX
-  CStdString strQuery = FormatSQL("SELECT idChannel, iChannelNumber FROM map_channelgroups_channels WHERE idGroup = %u", group->GroupID());
+  CStdString strQuery = FormatSQL("SELECT idChannel, iChannelNumber FROM map_channelgroups_channels WHERE idGroup = %u ORDER BY iChannelNumber", group->GroupID());
   if (ResultQuery(strQuery))
   {
     iReturn = 0;

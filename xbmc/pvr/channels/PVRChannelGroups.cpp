@@ -158,10 +158,16 @@ bool CPVRChannelGroups::Load(void)
 
   /* load the other groups from the database */
   CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
-  database->Open();
+  if (database->Open())
+  {
+    database->GetChannelGroupList(*this, m_bRadio);
 
-  database->GetChannelGroupList(*this, m_bRadio);
-  database->Close();
+    /* load group members */
+    for (unsigned int iGroupPtr = 1; iGroupPtr < size(); iGroupPtr++)
+      at(iGroupPtr)->Load();
+
+    database->Close();
+  }
 
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d %s channel groups loaded",
       __FUNCTION__, size(), m_bRadio ? "radio" : "TV");

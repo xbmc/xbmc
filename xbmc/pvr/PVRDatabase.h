@@ -169,20 +169,13 @@ public:
   /*!
    * @brief Get the channel groups.
    * @param results The container to store the results in.
-   * @return True if the list was fetched successfully, false otherwise.
-   */
-  bool GetChannelGroupList(CPVRChannelGroups &results);
-
-  /*!
-   * @brief Get the channel groups.
-   * @param results The container to store the results in.
    * @param bRadio Get radio channel groups if true.
    * @return True if the list was fetched successfully, false otherwise.
    */
   bool GetChannelGroupList(CPVRChannelGroups &results, bool bRadio);
 
   /*!
-   * @brief Get the group members for a group.
+   * @brief Add the group members to a group.
    * @param group The group to get the channels for.
    * @return The amount of channels that were added.
    */

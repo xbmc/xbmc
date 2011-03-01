@@ -40,19 +40,21 @@ using namespace MUSIC_INFO;
 
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder)
 {
-  m_bRadio       = bRadio;
-  m_iGroupId     = iGroupId;
-  m_strGroupName = strGroupName;
-  m_iSortOrder   = iSortOrder;
+  m_bRadio          = bRadio;
+  m_iGroupId        = iGroupId;
+  m_strGroupName    = strGroupName;
+  m_iSortOrder      = iSortOrder;
+  m_bInhibitSorting = false;
   clear();
 }
 
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio)
 {
-  m_bRadio       = bRadio;
-  m_iGroupId     = -1;
+  m_bRadio          = bRadio;
+  m_iGroupId        = -1;
   m_strGroupName.clear();
-  m_iSortOrder   = -1;
+  m_iSortOrder      = -1;
+  m_bInhibitSorting = false;
   clear();
 }
 
@@ -78,14 +80,17 @@ int CPVRChannelGroup::Load(void)
   /* make sure this container is empty before loading */
   Unload();
 
-  int iReturn = 0;
+  int iReturn = -1;
 
   CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
-  database->Open();
+  if (database->Open())
+  {
+    m_bInhibitSorting = true;
+    iReturn = database->GetChannelsInGroup(this);
+    m_bInhibitSorting = false;
 
-  iReturn = database->GetChannelsInGroup(this);
-
-  database->Close();
+    database->Close();
+  }
 
   return iReturn;
 }
@@ -207,11 +212,17 @@ struct sortByChannelNumber
 
 void CPVRChannelGroup::SortByClientChannelNumber(void)
 {
+  if (m_bInhibitSorting)
+    return;
+
   sort(begin(), end(), sortByClientChannelNumber());
 }
 
 void CPVRChannelGroup::SortByChannelNumber(void)
 {
+  if (m_bInhibitSorting)
+    return;
+
   sort(begin(), end(), sortByChannelNumber());
 }
 
@@ -469,7 +480,7 @@ bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 
     PVRChannelGroupMember newMember = { channel, iChannelNumber };
     // TODO notify observers
     push_back(newMember);
-    Renumber();
+    SortByClientChannelNumber();
     bReturn = true;
   }
 

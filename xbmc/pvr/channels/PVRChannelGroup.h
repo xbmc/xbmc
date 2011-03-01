@@ -27,6 +27,7 @@
 #define XBMC_INTERNAL_GROUP_RADIO 1
 #define XBMC_INTERNAL_GROUP_TV    2
 
+class CPVRChannelGroups;
 class CPVRChannelGroupInternal;
 
 typedef struct {
@@ -38,14 +39,16 @@ typedef struct {
 
 class CPVRChannelGroup : private std::vector<PVRChannelGroupMember>
 {
+  friend class CPVRChannelGroups;
   friend class CPVRChannelGroupInternal;
   friend class CPVRDatabase;
 
 private:
-  bool       m_bRadio;       /*!< true if this container holds radio channels, false if it holds TV channels */
-  int        m_iGroupId;     /*!< The ID of this group in the database */
-  CStdString m_strGroupName; /*!< The name of this group */
-  int        m_iSortOrder;   /*!< The sort order to use */
+  bool       m_bRadio;          /*!< true if this container holds radio channels, false if it holds TV channels */
+  int        m_iGroupId;        /*!< The ID of this group in the database */
+  CStdString m_strGroupName;    /*!< The name of this group */
+  int        m_iSortOrder;      /*!< The sort order to use */
+  bool       m_bInhibitSorting; /*!< True if sorting is inhibited, false otherwise */
 
   /*!
    * @brief Load the channels stored in the database.
@@ -82,7 +85,7 @@ private:
 
   /*!
    * @brief Load the channels from the database.
-   * @return The amount of channels that were added.
+   * @return The amount of channels that were added or -1 if an error occured.
    */
   virtual int Load();
 
