@@ -117,7 +117,7 @@ void CEpgContainer::Start(void)
 
   Create();
   SetName("XBMC EPG thread");
-  SetPriority(0);
+  SetPriority(10);
   CLog::Log(LOGNOTICE, "%s - EPG thread started", __FUNCTION__);
 }
 

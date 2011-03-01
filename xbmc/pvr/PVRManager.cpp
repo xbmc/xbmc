@@ -134,7 +134,7 @@ void CPVRManager::Start()
   /* create the supervisor thread to do all background activities */
   Create();
   SetName("XBMC PVRManager");
-  SetPriority(-15);
+  SetPriority(5);
   CLog::Log(LOGNOTICE, "PVRManager - started with %u active clients", m_clients.size());
 }
 
