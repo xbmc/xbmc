@@ -220,7 +220,7 @@ bool CPVRManager::LoadClients(void)
     /* check if this client isn't active already */
     for (unsigned int iClientPtr = 0; iClientPtr < m_clients.size(); iClientPtr++)
     {
-      if (m_clients.at(iClientPtr)->ID() == clientAddon->ID() && m_clients.at(iClientPtr)->ReadyToUse())
+      if (m_clients[iClientPtr]->ID() == clientAddon->ID() && m_clients[iClientPtr]->ReadyToUse())
       {
         /* already started */
         bStarted = true;
