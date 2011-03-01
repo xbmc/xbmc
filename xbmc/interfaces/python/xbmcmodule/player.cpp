@@ -31,6 +31,7 @@
 #include "FileItem.h"
 #include "utils/LangCodeExpander.h"
 #include "settings/Settings.h"
+#include "pysingleexit.h"
 
 using namespace MUSIC_INFO;
 
