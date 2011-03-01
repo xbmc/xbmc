@@ -112,10 +112,9 @@ public:
   /*!
    * @brief Show a hidden channel or hide a visible channel.
    * @param channel The channel to change.
-   * @param bShowDialog If true, show a confirmation dialog.
    * @return True if the channel was changed, false otherwise.
    */
-  bool HideChannel(CPVRChannel *channel, bool bShowDialog = true);
+  bool RemoveFromGroup(CPVRChannel *channel);
 
   /**
    * @brief The amount of channels in this container.

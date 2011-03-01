@@ -154,14 +154,6 @@ public:
   virtual void MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex);
 
   /*!
-   * @brief Show a hidden channel or hide a visible channel.
-   * @param channel The channel to change.
-   * @param bShowDialog If true, show a confirmation dialog.
-   * @return True if the channel was changed, false otherwise.
-   */
-  virtual bool HideChannel(CPVRChannel *channel, bool bShowDialog = true);
-
-  /*!
    * @brief Search missing channel icons for all known channels.
    * @param bUpdateDb If true, update the changed values in the database.
    */
@@ -172,7 +164,7 @@ public:
    * @param channel The channel to remove.
    * @return True if the channel was found and removed, false otherwise.
    */
-  virtual bool RemoveFromGroup(const CPVRChannel *channel);
+  virtual bool RemoveFromGroup(CPVRChannel *channel);
 
   /*!
    * @brief Add a channel to this container.

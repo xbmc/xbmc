@@ -157,7 +157,7 @@ bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldIndex, unsigned int 
   return bReturn;
 }
 
-bool CPVRChannelGroupInternal::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true */)
+bool CPVRChannelGroupInternal::RemoveFromGroup(CPVRChannel *channel)
 {
   bool bReturn = false;
 
@@ -167,22 +167,6 @@ bool CPVRChannelGroupInternal::HideChannel(CPVRChannel *channel, bool bShowDialo
   /* check if there are active timers on this channel if we are hiding it */
   if (!channel->IsHidden() && CPVRManager::GetTimers()->ChannelHasTimers(*channel))
   {
-    if (bShowDialog)
-    {
-      CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-      if (!pDialog)
-        return bReturn;
-
-      pDialog->SetHeading(19098);
-      pDialog->SetLine(0, 19099);
-      pDialog->SetLine(1, "");
-      pDialog->SetLine(2, 19100);
-      pDialog->DoModal();
-
-      if (!pDialog->IsConfirmed())
-        return bReturn;
-    }
-
     /* delete the timers */
     CPVRManager::GetTimers()->DeleteTimersOnChannel(*channel);
   }

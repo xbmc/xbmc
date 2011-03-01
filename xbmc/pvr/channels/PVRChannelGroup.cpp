@@ -113,11 +113,6 @@ void CPVRChannelGroup::MoveChannel(unsigned int iOldIndex, unsigned int iNewInde
   // TODO non-system groups. need a mapping table first
 }
 
-bool CPVRChannelGroup::HideChannel(CPVRChannel *channel, bool bShowDialog /* = true */)
-{
-  return RemoveFromGroup(channel);
-}
-
 void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 {
   if (g_guiSettings.GetString("pvrmenu.iconpath") == "")
@@ -412,7 +407,7 @@ void CPVRChannelGroup::RemoveInvalidChannels(void)
   }
 }
 
-bool CPVRChannelGroup::RemoveFromGroup(const CPVRChannel *channel)
+bool CPVRChannelGroup::RemoveFromGroup(CPVRChannel *channel)
 {
   bool bReturn = false;
 

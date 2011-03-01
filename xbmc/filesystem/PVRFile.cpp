@@ -234,12 +234,6 @@ bool CPVRFile::SelectChannel(unsigned int channel)
 
 bool CPVRFile::UpdateItem(CFileItem& item)
 {
-  if (m_isPlayRecording)
-  {
-    /* We are inside a recording, skip item update */
-    return true;
-  }
-
   return CPVRManager::Get()->UpdateItem(item);
 }
 
