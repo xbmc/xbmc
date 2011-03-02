@@ -108,7 +108,7 @@ bool CPVRDatabase::CreateTables()
     m_pDS->exec(
         "CREATE VIEW vw_last_watched "
         "AS SELECT idChannel, sChannelName "
-        "FROM Channels "
+        "FROM channels "
         "ORDER BY iLastWatched DESC;"
     );
 
