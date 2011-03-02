@@ -28,12 +28,12 @@
 class CPyThreadState
 {
   public:
-    CPyThreadState(bool exit = true)
+    CPyThreadState(bool save = true)
     {
       m_threadState = NULL;
 
-      if (exit)
-        Exit();
+      if (save)
+        Save();
     }
 
     ~CPyThreadState()
@@ -41,7 +41,7 @@ class CPyThreadState
       Restore();
     }
 
-    void Exit()
+    void Save()
     {
       if (!m_threadState)
         m_threadState = PyEval_SaveThread(); //same as Py_BEGIN_ALLOW_THREADS
