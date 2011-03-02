@@ -89,19 +89,12 @@ public:
   void *Get()
   {
     if (pthread_getspecific(m_key) == NULL)
-	  pthread_setspecific(m_key, malloc(8));
-	
+pthread_setspecific(m_key, malloc(8));
+
     return pthread_getspecific(m_key);
   }
 
-  pthread_key_t  m_key;
+  pthread_key_t m_key;
 };
-
-// thread local storage functions
-LPVOID WINAPI TlsGetValue(DWORD dwTlsIndex);
-BOOL WINAPI TlsSetValue(int dwTlsIndex, LPVOID lpTlsValue);
-BOOL WINAPI TlsFree(DWORD dwTlsIndex);
-DWORD WINAPI TlsAlloc();
-
 
 #endif
