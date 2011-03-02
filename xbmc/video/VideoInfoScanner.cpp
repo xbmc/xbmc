@@ -750,7 +750,7 @@ namespace VIDEO
     }
 
     // enumerate
-    SETTINGS_TVSHOWLIST expression = g_advancedSettings.m_tvshowStackRegExps;
+    SETTINGS_TVSHOWLIST expression = g_advancedSettings.m_tvshowEnumRegExps;
     CStdStringArray regexps = g_advancedSettings.m_tvshowExcludeFromScanRegExps;
 
     for (int i=0;i<items.Size();++i)

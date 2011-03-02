@@ -169,7 +169,7 @@ class CAdvancedSettings : public virtual xbmcutil::Referenced
     CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
     CStdStringArray m_trailerMatchRegExps;
-    SETTINGS_TVSHOWLIST m_tvshowStackRegExps;
+    SETTINGS_TVSHOWLIST m_tvshowEnumRegExps;
     CStdString m_tvshowMultiPartEnumRegExp;
     typedef std::vector< std::pair<CStdString, CStdString> > StringMapping;
     StringMapping m_pathSubstitutions;
