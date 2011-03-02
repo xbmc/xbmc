@@ -1926,10 +1926,6 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
-    <ProjectReference Include="..\..\lib\win32\fribidi\libfridibidi\libfridibidi.vcxproj">
-      <Project>{f7c8ae15-b8c1-4f93-a414-ec908f0592b4}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\..\lib\win32\libcdio\libcdio.vcxproj">
       <Project>{e465056a-c6f3-45ee-b791-caf8e0ce629d}</Project>
       <Private>true</Private>
