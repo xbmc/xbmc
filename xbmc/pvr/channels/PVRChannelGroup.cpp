@@ -349,6 +349,9 @@ int CPVRChannelGroup::GetMembers(CFileItemList *results, bool bGroupMembers /* =
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
   {
     CPVRChannel *channel = channels->at(iChannelPtr).channel;
+    if (!channel)
+      continue;
+
     if (bGroupMembers || !IsGroupMember(channel))
     {
       CFileItemPtr pFileItem(new CFileItem(*channel));
@@ -452,17 +455,26 @@ bool CPVRChannelGroup::RemoveFromGroup(CPVRChannel *channel)
 bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */)
 {
   bool bReturn = false;
+  if (!channel)
+    return bReturn;
 
   if (!IsGroupMember(channel))
   {
     if (iChannelNumber <= 0)
       iChannelNumber = size() + 1;
 
-    PVRChannelGroupMember newMember = { channel, iChannelNumber };
-    // TODO notify observers
-    push_back(newMember);
-    SortByChannelNumber();
-    bReturn = true;
+    CPVRChannel *realChannel = (IsInternalGroup()) ?
+        channel :
+        (CPVRChannel *) CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio)->GetByClient(channel->ClientChannelNumber(), channel->ClientID());
+
+    if (realChannel)
+    {
+      PVRChannelGroupMember newMember = { realChannel, iChannelNumber };
+      // TODO notify observers
+      push_back(newMember);
+      SortByChannelNumber();
+      bReturn = true;
+    }
   }
 
   return bReturn;
