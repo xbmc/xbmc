@@ -210,12 +210,30 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   m_pictureInfoTag = NULL;
 
   Reset();
+  CPVREpgInfoTag *epgNow = channel.GetEPGNow();
 
   m_strPath = channel.Path();
   m_bIsFolder = false;
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
-  m_strLabel2 = channel.GetEPGNow() ? channel.GetEPGNow()->Title() : g_localizeStrings.Get(19055);
+  m_strLabel2 = epgNow ? epgNow->Title() : g_localizeStrings.Get(19055);
+
+  if (channel.IsRadio() && epgNow)
+  {
+    CMusicInfoTag* musictag = GetMusicInfoTag();
+    if (musictag)
+    {
+      musictag->SetURL(channel.Path());
+      musictag->SetTitle(epgNow ? epgNow->Title() : g_localizeStrings.Get(19055));
+      musictag->SetArtist(channel.ChannelName());
+      musictag->SetAlbumArtist(channel.ChannelName());
+      musictag->SetGenre(epgNow ? epgNow->Genre() : "");
+      musictag->SetDuration(epgNow ? epgNow->GetDuration() : 3600);
+      musictag->SetLoaded(true);
+      musictag->SetComment("");
+      musictag->SetLyrics("");
+    }
+  }
 
   FillInDefaultIcon();
   if (!channel.IconPath().IsEmpty())

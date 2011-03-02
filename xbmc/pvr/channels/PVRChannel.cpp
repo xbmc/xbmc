@@ -42,7 +42,6 @@ bool CPVRChannel::operator==(const CPVRChannel& right) const
 
   return (m_iChannelId              == right.m_iChannelId &&
           m_bIsRadio                == right.m_bIsRadio &&
-          m_bIsHidden               == right.m_bIsHidden &&
           m_bClientIsRecording      == right.m_bClientIsRecording &&
           m_strIconPath             == right.m_strIconPath &&
           m_strChannelName          == right.m_strChannelName &&

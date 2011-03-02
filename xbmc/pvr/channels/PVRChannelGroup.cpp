@@ -351,27 +351,8 @@ int CPVRChannelGroup::GetMembers(CFileItemList *results, bool bGroupMembers /* =
     CPVRChannel *channel = channels->at(iChannelPtr).channel;
     if (bGroupMembers || !IsGroupMember(channel))
     {
-      CFileItemPtr channelFile(new CFileItem(*channel));
-
-      if (channel->IsRadio())
-      {
-        CMusicInfoTag* musictag = channelFile->GetMusicInfoTag();
-        if (musictag)
-        {
-          const CPVREpgInfoTag *epgNow = channel->GetEPGNow();
-          musictag->SetURL(channel->Path());
-          musictag->SetTitle(epgNow ? epgNow->Title() : g_localizeStrings.Get(19055));
-          musictag->SetArtist(channel->ChannelName());
-          musictag->SetAlbumArtist(channel->ChannelName());
-          musictag->SetGenre(epgNow ? epgNow->Genre() : "");
-          musictag->SetDuration(epgNow ? epgNow->GetDuration() : 3600);
-          musictag->SetLoaded(true);
-          musictag->SetComment("");
-          musictag->SetLyrics("");
-        }
-      }
-
-      results->Add(channelFile);
+      CFileItemPtr pFileItem(new CFileItem(*channel));
+      results->Add(pFileItem);
     }
   }
 
