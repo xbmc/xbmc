@@ -32,18 +32,11 @@
 #include <pthread.h>
 #include <limits.h>
 
-// a variable which is defined __thread will be defined in thread local storage
-// which means it will be different for each thread that accesses it.
-#define TLS_INDEXES 16
+// 64 slots is apparently the max on windows, so this should make it compatible.
+#define TLS_INDEXES 64
 #define TLS_OUT_OF_INDEXES (DWORD)0xFFFFFFFF
 
-#ifdef __APPLE__
-// FIXME, this needs to be converted to use pthread_once.
-static LPVOID tls[TLS_INDEXES] = { NULL };
-#else
-static LPVOID __thread tls[TLS_INDEXES] = { NULL };
-#endif
-
+static pthread_key_t tls[TLS_INDEXES];
 static BOOL tls_used[TLS_INDEXES];
 
 HANDLE WINAPI CreateThread(
@@ -224,31 +217,64 @@ int GetThreadPriority(HANDLE hThread)
 // we use different method than in windows. TlsAlloc has no meaning since
 // we always take the __thread variable "tls".
 // so we return static answer in TlsAlloc and do nothing in TlsFree.
-LPVOID WINAPI TlsGetValue(DWORD dwTlsIndex) {
-   return tls[dwTlsIndex];
+
+LPVOID WINAPI TlsGetValue(DWORD dwTlsIndex) 
+{
+  return pthread_getspecific(tls[dwTlsIndex]);
 }
 
 BOOL WINAPI TlsSetValue(int dwTlsIndex, LPVOID lpTlsValue) {
-   tls[dwTlsIndex]=lpTlsValue;
-   return true;
+  return pthread_setspecific(tls[dwTlsIndex],lpTlsValue) == 0 ? true : false;
 }
 
-BOOL WINAPI TlsFree(DWORD dwTlsIndex) {
+// we want to limit access to a single thread. Since we're already
+//  assuming pthreads is available here and I'd rather not pull in 
+//  CSingleLock and there's no chance of the block that's being locked
+//  throwing an exception, I'll just use pthread_mutex_*.
+pthread_mutex_t tlsAllocLock = PTHREAD_MUTEX_INITIALIZER;
+
+BOOL WINAPI TlsFree(DWORD dwTlsIndex)
+{
+  pthread_mutex_lock( &tlsAllocLock );
+   if (!tls_used[dwTlsIndex]) // if we haven't alloced, don't free
+     return false;            // ... and consider that a failure?
+
+   int rc = pthread_key_delete(tls[dwTlsIndex]);
    tls_used[dwTlsIndex] = false;
-   return true;
+   
+  pthread_mutex_unlock( &tlsAllocLock );
+
+   return rc == 0 ? true : false;
 }
 
-DWORD WINAPI TlsAlloc() {
+DWORD WINAPI TlsAlloc() 
+{
+  // find the first available slot
+  int indexOfOpenSlot = -1;
+
+  pthread_mutex_lock( &tlsAllocLock );
   for (int i = 0; i < TLS_INDEXES; i++)
   {
     if (!tls_used[i])
     {
       tls_used[i] = TRUE;
-      return i;
+      indexOfOpenSlot = i;
+      break;
     }
   }
+  pthread_mutex_unlock( &tlsAllocLock );
 
-  return TLS_OUT_OF_INDEXES;
+  // if a slot is unavailalble ...
+  if (indexOfOpenSlot < 0)
+    return TLS_OUT_OF_INDEXES;
+
+  // initialize the chosen key
+  tls[indexOfOpenSlot] = 0;
+  if (pthread_key_create( &tls[indexOfOpenSlot], NULL ))
+    return TLS_OUT_OF_INDEXES; // according to the MS docs, this is the only valid error condition return value
+
+  // the key is set now, so we can return the index
+  return (DWORD)indexOfOpenSlot;
 }
 
 
