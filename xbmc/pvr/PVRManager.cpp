@@ -1535,7 +1535,9 @@ void CPVRManager::CloseStream()
   else if (m_currentPlayingRecording)
   {
     /* Close the Client connection */
-    m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->CloseRecordedStream();
+    if (m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID() > 0 &&
+        m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()])
+      m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->CloseRecordedStream();
     delete m_currentPlayingRecording;
     m_currentPlayingRecording = NULL;
   }
