@@ -56,6 +56,12 @@ private:
   int GetFromClients(void);
 
   /*!
+   * @brief Check if this group is the internal group containing all channels.
+   * @return True if it's the internal group, false otherwise.
+   */
+  bool IsInternalGroup(void) const { return true; }
+
+  /*!
    * @brief Update the current channel list with the given list.
    *
    * Update the current channel list with the given list.

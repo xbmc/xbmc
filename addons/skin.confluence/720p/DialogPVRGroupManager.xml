@@ -153,7 +153,7 @@
 					<description>Channels list</description>
 					<posx>525</posx>
 					<posy>90</posy>
-					<control type="label">
+					<control type="label" id="21">
 						<description>name label</description>
 						<posx>0</posx>
 						<posy>0</posy>
@@ -271,7 +271,7 @@
 					<description>Grouped Channels list</description>
 					<posx>890</posx>
 					<posy>90</posy>
-					<control type="label">
+					<control type="label" id="22">
 						<description>name label</description>
 						<posx>0</posx>
 						<posy>0</posy>

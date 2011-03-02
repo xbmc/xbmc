@@ -1742,6 +1742,9 @@
   <string id="19215">The PVR-Server don't support Timers!</string>
   <string id="19216">All radio channels</string>
   <string id="19217">All TV channels</string>
+  <string id="19218">Visible</string>
+  <string id="19219">Ungrouped channels</string>
+  <string id="19220">Channels in</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>

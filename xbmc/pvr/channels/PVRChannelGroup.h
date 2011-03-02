@@ -201,6 +201,12 @@ public:
   virtual bool IsGroupMember(const CPVRChannel *channel) const;
 
   /*!
+   * @brief Check if this group is the internal group containing all channels.
+   * @return True if it's the internal group, false otherwise.
+   */
+  virtual bool IsInternalGroup(void) const { return false; }
+
+  /*!
    * @brief Get the first channel in this group.
    * @return The first channel.
    */

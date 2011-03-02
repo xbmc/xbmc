@@ -37,6 +37,8 @@ using namespace std;
 #define CONTROL_LIST_CHANNELS_RIGHT   12
 #define CONTROL_LIST_CHANNEL_GROUPS   13
 #define CONTROL_CURRENT_GROUP_LABEL   20
+#define CONTROL_UNGROUPED_LABEL       21
+#define CONTROL_IN_GROUP_LABEL        22
 #define BUTTON_NEWGROUP               26
 #define BUTTON_RENAMEGROUP            27
 #define BUTTON_DELGROUP               28
@@ -319,10 +321,31 @@ void CGUIDialogPVRGroupManager::Update()
 
   CFileItemPtr pItem = m_channelGroupItems->Get(m_viewControlGroup.GetSelectedItem());
   m_CurrentGroupName = pItem->m_strTitle;
-  SET_CONTROL_LABEL(CONTROL_CURRENT_GROUP_LABEL, m_CurrentGroupName);
+
   const CPVRChannelGroup *selectedGroup = CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetByName(m_CurrentGroupName);
   if (selectedGroup)
   {
+    SET_CONTROL_LABEL(CONTROL_CURRENT_GROUP_LABEL, m_CurrentGroupName);
+
+    if (selectedGroup->IsInternalGroup())
+    {
+      CStdString strNewLabel;
+      strNewLabel.Format("%s %s", g_localizeStrings.Get(19022), m_bIsRadio ? g_localizeStrings.Get(19024) : g_localizeStrings.Get(19023));
+      SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL, strNewLabel);
+
+      strNewLabel.Format("%s %s", g_localizeStrings.Get(19218), m_bIsRadio ? g_localizeStrings.Get(19024) : g_localizeStrings.Get(19023));
+      SET_CONTROL_LABEL(CONTROL_IN_GROUP_LABEL, strNewLabel);
+    }
+    else
+    {
+      CStdString strNewLabel;
+      strNewLabel.Format("%s", g_localizeStrings.Get(19219));
+      SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL, strNewLabel);
+
+      strNewLabel.Format("%s %s", g_localizeStrings.Get(19220), m_CurrentGroupName);
+      SET_CONTROL_LABEL(CONTROL_IN_GROUP_LABEL, strNewLabel);
+    }
+
     /* get all channels that are not in this group for the center part */
     selectedGroup->GetMembers(m_channelLeftItems, false);
     m_viewControlLeft.SetItems(*m_channelLeftItems);
