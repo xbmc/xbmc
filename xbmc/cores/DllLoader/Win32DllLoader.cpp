@@ -178,6 +178,7 @@ Export win32_python_exports[] =
 Win32DllLoader::Win32DllLoader(const char *dll) : LibraryLoader(dll)
 {
   m_dllHandle = NULL;
+  bIsSystemDll = false;
   DllLoaderContainer::RegisterDll(this);
 }
 
@@ -208,6 +209,8 @@ bool Win32DllLoader::Load()
   // handle functions that the dll imports
   if (NeedsHooking(strFileName.c_str()))
     OverrideImports(strFileName);
+  else
+    bIsSystemDll = true;
 
   return true;
 }
@@ -252,7 +255,7 @@ int Win32DllLoader::ResolveExport(const char* symbol, void** f, bool logging)
 
 bool Win32DllLoader::IsSystemDll()
 {
-  return false;
+  return bIsSystemDll;
 }
 
 HMODULE Win32DllLoader::GetHModule()
