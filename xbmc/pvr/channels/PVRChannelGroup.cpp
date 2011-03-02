@@ -449,6 +449,8 @@ bool CPVRChannelGroup::RemoveFromGroup(CPVRChannel *channel)
     }
   }
 
+  Renumber();
+
   return bReturn;
 }
 
@@ -529,9 +531,8 @@ bool CPVRChannelGroup::SetGroupName(const CStdString &strGroupName, bool bSaveIn
 bool CPVRChannelGroup::Persist(void)
 {
   CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
-  if (database)
+  if (database && database->Open())
   {
-    database->Open();
     database->Persist(this);
     database->Close();
 

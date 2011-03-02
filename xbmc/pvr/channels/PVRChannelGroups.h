@@ -174,4 +174,10 @@ public:
    * @return The ID or -1 if it wasn't found.
    */
   int GetGroupId(CStdString strGroupName) const;
+
+  /*!
+   * @brief Persist all changes in channel groups.
+   * @return True if everything was persisted, false otherwise.
+   */
+  bool PersistAll(void);
 };

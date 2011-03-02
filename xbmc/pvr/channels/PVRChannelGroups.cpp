@@ -175,6 +175,16 @@ bool CPVRChannelGroups::Load(void)
   return true;
 }
 
+bool CPVRChannelGroups::PersistAll(void)
+{
+  bool bReturn = true;
+
+  for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
+    bReturn = at(iGroupPtr)->Persist() && bReturn;
+
+  return bReturn;
+}
+
 const CPVRChannelGroup *CPVRChannelGroups::GetGroupAll(void) const
 {
   if (size() > 0)
