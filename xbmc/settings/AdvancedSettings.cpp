@@ -164,7 +164,7 @@ void CAdvancedSettings::Initialize()
   // Part I, Pt.VI
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\/._ -]p(?:ar)?t[_. -]()([ivx]+)([._ -][^\\/]*)$"));
 
-  m_tvshowMultiPartStackRegExp = "^[-_EeXx]+([0-9]+)";
+  m_tvshowMultiPartEnumRegExp = "^[-_EeXx]+([0-9]+)";
 
   m_remoteDelay = 3;
   m_controllerDeadzone = 0.2f;

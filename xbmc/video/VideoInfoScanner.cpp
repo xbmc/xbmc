@@ -910,7 +910,7 @@ namespace VIDEO
 
     // check the remainder of the string for any further episodes.
     CRegExp reg2;
-    if (!reg2.RegComp(g_advancedSettings.m_tvshowMultiPartStackRegExp))
+    if (!reg2.RegComp(g_advancedSettings.m_tvshowMultiPartEnumRegExp))
       return true;
 
     char *remainder = reg.GetReplaceString("\\3");
