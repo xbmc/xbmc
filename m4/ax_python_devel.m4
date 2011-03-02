@@ -216,13 +216,13 @@ EOD`
 		  "import distutils.sysconfig; \
 		  print (distutils.sysconfig.get_config_vars('LDLIBRARY')[[0]])"`
 
-                # If we're on OS X and this is a .dylib then the distutils will
-                # identify the .so extension incorrectly. So we check if the 
-                # the extension is .dylib
-                PYTHON_LIB_IS_NOT_OSX_DYLIB=`echo "$ac_python_soname" | sed "s/^.*\.dylib$//"`
-                if test -z "$PYTHON_LIB_IS_NOT_OSX_DYLIB"; then
-                   ac_python_soext=".dylib"
-                fi
+		# If we're on OS X and this is a .dylib then the distutils will
+		# identify the .so extension incorrectly. So we check if the 
+		# the extension is .dylib
+		PYTHON_LIB_IS_NOT_OSX_DYLIB=`echo "$ac_python_soname" | sed "s/^.*\.dylib$//"`
+		if test -z "$PYTHON_LIB_IS_NOT_OSX_DYLIB"; then
+		   ac_python_soext=".dylib"
+		fi
 
 		# Strip away extension from the end to canonicalize its name:
 		ac_python_library=`echo "$ac_python_soname" | sed "s/${ac_python_soext}$//"`
