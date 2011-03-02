@@ -504,7 +504,10 @@ void CPVRManager::Process()
 
     CSingleLock lock(m_critSection);
     /* Get Signal information of the current playing channel */
-    if (m_currentPlayingChannel && g_guiSettings.GetBool("pvrplayback.signalquality") && !m_currentPlayingChannel->GetPVRChannelInfoTag()->IsVirtual())
+    if (m_currentPlayingChannel && g_guiSettings.GetBool("pvrplayback.signalquality") &&
+        !m_currentPlayingChannel->GetPVRChannelInfoTag()->IsVirtual() &&
+        m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID() >= 0 &&
+        m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()])
       m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->SignalQuality(m_qualityInfo);
     lock.Leave();
 
