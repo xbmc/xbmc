@@ -742,6 +742,9 @@ bool CAdvancedSettings::Load()
   if (pTVStacking)
     GetCustomTVRegexps(pTVStacking, m_tvshowStackRegExps);
 
+  //tv multipart enumeration regexp
+  XMLUtils::GetString(pRootElement, "tvmultipartmatching", m_tvshowMultiPartEnumRegExp);
+
   // path substitutions
   TiXmlElement* pPathSubstitution = pRootElement->FirstChildElement("pathsubstitution");
   if (pPathSubstitution)

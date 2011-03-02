@@ -923,7 +923,11 @@ namespace VIDEO
          (regexppos >= 0 && regexp2pos == -1))
       {
         GetEpisodeAndSeasonFromRegExp(reg, episode);
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new season %u, multipart episode %u", episode.iSeason, episode.iEpisode);
+
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new season %u, multipart episode %u [%s]",
+                  episode.iSeason, episode.iEpisode,
+                  g_advancedSettings.m_tvshowMultiPartEnumRegExp.c_str());
+
         episodeList.push_back(episode);
         free(remainder);
         remainder = reg.GetReplaceString("\\3");
@@ -935,7 +939,8 @@ namespace VIDEO
         char *ep = reg2.GetReplaceString("\\1");
         episode.iEpisode = atoi(ep);
         free(ep);
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding multipart episode %u", episode.iEpisode);
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding multipart episode %u [%s]",
+                  episode.iEpisode, g_advancedSettings.m_tvshowMultiPartEnumRegExp.c_str());
         episodeList.push_back(episode);
         offset += regexp2pos + reg2.GetFindLen();
       }
