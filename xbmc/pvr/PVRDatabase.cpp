@@ -390,32 +390,35 @@ bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings
 
   CStdString strQuery = FormatSQL("SELECT * FROM channelsettings WHERE idChannel = %u;", channel.ChannelID());
 
-  if (ResultQuery(strQuery) && m_pDS->num_rows() > 0)
+  if (ResultQuery(strQuery))
   {
     try
     {
-      settings.m_AudioDelay           = m_pDS->fv("fAudioDelay").get_asFloat();
-      settings.m_AudioStream          = m_pDS->fv("iAudioStream").get_asInt();
-      settings.m_Brightness           = m_pDS->fv("fBrightness").get_asFloat();
-      settings.m_Contrast             = m_pDS->fv("fContrast").get_asFloat();
-      settings.m_CustomPixelRatio     = m_pDS->fv("fPixelRatio").get_asFloat();
-      settings.m_NoiseReduction       = m_pDS->fv("fNoiseReduction").get_asFloat();
-      settings.m_Sharpness            = m_pDS->fv("fSharpness").get_asFloat();
-      settings.m_CustomZoomAmount     = m_pDS->fv("fCustomZoomAmount").get_asFloat();
-      settings.m_Gamma                = m_pDS->fv("fGamma").get_asFloat();
-      settings.m_SubtitleDelay        = m_pDS->fv("fSubtitleDelay").get_asFloat();
-      settings.m_SubtitleOn           = m_pDS->fv("bSubtitles").get_asBool();
-      settings.m_SubtitleStream       = m_pDS->fv("iSubtitleStream").get_asInt();
-      settings.m_ViewMode             = m_pDS->fv("iViewMode").get_asInt();
-      settings.m_Crop                 = m_pDS->fv("bCrop").get_asBool();
-      settings.m_CropLeft             = m_pDS->fv("iCropLeft").get_asInt();
-      settings.m_CropRight            = m_pDS->fv("iCropRight").get_asInt();
-      settings.m_CropTop              = m_pDS->fv("iCropTop").get_asInt();
-      settings.m_CropBottom           = m_pDS->fv("iCropBottom").get_asInt();
-      settings.m_InterlaceMethod      = (EINTERLACEMETHOD)m_pDS->fv("iInterlaceMethod").get_asInt();
-      settings.m_VolumeAmplification  = m_pDS->fv("fVolumeAmplification").get_asFloat();
-      settings.m_OutputToAllSpeakers  = m_pDS->fv("bOutputToAllSpeakers").get_asBool();
-      settings.m_SubtitleCached       = false;
+      if (m_pDS->num_rows() > 0)
+      {
+        settings.m_AudioDelay           = m_pDS->fv("fAudioDelay").get_asFloat();
+        settings.m_AudioStream          = m_pDS->fv("iAudioStream").get_asInt();
+        settings.m_Brightness           = m_pDS->fv("fBrightness").get_asFloat();
+        settings.m_Contrast             = m_pDS->fv("fContrast").get_asFloat();
+        settings.m_CustomPixelRatio     = m_pDS->fv("fPixelRatio").get_asFloat();
+        settings.m_NoiseReduction       = m_pDS->fv("fNoiseReduction").get_asFloat();
+        settings.m_Sharpness            = m_pDS->fv("fSharpness").get_asFloat();
+        settings.m_CustomZoomAmount     = m_pDS->fv("fCustomZoomAmount").get_asFloat();
+        settings.m_Gamma                = m_pDS->fv("fGamma").get_asFloat();
+        settings.m_SubtitleDelay        = m_pDS->fv("fSubtitleDelay").get_asFloat();
+        settings.m_SubtitleOn           = m_pDS->fv("bSubtitles").get_asBool();
+        settings.m_SubtitleStream       = m_pDS->fv("iSubtitleStream").get_asInt();
+        settings.m_ViewMode             = m_pDS->fv("iViewMode").get_asInt();
+        settings.m_Crop                 = m_pDS->fv("bCrop").get_asBool();
+        settings.m_CropLeft             = m_pDS->fv("iCropLeft").get_asInt();
+        settings.m_CropRight            = m_pDS->fv("iCropRight").get_asInt();
+        settings.m_CropTop              = m_pDS->fv("iCropTop").get_asInt();
+        settings.m_CropBottom           = m_pDS->fv("iCropBottom").get_asInt();
+        settings.m_InterlaceMethod      = (EINTERLACEMETHOD)m_pDS->fv("iInterlaceMethod").get_asInt();
+        settings.m_VolumeAmplification  = m_pDS->fv("fVolumeAmplification").get_asFloat();
+        settings.m_OutputToAllSpeakers  = m_pDS->fv("bOutputToAllSpeakers").get_asBool();
+        settings.m_SubtitleCached       = false;
+      }
 
       m_pDS->close();
       bReturn = true;
