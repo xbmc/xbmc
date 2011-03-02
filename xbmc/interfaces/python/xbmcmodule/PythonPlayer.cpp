@@ -21,7 +21,7 @@
 
 #include "pyutil.h"
 #include "PythonPlayer.h"
-#include "pysingleexit.h"
+#include "pythreadstate.h"
 #include "../XBPython.h"
 
 using namespace PYXBMC;
@@ -61,7 +61,7 @@ static int SPyEvent_Function(void* e)
     Py_DECREF(ret);
   }
 
-  CPySingleExit pyExit;
+  CPyThreadState pyState;
   delete object;
 
   return 0;

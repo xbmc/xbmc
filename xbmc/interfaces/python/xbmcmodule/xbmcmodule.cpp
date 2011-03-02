@@ -64,7 +64,7 @@
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/FileUtils.h"
-#include "pysingleexit.h"
+#include "pythreadstate.h"
 
 // include for constants
 #include "pyutil.h"
@@ -380,9 +380,9 @@ namespace PYXBMC
     long i = PyInt_AsLong(pObject);
     //while(i != 0)
     //{
-      CPySingleExit pyExit;
+      CPyThreadState pyState;
       Sleep(i);//(500);
-      pyExit.Restore();
+      pyState.Restore();
 
       PyXBMC_MakePendingCalls();
       //i = PyInt_AsLong(pObject);
@@ -983,9 +983,9 @@ namespace PYXBMC
     CStdString strSize;
     CStdString strHash;
 
-    CPySingleExit pyExit;
+    CPyThreadState pyState;
     CFileUtils::SubtitleFileSizeAndHash(strSource, strSize, strHash);
-    pyExit.Restore();
+    pyState.Restore();
     
     return Py_BuildValue((char*)"ss",strSize.c_str(), strHash.c_str());
   } 

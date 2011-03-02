@@ -37,7 +37,7 @@
 
 #include "filesystem/File.h"
 #include "pyutil.h"
-#include "pysingleexit.h"
+#include "pythreadstate.h"
 
 using namespace std;
 using namespace XFILE;
@@ -97,9 +97,9 @@ extern "C" {
       if (!PyXBMCGetUnicodeString(strSource, f_line, 1)) return NULL;
       if (!PyXBMCGetUnicodeString(strDestnation, d_line, 1)) return NULL;
 
-      CPySingleExit pyExit;
+      CPyThreadState pyState;
       bResult = CFile::Cache(strSource, strDestnation);
-      pyExit.Restore();
+      pyState.Restore();
       
       return Py_BuildValue((char*)"b", bResult);
     }
@@ -125,9 +125,9 @@ extern "C" {
       CStdString strSource;
       if (!PyXBMCGetUnicodeString(strSource, f_line, 1)) return NULL;
       
-      CPySingleExit pyExit;
+      CPyThreadState pyState;
       self->pFile->Delete(strSource);
-      pyExit.Restore();
+      pyState.Restore();
       
       Py_INCREF(Py_None);
       return Py_None;
@@ -163,9 +163,9 @@ extern "C" {
       
       bool bResult;
 
-      CPySingleExit pyExit;
+      CPyThreadState pyState;
       bResult = self->pFile->Rename(strSource,strDestnation);
-      pyExit.Restore();
+      pyState.Restore();
       
       return Py_BuildValue((char*)"b", bResult);
       

@@ -52,7 +52,7 @@
 #include "XBPython.h"
 
 #include "xbmcmodule/pyutil.h"
-#include "xbmcmodule/pysingleexit.h"
+#include "xbmcmodule/pythreadstate.h"
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
@@ -354,9 +354,9 @@ void XBPyThread::Process()
       old = s;
     }
 
-    CPySingleExit pyExit;
+    CPyThreadState pyState;
     Sleep(100);
-    pyExit.Restore();
+    pyState.Restore();
 
     s = state->interp->tstate_head;
   }

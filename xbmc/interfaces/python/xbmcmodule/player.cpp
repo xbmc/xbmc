@@ -31,7 +31,7 @@
 #include "FileItem.h"
 #include "utils/LangCodeExpander.h"
 #include "settings/Settings.h"
-#include "pysingleexit.h"
+#include "pythreadstate.h"
 
 using namespace MUSIC_INFO;
 
@@ -62,9 +62,9 @@ namespace PYXBMC
 
     self->iPlayList = PLAYLIST_MUSIC;
 
-    CPySingleExit pyExit;
+    CPyThreadState pyState;
     self->pPlayer = new CPythonPlayer();
-    pyExit.Restore();
+    pyState.Restore();
 
     self->pPlayer->SetCallback(PyThreadState_Get(), (PyObject*)self);
     self->playerCore = EPC_NONE;
@@ -83,9 +83,9 @@ namespace PYXBMC
   {
     self->pPlayer->SetCallback(NULL, NULL);
 
-    CPySingleExit pyExit;
+    CPyThreadState pyState;
     self->pPlayer->Release();
-    pyExit.Restore();
+    pyState.Restore();
       
     self->pPlayer = NULL;
     self->ob_type->tp_free((PyObject*)self);
@@ -142,7 +142,7 @@ namespace PYXBMC
       {
         g_playlistPlayer.SetCurrentPlaylist(self->iPlayList);
       }
-      CPySingleExit pyExit;
+      CPyThreadState pyState;
       g_application.getApplicationMessenger().PlayListPlayerPlay(g_playlistPlayer.GetCurrentSong());
     }
     else if ((PyString_Check(pObject) || PyUnicode_Check(pObject)) && pObjectListItem != NULL && ListItem_CheckExact(pObjectListItem))
@@ -154,14 +154,14 @@ namespace PYXBMC
       // set m_strPath to the passed url
       pListItem->item->m_strPath = PyString_AsString(pObject);
 
-      CPySingleExit pyExit;
+      CPyThreadState pyState;
       g_application.getApplicationMessenger().PlayFile((const CFileItem)*pListItem->item, false);
     }
     else if (PyString_Check(pObject) || PyUnicode_Check(pObject))
     {
       CFileItem item(PyString_AsString(pObject), false);
       
-      CPySingleExit pyExit;
+      CPyThreadState pyState;
       g_application.getApplicationMessenger().MediaPlay(item.m_strPath);
     }
     else if (PlayList_Check(pObject))
@@ -171,7 +171,7 @@ namespace PYXBMC
       self->iPlayList = pPlayList->iPlayList;
       g_playlistPlayer.SetCurrentPlaylist(pPlayList->iPlayList);
 
-      CPySingleExit pyExit;
+      CPyThreadState pyState;
       g_application.getApplicationMessenger().PlayListPlayerPlay();
     }
 
@@ -185,9 +185,9 @@ namespace PYXBMC
 
   PyObject* pyPlayer_Stop(PyObject *self, PyObject *args)
   {
-    CPySingleExit pyExit;
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().MediaStop();
-    pyExit.Restore();
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -199,9 +199,9 @@ namespace PYXBMC
 
   PyObject* Player_Pause(PyObject *self, PyObject *args)
   {
-    CPySingleExit pyExit;
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().MediaPause();
-    pyExit.Restore();
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -216,9 +216,9 @@ namespace PYXBMC
     // force a playercore before playing
     g_application.m_eForcedNextPlayer = self->playerCore;
 
-    CPySingleExit pyExit;
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().PlayListPlayerNext();
-    pyExit.Restore();
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -233,9 +233,9 @@ namespace PYXBMC
     // force a playercore before playing
     g_application.m_eForcedNextPlayer = self->playerCore;
 
-    CPySingleExit pyExit;
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().PlayListPlayerPrevious();
-    pyExit.Restore();
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -259,9 +259,9 @@ namespace PYXBMC
     }
     g_playlistPlayer.SetCurrentSong(iItem);
 
-    CPySingleExit pyExit;
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().PlayListPlayerPlay(iItem);
-    pyExit.Restore();
+    pyState.Restore();
 
     //g_playlistPlayer.Play(iItem);
     //CLog::Log(LOGNOTICE, "Current Song After Play: %i", g_playlistPlayer.GetCurrentSong());

@@ -23,7 +23,7 @@
 #include "dialog.h"
 #include "winxml.h"
 #include "pyutil.h"
-#include "pysingleexit.h"
+#include "pythreadstate.h"
 #include "action.h"
 #include "GUIPythonWindow.h"
 #include "guilib/GUIButtonControl.h"
@@ -390,14 +390,14 @@ namespace PYXBMC
     // if it's a dialog, we have to activate it a bit different
     if (WindowDialog_Check(self) || WindowXMLDialog_Check(self))
     {
-      CPySingleExit pyExit;
+      CPyThreadState pyState;
       ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, WindowXMLDialog_Check(self) ? 1 : 0, 1};
       tMsg.lpVoid = self->pWindow;
       g_application.getApplicationMessenger().SendMessage(tMsg, true);
     }
     else
     {
-      CPySingleExit pyExit;
+      CPyThreadState pyState;
       vector<CStdString> params;
       g_application.getApplicationMessenger().ActivateWindow(self->iWindowId, params, false);
     }
@@ -428,14 +428,14 @@ namespace PYXBMC
     // if it's a dialog, we have to close it a bit different
     if (WindowDialog_Check(self) || WindowXMLDialog_Check(self))
     {
-      CPySingleExit pyExit;
+      CPyThreadState pyState;
       ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, WindowXMLDialog_Check(self) ? 1 : 0, 0};
       tMsg.lpVoid = self->pWindow;
       g_application.getApplicationMessenger().SendMessage(tMsg, true);
     }
     else
     {
-      CPySingleExit pyExit;
+      CPyThreadState pyState;
       vector<CStdString> params;
       g_application.getApplicationMessenger().ActivateWindow(self->iOldWindowId, params, false);
     }
@@ -506,7 +506,7 @@ namespace PYXBMC
       {
         PyXBMC_MakePendingCalls();
 
-        CPySingleExit pyExit;
+        CPyThreadState pyState;
         if (WindowXML_Check(self))
           ((CGUIPythonWindowXML*)self->pWindow)->WaitForActionEvent(INFINITE);
         else if (WindowXMLDialog_Check(self))

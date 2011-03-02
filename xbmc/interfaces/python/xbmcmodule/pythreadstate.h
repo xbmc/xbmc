@@ -25,10 +25,10 @@
 //         it will not work recursively
 
 //this is basically a scoped version of a Py_BEGIN_ALLOW_THREADS .. Py_END_ALLOW_THREADS block
-class CPySingleExit
+class CPyThreadState
 {
   public:
-    CPySingleExit(bool exit = true)
+    CPyThreadState(bool exit = true)
     {
       m_threadState = NULL;
 
@@ -36,7 +36,7 @@ class CPySingleExit
         Exit();
     }
 
-    ~CPySingleExit()
+    ~CPyThreadState()
     {
       Restore();
     }

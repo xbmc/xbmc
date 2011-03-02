@@ -40,7 +40,7 @@
 #include "Application.h"
 #include "settings/Settings.h"
 #include "pyutil.h"
-#include "pysingleexit.h"
+#include "pythreadstate.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogGamepad.h"
@@ -205,7 +205,7 @@ namespace PYXBMC
 
     value = cDefault;
 
-    CPySingleExit pyExit;
+    CPyThreadState pyState;
 
     if (browsetype == 1)
     {
@@ -224,7 +224,7 @@ namespace PYXBMC
     else
       CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, utf8Line[0], value, browsetype != 0);
 
-    pyExit.Restore();
+    pyState.Restore();
 
     if (enableMultiple && (browsetype == 1 || browsetype == 2))
     {

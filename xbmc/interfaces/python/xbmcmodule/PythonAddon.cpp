@@ -21,7 +21,7 @@
 
 #include "PythonAddon.h"
 #include "pyutil.h"
-#include "pysingleexit.h"
+#include "pythreadstate.h"
 #include "addons/AddonManager.h"
 #include "addons/GUIDialogAddonSettings.h"
 
@@ -173,10 +173,10 @@ namespace PYXBMC
     }
 
     AddonPtr addon(self->pAddon);
-    CPySingleExit pyExit;
+    CPyThreadState pyState;
     addon->UpdateSetting(id, value);
     addon->SaveSettings();
-    pyExit.Restore();
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -192,9 +192,9 @@ namespace PYXBMC
   {
     // show settings dialog
     AddonPtr addon(self->pAddon);
-    CPySingleExit pyExit;
+    CPyThreadState pyState;
     CGUIDialogAddonSettings::ShowAndGetInput(addon);
-    pyExit.Restore();
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
