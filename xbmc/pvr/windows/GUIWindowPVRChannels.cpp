@@ -106,7 +106,8 @@ void CGUIWindowPVRChannels::UpdateData(void)
   if (m_bIsFocusing)
     return;
 
-  CLog::Log(LOGDEBUG, "CGUIWindowPVRChannels - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
+  CLog::Log(LOGDEBUG, "CGUIWindowPVRChannels - %s - update window '%s'. set view to %d",
+      __FUNCTION__, GetName(), m_iControlList);
   m_bIsFocusing = true;
   m_bUpdateRequired = false;
   m_parent->m_vecItems->Clear();
@@ -163,7 +164,7 @@ bool CGUIWindowPVRChannels::OnClickButton(CGUIMessage &message)
   if (IsSelectedButton(message))
   {
     bReturn = true;
-    m_selectedGroup = CPVRManager::GetChannelGroups()->Get(m_bRadio)->GetNextGroup(SelectedGroup());
+    m_selectedGroup = CPVRManager::GetChannelGroups()->Get(m_bRadio)->GetNextGroup(*SelectedGroup());
     UpdateData();
   }
 

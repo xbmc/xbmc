@@ -219,18 +219,11 @@ int CPVRChannelGroups::GetFirstChannelForGroupID(int iGroupId) const
 
 int CPVRChannelGroups::GetPreviousGroupID(int iGroupId) const
 {
-  int iReturn = m_bRadio ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV;
+  const CPVRChannelGroup *currentGroup = GetById(iGroupId);
+  if (!currentGroup)
+    currentGroup = GetGroupAll();
 
-  int iCurrentGroupIndex = GetIndexForGroupID(iGroupId);
-  if (iCurrentGroupIndex != -1)
-  {
-    int iGroupIndex = iCurrentGroupIndex - 1;
-    if (iGroupIndex < 0) iGroupIndex = size() - 1;
-
-    iReturn = at(iGroupIndex)->GroupID();
-  }
-
-  return iReturn;
+  return GetPreviousGroup(*currentGroup)->GroupID();
 }
 
 const CPVRChannelGroup *CPVRChannelGroups::GetPreviousGroup(const CPVRChannelGroup &group) const
@@ -238,13 +231,10 @@ const CPVRChannelGroup *CPVRChannelGroups::GetPreviousGroup(const CPVRChannelGro
   const CPVRChannelGroup *returnGroup = NULL;
 
   int iCurrentGroupIndex = GetIndexForGroupID(group.GroupID());
-  if (iCurrentGroupIndex != -1)
-  {
-    int iGroupIndex = iCurrentGroupIndex - 1;
-    if (iGroupIndex < 0) iGroupIndex = size() - 1;
-
-    returnGroup = at(iGroupIndex);
-  }
+  if (iCurrentGroupIndex - 1 < 0)
+    returnGroup = at(size() - 1);
+  else
+    returnGroup = at(iCurrentGroupIndex - 1);
 
   if (!returnGroup)
     returnGroup = GetGroupAll();
@@ -254,18 +244,11 @@ const CPVRChannelGroup *CPVRChannelGroups::GetPreviousGroup(const CPVRChannelGro
 
 int CPVRChannelGroups::GetNextGroupID(int iGroupId) const
 {
-  int iReturn = m_bRadio ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV;
+  const CPVRChannelGroup *currentGroup = GetById(iGroupId);
+  if (!currentGroup)
+    currentGroup = GetGroupAll();
 
-  int iCurrentGroupIndex = GetIndexForGroupID(iGroupId);
-  if (iCurrentGroupIndex != -1)
-  {
-    int iGroupIndex = iCurrentGroupIndex + 1;
-    if (iGroupIndex == (int) size()) iGroupIndex = 0;
-
-    iReturn = at(iGroupIndex)->GroupID();
-  }
-
-  return iReturn;
+  return GetNextGroup(*currentGroup)->GroupID();
 }
 
 const CPVRChannelGroup *CPVRChannelGroups::GetNextGroup(const CPVRChannelGroup &group) const
@@ -273,13 +256,10 @@ const CPVRChannelGroup *CPVRChannelGroups::GetNextGroup(const CPVRChannelGroup &
   const CPVRChannelGroup *returnGroup = NULL;
 
   int iCurrentGroupIndex = GetIndexForGroupID(group.GroupID());
-  if (iCurrentGroupIndex != -1)
-  {
-    int iGroupIndex = iCurrentGroupIndex + 1;
-    if (iGroupIndex == (int) size()) iGroupIndex = 0;
-
-    returnGroup = at(iGroupIndex);
-  }
+  if (iCurrentGroupIndex + 1 >= (int)size())
+    returnGroup = at(0);
+  else
+    returnGroup = at(iCurrentGroupIndex + 1);
 
   if (!returnGroup)
     returnGroup = GetGroupAll();
