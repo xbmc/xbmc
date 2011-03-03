@@ -575,7 +575,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("unloadskin"))
   {
-    g_application.UnloadSkin();
+    g_application.UnloadSkin(true); // we're reloading the skin after this
   }
   else if (execute.Equals("refreshrss"))
   {
