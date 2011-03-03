@@ -103,8 +103,7 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
       {
         Close();
 
-        const CPVRChannelGroup *channels = CPVRManager::GetChannelGroups()->GetGroupAll(((CPVREpgInfoTag *)m_progItem->GetEPGInfoTag())->ChannelTag()->IsRadio());
-        if (!g_application.PlayFile(CFileItem(*channels->GetByChannelNumber(((CPVREpgInfoTag *)m_progItem->GetEPGInfoTag())->ChannelTag()->ChannelNumber()-1))))
+        if (!g_application.PlayFile(CFileItem(*((CPVREpgInfoTag *)m_progItem->GetEPGInfoTag())->ChannelTag())))
         {
           CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
           return false;
