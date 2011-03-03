@@ -11,8 +11,7 @@ LIBNAME=samba
 VERSION=3.5.6
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
-#BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
-BASE_URL=http://www.samba.org/samba/ftp/stable
+BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
 ARCHIVE=$(SOURCE).tar.gz
 
 RETRIEVE_TOOL=/usr/bin/curl
