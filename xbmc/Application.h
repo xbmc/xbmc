@@ -126,7 +126,7 @@ public:
   bool IsCurrentThread() const;
   void Stop();
   void RestartApp();
-  void UnloadSkin();
+  void UnloadSkin(bool forReload = false);
   bool LoadUserWindows();
   void ReloadSkin();
   const CStdString& CurrentFile();
@@ -297,6 +297,8 @@ protected:
   void RenderScreenSaver();
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
+
+  bool m_skinReloading; // if true we disallow LoadSkin until ReloadSkin is called
 
   friend class CApplicationMessenger;
   // screensaver
