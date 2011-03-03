@@ -60,7 +60,7 @@ JSON_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLayer *
     return InvalidParams;
 
   const Value param = ForceObject(parameterObject);
-  if (!(ParameterIntOrNull(param, "artistid") || ParameterIntOrNull(param, "albumid")))
+  if (!(ParameterIntOrNull(param, "artistid") || ParameterIntOrNull(param, "genreid")))
     return InvalidParams;
 
   CMusicDatabase musicdatabase;
