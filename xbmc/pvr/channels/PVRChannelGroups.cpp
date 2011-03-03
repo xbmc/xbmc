@@ -60,26 +60,22 @@ void CPVRChannelGroups::Clear(void)
 bool CPVRChannelGroups::Update(const CPVRChannelGroup &group)
 {
   int iIndex = GetIndexForGroupID(group.GroupID());
-  CPVRChannelGroup *updateGroup = NULL;
 
   if (iIndex < 0)
   {
     CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - new %s channel group '%s'",
         __FUNCTION__, m_bRadio ? "radio" : "TV", group.GroupName().c_str());
 
-    updateGroup = new CPVRChannelGroup(m_bRadio);
-    push_back(updateGroup);
+    push_back(new CPVRChannelGroup(m_bRadio, group.GroupID(), group.GroupName(), group.SortOrder()));
   }
   else
   {
     CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - updating %s channel group '%s'",
         __FUNCTION__, m_bRadio ? "radio" : "TV", group.GroupName().c_str());
 
-    updateGroup = at(iIndex);
+    at(iIndex)->SetGroupName(group.GroupName());
+    at(iIndex)->SetSortOrder(group.SortOrder());
   }
-
-  updateGroup->SetGroupName(group.GroupName());
-  updateGroup->SetSortOrder(group.SortOrder());
 
   return true;
 }
