@@ -1842,6 +1842,7 @@ XB_CONFIG_MODULE([lib/libapetag], [
 
 XB_CONFIG_MODULE([lib/libmodplug], [
   if test "$host_vendor" = "apple" ; then
+    autoreconf -vif
     CFLAGS="$CFLAGS -fno-common" \
     CXXFLAGS="$CXXFLAGS -fno-common" \
     ./configure --with-pic --disable-shared --enable-static \
@@ -1853,7 +1854,7 @@ XB_CONFIG_MODULE([lib/libmodplug], [
 
 XB_CONFIG_MODULE([lib/libmicrohttpd], [
   if test "$host_vendor" = "apple" ; then
-    autoreconfig -vif
+    autoreconf -vif
     CFLAGS="$CFLAGS -fno-common" \
     CXXFLAGS="$CXXFLAGS -fno-common" \
     ./configure --with-pic --disable-shared --enable-static --with-libgcrypt-prefix=/dev/null \
