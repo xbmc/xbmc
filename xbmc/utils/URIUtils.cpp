@@ -521,24 +521,14 @@ bool URIUtils::IsInArchive(const CStdString &strFile)
 
 bool URIUtils::IsInZIP(const CStdString& strFile)
 {
-  CStdString strFile2(strFile);
-
-  if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
-
-  CURL url(strFile2);
+  CURL url(strFile);
 
   return url.GetProtocol() == "zip" && url.GetFileName() != "";
 }
 
 bool URIUtils::IsInRAR(const CStdString& strFile)
 {
-  CStdString strFile2(strFile);
-
-  if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
-
-  CURL url(strFile2);
+  CURL url(strFile);
 
   return url.GetProtocol() == "rar" && url.GetFileName() != "";
 }

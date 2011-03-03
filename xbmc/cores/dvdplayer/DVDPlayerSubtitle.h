@@ -42,7 +42,7 @@ public:
   void Process(double pts);
   void Flush();
   void FindSubtitles(const char* strFilename);
-  bool GetCurrentSubtitle(CStdString& strSubtitle, double pts);
+  void GetCurrentSubtitle(CStdString& strSubtitle, double pts);
   int GetSubtitleCount();
 
   void UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, int iAction) { m_pOverlayContainer->UpdateOverlayInfo(pStream, &m_dvdspus, iAction); }

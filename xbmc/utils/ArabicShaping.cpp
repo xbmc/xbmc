@@ -22,6 +22,10 @@
  *
  */
 
+#ifdef _WIN32
+#pragma comment(lib, "libfribidi.lib")
+#endif
+
 #include <stdlib.h>
 #include "ArabicShaping.h"
 

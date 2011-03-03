@@ -25,11 +25,7 @@
  *
  */
 
-#ifndef _LINUX
-#include "lib/win32/fribidi/fribidi.h"
-#else
 #include <fribidi/fribidi.h>
-#endif
 
 /**
  * Shapes an Arabic text chunk
