@@ -65,6 +65,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_viewControl.Reset();
+      m_vecItems->Clear();
     }
     break;
 
