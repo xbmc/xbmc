@@ -100,8 +100,12 @@ bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(CGUIMessage &message)
       if (strGroupName != "")
       {
         /* add the group if it doesn't already exist */
-        ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->AddGroup(strGroupName);
-        Update();
+        CPVRChannelGroups *groups = ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio));
+        if (groups->AddGroup(strGroupName))
+        {
+          m_iSelectedChannelGroup = groups->size() - 1;
+          Update();
+        }
       }
     }
     bReturn = true;
