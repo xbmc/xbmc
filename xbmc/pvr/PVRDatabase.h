@@ -149,7 +149,7 @@ public:
   /*! @name Channel group methods */
   //@{
 
-  bool DeleteChannelsInGroups(int iGroupId);
+  bool RemoveChannelsFromGroup(int iGroupId);
 
   /*!
    * @brief Remove all channel groups from the database

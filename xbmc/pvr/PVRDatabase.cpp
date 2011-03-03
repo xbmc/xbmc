@@ -460,7 +460,7 @@ bool CPVRDatabase::PersistChannelSettings(const CPVRChannel &channel, const CVid
 
 /********** Channel group methods **********/
 
-bool CPVRDatabase::DeleteChannelsInGroups(int iGroupId)
+bool CPVRDatabase::RemoveChannelsFromGroup(int iGroupId)
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all channels from group %d from the database", __FUNCTION__, iGroupId);
 
@@ -601,7 +601,7 @@ int CPVRDatabase::Persist(CPVRChannelGroup *group)
     if (group->GroupID() <= 0)
       group->m_iGroupId = (int) m_pDS->lastinsertid();
 
-    DeleteChannelsInGroups(group->GroupID());
+    RemoveChannelsFromGroup(group->GroupID());
 
     for (unsigned int iChannelPtr = 0; iChannelPtr < group->size(); iChannelPtr++)
     {

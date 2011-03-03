@@ -132,8 +132,8 @@ bool CGUIDialogPVRGroupManager::ActionButtonDeleteGroup(CGUIMessage &message)
 
     if (pDialog->IsConfirmed())
     {
-      ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->DeleteGroup(*m_selectedGroup);
-      Update();
+      if (((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio))->DeleteGroup(*m_selectedGroup))
+        Update();
     }
 
     bReturn = true;

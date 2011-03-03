@@ -312,21 +312,35 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
 {
   bool bReturn = false;
 
-  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
-  if (!database->Open())
+  if (group.IsInternalGroup())
+  {
+    CLog::Log(LOG_ERROR, "CPVRChannelGroups - %s - cannot delete internal group '%s'",
+        __FUNCTION__, group.GroupName().c_str());
     return bReturn;
+  }
+
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  if (!database || !database->Open())
+  {
+    CLog::Log(LOG_ERROR, "CPVRChannelGroups - %s - unable to open the database", __FUNCTION__);
+    return bReturn;
+  }
+
+  /* remove all channels from the group */
+  database->RemoveChannelsFromGroup(group.GroupID());
 
   /* delete the group from the database */
   bReturn = database->DeleteChannelGroup(group.GroupID(), m_bRadio);
 
   database->Close();
 
-  /* delete the group */
+  /* delete the group in this container */
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
     if (at(iGroupPtr)->GroupID() == group.GroupID())
     {
       delete at(iGroupPtr);
+      erase(begin() + iGroupPtr);
       break;
     }
   }
