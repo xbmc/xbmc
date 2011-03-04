@@ -1,0 +1,29 @@
+From 9ac2085dbf1821b7995fe360038c1bf0f3940032 Mon Sep 17 00:00:00 2001
+From: Max Shakhmetov <shakhmetov.max@gmail.com>
+Date: Tue, 15 Feb 2011 17:49:27 +0100
+Subject: [PATCH] os_support: fix poll() implementation
+
+Our poll implementation does not iterate over the pollfd array properly
+while setting the revents.
+
+Signed-off-by: Luca Barbato <lu_zero@gentoo.org>
+---
+ libavformat/os_support.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/ffmpeg/libavformat/os_support.c b/lib/ffmpeg/libavformat/os_support.c
+index 4f73011..0b7b59e 100644
+--- a/lib/ffmpeg/libavformat/os_support.c
++++ b/lib/ffmpeg/libavformat/os_support.c
+@@ -292,7 +292,7 @@ int poll(struct pollfd *fds, nfds_t numfds, int timeout)
+     if (rc < 0)
+         return rc;
+ 
+-    for(i = 0; i < (nfds_t) n; i++) {
++    for(i = 0; i < numfds; i++) {
+         fds[i].revents = 0;
+ 
+         if (FD_ISSET(fds[i].fd, &read_set))      fds[i].revents |= POLLIN;
+-- 
+1.7.0.4
+

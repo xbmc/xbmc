@@ -322,6 +322,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
   m_bPlaybackStarting = false;
+  m_skinReloading = false;
 
 #ifdef HAS_GLX
   XInitThreads();
@@ -1518,6 +1519,7 @@ void CApplication::StopServices()
 
 void CApplication::ReloadSkin()
 {
+  m_skinReloading = false;
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, g_windowManager.GetActiveWindow());
   g_windowManager.SendMessage(msg);
   // Reload the skin, restoring the previously focused control.  We need this as
@@ -1535,6 +1537,9 @@ void CApplication::ReloadSkin()
 
 bool CApplication::LoadSkin(const CStdString& skinID)
 {
+  if (m_skinReloading)
+    return false;
+
   AddonPtr addon;
   if (CAddonMgr::Get().GetAddon(skinID, addon, ADDON_SKIN))
   {
@@ -1580,7 +1585,6 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   vector<int> currentModelessWindows;
   g_windowManager.GetActiveModelessWindows(currentModelessWindows);
 
-  CLog::Log(LOGINFO, "  delete old skin...");
   UnloadSkin();
 
   CLog::Log(LOGINFO, "  load skin from:%s", skin->Path().c_str());
@@ -1689,8 +1693,12 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   }
 }
 
-void CApplication::UnloadSkin()
+void CApplication::UnloadSkin(bool forReload /* = false */)
 {
+  m_skinReloading = forReload;
+
+  CLog::Log(LOGINFO, "Unloading old skin %s...", forReload ? "for reload " : "");
+
   g_audioManager.Enable(false);
 
   g_windowManager.DeInitialize();
