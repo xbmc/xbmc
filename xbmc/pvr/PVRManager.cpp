@@ -226,6 +226,11 @@ void CPVRManager::Process(void)
     m_loadingBusyDialog = NULL;
   }
 
+  /* signal to window that clients are loaded */
+  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
+  if (pWindow)
+    pWindow->UnlockWindow();
+
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
 
   /* main loop */
