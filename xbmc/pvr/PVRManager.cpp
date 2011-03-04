@@ -177,7 +177,7 @@ bool CPVRManager::TryLoadClients(int iMaxTime /* = 0 */)
         break;
     }
 
-    Sleep(0);
+    Sleep(10);
   }
 
   CLog::Log(LOG_DEBUG, "PVRManager - %s - %s",
@@ -1313,7 +1313,7 @@ void CPVRManager::LoadCurrentChannelSettings()
 {
   if (m_currentPlayingChannel && g_application.m_pPlayer)
   {
-    CVideoSettings loadedChannelSettings;
+    CVideoSettings loadedChannelSettings = g_settings.m_defaultVideoSettings;
 
     /* set the default settings first */
     g_settings.m_currentVideoSettings = g_settings.m_defaultVideoSettings;
