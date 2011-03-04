@@ -183,6 +183,7 @@
 //NOTE: dont try to define __except because it breaks g++ (already uses it).
 
 typedef pthread_t ThreadIdentifier;
+typedef pid_t LwpIdentifier;
 
 struct CXHandle; // forward declaration
 typedef CXHandle* HANDLE;
