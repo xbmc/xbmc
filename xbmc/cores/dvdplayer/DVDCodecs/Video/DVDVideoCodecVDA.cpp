@@ -566,8 +566,12 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     CFRelease(destinationImageBufferAttributes);
     if (status != kVDADecoderNoErr)
     {
-      CLog::Log(LOGNOTICE, "%s - VDADecoder Codec failed to open, status(%d), profile(%d), level(%d)",
-        __FUNCTION__, (int)status, profile, level);
+	  if (status == kVDADecoderDecoderFailedErr)
+        CLog::Log(LOGNOTICE, "%s - VDADecoder Codec failed to open, currently in use by another process",
+          __FUNCTION__);
+	  else
+        CLog::Log(LOGNOTICE, "%s - VDADecoder Codec failed to open, status(%d), profile(%d), level(%d)",
+          __FUNCTION__, (int)status, profile, level);
       return false;
     }
 
