@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Rafał Wójcik-->
-<!--Email: rafal.wojcik@gmail.com-->
-<!--Date of translation: 11/19/2010-->
+<!--Email: rafal.wojcik@gmail.com-->
+<!--Date of translation: 03/04/2011-->
 <!--$Revision$-->
-<!--Based on english strings version 35193-->
 <strings>
   <string id="0">Programy</string>
   <string id="1">Zdjęcia</string>
@@ -184,6 +183,7 @@
   <string id="221">Sieć nie jest podłączona</string>
   <string id="222">Anuluj</string>
   <string id="224">Szybkość</string>
+  <string id="225">Przesunięcie w pionie</string>
   <string id="226">Wzorce testowe...</string>
   <string id="227">Szukaj tytułów CD na freedb.org</string>
   <string id="228">Losuj utwory podczas wczytywania</string>
@@ -504,6 +504,7 @@
   <string id="573">Ścieżka</string>
   <string id="574">Kraj</string>
   <string id="575">W toku</string>
+  <string id="576">Odtworzeń</string>
   <string id="580">Kierunek sortowania</string>
   <string id="581">Metoda sortowania</string>
   <string id="582">Tryby widoku</string>
@@ -1105,6 +1106,7 @@
   <string id="13409">Top 250</string>
   <string id="13410">Podłącz do Last.fm</string>
   <string id="13411">Minimalne obroty wentylatora</string>
+  <string id="13412">Odtwórz z tego miejsca</string>
   <string id="13413">Pobieranie</string>
   <string id="13414">Pokazuj artystów występujących tylko w składankach</string>
   <string id="13415">Metoda renderowania</string>
@@ -1307,7 +1309,6 @@
   <string id="15283">Utwory ostatnio odtwarzane przez %name%</string>
   <string id="15284">Słuchaj Radia %name% Poleca z Last.fm</string>
   <string id="15285">Top tagi dla %name%</string>
-  <string id="15286">Słuchaj playlisty %name% radia Last.fm</string>
   <string id="15287">Na pewno chcesz dodać ten utwór do ulubionych?</string>
   <string id="15288">Na pewno chcesz zablokować ten utwór?</string>
   <string id="15289">Dodano do ulubionych: '%s'.</string>
@@ -1965,6 +1966,7 @@
   <string id="24015">O teledysku</string>
   <string id="24016">O albumie</string>
   <string id="24017">O artyście</string>
+  <string id="24018">Usługi</string>
   <string id="24020">Ustaw</string>
   <string id="24021">Wyłącz</string>
   <string id="24022">Włącz</string>
@@ -2085,7 +2087,7 @@
   <string id="33080">Nie lubię</string>
   <string id="33081">Plik znajduje się w stosie, wybierz część którą chcesz odtwarzać.</string>
   <string id="33082">Ścieżka do skryptu</string>
-  <string id="33083">Włącz własny przycisk dla skryptu</string>
+  <string id="33083">Włącz przycisk własnego skryptu</string>
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
