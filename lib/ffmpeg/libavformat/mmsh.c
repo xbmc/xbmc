@@ -230,20 +230,56 @@ static int mmsh_open(URLContext *h, const char *uri, int flags)
         host, sizeof(host), &port, path, sizeof(path), location);
     if (port<0)
         port = 80; // default mmsh protocol port
+        
+    //search for | in 'path' and split.
+    char *searchToken;
+    char customHeaders[1024];    
+    char *pPath = &path;
+    pPath = strtok(path, "|");
+    customHeaders[0] = '\0';
+
+    do {
+    searchToken = strtok(NULL, "|");
+    if (searchToken)
+        {
+            int len;
+            char *p;
+            len = strlen(searchToken);
+            char *newHeader = av_mallocz(sizeof(char) * (len + 2));
+
+            if((p = strchr(searchToken, '=')) != NULL) // search for '/'
+            {
+                int pos = p - searchToken;
+                len = strlen(searchToken);
+                strncpy(newHeader, searchToken, pos);
+                strncpy(newHeader+pos, ": ", 2);
+                strncpy(newHeader+ pos + 2, searchToken + pos + 1, len-pos); 
+                
+            }
+            
+        av_strlcat(customHeaders, newHeader, sizeof(customHeaders));
+        av_strlcat(customHeaders, "\r\n", sizeof(customHeaders));
+        av_freep(&newHeader);
+        }
+    } while(searchToken);
+
     ff_url_join(httpname, sizeof(httpname), "http", NULL, host, port, path);
 
     if (url_alloc(&mms->mms_hd, httpname, URL_RDONLY) < 0) {
         return AVERROR(EIO);
     }
 
+ 
+
     snprintf(headers, sizeof(headers),
              "Accept: */*\r\n"
              USERAGENT
+             "%s"
              "Host: %s:%d\r\n"
              "Pragma: no-cache,rate=1.000000,stream-time=0,"
              "stream-offset=0:0,request-context=%u,max-duration=0\r\n"
              CLIENTGUID
-             "Connection: Close\r\n\r\n",
+             "Connection: Close\r\n\r\n", customHeaders,
              host, port, mmsh->request_seq++);
     ff_http_set_headers(mms->mms_hd, headers);
 
@@ -277,6 +313,7 @@ static int mmsh_open(URLContext *h, const char *uri, int flags)
     err = snprintf(headers, sizeof(headers),
                    "Accept: */*\r\n"
                    USERAGENT
+                   "%s"
                    "Host: %s:%d\r\n"
                    "Pragma: no-cache,rate=1.000000,request-context=%u\r\n"
                    "Pragma: xPlayStrm=1\r\n"
@@ -284,7 +321,7 @@ static int mmsh_open(URLContext *h, const char *uri, int flags)
                    "Pragma: stream-switch-count=%d\r\n"
                    "Pragma: stream-switch-entry=%s\r\n"
                    "Connection: Close\r\n\r\n",
-                   host, port, mmsh->request_seq++, mms->stream_num, stream_selection);
+                   customHeaders, host, port, mmsh->request_seq++, mms->stream_num, stream_selection);
     av_freep(&stream_selection);
     if (err < 0) {
         av_log(NULL, AV_LOG_ERROR, "Build play request failed!\n");
