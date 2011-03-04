@@ -40,7 +40,7 @@ public:
   void              Close();
   void              Abort();
 
-  cResponsePacket*  ReadMessage(int timeout = 10);
+  cResponsePacket*  ReadMessage(int timeout = 20);
   bool              SendMessage(cRequestPacket* vrp);
   int               sendData(void* bufR, size_t count);
   int               readData(uint8_t* buffer, int totalBytes, int TimeOut = 2);
