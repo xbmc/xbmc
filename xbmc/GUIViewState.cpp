@@ -33,7 +33,9 @@
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
 #include "guilib/GUIWindowManager.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
+#include "addons/PluginSource.h"
 #include "ViewState.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
@@ -44,6 +46,7 @@
 #include "guilib/TextureManager.h"
 
 using namespace std;
+using namespace ADDON;
 
 CStdString CGUIViewState::m_strPlaylistDirectory;
 VECSOURCES CGUIViewState::m_sources;
@@ -133,6 +136,7 @@ CGUIViewState::CGUIViewState(const CFileItemList& items) : m_items(items)
 {
   m_currentViewAsControl=0;
   m_currentSortMethod=0;
+  m_playlist = PLAYLIST_NONE;
   m_sortOrder=SORT_ORDER_ASC;
 }
 
@@ -298,7 +302,7 @@ bool CGUIViewState::DisableAddSourceButtons()
 
 int CGUIViewState::GetPlaylist()
 {
-  return PLAYLIST_NONE;
+  return m_playlist;
 }
 
 const CStdString& CGUIViewState::GetPlaylistDirectory()
@@ -444,6 +448,19 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
   SetSortOrder(SORT_ORDER_ASC);
+  if (items.IsPlugin())
+  {
+    CURL url(items.m_strPath);
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(url.GetHostName(),addon) && addon)
+    {
+      PluginPtr plugin = boost::static_pointer_cast<CPluginSource>(addon);
+      if (plugin->Provides(CPluginSource::AUDIO))
+        m_playlist = PLAYLIST_MUSIC;
+      if (plugin->Provides(CPluginSource::VIDEO))
+        m_playlist = PLAYLIST_VIDEO;
+    }
+  }
   LoadViewState(items.m_strPath, g_windowManager.GetActiveWindow());
 }
 
