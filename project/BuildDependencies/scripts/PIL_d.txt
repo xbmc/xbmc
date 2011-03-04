@@ -1,2 +1,2 @@
-; filename                        source of the file
-PIL-1.1.7.win32-py2.4.exe         http://effbot.org/media/downloads/
+; filename                        mirror                                     source of the file
+PIL-1.1.7.win32-py2.4.exe         http://mirrors.xbmc.org/build-deps/win32/  http://effbot.org/media/downloads/

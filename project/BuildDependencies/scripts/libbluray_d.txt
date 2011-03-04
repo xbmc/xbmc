@@ -1,2 +1,2 @@
-; filename                        source of the file
-libbluray-20110222-dll.zip         http://mirrors.xbmc.org/build-deps/win32/eden/
+; filename                         source of the file
+libbluray-20110222-dll.zip         http://mirrors.xbmc.org/build-deps/win32/

@@ -1,2 +1,2 @@
-; filename                        source of the file
-pysqlite-2.5.6.win32-py2.4.exe    http://pysqlite.googlecode.com/files/
+; filename                        mirror                                     source of the file
+pysqlite-2.5.6.win32-py2.4.exe    http://mirrors.xbmc.org/build-deps/win32/  http://pysqlite.googlecode.com/files/

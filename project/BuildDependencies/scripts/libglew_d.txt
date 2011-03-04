@@ -1,2 +1,2 @@
-; filename                        source of the file
-glew-1.5.0-win32.zip          http://downloads.sourceforge.net/glew/
+; filename                    mirror                                     source of the file
+glew-1.5.0-win32.zip          http://mirrors.xbmc.org/build-deps/win32/  http://downloads.sourceforge.net/glew/
