@@ -353,7 +353,7 @@ public:
    * @brief Set the current playing group, used to load the right channel.
    * @param group The new group.
    */
-  void SetPlayingGroup(const CPVRChannelGroup *group) { m_currentGroup = group; }
+  void SetPlayingGroup(CPVRChannelGroup *group) { m_currentGroup = group; }
 
   /*!
    * @brief Get the current playing group, used to load the right channel.
@@ -699,9 +699,9 @@ private:
   unsigned int                    m_LastChannelChanged;
 
   /*--- Stream playback data ---*/
-  CFileItem          *            m_currentPlayingChannel;    /* The current playing channel or NULL */
-  CFileItem          *            m_currentPlayingRecording;  /* The current playing recording or NULL */
-  const CPVRChannelGroup *        m_currentGroup;             /* The current selected Channel group list */
+  CFileItem *                     m_currentPlayingChannel;    /* The current playing channel or NULL */
+  CFileItem *                     m_currentPlayingRecording;  /* The current playing recording or NULL */
+  CPVRChannelGroup *              m_currentGroup;             /* The current selected Channel group list */
   DWORD                           m_scanStart;                /* Scan start time to check for non present streams */
   PVR_SIGNALQUALITY               m_qualityInfo;              /* Stream quality information */
 };

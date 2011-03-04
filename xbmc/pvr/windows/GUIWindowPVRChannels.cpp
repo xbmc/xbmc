@@ -95,8 +95,38 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
 
 const CPVRChannelGroup *CGUIWindowPVRChannels::SelectedGroup(void)
 {
-  if (!m_selectedGroup)
-    m_selectedGroup = CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio);
+  const CPVRChannelGroup *group = m_selectedGroup;
+
+  if (!group)
+    group = CPVRManager::Get()->GetPlayingGroup();
+
+  /* playing group can return the wrong type. check this */
+  if (!group || group->IsRadio() != m_bRadio)
+    group = CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio);
+
+  SetSelectedGroup((CPVRChannelGroup *) group);
+
+  return m_selectedGroup;
+}
+
+void CGUIWindowPVRChannels::SetSelectedGroup(CPVRChannelGroup *group)
+{
+  if (!group)
+    return;
+
+  m_selectedGroup = group;
+  CPVRManager::Get()->SetPlayingGroup(m_selectedGroup);
+}
+
+const CPVRChannelGroup *CGUIWindowPVRChannels::SelectNextGroup(void)
+{
+  const CPVRChannelGroup *currentGroup = SelectedGroup();
+  CPVRChannelGroup *nextGroup = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->Get(m_bRadio)->GetNextGroup(*currentGroup);
+  if (nextGroup && *nextGroup != *currentGroup)
+  {
+    SetSelectedGroup(nextGroup);
+    UpdateData();
+  }
 
   return m_selectedGroup;
 }
@@ -135,14 +165,8 @@ void CGUIWindowPVRChannels::UpdateData(void)
     }
     else if (currentGroup->GroupID() > 0)
     {
-      /* try the next group */
-      const CPVRChannelGroup *nextGroup = CPVRManager::GetChannelGroups()->Get(m_bRadio)->GetNextGroup(currentGroup);
-      if (nextGroup && *nextGroup != m_selectedGroup)
-      {
-        m_selectedGroup = nextGroup;
-        UpdateData();
+      if (*currentGroup != *SelectNextGroup())
         return;
-      }
     }
   }
 
@@ -164,8 +188,7 @@ bool CGUIWindowPVRChannels::OnClickButton(CGUIMessage &message)
   if (IsSelectedButton(message))
   {
     bReturn = true;
-    m_selectedGroup = CPVRManager::GetChannelGroups()->Get(m_bRadio)->GetNextGroup(*SelectedGroup());
-    UpdateData();
+    SelectNextGroup();
   }
 
   return bReturn;
@@ -187,10 +210,7 @@ bool CGUIWindowPVRChannels::OnClickList(CGUIMessage &message)
 
     /* process actions */
     if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK || iAction == ACTION_PLAY)
-    {
-      if (ActionPlayChannel(pItem.get()))
-        CPVRManager::Get()->SetPlayingGroup(SelectedGroup());
-    }
+      ActionPlayChannel(pItem.get());
     else if (iAction == ACTION_SHOW_INFO)
       ShowEPGInfo(pItem.get());
     else if (iAction == ACTION_DELETE_ITEM)
@@ -309,9 +329,6 @@ bool CGUIWindowPVRChannels::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON 
   if (button == CONTEXT_BUTTON_PLAY_ITEM)
   {
     /* play channel */
-    const CPVRChannelGroup *currentGroup = SelectedGroup();
-    CPVRManager::Get()->SetPlayingGroup(currentGroup);
-
     bReturn = PlayFile(item, g_guiSettings.GetBool("pvrplayback.playminimized"));
   }
 

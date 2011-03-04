@@ -702,7 +702,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         if (msg.GetParam1() != 0)
         {
           const CPVRChannelGroups *groups = CPVRManager::GetChannelGroups()->Get(CPVRManager::Get()->IsPlayingRadio());
-          const CPVRChannelGroup *selectedGroup = groups->GetByName(strLabel);
+          CPVRChannelGroup *selectedGroup = (CPVRChannelGroup *) groups->GetByName(strLabel);
 
           // Switch to the first channel of the new group if the new group ID is
           // different from the current one.

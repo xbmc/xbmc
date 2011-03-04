@@ -1395,9 +1395,10 @@ void CPVRManager::ResetQualityData()
 
 const CPVRChannelGroup *CPVRManager::GetPlayingGroup(void)
 {
-  return m_currentGroup ?
-      m_currentGroup :
-      GetChannelGroups()->GetGroupAllTV();
+  if (!m_currentGroup)
+    m_currentGroup = (CPVRChannelGroup *) GetChannelGroups()->GetGroupAllTV();
+
+  return m_currentGroup;
 }
 
 void CPVRManager::TriggerRecordingsUpdate()
@@ -1720,9 +1721,10 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
   if (m_currentPlayingChannel)
   {
     const CPVRChannel *currentChannel = m_currentPlayingChannel->GetPVRChannelInfoTag();
-    if (m_currentGroup)
+    const CPVRChannelGroup *group = GetPlayingGroup();
+    if (group)
     {
-      const CPVRChannel *newChannel = bUp ? m_currentGroup->GetByChannelUp(currentChannel) : m_currentGroup->GetByChannelDown(currentChannel);
+      const CPVRChannel *newChannel = bUp ? group->GetByChannelUp(currentChannel) : group->GetByChannelDown(currentChannel);
       if (PerformChannelSwitch(newChannel, bPreview))
       {
         *iNewChannelNumber = newChannel->ChannelNumber();

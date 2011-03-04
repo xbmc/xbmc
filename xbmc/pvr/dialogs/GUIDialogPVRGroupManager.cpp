@@ -337,6 +337,7 @@ void CGUIDialogPVRGroupManager::Update()
   m_selectedGroup = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetByName(pItem->m_strTitle);
   if (m_selectedGroup)
   {
+    CPVRManager::Get()->SetPlayingGroup(m_selectedGroup);
     SET_CONTROL_LABEL(CONTROL_CURRENT_GROUP_LABEL, m_selectedGroup->GroupName());
 
     if (m_selectedGroup->IsInternalGroup())
