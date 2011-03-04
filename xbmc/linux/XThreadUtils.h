@@ -72,11 +72,29 @@ BOOL WINAPI SetThreadPriority(
   int nPriority
 );
 
-// thread local storage functions
-LPVOID WINAPI TlsGetValue(DWORD dwTlsIndex);
-BOOL WINAPI TlsSetValue(int dwTlsIndex, LPVOID lpTlsValue);
-BOOL WINAPI TlsFree(DWORD dwTlsIndex);
-DWORD WINAPI TlsAlloc();
+// helper class for TLS handling
+class TLS
+{
+public:
+  TLS()
+  {
+    pthread_key_create(&m_key, free);
+  }
 
+  ~TLS()
+  {
+    pthread_key_delete(m_key);
+  }
+
+  void *Get()
+  {
+    if (pthread_getspecific(m_key) == NULL)
+pthread_setspecific(m_key, malloc(8));
+
+    return pthread_getspecific(m_key);
+  }
+
+  pthread_key_t m_key;
+};
 
 #endif
