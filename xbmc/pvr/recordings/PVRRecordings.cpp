@@ -94,7 +94,7 @@ bool CPVRRecordings::Update(bool Wait)
   {
     Create();
     SetName("PVR Recordings Update");
-    SetPriority(-5);
+    SetPriority(-1);
   }
   return false;
 }
