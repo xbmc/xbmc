@@ -681,17 +681,13 @@ bool URIUtils::IsHTSP(const CStdString& strFile)
 
 bool URIUtils::IsLiveTV(const CStdString& strFile)
 {
-  if(IsTuxBox(strFile)
-  || IsVTP(strFile)
-  || IsHDHomeRun(strFile)
-  || IsHTSP(strFile)
-  || strFile.Left(4).Equals("sap:"))
-    return true;
-
-  if (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
-    return true;
-
-  return false;
+  return IsTuxBox(strFile) ||
+      IsVTP(strFile) ||
+      IsHDHomeRun(strFile) ||
+      IsHTSP(strFile) ||
+      strFile.Left(4).Equals("sap:") ||
+      strFile.Right(4).Equals(".pvr") ||
+      (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile));
 }
 
 bool URIUtils::IsMusicDb(const CStdString& strFile)
