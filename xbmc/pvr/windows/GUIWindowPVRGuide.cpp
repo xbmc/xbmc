@@ -186,8 +186,8 @@ void CGUIWindowPVRGuide::UpdateData(void)
     if (CPVRManager::GetEpg()->GetEPGAll(m_parent->m_vecItems, bRadio) > 0)
     {
       CDateTime now = CDateTime::GetCurrentDateTime();
-      CDateTime m_gridStart = now - CDateTimeSpan(0, 0, 0, (now.GetMinute() % 30) * 60 + now.GetSecond()) - CDateTimeSpan(0, g_guiSettings.GetInt("epg.lingertime") / 60, g_guiSettings.GetInt("epg.lingertime") % 60, 0);
-      CDateTime m_gridEnd = m_gridStart + CDateTimeSpan(g_guiSettings.GetInt("epg.daystodisplay"), 0, 0, 0);
+      CDateTime m_gridStart = CPVRManager::GetEpg()->GetFirstEPGDate(bRadio);
+      CDateTime m_gridEnd = CPVRManager::GetEpg()->GetLastEPGDate(bRadio);
       m_parent->m_guideGrid = (CGUIEPGGridContainer*) m_parent->GetControl(CONTROL_LIST_TIMELINE);
       if (m_parent->m_guideGrid)
       {
