@@ -42,7 +42,8 @@
                  "special://xbmc/system/players/mplayer/;" \
                  "special://xbmc/system/players/dvdplayer/;" \
                  "special://xbmc/system/players/paplayer/;" \
-                 "special://xbmc/system/python/"
+                 "special://xbmc/system/python/;" \
+                 "special://frameworks/"
 
 //Define this to get loggin on all calls to load/unload of dlls
 //#define LOGALL
