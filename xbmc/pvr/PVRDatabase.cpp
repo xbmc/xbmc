@@ -418,10 +418,11 @@ bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings
         settings.m_VolumeAmplification  = m_pDS->fv("fVolumeAmplification").get_asFloat();
         settings.m_OutputToAllSpeakers  = m_pDS->fv("bOutputToAllSpeakers").get_asBool();
         settings.m_SubtitleCached       = false;
+
+        bReturn = true;
       }
 
       m_pDS->close();
-      bReturn = true;
     }
     catch(...)
     {
