@@ -534,7 +534,7 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
 
     object.m_Description.description = tag.m_strTagLine;
     object.m_Description.long_description = tag.m_strPlot;
-    if (resource) resource->m_Duration = StringUtils::TimeStringToSeconds(tag.m_strRuntime.c_str());
+    if (resource) resource->m_Duration = tag.m_streamDetails.GetVideoDuration();
     if (resource) resource->m_Resolution = NPT_String::FromInteger(tag.m_streamDetails.GetVideoWidth()) + "x" + NPT_String::FromInteger(tag.m_streamDetails.GetVideoHeight());
 
     return NPT_SUCCESS;
