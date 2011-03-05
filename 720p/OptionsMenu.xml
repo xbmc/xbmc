@@ -84,7 +84,7 @@
   <include name="OptionsMenuUI">
     <control type="group">
       <include>OptionsMenuUIDims</include>
-      <visible>!Skin.HasSetting(HideOptionMenuThumbs) + ControlGroup(9009).HasFocus() + [Control.HasFocus(911) | Control.HasFocus(912) | Control.HasFocus(915) | Control.HasFocus(916) | Control.HasFocus(925) | Control.HasFocus(926) | Control.HasFocus(927) | Control.HasFocus(951) | Control.HasFocus(952)| Control.HasFocus(953)| Control.HasFocus(955) | Control.HasFocus(956) | Control.HasFocus(957) | Control.HasFocus(958)]</visible>
+      <visible>!Skin.HasSetting(HideOptionMenuThumbs) + ControlGroup(9009).HasFocus() + [Control.HasFocus(911) | Control.HasFocus(912) | Control.HasFocus(915) | Control.HasFocus(916) | Control.HasFocus(925) | Control.HasFocus(926) | Control.HasFocus(927) | Control.HasFocus(951) | Control.HasFocus(952)| Control.HasFocus(953)| Control.HasFocus(955) | Control.HasFocus(956) | Control.HasFocus(957) | Control.HasFocus(958) | Control.HasFocus(959) | Control.HasFocus(960)]</visible>
 
       <control type="group">
         <posy>12</posy>
@@ -190,7 +190,7 @@
           <description>Panel Stream Thumb</description>
           <include>OMViewLargeThumb</include>
           <texture>ViewThumbPanelStream.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(957)</visible>
+          <visible>ControlGroup(9009).HasFocus() + [Control.HasFocus(957) | Control.HasFocus(958) | Control.HasFocus(960)]</visible>
           <include>VideoOSDSlideLeft</include>
         </control>
 
@@ -198,7 +198,7 @@
           <description>Wall Stream Thumb</description>
           <include>OMViewLargeThumb</include>
           <texture>ViewThumbWallStream.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(958)</visible>
+          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(959)</visible>
           <include>VideoOSDSlideLeft</include>
         </control>
       </control>
@@ -452,7 +452,7 @@
 <!-- Possible View Options -->
         <control type="button" id="911">
           <description>List view button</description>
-          <visible>!Control.IsVisible(50) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(Movies) + !Container.Content(Artists) + !Container.Content(Albums) + !Container.Content(Songs)  + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
+          <visible>!Control.IsVisible(50) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(Movies) + !Container.Content(Artists) + !Container.Content(Albums) + !Container.Content(Songs)  + !Window.IsVisible(MyPictures) + !Container.Content(Secondary)</visible>
           <label>$LOCALIZE[535]</label>
           <onclick>Container.SetViewMode(50)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -461,7 +461,7 @@
 
         <control type="button" id="912">
           <description>Info List view button</description>
-          <visible>!Control.IsVisible(56) | [Control.IsVisible(56) + Container.Content(Secondary) + !Container.Content(Plugins)]</visible>
+          <visible>[!Control.IsVisible(56) + !Container.Content(Plugins)] | [Control.IsVisible(56) + Container.Content(Secondary)]</visible>
           <label>$LOCALIZE[31711]</label>
           <onclick>Container.SetViewMode(56)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -576,6 +576,7 @@
           <onclick>SetFocus(50)</onclick>
           <include>OMButtonItem</include>
         </control>
+ 
         <control type="button" id="958">
           <description>Panel Stream view button</description>
           <visible>!Control.IsVisible(59) + [Container.Content(Songs) | Container.Content(Albums) | Container.Content(Artists)]</visible>
@@ -603,16 +604,6 @@
           <include>OMButtonItem</include>
         </control>
         
-<!--
-        <control type="button" id="959">
-          <description>Grid view button</description>
-          <visible>!Control.IsVisible(59)</visible>
-          <label>$LOCALIZE[31720]</label>
-          <onclick>Container.SetViewMode(59)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
--->
 
 <!-- Setup Options -->
         <control type="label" id="1000">
