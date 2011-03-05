@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Lars Op den Kamp-->
 <!--Email: lars@opdenkamp.eu-->
-<!--Date of translation: 11/15/2010-->
+<!--Date of translation: 03/05/2011-->
 <!--$Revision$-->
 <!--Based on english strings version 32586-->
 <strings>
@@ -140,14 +140,8 @@
   <string id="164">Geen schijf</string>
   <string id="165">Schijf aanwezig</string>
   <string id="166">Skin</string>
-  <string id="167">
-  </string>
-  <string id="168">
-  </string>
   <string id="169">Resolutie</string>
   <string id="170">Verversingsfrequentie scherm aanpassen aan video</string>
-  <string id="171">
-  </string>
   <string id="172">Releasedatum:</string>
   <string id="173">Geef 4:3 video's weer als</string>
   <string id="175">Stemmingen</string>
@@ -250,8 +244,6 @@
   <string id="282">%i items gevonden</string>
   <string id="283">Zoekresultaten</string>
   <string id="284">Niets gevonden</string>
-  <string id="286">
-  </string>
   <string id="287">Ondertiteling</string>
   <string id="288">Lettertype</string>
   <string id="289">- Formaat</string>
@@ -271,16 +263,6 @@
   <string id="304">Taal</string>
   <string id="305">Ingeschakeld</string>
   <string id="306">Non-Interleaved</string>
-  <string id="307">
-  </string>
-  <string id="308">
-  </string>
-  <string id="309">
-  </string>
-  <string id="310">
-  </string>
-  <string id="311">
-  </string>
   <string id="312">(0=auto)</string>
   <string id="313">Bibliotheek opschonen</string>
   <string id="314">Voorbereiden...</string>
@@ -373,10 +355,6 @@
   <string id="404">Wind</string>
   <string id="405">Dauwpunt</string>
   <string id="406">Vochtigheid</string>
-  <string id="407">
-  </string>
-  <string id="408">
-  </string>
   <string id="409">Standaard</string>
   <string id="410">Weersverwachting opzoeken</string>
   <string id="411">Weersverwachting ophalen voor</string>
@@ -475,8 +453,6 @@
   <string id="517">Laatst afgespeelde albums</string>
   <string id="518">Starten</string>
   <string id="519">Starten in..</string>
-  <string id="520">
-  </string>
   <string id="521">Compilaties</string>
   <string id="522">Snelkoppeling verwijderen</string>
   <string id="523">Media veranderen</string>
@@ -617,8 +593,6 @@
   <string id="715">Toewijzing</string>
   <string id="716">Automatisch (DHCP)</string>
   <string id="717">Handmatig (Statisch)</string>
-  <string id="718">
-  </string>
   <string id="719">- IP-adres</string>
   <string id="720">- Netmask</string>
   <string id="721">- Standaard Gateway</string>
@@ -629,10 +603,7 @@
   <string id="726">Veranderingen niet opgeslagen. Doorgaan zonder op te slaan?</string>
   <string id="727">Webserver</string>
   <string id="728">FTP-server</string>
-  <string id="729">
-  </string>
   <string id="730">- Poort</string>
-  <string id="731">- Host</string>
   <string id="732">Opslaan en toepassen</string>
   <string id="733">- Wachtwoord</string>
   <string id="734">Geen wachtwoord</string>
@@ -667,8 +638,6 @@
   <string id="766">Reserved</string>
   <string id="767">Reserved</string>
   <string id="770">Fout %i: gedeelde map niet beschikbaar</string>
-  <string id="771">
-  </string>
   <string id="772">Geluidshardware</string>
   <string id="773">Zoeken</string>
   <string id="774">Map schermbeveiliging door diavoorstelling</string>
@@ -779,12 +748,6 @@
   <string id="1233">Programma's, video en muziek</string>
   <string id="1234">Programma's, afbeeldingen en muziek</string>
   <string id="1235">Programma's, afbeeldingen en video's</string>
-  <string id="1245">
-  </string>
-  <string id="1246">
-  </string>
-  <string id="1247">
-  </string>
   <string id="1250">Systeem detecteren</string>
   <string id="1251">Aangesloten systemen automatisch detecteren</string>
   <string id="1252">Nickname</string>
@@ -827,10 +790,6 @@
   <string id="2050">Speelduur</string>
   <string id="2100">Fout in script! : %s</string>
   <string id="2101">Nieuwere versie vereist - Zie log</string>
-  <string id="2102">
-  </string>
-  <string id="2103">
-  </string>
   <string id="4501">Gebruik LCD/VFD</string>
   <string id="10000">Beginscherm</string>
   <string id="10001">Programma's</string>
@@ -891,28 +850,8 @@
   <string id="12009">Herindexeren</string>
   <string id="12010">Terug naar Muziek</string>
   <string id="12011">Terug naar Video's</string>
-  <string id="12012">
-  </string>
-  <string id="12013">
-  </string>
-  <string id="12014">
-  </string>
-  <string id="12015">
-  </string>
-  <string id="12016">
-  </string>
-  <string id="12017">
-  </string>
-  <string id="12018">
-  </string>
-  <string id="12019">
-  </string>
-  <string id="12020">
-  </string>
   <string id="12021">Starten vanaf begin</string>
   <string id="12022">Hervatten vanaf %s</string>
-  <string id="12023">
-  </string>
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -962,12 +901,6 @@
   <string id="12377">Dit zal alle voorgaande opgeslagen waarden resetten</string>
   <string id="12378">Afbeeldingen weergeven gedurende</string>
   <string id="12379">Pan- en zoomeffecten gebruiken</string>
-  <string id="12380">
-  </string>
-  <string id="12381">
-  </string>
-  <string id="12382">
-  </string>
   <string id="12383">12-uursformaat</string>
   <string id="12384">24-uursformaat</string>
   <string id="12385">Dag/Maand</string>
@@ -986,10 +919,6 @@
   <string id="13003">- Vertraging</string>
   <string id="13004">- Minimale bestandsduur</string>
   <string id="13005">Computer uitschakelen</string>
-  <string id="13006">
-  </string>
-  <string id="13007">
-  </string>
   <string id="13008">Standaard afsluitmethode</string>
   <string id="13009">XBMC afsluiten</string>
   <string id="13010">Winterslaap (S4)</string>
@@ -1036,42 +965,10 @@
   <string id="13145">Als u op dit moment de Apple afstandsbediening gebruikt</string>
   <string id="13146">om XBMC te besturen, kan het veranderen van deze instelling</string>
   <string id="13147">de mogelijkheid om het te blijven besturen beïnvloeden. Doorgaan?</string>
-  <string id="13150">
-  </string>
-  <string id="13151">
-  </string>
-  <string id="13152">
-  </string>
-  <string id="13153">
-  </string>
-  <string id="13154">
-  </string>
-  <string id="13155">
-  </string>
-  <string id="13156">
-  </string>
-  <string id="13157">
-  </string>
-  <string id="13158">
-  </string>
   <string id="13159">Subnetmasker</string>
   <string id="13160">Gateway</string>
   <string id="13161">DNS-server</string>
   <string id="13162">Initialiseren mislukt</string>
-  <string id="13163">
-  </string>
-  <string id="13164">
-  </string>
-  <string id="13165">
-  </string>
-  <string id="13166">
-  </string>
-  <string id="13167">
-  </string>
-  <string id="13168">
-  </string>
-  <string id="13169">
-  </string>
   <string id="13170">Nooit</string>
   <string id="13171">Direct</string>
   <string id="13172">Na %i sec.</string>
@@ -1106,27 +1003,13 @@
   <string id="13281">Hardware</string>
   <string id="13283">Besturingssysteem:</string>
   <string id="13284">Kloksnelheid:</string>
-  <string id="13285">
-  </string>
   <string id="13286">Video-encoder:</string>
   <string id="13287">Schermresolutie:</string>
-  <string id="13288">
-  </string>
-  <string id="13289">
-  </string>
-  <string id="13290">
-  </string>
-  <string id="13291">
-  </string>
   <string id="13292">A/V-kabel:</string>
-  <string id="13293">
-  </string>
   <string id="13294">DVD-regio:</string>
   <string id="13295">Internet:</string>
   <string id="13296">Ja, verbonden met internet</string>
   <string id="13297">Nee, niet verbonden met internet. Controleer uw netwerkinstellingen.</string>
-  <string id="13298">
-  </string>
   <string id="13299">- Doeltemperatuur</string>
   <string id="13300">- Ventilatorsnelheid</string>
   <string id="13301">Automatische ventilatorsnelheid</string>
@@ -1165,10 +1048,6 @@
   <string id="13334">Label aanpassen</string>
   <string id="13335">Maak standaard</string>
   <string id="13336">Verwijder Knop</string>
-  <string id="13338">
-  </string>
-  <string id="13339">
-  </string>
   <string id="13340">Onveranderd laten</string>
   <string id="13341">Groen</string>
   <string id="13342">Oranje</string>
@@ -1432,7 +1311,6 @@
   <string id="15283">Onlangs door %name% afgespeelde nummers</string>
   <string id="15284">Beluister de aanbevelingen van %name% op Last.FM-radio</string>
   <string id="15285">Top tags van %name%</string>
-  <string id="15286">Beluister %name%'s Last.FM afspeellijst radio</string>
   <string id="15287">Wilt u dit nummer toevoegen aan uw favoriete nummers?</string>
   <string id="15288">Wilt u dit nummer verbannen?</string>
   <string id="15289">Toegevoegd aan favoriete nummers: %s</string>
@@ -1489,16 +1367,6 @@
   <string id="16103">Als bekeken markeren</string>
   <string id="16104">Als niet-bekeken markeren</string>
   <string id="16105">Titel aanpassen</string>
-  <string id="16106">
-  </string>
-  <string id="16107">
-  </string>
-  <string id="16108">
-  </string>
-  <string id="16109">
-  </string>
-  <string id="16110">
-  </string>
   <string id="16200">Actie is afgebroken</string>
   <string id="16201">Kopiëren mislukt</string>
   <string id="16202">Tenminste 1 bestand is niet gekopieerd</string>
@@ -1528,9 +1396,6 @@
   <string id="16319">DXVA</string>
   <string id="16320">Auto - ION geoptimaliseerd</string>
   <string id="16400">Kwaliteitsverbetering video</string>
-  <string id="16401">Uitgeschakeld</string>
-  <string id="16402">Ingeschakeld voor SD content</string>
-  <string id="16403">Altijd ingeschakeld</string>
   <string id="17500">Uitschakeltijd beeldscherm</string>
   <string id="17997">%i MB</string>
   <string id="17998">%i uren</string>
@@ -1543,7 +1408,7 @@
   <string id="19005">PVR stream informatie</string>
   <string id="19006">Ontvanger</string>
   <string id="19007">Status ontvanger</string>
-  <string id="19008">Signaal kwaliteit</string>
+  <string id="19008">Signaalkwaliteit</string>
   <string id="19009">SNR</string>
   <string id="19010">BER</string>
   <string id="19011">UNC</string>
@@ -1575,7 +1440,7 @@
   <string id="19037">Toon signaal kwaliteit</string>
   <string id="19038">Op dit moment niet ondersteund!</string>
   <string id="19039">Bevestig verbergen van het kanaal</string>
-  <string id="19040">Planning</string>
+  <string id="19040">Geplande opname</string>
   <string id="19041">Hernoem opname?</string>
   <string id="19042">Hernoem geplande opname?</string>
   <string id="19043">Opname</string>
@@ -1600,14 +1465,14 @@
   <string id="19062">Sorteer op: Kanaal</string>
   <string id="19063">Ga naar begin</string>
   <string id="19064">Ga naar einde</string>
-  <string id="19065">Standaard gids</string>
-  <string id="19066">Laadt opname informatie van clients</string>
+  <string id="19065">Standaardgids</string>
+  <string id="19066">Opname informatie wordt geladen</string>
   <string id="19067">Dit programma wordt al opgenomen</string>
   <string id="19068">Kon de opname niet verwijderen</string>
   <string id="19069">TV gids</string>
   <string id="19070">TV gids scan timeout</string>
   <string id="19071">TV gids update timeout</string>
-  <string id="19072">Negeer database voor PVR-Server gids</string>
+  <string id="19072">TV gids niet opslaan in de database</string>
   <string id="19073">Kanaal timeout</string>
   <string id="19074">Actief:</string>
   <string id="19075">Naam:</string>
@@ -1647,7 +1512,7 @@
   <string id="19109">Kon de opname niet opslaan!</string>
   <string id="19110">Probeer nog eens...</string>
   <string id="19111">Server fout!</string>
-  <string id="19112">Opnames niet synchroon!</string>
+  <string id="19112">Opnames niet gesynchroniseerd</string>
   <string id="19113">Volgende</string>
   <string id="19114">Versie</string>
   <string id="19115">Adres</string>
@@ -1751,7 +1616,9 @@
   <string id="19215">De PVR server ondersteunt geen timers!</string>
   <string id="19216">Alle radio kanalen</string>
   <string id="19217">Alle TV kanalen</string>
-
+  <string id="19218">Zichtbare</string>
+  <string id="19219">Ongegroepeerde kanalen</string>
+  <string id="19220">Kanalen in</string>
   <string id="19499">Anders/Onbekend</string>
   <string id="19500">Film/Drama</string>
   <string id="19501">Detective/Thriller</string>
@@ -2221,10 +2088,6 @@
   <string id="20184">Foto's draaien op basis van EXIF-informatie</string>
   <string id="20185">Posterstijl voor tv-series gebruiken</string>
   <string id="20186">Even geduld...</string>
-  <string id="20187">
-  </string>
-  <string id="20188">
-  </string>
   <string id="20189">Plot en bespreking automatisch scrollen</string>
   <string id="20190">Handmatig</string>
   <string id="20191">Foutregistratie inschakelen</string>
@@ -2250,34 +2113,14 @@
   <string id="20302">Kan niet schrijven naar map:</string>
   <string id="20303">Overslaan en verdergaan?</string>
   <string id="20304">RSS-feed</string>
-  <string id="20306">
-  </string>
   <string id="20307">Secundaire DNS</string>
   <string id="20308">DHCP-server:</string>
   <string id="20309">Nieuwe map</string>
   <string id="20310">LCD dimmen tijdens afspelen</string>
   <string id="20311">Onbekend of onboard (beveiligd)</string>
   <string id="20312">LCD dimmen tijdens pauze</string>
-  <string id="20313">
-  </string>
   <string id="20314">Video - Bibliotheek</string>
-  <string id="20315">
-  </string>
   <string id="20316">Sorteer: ID</string>
-  <string id="20317">
-  </string>
-  <string id="20318">
-  </string>
-  <string id="20319">
-  </string>
-  <string id="20320">
-  </string>
-  <string id="20321">
-  </string>
-  <string id="20322">
-  </string>
-  <string id="20323">
-  </string>
   <string id="20324">Afspelen deel...</string>
   <string id="20325">Kalibratie opnieuw instellen</string>
   <string id="20326">Dit zet de kalibratiewaarden voor %s</string>
@@ -2405,7 +2248,7 @@
   <string id="20451">Landen</string>
   <string id="20452">Aflevering</string>
   <string id="20453">Afleveringen</string>
-  <string id="20454">Luisteraar</string> 
+  <string id="20454">Luisteraar</string>
   <string id="20455">Luisteraars</string>
   <string id="21330">Verborgen bestanden en mappen weergeven</string>
   <string id="21331">TuxBox-client</string>
@@ -2696,15 +2539,6 @@
   <string id="24080">Nogmaals proberen te verbinden?</string>
   <string id="24089">Add-on aan het herstarten</string>
   <string id="24090">Add-onmanager vastzetten</string>
-  <string id="24091">
-  </string>
-  <string id="24092">
-  </string>
-  <string id="24093">
-  </string>
-  <string id="24094">
-  </string>
-  <string id="24095">Uitgeschakelde systeem add-on</string>
   <string id="24096">Add-on is gemarkeerd als niet werkend in het repository.</string>
   <string id="24097">Wilt u de add-on uitschakelen?</string>
   <string id="24098">Defect</string>
@@ -2713,8 +2547,6 @@
   <string id="29800">Bibliotheekmodus</string>
   <string id="29801">QWERTY-indeling toetsenbord</string>
   <string id="29802">Passthrough audio in gebruik</string>
-  <string id="29999">
-  </string>
   <string id="33001">Trailerkwaliteit</string>
   <string id="33002">Stream</string>
   <string id="33003">Downloaden</string>
