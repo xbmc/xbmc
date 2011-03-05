@@ -352,6 +352,7 @@ config.log
 /system/players/dvdplayer/librtmp.dll
 /system/players/dvdplayer/postproc-51.dll
 /system/players/dvdplayer/swscale-0.6.1.dll
+/system/players/dvdplayer/libbluray.dll
 
 # /system/players/paplayer
 /system/players/paplayer/wavpack.dll
