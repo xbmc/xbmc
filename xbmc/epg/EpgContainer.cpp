@@ -20,6 +20,7 @@
  */
 
 #include "threads/SingleLock.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -31,9 +32,6 @@
 #include "Epg.h"
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
-
-#define EPGUPDATE                300  /* check if tables need to be updated every 5 minutes */
-#define EPGCLEANUPINTERVAL       900 /* remove old entries from the EPG every 15 minutes */
 
 using namespace std;
 
@@ -150,11 +148,11 @@ void CEpgContainer::Process(void)
     CDateTime::GetCurrentDateTime().GetAsTime(iNow);
 
     /* load or update the EPG */
-    if (!m_bStop && (iNow > m_iLastEpgUpdate + EPGUPDATE || !m_bDatabaseLoaded))
+    if (!m_bStop && (iNow > m_iLastEpgUpdate + g_advancedSettings.m_iEpgUpdateCheckInterval || !m_bDatabaseLoaded))
       UpdateEPG(false);
 
     /* clean up old entries */
-    if (!m_bStop && iNow > m_iLastEpgCleanup + EPGCLEANUPINTERVAL)
+    if (!m_bStop && iNow > m_iLastEpgCleanup + g_advancedSettings.m_iEpgCleanupInterval)
       RemoveOldEntries();
 
     /* call the update hook */
@@ -225,7 +223,6 @@ bool CEpgContainer::LoadSettings(void)
 {
   m_bIgnoreDbForClient = g_guiSettings.GetBool("epg.ignoredbforclient");
   m_iUpdateTime        = g_guiSettings.GetInt ("epg.epgupdate") * 60;
-  m_iLingerTime        = g_guiSettings.GetInt ("epg.lingertime") * 60;
   m_iDisplayTime       = g_guiSettings.GetInt ("epg.daystodisplay") * 24 * 60 * 60;
 
   return true;
@@ -313,7 +310,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   time_t end;
   CDateTime::GetCurrentDateTime().GetAsTime(start); // NOTE: XBMC stores the EPG times as local time
   end = start;
-  start -= m_iLingerTime;
+  start -= g_advancedSettings.m_iEpgLingerTime * 60;
   end += m_iDisplayTime;
 
   /* open the database */

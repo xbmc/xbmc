@@ -51,7 +51,6 @@ private:
   /** @name Configuration */
   //@{
   bool         m_bIgnoreDbForClient; /*!< don't save the EPG data in the database */
-  int          m_iLingerTime;        /*!< hours to keep old EPG data */
   int          m_iDisplayTime;       /*!< hours of EPG data to fetch */
   int          m_iUpdateTime;        /*!< update the full EPG after this period */
   //@}

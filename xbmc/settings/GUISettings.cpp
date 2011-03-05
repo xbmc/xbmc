@@ -775,8 +775,6 @@ void CGUISettings::Initialize()
 
   CSettingsCategory* pvre = AddCategory(8, "epg", 19069);
   AddInt(pvre, "epg.daystodisplay", 19182, 2, 1, 1, 14, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
-  AddInt(pvre, "epg.lingertime", 19183, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddInt(pvre, "epg.epgscan", 19070, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
   AddInt(pvre, "epg.epgupdate", 19071, 120, 15, 15, 480, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddBool(pvre, "epg.ignoredbforclient", 19072, false);
   AddString(pvre, "epg.resetepg", 19187, "", BUTTON_CONTROL_STANDARD);

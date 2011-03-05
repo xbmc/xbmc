@@ -224,6 +224,10 @@ void CAdvancedSettings::Initialize()
 
   m_iMythMovieLength = 0; // 0 == Off
 
+  m_iEpgLingerTime = 60;           /* keep 1 hour by default */
+  m_iEpgUpdateCheckInterval = 300; /* check if tables need to be updated every 5 minutes */
+  m_iEpgCleanupInterval = 900;     /* remove old entries from the EPG every 15 minutes */
+
   m_bEdlMergeShortCommBreaks = false;      // Off by default
   m_iEdlMaxCommBreakLength = 8 * 30 + 10;  // Just over 8 * 30 second commercial break.
   m_iEdlMinCommBreakLength = 3 * 30;       // 3 * 30 second commercial breaks.
@@ -680,6 +684,15 @@ bool CAdvancedSettings::Load()
   if (pElement)
   {
     XMLUtils::GetInt(pElement, "movielength", m_iMythMovieLength);
+  }
+
+  // EPG
+  pElement = pRootElement->FirstChildElement("epg");
+  if (pElement)
+  {
+    XMLUtils::GetInt(pElement, "lingertime", m_iEpgLingerTime);
+    XMLUtils::GetInt(pElement, "updatecheckinterval", m_iEpgUpdateCheckInterval);
+    XMLUtils::GetInt(pElement, "cleanupinterval", m_iEpgCleanupInterval);
   }
 
   // EDL commercial break handling

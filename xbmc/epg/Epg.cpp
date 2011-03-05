@@ -19,6 +19,7 @@
  *
  */
 
+#include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "threads/SingleLock.h"
 #include "log.h"
@@ -160,7 +161,7 @@ void CEpg::Cleanup(const CDateTime &Time)
   {
     CEpgInfoTag *tag = at(iTagPtr);
     if ( tag && /* valid tag */
-        (tag->End() + CDateTimeSpan(0, g_EpgContainer.m_iLingerTime / 60 + 1, g_EpgContainer.m_iLingerTime % 60, 0) < Time)) /* adding one hour for safety */
+        (tag->End() + CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0) < Time))
     {
       erase(begin() + iTagPtr);
       --iSize;

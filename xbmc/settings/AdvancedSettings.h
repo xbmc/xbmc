@@ -234,6 +234,10 @@ class CAdvancedSettings : public virtual xbmcutil::Referenced
 
     int m_iMythMovieLength;         // minutes
 
+    int m_iEpgLingerTime;           // minutes
+    int m_iEpgUpdateCheckInterval;  // seconds
+    int m_iEpgCleanupInterval;      // seconds
+
     // EDL Commercial Break
     bool m_bEdlMergeShortCommBreaks;
     int m_iEdlMaxCommBreakLength;   // seconds
