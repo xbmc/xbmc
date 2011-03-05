@@ -503,11 +503,13 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
           object.m_Recorded.series_title = tag.m_strShowTitle;
           object.m_Recorded.episode_number = tag.m_iSeason * 100 + tag.m_iEpisode;
           object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
+          object.m_Date = tag.m_strFirstAired;
           if(tag.m_iSeason != -1)
               object.m_ReferenceID = NPT_String::Format("videodb://2/0/%i", tag.m_iDbId);
         } else {
           object.m_ObjectClass.type = "object.item.videoItem.movie";
           object.m_Title = tag.m_strTitle;
+          object.m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
           object.m_ReferenceID = NPT_String::Format("videodb://1/2/%i", tag.m_iDbId);
         }
     }
@@ -621,11 +623,6 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         }
         if(resource.m_Size == 0)
           resource.m_Size = (NPT_LargeSize)-1;
-
-        // set date
-        if (item.m_dateTime.IsValid()) {
-            object->m_Date = item.m_dateTime.GetAsLocalizedDate();
-        }
 
         if (upnp_server) {
             // iterate through ip addresses and build list of resources
