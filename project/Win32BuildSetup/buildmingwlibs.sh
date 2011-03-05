@@ -56,6 +56,13 @@ setfilepath /xbmc/system/players/dvdplayer
 checkfiles libdvdcss-2.dll libdvdnav.dll
 echo "##### building of libdvd dlls done #####"
 
+echo "##### building libmpeg2 dlls #####"
+cd /xbmc/lib/libmpeg2/
+sh ./make-xbmc-lib-win32.sh
+setfilepath /xbmc/system/players/dvdplayer
+checkfiles libmpeg2.dll
+echo "##### building of libmpeg2 dlls done #####"
+
 # wait for key press
 if [ $NOPROMPT == 0 ]; then
   echo press a key to close the window
