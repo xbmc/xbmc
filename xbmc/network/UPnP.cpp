@@ -762,6 +762,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         object->m_ExtraInfo.album_art_uri = upnp_server->BuildSafeResourceUri(
             (*ips.GetFirstItem()).ToString(),
             item.GetThumbnailImage());
+        object->m_ExtraInfo.album_art_uri_dlna_profile = "JPEG_TN";
     }
 
     return object;
