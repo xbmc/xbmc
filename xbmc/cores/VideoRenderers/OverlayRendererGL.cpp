@@ -39,6 +39,7 @@
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "RenderManager.h"
 
 #if defined(HAS_GL) || HAS_GLES == 2
 
@@ -262,24 +263,18 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
 
 COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
 {
-  RESOLUTION_INFO& res = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
+  CRect src, dst;
+  g_renderManager.GetVideoRect(src, dst);
 
-  int width  = res.iWidth;
-  int height = res.iHeight;
+  m_width  = 1.0;
+  m_height = 1.0;
+  m_align  = ALIGN_VIDEO;
+  m_pos    = POSITION_RELATIVE;
+  m_x      = 0.0f;
+  m_y      = 0.0f;
 
-  m_width  = (float)width;
-  m_height = (float)height;
-
-  if     (res.fPixelRatio > 1.0)
-    width  = MathUtils::round_int(width  * res.fPixelRatio);
-  else if(res.fPixelRatio < 1.0)
-    height = MathUtils::round_int(height / res.fPixelRatio);
-
-  m_vertex = NULL;
-  m_align  = ALIGN_SCREEN;
-  m_pos    = POSITION_ABSOLUTE;
-  m_x      = (float)0.0f;
-  m_y      = (float)0.0f;
+  int width  = MathUtils::round_int(dst.Width());
+  int height = MathUtils::round_int(dst.Height());
 
   m_texture = ~(GLuint)0;
 
