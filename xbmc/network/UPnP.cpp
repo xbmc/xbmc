@@ -625,6 +625,11 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         if(resource.m_Size == 0)
           resource.m_Size = (NPT_LargeSize)-1;
 
+        // set date
+        if (object->m_Date.IsEmpty() && item.m_dateTime.IsValid()) {
+            object->m_Date = item.m_dateTime.GetAsLocalizedDate();
+        }
+
         if (upnp_server) {
             // iterate through ip addresses and build list of resources
             // through http file server
