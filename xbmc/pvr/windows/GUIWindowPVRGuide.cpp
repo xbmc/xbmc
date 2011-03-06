@@ -129,7 +129,7 @@ void CGUIWindowPVRGuide::UpdateData(void)
     if (bGotCurrentChannel)
       m_parent->SetLabel(CONTROL_LABELGROUP, CurrentChannel.ChannelName().c_str());
 
-    if (!bGotCurrentChannel || CurrentChannel.GetEPG(m_parent->m_vecItems) == 0)
+    if (!bGotCurrentChannel || CPVRManager::Get()->GetCurrentEpg(m_parent->m_vecItems) == 0)
     {
       CFileItemPtr item;
       item.reset(new CFileItem("pvr://guide/" + CurrentChannel.ChannelName() + "/empty.epg", false));
