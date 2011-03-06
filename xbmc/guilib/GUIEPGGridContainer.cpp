@@ -97,7 +97,7 @@ void CGUIEPGGridContainer::Render()
   if (m_bInvalidated)
     UpdateLayout();
 
-  if (!m_focusedChannelLayout || !m_channelLayout || !m_rulerLayout || !m_focusedProgrammeLayout || !m_programmeLayout || m_rulerItems.empty())
+  if (!m_focusedChannelLayout || !m_channelLayout || !m_rulerLayout || !m_focusedProgrammeLayout || !m_programmeLayout || m_rulerItems.empty() || (m_gridEnd - m_gridStart) == CDateTimeSpan(0, 0, 0, 0))
     return;
 
   UpdateScrollOffset();
