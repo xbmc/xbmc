@@ -31,6 +31,7 @@
 #include "FileItem.h"
 #include "utils/LangCodeExpander.h"
 #include "settings/Settings.h"
+#include "pythreadstate.h"
 
 using namespace MUSIC_INFO;
 
@@ -61,9 +62,9 @@ namespace PYXBMC
 
     self->iPlayList = PLAYLIST_MUSIC;
 
-    Py_BEGIN_ALLOW_THREADS
+    CPyThreadState pyState;
     self->pPlayer = new CPythonPlayer();
-    Py_END_ALLOW_THREADS
+    pyState.Restore();
 
     self->pPlayer->SetCallback(PyThreadState_Get(), (PyObject*)self);
     self->playerCore = EPC_NONE;
@@ -82,10 +83,10 @@ namespace PYXBMC
   {
     self->pPlayer->SetCallback(NULL, NULL);
 
-    Py_BEGIN_ALLOW_THREADS
+    CPyThreadState pyState;
     self->pPlayer->Release();
-    Py_END_ALLOW_THREADS
-
+    pyState.Restore();
+      
     self->pPlayer = NULL;
     self->ob_type->tp_free((PyObject*)self);
   }

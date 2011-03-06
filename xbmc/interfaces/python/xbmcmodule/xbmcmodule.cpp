@@ -64,6 +64,7 @@
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/FileUtils.h"
+#include "pythreadstate.h"
 
 // include for constants
 #include "pyutil.h"
@@ -379,9 +380,9 @@ namespace PYXBMC
     long i = PyInt_AsLong(pObject);
     //while(i != 0)
     //{
-      Py_BEGIN_ALLOW_THREADS
+      CPyThreadState pyState;
       Sleep(i);//(500);
-      Py_END_ALLOW_THREADS
+      pyState.Restore();
 
       PyXBMC_MakePendingCalls();
       //i = PyInt_AsLong(pObject);
@@ -981,9 +982,10 @@ namespace PYXBMC
     
     CStdString strSize;
     CStdString strHash;
-    Py_BEGIN_ALLOW_THREADS
+
+    CPyThreadState pyState;
     CFileUtils::SubtitleFileSizeAndHash(strSource, strSize, strHash);
-    Py_END_ALLOW_THREADS
+    pyState.Restore();
     
     return Py_BuildValue((char*)"ss",strSize.c_str(), strHash.c_str());
   } 
