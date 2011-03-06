@@ -266,7 +266,7 @@
 					<description>XBMC XBE BUILD Version</description>
 					<posx>750</posx>
 					<posy>400</posy>
-					<width>700</width>
+					<width>730</width>
 					<label>144</label>
 					<align>right</align>
 					<textcolor>blue</textcolor>

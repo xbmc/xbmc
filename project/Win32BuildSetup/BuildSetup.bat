@@ -207,8 +207,7 @@ IF %comp%==vs2010 (
   call genNsisIncludes.bat
   ECHO ------------------------------------------------------------
   CALL extract_git_rev.bat
-  SET GIT_REV=_%GIT_REV%
-  SET XBMC_SETUPFILE=XBMCSetup-Rev%GIT_REV%-%target%.exe
+  SET XBMC_SETUPFILE=XBMCSetup-%GIT_REV%-%target%.exe
   ECHO Creating installer %XBMC_SETUPFILE%...
   IF EXIST %XBMC_SETUPFILE% del %XBMC_SETUPFILE% > NUL
   rem get path to makensis.exe from registry, first try tab delim
