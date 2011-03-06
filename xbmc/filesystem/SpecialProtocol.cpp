@@ -276,6 +276,5 @@ CStdString CSpecialProtocol::GetPath(const CStdString &key)
   map<CStdString, CStdString>::iterator it = m_pathMap.find(key);
   if (it != m_pathMap.end())
     return it->second;
-  assert(false);
   return "";
 }
