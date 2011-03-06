@@ -288,6 +288,13 @@ public:
   bool GetCurrentChannel(const CPVRChannel *channel);
 
   /*!
+   * @brief Return the EPG for the channel that is currently playing.
+   * @param channel The EPG or NULL if no channel is playing.
+   * @return The amount of results that was added or -1 if none.
+   */
+  int GetCurrentEpg(CFileItemList *results);
+
+  /*!
    * @brief Check whether the PVRManager has fully started.
    * @return True if started, false otherwise.
    */

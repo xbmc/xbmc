@@ -98,10 +98,7 @@ void CGUIDialogPVRGuideOSD::Update()
   // empty the list ready for population
   Clear();
 
-  CPVRChannel CurrentChannel;
-  if (CPVRManager::Get()->GetCurrentChannel(&CurrentChannel))
-    CurrentChannel.GetEPG(m_vecItems);
-
+  CPVRManager::Get()->GetCurrentEpg(m_vecItems);
   m_viewControl.SetItems(*m_vecItems);
   g_graphicsContext.Unlock();
 }

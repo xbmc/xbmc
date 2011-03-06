@@ -1159,6 +1159,18 @@ bool CPVRManager::GetCurrentChannel(const CPVRChannel *channel)
   return bReturn;
 }
 
+int CPVRManager::GetCurrentEpg(CFileItemList *results)
+{
+  bool iReturn = -1;
+
+  if (m_currentPlayingChannel)
+    iReturn = m_currentPlayingChannel->GetPVRChannelInfoTag()->GetEPG(results);
+  else
+    CLog::Log(LOGDEBUG,"PVRManager - %s - no current channel set", __FUNCTION__);
+
+  return iReturn;
+}
+
 bool CPVRManager::HasActiveClients(void)
 {
   bool bReturn = false;
