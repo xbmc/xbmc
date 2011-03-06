@@ -51,7 +51,7 @@ public:
    * @brief Get the minimal database version that is required to operate correctly.
    * @return The minimal database version.
    */
-  virtual int GetMinVersion() const { return 11; };
+  virtual int GetMinVersion() const { return 12; };
 
   /*!
    * @brief Get the default sqlite database filename.
@@ -97,19 +97,6 @@ public:
    * @return The amount of channels that were added.
    */
   int GetChannels(CPVRChannelGroupInternal *results, bool bIsRadio);
-
-  /*!
-   * @brief Get the ID of the channel that was played last
-   * @return The ID of the channel that was played last
-   */
-  int GetLastChannel();
-
-  /*!
-   * @brief Update the last playing channel.
-   * @param channel The channel to store.
-   * @return True if the value was stored, false otherwise.
-   */
-  bool PersistLastChannel(const CPVRChannel &channel);
 
   //@}
 

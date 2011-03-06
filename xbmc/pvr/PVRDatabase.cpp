@@ -104,14 +104,6 @@ bool CPVRDatabase::CreateTables()
     //    );
     //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idClient on map_channels_clients(idChannel, idClient);");
 
-    CLog::Log(LOGDEBUG, "PVRDB - %s - creating view 'vw_last_watched'", __FUNCTION__);
-    m_pDS->exec(
-        "CREATE VIEW vw_last_watched "
-        "AS SELECT idChannel, sChannelName "
-        "FROM channels "
-        "ORDER BY iLastWatched DESC;"
-    );
-
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'channelgroups'", __FUNCTION__);
     m_pDS->exec(
         "CREATE TABLE channelgroups ("
@@ -176,14 +168,35 @@ bool CPVRDatabase::CreateTables()
 
 bool CPVRDatabase::UpdateOldVersion(int iVersion)
 {
-  if (iVersion < GetMinVersion())
+  bool bReturn = true;
+
+  BeginTransaction();
+
+  try
   {
-    CLog::Log(LOGERROR, "PVRDB - %s - updating old table versions not supported. please delete '%s'",
-        __FUNCTION__, GetBaseDBName());
-    return false;
+    if (iVersion == 11)
+    {
+      m_pDS->exec("DROP VIEW vw_last_watched");
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "PVRDB - %s - updating from this old table versions not supported. please delete '%s'",
+          __FUNCTION__, GetBaseDBName());
+      bReturn = false;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "Error attempting to update the database version!");
+    bReturn = false;
   }
 
-  return true;
+  if (bReturn)
+    CommitTransaction();
+  else
+    RollbackTransaction();
+
+  return bReturn;
 }
 
 /********** Channel methods **********/
@@ -231,11 +244,11 @@ int CPVRDatabase::Persist(const CPVRChannel &channel, bool bQueueWrite /* = fals
     /* new channel */
     strQuery = FormatSQL("INSERT INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, "
-        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iClientId, "
+        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
         "iClientChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem) "
-        "VALUES (%i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i);",
+        "VALUES (%i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, '%s', '%s', %i);",
         channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0),
-        channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.ClientID(),
+        channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(), channel.ClientID(),
         channel.ClientChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem());
   }
   else
@@ -243,11 +256,11 @@ int CPVRDatabase::Persist(const CPVRChannel &channel, bool bQueueWrite /* = fals
     /* update channel */
     strQuery = FormatSQL("REPLACE INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, "
-        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iClientId, "
+        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
         "iClientChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem, idChannel) "
-        "VALUES (%i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i, %i);",
+        "VALUES (%i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, '%s', '%s', %i, %i);",
         channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0),
-        channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.ClientID(),
+        channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(), channel.ClientID(),
         channel.ClientChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem(), channel.ChannelID());
   }
 
@@ -279,7 +292,7 @@ int CPVRDatabase::GetChannels(CPVRChannelGroupInternal *results, bool bIsRadio)
   int iReturn = 0;
 
   CStdString strQuery = FormatSQL("SELECT channels.idChannel, channels.iUniqueId, channels.bIsRadio, channels.bIsHidden, "
-      "channels.sIconPath, channels.sChannelName, channels.bIsVirtual, channels.bEPGEnabled, channels.sEPGScraper, channels.iClientId, "
+      "channels.sIconPath, channels.sChannelName, channels.bIsVirtual, channels.bEPGEnabled, channels.sEPGScraper, channels.iLastWatched, channels.iClientId, "
       "channels.iClientChannelNumber, channels.sInputFormat, channels.sInputFormat, channels.sStreamURL, channels.iEncryptionSystem, map_channelgroups_channels.iChannelNumber "
       "FROM channels "
       "LEFT JOIN map_channelgroups_channels ON map_channelgroups_channels.idChannel = channels.idChannel AND map_channelgroups_channels.idGroup = %u "
@@ -301,6 +314,7 @@ int CPVRDatabase::GetChannels(CPVRChannelGroupInternal *results, bool bIsRadio)
         channel->m_bIsVirtual              = m_pDS->fv("bIsVirtual").get_asBool();
         channel->m_bEPGEnabled             = m_pDS->fv("bEPGEnabled").get_asBool();
         channel->m_strEPGScraper           = m_pDS->fv("sEPGScraper").get_asString();
+        channel->m_iLastWatched            = (time_t) m_pDS->fv("iLastWatched").get_asInt();
         channel->m_iClientId               = m_pDS->fv("iClientId").get_asInt();
         channel->m_iClientChannelNumber    = m_pDS->fv("iClientChannelNumber").get_asInt();
         channel->m_strInputFormat          = m_pDS->fv("sInputFormat").get_asString();
@@ -324,35 +338,6 @@ int CPVRDatabase::GetChannels(CPVRChannelGroupInternal *results, bool bIsRadio)
   m_pDS->close();
   return iReturn;
 }
-
-int CPVRDatabase::GetLastChannel()
-{
-  CStdString strValue = GetSingleValue("vw_last_watched", "idChannel");
-
-  if (strValue.IsEmpty())
-    return -1;
-
-  return atoi(strValue.c_str());
-}
-
-bool CPVRDatabase::PersistLastChannel(const CPVRChannel &channel)
-{
-  /* invalid channel */
-  if (channel.ChannelID() <= 0)
-  {
-    CLog::Log(LOGERROR, "PVRDB - %s - invalid channel id: %i",
-        __FUNCTION__, channel.ChannelID());
-    return false;
-  }
-
-  time_t tNow;
-  CDateTime::GetCurrentDateTime().GetAsTime(tNow);
-  CStdString strQuery = FormatSQL("UPDATE channels SET iLastWatched = %u WHERE idChannel = %u",
-      tNow, channel.ChannelID());
-
-  return ExecuteQuery(strQuery);
-}
-
 
 bool CPVRDatabase::DeleteChannelSettings()
 {

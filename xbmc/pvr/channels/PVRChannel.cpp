@@ -68,6 +68,7 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_strIconPath             = "";
   m_strChannelName          = "";
   m_bIsVirtual              = false;
+  m_iLastWatched            = 0;
 
   m_EPG                     = NULL;
   m_bEPGEnabled             = true;
@@ -279,6 +280,26 @@ bool CPVRChannel::SetVirtual(bool bIsVirtual, bool bSaveInDb /* = false */)
   {
     /* update the virtual flag */
     m_bIsVirtual = bIsVirtual;
+    SetChanged();
+
+    /* persist the changes */
+    if (bSaveInDb)
+      Persist();
+
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CPVRChannel::SetLastWatched(time_t iLastWatched, bool bSaveInDb /* = false */)
+{
+  bool bReturn = false;
+
+  if (m_iLastWatched != iLastWatched)
+  {
+    /* update last watched  */
+    m_iLastWatched = iLastWatched;
     SetChanged();
 
     /* persist the changes */

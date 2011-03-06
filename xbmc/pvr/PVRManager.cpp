@@ -431,27 +431,27 @@ bool CPVRManager::ContinueLastChannel()
   bool bReturn = false;
   m_bFirstStart = false;
 
-  if (m_database.Open())
+  const CPVRChannel *channel = GetChannelGroups()->GetGroupAllTV()->GetByIndex(0);
+  for (int i = 0; i < GetChannelGroups()->GetGroupAllTV()->GetNumChannels(); i++)
   {
-    int iLastChannel = m_database.GetLastChannel();
-    m_database.Close();
+    const CPVRChannel *nextChannel = GetChannelGroups()->GetGroupAllTV()->GetByIndex(i);
+    if (nextChannel->ClientID() < 0 | !m_clients[nextChannel->ClientID()] | !m_clients[nextChannel->ClientID()]->ReadyToUse())
+      continue;
+    channel = channel->LastWatched() > nextChannel->LastWatched() ? channel : nextChannel;
+  }
+  for (int i = 0; i < GetChannelGroups()->GetGroupAllRadio()->GetNumChannels(); i++)
+  {
+    const CPVRChannel *nextChannel = GetChannelGroups()->GetGroupAllRadio()->GetByIndex(i);
+    if (nextChannel->ClientID() < 0 | !m_clients[nextChannel->ClientID()] | !m_clients[nextChannel->ClientID()]->ReadyToUse())
+      continue;
+    channel = channel->LastWatched() > nextChannel->LastWatched() ? channel : nextChannel;
+  }
 
-    if (iLastChannel > 0)
-    {
-      const CPVRChannel *channel = CPVRManager::GetChannelGroups()->GetByChannelIDFromAll(iLastChannel);
-
-      if (channel)
-      {
-        CLog::Log(LOGNOTICE, "PVRManager - %s - continue playback on channel '%s'",
-            __FUNCTION__, channel->ChannelName().c_str());
-        bReturn = StartPlayback(channel, (g_guiSettings.GetInt("pvrplayback.startlast") == START_LAST_CHANNEL_MIN));
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "PVRManager - %s - cannot continue playback on channel: channel '%d' not found",
-            __FUNCTION__, iLastChannel);
-      }
-    }
+  if (channel)
+  {
+    CLog::Log(LOGNOTICE, "PVRManager - %s - continue playback on channel '%s'",
+        __FUNCTION__, channel->ChannelName().c_str());
+    bReturn = StartPlayback(channel, (g_guiSettings.GetInt("pvrplayback.startlast") == START_LAST_CHANNEL_MIN));
   }
 
   return bReturn;
@@ -1539,10 +1539,10 @@ void CPVRManager::CloseStream()
   {
     m_playingClientName = "";
 
-    /* Save channel number in database */
-    m_database.Open();
-    m_database.PersistLastChannel(*m_currentPlayingChannel->GetPVRChannelInfoTag());
-    m_database.Close();
+    /* store current time in iLastWatched */
+    time_t tNow;
+    CDateTime::GetCurrentDateTime().GetAsTime(tNow);
+    m_currentPlayingChannel->GetPVRChannelInfoTag()->SetLastWatched(tNow, true);
 
     /* Store current settings inside Database */
     SaveCurrentChannelSettings();
