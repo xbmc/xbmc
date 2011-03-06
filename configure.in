@@ -416,8 +416,7 @@ if test "$host_vendor" = "apple" ; then
   LIBS="$LIBS -framework CoreFoundation"
   LIBS="$LIBS -framework DiskArbitration"
   LIBS="$LIBS -framework ApplicationServices"
-fi
-if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
+elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
   use_arch=arm
   CFLAGS="$CFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
   CXXFLAGS="$CXXFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
@@ -1755,7 +1754,6 @@ XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
 
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   if test "$host_vendor" = "apple" ; then
-    #rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_C_FLAGS:STRING="${CFLAGS} -fno-common" -D CMAKE_CXX_FLAGS:STRING="${CXXFLAGS} -fno-common" -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
     rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
       -DCMAKE_C_FLAGS:STRING="${CFLAGS} -fno-common" -DCMAKE_CXX_FLAGS:STRING="${CXXFLAGS} -fno-common"
   else

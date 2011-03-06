@@ -2185,10 +2185,10 @@ CStdString CUtil::ResolveExecutablePath()
   return strExecutablePath;
 }
 
-#if defined(__APPLE__)
 CStdString CUtil::GetFrameworksPath(void)
 {
   CStdString strFrameworksPath;
+#if defined(__APPLE__)
   int      result = -1;
   char     given_path[2*MAXPATHLEN];
   char     real_given_path[2*MAXPATHLEN];
@@ -2215,10 +2215,9 @@ CStdString CUtil::GetFrameworksPath(void)
       }
     }
   }
-
+#endif
   return strFrameworksPath;
 }
-#endif
 
 void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CStdString>& vecSubtitles )
 {

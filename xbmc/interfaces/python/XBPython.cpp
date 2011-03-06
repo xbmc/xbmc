@@ -401,7 +401,7 @@ void XBPython::Initialize()
          .pyc, etc.). */
       #if defined(__APPLE__)
         // check if we are running as real xbmc.app or just binary
-        if (CUtil::GetFrameworksPath().length())
+        if (!CUtil::GetFrameworksPath().IsEmpty())
         {
           // using external python, it's build looking for xxx/lib/python2.6
           // so point it to frameworks/usr which is where python2.6 is located
@@ -477,12 +477,11 @@ void XBPython::Finalize()
 #if !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
     DllLoaderContainer::UnloadPythonDlls();
 #endif
-#ifdef _LINUX
+#if defined(_LINUX) && !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
     // we can't release it on windows, as this is done in UnloadPythonDlls() for win32 (see above).
-    // The implementation for linux and os x needs looking at - UnloadPythonDlls() currently only searches for "python24.dll"
-#if !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
+    // The implementation for linux needs looking at - UnloadPythonDlls() currently only searches for "python24.dll"
+    // The implementation for osx can never unload the python dylib.
     DllLoaderContainer::ReleaseModule(m_pDll);
-#endif
 #endif
     m_hModule         = NULL;
     m_mainThreadState = NULL;

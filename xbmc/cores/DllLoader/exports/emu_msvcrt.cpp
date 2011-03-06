@@ -139,9 +139,8 @@ extern "C" void __stdcall init_emu_environ()
   dll_putenv("OS=unknown");
 #endif
 
-#if defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON)
   // check if we are running as real xbmc.app or just binary
-  if (CUtil::GetFrameworksPath().length())
+  if (!CUtil::GetFrameworksPath().IsEmpty())
   {
     // using external python, it's build looking for xxx/lib/python2.6
     // so point it to frameworks/usr which is where python2.6 is located
@@ -149,11 +148,12 @@ extern "C" void __stdcall init_emu_environ()
     dll_putenv(string("PYTHONHOME=" + _P("special://frameworks/usr")).c_str());
     dll_putenv(string("PATH=.;" + _P("special://xbmc") + ";" + _P("special://frameworks/usr")).c_str());
   }
-#else
-  dll_putenv(string("PYTHONPATH=" + _P("special://xbmc/system/python/DLLs") + ";" + _P("special://xbmc/system/python/Lib")).c_str());
-  dll_putenv(string("PYTHONHOME=" + _P("special://xbmc/system/python")).c_str());
-  dll_putenv(string("PATH=.;" + _P("special://xbmc") + ";" + _P("special://xbmc/system/python")).c_str());
-#endif
+  else
+  {
+    dll_putenv(string("PYTHONPATH=" + _P("special://xbmc/system/python/DLLs") + ";" + _P("special://xbmc/system/python/Lib")).c_str());
+    dll_putenv(string("PYTHONHOME=" + _P("special://xbmc/system/python")).c_str());
+    dll_putenv(string("PATH=.;" + _P("special://xbmc") + ";" + _P("special://xbmc/system/python")).c_str());
+  }
   //dll_putenv("PYTHONCASEOK=1");
   //dll_putenv("PYTHONDEBUG=1");
   //dll_putenv("PYTHONVERBOSE=2"); // "1" for normal verbose, "2" for more verbose ?
