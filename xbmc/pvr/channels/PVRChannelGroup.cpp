@@ -228,14 +228,14 @@ void CPVRChannelGroup::SortByChannelNumber(void)
 
 /********** getters **********/
 
-const CPVRChannel *CPVRChannelGroup::GetByClient(int iClientChannelNumber, int iClientID) const
+const CPVRChannel *CPVRChannelGroup::GetByClient(int iUniqueChannelId, int iClientID) const
 {
   CPVRChannel *channel = NULL;
 
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
     PVRChannelGroupMember groupMember = at(ptr);
-    if (groupMember.channel->ClientChannelNumber() == iClientChannelNumber &&
+    if (groupMember.channel->UniqueID() == iUniqueChannelId &&
         groupMember.channel->ClientID() == iClientID)
     {
       channel = groupMember.channel;

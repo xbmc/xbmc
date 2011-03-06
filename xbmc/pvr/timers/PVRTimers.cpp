@@ -90,9 +90,6 @@ int CPVRTimers::Update()
     itr++;
   }
 
-  //XXX
-  CPVRManager::Get()->UpdateRecordingsCache();
-
   /* set channel timers */
   for (unsigned int ptr = 0; ptr < size(); ptr++)
   {
