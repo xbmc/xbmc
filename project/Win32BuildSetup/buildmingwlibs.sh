@@ -60,7 +60,7 @@ echo "##### building libmpeg2 dlls #####"
 cd /xbmc/lib/libmpeg2/
 sh ./make-xbmc-lib-win32.sh
 setfilepath /xbmc/system/players/dvdplayer
-checkfiles libmpeg2.dll
+checkfiles libmpeg2-0.dll
 echo "##### building of libmpeg2 dlls done #####"
 
 # wait for key press
