@@ -51,6 +51,11 @@ void CSpecialProtocol::SetXBMCBinPath(const CStdString &dir)
   SetPath("xbmcbin", dir);
 }
 
+void CSpecialProtocol::SetXBMCFrameworksPath(const CStdString &dir)
+{
+  SetPath("frameworks", dir);
+}
+
 void CSpecialProtocol::SetHomePath(const CStdString &dir)
 {
   SetPath("home", dir);
@@ -142,20 +147,21 @@ CStdString CSpecialProtocol::TranslatePath(const CURL &url)
     URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), FileName, translatedPath);
 
   // from here on, we have our "real" special paths
-  else if (RootDir.Equals("xbmc"))
-    URIUtils::AddFileToFolder(GetPath("xbmc"), FileName, translatedPath);
-  else if (RootDir.Equals("xbmcbin"))
-    URIUtils::AddFileToFolder(GetPath("xbmcbin"), FileName, translatedPath);
-  else if (RootDir.Equals("home"))
-    URIUtils::AddFileToFolder(GetPath("home"), FileName, translatedPath);
-  else if (RootDir.Equals("userhome"))
-    URIUtils::AddFileToFolder(GetPath("userhome"), FileName, translatedPath);
-  else if (RootDir.Equals("temp"))
-    URIUtils::AddFileToFolder(GetPath("temp"), FileName, translatedPath);
-  else if (RootDir.Equals("profile"))
-    URIUtils::AddFileToFolder(GetPath("profile"), FileName, translatedPath);
-  else if (RootDir.Equals("masterprofile"))
-    URIUtils::AddFileToFolder(GetPath("masterprofile"), FileName, translatedPath);
+  else if (RootDir.Equals("xbmc") ||
+           RootDir.Equals("xbmcbin") ||
+           RootDir.Equals("home") ||
+           RootDir.Equals("userhome") ||
+           RootDir.Equals("temp") ||
+           RootDir.Equals("profile") ||
+           RootDir.Equals("masterprofile") ||
+           RootDir.Equals("frameworks"))
+  {
+    CStdString basePath = GetPath(RootDir);
+    if (!basePath.IsEmpty())
+      URIUtils::AddFileToFolder(basePath, FileName, translatedPath);
+    else
+      translatedPath.clear();
+  }
 
   // check if we need to recurse in
   if (URIUtils::IsSpecial(translatedPath))

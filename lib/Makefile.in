@@ -21,11 +21,6 @@ ifneq (@USE_EXTERNAL_FFMPEG@,1)
 	swscale-0-$(ARCH).so
 endif
 
-ifeq ($(findstring osx,$(ARCH)),osx)
-	DIRS+=libmad
-	LIBS+=libmad-$(ARCH).so
-endif
-
 ifneq (,$(findstring powerpc,$(ARCH)))
   ARCH_DIR=ppc
 else
@@ -92,15 +87,6 @@ ffmpeg/libavformat/libavformat.dylib : ffmpeg;
 ffmpeg/libswscale/libswscale.dylib   : ffmpeg;
 ffmpeg/libpostproc/libpostproc.dylib : ffmpeg;
 ffmpeg:
-	$(MAKE) -C $@
-
-$(SYSDIR)/libmad-$(ARCH).so: $(WRAPPER_OSX) libmad/libmad.la
-	ld -bundle -flat_namespace -undefined suppress -o $@ \
-		libmad/.libs/*.o $(BUNDLE1_O)
-	$(WRAPPER_OSX) $@;mv output.so $@
-
-libmad/libmad.la: libmad;
-libmad:
 	$(MAKE) -C $@
 
 else
