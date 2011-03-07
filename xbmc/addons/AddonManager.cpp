@@ -324,6 +324,8 @@ bool CAddonMgr::HasOutdatedAddons(bool enabled /*= true*/)
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)
 {
   CSingleLock lock(m_critSection);
+  if (!m_cp_context)
+    return false;
   addons.clear();
   cp_status_t status;
   int num;
