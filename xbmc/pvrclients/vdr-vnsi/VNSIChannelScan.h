@@ -67,7 +67,7 @@ private:
   void SetSignal(int procent, bool locked);
 
   cResponsePacket* ReadResult(cRequestPacket* vrp);
-  bool readData(uint8_t* buffer, int totalBytes, int TimeOut = 2);
+  bool readData(uint8_t* buffer, int totalBytes);
 
   struct SMessage
   {

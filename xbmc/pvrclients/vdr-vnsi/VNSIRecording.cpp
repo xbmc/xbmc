@@ -41,7 +41,7 @@ bool cVNSIRecording::Open(const CStdString& path)
 {
   bool ret = false;
 
-  if(!m_session.Open(g_szHostname, g_iPort, g_iConnectTimeout, "XBMC Recording stream receiver"))
+  if(!m_session.Open(g_szHostname, g_iPort, "XBMC Recording stream receiver"))
     return ret;
 
   cRequestPacket vrp;

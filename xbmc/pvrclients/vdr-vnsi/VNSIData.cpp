@@ -36,9 +36,9 @@ cVNSIData::~cVNSIData()
   Close();
 }
 
-bool cVNSIData::Open(const CStdString& hostname, int port, long timeout)
+bool cVNSIData::Open(const CStdString& hostname, int port)
 {
-  if(!m_session.Open(hostname, port, timeout))
+  if(!m_session.Open(hostname, port))
     return false;
 
   SetDescription("VNSI Data Listener");
@@ -75,7 +75,7 @@ cResponsePacket* cVNSIData::ReadResult(cRequestPacket* vrp)
     return NULL;
   }
 
-  message.event->Wait(2000);
+  message.event->Wait(g_iConnectTimeout * 1000);
 
   m_Mutex.Lock();
 
@@ -762,7 +762,7 @@ void cVNSIData::Action()
   {
     timeNow = time(NULL);
 
-    readSuccess = readData((uint8_t*)&channelID, sizeof(uint32_t));  // 2s timeout atm
+    readSuccess = readData((uint8_t*)&channelID, sizeof(uint32_t));
     if (!readSuccess && !IsClientConnected())
       return; // return to stop this thread
 
@@ -930,9 +930,9 @@ bool cVNSIData::sendKA(uint32_t timeStamp)
   return (m_session.sendData(&m_headerKA, sizeof(m_headerKA)) == sizeof(m_headerKA));
 }
 
-bool cVNSIData::readData(uint8_t* buffer, int totalBytes, int TimeOut)
+bool cVNSIData::readData(uint8_t* buffer, int totalBytes)
 {
-  int ret = m_session.readData(buffer, totalBytes, TimeOut);
+  int ret = m_session.readData(buffer, totalBytes);
   if (ret == 1)
     return true;
   else if (ret == 0)
