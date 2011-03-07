@@ -1,0 +1,5 @@
+using darwin : 4.0 : g++-4.0 :
+  <cflags>"-isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch i386 -fvisibility=hidden -fvisibility-inlines-hidden -DBOOST_AC_USE_PTHREADS -DBOOST_SP_USE_PTHREADS"
+  <cxxflags>"-isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch i386 -fvisibility=hidden -fvisibility-inlines-hidden -DBOOST_AC_USE_PTHREADS -DBOOST_SP_USE_PTHREADS"
+  <linkflags>"-Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk -arch i386"
+;

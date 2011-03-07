@@ -10,7 +10,6 @@ LIBNAME=boost
 VERSION=1_44_0
 SOURCE=$(LIBNAME)_$(VERSION)
 # download location and format
-# git clone git://gitorious.org/boostoniphone/boostoniphone.git
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
 
 RETRIEVE_TOOL=/usr/bin/curl
@@ -19,30 +18,35 @@ ARCHIVE=$(SOURCE).tar.bz2
 ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
-LIBDYLIB=$(SOURCE)/prefix/lib/libboost_system.a
+LIBDYLIB=$(PREFIX)/lib/libboost_thread-mt.a
 
-all: $(LIBDYLIB) .compiled .installed
+all: $(LIBDYLIB) .installed
 
 $(ARCHIVE):
 	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 	echo $(ARCHIVE) > .gitignore
 
-$(LIBDYLIB): $(ARCHIVE)
+$(SOURCE): $(ARCHIVE)
+	rm -rf $(SOURCE)
+	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(ARCHIVE)
+	echo $(SOURCE) >> .gitignore
+	cat user-config.jam-osx-10.4_i386.in >> $(SOURCE)/tools/build/v2/user-config.jam
 
-.compiled:
-	rm -rf src build prefix framework
-	echo src >> .gitignore
-	echo build >> .gitignore
-	echo prefix >> .gitignore
-	echo framework >> .gitignore
-	sh ./boost.sh
-	touch $@
+$(LIBDYLIB): $(SOURCE)
+	cd $(SOURCE); ./bootstrap.sh --prefix=$(PREFIX) --with-libraries=thread
+	cd $(SOURCE); ./bjam --prefix=$(PREFIX) toolset=darwin-4.0 --architecture=x86 address-model=32 target-os=darwin macosx-version=10.4 macosx-version-min=10.4 --link=static  install
 
 .installed:
-	cp -rf prefix/* $(PREFIX) 
 	touch $@
 
 clean:
+	cd $(SOURCE); ./bjam --clean
+	rm -rf $(PREFIX)/include/boost
+	rm -f  $(PREFIX)/lib/libboost*
+	rm -f .installed
+
 distclean::
-	rm -rf src build prefix framework .compiled .installed
+	rm -rf $(PREFIX)/include/boost
+	rm -f  $(PREFIX)/lib/libboost*
+	rm -rf $(SOURCE) .installed
 
