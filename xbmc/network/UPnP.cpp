@@ -769,11 +769,10 @@ CUPnPServer::BuildObject(const CFileItem&              item,
             item.GetThumbnailImage());
         // Set DLNA profileID by extension, defaulting to JPEG.
         NPT_String ext = URIUtils::GetExtension(item.GetThumbnailImage()).c_str();
-        if (strcmp(ext, ".png") == 0) {
+        if (strcmp(ext, ".png") == 0)
             object->m_ExtraInfo.album_art_uri_dlna_profile = "PNG_TN";
-        } else {
+        else
             object->m_ExtraInfo.album_art_uri_dlna_profile = "JPEG_TN";
-        }
     }
 
     return object;
