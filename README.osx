@@ -68,15 +68,8 @@ and command-line building. The "make clean" ensures that there are no stale
 binaries from git that might cause problems. The last step will pre-build
 the majority of the codecs and libs:
 
-
-The configure operation will default to building "debug". To build "release"
-codecs and libraries for Xcode, do the configure step with "--disable-debug"
-but remember that Xcode will need to be also built "Release":
-
- $ ./configure --disable-debug
-
 -----------------------------------------------------------------------------
-4.1 Using Xcode (broken right now)
+4.1 Using Xcode
 -----------------------------------------------------------------------------
 Start XCode and open the XBMC project (XBMC.xcodeproj) located in $HOME/XBMC.
 For development, XBMC is run from the $HOME/XBMC directory and needs to have
@@ -128,9 +121,6 @@ before running xcodebuild from the command-line.
  $ cd $HOME/XBMC
  $ export XBMC_HOME=`pwd`
  $ make xcode_depends
- $ make -C lib/addons/script.module.pil
- $ make -C lib/addons/script.module.pysqlite
- $ sh lib/librtmp/darwin_package_librtmp.sh
  $ xcodebuild -sdk macosx10.4 -project XBMC.xcodeproj -target XBMC.app -configuration Release build
 
  b)
