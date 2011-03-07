@@ -86,8 +86,6 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
 
   m_iLastEpgUpdate  = 0;
   m_bDatabaseLoaded = false;
-  m_First           = CDateTime::GetCurrentDateTime();
-  m_Last            = m_First;
 
   lock.Leave();
 
@@ -397,12 +395,34 @@ int CEpgContainer::GetEPGAll(CFileItemList* results)
   return results->Size() - iInitialSize;
 }
 
-void CEpgContainer::UpdateFirstAndLastEPGDates(const CEpgInfoTag &tag)
+const CDateTime CEpgContainer::GetFirstEPGDate(void) const
 {
-  if (tag.Start() < m_First)
-    m_First = tag.Start();
-  if (tag.End() > m_Last)
-    m_Last = tag.End();
+  CDateTime returnValue;
+
+  CSingleLock lock(m_critSection);
+  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+  {
+    CDateTime entry = at(iEpgPtr)->GetFirstDate();
+    if (entry.IsValid() && (!returnValue.IsValid() || entry < returnValue))
+      returnValue = entry;
+  }
+
+  return returnValue;
+}
+
+const CDateTime CEpgContainer::GetLastEPGDate(void) const
+{
+  CDateTime returnValue;
+
+  CSingleLock lock(m_critSection);
+  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+  {
+    CDateTime entry = at(iEpgPtr)->GetLastDate();
+    if (entry.IsValid() && (!returnValue.IsValid() || entry > returnValue))
+      returnValue = entry;
+  }
+
+  return returnValue;
 }
 
 int CEpgContainer::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &filter)

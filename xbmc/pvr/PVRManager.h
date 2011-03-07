@@ -360,13 +360,14 @@ public:
    * @brief Set the current playing group, used to load the right channel.
    * @param group The new group.
    */
-  void SetPlayingGroup(CPVRChannelGroup *group) { m_currentGroup = group; }
+  void SetPlayingGroup(CPVRChannelGroup *group);
 
   /*!
    * @brief Get the current playing group, used to load the right channel.
+   * @param bRadio True to get the current radio group, false to get the current TV group.
    * @return The current group or the group containing all channels if it's not set.
    */
-  const CPVRChannelGroup *GetPlayingGroup();
+  const CPVRChannelGroup *GetPlayingGroup(bool bRadio = false);
 
   /*!
    * @brief Let the background thread update the recordings list.
@@ -708,7 +709,8 @@ private:
   /*--- Stream playback data ---*/
   CFileItem *                     m_currentPlayingChannel;    /* The current playing channel or NULL */
   CFileItem *                     m_currentPlayingRecording;  /* The current playing recording or NULL */
-  CPVRChannelGroup *              m_currentGroup;             /* The current selected Channel group list */
+  CPVRChannelGroup *              m_currentRadioGroup;        /* The current selected radio channel group list */
+  CPVRChannelGroup *              m_currentTVGroup;           /* The current selected TV channel group list */
   DWORD                           m_scanStart;                /* Scan start time to check for non present streams */
   PVR_SIGNALQUALITY               m_qualityInfo;              /* Stream quality information */
 };

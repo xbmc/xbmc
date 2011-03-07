@@ -282,7 +282,6 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
 
     newTag->m_Epg = this;
     newTag->Update(tag);
-    g_EpgContainer.UpdateFirstAndLastEPGDates(*newTag);
   }
 }
 
@@ -303,9 +302,6 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
 
   InfoTag->m_Epg = this;
   InfoTag->Update(tag);
-
-  /* update the cached first and last date in the table */
-  g_EpgContainer.UpdateFirstAndLastEPGDates(*InfoTag);
 
   Sort();
 
@@ -477,6 +473,20 @@ bool CEpg::Persist(bool bPersistTags /* = false */, bool bQueueWrite /* = false 
   database->Close();
 
   return bReturn;
+}
+
+CDateTime CEpg::GetFirstDate(void)
+{
+  CSingleLock lock(m_critSection);
+
+  return size() > 0 ? at(0)->Start() : CDateTime();
+}
+
+CDateTime CEpg::GetLastDate(void)
+{
+  CSingleLock lock(m_critSection);
+
+  return size() > 0 ? at(size() - 1)->End() : CDateTime();
 }
 
 //@}

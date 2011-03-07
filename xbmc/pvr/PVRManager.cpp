@@ -374,7 +374,8 @@ void CPVRManager::ResetProperties(void)
   m_bTriggerChannelsUpdate   = false;
   m_bTriggerRecordingsUpdate = false;
   m_bTriggerTimersUpdate     = false;
-  m_currentGroup             = NULL;
+  m_currentRadioGroup        = NULL;
+  m_currentTVGroup           = NULL;
   m_currentPlayingChannel    = NULL;
   m_currentPlayingRecording  = NULL;
   m_PreviousChannel[0]       = -1;
@@ -1405,12 +1406,22 @@ void CPVRManager::ResetQualityData()
   m_qualityInfo.dolby_bitrate = 0;
 }
 
-const CPVRChannelGroup *CPVRManager::GetPlayingGroup(void)
+void CPVRManager::SetPlayingGroup(CPVRChannelGroup *group)
 {
-  if (!m_currentGroup)
-    m_currentGroup = (CPVRChannelGroup *) GetChannelGroups()->GetGroupAllTV();
+  if (group && group->IsRadio())
+    m_currentRadioGroup = group;
+  else if (group && !group->IsRadio())
+    m_currentTVGroup = group;
+}
 
-  return m_currentGroup;
+const CPVRChannelGroup *CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
+{
+  if (bRadio && !m_currentRadioGroup)
+    m_currentRadioGroup = (CPVRChannelGroup *) GetChannelGroups()->GetGroupAllRadio();
+  else if (!bRadio &&!m_currentTVGroup)
+    m_currentTVGroup = (CPVRChannelGroup *) GetChannelGroups()->GetGroupAllTV();
+
+  return bRadio ? m_currentRadioGroup : m_currentTVGroup;
 }
 
 void CPVRManager::TriggerRecordingsUpdate()
@@ -1714,8 +1725,10 @@ bool CPVRManager::UpdateItem(CFileItem& item)
 bool CPVRManager::ChannelSwitch(unsigned int iChannel)
 {
   const CPVRChannel *channel = NULL;
-  if (m_currentGroup)
-    channel = m_currentGroup->GetByChannelNumber(iChannel);
+  if (IsPlayingRadio() && m_currentRadioGroup)
+    channel = m_currentRadioGroup->GetByChannelNumber(iChannel);
+  else if (IsPlayingTV() && m_currentRadioGroup)
+    channel = m_currentTVGroup->GetByChannelNumber(iChannel);
   else if (m_currentPlayingChannel)
     channel = m_channelGroups->Get(m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio())->GetGroupAll()->GetByChannelNumber(iChannel);
 
@@ -1739,7 +1752,7 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
   if (m_currentPlayingChannel)
   {
     const CPVRChannel *currentChannel = m_currentPlayingChannel->GetPVRChannelInfoTag();
-    const CPVRChannelGroup *group = GetPlayingGroup();
+    const CPVRChannelGroup *group = GetPlayingGroup(currentChannel->IsRadio());
     if (group)
     {
       const CPVRChannel *newChannel = bUp ? group->GetByChannelUp(currentChannel) : group->GetByChannelDown(currentChannel);

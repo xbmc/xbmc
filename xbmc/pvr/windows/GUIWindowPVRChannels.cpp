@@ -98,11 +98,7 @@ const CPVRChannelGroup *CGUIWindowPVRChannels::SelectedGroup(void)
   const CPVRChannelGroup *group = m_selectedGroup;
 
   if (!group)
-    group = CPVRManager::Get()->GetPlayingGroup();
-
-  /* playing group can return the wrong type. check this */
-  if (!group || group->IsRadio() != m_bRadio)
-    group = CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio);
+    group = CPVRManager::Get()->GetPlayingGroup(m_bRadio);
 
   SetSelectedGroup((CPVRChannelGroup *) group);
 

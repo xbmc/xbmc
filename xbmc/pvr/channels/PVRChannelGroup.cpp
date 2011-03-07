@@ -289,7 +289,7 @@ unsigned int CPVRChannelGroup::GetChannelNumber(const CPVRChannel *channel) cons
   for (unsigned int iChannelPtr = 0; iChannelPtr < iSize; iChannelPtr++)
   {
     PVRChannelGroupMember member = at(iChannelPtr);
-    if (*member.channel == *channel)
+    if (member.channel->ChannelID() == channel->ChannelID())
     {
       iReturn = member.iChannelNumber;
       break;

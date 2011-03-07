@@ -625,25 +625,30 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
       CFileItemList *items = (CFileItemList *)message.GetPointer();
 
       /* Create Channel items */
-      int ChannelLast = -1;
+      int iLastChannelNumber = -1;
       ItemsPtr itemsPointer;
       itemsPointer.start = 0;
       for (int i = 0; i < items->Size(); ++i)
       {
         const CPVREpgInfoTag* tag = (CPVREpgInfoTag *) items->Get(i)->GetEPGInfoTag();
-        if (!tag || !tag->ChannelTag())
-          return false;
-        int ChannelNow = tag->ChannelTag()->ChannelNumber();
-        if (ChannelNow != ChannelLast)
+        if (!tag)
+          continue;
+
+        const CPVRChannel *channel = tag->ChannelTag();
+        if (!tag->ChannelTag())
+          continue;
+
+        int iCurrentChannelNumber = channel->ChannelNumber();
+        if (iCurrentChannelNumber != iLastChannelNumber)
         {
           if (i > 0)
           {
-            itemsPointer.stop     = i-1;
+            itemsPointer.stop = i-1;
             m_epgItemsPtr.push_back(itemsPointer);
-            itemsPointer.start    = i;
+            itemsPointer.start = i;
           }
-          ChannelLast = ChannelNow;
-          CGUIListItemPtr item(new CFileItem(*tag->ChannelTag()));
+          iLastChannelNumber = iCurrentChannelNumber;
+          CGUIListItemPtr item(new CFileItem(*channel));
           m_channelItems.push_back(item);
         }
       }
@@ -1487,6 +1492,8 @@ void CGUIEPGGridContainer::SetStartEnd(CDateTime start, CDateTime end)
 {
   m_gridStart = start;
   m_gridEnd = end;
+  CLog::Log(LOGDEBUG, "CGUIEPGGridContainer - %s - start=%s end=%s",
+      __FUNCTION__, start.GetAsLocalizedDateTime(false, true).c_str(), end.GetAsLocalizedDateTime(false, true).c_str());
 }
 
 void CGUIEPGGridContainer::CalculateLayout()

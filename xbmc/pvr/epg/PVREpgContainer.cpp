@@ -83,29 +83,6 @@ int CPVREpgContainer::GetEPGAll(CFileItemList* results, bool bRadio /* = false *
   return results->Size() - iInitialSize;
 }
 
-void CPVREpgContainer::UpdateFirstAndLastEPGDates(const CPVREpgInfoTag &tag)
-{
-  CEpgContainer::UpdateFirstAndLastEPGDates(tag);
-
-  if (!tag.ChannelTag())
-    return;
-
-  if (tag.ChannelTag()->IsRadio())
-  {
-    if (tag.Start() < m_First)
-      m_RadioFirst = tag.Start();
-    if (tag.End() > m_Last)
-      m_RadioLast = tag.End();
-  }
-  else
-  {
-    if (tag.Start() < m_First)
-      m_TVFirst = tag.Start();
-    if (tag.End() > m_Last)
-      m_TVLast = tag.End();
-  }
-}
-
 bool CPVREpgContainer::AutoCreateTablesHook(void)
 {
   return CreateChannelEpgs();
@@ -126,14 +103,16 @@ CEpg* CPVREpgContainer::CreateEpg(int iEpgId)
   }
 }
 
-const CDateTime &CPVREpgContainer::GetFirstEPGDate(bool bRadio /* = false */)
+const CDateTime CPVREpgContainer::GetFirstEPGDate(bool bRadio /* = false */)
 {
-  return bRadio ? m_RadioFirst : m_TVFirst;
+  // TODO should use two separate containers, one for radio, one for tv
+  return CEpgContainer::GetFirstEPGDate();
 }
 
-const CDateTime &CPVREpgContainer::GetLastEPGDate(bool bRadio /* = false */)
+const CDateTime CPVREpgContainer::GetLastEPGDate(bool bRadio /* = false */)
 {
-  return bRadio ? m_RadioLast : m_TVLast;
+  // TODO should use two separate containers, one for radio, one for tv
+  return CEpgContainer::GetLastEPGDate();
 }
 
 int CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &filter)

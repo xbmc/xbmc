@@ -42,7 +42,6 @@ bool CPVRChannel::operator==(const CPVRChannel& right) const
 
   return (m_iChannelId              == right.m_iChannelId &&
           m_bIsRadio                == right.m_bIsRadio &&
-          m_bClientIsRecording      == right.m_bClientIsRecording &&
           m_strIconPath             == right.m_strIconPath &&
           m_strChannelName          == right.m_strChannelName &&
           m_bIsVirtual              == right.m_bIsVirtual &&
@@ -52,7 +51,6 @@ bool CPVRChannel::operator==(const CPVRChannel& right) const
           m_iClientChannelNumber    == right.m_iClientChannelNumber &&
           m_strClientChannelName    == right.m_strClientChannelName &&
           m_strStreamURL            == right.m_strStreamURL &&
-          m_strFileNameAndPath      == right.m_strFileNameAndPath &&
           m_iClientEncryptionSystem == right.m_iClientEncryptionSystem);
 }
 
@@ -180,7 +178,7 @@ bool CPVRChannel::SetChannelID(int iChannelId, bool bSaveInDb /* = false */)
 int CPVRChannel::ChannelNumber(void) const
 {
   int iReturn = -1;
-  const CPVRChannelGroup *group = CPVRManager::Get()->GetPlayingGroup();
+  const CPVRChannelGroup *group = CPVRManager::Get()->GetPlayingGroup(m_bIsRadio);
   if (group)
     iReturn = group->GetChannelNumber(this);
 

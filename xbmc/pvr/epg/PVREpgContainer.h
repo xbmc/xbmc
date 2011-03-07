@@ -30,25 +30,11 @@ class CPVREpgContainer : public CEpgContainer
   friend class CPVREpg;
 
 private:
-  /** @name Cached data */
-  //@{
-  CDateTime m_RadioFirst;         /*!< the earliest EPG radio date in our tables */
-  CDateTime m_RadioLast;          /*!< the latest EPG radio date in our tables */
-  CDateTime m_TVFirst;            /*!< the earliest EPG TV date in our tables */
-  CDateTime m_TVLast;             /*!< the latest EPG TV date in our tables */
-  //@}
-
   /*!
    * @brief Create an EPG table for each channel.
    * @return True if all tables were created successfully, false otherwise.
    */
   bool CreateChannelEpgs(void);
-
-  /*!
-   * @brief Update the last and first EPG date cache after changing or inserting a tag.
-   * @param tag The tag that was changed or added.
-   */
-  void UpdateFirstAndLastEPGDates(const CPVREpgInfoTag &tag);
 
   /*!
    * @brief A hook that is called after the tables have been loaded from the database.
@@ -108,12 +94,12 @@ public:
    * @param bRadio Get radio items if true and TV items if false.
    * @return The start time.
    */
-  const CDateTime &GetFirstEPGDate(bool bRadio = false);
+  const CDateTime GetFirstEPGDate(bool bRadio = false);
 
   /*!
     * @brief Get the end time of the last entry.
     * @param bRadio Get radio items if true and TV items if false.
     * @return The end time.
     */
-  const CDateTime &GetLastEPGDate(bool bRadio = false);
+  const CDateTime GetLastEPGDate(bool bRadio = false);
 };

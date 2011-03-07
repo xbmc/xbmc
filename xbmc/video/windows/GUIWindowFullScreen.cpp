@@ -706,7 +706,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
           // Switch to the first channel of the new group if the new group ID is
           // different from the current one.
-          if (selectedGroup && *selectedGroup != *CPVRManager::Get()->GetPlayingGroup())
+          if (selectedGroup && *selectedGroup != *CPVRManager::Get()->GetPlayingGroup(selectedGroup->IsRadio()))
           {
             CPVRManager::Get()->SetPlayingGroup(selectedGroup);
             OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) groups->GetFirstChannelForGroupID(selectedGroup->GroupID())));
@@ -1115,7 +1115,7 @@ void CGUIWindowFullScreen::FillInTVGroups()
 
   int iGroup        = 0;
   int iCurrentGroup = 0;
-  const CPVRChannelGroup *currentGroup = CPVRManager::Get()->GetPlayingGroup();
+  const CPVRChannelGroup *currentGroup = CPVRManager::Get()->GetPlayingGroup(false);
   for (int i = 0; i < (int) groups->size(); ++i)
   {
     if (*groups->at(i) == *currentGroup)
