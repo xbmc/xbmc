@@ -282,7 +282,7 @@ int CWeatherJob::ConvertSpeed(int curSpeed)
 void CWeatherJob::FormatTemperature(CStdString &text, int temp)
 {
   CTemperature temperature = CTemperature::CreateFromCelsius(temp);
-  text.Format("%2.0f", temperature.ToLocale());
+  text.Format("%.0f", temperature.ToLocale());
 }
 
 bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
