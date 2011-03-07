@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2009 Team XBMC
+ *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,26 +20,21 @@
  *
  */
 
-#include "ICodec.h"
-#include "addons/AudioCodec.h"
 
-class AddonCodec : public ICodec
+#include "IFileDirectory.h"
+
+namespace XFILE
 {
-public:
-  AddonCodec(ADDON::AudioCodecPtr codec);
-  virtual ~AddonCodec();
-
-  virtual bool Init(const CFileItem& file, unsigned int filecache);
-  // backwards compat
-  virtual bool Init(const CStdString& file, unsigned int filecache) 
+  class CMultiTrackDirectory : public IFileDirectory
   {
-    return false;
-  }
-  virtual void DeInit();
-  virtual __int64 Seek(__int64 iSeekTime);
-  virtual int ReadPCM(BYTE* pBuffer, int size, int* actualsize);
-  virtual bool CanInit();
-protected:
-  ADDON::AudioCodecPtr m_codec;
-  AC_INFO* m_info;
-};
+    public:
+      CMultiTrackDirectory(int tracks);
+      virtual ~CMultiTrackDirectory(void);
+      virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+      virtual bool Exists(const char* strPath);
+      virtual bool ContainsFiles(const CStdString& strPath);
+      virtual bool IsAllowed(const CStdString &strFile) const { return true; };
+    protected:
+      int m_tracks;
+  };
+}

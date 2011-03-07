@@ -29,6 +29,9 @@ CAudioCodec::CAudioCodec(const cp_extension_t *ext) :
   if (ext)
   {
     m_exts = CAddonMgr::Get().GetExtValue(ext->configuration, "@file_exts");
+    CStdString multi = CAddonMgr::Get().GetExtValue(ext->configuration, "@multitracks");
+    m_multi = (multi.Equals("yes")  ||
+               multi.Equals("true") || multi.Equals("1"));
   }
 }
 
@@ -45,13 +48,13 @@ bool CAudioCodec::Supports(const CStdString& ext)
   return m_exts.Find(ext) > -1;
 }
 
-AC_INFO* CAudioCodec::Init(const char* strFile)
+AC_INFO* CAudioCodec::Init(const char* strFile, int track)
 {
   if (CAddonDll<DllAudioCodec, AudioCodec, AC_PROPS>::Create())
   {
     try
     {
-      return m_pStruct->Init(strFile);
+      return m_pStruct->Init(strFile,track);
     }
     catch (...)
     {
@@ -94,4 +97,21 @@ int CAudioCodec::ReadPCM(AC_INFO* info, void* pBuffer, unsigned int size,
   {
   }
   return READ_ERROR;
+}
+
+int CAudioCodec::GetNumberOfTracks(const CStdString& file)
+{
+  if (!m_multi)
+    return 1;
+  if (CAddonDll<DllAudioCodec, AudioCodec, AC_PROPS>::Create())
+  {
+    try
+    {
+      return m_pStruct->GetNumberOfTracks(file.c_str());
+    }
+    catch (...)
+    {
+    }
+  }
+  return 1;
 }

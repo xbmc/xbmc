@@ -40,10 +40,10 @@ AddonCodec::~AddonCodec()
   //DeInit();
 }
 
-bool AddonCodec::Init(const CStdString &strFile, unsigned int filecache)
+bool AddonCodec::Init(const CFileItem& file, unsigned int filecache)
 {
 //  DeInit();
-  if ((m_info=m_codec->Init(strFile.c_str())))
+  if ((m_info=m_codec->Init(file.m_strPath.c_str(),file.m_lStartOffset)))
   {
     m_Channels = m_info->channels;
     m_SampleRate = m_info->samplerate;

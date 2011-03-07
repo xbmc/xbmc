@@ -29,6 +29,7 @@
 #include "NSFFileDirectory.h"
 #include "SIDFileDirectory.h"
 #include "ASAPFileDirectory.h"
+#include "MultiTrackDirectory.h"
 #include "RSSDirectory.h"
 #include "cores/paplayer/ASAPCodec.h"
 #endif
@@ -45,7 +46,11 @@
 #include "ZipManager.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
+#include "addons/Addon.h"
+#include "addons/AddonManager.h"
+#include "addons/AudioCodec.h"
 
+using namespace ADDON;
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace std;
@@ -213,6 +218,24 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     }
     delete pDir;
     return NULL;
+  }
+  
+  if (!strExtension.IsEmpty())
+  {
+    if (pItem->m_lStartOffset > 0)
+      return NULL;
+    ADDON::VECADDONS addons;
+    ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_AUDIOCODEC,addons);
+    for (unsigned int i=0;i<addons.size();++i)
+    {
+      AudioCodecPtr codec = boost::static_pointer_cast<ADDON::CAudioCodec>(addons[i]);
+      if (codec->Supports(strExtension))
+      {
+        int tracks = codec->GetNumberOfTracks(strPath);
+        if (tracks > 1)
+          return new CMultiTrackDirectory(tracks);
+      }
+    }
   }
   return NULL;
 }

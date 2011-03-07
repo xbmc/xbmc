@@ -25,9 +25,9 @@
 
 extern "C"
 {
-
   // Functions that your audio codec must implement
-  AC_INFO* Init(const char* strFile);
+  AC_INFO* Init(const char* strFile, int track);
+  int GetNumberOfTracks(const char* strFile);
   void DeInit(AC_INFO* info);
   int64_t Seek(AC_INFO* info, int64_t seektime);
   int ReadPCM(AC_INFO* info, void* pBuffer, unsigned int size,
@@ -40,6 +40,7 @@ extern "C"
     pAC->DeInit = DeInit;
     pAC->Seek = Seek;
     pAC->ReadPCM = ReadPCM;
+    pAC->GetNumberOfTracks = GetNumberOfTracks;
   };
 };
 

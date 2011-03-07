@@ -40,15 +40,19 @@ namespace ADDON
       CAudioCodec(const cp_extension_t *ext);
 
       bool Supports(const CStdString& ext);
+      int GetNumberOfTracks(const CStdString& file);
+
       CStdString GetExtensions();
 
-      AC_INFO* Init(const char* strFile);
+      AC_INFO* Init(const char* strFile, int track);
       void DeInit(AC_INFO* strFile);
       int64_t Seek(AC_INFO* info, int64_t seektime);
       int ReadPCM(AC_INFO* info, void* pBuffer, unsigned int size,
                   unsigned int* actualsize);
+
     protected:
       CStdString m_exts;
+      bool m_multi;
   };
   typedef boost::shared_ptr<CAudioCodec> AudioCodecPtr;
 }

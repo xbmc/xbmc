@@ -21,6 +21,7 @@
  *
  */
 
+#include "FileItem.h"
 #include "ReplayGain.h"
 #include "utils/StdString.h"
 #include "filesystem/File.h"
@@ -54,6 +55,11 @@ public:
   // 3.  Load the file (or at least attempt to load it)
   // 4.  Fill in the m_TotalTime, m_SampleRate, m_BitsPerSample and m_Channels parameters.
   virtual bool Init(const CStdString &strFile, unsigned int filecache)=0;
+
+  virtual bool Init(const CFileItem &item, unsigned int filecache)
+  {
+    return Init(item.m_strPath, filecache);
+  }
 
   // DeInit()
   // Should just cleanup anything as necessary.  No need to free buffers here if they

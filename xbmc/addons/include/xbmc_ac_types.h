@@ -45,9 +45,10 @@ extern "C"
 
   struct AudioCodec
   {
-    AC_INFO* (*Init) (const char* strFile);
+    AC_INFO* (*Init) (const char* strFile, int track);
     void (*DeInit) (AC_INFO*);
     int64_t (*Seek)(AC_INFO*, int64_t seektime);
     int (*ReadPCM)(AC_INFO*, void* pBuffer, unsigned int size, unsigned int* actualsize);
+    int (*GetNumberOfTracks)(const char* strFile);
   };
 }
