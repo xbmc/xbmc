@@ -81,7 +81,7 @@ bool CPVRFile::Open(const CURL& url)
   }
   else if (strURL.Left(17) == "pvr://recordings/")
   {
-    CPVRRecordingInfoTag *tag = CPVRManager::GetRecordings()->GetByPath(strURL);
+    CPVRRecording *tag = CPVRManager::GetRecordings()->GetByPath(strURL);
     if (tag)
     {
       if (!CPVRManager::Get()->OpenRecordedStream(tag))
@@ -294,7 +294,7 @@ bool CPVRFile::Delete(const CURL& url)
   if (path.Left(11) == "recordings/" && path[path.size()-1] != '/')
   {
     CStdString strURL = url.Get();
-    CPVRRecordingInfoTag *tag = CPVRManager::GetRecordings()->GetByPath(strURL);
+    CPVRRecording *tag = CPVRManager::GetRecordings()->GetByPath(strURL);
     if (tag)
       return tag->Delete();
   }
@@ -313,7 +313,7 @@ bool CPVRFile::Rename(const CURL& url, const CURL& urlnew)
   if (path.Left(11) == "recordings/" && path[path.size()-1] != '/')
   {
     CStdString strURL = url.Get();
-    CPVRRecordingInfoTag *tag = CPVRManager::GetRecordings()->GetByPath(strURL);
+    CPVRRecording *tag = CPVRManager::GetRecordings()->GetByPath(strURL);
     if (tag)
       return tag->Rename(newname);
   }

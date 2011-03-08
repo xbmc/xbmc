@@ -247,7 +247,7 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   }
 }
 
-CFileItem::CFileItem(const CPVRRecordingInfoTag& record)
+CFileItem::CFileItem(const CPVRRecording& record)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -259,11 +259,11 @@ CFileItem::CFileItem(const CPVRRecordingInfoTag& record)
 
   Reset();
 
-  m_strPath = record.Path();
+  m_strPath = record.m_strFileNameAndPath;
   m_bIsFolder = false;
   *GetPVRRecordingInfoTag() = record;
   SetLabel(record.m_strTitle);
-  m_strLabel2 = record.Plot();
+  m_strLabel2 = record.m_strPlot;
 
   FillInDefaultIcon();
   SetInvalid();
@@ -3311,10 +3311,10 @@ CPVRChannel* CFileItem::GetPVRChannelInfoTag()
   return m_pvrChannelInfoTag;
 }
 
-CPVRRecordingInfoTag* CFileItem::GetPVRRecordingInfoTag()
+CPVRRecording* CFileItem::GetPVRRecordingInfoTag()
 {
   if (!m_pvrRecordingInfoTag)
-    m_pvrRecordingInfoTag = new CPVRRecordingInfoTag;
+    m_pvrRecordingInfoTag = new CPVRRecording;
 
   return m_pvrRecordingInfoTag;
 }

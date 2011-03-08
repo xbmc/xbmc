@@ -4084,7 +4084,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasPVRChannelInfoTag())
       return item->GetPVRChannelInfoTag()->GetEPGNow() ? item->GetPVRChannelInfoTag()->GetEPGNow()->Start().GetAsLocalizedDateTime(false, false) : CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime(false, false);
     if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->RecordingTime().GetAsLocalizedDateTime(false, false);
+      return item->GetPVRRecordingInfoTag()->m_recordingTime.GetAsLocalizedDateTime(false, false);
     if (item->HasPVRTimerInfoTag())
       return item->GetPVRTimerInfoTag()->Summary();
     if (item->m_dateTime.IsValid())
@@ -4163,7 +4163,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->Plot();
     if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->Plot();
+      return item->GetPVRRecordingInfoTag()->m_strPlot;
     if (item->HasVideoInfoTag())
     {
       if (!(!item->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && item->GetVideoInfoTag()->m_iSeason == -1)) // dont apply to tvshows
@@ -4179,7 +4179,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->PlotOutline();
     if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->PlotOutline();
+      return item->GetPVRRecordingInfoTag()->m_strPlotOutline;
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strPlotOutline;
     break;
@@ -4374,7 +4374,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasPVRTimerInfoTag())
       return item->GetPVRTimerInfoTag()->Start().GetAsLocalizedTime("", false);
     if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->RecordingTime().GetAsLocalizedTime("", false);
+      return item->GetPVRRecordingInfoTag()->m_recordingTime.GetAsLocalizedTime("", false);
     if (item->m_dateTime.IsValid())
       return item->m_dateTime.GetAsLocalizedTime("", false);
     break;
@@ -4394,7 +4394,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasPVRTimerInfoTag())
       return item->GetPVRTimerInfoTag()->Start().GetAsLocalizedDate(true);
     if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->RecordingTime().GetAsLocalizedDate(true);
+      return item->GetPVRRecordingInfoTag()->m_recordingTime.GetAsLocalizedDate(true);
     if (item->m_dateTime.IsValid())
       return item->m_dateTime.GetAsLocalizedDate(true);
     break;
@@ -4425,7 +4425,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasEPGInfoTag())
       return ((CPVREpgInfoTag *)item->GetEPGInfoTag())->ChannelTag()->ChannelName();
     if (item->HasPVRRecordingInfoTag())
-      return item->GetPVRRecordingInfoTag()->ChannelName();
+      return item->GetPVRRecordingInfoTag()->m_strChannel;
     if (item->HasPVRTimerInfoTag())
       return item->GetPVRTimerInfoTag()->ChannelName();
     break;

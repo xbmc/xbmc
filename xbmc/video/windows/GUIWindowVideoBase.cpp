@@ -1343,10 +1343,10 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
   if (item.m_strPath.Left(17) == "pvr://recordings/")
   {
     /* For recordings we check here for a available stream URL */
-    CPVRRecordingInfoTag *tag = CPVRManager::GetRecordings()->GetByPath(item.m_strPath);
-    if (tag && !tag->StreamURL().IsEmpty())
+    CPVRRecording *tag = CPVRManager::GetRecordings()->GetByPath(item.m_strPath);
+    if (tag && !tag->m_strStreamURL.IsEmpty())
     {
-      CStdString stream = tag->StreamURL();
+      CStdString stream = tag->m_strStreamURL;
 
       /* Isolate the folder from the filename */
       size_t found = stream.find_last_of("/");

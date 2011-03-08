@@ -401,7 +401,7 @@ public:
    * @param recording The recording to start playing.
    * @return True if the stream was opened successfully, false otherwise.
    */
-  bool OpenRecordedStream(const CPVRRecordingInfoTag *recording);
+  bool OpenRecordedStream(const CPVRRecording *recording);
 
   /*!
    * @brief Get a stream URL from the PVR Client.

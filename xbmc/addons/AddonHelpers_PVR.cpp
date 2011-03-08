@@ -114,23 +114,22 @@ void CAddonHelpers_PVR::PVRTransferRecordingEntry(void *addonData, const PVRHAND
   CPVRClient* client = (CPVRClient*) handle->CALLER_ADDRESS;
   CPVRRecordings *xbmcRecordings = (CPVRRecordings*) handle->DATA_ADDRESS;
 
-  CPVRRecordingInfoTag tag;
+  CPVRRecording tag;
 
-  tag.SetClientIndex(recording->index);
-  tag.SetClientID(client->GetClientID());
-  tag.SetTitle(recording->title);
-  tag.SetRecordingTime(recording->recording_time);
-  tag.SetDuration(CDateTimeSpan(0, 0, recording->duration / 60, recording->duration % 60));
-  tag.SetPriority(recording->priority);
-  tag.SetLifetime(recording->lifetime);
-  tag.SetDirectory(recording->directory);
-  tag.SetPlot(recording->description);
-  tag.SetPlotOutline(recording->subtitle);
-  tag.SetStreamURL(recording->stream_url);
-  tag.SetChannelName(recording->channel_name);
+  tag.m_clientIndex    = recording->index;
+  tag.m_clientID       = client->GetClientID();
+  tag.m_strTitle       = recording->title;
+  tag.m_recordingTime  = recording->recording_time;
+  tag.m_duration       = CDateTimeSpan(0, 0, recording->duration / 60, recording->duration % 60);
+  tag.m_Priority       = recording->priority;
+  tag.m_Lifetime       = recording->lifetime;
+  tag.m_strDirectory   = recording->directory;
+  tag.m_strPlot        = recording->description;
+  tag.m_strPlotOutline = recording->subtitle;
+  tag.m_strStreamURL   = recording->stream_url;
+  tag.m_strChannel     = recording->channel_name;
 
-  xbmcRecordings->push_back(tag);
-  return;
+  xbmcRecordings->UpdateEntry(tag);
 }
 
 void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE handle, const PVR_TIMERINFO *timer)

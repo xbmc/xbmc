@@ -288,7 +288,7 @@ bool CGUIWindowPVRCommon::OnContextButtonMenuHooks(CFileItem *item, CONTEXT_BUTT
     else if (item->IsPVRChannel())
       CPVRManager::Get()->ProcessMenuHooks(item->GetPVRChannelInfoTag()->ClientID());
     else if (item->IsPVRRecording())
-      CPVRManager::Get()->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->ClientID());
+      CPVRManager::Get()->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->m_clientID);
     else if (item->IsPVRTimer())
       CPVRManager::Get()->ProcessMenuHooks(item->GetPVRTimerInfoTag()->ClientID());
   }
@@ -418,8 +418,8 @@ bool CGUIWindowPVRCommon::ActionDeleteRecording(CFileItem *item)
   bool bReturn = false;
 
   /* check if the recording tag is valid */
-  CPVRRecordingInfoTag *recTag = (CPVRRecordingInfoTag *) item->GetPVRRecordingInfoTag();
-  if (!recTag || recTag->ClientIndex() < 0)
+  CPVRRecording *recTag = (CPVRRecording *) item->GetPVRRecordingInfoTag();
+  if (!recTag || recTag->m_clientIndex < 0)
     return bReturn;
 
   /* show a confirmation dialog */
@@ -429,7 +429,7 @@ bool CGUIWindowPVRCommon::ActionDeleteRecording(CFileItem *item)
   pDialog->SetHeading(122);
   pDialog->SetLine(0, 19043);
   pDialog->SetLine(1, "");
-  pDialog->SetLine(2, recTag->Title());
+  pDialog->SetLine(2, recTag->m_strTitle);
   pDialog->DoModal();
 
   /* prompt for the user's confirmation */
@@ -437,9 +437,9 @@ bool CGUIWindowPVRCommon::ActionDeleteRecording(CFileItem *item)
     return bReturn;
 
   /* delete the recording */
-  if (CPVRRecordings::DeleteRecording(*item))
+  if (CPVRManager::GetRecordings()->DeleteRecording(*item))
   {
-    CPVRManager::GetRecordings()->Update(true);
+    CPVRManager::GetRecordings()->Update();
     UpdateData();
     bReturn = true;
   }
@@ -548,7 +548,7 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
   if (item->m_strPath.Left(17) != "pvr://recordings/")
     return false;
 
-  CStdString stream = item->GetPVRRecordingInfoTag()->StreamURL();
+  CStdString stream = item->GetPVRRecordingInfoTag()->m_strStreamURL;
   if (stream == "")
     return false;
 

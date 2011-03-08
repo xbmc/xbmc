@@ -407,7 +407,7 @@ void CPVRManager::UpdateRecordings(void)
 {
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating recordings list", __FUNCTION__);
 
-  m_recordings->Update(true);
+  m_recordings->Update();
   UpdateRecordingsCache();
   UpdateWindow(PVR_WINDOW_RECORDINGS);
 
@@ -1088,7 +1088,7 @@ PVR_SERVERPROPS *CPVRManager::GetCurrentClientProperties(void)
   if (m_currentPlayingChannel)
     props = &m_clientsProps[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()];
   else if (m_currentPlayingRecording)
-    props = &m_clientsProps[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()];
+    props = &m_clientsProps[m_currentPlayingRecording->GetPVRRecordingInfoTag()->m_clientID];
 
   return props;
 }
@@ -1100,7 +1100,7 @@ int CPVRManager::GetCurrentPlayingClientID(void)
   if (m_currentPlayingChannel)
     iReturn = m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID();
   else if (m_currentPlayingRecording)
-    iReturn = m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID();
+    iReturn = m_currentPlayingRecording->GetPVRRecordingInfoTag()->m_clientID;
 
   return iReturn;
 }
@@ -1478,7 +1478,7 @@ bool CPVRManager::OpenLiveStream(const CPVRChannel* tag)
   return true;
 }
 
-bool CPVRManager::OpenRecordedStream(const CPVRRecordingInfoTag* tag)
+bool CPVRManager::OpenRecordedStream(const CPVRRecording* tag)
 {
   if (tag == NULL)
     return false;
@@ -1495,10 +1495,10 @@ bool CPVRManager::OpenRecordedStream(const CPVRRecordingInfoTag* tag)
   m_currentPlayingRecording = new CFileItem(*tag);
   m_currentPlayingChannel   = NULL;
   m_scanStart               = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
-  m_playingClientName       = m_clients[tag->ClientID()]->GetBackendName() + ":" + m_clients[tag->ClientID()]->GetConnectionString();
+  m_playingClientName       = m_clients[tag->m_clientID]->GetBackendName() + ":" + m_clients[tag->m_clientID]->GetConnectionString();
 
   /* Open the recording stream on the Client */
-  return m_clients[tag->ClientID()]->OpenRecordedStream(*tag);
+  return m_clients[tag->m_clientID]->OpenRecordedStream(*tag);
 }
 
 CStdString CPVRManager::GetLiveStreamURL(const CPVRChannel *channel)
@@ -1559,9 +1559,9 @@ void CPVRManager::CloseStream()
   else if (m_currentPlayingRecording)
   {
     /* Close the Client connection */
-    if (m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID() > 0 &&
-        m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()])
-      m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->CloseRecordedStream();
+    if (m_currentPlayingRecording->GetPVRRecordingInfoTag()->m_clientID > 0 &&
+        m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->m_clientID])
+      m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->m_clientID]->CloseRecordedStream();
     delete m_currentPlayingRecording;
     m_currentPlayingRecording = NULL;
   }
@@ -1590,7 +1590,7 @@ int CPVRManager::ReadStream(void* lpBuf, int64_t uiBufSize)
   if (m_currentPlayingChannel)
     bytesRead = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->ReadLiveStream(lpBuf, uiBufSize);
   else if (m_currentPlayingRecording)
-    bytesRead = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->ReadRecordedStream(lpBuf, uiBufSize);
+    bytesRead = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->m_clientID]->ReadRecordedStream(lpBuf, uiBufSize);
 
   return bytesRead;
 }
@@ -1636,7 +1636,7 @@ int64_t CPVRManager::LengthStream(void)
   if (m_currentPlayingChannel)
     streamLength = 0;
   else if (m_currentPlayingRecording)
-    streamLength = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->LengthRecordedStream();
+    streamLength = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->m_clientID]->LengthRecordedStream();
 
   return streamLength;
 }
@@ -1650,7 +1650,7 @@ int64_t CPVRManager::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*
   if (m_currentPlayingChannel)
     streamNewPos = 0;
   else if (m_currentPlayingRecording)
-    streamNewPos = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->SeekRecordedStream(iFilePosition, iWhence);
+    streamNewPos = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->m_clientID]->SeekRecordedStream(iFilePosition, iWhence);
 
   return streamNewPos;
 }
@@ -1664,7 +1664,7 @@ int64_t CPVRManager::GetStreamPosition()
   if (m_currentPlayingChannel)
     streamPos = 0;
   else if (m_currentPlayingRecording)
-    streamPos = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->PositionRecordedStream();
+    streamPos = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->m_clientID]->PositionRecordedStream();
 
   return streamPos;
 }

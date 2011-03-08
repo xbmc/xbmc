@@ -127,12 +127,12 @@ int CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFil
       for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
       {
         const CPVREpgInfoTag *epgentry  = (CPVREpgInfoTag *) results->Get(iResultPtr)->GetEPGInfoTag();
-        CPVRRecordingInfoTag *recording = &CPVRManager::GetRecordings()->at(iRecordingPtr);
+        CPVRRecording *recording = CPVRManager::GetRecordings()->at(iRecordingPtr);
         if (epgentry)
         {
-          if (epgentry->Title()       != recording->Title() ||
-              epgentry->PlotOutline() != recording->PlotOutline() ||
-              epgentry->Plot()        != recording->Plot())
+          if (epgentry->Title()       != recording->m_strTitle ||
+              epgentry->PlotOutline() != recording->m_strPlotOutline ||
+              epgentry->Plot()        != recording->m_strPlot)
             continue;
 
           results->Remove(iResultPtr);

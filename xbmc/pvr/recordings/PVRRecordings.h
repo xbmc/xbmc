@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -24,25 +24,30 @@
 #include "threads/Thread.h"
 #include "DateTime.h"
 
-class CPVRRecordings : public std::vector<CPVRRecordingInfoTag>
+class CPVRRecordings : public std::vector<CPVRRecording *>
                      , private CThread
 {
 private:
   CCriticalSection  m_critSection;
   virtual void Process();
+  virtual void UpdateFromClients(void);
 
 public:
-  CPVRRecordings(void);
-  bool Load() { return Update(true); }
+  CPVRRecordings(void) {};
+  virtual ~CPVRRecordings(void) { Clear(); };
+
+  bool Load() { return Update(); }
   void Unload();
-  bool Update(bool Wait = false);
+  void Clear();
+  void UpdateEntry(const CPVRRecording &tag);
+  bool Update(bool bAsync = false);
+
   int GetNumRecordings();
   int GetRecordings(CFileItemList* results);
-  static bool DeleteRecording(const CFileItem &item);
-  static bool RenameRecording(CFileItem &item, CStdString &newname);
-  bool RemoveRecording(const CFileItem &item);
+  bool DeleteRecording(const CFileItem &item);
+  bool RenameRecording(CFileItem &item, CStdString &strNewName);
+
   bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-  CPVRRecordingInfoTag *GetByPath(CStdString &path);
-  void Clear();
+  CPVRRecording *GetByPath(CStdString &path);
 };
 

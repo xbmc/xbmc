@@ -79,8 +79,8 @@ public:
   /* Recordings */
   int GetNumRecordings(void);
   PVR_ERROR GetAllRecordings(CPVRRecordings *results);
-  PVR_ERROR DeleteRecording(const CPVRRecordingInfoTag &recinfo);
-  PVR_ERROR RenameRecording(const CPVRRecordingInfoTag &recinfo, const CStdString &newname);
+  PVR_ERROR DeleteRecording(const CPVRRecording &recinfo);
+  PVR_ERROR RenameRecording(const CPVRRecording &recinfo, const CStdString &newname);
 
   /* Timers */
   int GetNumTimers(void);
@@ -101,7 +101,7 @@ public:
   bool SignalQuality(PVR_SIGNALQUALITY &qualityinfo);
   const std::string GetLiveStreamURL(const CPVRChannel &channelinfo);
 
-  bool OpenRecordedStream(const CPVRRecordingInfoTag &recinfo);
+  bool OpenRecordedStream(const CPVRRecording &recinfo);
   void CloseRecordedStream(void);
   int ReadRecordedStream(void* lpBuf, int64_t uiBufSize);
   int64_t SeekRecordedStream(int64_t iFilePosition, int iWhence = SEEK_SET);
@@ -125,7 +125,7 @@ protected:
 private:
   void WriteClientChannelInfo(const CPVRChannel &channelinfo, PVR_CHANNEL &tag);
   void WriteClientTimerInfo(const CPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag);
-  void WriteClientRecordingInfo(const CPVRRecordingInfoTag &recordinginfo, PVR_RECORDINGINFO &tag);
+  void WriteClientRecordingInfo(const CPVRRecording &recordinginfo, PVR_RECORDINGINFO &tag);
 };
 
 typedef std::vector<CPVRClient*> VECCLIENTS;
