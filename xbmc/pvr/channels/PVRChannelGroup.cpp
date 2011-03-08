@@ -467,7 +467,7 @@ bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 
 
     CPVRChannel *realChannel = (IsInternalGroup()) ?
         channel :
-        (CPVRChannel *) CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio)->GetByClient(channel->ClientChannelNumber(), channel->ClientID());
+        (CPVRChannel *) CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio)->GetByChannelID(channel->ChannelID());
 
     if (realChannel)
     {
