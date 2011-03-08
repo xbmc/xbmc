@@ -28,6 +28,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/windows/GUIWindowPVR.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 
@@ -185,13 +186,14 @@ void CGUIWindowPVRGuide::UpdateData(void)
 
     if (CPVRManager::GetEpg()->GetEPGAll(m_parent->m_vecItems, bRadio) > 0)
     {
-      CDateTime now = CDateTime::GetCurrentDateTime();
-      CDateTime m_gridStart = CPVRManager::GetEpg()->GetFirstEPGDate(bRadio);
-      CDateTime m_gridEnd = CPVRManager::GetEpg()->GetLastEPGDate(bRadio);
       m_parent->m_guideGrid = (CGUIEPGGridContainer*) m_parent->GetControl(CONTROL_LIST_TIMELINE);
       if (m_parent->m_guideGrid)
       {
-        m_parent->m_guideGrid->SetStartEnd(m_gridStart, m_gridEnd);
+        CDateTime gridStart = CDateTime::GetCurrentDateTime() - CDateTimeSpan(0, 0, g_advancedSettings.m_iEpgLingerTime, 0);
+        CDateTime firstDate = CPVRManager::GetEpg()->GetFirstEPGDate(bRadio);
+        CDateTime lastDate = CPVRManager::GetEpg()->GetLastEPGDate(bRadio);
+
+        m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
         m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
       }
 //      m_viewControl.SetSelectedItem(m_iSelected_GUIDE);
