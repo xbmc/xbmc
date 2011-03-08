@@ -1755,7 +1755,7 @@ XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   if test "$host_vendor" = "apple" ; then
     rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
-      -DCMAKE_C_FLAGS:STRING="${CFLAGS} -fno-common" -DCMAKE_CXX_FLAGS:STRING="${CXXFLAGS} -fno-common"
+      -DCMAKE_C_FLAGS:STRING="${CPPFLAGS} ${CFLAGS} -fno-common" -DCMAKE_CXX_FLAGS:STRING="${CPPFLAGS} ${CXXFLAGS} -fno-common"
   else
 set -x
     rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
