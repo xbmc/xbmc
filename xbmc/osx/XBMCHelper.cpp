@@ -19,6 +19,7 @@
  *
  */
 
+#if defined(__APPLE__) && !defined(__arm__)
 #include <fstream>
 #include <sstream>
 #include <Carbon/Carbon.h>
@@ -480,3 +481,4 @@ static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount)
   assert( (err == 0) == (*procList != NULL) );
   return err;
 }
+#endif

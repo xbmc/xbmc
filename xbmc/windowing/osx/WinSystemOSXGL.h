@@ -23,6 +23,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#if !defined(__arm__)
 #include "WinSystemOSX.h"
 #include "rendering/gl/RenderSystemGL.h"
 #include "utils/GlobalsHandling.h"
@@ -43,4 +44,5 @@ protected:
 XBMC_GLOBAL_REF(CWinSystemOSXGL,g_Windowing);
 #define g_Windowing XBMC_GLOBAL_USE(CWinSystemOSXGL)
 
+#endif
 #endif // WINDOW_SYSTEM_H

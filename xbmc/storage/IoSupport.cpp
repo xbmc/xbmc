@@ -41,6 +41,7 @@
 #ifdef __APPLE__
 #include <sys/param.h>
 #include <mach-o/dyld.h>
+#if !defined(__arm__)
 #include <IOKit/IOKitLib.h>
 #include <IOKit/IOBSD.h>
 #include <IOKit/storage/IOCDTypes.h>
@@ -51,6 +52,7 @@
 #include <IOKit/storage/IOCDMediaBSDClient.h>
 #include <IOKit/storage/IODVDMediaBSDClient.h>
 #include <IOKit/storage/IOStorageDeviceCharacteristics.h>
+#endif
 #endif
 #include "cdioSupport.h"
 #include "filesystem/iso9660.h"
@@ -406,7 +408,7 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   DWORD dwRead;
   DWORD dwSectorSize = 2048;
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && HAS_DVD_DRIVE
   dk_cd_read_t cd_read;
   memset( &cd_read, 0, sizeof(cd_read) );
 

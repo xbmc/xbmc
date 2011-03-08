@@ -21,7 +21,7 @@
 #ifndef _COCOA_POWER_SYSCALL_H_
 #define _COCOA_POWER_SYSCALL_H_
 
-#ifdef __APPLE__
+#if defined (__APPLE__) && !defined(__arm__)
 #include "powermanagement/IPowerSyscall.h"
 #include <IOKit/pwr_mgt/IOPMLib.h>
 #include <IOKit/IOMessage.h>
