@@ -25,7 +25,7 @@ export CFLAGS+=-undefined dynamic_lookup
 export CXXFLAGS+=-undefined dynamic_lookup
 export LDFLAGS+=-Wl,-read_only_relocs,suppress -Wl,-undefined,dynamic_lookup
 CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) \
-   --disable-sdltest
+   --disable-jpg-shared --disable-png-shared --disable-tif-shared --disable-sdltest
 
 LIBDYLIB=$(SOURCE)/.libs/$(LIBNAME).a
 
