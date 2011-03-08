@@ -20,6 +20,7 @@ ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
 PREFIX:=/Users/Shared/xbmc-depends/osx-10.4_i386
+export PATH:=$(PREFIX)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(PREFIX)
 
 LIBDYLIB=$(SOURCE)/bin/automake
