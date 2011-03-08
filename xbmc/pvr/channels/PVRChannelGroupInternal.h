@@ -33,7 +33,6 @@ class CPVRChannelGroupInternal : public CPVRChannelGroup
 
 private:
   int  m_iHiddenChannels; /*!< the amount of hidden channels in this container */
-  bool m_bLoaded;
 
   /*!
    * @brief Load all channels from the database.

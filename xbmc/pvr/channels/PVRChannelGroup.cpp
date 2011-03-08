@@ -45,6 +45,7 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CSt
   m_strGroupName    = strGroupName;
   m_iSortOrder      = iSortOrder;
   m_bInhibitSorting = false;
+  m_bLoaded         = false;
   clear();
 }
 
@@ -55,6 +56,7 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio)
   m_strGroupName.clear();
   m_iSortOrder      = -1;
   m_bInhibitSorting = false;
+  m_bLoaded         = false;
   clear();
 }
 
@@ -80,19 +82,21 @@ int CPVRChannelGroup::Load(void)
   /* make sure this container is empty before loading */
   Unload();
 
-  int iReturn = -1;
+  int iChannelCount = LoadFromDb();
+  CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels loaded from the database for group '%s'",
+        __FUNCTION__, iChannelCount, m_strGroupName.c_str());
 
-  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
-  if (database->Open())
+  int iClientChannelCount = LoadFromClients();
+  if (iClientChannelCount > 0)
   {
-    m_bInhibitSorting = true;
-    iReturn = database->GetChannelsInGroup(this);
-    m_bInhibitSorting = false;
-
-    database->Close();
+    CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels added from clients to group '%s'",
+        __FUNCTION__, iClientChannelCount, m_strGroupName.c_str());
+    iChannelCount += iClientChannelCount;
   }
 
-  return iReturn;
+  m_bLoaded = true;
+
+  return iChannelCount;
 }
 
 void CPVRChannelGroup::Unload()
@@ -371,8 +375,18 @@ int CPVRChannelGroup::GetHiddenChannels(CFileItemList* results) const
 
 int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 {
-  // TODO load group members
-  return -1;
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  if (!database || !database->Open())
+    return -1;
+
+  int iChannelCount = size();
+
+  m_bInhibitSorting = true;
+  database->GetChannelsInGroup(this);
+  database->Close();
+  m_bInhibitSorting = false;
+
+  return size() - iChannelCount;
 }
 
 int CPVRChannelGroup::LoadFromClients(bool bAddToDb /* = true */)

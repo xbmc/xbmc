@@ -49,6 +49,7 @@ private:
   CStdString m_strGroupName;    /*!< The name of this group */
   int        m_iSortOrder;      /*!< The sort order to use */
   bool       m_bInhibitSorting; /*!< True if sorting is inhibited, false otherwise */
+  bool       m_bLoaded;         /*!< True if this container is loaded, false otherwise */
 
   /*!
    * @brief Load the channels stored in the database.
