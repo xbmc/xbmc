@@ -3,10 +3,10 @@
  *  Copyright (C) 2008 Andreas Öman
  *  Copyright (C) 2008 Mattias Wadman
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,25 +14,23 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef __APPLE__
+#include "OSXGNUReplacements.h"
+#elif defined(_MSC_VER)
+#include "msvc.h"
+#endif
 #include "htsstr.h"
 
 
 static void htsstr_argsplit_add(char ***argv, int *argc, char *s);
 static int htsstr_format0(const char *str, char *out, char **map);
-
-static char *
-mystrndup(const char *src, size_t len)
-{
-  char *r = malloc(len + 1);
-  r[len] = 0;
-  return memcpy(r, src, len);
-}
 
 
 char *
@@ -85,7 +83,7 @@ htsstr_argsplit(const char *str) {
   for(s = str; *s; s++) {
     if(start && stop) {
       htsstr_argsplit_add(&argv, &argc,
-                          htsstr_unescape(mystrndup(start, stop - start)));
+                          htsstr_unescape(strndup(start, stop - start)));
       start = stop = NULL;
     }
     
@@ -131,7 +129,7 @@ htsstr_argsplit(const char *str) {
     if(!stop)
       stop = str + strlen(str);
     htsstr_argsplit_add(&argv, &argc,
-                        htsstr_unescape(mystrndup(start, stop - start)));
+                        htsstr_unescape(strndup(start, stop - start)));
   }
 
   htsstr_argsplit_add(&argv, &argc, NULL);

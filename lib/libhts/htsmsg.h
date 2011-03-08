@@ -1,11 +1,11 @@
 /*
  *  Functions for manipulating HTS messages
- *  Copyright (C) 2007 Andreas ï¿½man
+ *  Copyright (C) 2007 Andreas Öman
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,14 +13,15 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 #ifndef HTSMSG_H_
 #define HTSMSG_H_
 
 #include <inttypes.h>
-#include "queue.h"
+#include "htsq.h"
 
 #define HTSMSG_ERR_FIELD_NOT_FOUND       -1
 #define HTSMSG_ERR_CONVERSION_IMPOSSIBLE -2
@@ -46,9 +47,9 @@ typedef struct htsmsg {
 
 
 #define HMF_MAP  1
-#define HMF_S64  2
-#define HMF_STR  3
-#define HMF_BIN  4
+#define HMF_S64 2
+#define HMF_STR 3
+#define HMF_BIN 4
 #define HMF_LIST 5
 
 typedef struct htsmsg_field {
@@ -134,7 +135,7 @@ void htsmsg_add_msg_extname(htsmsg_t *msg, const char *name, htsmsg_t *sub);
  * Add an binary field. The data is copied to a malloced storage
  */
 void htsmsg_add_bin(htsmsg_t *msg, const char *name, const void *bin,
-                    size_t len);
+		    size_t len);
 
 /**
  * Add an binary field. The data is not copied, instead the caller
@@ -142,7 +143,7 @@ void htsmsg_add_bin(htsmsg_t *msg, const char *name, const void *bin,
  * is around.
  */
 void htsmsg_add_binptr(htsmsg_t *msg, const char *name, const void *bin,
-                       size_t len);
+		       size_t len);
 
 /**
  * Get an integer as an unsigned 32 bit integer.
@@ -183,7 +184,7 @@ int htsmsg_get_s64(htsmsg_t *msg, const char *name,  int64_t *s64p);
  *         HTSMSG_ERR_CONVERSION_IMPOSSIBLE - Field is not a binary blob.
  */
 int htsmsg_get_bin(htsmsg_t *msg, const char *name, const void **binp,
-                   size_t *lenp);
+		   size_t *lenp);
 
 /**
  * Get a field of type 'list'. No copying is done.
@@ -250,7 +251,7 @@ void htsmsg_print(htsmsg_t *msg);
  * Create a new field. Primarily intended for htsmsg internal functions.
  */
 htsmsg_field_t *htsmsg_field_add(htsmsg_t *msg, const char *name,
-                                 int type, int flags);
+				 int type, int flags);
 
 /**
  * Clone a message.
@@ -258,10 +259,5 @@ htsmsg_field_t *htsmsg_field_add(htsmsg_t *msg, const char *name,
 htsmsg_t *htsmsg_copy(htsmsg_t *src);
 
 #define HTSMSG_FOREACH(f, msg) TAILQ_FOREACH(f, &(msg)->hm_fields, hmf_link)
-
-
-extern void htsmsg_dtor(htsmsg_t **mp);
-
-#define htsmsg_autodtor(n) htsmsg_t *n __attribute__((cleanup(htsmsg_dtor)))
 
 #endif /* HTSMSG_H_ */

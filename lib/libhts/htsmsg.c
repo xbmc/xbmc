@@ -1,11 +1,11 @@
 /*
  *  Functions for manipulating HTS messages
- *  Copyright (C) 2007 Andreas ï¿½man
+ *  Copyright (C) 2007 Andreas Öman
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +13,8 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 #include <assert.h>
@@ -23,6 +24,11 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+
+#ifdef _MSC_VER
+#include "msvc.h"
+#endif
+
 #include "htsmsg.h"
 
 static void htsmsg_clear(htsmsg_t *msg);
@@ -215,7 +221,7 @@ void
 htsmsg_add_str(htsmsg_t *msg, const char *name, const char *str)
 {
   htsmsg_field_t *f = htsmsg_field_add(msg, name, HMF_STR, 
-                                        HMF_ALLOCED | HMF_NAME_ALLOCED);
+				        HMF_ALLOCED | HMF_NAME_ALLOCED);
   f->hmf_str = strdup(str);
 }
 
@@ -226,7 +232,7 @@ void
 htsmsg_add_bin(htsmsg_t *msg, const char *name, const void *bin, size_t len)
 {
   htsmsg_field_t *f = htsmsg_field_add(msg, name, HMF_BIN, 
-                                       HMF_ALLOCED | HMF_NAME_ALLOCED);
+				       HMF_ALLOCED | HMF_NAME_ALLOCED);
   void *v;
   f->hmf_bin = v = malloc(len);
   f->hmf_binsize = len;
@@ -254,7 +260,7 @@ htsmsg_add_msg(htsmsg_t *msg, const char *name, htsmsg_t *sub)
   htsmsg_field_t *f;
 
   f = htsmsg_field_add(msg, name, sub->hm_islist ? HMF_LIST : HMF_MAP,
-                       HMF_NAME_ALLOCED);
+		       HMF_NAME_ALLOCED);
 
   assert(sub->hm_data == NULL);
   TAILQ_MOVE(&f->hmf_msg.hm_fields, &sub->hm_fields, hmf_link);
@@ -320,7 +326,7 @@ htsmsg_get_u32(htsmsg_t *msg, const char *name, uint32_t *u32p)
   if(s64 < 0 || s64 > 0xffffffffLL)
     return HTSMSG_ERR_CONVERSION_IMPOSSIBLE;
   
-  *u32p = s64;
+  *u32p = (uint32_t)s64;
   return 0;
 }
 
@@ -351,7 +357,7 @@ htsmsg_get_s32(htsmsg_t *msg, const char *name, int32_t *s32p)
   if(s64 < -0x80000000LL || s64 > 0x7fffffffLL)
     return HTSMSG_ERR_CONVERSION_IMPOSSIBLE;
   
-  *s32p = s64;
+  *s32p = (int32_t)s64;
   return 0;
 }
 
@@ -361,7 +367,7 @@ htsmsg_get_s32(htsmsg_t *msg, const char *name, int32_t *s32p)
  */
 int
 htsmsg_get_bin(htsmsg_t *msg, const char *name, const void **binp,
-               size_t *lenp)
+	       size_t *lenp)
 {
   htsmsg_field_t *f;
   
@@ -393,7 +399,6 @@ htsmsg_field_get_string(htsmsg_field_t *f)
     snprintf(buf, sizeof(buf), "%"PRId64, f->hmf_s64);
     f->hmf_str = strdup(buf);
     f->hmf_type = HMF_STR;
-    f->hmf_flags |= HMF_ALLOCED;
     break;
   }
   return f->hmf_str;
@@ -484,7 +489,7 @@ htsmsg_print0(htsmsg_t *msg, int indent)
 
     for(i = 0; i < indent; i++) printf("\t");
     
-    printf("%s (", f->hmf_name ?: "");
+    printf("%s (", f->hmf_name ? f->hmf_name : "");
     
     switch(f->hmf_type) {
 
@@ -506,8 +511,8 @@ htsmsg_print0(htsmsg_t *msg, int indent)
 
     case HMF_BIN:
       printf("BIN) = [");
-      for(i = 0; i < f->hmf_binsize - 1; i++)
-        printf("%02x.", ((uint8_t *)f->hmf_bin)[i]);
+      for(i = 0; i < (int)f->hmf_binsize - 1; i++)
+	printf("%02x.", ((uint8_t *)f->hmf_bin)[i]);
       printf("%02x]\n", ((uint8_t *)f->hmf_bin)[i]);
       break;
 
@@ -544,7 +549,7 @@ htsmsg_copy_i(htsmsg_t *src, htsmsg_t *dst)
     case HMF_MAP:
     case HMF_LIST:
       sub = f->hmf_type == HMF_LIST ? 
-        htsmsg_create_list() : htsmsg_create_map();
+	htsmsg_create_list() : htsmsg_create_map();
       htsmsg_copy_i(&f->hmf_msg, sub);
       htsmsg_add_msg(dst, f->hmf_name, sub);
       break;
@@ -570,15 +575,4 @@ htsmsg_copy(htsmsg_t *src)
   htsmsg_t *dst = src->hm_islist ? htsmsg_create_list() : htsmsg_create_map();
   htsmsg_copy_i(src, dst);
   return dst;
-}
-
-
-/**
- *
- */
-void
-htsmsg_dtor(htsmsg_t **mp)
-{
-  if(*mp != NULL)
-    htsmsg_destroy(*mp);
 }

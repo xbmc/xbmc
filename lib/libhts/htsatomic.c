@@ -1,6 +1,6 @@
 /*
- *  Functions converting HTSMSGs to/from a simple binary format
- *  Copyright (C) 2007 Andreas Öman
+ *  Atomic ops
+ *  Copyright (C) 2008 Andreas Ã–man
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -16,19 +16,4 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
-#ifndef HTSMSG_BINARY_H_
-#define HTSMSG_BINARY_H_
-
-#include "htsmsg.h"
-
-/**
- * htsmsg_binary_deserialize
- */
-htsmsg_t *htsmsg_binary_deserialize(const void *data, size_t len,
-				    const void *buf);
-
-int htsmsg_binary_serialize(htsmsg_t *msg, void **datap, size_t *lenp,
-			    int maxlen);
-
-#endif /* HTSMSG_BINARY_H_ */
+/* Nothing here yet */
