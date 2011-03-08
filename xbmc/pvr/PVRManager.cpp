@@ -177,7 +177,7 @@ bool CPVRManager::TryLoadClients(int iMaxTime /* = 0 */)
         break;
     }
 
-    Sleep(10);
+    Sleep(250);
   }
 
   CLog::Log(LOG_DEBUG, "PVRManager - %s - %s",
