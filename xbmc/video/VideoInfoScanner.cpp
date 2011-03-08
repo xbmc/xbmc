@@ -471,7 +471,7 @@ namespace VIDEO
       if (m_pObserver)
         m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
-      long lResult = AddVideo(pItem.get(), info2->Content());
+      long lResult = AddVideo(pItem.get(), info2->Content(), bDirNames);
       if (lResult < 0)
         return INFO_ERROR;
       GetArtwork(pItem.get(), info2->Content(), bDirNames, useLocal, pDlgProgress);
@@ -502,7 +502,7 @@ namespace VIDEO
     long lResult=-1;
     if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
     {
-      if ((lResult = AddVideo(pItem.get(), info2->Content())) < 0)
+      if ((lResult = AddVideo(pItem.get(), info2->Content(), bDirNames)) < 0)
         return INFO_ERROR;
       GetArtwork(pItem.get(), info2->Content(), false, useLocal);
     }
@@ -541,7 +541,7 @@ namespace VIDEO
       if (m_pObserver)
         m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
-      if (AddVideo(pItem.get(), info2->Content()) < 0)
+      if (AddVideo(pItem.get(), info2->Content(), bDirNames) < 0)
         return INFO_ERROR;
       GetArtwork(pItem.get(), info2->Content(), bDirNames, true, pDlgProgress);
       return INFO_ADDED;
@@ -561,7 +561,7 @@ namespace VIDEO
 
     if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
     {
-      if (AddVideo(pItem.get(), info2->Content()) < 0)
+      if (AddVideo(pItem.get(), info2->Content(), bDirNames) < 0)
         return INFO_ERROR;
       GetArtwork(pItem.get(), info2->Content(), bDirNames, useLocal);
       return INFO_ADDED;
@@ -593,7 +593,7 @@ namespace VIDEO
       if (m_pObserver)
         m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
-      if (AddVideo(pItem.get(), info2->Content()) < 0)
+      if (AddVideo(pItem.get(), info2->Content(), bDirNames) < 0)
         return INFO_ERROR;
       GetArtwork(pItem.get(), info2->Content(), bDirNames, true, pDlgProgress);
       return INFO_ADDED;
@@ -613,7 +613,7 @@ namespace VIDEO
 
     if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
     {
-      if (AddVideo(pItem.get(), info2->Content()) < 0)
+      if (AddVideo(pItem.get(), info2->Content(), bDirNames) < 0)
         return INFO_ERROR;
       GetArtwork(pItem.get(), info2->Content(), bDirNames, useLocal);
       return INFO_ADDED;
@@ -1042,7 +1042,7 @@ namespace VIDEO
     return bMatched;
   }
 
-  long CVideoInfoScanner::AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, int idShow)
+  long CVideoInfoScanner::AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder, int idShow)
   {
     // ensure our database is open (this can get called via other classes)
     if (!m_database.Open())
@@ -1052,6 +1052,8 @@ namespace VIDEO
     long lResult = -1;
 
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
+    movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
+
     if (content == CONTENT_MOVIES)
     {
       // find local trailer first
@@ -1253,7 +1255,7 @@ namespace VIDEO
           strTitle.Format("%s - %ix%i - %s", strShowTitle.c_str(), item.GetVideoInfoTag()->m_iSeason, item.GetVideoInfoTag()->m_iEpisode, item.GetVideoInfoTag()->m_strTitle.c_str());
           m_pObserver->OnSetTitle(strTitle);
         }
-        if (AddVideo(&item, CONTENT_TVSHOWS, idShow) < 0)
+        if (AddVideo(&item, CONTENT_TVSHOWS, false, idShow) < 0)
           return INFO_ERROR;
         GetArtwork(&item, CONTENT_TVSHOWS);
         continue;
@@ -1350,7 +1352,7 @@ namespace VIDEO
           strTitle.Format("%s - %ix%i - %s", strShowTitle.c_str(), item.GetVideoInfoTag()->m_iSeason, item.GetVideoInfoTag()->m_iEpisode, item.GetVideoInfoTag()->m_strTitle.c_str());
           m_pObserver->OnSetTitle(strTitle);
         }
-        if (AddVideo(&item, CONTENT_TVSHOWS, idShow) < 0)
+        if (AddVideo(&item, CONTENT_TVSHOWS, false, idShow) < 0)
           return INFO_ERROR;
         GetArtwork(&item, CONTENT_TVSHOWS);
       }

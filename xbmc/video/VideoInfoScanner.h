@@ -94,10 +94,11 @@ namespace VIDEO
     /*! \brief Add an item to the database.
      \param pItem item to add to the database.
      \param content content type of the item.
+     \param videoFolder whether the video is represented by a folder (single movie per folder). Defaults to false.
      \param idShow database id of the tvshow if we're adding an episode.  Defaults to -1.
      \return database id of the added item, or -1 on failure.
      */
-    long AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, int idShow = -1);
+    long AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder = false, int idShow = -1);
 
     /*! \brief Retrieve information for a list of items and add them to the database.
      \param items list of items to retrieve info for.

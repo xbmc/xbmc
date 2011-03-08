@@ -56,6 +56,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
+#include "settings/GUIDialogContentSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -86,6 +87,7 @@ CGUIWindowVideoBase::CGUIWindowVideoBase(int id, const CStdString &xmlFile)
 {
   m_thumbLoader.SetObserver(this);
   m_thumbLoader.SetStreamDetailsObserver(this);
+  m_stackingAvailable = true;
 }
 
 CGUIWindowVideoBase::~CGUIWindowVideoBase()
@@ -136,7 +138,14 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_PLAY_DVD)
+      if (iControl == CONTROL_STACK)
+      {
+        g_settings.m_videoStacking = !g_settings.m_videoStacking;
+        g_settings.Save();
+        UpdateButtons();
+        Update( m_vecItems->m_strPath );
+      }
+      else if (iControl == CONTROL_PLAY_DVD)
       {
         // play movie...
         CUtil::PlayDVD();
@@ -240,6 +249,10 @@ void CGUIWindowVideoBase::UpdateButtons()
 
   CONTROL_ENABLE(CONTROL_BTNSCAN);
 
+  SET_CONTROL_LABEL(CONTROL_STACK, 14000);  // Stack
+  SET_CONTROL_SELECTED(GetID(), CONTROL_STACK, g_settings.m_videoStacking);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_STACK, m_stackingAvailable);
+  
   CGUIMediaWindow::UpdateButtons();
 }
 
@@ -812,7 +825,8 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
   if (item->IsLiveTV())
     return 0;
 
-  m_database.Open();
+  CVideoDatabase db;
+  db.Open();
   long startoffset = 0;
 
   if (item->IsStack() && (!g_guiSettings.GetBool("myvideos.treatstackasfile") ||
@@ -826,7 +840,7 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
     for (unsigned i = 0; i<movies.size();i++)
     {
       CBookmark bookmark;
-      if (m_database.GetResumeBookMark(movies[i], bookmark))
+      if (db.GetResumeBookMark(movies[i], bookmark))
       {
         startoffset = (long)(bookmark.timeInSeconds*75);
         startoffset += 0x10000000 * (i+1); /* store file number in here */
@@ -841,10 +855,10 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
     if (item->IsVideoDb() && item->HasVideoInfoTag())
       strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
-    if (m_database.GetResumeBookMark(strPath, bookmark))
+    if (db.GetResumeBookMark(strPath, bookmark))
       startoffset = (long)(bookmark.timeInSeconds*75);
   }
-  m_database.Close();
+  db.Close();
 
   return startoffset;
 }
@@ -1066,8 +1080,8 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
 
-        if (GetID() != WINDOW_VIDEO_NAV || (!m_vecItems->m_strPath.IsEmpty() &&
-           !item->m_strPath.Left(19).Equals("newsmartplaylist://")))
+        if (!m_vecItems->m_strPath.IsEmpty() && !item->m_strPath.Left(19).Equals("newsmartplaylist://")
+            && !m_vecItems->m_strPath.Left(10).Equals("sources://"))
         {
           buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
         }
@@ -1117,11 +1131,8 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
 
 void CGUIWindowVideoBase::GetNonContextButtons(int itemNumber, CContextButtons &buttons)
 {
-  if (!m_vecItems->m_strPath.IsEmpty())
-    buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128);
   if (g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO).size() > 0)
     buttons.Add(CONTEXT_BUTTON_NOW_PLAYING, 13350);
-  buttons.Add(CONTEXT_BUTTON_SETTINGS, 5);
 }
 
 bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -1131,6 +1142,13 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     item = m_vecItems->Get(itemNumber);
   switch (button)
   {
+  case CONTEXT_BUTTON_SET_CONTENT:
+    {
+      SScanSettings settings;
+      ADDON::ScraperPtr info = m_database.GetScraperForPath(item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strPath : item->m_strPath, settings);
+      OnAssignContent(item->m_strPath,0, info, settings);
+      return true;
+    }
   case CONTEXT_BUTTON_PLAY_PART:
     {
       CFileItemList items;
@@ -1195,16 +1213,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_RESUME_ITEM:
     return OnFileAction(itemNumber, SELECT_ACTION_RESUME);
 
-  case CONTEXT_BUTTON_GOTO_ROOT:
-    Update("");
-    return true;
-
   case CONTEXT_BUTTON_NOW_PLAYING:
     g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
-    return true;
-
-  case CONTEXT_BUTTON_SETTINGS:
-    g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYVIDEOS);
     return true;
 
   case CONTEXT_BUTTON_INFO:
@@ -1491,17 +1501,7 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
     if (item->m_bIsFolder)
     {
       CStdString strPath = item->m_strPath;
-      if (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES)
-      {
-        CDirectory::GetDirectory(strPath, items);
-      }
-      else
-      {
-        CVideoDatabaseDirectory dir;
-        if (dir.GetDirectoryChildType(strPath) == NODE_TYPE_SEASONS)
-          strPath += "-1/";
-        dir.GetDirectory(strPath,items);
-      }
+      CDirectory::GetDirectory(strPath, items);
     }
     else
       items.Add(item);
@@ -1510,13 +1510,10 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
     {
       CFileItemPtr pItem=items[i];
 
-      if (pItem->IsVideoDb())
-      {
-        if (pItem->HasVideoInfoTag() &&
-            (( bMark && pItem->GetVideoInfoTag()->m_playCount) ||
-             (!bMark && !(pItem->GetVideoInfoTag()->m_playCount))))
-          continue;
-      }
+      if (pItem->HasVideoInfoTag() &&
+          (( bMark && pItem->GetVideoInfoTag()->m_playCount) ||
+           (!bMark && !(pItem->GetVideoInfoTag()->m_playCount))))
+        continue;
 
       // Clear resume bookmark
       if (bMark)
@@ -1691,6 +1688,19 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
     items.Add(newPlaylist);
   }
 
+  m_stackingAvailable = !(items.IsTuxBox() || items.IsPlugin() ||
+                          items.IsAddonsPath() || items.IsRSS() ||
+                          items.IsInternetStream() || items.IsVideoDb());
+  // we may also be in a tvshow files listing
+  // (ideally this should be removed, and our stack regexps tidied up if necessary
+  // No "normal" episodes should stack, and multi-parts should be supported)
+  ADDON::ScraperPtr info = m_database.GetScraperForPath(strDirectory);
+  if (info && info->Content() == CONTENT_TVSHOWS)
+    m_stackingAvailable = false;
+
+  if (m_stackingAvailable && !items.IsStack() && g_settings.m_videoStacking)
+    items.Stack();
+
   return bResult;
 }
 
@@ -1710,6 +1720,17 @@ void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)
         if (CFile::Exists(art))
           item->SetProperty("fanart_image", art);
       }
+    }
+  }
+  if (!items.IsVideoDb() && items.GetContent().IsEmpty() &&
+      g_guiSettings.GetBool("myvideos.cleanstrings") && !items.IsVirtualDirectoryRoot())
+  {
+    for (int i = 0; i < (int)items.Size(); ++i)
+    {
+      CFileItemPtr item = items[i];
+      // TODO: Find why this code is as it is - why do we always clean non-archived folders??
+      if ((item->m_bIsFolder && !URIUtils::IsInArchive(item->m_strPath)) || m_stackingAvailable)
+        item->CleanString();
     }
   }
 }
@@ -1936,4 +1957,66 @@ void CGUIWindowVideoBase::AppendAndClearSearchItems(CFileItemList &searchItems, 
   results.Append(searchItems);
 
   searchItems.Clear();
+}
+
+bool CGUIWindowVideoBase::OnUnAssignContent(const CStdString &path, int label1, int label2, int label3)
+{
+  bool bCanceled;
+  CVideoDatabase db;
+  db.Open();
+  if (CGUIDialogYesNo::ShowAndGetInput(label1,label2,label3,20022,bCanceled))
+  {
+    db.RemoveContentForPath(path);
+    db.Close();
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+    return true;
+  }
+  else
+  {
+    if (!bCanceled)
+    {
+      ADDON::ScraperPtr info;
+      SScanSettings settings;
+      settings.exclude = true;
+      db.SetScraperForPath(path,info,settings);
+    }
+  }
+  db.Close();
+  
+  return false;
+}
+
+void CGUIWindowVideoBase::OnAssignContent(const CStdString &path, int iFound, ADDON::ScraperPtr& info, SScanSettings& settings)
+{
+  bool bScan=false;
+  CVideoDatabase db;
+  db.Open();
+  if (iFound == 0)
+  {
+    info = db.GetScraperForPath(path, settings);
+  }
+  
+  ADDON::ScraperPtr info2(info);
+  
+  if (CGUIDialogContentSettings::Show(info, settings, bScan))
+  {
+    if(settings.exclude || (!info && info2))
+    {
+      OnUnAssignContent(path,20375,20340,20341);
+    }
+    else if (info != info2)
+    {
+      if (OnUnAssignContent(path,20442,20443,20444))
+        bScan = true;
+    }
+    
+    db.SetScraperForPath(path,info,settings);
+    
+    if (bScan)
+    {
+      CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+      if (pDialog)
+        pDialog->StartScanning(path, true);
+    }
+  }
 }

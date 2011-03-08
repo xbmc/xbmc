@@ -1952,7 +1952,7 @@ void CFileItemList::Stack()
   CSingleLock lock(m_lock);
 
   // not allowed here
-  if (IsVirtualDirectoryRoot() || IsLiveTV())
+  if (IsVirtualDirectoryRoot() || IsLiveTV() || m_strPath.Left(10).Equals("sources://"))
     return;
 
   SetProperty("isstacked", "1");
@@ -2633,6 +2633,17 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
   if (IsLabelPreformated())
     return GetLabel();
 
+  CStdString strMovieName = GetBaseMoviePath(bUseFolderNames);
+
+  URIUtils::RemoveSlashAtEnd(strMovieName);
+  strMovieName = URIUtils::GetFileName(strMovieName);
+  CURL::Decode(strMovieName);
+
+  return strMovieName;
+}
+
+CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
+{
   CStdString strMovieName = m_strPath;
 
   if (IsMultiPath())
@@ -2657,10 +2668,6 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
       strMovieName = strArchivePath;
     }
   }
-
-  URIUtils::RemoveSlashAtEnd(strMovieName);
-  strMovieName = URIUtils::GetFileName(strMovieName);
-  CURL::Decode(strMovieName);
 
   return strMovieName;
 }

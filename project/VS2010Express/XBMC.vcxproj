@@ -724,7 +724,6 @@
     <ClCompile Include="..\..\xbmc\video\VideoReferenceClock.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowFullScreen.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoBase.cpp" />
-    <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoFiles.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoNav.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoPlaylist.cpp" />
     <ClCompile Include="..\..\xbmc\ViewDatabase.cpp" />
@@ -965,6 +964,7 @@
     <ClCompile Include="..\..\xbmc\FileSystem\SpecialProtocol.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SpecialProtocolDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\StackDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\FileSystem\SourcesDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\UPnPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VirtualDirectory.cpp" />
@@ -1557,7 +1557,6 @@
     <ClInclude Include="..\..\xbmc\video\VideoReferenceClock.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowFullScreen.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoBase.h" />
-    <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoFiles.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoNav.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoPlaylist.h" />
     <ClInclude Include="..\..\xbmc\ViewDatabase.h" />
@@ -1815,6 +1814,7 @@
     <ClInclude Include="..\..\xbmc\FileSystem\SpecialProtocol.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\SpecialProtocolDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\StackDirectory.h" />
+    <ClInclude Include="..\..\xbmc\FileSystem\SourcesDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\UPnPDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VirtualPathDirectory.h" />

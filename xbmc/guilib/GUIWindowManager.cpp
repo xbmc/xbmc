@@ -358,12 +358,9 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
       iWindowID = WINDOW_MUSIC_FILES;
   }
   // virtual video window which returns the last open video window (aka the video start window)
-  if (iWindowID == WINDOW_VIDEOS)
-  {
-    iWindowID = g_settings.m_iVideoStartWindow;
-    // ensure the virtual video window only returns video windows
-    if (iWindowID != WINDOW_VIDEO_NAV)
-      iWindowID = WINDOW_VIDEO_FILES;
+  if (iWindowID == WINDOW_VIDEOS || iWindowID == WINDOW_VIDEO_FILES)
+  { // backward compatibility for pre-Eden
+    iWindowID = WINDOW_VIDEO_NAV;
   }
   if (iWindowID == WINDOW_SCRIPTS)
   { // backward compatibility for pre-Dharma

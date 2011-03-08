@@ -35,6 +35,7 @@
 #include "MusicSearchDirectory.h"
 #include "VideoDatabaseDirectory.h"
 #include "AddonsDirectory.h"
+#include "SourcesDirectory.h"
 #include "LastFMDirectory.h"
 #include "FTPDirectory.h"
 #include "HTTPDirectory.h"
@@ -117,6 +118,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
   if (strProtocol == "special") return new CSpecialProtocolDirectory();
+  if (strProtocol == "sources") return new CSourcesDirectory();
   if (strProtocol == "addons") return new CAddonsDirectory();
 #if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
   if (strProtocol == "cdda") return new CCDDADirectory();

@@ -26,7 +26,6 @@
 #include "GUIDialogGamepad.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIUserMessages.h"
-#include "video/windows/GUIWindowVideoFiles.h"
 #include "Autorun.h"
 #include "GUIPassword.h"
 #include "Util.h"
@@ -251,7 +250,8 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
         if (plugin->HasSettings())
           buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045); // Plugin Settings
       }
-      buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
+      if (type != "video")
+        buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
       if (!share->m_ignore && !isAddon)
         buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
 
@@ -628,8 +628,6 @@ void CGUIDialogContextMenu::SetDefault(const CStdString &strType, const CStdStri
     g_settings.m_defaultFileSource = strDefault;
   else if (strType == "music")
     g_settings.m_defaultMusicSource = strDefault;
-  else if (strType == "video")
-    g_settings.m_defaultVideoSource = strDefault;
   else if (strType == "pictures")
     g_settings.m_defaultPictureSource = strDefault;
   g_settings.SaveSources();

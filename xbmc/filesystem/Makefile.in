@@ -69,6 +69,7 @@ SRCS=AddonsDirectory.cpp \
      SIDFileDirectory.cpp \
      SmartPlaylistDirectory.cpp \
      SMBDirectory.cpp \
+     SourcesDirectory.cpp \
      SpecialProtocol.cpp \
      SpecialProtocolDirectory.cpp \
      StackDirectory.cpp \

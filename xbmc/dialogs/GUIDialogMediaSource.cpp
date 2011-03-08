@@ -22,7 +22,7 @@
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogFileBrowser.h"
-#include "video/windows/GUIWindowVideoFiles.h"
+#include "video/windows/GUIWindowVideoBase.h"
 #include "video/dialogs/GUIDialogVideoScan.h"
 #include "guilib/GUIWindowManager.h"
 #include "Util.h"
@@ -382,7 +382,7 @@ void CGUIDialogMediaSource::OnOK()
     if (m_type == "video" && !URIUtils::IsLiveTV(share.strPath) && 
         !share.strPath.Left(6).Equals("rss://"))
     {
-      CGUIWindowVideoFiles::OnAssignContent(share.strPath, 0, m_info, m_settings);
+      CGUIWindowVideoBase::OnAssignContent(share.strPath, 0, m_info, m_settings);
     }
   }
 

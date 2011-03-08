@@ -595,21 +595,21 @@
 					</item>
 					<item id="2">
 						<label>3</label>
-						<onclick>ActivateWindow(VideoFiles)</onclick>
+						<onclick>ActivateWindow(Videos,Files,return)</onclick>
 						<icon>special://skin/backgrounds/videos.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoVideosButton) + [Skin.HasSetting(HomeMenuNoMoviesButton) + Skin.HasSetting(HomeMenuNoTVShowsButton)]</visible>
 					</item>
 					<item id="10">
 						<label>20342</label>
-						<onclick>ActivateWindow(VideoLibrary,MovieTitles,return)</onclick>
+						<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
 						<icon>special://skin/backgrounds/videos.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Movies_Folder)]</thumb>
 						<visible>Skin.HasSetting(HomeMenuNoMoviesButton) + Library.HasContent(Movies)</visible>
 					</item>
 					<item id="11">
 						<label>20343</label>
-						<onclick>ActivateWindow(VideoLibrary,TVShowTitles,return)</onclick>
+						<onclick>ActivateWindow(Videos,TVShowTitles,return)</onclick>
 						<icon>special://skin/backgrounds/videos.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_TVShow_Folder)]</thumb>
 						<visible>Skin.HasSetting(HomeMenuNoTVShowsButton) + Library.HasContent(TVShows)</visible>

@@ -706,6 +706,8 @@
   <string id="851">Valid port range is 1-65535</string>
   <string id="852">Valid port range is 1024-65535</string>
 
+  <string id="998">Add Music...</string>
+  <string id="999">Add Videos...</string>
   <string id="1000">- Preview</string>
   <string id="1001">Unable to connect</string>
   <string id="1002">XBMC was unable to connect to the network location.</string>

@@ -858,6 +858,9 @@
     <ClCompile Include="..\..\xbmc\FileSystem\StackDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\FileSystem\SourcesDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\UPnPDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -2075,9 +2078,6 @@
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoBase.cpp">
       <Filter>video\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoFiles.cpp">
-      <Filter>video\windows</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoNav.cpp">
       <Filter>video\windows</Filter>
     </ClCompile>
@@ -3182,6 +3182,9 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\StackDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\FileSystem\SourcesDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\UPnPDirectory.h">
@@ -4567,9 +4570,6 @@
       <Filter>video\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoBase.h">
-      <Filter>video\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoFiles.h">
       <Filter>video\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoNav.h">
