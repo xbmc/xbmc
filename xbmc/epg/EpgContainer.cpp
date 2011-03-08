@@ -103,6 +103,7 @@ void CEpgContainer::Start(void)
 
   if (m_database.Open())
   {
+    m_database.DeleteOldEpgEntries();
     m_database.Get(this);
     m_database.Close();
   }
@@ -135,9 +136,9 @@ void CEpgContainer::Notify(const Observable &obs, const CStdString& msg)
 
 void CEpgContainer::Process(void)
 {
-  time_t iNow          = 0;
-  m_iLastEpgCleanup    = 0;
-  m_iLastEpgUpdate     = 0;
+  time_t iNow       = 0;
+  m_iLastEpgUpdate  = 0;
+  CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgCleanup);
 
   UpdateEPG(true);
 
