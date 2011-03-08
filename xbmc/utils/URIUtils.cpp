@@ -686,7 +686,7 @@ bool URIUtils::IsLiveTV(const CStdString& strFile)
       IsHDHomeRun(strFile) ||
       IsHTSP(strFile) ||
       strFile.Left(4).Equals("sap:") ||
-      strFile.Right(4).Equals(".pvr") ||
+      (strFile.Right(4).Equals(".pvr") && !strFile.Left(16).Equals("pvr://recordings")) ||
       (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile));
 }
 
