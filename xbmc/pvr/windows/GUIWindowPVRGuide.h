@@ -36,7 +36,6 @@ public:
 
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual void OnInitWindow(void);
   virtual void UpdateData(void);
 
 private:

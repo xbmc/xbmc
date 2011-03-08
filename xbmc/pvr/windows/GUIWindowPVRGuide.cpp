@@ -33,7 +33,7 @@
 #include "settings/Settings.h"
 
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
-  CGUIWindowPVRCommon(parent, PVR_WINDOW_EPG, CONTROL_BTNGUIDE, CONTROL_LIST_TIMELINE)
+  CGUIWindowPVRCommon(parent, PVR_WINDOW_EPG, CONTROL_BTNGUIDE, CONTROL_LIST_GUIDE_NOW_NEXT)
 {
   m_iGuideView = g_guiSettings.GetInt("pvrmenu.defaultguideview");
 }
@@ -89,25 +89,6 @@ bool CGUIWindowPVRGuide::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnContextButtonBegin(pItem.get(), button) ||
       OnContextButtonEnd(pItem.get(), button) ||
       CGUIWindowPVRCommon::OnContextButton(itemNumber, button);
-}
-
-void CGUIWindowPVRGuide::OnInitWindow(void)
-{
-  switch (m_iGuideView)
-  {
-  case GUIDE_VIEW_CHANNEL:
-    m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_CHANNEL);
-    break;
-  case GUIDE_VIEW_NOW:
-  case GUIDE_VIEW_NEXT:
-    m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
-    break;
-  case GUIDE_VIEW_TIMELINE:
-    m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
-    break;
-  default:
-    break;
-  }
 }
 
 void CGUIWindowPVRGuide::UpdateData(void)
