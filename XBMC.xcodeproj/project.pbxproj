@@ -1733,7 +1733,6 @@
 		F5A1CB640F6B06CF00A96ABD /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */; };
 		F5A1CB670F6B06CF00A96ABD /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
 		F5A1CB680F6B06CF00A96ABD /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
-		F5A1CB690F6B06CF00A96ABD /* ArabicShaping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1EF0E42807A00A8E96F /* ArabicShaping.cpp */; };
 		F5A1CB6A0F6B06CF00A96ABD /* GUIWindowTestPattern.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F95D9F0E4E203700C3FA5C /* GUIWindowTestPattern.cpp */; };
 		F5A1CB6C0F6B06CF00A96ABD /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F5A1CB6D0F6B06CF00A96ABD /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
@@ -1876,7 +1875,6 @@
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
 		F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
 		F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
-		F5F8E1F00E42807A00A8E96F /* ArabicShaping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1EF0E42807A00A8E96F /* ArabicShaping.cpp */; };
 		F5F95DA00E4E203700C3FA5C /* GUIWindowTestPattern.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F95D9F0E4E203700C3FA5C /* GUIWindowTestPattern.cpp */; };
 		F5FAB0710EFABAC800BAD4AE /* VTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB0700EFABAC800BAD4AE /* VTPFile.cpp */; };
 		F5FAB0760EFABE2C00BAD4AE /* VTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB0750EFABE2C00BAD4AE /* VTPDirectory.cpp */; };
@@ -3838,8 +3836,6 @@
 		F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = VGMCodec.cpp; sourceTree = "<group>"; };
 		F5F8E1E60E427F6700A8E96F /* md5.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = md5.cpp; sourceTree = "<group>"; };
 		F5F8E1E70E427F6700A8E96F /* md5.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
-		F5F8E1EE0E42807A00A8E96F /* ArabicShaping.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ArabicShaping.h; sourceTree = "<group>"; };
-		F5F8E1EF0E42807A00A8E96F /* ArabicShaping.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ArabicShaping.cpp; sourceTree = "<group>"; };
 		F5F95D9E0E4E203700C3FA5C /* GUIWindowTestPattern.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = GUIWindowTestPattern.h; sourceTree = "<group>"; };
 		F5F95D9F0E4E203700C3FA5C /* GUIWindowTestPattern.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowTestPattern.cpp; sourceTree = "<group>"; };
 		F5FAB06F0EFABAC800BAD4AE /* VTPFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VTPFile.h; sourceTree = "<group>"; };
@@ -6777,8 +6773,6 @@
 				F5A9D3071097C9370050490F /* AliasShortcutUtils.h */,
 				E38E18560D25F9FA00618676 /* LangCodeExpander.cpp */,
 				E38E18570D25F9FA00618676 /* LangCodeExpander.h */,
-				F5F8E1EF0E42807A00A8E96F /* ArabicShaping.cpp */,
-				F5F8E1EE0E42807A00A8E96F /* ArabicShaping.h */,
 				E38E1E250D25F9FD00618676 /* Archive.cpp */,
 				E38E1E260D25F9FD00618676 /* Archive.h */,
 				F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */,
@@ -7774,7 +7768,6 @@
 				815EE6350E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp in Sources */,
 				F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */,
 				F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */,
-				F5F8E1F00E42807A00A8E96F /* ArabicShaping.cpp in Sources */,
 				F5F95DA00E4E203700C3FA5C /* GUIWindowTestPattern.cpp in Sources */,
 				F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */,
 				F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */,
@@ -8647,7 +8640,6 @@
 				F5A1CB640F6B06CF00A96ABD /* DVDInputStreamRTMP.cpp in Sources */,
 				F5A1CB670F6B06CF00A96ABD /* VGMCodec.cpp in Sources */,
 				F5A1CB680F6B06CF00A96ABD /* md5.cpp in Sources */,
-				F5A1CB690F6B06CF00A96ABD /* ArabicShaping.cpp in Sources */,
 				F5A1CB6A0F6B06CF00A96ABD /* GUIWindowTestPattern.cpp in Sources */,
 				F5A1CB6C0F6B06CF00A96ABD /* MultiPathFile.cpp in Sources */,
 				F5A1CB6D0F6B06CF00A96ABD /* DVDFileInfo.cpp in Sources */,

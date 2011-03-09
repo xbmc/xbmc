@@ -651,7 +651,6 @@
     <ClCompile Include="..\..\xbmc\Util.cpp" />
     <ClCompile Include="..\..\xbmc\utils\AlarmClock.cpp" />
     <ClCompile Include="..\..\xbmc\utils\AliasShortcutUtils.cpp" />
-    <ClCompile Include="..\..\xbmc\utils\ArabicShaping.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Archive.cpp" />
     <ClCompile Include="..\..\xbmc\utils\AsyncFileCopy.cpp" />
     <ClCompile Include="..\..\xbmc\utils\AutoPtrHandle.cpp" />
@@ -1482,7 +1481,6 @@
     <ClInclude Include="..\..\xbmc\Util.h" />
     <ClInclude Include="..\..\xbmc\utils\AlarmClock.h" />
     <ClInclude Include="..\..\xbmc\utils\AliasShortcutUtils.h" />
-    <ClInclude Include="..\..\xbmc\utils\ArabicShaping.h" />
     <ClInclude Include="..\..\xbmc\utils\Archive.h" />
     <ClInclude Include="..\..\xbmc\utils\AsyncFileCopy.h" />
     <ClInclude Include="..\..\xbmc\utils\AutoPtrHandle.h" />

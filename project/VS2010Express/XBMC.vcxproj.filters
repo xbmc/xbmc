@@ -1889,9 +1889,6 @@
     <ClCompile Include="..\..\xbmc\utils\AliasShortcutUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\ArabicShaping.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\Archive.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -4360,9 +4357,6 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\AliasShortcutUtils.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\ArabicShaping.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Archive.h">

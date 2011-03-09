@@ -1,6 +1,5 @@
 SRCS=AlarmClock.cpp \
      AliasShortcutUtils.cpp \
-     ArabicShaping.cpp \
      Archive.cpp \
      AsyncFileCopy.cpp \
      AutoPtrHandle.cpp \
