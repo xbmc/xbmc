@@ -50,6 +50,110 @@ void CPVRRecordings::UpdateFromClients(void)
   }
 }
 
+CStdString CPVRRecordings::TrimSlashes(const CStdString &strOrig) const
+{
+  CStdString strReturn(strOrig);
+  while (strReturn.Left(1) == "/")
+    strReturn.erase(0, 1);
+
+  URIUtils::RemoveSlashAtEnd(strReturn);
+
+  return strReturn;
+}
+
+const CStdString CPVRRecordings::GetDirectoryFromPath(const CStdString &strPath, const CStdString &strBase) const
+{
+  CStdString strReturn;
+  CStdString strUsePath = TrimSlashes(strPath);
+  CStdString strUseBase = TrimSlashes(strBase);
+
+  /* strip the base or return an empty value if it doesn't fit or match */
+  if (!strUseBase.IsEmpty())
+  {
+    if (strUsePath.GetLength() <= strUseBase.GetLength() || strUsePath.Left(strUseBase.GetLength()) != strUseBase)
+      return strReturn;
+    strUsePath.erase(0, strUseBase.GetLength());
+  }
+
+  /* check for more occurences */
+  int iDelimiter = strUsePath.Find('/');
+  if (iDelimiter > 0)
+    strReturn = strUsePath.Left(iDelimiter);
+  else
+    strReturn = strUsePath;
+
+  return TrimSlashes(strReturn);
+}
+
+bool CPVRRecordings::IsDirectoryMember(const CStdString &strDirectory, const CStdString &strEntryDirectory, bool bDirectMember /* = true */) const
+{
+  CStdString strUseDirectory = TrimSlashes(strDirectory);
+  CStdString strUseEntryDirectory = TrimSlashes(strEntryDirectory);
+
+  return strUseEntryDirectory.Left(strUseDirectory.GetLength()).Equals(strUseDirectory) &&
+      (!bDirectMember || strUseEntryDirectory.Equals(strUseDirectory));
+}
+
+void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *results) const
+{
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
+  {
+    CPVRRecording *current = at(iRecordingPtr);
+    if (!IsDirectoryMember(strDirectory, current->m_strDirectory, true))
+      continue;
+
+    CFileItemPtr pFileItem(new CFileItem(*current));
+    pFileItem->SetLabel2(current->m_recordingTime.GetAsLocalizedDateTime(true, false));
+    pFileItem->m_dateTime = current->m_recordingTime;
+    pFileItem->m_strPath.Format("pvr://recordings/%05i-%05i.pvr", current->m_clientID, current->m_clientIndex);
+    results->Add(pFileItem);
+  }
+}
+
+void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList *results, bool bAutoSkip /* = true */) const
+{
+  CStdString strUseBase = TrimSlashes(strBase);
+
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
+  {
+    CPVRRecording *current = at(iRecordingPtr);
+    const CStdString strCurrent = GetDirectoryFromPath(current->m_strDirectory, strUseBase);
+    if (strCurrent.IsEmpty())
+      continue;
+
+    CStdString strFilePath;
+    strFilePath.Format("pvr://recordings/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
+
+    if (!results->Contains(strFilePath))
+    {
+      CFileItemPtr pFileItem;
+      pFileItem.reset(new CFileItem(strCurrent, true));
+      pFileItem->m_strPath = strFilePath;
+      pFileItem->SetLabel(strCurrent);
+      pFileItem->SetLabelPreformated(true);
+      results->Add(pFileItem);
+    }
+  }
+
+  if (bAutoSkip && results->Size() == 1)
+  {
+    CStdString strGetPath;
+    strGetPath.Format("%s/%s/", strUseBase.c_str(), results->Get(0)->GetLabel());
+
+    results->Clear();
+
+    CLog::Log(LOGDEBUG, "CPVRRecordings - %s - '%s' only has 1 subdirectory, selecting that directory ('%s')",
+        __FUNCTION__, strUseBase.c_str(), strGetPath.c_str());
+    GetSubDirectories(strGetPath, results, true);
+    return;
+  }
+
+  if (results->Size() == 0)
+  {
+    GetContents(strUseBase, results);
+  }
+}
+
 void CPVRRecordings::Process()
 {
   CSingleLock lock(m_critSection);
@@ -144,24 +248,18 @@ bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
 {
   CSingleLock lock(m_critSection);
 
-  CStdString base(strPath);
-  URIUtils::RemoveSlashAtEnd(base);
+  CStdString strBase(strPath);
+  URIUtils::RemoveSlashAtEnd(strBase);
 
   CURL url(strPath);
-  CStdString fileName = url.GetFileName();
-  URIUtils::RemoveSlashAtEnd(fileName);
+  CStdString strFileName = url.GetFileName();
+  URIUtils::RemoveSlashAtEnd(strFileName);
 
-  if (fileName == "recordings")
+  if (strFileName.Left(10) == "recordings")
   {
-    for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
-    {
-      CPVRRecording *recording = at(iRecordingPtr);
-      CFileItemPtr pFileItem(new CFileItem(*recording));
-      pFileItem->SetLabel2(recording->m_recordingTime.GetAsLocalizedDateTime(true, false));
-      pFileItem->m_dateTime = recording->m_recordingTime;
-      pFileItem->m_strPath.Format("pvr://recordings/%05i-%05i.pvr", recording->m_clientID, recording->m_clientIndex);
-      items.Add(pFileItem);
-    }
+    strFileName.erase(0, 10);
+    GetSubDirectories(strFileName, &items, true);
+
     return true;
   }
 
