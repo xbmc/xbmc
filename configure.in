@@ -475,6 +475,9 @@ AC_CHECK_SIZEOF([size_t])
 # Add top source directory for all builds so we can use config.h
 INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 
+# Check inotify availability
+AC_CHECK_HEADER([sys/inotify.h], AC_DEFINE([HAVE_INOTIFY],[1],[Define if we have inotify]),)
+
 # Checks for boost headers using CXX instead of CC
 AC_LANG_PUSH([C++])
 AC_CHECK_HEADER([boost/shared_ptr.hpp],, AC_MSG_ERROR($missing_library))
