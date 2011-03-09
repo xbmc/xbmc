@@ -408,7 +408,7 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   DWORD dwRead;
   DWORD dwSectorSize = 2048;
 
-#if defined(__APPLE__) && HAS_DVD_DRIVE
+#if defined(__APPLE__) && defined(HAS_DVD_DRIVE)
   dk_cd_read_t cd_read;
   memset( &cd_read, 0, sizeof(cd_read) );
 
