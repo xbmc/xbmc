@@ -259,6 +259,10 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
   if (!channel)
   {
     if (!CPVRManager::Get()->GetCurrentChannel(channel))
+      channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetGroupAllTV()->GetFirstChannel();
+
+    /* no channels present */
+    if (!channel)
       return NULL;
   }
 
@@ -301,7 +305,7 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
   /* unused only for reference */
   newTimer->m_strFileNameAndPath = "pvr://timers/new";
 
-  if (!bStartTimer || !newTimer->AddToClient())
+  if (bStartTimer && !newTimer->AddToClient())
   {
     CLog::Log(LOGERROR, "PVRTimers - %s - unable to add an instant timer on the client", __FUNCTION__);
     delete newTimer;

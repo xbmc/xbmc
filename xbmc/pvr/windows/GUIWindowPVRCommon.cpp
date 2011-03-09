@@ -338,10 +338,10 @@ bool CGUIWindowPVRCommon::ActionShowTimer(CFileItem *item)
      open settings for selected timer entry */
   if (item->m_strPath == "pvr://timers/add.timer")
   {
-    CPVRTimerInfoTag *newtimer = CPVRManager::GetTimers()->InstantTimer(NULL, false);
-    if (!newtimer)
+    CPVRTimerInfoTag *newTimer = CPVRManager::GetTimers()->InstantTimer(NULL, false);
+    if (newTimer)
     {
-      CFileItem *newItem = new CFileItem(*newtimer);
+      CFileItem *newItem = new CFileItem(*newTimer);
 
       if (ShowTimerSettings(newItem))
       {
@@ -350,6 +350,9 @@ bool CGUIWindowPVRCommon::ActionShowTimer(CFileItem *item)
         UpdateData();
         bReturn = true;
       }
+
+      delete newItem;
+      delete newTimer;
     }
   }
   else
