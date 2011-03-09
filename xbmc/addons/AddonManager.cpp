@@ -603,24 +603,6 @@ const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, con
   return NULL;
 }
 
-ADDONDEPS CAddonMgr::GetDeps(const CStdString &id)
-{
-  ADDONDEPS result;
-  cp_status_t status;
-
-  cp_plugin_info_t *info = m_cpluff->get_plugin_info(m_cp_context,id.c_str(),&status);
-  if (info)
-  {
-    for (unsigned int i=0;i<info->num_imports;++i)
-      result.insert(make_pair(CStdString(info->imports[i].plugin_id),
-                              make_pair(AddonVersion(info->version),
-                                        AddonVersion(info->version))));
-    m_cpluff->release_info(m_cp_context, info);
-  }
-
-  return result;
-}
-
 CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
 {
   const char *value = NULL;

@@ -153,7 +153,6 @@ namespace ADDON
      \return true if the repository XML file is parsed, false otherwise.
      */
     bool AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons);
-    ADDONDEPS GetDeps(const CStdString& id);
 
     /*! \brief Start all services addons.
         \return True is all addons are started, false otherwise

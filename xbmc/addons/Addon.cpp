@@ -270,6 +270,18 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     EMPTY_IF("noicon",icon)
     EMPTY_IF("nochangelog",changelog)
   }
+  BuildDependencies(ext->plugin);
+}
+
+void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)
+{
+  if (!plugin)
+    return;
+  // TODO: no need for a pair of versions here here - could use the optional flag instead?
+  for (unsigned int i = 0; i < plugin->num_imports; ++i)
+    dependencies.insert(make_pair(CStdString(plugin->imports[i].plugin_id),
+                        make_pair(AddonVersion(plugin->imports[i].version),
+                                  AddonVersion(plugin->imports[i].version))));
 }
 
 /**
@@ -603,11 +615,6 @@ const CStdString CAddon::Icon() const
 const CStdString CAddon::LibPath() const
 {
   return URIUtils::AddFileToFolder(m_props.path, m_strLibName);
-}
-
-ADDONDEPS CAddon::GetDeps()
-{
-  return CAddonMgr::Get().GetDeps(ID());
 }
 
 /**

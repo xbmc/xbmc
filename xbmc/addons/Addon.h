@@ -99,6 +99,8 @@ public:
   CStdString broken;
   InfoMap    extrainfo;
   int        stars;
+private:
+  void BuildDependencies(const cp_plugin_info_t *plugin);
 };
 
 typedef std::vector<class AddonProps> VECADDONPROPS;
@@ -168,7 +170,7 @@ public:
   int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }
   const InfoMap &ExtraInfo() const { return m_props.extrainfo; }
-  ADDONDEPS GetDeps();
+  const ADDONDEPS &GetDeps() const { return m_props.dependencies; }
 
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()

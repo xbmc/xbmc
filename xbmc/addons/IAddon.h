@@ -105,7 +105,7 @@ namespace ADDON
     virtual CStdString GetSetting(const CStdString& key) =0;
     virtual TiXmlElement* GetSettingsXML() =0;
     virtual CStdString GetString(uint32_t id) =0;
-    virtual ADDONDEPS GetDeps() =0;
+    virtual const ADDONDEPS &GetDeps() const =0;
 
   protected:
     virtual const AddonPtr Parent() const =0;
