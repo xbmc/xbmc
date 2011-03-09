@@ -38,12 +38,14 @@ public:
    \param force whether to force the install even if the addon is already installed (eg for updating). Defaults to false.
    \param referer string to use for referer for http fetch. Set to previous version when updating, parent when fetching a dependency
    \param background whether to install in the background or not. Defaults to true.
+   \sa DoInstall
    */
   void Install(const CStdString &addonID, bool force = false, const CStdString &referer="", bool background = true);
 
   /*! \brief Install an addon from the given zip path
    \param path the zip file to install from
    \return true if successful, false otherwise
+   \sa DoInstall
    */
   bool InstallFromZip(const CStdString &path);
 
@@ -75,6 +77,16 @@ private:
   CAddonInstaller(const CAddonInstaller&);
   CAddonInstaller const& operator=(CAddonInstaller const&);
   virtual ~CAddonInstaller();
+
+  /*! \brief Install an addon from a repository or zip
+   \param addon the AddonPtr describing the addon
+   \param hash the hash to verify the install. Defaults to "".
+   \param update whether this is an update of an existing addon, or a new install. Defaults to false.
+   \param referer string to use for referer for http fetch. Defaults to "".
+   \param background whether to install in the background or not. Defaults to true.
+   \return true on successful install, false on failure.
+   */
+  bool DoInstall(const ADDON::AddonPtr &addon, const CStdString &hash = "", bool update = false, const CStdString &referer = "", bool background = true);
 
   CCriticalSection m_critSection;
   JobMap m_downloadJobs;

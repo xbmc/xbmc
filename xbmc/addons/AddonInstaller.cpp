@@ -164,30 +164,36 @@ void CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdS
     CStdString hash;
     if (therepo)
       hash = therepo->GetAddonHash(addon);
-
-    // check whether we already have the addon installing
-    CSingleLock lock(m_critSection);
-    if (m_downloadJobs.find(addonID) != m_downloadJobs.end())
-      return; // already installing this addon
-
-    if (background)
-    {
-      unsigned int jobID = CJobManager::GetInstance().AddJob(new CAddonInstallJob(addon, hash, addonInstalled, referer), this);
-      m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(jobID)));
-    }
-    else
-    {
-      m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(0)));
-      lock.Leave();
-      CAddonInstallJob job(addon, hash, addonInstalled, referer);
-      if (!job.DoWork())
-      { // TODO: dump something to debug log?
-      }
-      lock.Enter();
-      JobMap::iterator i = m_downloadJobs.find(addon->ID());
-      m_downloadJobs.erase(i);
-    }
+    DoInstall(addon, hash, addonInstalled, referer, background);
   }
+}
+
+bool CAddonInstaller::DoInstall(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer, bool background)
+{
+  // check whether we already have the addon installing
+  CSingleLock lock(m_critSection);
+  if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
+    return false;
+
+  if (background)
+  {
+    unsigned int jobID = CJobManager::GetInstance().AddJob(new CAddonInstallJob(addon, hash, update, referer), this);
+    m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(jobID)));
+  }
+  else
+  {
+    m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(0)));
+    lock.Leave();
+    CAddonInstallJob job(addon, hash, update, referer);
+    if (!job.DoWork())
+    { // TODO: dump something to debug log?
+      return false;
+    }
+    lock.Enter();
+    JobMap::iterator i = m_downloadJobs.find(addon->ID());
+    m_downloadJobs.erase(i);
+  }
+  return true;
 }
 
 bool CAddonInstaller::InstallFromZip(const CStdString &path)
@@ -211,13 +217,7 @@ bool CAddonInstaller::InstallFromZip(const CStdString &path)
     addon->Props().path = path;
 
     // install the addon
-    CSingleLock lock(m_critSection);
-    if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
-      return false;
-
-    unsigned int jobID = CJobManager::GetInstance().AddJob(new CAddonInstallJob(addon), this);
-    m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(jobID)));
-    return true;
+    return DoInstall(addon);
   }
   return false;
 }
