@@ -44,14 +44,7 @@ endif
 endif
 
 PYDIRS=bsddb compiler curses distutils email encodings hotshot idlelib \
-	lib-old lib-tk logging site-packages xml
-ifeq ($(findstring osx,$(ARCH)),osx)
-	PYLIBDIR=lib.macosx-10.4-@ARCHTYPE@-2.4
-	PYDIRS+=plat-darwin
-	PYDIRS+=plat-mac
-else
-	PYDIRS+=plat-linux2
-endif
+	lib-old lib-tk logging site-packages xml plat-linux2
 
 PY=$(wildcard $(abs_top_srcdir)/lib/python/Lib/*.py)
 PY+=$(foreach DIR, $(PYDIRS), $(wildcard $(abs_top_srcdir)/lib/python/Lib/$(DIR)/*.py))
@@ -65,35 +58,9 @@ PYO=$(addsuffix o, $(PY))
 ifeq ($(findstring osx,$(ARCH)), osx)
 all: $(SLIB)
 
-ifneq (@USE_EXTERNAL_PYTHON@,1)
-$(SLIB): $(PYWRAP) $(abs_top_srcdir)/lib/python/libpython2.4.a $(PYO) $(abs_top_srcdir)/tools/Mach5/wrapper.rb
-	rm -rf $(SYSDIR)/Lib
-	rsync -a --exclude '.svn' -t $(abs_top_srcdir)/lib/python/build/$(PYLIBDIR)/*.so $(SYSDIR)/Lib
-	rsync -a --exclude '.svn' -t $(abs_top_srcdir)/lib/python/Lib/*.{py,pyo} $(SYSDIR)/Lib
-	for dirs in $(PYDIRS); do rsync -a --exclude 'test*'  --exclude '.svn' $(abs_top_srcdir)/lib/python/Lib/$$dirs $(SYSDIR)/Lib; done
-	(mkdir -p tmp && rm -rf tmp/*)
-	(cd ./tmp && ar x $(abs_top_srcdir)/lib/python/libpython2.4.a)
-	$(CXX) -bundle -flat_namespace -undefined suppress -shared -o $@ \
-		tmp/*.o \
-		wrapper_python.o
-	$(abs_top_srcdir)/tools/Mach5/wrapper.rb $@ libpython;mv output.so $@
-	$(abs_top_srcdir)/tools/Mach5/wrapper.rb $@;mv output.so $@
-	@rm -rf tmp
-else
 $(SLIB): $(PYWRAP)
 	$(CC) $(LDFLAGS) -bundle -undefined dynamic_lookup -o $@ \
 		-l$(PYVERSION) wrapper_python.o
-endif
-
-$(abs_top_srcdir)/lib/python/libpython2.4.a: compile
-	$(MAKE) -C $(abs_top_srcdir)/lib/python
-
-%pyo: %py
-	@echo Compiling $@
-	@$(abs_top_srcdir)/lib/python/python.exe -O $(abs_top_srcdir)/lib/python/Lib/py_compile.py $<
-
-$(PYWRAP): $(PYWRAP:.o=.c)
-	 $(CC) $(CFLAGS) -fPIC -o $@ -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -c $<
 
 else
 all: $(SLIB)

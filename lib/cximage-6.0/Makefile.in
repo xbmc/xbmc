@@ -9,6 +9,7 @@ SLIBS=CxImage/cximage.a raw/raw.a jbig/jbig.a
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 	export ARCH
+	export SYSROOT
 	DIRS+=jasper
 	SLIBS+=jasper/jasper.a
 endif
@@ -17,10 +18,9 @@ endif
 
 $(SLIB): $(SLIBS)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(LDFLAGS) -bundle -flat_namespace -undefined suppress -shared -lpng -ljpeg -ltiff -lz -o $@ \
-		CxImage/*.o jasper/*/*.o jbig/*.o raw/*.o
-	../../tools/Mach5/wrapper.rb $@;mv output.so $@
-	chmod +x $@
+	$(CXX) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias \
+	-bundle -undefined dynamic_lookup -read_only_relocs suppress -lpng -ljpeg -ltiff -lz -o $@ \
+	@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o CxImage/*.o jasper/*/*.o jbig/*.o raw/*.o
 else
 	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -o $(SLIB) -Wl,--whole-archive $(SLIBS) \
 		-Wl,--no-whole-archive -lpng -ljasper -ljpeg -ltiff -lz \

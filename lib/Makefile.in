@@ -1,11 +1,23 @@
+ARCH=@ARCH@
+SYSROOT=@SYSROOT@
+
+LD=@LD@
 CC=@CC@
 CXX=@CXX@
 SHELL=@SHELL@
+ifeq ($(findstring osx,$(ARCH)),osx)
+ifeq ($(findstring arm,$(ARCH)),arm)
+LDFLAGS=-arch armv7 -iphoneos_version_min 4.1 -bundle -undefined dynamic_lookup -read_only_relocs suppress
+else
+LDFLAGS=-bundle -undefined dynamic_lookup -read_only_relocs suppress
+endif
+else
 LDFLAGS=-shared -fPIC -rdynamic
-ARCH=@ARCH@
+endif
 SYSDIR=@abs_top_srcdir@/system/players/dvdplayer
 WRAPPER=@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
-WRAPPER_OSX=@abs_top_srcdir@/tools/Mach5/wrapper.rb
+WRAPPER_MACH_ALIAS=@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias
+
 DIRS=
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
   DIRS+=ffmpeg
@@ -24,7 +36,7 @@ endif
 ifneq (,$(findstring powerpc,$(ARCH)))
   ARCH_DIR=ppc
 else
-ifeq ($(ARCH), arm)
+ifeq ($(findstring arm,$(ARCH)),arm)
   ARCH_DIR=arm
 else
   ARCH_DIR=x86
@@ -42,43 +54,37 @@ ifeq ($(ARCH), powerpc-osx)
 BUNDLE1_O = -lbundle1.o
 endif
 
-$(SYSDIR)/avutil-50-$(ARCH).so: ffmpeg/libavutil/libavutil.dylib
-	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
-		ffmpeg/libavutil/*.o \
+$(SYSDIR)/avutil-50-$(ARCH).so: $(WRAPPER) ffmpeg/libavutil/libavutil.dylib
+	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS) -o $@ \
+		$(WRAPPER) ffmpeg/libavutil/*.o \
 		ffmpeg/libavutil/$(ARCH_DIR)/*.o
-	$(WRAPPER_OSX) $@;mv output.so $@
-	chmod +x $@
 
-$(SYSDIR)/avcodec-52-$(ARCH).so: ffmpeg/libavcodec/libavcodec.dylib
-	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
-		ffmpeg/libavcodec/*.o \
+$(SYSDIR)/avcodec-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavcodec/libavcodec.dylib
+	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS) -o $@ \
+		$(WRAPPER) ffmpeg/libavcodec/*.o \
 		ffmpeg/libavcodec/$(ARCH_DIR)/*.o
-	$(WRAPPER_OSX) $@;mv output.so $@
-	chmod +x $@
 
-$(SYSDIR)/avcore-0-$(ARCH).so: ffmpeg/libavcore/libavcore.dylib
-	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
-		ffmpeg/libavcore/*.o
-	$(WRAPPER_OSX) $@;mv output.so $@
-	chmod +x $@
+$(SYSDIR)/avcore-0-$(ARCH).so: $(WRAPPER) ffmpeg/libavcore/libavcore.dylib
+	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+		$(WRAPPER) ffmpeg/libavcore/*.o
 
-$(SYSDIR)/avformat-52-$(ARCH).so: ffmpeg/libavformat/libavformat.dylib
-	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
-		ffmpeg/libavformat/*.o
-	$(WRAPPER_OSX) $@;mv output.so $@
-	chmod +x $@
+$(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.dylib
+	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+		$(WRAPPER) ffmpeg/libavformat/*.o
 
-$(SYSDIR)/swscale-0-$(ARCH).so: ffmpeg/libswscale/libswscale.dylib
-	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
-		ffmpeg/libswscale/*.o ffmpeg/libswscale/$(ARCH_DIR)/*.o
-	$(WRAPPER_OSX) $@;mv output.so $@
-	chmod +x $@
+ifneq ($(findstring arm,$(ARCH)), arm)
+$(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.dylib
+	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+		$(WRAPPER) ffmpeg/libswscale/*.o ffmpeg/libswscale/$(ARCH_DIR)/*.o
+else # No ARM version of swscale available yet.
+$(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.dylib
+	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+		$(WRAPPER) ffmpeg/libswscale/*.o
+endif
 
-$(SYSDIR)/postproc-51-$(ARCH).so: ffmpeg/libpostproc/libpostproc.dylib
-	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
-		ffmpeg/libpostproc/*.o
-	$(WRAPPER_OSX) $@;mv output.so $@
-	chmod +x $@
+$(SYSDIR)/postproc-51-$(ARCH).so: $(WRAPPER) ffmpeg/libpostproc/libpostproc.dylib
+	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+		$(WRAPPER) ffmpeg/libpostproc/*.o
 
 ffmpeg/libavutil/libavutil.dylib     : ffmpeg;
 ffmpeg/libavcodec/libavcodec.dylib   : ffmpeg;
