@@ -84,7 +84,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   {
     strDVDFile[strlen(strDVDFile) - 13] = '\0';
   }
-#if defined(__APPLE__)
+#if defined(__APPLE__) && !defined(__arm__)
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
   // strDVDFile will get realloc'ed and replaced IF this is a physical DVD.
   Cocoa_MountPoint2DeviceName(strDVDFile);
