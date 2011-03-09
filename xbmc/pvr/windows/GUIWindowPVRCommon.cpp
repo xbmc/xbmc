@@ -290,7 +290,7 @@ bool CGUIWindowPVRCommon::OnContextButtonMenuHooks(CFileItem *item, CONTEXT_BUTT
     else if (item->IsPVRRecording())
       CPVRManager::Get()->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->m_clientID);
     else if (item->IsPVRTimer())
-      CPVRManager::Get()->ProcessMenuHooks(item->GetPVRTimerInfoTag()->ClientID());
+      CPVRManager::Get()->ProcessMenuHooks(item->GetPVRTimerInfoTag()->m_iClientID);
   }
 
   return bReturn;
@@ -302,7 +302,7 @@ bool CGUIWindowPVRCommon::ActionDeleteTimer(CFileItem *item)
 
   /* check if the timer tag is valid */
   CPVRTimerInfoTag *timerTag = item->GetPVRTimerInfoTag();
-  if (!timerTag || timerTag->ClientIndex() < 0)
+  if (!timerTag || timerTag->m_iClientIndex < 0)
     return bReturn;
 
   /* show a confirmation dialog */
@@ -312,7 +312,7 @@ bool CGUIWindowPVRCommon::ActionDeleteTimer(CFileItem *item)
   pDialog->SetHeading(122);
   pDialog->SetLine(0, 19040);
   pDialog->SetLine(1, "");
-  pDialog->SetLine(2, timerTag->Title());
+  pDialog->SetLine(2, timerTag->m_strTitle);
   pDialog->DoModal();
 
   /* prompt for the user's confirmation */
@@ -693,7 +693,7 @@ bool CGUIWindowPVRCommon::StopRecordFile(CFileItem *item)
     return bReturn;
 
   CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(item);
-  if (!timer || timer->IsRepeating())
+  if (!timer || timer->m_bIsRepeating)
     return bReturn;
 
   if (CPVRManager::GetTimers()->DeleteTimer(*timer))

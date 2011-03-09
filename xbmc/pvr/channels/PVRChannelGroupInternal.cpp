@@ -90,9 +90,9 @@ bool CPVRChannelGroupInternal::UpdateTimers(void)
   for (unsigned int ptr = 0; ptr < timers->size(); ptr++)
   {
     CPVRTimerInfoTag *timer = timers->at(ptr);
-    const CPVRChannel *tag = GetByClient(timer->Number(), timer->ClientID());
+    const CPVRChannel *tag = GetByClient(timer->m_iChannelNumber, timer->m_iClientID);
     if (tag)
-      timer->SetNumber(tag->ChannelNumber());
+      timer->m_iChannelNumber = tag->ChannelNumber();
   }
 
   return true;

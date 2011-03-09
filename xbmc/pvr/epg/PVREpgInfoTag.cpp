@@ -67,7 +67,7 @@ bool CPVREpgInfoTag::HasTimer(void) const
     CPVRTimers *timers = CPVRManager::GetTimers();
     for (unsigned int iTimerPtr = 0; iTimerPtr < timers->size(); iTimerPtr++)
     {
-      if (timers->at(iTimerPtr)->EpgInfoTag() == this)
+      if (timers->at(iTimerPtr)->m_EpgInfo == this)
       {
         bReturn = true;
         break;

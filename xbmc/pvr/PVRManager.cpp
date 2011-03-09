@@ -557,14 +557,14 @@ void CPVRManager::UpdateRecordingsCache(void)
     for (unsigned int iTimerPtr = 0; iTimerPtr < m_timers->size(); iTimerPtr++)
     {
       CPVRTimerInfoTag *timerTag = m_timers->at(iTimerPtr);
-      if (timerTag->Active())
+      if (timerTag->m_bIsActive)
       {
-        if (timerTag->Start() <= now && timerTag->Stop() > now)
+        if (timerTag->m_StartTime <= now && timerTag->m_StopTime > now)
         {
           m_NowRecording.push_back(timerTag);
           m_isRecording = true;
         }
-        if (!m_NextRecording || m_NextRecording->Start() > timerTag->Start())
+        if (!m_NextRecording || m_NextRecording->m_StartTime > timerTag->m_StartTime)
         {
           m_NextRecording = timerTag;
         }
@@ -598,7 +598,7 @@ const char *CPVRManager::CharInfoNowRecordingTitle(void)
   }
 
   return (m_NowRecording.size() >= m_recordingToggleCurrent + 1) ?
-    m_NowRecording[m_recordingToggleCurrent]->Title() :
+    m_NowRecording[m_recordingToggleCurrent]->m_strTitle :
     "";
 }
 
@@ -622,7 +622,7 @@ const char *CPVRManager::CharInfoNowRecordingDateTime(void)
   if (m_NowRecording.size() > 0)
   {
     CPVRTimerInfoTag *timerTag = m_NowRecording[m_recordingToggleCurrent];
-    strReturn = timerTag ? timerTag->Start().GetAsLocalizedDateTime(false, false) : "";
+    strReturn = timerTag ? timerTag->m_StartTime.GetAsLocalizedDateTime(false, false) : "";
   }
 
   return strReturn;
@@ -737,9 +737,9 @@ const char *CPVRManager::CharInfoNextTimer(void)
   if (next != NULL)
   {
     m_nextTimer.Format("%s %s %s %s", g_localizeStrings.Get(19106),
-        next->Start().GetAsLocalizedDate(true),
+        next->m_StartTime.GetAsLocalizedDate(true),
         g_localizeStrings.Get(19107),
-        next->Start().GetAsLocalizedTime("HH:mm", false));
+        next->m_StartTime.GetAsLocalizedTime("HH:mm", false));
     strReturn = m_nextTimer;
   }
 
@@ -845,9 +845,9 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
   if      (dwInfo == PVR_NOW_RECORDING_TITLE)     return CharInfoNowRecordingTitle();
   else if (dwInfo == PVR_NOW_RECORDING_CHANNEL)   return CharInfoNowRecordingChannel();
   else if (dwInfo == PVR_NOW_RECORDING_DATETIME)  return CharInfoNowRecordingDateTime();
-  else if (dwInfo == PVR_NEXT_RECORDING_TITLE)    return m_NextRecording ? m_NextRecording->Title() : "";
+  else if (dwInfo == PVR_NEXT_RECORDING_TITLE)    return m_NextRecording ? m_NextRecording->m_strTitle : "";
   else if (dwInfo == PVR_NEXT_RECORDING_CHANNEL)  return m_NextRecording ? m_NextRecording->ChannelName() : "";
-  else if (dwInfo == PVR_NEXT_RECORDING_DATETIME) return m_NextRecording ? m_NextRecording->Start().GetAsLocalizedDateTime(false, false) : "";
+  else if (dwInfo == PVR_NEXT_RECORDING_DATETIME) return m_NextRecording ? m_NextRecording->m_StartTime.GetAsLocalizedDateTime(false, false) : "";
   else if (dwInfo == PVR_BACKEND_NAME)            return m_backendName;
   else if (dwInfo == PVR_BACKEND_VERSION)         return m_backendVersion;
   else if (dwInfo == PVR_BACKEND_HOST)            return m_backendHost;

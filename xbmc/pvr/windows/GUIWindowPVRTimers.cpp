@@ -60,7 +60,7 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
     buttons.Add(CONTEXT_BUTTON_DELETE, 117);            /* delete timer */
     buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* sort by name */
     buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* sort by date */
-    if (CPVRManager::Get()->HasMenuHooks(pItem->GetPVRTimerInfoTag()->ClientID()))
+    if (CPVRManager::Get()->HasMenuHooks(pItem->GetPVRTimerInfoTag()->m_iClientID))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);    /* PVR client specific action */
   }
 }
@@ -153,14 +153,14 @@ bool CGUIWindowPVRTimers::OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTO
 
     CPVRTimerInfoTag *timer = item->GetPVRTimerInfoTag();
     int iLabelId;
-    if (timer->Active())
+    if (timer->m_bIsActive)
     {
-      timer->SetActive(false);
+      timer->m_bIsActive = false;
       iLabelId = 13106;
     }
     else
     {
-      timer->SetActive(true);
+      timer->m_bIsActive = true;
       iLabelId = 305;
     }
 
@@ -208,7 +208,7 @@ bool CGUIWindowPVRTimers::OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON 
     pDialog->SetHeading(122);
     pDialog->SetLine(0, 19040);
     pDialog->SetLine(1, "");
-    pDialog->SetLine(2, item->GetPVRTimerInfoTag()->Title());
+    pDialog->SetLine(2, item->GetPVRTimerInfoTag()->m_strTitle);
     pDialog->DoModal();
 
     if (!pDialog->IsConfirmed())
@@ -252,7 +252,7 @@ bool CGUIWindowPVRTimers::OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON 
       return bReturn;
     CPVRTimerInfoTag *timer = item->GetPVRTimerInfoTag();
 
-    CStdString strNewName = timer->Title();
+    CStdString strNewName(timer->m_strTitle);
     if (CGUIDialogKeyboard::ShowAndGetInput(strNewName, g_localizeStrings.Get(19042), false))
     {
       if (CPVRManager::GetTimers()->RenameTimer(*item, strNewName))

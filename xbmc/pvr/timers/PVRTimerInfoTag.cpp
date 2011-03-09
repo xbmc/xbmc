@@ -33,7 +33,6 @@ CPVRTimerInfoTag::CPVRTimerInfoTag()
   m_strTitle           = "";
   m_strDir             = "/";
   m_strSummary         = "";
-  m_bValidSummary      = false;
   m_bIsActive          = false;
   m_iChannelNumber     = -1;
   m_iClientID          = CPVRManager::Get()->GetFirstClientID();
@@ -116,24 +115,6 @@ time_t CPVRTimerInfoTag::FirstDayTime(void) const
   return firstday;
 }
 
-void CPVRTimerInfoTag::SetStart(const CDateTime &Start)
-{
-  m_StartTime = Start;
-  m_bValidSummary = false;
-}
-
-void CPVRTimerInfoTag::SetStop(const CDateTime &Start)
-{
-  m_StopTime = Start;
-  m_bValidSummary = false;
-}
-
-void CPVRTimerInfoTag::SetWeekdays(int Weekdays)
-{
-  m_iWeekdays = Weekdays;
-  m_bValidSummary = false;
-}
-
 void CPVRTimerInfoTag::UpdateSummary(void)
 {
   m_strSummary.clear();
@@ -179,8 +160,6 @@ void CPVRTimerInfoTag::UpdateSummary(void)
         g_localizeStrings.Get(19160),
         m_StopTime.GetAsLocalizedTime("", false));
   }
-
-  m_bValidSummary = true;
 }
 
 /**
@@ -317,9 +296,9 @@ void CPVRTimerInfoTag::SetEpgInfoTag(const CPVREpgInfoTag *tag)
   if (m_EpgInfo != tag)
   {
     if (tag)
-      CLog::Log(LOGINFO, "cPVRTimerInfoTag: timer %s set to epg event %s", Title().c_str(), tag->Title().c_str());
+      CLog::Log(LOGINFO, "cPVRTimerInfoTag: timer %s set to epg event %s", m_strTitle.c_str(), tag->Title().c_str());
     else
-      CLog::Log(LOGINFO, "cPVRTimerInfoTag: timer %s set to no epg event", Title().c_str());
+      CLog::Log(LOGINFO, "cPVRTimerInfoTag: timer %s set to no epg event", m_strTitle.c_str());
     m_EpgInfo = tag;
   }
 }

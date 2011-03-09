@@ -152,23 +152,22 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
   }
 
   CPVRTimerInfoTag tag;
-  tag.SetClientID(client->GetClientID());
-  tag.SetClientIndex(timer->index);
-  tag.SetActive(timer->active == 1);
-  tag.SetTitle(timer->title);
-  tag.SetDir(timer->directory);
-  tag.SetClientNumber(timer->channelNum);
-  tag.SetStart((time_t) (timer->starttime+client->GetTimeCorrection()));
-  tag.SetStop((time_t) (timer->endtime+client->GetTimeCorrection()));
-  tag.SetFirstDay((time_t) (timer->firstday+client->GetTimeCorrection()));
-  tag.SetPriority(timer->priority);
-  tag.SetLifetime(timer->lifetime);
-  tag.SetRecording(timer->recording == 1);
-  tag.SetRepeating(timer->repeat == 1);
-  tag.SetWeekdays(timer->repeatflags);
-  CStdString path;
-  path.Format("pvr://client%i/timers/%i", tag.ClientID(), tag.ClientIndex());
-  tag.SetPath(path);
+  tag.m_iClientID     = client->GetClientID();
+  tag.m_iClientIndex  = timer->index;
+  tag.m_bIsActive     = timer->active == 1;
+  tag.m_strTitle      = timer->title;
+  tag.m_strDir        = timer->directory;
+  tag.m_iClientNumber = timer->channelNum;
+  tag.m_StartTime     = (time_t) (timer->starttime+client->GetTimeCorrection());
+  tag.m_StopTime      = (time_t) (timer->endtime+client->GetTimeCorrection());
+  tag.m_FirstDay      = (time_t) (timer->firstday+client->GetTimeCorrection());
+  tag.m_iPriority     = timer->priority;
+  tag.m_iLifetime     = timer->lifetime;
+  tag.m_bIsRecording  = timer->recording == 1;
+  tag.m_bIsRepeating  = timer->repeat == 1;
+  tag.m_iWeekdays     = timer->repeatflags;
+  tag.m_strFileNameAndPath.Format("pvr://client%i/timers/%i", tag.m_iClientID, tag.m_iClientIndex);
+  tag.UpdateSummary();
 
   xbmcTimers->Update(tag);
   return;

@@ -614,8 +614,8 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timerinfo)
       WriteClientTimerInfo(timerinfo, tag);
 
       //Workaround for string transfer to PVRclient
-      CStdString myTitle = timerinfo.Title();
-      CStdString myDirectory = timerinfo.Dir();
+      CStdString myTitle(timerinfo.m_strTitle);
+      CStdString myDirectory(timerinfo.m_strDir);
       tag.title = myTitle.c_str();
       tag.directory = myDirectory.c_str();
 
@@ -651,7 +651,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timerinfo, bool force)
       WriteClientTimerInfo(timerinfo, tag);
 
       //Workaround for string transfer to PVRclient
-      CStdString myTitle = timerinfo.Title();
+      CStdString myTitle(timerinfo.m_strTitle);
       tag.title = myTitle.c_str();
 
       ret = m_pStruct->DeleteTimer(tag, force);
@@ -686,7 +686,7 @@ PVR_ERROR CPVRClient::RenameTimer(const CPVRTimerInfoTag &timerinfo, const CStdS
       WriteClientTimerInfo(timerinfo, tag);
 
       //Workaround for string transfer to PVRclient
-      CStdString myTitle = timerinfo.Title();
+      CStdString myTitle(timerinfo.m_strTitle);
       tag.title = myTitle.c_str();
 
       ret = m_pStruct->RenameTimer(tag, newname.c_str());
@@ -721,8 +721,8 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timerinfo)
       WriteClientTimerInfo(timerinfo, tag);
 
       //Workaround for string transfer to PVRclient
-      CStdString myTitle = timerinfo.Title();
-      CStdString myDirectory = timerinfo.Dir();
+      CStdString myTitle(timerinfo.m_strTitle);
+      CStdString myDirectory(timerinfo.m_strDir);
       tag.title = myTitle.c_str();
       tag.directory = myDirectory.c_str();
 
@@ -746,23 +746,22 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timerinfo)
 
 void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag)
 {
-  tag.index         = timerinfo.ClientIndex();
-  tag.active        = timerinfo.Active();
-  tag.channelNum    = timerinfo.ClientNumber();
-  tag.recording     = timerinfo.IsRecording();
-  tag.title         = timerinfo.Title();
-  tag.directory     = timerinfo.Dir();
-  tag.priority      = timerinfo.Priority();
-  tag.lifetime      = timerinfo.Lifetime();
-  tag.repeat        = timerinfo.IsRepeating();
-  tag.repeatflags   = timerinfo.Weekdays();
+  tag.index         = timerinfo.m_iClientIndex;
+  tag.active        = timerinfo.m_bIsActive;
+  tag.channelNum    = timerinfo.m_iClientNumber;
+  tag.recording     = timerinfo.m_bIsRecording;
+  tag.title         = timerinfo.m_strTitle;
+  tag.directory     = timerinfo.m_strDir;
+  tag.priority      = timerinfo.m_iPriority;
+  tag.lifetime      = timerinfo.m_iLifetime;
+  tag.repeat        = timerinfo.m_bIsRepeating;
+  tag.repeatflags   = timerinfo.m_iWeekdays;
   tag.starttime     = timerinfo.StartTime();
   tag.starttime    -= m_iTimeCorrection;
   tag.endtime       = timerinfo.StopTime();
   tag.endtime      -= m_iTimeCorrection;
   tag.firstday      = timerinfo.FirstDayTime();
   tag.firstday     -= m_iTimeCorrection;
-  return;
 }
 
 /**********************************************************

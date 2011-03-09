@@ -62,10 +62,10 @@ int CPVRTimers::Update()
   for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
   {
     CPVRTimerInfoTag *timerTag = at(iTimerPtr);
-    if (!timerTag || !timerTag->Active())
+    if (!timerTag || !timerTag->m_bIsActive)
       continue;
 
-    CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *)timerTag->EpgInfoTag();
+    CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *) timerTag->m_EpgInfo;
     if (!epgTag)
       continue;
 
@@ -95,11 +95,11 @@ int CPVRTimers::Update()
   {
     /* get the timer tag */
     CPVRTimerInfoTag *timerTag = at(ptr);
-    if (!timerTag || !timerTag->Active())
+    if (!timerTag || !timerTag->m_bIsActive)
       continue;
 
     /* try to get the channel */
-    CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByClientFromAll(timerTag->Number(), timerTag->ClientID());
+    CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByClientFromAll(timerTag->m_iChannelNumber, timerTag->m_iClientID);
     if (!channel)
       continue;
 
@@ -109,7 +109,7 @@ int CPVRTimers::Update()
       continue;
 
     /* try to set the timer on the epg tag that matches */
-    CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *) epg->InfoTagBetween(timerTag->Start(), timerTag->Stop());
+    CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *) epg->InfoTagBetween(timerTag->m_StartTime, timerTag->m_StopTime);
     if (epgTag)
       epgTag->SetTimer(timerTag);
   }
@@ -167,7 +167,7 @@ CPVRTimerInfoTag *CPVRTimers::GetNextActiveTimer(void)
   CPVRTimerInfoTag *t0 = NULL;
   for (unsigned int i = 0; i < size(); i++)
   {
-    if ((at(i)->Active()) && (!t0 || (at(i)->Stop() > CDateTime::GetCurrentDateTime() && at(i)->Compare(*t0) < 0)))
+    if ((at(i)->m_bIsActive) && (!t0 || (at(i)->m_StopTime > CDateTime::GetCurrentDateTime() && at(i)->Compare(*t0) < 0)))
     {
       t0 = at(i);
     }
@@ -219,7 +219,7 @@ bool CPVRTimers::ChannelHasTimers(const CPVRChannel &channel)
   {
     CPVRTimerInfoTag *timer = at(ptr);
 
-    if (timer->ChannelNumber() == channel.ChannelNumber() && timer->IsRadio() == channel.IsRadio())
+    if (timer->ChannelNumber() == channel.ChannelNumber() && timer->m_bIsRadio == channel.IsRadio())
       return true;
   }
 
@@ -236,14 +236,14 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteR
     CPVRTimerInfoTag *timer = at(ptr);
 
     if (bCurrentlyActiveOnly &&
-        (CDateTime::GetCurrentDateTime() < timer->Start() ||
-         CDateTime::GetCurrentDateTime() > timer->Stop()))
+        (CDateTime::GetCurrentDateTime() < timer->m_StartTime ||
+         CDateTime::GetCurrentDateTime() > timer->m_StopTime))
       continue;
 
-    if (!bDeleteRepeating && timer->IsRepeating())
+    if (!bDeleteRepeating && timer->m_bIsRepeating)
       continue;
 
-    if (timer->ChannelNumber() == channel.ChannelNumber() && timer->IsRadio() == channel.IsRadio())
+    if (timer->ChannelNumber() == channel.ChannelNumber() && timer->m_bIsRadio == channel.IsRadio())
     {
       bReturn = timer->DeleteFromClient(true) || bReturn;
       erase(begin() + ptr);
@@ -279,7 +279,7 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
   /* set the timer data */
   newTimer->m_iClientIndex   = -1;
   newTimer->m_bIsActive      = true;
-  newTimer->SetTitle(channel->ChannelName());
+  newTimer->m_strTitle       = channel->ChannelName();
   newTimer->m_strTitle       = g_localizeStrings.Get(19056);
   newTimer->m_iChannelNumber = channel->ChannelNumber();
   newTimer->m_iClientNumber  = channel->ClientChannelNumber();
@@ -337,7 +337,7 @@ bool CPVRTimers::AddTimer(const CFileItem &item)
 
 bool CPVRTimers::AddTimer(const CPVRTimerInfoTag &item)
 {
-  if (!CPVRManager::Get()->GetClientProperties(item.ClientID())->SupportTimers)
+  if (!CPVRManager::Get()->GetClientProperties(item.m_iClientID)->SupportTimers)
   {
     CGUIDialogOK::ShowAndGetInput(19033,0,19215,0);
     return false;
@@ -387,7 +387,7 @@ bool CPVRTimers::RenameTimer(CPVRTimerInfoTag &item, const CStdString &strNewNam
 {
   if (item.RenameOnClient(strNewName))
   {
-    item.SetTitle(strNewName);
+    item.m_strTitle = strNewName;
     return true;
   }
 
@@ -428,10 +428,10 @@ CPVRTimerInfoTag *CPVRTimers::GetMatch(const CEpgInfoTag *Epg)
 
      const CPVRChannel *channel = Epg->GetTable()->Channel();
      if (timer->ChannelNumber() != channel->ChannelNumber()
-         || timer->IsRadio() != channel->IsRadio())
+         || timer->m_bIsRadio != channel->IsRadio())
        continue;
 
-     if (timer->Start() > Epg->Start() || timer->Stop() < Epg->End())
+     if (timer->m_StartTime > Epg->Start() || timer->m_StopTime < Epg->End())
        continue;
 
      returnTag = timer;

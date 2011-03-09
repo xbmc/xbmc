@@ -173,7 +173,7 @@ void SSortFileItem::ByDate(CFileItemPtr &item)
   if (item->IsEPG())
     label.Format("%s %s", item->GetEPGInfoTag()->Start().GetAsDBDateTime().c_str(), item->GetLabel().c_str());
   else if (item->IsPVRTimer())
-    label.Format("%s %s", item->GetPVRTimerInfoTag()->Start().GetAsDBDateTime().c_str(), item->GetLabel().c_str());
+    label.Format("%s %s", item->GetPVRTimerInfoTag()->m_StartTime.GetAsDBDateTime().c_str(), item->GetLabel().c_str());
   else
     label.Format("%s %s", item->m_dateTime.GetAsDBDateTime().c_str(), item->GetLabel().c_str());
 

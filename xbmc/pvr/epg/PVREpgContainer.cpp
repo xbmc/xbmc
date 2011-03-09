@@ -155,8 +155,8 @@ int CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFil
         if (epgentry)
         {
           if (epgentry->ChannelTag()->ChannelNumber() != timer->ChannelNumber() ||
-              epgentry->Start()                       <  timer->Start() ||
-              epgentry->End()                         >  timer->Stop())
+              epgentry->Start()                       <  timer->m_StartTime ||
+              epgentry->End()                         >  timer->m_StopTime)
             continue;
 
           results->Remove(iResultPtr);
