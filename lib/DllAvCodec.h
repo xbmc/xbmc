@@ -295,7 +295,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD1(void, avpicture_free, (AVPicture *p1))
   DEFINE_METHOD1(AVBitStreamFilterContext*, av_bitstream_filter_init, (const char *p1))
   DEFINE_METHOD8(int, av_bitstream_filter_filter, (AVBitStreamFilterContext* p1, AVCodecContext* p2, const char* p3, uint8_t** p4, int* p5, const uint8_t* p6, int p7, int p8))
-  DEFINE_METHOD1(void, av_bitstream_filter_close, (AVBitStreamFilterContext *p1))  DEFINE_METHOD1(void, avpicture_free, (AVPicture *p1))
+  DEFINE_METHOD1(void, av_bitstream_filter_close, (AVBitStreamFilterContext *p1))
   DEFINE_METHOD1(void, av_free_packet, (AVPacket *p1))
   DEFINE_METHOD4(int, avpicture_alloc, (AVPicture *p1, PixelFormat p2, int p3, int p4))
   DEFINE_METHOD3(const AVOption*, av_set_string, (void *p1, const char *p2, const char *p3))
