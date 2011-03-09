@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Date of translation: 02/14/2011-->
+<!--Date of translation: 03/06/2011-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -2191,9 +2191,9 @@
   <string id="24089">重新启动扩展功能</string>
   <string id="24090">锁定扩展功能管理器</string>
 
-  <string id="24096">库中的扩展功能被标记为已损坏。</string>
+  <string id="24096">库中的扩展功能被标记为已失效。</string>
   <string id="24097">要在系统中禁用它吗？</string>
-  <string id="24098">已损坏</string>
+  <string id="24098">已失效</string>
   <string id="24099">要切换到此皮肤吗？</string>
   <string id="25000">提示信息</string>
 

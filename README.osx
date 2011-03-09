@@ -3,7 +3,7 @@ TOC
 2. Getting the source code
 3. Install required libs
   3.1. Install Xcode
-  3.2. Install MacPorts 1.7
+  3.2. Install XBMC build depends
 4. How to compile and run
 	4.1 Using XCode
 	4.2 Using Command line
@@ -14,10 +14,9 @@ TOC
 -----------------------------------------------------------------------------
 
 This is a platform port of XBMC for the Apple OSX operating system. Both 10.5
-and 10.4 Intel development platforms are supported. The current build system
-is Xcode 2.5 or Xcode 3.1.2 There are two ways to build XBMC for Mac.
-1) command-line or
-2) Xcode.
+and 10.6 Intel development platforms are supported. The current build system
+is Xcode 3.1.2 There are two ways to build XBMC for Mac, from command-line or
+from Xcode.
 
 Generally, Xcode is the easiest as it presents the build system in a GUI environment.
 The command-line build is still under development.
@@ -45,97 +44,12 @@ Install latest Xcode. You can download it from Apple's site after registration a
 sdk. If using Xcode 3.x, you MUST use Xcode 3.1.2 so update your existing version
 if you are running a previous Xcode 3.x version. Xcode 3.x only runs on 10.5.
 
-
 -----------------------------------------------------------------------------
-3.1 Install MacPorts 1.7
+3.1 Install XBMC build depends
 -----------------------------------------------------------------------------
 
-These build instructions depend on MacPorts 1.7.1 from xbmc-port-depends at 
-http://code.google.com/p/xbmc-port-depends/ .
-If you have another version of MacPorts installed, it's best to remove it and
-install this 1.7.1 version. To remove a previous install of MacPorts, enter the
-following from a terminal windows:
-
- $ sudo rm -rf \
-    /opt/local \
-    /etc/manpaths.d/macports \
-    /etc/paths.d/macports \
-    /Applications/DarwinPorts \
-    /Applications/MacPorts \
-    /Library/LaunchDaemons/org.macports.* \
-    /Library/Receipts/DarwinPorts*.pkg \
-    /Library/Receipts/MacPorts*.pkg \
-    /Library/StartupItems/DarwinPortsStartup \
-    /Library/Tcl/darwinports1.0 \
-    /Library/Tcl/macports1.0
-
-Install MacPorts 1.7.1 (see http://code.google.com/p/xbmc-port-depends/). No NOT
-install the versions from http://www.macports.org, they were hopelessly broke
-for XBMC usage when their devs released MacPorts 1.8. Change MacPorts's behavior
-to always build universal against 10.4sdk using the following instructions.
-
- 1)
-   $ sudo nano /opt/local/etc/macports/macports.conf
-   a) change "universal_target	10.5" to "universal_target	10.4"
-
-   b) change "universal_sysroot	/Developer/SDKs/MacOSX10.5.sdk" to
-     "universal_sysroot	/Developer/SDKs/MacOSX10.4u.sdk"
-
-   c) change "universal_archs         ppc i386"
-     to reflect the arch you are building by removing the unused arch.
-
- 2) These are needed to build openssl (used by samba3 and mysql5) against 10.4sdk
-   $ sudo ln -s /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/dylib1.o /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/dylib1.10.5.o
-   $ sudo ln -s /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/crt1.o /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/crt1.10.5.o
-
-
-Then install the following port packages (order is very important):
-
- $ sudo port install pcre +universal
- $ sudo port install expat +universal
- $ sudo port install libiconv +universal
- $ sudo port install gettext +universal
- $ sudo port install libtool yasm cmake gmake pkgconfig
-
- $ sudo port install lzo +universal
- $ sudo port install lzo2 +universal
- $ sudo port install bzip2 +universal
- $ sudo port install fontconfig +universal
- $ sudo port install boost +universal
-
- $ sudo port install jpeg +universal
- $ sudo port install tiff +universal
- $ sudo port install libpng +universal
- $ sudo port install libogg +universal
- $ sudo port install libvorbis +universal
- $ sudo port install libmad macosx_deployment_target=10.4
- $ sudo port install fribidi +universal
- $ sudo port install wavpack +universal
- $ sudo port install libmpeg2 +no_sdl +no_x11 +universal
-
- $ sudo port install glew +universal
- $ sudo port install libcdio +universal
- $ sudo port install openssl +universal
- $ sudo port install libssh2 +universal
- $ sudo port install samba3 macosx_deployment_target=10.4
- $ sudo port install mysql5 +universal
- $ sudo port install sqlite3 +universal
- $ sudo port install libsamplerate +universal
-
- $ sudo port install libsdl +no_x11 +universal
- $ sudo port install smpeg +universal
- $ sudo port install libsdl_mixer +universal
- $ sudo port install libsdl_image +universal
-
-If you understand the following two lines, you can run it to automate
-the installation of the ports in the above order:
-
-  sudo bash
-  perl -ne 'print `port install $1` if /^ \$ sudo port install (.*)$/;' README.osx
-
-Finally, fix the mysql package default install location with this symlink:
-
- $ sudo ln -s /opt/local/include/mysql5/mysql/ /opt/local/include/mysql
+ $ cd $HOME/XBMC
+ $ make -C tools/osx/osx-depends
 
 -----------------------------------------------------------------------------
 4. How to compile
@@ -144,28 +58,15 @@ Both Xcode and Terminal compilation require that build environment be setup
 first. This is a simple step and involves the following:
 
  $ cd $HOME/XBMC
- $ ./bootstrap
- $ make -C lib/librtmp
- $ sudo make -C lib/librtmp install
- $ ./configure
+ $ make -C tools/osx/osx-depends/xbmc
  $ make clean
  $ make xcode_depends
- $ make -C lib/addons/script.module.pil
- $ make -C lib/addons/script.module.pysqlite
- $ sh lib/librtmp/darwin_package_librtmp.sh
 
 The configure operation will setup the build environment for codecs and
 internal libraries that are used by XBMC. This step is required for both Xcode
 and command-line building. The "make clean" ensures that there are no stale
 binaries from git that might cause problems. The last step will pre-build
 the majority of the codecs and libs:
-
-
-The configure operation will default to building "debug". To build "release"
-codecs and libraries for Xcode, do the configure step with "--disable-debug"
-but remember that Xcode will need to be also built "Release":
-
- $ ./configure --disable-debug
 
 -----------------------------------------------------------------------------
 4.1 Using Xcode
@@ -220,9 +121,6 @@ before running xcodebuild from the command-line.
  $ cd $HOME/XBMC
  $ export XBMC_HOME=`pwd`
  $ make xcode_depends
- $ make -C lib/addons/script.module.pil
- $ make -C lib/addons/script.module.pysqlite
- $ sh lib/librtmp/darwin_package_librtmp.sh
  $ xcodebuild -sdk macosx10.4 -project XBMC.xcodeproj -target XBMC.app -configuration Release build
 
  b)

@@ -152,7 +152,6 @@
 #include "video/windows/GUIWindowVideoPlaylist.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
-#include "video/windows/GUIWindowVideoFiles.h"
 #include "video/windows/GUIWindowVideoNav.h"
 #include "settings/GUIWindowSettingsProfile.h"
 #ifdef HAS_GL
@@ -868,6 +867,10 @@ bool CApplication::InitDirectoriesOSX()
   CUtil::GetHomePath(xbmcPath);
   setenv("XBMC_HOME", xbmcPath.c_str(), 0);
 
+  // setup path to our internal dylibs so loader can find them
+  CStdString frameworksPath = CUtil::GetFrameworksPath();
+  CSpecialProtocol::SetXBMCFrameworksPath(frameworksPath);
+  
   // OSX always runs with m_bPlatformDirectories == true
   if (m_bPlatformDirectories)
   {
@@ -1029,7 +1032,6 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowPrograms);                 // window id = 1
   g_windowManager.Add(new CGUIWindowPictures);                 // window id = 2
   g_windowManager.Add(new CGUIWindowFileManager);      // window id = 3
-  g_windowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   g_windowManager.Add(new CGUIWindowSettings);                 // window id = 4
   g_windowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
 #ifdef HAS_GL

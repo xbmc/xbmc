@@ -61,7 +61,7 @@ enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_MAX };
 
 
-class CGraphicContext : public CCriticalSection, public virtual xbmcutil::Referenced
+class CGraphicContext : public CCriticalSection
 {
 public:
   CGraphicContext(void);

@@ -27,7 +27,7 @@
 //  forward
 class LibraryLoader;
 
-class CSectionLoader : public virtual xbmcutil::Referenced
+class CSectionLoader
 {
 public:
   class CSection

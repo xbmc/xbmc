@@ -158,7 +158,7 @@
 				</control>
 				<control type="grouplist" id="9010">
 					<posx>10</posx>
-					<posy>290</posy>
+					<posy>250</posy>
 					<width>240</width>
 					<height>550</height>
 					<onleft>9000</onleft>
@@ -176,6 +176,12 @@
 						<description>Search</description>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>137</label>
+					</control>
+					<control type="radiobutton" id="7">
+						<description>Stack Toggle</description>
+						<textwidth>170</textwidth>
+						<include>ButtonMediaSubCommonValues</include>
+						<label>346</label>
 					</control>
 					<control type="radiobutton" id="19">
 						<description>Filter</description>
@@ -275,7 +281,7 @@
 					<onleft>50</onleft>
 					<onright>4</onright>
 					<onup>2</onup>
-					<ondown>99</ondown>
+					<ondown>16</ondown>
 				</control>
 				<control type="togglebutton" id="4">
 					<description>Sort asc</description>
@@ -285,37 +291,24 @@
 					<onleft>3</onleft>
 					<onright>50</onright>
 					<onup>2</onup>
-					<ondown>99</ondown>
-				</control>
-				<control type="radiobutton" id="99">
-					<description>Library button</description>
-					<posx>0</posx>
-					<posy>80</posy>
-					<label>$LOCALIZE[29800]</label>
-					<onclick>ReplaceWindow(VideoFiles)</onclick>
-					<selected>Window.IsVisible(VideoLibrary)</selected>
-					<include>ButtonCommonValues</include>
-					<onleft>50</onleft>
-					<onright>50</onright>
-					<onup>3</onup>
 					<ondown>16</ondown>
 				</control>
 				<control type="radiobutton" id="16">
 					<description>PartyMode</description>
 					<posx>0</posx>
-					<posy>120</posy>
+					<posy>80</posy>
 					<label>589</label>
 					<include>ButtonCommonValues</include>
 					<onleft>50</onleft>
 					<onright>50</onright>
-					<onup>99</onup>
+					<onup>3</onup>
 					<ondown>98</ondown>
 				</control>
 				<control type="radiobutton" id="98">
 					<description>Extra Options</description>
 					<hitrect x="0" y="160" w="265" h="40" />
 					<posx>0</posx>
-					<posy>160</posy>
+					<posy>120</posy>
 					<include>ButtonCommonValues</include>
 					<radiowidth>18</radiowidth>
 					<radioheight>18</radioheight>

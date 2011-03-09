@@ -739,10 +739,17 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     m_history.ClearPathHistory();
 
   int iWindow = GetID();
-  bool bOkay = (iWindow == WINDOW_MUSIC_FILES || iWindow == WINDOW_VIDEO_FILES || iWindow == WINDOW_FILES || iWindow == WINDOW_PICTURES || iWindow == WINDOW_PROGRAMS);
-  if (strDirectory.IsEmpty() && bOkay && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
+  int showLabel = 0;
+  if (strDirectory.IsEmpty() && (iWindow == WINDOW_MUSIC_FILES ||
+                                 iWindow == WINDOW_FILES ||
+                                 iWindow == WINDOW_PICTURES ||
+                                 iWindow == WINDOW_PROGRAMS))
+    showLabel = 1026;
+  if (strDirectory.Equals("sources://video/"))
+    showLabel = 999;
+  if (showLabel && (m_vecItems->Size() == 0 || !m_guiState->DisableAddSourceButtons())) // add 'add source button'
   {
-    CStdString strLabel = g_localizeStrings.Get(1026);
+    CStdString strLabel = g_localizeStrings.Get(showLabel);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->m_strPath = "add";
     pItem->SetIconImage("DefaultAddSource.png");
@@ -852,9 +859,9 @@ bool CGUIMediaWindow::OnClick(int iItem)
     GoParentFolder();
     return true;
   }
-  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+  if (pItem->m_strPath == "add" || pItem->m_strPath == "sources://add/") // 'add source button' in empty root
   {
-    OnContextButton(0, CONTEXT_BUTTON_ADD_SOURCE);
+    OnContextButton(iItem, CONTEXT_BUTTON_ADD_SOURCE);
     return true;
   }
 

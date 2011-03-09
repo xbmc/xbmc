@@ -42,6 +42,11 @@ CXBApplicationEx::~CXBApplicationEx()
 /* Create the app */
 bool CXBApplicationEx::Create()
 {
+  // Variables to perform app timing
+  m_bStop = false;
+  m_AppActive = true;
+  m_AppFocused = true;
+
   // Initialize the app's device-dependent objects
   if (!Initialize())
   {

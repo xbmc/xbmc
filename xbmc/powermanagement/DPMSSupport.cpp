@@ -230,7 +230,7 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
   return true;
 }
 
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && !defined(__arm__)
 #include <IOKit/IOKitLib.h>
 #include <CoreFoundation/CFNumber.h>
 

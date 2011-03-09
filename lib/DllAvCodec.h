@@ -123,6 +123,12 @@ public:
                     const uint8_t *buf, int buf_size,
                     int64_t pts, int64_t dts, int64_t pos)=0;
   virtual void av_parser_close(AVCodecParserContext *s)=0;
+  virtual AVBitStreamFilterContext *av_bitstream_filter_init(const char *name)=0;
+  virtual int av_bitstream_filter_filter(AVBitStreamFilterContext *bsfc,
+    AVCodecContext *avctx, const char *args,
+    uint8_t **poutbuf, int *poutbuf_size,
+    const uint8_t *buf, int buf_size, int keyframe) =0;
+  virtual void av_bitstream_filter_close(AVBitStreamFilterContext *bsfc) =0;
   virtual void avpicture_free(AVPicture *picture)=0;
   virtual void av_free_packet(AVPacket *pkt)=0;
   virtual int avpicture_alloc(AVPicture *picture, PixelFormat pix_fmt, int width, int height)=0;
@@ -205,6 +211,13 @@ public:
   }
   virtual void av_parser_close(AVCodecParserContext *s) { ::av_parser_close(s); }
 
+  virtual AVBitStreamFilterContext *av_bitstream_filter_init(const char *name) { return ::av_bitstream_filter_init(name); }
+  virtual int av_bitstream_filter_filter(AVBitStreamFilterContext *bsfc,
+    AVCodecContext *avctx, const char *args,
+    uint8_t **poutbuf, int *poutbuf_size,
+    const uint8_t *buf, int buf_size, int keyframe) { return ::av_bitstream_filter_filter(bsfc, avctx, args, poutbuf, poutbuf_size, buf, buf_size, keyframe); }
+  virtual void av_bitstream_filter_close(AVBitStreamFilterContext *bsfc) { ::av_bitstream_filter_close(bsfc); }
+
   virtual void avpicture_free(AVPicture *picture) { ::avpicture_free(picture); }
   virtual void av_free_packet(AVPacket *pkt) { ::av_free_packet(pkt); }
   virtual int avpicture_alloc(AVPicture *picture, PixelFormat pix_fmt, int width, int height) { return ::avpicture_alloc(picture, pix_fmt, width, height); }
@@ -280,6 +293,9 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD1(void, avcodec_get_context_defaults, (AVCodecContext *p1))
   DEFINE_METHOD1(void, av_parser_close, (AVCodecParserContext *p1))
   DEFINE_METHOD1(void, avpicture_free, (AVPicture *p1))
+  DEFINE_METHOD1(AVBitStreamFilterContext*, av_bitstream_filter_init, (const char *p1))
+  DEFINE_METHOD8(int, av_bitstream_filter_filter, (AVBitStreamFilterContext* p1, AVCodecContext* p2, const char* p3, uint8_t** p4, int* p5, const uint8_t* p6, int p7, int p8))
+  DEFINE_METHOD1(void, av_bitstream_filter_close, (AVBitStreamFilterContext *p1))
   DEFINE_METHOD1(void, av_free_packet, (AVPacket *p1))
   DEFINE_METHOD4(int, avpicture_alloc, (AVPicture *p1, PixelFormat p2, int p3, int p4))
   DEFINE_METHOD3(const AVOption*, av_set_string, (void *p1, const char *p2, const char *p3))
@@ -316,6 +332,9 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(av_parser_init)
     RESOLVE_METHOD(av_parser_parse2)
     RESOLVE_METHOD(av_parser_close)
+    RESOLVE_METHOD(av_bitstream_filter_init)
+    RESOLVE_METHOD(av_bitstream_filter_filter)
+    RESOLVE_METHOD(av_bitstream_filter_close)
     RESOLVE_METHOD(avpicture_free)
     RESOLVE_METHOD(avpicture_alloc)
     RESOLVE_METHOD(av_free_packet)

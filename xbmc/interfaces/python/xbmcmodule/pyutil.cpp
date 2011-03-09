@@ -20,6 +20,7 @@
  */
 
 #include "pyutil.h"
+#include "pythreadstate.h"
 #include <wchar.h>
 #include <vector>
 #include "addons/Skin.h"
@@ -94,10 +95,9 @@ namespace PYXBMC
 
   void PyXBMCWaitForThreadMessage(int message, int param1, int param2)
   {
-    Py_BEGIN_ALLOW_THREADS
+    CPyThreadState pyState;
     ThreadMessage tMsg = {message, param1, param2};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
-    Py_END_ALLOW_THREADS
   }
 
   static char defaultImage[1024];

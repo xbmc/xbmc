@@ -21,6 +21,7 @@
 
 #include "pyutil.h"
 #include "PythonPlayer.h"
+#include "pythreadstate.h"
 #include "../XBPython.h"
 
 using namespace PYXBMC;
@@ -60,9 +61,9 @@ static int SPyEvent_Function(void* e)
     Py_DECREF(ret);
   }
 
-  Py_BEGIN_ALLOW_THREADS
+  CPyThreadState pyState;
   delete object;
-  Py_END_ALLOW_THREADS
+
   return 0;
 
 }

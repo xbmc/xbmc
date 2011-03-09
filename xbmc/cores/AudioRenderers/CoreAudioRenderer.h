@@ -19,6 +19,7 @@
  *
  */
 
+#if !defined(__arm__)
 #ifndef __COREAUDIO_RENDERER_H__
 #define __COREAUDIO_RENDERER_H__
 
@@ -167,4 +168,5 @@ class CCoreAudioRenderer : public IAudioRenderer
     long m_DoRunout;
   };
 
+#endif
 #endif
