@@ -167,10 +167,11 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
   tag.m_bIsRepeating  = timer->repeat == 1;
   tag.m_iWeekdays     = timer->repeatflags;
   tag.m_strFileNameAndPath.Format("pvr://client%i/timers/%i", tag.m_iClientID, tag.m_iClientIndex);
+
+  // TODO find matching EPG entry
   tag.UpdateSummary();
 
   xbmcTimers->Update(tag);
-  return;
 }
 
 void CAddonHelpers_PVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)

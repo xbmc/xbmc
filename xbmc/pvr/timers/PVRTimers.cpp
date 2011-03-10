@@ -143,6 +143,8 @@ bool CPVRTimers::Update(const CPVRTimerInfoTag &timer)
   newTag->m_iChannelNumber = timer.m_iChannelNumber;
   newTag->m_bIsRadio       = timer.m_bIsRadio;
 
+  // TODO epg entry
+
   return true;
 }
 
@@ -332,14 +334,14 @@ bool CPVRTimers::AddTimer(const CFileItem &item)
     return false;
   }
 
-  const CPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
+  CPVRTimerInfoTag *tag = (CPVRTimerInfoTag *)item.GetPVRTimerInfoTag();
   if (!tag)
     return false;
 
   return AddTimer(*tag);
 }
 
-bool CPVRTimers::AddTimer(const CPVRTimerInfoTag &item)
+bool CPVRTimers::AddTimer(CPVRTimerInfoTag &item)
 {
   if (!CPVRManager::Get()->GetClientProperties(item.m_iClientID)->SupportTimers)
   {
@@ -414,7 +416,7 @@ bool CPVRTimers::UpdateTimer(const CFileItem &item)
   return UpdateTimer(*tag);
 }
 
-bool CPVRTimers::UpdateTimer(const CPVRTimerInfoTag &item)
+bool CPVRTimers::UpdateTimer(CPVRTimerInfoTag &item)
 {
   return item.UpdateOnClient();
 }

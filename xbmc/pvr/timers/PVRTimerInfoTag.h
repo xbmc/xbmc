@@ -106,9 +106,11 @@ public:
   int ChannelNumber(void) const;
   CStdString ChannelName(void) const;
 
+  void FindEpgEvent(void);
+
   /* Client control functions */
-  bool AddToClient() const;
+  bool AddToClient();
   bool DeleteFromClient(bool force = false) const;
   bool RenameOnClient(const CStdString &newname) const;
-  bool UpdateOnClient() const;
+  bool UpdateOnClient();
 };

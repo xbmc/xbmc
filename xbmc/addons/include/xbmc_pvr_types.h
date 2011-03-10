@@ -260,6 +260,7 @@ extern "C" {
     int           lifetime;
     int           repeat;
     int           repeatflags;
+    int           epgid;
   } ATTRIBUTE_PACKED PVR_TIMERINFO;
 
   /*! \brief PVR recording defination

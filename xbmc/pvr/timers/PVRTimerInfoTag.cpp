@@ -177,8 +177,10 @@ const CStdString &CPVRTimerInfoTag::GetStatus() const
     return g_localizeStrings.Get(305);
 }
 
-bool CPVRTimerInfoTag::AddToClient() const
+bool CPVRTimerInfoTag::AddToClient()
 {
+  FindEpgEvent();
+
   try
   {
     CLIENTMAP *clients = CPVRManager::Get()->Clients();
@@ -252,8 +254,25 @@ bool CPVRTimerInfoTag::RenameOnClient(const CStdString &newname) const
   return false;
 }
 
-bool CPVRTimerInfoTag::UpdateOnClient() const
+void CPVRTimerInfoTag::FindEpgEvent(void)
 {
+  if (!m_EpgInfo)
+  {
+    CPVREpg *epg = ((CPVRChannel *)CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetGroupAll()->GetByChannelNumber(m_iChannelNumber))->GetEPG();
+
+    if (epg)
+    {
+      m_EpgInfo = (CPVREpgInfoTag *) epg->InfoTagBetween(m_StartTime, m_StopTime);
+      if (!m_EpgInfo)
+        m_EpgInfo = (CPVREpgInfoTag *) epg->InfoTagAround(m_StartTime);
+    }
+  }
+}
+
+bool CPVRTimerInfoTag::UpdateOnClient()
+{
+  FindEpgEvent();
+
   try
   {
     CLIENTMAP *clients = CPVRManager::Get()->Clients();
