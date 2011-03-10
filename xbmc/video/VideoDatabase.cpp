@@ -7701,9 +7701,14 @@ void CVideoDatabase::AnnounceUpdate(std::string content, int id)
   ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "UpdateVideo", data);
 }
 
-bool CVideoDatabase::GetItemForPath(const CStdString &content, const CStdString &path, CFileItem &item)
+bool CVideoDatabase::GetItemForPath(const CStdString &content, const CStdString &strPath, CFileItem &item)
 {
   CFileItemList items;
+  CStdString path(strPath);
+
+  if(URIUtils::IsMultiPath(path))
+    path = CMultiPathDirectory::GetFirstPath(path);
+
   if (content == "movies")
   {
     CStdString where = PrepareSQL("where c%02d='%s' limit 1", VIDEODB_ID_BASEPATH, path.c_str());
