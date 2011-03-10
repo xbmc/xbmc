@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Date of translation: 03/06/2011-->
+<!--Date of translation: 03/10/2011-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -707,6 +707,8 @@
   <string id="851">有效端口范围是 1-65535</string>
   <string id="852">有效端口范围是 1024-65535</string>
 
+  <string id="998">添加音乐...</string>
+  <string id="999">添加视频...</string>
   <string id="1000">- 预览</string>
   <string id="1001">无法连接</string>
   <string id="1002">XBMC 无法连接到该网上邻居！</string>
