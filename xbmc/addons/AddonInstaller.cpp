@@ -334,6 +334,14 @@ bool CAddonInstallJob::OnPreInstall()
   return false;
 }
 
+void CAddonInstallJob::DeleteAddon(const CStdString &addonFolder)
+{
+  CFileItemList list;
+  list.Add(CFileItemPtr(new CFileItem(addonFolder, true)));
+  list[0]->Select(true);
+  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete, list, ""), NULL);
+}
+
 bool CAddonInstallJob::Install(const CStdString &installFrom)
 {
   CStdString addonFolder(installFrom);
@@ -352,10 +360,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom)
     CStdString addonID = URIUtils::GetFileName(addonFolder);
     ReportInstallError(addonID, addonID);
     CLog::Log(LOGERROR,"Could not read addon description of %s", addonID.c_str());
-    CFileItemList list;
-    list.Add(CFileItemPtr(new CFileItem(addonFolder, true)));
-    list[0]->Select(true);
-    CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete, list, ""), NULL);
+    DeleteAddon(addonFolder);
     return false;
   }
 

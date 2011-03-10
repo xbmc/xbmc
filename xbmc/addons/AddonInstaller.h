@@ -110,6 +110,11 @@ private:
    */
   bool CheckHash(const CStdString& addonZip);
 
+  /*! \brief Delete an addon following install failure
+   \param addonFolder - the folder to delete
+   */
+  void DeleteAddon(const CStdString &addonFolder);
+
   ADDON::AddonPtr m_addon;
   CStdString m_hash;
   bool m_update;
