@@ -69,7 +69,7 @@ namespace ADDON
 
   class CAddonMgr;
   class AddonVersion;
-  typedef std::map<CStdString, std::pair<const AddonVersion, const AddonVersion> > ADDONDEPS;
+  typedef std::map<CStdString, std::pair<const AddonVersion, bool> > ADDONDEPS;
   typedef std::map<CStdString, CStdString> InfoMap;
   class AddonProps;
 

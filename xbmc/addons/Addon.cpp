@@ -288,11 +288,9 @@ void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)
 {
   if (!plugin)
     return;
-  // TODO: no need for a pair of versions here here - could use the optional flag instead?
   for (unsigned int i = 0; i < plugin->num_imports; ++i)
     dependencies.insert(make_pair(CStdString(plugin->imports[i].plugin_id),
-                        make_pair(AddonVersion(plugin->imports[i].version),
-                                  AddonVersion(plugin->imports[i].version))));
+                        make_pair(AddonVersion(plugin->imports[i].version), plugin->imports[i].optional != 0)));
 }
 
 /**

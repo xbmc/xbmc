@@ -62,6 +62,10 @@ bool CAddonDatabase::CreateTables()
     CLog::Log(LOGINFO, "create addonextra index");
     m_pDS->exec("CREATE INDEX idxAddonExtra ON addonextra(id)");
 
+    CLog::Log(LOGINFO, "create dependencies table");
+    m_pDS->exec("CREATE TABLE dependencies (id integer, addon text, version text, optional boolean)\n");
+    m_pDS->exec("CREATE INDEX idxDependencies ON dependencies(id)");
+
     CLog::Log(LOGINFO, "create repo table");
     m_pDS->exec("CREATE TABLE repo (id integer primary key, addonID text,"
                 "checksum text, lastcheck text)\n");
@@ -150,6 +154,11 @@ bool CAddonDatabase::UpdateOldVersion(int version)
     {
       m_pDS->exec("alter table addon add disclaimer text");
     }
+    if (version < 13)
+    {
+      m_pDS->exec("CREATE TABLE dependencies (id integer, addon text, version text, optional boolean)\n");
+      m_pDS->exec("CREATE INDEX idxDependencies ON dependencies(id)");
+    }
   }
   catch (...)
   {
@@ -191,6 +200,12 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
     for (InfoMap::const_iterator i = info.begin(); i != info.end(); ++i)
     {
       sql = PrepareSQL("insert into addonextra(id, key, value) values (%i, '%s', '%s')", idAddon, i->first.c_str(), i->second.c_str());
+      m_pDS->exec(sql.c_str());
+    }
+    const ADDONDEPS &deps = addon->GetDeps();
+    for (ADDONDEPS::const_iterator i = deps.begin(); i != deps.end(); ++i)
+    {
+      sql = PrepareSQL("insert into dependencies(id, addon, version, optional) values (%i, '%s', '%s', %i)", idAddon, i->first.c_str(), i->second.first.str.c_str(), i->second.second ? 1 : 0);
       m_pDS->exec(sql.c_str());
     }
     return idAddon;
@@ -281,6 +296,14 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr& addon)
         m_pDS2->next();
       }
 
+      sql = PrepareSQL("select addon,version,optional from dependencies where id=%i", id);
+      m_pDS2->query(sql.c_str());
+      while (!m_pDS2->eof())
+      {
+        props.dependencies.insert(make_pair(m_pDS2->fv(0).get_asString(), make_pair(m_pDS2->fv(1).get_asString(), m_pDS2->fv(2).get_asBool())));
+        m_pDS2->next();
+      }
+
       addon = CAddonMgr::AddonFromProps(props);
       return NULL != addon.get();
     }
@@ -351,6 +374,8 @@ void CAddonDatabase::DeleteRepository(int idRepo)
     sql = PrepareSQL("delete from addon where id in (select idAddon from addonlinkrepo where idRepo=%i)",idRepo);
     m_pDS->exec(sql.c_str());
     sql = PrepareSQL("delete from addonextra where id in (select idAddon from addonlinkrepo where idRepo=%i)",idRepo);
+    m_pDS->exec(sql.c_str());
+    sql = PrepareSQL("delete from dependencies where id in (select idAddon from addonlinkrepo where idRepo=%i)",idRepo);
     m_pDS->exec(sql.c_str());
     sql = PrepareSQL("delete from addonlinkrepo where idRepo=%i",idRepo);
     m_pDS->exec(sql.c_str());
