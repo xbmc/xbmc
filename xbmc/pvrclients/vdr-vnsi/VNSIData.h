@@ -20,9 +20,12 @@
  *
  */
 
-#include "client.h"
-#include "thread.h"
 #include "VNSISession.h"
+#include "thread.h"
+#include "client.h"
+
+#include <string>
+#include <map>
 
 class cResponsePacket;
 class cRequestPacket;
@@ -33,14 +36,14 @@ public:
   cVNSIData();
   ~cVNSIData();
 
-  bool Open(const CStdString& hostname, int port);
+  bool Open(const std::string& hostname, int port);
   void Close();
   bool CheckConnection();
 
   cResponsePacket*  ReadResult(cRequestPacket* vrp);
   int         GetProtocol()   { return m_session.GetProtocol(); }
-  const CStdString& GetServerName() { return m_session.GetServerName(); }
-  const CStdString& GetVersion()    { return m_session.GetVersion(); }
+  const std::string& GetServerName() { return m_session.GetServerName(); }
+  const std::string& GetVersion()    { return m_session.GetVersion(); }
   bool        SupportChannelScan();
   bool        EnableStatusInterface(bool onOff);
   bool        EnableOSDInterface(bool onOff);
@@ -62,8 +65,8 @@ public:
 
   int         GetRecordingsCount();
   PVR_ERROR   GetRecordingsList(PVRHANDLE handle);
-  const CStdString& GetRecordingPath(uint32_t index);
-  PVR_ERROR   DeleteRecording(const CStdString& path);
+  const std::string& GetRecordingPath(uint32_t index);
+  PVR_ERROR   DeleteRecording(const std::string& path);
 
 
 protected:
@@ -78,12 +81,12 @@ private:
     cResponsePacket *pkt;
   };
   typedef std::map<int, SMessage> SMessages;
-  typedef std::vector<CStdString> RecordPaths;
+  typedef std::vector<std::string> RecordPaths;
 
   cVNSISession    m_session;
   cMutex          m_Mutex;
   SMessages       m_queue;
   RecordPaths     m_RecordsPaths;
-  CStdString      m_videodir;
+  std::string     m_videodir;
   int             m_recIndex;
 };

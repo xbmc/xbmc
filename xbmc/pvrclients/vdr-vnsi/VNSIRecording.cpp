@@ -19,12 +19,12 @@
  *
  */
 
-#include "VNSIRecording.h"
 #include <limits.h>
-#include "tools.h"
+#include "VNSIRecording.h"
 #include "responsepacket.h"
 #include "requestpacket.h"
 #include "vdrcommand.h"
+#include "client.h"
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
 
@@ -37,7 +37,7 @@ cVNSIRecording::~cVNSIRecording()
   Close();
 }
 
-bool cVNSIRecording::Open(const CStdString& path)
+bool cVNSIRecording::Open(const std::string& path)
 {
   bool ret = false;
 
@@ -46,7 +46,7 @@ bool cVNSIRecording::Open(const CStdString& path)
 
   cRequestPacket vrp;
   if (!vrp.init(VDR_RECSTREAM_OPEN) ||
-      !vrp.add_String(path))
+      !vrp.add_String(path.c_str()))
   {
     return ret;
   }

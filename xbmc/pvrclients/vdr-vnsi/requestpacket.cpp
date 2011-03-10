@@ -19,17 +19,18 @@
  *
  */
 
-#ifndef WIN32
-#include <arpa/inet.h>
-#else
-
-#endif
 #include <stdlib.h>
 #include <string.h>
 
 #include "requestpacket.h"
 #include "vdrcommand.h"
 #include "tools.h"
+
+#ifdef __WINDOWS__
+#include <Winsock2.h>
+#else
+#include <arpa/inet.h>
+#endif
 
 uint32_t cRequestPacket::serialNumberCounter = 1;
 

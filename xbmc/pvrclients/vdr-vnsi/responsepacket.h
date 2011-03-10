@@ -20,14 +20,8 @@
  *
  */
 
-#ifndef WIN32
-#include <arpa/inet.h>
-#else
-
-#endif
-
-#include <stdlib.h>
-#include <string.h>
+#include <stdio.h>
+#include <stdint.h>
 
 class cResponsePacket
 {

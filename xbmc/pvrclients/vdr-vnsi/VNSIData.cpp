@@ -23,7 +23,12 @@
 #include "responsepacket.h"
 #include "requestpacket.h"
 #include "vdrcommand.h"
-#include "tools.h"
+
+#ifdef __WINDOWS__
+#include <Winsock2.h>
+#else
+#include <arpa/inet.h>
+#endif
 
 #define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
 
@@ -36,7 +41,7 @@ cVNSIData::~cVNSIData()
   Close();
 }
 
-bool cVNSIData::Open(const CStdString& hostname, int port)
+bool cVNSIData::Open(const std::string& hostname, int port)
 {
   if(!m_session.Open(hostname, port))
     return false;
@@ -690,7 +695,7 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
 
   while (!vresp->end())
   {
-    CStdString title;
+    std::string title;
 
     PVR_RECORDINGINFO tag;
     tag.index           = m_recIndex++;
@@ -711,14 +716,15 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
 
     /* Cleanup now the path name and remove VDR's 2 top
        directories and the strip the base path */
-    CStdString path = fileName+m_videodir.size()+1;
+    std::string path = fileName+m_videodir.size()+1;
+    path = path.substr(0, path.find_last_of("/\\"));
 
     size_t found = path.find_last_of("/\\");
-    if (found != CStdString::npos)
+    if (found != std::string::npos)
     {
       /* If no title is present use recording dir name
          as title */
-      if (title.IsEmpty())
+      if (title.empty())
         title = path.substr(found+1);
       path = path.substr(0, found);
     }
@@ -726,7 +732,7 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
     {
       /* If no title is present use recording dir name
          as title */
-      if (title.IsEmpty())
+      if (title.empty())
         title = path;
       path = "";
     }
@@ -749,13 +755,13 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cVNSIData::DeleteRecording(const CStdString& path)
+PVR_ERROR cVNSIData::DeleteRecording(const std::string& path)
 {
   cRequestPacket vrp;
   if (!vrp.init(VDR_RECORDINGS_DELETE))
     return PVR_ERROR_UNKOWN;
 
-  if (!vrp.add_String(path))
+  if (!vrp.add_String(path.c_str()))
     return PVR_ERROR_UNKOWN;
 
   cResponsePacket* vresp = ReadResult(&vrp);
@@ -818,7 +824,6 @@ void cVNSIData::Action()
 
       vresp = new cResponsePacket();
       vresp->setResponse(requestID, userData, userDataLength);
-      DEVDBG("cVNSIData::Action() - Rxd a response packet, requestID=%lu, len=%lu", requestID, userDataLength);
 
       CMD_LOCK;
       SMessages::iterator it = m_queue.find(requestID);
@@ -854,7 +859,7 @@ void cVNSIData::Action()
         char* str = new char[length + 1];
         strcpy(str, (char*)&userData[4]);
 
-        CStdString text = str;
+        std::string text = str;
         if (g_bCharsetConv)
           XBMC->UnknownToUTF8(text);
 
@@ -929,9 +934,9 @@ bool cVNSIData::readData(uint8_t* buffer, int totalBytes)
   return false;
 }
 
-const CStdString& cVNSIData::GetRecordingPath(uint32_t index)
+const std::string& cVNSIData::GetRecordingPath(uint32_t index)
 {
-  static CStdString empty;
+  static std::string empty;
 
   if (index == 0 || index > m_RecordsPaths.size())
     return empty;

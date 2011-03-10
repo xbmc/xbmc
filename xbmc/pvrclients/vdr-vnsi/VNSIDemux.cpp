@@ -23,7 +23,6 @@
 #include <limits.h>
 #include <libavcodec/avcodec.h> // For codec id's
 #include "VNSIDemux.h"
-#include "tools.h"
 #include "responsepacket.h"
 #include "requestpacket.h"
 #include "vdrcommand.h"
@@ -205,7 +204,7 @@ bool cVNSIDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
 
 bool cVNSIDemux::GetSignalStatus(PVR_SIGNALQUALITY &qualityinfo)
 {
-  if (m_Quality.fe_name.IsEmpty())
+  if (m_Quality.fe_name.empty())
     return false;
 
   strncpy(qualityinfo.frontend_name, m_Quality.fe_name.c_str(), sizeof(qualityinfo.frontend_name));
@@ -229,8 +228,6 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
   {
     uint32_t    index = resp->extract_U32();
     const char* type  = resp->extract_String();
-
-    DEVDBG("cVNSIDemux::StreamChange - id: %d, type: %s", index, type);
 
     m_Streams.stream[m_Streams.nstreams].fpsscale         = 0;
     m_Streams.stream[m_Streams.nstreams].fpsrate          = 0;

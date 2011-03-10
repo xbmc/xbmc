@@ -20,9 +20,7 @@
  *
  */
 
-#include "client.h"
 #include "VNSISession.h"
-#include "thread.h"
 
 class cResponsePacket;
 
@@ -32,7 +30,7 @@ public:
   cVNSIRecording();
   ~cVNSIRecording();
 
-  bool Open(const CStdString& path);
+  bool Open(const std::string& path);
   void Close();
 
   int Read(unsigned char* buf, uint32_t buf_size);

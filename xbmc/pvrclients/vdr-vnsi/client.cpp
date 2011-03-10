@@ -26,6 +26,10 @@
 #include "VNSIData.h"
 #include "VNSIChannelScan.h"
 
+#include <sstream>
+#include <string>
+#include <iostream>
+
 using namespace std;
 
 bool m_bCreated               = false;
@@ -38,14 +42,14 @@ int g_clientID                = -1;
  * Default values are defined inside client.h
  * and exported to the other source files.
  */
-CStdString    g_szHostname              = DEFAULT_HOST;
+std::string   g_szHostname              = DEFAULT_HOST;
 int           g_iPort                   = DEFAULT_PORT;
 bool          g_bCharsetConv            = DEFAULT_CHARCONV;     ///< Convert VDR's incoming strings to UTF8 character set
 bool          g_bHandleMessages         = DEFAULT_HANDLE_MSG;   ///< Send VDR's OSD status messages to XBMC OSD
 int           g_iConnectTimeout         = DEFAULT_TIMEOUT;      ///< The Socket connection timeout
 int           g_iPriority               = DEFAULT_PRIORITY;     ///< The Priority this client have in response to other clients
-CStdString    g_szUserPath              = "";
-CStdString    g_szClientPath            = "";
+std::string   g_szUserPath              = "";
+std::string   g_szClientPath            = "";
 CHelper_libXBMC_addon *XBMC   = NULL;
 CHelper_libXBMC_gui   *GUI    = NULL;
 CHelper_libXBMC_pvr   *PVR    = NULL;
@@ -323,25 +327,33 @@ PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
 
 const char * GetBackendName()
 {
-  static CStdString BackendName = VNSIData ? VNSIData->GetServerName() : "unknown";
+  static std::string BackendName = VNSIData ? VNSIData->GetServerName() : "unknown";
   return BackendName.c_str();
 }
 
 const char * GetBackendVersion()
 {
-  static CStdString BackendVersion;
-  if (VNSIData)
-    BackendVersion.Format("%s (Protocol: %i)", VNSIData->GetVersion(), VNSIData->GetProtocol());
+  static std::string BackendVersion;
+  if (VNSIData) {
+    std::stringstream format;
+    format << VNSIData->GetVersion() << "(Protocol: " << VNSIData->GetProtocol() << ")";
+    BackendVersion = format.str();
+  }
   return BackendVersion.c_str();
 }
 
 const char * GetConnectionString()
 {
-  static CStdString ConnectionString;
-  if (VNSIData)
-    ConnectionString.Format("%s:%i%s", g_szHostname.c_str(), g_iPort, IsClientConnected() ? "" : " (Not connected!)");
-  else
-    ConnectionString.Format("%s:%i (addon error!)", g_szHostname.c_str(), g_iPort);
+  static std::string ConnectionString;
+  std::stringstream format;
+
+  if (VNSIData) {
+    format << g_szHostname << ":" << g_iPort << (IsClientConnected() ? "" : " (Not connected!)");
+  }
+  else {
+    format << g_szHostname << ":" << g_iPort << " (addon error!)";
+  }
+  ConnectionString = format.str();
   return ConnectionString.c_str();
 }
 
@@ -559,7 +571,7 @@ bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 
   CloseRecordedStream();
 
-  const CStdString& name = VNSIData->GetRecordingPath(recinfo.index);
+  const std::string& name = VNSIData->GetRecordingPath(recinfo.index);
   VNSIRecording = new cVNSIRecording;
   return VNSIRecording->Open(name);
 }

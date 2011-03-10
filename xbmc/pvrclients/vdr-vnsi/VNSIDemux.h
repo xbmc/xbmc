@@ -20,16 +20,16 @@
  *
  */
 
-#include "client.h"
 #include "VNSISession.h"
-#include "thread.h"
+#include "client.h"
+#include <string>
 
 class cResponsePacket;
 
 struct SQuality
 {
-  CStdString  fe_name;
-  CStdString  fe_status;
+  std::string fe_name;
+  std::string fe_status;
   uint32_t    fe_snr;
   uint32_t    fe_signal;
   uint32_t    fe_ber;
@@ -62,7 +62,7 @@ private:
   cVNSISession    m_session;
   int             m_channel;
   int             m_StatusCount;
-  CStdString      m_Status;
+  std::string     m_Status;
   PVR_STREAMPROPS m_Streams;
   SQuality        m_Quality;
 };

@@ -20,9 +20,11 @@
  *
  */
 
-#include "client.h"
 #include "VNSISession.h"
 #include "thread.h"
+#include "client.h"
+#include <string>
+#include <map>
 
 typedef enum scantype
 {
@@ -78,8 +80,8 @@ private:
   SMessages       m_queue;
   cMutex          m_Mutex;
   cVNSISession    m_session;
-  CStdString      m_header;
-  CStdString      m_Signal;
+  std::string     m_header;
+  std::string     m_Signal;
   bool            m_running;
   bool            m_stopped;
   bool            m_Canceled;

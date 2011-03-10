@@ -19,12 +19,19 @@
  *
  */
 
-#include "VNSIChannelScan.h"
 #include <limits.h>
-#include "tools.h"
+#include "VNSIChannelScan.h"
 #include "responsepacket.h"
 #include "requestpacket.h"
 #include "vdrcommand.h"
+
+#include <sstream>
+
+#ifdef __WINDOWS__
+#include <Winsock2.h>
+#else
+#include <arpa/inet.h>
+#endif
 
 #define BUTTON_START                    5
 #define BUTTON_BACK                     6
@@ -203,26 +210,28 @@ void cVNSIChannelScan::ReturnFromProcessView()
   }
 }
 
-void cVNSIChannelScan::SetProgress(int procent)
+void cVNSIChannelScan::SetProgress(int percent)
 {
   if (!m_progressDone)
     m_progressDone = GUI->Control_getProgress(m_window, PROGRESS_DONE);
 
-  CStdString header;
-  header.Format(m_header, procent);
-  m_window->SetControlLabel(HEADER_LABEL, header.c_str());
-  m_progressDone->SetPercentage((float)procent);
+  std::stringstream header;
+  header << percent;
+
+  m_window->SetControlLabel(HEADER_LABEL, header.str().c_str());
+  m_progressDone->SetPercentage((float)percent);
 }
 
-void cVNSIChannelScan::SetSignal(int procent, bool locked)
+void cVNSIChannelScan::SetSignal(int percent, bool locked)
 {
   if (!m_progressSignal)
     m_progressSignal = GUI->Control_getProgress(m_window, PROGRESS_SIGNAL);
 
-  CStdString signal;
-  signal.Format(m_Signal, procent);
-  m_window->SetControlLabel(LABEL_SIGNAL, signal.c_str());
-  m_progressSignal->SetPercentage((float)procent);
+  std::stringstream signal;
+  signal << percent;
+
+  m_window->SetControlLabel(LABEL_SIGNAL, signal.str().c_str());
+  m_progressSignal->SetPercentage((float)percent);
 
   if (locked)
     m_window->SetProperty("Locked", "true");
@@ -411,8 +420,8 @@ bool cVNSIChannelScan::ReadCountries()
   m_spinCountries = GUI->Control_getSpin(m_window, CONTROL_SPIN_COUNTRIES);
   m_spinCountries->Clear();
 
-  CStdString dvdlang = XBMC->GetDVDMenuLanguage();
-  dvdlang = dvdlang.ToUpper();
+  std::string dvdlang = XBMC->GetDVDMenuLanguage();
+  //dvdlang = dvdlang.ToUpper();
 
   cRequestPacket vrp;
   if (!vrp.init(VDR_SCAN_GETCOUNTRIES))

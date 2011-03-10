@@ -21,14 +21,21 @@
 
 #include "VNSISession.h"
 #include "client.h"
-#ifdef _MSC_VER
-#include <winsock2.h>
+
+#ifdef __WINDOWS__
+#include <Winsock2.h>
 #define SHUT_RDWR SD_BOTH
 #define ETIMEDOUT WSAETIMEDOUT
 #else
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #endif
+
+#include <unistd.h>
+#include <netdb.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <poll.h>
 
 #include "responsepacket.h"
 #include "requestpacket.h"
@@ -40,7 +47,8 @@
 #ifndef SOL_TCP
 #define SOL_TCP IPPROTO_TCP
 #endif
-using namespace std;
+
+#define INVALID_SOCKET (-1)
 
 cVNSISession::cVNSISession()
   : m_fd(INVALID_SOCKET)
@@ -62,12 +70,16 @@ void cVNSISession::Close()
 {
   if(m_fd != INVALID_SOCKET)
   {
+#ifdef __WINDOWS__
     closesocket(m_fd);
+#else
+    close(m_fd);
+#endif
     m_fd = INVALID_SOCKET;
   }
 }
 
-bool cVNSISession::Open(const CStdString& hostname, int port, const char *name)
+bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
 {
   struct hostent hostbuf, *hp;
   int herr, fd, r, res, err;
@@ -297,7 +309,6 @@ cResponsePacket* cVNSISession::ReadMessage()
 
     vresp = new cResponsePacket();
     vresp->setResponse(requestID, userData, userDataLength);
-    DEVDBG("cVNSISession::ReadMessage() - Rxd a response packet, requestID=%lu, len=%lu", requestID, userDataLength);
   }
   else if (channelID == CHANNEL_STREAM)
   {
@@ -378,7 +389,6 @@ bool cVNSISession::ReadSuccess(cRequestPacket* vrp, bool sequence)
   cResponsePacket *pkt = NULL;
   if((pkt = ReadResult(vrp, sequence)) == NULL)
   {
-    DEVDBG("cVNSISession::ReadSuccess - failed");
     return false;
   }
   uint32_t retCode = pkt->extract_U32();
@@ -402,16 +412,16 @@ int cVNSISession::sendData(void* bufR, size_t count)
 
   while (bytes_sent < count)
   {
-#ifndef WIN32
-    do
-    {
-      temp_write = this_write = write(m_fd, buf, count - bytes_sent);
-    } while ( (this_write < 0) && (errno == EINTR) );
-#else
+#ifdef __WINDOWS__
     do
     {
       temp_write = this_write = send(m_fd,(char*) buf, count- bytes_sent,0);
     } while ( (this_write == SOCKET_ERROR) && (WSAGetLastError() == WSAEINTR) );
+    do
+#else
+    {
+      temp_write = this_write = write(m_fd, buf, count - bytes_sent);
+    } while ( (this_write < 0) && (errno == EINTR) );
 #endif
     if (this_write <= 0)
     {
@@ -443,10 +453,10 @@ int cVNSISession::readData(uint8_t* buffer, int totalBytes)
     {
       return 0;  // error, or timeout
     }
-#ifndef WIN32
-    thisRead = read(m_fd, &buffer[bytesRead], totalBytes - bytesRead);
-#else
+#ifdef __WINDOWS__
     thisRead = recv(m_fd, (char*)&buffer[bytesRead], totalBytes - bytesRead, 0);
+#else
+    thisRead = read(m_fd, &buffer[bytesRead], totalBytes - bytesRead);
 #endif
     if (!thisRead)
     {
