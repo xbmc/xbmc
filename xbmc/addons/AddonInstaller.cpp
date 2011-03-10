@@ -176,6 +176,13 @@ bool CAddonInstaller::DoInstall(const AddonPtr &addon, const CStdString &hash, b
   if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
     return false;
 
+  // check whether all the dependencies are available or not
+  // TODO: we currently assume that dependencies will install correctly (and each of their dependencies and so on).
+  //       it may be better to install the dependencies first to minimise the chance of an addon becoming orphaned due to
+  //       missing deps.
+  if (!CheckDependencies(addon))
+    return false;
+
   if (background)
   {
     unsigned int jobID = CJobManager::GetInstance().AddJob(new CAddonInstallJob(addon, hash, update, referer), this);
@@ -241,6 +248,35 @@ void CAddonInstaller::InstallFromXBMCRepo(const set<CStdString> &addonIDs)
   // now install the addons
   for (set<CStdString>::const_iterator i = addonIDs.begin(); i != addonIDs.end(); ++i)
     CAddonInstaller::Get().Install(*i);
+}
+
+bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
+{
+  assert(addon.get());
+  ADDONDEPS deps = addon->GetDeps();
+  CAddonDatabase database;
+  database.Open();
+  for (ADDONDEPS::const_iterator i = deps.begin(); i != deps.end(); ++i)
+  {
+    const CStdString &addonID = i->first;
+    const AddonVersion &version = i->second.first;
+    bool optional = i->second.second;
+    AddonPtr dep;
+    bool haveAddon = CAddonMgr::Get().GetAddon(addonID, dep);
+    if ((haveAddon && dep->Version() < version) || (!haveAddon && !optional))
+    { // we have it but our version isn't good enough, or we don't have it and we need it
+      if (!database.GetAddon(addonID, dep) || dep->Version() < version)
+      { // we don't have it in a repo, or we have it but the version isn't good enough, so dep isn't satisfied.
+        CLog::Log(LOGDEBUG, "Addon %s requires %s version %s which is not available", addon->ID().c_str(), addonID.c_str(), version.str.c_str());
+        return false;
+      }
+    }
+    // at this point we have our dep, so check that it's OK as well
+    // TODO: should we assume that installed deps are OK?
+    if (!CheckDependencies(dep))
+      return false;
+  }
+  return true;
 }
 
 CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer)

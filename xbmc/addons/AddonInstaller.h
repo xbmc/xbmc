@@ -55,6 +55,14 @@ public:
    */
   static void InstallFromXBMCRepo(const std::set<CStdString> &addonIDs);
 
+  /*! \brief Check whether dependencies of an addon exist or are installable.
+   Iterates through the addon's dependencies, checking they're installed or installable.
+   Each dependency must also satisfies CheckDependencies in turn.
+   \param addon the addon to check
+   \return true if dependencies are available, false otherwise.
+   */
+  bool CheckDependencies(const ADDON::AddonPtr &addon);
+
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
   void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
 
