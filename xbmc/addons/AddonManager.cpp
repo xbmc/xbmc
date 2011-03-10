@@ -624,8 +624,13 @@ bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<CStd
 
 AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info)
 {
-  if (!info || !info->extensions)
+  if (!info)
     return AddonPtr();
+
+  if (!info->extensions)
+  { // no extensions, so we need only the dep information
+    return AddonPtr(new CAddon(info));
+  }
 
   // FIXME: If we want to support multiple extension points per addon, we'll need to extend this to not just take
   //        the first extension point (eg use the TYPE information we pass in)

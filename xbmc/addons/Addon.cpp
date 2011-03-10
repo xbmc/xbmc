@@ -273,6 +273,17 @@ AddonProps::AddonProps(const cp_extension_t *ext)
   BuildDependencies(ext->plugin);
 }
 
+AddonProps::AddonProps(const cp_plugin_info_t *plugin)
+  : id(plugin->identifier)
+  , version(plugin->version)
+  , name(plugin->name)
+  , path(plugin->plugin_path)
+  , author(plugin->provider_name)
+  , stars(0)
+{
+  BuildDependencies(plugin);
+}
+
 void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)
 {
   if (!plugin)
@@ -300,6 +311,18 @@ CAddon::CAddon(const cp_extension_t *ext)
   m_hasSettings = true;
   m_hasStrings = false;
   m_checkedStrings = false;
+  m_settingsLoaded = false;
+  m_userSettingsLoaded = false;
+}
+
+CAddon::CAddon(const cp_plugin_info_t *plugin)
+  : m_props(plugin)
+  , m_parent(AddonPtr())
+{
+  m_enabled = true;
+  m_hasSettings = false;
+  m_hasStrings = false;
+  m_checkedStrings = true;
   m_settingsLoaded = false;
   m_userSettingsLoaded = false;
 }

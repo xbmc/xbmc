@@ -71,6 +71,7 @@ public:
   }
 
   AddonProps(const cp_extension_t *ext);
+  AddonProps(const cp_plugin_info_t *plugin);
 
   bool operator==(const AddonProps &rhs)
   { 
@@ -110,6 +111,7 @@ class CAddon : public IAddon
 public:
   CAddon(const AddonProps &addonprops);
   CAddon(const cp_extension_t *ext);
+  CAddon(const cp_plugin_info_t *plugin);
   virtual ~CAddon() {}
   virtual AddonPtr Clone(const AddonPtr& parent) const;
 
