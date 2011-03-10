@@ -610,6 +610,7 @@ void cLiveStreamer::Action(void)
   unsigned char *buf    = NULL;
   bool startup          = true;
   uint64_t last_info    = last_data;
+  uint64_t starttime    = last_data;
 
   while (Running())
   {
@@ -623,10 +624,16 @@ void cLiveStreamer::Action(void)
       break;
     }
 
+    // prevent inifinite loop on encrypted channels
+    uint64_t tick = get_ticks();
+    if(!IsReady() && (tick - starttime >= (uint64_t)(VNSIServerConfig.stream_timeout*1000))) {
+      isyslog("VNSI: returning from streamer thread, timout on starting streaming");
+      break;
+    }
+
     // no data
     if (buf == NULL || size <= TS_SIZE)
     {
-      uint64_t tick = get_ticks();
       // timeout
       if(tick - last_data >= (uint64_t)(VNSIServerConfig.stream_timeout*1000)) {
         isyslog("VNSI: returning from streamer thread, timout on reading data");
@@ -653,6 +660,7 @@ void cLiveStreamer::Action(void)
     // Send stream information as the first packet on startup
     if (startup && m_NumStreams > 0 && IsReady())
     {
+      isyslog("VNSI: streaming of channel started");
       last_info = get_ticks();
       sendStreamInfo();
       sendSignalInfo();
