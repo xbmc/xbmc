@@ -408,6 +408,11 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
   //       we could also cache the info
   CStdString content = m_database.GetContentForPath(items.m_strPath);
   items.SetContent(content);
+
+  bool clean = (g_guiSettings.GetBool("myvideos.cleanstrings") &&
+                !items.IsVirtualDirectoryRoot() &&
+                m_stackingAvailable);
+
   if (!content.IsEmpty())
   {
     for (int i = 0; i < items.Size(); i++)
@@ -422,6 +427,11 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
         pItem->m_strPath = item.m_strPath;
         pItem->m_bIsFolder = item.m_bIsFolder;
       }
+      else
+      {
+        if (clean)
+          pItem->CleanString();
+      }
     }
   }
   else
@@ -432,6 +442,8 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       int playCount = m_database.GetPlayCount(*pItem);
       if (playCount >= 0)
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, playCount > 0);
+      if (clean)
+        pItem->CleanString();
     }
   }
 }
