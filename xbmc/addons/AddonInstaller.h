@@ -38,9 +38,10 @@ public:
    \param force whether to force the install even if the addon is already installed (eg for updating). Defaults to false.
    \param referer string to use for referer for http fetch. Set to previous version when updating, parent when fetching a dependency
    \param background whether to install in the background or not. Defaults to true.
+   \return true on successful install, false on failure.
    \sa DoInstall
    */
-  void Install(const CStdString &addonID, bool force = false, const CStdString &referer="", bool background = true);
+  bool Install(const CStdString &addonID, bool force = false, const CStdString &referer="", bool background = true);
 
   /*! \brief Install an addon from the given zip path
    \param path the zip file to install from

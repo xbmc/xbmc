@@ -144,12 +144,12 @@ bool CAddonInstaller::Cancel(const CStdString &addonID)
   return false;
 }
 
-void CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdString &referer, bool background)
+bool CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdString &referer, bool background)
 {
   AddonPtr addon;
   bool addonInstalled = CAddonMgr::Get().GetAddon(addonID, addon);
   if (addonInstalled && !force)
-    return;
+    return true;
 
   // check whether we have it available in a repository
   CAddonDatabase database;
@@ -164,8 +164,9 @@ void CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdS
     CStdString hash;
     if (therepo)
       hash = therepo->GetAddonHash(addon);
-    DoInstall(addon, hash, addonInstalled, referer, background);
+    return DoInstall(addon, hash, addonInstalled, referer, background);
   }
+  return false;
 }
 
 bool CAddonInstaller::DoInstall(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer, bool background)
@@ -374,8 +375,15 @@ bool CAddonInstallJob::Install(const CStdString &installFrom)
     if (it->first.Equals("xbmc.metadata"))
       continue;
     AddonPtr dependency;
-    if (!CAddonMgr::Get().GetAddon(it->first,dependency))
-      CAddonInstaller::Get().Install(it->first, false, referer, false); // no new job for these
+    if (!CAddonMgr::Get().GetAddon(it->first,dependency) || dependency->Version() < it->second.first)
+    {
+      // don't have the addon or the addon isn't new enough - grab it (no new job for these)
+      if (!CAddonInstaller::Get().Install(it->first, dependency != NULL, referer, false))
+      {
+        DeleteAddon(addonFolder);
+        return false;
+      }
+    }
   }
   return true;
 }
