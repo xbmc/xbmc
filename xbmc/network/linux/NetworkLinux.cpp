@@ -24,18 +24,19 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #ifndef __APPLE__
-#include <linux/if.h>
-#include <linux/wireless.h>
-#include <linux/sockios.h>
+  #include <linux/if.h>
+  #include <linux/wireless.h>
+  #include <linux/sockios.h>
 #endif
 #include <errno.h>
 #include <resolv.h>
-#ifdef __APPLE__
-#include <sys/sockio.h>
-#include <net/if.h>
-#include <ifaddrs.h>
+#if defined(__APPLE__)
+  #include <sys/sockio.h>
+  #include <net/if.h>
+  #include <ifaddrs.h>
+#else
+  #include <net/if_arp.h>
 #endif
-#include <net/if_arp.h>
 #include "PlatformDefs.h"
 #include "NetworkLinux.h"
 #include "Util.h"
@@ -257,6 +258,27 @@ std::vector<CNetworkInterface*>& CNetworkLinux::GetInterfaceList(void)
 {
    return m_interfaces;
 }
+
+#if defined(__APPLE__) && defined(__arm__)
+// on iOS, overwrite the GetFirstConnectedInterface and requery
+// the interface list if no connected device is found
+// this fixes a bug when no network is available after first start of xbmc after reboot
+CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
+{
+    CNetworkInterface *pNetIf=CNetwork::GetFirstConnectedInterface();
+    
+    // no connected Interfaces found? - requeryInterfaceList
+    if (!pNetIf)
+    {
+        CLog::Log(LOGDEBUG,"%s no connected if found - requery if list",__FUNCTION__);        
+        queryInterfaceList();        
+        //retry finding a connected if
+        pNetIf = CNetwork::GetFirstConnectedInterface();
+    }
+    
+    return pNetIf;
+}
+#endif
 
 void CNetworkLinux::queryInterfaceList()
 {

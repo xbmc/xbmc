@@ -52,7 +52,7 @@ public:
 
    // Returns the list of access points in the area
    virtual std::vector<NetworkAccessPoint> GetAccessPoints(void);
-
+    
 private:
    void WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
    CStdString     m_interfaceName;
@@ -67,7 +67,13 @@ public:
 
    // Return the list of interfaces
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void);
-
+#if defined(__APPLE__) && defined(__arm__)
+  // on iOS, overwrite the GetFirstConnectedInterface and requery
+  // the interface list if no connected device is found
+  // this fixes a bug when no network is available after first start of xbmc after reboot
+   virtual CNetworkInterface* GetFirstConnectedInterface(void);        
+#endif
+    
    // Get/set the nameserver(s)
    virtual std::vector<CStdString> GetNameServers(void);
    virtual void SetNameServers(std::vector<CStdString> nameServers);
