@@ -13,9 +13,9 @@ SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
 BASE_URL=http://rtmpdump.mplayerhq.hu/download
 ARCHIVE=$(SOURCE).tgz
-
+TARBALLS_LOCATION=/Users/Shared/xbmc-depends/tarballs
 RETRIEVE_TOOL=/usr/bin/curl
-RETRIEVE_TOOL_FLAGS=-Ls --output $(ARCHIVE)
+RETRIEVE_TOOL_FLAGS=-Ls --create-dirs --output $(TARBALLS_LOCATION)/$(ARCHIVE)
 ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
@@ -30,14 +30,13 @@ CLEAN_FILES=$(ARCHIVE) $(SOURCE)
 
 all: $(LIBDYLIB) .installed
 
-$(ARCHIVE):
+$(TARBALLS_LOCATION)/$(ARCHIVE):
 	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
-	echo $(ARCHIVE) > .gitignore
 
-$(SOURCE): $(ARCHIVE)
+$(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	-rm -rf $(SOURCE)
-	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(ARCHIVE)
-	echo $(SOURCE) >> .gitignore
+	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); patch -p1 < ../01-make_shared_lib_for_darwin-tag2.3.patch
 
 $(LIBDYLIB): $(SOURCE)

@@ -1781,17 +1781,6 @@ void CGUIWindowVideoBase::OnPrepareFileItems(CFileItemList &items)
       }
     }
   }
-  if (!items.IsVideoDb() && items.GetContent().IsEmpty() &&
-      g_guiSettings.GetBool("myvideos.cleanstrings") && !items.IsVirtualDirectoryRoot())
-  {
-    for (int i = 0; i < (int)items.Size(); ++i)
-    {
-      CFileItemPtr item = items[i];
-      // TODO: Find why this code is as it is - why do we always clean non-archived folders??
-      if ((item->m_bIsFolder && !URIUtils::IsInArchive(item->m_strPath)) || m_stackingAvailable)
-        item->CleanString();
-    }
-  }
 }
 
 void CGUIWindowVideoBase::AddToDatabase(int iItem)

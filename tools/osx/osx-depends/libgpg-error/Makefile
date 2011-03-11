@@ -13,9 +13,9 @@ SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
 BASE_URL=ftp://ftp.gnupg.org/gcrypt/libgpg-error
 ARCHIVE=$(SOURCE).tar.bz2
-
+TARBALLS_LOCATION=/Users/Shared/xbmc-depends/tarballs
 RETRIEVE_TOOL=/usr/bin/curl
-RETRIEVE_TOOL_FLAGS=-Ls --output $(ARCHIVE)
+RETRIEVE_TOOL_FLAGS=-Ls --create-dirs --output $(TARBALLS_LOCATION)/$(ARCHIVE)
 ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
@@ -23,7 +23,8 @@ ARCHIVE_TOOL_FLAGS=xf
 export CFLAGS+=-undefined dynamic_lookup
 export CXXFLAGS+=-undefined dynamic_lookup
 export LDFLAGS+=-Wl,-read_only_relocs,suppress
-CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared=yes
+CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared=yes \
+ --with-libintl-prefix=$(PREFIX)/lib gt_cv_func_gnugettext1_libc=no
 
 LIBDYLIB=$(SOURCE)/.libs/libgpg-error.dylib
 
@@ -31,14 +32,13 @@ CLEAN_FILES=$(ARCHIVE) $(SOURCE)
 
 all: $(LIBDYLIB) .installed
 
-$(ARCHIVE):
+$(TARBALLS_LOCATION)/$(ARCHIVE):
 	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
-	echo $(ARCHIVE) > .gitignore
 
-$(SOURCE): $(ARCHIVE)
+$(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	-rm -rf $(SOURCE)
-	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(ARCHIVE)
-	echo $(SOURCE) >> .gitignore
+	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)

@@ -1246,10 +1246,10 @@
 		F56C8D6F131F5E86000AD0F6 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */; };
 		F56C8D70131F5E86000AD0F6 /* libpython2.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D40131F5E85000AD0F6 /* libpython2.6.dylib */; };
 		F56C8D71131F5E86000AD0F6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D41131F5E85000AD0F6 /* libsqlite3.dylib */; };
-		F56C8D86131F622E000AD0F6 /* libSDL-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D85131F622E000AD0F6 /* libSDL-x86-osx.a */; };
-		F56C8D87131F622E000AD0F6 /* libSDL-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D85131F622E000AD0F6 /* libSDL-x86-osx.a */; };
-		F56C8DF4131F7587000AD0F6 /* libSDL_mixer-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8DF3131F7587000AD0F6 /* libSDL_mixer-x86-osx.a */; };
-		F56C8DF5131F7587000AD0F6 /* libSDL_mixer-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8DF3131F7587000AD0F6 /* libSDL_mixer-x86-osx.a */; };
+		F57A1E3A132AAB0E00498CC7 /* libSDL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A1E39132AAB0E00498CC7 /* libSDL.dylib */; };
+		F57A1E3B132AAB0E00498CC7 /* libSDL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A1E39132AAB0E00498CC7 /* libSDL.dylib */; };
+		F57A1E3D132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */; };
+		F57A1E3E132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */; };
 		F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F57B6F811071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F584E1290F257BD800DB26A5 /* FileSpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */; };
@@ -3858,8 +3858,8 @@
 		F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/mysql/libmysqlclient.dylib"; sourceTree = "<absolute>"; };
 		F56C8D40131F5E85000AD0F6 /* libpython2.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpython2.6.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libpython2.6.dylib"; sourceTree = "<absolute>"; };
 		F56C8D41131F5E85000AD0F6 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libsqlite3.dylib"; sourceTree = "<absolute>"; };
-		F56C8D85131F622E000AD0F6 /* libSDL-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL-x86-osx.a"; path = "lib/darwin/libSDL-OSX/libSDL-x86-osx.a"; sourceTree = SOURCE_ROOT; };
-		F56C8DF3131F7587000AD0F6 /* libSDL_mixer-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_mixer-x86-osx.a"; path = "lib/darwin/libSDL-OSX/libSDL_mixer-x86-osx.a"; sourceTree = SOURCE_ROOT; };
+		F57A1E39132AAB0E00498CC7 /* libSDL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libSDL.dylib"; sourceTree = "<absolute>"; };
+		F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL_mixer.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libSDL_mixer.dylib"; sourceTree = "<absolute>"; };
 		F57B6F7E1071B8B500079ACB /* JobManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JobManager.cpp; sourceTree = "<group>"; };
 		F57B6F7F1071B8B500079ACB /* JobManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JobManager.h; sourceTree = "<group>"; };
 		F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileSpecialProtocol.cpp; sourceTree = "<group>"; };
@@ -4060,8 +4060,8 @@
 				F56C8D57131F5E85000AD0F6 /* libmysqlclient.dylib in Frameworks */,
 				F56C8D58131F5E85000AD0F6 /* libpython2.6.dylib in Frameworks */,
 				F56C8D59131F5E85000AD0F6 /* libsqlite3.dylib in Frameworks */,
-				F56C8D86131F622E000AD0F6 /* libSDL-x86-osx.a in Frameworks */,
-				F56C8DF4131F7587000AD0F6 /* libSDL_mixer-x86-osx.a in Frameworks */,
+				F57A1E3A132AAB0E00498CC7 /* libSDL.dylib in Frameworks */,
+				F57A1E3D132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4126,8 +4126,8 @@
 				F56C8D6F131F5E86000AD0F6 /* libmysqlclient.dylib in Frameworks */,
 				F56C8D70131F5E86000AD0F6 /* libpython2.6.dylib in Frameworks */,
 				F56C8D71131F5E86000AD0F6 /* libsqlite3.dylib in Frameworks */,
-				F56C8D87131F622E000AD0F6 /* libSDL-x86-osx.a in Frameworks */,
-				F56C8DF5131F7587000AD0F6 /* libSDL_mixer-x86-osx.a in Frameworks */,
+				F57A1E3B132AAB0E00498CC7 /* libSDL.dylib in Frameworks */,
+				F57A1E3E132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7244,8 +7244,8 @@
 				F56C8D40131F5E85000AD0F6 /* libpython2.6.dylib */,
 				F56C8D41131F5E85000AD0F6 /* libsqlite3.dylib */,
 				E38E24250D26317D00618676 /* libGLEW.dylib */,
-				F56C8D85131F622E000AD0F6 /* libSDL-x86-osx.a */,
-				F56C8DF3131F7587000AD0F6 /* libSDL_mixer-x86-osx.a */,
+				F57A1E39132AAB0E00498CC7 /* libSDL.dylib */,
+				F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */,
 			);
 			name = "External Libs";
 			sourceTree = "<group>";
@@ -9446,6 +9446,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"";
@@ -9454,6 +9455,7 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$XBMC_DEPENDS/lib/mysql\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)/xbmc/interfaces/http-api\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\"$(SRCROOT)/xbmc/interfaces/json-rpc\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/lib/libRTV\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libXDAAP\"";
@@ -9535,6 +9537,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"";
@@ -9543,6 +9546,7 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$XBMC_DEPENDS/lib/mysql\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)/xbmc/interfaces/http-api\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\"$(SRCROOT)/xbmc/interfaces/json-rpc\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/lib/libRTV\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libXDAAP\"";
@@ -9682,10 +9686,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib/mysql\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
@@ -9760,10 +9766,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib/mysql\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",

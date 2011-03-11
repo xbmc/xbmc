@@ -45,6 +45,11 @@ config.log
 /build/
 .DS_Store
 *.dSYM
+/tools/osx/osx-depends/**/.gitignore
+/tools/osx/osx-depends/**/.installed
+/tools/osx/ios-depends/**/.gitignore
+/tools/osx/ios-depends/**/.installed
+/tools/osx/ios-depends/**/.compiled
 
 .libs/
 .deps/
