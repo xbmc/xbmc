@@ -65,7 +65,7 @@ public:
    * @brief Check whether this event has an active timer tag.
    * @return True if it has an active timer tag, false if not.
    */
-  bool HasTimer() const;
+  bool HasTimer() const { return !(m_Timer == NULL); }
 
   /*!
    * @brief Set a timer for this event or NULL to clear it.

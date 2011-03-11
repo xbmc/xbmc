@@ -58,30 +58,6 @@ void CPVREpgInfoTag::SetTimer(const CPVRTimerInfoTag *newTimer)
   m_Timer = newTimer;
 }
 
-bool CPVREpgInfoTag::HasTimer(void) const
-{
-  bool bReturn = false;
-
-  if (m_Timer == NULL)
-  {
-    CPVRTimers *timers = CPVRManager::GetTimers();
-    for (unsigned int iTimerPtr = 0; iTimerPtr < timers->size(); iTimerPtr++)
-    {
-      if (timers->at(iTimerPtr)->m_EpgInfo == this)
-      {
-        bReturn = true;
-        break;
-      }
-    }
-  }
-  else
-  {
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
 void CPVREpgInfoTag::UpdatePath(void)
 {
   if (!m_Epg)
