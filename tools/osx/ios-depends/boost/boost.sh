@@ -33,7 +33,7 @@
 #
 # Should perhaps also consider/use instead: -BOOST_SP_USE_PTHREADS
 
-: ${TARBALLDIR:=`pwd`}
+: ${TARBALLDIR:=/Users/Shared/xbmc-depends/tarballs}
 : ${SRCDIR:=`pwd`/src}
 : ${BUILDDIR:=`pwd`/build}
 : ${PREFIXDIR:=`pwd`/prefix}
