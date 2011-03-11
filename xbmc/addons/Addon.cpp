@@ -246,6 +246,7 @@ CStdString AddonVersion::Print() const
 AddonProps::AddonProps(const cp_extension_t *ext)
   : id(ext->plugin->identifier)
   , version(ext->plugin->version)
+  , minversion(ext->plugin->abi_bw_compatibility)
   , name(ext->plugin->name)
   , path(ext->plugin->plugin_path)
   , author(ext->plugin->provider_name)
@@ -276,6 +277,7 @@ AddonProps::AddonProps(const cp_extension_t *ext)
 AddonProps::AddonProps(const cp_plugin_info_t *plugin)
   : id(plugin->identifier)
   , version(plugin->version)
+  , minversion(plugin->abi_bw_compatibility)
   , name(plugin->name)
   , path(plugin->plugin_path)
   , author(plugin->provider_name)
@@ -363,9 +365,9 @@ AddonPtr CAddon::Clone(const AddonPtr &self) const
   return AddonPtr(new CAddon(*this, self));
 }
 
-const AddonVersion CAddon::Version()
+bool CAddon::MeetsVersion(const AddonVersion &version) const
 {
-  return m_props.version;
+  return m_props.minversion <= version && version <= m_props.version;
 }
 
 //TODO platform/path crap should be negotiated between the addon and

@@ -62,10 +62,11 @@ public:
 class AddonProps
 {
 public:
-  AddonProps(const CStdString &id, TYPE type, const CStdString &versionstr)
+  AddonProps(const CStdString &id, TYPE type, const CStdString &versionstr, const CStdString &minversionstr)
     : id(id)
     , type(type)
     , version(versionstr)
+    , minversion(minversionstr)
     , stars(0)
   {
   }
@@ -83,6 +84,7 @@ public:
   CStdString id;
   TYPE type;
   AddonVersion version;
+  AddonVersion minversion;
   CStdString name;
   CStdString parent;
   CStdString license;
@@ -159,7 +161,8 @@ public:
   const CStdString Name() const { return m_props.name; }
   bool Enabled() const { return m_enabled; }
   virtual bool IsInUse() const { return false; };
-  const AddonVersion Version();
+  const AddonVersion Version() const { return m_props.version; }
+  const AddonVersion MinVersion() const { return m_props.minversion; }
   const CStdString Summary() const { return m_props.summary; }
   const CStdString Description() const { return m_props.description; }
   const CStdString Path() const { return m_props.path; }
@@ -173,6 +176,12 @@ public:
   const CStdString Disclaimer() const { return m_props.disclaimer; }
   const InfoMap &ExtraInfo() const { return m_props.extrainfo; }
   const ADDONDEPS &GetDeps() const { return m_props.dependencies; }
+
+  /*! \brief return whether or not this addon satisfies the given version requirements
+   \param version the version to meet.
+   \return true if  min_version <= version <= current_version, false otherwise.
+   */
+  bool MeetsVersion(const AddonVersion &version) const;
 
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()

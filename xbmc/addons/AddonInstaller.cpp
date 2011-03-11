@@ -270,9 +270,9 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
     bool optional = i->second.second;
     AddonPtr dep;
     bool haveAddon = CAddonMgr::Get().GetAddon(addonID, dep);
-    if ((haveAddon && dep->Version() < version) || (!haveAddon && !optional))
+    if ((haveAddon && !dep->MeetsVersion(version)) || (!haveAddon && !optional))
     { // we have it but our version isn't good enough, or we don't have it and we need it
-      if (!database.GetAddon(addonID, dep) || dep->Version() < version)
+      if (!database.GetAddon(addonID, dep) || !dep->MeetsVersion(version))
       { // we don't have it in a repo, or we have it but the version isn't good enough, so dep isn't satisfied.
         CLog::Log(LOGDEBUG, "Addon %s requires %s version %s which is not available", addon->ID().c_str(), addonID.c_str(), version.str.c_str());
         return false;

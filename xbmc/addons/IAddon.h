@@ -86,7 +86,8 @@ namespace ADDON
     virtual const CStdString Name() const =0;
     virtual bool Enabled() const =0;
     virtual bool IsInUse() const =0;
-    virtual const AddonVersion Version() =0;
+    virtual const AddonVersion Version() const =0;
+    virtual const AddonVersion MinVersion() const =0;
     virtual const CStdString Summary() const =0;
     virtual const CStdString Description() const =0;
     virtual const CStdString Path() const =0;
@@ -106,6 +107,7 @@ namespace ADDON
     virtual TiXmlElement* GetSettingsXML() =0;
     virtual CStdString GetString(uint32_t id) =0;
     virtual const ADDONDEPS &GetDeps() const =0;
+    virtual bool MeetsVersion(const AddonVersion &version) const =0;
 
   protected:
     virtual const AddonPtr Parent() const =0;
