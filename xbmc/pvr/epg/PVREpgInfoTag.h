@@ -89,4 +89,6 @@ public:
    * @param tag The new info.
    */
   void Update(const PVR_PROGINFO &tag);
+
+  const CStdString &Icon(void) const;
 };
