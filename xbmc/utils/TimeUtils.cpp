@@ -23,22 +23,22 @@
 #include "DateTime.h"
 
 #ifdef __APPLE__
-#ifdef __ppc__
-#include <mach/mach_time.h>
-#include <CoreVideo/CVHostTime.h>
-#else
-#include <time.h>
-#include "posix-realtime-stub.h"
-#endif
+  #if defined(__ppc__) || defined(__arm__)
+    #include <mach/mach_time.h>
+    #include <CoreVideo/CVHostTime.h>
+  #else
+    #include <time.h>
+    #include "posix-realtime-stub.h"
+  #endif
 #elif defined(_LINUX)
-#include <time.h>
+  #include <time.h>
 #elif defined(_WIN32)
-#include <windows.h>
+  #include <windows.h>
 #endif
 
 int64_t CurrentHostCounter(void)
 {
-#if defined(__APPLE__) && defined(__ppc__)
+#if defined(__APPLE__) && (defined(__ppc__) || defined(__arm__))
   return( (int64_t)CVGetCurrentHostTime() );
 #elif defined(_LINUX)
   struct timespec now;
@@ -53,7 +53,7 @@ int64_t CurrentHostCounter(void)
 
 int64_t CurrentHostFrequency(void)
 {
-#if defined(__APPLE__) && defined(__ppc__)
+#if defined(__APPLE__) && (defined(__ppc__) || defined(__arm__))
   // needed for 10.5.8 on ppc
   return( (int64_t)CVGetHostClockFrequency() );
 #elif defined(_LINUX)
@@ -80,19 +80,19 @@ unsigned int CTimeUtils::GetFrameTime()
 unsigned int CTimeUtils::GetTimeMS()
 {
 #ifdef _LINUX
-          uint64_t now_time;
+  uint64_t now_time;
   static  uint64_t start_time = 0;
-#if defined(__APPLE__) && defined(__ppc__)
-  now_time = CVGetCurrentHostTime() * 1000 / CVGetHostClockFrequency();
-#else
-  struct timespec ts = {};
-  clock_gettime(CLOCK_MONOTONIC, &ts);
-  now_time = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
-#endif
-  if (start_time == 0)
-    start_time = now_time;
-  return (now_time - start_time);
-#else
+  #if defined(__APPLE__) && (defined(__ppc__) || defined(__arm__))
+    now_time = CVGetCurrentHostTime() *  1000 / CVGetHostClockFrequency();
+  #else
+    struct timespec ts = {};
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    now_time = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
+  #endif
+    if (start_time == 0)
+      start_time = now_time;
+    return (now_time - start_time);
+  #else
   return timeGetTime();
 #endif
 }
