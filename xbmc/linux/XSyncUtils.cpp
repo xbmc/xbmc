@@ -25,11 +25,16 @@
 #include "XHandle.h"
 #include "XEventUtils.h"
 
-#ifdef __APPLE__
-#include <mach/mach.h>
-#include <SDL/SDL.h>
+#if (defined(__APPLE__) && defined(__arm__))
+  #include <threads/XBMC_cond.h>
+  #include <threads/XBMC_mutex.h>
 #else
-#include <SDL.h>
+  #ifdef __APPLE__
+    #include <mach/mach.h>
+    #include <SDL/SDL.h>
+  #else
+    #include <SDL.h>
+  #endif
 #endif
 
 #ifdef _LINUX

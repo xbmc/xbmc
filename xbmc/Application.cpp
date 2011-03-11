@@ -236,8 +236,12 @@
 #include "windowing/X11/XRandR.h"
 #endif
 #ifdef __APPLE__
+#if !defined(__arm__)
 #include "CocoaInterface.h"
 #include "XBMCHelper.h"
+#else
+#include "iOSUtils.h"
+#endif
 #endif
 
 #ifdef HAS_DVD_DRIVE
@@ -320,7 +324,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
 #endif
   m_currentStack = new CFileItemList;
 
-#ifdef HAS_SDL
+#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
   m_frameCount = 0;
   m_frameMutex = SDL_CreateMutex();
   m_frameCond = SDL_CreateCond();
@@ -343,7 +347,7 @@ CApplication::~CApplication(void)
   delete m_pKaraokeMgr;
 #endif
 
-#ifdef HAS_SDL
+#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
   if (m_frameMutex)
     SDL_DestroyMutex(m_frameMutex);
 
@@ -433,7 +437,7 @@ void CApplication::Preflight()
 #endif
 
   // run any platform preflight scripts.
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__arm__)
   CStdString install_path;
 
   CUtil::GetHomePath(install_path);
@@ -654,7 +658,7 @@ bool CApplication::Create()
   g_Joystick.Initialize();
 #endif
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__arm__)
   // Configure and possible manually start the helper.
   XBMCHelper::GetInstance().Configure();
 #endif
@@ -851,30 +855,46 @@ bool CApplication::InitDirectoriesOSX()
   CUtil::GetHomePath(xbmcPath);
   setenv("XBMC_HOME", xbmcPath.c_str(), 0);
 
+#if defined(__arm__)
+  CStdString fontconfigPath;
+  fontconfigPath = xbmcPath + "/system/players/dvdplayer/etc/fonts/fonts.conf";
+  setenv("FONTCONFIG_FILE", fontconfigPath.c_str(), 0);
+#endif
+  
   // setup path to our internal dylibs so loader can find them
   CStdString frameworksPath = CUtil::GetFrameworksPath();
   CSpecialProtocol::SetXBMCFrameworksPath(frameworksPath);
-  
+
   // OSX always runs with m_bPlatformDirectories == true
   if (m_bPlatformDirectories)
   {
     // map our special drives
     CSpecialProtocol::SetXBMCBinPath(xbmcPath);
     CSpecialProtocol::SetXBMCPath(xbmcPath);
-    CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
-    CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
+    #if defined(__arm__)
+      CSpecialProtocol::SetHomePath(userHome + "/Library/Preferences/XBMC");
+      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Preferences/XBMC/userdata");
+    #else
+      CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
+      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
+    #endif
 
-#ifdef __APPLE__
-    CStdString strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/");
-    CDirectory::Create(strTempPath);
-#endif
-
-    strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/temp");
+    // location for temp files
+    #if defined(__arm__)
+      CStdString strTempPath = URIUtils::AddFileToFolder(userHome,  "Library/Preferences/XBMC/temp");
+    #else
+      CStdString strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/");
+      CDirectory::Create(strTempPath);
+      strTempPath = URIUtils::AddFileToFolder(userHome, ".xbmc/temp");
+    #endif
     CSpecialProtocol::SetTempPath(strTempPath);
 
-#ifdef __APPLE__
-    strTempPath = userHome + "/Library/Logs";
-#endif
+    // xbmc.log file location
+    #if defined(__arm__)
+      strTempPath = userHome + "/Library/Preferences";
+    #else
+      strTempPath = userHome + "/Library/Logs";
+    #endif
     URIUtils::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
 
@@ -1153,7 +1173,7 @@ bool CApplication::Initialize()
 
   m_slowTimer.StartZero();
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__arm__)
   XBMCHelper::GetInstance().CaptureAllInput();
 #endif
 #if defined(HAVE_LIBCRYSTALHD)
@@ -1826,7 +1846,9 @@ void CApplication::RenderNoPresent()
   // reset image scaling and effect states
   g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
 
-  RenderMemoryStatus();
+#if !defined(__arm__)
+   RenderMemoryStatus();
+#endif
   RenderScreenSaver();
 
   g_graphicsContext.Unlock();
@@ -1879,7 +1901,7 @@ void CApplication::RenderScreenSaver()
 bool CApplication::WaitFrame(unsigned int timeout)
 {
   bool done = false;
-#ifdef HAS_SDL
+#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
   // Wait for all other frames to be presented
   SDL_mutexP(m_frameMutex);
   //wait until event is set, but modify remaining time
@@ -1917,7 +1939,7 @@ bool CApplication::WaitFrame(unsigned int timeout)
 
 void CApplication::NewFrame()
 {
-#ifdef HAS_SDL
+#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
   // We just posted another frame. Keep track and notify.
   SDL_mutexP(m_frameMutex);
   m_frameCount++;
@@ -1955,7 +1977,7 @@ void CApplication::Render()
     m_bPresentFrame = false;
     if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !IsPaused())
     {
-#ifdef HAS_SDL
+#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
       SDL_mutexP(m_frameMutex);
 
       //wait until event is set, but modify remaining time
@@ -2060,7 +2082,7 @@ void CApplication::Render()
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();
 
-#ifdef HAS_SDL
+#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
   SDL_mutexP(m_frameMutex);
   if(m_frameCount > 0 && decrement)
     m_frameCount--;
@@ -3263,7 +3285,7 @@ void CApplication::Stop()
     StopServices();
     //Sleep(5000);
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__arm__)
     XBMCHelper::GetInstance().ReleaseAllInput();
 #endif
 
@@ -3303,7 +3325,7 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__arm__)
     if (XBMCHelper::GetInstance().IsAlwaysOn() == false)
       XBMCHelper::GetInstance().Stop();
 #endif
@@ -4130,7 +4152,7 @@ void CApplication::ResetScreenSaver()
 
 void CApplication::ResetScreenSaverTimer()
 {
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__arm__)
   Cocoa_UpdateSystemActivity();
 #endif
   m_screenSaverTimer.StartZero();
@@ -4681,7 +4703,7 @@ void CApplication::ProcessSlow()
 {
   g_powerManager.ProcessEvents();
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) &&  !defined(__arm__)
   // There is an issue on OS X that several system services ask the cursor to become visible
   // during their startup routines.  Given that we can't control this, we hack it in by
   // forcing the
@@ -5157,7 +5179,7 @@ bool CApplication::SwitchToFullScreen()
   // See if we're playing a video, and are in GUI mode
   if ( IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
   {
-#ifdef HAS_SDL
+#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
     // Reset frame count so that timing is FPS will be correct.
     SDL_mutexP(m_frameMutex);
     m_frameCount = 0;
@@ -5334,7 +5356,7 @@ bool CApplication::IsCurrentThread() const
 
 bool CApplication::IsPresentFrame()
 {
-#ifdef HAS_SDL // TODO:DIRECTX
+#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__)) //TODO:DIRECTX
   SDL_mutexP(m_frameMutex);
   bool ret = m_bPresentFrame;
   SDL_mutexV(m_frameMutex);
