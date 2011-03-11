@@ -602,6 +602,10 @@ if test "$host_vendor" = "apple" ; then
   PKG_CHECK_MODULES([VORBISFILE],     [vorbisfile],
     [INCLUDES="$INCLUDES $VORBISFILE_CFLAGS"; LIBS="$LIBS $VORBISFILE_LIBS"],
     AC_MSG_ERROR($missing_library))
+  if test "$use_arch" != "arm"; then
+    AC_CHECK_LIB([SDL_mixer],[main],, AC_MSG_ERROR($missing_library))
+    AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
+  fi
 else
   AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, "yes", "no")
   if test $MYSQL_CONFIG = "yes"; then
