@@ -23,7 +23,8 @@ ARCHIVE_TOOL_FLAGS=xf
 export CFLAGS+=-undefined dynamic_lookup
 export CXXFLAGS+=-undefined dynamic_lookup
 export LDFLAGS+=-Wl,-read_only_relocs,suppress
-CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared=yes
+CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared=yes \
+ --with-libintl-prefix=$(PREFIX)/lib gt_cv_func_gnugettext1_libc=no
 
 LIBDYLIB=$(SOURCE)/.libs/libgpg-error.dylib
 

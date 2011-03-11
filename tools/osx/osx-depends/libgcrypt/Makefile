@@ -20,7 +20,7 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-export CFLAGS+=-undefined dynamic_lookup -fgnu89-inline
+export CFLAGS+=-undefined dynamic_lookup
 export CXXFLAGS+=-undefined dynamic_lookup
 export LDFLAGS+=-Wl,-read_only_relocs,suppress
 CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared=yes \
