@@ -314,42 +314,44 @@ void CEpgInfoTag::SetPath(const CStdString &strFileNameAndPath)
 bool CEpgInfoTag::Update(const CEpgInfoTag &tag)
 {
   bool bChanged = (
-      m_iBroadcastId    != tag.m_iBroadcastId ||
-      m_strTitle        != tag.m_strTitle ||
-      m_strPlotOutline  != tag.m_strPlotOutline ||
-      m_strPlot         != tag.m_strPlot ||
-      m_startTime       != tag.m_startTime ||
-      m_endTime         != tag.m_endTime ||
-      m_iGenreType      != tag.m_iGenreType ||
-      m_iGenreSubType   != tag.m_iGenreSubType ||
-      m_firstAired      != tag.m_firstAired ||
-      m_iParentalRating != tag.m_iParentalRating ||
-      m_iStarRating     != tag.m_iStarRating ||
-      m_bNotify         != tag.m_bNotify ||
-      m_iEpisodeNum     != tag.m_iEpisodeNum ||
-      m_iEpisodePart    != tag.m_iEpisodePart ||
-      m_iSeriesNum      != tag.m_iSeriesNum ||
-      m_strEpisodeName  != tag.m_strEpisodeName
+      m_iBroadcastId       != tag.m_iBroadcastId ||
+      m_strTitle           != tag.m_strTitle ||
+      m_strPlotOutline     != tag.m_strPlotOutline ||
+      m_strPlot            != tag.m_strPlot ||
+      m_startTime          != tag.m_startTime ||
+      m_endTime            != tag.m_endTime ||
+      m_iGenreType         != tag.m_iGenreType ||
+      m_iGenreSubType      != tag.m_iGenreSubType ||
+      m_firstAired         != tag.m_firstAired ||
+      m_iParentalRating    != tag.m_iParentalRating ||
+      m_iStarRating        != tag.m_iStarRating ||
+      m_bNotify            != tag.m_bNotify ||
+      m_iEpisodeNum        != tag.m_iEpisodeNum ||
+      m_iEpisodePart       != tag.m_iEpisodePart ||
+      m_iSeriesNum         != tag.m_iSeriesNum ||
+      m_strEpisodeName     != tag.m_strEpisodeName ||
+      m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID
   );
 
   if (bChanged)
   {
-    m_iBroadcastId    = tag.m_iBroadcastId;
-    m_strTitle        = tag.m_strTitle;
-    m_strPlotOutline  = tag.m_strPlotOutline;
-    m_strPlot         = tag.m_strPlot;
-    m_startTime       = tag.m_startTime;
-    m_endTime         = tag.m_endTime;
-    m_iGenreType      = tag.m_iGenreType;
-    m_iGenreSubType   = tag.m_iGenreSubType;
-    m_firstAired      = tag.m_firstAired;
-    m_iParentalRating = tag.m_iParentalRating;
-    m_iStarRating     = tag.m_iStarRating;
-    m_bNotify         = tag.m_bNotify;
-    m_iEpisodeNum     = tag.m_iEpisodeNum;
-    m_iEpisodePart    = tag.m_iEpisodePart;
-    m_iSeriesNum      = tag.m_iSeriesNum;
-    m_strEpisodeName  = tag.m_strEpisodeName;
+    m_iBroadcastId       = tag.m_iBroadcastId;
+    m_strTitle           = tag.m_strTitle;
+    m_strPlotOutline     = tag.m_strPlotOutline;
+    m_strPlot            = tag.m_strPlot;
+    m_startTime          = tag.m_startTime;
+    m_endTime            = tag.m_endTime;
+    m_iGenreType         = tag.m_iGenreType;
+    m_iGenreSubType      = tag.m_iGenreSubType;
+    m_firstAired         = tag.m_firstAired;
+    m_iParentalRating    = tag.m_iParentalRating;
+    m_iStarRating        = tag.m_iStarRating;
+    m_bNotify            = tag.m_bNotify;
+    m_iEpisodeNum        = tag.m_iEpisodeNum;
+    m_iEpisodePart       = tag.m_iEpisodePart;
+    m_iSeriesNum         = tag.m_iSeriesNum;
+    m_strEpisodeName     = tag.m_strEpisodeName;
+    m_iUniqueBroadcastID = tag.m_iUniqueBroadcastID;
 
     m_bChanged = true;
     UpdatePath();
