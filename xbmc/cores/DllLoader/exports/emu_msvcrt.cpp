@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
+#ifdef HAS_DVD_DRIVE
 #ifdef _LINUX
 #include <sys/ioctl.h>
 #ifndef __APPLE__
@@ -37,6 +38,7 @@
 #include <linux/cdrom.h>
 #else
 #include <IOKit/storage/IODVDMediaBSDClient.h>
+#endif
 #endif
 #endif
 #include <fcntl.h>
@@ -2111,6 +2113,7 @@ extern "C"
      if (!pFile)
        return -1;
 
+#ifdef HAS_DVD_DRIVE
 #ifndef __APPLE__
     if(request == DVD_READ_STRUCT || request == DVD_AUTH)
 #else
@@ -2124,6 +2127,7 @@ extern "C"
       return ret;
     }
     else
+#endif
     {
       CLog::Log(LOGWARNING, "%s - Unknown request type %ld", __FUNCTION__, request);
       return -1;
