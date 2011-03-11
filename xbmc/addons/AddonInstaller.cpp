@@ -181,7 +181,10 @@ bool CAddonInstaller::DoInstall(const AddonPtr &addon, const CStdString &hash, b
   //       it may be better to install the dependencies first to minimise the chance of an addon becoming orphaned due to
   //       missing deps.
   if (!CheckDependencies(addon))
+  {
+    g_application.m_guiDialogKaiToast.QueueNotification(addon->Icon(), addon->Name(), g_localizeStrings.Get(24044), TOAST_DISPLAY_TIME, false);
     return false;
+  }
 
   if (background)
   {
@@ -212,7 +215,10 @@ bool CAddonInstaller::InstallFromZip(const CStdString &path)
   CStdString zipDir;
   URIUtils::CreateArchivePath(zipDir, "zip", path, "");
   if (!CDirectory::GetDirectory(zipDir, items) || items.Size() != 1 || !items[0]->m_bIsFolder)
+  {
+    g_application.m_guiDialogKaiToast.QueueNotification("", path, g_localizeStrings.Get(24045), TOAST_DISPLAY_TIME, false);
     return false;
+  }
 
   // TODO: possibly add support for github generated zips here?
   CStdString archive = URIUtils::AddFileToFolder(items[0]->m_strPath, "addon.xml");
@@ -227,6 +233,7 @@ bool CAddonInstaller::InstallFromZip(const CStdString &path)
     // install the addon
     return DoInstall(addon);
   }
+  g_application.m_guiDialogKaiToast.QueueNotification("", path, g_localizeStrings.Get(24045), TOAST_DISPLAY_TIME, false);
   return false;
 }
 

@@ -2162,6 +2162,8 @@
   <string id="24041">Install from zip file</string>
   <string id="24042">Downloading %i%%</string>
   <string id="24043">Available Updates</string>
+  <string id="24044">Dependencies not met</string>
+  <string id="24045">Add-on does not have the correct structure</string>
 
   <string id="24050">Available Add-ons</string>
   <string id="24051">Version:</string>
