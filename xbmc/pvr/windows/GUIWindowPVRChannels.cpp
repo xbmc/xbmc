@@ -308,7 +308,7 @@ bool CGUIWindowPVRChannels::OnContextButtonMove(CFileItem *item, CONTEXT_BUTTON 
 
     if (newIndex != channel->ChannelNumber())
     {
-      ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio))->MoveChannel(channel->ChannelNumber(), newIndex);
+      ((CPVRChannelGroup *) CPVRManager::Get()->GetPlayingGroup())->MoveChannel(channel->ChannelNumber(), newIndex);
       UpdateData();
     }
 
