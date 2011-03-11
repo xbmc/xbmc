@@ -75,6 +75,17 @@
 #define GMASK 0x0000ff00
 #define BMASK 0x000000ff
 #endif
+#else
+#if defined(__arm__)
+#define PIXEL_ASHIFT 24
+#define PIXEL_RSHIFT 16
+#define PIXEL_GSHIFT 8
+#define PIXEL_BSHIFT 0
+#define AMASK 0xff000000
+#define RMASK 0x00ff0000
+#define GMASK 0x0000ff00
+#define BMASK 0x000000ff
+#endif
 #endif
 
 #include <stdint.h>
@@ -191,15 +202,6 @@ typedef CXHandle* HANDLE;
 
 typedef void* HINSTANCE;
 typedef void* HMODULE;
-
-#ifdef __APPLE__
-#include <AvailabilityMacros.h>
-typedef int64_t   off64_t;
-typedef off_t     __off_t;
-typedef off64_t   __off64_t;
-typedef fpos_t fpos64_t;
-#include <sched.h>
-#endif
 
 typedef unsigned int  DWORD;
 typedef unsigned short  WORD;
@@ -359,13 +361,28 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
 #define _O_WRONLY O_WRONLY
 #define _off_t off_t
 
-#if defined(__APPLE__) && (MAC_OS_X_VERSION_MAX_ALLOWED < 1050)
+#if defined(__APPLE__)
+#include <sched.h>
+#include <AvailabilityMacros.h>
+typedef int64_t   off64_t;
+typedef off_t     __off_t;
+typedef off64_t   __off64_t;
+typedef fpos_t    fpos64_t;
+#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1050)
+#define __stat64 stat
+#define stat64 stat
+#define statfs64 statfs
+#define fstat64 fstat
+#else
+#if defined(__arm__)
 #define __stat64 stat
 #define stat64 stat
 #define statfs64 statfs
 #define fstat64 fstat
 #else
 #define __stat64 stat64
+#endif
+#endif
 #endif
 
 struct _stati64 {
