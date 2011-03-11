@@ -481,7 +481,8 @@ int SqliteDataset::exec(const string &sql) {
   //   after:  CREATE UNIQUE INDEX ixPath ON path ( strPath )
   //
   // NOTE: unexpected results occur if brackets are not matched
-  if ( qry.find("CREATE UNIQUE INDEX") != string::npos )
+  if ( qry.find("CREATE UNIQUE INDEX") != string::npos ||
+      (qry.find("CREATE INDEX") != string::npos))
   {
     size_t pos = 0;
     size_t pos2 = 0;
