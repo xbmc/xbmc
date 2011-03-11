@@ -12,9 +12,9 @@ SOURCE_DEBIAN=$(APPNAME)-$(VERSION)
 # download location and format
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
 ARCHIVE=$(SOURCE).tar.gz
-
+TARBALLS_LOCATION=/Users/Shared/xbmc-depends/tarballs
 RETRIEVE_TOOL=/usr/bin/curl
-RETRIEVE_TOOL_FLAGS=-Ls --output $(ARCHIVE)
+RETRIEVE_TOOL_FLAGS=-Ls --create-dirs --output $(TARBALLS_LOCATION)/$(ARCHIVE)
 ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
@@ -26,14 +26,13 @@ CLEAN_FILES=$(ARCHIVE) $(SOURCE_DEBIAN)
 
 all: $(APPNAME) .installed
 
-$(ARCHIVE):
+$(TARBALLS_LOCATION)/$(ARCHIVE):
 	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
-	echo $(ARCHIVE) > .gitignore
 
-$(SOURCE_DEBIAN): $(ARCHIVE)
+$(SOURCE_DEBIAN): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	-rm -rf $(SOURCE_DEBIAN)
-	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(ARCHIVE)
-	echo $(SOURCE_DEBIAN) >> .gitignore
+	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	echo $(SOURCE_DEBIAN) > .gitignore
 	cd $(SOURCE_DEBIAN); $(CONFIGURE)
 
 $(APPNAME): $(SOURCE_DEBIAN)
