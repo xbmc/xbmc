@@ -641,29 +641,19 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
   return false;
 }
 
-bool CAddonDatabase::BreakAddon(const CStdString &addonID, bool broken /* = true */, const CStdString& reason)
+bool CAddonDatabase::BreakAddon(const CStdString &addonID, const CStdString& reason)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    if (broken)
-    {
-      CStdString sql = PrepareSQL("select id from broken where addonID='%s'", addonID.c_str());
-      m_pDS->query(sql.c_str());
-      if (m_pDS->eof()) // not found
-      {
-        m_pDS->close();
-        sql = PrepareSQL("insert into broken(id, addonID, reason) values(NULL, '%s', '%s')", addonID.c_str(),reason.c_str());
-        m_pDS->exec(sql);
-        return true;
-      }
-      return false; // already disabled or failed query
-    }
-    else
-    {
-      CStdString sql = PrepareSQL("delete from broken where addonID='%s'", addonID.c_str());
+    CStdString sql = PrepareSQL("delete from broken where addonID='%s'", addonID.c_str());
+    m_pDS->exec(sql);
+
+    if (!reason.IsEmpty())
+    { // broken
+      sql = PrepareSQL("insert into broken(id, addonID, reason) values(NULL, '%s', '%s')", addonID.c_str(),reason.c_str());
       m_pDS->exec(sql);
     }
     return true;

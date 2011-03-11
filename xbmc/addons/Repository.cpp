@@ -214,12 +214,9 @@ bool CRepositoryUpdateJob::DoWork()
                                              g_localizeStrings.Get(24097),
                                              ""))
           database.DisableAddon(addons[i]->ID());
-
-        database.BreakAddon(addons[i]->ID(),true,addons[i]->Props().broken);
       }
     }
-    if (addons[i]->Props().broken.IsEmpty())
-      database.BreakAddon(addons[i]->ID(),false);
+    database.BreakAddon(addons[i]->ID(), addons[i]->Props().broken);
   }
 
   return true;
