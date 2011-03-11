@@ -26,7 +26,9 @@
 #include "Texture.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "utils/MathUtils.h"
 #include "windowing/WindowingFactory.h"
+#include "guilib/GraphicContext.h"
 
 #if defined(HAS_GLES)
 
@@ -229,12 +231,15 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
 
   VerifyGLState();
 
-  GLfloat col[4][4];
+  GLubyte col[4][4];
   GLfloat ver[4][3];
   GLfloat tex[4][2];
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
-  g_Windowing.EnableGUIShader(SM_TEXTURE);
+  if (texture)
+    g_Windowing.EnableGUIShader(SM_TEXTURE);
+  else
+    g_Windowing.EnableGUIShader(SM_DEFAULT);
 
   GLint posLoc   = g_Windowing.GUIShaderGetPos();
   GLint colLoc   = g_Windowing.GUIShaderGetCol();
@@ -242,10 +247,12 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
 
   glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
   glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, 0, col);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
+  if (texture)
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
 
   glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(tex0Loc);
+  if (texture)
+    glEnableVertexAttribArray(tex0Loc);
   glEnableVertexAttribArray(colLoc);
 
   for (int i=0; i<4; i++)
@@ -258,24 +265,34 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   }
 
   // Setup vertex position values
-  // ver[0][3] = ver[1][3] = ver[2][3] = ver[3][3] = 0.0f; // FIXME, ver has only 3 elements - this is not correct
-  ver[0][0] = ver[3][0] = rect.x1;
-  ver[0][1] = ver[1][1] = rect.y1;
-  ver[1][0] = ver[2][0] = rect.x2;
-  ver[2][1] = ver[3][1] = rect.y2;
-
-  // Setup texture coordinates
-  CRect coords = texCoords ? *texCoords : CRect(0.0f, 0.0f, 1.0f, 1.0f);
-  tex[0][0] = tex[3][0] = coords.x1;
-  tex[0][1] = tex[1][1] = coords.y1;
-  tex[1][0] = tex[2][0] = coords.x2;
-  tex[2][1] = tex[3][1] = coords.y2;
-
+  #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
+  ver[0][0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(rect.x1, rect.y1));
+  ver[0][1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(rect.x1, rect.y1));
+  ver[0][2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(rect.x1, rect.y1));
+  ver[1][0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(rect.x2, rect.y1));
+  ver[1][1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(rect.x2, rect.y1));
+  ver[1][2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(rect.x2, rect.y1));
+  ver[2][0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(rect.x2, rect.y2));
+  ver[2][1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(rect.x2, rect.y2));
+  ver[2][2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(rect.x2, rect.y2));
+  ver[3][0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(rect.x1, rect.y2));
+  ver[3][1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(rect.x1, rect.y2));
+  ver[3][2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(rect.x1, rect.y2));
+  if (texture)
+  {
+    // Setup texture coordinates
+    CRect coords = texCoords ? *texCoords : CRect(0.0f, 0.0f, 1.0f, 1.0f);
+    tex[0][0] = tex[3][0] = coords.x1;
+    tex[0][1] = tex[1][1] = coords.y1;
+    tex[1][0] = tex[2][0] = coords.x2;
+    tex[2][1] = tex[3][1] = coords.y2;
+  }
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(colLoc);
-  glDisableVertexAttribArray(tex0Loc);
+  if (texture)
+    glDisableVertexAttribArray(tex0Loc);
 
   g_Windowing.DisableGUIShader();
 
