@@ -766,7 +766,7 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &timerinfo, PVR_TIM
   tag.endtime      -= m_iTimeCorrection;
   tag.firstday      = timerinfo.FirstDayTime();
   tag.firstday     -= m_iTimeCorrection;
-  tag.epgid         = timerinfo.m_EpgInfo ? timerinfo.m_EpgInfo->BroadcastId() : -1;
+  tag.epgid         = timerinfo.m_EpgInfo ? timerinfo.m_EpgInfo->UniqueBroadcastID() : -1;
   tag.description   = timerinfo.m_strSummary;
 }
 
