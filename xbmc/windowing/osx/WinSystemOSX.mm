@@ -33,6 +33,8 @@
 #include "utils/SystemInfo.h"
 #undef BOOL
 
+#include <SDL/SDL_events.h>
+
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
 #import <Carbon/Carbon.h>   // ShowMenuBar, HideMenuBar

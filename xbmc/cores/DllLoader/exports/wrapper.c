@@ -44,8 +44,9 @@ typedef off64_t   __off64_t;
 typedef fpos_t    fpos64_t;
 #define stat64    stat
 #define statvfs64 statvfs
-// this is not right, fix later
-//#define _G_va_list va_list
+#if defined(__arm__)
+#define _G_va_list va_list
+#endif
 #endif
 
 #ifdef _LINUX

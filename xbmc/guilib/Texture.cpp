@@ -25,7 +25,7 @@
 #include "utils/URIUtils.h"
 #include "pictures/DllImageLib.h"
 #include "DDSImage.h"
-#include "SpecialProtocol.h"
+#include "filesystem/SpecialProtocol.h"
 #if defined(__APPLE__) && defined(__arm__)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"

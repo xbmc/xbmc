@@ -32,6 +32,7 @@
   #include <X11/extensions/Xrandr.h>
   #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate3"
 #elif defined(__APPLE__) && !defined(__arm__)
+  #include <QuartzCore/CVDisplayLink.h>
   #include "CocoaInterface.h"
 #elif defined(__APPLE__) && defined(__arm__)
   #include "WindowingFactory.h"
@@ -850,7 +851,6 @@ void CVideoReferenceClock::CleanupCocoa()
   #endif
 }
 
-#endif
 void CVideoReferenceClock::VblankHandler(int64_t nowtime, double fps)
 {
   int           NrVBlanks;
@@ -881,6 +881,7 @@ void CVideoReferenceClock::VblankHandler(int64_t nowtime, double fps)
 
   SendVblankSignal();
 }
+#endif
 
 //this is called from the vblank run function and from CVideoReferenceClock::Wait in case of a late update
 void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
