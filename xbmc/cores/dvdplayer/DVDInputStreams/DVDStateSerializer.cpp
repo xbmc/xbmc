@@ -94,7 +94,7 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
           }
 
           { TiXmlElement eValue("tv_usec");
-            sprintf(buffer, "%ld", state->registers.GPRM_time[i].tv_usec);
+            sprintf(buffer, "%d", state->registers.GPRM_time[i].tv_usec);
             eValue.InsertEndChild( TiXmlText( buffer ) );
             eTime.InsertEndChild( eValue ) ;
           }
@@ -251,7 +251,7 @@ bool CDVDStateSerializer::XMLToDVDState( dvd_state_t *state, const std::string &
 
       text = TiXmlHandle( element ).FirstChildElement("time").FirstChildElement("tv_usec").FirstChild().Text();
       if( text )
-        sscanf(text->Value(), "%ld", &state->registers.GPRM_time[index].tv_usec);
+        sscanf(text->Value(), "%d", &state->registers.GPRM_time[index].tv_usec);
     }
     element = element->NextSiblingElement("gprm");
   }
