@@ -99,7 +99,7 @@ int CPVRTimers::Update()
       continue;
 
     /* try to get the channel */
-    CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByClientFromAll(timerTag->m_iChannelNumber, timerTag->m_iClientID);
+    CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByUniqueID(timerTag->m_iClientChannelUid, timerTag->m_iClientID);
     if (!channel)
       continue;
 
@@ -126,22 +126,23 @@ bool CPVRTimers::Update(const CPVRTimerInfoTag &timer)
     push_back(newTag);
   }
 
-  newTag->m_iClientID      = timer.m_iClientID;
-  newTag->m_iClientIndex   = timer.m_iClientIndex;
-  newTag->m_bIsActive      = timer.m_bIsActive;
-  newTag->m_strTitle       = timer.m_strTitle;
-  newTag->m_strDir         = timer.m_strDir;
-  newTag->m_iClientNumber  = timer.m_iClientNumber;
-  newTag->m_StartTime      = timer.m_StartTime;
-  newTag->m_StopTime       = timer.m_StopTime;
-  newTag->m_FirstDay       = timer.m_FirstDay;
-  newTag->m_iPriority      = timer.m_iPriority;
-  newTag->m_iLifetime      = timer.m_iLifetime;
-  newTag->m_bIsRecording   = timer.m_bIsRecording;
-  newTag->m_bIsRepeating   = timer.m_bIsRepeating;
-  newTag->m_iWeekdays      = timer.m_iWeekdays;
-  newTag->m_iChannelNumber = timer.m_iChannelNumber;
-  newTag->m_bIsRadio       = timer.m_bIsRadio;
+  newTag->m_iClientID         = timer.m_iClientID;
+  newTag->m_iClientIndex      = timer.m_iClientIndex;
+  newTag->m_bIsActive         = timer.m_bIsActive;
+  newTag->m_strTitle          = timer.m_strTitle;
+  newTag->m_strDir            = timer.m_strDir;
+  newTag->m_iClientNumber     = timer.m_iClientNumber;
+  newTag->m_iClientChannelUid = timer.m_iClientChannelUid;
+  newTag->m_StartTime         = timer.m_StartTime;
+  newTag->m_StopTime          = timer.m_StopTime;
+  newTag->m_FirstDay          = timer.m_FirstDay;
+  newTag->m_iPriority         = timer.m_iPriority;
+  newTag->m_iLifetime         = timer.m_iLifetime;
+  newTag->m_bIsRecording      = timer.m_bIsRecording;
+  newTag->m_bIsRepeating      = timer.m_bIsRepeating;
+  newTag->m_iWeekdays         = timer.m_iWeekdays;
+  newTag->m_iChannelNumber    = timer.m_iChannelNumber;
+  newTag->m_bIsRadio          = timer.m_bIsRadio;
 
   // TODO epg entry
 
@@ -283,18 +284,19 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
     iLifetime   = 30;  /* default to 30 days */
 
   /* set the timer data */
-  newTimer->m_iClientIndex   = -1;
-  newTimer->m_bIsActive      = true;
-  newTimer->m_strTitle       = channel->ChannelName();
-  newTimer->m_strTitle       = g_localizeStrings.Get(19056);
-  newTimer->m_iChannelNumber = channel->ChannelNumber();
-  newTimer->m_iClientNumber  = channel->ClientChannelNumber();
-  newTimer->m_iClientID      = channel->ClientID();
-  newTimer->m_bIsRadio       = channel->IsRadio();
-  newTimer->m_StartTime      = CDateTime::GetCurrentDateTime();
+  newTimer->m_iClientIndex      = -1;
+  newTimer->m_bIsActive         = true;
+  newTimer->m_strTitle          = channel->ChannelName();
+  newTimer->m_strTitle          = g_localizeStrings.Get(19056);
+  newTimer->m_iChannelNumber    = channel->ChannelNumber();
+  newTimer->m_iClientNumber     = channel->ClientChannelNumber();
+  newTimer->m_iClientChannelUid = channel->UniqueID();
+  newTimer->m_iClientID         = channel->ClientID();
+  newTimer->m_bIsRadio          = channel->IsRadio();
+  newTimer->m_StartTime         = CDateTime::GetCurrentDateTime();
   newTimer->SetDuration(iDuration);
-  newTimer->m_iPriority      = iPriority;
-  newTimer->m_iLifetime      = iLifetime;
+  newTimer->m_iPriority         = iPriority;
+  newTimer->m_iLifetime         = iLifetime;
 
   /* generate summary string */
   newTimer->m_strSummary.Format("%s %s %s %s %s",

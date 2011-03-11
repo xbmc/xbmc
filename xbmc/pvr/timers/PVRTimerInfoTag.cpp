@@ -38,6 +38,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag()
   m_iClientID          = CPVRManager::Get()->GetFirstClientID();
   m_iClientIndex       = -1;
   m_iClientNumber      = -1;
+  m_iClientChannelUid  = -1;
   m_bIsRadio           = false;
   m_bIsRecording       = false;
   m_StartTime          = NULL;
@@ -60,6 +61,7 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_strSummary         == right.m_strSummary &&
           m_iChannelNumber     == right.m_iChannelNumber &&
           m_iClientNumber      == right.m_iClientNumber &&
+          m_iClientChannelUid  == right.m_iClientChannelUid &&
           m_bIsRadio           == right.m_bIsRadio &&
           m_bIsRepeating       == right.m_bIsRepeating &&
           m_StartTime          == right.m_StartTime &&
@@ -324,7 +326,7 @@ void CPVRTimerInfoTag::SetEpgInfoTag(const CPVREpgInfoTag *tag)
 
 int CPVRTimerInfoTag::ChannelNumber() const
 {
-  const CPVRChannel *channeltag = CPVRManager::GetChannelGroups()->GetByClientFromAll(m_iClientNumber, m_iClientID);
+  const CPVRChannel *channeltag = CPVRManager::GetChannelGroups()->GetByUniqueID(m_iClientChannelUid, m_iClientID);
   if (channeltag)
     return channeltag->ChannelNumber();
   else
@@ -333,7 +335,7 @@ int CPVRTimerInfoTag::ChannelNumber() const
 
 CStdString CPVRTimerInfoTag::ChannelName() const
 {
-  const CPVRChannel *channeltag = CPVRManager::GetChannelGroups()->GetByClientFromAll(m_iClientNumber, m_iClientID);
+  const CPVRChannel *channeltag = CPVRManager::GetChannelGroups()->GetByUniqueID(m_iClientChannelUid, m_iClientID);
   if (channeltag)
     return channeltag->ChannelName();
   else
@@ -393,17 +395,18 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
     iMarginStop    = 10; /* default to 10 minutes */
 
   /* set the timer data */
-  newTag->m_iClientIndex   = (tag.UniqueBroadcastID() > 0 ? tag.UniqueBroadcastID() : channel->ClientID());
-  newTag->m_bIsActive      = true;
-  newTag->m_strTitle       = tag.Title().IsEmpty() ? channel->ChannelName() : tag.Title();
-  newTag->m_iChannelNumber = channel->ChannelNumber();
-  newTag->m_iClientNumber  = channel->ClientChannelNumber();
-  newTag->m_iClientID      = channel->ClientID();
-  newTag->m_bIsRadio       = channel->IsRadio();
-  newTag->m_StartTime      = tag.Start() - CDateTimeSpan(0, iMarginStart / 60, iMarginStart % 60, 0);
-  newTag->m_StopTime       = tag.End() + CDateTimeSpan(0, iMarginStop / 60, iMarginStop % 60, 0);
-  newTag->m_iPriority      = iPriority;
-  newTag->m_iLifetime      = iLifetime;
+  newTag->m_iClientIndex      = (tag.UniqueBroadcastID() > 0 ? tag.UniqueBroadcastID() : channel->ClientID());
+  newTag->m_bIsActive         = true;
+  newTag->m_strTitle          = tag.Title().IsEmpty() ? channel->ChannelName() : tag.Title();
+  newTag->m_iChannelNumber    = channel->ChannelNumber();
+  newTag->m_iClientNumber     = channel->ClientChannelNumber();
+  newTag->m_iClientChannelUid = channel->UniqueID();
+  newTag->m_iClientID         = channel->ClientID();
+  newTag->m_bIsRadio          = channel->IsRadio();
+  newTag->m_StartTime         = tag.Start() - CDateTimeSpan(0, iMarginStart / 60, iMarginStart % 60, 0);
+  newTag->m_StopTime          = tag.End() + CDateTimeSpan(0, iMarginStop / 60, iMarginStop % 60, 0);
+  newTag->m_iPriority         = iPriority;
+  newTag->m_iLifetime         = iLifetime;
 
   /* generate summary string */
   newTag->m_strSummary.Format("%s %s %s %s %s",

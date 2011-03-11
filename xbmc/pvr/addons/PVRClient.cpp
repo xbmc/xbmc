@@ -41,6 +41,7 @@
 #include "FileItem.h"
 #include "PVRClient.h"
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
@@ -616,8 +617,10 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timerinfo)
       //Workaround for string transfer to PVRclient
       CStdString myTitle(timerinfo.m_strTitle);
       CStdString myDirectory(timerinfo.m_strDir);
+      CStdString myDescription(timerinfo.m_strSummary);
       tag.title = myTitle.c_str();
       tag.directory = myDirectory.c_str();
+      tag.description = myDescription.c_str();
 
       ret = m_pStruct->AddTimer(tag);
       if (ret != PVR_ERROR_NO_ERROR)
@@ -749,6 +752,7 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &timerinfo, PVR_TIM
   tag.index         = timerinfo.m_iClientIndex;
   tag.active        = timerinfo.m_bIsActive;
   tag.channelNum    = timerinfo.m_iClientNumber;
+  tag.channelUid    = timerinfo.m_iClientChannelUid;
   tag.recording     = timerinfo.m_bIsRecording;
   tag.title         = timerinfo.m_strTitle;
   tag.directory     = timerinfo.m_strDir;
@@ -763,6 +767,7 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &timerinfo, PVR_TIM
   tag.firstday      = timerinfo.FirstDayTime();
   tag.firstday     -= m_iTimeCorrection;
   tag.epgid         = timerinfo.m_EpgInfo ? timerinfo.m_EpgInfo->BroadcastId() : -1;
+  tag.description   = timerinfo.m_strSummary;
 }
 
 /**********************************************************

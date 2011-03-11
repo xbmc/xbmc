@@ -143,7 +143,7 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
 
   CPVRTimers *xbmcTimers     = (CPVRTimers*) handle->DATA_ADDRESS;
   CPVRClient* client         = (CPVRClient*) handle->CALLER_ADDRESS;
-  const CPVRChannel *channel = CPVRManager::GetChannelGroups()->GetByClientFromAll(timer->channelNum, client->GetClientID());
+  const CPVRChannel *channel = CPVRManager::GetChannelGroups()->GetByUniqueID(timer->channelUid, client->GetClientID());
 
   if (channel == NULL)
   {
@@ -152,20 +152,21 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
   }
 
   CPVRTimerInfoTag tag;
-  tag.m_iClientID     = client->GetClientID();
-  tag.m_iClientIndex  = timer->index;
-  tag.m_bIsActive     = timer->active == 1;
-  tag.m_strTitle      = timer->title;
-  tag.m_strDir        = timer->directory;
-  tag.m_iClientNumber = timer->channelNum;
-  tag.m_StartTime     = (time_t) (timer->starttime+client->GetTimeCorrection());
-  tag.m_StopTime      = (time_t) (timer->endtime+client->GetTimeCorrection());
-  tag.m_FirstDay      = (time_t) (timer->firstday+client->GetTimeCorrection());
-  tag.m_iPriority     = timer->priority;
-  tag.m_iLifetime     = timer->lifetime;
-  tag.m_bIsRecording  = timer->recording == 1;
-  tag.m_bIsRepeating  = timer->repeat == 1;
-  tag.m_iWeekdays     = timer->repeatflags;
+  tag.m_iClientID         = client->GetClientID();
+  tag.m_iClientIndex      = timer->index;
+  tag.m_bIsActive         = timer->active == 1;
+  tag.m_strTitle          = timer->title;
+  tag.m_strDir            = timer->directory;
+  tag.m_iClientNumber     = timer->channelNum;
+  tag.m_iClientChannelUid = timer->channelUid;
+  tag.m_StartTime         = (time_t) (timer->starttime+client->GetTimeCorrection());
+  tag.m_StopTime          = (time_t) (timer->endtime+client->GetTimeCorrection());
+  tag.m_FirstDay          = (time_t) (timer->firstday+client->GetTimeCorrection());
+  tag.m_iPriority         = timer->priority;
+  tag.m_iLifetime         = timer->lifetime;
+  tag.m_bIsRecording      = timer->recording == 1;
+  tag.m_bIsRepeating      = timer->repeat == 1;
+  tag.m_iWeekdays         = timer->repeatflags;
   tag.m_strFileNameAndPath.Format("pvr://client%i/timers/%i", tag.m_iClientID, tag.m_iClientIndex);
 
   // TODO find matching EPG entry

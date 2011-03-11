@@ -208,7 +208,7 @@ int CPVRChannelGroupsContainer::GetNumChannelsFromAll()
   return GetGroupAllTV()->GetNumChannels() + GetGroupAllRadio()->GetNumChannels();
 }
 
-const CPVRChannel *CPVRChannelGroupsContainer::GetByClientFromAll(int iClientChannelNumber, int iClientID)
+const CPVRChannel *CPVRChannelGroupsContainer::GetByUniqueID(int iClientChannelNumber, int iClientID)
 {
   const CPVRChannel *channel = NULL;
 

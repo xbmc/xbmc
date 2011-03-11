@@ -68,6 +68,7 @@ public:
   int                   m_iClientID;          /* ID of the backend */
   int                   m_iClientIndex;       /* index number of the tag, given by the backend, -1 for new */
   int                   m_iClientNumber;      /* integer value of the client number */
+  int                   m_iClientChannelUid;  /* channel uid */
   bool                  m_bIsRadio;           /* is radio channel if set */
   bool                  m_bIsRecording;       /* is this timer recording? */
   int                   m_iPriority;          /* priority of the timer */

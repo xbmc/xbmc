@@ -252,6 +252,7 @@ extern "C" {
     const char   *title;
     const char   *directory;
     int           channelNum;
+    int           channelUid;
     time_t        starttime;
     time_t        endtime;
     time_t        firstday;
@@ -261,6 +262,7 @@ extern "C" {
     int           repeat;
     int           repeatflags;
     int           epgid;
+    const char   *description;
   } ATTRIBUTE_PACKED PVR_TIMERINFO;
 
   /*! \brief PVR recording defination
