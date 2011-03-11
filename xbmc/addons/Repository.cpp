@@ -186,6 +186,9 @@ bool CRepositoryUpdateJob::DoWork()
   database.Open();
   for (unsigned int i=0;i<addons.size();++i)
   {
+    if (!CAddonInstaller::Get().CheckDependencies(addons[i]))
+      addons[i]->Props().broken = g_localizeStrings.Get(24044);
+
     AddonPtr addon;
     CAddonMgr::Get().GetAddon(addons[i]->ID(),addon);
     if (addon && addons[i]->Version() > addon->Version())
