@@ -30,16 +30,17 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
+#include "system.h" // for HAS_DVD_DRIVE
 #ifdef HAS_DVD_DRIVE
-#ifdef _LINUX
-#include <sys/ioctl.h>
-#ifndef __APPLE__
-#include <mntent.h>
-#include <linux/cdrom.h>
-#else
-#include <IOKit/storage/IODVDMediaBSDClient.h>
-#endif
-#endif
+  #ifdef _LINUX
+    #include <sys/ioctl.h>
+    #ifndef __APPLE__
+      #include <mntent.h>
+      #include <linux/cdrom.h>
+    #else
+      #include <IOKit/storage/IODVDMediaBSDClient.h>
+    #endif
+  #endif
 #endif
 #include <fcntl.h>
 #include <time.h>
@@ -2109,6 +2110,7 @@ extern "C"
 
   int __cdecl dll_ioctl(int fd, unsigned long int request, va_list va)
   {
+     int ret;
      CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
      if (!pFile)
        return -1;
@@ -2121,17 +2123,17 @@ extern "C"
 #endif
     {
       void *p1 = va_arg(va, void*);
-      int ret = pFile->IoControl(request, p1);
+      ret = pFile->IoControl(request, p1);
       if(ret<0)
         CLog::Log(LOGWARNING, "%s - %ld request failed with error [%d] %s", __FUNCTION__, request, errno, strerror(errno));
-      return ret;
     }
     else
 #endif
     {
       CLog::Log(LOGWARNING, "%s - Unknown request type %ld", __FUNCTION__, request);
-      return -1;
+      ret = -1;
     }
+    return ret;
   }
 #endif
 

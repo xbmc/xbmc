@@ -367,22 +367,22 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
 typedef int64_t   off64_t;
 typedef off_t     __off_t;
 typedef off64_t   __off64_t;
-typedef fpos_t    fpos64_t;
+typedef fpos_t fpos64_t;
 #if (MAC_OS_X_VERSION_MAX_ALLOWED < 1050)
 #define __stat64 stat
 #define stat64 stat
 #define statfs64 statfs
 #define fstat64 fstat
-#else
-#if defined(__arm__)
+#elif defined(__arm__) 
 #define __stat64 stat
 #define stat64 stat
 #define statfs64 statfs
 #define fstat64 fstat
 #else
+#define fstat64 fstat
+#endif
+#else
 #define __stat64 stat64
-#endif
-#endif
 #endif
 
 struct _stati64 {
