@@ -57,17 +57,31 @@
 #endif
 #else
 #if defined(__APPLE__)
-  #if defined(__POWERPC__)
-    #define PYTHON_DLL "special://xbmcbin/system/python/python24-powerpc-osx.so"
-  #else
-    #if (defined HAVE_LIBPYTHON2_6)
-      #define PYTHON_DLL "special://xbmcbin/system/python/python26-x86-osx.so"
-    #elif (defined HAVE_LIBPYTHON2_5)
-      #define PYTHON_DLL "special://xbmcbin/system/python/python25-x86-osx.so"
-    #else
-      #define PYTHON_DLL "special://xbmcbin/system/python/python24-x86-osx.so"
-    #endif
-  #endif
+#if defined(__POWERPC__)
+#if (defined HAVE_LIBPYTHON2_6)
+  #define PYTHON_DLL "special://xbmcbin/system/python/python26-powerpc-osx.so"
+#elif (defined HAVE_LIBPYTHON2_5)
+  #define PYTHON_DLL "special://xbmcbin/system/python/python25-powerpc-osx.so"
+#else
+  #define PYTHON_DLL "special://xbmcbin/system/python/python24-powerpc-osx.so"
+#endif
+#elif defined(__arm__)
+#if (defined HAVE_LIBPYTHON2_6)
+  #define PYTHON_DLL "special://xbmcbin/system/python/python26-arm-osx.so"
+#elif (defined HAVE_LIBPYTHON2_5)
+  #define PYTHON_DLL "special://xbmcbin/system/python/python25-arm-osx.so"
+#else
+  #define PYTHON_DLL "special://xbmcbin/system/python/python24-arm-osx.so"
+#endif
+#else
+#if (defined HAVE_LIBPYTHON2_6)
+  #define PYTHON_DLL "special://xbmcbin/system/python/python26-x86-osx.so"
+#elif (defined HAVE_LIBPYTHON2_5)
+  #define PYTHON_DLL "special://xbmcbin/system/python/python25-x86-osx.so"
+#else
+  #define PYTHON_DLL "special://xbmcbin/system/python/python24-x86-osx.so"
+#endif
+#endif
 #elif defined(__x86_64__)
 #if (defined HAVE_LIBPYTHON2_6)
 #define PYTHON_DLL "special://xbmcbin/system/python/python26-x86_64-linux.so"
@@ -92,7 +106,7 @@
 #else
 #define PYTHON_DLL "special://xbmcbin/system/python/python24-powerpc64-linux.so"
 #endif
-#elif defined(_ARMEL)
+#elif defined(_ARMEL) && !defined(__APPLE__)
 #if (defined HAVE_LIBPYTHON2_6)
 #define PYTHON_DLL "special://xbmc/system/python/python26-arm.so"
 #elif (defined HAVE_LIBPYTHON2_5)
@@ -399,18 +413,16 @@ void XBPython::Initialize()
          Reason for this is because we cannot be sure what version of Python
          was used to compile the various Python object files (i.e. .pyo,
          .pyc, etc.). */
-      #if defined(__APPLE__)
         // check if we are running as real xbmc.app or just binary
-        if (!CUtil::GetFrameworksPath().IsEmpty())
-        {
-          // using external python, it's build looking for xxx/lib/python2.6
-          // so point it to frameworks/usr which is where python2.6 is located
-          setenv("PYTHONHOME", _P("special://frameworks/usr").c_str(), 1);
-          setenv("PYTHONPATH", _P("special://frameworks/usr").c_str(), 1);
-          CLog::Log(LOGDEBUG, "PYTHONHOME -> %s", _P("special://frameworks/usr").c_str());
-          CLog::Log(LOGDEBUG, "PYTHONPATH -> %s", _P("special://frameworks/usr").c_str());
-        }
-      #endif
+      if (!CUtil::GetFrameworksPath().IsEmpty())
+      {
+        // using external python, it's build looking for xxx/lib/python2.6
+        // so point it to frameworks/usr which is where python2.6 is located
+        setenv("PYTHONHOME", _P("special://frameworks/usr").c_str(), 1);
+        setenv("PYTHONPATH", _P("special://frameworks/usr").c_str(), 1);
+        CLog::Log(LOGDEBUG, "PYTHONHOME -> %s", _P("special://frameworks/usr").c_str());
+        CLog::Log(LOGDEBUG, "PYTHONPATH -> %s", _P("special://frameworks/usr").c_str());
+      }
       setenv("PYTHONCASEOK", "1", 1); //This line should really be removed
       CLog::Log(LOGDEBUG, "Python wrapper library linked with system Python library");
 #endif /* USE_EXTERNAL_PYTHON */
