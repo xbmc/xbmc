@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2009 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -47,6 +47,7 @@ static const char* ShaderNames[SM_ESHADERCOUNT] =
 CRenderSystemGLES::CRenderSystemGLES()
  : CRenderSystemBase()
  , m_pGUIshader(0)
+ , m_method(SM_DEFAULT)
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGLES;
 }
@@ -146,6 +147,7 @@ bool CRenderSystemGLES::DestroyRenderSystem()
       }
     }
     delete[] m_pGUIshader;
+    m_pGUIshader = NULL;
   }
 
   m_bRenderCreated = false;
