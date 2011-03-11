@@ -44,6 +44,11 @@ config.log
 /build/
 .DS_Store
 *.dSYM
+/tools/osx/osx-depends/**/.gitignore
+/tools/osx/osx-depends/**/.installed
+/tools/osx/ios-depends/**/.gitignore
+/tools/osx/ios-depends/**/.installed
+/tools/osx/ios-depends/**/.compiled
 
 .libs/
 .deps/
@@ -483,7 +488,7 @@ config.log
 # /xbmc/cores/DllLoader/exports/
 /xbmc/cores/DllLoader/exports/build_wrapper.sh
 /xbmc/cores/DllLoader/exports/wrapper.def
-
+/xbmc/cores/DllLoader/Makefile
 /xbmc/cores/Makefile
 
 /xbmc/cores/VideoRenderers/Makefile
