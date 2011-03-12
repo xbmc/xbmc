@@ -637,9 +637,6 @@ else
   PKG_CHECK_MODULES([XT],    [xt],
     [INCLUDES="$INCLUDES $XT_CFLAGS"; LIBS="$LIBS $XT_LIBS"],
     AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([XTST],  [xtst],
-    [INCLUDES="$INCLUDES $XTST_CFLAGS"; LIBS="$LIBS $XTST_LIBS"],
-    AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([XEXT],  [xext],
     [INCLUDES="$INCLUDES $XEXT_CFLAGS"; LIBS="$LIBS $XEXT_LIBS"],
     AC_MSG_ERROR($missing_library))
