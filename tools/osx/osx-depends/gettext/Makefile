@@ -31,7 +31,7 @@ CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared \
     --with-included-libcroco \
     --with-included-libxml \
     --without-git --without-cvs \
-    ac_cv_func___fsetlocking=no ac_cv_func_posix_spawn=no
+    ac_cv_func___fsetlocking=no ac_cv_func_posix_spawn=no ac_cv_func_mempcpy=no
 
 LIBDYLIB=$(SOURCE)/.libs/lib$(LIBNAME).dylib
 
