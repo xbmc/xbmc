@@ -428,16 +428,13 @@ bool FunctionNeedsWrapping(Export *exports, const char *functionName, void **fix
 bool Win32DllLoader::ResolveImport(const char *dllName, const char *functionName, void **fixup)
 {
   char *dll = GetName();
-#ifdef HAVE_LIBPYTHON2_6
-  if (strstr(dll, "python26.dll")
-#else
-  if (strstr(dll, "python24.dll")
-#endif
-   || strstr(dll, ".pyd"))
+#if !defined(USE_EXTERNAL_PYTHON)
+  if (strstr(dll, "python24.dll") || strstr(dll, ".pyd"))
   { // special case for python
     if (FunctionNeedsWrapping(win32_python_exports, functionName, fixup))
       return true;
   }
+#endif
   return FunctionNeedsWrapping(win32_exports, functionName, fixup);
 }
 
