@@ -24,12 +24,14 @@
 #include "PVRChannelGroup.h"
 
 class CPVRChannelGroups;
+class CPVRDatabase;
 
 /** XBMC's internal group, the group containing all channels */
 
 class CPVRChannelGroupInternal : public CPVRChannelGroup
 {
   friend class CPVRChannelGroups;
+  friend class CPVRDatabase;
 
 private:
   int  m_iHiddenChannels; /*!< the amount of hidden channels in this container */
@@ -98,19 +100,17 @@ private:
    */
   void Unload();
 
+  /*!
+   * @brief Add a channel to this internal group.
+   */
+  bool InsertInGroup(CPVRChannel *channel, int iChannelNumber = 0);
+
 public:
   /*!
    * @brief Create a new internal channel group.
    * @param bRadio True if this group holds radio channels.
    */
   CPVRChannelGroupInternal(bool bRadio);
-
-  /*!
-   * @brief Show a hidden channel or hide a visible channel.
-   * @param channel The channel to change.
-   * @return True if the channel was changed, false otherwise.
-   */
-  bool RemoveFromGroup(CPVRChannel *channel);
 
   /**
    * @brief The amount of channels in this container.
@@ -136,4 +136,10 @@ public:
    * @return True if the channel was updated and persisted.
    */
   bool UpdateChannel(const CPVRChannel &channel);
+
+  bool IsGroupMember(const CPVRChannel *channel) const;
+  bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0);
+  bool RemoveFromGroup(CPVRChannel *channel);
+  bool MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb = true);
+  int GetMembers(CFileItemList *results, bool bGroupMembers = true) const;
 };

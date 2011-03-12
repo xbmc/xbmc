@@ -145,11 +145,11 @@ const CPVRChannel *CPVRChannelGroupsContainer::GetByPath(const CStdString &strPa
 bool CPVRChannelGroupsContainer::GetDirectory(const CStdString& strPath, CFileItemList &results)
 {
   CStdString strBase(strPath);
-  URIUtils::RemoveSlashAtEnd(strBase);
 
   /* get the filename from curl */
   CURL url(strPath);
   CStdString fileName = url.GetFileName();
+  URIUtils::RemoveSlashAtEnd(fileName);
 
   if (fileName == "channels")
   {
@@ -185,7 +185,7 @@ bool CPVRChannelGroupsContainer::GetDirectory(const CStdString& strPath, CFileIt
     if (!group)
       group = GetGroupAllTV();
     if (group)
-      group->GetMembers(&results, fileName.substr(fileName.length() - 8) != ".hidden");
+      group->GetMembers(&results, !fileName.Right(7).Equals(".hidden"));
     return true;
   }
   else if (fileName.Left(15) == "channels/radio/")
@@ -196,7 +196,7 @@ bool CPVRChannelGroupsContainer::GetDirectory(const CStdString& strPath, CFileIt
     if (!group)
       group = GetGroupAllRadio();
     if (group)
-      group->GetMembers(&results, fileName.substr(fileName.length() - 8) != ".hidden");
+      group->GetMembers(&results, !fileName.Right(7).Equals(".hidden"));
     return true;
   }
 

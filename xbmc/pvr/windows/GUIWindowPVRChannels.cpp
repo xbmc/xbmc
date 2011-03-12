@@ -269,7 +269,7 @@ bool CGUIWindowPVRChannels::OnContextButtonHide(CFileItem *item, CONTEXT_BUTTON 
     if (!pDialog->IsConfirmed())
       return bReturn;
 
-    ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio))->RemoveFromGroup(channel);
+    ((CPVRChannelGroup *) CPVRManager::Get()->GetPlayingGroup(m_bRadio))->RemoveFromGroup(channel);
     UpdateData();
 
     bReturn = true;

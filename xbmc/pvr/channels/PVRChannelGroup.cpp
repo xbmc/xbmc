@@ -366,11 +366,6 @@ int CPVRChannelGroup::GetMembers(CFileItemList *results, bool bGroupMembers /* =
   return results->Size() - iOrigSize;
 }
 
-int CPVRChannelGroup::GetHiddenChannels(CFileItemList* results) const
-{
-  return GetMembers(results, false);
-}
-
 /********** private methods **********/
 
 int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
@@ -474,7 +469,7 @@ bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 
   if (!channel)
     return bReturn;
 
-  if (!IsGroupMember(channel))
+  if (!CPVRChannelGroup::IsGroupMember(channel))
   {
     if (iChannelNumber <= 0)
       iChannelNumber = size() + 1;

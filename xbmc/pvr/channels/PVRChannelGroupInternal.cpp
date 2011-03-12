@@ -65,6 +65,11 @@ void CPVRChannelGroupInternal::Unload()
   CPVRChannelGroup::Unload();
 }
 
+bool CPVRChannelGroupInternal::InsertInGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */)
+{
+  return CPVRChannelGroup::AddToGroup(channel, iChannelNumber);
+}
+
 bool CPVRChannelGroupInternal::Update()
 {
   bool          bReturn  = false;
@@ -98,47 +103,83 @@ bool CPVRChannelGroupInternal::UpdateTimers(void)
   return true;
 }
 
-bool CPVRChannelGroupInternal::RemoveFromGroup(CPVRChannel *channel)
+bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */)
 {
-  bool bReturn = false;
-
-  if (!channel)
-    return bReturn;
-
-  /* check if there are active timers on this channel if we are hiding it */
-  if (!channel->IsHidden() && CPVRManager::GetTimers()->ChannelHasTimers(*channel))
-  {
-    /* delete the timers */
-    CPVRManager::GetTimers()->DeleteTimersOnChannel(*channel);
-  }
-
-  /* check if this channel is currently playing if we are hiding it */
-  if (!channel->IsHidden() &&
-      (CPVRManager::Get()->IsPlayingTV() || CPVRManager::Get()->IsPlayingRadio()) &&
-      (CPVRManager::Get()->GetCurrentPlayingItem()->GetPVRChannelInfoTag() == channel))
-  {
-    CGUIDialogOK::ShowAndGetInput(19098,19101,0,19102);
-    return bReturn;
-  }
+  /* get the actual channel since this is called from a fileitemlist copy */
+  CPVRChannel *realChannel = (CPVRChannel *) GetByChannelID(channel->ChannelID());
+  if (!realChannel)
+    return false;
 
   /* switch the hidden flag */
-  channel->SetHidden(!channel->IsHidden());
+  realChannel->SetHidden(false, true);
+  m_iHiddenChannels--;
 
-  /* update the hidden channel counter */
-  if (channel->IsHidden())
-    ++m_iHiddenChannels;
+  /* renumber this list */
+  Renumber();
+
+  /* move this channel and persist */
+  if (iChannelNumber > 0)
+    return MoveChannel(realChannel->ChannelNumber(), iChannelNumber, true);
   else
-    --m_iHiddenChannels;
+    return MoveChannel(realChannel->ChannelNumber(), size() - m_iHiddenChannels, true);
+}
 
-  /* update the database entry */
-  channel->Persist();
+bool CPVRChannelGroupInternal::RemoveFromGroup(CPVRChannel *channel)
+{
+  if (!channel)
+    return false;
 
-  /* move the channel to the end of the list */
-  MoveChannel(channel->ChannelNumber(), size());
+  /* check if this channel is currently playing if we are hiding it */
+  if ((CPVRManager::Get()->IsPlayingTV() || CPVRManager::Get()->IsPlayingRadio()) &&
+      (*CPVRManager::Get()->GetCurrentPlayingItem()->GetPVRChannelInfoTag() == *channel))
+  {
+    CGUIDialogOK::ShowAndGetInput(19098,19101,0,19102);
+    return false;
+  }
 
-  bReturn = true;
+  /* get the actual channel since this is called from a fileitemlist copy */
+  CPVRChannel *realChannel = (CPVRChannel *) GetByChannelID(channel->ChannelID());
+  if (!realChannel)
+    return false;
 
-  return bReturn;
+  /* switch the hidden flag */
+  realChannel->SetHidden(true, true);
+  ++m_iHiddenChannels;
+
+  /* renumber this list */
+  Renumber();
+
+  /* and persist */
+  return Persist();
+}
+
+bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb /* = true */)
+{
+  /* new channel number out of range */
+  if (iNewChannelNumber > size() - m_iHiddenChannels)
+    iNewChannelNumber = size() - m_iHiddenChannels;
+
+  return CPVRChannelGroup::MoveChannel(iOldChannelNumber, iNewChannelNumber, bSaveInDb);
+}
+
+int CPVRChannelGroupInternal::GetMembers(CFileItemList *results, bool bGroupMembers /* = true */) const
+{
+  int iOrigSize = results->Size();
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    CPVRChannel *channel = at(iChannelPtr).channel;
+    if (!channel)
+      continue;
+
+    if (bGroupMembers != channel->IsHidden())
+    {
+      CFileItemPtr pFileItem(new CFileItem(*channel));
+      results->Add(pFileItem);
+    }
+  }
+
+  return results->Size() - iOrigSize;
 }
 
 int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
@@ -205,6 +246,7 @@ void CPVRChannelGroupInternal::Renumber(void)
   {
     if (at(ptr).channel->IsHidden())
     {
+      at(ptr).iChannelNumber = 0;
       m_iHiddenChannels++;
     }
     else
@@ -234,6 +276,11 @@ int CPVRChannelGroupInternal::GetFromClients(void)
   }
 
   return size() - iCurSize;
+}
+
+bool CPVRChannelGroupInternal::IsGroupMember(const CPVRChannel *channel) const
+{
+  return channel && !channel->IsHidden();
 }
 
 bool CPVRChannelGroupInternal::UpdateChannel(const CPVRChannel &channel)

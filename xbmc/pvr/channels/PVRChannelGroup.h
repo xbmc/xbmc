@@ -327,20 +327,13 @@ public:
    * @param bGroupMembers If true, get the channels that are in this group. Get the channels that are not in this group otherwise.
    * @return The amount of channels that were added to the list.
    */
-  int GetMembers(CFileItemList *results, bool bGroupMembers = true) const;
+  virtual int GetMembers(CFileItemList *results, bool bGroupMembers = true) const;
 
   /*!
    * @brief The amount of channels in this container.
    * @return The amount of channels in this container.
    */
   int GetNumChannels() const { return size(); }
-
-  /*!
-   * @brief Get the list of hidden channels.
-   * @param results The file list to store the results in.
-   * @return The amount of channels that were added to the list.
-   */
-  int GetHiddenChannels(CFileItemList* results) const;
 
   /*!
    * @brief The amount of hidden channels in this container.

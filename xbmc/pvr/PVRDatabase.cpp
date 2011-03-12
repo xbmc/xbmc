@@ -323,7 +323,7 @@ int CPVRDatabase::GetChannels(CPVRChannelGroupInternal *results, bool bIsRadio)
 
         CLog::Log(LOGDEBUG, "PVRDB - %s - channel '%s' loaded from the database",
             __FUNCTION__, channel->m_strChannelName.c_str());
-        results->AddToGroup(channel, m_pDS->fv("iChannelNumber").get_asInt());
+        results->InsertInGroup(channel, m_pDS->fv("iChannelNumber").get_asInt());
         m_pDS->next();
         ++iReturn;
       }
