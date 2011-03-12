@@ -35,6 +35,7 @@
 #include "PlatformInclude.h"
 #endif
 #include "Event.h"
+#include "utils/StringUtils.h"
 
 class IRunnable
 {
