@@ -1538,7 +1538,9 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
       return;
   }
 
-  CFileUtils::DeleteItem(item);
+  if (g_guiSettings.GetBool("filelists.allowfiledeletion") &&
+      CUtil::SupportsFileOperations(item->m_strPath))
+    CFileUtils::DeleteItem(item);
 }
 
 void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)

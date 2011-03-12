@@ -47,7 +47,7 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
-						<animation effect="slide" start="0,0" end="20,0" delay="0" time="0" condition="![Window.IsVisible(VideoLibrary) | Window.IsVisible(VideoFiles)]">conditional</animation>
+						<animation effect="slide" start="0,0" end="20,0" delay="0" time="0" condition="!Window.IsVisible(Videos)">conditional</animation>
 					</control>
 					<control type="image">
 						<posx>665</posx>
@@ -55,7 +55,7 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
-						<visible>Window.IsVisible(VideoLibrary) | Window.IsVisible(VideoFiles)</visible>
+						<visible>Window.IsVisible(Videos)</visible>
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="580">
@@ -108,7 +108,7 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
-						<animation effect="slide" start="0,0" end="20,0" delay="0" time="0" condition="![Window.IsVisible(VideoLibrary) | Window.IsVisible(VideoFiles)]">conditional</animation>
+						<animation effect="slide" start="0,0" end="20,0" delay="0" time="0" condition="!Window.IsVisible(Videos)">conditional</animation>
 					</control>
 					<control type="image">
 						<posx>665</posx>
@@ -116,7 +116,7 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
-						<visible>Window.IsVisible(VideoLibrary) | Window.IsVisible(VideoFiles)</visible>
+						<visible>Window.IsVisible(Videos)</visible>
 					</control>
 				</focusedlayout>
 			</control>
@@ -269,8 +269,7 @@
 			<visible>Control.IsVisible(505)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="panel" id="505">
-				<visible>[Container.Content(TVShows) + !Skin.HasSetting(TVShowsUsePosters)] | Window.IsVisible(VideoFiles)</visible>
-				<visible>!Container.Content(LiveTV)</visible>
+				<visible>!Container.Content(LiveTV) + !Container.Content(Movies) + !Container.Content(Episodes) + !Container.Content(Seasons) + !Container.Content(MusicVideos) + !Skin.HasSetting(TVShowsUsePosters)</visible>
 				<posx>95</posx>
 				<posy>80</posy>
 				<width>1080</width>
@@ -394,7 +393,7 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
-						<animation effect="slide" start="0,0" end="20,0" delay="0" time="0" condition="![Window.IsVisible(VideoLibrary) | Window.IsVisible(VideoFiles)]">conditional</animation>
+						<animation effect="slide" start="0,0" end="20,0" delay="0" time="0" condition="!Window.IsVisible(Videos)">conditional</animation>
 					</control>
 					<control type="image">
 						<posx>1050</posx>
@@ -402,7 +401,7 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
-						<visible>Window.IsVisible(VideoLibrary) | Window.IsVisible(VideoFiles)</visible>
+						<visible>Window.IsVisible(Videos)</visible>
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="1080">
@@ -462,7 +461,7 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
-						<animation effect="slide" start="0,0" end="20,0" delay="0" time="0" condition="![Window.IsVisible(VideoLibrary) | Window.IsVisible(VideoFiles)]">conditional</animation>
+						<animation effect="slide" start="0,0" end="20,0" delay="0" time="0" condition="!Window.IsVisible(Videos)">conditional</animation>
 					</control>
 					<control type="image">
 						<posx>1050</posx>
@@ -470,7 +469,7 @@
 						<width>20</width>
 						<height>16</height>
 						<texture>$INFO[ListItem.Overlay]</texture>
-						<visible>Window.IsVisible(VideoLibrary) | Window.IsVisible(VideoFiles)</visible>
+						<visible>Window.IsVisible(Videos)</visible>
 					</control>
 				</focusedlayout>
 			</control>

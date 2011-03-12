@@ -49,6 +49,7 @@ CRssReader::CRssReader() : CThread()
   m_spacesBetweenFeeds = 0;
   m_bIsRunning = false;
   m_SavedScrollPos = 0;
+  m_ThreadName = "CRssReader";
 }
 
 CRssReader::~CRssReader()

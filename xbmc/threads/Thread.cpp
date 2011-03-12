@@ -57,7 +57,7 @@ static void MakeTlsKeys()
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CThread::CThread()
+CThread::CThread(const char* ThreadName)
 {
 #ifdef __APPLE__
   // Initialize thread local storage and local thread pointer.
@@ -75,9 +75,11 @@ CThread::CThread()
   m_StopEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
 
   m_pRunnable=NULL;
+
+  m_ThreadName = ThreadName;
 }
 
-CThread::CThread(IRunnable* pRunnable)
+CThread::CThread(IRunnable* pRunnable, const char* ThreadName)
 {
 #ifdef __APPLE__
   // Initialize thread local storage and local thread pointer.
@@ -95,6 +97,8 @@ CThread::CThread(IRunnable* pRunnable)
   m_StopEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
 
   m_pRunnable=pRunnable;
+
+  m_ThreadName = ThreadName;
 }
 
 CThread::~CThread()
