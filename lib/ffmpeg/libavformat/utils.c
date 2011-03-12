@@ -1092,7 +1092,7 @@ static int av_read_frame_internal(AVFormatContext *s, AVPacket *pkt)
                     av_add_index_entry(st, pkt->pos, pkt->dts, 0, 0, AVINDEX_KEYFRAME);
                 }
                 break;
-            } else if (st->cur_len > 0 && st->discard < AVDISCARD_ALL) {
+            } else if (st->cur_len > 0 && st->cur_ptr && st->discard < AVDISCARD_ALL) {
                 len = av_parser_parse2(st->parser, st->codec, &pkt->data, &pkt->size,
                                        st->cur_ptr, st->cur_len,
                                        st->cur_pkt.pts, st->cur_pkt.dts,
