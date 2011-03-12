@@ -120,15 +120,16 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   // TODO
 
 // Playlist
-//  { "Playlist.Create",                              CPlaylistOperations::Create },
-//  { "Playlist.Destroy",                             CPlaylistOperations::Destroy },
-//
-//  { "Playlist.GetItems",                            CPlaylistOperations::GetItems },
-//  { "Playlist.Add",                                 CPlaylistOperations::Add },
-//  { "Playlist.Remove",                              CPlaylistOperations::Remove },
-//  { "Playlist.Swap",                                CPlaylistOperations::Swap },
-//  { "Playlist.Shuffle",                             CPlaylistOperations::Shuffle },
-//  { "Playlist.UnShuffle",                           CPlaylistOperations::UnShuffle },
+  { "Playlist.Create",                              CPlaylistOperations::Create },
+  { "Playlist.Destroy",                             CPlaylistOperations::Destroy },
+
+  { "Playlist.GetItems",                            CPlaylistOperations::GetItems },
+  { "Playlist.Add",                                 CPlaylistOperations::Add },
+  { "Playlist.Remove",                              CPlaylistOperations::Remove },
+  { "Playlist.Swap",                                CPlaylistOperations::Swap },
+  { "Playlist.Clear",                               CPlaylistOperations::Clear },
+  { "Playlist.Shuffle",                             CPlaylistOperations::Shuffle },
+  { "Playlist.UnShuffle",                           CPlaylistOperations::UnShuffle },
 
 // Files
   { "Files.GetSources",                             CFileOperations::GetRootDirectory },
@@ -203,17 +204,6 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "AudioPlaylist.Shuffle",                        CAVPlaylistOperations::Shuffle,                      Response,     ControlPlayback, "Shuffle audio playlist" },
   { "AudioPlaylist.UnShuffle",                      CAVPlaylistOperations::UnShuffle,                    Response,     ControlPlayback, "UnShuffle audio playlist" },
   { "AudioPlaylist.Remove",                         CAVPlaylistOperations::Remove,                       Response,     ControlPlayback, "Remove entry from playlist" },
-
-// Playlist
-  { "Playlist.Create",                              CPlaylistOperations::Create,                         Response,     ReadData,        "Creates a virtual playlist from a given one from a file" },
-  { "Playlist.Destroy",                             CPlaylistOperations::Destroy,                        Response,     ReadData,        "Destroys a virtual playlist" },
-
-  { "Playlist.GetItems",                            CPlaylistOperations::GetItems,                       Response,     ReadData,        "Retrieve items in the playlist. Parameter example {\"playlist\": \"music\" }. playlist optional." },
-  { "Playlist.Add",                                 CPlaylistOperations::Add,                            Response,     ControlPlayback, "Add items to the playlist. Parameter example {\"playlist\": \"music\", \"file\": \"/foo/bar.mp3\" }. playlist optional." },
-  { "Playlist.Remove",                              CPlaylistOperations::Remove,                         Response,     ControlPlayback, "Remove items in the playlist. Parameter example {\"playlist\": \"music\", \"item\": 0 }. playlist optional." },
-  { "Playlist.Swap",                                CPlaylistOperations::Swap,                           Response,     ControlPlayback, "Swap items in the playlist. Parameter example {\"playlist\": \"music\", \"item1\": 0, \"item2\": 1 }. playlist optional." },
-  { "Playlist.Shuffle",                             CPlaylistOperations::Shuffle,                        Response,     ControlPlayback, "Shuffle playlist" },
-  { "Playlist.UnShuffle",                           CPlaylistOperations::UnShuffle,                      Response,     ControlPlayback, "UnShuffle playlist" },
 };*/
 
 void CJSONRPC::Initialize()
