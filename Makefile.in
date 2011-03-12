@@ -461,17 +461,11 @@ imagelib: dllloader
 	$(MAKE) -C lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-libs: cmyth libhdhomerun libid3tag imagelib libexif python system/libcpluff-@ARCH@.so
-externals: codecs libs python visualizations screensavers
-
-ifeq ($(findstring osx,@ARCH@), osx)
-libs: libhdhomerun libid3tag imagelib libexif $(PYTHON_TARGET) system/libcpluff-@ARCH@.so system/players/paplayer/libmodplug-@ARCH@.so
-else
-libs: libhdhomerun libid3tag imagelib libexif $(PYTHON_TARGET) system/libcpluff-@ARCH@.so
-endif
+libs: cmyth libhdhomerun libid3tag imagelib libexif  $(PYTHON_TARGET) system/libcpluff-@ARCH@.so
+externals: codecs libs $(PYTHON_TARGET) visualizations screensavers
 
 xcode_depends: \
-	codecs libs python visualizations screensavers eventclients skins \
+	codecs libs $(PYTHON_TARGET) visualizations screensavers eventclients skins \
 	lib/libsquish/libsquish.a \
 	lib/libapetag/.libs/libapetag.a \
 	lib/libXBMS/libxbms.a \

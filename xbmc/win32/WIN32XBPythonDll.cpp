@@ -214,7 +214,11 @@ extern "C"
   FUNCTION4(PyLong_FromLong)
   FUNCTION12(PyModule_AddStringConstant)
   FUNCTION12(PyModule_AddObject)
+#ifndef Py_TRACE_REFS
   FUNCTION20(Py_InitModule4)
+#else
+  FUNCTION20(Py_InitModule4TraceRefs)
+#endif
   FUNCTION4(PyInt_AsLong)
   FUNCTION4(PyFloat_AsDouble)
   FUNCTION4(PyString_FromString)
@@ -271,7 +275,12 @@ extern "C"
   FUNCTION(PyErr_Clear)
   FUNCTION12(PyObject_SetAttrString)
 
-#if (defined USE_EXTERNAL_PYTHON) && (defined HAVE_LIBPYTHON2_6)
+#ifdef Py_TRACE_REFS
+  FUNCTION12(_Py_NegativeRefcount)
+  FUNCTION4(_Py_Dealloc)
+#endif
+
+#if (defined HAVE_LIBPYTHON2_6)
   FUNCTION8(PyRun_SimpleStringFlags)
   FUNCTION20(PyRun_StringFlags)
   FUNCTION28(PyRun_FileExFlags)
@@ -301,6 +310,10 @@ extern "C"
   DATA_OBJECT(PyUnicode_Type)
   DATA_OBJECT(PyTuple_Type)
   DATA_OBJECT(PyDict_Type)
+
+#ifdef Py_TRACE_REFS
+  DATA_OBJECT(_Py_RefTotal)
+#endif
 
   bool python_load_dll(LibraryLoader& dll)
   {
@@ -355,7 +368,11 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyLong_FromLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyModule_AddStringConstant)) &&
       dll.ResolveExport(DLL_FUNCTION(PyModule_AddObject)) &&
+#ifndef Py_TRACE_REFS
       dll.ResolveExport(DLL_FUNCTION(Py_InitModule4)) &&
+#else
+      dll.ResolveExport(DLL_FUNCTION(Py_InitModule4TraceRefs)) &&
+#endif
       dll.ResolveExport(DLL_FUNCTION(PyInt_AsLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyFloat_AsDouble)) &&
       dll.ResolveExport(DLL_FUNCTION(PyString_FromString)) &&
@@ -402,6 +419,11 @@ extern "C"
       dll.ResolveExport(DLL_OBJECT_DATA(PyUnicode_Type)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyTuple_Type)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyDict_Type)) &&
+#ifdef Py_TRACE_REFS
+      dll.ResolveExport(DLL_OBJECT_DATA(_Py_RefTotal)) &&
+      dll.ResolveExport(DLL_FUNCTION(_Py_NegativeRefcount)) &&
+      dll.ResolveExport(DLL_FUNCTION(_Py_Dealloc)) &&
+#endif
       dll.ResolveExport(DLL_FUNCTION(PyErr_Fetch)) &&
       dll.ResolveExport(DLL_FUNCTION(PyImport_AddModule)) &&
       dll.ResolveExport(DLL_FUNCTION(PyImport_ImportModule)) &&
@@ -410,7 +432,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyErr_Clear)) &&
       dll.ResolveExport(DLL_FUNCTION(PyObject_SetAttrString)) &&
       dll.ResolveExport(DLL_FUNCTION(PyErr_ExceptionMatches)) &&
-#if (defined USE_EXTERNAL_PYTHON) && (defined HAVE_LIBPYTHON2_6)
+#if (defined HAVE_LIBPYTHON2_6)
       dll.ResolveExport(DLL_FUNCTION(PyRun_SimpleStringFlags)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_StringFlags)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_FileExFlags)) &&

@@ -229,15 +229,39 @@ void XBPyThread::Process()
   {
     if (m_type == 'F')
     {
+#ifdef USE_EXTERNAL_PYTHON
       // run script from file
-      FILE *fp = fopen_utf8(_P(m_source).c_str(), "r");
+      // We need to have python open the file because on Windows the DLL that python
+      //  is linked against may not be the DLL that xbmc is linked against so 
+      //  passing a FILE* to python from an fopen has the potential to crash.
+      PyObject* file = PyFile_FromString((char *) _P(m_source).c_str(), (char*)"r");
+      FILE *fp = PyFile_AsFile(file);
+#else
+      FILE *fp = fopen_utf8(_P(m_source).c_str(), "r");      
+#endif
+
       if (fp)
       {
         PyObject *f = PyString_FromString(_P(m_source).c_str());
         PyDict_SetItemString(moduleDict, "__file__", f);
         Py_DECREF(f);
         PyRun_File(fp, _P(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict);
+
+#ifdef USE_EXTERNAL_PYTHON
+        // Get a reference to the main module
+        // and global dictionary
+        PyObject* main_module = PyImport_AddModule((char*)"__main__");
+        PyObject* global_dict = PyModule_GetDict(main_module);
+
+        // Extract a reference to the function "func_name"
+        // from the global dictionary
+        PyObject* expression = PyDict_GetItemString(global_dict, "xbmcclosefilehack");
+
+        if (!PyObject_CallFunction(expression,(char*)"(O)",file))
+          CLog::Log(LOGERROR,"Failed to close the script file %s",_P(m_source).c_str());
+#else
         fclose(fp);
+#endif
       }
       else
         CLog::Log(LOGERROR, "%s not found!", m_source);

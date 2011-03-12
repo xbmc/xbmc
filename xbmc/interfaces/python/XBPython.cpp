@@ -41,7 +41,7 @@
 #include "Util.h"
 
 #ifndef _LINUX
-#if (defined USE_EXTERNAL_PYTHON) && (defined HAVE_LIBPYTHON2_6)
+#if defined HAVE_LIBPYTHON2_6
 #define PYTHON_DLL "special://xbmcbin/system/python/python26.dll"
 #else
 #define PYTHON_DLL "special://xbmcbin/system/python/python24.dll"
@@ -324,10 +324,13 @@ void XBPython::InitializeInterpreter()
         "\t\txbmc.output('.')\n"
         "\tdef flush(self):\n"
         "\t\txbmc.output('.')\n"
-        "\n"
         "import sys\n"
         "sys.stdout = xbmcout()\n"
         "sys.stderr = xbmcout()\n"
+        "def xbmcclosefilehack(f):\n"
+//        "\txbmc.output(\"Closing Script File.\")\n"
+        "\tf.close()\n"
+        "\n"
         "print '-->Python Interpreter Initialized<--'\n"
         "") == -1)
   {
@@ -420,7 +423,14 @@ void XBPython::Initialize()
       CLog::Log(LOGDEBUG, "Python wrapper library linked with system Python library");
 #endif /* USE_EXTERNAL_PYTHON */
 
+      if (PyEval_ThreadsInitialized())
+        PyEval_AcquireLock();
+      else
+        PyEval_InitThreads();
+
       Py_Initialize();
+      PyEval_ReleaseLock();
+
       // If this is not the first time we initialize Python, the interpreter
       // lock already exists and we need to lock it as PyEval_InitThreads
       // would not do that in that case.

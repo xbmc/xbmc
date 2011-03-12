@@ -2454,6 +2454,9 @@
     <ClCompile Include="..\..\xbmc\XBDateTime.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\WIN32XBPythonDll.cpp">
+      <Filter>interfaces\python</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">

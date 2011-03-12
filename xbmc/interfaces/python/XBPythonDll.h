@@ -49,6 +49,10 @@
 #define PyExc_RuntimeError ((PyObject*)(*(long*)pointer_PyExc_RuntimeError))
 #define PyExc_ReferenceError ((PyObject*)(*(long*)pointer_PyExc_ReferenceError))
 
+#if defined(_WIN32) && defined(Py_TRACE_REFS)
+#define _Py_RefTotal (*((Py_ssize_t*)pointer__Py_RefTotal))
+#endif
+
 #if (defined USE_EXTERNAL_PYTHON) && (!defined HAVE_LIBPYTHON2_4)
   /* Upstream Python rename Py_InitModule4 for 64-bit systems for Python
    versions higher than 2.4 */
@@ -91,6 +95,10 @@ class LibraryLoader;
   extern DATA_OBJECT(PyExc_KeyboardInterrupt)
   extern DATA_OBJECT(PyExc_RuntimeError)
   extern DATA_OBJECT(PyExc_ReferenceError)
+
+#if defined(_WIN32) && defined(Py_TRACE_REFS)
+  extern DATA_OBJECT(_Py_RefTotal)
+#endif
 
   bool python_load_dll(LibraryLoader& dll);
 
