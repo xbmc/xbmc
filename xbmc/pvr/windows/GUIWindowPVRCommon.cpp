@@ -125,12 +125,14 @@ bool CGUIWindowPVRCommon::OnMessageFocus(CGUIMessage &message)
       (IsSelectedControl(message) || IsSavedView()))
   {
     CLog::Log(LOGDEBUG, "CGUIWindowPVRCommon - %s - focus set to window '%s'", __FUNCTION__, GetName());
-    if (!IsActive())
+    bool bIsActive = IsActive();
+    m_parent->SetActiveView(this);
+
+    if (!bIsActive)
       UpdateData();
     else
       m_iSelected = m_parent->m_viewControl.GetSelectedItem();
 
-    m_parent->SetActiveView(this);
     bReturn = true;
   }
 

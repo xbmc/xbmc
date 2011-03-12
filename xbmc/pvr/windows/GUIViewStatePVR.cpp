@@ -20,13 +20,16 @@
  */
 
 #include "GUIViewStatePVR.h"
+#include "GUIWindowPVR.h"
 #include "GUIWindowPVRCommon.h"
+#include "guilib/GUIWindowManager.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 
-CGUIViewStatePVR::CGUIViewStatePVR(const CFileItemList& items) : CGUIViewState(items)
+CGUIViewStatePVR::CGUIViewStatePVR(const CFileItemList& items) :
+  CGUIViewState(items)
 {
-  if (items.m_strPath.Left(17) == "pvr://recordings/")
+  if (GetActiveView() == PVR_WINDOW_RECORDINGS)
   {
     if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
       AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // FileName, Size | Foldername, e
@@ -44,16 +47,18 @@ CGUIViewStatePVR::CGUIViewStatePVR(const CFileItemList& items) : CGUIViewState(i
   LoadViewState(items.m_strPath, WINDOW_PVR);
 }
 
-bool CGUIViewStatePVR::AutoPlayNextItem(void)
+PVRWindow CGUIViewStatePVR::GetActiveView()
 {
-  return false;
-}
+  PVRWindow returnWindow = PVR_WINDOW_UNKNOWN;
 
-bool CGUIViewStatePVR::HideParentDirItems(void)
-{
-  return false;
-}
+  int iActiveWindow = g_windowManager.GetActiveWindow();
+  if (iActiveWindow == WINDOW_PVR)
+  {
+    CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
+    CGUIWindowPVRCommon *pActiveView = NULL;
+    if (pWindow && (pActiveView = pWindow->GetActiveView()) != NULL)
+      returnWindow = pActiveView->GetWindowId();
+  }
 
-void CGUIViewStatePVR::SaveViewState(void)
-{
+  return returnWindow;
 }
