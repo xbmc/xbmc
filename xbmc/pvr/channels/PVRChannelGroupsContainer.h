@@ -151,7 +151,7 @@ public:
    * @param iClientID The ID of the client.
    * @return The channel or NULL if it wasn't found.
    */
-  const CPVRChannel *GetByClientFromAll(int iClientChannelNumber, int iClientID);
+  const CPVRChannel *GetByUniqueID(int iClientChannelNumber, int iClientID);
 
   /*!
    * @brief Get a channel given it's channel ID from all containers.

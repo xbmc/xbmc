@@ -27,6 +27,7 @@
 #define XBMC_INTERNAL_GROUP_RADIO 1
 #define XBMC_INTERNAL_GROUP_TV    2
 
+class CPVRChannelGroups;
 class CPVRChannelGroupInternal;
 
 typedef struct {
@@ -38,14 +39,17 @@ typedef struct {
 
 class CPVRChannelGroup : private std::vector<PVRChannelGroupMember>
 {
+  friend class CPVRChannelGroups;
   friend class CPVRChannelGroupInternal;
   friend class CPVRDatabase;
 
 private:
-  bool       m_bRadio;       /*!< true if this container holds radio channels, false if it holds TV channels */
-  int        m_iGroupId;     /*!< The ID of this group in the database */
-  CStdString m_strGroupName; /*!< The name of this group */
-  int        m_iSortOrder;   /*!< The sort order to use */
+  bool       m_bRadio;          /*!< true if this container holds radio channels, false if it holds TV channels */
+  int        m_iGroupId;        /*!< The ID of this group in the database */
+  CStdString m_strGroupName;    /*!< The name of this group */
+  int        m_iSortOrder;      /*!< The sort order to use */
+  bool       m_bInhibitSorting; /*!< True if sorting is inhibited, false otherwise */
+  bool       m_bLoaded;         /*!< True if this container is loaded, false otherwise */
 
   /*!
    * @brief Load the channels stored in the database.
@@ -82,7 +86,7 @@ private:
 
   /*!
    * @brief Load the channels from the database.
-   * @return The amount of channels that were added.
+   * @return The amount of channels that were added or -1 if an error occured.
    */
   virtual int Load();
 
@@ -148,18 +152,12 @@ public:
 
   /*!
    * @brief Move a channel from position iOldIndex to iNewIndex.
-   * @param iOldIndex The old index.
-   * @param iNewIndex The new index.
+   * @param iOldChannelNumber The channel number of the channel to move.
+   * @param iNewChannelNumber The new channel number.
+   * @param bSaveInDb If true, save this change in the database.
+   * @return True if the channel was moved successfully, false otherwise.
    */
-  virtual void MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex);
-
-  /*!
-   * @brief Show a hidden channel or hide a visible channel.
-   * @param channel The channel to change.
-   * @param bShowDialog If true, show a confirmation dialog.
-   * @return True if the channel was changed, false otherwise.
-   */
-  virtual bool HideChannel(CPVRChannel *channel, bool bShowDialog = true);
+  virtual bool MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb = true);
 
   /*!
    * @brief Search missing channel icons for all known channels.
@@ -172,7 +170,7 @@ public:
    * @param channel The channel to remove.
    * @return True if the channel was found and removed, false otherwise.
    */
-  virtual bool RemoveFromGroup(const CPVRChannel *channel);
+  virtual bool RemoveFromGroup(CPVRChannel *channel);
 
   /*!
    * @brief Add a channel to this container.
@@ -202,6 +200,12 @@ public:
    * @return True if the channel was found, false otherwise.
    */
   virtual bool IsGroupMember(const CPVRChannel *channel) const;
+
+  /*!
+   * @brief Check if this group is the internal group containing all channels.
+   * @return True if it's the internal group, false otherwise.
+   */
+  virtual bool IsInternalGroup(void) const { return false; }
 
   /*!
    * @brief Get the first channel in this group.
@@ -267,11 +271,11 @@ public:
 
   /*!
    * @brief Get a channel given the channel number on the client.
-   * @param iClientChannelNumber The channel number on the client.
+   * @param iUniqueChannelId The unique channel id on the client.
    * @param iClientID The ID of the client.
    * @return The channel or NULL if it wasn't found.
    */
-  const CPVRChannel *GetByClient(int iClientChannelNumber, int iClientID) const;
+  const CPVRChannel *GetByClient(int iUniqueChannelId, int iClientID) const;
 
   /*!
    * @brief Get a channel given it's channel ID.
@@ -323,20 +327,13 @@ public:
    * @param bGroupMembers If true, get the channels that are in this group. Get the channels that are not in this group otherwise.
    * @return The amount of channels that were added to the list.
    */
-  int GetMembers(CFileItemList *results, bool bGroupMembers = true) const;
+  virtual int GetMembers(CFileItemList *results, bool bGroupMembers = true) const;
 
   /*!
    * @brief The amount of channels in this container.
    * @return The amount of channels in this container.
    */
   int GetNumChannels() const { return size(); }
-
-  /*!
-   * @brief Get the list of hidden channels.
-   * @param results The file list to store the results in.
-   * @return The amount of channels that were added to the list.
-   */
-  int GetHiddenChannels(CFileItemList* results) const;
 
   /*!
    * @brief The amount of hidden channels in this container.

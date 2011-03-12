@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">VDR-palvelimen nimi tai IP-osoite</string>
+    <string id="30001">VNSI-portti</string>
+    <string id="30002">Tärkeysaste</string>
+    <string id="30003">Kirjainmerkistön muunnos</string>
+    <string id="30004">Yhteyden aikakatkaisu (s)</string>
+    <string id="30005">Salli VDR-palvelimen viestit</string>
+    <string id="30006">Lue nauhoitukset kansiosta</string>
+    <string id="30007">VDR-nauhoitusten kansio</string>
+    <string id="30008">Kanavahaku</string>
+    <string id="30009">Kanavahaun asetukset</string>
+    <string id="30010">Aloita kanavahaku</string>
+    <string id="30011">Lähteen tyyppi</string>
+    <string id="30012">TV-kanavat</string>
+    <string id="30013">Radiokanavat</string>
+    <string id="30014">Ilmaiskanavat</string>
+    <string id="30015">Salatut kanavat</string>
+    <string id="30016">HD-kanavat</string>
+    <string id="30017">Maa</string>
+    <string id="30018">Kaapeliverkon inversio</string>
+    <string id="30019">Kaapeliverkon symbolinopeus</string>
+    <string id="30020">Kaapeliverkon modulointi</string>
+    <string id="30021">Antenniverkon inversio</string>
+    <string id="30022">Satelliitti</string>
+    <string id="30023">ATSC tyyppi</string>
+    <string id="30024">Takaisin</string>
+    <string id="30025">Kanavahaku käynnissä... %i %%</string>
+    <string id="30026">Tyyppi:</string>
+    <string id="30027">Laite:</string>
+    <string id="30028">Haku: %i</string>
+    <string id="30029">Signaali: %i %%</string>
+    <string id="30030">Uudet kanavat: %i</string>
+    <string id="30031">Kaikki kanavat: %i</string>
+    <string id="30032">Analoginen TV</string>
+    <string id="30033">Analoginen radio</string>
+    <string id="30034">Transponder:</string>
+    <string id="30035">Uudet kanavat</string>
+    <string id="30036">Kanavahaku valmis</string>
+    <string id="30037">Ei laitetta saatavilla - lopetetaan</string>
+    <string id="30038">Ei DVB-S2 laitetta saatavilla - kokeillaan DVB-S</string>
+    <string id="30039">Käynnissä</string>
+    <string id="30040">Pysäytetty</string>
+    <string id="30041">Valmis</string>
+    <string id="30042">Kanavahaku peruutettu</string>
+    <string id="30043">Kanavahaku virhe</string>
+</strings>

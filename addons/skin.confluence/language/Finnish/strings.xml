@@ -148,6 +148,18 @@
   <string id="31406">[B]Muokkaa järjestelmän asetuksia[/B][CR][CR]Aseta ja kalibroi näyttö · Määritä äänilähtö · Aseta kauko-ohjaus[CR]Aseta sähkönsäästöasetukset · Ota debuggaus käyttöön · Muokkaa pääkäyttäjän lukituksia</string>
   <string id="31407">[B]Muokkaa ulkoasun asetuksia[/B][CR][CR]Aseta Confluence-ulkoasun asetukset · Lisää ja poista päävalikon kohteita[CR]Vaihda ulkoasun taustakuvia</string>
   <string id="31408">[B]Muokkaa lisäosia[/B][CR][CR]Hallitse asennettuja lisäosia · Valitse ja asenna lisäosia xbmc.org:sta[CR]Muokkaa lisäosien asetuksia</string> 
+  <string id="31409">[B]Muokkaa TV-asetuksia[/B][CR][CR]Aseta kanavien toiston asetukset · Hallitse ohjelmaoppaan asetuksia</string>
 
   <string id="31421">Valitse XBMC-käyttäjäprofiili[CR]kirjautuaksesi sisään</string>
+
+  <!-- Extra Unified PVR labels -->
+  <string id="31500">Nauhoitusajastukset</string>
+  <string id="31501">Ajastettu aika</string>
+  <string id="31502">TV-lähetys</string>
+  <string id="31503">Lisää ryhmä</string>
+  <string id="31504">Uudelleennimeä ryhmä</string>
+  <string id="31505">Poista ryhmä</string>
+  <string id="31506">Saatavilla olevat[CR]ryhmät</string>
+  <string id="31509">Kanavaryhmä</string>
+  <string id="31510">Ajastus asetettu</string>
 </strings>

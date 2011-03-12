@@ -111,7 +111,7 @@ void CGUIDialogPVRChannelsOSD::Update()
 
   CPVRChannel channel;
   CPVRManager::Get()->GetCurrentChannel(&channel);
-  CPVRManager::Get()->GetPlayingGroup()->GetMembers(m_vecItems);
+  CPVRManager::Get()->GetPlayingGroup(channel.IsRadio())->GetMembers(m_vecItems);
   m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(channel.ChannelNumber() - 1);
   g_graphicsContext.Unlock();
@@ -154,7 +154,7 @@ void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
   if (pItem && pItem->IsPVRChannel())
   {
     /* Get the current running show on this channel from the EPG storage */
-    const CPVREpgInfoTag *epgnow = pItem->GetPVRChannelInfoTag()->GetEPGNow();
+    CPVREpgInfoTag *epgnow = pItem->GetPVRChannelInfoTag()->GetEPGNow();
     if (!epgnow)
       return;
     CFileItem *itemNow  = new CFileItem(*epgnow);

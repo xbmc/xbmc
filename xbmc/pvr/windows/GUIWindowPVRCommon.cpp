@@ -47,10 +47,11 @@ CGUIWindowPVRCommon::CGUIWindowPVRCommon(CGUIWindowPVR *parent, PVRWindow window
   m_window          = window;
   m_iControlButton  = iControlButton;
   m_iControlList    = iControlList;
-  m_bUpdateRequired = true;
+  m_bUpdateRequired = false;
   m_iSelected       = 0;
   m_iSortOrder      = SORT_ORDER_ASC;
   m_iSortMethod     = SORT_METHOD_DATE;
+  m_bIsFocusing     = false;
 }
 
 bool CGUIWindowPVRCommon::operator ==(const CGUIWindowPVRCommon &right) const
@@ -61,6 +62,27 @@ bool CGUIWindowPVRCommon::operator ==(const CGUIWindowPVRCommon &right) const
 bool CGUIWindowPVRCommon::operator !=(const CGUIWindowPVRCommon &right) const
 {
   return !(*this == right);
+}
+
+const char *CGUIWindowPVRCommon::GetName(void) const
+{
+  switch(m_window)
+  {
+  case PVR_WINDOW_EPG:
+    return "epg";
+  case PVR_WINDOW_CHANNELS_RADIO:
+    return "radio";
+  case PVR_WINDOW_CHANNELS_TV:
+    return "tv";
+  case PVR_WINDOW_RECORDINGS:
+    return "recordings";
+  case PVR_WINDOW_SEARCH:
+    return "search";
+  case PVR_WINDOW_TIMERS:
+    return "timers";
+  default:
+    return "unknown";
+  }
 }
 
 bool CGUIWindowPVRCommon::IsActive(void) const
@@ -102,12 +124,15 @@ bool CGUIWindowPVRCommon::OnMessageFocus(CGUIMessage &message)
   if (message.GetMessage() == GUI_MSG_FOCUSED &&
       (IsSelectedControl(message) || IsSavedView()))
   {
-    if (!IsActive() || m_bUpdateRequired)
+    CLog::Log(LOGDEBUG, "CGUIWindowPVRCommon - %s - focus set to window '%s'", __FUNCTION__, GetName());
+    bool bIsActive = IsActive();
+    m_parent->SetActiveView(this);
+
+    if (!bIsActive)
       UpdateData();
     else
       m_iSelected = m_parent->m_viewControl.GetSelectedItem();
 
-    m_parent->m_currentSubwindow = this;
     bReturn = true;
   }
 
@@ -265,9 +290,9 @@ bool CGUIWindowPVRCommon::OnContextButtonMenuHooks(CFileItem *item, CONTEXT_BUTT
     else if (item->IsPVRChannel())
       CPVRManager::Get()->ProcessMenuHooks(item->GetPVRChannelInfoTag()->ClientID());
     else if (item->IsPVRRecording())
-      CPVRManager::Get()->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->ClientID());
+      CPVRManager::Get()->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->m_clientID);
     else if (item->IsPVRTimer())
-      CPVRManager::Get()->ProcessMenuHooks(item->GetPVRTimerInfoTag()->ClientID());
+      CPVRManager::Get()->ProcessMenuHooks(item->GetPVRTimerInfoTag()->m_iClientID);
   }
 
   return bReturn;
@@ -279,7 +304,7 @@ bool CGUIWindowPVRCommon::ActionDeleteTimer(CFileItem *item)
 
   /* check if the timer tag is valid */
   CPVRTimerInfoTag *timerTag = item->GetPVRTimerInfoTag();
-  if (!timerTag || timerTag->ClientIndex() < 0)
+  if (!timerTag || timerTag->m_iClientIndex < 0)
     return bReturn;
 
   /* show a confirmation dialog */
@@ -289,7 +314,7 @@ bool CGUIWindowPVRCommon::ActionDeleteTimer(CFileItem *item)
   pDialog->SetHeading(122);
   pDialog->SetLine(0, 19040);
   pDialog->SetLine(1, "");
-  pDialog->SetLine(2, timerTag->Title());
+  pDialog->SetLine(2, timerTag->m_strTitle);
   pDialog->DoModal();
 
   /* prompt for the user's confirmation */
@@ -315,10 +340,10 @@ bool CGUIWindowPVRCommon::ActionShowTimer(CFileItem *item)
      open settings for selected timer entry */
   if (item->m_strPath == "pvr://timers/add.timer")
   {
-    CPVRTimerInfoTag *newtimer = CPVRManager::GetTimers()->InstantTimer(NULL, false);
-    if (!newtimer)
+    CPVRTimerInfoTag *newTimer = CPVRManager::GetTimers()->InstantTimer(NULL, false);
+    if (newTimer)
     {
-      CFileItem *newItem = new CFileItem(*newtimer);
+      CFileItem *newItem = new CFileItem(*newTimer);
 
       if (ShowTimerSettings(newItem))
       {
@@ -327,6 +352,9 @@ bool CGUIWindowPVRCommon::ActionShowTimer(CFileItem *item)
         UpdateData();
         bReturn = true;
       }
+
+      delete newItem;
+      delete newTimer;
     }
   }
   else
@@ -395,8 +423,8 @@ bool CGUIWindowPVRCommon::ActionDeleteRecording(CFileItem *item)
   bool bReturn = false;
 
   /* check if the recording tag is valid */
-  CPVRRecordingInfoTag *recTag = (CPVRRecordingInfoTag *) item->GetPVRRecordingInfoTag();
-  if (!recTag || recTag->ClientIndex() < 0)
+  CPVRRecording *recTag = (CPVRRecording *) item->GetPVRRecordingInfoTag();
+  if (!recTag || recTag->m_clientIndex < 0)
     return bReturn;
 
   /* show a confirmation dialog */
@@ -406,7 +434,7 @@ bool CGUIWindowPVRCommon::ActionDeleteRecording(CFileItem *item)
   pDialog->SetHeading(122);
   pDialog->SetLine(0, 19043);
   pDialog->SetLine(1, "");
-  pDialog->SetLine(2, recTag->Title());
+  pDialog->SetLine(2, recTag->m_strTitle);
   pDialog->DoModal();
 
   /* prompt for the user's confirmation */
@@ -414,9 +442,9 @@ bool CGUIWindowPVRCommon::ActionDeleteRecording(CFileItem *item)
     return bReturn;
 
   /* delete the recording */
-  if (CPVRRecordings::DeleteRecording(*item))
+  if (CPVRManager::GetRecordings()->DeleteRecording(*item))
   {
-    CPVRManager::GetRecordings()->Update(true);
+    CPVRManager::GetRecordings()->Update();
     UpdateData();
     bReturn = true;
   }
@@ -488,7 +516,7 @@ bool CGUIWindowPVRCommon::ActionDeleteChannel(CFileItem *item)
   if (!pDialog->IsConfirmed())
     return false;
 
-  ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(channel->IsRadio()))->HideChannel(channel, true);
+  ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(channel->IsRadio()))->RemoveFromGroup(channel);
   UpdateData();
 
   return true;
@@ -525,7 +553,7 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
   if (item->m_strPath.Left(17) != "pvr://recordings/")
     return false;
 
-  CStdString stream = item->GetPVRRecordingInfoTag()->StreamURL();
+  CStdString stream = item->GetPVRRecordingInfoTag()->m_strStreamURL;
   if (stream == "")
     return false;
 
@@ -670,7 +698,7 @@ bool CGUIWindowPVRCommon::StopRecordFile(CFileItem *item)
     return bReturn;
 
   CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(item);
-  if (!timer || timer->IsRepeating())
+  if (!timer || timer->m_bIsRepeating)
     return bReturn;
 
   if (CPVRManager::GetTimers()->DeleteTimer(*timer))

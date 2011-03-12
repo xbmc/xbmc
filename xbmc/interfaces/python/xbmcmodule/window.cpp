@@ -23,6 +23,7 @@
 #include "dialog.h"
 #include "winxml.h"
 #include "pyutil.h"
+#include "pythreadstate.h"
 #include "action.h"
 #include "GUIPythonWindow.h"
 #include "guilib/GUIButtonControl.h"
@@ -389,18 +390,16 @@ namespace PYXBMC
     // if it's a dialog, we have to activate it a bit different
     if (WindowDialog_Check(self) || WindowXMLDialog_Check(self))
     {
-      Py_BEGIN_ALLOW_THREADS
+      CPyThreadState pyState;
       ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, WindowXMLDialog_Check(self) ? 1 : 0, 1};
       tMsg.lpVoid = self->pWindow;
       g_application.getApplicationMessenger().SendMessage(tMsg, true);
-      Py_END_ALLOW_THREADS
     }
     else
     {
-      Py_BEGIN_ALLOW_THREADS
+      CPyThreadState pyState;
       vector<CStdString> params;
       g_application.getApplicationMessenger().ActivateWindow(self->iWindowId, params, false);
-      Py_END_ALLOW_THREADS
     }
 
     Py_INCREF(Py_None);
@@ -429,18 +428,16 @@ namespace PYXBMC
     // if it's a dialog, we have to close it a bit different
     if (WindowDialog_Check(self) || WindowXMLDialog_Check(self))
     {
-      Py_BEGIN_ALLOW_THREADS
+      CPyThreadState pyState;
       ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, WindowXMLDialog_Check(self) ? 1 : 0, 0};
       tMsg.lpVoid = self->pWindow;
       g_application.getApplicationMessenger().SendMessage(tMsg, true);
-      Py_END_ALLOW_THREADS
     }
     else
     {
-      Py_BEGIN_ALLOW_THREADS
+      CPyThreadState pyState;
       vector<CStdString> params;
       g_application.getApplicationMessenger().ActivateWindow(self->iOldWindowId, params, false);
-      Py_END_ALLOW_THREADS
     }
     self->iOldWindowId = 0;
 
@@ -509,14 +506,13 @@ namespace PYXBMC
       {
         PyXBMC_MakePendingCalls();
 
-        Py_BEGIN_ALLOW_THREADS
+        CPyThreadState pyState;
         if (WindowXML_Check(self))
           ((CGUIPythonWindowXML*)self->pWindow)->WaitForActionEvent(INFINITE);
         else if (WindowXMLDialog_Check(self))
           ((CGUIPythonWindowXMLDialog*)self->pWindow)->WaitForActionEvent(INFINITE);
         else
           ((CGUIPythonWindow*)self->pWindow)->WaitForActionEvent(INFINITE);
-        Py_END_ALLOW_THREADS
       }
     }
     Py_INCREF(Py_None);

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -32,21 +32,13 @@
 #include "pvr/PVRManager.h"
 #include "PVRRecordings.h"
 
-CPVRRecordings::CPVRRecordings(void)
+void CPVRRecordings::UpdateFromClients(void)
 {
-
-}
-
-void CPVRRecordings::Process()
-{
-  CSingleLock lock(m_critSection);
   CLIENTMAP *clients = CPVRManager::Get()->Clients();
 
   Clear();
 
-  /* Go thru all clients and receive there Recordings */
   CLIENTMAPITR itr = clients->begin();
-  int cnt = 0;
   while (itr != clients->end())
   {
     /* Load only if the client have Recordings */
@@ -55,37 +47,127 @@ void CPVRRecordings::Process()
       (*itr).second->GetAllRecordings(this);
     }
     itr++;
-    cnt++;
   }
+}
 
-  for (unsigned int i = 0; i < size(); ++i)
+CStdString CPVRRecordings::TrimSlashes(const CStdString &strOrig) const
+{
+  CStdString strReturn(strOrig);
+  while (strReturn.Left(1) == "/")
+    strReturn.erase(0, 1);
+
+  URIUtils::RemoveSlashAtEnd(strReturn);
+
+  return strReturn;
+}
+
+const CStdString CPVRRecordings::GetDirectoryFromPath(const CStdString &strPath, const CStdString &strBase) const
+{
+  CStdString strReturn;
+  CStdString strUsePath = TrimSlashes(strPath);
+  CStdString strUseBase = TrimSlashes(strBase);
+
+  /* strip the base or return an empty value if it doesn't fit or match */
+  if (!strUseBase.IsEmpty())
   {
-    CFileItemPtr pFileItem(new CFileItem(at(i)));
-
-    CStdString Path;
-    CStdString strTitle = at(i).Title();
-    strTitle.Replace('/','-');
-
-    Path.Format("pvr://recordings/client_%04i/", at(i).ClientID());
-    if (at(i).Directory() != "")
-      Path += at(i).Directory();
-
-    URIUtils::AddSlashAtEnd(Path);
-    Path += strTitle + ".pvr";
-    at(i).SetPath(Path);
+    if (strUsePath.GetLength() <= strUseBase.GetLength() || strUsePath.Left(strUseBase.GetLength()) != strUseBase)
+      return strReturn;
+    strUsePath.erase(0, strUseBase.GetLength());
   }
-  return;
+
+  /* check for more occurences */
+  int iDelimiter = strUsePath.Find('/');
+  if (iDelimiter > 0)
+    strReturn = strUsePath.Left(iDelimiter);
+  else
+    strReturn = strUsePath;
+
+  return TrimSlashes(strReturn);
+}
+
+bool CPVRRecordings::IsDirectoryMember(const CStdString &strDirectory, const CStdString &strEntryDirectory, bool bDirectMember /* = true */) const
+{
+  CStdString strUseDirectory = TrimSlashes(strDirectory);
+  CStdString strUseEntryDirectory = TrimSlashes(strEntryDirectory);
+
+  return strUseEntryDirectory.Left(strUseDirectory.GetLength()).Equals(strUseDirectory) &&
+      (!bDirectMember || strUseEntryDirectory.Equals(strUseDirectory));
+}
+
+void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *results) const
+{
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
+  {
+    CPVRRecording *current = at(iRecordingPtr);
+    if (!IsDirectoryMember(strDirectory, current->m_strDirectory, true))
+      continue;
+
+    CFileItemPtr pFileItem(new CFileItem(*current));
+    pFileItem->SetLabel2(current->m_recordingTime.GetAsLocalizedDateTime(true, false));
+    pFileItem->m_dateTime = current->m_recordingTime;
+    pFileItem->m_strPath.Format("pvr://recordings/%05i-%05i.pvr", current->m_clientID, current->m_clientIndex);
+    results->Add(pFileItem);
+  }
+}
+
+void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList *results, bool bAutoSkip /* = true */) const
+{
+  CStdString strUseBase = TrimSlashes(strBase);
+
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
+  {
+    CPVRRecording *current = at(iRecordingPtr);
+    const CStdString strCurrent = GetDirectoryFromPath(current->m_strDirectory, strUseBase);
+    if (strCurrent.IsEmpty())
+      continue;
+
+    CStdString strFilePath;
+    strFilePath.Format("pvr://recordings/%s/%s/", strUseBase.c_str(), strCurrent.c_str());
+
+    if (!results->Contains(strFilePath))
+    {
+      CFileItemPtr pFileItem;
+      pFileItem.reset(new CFileItem(strCurrent, true));
+      pFileItem->m_strPath = strFilePath;
+      pFileItem->SetLabel(strCurrent);
+      pFileItem->SetLabelPreformated(true);
+      results->Add(pFileItem);
+    }
+  }
+
+  if (bAutoSkip && results->Size() == 1)
+  {
+    CStdString strGetPath;
+    strGetPath.Format("%s/%s/", strUseBase.c_str(), results->Get(0)->GetLabel());
+
+    results->Clear();
+
+    CLog::Log(LOGDEBUG, "CPVRRecordings - %s - '%s' only has 1 subdirectory, selecting that directory ('%s')",
+        __FUNCTION__, strUseBase.c_str(), strGetPath.c_str());
+    GetSubDirectories(strGetPath, results, true);
+    return;
+  }
+
+  if (results->Size() == 0)
+  {
+    GetContents(strUseBase, results);
+  }
+}
+
+void CPVRRecordings::Process()
+{
+  CSingleLock lock(m_critSection);
+  UpdateFromClients();
 }
 
 void CPVRRecordings::Unload()
 {
-  CSingleLock lock(m_critSection);
   Clear();
 }
 
-bool CPVRRecordings::Update(bool Wait)
+bool CPVRRecordings::Update(bool bAsync /* = false */)
 {
-  if (Wait)
+  if (!bAsync)
   {
     Process();
     return true;
@@ -94,7 +176,7 @@ bool CPVRRecordings::Update(bool Wait)
   {
     Create();
     SetName("PVR Recordings Update");
-    SetPriority(-5);
+    SetPriority(-1);
   }
   return false;
 }
@@ -108,94 +190,85 @@ int CPVRRecordings::GetNumRecordings()
 int CPVRRecordings::GetRecordings(CFileItemList* results)
 {
   CSingleLock lock(m_critSection);
-  for (unsigned int i = 0; i < size(); ++i)
+
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
   {
-    CFileItemPtr pFileItem(new CFileItem(at(i)));
+    CFileItemPtr pFileItem(new CFileItem(*at(iRecordingPtr)));
     results->Add(pFileItem);
   }
+
   return size();
 }
 
 bool CPVRRecordings::DeleteRecording(const CFileItem &item)
 {
-  /* Check if a CPVRRecordingInfoTag is inside file item */
+  bool bReturn = false;
+
   if (!item.IsPVRRecording())
   {
-    CLog::Log(LOGERROR, "cPVRRecordings: DeleteRecording no RecordingInfoTag given!");
-    return false;
+    CLog::Log(LOGERROR, "CPVRRecordings - %s - cannot delete file: no valid recording tag", __FUNCTION__);
+    return bReturn;
   }
 
-  const CPVRRecordingInfoTag* tag = item.GetPVRRecordingInfoTag();
-  return tag->Delete();
-}
-
-bool CPVRRecordings::RenameRecording(CFileItem &item, CStdString &newname)
-{
-  /* Check if a CPVRRecordingInfoTag is inside file item */
-  if (!item.IsPVRRecording())
-  {
-    CLog::Log(LOGERROR, "cPVRRecordings: RenameRecording no RecordingInfoTag given!");
-    return false;
-  }
-
-  CPVRRecordingInfoTag* tag = item.GetPVRRecordingInfoTag();
-  return tag->Rename(newname);
-}
-
-bool CPVRRecordings::RemoveRecording(const CFileItem &item)
-{
+  const CPVRRecording* tag = item.GetPVRRecordingInfoTag();
   CSingleLock lock(m_critSection);
-
-  if (!item.IsPVRRecording())
+  if (tag->Delete())
   {
-    CLog::Log(LOGERROR, "cPVRRecordings: RemoveRecording no RecordingInfoTag given!");
-    return false;
-  }
+    bReturn = true;
 
-  const CPVRRecordingInfoTag* tag = item.GetPVRRecordingInfoTag();
-
-  for (unsigned int i = 0; i < size(); ++i)
-  {
-    if (tag == &at(i))
+    for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
     {
-      erase(begin()+i);
-      return true;
+      if (*at(iRecordingPtr) == *tag)
+      {
+        delete at(iRecordingPtr);
+        erase(begin() + iRecordingPtr);
+        break;
+      }
     }
   }
-  return false;
+
+  return bReturn;
+}
+
+bool CPVRRecordings::RenameRecording(CFileItem &item, CStdString &strNewName)
+{
+  bool bReturn = false;
+
+  if (!item.IsPVRRecording())
+  {
+    CLog::Log(LOGERROR, "CPVRRecordings - %s - cannot rename file: no valid recording tag", __FUNCTION__);
+    return bReturn;
+  }
+
+  CPVRRecording* tag = item.GetPVRRecordingInfoTag();
+  return tag->Rename(strNewName);
 }
 
 bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CSingleLock lock(m_critSection);
 
-  CStdString base(strPath);
-  URIUtils::RemoveSlashAtEnd(base);
+  CStdString strBase(strPath);
+  URIUtils::RemoveSlashAtEnd(strBase);
 
   CURL url(strPath);
-  CStdString fileName = url.GetFileName();
-  URIUtils::RemoveSlashAtEnd(fileName);
+  CStdString strFileName = url.GetFileName();
+  URIUtils::RemoveSlashAtEnd(strFileName);
 
-  if (fileName == "recordings")
+  if (strFileName.Left(10) == "recordings")
   {
-    for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
-    {
-      CPVRRecordingInfoTag *recording = &at(iRecordingPtr);
-      CFileItemPtr pFileItem(new CFileItem(*recording));
-      pFileItem->SetLabel2(recording->RecordingTime().GetAsLocalizedDateTime(true, false));
-      pFileItem->m_dateTime = recording->RecordingTime();
-      pFileItem->m_strPath.Format("pvr://recordings/%05i-%05i.pvr", recording->ClientID(), recording->ClientIndex());
-      items.Add(pFileItem);
-    }
+    strFileName.erase(0, 10);
+    GetSubDirectories(strFileName, &items, true);
+
     return true;
   }
 
   return false;
 }
 
-CPVRRecordingInfoTag *CPVRRecordings::GetByPath(CStdString &path)
+CPVRRecording *CPVRRecordings::GetByPath(CStdString &path)
 {
-  CPVRRecordingInfoTag *tag = NULL;
+  CPVRRecording *tag = NULL;
   CSingleLock lock(m_critSection);
 
   CURL url(path);
@@ -215,11 +288,11 @@ CPVRRecordingInfoTag *CPVRRecordings::GetByPath(CStdString &path)
 
     for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
     {
-      CPVRRecordingInfoTag *recording = &at(iRecordingPtr);
+      CPVRRecording *recording = at(iRecordingPtr);
 
-      if (recording->ClientID() == iClientID && recording->ClientIndex() == iClientIndex)
+      if (recording->m_clientID == iClientID && recording->m_clientIndex == iClientIndex)
       {
-        tag = &at(iRecordingPtr);
+        tag = recording;
         break;
       }
     }
@@ -230,7 +303,34 @@ CPVRRecordingInfoTag *CPVRRecordings::GetByPath(CStdString &path)
 
 void CPVRRecordings::Clear()
 {
-  /* Clear all current present Recordings inside list */
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
+    delete at(iRecordingPtr);
   erase(begin(), end());
-  return;
+}
+
+void CPVRRecordings::UpdateEntry(const CPVRRecording &tag)
+{
+  bool bFound = false;
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
+  {
+    CPVRRecording *currentTag = at(iRecordingPtr);
+    if (currentTag->m_clientID == tag.m_clientID &&
+        currentTag->m_clientIndex == tag.m_clientIndex)
+    {
+      currentTag->Update(tag);
+      bFound = true;
+      break;
+    }
+  }
+
+  if (!bFound)
+  {
+    CPVRRecording *newTag = new CPVRRecording();
+    newTag->Update(tag);
+    push_back(newTag);
+  }
 }

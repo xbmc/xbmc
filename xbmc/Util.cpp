@@ -2223,6 +2223,40 @@ CStdString CUtil::ResolveExecutablePath()
   return strExecutablePath;
 }
 
+CStdString CUtil::GetFrameworksPath(void)
+{
+  CStdString strFrameworksPath;
+#if defined(__APPLE__)
+  int      result = -1;
+  char     given_path[2*MAXPATHLEN];
+  char     real_given_path[2*MAXPATHLEN];
+  uint32_t path_size = 2*MAXPATHLEN;
+
+  result = _NSGetExecutablePath(given_path, &path_size);
+  if (result == 0)
+  {
+    // Move backwards to last /.
+    for (int n=strlen(given_path)-1; given_path[n] != '/'; n--)
+      given_path[n] = '\0';
+
+    // Assume local path inside application bundle.
+    strcat(given_path, "../Frameworks");
+
+    // Convert to real path.
+    if (realpath(given_path, real_given_path) != NULL)
+    {
+      // check if we are running as real xbmc.app
+      if (strstr(real_given_path, "Contents"))
+      {
+        strFrameworksPath = real_given_path;
+        return strFrameworksPath;
+      }
+    }
+  }
+#endif
+  return strFrameworksPath;
+}
+
 void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CStdString>& vecSubtitles )
 {
   unsigned int startTimer = CTimeUtils::GetTimeMS();

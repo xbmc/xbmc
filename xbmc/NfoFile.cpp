@@ -68,9 +68,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
 
   AddonPtr addon;
   ScraperPtr defaultScraper;
-  if (!CAddonMgr::Get().GetDefault(m_type, addon))
-    return NO_NFO;
-  else
+  if (CAddonMgr::Get().GetDefault(m_type, addon))
     defaultScraper = boost::dynamic_pointer_cast<CScraper>(addon);
 
   if (m_type == ADDON_SCRAPER_ALBUMS)
@@ -121,7 +119,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
     AddScrapers(addons,vecScrapers);
 
   // add default scraper
-  if ((m_info && m_info->ID() != defaultScraper->ID()) || !m_info)
+  if (defaultScraper && m_info && m_info->ID() != defaultScraper->ID())
     vecScrapers.push_back(defaultScraper);
 
   // search ..

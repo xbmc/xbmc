@@ -36,14 +36,14 @@ public:
   cVNSISession();
   ~cVNSISession();
 
-  bool              Open(const CStdString& hostname, int port, long timeout, const char *name = NULL);
+  bool              Open(const CStdString& hostname, int port, const char *name = NULL);
   void              Close();
   void              Abort();
 
-  cResponsePacket*  ReadMessage(int timeout = 10);
+  cResponsePacket*  ReadMessage();
   bool              SendMessage(cRequestPacket* vrp);
   int               sendData(void* bufR, size_t count);
-  int               readData(uint8_t* buffer, int totalBytes, int TimeOut = 2);
+  int               readData(uint8_t* buffer, int totalBytes);
 
   cResponsePacket*  ReadResult(cRequestPacket* vrp, bool sequence = true);
   bool              ReadSuccess(cRequestPacket* m, bool sequence = true);

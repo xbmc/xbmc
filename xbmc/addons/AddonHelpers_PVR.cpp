@@ -114,23 +114,22 @@ void CAddonHelpers_PVR::PVRTransferRecordingEntry(void *addonData, const PVRHAND
   CPVRClient* client = (CPVRClient*) handle->CALLER_ADDRESS;
   CPVRRecordings *xbmcRecordings = (CPVRRecordings*) handle->DATA_ADDRESS;
 
-  CPVRRecordingInfoTag tag;
+  CPVRRecording tag;
 
-  tag.SetClientIndex(recording->index);
-  tag.SetClientID(client->GetClientID());
-  tag.SetTitle(recording->title);
-  tag.SetRecordingTime(recording->recording_time);
-  tag.SetDuration(CDateTimeSpan(0, 0, recording->duration / 60, recording->duration % 60));
-  tag.SetPriority(recording->priority);
-  tag.SetLifetime(recording->lifetime);
-  tag.SetDirectory(recording->directory);
-  tag.SetPlot(recording->description);
-  tag.SetPlotOutline(recording->subtitle);
-  tag.SetStreamURL(recording->stream_url);
-  tag.SetChannelName(recording->channel_name);
+  tag.m_clientIndex    = recording->index;
+  tag.m_clientID       = client->GetClientID();
+  tag.m_strTitle       = recording->title;
+  tag.m_recordingTime  = recording->recording_time;
+  tag.m_duration       = CDateTimeSpan(0, 0, recording->duration / 60, recording->duration % 60);
+  tag.m_Priority       = recording->priority;
+  tag.m_Lifetime       = recording->lifetime;
+  tag.m_strDirectory   = recording->directory;
+  tag.m_strPlot        = recording->description;
+  tag.m_strPlotOutline = recording->subtitle;
+  tag.m_strStreamURL   = recording->stream_url;
+  tag.m_strChannel     = recording->channel_name;
 
-  xbmcRecordings->push_back(tag);
-  return;
+  xbmcRecordings->UpdateEntry(tag);
 }
 
 void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE handle, const PVR_TIMERINFO *timer)
@@ -144,7 +143,7 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
 
   CPVRTimers *xbmcTimers     = (CPVRTimers*) handle->DATA_ADDRESS;
   CPVRClient* client         = (CPVRClient*) handle->CALLER_ADDRESS;
-  const CPVRChannel *channel = CPVRManager::GetChannelGroups()->GetByClientFromAll(timer->channelNum, client->GetClientID());
+  const CPVRChannel *channel = CPVRManager::GetChannelGroups()->GetByUniqueID(timer->channelUid, client->GetClientID());
 
   if (channel == NULL)
   {
@@ -153,26 +152,27 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
   }
 
   CPVRTimerInfoTag tag;
-  tag.SetClientID(client->GetClientID());
-  tag.SetClientIndex(timer->index);
-  tag.SetActive(timer->active == 1);
-  tag.SetTitle(timer->title);
-  tag.SetDir(timer->directory);
-  tag.SetClientNumber(timer->channelNum);
-  tag.SetStart((time_t) (timer->starttime+client->GetTimeCorrection()));
-  tag.SetStop((time_t) (timer->endtime+client->GetTimeCorrection()));
-  tag.SetFirstDay((time_t) (timer->firstday+client->GetTimeCorrection()));
-  tag.SetPriority(timer->priority);
-  tag.SetLifetime(timer->lifetime);
-  tag.SetRecording(timer->recording == 1);
-  tag.SetRepeating(timer->repeat == 1);
-  tag.SetWeekdays(timer->repeatflags);
-  CStdString path;
-  path.Format("pvr://client%i/timers/%i", tag.ClientID(), tag.ClientIndex());
-  tag.SetPath(path);
+  tag.m_iClientID         = client->GetClientID();
+  tag.m_iClientIndex      = timer->index;
+  tag.m_bIsActive         = timer->active == 1;
+  tag.m_strTitle          = timer->title;
+  tag.m_strDir            = timer->directory;
+  tag.m_iClientNumber     = timer->channelNum;
+  tag.m_iClientChannelUid = timer->channelUid;
+  tag.m_StartTime         = (time_t) (timer->starttime+client->GetTimeCorrection());
+  tag.m_StopTime          = (time_t) (timer->endtime+client->GetTimeCorrection());
+  tag.m_FirstDay          = (time_t) (timer->firstday+client->GetTimeCorrection());
+  tag.m_iPriority         = timer->priority;
+  tag.m_iLifetime         = timer->lifetime;
+  tag.m_bIsRecording      = timer->recording == 1;
+  tag.m_bIsRepeating      = timer->repeat == 1;
+  tag.m_iWeekdays         = timer->repeatflags;
+  tag.m_strFileNameAndPath.Format("pvr://client%i/timers/%i", tag.m_iClientID, tag.m_iClientIndex);
+
+  // TODO find matching EPG entry
+  tag.UpdateSummary();
 
   xbmcTimers->Update(tag);
-  return;
 }
 
 void CAddonHelpers_PVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)

@@ -1879,6 +1879,7 @@ int ff_mpegts_parse_packet(MpegTSContext *ts, AVPacket *pkt,
 
     len1 = len;
     ts->pkt = pkt;
+    ts->pkt->data = NULL;
     ts->stop_parse = 0;
     for(;;) {
         if (ts->stop_parse>0)

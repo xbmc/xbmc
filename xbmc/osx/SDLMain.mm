@@ -8,6 +8,7 @@
   SDLMain.m and SDLMain.h carry neither a copyright or license. They are in the
   public domain.
 */
+#if !defined(__arm__)
 
 #import "SDL/SDL.h"
 #import "SDLMain.h"
@@ -464,4 +465,4 @@ int main(int argc, char *argv[])
 
   return 0;
 }
-
+#endif

@@ -54,6 +54,10 @@ enum PVRWindow
 #define CONTROL_BTNRECORDINGS        34
 #define CONTROL_BTNTIMERS            35
 #define CONTROL_BTNSEARCH            36
+#define CONTROL_BTNGUIDE_CHANNEL     37
+#define CONTROL_BTNGUIDE_NOW         38
+#define CONTROL_BTNGUIDE_NEXT        39
+#define CONTROL_BTNGUIDE_TIMELINE    40
 
 class CGUIWindowPVR;
 
@@ -69,6 +73,7 @@ public:
   bool operator ==(const CGUIWindowPVRCommon &right) const;
   bool operator !=(const CGUIWindowPVRCommon &right) const;
 
+  virtual const char *GetName(void) const;
   virtual PVRWindow GetWindowId(void) const { return m_window; }
   virtual bool IsActive(void) const;
   virtual bool IsSavedView(void) const;
@@ -122,4 +127,5 @@ protected:
   int            m_iSelected;
   SORT_ORDER     m_iSortOrder;
   SORT_METHOD    m_iSortMethod;
+  bool           m_bIsFocusing;
 };

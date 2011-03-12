@@ -1,0 +1,25 @@
+diff -ruN lzo-1.08.org/Makefile.am lzo-1.08/Makefile.am
+--- lzo-1.08.org/Makefile.am	2002-07-12 21:31:52.000000000 -0400
++++ lzo-1.08/Makefile.am	2010-10-29 12:13:48.000000000 -0400
+@@ -5,7 +5,7 @@
+ 
+ AUTOMAKE_OPTIONS = 1.6 gnu
+ 
+-SUBDIRS = include src ltest examples tests minilzo
++SUBDIRS = include src
+ 
+ EXTRA_DIST = BUGS
+ 
+diff -ruN lzo-1.08.org/Makefile.in lzo-1.08/Makefile.in
+--- lzo-1.08.org/Makefile.in	2002-07-12 21:31:52.000000000 -0400
++++ lzo-1.08/Makefile.in	2010-10-29 12:17:18.000000000 -0400
+@@ -108,7 +108,7 @@
+ 
+ AUTOMAKE_OPTIONS = 1.6 gnu
+ 
+-SUBDIRS = include src ltest examples tests minilzo
++SUBDIRS = include src
+ 
+ EXTRA_DIST = BUGS
+ 
+

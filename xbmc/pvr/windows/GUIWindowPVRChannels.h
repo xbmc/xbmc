@@ -37,6 +37,8 @@ public:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual const CPVRChannelGroup *SelectedGroup(void);
+  virtual void SetSelectedGroup(CPVRChannelGroup *group);
+  virtual const CPVRChannelGroup *SelectNextGroup(void);
   virtual void UpdateData(void);
 
 private:
@@ -54,7 +56,7 @@ private:
 
   virtual void ShowGroupManager(void);
 
-  const CPVRChannelGroup *m_selectedGroup;
-  bool                    m_bShowHiddenChannels;
-  bool                    m_bRadio;
+  CPVRChannelGroup *m_selectedGroup;
+  bool              m_bShowHiddenChannels;
+  bool              m_bRadio;
 };

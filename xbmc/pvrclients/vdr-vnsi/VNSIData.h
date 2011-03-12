@@ -33,7 +33,7 @@ public:
   cVNSIData();
   ~cVNSIData();
 
-  bool Open(const CStdString& hostname, int port, long timeout);
+  bool Open(const CStdString& hostname, int port);
   void Close();
   bool CheckConnection();
 
@@ -70,7 +70,7 @@ protected:
   virtual void Action(void);
 
 private:
-  bool readData(uint8_t* buffer, int totalBytes, int TimeOut = 2);
+  bool readData(uint8_t* buffer, int totalBytes);
   bool sendKA(uint32_t timeStamp);
 
   struct {

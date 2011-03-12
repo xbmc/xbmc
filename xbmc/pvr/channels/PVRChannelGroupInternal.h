@@ -24,16 +24,17 @@
 #include "PVRChannelGroup.h"
 
 class CPVRChannelGroups;
+class CPVRDatabase;
 
 /** XBMC's internal group, the group containing all channels */
 
 class CPVRChannelGroupInternal : public CPVRChannelGroup
 {
   friend class CPVRChannelGroups;
+  friend class CPVRDatabase;
 
 private:
   int  m_iHiddenChannels; /*!< the amount of hidden channels in this container */
-  bool m_bLoaded;
 
   /*!
    * @brief Load all channels from the database.
@@ -54,6 +55,12 @@ private:
    * @return The amount of channels that were added.
    */
   int GetFromClients(void);
+
+  /*!
+   * @brief Check if this group is the internal group containing all channels.
+   * @return True if it's the internal group, false otherwise.
+   */
+  bool IsInternalGroup(void) const { return true; }
 
   /*!
    * @brief Update the current channel list with the given list.
@@ -93,29 +100,17 @@ private:
    */
   void Unload();
 
+  /*!
+   * @brief Add a channel to this internal group.
+   */
+  bool InsertInGroup(CPVRChannel *channel, int iChannelNumber = 0);
+
 public:
   /*!
    * @brief Create a new internal channel group.
    * @param bRadio True if this group holds radio channels.
    */
   CPVRChannelGroupInternal(bool bRadio);
-
-  /*!
-   * @brief Move a channel from position iOldIndex to iNewIndex.
-   * @param iOldIndex The old index.
-   * @param iNewIndex The new index.
-   * @param bSaveInDb If true, save this change in the database.
-   * @return True if the channel was moved successfully, false otherwise.
-   */
-  bool MoveChannel(unsigned int iOldIndex, unsigned int iNewIndex, bool bSaveInDb = true);
-
-  /*!
-   * @brief Show a hidden channel or hide a visible channel.
-   * @param channel The channel to change.
-   * @param bShowDialog If true, show a confirmation dialog.
-   * @return True if the channel was changed, false otherwise.
-   */
-  bool HideChannel(CPVRChannel *channel, bool bShowDialog = true);
 
   /**
    * @brief The amount of channels in this container.
@@ -141,4 +136,10 @@ public:
    * @return True if the channel was updated and persisted.
    */
   bool UpdateChannel(const CPVRChannel &channel);
+
+  bool IsGroupMember(const CPVRChannel *channel) const;
+  bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0);
+  bool RemoveFromGroup(CPVRChannel *channel);
+  bool MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb = true);
+  int GetMembers(CFileItemList *results, bool bGroupMembers = true) const;
 };

@@ -60,7 +60,7 @@ struct RefreshOverride
 
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
-class CAdvancedSettings : public virtual xbmcutil::Referenced
+class CAdvancedSettings
 {
   public:
     CAdvancedSettings();
@@ -169,8 +169,8 @@ class CAdvancedSettings : public virtual xbmcutil::Referenced
     CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
     CStdStringArray m_trailerMatchRegExps;
-    SETTINGS_TVSHOWLIST m_tvshowStackRegExps;
-    CStdString m_tvshowMultiPartStackRegExp;
+    SETTINGS_TVSHOWLIST m_tvshowEnumRegExps;
+    CStdString m_tvshowMultiPartEnumRegExp;
     typedef std::vector< std::pair<CStdString, CStdString> > StringMapping;
     StringMapping m_pathSubstitutions;
     int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
@@ -233,6 +233,10 @@ class CAdvancedSettings : public virtual xbmcutil::Referenced
     int m_iTuxBoxZapstreamPort;
 
     int m_iMythMovieLength;         // minutes
+
+    int m_iEpgLingerTime;           // minutes
+    int m_iEpgUpdateCheckInterval;  // seconds
+    int m_iEpgCleanupInterval;      // seconds
 
     // EDL Commercial Break
     bool m_bEdlMergeShortCommBreaks;

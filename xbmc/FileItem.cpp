@@ -210,12 +210,30 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   m_pictureInfoTag = NULL;
 
   Reset();
+  CPVREpgInfoTag *epgNow = channel.GetEPGNow();
 
   m_strPath = channel.Path();
   m_bIsFolder = false;
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
-  m_strLabel2 = channel.GetEPGNow()->Title();
+  m_strLabel2 = epgNow ? epgNow->Title() : g_localizeStrings.Get(19055);
+
+  if (channel.IsRadio() && epgNow)
+  {
+    CMusicInfoTag* musictag = GetMusicInfoTag();
+    if (musictag)
+    {
+      musictag->SetURL(channel.Path());
+      musictag->SetTitle(epgNow ? epgNow->Title() : g_localizeStrings.Get(19055));
+      musictag->SetArtist(channel.ChannelName());
+      musictag->SetAlbumArtist(channel.ChannelName());
+      musictag->SetGenre(epgNow ? epgNow->Genre() : "");
+      musictag->SetDuration(epgNow ? epgNow->GetDuration() : 3600);
+      musictag->SetLoaded(true);
+      musictag->SetComment("");
+      musictag->SetLyrics("");
+    }
+  }
 
   FillInDefaultIcon();
   if (!channel.IconPath().IsEmpty())
@@ -229,7 +247,7 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   }
 }
 
-CFileItem::CFileItem(const CPVRRecordingInfoTag& record)
+CFileItem::CFileItem(const CPVRRecording& record)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -241,11 +259,11 @@ CFileItem::CFileItem(const CPVRRecordingInfoTag& record)
 
   Reset();
 
-  m_strPath = record.Path();
+  m_strPath = record.m_strFileNameAndPath;
   m_bIsFolder = false;
   *GetPVRRecordingInfoTag() = record;
   SetLabel(record.m_strTitle);
-  m_strLabel2 = record.Plot();
+  m_strLabel2 = record.m_strPlot;
 
   FillInDefaultIcon();
   SetInvalid();
@@ -263,11 +281,11 @@ CFileItem::CFileItem(const CPVRTimerInfoTag& timer)
 
   Reset();
 
-  m_strPath = timer.Path();
+  m_strPath = timer.m_strFileNameAndPath;
   m_bIsFolder = false;
   *GetPVRTimerInfoTag() = timer;
-  SetLabel(timer.Title());
-  m_strLabel2 = timer.Summary();
+  SetLabel(timer.m_strTitle);
+  m_strLabel2 = timer.m_strSummary;
 
   FillInDefaultIcon();
   SetInvalid();
@@ -2269,7 +2287,7 @@ void CFileItemList::Stack()
   CSingleLock lock(m_lock);
 
   // not allowed here
-  if (IsVirtualDirectoryRoot() || IsLiveTV())
+  if (IsVirtualDirectoryRoot() || IsLiveTV() || m_strPath.Left(10).Equals("sources://"))
     return;
 
   SetProperty("isstacked", "1");
@@ -2952,6 +2970,17 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
   if (IsLabelPreformated())
     return GetLabel();
 
+  CStdString strMovieName = GetBaseMoviePath(bUseFolderNames);
+
+  URIUtils::RemoveSlashAtEnd(strMovieName);
+  strMovieName = URIUtils::GetFileName(strMovieName);
+  CURL::Decode(strMovieName);
+
+  return strMovieName;
+}
+
+CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
+{
   CStdString strMovieName = m_strPath;
 
   if (IsMultiPath())
@@ -2976,10 +3005,6 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
       strMovieName = strArchivePath;
     }
   }
-
-  URIUtils::RemoveSlashAtEnd(strMovieName);
-  strMovieName = URIUtils::GetFileName(strMovieName);
-  CURL::Decode(strMovieName);
 
   return strMovieName;
 }
@@ -3293,10 +3318,10 @@ CPVRChannel* CFileItem::GetPVRChannelInfoTag()
   return m_pvrChannelInfoTag;
 }
 
-CPVRRecordingInfoTag* CFileItem::GetPVRRecordingInfoTag()
+CPVRRecording* CFileItem::GetPVRRecordingInfoTag()
 {
   if (!m_pvrRecordingInfoTag)
-    m_pvrRecordingInfoTag = new CPVRRecordingInfoTag;
+    m_pvrRecordingInfoTag = new CPVRRecording;
 
   return m_pvrRecordingInfoTag;
 }

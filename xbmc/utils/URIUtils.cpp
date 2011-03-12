@@ -679,19 +679,27 @@ bool URIUtils::IsHTSP(const CStdString& strFile)
   return strFile.Left(5).Equals("htsp:");
 }
 
+bool URIUtils::IsPVRRecording(const CStdString& strFile)
+{
+  CStdString strFileWithoutSlash(strFile);
+  RemoveSlashAtEnd(strFileWithoutSlash);
+
+  return strFileWithoutSlash.Right(4).Equals(".pvr") &&
+      strFile.Left(16).Equals("pvr://recordings");
+}
+
 bool URIUtils::IsLiveTV(const CStdString& strFile)
 {
-  if(IsTuxBox(strFile)
-  || IsVTP(strFile)
-  || IsHDHomeRun(strFile)
-  || IsHTSP(strFile)
-  || strFile.Left(4).Equals("sap:"))
-    return true;
+  CStdString strFileWithoutSlash(strFile);
+  RemoveSlashAtEnd(strFileWithoutSlash);
 
-  if (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
-    return true;
-
-  return false;
+  return IsTuxBox(strFileWithoutSlash) ||
+      IsVTP(strFileWithoutSlash) ||
+      IsHDHomeRun(strFileWithoutSlash) ||
+      IsHTSP(strFileWithoutSlash) ||
+      strFileWithoutSlash.Left(4).Equals("sap:") ||
+      (strFileWithoutSlash.Right(4).Equals(".pvr") && !strFileWithoutSlash.Left(16).Equals("pvr://recordings")) ||
+      (IsMythTV(strFileWithoutSlash) && CMythDirectory::IsLiveTV(strFileWithoutSlash));
 }
 
 bool URIUtils::IsMusicDb(const CStdString& strFile)

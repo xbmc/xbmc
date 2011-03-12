@@ -48,6 +48,7 @@ private:
   CStdString m_strIconPath;             /*!< the path to the icon for this channel */
   CStdString m_strChannelName;          /*!< the name for this channel used by XBMC */
   bool       m_bIsVirtual;              /*!< true if this channel is marked as virtual, false if not */
+  time_t     m_iLastWatched;            /*!< last time channel has been watched */
   //@}
 
   /*! @name EPG related channel data
@@ -200,6 +201,20 @@ public:
    * @return True if the something changed, false otherwise.
    */
   bool SetVirtual(bool bIsVirtual, bool bSaveInDb = false);
+
+  /*!
+   * @brief Last time channel has been watched.
+   * @return Time channel has been watched last.
+   */
+  time_t LastWatched() const { return m_iLastWatched; }
+
+  /*!
+   * @brief Last time channel has been watched
+   * @param iLastWatched The new value.
+   * @param bSaveInDb Save in the database or not.
+   * @return True if the something changed, false otherwise.
+   */
+  bool SetLastWatched(time_t iLastWatched, bool bSaveInDb = false);
 
   /*!
    * @brief True if this channel has no file or stream name
@@ -414,7 +429,7 @@ public:
    *
    * @return The EPG tag that is active on this channel now.
    */
-  const CPVREpgInfoTag* GetEPGNow() const;
+  CPVREpgInfoTag* GetEPGNow() const;
 
   /*!
    * @brief Get the EPG tag that is active on this channel next.
@@ -424,7 +439,7 @@ public:
    *
    * @return The EPG tag that is active on this channel next.
    */
-  const CPVREpgInfoTag* GetEPGNext() const;
+  CPVREpgInfoTag* GetEPGNext() const;
 
   /*!
    * @brief Don't use an EPG for this channel if set to false.

@@ -46,6 +46,7 @@ public:
   virtual ~CGUIWindowPVR(void);
 
   virtual CGUIWindowPVRCommon *GetActiveView(void) const;
+  virtual void SetActiveView(CGUIWindowPVRCommon *window);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual CGUIWindowPVRCommon *GetSavedView(void) const;
   virtual bool OnAction(const CAction &action);
@@ -61,6 +62,7 @@ public:
 protected:
   virtual void SetLabel(int iControl, const CStdString &strLabel);
   virtual void SetLabel(int iControl, int iLabel);
+  virtual void UpdateButtons(void);
 
 private:
   virtual bool OnMessageFocus(CGUIMessage &message);

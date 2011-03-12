@@ -98,11 +98,22 @@ void CGUIDialogPVRGuideOSD::Update()
   // empty the list ready for population
   Clear();
 
-  CPVRChannel CurrentChannel;
-  if (CPVRManager::Get()->GetCurrentChannel(&CurrentChannel))
-    CurrentChannel.GetEPG(m_vecItems);
-
+  CPVRManager::Get()->GetCurrentEpg(m_vecItems);
   m_viewControl.SetItems(*m_vecItems);
+
+  /* select the active entry */
+  unsigned int iSelectedItem = 0;
+  for (int iEpgPtr = 0; iEpgPtr < m_vecItems->Size(); iEpgPtr++)
+  {
+    CFileItemPtr entry = m_vecItems->Get(iEpgPtr);
+    if (entry->GetEPGInfoTag()->IsActive())
+    {
+      iSelectedItem = iEpgPtr;
+      break;
+    }
+  }
+  m_viewControl.SetSelectedItem(iSelectedItem);
+
   g_graphicsContext.Unlock();
 }
 

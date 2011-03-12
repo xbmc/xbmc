@@ -20,6 +20,7 @@
  */
 
 #include "threads/SingleLock.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -31,9 +32,6 @@
 #include "Epg.h"
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
-
-#define EPGUPDATE                300  /* check if tables need to be updated every 5 minutes */
-#define EPGCLEANUPINTERVAL       900 /* remove old entries from the EPG every 15 minutes */
 
 using namespace std;
 
@@ -88,8 +86,6 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
 
   m_iLastEpgUpdate  = 0;
   m_bDatabaseLoaded = false;
-  m_First           = CDateTime::GetCurrentDateTime();
-  m_Last            = m_First;
 
   lock.Leave();
 
@@ -107,6 +103,7 @@ void CEpgContainer::Start(void)
 
   if (m_database.Open())
   {
+    m_database.DeleteOldEpgEntries();
     m_database.Get(this);
     m_database.Close();
   }
@@ -117,7 +114,7 @@ void CEpgContainer::Start(void)
 
   Create();
   SetName("XBMC EPG thread");
-  SetPriority(0);
+  SetPriority(-1);
   CLog::Log(LOGNOTICE, "%s - EPG thread started", __FUNCTION__);
 }
 
@@ -139,9 +136,9 @@ void CEpgContainer::Notify(const Observable &obs, const CStdString& msg)
 
 void CEpgContainer::Process(void)
 {
-  time_t iNow          = 0;
-  m_iLastEpgCleanup    = 0;
-  m_iLastEpgUpdate     = 0;
+  time_t iNow       = 0;
+  m_iLastEpgUpdate  = 0;
+  CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgCleanup);
 
   UpdateEPG(true);
 
@@ -150,11 +147,11 @@ void CEpgContainer::Process(void)
     CDateTime::GetCurrentDateTime().GetAsTime(iNow);
 
     /* load or update the EPG */
-    if (!m_bStop && (iNow > m_iLastEpgUpdate + EPGUPDATE || !m_bDatabaseLoaded))
+    if (!m_bStop && (iNow > m_iLastEpgUpdate + g_advancedSettings.m_iEpgUpdateCheckInterval || !m_bDatabaseLoaded))
       UpdateEPG(false);
 
     /* clean up old entries */
-    if (!m_bStop && iNow > m_iLastEpgCleanup + EPGCLEANUPINTERVAL)
+    if (!m_bStop && iNow > m_iLastEpgCleanup + g_advancedSettings.m_iEpgCleanupInterval)
       RemoveOldEntries();
 
     /* call the update hook */
@@ -225,7 +222,6 @@ bool CEpgContainer::LoadSettings(void)
 {
   m_bIgnoreDbForClient = g_guiSettings.GetBool("epg.ignoredbforclient");
   m_iUpdateTime        = g_guiSettings.GetInt ("epg.epgupdate") * 60;
-  m_iLingerTime        = g_guiSettings.GetInt ("epg.lingertime") * 60;
   m_iDisplayTime       = g_guiSettings.GetInt ("epg.daystodisplay") * 24 * 60 * 60;
 
   return true;
@@ -313,7 +309,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   time_t end;
   CDateTime::GetCurrentDateTime().GetAsTime(start); // NOTE: XBMC stores the EPG times as local time
   end = start;
-  start -= m_iLingerTime;
+  start -= g_advancedSettings.m_iEpgLingerTime * 60;
   end += m_iDisplayTime;
 
   /* open the database */
@@ -400,12 +396,34 @@ int CEpgContainer::GetEPGAll(CFileItemList* results)
   return results->Size() - iInitialSize;
 }
 
-void CEpgContainer::UpdateFirstAndLastEPGDates(const CEpgInfoTag &tag)
+const CDateTime CEpgContainer::GetFirstEPGDate(void) const
 {
-  if (tag.Start() < m_First)
-    m_First = tag.Start();
-  if (tag.End() > m_Last)
-    m_Last = tag.End();
+  CDateTime returnValue;
+
+  CSingleLock lock(m_critSection);
+  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+  {
+    CDateTime entry = at(iEpgPtr)->GetFirstDate();
+    if (entry.IsValid() && (!returnValue.IsValid() || entry < returnValue))
+      returnValue = entry;
+  }
+
+  return returnValue;
+}
+
+const CDateTime CEpgContainer::GetLastEPGDate(void) const
+{
+  CDateTime returnValue;
+
+  CSingleLock lock(m_critSection);
+  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+  {
+    CDateTime entry = at(iEpgPtr)->GetLastDate();
+    if (entry.IsValid() && (!returnValue.IsValid() || entry > returnValue))
+      returnValue = entry;
+  }
+
+  return returnValue;
 }
 
 int CEpgContainer::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &filter)

@@ -36,6 +36,8 @@ class CPVRChannelGroup;
 class CPVRRecordings;
 class CPVRTimers;
 
+#define XBMC_VIRTUAL_CLIENTID -1
+
 typedef std::map< long, boost::shared_ptr<CPVRClient> >           CLIENTMAP;
 typedef std::map< long, boost::shared_ptr<CPVRClient> >::iterator CLIENTMAPITR;
 typedef std::map< long, PVR_SERVERPROPS >       CLIENTPROPS;
@@ -286,6 +288,13 @@ public:
   bool GetCurrentChannel(const CPVRChannel *channel);
 
   /*!
+   * @brief Return the EPG for the channel that is currently playing.
+   * @param channel The EPG or NULL if no channel is playing.
+   * @return The amount of results that was added or -1 if none.
+   */
+  int GetCurrentEpg(CFileItemList *results);
+
+  /*!
    * @brief Check whether the PVRManager has fully started.
    * @return True if started, false otherwise.
    */
@@ -351,13 +360,14 @@ public:
    * @brief Set the current playing group, used to load the right channel.
    * @param group The new group.
    */
-  void SetPlayingGroup(const CPVRChannelGroup *group) { m_currentGroup = group; }
+  void SetPlayingGroup(CPVRChannelGroup *group);
 
   /*!
    * @brief Get the current playing group, used to load the right channel.
+   * @param bRadio True to get the current radio group, false to get the current TV group.
    * @return The current group or the group containing all channels if it's not set.
    */
-  const CPVRChannelGroup *GetPlayingGroup();
+  const CPVRChannelGroup *GetPlayingGroup(bool bRadio = false);
 
   /*!
    * @brief Let the background thread update the recordings list.
@@ -391,7 +401,7 @@ public:
    * @param recording The recording to start playing.
    * @return True if the stream was opened successfully, false otherwise.
    */
-  bool OpenRecordedStream(const CPVRRecordingInfoTag *recording);
+  bool OpenRecordedStream(const CPVRRecording *recording);
 
   /*!
    * @brief Get a stream URL from the PVR Client.
@@ -554,10 +564,17 @@ private:
   void ResetProperties(void);
 
   /*!
+   * @brief Try to load and initialise all clients.
+   * @param iMaxTime Maximum time to try to load clients in seconds. Use 0 to keep trying until m_bStop becomes true.
+   * @return True if all clients were loaded, false otherwise.
+   */
+  bool TryLoadClients(int iMaxTime = 0);
+
+  /*!
    * @brief Load and initialise all clients.
    * @return True if any clients were loaded, false otherwise.
    */
-  bool LoadClients();
+  bool LoadClients(void);
 
   /*!
    * @brief Stop a client.
@@ -690,9 +707,10 @@ private:
   unsigned int                    m_LastChannelChanged;
 
   /*--- Stream playback data ---*/
-  CFileItem          *            m_currentPlayingChannel;    /* The current playing channel or NULL */
-  CFileItem          *            m_currentPlayingRecording;  /* The current playing recording or NULL */
-  const CPVRChannelGroup *        m_currentGroup;             /* The current selected Channel group list */
+  CFileItem *                     m_currentPlayingChannel;    /* The current playing channel or NULL */
+  CFileItem *                     m_currentPlayingRecording;  /* The current playing recording or NULL */
+  CPVRChannelGroup *              m_currentRadioGroup;        /* The current selected radio channel group list */
+  CPVRChannelGroup *              m_currentTVGroup;           /* The current selected TV channel group list */
   DWORD                           m_scanStart;                /* Scan start time to check for non present streams */
   PVR_SIGNALQUALITY               m_qualityInfo;              /* Stream quality information */
 };

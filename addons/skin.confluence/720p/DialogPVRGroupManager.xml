@@ -153,14 +153,14 @@
 					<description>Channels list</description>
 					<posx>525</posx>
 					<posy>90</posy>
-					<control type="label">
+					<control type="label" id="21">
 						<description>name label</description>
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>340</width>
 						<height>70</height>
 						<font>font13_title</font>
-						<label>31507</label>
+						<label>19219</label>
 						<align>center</align>
 						<aligny>center</aligny>
 						<textcolor>blue</textcolor>
@@ -271,14 +271,14 @@
 					<description>Grouped Channels list</description>
 					<posx>890</posx>
 					<posy>90</posy>
-					<control type="label">
+					<control type="label" id="22">
 						<description>name label</description>
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>340</width>
 						<height>70</height>
 						<font>font13_title</font>
-						<label>$LOCALIZE[31508][CR]$INFO[Control.GetLabel(20)]</label>
+						<label>$LOCALIZE[19220][CR]$INFO[Control.GetLabel(20)]</label>
 						<align>center</align>
 						<aligny>center</aligny>
 						<textcolor>blue</textcolor>

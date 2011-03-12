@@ -87,6 +87,8 @@ bool CTextureBundleXBT::OpenBundle()
     return false;
   }
 
+  CLog::Log(LOGDEBUG, "%s - Opened bundle %s", __FUNCTION__, strPath.c_str());
+
   m_TimeStamp = m_XBTFReader.GetLastModificationTimestamp();
 
   if (lzo_init() != LZO_E_OK)
@@ -248,6 +250,7 @@ void CTextureBundleXBT::Cleanup()
   if (m_XBTFReader.IsOpen())
   {
     m_XBTFReader.Close();
+    CLog::Log(LOGDEBUG, "%s - Closed %sbundle", __FUNCTION__, m_themeBundle ? "theme " : "");
   }
 }
 

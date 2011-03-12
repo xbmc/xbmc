@@ -44,6 +44,8 @@
 #define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-powerpc-linux.so"
 #elif defined(_POWERPC64)
 #define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-powerpc64-linux.so"
+#elif defined(_ARMEL)
+#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-arm.so"
 #else /* !__x86_64__ && !__powerpc__ */
 #define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-i486-linux.so"
 #endif /* __x86_64__ */

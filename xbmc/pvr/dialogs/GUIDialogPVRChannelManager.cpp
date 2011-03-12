@@ -52,7 +52,6 @@
 #define EDIT_NAME                 8
 #define BUTTON_CHANNEL_LOGO       9
 #define IMAGE_CHANNEL_LOGO        10
-#define SPIN_GROUP_SELECTION      11
 #define RADIOBUTTON_USEEPG        12
 #define SPIN_EPGSOURCE_SELECTION  13
 #define CONTROL_LIST_CHANNELS     20
@@ -369,24 +368,6 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         m_bContainsChanges = true;
         return true;
       }
-      else if (iControl == SPIN_GROUP_SELECTION)
-      {
-        CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_GROUP_SELECTION);
-        if (pSpin)
-        {
-          if (CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->size() == 0)
-            return true;
-
-          CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
-          if (pItem)
-          {
-            pItem->SetProperty("GroupId", (int)pSpin->GetValue());
-            pItem->SetProperty("Changed", true);
-            m_bContainsChanges = true;
-            return true;
-          }
-        }
-      }
       else if (iControl == RADIOBUTTON_USEEPG)
       {
         CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_USEEPG);
@@ -429,19 +410,6 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
 
         /* Open dialog window */
         pDlgInfo->DoModal();
-
-        CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_GROUP_SELECTION);
-        if (pSpin)
-        {
-          pSpin->Clear();
-          pSpin->AddLabel(g_localizeStrings.Get(m_bIsRadio ? 19216 : 19217), -1);
-
-          CPVRChannelGroups *groups = (CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio);
-          for (unsigned int iGroupPtr = 0; iGroupPtr < groups->size(); iGroupPtr++)
-            pSpin->AddLabel(groups->at(iGroupPtr)->GroupName(), groups->at(iGroupPtr)->GroupID());
-
-          pSpin->SetValue(m_channelItems->Get(m_iSelected)->GetPropertyInt("GroupId"));
-        }
 
         return true;
       }
@@ -507,7 +475,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
 
         pDlgSelect->SetHeading(19213); // Select Client
         pDlgSelect->Add(g_localizeStrings.Get(19209));
-        clients.push_back(999);
+        clients.push_back(XBMC_VIRTUAL_CLIENTID);
         CLIENTMAPITR itr;
         for (itr = CPVRManager::Get()->Clients()->begin() ; itr != CPVRManager::Get()->Clients()->end(); itr++)
         {
@@ -522,7 +490,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         if (selection >= 0 && selection <= (int) clients.size())
         {
           int clientID = clients[selection];
-          if (clientID == 999)
+          if (clientID == XBMC_VIRTUAL_CLIENTID)
           {
             CStdString strURL = "";
             if (CGUIDialogKeyboard::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
@@ -534,7 +502,7 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
                 newchannel.SetEPGEnabled(false);
                 newchannel.SetVirtual(true);
                 newchannel.SetStreamURL(strURL);
-                newchannel.SetClientID(999);
+                newchannel.SetClientID(XBMC_VIRTUAL_CLIENTID);
 
                 CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
                 database->Open();
@@ -649,7 +617,6 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
 
 void CGUIDialogPVRChannelManager::SetData(int iItem)
 {
-  CGUISpinControlEx      *pSpin;
   CGUIEditControl        *pEdit;
   CGUIRadioButtonControl *pRadioButton;
 
@@ -673,13 +640,6 @@ void CGUIDialogPVRChannelManager::SetData(int iItem)
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_USEEPG);
   if (pRadioButton) pRadioButton->SetSelected(pItem->GetPropertyBOOL("UseEPG"));
-
-  pSpin = (CGUISpinControlEx *)GetControl(SPIN_GROUP_SELECTION);
-  if (pSpin) pSpin->SetValue(pItem->GetPropertyInt("GroupId"));
-
-  pSpin = (CGUISpinControlEx *)GetControl(SPIN_GROUP_SELECTION);
-  if (pSpin) pSpin->SetValue(pItem->GetPropertyInt("EPGSource"));
-
 }
 
 void CGUIDialogPVRChannelManager::Update()
@@ -716,7 +676,7 @@ void CGUIDialogPVRChannelManager::Update()
     }
 
     CStdString clientName;
-    if (channel->ClientID() == 999) /* XBMC internal */
+    if (channel->ClientID() == XBMC_VIRTUAL_CLIENTID) /* XBMC internal */
       clientName = g_localizeStrings.Get(19209);
     else
       clientName = CPVRManager::Get()->Clients()->find(channel->ClientID())->second->GetBackendName() + ":" + CPVRManager::Get()->Clients()->find(channel->ClientID())->second->GetConnectionString();
@@ -725,18 +685,7 @@ void CGUIDialogPVRChannelManager::Update()
     m_channelItems->Add(channelFile);
   }
 
-  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_GROUP_SELECTION);
-  if (pSpin)
-  {
-    pSpin->Clear();
-    pSpin->AddLabel(g_localizeStrings.Get(m_bIsRadio ? 19216 : 19217), -1);
-
-    CPVRChannelGroups *groups = (CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio);
-    for (unsigned int iGroupPtr = 0; iGroupPtr < groups->size(); iGroupPtr++)
-      pSpin->AddLabel(groups->at(iGroupPtr)->GroupName(), groups->at(iGroupPtr)->GroupID());
-  }
-
-  pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);
+  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);
   if (pSpin)
   {
     pSpin->Clear();

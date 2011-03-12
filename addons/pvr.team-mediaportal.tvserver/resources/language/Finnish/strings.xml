@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Mediaportal-palvelimen nimi</string>
+    <string id="30001">Mediaportal XBMC-lisäosan portti</string>
+    <string id="30002">Vain ilmaiskanavat</string>
+    <string id="30003">Sisällytä radiokanavat</string>
+
+    <string id="30005">Yhteyden aikakatkaisu (s)</string>
+    <string id="30006">Tuo ainoastaan TV-kanavat ryhmästä</string>
+    <string id="30007">Tuo ainoastaan radiokanavat ryhmästä</string>
+    <string id="30008">Muunna palvelimen nimi IP-osoitteeksi</string>
+    <string id="30009">Ohjelmaopas: Lue lajityyppi merkkijonoista (hidas)</string>
+    <string id="30010">Odotusaika kanavan virittämisen jälkeen (ms)</string>
+    <string id="30011">Toista nauhoitukset suoraan (ei streamausta)</string>
+    <string id="30012">Mediaportal-nauhoitusten kansio</string>
+</strings>

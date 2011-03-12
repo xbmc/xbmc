@@ -51,13 +51,13 @@ public:
    * @brief Get the minimal database version that is required to operate correctly.
    * @return The minimal database version.
    */
-  virtual int GetMinVersion() const { return 10; };
+  virtual int GetMinVersion() const { return 12; };
 
   /*!
    * @brief Get the default sqlite database filename.
    * @return The default filename.
    */
-  const char *GetDefaultDBName() const { return "MyTV4.db"; };
+  const char *GetBaseDBName() const { return "TV"; };
 
   /*! @name Channel methods */
   //@{
@@ -98,19 +98,6 @@ public:
    */
   int GetChannels(CPVRChannelGroupInternal *results, bool bIsRadio);
 
-  /*!
-   * @brief Get the ID of the channel that was played last
-   * @return The ID of the channel that was played last
-   */
-  int GetLastChannel();
-
-  /*!
-   * @brief Update the last playing channel.
-   * @param channel The channel to store.
-   * @return True if the value was stored, false otherwise.
-   */
-  bool PersistLastChannel(const CPVRChannel &channel);
-
   //@}
 
   /*! @name Channel settings methods */
@@ -149,7 +136,7 @@ public:
   /*! @name Channel group methods */
   //@{
 
-  bool DeleteChannelsInGroups(int iGroupId);
+  bool RemoveChannelsFromGroup(int iGroupId);
 
   /*!
    * @brief Remove all channel groups from the database
@@ -169,20 +156,13 @@ public:
   /*!
    * @brief Get the channel groups.
    * @param results The container to store the results in.
-   * @return True if the list was fetched successfully, false otherwise.
-   */
-  bool GetChannelGroupList(CPVRChannelGroups &results);
-
-  /*!
-   * @brief Get the channel groups.
-   * @param results The container to store the results in.
    * @param bRadio Get radio channel groups if true.
    * @return True if the list was fetched successfully, false otherwise.
    */
   bool GetChannelGroupList(CPVRChannelGroups &results, bool bRadio);
 
   /*!
-   * @brief Get the group members for a group.
+   * @brief Add the group members to a group.
    * @param group The group to get the channels for.
    * @return The amount of channels that were added.
    */

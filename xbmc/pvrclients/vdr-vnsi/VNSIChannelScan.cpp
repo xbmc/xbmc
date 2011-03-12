@@ -71,7 +71,7 @@ bool cVNSIChannelScan::Open()
   m_progressDone    = NULL;
   m_progressSignal  = NULL;
 
-  if(!m_session.Open(g_szHostname, g_iPort, g_iConnectTimeout, "XBMC channel scanner"))
+  if(!m_session.Open(g_szHostname, g_iPort, "XBMC channel scanner"))
     return false;
 
   SetDescription("VNSI channel scan listener");
@@ -513,7 +513,7 @@ void cVNSIChannelScan::Action()
 
   while (Running())
   {
-    readSuccess = readData((uint8_t*)&channelID, sizeof(uint32_t));  // 2s timeout atm
+    readSuccess = readData((uint8_t*)&channelID, sizeof(uint32_t));
     if (!readSuccess && !IsClientConnected())
       return; // return to stop this thread
 
@@ -698,9 +698,9 @@ cResponsePacket* cVNSIChannelScan::ReadResult(cRequestPacket* vrp)
   return vresp;
 }
 
-bool cVNSIChannelScan::readData(uint8_t* buffer, int totalBytes, int TimeOut)
+bool cVNSIChannelScan::readData(uint8_t* buffer, int totalBytes)
 {
-  int ret = m_session.readData(buffer, totalBytes, TimeOut);
+  int ret = m_session.readData(buffer, totalBytes);
   if (ret == 1)
     return true;
   else if (ret == 0)

@@ -43,6 +43,8 @@
 #define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-powerpc-linux.so"
 #elif defined(_POWERPC64)
 #define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-powerpc64-linux.so"
+#elif defined(_ARMEL)
+#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-arm.so"
 #else /* !__x86_64__ && !__powerpc__ */
 #define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-i486-linux.so"
 #endif /* __x86_64__ */

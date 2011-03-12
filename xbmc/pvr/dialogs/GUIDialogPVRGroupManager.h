@@ -24,6 +24,7 @@
 #include "GUIViewControl.h"
 
 class CFileItemList;
+class CPVRChannelGroup;
 
 class CGUIDialogPVRGroupManager : public CGUIDialog
 {
@@ -40,27 +41,29 @@ protected:
   void Update();
 
 private:
+  bool PersistChanges(void);
+  bool CancelChanges(void);
   bool ActionButtonOk(CGUIMessage &message);
   bool ActionButtonNewGroup(CGUIMessage &message);
   bool ActionButtonDeleteGroup(CGUIMessage &message);
   bool ActionButtonRenameGroup(CGUIMessage &message);
-  bool ActionButtonControlLeft(CGUIMessage &message);
-  bool ActionButtonControlRight(CGUIMessage &message);
-  bool ActionButtonControlGroup(CGUIMessage &message);
+  bool ActionButtonUngroupedChannels(CGUIMessage &message);
+  bool ActionButtonGroupMembers(CGUIMessage &message);
+  bool ActionButtonChannelGroups(CGUIMessage &message);
   bool OnMessageClick(CGUIMessage &message);
 
-  CStdString      m_CurrentGroupName;
-  bool            m_bIsRadio;
+  CPVRChannelGroup *m_selectedGroup;
+  bool              m_bIsRadio;
 
-  unsigned int    m_iSelectedLeft;
-  unsigned int    m_iSelectedRight;
-  unsigned int    m_iSelectedGroup;
+  unsigned int      m_iSelectedUngroupedChannel;
+  unsigned int      m_iSelectedGroupMember;
+  unsigned int      m_iSelectedChannelGroup;
 
-  CFileItemList  *m_channelLeftItems;
-  CFileItemList  *m_channelRightItems;
-  CFileItemList  *m_channelGroupItems;
+  CFileItemList *   m_ungroupedChannels;
+  CFileItemList *   m_groupMembers;
+  CFileItemList *   m_channelGroups;
 
-  CGUIViewControl m_viewControlLeft;
-  CGUIViewControl m_viewControlRight;
-  CGUIViewControl m_viewControlGroup;
+  CGUIViewControl   m_viewUngroupedChannels;
+  CGUIViewControl   m_viewGroupMembers;
+  CGUIViewControl   m_viewChannelGroups;
 };

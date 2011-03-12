@@ -706,6 +706,8 @@
   <string id="851">Valid port range is 1-65535</string>
   <string id="852">Valid port range is 1024-65535</string>
 
+  <string id="998">Add Music...</string>
+  <string id="999">Add Videos...</string>
   <string id="1000">- Preview</string>
   <string id="1001">Unable to connect</string>
   <string id="1002">XBMC was unable to connect to the network location.</string>
@@ -1707,7 +1709,6 @@
   <string id="19180">TV</string>
   <string id="19181">Menu/OSD</string>
   <string id="19182">Days to display in TV Guide</string>
-  <string id="19183">TV Guide linger time</string>
   <string id="19184">Channel info time</string>
   <string id="19185">Clear TV Database</string>
   <string id="19186">All data in the Database is being erased</string>
@@ -1742,6 +1743,9 @@
   <string id="19215">The PVR-Server don't support Timers!</string>
   <string id="19216">All radio channels</string>
   <string id="19217">All TV channels</string>
+  <string id="19218">Visible</string>
+  <string id="19219">Ungrouped channels</string>
+  <string id="19220">Channels in</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>

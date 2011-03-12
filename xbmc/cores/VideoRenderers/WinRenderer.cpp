@@ -206,6 +206,8 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
     // need to recreate textures
     m_NumYV12Buffers    = 0;
     m_iYV12RenderBuffer = 0;
+    // reinitialize the filters/shaders
+    m_bFilterInitialized = false;
   }
 
   m_fps = fps;

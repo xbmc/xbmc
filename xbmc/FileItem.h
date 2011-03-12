@@ -46,7 +46,7 @@ class CVideoInfoTag;
 class CEpgInfoTag;
 class CPVREpgInfoTag;
 class CPVRChannel;
-class CPVRRecordingInfoTag;
+class CPVRRecording;
 class CPVRTimerInfoTag;
 class CPictureInfoTag;
 
@@ -83,7 +83,7 @@ public:
   CFileItem(const CPVREpgInfoTag& tag);
   CFileItem(const CEpgInfoTag& tag);
   CFileItem(const CPVRChannel& channel);
-  CFileItem(const CPVRRecordingInfoTag& record);
+  CFileItem(const CPVRRecording& record);
   CFileItem(const CPVRTimerInfoTag& timer);
   CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
@@ -223,9 +223,9 @@ public:
     return m_pvrRecordingInfoTag != NULL;
   }
 
-  CPVRRecordingInfoTag* GetPVRRecordingInfoTag();
+  CPVRRecording* GetPVRRecordingInfoTag();
 
-  inline const CPVRRecordingInfoTag* GetPVRRecordingInfoTag() const
+  inline const CPVRRecording* GetPVRRecordingInfoTag() const
   {
     return m_pvrRecordingInfoTag;
   }
@@ -296,6 +296,13 @@ public:
   // Gets the correct movie title
   CStdString GetMovieName(bool bUseFolderNames = false) const;
 
+  /*! \brief Find the base movie path (eg the folder if using "use foldernames for lookups")
+   Takes care of VIDEO_TS, BDMV, and rar:// listings
+   \param useFolderNames whether we're using foldernames for lookups
+   \return the base movie folder
+   */
+  CStdString GetBaseMoviePath(bool useFolderNames) const;
+
   // Gets the user thumb, if it exists
   CStdString GetUserVideoThumb() const;
   CStdString GetUserMusicThumb(bool alwaysCheckRemote = false) const;
@@ -363,7 +370,7 @@ private:
   CVideoInfoTag* m_videoInfoTag;
   CEpgInfoTag* m_epgInfoTag;
   CPVRChannel* m_pvrChannelInfoTag;
-  CPVRRecordingInfoTag* m_pvrRecordingInfoTag;
+  CPVRRecording* m_pvrRecordingInfoTag;
   CPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;

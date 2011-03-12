@@ -215,7 +215,7 @@ protected:
 
   virtual bool CreateTables();
   virtual int GetMinVersion() const { return 16; };
-  const char *GetDefaultDBName() const { return "MyMusic7"; };
+  const char *GetBaseDBName() const { return "MyMusic"; };
 
   int AddAlbum(const CStdString& strAlbum1, int idArtist, const CStdString &extraArtists, const CStdString &strArtist1, int idThumb, int idGenre, const CStdString &extraGenres, int year);
   int AddGenre(const CStdString& strGenre);

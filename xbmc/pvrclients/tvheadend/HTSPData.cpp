@@ -364,7 +364,7 @@ PVR_ERROR cHTSPData::RequestTimerList(PVRHANDLE handle)
 
     PVR_TIMERINFO tag;
     tag.index       = recording.id;
-    tag.channelNum  = recording.channel;
+    tag.channelUid  = recording.channel;
     tag.starttime   = recording.start;
     tag.endtime     = recording.stop;
     tag.active      = recording.state == ST_SCHEDULED || recording.state == ST_RECORDING;
@@ -407,18 +407,29 @@ PVR_ERROR cHTSPData::DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
 
 PVR_ERROR cHTSPData::AddTimer(const PVR_TIMERINFO &timerinfo)
 {
-  XBMC->Log(LOG_DEBUG, "%s - id=%d", __FUNCTION__, timerinfo.index);
+  XBMC->Log(LOG_DEBUG, "%s - channelNumber=%d channelUid=%d title=%s epgid=%d", __FUNCTION__, timerinfo.channelUid, timerinfo.channelUid, timerinfo.title, timerinfo.epgid);
 
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "addDvrEntry");
-  htsmsg_add_u32(msg, "eventId", timerinfo.index);
+  htsmsg_add_u32(msg, "eventId", timerinfo.epgid);
   htsmsg_add_str(msg, "title", timerinfo.title);
-  htsmsg_add_u32(msg, "starttime", timerinfo.starttime);
-  htsmsg_add_u32(msg, "endtime", timerinfo.endtime);
+  htsmsg_add_u32(msg, "start", timerinfo.starttime);
+  htsmsg_add_u32(msg, "stop", timerinfo.endtime);
+  htsmsg_add_u32(msg, "channelId", timerinfo.channelUid);
+  htsmsg_add_u32(msg, "priority", timerinfo.priority);
+  htsmsg_add_str(msg, "description", timerinfo.description);
+  htsmsg_add_str(msg, "creator", "XBMC");
 
   if ((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get addDvrEntry", __FUNCTION__);
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
+  const char *strError = NULL;
+  if ((strError = htsmsg_get_str(msg, "error")))
+  {
+    XBMC->Log(LOG_DEBUG, "%s - Error adding timer: '%s'", __FUNCTION__, strError);
     return PVR_ERROR_SERVER_ERROR;
   }
 

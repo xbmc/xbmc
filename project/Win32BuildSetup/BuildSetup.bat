@@ -21,6 +21,7 @@ SET comp=vs2010
 SET target=dx
 SET buildmode=ask
 SET promptlevel=prompt
+SET exitcode=0
 FOR %%b in (%1, %2, %3, %4, %5) DO (
   IF %%b==vs2010 SET comp=vs2010
 	IF %%b==dx SET target=dx
@@ -264,6 +265,7 @@ IF %comp%==vs2010 (
   ECHO !-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-
   set DIETEXT=ERROR: %DIETEXT%
   echo %DIETEXT%
+  SET exitcode=1
   ECHO ------------------------------------------------------------
 
 :VIEWLOG_EXE
@@ -288,3 +290,4 @@ IF %comp%==vs2010 (
   ECHO Press any key to exit...
   pause > NUL
   )
+  EXIT %exitcode%

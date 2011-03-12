@@ -51,15 +51,8 @@ private:
   /** @name Configuration */
   //@{
   bool         m_bIgnoreDbForClient; /*!< don't save the EPG data in the database */
-  int          m_iLingerTime;        /*!< hours to keep old EPG data */
   int          m_iDisplayTime;       /*!< hours of EPG data to fetch */
   int          m_iUpdateTime;        /*!< update the full EPG after this period */
-  //@}
-
-  /** @name Cached data */
-  //@{
-  CDateTime    m_First;              /*!< the earliest EPG date in our tables */
-  CDateTime    m_Last;               /*!< the latest EPG date in our tables */
   //@}
 
   /** @name Class state properties */
@@ -82,12 +75,6 @@ private:
    * @return True if the old entries were removed successfully, false otherwise.
    */
   virtual bool RemoveOldEntries(void);
-
-  /*!
-   * @brief Update the last and first EPG date cache after changing or inserting a tag.
-   * @param tag The tag that was changed or added.
-   */
-  virtual void UpdateFirstAndLastEPGDates(const CEpgInfoTag &tag);
 
   /*!
    * @brief Load and update the EPG data.
@@ -201,13 +188,13 @@ public:
    * @brief Get the start time of the first entry.
    * @return The start time.
    */
-  virtual const CDateTime &GetFirstEPGDate(void) { return m_First; }
+  virtual const CDateTime GetFirstEPGDate(void) const;
 
   /*!
     * @brief Get the end time of the last entry.
     * @return The end time.
     */
-  virtual const CDateTime &GetLastEPGDate(void) { return m_Last; }
+  virtual const CDateTime GetLastEPGDate(void) const;
 
   /*!
    * @brief Get an EPG table given it's ID.

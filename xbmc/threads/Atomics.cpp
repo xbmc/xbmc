@@ -73,8 +73,8 @@ long cas(volatile long* pAddr, long expectedVal, long swapVal)
 
 long cas(volatile long* pAddr, long expectedVal, long swapVal)
 {
-  // TODO: ARM Assembler
-  return 0;
+  // __sync_val_compare_and_swap -> GCC >= 401
+  return __sync_val_compare_and_swap(pAddr, expectedVal, swapVal); 
 }
 
 #else // Linux / OSX86 (GCC)
@@ -190,8 +190,8 @@ long AtomicIncrement(volatile long* pAddr)
 
 long AtomicIncrement(volatile long* pAddr)
 {
-  // TODO: ARM Assembler
-  return 0;
+  // __sync_fetch_and_add -> GCC >= 401
+  return __sync_fetch_and_add(pAddr, 1);
 }
 
 #else // Linux / OSX86 (GCC)
@@ -317,8 +317,8 @@ long AtomicDecrement(volatile long* pAddr)
 
 long AtomicDecrement(volatile long* pAddr)
 {
-  // TODO: ARM Assembler
-  return 0;
+  // __sync_fetch_and_add -> GCC >= 401
+  return __sync_fetch_and_add(pAddr, -1);
 }
 
 #else // Linux / OSX86 (GCC)

@@ -58,30 +58,6 @@ void CPVREpgInfoTag::SetTimer(const CPVRTimerInfoTag *newTimer)
   m_Timer = newTimer;
 }
 
-bool CPVREpgInfoTag::HasTimer(void) const
-{
-  bool bReturn = false;
-
-  if (m_Timer == NULL)
-  {
-    CPVRTimers *timers = CPVRManager::GetTimers();
-    for (unsigned int iTimerPtr = 0; iTimerPtr < timers->size(); iTimerPtr++)
-    {
-      if (timers->at(iTimerPtr)->EpgInfoTag() == this)
-      {
-        bReturn = true;
-        break;
-      }
-    }
-  }
-  else
-  {
-    bReturn = true;
-  }
-
-  return bReturn;
-}
-
 void CPVREpgInfoTag::UpdatePath(void)
 {
   if (!m_Epg)
@@ -102,5 +78,16 @@ void CPVREpgInfoTag::Update(const PVR_PROGINFO &tag)
   SetGenre(tag.genre_type, tag.genre_sub_type);
   SetParentalRating(tag.parental_rating);
   SetUniqueBroadcastID(tag.uid);
-//  SetIcon(((CPVREpg *) m_Epg)->Channel()->IconPath());
+}
+
+const CStdString &CPVREpgInfoTag::Icon(void) const
+{
+  if (m_strIconPath.IsEmpty() && m_Epg)
+  {
+    CPVREpg *pvrEpg = (CPVREpg *) m_Epg;
+    if (pvrEpg->Channel())
+      return pvrEpg->Channel()->IconPath();
+  }
+
+  return m_strIconPath;
 }

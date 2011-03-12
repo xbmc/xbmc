@@ -118,7 +118,7 @@ bool CEpgDatabase::UpdateOldVersion(int iVersion)
 {
   if (iVersion < GetMinVersion())
   {
-    CLog::Log(LOGERROR, "EpgDB - %s - updating old table versions not supported. please delete '%s'", __FUNCTION__, GetDefaultDBName());
+    CLog::Log(LOGERROR, "EpgDB - %s - updating old table versions not supported. please delete '%s'", __FUNCTION__, GetBaseDBName());
     return false;
   }
 

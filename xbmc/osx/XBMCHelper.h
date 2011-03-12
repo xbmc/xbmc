@@ -22,6 +22,7 @@
  *
  */
 
+#if !defined(__arm__)
 class XBMCHelper
 {
  public:
@@ -75,4 +76,5 @@ private:
   static XBMCHelper* smp_instance;
 };
 
+#endif
 #endif

@@ -45,7 +45,7 @@ bool cVNSIDemux::Open(const PVR_CHANNEL &channelinfo)
 {
   m_channel = channelinfo.number;
 
-  if(!m_session.Open(g_szHostname, g_iPort, g_iConnectTimeout, "XBMC Live stream receiver"))
+  if(!m_session.Open(g_szHostname, g_iPort, "XBMC Live stream receiver"))
     return false;
 
   cRequestPacket vrp;
@@ -108,7 +108,7 @@ void cVNSIDemux::Abort()
 
 DemuxPacket* cVNSIDemux::Read()
 {
-  cResponsePacket *resp = m_session.ReadMessage(15);
+  cResponsePacket *resp = m_session.ReadMessage();
 
   if(resp == NULL)
   {

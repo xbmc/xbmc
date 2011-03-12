@@ -342,7 +342,7 @@ public:
    * @brief Get the path to the icon for this event.
    * @return The path to the icon
    */
-  const CStdString &Icon(void) const { return m_strIconPath; }
+  virtual const CStdString &Icon(void) const { return m_strIconPath; }
 
   /*!
    * @brief Change the path to the icon for this event.

@@ -257,4 +257,16 @@ public:
    * @return True if the table was persisted, false otherwise.
    */
   virtual bool Persist(bool bPersistTags = false, bool bQueueWrite = false);
+
+  /*!
+   * @brief Get the start time of the first entry in this table.
+   * @return The first date.
+   */
+  virtual CDateTime GetFirstDate(void);
+
+  /*!
+   * @brief Get the end time of the last entry in this table.
+   * @return The last date.
+   */
+  virtual CDateTime GetLastDate(void);
 };

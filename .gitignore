@@ -45,11 +45,17 @@ config.log
 /build/
 .DS_Store
 *.dSYM
+/tools/osx/osx-depends/**/.gitignore
+/tools/osx/osx-depends/**/.installed
+/tools/osx/ios-depends/**/.gitignore
+/tools/osx/ios-depends/**/.installed
+/tools/osx/ios-depends/**/.compiled
 
 .libs/
 .deps/
 
 # Eclipse project files. Not needed as they are generated in two clicks if needed.
+.settings
 .project
 .cproject
 
@@ -376,6 +382,8 @@ autom4te.cache
 /system/players/dvdplayer/librtmp.dll
 /system/players/dvdplayer/postproc-51.dll
 /system/players/dvdplayer/swscale-0.6.1.dll
+/system/players/dvdplayer/libbluray.dll
+/system/players/dvdplayer/libmpeg2-0.dll
 
 # /system/players/paplayer
 /system/players/paplayer/wavpack.dll

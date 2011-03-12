@@ -342,46 +342,59 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
   }
   else
   {
-    AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%F", "%D", "%L", ""));  // Filename, Duration | Foldername, empty
-    SetSortMethod(SORT_METHOD_LABEL);
-
-    SetViewAsControl(DEFAULT_VIEW_LIST);
-
+    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+      AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // FileName, Size | Foldername, empty
+    else
+      AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // FileName, Size | Foldername, empty
+    AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // FileName, Size | Foldername, Size
+    AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
+    AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | FolderName, empty
+    
+    SetSortMethod(g_settings.m_viewStateVideoFiles.m_sortMethod);
+    SetViewAsControl(g_settings.m_viewStateVideoFiles.m_viewMode);
+    SetSortOrder(g_settings.m_viewStateVideoFiles.m_sortOrder);
   }
   LoadViewState(items.m_strPath, WINDOW_VIDEO_NAV);
 }
 
 void CGUIViewStateWindowVideoNav::SaveViewState()
 {
-  NODE_TYPE NodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_items.m_strPath);
-  switch (NodeType)
+  if (m_items.IsVideoDb())
   {
-  case NODE_TYPE_ACTOR:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavActors);
-    break;
-  case NODE_TYPE_YEAR:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavYears);
-    break;
-  case NODE_TYPE_GENRE:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavGenres);
-    break;
-  case NODE_TYPE_TITLE_MOVIES:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavTitles);
-    break;
-  case NODE_TYPE_EPISODES:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavEpisodes);
-    break;
-  case NODE_TYPE_TITLE_TVSHOWS:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavTvShows);
-    break;
-  case NODE_TYPE_SEASONS:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavSeasons);
-    break;
-  case NODE_TYPE_TITLE_MUSICVIDEOS:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavMusicVideos);
-  default:
-    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV);
-    break;
+    NODE_TYPE NodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_items.m_strPath);
+    switch (NodeType)
+    {
+    case NODE_TYPE_ACTOR:
+      SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavActors);
+      break;
+    case NODE_TYPE_YEAR:
+      SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavYears);
+      break;
+    case NODE_TYPE_GENRE:
+      SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavGenres);
+      break;
+    case NODE_TYPE_TITLE_MOVIES:
+      SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavTitles);
+      break;
+    case NODE_TYPE_EPISODES:
+      SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavEpisodes);
+      break;
+    case NODE_TYPE_TITLE_TVSHOWS:
+      SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavTvShows);
+      break;
+    case NODE_TYPE_SEASONS:
+      SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavSeasons);
+      break;
+    case NODE_TYPE_TITLE_MUSICVIDEOS:
+      SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoNavMusicVideos);
+    default:
+      SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV);
+      break;
+    }
+  }
+  else
+  {
+    SaveViewToDb(m_items.m_strPath, WINDOW_VIDEO_NAV, &g_settings.m_viewStateVideoFiles);
   }
 }
 
@@ -403,14 +416,34 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
     m_sources.push_back(share);
   }
 
-  //  Playlists share
-  CMediaSource share;
-  share.strName=g_localizeStrings.Get(136); // Playlists
-  share.strPath = "special://videoplaylists/";
-  share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultVideoPlaylists.png");
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-  m_sources.push_back(share);
-
+  if (g_settings.GetSourcesFromType("video")->empty())
+  { // no sources - add the "Add Source" item
+    CMediaSource share;
+    share.strName=g_localizeStrings.Get(999); // "Add Videos"
+    share.strPath = "sources://add/";
+    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultAddSource.png");
+    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    m_sources.push_back(share);
+  }
+  else
+  {
+    { // Files share
+      CMediaSource share;
+      share.strName=g_localizeStrings.Get(744); // Files
+      share.strPath = "sources://video/";
+      share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultFolder.png");
+      share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+      m_sources.push_back(share);
+    }
+    { // Playlists share
+      CMediaSource share;
+      share.strName=g_localizeStrings.Get(136); // Playlists
+      share.strPath = "special://videoplaylists/";
+      share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultVideoPlaylists.png");
+      share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+      m_sources.push_back(share);
+    }
+  }
   return CGUIViewStateWindowVideo::GetSources();
 }
 

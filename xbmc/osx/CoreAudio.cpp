@@ -20,6 +20,7 @@
  *
  */
 
+#if !defined(__arm__)
 #include "CoreAudio.h"
 #include <PlatformDefs.h>
 #include <utils/log.h>
@@ -1106,4 +1107,5 @@ CAUMatrixMixer::~CAUMatrixMixer()
 
 
 
+#endif
 #endif

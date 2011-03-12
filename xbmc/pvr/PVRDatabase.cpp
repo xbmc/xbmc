@@ -104,14 +104,6 @@ bool CPVRDatabase::CreateTables()
     //    );
     //    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idClient on map_channels_clients(idChannel, idClient);");
 
-    CLog::Log(LOGDEBUG, "PVRDB - %s - creating view 'vw_last_watched'", __FUNCTION__);
-    m_pDS->exec(
-        "CREATE VIEW vw_last_watched "
-        "AS SELECT idChannel, sChannelName "
-        "FROM Channels "
-        "ORDER BY iLastWatched DESC;"
-    );
-
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'channelgroups'", __FUNCTION__);
     m_pDS->exec(
         "CREATE TABLE channelgroups ("
@@ -123,8 +115,6 @@ bool CPVRDatabase::CreateTables()
     );
     m_pDS->exec("CREATE INDEX idx_channelgroups_bIsRadio on channelgroups(bIsRadio);");
 
-    // TODO use a mapping table so multiple groups per channel can be implemented
-    // replaces idGroup in the channels table
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'map_channelgroups_channels'", __FUNCTION__);
     m_pDS->exec(
         "CREATE TABLE map_channelgroups_channels ("
@@ -178,14 +168,35 @@ bool CPVRDatabase::CreateTables()
 
 bool CPVRDatabase::UpdateOldVersion(int iVersion)
 {
-  if (iVersion < GetMinVersion())
+  bool bReturn = true;
+
+  BeginTransaction();
+
+  try
   {
-    CLog::Log(LOGERROR, "PVRDB - %s - updating old table versions not supported. please delete '%s'",
-        __FUNCTION__, GetDefaultDBName());
-    return false;
+    if (iVersion == 11)
+    {
+      m_pDS->exec("DROP VIEW vw_last_watched");
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "PVRDB - %s - updating from this old table versions not supported. please delete '%s'",
+          __FUNCTION__, GetBaseDBName());
+      bReturn = false;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "Error attempting to update the database version!");
+    bReturn = false;
   }
 
-  return true;
+  if (bReturn)
+    CommitTransaction();
+  else
+    RollbackTransaction();
+
+  return bReturn;
 }
 
 /********** Channel methods **********/
@@ -233,11 +244,11 @@ int CPVRDatabase::Persist(const CPVRChannel &channel, bool bQueueWrite /* = fals
     /* new channel */
     strQuery = FormatSQL("INSERT INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, "
-        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iClientId, "
+        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
         "iClientChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem) "
-        "VALUES (%i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i);",
+        "VALUES (%i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, '%s', '%s', %i);",
         channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0),
-        channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.ClientID(),
+        channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(), channel.ClientID(),
         channel.ClientChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem());
   }
   else
@@ -245,11 +256,11 @@ int CPVRDatabase::Persist(const CPVRChannel &channel, bool bQueueWrite /* = fals
     /* update channel */
     strQuery = FormatSQL("REPLACE INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, "
-        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iClientId, "
+        "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
         "iClientChannelNumber, sInputFormat, sStreamURL, iEncryptionSystem, idChannel) "
-        "VALUES (%i, %i, %i, '%s', '%s', %i, %i, '%s', %i, %i, '%s', '%s', %i, %i);",
+        "VALUES (%i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, '%s', '%s', %i, %i);",
         channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0),
-        channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.ClientID(),
+        channel.IconPath().c_str(), channel.ChannelName().c_str(), (channel.IsVirtual() ? 1 : 0), (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), channel.LastWatched(), channel.ClientID(),
         channel.ClientChannelNumber(), channel.InputFormat().c_str(), channel.StreamURL().c_str(), channel.EncryptionSystem(), channel.ChannelID());
   }
 
@@ -281,7 +292,7 @@ int CPVRDatabase::GetChannels(CPVRChannelGroupInternal *results, bool bIsRadio)
   int iReturn = 0;
 
   CStdString strQuery = FormatSQL("SELECT channels.idChannel, channels.iUniqueId, channels.bIsRadio, channels.bIsHidden, "
-      "channels.sIconPath, channels.sChannelName, channels.bIsVirtual, channels.bEPGEnabled, channels.sEPGScraper, channels.iClientId, "
+      "channels.sIconPath, channels.sChannelName, channels.bIsVirtual, channels.bEPGEnabled, channels.sEPGScraper, channels.iLastWatched, channels.iClientId, "
       "channels.iClientChannelNumber, channels.sInputFormat, channels.sInputFormat, channels.sStreamURL, channels.iEncryptionSystem, map_channelgroups_channels.iChannelNumber "
       "FROM channels "
       "LEFT JOIN map_channelgroups_channels ON map_channelgroups_channels.idChannel = channels.idChannel AND map_channelgroups_channels.idGroup = %u "
@@ -303,6 +314,7 @@ int CPVRDatabase::GetChannels(CPVRChannelGroupInternal *results, bool bIsRadio)
         channel->m_bIsVirtual              = m_pDS->fv("bIsVirtual").get_asBool();
         channel->m_bEPGEnabled             = m_pDS->fv("bEPGEnabled").get_asBool();
         channel->m_strEPGScraper           = m_pDS->fv("sEPGScraper").get_asString();
+        channel->m_iLastWatched            = (time_t) m_pDS->fv("iLastWatched").get_asInt();
         channel->m_iClientId               = m_pDS->fv("iClientId").get_asInt();
         channel->m_iClientChannelNumber    = m_pDS->fv("iClientChannelNumber").get_asInt();
         channel->m_strInputFormat          = m_pDS->fv("sInputFormat").get_asString();
@@ -311,7 +323,7 @@ int CPVRDatabase::GetChannels(CPVRChannelGroupInternal *results, bool bIsRadio)
 
         CLog::Log(LOGDEBUG, "PVRDB - %s - channel '%s' loaded from the database",
             __FUNCTION__, channel->m_strChannelName.c_str());
-        results->AddToGroup(channel, m_pDS->fv("iChannelNumber").get_asInt());
+        results->InsertInGroup(channel, m_pDS->fv("iChannelNumber").get_asInt());
         m_pDS->next();
         ++iReturn;
       }
@@ -326,35 +338,6 @@ int CPVRDatabase::GetChannels(CPVRChannelGroupInternal *results, bool bIsRadio)
   m_pDS->close();
   return iReturn;
 }
-
-int CPVRDatabase::GetLastChannel()
-{
-  CStdString strValue = GetSingleValue("vw_last_watched", "idChannel");
-
-  if (strValue.IsEmpty())
-    return -1;
-
-  return atoi(strValue.c_str());
-}
-
-bool CPVRDatabase::PersistLastChannel(const CPVRChannel &channel)
-{
-  /* invalid channel */
-  if (channel.ChannelID() <= 0)
-  {
-    CLog::Log(LOGERROR, "PVRDB - %s - invalid channel id: %i",
-        __FUNCTION__, channel.ChannelID());
-    return false;
-  }
-
-  time_t tNow;
-  CDateTime::GetCurrentDateTime().GetAsTime(tNow);
-  CStdString strQuery = FormatSQL("UPDATE channels SET iLastWatched = %u WHERE idChannel = %u",
-      tNow, channel.ChannelID());
-
-  return ExecuteQuery(strQuery);
-}
-
 
 bool CPVRDatabase::DeleteChannelSettings()
 {
@@ -392,35 +375,39 @@ bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings
 
   CStdString strQuery = FormatSQL("SELECT * FROM channelsettings WHERE idChannel = %u;", channel.ChannelID());
 
-  if (ResultQuery(strQuery) && m_pDS->num_rows() > 0)
+  if (ResultQuery(strQuery))
   {
     try
     {
-      settings.m_AudioDelay           = m_pDS->fv("fAudioDelay").get_asFloat();
-      settings.m_AudioStream          = m_pDS->fv("iAudioStream").get_asInt();
-      settings.m_Brightness           = m_pDS->fv("fBrightness").get_asFloat();
-      settings.m_Contrast             = m_pDS->fv("fContrast").get_asFloat();
-      settings.m_CustomPixelRatio     = m_pDS->fv("fPixelRatio").get_asFloat();
-      settings.m_NoiseReduction       = m_pDS->fv("fNoiseReduction").get_asFloat();
-      settings.m_Sharpness            = m_pDS->fv("fSharpness").get_asFloat();
-      settings.m_CustomZoomAmount     = m_pDS->fv("fCustomZoomAmount").get_asFloat();
-      settings.m_Gamma                = m_pDS->fv("fGamma").get_asFloat();
-      settings.m_SubtitleDelay        = m_pDS->fv("fSubtitleDelay").get_asFloat();
-      settings.m_SubtitleOn           = m_pDS->fv("bSubtitles").get_asBool();
-      settings.m_SubtitleStream       = m_pDS->fv("iSubtitleStream").get_asInt();
-      settings.m_ViewMode             = m_pDS->fv("iViewMode").get_asInt();
-      settings.m_Crop                 = m_pDS->fv("bCrop").get_asBool();
-      settings.m_CropLeft             = m_pDS->fv("iCropLeft").get_asInt();
-      settings.m_CropRight            = m_pDS->fv("iCropRight").get_asInt();
-      settings.m_CropTop              = m_pDS->fv("iCropTop").get_asInt();
-      settings.m_CropBottom           = m_pDS->fv("iCropBottom").get_asInt();
-      settings.m_InterlaceMethod      = (EINTERLACEMETHOD)m_pDS->fv("iInterlaceMethod").get_asInt();
-      settings.m_VolumeAmplification  = m_pDS->fv("fVolumeAmplification").get_asFloat();
-      settings.m_OutputToAllSpeakers  = m_pDS->fv("bOutputToAllSpeakers").get_asBool();
-      settings.m_SubtitleCached       = false;
+      if (m_pDS->num_rows() > 0)
+      {
+        settings.m_AudioDelay           = m_pDS->fv("fAudioDelay").get_asFloat();
+        settings.m_AudioStream          = m_pDS->fv("iAudioStream").get_asInt();
+        settings.m_Brightness           = m_pDS->fv("fBrightness").get_asFloat();
+        settings.m_Contrast             = m_pDS->fv("fContrast").get_asFloat();
+        settings.m_CustomPixelRatio     = m_pDS->fv("fPixelRatio").get_asFloat();
+        settings.m_NoiseReduction       = m_pDS->fv("fNoiseReduction").get_asFloat();
+        settings.m_Sharpness            = m_pDS->fv("fSharpness").get_asFloat();
+        settings.m_CustomZoomAmount     = m_pDS->fv("fCustomZoomAmount").get_asFloat();
+        settings.m_Gamma                = m_pDS->fv("fGamma").get_asFloat();
+        settings.m_SubtitleDelay        = m_pDS->fv("fSubtitleDelay").get_asFloat();
+        settings.m_SubtitleOn           = m_pDS->fv("bSubtitles").get_asBool();
+        settings.m_SubtitleStream       = m_pDS->fv("iSubtitleStream").get_asInt();
+        settings.m_ViewMode             = m_pDS->fv("iViewMode").get_asInt();
+        settings.m_Crop                 = m_pDS->fv("bCrop").get_asBool();
+        settings.m_CropLeft             = m_pDS->fv("iCropLeft").get_asInt();
+        settings.m_CropRight            = m_pDS->fv("iCropRight").get_asInt();
+        settings.m_CropTop              = m_pDS->fv("iCropTop").get_asInt();
+        settings.m_CropBottom           = m_pDS->fv("iCropBottom").get_asInt();
+        settings.m_InterlaceMethod      = (EINTERLACEMETHOD)m_pDS->fv("iInterlaceMethod").get_asInt();
+        settings.m_VolumeAmplification  = m_pDS->fv("fVolumeAmplification").get_asFloat();
+        settings.m_OutputToAllSpeakers  = m_pDS->fv("bOutputToAllSpeakers").get_asBool();
+        settings.m_SubtitleCached       = false;
+
+        bReturn = true;
+      }
 
       m_pDS->close();
-      bReturn = true;
     }
     catch(...)
     {
@@ -459,12 +446,12 @@ bool CPVRDatabase::PersistChannelSettings(const CPVRChannel &channel, const CVid
 
 /********** Channel group methods **********/
 
-bool CPVRDatabase::DeleteChannelsInGroups(int iGroupId)
+bool CPVRDatabase::RemoveChannelsFromGroup(int iGroupId)
 {
-  CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all channel from group %d from the database", __FUNCTION__, iGroupId);
+  CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all channels from group %d from the database", __FUNCTION__, iGroupId);
 
    CStdString strWhereClause = FormatSQL("idGroup = %u", iGroupId);
-   return DeleteValues("channelgroups", strWhereClause); // XXX
+   return DeleteValues("map_channelgroups_channels", strWhereClause);
 }
 
 bool CPVRDatabase::DeleteChannelGroups(bool bRadio /* = false */)
@@ -487,38 +474,6 @@ bool CPVRDatabase::DeleteChannelGroup(int iGroupId, bool bRadio /* = false */)
 
   CStdString strWhereClause = FormatSQL("idGroup = %u AND bIsRadio = %u", iGroupId, bRadio);
   return DeleteValues("channelgroups", strWhereClause);
-}
-
-bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results)
-{
-  bool bReturn = false;
-  CStdString strQuery = FormatSQL("SELECT * from channelgroups ORDER BY idGroup;");
-
-  if (ResultQuery(strQuery))
-  {
-    try
-    {
-      while (!m_pDS->eof())
-      {
-        CPVRChannelGroup data(m_pDS->fv("bIsRadio").get_asBool());
-
-        data.SetGroupID(m_pDS->fv("idGroup").get_asInt());
-        data.SetGroupName(m_pDS->fv("sName").get_asString());
-        data.SetSortOrder(m_pDS->fv("iSortOrder").get_asInt());
-
-        results.Update(data);
-        m_pDS->next();
-      }
-      m_pDS->close();
-      bReturn = true;
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "%s - couldn't load channels from the database", __FUNCTION__);
-    }
-  }
-
-  return bReturn;
 }
 
 bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results, bool bRadio)
@@ -565,8 +520,7 @@ int CPVRDatabase::GetChannelsInGroup(CPVRChannelGroup *group)
     return -1;
   }
 
-  //XXX
-  CStdString strQuery = FormatSQL("SELECT idChannel, iChannelNumber FROM map_channelgroups_channels WHERE idGroup = %u", group->GroupID());
+  CStdString strQuery = FormatSQL("SELECT idChannel, iChannelNumber FROM map_channelgroups_channels WHERE idGroup = %u ORDER BY iChannelNumber", group->GroupID());
   if (ResultQuery(strQuery))
   {
     iReturn = 0;
@@ -633,7 +587,7 @@ int CPVRDatabase::Persist(CPVRChannelGroup *group)
     if (group->GroupID() <= 0)
       group->m_iGroupId = (int) m_pDS->lastinsertid();
 
-    DeleteChannelsInGroups(group->GroupID());
+    RemoveChannelsFromGroup(group->GroupID());
 
     for (unsigned int iChannelPtr = 0; iChannelPtr < group->size(); iChannelPtr++)
     {

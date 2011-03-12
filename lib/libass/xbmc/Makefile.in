@@ -1,6 +1,8 @@
 abs_top_srcdir=@abs_top_srcdir@
 
 ARCH=@ARCH@
+SYSROOT=@SYSROOT@
+
 SYSDIR=$(abs_top_srcdir)/system/players/dvdplayer
 SO=libass-$(ARCH).so
 SLIB=$(SYSDIR)/$(SO)
@@ -10,13 +12,11 @@ DIRS=..
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 $(SLIB): ../libass/.libs/libass.dylib
-	$(CXX) $(LDFLAGS) -bundle -flat_namespace -undefined suppress -shared -fPIC \
-	-lfontconfig -o $@ ../libass/.libs/*.o
-	$(abs_top_srcdir)/tools/Mach5/wrapper.rb $@;mv output.so $@
-	chmod +x $@
+	$(CC) $(SYSROOT) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias \
+		-bundle -undefined dynamic_lookup -read_only_relocs suppress -lfontconfig -o $@ \
+		@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o ../libass/.libs/*.o
 
 ../libass/.libs/libass.dylib: compile
-	export MACOSX_DEPLOYMENT_TARGET=10.4
 	$(MAKE) -C ..
 else
 $(SLIB): ../libass/.libs/libass.so

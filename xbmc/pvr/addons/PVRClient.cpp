@@ -41,6 +41,7 @@
 #include "FileItem.h"
 #include "PVRClient.h"
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
@@ -467,7 +468,7 @@ PVR_ERROR CPVRClient::GetAllRecordings(CPVRRecordings *results)
   return ret;
 }
 
-PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecordingInfoTag &recinfo)
+PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording &recinfo)
 {
   CSingleLock lock(m_critSection);
 
@@ -498,7 +499,7 @@ PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecordingInfoTag &recinfo)
   return ret;
 }
 
-PVR_ERROR CPVRClient::RenameRecording(const CPVRRecordingInfoTag &recinfo, const CStdString &newname)
+PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording &recinfo, const CStdString &newname)
 {
   CSingleLock lock(m_critSection);
 
@@ -529,22 +530,21 @@ PVR_ERROR CPVRClient::RenameRecording(const CPVRRecordingInfoTag &recinfo, const
   return ret;
 }
 
-void CPVRClient::WriteClientRecordingInfo(const CPVRRecordingInfoTag &recordinginfo, PVR_RECORDINGINFO &tag)
+void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &recordinginfo, PVR_RECORDINGINFO &tag)
 {
   time_t recTime;
-  recordinginfo.RecordingTime().GetAsTime(recTime);
-  tag.recording_time= recTime+m_iTimeCorrection;
-  tag.index         = recordinginfo.ClientIndex();
-  tag.title         = recordinginfo.Title();
-  tag.subtitle      = recordinginfo.PlotOutline();
-  tag.description   = recordinginfo.Plot();
-  tag.channel_name  = recordinginfo.ChannelName();
-  tag.duration      = recordinginfo.GetDuration();
-  tag.priority      = recordinginfo.Priority();
-  tag.lifetime      = recordinginfo.Lifetime();
-  tag.directory     = recordinginfo.Directory();
-  tag.stream_url    = recordinginfo.StreamURL();
-  return;
+  recordinginfo.m_recordingTime.GetAsTime(recTime);
+  tag.recording_time = recTime+m_iTimeCorrection;
+  tag.index          = recordinginfo.m_clientIndex;
+  tag.title          = recordinginfo.m_strTitle;
+  tag.subtitle       = recordinginfo.m_strPlotOutline;
+  tag.description    = recordinginfo.m_strPlot;
+  tag.channel_name   = recordinginfo.m_strChannel;
+  tag.duration       = recordinginfo.GetDuration();
+  tag.priority       = recordinginfo.m_Priority;
+  tag.lifetime       = recordinginfo.m_Lifetime;
+  tag.directory      = recordinginfo.m_strDirectory;
+  tag.stream_url     = recordinginfo.m_strStreamURL;
 }
 
 
@@ -615,10 +615,12 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timerinfo)
       WriteClientTimerInfo(timerinfo, tag);
 
       //Workaround for string transfer to PVRclient
-      CStdString myTitle = timerinfo.Title();
-      CStdString myDirectory = timerinfo.Dir();
+      CStdString myTitle(timerinfo.m_strTitle);
+      CStdString myDirectory(timerinfo.m_strDir);
+      CStdString myDescription(timerinfo.m_strSummary);
       tag.title = myTitle.c_str();
       tag.directory = myDirectory.c_str();
+      tag.description = myDescription.c_str();
 
       ret = m_pStruct->AddTimer(tag);
       if (ret != PVR_ERROR_NO_ERROR)
@@ -652,7 +654,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timerinfo, bool force)
       WriteClientTimerInfo(timerinfo, tag);
 
       //Workaround for string transfer to PVRclient
-      CStdString myTitle = timerinfo.Title();
+      CStdString myTitle(timerinfo.m_strTitle);
       tag.title = myTitle.c_str();
 
       ret = m_pStruct->DeleteTimer(tag, force);
@@ -687,7 +689,7 @@ PVR_ERROR CPVRClient::RenameTimer(const CPVRTimerInfoTag &timerinfo, const CStdS
       WriteClientTimerInfo(timerinfo, tag);
 
       //Workaround for string transfer to PVRclient
-      CStdString myTitle = timerinfo.Title();
+      CStdString myTitle(timerinfo.m_strTitle);
       tag.title = myTitle.c_str();
 
       ret = m_pStruct->RenameTimer(tag, newname.c_str());
@@ -722,8 +724,8 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timerinfo)
       WriteClientTimerInfo(timerinfo, tag);
 
       //Workaround for string transfer to PVRclient
-      CStdString myTitle = timerinfo.Title();
-      CStdString myDirectory = timerinfo.Dir();
+      CStdString myTitle(timerinfo.m_strTitle);
+      CStdString myDirectory(timerinfo.m_strDir);
       tag.title = myTitle.c_str();
       tag.directory = myDirectory.c_str();
 
@@ -747,23 +749,25 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timerinfo)
 
 void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag)
 {
-  tag.index         = timerinfo.ClientIndex();
-  tag.active        = timerinfo.Active();
-  tag.channelNum    = timerinfo.ClientNumber();
-  tag.recording     = timerinfo.IsRecording();
-  tag.title         = timerinfo.Title();
-  tag.directory     = timerinfo.Dir();
-  tag.priority      = timerinfo.Priority();
-  tag.lifetime      = timerinfo.Lifetime();
-  tag.repeat        = timerinfo.IsRepeating();
-  tag.repeatflags   = timerinfo.Weekdays();
+  tag.index         = timerinfo.m_iClientIndex;
+  tag.active        = timerinfo.m_bIsActive;
+  tag.channelNum    = timerinfo.m_iClientNumber;
+  tag.channelUid    = timerinfo.m_iClientChannelUid;
+  tag.recording     = timerinfo.m_bIsRecording;
+  tag.title         = timerinfo.m_strTitle;
+  tag.directory     = timerinfo.m_strDir;
+  tag.priority      = timerinfo.m_iPriority;
+  tag.lifetime      = timerinfo.m_iLifetime;
+  tag.repeat        = timerinfo.m_bIsRepeating;
+  tag.repeatflags   = timerinfo.m_iWeekdays;
   tag.starttime     = timerinfo.StartTime();
   tag.starttime    -= m_iTimeCorrection;
   tag.endtime       = timerinfo.StopTime();
   tag.endtime      -= m_iTimeCorrection;
   tag.firstday      = timerinfo.FirstDayTime();
   tag.firstday     -= m_iTimeCorrection;
-  return;
+  tag.epgid         = timerinfo.m_EpgInfo ? timerinfo.m_EpgInfo->UniqueBroadcastID() : -1;
+  tag.description   = timerinfo.m_strSummary;
 }
 
 /**********************************************************
@@ -913,7 +917,7 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannel &channelinfo, PVR_CHAN
   return;
 }
 
-bool CPVRClient::OpenRecordedStream(const CPVRRecordingInfoTag &recinfo)
+bool CPVRClient::OpenRecordedStream(const CPVRRecording &recinfo)
 {
   CSingleLock lock(m_critSection);
 

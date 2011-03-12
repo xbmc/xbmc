@@ -101,16 +101,16 @@ bool CPVRDirectory::SupportsFileOperations(const CStdString& strPath)
 {
   CURL url(strPath);
   CStdString filename = url.GetFileName();
-  URIUtils::RemoveSlashAtEnd(filename);
 
-  return filename.Left(11) == "recordings/" &&
-         filename.Right(4) == ".pvr";
+  return URIUtils::IsPVRRecording(filename);
 }
 
 bool CPVRDirectory::IsLiveTV(const CStdString& strPath)
 {
   CURL url(strPath);
-  return url.GetFileName().Left(9) == "channelstv/";
+  CStdString filename = url.GetFileName();
+
+  return URIUtils::IsLiveTV(filename);
 }
 
 bool CPVRDirectory::HasRecordings()

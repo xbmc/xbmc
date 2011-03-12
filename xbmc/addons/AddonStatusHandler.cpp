@@ -87,7 +87,7 @@ void CAddonStatusHandler::Process()
   heading.Format("%s: %s", TranslateType(m_addon->Type(), true).c_str(), m_addon->Name().c_str());
 
   /* AddOn lost connection to his backend (for ones that use Network) */
-  if (m_status == STATUS_LOST_CONNECTION)
+  if (m_status == STATUS_LOST_CONNECTION && m_addon->Type() != ADDON_PVRDLL) // TODO display a proper message for pvr addons, but don't popup a dialog that requires user action
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialog) return;
