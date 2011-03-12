@@ -675,7 +675,6 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
     /* Cleanup now the path name and remove VDR's 2 top
        directories and the strip the base path */
     CStdString path = fileName+m_videodir.size()+1;
-    path = path.substr(0, path.find_last_of("/\\"));
 
     size_t found = path.find_last_of("/\\");
     if (found != CStdString::npos)
