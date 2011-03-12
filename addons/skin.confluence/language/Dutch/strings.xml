@@ -154,4 +154,15 @@
   <string id="31408">[B]ADD-ONS CONFIGUREREN[/B][CR][CR]Beheer uw geïnstalleerde Add-ons · Zoek en installeer Add-ons via xbmc.org · Wijzig Add-oninstellingen</string>
 
   <string id="31421">Selecteer uw XBMC-gebruikersprofiel[CR]om in te loggen</string>
+
+  <!-- Extra Unified PVR labels -->
+  <string id="31500">Geplande opnames</string>
+  <string id="31501">Opname starttijd</string>
+  <string id="31502">Televisie</string>
+  <string id="31503">Groep toevoegen</string>
+  <string id="31504">Groep hernoemen</string>
+  <string id="31505">Groep verwijderen</string>
+  <string id="31506">Beschikbare[CR]Groepen</string>
+  <string id="31509">Groep</string>
+  <string id="31510">Geplande opname ingesteld</string>
 </strings>

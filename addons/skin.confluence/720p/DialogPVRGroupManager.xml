@@ -160,7 +160,7 @@
 						<width>340</width>
 						<height>70</height>
 						<font>font13_title</font>
-						<label>31507</label>
+						<label>19219</label>
 						<align>center</align>
 						<aligny>center</aligny>
 						<textcolor>blue</textcolor>
@@ -278,7 +278,7 @@
 						<width>340</width>
 						<height>70</height>
 						<font>font13_title</font>
-						<label>$LOCALIZE[31508][CR]$INFO[Control.GetLabel(20)]</label>
+						<label>$LOCALIZE[19220][CR]$INFO[Control.GetLabel(20)]</label>
 						<align>center</align>
 						<aligny>center</aligny>
 						<textcolor>blue</textcolor>
