@@ -135,7 +135,7 @@ void CPVRManager::Start()
   Create();
   SetName("XBMC PVRManager");
   SetPriority(-1);
-  CLog::Log(LOGNOTICE, "PVRManager - started with %u active clients", m_clients.size());
+  CLog::Log(LOGNOTICE, "PVRManager - starting up");
 }
 
 void CPVRManager::Stop()
@@ -160,7 +160,7 @@ bool CPVRManager::TryLoadClients(int iMaxTime /* = 0 */)
   CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
   CDateTime start = CDateTime::GetCurrentDateTime();
 
-  while (!m_bAllClientsLoaded && m_clients.size() > 0)
+  while (!m_bAllClientsLoaded)
   {
     /* try to load clients */
     LoadClients();
@@ -177,11 +177,15 @@ bool CPVRManager::TryLoadClients(int iMaxTime /* = 0 */)
         break;
     }
 
+    /* break if there are no activated clients */
+    if (m_clients.empty())
+      break;
+
     Sleep(250);
   }
 
   CLog::Log(LOG_DEBUG, "PVRManager - %s - %s",
-      __FUNCTION__, m_bAllClientsLoaded ? "all clients loaded" : "couldn't load all clients. will keep trying in a separate thread.");
+      __FUNCTION__, m_bAllClientsLoaded && !m_clients.empty() ? "all clients loaded" : "couldn't load all clients. will keep trying in a separate thread.");
   return m_bAllClientsLoaded;
 }
 
@@ -197,7 +201,10 @@ bool CPVRManager::LoadClients(void)
 
   /* load and initialise the clients */
   if (!m_database.Open())
+  {
+    CLog::Log(LOGERROR, "PVRManager - %s - cannot open the database", __FUNCTION__);
     return false;
+  }
 
   m_bAllClientsLoaded = true;
   for (unsigned iClientPtr = 0; iClientPtr < addons.size(); iClientPtr++)
@@ -461,7 +468,7 @@ bool CPVRManager::DisableIfNoClients(void)
 {
   bool bReturn = false;
 
-  if (m_clients.size() == 0)
+  if (m_clients.empty())
   {
     g_guiSettings.SetBool("pvrmanager.enabled", false);
     CLog::Log(LOGNOTICE,"PVRManager - no clients enabled. pvrmanager disabled.");
@@ -475,14 +482,12 @@ void CPVRManager::Process()
 {
   while (!HasActiveClients())
   {
-    /* check if the (still) are any enabled addons */
-    if (DisableIfNoClients())
-      return;
-
     TryLoadClients(1);
 
     if (HasActiveClients())
     {
+      CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
+
       /* load all channels and groups */
       m_channelGroups->Load();
 
@@ -494,6 +499,13 @@ void CPVRManager::Process()
 
       /* start the EPG thread */
       m_epg->Start();
+    }
+
+    /* check if the (still) are any enabled addons */
+    if (DisableIfNoClients())
+    {
+      CLog::Log(LOGDEBUG, "PVRManager - %s - no clients could be found. aborting startup", __FUNCTION__);
+      return;
     }
   }
 
