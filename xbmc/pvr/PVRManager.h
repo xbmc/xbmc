@@ -535,6 +535,8 @@ protected:
    */
   virtual void Process();
 
+  bool DisableIfNoClients(void);
+
   void UpdateWindow(PVRWindow window);
 
 private:

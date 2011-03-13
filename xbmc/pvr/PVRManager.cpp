@@ -160,7 +160,7 @@ bool CPVRManager::TryLoadClients(int iMaxTime /* = 0 */)
   CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
   CDateTime start = CDateTime::GetCurrentDateTime();
 
-  while (!m_bAllClientsLoaded)
+  while (!m_bAllClientsLoaded && m_clients.size() > 0)
   {
     /* try to load clients */
     LoadClients();
@@ -457,10 +457,28 @@ bool CPVRManager::ContinueLastChannel()
   return bReturn;
 }
 
+bool CPVRManager::DisableIfNoClients(void)
+{
+  bool bReturn = false;
+
+  if (m_clients.size() == 0)
+  {
+    g_guiSettings.SetBool("pvrmanager.enabled", false);
+    CLog::Log(LOGNOTICE,"PVRManager - no clients enabled. pvrmanager disabled.");
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
 void CPVRManager::Process()
 {
   while (!HasActiveClients())
   {
+    /* check if the (still) are any enabled addons */
+    if (DisableIfNoClients())
+      return;
+
     TryLoadClients(1);
 
     if (HasActiveClients())
@@ -494,6 +512,10 @@ void CPVRManager::Process()
   /* main loop */
   while (!m_bStop)
   {
+    /* check if the (still) are any enabled addons */
+    if (DisableIfNoClients())
+      return;
+
     if (m_bTriggerChannelsUpdate)
       UpdateChannels();
 
