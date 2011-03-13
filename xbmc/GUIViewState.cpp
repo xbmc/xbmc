@@ -399,6 +399,8 @@ void CGUIViewState::SetSortOrder(SORT_ORDER sortOrder)
 {
   if (GetSortMethod() == SORT_METHOD_NONE)
     m_sortOrder = SORT_ORDER_NONE;
+  else if (sortOrder == SORT_ORDER_NONE)
+    m_sortOrder = SORT_ORDER_ASC;
   else
     m_sortOrder = sortOrder;
 }
