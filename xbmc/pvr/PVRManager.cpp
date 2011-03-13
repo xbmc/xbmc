@@ -435,14 +435,14 @@ bool CPVRManager::ContinueLastChannel()
   for (int i = 0; i < GetChannelGroups()->GetGroupAllTV()->GetNumChannels(); i++)
   {
     const CPVRChannel *nextChannel = GetChannelGroups()->GetGroupAllTV()->GetByIndex(i);
-    if (nextChannel->ClientID() < 0 | !m_clients[nextChannel->ClientID()] | !m_clients[nextChannel->ClientID()]->ReadyToUse())
+    if (nextChannel->ClientID() < 0 || !m_clients[nextChannel->ClientID()] || !m_clients[nextChannel->ClientID()]->ReadyToUse())
       continue;
     channel = channel->LastWatched() > nextChannel->LastWatched() ? channel : nextChannel;
   }
   for (int i = 0; i < GetChannelGroups()->GetGroupAllRadio()->GetNumChannels(); i++)
   {
     const CPVRChannel *nextChannel = GetChannelGroups()->GetGroupAllRadio()->GetByIndex(i);
-    if (nextChannel->ClientID() < 0 | !m_clients[nextChannel->ClientID()] | !m_clients[nextChannel->ClientID()]->ReadyToUse())
+    if (nextChannel->ClientID() < 0 || !m_clients[nextChannel->ClientID()] || !m_clients[nextChannel->ClientID()]->ReadyToUse())
       continue;
     channel = channel->LastWatched() > nextChannel->LastWatched() ? channel : nextChannel;
   }
