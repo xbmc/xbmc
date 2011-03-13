@@ -35,19 +35,20 @@ using namespace std;
 JSON_STATUS CAVPlaylistOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   bool status = true;
-  if (g_playlistPlayer.GetCurrentPlaylist() != GetPlaylist(method))
-    g_playlistPlayer.SetCurrentPlaylist(GetPlaylist(method));
+  int playlist = GetPlaylist(method);
+  if (g_playlistPlayer.GetCurrentPlaylist() != playlist)
+    g_playlistPlayer.SetCurrentPlaylist(playlist);
 
-  if (parameterObject.isInt())
-    g_application.getApplicationMessenger().PlayListPlayerPlay(parameterObject.asInt());
+  int item = parameterObject["item"].asInt();
+  int songId = parameterObject["songid"].asInt();
+
+  if (item >= 0)
+    g_application.getApplicationMessenger().PlayListPlayerPlay(item);
+  else if (playlist == PLAYLIST_MUSIC && songId > 0)
+    status = g_application.getApplicationMessenger().PlayListPlayerPlaySongId(songId);
   else
-  {
-    int songId = (parameterObject.isMember("songid") && parameterObject["songid"].isInt()) ? parameterObject["songid"].asInt() : 0;
-    if (songId > 0)
-      status = g_application.getApplicationMessenger().PlayListPlayerPlaySongId(songId);
-    else
-      g_application.getApplicationMessenger().PlayListPlayerPlay();
-  }
+    g_application.getApplicationMessenger().PlayListPlayerPlay();
+
   result["success"] = status;
   NotifyAll();
   return OK;
@@ -106,16 +107,11 @@ JSON_STATUS CAVPlaylistOperations::Add(const CStdString &method, ITransportLayer
 
 JSON_STATUS CAVPlaylistOperations::Insert(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  int indexValue = -1;
-
   CFileItemList list;
   if (!FillFileItemList(parameterObject, list))
     return InvalidParams;
 
- if (parameterObject["index"].isInt())
-          indexValue = parameterObject["index"].asInt();
-
-  g_application.getApplicationMessenger().PlayListPlayerInsert(GetPlaylist(method), list, indexValue);
+  g_application.getApplicationMessenger().PlayListPlayerInsert(GetPlaylist(method), list, parameterObject["index"].asInt());
 
   NotifyAll();
   return ACK;
@@ -123,8 +119,7 @@ JSON_STATUS CAVPlaylistOperations::Insert(const CStdString &method, ITransportLa
 
 JSON_STATUS CAVPlaylistOperations::Remove(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (parameterObject.isInt())
-    g_application.getApplicationMessenger().PlayListPlayerRemove(GetPlaylist(method),parameterObject.asInt());
+  g_application.getApplicationMessenger().PlayListPlayerRemove(GetPlaylist(method), parameterObject["item"].asInt());
 
   NotifyAll();
   return ACK;
