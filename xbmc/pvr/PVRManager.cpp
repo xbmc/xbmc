@@ -1081,26 +1081,26 @@ void CPVRManager::ResetEPG(void)
 
 bool CPVRManager::IsPlayingTV(void)
 {
-  return m_currentPlayingChannel ?
+  return m_bLoaded && m_currentPlayingChannel ?
       !m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio() :
       false;
 }
 
 bool CPVRManager::IsPlayingRadio(void)
 {
-  return m_currentPlayingChannel ?
+  return m_bLoaded && m_currentPlayingChannel ?
       m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio() :
       false;
 }
 
 bool CPVRManager::IsPlayingRecording(void)
 {
-  return m_currentPlayingRecording;
+  return m_bLoaded && m_currentPlayingRecording;
 }
 
 bool CPVRManager::IsPlaying(void)
 {
-  return (m_currentPlayingChannel || m_currentPlayingRecording);
+  return m_bLoaded && (m_currentPlayingChannel || m_currentPlayingRecording);
 }
 
 PVR_SERVERPROPS *CPVRManager::GetCurrentClientProperties(void)
