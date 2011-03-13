@@ -95,15 +95,13 @@ void CFileItemHandler::MakeFieldsList(const Json::Value &parameterObject, Json::
 
 void CFileItemHandler::HandleFileItemList(const char *id, bool allowFile, const char *resultname, CFileItemList &items, const Value &parameterObject, Value &result)
 {
-  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
-
   int size  = items.Size();
-  int start = param.get("start", 0).asInt();
-  int end   = param.get("end", size).asInt();
-  end = end < 0 ? 0 : end > size ? size : end;
-  start = start < 0 ? 0 : start > end ? end : start;
+  int start = parameterObject["limits"]["start"].asInt();
+  int end   = parameterObject["limits"]["end"].asInt();
+  end = (end <= 0 || end > size) ? size : end;
+  start = start > end ? end : start;
 
-  Sort(items, param);
+  Sort(items, parameterObject["sort"]);
 
   result["start"] = start;
   result["end"]   = end;
@@ -248,21 +246,15 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ig
 
 void CFileItemHandler::Sort(CFileItemList &items, const Value &parameterObject)
 {
-  Value sort = parameterObject["sort"];
+  CStdString method = parameterObject["method"].asString();
+  CStdString order  = parameterObject["order"].asString();
 
-  if (sort.isObject())
-  {
-    CStdString method = sort["method"].isString() ? sort["method"].asString() : "none";
-    CStdString order  = sort["order"].isString() ? sort["order"].asString() : "ascending";
-    bool ignorethe    = sort["ignorethe"].isBool() ? sort["ignorethe"].asBool() : false;
+  method = method.ToLower();
+  order  = order.ToLower();
 
-    method = method.ToLower();
-    order  = order.ToLower();
+  SORT_METHOD sortmethod = SORT_METHOD_NONE;
+  SORT_ORDER  sortorder  = SORT_ORDER_ASC;
 
-    SORT_METHOD sortmethod = SORT_METHOD_NONE;
-    SORT_ORDER  sortorder  = SORT_ORDER_ASC;
-
-    if (ParseSortMethods(method, ignorethe, order, sortmethod, sortorder))
-      items.Sort(sortmethod, sortorder);
-  }
+  if (ParseSortMethods(method, parameterObject["ignorethe"].asBool(), order, sortmethod, sortorder))
+    items.Sort(sortmethod, sortorder);
 }

@@ -131,9 +131,9 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
 //  { "Playlist.UnShuffle",                           CPlaylistOperations::UnShuffle },
 
 // Files
-//  { "Files.GetSources",                             CFileOperations::GetRootDirectory },
-//  { "Files.Download",                               CFileOperations::Download },
-//  { "Files.GetDirectory",                           CFileOperations::GetDirectory },
+  { "Files.GetSources",                             CFileOperations::GetRootDirectory },
+  { "Files.Download",                               CFileOperations::Download },
+  { "Files.GetDirectory",                           CFileOperations::GetDirectory },
 
 // Music Library
   // TODO
@@ -160,78 +160,6 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
 };
 
 /*Command CJSONRPC::m_commands[] = {
-// JSON-RPC
-  { "JSONRPC.Introspect",                           CJSONRPC::Introspect,                                Response,     ReadData,        "Enumerates all actions and descriptions. Parameter example {\"getdescriptions\": true, \"getpermissions\": true, \"filterbytransport\": true }. All parameters optional" },
-  { "JSONRPC.Version",                              CJSONRPC::Version,                                   Response,     ReadData,        "Retrieve the jsonrpc protocol version" },
-  { "JSONRPC.Permission",                           CJSONRPC::Permission,                                Response,     ReadData,        "Retrieve the clients permissions" },
-  { "JSONRPC.Ping",                                 CJSONRPC::Ping,                                      Response,     ReadData,        "Ping responder" },
-  { "JSONRPC.GetAnnouncementFlags",                 CJSONRPC::GetAnnouncementFlags,                      Announcing,   ReadData,        "Get announcement flags" },
-  { "JSONRPC.SetAnnouncementFlags",                 CJSONRPC::SetAnnouncementFlags,                      Announcing,   ControlAnnounce, "Change the announcement flags. Parameter example {\"playback\": true, \"gui\": false }" },
-  { "JSONRPC.Announce",                             CJSONRPC::Announce,                                  Response,     ReadData,        "Announce to other connected clients. Parameter example {\"sender\": \"foo\", \"message\": \"bar\", \"data\": \"somedata\" }. data is optional" },
-
-// Player
-  { "Player.GetActivePlayers",                      CPlayerOperations::GetActivePlayers,                 Response,     ReadData,        "Returns all active players IDs"},
-
-// Music player
-  { "AudioPlayer.State",                            CAVPlayerOperations::State,                          Response,     ReadData,        "Returns Current Playback state"},
-  { "AudioPlayer.PlayPause",                        CAVPlayerOperations::PlayPause,                      Response,     ControlPlayback, "Pauses or unpause playback, returns new state" },
-  { "AudioPlayer.Stop",                             CAVPlayerOperations::Stop,                           Response,     ControlPlayback, "Stops playback" },
-  { "AudioPlayer.SkipPrevious",                     CAVPlayerOperations::SkipPrevious,                   Response,     ControlPlayback, "Skips to previous item on the playlist" },
-  { "AudioPlayer.SkipNext",                         CAVPlayerOperations::SkipNext,                       Response,     ControlPlayback, "Skips to next item on the playlist" },
-
-  { "AudioPlayer.BigSkipBackward",                  CAVPlayerOperations::BigSkipBackward,                Response,     ControlPlayback, "" },
-  { "AudioPlayer.BigSkipForward",                   CAVPlayerOperations::BigSkipForward,                 Response,     ControlPlayback, "" },
-  { "AudioPlayer.SmallSkipBackward",                CAVPlayerOperations::SmallSkipBackward,              Response,     ControlPlayback, "" },
-  { "AudioPlayer.SmallSkipForward",                 CAVPlayerOperations::SmallSkipForward,               Response,     ControlPlayback, "" },
-
-  { "AudioPlayer.Rewind",                           CAVPlayerOperations::Rewind,                         Response,     ControlPlayback, "Rewind current playback" },
-  { "AudioPlayer.Forward",                          CAVPlayerOperations::Forward,                        Response,     ControlPlayback, "Forward current playback" },
-
-  { "AudioPlayer.GetTime",                          CAVPlayerOperations::GetTime,                        Response,     ReadData,        "Retrieve time" },
-  { "AudioPlayer.GetTimeMS",                        CAVPlayerOperations::GetTimeMS,                      Response,     ReadData,        "Retrieve time in MS" },
-  { "AudioPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage,                  Response,     ReadData,        "Retrieve percentage" },
-  { "AudioPlayer.SeekTime",                         CAVPlayerOperations::SeekTime,                       Response,     ControlPlayback, "Seek to a specific time. Parameter integer in seconds" },
-  { "AudioPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage,                 Response,     ControlPlayback, "Seek to a specific percentage. Parameter float or integer from 0 to 100" },
-
-  { "AudioPlayer.Record",                           CAVPlayerOperations::Record,                         Response,     ControlPlayback, "" },
-
-// Video player
-  { "VideoPlayer.State",                            CAVPlayerOperations::State,                          Response,     ReadData,        "Returns Current Playback state"},
-  { "VideoPlayer.PlayPause",                        CAVPlayerOperations::PlayPause,                      Response,     ControlPlayback, "Pauses or unpause playback, returns new state" },
-  { "VideoPlayer.Stop",                             CAVPlayerOperations::Stop,                           Response,     ControlPlayback, "Stops playback" },
-  { "VideoPlayer.SkipPrevious",                     CAVPlayerOperations::SkipPrevious,                   Response,     ControlPlayback, "Skips to previous item on the playlist" },
-  { "VideoPlayer.SkipNext",                         CAVPlayerOperations::SkipNext,                       Response,     ControlPlayback, "Skips to next item on the playlist" },
-
-  { "VideoPlayer.BigSkipBackward",                  CAVPlayerOperations::BigSkipBackward,                Response,     ControlPlayback, "" },
-  { "VideoPlayer.BigSkipForward",                   CAVPlayerOperations::BigSkipForward,                 Response,     ControlPlayback, "" },
-  { "VideoPlayer.SmallSkipBackward",                CAVPlayerOperations::SmallSkipBackward,              Response,     ControlPlayback, "" },
-  { "VideoPlayer.SmallSkipForward",                 CAVPlayerOperations::SmallSkipForward,               Response,     ControlPlayback, "" },
-
-  { "VideoPlayer.Rewind",                           CAVPlayerOperations::Rewind,                         Response,     ControlPlayback, "Rewind current playback" },
-  { "VideoPlayer.Forward",                          CAVPlayerOperations::Forward,                        Response,     ControlPlayback, "Forward current playback" },
-
-  { "VideoPlayer.GetTime",                          CAVPlayerOperations::GetTime,                        Response,     ReadData,        "Retrieve time" },
-  { "VideoPlayer.GetTimeMS",                        CAVPlayerOperations::GetTimeMS,                      Response,     ReadData,        "Retrieve time in MS" },
-  { "VideoPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage,                  Response,     ReadData,        "Retrieve percentage" },
-  { "VideoPlayer.SeekTime",                         CAVPlayerOperations::SeekTime,                       Response,     ControlPlayback, "Seek to a specific time. Parameter integer in seconds" },
-  { "VideoPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage,                 Response,     ControlPlayback, "Seek to a specific percentage. Parameter float or integer from 0 to 100" },
-
-// Picture player
-  { "PicturePlayer.PlayPause",                      CPicturePlayerOperations::PlayPause,                 Response,     ControlPlayback, "Pauses or unpause slideshow" },
-  { "PicturePlayer.Stop",                           CPicturePlayerOperations::Stop,                      Response,     ControlPlayback, "Stops slideshow" },
-  { "PicturePlayer.SkipPrevious",                   CPicturePlayerOperations::SkipPrevious,              Response,     ControlPlayback, "Skips to previous picture in the slideshow" },
-  { "PicturePlayer.SkipNext",                       CPicturePlayerOperations::SkipNext,                  Response,     ControlPlayback, "Skips to next picture in the slideshow" },
-
-  { "PicturePlayer.MoveLeft",                       CPicturePlayerOperations::MoveLeft,                  Response,     ControlPlayback, "If picture is zoomed move viewport left otherwise skip previous" },
-  { "PicturePlayer.MoveRight",                      CPicturePlayerOperations::MoveRight,                 Response,     ControlPlayback, "If picture is zoomed move viewport right otherwise skip previous" },
-  { "PicturePlayer.MoveDown",                       CPicturePlayerOperations::MoveDown,                  Response,     ControlPlayback, "If picture is zoomed move viewport down" },
-  { "PicturePlayer.MoveUp",                         CPicturePlayerOperations::MoveUp,                    Response,     ControlPlayback, "If picture is zoomed move viewport up" },
-
-  { "PicturePlayer.ZoomOut",                        CPicturePlayerOperations::ZoomOut,                   Response,     ControlPlayback, "Zoom out once" },
-  { "PicturePlayer.ZoomIn",                         CPicturePlayerOperations::ZoomIn,                    Response,     ControlPlayback, "Zoom in once" },
-  { "PicturePlayer.Zoom",                           CPicturePlayerOperations::Zoom,                      Response,     ControlPlayback, "Zooms current picture. Parameter integer of zoom level" },
-  { "PicturePlayer.Rotate",                         CPicturePlayerOperations::Rotate,                    Response,     ControlPlayback, "Rotates current picture" },
-
 // Video Playlist
   { "VideoPlaylist.Play",                           CAVPlaylistOperations::Play,                         Response,     ControlPlayback, "" },
   { "VideoPlaylist.SkipPrevious",                   CAVPlaylistOperations::SkipPrevious,                 Response,     ControlPlayback, "" },
@@ -287,27 +215,6 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "VideoLibrary.GetRecentlyAddedMusicVideos",     CVideoLibrary::GetRecentlyAddedMusicVideos,          Response,     ReadData,        "Retrieve all recently added music videos. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
 
   { "VideoLibrary.ScanForContent",                  CVideoLibrary::ScanForContent,                       Response,     ScanLibrary,     "" },
-
-// System operations
-  { "System.Shutdown",                              CSystemOperations::Shutdown,                         Response,     ControlPower,    "" },
-  { "System.Suspend",                               CSystemOperations::Suspend,                          Response,     ControlPower,    "" },
-  { "System.Hibernate",                             CSystemOperations::Hibernate,                        Response,     ControlPower,    "" },
-  { "System.Reboot",                                CSystemOperations::Reboot,                           Response,     ControlPower,    "" },
-
-  { "System.GetInfoLabels",                         CSystemOperations::GetInfoLabels,                    Response,     ReadData,        "Retrieve info labels about the system" },
-  { "System.GetInfoBooleans",                       CSystemOperations::GetInfoBooleans,                  Response,     ReadData,        "Retrieve info booleans about the system" },
-
-// XBMC Operations
-  { "XBMC.GetVolume",                               CXBMCOperations::GetVolume,                          Response,     ReadData,        "Retrieve the current volume" },
-  { "XBMC.SetVolume",                               CXBMCOperations::SetVolume,                          Response,     ControlPlayback, "Set volume. Parameter integer between 0 amd 100" },
-  { "XBMC.ToggleMute",                              CXBMCOperations::ToggleMute,                         Response,     ControlPlayback, "Toggle mute" },
-
-  { "XBMC.Play",                                    CXBMCOperations::Play,                               Response,     ControlPlayback, "Starts playback" },
-  { "XBMC.StartSlideshow",                          CXBMCOperations::StartSlideshow,                     Response,     ControlPlayback, "Starts slideshow. Parameter example {\"directory\": \"/foo/\", \"random\": true, \"recursive\": true} or just string to recursively and random run directory" },
-
-  { "XBMC.Log",                                     CXBMCOperations::Log,                                Response,     Logging,         "Logs a line in the xbmc.log. Parameter example {\"message\": \"foo\", \"level\": \"info\"} or just a string to log message with level debug" },
-
-  { "XBMC.Quit",                                    CXBMCOperations::Quit,                               Response,     ControlPower,    "Quit xbmc" }
 };*/
 
 void CJSONRPC::Initialize()
