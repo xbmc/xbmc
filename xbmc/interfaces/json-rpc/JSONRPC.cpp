@@ -126,16 +126,16 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "VideoPlaylist.Remove",                         CAVPlaylistOperations::Remove },
 
 // AudioPlaylist
-//  { "AudioPlaylist.Play",                           CAVPlaylistOperations::Play },
-//  { "AudioPlaylist.SkipPrevious",                   CAVPlaylistOperations::SkipPrevious },
-//  { "AudioPlaylist.SkipNext",                       CAVPlaylistOperations::SkipNext },
-//  { "AudioPlaylist.GetItems",                       CAVPlaylistOperations::GetItems },
-//  { "AudioPlaylist.Add",                            CAVPlaylistOperations::Add },
-//  { "AudioPlaylist.Insert",                         CAVPlaylistOperations::Insert },
-//  { "AudioPlaylist.Clear",                          CAVPlaylistOperations::Clear },
-//  { "AudioPlaylist.Shuffle",                        CAVPlaylistOperations::Shuffle },
-//  { "AudioPlaylist.UnShuffle",                      CAVPlaylistOperations::UnShuffle },
-//  { "AudioPlaylist.Remove",                         CAVPlaylistOperations::Remove },
+  { "AudioPlaylist.Play",                           CAVPlaylistOperations::Play },
+  { "AudioPlaylist.SkipPrevious",                   CAVPlaylistOperations::SkipPrevious },
+  { "AudioPlaylist.SkipNext",                       CAVPlaylistOperations::SkipNext },
+  { "AudioPlaylist.GetItems",                       CAVPlaylistOperations::GetItems },
+  { "AudioPlaylist.Add",                            CAVPlaylistOperations::Add },
+  { "AudioPlaylist.Insert",                         CAVPlaylistOperations::Insert },
+  { "AudioPlaylist.Clear",                          CAVPlaylistOperations::Clear },
+  { "AudioPlaylist.Shuffle",                        CAVPlaylistOperations::Shuffle },
+  { "AudioPlaylist.UnShuffle",                      CAVPlaylistOperations::UnShuffle },
+  { "AudioPlaylist.Remove",                         CAVPlaylistOperations::Remove },
 
 // Playlist
   { "Playlist.Create",                              CPlaylistOperations::Create },
