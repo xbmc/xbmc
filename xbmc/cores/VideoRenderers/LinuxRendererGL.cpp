@@ -924,7 +924,7 @@ void CLinuxRendererGL::LoadShaders(int field)
 #if defined(_LINUX) && !defined(__APPLE__)
        //with render method set to auto, don't try glsl on ati if we're on linux
        //it seems to be broken in a random way with every new driver release
-       tryGlsl = CStdString(g_Windowing.GetRenderVendor().substr(0,3)).CompareNoCase("ati") != 0;
+       tryGlsl = g_Windowing.GetRenderVendor().Left(3).CompareNoCase("ati") != 0;
 #endif
       
       case RENDER_METHOD_GLSL:
