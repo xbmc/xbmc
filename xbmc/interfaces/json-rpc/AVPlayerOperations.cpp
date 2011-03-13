@@ -133,34 +133,13 @@ JSON_STATUS CAVPlayerOperations::Forward(const CStdString &method, ITransportLay
   return ACK;
 }
 
-JSON_STATUS CAVPlayerOperations::Record(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
-{
-  if (!IsCorrectPlayer(method))
-    return FailedToExecute;
-
-  CBuiltins::Execute("playercontrol(record)");
-  return ACK;
-}
-
 JSON_STATUS CAVPlayerOperations::GetTime(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
 
-  result["time"] = (int)g_application.GetTime();
-  result["total"] = (int)g_application.GetTotalTime();
-  result["playing"] = g_application.IsPlaying();
-  result["paused"] = g_application.IsPaused();
-  return OK;
-}
-
-JSON_STATUS CAVPlayerOperations::GetTimeMS(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
-{
-  if (!IsCorrectPlayer(method))
-    return FailedToExecute;
-
-  result["time"] = (int)(g_application.GetTime() * 1000.0);
-  result["total"] = (int)(g_application.GetTotalTime() * 1000.0);
+  CreateTime((int)(g_application.GetTime() * 1000.0), result["time"]);
+  CreateTime((int)(g_application.GetTotalTime() * 1000.0), result["total"]);
   result["playing"] = g_application.IsPlaying();
   result["paused"] = g_application.IsPaused();
   return OK;
@@ -178,29 +157,42 @@ JSON_STATUS CAVPlayerOperations::GetPercentage(const CStdString &method, ITransp
 
 JSON_STATUS CAVPlayerOperations::SeekTime(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  if (!parameterObject.isInt())
-    return InvalidParams;
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
 
-  g_application.SeekTime(parameterObject.asInt());
+  g_application.SeekTime(parameterObject["value"].asInt());
   return ACK;
 }
 
 JSON_STATUS CAVPlayerOperations::SeekPercentage(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  if (!(parameterObject.isDouble() || parameterObject.isInt()))
-    return InvalidParams;
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
 
   float percentage = parameterObject.isDouble() ? (float)parameterObject.asDouble() : (float)parameterObject.asInt();
 
-  g_application.SeekPercentage(percentage);
+  g_application.SeekPercentage(parameterObject["value"].asFloat());
   return ACK;
 }
 
 bool CAVPlayerOperations::IsCorrectPlayer(const CStdString &method)
 {
   return (method.Left(5).Equals("audio") && g_application.IsPlayingAudio()) || (method.Left(5).Equals("video") && g_application.IsPlayingVideo());
+}
+
+void CAVPlayerOperations::CreateTime(int time, Json::Value &result)
+{
+  int ms = time % 1000;
+  result["milliseconds"] = ms;
+  time = (time - ms) / 1000;
+
+  int s = time % 60;
+  result["seconds"] = s;
+  time = (time - s) / 60;
+
+  int m = time % 60;
+  result["minutes"] = m;
+  time = (time -m) / 60;
+
+  result["hours"] = time;
 }

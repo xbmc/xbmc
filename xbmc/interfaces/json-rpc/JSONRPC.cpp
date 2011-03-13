@@ -55,51 +55,47 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "JSONRPC.Announce",                             CJSONRPC::Announce },
 
 // Player
-//  { "Player.GetActivePlayers",                      CPlayerOperations::GetActivePlayers },
+  { "Player.GetActivePlayers",                      CPlayerOperations::GetActivePlayers },
 
 // Music player
-//  { "AudioPlayer.State",                            CAVPlayerOperations::State },
-//  { "AudioPlayer.PlayPause",                        CAVPlayerOperations::PlayPause },
-//  { "AudioPlayer.Stop",                             CAVPlayerOperations::Stop },
-//  { "AudioPlayer.SkipPrevious",                     CAVPlayerOperations::SkipPrevious },
-//  { "AudioPlayer.SkipNext",                         CAVPlayerOperations::SkipNext },
-//
-//  { "AudioPlayer.BigSkipBackward",                  CAVPlayerOperations::BigSkipBackward },
-//  { "AudioPlayer.BigSkipForward",                   CAVPlayerOperations::BigSkipForward },
-//  { "AudioPlayer.SmallSkipBackward",                CAVPlayerOperations::SmallSkipBackward },
-//  { "AudioPlayer.SmallSkipForward",                 CAVPlayerOperations::SmallSkipForward },
-//
-//  { "AudioPlayer.Rewind",                           CAVPlayerOperations::Rewind },
-//  { "AudioPlayer.Forward",                          CAVPlayerOperations::Forward },
-//
-//  { "AudioPlayer.GetTime",                          CAVPlayerOperations::GetTime },
-//  { "AudioPlayer.GetTimeMS",                        CAVPlayerOperations::GetTimeMS },
-//  { "AudioPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage },
-//  { "AudioPlayer.SeekTime",                         CAVPlayerOperations::SeekTime },
-//  { "AudioPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage },
-//
-//  { "AudioPlayer.Record",                           CAVPlayerOperations::Record },
+  { "AudioPlayer.State",                            CAVPlayerOperations::State },
+  { "AudioPlayer.PlayPause",                        CAVPlayerOperations::PlayPause },
+  { "AudioPlayer.Stop",                             CAVPlayerOperations::Stop },
+  { "AudioPlayer.SkipPrevious",                     CAVPlayerOperations::SkipPrevious },
+  { "AudioPlayer.SkipNext",                         CAVPlayerOperations::SkipNext },
+
+  { "AudioPlayer.BigSkipBackward",                  CAVPlayerOperations::BigSkipBackward },
+  { "AudioPlayer.BigSkipForward",                   CAVPlayerOperations::BigSkipForward },
+  { "AudioPlayer.SmallSkipBackward",                CAVPlayerOperations::SmallSkipBackward },
+  { "AudioPlayer.SmallSkipForward",                 CAVPlayerOperations::SmallSkipForward },
+
+  { "AudioPlayer.Rewind",                           CAVPlayerOperations::Rewind },
+  { "AudioPlayer.Forward",                          CAVPlayerOperations::Forward },
+
+  { "AudioPlayer.GetTime",                          CAVPlayerOperations::GetTime },
+  { "AudioPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage },
+  { "AudioPlayer.SeekTime",                         CAVPlayerOperations::SeekTime },
+  { "AudioPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage },
 
 // Video player
-//  { "VideoPlayer.State",                            CAVPlayerOperations::State },
-//  { "VideoPlayer.PlayPause",                        CAVPlayerOperations::PlayPause },
-//  { "VideoPlayer.Stop",                             CAVPlayerOperations::Stop },
-//  { "VideoPlayer.SkipPrevious",                     CAVPlayerOperations::SkipPrevious },
-//  { "VideoPlayer.SkipNext",                         CAVPlayerOperations::SkipNext },
-//
-//  { "VideoPlayer.BigSkipBackward",                  CAVPlayerOperations::BigSkipBackward },
-//  { "VideoPlayer.BigSkipForward",                   CAVPlayerOperations::BigSkipForward },
-//  { "VideoPlayer.SmallSkipBackward",                CAVPlayerOperations::SmallSkipBackward },
-//  { "VideoPlayer.SmallSkipForward",                 CAVPlayerOperations::SmallSkipForward },
-//
-//  { "VideoPlayer.Rewind",                           CAVPlayerOperations::Rewind },
-//  { "VideoPlayer.Forward",                          CAVPlayerOperations::Forward },
-//
-//  { "VideoPlayer.GetTime",                          CAVPlayerOperations::GetTime },
-//  { "VideoPlayer.GetTimeMS",                        CAVPlayerOperations::GetTimeMS },
-//  { "VideoPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage },
-//  { "VideoPlayer.SeekTime",                         CAVPlayerOperations::SeekTime },
-//  { "VideoPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage },
+  { "VideoPlayer.State",                            CAVPlayerOperations::State },
+  { "VideoPlayer.PlayPause",                        CAVPlayerOperations::PlayPause },
+  { "VideoPlayer.Stop",                             CAVPlayerOperations::Stop },
+  { "VideoPlayer.SkipPrevious",                     CAVPlayerOperations::SkipPrevious },
+  { "VideoPlayer.SkipNext",                         CAVPlayerOperations::SkipNext },
+
+  { "VideoPlayer.BigSkipBackward",                  CAVPlayerOperations::BigSkipBackward },
+  { "VideoPlayer.BigSkipForward",                   CAVPlayerOperations::BigSkipForward },
+  { "VideoPlayer.SmallSkipBackward",                CAVPlayerOperations::SmallSkipBackward },
+  { "VideoPlayer.SmallSkipForward",                 CAVPlayerOperations::SmallSkipForward },
+
+  { "VideoPlayer.Rewind",                           CAVPlayerOperations::Rewind },
+  { "VideoPlayer.Forward",                          CAVPlayerOperations::Forward },
+
+  { "VideoPlayer.GetTime",                          CAVPlayerOperations::GetTime },
+  { "VideoPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage },
+  { "VideoPlayer.SeekTime",                         CAVPlayerOperations::SeekTime },
+  { "VideoPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage },
 
 // Picture player
 //  { "PicturePlayer.PlayPause",                      CPicturePlayerOperations::PlayPause },
@@ -272,21 +268,6 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "Playlist.Swap",                                CPlaylistOperations::Swap,                           Response,     ControlPlayback, "Swap items in the playlist. Parameter example {\"playlist\": \"music\", \"item1\": 0, \"item2\": 1 }. playlist optional." },
   { "Playlist.Shuffle",                             CPlaylistOperations::Shuffle,                        Response,     ControlPlayback, "Shuffle playlist" },
   { "Playlist.UnShuffle",                           CPlaylistOperations::UnShuffle,                      Response,     ControlPlayback, "UnShuffle playlist" },
-
-// File
-  { "Files.GetSources",                             CFileOperations::GetRootDirectory,                   Response,     ReadData,        "Get the sources of the media windows. Parameter example {\"media\": \"video\"}. Media can be video, music, pictures or files" },
-  { "Files.Download",                               CFileOperations::Download,                           FileDownload, ReadData,        "Specify a file to download to get info about how to download it, i.e a proper URL" },
-
-  { "Files.GetDirectory",                           CFileOperations::GetDirectory,                       Response,     ReadData,        "Retrieve the specified directory. Parameter example {\"directory\": \"foo/bar\", \"media\": \"video\"}. Media can be video, music, pictures or files" },
-
-// Music library
-  { "AudioLibrary.GetArtists",                      CAudioLibrary::GetArtists,                           Response,     ReadData,        "Retrieve all artists" },
-  { "AudioLibrary.GetAlbums",                       CAudioLibrary::GetAlbums,                            Response,     ReadData,        "Retrieve all albums from specified artist or genre, Fields: album_description, album_theme, album_mood, album_style, album_type, album_label, album_artist, album_genre, album_rating, album_title" },
-  { "AudioLibrary.GetAlbumDetails",                 CAudioLibrary::GetAlbumDetails,                      Response,     ReadData,        "Retrieve details about a specific album. Parameter example { \"fields\": [\"review\"], \"albumid\": 12}. fields is optional"},
-  { "AudioLibrary.GetSongs",                        CAudioLibrary::GetSongs,                             Response,     ReadData,        "Retrieve all songs from specified album, artist or genre" },
-  { "AudioLibrary.GetSongDetails",                  CAudioLibrary::GetSongDetails,                       Response,     ReadData,        "Retrieve details about a specific song. Parameter example { \"fields\": [\"title\"], \"songid\": 12}. fields is optional"},
-  { "AudioLibrary.GetGenres",                       CAudioLibrary::GetGenres,                            Response,     ReadData,        "Retrieve all genres" },
-  { "AudioLibrary.ScanForContent",                  CAudioLibrary::ScanForContent,                       Response,     ScanLibrary,     "" },
 
 // Video library
   { "VideoLibrary.GetMovies",                       CVideoLibrary::GetMovies,                            Response,     ReadData,        "Retrieve all movies. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
