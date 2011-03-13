@@ -917,12 +917,19 @@ void CLinuxRendererGL::LoadShaders(int field)
       m_pYUVShader = NULL;
     }
 
+    bool tryGlsl = true;
     switch(requestedMethod)
     {
       case RENDER_METHOD_AUTO:
+#if defined(_LINUX) && !defined(__APPLE__)
+       //with render method set to auto, don't try glsl on ati if we're on linux
+       //it seems to be broken in a random way with every new driver release
+       tryGlsl = CStdString(g_Windowing.GetRenderVendor().substr(0,3)).CompareNoCase("ati") != 0;
+#endif
+      
       case RENDER_METHOD_GLSL:
       // Try GLSL shaders if supported and user requested auto or GLSL.
-      if (glCreateProgram)
+      if (glCreateProgram && tryGlsl)
       {
         // create regular progressive scan shader
         m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags,
