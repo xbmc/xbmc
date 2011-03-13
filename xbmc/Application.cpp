@@ -3349,6 +3349,14 @@ void CApplication::Stop()
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
 {
+  //If item is a plugin, expand out now and run ourselves again
+  if (item.IsPlugin())
+  { // we modify the item so that it becomes a real URL
+    CFileItem item_new(item);
+    if (XFILE::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
+      return PlayMedia(item_new, iPlaylist);
+    return false;
+  }
   if (item.IsLastFM())
   {
     g_partyModeManager.Disable();
