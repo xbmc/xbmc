@@ -438,7 +438,7 @@ void CApplication::Preflight()
 
   CUtil::GetHomePath(install_path);
   setenv("XBMC_HOME", install_path.c_str(), 0);
-  install_path += "/tools/osx/preflight";
+  install_path += "/tools/preflight";
   system(install_path.c_str());
 #endif
 }
