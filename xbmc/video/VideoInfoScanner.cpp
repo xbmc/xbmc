@@ -750,7 +750,6 @@ namespace VIDEO
     }
 
     // enumerate
-    SETTINGS_TVSHOWLIST expression = g_advancedSettings.m_tvshowEnumRegExps;
     CStdStringArray regexps = g_advancedSettings.m_tvshowExcludeFromScanRegExps;
 
     for (int i=0;i<items.Size();++i)
@@ -776,22 +775,7 @@ namespace VIDEO
       if (ProcessItemByVideoInfoTag(items[i], episodeList))
         continue;
 
-      bool bMatched=false;
-      for (unsigned int j=0;j<expression.size();++j)
-      {
-        if (expression[j].byDate)
-        {
-          bMatched = ProcessItemByDate(items[i], episodeList, expression[j].regexp);
-        }
-        else
-        {
-          bMatched = ProcessItemNormal(items[i], episodeList, expression[j].regexp);
-        }
-        if (bMatched)
-          break;
-      }
-
-      if (!bMatched)
+      if (!EnumerateEpisodeItem(items[i], episodeList))
       {
         CStdString decode(items[i]->m_strPath);
         CURL::Decode(decode);
@@ -885,89 +869,125 @@ namespace VIDEO
     return false;
   }
 
-  bool CVideoInfoScanner::ProcessItemNormal(CFileItemPtr item, EPISODES &episodeList, CStdString regexp)
+  bool CVideoInfoScanner::EnumerateEpisodeItem(const CFileItemPtr item, EPISODES& episodeList)
   {
-    CRegExp reg;
-    if (!reg.RegComp(regexp))
-      return false;
+    SETTINGS_TVSHOWLIST expression = g_advancedSettings.m_tvshowEnumRegExps;
 
     CStdString strLabel=item->m_strPath;
     // URLDecode in case an episode is on a http/https/dav/davs:// source and URL-encoded like foo%201x01%20bar.avi
     CURL::Decode(strLabel);
     strLabel.MakeLower();
-//    CLog::Log(LOGDEBUG,"running expression %s on label %s",regexp.c_str(),strLabel.c_str());
-    int regexppos, regexp2pos;
 
-    if ((regexppos = reg.RegFind(strLabel.c_str())) < 0)
-      return false;
-
-
-    SEpisode episode;
-    episode.strPath = item->m_strPath;
-    episode.cDate.SetValid(false);
-    episode.isFolder = false;
-    if (!GetEpisodeAndSeasonFromRegExp(reg, episode))
-      return false;
-
-    /*
-     * Check if the files base path is a dedicated folder that contains
-     * only this single episode. If season and episode match with the
-     * actual media file, we set episode.isFolder to true.
-     */
-    CStdString strBasePath = item->GetBaseMoviePath(true);
-    URIUtils::RemoveSlashAtEnd(strBasePath);
-    strBasePath = URIUtils::GetFileName(strBasePath);
-
-    SEpisode parent;
-    if (reg.RegFind(strBasePath.c_str()) > -1)
+    for (unsigned int i=0;i<expression.size();++i)
     {
-      GetEpisodeAndSeasonFromRegExp(reg, parent);
-      if (episode.iSeason == parent.iSeason && episode.iEpisode == parent.iEpisode)
-        episode.isFolder = true;
-    }
+      CRegExp reg;
+      if (!reg.RegComp(expression[i].regexp))
+        continue;
 
-    CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode match %s (s%ie%i) [%s]", strLabel.c_str(), episode.iSeason, episode.iEpisode, regexp.c_str());
-    episodeList.push_back(episode);
+      int regexppos, regexp2pos;
+      //CLog::Log(LOGDEBUG,"running expression %s on %s",expression[i].regexp.c_str(),strLabel.c_str());
+      if ((regexppos = reg.RegFind(strLabel.c_str())) < 0)
+        continue;
 
-    // check the remainder of the string for any further episodes.
-    CRegExp reg2;
-    if (!reg2.RegComp(g_advancedSettings.m_tvshowMultiPartEnumRegExp))
-      return true;
+      SEpisode episode;
+      episode.strPath = item->m_strPath;
+      episode.iSeason = -1;
+      episode.iEpisode = -1;
+      episode.cDate.SetValid(false);
+      episode.isFolder = false;
 
-    char *remainder = reg.GetReplaceString("\\3");
-    int offset = 0;
+      bool byDate = expression[i].byDate ? true : false;
 
-    // we want "long circuit" OR below so that both offsets are evaluated
-    while (((regexp2pos = reg2.RegFind(remainder + offset)) > -1) | ((regexppos = reg.RegFind(remainder + offset)) > -1))
-    {
-      if (((regexppos <= regexp2pos) && regexppos != -1) ||
-         (regexppos >= 0 && regexp2pos == -1))
+      if (byDate)
       {
-        GetEpisodeAndSeasonFromRegExp(reg, episode);
+        if (!GetAirDateFromRegExp(reg, episode))
+          continue;
 
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new season %u, multipart episode %u [%s]",
-                  episode.iSeason, episode.iEpisode,
-                  g_advancedSettings.m_tvshowMultiPartEnumRegExp.c_str());
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Found date based match %s (%s) [%s]", strLabel.c_str(),
+                  episode.cDate.GetAsLocalizedDate().c_str(), expression[i].regexp.c_str());
+      }
+      else
+      {
+        if (!GetEpisodeAndSeasonFromRegExp(reg, episode))
+          continue;
 
-        episodeList.push_back(episode);
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode match %s (s%ie%i) [%s]", strLabel.c_str(),
+                  episode.iSeason, episode.iEpisode, expression[i].regexp.c_str());
+      }
+
+      // Grab the remainder from first regexp run
+      // as second run might modify or empty it.
+      char *remainder = reg.GetReplaceString("\\3");
+
+      /*
+       * Check if the files base path is a dedicated folder that contains
+       * only this single episode. If season and episode match with the
+       * actual media file, we set episode.isFolder to true.
+       */
+      CStdString strBasePath = item->GetBaseMoviePath(true);
+      URIUtils::RemoveSlashAtEnd(strBasePath);
+      strBasePath = URIUtils::GetFileName(strBasePath);
+
+      if (reg.RegFind(strBasePath.c_str()) > -1)
+      {
+        SEpisode parent;
+        if (byDate)
+        {
+          GetAirDateFromRegExp(reg, parent);
+          if (episode.cDate == parent.cDate)
+            episode.isFolder = true;
+        }
+        else
+        {
+          GetEpisodeAndSeasonFromRegExp(reg, parent);
+          if (episode.iSeason == parent.iSeason && episode.iEpisode == parent.iEpisode)
+            episode.isFolder = true;
+        }
+      }
+
+      // add what we found by now
+      episodeList.push_back(episode);
+
+      CRegExp reg2;
+      // check the remainder of the string for any further episodes.
+      if (!byDate && reg2.RegComp(g_advancedSettings.m_tvshowMultiPartEnumRegExp))
+      {
+        int offset = 0;
+
+        // we want "long circuit" OR below so that both offsets are evaluated
+        while (((regexp2pos = reg2.RegFind(remainder + offset)) > -1) | ((regexppos = reg.RegFind(remainder + offset)) > -1))
+        {
+          if (((regexppos <= regexp2pos) && regexppos != -1) ||
+             (regexppos >= 0 && regexp2pos == -1))
+          {
+            GetEpisodeAndSeasonFromRegExp(reg, episode);
+
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new season %u, multipart episode %u [%s]",
+                      episode.iSeason, episode.iEpisode,
+                      g_advancedSettings.m_tvshowMultiPartEnumRegExp.c_str());
+
+            episodeList.push_back(episode);
+            free(remainder);
+            remainder = reg.GetReplaceString("\\3");
+            offset = 0;
+          }
+          else if (((regexp2pos < regexppos) && regexp2pos != -1) ||
+                   (regexp2pos >= 0 && regexppos == -1))
+          {
+            char *ep = reg2.GetReplaceString("\\1");
+            episode.iEpisode = atoi(ep);
+            free(ep);
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding multipart episode %u [%s]",
+                      episode.iEpisode, g_advancedSettings.m_tvshowMultiPartEnumRegExp.c_str());
+            episodeList.push_back(episode);
+            offset += regexp2pos + reg2.GetFindLen();
+          }
+        }
         free(remainder);
-        remainder = reg.GetReplaceString("\\3");
-        offset = 0;
       }
-      else if (((regexp2pos < regexppos) && regexp2pos != -1) ||
-               (regexp2pos >= 0 && regexppos == -1))
-      {
-        char *ep = reg2.GetReplaceString("\\1");
-        episode.iEpisode = atoi(ep);
-        free(ep);
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding multipart episode %u [%s]",
-                  episode.iEpisode, g_advancedSettings.m_tvshowMultiPartEnumRegExp.c_str());
-        episodeList.push_back(episode);
-        offset += regexp2pos + reg2.GetFindLen();
-      }
+      return true;
     }
-    free(remainder);
-    return true;
+    return false;
   }
 
   bool CVideoInfoScanner::GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo)
@@ -998,55 +1018,6 @@ namespace VIDEO
     free(season);
     free(episode);
     return (season && episode);
-  }
-
-  bool CVideoInfoScanner::ProcessItemByDate(CFileItemPtr item, EPISODES &episodeList, CStdString regexp)
-  {
-    CRegExp reg;
-    if (!reg.RegComp(regexp))
-      return false;
-
-    CStdString strLabel=item->m_strPath;
-    // URLDecode in case an episode is on a http/https/dav/davs:// source and URL-encoded like foo%201x01%20bar.avi
-    CURL::Decode(strLabel);
-    strLabel.MakeLower();
-//    CLog::Log(LOGDEBUG,"running expression %s on label %s",regexp.c_str(),strLabel.c_str());
-    int regexppos;
-
-    if ((regexppos = reg.RegFind(strLabel.c_str())) < 0)
-      return false;
-
-    SEpisode episode;
-    episode.strPath = item->m_strPath;
-    episode.iSeason = -1;
-    episode.iEpisode = -1;
-    episode.cDate.SetValid(false);
-    episode.isFolder = false;
-    if (!GetAirDateFromRegExp(reg, episode))
-      return false;
-
-    /*
-     * Check if the files base path is a dedicated folder that contains
-     * only this single episode. If cData matches with the actual media
-     * file, we set episode.isFolder to true.
-     */
-    CStdString strBasePath = item->GetBaseMoviePath(true);
-    URIUtils::RemoveSlashAtEnd(strBasePath);
-    strBasePath = URIUtils::GetFileName(strBasePath);
-
-    SEpisode parent;
-    if (reg.RegFind(strBasePath.c_str()) > -1)
-    {
-      GetAirDateFromRegExp(reg, parent);
-      if (episode.cDate == parent.cDate)
-        episode.isFolder = true;
-    }
-
-    CLog::Log(LOGDEBUG, "VideoInfoScanner: Found date based match %s (%s) [%s]", strLabel.c_str(),
-              episode.cDate.GetAsLocalizedDate().c_str(), regexp.c_str());
-    episodeList.push_back(episode);
-
-    return true;
   }
 
   bool CVideoInfoScanner::GetAirDateFromRegExp(CRegExp &reg, SEpisode &episodeInfo)
