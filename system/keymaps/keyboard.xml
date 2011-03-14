@@ -383,6 +383,7 @@
     <keyboard>
       <backspace>Close</backspace>
       <escape>Close</escape>
+      <delete>Delete</delete>
     </keyboard>
   </VideoBookmarks>
   <MyVideoLibrary>
