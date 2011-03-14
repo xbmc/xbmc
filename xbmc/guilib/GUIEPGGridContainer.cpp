@@ -1490,10 +1490,11 @@ void CGUIEPGGridContainer::GoToEnd()
 
 void CGUIEPGGridContainer::SetStartEnd(CDateTime start, CDateTime end)
 {
-  m_gridStart = start;
-  m_gridEnd = end;
+  m_gridStart = CDateTime(start.GetYear(), start.GetMonth(), start.GetDay(), start.GetHour(), 0, 0);
+  m_gridEnd = CDateTime(end.GetYear(), end.GetMonth(), end.GetDay(), end.GetHour(), 0, 0);
+
   CLog::Log(LOGDEBUG, "CGUIEPGGridContainer - %s - start=%s end=%s",
-      __FUNCTION__, start.GetAsLocalizedDateTime(false, true).c_str(), end.GetAsLocalizedDateTime(false, true).c_str());
+      __FUNCTION__, m_gridStart.GetAsLocalizedDateTime(false, true).c_str(), m_gridEnd.GetAsLocalizedDateTime(false, true).c_str());
 }
 
 void CGUIEPGGridContainer::CalculateLayout()
