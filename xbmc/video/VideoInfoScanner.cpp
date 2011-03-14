@@ -816,6 +816,7 @@ namespace VIDEO
       episode.strPath = item->m_strPath;
       episode.iSeason = tag->m_iSeason;
       episode.iEpisode = tag->m_iEpisode;
+      episode.isFolder = false;
       episodeList.push_back(episode);
       CLog::Log(LOGDEBUG, "%s - found match for: %s. Season %d, Episode %d", __FUNCTION__,
                 episode.strPath.c_str(), episode.iSeason, episode.iEpisode);
@@ -831,6 +832,7 @@ namespace VIDEO
       SEpisode episode;
       episode.strPath = item->m_strPath;
       episode.strTitle = tag->m_strTitle;
+      episode.isFolder = false;
       /*
        * Set season and episode to -1 to indicate to use the aired date.
        */
@@ -856,6 +858,7 @@ namespace VIDEO
       SEpisode episode;
       episode.strPath = item->m_strPath;
       episode.strTitle = tag->m_strTitle;
+      episode.isFolder = false;
       /*
        * Set season and episode to -1 to indicate to use the title.
        */
@@ -902,8 +905,26 @@ namespace VIDEO
     SEpisode episode;
     episode.strPath = item->m_strPath;
     episode.cDate.SetValid(false);
+    episode.isFolder = false;
     if (!GetEpisodeAndSeasonFromRegExp(reg, episode))
       return false;
+
+    /*
+     * Check if the files base path is a dedicated folder that contains
+     * only this single episode. If season and episode match with the
+     * actual media file, we set episode.isFolder to true.
+     */
+    CStdString strBasePath = item->GetBaseMoviePath(true);
+    URIUtils::RemoveSlashAtEnd(strBasePath);
+    strBasePath = URIUtils::GetFileName(strBasePath);
+
+    SEpisode parent;
+    if (reg.RegFind(strBasePath.c_str()) > -1)
+    {
+      GetEpisodeAndSeasonFromRegExp(reg, parent);
+      if (episode.iSeason == parent.iSeason && episode.iEpisode == parent.iEpisode)
+        episode.isFolder = true;
+    }
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode match %s (s%ie%i) [%s]", strLabel.c_str(), episode.iSeason, episode.iEpisode, regexp.c_str());
     episodeList.push_back(episode);
@@ -1000,8 +1021,26 @@ namespace VIDEO
     episode.iSeason = -1;
     episode.iEpisode = -1;
     episode.cDate.SetValid(false);
+    episode.isFolder = false;
     if (!GetAirDateFromRegExp(reg, episode))
       return false;
+
+    /*
+     * Check if the files base path is a dedicated folder that contains
+     * only this single episode. If cData matches with the actual media
+     * file, we set episode.isFolder to true.
+     */
+    CStdString strBasePath = item->GetBaseMoviePath(true);
+    URIUtils::RemoveSlashAtEnd(strBasePath);
+    strBasePath = URIUtils::GetFileName(strBasePath);
+
+    SEpisode parent;
+    if (reg.RegFind(strBasePath.c_str()) > -1)
+    {
+      GetAirDateFromRegExp(reg, parent);
+      if (episode.cDate == parent.cDate)
+        episode.isFolder = true;
+    }
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Found date based match %s (%s) [%s]", strLabel.c_str(),
               episode.cDate.GetAsLocalizedDate().c_str(), regexp.c_str());
@@ -1253,7 +1292,7 @@ namespace VIDEO
           strTitle.Format("%s - %ix%i - %s", strShowTitle.c_str(), item.GetVideoInfoTag()->m_iSeason, item.GetVideoInfoTag()->m_iEpisode, item.GetVideoInfoTag()->m_strTitle.c_str());
           m_pObserver->OnSetTitle(strTitle);
         }
-        if (AddVideo(&item, CONTENT_TVSHOWS, false, idShow) < 0)
+        if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, idShow) < 0)
           return INFO_ERROR;
         GetArtwork(&item, CONTENT_TVSHOWS);
         continue;
@@ -1350,7 +1389,7 @@ namespace VIDEO
           strTitle.Format("%s - %ix%i - %s", strShowTitle.c_str(), item.GetVideoInfoTag()->m_iSeason, item.GetVideoInfoTag()->m_iEpisode, item.GetVideoInfoTag()->m_strTitle.c_str());
           m_pObserver->OnSetTitle(strTitle);
         }
-        if (AddVideo(&item, CONTENT_TVSHOWS, false, idShow) < 0)
+        if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, idShow) < 0)
           return INFO_ERROR;
         GetArtwork(&item, CONTENT_TVSHOWS);
       }

@@ -47,6 +47,7 @@ namespace VIDEO
     CStdString strTitle;
     int iSeason;
     int iEpisode;
+    bool isFolder;
     CDateTime cDate;
   } SEpisode;
 
