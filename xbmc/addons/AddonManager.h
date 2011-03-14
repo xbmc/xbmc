@@ -24,8 +24,6 @@
 #include "tinyXML/tinyxml.h"
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
-#include "utils/Job.h"
-#include "utils/Stopwatch.h"
 #include <vector>
 #include <map>
 #include <deque>
@@ -112,7 +110,6 @@ namespace ADDON
 
     const char *GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
-    void UpdateRepos(bool force=false);
     void FindAddons();
     void RemoveAddon(const CStdString& ID);
 
@@ -194,7 +191,6 @@ namespace ADDON
     virtual ~CAddonMgr();
 
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
-    CStopWatch m_watch;
     CCriticalSection m_critSection;
     CAddonDatabase m_database;
   };

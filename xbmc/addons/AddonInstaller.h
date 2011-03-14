@@ -22,6 +22,7 @@
 
 #include "utils/FileOperationJob.h"
 #include "addons/IAddon.h"
+#include "utils/Stopwatch.h"
 
 class CAddonInstaller : public IJobCallback
 {
@@ -63,6 +64,13 @@ public:
    */
   bool CheckDependencies(const ADDON::AddonPtr &addon);
 
+  /*! \brief Update all repositories (if needed)
+   Runs through all available repositories and queues an update of them if they
+   need it (according to the set timeouts) or if forced.
+   \param force whether we should run an update regardless of the normal update cycle. Defaults to false.
+   */
+  void UpdateRepos(bool force = false);
+
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
   void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
 
@@ -99,6 +107,7 @@ private:
 
   CCriticalSection m_critSection;
   JobMap m_downloadJobs;
+  CStopWatch m_repoUpdateWatch;   ///< repository updates are done based on this counter
 };
 
 class CAddonInstallJob : public CFileOperationJob

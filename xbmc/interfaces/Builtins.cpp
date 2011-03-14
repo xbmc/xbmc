@@ -39,6 +39,7 @@
 #include "video/windows/GUIWindowVideoBase.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "addons/Addon.h" // for TranslateType, TranslateContent
+#include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
 #include "music/LastFmManager.h"
@@ -1437,7 +1438,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("updateaddonrepos"))
   {
-    CAddonMgr::Get().UpdateRepos(true);
+    CAddonInstaller::Get().UpdateRepos(true);
   }
   else if (execute.Equals("toggledpms"))
   {

@@ -286,6 +286,28 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
   return true;
 }
 
+void CAddonInstaller::UpdateRepos(bool force)
+{
+  CSingleLock lock(m_critSection);
+  if (!force && m_repoUpdateWatch.IsRunning() && m_repoUpdateWatch.GetElapsedSeconds() < 600)
+    return;
+  m_repoUpdateWatch.StartZero();
+  VECADDONS addons;
+  CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons);
+  for (unsigned int i=0;i<addons.size();++i)
+  {
+    RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addons[i]);
+    CAddonDatabase database;
+    database.Open();
+    CDateTime lastUpdate = database.GetRepoTimestamp(repo->ID());
+    if (force || !lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
+    {
+      CLog::Log(LOGDEBUG,"Checking repository %s for updates",repo->Name().c_str());
+      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo), NULL);
+    }
+  }
+}
+
 CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer)
 : m_addon(addon), m_hash(hash), m_update(update), m_referer(referer)
 {
