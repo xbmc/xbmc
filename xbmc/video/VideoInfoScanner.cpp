@@ -995,51 +995,49 @@ namespace VIDEO
     if ((regexppos = reg.RegFind(strLabel.c_str())) < 0)
       return false;
 
-    bool bMatched = false;
+    SEpisode episode;
+    episode.strPath = item->m_strPath;
+    episode.iSeason = -1;
+    episode.iEpisode = -1;
+    episode.cDate.SetValid(false);
+    if (!GetAirDateFromRegExp(reg, episode))
+      return false;
 
+    CLog::Log(LOGDEBUG, "VideoInfoScanner: Found date based match %s (%s) [%s]", strLabel.c_str(),
+              episode.cDate.GetAsLocalizedDate().c_str(), regexp.c_str());
+    episodeList.push_back(episode);
+
+    return true;
+  }
+
+  bool CVideoInfoScanner::GetAirDateFromRegExp(CRegExp &reg, SEpisode &episodeInfo)
+  {
     char* param1 = reg.GetReplaceString("\\1");
     char* param2 = reg.GetReplaceString("\\2");
     char* param3 = reg.GetReplaceString("\\3");
+
     if (param1 && param2 && param3)
     {
       // regular expression by date
       int len1 = strlen( param1 );
       int len2 = strlen( param2 );
       int len3 = strlen( param3 );
-      char* day;
-      char* month;
-      char* year;
+
       if (len1==4 && len2==2 && len3==2)
       {
         // yyyy mm dd format
-        bMatched = true;
-        year = param1;
-        month = param2;
-        day = param3;
+        episodeInfo.cDate.SetDate(atoi(param1), atoi(param2), atoi(param3));
       }
       else if (len1==2 && len2==2 && len3==4)
       {
         // mm dd yyyy format
-        bMatched = true;
-        year = param3;
-        month = param1;
-        day = param2;
-      }
-      if (bMatched)
-      {
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Found date based match %s (Y%sm=%sd=%s) [%s]", strLabel.c_str(), year, month, day, regexp.c_str());
-        SEpisode myEpisode;
-        myEpisode.strPath = item->m_strPath;
-        myEpisode.iSeason = -1;
-        myEpisode.iEpisode = -1;
-        myEpisode.cDate.SetDate(atoi(year), atoi(month), atoi(day));
-        episodeList.push_back(myEpisode);
+        episodeInfo.cDate.SetDate(atoi(param3), atoi(param1), atoi(param2));
       }
     }
     free(param1);
     free(param2);
     free(param3);
-    return bMatched;
+    return episodeInfo.cDate.IsValid();
   }
 
   long CVideoInfoScanner::AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder, int idShow)

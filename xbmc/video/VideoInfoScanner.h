@@ -178,6 +178,13 @@ namespace VIDEO
      */
     bool GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo);
 
+    /*! \brief Extract episode air-date from a processed regexp
+     \param reg Regular expression object with at least 3 matches
+     \param episodeInfo Episode information to fill in.
+     \return true on success (3 matches), false on failure (fewer than 3 matches)
+     */
+    bool GetAirDateFromRegExp(CRegExp &reg, SEpisode &episodeInfo);
+
     void FetchActorThumbs(const std::vector<SActorInfo>& actors, const CStdString& strPath);
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
 
