@@ -26,8 +26,7 @@
  * SUCH DAMAGE.
  */
 
-//#include <machine/cpu-features.h>
-
+#if defined(__arm__)
 #if __ARM_ARCH__ == 7 || defined(__ARM_NEON__)
 
         .text
@@ -527,3 +526,4 @@ copy_last_3_and_return:
 #endif
 
 #endif    /* __ARM_ARCH__ < 7 */
+#endif

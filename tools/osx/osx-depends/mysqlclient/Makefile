@@ -19,25 +19,9 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-export CFLAGS+=-undefined dynamic_lookup
-export CXXFLAGS+=-undefined dynamic_lookup
-export LDFLAGS+=-Wl,-read_only_relocs,suppress
 CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared \
   --enable-thread-safe-client -with-extra-charsets=complex \
-  --without-readline --without-server --without-bench --without-docs --without-man \
-  ac_cv_func_locking=no \
-  ac_cv_func_thr_setconcurrency=no \
-  ac_cv_func_clock_gettime=no \
-  ac_cv_func_gethrtime=no \
-  ac_cv_func_printstack=no \
-  ac_cv_func_backtrace=no \
-  ac_cv_func_backtrace_symbols=no \
-  ac_cv_func_gethostbyname_r=no \
-  ac_cv_func_bfill=no \
-  ac_cv_func_bmove=no \
-  ac_cv_func_bsearch=no \
-  ac_cv_func_bzero=no \
-  ac_cv_func_fconvert=no \
+  --without-readline --without-server --without-bench --without-docs --without-man
 
 LIBDYLIB=$(SOURCE)/libmysql/.libs/$(LIBNAME).dylib
 

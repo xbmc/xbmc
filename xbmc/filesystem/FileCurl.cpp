@@ -438,7 +438,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, m_referer.c_str());
   else
   {
-    g_curlInterface.easy_setopt(h, CURLOPT_REFERER, "");
+    g_curlInterface.easy_setopt(h, CURLOPT_REFERER, NULL);
     g_curlInterface.easy_setopt(h, CURLOPT_AUTOREFERER, TRUE);
   }
 
