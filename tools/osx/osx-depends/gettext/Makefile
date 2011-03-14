@@ -20,9 +20,6 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-export CFLAGS+=-undefined dynamic_lookup
-export CXXFLAGS+=-undefined dynamic_lookup
-export LDFLAGS+=-Wl,-read_only_relocs,suppress -Wl,-undefined,dynamic_lookup
 CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared \
     --disable-csharp --disable-native-java --disable-java --without-emacs \
     --disable-libasprintf --disable-openmp \
@@ -30,8 +27,7 @@ CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared \
     --with-included-glib \
     --with-included-libcroco \
     --with-included-libxml \
-    --without-git --without-cvs \
-    ac_cv_func___fsetlocking=no ac_cv_func_posix_spawn=no ac_cv_func_mempcpy=no
+    --without-git --without-cvs
 
 LIBDYLIB=$(SOURCE)/.libs/lib$(LIBNAME).dylib
 

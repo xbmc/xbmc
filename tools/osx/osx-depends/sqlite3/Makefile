@@ -21,9 +21,7 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-export CFLAGS+=-undefined dynamic_lookup
-export CXXFLAGS+=-undefined dynamic_lookup -DSQLITE_ENABLE_COLUMN_METADATA=1
-export LDFLAGS+=-Wl,-read_only_relocs,suppress
+export CXXFLAGS+=-DSQLITE_ENABLE_COLUMN_METADATA=1
 export TCLLIBDIR=/dev/null
 CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared \
   --enable-threadsafe --disable-tcl \
