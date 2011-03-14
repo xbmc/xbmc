@@ -23,17 +23,17 @@
 #include "DateTime.h"
 
 #ifdef __APPLE__
-  #if defined(__ppc__) || defined(__arm__)
-    #include <mach/mach_time.h>
-    #include <CoreVideo/CVHostTime.h>
-  #else
-    #include <time.h>
-    #include "posix-realtime-stub.h"
-  #endif
+#if defined(__ppc__) || defined(__arm__)
+#include <mach/mach_time.h>
+#include <CoreVideo/CVHostTime.h>
+#else
+#include <time.h>
+#include "posix-realtime-stub.h"
+#endif
 #elif defined(_LINUX)
-  #include <time.h>
+#include <time.h>
 #elif defined(_WIN32)
-  #include <windows.h>
+#include <windows.h>
 #endif
 
 int64_t CurrentHostCounter(void)
@@ -82,17 +82,17 @@ unsigned int CTimeUtils::GetTimeMS()
 #ifdef _LINUX
   uint64_t now_time;
   static  uint64_t start_time = 0;
-  #if defined(__APPLE__) && (defined(__ppc__) || defined(__arm__))
+#if defined(__APPLE__) && (defined(__ppc__) || defined(__arm__))
     now_time = CVGetCurrentHostTime() *  1000 / CVGetHostClockFrequency();
-  #else
+#else
     struct timespec ts = {};
     clock_gettime(CLOCK_MONOTONIC, &ts);
     now_time = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
-  #endif
+#endif
     if (start_time == 0)
       start_time = now_time;
     return (now_time - start_time);
-  #else
+#else
   return timeGetTime();
 #endif
 }
