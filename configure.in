@@ -1528,7 +1528,7 @@ XB_CONFIG_MODULE([lib/libflac/flac-1.2.1], [
   if test "$host_vendor" = "apple" ; then
     rm -f config.cache
     CFLAGS="$CFLAGS -fno-common" \ 
-    LDFLAGS="$LDFLAGS -Wl,-read_only_relocs,suppress -Wl,-undefined,dynamic_lookup" \
+    LDFLAGS="$LDFLAGS" \
     ./configure -C \
       --host=$host_alias \
       --build=$build_alias \
@@ -1546,7 +1546,6 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
     ./configure \
       --extra-cflags="$CFLAGS $FFMPEG_EXTRACFLAGS -w -D_DARWIN_C_SOURCE -Dattribute_deprecated=" \
-      --extra-ldflags="-Wl,-undefined,dynamic_lookup -lc" \
       `if test "$cross_compiling" = "yes"; then echo --enable-cross-compile; fi` \
       `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
       `if test "$use_cpu" != "no"; then echo --cpu=$use_cpu; fi`\
@@ -1576,9 +1575,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --cc="$CC" &&
     sed -i "" -e "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak &&
     sed -i "" -e "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak &&
-    sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak &&
-    sed -i "" -e "s#libswscale_VERSION_MAJOR=0#libswscale_VERSION_MAJOR=0.7.1#" config.mak &&
-    sed -i "" -e "s#libavfilter_VERSION_MAJOR=0#libavfilter_VERSION_MAJOR=0.4.0#" config.mak
+    sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
   else
     CFLAGS="" \
     LDFLAGS="$(echo "$LDFLAGS" | sed "s/-Wl,-Bsymbolic-functions//g")" \
