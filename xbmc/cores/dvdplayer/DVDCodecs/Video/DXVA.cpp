@@ -1092,6 +1092,12 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
   blt.BackgroundColor.Cr    = 0x8000;
   blt.BackgroundColor.Alpha = 0xffff;
 
+  /* HACK to kickstart certain DXVA drivers (poulsbo) which oddly  *
+   * won't render anything until someting else have been rendered. */
+  g_Windowing.Get3DDevice()->SetFVF( D3DFVF_XYZ );
+  float verts[2][3]= {};
+  g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 1, verts, 3*sizeof(float));
+
   CHECK(m_process->VideoProcessBlt(target, &blt, samp.get(), valid, NULL));
   return true;
 }
