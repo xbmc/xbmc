@@ -254,7 +254,7 @@ void CAddonInstaller::InstallFromXBMCRepo(const set<CStdString> &addonIDs)
   }
   // now install the addons
   for (set<CStdString>::const_iterator i = addonIDs.begin(); i != addonIDs.end(); ++i)
-    CAddonInstaller::Get().Install(*i);
+    Install(*i);
 }
 
 bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)

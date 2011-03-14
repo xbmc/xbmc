@@ -53,7 +53,7 @@ public:
   /*! \brief Install a set of addons from the official repository (if needed)
    \param addonIDs a set of addon IDs to install
    */
-  static void InstallFromXBMCRepo(const std::set<CStdString> &addonIDs);
+  void InstallFromXBMCRepo(const std::set<CStdString> &addonIDs);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
    Iterates through the addon's dependencies, checking they're installed or installable.
