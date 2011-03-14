@@ -68,7 +68,8 @@ namespace ADDON
 
     virtual const char *GetType() const { return "repoupdate"; };
     virtual bool DoWork();
-    static VECADDONS GrabAddons(RepositoryPtr& repo, bool check);
+  private:
+    VECADDONS GrabAddons(RepositoryPtr& repo);
 
     VECADDONS m_repos;
   };

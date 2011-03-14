@@ -181,7 +181,7 @@ bool CRepositoryUpdateJob::DoWork()
   for (VECADDONS::const_iterator i = m_repos.begin(); i != m_repos.end(); ++i)
   {
     RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(*i);
-    VECADDONS newAddons = GrabAddons(repo, true);
+    VECADDONS newAddons = GrabAddons(repo);
     addons.insert(addons.end(), newAddons.begin(), newAddons.end());
   }
   if (addons.empty())
@@ -231,16 +231,13 @@ bool CRepositoryUpdateJob::DoWork()
   return true;
 }
 
-VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo,
-                                           bool check)
+VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
 {
   CAddonDatabase database;
   database.Open();
   CStdString checksum;
   int idRepo = database.GetRepoChecksum(repo->ID(),checksum);
-  CStdString reposum=checksum;
-  if (check)
-    reposum = repo->Checksum();
+  CStdString reposum = repo->Checksum();
   VECADDONS addons;
   if (idRepo == -1 || !checksum.Equals(reposum))
   {
