@@ -51,6 +51,7 @@ struct find_map : public binary_function<CAddonInstaller::JobMap::value_type, un
 
 CAddonInstaller::CAddonInstaller()
 {
+  m_repoUpdateJob = 0;
 }
 
 CAddonInstaller::~CAddonInstaller()
@@ -63,13 +64,20 @@ CAddonInstaller &CAddonInstaller::Get()
   return addonInstaller;
 }
 
-void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job2)
+void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
   CSingleLock lock(m_critSection);
-  JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
-  if (i != m_downloadJobs.end())
-    m_downloadJobs.erase(i);
-  lock.Leave();
+  if (strncmp(job->GetType(), "repoupdate", 10) == 0)
+  { // repo job finished
+    m_repoUpdateJob = 0;
+  }
+  else
+  { // download job
+    JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
+    if (i != m_downloadJobs.end())
+      m_downloadJobs.erase(i);
+    lock.Leave();
+  }
 
   if (success)
     CAddonMgr::Get().FindAddons();
@@ -286,10 +294,12 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
   return true;
 }
 
-void CAddonInstaller::UpdateRepos(bool force)
+void CAddonInstaller::UpdateRepos(bool force, bool wait)
 {
   CSingleLock lock(m_critSection);
   if (!force && m_repoUpdateWatch.IsRunning() && m_repoUpdateWatch.GetElapsedSeconds() < 600)
+    return;
+  if (m_repoUpdateJob)
     return;
   m_repoUpdateWatch.StartZero();
   VECADDONS addons;
@@ -302,7 +312,7 @@ void CAddonInstaller::UpdateRepos(bool force)
     if (force || !lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
     {
       CLog::Log(LOGDEBUG,"Checking repositories for updates (triggered by %s)",addons[i]->Name().c_str());
-      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), this);
+      m_repoUpdateJob = CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), this);
       return;
     }
   }

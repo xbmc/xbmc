@@ -108,6 +108,7 @@ private:
   CCriticalSection m_critSection;
   JobMap m_downloadJobs;
   CStopWatch m_repoUpdateWatch;   ///< repository updates are done based on this counter
+  unsigned int m_repoUpdateJob;   ///< the job ID of the repository updates
 };
 
 class CAddonInstallJob : public CFileOperationJob

@@ -66,6 +66,7 @@ namespace ADDON
     CRepositoryUpdateJob(const VECADDONS& repos);
     virtual ~CRepositoryUpdateJob() {}
 
+    virtual const char *GetType() const { return "repoupdate"; };
     virtual bool DoWork();
     static VECADDONS GrabAddons(RepositoryPtr& repo, bool check);
 
