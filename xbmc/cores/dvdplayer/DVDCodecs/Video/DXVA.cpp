@@ -538,7 +538,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 
   DXVA2_ConfigPictureDecode config = {};
 
-  unsigned bitstream = 1; //ConfigBitstreamRaw = 2 seems to be broken in current ffmpeg, so prefer mode 1 for now
+  unsigned bitstream = 2;
   for(unsigned i = 0; i< cfg_count; i++)
   {
     CLog::Log(LOGDEBUG,
