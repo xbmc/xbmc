@@ -74,10 +74,10 @@ int CPVREpgContainer::GetEPGAll(CFileItemList* results, bool bRadio /* = false *
   for (unsigned int iChannelPtr = 0; iChannelPtr < group->Size(); iChannelPtr++)
   {
     CPVRChannel *channel = (CPVRChannel *) group->GetByIndex(iChannelPtr);
-    if (!channel || !channel->GetEPG())
+    if (!channel)
       continue;
 
-    channel->GetEPG()->Get(results);
+    channel->GetEPG(results);
   }
 
   return results->Size() - iInitialSize;
