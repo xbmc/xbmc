@@ -296,14 +296,14 @@ void CAddonInstaller::UpdateRepos(bool force)
   CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons);
   for (unsigned int i=0;i<addons.size();++i)
   {
-    RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addons[i]);
     CAddonDatabase database;
     database.Open();
-    CDateTime lastUpdate = database.GetRepoTimestamp(repo->ID());
+    CDateTime lastUpdate = database.GetRepoTimestamp(addons[i]->ID());
     if (force || !lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
     {
-      CLog::Log(LOGDEBUG,"Checking repository %s for updates",repo->Name().c_str());
-      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo), NULL);
+      CLog::Log(LOGDEBUG,"Checking repositories for updates (triggered by %s)",addons[i]->Name().c_str());
+      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), this);
+      return;
     }
   }
 }

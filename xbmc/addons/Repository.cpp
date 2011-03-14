@@ -170,14 +170,20 @@ VECADDONS CRepository::Parse()
   return result;
 }
 
-CRepositoryUpdateJob::CRepositoryUpdateJob(RepositoryPtr& repo, bool check)
+CRepositoryUpdateJob::CRepositoryUpdateJob(const VECADDONS &repos)
+  : m_repos(repos)
 {
-  m_repo = boost::dynamic_pointer_cast<CRepository>(repo->Clone(repo));
 }
 
 bool CRepositoryUpdateJob::DoWork()
 {
-  VECADDONS addons = GrabAddons(m_repo,true);
+  VECADDONS addons;
+  for (VECADDONS::const_iterator i = m_repos.begin(); i != m_repos.end(); ++i)
+  {
+    RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(*i);
+    VECADDONS newAddons = GrabAddons(repo, true);
+    addons.insert(addons.end(), newAddons.begin(), newAddons.end());
+  }
   if (addons.empty())
     return false;
 
