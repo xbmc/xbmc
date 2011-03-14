@@ -23,6 +23,7 @@
 #include "utils/FileOperationJob.h"
 #include "addons/IAddon.h"
 #include "utils/Stopwatch.h"
+#include "threads/Event.h"
 
 class CAddonInstaller : public IJobCallback
 {
@@ -66,10 +67,12 @@ public:
 
   /*! \brief Update all repositories (if needed)
    Runs through all available repositories and queues an update of them if they
-   need it (according to the set timeouts) or if forced.
+   need it (according to the set timeouts) or if forced.  Optionally busy wait
+   until the repository updates are complete.
    \param force whether we should run an update regardless of the normal update cycle. Defaults to false.
+   \param wait whether we should busy wait for the updates to be performed. Defaults to false.
    */
-  void UpdateRepos(bool force = false);
+  void UpdateRepos(bool force = false, bool wait = false);
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
   void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
@@ -109,6 +112,7 @@ private:
   JobMap m_downloadJobs;
   CStopWatch m_repoUpdateWatch;   ///< repository updates are done based on this counter
   unsigned int m_repoUpdateJob;   ///< the job ID of the repository updates
+  CEvent m_repoUpdateDone;        ///< event set when the repository updates are complete
 };
 
 class CAddonInstallJob : public CFileOperationJob

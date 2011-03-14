@@ -69,6 +69,7 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
   CSingleLock lock(m_critSection);
   if (strncmp(job->GetType(), "repoupdate", 10) == 0)
   { // repo job finished
+    m_repoUpdateDone.Set();
     m_repoUpdateJob = 0;
   }
   else
@@ -247,19 +248,9 @@ bool CAddonInstaller::InstallFromZip(const CStdString &path)
 
 void CAddonInstaller::InstallFromXBMCRepo(const set<CStdString> &addonIDs)
 {
-  // first check we have the main repository updated...
-  AddonPtr addon;
-  if (CAddonMgr::Get().GetAddon("repository.xbmc.org", addon))
-  {
-    VECADDONS addons;
-    CAddonDatabase database;
-    database.Open();
-    if (!database.GetRepository(addon->ID(), addons))
-    {
-      RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addon);
-      addons = CRepositoryUpdateJob::GrabAddons(repo, false);
-    }
-  }
+  // first check we have the our repositories up to date (and wait until we do)
+  UpdateRepos(false, true);
+
   // now install the addons
   for (set<CStdString>::const_iterator i = addonIDs.begin(); i != addonIDs.end(); ++i)
     Install(*i);
@@ -297,9 +288,17 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
 void CAddonInstaller::UpdateRepos(bool force, bool wait)
 {
   CSingleLock lock(m_critSection);
-  if (!force && m_repoUpdateWatch.IsRunning() && m_repoUpdateWatch.GetElapsedSeconds() < 600)
-    return;
   if (m_repoUpdateJob)
+  {
+    if (wait)
+    { // wait for our job to complete
+      lock.Leave();
+      CLog::Log(LOGDEBUG, "%s - waiting for repository update job to finish...", __FUNCTION__);
+      m_repoUpdateDone.Wait();
+    }
+    return;
+  }
+  if (!force && m_repoUpdateWatch.IsRunning() && m_repoUpdateWatch.GetElapsedSeconds() < 600)
     return;
   m_repoUpdateWatch.StartZero();
   VECADDONS addons;
@@ -313,6 +312,12 @@ void CAddonInstaller::UpdateRepos(bool force, bool wait)
     {
       CLog::Log(LOGDEBUG,"Checking repositories for updates (triggered by %s)",addons[i]->Name().c_str());
       m_repoUpdateJob = CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), this);
+      if (wait)
+      { // wait for our job to complete
+        lock.Leave();
+        CLog::Log(LOGDEBUG, "%s - waiting for this repository update job to finish...", __FUNCTION__);
+        m_repoUpdateDone.Wait();
+      }
       return;
     }
   }
