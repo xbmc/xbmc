@@ -133,7 +133,7 @@ static void LoadTexture(GLenum target
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 #endif
 
-  if(pixelVector) free(pixelVector);
+  free(pixelVector);
   
   *u = (GLfloat)width  / width2;
   *v = (GLfloat)height / height2;
