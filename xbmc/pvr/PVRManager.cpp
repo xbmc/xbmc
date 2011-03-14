@@ -399,8 +399,31 @@ void CPVRManager::ResetProperties(void)
   m_clients.clear();
 }
 
+void CPVRManager::UpdateSignalQuality(void)
+{
+  CSingleLock lock(m_critSection);
+
+  if (!m_currentPlayingChannel || !g_guiSettings.GetBool("pvrplayback.signalquality"))
+  {
+    ResetQualityData();
+    return;
+  }
+
+  const CPVRChannel *channel = m_currentPlayingChannel->GetPVRChannelInfoTag();
+
+  if (!channel->IsVirtual() && channel->ClientID() >= 0 && m_clients[channel->ClientID()])
+    m_clients[channel->ClientID()]->SignalQuality(m_qualityInfo);
+  else
+    ResetQualityData();
+}
+
 void CPVRManager::UpdateTimers(void)
 {
+  CSingleLock lock(m_critSection);
+
+  if (!m_bTriggerRecordingsUpdate)
+    return;
+
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating timers", __FUNCTION__);
 
   m_timers->Update();
@@ -412,6 +435,11 @@ void CPVRManager::UpdateTimers(void)
 
 void CPVRManager::UpdateRecordings(void)
 {
+  CSingleLock lock(m_critSection);
+
+  if (!m_bTriggerRecordingsUpdate)
+    return;
+
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating recordings list", __FUNCTION__);
 
   m_recordings->Update();
@@ -423,6 +451,11 @@ void CPVRManager::UpdateRecordings(void)
 
 void CPVRManager::UpdateChannels(void)
 {
+  CSingleLock lock(m_critSection);
+
+  if (!m_bTriggerChannelsUpdate)
+    return;
+
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating channel list", __FUNCTION__);
 
   m_channelGroups->Update();
@@ -528,23 +561,10 @@ void CPVRManager::Process()
     if (DisableIfNoClients())
       return;
 
-    if (m_bTriggerChannelsUpdate)
-      UpdateChannels();
-
-    if (m_bTriggerRecordingsUpdate)
-      UpdateRecordings();
-
-    if (m_bTriggerTimersUpdate)
-      UpdateTimers();
-
-    CSingleLock lock(m_critSection);
-    /* Get Signal information of the current playing channel */
-    if (m_currentPlayingChannel && g_guiSettings.GetBool("pvrplayback.signalquality") &&
-        !m_currentPlayingChannel->GetPVRChannelInfoTag()->IsVirtual() &&
-        m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID() >= 0 &&
-        m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()])
-      m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->SignalQuality(m_qualityInfo);
-    lock.Leave();
+    UpdateChannels();
+    UpdateRecordings();
+    UpdateTimers();
+    UpdateSignalQuality();
 
     Sleep(1000);
   }
@@ -1460,16 +1480,19 @@ const CPVRChannelGroup *CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
 
 void CPVRManager::TriggerRecordingsUpdate()
 {
+  CSingleLock lock(m_critSection);
   m_bTriggerRecordingsUpdate = true;
 }
 
 void CPVRManager::TriggerTimersUpdate()
 {
+  CSingleLock lock(m_critSection);
   m_bTriggerTimersUpdate = true;
 }
 
 void CPVRManager::TriggerChannelsUpdate()
 {
+  CSingleLock lock(m_critSection);
   m_bTriggerChannelsUpdate = true;
 }
 

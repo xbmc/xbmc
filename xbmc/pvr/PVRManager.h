@@ -654,6 +654,11 @@ private:
    */
   void UpdateTimers(void);
 
+  /*!
+   * @brief Update the signal quality info.
+   */
+  void UpdateSignalQuality(void);
+
   /** @name General PVRManager data */
   //@{
   static CPVRManager *            m_instance;                 /*!< singleton instance */
