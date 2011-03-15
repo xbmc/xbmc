@@ -369,39 +369,39 @@ void CGUISettings::Initialize()
   AddInt(vs, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
   // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
   // contains an index to the g_settings.m_ResInfo array. the only meaningful fields are iScreen, iWidth, iHeight.
-  #if defined (__APPLE__)
-    AddInt(vs, "videoscreen.resolution", 131, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
-  #else
-    AddInt(vs, "videoscreen.resolution", 169, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
-  #endif
+#if defined (__APPLE__)
+  AddInt(vs, "videoscreen.resolution", 131, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
+#else
+  AddInt(vs, "videoscreen.resolution", 169, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
+#endif
   AddString(g_application.IsStandAlone() ? vs : NULL, "videoscreen.screenmode", 243, "DESKTOP", SPIN_CONTROL_TEXT);
 
-  #if defined(_WIN32) || defined (__APPLE__)
-    // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
-    // as it works nicer with switching to other applications. However on some systems vsync is broken
-    // when we do this (eg non-Aero on ATI in particular) and on others (AppleTV) we can't get XBMC to
-    // the front
-    bool fakeFullScreen = true;
-    bool showSetting = true;
-    if (g_sysinfo.IsAeroDisabled())
-      fakeFullScreen = false;
+#if defined(_WIN32) || defined (__APPLE__)
+  // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
+  // as it works nicer with switching to other applications. However on some systems vsync is broken
+  // when we do this (eg non-Aero on ATI in particular) and on others (AppleTV) we can't get XBMC to
+  // the front
+  bool fakeFullScreen = true;
+  bool showSetting = true;
+  if (g_sysinfo.IsAeroDisabled())
+    fakeFullScreen = false;
 
-    #if defined(_WIN32) && defined(HAS_GL)
-      fakeFullScreen = true;
-      showSetting = false;
-    #endif
+#if defined(_WIN32) && defined(HAS_GL)
+  fakeFullScreen = true;
+  showSetting = false;
+#endif
 
-    #if defined (__APPLE__)
-      if (g_sysinfo.IsAppleTV())
-      {
-        fakeFullScreen = false;
-      }
-      showSetting = false;
-    #endif
-    AddBool(showSetting ? vs : NULL, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
-    AddBool(vs, "videoscreen.blankdisplays", 13130, false);
-    AddSeparator(vs, "videoscreen.sep1");
-  #endif
+#if defined (__APPLE__)
+  if (g_sysinfo.IsAppleTV())
+  {
+    fakeFullScreen = false;
+  }
+  showSetting = false;
+#endif
+  AddBool(showSetting ? vs : NULL, "videoscreen.fakefullscreen", 14083, fakeFullScreen);
+  AddBool(vs, "videoscreen.blankdisplays", 13130, false);
+  AddSeparator(vs, "videoscreen.sep1");
+#endif
 #endif
 
   map<int,int> vsync;
@@ -478,11 +478,11 @@ void CGUISettings::Initialize()
   remotemode.insert(make_pair(13612,APPLE_REMOTE_UNIVERSAL));
   remotemode.insert(make_pair(13613,APPLE_REMOTE_MULTIREMOTE));
   AddInt(in, "input.appleremotemode", 13600, APPLE_REMOTE_STANDARD, remotemode, SPIN_CONTROL_TEXT);
-  #if !defined(__arm__)
-    AddBool(in, "input.appleremotealwayson", 13602, false);
-  #else
-    AddBool(NULL, "input.appleremotealwayson", 13602, false);
-  #endif
+#if !defined(__arm__)
+  AddBool(in, "input.appleremotealwayson", 13602, false);
+#else
+  AddBool(NULL, "input.appleremotealwayson", 13602, false);
+#endif
   AddInt(NULL, "input.appleremotesequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
   AddSeparator(in, "input.sep1");
 #endif
