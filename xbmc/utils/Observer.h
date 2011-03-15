@@ -22,6 +22,7 @@
  */
 
 #include "StdString.h"
+#include "threads/CriticalSection.h"
 
 class Observable;
 
@@ -31,12 +32,12 @@ public:
   virtual void Notify(const Observable &obs, const CStdString& msg) = 0;
 };
 
-class Observable : private std::vector<Observer *>
+class Observable
 {
-
 public:
   Observable();
   virtual ~Observable();
+  Observable &operator=(const Observable &observable);
 
   void AddObserver(Observer *o);
   void RemoveObserver(Observer *o);
@@ -44,5 +45,7 @@ public:
   void SetChanged(bool bSetTo = true);
 
 private:
-  bool  m_bObservableChanged;
+  bool                    m_bObservableChanged;
+  std::vector<Observer *> m_observers;
+  CCriticalSection        m_critSection;
 };
