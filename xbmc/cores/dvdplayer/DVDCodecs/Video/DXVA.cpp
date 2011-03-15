@@ -630,8 +630,11 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
   ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(picture);
   CSingleLock lock(m_section);
   picture->format = DVDVideoPicture::FMT_DXVA;
-  picture->proc    = m_processor;
-  picture->proc_id = m_processor->Add((IDirect3DSurface9*)frame->data[3]);
+  picture->proc   = m_processor;
+  if(picture->iFlags & DVP_FLAG_DROPPED)
+    picture->proc_id = 0;
+  else
+    picture->proc_id = m_processor->Add((IDirect3DSurface9*)frame->data[3]);
   return true;
 }
 
