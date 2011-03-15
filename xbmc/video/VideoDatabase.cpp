@@ -6830,6 +6830,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
     {
       TiXmlElement xmlMainElement("videodb");
       pMain = xmlDoc.InsertEndChild(xmlMainElement);
+      XMLUtils::SetInt(pMain,"version", GetExportVersion());
     }
 
     while (!m_pDS->eof())
@@ -7355,6 +7356,11 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
       progress->StartModal();
       progress->ShowProgressBar(true);
     }
+
+    int iVersion = 0;
+    XMLUtils::GetInt(root, "version", iVersion);
+
+    CLog::Log(LOGDEBUG, "%s: Starting import (export version = %i)", __FUNCTION__, iVersion);
 
     TiXmlElement *movie = root->FirstChildElement();
     int current = 0;
