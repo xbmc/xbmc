@@ -52,6 +52,10 @@ private:
   virtual bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
 
   virtual void UpdateButtons(void);
+  virtual void UpdateViewChannel(void);
+  virtual void UpdateViewNow(void);
+  virtual void UpdateViewNext(void);
+  virtual void UpdateViewTimeline(void);
 
   int m_iGuideView;
 };
