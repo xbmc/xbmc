@@ -31,11 +31,38 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
+#include "threads/SingleLock.h"
 
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
-  CGUIWindowPVRCommon(parent, PVR_WINDOW_EPG, CONTROL_BTNGUIDE, CONTROL_LIST_GUIDE_NOW_NEXT)
+  CGUIWindowPVRCommon(parent, PVR_WINDOW_EPG, CONTROL_BTNGUIDE, CONTROL_LIST_GUIDE_NOW_NEXT),
+  Observer()
 {
-  m_iGuideView = g_guiSettings.GetInt("pvrmenu.defaultguideview");
+  m_iGuideView     = g_guiSettings.GetInt("pvrmenu.defaultguideview");
+  m_epgData        = new CFileItemList();
+  m_bLastEpgView   = false;
+  m_bGotInitialEpg = false;
+  m_bObservingEpg  = false;
+}
+
+CGUIWindowPVRGuide::~CGUIWindowPVRGuide()
+{
+  delete m_epgData;
+}
+
+void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
+{
+  if (msg.Equals("epg"))
+  {
+    /* update the EPG cache */
+    CSingleLock lock(m_critSection);
+    CPVRManager::GetEpg()->GetEPGAll(m_epgData, m_bLastEpgView);
+    m_bGotInitialEpg = true;
+    lock.Leave();
+
+    /* update the current window if the EPG timeline view is active */
+    if (IsActive() && m_iGuideView == GUIDE_VIEW_TIMELINE)
+      UpdateData();
+  }
 }
 
 void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &buttons) const
@@ -169,20 +196,38 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19032));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
 
-  if (CPVRManager::GetEpg()->GetEPGAll(m_parent->m_vecItems, bRadio) > 0)
-  {
-    m_parent->m_guideGrid = (CGUIEPGGridContainer*) m_parent->GetControl(CONTROL_LIST_TIMELINE);
-    if (m_parent->m_guideGrid)
-    {
-      CDateTime gridStart = CDateTime::GetCurrentDateTime() - CDateTimeSpan(0, 0, g_advancedSettings.m_iEpgLingerTime, 0);
-      CDateTime firstDate = CPVRManager::GetEpg()->GetFirstEPGDate(bRadio);
-      CDateTime lastDate = CPVRManager::GetEpg()->GetLastEPGDate(bRadio);
+  CSingleLock lock(m_critSection);
 
-      m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
-      m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
-    }
-//      m_viewControl.SetSelectedItem(m_iSelected_GUIDE);
+  /* start observing the EPG for changes, so our cache becomes updated in the background */
+  if (!m_bObservingEpg)
+  {
+    CPVRManager::GetEpg()->AddObserver(this);
+    m_bObservingEpg = true;
   }
+
+  if (!m_bGotInitialEpg || bRadio != m_bLastEpgView)
+    CPVRManager::GetEpg()->GetEPGAll(m_epgData, bRadio);
+  m_bGotInitialEpg = true;
+  m_bLastEpgView = bRadio;
+
+  if (m_epgData->Size() <= 0)
+    return;
+
+  m_parent->m_guideGrid = (CGUIEPGGridContainer*) m_parent->GetControl(CONTROL_LIST_TIMELINE);
+  if (m_parent->m_guideGrid)
+  {
+    CDateTime gridStart = CDateTime::GetCurrentDateTime() - CDateTimeSpan(0, 0, g_advancedSettings.m_iEpgLingerTime, 0);
+    CDateTime firstDate = CPVRManager::GetEpg()->GetFirstEPGDate(bRadio);
+    CDateTime lastDate = CPVRManager::GetEpg()->GetLastEPGDate(bRadio);
+
+    /* copy over the cached epg data */
+    for (int iEpgPtr = 0; iEpgPtr < m_epgData->Size(); iEpgPtr++)
+      m_parent->m_vecItems->Add(m_epgData->Get(iEpgPtr));
+
+    m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
+    m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
+  }
+//m_viewControl.SetSelectedItem(m_iSelected_GUIDE);
 }
 
 void CGUIWindowPVRGuide::UpdateData(void)

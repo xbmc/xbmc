@@ -23,20 +23,23 @@
 
 #include "GUIWindowPVRCommon.h"
 #include "guilib/GUIEPGGridContainer.h"
+#include "threads/CriticalSection.h"
+#include "utils/Observer.h"
 
 class CGUIWindowPVR;
 
-class CGUIWindowPVRGuide : public CGUIWindowPVRCommon
+class CGUIWindowPVRGuide : public CGUIWindowPVRCommon, public Observer
 {
   friend class CGUIWindowPVR;
 
 public:
   CGUIWindowPVRGuide(CGUIWindowPVR *parent);
-  virtual ~CGUIWindowPVRGuide(void) {};
+  virtual ~CGUIWindowPVRGuide(void);
 
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void UpdateData(void);
+  virtual void Notify(const Observable &obs, const CStdString& msg);
 
 private:
   virtual bool IsSelectedButton(CGUIMessage &message) const;
@@ -57,5 +60,10 @@ private:
   virtual void UpdateViewNext(void);
   virtual void UpdateViewTimeline(void);
 
-  int m_iGuideView;
+  int              m_iGuideView;
+  CFileItemList *  m_epgData;
+  bool             m_bLastEpgView; /*!< true for radio, false for tv */
+  bool             m_bGotInitialEpg;
+  bool             m_bObservingEpg;
+  CCriticalSection m_critSection;
 };
