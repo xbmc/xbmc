@@ -180,7 +180,6 @@
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<preloaditems>2</preloaditems>
-				<visible>![Window.IsVisible(VideoLibrary) + Container.Content(TVShows)]</visible>
 				<itemlayout height="275" width="270">
 					<control type="image">
 						<posx>1</posx>
