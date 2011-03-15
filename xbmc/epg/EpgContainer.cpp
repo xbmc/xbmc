@@ -37,7 +37,8 @@ using namespace std;
 
 CEpgContainer g_EpgContainer;
 
-CEpgContainer::CEpgContainer(void)
+CEpgContainer::CEpgContainer(void) :
+    Observable()
 {
   m_bStop = true;
   Clear(false);
@@ -327,6 +328,8 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     progress->SetHeader(g_localizeStrings.Get(19004));
   }
 
+  int iUpdatedTables = 0;
+
   /* load or update all EPG tables */
   for (unsigned int iEpgPtr = 0; iEpgPtr < iEpgCount; iEpgPtr++)
   {
@@ -351,6 +354,8 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
           __FUNCTION__, at(iEpgPtr)->Name().c_str());
 
     bUpdateSuccess = bCurrent && bUpdateSuccess;
+    if (bCurrent)
+      ++iUpdatedTables;
 
     if (bShowProgress)
     {
@@ -381,6 +386,13 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 
   /* only try to load the database once */
   m_bDatabaseLoaded = true;
+
+  /* notify observers */
+  if (iUpdatedTables > 0)
+  {
+    SetChanged();
+    NotifyObservers("epg");
+  }
 
   return bUpdateSuccess;
 }
