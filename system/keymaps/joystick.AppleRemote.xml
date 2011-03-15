@@ -1,39 +1,32 @@
-<!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
-<!-- The <global> section is a fall through - they will only be used if the button is not          -->
-<!-- used in the current window's section.  Note that there is only handling                       -->
-<!-- for a single action per button at this stage.                                                 -->
-<!-- For joystick/gamepad configuration under linux/win32, see below as it differs from xbox       -->
-<!-- gamepads.                                                                                     -->
+<!-- This file contains the mapping of keys (gamepad,remote and keyboard) to actions within XBMC -->
+<!-- The <global> section is a fall through - they will only be used if the button is not        -->
+<!-- used in the current window's section.  Note that there is only handling                     -->
+<!-- for a single action per button at this stage.                                               -->
+<!-- For joystick/gamepad configuration under linux/win32, see below as it differs from xbox     -->
+<!-- gamepads.                                                                                   -->
 
-<!-- The format is:                      -->
-<!--    <device>                         -->
-<!--      <button>action</button>        -->
-<!--    </device>                        -->
+<!-- The format is:                                                                              -->
+<!--    <device>                                                                                 -->
+<!--      <button id="#">xbmc action</button>                                                    -->
+<!--    </device>                                                                                -->
 
 <!-- To map keys from other remotes using the RCA protocol, you may add <universalremote> blocks -->
 <!-- In this case, the tags used are <obc#> where # is the original button code (OBC) of the key -->
-<!-- You set it up by adding a <universalremote> block to the window or <global> section:       -->
-<!--    <universalremote>             -->
-<!--       <obc45>Stop</obc45>         -->
-<!--    </universalremote>            -->
+<!-- You set it up by adding a <universalremote> block to the window or <global> section:        -->
+<!--    <universalremote>                                                                        -->
+<!--       <obc45>Stop</obc45>                                                                   -->
+<!--    </universalremote>                                                                       -->
 
-<!-- Note that the action can be a built-in function.                 -->
-<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
-<!-- would automatically go to My Music on the press of the B button. -->
+<!-- Note that the action can be a built-in function.                                            -->
+<!--            eg <button id="6">XBMC.ActivateWindow(Favourites)</button>                       -->
+<!-- would bring up Favourites when the button with the id of 6 is press. In this case, "Menu"   -->
 
-<!-- Joysticks / Gamepads:                                                                    -->
-<!--   See the sample PS3 controller configuration below for the format.                      -->
-<!--                                                                                          -->
-<!--  Joystick Name:                                                                          -->
-<!--   Do 'cat /proc/bus/input/devices' or see your xbmc log file  to find the names of       -->
-<!--   detected joysticks. The name used in the configuration should match the detected name. -->
-<!--                                                                                          -->
-<!--  Button Ids:                                                                             -->
-<!--   'id' is the button ID used by SDL. Joystick button ids of connected joysticks appear   -->
-<!--   in xbmc.log when they are pressed. Use your log to map custom buttons to actions.      -->
-<!--                                                                                          -->
-<!--  Axis Ids / Analog Controls                                                              -->
-<!--   Coming soon.                                                                           -->
+<!--                                                                                             -->
+<!--  Button Ids:                                                                                -->
+<!--  'id' is the button ID used by SDL. The button ids recognized from your remote appears      -->
+<!--  in /var/log/syslog on the ATV2 for each button pressed and when debug mode is enabled      -->
+<!--  Use your log to discover and map custom buttons to actions.                                -->
+
 <keymap>
   <global>
     <joystick name="AppleRemote">
@@ -43,28 +36,49 @@
       <!-- right      -->      <button id="4">Right</button>
       <!-- center     -->      <button id="5">Select</button>
       <!-- menu       -->      <button id="6">PreviousMenu</button>
-      <!-- hold center  -->    <button id="7">Fullscreen</button>
+      <!-- hold center-->      <button id="7">Fullscreen</button>
       <!-- hold menu  -->      <button id="8">ContextMenu</button>
+
       <!-- old buttons for ATV <2.2, used on OSX  -->
       <!-- hold left  -->      <button id="9">Left</button>
       <!-- hold right -->      <button id="10">Right</button>
+
       <!-- new aluminium remote buttons  -->
-      <!-- play  -->           <button id="12">Play</button>
+      <!-- play/pause -->      <button id="12">Play</button>
+
+      <!-- Additional buttons via Harmony Apple TV remote profile -->
+      <!-- pageup     -->      <button id="13">PageUp</button>
+      <!-- pagedown   -->      <button id="14">PageDown</button>
+      <!-- pause      -->      <button id="15">Pause</button><!-- work? -->
+      <!-- play2      -->      <button id="16">Play</button>
+      <!-- stop       -->      <button id="17">Stop</button>
+      <!-- fast fwd   -->      <button id="18">FastForward</button><!-- work? -->
+      <!-- rewind     -->      <button id="19">Rewind</button>
+      <!-- skip fwd   -->      <button id="20">SkipNext</button>
+      <!-- skip back  -->      <button id="21">SkipPrevious</button>
+
       <!-- Learned remote buttons (ATV >2.3) -->
-      <!-- Play -->      <button id="70">Play</button>
-      <!-- Pause -->      <button id="71">Pause</button>
-      <!-- Stop -->      <button id="72">Stop</button>
-      <!-- Previous -->      <button id="73">SkipPrevious</button>
-      <!-- Next -->      <button id="74">SkipNext</button>
-      <!-- Rewind -->      <button id="75">Rewind</button>
-      <!-- Forward -->      <button id="76">FastForward</button>
-      <!-- Return -->      <button id="77">OSD</button>
-      <!-- Enter -->      <button id="78">ShowVideoMenu</button>
+      <!-- Play       -->      <button id="70">Play</button>
+      <!-- Pause      -->      <button id="71">Pause</button>
+      <!-- Stop       -->      <button id="72">Stop</button>
+      <!-- Previous   -->      <button id="73">SkipPrevious</button>
+      <!-- Next       -->      <button id="74">SkipNext</button>
+      <!-- Rewind     -->      <button id="75">Rewind</button>
+      <!-- Forward    -->      <button id="76">FastForward</button>
+      <!-- Return     -->      <button id="77">OSD</button>
+      <!-- Enter      -->      <button id="78">ShowVideoMenu</button>
+
       <!-- few gestures from Apple's iPhone Remote (ATV > 2.3 ?) -->
       <!-- SwipeLeft  -->      <button id="80">Left</button>
-      <!-- SwipeRight  -->      <button id="81">Right</button>
-      <!-- SwipeUp  -->      <button id="82">Up</button>
+      <!-- SwipeRight -->      <button id="81">Right</button>
+      <!-- SwipeUp    -->      <button id="82">Up</button>
       <!-- SwipeDown  -->      <button id="83">Down</button>
+
+      <!-- FlickLeft  -->      <button id="85">Left</button>
+      <!-- FlickRight -->      <button id="86">Right</button>
+      <!-- FlickUp    -->      <button id="87">Up</button>
+      <!-- FlickDown  -->      <button id="88">Down</button>
+
     </joystick>
   </global>
   <Home>
@@ -115,6 +129,16 @@
       <button id="8">Fullscreen</button>
       <button id="9">Rewind</button>
       <button id="10">FastForward</button>
+      <!-- pageup     -->      <button id="13">BigStepForward</button>
+      <!-- pagedown   -->      <button id="14">BigStepBack</button>
+      <!-- SwipeLeft  -->      <button id="80">StepBack</button>
+      <!-- SwipeRight -->      <button id="81">StepForward</button>
+      <!-- SwipeUp    -->      <button id="82">BigStepForward</button>
+      <!-- SwipeDown  -->      <button id="83">BigStepBack</button>
+      <!-- FlickLeft  -->      <button id="85">Rewind</button>
+      <!-- FlickRight -->      <button id="86">FastForward</button>
+      <!-- FlickUp    -->      <button id="87">BigStepForward</button>
+      <!-- FlickDown  -->      <button id="88">BigStepBack</button>
     </joystick>
   </FullscreenVideo>
   <FullscreenInfo>
@@ -137,6 +161,10 @@
       <button id="6">Fullscreen</button>
       <button id="7">XBMC.ActivateWindow(MusicOSD)</button>
       <button id="8">Stop</button>
+      <!-- SwipeLeft  -->      <button id="80">SkipPrevious</button>
+      <!-- SwipeRight -->      <button id="81">SkipNext</button>
+      <!-- FlickLeft  -->      <button id="85">SkipPrevious</button>
+      <!-- FlickRight -->      <button id="86">SkipNext</button>
     </joystick>
   </Visualisation>
   <MusicOSD>
@@ -163,6 +191,10 @@
       <button id="6">Stop</button>
       <button id="7">Info</button>
       <button id="8">Rotate</button>
+      <!-- SwipeLeft  -->      <button id="80">PreviousPicture</button>
+      <!-- SwipeRight -->      <button id="81">NextPicture</button>
+      <!-- FlickLeft  -->      <button id="85">PreviousPicture</button>
+      <!-- FlickRight -->      <button id="86">NextPicture</button>
     </joystick>
   </SlideShow>
   <ScreenCalibration>
@@ -178,6 +210,7 @@
   <VideoOSD>
     <joystick name="AppleRemote">
       <button id="6">Close</button>
+      <button id="7">Close</button>
     </joystick>
   </VideoOSD>
   <VideoMenu>
@@ -250,6 +283,10 @@
       <button id="3">Left</button>
       <button id="4">Right</button>
       <button id="6">Close</button>
+      <!-- SwipeLeft  -->      <button id="80">Left</button>
+      <!-- SwipeRight -->      <button id="81">Right</button>
+      <!-- FlickLeft  -->      <button id="85">Left</button>
+      <!-- FlickRight -->      <button id="86">Right</button>
     </joystick>
   </PictureInfo>
   <AddonBrowser>

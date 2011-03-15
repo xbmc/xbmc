@@ -133,6 +133,15 @@ public:
   }
 #endif
 
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  void AddProcessor(CDVDVideoCodecVideoToolBox* vtb, DVDVideoPicture *picture)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      m_pRenderer->AddProcessor(vtb, picture);
+  }
+#endif
+
   void AddOverlay(CDVDOverlay* o, double pts)
   {
     CSharedLock lock(m_sharedSection);

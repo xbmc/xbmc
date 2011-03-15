@@ -216,12 +216,17 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->get_format = GetFormat;
   m_pCodecContext->codec_tag = hints.codec_tag;
 
+#if defined(__APPLE__) && defined(__arm__)
+  // ffmpeg with enabled neon will crash and burn if this is enabled
+  m_pCodecContext->flags &= CODEC_FLAG_EMU_EDGE;
+#else
   if (pCodec->id != CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,69,0)
       && pCodec->id != CODEC_ID_VP8
 #endif
      )
     m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
+#endif
 
   // if we don't do this, then some codecs seem to fail.
   m_pCodecContext->coded_height = hints.height;
@@ -250,7 +255,9 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_dllAvCodec.av_set_string(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str());
   }
 
-#if defined(_LINUX) || defined(_WIN32)
+#if defined(__APPLE__) && defined(__arm__)
+  m_dllAvCodec.avcodec_thread_init(m_pCodecContext, 1);
+#elif defined(_LINUX) || defined(_WIN32)
   int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
   if( num_threads > 1 && !hints.software && m_pHardware == NULL // thumbnail extraction fails when run threaded
   && ( pCodec->id == CODEC_ID_H264

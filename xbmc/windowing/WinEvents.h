@@ -41,8 +41,13 @@ public:
 #endif
 
 #ifdef _LINUX
+#if defined(__APPLE__) && defined(__arm__)
+#include "osx/WinEventsIOS.h"
+#define CWinEvents CWinEventsIOS
+#else
 #include "WinEventsSDL.h"
 #define CWinEvents CWinEventsSDL
+#endif
 #endif
 
 

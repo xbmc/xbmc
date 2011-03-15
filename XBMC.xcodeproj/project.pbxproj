@@ -1200,6 +1200,8 @@
 		F57A1E3B132AAB0E00498CC7 /* libSDL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A1E39132AAB0E00498CC7 /* libSDL.dylib */; };
 		F57A1E3D132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */; };
 		F57A1E3E132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */; };
+		F57A1D1E1329B15300498CC7 /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F57A1D1D1329B15300498CC7 /* AutoPool.mm */; };
+		F57A1D1F1329B15300498CC7 /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F57A1D1D1329B15300498CC7 /* AutoPool.mm */; };
 		F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F57B6F811071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F584E1290F257BD800DB26A5 /* FileSpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */; };
@@ -3710,6 +3712,8 @@
 		F56C8D41131F5E85000AD0F6 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libsqlite3.dylib"; sourceTree = "<absolute>"; };
 		F57A1E39132AAB0E00498CC7 /* libSDL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libSDL.dylib"; sourceTree = "<absolute>"; };
 		F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL_mixer.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libSDL_mixer.dylib"; sourceTree = "<absolute>"; };
+		F57A1D1C1329B15300498CC7 /* AutoPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoPool.h; sourceTree = "<group>"; };
+		F57A1D1D1329B15300498CC7 /* AutoPool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AutoPool.mm; sourceTree = "<group>"; };
 		F57B6F7E1071B8B500079ACB /* JobManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JobManager.cpp; sourceTree = "<group>"; };
 		F57B6F7F1071B8B500079ACB /* JobManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JobManager.h; sourceTree = "<group>"; };
 		F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileSpecialProtocol.cpp; sourceTree = "<group>"; };
@@ -4965,6 +4969,8 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
+				F57A1D1C1329B15300498CC7 /* AutoPool.h */,
+				F57A1D1D1329B15300498CC7 /* AutoPool.mm */,
 				6E2FACD20E26E92800DF79EA /* Info.plist */,
 				F5EA04280F72EB88005C2EC5 /* SDLMain.mm */,
 				F5EA04E80F72F9CA005C2EC5 /* SDLMain.h */,
@@ -8129,6 +8135,7 @@
 				183C454D130C4D55006AA317 /* xbmcvfsmodule.cpp in Sources */,
 				F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */,
 				7C84A59E12FA3C1600CD1714 /* SourcesDirectory.cpp in Sources */,
+				F57A1D1E1329B15300498CC7 /* AutoPool.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8997,6 +9004,7 @@
 				7C4705AF12EF584C00369E51 /* AddonInstaller.cpp in Sources */,
 				18C1D22E13033F6A00CFFE59 /* GLUtils.cpp in Sources */,
 				7C84A59F12FA3C1600CD1714 /* SourcesDirectory.cpp in Sources */,
+				F57A1D1F1329B15300498CC7 /* AutoPool.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

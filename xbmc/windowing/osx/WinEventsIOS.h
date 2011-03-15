@@ -1,5 +1,5 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2010 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -18,28 +18,23 @@
 *  http://www.gnu.org/copyleft/gpl.html
 *
 */
+
 #pragma once
 
-#ifndef WINDOW_EVENTS_SDL_H
-#define WINDOW_EVENTS_SDL_H
-
-#ifdef HAS_SDL
-#include <SDL/SDL_events.h>
+#ifndef WINDOW_EVENTS_IOS_H
+#define WINDOW_EVENTS_IOS_H
 
 #include "WinEvents.h"
 
-class CWinEventsSDL : public CWinEventsBase
+class CWinEventsIOS : public CWinEventsBase
 {
 public:
+  static void Init();
+  static void DeInit();
+  static void MessagePush(XBMC_Event *newEvent);
   static bool MessagePump();
 
 protected:
-#ifdef __APPLE__
-  static bool ProcessOSXShortcuts(SDL_Event& event);
-#elif defined(_LINUX)
-  static bool ProcessLinuxShortcuts(SDL_Event& event);
-#endif
 };
 
-#endif
-#endif // WINDOW_EVENTS_SDL_H
+#endif // WINDOW_EVENTS_IOS_H

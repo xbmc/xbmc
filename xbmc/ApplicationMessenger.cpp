@@ -233,8 +233,10 @@ case TMSG_POWERDOWN:
         g_application.Stop();
         Sleep(200);
         g_Windowing.DestroyWindow();
+        #if !(defined(__APPLE__) && defined(__arm__))
         g_powerManager.Powerdown();
         exit(64);
+        #endif
       }
       break;
 
@@ -242,7 +244,9 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
+        #if !(defined(__APPLE__) && defined(__arm__))
         exit(0);
+        #endif
       }
       break;
 
@@ -264,8 +268,10 @@ case TMSG_POWERDOWN:
         g_application.Stop();
         Sleep(200);
         g_Windowing.DestroyWindow();
+        #if !(defined(__APPLE__) && defined(__arm__))
         g_powerManager.Reboot();
         exit(66);
+        #endif
       }
       break;
 
@@ -275,7 +281,9 @@ case TMSG_POWERDOWN:
         g_application.Stop();
         Sleep(200);
 #endif
+        #if !(defined(__APPLE__) && defined(__arm__))
         exit(65);
+        #endif
         // TODO
       }
       break;
