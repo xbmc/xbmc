@@ -214,7 +214,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdStri
   CFileItemPtr item(new CFileItem(path, folder));
   item->SetLabel(addon->Name());
   if (!(basePath.Equals("addons://") && addon->Type() == ADDON_REPOSITORY))
-    item->SetLabel2(addon->Version().str);
+    item->SetLabel2(addon->Version().c_str());
   item->SetThumbnailImage(addon->Icon());
   item->SetLabelPreformated(true);
   item->SetIconImage("DefaultAddon.png");

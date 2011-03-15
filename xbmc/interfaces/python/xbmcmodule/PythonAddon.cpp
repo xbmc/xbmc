@@ -255,7 +255,7 @@ namespace PYXBMC
     else if (strcmpi(id, "type") == 0)
       return Py_BuildValue((char*)"s", ADDON::TranslateType(self->pAddon->Type()).c_str());
     else if (strcmpi(id, "version") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Version().str.c_str());
+      return Py_BuildValue((char*)"s", self->pAddon->Version().c_str());
     else
     {
       CStdString error;

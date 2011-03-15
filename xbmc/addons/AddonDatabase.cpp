@@ -193,9 +193,9 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
                                addon->Description().c_str(),addon->Stars(),
                                addon->Path().c_str(), addon->Props().icon.c_str(),
                                addon->ChangeLog().c_str(),addon->FanArt().c_str(),
-                               addon->ID().c_str(), addon->Version().str.c_str(),
+                               addon->ID().c_str(), addon->Version().c_str(),
                                addon->Author().c_str(),addon->Disclaimer().c_str(),
-                               addon->MinVersion().str.c_str());
+                               addon->MinVersion().c_str());
     m_pDS->exec(sql.c_str());
     int idAddon = (int)m_pDS->lastinsertid();
 
@@ -211,7 +211,7 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
     const ADDONDEPS &deps = addon->GetDeps();
     for (ADDONDEPS::const_iterator i = deps.begin(); i != deps.end(); ++i)
     {
-      sql = PrepareSQL("insert into dependencies(id, addon, version, optional) values (%i, '%s', '%s', %i)", idAddon, i->first.c_str(), i->second.first.str.c_str(), i->second.second ? 1 : 0);
+      sql = PrepareSQL("insert into dependencies(id, addon, version, optional) values (%i, '%s', '%s', %i)", idAddon, i->first.c_str(), i->second.first.c_str(), i->second.second ? 1 : 0);
       m_pDS->exec(sql.c_str());
     }
     return idAddon;
@@ -581,7 +581,7 @@ void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
   pItem->SetProperty("Addon.Type", TranslateType(addon->Type(),true));
   pItem->SetProperty("Addon.intType", TranslateType(addon->Type()));
   pItem->SetProperty("Addon.Name", addon->Name());
-  pItem->SetProperty("Addon.Version", addon->Version().str);
+  pItem->SetProperty("Addon.Version", addon->Version().c_str());
   pItem->SetProperty("Addon.Summary", addon->Summary());
   pItem->SetProperty("Addon.Description", addon->Description());
   pItem->SetProperty("Addon.Creator", addon->Author());

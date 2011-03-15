@@ -56,7 +56,9 @@ public:
   bool operator<(const AddonVersion &rhs) const;
   bool operator<=(const AddonVersion &rhs) const;
   CStdString Print() const;
-  const CStdString str;
+  const char *c_str() const { return str.c_str(); };
+private:
+  CStdString str;
 };
 
 class AddonProps

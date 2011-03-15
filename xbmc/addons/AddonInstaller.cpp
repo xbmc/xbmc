@@ -273,7 +273,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
     { // we have it but our version isn't good enough, or we don't have it and we need it
       if (!database.GetAddon(addonID, dep) || !dep->MeetsVersion(version))
       { // we don't have it in a repo, or we have it but the version isn't good enough, so dep isn't satisfied.
-        CLog::Log(LOGDEBUG, "Addon %s requires %s version %s which is not available", addon->ID().c_str(), addonID.c_str(), version.str.c_str());
+        CLog::Log(LOGDEBUG, "Addon %s requires %s version %s which is not available", addon->ID().c_str(), addonID.c_str(), version.c_str());
         return false;
       }
     }
@@ -449,7 +449,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom)
   CAddonMgr::Get().FindAddons(); // needed as GetDeps() grabs directly from c-pluff via the addon manager
   ADDONDEPS deps = addon->GetDeps();
   CStdString referer;
-  referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().str.c_str());
+  referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
   for (ADDONDEPS::iterator it  = deps.begin(); it != deps.end(); ++it)
   {
     if (it->first.Equals("xbmc.metadata"))

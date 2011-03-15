@@ -152,9 +152,12 @@ VECADDONS CRepository::Parse()
       AddonPtr addon = *i;
       if (m_zipped)
       {
-        addon->Props().path = URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/"+addon->ID()+"-"+addon->Version().str+".zip");
+        CStdString file;
+        file.Format("%s/%s-%s.zip", addon->ID().c_str(), addon->ID().c_str(), addon->Version().c_str());
+        addon->Props().path = URIUtils::AddFileToFolder(m_datadir,file);
         SET_IF_NOT_EMPTY(addon->Props().icon,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/icon.png"))
-        SET_IF_NOT_EMPTY(addon->Props().changelog,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/changelog-"+addon->Version().str+".txt"))
+        file.Format("%s/changelog-%s.txt", addon->ID().c_str(), addon->Version().c_str());
+        SET_IF_NOT_EMPTY(addon->Props().changelog,URIUtils::AddFileToFolder(m_datadir,file))
         SET_IF_NOT_EMPTY(addon->Props().fanart,URIUtils::AddFileToFolder(m_datadir,addon->ID()+"/fanart.jpg"))
       }
       else
@@ -203,7 +206,7 @@ bool CRepositoryUpdateJob::DoWork()
       {
         CStdString referer;
         if (URIUtils::IsInternetStream(addons[i]->Path()))
-          referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().str.c_str());
+          referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
 
         CAddonInstaller::Get().Install(addon->ID(), true, referer);
       }
