@@ -914,6 +914,9 @@ bool CGUIEPGGridContainer::MoveProgrammes(bool direction)
 
   if (direction)
   {
+    if (m_channelCursor + m_channelOffset < 0 || m_blockOffset < 0)
+      return false;
+
     if (m_item->item != m_gridIndex[m_channelCursor + m_channelOffset][m_blockOffset].item)
     {
       // this is not first item on page
