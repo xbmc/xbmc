@@ -430,6 +430,7 @@ PVR_ERROR cVNSIData::GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &tag)
   tag.priority    = vresp->extract_U32();
   tag.lifetime    = vresp->extract_U32();
   tag.channelNum  = vresp->extract_U32();
+  tag.channelUid  = vresp->extract_U32();
   tag.starttime   = vresp->extract_U32();
   tag.endtime     = vresp->extract_U32();
   tag.firstday    = vresp->extract_U32();
@@ -473,6 +474,7 @@ bool cVNSIData::GetTimersList(PVRHANDLE handle)
       tag.priority    = vresp->extract_U32();
       tag.lifetime    = vresp->extract_U32();
       tag.channelNum  = vresp->extract_U32();
+      tag.channelUid  = vresp->extract_U32();
       tag.starttime   = vresp->extract_U32();
       tag.endtime     = vresp->extract_U32();
       tag.firstday    = vresp->extract_U32();
@@ -497,6 +499,41 @@ PVR_ERROR cVNSIData::AddTimer(const PVR_TIMERINFO &timerinfo)
     XBMC->Log(LOG_ERROR, "cVNSIData::AddTimer - Can't init cRequestPacket");
     return PVR_ERROR_UNKOWN;
   }
+
+  // add directory in front of the title
+  std::string path;
+  if(timerinfo.directory != NULL && strlen(timerinfo.directory) > 0) {
+    path += timerinfo.directory;
+    if(path == "/") {
+      path.clear();
+    }
+    else if(path.size() > 1) {
+      if(path[0] == '/') {
+        path = path.substr(1);
+      }
+    }
+
+    if(path.size() > 0 && path[path.size()-1] != '/') {
+      path += "/";
+    }
+  }
+
+  if(timerinfo.title != NULL) {
+    path += timerinfo.title;
+  }
+
+  // replace directory separators
+  for(std::size_t i=0; i<path.size(); i++) {
+    if(path[i] == '/' || path[i] == '\\') {
+      path[i] = '~';
+    }
+  }
+
+  if(path.empty()) {
+    XBMC->Log(LOG_ERROR, "cVNSIData::AddTimer - Empty filename !");
+    return PVR_ERROR_UNKOWN;
+  }
+
   if (!vrp.add_U32(timerinfo.active))     return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.priority))   return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.lifetime))   return PVR_ERROR_UNKOWN;
@@ -505,11 +542,11 @@ PVR_ERROR cVNSIData::AddTimer(const PVR_TIMERINFO &timerinfo)
   if (!vrp.add_U32(timerinfo.endtime))    return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.repeat ? timerinfo.firstday : 0))   return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.repeatflags))return PVR_ERROR_UNKOWN;
-  if (!vrp.add_String(timerinfo.title))   return PVR_ERROR_UNKOWN;
+  if (!vrp.add_String(path.c_str()))      return PVR_ERROR_UNKOWN;
   if (!vrp.add_String(""))                return PVR_ERROR_UNKOWN;
 
   cResponsePacket* vresp = ReadResult(&vrp);
-  if (vresp->noResponse())
+  if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
     XBMC->Log(LOG_ERROR, "cVNSIData::AddTimer - Can't get response packed");
@@ -750,45 +787,15 @@ void cVNSIData::Action()
   uint32_t userDataLength;
   uint8_t* userData;
 
-  uint32_t timeNow;
-  uint32_t lastKAsent = 0;
-  uint32_t lastKArecv = time(NULL);
   bool readSuccess;
 
   cResponsePacket* vresp;
 
   while (Running())
   {
-    timeNow = time(NULL);
-
     readSuccess = readData((uint8_t*)&channelID, sizeof(uint32_t));
     if (!readSuccess && !IsClientConnected())
       return; // return to stop this thread
-
-    // Error or timeout.
-    if (!lastKAsent) // have not sent a KA
-    {
-      if (lastKArecv < (timeNow - 5))
-      {
-        DEVDBG("cVNSIData::Action() - Sending KA packet");
-        if (!sendKA(timeNow))
-        {
-          XBMC->Log(LOG_ERROR, "cVNSIData::Action() - Could not send KA, calling connectionDied");
-          SetClientConnected(false);
-          return;
-        }
-        lastKAsent = timeNow;
-      }
-    }
-    else
-    {
-      if (lastKAsent <= (timeNow - 10))
-      {
-        XBMC->Log(LOG_ERROR, "cVNSIData::Action() - lastKA over 10s ago, calling connectionDied");
-        SetClientConnected(false);
-        return;
-      }
-    }
 
     if (!readSuccess) continue; // no data was read but the connection is ok.
 
@@ -902,31 +909,12 @@ void cVNSIData::Action()
       if (userData)
         free(userData);
     }
-    else if (channelID == CHANNEL_KEEPALIVE)
-    {
-      uint32_t KAreply = 0;
-      if (!readData((uint8_t*)&KAreply, sizeof(uint32_t))) break;
-      KAreply = (uint32_t)ntohl(KAreply);
-      if (KAreply == lastKAsent) // successful KA response
-      {
-        lastKAsent = 0;
-        lastKArecv = KAreply;
-        DEVDBG("cVNSIData::Action() - Rxd correct KA reply");
-      }
-    }
     else
     {
       XBMC->Log(LOG_ERROR, "cVNSIData::Action() - Rxd a response packet on channel %lu !!", channelID);
       break;
     }
   }
-}
-
-bool cVNSIData::sendKA(uint32_t timeStamp)
-{
-  m_headerKA.channel = htonl(CHANNEL_KEEPALIVE);
-  m_headerKA.timestamp = htonl(timeStamp);
-  return (m_session.sendData(&m_headerKA, sizeof(m_headerKA)) == sizeof(m_headerKA));
 }
 
 bool cVNSIData::readData(uint8_t* buffer, int totalBytes)

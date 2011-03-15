@@ -23,7 +23,7 @@
 #define VDRCOMMAND_H
 
 /** Current VNSI Protocol Version number */
-const static uint32_t VNSIProtocolVersion      = 1;
+const static uint32_t VNSIProtocolVersion      = 2;
 
 
 /** Packet types */

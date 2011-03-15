@@ -71,12 +71,6 @@ protected:
 
 private:
   bool readData(uint8_t* buffer, int totalBytes);
-  bool sendKA(uint32_t timeStamp);
-
-  struct {
-	  uint32_t channel;
-	  uint32_t timestamp;
-  } m_headerKA;
 
   struct SMessage
   {
