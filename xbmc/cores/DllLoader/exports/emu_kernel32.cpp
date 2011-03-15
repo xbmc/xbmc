@@ -315,17 +315,10 @@ extern "C" HANDLE WINAPI dllGetCurrentThread(void)
 
 extern "C" DWORD WINAPI dllGetCurrentProcessId(void)
 {
-#ifndef _XBOX
 #ifdef _LINUX
   return (DWORD)getppid();
 #else
   return GetCurrentProcessId();
-#endif
-#else
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "GetCurrentProcessId(void) => 31337");
-#endif
-  return 31337;
 #endif
 }
 
@@ -352,7 +345,7 @@ extern "C" int WINAPI dllDuplicateHandle(HANDLE hSourceProcessHandle,   // handl
             hSourceProcessHandle, hSourceHandle, hTargetProcessHandle,
             lpTargetHandle, dwDesiredAccess, bInheritHandle, dwOptions);
 #endif
-#if defined (_XBOX) || defined (_LINUX)
+#if defined (_LINUX)
   *lpTargetHandle = hSourceHandle;
   return 1;
 #else
@@ -570,7 +563,7 @@ extern "C" HMODULE WINAPI dllTerminateProcess(HANDLE hProcess, UINT uExitCode)
 }
 extern "C" HANDLE WINAPI dllGetCurrentProcess()
 {
-#if !defined (_XBOX) && !defined(_LINUX)
+#if !defined(_LINUX)
   return GetCurrentProcess();
 #else
 #ifdef _WIN32
@@ -612,12 +605,6 @@ extern "C" HANDLE WINAPI dllGetStdHandle(DWORD nStdHandle)
   SetLastError( ERROR_INVALID_PARAMETER );
   return INVALID_HANDLE_VALUE;
 }
-
-#ifdef _XBOX
-#define FILE_TYPE_UNKNOWN       0
-#define FILE_TYPE_DISK          1
-#define FILE_TYPE_CHAR          2
-#endif
 
 extern "C" DWORD WINAPI dllGetFileType(HANDLE hFile)
 {
@@ -1149,7 +1136,7 @@ typedef struct _SFlsSlot
 SFlsSlot, *LPSFlsSlot;
 
 #define FLS_NUM_SLOTS 5
-#if defined (_XBOX) || defined (_LINUX)
+#if defined (_LINUX)
 #define FLS_OUT_OF_INDEXES (DWORD)0xFFFFFFFF
 #endif
 SFlsSlot flsSlots[FLS_NUM_SLOTS] = { { false, NULL, NULL } };

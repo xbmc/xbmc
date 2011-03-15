@@ -201,7 +201,7 @@ void CryptData::SetCryptKeys(char *Password,byte *Salt,bool Encrypt,bool OldOnly
     Key[2]=0x7515A235L;
     Key[3]=0xA4E7F123L;
     memset(Psw,0,sizeof(Psw));
-#if defined(_WIN_32) && !defined(GUI) && !defined(_XBOX) && !defined(_LINUX)
+#if defined(_WIN_32) && !defined(GUI) && !defined(_LINUX)
     CharToOemBuff(Password,(char*)Psw,strlen(Password));
 #else
     strncpy((char *)Psw,Password,MAXPASSWORD-1);

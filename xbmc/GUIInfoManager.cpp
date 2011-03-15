@@ -399,7 +399,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.profilecount")) ret = SYSTEM_PROFILECOUNT;
     else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
     else if (strTest.Equals("system.platform.linux")) ret = SYSTEM_PLATFORM_LINUX;
-    else if (strTest.Equals("system.platform.xbox")) ret = SYSTEM_PLATFORM_XBOX;
     else if (strTest.Equals("system.platform.windows")) ret = SYSTEM_PLATFORM_WINDOWS;
     else if (strTest.Equals("system.platform.osx")) ret = SYSTEM_PLATFORM_OSX;
     else if (strTest.Left(15).Equals("system.getbool("))
@@ -1770,8 +1769,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #else
     bReturn = false;
 #endif
-  else if (condition == SYSTEM_PLATFORM_XBOX)
-    bReturn = false;
   else if (condition == SYSTEM_MEDIA_DVD)
     bReturn = g_mediaManager.IsDiscInDrive();
 #ifdef HAS_DVD_DRIVE

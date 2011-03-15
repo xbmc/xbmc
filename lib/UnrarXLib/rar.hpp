@@ -5,7 +5,6 @@
 #include "os.hpp"
 
 
-//#if defined(RARDLL) || defined(_XBOX)
 #ifdef RARDLL
 #include "dll.hpp"
 #endif
