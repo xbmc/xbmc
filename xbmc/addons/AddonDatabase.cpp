@@ -230,10 +230,28 @@ bool CAddonDatabase::GetAddon(const CStdString& id, AddonPtr& addon)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS2.get()) return false;
 
-    CStdString sql = PrepareSQL("select id from addon where addonID='%s' order by version desc",id.c_str());
+    // there may be multiple addons with this id (eg from different repositories) in the database,
+    // so we want to retrieve the latest version.  Order by version won't work as the database
+    // won't know that 1.10 > 1.2, so grab them all and order outside
+    CStdString sql = PrepareSQL("select id,version from addon where addonID='%s'",id.c_str());
     m_pDS2->query(sql.c_str());
-    if (!m_pDS2->eof())
-      return GetAddon(m_pDS2->fv(0).get_asInt(),addon);
+
+    if (m_pDS2->eof())
+      return false;
+
+    AddonVersion maxversion("0.0.0");
+    int maxid = 0;
+    while (!m_pDS2->eof())
+    {
+      AddonVersion version(m_pDS2->fv(1).get_asString());
+      if (version > maxversion)
+      {
+        maxid = m_pDS2->fv(0).get_asInt();
+        maxversion = version;
+      }
+      m_pDS2->next();
+    }
+    return GetAddon(maxid,addon);
   }
   catch (...)
   {
