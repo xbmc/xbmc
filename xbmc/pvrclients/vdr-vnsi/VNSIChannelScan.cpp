@@ -603,7 +603,7 @@ void cVNSIChannelScan::Action()
         char* str = new char[length + 1];
         strcpy(str, (char*)&userData[12]);
 
-        cListItem* item = GUI->ListItem_create(str, NULL, NULL, NULL, NULL);
+        CAddonListItem* item = GUI->ListItem_create(str, NULL, NULL, NULL, NULL);
         if (isEncrypted)
           item->SetProperty("IsEncrypted", "yes");
         if (isRadio)

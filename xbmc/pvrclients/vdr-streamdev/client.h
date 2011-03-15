@@ -56,7 +56,7 @@ extern bool         g_bNoBadChannels;     ///< Ignore channels without a PID, AP
 extern bool         g_bHandleMessages;    ///< Send VDR's OSD status messages to XBMC OSD
 extern bool         g_bUseRecordingsDir;  ///< Use a normal directory if true for recordings
 extern CStdString   g_szRecordingsDir;    ///< The path to the recordings directory
-extern cHelper_libXBMC_addon *XBMC;
-extern cHelper_libXBMC_pvr   *PVR;
+extern CHelper_libXBMC_addon *XBMC;
+extern CHelper_libXBMC_pvr   *PVR;
 
 #endif /* CLIENT_H */

@@ -68,8 +68,8 @@ bool         g_bCreated               = false;
 int          g_iClientID              = -1;
 CStdString   g_szUserPath             = "";
 CStdString   g_szClientPath           = "";
-cHelper_libXBMC_addon *XBMC           = NULL;
-cHelper_libXBMC_pvr   *PVR            = NULL;
+CHelper_libXBMC_addon *XBMC           = NULL;
+CHelper_libXBMC_pvr   *PVR            = NULL;
 
 
 
@@ -438,11 +438,11 @@ ADDON_STATUS Create(void* hdl, void* props)
 
   PVR_PROPS* pvrprops = (PVR_PROPS*)props;
 
-  XBMC = new cHelper_libXBMC_addon;
+  XBMC = new CHelper_libXBMC_addon;
   if (!XBMC->RegisterMe(hdl))
     return STATUS_UNKNOWN;
 
-  PVR = new cHelper_libXBMC_pvr;
+  PVR = new CHelper_libXBMC_pvr;
   if (!PVR->RegisterMe(hdl))
     return STATUS_UNKNOWN;
 

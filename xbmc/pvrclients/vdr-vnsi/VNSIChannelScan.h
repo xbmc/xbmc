@@ -84,21 +84,21 @@ private:
   bool            m_stopped;
   bool            m_Canceled;
 
-  cGUIWindow      *m_window;
-  cGUISpinControl *m_spinSourceType;
-  cGUISpinControl *m_spinCountries;
-  cGUISpinControl *m_spinSatellites;
-  cGUISpinControl *m_spinDVBCInversion;
-  cGUISpinControl *m_spinDVBCSymbolrates;
-  cGUISpinControl *m_spinDVBCqam;
-  cGUISpinControl *m_spinDVBTInversion;
-  cGUISpinControl *m_spinATSCType;
-  cGUIRadioButton *m_radioButtonTV;
-  cGUIRadioButton *m_radioButtonRadio;
-  cGUIRadioButton *m_radioButtonFTA;
-  cGUIRadioButton *m_radioButtonScrambled;
-  cGUIRadioButton *m_radioButtonHD;
-  cGUIProgressControl *m_progressDone;
-  cGUIProgressControl *m_progressSignal;
+  CAddonGUIWindow      *m_window;
+  CAddonGUISpinControl *m_spinSourceType;
+  CAddonGUISpinControl *m_spinCountries;
+  CAddonGUISpinControl *m_spinSatellites;
+  CAddonGUISpinControl *m_spinDVBCInversion;
+  CAddonGUISpinControl *m_spinDVBCSymbolrates;
+  CAddonGUISpinControl *m_spinDVBCqam;
+  CAddonGUISpinControl *m_spinDVBTInversion;
+  CAddonGUISpinControl *m_spinATSCType;
+  CAddonGUIRadioButton *m_radioButtonTV;
+  CAddonGUIRadioButton *m_radioButtonRadio;
+  CAddonGUIRadioButton *m_radioButtonFTA;
+  CAddonGUIRadioButton *m_radioButtonScrambled;
+  CAddonGUIRadioButton *m_radioButtonHD;
+  CAddonGUIProgressControl *m_progressDone;
+  CAddonGUIProgressControl *m_progressSignal;
 
 };

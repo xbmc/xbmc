@@ -46,7 +46,7 @@ extern int          g_iEpgOffsetCorrection;
 extern int          g_clientID;
 extern CStdString   g_szUserPath;
 extern CStdString   g_szClientPath;
-extern cHelper_libXBMC_addon *XBMC;
-extern cHelper_libXBMC_pvr   *PVR;
+extern CHelper_libXBMC_addon *XBMC;
+extern CHelper_libXBMC_pvr   *PVR;
 
 #endif /* CLIENT_H */

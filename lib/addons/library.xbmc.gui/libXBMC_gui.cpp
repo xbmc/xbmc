@@ -88,42 +88,42 @@ DLLEXPORT int GUI_get_video_resolution()
   return m_cb->GetVideoResolution();
 }
 
-DLLEXPORT cGUIWindow* GUI_Window_create(const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog)
+DLLEXPORT CAddonGUIWindow* GUI_Window_create(const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog)
 {
-  return new cGUIWindow(xmlFilename, defaultSkin, forceFallback, asDialog);
+  return new CAddonGUIWindow(xmlFilename, defaultSkin, forceFallback, asDialog);
 }
 
-DLLEXPORT void GUI_Window_destroy(cGUIWindow* p)
+DLLEXPORT void GUI_Window_destroy(CAddonGUIWindow* p)
 {
   delete p;
 }
 
 DLLEXPORT bool GUI_Window_OnClick(GUIHANDLE handle, int controlId)
 {
-  cGUIWindow *window = (cGUIWindow*) handle;
+  CAddonGUIWindow *window = (CAddonGUIWindow*) handle;
   return window->OnClick(controlId);
 }
 
 DLLEXPORT bool GUI_Window_OnFocus(GUIHANDLE handle, int controlId)
 {
-  cGUIWindow *window = (cGUIWindow*) handle;
+  CAddonGUIWindow *window = (CAddonGUIWindow*) handle;
   return window->OnFocus(controlId);
 }
 
 DLLEXPORT bool GUI_Window_OnInit(GUIHANDLE handle)
 {
-  cGUIWindow *window = (cGUIWindow*) handle;
+  CAddonGUIWindow *window = (CAddonGUIWindow*) handle;
   return window->OnInit();
 }
 
 DLLEXPORT bool GUI_Window_OnAction(GUIHANDLE handle, int actionId)
 {
-  cGUIWindow *window = (cGUIWindow*) handle;
+  CAddonGUIWindow *window = (CAddonGUIWindow*) handle;
   return window->OnAction(actionId);
 }
 
 
-cGUIWindow::cGUIWindow(const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog)
+CAddonGUIWindow::CAddonGUIWindow(const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog)
 {
   CBOnInit = NULL;
   CBOnClick = NULL;
@@ -138,7 +138,7 @@ cGUIWindow::cGUIWindow(const char *xmlFilename, const char *defaultSkin, bool fo
   }
 }
 
-cGUIWindow::~cGUIWindow()
+CAddonGUIWindow::~CAddonGUIWindow()
 {
   if (m_Handle && m_cb && m_WindowHandle)
   {
@@ -147,22 +147,22 @@ cGUIWindow::~cGUIWindow()
   }
 }
 
-bool cGUIWindow::Show()
+bool CAddonGUIWindow::Show()
 {
   return m_cb->Window_Show(m_Handle->addonData, m_WindowHandle);
 }
 
-void cGUIWindow::Close()
+void CAddonGUIWindow::Close()
 {
   m_cb->Window_Close(m_Handle->addonData, m_WindowHandle);
 }
 
-void cGUIWindow::DoModal()
+void CAddonGUIWindow::DoModal()
 {
   m_cb->Window_DoModal(m_Handle->addonData, m_WindowHandle);
 }
 
-bool cGUIWindow::OnInit()
+bool CAddonGUIWindow::OnInit()
 {
   if (!CBOnInit)
     return false;
@@ -170,7 +170,7 @@ bool cGUIWindow::OnInit()
   return CBOnInit(m_cbhdl);
 }
 
-bool cGUIWindow::OnClick(int controlId)
+bool CAddonGUIWindow::OnClick(int controlId)
 {
   if (!CBOnClick)
     return false;
@@ -178,7 +178,7 @@ bool cGUIWindow::OnClick(int controlId)
   return CBOnClick(m_cbhdl, controlId);
 }
 
-bool cGUIWindow::OnFocus(int controlId)
+bool CAddonGUIWindow::OnFocus(int controlId)
 {
   if (!CBOnFocus)
     return false;
@@ -186,7 +186,7 @@ bool cGUIWindow::OnFocus(int controlId)
   return CBOnFocus(m_cbhdl, controlId);
 }
 
-bool cGUIWindow::OnAction(int actionId)
+bool CAddonGUIWindow::OnAction(int actionId)
 {
   if (!CBOnAction)
     return false;
@@ -194,112 +194,112 @@ bool cGUIWindow::OnAction(int actionId)
   return CBOnAction(m_cbhdl, actionId);
 }
 
-bool cGUIWindow::SetFocusId(int iControlId)
+bool CAddonGUIWindow::SetFocusId(int iControlId)
 {
   return m_cb->Window_SetFocusId(m_Handle->addonData, m_WindowHandle, iControlId);
 }
 
-int cGUIWindow::GetFocusId()
+int CAddonGUIWindow::GetFocusId()
 {
   return m_cb->Window_GetFocusId(m_Handle->addonData, m_WindowHandle);
 }
 
-bool cGUIWindow::SetCoordinateResolution(int res)
+bool CAddonGUIWindow::SetCoordinateResolution(int res)
 {
   return m_cb->Window_SetCoordinateResolution(m_Handle->addonData, m_WindowHandle, res);
 }
 
-void cGUIWindow::SetProperty(const char *key, const char *value)
+void CAddonGUIWindow::SetProperty(const char *key, const char *value)
 {
   m_cb->Window_SetProperty(m_Handle->addonData, m_WindowHandle, key, value);
 }
 
-void cGUIWindow::SetPropertyInt(const char *key, int value)
+void CAddonGUIWindow::SetPropertyInt(const char *key, int value)
 {
   m_cb->Window_SetPropertyInt(m_Handle->addonData, m_WindowHandle, key, value);
 }
 
-void cGUIWindow::SetPropertyBool(const char *key, bool value)
+void CAddonGUIWindow::SetPropertyBool(const char *key, bool value)
 {
   m_cb->Window_SetPropertyBool(m_Handle->addonData, m_WindowHandle, key, value);
 }
 
-void cGUIWindow::SetPropertyDouble(const char *key, double value)
+void CAddonGUIWindow::SetPropertyDouble(const char *key, double value)
 {
   m_cb->Window_SetPropertyDouble(m_Handle->addonData, m_WindowHandle, key, value);
 }
 
-const char *cGUIWindow::GetProperty(const char *key) const
+const char *CAddonGUIWindow::GetProperty(const char *key) const
 {
   return m_cb->Window_GetProperty(m_Handle->addonData, m_WindowHandle, key);
 }
 
-int cGUIWindow::GetPropertyInt(const char *key) const
+int CAddonGUIWindow::GetPropertyInt(const char *key) const
 {
   return m_cb->Window_GetPropertyInt(m_Handle->addonData, m_WindowHandle, key);
 }
 
-bool cGUIWindow::GetPropertyBool(const char *key) const
+bool CAddonGUIWindow::GetPropertyBool(const char *key) const
 {
   return m_cb->Window_GetPropertyBool(m_Handle->addonData, m_WindowHandle, key);
 }
 
-double cGUIWindow::GetPropertyDouble(const char *key) const
+double CAddonGUIWindow::GetPropertyDouble(const char *key) const
 {
   return m_cb->Window_GetPropertyDouble(m_Handle->addonData, m_WindowHandle, key);
 }
 
-void cGUIWindow::ClearProperties()
+void CAddonGUIWindow::ClearProperties()
 {
   m_cb->Window_ClearProperties(m_Handle->addonData, m_WindowHandle);
 }
 
-int cGUIWindow::GetListSize()
+int CAddonGUIWindow::GetListSize()
 {
   return m_cb->Window_GetListSize(m_Handle->addonData, m_WindowHandle);
 }
 
-void cGUIWindow::ClearList()
+void CAddonGUIWindow::ClearList()
 {
   m_cb->Window_ClearList(m_Handle->addonData, m_WindowHandle);
 }
 
-GUIHANDLE cGUIWindow::AddStringItem(const char *name, int itemPosition)
+GUIHANDLE CAddonGUIWindow::AddStringItem(const char *name, int itemPosition)
 {
   return m_cb->Window_AddStringItem(m_Handle->addonData, m_WindowHandle, name, itemPosition);
 }
 
-void cGUIWindow::AddItem(GUIHANDLE item, int itemPosition)
+void CAddonGUIWindow::AddItem(GUIHANDLE item, int itemPosition)
 {
   m_cb->Window_AddItem(m_Handle->addonData, m_WindowHandle, item, itemPosition);
 }
 
-void cGUIWindow::AddItem(cListItem *item, int itemPosition)
+void CAddonGUIWindow::AddItem(CAddonListItem *item, int itemPosition)
 {
   m_cb->Window_AddItem(m_Handle->addonData, m_WindowHandle, item->m_ListItemHandle, itemPosition);
 }
 
-void cGUIWindow::RemoveItem(int itemPosition)
+void CAddonGUIWindow::RemoveItem(int itemPosition)
 {
   m_cb->Window_RemoveItem(m_Handle->addonData, m_WindowHandle, itemPosition);
 }
 
-GUIHANDLE cGUIWindow::GetListItem(int listPos)
+GUIHANDLE CAddonGUIWindow::GetListItem(int listPos)
 {
   return m_cb->Window_GetListItem(m_Handle->addonData, m_WindowHandle, listPos);
 }
 
-void cGUIWindow::SetCurrentListPosition(int listPos)
+void CAddonGUIWindow::SetCurrentListPosition(int listPos)
 {
   m_cb->Window_SetCurrentListPosition(m_Handle->addonData, m_WindowHandle, listPos);
 }
 
-int cGUIWindow::GetCurrentListPosition()
+int CAddonGUIWindow::GetCurrentListPosition()
 {
   return m_cb->Window_GetCurrentListPosition(m_Handle->addonData, m_WindowHandle);
 }
 
-void cGUIWindow::SetControlLabel(int controlId, const char *label)
+void CAddonGUIWindow::SetControlLabel(int controlId, const char *label)
 {
   m_cb->Window_SetControlLabel(m_Handle->addonData, m_WindowHandle, controlId, label);
 }
@@ -307,48 +307,48 @@ void cGUIWindow::SetControlLabel(int controlId, const char *label)
 ///-------------------------------------
 /// cGUISpinControl
 
-DLLEXPORT cGUISpinControl* GUI_control_get_spin(cGUIWindow *window, int controlId)
+DLLEXPORT CAddonGUISpinControl* GUI_control_get_spin(CAddonGUIWindow *window, int controlId)
 {
-  return new cGUISpinControl(window, controlId);
+  return new CAddonGUISpinControl(window, controlId);
 }
 
-DLLEXPORT void GUI_control_release_spin(cGUISpinControl* p)
+DLLEXPORT void GUI_control_release_spin(CAddonGUISpinControl* p)
 {
   delete p;
 }
 
-cGUISpinControl::cGUISpinControl(cGUIWindow *window, int controlId)
+CAddonGUISpinControl::CAddonGUISpinControl(CAddonGUIWindow *window, int controlId)
  : m_Window(window)
  , m_ControlId(controlId)
 {
   m_SpinHandle = m_cb->Window_GetControl_Spin(m_Handle->addonData, m_Window->m_WindowHandle, controlId);
 }
 
-void cGUISpinControl::SetVisible(bool yesNo)
+void CAddonGUISpinControl::SetVisible(bool yesNo)
 {
   if (m_SpinHandle)
     m_cb->Control_Spin_SetVisible(m_Handle->addonData, m_SpinHandle, yesNo);
 }
 
-void cGUISpinControl::SetText(const char *label)
+void CAddonGUISpinControl::SetText(const char *label)
 {
   if (m_SpinHandle)
     m_cb->Control_Spin_SetText(m_Handle->addonData, m_SpinHandle, label);
 }
 
-void cGUISpinControl::Clear()
+void CAddonGUISpinControl::Clear()
 {
   if (m_SpinHandle)
     m_cb->Control_Spin_Clear(m_Handle->addonData, m_SpinHandle);
 }
 
-void cGUISpinControl::AddLabel(const char *label, int iValue)
+void CAddonGUISpinControl::AddLabel(const char *label, int iValue)
 {
   if (m_SpinHandle)
     m_cb->Control_Spin_AddLabel(m_Handle->addonData, m_SpinHandle, label, iValue);
 }
 
-int cGUISpinControl::GetValue()
+int CAddonGUISpinControl::GetValue()
 {
   if (!m_SpinHandle)
     return -1;
@@ -356,7 +356,7 @@ int cGUISpinControl::GetValue()
   return m_cb->Control_Spin_GetValue(m_Handle->addonData, m_SpinHandle);
 }
 
-void cGUISpinControl::SetValue(int iValue)
+void CAddonGUISpinControl::SetValue(int iValue)
 {
   if (m_SpinHandle)
     m_cb->Control_Spin_SetValue(m_Handle->addonData, m_SpinHandle, iValue);
@@ -365,42 +365,42 @@ void cGUISpinControl::SetValue(int iValue)
 ///-------------------------------------
 /// cGUIRadioButton
 
-DLLEXPORT cGUIRadioButton* GUI_control_get_radiobutton(cGUIWindow *window, int controlId)
+DLLEXPORT CAddonGUIRadioButton* GUI_control_get_radiobutton(CAddonGUIWindow *window, int controlId)
 {
-  return new cGUIRadioButton(window, controlId);
+  return new CAddonGUIRadioButton(window, controlId);
 }
 
-DLLEXPORT void GUI_control_release_radiobutton(cGUIRadioButton* p)
+DLLEXPORT void GUI_control_release_radiobutton(CAddonGUIRadioButton* p)
 {
   delete p;
 }
 
-cGUIRadioButton::cGUIRadioButton(cGUIWindow *window, int controlId)
+CAddonGUIRadioButton::CAddonGUIRadioButton(CAddonGUIWindow *window, int controlId)
  : m_Window(window)
  , m_ControlId(controlId)
 {
   m_ButtonHandle = m_cb->Window_GetControl_RadioButton(m_Handle->addonData, m_Window->m_WindowHandle, controlId);
 }
 
-void cGUIRadioButton::SetVisible(bool yesNo)
+void CAddonGUIRadioButton::SetVisible(bool yesNo)
 {
   if (m_ButtonHandle)
     m_cb->Control_RadioButton_SetVisible(m_Handle->addonData, m_ButtonHandle, yesNo);
 }
 
-void cGUIRadioButton::SetText(const char *label)
+void CAddonGUIRadioButton::SetText(const char *label)
 {
   if (m_ButtonHandle)
     m_cb->Control_RadioButton_SetText(m_Handle->addonData, m_ButtonHandle, label);
 }
 
-void cGUIRadioButton::SetSelected(bool yesNo)
+void CAddonGUIRadioButton::SetSelected(bool yesNo)
 {
   if (m_ButtonHandle)
     m_cb->Control_RadioButton_SetSelected(m_Handle->addonData, m_ButtonHandle, yesNo);
 }
 
-bool cGUIRadioButton::IsSelected()
+bool CAddonGUIRadioButton::IsSelected()
 {
   if (!m_ButtonHandle)
     return false;
@@ -412,30 +412,30 @@ bool cGUIRadioButton::IsSelected()
 ///-------------------------------------
 /// cGUIProgressControl
 
-DLLEXPORT cGUIProgressControl* GUI_control_get_progress(cGUIWindow *window, int controlId)
+DLLEXPORT CAddonGUIProgressControl* GUI_control_get_progress(CAddonGUIWindow *window, int controlId)
 {
-  return new cGUIProgressControl(window, controlId);
+  return new CAddonGUIProgressControl(window, controlId);
 }
 
-DLLEXPORT void GUI_control_release_progress(cGUIProgressControl* p)
+DLLEXPORT void GUI_control_release_progress(CAddonGUIProgressControl* p)
 {
   delete p;
 }
 
-cGUIProgressControl::cGUIProgressControl(cGUIWindow *window, int controlId)
+CAddonGUIProgressControl::CAddonGUIProgressControl(CAddonGUIWindow *window, int controlId)
  : m_Window(window)
  , m_ControlId(controlId)
 {
   m_ProgressHandle = m_cb->Window_GetControl_Progress(m_Handle->addonData, m_Window->m_WindowHandle, controlId);
 }
 
-void cGUIProgressControl::SetPercentage(float fPercent)
+void CAddonGUIProgressControl::SetPercentage(float fPercent)
 {
   if (m_ProgressHandle)
     m_cb->Control_Progress_SetPercentage(m_Handle->addonData, m_ProgressHandle, fPercent);
 }
 
-float cGUIProgressControl::GetPercentage() const
+float CAddonGUIProgressControl::GetPercentage() const
 {
   if (!m_ProgressHandle)
     return 0.0;
@@ -443,13 +443,13 @@ float cGUIProgressControl::GetPercentage() const
   return m_cb->Control_Progress_GetPercentage(m_Handle->addonData, m_ProgressHandle);
 }
 
-void cGUIProgressControl::SetInfo(int iInfo)
+void CAddonGUIProgressControl::SetInfo(int iInfo)
 {
   if (m_ProgressHandle)
     m_cb->Control_Progress_SetInfo(m_Handle->addonData, m_ProgressHandle, iInfo);
 }
 
-int cGUIProgressControl::GetInfo() const
+int CAddonGUIProgressControl::GetInfo() const
 {
   if (!m_ProgressHandle)
     return -1;
@@ -457,7 +457,7 @@ int cGUIProgressControl::GetInfo() const
   return m_cb->Control_Progress_GetInfo(m_Handle->addonData, m_ProgressHandle);
 }
 
-string cGUIProgressControl::GetDescription() const
+string CAddonGUIProgressControl::GetDescription() const
 {
   if (!m_ProgressHandle)
     return "";
@@ -469,23 +469,23 @@ string cGUIProgressControl::GetDescription() const
 ///-------------------------------------
 /// cListItem
 
-DLLEXPORT cListItem* GUI_ListItem_create(const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path)
+DLLEXPORT CAddonListItem* GUI_ListItem_create(const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path)
 {
-  return new cListItem(label, label2, iconImage, thumbnailImage, path);
+  return new CAddonListItem(label, label2, iconImage, thumbnailImage, path);
 }
 
-DLLEXPORT void GUI_ListItem_destroy(cListItem* p)
+DLLEXPORT void GUI_ListItem_destroy(CAddonListItem* p)
 {
   delete p;
 }
 
 
-cListItem::cListItem(const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path)
+CAddonListItem::CAddonListItem(const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path)
 {
   m_ListItemHandle = m_cb->ListItem_Create(m_Handle->addonData, label, label2, iconImage, thumbnailImage, path);
 }
 
-const char *cListItem::GetLabel()
+const char *CAddonListItem::GetLabel()
 {
   if (!m_ListItemHandle)
     return "";
@@ -493,13 +493,13 @@ const char *cListItem::GetLabel()
   return m_cb->ListItem_GetLabel(m_Handle->addonData, m_ListItemHandle);
 }
 
-void cListItem::SetLabel(const char *label)
+void CAddonListItem::SetLabel(const char *label)
 {
   if (m_ListItemHandle)
     m_cb->ListItem_SetLabel(m_Handle->addonData, m_ListItemHandle, label);
 }
 
-const char *cListItem::GetLabel2()
+const char *CAddonListItem::GetLabel2()
 {
   if (!m_ListItemHandle)
     return "";
@@ -507,37 +507,37 @@ const char *cListItem::GetLabel2()
   return m_cb->ListItem_GetLabel2(m_Handle->addonData, m_ListItemHandle);
 }
 
-void cListItem::SetLabel2(const char *label)
+void CAddonListItem::SetLabel2(const char *label)
 {
   if (m_ListItemHandle)
     m_cb->ListItem_SetLabel2(m_Handle->addonData, m_ListItemHandle, label);
 }
 
-void cListItem::SetIconImage(const char *image)
+void CAddonListItem::SetIconImage(const char *image)
 {
   if (m_ListItemHandle)
     m_cb->ListItem_SetIconImage(m_Handle->addonData, m_ListItemHandle, image);
 }
 
-void cListItem::SetThumbnailImage(const char *image)
+void CAddonListItem::SetThumbnailImage(const char *image)
 {
   if (m_ListItemHandle)
     m_cb->ListItem_SetThumbnailImage(m_Handle->addonData, m_ListItemHandle, image);
 }
 
-void cListItem::SetInfo(const char *Info)
+void CAddonListItem::SetInfo(const char *Info)
 {
   if (m_ListItemHandle)
     m_cb->ListItem_SetInfo(m_Handle->addonData, m_ListItemHandle, Info);
 }
 
-void cListItem::SetProperty(const char *key, const char *value)
+void CAddonListItem::SetProperty(const char *key, const char *value)
 {
   if (m_ListItemHandle)
     m_cb->ListItem_SetProperty(m_Handle->addonData, m_ListItemHandle, key, value);
 }
 
-const char *cListItem::GetProperty(const char *key) const
+const char *CAddonListItem::GetProperty(const char *key) const
 {
   if (!m_ListItemHandle)
     return "";
@@ -545,7 +545,7 @@ const char *cListItem::GetProperty(const char *key) const
   return m_cb->ListItem_GetProperty(m_Handle->addonData, m_ListItemHandle, key);
 }
 
-void cListItem::SetPath(const char *Path)
+void CAddonListItem::SetPath(const char *Path)
 {
   if (m_ListItemHandle)
     m_cb->ListItem_SetPath(m_Handle->addonData, m_ListItemHandle, Path);

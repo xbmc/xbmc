@@ -46,9 +46,9 @@ int           g_iConnectTimeout         = DEFAULT_TIMEOUT;      ///< The Socket 
 int           g_iPriority               = DEFAULT_PRIORITY;     ///< The Priority this client have in response to other clients
 CStdString    g_szUserPath              = "";
 CStdString    g_szClientPath            = "";
-cHelper_libXBMC_addon *XBMC   = NULL;
-cHelper_libXBMC_gui   *GUI    = NULL;
-cHelper_libXBMC_pvr   *PVR    = NULL;
+CHelper_libXBMC_addon *XBMC   = NULL;
+CHelper_libXBMC_gui   *GUI    = NULL;
+CHelper_libXBMC_pvr   *PVR    = NULL;
 cVNSIDemux      *VNSIDemuxer       = NULL;
 cVNSIData       *VNSIData          = NULL;
 cVNSIRecording  *VNSIRecording     = NULL;
@@ -126,15 +126,15 @@ ADDON_STATUS Create(void* hdl, void* props)
 
   PVR_PROPS* pvrprops = (PVR_PROPS*)props;
 
-  XBMC = new cHelper_libXBMC_addon;
+  XBMC = new CHelper_libXBMC_addon;
   if (!XBMC->RegisterMe(hdl))
     return STATUS_UNKNOWN;
 
-  GUI = new cHelper_libXBMC_gui;
+  GUI = new CHelper_libXBMC_gui;
   if (!GUI->RegisterMe(hdl))
     return STATUS_UNKNOWN;
 
-  PVR = new cHelper_libXBMC_pvr;
+  PVR = new CHelper_libXBMC_pvr;
   if (!PVR->RegisterMe(hdl))
     return STATUS_UNKNOWN;
 

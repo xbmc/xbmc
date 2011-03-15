@@ -54,16 +54,16 @@
 #define DVD_TIME_BASE 1000000
 #define DVD_NOPTS_VALUE    (-1LL<<52) // should be possible to represent in both double and __int64
 
-class cHelper_libXBMC_pvr
+class CHelper_libXBMC_pvr
 {
 public:
-  cHelper_libXBMC_pvr()
+  CHelper_libXBMC_pvr()
   {
     m_libXBMC_pvr = NULL;
     m_Handle      = NULL;
   }
 
-  ~cHelper_libXBMC_pvr()
+  ~CHelper_libXBMC_pvr()
   {
     if (m_libXBMC_pvr)
     {
