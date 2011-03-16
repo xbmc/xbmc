@@ -58,7 +58,8 @@ using namespace ADDON;
 
 CPVRManager *CPVRManager::m_instance = NULL;
 
-CPVRManager::CPVRManager()
+CPVRManager::CPVRManager() :
+    Observer()
 {
   m_bFirstStart              = true;
   m_bLoaded                  = false;
@@ -79,6 +80,14 @@ CPVRManager::~CPVRManager()
   delete m_timers;
   delete m_channelGroups;
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
+}
+
+void CPVRManager::Notify(const Observable &obs, const CStdString& msg)
+{
+  if (msg.Equals("epg"))
+  {
+    TriggerTimersUpdate();
+  }
 }
 
 CPVRManager *CPVRManager::Get(void)
@@ -531,10 +540,11 @@ void CPVRManager::Process()
       m_recordings->Load();
 
       /* start the EPG thread */
+      m_epg->AddObserver(this);
       m_epg->Start();
     }
 
-    /* check if the (still) are any enabled addons */
+    /* check if there are (still) any enabled addons */
     if (DisableIfNoClients())
     {
       CLog::Log(LOGDEBUG, "PVRManager - %s - no clients could be found. aborting startup", __FUNCTION__);
@@ -573,6 +583,7 @@ void CPVRManager::Process()
 void CPVRManager::Cleanup(void)
 {
   /* stop and clean up the EPG thread */
+  m_epg->RemoveObserver(this);
   m_epg->Stop();
 
   /* unload the rest */

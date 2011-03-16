@@ -301,7 +301,7 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
   {
     const CPVRChannel *channel = channels->at(iChannelPtr).channel;
 
-    /* check if this channel present in this container */
+    /* check if this channel is present in this container */
     CPVRChannel *existingChannel = (CPVRChannel *) GetByClient(channel->UniqueID(), channel->ClientID());
     if (existingChannel)
     {

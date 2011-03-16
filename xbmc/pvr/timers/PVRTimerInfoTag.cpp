@@ -181,7 +181,7 @@ const CStdString &CPVRTimerInfoTag::GetStatus() const
 
 bool CPVRTimerInfoTag::AddToClient()
 {
-  FindEpgEvent();
+  UpdateEpgEvent();
 
   try
   {
@@ -256,24 +256,62 @@ bool CPVRTimerInfoTag::RenameOnClient(const CStdString &newname) const
   return false;
 }
 
-void CPVRTimerInfoTag::FindEpgEvent(void)
+bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
 {
-  if (!m_EpgInfo)
+  if (m_EpgInfo)
   {
-    CPVREpg *epg = ((CPVRChannel *)CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetGroupAll()->GetByChannelNumber(m_iChannelNumber))->GetEPG();
-
-    if (epg)
-    {
-      m_EpgInfo = (CPVREpgInfoTag *) epg->InfoTagBetween(m_StartTime, m_StopTime);
-      if (!m_EpgInfo)
-        m_EpgInfo = (CPVREpgInfoTag *) epg->InfoTagAround(m_StartTime);
-    }
+    m_EpgInfo->SetTimer(NULL);
+    m_EpgInfo = NULL;
   }
+
+  m_iClientID         = tag.m_iClientID;
+  m_iClientIndex      = tag.m_iClientIndex;
+  m_bIsActive         = tag.m_bIsActive;
+  m_strTitle          = tag.m_strTitle;
+  m_strDir            = tag.m_strDir;
+  m_iClientNumber     = tag.m_iClientNumber;
+  m_iClientChannelUid = tag.m_iClientChannelUid;
+  m_StartTime         = tag.m_StartTime;
+  m_StopTime          = tag.m_StopTime;
+  m_FirstDay          = tag.m_FirstDay;
+  m_iPriority         = tag.m_iPriority;
+  m_iLifetime         = tag.m_iLifetime;
+  m_bIsRecording      = tag.m_bIsRecording;
+  m_bIsRepeating      = tag.m_bIsRepeating;
+  m_iWeekdays         = tag.m_iWeekdays;
+  m_iChannelNumber    = tag.m_iChannelNumber;
+  m_bIsRadio          = tag.m_bIsRadio;
+
+  /* try to find an epg event */
+  UpdateEpgEvent();
+
+  return true;
+}
+
+void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
+{
+  /* try to get the channel */
+  CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByUniqueID(m_iClientChannelUid, m_iClientID);
+  if (!channel)
+    return;
+
+  /* try to get the EPG table */
+  CPVREpg *epg = channel->GetEPG();
+  if (!epg)
+    return;
+
+  /* try to set the timer on the epg tag that matches */
+  m_EpgInfo = (CPVREpgInfoTag *) epg->InfoTagBetween(m_StartTime, m_StopTime);
+  if (!m_EpgInfo)
+    m_EpgInfo = (CPVREpgInfoTag *) epg->InfoTagAround(m_StartTime);
+
+  if (m_EpgInfo)
+    m_EpgInfo->SetTimer(bClear ? NULL : this);
 }
 
 bool CPVRTimerInfoTag::UpdateOnClient()
 {
-  FindEpgEvent();
+  UpdateEpgEvent();
 
   try
   {
@@ -312,7 +350,7 @@ void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
   return;
 }
 
-void CPVRTimerInfoTag::SetEpgInfoTag(const CPVREpgInfoTag *tag)
+void CPVRTimerInfoTag::SetEpgInfoTag(CPVREpgInfoTag *tag)
 {
   if (m_EpgInfo != tag)
   {

@@ -79,7 +79,7 @@ public:
   CDateTime             m_FirstDay;           /* if it is a repeating timer the first date it starts */
   int                   m_iWeekdays;          /* bit based store of weekdays to repeat */
   CStdString            m_strFileNameAndPath; /* filename is only for reference */
-  const CPVREpgInfoTag *m_EpgInfo;
+  CPVREpgInfoTag *      m_EpgInfo;
 
   CPVRTimerInfoTag();
 
@@ -102,12 +102,14 @@ public:
   bool SetDuration(int iDuration);
 
   static CPVRTimerInfoTag *CreateFromEpg(const CPVREpgInfoTag &tag);
-  void SetEpgInfoTag(const CPVREpgInfoTag *tag);
+  void SetEpgInfoTag(CPVREpgInfoTag *tag);
 
   int ChannelNumber(void) const;
   CStdString ChannelName(void) const;
 
-  void FindEpgEvent(void);
+  bool UpdateEntry(const CPVRTimerInfoTag &tag);
+
+  void UpdateEpgEvent(bool bClear = false);
 
   /* Client control functions */
   bool AddToClient();

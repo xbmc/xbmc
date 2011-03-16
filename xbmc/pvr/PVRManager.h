@@ -26,6 +26,7 @@
 #include "addons/PVRClient.h"
 #include "addons/AddonManager.h"
 #include "threads/Thread.h"
+#include "utils/Observer.h"
 #include "windows/GUIWindowPVRCommon.h"
 
 #include <vector>
@@ -43,9 +44,10 @@ typedef std::map< long, boost::shared_ptr<CPVRClient> >::iterator CLIENTMAPITR;
 typedef std::map< long, PVR_SERVERPROPS >       CLIENTPROPS;
 typedef std::map< long, PVR_STREAMPROPS >       STREAMPROPS;
 
-class CPVRManager : IPVRClientCallback
-                  , public ADDON::IAddonMgrCallback
-                  , private CThread
+class CPVRManager : IPVRClientCallback,
+                  public ADDON::IAddonMgrCallback,
+                  public Observer,
+                  private CThread
 {
 private:
   /*!
@@ -101,6 +103,8 @@ public:
    * @brief Start the PVRManager
    */
   void Start(void);
+
+  void Notify(const Observable &obs, const CStdString& msg);
 
 private:
 

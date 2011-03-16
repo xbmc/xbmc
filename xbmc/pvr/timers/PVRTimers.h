@@ -33,6 +33,12 @@ class CPVRTimers : public std::vector<CPVRTimerInfoTag *>
 private:
   CCriticalSection m_critSection;
 
+  /*!
+   * @brief Add timers to this container.
+   * @return The amount of timers that were added.
+   */
+  int LoadFromClients(void);
+
 public:
   CPVRTimers(void);
 
@@ -49,9 +55,9 @@ public:
 
   /**
    * Refresh the channel list from the clients.
-   * Returns the amount of timers that were added.
+   * True if anything was changed.
    */
-  int Update();
+  bool Update();
 
   /**
    * Update a timer entry in this container.
@@ -155,6 +161,8 @@ public:
    */
   static bool UpdateTimer(CPVRTimerInfoTag &item);
 
+  bool UpdateEntries(CPVRTimers *timers);
+  CPVRTimerInfoTag *GetByClient(int iClientId, int iClientTimerId);
   CPVRTimerInfoTag *GetMatch(const CEpgInfoTag *Epg);
   CPVRTimerInfoTag *GetMatch(const CFileItem *item);
 };
