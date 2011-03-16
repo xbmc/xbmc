@@ -11,8 +11,7 @@ LIBNAME=libmodplug
 VERSION=0.8.7
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
-#BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
-BASE_URL=http://voxel.dl.sourceforge.net/project/modplug-xmms/libmodplug/0.8.7
+BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
 ARCHIVE=$(SOURCE).tar.gz
 TARBALLS_LOCATION=/Users/Shared/xbmc-depends/tarballs
 
