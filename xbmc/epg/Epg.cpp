@@ -369,8 +369,6 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
   m_lastScanTime.GetAsTime(iLastUpdate);
   bUpdate = (iNow > iLastUpdate + iUpdateTime);
 
-  lock.Leave();
-
   if (bUpdate)
   {
     m_bInhibitSorting = true;
@@ -381,7 +379,6 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
     if (bGrabSuccess && size() > 0)
     {
       Sort();
-      lock.Enter();
       FixOverlappingEvents(false);
 
       if (bStoreInDb)
@@ -392,7 +389,6 @@ bool CEpg::Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb /* 
         database->CommitInsertQueries();
       }
 
-      lock.Leave();
       m_lastScanTime = CDateTime::GetCurrentDateTime();
     }
     else
