@@ -321,14 +321,19 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
     return;
   }
 
-  //pause the player during the refreshrate change
-  int delay = g_guiSettings.GetInt("videoplayer.pauseafterrefreshchange");
-  if (delay > 0 && g_guiSettings.GetBool("videoplayer.adjustrefreshrate") && g_application.IsPlayingVideo() && !g_application.IsPaused())
+  //only pause when switching monitor resolution/refreshrate,
+  //not when switching between fullscreen and windowed or when resizing the window
+  if ((res != RES_DESKTOP && res != RES_WINDOW) || (lastRes != RES_DESKTOP && lastRes != RES_WINDOW))
   {
-    g_application.m_pPlayer->Pause();
-    ThreadMessage msg = {TMSG_MEDIA_UNPAUSE};
-    CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 500);
-    pauseMessage->Create(true);
+    //pause the player during the refreshrate change
+    int delay = g_guiSettings.GetInt("videoplayer.pauseafterrefreshchange");
+    if (delay > 0 && g_guiSettings.GetBool("videoplayer.adjustrefreshrate") && g_application.IsPlayingVideo() && !g_application.IsPaused())
+    {
+      g_application.m_pPlayer->Pause();
+      ThreadMessage msg = {TMSG_MEDIA_UNPAUSE};
+      CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 100);
+      pauseMessage->Create(true);
+    }
   }
 
   if (res >= RES_DESKTOP)

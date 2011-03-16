@@ -25,6 +25,11 @@
 #include "utils/URIUtils.h"
 #include "pictures/DllImageLib.h"
 #include "DDSImage.h"
+#include "filesystem/SpecialProtocol.h"
+#if defined(__APPLE__) && defined(__arm__)
+#include <ImageIO/ImageIO.h>
+#include "filesystem/File.h"
+#endif
 
 /************************************************************************/
 /*                                                                      */
@@ -164,6 +169,116 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     return false;
   }
 
+#if defined(__APPLE__) && defined(__arm__)
+  XFILE::CFile file;
+  UInt8 *imageBuff      = NULL;
+  int64_t imageBuffSize = 0;
+
+  //open path and read data to buffer
+  //this handles advancedsettings.xml pathsubstitution
+  //and resulting networking
+  if (file.Open(texturePath, 0))
+  {
+    imageBuffSize =file.GetLength();
+    imageBuff = new UInt8[imageBuffSize];
+    imageBuffSize = file.Read(imageBuff, imageBuffSize);
+    file.Close();
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "Texture manager unable to open file %s", texturePath.c_str());
+    return false;
+  }
+
+  if (imageBuffSize <= 0)
+  {
+    CLog::Log(LOGERROR, "Texture manager read texture file failed.");
+    delete [] imageBuff;
+    return false;
+  }
+
+  // create the image from buffer;
+  CGImageSourceRef imageSource;
+  // create a CFDataRef using CFDataCreateWithBytesNoCopy and kCFAllocatorNull for deallocator.
+  // this allows us to do a nocopy reference and we handle the free of imageBuff
+  CFDataRef cfdata = CFDataCreateWithBytesNoCopy(NULL, imageBuff, imageBuffSize, kCFAllocatorNull);
+  imageSource = CGImageSourceCreateWithData(cfdata, NULL);   
+    
+  if (imageSource == nil)
+  {
+    CLog::Log(LOGERROR, "Texture manager unable to load file: %s", CSpecialProtocol::TranslatePath(texturePath).c_str());
+    CFRelease(cfdata);
+    delete [] imageBuff;
+    return false;
+  }
+
+  CGImageRef image = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
+  CFRelease(imageSource);
+
+  unsigned int width  = CGImageGetWidth(image);
+  unsigned int height = CGImageGetHeight(image);
+
+  m_hasAlpha = (CGImageGetAlphaInfo(image) != kCGImageAlphaNone);
+
+// not sure what to do here :)
+//  if (autoRotate && image.exifInfo.Orientation)
+//    m_orientation = image.exifInfo.Orientation - 1;
+  if (originalWidth)
+    *originalWidth = width;
+  if (originalHeight)
+    *originalHeight = height;
+
+  // check texture size limits and limit to screen size - preserving aspectratio of image  
+  if ( width > g_Windowing.GetMaxTextureSize() || height > g_Windowing.GetMaxTextureSize() )
+  {
+    float aspect;
+
+    if ( width > height )
+    {
+      aspect = (float)width / (float)height;
+      width  = g_Windowing.GetWidth();
+      height = (float)width / (float)aspect;
+    }
+    else
+    {
+      aspect = (float)height / (float)width;
+      height = g_Windowing.GetHeight();
+      width  = (float)height / (float)aspect;
+    }
+    CLog::Log(LOGDEBUG, "Texture manager texture clamp:new texture size: %i x %i", width, height);
+  }
+
+  Allocate(width, height, XB_FMT_A8R8G8B8);    
+    
+  CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+
+  CGContextRef context = CGBitmapContextCreate(m_pixels,
+    width, height, 8, GetPitch(), colorSpace,
+    kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host);
+
+  CGColorSpaceRelease(colorSpace);
+
+  // Flip so that it isn't upside-down
+  //CGContextTranslateCTM(context, 0, height);
+  //CGContextScaleCTM(context, 1.0f, -1.0f);
+  #if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
+    CGContextClearRect(context, CGRectMake(0, 0, width, height));
+  #else
+    #if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
+    // (just a way of checking whether we're running in 10.5 or later)
+    if (CGContextDrawLinearGradient == 0)
+      CGContextClearRect(context, CGRectMake(0, 0, width, height));
+    else
+    #endif
+      CGContextSetBlendMode(context, kCGBlendModeCopy);
+  #endif
+  //CGContextSetBlendMode(context, kCGBlendModeCopy);
+  CGContextDrawImage(context, CGRectMake(0, 0, width, height), image);
+  CGContextRelease(context);
+  CGImageRelease(image);
+  CFRelease(cfdata);
+  delete [] imageBuff;
+#else
   DllImageLib dll;
   if (!dll.Load())
     return false;
@@ -208,6 +323,7 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   }
 
   dll.ReleaseImage(&image);
+#endif
 
   ClampToEdge();
 

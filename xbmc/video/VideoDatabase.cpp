@@ -3365,7 +3365,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       }
       m_pDS->close();
       // ensure these scrapers are installed
-      CAddonInstaller::InstallFromXBMCRepo(scrapers);
+      CAddonInstaller::Get().InstallFromXBMCRepo(scrapers);
     }
     if (iVersion < 40)
     {
@@ -5371,7 +5371,7 @@ CStdString CVideoDatabase::GetContentForPath(const CStdString& strPath)
     { // check for episodes or seasons (ASSUMPTION: no episodes == seasons (i.e. assume show/season/episodes structure)
       CStdString sql = PrepareSQL("select count(1) from episodeview where strPath = '%s' limit 1", strPath.c_str());
       m_pDS->query( sql.c_str() );
-      if (m_pDS->num_rows())
+      if (m_pDS->num_rows() && m_pDS->fv(0).get_asInt() > 0)
         return "episodes";
       return "seasons";
     }
@@ -6830,6 +6830,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
     {
       TiXmlElement xmlMainElement("videodb");
       pMain = xmlDoc.InsertEndChild(xmlMainElement);
+      XMLUtils::SetInt(pMain,"version", GetExportVersion());
     }
 
     while (!m_pDS->eof())
@@ -6859,7 +6860,12 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
       CFileItem item(movie.m_strFileNameAndPath,false);
       CFileItem saveItem(item);
       if (!singleFiles)
-        saveItem = CFileItem(GetSafeFile(moviesDir, movie.m_strTitle) + ".avi", false);
+      {
+        CStdString strFileName(movie.m_strTitle);
+        if (movie.m_iYear > 0)
+          strFileName.AppendFormat("_%i", movie.m_iYear);
+        saveItem = CFileItem(GetSafeFile(moviesDir, strFileName) + ".avi", false);
+      }
       if (singleFiles && CUtil::SupportsFileOperations(movie.m_strFileNameAndPath))
       {
         if (!item.Exists(false))
@@ -6955,7 +6961,12 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
       CFileItem item(movie.m_strFileNameAndPath,false);
       CFileItem saveItem(item);
       if (!singleFiles)
-        saveItem = CFileItem(GetSafeFile(musicvideosDir, movie.m_strArtist + "." + movie.m_strTitle) + ".avi", false);
+      {
+        CStdString strFileName(movie.m_strArtist + "." + movie.m_strTitle);
+        if (movie.m_iYear > 0)
+          strFileName.AppendFormat("_%i", movie.m_iYear);
+        saveItem = CFileItem(GetSafeFile(musicvideosDir, strFileName) + ".avi", false);
+      }
       if (CUtil::SupportsFileOperations(movie.m_strFileNameAndPath) && singleFiles)
       {
         if (!item.Exists(false))
@@ -7356,6 +7367,11 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
       progress->ShowProgressBar(true);
     }
 
+    int iVersion = 0;
+    XMLUtils::GetInt(root, "version", iVersion);
+
+    CLog::Log(LOGDEBUG, "%s: Starting import (export version = %i)", __FUNCTION__, iVersion);
+
     TiXmlElement *movie = root->FirstChildElement();
     int current = 0;
     int total = 0;
@@ -7385,7 +7401,10 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         CFileItem item(info);
         scanner.AddVideo(&item,CONTENT_MOVIES);
         SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
-        CStdString file(GetSafeFile(moviesDir, info.m_strTitle));
+        CStdString strFileName(info.m_strTitle);
+        if (GetExportVersion() >= 1 && info.m_iYear > 0)
+          strFileName.AppendFormat("_%i", info.m_iYear);
+        CStdString file(GetSafeFile(moviesDir, strFileName));
         CFile::Cache(file + ".tbn", item.GetCachedVideoThumb());
         CFile::Cache(file + "-fanart.jpg", item.GetCachedFanart());
         for (CVideoInfoTag::iCast i = info.m_cast.begin(); i != info.m_cast.end(); ++i)
@@ -7398,7 +7417,10 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         CFileItem item(info);
         scanner.AddVideo(&item,CONTENT_MUSICVIDEOS);
         SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
-        CStdString file(GetSafeFile(musicvideosDir, info.m_strArtist + "." + info.m_strTitle));
+        CStdString strFileName(info.m_strArtist + "." + info.m_strTitle);
+        if (GetExportVersion() >= 1 && info.m_iYear > 0)
+          strFileName.AppendFormat("_%i", info.m_iYear);
+        CStdString file(GetSafeFile(musicvideosDir, strFileName));
         CFile::Cache(file + ".tbn", item.GetCachedVideoThumb());
         current++;
       }

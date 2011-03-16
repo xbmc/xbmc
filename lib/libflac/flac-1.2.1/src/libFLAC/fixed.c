@@ -52,7 +52,11 @@
 #ifdef local_abs
 #undef local_abs
 #endif
+#if defined(__APPLE__) && defined(__arm__)
+#define local_abs(x) abs(x)
+#else
 #define local_abs(x) ((unsigned)((x)<0? -(x) : (x)))
+#endif
 
 #ifdef FLAC__INTEGER_ONLY_LIBRARY
 /* rbps stands for residual bits per sample

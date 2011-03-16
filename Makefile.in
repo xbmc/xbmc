@@ -142,12 +142,8 @@ LIB_DIRS=\
 	lib/libapetag \
 	xbmc/interfaces/python/linux \
 	lib/cpluff \
-	lib/libmodplug \
 	lib/xbmc-dll-symbols \
 	lib/jsoncpp/src/lib_json
-ifeq ($(findstring osx,@ARCH@), osx)
-LIB_DIRS+=lib/libmicrohttpd
-endif
 
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
@@ -437,22 +433,8 @@ ifeq ($(findstring osx,@ARCH@), osx)
 else
 	cp lib/cpluff/libcpluff/.libs/libcpluff.so $@
 endif
-lib/libmodplug/src/.libs/libmodplug.a: force
-	$(MAKE) -C lib/libmodplug
-system/players/paplayer/libmodplug-@ARCH@.so: lib/libmodplug/src/.libs/libmodplug.a
-ifeq (@ARCH@, powerpc-osx)
-	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -arch @ARCHTYPE@ -lbundle1.o -o $@ $<
-endif
-ifeq (@ARCH@, x86-osx)
-	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -arch @ARCHTYPE@ -o $@ $<
-endif
-ifeq (@ARCH@, arm-osx)
-	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -read_only_relocs suppress -arch armv7 -o $@ $<
-endif
 lib/xbmc-dll-symbols/dll-symbols.a: force
 	$(MAKE) -C lib/xbmc-dll-symbols
-lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a: force
-	$(MAKE) -C lib/libmicrohttpd
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
@@ -537,11 +519,7 @@ imagelib: dllloader
 	$(MAKE) -C lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-ifeq ($(findstring osx,@ARCH@), osx)
-libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-@ARCH@.so system/players/paplayer/libmodplug-@ARCH@.so
-else
 libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-@ARCH@.so
-endif
 externals: libaddon codecs libs python pvrclients visualizations screensavers
 
 xcode_depends: \
@@ -556,8 +534,7 @@ xcode_depends: \
 	xbmc/interfaces/interfaces.a \
 	xbmc/interfaces/http-api/http-api.a \
 	xbmc/interfaces/json-rpc/json-rpc.a \
-	lib/jsoncpp/src/lib_json/libjsoncpp.a \
-	lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a
+	lib/jsoncpp/src/lib_json/libjsoncpp.a
 
 # platform independend objects
 OBJSXBMC=	\
@@ -651,7 +628,6 @@ ifeq ($(findstring osx,@ARCH@), osx)
 OBJSXBMC += \
 	xbmc/osx/osx.a \
 	xbmc/windowing/osx/windowing_osx.a \
-	lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a \
 	xbmc/threads/darwin/threads_darwin.a \
 	xbmc/powermanagement/osx/powermanagement.a \
 	xbmc/network/osx/network.a \

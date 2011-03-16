@@ -41,6 +41,9 @@
 #endif
 #ifdef __APPLE__
 #include "osx/CocoaInterface.h"
+#if defined(__arm__)
+#include "osx/iOSUtils.h"
+#endif
 #endif
 
 CSysInfo g_sysinfo;
@@ -671,7 +674,11 @@ CStdString CSysInfo::GetUserAgent()
   result += "Windows; ";
   result += GetKernelVersion();
 #elif defined(__APPLE__)
+#if defined(__arm__)
+  result += "iOS; ";
+#else
   result += "Mac OS X; ";
+#endif
   result += GetUnameVersion();
 #elif defined(_LINUX)
   result += "Linux; ";
@@ -701,11 +708,38 @@ bool CSysInfo::IsAppleTV()
   return result;
 }
 
+bool CSysInfo::IsAppleTV2()
+{
+  bool        result = false;
+#if defined(__APPLE__) && defined(__arm__)
+  char        buffer[512];
+  size_t      len = 512;
+  std::string hw_machine = "unknown";
+
+  if (sysctlbyname("hw.machine", &buffer, &len, NULL, 0) == 0)
+    hw_machine = buffer;
+
+  if (hw_machine.find("AppleTV2,1") != std::string::npos)
+    result = true;
+#endif
+  return result;
+}
+
+bool CSysInfo::HasVideoToolBoxDecoder()
+{
+  bool        result = false;
+
+#if defined(HAVE_VIDEOTOOLBOXDECODER)
+  result = iOS_HasVideoToolboxDecoder();
+#endif
+  return result;
+}
+
 bool CSysInfo::HasVDADecoder()
 {
   bool        result = false;
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) && !defined(__arm__)
   result = Cocoa_HasVDADecoder();
 #endif
   return result;

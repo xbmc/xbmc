@@ -59,7 +59,7 @@
   <string id="31104">Toista esittelyt ikkunassa [COLOR=grey3](Videotiedot-ikkuna)[/COLOR]</string>
   <string id="31105"></string>
   <string id="31106">Yleiset asetukset</string>
-  <string id="31107"></string>
+  <string id="31107">Piilota tiedostojen nimistä luetut merkinnät [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Piilota päävalikon painikkeet</string>
   <string id="31109">Päävalikon taustakuvat</string>
   <string id="31110">Muokkaa taustakuvaa päävalikon painikkeelle</string>
@@ -71,7 +71,7 @@
   <string id="31116"></string>
   <string id="31117">Näytä viimeksi lisätyt videot</string>
   <string id="31118">Päävalikon alivalikko</string>
-  <string id="31119"></string>
+  <string id="31119">Piilota taustan fanitaide</string>
   <string id="31120">PAINIKKEEN TEKSTI</string>
   <string id="31121"></string>
   <string id="31122">Sääsivu</string>
@@ -84,6 +84,12 @@
   <string id="31128">Sanoitukset</string>
   <string id="31129"></string>
   <string id="31130"></string>
+  <string id="31131"></string>
+  <string id="31132">Sanoitukset-lisäosa</string>
+  <string id="31133">Tekstitykset-lisäosa</string>
+  <string id="31134">Päävalikon Videot-alivalikko</string>
+  <string id="31135">Päävalikon Musiikki-alivalikko</string>
+  <string id="31136">Päävalikon Kuvat-alivalikko</string>
 
   <string id="31140">Musiikki-OSD</string>
   <string id="31141">Video-OSD</string>

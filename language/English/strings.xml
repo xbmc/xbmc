@@ -1221,6 +1221,7 @@
   <string id="13429">Allow hardware acceleration (VDADecoder)</string>
   <string id="13430">Allow hardware acceleration (OpenMax)</string>
   <string id="13431">Pixel Shaders</string>
+  <string id="13432">Allow hardware acceleration (VideoToolbox)</string>
 
   <string id="13500">A/V sync method</string>
   <string id="13501">Audio clock</string>
@@ -2583,6 +2584,8 @@
   <string id="24041">Install from zip file</string>
   <string id="24042">Downloading %i%%</string>
   <string id="24043">Available Updates</string>
+  <string id="24044">Dependencies not met</string>
+  <string id="24045">Add-on does not have the correct structure</string>
 
   <string id="24050">Available Add-ons</string>
   <string id="24051">Version:</string>

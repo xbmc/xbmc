@@ -1,0 +1,90 @@
+TOC
+1. Introduction
+2. Getting the source code
+3. Install required libs
+  3.1. Install Xcode
+  3.2. Install Cross libs and runtime environment
+4. How to compile and run
+	4.1 Using XCode
+	4.2 Using Command line
+5. Gesture Handling on iPad/iPhone/iPod touch
+
+-----------------------------------------------------------------------------
+1. Introduction
+-----------------------------------------------------------------------------
+
+This is a platform port of XBMC for the Apple iOS operating system. 
+The current build system is Xcode 3.2.5 and iOS SDK 4.2 
+There are two ways to build XBMC for Mac.
+
+1) command-line or
+2) Xcode.
+
+Generally, Xcode is the easiest as it presents the build system in a GUI environment.
+The command-line build is still under development.
+
+XBMC for Mac is composed of a main binary with numerous dynamic libraries and
+codecs that support a multitude of music and video formats.
+
+NOTE TO NEW OS X USERS: All lines that are prefixed with the '$' character are
+commands that need to be typed into a Terminal window. Note that the '$'
+character itself should NOT be typed as part of the command.
+
+
+-----------------------------------------------------------------------------
+2. Getting the source code
+-----------------------------------------------------------------------------
+
+ $ cd $HOME
+ $ git clone git://github.com/xbmc/atv2
+
+-----------------------------------------------------------------------------
+3.0 Install Xcode
+-----------------------------------------------------------------------------
+Install latest Xcode. You can download it from Apple's site after registration at
+(http://developer.apple.com/tools/download). 
+The preferred version is Xcode 3.2.5 and iOS SDK 4.2.
+
+-----------------------------------------------------------------------------
+3.1 Install Cross libs and runtime environment
+-----------------------------------------------------------------------------
+ $ sudo mkdir -p /usr/local/bin; sudo cp tools/osx/ios-depends/gas-preprocessor/gas-preprocessor.pl /usr/local/bin/
+ $ make -C tools/osx/ios-depends
+ $ make -C tools/osx/ios-depends/xbmc
+ $ make xcode_depends
+
+-----------------------------------------------------------------------------
+4. How to compile
+-----------------------------------------------------------------------------
+Both Xcode and Terminal compilation require that build environment be setup
+from the step 3.1.
+
+ $ cd $HOME/XBMC
+
+-----------------------------------------------------------------------------
+4.1 Using Xcode
+-----------------------------------------------------------------------------
+Start XCode and open the XBMC project (XBMC-IOS.xcodeproj or XBMC-ATV2.xcodeproj)
+located in $HOME/XBMC.
+
+There are two relevant build targets : Release and Debug. Compile always for device
+end not simulator.
+
+-----------------------------------------------------------------------------
+4.2 Using Terminal (command-line)
+-----------------------------------------------------------------------------
+
+ $ cd $HOME/XBMC
+ $ xcodebuild -project XBMC-IOS.xcodeproj -target XBMC -configuration Release build ONLY_ACTIVE_ARCH=YES ARCHS=armv7 VALID_ARCHS=armv7 IPHONEOS_DEPLOYMENT_TARGET=4.1 SDKROOT=iphoneos4.2
+
+or
+
+ $ xcodebuild -project XBMC-ATV2.xcodeproj -target XBMC -configuration Release build ONLY_ACTIVE_ARCH=YES ARCHS=armv7 VALID_ARCHS=armv7 IPHONEOS_DEPLOYMENT_TARGET=4.1 SDKROOT=iphoneos4.2
+
+
+5. Gesture Handling on iPad/iPhone/iPod touch
+
+  Double Tap : Right Mouse Click
+  Swipe Left : Backspace
+  Swipe Right : Tab
+

@@ -69,8 +69,13 @@ namespace ADDON
 #include "network/WebServer.h"
 #endif
 
+#if (defined(__APPLE__) && defined(__arm__))
+#include "threads/XBMC_cond.h"
+#include "threads/XBMC_mutex.h"
+#else
 #ifdef HAS_SDL
 #include <SDL/SDL_mutex.h>
+#endif
 #endif
 
 class CKaraokeLyricsManager;
@@ -303,6 +308,9 @@ protected:
   bool m_skinReloading; // if true we disallow LoadSkin until ReloadSkin is called
 
   friend class CApplicationMessenger;
+#if defined(__APPLE__) && defined(__arm__)
+  friend class CWinEventsIOS;
+#endif
   // screensaver
   bool m_bScreenSave;
   ADDON::AddonPtr m_screenSaver;
@@ -352,7 +360,7 @@ protected:
   
   CGUITextLayout *m_debugLayout;
 
-#ifdef HAS_SDL
+#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
   int        m_frameCount;
   SDL_mutex* m_frameMutex;
   SDL_cond*  m_frameCond;

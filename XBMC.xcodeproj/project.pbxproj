@@ -1246,6 +1246,8 @@
 		F56C8D6F131F5E86000AD0F6 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */; };
 		F56C8D70131F5E86000AD0F6 /* libpython2.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D40131F5E85000AD0F6 /* libpython2.6.dylib */; };
 		F56C8D71131F5E86000AD0F6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D41131F5E85000AD0F6 /* libsqlite3.dylib */; };
+		F57A1D1E1329B15300498CC7 /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F57A1D1D1329B15300498CC7 /* AutoPool.mm */; };
+		F57A1D1F1329B15300498CC7 /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F57A1D1D1329B15300498CC7 /* AutoPool.mm */; };
 		F57A1E3A132AAB0E00498CC7 /* libSDL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A1E39132AAB0E00498CC7 /* libSDL.dylib */; };
 		F57A1E3B132AAB0E00498CC7 /* libSDL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A1E39132AAB0E00498CC7 /* libSDL.dylib */; };
 		F57A1E3D132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */; };
@@ -1848,8 +1850,6 @@
 		F5A7A6F81128934D0059D6AA /* http-api.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F61128934C0059D6AA /* http-api.a */; };
 		F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
 		F5A7A703112893E50059D6AA /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
-		F5A7A8131128F4DA0059D6AA /* libmicrohttpd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A8121128F4DA0059D6AA /* libmicrohttpd.a */; };
-		F5A7A8141128F4DA0059D6AA /* libmicrohttpd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A8121128F4DA0059D6AA /* libmicrohttpd.a */; };
 		F5A7A85B112908F00059D6AA /* WebServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A859112908F00059D6AA /* WebServer.cpp */; };
 		F5A7A85C112908F00059D6AA /* WebServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A859112908F00059D6AA /* WebServer.cpp */; };
 		F5A7B376113AFB5F0059D6AA /* FileSFTP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B374113AFB5F0059D6AA /* FileSFTP.cpp */; };
@@ -1865,6 +1865,10 @@
 		F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
 		F5AACA980FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
 		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
+		F5B13866133081310045076D /* libmodplug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13865133081310045076D /* libmodplug.dylib */; };
+		F5B13867133081310045076D /* libmodplug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13865133081310045076D /* libmodplug.dylib */; };
+		F5B13868133081390045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138641330811D0045076D /* libmicrohttpd.dylib */; };
+		F5B138691330813A0045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138641330811D0045076D /* libmicrohttpd.dylib */; };
 		F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB80D120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB81A1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB8191202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp */; };
@@ -3858,6 +3862,8 @@
 		F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/mysql/libmysqlclient.dylib"; sourceTree = "<absolute>"; };
 		F56C8D40131F5E85000AD0F6 /* libpython2.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpython2.6.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libpython2.6.dylib"; sourceTree = "<absolute>"; };
 		F56C8D41131F5E85000AD0F6 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libsqlite3.dylib"; sourceTree = "<absolute>"; };
+		F57A1D1C1329B15300498CC7 /* AutoPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoPool.h; sourceTree = "<group>"; };
+		F57A1D1D1329B15300498CC7 /* AutoPool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AutoPool.mm; sourceTree = "<group>"; };
 		F57A1E39132AAB0E00498CC7 /* libSDL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libSDL.dylib"; sourceTree = "<absolute>"; };
 		F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL_mixer.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libSDL_mixer.dylib"; sourceTree = "<absolute>"; };
 		F57B6F7E1071B8B500079ACB /* JobManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JobManager.cpp; sourceTree = "<group>"; };
@@ -3904,7 +3910,6 @@
 		F5A7A6F61128934C0059D6AA /* http-api.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "http-api.a"; path = "xbmc/interfaces/http-api/http-api.a"; sourceTree = "<group>"; };
 		F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnnouncementManager.cpp; sourceTree = "<group>"; };
 		F5A7A701112893E50059D6AA /* AnnouncementManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnouncementManager.h; sourceTree = "<group>"; };
-		F5A7A8121128F4DA0059D6AA /* libmicrohttpd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmicrohttpd.a; path = lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a; sourceTree = "<group>"; };
 		F5A7A859112908F00059D6AA /* WebServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WebServer.cpp; sourceTree = "<group>"; };
 		F5A7A85A112908F00059D6AA /* WebServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebServer.h; sourceTree = "<group>"; };
 		F5A7B374113AFB5F0059D6AA /* FileSFTP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileSFTP.cpp; sourceTree = "<group>"; };
@@ -3922,6 +3927,8 @@
 		F5ACB5370FC3DF3D00AAA056 /* eprintf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = eprintf.cpp; sourceTree = "<group>"; };
 		F5AD1EA60F488A1A0065EB5D /* GUIWindowKaraokeLyrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowKaraokeLyrics.h; sourceTree = "<group>"; };
 		F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowKaraokeLyrics.cpp; sourceTree = "<group>"; };
+		F5B138641330811D0045076D /* libmicrohttpd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmicrohttpd.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libmicrohttpd.dylib"; sourceTree = "<absolute>"; };
+		F5B13865133081310045076D /* libmodplug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmodplug.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libmodplug.dylib"; sourceTree = "<absolute>"; };
 		F5B413131065900C0035D105 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		F5BDB80A120202F400F0B710 /* DVDSubtitleTagSami.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleTagSami.h; sourceTree = "<group>"; };
 		F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleTagSami.cpp; sourceTree = "<group>"; };
@@ -4029,7 +4036,6 @@
 				F5A7A6F1112893330059D6AA /* libjsoncpp.a in Frameworks */,
 				F5A7A6F4112893440059D6AA /* json-rpc.a in Frameworks */,
 				F5A7A6F71128934C0059D6AA /* http-api.a in Frameworks */,
-				F5A7A8131128F4DA0059D6AA /* libmicrohttpd.a in Frameworks */,
 				F56C8CE2131F5DAF000AD0F6 /* libc.dylib in Frameworks */,
 				F56C8CE7131F5DC6000AD0F6 /* libz.dylib in Frameworks */,
 				F56C8CEA131F5DCC000AD0F6 /* libm.dylib in Frameworks */,
@@ -4062,6 +4068,8 @@
 				F56C8D59131F5E85000AD0F6 /* libsqlite3.dylib in Frameworks */,
 				F57A1E3A132AAB0E00498CC7 /* libSDL.dylib in Frameworks */,
 				F57A1E3D132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */,
+				F5B13866133081310045076D /* libmodplug.dylib in Frameworks */,
+				F5B13868133081390045076D /* libmicrohttpd.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4095,7 +4103,6 @@
 				F5A7A6F2112893330059D6AA /* libjsoncpp.a in Frameworks */,
 				F5A7A6F5112893440059D6AA /* json-rpc.a in Frameworks */,
 				F5A7A6F81128934D0059D6AA /* http-api.a in Frameworks */,
-				F5A7A8141128F4DA0059D6AA /* libmicrohttpd.a in Frameworks */,
 				F56C8CE3131F5DAF000AD0F6 /* libc.dylib in Frameworks */,
 				F56C8CE8131F5DC6000AD0F6 /* libz.dylib in Frameworks */,
 				F56C8CEB131F5DCC000AD0F6 /* libm.dylib in Frameworks */,
@@ -4128,6 +4135,8 @@
 				F56C8D71131F5E86000AD0F6 /* libsqlite3.dylib in Frameworks */,
 				F57A1E3B132AAB0E00498CC7 /* libSDL.dylib in Frameworks */,
 				F57A1E3E132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */,
+				F5B13867133081310045076D /* libmodplug.dylib in Frameworks */,
+				F5B138691330813A0045076D /* libmicrohttpd.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5275,6 +5284,8 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
+				F57A1D1C1329B15300498CC7 /* AutoPool.h */,
+				F57A1D1D1329B15300498CC7 /* AutoPool.mm */,
 				6E2FACD20E26E92800DF79EA /* Info.plist */,
 				F5EA04280F72EB88005C2EC5 /* SDLMain.mm */,
 				F5EA04E80F72F9CA005C2EC5 /* SDLMain.h */,
@@ -7246,6 +7257,8 @@
 				E38E24250D26317D00618676 /* libGLEW.dylib */,
 				F57A1E39132AAB0E00498CC7 /* libSDL.dylib */,
 				F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */,
+				F5B13865133081310045076D /* libmodplug.dylib */,
+				F5B138641330811D0045076D /* libmicrohttpd.dylib */,
 			);
 			name = "External Libs";
 			sourceTree = "<group>";
@@ -7259,7 +7272,6 @@
 				F5A7A6F61128934C0059D6AA /* http-api.a */,
 				F5A7A6F3112893440059D6AA /* json-rpc.a */,
 				F5A7A6F0112893330059D6AA /* libjsoncpp.a */,
-				F5A7A8121128F4DA0059D6AA /* libmicrohttpd.a */,
 				F5A1C86A0F6B048000A96ABD /* x86 */,
 				F5A1C8690F6B047D00A96ABD /* ppc */,
 			);
@@ -7534,7 +7546,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude skin.confluence\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/osx\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/osx\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\n\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
+			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude skin.confluence\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/osx/XBMCHelper\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${SYNC} \"$SRCROOT/tools/osx/org.xbmc.helper.plist\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${SYNC} \"$SRCROOT/tools/osx/preflight\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\n\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
 		};
 		F5A1CBDF0F6B0B4700A96ABD /* copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -7577,7 +7589,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude skin.confluence\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/osx\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/osx/XBMCHelper\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${SYNC} \"$SRCROOT/tools/osx/org.xbmc.helper.plist\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${SYNC} \"$SRCROOT/tools/osx/preflight\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\n\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
+			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude skin.confluence\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/osx/XBMCHelper\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${SYNC} \"$SRCROOT/tools/osx/org.xbmc.helper.plist\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${SYNC} \"$SRCROOT/tools/osx/preflight\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\n\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -8502,6 +8514,7 @@
 				C8F3728B132A53E700E903AE /* PVRFile.cpp in Sources */,
 				C8F3728E132A541300E903AE /* DVDInputStreamPVRManager.cpp in Sources */,
 				C8F37293132A54F300E903AE /* Observer.cpp in Sources */,
+				F57A1D1E1329B15300498CC7 /* AutoPool.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9369,6 +9382,7 @@
 				7C4705AF12EF584C00369E51 /* AddonInstaller.cpp in Sources */,
 				18C1D22E13033F6A00CFFE59 /* GLUtils.cpp in Sources */,
 				7C84A59F12FA3C1600CD1714 /* SourcesDirectory.cpp in Sources */,
+				F57A1D1F1329B15300498CC7 /* AutoPool.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9440,17 +9454,15 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\"$(SRCROOT)/lib/darwin/libSDL-OSX\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$XBMC_DEPENDS/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$XBMC_DEPENDS/lib/mysql\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)/xbmc/interfaces/http-api\"";
@@ -9531,17 +9543,15 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\"$(SRCROOT)/lib/darwin/libSDL-OSX\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$XBMC_DEPENDS/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$XBMC_DEPENDS/lib/mysql\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)/xbmc/interfaces/http-api\"";
@@ -9675,9 +9685,7 @@
 					lib/cmyth/librefmem,
 					lib/libapetag/.libs,
 					lib/libsquish,
-					"lib/darwin/libSDL-OSX",
 					lib/jsoncpp/src/lib_json,
-					lib/libmicrohttpd/src/daemon/.libs,
 					"xbmc/interfaces/http-api",
 					"xbmc/interfaces/json-rpc",
 					/opt/local/lib,
@@ -9687,11 +9695,13 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib/mysql\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
@@ -9755,9 +9765,7 @@
 					lib/cmyth/librefmem,
 					lib/libapetag/.libs,
 					lib/libsquish,
-					"lib/darwin/libSDL-OSX",
 					lib/jsoncpp/src/lib_json,
-					lib/libmicrohttpd/src/daemon/.libs,
 					"xbmc/interfaces/http-api",
 					"xbmc/interfaces/json-rpc",
 					/opt/local/lib,
@@ -9767,11 +9775,13 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib/mysql\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",

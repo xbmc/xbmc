@@ -70,11 +70,11 @@ XBMCHelper::XBMCHelper()
   m_homepath = homePath;
 
   // Compute the helper filename.
-  m_helperFile = m_homepath + "/tools/osx/";
+  m_helperFile = m_homepath + "/tools/";
   m_helperFile += XBMC_HELPER_PROGRAM;
   
   // Compute the local (pristine) launch agent filename.
-  m_launchAgentLocalFile = m_homepath + "/tools/osx/";
+  m_launchAgentLocalFile = m_homepath + "/tools/";
   m_launchAgentLocalFile += XBMC_LAUNCH_PLIST;
 
   // Compute the install path for the launch agent.
