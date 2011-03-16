@@ -67,6 +67,9 @@ void cHTSPData::Close()
 
 bool cHTSPData::CheckConnection()
 {
+  if (!m_session.IsConnected())
+    m_session.Connect(g_szHostname, g_iPortHTSP);
+
   return m_session.IsConnected();
 }
 
