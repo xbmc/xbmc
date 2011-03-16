@@ -385,7 +385,7 @@
 		<control type="group">
 			<posx>470</posx>
 			<posy>0</posy>
-			<visible>Container.Content(Episodes)</visible>
+			<visible>Container.Content(Episodes) + !IsEmpty(ListItem.Season)</visible>
 			<include>VisibleFadeEffect</include>
 			<animation effect="slide" end="-710,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="slide" start="-710,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
@@ -406,6 +406,7 @@
 			<posx>240</posx>
 			<posy>0</posy>
 			<visible>Container.Content(Seasons) | Container.Content(Episodes)</visible>
+			<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
 			<include>VisibleFadeEffect</include>
 			<animation effect="slide" end="-600,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="slide" start="-600,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
