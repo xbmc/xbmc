@@ -230,23 +230,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
 case TMSG_POWERDOWN:
       {
-        g_application.Stop();
-        Sleep(200);
-        g_Windowing.DestroyWindow();
-        #if !(defined(__APPLE__) && defined(__arm__))
+        g_application.Stop(EXITCODE_POWERDOWN);
         g_powerManager.Powerdown();
-        exit(64);
-        #endif
       }
       break;
 
     case TMSG_QUIT:
       {
-        g_application.Stop();
-        Sleep(200);
-        #if !(defined(__APPLE__) && defined(__arm__))
-        exit(0);
-        #endif
+        g_application.Stop(EXITCODE_QUIT);
       }
       break;
 
@@ -265,25 +256,16 @@ case TMSG_POWERDOWN:
     case TMSG_RESTART:
     case TMSG_RESET:
       {
-        g_application.Stop();
-        Sleep(200);
-        g_Windowing.DestroyWindow();
-        #if !(defined(__APPLE__) && defined(__arm__))
+        g_application.Stop(EXITCODE_REBOOT);
         g_powerManager.Reboot();
-        exit(66);
-        #endif
       }
       break;
 
     case TMSG_RESTARTAPP:
       {
 #ifdef _WIN32
-        g_application.Stop();
-        Sleep(200);
+        g_application.Stop(EXITCODE_RESTARTAPP);
 #endif
-        #if !(defined(__APPLE__) && defined(__arm__))
-        exit(65);
-        #endif
         // TODO
       }
       break;
