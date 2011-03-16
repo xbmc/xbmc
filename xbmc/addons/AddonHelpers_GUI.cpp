@@ -198,7 +198,7 @@ GUIHANDLE CAddonHelpers_GUI::Window_New(void *addonData, const char *xmlFilename
   {
     //FIXME make this static method of current skin?
     CStdString str("none");
-    AddonProps props(str, ADDON_SKIN, str);
+    AddonProps props(str, ADDON_SKIN, str, str);
     CSkinInfo skinInfo(props);
     CStdString basePath;
     URIUtils::AddFileToFolder(guiHelper->m_addon->Path(), "resources", basePath);
