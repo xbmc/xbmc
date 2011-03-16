@@ -585,10 +585,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
       for (int i = 1; i <= MAXREFRESHCHANGEDELAY; i++)
       {
         CStdString delayText;
-        if (i < 4)
-          delayText.Format(g_localizeStrings.Get(13552).c_str(), (double)i / 2.0);
+        if (i < 20)
+          delayText.Format(g_localizeStrings.Get(13552).c_str(), (double)i / 10.0);
         else
-          delayText.Format(g_localizeStrings.Get(13553).c_str(), (double)i / 2.0);
+          delayText.Format(g_localizeStrings.Get(13553).c_str(), (double)i / 10.0);
 
         pControl->AddLabel(delayText, i);
       }

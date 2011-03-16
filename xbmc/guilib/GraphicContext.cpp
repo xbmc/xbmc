@@ -327,7 +327,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   {
     g_application.m_pPlayer->Pause();
     ThreadMessage msg = {TMSG_MEDIA_UNPAUSE};
-    CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 500);
+    CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 100);
     pauseMessage->Create(true);
   }
 
