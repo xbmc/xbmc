@@ -3365,7 +3365,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       }
       m_pDS->close();
       // ensure these scrapers are installed
-      CAddonInstaller::InstallFromXBMCRepo(scrapers);
+      CAddonInstaller::Get().InstallFromXBMCRepo(scrapers);
     }
     if (iVersion < 40)
     {

@@ -218,6 +218,7 @@
 #include "dialogs/GUIDialogSlider.h"
 #include "guilib/GUIControlFactory.h"
 #include "dialogs/GUIDialogCache.h"
+#include "addons/AddonInstaller.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -4809,7 +4810,7 @@ void CApplication::ProcessSlow()
 #endif
   
   if (!IsPlayingVideo())
-    ADDON::CAddonMgr::Get().UpdateRepos();
+    CAddonInstaller::Get().UpdateRepos();
 }
 
 // Global Idle Time in Seconds
