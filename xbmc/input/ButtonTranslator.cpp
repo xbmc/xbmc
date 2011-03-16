@@ -202,7 +202,7 @@ static const ActionMapping windows[] =
         {"settings"                 , WINDOW_SETTINGS_MENU},
         {"music"                    , WINDOW_MUSIC},
         {"video"                    , WINDOW_VIDEOS},
-        {"videos"                   , WINDOW_VIDEOS}, // backward compat
+        {"videos"                   , WINDOW_VIDEO_NAV},
         {"systeminfo"               , WINDOW_SYSTEM_INFORMATION},
         {"testpattern"              , WINDOW_TEST_PATTERN},
         {"screencalibration"        , WINDOW_SCREEN_CALIBRATION},
