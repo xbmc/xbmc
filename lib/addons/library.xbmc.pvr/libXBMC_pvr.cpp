@@ -114,6 +114,14 @@ DLLEXPORT void PVR_recording(const char *Name, const char *FileName, bool On)
   m_cb->Recording(m_Handle->addonData, Name, FileName, On);
 }
 
+DLLEXPORT void PVR_trigger_channel_update()
+{
+  if (m_cb == NULL)
+    return;
+
+  m_cb->TriggerChannelUpdate(m_Handle->addonData);
+}
+
 DLLEXPORT void PVR_trigger_timer_update()
 {
   if (m_cb == NULL)

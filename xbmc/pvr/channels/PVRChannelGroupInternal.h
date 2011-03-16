@@ -45,10 +45,9 @@ private:
 
   /*!
    * @brief Load all channels from the clients.
-   * @param bAddToDb If true, add the channels to the database.
    * @return The amount of channels that were loaded.
    */
-  int LoadFromClients(bool bAddToDb = true);
+  int LoadFromClients(void);
 
   /*!
    * @brief Add client channels to this container.
@@ -100,11 +99,6 @@ private:
    */
   void Unload();
 
-  /*!
-   * @brief Add a channel to this internal group.
-   */
-  bool InsertInGroup(CPVRChannel *channel, int iChannelNumber = 0);
-
 public:
   /*!
    * @brief Create a new internal channel group.
@@ -136,6 +130,11 @@ public:
    * @return True if the channel was updated and persisted.
    */
   bool UpdateChannel(const CPVRChannel &channel);
+
+  /*!
+   * @brief Add a channel to this internal group.
+   */
+  bool InsertInGroup(CPVRChannel *channel, int iChannelNumber = 0);
 
   bool IsGroupMember(const CPVRChannel *channel) const;
   bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0);

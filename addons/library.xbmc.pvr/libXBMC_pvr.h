@@ -127,6 +127,10 @@ public:
       dlsym(m_libXBMC_pvr, "PVR_trigger_recording_update");
     if (TriggerRecordingUpdate == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+    TriggerChannelUpdate  = (void (*)())
+      dlsym(m_libXBMC_pvr, "PVR_trigger_channel_update");
+    if (TriggerChannelUpdate == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
 #ifdef USE_DEMUX
     FreeDemuxPacket         = (void (*)(DemuxPacket* pPacket))
       dlsym(m_libXBMC_pvr, "PVR_free_demux_packet");
@@ -148,6 +152,7 @@ public:
   void (*Recording)(const char *Name, const char *FileName, bool On);
   void (*TriggerTimerUpdate)();
   void (*TriggerRecordingUpdate)();
+  void (*TriggerChannelUpdate)();
 #ifdef USE_DEMUX
   void (*FreeDemuxPacket)(DemuxPacket* pPacket);
   DemuxPacket* (*AllocateDemuxPacket)(int iDataSize);

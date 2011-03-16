@@ -42,6 +42,7 @@ public:
   static void PVRTransferRecordingEntry(void *addonData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
   static void PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook);
   static void PVRRecording(void *addonData, const char *Name, const char *FileName, bool On);
+  static void PVRTriggerChannelUpdate(void *addonData);
   static void PVRTriggerTimerUpdate(void *addonData);
   static void PVRTriggerRecordingUpdate(void *addonData);
   static void PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket);

@@ -464,6 +464,8 @@ void cHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
   
   XBMC->Log(LOG_DEBUG, "%s - id:%u, name:'%s', icon:'%s', event:%u"
       , __FUNCTION__, id, name ? name : "(null)", icon ? icon : "(null)", event);
+
+  PVR->TriggerChannelUpdate();
 }
 
 void cHTSPSession::ParseChannelRemove(htsmsg_t* msg, SChannels &channels)

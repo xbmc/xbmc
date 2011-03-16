@@ -180,6 +180,7 @@ typedef void (*PVRTransferTimerEntry)(void *userData, const PVRHANDLE handle, co
 typedef void (*PVRTransferRecordingEntry)(void *userData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
 typedef void (*PVRAddMenuHook)(void *addonData, PVR_MENUHOOK *hook);
 typedef void (*PVRRecording)(void *addonData, const char *Name, const char *FileName, bool On);
+typedef void (*PVRTriggerChannelUpdate)(void *addonData);
 typedef void (*PVRTriggerTimerUpdate)(void *addonData);
 typedef void (*PVRTriggerRecordingUpdate)(void *addonData);
 typedef void (*PVRFreeDemuxPacket)(void *addonData, DemuxPacket* pPacket);
@@ -193,6 +194,7 @@ typedef struct CB_PVRLib
   PVRTransferRecordingEntry TransferRecordingEntry;
   PVRAddMenuHook            AddMenuHook;
   PVRRecording              Recording;
+  PVRTriggerChannelUpdate   TriggerChannelUpdate;
   PVRTriggerTimerUpdate     TriggerTimerUpdate;
   PVRTriggerRecordingUpdate TriggerRecordingUpdate;
   PVRFreeDemuxPacket        FreeDemuxPacket;

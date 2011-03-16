@@ -176,6 +176,12 @@ public:
   int GetGroupId(CStdString strGroupName) const;
 
   /*!
+   * @brief Remove a channel from all non-system groups.
+   * @param channel The channel to remove.
+   */
+  void RemoveFromAllGroups(CPVRChannel *channel);
+
+  /*!
    * @brief Persist all changes in channel groups.
    * @return True if everything was persisted, false otherwise.
    */
