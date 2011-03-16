@@ -538,7 +538,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 
   DXVA2_ConfigPictureDecode config = {};
 
-  unsigned bitstream = 2;
+  unsigned bitstream = 2; // ConfigBitstreamRaw = 2 is required for Poulsbo and handles skipping better with nVidia
   for(unsigned i = 0; i< cfg_count; i++)
   {
     CLog::Log(LOGDEBUG,
