@@ -141,7 +141,7 @@ void CEpgContainer::Process(void)
   m_iLastEpgUpdate  = 0;
   CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgCleanup);
 
-  UpdateEPG(true);
+  bool bInitialLoadSucess = UpdateEPG(true);
 
   while (!m_bStop)
   {
@@ -149,7 +149,10 @@ void CEpgContainer::Process(void)
 
     /* load or update the EPG */
     if (!m_bStop && (iNow > m_iLastEpgUpdate + g_advancedSettings.m_iEpgUpdateCheckInterval || !m_bDatabaseLoaded))
-      UpdateEPG(false);
+    {
+      UpdateEPG(!bInitialLoadSucess);
+      bInitialLoadSucess = true;
+    }
 
     /* clean up old entries */
     if (!m_bStop && iNow > m_iLastEpgCleanup + g_advancedSettings.m_iEpgCleanupInterval)
@@ -364,6 +367,8 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
       progress->SetTitle(at(iEpgPtr)->Name());
       progress->UpdateState();
     }
+
+    Sleep(0); /* give other threads a chance to get a lock on tables */
   }
 
   /* update the last scan time if we did a full update */
