@@ -9,6 +9,7 @@ SUBDIRS = \
 	jpeg tiff libpng libogg \
 	libvorbis libmad fribidi libwavpack libmpeg2 \
 	faad2 libcdio libsamplerate librtmp \
+	libmicrohttpd \
 	boost \
 	mysqlclient samba python26
 

@@ -555,6 +555,7 @@ AC_CHECK_LIB([mpeg2],       [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
+AC_CHECK_LIB([modplug],     [main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([MAD],        [mad],
   [INCLUDES="$INCLUDES $MAD_CFLAGS"; LIBS="$LIBS $MAD_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -636,7 +637,6 @@ if test "$host_vendor" = "apple" ; then
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
   fi
 else
-  AC_CHECK_LIB([modplug],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient],  [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer],  [main],, AC_MSG_ERROR($missing_library))
@@ -678,7 +678,6 @@ fi
 
 if test "$host_vendor" != "apple"; then
   XB_FIND_SONAME([FLAC],        [FLAC])
-  XB_FIND_SONAME([MODPLUG],     [modplug])
 fi
 XB_FIND_SONAME([MAD],         [mad])
 XB_FIND_SONAME([OGG],         [ogg])
@@ -686,16 +685,11 @@ XB_FIND_SONAME([CURL],        [curl])
 XB_FIND_SONAME([VORBIS],      [vorbis])
 XB_FIND_SONAME([VORBISENC],   [vorbisenc])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
+XB_FIND_SONAME([MODPLUG],     [modplug])
 
 # WebServer
-if test "$host_vendor" != "apple" ; then
-  if test "$use_webserver" = "yes"; then
-    AC_CHECK_LIB([microhttpd],  [main],, AC_MSG_ERROR($missing_library))
-  fi
-else
-  if test "$use_webserver" = "yes"; then
-    AC_DEFINE([HAVE_LIBMICROHTTPD], [1],)
-  fi
+if test "$use_webserver" = "yes"; then
+  AC_CHECK_LIB([microhttpd],  [main],, AC_MSG_ERROR($missing_library))
 fi
 
 # Optical
@@ -1888,30 +1882,6 @@ XB_CONFIG_MODULE([lib/libapetag], [
       --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
   fi
 ], [0])
-
-XB_CONFIG_MODULE([lib/libmodplug], [
-  if test "$host_vendor" = "apple" ; then
-    autoreconf -vif
-    CFLAGS="$CFLAGS -fno-common" \
-    CXXFLAGS="$CXXFLAGS -fno-common" \
-    ./configure --with-pic --disable-shared --enable-static \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias     
-  fi
-], [$HOST_NOT_APPLE])
-
-XB_CONFIG_MODULE([lib/libmicrohttpd], [
-  if test "$host_vendor" = "apple" ; then
-    autoreconf -vif
-    CFLAGS="$CFLAGS -fno-common" \
-    CXXFLAGS="$CXXFLAGS -fno-common" \
-    ./configure --with-pic --disable-shared --enable-static --with-libgcrypt-prefix=/dev/null \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias     
-  fi
-], [$HOST_NOT_APPLE])
 
 XB_CONFIG_MODULE([lib/cpluff], [
   if test "$host_vendor" = "apple" ; then

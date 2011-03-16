@@ -925,13 +925,14 @@
 		F589AE7512890B9E00D8079E /* libcmyth.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE6E12890B9E00D8079E /* libcmyth.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		F589AE7612890B9E00D8079E /* librefmem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE6F12890B9E00D8079E /* librefmem.a */; };
 		F589AE7712890B9E00D8079E /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7012890B9E00D8079E /* libapetag.a */; };
-		F589AE7B12890B9F00D8079E /* libmicrohttpd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7412890B9E00D8079E /* libmicrohttpd.a */; };
 		F589AE8212890BEF00D8079E /* libsquish-arm-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7D12890BEF00D8079E /* libsquish-arm-osx.a */; };
 		F589AE8312890BEF00D8079E /* librtv-arm-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7E12890BEF00D8079E /* librtv-arm-osx.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		F589AE8412890BEF00D8079E /* libxbms-arm-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7F12890BEF00D8079E /* libxbms-arm-osx.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		F589AE8512890BEF00D8079E /* libxdaap-arm-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE8012890BEF00D8079E /* libxdaap-arm-osx.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		F5A29EC312A7221B003A610C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29EC212A7221B003A610C /* CoreMedia.framework */; };
 		F5A29F2712A72246003A610C /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29F2612A72246003A610C /* VideoToolbox.framework */; };
+		F5B13836133080CA0045076D /* libmodplug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13834133080CA0045076D /* libmodplug.dylib */; };
+		F5B13837133080CB0045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13835133080CA0045076D /* libmicrohttpd.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -2866,13 +2867,14 @@
 		F589AE6E12890B9E00D8079E /* libcmyth.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcmyth.a; path = lib/cmyth/libcmyth/libcmyth.a; sourceTree = "<group>"; };
 		F589AE6F12890B9E00D8079E /* librefmem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librefmem.a; path = lib/cmyth/librefmem/librefmem.a; sourceTree = "<group>"; };
 		F589AE7012890B9E00D8079E /* libapetag.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libapetag.a; path = lib/libapetag/.libs/libapetag.a; sourceTree = "<group>"; };
-		F589AE7412890B9E00D8079E /* libmicrohttpd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmicrohttpd.a; path = lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a; sourceTree = "<group>"; };
 		F589AE7D12890BEF00D8079E /* libsquish-arm-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsquish-arm-osx.a"; path = "lib/libsquish/libsquish-arm-osx.a"; sourceTree = "<group>"; };
 		F589AE7E12890BEF00D8079E /* librtv-arm-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "librtv-arm-osx.a"; path = "lib/libRTV/librtv-arm-osx.a"; sourceTree = "<group>"; };
 		F589AE7F12890BEF00D8079E /* libxbms-arm-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; name = "libxbms-arm-osx.a"; path = "lib/libXBMS/libxbms-arm-osx.a"; sourceTree = "<group>"; };
 		F589AE8012890BEF00D8079E /* libxdaap-arm-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxdaap-arm-osx.a"; path = "lib/libXDAAP/libxdaap-arm-osx.a"; sourceTree = "<group>"; };
 		F5A29EC212A7221B003A610C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		F5A29F2612A72246003A610C /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/PrivateFrameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		F5B13834133080CA0045076D /* libmodplug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmodplug.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmodplug.dylib"; sourceTree = "<absolute>"; };
+		F5B13835133080CA0045076D /* libmicrohttpd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmicrohttpd.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmicrohttpd.dylib"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2911,7 +2913,6 @@
 				F589AE7512890B9E00D8079E /* libcmyth.a in Frameworks */,
 				F589AE7612890B9E00D8079E /* librefmem.a in Frameworks */,
 				F589AE7712890B9E00D8079E /* libapetag.a in Frameworks */,
-				F589AE7B12890B9F00D8079E /* libmicrohttpd.a in Frameworks */,
 				F589AE8212890BEF00D8079E /* libsquish-arm-osx.a in Frameworks */,
 				F589AE8312890BEF00D8079E /* librtv-arm-osx.a in Frameworks */,
 				F589AE8412890BEF00D8079E /* libxbms-arm-osx.a in Frameworks */,
@@ -2935,6 +2936,8 @@
 				F56C7EDD131F0942000AD0F6 /* http-api.a in Frameworks */,
 				F56C7EDF131F0959000AD0F6 /* json-rpc.a in Frameworks */,
 				F56C7EE1131F0965000AD0F6 /* libjsoncpp.a in Frameworks */,
+				F5B13836133080CA0045076D /* libmodplug.dylib in Frameworks */,
+				F5B13837133080CB0045076D /* libmicrohttpd.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5736,6 +5739,8 @@
 				F589AE381288DF1F00D8079E /* libmysqlclient.dylib */,
 				F51BD1F012CA77B500B8BD20 /* libpython2.6.dylib */,
 				F589AE521288E20900D8079E /* libsqlite3.dylib */,
+				F5B13834133080CA0045076D /* libmodplug.dylib */,
+				F5B13835133080CA0045076D /* libmicrohttpd.dylib */,
 			);
 			name = "External Libs";
 			sourceTree = "<group>";
@@ -5749,7 +5754,6 @@
 				F56C7EDC131F0942000AD0F6 /* http-api.a */,
 				F56C7EDE131F0959000AD0F6 /* json-rpc.a */,
 				F56C7EE0131F0965000AD0F6 /* libjsoncpp.a */,
-				F589AE7412890B9E00D8079E /* libmicrohttpd.a */,
 				F589AE7C12890BDA00D8079E /* arm */,
 			);
 			name = "Internal Libs";

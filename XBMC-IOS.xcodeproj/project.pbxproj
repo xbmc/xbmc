@@ -929,9 +929,10 @@
 		F589AE491288E07D00D8079E /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE481288E07D00D8079E /* libxml2.dylib */; };
 		F589AE4B1288E09200D8079E /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE4A1288E09200D8079E /* libncurses.dylib */; };
 		F589AE4D1288E0A300D8079E /* libm.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE4C1288E0A300D8079E /* libm.dylib */; };
-		F589AE7B12890B9F00D8079E /* libmicrohttpd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7412890B9E00D8079E /* libmicrohttpd.a */; };
 		F5A29EC312A7221B003A610C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29EC212A7221B003A610C /* CoreMedia.framework */; };
 		F5A29F2712A72246003A610C /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29F2612A72246003A610C /* VideoToolbox.framework */; };
+		F5B1380D13306B890045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B1380C13306B890045076D /* libmicrohttpd.dylib */; };
+		F5B138131330732A0045076D /* libmodplug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138121330732A0045076D /* libmodplug.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -2870,9 +2871,10 @@
 		F589AE481288E07D00D8079E /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		F589AE4A1288E09200D8079E /* libncurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libncurses.dylib; path = usr/lib/libncurses.dylib; sourceTree = SDKROOT; };
 		F589AE4C1288E0A300D8079E /* libm.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libm.dylib; path = usr/lib/libm.dylib; sourceTree = SDKROOT; };
-		F589AE7412890B9E00D8079E /* libmicrohttpd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmicrohttpd.a; path = lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a; sourceTree = "<group>"; };
 		F5A29EC212A7221B003A610C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		F5A29F2612A72246003A610C /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/PrivateFrameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		F5B1380C13306B890045076D /* libmicrohttpd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmicrohttpd.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmicrohttpd.dylib"; sourceTree = "<absolute>"; };
+		F5B138121330732A0045076D /* libmodplug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmodplug.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmodplug.dylib"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2890,7 +2892,6 @@
 				F589AE491288E07D00D8079E /* libxml2.dylib in Frameworks */,
 				F589AE4B1288E09200D8079E /* libncurses.dylib in Frameworks */,
 				F589AE4D1288E0A300D8079E /* libm.dylib in Frameworks */,
-				F589AE7B12890B9F00D8079E /* libmicrohttpd.a in Frameworks */,
 				F5A29EC312A7221B003A610C /* CoreMedia.framework in Frameworks */,
 				F5A29F2712A72246003A610C /* VideoToolbox.framework in Frameworks */,
 				3255316612B2D02400837CD2 /* CoreAudio.framework in Frameworks */,
@@ -2934,6 +2935,8 @@
 				F56C8C12131F4811000AD0F6 /* librtv-arm-osx.a in Frameworks */,
 				F56C8C13131F4811000AD0F6 /* libxbms-arm-osx.a in Frameworks */,
 				F56C8C14131F4811000AD0F6 /* libxdaap-arm-osx.a in Frameworks */,
+				F5B1380D13306B890045076D /* libmicrohttpd.dylib in Frameworks */,
+				F5B138131330732A0045076D /* libmodplug.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5735,6 +5738,8 @@
 				F56C8BE5131F4796000AD0F6 /* libmysqlclient.dylib */,
 				F56C8BE6131F4796000AD0F6 /* libpython2.6.dylib */,
 				F56C8BE7131F4796000AD0F6 /* libsqlite3.dylib */,
+				F5B138121330732A0045076D /* libmodplug.dylib */,
+				F5B1380C13306B890045076D /* libmicrohttpd.dylib */,
 			);
 			name = "External Libs";
 			sourceTree = "<group>";
@@ -5748,7 +5753,6 @@
 				F56C8C04131F47EA000AD0F6 /* http-api.a */,
 				F56C8C05131F47EA000AD0F6 /* json-rpc.a */,
 				F56C8C06131F47EA000AD0F6 /* libjsoncpp.a */,
-				F589AE7412890B9E00D8079E /* libmicrohttpd.a */,
 				F589AE7C12890BDA00D8079E /* arm */,
 			);
 			name = "Internal Libs";

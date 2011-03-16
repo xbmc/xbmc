@@ -61,11 +61,10 @@
 #define DLL_PATH_SHN_CODEC     "special://xbmcbin/system/players/paplayer/libshnplay-@ARCH@.so"
 #if defined(_LINUX) && !defined(__APPLE__)
 #define DLL_PATH_FLAC_CODEC    "@FLAC_SONAME@"
-#define DLL_PATH_MODPLUG_CODEC "@MODPLUG_SONAME@"
 #else
 #define DLL_PATH_FLAC_CODEC    "special://xbmcbin/system/players/paplayer/libFLAC-@ARCH@.so"
-#define DLL_PATH_MODPLUG_CODEC "special://xbmcbin/system/players/paplayer/libmodplug-@ARCH@.so"
 #endif
+#define DLL_PATH_MODPLUG_CODEC "@MODPLUG_SONAME@"
 #define DLL_PATH_OGG_CODEC     "@VORBISFILE_SONAME@"
 
 /* dvdplayer */
