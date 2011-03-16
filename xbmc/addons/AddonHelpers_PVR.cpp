@@ -229,7 +229,7 @@ void CAddonHelpers_PVR::PVRTriggerChannelUpdate(void *addonData)
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL)
   {
-    CLog::Log(LOGERROR, "PVR addon - %s - called from an invalid client");
+    CLog::Log(LOGERROR, "PVR addon - %s - called from an invalid client", __FUNCTION__);
     return;
   }
 
