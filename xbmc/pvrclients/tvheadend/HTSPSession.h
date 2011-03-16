@@ -243,7 +243,7 @@ public:
 
   bool      Connect(const std::string& hostname, int port);
   bool      IsConnected() { return m_connected; }
-  void      Close();
+  void      Close(bool bForce = false);
   void      Abort();
   bool      Auth(const std::string& username, const std::string& password);
 
@@ -280,6 +280,7 @@ private:
   void*       m_challenge;
   int         m_challenge_len;
   int         m_protocol;
+  int         m_iRefCount;
   CStdString  m_server;
   CStdString  m_version;
   bool        m_connected;

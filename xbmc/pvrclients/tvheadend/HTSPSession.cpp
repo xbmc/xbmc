@@ -47,6 +47,7 @@ cHTSPSession::cHTSPSession()
   , m_challenge(NULL)
   , m_challenge_len(0)
   , m_protocol(0)
+  , m_iRefCount(0)
   , m_connected(false)
   , m_queue_size(1000)
 {
@@ -54,7 +55,7 @@ cHTSPSession::cHTSPSession()
 
 cHTSPSession::~cHTSPSession()
 {
-  Close();
+  Close(true);
 }
 
 void cHTSPSession::Abort()
@@ -62,10 +63,13 @@ void cHTSPSession::Abort()
   shutdown(m_fd, SHUT_RDWR);
 }
 
-void cHTSPSession::Close()
+void cHTSPSession::Close(bool bForce /* = false */)
 {
-  if (!m_connected) return;
+  if (!bForce && (--m_iRefCount > 0 || !m_connected))
+    return;
+
   m_connected = false;
+  m_iRefCount = 0;
 
   if(m_fd != INVALID_SOCKET)
   {
@@ -83,6 +87,11 @@ void cHTSPSession::Close()
 
 bool cHTSPSession::Connect(const std::string& hostname, int port)
 {
+  ++m_iRefCount;
+
+  if (m_connected)
+    return true;
+
   char errbuf[1024];
   int  errlen = sizeof(errbuf);
   htsmsg_t *m;
@@ -469,6 +478,8 @@ void cHTSPSession::ParseChannelRemove(htsmsg_t* msg, SChannels &channels)
   XBMC->Log(LOG_DEBUG, "%s - id:%u", __FUNCTION__, id);
 
   channels.erase(id);
+
+  PVR->TriggerChannelUpdate();
 }
 
 void cHTSPSession::ParseTagUpdate(htsmsg_t* msg, STags &tags)
