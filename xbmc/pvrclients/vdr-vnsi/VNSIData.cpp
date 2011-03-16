@@ -208,28 +208,6 @@ bool cVNSIData::EnableOSDInterface(bool onOff)
   return ret == VDR_RET_OK ? true : false;
 }
 
-int cVNSIData::GetGroupsCount()
-{
-  cRequestPacket vrp;
-  if (!vrp.init(VDR_CHANNELS_GROUPSCOUNT))
-  {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetGroupsCount - Can't init cRequestPacket");
-    return -1;
-  }
-
-  cResponsePacket* vresp = ReadResult(&vrp);
-  if (!vresp)
-  {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetGroupsCount - Can't get response packed");
-    return -1;
-  }
-
-  uint32_t count = vresp->extract_U32();
-
-  delete vresp;
-  return count;
-}
-
 int cVNSIData::GetChannelsCount()
 {
   cRequestPacket vrp;
@@ -250,41 +228,6 @@ int cVNSIData::GetChannelsCount()
 
   delete vresp;
   return count;
-}
-
-bool cVNSIData::GetGroupsList(PVRHANDLE handle, bool radio)
-{
-  cRequestPacket vrp;
-  if (!vrp.init(VDR_CHANNELS_GETGROUPS))
-  {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetGroupsList - Can't init cRequestPacket");
-    return false;
-  }
-  if (!vrp.add_U32(radio))
-  {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetGroupsList - Can't add parameter to cRequestPacket");
-    return false;
-  }
-
-  cResponsePacket* vresp = ReadResult(&vrp);
-  if (!vresp)
-  {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetGroupsList - Can't get response packed");
-    return false;
-  }
-
-  while (!vresp->end())
-  {
-    uint32_t    index = vresp->extract_U32();
-    uint32_t    count = vresp->extract_U32();
-    const char *name  = vresp->extract_String();
-
-    XBMC->Log(LOG_DEBUG, "New Group: %lu %lu %s", index, count, name);
-    delete[] name;
-  }
-
-  delete vresp;
-  return true;
 }
 
 bool cVNSIData::GetChannelsList(PVRHANDLE handle, bool radio)
@@ -689,10 +632,6 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
     return PVR_ERROR_UNKOWN;
   }
 
-  char* videodir = vresp->extract_String();
-  m_videodir = videodir;
-  delete[] videodir;
-
   while (!vresp->end())
   {
     std::string title;
@@ -704,49 +643,24 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
     tag.priority        = vresp->extract_U32();
     tag.lifetime        = vresp->extract_U32();
     tag.channel_name    = vresp->extract_String();
-    char* name = vresp->extract_String();
-    title = name;
+    tag.title           = vresp->extract_String();
     tag.subtitle        = vresp->extract_String();
     tag.description     = vresp->extract_String();
-    char* fileName  = vresp->extract_String();
+    tag.directory       = vresp->extract_String();
+    tag.stream_url      = "";
 
     /* Save the given path name for later to translate the
        index numbers to the path name. */
+    char* fileName  = vresp->extract_String();
     m_RecordsPaths.push_back(fileName);
-
-    /* Cleanup now the path name and remove VDR's 2 top
-       directories and the strip the base path */
-    std::string path = fileName+m_videodir.size()+1;
-    path = path.substr(0, path.find_last_of("/\\"));
-
-    size_t found = path.find_last_of("/\\");
-    if (found != std::string::npos)
-    {
-      /* If no title is present use recording dir name
-         as title */
-      if (title.empty())
-        title = path.substr(found+1);
-      path = path.substr(0, found);
-    }
-    else
-    {
-      /* If no title is present use recording dir name
-         as title */
-      if (title.empty())
-        title = path;
-      path = "";
-    }
-
-    tag.title           = title.c_str();
-    tag.directory       = path.c_str();
-    tag.stream_url      = "";
 
     PVR->TransferRecordingEntry(handle, &tag);
 
     delete[] tag.channel_name;
+    delete[] tag.title;
     delete[] tag.subtitle;
     delete[] tag.description;
-    delete[] name;
+    delete[] tag.directory;
     delete[] fileName;
   }
 
@@ -902,12 +816,6 @@ void cVNSIData::Action()
       }
       else if (requestID == VDR_STATUS_TIMERCHANGE)
       {
-      	// this one is currently unused
-        //uint32_t status = ntohl(*(uint32_t*)&userData[0]);
-        int length = strlen((char*)&userData[4]);
-        char* str = new char[length + 1];
-        strcpy(str, (char*)&userData[4]);
-        delete[] str;
         PVR->TriggerTimerUpdate();
       }
 

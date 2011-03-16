@@ -49,13 +49,12 @@ public:
   bool        EnableOSDInterface(bool onOff);
   bool        GetTime(time_t *localTime, int *gmtOffset);
   bool        GetDriveSpace(long long *total, long long *used);
-  int         GetGroupsCount();
+
   int         GetChannelsCount();
-  bool        GetGroupsList(PVRHANDLE handle, bool radio = false);
   bool        GetChannelsList(PVRHANDLE handle, bool radio = false);
   bool        GetEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
-  bool        GetTimersList(PVRHANDLE handle);
 
+  bool        GetTimersList(PVRHANDLE handle);
   int         GetTimersCount();
   PVR_ERROR   AddTimer(const PVR_TIMERINFO &timerinfo);
   PVR_ERROR   GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &tag);
