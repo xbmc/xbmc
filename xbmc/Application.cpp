@@ -1950,6 +1950,10 @@ void CApplication::NewFrame()
 
 void CApplication::Render()
 {
+  // do not render if we are stopped
+  if (m_bStop)
+    return;
+
   if (!m_AppActive && !m_bStop && (!IsPlayingVideo() || IsPaused()))
   {
     Sleep(1);
@@ -3231,7 +3235,7 @@ bool CApplication::Cleanup()
   }
 }
 
-void CApplication::Stop()
+void CApplication::Stop(int exitCode)
 {
   try
   {
@@ -3268,6 +3272,9 @@ void CApplication::Stop()
       CLog::Log(LOGNOTICE, "Not saving settings (settings.xml is not present)");
 
     m_bStop = true;
+    m_AppActive = false;
+    m_AppFocused = false;
+    m_ExitCode = exitCode;
     CLog::Log(LOGNOTICE, "stop all");
 
     // stop scanning before we kill the network and so on
@@ -3354,6 +3361,7 @@ void CApplication::Stop()
 #endif
 
     g_Windowing.DestroyRenderSystem();
+    g_Windowing.DestroyWindow();
     g_Windowing.DestroyWindowSystem();
 
     CLog::Log(LOGNOTICE, "stopped");
@@ -3366,6 +3374,9 @@ void CApplication::Stop()
   // we may not get to finish the run cycle but exit immediately after a call to g_application.Stop()
   // so we may never get to Destroy() in CXBApplicationEx::Run(), we call it here.
   Destroy();
+
+  // 
+  Sleep(200);
 }
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)

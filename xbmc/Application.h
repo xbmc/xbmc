@@ -129,7 +129,7 @@ public:
   void StopZeroconf();
   void DimLCDOnPlayback(bool dim);
   bool IsCurrentThread() const;
-  void Stop();
+  void Stop(int exitCode);
   void RestartApp();
   void UnloadSkin(bool forReload = false);
   bool LoadUserWindows();
