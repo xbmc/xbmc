@@ -55,22 +55,6 @@ using namespace XFILE;
 using namespace VIDEO;
 using namespace ADDON;
 
-#define VIDEO_DATABASE_VIEW_TVSHOW "SELECT tvshow.*,path.strPath AS strPath," \
-                                   "counts.totalcount AS totalCount," \
-                                   "counts.watchedcount AS watchedCount," \
-                                   "counts.totalseasons AS totalSeasons FROM tvshow " \
-                                   "JOIN tvshowlinkpath ON tvshow.idShow=tvshowlinkpath.idShow " \
-                                   "JOIN path ON path.idpath=tvshowlinkpath.idPath " \
-                                   "LEFT OUTER join (" \
-                                   "    SELECT tvshow.idShow AS idShow,count(1) AS totalcount," \
-                                   "    COUNT(files.playCount) AS watchedcount," \
-                                   "    COUNT(DISTINCT(episode.c12)) AS totalSeasons FROM tvshow " \
-                                   "    JOIN tvshowlinkepisode ON tvshow.idShow=tvshowlinkepisode.idShow " \
-                                   "    JOIN episode ON episode.idEpisode=tvshowlinkepisode.idEpisode " \
-                                   "    JOIN files ON files.idFile=episode.idFile " \
-                                   "    GROUP BY tvshow.idShow" \
-                                   ") counts ON tvshow.idShow=counts.idShow "
-
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
 {
@@ -314,6 +298,27 @@ bool CVideoDatabase::CreateTables()
                                        "join tvshow on tvshow.idShow=tvshowlinkepisode.idShow "
                                        "join path on files.idPath=path.idPath",VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA);
     m_pDS->exec(episodeview.c_str());
+
+    CLog::Log(LOGINFO, "create tvshowview");
+    CStdString tvshowview = PrepareSQL("CREATE VIEW tvshowview AS SELECT "
+                                       "tvshow.*,"
+                                       "path.strPath AS strPath,"
+                                       "  NULLIF(COUNT(episode.c12), 0) AS totalCount,"
+                                       "  SUM(files.playCount) AS watchedcount,"
+                                       "  NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons "
+                                       "FROM tvshow"
+                                       "  LEFT JOIN tvshowlinkpath ON"
+                                       "    tvshowlinkpath.idShow=tvshow.idShow"
+                                       "  LEFT JOIN path ON"
+                                       "    path.idPath=tvshowlinkpath.idPath"
+                                       "  LEFT JOIN tvshowlinkepisode ON"
+                                       "    tvshowlinkepisode.idShow=tvshow.idShow"
+                                       "  LEFT JOIN episode ON"
+                                       "    episode.idEpisode=tvshowlinkepisode.idEpisode"
+                                       "  LEFT JOIN files ON"
+                                       "    files.idFile=episode.idFile "
+                                       "GROUP BY tvshow.idShow;");
+    m_pDS->exec(tvshowview.c_str());
 
     CLog::Log(LOGINFO, "create musicvideoview");
     m_pDS->exec("create view musicvideoview as select musicvideo.*,files.strFileName as strFileName,path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed "
@@ -1535,7 +1540,7 @@ void CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& det
       idTvShow = GetTvShowId(strPath);
     if (idTvShow < 0) return ;
 
-    CStdString sql = PrepareSQL(VIDEO_DATABASE_VIEW_TVSHOW " WHERE tvshow.idShow=%i", idTvShow);
+    CStdString sql = PrepareSQL("SELECT * FROM tvshowview WHERE idShow=%i", idTvShow);
     if (!m_pDS->query(sql.c_str()))
       return;
     details = GetDetailsForTvShow(m_pDS, true);
@@ -3478,6 +3483,30 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c18(255) )");
       m_pDS->exec("CREATE INDEX ixTVShowBasePath ON tvshow ( c16(255) )");
     }
+    if(iVersion < 47)
+    {
+      CLog::Log(LOGINFO, "create tvshowview");
+      m_pDS->exec("DROP VIEW IF EXISTS tvshowview");
+      CStdString tvshowview = PrepareSQL("CREATE VIEW tvshowview AS SELECT "
+                                         "tvshow.*,"
+                                         "path.strPath AS strPath,"
+                                         "  NULLIF(COUNT(episode.c12), 0) AS totalCount,"
+                                         "  SUM(files.playCount) AS watchedcount,"
+                                         "  NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons "
+                                         "FROM tvshow"
+                                         "  LEFT JOIN tvshowlinkpath ON"
+                                         "    tvshowlinkpath.idShow=tvshow.idShow"
+                                         "  LEFT JOIN path ON"
+                                         "    path.idPath=tvshowlinkpath.idPath"
+                                         "  LEFT JOIN tvshowlinkepisode ON"
+                                         "    tvshowlinkepisode.idShow=tvshow.idShow"
+                                         "  LEFT JOIN episode ON"
+                                         "    episode.idEpisode=tvshowlinkepisode.idEpisode"
+                                         "  LEFT JOIN files ON"
+                                         "    files.idFile=episode.idFile "
+                                         "GROUP BY tvshow.idShow;");
+      m_pDS->exec(tvshowview.c_str());
+    }
   }
   catch (...)
   {
@@ -4669,7 +4698,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    int iRowsFound = RunQuery(VIDEO_DATABASE_VIEW_TVSHOW + where);
+    int iRowsFound = RunQuery("SELECT * FROM tvshowview" + where);
     if (iRowsFound <= 0)
       return iRowsFound == 0;
 
@@ -7015,7 +7044,7 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
     m_pDS->close();
 
     // repeat for all tvshows
-    sql = VIDEO_DATABASE_VIEW_TVSHOW;
+    sql = "SELECT * FROM tvshowview";
     m_pDS->query(sql.c_str());
 
     total = m_pDS->num_rows();
