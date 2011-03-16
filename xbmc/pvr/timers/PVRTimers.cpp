@@ -156,11 +156,7 @@ bool CPVRTimers::Update(const CPVRTimerInfoTag &timer)
     push_back(tag);
   }
 
-  tag->UpdateEntry(timer);
-
-  // TODO epg entry
-
-  return true;
+  return tag->UpdateEntry(timer);
 }
 
 /********** getters **********/
