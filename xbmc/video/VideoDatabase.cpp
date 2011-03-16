@@ -5371,7 +5371,7 @@ CStdString CVideoDatabase::GetContentForPath(const CStdString& strPath)
     { // check for episodes or seasons (ASSUMPTION: no episodes == seasons (i.e. assume show/season/episodes structure)
       CStdString sql = PrepareSQL("select count(1) from episodeview where strPath = '%s' limit 1", strPath.c_str());
       m_pDS->query( sql.c_str() );
-      if (m_pDS->num_rows())
+      if (m_pDS->num_rows() && m_pDS->fv(0).get_asInt() > 0)
         return "episodes";
       return "seasons";
     }
