@@ -33,6 +33,11 @@ typedef unsigned (WINAPI *PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 typedef int (*PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 #endif
 
+#if defined(__GNUC__)
+#include <cxxabi.h>
+using namespace __cxxabiv1;
+#endif
+
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
@@ -445,18 +450,16 @@ void CThread::SetName( LPCTSTR szThreadName )
 // and attempt to clean it.
 CStdString CThread::GetTypeName(void)
 {
-  CStdString name;
-
-  name = typeid(*this).name();
-
+  CStdString name = typeid(*this).name();
+ 
+#if defined(_MSC_VER)
   // Visual Studio 2010 returns the name as "class CThread" etc
   if (name.substr(0, 6) == "class ")
     name = name.Right(name.length() - 6);
-
+#elif defined(__GNUC__)
   // gcc provides __cxa_demangle to demangle the name
-#if defined(__GNUC__)
-  char* demangled;
-  int   status
+  char* demangled = NULL;
+  int   status;
 
   demangled = __cxa_demangle(name.c_str(), NULL, 0, &status);
   if (status == 0)
