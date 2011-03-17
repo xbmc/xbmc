@@ -698,14 +698,20 @@ PVR_ERROR cVNSIData::DeleteRecording(const std::string& path)
   uint32_t returnCode = vresp->extract_U32();
   delete vresp;
 
-  if (returnCode == VDR_RET_DATALOCKED)
-    return PVR_ERROR_NOT_DELETED;
-  if (returnCode == VDR_RET_RECRUNNING)
-    return PVR_ERROR_RECORDING_RUNNING;
-  else if (returnCode == VDR_RET_DATAINVALID)
-    return PVR_ERROR_NOT_POSSIBLE;
-  else if (returnCode == VDR_RET_ERROR)
-    return PVR_ERROR_SERVER_ERROR;
+  switch(returnCode)
+  {
+    case VDR_RET_DATALOCKED:
+      return PVR_ERROR_NOT_DELETED;
+
+    case VDR_RET_RECRUNNING:
+      return PVR_ERROR_RECORDING_RUNNING;
+
+    case VDR_RET_DATAINVALID:
+      return PVR_ERROR_NOT_POSSIBLE;
+
+    case VDR_RET_ERROR:
+      return PVR_ERROR_SERVER_ERROR;
+  }
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -848,10 +854,14 @@ void cVNSIData::Action()
 
 bool cVNSIData::readData(uint8_t* buffer, int totalBytes)
 {
-  if(m_connectionLost)
-    if(TryReconnect()) m_connectionLost = false;
-  else
-    return false;
+  if(m_connectionLost) {
+    if(TryReconnect()) {
+      m_connectionLost = false;
+    }
+    else {
+      return false;
+    }
+  }
 
   int ret = m_session.readData(buffer, totalBytes);
   if (ret == 1)

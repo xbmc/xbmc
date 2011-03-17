@@ -299,18 +299,18 @@ const char * GetConnectionString()
 
 PVR_ERROR GetDriveSpace(long long *total, long long *used)
 {
-  if (VNSIData && VNSIData->GetDriveSpace(total, used))
-    return PVR_ERROR_NO_ERROR;
+  if (!VNSIData)
+    return PVR_ERROR_SERVER_ERROR;
 
-  return PVR_ERROR_SERVER_ERROR;
+  return (VNSIData->GetDriveSpace(total, used) ? PVR_ERROR_NO_ERROR : PVR_ERROR_SERVER_ERROR);
 }
 
 PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
 {
-  if (VNSIData && VNSIData->GetTime(localTime, gmtOffset))
-    return PVR_ERROR_NO_ERROR;
+  if (!VNSIData)
+    return PVR_ERROR_SERVER_ERROR;
 
-  return PVR_ERROR_SERVER_ERROR;
+  return (VNSIData->GetTime(localTime, gmtOffset) ? PVR_ERROR_NO_ERROR : PVR_ERROR_SERVER_ERROR);
 }
 
 PVR_ERROR DialogChannelScan()
@@ -325,10 +325,10 @@ PVR_ERROR DialogChannelScan()
 
 PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end)
 {
-  if (VNSIData && VNSIData->GetEPGForChannel(handle, channel, start, end))
-    return PVR_ERROR_NO_ERROR;
+  if (!VNSIData)
+    return PVR_ERROR_SERVER_ERROR;
 
-  return PVR_ERROR_SERVER_ERROR;
+  return (VNSIData->GetEPGForChannel(handle, channel, start, end) ? PVR_ERROR_NO_ERROR: PVR_ERROR_SERVER_ERROR);
 }
 
 
@@ -345,10 +345,10 @@ int GetNumChannels()
 
 PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio)
 {
-  if (VNSIData && VNSIData->GetChannelsList(handle, radio))
-    return PVR_ERROR_NO_ERROR;
+  if (!VNSIData)
+    return PVR_ERROR_SERVER_ERROR;
 
-  return PVR_ERROR_SERVER_ERROR;
+  return (VNSIData->GetChannelsList(handle, radio) ? PVR_ERROR_NO_ERROR : PVR_ERROR_SERVER_ERROR);
 }
 
 
@@ -365,10 +365,10 @@ int GetNumTimers(void)
 
 PVR_ERROR RequestTimerList(PVRHANDLE handle)
 {
-  if (VNSIData && VNSIData->GetTimersList(handle))
-    return PVR_ERROR_NO_ERROR;
+  if (!VNSIData)
+    return PVR_ERROR_SERVER_ERROR;
 
-  return PVR_ERROR_SERVER_ERROR;
+  return (VNSIData->GetTimersList(handle) ? PVR_ERROR_NO_ERROR : PVR_ERROR_SERVER_ERROR);
 }
 
 PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo)
@@ -425,10 +425,10 @@ PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
 
 PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo)
 {
-  if (VNSIData && VNSIData->DeleteRecording(VNSIData->GetRecordingPath(recinfo.index)))
-    return PVR_ERROR_NO_ERROR;
+  if (!VNSIData)
+    return PVR_ERROR_SERVER_ERROR;
 
-  return PVR_ERROR_SERVER_ERROR;
+  return VNSIData->DeleteRecording(VNSIData->GetRecordingPath(recinfo.index));
 }
 
 /*******************************************/
@@ -454,10 +454,10 @@ void CloseLiveStream()
 
 PVR_ERROR GetStreamProperties(PVR_STREAMPROPS* props)
 {
-  if (VNSIDemuxer && VNSIDemuxer->GetStreamProperties(props))
-    return PVR_ERROR_NO_ERROR;
+  if (!VNSIDemuxer)
+    return PVR_ERROR_SERVER_ERROR;
 
-  return PVR_ERROR_SERVER_ERROR;
+  return (VNSIDemuxer->GetStreamProperties(props) ? PVR_ERROR_NO_ERROR : PVR_ERROR_SERVER_ERROR);
 }
 
 void DemuxAbort()
@@ -491,10 +491,11 @@ bool SwitchChannel(const PVR_CHANNEL &channelinfo)
 
 PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
 {
-  if (VNSIDemuxer && VNSIDemuxer->GetSignalStatus(qualityinfo))
-    return PVR_ERROR_NO_ERROR;
+  if (!VNSIDemuxer)
+    return PVR_ERROR_SERVER_ERROR;
 
-  return PVR_ERROR_SERVER_ERROR;
+  return (VNSIDemuxer->GetSignalStatus(qualityinfo) ? PVR_ERROR_NO_ERROR : PVR_ERROR_SERVER_ERROR);
+
 }
 
 
