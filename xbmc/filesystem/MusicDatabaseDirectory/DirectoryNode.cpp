@@ -155,7 +155,7 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
 }
 
 //  Current node name
-const CStdString& CDirectoryNode::GetName()
+const CStdString& CDirectoryNode::GetName() const
 {
   return m_strName;
 }

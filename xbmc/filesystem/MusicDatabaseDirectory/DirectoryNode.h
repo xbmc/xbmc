@@ -77,7 +77,7 @@ namespace XFILE
 
       void CollectQueryParams(CQueryParams& params);
 
-      const CStdString& GetName();
+      const CStdString& GetName() const;
       void RemoveParent();
 
       virtual bool GetContent(CFileItemList& items);
