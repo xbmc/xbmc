@@ -46,6 +46,14 @@ NODE_TYPE CDirectoryNodeTop100::GetChildType()
   return NODE_TYPE_NONE;
 }
 
+CStdString CDirectoryNodeTop100::GetLocalizedName() const
+{
+  for (unsigned int i = 0; i < sizeof(Top100Children) / sizeof(Node); ++i)
+    if (GetID() == Top100Children[i].id)
+      return g_localizeStrings.Get(Top100Children[i].label);
+  return "";
+}
+
 bool CDirectoryNodeTop100::GetContent(CFileItemList& items)
 {
   for (unsigned int i = 0; i < sizeof(Top100Children) / sizeof(Node); ++i)

@@ -53,6 +53,14 @@ NODE_TYPE CDirectoryNodeMoviesOverview::GetChildType()
   return NODE_TYPE_NONE;
 }
 
+CStdString CDirectoryNodeMoviesOverview::GetLocalizedName() const
+{
+  for (unsigned int i = 0; i < sizeof(MovieChildren) / sizeof(Node); ++i)
+    if (GetID() == MovieChildren[i].id)
+      return g_localizeStrings.Get(MovieChildren[i].label);
+  return "";
+}
+
 bool CDirectoryNodeMoviesOverview::GetContent(CFileItemList& items)
 {
   for (unsigned int i = 0; i < sizeof(MovieChildren) / sizeof(Node); ++i)

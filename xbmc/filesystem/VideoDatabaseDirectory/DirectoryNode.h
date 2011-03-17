@@ -74,6 +74,7 @@ namespace XFILE
 
       bool GetChilds(CFileItemList& items);
       virtual NODE_TYPE GetChildType();
+      virtual CStdString GetLocalizedName() const;
 
       CDirectoryNode* GetParent();
 

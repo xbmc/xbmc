@@ -50,6 +50,14 @@ NODE_TYPE CDirectoryNodeMusicVideosOverview::GetChildType()
   return NODE_TYPE_NONE;
 }
 
+CStdString CDirectoryNodeMusicVideosOverview::GetLocalizedName() const
+{
+  for (unsigned int i = 0; i < sizeof(MusicVideoChildren) / sizeof(Node); ++i)
+    if (GetID() == MusicVideoChildren[i].id)
+      return g_localizeStrings.Get(MusicVideoChildren[i].label);
+  return "";
+}
+
 bool CDirectoryNodeMusicVideosOverview::GetContent(CFileItemList& items)
 {
   for (unsigned int i = 0; i < sizeof(MusicVideoChildren) / sizeof(Node); ++i)

@@ -54,6 +54,14 @@ NODE_TYPE CDirectoryNodeOverview::GetChildType()
   return NODE_TYPE_NONE;
 }
 
+CStdString CDirectoryNodeOverview::GetLocalizedName() const
+{
+  for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
+    if (GetID() == OverviewChildren[i].id)
+      return g_localizeStrings.Get(OverviewChildren[i].label);
+  return "";
+}
+
 bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
 {
   CVideoDatabase database;

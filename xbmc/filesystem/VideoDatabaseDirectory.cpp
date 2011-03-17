@@ -61,6 +61,7 @@ bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
         item->SetIconImage(strImage);
     }
   }
+  items.SetLabel(pNode->GetLocalizedName());
 
   return bResult;
 }

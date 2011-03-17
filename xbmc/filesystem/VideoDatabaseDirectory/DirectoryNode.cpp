@@ -170,6 +170,11 @@ int CDirectoryNode::GetID() const
   return atoi(m_strName.c_str());
 }
 
+CStdString CDirectoryNode::GetLocalizedName() const
+{
+  return "";
+}
+
 //  Current node type
 NODE_TYPE CDirectoryNode::GetType()
 {

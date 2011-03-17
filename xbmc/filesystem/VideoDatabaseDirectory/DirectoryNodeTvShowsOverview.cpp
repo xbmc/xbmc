@@ -51,6 +51,14 @@ NODE_TYPE CDirectoryNodeTvShowsOverview::GetChildType()
   return NODE_TYPE_NONE;
 }
 
+CStdString CDirectoryNodeTvShowsOverview::GetLocalizedName() const
+{
+  for (unsigned int i = 0; i < sizeof(TvShowChildren) / sizeof(Node); ++i)
+    if (GetID() == TvShowChildren[i].id)
+      return g_localizeStrings.Get(TvShowChildren[i].label);
+  return "";
+}
+
 bool CDirectoryNodeTvShowsOverview::GetContent(CFileItemList& items)
 {
   for (unsigned int i = 0; i < sizeof(TvShowChildren) / sizeof(Node); ++i)
