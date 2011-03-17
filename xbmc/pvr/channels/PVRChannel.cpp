@@ -117,19 +117,13 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   bChanged = SetInputFormat(channel.InputFormat()) || bChanged;
   bChanged = SetStreamURL(channel.StreamURL()) || bChanged;
   bChanged = SetEncryptionSystem(channel.EncryptionSystem()) || bChanged;
-  bChanged = SetRecording(channel.IsRecording()) || bChanged;
-
   if (m_strChannelName.IsEmpty())
-  {
-    m_strChannelName = channel.ClientChannelName();
-    bChanged = true;
-  }
-
+    bChanged = SetChannelName(channel.ClientChannelName()) || bChanged;
   if (m_strIconPath.IsEmpty())
-  {
-    m_strIconPath = channel.IconPath();
-    bChanged = true;
-  }
+    bChanged = SetIconPath(channel.IconPath()) || bChanged;
+
+  /* don't set bChanged to true because this is not persisted */
+  SetRecording(channel.IsRecording());
 
   return bChanged;
 }
