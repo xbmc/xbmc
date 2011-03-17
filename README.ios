@@ -36,7 +36,7 @@ character itself should NOT be typed as part of the command.
 -----------------------------------------------------------------------------
 
  $ cd $HOME
- $ git clone git://github.com/xbmc/atv2
+ $ git clone git://github.com/xbmc/xbmc.git xbmc
 
 -----------------------------------------------------------------------------
 3.0 Install Xcode
@@ -48,10 +48,10 @@ The preferred version is Xcode 3.2.5 and iOS SDK 4.2.
 -----------------------------------------------------------------------------
 3.1 Install Cross libs and runtime environment
 -----------------------------------------------------------------------------
+
+ $ cd $HOME/XBMC
  $ sudo mkdir -p /usr/local/bin; sudo cp tools/osx/ios-depends/gas-preprocessor/gas-preprocessor.pl /usr/local/bin/
  $ make -C tools/osx/ios-depends
- $ make -C tools/osx/ios-depends/xbmc
- $ make xcode_depends
 
 -----------------------------------------------------------------------------
 4. How to compile
@@ -60,6 +60,9 @@ Both Xcode and Terminal compilation require that build environment be setup
 from the step 3.1.
 
  $ cd $HOME/XBMC
+ $ make -C tools/osx/ios-depends/xbmc
+ $ make clean
+ $ make xcode_depends
 
 -----------------------------------------------------------------------------
 4.1 Using Xcode

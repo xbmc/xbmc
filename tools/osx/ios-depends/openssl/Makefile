@@ -38,18 +38,21 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); $(CONFIGURE)
-	cd $(SOURCE); patch -p1 < ../01-build-armv7.patch
+	sed -ie "s|Developer/usr/bin/arm-apple-darwin10-gcc-4.2.1|Developer/usr/bin/gcc-4.2|" "$(SOURCE)/Makefile"
+	sed -ie "s|CFLAG= |CFLAG=-arch armv7 -isysroot ${SDKROOT} |" "$(SOURCE)/Makefile"
+	sed -ie "s|-arch i386|-arch armv7|" "$(SOURCE)/Makefile"
+	sed -ie "s|static volatile sig_atomic_t intr_signal;|static volatile intr_signal;|" "$(SOURCE)/crypto/ui/ui_openssl.c"
 
 $(LIBDYLIB): $(SOURCE)
 	make -C $(SOURCE)
 
 .installed:
-	make -C $(SOURCE) install
+	make -C $(SOURCE) install_sw
 	touch $@
 
 clean:
 	make -C $(SOURCE) clean
-	rm .installed
+	rm -f .installed
 
 distclean::
 	rm -rf $(SOURCE) .installed

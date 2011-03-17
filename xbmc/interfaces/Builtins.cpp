@@ -347,7 +347,7 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     int controlID = atol(params[0].c_str());
     int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
-    CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetActiveWindow(), controlID, subItem);
+    CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem);
     g_windowManager.SendMessage(msg);
   }
 #ifdef HAS_PYTHON

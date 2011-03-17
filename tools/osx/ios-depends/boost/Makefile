@@ -19,6 +19,8 @@ RETRIEVE_TOOL_FLAGS=-Ls --create-dirs --output $(TARBALLS_LOCATION)/$(ARCHIVE)
 ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
+SDK_VERSION:=$(shell xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $$2}')
+
 LIBDYLIB=$(SOURCE)/prefix/lib/libboost_system.a
 
 all: $(LIBDYLIB) .compiled .installed
@@ -34,6 +36,7 @@ $(LIBDYLIB): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo build >> .gitignore
 	echo prefix >> .gitignore
 	echo framework >> .gitignore
+	sed -ie "s/{IPHONE_SDKVERSION:=*.*}/{IPHONE_SDKVERSION:=$(SDK_VERSION)}/g" "boost.sh"
 	sh ./boost.sh
 	touch $@
 
