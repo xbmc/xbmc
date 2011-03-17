@@ -216,7 +216,7 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
   m_parent->m_guideGrid = (CGUIEPGGridContainer*) m_parent->GetControl(CONTROL_LIST_TIMELINE);
   if (m_parent->m_guideGrid)
   {
-    CDateTime gridStart = CDateTime::GetCurrentDateTime() - CDateTimeSpan(0, 0, g_advancedSettings.m_iEpgLingerTime, 0);
+    CDateTime gridStart = CDateTime::GetCurrentDateTime();
     CDateTime firstDate = CPVRManager::GetEpg()->GetFirstEPGDate(bRadio);
     CDateTime lastDate = CPVRManager::GetEpg()->GetLastEPGDate(bRadio);
 
