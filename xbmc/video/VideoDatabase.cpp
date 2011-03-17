@@ -5048,56 +5048,19 @@ bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir
   return GetMusicVideosByWhere(strBaseDir, where, items);
 }
 
-bool CVideoDatabase::GetGenreById(int idGenre, CStdString& strGenre)
+CStdString CVideoDatabase::GetGenreById(int id)
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    CStdString strSQL=PrepareSQL("select genre.strGenre from genre where genre.idGenre=%i", idGenre);
-    m_pDS->query( strSQL.c_str() );
-
-    bool bResult = false;
-    if (!m_pDS->eof())
-    {
-      strGenre  = m_pDS->fv("genre.strGenre").get_asString();
-      bResult = true;
-    }
-    m_pDS->close();
-    return bResult;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strGenre.c_str());
-  }
-  return false;
+  return GetSingleValue("genre", "strGenre", PrepareSQL("idGenre=%i", id));
 }
 
-bool CVideoDatabase::GetCountryById(int idCountry, CStdString& strCountry)
+CStdString CVideoDatabase::GetCountryById(int id)
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+  return GetSingleValue("country", "strCountry", PrepareSQL("idCountry=%i", id));
+}
 
-    CStdString strSQL=PrepareSQL("select country.strCountry from country where country.idCountry=%i", idCountry);
-    m_pDS->query( strSQL.c_str() );
-
-    bool bResult = false;
-    if (!m_pDS->eof())
-    {
-      strCountry  = m_pDS->fv("country.strCountry").get_asString();
-      bResult = true;
-    }
-    m_pDS->close();
-    return bResult;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strCountry.c_str());
-  }
-  return false;
+CStdString CVideoDatabase::GetSetById(int id)
+{
+  return GetSingleValue("sets", "strSet", PrepareSQL("idSet=%i", id));
 }
 
 bool CVideoDatabase::HasSets() const
@@ -5115,32 +5078,6 @@ bool CVideoDatabase::HasSets() const
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-  return false;
-}
-
-bool CVideoDatabase::GetSetById(int idSet, CStdString& strSet)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    CStdString strSQL=PrepareSQL("select sets.strSet from sets where sets.idSet=%i", idSet);
-    m_pDS->query( strSQL.c_str() );
-
-    bool bResult = false;
-    if (!m_pDS->eof())
-    {
-      strSet  = m_pDS->fv("sets.strSet").get_asString();
-      bResult = true;
-    }
-    m_pDS->close();
-    return bResult;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSet.c_str());
   }
   return false;
 }

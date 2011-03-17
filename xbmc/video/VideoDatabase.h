@@ -354,9 +354,9 @@ public:
   bool HasMusicVideoInfo(const CStdString& strFilenameAndPath);
 
   void GetFilePathById(int idMovie, CStdString &filePath, VIDEODB_CONTENT_TYPE iType);
-  bool GetGenreById(int idGenre, CStdString& strGenre);
-  bool GetCountryById(int idCountry, CStdString& strCountry);
-  bool GetSetById(int idSet, CStdString& strSet);
+  CStdString GetGenreById(int id);
+  CStdString GetCountryById(int id);
+  CStdString GetSetById(int id);
   int GetTvShowForEpisode(int idEpisode);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMovie = -1);
