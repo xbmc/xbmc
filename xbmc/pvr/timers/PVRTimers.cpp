@@ -64,10 +64,13 @@ int CPVRTimers::LoadFromClients(void)
     if (!(*itrClients).second->ReadyToUse() ||
         !CPVRManager::Get()->GetClientProperties((*itrClients).second->GetID())->SupportTimers ||
         (*itrClients).second->GetNumTimers() <= 0)
+    {
+      ++itrClients;
       continue;
+    }
 
     (*itrClients).second->GetAllTimers(this);
-    itrClients++;
+    ++itrClients;
   }
 
   return size() - iCurSize;
