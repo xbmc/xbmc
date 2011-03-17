@@ -642,7 +642,6 @@ const char *CPVRManager::CharInfoNowRecordingTitle(void)
 {
   if (m_recordingToggleStart == 0)
   {
-    UpdateRecordingsCache();
     m_recordingToggleStart = CTimeUtils::GetTimeMS();
     m_recordingToggleCurrent = 0;
   }
@@ -650,7 +649,6 @@ const char *CPVRManager::CharInfoNowRecordingTitle(void)
   {
     if (CTimeUtils::GetTimeMS() - m_recordingToggleStart > INFO_TOGGLE_TIME)
     {
-      UpdateRecordingsCache();
       if (m_NowRecording.size() > 0)
       {
         m_recordingToggleCurrent++;
