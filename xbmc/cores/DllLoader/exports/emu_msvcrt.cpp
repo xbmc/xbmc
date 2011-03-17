@@ -26,6 +26,10 @@
 #include <io.h>
 #include <direct.h>
 #include <process.h>
+#else
+#ifndef __APPLE__
+#include <mntent.h>
+#endif
 #endif
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -35,7 +39,6 @@
   #ifdef _LINUX
     #include <sys/ioctl.h>
     #ifndef __APPLE__
-      #include <mntent.h>
       #include <linux/cdrom.h>
     #else
       #include <IOKit/storage/IODVDMediaBSDClient.h>
