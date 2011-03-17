@@ -35,7 +35,6 @@
 #define DEFAULT_TIMEOUT       3
 
 extern bool IsClientConnected(bool forceReconnect = false);
-extern void SetClientConnected(bool yesNo);
 
 extern bool         m_bCreated;
 extern std::string  g_szHostname;

@@ -523,7 +523,7 @@ void cVNSIChannelScan::Action()
   while (Running())
   {
     readSuccess = readData((uint8_t*)&channelID, sizeof(uint32_t));
-    if (!readSuccess && !IsClientConnected())
+    if (!readSuccess)
       return; // return to stop this thread
 
     if (!readSuccess) continue; // no data was read but the connection is ok.
@@ -715,6 +715,5 @@ bool cVNSIChannelScan::readData(uint8_t* buffer, int totalBytes)
   else if (ret == 0)
     return false;
 
-  SetClientConnected(false);
   return false;
 }

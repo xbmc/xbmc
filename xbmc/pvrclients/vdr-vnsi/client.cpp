@@ -57,66 +57,6 @@ cVNSIDemux      *VNSIDemuxer       = NULL;
 cVNSIData       *VNSIData          = NULL;
 cVNSIRecording  *VNSIRecording     = NULL;
 
-bool IsClientConnected(bool forceReconnect)
-{
-  if (forceReconnect)
-    m_retries = 0;
-
-  if (!m_connected && m_bCreated)
-  {
-    while (m_retries < 5)
-    {
-      m_retries++;
-      if (VNSIDemuxer)
-      {
-        delete VNSIDemuxer;
-        VNSIDemuxer = NULL;
-      }
-      if (VNSIRecording)
-      {
-        delete VNSIRecording;
-        VNSIRecording = NULL;
-      }
-      if (VNSIData)
-      {
-        XBMC->Log(LOG_NOTICE, "Trying to reconnect to VNSI Server (try %i)", m_retries+1);
-        sleep(2);
-        if (VNSIData->Open(g_szHostname, g_iPort))
-        {
-          XBMC->Log(LOG_NOTICE, "Reconnect to VNSI Server succesfull");
-          m_CurStatus = STATUS_OK;
-          m_connected = true;
-          m_retries   = 0;
-          return true;
-        }
-      }
-    }
-  }
-  return m_connected;
-}
-
-void SetClientConnected(bool yesNo)
-{
-  if (yesNo)
-  {
-    m_connected = true;
-  }
-  else
-  {
-    XBMC->Log(LOG_ERROR, "Lost connection to VNSI Server");
-
-    if (VNSIData)
-      VNSIData->Close();
-    if (VNSIDemuxer)
-      VNSIDemuxer->Close();
-    if (VNSIRecording)
-      VNSIRecording->Close();
-
-    m_connected = false;
-    m_CurStatus = STATUS_LOST_CONNECTION;
-  }
-}
-
 extern "C" {
 
 /***********************************************************
@@ -348,7 +288,7 @@ const char * GetConnectionString()
   std::stringstream format;
 
   if (VNSIData) {
-    format << g_szHostname << ":" << g_iPort << (IsClientConnected() ? "" : " (Not connected!)");
+    format << g_szHostname << ":" << g_iPort;
   }
   else {
     format << g_szHostname << ":" << g_iPort << " (addon error!)";
@@ -359,7 +299,7 @@ const char * GetConnectionString()
 
 PVR_ERROR GetDriveSpace(long long *total, long long *used)
 {
-  if (IsClientConnected() && VNSIData && VNSIData->GetDriveSpace(total, used))
+  if (VNSIData && VNSIData->GetDriveSpace(total, used))
     return PVR_ERROR_NO_ERROR;
 
   return PVR_ERROR_SERVER_ERROR;
@@ -367,7 +307,7 @@ PVR_ERROR GetDriveSpace(long long *total, long long *used)
 
 PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
 {
-  if (IsClientConnected() && VNSIData && VNSIData->GetTime(localTime, gmtOffset))
+  if (VNSIData && VNSIData->GetTime(localTime, gmtOffset))
     return PVR_ERROR_NO_ERROR;
 
   return PVR_ERROR_SERVER_ERROR;
@@ -385,7 +325,7 @@ PVR_ERROR DialogChannelScan()
 
 PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end)
 {
-  if (IsClientConnected() && VNSIData && VNSIData->GetEPGForChannel(handle, channel, start, end))
+  if (VNSIData && VNSIData->GetEPGForChannel(handle, channel, start, end))
     return PVR_ERROR_NO_ERROR;
 
   return PVR_ERROR_SERVER_ERROR;
@@ -397,7 +337,7 @@ PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, tim
 
 int GetNumChannels()
 {
-  if (!IsClientConnected(true) || !VNSIData)
+  if (!VNSIData)
     return 0;
 
   return VNSIData->GetChannelsCount();
@@ -405,7 +345,7 @@ int GetNumChannels()
 
 PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio)
 {
-  if (IsClientConnected(true) && VNSIData && VNSIData->GetChannelsList(handle, radio))
+  if (VNSIData && VNSIData->GetChannelsList(handle, radio))
     return PVR_ERROR_NO_ERROR;
 
   return PVR_ERROR_SERVER_ERROR;
@@ -417,7 +357,7 @@ PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio)
 
 int GetNumTimers(void)
 {
-  if (!IsClientConnected() || !VNSIData)
+  if (!VNSIData)
     return 0;
 
   return VNSIData->GetTimersCount();
@@ -425,7 +365,7 @@ int GetNumTimers(void)
 
 PVR_ERROR RequestTimerList(PVRHANDLE handle)
 {
-  if (IsClientConnected() && VNSIData && VNSIData->GetTimersList(handle))
+  if (VNSIData && VNSIData->GetTimersList(handle))
     return PVR_ERROR_NO_ERROR;
 
   return PVR_ERROR_SERVER_ERROR;
@@ -433,7 +373,7 @@ PVR_ERROR RequestTimerList(PVRHANDLE handle)
 
 PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo)
 {
-  if (!IsClientConnected() || !VNSIData)
+  if (!VNSIData)
     return PVR_ERROR_SERVER_ERROR;
 
   return VNSIData->AddTimer(timerinfo);
@@ -441,7 +381,7 @@ PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo)
 
 PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
 {
-  if (!IsClientConnected() || !VNSIData)
+  if (!VNSIData)
     return PVR_ERROR_SERVER_ERROR;
 
   return VNSIData->DeleteTimer(timerinfo, force);
@@ -449,7 +389,7 @@ PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
 
 PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname)
 {
-  if (!IsClientConnected() || !VNSIData)
+  if (!VNSIData)
     return PVR_ERROR_SERVER_ERROR;
 
   return VNSIData->RenameTimer(timerinfo, newname);
@@ -457,7 +397,7 @@ PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname)
 
 PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo)
 {
-  if (!IsClientConnected() || !VNSIData)
+  if (!VNSIData)
     return PVR_ERROR_SERVER_ERROR;
 
   return VNSIData->UpdateTimer(timerinfo);
@@ -469,7 +409,7 @@ PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo)
 
 int GetNumRecordings(void)
 {
-  if (!IsClientConnected() || !VNSIData)
+  if (!VNSIData)
     return 0;
 
   return VNSIData->GetRecordingsCount();
@@ -477,7 +417,7 @@ int GetNumRecordings(void)
 
 PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
 {
-  if (!VNSIData || !IsClientConnected())
+  if (!VNSIData)
     return PVR_ERROR_SERVER_ERROR;
 
   return VNSIData->GetRecordingsList(handle);
@@ -485,7 +425,7 @@ PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
 
 PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo)
 {
-  if (IsClientConnected() && VNSIData && VNSIData->DeleteRecording(VNSIData->GetRecordingPath(recinfo.index)))
+  if (VNSIData && VNSIData->DeleteRecording(VNSIData->GetRecordingPath(recinfo.index)))
     return PVR_ERROR_NO_ERROR;
 
   return PVR_ERROR_SERVER_ERROR;
@@ -496,9 +436,6 @@ PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo)
 
 bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
-  if (!IsClientConnected(true))
-    return false;
-
   CloseLiveStream();
 
   VNSIDemuxer = new cVNSIDemux;
@@ -507,7 +444,7 @@ bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
 
 void CloseLiveStream()
 {
-  if (IsClientConnected() && VNSIDemuxer)
+  if (VNSIDemuxer)
   {
     VNSIDemuxer->Close();
     delete VNSIDemuxer;
@@ -517,7 +454,7 @@ void CloseLiveStream()
 
 PVR_ERROR GetStreamProperties(PVR_STREAMPROPS* props)
 {
-  if (IsClientConnected() && VNSIDemuxer && VNSIDemuxer->GetStreamProperties(props))
+  if (VNSIDemuxer && VNSIDemuxer->GetStreamProperties(props))
     return PVR_ERROR_NO_ERROR;
 
   return PVR_ERROR_SERVER_ERROR;
@@ -525,12 +462,12 @@ PVR_ERROR GetStreamProperties(PVR_STREAMPROPS* props)
 
 void DemuxAbort()
 {
-  if (IsClientConnected() && VNSIDemuxer) VNSIDemuxer->Abort();
+  if (VNSIDemuxer) VNSIDemuxer->Abort();
 }
 
 DemuxPacket* DemuxRead()
 {
-  if (!IsClientConnected())
+  if (!VNSIDemuxer)
     return NULL;
 
   return VNSIDemuxer->Read();
@@ -538,7 +475,7 @@ DemuxPacket* DemuxRead()
 
 int GetCurrentClientChannel()
 {
-  if (IsClientConnected() && VNSIDemuxer)
+  if (VNSIDemuxer)
     return VNSIDemuxer->CurrentChannel();
 
   return -1;
@@ -546,7 +483,7 @@ int GetCurrentClientChannel()
 
 bool SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
-  if (IsClientConnected() && VNSIDemuxer)
+  if (VNSIDemuxer)
     return VNSIDemuxer->SwitchChannel(channelinfo);
 
   return false;
@@ -554,7 +491,7 @@ bool SwitchChannel(const PVR_CHANNEL &channelinfo)
 
 PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
 {
-  if (IsClientConnected() && VNSIDemuxer && VNSIDemuxer->GetSignalStatus(qualityinfo))
+  if (VNSIDemuxer && VNSIDemuxer->GetSignalStatus(qualityinfo))
     return PVR_ERROR_NO_ERROR;
 
   return PVR_ERROR_SERVER_ERROR;
@@ -566,7 +503,7 @@ PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
 
 bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 {
-  if (!IsClientConnected(true))
+  if(!VNSIData)
     return false;
 
   CloseRecordedStream();
@@ -578,7 +515,7 @@ bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 
 void CloseRecordedStream(void)
 {
-  if (IsClientConnected() && VNSIRecording)
+  if (VNSIRecording)
   {
     VNSIRecording->Close();
     delete VNSIRecording;
@@ -588,7 +525,7 @@ void CloseRecordedStream(void)
 
 int ReadRecordedStream(unsigned char* buf, int buf_size)
 {
-  if (!IsClientConnected())
+  if (!VNSIRecording)
     return -1;
 
   return VNSIRecording->Read(buf, buf_size);
@@ -596,7 +533,7 @@ int ReadRecordedStream(unsigned char* buf, int buf_size)
 
 long long SeekRecordedStream(long long pos, int whence)
 {
-  if (IsClientConnected() && VNSIRecording)
+  if (VNSIRecording)
     return VNSIRecording->Seek(pos, whence);
 
   return -1;
@@ -604,7 +541,7 @@ long long SeekRecordedStream(long long pos, int whence)
 
 long long PositionRecordedStream(void)
 {
-  if (IsClientConnected() && VNSIRecording)
+  if (VNSIRecording)
     return VNSIRecording->Position();
 
   return 0;
@@ -612,7 +549,7 @@ long long PositionRecordedStream(void)
 
 long long LengthRecordedStream(void)
 {
-  if (IsClientConnected() && VNSIRecording)
+  if (VNSIRecording)
     return VNSIRecording->Length();
 
   return 0;

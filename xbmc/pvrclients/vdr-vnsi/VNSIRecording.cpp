@@ -95,12 +95,9 @@ int cVNSIRecording::Read(unsigned char* buf, uint32_t buf_size)
     return 0;
   }
 
-  if (!IsClientConnected())
-    return -1;
-
   cResponsePacket* vresp = m_session.ReadResult(&vrp);
   if (!vresp)
-    return 0;
+    return -1;
 
   uint32_t length = vresp->getUserDataLength();
   uint8_t *data   = vresp->getUserData();

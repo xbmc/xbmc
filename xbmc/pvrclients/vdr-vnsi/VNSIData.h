@@ -38,7 +38,6 @@ public:
 
   bool Open(const std::string& hostname, int port);
   void Close();
-  bool CheckConnection();
 
   cResponsePacket*  ReadResult(cRequestPacket* vrp);
   int         GetProtocol()   { return m_session.GetProtocol(); }
@@ -69,6 +68,7 @@ public:
 
 
 protected:
+  bool TryReconnect();
   virtual void Action(void);
 
 private:
@@ -88,4 +88,7 @@ private:
   RecordPaths     m_RecordsPaths;
   std::string     m_videodir;
   int             m_recIndex;
+  bool            m_connectionLost;
+  std::string     m_hostname;
+  int             m_port;
 };

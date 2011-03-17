@@ -464,7 +464,6 @@ int cVNSISession::readData(uint8_t* buffer, int totalBytes)
       // in non-blocking mode if read is called with no data available, it returns -1
       // and sets errno to EGAGAIN. but we use select so it wouldn't do that anyway.
       XBMC->Log(LOG_ERROR, "cVNSISession::readData - Detected connection closed");
-      SetClientConnected(false);
       return -1;
     }
     bytesRead += thisRead;

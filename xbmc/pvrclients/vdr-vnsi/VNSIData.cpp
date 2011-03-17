@@ -32,7 +32,7 @@
 
 #define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
 
-cVNSIData::cVNSIData()
+cVNSIData::cVNSIData() : m_connectionLost(false)
 {
 }
 
@@ -46,9 +46,12 @@ bool cVNSIData::Open(const std::string& hostname, int port)
   if(!m_session.Open(hostname, port))
     return false;
 
+  // store connection data for TryReconnect()
+  m_hostname = hostname;
+  m_port = port;
+
   SetDescription("VNSI Data Listener");
   Start();
-  SetClientConnected(true);
   return true;
 }
 
@@ -59,8 +62,15 @@ void cVNSIData::Close()
   m_session.Close();
 }
 
-bool cVNSIData::CheckConnection()
-{
+bool cVNSIData::TryReconnect() {
+  m_session.Abort();
+  m_session.Close();
+
+  if(!Open(m_hostname, m_port)) {
+    return false;
+  }
+
+  XBMC->Log(LOG_DEBUG, "cVNSIData -- reconnected");
   return true;
 }
 
@@ -525,7 +535,7 @@ PVR_ERROR cVNSIData::DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
     return PVR_ERROR_UNKOWN;
 
   cResponsePacket* vresp = ReadResult(&vrp);
-  if (vresp->noResponse())
+  if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
     return PVR_ERROR_UNKOWN;
@@ -574,7 +584,7 @@ PVR_ERROR cVNSIData::UpdateTimer(const PVR_TIMERINFO &timerinfo)
   if (!vrp.add_String(""))                return PVR_ERROR_UNKOWN;
 
   cResponsePacket* vresp = ReadResult(&vrp);
-  if (vresp->noResponse())
+  if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
     return PVR_ERROR_UNKOWN;
@@ -679,7 +689,7 @@ PVR_ERROR cVNSIData::DeleteRecording(const std::string& path)
     return PVR_ERROR_UNKOWN;
 
   cResponsePacket* vresp = ReadResult(&vrp);
-  if (vresp->noResponse())
+  if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
     return PVR_ERROR_UNKOWN;
@@ -713,31 +723,63 @@ void cVNSIData::Action()
 
   while (Running())
   {
+    // read channelID
     readSuccess = readData((uint8_t*)&channelID, sizeof(uint32_t));
-    if (!readSuccess && !IsClientConnected())
-      return; // return to stop this thread
+
+    // just wait if we're currently not connected
+    if (m_connectionLost)
+    {
+      usleep(1000 * 1000); // 1000 ms to relax
+      continue;
+    }
 
     if (!readSuccess) continue; // no data was read but the connection is ok.
 
     // Data was read
     channelID = ntohl(channelID);
+
+    // read requestID
+    if (!readData((uint8_t*)&requestID, sizeof(uint32_t)))
+    {
+      m_connectionLost = true;
+      continue;
+    }
+    requestID = ntohl(requestID);
+
+    // read userDataLength
+    if (!readData((uint8_t*)&userDataLength, sizeof(uint32_t)))
+    {
+      m_connectionLost = true;
+      continue;
+    }
+    userDataLength = ntohl(userDataLength);
+    if (userDataLength > 5000000) {
+      m_connectionLost = true;
+      continue; // how big can these packets get?
+    }
+
+    // read userData
+    userData = NULL;
+    if (userDataLength > 0)
+    {
+      userData = (uint8_t*)malloc(userDataLength);
+      if (!userData) continue;
+      if (!userData || !readData(userData, userDataLength))
+      {
+        free(userData);
+        m_connectionLost = true;
+        continue;
+      }
+    }
+
+    // assemble response packet
+    vresp = new cResponsePacket();
+    vresp->setResponse(requestID, userData, userDataLength);
+
+    // CHANNEL_REQUEST_RESPONSE
+
     if (channelID == CHANNEL_REQUEST_RESPONSE)
     {
-      if (!readData((uint8_t*)&requestID, sizeof(uint32_t))) break;
-      requestID = ntohl(requestID);
-      if (!readData((uint8_t*)&userDataLength, sizeof(uint32_t))) break;
-      userDataLength = ntohl(userDataLength);
-      if (userDataLength > 5000000) break; // how big can these packets get?
-      userData = NULL;
-      if (userDataLength > 0)
-      {
-        userData = (uint8_t*)malloc(userDataLength);
-        if (!userData) break;
-        if (!readData(userData, userDataLength)) break;
-      }
-
-      vresp = new cResponsePacket();
-      vresp->setResponse(requestID, userData, userDataLength);
 
       CMD_LOCK;
       SMessages::iterator it = m_queue.find(requestID);
@@ -751,29 +793,17 @@ void cVNSIData::Action()
         delete vresp;
       }
     }
+
+    // CHANNEL_STATUS
+
     else if (channelID == CHANNEL_STATUS)
     {
-      if (!readData((uint8_t*)&requestID, sizeof(uint32_t))) break;
-      requestID = ntohl(requestID);
-      if (!readData((uint8_t*)&userDataLength, sizeof(uint32_t))) break;
-      userDataLength = ntohl(userDataLength);
-      if (userDataLength > 5000000) break; // how big can these packets get?
-      userData = NULL;
-      if (userDataLength > 0)
-      {
-        userData = (uint8_t*)malloc(userDataLength);
-        if (!userData) break;
-        if (!readData(userData, userDataLength)) break;
-      }
-
       if (requestID == VDR_STATUS_MESSAGE)
       {
-        uint32_t type = ntohl(*(uint32_t*)&userData[0]);
-        int length = strlen((char*)&userData[4]);
-        char* str = new char[length + 1];
-        strcpy(str, (char*)&userData[4]);
+        uint32_t type = vresp->extract_U32();
+        char* msgstr  = vresp->extract_String();
+        std::string text = msgstr;
 
-        std::string text = str;
         if (g_bCharsetConv)
           XBMC->UnknownToUTF8(text);
 
@@ -784,34 +814,19 @@ void cVNSIData::Action()
         else
           XBMC->QueueNotification(QUEUE_INFO, text.c_str());
 
-        delete[] str;
+        delete[] msgstr;
       }
       else if (requestID == VDR_STATUS_RECORDING)
       {
-    	// this one is currently unused
-        //uint32_t device = ntohl(*(uint32_t*)&userData[0]);
-        uint32_t on     = ntohl(*(uint32_t*)&userData[4]);
+                          vresp->extract_U32(); // device currently unused
+        uint32_t on     = vresp->extract_U32();
+        char* str1      = vresp->extract_String();
+        char* str2      = vresp->extract_String();
 
-        int length = strlen((char*)&userData[8]);
-        char* str = NULL;
-        if (length > 1)
-        {
-          str = new char[length + 1];
-          strcpy(str, (char*)&userData[8]);
-        }
-
-        int length2 = strlen((char*)&userData[8+length]);
-        char* str2 = NULL;
-        if (length2 > 1)
-        {
-          str2 = new char[length2 + 1];
-          strcpy(str2, (char*)&userData[8+length]);
-        }
-
-        PVR->Recording(str, str2, on);
+        PVR->Recording(str1, str2, on);
         PVR->TriggerTimerUpdate();
 
-        delete[] str;
+        delete[] str1;
         delete[] str2;
       }
       else if (requestID == VDR_STATUS_TIMERCHANGE)
@@ -819,26 +834,33 @@ void cVNSIData::Action()
         PVR->TriggerTimerUpdate();
       }
 
-      if (userData)
-        free(userData);
+      delete vresp;
     }
+
+    // UNKOWN CHANNELID
+
     else
     {
       XBMC->Log(LOG_ERROR, "cVNSIData::Action() - Rxd a response packet on channel %lu !!", channelID);
-      break;
     }
   }
 }
 
 bool cVNSIData::readData(uint8_t* buffer, int totalBytes)
 {
+  if(m_connectionLost)
+    if(TryReconnect()) m_connectionLost = false;
+  else
+    return false;
+
   int ret = m_session.readData(buffer, totalBytes);
   if (ret == 1)
     return true;
   else if (ret == 0)
     return false;
 
-  SetClientConnected(false);
+  XBMC->Log(LOG_ERROR, "cVNSIData - connection lost !!!");
+  m_connectionLost = true;
   return false;
 }
 
