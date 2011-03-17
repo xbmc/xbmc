@@ -33,8 +33,6 @@ CDirectoryNodeCountry::CDirectoryNodeCountry(const CStdString& strName, CDirecto
 
 NODE_TYPE CDirectoryNodeCountry::GetChildType()
 {
-  CQueryParams params;
-  CollectQueryParams(params);
   return NODE_TYPE_TITLE_MOVIES;
 }
 

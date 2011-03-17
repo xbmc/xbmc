@@ -33,8 +33,6 @@ CDirectoryNodeSets::CDirectoryNodeSets(const CStdString& strName, CDirectoryNode
 
 NODE_TYPE CDirectoryNodeSets::GetChildType()
 {
-  CQueryParams params;
-  CollectQueryParams(params);
   return NODE_TYPE_TITLE_MOVIES;
 }
 
