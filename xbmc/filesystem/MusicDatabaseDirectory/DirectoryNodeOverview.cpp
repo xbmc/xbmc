@@ -24,6 +24,25 @@
 #include "music/MusicDatabase.h"
 #include "guilib/LocalizeStrings.h"
 
+namespace XFILE
+{
+  namespace MUSICDATABASEDIRECTORY
+  {
+    Node OverviewChildren[] = {
+                                { NODE_TYPE_GENRE,                 1, 135 },
+                                { NODE_TYPE_ARTIST,                2, 133 },
+                                { NODE_TYPE_ALBUM,                 3, 132 },
+                                { NODE_TYPE_SINGLES,              10, 1050 },
+                                { NODE_TYPE_SONG,                  4, 134 },
+                                { NODE_TYPE_YEAR,                  9, 652 },
+                                { NODE_TYPE_TOP100,                5, 271 },
+                                { NODE_TYPE_ALBUM_RECENTLY_ADDED,  6, 359 },
+                                { NODE_TYPE_ALBUM_RECENTLY_PLAYED, 7, 517 },
+                                { NODE_TYPE_ALBUM_COMPILATIONS,    8, 521 },
+                              };
+  };
+};
+
 using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
@@ -35,32 +54,14 @@ CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirec
 
 NODE_TYPE CDirectoryNodeOverview::GetChildType()
 {
-  if (GetName()=="1")
-    return NODE_TYPE_GENRE;
-  else if (GetName()=="2")
-    return NODE_TYPE_ARTIST;
-  else if (GetName()=="3")
-    return NODE_TYPE_ALBUM;
-  else if (GetName()=="4")
-    return NODE_TYPE_SONG;
-  else if (GetName()=="5")
-    return NODE_TYPE_TOP100;
-  else if (GetName()=="6")
-    return NODE_TYPE_ALBUM_RECENTLY_ADDED;
-  else if (GetName()=="7")
-    return NODE_TYPE_ALBUM_RECENTLY_PLAYED;
-  else if (GetName()=="8")
-    return NODE_TYPE_ALBUM_COMPILATIONS;
-  else if (GetName()=="9")
-    return NODE_TYPE_YEAR;
-  else if (GetName()=="10")
-    return NODE_TYPE_SINGLES;
+  for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
+    if (GetID() == OverviewChildren[i].id)
+      return OverviewChildren[i].node;
   return NODE_TYPE_NONE;
 }
 
 bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
 {
-  vector< pair<int, int> > rootItems;
   CMusicDatabase musicDatabase;
   bool showSingles = false;
   if (musicDatabase.Open())
@@ -69,24 +70,16 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
       showSingles = true;
   }
 
-  rootItems.push_back(make_pair(1, 135));
-  rootItems.push_back(make_pair(2, 133));
-  rootItems.push_back(make_pair(3, 132));
-  if (showSingles)
-    rootItems.push_back(make_pair(10, 1050));
-  rootItems.push_back(make_pair(4, 134));
-  rootItems.push_back(make_pair(9, 652));
-  rootItems.push_back(make_pair(5, 271));
-  rootItems.push_back(make_pair(6, 359));
-  rootItems.push_back(make_pair(7, 517));
-  if (musicDatabase.GetVariousArtistsAlbumsCount() > 0)
-    rootItems.push_back(make_pair(8, 521));
-
-  for (unsigned int i = 0; i < rootItems.size(); ++i)
+  for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
   {
-    CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(rootItems[i].second)));
+    if (i == 3 && !showSingles) // singles
+      continue;
+    if (i == 9 && musicDatabase.GetVariousArtistsAlbumsCount() == 0) // compilations
+      continue;
+
+    CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(OverviewChildren[i].label)));
     CStdString strDir;
-    strDir.Format("%i/", rootItems[i].first);
+    strDir.Format("%ld/", OverviewChildren[i].id);
     pItem->m_strPath = BuildPath() + strDir;
     pItem->m_bIsFolder = true;
     pItem->SetCanQueue(false);

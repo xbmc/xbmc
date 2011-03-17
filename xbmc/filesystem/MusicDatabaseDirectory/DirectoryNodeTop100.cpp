@@ -26,6 +26,11 @@
 using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
+Node Top100Children[] = {
+                          { NODE_TYPE_SONG_TOP100,  1, 10504 },
+                          { NODE_TYPE_ALBUM_TOP100, 2, 10505 },
+                        };
+
 CDirectoryNodeTop100::CDirectoryNodeTop100(const CStdString& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_TOP100, strName, pParent)
 {
@@ -34,25 +39,20 @@ CDirectoryNodeTop100::CDirectoryNodeTop100(const CStdString& strName, CDirectory
 
 NODE_TYPE CDirectoryNodeTop100::GetChildType()
 {
-  if (GetName()=="1")
-    return NODE_TYPE_SONG_TOP100;
-  else if (GetName()=="2")
-    return NODE_TYPE_ALBUM_TOP100;
+  for (unsigned int i = 0; i < sizeof(Top100Children) / sizeof(Node); ++i)
+    if (GetID() == Top100Children[i].id)
+      return Top100Children[i].node;
 
   return NODE_TYPE_NONE;
 }
 
 bool CDirectoryNodeTop100::GetContent(CFileItemList& items)
 {
-  vector<CStdString> vecRoot;
-  vecRoot.push_back(g_localizeStrings.Get(10504));  // Top 100 Songs
-  vecRoot.push_back(g_localizeStrings.Get(10505));  // Top 100 Albums
-
-  for (int i = 0; i < (int)vecRoot.size(); ++i)
+  for (unsigned int i = 0; i < sizeof(Top100Children) / sizeof(Node); ++i)
   {
-    CFileItemPtr pItem(new CFileItem(vecRoot[i]));
+    CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(Top100Children[i].label)));
     CStdString strDir;
-    strDir.Format("%i/", i+1);
+    strDir.Format("%ld/", Top100Children[i].id);
     pItem->m_strPath += BuildPath() + strDir;
     pItem->m_bIsFolder = true;
     items.Add(pItem);

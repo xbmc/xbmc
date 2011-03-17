@@ -56,6 +56,12 @@ namespace XFILE
       NODE_TYPE_SINGLES
     } NODE_TYPE;
 
+    typedef struct {
+      NODE_TYPE node;
+      int       id;
+      int       label;
+    } Node;
+
     class CDirectoryNode
     {
     public:
@@ -78,6 +84,7 @@ namespace XFILE
       void CollectQueryParams(CQueryParams& params);
 
       const CStdString& GetName() const;
+      int GetID() const;
       void RemoveParent();
 
       virtual bool GetContent(CFileItemList& items);

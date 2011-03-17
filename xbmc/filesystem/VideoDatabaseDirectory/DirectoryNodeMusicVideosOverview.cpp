@@ -25,6 +25,16 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
+Node MusicVideoChildren[] = {
+                              { NODE_TYPE_GENRE,             1, 135 },
+                              { NODE_TYPE_TITLE_MOVIES,      2, 369 },
+                              { NODE_TYPE_YEAR,              3, 562 },
+                              { NODE_TYPE_ACTOR,             4, 133 },
+                              { NODE_TYPE_MUSICVIDEOS_ALBUM, 5, 132 },
+                              { NODE_TYPE_DIRECTOR,          6, 20348 },
+                              { NODE_TYPE_STUDIO,            7, 20388 },
+                            };
+
 CDirectoryNodeMusicVideosOverview::CDirectoryNodeMusicVideosOverview(const CStdString& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_MUSICVIDEOS_OVERVIEW, strName, pParent)
 {
@@ -33,40 +43,20 @@ CDirectoryNodeMusicVideosOverview::CDirectoryNodeMusicVideosOverview(const CStdS
 
 NODE_TYPE CDirectoryNodeMusicVideosOverview::GetChildType()
 {
-  if (GetName()=="1")
-    return NODE_TYPE_GENRE;
-  else if (GetName()=="2")
-    return NODE_TYPE_TITLE_MUSICVIDEOS;
-  else if (GetName()=="3")
-    return NODE_TYPE_YEAR;
-  else if (GetName()=="4")
-    return NODE_TYPE_ACTOR;
-  else if (GetName()=="5")
-    return NODE_TYPE_MUSICVIDEOS_ALBUM;
-  else if (GetName()=="6")
-    return NODE_TYPE_DIRECTOR;
-  else if (GetName()=="7")
-    return NODE_TYPE_STUDIO;
+  for (unsigned int i = 0; i < sizeof(MusicVideoChildren) / sizeof(Node); ++i)
+    if (GetID() == MusicVideoChildren[i].id)
+      return MusicVideoChildren[i].node;
 
   return NODE_TYPE_NONE;
 }
 
 bool CDirectoryNodeMusicVideosOverview::GetContent(CFileItemList& items)
 {
-  CStdStringArray vecRoot;
-  vecRoot.push_back(g_localizeStrings.Get(135));  // Genres
-  vecRoot.push_back(g_localizeStrings.Get(369));  // Title
-  vecRoot.push_back(g_localizeStrings.Get(562));  // Year
-  vecRoot.push_back(g_localizeStrings.Get(133));  // Artists
-  vecRoot.push_back(g_localizeStrings.Get(132));  // Albums
-  vecRoot.push_back(g_localizeStrings.Get(20348));  // Directors
-  vecRoot.push_back(g_localizeStrings.Get(20388));  // Studios
-
-  for (int i = 0; i < (int)vecRoot.size(); ++i)
+  for (unsigned int i = 0; i < sizeof(MusicVideoChildren) / sizeof(Node); ++i)
   {
-    CFileItemPtr pItem(new CFileItem(vecRoot[i]));
+    CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(MusicVideoChildren[i].label)));
     CStdString strDir;
-    strDir.Format("%i/", i+1);
+    strDir.Format("%ld/", MusicVideoChildren[i].id);
     pItem->m_strPath = BuildPath() + strDir;
     pItem->m_bIsFolder = true;
     pItem->SetCanQueue(false);

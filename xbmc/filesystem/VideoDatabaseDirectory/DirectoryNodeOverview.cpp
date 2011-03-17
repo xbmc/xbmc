@@ -29,6 +29,16 @@
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace std;
 
+
+Node OverviewChildren[] = {
+                            { NODE_TYPE_MOVIES_OVERVIEW,            1, 342 },
+                            { NODE_TYPE_TVSHOWS_OVERVIEW,           2, 20343 },
+                            { NODE_TYPE_MUSICVIDEOS_OVERVIEW,       3, 20389 },
+                            { NODE_TYPE_RECENTLY_ADDED_MOVIES,      4, 20386 },
+                            { NODE_TYPE_RECENTLY_ADDED_EPISODES,    5, 20387 },
+                            { NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS, 6, 20390 },
+                          };
+
 CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_OVERVIEW, strName, pParent)
 {
@@ -37,18 +47,9 @@ CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirec
 
 NODE_TYPE CDirectoryNodeOverview::GetChildType()
 {
-  if (GetName()=="1")
-    return NODE_TYPE_MOVIES_OVERVIEW;
-  else if (GetName()=="2")
-    return NODE_TYPE_TVSHOWS_OVERVIEW;
-  else if (GetName() == "3")
-    return NODE_TYPE_MUSICVIDEOS_OVERVIEW;
-  else if (GetName() == "4")
-    return NODE_TYPE_RECENTLY_ADDED_MOVIES;
-  else if (GetName() == "5")
-    return NODE_TYPE_RECENTLY_ADDED_EPISODES;
-  else if (GetName() == "6")
-    return NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS;
+  for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
+    if (GetID() == OverviewChildren[i].id)
+      return OverviewChildren[i].node;
 
   return NODE_TYPE_NONE;
 }
