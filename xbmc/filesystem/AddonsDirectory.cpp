@@ -273,6 +273,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
   items.Add(GetMoreItem(content));
 
   items.SetContent("addons");
+  items.SetLabel(g_localizeStrings.Get(24001)); // Add-ons
 
   return items.Size() > 0;
 }
