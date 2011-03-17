@@ -31,12 +31,12 @@ CDirectoryNodeSets::CDirectoryNodeSets(const CStdString& strName, CDirectoryNode
 
 }
 
-NODE_TYPE CDirectoryNodeSets::GetChildType()
+NODE_TYPE CDirectoryNodeSets::GetChildType() const
 {
   return NODE_TYPE_TITLE_MOVIES;
 }
 
-bool CDirectoryNodeSets::GetContent(CFileItemList& items)
+bool CDirectoryNodeSets::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())

@@ -44,7 +44,7 @@ CDirectoryNodeMoviesOverview::CDirectoryNodeMoviesOverview(const CStdString& str
 
 }
 
-NODE_TYPE CDirectoryNodeMoviesOverview::GetChildType()
+NODE_TYPE CDirectoryNodeMoviesOverview::GetChildType() const
 {
   for (unsigned int i = 0; i < sizeof(MovieChildren) / sizeof(Node); ++i)
     if (GetID() == MovieChildren[i].id)
@@ -61,7 +61,7 @@ CStdString CDirectoryNodeMoviesOverview::GetLocalizedName() const
   return "";
 }
 
-bool CDirectoryNodeMoviesOverview::GetContent(CFileItemList& items)
+bool CDirectoryNodeMoviesOverview::GetContent(CFileItemList& items) const
 {
   for (unsigned int i = 0; i < sizeof(MovieChildren) / sizeof(Node); ++i)
   {

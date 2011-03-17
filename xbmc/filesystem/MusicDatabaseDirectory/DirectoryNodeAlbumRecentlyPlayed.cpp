@@ -31,7 +31,7 @@ CDirectoryNodeAlbumRecentlyPlayed::CDirectoryNodeAlbumRecentlyPlayed(const CStdS
 
 }
 
-NODE_TYPE CDirectoryNodeAlbumRecentlyPlayed::GetChildType()
+NODE_TYPE CDirectoryNodeAlbumRecentlyPlayed::GetChildType() const
 {
   if (GetName()=="-1")
     return NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS;
@@ -39,7 +39,7 @@ NODE_TYPE CDirectoryNodeAlbumRecentlyPlayed::GetChildType()
   return NODE_TYPE_SONG;
 }
 
-bool CDirectoryNodeAlbumRecentlyPlayed::GetContent(CFileItemList& items)
+bool CDirectoryNodeAlbumRecentlyPlayed::GetContent(CFileItemList& items) const
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())

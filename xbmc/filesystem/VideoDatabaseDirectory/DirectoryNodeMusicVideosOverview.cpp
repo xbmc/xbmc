@@ -41,7 +41,7 @@ CDirectoryNodeMusicVideosOverview::CDirectoryNodeMusicVideosOverview(const CStdS
 
 }
 
-NODE_TYPE CDirectoryNodeMusicVideosOverview::GetChildType()
+NODE_TYPE CDirectoryNodeMusicVideosOverview::GetChildType() const
 {
   for (unsigned int i = 0; i < sizeof(MusicVideoChildren) / sizeof(Node); ++i)
     if (GetID() == MusicVideoChildren[i].id)
@@ -58,7 +58,7 @@ CStdString CDirectoryNodeMusicVideosOverview::GetLocalizedName() const
   return "";
 }
 
-bool CDirectoryNodeMusicVideosOverview::GetContent(CFileItemList& items)
+bool CDirectoryNodeMusicVideosOverview::GetContent(CFileItemList& items) const
 {
   for (unsigned int i = 0; i < sizeof(MusicVideoChildren) / sizeof(Node); ++i)
   {

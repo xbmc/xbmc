@@ -31,7 +31,7 @@ CDirectoryNodeAlbumTop100::CDirectoryNodeAlbumTop100(const CStdString& strName, 
 
 }
 
-NODE_TYPE CDirectoryNodeAlbumTop100::GetChildType()
+NODE_TYPE CDirectoryNodeAlbumTop100::GetChildType() const
 {
   if (GetName()=="-1")
     return NODE_TYPE_ALBUM_TOP100_SONGS;
@@ -39,7 +39,7 @@ NODE_TYPE CDirectoryNodeAlbumTop100::GetChildType()
   return NODE_TYPE_SONG;
 }
 
-bool CDirectoryNodeAlbumTop100::GetContent(CFileItemList& items)
+bool CDirectoryNodeAlbumTop100::GetContent(CFileItemList& items) const
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())

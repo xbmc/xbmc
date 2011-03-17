@@ -31,12 +31,12 @@ CDirectoryNodeMusicVideoAlbum::CDirectoryNodeMusicVideoAlbum(const CStdString& s
 
 }
 
-NODE_TYPE CDirectoryNodeMusicVideoAlbum::GetChildType()
+NODE_TYPE CDirectoryNodeMusicVideoAlbum::GetChildType() const
 {
   return NODE_TYPE_TITLE_MUSICVIDEOS;
 }
 
-bool CDirectoryNodeMusicVideoAlbum::GetContent(CFileItemList& items)
+bool CDirectoryNodeMusicVideoAlbum::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())

@@ -31,7 +31,7 @@ namespace XFILE
     public:
       CDirectoryNodeRoot(const CStdString& strName, CDirectoryNode* pParent);
     protected:
-      virtual NODE_TYPE GetChildType();
+      virtual NODE_TYPE GetChildType() const;
     };
   }
 }

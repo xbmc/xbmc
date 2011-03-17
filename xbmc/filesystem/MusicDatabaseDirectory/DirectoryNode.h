@@ -69,31 +69,31 @@ namespace XFILE
       static void GetDatabaseInfo(const CStdString& strPath, CQueryParams& params);
       virtual ~CDirectoryNode();
 
-      NODE_TYPE GetType();
+      NODE_TYPE GetType() const;
 
       bool GetChilds(CFileItemList& items);
-      virtual NODE_TYPE GetChildType();
+      virtual NODE_TYPE GetChildType() const;
       virtual CStdString GetLocalizedName() const;
 
-      CDirectoryNode* GetParent();
-      bool CanCache();
+      CDirectoryNode* GetParent() const;
+      bool CanCache() const;
 
     protected:
       CDirectoryNode(NODE_TYPE Type, const CStdString& strName, CDirectoryNode* pParent);
       static CDirectoryNode* CreateNode(NODE_TYPE Type, const CStdString& strName, CDirectoryNode* pParent);
 
-      void CollectQueryParams(CQueryParams& params);
+      void CollectQueryParams(CQueryParams& params) const;
 
       const CStdString& GetName() const;
       int GetID() const;
       void RemoveParent();
 
-      virtual bool GetContent(CFileItemList& items);
+      virtual bool GetContent(CFileItemList& items) const;
 
-      CStdString BuildPath();
+      CStdString BuildPath() const;
 
     private:
-      void AddQueuingFolder(CFileItemList& items);
+      void AddQueuingFolder(CFileItemList& items) const;
 
     private:
       NODE_TYPE m_Type;

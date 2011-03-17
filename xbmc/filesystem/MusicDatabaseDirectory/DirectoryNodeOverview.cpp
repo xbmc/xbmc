@@ -52,7 +52,7 @@ CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirec
 
 }
 
-NODE_TYPE CDirectoryNodeOverview::GetChildType()
+NODE_TYPE CDirectoryNodeOverview::GetChildType() const
 {
   for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
     if (GetID() == OverviewChildren[i].id)
@@ -68,7 +68,7 @@ CStdString CDirectoryNodeOverview::GetLocalizedName() const
   return "";
 }
 
-bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
+bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
 {
   CMusicDatabase musicDatabase;
   bool showSingles = false;

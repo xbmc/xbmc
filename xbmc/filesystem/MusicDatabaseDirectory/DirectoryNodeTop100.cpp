@@ -37,7 +37,7 @@ CDirectoryNodeTop100::CDirectoryNodeTop100(const CStdString& strName, CDirectory
 
 }
 
-NODE_TYPE CDirectoryNodeTop100::GetChildType()
+NODE_TYPE CDirectoryNodeTop100::GetChildType() const
 {
   for (unsigned int i = 0; i < sizeof(Top100Children) / sizeof(Node); ++i)
     if (GetID() == Top100Children[i].id)
@@ -54,7 +54,7 @@ CStdString CDirectoryNodeTop100::GetLocalizedName() const
   return "";
 }
 
-bool CDirectoryNodeTop100::GetContent(CFileItemList& items)
+bool CDirectoryNodeTop100::GetContent(CFileItemList& items) const
 {
   for (unsigned int i = 0; i < sizeof(Top100Children) / sizeof(Node); ++i)
   {

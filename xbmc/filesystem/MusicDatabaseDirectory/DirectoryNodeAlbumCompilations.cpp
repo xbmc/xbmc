@@ -31,7 +31,7 @@ CDirectoryNodeAlbumCompilations::CDirectoryNodeAlbumCompilations(const CStdStrin
 
 }
 
-NODE_TYPE CDirectoryNodeAlbumCompilations::GetChildType()
+NODE_TYPE CDirectoryNodeAlbumCompilations::GetChildType() const
 {
   if (GetName()=="-1")
     return NODE_TYPE_ALBUM_COMPILATIONS_SONGS;
@@ -39,7 +39,7 @@ NODE_TYPE CDirectoryNodeAlbumCompilations::GetChildType()
   return NODE_TYPE_SONG;
 }
 
-bool CDirectoryNodeAlbumCompilations::GetContent(CFileItemList& items)
+bool CDirectoryNodeAlbumCompilations::GetContent(CFileItemList& items) const
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())

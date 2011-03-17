@@ -31,12 +31,12 @@ CDirectoryNodeGenre::CDirectoryNodeGenre(const CStdString& strName, CDirectoryNo
 
 }
 
-NODE_TYPE CDirectoryNodeGenre::GetChildType()
+NODE_TYPE CDirectoryNodeGenre::GetChildType() const
 {
   return NODE_TYPE_ARTIST;
 }
 
-bool CDirectoryNodeGenre::GetContent(CFileItemList& items)
+bool CDirectoryNodeGenre::GetContent(CFileItemList& items) const
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())

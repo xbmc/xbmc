@@ -34,12 +34,12 @@ CDirectoryNodeSeasons::CDirectoryNodeSeasons(const CStdString& strName, CDirecto
 
 }
 
-NODE_TYPE CDirectoryNodeSeasons::GetChildType()
+NODE_TYPE CDirectoryNodeSeasons::GetChildType() const
 {
   return NODE_TYPE_EPISODES;
 }
 
-bool CDirectoryNodeSeasons::GetContent(CFileItemList& items)
+bool CDirectoryNodeSeasons::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())

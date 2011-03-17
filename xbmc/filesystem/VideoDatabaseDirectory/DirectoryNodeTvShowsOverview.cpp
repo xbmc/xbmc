@@ -39,7 +39,7 @@ CDirectoryNodeTvShowsOverview::CDirectoryNodeTvShowsOverview(const CStdString& s
 
 }
 
-NODE_TYPE CDirectoryNodeTvShowsOverview::GetChildType()
+NODE_TYPE CDirectoryNodeTvShowsOverview::GetChildType() const
 {
   if (GetName()=="0")
     return NODE_TYPE_EPISODES;
@@ -59,7 +59,7 @@ CStdString CDirectoryNodeTvShowsOverview::GetLocalizedName() const
   return "";
 }
 
-bool CDirectoryNodeTvShowsOverview::GetContent(CFileItemList& items)
+bool CDirectoryNodeTvShowsOverview::GetContent(CFileItemList& items) const
 {
   for (unsigned int i = 0; i < sizeof(TvShowChildren) / sizeof(Node); ++i)
   {
