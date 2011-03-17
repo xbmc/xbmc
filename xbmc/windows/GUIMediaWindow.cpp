@@ -654,6 +654,12 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     pItem->m_bIsShareOrDrive = false;
     items.AddFront(pItem, 0);
   }
+  if (items.GetLabel().IsEmpty())
+  {
+    CStdString label = items.m_strPath;
+    URIUtils::RemoveSlashAtEnd(label);
+    items.SetLabel(URIUtils::GetFileName(label));
+  }
 
   int iWindow = GetID();
   CStdStringArray regexps;

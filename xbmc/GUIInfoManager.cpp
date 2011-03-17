@@ -1290,12 +1290,10 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
-        strLabel = CURL(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath).GetWithoutUserDetails();
         if (info==CONTAINER_FOLDERNAME)
-        {
-          URIUtils::RemoveSlashAtEnd(strLabel);
-          strLabel=URIUtils::GetFileName(strLabel);
-        }
+          strLabel = ((CGUIMediaWindow*)window)->CurrentDirectory().GetLabel();
+        else
+          strLabel = CURL(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath).GetWithoutUserDetails();
       }
       break;
     }
