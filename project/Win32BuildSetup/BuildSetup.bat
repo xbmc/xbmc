@@ -21,14 +21,16 @@ SET comp=vs2010
 SET target=dx
 SET buildmode=ask
 SET promptlevel=prompt
+SET buildmingwlibs=true
 SET exitcode=0
 FOR %%b in (%1, %2, %3, %4, %5) DO (
-  IF %%b==vs2010 SET comp=vs2010
+	IF %%b==vs2010 SET comp=vs2010
 	IF %%b==dx SET target=dx
 	IF %%b==gl SET target=gl
 	IF %%b==clean SET buildmode=clean
 	IF %%b==noclean SET buildmode=noclean
 	IF %%b==noprompt SET promptlevel=noprompt
+	IF %%b==nomingwlibs SET buildmingwlibs=false
 )
 SET buildconfig=Release (OpenGL)
 IF %target%==dx SET buildconfig=Release (DirectX)
@@ -129,13 +131,15 @@ IF %comp%==vs2010 (
   GOTO MAKE_BUILD_EXE
 
 :MAKE_BUILD_EXE
-  ECHO Compiling mingw libs
-  ECHO bla>noprompt
-  IF EXIST errormingw del errormingw > NUL
-  call buildmingwlibs.bat
-  IF EXIST errormingw (
-  	set DIETEXT="failed to build mingw libs"
-  	goto DIE
+  IF %buildmingwlibs%==true (
+    ECHO Compiling mingw libs
+    ECHO bla>noprompt
+    IF EXIST errormingw del errormingw > NUL
+    call buildmingwlibs.bat
+    IF EXIST errormingw (
+    	set DIETEXT="failed to build mingw libs"
+    	goto DIE
+    )
   )
   
   ECHO Copying files...
