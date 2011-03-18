@@ -543,6 +543,7 @@ AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ass],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
+AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
@@ -554,6 +555,7 @@ AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
 AC_CHECK_LIB([modplug],     [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([smbclient],   [main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([MAD],        [mad],
   [INCLUDES="$INCLUDES $MAD_CFLAGS"; LIBS="$LIBS $MAD_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -611,9 +613,7 @@ AS_CASE([x$use_libbluray],
 AS_CASE([x$use_libbluray],
   [xyes],[
     INCLUDES="$INCLUDES $LIBBLURAY_CFLAGS";
-    if test "$host_vendor" != "apple"; then
-      XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray])
-    fi;
+    XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray])
     AC_DEFINE([HAVE_LIBBLURAY], 1, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 1)
   ],[
@@ -625,8 +625,6 @@ AS_CASE([x$use_libbluray],
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([tiff],       [main],, AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([VORBISFILE],     [vorbisfile],
     [INCLUDES="$INCLUDES $VORBISFILE_CFLAGS"; LIBS="$LIBS $VORBISFILE_LIBS"],
     AC_MSG_ERROR($missing_library))
@@ -636,12 +634,10 @@ if test "$host_vendor" = "apple" ; then
   fi
 else
   AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([smbclient],  [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer],  [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dl],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
-  AC_CHECK_LIB([tiff],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image],  [main],, AC_MSG_ERROR($missing_library))
 
@@ -796,7 +792,7 @@ if test "$use_librtmp" != "no"; then
       use_librtmp="no"
     fi
    ])
-  if test "$use_librtmp" != "no" && test "$host_vendor" != "apple"; then
+  if test "$use_librtmp" != "no"; then
     XB_FIND_SONAME([RTMP], [rtmp], [use_librtmp])
   fi
   if test "$use_librtmp" != "no"; then
@@ -1722,17 +1718,6 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdnav], [
       --cc="$CC"
   fi
 ], [0])
-
-XB_CONFIG_MODULE([lib/cximage-6.0/zlib], [
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="$CFLAGS -fno-common" \
-    LDFLAGS="-Wl,-read_only_relocs,suppress" \
-    ./configure \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias
-  fi
-], [$HOST_NOT_APPLE])
 
 XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
   if test "$host_vendor" = "apple" ; then
