@@ -1,0 +1,5 @@
+using darwin : 4.0 : g++-4.2 :
+  <cflags>"-isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk -arch armv7 -fvisibility=hidden -fvisibility-inlines-hidden -DBOOST_AC_USE_PTHREADS -DBOOST_SP_USE_PTHREADS"
+  <cxxflags>"-isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk -arch armv7 -fvisibility=hidden -fvisibility-inlines-hidden -DBOOST_AC_USE_PTHREADS -DBOOST_SP_USE_PTHREADS"
+  <linkflags>"-Wl,-syslibroot,/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk -arch armv7"
+;
