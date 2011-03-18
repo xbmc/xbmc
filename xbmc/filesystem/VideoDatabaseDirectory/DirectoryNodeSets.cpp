@@ -36,6 +36,14 @@ NODE_TYPE CDirectoryNodeSets::GetChildType() const
   return NODE_TYPE_TITLE_MOVIES;
 }
 
+CStdString CDirectoryNodeSets::GetLocalizedName() const
+{
+  CVideoDatabase db;
+  if (db.Open())
+    return db.GetSetById(GetID());
+  return "";
+}
+
 bool CDirectoryNodeSets::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;

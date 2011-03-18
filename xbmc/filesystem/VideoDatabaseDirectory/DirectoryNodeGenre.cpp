@@ -43,6 +43,14 @@ NODE_TYPE CDirectoryNodeGenre::GetChildType() const
   return NODE_TYPE_TITLE_TVSHOWS;
 }
 
+CStdString CDirectoryNodeGenre::GetLocalizedName() const
+{
+  CVideoDatabase db;
+  if (db.Open())
+    return db.GetGenreById(GetID());
+  return "";
+}
+
 bool CDirectoryNodeGenre::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;

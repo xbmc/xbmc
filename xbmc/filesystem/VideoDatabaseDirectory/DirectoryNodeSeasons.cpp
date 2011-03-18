@@ -39,6 +39,21 @@ NODE_TYPE CDirectoryNodeSeasons::GetChildType() const
   return NODE_TYPE_EPISODES;
 }
 
+CStdString CDirectoryNodeSeasons::GetLocalizedName() const
+{
+  switch (GetID())
+  {
+  case 0:
+    return g_localizeStrings.Get(20381); // Specials
+  case -1:
+    return g_localizeStrings.Get(20366); // All Seasons
+  default:
+    CStdString season;
+    season.Format(g_localizeStrings.Get(20358), GetID()); // Season <season>
+    return season;
+  }
+}
+
 bool CDirectoryNodeSeasons::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;

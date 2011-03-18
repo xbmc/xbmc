@@ -36,6 +36,14 @@ NODE_TYPE CDirectoryNodeCountry::GetChildType() const
   return NODE_TYPE_TITLE_MOVIES;
 }
 
+CStdString CDirectoryNodeCountry::GetLocalizedName() const
+{
+  CVideoDatabase db;
+  if (db.Open())
+    return db.GetCountryById(GetID());
+  return "";
+}
+
 bool CDirectoryNodeCountry::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;

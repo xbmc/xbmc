@@ -33,6 +33,7 @@ namespace XFILE
     protected:
       virtual bool GetContent(CFileItemList& items) const;
       virtual NODE_TYPE GetChildType() const;
+      virtual CStdString GetLocalizedName() const;
     };
   }
 }

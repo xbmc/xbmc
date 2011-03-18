@@ -36,6 +36,14 @@ NODE_TYPE CDirectoryNodeMusicVideoAlbum::GetChildType() const
   return NODE_TYPE_TITLE_MUSICVIDEOS;
 }
 
+CStdString CDirectoryNodeMusicVideoAlbum::GetLocalizedName() const
+{
+  CVideoDatabase db;
+  if (db.Open())
+    return db.GetMusicVideoAlbumById(GetID());
+  return "";
+}
+
 bool CDirectoryNodeMusicVideoAlbum::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;
