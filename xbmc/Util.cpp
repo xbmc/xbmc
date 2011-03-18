@@ -214,11 +214,11 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
 
   // Music Playlists
   else if (path.Left(24).Equals("special://musicplaylists"))
-    strFilename = g_localizeStrings.Get(20011);
+    strFilename = g_localizeStrings.Get(136);
 
   // Video Playlists
   else if (path.Left(24).Equals("special://videoplaylists"))
-    strFilename = g_localizeStrings.Get(20012);
+    strFilename = g_localizeStrings.Get(136);
 
   // now remove the extension if needed
   if (!g_guiSettings.GetBool("filelists.showextensions") && !bIsFolder)
