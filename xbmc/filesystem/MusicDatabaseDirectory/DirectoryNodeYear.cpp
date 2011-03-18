@@ -36,6 +36,11 @@ NODE_TYPE CDirectoryNodeYear::GetChildType() const
   return NODE_TYPE_YEAR_ALBUM;
 }
 
+CStdString CDirectoryNodeYear::GetLocalizedName() const
+{
+  return GetName();
+}
+
 bool CDirectoryNodeYear::GetContent(CFileItemList& items) const
 {
   CMusicDatabase musicdatabase;

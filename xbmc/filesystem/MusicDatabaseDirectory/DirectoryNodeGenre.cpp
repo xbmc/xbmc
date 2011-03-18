@@ -36,6 +36,14 @@ NODE_TYPE CDirectoryNodeGenre::GetChildType() const
   return NODE_TYPE_ARTIST;
 }
 
+CStdString CDirectoryNodeGenre::GetLocalizedName() const
+{
+  CMusicDatabase db;
+  if (db.Open())
+    return db.GetGenreById(GetID());
+  return "";
+}
+
 bool CDirectoryNodeGenre::GetContent(CFileItemList& items) const
 {
   CMusicDatabase musicdatabase;
