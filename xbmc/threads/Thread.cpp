@@ -33,7 +33,7 @@ typedef unsigned (WINAPI *PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 typedef int (*PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 #endif
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) && !defined(__clang__)
 #include <cxxabi.h>
 using namespace __cxxabiv1;
 #endif
@@ -456,7 +456,7 @@ CStdString CThread::GetTypeName(void)
   // Visual Studio 2010 returns the name as "class CThread" etc
   if (name.substr(0, 6) == "class ")
     name = name.Right(name.length() - 6);
-#elif defined(__GNUC__)
+#elif defined(__GNUC__) && !defined(__clang__)
   // gcc provides __cxa_demangle to demangle the name
   char* demangled = NULL;
   int   status;
