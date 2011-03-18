@@ -231,7 +231,7 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool force) const
   return false;
 }
 
-bool CPVRTimerInfoTag::RenameOnClient(const CStdString &newname) const
+bool CPVRTimerInfoTag::RenameOnClient(const CStdString &newname)
 {
   try
   {
@@ -246,6 +246,7 @@ bool CPVRTimerInfoTag::RenameOnClient(const CStdString &newname) const
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
 
+    m_strTitle = CStdString(newname);
     return true;
   }
   catch (PVR_ERROR err)

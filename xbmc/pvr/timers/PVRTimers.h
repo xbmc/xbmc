@@ -73,9 +73,9 @@ public:
 
   /**
    * The timer that will be active next.
-   * Returns null if there is none.
+   * Returns false if there is none.
    */
-  CPVRTimerInfoTag *GetNextActiveTimer(void);
+  bool GetNextActiveTimer(CPVRTimerInfoTag *tag);
 
   /**
    * The amount of timers in this container.

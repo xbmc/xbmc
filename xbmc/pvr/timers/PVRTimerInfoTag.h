@@ -111,9 +111,11 @@ public:
 
   void UpdateEpgEvent(bool bClear = false);
 
+  bool IsActive(void) const { return m_bIsActive && m_StopTime > CDateTime::GetCurrentDateTime(); }
+
   /* Client control functions */
   bool AddToClient();
   bool DeleteFromClient(bool force = false) const;
-  bool RenameOnClient(const CStdString &newname) const;
+  bool RenameOnClient(const CStdString &newname);
   bool UpdateOnClient();
 };

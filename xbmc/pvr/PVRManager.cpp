@@ -796,13 +796,13 @@ const char *CPVRManager::CharInfoTotalDiskSpace(void)
 const char *CPVRManager::CharInfoNextTimer(void)
 {
   static CStdString strReturn = "";
-  CPVRTimerInfoTag *next = m_timers->GetNextActiveTimer();
-  if (next != NULL)
+  CPVRTimerInfoTag next;
+  if (m_timers->GetNextActiveTimer(&next))
   {
     m_nextTimer.Format("%s %s %s %s", g_localizeStrings.Get(19106),
-        next->m_StartTime.GetAsLocalizedDate(true),
+        next.m_StartTime.GetAsLocalizedDate(true),
         g_localizeStrings.Get(19107),
-        next->m_StartTime.GetAsLocalizedTime("HH:mm", false));
+        next.m_StartTime.GetAsLocalizedTime("HH:mm", false));
     strReturn = m_nextTimer;
   }
 
