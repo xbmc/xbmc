@@ -212,6 +212,10 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   else if (url.GetProtocol() == "sap" && strFilename.IsEmpty())
     strFilename = "SAP Streams";
 
+  // Root file views
+  else if (url.GetProtocol() == "sources")
+    strFilename = g_localizeStrings.Get(744);
+
   // Music Playlists
   else if (path.Left(24).Equals("special://musicplaylists"))
     strFilename = g_localizeStrings.Get(136);
@@ -219,6 +223,9 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   // Video Playlists
   else if (path.Left(24).Equals("special://videoplaylists"))
     strFilename = g_localizeStrings.Get(136);
+
+  else if ((url.GetProtocol() == "rar" || url.GetProtocol() == "zip") && strFilename.IsEmpty())
+    strFilename = URIUtils::GetFileName(url.GetHostName());
 
   // now remove the extension if needed
   if (!g_guiSettings.GetBool("filelists.showextensions") && !bIsFolder)

@@ -111,6 +111,7 @@ namespace XFILE
         items.SetContent("musicvideos");
       playlist.SetType(type);
     }
+    items.SetLabel(playlist.GetName());
     // go through and set the playlist order
     for (int i = 0; i < items.Size(); i++)
     {
