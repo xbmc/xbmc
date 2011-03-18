@@ -77,11 +77,12 @@ IF %comp%==vs2010 (
   goto EXE_COMPILE
 
 :EXE_COMPILE
+  IF EXIST buildlog.html del buildlog.html /q
   IF %buildmode%==clean goto COMPILE_EXE
+  IF %buildmode%==noclean goto COMPILE_NO_CLEAN_EXE
   rem ---------------------------------------------
   rem	check for existing exe
   rem ---------------------------------------------
-  IF EXIST buildlog.html del buildlog.html /q
   
   IF EXIST %EXE% (
     goto EXE_EXIST
@@ -89,7 +90,7 @@ IF %comp%==vs2010 (
   goto COMPILE_EXE
 
 :EXE_EXIST
-  IF %buildmode%==noclean goto COMPILE_NO_CLEAN_EXE
+  IF %promptlevel%==noprompt goto COMPILE_EXE
   ECHO ------------------------------------------------------------
   ECHO Found a previous Compiled WIN32 EXE!
   ECHO [1] a NEW EXE will be compiled for the BUILD_WIN32
