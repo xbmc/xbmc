@@ -2211,6 +2211,8 @@ CStdString CUtil::GetFrameworksPath(void)
 
   #if defined(__arm__)
     GetIOSFrameworkPath(given_path, &path_size);
+    if (realpath(given_path, real_given_path) != NULL)
+      strFrameworksPath = real_given_path;
   #else
     _NSGetExecutablePath(given_path, &path_size);
     // Move backwards to last /.
@@ -2219,17 +2221,14 @@ CStdString CUtil::GetFrameworksPath(void)
 
     // Assume local path inside application bundle.
     strcat(given_path, "../Frameworks");
-  #endif
-  // Convert to real path.
-  if (realpath(given_path, real_given_path) != NULL)
-  {
-    // check if we are running as real xbmc.app
-    if (strstr(real_given_path, "Contents"))
+    // Convert to real path.
+    if (realpath(given_path, real_given_path) != NULL)
     {
-      strFrameworksPath = real_given_path;
-      return strFrameworksPath;
+      // check if we are running as real xbmc.app
+      if (strstr(real_given_path, "Contents"))
+        strFrameworksPath = real_given_path;
     }
-  }
+  #endif
 #endif
   return strFrameworksPath;
 }
