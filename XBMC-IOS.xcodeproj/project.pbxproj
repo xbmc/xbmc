@@ -934,6 +934,7 @@
 		F5B1380D13306B890045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B1380C13306B890045076D /* libmicrohttpd.dylib */; };
 		F5B138131330732A0045076D /* libmodplug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138121330732A0045076D /* libmodplug.dylib */; };
 		F5B13AFE1333247D0045076D /* libass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13AFD1333247D0045076D /* libass.dylib */; };
+		F5B13B2E13332B4C0045076D /* libbluray.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13B2D13332B4C0045076D /* libbluray.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -2877,6 +2878,7 @@
 		F5B1380C13306B890045076D /* libmicrohttpd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmicrohttpd.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmicrohttpd.dylib"; sourceTree = "<absolute>"; };
 		F5B138121330732A0045076D /* libmodplug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmodplug.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmodplug.dylib"; sourceTree = "<absolute>"; };
 		F5B13AFD1333247D0045076D /* libass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libass.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libass.dylib"; sourceTree = "<absolute>"; };
+		F5B13B2D13332B4C0045076D /* libbluray.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbluray.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libbluray.dylib"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2940,6 +2942,7 @@
 				F5B1380D13306B890045076D /* libmicrohttpd.dylib in Frameworks */,
 				F5B138131330732A0045076D /* libmodplug.dylib in Frameworks */,
 				F5B13AFE1333247D0045076D /* libass.dylib in Frameworks */,
+				F5B13B2E13332B4C0045076D /* libbluray.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5744,6 +5747,7 @@
 				F56C8BE7131F4796000AD0F6 /* libsqlite3.dylib */,
 				F5B138121330732A0045076D /* libmodplug.dylib */,
 				F5B1380C13306B890045076D /* libmicrohttpd.dylib */,
+				F5B13B2D13332B4C0045076D /* libbluray.dylib */,
 			);
 			name = "External Libs";
 			sourceTree = "<group>";
