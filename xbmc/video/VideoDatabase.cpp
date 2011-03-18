@@ -5063,6 +5063,26 @@ CStdString CVideoDatabase::GetSetById(int id)
   return GetSingleValue("sets", "strSet", PrepareSQL("idSet=%i", id));
 }
 
+CStdString CVideoDatabase::GetPersonById(int id)
+{
+  return GetSingleValue("actors", "strActor", PrepareSQL("idActor=%i", id));
+}
+
+CStdString CVideoDatabase::GetStudioById(int id)
+{
+  return GetSingleValue("studio", "strStudio", PrepareSQL("idStudio=%i", id));
+}
+
+CStdString CVideoDatabase::GetTvShowTitleById(int id)
+{
+  return GetSingleValue("tvshow", PrepareSQL("c%02d", VIDEODB_ID_TV_TITLE), PrepareSQL("idShow=%i", id));
+}
+
+CStdString CVideoDatabase::GetMusicVideoAlbumById(int id)
+{
+  return GetSingleValue("musicvideo", PrepareSQL("c%02d", VIDEODB_ID_MUSICVIDEO_ALBUM), PrepareSQL("idMVideo=%i", id));
+}
+
 bool CVideoDatabase::HasSets() const
 {
   try

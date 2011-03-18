@@ -357,6 +357,10 @@ public:
   CStdString GetGenreById(int id);
   CStdString GetCountryById(int id);
   CStdString GetSetById(int id);
+  CStdString GetPersonById(int id);
+  CStdString GetStudioById(int id);
+  CStdString GetTvShowTitleById(int id);
+  CStdString GetMusicVideoAlbumById(int id);
   int GetTvShowForEpisode(int idEpisode);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMovie = -1);
