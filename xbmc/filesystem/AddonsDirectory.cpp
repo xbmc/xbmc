@@ -93,6 +93,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   }
   else
   {
+    reposAsFolders = false;
     AddonPtr addon;
     CAddonMgr::Get().GetAddon(path.GetHostName(),addon);
     if (!addon)
