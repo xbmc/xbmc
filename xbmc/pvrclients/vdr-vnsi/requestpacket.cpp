@@ -21,6 +21,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "requestpacket.h"
 #include "vdrcommand.h"
@@ -141,11 +142,19 @@ bool cRequestPacket::add_U64(uint64_t ull)
 bool cRequestPacket::checkExtend(uint32_t by)
 {
   if (lengthSet) return true;
-  if ((bufUsed + by) < bufSize) return true;
-  uint8_t* newBuf = (uint8_t*)realloc(buffer, bufSize + 512);
-  if (!newBuf) return false;
+  if ((bufUsed + by) <= bufSize) return true;
+  uint8_t* newBuf = (uint8_t*)realloc(buffer, bufUsed + by);
+  if (!newBuf)
+  {
+    newBuf = (uint8_t*)malloc(bufUsed + by);
+    if (!newBuf) {
+      return false;
+    }
+    memcpy(newBuf, buffer, bufUsed);
+    free(buffer);
+  }
   buffer = newBuf;
-  bufSize += 512;
+  bufSize = bufUsed + by;
   return true;
 }
 
