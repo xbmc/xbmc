@@ -150,32 +150,23 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
     return false;
 
   // get genre
-  CStdString strTemp;
   if (params.GetGenreId() >= 0)
-  {
-    strTemp = "";
-    musicdatabase.GetGenreById(params.GetGenreId(), strTemp);
-    strLabel += strTemp;
-  }
+    strLabel += musicdatabase.GetGenreById(params.GetGenreId());
 
   // get artist
   if (params.GetArtistId() >= 0)
   {
-    strTemp = "";
-    musicdatabase.GetArtistById(params.GetArtistId(), strTemp);
     if (!strLabel.IsEmpty())
       strLabel += " / ";
-    strLabel += strTemp;
+    strLabel += musicdatabase.GetArtistById(params.GetArtistId());
   }
 
   // get album
   if (params.GetAlbumId() >= 0)
   {
-    strTemp = "";
-    musicdatabase.GetAlbumById(params.GetAlbumId(), strTemp);
     if (!strLabel.IsEmpty())
       strLabel += " / ";
-    strLabel += strTemp;
+    strLabel += musicdatabase.GetAlbumById(params.GetAlbumId());
   }
 
   if (strLabel.IsEmpty())
