@@ -68,7 +68,6 @@
 #define DLL_PATH_OGG_CODEC     "@VORBISFILE_SONAME@"
 
 /* dvdplayer */
-#define DLL_PATH_LIBASS        "special://xbmcbin/system/players/dvdplayer/libass-@ARCH@.so"
 #if defined(__APPLE__)
 #define DLL_PATH_LIBMPEG2      "libmpeg2.0.dylib"
 #else

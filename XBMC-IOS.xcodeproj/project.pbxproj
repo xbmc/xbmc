@@ -933,6 +933,7 @@
 		F5A29F2712A72246003A610C /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29F2612A72246003A610C /* VideoToolbox.framework */; };
 		F5B1380D13306B890045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B1380C13306B890045076D /* libmicrohttpd.dylib */; };
 		F5B138131330732A0045076D /* libmodplug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138121330732A0045076D /* libmodplug.dylib */; };
+		F5B13AFE1333247D0045076D /* libass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13AFD1333247D0045076D /* libass.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -2875,6 +2876,7 @@
 		F5A29F2612A72246003A610C /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/PrivateFrameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		F5B1380C13306B890045076D /* libmicrohttpd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmicrohttpd.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmicrohttpd.dylib"; sourceTree = "<absolute>"; };
 		F5B138121330732A0045076D /* libmodplug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmodplug.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmodplug.dylib"; sourceTree = "<absolute>"; };
+		F5B13AFD1333247D0045076D /* libass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libass.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libass.dylib"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2937,6 +2939,7 @@
 				F56C8C14131F4811000AD0F6 /* libxdaap-arm-osx.a in Frameworks */,
 				F5B1380D13306B890045076D /* libmicrohttpd.dylib in Frameworks */,
 				F5B138131330732A0045076D /* libmodplug.dylib in Frameworks */,
+				F5B13AFE1333247D0045076D /* libass.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5718,6 +5721,7 @@
 				F56C8BD1131F4795000AD0F6 /* libpcre.dylib */,
 				F56C8BD2131F4795000AD0F6 /* libpcrecpp.dylib */,
 				F56C8BD3131F4795000AD0F6 /* libcrypto.dylib */,
+				F5B13AFD1333247D0045076D /* libass.dylib */,
 				F56C8BD4131F4795000AD0F6 /* libmad.dylib */,
 				F56C8BD5131F4796000AD0F6 /* libfaad.dylib */,
 				F56C8BD6131F4796000AD0F6 /* libmpeg2.dylib */,

@@ -1820,6 +1820,8 @@
 		F5B13867133081310045076D /* libmodplug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13865133081310045076D /* libmodplug.dylib */; };
 		F5B13868133081390045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138641330811D0045076D /* libmicrohttpd.dylib */; };
 		F5B138691330813A0045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138641330811D0045076D /* libmicrohttpd.dylib */; };
+		F5B13AD1133319310045076D /* libass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13AD0133319310045076D /* libass.dylib */; };
+		F5B13AD2133319310045076D /* libass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13AD0133319310045076D /* libass.dylib */; };
 		F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB80D120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB81A1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB8191202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp */; };
@@ -3779,6 +3781,7 @@
 		F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowKaraokeLyrics.cpp; sourceTree = "<group>"; };
 		F5B138641330811D0045076D /* libmicrohttpd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmicrohttpd.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libmicrohttpd.dylib"; sourceTree = "<absolute>"; };
 		F5B13865133081310045076D /* libmodplug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmodplug.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libmodplug.dylib"; sourceTree = "<absolute>"; };
+		F5B13AD0133319310045076D /* libass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libass.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libass.dylib"; sourceTree = "<absolute>"; };
 		F5B413131065900C0035D105 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		F5BDB80A120202F400F0B710 /* DVDSubtitleTagSami.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleTagSami.h; sourceTree = "<group>"; };
 		F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleTagSami.cpp; sourceTree = "<group>"; };
@@ -3920,6 +3923,7 @@
 				F57A1E3D132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */,
 				F5B13866133081310045076D /* libmodplug.dylib in Frameworks */,
 				F5B13868133081390045076D /* libmicrohttpd.dylib in Frameworks */,
+				F5B13AD1133319310045076D /* libass.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3987,6 +3991,7 @@
 				F57A1E3E132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */,
 				F5B13867133081310045076D /* libmodplug.dylib in Frameworks */,
 				F5B138691330813A0045076D /* libmicrohttpd.dylib in Frameworks */,
+				F5B13AD2133319310045076D /* libass.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6912,6 +6917,7 @@
 				F56C8D2B131F5E84000AD0F6 /* libpcre.dylib */,
 				F56C8D2C131F5E84000AD0F6 /* libpcrecpp.dylib */,
 				F56C8D2D131F5E84000AD0F6 /* libcrypto.dylib */,
+				F5B13AD0133319310045076D /* libass.dylib */,
 				F56C8D2E131F5E84000AD0F6 /* libmad.dylib */,
 				F56C8D30131F5E84000AD0F6 /* libmpeg2.dylib */,
 				F56C8D31131F5E84000AD0F6 /* libwavpack.dylib */,
@@ -9086,16 +9092,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$XBMC_DEPENDS/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$XBMC_DEPENDS/lib/mysql\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)/xbmc/interfaces/http-api\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\"$(SRCROOT)/xbmc/interfaces/json-rpc\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/lib/libRTV\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libXDAAP\"";
@@ -9175,16 +9177,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$XBMC_DEPENDS/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$XBMC_DEPENDS/lib/mysql\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)/xbmc/interfaces/http-api\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\"$(SRCROOT)/xbmc/interfaces/json-rpc\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/lib/libRTV\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libXDAAP\"";
@@ -9324,12 +9322,14 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib/mysql\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
@@ -9404,12 +9404,14 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib/mysql\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",

@@ -101,10 +101,6 @@ DVDPCODECS_DIRS= \
 	lib \
 	lib/libdvd \
 
-ifneq (@USE_EXTERNAL_LIBASS@,1)
-DVDPCODECS_DIRS+=lib/libass/xbmc
-endif
-
 PAPCODECS_DIRS= \
 	lib/xbadpcm \
 	lib/nosefart \
@@ -426,9 +422,6 @@ python: dllloader
 dvdpcodecs: dllloader
 	$(MAKE) -C lib 
 	$(MAKE) -C lib/libdvd
-ifneq (@USE_EXTERNAL_LIBASS@,1)
-	$(MAKE) -C lib/libass/xbmc
-endif
 eventclients:
 ifeq ($(findstring osx,@ARCH@), osx)
 ifneq ($(findstring arm,@ARCH@), arm)
