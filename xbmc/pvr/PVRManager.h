@@ -675,6 +675,7 @@ private:
   STREAMPROPS                     m_streamProps;              /*!< the current stream's properties */
   CPVRDatabase                    m_database;                 /*!< the database for all PVR related data */
   CCriticalSection                m_critSection;              /*!< critical section for all changes to this class */
+  CCriticalSection                m_critSectionTriggers;      /*!< critical section for triggers */
   bool                            m_bFirstStart;              /*!< true when the PVR manager was started first, false otherwise */
   bool                            m_bLoaded;
   bool                            m_bChannelScanRunning;      /*!< true if a channel scan is currently running, false otherwise */

@@ -355,6 +355,7 @@ void CPVRManager::OnClientMessage(const int iClientId, const PVR_EVENT clientEve
     {
       CLog::Log(LOGDEBUG, "PVRManager - %s - timers changed on client '%d'",
           __FUNCTION__, iClientId);
+      CSingleLock lock(m_critSectionTriggers);
       m_bTriggerTimersUpdate = true;
     }
     break;
@@ -363,6 +364,7 @@ void CPVRManager::OnClientMessage(const int iClientId, const PVR_EVENT clientEve
     {
       CLog::Log(LOGDEBUG, "PVRManager - %s - recording list changed on client '%d'",
           __FUNCTION__, iClientId);
+      CSingleLock lock(m_critSectionTriggers);
       m_bTriggerRecordingsUpdate = true;
     }
     break;
@@ -371,6 +373,7 @@ void CPVRManager::OnClientMessage(const int iClientId, const PVR_EVENT clientEve
     {
       CLog::Log(LOGDEBUG, "PVRManager - %s - channel list changed on client '%d'",
           __FUNCTION__, iClientId);
+      CSingleLock lock(m_critSectionTriggers);
       m_bTriggerChannelsUpdate = true;
     }
     break;
@@ -428,10 +431,10 @@ void CPVRManager::UpdateSignalQuality(void)
 
 void CPVRManager::UpdateTimers(void)
 {
-  CSingleLock lock(m_critSection);
-
+  CSingleLock lock(m_critSectionTriggers);
   if (!m_bTriggerRecordingsUpdate)
     return;
+  lock.Leave();
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating timers", __FUNCTION__);
 
@@ -439,15 +442,17 @@ void CPVRManager::UpdateTimers(void)
   UpdateRecordingsCache();
   UpdateWindow(PVR_WINDOW_TIMERS);
 
+  lock.Enter();
   m_bTriggerTimersUpdate = false;
+  lock.Leave();
 }
 
 void CPVRManager::UpdateRecordings(void)
 {
-  CSingleLock lock(m_critSection);
-
+  CSingleLock lock(m_critSectionTriggers);
   if (!m_bTriggerRecordingsUpdate)
     return;
+  lock.Leave();
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating recordings list", __FUNCTION__);
 
@@ -455,15 +460,17 @@ void CPVRManager::UpdateRecordings(void)
   UpdateRecordingsCache();
   UpdateWindow(PVR_WINDOW_RECORDINGS);
 
+  lock.Enter();
   m_bTriggerRecordingsUpdate = false;
+  lock.Leave();
 }
 
 void CPVRManager::UpdateChannels(void)
 {
-  CSingleLock lock(m_critSection);
-
+  CSingleLock lock(m_critSectionTriggers);
   if (!m_bTriggerChannelsUpdate)
     return;
+  lock.Leave();
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating channel list", __FUNCTION__);
 
@@ -472,7 +479,9 @@ void CPVRManager::UpdateChannels(void)
   UpdateWindow(PVR_WINDOW_CHANNELS_TV);
   UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
 
+  lock.Enter();
   m_bTriggerChannelsUpdate = false;
+  lock.Leave();
 }
 
 bool CPVRManager::ContinueLastChannel()
@@ -1489,19 +1498,19 @@ const CPVRChannelGroup *CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
 
 void CPVRManager::TriggerRecordingsUpdate()
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_critSectionTriggers);
   m_bTriggerRecordingsUpdate = true;
 }
 
 void CPVRManager::TriggerTimersUpdate()
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_critSectionTriggers);
   m_bTriggerTimersUpdate = true;
 }
 
 void CPVRManager::TriggerChannelsUpdate()
 {
-  CSingleLock lock(m_critSection);
+  CSingleLock lock(m_critSectionTriggers);
   m_bTriggerChannelsUpdate = true;
 }
 
