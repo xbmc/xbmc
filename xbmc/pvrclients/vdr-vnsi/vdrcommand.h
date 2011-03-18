@@ -56,9 +56,7 @@ const static uint32_t VDR_RECSTREAM_FRAMETOPOS  = 44;
 const static uint32_t VDR_RECSTREAM_GETIFRAME   = 45;
 
 /* OPCODE 60 - 79: VNSI network functions for channel access */
-//const static uint32_t VDR_CHANNELS_GROUPSCOUNT  = 60; -- unused
 const static uint32_t VDR_CHANNELS_GETCOUNT     = 61;
-//const static uint32_t VDR_CHANNELS_GETGROUPS    = 62; -- unused
 const static uint32_t VDR_CHANNELS_GETCHANNELS  = 63;
 
 /* OPCODE 80 - 99: VNSI network functions for timer access */
@@ -73,9 +71,8 @@ const static uint32_t VDR_TIMER_UPDATE          = 85;
 const static uint32_t VDR_RECORDINGS_DISKSIZE   = 100;
 const static uint32_t VDR_RECORDINGS_GETCOUNT   = 101;
 const static uint32_t VDR_RECORDINGS_GETLIST    = 102;
-//const static uint32_t VDR_RECORDINGS_GETINFO    = 103; -- unused
+const static uint32_t VDR_RECORDINGS_RENAME     = 103;
 const static uint32_t VDR_RECORDINGS_DELETE     = 104;
-//const static uint32_t VDR_RECORDINGS_MOVE       = 105; -- unused
 
 /* OPCODE 120 - 139: VNSI network functions for epg access and manipulating */
 const static uint32_t VDR_EPG_GETFORCHANNEL     = 120;

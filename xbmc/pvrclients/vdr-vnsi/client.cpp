@@ -423,6 +423,14 @@ PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
   return VNSIData->GetRecordingsList(handle);
 }
 
+PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname)
+{
+  if (!VNSIData)
+    return PVR_ERROR_SERVER_ERROR;
+
+  return VNSIData->RenameRecording(recinfo, newname);
+}
+
 PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo)
 {
   if (!VNSIData)
@@ -567,7 +575,6 @@ PVR_ERROR RenameChannel(unsigned int number, const char *newname) { return PVR_E
 PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DialogChannelSettings(const PVR_CHANNEL &channelinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DialogAddChannel(const PVR_CHANNEL &channelinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
-PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname) { return PVR_ERROR_NOT_IMPLEMENTED; }
 bool HaveCutmarks() { return false; }
 PVR_ERROR RequestCutMarksList(PVRHANDLE handle) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR AddCutMark(const PVR_CUT_MARK &cutmark) { return PVR_ERROR_NOT_IMPLEMENTED; }

@@ -64,6 +64,7 @@ public:
   int         GetRecordingsCount();
   PVR_ERROR   GetRecordingsList(PVRHANDLE handle);
   const std::string& GetRecordingPath(uint32_t index);
+  PVR_ERROR   RenameRecording(const PVR_RECORDINGINFO& recinfo, const char* newname);
   PVR_ERROR   DeleteRecording(const std::string& path);
 
 
