@@ -295,4 +295,4 @@ IF %comp%==vs2010 (
   ECHO Press any key to exit...
   pause > NUL
   )
-  EXIT %exitcode%
+  EXIT /B %exitcode%
