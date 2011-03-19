@@ -43,7 +43,6 @@
 #import "XBMCController.h"
 #import "XBMCApplication.h"
 #import "XBMCDebugHelpers.h"
-#import "iOSUtils.h"
 
 XBMCController *g_xbmcController;
 

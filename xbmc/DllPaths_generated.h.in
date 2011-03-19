@@ -22,6 +22,9 @@
  *
  */
 
+/* prefix install location */
+#define PREFIX_USR_PATH        "@prefix@"
+
 /* libraries */
 #define DLL_PATH_CPLUFF        "special://xbmcbin/system/libcpluff-@ARCH@.so"
 #define DLL_PATH_IMAGELIB      "special://xbmcbin/system/ImageLib-@ARCH@.so"
@@ -91,15 +94,15 @@
 
 /* broadcom crystalhd */
 #if defined(_LINUX) && !defined(__APPLE__)
-#define DLL_PATH_LIBCRYSTALHD "@CRYSTALHD_SONAME@"
+#define DLL_PATH_LIBCRYSTALHD  "@CRYSTALHD_SONAME@"
 #else
-#define DLL_PATH_LIBCRYSTALHD "libcrystalhd.dylib"
+#define DLL_PATH_LIBCRYSTALHD  "libcrystalhd.dylib"
 #endif
 
 /* libbluray */
-#define DLL_PATH_LIBBLURAY "@BLURAY_SONAME@"
+#define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"
 
 /* apple vdadecoder */
-#define DLL_PATH_LIBVDADECODER  "/System/Library/Frameworks/VideoDecodeAcceleration.framework/Versions/Current/VideoDecodeAcceleration"
+#define DLL_PATH_LIBVDADECODER "/System/Library/Frameworks/VideoDecodeAcceleration.framework/Versions/Current/VideoDecodeAcceleration"
 
 #endif

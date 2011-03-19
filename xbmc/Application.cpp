@@ -240,8 +240,6 @@
 #if !defined(__arm__)
 #include "CocoaInterface.h"
 #include "XBMCHelper.h"
-#else
-#include "iOSUtils.h"
 #endif
 #endif
 
