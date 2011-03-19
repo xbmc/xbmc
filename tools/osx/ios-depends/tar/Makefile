@@ -41,7 +41,7 @@ $(SOURCE)/src/tar: $(SOURCE)
 
 .installed:
 	make -C $(SOURCE) install
-	cd $(PREFIX)/bin; ln -s gtar tar; ln -s gtar gnutar
+	cd $(PREFIX)/bin; ln -sf gtar tar; ln -sf gtar gnutar
 	touch $@
 
 clean:
