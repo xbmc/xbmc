@@ -20,6 +20,7 @@ ARCHIVE_TOOL_FLAGS=xf
 
 export LIBTOOL=builds/unix/libtool
 PREFIX:=/Users/Shared/xbmc-depends/osx-10.4_i386
+export PATH:=$(PREFIX)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(PREFIX) --enable-static --disable-shared
 
 CLEAN_FILES=$(ARCHIVE) $(SOURCE_DEBIAN)
