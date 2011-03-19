@@ -654,8 +654,6 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     pItem->m_bIsShareOrDrive = false;
     items.AddFront(pItem, 0);
   }
-  if (items.GetLabel().IsEmpty())
-    items.SetLabel(CUtil::GetTitleFromPath(items.m_strPath, true));
 
   int iWindow = GetID();
   CStdStringArray regexps;
@@ -726,6 +724,9 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     Update(strParentPath);
     return false;
   }
+
+  if (items.GetLabel().IsEmpty())
+    items.SetLabel(CUtil::GetTitleFromPath(items.m_strPath, true));
 
   ClearFileItems();
   m_vecItems->Copy(items);
