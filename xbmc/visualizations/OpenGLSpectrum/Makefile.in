@@ -7,9 +7,9 @@ SLIB=@abs_top_srcdir@/addons/visualization.glspectrum/opengl_spectrum.vis
 
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	@export MACOSX_DEPLOYMENT_TARGET=10.4
-	$(CXX) $(CXXFLAGS) -bundle -shared -flat_namespace -undefined suppress -o $@ $(OBJS)
-	@abs_top_srcdir@/tools/Mach5/wrapper.rb $@;mv output.so $@
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias \
+	-bundle -undefined dynamic_lookup -read_only_relocs suppress -o $@ \
+ 	@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o $(OBJS)
 else
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g -o $(SLIB) $(OBJS)
 endif

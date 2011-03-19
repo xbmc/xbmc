@@ -46,6 +46,7 @@
 #include "gui3d.h"
 #include "utils/StdString.h"
 #include "Resolution.h"
+#include "utils/GlobalsHandling.h"
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
@@ -92,7 +93,7 @@ public:
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetOverscan(RESOLUTION_INFO &resinfo);
   void ResetScreenParameters(RESOLUTION res);
-  void Lock() { EnterCriticalSection(*this);  }
+  void Lock() { EnterCriticalSection(*this); }
   void Unlock() { LeaveCriticalSection(*this); }
   float GetPixelRatio(RESOLUTION iRes) const;
   void CaptureStateBlock();
@@ -218,5 +219,7 @@ private:
  \ingroup graphics
  \brief
  */
-extern CGraphicContext g_graphicsContext;
+
+XBMC_GLOBAL(CGraphicContext,g_graphicsContext);
+
 #endif

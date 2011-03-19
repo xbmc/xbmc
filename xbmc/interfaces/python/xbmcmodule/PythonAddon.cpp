@@ -21,6 +21,7 @@
 
 #include "PythonAddon.h"
 #include "pyutil.h"
+#include "pythreadstate.h"
 #include "addons/AddonManager.h"
 #include "addons/GUIDialogAddonSettings.h"
 
@@ -172,10 +173,10 @@ namespace PYXBMC
     }
 
     AddonPtr addon(self->pAddon);
-    Py_BEGIN_ALLOW_THREADS
+    CPyThreadState pyState;
     addon->UpdateSetting(id, value);
     addon->SaveSettings();
-    Py_END_ALLOW_THREADS
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -191,9 +192,9 @@ namespace PYXBMC
   {
     // show settings dialog
     AddonPtr addon(self->pAddon);
-    Py_BEGIN_ALLOW_THREADS
+    CPyThreadState pyState;
     CGUIDialogAddonSettings::ShowAndGetInput(addon);
-    Py_END_ALLOW_THREADS
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -255,7 +256,7 @@ namespace PYXBMC
     else if (strcmpi(id, "type") == 0)
       return Py_BuildValue((char*)"s", ADDON::TranslateType(self->pAddon->Type()).c_str());
     else if (strcmpi(id, "version") == 0)
-      return Py_BuildValue((char*)"s", self->pAddon->Version().str.c_str());
+      return Py_BuildValue((char*)"s", self->pAddon->Version().c_str());
     else
     {
       CStdString error;

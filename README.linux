@@ -44,7 +44,7 @@ Build-Depends: debhelper (>= 7.0.50~), python-support, cmake,
  libfreetype6-dev, libfontconfig-dev, libbz2-dev, libfribidi-dev,
  libsqlite3-dev, libmysqlclient-dev, libasound-dev, libpng12-dev | libpng-dev,
  libpcre3-dev, liblzo2-dev, libcdio-dev, libsdl-dev, libsdl-image1.2-dev,
- libsdl-mixer1.2-dev, libenca-dev, libjasper-dev, libxt-dev, libxtst-dev,
+ libsdl-mixer1.2-dev, libenca-dev, libjasper-dev, libxt-dev,
  libxmu-dev, libxinerama-dev, libcurl4-gnutls-dev | libcurl-dev,
  libdbus-1-dev, libhal-storage-dev, libhal-dev, libpulse-dev,
  libavahi-common-dev, libavahi-client-dev, libxrandr-dev, libavcodec-dev,
@@ -52,7 +52,7 @@ Build-Depends: debhelper (>= 7.0.50~), python-support, cmake,
  libmpeg2-4-dev, libass-dev (>= 0.9.8), libmpcdec-dev, libflac-dev,
  libwavpack-dev, python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev,
  libbluetooth-dev, zlib1g-dev, libsmbclient-dev,
- libfaad-dev, libiso9660-dev, libssl-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev,
+ libiso9660-dev, libssl-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev,
  libmodplug-dev, librtmp-dev, libcrystalhd-dev, curl
 
 *** For developers and anyone else who compiles frequently it is recommended to

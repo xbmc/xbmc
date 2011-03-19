@@ -28,13 +28,12 @@
 #include "threads/Thread.h"
 #include "utils/StdString.h"
 
-FILE*       CLog::m_file            = NULL;
-int         CLog::m_repeatCount     = 0;
-int         CLog::m_repeatLogLevel  = -1;
-std::string CLog::m_repeatLine;
-int         CLog::m_logLevel        = LOG_LEVEL_DEBUG;
-
-static CCriticalSection critSec;
+#define critSec XBMC_GLOBAL_USE(CLog::CLogGlobals).critSec
+#define m_file XBMC_GLOBAL_USE(CLog::CLogGlobals).m_file
+#define m_repeatCount XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatCount
+#define m_repeatLogLevel XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatLogLevel
+#define m_repeatLine XBMC_GLOBAL_USE(CLog::CLogGlobals).m_repeatLine
+#define m_logLevel XBMC_GLOBAL_USE(CLog::CLogGlobals).m_logLevel
 
 static char levelNames[][8] =
 {"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
@@ -47,6 +46,7 @@ CLog::~CLog()
 
 void CLog::Close()
 {
+  
   CSingleLock waitLock(critSec);
   if (m_file)
   {

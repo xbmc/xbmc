@@ -1,4 +1,5 @@
 ARCH=@ARCH@
+SYSROOT=@SYSROOT@
 
 CFLAGS +=-D_LINUX -DHAVE_UNIX -DHAVE_STRCASECMP -DHAVE_STRNCASECMP \
          -DHAVE_IOS_OPENMODE -fPIC -Ilibsidplay/win/VC \
@@ -53,10 +54,9 @@ SLIB=@abs_top_srcdir@/system/players/paplayer/libsidplay2-@ARCH@.so
 
 $(SLIB): $(OBJS) @abs_top_srcdir@/xbmc/linux/XHandle.o
 ifeq ($(findstring osx,$(ARCH)), osx)
-	ld -bundle -flat_namespace -undefined suppress -o $@ \
-		$(OBJS) @abs_top_srcdir@/xbmc/linux/XHandle.o $(BUNDLE1_O)
-	@abs_top_srcdir@/tools/Mach5/wrapper.rb $@;mv output.so $@
-	chmod +x $@
+	$(CXX) $(SYSROOT) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias \
+		-bundle -undefined dynamic_lookup -read_only_relocs suppress -o $@ \
+		@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o $(OBJS) @abs_top_srcdir@/xbmc/linux/XHandle.o $(BUNDLE1_O)
 else
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(OBJS) @abs_top_srcdir@/xbmc/linux/XHandle.o `cat @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.def` @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
 endif

@@ -357,6 +357,13 @@ void CGUISettings::Initialize()
   // System settings
   AddGroup(4, 13000);
   CSettingsCategory* vs = AddCategory(4, "videoscreen", 21373);
+
+#if (defined(__APPLE__) && defined(__arm__))
+  // define but hide display, resolution and blankdisplays settings on atv2/ios, they are not user controlled
+  AddInt(NULL, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
+  AddInt(NULL, "videoscreen.resolution", 131, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
+  AddBool(NULL, "videoscreen.blankdisplays", 13130, false);
+#else
   // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
   // contains a DISPLAYMODE
   AddInt(vs, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
@@ -395,6 +402,7 @@ void CGUISettings::Initialize()
   AddBool(vs, "videoscreen.blankdisplays", 13130, false);
   AddSeparator(vs, "videoscreen.sep1");
 #endif
+#endif
 
   map<int,int> vsync;
 #if defined(_LINUX) && !defined(__APPLE__)
@@ -428,8 +436,21 @@ void CGUISettings::Initialize()
   AddInt(ao, "audiooutput.channellayout", 34100, PCM_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
   AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
 
+#if (defined(__APPLE__) && defined(__arm__))
+  if (g_sysinfo.IsAppleTV2())
+  {
+    AddBool(ao, "audiooutput.ac3passthrough", 364, false);
+    AddBool(ao, "audiooutput.dtspassthrough", 254, false);
+  }
+  else
+  {
+    AddBool(NULL, "audiooutput.ac3passthrough", 364, false);
+    AddBool(NULL, "audiooutput.dtspassthrough", 254, false);
+  }
+#else
   AddBool(ao, "audiooutput.ac3passthrough", 364, true);
   AddBool(ao, "audiooutput.dtspassthrough", 254, true);
+#endif
   AddBool(NULL, "audiooutput.passthroughaac", 299, false);
   AddBool(NULL, "audiooutput.passthroughmp1", 300, false);
   AddBool(NULL, "audiooutput.passthroughmp2", 301, false);
@@ -450,19 +471,27 @@ void CGUISettings::Initialize()
 #endif
 
   CSettingsCategory* in = AddCategory(4, "input", 14094);
-#ifdef __APPLE__
+#if defined(__APPLE__)
   map<int,int> remotemode;
   remotemode.insert(make_pair(13610,APPLE_REMOTE_DISABLED));
   remotemode.insert(make_pair(13611,APPLE_REMOTE_STANDARD));
   remotemode.insert(make_pair(13612,APPLE_REMOTE_UNIVERSAL));
   remotemode.insert(make_pair(13613,APPLE_REMOTE_MULTIREMOTE));
   AddInt(in, "input.appleremotemode", 13600, APPLE_REMOTE_STANDARD, remotemode, SPIN_CONTROL_TEXT);
+#if !defined(__arm__)
   AddBool(in, "input.appleremotealwayson", 13602, false);
+#else
+  AddBool(NULL, "input.appleremotealwayson", 13602, false);
+#endif
   AddInt(NULL, "input.appleremotesequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
   AddSeparator(in, "input.sep1");
 #endif
   AddBool(in, "input.remoteaskeyboard", 21449, false);
+#if (defined(__APPLE__) && defined(__arm_))
+  AddBool(NULL, "input.enablemouse", 21369, true);
+#else
   AddBool(in, "input.enablemouse", 21369, true);
+#endif
 
   CSettingsCategory* pwm = AddCategory(4, "powermanagement", 14095);
   // Note: Application.cpp might hide powersaving settings if not supported.
@@ -566,6 +595,9 @@ void CGUISettings::Initialize()
 #ifdef HAVE_LIBOPENMAX
   AddBool(vp, "videoplayer.useomx", 13430, true);
 #endif
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  AddBool(g_sysinfo.HasVideoToolBoxDecoder() ? vp: NULL, "videoplayer.usevideotoolbox", 13432, true);
+#endif
 
 #ifdef HAS_GL
   AddBool(NULL, "videoplayer.usepbo", 13424, true);
@@ -574,8 +606,13 @@ void CGUISettings::Initialize()
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(NULL, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
+#if !(defined(__APPLE__) && defined(__arm__))
   AddBool(vp, "videoplayer.adjustrefreshrate", 170, false);
   AddInt(vp, "videoplayer.pauseafterrefreshchange", 13550, 0, 0, 1, MAXREFRESHCHANGEDELAY, SPIN_CONTROL_TEXT);
+#else
+  AddBool(NULL, "videoplayer.adjustrefreshrate", 170, false);
+  AddInt(NULL, "videoplayer.pauseafterrefreshchange", 13550, 0, 0, 1, MAXREFRESHCHANGEDELAY, SPIN_CONTROL_TEXT);
+#endif
   //sync settings not available on windows gl build
 #if defined(_WIN32) && defined(HAS_GL)
   #define SYNCSETTINGS 0
@@ -929,7 +966,9 @@ void CGUISettings::AddHex(CSettingsCategory* cat, const char *strSetting, int iL
 
 int CGUISettings::GetInt(const char *strSetting) const
 {
+#if !(defined(__APPLE__) && defined(__arm__))
   ASSERT(settingsMap.size());
+#endif
   constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {

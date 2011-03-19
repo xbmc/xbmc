@@ -26,11 +26,13 @@
 
 #include "xbmc/guilib/FrameBufferObject.h"
 #include "xbmc/guilib/Shader.h"
-#include "../../settings/VideoSettings.h"
+#include "settings/VideoSettings.h"
 #include "RenderFlags.h"
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
-#include "../dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "DVDCodecs/Video/DVDVideoCodec.h"
+
+class CRenderCapture;
 
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
@@ -87,7 +89,8 @@ enum RenderMethod
   RENDER_GLSL=0x01,
   RENDER_SW=0x04,
   RENDER_POT=0x10,
-  RENDER_OMXEGL=0x40
+  RENDER_OMXEGL=0x40,
+  RENDER_CVREF=0x80
 };
 
 enum RenderQuality
@@ -114,6 +117,8 @@ extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
 class DllSwScale;
+struct SwsContext;
+
 
 class CLinuxRendererGLES : public CBaseRenderer
 {
@@ -124,7 +129,7 @@ public:
   virtual void Update(bool bPauseDrawing);
   virtual void SetupScreenshot() {};
 
-  void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
+  bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
@@ -148,8 +153,11 @@ public:
 #ifdef HAVE_LIBOPENMAX
   virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture);
 #endif
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  virtual void         AddProcessor(CDVDVideoCodecVideoToolBox* vtb, DVDVideoPicture *picture);
+#endif
 protected:
-  virtual void Render(DWORD flags, int renderBuffer);
+  virtual void Render(DWORD flags, int index);
 
   virtual void ManageTextures();
   int  NextYV12Texture();
@@ -167,13 +175,18 @@ protected:
   void DeleteYV12Texture(int index);
   bool CreateYV12Texture(int index);
 
+  void UploadCVRefTexture(int index);
+  void DeleteCVRefTexture(int index);
+  bool CreateCVRefTexture(int index);
+
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
-  void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer
-  void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
-  void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
-  void RenderOpenMax(int renderBuffer, int field);  // OpenMAX rgb texture
+  void RenderMultiPass(int index, int field);     // multi pass glsl renderer
+  void RenderSinglePass(int index, int field);    // single pass glsl renderer
+  void RenderSoftware(int index, int field);      // single pass s/w yuv2rgb renderer
+  void RenderOpenMax(int index, int field);       // OpenMAX rgb texture
+  void RenderCoreVideoRef(int index, int field);  // CoreVideo reference
 
   CFrameBufferObject m_fbo;
 
@@ -224,6 +237,10 @@ protected:
 #ifdef HAVE_LIBOPENMAX
     OpenMaxVideoBuffer *openMaxBuffer;
 #endif
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  struct __CVBuffer *cvBufferRef;
+#endif
+
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
@@ -246,6 +263,7 @@ protected:
 
   // software scale libraries (fallback if required gl version is not available)
   DllSwScale  *m_dllSwScale;
+  struct SwsContext *m_sw_context;
   BYTE	      *m_rgbBuffer;  // if software scale is used, this will hold the result image
   unsigned int m_rgbBufferSize;
 

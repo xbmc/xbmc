@@ -31,6 +31,7 @@
 #include "FileItem.h"
 #include "utils/LangCodeExpander.h"
 #include "settings/Settings.h"
+#include "pythreadstate.h"
 
 using namespace MUSIC_INFO;
 
@@ -61,9 +62,9 @@ namespace PYXBMC
 
     self->iPlayList = PLAYLIST_MUSIC;
 
-    Py_BEGIN_ALLOW_THREADS
+    CPyThreadState pyState;
     self->pPlayer = new CPythonPlayer();
-    Py_END_ALLOW_THREADS
+    pyState.Restore();
 
     self->pPlayer->SetCallback(PyThreadState_Get(), (PyObject*)self);
     self->playerCore = EPC_NONE;
@@ -82,10 +83,10 @@ namespace PYXBMC
   {
     self->pPlayer->SetCallback(NULL, NULL);
 
-    Py_BEGIN_ALLOW_THREADS
+    CPyThreadState pyState;
     self->pPlayer->Release();
-    Py_END_ALLOW_THREADS
-
+    pyState.Restore();
+      
     self->pPlayer = NULL;
     self->ob_type->tp_free((PyObject*)self);
   }
@@ -141,6 +142,8 @@ namespace PYXBMC
       {
         g_playlistPlayer.SetCurrentPlaylist(self->iPlayList);
       }
+
+      CPyThreadState pyState;
       g_application.getApplicationMessenger().PlayListPlayerPlay(g_playlistPlayer.GetCurrentSong());
     }
     else if ((PyString_Check(pObject) || PyUnicode_Check(pObject)) && pObjectListItem != NULL && ListItem_CheckExact(pObjectListItem))
@@ -152,11 +155,14 @@ namespace PYXBMC
       // set m_strPath to the passed url
       pListItem->item->m_strPath = PyString_AsString(pObject);
 
+      CPyThreadState pyState;
       g_application.getApplicationMessenger().PlayFile((const CFileItem)*pListItem->item, false);
     }
     else if (PyString_Check(pObject) || PyUnicode_Check(pObject))
     {
       CFileItem item(PyString_AsString(pObject), false);
+      
+      CPyThreadState pyState;
       g_application.getApplicationMessenger().MediaPlay(item.m_strPath);
     }
     else if (PlayList_Check(pObject))
@@ -165,6 +171,8 @@ namespace PYXBMC
       PlayList* pPlayList = (PlayList*)pObject;
       self->iPlayList = pPlayList->iPlayList;
       g_playlistPlayer.SetCurrentPlaylist(pPlayList->iPlayList);
+
+      CPyThreadState pyState;
       g_application.getApplicationMessenger().PlayListPlayerPlay();
     }
 
@@ -178,7 +186,9 @@ namespace PYXBMC
 
   PyObject* pyPlayer_Stop(PyObject *self, PyObject *args)
   {
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().MediaStop();
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -190,7 +200,9 @@ namespace PYXBMC
 
   PyObject* Player_Pause(PyObject *self, PyObject *args)
   {
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().MediaPause();
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -205,7 +217,9 @@ namespace PYXBMC
     // force a playercore before playing
     g_application.m_eForcedNextPlayer = self->playerCore;
 
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().PlayListPlayerNext();
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -220,7 +234,9 @@ namespace PYXBMC
     // force a playercore before playing
     g_application.m_eForcedNextPlayer = self->playerCore;
 
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().PlayListPlayerPrevious();
+    pyState.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -244,7 +260,10 @@ namespace PYXBMC
     }
     g_playlistPlayer.SetCurrentSong(iItem);
 
+    CPyThreadState pyState;
     g_application.getApplicationMessenger().PlayListPlayerPlay(iItem);
+    pyState.Restore();
+
     //g_playlistPlayer.Play(iItem);
     //CLog::Log(LOGNOTICE, "Current Song After Play: %i", g_playlistPlayer.GetCurrentSong());
 
@@ -557,7 +576,7 @@ namespace PYXBMC
         g_LangCodeExpander.Lookup(FullLang, strName);
         if (FullLang.IsEmpty())
           g_application.m_pPlayer->GetAudioStreamName(iStream, FullLang);
-        PyList_Append(list, Py_BuildValue("s", FullLang.c_str()));
+        PyList_Append(list, Py_BuildValue((char*)"s", FullLang.c_str()));
       }
       return list;
     }

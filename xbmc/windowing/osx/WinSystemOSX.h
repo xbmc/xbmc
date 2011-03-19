@@ -19,6 +19,7 @@
  *
  */
 
+#if !defined(__arm__)
 #ifndef WINDOW_SYSTEM_OSX_H
 #define WINDOW_SYSTEM_OSX_H
 
@@ -67,4 +68,4 @@ protected:
 };
 
 #endif // WINDOW_SYSTEM_H
-
+#endif

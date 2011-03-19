@@ -40,6 +40,7 @@
 #include "DllSwScale.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "RenderCapture.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
@@ -916,12 +917,19 @@ void CLinuxRendererGL::LoadShaders(int field)
       m_pYUVShader = NULL;
     }
 
+    bool tryGlsl = true;
     switch(requestedMethod)
     {
       case RENDER_METHOD_AUTO:
+#if defined(_LINUX) && !defined(__APPLE__)
+       //with render method set to auto, don't try glsl on ati if we're on linux
+       //it seems to be broken in a random way with every new driver release
+       tryGlsl = g_Windowing.GetRenderVendor().Left(3).CompareNoCase("ati") != 0;
+#endif
+      
       case RENDER_METHOD_GLSL:
       // Try GLSL shaders if supported and user requested auto or GLSL.
-      if (glCreateProgram)
+      if (glCreateProgram && tryGlsl)
       {
         // create regular progressive scan shader
         m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags,
@@ -1641,31 +1649,36 @@ void CLinuxRendererGL::RenderSoftware(int index, int field)
   VerifyGLState();
 }
 
-void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width, unsigned int height)
+bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
 {
+  if (!m_bValidated)
+    return false;
+
   // get our screen rect
   const CRect rv = g_graphicsContext.GetViewWindow();
 
   // save current video rect
   CRect saveSize = m_destRect;
 
-  // new video rect is thumbnail size
-  m_destRect.SetRect(0, 0, (float)width, (float)height);
+  // new video rect is capture size
+  m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
 
-  // clear framebuffer and invert Y axis to get non-inverted image
-  glClearColor(0, 0, 0, 1);
-  glClear(GL_COLOR_BUFFER_BIT);
-  glClearColor(0, 0, 0, 0);
+  //invert Y axis to get non-inverted image
   glDisable(GL_BLEND);
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
-  glTranslatef(0, height, 0);
+  glTranslatef(0, capture->GetHeight(), 0);
   glScalef(1.0, -1.0f, 1.0f);
-  Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
 
+  capture->BeginRender();
+
+  Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
   // read pixels
-  glReadPixels(0, rv.y2-height, width, height, GL_BGRA, GL_UNSIGNED_BYTE, texture->GetPixels());
+  glReadPixels(0, rv.y2 - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
+               GL_BGRA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
+
+  capture->EndRender();
 
   // revert model view matrix
   glMatrixMode(GL_MODELVIEW);
@@ -1673,6 +1686,8 @@ void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width
 
   // restore original video rect
   m_destRect = saveSize;
+
+  return true;
 }
 
 //********************************************************************************************************

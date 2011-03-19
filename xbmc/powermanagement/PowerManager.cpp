@@ -64,7 +64,7 @@ CPowerManager::~CPowerManager()
 
 void CPowerManager::Initialize()
 {
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__arm__)
   m_instance = new CCocoaPowerSyscall();
 #elif defined(_LINUX) && defined(HAS_DBUS)
   if (CConsoleUPowerSyscall::HasDeviceConsoleKit())

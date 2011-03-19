@@ -191,7 +191,7 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
   if (button == CONTEXT_BUTTON_SCAN)
   {
     RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addon);
-    CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo,false),&CAddonInstaller::Get());
+    CAddonInstaller::Get().UpdateRepos(true);
     return true;
   }
 

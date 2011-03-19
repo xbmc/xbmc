@@ -106,6 +106,13 @@ private:
   void LocalizeOverviewToken(CStdString &str);
   void LoadLocalizedToken();
   int ConvertSpeed(int speed);
+
+  /*! \brief Formats a celcius temperature into a string based on the users locale
+   \param text the string to format
+   \param temp the temperature (in degrees celcius).
+   */
+  void FormatTemperature(CStdString &text, int temp);
+
   std::map<CStdString, int> m_localizedTokens;
   typedef std::map<CStdString, int>::const_iterator ilocalizedTokens;
 

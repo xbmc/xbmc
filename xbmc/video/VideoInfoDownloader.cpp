@@ -74,7 +74,7 @@ int CVideoInfoDownloader::InternalFindMovie(const CStdString &strMovie,
 
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (path: '%s', content: '%s', version: '%s')",
     __FUNCTION__, movieTitle.c_str(), m_info->Name().c_str(), m_info->Path().c_str(),
-    ADDON::TranslateContent(m_info->Content()).c_str(), m_info->Version().str.c_str());
+    ADDON::TranslateContent(m_info->Content()).c_str(), m_info->Version().c_str());
 
   if (m_info->GetParser().HasFunction("CreateSearchUrl"))
   {

@@ -19,7 +19,9 @@
  *
  */
 
+#if !(defined(__APPLE__) && defined(__arm__))
 #include <SDL/SDL.h>
+#endif
 
 #include "XHandle.h"
 #include "XThreadUtils.h"

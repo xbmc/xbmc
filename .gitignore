@@ -44,6 +44,11 @@ config.log
 /build/
 .DS_Store
 *.dSYM
+/tools/osx/osx-depends/**/.gitignore
+/tools/osx/osx-depends/**/.installed
+/tools/osx/ios-depends/**/.gitignore
+/tools/osx/ios-depends/**/.installed
+/tools/osx/ios-depends/**/.compiled
 
 .libs/
 .deps/
@@ -348,11 +353,12 @@ config.log
 /system/players/dvdplayer/libdvdcss-2.dll
 /system/players/dvdplayer/libdvdnav.dll
 /system/players/dvdplayer/libexpat-1.dll
-/system/players/dvdplayer/libfaad.dll
 /system/players/dvdplayer/libfontconfig-1.dll
 /system/players/dvdplayer/librtmp.dll
 /system/players/dvdplayer/postproc-51.dll
 /system/players/dvdplayer/swscale-0.6.1.dll
+/system/players/dvdplayer/libbluray.dll
+/system/players/dvdplayer/libmpeg2-0.dll
 
 # /system/players/paplayer
 /system/players/paplayer/wavpack.dll
@@ -361,11 +367,9 @@ config.log
 /system/players/paplayer/vorbisfile.dll
 /system/players/paplayer/vgmstream.dll
 /system/players/paplayer/NoseFart.dll
-/system/players/paplayer/AC3Codec.dll
 /system/players/paplayer/libsidplay2.dll
 /system/players/paplayer/adpcm.dll
 /system/players/dvdplayer/libmad.dll
-/system/players/dvdplayer/libdts.dll
 
 # /system/players/dsplayer
 /system/players/dsplayer/libsubs.dll
@@ -484,7 +488,7 @@ config.log
 # /xbmc/cores/DllLoader/exports/
 /xbmc/cores/DllLoader/exports/build_wrapper.sh
 /xbmc/cores/DllLoader/exports/wrapper.def
-
+/xbmc/cores/DllLoader/Makefile
 /xbmc/cores/Makefile
 
 /xbmc/cores/VideoRenderers/Makefile
@@ -506,46 +510,6 @@ config.log
 # /lib/ffmpeg/doc/
 /lib/ffmpeg/doc/*.html
 /lib/ffmpeg/doc/*.1
-
-# /lib/liba52/
-/lib/liba52/config.log
-/lib/liba52/config.status
-/lib/liba52/libtool
-/lib/liba52/Makefile
-/lib/liba52/include/stamp-h1
-/lib/liba52/src/a52dec
-/lib/liba52/src/extract_a52
-/lib/liba52/test/compare
-
-# /lib/liba52/autotools/
-/lib/liba52/autotools/Makefile
-
-# /lib/liba52/doc/
-/lib/liba52/doc/Makefile
-
-# /lib/liba52/include/
-/lib/liba52/include/stamp-h
-/lib/liba52/include/config.h
-/lib/liba52/include/Makefile
-
-# /lib/liba52/liba52/
-/lib/liba52/liba52/Makefile
-
-# /lib/liba52/libao/
-/lib/liba52/libao/Makefil
-/lib/liba52/libao/Makefile
-
-# /lib/liba52/src/
-/lib/liba52/src/Makefi
-/lib/liba52/src/Makefile
-
-# /lib/liba52/test/
-/lib/liba52/test/Makefile
-
-# /lib/liba52/vc++/
-/lib/liba52/vc++/Makefile
-/lib/liba52/vc++/Debug
-/lib/liba52/vc++/Release
 
 # /lib/libdvd/
 /lib/libdvd/Makefile
@@ -643,85 +607,6 @@ config.log
 /lib/libdvd/libdvdread/INSTALL
 /lib/libdvd/libdvdread/autom4te.cache
 /lib/libdvd/libdvdread/config.h.in~
-
-# /lib/libdts/
-/lib/libdts/config.log
-/lib/libdts/config.h
-/lib/libdts/Makefile
-/lib/libdts/config.status
-/lib/libdts/stamp-h1
-/lib/libdts/configure.lineno
-
-# /lib/libdts/autotools/
-/lib/libdts/autotools/Makefile
-
-# /lib/libdts/debian/
-/lib/libdts/debian/Makefile
-
-# /lib/libdts/doc/
-/lib/libdts/doc/Makefile
-
-# /lib/libdts/include/
-/lib/libdts/include/Makefile
-
-# /lib/libdts/libao/
-/lib/libdts/libao/Makefile
-
-# /lib/libdts/libdts/
-/lib/libdts/libdts/Makefile
-
-# /lib/libdts/src/
-/lib/libdts/src/extract_dts
-/lib/libdts/src/dtsdec
-/lib/libdts/src/Makefile
-
-# /lib/libdts/test/
-/lib/libdts/test/compare
-/lib/libdts/test/Makefile
-
-# /lib/libdts/vc++/
-/lib/libdts/vc++/Makefile
-/lib/libdts/vc++/libdts.lib
-/lib/libdts/vc++/Debug
-/lib/libdts/vc++/Release
-
-# /lib/libfaad2/
-/lib/libfaad2/config.log
-/lib/libfaad2/config.h
-/lib/libfaad2/Makefile
-/lib/libfaad2/config.status
-/lib/libfaad2/stamp-h1
-/lib/libfaad2/configure.lineno
-/lib/libfaad2/libtool
-/lib/libfaad2/faad2.spec
-/lib/libfaad2/libfaad/ReleaseDLL
-
-# /lib/libfaad2/common/
-/lib/libfaad2/common/Makefile
-
-# /lib/libfaad2/common/mp4ff/
-/lib/libfaad2/common/mp4ff/Makefile
-
-# /lib/libfaad2/frontend/
-/lib/libfaad2/frontend/Makefile
-/lib/libfaad2/frontend/faad
-
-# /lib/libfaad2/libfaad/
-/lib/libfaad2/libfaad/Makefile
-/lib/libfaad2/libfaad/DebugDLL
-/lib/libfaad2/libfaad/ReleaseDLL
-
-# /lib/libfaad2/plugins/
-/lib/libfaad2/plugins/Makefile
-
-# /lib/libfaad2/plugins/mpeg4ip/
-/lib/libfaad2/plugins/mpeg4ip/Makefile
-
-# /lib/libfaad2/plugins/xmms/
-/lib/libfaad2/plugins/xmms/Makefile
-
-# /lib/libfaad2/plugins/xmms/src/
-/lib/libfaad2/plugins/xmms/src/Makefile
 
 # /lib/libmad/
 /lib/libmad/config.h
@@ -1121,6 +1006,8 @@ config.log
 
 # /lib/libid3tag/
 /lib/libid3tag/Makefile
+/lib/libid3tag/libid3tag/autom4te.cache
+/lib/libid3tag/libid3tag/configure
 /lib/libid3tag/libid3tag/Makefile
 /lib/libid3tag/libid3tag/compat.c
 /lib/libid3tag/libid3tag/config.h
@@ -1186,6 +1073,7 @@ config.log
 /xbmc/screensavers/Makefile
 
 /xbmc/screensavers/rsxs-0.9/Makefile
+/xbmc/screensavers/rsxs-0.9/configure
 /xbmc/screensavers/rsxs-0.9/config.h
 /xbmc/screensavers/rsxs-0.9/config.log
 /xbmc/screensavers/rsxs-0.9/config/Makefile

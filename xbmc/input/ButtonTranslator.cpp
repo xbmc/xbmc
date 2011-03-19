@@ -202,7 +202,7 @@ static const ActionMapping windows[] =
         {"settings"                 , WINDOW_SETTINGS_MENU},
         {"music"                    , WINDOW_MUSIC},
         {"video"                    , WINDOW_VIDEOS},
-        {"videos"                   , WINDOW_VIDEOS}, // backward compat
+        {"videos"                   , WINDOW_VIDEO_NAV},
         {"systeminfo"               , WINDOW_SYSTEM_INFORMATION},
         {"testpattern"              , WINDOW_TEST_PATTERN},
         {"screencalibration"        , WINDOW_SCREEN_CALIBRATION},
@@ -582,13 +582,13 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
           {
             uint32_t hatID = id|0xFFF00000;
             if (position.compare("up") == 0)
-              hatMap[(SDL_HAT_UP<<16)|hatID] = string(szAction);
+              hatMap[(JACTIVE_HAT_UP<<16)|hatID] = string(szAction);
             else if (position.compare("down") == 0)
-              hatMap[(SDL_HAT_DOWN<<16)|hatID] = string(szAction);
+              hatMap[(JACTIVE_HAT_DOWN<<16)|hatID] = string(szAction);
             else if (position.compare("right") == 0)
-              hatMap[(SDL_HAT_RIGHT<<16)|hatID] = string(szAction);
+              hatMap[(JACTIVE_HAT_RIGHT<<16)|hatID] = string(szAction);
             else if (position.compare("left") == 0)
-              hatMap[(SDL_HAT_LEFT<<16)|hatID] = string(szAction);
+              hatMap[(JACTIVE_HAT_LEFT<<16)|hatID] = string(szAction);
             else
               CLog::Log(LOGERROR, "Error in joystick map, invalid position specified %s for axis %d", position.c_str(), id);
           }

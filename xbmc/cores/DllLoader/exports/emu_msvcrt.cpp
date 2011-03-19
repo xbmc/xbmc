@@ -30,14 +30,17 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
-#ifdef _LINUX
-#include <sys/ioctl.h>
-#ifndef __APPLE__
-#include <mntent.h>
-#include <linux/cdrom.h>
-#else
-#include <IOKit/storage/IODVDMediaBSDClient.h>
-#endif
+#include "system.h" // for HAS_DVD_DRIVE
+#ifdef HAS_DVD_DRIVE
+  #ifdef _LINUX
+    #include <sys/ioctl.h>
+    #ifndef __APPLE__
+      #include <mntent.h>
+      #include <linux/cdrom.h>
+    #else
+      #include <IOKit/storage/IODVDMediaBSDClient.h>
+    #endif
+  #endif
 #endif
 #include <fcntl.h>
 #include <time.h>
@@ -138,9 +141,22 @@ extern "C" void __stdcall init_emu_environ()
 #else
   dll_putenv("OS=unknown");
 #endif
-  dll_putenv(string("PYTHONPATH=" + _P("special://xbmc/system/python/DLLs") + ";" + _P("special://xbmc/system/python/Lib")).c_str());
-  dll_putenv(string("PYTHONHOME=" + _P("special://xbmc/system/python")).c_str());
-  dll_putenv(string("PATH=.;" + _P("special://xbmc") + ";" + _P("special://xbmc/system/python")).c_str());
+
+  // check if we are running as real xbmc.app or just binary
+  if (!CUtil::GetFrameworksPath().IsEmpty())
+  {
+    // using external python, it's build looking for xxx/lib/python2.6
+    // so point it to frameworks/usr which is where python2.6 is located
+    dll_putenv(string("PYTHONPATH=" + _P("special://frameworks/usr")).c_str());
+    dll_putenv(string("PYTHONHOME=" + _P("special://frameworks/usr")).c_str());
+    dll_putenv(string("PATH=.;" + _P("special://xbmc") + ";" + _P("special://frameworks/usr")).c_str());
+  }
+  else
+  {
+    dll_putenv(string("PYTHONPATH=" + _P("special://xbmc/system/python/DLLs") + ";" + _P("special://xbmc/system/python/Lib")).c_str());
+    dll_putenv(string("PYTHONHOME=" + _P("special://xbmc/system/python")).c_str());
+    dll_putenv(string("PATH=.;" + _P("special://xbmc") + ";" + _P("special://xbmc/system/python")).c_str());
+  }
   //dll_putenv("PYTHONCASEOK=1");
   //dll_putenv("PYTHONDEBUG=1");
   //dll_putenv("PYTHONVERBOSE=2"); // "1" for normal verbose, "2" for more verbose ?
@@ -172,19 +188,25 @@ extern "C" void __stdcall update_emu_environ()
     const CStdString &strProxyServer = g_guiSettings.GetString("network.httpproxyserver");
     const CStdString &strProxyPort = g_guiSettings.GetString("network.httpproxyport");
     // Should we check for valid strings here? should HTTPS_PROXY use https://?
-    dll_putenv( "HTTP_PROXY=http://" + strProxyServer + ":" + strProxyPort );
-    dll_putenv( "HTTPS_PROXY=http://" + strProxyServer + ":" + strProxyPort );
 #ifdef _WIN32
     SetEnvironmentVariable("HTTP_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
     SetEnvironmentVariable("HTTPS_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
+    dll_putenv( "HTTP_PROXY=http://" + strProxyServer + ":" + strProxyPort );
+    dll_putenv( "HTTPS_PROXY=http://" + strProxyServer + ":" + strProxyPort );
+#else
+    setenv( "HTTP_PROXY", "http://" + strProxyServer + ":" + strProxyPort, true );
+    setenv( "HTTPS_PROXY", "http://" + strProxyServer + ":" + strProxyPort, true );
 #endif
     if (!g_guiSettings.GetString("network.httpproxyusername").IsEmpty())
     {
-      dll_putenv("PROXY_USER=" + g_guiSettings.GetString("network.httpproxyusername"));
-      dll_putenv("PROXY_PASS=" + g_guiSettings.GetString("network.httpproxypassword"));
 #ifdef _WIN32
       SetEnvironmentVariable("PROXY_USER", g_guiSettings.GetString("network.httpproxyusername"));
       SetEnvironmentVariable("PROXY_PASS", g_guiSettings.GetString("network.httpproxypassword"));
+      dll_putenv("PROXY_USER=" + g_guiSettings.GetString("network.httpproxyusername"));
+      dll_putenv("PROXY_PASS=" + g_guiSettings.GetString("network.httpproxypassword"));
+#else
+      setenv("PROXY_USER", g_guiSettings.GetString("network.httpproxyusername"), true);
+      setenv("PROXY_PASS", g_guiSettings.GetString("network.httpproxypassword"), true);
 #endif
     }
   }
@@ -2088,10 +2110,12 @@ extern "C"
 
   int __cdecl dll_ioctl(int fd, unsigned long int request, va_list va)
   {
+     int ret;
      CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
      if (!pFile)
        return -1;
 
+#ifdef HAS_DVD_DRIVE
 #ifndef __APPLE__
     if(request == DVD_READ_STRUCT || request == DVD_AUTH)
 #else
@@ -2099,16 +2123,17 @@ extern "C"
 #endif
     {
       void *p1 = va_arg(va, void*);
-      int ret = pFile->IoControl(request, p1);
+      ret = pFile->IoControl(request, p1);
       if(ret<0)
         CLog::Log(LOGWARNING, "%s - %ld request failed with error [%d] %s", __FUNCTION__, request, errno, strerror(errno));
-      return ret;
     }
     else
+#endif
     {
       CLog::Log(LOGWARNING, "%s - Unknown request type %ld", __FUNCTION__, request);
-      return -1;
+      ret = -1;
     }
+    return ret;
   }
 #endif
 

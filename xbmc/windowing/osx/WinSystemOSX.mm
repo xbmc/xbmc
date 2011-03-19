@@ -19,7 +19,7 @@
  *
  */
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__arm__)
 
 //hack around problem with xbmc's typedef int BOOL
 // and obj-c's typedef unsigned char BOOL
@@ -32,6 +32,8 @@
 #include "XBMCHelper.h"
 #include "utils/SystemInfo.h"
 #undef BOOL
+
+#include <SDL/SDL_events.h>
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>

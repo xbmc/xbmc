@@ -20,6 +20,7 @@
  *
  */
 
+#if !defined(__arm__)
 #include "CoreAudio.h"
 #include <PlatformDefs.h>
 #include <utils/log.h>
@@ -45,19 +46,23 @@ const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdStri
   switch (desc.mFormatID)
   {
     case kAudioFormatLinearPCM:
-      str.Format("[%4.4s] %s%u Channel %u-bit %s (%uHz)", 
+      str.Format("[%4.4s] %s%u Channel %u-bit %s %s (%uHz)",
                  fourCC,
                  (desc.mFormatFlags & kAudioFormatFlagIsNonMixable) ? "" : "Mixable ",
                  desc.mChannelsPerFrame,
                  desc.mBitsPerChannel,
                  (desc.mFormatFlags & kAudioFormatFlagIsFloat) ? "Floating Point" : "Signed Integer",
+                 (desc.mFormatFlags & kAudioFormatFlagIsBigEndian) ? "BE" : "LE",
                  (UInt32)desc.mSampleRate);
       break;
     case kAudioFormatAC3:
       str.Format("[%4.4s] AC-3/DTS (%uHz)", fourCC, (UInt32)desc.mSampleRate);
       break;
     case kAudioFormat60958AC3:
-      str.Format("[%4.4s] AC-3/DTS for S/PDIF (%uHz)", fourCC, (UInt32)desc.mSampleRate);
+      str.Format("[%4.4s] AC-3/DTS for S/PDIF %s (%uHz)",
+                 fourCC,
+                 (desc.mFormatFlags & kAudioFormatFlagIsBigEndian) ? "BE" : "LE",
+                 (UInt32)desc.mSampleRate);
       break;
     default:
       str.Format("[%4.4s]", fourCC);
@@ -1102,4 +1107,5 @@ CAUMatrixMixer::~CAUMatrixMixer()
 
 
 
+#endif
 #endif

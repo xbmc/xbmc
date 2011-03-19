@@ -39,6 +39,9 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase(), m_screensaverReset(true)
   m_glContext = NULL;
   m_SDLSurface = NULL;
   m_dpy = NULL;
+  m_glWindow = NULL;
+  m_wmWindow = NULL;
+  m_bWasFullScreenBeforeMinimize = false;
 }
 
 CWinSystemX11::~CWinSystemX11()

@@ -41,17 +41,26 @@ extern bool g_fullScreen;
 /* quick access to a skin setting, fine unless we starts clearing video settings */
 static CSettingInt* g_guiSkinzoom = NULL;
 
-CGraphicContext::CGraphicContext(void)
+CGraphicContext::CGraphicContext(void) :
+  m_iScreenHeight(576), 
+  m_iScreenWidth(720), 
+  m_iScreenId(0), 
+  m_strMediaDir(""), 
+  /*m_videoRect,*/ 
+  m_bFullScreenRoot(false), 
+  m_bFullScreenVideo(false),
+  m_bCalibrating(false), 
+  m_Resolution(RES_INVALID), 
+  m_windowResolution(RES_INVALID),
+  m_guiScaleX(1.0f), 
+  m_guiScaleY(1.0f) 
+  /*,m_cameras, */ 
+  /*m_origins, */
+  /*m_clipRegions,*/
+  /*m_guiTransform,*/
+  /*m_finalTransform, */
+  /*m_groupTransform*/
 {
-  m_iScreenWidth = 720;
-  m_iScreenHeight = 576;
-  m_iScreenId = 0;
-  m_strMediaDir = "";
-  m_bCalibrating = false;
-  m_Resolution = RES_INVALID;
-  m_guiScaleX = m_guiScaleY = 1.0f;
-  m_windowResolution = RES_INVALID;
-  m_bFullScreenRoot = false;
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -312,14 +321,19 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
     return;
   }
 
-  //pause the player during the refreshrate change
-  int delay = g_guiSettings.GetInt("videoplayer.pauseafterrefreshchange");
-  if (delay > 0 && g_guiSettings.GetBool("videoplayer.adjustrefreshrate") && g_application.IsPlayingVideo() && !g_application.IsPaused())
+  //only pause when switching monitor resolution/refreshrate,
+  //not when switching between fullscreen and windowed or when resizing the window
+  if ((res != RES_DESKTOP && res != RES_WINDOW) || (lastRes != RES_DESKTOP && lastRes != RES_WINDOW))
   {
-    g_application.m_pPlayer->Pause();
-    ThreadMessage msg = {TMSG_MEDIA_UNPAUSE};
-    CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 500);
-    pauseMessage->Create(true);
+    //pause the player during the refreshrate change
+    int delay = g_guiSettings.GetInt("videoplayer.pauseafterrefreshchange");
+    if (delay > 0 && g_guiSettings.GetBool("videoplayer.adjustrefreshrate") && g_application.IsPlayingVideo() && !g_application.IsPaused())
+    {
+      g_application.m_pPlayer->Pause();
+      ThreadMessage msg = {TMSG_MEDIA_UNPAUSE};
+      CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 100);
+      pauseMessage->Create(true);
+    }
   }
 
   if (res >= RES_DESKTOP)

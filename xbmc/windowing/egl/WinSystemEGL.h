@@ -27,6 +27,7 @@
 #include <EGL/egl.h>
 #include <X11/Xlib.h>
 #include "rendering/gles/RenderSystemGLES.h"
+#include "utils/GlobalsHandling.h"
 
 class CWinSystemEGL : public CWinSystemBase, public CRenderSystemGLES
 {
@@ -78,5 +79,8 @@ protected:
 
   int m_iVSyncErrors;
 };
+
+XBMC_GLOBAL_REF(CWinSystemEGL,g_Windowing);
+#define g_Windowing XBMC_GLOBAL_USE(CWinSystemEGL)
 
 #endif // WINDOW_SYSTEM_H

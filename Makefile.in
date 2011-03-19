@@ -101,10 +101,6 @@ DVDPCODECS_DIRS= \
 	lib \
 	lib/libdvd \
 
-ifneq (@USE_EXTERNAL_LIBASS@,1)
-DVDPCODECS_DIRS+=lib/libass/xbmc
-endif
-
 PAPCODECS_DIRS= \
 	lib/xbadpcm \
 	lib/nosefart \
@@ -113,11 +109,6 @@ PAPCODECS_DIRS= \
 	lib/stsound/StSoundLibrary \
 	lib/snesapu/SNES/SNESAPU \
 	lib/vgmstream \
-
-ifeq (@USE_INTERNAL_LIBA52@,1)
-PAPCODECS_DIRS+= \
-	xbmc/cores/paplayer/AC3Codec
-endif
 
 ifeq (@USE_ASAP_CODEC@,1)
 PAPCODEC_DIRS+= \
@@ -137,12 +128,8 @@ LIB_DIRS=\
 	lib/libapetag \
 	xbmc/interfaces/python/linux \
 	lib/cpluff \
-	lib/libmodplug \
 	lib/xbmc-dll-symbols \
 	lib/jsoncpp/src/lib_json
-ifeq ($(findstring osx,@ARCH@), osx)
-LIB_DIRS+=lib/libmicrohttpd
-endif
 
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
@@ -210,10 +197,13 @@ configure: configure.in
 	@./bootstrap
 
 # skin textures
+ifneq ($(findstring arm,@ARCH@), arm)
 skins: tools/TexturePacker/TexturePacker force
-ifneq (arm, @ARCH@)
 	 $(MAKE) -C $(CONFLUENCE_MEDIA)
+else
+skins:
 endif
+
 
 xbmc/guilib/guilib.a: force
 	$(MAKE) -C xbmc/guilib
@@ -289,6 +279,8 @@ xbmc/powermanagement/linux/powermanagement_linux.a: force
 	$(MAKE) -C xbmc/powermanagement/linux
 xbmc/powermanagement/osx/powermanagement.a: force
 	$(MAKE) -C xbmc/powermanagement/osx
+xbmc/windowing/X11/windowing_X11.a: force
+	$(MAKE) -C xbmc/windowing/X11
 xbmc/rendering/rendering.a: force
 	$(MAKE) -C xbmc/rendering
 xbmc/rendering/gl/rendering_gl.a: force
@@ -299,8 +291,6 @@ xbmc/windowing/windowing.a: force
 	$(MAKE) -C xbmc/windowing
 xbmc/windowing/egl/windowing_egl.a: force
 	$(MAKE) -C xbmc/windowing/egl
-xbmc/windowing/X11/windowing_X11.a: force
-	$(MAKE) -C xbmc/windowing/X11
 xbmc/windowing/osx/windowing_osx.a: force
 	$(MAKE) -C xbmc/windowing/osx
 xbmc/storage/storage.a: force
@@ -386,25 +376,19 @@ lib/cpluff/libcpluff/.libs/libcpluff.a: force
 system/libcpluff-@ARCH@.so: lib/cpluff/libcpluff/.libs/libcpluff.a
 ifeq ($(findstring osx,@ARCH@), osx)
   ifeq (@ARCH@, powerpc-osx)
-	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -L/opt/local/lib -lexpat -lbundle1.o -o $@ $<
-  else
-	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -L/opt/local/lib -lexpat -o $@ $<
+	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -arch @ARCHTYPE@ -lexpat -lbundle1.o -o $@ $<
+  endif
+  ifeq (@ARCH@, x86-osx)
+	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -arch @ARCHTYPE@ -lexpat -o $@ $<
+  endif
+  ifeq (@ARCH@, arm-osx)
+	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -read_only_relocs suppress -arch armv7 -o $@ $<
   endif
 else
 	cp lib/cpluff/libcpluff/.libs/libcpluff.so $@
 endif
-lib/libmodplug/src/.libs/libmodplug.a: force
-	$(MAKE) -C lib/libmodplug
-system/players/paplayer/libmodplug-@ARCH@.so: lib/libmodplug/src/.libs/libmodplug.a
-ifeq (@ARCH@, powerpc-osx)
-	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -lbundle1.o -o $@ $<
-else
-	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -o $@ $<
-endif
 lib/xbmc-dll-symbols/dll-symbols.a: force
 	$(MAKE) -C lib/xbmc-dll-symbols
-lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a: force
-	$(MAKE) -C lib/libmicrohttpd
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
@@ -413,7 +397,7 @@ exports:
 dllloader: exports
 	$(MAKE) xbmc/cores/DllLoader/dllloader.a
 visualizations: exports
-ifneq (arm, @ARCH@)
+ifneq ($(findstring arm,@ARCH@), arm)
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
@@ -427,7 +411,7 @@ endif
 endif
 endif
 screensavers: exports
-ifneq (arm, @ARCH@)
+ifneq ($(findstring arm,@ARCH@), arm)
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 endif
 libpython: dllloader
@@ -438,12 +422,11 @@ python: dllloader
 dvdpcodecs: dllloader
 	$(MAKE) -C lib 
 	$(MAKE) -C lib/libdvd
-ifneq (@USE_EXTERNAL_LIBASS@,1)
-	$(MAKE) -C lib/libass/xbmc
-endif
 eventclients:
 ifeq ($(findstring osx,@ARCH@), osx)
+ifneq ($(findstring arm,@ARCH@), arm)
 	$(MAKE) -C tools/EventClients/Clients/OSXRemote
+endif
 else
 	$(MAKE) -C tools/EventClients
 endif
@@ -454,9 +437,6 @@ libhdhomerun: dllloader
 libid3tag: dllloader
 	$(MAKE) -C lib/libid3tag
 papcodecs: dllloader dvdpcodecs
-ifeq (@USE_INTERNAL_LIBA52@,1)
-	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
-endif
 	$(MAKE) -C lib/xbadpcm
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(MAKE) -C lib/libflac
@@ -464,7 +444,9 @@ endif
 	$(MAKE) -C lib/vgmstream
 	$(MAKE) -C lib/timidity
 	$(MAKE) -C lib/nosefart 
+ifneq ($(findstring arm-osx,@ARCH@), arm-osx)
 	$(MAKE) -C lib/libsidplay2 
+endif
 ifeq (@USE_ASAP_CODEC@,1)
   ifneq ($(findstring osx,@ARCH@), osx)
 	$(MAKE) -C lib/asap asap-xbmc
@@ -478,11 +460,7 @@ imagelib: dllloader
 	$(MAKE) -C lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-ifeq ($(findstring osx,@ARCH@), osx)
-libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-@ARCH@.so system/players/paplayer/libmodplug-@ARCH@.so
-else
 libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-@ARCH@.so
-endif
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
@@ -497,8 +475,7 @@ xcode_depends: \
 	xbmc/interfaces/interfaces.a \
 	xbmc/interfaces/http-api/http-api.a \
 	xbmc/interfaces/json-rpc/json-rpc.a \
-	lib/jsoncpp/src/lib_json/libjsoncpp.a \
-	lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a
+	lib/jsoncpp/src/lib_json/libjsoncpp.a
 
 # platform independend objects
 OBJSXBMC=	\
@@ -574,7 +551,7 @@ OBJSXBMC+= \
 	lib/UnrarXLib/UnrarXLib.a
 endif
 
-ifneq (arm, @ARCH@)
+ifneq ($(findstring arm,@ARCH@), arm)
 # Can't include libhts for arm due to GPLv3
 OBJSXBMC+= \
 	lib/libhts/libhts.a
@@ -585,9 +562,6 @@ ifeq ($(findstring osx,@ARCH@), osx)
 OBJSXBMC += \
 	xbmc/osx/osx.a \
 	xbmc/windowing/osx/windowing_osx.a \
-	lib/darwin/libSDL-OSX/libSDL-@ARCH@.a \
-	lib/darwin/libSDL-OSX/libSDL_mixer-@ARCH@.a \
-	lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a \
 	xbmc/threads/darwin/threads_darwin.a \
 	xbmc/powermanagement/osx/powermanagement.a \
 	xbmc/network/osx/network.a \
@@ -620,7 +594,7 @@ DYNOBJSXBMC= \
 	xbmc/video/video.a \
 	xbmc/guilib/guilib.a # must be dynamic to avoid linker errors
 
-ifeq (arm, @ARCH@)
+ifeq ($(findstring arm,@ARCH@), arm)
 # Force external python2.6 for now!
 LIBS +=-lpython2.6
 endif
@@ -629,7 +603,7 @@ xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
 else
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin -Wl,--whole-archive $(DYNOBJSXBMC) -Wl,--no-whole-archive $(OBJSXBMC) $(LIBS) -rdynamic
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive $(LIBS) -rdynamic
 endif
 
 xbmc-xrandr: xbmc-xrandr.c

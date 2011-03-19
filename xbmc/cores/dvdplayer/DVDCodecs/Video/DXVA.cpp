@@ -538,7 +538,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 
   DXVA2_ConfigPictureDecode config = {};
 
-  unsigned bitstream = 1; //ConfigBitstreamRaw = 2 seems to be broken in current ffmpeg, so prefer mode 1 for now
+  unsigned bitstream = 2; // ConfigBitstreamRaw = 2 is required for Poulsbo and handles skipping better with nVidia
   for(unsigned i = 0; i< cfg_count; i++)
   {
     CLog::Log(LOGDEBUG,
@@ -630,8 +630,11 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
   ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(picture);
   CSingleLock lock(m_section);
   picture->format = DVDVideoPicture::FMT_DXVA;
-  picture->proc    = m_processor;
-  picture->proc_id = m_processor->Add((IDirect3DSurface9*)frame->data[3]);
+  picture->proc   = m_processor;
+  if(picture->iFlags & DVP_FLAG_DROPPED)
+    picture->proc_id = 0;
+  else
+    picture->proc_id = m_processor->Add((IDirect3DSurface9*)frame->data[3]);
   return true;
 }
 
@@ -1088,6 +1091,12 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
   blt.BackgroundColor.Cb    = 0x8000;
   blt.BackgroundColor.Cr    = 0x8000;
   blt.BackgroundColor.Alpha = 0xffff;
+
+  /* HACK to kickstart certain DXVA drivers (poulsbo) which oddly  *
+   * won't render anything until someting else have been rendered. */
+  g_Windowing.Get3DDevice()->SetFVF( D3DFVF_XYZ );
+  float verts[2][3]= {};
+  g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 1, verts, 3*sizeof(float));
 
   CHECK(m_process->VideoProcessBlt(target, &blt, samp.get(), valid, NULL));
   return true;

@@ -38,16 +38,11 @@
 #endif
 
 #ifndef DLL_PATH_LIBCURL
-#ifdef __APPLE__
-#define DLL_PATH_LIBCURL       "special://xbmcbin/system/libcurl-@ARCH@.so"
-#else
 #define DLL_PATH_LIBCURL       "@CURL_SONAME@"
-#endif
 #endif
 
 /* paplayer */
 #define DLL_PATH_AAC_CODEC     "special://xbmcbin/system/players/paplayer/AACCodec-@ARCH@.so"
-#define DLL_PATH_AC3_CODEC     "special://xbmcbin/system/players/paplayer/ac3codec-@ARCH@.so"
 #define DLL_PATH_ADPCM_CODEC   "special://xbmcbin/system/players/paplayer/adpcm-@ARCH@.so"
 #define DLL_PATH_ADPLUG_CODEC  "special://xbmcbin/system/players/paplayer/adplug-@ARCH@.so"
 #define DLL_PATH_APE_CODEC     "special://xbmcbin/system/players/paplayer/MACDll-@ARCH@.so"
@@ -66,27 +61,20 @@
 #define DLL_PATH_SHN_CODEC     "special://xbmcbin/system/players/paplayer/libshnplay-@ARCH@.so"
 #if defined(_LINUX) && !defined(__APPLE__)
 #define DLL_PATH_FLAC_CODEC    "@FLAC_SONAME@"
-#define DLL_PATH_MODPLUG_CODEC "@MODPLUG_SONAME@"
-#define DLL_PATH_OGG_CODEC     "@VORBISFILE_SONAME@"
 #else
 #define DLL_PATH_FLAC_CODEC    "special://xbmcbin/system/players/paplayer/libFLAC-@ARCH@.so"
-#define DLL_PATH_MODPLUG_CODEC "special://xbmcbin/system/players/paplayer/libmodplug-@ARCH@.so"
-#define DLL_PATH_OGG_CODEC     "@executable_path/../Frameworks/@VORBISFILE_SONAME@"
 #endif
+#define DLL_PATH_MODPLUG_CODEC "@MODPLUG_SONAME@"
+#define DLL_PATH_OGG_CODEC     "@VORBISFILE_SONAME@"
 
 /* dvdplayer */
-#define DLL_PATH_LIBASS        "special://xbmcbin/system/players/dvdplayer/libass-@ARCH@.so"
-#define DLL_PATH_LIBA52        "special://xbmcbin/system/players/dvdplayer/liba52-@ARCH@.so"
-#define DLL_PATH_LIBDTS        "special://xbmcbin/system/players/dvdplayer/libdts-@ARCH@.so"
-#define DLL_PATH_LIBMPEG2      "special://xbmcbin/system/players/dvdplayer/libmpeg2-@ARCH@.so"
-#define DLL_PATH_LIBDVDNAV     "special://xbmcbin/system/players/dvdplayer/libdvdnav-@ARCH@.so"
-#if defined(_LINUX) && !defined(__APPLE__)
-#define DLL_PATH_LIBFAAD       "@FAAD_SONAME@"
-#define DLL_PATH_LIBMAD        "@MAD_SONAME@"
+#if defined(__APPLE__)
+#define DLL_PATH_LIBMPEG2      "libmpeg2.0.dylib"
 #else
-#define DLL_PATH_LIBFAAD       "special://xbmcbin/system/players/dvdplayer/libfaad-@ARCH@.so"
-#define DLL_PATH_LIBMAD        "special://xbmcbin/system/players/dvdplayer/libmad-@ARCH@.so"
+ #define DLL_PATH_LIBMPEG2      "special://xbmcbin/system/players/dvdplayer/libmpeg2-@ARCH@.so"
 #endif
+#define DLL_PATH_LIBDVDNAV     "special://xbmcbin/system/players/dvdplayer/libdvdnav-@ARCH@.so"
+#define DLL_PATH_LIBMAD        "@MAD_SONAME@"
 
 /* ffmpeg */
 #define DLL_PATH_LIBAVCODEC    "special://xbmcbin/system/players/dvdplayer/avcodec-52-@ARCH@.so"
@@ -94,20 +82,17 @@
 #define DLL_PATH_LIBAVFORMAT   "special://xbmcbin/system/players/dvdplayer/avformat-52-@ARCH@.so"
 #define DLL_PATH_LIBAVUTIL     "special://xbmcbin/system/players/dvdplayer/avutil-50-@ARCH@.so"
 #define DLL_PATH_LIBPOSTPROC   "special://xbmcbin/system/players/dvdplayer/postproc-51-@ARCH@.so"
-#define DLL_PATH_LIBSWSCALE    "special://xbmcbin/system/players/dvdplayer/swscale-0.6.1-@ARCH@.so"
+#define DLL_PATH_LIBSWSCALE    "special://xbmcbin/system/players/dvdplayer/swscale-0-@ARCH@.so"
 
 /* cdrip */
 #if defined(_LINUX) && !defined(__APPLE__)
 #define DLL_PATH_LAME_ENC      "libmp3lame.so.0"
+#else
+#define DLL_PATH_LAME_ENC      "special://xbmcbin/system/cdrip/lame_enc-@ARCH@.so"
+#endif
 #define DLL_PATH_OGG           "@OGG_SONAME@"
 #define DLL_PATH_VORBIS_ENC    "@VORBISENC_SONAME@"
 #define DLL_PATH_VORBIS        "@VORBIS_SONAME@"
-#else
-#define DLL_PATH_LAME_ENC      "special://xbmcbin/system/cdrip/lame_enc-@ARCH@.so"
-#define DLL_PATH_OGG           "@executable_path/../Frameworks/@OGG_SONAME@"
-#define DLL_PATH_VORBIS_ENC    "@executable_path/../Frameworks/@VORBISENC_SONAME@"
-#define DLL_PATH_VORBIS        "@executable_path/../Frameworks/@VORBIS_SONAME@"
-#endif
 
 /* broadcom crystalhd */
 #if defined(_LINUX) && !defined(__APPLE__)

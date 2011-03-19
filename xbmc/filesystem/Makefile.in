@@ -69,6 +69,7 @@ SRCS=AddonsDirectory.cpp \
      SIDFileDirectory.cpp \
      SmartPlaylistDirectory.cpp \
      SMBDirectory.cpp \
+     SourcesDirectory.cpp \
      SpecialProtocol.cpp \
      SpecialProtocolDirectory.cpp \
      StackDirectory.cpp \
@@ -99,10 +100,6 @@ INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
           -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaServer \
           -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/System/Posix \
           -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/Core
-
-ifeq ($(findstring osx,$(ARCH)), osx)
-INCLUDES+=-I@abs_top_srcdir@/lib/darwin/libcurl-OSX/include
-endif
 
 LIB=filesystem.a
 

@@ -28,7 +28,7 @@
 
 using namespace std;
 
-class CSectionLoader g_sectionLoader;
+#define g_sectionLoader XBMC_GLOBAL_USE(CSectionLoader)
 
 //  delay for unloading dll's
 #define UNLOAD_DELAY 30*1000 // 30 sec.

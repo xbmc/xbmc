@@ -527,7 +527,7 @@ void CGUIEditControl::OnSMSCharacter(unsigned int key)
 
 void CGUIEditControl::OnPasteClipboard()
 {
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__arm__)
   const char *szStr = Cocoa_Paste();
   if (szStr)
   {

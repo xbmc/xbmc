@@ -325,6 +325,8 @@ protected:
   CDVDInputStream* m_pInputStream;  // input stream for current playing file
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
+
+  CStdString m_lastSub;
   
   struct SDVDInfo
   {

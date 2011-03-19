@@ -32,11 +32,13 @@ extern "C" {
   #if (defined HAVE_LIBAVUTIL_AVUTIL_H)
     #include <libavutil/avutil.h>
     #include <libavutil/crc.h>
+    #include <libavutil/fifo.h>
     // for LIBAVCODEC_VERSION_INT:
     #include <libavcodec/avcodec.h>
   #elif (defined HAVE_FFMPEG_AVUTIL_H)
     #include <ffmpeg/avutil.h>
     #include <ffmpeg/crc.h>
+    #include <ffmpeg/fifo.h>
     // for LIBAVCODEC_VERSION_INT:
     #include <ffmpeg/avcodec.h>
   #endif
@@ -51,6 +53,7 @@ extern "C" {
   #include "libavutil/avutil.h"
   #include "libavutil/crc.h"
   #include "libavutil/opt.h"
+  #include "libavutil/fifo.h"
 #endif
 }
 
@@ -72,6 +75,12 @@ public:
   virtual const AVCRC* av_crc_get_table(AVCRCId crc_id)=0;
   virtual uint32_t av_crc(const AVCRC *ctx, uint32_t crc, const uint8_t *buffer, size_t length)=0;
   virtual int av_set_string3(void *obj, const char *name, const char *val, int alloc, const AVOption **o_out)=0;
+  virtual AVFifoBuffer *av_fifo_alloc(unsigned int size) = 0;
+  virtual void av_fifo_free(AVFifoBuffer *f) = 0;
+  virtual void av_fifo_reset(AVFifoBuffer *f) = 0;
+  virtual int av_fifo_size(AVFifoBuffer *f) = 0;
+  virtual int av_fifo_generic_read(AVFifoBuffer *f, void *dest, int buf_size, void (*func)(void*, void*, int)) = 0;
+  virtual int av_fifo_generic_write(AVFifoBuffer *f, void *src, int size, int (*func)(void*, void*, int)) = 0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -98,6 +107,14 @@ public:
 #else
    virtual int av_set_string3(void *obj, const char *name, const char *val, int alloc, const AVOption **o_out) { return AVERROR(ENOENT); }
 #endif
+  virtual AVFifoBuffer *av_fifo_alloc(unsigned int size) {return ::av_fifo_alloc(size); }
+  virtual void av_fifo_free(AVFifoBuffer *f) { ::av_fifo_free(f); }
+  virtual void av_fifo_reset(AVFifoBuffer *f) { ::av_fifo_reset(f); }
+  virtual int av_fifo_size(AVFifoBuffer *f) { return ::av_fifo_size(f); }
+  virtual int av_fifo_generic_read(AVFifoBuffer *f, void *dest, int buf_size, void (*func)(void*, void*, int))
+    { return ::av_fifo_generic_read(f, dest, buf_size, func); }
+  virtual int av_fifo_generic_write(AVFifoBuffer *f, void *src, int size, int (*func)(void*, void*, int))
+    { return ::av_fifo_generic_write(f, src, size, func); }
 
    // DLL faking.
    virtual bool ResolveExports() { return true; }
@@ -127,6 +144,12 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
   DEFINE_METHOD1(const AVCRC*, av_crc_get_table, (AVCRCId p1))
   DEFINE_METHOD4(uint32_t, av_crc, (const AVCRC *p1, uint32_t p2, const uint8_t *p3, size_t p4));
   DEFINE_METHOD5(int, av_set_string3, (void *p1, const char *p2, const char *p3, int p4, const AVOption **p5));
+  DEFINE_METHOD1(AVFifoBuffer*, av_fifo_alloc, (unsigned int p1))
+  DEFINE_METHOD1(void, av_fifo_free, (AVFifoBuffer *p1))
+  DEFINE_METHOD1(void, av_fifo_reset, (AVFifoBuffer *p1))
+  DEFINE_METHOD1(int, av_fifo_size, (AVFifoBuffer *p1))
+  DEFINE_METHOD4(int, av_fifo_generic_read, (AVFifoBuffer *p1, void *p2, int p3, void (*p4)(void*, void*, int)))
+  DEFINE_METHOD4(int, av_fifo_generic_write, (AVFifoBuffer *p1, void *p2, int p3, int (*p4)(void*, void*, int)))
 
   public:
   BEGIN_METHOD_RESOLVE()
@@ -141,6 +164,12 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
     RESOLVE_METHOD(av_crc_get_table)
     RESOLVE_METHOD(av_crc)
     RESOLVE_METHOD(av_set_string3)
+    RESOLVE_METHOD(av_fifo_alloc)
+    RESOLVE_METHOD(av_fifo_free)
+    RESOLVE_METHOD(av_fifo_reset)
+    RESOLVE_METHOD(av_fifo_size)
+    RESOLVE_METHOD(av_fifo_generic_read)
+    RESOLVE_METHOD(av_fifo_generic_write)
   END_METHOD_RESOLVE()
 };
 

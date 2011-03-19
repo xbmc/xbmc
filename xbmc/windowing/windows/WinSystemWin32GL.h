@@ -30,6 +30,7 @@
  */
 #include "WinSystemWin32.h"
 #include "rendering/gl/RenderSystemGL.h"
+#include "utils/GlobalsHandling.h"
 
 class CWinSystemWin32GL : public CWinSystemWin32, public CRenderSystemGL
 {
@@ -47,6 +48,13 @@ protected:
   HGLRC m_hglrc;
   BOOL (APIENTRY *m_wglSwapIntervalEXT)( int );
 };
+
+#ifdef HAS_GL
+
+XBMC_GLOBAL_REF(CWinSystemWin32GL,g_Windowing);
+#define g_Windowing XBMC_GLOBAL_USE(CWinSystemWin32GL)
+
+#endif
 
 #endif // WINDOW_SYSTEM_H
 

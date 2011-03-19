@@ -8,23 +8,19 @@ DIRS=CxImage raw jbig
 SLIBS=CxImage/cximage.a raw/raw.a jbig/jbig.a
 
 ifeq ($(findstring osx,$(ARCH)), osx)
-	export MACOSX_DEPLOYMENT_TARGET=10.4
 	export ARCH
-	CFLAGS+=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
-	CXXFLAGS+=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
-	DIRS+=jasper jpeg tiff
-	SLIBS+=jasper/jasper.a jpeg/jpeg.a tiff/tiff.a
+	export SYSROOT
+	DIRS+=jasper
+	SLIBS+=jasper/jasper.a
 endif
 
 .PHONY: compile
 
 $(SLIB): $(SLIBS)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) -bundle -flat_namespace -undefined suppress -shared -fPIC -lpng -L/opt/local/lib \
-		-mmacosx-version-min=10.4 -o $@ \
-		CxImage/*.o jasper/*/*.o jbig/*.o jpeg/*.o raw/*.o tiff/*.o
-	../../tools/Mach5/wrapper.rb $@;mv output.so $@
-	chmod +x $@
+	$(CXX) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias \
+	-bundle -undefined dynamic_lookup -read_only_relocs suppress -lpng -ljpeg -ltiff -lz -o $@ \
+	@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o CxImage/*.o jasper/*/*.o jbig/*.o raw/*.o
 else
 	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -o $(SLIB) -Wl,--whole-archive $(SLIBS) \
 		-Wl,--no-whole-archive -lpng -ljasper -ljpeg -ltiff -lz \

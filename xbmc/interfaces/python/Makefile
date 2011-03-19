@@ -6,4 +6,4 @@ SRCS=XBPython.cpp \
 LIB=python.a
 
 include ../../../Makefile.include
--include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(pathsubst %.S,,$(SRCS))))
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(patsubst %.S,,$(SRCS))))

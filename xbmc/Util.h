@@ -180,6 +180,7 @@ public:
   static bool RunCommandLine(const CStdString& cmdLine, bool waitExit = false);
 #endif
   static CStdString ResolveExecutablePath();
+  static CStdString GetFrameworksPath(void);
 };
 
 

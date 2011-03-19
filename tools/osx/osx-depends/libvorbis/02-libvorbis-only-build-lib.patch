@@ -1,0 +1,13 @@
+diff -ruN libvorbis-1.2.0.org/Makefile.in libvorbis-1.2.0/Makefile.in
+--- libvorbis-1.2.0.org/Makefile.in	2007-07-25 12:46:36.000000000 -0400
++++ libvorbis-1.2.0/Makefile.in	2010-10-29 11:47:46.000000000 -0400
+@@ -221,7 +221,7 @@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = 1.6 foreign dist-zip dist-bzip2
+-SUBDIRS = lib include doc examples vq
++SUBDIRS = lib include
+ m4datadir = $(datadir)/aclocal
+ m4data_DATA = vorbis.m4
+ pkgconfigdir = $(libdir)/pkgconfig
+

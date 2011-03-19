@@ -55,6 +55,7 @@ private:
   bool NeedsHooking(const char *dllName);
 
   HMODULE m_dllHandle;
+  bool bIsSystemDll;
 
   std::vector<Import> m_overriddenImports;
   std::vector<HMODULE> m_referencedDlls;
