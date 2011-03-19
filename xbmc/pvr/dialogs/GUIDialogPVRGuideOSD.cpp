@@ -56,7 +56,7 @@ bool CGUIDialogPVRGuideOSD::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       /* Close dialog immediately if now TV or radio channel is playing */
-      if (!CPVRManager::Get()->IsPlayingTV() && !CPVRManager::Get()->IsPlayingRadio())
+      if (!CPVRManager::Get()->IsPlaying())
       {
         Close();
         return true;

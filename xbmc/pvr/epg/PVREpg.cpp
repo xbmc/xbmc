@@ -75,12 +75,14 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
 
   if (m_Channel && m_Channel->EPGEnabled() && ScraperName() == "client")
   {
+    CLIENTMAP clients;
     if (CPVRManager::Get()->GetClientProperties(m_Channel->ClientID())->SupportEPG &&
-        CPVRManager::Get()->Clients()->find(m_Channel->ClientID())->second->ReadyToUse())
+        CPVRManager::Get()->GetClients()->Clients(&clients) &&
+        clients.find(m_Channel->ClientID())->second->ReadyToUse())
     {
       CLog::Log(LOGINFO, "%s - updating EPG for channel '%s' from client '%i'",
           __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->ClientID());
-      bGrabSuccess = CPVRManager::Get()->Clients()->find(m_Channel->ClientID())->second->GetEPGForChannel(*m_Channel, this, start, end) == PVR_ERROR_NO_ERROR;
+      bGrabSuccess = clients.find(m_Channel->ClientID())->second->GetEPGForChannel(*m_Channel, this, start, end) == PVR_ERROR_NO_ERROR;
     }
     else
     {

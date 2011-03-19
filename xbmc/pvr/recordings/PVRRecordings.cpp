@@ -34,12 +34,14 @@
 
 void CPVRRecordings::UpdateFromClients(void)
 {
-  CLIENTMAP *clients = CPVRManager::Get()->Clients();
-
   Clear();
 
-  CLIENTMAPITR itr = clients->begin();
-  while (itr != clients->end())
+  CLIENTMAP clients;
+  if (!CPVRManager::Get()->GetClients()->Clients(&clients))
+    return;
+
+  CLIENTMAPITR itr = clients.begin();
+  while (itr != clients.end())
   {
     /* Load only if the client have Recordings */
     if ((*itr).second->GetNumRecordings() > 0)

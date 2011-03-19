@@ -98,7 +98,7 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     buttons.Add(CONTEXT_BUTTON_BEGIN, 19063);           /* go to begin */
     buttons.Add(CONTEXT_BUTTON_END, 19064);             /* go to end */
   }
-  if (CPVRManager::Get()->HasMenuHooks(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ClientID()))
+  if (CPVRManager::Get()->GetClients()->HasMenuHooks(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ClientID()))
     buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
 }
 

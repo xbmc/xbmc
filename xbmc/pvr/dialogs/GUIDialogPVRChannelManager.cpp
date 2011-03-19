@@ -477,11 +477,15 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         pDlgSelect->Add(g_localizeStrings.Get(19209));
         clients.push_back(XBMC_VIRTUAL_CLIENTID);
         CLIENTMAPITR itr;
-        for (itr = CPVRManager::Get()->Clients()->begin() ; itr != CPVRManager::Get()->Clients()->end(); itr++)
+        CLIENTMAP clientMap;
+        if (CPVRManager::Get()->GetClients()->Clients(&clientMap))
         {
-          CStdString strClient = (*itr).second->GetBackendName() + ":" + (*itr).second->GetConnectionString();
-          clients.push_back((*itr).first);
-          pDlgSelect->Add(strClient);
+          for (itr = clientMap.begin() ; itr != clientMap.end(); itr++)
+          {
+            CStdString strClient = (*itr).second->GetBackendName() + ":" + (*itr).second->GetConnectionString();
+            clients.push_back((*itr).first);
+            pDlgSelect->Add(strClient);
+          }
         }
 
         pDlgSelect->DoModal();
@@ -679,7 +683,7 @@ void CGUIDialogPVRChannelManager::Update()
     if (channel->ClientID() == XBMC_VIRTUAL_CLIENTID) /* XBMC internal */
       clientName = g_localizeStrings.Get(19209);
     else
-      clientName = CPVRManager::Get()->Clients()->find(channel->ClientID())->second->GetBackendName() + ":" + CPVRManager::Get()->Clients()->find(channel->ClientID())->second->GetConnectionString();
+      clientName = CPVRManager::Get()->GetClients()->GetClientName(channel->ClientID());
     channelFile->SetProperty("ClientName", clientName);
 
     m_channelItems->Add(channelFile);

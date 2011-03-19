@@ -64,7 +64,7 @@ CPVRClient::CPVRClient(const cp_extension_t *ext) : CAddonDll<DllPVRClient, PVRC
 {
 }
 
-CPVRClient::~CPVRClient()
+CPVRClient::~CPVRClient(void)
 {
 }
 
@@ -124,7 +124,7 @@ bool CPVRClient::Create(int clientID, IPVRClientCallback *pvrCB)
   return m_ReadyToUse;
 }
 
-void CPVRClient::Destroy()
+void CPVRClient::Destroy(void)
 {
   /* tell the AddOn to disconnect and prepare for destruction */
   try
@@ -142,7 +142,7 @@ void CPVRClient::Destroy()
   }
 }
 
-bool CPVRClient::ReCreate()
+bool CPVRClient::ReCreate(void)
 {
   long clientID = m_pInfo->clientID;
   IPVRClientCallback *pvrCB = m_manager;
@@ -150,7 +150,7 @@ bool CPVRClient::ReCreate()
   return Create(clientID, pvrCB);
 }
 
-int CPVRClient::GetID()
+int CPVRClient::GetID(void)
 {
   return m_pInfo->clientID;
 }
@@ -187,7 +187,7 @@ PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
  * General PVR Functions
  */
 
-const std::string CPVRClient::GetBackendName()
+const std::string CPVRClient::GetBackendName(void)
 {
   CSingleLock lock(m_critSection);
 
@@ -206,7 +206,7 @@ const std::string CPVRClient::GetBackendName()
   return g_localizeStrings.Get(161);
 }
 
-const std::string CPVRClient::GetBackendVersion()
+const std::string CPVRClient::GetBackendVersion(void)
 {
   CSingleLock lock(m_critSection);
 
@@ -225,7 +225,7 @@ const std::string CPVRClient::GetBackendVersion()
   return g_localizeStrings.Get(161);
 }
 
-const std::string CPVRClient::GetConnectionString()
+const std::string CPVRClient::GetConnectionString(void)
 {
   CSingleLock lock(m_critSection);
 
@@ -366,7 +366,7 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannel &channelinfo, CPVREpg *
  * Channels PVR Functions
  */
 
-int CPVRClient::GetNumChannels()
+int CPVRClient::GetNumChannels(void)
 {
   CSingleLock lock(m_critSection);
 
@@ -794,7 +794,7 @@ bool CPVRClient::OpenLiveStream(const CPVRChannel &channelinfo)
   return false;
 }
 
-void CPVRClient::CloseLiveStream()
+void CPVRClient::CloseLiveStream(void)
 {
   CSingleLock lock(m_critSection);
 
@@ -823,7 +823,7 @@ int64_t CPVRClient::SeekLiveStream(int64_t iFilePosition, int iWhence/* = SEEK_S
   return m_pStruct->SeekLiveStream(iFilePosition, iWhence);
 }
 
-int64_t CPVRClient::PositionLiveStream()
+int64_t CPVRClient::PositionLiveStream(void)
 {
   return m_pStruct->PositionLiveStream();
 }
@@ -833,7 +833,7 @@ int64_t CPVRClient::LengthLiveStream(void)
   return m_pStruct->LengthLiveStream();
 }
 
-int CPVRClient::GetCurrentClientChannel()
+int CPVRClient::GetCurrentClientChannel(void)
 {
   CSingleLock lock(m_critSection);
 
@@ -970,22 +970,22 @@ PVR_ERROR CPVRClient::GetStreamProperties(PVR_STREAMPROPS *props)
   return PVR_ERROR_UNKOWN;
 }
 
-void CPVRClient::DemuxReset()
+void CPVRClient::DemuxReset(void)
 {
   m_pStruct->DemuxReset();
 }
 
-void CPVRClient::DemuxAbort()
+void CPVRClient::DemuxAbort(void)
 {
   m_pStruct->DemuxAbort();
 }
 
-void CPVRClient::DemuxFlush()
+void CPVRClient::DemuxFlush(void)
 {
   m_pStruct->DemuxFlush();
 }
 
-DemuxPacket* CPVRClient::DemuxRead()
+DemuxPacket* CPVRClient::DemuxRead(void)
 {
   return m_pStruct->DemuxRead();
 }

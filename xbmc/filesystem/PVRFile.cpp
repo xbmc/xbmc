@@ -50,7 +50,7 @@ bool CPVRFile::Open(const CURL& url)
     const CPVRChannel *tag = CPVRManager::GetChannelGroups()->GetByPath(strURL);
     if (tag)
     {
-      if (!CPVRManager::Get()->OpenLiveStream(tag))
+      if (!CPVRManager::Get()->OpenLiveStream(*tag))
         return false;
 
       m_isPlayRecording = false;
@@ -67,7 +67,7 @@ bool CPVRFile::Open(const CURL& url)
     const CPVRChannel *tag = CPVRManager::GetChannelGroups()->GetByPath(strURL);
     if (tag)
     {
-      if (!CPVRManager::Get()->OpenLiveStream(tag))
+      if (!CPVRManager::Get()->OpenLiveStream(*tag))
         return false;
 
       m_isPlayRecording = false;
@@ -84,7 +84,7 @@ bool CPVRFile::Open(const CURL& url)
     CPVRRecording *tag = CPVRManager::GetRecordings()->GetByPath(strURL);
     if (tag)
     {
-      if (!CPVRManager::Get()->OpenRecordedStream(tag))
+      if (!CPVRManager::Get()->OpenRecordedStream(*tag))
         return false;
 
       m_isPlayRecording = true;
@@ -255,7 +255,10 @@ CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
           // This function was added to retrieve the stream URL for this item
           // Is is used for the MediaPortal PVR addon
           // see PVRManager.cpp
-          return CPVRManager::Get()->GetLiveStreamURL(tag);
+          if (CPVRManager::Get()->OpenLiveStream(*tag))
+            return CPVRManager::Get()->GetClients()->GetStreamURL(*tag);
+          else
+            return "";
         }
         else
         {

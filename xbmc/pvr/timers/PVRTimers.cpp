@@ -52,15 +52,15 @@ void CPVRTimers::Unload()
 
 int CPVRTimers::LoadFromClients(void)
 {
-  CLIENTMAP *clients = CPVRManager::Get()->Clients();
-  if (!clients)
+  CLIENTMAP clients;
+  if (!CPVRManager::Get()->GetClients()->Clients(&clients))
     return 0;
 
   int iCurSize = size();
 
   /* get the timer list from each client */
-  CLIENTMAPITR itrClients = clients->begin();
-  while (itrClients != clients->end())
+  CLIENTMAPITR itrClients = clients.begin();
+  while (itrClients != clients.end())
   {
     if (!(*itrClients).second->ReadyToUse() ||
         !CPVRManager::Get()->GetClientProperties((*itrClients).second->GetID())->SupportTimers ||

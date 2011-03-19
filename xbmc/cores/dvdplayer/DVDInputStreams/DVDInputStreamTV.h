@@ -51,7 +51,7 @@ public:
   bool            PrevChannel(bool preview = false);
   bool            SelectChannelByNumber(unsigned int channel);
   bool            SelectChannel(const CPVRChannel &channel);
-  bool            GetSelectedChannel(const CPVRChannel *channel) {return false; }
+  bool            GetSelectedChannel(CPVRChannel *channel) {return false; }
 
   int             GetTotalTime();
   int             GetStartTime();

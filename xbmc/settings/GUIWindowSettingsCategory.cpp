@@ -1935,7 +1935,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("pvrmanager.channelscan"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19118, 19194, 0))
-      CPVRManager::Get()->StartChannelScan();
+      CPVRManager::Get()->GetClients()->StartChannelScan();
   }
   else if (strSetting.Equals("pvrmanager.channelmanager"))
   {

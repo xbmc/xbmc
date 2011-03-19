@@ -121,8 +121,8 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(CPVRChannel *channel)
     return false;
 
   /* check if this channel is currently playing if we are hiding it */
-  if ((CPVRManager::Get()->IsPlayingTV() || CPVRManager::Get()->IsPlayingRadio()) &&
-      (*CPVRManager::Get()->GetCurrentPlayingItem()->GetPVRChannelInfoTag() == *channel))
+  CPVRChannel currentChannel;
+  if (CPVRManager::Get()->GetCurrentChannel(&currentChannel) && currentChannel == *channel)
   {
     CGUIDialogOK::ShowAndGetInput(19098,19101,0,19102);
     return false;
@@ -246,15 +246,15 @@ void CPVRChannelGroupInternal::Renumber(void)
 
 int CPVRChannelGroupInternal::GetFromClients(void)
 {
-  CLIENTMAP *clients = CPVRManager::Get()->Clients();
-  if (!clients)
+  CLIENTMAP clients;
+  if (!CPVRManager::Get()->GetClients()->Clients(&clients))
     return 0;
 
   int iCurSize = size();
 
   /* get the channel list from each client */
-  CLIENTMAPITR itrClients = clients->begin();
-  while (itrClients != clients->end())
+  CLIENTMAPITR itrClients = clients.begin();
+  while (itrClients != clients.end())
   {
     if ((*itrClients).second->ReadyToUse() && (*itrClients).second->GetNumChannels() > 0)
       (*itrClients).second->GetChannelList(*this, m_bRadio);

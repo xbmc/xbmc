@@ -35,7 +35,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag()
   m_strSummary         = "";
   m_bIsActive          = false;
   m_iChannelNumber     = -1;
-  m_iClientID          = CPVRManager::Get()->GetFirstClientID();
+  m_iClientID          = CPVRManager::Get()->GetClients()->GetFirstID();
   m_iClientIndex       = -1;
   m_iClientNumber      = -1;
   m_iClientChannelUid  = -1;
@@ -185,10 +185,12 @@ bool CPVRTimerInfoTag::AddToClient()
 
   try
   {
-    CLIENTMAP *clients = CPVRManager::Get()->Clients();
+    CLIENTMAP clients;
+    if (!CPVRManager::Get()->GetClients()->Clients(&clients))
+      return false;
 
     /* and write it to the backend */
-    PVR_ERROR err = clients->find(m_iClientID)->second->AddTimer(*this);
+    PVR_ERROR err = clients.find(m_iClientID)->second->AddTimer(*this);
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
 
@@ -208,15 +210,17 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool force) const
 {
   try
   {
-    CLIENTMAP *clients = CPVRManager::Get()->Clients();
+    CLIENTMAP clients;
+    if (!CPVRManager::Get()->GetClients()->Clients(&clients))
+      return false;
 
     /* and write it to the backend */
-    PVR_ERROR err = clients->find(m_iClientID)->second->DeleteTimer(*this, force);
+    PVR_ERROR err = clients.find(m_iClientID)->second->DeleteTimer(*this, force);
 
     if (err == PVR_ERROR_RECORDING_RUNNING)
     {
       if (CGUIDialogYesNo::ShowAndGetInput(122,0,19122,0))
-        err = clients->find(m_iClientID)->second->DeleteTimer(*this, true);
+        err = clients.find(m_iClientID)->second->DeleteTimer(*this, true);
     }
 
     if (err != PVR_ERROR_NO_ERROR)
@@ -235,13 +239,15 @@ bool CPVRTimerInfoTag::RenameOnClient(const CStdString &newname)
 {
   try
   {
-    CLIENTMAP *clients = CPVRManager::Get()->Clients();
+    CLIENTMAP clients;
+    if (!CPVRManager::Get()->GetClients()->Clients(&clients))
+      return false;
 
     /* and write it to the backend */
-    PVR_ERROR err = clients->find(m_iClientID)->second->RenameTimer(*this, newname);
+    PVR_ERROR err = clients.find(m_iClientID)->second->RenameTimer(*this, newname);
 
     if (err == PVR_ERROR_NOT_IMPLEMENTED)
-      err = clients->find(m_iClientID)->second->UpdateTimer(*this);
+      err = clients.find(m_iClientID)->second->UpdateTimer(*this);
 
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
@@ -316,10 +322,12 @@ bool CPVRTimerInfoTag::UpdateOnClient()
 
   try
   {
-    CLIENTMAP *clients = CPVRManager::Get()->Clients();
+    CLIENTMAP clients;
+    if (!CPVRManager::Get()->GetClients()->Clients(&clients))
+      return false;
 
     /* and write it to the backend */
-    PVR_ERROR err = clients->find(m_iClientID)->second->UpdateTimer(*this);
+    PVR_ERROR err = clients.find(m_iClientID)->second->UpdateTimer(*this);
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
 
