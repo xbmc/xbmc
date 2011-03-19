@@ -51,8 +51,7 @@ int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
     pathname = [[NSBundle bundleForClass:XBMCfrapp] pathForResource:@"Frameworks" ofType:@""];
     strcpy(path, [pathname UTF8String]);
     *pathsize = strlen(path);
-    CLog::Log(LOGDEBUG, "DarwinFrameworkPath(a) -> %s", path);
-    //NSLog(@"%s XBMC Frapp Frameworks path %s", __PRETTY_FUNCTION__, path);
+    //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(a) -> %s", path);
     return 0;
   }
 
@@ -66,7 +65,7 @@ int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
       path[n] = '\0';
     strcat(path, "Frameworks");
     *pathsize = strlen(path);
-    CLog::Log(LOGDEBUG, "DarwinFrameworkPath(c) -> %s", path);
+    //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(c) -> %s", path);
     return 0;
   }
 
@@ -77,7 +76,7 @@ int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
     // check for 'Contents' if we are running as real xbmc.app
     strcpy(path, [pathname UTF8String]);
     *pathsize = strlen(path);
-    CLog::Log(LOGDEBUG, "DarwinFrameworkPath(d) -> %s", path);
+    //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(d) -> %s", path);
     return 0;
   }
 
@@ -89,7 +88,7 @@ int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
     strcpy(path, PREFIX_USR_PATH);
     strcat(path, "/lib");
     *pathsize = strlen(path);
-    CLog::Log(LOGDEBUG, "DarwinFrameworkPath(e) -> %s", path);
+    //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(e) -> %s", path);
     return 0;
   }
 
@@ -108,7 +107,7 @@ int  GetDarwinExecutablePath(char* path, uint32_t *pathsize)
     pathname = [[NSBundle bundleForClass:XBMCfrapp] pathForResource:@"XBMC" ofType:@""];
     strcpy(path, [pathname UTF8String]);
     *pathsize = strlen(path);
-    CLog::Log(LOGDEBUG, "DarwinExecutablePath(a) -> %s", path);
+    //CLog::Log(LOGDEBUG, "DarwinExecutablePath(a) -> %s", path);
     return 0;
   }
 
@@ -117,7 +116,7 @@ int  GetDarwinExecutablePath(char* path, uint32_t *pathsize)
   pathname = [[NSBundle mainBundle] executablePath];
   strcpy(path, [pathname UTF8String]);
   *pathsize = strlen(path);
-  CLog::Log(LOGDEBUG, "DarwinExecutablePath(b/c) -> %s", path);
+  //CLog::Log(LOGDEBUG, "DarwinExecutablePath(b/c) -> %s", path);
 
   return 0;
 }
