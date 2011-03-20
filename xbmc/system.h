@@ -102,10 +102,7 @@
 
 #ifdef __APPLE__
   #if defined(__arm__)
-    #undef HAS_GL
     #undef HAS_SDL
-    #define HAVE_LIBEGL
-    #define HAVE_LIBGLESV2
   #else
     #define HAS_GL
     #define HAS_SDL_AUDIO

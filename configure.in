@@ -506,16 +506,22 @@ AC_LANG_POP([C++])
 # Checks for platforms libraries.
 if test "$use_gles" = "yes"; then
   # GLES overwrites GL if both set to yes.
-  if test "$host_vendor" != "apple" ; then
-    AC_CHECK_LIB([EGL],     [main],, AC_MSG_ERROR($missing_library))
-    AC_CHECK_LIB([GLESv2],  [main],, AC_MSG_ERROR($missing_library))
+  if test "$host_vendor" = "apple" ; then
+    AC_DEFINE([HAVE_LIBEGL],[1],["Define to 1 if you have the `EGL' library (-lEGL)."])
+    AC_DEFINE([HAVE_LIBGLESV2],[1],["Define to 1 if you have the `GLESv2' library (-lGLESv2)."])
+    AC_MSG_RESULT(== WARNING: OpenGLES support is assumed.)
   else
-    AC_MSG_RESULT(== WARNING: OpenGL EL  support is assumed.)
+    AC_CHECK_LIB([EGL],   [main],, AC_MSG_ERROR($missing_library))
+    AC_CHECK_LIB([GLESv2],[main],, AC_MSG_ERROR($missing_library))
   fi
 else
   if test "$use_gl" = "yes"; then
     if test "$host_vendor" = "apple" ; then
-      # linking to OpenGL.framework instead of libGL, libGLU
+      # linking to OpenGL.framework instead of libGL, libGLU so AC_CHECK_LIB will fail
+      AC_DEFINE([HAVE_LIBGL],[1],["Define to 1 if you have the `GL' library (-lGL)."])
+      AC_MSG_RESULT(== WARNING: OpenGL support is assumed.)
+      AC_DEFINE([HAVE_LIBGLU],[1],["Define to 1 if you have the `GLU' library (-lGLU)."])
+      AC_MSG_RESULT(== WARNING: OpenGLU support is assumed.)
       AC_CHECK_LIB([GLEW],[main],, AC_MSG_ERROR($missing_library))
     else
       AC_CHECK_LIB([GL],  [main],, AC_MSG_ERROR($missing_library))
