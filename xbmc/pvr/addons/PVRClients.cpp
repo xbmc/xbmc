@@ -126,13 +126,13 @@ int CPVRClients::GetClients(map<long, CStdString> *clients)
   return clients->size() - iInitialSize;
 }
 
-bool CPVRClients::AllClientsLoaded(void)
+bool CPVRClients::AllClientsLoaded(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bAllClientsLoaded;
 }
 
-bool CPVRClients::HasClients(void)
+bool CPVRClients::HasClients(void) const
 {
   CSingleLock lock(m_critSection);
   return !m_clientMap.empty();
@@ -179,31 +179,31 @@ bool CPVRClients::IsValidClient(int iClientId)
   return bReturn;
 }
 
-bool CPVRClients::IsPlaying(void)
+bool CPVRClients::IsPlaying(void) const
 {
   CSingleLock lock(m_critSection);
   return m_currentRecording != NULL || m_currentChannel != NULL;
 }
 
-bool CPVRClients::IsPlayingTV(void)
+bool CPVRClients::IsPlayingTV(void) const
 {
   CSingleLock lock(m_critSection);
   return m_currentChannel != NULL && !m_currentChannel->IsRadio();
 }
 
-bool CPVRClients::IsPlayingRadio(void)
+bool CPVRClients::IsPlayingRadio(void) const
 {
   CSingleLock lock(m_critSection);
   return m_currentChannel != NULL && m_currentChannel->IsRadio();
 }
 
-bool CPVRClients::IsRunningChannelScan(void)
+bool CPVRClients::IsRunningChannelScan(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bChannelScanRunning;
 }
 
-bool CPVRClients::IsEncrypted(void)
+bool CPVRClients::IsEncrypted(void) const
 {
   CSingleLock lock(m_critSection);
   return m_currentChannel != NULL && m_currentChannel->IsEncrypted();
@@ -430,7 +430,7 @@ void CPVRClients::UpdateSignalQuality(void)
     ResetQualityData();
 }
 
-bool CPVRClients::IsReadingLiveStream(void)
+bool CPVRClients::IsReadingLiveStream(void) const
 {
   CSingleLock lock(m_critSection);
   return m_currentChannel != NULL;
@@ -493,7 +493,7 @@ bool CPVRClients::CloseLiveStream(void)
   return bReturn;
 }
 
-bool CPVRClients::IsPlayingRecording(void)
+bool CPVRClients::IsPlayingRecording(void) const
 {
   CSingleLock lock(m_critSection);
   return m_currentRecording != NULL;
@@ -1034,7 +1034,7 @@ PVR_STREAMPROPS *CPVRClients::GetCurrentStreamProperties(void)
   return props;
 }
 
-bool CPVRClients::GetPlayingChannel(CPVRChannel *channel)
+bool CPVRClients::GetPlayingChannel(CPVRChannel *channel) const
 {
   CSingleLock lock(m_critSection);
 
@@ -1046,7 +1046,7 @@ bool CPVRClients::GetPlayingChannel(CPVRChannel *channel)
   return m_currentChannel != NULL;
 }
 
-bool CPVRClients::GetPlayingRecording(const CPVRRecording *recording)
+bool CPVRClients::GetPlayingRecording(const CPVRRecording *recording) const
 {
   CSingleLock lock(m_critSection);
   recording = m_currentRecording;
@@ -1054,7 +1054,7 @@ bool CPVRClients::GetPlayingRecording(const CPVRRecording *recording)
   return recording != NULL;
 }
 
-int CPVRClients::GetPlayingClientID(void)
+int CPVRClients::GetPlayingClientID(void) const
 {
   int iReturn = -1;
   CSingleLock lock(m_critSection);
@@ -1140,7 +1140,7 @@ bool CPVRClients::CanRecordInstantly(void)
 }
 
 
-bool CPVRClients::IsRecordingOnPlayingChannel(void)
+bool CPVRClients::IsRecordingOnPlayingChannel(void) const
 {
   CSingleLock lock(m_critSection);
   return m_currentChannel && m_currentChannel->IsRecording();
@@ -1173,7 +1173,7 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
   return bReturn;
 }
 
-CStdString CPVRClients::GetCurrentInputFormat(void)
+CStdString CPVRClients::GetCurrentInputFormat(void) const
 {
   static CStdString strReturn = "";
   CSingleLock lock(m_critSection);
@@ -1230,13 +1230,13 @@ bool CPVRClients::RequestRemoval(AddonPtr addon)
   return StopClient(addon, false);
 }
 
-int CPVRClients::GetSignalLevel(void)
+int CPVRClients::GetSignalLevel(void) const
 {
   CSingleLock lock(m_critSection);
   return (float) m_qualityInfo.signal / 0xFFFF * 100;
 }
 
-int CPVRClients::GetSNR(void)
+int CPVRClients::GetSNR(void) const
 {
   CSingleLock lock(m_critSection);
   return (float) m_qualityInfo.snr / 0xFFFF * 100;

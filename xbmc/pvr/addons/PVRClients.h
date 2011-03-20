@@ -136,14 +136,14 @@ public:
 
   const CStdString GetClientName(int iClientId);
   const CStdString GetStreamURL(const CPVRChannel &tag);
-  int GetSignalLevel(void);
-  int GetSNR(void);
-  bool HasClients(void);
+  int GetSignalLevel(void) const;
+  int GetSNR(void) const;
+  bool HasClients(void) const;
   bool HasTimerSupport(int iClientId);
-  bool IsEncrypted(void);
-  bool IsPlaying(void);
-  bool AllClientsLoaded(void);
-  bool IsReadingLiveStream(void);
+  bool IsEncrypted(void) const;
+  bool IsPlaying(void) const;
+  bool AllClientsLoaded(void) const;
+  bool IsReadingLiveStream(void) const;
   bool SwitchChannel(const CPVRChannel &channel);
 
   int GetTimers(CPVRTimers *timers);
@@ -213,21 +213,21 @@ public:
    * @brief Check if a TV channel is playing.
    * @return True if it's playing, false otherwise.
    */
-  bool IsPlayingTV(void);
+  bool IsPlayingTV(void) const;
 
   /*!
    * @brief Check if a radio channel is playing.
    * @return True if it's playing, false otherwise.
    */
-  bool IsPlayingRadio(void);
+  bool IsPlayingRadio(void) const;
 
   /*!
    * @brief Check if a recording is playing.
    * @return True if it's playing, false otherwise.
    */
-  bool IsPlayingRecording(void);
+  bool IsPlayingRecording(void) const;
 
-  bool IsRunningChannelScan(void);
+  bool IsRunningChannelScan(void) const;
 
   /*!
    * @brief Open a selection dialog and start a channel scan on the selected client.
@@ -269,7 +269,7 @@ public:
    * @brief Get the input format name of the current playing stream content.
    * @return A pointer to the properties or NULL if no stream is playing.
    */
-  CStdString GetCurrentInputFormat(void);
+  CStdString GetCurrentInputFormat(void) const;
 
   /*!
    * @brief Start an instant recording on the current channel.
@@ -282,7 +282,7 @@ public:
    * @brief Check whether there is an active recording on the current channel.
    * @return True if there is, false otherwise.
    */
-  bool IsRecordingOnPlayingChannel(void);
+  bool IsRecordingOnPlayingChannel(void) const;
 
   boost::shared_ptr<CPVRClient> GetById(int iClientId);
 
@@ -309,9 +309,9 @@ public:
   const char *CharInfoBackendRecordings(void) const;
   const char *CharInfoPlayingClientName(void) const;
 
-  bool GetPlayingChannel(CPVRChannel *channel);
-  bool GetPlayingRecording(const CPVRRecording *recording);
-  int GetPlayingClientID(void);
+  bool GetPlayingChannel(CPVRChannel *channel) const;
+  bool GetPlayingRecording(const CPVRRecording *recording) const;
+  int GetPlayingClientID(void) const;
   bool IsValidClient(int iClientId);
   bool ClientLoaded(const CStdString &strClientId);
 
