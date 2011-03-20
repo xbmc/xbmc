@@ -8,10 +8,9 @@ SUBDIRS = \
 	openssl libssh2 curl \
 	jpeg tiff libpng libogg \
 	libvorbis libmad fribidi libwavpack libmpeg2 \
-	faad2 libcdio libsamplerate librtmp \
-	libmicrohttpd libmodplug \
-	boost \
-	mysqlclient samba python26
+	faad2 libass libcdio libsamplerate librtmp \
+	libmicrohttpd libmodplug libbluray \
+	samba python26 mysqlclient boost
 
 .PHONY: setup $(SUBDIRS)
 

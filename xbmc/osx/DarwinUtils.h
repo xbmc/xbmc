@@ -18,22 +18,19 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#ifndef _IOS_UTILS_H_
-#define _IOS_UTILS_H_
+#ifndef _DARWIN_UTILS_H_
+#define _DARWIN_UTILS_H_
 
 #include <string>
-#include <CoreFoundation/CFURL.h>
-#import "osx/AutoPool.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-  CFURLRef CreateCFURLRefFromFilePath(const char *filepath);
+  int     GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize);
+  int     GetDarwinExecutablePath(char* path, uint32_t *pathsize);
 
-  int     GetIOSFrameworkPath(char* path, uint32_t *pathsize);
-  int     GetIOSExecutablePath(char* path, uint32_t *pathsize);
-  bool    iOS_HasVideoToolboxDecoder(void);
+  bool    DarwinHasVideoToolboxDecoder(void);
 #ifdef __cplusplus
 }
 #endif

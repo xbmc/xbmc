@@ -19,6 +19,7 @@ ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
 PREFIX:=/Users/Shared/xbmc-depends/ios-4.2_arm7
+export PATH:=$(PREFIX)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(PREFIX) --enable-indirect-deps --with-pc-path=$(PREFIX)/lib/pkgconfig:$(PREFIX)/share/pkgconfig
 
 LIBDYLIB=$(SOURCE)/bin/pkg-config

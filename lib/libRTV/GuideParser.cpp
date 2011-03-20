@@ -130,7 +130,7 @@
 #include <winbase.h>
 #endif
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__FreeBSD__)
+#if (defined(__unix__) || defined(__APPLE__))
 #include <netinet/in.h>
 #endif
 

@@ -20,6 +20,7 @@ ARCHIVE_TOOL_FLAGS=xf
 
 export LIBTOOL=builds/unix/libtool
 PREFIX:=/Users/Shared/xbmc-depends/ios-4.2_arm7
+export PATH:=$(PREFIX)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(PREFIX) --enable-static --disable-shared
 
 CLEAN_FILES=$(ARCHIVE) $(SOURCE_DEBIAN)

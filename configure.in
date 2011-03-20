@@ -86,7 +86,6 @@ vtbdecoder_enabled="== VTBDecoder support enabled. =="
 vtbdecoder_disabled="== VTBDecoder support manually disabled. =="
 openmax_disabled="== OpenMax support manually disabled. =="
 openmax_not_found="== Could not find libnvomx. OpenMax support disabled. =="
-libass_using_internal="== External Libass not found, using internal. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
 librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
@@ -310,7 +309,6 @@ AC_ARG_ENABLE([external-python],
   [use_external_python=$enableval],
   [use_external_python=$use_external_libraries])
 
-use_external_libass="yes"
 ### End of external library options
 
 if test "x$host_vendor" != "xapple"; then
@@ -508,9 +506,12 @@ AC_LANG_POP([C++])
 # Checks for platforms libraries.
 if test "$use_gles" = "yes"; then
   # GLES overwrites GL if both set to yes.
-  #AC_CHECK_LIB([EGL],     [main],, AC_MSG_ERROR($missing_library))
-  #AC_CHECK_LIB([GLESv2],  [main],, AC_MSG_ERROR($missing_library))
-  AC_MSG_RESULT(== WARNING: OpenGL EL  support is assumed.)
+  if test "$host_vendor" != "apple" ; then
+    AC_CHECK_LIB([EGL],     [main],, AC_MSG_ERROR($missing_library))
+    AC_CHECK_LIB([GLESv2],  [main],, AC_MSG_ERROR($missing_library))
+  else
+    AC_MSG_RESULT(== WARNING: OpenGL EL  support is assumed.)
+  fi
 else
   if test "$use_gl" = "yes"; then
     if test "$host_vendor" = "apple" ; then
@@ -542,9 +543,10 @@ AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([ass], [ass_set_message_cb],,use_external_libass="no")
+AC_CHECK_LIB([ass],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
+AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
@@ -556,6 +558,7 @@ AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
 AC_CHECK_LIB([modplug],     [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([smbclient],   [main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([MAD],        [mad],
   [INCLUDES="$INCLUDES $MAD_CFLAGS"; LIBS="$LIBS $MAD_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -613,9 +616,7 @@ AS_CASE([x$use_libbluray],
 AS_CASE([x$use_libbluray],
   [xyes],[
     INCLUDES="$INCLUDES $LIBBLURAY_CFLAGS";
-    if test "$host_vendor" != "apple"; then
-      XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray])
-    fi;
+    XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray])
     AC_DEFINE([HAVE_LIBBLURAY], 1, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 1)
   ],[
@@ -627,8 +628,6 @@ AS_CASE([x$use_libbluray],
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([tiff],       [main],, AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([VORBISFILE],     [vorbisfile],
     [INCLUDES="$INCLUDES $VORBISFILE_CFLAGS"; LIBS="$LIBS $VORBISFILE_LIBS"],
     AC_MSG_ERROR($missing_library))
@@ -638,12 +637,10 @@ if test "$host_vendor" = "apple" ; then
   fi
 else
   AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([smbclient],  [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer],  [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dl],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
-  AC_CHECK_LIB([tiff],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image],  [main],, AC_MSG_ERROR($missing_library))
 
@@ -798,7 +795,7 @@ if test "$use_librtmp" != "no"; then
       use_librtmp="no"
     fi
    ])
-  if test "$use_librtmp" != "no" && test "$host_vendor" != "apple"; then
+  if test "$use_librtmp" != "no"; then
     XB_FIND_SONAME([RTMP], [rtmp], [use_librtmp])
   fi
   if test "$use_librtmp" != "no"; then
@@ -1087,7 +1084,7 @@ if test "$HAVE_ZIP" = "no" ; then
   AC_MSG_ERROR($missing_program)
 fi
 
-if test "$ARCH" = "i486-linux"; then
+if test "$ARCH" = "i486-linux" || test "$ARCH" = "x86-freebsd"; then
   AC_CHECK_PROG(HAVE_NASM,nasm,"yes","no",)
   if test "$HAVE_NASM" = "no" ; then
     AC_MSG_ERROR($missing_program)
@@ -1414,16 +1411,6 @@ if test "$host_vendor" = "apple"; then
     lib/libflac/Makefile"
 fi
 
-if test "$use_external_libass" = "no"; then
-  OUTPUT_FILES="$OUTPUT_FILES \
-    lib/libass/xbmc/Makefile"
-  USE_EXTERNAL_LIBASS=0
-  AC_MSG_NOTICE($libass_using_internal)
-else
-  AC_DEFINE([USE_EXTERNAL_LIBASS], [1], [Whether to use external libass library.])
-  USE_EXTERNAL_LIBASS=1
-fi
-
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
 # .dummy.am does nothing.
 AC_CONFIG_FILES([.dummy])
@@ -1440,7 +1427,6 @@ AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(BUILD_GOOM)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
-AC_SUBST(USE_EXTERNAL_LIBASS)
 AC_SUBST(USE_EXTERNAL_LIBMPEG2)
 AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
 AC_SUBST(USE_EXTERNAL_PYTHON)
@@ -1741,34 +1727,6 @@ XB_CONFIG_MODULE([lib/libdvd/libdvdnav], [
       --cc="$CC"
   fi
 ], [0])
-
-XB_CONFIG_MODULE([lib/cximage-6.0/zlib], [
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="$CFLAGS -fno-common" \
-    LDFLAGS="-Wl,-read_only_relocs,suppress" \
-    ./configure \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias
-  fi
-], [$HOST_NOT_APPLE])
-
-XB_CONFIG_MODULE([lib/libass], [
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="$CFLAGS -fno-common" \
-    LDFLAGS="-Wl,-read_only_relocs,suppress" \
-    ./configure \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias
-  else
-    CFLAGS="$CFLAGS" \
-    ./configure \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias
-  fi
-], [$USE_EXTERNAL_LIBASS])
 
 XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
   if test "$host_vendor" = "apple" ; then

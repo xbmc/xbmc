@@ -22,6 +22,9 @@
  *
  */
 
+/* prefix install location */
+#define PREFIX_USR_PATH        "@prefix@"
+
 /* libraries */
 #define DLL_PATH_CPLUFF        "special://xbmcbin/system/libcpluff-@ARCH@.so"
 #define DLL_PATH_IMAGELIB      "special://xbmcbin/system/ImageLib-@ARCH@.so"
@@ -31,11 +34,7 @@
 #define DLL_PATH_MEDIAINFO     "special://xbmcbin/system/mediainfo-@ARCH@.so"
 #define DLL_PATH_LIBCMYTH      "xbmc.so"
 
-#if defined(_LINUX) && !defined(__APPLE__)
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
-#else
-#define DLL_PATH_LIBRTMP       "librtmp.so"
-#endif
 
 #ifndef DLL_PATH_LIBCURL
 #define DLL_PATH_LIBCURL       "@CURL_SONAME@"
@@ -68,12 +67,6 @@
 #define DLL_PATH_OGG_CODEC     "@VORBISFILE_SONAME@"
 
 /* dvdplayer */
-#define DLL_PATH_LIBASS        "special://xbmcbin/system/players/dvdplayer/libass-@ARCH@.so"
-#if defined(__APPLE__)
-#define DLL_PATH_LIBMPEG2      "libmpeg2.0.dylib"
-#else
- #define DLL_PATH_LIBMPEG2      "special://xbmcbin/system/players/dvdplayer/libmpeg2-@ARCH@.so"
-#endif
 #define DLL_PATH_LIBDVDNAV     "special://xbmcbin/system/players/dvdplayer/libdvdnav-@ARCH@.so"
 #define DLL_PATH_LIBMAD        "@MAD_SONAME@"
 
@@ -97,19 +90,15 @@
 
 /* broadcom crystalhd */
 #if defined(_LINUX) && !defined(__APPLE__)
-#define DLL_PATH_LIBCRYSTALHD "@CRYSTALHD_SONAME@"
+#define DLL_PATH_LIBCRYSTALHD  "@CRYSTALHD_SONAME@"
 #else
-#define DLL_PATH_LIBCRYSTALHD "libcrystalhd.dylib"
+#define DLL_PATH_LIBCRYSTALHD  "libcrystalhd.dylib"
 #endif
 
 /* libbluray */
-#if defined(_LINUX) && !defined(__APPLE__)
-#define DLL_PATH_LIBBLURAY "@BLURAY_SONAME@"
-#else
-#define DLL_PATH_LIBBLURAY "libbluray.dylib"
-#endif
+#define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"
 
 /* apple vdadecoder */
-#define DLL_PATH_LIBVDADECODER  "/System/Library/Frameworks/VideoDecodeAcceleration.framework/Versions/Current/VideoDecodeAcceleration"
+#define DLL_PATH_LIBVDADECODER "/System/Library/Frameworks/VideoDecodeAcceleration.framework/Versions/Current/VideoDecodeAcceleration"
 
 #endif

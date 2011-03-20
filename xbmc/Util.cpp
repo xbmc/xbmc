@@ -71,11 +71,7 @@
 #include "WIN32Util.h"
 #endif
 #if defined(__APPLE__)
-#if defined(__arm__)
-#include "osx/iOSUtils.h"
-#else
-#include "osx/CocoaInterface.h"
-#endif
+#include "osx/DarwinUtils.h"
 #endif
 #include "GUIUserMessages.h"
 #include "filesystem/File.h"
@@ -497,13 +493,9 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 #ifdef __APPLE__
     int      result = -1;
     char     given_path[2*MAXPATHLEN];
-    uint32_t path_size = 2*MAXPATHLEN;
+    uint32_t path_size =2*MAXPATHLEN;
 
-    #if defined(__arm__)
-      result = GetIOSExecutablePath(given_path, &path_size);
-    #else
-      result = _NSGetExecutablePath(given_path, &path_size);
-    #endif
+    result = GetDarwinExecutablePath(given_path, &path_size);
     if (result == 0)
     {
       // Move backwards to last /.
@@ -2210,19 +2202,11 @@ CStdString CUtil::ResolveExecutablePath()
   CStdStringW strPathW = szAppPathW;
   g_charsetConverter.wToUTF8(strPathW,strExecutablePath);
 #elif defined(__APPLE__)
-  int      result = -1;
   char     given_path[2*MAXPATHLEN];
-  char     real_given_path[2*MAXPATHLEN];
-  uint32_t path_size = 2*MAXPATHLEN;
+  uint32_t path_size =2*MAXPATHLEN;
 
-  #if defined(__arm__)
-    result = GetIOSExecutablePath(given_path, &path_size);
-  #else
-    result = _NSGetExecutablePath(given_path, &path_size);
-  #endif
-  if (result == 0)
-    realpath(given_path, real_given_path);
-  strExecutablePath = real_given_path;
+  GetDarwinExecutablePath(given_path, &path_size);
+  strExecutablePath = given_path;
 #else
   /* Get our PID and build the name of the link in /proc */
   pid_t pid = getpid();
@@ -2239,35 +2223,15 @@ CStdString CUtil::ResolveExecutablePath()
   return strExecutablePath;
 }
 
-CStdString CUtil::GetFrameworksPath(void)
+CStdString CUtil::GetFrameworksPath(bool forPython)
 {
   CStdString strFrameworksPath;
 #if defined(__APPLE__)
   char     given_path[2*MAXPATHLEN];
-  char     real_given_path[2*MAXPATHLEN];
-  uint32_t path_size = 2*MAXPATHLEN;
+  uint32_t path_size =2*MAXPATHLEN;
 
-  #if defined(__arm__)
-    GetIOSFrameworkPath(given_path, &path_size);
-  #else
-    _NSGetExecutablePath(given_path, &path_size);
-    // Move backwards to last /.
-    for (int n=strlen(given_path)-1; given_path[n] != '/'; n--)
-      given_path[n] = '\0';
-
-    // Assume local path inside application bundle.
-    strcat(given_path, "../Frameworks");
-  #endif
-  // Convert to real path.
-  if (realpath(given_path, real_given_path) != NULL)
-  {
-    // check if we are running as real xbmc.app
-    if (strstr(real_given_path, "Contents"))
-    {
-      strFrameworksPath = real_given_path;
-      return strFrameworksPath;
-    }
-  }
+  GetDarwinFrameworkPath(forPython, given_path, &path_size);
+  strFrameworksPath = given_path;
 #endif
   return strFrameworksPath;
 }

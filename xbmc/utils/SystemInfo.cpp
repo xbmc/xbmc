@@ -35,15 +35,13 @@
 #include "guilib/LocalizeStrings.h"
 #include "CPUInfo.h"
 #include "utils/TimeUtils.h"
-#include "log.h"
+#include "utils/log.h"
 #ifdef _WIN32
 #include "dwmapi.h"
 #endif
 #ifdef __APPLE__
+#include "osx/DarwinUtils.h"
 #include "osx/CocoaInterface.h"
-#if defined(__arm__)
-#include "osx/iOSUtils.h"
-#endif
 #endif
 
 CSysInfo g_sysinfo;
@@ -730,7 +728,7 @@ bool CSysInfo::HasVideoToolBoxDecoder()
   bool        result = false;
 
 #if defined(HAVE_VIDEOTOOLBOXDECODER)
-  result = iOS_HasVideoToolboxDecoder();
+  result = DarwinHasVideoToolboxDecoder();
 #endif
   return result;
 }

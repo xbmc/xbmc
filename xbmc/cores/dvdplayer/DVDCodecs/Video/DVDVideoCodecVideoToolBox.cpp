@@ -33,7 +33,7 @@
 #include "lib/DllAvFormat.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "osx/iOSUtils.h"
+#include "osx/DarwinUtils.h"
 
 #if defined(__cplusplus)
 extern "C"

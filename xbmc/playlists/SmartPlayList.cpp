@@ -915,7 +915,7 @@ CStdString CSmartPlaylist::GetWhereClause(CDatabase &db, bool needWhere /* = tru
     if (it != m_playlistRules.begin())
       rule += m_matchAllRules ? " AND " : " OR ";
     else if (needWhere)
-      rule += "WHERE ";
+      rule += " WHERE ";
     rule += "(";
     currentRule = (*it).GetWhereClause(db, GetType());
     // if we don't get a rule, we add '1' or '0' so the query is still valid and doesn't fail

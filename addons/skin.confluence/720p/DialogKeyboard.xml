@@ -1,5 +1,5 @@
 <window id="103">
-	<defaultcontrol always="true">65</defaultcontrol>
+	<defaultcontrol always="true">300</defaultcontrol>
 	<include>dialogeffect</include>
 	<coordinates>
 		<system>2</system>

@@ -21,33 +21,28 @@
 
 #define BOOL XBMC_BOOL 
 #include "system.h"
+#include "DllPaths.h"
 #include "utils/log.h"
 #undef BOOL
 
 #if defined(__APPLE__)
-  #if defined(__arm__)
-    #import <Foundation/Foundation.h>
-  #else
-    #import <Cocoa/Cocoa.h>
-  #endif
-#import <mach/mach_host.h>
-#import <sys/sysctl.h>
+#if defined(__arm__)
+  #import <Foundation/Foundation.h>
+  #import <mach/mach_host.h>
+  #import <sys/sysctl.h>
+#else
+  #import <Cocoa/Cocoa.h>
+#endif
 
-#import "iOSUtils.h"
+#import "DarwinUtils.h"
 
-CFURLRef CreateCFURLRefFromFilePath(const char *filepath)
-{
-  NSString *fpath = [[NSString alloc]initWithUTF8String:filepath];
-  CFURLRef fileURL = (CFURLRef)[[NSURL alloc] initFileURLWithPath: fpath];
-  [fpath release];
-
-  return fileURL;
-}
-
-int  GetIOSFrameworkPath(char* path, uint32_t *pathsize)
+int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
 {
   // see if we can figure out who we are
-	NSString *pathname;
+  NSString *pathname;
+
+  path[0] = 0;
+  *pathsize = 0;
 
   // a) XBMC frappliance running under ATV2
   Class XBMCfrapp = NSClassFromString(@"XBMCAppliance");
@@ -56,34 +51,54 @@ int  GetIOSFrameworkPath(char* path, uint32_t *pathsize)
     pathname = [[NSBundle bundleForClass:XBMCfrapp] pathForResource:@"Frameworks" ofType:@""];
     strcpy(path, [pathname UTF8String]);
     *pathsize = strlen(path);
-    //NSLog(@"%s XBMC Frapp Frameworks path %s", __PRETTY_FUNCTION__, path);
+    //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(a) -> %s", path);
     return 0;
   }
 
   // b) XBMC application running under IOS
-  Class XBMCapp= NSClassFromString(@"XBMCApplication");
-  if (XBMCfrapp != NULL)
+  pathname = [[NSBundle mainBundle] executablePath];
+  if (pathname && strstr([pathname UTF8String], "XBMC.app/XBMC"))
   {
-    pathname = [[NSBundle bundleForClass:XBMCapp] pathForResource:@"Frameworks" ofType:@""];
     strcpy(path, [pathname UTF8String]);
+    // Move backwards to last "/"
+    for (int n=strlen(path)-1; path[n] != '/'; n--)
+      path[n] = '\0';
+    strcat(path, "Frameworks");
     *pathsize = strlen(path);
-    //NSLog(@"%s XBMC IOS Frameworks path %s", __PRETTY_FUNCTION__, path);
+    //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(c) -> %s", path);
     return 0;
   }
 
-  // c) XBMC application running under OSX
+  // d) XBMC application running under OSX
   pathname = [[NSBundle mainBundle] privateFrameworksPath];
-  strcpy(path, [pathname UTF8String]);
-  *pathsize = strlen(path);
-  //NSLog(@"%s XBMC Frameworks path %s", __PRETTY_FUNCTION__, path);
+  if (pathname && strstr([pathname UTF8String], "Contents"))
+  {
+    // check for 'Contents' if we are running as real xbmc.app
+    strcpy(path, [pathname UTF8String]);
+    *pathsize = strlen(path);
+    //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(d) -> %s", path);
+    return 0;
+  }
 
-  return 0;
+  // e) XBMC OSX binary running under xcode or command-line
+  // but only if it's not for python. In this case, let python
+  // use it's internal compiled paths.
+  if (!forPython)
+  {
+    strcpy(path, PREFIX_USR_PATH);
+    strcat(path, "/lib");
+    *pathsize = strlen(path);
+    //CLog::Log(LOGDEBUG, "DarwinFrameworkPath(e) -> %s", path);
+    return 0;
+  }
+
+  return -1;
 }
 
-int  GetIOSExecutablePath(char* path, uint32_t *pathsize)
+int  GetDarwinExecutablePath(char* path, uint32_t *pathsize)
 {
   // see if we can figure out who we are
-	NSString *pathname;
+  NSString *pathname;
 
   // a) XBMC frappliance running under ATV2
   Class XBMCfrapp = NSClassFromString(@"XBMCAppliance");
@@ -92,7 +107,7 @@ int  GetIOSExecutablePath(char* path, uint32_t *pathsize)
     pathname = [[NSBundle bundleForClass:XBMCfrapp] pathForResource:@"XBMC" ofType:@""];
     strcpy(path, [pathname UTF8String]);
     *pathsize = strlen(path);
-    //NSLog(@"%s XBMC frapp executable_path %s", __PRETTY_FUNCTION__, path);
+    //CLog::Log(LOGDEBUG, "DarwinExecutablePath(a) -> %s", path);
     return 0;
   }
 
@@ -101,12 +116,12 @@ int  GetIOSExecutablePath(char* path, uint32_t *pathsize)
   pathname = [[NSBundle mainBundle] executablePath];
   strcpy(path, [pathname UTF8String]);
   *pathsize = strlen(path);
-  //NSLog(@"%s XBMC app executable_path %s", __PRETTY_FUNCTION__, path);
+  //CLog::Log(LOGDEBUG, "DarwinExecutablePath(b/c) -> %s", path);
 
   return 0;
 }
 
-bool iOS_HasVideoToolboxDecoder(void)
+bool DarwinHasVideoToolboxDecoder(void)
 {
   bool bDecoderAvailable = false;
 
@@ -124,7 +139,7 @@ bool iOS_HasVideoToolboxDecoder(void)
     int      result = -1;
     
     memset(given_path, 0x0, path_size);
-    result = GetIOSExecutablePath(given_path, &path_size);
+    result = GetDarwinExecutablePath(given_path, &path_size);
     if(result == 0) 
     {
       /* When XBMC is started from a sandbox directory we have to check the sysctl values */

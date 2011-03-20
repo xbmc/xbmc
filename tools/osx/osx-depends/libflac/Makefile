@@ -4,9 +4,11 @@
 #    make
 #    sudo make install
 
+include ../config.mk
+
 # lib name, version
-LIBNAME=autoconf
-VERSION=2.63
+LIBNAME=flac
+VERSION=1.2.1
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
@@ -18,11 +20,12 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-PREFIX:=/Users/Shared/xbmc-depends/osx-10.4_i386
-export PATH:=$(PREFIX)/bin:$(PATH)
-CONFIGURE=./configure --prefix=$(PREFIX)
+CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) \
+  --disable-asm-optimizations \
+  --disable-xmms-plugin \
+  --disable-cpplibs
 
-LIBDYLIB=$(SOURCE)/bin/autoconf
+LIBDYLIB=$(SOURCE)/$(LIBNAME)/.libs/$(LIBNAME).dylib
 
 CLEAN_FILES=$(ARCHIVE) $(SOURCE)
 
@@ -35,7 +38,6 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	-rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
-	sed -i bak -e "s/'libtoolize'/'glibtoolize'/" $(SOURCE)/bin/autoreconf.in
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)

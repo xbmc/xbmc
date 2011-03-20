@@ -24,6 +24,10 @@
 #define SOL_TCP IPPROTO_TCP
 #endif
 #include "OSXGNUReplacements.h"
+#elif defined(__FreeBSD__)
+#ifndef SOL_TCP
+#define SOL_TCP IPPROTO_TCP
+#endif
 #else
 #include <sys/epoll.h>
 #endif
@@ -39,6 +43,10 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
+
+#if defined(__FreeBSD__)
+#include <sys/socket.h>
+#endif
 
 #include "net.h"
 

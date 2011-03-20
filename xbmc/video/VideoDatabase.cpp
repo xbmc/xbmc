@@ -3507,6 +3507,48 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
                                          "GROUP BY tvshow.idShow;");
       m_pDS->exec(tvshowview.c_str());
     }
+    if(iVersion < 48)
+    {
+      CLog::Log(LOGINFO, "recreate episodeview");
+      m_pDS->exec("DROP VIEW IF EXISTS episodeview");
+      CStdString episodeview = PrepareSQL("CREATE VIEW episodeview AS SELECT "
+                                          "  episode.*,files.strFileName as strFileName,"
+                                          "  path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed,"
+                                          "  tvshow.c%02d as strTitle,tvshow.c%02d as strStudio,tvshow.idShow as idShow,"
+                                          "  tvshow.c%02d as premiered, tvshow.c%02d as mpaa "
+                                          "FROM episode "
+                                          "  JOIN files ON"
+                                          "    files.idFile=episode.idFile "
+                                          "  JOIN tvshowlinkepisode ON "
+                                          "    episode.idepisode=tvshowlinkepisode.idEpisode "
+                                          "  JOIN tvshow ON"
+                                          "     tvshow.idShow=tvshowlinkepisode.idShow "
+                                          "  JOIN path ON"
+                                          "     files.idPath=path.idPath", VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA);
+      m_pDS->exec(episodeview.c_str());
+
+      CLog::Log(LOGINFO, "recreate musicvideoview");
+      m_pDS->exec("DROP VIEW IF EXISTS musicvideoview");
+      m_pDS->exec("CREATE VIEW musicvideoview AS SELECT "
+                  "  musicvideo.*,files.strFileName AS strFileName,path.strPath AS strPath,"
+                  "  files.playCount AS playCount,files.lastPlayed as lastPlayed "
+                  "FROM musicvideo"
+                  "  JOIN files ON"
+                  "    files.idFile=musicvideo.idFile"
+                  "  JOIN path ON"
+                  "    path.idPath=files.idPath");
+
+      CLog::Log(LOGINFO, "recreate movieview");
+      m_pDS->exec("DROP VIEW IF EXISTS movieview");
+      m_pDS->exec("CREATE VIEW movieview AS SELECT "
+                  "  movie.*,files.strFileName as strFileName,path.strPath as strPath,"
+                  "  files.playCount as playCount,files.lastPlayed as lastPlayed "
+                  "FROM movie "
+                  "  JOIN files ON"
+                  "    files.idFile=movie.idFile"
+                  "  JOIN path ON"
+                  "    path.idPath=files.idPath");
+    }
   }
   catch (...)
   {
