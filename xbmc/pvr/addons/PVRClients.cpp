@@ -88,29 +88,6 @@ int CPVRClients::GetFirstID(void)
   return iReturn;
 }
 
-boost::shared_ptr<CPVRClient> CPVRClients::GetById(int iClientId)
-{
-  boost::shared_ptr<CPVRClient> returnClient;
-  CSingleLock lock(m_critSection);
-
-  if (m_clientMap.size() > 0)
-  {
-    CLIENTMAPITR itr = m_clientMap.begin();
-    while (itr != m_clientMap.end())
-    {
-      if (m_clientMap[(*itr).first]->ReadyToUse() &&
-          m_clientMap[(*itr).first]->GetID() == iClientId)
-      {
-        returnClient = m_clientMap[(*itr).first];
-        break;
-      }
-      itr++;
-    }
-  }
-
-  return returnClient;
-}
-
 int CPVRClients::GetClients(map<long, CStdString> *clients)
 {
   CLIENTMAPITR itr;
@@ -170,9 +147,11 @@ bool CPVRClients::HasTimerSupport(int iClientId)
 bool CPVRClients::IsValidClient(int iClientId)
 {
   bool bReturn = false;
-  boost::shared_ptr<CPVRClient> client = GetById(iClientId);
-  if (client != NULL)
-    bReturn = client->ReadyToUse();
+  CSingleLock lock(m_critSection);
+
+  CLIENTMAPITR itr = m_clientMap.find(iClientId);
+  if (itr != m_clientMap.end() && itr->second->ReadyToUse())
+    bReturn = true;
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, iClientId);
 
@@ -387,10 +366,13 @@ bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
 const CStdString CPVRClients::GetClientName(int iClientId)
 {
   static CStdString strClientName;
+  CSingleLock lock(m_critSection);
 
-  boost::shared_ptr<CPVRClient> client = GetById(iClientId);
-  if (client != NULL)
+  if (IsValidClient(iClientId))
+  {
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(iClientId)->second;
     strClientName = client->GetBackendName() + ":" + client->GetConnectionString();
+  }
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, iClientId);
 
@@ -673,9 +655,14 @@ int64_t CPVRClients::GetStreamPosition(void)
 bool CPVRClients::AddTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
-  boost::shared_ptr<CPVRClient> client = GetById(timer.m_iClientID);
-  if (client != NULL)
+  CSingleLock lock(m_critSection);
+
+  if (IsValidClient(timer.m_iClientID))
+  {
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(timer.m_iClientID)->second;
+    lock.Leave();
     *error = client->AddTimer(timer);
+  }
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, timer.m_iClientID);
 
@@ -685,9 +672,14 @@ bool CPVRClients::AddTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
 bool CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
-  boost::shared_ptr<CPVRClient> client = GetById(timer.m_iClientID);
-  if (client != NULL)
+  CSingleLock lock(m_critSection);
+
+  if (IsValidClient(timer.m_iClientID))
+  {
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(timer.m_iClientID)->second;
+    lock.Leave();
     *error = client->UpdateTimer(timer);
+  }
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, timer.m_iClientID);
 
@@ -697,9 +689,14 @@ bool CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
 bool CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
-  boost::shared_ptr<CPVRClient> client = GetById(timer.m_iClientID);
-  if (client != NULL)
+  CSingleLock lock(m_critSection);
+
+  if (IsValidClient(timer.m_iClientID))
+  {
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(timer.m_iClientID)->second;
+    lock.Leave();
     *error = client->DeleteTimer(timer, bForce);
+  }
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, timer.m_iClientID);
 
@@ -709,9 +706,14 @@ bool CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, PVR_ER
 bool CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &strNewName, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
-  boost::shared_ptr<CPVRClient> client = GetById(timer.m_iClientID);
-  if (client != NULL)
+  CSingleLock lock(m_critSection);
+
+  if (IsValidClient(timer.m_iClientID))
+  {
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(timer.m_iClientID)->second;
+    lock.Leave();
     *error = client->RenameTimer(timer, strNewName);
+  }
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, timer.m_iClientID);
 
@@ -765,9 +767,14 @@ int CPVRClients::GetRecordings(CPVRRecordings *recordings)
 bool CPVRClients::RenameRecording(const CPVRRecording &recording, const CStdString &strNewName, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
-  boost::shared_ptr<CPVRClient> client = GetById(recording.m_clientID);
-  if (client != NULL)
+  CSingleLock lock(m_critSection);
+
+  if (IsValidClient(recording.m_clientID))
+  {
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(recording.m_clientID)->second;
+    lock.Leave();
     *error = client->RenameRecording(recording, strNewName);
+  }
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, recording.m_clientID);
 
@@ -777,9 +784,14 @@ bool CPVRClients::RenameRecording(const CPVRRecording &recording, const CStdStri
 bool CPVRClients::DeleteRecording(const CPVRRecording &recording, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
-  boost::shared_ptr<CPVRClient> client = GetById(recording.m_clientID);
-  if (client != NULL)
+  CSingleLock lock(m_critSection);
+
+  if (IsValidClient(recording.m_clientID))
+  {
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(recording.m_clientID)->second;
+    lock.Leave();
     *error = client->DeleteRecording(recording);
+  }
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, recording.m_clientID);
 
@@ -789,9 +801,14 @@ bool CPVRClients::DeleteRecording(const CPVRRecording &recording, PVR_ERROR *err
 bool CPVRClients::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
-  boost::shared_ptr<CPVRClient> client = GetById(channel.ClientID());
-  if (client != NULL)
+  CSingleLock lock(m_critSection);
+
+  if (IsValidClient(channel.ClientID()))
+  {
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(channel.ClientID())->second;
+    lock.Leave();
     *error = client->GetEPGForChannel(channel, epg, start, end);
+  }
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel.ClientID());
 
@@ -821,9 +838,14 @@ int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)
 const CStdString CPVRClients::GetStreamURL(const CPVRChannel &tag)
 {
   static CStdString strReturn;
-  boost::shared_ptr<CPVRClient> client = GetById(tag.ClientID());
-  if (client != NULL)
+  CSingleLock lock(m_critSection);
+
+  if (IsValidClient(tag.ClientID()))
+  {
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(tag.ClientID())->second;
+    lock.Leave();
     strReturn = client->GetLiveStreamURL(tag);
+  }
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, tag.ClientID());
 
@@ -1070,12 +1092,17 @@ int CPVRClients::GetPlayingClientID(void) const
 bool CPVRClients::HasMenuHooks(int iClientID)
 {
   bool bReturn = false;
+  CSingleLock lock(m_critSection);
+
   if (iClientID < 0)
     iClientID = GetPlayingClientID();
 
-  boost::shared_ptr<CPVRClient> client = GetById(iClientID);
-  if (client != NULL)
+  if (IsValidClient(iClientID))
+  {
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(iClientID)->second;
+    lock.Leave();
     bReturn = client->HaveMenuHooks();
+  }
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, iClientID);
 
@@ -1085,14 +1112,20 @@ bool CPVRClients::HasMenuHooks(int iClientID)
 bool CPVRClients::GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks)
 {
   bool bReturn = false;
+  CSingleLock lock(m_critSection);
+
   if (iClientID < 0)
     iClientID = GetPlayingClientID();
 
-  boost::shared_ptr<CPVRClient> client = GetById(iClientID);
-  if (client != NULL && client->HaveMenuHooks())
+  if (IsValidClient(iClientID))
   {
-    hooks = client->GetMenuHooks();
-    bReturn = true;
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(iClientID)->second;
+    lock.Leave();
+    if (client->HaveMenuHooks())
+    {
+      hooks = client->GetMenuHooks();
+      bReturn = true;
+    }
   }
   else
   {
@@ -1105,12 +1138,15 @@ bool CPVRClients::GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks)
 void CPVRClients::ProcessMenuHooks(int iClientID)
 {
   PVR_MENUHOOKS *hooks = NULL;
+  CSingleLock lock(m_critSection);
+
   if (iClientID < 0)
     iClientID = GetPlayingClientID();
 
-  boost::shared_ptr<CPVRClient> client = GetById(iClientID);
-  if (client != NULL && GetMenuHooks(iClientID, hooks))
+  if (GetMenuHooks(iClientID, hooks))
   {
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(iClientID)->second;
+    lock.Leave();
     std::vector<long> hookIDs;
 
     CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -1157,17 +1193,25 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
     return OpenLiveStream(channel);
   }
 
-  boost::shared_ptr<CPVRClient> client = GetById(channel.ClientID());
-  if (client != NULL && client->SwitchChannel(channel))
+  if (IsValidClient(channel.ClientID()))
   {
-    m_currentChannel = &channel;
-    m_scanStart = CTimeUtils::GetTimeMS();
-    ResetQualityData();
-    bReturn = true;
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(channel.ClientID())->second;
+    lock.Leave();
+    if (client->SwitchChannel(channel))
+    {
+      m_currentChannel = &channel;
+      m_scanStart = CTimeUtils::GetTimeMS();
+      ResetQualityData();
+      bReturn = true;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "PVR - %s - cannot switch channel on client %d",__FUNCTION__, channel.ClientID());
+    }
   }
   else
   {
-    CLog::Log(LOGERROR, "PVR - %s - cannot switch channel on client %d",__FUNCTION__, channel.ClientID());
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel.ClientID());
   }
 
   return bReturn;

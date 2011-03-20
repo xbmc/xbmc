@@ -284,8 +284,6 @@ public:
    */
   bool IsRecordingOnPlayingChannel(void) const;
 
-  boost::shared_ptr<CPVRClient> GetById(int iClientId);
-
   void Unload(void);
 
   const char *CharInfoVideoBR(void) const;
