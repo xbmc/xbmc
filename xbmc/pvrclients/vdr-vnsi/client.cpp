@@ -436,7 +436,7 @@ PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo)
   if (!VNSIData)
     return PVR_ERROR_SERVER_ERROR;
 
-  return VNSIData->DeleteRecording(VNSIData->GetRecordingPath(recinfo.index));
+  return VNSIData->DeleteRecording(recinfo);
 }
 
 /*******************************************/
@@ -517,9 +517,9 @@ bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 
   CloseRecordedStream();
 
-  const std::string& name = VNSIData->GetRecordingPath(recinfo.index);
+  //const std::string& name = VNSIData->GetRecordingPath(recinfo.index);
   VNSIRecording = new cVNSIRecording;
-  return VNSIRecording->Open(name);
+  return VNSIRecording->Open(recinfo);
 }
 
 void CloseRecordedStream(void)

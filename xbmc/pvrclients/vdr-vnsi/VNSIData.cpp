@@ -70,7 +70,12 @@ bool cVNSIData::TryReconnect() {
     return false;
   }
 
-  XBMC->Log(LOG_DEBUG, "cVNSIData -- reconnected");
+  XBMC->Log(LOG_DEBUG, "%s - reconnected", __FUNCTION__);
+
+  PVR->TriggerTimerUpdate();
+  PVR->TriggerRecordingUpdate();
+  PVR->TriggerChannelUpdate();
+
   return true;
 }
 
@@ -109,14 +114,14 @@ bool cVNSIData::GetTime(time_t *localTime, int *gmtOffset)
   cRequestPacket vrp;
   if (!vrp.init(VDR_GETTIME))
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetTime - Can't init cRequestPacket");
+    XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return false;
   }
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetTime - Can't get response packed");
+    XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
     return false;
   }
 
@@ -135,14 +140,14 @@ bool cVNSIData::GetDriveSpace(long long *total, long long *used)
   cRequestPacket vrp;
   if (!vrp.init(VDR_RECORDINGS_DISKSIZE))
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetDriveSpace - Can't init cRequestPacket");
+    XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return false;
   }
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetDriveSpace - Can't get response packed");
+    XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
     return false;
   }
 
@@ -166,14 +171,14 @@ bool cVNSIData::SupportChannelScan()
   cRequestPacket vrp;
   if (!vrp.init(VDR_SCAN_SUPPORTED))
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::SupportChannelScan - Can't init cRequestPacket");
+    XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return false;
   }
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::SupportChannelScan - Can't get response packed");
+    XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
     return false;
   }
 
@@ -191,7 +196,7 @@ bool cVNSIData::EnableStatusInterface(bool onOff)
   cResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::EnableStatusInterface - Can't get response packed");
+    XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
     return false;
   }
 
@@ -209,7 +214,7 @@ bool cVNSIData::EnableOSDInterface(bool onOff)
   cResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::EnableStatusInterface - Can't get response packed");
+    XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
     return false;
   }
 
@@ -223,14 +228,14 @@ int cVNSIData::GetChannelsCount()
   cRequestPacket vrp;
   if (!vrp.init(VDR_CHANNELS_GETCOUNT))
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetChannelsCount - Can't init cRequestPacket");
+    XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return -1;
   }
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetChannelsCount - Can't get response packed");
+    XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
     return -1;
   }
 
@@ -245,19 +250,19 @@ bool cVNSIData::GetChannelsList(PVRHANDLE handle, bool radio)
   cRequestPacket vrp;
   if (!vrp.init(VDR_CHANNELS_GETCHANNELS))
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetChannelsList - Can't init cRequestPacket");
+    XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return false;
   }
   if (!vrp.add_U32(radio))
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetChannelsList - Can't add parameter to cRequestPacket");
+    XBMC->Log(LOG_ERROR, "%s - Can't add parameter to cRequestPacket", __FUNCTION__);
     return false;
   }
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetChannelsList - Can't get response packed");
+    XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
     return false;
   }
 
@@ -290,19 +295,19 @@ bool cVNSIData::GetEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, t
   cRequestPacket vrp;
   if (!vrp.init(VDR_EPG_GETFORCHANNEL))
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetEPGForChannel - Can't init cRequestPacket");
+    XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return false;
   }
   if (!vrp.add_U32(channel.number) || !vrp.add_U32(start) || !vrp.add_U32(end - start))
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetEPGForChannel - Can't add parameter to cRequestPacket");
+    XBMC->Log(LOG_ERROR, "%s - Can't add parameter to cRequestPacket", __FUNCTION__);
     return false;
   }
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetEPGForChannel - Can't get response packed");
+    XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
     return false;
   }
 
@@ -341,14 +346,14 @@ int cVNSIData::GetTimersCount()
   cRequestPacket vrp;
   if (!vrp.init(VDR_TIMER_GETCOUNT))
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetTimersCount - Can't init cRequestPacket");
+    XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return -1;
   }
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetTimersCount - Can't get response packed");
+    XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
     return -1;
   }
 
@@ -361,12 +366,19 @@ int cVNSIData::GetTimersCount()
 PVR_ERROR cVNSIData::GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &tag)
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_TIMER_GET))           return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timernumber))          return PVR_ERROR_UNKOWN;
+  if (!vrp.init(VDR_TIMER_GET))
+  {
+    XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
+    return PVR_ERROR_UNKOWN;
+  }
+
+  if (!vrp.add_U32(timernumber))
+    return PVR_ERROR_UNKOWN;
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
+    XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
     delete vresp;
     return PVR_ERROR_UNKOWN;
   }
@@ -407,7 +419,7 @@ bool cVNSIData::GetTimersList(PVRHANDLE handle)
   cRequestPacket vrp;
   if (!vrp.init(VDR_TIMER_GETLIST))
   {
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetTimersList - Can't init cRequestPacket");
+    XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return false;
   }
 
@@ -415,7 +427,7 @@ bool cVNSIData::GetTimersList(PVRHANDLE handle)
   if (!vresp)
   {
     delete vresp;
-    XBMC->Log(LOG_ERROR, "cVNSIData::GetTimersList - Can't get response packed");
+    XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
     return false;
   }
 
@@ -625,9 +637,6 @@ int cVNSIData::GetRecordingsCount()
 
 PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
 {
-  m_recIndex = 1;
-  m_RecordsPaths.clear();
-
   cRequestPacket vrp;
   if (!vrp.init(VDR_RECORDINGS_GETLIST))
   {
@@ -644,10 +653,7 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
 
   while (!vresp->end())
   {
-    std::string title;
-
     PVR_RECORDINGINFO tag;
-    tag.index           = m_recIndex++;
     tag.recording_time  = vresp->extract_U32();
     tag.duration        = vresp->extract_U32();
     tag.priority        = vresp->extract_U32();
@@ -657,12 +663,8 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
     tag.subtitle        = vresp->extract_String();
     tag.description     = vresp->extract_String();
     tag.directory       = vresp->extract_String();
+    tag.index           = vresp->extract_U32();
     tag.stream_url      = "";
-
-    /* Save the given path name for later to translate the
-       index numbers to the path name. */
-    char* fileName  = vresp->extract_String();
-    m_RecordsPaths.push_back(fileName);
 
     PVR->TransferRecordingEntry(handle, &tag);
 
@@ -671,7 +673,6 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
     delete[] tag.subtitle;
     delete[] tag.description;
     delete[] tag.directory;
-    delete[] fileName;
   }
 
   delete vresp;
@@ -688,25 +689,9 @@ PVR_ERROR cVNSIData::RenameRecording(const PVR_RECORDINGINFO& recinfo, const cha
     return PVR_ERROR_UNKOWN;
   }
 
-  // add filename
-  const char* filename = GetRecordingPath(recinfo.index).c_str();
-
-  XBMC->Log(LOG_DEBUG, "%s - filename: %s", __FUNCTION__, filename);
-  if (!vrp.add_String(filename))
-    return PVR_ERROR_UNKOWN;
-
-  // add old directory
-  XBMC->Log(LOG_DEBUG, "%s - old directory: %s", __FUNCTION__, recinfo.directory);
-  if (!vrp.add_String(recinfo.directory))
-    return PVR_ERROR_UNKOWN;
-
-  // add old title
-  XBMC->Log(LOG_DEBUG, "%s - old title: %s", __FUNCTION__, recinfo.title);
-  if (!vrp.add_String(recinfo.title))
-    return PVR_ERROR_UNKOWN;
-
-  // add new directory -- currently the same as the old one
-  if (!vrp.add_String(recinfo.directory))
+  // add uid
+  XBMC->Log(LOG_DEBUG, "%s - uid: %u", __FUNCTION__, recinfo.index);
+  if (!vrp.add_U32(recinfo.index))
     return PVR_ERROR_UNKOWN;
 
   // add new title
@@ -729,7 +714,7 @@ PVR_ERROR cVNSIData::RenameRecording(const PVR_RECORDINGINFO& recinfo, const cha
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cVNSIData::DeleteRecording(const std::string& path)
+PVR_ERROR cVNSIData::DeleteRecording(const PVR_RECORDINGINFO& recinfo)
 {
   cRequestPacket vrp;
   if (!vrp.init(VDR_RECORDINGS_DELETE))
@@ -738,7 +723,7 @@ PVR_ERROR cVNSIData::DeleteRecording(const std::string& path)
     return PVR_ERROR_UNKOWN;
   }
 
-  if (!vrp.add_String(path.c_str()))
+  if (!vrp.add_U32(recinfo.index))
     return PVR_ERROR_UNKOWN;
 
   cResponsePacket* vresp = ReadResult(&vrp);
@@ -925,14 +910,4 @@ bool cVNSIData::readData(uint8_t* buffer, int totalBytes)
   XBMC->Log(LOG_ERROR, "%s - connection lost !!!", __FUNCTION__);
   m_connectionLost = true;
   return false;
-}
-
-const std::string& cVNSIData::GetRecordingPath(uint32_t index)
-{
-  static std::string empty;
-
-  if (index == 0 || index > m_RecordsPaths.size())
-    return empty;
-
-  return m_RecordsPaths[index-1];
 }

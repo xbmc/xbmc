@@ -37,7 +37,7 @@ cVNSIRecording::~cVNSIRecording()
   Close();
 }
 
-bool cVNSIRecording::Open(const std::string& path)
+bool cVNSIRecording::Open(const PVR_RECORDINGINFO& recinfo)
 {
   bool ret = false;
 
@@ -46,7 +46,7 @@ bool cVNSIRecording::Open(const std::string& path)
 
   cRequestPacket vrp;
   if (!vrp.init(VDR_RECSTREAM_OPEN) ||
-      !vrp.add_String(path.c_str()))
+      !vrp.add_U32(recinfo.index))
   {
     return ret;
   }
@@ -66,7 +66,7 @@ bool cVNSIRecording::Open(const std::string& path)
   }
   else
   {
-    XBMC->Log(LOG_ERROR, "cVNSIDemux::Open - Can't open recording %s", path.c_str());
+    XBMC->Log(LOG_ERROR, "%s - Can't open recording '%s'", __FUNCTION__, recinfo.title);
     ret = false;
   }
 
@@ -103,7 +103,7 @@ int cVNSIRecording::Read(unsigned char* buf, uint32_t buf_size)
   uint8_t *data   = vresp->getUserData();
   if (length > buf_size)
   {
-    XBMC->Log(LOG_ERROR, "cVNSIRecording::Read: PANIC - Received more bytes as requested");
+    XBMC->Log(LOG_ERROR, "%s: PANIC - Received more bytes as requested", __FUNCTION__);
     free(data);
     delete vresp;
     return 0;

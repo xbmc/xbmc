@@ -63,9 +63,9 @@ public:
 
   int         GetRecordingsCount();
   PVR_ERROR   GetRecordingsList(PVRHANDLE handle);
-  const std::string& GetRecordingPath(uint32_t index);
+  //const std::string& GetRecordingPath(uint32_t index);
   PVR_ERROR   RenameRecording(const PVR_RECORDINGINFO& recinfo, const char* newname);
-  PVR_ERROR   DeleteRecording(const std::string& path);
+  PVR_ERROR   DeleteRecording(const PVR_RECORDINGINFO& recinfo);
 
 
 protected:
@@ -81,14 +81,11 @@ private:
     cResponsePacket *pkt;
   };
   typedef std::map<int, SMessage> SMessages;
-  typedef std::vector<std::string> RecordPaths;
 
   cVNSISession    m_session;
   cMutex          m_Mutex;
   SMessages       m_queue;
-  RecordPaths     m_RecordsPaths;
   std::string     m_videodir;
-  int             m_recIndex;
   bool            m_connectionLost;
   std::string     m_hostname;
   int             m_port;
