@@ -65,6 +65,7 @@ CPVRManager::CPVRManager() :
   m_bTriggerChannelsUpdate   = false;
   m_bTriggerRecordingsUpdate = false;
   m_bTriggerTimersUpdate     = false;
+  m_currentFile              = NULL;
   m_addons                   = new CPVRClients();
   m_channelGroups            = new CPVRChannelGroupsContainer();
   m_epg                      = new CPVREpgContainer();
