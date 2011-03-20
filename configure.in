@@ -506,9 +506,12 @@ AC_LANG_POP([C++])
 # Checks for platforms libraries.
 if test "$use_gles" = "yes"; then
   # GLES overwrites GL if both set to yes.
-  #AC_CHECK_LIB([EGL],     [main],, AC_MSG_ERROR($missing_library))
-  #AC_CHECK_LIB([GLESv2],  [main],, AC_MSG_ERROR($missing_library))
-  AC_MSG_RESULT(== WARNING: OpenGL EL  support is assumed.)
+  if test "$host_vendor" != "apple" ; then
+    AC_CHECK_LIB([EGL],     [main],, AC_MSG_ERROR($missing_library))
+    AC_CHECK_LIB([GLESv2],  [main],, AC_MSG_ERROR($missing_library))
+  else
+    AC_MSG_RESULT(== WARNING: OpenGL EL  support is assumed.)
+  fi
 else
   if test "$use_gl" = "yes"; then
     if test "$host_vendor" = "apple" ; then
