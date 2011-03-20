@@ -557,7 +557,7 @@ bool CDVDPlayer::OpenDemuxStream()
   return true;
 }
 
-bool CDVDPlayer::OpenDefaultStreams()
+void CDVDPlayer::OpenDefaultStreams()
 {
   int  count;
   bool valid;
@@ -684,8 +684,6 @@ bool CDVDPlayer::OpenDefaultStreams()
   }
   if(!valid)
     CloseTeletextStream(true);
-
-  return valid;
 }
 
 bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
@@ -870,11 +868,7 @@ void CDVDPlayer::Process()
   // allow renderer to switch to fullscreen if requested
   m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
 
-  if (!OpenDefaultStreams())
-  {
-    m_bAbortRequest = true;
-    return;
-  }
+  OpenDefaultStreams();
 
   // look for any EDL files
   m_Edl.Clear();
@@ -980,11 +974,7 @@ void CDVDPlayer::Process()
         break;
       }
 
-      if (!OpenDefaultStreams())
-      {
-        m_bAbortRequest = true;
-        break;
-      }
+      OpenDefaultStreams();
       UpdateApplication(0);
       UpdatePlayState(0);
     }
