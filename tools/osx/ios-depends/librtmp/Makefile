@@ -11,7 +11,6 @@ LIBNAME=rtmpdump
 VERSION=2.3
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
-#BASE_URL=http://rtmpdump.mplayerhq.hu/download
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
 ARCHIVE=$(SOURCE).tgz
 TARBALLS_LOCATION=/Users/Shared/xbmc-depends/tarballs
@@ -21,9 +20,6 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-export CFLAGS+=-undefined dynamic_lookup
-export CXXFLAGS+=-undefined dynamic_lookup
-export LDFLAGS+=-Wl,-read_only_relocs,suppress
 
 LIBDYLIB=$(SOURCE)/.libs/$(LIBNAME).dylib
 
@@ -45,12 +41,10 @@ $(LIBDYLIB): $(SOURCE)
 
 .installed:
 	make SYS=darwin prefix=$(PREFIX) -C $(SOURCE)/librtmp install
-	cp $(PREFIX)/lib/librtmp.so ../../../../system/
 	touch $@
 
 clean:
-	make -C $(SOURCE) clean
-	rm -f ../../../../system/librtmp.so
+	make SYS=darwin -C $(SOURCE) clean
 	rm -f .installed
 
 distclean::

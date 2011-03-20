@@ -34,11 +34,7 @@
 #define DLL_PATH_MEDIAINFO     "special://xbmcbin/system/mediainfo-@ARCH@.so"
 #define DLL_PATH_LIBCMYTH      "xbmc.so"
 
-#if defined(_LINUX) && !defined(__APPLE__)
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
-#else
-#define DLL_PATH_LIBRTMP       "librtmp.so"
-#endif
 
 #ifndef DLL_PATH_LIBCURL
 #define DLL_PATH_LIBCURL       "@CURL_SONAME@"
