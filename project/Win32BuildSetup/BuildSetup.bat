@@ -211,7 +211,7 @@ IF %comp%==vs2010 (
   ECHO Generating installer includes...
   call genNsisIncludes.bat
   ECHO ------------------------------------------------------------
-  CALL extract_git_rev.bat
+  CALL extract_git_rev.bat > NUL
   SET XBMC_SETUPFILE=XBMCSetup-%GIT_REV%-%target%.exe
   ECHO Creating installer %XBMC_SETUPFILE%...
   IF EXIST %XBMC_SETUPFILE% del %XBMC_SETUPFILE% > NUL
