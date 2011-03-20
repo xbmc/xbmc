@@ -90,7 +90,7 @@ int CPVRChannelGroup::Load(void)
   if (size() - iChannelCount > 0)
   {
     CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels added from clients to group '%s'",
-        __FUNCTION__, size() - iChannelCount, m_strGroupName.c_str());
+        __FUNCTION__, (int) size() - iChannelCount, m_strGroupName.c_str());
   }
 
   m_bLoaded = true;
