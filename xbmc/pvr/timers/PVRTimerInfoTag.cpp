@@ -35,7 +35,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag()
   m_strSummary         = "";
   m_bIsActive          = false;
   m_iChannelNumber     = -1;
-  m_iClientID          = CPVRManager::Get()->GetClients()->GetFirstID();
+  m_iClientID          = CPVRManager::GetClients()->GetFirstID();
   m_iClientIndex       = -1;
   m_iClientNumber      = -1;
   m_iClientChannelUid  = -1;
@@ -179,88 +179,61 @@ const CStdString &CPVRTimerInfoTag::GetStatus() const
     return g_localizeStrings.Get(305);
 }
 
-bool CPVRTimerInfoTag::AddToClient()
+bool CPVRTimerInfoTag::AddToClient(void)
 {
   UpdateEpgEvent();
-
-  try
+  PVR_ERROR error;
+  if (!CPVRManager::GetClients()->AddTimer(*this, &error))
   {
-    CLIENTMAP clients;
-    if (!CPVRManager::Get()->GetClients()->Clients(&clients))
-      return false;
-
-    /* and write it to the backend */
-    PVR_ERROR err = clients.find(m_iClientID)->second->AddTimer(*this);
-    if (err != PVR_ERROR_NO_ERROR)
-      throw err;
-
+    DisplayError(error);
+    return false;
+  }
+  else
+  {
     if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
       CPVRManager::Get()->TriggerRecordingsUpdate();
-
     return true;
   }
-  catch (PVR_ERROR err)
-  {
-    DisplayError(err);
-  }
-  return false;
 }
 
-bool CPVRTimerInfoTag::DeleteFromClient(bool force) const
+bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */)
 {
-  try
+  bool bRemoved = false;
+  PVR_ERROR error;
+
+  bRemoved = CPVRManager::GetClients()->DeleteTimer(*this, bForce, &error);
+  if (!bRemoved && error == PVR_ERROR_RECORDING_RUNNING)
   {
-    CLIENTMAP clients;
-    if (!CPVRManager::Get()->GetClients()->Clients(&clients))
+    if (CGUIDialogYesNo::ShowAndGetInput(122,0,19122,0))
+      bRemoved = CPVRManager::GetClients()->DeleteTimer(*this, true, &error);
+    else
       return false;
-
-    /* and write it to the backend */
-    PVR_ERROR err = clients.find(m_iClientID)->second->DeleteTimer(*this, force);
-
-    if (err == PVR_ERROR_RECORDING_RUNNING)
-    {
-      if (CGUIDialogYesNo::ShowAndGetInput(122,0,19122,0))
-        err = clients.find(m_iClientID)->second->DeleteTimer(*this, true);
-    }
-
-    if (err != PVR_ERROR_NO_ERROR)
-      throw err;
-
-    return true;
   }
-  catch (PVR_ERROR err)
+
+  if (!bRemoved)
   {
-    DisplayError(err);
+    DisplayError(error);
+    return false;
   }
-  return false;
+
+  CPVRManager::Get()->TriggerRecordingsUpdate();
+  return true;
 }
 
-bool CPVRTimerInfoTag::RenameOnClient(const CStdString &newname)
+bool CPVRTimerInfoTag::RenameOnClient(const CStdString &strNewName)
 {
-  try
+  PVR_ERROR error;
+  m_strTitle = CStdString(strNewName);
+  if (!CPVRManager::GetClients()->RenameTimer(*this, m_strTitle, &error))
   {
-    CLIENTMAP clients;
-    if (!CPVRManager::Get()->GetClients()->Clients(&clients))
-      return false;
+    if (error == PVR_ERROR_NOT_IMPLEMENTED)
+      return UpdateOnClient();
 
-    /* and write it to the backend */
-    PVR_ERROR err = clients.find(m_iClientID)->second->RenameTimer(*this, newname);
-
-    if (err == PVR_ERROR_NOT_IMPLEMENTED)
-      err = clients.find(m_iClientID)->second->UpdateTimer(*this);
-
-    if (err != PVR_ERROR_NO_ERROR)
-      throw err;
-
-    m_strTitle = CStdString(newname);
-    return true;
-  }
-  catch (PVR_ERROR err)
-  {
-    DisplayError(err);
+    DisplayError(error);
+    return false;
   }
 
-  return false;
+  return true;
 }
 
 bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
@@ -319,28 +292,18 @@ void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
 bool CPVRTimerInfoTag::UpdateOnClient()
 {
   UpdateEpgEvent();
-
-  try
+  PVR_ERROR error;
+  if (!CPVRManager::GetClients()->UpdateTimer(*this, &error))
   {
-    CLIENTMAP clients;
-    if (!CPVRManager::Get()->GetClients()->Clients(&clients))
-      return false;
-
-    /* and write it to the backend */
-    PVR_ERROR err = clients.find(m_iClientID)->second->UpdateTimer(*this);
-    if (err != PVR_ERROR_NO_ERROR)
-      throw err;
-
+    DisplayError(error);
+    return false;
+  }
+  else
+  {
     if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
       CPVRManager::Get()->TriggerRecordingsUpdate();
-
     return true;
   }
-  catch (PVR_ERROR err)
-  {
-    DisplayError(err);
-  }
-  return false;
 }
 
 void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const

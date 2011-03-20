@@ -74,14 +74,14 @@ public:
    * @brief Delete this recording on the client (if supported).
    * @return True if it was deleted successfully, false otherwise.
    */
-  bool Delete(void) const;
+  bool Delete(void);
 
   /*!
    * @brief Rename this recording on the client (if supported).
    * @param strNewName The new name.
    * @return True if it was renamed successfully, false otherwise.
    */
-  bool Rename(const CStdString &strNewName) const;
+  bool Rename(const CStdString &strNewName);
 
   /*!
    * @brief Update this tag with the contents of the given tag.

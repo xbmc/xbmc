@@ -55,7 +55,7 @@ bool CPVRRecording::operator !=(const CPVRRecording& right) const
 void CPVRRecording::Reset(void)
 {
   m_clientIndex           = -1;
-  m_clientID              = CPVRManager::Get()->GetClients()->GetFirstID(); // Temporary until we support multiple backends
+  m_clientID              = CPVRManager::GetClients()->GetFirstID(); // Temporary until we support multiple backends
   m_strChannel            = "";
   m_strDirectory          = "";
   m_recordingTime         = NULL;
@@ -75,51 +75,31 @@ int CPVRRecording::GetDuration() const
       m_duration.GetSeconds()) / 60;
 }
 
-bool CPVRRecording::Delete(void) const
+bool CPVRRecording::Delete(void)
 {
-  try
+  PVR_ERROR error;
+  if (!CPVRManager::GetClients()->DeleteRecording(*this, &error))
   {
-    CLIENTMAP clients;
-    if (CPVRManager::Get()->GetClients()->Clients(&clients))
-      return false;
-
-    /* and write it to the backend */
-    PVR_ERROR err = clients.find(m_clientID)->second->DeleteRecording(*this);
-
-    if (err != PVR_ERROR_NO_ERROR)
-      throw err;
-
-    return true;
+    DisplayError(error);
+    return false;
   }
-  catch (PVR_ERROR err)
-  {
-    DisplayError(err);
-  }
-  return false;
+
+  CPVRManager::GetRecordings()->Update(true); // async update
+  return true;
 }
 
-bool CPVRRecording::Rename(const CStdString &strNewName) const
+bool CPVRRecording::Rename(const CStdString &strNewName)
 {
-  try
+  PVR_ERROR error;
+  m_strTitle = CStdString(strNewName);
+  if (!CPVRManager::GetClients()->RenameRecording(*this, m_strTitle, &error))
   {
-    CLIENTMAP clients;
-    if (CPVRManager::Get()->GetClients()->Clients(&clients))
-      return false;
-
-    /* and write it to the backend */
-    PVR_ERROR err = clients.find(m_clientID)->second->RenameRecording(*this, strNewName);
-
-    if (err != PVR_ERROR_NO_ERROR)
-      throw err;
-
-    CPVRManager::GetRecordings()->Update(true); // async update
-    return true;
+    DisplayError(error);
+    return false;
   }
-  catch (PVR_ERROR err)
-  {
-    DisplayError(err);
-  }
-  return false;
+
+  CPVRManager::GetRecordings()->Update(true); // async update
+  return true;
 }
 
 void CPVRRecording::DisplayError(PVR_ERROR err) const

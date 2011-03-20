@@ -135,7 +135,7 @@ public:
    * Delete a timer on the client.
    * True if it was sent correctly, false if not.
    */
-  static bool DeleteTimer(const CPVRTimerInfoTag &item, bool bForce = false);
+  static bool DeleteTimer(CPVRTimerInfoTag &item, bool bForce = false);
 
   /**
    * Rename a timer on the client.

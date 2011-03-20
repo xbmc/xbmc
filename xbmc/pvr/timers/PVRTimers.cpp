@@ -52,29 +52,7 @@ void CPVRTimers::Unload()
 
 int CPVRTimers::LoadFromClients(void)
 {
-  CLIENTMAP clients;
-  if (!CPVRManager::Get()->GetClients()->Clients(&clients))
-    return 0;
-
-  int iCurSize = size();
-
-  /* get the timer list from each client */
-  CLIENTMAPITR itrClients = clients.begin();
-  while (itrClients != clients.end())
-  {
-    if (!(*itrClients).second->ReadyToUse() ||
-        !CPVRManager::Get()->GetClientProperties((*itrClients).second->GetID())->SupportTimers ||
-        (*itrClients).second->GetNumTimers() <= 0)
-    {
-      ++itrClients;
-      continue;
-    }
-
-    (*itrClients).second->GetAllTimers(this);
-    ++itrClients;
-  }
-
-  return size() - iCurSize;
+  return CPVRManager::GetClients()->GetTimers(this);
 }
 
 bool CPVRTimers::Update(void)
@@ -389,14 +367,14 @@ bool CPVRTimers::DeleteTimer(const CFileItem &item, bool bForce /* = false */)
     return false;
   }
 
-  const CPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
+  CPVRTimerInfoTag *tag = (CPVRTimerInfoTag *)item.GetPVRTimerInfoTag();
   if (!tag)
     return false;
 
   return DeleteTimer(*tag, bForce);
 }
 
-bool CPVRTimers::DeleteTimer(const CPVRTimerInfoTag &item, bool bForce /* = false */)
+bool CPVRTimers::DeleteTimer(CPVRTimerInfoTag &item, bool bForce /* = false */)
 {
   return item.DeleteFromClient(bForce);
 }

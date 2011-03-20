@@ -47,13 +47,6 @@ public:
   int GetFirstID(void);
 
   /*!
-   * TODO remove this as it breaks locking
-   * @brief Get a pointer to the clients.
-   * @return The clients.
-   */
-  CLIENTMAP *GetAll(void) { return &m_clientMap; }
-
-  /*!
    * @brief Try to load and initialise all clients.
    * @param iMaxTime Maximum time to try to load clients in seconds. Use 0 to keep trying until m_bStop becomes true.
    * @return True if all clients were loaded, false otherwise.
@@ -143,15 +136,30 @@ public:
 
   const CStdString GetClientName(int iClientId);
   const CStdString GetStreamURL(const CPVRChannel &tag);
-  int GetSignalLevel(void) const;
-  int GetSNR(void) const;
+  int GetSignalLevel(void);
+  int GetSNR(void);
   bool HasClients(void);
   bool HasTimerSupport(int iClientId);
   bool IsEncrypted(void);
   bool IsPlaying(void);
   bool AllClientsLoaded(void);
-  bool IsReadingLiveStream(void) const;
+  bool IsReadingLiveStream(void);
   bool SwitchChannel(const CPVRChannel &channel);
+
+  int GetTimers(CPVRTimers *timers);
+  bool AddTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error);
+  bool UpdateTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error);
+  bool DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, PVR_ERROR *error);
+  bool RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &strNewName, PVR_ERROR *error);
+
+  int GetRecordings(CPVRRecordings *recordings);
+  bool RenameRecording(const CPVRRecording &recording, const CStdString &strNewName, PVR_ERROR *error);
+  bool DeleteRecording(const CPVRRecording &recording, PVR_ERROR *error);
+
+  bool GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end, PVR_ERROR *error);
+  int GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error);
+
+  int GetClients(std::map<long, CStdString> *clients);
 
   /*!
    * @brief Check whether a client has any PVR specific menu entries.
@@ -177,14 +185,6 @@ public:
    * @return True if at least one client is active.
    */
   bool HasActiveClients(void);
-
-  bool ClientLoaded(const CStdString &strClientId);
-
-  /*!
-   * @brief Get a pointer to the clients.
-   * @return The clients.
-   */
-  int Clients(CLIENTMAP *clients);
 
   /*!
    * @brief Callback function from client to inform about changed timers, channels, recordings or epg.
@@ -225,7 +225,7 @@ public:
    * @brief Check if a recording is playing.
    * @return True if it's playing, false otherwise.
    */
-  bool IsPlayingRecording(void) const;
+  bool IsPlayingRecording(void);
 
   bool IsRunningChannelScan(void);
 
@@ -269,7 +269,7 @@ public:
    * @brief Get the input format name of the current playing stream content.
    * @return A pointer to the properties or NULL if no stream is playing.
    */
-  CStdString GetCurrentInputFormat(void) const;
+  CStdString GetCurrentInputFormat(void);
 
   /*!
    * @brief Start an instant recording on the current channel.
@@ -282,13 +282,7 @@ public:
    * @brief Check whether there is an active recording on the current channel.
    * @return True if there is, false otherwise.
    */
-  bool IsRecordingOnPlayingChannel(void) const;
-
-  /*!
-   * @brief Load and initialise all clients.
-   * @return True if any clients were loaded, false otherwise.
-   */
-  bool LoadClients(void);
+  bool IsRecordingOnPlayingChannel(void);
 
   boost::shared_ptr<CPVRClient> GetById(int iClientId);
 
@@ -306,7 +300,7 @@ public:
   const char *CharInfoBackendName(void) const;
   const char *CharInfoBackendNumber(void);
   const char *CharInfoTotalDiskSpace(void);
-  const char *CharInfoEncryption(void);
+  const char *CharInfoEncryption(void) const;
   const char *CharInfoBackendVersion(void) const;
   const char *CharInfoBackendHost(void) const;
   const char *CharInfoBackendDiskspace(void) const;
@@ -315,10 +309,11 @@ public:
   const char *CharInfoBackendRecordings(void) const;
   const char *CharInfoPlayingClientName(void) const;
 
-  bool GetPlayingChannel(CPVRChannel *channel) const;
-  bool GetPlayingRecording(const CPVRRecording *recording) const;
-  int GetPlayingClientID(void) const;
+  bool GetPlayingChannel(CPVRChannel *channel);
+  bool GetPlayingRecording(const CPVRRecording *recording);
+  int GetPlayingClientID(void);
   bool IsValidClient(int iClientId);
+  bool ClientLoaded(const CStdString &strClientId);
 
   /*!
    * @brief Update the signal quality info.
@@ -332,9 +327,17 @@ private:
   bool GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks);
 
   /*!
+   * @brief Load and initialise all clients.
+   * @return True if any clients were loaded, false otherwise.
+   */
+  bool LoadClients(void);
+
+  /*!
    * @brief Reset the signal quality data to the initial values.
    */
   void ResetQualityData(void);
+
+  int GetActiveClients(CLIENTMAP *clients);
 
   const CPVRChannel *   m_currentChannel;
   const CPVRRecording * m_currentRecording;

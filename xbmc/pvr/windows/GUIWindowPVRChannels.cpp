@@ -71,7 +71,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
     if (m_bShowHiddenChannels || CPVRManager::GetChannelGroups()->GetGroupAll(false)->GetNumHiddenChannels() > 0)
       buttons.Add(CONTEXT_BUTTON_SHOW_HIDDEN, m_bShowHiddenChannels ? 19050 : 19051); /* show hidden/visible channels */
 
-    if (CPVRManager::Get()->GetClients()->HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID()))
+    if (CPVRManager::GetClients()->HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID()))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);                                  /* PVR client specific action */
   }
 }

@@ -246,23 +246,8 @@ void CPVRChannelGroupInternal::Renumber(void)
 
 int CPVRChannelGroupInternal::GetFromClients(void)
 {
-  CLIENTMAP clients;
-  if (!CPVRManager::Get()->GetClients()->Clients(&clients))
-    return 0;
-
-  int iCurSize = size();
-
-  /* get the channel list from each client */
-  CLIENTMAPITR itrClients = clients.begin();
-  while (itrClients != clients.end())
-  {
-    if ((*itrClients).second->ReadyToUse() && (*itrClients).second->GetNumChannels() > 0)
-      (*itrClients).second->GetChannelList(*this, m_bRadio);
-
-    itrClients++;
-  }
-
-  return size() - iCurSize;
+  PVR_ERROR error;
+  return CPVRManager::GetClients()->GetChannels(this, &error);
 }
 
 bool CPVRChannelGroupInternal::IsGroupMember(const CPVRChannel *channel) const

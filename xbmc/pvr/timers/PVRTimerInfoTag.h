@@ -115,7 +115,7 @@ public:
 
   /* Client control functions */
   bool AddToClient();
-  bool DeleteFromClient(bool force = false) const;
-  bool RenameOnClient(const CStdString &newname);
+  bool DeleteFromClient(bool bForce = false);
+  bool RenameOnClient(const CStdString &strNewName);
   bool UpdateOnClient();
 };
