@@ -43,6 +43,7 @@ CPVRClients::CPVRClients(void)
   m_currentRecording    = NULL;
   m_iInfoToggleStart    = 0;
   m_iInfoToggleCurrent  = 0;
+  m_scanStart           = 0;
   m_clientsProps.clear();
   m_clientMap.clear();
   ResetQualityData();
@@ -550,73 +551,50 @@ int CPVRClients::ReadStream(void* lpBuf, int64_t uiBufSize)
       }
     }
     else if (g_application.IsPlayingVideo() || g_application.IsPlayingAudio())
-      m_scanStart = NULL;
+      m_scanStart = 0;
   }
 
-  int iReturn = 0;
   if (m_currentChannel)
-    iReturn = m_clientMap[m_currentChannel->ClientID()]->ReadLiveStream(lpBuf, uiBufSize);
+    return m_clientMap[m_currentChannel->ClientID()]->ReadLiveStream(lpBuf, uiBufSize);
   else if (m_currentRecording)
-    iReturn = m_clientMap[m_currentChannel->ClientID()]->ReadRecordedStream(lpBuf, uiBufSize);
+    return m_clientMap[m_currentChannel->ClientID()]->ReadRecordedStream(lpBuf, uiBufSize);
 
-  return iReturn;
+  return 0;
 }
 
 void CPVRClients::DemuxReset(void)
 {
   /* don't lock here cause it'll cause a dead lock when the client connection is dropped while playing */
-  const CPVRChannel *channel = m_currentChannel;
-  if (channel)
-  {
-    boost::shared_ptr<CPVRClient> client = m_clientMap[channel->ClientID()];
-    if (client != NULL)
-      client->DemuxReset();
-  }
+  if (m_currentChannel)
+    m_clientMap[m_currentChannel->ClientID()]->DemuxReset();
 }
 
 void CPVRClients::DemuxAbort(void)
 {
   /* don't lock here cause it'll cause a dead lock when the client connection is dropped while playing */
-  const CPVRChannel *channel = m_currentChannel;
-  if (channel)
-  {
-    boost::shared_ptr<CPVRClient> client = m_clientMap[channel->ClientID()];
-    if (client != NULL)
-      client->DemuxAbort();
-  }
+  if (m_currentChannel)
+    m_clientMap[m_currentChannel->ClientID()]->DemuxAbort();
 }
 
 void CPVRClients::DemuxFlush(void)
 {
   /* don't lock here cause it'll cause a dead lock when the client connection is dropped while playing */
-  const CPVRChannel *channel = m_currentChannel;
-  if (channel)
-  {
-    boost::shared_ptr<CPVRClient> client = m_clientMap[channel->ClientID()];
-    if (client != NULL)
-      client->DemuxFlush();
-  }
+  if (m_currentChannel)
+    m_clientMap[m_currentChannel->ClientID()]->DemuxFlush();
 }
 
 DemuxPacket* CPVRClients::ReadDemuxStream(void)
 {
   /* don't lock here cause it'll cause a dead lock when the client connection is dropped while playing */
-  DemuxPacket* packet = NULL;
-  const CPVRChannel *channel = m_currentChannel;
-  if (channel)
-  {
-    boost::shared_ptr<CPVRClient> client = m_clientMap[channel->ClientID()];
-    if (client != NULL)
-      packet = m_clientMap[channel->ClientID()]->DemuxRead();
-  }
+  if (m_currentChannel)
+    return m_clientMap[m_currentChannel->ClientID()]->DemuxRead();
 
-  return packet;
+  return NULL;
 }
 
 int64_t CPVRClients::LengthStream(void)
 {
   int64_t streamLength = 0;
-  CSingleLock lock(m_critSection);
 
   if (m_currentChannel)
     streamLength = 0;
@@ -629,7 +607,6 @@ int64_t CPVRClients::LengthStream(void)
 int64_t CPVRClients::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*/)
 {
   int64_t streamNewPos = 0;
-  CSingleLock lock(m_critSection);
 
   if (m_currentChannel)
     streamNewPos = 0;
@@ -642,7 +619,6 @@ int64_t CPVRClients::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*
 int64_t CPVRClients::GetStreamPosition(void)
 {
   int64_t streamPos = 0;
-  CSingleLock lock(m_critSection);
 
   if (m_currentChannel)
     streamPos = 0;
@@ -730,7 +706,7 @@ int CPVRClients::GetTimers(CPVRTimers *timers)
   CLIENTMAPITR itrClients = clients.begin();
   while (itrClients != clients.end())
   {
-    if (!CPVRManager::Get()->GetClientProperties((*itrClients).second->GetID())->SupportTimers ||
+    if (!GetClientProperties((*itrClients).second->GetID())->SupportTimers ||
         (*itrClients).second->GetNumTimers() <= 0)
     {
       ++itrClients;
@@ -1068,12 +1044,13 @@ bool CPVRClients::GetPlayingChannel(CPVRChannel *channel) const
   return m_currentChannel != NULL;
 }
 
-bool CPVRClients::GetPlayingRecording(const CPVRRecording *recording) const
+bool CPVRClients::GetPlayingRecording(CPVRRecording *recording) const
 {
   CSingleLock lock(m_critSection);
-  recording = m_currentRecording;
+  if (m_currentRecording != NULL)
+    *recording = *m_currentRecording;
 
-  return recording != NULL;
+  return m_currentRecording != NULL;
 }
 
 int CPVRClients::GetPlayingClientID(void) const
@@ -1170,7 +1147,6 @@ void CPVRClients::ProcessMenuHooks(int iClientID)
 
 bool CPVRClients::CanRecordInstantly(void)
 {
-  CSingleLock lock(m_critSection);
   return m_currentChannel != NULL &&
       m_clientsProps[m_currentChannel->ClientID()].SupportTimers;
 }
@@ -1178,7 +1154,6 @@ bool CPVRClients::CanRecordInstantly(void)
 
 bool CPVRClients::IsRecordingOnPlayingChannel(void) const
 {
-  CSingleLock lock(m_critSection);
   return m_currentChannel && m_currentChannel->IsRecording();
 }
 

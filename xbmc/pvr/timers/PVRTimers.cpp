@@ -349,7 +349,7 @@ bool CPVRTimers::AddTimer(const CFileItem &item)
 
 bool CPVRTimers::AddTimer(CPVRTimerInfoTag &item)
 {
-  if (!CPVRManager::Get()->GetClientProperties(item.m_iClientID)->SupportTimers)
+  if (!CPVRManager::GetClients()->GetClientProperties(item.m_iClientID)->SupportTimers)
   {
     CGUIDialogOK::ShowAndGetInput(19033,0,19215,0);
     return false;

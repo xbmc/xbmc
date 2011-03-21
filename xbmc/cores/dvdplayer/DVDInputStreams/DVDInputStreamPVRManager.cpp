@@ -282,5 +282,5 @@ CStdString CDVDInputStreamPVRManager::GetInputFormat()
   if (m_pOtherStream)
     return "";
   else
-    return CPVRManager::Get()->GetCurrentInputFormat();
+    return CPVRManager::GetClients()->GetCurrentInputFormat();
 }

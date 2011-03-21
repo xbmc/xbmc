@@ -308,7 +308,7 @@ public:
   const char *CharInfoPlayingClientName(void) const;
 
   bool GetPlayingChannel(CPVRChannel *channel) const;
-  bool GetPlayingRecording(const CPVRRecording *recording) const;
+  bool GetPlayingRecording(CPVRRecording *recording) const;
   int GetPlayingClientID(void) const;
   bool IsValidClient(int iClientId);
   bool ClientLoaded(const CStdString &strClientId);

@@ -185,22 +185,8 @@ public:
 
   bool IsRunningChannelScan(void);
   void CloseStream();
-  int ReadStream(void* lpBuf, int64_t uiBufSize) { return m_addons->ReadStream(lpBuf, uiBufSize); }
-  void DemuxReset() { m_addons->DemuxReset(); }
-  void DemuxAbort() { m_addons->DemuxAbort(); }
-  void DemuxFlush() { m_addons->DemuxFlush(); }
-  DemuxPacket* ReadDemuxStream() { return m_addons->ReadDemuxStream(); }
-  int64_t LengthStream(void) { return m_addons->LengthStream(); }
-  int64_t SeekStream(int64_t iFilePosition, int iWhence = SEEK_SET) { return m_addons->SeekStream(iFilePosition, iWhence); }
-  int64_t GetStreamPosition(void) { return m_addons->GetStreamPosition(); }
-  PVR_STREAMPROPS *GetCurrentStreamProperties(void) { return m_addons->GetCurrentStreamProperties(); }
-  PVR_SERVERPROPS *GetClientProperties(int iClientId) { return m_addons->GetClientProperties(iClientId); };
-  PVR_SERVERPROPS *GetCurrentClientProperties(void) { return m_addons->GetCurrentClientProperties(); }
-  CStdString GetCurrentInputFormat(void) { return m_addons->GetCurrentInputFormat(); }
   bool OpenLiveStream(const CPVRChannel &tag);
   bool OpenRecordedStream(const CPVRRecording &tag);
-  bool CanRecordInstantly() { return m_addons->CanRecordInstantly(); }
-  bool IsRecordingOnPlayingChannel() { return m_addons->IsRecordingOnPlayingChannel(); }
   bool StartRecordingOnPlayingChannel(bool bOnOff);
 
   /*!
