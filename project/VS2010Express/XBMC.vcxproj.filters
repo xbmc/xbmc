@@ -237,9 +237,6 @@
     <ClCompile Include="..\..\xbmc\win32\strverscmp.cpp">
       <Filter>win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\Win32DelayedDllLoad.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\win32\WIN32Util.cpp">
       <Filter>win32</Filter>
     </ClCompile>
@@ -2454,8 +2451,8 @@
     <ClCompile Include="..\..\xbmc\XBDateTime.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\WIN32XBPythonDll.cpp">
-      <Filter>interfaces\python</Filter>
+    <ClCompile Include="..\..\xbmc\win32\Win32DelayedDllLoad.cpp">
+      <Filter>win32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

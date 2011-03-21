@@ -1,2 +1,0 @@
-; filename                        source of the file
-python2.6.6.7z                    http://xbmcwindeps.googlecode.com/files

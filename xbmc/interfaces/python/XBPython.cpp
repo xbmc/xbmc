@@ -484,12 +484,12 @@ void XBPython::Finalize()
     Py_Finalize();
     PyEval_ReleaseLock();
 
-#if !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
+#if !((defined(__APPLE__) || defined(_WIN32)) && defined(USE_EXTERNAL_PYTHON))
     UnloadExtensionLibs();
 #endif
 
     // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
-#if !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
+#if !((defined(__APPLE__) || defined(_WIN32)) && defined(USE_EXTERNAL_PYTHON))
     DllLoaderContainer::UnloadPythonDlls();
 #endif
 #if defined(_LINUX) && !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
