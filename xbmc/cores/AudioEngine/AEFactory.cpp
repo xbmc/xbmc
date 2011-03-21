@@ -18,9 +18,13 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "system.h"
+
 #include "AEFactory.h"
 #include "Engines/SoftAE.h"
+#ifdef HAS_PULSEAUDIO
 #include "Engines/PulseAE.h"
+#endif
 
 bool CAEFactory::LoadEngine(enum AEEngine engine)
 {
@@ -28,7 +32,9 @@ bool CAEFactory::LoadEngine(enum AEEngine engine)
   {
     case AE_ENGINE_NULL : return AE.SetEngine(NULL);
     case AE_ENGINE_SOFT : return AE.SetEngine(new CSoftAE ());
+#ifdef HAS_PULSEAUDIO
     case AE_ENGINE_PULSE: return AE.SetEngine(new CPulseAE());
+#endif
   }
 
   return false;
