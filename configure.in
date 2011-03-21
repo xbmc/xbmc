@@ -839,8 +839,8 @@ if test "$use_external_ffmpeg" = "yes"; then
   [AC_CHECK_HEADERS([ffmpeg/avcodec.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h],,
   [AC_MSG_ERROR($missing_headers)])])
 
-  # libavcore is optional
-  AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h])
+  # optional
+  AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h libavutil/samplefmt.h])
 
   # old FFmpeg have this in libavcodec/opt.h instead:
   AC_CHECK_HEADERS([libavutil/opt.h])

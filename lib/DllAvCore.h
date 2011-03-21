@@ -30,6 +30,12 @@
 
 extern "C" {
 #ifdef USE_EXTERNAL_FFMPEG
+  #ifdef HAVE_LIBAVUTIL_SAMPLEFMT_H
+    // libavcore was merged to libavutil on 2010-02-15
+    #include <libavutil/audioconvert.h>
+    #include <libavutil/samplefmt.h>
+  #endif
+
   #ifdef HAVE_LIBAVCORE_AVCORE_H
     #include <libavcore/avcore.h>
   #endif
@@ -54,11 +60,11 @@ extern "C" {
 #ifdef USE_EXTERNAL_FFMPEG
 
 #ifndef LIBAVCORE_VERSION_INT
-// API added on: 2010-07-21
+// API added on: 2010-07-21, removed on 2010-02-15
 #define LIBAVCORE_VERSION_INT 0
 #endif
 
-#if LIBAVCORE_VERSION_INT < AV_VERSION_INT(0,10,0)
+#ifndef AV_SAMPLE_FMT_NONE
 // API added on: 2010-11-02
 #define AVSampleFormat     SampleFormat
 #define AV_SAMPLE_FMT_NONE SAMPLE_FMT_NONE
@@ -69,7 +75,7 @@ extern "C" {
 #define AV_SAMPLE_FMT_DBL  SAMPLE_FMT_DBL
 #endif
 
-#if LIBAVCORE_VERSION_INT < AV_VERSION_INT(0,14,0)
+#ifndef AV_CH_FRONT_LEFT
 // API added on: 2010-11-21
 #define AV_CH_FRONT_LEFT            CH_FRONT_LEFT
 #define AV_CH_FRONT_RIGHT           CH_FRONT_RIGHT
@@ -127,8 +133,8 @@ class DllAvCore : public DllDynamic, DllAvCoreInterface
 {
 public:
   virtual ~DllAvCore() {}
-#if LIBAVCORE_VERSION_INT >= AV_VERSION_INT(0,12,0)
-  // API added on: 2010-11-02
+#if LIBAVCORE_VERSION_INT >= AV_VERSION_INT(0,12,0) || LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(50,38,0)
+  // API added on: 2010-11-02, moved to libavutil on 2010-02-15
   virtual int av_get_bits_per_sample_fmt(enum AVSampleFormat sample_fmt) { return ::av_get_bits_per_sample_fmt(sample_fmt); }
 #else
   // from avcodec.h
