@@ -2630,6 +2630,9 @@
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIWindowPVRTimers.cpp">
       <Filter>pvr\windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\pvr\addons\PVRClients.cpp">
+      <Filter>pvr\addons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5232,6 +5235,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\GlobalsHandling.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\pvr\addons\PVRClients.h">
+      <Filter>pvr\addons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
