@@ -4740,7 +4740,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    int iRowsFound = RunQuery("SELECT * FROM tvshowview" + where);
+    int iRowsFound = RunQuery("SELECT * FROM tvshowview " + where);
     if (iRowsFound <= 0)
       return iRowsFound == 0;
 
