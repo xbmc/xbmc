@@ -1281,7 +1281,7 @@ else
 fi
 
 if test "$HAVE_GIT" = "yes"; then
-  GIT_REV=$(git --no-pager log --abbrev=7 -1 --pretty=format:"%h %ci" HEAD | awk '{gsub("-", "");print $2"-"$1}')
+  GIT_REV=$(git --no-pager log --abbrev=7 -n 1 --pretty=format:"%h %ci" HEAD | awk '{gsub("-", "");print $2"-"$1}')
 fi
 if test "$GIT_REV" = ""; then
   GIT_REV="Unknown"
