@@ -1,4 +1,5 @@
 ARCH=@ARCH@
+SYSROOT=@SYSROOT@
 
 CFLAGS +=-D_LINUX -fPIC -DNSF_PLAYER
 CXXFLAGS +=-D_LINUX -fPIC -DNSF_PLAYER
@@ -27,9 +28,9 @@ SLIB=@abs_top_srcdir@/system/players/paplayer/nosefart-@ARCH@.so
 
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	ld -bundle -flat_namespace -undefined suppress -o $@ $(OBJS) $(BUNDLE1_O)
-	@abs_top_srcdir@/tools/Mach5/wrapper.rb $@;mv output.so $@
-	chmod +x $@
+	$(CC) $(SYSROOT) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias \
+	-bundle -undefined dynamic_lookup -read_only_relocs suppress -o $@ \
+	@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o $(OBJS) $(BUNDLE1_O)
 else
 	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o $@ $(OBJS) `cat @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.def` @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
 endif

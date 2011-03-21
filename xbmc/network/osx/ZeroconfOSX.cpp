@@ -29,8 +29,12 @@
 CZeroconfOSX::CZeroconfOSX():m_runloop(0)
 {
   //aquire the main threads event loop
+#if !defined(__arm__)
   EventLoopRef ref = GetMainEventLoop();
   m_runloop = (CFRunLoopRef)GetCFRunLoopFromEventLoop(ref);
+#else
+  m_runloop = CFRunLoopGetMain();
+#endif
 }
 
 CZeroconfOSX::~CZeroconfOSX()
@@ -160,4 +164,3 @@ std::string CZeroconfOSX::assemblePublishedName(const std::string& fcr_given_nam
   }
   return ss.str();
 }
-

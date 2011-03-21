@@ -44,6 +44,11 @@ config.log
 /build/
 .DS_Store
 *.dSYM
+/tools/osx/osx-depends/**/.gitignore
+/tools/osx/osx-depends/**/.installed
+/tools/osx/ios-depends/**/.gitignore
+/tools/osx/ios-depends/**/.installed
+/tools/osx/ios-depends/**/.compiled
 
 .libs/
 .deps/
@@ -352,6 +357,8 @@ config.log
 /system/players/dvdplayer/librtmp.dll
 /system/players/dvdplayer/postproc-51.dll
 /system/players/dvdplayer/swscale-0.6.1.dll
+/system/players/dvdplayer/libbluray.dll
+/system/players/dvdplayer/libmpeg2-0.dll
 
 # /system/players/paplayer
 /system/players/paplayer/wavpack.dll
@@ -481,7 +488,7 @@ config.log
 # /xbmc/cores/DllLoader/exports/
 /xbmc/cores/DllLoader/exports/build_wrapper.sh
 /xbmc/cores/DllLoader/exports/wrapper.def
-
+/xbmc/cores/DllLoader/Makefile
 /xbmc/cores/Makefile
 
 /xbmc/cores/VideoRenderers/Makefile
@@ -999,6 +1006,8 @@ config.log
 
 # /lib/libid3tag/
 /lib/libid3tag/Makefile
+/lib/libid3tag/libid3tag/autom4te.cache
+/lib/libid3tag/libid3tag/configure
 /lib/libid3tag/libid3tag/Makefile
 /lib/libid3tag/libid3tag/compat.c
 /lib/libid3tag/libid3tag/config.h
@@ -1064,6 +1073,7 @@ config.log
 /xbmc/screensavers/Makefile
 
 /xbmc/screensavers/rsxs-0.9/Makefile
+/xbmc/screensavers/rsxs-0.9/configure
 /xbmc/screensavers/rsxs-0.9/config.h
 /xbmc/screensavers/rsxs-0.9/config.log
 /xbmc/screensavers/rsxs-0.9/config/Makefile

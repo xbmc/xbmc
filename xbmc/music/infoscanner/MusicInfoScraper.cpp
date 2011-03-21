@@ -91,7 +91,7 @@ void CMusicInfoScraper::FindAlbumInfo()
 
   CLog::Log(LOGDEBUG, "%s: Searching for '%s - %s' using %s scraper (path: '%s', content: '%s', version: '%s')",
     __FUNCTION__, m_strArtist.c_str(), strAlbum.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(),
-    ADDON::TranslateContent(m_scraper->Content()).c_str(), m_scraper->Version().str.c_str());
+    ADDON::TranslateContent(m_scraper->Content()).c_str(), m_scraper->Version().c_str());
   
   vector<CStdString> extras;
   extras.push_back(strAlbum);
@@ -187,7 +187,7 @@ void CMusicInfoScraper::FindArtistInfo()
   
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', version: '%s')",
     __FUNCTION__, m_strArtist.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(),
-    ADDON::TranslateContent(m_scraper->Content()).c_str(), m_scraper->Version().str.c_str());
+    ADDON::TranslateContent(m_scraper->Content()).c_str(), m_scraper->Version().c_str());
 
   CScraperUrl scrURL;
   vector<CStdString> url = m_scraper->Run("CreateArtistSearchUrl",scrURL,m_http,&extras);

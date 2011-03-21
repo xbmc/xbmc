@@ -58,6 +58,10 @@
 #define snprintf _snprintf
 #endif /* _XBOX */
 
+#if defined(__FreeBSD__)
+#include <netinet/in.h>
+#endif
+
 //extern int errno;
 
 #ifndef PATH_MAX

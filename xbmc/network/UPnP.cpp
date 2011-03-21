@@ -1453,6 +1453,7 @@ CUPnPRenderer::SetupServices(PLT_DeviceData& data)
         ",http-get:*:audio/mpeg:*"
         ",http-get:*:audio/mpeg3:*"
         ",http-get:*:audio/mp3:*"
+        ",http-get:*:audio/mp4:*"
         ",http-get:*:audio/basic:*"
         ",http-get:*:audio/midi:*"
         ",http-get:*:audio/ulaw:*"

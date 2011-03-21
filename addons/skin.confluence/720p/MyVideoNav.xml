@@ -1,7 +1,7 @@
 <window id="25">
 	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
-	<views>50,500,550,560,501,508,504,503,505,511</views>
+	<views>50,51,500,550,560,501,508,504,503,505,511</views>
 	<controls>
 		<include>CommonVideoBackground</include>
 		<include>CommonMediaPlayingBackground</include>
@@ -14,7 +14,7 @@
 				<height>720</height>
 				<texture border="20">black-back.png</texture>
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(50) | Control.IsVisible(500) | Control.IsVisible(505)</visible>
+				<visible>Control.IsVisible(50) | Control.IsVisible(51) | Control.IsVisible(500) | Control.IsVisible(505)</visible>
 			</control>
 			<control type="image">
 				<posx>0</posx>
@@ -23,7 +23,7 @@
 				<height>128</height>
 				<texture>floor.png</texture>
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(50) | Control.IsVisible(500) | Control.IsVisible(505) | Control.IsVisible(508)</visible>
+				<visible>Control.IsVisible(50) | Control.IsVisible(51) | Control.IsVisible(500) | Control.IsVisible(505) | Control.IsVisible(508)</visible>
 			</control>
 			<control type="group">
 				<include>VisibleFadeEffect</include>
@@ -73,7 +73,7 @@
 			</control>
 			<control type="group">
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(500) | Control.IsVisible(505)</visible>
+				<visible>Control.IsVisible(51) | Control.IsVisible(500) | Control.IsVisible(505)</visible>
 				<control type="image">
 					<posx>75</posx>
 					<posy>60</posy>
@@ -94,6 +94,7 @@
 		<control type="group">
 			<include>Window_OpenClose_Animation</include>		
 			<include>CommonRootView</include> <!-- view id = 50 -->
+			<include>FullWidthList</include> <!-- view id = 51 -->
 			<include>ThumbnailView</include> <!-- view id = 500 -->
 			<include>PosterWrapView</include> <!-- view id = 501 -->
 			<include>PosterWrapView2_Fanart</include> <!-- view id = 508 -->
@@ -158,7 +159,7 @@
 				</control>
 				<control type="grouplist" id="9010">
 					<posx>10</posx>
-					<posy>290</posy>
+					<posy>250</posy>
 					<width>240</width>
 					<height>550</height>
 					<onleft>9000</onleft>
@@ -176,6 +177,12 @@
 						<description>Search</description>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>137</label>
+					</control>
+					<control type="radiobutton" id="7">
+						<description>Stack Toggle</description>
+						<textwidth>170</textwidth>
+						<include>ButtonMediaSubCommonValues</include>
+						<label>346</label>
 					</control>
 					<control type="radiobutton" id="19">
 						<description>Filter</description>
@@ -275,7 +282,7 @@
 					<onleft>50</onleft>
 					<onright>4</onright>
 					<onup>2</onup>
-					<ondown>99</ondown>
+					<ondown>16</ondown>
 				</control>
 				<control type="togglebutton" id="4">
 					<description>Sort asc</description>
@@ -285,37 +292,24 @@
 					<onleft>3</onleft>
 					<onright>50</onright>
 					<onup>2</onup>
-					<ondown>99</ondown>
-				</control>
-				<control type="radiobutton" id="99">
-					<description>Library button</description>
-					<posx>0</posx>
-					<posy>80</posy>
-					<label>$LOCALIZE[29800]</label>
-					<onclick>ReplaceWindow(VideoFiles)</onclick>
-					<selected>Window.IsVisible(VideoLibrary)</selected>
-					<include>ButtonCommonValues</include>
-					<onleft>50</onleft>
-					<onright>50</onright>
-					<onup>3</onup>
 					<ondown>16</ondown>
 				</control>
 				<control type="radiobutton" id="16">
 					<description>PartyMode</description>
 					<posx>0</posx>
-					<posy>120</posy>
+					<posy>80</posy>
 					<label>589</label>
 					<include>ButtonCommonValues</include>
 					<onleft>50</onleft>
 					<onright>50</onright>
-					<onup>99</onup>
+					<onup>3</onup>
 					<ondown>98</ondown>
 				</control>
 				<control type="radiobutton" id="98">
 					<description>Extra Options</description>
 					<hitrect x="0" y="160" w="265" h="40" />
 					<posx>0</posx>
-					<posy>160</posy>
+					<posy>120</posy>
 					<include>ButtonCommonValues</include>
 					<radiowidth>18</radiowidth>
 					<radioheight>18</radioheight>
@@ -391,7 +385,7 @@
 		<control type="group">
 			<posx>470</posx>
 			<posy>0</posy>
-			<visible>Container.Content(Episodes)</visible>
+			<visible>Container.Content(Episodes) + !IsEmpty(ListItem.Season)</visible>
 			<include>VisibleFadeEffect</include>
 			<animation effect="slide" end="-710,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="slide" start="-710,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
@@ -412,6 +406,7 @@
 			<posx>240</posx>
 			<posy>0</posy>
 			<visible>Container.Content(Seasons) | Container.Content(Episodes)</visible>
+			<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
 			<include>VisibleFadeEffect</include>
 			<animation effect="slide" end="-600,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="slide" start="-600,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
@@ -464,7 +459,7 @@
 			<control type="label">
 				<include>WindowTitleCommons</include>
 				<posx>220</posx>
-				<label>$LOCALIZE[20314]</label>
+				<label>$LOCALIZE[3]</label>
 			</control>
 		</control>
 		<include>WindowTitleHomeButton</include>

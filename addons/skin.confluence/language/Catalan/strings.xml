@@ -149,14 +149,14 @@
   <string id="31392">Basat en Arial</string>
 
   <!-- Description Labels  -->
-  <string id="31400">[B]CONFIGUREU ELS PARÀMETRES D'APARENÇA[/B][CR][CR]Canvieu el tema · Establiu l'idioma i la regió · Canvieu les opcions del llistat de fitxers · Establiu un estalvi de pantalla</string>
-  <string id="31401">[B]CONFIGUREU ELS PARÀMETRES DE VÍDEO[/B][CR][CR]Gestioneu la biblioteca de vídeos · Establiu les opcions de reproducció de vídeo · Canvieu les opcions del llistat de vídeo · Establiu els tipus de lletra dels subtítols</string>
-  <string id="31402">[B]CONFIGUREU ELS PARÀMETRES DE LA MÚSICA[/B][CR][CR]Gestioneu la biblioteca de música · Establiu les opcions de reproducció de la música · Canvieu les opcions del llistat de música · Configureu l'enviament de cançons · Establiu les opcions del karaoke</string>
+  <string id="31400">[B]CONFIGUREU ELS PARÀMETRES D'APARENÇA[/B][CR][CR]Canvieu el tema · Establiu l'idioma i la regió · Canvieu les opcions del llistat de fitxers[CR]Establiu un estalvi de pantalla</string>
+  <string id="31401">[B]CONFIGUREU ELS PARÀMETRES DE VÍDEO[/B][CR][CR]Gestioneu la biblioteca de vídeos · Establiu les opcions de reproducció de vídeo[CR]Canvieu les opcions del llistat de vídeo · Establiu els tipus de lletra dels subtítols</string>
+  <string id="31402">[B]CONFIGUREU ELS PARÀMETRES DE LA MÚSICA[/B][CR][CR]Gestioneu la biblioteca de música · Establiu les opcions de reproducció de la música[CR]Canvieu les opcions del llistat de música · Configureu l'enviament de cançons[CR]Establiu les opcions del karaoke</string>
   <string id="31403">[B]CONFIGUREU ELS PARÀMETRES D'IMATGE[/B][CR][CR]Establiu les opcions del llistat d'imatges · Configureu les presentacions de diapositives</string>
   <string id="31404">[B]CONFIGUREU ELS PARÀMETRES DEL TEMPS[/B][CR][CR]Indiqueu tres ciutats per recollir informació del temps</string>
-  <string id="31405">[B]CONFIGUREU ELS PARÀMETRES DE LA XARXA[/B][CR][CR]Configureu el control de l'XBMC a través de UPnP i HTTP · Configureu l'ús compartit de fitxers · Establiu les opcions d'accés a internet</string>
-  <string id="31406">[B]CONFIGUREU ELS PARÀMETRES DEL SISTEMA[/B][CR][CR]Configureu i calibreu les pantalles · Configureu la sortida d'àudio · Configureu els comandaments a distància · Establiu les opcions d'estalvi d'energia · Habiliteu la depuració · Configureu el bloqueig mestre</string>
-  <string id="31407">[B]CONFIGUREU ELS PARÀMETRES DEL TEMA[/B][CR][CR]Configureu la pell Confluence · Afegiu i elimineu elements del menú d'inici · Canvieu els fons de la pell</string>
+  <string id="31405">[B]CONFIGUREU ELS PARÀMETRES DE LA XARXA[/B][CR][CR]Configureu el control de l'XBMC a través de UPnP i HTTP[CR]Configureu l'ús compartit de fitxers · Establiu les opcions d'accés a internet</string>
+  <string id="31406">[B]CONFIGUREU ELS PARÀMETRES DEL SISTEMA[/B][CR][CR]Configureu i calibreu les pantalles · Configureu la sortida d'àudio[CR]Configureu els comandaments a distància · Establiu les opcions d'estalvi d'energia[CR]Habiliteu la depuració · Configureu el bloqueig mestre</string>
+  <string id="31407">[B]CONFIGUREU ELS PARÀMETRES DEL TEMA[/B][CR][CR]Configureu la pell Confluence · Afegiu i elimineu elements del menú d'inici[CR]Canvieu els fons de la pell</string>
   <string id="31408">[B]CONFIGUREU ELS COMPLEMENTS[/B][CR][CR]Gestioneu els complements instal·lats · Cerqueu i instal·leu complements des de xbmc.org[CR]Modifiqueu els paràmetres dels complements</string>
 
   <string id="31421">Seleccioneu el vostre perfil d'usuari[CR]per iniciar la sessió i continuar</string>

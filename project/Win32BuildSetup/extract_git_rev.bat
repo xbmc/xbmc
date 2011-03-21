@@ -24,10 +24,8 @@ GOTO :done
 
 :extract
 
-SET oldCurrentDir=%CD%
-CD ..\..
-FOR /F "tokens=1 delims= " %%A IN ('%GITEXE% rev-parse --short HEAD') DO SET GIT_REV=%%A
-CD %oldCurrentDir%
+FOR /F "tokens=1-4 delims=-" %%A IN ('"%GITEXE% --no-pager log --abbrev=7 -1 --date=short --pretty=format:"%%cd-%%h""') DO SET GIT_REV=%%A%%B%%C-%%D
+@echo %GIT_REV%
 
 :done
 

@@ -2622,7 +2622,7 @@ int CXbmcHttp::xbmcSTSetting(int numParas, CStdString paras[])
       else if (paras[i]=="videostartwindow")
         tmp.Format("%i",g_settings.m_iVideoStartWindow);
       else if (paras[i]=="myvideostack")
-        tmp.Format("%i",g_settings.m_iMyVideoStack);
+        tmp.Format("%i",g_settings.m_videoStacking ? 1 : 0);
       else if (paras[i]=="additionalsubtitledirectorychecked")
         tmp.Format("%i",g_settings.iAdditionalSubtitleDirectoryChecked);
       else if (paras[i]=="httpapibroadcastport")

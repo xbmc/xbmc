@@ -54,7 +54,7 @@ class CLog
 {
 public:
 
-  class CLogGlobals : public xbmcutil::Referenced
+  class CLogGlobals
   {
   public:
     CLogGlobals() : m_file(NULL), m_repeatCount(0), m_repeatLogLevel(-1), m_logLevel(LOG_LEVEL_DEBUG) {}

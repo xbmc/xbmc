@@ -858,6 +858,9 @@
     <ClCompile Include="..\..\xbmc\FileSystem\StackDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\FileSystem\SourcesDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\UPnPDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -1844,9 +1847,6 @@
     <ClCompile Include="..\..\xbmc\storage\cdioSupport.cpp">
       <Filter>storage</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\storage\DetectDVDType.cpp">
-      <Filter>storage</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\storage\IoSupport.cpp">
       <Filter>storage</Filter>
     </ClCompile>
@@ -1884,9 +1884,6 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\AliasShortcutUtils.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\ArabicShaping.cpp">
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\Archive.cpp">
@@ -2073,9 +2070,6 @@
       <Filter>video\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoBase.cpp">
-      <Filter>video\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoFiles.cpp">
       <Filter>video\windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoNav.cpp">
@@ -2455,9 +2449,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.cpp">
       <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\utils\ReferenceCounting.cpp">
-      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3185,6 +3176,9 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\StackDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\FileSystem\SourcesDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\UPnPDirectory.h">
@@ -4317,9 +4311,6 @@
     <ClInclude Include="..\..\xbmc\storage\cdioSupport.h">
       <Filter>storage</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\storage\DetectDVDType.h">
-      <Filter>storage</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\storage\IoSupport.h">
       <Filter>storage</Filter>
     </ClInclude>
@@ -4360,9 +4351,6 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\AliasShortcutUtils.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\ArabicShaping.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Archive.h">
@@ -4570,9 +4558,6 @@
       <Filter>video\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoBase.h">
-      <Filter>video\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoFiles.h">
       <Filter>video\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoNav.h">
@@ -4910,9 +4895,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.h">
       <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\utils\ReferenceCounting.h">
-      <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\GlobalsHandling.h">
       <Filter>utils</Filter>

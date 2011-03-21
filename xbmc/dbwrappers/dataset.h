@@ -115,7 +115,7 @@ public:
   virtual int setErr(int err_code, const char *qry)=0;
   virtual const char *getErrorMsg(void) { return error.c_str(); }
 	
-  virtual int connect(void) { return DB_COMMAND_OK; }
+  virtual int connect(bool create) { return DB_COMMAND_OK; }
   virtual int connectFull( const char *newDb, const char *newHost=NULL,
                       const char *newLogin=NULL, const char *newPasswd=NULL,const char *newPort=NULL);
   virtual void disconnect(void) { active = false; }

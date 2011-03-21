@@ -22,6 +22,7 @@
 #ifndef __COREAUDIO_H__
 #define __COREAUDIO_H__
 
+#if !defined(__arm__)
 #include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
 #include <utils/StdString.h>
@@ -189,4 +190,5 @@ const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdStri
 
 #define CONVERT_OSSTATUS(x) UInt32ToFourCC((UInt32*)&ret)
 
+#endif
 #endif // __COREAUDIO_H__

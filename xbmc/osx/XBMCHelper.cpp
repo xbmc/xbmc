@@ -19,6 +19,7 @@
  *
  */
 
+#if defined(__APPLE__) && !defined(__arm__)
 #include <fstream>
 #include <sstream>
 #include <Carbon/Carbon.h>
@@ -69,11 +70,11 @@ XBMCHelper::XBMCHelper()
   m_homepath = homePath;
 
   // Compute the helper filename.
-  m_helperFile = m_homepath + "/tools/osx/";
+  m_helperFile = m_homepath + "/tools/";
   m_helperFile += XBMC_HELPER_PROGRAM;
   
   // Compute the local (pristine) launch agent filename.
-  m_launchAgentLocalFile = m_homepath + "/tools/osx/";
+  m_launchAgentLocalFile = m_homepath + "/tools/";
   m_launchAgentLocalFile += XBMC_LAUNCH_PLIST;
 
   // Compute the install path for the launch agent.
@@ -480,3 +481,4 @@ static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount)
   assert( (err == 0) == (*procList != NULL) );
   return err;
 }
+#endif

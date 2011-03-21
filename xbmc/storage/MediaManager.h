@@ -71,8 +71,8 @@ public:
 #ifdef HAS_DVD_DRIVE
   CCdInfo* GetCdInfo(const CStdString& devicePath="");
   bool RemoveCdInfo(const CStdString& devicePath="");
-#endif
   CStdString GetDiskLabel(const CStdString& devicePath="");
+#endif
   CStdString GetDiscPath();
   void SetHasOpticalDrive(bool bstatus);
 

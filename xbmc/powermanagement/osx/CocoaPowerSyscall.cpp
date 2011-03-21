@@ -19,7 +19,7 @@
  *
  */
  
-#ifdef __APPLE__
+#if defined (__APPLE__) && !defined(__arm__)
 // defined in PlatformDefs.h but I don't want to include that here
 typedef unsigned char   BYTE;
 

@@ -21,13 +21,16 @@ SET comp=vs2010
 SET target=dx
 SET buildmode=ask
 SET promptlevel=prompt
+SET buildmingwlibs=true
+SET exitcode=0
 FOR %%b in (%1, %2, %3, %4, %5) DO (
-  IF %%b==vs2010 SET comp=vs2010
+	IF %%b==vs2010 SET comp=vs2010
 	IF %%b==dx SET target=dx
 	IF %%b==gl SET target=gl
 	IF %%b==clean SET buildmode=clean
 	IF %%b==noclean SET buildmode=noclean
 	IF %%b==noprompt SET promptlevel=noprompt
+	IF %%b==nomingwlibs SET buildmingwlibs=false
 )
 SET buildconfig=Release (OpenGL)
 IF %target%==dx SET buildconfig=Release (DirectX)
@@ -76,11 +79,12 @@ IF %comp%==vs2010 (
   goto EXE_COMPILE
 
 :EXE_COMPILE
+  IF EXIST buildlog.html del buildlog.html /q
   IF %buildmode%==clean goto COMPILE_EXE
+  IF %buildmode%==noclean goto COMPILE_NO_CLEAN_EXE
   rem ---------------------------------------------
   rem	check for existing exe
   rem ---------------------------------------------
-  IF EXIST buildlog.html del buildlog.html /q
   
   IF EXIST %EXE% (
     goto EXE_EXIST
@@ -88,7 +92,7 @@ IF %comp%==vs2010 (
   goto COMPILE_EXE
 
 :EXE_EXIST
-  IF %buildmode%==noclean goto COMPILE_NO_CLEAN_EXE
+  IF %promptlevel%==noprompt goto COMPILE_EXE
   ECHO ------------------------------------------------------------
   ECHO Found a previous Compiled WIN32 EXE!
   ECHO [1] a NEW EXE will be compiled for the BUILD_WIN32
@@ -127,13 +131,15 @@ IF %comp%==vs2010 (
   GOTO MAKE_BUILD_EXE
 
 :MAKE_BUILD_EXE
-  ECHO Compiling mingw libs
-  ECHO bla>noprompt
-  IF EXIST errormingw del errormingw > NUL
-  call buildmingwlibs.bat
-  IF EXIST errormingw (
-  	set DIETEXT="failed to build mingw libs"
-  	goto DIE
+  IF %buildmingwlibs%==true (
+    ECHO Compiling mingw libs
+    ECHO bla>noprompt
+    IF EXIST errormingw del errormingw > NUL
+    call buildmingwlibs.bat
+    IF EXIST errormingw (
+    	set DIETEXT="failed to build mingw libs"
+    	goto DIE
+    )
   )
   
   ECHO Copying files...
@@ -205,9 +211,8 @@ IF %comp%==vs2010 (
   ECHO Generating installer includes...
   call genNsisIncludes.bat
   ECHO ------------------------------------------------------------
-  CALL extract_git_rev.bat
-  SET GIT_REV=_%GIT_REV%
-  SET XBMC_SETUPFILE=XBMCSetup-Rev%GIT_REV%-%target%.exe
+  CALL extract_git_rev.bat > NUL
+  SET XBMC_SETUPFILE=XBMCSetup-%GIT_REV%-%target%.exe
   ECHO Creating installer %XBMC_SETUPFILE%...
   IF EXIST %XBMC_SETUPFILE% del %XBMC_SETUPFILE% > NUL
   rem get path to makensis.exe from registry, first try tab delim
@@ -264,6 +269,7 @@ IF %comp%==vs2010 (
   ECHO !-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-!-
   set DIETEXT=ERROR: %DIETEXT%
   echo %DIETEXT%
+  SET exitcode=1
   ECHO ------------------------------------------------------------
 
 :VIEWLOG_EXE
@@ -288,3 +294,4 @@ IF %comp%==vs2010 (
   ECHO Press any key to exit...
   pause > NUL
   )
+  EXIT /B %exitcode%

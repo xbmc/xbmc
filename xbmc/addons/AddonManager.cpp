@@ -174,6 +174,7 @@ bool CAddonMgr::CheckUserDirs(const cp_cfg_element_t *settings)
 
 CAddonMgr::CAddonMgr()
 {
+  m_cpluff = NULL;
 }
 
 CAddonMgr::~CAddonMgr()
@@ -507,26 +508,6 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
   return AddonPtr();
 }
 
-void CAddonMgr::UpdateRepos(bool force)
-{
-  CSingleLock lock(m_critSection);
-  if (!force && m_watch.IsRunning() && m_watch.GetElapsedSeconds() < 600)
-    return;
-  m_watch.StartZero();
-  VECADDONS addons;
-  GetAddons(ADDON_REPOSITORY,addons);
-  for (unsigned int i=0;i<addons.size();++i)
-  {
-    RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addons[i]);
-    CDateTime lastUpdate = m_database.GetRepoTimestamp(repo->ID());
-    if (force || !lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
-    {
-      CLog::Log(LOGDEBUG,"Checking repository %s for updates",repo->Name().c_str());
-      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo), NULL);
-    }
-  }
-}
-
 /*
  * libcpluff interaction
  */
@@ -603,24 +584,6 @@ const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, con
   return NULL;
 }
 
-ADDONDEPS CAddonMgr::GetDeps(const CStdString &id)
-{
-  ADDONDEPS result;
-  cp_status_t status;
-
-  cp_plugin_info_t *info = m_cpluff->get_plugin_info(m_cp_context,id.c_str(),&status);
-  if (info)
-  {
-    for (unsigned int i=0;i<info->num_imports;++i)
-      result.insert(make_pair(CStdString(info->imports[i].plugin_id),
-                              make_pair(AddonVersion(info->version),
-                                        AddonVersion(info->version))));
-    m_cpluff->release_info(m_cp_context, info);
-  }
-
-  return result;
-}
-
 CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
 {
   const char *value = NULL;
@@ -642,8 +605,13 @@ bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<CStd
 
 AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info)
 {
-  if (!info || !info->extensions)
+  if (!info)
     return AddonPtr();
+
+  if (!info->extensions)
+  { // no extensions, so we need only the dep information
+    return AddonPtr(new CAddon(info));
+  }
 
   // FIXME: If we want to support multiple extension points per addon, we'll need to extend this to not just take
   //        the first extension point (eg use the TYPE information we pass in)

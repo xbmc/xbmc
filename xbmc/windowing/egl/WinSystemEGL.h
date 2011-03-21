@@ -29,7 +29,7 @@
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GlobalsHandling.h"
 
-class CWinSystemEGL : public CWinSystemBase, public CRenderSystemGLES, public virtual xbmcutil::Referenced
+class CWinSystemEGL : public CWinSystemBase, public CRenderSystemGLES
 {
 public:
   CWinSystemEGL();

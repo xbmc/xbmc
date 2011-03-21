@@ -33,7 +33,7 @@
 // and will be optimized out.
 
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);
-#if defined(GL_DEBUGGING) && defined(HAS_GL)
+#if defined(GL_DEBUGGING) && (defined(HAS_GL) || defined(HAS_GLES))
 #define VerifyGLState() _VerifyGLState(__FILE__, __FUNCTION__, __LINE__)
 #else
 #define VerifyGLState()

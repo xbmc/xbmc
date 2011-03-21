@@ -37,6 +37,7 @@
 
 #include "filesystem/File.h"
 #include "pyutil.h"
+#include "pythreadstate.h"
 
 using namespace std;
 using namespace XFILE;
@@ -95,9 +96,10 @@ extern "C" {
       
       if (!PyXBMCGetUnicodeString(strSource, f_line, 1)) return NULL;
       if (!PyXBMCGetUnicodeString(strDestnation, d_line, 1)) return NULL;
-      Py_BEGIN_ALLOW_THREADS
+
+      CPyThreadState pyState;
       bResult = CFile::Cache(strSource, strDestnation);
-      Py_END_ALLOW_THREADS
+      pyState.Restore();
       
       return Py_BuildValue((char*)"b", bResult);
     }
@@ -123,9 +125,9 @@ extern "C" {
       CStdString strSource;
       if (!PyXBMCGetUnicodeString(strSource, f_line, 1)) return NULL;
       
-      Py_BEGIN_ALLOW_THREADS
+      CPyThreadState pyState;
       self->pFile->Delete(strSource);
-      Py_END_ALLOW_THREADS
+      pyState.Restore();
       
       Py_INCREF(Py_None);
       return Py_None;
@@ -160,20 +162,52 @@ extern "C" {
       if (!PyXBMCGetUnicodeString(strDestnation, d_line, 1)) return NULL;
       
       bool bResult;
-      Py_BEGIN_ALLOW_THREADS
+
+      CPyThreadState pyState;
       bResult = self->pFile->Rename(strSource,strDestnation);
-      Py_END_ALLOW_THREADS
+      pyState.Restore();
       
       return Py_BuildValue((char*)"b", bResult);
       
     }  
+
+    PyDoc_STRVAR(exists__doc__,
+      "exists(path)\n"
+      "\n"
+      "path        : file or folder"
+      "\n"
+      "example:\n"
+      "  success = xbmcvfs.exists(path)\n");
+   
+    // check for a file or folder existance, mimics Pythons os.path.exists()
+    PyObject* vfs_exists(File *self, PyObject *args, PyObject *kwds)
+    {
+      PyObject *f_line;
+      if (!PyArg_ParseTuple(
+        args,
+        (char*)"O",
+        &f_line))
+      {
+        return NULL;
+      }
+      CStdString strSource;
+      if (!PyXBMCGetUnicodeString(strSource, f_line, 1)) return NULL;
      
+      bool bResult;
+     
+      CPyThreadState pyState;
+      bResult = self->pFile->Exists(strSource, false);
+      pyState.Restore();
+
+      return Py_BuildValue((char*)"b", bResult);
+    }      
     
     // define c functions to be used in python here
     PyMethodDef xbmcvfsMethods[] = {
       {(char*)"copy", (PyCFunction)vfs_copy, METH_VARARGS, copy__doc__},
       {(char*)"delete", (PyCFunction)vfs_delete, METH_VARARGS, delete__doc__},
       {(char*)"rename", (PyCFunction)vfs_rename, METH_VARARGS, rename__doc__},
+      {(char*)"exists", (PyCFunction)vfs_exists, METH_VARARGS, exists__doc__},
       {NULL, NULL, 0, NULL}
     };
     

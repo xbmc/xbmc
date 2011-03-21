@@ -21,7 +21,7 @@
 
 #include "CharsetConverter.h"
 #include "Util.h"
-#include "ArabicShaping.h"
+#include <fribidi/fribidi.h>
 #include "LangInfo.h"
 #include "threads/SingleLock.h"
 #include "log.h"
@@ -39,6 +39,7 @@
 #elif defined(WIN32)
   #define WCHAR_CHARSET "UTF-16LE"
   #define UTF8_SOURCE "UTF-8"
+  #pragma comment(lib, "libfribidi.lib")
 #else
   #define WCHAR_CHARSET "WCHAR_T"
   #define UTF8_SOURCE "UTF-8"
@@ -270,16 +271,10 @@ static void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDe
     FriBidiChar* visual = (FriBidiChar*) malloc((len + 1) * sizeof(FriBidiChar));
     FriBidiLevel* levels = (FriBidiLevel*) malloc((len + 1) * sizeof(FriBidiLevel));
 
-    // Shape Arabic Text
-    FriBidiChar *shaped_text = shape_arabic(logical, len);
-    for (int i = 0; i < len; i++)
-       logical[i] = shaped_text[i];
-    free(shaped_text);
-
     if (fribidi_log2vis(logical, len, &base, visual, NULL, NULL, NULL))
     {
       // Removes bidirectional marks
-      //len = fribidi_remove_bidi_marks(visual, len, NULL, NULL, NULL);
+      len = fribidi_remove_bidi_marks(visual, len, NULL, NULL, NULL);
 
       // Apperently a string can get longer during this transformation
       // so make sure we allocate the maximum possible character utf8

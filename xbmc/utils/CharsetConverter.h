@@ -28,7 +28,7 @@
 
 #include <vector>
 
-class CCharsetConverter : public virtual xbmcutil::Referenced
+class CCharsetConverter 
 {
 public:
   CCharsetConverter();

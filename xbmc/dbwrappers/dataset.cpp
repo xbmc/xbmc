@@ -60,7 +60,7 @@ int Database::connectFull(const char *newHost, const char *newPort, const char *
   db = newDb;
   login = newLogin;
   passwd = newPasswd;
-  return connect();
+  return connect(true);
 }
 
 

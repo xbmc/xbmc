@@ -32,7 +32,7 @@
 #include "rendering/gl/RenderSystemGL.h"
 #include "utils/GlobalsHandling.h"
 
-class CWinSystemWin32GL : public CWinSystemWin32, public CRenderSystemGL, public virtual xbmcutil::Referenced
+class CWinSystemWin32GL : public CWinSystemWin32, public CRenderSystemGL
 {
 public:
   CWinSystemWin32GL();

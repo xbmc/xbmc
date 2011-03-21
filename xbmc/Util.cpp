@@ -70,7 +70,7 @@
 #include "WIN32Util.h"
 #endif
 #if defined(__APPLE__)
-#include "CocoaInterface.h"
+#include "osx/DarwinUtils.h"
 #endif
 #include "GUIUserMessages.h"
 #include "filesystem/File.h"
@@ -492,17 +492,21 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 #ifdef __APPLE__
     int      result = -1;
     char     given_path[2*MAXPATHLEN];
-    uint32_t path_size = 2*MAXPATHLEN;
+    uint32_t path_size =2*MAXPATHLEN;
 
-    result = _NSGetExecutablePath(given_path, &path_size);
+    result = GetDarwinExecutablePath(given_path, &path_size);
     if (result == 0)
     {
       // Move backwards to last /.
       for (int n=strlen(given_path)-1; given_path[n] != '/'; n--)
         given_path[n] = '\0';
 
-      // Assume local path inside application bundle.
-      strcat(given_path, "../Resources/XBMC/");
+      #if defined(__arm__)
+        strcat(given_path, "/XBMCData/XBMCHome/");
+      #else
+        // Assume local path inside application bundle.
+        strcat(given_path, "../Resources/XBMC/");
+      #endif
 
       // Convert to real path.
       char real_path[2*MAXPATHLEN];
@@ -2160,15 +2164,11 @@ CStdString CUtil::ResolveExecutablePath()
   CStdStringW strPathW = szAppPathW;
   g_charsetConverter.wToUTF8(strPathW,strExecutablePath);
 #elif defined(__APPLE__)
-  int      result = -1;
   char     given_path[2*MAXPATHLEN];
-  char     real_given_path[2*MAXPATHLEN];
-  uint32_t path_size = 2*MAXPATHLEN;
+  uint32_t path_size =2*MAXPATHLEN;
 
-  result = _NSGetExecutablePath(given_path, &path_size);
-  if (result == 0)
-    realpath(given_path, real_given_path);
-  strExecutablePath = real_given_path;
+  GetDarwinExecutablePath(given_path, &path_size);
+  strExecutablePath = given_path;
 #else
   /* Get our PID and build the name of the link in /proc */
   pid_t pid = getpid();
@@ -2183,6 +2183,19 @@ CStdString CUtil::ResolveExecutablePath()
   strExecutablePath = buf;
 #endif
   return strExecutablePath;
+}
+
+CStdString CUtil::GetFrameworksPath(bool forPython)
+{
+  CStdString strFrameworksPath;
+#if defined(__APPLE__)
+  char     given_path[2*MAXPATHLEN];
+  uint32_t path_size =2*MAXPATHLEN;
+
+  GetDarwinFrameworkPath(forPython, given_path, &path_size);
+  strFrameworksPath = given_path;
+#endif
+  return strFrameworksPath;
 }
 
 void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CStdString>& vecSubtitles )

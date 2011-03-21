@@ -246,6 +246,7 @@ CStdString AddonVersion::Print() const
 AddonProps::AddonProps(const cp_extension_t *ext)
   : id(ext->plugin->identifier)
   , version(ext->plugin->version)
+  , minversion(ext->plugin->abi_bw_compatibility)
   , name(ext->plugin->name)
   , path(ext->plugin->plugin_path)
   , author(ext->plugin->provider_name)
@@ -270,6 +271,28 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     EMPTY_IF("noicon",icon)
     EMPTY_IF("nochangelog",changelog)
   }
+  BuildDependencies(ext->plugin);
+}
+
+AddonProps::AddonProps(const cp_plugin_info_t *plugin)
+  : id(plugin->identifier)
+  , version(plugin->version)
+  , minversion(plugin->abi_bw_compatibility)
+  , name(plugin->name)
+  , path(plugin->plugin_path)
+  , author(plugin->provider_name)
+  , stars(0)
+{
+  BuildDependencies(plugin);
+}
+
+void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)
+{
+  if (!plugin)
+    return;
+  for (unsigned int i = 0; i < plugin->num_imports; ++i)
+    dependencies.insert(make_pair(CStdString(plugin->imports[i].plugin_id),
+                        make_pair(AddonVersion(plugin->imports[i].version), plugin->imports[i].optional != 0)));
 }
 
 /**
@@ -288,6 +311,18 @@ CAddon::CAddon(const cp_extension_t *ext)
   m_hasSettings = true;
   m_hasStrings = false;
   m_checkedStrings = false;
+  m_settingsLoaded = false;
+  m_userSettingsLoaded = false;
+}
+
+CAddon::CAddon(const cp_plugin_info_t *plugin)
+  : m_props(plugin)
+  , m_parent(AddonPtr())
+{
+  m_enabled = true;
+  m_hasSettings = false;
+  m_hasStrings = false;
+  m_checkedStrings = true;
   m_settingsLoaded = false;
   m_userSettingsLoaded = false;
 }
@@ -330,9 +365,9 @@ AddonPtr CAddon::Clone(const AddonPtr &self) const
   return AddonPtr(new CAddon(*this, self));
 }
 
-const AddonVersion CAddon::Version()
+bool CAddon::MeetsVersion(const AddonVersion &version) const
 {
-  return m_props.version;
+  return m_props.minversion <= version && version <= m_props.version;
 }
 
 //TODO platform/path crap should be negotiated between the addon and
@@ -603,11 +638,6 @@ const CStdString CAddon::Icon() const
 const CStdString CAddon::LibPath() const
 {
   return URIUtils::AddFileToFolder(m_props.path, m_strLibName);
-}
-
-ADDONDEPS CAddon::GetDeps()
-{
-  return CAddonMgr::Get().GetDeps(ID());
 }
 
 /**

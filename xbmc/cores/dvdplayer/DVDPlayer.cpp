@@ -477,7 +477,6 @@ retry:
 
     for(unsigned int i=0;i<filenames.size();i++)
     {
-      CLog::Log(LOGERROR, "test subs Amet [%s]", filenames[i].c_str());
       // if vobsub subtitle:		
       if (URIUtils::GetExtension(filenames[i]) == ".idx")
       {
@@ -3312,16 +3311,15 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     return false;
 
-  bool result = m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts - m_dvdPlayerVideo.GetSubtitleDelay());
+  m_dvdPlayerSubtitle.GetCurrentSubtitle(strSubtitle, pts - m_dvdPlayerVideo.GetSubtitleDelay());
   
   // In case we stalled, don't output any subs
   if (m_dvdPlayerVideo.IsStalled() || m_dvdPlayerAudio.IsStalled())
-  {
-    strSubtitle = "";
-    return false;
-  }
-    
-  return result;
+    strSubtitle = m_lastSub;
+  else
+    m_lastSub = strSubtitle;
+  
+  return !strSubtitle.IsEmpty();
 }
 
 CStdString CDVDPlayer::GetPlayerState()

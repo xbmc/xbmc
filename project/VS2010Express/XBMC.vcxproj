@@ -629,7 +629,6 @@
     <ClCompile Include="..\..\xbmc\SortFileItem.cpp" />
     <ClCompile Include="..\..\xbmc\storage\AutorunMediaJob.cpp" />
     <ClCompile Include="..\..\xbmc\storage\cdioSupport.cpp" />
-    <ClCompile Include="..\..\xbmc\storage\DetectDVDType.cpp" />
     <ClCompile Include="..\..\xbmc\storage\IoSupport.cpp" />
     <ClCompile Include="..\..\xbmc\storage\MediaManager.cpp" />
     <ClCompile Include="..\..\xbmc\storage\windows\Win32StorageProvider.cpp" />
@@ -651,7 +650,6 @@
     <ClCompile Include="..\..\xbmc\Util.cpp" />
     <ClCompile Include="..\..\xbmc\utils\AlarmClock.cpp" />
     <ClCompile Include="..\..\xbmc\utils\AliasShortcutUtils.cpp" />
-    <ClCompile Include="..\..\xbmc\utils\ArabicShaping.cpp" />
     <ClCompile Include="..\..\xbmc\utils\Archive.cpp" />
     <ClCompile Include="..\..\xbmc\utils\AsyncFileCopy.cpp" />
     <ClCompile Include="..\..\xbmc\utils\AutoPtrHandle.cpp" />
@@ -686,7 +684,6 @@
     <ClCompile Include="..\..\xbmc\utils\PCMAmplifier.cpp" />
     <ClCompile Include="..\..\xbmc\utils\PerformanceSample.cpp" />
     <ClCompile Include="..\..\xbmc\utils\PerformanceStats.cpp" />
-    <ClCompile Include="..\..\xbmc\utils\ReferenceCounting.cpp" />
     <ClCompile Include="..\..\xbmc\utils\RegExp.cpp" />
     <ClCompile Include="..\..\xbmc\utils\RingBuffer.cpp" />
     <ClCompile Include="..\..\xbmc\utils\RssReader.cpp" />
@@ -725,7 +722,6 @@
     <ClCompile Include="..\..\xbmc\video\VideoReferenceClock.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowFullScreen.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoBase.cpp" />
-    <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoFiles.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoNav.cpp" />
     <ClCompile Include="..\..\xbmc\video\windows\GUIWindowVideoPlaylist.cpp" />
     <ClCompile Include="..\..\xbmc\ViewDatabase.cpp" />
@@ -966,6 +962,7 @@
     <ClCompile Include="..\..\xbmc\FileSystem\SpecialProtocol.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SpecialProtocolDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\StackDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\FileSystem\SourcesDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\UPnPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VirtualDirectory.cpp" />
@@ -1460,7 +1457,6 @@
     <ClInclude Include="..\..\xbmc\SortFileItem.h" />
     <ClInclude Include="..\..\xbmc\storage\AutorunMediaJob.h" />
     <ClInclude Include="..\..\xbmc\storage\cdioSupport.h" />
-    <ClInclude Include="..\..\xbmc\storage\DetectDVDType.h" />
     <ClInclude Include="..\..\xbmc\storage\IoSupport.h" />
     <ClInclude Include="..\..\xbmc\storage\IStorageProvider.h" />
     <ClInclude Include="..\..\xbmc\storage\MediaManager.h" />
@@ -1483,7 +1479,6 @@
     <ClInclude Include="..\..\xbmc\Util.h" />
     <ClInclude Include="..\..\xbmc\utils\AlarmClock.h" />
     <ClInclude Include="..\..\xbmc\utils\AliasShortcutUtils.h" />
-    <ClInclude Include="..\..\xbmc\utils\ArabicShaping.h" />
     <ClInclude Include="..\..\xbmc\utils\Archive.h" />
     <ClInclude Include="..\..\xbmc\utils\AsyncFileCopy.h" />
     <ClInclude Include="..\..\xbmc\utils\AutoPtrHandle.h" />
@@ -1517,7 +1512,6 @@
     <ClInclude Include="..\..\xbmc\utils\PCMAmplifier.h" />
     <ClInclude Include="..\..\xbmc\utils\PerformanceSample.h" />
     <ClInclude Include="..\..\xbmc\utils\PerformanceStats.h" />
-    <ClInclude Include="..\..\xbmc\utils\ReferenceCounting.h" />
     <ClInclude Include="..\..\xbmc\utils\RegExp.h" />
     <ClInclude Include="..\..\xbmc\utils\RingBuffer.h" />
     <ClInclude Include="..\..\xbmc\utils\RssReader.h" />
@@ -1559,7 +1553,6 @@
     <ClInclude Include="..\..\xbmc\video\VideoReferenceClock.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowFullScreen.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoBase.h" />
-    <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoFiles.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoNav.h" />
     <ClInclude Include="..\..\xbmc\video\windows\GUIWindowVideoPlaylist.h" />
     <ClInclude Include="..\..\xbmc\ViewDatabase.h" />
@@ -1817,6 +1810,7 @@
     <ClInclude Include="..\..\xbmc\FileSystem\SpecialProtocol.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\SpecialProtocolDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\StackDirectory.h" />
+    <ClInclude Include="..\..\xbmc\FileSystem\SourcesDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\UPnPDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VirtualPathDirectory.h" />
@@ -1925,10 +1919,6 @@
       <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
-    <ProjectReference Include="..\..\lib\win32\fribidi\libfridibidi\libfridibidi.vcxproj">
-      <Project>{f7c8ae15-b8c1-4f93-a414-ec908f0592b4}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\..\lib\win32\libcdio\libcdio.vcxproj">
       <Project>{e465056a-c6f3-45ee-b791-caf8e0ce629d}</Project>

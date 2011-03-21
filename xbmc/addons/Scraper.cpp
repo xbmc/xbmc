@@ -302,6 +302,9 @@ bool CScraper::Load()
   bool result=m_parser.Load(LibPath());
   if (result)
   {
+    // TODO: this routine assumes that deps are a single level, and assumes the dep is installed.
+    //       1. Does it make sense to have recursive dependencies?
+    //       2. Should we be checking the dep versions or do we assume it is ok?
     ADDONDEPS deps = GetDeps();
     ADDONDEPS::iterator itr = deps.begin();
     while (itr != deps.end())
@@ -315,7 +318,7 @@ bool CScraper::Load()
       if (!CAddonMgr::Get().GetAddon((*itr).first, dep))
         return false;
       TiXmlDocument doc;
-      if (doc.LoadFile(dep->LibPath()))
+      if (dep->Type() == ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))
         m_parser.AddDocument(&doc);
       itr++;
     }

@@ -239,7 +239,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     // stack video files
     CFileItemList tempItems;
     tempItems.Append(vecItems);
-    if (g_settings.m_iMyVideoStack != STACK_NONE)
+    if (g_settings.m_videoStacking)
       tempItems.Stack();
     CFileItemList itemlist;
 

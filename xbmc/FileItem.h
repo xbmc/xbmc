@@ -232,6 +232,13 @@ public:
   // Gets the correct movie title
   CStdString GetMovieName(bool bUseFolderNames = false) const;
 
+  /*! \brief Find the base movie path (eg the folder if using "use foldernames for lookups")
+   Takes care of VIDEO_TS, BDMV, and rar:// listings
+   \param useFolderNames whether we're using foldernames for lookups
+   \return the base movie folder
+   */
+  CStdString GetBaseMoviePath(bool useFolderNames) const;
+
   // Gets the user thumb, if it exists
   CStdString GetUserVideoThumb() const;
   CStdString GetUserMusicThumb(bool alwaysCheckRemote = false) const;

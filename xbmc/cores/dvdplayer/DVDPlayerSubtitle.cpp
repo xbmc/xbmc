@@ -242,7 +242,7 @@ bool CDVDPlayerSubtitle::AcceptsData()
   return m_pOverlayContainer->GetSize() < 5;
 }
 
-bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, double pts)
+void CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, double pts)
 {
   strSubtitle = "";
 
@@ -276,5 +276,4 @@ bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, double pts)
   }
   m_pOverlayContainer->Unlock();
   strSubtitle.TrimRight('\n');
-  return !strSubtitle.IsEmpty();
 }

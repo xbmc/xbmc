@@ -3,7 +3,7 @@ CXXFLAGS+=-fPIC
 DEFINES+=-D_DLL -DXBMC
 ifeq ($(findstring osx,$(ARCH)), osx)
 	CXXFLAGS+=-fno-common
-	INCLUDES+=-I../jasper/include -I../jpeg/
+	INCLUDES+=-I../jasper/include
 endif
 OBJS= \
 	DllInterface.o ximadsp.o ximage.o ximaico.o ximajas.o \

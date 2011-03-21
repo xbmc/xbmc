@@ -2,8 +2,7 @@ abs_top_srcdir=@abs_top_srcdir@
 
 INCLUDES=-I$(abs_top_srcdir) \
 	 -I$(abs_top_srcdir)/xbmc \
-	 -I$(abs_top_srcdir)/xbmc/linux \
-	 -I$(abs_top_srcdir)/lib/libportaudio
+	 -I$(abs_top_srcdir)/xbmc/linux
 
 .SUFFIXES : .m .mm
 
