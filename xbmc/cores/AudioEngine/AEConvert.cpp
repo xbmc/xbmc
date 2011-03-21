@@ -19,6 +19,7 @@
  *
  */
 
+#define __STDC_LIMIT_MACROS
 #include "AEConvert.h"
 #include "AEUtil.h"
 #include "MathUtils.h"
