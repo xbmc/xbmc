@@ -43,7 +43,9 @@
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
 #include "threads/SingleLock.h"
 #include "RenderCapture.h"
+#if defined(__ARM_NEON__)
 #include "yuv2rgb.neon.h"
+#endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
 #include "DVDCodecs/Video/DVDVideoCodecVideoToolBox.h"
 #include <CoreVideo/CoreVideo.h>
