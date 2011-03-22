@@ -31,6 +31,8 @@
 #include "pvr/PVRManager.h"
 #include "pvr/epg/PVREpgInfoTag.h"
 
+using namespace std;
+
 CPVRTimers::CPVRTimers(void)
 {
 
@@ -61,6 +63,23 @@ bool CPVRTimers::Update(void)
   PVRTimers_tmp.LoadFromClients();
 
   return UpdateEntries(&PVRTimers_tmp);
+}
+
+bool CPVRTimers::IsRecording(void)
+{
+  bool bReturn = false;
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
+  {
+    if (at(iTimerPtr)->IsRecording())
+    {
+      bReturn = true;
+      break;
+    }
+  }
+
+  return bReturn;
 }
 
 bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
@@ -146,8 +165,6 @@ bool CPVRTimers::Update(const CPVRTimerInfoTag &timer)
 
 int CPVRTimers::GetTimers(CFileItemList* results)
 {
-  Update();
-
   CSingleLock lock(m_critSection);
   for (unsigned int i = 0; i < size(); ++i)
   {
@@ -158,23 +175,34 @@ int CPVRTimers::GetTimers(CFileItemList* results)
   return size();
 }
 
-bool CPVRTimers::GetNextActiveTimer(CPVRTimerInfoTag *tag)
+const CPVRTimerInfoTag *CPVRTimers::GetNextActiveTimer(void)
 {
-  tag = NULL;
+  CPVRTimerInfoTag *tag = NULL;
   bool bReturn = false;
   CSingleLock lock(m_critSection);
 
   for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
   {
     CPVRTimerInfoTag *current = at(iTimerPtr);
-    if (current->IsActive() && (!bReturn || current->Compare(*tag) < 0))
-    {
+    if (current->IsActive() && (tag == NULL || current->Compare(*tag) < 0))
       tag = at(iTimerPtr);
-      bReturn = true;
-    }
   }
 
-  return bReturn;
+  return tag;
+}
+
+int CPVRTimers::GetActiveTimers(vector<CPVRTimerInfoTag *> *tags)
+{
+  int iInitialSize = tags->size();
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
+  {
+    if (at(iTimerPtr)->IsActive())
+      tags->push_back(at(iTimerPtr));
+  }
+
+  return tags->size() - iInitialSize;
 }
 
 int CPVRTimers::GetNumTimers()
@@ -195,8 +223,6 @@ bool CPVRTimers::GetDirectory(const CStdString& strPath, CFileItemList &items)
   if (fileName == "timers")
   {
     CFileItemPtr item;
-
-    Update();
 
     item.reset(new CFileItem(base + "/add.timer", false));
     item->SetLabel(g_localizeStrings.Get(19026));

@@ -110,6 +110,9 @@ public:
    */
   virtual ~CEpgInfoTag();
 
+  bool operator ==(const CEpgInfoTag& right) const;
+  bool operator !=(const CEpgInfoTag& right) const;
+
   /*!
    * @brief Check whether this tag has changed and unsaved values.
    * @return True if it has unsaved values, false otherwise.

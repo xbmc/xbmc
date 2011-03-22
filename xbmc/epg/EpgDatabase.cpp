@@ -362,7 +362,7 @@ int CEpgDatabase::Persist(const CEpg &epg, bool bQueueWrite /* = false */)
   else
   {
     if (ExecuteQuery(strQuery))
-      iReturn = epg.EpgID() <= 0 ? m_pDS->lastinsertid() : epg.EpgID();
+      iReturn = epg.EpgID() <= 0 ? (int) m_pDS->lastinsertid() : epg.EpgID();
   }
 
   return iReturn;
@@ -437,7 +437,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   if (bSingleUpdate)
   {
     if (ExecuteQuery(strQuery))
-      iReturn = m_pDS->lastinsertid();
+      iReturn = (int) m_pDS->lastinsertid();
   }
   else
   {

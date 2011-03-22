@@ -169,8 +169,6 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
   tag.m_bIsRepeating      = timer->repeat == 1;
   tag.m_iWeekdays         = timer->repeatflags;
   tag.m_strFileNameAndPath.Format("pvr://client%i/timers/%i", tag.m_iClientID, tag.m_iClientIndex);
-
-  // TODO find matching EPG entry
   tag.UpdateSummary();
 
   xbmcTimers->Update(tag);
@@ -234,10 +232,6 @@ void CAddonHelpers_PVR::PVRTriggerChannelUpdate(void *addonData)
   }
 
   CPVRManager::Get()->TriggerChannelsUpdate();
-
-  CAddonHelpers_PVR* addonHelper = addon->GetHelperPVR();
-  CLog::Log(LOGDEBUG, "%s: %s-%s - Triggered channels update",
-      __FUNCTION__, TranslateType(addonHelper->m_addon->Type()).c_str(), addonHelper->m_addon->Name().c_str());
 }
 
 void CAddonHelpers_PVR::PVRTriggerTimerUpdate(void *addonData)
@@ -249,10 +243,7 @@ void CAddonHelpers_PVR::PVRTriggerTimerUpdate(void *addonData)
     return;
   }
 
-  CAddonHelpers_PVR* addonHelper = addon->GetHelperPVR();
-
   CPVRManager::Get()->TriggerTimersUpdate();
-  CLog::Log(LOGDEBUG, "%s: %s-%s - Triggered Timer Update", __FUNCTION__, TranslateType(addonHelper->m_addon->Type()).c_str(), addonHelper->m_addon->Name().c_str());
 }
 
 void CAddonHelpers_PVR::PVRTriggerRecordingUpdate(void *addonData)
@@ -264,10 +255,7 @@ void CAddonHelpers_PVR::PVRTriggerRecordingUpdate(void *addonData)
     return;
   }
 
-  CAddonHelpers_PVR* addonHelper = addon->GetHelperPVR();
-
   CPVRManager::Get()->TriggerRecordingsUpdate();
-  CLog::Log(LOGDEBUG, "%s: %s-%s - Triggered Recording Update", __FUNCTION__, TranslateType(addonHelper->m_addon->Type()).c_str(), addonHelper->m_addon->Name().c_str());
 }
 
 void CAddonHelpers_PVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket)

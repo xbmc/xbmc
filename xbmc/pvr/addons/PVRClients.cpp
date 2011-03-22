@@ -1252,13 +1252,13 @@ bool CPVRClients::RequestRemoval(AddonPtr addon)
 int CPVRClients::GetSignalLevel(void) const
 {
   CSingleLock lock(m_critSection);
-  return (float) m_qualityInfo.signal / 0xFFFF * 100;
+  return (int) ((float) m_qualityInfo.signal / 0xFFFF * 100);
 }
 
 int CPVRClients::GetSNR(void) const
 {
   CSingleLock lock(m_critSection);
-  return (float) m_qualityInfo.snr / 0xFFFF * 100;
+  return (int) ((float) m_qualityInfo.snr / 0xFFFF * 100);
 }
 
 const char *CPVRClients::CharInfoVideoBR(void) const

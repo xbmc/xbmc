@@ -815,7 +815,7 @@ void CPVRClient::CloseLiveStream(void)
 
 int CPVRClient::ReadLiveStream(void* lpBuf, int64_t uiBufSize)
 {
-  return m_pStruct->ReadLiveStream((unsigned char *)lpBuf, uiBufSize);
+  return m_pStruct->ReadLiveStream((unsigned char *)lpBuf, (int)uiBufSize);
 }
 
 int64_t CPVRClient::SeekLiveStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*/)
@@ -935,7 +935,7 @@ void CPVRClient::CloseRecordedStream(void)
 
 int CPVRClient::ReadRecordedStream(void* lpBuf, int64_t uiBufSize)
 {
-  return m_pStruct->ReadRecordedStream((unsigned char *)lpBuf, uiBufSize);
+  return m_pStruct->ReadRecordedStream((unsigned char *)lpBuf, (int)uiBufSize);
 }
 
 int64_t CPVRClient::SeekRecordedStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*/)

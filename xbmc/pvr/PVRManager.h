@@ -199,13 +199,13 @@ public:
    * @brief Check whether there are active timers.
    * @return True if there are active timers, false otherwise.
    */
-  bool HasTimer() { return m_hasTimers; }
+  bool HasTimer() { return m_bHasTimers; }
 
   /*!
    * @brief Check whether there are active recordings.
    * @return True if there are active recordings, false otherwise.
    */
-  bool IsRecording() { return m_isRecording; }
+  bool IsRecording() { return m_bIsRecording; }
 
   /*!
    * @brief Set the current playing group, used to load the right channel.
@@ -308,6 +308,9 @@ private:
   const char *CharInfoNowRecordingTitle(void);
   const char *CharInfoNowRecordingChannel(void);
   const char *CharInfoNowRecordingDateTime(void);
+  const char *CharInfoNextRecordingTitle(void);
+  const char *CharInfoNextRecordingChannel(void);
+  const char *CharInfoNextRecordingDateTime(void);
   const char *CharInfoNextTimer(void);
   const char *CharInfoPlayingDuration(void);
   const char *CharInfoPlayingTime(void);
@@ -380,6 +383,9 @@ private:
    */
   void UpdateTimers(void);
 
+  void UpdateTimersCache(void);
+  void UpdateRecordingToggle(void);
+
   /** @name General PVRManager data */
   //@{
   static CPVRManager *            m_instance;                 /*!< singleton instance */
@@ -403,20 +409,24 @@ private:
 
   /** @name GUIInfoManager data */
   //@{
-  DWORD                           m_infoToggleStart;        /* Time to toogle pvr infos like in System info */
-  unsigned int                    m_infoToggleCurrent;      /* The current item showed by the GUIInfoManager */
-  DWORD                           m_recordingToggleStart;   /* Time to toogle currently running pvr recordings */
+  DWORD                           m_recordingToggleStart;   /* Time to toggle currently running pvr recordings */
   unsigned int                    m_recordingToggleCurrent; /* The current item showed by the GUIInfoManager */
 
   std::vector<CPVRTimerInfoTag *> m_NowRecording;
-  CPVRTimerInfoTag *              m_NextRecording;
+  const CPVRTimerInfoTag *        m_NextRecording;
 
-  CStdString                      m_nextTimer;
-  CStdString                      m_playingDuration;
-  CStdString                      m_playingTime;
-  bool                            m_isRecording;
-  bool                            m_hasRecordings;
-  bool                            m_hasTimers;
+  CStdString                      m_strPlayingDuration;
+  CStdString                      m_strPlayingTime;
+  CStdString                      m_strActiveTimerTitle;
+  CStdString                      m_strActiveTimerChannelName;
+  CStdString                      m_strActiveTimerTime;
+  CStdString                      m_strNextTimerInfo;
+  CStdString                      m_strNextRecordingTitle;
+  CStdString                      m_strNextRecordingChannelName;
+  CStdString                      m_strNextRecordingTime;
+  bool                            m_bIsRecording;
+  bool                            m_bHasRecordings;
+  bool                            m_bHasTimers;
   //@}
 
   /*--- Previous Channel data ---*/

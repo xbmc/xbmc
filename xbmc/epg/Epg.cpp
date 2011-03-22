@@ -202,7 +202,7 @@ const CEpgInfoTag *CEpg::InfoTagNext(void) const
 const CEpgInfoTag *CEpg::InfoTag(int uniqueID, const CDateTime &StartTime) const
 {
   CEpgInfoTag *returnTag = NULL;
-  CSingleLock locka(m_critSection);
+  CSingleLock lock(m_critSection);
 
   /* try to find the tag by UID */
   if (uniqueID > 0)

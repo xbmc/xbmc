@@ -112,6 +112,7 @@ public:
   void UpdateEpgEvent(bool bClear = false);
 
   bool IsActive(void) const { return m_bIsActive && m_StopTime > CDateTime::GetCurrentDateTime(); }
+  bool IsRecording(void) const { return IsActive() && m_StartTime < CDateTime::GetCurrentDateTime(); }
 
   /* Client control functions */
   bool AddToClient();

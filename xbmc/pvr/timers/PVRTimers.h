@@ -75,7 +75,9 @@ public:
    * The timer that will be active next.
    * Returns false if there is none.
    */
-  bool GetNextActiveTimer(CPVRTimerInfoTag *tag);
+  const CPVRTimerInfoTag *GetNextActiveTimer(void);
+
+  int GetActiveTimers(std::vector<CPVRTimerInfoTag *> *tags);
 
   /**
    * The amount of timers in this container.
@@ -161,6 +163,7 @@ public:
    */
   static bool UpdateTimer(CPVRTimerInfoTag &item);
 
+  bool IsRecording(void);
   bool UpdateEntries(CPVRTimers *timers);
   CPVRTimerInfoTag *GetByClient(int iClientId, int iClientTimerId);
   CPVRTimerInfoTag *GetMatch(const CEpgInfoTag *Epg);

@@ -368,7 +368,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
       progress->UpdateState();
     }
 
-    Sleep(0); /* give other threads a chance to get a lock on tables */
+    Sleep(25); /* give other threads a chance to get a lock on tables */
   }
 
   /* update the last scan time if we did a full update */

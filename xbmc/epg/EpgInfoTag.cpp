@@ -41,6 +41,38 @@ CEpgInfoTag::~CEpgInfoTag()
   m_previousEvent = NULL;
 }
 
+bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
+{
+  if (this == &right) return true;
+
+  return (m_iBroadcastId       == right.m_iBroadcastId &&
+          m_strTitle           == right.m_strTitle &&
+          m_strPlotOutline     == right.m_strPlotOutline &&
+          m_strPlot            == right.m_strPlot &&
+          m_strGenre           == right.m_strGenre &&
+          m_startTime          == right.m_startTime &&
+          m_endTime            == right.m_endTime &&
+          m_strIconPath        == right.m_strIconPath &&
+          m_strFileNameAndPath == right.m_strFileNameAndPath &&
+          m_iGenreType         == right.m_iGenreType &&
+          m_iGenreSubType      == right.m_iGenreSubType &&
+          m_firstAired         == right.m_firstAired &&
+          m_iParentalRating    == right.m_iParentalRating &&
+          m_iStarRating        == right.m_iStarRating &&
+          m_bNotify            == right.m_bNotify &&
+          m_iSeriesNum         == right.m_iSeriesNum &&
+          m_iEpisodeNum        == right.m_iEpisodeNum &&
+          m_iEpisodePart       == right.m_iEpisodePart &&
+          m_iUniqueBroadcastID == right.m_iUniqueBroadcastID);
+}
+
+bool CEpgInfoTag::operator !=(const CEpgInfoTag& right) const
+{
+  if (this == &right) return false;
+
+  return !(*this == right);
+}
+
 void CEpgInfoTag::Reset()
 {
   m_iBroadcastId        = -1;
