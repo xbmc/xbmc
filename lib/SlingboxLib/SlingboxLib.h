@@ -402,7 +402,7 @@ protected:
     {
       memset(m_ucData, 0, sizeof(m_ucData));
       m_ucData[0] = ucCode;
-      m_ucData[472] = 0x00FF;
+      m_ucData[472] = 0xFF;
     }
   };
 };
