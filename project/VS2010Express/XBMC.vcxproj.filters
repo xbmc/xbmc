@@ -229,6 +229,9 @@
     <Filter Include="guilib\Rendering\GL">
       <UniqueIdentifier>{9592a005-d33b-48d1-8462-d95c42c383c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="libs\SlingboxLib">
+      <UniqueIdentifier>{dfa70c36-927b-4540-b505-35919e64eb3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2449,6 +2452,12 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.cpp">
       <Filter>cores\VideoRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\SlingboxLib\SlingboxLib.cpp">
+      <Filter>libs\SlingboxLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\Slingbox.cpp">
+      <Filter>filesystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4898,6 +4907,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\GlobalsHandling.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\SlingboxLib\SlingboxLib.h">
+      <Filter>libs\SlingboxLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\Slingbox.h">
+      <Filter>filesystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
