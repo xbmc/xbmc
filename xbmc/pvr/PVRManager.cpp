@@ -126,10 +126,30 @@ bool CPVRManager::ChannelDown(unsigned int *iNewChannelNumber, bool bPreview /* 
 bool CPVRManager::ChannelSwitch(unsigned int iChannel)
 {
   const CPVRChannel *channel = NULL;
-  if (m_addons->IsPlayingRadio() && m_currentRadioGroup)
-    channel = m_currentRadioGroup->GetByChannelNumber(iChannel);
-  else if (m_addons->IsPlayingTV() && m_currentRadioGroup)
-    channel = m_currentTVGroup->GetByChannelNumber(iChannel);
+
+  if (m_addons->IsPlayingRadio())
+  {
+    if (m_currentRadioGroup != NULL)
+      channel = m_currentRadioGroup->GetByChannelNumber(iChannel);
+
+    if (channel == NULL)
+      channel = GetChannelGroups()->GetGroupAllRadio()->GetByChannelNumber(iChannel);
+  }
+  else
+  {
+    /* always use the TV group if we're not playing a radio channel */
+    if (m_currentTVGroup != NULL)
+      channel = m_currentTVGroup->GetByChannelNumber(iChannel);
+
+    if (channel == NULL)
+      channel = GetChannelGroups()->GetGroupAllTV()->GetByChannelNumber(iChannel);
+  }
+
+  if (channel == NULL)
+  {
+    CLog::Log(LOGERROR, "PVRManager - %s - cannot find channel %d", __FUNCTION__, iChannel);
+    return false;
+  }
 
   return PerformChannelSwitch(*channel, false);
 }
