@@ -188,6 +188,10 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   else if (url.GetProtocol() == "hdhomerun" && strFilename.IsEmpty())
     strFilename = "HDHomerun Devices";
 
+  // Slingbox Devices
+  else if (url.GetProtocol() == "sling")
+    strFilename = "Slingbox";
+
   // ReplayTV Devices
   else if (url.GetProtocol() == "rtv")
     strFilename = "ReplayTV Devices";
@@ -2223,6 +2227,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   CFileItem item(strMovie, false);
   if (item.IsInternetStream()) return ;
   if (item.IsHDHomeRun()) return ;
+  if (item.IsSlingbox()) return ;
   if (item.IsPlayList()) return ;
   if (!item.IsVideo()) return ;
   

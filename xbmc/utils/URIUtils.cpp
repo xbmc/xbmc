@@ -669,6 +669,11 @@ bool URIUtils::IsHDHomeRun(const CStdString& strFile)
   return strFile.Left(10).Equals("hdhomerun:");
 }
 
+bool URIUtils::IsSlingbox(const CStdString& strFile)
+{
+  return strFile.Left(6).Equals("sling:");
+}
+
 bool URIUtils::IsVTP(const CStdString& strFile)
 {
   return strFile.Left(4).Equals("vtp:");
@@ -684,6 +689,7 @@ bool URIUtils::IsLiveTV(const CStdString& strFile)
   if(IsTuxBox(strFile)
   || IsVTP(strFile)
   || IsHDHomeRun(strFile)
+  || IsSlingbox(strFile)
   || IsHTSP(strFile)
   || strFile.Left(4).Equals("sap:"))
     return true;
