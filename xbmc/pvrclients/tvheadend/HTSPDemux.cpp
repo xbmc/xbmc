@@ -153,10 +153,10 @@ DemuxPacket* cHTSPDemux::Read()
       // Jumpy video error on channel change is fixed if first I-frame is not send to demuxer on MPEG2 stream
       // Problem exists on some HD H264 stream, but it can help if 2 I-frames are skipped :D
       // SD H264 stream not tested
-      if (g_bSkipIFrame && m_SkipIFrame == 0 && frametypechar[0]=='I')
+      if (frametypechar[0]=='I' && m_SkipIFrame < g_iSkipIFrame)
       {
         m_SkipIFrame++;
-        XBMC->Log(LOG_DEBUG, "%s - Skipped first I-frame", __FUNCTION__);
+        //XBMC->Log(LOG_DEBUG, "%s - Skipped first I-frame", __FUNCTION__);
         htsmsg_destroy(msg);
         DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
         return pkt;
