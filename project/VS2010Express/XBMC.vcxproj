@@ -279,6 +279,7 @@
     <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_reader.cpp" />
     <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_value.cpp" />
     <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_writer.cpp" />
+    <ClCompile Include="..\..\lib\SlingboxLib\SlingboxLib.cpp" />
     <ClCompile Include="..\..\lib\tinyXML\tinystr.cpp" />
     <ClCompile Include="..\..\lib\tinyXML\tinyxml.cpp" />
     <ClCompile Include="..\..\lib\tinyXML\tinyxmlerror.cpp" />
@@ -341,6 +342,7 @@
     <ClCompile Include="..\..\xbmc\FileSystem\iso9660.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\ISO9660Directory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\FileUDF.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\Slingbox.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\udf25.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\UDFDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.cpp" />
@@ -1157,6 +1159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lib\ffmpeg\include-xbmc-win32\libavutil\avconfig.h" />
+    <ClInclude Include="..\..\lib\SlingboxLib\SlingboxLib.h" />
     <ClInclude Include="..\..\lib\tinyXML\tinystr.h" />
     <ClInclude Include="..\..\lib\tinyXML\tinyxml.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonDatabase.h" />
@@ -1229,6 +1232,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\iso9660.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\ISO9660Directory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\FileUDF.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\Slingbox.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\udf25.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\UDFDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.h" />
