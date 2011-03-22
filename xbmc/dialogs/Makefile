@@ -23,6 +23,7 @@ SRCS=GUIDialogBoxBase.cpp \
      GUIDialogTextViewer.cpp \
      GUIDialogVolumeBar.cpp \
      GUIDialogYesNo.cpp \
+     GUIDialogPlayEjectCancel.cpp \
 
 LIB=dialogs.a
 
