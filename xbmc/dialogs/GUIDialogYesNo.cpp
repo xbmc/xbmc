@@ -22,8 +22,8 @@
 #include "GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 
-CGUIDialogYesNo::CGUIDialogYesNo(void)
-    : CGUIDialogBoxBase(WINDOW_DIALOG_YES_NO, "DialogYesNo.xml")
+CGUIDialogYesNo::CGUIDialogYesNo(int overrideId /* = -1 */)
+    : CGUIDialogBoxBase(overrideId == -1 ? WINDOW_DIALOG_YES_NO : overrideId, "DialogYesNo.xml")
 {
   m_bConfirmed = false;
 }

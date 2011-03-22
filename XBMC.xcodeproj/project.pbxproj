@@ -517,6 +517,8 @@
 		7C8A187D115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */; };
 		7C99B6A4133D342100FC2B16 /* CacheCircular.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B6A2133D342100FC2B16 /* CacheCircular.cpp */; };
 		7C99B6A5133D342100FC2B16 /* CacheCircular.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B6A2133D342100FC2B16 /* CacheCircular.cpp */; };
+		7C99B7951340723F00FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7931340723F00FC2B16 /* GUIDialogPlayEject.cpp */; };
+		7C99B7961340723F00FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7931340723F00FC2B16 /* GUIDialogPlayEject.cpp */; };
 		7CAA20511079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA20521079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
@@ -2407,6 +2409,8 @@
 		7C8A187B115B2A8200E5FCFA /* TextureDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureDatabase.h; sourceTree = "<group>"; };
 		7C99B6A2133D342100FC2B16 /* CacheCircular.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CacheCircular.cpp; sourceTree = "<group>"; };
 		7C99B6A3133D342100FC2B16 /* CacheCircular.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheCircular.h; sourceTree = "<group>"; };
+		7C99B7931340723F00FC2B16 /* GUIDialogPlayEject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPlayEject.cpp; sourceTree = "<group>"; };
+		7C99B7941340723F00FC2B16 /* GUIDialogPlayEject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPlayEject.h; sourceTree = "<group>"; };
 		7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseRenderer.cpp; sourceTree = "<group>"; };
 		7CAA20501079C8160096DE39 /* BaseRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseRenderer.h; sourceTree = "<group>"; };
 		7CAA205B107AFC280096DE39 /* Job.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Job.h; sourceTree = "<group>"; };
@@ -4538,6 +4542,8 @@
 				E38E17C30D25F9FA00618676 /* GUIDialogNumeric.h */,
 				E38E17C40D25F9FA00618676 /* GUIDialogOK.cpp */,
 				E38E17C50D25F9FA00618676 /* GUIDialogOK.h */,
+				7C99B7931340723F00FC2B16 /* GUIDialogPlayEject.cpp */,
+				7C99B7941340723F00FC2B16 /* GUIDialogPlayEject.h */,
 				E38E17C80D25F9FA00618676 /* GUIDialogPlayerControls.cpp */,
 				E38E17C90D25F9FA00618676 /* GUIDialogPlayerControls.h */,
 				E38E17CE0D25F9FA00618676 /* GUIDialogProgress.cpp */,
@@ -8028,6 +8034,7 @@
 				F57A1D1E1329B15300498CC7 /* AutoPool.mm in Sources */,
 				F5B13C8D1334056B0045076D /* DarwinUtils.mm in Sources */,
 				7C99B6A4133D342100FC2B16 /* CacheCircular.cpp in Sources */,
+				7C99B7951340723F00FC2B16 /* GUIDialogPlayEject.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8899,6 +8906,7 @@
 				F57A1D1F1329B15300498CC7 /* AutoPool.mm in Sources */,
 				F5B13C8E1334056B0045076D /* DarwinUtils.mm in Sources */,
 				7C99B6A5133D342100FC2B16 /* CacheCircular.cpp in Sources */,
+				7C99B7961340723F00FC2B16 /* GUIDialogPlayEject.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

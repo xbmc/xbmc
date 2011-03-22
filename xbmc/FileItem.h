@@ -86,6 +86,7 @@ public:
 
   bool Exists(bool bUseCache = true) const;
   bool IsVideo() const;
+  bool IsDiscStub() const;
   bool IsPicture() const;
   bool IsLyrics() const;
   bool IsAudio() const;

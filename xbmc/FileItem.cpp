@@ -509,6 +509,20 @@ bool CFileItem::IsVideo() const
   return (g_settings.m_videoExtensions.Find(extension) != -1);
 }
 
+bool CFileItem::IsDiscStub() const
+{
+  CStdString strExtension;
+  URIUtils::GetExtension(m_strPath, strExtension);
+
+  if (strExtension.IsEmpty())
+    return false;
+
+  strExtension.ToLower();
+  strExtension += '|';
+
+  return (g_settings.m_discStubExtensions + '|').Find(strExtension) != -1;
+}
+
 bool CFileItem::IsAudio() const
 {
   /* check preset mime type */
