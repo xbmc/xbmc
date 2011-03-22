@@ -1591,6 +1591,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --enable-encoder=aac \
       `if test "$use_ffmpeg_libvorbis" == "yes"; then echo --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis; else echo --disable-libvorbis; fi` \
       --disable-devices \
+      --disable-ffprobe \
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
@@ -1626,6 +1627,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       `if test "$use_ffmpeg_libvorbis" == "yes"; then echo --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis; else echo --disable-libvorbis; fi` \
       --disable-decoder=mpeg_xvmc \
       --disable-devices \
+      --disable-ffprobe \
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
