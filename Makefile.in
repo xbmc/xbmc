@@ -551,11 +551,8 @@ OBJSXBMC+= \
 	lib/UnrarXLib/UnrarXLib.a
 endif
 
-ifneq ($(findstring arm,@ARCH@), arm)
-# Can't include libhts for arm due to GPLv3
 OBJSXBMC+= \
 	lib/libhts/libhts.a
-endif
 
 # platform dependend objects
 ifeq ($(findstring osx,@ARCH@), osx)
