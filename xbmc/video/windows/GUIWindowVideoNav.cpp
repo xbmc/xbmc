@@ -396,6 +396,9 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
     else
     { // load info from the database
+      CStdString label;
+      if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.m_strPath, g_settings.GetSourcesFromType("video"), &label)) 
+        items.SetLabel(label);
       LoadVideoInfo(items);
     }
   }

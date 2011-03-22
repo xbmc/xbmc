@@ -174,9 +174,9 @@ public:
   bool GetAlbumThumb(int idAlbum, CStdString &thumb);
   bool GetArtistPath(int idArtist, CStdString &path);
 
-  bool GetGenreById(int idGenre, CStdString& strGenre);
-  bool GetArtistById(int idArtist, CStdString& strArtist);
-  bool GetAlbumById(int idAlbum, CStdString& strAlbum);
+  CStdString GetGenreById(int id);
+  CStdString GetArtistById(int id);
+  CStdString GetAlbumById(int id);
 
   int GetArtistByName(const CStdString& strArtist);
   int GetAlbumByName(const CStdString& strAlbum, const CStdString& strArtist="");
