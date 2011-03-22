@@ -218,6 +218,7 @@
 #include "dialogs/GUIDialogSlider.h"
 #include "guilib/GUIControlFactory.h"
 #include "dialogs/GUIDialogCache.h"
+#include "dialogs/GUIDialogPlayEjectCancel.h"
 #include "addons/AddonInstaller.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -1096,6 +1097,8 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogLockSettings); // window id = 131
 
   g_windowManager.Add(new CGUIDialogContentSettings);        // window id = 132
+
+  g_windowManager.Add(new CGUIDialogPlayEjectCancel);        // window id = 148
 
   g_windowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   g_windowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
@@ -3137,6 +3140,8 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
     g_windowManager.Delete(WINDOW_DIALOG_TEXT_VIEWER);
 
+    g_windowManager.Delete(WINDOW_DIALOG_PLAY_EJECT_CANCEL);
+
     g_windowManager.Delete(WINDOW_STARTUP_ANIM);
     g_windowManager.Delete(WINDOW_LOGIN_SCREEN);
     g_windowManager.Delete(WINDOW_VISUALISATION);
@@ -3536,6 +3541,35 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
     if (item.IsVideo())
       CUtil::ClearSubtitles();
+  }
+
+  if (item.IsDiscStub())
+  {
+    // Display the Play Eject Cancel dialog
+    CGUIDialogPlayEjectCancel * pDialog =
+      (CGUIDialogPlayEjectCancel *)g_windowManager.GetWindow(WINDOW_DIALOG_PLAY_EJECT_CANCEL);
+    if (pDialog)
+    {
+      pDialog->SetHeading(219);
+      pDialog->SetLine(0, 429);
+      if (item.GetVideoInfoTag())
+      {
+        pDialog->SetLine(1, item.GetVideoInfoTag()->m_strTitle);
+      }
+      else
+      {
+        CStdString strTitle = URIUtils::GetFileName(item.m_strPath);
+        URIUtils::RemoveExtension(strTitle);
+        pDialog->SetLine(1, strTitle);
+      }
+      pDialog->DoModal();
+
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   if (item.IsPlayList())

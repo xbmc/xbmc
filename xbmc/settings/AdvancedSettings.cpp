@@ -712,6 +712,11 @@ bool CAdvancedSettings::Load()
   if (pExts)
     GetCustomExtensions(pExts,g_settings.m_videoExtensions);
 
+  // stub extensions
+  pExts = pRootElement->FirstChildElement("discstubextensions");
+  if (pExts)
+    GetCustomExtensions(pExts,g_settings.m_discStubExtensions);
+
   m_vecTokens.clear();
   CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"),m_vecTokens);
 
