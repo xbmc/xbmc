@@ -30,11 +30,22 @@ extern "C" {
 
 cHTSPData::cHTSPData()
 {
+  m_bGotGmtOffset = false;
 }
 
 cHTSPData::~cHTSPData()
 {
   Close();
+}
+
+void cHTSPData::GetGmtOffset(void)
+{
+  if (!m_bGotGmtOffset)
+  {
+    time_t localTime;
+    GetTime(&localTime, &m_iGmtOffset);
+    m_bGotGmtOffset = true;
+  }
 }
 
 bool cHTSPData::Open(CStdString hostname, int port, CStdString user, CStdString pass, long timeout)
@@ -248,10 +259,6 @@ PVR_ERROR cHTSPData::RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &c
 
 SRecordings cHTSPData::GetDVREntries(bool recorded, bool scheduled)
 {
-  time_t localTime;
-  int gmtOffset;
-  GetTime(&localTime, &gmtOffset);
-
   CMD_LOCK;
   SRecordings recordings;
 
@@ -275,10 +282,7 @@ int cHTSPData::GetNumRecordings()
 
 PVR_ERROR cHTSPData::RequestRecordingsList(PVRHANDLE handle)
 {
-  time_t localTime;
-  int gmtOffset;
-  GetTime(&localTime, &gmtOffset);
-
+  GetGmtOffset();
   SRecordings recordings = GetDVREntries(true, false);
 
   for(SRecordings::const_iterator it = recordings.begin(); it != recordings.end(); ++it)
@@ -290,7 +294,7 @@ PVR_ERROR cHTSPData::RequestRecordingsList(PVRHANDLE handle)
     tag.directory       = "/";
     tag.subtitle        = "";
     tag.channel_name    = "";
-    tag.recording_time  = recording.start + gmtOffset;
+    tag.recording_time  = recording.start + m_iGmtOffset;
     tag.duration        = recording.stop - recording.start;
     tag.description     = recording.description.c_str();
     tag.title           = recording.title.c_str();
@@ -355,10 +359,7 @@ int cHTSPData::GetNumTimers()
 
 PVR_ERROR cHTSPData::RequestTimerList(PVRHANDLE handle)
 {
-  time_t localTime;
-  int gmtOffset;
-  GetTime(&localTime, &gmtOffset);
-
+  //GetGmtOfsset();
   SRecordings recordings = GetDVREntries(false, true);
 
   for(SRecordings::const_iterator it = recordings.begin(); it != recordings.end(); ++it)
