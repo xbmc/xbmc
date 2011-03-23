@@ -211,9 +211,8 @@ IF %comp%==vs2010 (
   ECHO Generating installer includes...
   call genNsisIncludes.bat
   ECHO ------------------------------------------------------------
-  CALL extract_git_rev.bat
-  SET GIT_REV=_%GIT_REV%
-  SET XBMC_SETUPFILE=XBMCSetup-Rev%GIT_REV%-%target%.exe
+  CALL extract_git_rev.bat > NUL
+  SET XBMC_SETUPFILE=XBMCSetup-%GIT_REV%-%target%.exe
   ECHO Creating installer %XBMC_SETUPFILE%...
   IF EXIST %XBMC_SETUPFILE% del %XBMC_SETUPFILE% > NUL
   rem get path to makensis.exe from registry, first try tab delim
@@ -274,14 +273,15 @@ IF %comp%==vs2010 (
   ECHO ------------------------------------------------------------
 
 :VIEWLOG_EXE
-  IF %promptlevel%==noprompt (
-  goto END
-  )
   SET log="%CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
   IF NOT EXIST %log% goto END
   
   copy %log% ./buildlog.html > NUL
-  
+
+  IF %promptlevel%==noprompt (
+  goto END
+  )
+
   set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
   if /I %XBMC_BUILD_ANSWER% NEQ y goto END
   

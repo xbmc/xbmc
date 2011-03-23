@@ -1,7 +1,7 @@
 BUILDDIR=/Users/Shared/xbmc-depends/osx-10.4_i386
 
 SUBDIRS = \
-	help2man autoconf automake pkg-config yasm cmake \
+	help2man autoconf automake libtool pkg-config yasm cmake \
 	pcre expat gettext readline sqlite3 \
 	liblzo liblzo2 freetype2 fontconfig \
 	openssl libssh2 curl \

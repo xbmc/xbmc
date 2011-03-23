@@ -64,22 +64,26 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   {
     CAddonMgr::Get().GetAllAddons(addons, true);
     items.SetProperty("reponame",g_localizeStrings.Get(24062));
+    items.SetLabel(g_localizeStrings.Get(24062));
   }
   else if (path.GetHostName().Equals("disabled"))
   { // grab all disabled addons, including disabled repositories
     reposAsFolders = false;
     CAddonMgr::Get().GetAllAddons(addons, false, true);
     items.SetProperty("reponame",g_localizeStrings.Get(24039));
+    items.SetLabel(g_localizeStrings.Get(24039));
   }
   else if (path.GetHostName().Equals("outdated"))
   {
     reposAsFolders = false;
     CAddonMgr::Get().GetAllOutdatedAddons(addons);
     items.SetProperty("reponame",g_localizeStrings.Get(24043));
+    items.SetLabel(g_localizeStrings.Get(24043));
   }
   else if (path.GetHostName().Equals("repos"))
   {
     CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons,true);
+    items.SetLabel(g_localizeStrings.Get(24033)); // Get Add-ons
   }
   else if (path.GetHostName().Equals("sources"))
   {
@@ -91,6 +95,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     database.Open();
     database.GetAddons(addons);
     items.SetProperty("reponame",g_localizeStrings.Get(24032));
+    items.SetLabel(g_localizeStrings.Get(24032));
   }
   else
   {
@@ -106,6 +111,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     database.Open();
     database.GetRepository(addon->ID(),addons);
     items.SetProperty("reponame",addon->Name());
+    items.SetLabel(addon->Name());
   }
 
   if (path.GetFileName().IsEmpty())
@@ -137,6 +143,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   {
     TYPE type = TranslateType(path.GetFileName());
     items.SetProperty("addoncategory",TranslateType(type, true));
+    items.SetLabel(TranslateType(type, true));
     items.m_strPath = strPath;
 
     // FIXME: Categorisation of addons needs adding here
@@ -278,6 +285,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
   items.Add(GetMoreItem(content));
 
   items.SetContent("addons");
+  items.SetLabel(g_localizeStrings.Get(24001)); // Add-ons
 
   return items.Size() > 0;
 }

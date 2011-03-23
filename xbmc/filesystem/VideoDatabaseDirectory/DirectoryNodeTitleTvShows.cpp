@@ -31,12 +31,20 @@ CDirectoryNodeTitleTvShows::CDirectoryNodeTitleTvShows(const CStdString& strName
 
 }
 
-NODE_TYPE CDirectoryNodeTitleTvShows::GetChildType()
+NODE_TYPE CDirectoryNodeTitleTvShows::GetChildType() const
 {
   return NODE_TYPE_SEASONS;
 }
 
-bool CDirectoryNodeTitleTvShows::GetContent(CFileItemList& items)
+CStdString CDirectoryNodeTitleTvShows::GetLocalizedName() const
+{
+  CVideoDatabase db;
+  if (db.Open())
+    return db.GetTvShowTitleById(GetID());
+  return "";
+}
+
+bool CDirectoryNodeTitleTvShows::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())

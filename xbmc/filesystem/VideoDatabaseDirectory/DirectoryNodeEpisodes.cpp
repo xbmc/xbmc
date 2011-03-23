@@ -31,7 +31,7 @@ CDirectoryNodeEpisodes::CDirectoryNodeEpisodes(const CStdString& strName, CDirec
 
 }
 
-bool CDirectoryNodeEpisodes::GetContent(CFileItemList& items)
+bool CDirectoryNodeEpisodes::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())

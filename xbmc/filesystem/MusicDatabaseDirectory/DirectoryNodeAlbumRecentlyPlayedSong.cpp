@@ -30,7 +30,7 @@ CDirectoryNodeAlbumRecentlyPlayedSong::CDirectoryNodeAlbumRecentlyPlayedSong(con
 
 }
 
-bool CDirectoryNodeAlbumRecentlyPlayedSong::GetContent(CFileItemList& items)
+bool CDirectoryNodeAlbumRecentlyPlayedSong::GetContent(CFileItemList& items) const
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())

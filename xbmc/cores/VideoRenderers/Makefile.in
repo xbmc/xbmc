@@ -4,6 +4,7 @@ SRCS=BaseRenderer.cpp \
      OverlayRendererUtil.cpp \
      RenderCapture.cpp \
      RenderManager.cpp \
+     yuv2rgb.neon.S \
 
 ifeq (@USE_OPENGL@,1)
 SRCS+= LinuxRendererGL.cpp \
@@ -20,4 +21,4 @@ endif
 LIB=VideoRenderer.a
 
 include @abs_top_srcdir@/Makefile.include
--include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(patsubst %.S,,$(SRCS)))) 

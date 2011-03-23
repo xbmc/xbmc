@@ -30,7 +30,7 @@
 #include "RenderFlags.h"
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
-#include "DVDCodecs/Video/DVDVideoCodec.h"
+#include "xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 
 class CRenderCapture;
 

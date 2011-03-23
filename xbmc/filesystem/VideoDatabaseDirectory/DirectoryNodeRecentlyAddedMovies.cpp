@@ -31,12 +31,12 @@ CDirectoryNodeRecentlyAddedMovies::CDirectoryNodeRecentlyAddedMovies(const CStdS
 
 }
 
-NODE_TYPE CDirectoryNodeRecentlyAddedMovies::GetChildType()
+NODE_TYPE CDirectoryNodeRecentlyAddedMovies::GetChildType() const
 {
   return NODE_TYPE_TITLE_MOVIES;
 }
 
-bool CDirectoryNodeRecentlyAddedMovies::GetContent(CFileItemList& items)
+bool CDirectoryNodeRecentlyAddedMovies::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())

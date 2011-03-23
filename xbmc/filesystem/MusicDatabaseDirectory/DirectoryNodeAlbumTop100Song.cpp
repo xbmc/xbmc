@@ -30,7 +30,7 @@ CDirectoryNodeAlbumTop100Song::CDirectoryNodeAlbumTop100Song(const CStdString& s
 
 }
 
-bool CDirectoryNodeAlbumTop100Song::GetContent(CFileItemList& items)
+bool CDirectoryNodeAlbumTop100Song::GetContent(CFileItemList& items) const
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())

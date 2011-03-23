@@ -29,7 +29,7 @@ CDirectoryNodeRoot::CDirectoryNodeRoot(const CStdString& strName, CDirectoryNode
 
 }
 
-NODE_TYPE CDirectoryNodeRoot::GetChildType()
+NODE_TYPE CDirectoryNodeRoot::GetChildType() const
 {
   return NODE_TYPE_OVERVIEW;
 }

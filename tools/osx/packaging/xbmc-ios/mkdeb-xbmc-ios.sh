@@ -1,15 +1,16 @@
 #!/bin/sh
 
 # usage: ./mkdeb-xbmc-ios.sh release/debug (case insensitive)
-
+Allows us to run mkdeb-xbmc-ios.sh from anywhere in the three, rather than the tools/osx/packaging/xbmc-ios folder only
 SWITCH=`echo $1 | tr [A-Z] [a-z]`
+DIRNAME=`dirname $0`
 
-if [ $SWITCH = "debug" ]; then
+if [ ${SWITCH:-""} = "debug" ]; then
   echo "Packaging Debug target for iOS"
-  XBMC="../../../../build/Debug-iphoneos/XBMC.app"
-elif [ $SWITCH = "release" ]; then
+  XBMC="$DIRNAME/../../../../build/Debug-iphoneos/XBMC.app"
+elif [ ${SWITCH:-""} = "release" ]; then
   echo "Packaging Release target for iOS"
-  XBMC="../../../../build/Release-iphoneos/XBMC.app"
+  XBMC="$DIRNAME/../../../../build/Release-iphoneos/XBMC.app"
 else
   echo "You need to specify the build target"
   exit 1 
@@ -35,42 +36,42 @@ REVISION=7
 ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_iphoneos-arm.deb
 
 echo Creating $PACKAGE package version $VERSION revision $REVISION
-${SUDO} rm -rf $PACKAGE
-${SUDO} rm -rf $ARCHIVE
+${SUDO} rm -rf $DIRNAME/$PACKAGE
+${SUDO} rm -rf $DIRNAME/$ARCHIVE
 
 # create debian control file.
-mkdir -p $PACKAGE/DEBIAN
-echo "Package: $PACKAGE"                          >  $PACKAGE/DEBIAN/control
-echo "Priority: Extra"                            >> $PACKAGE/DEBIAN/control
-echo "Name: XBMC-iOS"                             >> $PACKAGE/DEBIAN/control
-echo "Depends: firmware (>= 4.1), curl, org.xbmc.xbmc-iconpack" >> $PACKAGE/DEBIAN/control
-echo "Version: $VERSION-$REVISION"                >> $PACKAGE/DEBIAN/control
-echo "Architecture: iphoneos-arm"                 >> $PACKAGE/DEBIAN/control
-echo "Description: XBMC Multimedia Center for 4.x iOS" >> $PACKAGE/DEBIAN/control
-echo "Homepage: http://xbmc.org/"                 >> $PACKAGE/DEBIAN/control
-echo "Maintainer: Scott Davilla, Edgar Hucek"     >> $PACKAGE/DEBIAN/control
-echo "Author: TeamXBMC"                           >> $PACKAGE/DEBIAN/control
-echo "Section: Multimedia"                        >> $PACKAGE/DEBIAN/control
-echo "Icon: file:///Applications/Cydia.app/Sources/mirrors.xbmc.org.png" >> $PACKAGE/DEBIAN/control
+mkdir -p $DIRNAME/$PACKAGE/DEBIAN
+echo "Package: $PACKAGE"                          >  $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Priority: Extra"                            >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Name: XBMC-iOS"                             >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Depends: firmware (>= 4.1), curl, org.xbmc.xbmc-iconpack" >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Version: $VERSION-$REVISION"                >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Architecture: iphoneos-arm"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Description: XBMC Multimedia Center for 4.x iOS" >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Homepage: http://xbmc.org/"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Maintainer: Scott Davilla, Edgar Hucek"     >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Author: TeamXBMC"                           >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Section: Multimedia"                        >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Icon: file:///Applications/Cydia.app/Sources/mirrors.xbmc.org.png" >> $DIRNAME/$PACKAGE/DEBIAN/control
 
 # prerm: called on remove and upgrade - get rid of existing bits.
-echo "#!/bin/sh"                                  >  $PACKAGE/DEBIAN/prerm
-echo "rm -rf /Applications/XBMC.app"              >> $PACKAGE/DEBIAN/prerm
-chmod +x $PACKAGE/DEBIAN/prerm
+echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/prerm
+echo "rm -rf /Applications/XBMC.app"              >> $DIRNAME/$PACKAGE/DEBIAN/prerm
+chmod +x $DIRNAME/$PACKAGE/DEBIAN/prerm
 
 # postinst: nothing for now.
-echo "#!/bin/sh"                                  >  $PACKAGE/DEBIAN/postinst
-chmod +x $PACKAGE/DEBIAN/postinst
+echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/postinst
+chmod +x $DIRNAME/$PACKAGE/DEBIAN/postinst
 
 # prep XBMC.app
-mkdir -p $PACKAGE/Applications
-cp -r $XBMC $PACKAGE/Applications/
-find $PACKAGE/Applications/ -name '.svn' -exec rm -rf {} \;
-find $PACKAGE/Applications/ -name '.gitignore' -exec rm -rf {} \;
-find $PACKAGE/Applications/ -name '.DS_Store'  -exec rm -rf {} \;
+mkdir -p $DIRNAME/$PACKAGE/Applications
+cp -r $XBMC $DIRNAME/$PACKAGE/Applications/
+find $DIRNAME/$PACKAGE/Applications/ -name '.svn' -exec rm -rf {} \;
+find $DIRNAME/$PACKAGE/Applications/ -name '.gitignore' -exec rm -rf {} \;
+find $DIRNAME/$PACKAGE/Applications/ -name '.DS_Store'  -exec rm -rf {} \;
 
 # set ownership to root:root
-${SUDO} chown -R 0:0 $PACKAGE
+${SUDO} chown -R 0:0 $DIRNAME/$PACKAGE
 
 echo Packaging $PACKAGE
 # Tell tar, pax, etc. on Mac OS X 10.4+ not to archive
@@ -79,9 +80,9 @@ echo Packaging $PACKAGE
 export COPYFILE_DISABLE=true
 export COPY_EXTENDED_ATTRIBUTES_DISABLE=true
 #
-dpkg-deb -b $PACKAGE $ARCHIVE
-dpkg-deb --info $ARCHIVE
-dpkg-deb --contents $ARCHIVE
+dpkg-deb -b $DIRNAME/$PACKAGE $DIRNAME/$ARCHIVE
+dpkg-deb --info $DIRNAME/$ARCHIVE
+dpkg-deb --contents $DIRNAME/$ARCHIVE
 
 # clean up by removing package dir
-${SUDO} rm -rf $PACKAGE
+${SUDO} rm -rf $DIRNAME/$PACKAGE

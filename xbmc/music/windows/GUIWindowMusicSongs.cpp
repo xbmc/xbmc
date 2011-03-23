@@ -200,6 +200,10 @@ bool CGUIWindowMusicSongs::GetDirectory(const CStdString &strDirectory, CFileIte
   // check for .CUE files here.
   items.FilterCueItems();
 
+  CStdString label;
+  if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.m_strPath, g_settings.GetSourcesFromType("music"), &label)) 
+    items.SetLabel(label);
+
   return true;
 }
 

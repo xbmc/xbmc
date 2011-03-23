@@ -14,14 +14,14 @@
     .text
     .align 4
 #ifndef __APPLE__
-    .global _yuv420_2_rgb8888_neon
-    .type   _yuv420_2_rgb8888_neon, %function
+    .global yuv420_2_rgb8888_neon
+    .type   yuv420_2_rgb8888_neon, %function
 #else
     .globl  _yuv420_2_rgb8888_neon
 #endif
 #ifndef __APPLE__
-    .global _yuv422_2_rgb8888_neon
-    .type   _yuv422_2_rgb8888_neon, %function
+    .global yuv422_2_rgb8888_neon
+    .type   yuv422_2_rgb8888_neon, %function
 #else
     .globl  _yuv422_2_rgb8888_neon
 #endif
@@ -107,7 +107,11 @@ coeff_bias_b:
 coeff_pad:
     .short       0
 
+#ifndef __APPLE__
+yuv420_2_rgb8888_neon:
+#else
 _yuv420_2_rgb8888_neon:
+#endif
     /*  r0 = dst_ptr */
     /*  r1 = y_ptr */
     /*  r2 = u_ptr */
@@ -330,7 +334,11 @@ loop_h_420:
 #define rgb_ptr     rgb_t_ptr
 #define y_ptr       y_t_ptr
         
+#ifndef __APPLE__
+yuv422_2_rgb8888_neon:
+#else
 _yuv422_2_rgb8888_neon:
+#endif
     /*  r0 = dst_ptr */
     /*  r1 = y_ptr */
     /*  r2 = u_ptr */

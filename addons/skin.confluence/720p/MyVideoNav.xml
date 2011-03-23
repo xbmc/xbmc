@@ -14,7 +14,7 @@
 				<height>720</height>
 				<texture border="20">black-back.png</texture>
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(50) | Control.IsVisible(500) | Control.IsVisible(505)</visible>
+				<visible>Control.IsVisible(50) | Control.IsVisible(51) | Control.IsVisible(500) | Control.IsVisible(505)</visible>
 			</control>
 			<control type="image">
 				<posx>0</posx>
@@ -23,7 +23,7 @@
 				<height>128</height>
 				<texture>floor.png</texture>
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(50) | Control.IsVisible(500) | Control.IsVisible(505) | Control.IsVisible(508)</visible>
+				<visible>Control.IsVisible(50) | Control.IsVisible(51) | Control.IsVisible(500) | Control.IsVisible(505) | Control.IsVisible(508)</visible>
 			</control>
 			<control type="group">
 				<include>VisibleFadeEffect</include>

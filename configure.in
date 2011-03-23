@@ -506,16 +506,22 @@ AC_LANG_POP([C++])
 # Checks for platforms libraries.
 if test "$use_gles" = "yes"; then
   # GLES overwrites GL if both set to yes.
-  if test "$host_vendor" != "apple" ; then
-    AC_CHECK_LIB([EGL],     [main],, AC_MSG_ERROR($missing_library))
-    AC_CHECK_LIB([GLESv2],  [main],, AC_MSG_ERROR($missing_library))
+  if test "$host_vendor" = "apple" ; then
+    AC_DEFINE([HAVE_LIBEGL],[1],["Define to 1 if you have the `EGL' library (-lEGL)."])
+    AC_DEFINE([HAVE_LIBGLESV2],[1],["Define to 1 if you have the `GLESv2' library (-lGLESv2)."])
+    AC_MSG_RESULT(== WARNING: OpenGLES support is assumed.)
   else
-    AC_MSG_RESULT(== WARNING: OpenGL EL  support is assumed.)
+    AC_CHECK_LIB([EGL],   [main],, AC_MSG_ERROR($missing_library))
+    AC_CHECK_LIB([GLESv2],[main],, AC_MSG_ERROR($missing_library))
   fi
 else
   if test "$use_gl" = "yes"; then
     if test "$host_vendor" = "apple" ; then
-      # linking to OpenGL.framework instead of libGL, libGLU
+      # linking to OpenGL.framework instead of libGL, libGLU so AC_CHECK_LIB will fail
+      AC_DEFINE([HAVE_LIBGL],[1],["Define to 1 if you have the `GL' library (-lGL)."])
+      AC_MSG_RESULT(== WARNING: OpenGL support is assumed.)
+      AC_DEFINE([HAVE_LIBGLU],[1],["Define to 1 if you have the `GLU' library (-lGLU)."])
+      AC_MSG_RESULT(== WARNING: OpenGLU support is assumed.)
       AC_CHECK_LIB([GLEW],[main],, AC_MSG_ERROR($missing_library))
     else
       AC_CHECK_LIB([GL],  [main],, AC_MSG_ERROR($missing_library))
@@ -833,8 +839,8 @@ if test "$use_external_ffmpeg" = "yes"; then
   [AC_CHECK_HEADERS([ffmpeg/avcodec.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h],,
   [AC_MSG_ERROR($missing_headers)])])
 
-  # libavcore is optional
-  AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h])
+  # optional
+  AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h libavutil/samplefmt.h])
 
   # old FFmpeg have this in libavcodec/opt.h instead:
   AC_CHECK_HEADERS([libavutil/opt.h])
@@ -1275,7 +1281,7 @@ else
 fi
 
 if test "$HAVE_GIT" = "yes"; then
-  GIT_REV=$(git rev-parse --short HEAD)
+  GIT_REV=$(git --no-pager log --abbrev=7 -n 1 --pretty=format:"%h %ci" HEAD | awk '{gsub("-", "");print $2"-"$1}')
 fi
 if test "$GIT_REV" = ""; then
   GIT_REV="Unknown"
@@ -1591,6 +1597,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --enable-encoder=aac \
       `if test "$use_ffmpeg_libvorbis" == "yes"; then echo --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis; else echo --disable-libvorbis; fi` \
       --disable-devices \
+      --disable-ffprobe \
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
@@ -1626,6 +1633,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       `if test "$use_ffmpeg_libvorbis" == "yes"; then echo --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis; else echo --disable-libvorbis; fi` \
       --disable-decoder=mpeg_xvmc \
       --disable-devices \
+      --disable-ffprobe \
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
