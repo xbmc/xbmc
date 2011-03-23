@@ -22,6 +22,9 @@
 
 #include "guilib/GUIDialog.h"
 
+class CPVREpgInfoTag;
+class CPVRTimerInfoTag;
+
 class CGUIDialogPVRGuideInfo : public CGUIDialog
 {
 public:
@@ -35,6 +38,12 @@ public:
 
 protected:
   void Update();
+  bool ActionStartTimer(const CPVREpgInfoTag *tag);
+  bool ActionCancelTimer(const CPVRTimerInfoTag *tag);
+
+  bool OnClickButtonOK(CGUIMessage &message);
+  bool OnClickButtonRecord(CGUIMessage &message);
+  bool OnClickButtonSwitch(CGUIMessage &message);
 
   CFileItemPtr m_progItem;
 };

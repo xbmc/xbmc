@@ -47,70 +47,129 @@ CGUIDialogPVRGuideInfo::~CGUIDialogPVRGuideInfo(void)
 {
 }
 
+bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CPVREpgInfoTag *tag)
+{
+  bool bReturn = false;
+
+  // prompt user for confirmation of channel record
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+
+  if (pDialog)
+  {
+    pDialog->SetHeading(264);
+    pDialog->SetLine(0, "");
+    pDialog->SetLine(1, tag->Title());
+    pDialog->SetLine(2, "");
+    pDialog->DoModal();
+
+    if (pDialog->IsConfirmed())
+    {
+      CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
+      bReturn = CPVRTimers::AddTimer(*newTimer);
+      delete newTimer;
+    }
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGuideInfo::ActionCancelTimer(const CPVRTimerInfoTag *tag)
+{
+  bool bReturn = false;
+
+  // prompt user for confirmation of timer deletion
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+
+  if (pDialog)
+  {
+    pDialog->SetHeading(265);
+    pDialog->SetLine(0, "");
+    pDialog->SetLine(1, tag->m_strTitle);
+    pDialog->SetLine(2, "");
+    pDialog->DoModal();
+
+    if (pDialog->IsConfirmed())
+    {
+      bReturn = CPVRTimers::DeleteTimer(*tag);
+    }
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGuideInfo::OnClickButtonOK(CGUIMessage &message)
+{
+  bool bReturn = false;
+
+  if (message.GetSenderId() == CONTROL_BTN_OK)
+  {
+    Close();
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
+{
+  bool bReturn = false;
+
+  if (message.GetSenderId() == CONTROL_BTN_RECORD)
+  {
+    bReturn = true;
+
+    const CPVREpgInfoTag *tag = (const CPVREpgInfoTag *) m_progItem->GetEPGInfoTag();
+    if (!tag || !tag->ChannelTag() || tag->ChannelTag()->UniqueID() <= 0)
+    {
+      /* invalid channel */
+      CGUIDialogOK::ShowAndGetInput(19033,19067,0,0);
+      Close();
+      return bReturn;
+    }
+
+    const CPVRTimerInfoTag *timerTag = CPVRManager::GetTimers()->GetMatch(tag);
+    bool bHasTimer = timerTag != NULL;
+
+    if (!bHasTimer)
+      ActionStartTimer(tag);
+    else
+      ActionCancelTimer(timerTag);
+
+    Close();
+  }
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRGuideInfo::OnClickButtonSwitch(CGUIMessage &message)
+{
+  bool bReturn = false;
+
+  if (message.GetSenderId() == CONTROL_BTN_SWITCH)
+  {
+    Close();
+
+    if (!g_application.PlayFile(CFileItem(*((CPVREpgInfoTag *)m_progItem->GetEPGInfoTag())->ChannelTag())))
+      CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
+    else
+      bReturn = true;
+  }
+
+  return bReturn;
+}
+
 bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
   case GUI_MSG_WINDOW_INIT:
-    {
-      CGUIDialog::OnMessage(message);
-      Update();
-      break;
-    }
+    CGUIDialog::OnMessage(message);
+    Update();
+    break;
   case GUI_MSG_CLICKED:
-    {
-      int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTN_OK)
-      {
-        Close();
-        return true;
-      }
-      else if (iControl == CONTROL_BTN_RECORD)
-      {
-        if (((CPVREpgInfoTag *)m_progItem->GetEPGInfoTag())->ChannelTag()->ChannelNumber() > 0)
-        {
-          if (((CPVREpgInfoTag *) m_progItem->GetEPGInfoTag())->Timer() == NULL)
-          {
-            // prompt user for confirmation of channel record
-            CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-
-            if (pDialog)
-            {
-              pDialog->SetHeading(264);
-              pDialog->SetLine(0, "");
-              pDialog->SetLine(1, m_progItem->GetEPGInfoTag()->Title());
-              pDialog->SetLine(2, "");
-              pDialog->DoModal();
-
-              if (pDialog->IsConfirmed())
-              {
-                CPVREpgInfoTag *tag = (CPVREpgInfoTag *) m_progItem->GetEPGInfoTag();
-                CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
-                CFileItem *item = new CFileItem(*newtimer);
-                CPVRTimers::AddTimer(*item);
-              }
-            }
-          }
-          else
-          {
-            CGUIDialogOK::ShowAndGetInput(19033,19067,0,0);
-          }
-        }
-        Close();
-        return true;
-      }
-      else if (iControl == CONTROL_BTN_SWITCH)
-      {
-        Close();
-
-        if (!g_application.PlayFile(CFileItem(*((CPVREpgInfoTag *)m_progItem->GetEPGInfoTag())->ChannelTag())))
-        {
-          CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
-          return false;
-        }
-        return true;
-      }
-    }
+    return OnClickButtonOK(message) ||
+           OnClickButtonRecord(message) ||
+           OnClickButtonSwitch(message);
   }
 
   return CGUIDialog::OnMessage(message);
@@ -128,25 +187,35 @@ CFileItemPtr CGUIDialogPVRGuideInfo::GetCurrentListItem(int offset)
 
 void CGUIDialogPVRGuideInfo::Update()
 {
-  // set recording button label
-  CPVREpgInfoTag* tag = (CPVREpgInfoTag *) m_progItem->GetEPGInfoTag();
-  if (tag->End() > CDateTime::GetCurrentDateTime())
+  const CEpgInfoTag *tag = m_progItem->GetEPGInfoTag();
+  if (!tag)
   {
-    if (tag->Timer() == NULL)
-    {
-      if (tag->Start() < CDateTime::GetCurrentDateTime())
-        SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264);
-      else
-        SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19061);
-    }
+    /* no epg event selected */
+    return;
+  }
+
+  if (tag->End() <= CDateTime::GetCurrentDateTime())
+  {
+    /* event has passed. hide the record button */
+    SET_CONTROL_HIDDEN(CONTROL_BTN_RECORD);
+    return;
+  }
+
+  bool bHasTimer = CPVRManager::GetTimers()->GetMatch(tag) != NULL;
+  if (!bHasTimer)
+  {
+    /* no timer present on this tag */
+    if (tag->Start() < CDateTime::GetCurrentDateTime())
+      SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264);
     else
-    {
-      if (tag->Start() < CDateTime::GetCurrentDateTime())
-        SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19059);
-      else
-        SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19060);
-    }
+      SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19061);
   }
   else
-    SET_CONTROL_HIDDEN(CONTROL_BTN_RECORD);
+  {
+    /* timer present on this tag */
+    if (tag->Start() < CDateTime::GetCurrentDateTime())
+      SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19059);
+    else
+      SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19060);
+  }
 }
