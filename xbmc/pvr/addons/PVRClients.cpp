@@ -97,7 +97,7 @@ int CPVRClients::GetClients(map<long, CStdString> *clients)
 
   for (itr = m_clientMap.begin() ; itr != m_clientMap.end(); itr++)
   {
-    CStdString strClient = (*itr).second->GetBackendName() + ":" + (*itr).second->GetConnectionString();
+    CStdString strClient = (*itr).second->GetFriendlyName();
     clients->insert(std::make_pair(m_clientMap[(*itr).first]->GetID(), strClient));
   }
 
@@ -370,10 +370,7 @@ const CStdString CPVRClients::GetClientName(int iClientId)
   CSingleLock lock(m_critSection);
 
   if (IsValidClient(iClientId))
-  {
-    boost::shared_ptr<CPVRClient> client = m_clientMap.find(iClientId)->second;
-    strClientName = client->GetBackendName() + ":" + client->GetConnectionString();
-  }
+    strClientName = m_clientMap.find(iClientId)->second->GetFriendlyName();
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, iClientId);
 
@@ -962,7 +959,7 @@ void CPVRClients::StartChannelScan(void)
     pDialog->SetHeading(19119);
 
     for (unsigned int i = 0; i < clients.size(); i++)
-      pDialog->Add(m_clientMap[clients[i]]->GetBackendName() + ":" + m_clientMap[clients[i]]->GetConnectionString());
+      pDialog->Add(m_clientMap[clients[i]]->GetFriendlyName());
 
     pDialog->DoModal();
 
@@ -983,8 +980,8 @@ void CPVRClients::StartChannelScan(void)
   }
 
   /* start the channel scan */
-  CLog::Log(LOGNOTICE,"PVR - %s - starting to scan for channels on client %s:%s",
-      __FUNCTION__, m_clientMap[scanningClientID]->GetBackendName().c_str(), m_clientMap[scanningClientID]->GetConnectionString().c_str());
+  CLog::Log(LOGNOTICE,"PVR - %s - starting to scan for channels on client %s",
+      __FUNCTION__, m_clientMap[scanningClientID]->GetFriendlyName());
   long perfCnt = CTimeUtils::GetTimeMS();
 
   /* stop the supervisor thread */

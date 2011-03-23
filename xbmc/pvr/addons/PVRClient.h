@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -44,12 +44,12 @@ public:
   CPVRClient(const cp_extension_t *ext);
   ~CPVRClient();
 
-  bool Create(int clientID, IPVRClientCallback *pvrCB);
+  bool Create(int iClientId, IPVRClientCallback *pvrCB);
   void Destroy();
   bool ReCreate();
 
   /* DLL related */
-  bool ReadyToUse() { return m_ReadyToUse; }
+  bool ReadyToUse() { return m_bReadyToUse; }
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
 
   /* Server */
@@ -57,9 +57,10 @@ public:
   PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
 
   /* General */
-  const std::string GetBackendName();
-  const std::string GetBackendVersion();
-  const std::string GetConnectionString();
+  const char *GetBackendName();
+  const char *GetBackendVersion();
+  const char *GetConnectionString();
+  const char *GetFriendlyName(void);
   PVR_ERROR GetDriveSpace(long long *total, long long *used);
   PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset);
   PVR_ERROR StartChannelScan();
@@ -99,7 +100,7 @@ public:
   int GetCurrentClientChannel();
   bool SwitchChannel(const CPVRChannel &channelinfo);
   bool SignalQuality(PVR_SIGNALQUALITY &qualityinfo);
-  const std::string GetLiveStreamURL(const CPVRChannel &channelinfo);
+  const char *GetLiveStreamURL(const CPVRChannel &channelinfo);
 
   bool OpenRecordedStream(const CPVRRecording &recinfo);
   void CloseRecordedStream(void);
@@ -115,9 +116,9 @@ public:
   DemuxPacket* DemuxRead();
 
 protected:
-  bool                  m_ReadyToUse;
+  bool                  m_bReadyToUse;
   IPVRClientCallback   *m_manager;
-  CStdString            m_hostName;
+  CStdString            m_strHostName;
   CCriticalSection      m_critSection;
   int                   m_iTimeCorrection;
   PVR_MENUHOOKS         m_menuhooks;
@@ -126,6 +127,5 @@ private:
   void WriteClientChannelInfo(const CPVRChannel &channelinfo, PVR_CHANNEL &tag);
   void WriteClientTimerInfo(const CPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag);
   void WriteClientRecordingInfo(const CPVRRecording &recordinginfo, PVR_RECORDINGINFO &tag);
+  void SetTimeCorrection(void);
 };
-
-typedef std::vector<CPVRClient*> VECCLIENTS;
