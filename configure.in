@@ -551,6 +551,7 @@ AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([wavpack/wavpack.h],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ass],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
@@ -627,7 +628,6 @@ if test "$host_vendor" = "apple" ; then
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
   fi
 else
-  AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer],  [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dl],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
@@ -678,12 +678,10 @@ if [[ "$host_vendor" = "apple" ]]; then
   HOST_NOT_APPLE=0
 fi
 
-if test "$host_vendor" != "apple"; then
-  XB_FIND_SONAME([FLAC],        [FLAC])
-fi
 XB_FIND_SONAME([MAD],         [mad])
 XB_FIND_SONAME([OGG],         [ogg])
 XB_FIND_SONAME([CURL],        [curl])
+XB_FIND_SONAME([FLAC],        [FLAC])
 XB_FIND_SONAME([VORBIS],      [vorbis])
 XB_FIND_SONAME([VORBISENC],   [vorbisenc])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
@@ -1408,11 +1406,6 @@ OUTPUT_FILES="Makefile \
     tools/TexturePacker/Makefile \
     tools/EventClients/Clients/OSXRemote/Makefile"
 
-if test "$host_vendor" = "apple"; then
-  OUTPUT_FILES="$OUTPUT_FILES \
-    lib/libflac/Makefile"
-fi
-
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
 # .dummy.am does nothing.
 AC_CONFIG_FILES([.dummy])
@@ -1552,24 +1545,6 @@ XB_CONFIG_MODULE([lib/python], [
     cp pyconfig.h Include
   fi
 ], [$USE_EXTERNAL_PYTHON])
-
-XB_CONFIG_MODULE([lib/libflac/flac-1.2.1], [
-  if test "$host_vendor" = "apple" ; then
-    rm -f config.cache
-    CFLAGS="$CFLAGS -fno-common" \ 
-    LDFLAGS="$LDFLAGS" \
-    ./configure -C \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \
-      --with-pic \
-      --disable-asm-optimizations \
-      --disable-xmms-plugin \
-      --disable-cpplibs \
-      CC="$CC" \
-      CXX="$CXX"
-  fi
-], [$HOST_NOT_APPLE])
 
 XB_CONFIG_MODULE([lib/ffmpeg], [
   if test "$host_vendor" = "apple" ; then

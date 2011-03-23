@@ -7,7 +7,7 @@ SUBDIRS = \
 	liblzo liblzo2 freetype2 fontconfig \
 	openssl libssh2 curl \
 	jpeg tiff libpng libogg \
-	libvorbis libmad fribidi libwavpack libmpeg2 \
+	libvorbis libflac libmad fribidi libwavpack libmpeg2 \
 	faad2 libass libcdio libsamplerate librtmp \
 	libmicrohttpd libmodplug libbluray \
 	samba python26 mysqlclient boost

@@ -115,11 +115,6 @@ PAPCODEC_DIRS+= \
 	lib/asap
 endif
 
-ifeq ($(findstring osx,@ARCH@),osx)
-PAPCODEC_DIRS+= \
-	lib/libflac
-endif
-
 LIB_DIRS=\
 	lib/cximage-6.0 \
 	lib/libexif \
@@ -438,9 +433,6 @@ libid3tag: dllloader
 	$(MAKE) -C lib/libid3tag
 papcodecs: dllloader dvdpcodecs
 	$(MAKE) -C lib/xbadpcm
-ifeq ($(findstring osx,@ARCH@), osx)
-	$(MAKE) -C lib/libflac
-endif
 	$(MAKE) -C lib/vgmstream
 	$(MAKE) -C lib/timidity
 	$(MAKE) -C lib/nosefart 
