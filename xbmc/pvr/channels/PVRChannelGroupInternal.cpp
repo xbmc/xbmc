@@ -382,7 +382,7 @@ bool CPVRChannelGroupInternal::Persist(void)
     return bReturn;
 
   CLog::Log(LOGDEBUG, "CPVRChannelGroupInternal - %s - persisting %d channels",
-      __FUNCTION__, size());
+      __FUNCTION__, (int) size());
   bReturn = true;
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
