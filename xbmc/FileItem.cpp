@@ -518,8 +518,9 @@ bool CFileItem::IsDiscStub() const
     return false;
 
   strExtension.ToLower();
+  strExtension += '|';
 
-  return g_settings.m_discStubExtensions.Find(strExtension) != -1;
+  return (g_settings.m_discStubExtensions + '|').Find(strExtension) != -1;
 }
 
 bool CFileItem::IsAudio() const
