@@ -100,6 +100,7 @@ class CDateTime;
 #define PLAYER_PATH                  45
 #define PLAYER_FILEPATH              46
 #define PLAYER_SEEKOFFSET            47
+#define PLAYER_PROGRESS_CACHE        48
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101

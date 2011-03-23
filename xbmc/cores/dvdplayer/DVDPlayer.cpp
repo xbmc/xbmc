@@ -23,6 +23,7 @@
 #include "DVDPlayer.h"
 
 #include "DVDInputStreams/DVDInputStream.h"
+#include "DVDInputStreams/DVDInputStreamFile.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
 #include "DVDInputStreams/DVDInputStreamTV.h"
@@ -64,6 +65,7 @@
 #include "utils/StreamDetails.h"
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "utils/StringUtils.h"
 
 using namespace std;
 
@@ -2292,13 +2294,28 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
     CStdString strEDL;
     strEDL.AppendFormat(", edl:%s", m_Edl.GetInfo().c_str());
 
-    strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%% )"
+    CStdString strBuf;
+    CSingleLock lock(m_StateSection);
+    if(m_State.file_buffered >= 0 && m_State.time_total > 0)
+    {
+      int64_t queued = m_State.file_length * 8000 / 100 * GetCacheLevel() / m_State.time_total;
+      int64_t cached = m_State.file_buffered + queued;
+      int64_t remain = m_State.file_length - m_State.file_position - queued;
+
+      strBuf.AppendFormat(" buf:%s/%s"
+                         , StringUtils::SizeToString(std::min(remain, cached)).c_str()
+                         , StringUtils::SizeToString(std::max(remain, (int64_t)0)).c_str());
+    }
+
+    strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s )"
                          , dDelay
                          , dDiff
                          , strEDL.c_str()
                          , (int)(CThread::GetRelativeUsage()*100)
                          , (int)(m_dvdPlayerAudio.GetRelativeUsage()*100)
-                         , (int)(m_dvdPlayerVideo.GetRelativeUsage()*100));
+                         , (int)(m_dvdPlayerVideo.GetRelativeUsage()*100)
+                         , strBuf.c_str());
+
   }
 }
 
@@ -2320,6 +2337,23 @@ float CDVDPlayer::GetPercentage()
     return 0.0f;
 
   return GetTime() * 100 / (float)iTotalTime;
+}
+
+float CDVDPlayer::GetCachePercentage()
+{
+  CSingleLock lock(m_StateSection);
+  if(m_State.file_buffered < 0 || m_State.file_length == 0 || m_State.time_total == 0.0)
+    return 0.0f;
+
+  float fPercent = GetPercentage();
+
+  // add the 8 seconds of aq/vq
+  fPercent += 1000.0f * 8.0f * GetCacheLevel() / m_State.time_total;
+
+  // add forward buffered length
+  fPercent += 100.0f * m_State.file_buffered / m_State.file_length;
+
+  return min(100.0f, fPercent);
 }
 
 void CDVDPlayer::SetAVDelay(float fValue)
@@ -3506,6 +3540,10 @@ void CDVDPlayer::UpdatePlayState(double timeout)
         m_State.time_total = ((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime();
       }
     }
+
+    m_State.file_position = m_pInputStream->Seek(0, SEEK_CUR);
+    m_State.file_length   = m_pInputStream->GetLength();
+    m_State.file_buffered = m_pInputStream->GetCachedBytes();
   }
 
   if (m_Edl.HasCut())

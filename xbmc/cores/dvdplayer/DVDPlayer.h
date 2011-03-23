@@ -155,6 +155,8 @@ public:
   virtual bool SeekScene(bool bPlus = true);
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage();
+  virtual float GetCachePercentage();
+
   virtual void SetVolume(long nVolume)                          { m_dvdPlayerAudio.SetVolume(nVolume); }
   virtual void SetDynamicRangeCompression(long drc)             { m_dvdPlayerAudio.SetDynamicRangeCompression(drc); }
   virtual void GetAudioInfo(CStdString& strAudioInfo);
@@ -363,6 +365,9 @@ protected:
       recording     = false;
       demux_video   = "";
       demux_audio   = "";
+      file_length   = 0;
+      file_position = 0;
+      file_buffered = 0;
     }
 
     double timestamp;         // last time of update
@@ -383,6 +388,10 @@ protected:
 
     std::string demux_video;
     std::string demux_audio;
+
+    __int64 file_length;
+    __int64 file_position;
+    __int64 file_buffered;
   } m_State;
   CCriticalSection m_StateSection;
 
