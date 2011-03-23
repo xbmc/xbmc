@@ -123,7 +123,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
   unsigned int iSize = size();
   for (unsigned int iTimerPtr = 0; iTimerPtr < iSize; iTimerPtr++)
   {
-    CPVRTimerInfoTag *timer = (CPVRTimerInfoTag *) timers->at(iTimerPtr);
+    CPVRTimerInfoTag *timer = (CPVRTimerInfoTag *) at(iTimerPtr);
     if (!timer)
       continue;
     if (timers->GetByClient(timer->m_iClientID, timer->m_iClientIndex) == NULL)
