@@ -550,6 +550,7 @@ AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([wavpack/wavpack.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ass],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
@@ -559,7 +560,6 @@ AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssl],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([wavpack],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2],       [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
@@ -635,6 +635,7 @@ else
   AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image],  [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([modplug],    [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([wavpack],    [main],, AC_MSG_ERROR($missing_library))
 
   PKG_CHECK_MODULES([ALSA],  [alsa],
     [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"],
@@ -687,6 +688,9 @@ XB_FIND_SONAME([VORBIS],      [vorbis])
 XB_FIND_SONAME([VORBISENC],   [vorbisenc])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([MODPLUG],     [modplug])
+if test "$host_vendor" = "apple"; then
+  XB_FIND_SONAME([WAVPACK],   [wavpack])
+fi
 
 # WebServer
 if test "$use_webserver" = "yes"; then
@@ -1426,7 +1430,6 @@ AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(BUILD_GOOM)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(USE_EXTERNAL_LIBMPEG2)
-AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
 AC_SUBST(USE_EXTERNAL_PYTHON)
 AC_SUBST(USE_PYTHON2_6)
 AC_SUBST(USE_PYTHON2_5)
@@ -1442,6 +1445,7 @@ AC_SUBST(LIBMAD_BASENAME)
 AC_SUBST(LIBOGG_BASENAME)
 AC_SUBST(LIBVORBISENC_BASENAME)
 AC_SUBST(LIBVORBIS_BASENAME)
+AC_SUBST(LIBWAVPACK_BASENAME)
 AC_SUBST_FILE(XBMC_STANDALONE_SH_PULSE)
 AC_SUBST(USE_OPENGL)
 AC_SUBST(USE_OPENGLES)
