@@ -105,7 +105,8 @@ void CPVRChannelGroup::Unload()
 
 bool CPVRChannelGroup::Update()
 {
-  return (Load() >= 0);
+  // TODO implement method to get channel groups from clients
+  return true;
 }
 
 bool CPVRChannelGroup::Update(const CPVRChannelGroup &group)
