@@ -1311,7 +1311,7 @@ bool MysqlDataset::query(const char *query) {
       {
       case MYSQL_TYPE_LONGLONG:
       case MYSQL_TYPE_DECIMAL:
-	  case MYSQL_TYPE_NEWDECIMAL:
+      case MYSQL_TYPE_NEWDECIMAL:
       case MYSQL_TYPE_TINY:
       case MYSQL_TYPE_SHORT:
       case MYSQL_TYPE_INT24:
