@@ -74,6 +74,8 @@ namespace JSONRPC
 
   static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlAnnounce | ControlPower | Logging | ScanLibrary);
 
+  static const int OPERATION_PERMISSION_ANNOUNCEMENT = (ControlPlayback | ControlAnnounce | ControlPower | Logging | ScanLibrary);
+
   /*!
    \brief Possible value types of a parameter or return type
    */
@@ -107,7 +109,7 @@ namespace JSONRPC
      the given object is not an array) or for a parameter at the 
      given position (if the given object is an array).
      */
-    static inline bool ParameterExists(const Json::Value &parameterObject, const char *key, unsigned int position) { return IsValueMember(parameterObject, key) || (parameterObject.isArray() && parameterObject.size() > position); }
+    static inline bool ParameterExists(const Json::Value &parameterObject, std::string key, unsigned int position) { return IsValueMember(parameterObject, key) || (parameterObject.isArray() && parameterObject.size() > position); }
 
     /*!
      \brief Checks if the given object contains a value
@@ -117,7 +119,7 @@ namespace JSONRPC
      \return True if the given object contains a member with 
      the given key otherwise false
      */
-    static inline bool IsValueMember(const Json::Value &value, const char *key) { return value.isObject() && value.isMember(key); }
+    static inline bool IsValueMember(const Json::Value &value, std::string key) { return value.isObject() && value.isMember(key); }
     
     /*!
      \brief Returns the json value of a parameter
@@ -131,7 +133,7 @@ namespace JSONRPC
      the given object is not an array) or of the parameter at the 
      given position (if the given object is an array).
      */
-    static inline Json::Value GetParameter(const Json::Value &parameterObject, const char *key, unsigned int position) { return IsValueMember(parameterObject, key) ? parameterObject[key] : parameterObject[position]; }
+    static inline Json::Value GetParameter(const Json::Value &parameterObject, std::string key, unsigned int position) { return IsValueMember(parameterObject, key) ? parameterObject[key] : parameterObject[position]; }
     
     /*!
      \brief Returns the json value of a parameter or the given
@@ -148,7 +150,7 @@ namespace JSONRPC
      given position (if the given object is an array). If the
      parameter does not exist the given default value is returned.
      */
-    static inline Json::Value GetParameter(const Json::Value &parameterObject, const char *key, unsigned int position, Json::Value fallback) { return IsValueMember(parameterObject, key) ? parameterObject[key] : ((parameterObject.isArray() && parameterObject.size() > position) ? parameterObject[position] : fallback); }
+    static inline Json::Value GetParameter(const Json::Value &parameterObject, std::string key, unsigned int position, Json::Value fallback) { return IsValueMember(parameterObject, key) ? parameterObject[key] : ((parameterObject.isArray() && parameterObject.size() > position) ? parameterObject[position] : fallback); }
     
     /*!
      \brief Returns the given json value as a string
@@ -157,15 +159,15 @@ namespace JSONRPC
      \return String value of the given json value or the default value
      if the given json value is no string
      */
-    static inline const char* GetString(const Json::Value &value, const char* defaultValue)
+    static inline std::string GetString(const Json::Value &value, const char* defaultValue)
     {
-      CStdString str = defaultValue;
+      std::string str = defaultValue;
       if (value.isString())
       {
         str = value.asString();
       }
 
-      return strcpy((char *)malloc(sizeof(char) * str.length() + 1), str.c_str());
+      return str;
     }
 
     /*!
@@ -174,7 +176,7 @@ namespace JSONRPC
      \param permission Specific OperationPermission
      \return String representation of the given OperationPermission
      */
-    static inline const char* PermissionToString(const OperationPermission &permission)
+    static inline std::string PermissionToString(const OperationPermission &permission)
     {
       switch (permission)
       {
@@ -201,17 +203,17 @@ namespace JSONRPC
      \param permission String representation of the OperationPermission
      \return OperationPermission value of the given string representation
      */
-    static inline OperationPermission StringToPermission(const char *permission)
+    static inline OperationPermission StringToPermission(std::string permission)
     {
-      if (strcmp(permission, "ControlPlayback") == 0)
+      if (permission.compare("ControlPlayback") == 0)
         return ControlPlayback;
-      if (strcmp(permission, "ControlAnnounce") == 0)
+      if (permission.compare("ControlAnnounce") == 0)
         return ControlAnnounce;
-      if (strcmp(permission, "ControlPower") == 0)
+      if (permission.compare("ControlPower") == 0)
         return ControlPower;
-      if (strcmp(permission, "Logging") == 0)
+      if (permission.compare("Logging") == 0)
         return Logging;
-      if (strcmp(permission, "ScanLibrary") == 0)
+      if (permission.compare("ScanLibrary") == 0)
         return ScanLibrary;
 
       return ReadData;
@@ -223,7 +225,7 @@ namespace JSONRPC
      \param announcement Specific EAnnouncementFlag
      \return String representation of the given EAnnouncementFlag
      */
-    static inline const char* AnnouncementFlagToString(const EAnnouncementFlag &announcement)
+    static inline std::string AnnouncementFlagToString(const EAnnouncementFlag &announcement)
     {
       switch (announcement)
       {
@@ -248,11 +250,11 @@ namespace JSONRPC
      \param transport String representation of the TransportLayerCapability
      \return TransportLayerCapability value of the given string representation
      */
-    static inline TransportLayerCapability StringToTransportLayer(const char *transport)
+    static inline TransportLayerCapability StringToTransportLayer(std::string transport)
     {
-      if (strcmp(transport, "Announcing") == 0)
+      if (transport.compare("Announcing") == 0)
         return Announcing;
-      if (strcmp(transport, "FileDownload") == 0)
+      if (transport.compare("FileDownload") == 0)
         return FileDownload;
 
       return Response;
@@ -264,21 +266,21 @@ namespace JSONRPC
      \param valueType String representation of the JSONSchemaType
      \return JSONSchemaType value of the given string representation
      */
-    static inline JSONSchemaType StringToSchemaValueType(const char *valueType)
+    static inline JSONSchemaType StringToSchemaValueType(std::string valueType)
     {
-      if (strcmp(valueType, "null") == 0)
+      if (valueType.compare("null") == 0)
         return NullValue;
-      if (strcmp(valueType, "string") == 0)
+      if (valueType.compare("string") == 0)
         return StringValue;
-      if (strcmp(valueType, "number") == 0)
+      if (valueType.compare("number") == 0)
         return NumberValue;
-      if (strcmp(valueType, "integer") == 0)
+      if (valueType.compare("integer") == 0)
         return IntegerValue;
-      if (strcmp(valueType, "boolean") == 0)
+      if (valueType.compare("boolean") == 0)
         return BooleanValue;
-      if (strcmp(valueType, "array") == 0)
+      if (valueType.compare("array") == 0)
         return ArrayValue;
-      if (strcmp(valueType, "object") == 0)
+      if (valueType.compare("object") == 0)
         return ObjectValue;
 
       return AnyValue;
@@ -290,7 +292,7 @@ namespace JSONRPC
      \param valueType Specific JSONSchemaType
      \return String representation of the given JSONSchemaType
      */
-    static inline const char* SchemaValueTypeToString(JSONSchemaType valueType)
+    static inline std::string SchemaValueTypeToString(JSONSchemaType valueType)
     {
       std::vector<JSONSchemaType> types = std::vector<JSONSchemaType>();
       for (unsigned int value = 0x01; value <= (unsigned int)AnyValue; value *= 2)
@@ -299,7 +301,7 @@ namespace JSONRPC
           types.push_back((JSONSchemaType)value);
       }
 
-      CStdString strType;
+      std::string strType;
       if (types.size() > 1)
         strType.append("[");
 
@@ -342,7 +344,7 @@ namespace JSONRPC
       if (types.size() > 1)
         strType.append("]");
 
-      return strcpy((char *)malloc(sizeof(char) * strType.length() + 1), strType.c_str());
+      return strType;
     }
 
     /*!
@@ -364,7 +366,7 @@ namespace JSONRPC
         jsonObject = jsonObject[0];
     }
 
-    static inline const char* ValueTypeToString(Json::ValueType valueType)
+    static inline std::string ValueTypeToString(Json::ValueType valueType)
     {
       switch (valueType)
       {

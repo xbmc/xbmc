@@ -20,7 +20,6 @@
  *
  */
 
-#include "utils/StdString.h"
 #include <string>
 #include <vector>
 #include "jsoncpp/include/json/json.h"
@@ -44,12 +43,12 @@ namespace JSONRPC
      \brief Identification of the published
      service containing json rpc methods.
      */
-    const char* id;
+    std::string id;
     /*!
      \brief Description of the published
      service containing json rpc methods.
      */
-    const char* description;
+    std::string description;
 
     /*!
      \brief Version of the published
@@ -74,18 +73,18 @@ namespace JSONRPC
      \brief Name of the parameter (for 
      by-name calls)
      */
-    const char* name;
+    std::string name;
 
     /*!
      \brief Id of the type (for
      referenced types)
      */
-    const char* id;
+    std::string id;
 
     /*!
      \brief Description of the parameter
      */
-    const char* description;
+    std::string description;
 
     /*!
      \brief JSON schema type of the parameter's value
@@ -178,13 +177,13 @@ namespace JSONRPC
 
       void add(JSONSchemaTypeDefinition &property);
 
-      typedef std::map<CStdString, JSONSchemaTypeDefinition>::const_iterator JSONSchemaPropertiesIterator;
+      typedef std::map<std::string, JSONSchemaTypeDefinition>::const_iterator JSONSchemaPropertiesIterator;
       JSONSchemaPropertiesIterator begin() const;
-      JSONSchemaPropertiesIterator find(const CStdString& key) const;
+      JSONSchemaPropertiesIterator find(const std::string& key) const;
       JSONSchemaPropertiesIterator end() const;
       unsigned int size() const;
     private:
-      std::map<CStdString, JSONSchemaTypeDefinition> m_propertiesmap;
+      std::map<std::string, JSONSchemaTypeDefinition> m_propertiesmap;
     };
 
     /*!
@@ -208,7 +207,7 @@ namespace JSONRPC
     /*!
      \brief Name of the represented method
      */
-    const char* name;
+    std::string name;
     /*!
      \brief Pointer tot he implementation
      of the represented method
@@ -224,15 +223,10 @@ namespace JSONRPC
      to execute the method
      */
     OperationPermission permission;
-	  /*!
-	   \brief Whether this method changes the internal
-     state of XBMC or not
-	   */
-	  bool stateChanging;
     /*!
      \brief Description of the method
      */
-    const char* description;
+    std::string description;
     /*!
      \brief List of accepted parameters
      */
@@ -253,7 +247,7 @@ namespace JSONRPC
     /*!
      \brief Name of the json rpc method.
      */
-    const char* name;
+    std::string name;
     /*!
      \brief Pointer to the actual
      implementation of the json rpc
@@ -286,7 +280,7 @@ namespace JSONRPC
      \param size Size of the method map
      \return True if the json schema description has been parsed sucessfully otherwise false
      */
-    static bool Parse(const JsonRpcMethodMap methodMap[], unsigned int size);
+    static bool Parse(JsonRpcMethodMap methodMap[], unsigned int size);
 
     /*!
      \brief Gets the version of the json
@@ -342,19 +336,19 @@ namespace JSONRPC
 
       void add(JsonRpcMethod &method);
 
-      typedef std::map<CStdString, JsonRpcMethod>::const_iterator JsonRpcMethodIterator;
+      typedef std::map<std::string, JsonRpcMethod>::const_iterator JsonRpcMethodIterator;
       JsonRpcMethodIterator begin() const;
-      JsonRpcMethodIterator find(const CStdString& key) const;
+      JsonRpcMethodIterator find(const std::string& key) const;
       JsonRpcMethodIterator end() const;
     private:
-      std::map<CStdString, JsonRpcMethod> m_actionmap;
+      std::map<std::string, JsonRpcMethod> m_actionmap;
     };
 
     static Json::Value m_notifications;
     static JsonRpcDescriptionHeader m_header;
     static CJsonRpcMethodMap m_actionMap;
-    static std::map<CStdString, JSONSchemaTypeDefinition> m_types;
-    static std::vector<CStdString> m_badMethods;
+    static std::map<std::string, JSONSchemaTypeDefinition> m_types;
+    static std::vector<JsonRpcMethodMap> m_unresolvedMethods;
     static bool m_newReferenceType;
   };
 }
