@@ -887,14 +887,9 @@
 		F56C8BEA131F4796000AD0F6 /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD1131F4795000AD0F6 /* libpcre.dylib */; };
 		F56C8BEB131F4796000AD0F6 /* libpcrecpp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD2131F4795000AD0F6 /* libpcrecpp.dylib */; };
 		F56C8BEC131F4796000AD0F6 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD3131F4795000AD0F6 /* libcrypto.dylib */; };
-		F56C8BED131F4796000AD0F6 /* libmad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD4131F4795000AD0F6 /* libmad.dylib */; };
 		F56C8BEE131F4796000AD0F6 /* libfaad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD5131F4796000AD0F6 /* libfaad.dylib */; };
 		F56C8BEF131F4796000AD0F6 /* libmpeg2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD6131F4796000AD0F6 /* libmpeg2.dylib */; };
 		F56C8BF0131F4796000AD0F6 /* libwavpack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD7131F4796000AD0F6 /* libwavpack.dylib */; };
-		F56C8BF1131F4796000AD0F6 /* libogg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD8131F4796000AD0F6 /* libogg.dylib */; };
-		F56C8BF2131F4796000AD0F6 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD9131F4796000AD0F6 /* libvorbis.dylib */; };
-		F56C8BF3131F4796000AD0F6 /* libvorbisfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BDA131F4796000AD0F6 /* libvorbisfile.dylib */; };
-		F56C8BF4131F4796000AD0F6 /* libvorbisenc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BDB131F4796000AD0F6 /* libvorbisenc.dylib */; };
 		F56C8BF5131F4796000AD0F6 /* libfribidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BDC131F4796000AD0F6 /* libfribidi.dylib */; };
 		F56C8BF6131F4796000AD0F6 /* libcdio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BDD131F4796000AD0F6 /* libcdio.dylib */; };
 		F56C8BF7131F4796000AD0F6 /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BDE131F4796000AD0F6 /* libsamplerate.dylib */; };
@@ -2828,14 +2823,9 @@
 		F56C8BD1131F4795000AD0F6 /* libpcre.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libpcre.dylib"; sourceTree = "<absolute>"; };
 		F56C8BD2131F4795000AD0F6 /* libpcrecpp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcrecpp.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libpcrecpp.dylib"; sourceTree = "<absolute>"; };
 		F56C8BD3131F4795000AD0F6 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libcrypto.dylib"; sourceTree = "<absolute>"; };
-		F56C8BD4131F4795000AD0F6 /* libmad.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmad.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmad.dylib"; sourceTree = "<absolute>"; };
 		F56C8BD5131F4796000AD0F6 /* libfaad.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfaad.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libfaad.dylib"; sourceTree = "<absolute>"; };
 		F56C8BD6131F4796000AD0F6 /* libmpeg2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmpeg2.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmpeg2.dylib"; sourceTree = "<absolute>"; };
 		F56C8BD7131F4796000AD0F6 /* libwavpack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwavpack.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libwavpack.dylib"; sourceTree = "<absolute>"; };
-		F56C8BD8131F4796000AD0F6 /* libogg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libogg.dylib"; sourceTree = "<absolute>"; };
-		F56C8BD9131F4796000AD0F6 /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libvorbis.dylib"; sourceTree = "<absolute>"; };
-		F56C8BDA131F4796000AD0F6 /* libvorbisfile.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbisfile.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libvorbisfile.dylib"; sourceTree = "<absolute>"; };
-		F56C8BDB131F4796000AD0F6 /* libvorbisenc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbisenc.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libvorbisenc.dylib"; sourceTree = "<absolute>"; };
 		F56C8BDC131F4796000AD0F6 /* libfribidi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfribidi.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libfribidi.dylib"; sourceTree = "<absolute>"; };
 		F56C8BDD131F4796000AD0F6 /* libcdio.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcdio.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libcdio.dylib"; sourceTree = "<absolute>"; };
 		F56C8BDE131F4796000AD0F6 /* libsamplerate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsamplerate.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libsamplerate.dylib"; sourceTree = "<absolute>"; };
@@ -2909,14 +2899,9 @@
 				F56C8BEA131F4796000AD0F6 /* libpcre.dylib in Frameworks */,
 				F56C8BEB131F4796000AD0F6 /* libpcrecpp.dylib in Frameworks */,
 				F56C8BEC131F4796000AD0F6 /* libcrypto.dylib in Frameworks */,
-				F56C8BED131F4796000AD0F6 /* libmad.dylib in Frameworks */,
 				F56C8BEE131F4796000AD0F6 /* libfaad.dylib in Frameworks */,
 				F56C8BEF131F4796000AD0F6 /* libmpeg2.dylib in Frameworks */,
 				F56C8BF0131F4796000AD0F6 /* libwavpack.dylib in Frameworks */,
-				F56C8BF1131F4796000AD0F6 /* libogg.dylib in Frameworks */,
-				F56C8BF2131F4796000AD0F6 /* libvorbis.dylib in Frameworks */,
-				F56C8BF3131F4796000AD0F6 /* libvorbisfile.dylib in Frameworks */,
-				F56C8BF4131F4796000AD0F6 /* libvorbisenc.dylib in Frameworks */,
 				F56C8BF5131F4796000AD0F6 /* libfribidi.dylib in Frameworks */,
 				F56C8BF6131F4796000AD0F6 /* libcdio.dylib in Frameworks */,
 				F56C8BF7131F4796000AD0F6 /* libsamplerate.dylib in Frameworks */,
@@ -5724,14 +5709,9 @@
 				F56C8BD2131F4795000AD0F6 /* libpcrecpp.dylib */,
 				F56C8BD3131F4795000AD0F6 /* libcrypto.dylib */,
 				F5B13AFD1333247D0045076D /* libass.dylib */,
-				F56C8BD4131F4795000AD0F6 /* libmad.dylib */,
 				F56C8BD5131F4796000AD0F6 /* libfaad.dylib */,
 				F56C8BD6131F4796000AD0F6 /* libmpeg2.dylib */,
 				F56C8BD7131F4796000AD0F6 /* libwavpack.dylib */,
-				F56C8BD8131F4796000AD0F6 /* libogg.dylib */,
-				F56C8BD9131F4796000AD0F6 /* libvorbis.dylib */,
-				F56C8BDA131F4796000AD0F6 /* libvorbisfile.dylib */,
-				F56C8BDB131F4796000AD0F6 /* libvorbisenc.dylib */,
 				F56C8BDC131F4796000AD0F6 /* libfribidi.dylib */,
 				F56C8BDD131F4796000AD0F6 /* libcdio.dylib */,
 				F56C8BDE131F4796000AD0F6 /* libsamplerate.dylib */,
