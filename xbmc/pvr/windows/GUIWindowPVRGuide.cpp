@@ -55,6 +55,7 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
   {
     /* update the EPG cache */
     CSingleLock lock(m_critSection);
+    m_epgData->Clear();
     CPVRManager::GetEpg()->GetEPGAll(m_epgData, m_bLastEpgView);
     m_bGotInitialEpg = true;
     lock.Leave();
@@ -207,8 +208,12 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
 
   if (!m_bGotInitialEpg)
     InitializeEpgCache(bRadio);
+
   if (bRadio != m_bLastEpgView)
+  {
+    m_epgData->Clear();
     CPVRManager::GetEpg()->GetEPGAll(m_epgData, bRadio);
+  }
   m_bLastEpgView = bRadio;
 
   if (m_epgData->Size() <= 0)
@@ -445,7 +450,10 @@ void CGUIWindowPVRGuide::InitializeEpgCache(bool bRadio /* = false */)
   }
 
   if (!m_bGotInitialEpg || m_bLastEpgView != bRadio)
+  {
+    m_epgData->Clear();
     CPVRManager::GetEpg()->GetEPGAll(m_epgData, bRadio);
+  }
   m_bGotInitialEpg = true;
   m_bLastEpgView = bRadio;
 }
