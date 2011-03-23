@@ -281,3 +281,10 @@ void CGUIWindowPVR::CreateViews(void)
     m_windowTimers        = new CGUIWindowPVRTimers(this);
   }
 }
+
+void CGUIWindowPVR::InitializeEpgCache(void)
+{
+  CreateViews();
+
+  m_windowGuide->InitializeEpgCache();
+}

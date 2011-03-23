@@ -59,6 +59,7 @@ private:
   virtual void UpdateViewNow(void);
   virtual void UpdateViewNext(void);
   virtual void UpdateViewTimeline(void);
+  virtual void InitializeEpgCache(bool bRadio = false);
 
   int              m_iGuideView;
   CFileItemList *  m_epgData;
