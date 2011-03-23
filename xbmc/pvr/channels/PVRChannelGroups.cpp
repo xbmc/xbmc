@@ -178,7 +178,7 @@ bool CPVRChannelGroups::Load(void)
   }
 
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d %s channel groups loaded",
-      __FUNCTION__, size(), m_bRadio ? "radio" : "TV");
+      __FUNCTION__, (int) size(), m_bRadio ? "radio" : "TV");
 
   return true;
 }

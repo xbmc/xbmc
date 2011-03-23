@@ -178,7 +178,6 @@ int CPVRTimers::GetTimers(CFileItemList* results)
 const CPVRTimerInfoTag *CPVRTimers::GetNextActiveTimer(void)
 {
   CPVRTimerInfoTag *tag = NULL;
-  bool bReturn = false;
   CSingleLock lock(m_critSection);
 
   for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
