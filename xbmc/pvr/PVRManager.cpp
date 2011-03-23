@@ -1096,18 +1096,18 @@ void CPVRManager::UpdateTimersCache(void)
     if (m_bIsRecording)
     {
       const CPVRTimerInfoTag *tag = m_NowRecording.at(0);
-      m_strActiveTimerTitle       = CStdString(tag->m_strTitle);
-      m_strActiveTimerChannelName = CStdString(tag->ChannelName());
-      m_strActiveTimerTime        = CStdString(tag->m_StartTime.GetAsLocalizedDateTime(false, false));
+      m_strActiveTimerTitle.Format("%s",       tag->m_strTitle);
+      m_strActiveTimerChannelName.Format("%s", tag->ChannelName());
+      m_strActiveTimerTime.Format("%s",        tag->m_StartTime.GetAsLocalizedDateTime(false, false));
     }
 
     /* set the next timer info locally if there is a next timer */
     m_NextRecording = m_timers->GetNextActiveTimer();
     if (m_NextRecording != NULL)
     {
-      m_strNextRecordingTitle       = CStdString(m_NextRecording->m_strTitle);
-      m_strNextRecordingChannelName = CStdString(m_NextRecording->ChannelName());
-      m_strNextRecordingTime        = CStdString(m_NextRecording->m_StartTime.GetAsLocalizedDateTime(false, false));
+      m_strNextRecordingTitle.Format("%s",       m_NextRecording->m_strTitle);
+      m_strNextRecordingChannelName.Format("%s", m_NextRecording->ChannelName());
+      m_strNextRecordingTime.Format("%s",        m_NextRecording->m_StartTime.GetAsLocalizedDateTime(false, false));
 
       m_strNextTimerInfo.Format("%s %s %s %s",
           g_localizeStrings.Get(19106),

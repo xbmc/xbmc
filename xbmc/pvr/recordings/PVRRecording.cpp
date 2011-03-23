@@ -91,7 +91,7 @@ bool CPVRRecording::Delete(void)
 bool CPVRRecording::Rename(const CStdString &strNewName)
 {
   PVR_ERROR error;
-  m_strTitle = CStdString(strNewName);
+  m_strTitle.Format("%s", strNewName);
   if (!CPVRManager::GetClients()->RenameRecording(*this, m_strTitle, &error))
   {
     DisplayError(error);

@@ -223,7 +223,7 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */)
 bool CPVRTimerInfoTag::RenameOnClient(const CStdString &strNewName)
 {
   PVR_ERROR error;
-  m_strTitle = CStdString(strNewName);
+  m_strTitle.Format("%s", strNewName);
   if (!CPVRManager::GetClients()->RenameTimer(*this, m_strTitle, &error))
   {
     if (error == PVR_ERROR_NOT_IMPLEMENTED)
