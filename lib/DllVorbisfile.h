@@ -25,6 +25,10 @@
   #include "config.h"
 #endif
 #if defined(_LINUX) || defined(__APPLE__) || defined(WIN32)
+  // avoid unused symbol warnings from the static callbacks
+  // defined in vorbisfile.h on 1.2.3 and above
+  #define OV_EXCLUDE_STATIC_CALLBACKS
+
   #include <vorbis/vorbisfile.h>
   #include "utils/log.h"
 #else
