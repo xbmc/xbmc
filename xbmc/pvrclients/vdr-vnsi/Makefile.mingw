@@ -1,0 +1,58 @@
+#
+# Makefile for the XBMC Video Disk Recorder PVR AddOn
+#
+# See the README for copyright information and
+# how to reach the author.
+#
+
+CXX = i586-mingw32msvc-g++
+
+## DEFINES
+DEFINES += -D__WINDOWS__ -DUSE_DEMUX -D__STDC_CONSTANT_MACROS
+
+## INCLUDES
+INCLUDES  = -I. -Iwin32 -I../../cores/dvdplayer/DVDDemuxers
+INCLUDES += -I../../addons/include -I../../../addons/library.xbmc.pvr -I../../../addons/library.xbmc.addon
+INCLUDES += -I../../../lib/ffmpeg
+
+## CXXFLAGS
+CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
+
+## LIBS
+LIBS   = -lws2_32 -Lwin32 -lpthreadVC2
+LIB    = ../../../addons/pvr.vdr.vnsi/XBMC_VDR_vnsi_WIN32.pvr
+
+## SOURCES
+SRCS   = \
+	client.cpp \
+	VNSIChannelScan.cpp \
+	VNSIData.cpp \
+	VNSIDemux.cpp \
+	VNSIRecording.cpp \
+	VNSISession.cpp \
+	requestpacket.cpp \
+	responsepacket.cpp \
+	thread.cpp \
+	tools.cpp \
+	win32/dlfcn-mingw32.cpp
+
+.cpp.o:
+	@rm -f ${<:.cpp=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}
+	@cp $*.d $*.P; \
+	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+	  rm -f $*.d
+
+OBJS+=$(filter %.o,$(SRCS:.cpp=.o))
+
+.PHONY : lib clean distclean
+
+$(LIB): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
+
+clean: 
+	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(CLEAN_FILES) $(OBJS:.o=.P)
+	for d in $(DIRS); do (if test -f "$$d/Makefile"; then ($(MAKE) -C "$$d" clean); fi ); done
+
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

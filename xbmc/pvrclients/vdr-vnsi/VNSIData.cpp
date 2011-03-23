@@ -19,13 +19,15 @@
  *
  */
 
+#include <unistd.h>
 #include "VNSIData.h"
 #include "responsepacket.h"
 #include "requestpacket.h"
 #include "vdrcommand.h"
 
 #ifdef __WINDOWS__
-#include <Winsock2.h>
+#include <winsock2.h>
+#undef SendMessage
 #else
 #include <arpa/inet.h>
 #endif

@@ -35,12 +35,15 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <sys/time.h>
-#include <sys/resource.h>
 #include <pthread.h>
 #include <signal.h>
 
-#ifndef __WINDOWS__
+#ifdef __WINDOWS__
+#include <process.h>
+#define getpid _getpid
+#else
 #include <sys/syscall.h>
+#include <sys/resource.h>
 #endif
 
 template<class T> inline T max(T a, T b) { return a >= b ? a : b; }

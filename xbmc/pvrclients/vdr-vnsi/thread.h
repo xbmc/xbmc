@@ -26,6 +26,10 @@
 #include <sys/types.h>
 #include "tools.h"
 
+#ifdef __WINDOWS__
+#include "pthread.h"
+#endif
+
 class cCondWait {
 private:
   pthread_mutex_t mutex;

@@ -28,7 +28,8 @@
 #include <sstream>
 
 #ifdef __WINDOWS__
-#include <Winsock2.h>
+#include <winsock2.h>
+#undef SendMessage
 #else
 #include <arpa/inet.h>
 #endif

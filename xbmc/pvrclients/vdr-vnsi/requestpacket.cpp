@@ -28,7 +28,7 @@
 #include "tools.h"
 
 #ifdef __WINDOWS__
-#include <Winsock2.h>
+#include <winsock2.h>
 #else
 #include <arpa/inet.h>
 #endif
