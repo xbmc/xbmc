@@ -23,6 +23,7 @@
 
 #include "DateTime.h"
 #include "FileItem.h"
+#include "addons/include/xbmc_pvr_types.h"
 #include "utils/Observer.h"
 
 class CPVREpgInfoTag;
@@ -76,6 +77,8 @@ private:
 public:
   /*! @brief Create a new channel */
   CPVRChannel(bool bRadio = false);
+  CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId);
+  CPVRChannel(const CPVRChannel &channel);
 
   bool operator ==(const CPVRChannel &right) const;
   bool operator !=(const CPVRChannel &right) const;

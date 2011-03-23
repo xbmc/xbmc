@@ -66,6 +66,17 @@ void CPVRChannelGroupInternal::Unload()
   CPVRChannelGroup::Unload();
 }
 
+bool CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannel &channel)
+{
+  CPVRChannel *realChannel = (CPVRChannel *) GetByClient(channel.UniqueID(), channel.ClientID());
+  if (realChannel != NULL)
+    realChannel->UpdateFromClient(channel);
+  else
+    realChannel = new CPVRChannel(channel);
+
+  return InsertInGroup(realChannel);
+}
+
 bool CPVRChannelGroupInternal::InsertInGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */)
 {
   return CPVRChannelGroup::AddToGroup(channel, iChannelNumber);

@@ -86,21 +86,9 @@ void CAddonHelpers_PVR::PVRTransferChannelEntry(void *addonData, const PVRHANDLE
 
   CPVRClient* client = (CPVRClient*) handle->CALLER_ADDRESS;
   CPVRChannelGroupInternal *xbmcChannels = (CPVRChannelGroupInternal*) handle->DATA_ADDRESS;
-  CPVRChannel *channelTag = new CPVRChannel(channel->radio);
 
-  channelTag->SetClientChannelNumber(channel->number);
-  channelTag->SetClientID(client->GetClientID());
-  channelTag->SetUniqueID(channel->uid);
-  channelTag->SetChannelName(channel->name);
-  channelTag->SetClientChannelName(channel->callsign);
-  channelTag->SetIconPath(channel->iconpath);
-  channelTag->SetEncryptionSystem(channel->encryption);
-  channelTag->SetHidden(channel->hide);
-  channelTag->SetRecording(channel->recording);
-  channelTag->SetInputFormat(channel->input_format);
-  channelTag->SetStreamURL(channel->stream_url);
-
-  xbmcChannels->InsertInGroup(channelTag);
+  CPVRChannel channelTag(*channel, client->GetClientID());
+  xbmcChannels->UpdateFromClient(channelTag);
 }
 
 void CAddonHelpers_PVR::PVRTransferRecordingEntry(void *addonData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording)

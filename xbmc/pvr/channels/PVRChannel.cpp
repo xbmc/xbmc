@@ -84,6 +84,52 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_iClientEncryptionSystem = -1;
 }
 
+CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
+{
+  m_iChannelId              = -1;
+  m_bIsRadio                = channel.radio;
+  m_bIsHidden               = channel.hide;
+  m_bClientIsRecording      = channel.recording;
+  m_strIconPath             = channel.iconpath;
+  m_strChannelName          = channel.name;
+  m_iUniqueId               = channel.uid;
+  m_iClientChannelNumber    = channel.number;
+  m_strClientChannelName    = channel.callsign;
+  m_strInputFormat          = channel.input_format;
+  m_strStreamURL            = channel.stream_url;
+  m_iClientEncryptionSystem = channel.encryption;
+  m_iClientId               = iClientId;
+  m_strFileNameAndPath      = "";
+  m_bIsVirtual              = false;
+  m_iLastWatched            = 0;
+  m_bEPGEnabled             = true;
+  m_strEPGScraper           = "client";
+  m_EPG                     = NULL;
+}
+
+CPVRChannel::CPVRChannel(const CPVRChannel &channel)
+{
+  m_iChannelId              = channel.m_iChannelId;
+  m_bIsRadio                = channel.m_bIsRadio;
+  m_bIsHidden               = channel.m_bIsHidden;
+  m_bClientIsRecording      = channel.m_bClientIsRecording;
+  m_strIconPath             = channel.m_strIconPath;
+  m_strChannelName          = channel.m_strChannelName;
+  m_bIsVirtual              = channel.m_bIsVirtual;
+  m_iLastWatched            = channel.m_iLastWatched;
+  m_bEPGEnabled             = channel.m_bEPGEnabled;
+  m_strEPGScraper           = channel.m_strEPGScraper;
+  m_iUniqueId               = channel.m_iUniqueId;
+  m_iClientId               = channel.m_iClientId;
+  m_iClientChannelNumber    = channel.m_iClientChannelNumber;
+  m_strClientChannelName    = channel.m_strClientChannelName;
+  m_strInputFormat          = channel.m_strInputFormat;
+  m_strStreamURL            = channel.m_strStreamURL;
+  m_strFileNameAndPath      = channel.m_strFileNameAndPath;
+  m_iClientEncryptionSystem = channel.m_iClientEncryptionSystem;
+  m_EPG                     = NULL;
+}
+
 /********** XBMC related channel methods **********/
 
 bool CPVRChannel::Delete(void)

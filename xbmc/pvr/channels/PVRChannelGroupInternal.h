@@ -136,6 +136,8 @@ public:
    */
   bool InsertInGroup(CPVRChannel *channel, int iChannelNumber = 0);
 
+  bool UpdateFromClient(const CPVRChannel &channel);
+
   bool IsGroupMember(const CPVRChannel *channel) const;
   bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0);
   bool RemoveFromGroup(CPVRChannel *channel);
