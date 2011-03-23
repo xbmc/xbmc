@@ -283,6 +283,8 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
     iTarget = iCurPos + iTarget;
   else if (iWhence == SEEK_POSSIBLE)
     return m_seekPossible;
+  else if (iWhence == SEEK_BUFFERED)
+    return m_pCache->WaitForData(0, 0);
   else if (iWhence != SEEK_SET)
     return -1;
 
