@@ -269,6 +269,7 @@ int CPVRClients::AddClientToDb(const CStdString &strClientId, const CStdString &
 
 bool CPVRClients::LoadClients(void)
 {
+  CSingleLock lock(m_critSection);
   if (m_bAllClientsLoaded)
     return !m_clientMap.empty();
 

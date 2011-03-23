@@ -54,7 +54,8 @@ CPVRClient::CPVRClient(const ADDON::AddonProps& props) :
     CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>(props),
     m_bReadyToUse(false),
     m_strHostName("unknown"),
-    m_iTimeCorrection(0)
+    m_iTimeCorrection(0),
+    m_bGotTimerCorrection(false)
 {
 }
 
@@ -62,7 +63,8 @@ CPVRClient::CPVRClient(const cp_extension_t *ext) :
     CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>(ext),
     m_bReadyToUse(false),
     m_strHostName("unknown"),
-    m_iTimeCorrection(0)
+    m_iTimeCorrection(0),
+    m_bGotTimerCorrection(false)
 {
 }
 
@@ -72,6 +74,11 @@ CPVRClient::~CPVRClient(void)
 
 void CPVRClient::SetTimeCorrection(void)
 {
+  CSingleLock lock(m_critSection);
+  if (m_bGotTimerCorrection)
+    return;
+
+  m_bGotTimerCorrection = true;
   m_iTimeCorrection = 0;
 
   if (g_advancedSettings.m_bDisableEPGTimeCorrection)
@@ -136,8 +143,8 @@ bool CPVRClient::Create(int iClientId, IPVRClientCallback *pvrCB)
   if (CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>::Create())
   {
     m_strHostName = m_pStruct->GetConnectionString();
-    SetTimeCorrection();
     m_bReadyToUse = true;
+    SetTimeCorrection();
     bReturn = true;
   }
   /* don't log failed inits here because it will spam the log file as this is called in a loop */
@@ -322,6 +329,7 @@ PVR_ERROR CPVRClient::StartChannelScan()
 
   if (m_bReadyToUse)
   {
+    SetTimeCorrection();
     try
     {
       return m_pStruct->DialogChannelScan();
@@ -340,6 +348,7 @@ void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook)
 
   if (m_bReadyToUse)
   {
+    SetTimeCorrection();
     try
     {
       m_pStruct->MenuHook(hook);
@@ -363,6 +372,7 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannel &channelinfo, CPVREpg *
 
   if (m_bReadyToUse)
   {
+    SetTimeCorrection();
     try
     {
       if (start)
@@ -424,6 +434,7 @@ PVR_ERROR CPVRClient::GetChannelList(CPVRChannelGroup &channels, bool radio)
 
   if (m_bReadyToUse)
   {
+    SetTimeCorrection();
     try
     {
       PVRHANDLE_STRUCT handle;
@@ -477,6 +488,7 @@ PVR_ERROR CPVRClient::GetAllRecordings(CPVRRecordings *results)
 
   if (m_bReadyToUse)
   {
+    SetTimeCorrection();
     try
     {
       PVRHANDLE_STRUCT handle;
@@ -508,6 +520,7 @@ PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording &recinfo)
 
   if (m_bReadyToUse)
   {
+    SetTimeCorrection();
     try
     {
       PVR_RECORDINGINFO tag;
@@ -539,6 +552,7 @@ PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording &recinfo, const CStdSt
 
   if (m_bReadyToUse)
   {
+    SetTimeCorrection();
     try
     {
       PVR_RECORDINGINFO tag;
@@ -610,6 +624,7 @@ PVR_ERROR CPVRClient::GetAllTimers(CPVRTimers *results)
 
   if (m_bReadyToUse)
   {
+    SetTimeCorrection();
     try
     {
       PVRHANDLE_STRUCT handle;
@@ -641,6 +656,7 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timerinfo)
 
   if (m_bReadyToUse)
   {
+    SetTimeCorrection();
     try
     {
       PVR_TIMERINFO tag;
@@ -680,6 +696,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timerinfo, bool force)
 
   if (m_bReadyToUse)
   {
+    SetTimeCorrection();
     try
     {
       PVR_TIMERINFO tag;
@@ -715,6 +732,7 @@ PVR_ERROR CPVRClient::RenameTimer(const CPVRTimerInfoTag &timerinfo, const CStdS
 
   if (m_bReadyToUse)
   {
+    SetTimeCorrection();
     try
     {
       PVR_TIMERINFO tag;
@@ -747,9 +765,10 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timerinfo)
   CSingleLock lock(m_critSection);
 
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
-//
+
   if (m_bReadyToUse)
   {
+    SetTimeCorrection();
     try
     {
       PVR_TIMERINFO tag;
@@ -812,6 +831,7 @@ bool CPVRClient::OpenLiveStream(const CPVRChannel &channelinfo)
 
   if (m_bReadyToUse)
   {
+    SetTimeCorrection();
     try
     {
       PVR_CHANNEL tag;
@@ -914,6 +934,7 @@ const char *CPVRClient::GetLiveStreamURL(const CPVRChannel &channelinfo)
 
   if (m_bReadyToUse)
   {
+    SetTimeCorrection();
     try
     {
       PVR_CHANNEL tag;
@@ -952,6 +973,7 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannel &channelinfo, PVR_CHAN
 bool CPVRClient::OpenRecordedStream(const CPVRRecording &recinfo)
 {
   CSingleLock lock(m_critSection);
+  SetTimeCorrection();
 
   PVR_RECORDINGINFO tag;
   WriteClientRecordingInfo(recinfo, tag);

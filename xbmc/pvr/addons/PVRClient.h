@@ -121,6 +121,7 @@ protected:
   CStdString            m_strHostName;
   CCriticalSection      m_critSection;
   int                   m_iTimeCorrection;
+  bool                  m_bGotTimerCorrection;
   PVR_MENUHOOKS         m_menuhooks;
 
 private:
