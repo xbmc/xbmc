@@ -53,6 +53,9 @@ protected:
     size_t            m_size_back;
     CCriticalSection  m_sync;
     CEvent            m_written;
+#ifdef _WIN32
+    HANDLE            m_handle;
+#endif
 };
 
 } // namespace XFILE
