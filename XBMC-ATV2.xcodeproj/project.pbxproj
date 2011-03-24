@@ -9,12 +9,8 @@
 /* Begin PBXBuildFile section */
 		4D5D2E131301753F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E121301753F006ABC13 /* CFNetwork.framework */; };
 		F51BD1F112CA77B500B8BD20 /* libpython2.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F51BD1F012CA77B500B8BD20 /* libpython2.6.dylib */; };
-		F54D9DD812B56A7D006870F9 /* libfaad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9DD712B56A7D006870F9 /* libfaad.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
 		F54D9E0712B65FFF006870F9 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E0612B65FFF006870F9 /* libc.dylib */; };
 		F54D9E8E12B71457006870F9 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8D12B71457006870F9 /* CoreAudio.framework */; };
-		F55E026612EB5F84003E067B /* libcurl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5653BB4128B9441009C7ABB /* libcurl.dylib */; };
-		F5657641130193E80085ED7F /* libtalloc.dylib.2 in Frameworks */ = {isa = PBXBuildFile; fileRef = F5657640130193E70085ED7F /* libtalloc.dylib.2 */; };
-		F56576A21301C5490085ED7F /* libtdb.dylib.1 in Frameworks */ = {isa = PBXBuildFile; fileRef = F5657642130193F10085ED7F /* libtdb.dylib.1 */; };
 		F56B15FB12CD6922009B4C96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15FA12CD6922009B4C96 /* CoreVideo.framework */; };
 		F56B15FD12CD6930009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15FC12CD6930009B4C96 /* AudioToolbox.framework */; };
 		F56B15FF12CD695C009B4C96 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15FE12CD695C009B4C96 /* CoreGraphics.framework */; };
@@ -900,11 +896,9 @@
 		F589AE1B1288DE0800D8079E /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE1A1288DE0800D8079E /* libsamplerate.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
 		F589AE1D1288DE1B00D8079E /* libcdio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE1C1288DE1B00D8079E /* libcdio.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
 		F589AE211288DE6400D8079E /* libfribidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE201288DE6400D8079E /* libfribidi.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
-		F589AE2F1288DEC900D8079E /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE2E1288DEC900D8079E /* libcrypto.dylib */; };
 		F589AE311288DEE000D8079E /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE301288DEE000D8079E /* libpcre.dylib */; };
 		F589AE331288DEE900D8079E /* libpcrecpp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE321288DEE900D8079E /* libpcrecpp.dylib */; };
 		F589AE351288DEF900D8079E /* liblzo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE341288DEF900D8079E /* liblzo2.dylib */; };
-		F589AE371288DEFE00D8079E /* liblzo.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE361288DEFE00D8079E /* liblzo.dylib */; };
 		F589AE391288DF1F00D8079E /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE381288DF1F00D8079E /* libmysqlclient.dylib */; settings = {ATTRIBUTES = (Weak, ); }; };
 		F589AE431288E02000D8079E /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE421288E02000D8079E /* libiconv.dylib */; };
 		F589AE451288E06100D8079E /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE441288E06100D8079E /* libbz2.dylib */; };
@@ -923,10 +917,8 @@
 		F589AE8512890BEF00D8079E /* libxdaap-arm-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE8012890BEF00D8079E /* libxdaap-arm-osx.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		F5A29EC312A7221B003A610C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29EC212A7221B003A610C /* CoreMedia.framework */; };
 		F5A29F2712A72246003A610C /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29F2612A72246003A610C /* VideoToolbox.framework */; };
-		F5B13836133080CA0045076D /* libmodplug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13834133080CA0045076D /* libmodplug.dylib */; };
 		F5B13837133080CB0045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13835133080CA0045076D /* libmicrohttpd.dylib */; };
 		F5B13B021333248E0045076D /* libass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13B011333248E0045076D /* libass.dylib */; };
-		F5B13B2613332B340045076D /* libbluray.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13B2513332B340045076D /* libbluray.dylib */; };
 		F5B13E0113344F310045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13E0013344F310045076D /* DarwinUtils.mm */; };
 /* End PBXBuildFile section */
 
@@ -934,12 +926,8 @@
 		4D5D2E121301753F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		8D576316048677EA00EA77CD /* XBMC.frappliance */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XBMC.frappliance; sourceTree = BUILT_PRODUCTS_DIR; };
 		F51BD1F012CA77B500B8BD20 /* libpython2.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpython2.6.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libpython2.6.dylib"; sourceTree = "<absolute>"; };
-		F54D9DD712B56A7D006870F9 /* libfaad.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfaad.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libfaad.dylib"; sourceTree = "<absolute>"; };
 		F54D9E0612B65FFF006870F9 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		F54D9E8D12B71457006870F9 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
-		F5653BB4128B9441009C7ABB /* libcurl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurl.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libcurl.dylib"; sourceTree = "<absolute>"; };
-		F5657640130193E70085ED7F /* libtalloc.dylib.2 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtalloc.dylib.2; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libtalloc.dylib.2"; sourceTree = "<absolute>"; };
-		F5657642130193F10085ED7F /* libtdb.dylib.1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; fileEncoding = 4; name = libtdb.dylib.1; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libtdb.dylib.1"; sourceTree = "<absolute>"; };
 		F56B15FA12CD6922009B4C96 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		F56B15FC12CD6930009B4C96 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		F56B15FE12CD695C009B4C96 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -2837,11 +2825,9 @@
 		F589AE1C1288DE1B00D8079E /* libcdio.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcdio.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libcdio.dylib"; sourceTree = "<absolute>"; };
 		F589AE1E1288DE2700D8079E /* libfreetype.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreetype.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libfreetype.dylib"; sourceTree = "<absolute>"; };
 		F589AE201288DE6400D8079E /* libfribidi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfribidi.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libfribidi.dylib"; sourceTree = "<absolute>"; };
-		F589AE2E1288DEC900D8079E /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libcrypto.dylib"; sourceTree = "<absolute>"; };
 		F589AE301288DEE000D8079E /* libpcre.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libpcre.dylib"; sourceTree = "<absolute>"; };
 		F589AE321288DEE900D8079E /* libpcrecpp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcrecpp.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libpcrecpp.dylib"; sourceTree = "<absolute>"; };
 		F589AE341288DEF900D8079E /* liblzo2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo2.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/liblzo2.dylib"; sourceTree = "<absolute>"; };
-		F589AE361288DEFE00D8079E /* liblzo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/liblzo.dylib"; sourceTree = "<absolute>"; };
 		F589AE381288DF1F00D8079E /* libmysqlclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/mysql/libmysqlclient.dylib"; sourceTree = "<absolute>"; };
 		F589AE421288E02000D8079E /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		F589AE441288E06100D8079E /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = usr/lib/libbz2.dylib; sourceTree = SDKROOT; };
@@ -2859,10 +2845,8 @@
 		F589AE8012890BEF00D8079E /* libxdaap-arm-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxdaap-arm-osx.a"; path = "lib/libXDAAP/libxdaap-arm-osx.a"; sourceTree = "<group>"; };
 		F5A29EC212A7221B003A610C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		F5A29F2612A72246003A610C /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/PrivateFrameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
-		F5B13834133080CA0045076D /* libmodplug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmodplug.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmodplug.dylib"; sourceTree = "<absolute>"; };
 		F5B13835133080CA0045076D /* libmicrohttpd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmicrohttpd.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmicrohttpd.dylib"; sourceTree = "<absolute>"; };
 		F5B13B011333248E0045076D /* libass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libass.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libass.dylib"; sourceTree = "<absolute>"; };
-		F5B13B2513332B340045076D /* libbluray.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbluray.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libbluray.dylib"; sourceTree = "<absolute>"; };
 		F5B13DFF13344F2A0045076D /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
 		F5B13E0013344F310045076D /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -2880,11 +2864,9 @@
 				F589AE1B1288DE0800D8079E /* libsamplerate.dylib in Frameworks */,
 				F589AE1D1288DE1B00D8079E /* libcdio.dylib in Frameworks */,
 				F589AE211288DE6400D8079E /* libfribidi.dylib in Frameworks */,
-				F589AE2F1288DEC900D8079E /* libcrypto.dylib in Frameworks */,
 				F589AE311288DEE000D8079E /* libpcre.dylib in Frameworks */,
 				F589AE331288DEE900D8079E /* libpcrecpp.dylib in Frameworks */,
 				F589AE351288DEF900D8079E /* liblzo2.dylib in Frameworks */,
-				F589AE371288DEFE00D8079E /* liblzo.dylib in Frameworks */,
 				F589AE391288DF1F00D8079E /* libmysqlclient.dylib in Frameworks */,
 				F589AE431288E02000D8079E /* libiconv.dylib in Frameworks */,
 				F589AE451288E06100D8079E /* libbz2.dylib in Frameworks */,
@@ -2903,7 +2885,6 @@
 				F589AE8512890BEF00D8079E /* libxdaap-arm-osx.a in Frameworks */,
 				F5A29EC312A7221B003A610C /* CoreMedia.framework in Frameworks */,
 				F5A29F2712A72246003A610C /* VideoToolbox.framework in Frameworks */,
-				F54D9DD812B56A7D006870F9 /* libfaad.dylib in Frameworks */,
 				F54D9E0712B65FFF006870F9 /* libc.dylib in Frameworks */,
 				F54D9E8E12B71457006870F9 /* CoreAudio.framework in Frameworks */,
 				F577714112C3BA8E00871432 /* libsmbclient.dylib.0 in Frameworks */,
@@ -2912,17 +2893,12 @@
 				F56B15FD12CD6930009B4C96 /* AudioToolbox.framework in Frameworks */,
 				F56B15FF12CD695C009B4C96 /* CoreGraphics.framework in Frameworks */,
 				F56B161B12CD69DB009B4C96 /* ImageIO.framework in Frameworks */,
-				F55E026612EB5F84003E067B /* libcurl.dylib in Frameworks */,
 				4D5D2E131301753F006ABC13 /* CFNetwork.framework in Frameworks */,
-				F5657641130193E80085ED7F /* libtalloc.dylib.2 in Frameworks */,
-				F56576A21301C5490085ED7F /* libtdb.dylib.1 in Frameworks */,
 				F56C7EDD131F0942000AD0F6 /* http-api.a in Frameworks */,
 				F56C7EDF131F0959000AD0F6 /* json-rpc.a in Frameworks */,
 				F56C7EE1131F0965000AD0F6 /* libjsoncpp.a in Frameworks */,
-				F5B13836133080CA0045076D /* libmodplug.dylib in Frameworks */,
 				F5B13837133080CB0045076D /* libmicrohttpd.dylib in Frameworks */,
 				F5B13B021333248E0045076D /* libass.dylib in Frameworks */,
-				F5B13B2613332B340045076D /* libbluray.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5699,28 +5675,20 @@
 		F589AE0A1288DC1300D8079E /* External Libs */ = {
 			isa = PBXGroup;
 			children = (
-				F589AE361288DEFE00D8079E /* liblzo.dylib */,
 				F589AE341288DEF900D8079E /* liblzo2.dylib */,
 				F589AE301288DEE000D8079E /* libpcre.dylib */,
 				F589AE321288DEE900D8079E /* libpcrecpp.dylib */,
-				F589AE2E1288DEC900D8079E /* libcrypto.dylib */,
 				F5B13B011333248E0045076D /* libass.dylib */,
-				F54D9DD712B56A7D006870F9 /* libfaad.dylib */,
 				F589AE201288DE6400D8079E /* libfribidi.dylib */,
 				F589AE1C1288DE1B00D8079E /* libcdio.dylib */,
 				F589AE1A1288DE0800D8079E /* libsamplerate.dylib */,
-				F5653BB4128B9441009C7ABB /* libcurl.dylib */,
 				F577714012C3BA8E00871432 /* libsmbclient.dylib.0 */,
-				F5657640130193E70085ED7F /* libtalloc.dylib.2 */,
-				F5657642130193F10085ED7F /* libtdb.dylib.1 */,
 				F589AE1E1288DE2700D8079E /* libfreetype.dylib */,
 				F589AE161288DDE400D8079E /* libfontconfig.dylib */,
 				F589AE381288DF1F00D8079E /* libmysqlclient.dylib */,
 				F51BD1F012CA77B500B8BD20 /* libpython2.6.dylib */,
 				F589AE521288E20900D8079E /* libsqlite3.dylib */,
-				F5B13834133080CA0045076D /* libmodplug.dylib */,
 				F5B13835133080CA0045076D /* libmicrohttpd.dylib */,
-				F5B13B2513332B340045076D /* libbluray.dylib */,
 			);
 			name = "External Libs";
 			sourceTree = "<group>";
