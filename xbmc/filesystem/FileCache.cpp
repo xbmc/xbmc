@@ -25,9 +25,10 @@
 #include "File.h"
 #include "URL.h"
 
-#include "CacheMemBuffer.h"
+#include "CacheCircular.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace AUTOPTR;
 using namespace XFILE;
@@ -40,7 +41,7 @@ CFileCache::CFileCache()
    m_nSeekResult = 0;
    m_seekPos = 0;
    m_readPos = 0;
-   m_pCache = new CacheMemBuffer();
+   m_pCache = new CCacheCircular(g_advancedSettings.m_cacheMemBufferSize, g_advancedSettings.m_cacheMemBufferSize);
    m_seekPossible = 0;
 }
 

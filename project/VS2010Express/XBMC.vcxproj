@@ -337,6 +337,7 @@
     <ClCompile Include="..\..\xbmc\DynamicDll.cpp" />
     <ClCompile Include="..\..\xbmc\Favourites.cpp" />
     <ClCompile Include="..\..\xbmc\FileItem.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\iso9660.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\ISO9660Directory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\FileUDF.cpp" />
@@ -1138,6 +1139,7 @@
     <ClInclude Include="..\..\xbmc\DynamicDll.h" />
     <ClInclude Include="..\..\xbmc\Favourites.h" />
     <ClInclude Include="..\..\xbmc\FileItem.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\CacheCircular.h" />
     <ClInclude Include="..\..\xbmc\filesystem\Directory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\DirectoryHistory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FactoryDirectory.h" />
