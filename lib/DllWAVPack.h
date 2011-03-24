@@ -36,10 +36,10 @@
 
 // API changes from 4.2 to 4.60.1.
 #ifndef WavpackStreamReader
-typedef WavpackStreamReader stream_reader;
+#define WavpackStreamReader stream_reader;
 #endif
 #ifndef WavpackBlockOutput
-typedef WavpackBlockOutput blockout_f;
+#define WavpackBlockOutput blockout_f;
 #endif
 
 class DllWavPackInterface
