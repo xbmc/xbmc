@@ -205,9 +205,6 @@ int64_t CacheMemBuffer::Seek(int64_t iFilePosition, int iWhence)
     if (nToCopy > 0)
       m_forwardBuffer.Copy(saveUnRead);
 
-    SEEK_CHECK_RET(m_HistoryBuffer.Copy(saveHist));
-    m_HistoryBuffer.Clear();
-
     m_nStartPosition = iFilePosition;
     m_space.Set();
     return m_nStartPosition;
