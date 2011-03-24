@@ -555,7 +555,7 @@ int CPVRClients::ReadStream(void* lpBuf, int64_t uiBufSize)
   if (m_currentChannel)
     return m_clientMap[m_currentChannel->ClientID()]->ReadLiveStream(lpBuf, uiBufSize);
   else if (m_currentRecording)
-    return m_clientMap[m_currentChannel->ClientID()]->ReadRecordedStream(lpBuf, uiBufSize);
+    return m_clientMap[m_currentRecording->m_clientID]->ReadRecordedStream(lpBuf, uiBufSize);
 
   return 0;
 }
