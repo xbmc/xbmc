@@ -23,7 +23,7 @@
 #include "AddonHelpers_local.h"
 #include "AddonHelpers_Addon.h"
 #include "AddonHelpers_GUI.h"
-#include "AddonHelpers_PVR.h"
+#include "AddonCallbacksPVR.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
 
@@ -121,7 +121,7 @@ CB_PVRLib* CAddonHelpers::PVRLib_RegisterMe(void *addonData)
     return NULL;
   }
 
-  helper->m_helperPVR = new CAddonHelpers_PVR(helper->m_addon);
+  helper->m_helperPVR = new CAddonCallbacksPVR(helper->m_addon);
   return helper->m_helperPVR->GetCallbacks();
 }
 

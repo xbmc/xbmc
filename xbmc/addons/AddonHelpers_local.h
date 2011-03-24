@@ -229,7 +229,7 @@ namespace ADDON
 class CAddon;
 class CAddonHelpers_Addon;
 class CAddonHelpers_GUI;
-class CAddonHelpers_PVR;
+class CAddonCallbacksPVR;
 
 class CAddonHelpers
 {
@@ -247,14 +247,14 @@ public:
 
   CAddonHelpers_Addon *GetHelperAddon() { return m_helperAddon; }
   CAddonHelpers_GUI *GetHelperGUI() { return m_helperGUI; }
-  CAddonHelpers_PVR *GetHelperPVR() { return m_helperPVR; }
+  CAddonCallbacksPVR *GetHelperPVR() { return m_helperPVR; }
 
 private:
   AddonCB             *m_callbacks;
   CAddon              *m_addon;
   CAddonHelpers_Addon *m_helperAddon;
   CAddonHelpers_GUI   *m_helperGUI;
-  CAddonHelpers_PVR   *m_helperPVR;
+  CAddonCallbacksPVR   *m_helperPVR;
 };
 
 }; /* namespace ADDON */

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,7 +20,7 @@
  */
 
 #include "Application.h"
-#include "AddonHelpers_PVR.h"
+#include "AddonCallbacksPVR.h"
 #include "utils/log.h"
 
 #include "pvr/epg/PVREpg.h"
@@ -32,12 +32,12 @@
 namespace ADDON
 {
 
-CAddonHelpers_PVR::CAddonHelpers_PVR(CAddon* addon)
+CAddonCallbacksPVR::CAddonCallbacksPVR(CAddon* addon)
 {
   m_addon     = addon;
   m_callbacks = new CB_PVRLib;
 
-  /* Write XBMC PVR specific Add-on function addresses to callback table */
+  /* write XBMC PVR specific add-on function addresses to callback table */
   m_callbacks->TransferEpgEntry       = PVRTransferEpgEntry;
   m_callbacks->TransferChannelEntry   = PVRTransferChannelEntry;
   m_callbacks->TransferTimerEntry     = PVRTransferTimerEntry;
@@ -49,62 +49,67 @@ CAddonHelpers_PVR::CAddonHelpers_PVR(CAddon* addon)
   m_callbacks->TriggerRecordingUpdate = PVRTriggerRecordingUpdate;
   m_callbacks->FreeDemuxPacket        = PVRFreeDemuxPacket;
   m_callbacks->AllocateDemuxPacket    = PVRAllocateDemuxPacket;
-};
+}
 
-CAddonHelpers_PVR::~CAddonHelpers_PVR()
+CAddonCallbacksPVR::~CAddonCallbacksPVR()
 {
+  /* delete the callback table */
   delete m_callbacks;
-};
+}
 
-void CAddonHelpers_PVR::PVRTransferEpgEntry(void *addonData, const PVRHANDLE handle, const PVR_PROGINFO *epgentry)
+void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const PVRHANDLE handle, const PVR_PROGINFO *epgentry)
 {
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL || handle == NULL || epgentry == NULL)
   {
-    CLog::Log(LOGERROR, "PVR: PVRTransferEpgEntry is called with NULL-Pointer!!!");
+    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  CPVREpg *xbmcEpg        = (CPVREpg*) handle->DATA_ADDRESS;
-  PVR_PROGINFO *epgentry2 = (PVR_PROGINFO*) epgentry;
-  CPVRClient* client      = (CPVRClient*) handle->CALLER_ADDRESS;
-  epgentry2->starttime   += client->GetTimeCorrection();
-  epgentry2->endtime     += client->GetTimeCorrection();
-  xbmcEpg->UpdateEntry(epgentry2, handle->DATA_IDENTIFIER == 1);
+  CPVRClient* client = (CPVRClient*) handle->CALLER_ADDRESS;
+  CPVREpg *xbmcEpg   = (CPVREpg*) handle->DATA_ADDRESS;
 
-  return;
+  PVR_PROGINFO *epgentry2 = (PVR_PROGINFO*) epgentry;
+  epgentry2->starttime   += client->GetTimeCorrection(); // XXX time correction
+  epgentry2->endtime     += client->GetTimeCorrection(); // XXX time correction
+
+  bool bUpdateDatabase = handle->DATA_IDENTIFIER == 1;
+
+  /* transfer this entry to the epg */
+  xbmcEpg->UpdateFromClient(epgentry2, bUpdateDatabase);
 }
 
-void CAddonHelpers_PVR::PVRTransferChannelEntry(void *addonData, const PVRHANDLE handle, const PVR_CHANNEL *channel)
+void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const PVRHANDLE handle, const PVR_CHANNEL *channel)
 {
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL || handle == NULL || channel == NULL)
   {
-    CLog::Log(LOGERROR, "PVR: PVRTransferChannelEntry is called with NULL-Pointer!!!");
+    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  CPVRClient* client = (CPVRClient*) handle->CALLER_ADDRESS;
+  CPVRClient* client                     = (CPVRClient*) handle->CALLER_ADDRESS;
   CPVRChannelGroupInternal *xbmcChannels = (CPVRChannelGroupInternal*) handle->DATA_ADDRESS;
 
   CPVRChannel channelTag(*channel, client->GetClientID());
+
+  /* transfer this entry to the internal channels group */
   xbmcChannels->UpdateFromClient(channelTag);
 }
 
-void CAddonHelpers_PVR::PVRTransferRecordingEntry(void *addonData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording)
+void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording)
 {
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL || handle == NULL || recording == NULL)
   {
-    CLog::Log(LOGERROR, "PVR: PVRTransferRecordingEntry is called with NULL-Pointer!!!");
+    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  CPVRClient* client = (CPVRClient*) handle->CALLER_ADDRESS;
+  CPVRClient* client             = (CPVRClient*) handle->CALLER_ADDRESS;
   CPVRRecordings *xbmcRecordings = (CPVRRecordings*) handle->DATA_ADDRESS;
 
   CPVRRecording tag;
-
   tag.m_clientIndex    = recording->index;
   tag.m_clientID       = client->GetClientID();
   tag.m_strTitle       = recording->title;
@@ -118,15 +123,16 @@ void CAddonHelpers_PVR::PVRTransferRecordingEntry(void *addonData, const PVRHAND
   tag.m_strStreamURL   = recording->stream_url;
   tag.m_strChannel     = recording->channel_name;
 
-  xbmcRecordings->UpdateEntry(tag);
+  /* transfer this entry to the recordings container */
+  xbmcRecordings->UpdateFromClient(tag);
 }
 
-void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE handle, const PVR_TIMERINFO *timer)
+void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE handle, const PVR_TIMERINFO *timer)
 {
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL || handle == NULL || timer == NULL)
   {
-    CLog::Log(LOGERROR, "PVR: PVRTransferTimerEntry is called with NULL-Pointer!!!");
+    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
@@ -136,7 +142,8 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
 
   if (channel == NULL)
   {
-    CLog::Log(LOGERROR, "PVR: PVRTransferTimerEntry is called with not present channel");
+    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - cannot find channel %d on client %d",
+        __FUNCTION__, timer->channelUid, client->GetClientID());
     return;
   }
 
@@ -159,99 +166,108 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
   tag.m_strFileNameAndPath.Format("pvr://client%i/timers/%i", tag.m_iClientID, tag.m_iClientIndex);
   tag.UpdateSummary();
 
-  xbmcTimers->Update(tag);
+  /* transfer this entry to the timers container */
+  xbmcTimers->UpdateFromClient(tag);
 }
 
-void CAddonHelpers_PVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)
+void CAddonCallbacksPVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)
 {
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL || hook == NULL)
   {
-    CLog::Log(LOGERROR, "PVR: PVRAddMenuHook is called with NULL-Pointer!!!");
+    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  CAddonHelpers_PVR* addonHelper = addon->GetHelperPVR();
+  CAddonCallbacksPVR* addonHelper = addon->GetHelperPVR();
   CPVRClient* client  = (CPVRClient*) addonHelper->m_addon;
   PVR_MENUHOOKS *hooks = client->GetMenuHooks();
 
   PVR_MENUHOOK hookInt;
   hookInt.hook_id   = hook->hook_id;
   hookInt.string_id = hook->string_id;
+
+  /* add this new hook */
   hooks->push_back(hookInt);
 }
 
-void CAddonHelpers_PVR::PVRRecording(void *addonData, const char *Name, const char *FileName, bool On)
+void CAddonCallbacksPVR::PVRRecording(void *addonData, const char *strName, const char *strFileName, bool bOnOff)
 {
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL)
   {
-    CLog::Log(LOGERROR, "PVR: PVRRecording is called with NULL-Pointer!!!");
+    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  CAddonHelpers_PVR* addonHelper = addon->GetHelperPVR();
+  CAddonCallbacksPVR* addonHelper = addon->GetHelperPVR();
 
-  CStdString line1;
-  CStdString line2;
-  if (On)
-    line1.Format(g_localizeStrings.Get(19197), addonHelper->m_addon->Name());
+  CStdString strLine1;
+  if (bOnOff)
+    strLine1.Format(g_localizeStrings.Get(19197), addonHelper->m_addon->Name());
   else
-    line1.Format(g_localizeStrings.Get(19198), addonHelper->m_addon->Name());
+    strLine1.Format(g_localizeStrings.Get(19198), addonHelper->m_addon->Name());
 
-  if (Name)
-    line2 = Name;
-  else if (FileName)
-    line2 = FileName;
+  CStdString strLine2;
+  if (strName)
+    strLine2 = strName;
+  else if (strFileName)
+    strLine2 = strFileName;
   else
-    line2 = "";
+    strLine2 = "";
 
-  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, line1, line2, 5000, false);
-  CLog::Log(LOGDEBUG, "%s: %s-%s - Recording %s : %s %s", __FUNCTION__, TranslateType(addonHelper->m_addon->Type()).c_str(), addonHelper->m_addon->Name().c_str(), On ? "started" : "finished", Name, FileName);
+  /* display a notification for 5 seconds */
+  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, strLine1, strLine2, 5000, false);
+
+  CLog::Log(LOGDEBUG, "CAddonHelperPVR - %s - recording %s on client '%s'. name='%s' filename='%s'",
+      __FUNCTION__, bOnOff ? "started" : "finished", addonHelper->m_addon->Name().c_str(), strName, strFileName);
 }
 
-void CAddonHelpers_PVR::PVRTriggerChannelUpdate(void *addonData)
+void CAddonCallbacksPVR::PVRTriggerChannelUpdate(void *addonData)
 {
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL)
   {
-    CLog::Log(LOGERROR, "PVR addon - %s - called from an invalid client", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
+  /* update the channels table in the next iteration of the pvrmanager's main loop */
   CPVRManager::Get()->TriggerChannelsUpdate();
 }
 
-void CAddonHelpers_PVR::PVRTriggerTimerUpdate(void *addonData)
+void CAddonCallbacksPVR::PVRTriggerTimerUpdate(void *addonData)
 {
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL)
   {
-    CLog::Log(LOGERROR, "PVR: PVRTriggerTimerUpdate is called with NULL-Pointer!!!");
+    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
+  /* update the timers table in the next iteration of the pvrmanager's main loop */
   CPVRManager::Get()->TriggerTimersUpdate();
 }
 
-void CAddonHelpers_PVR::PVRTriggerRecordingUpdate(void *addonData)
+void CAddonCallbacksPVR::PVRTriggerRecordingUpdate(void *addonData)
 {
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL)
   {
-    CLog::Log(LOGERROR, "PVR: PVRTriggerRecordingUpdate is called with NULL-Pointer!!!");
+    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
+  /* update the recordings table in the next iteration of the pvrmanager's main loop */
   CPVRManager::Get()->TriggerRecordingsUpdate();
 }
 
-void CAddonHelpers_PVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket)
+void CAddonCallbacksPVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket)
 {
   CDVDDemuxUtils::FreeDemuxPacket(pPacket);
 }
 
-DemuxPacket* CAddonHelpers_PVR::PVRAllocateDemuxPacket(void *addonData, int iDataSize)
+DemuxPacket* CAddonCallbacksPVR::PVRAllocateDemuxPacket(void *addonData, int iDataSize)
 {
   return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
 }

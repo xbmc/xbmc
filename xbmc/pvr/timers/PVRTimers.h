@@ -62,7 +62,8 @@ public:
   /**
    * Update a timer entry in this container.
    */
-  bool Update(const CPVRTimerInfoTag &timer);
+  bool UpdateEntry(const CPVRTimerInfoTag &timer);
+  bool UpdateFromClient(const CPVRTimerInfoTag &timer) { return UpdateEntry(timer); }
 
   /********** getters **********/
 

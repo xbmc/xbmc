@@ -296,7 +296,7 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg,
     PVRHANDLE_STRUCT handle;
     handle.CALLER_ADDRESS = this;
     handle.DATA_ADDRESS = (CPVREpg*) epg;
-    handle.DATA_IDENTIFIER = bSaveInDb ? 1 : 0; // used by the callback method CAddonHelperPVR::PVRTransferEpgEntry()
+    handle.DATA_IDENTIFIER = bSaveInDb ? 1 : 0; // used by the callback method CAddonCallbacksPVR::PVRTransferEpgEntry()
     retVal = m_pStruct->RequestEPGForChannel(&handle, addonChannel, start ? start - iTimeCorrection : 0, end ? end - iTimeCorrection : 0);
 
     if (retVal != PVR_ERROR_NO_ERROR)

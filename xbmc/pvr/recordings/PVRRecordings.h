@@ -46,6 +46,7 @@ public:
   void Unload();
   void Clear();
   void UpdateEntry(const CPVRRecording &tag);
+  void UpdateFromClient(const CPVRRecording &tag) { UpdateEntry(tag); }
   bool Update(bool bAsync = false);
 
   int GetNumRecordings();

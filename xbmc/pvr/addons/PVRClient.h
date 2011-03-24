@@ -168,7 +168,7 @@ public:
    * @param epg The table to write the data to.
    * @param start The start time to use.
    * @param end The end time to use.
-   * @param bSaveInDb If true, tell the callback method to save any new entry in the database or not. see CAddonHelperPVR::PVRTransferEpgEntry()
+   * @param bSaveInDb If true, tell the callback method to save any new entry in the database or not. see CAddonCallbacksPVR::PVRTransferEpgEntry()
    * @return PVR_ERROR_NO_ERROR if the table has been fetched successfully.
    */
   PVR_ERROR GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start = 0, time_t end = 0, bool bSaveInDb = false);

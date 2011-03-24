@@ -147,7 +147,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
   return bChanged;
 }
 
-bool CPVRTimers::Update(const CPVRTimerInfoTag &timer)
+bool CPVRTimers::UpdateEntry(const CPVRTimerInfoTag &timer)
 {
   CPVRTimerInfoTag *tag = NULL;
   CSingleLock lock(m_critSection);
