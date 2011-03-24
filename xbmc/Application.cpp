@@ -218,7 +218,7 @@
 #include "dialogs/GUIDialogSlider.h"
 #include "guilib/GUIControlFactory.h"
 #include "dialogs/GUIDialogCache.h"
-#include "dialogs/GUIDialogPlayEjectCancel.h"
+#include "dialogs/GUIDialogPlayEject.h"
 #include "addons/AddonInstaller.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -1098,7 +1098,7 @@ bool CApplication::Initialize()
 
   g_windowManager.Add(new CGUIDialogContentSettings);        // window id = 132
 
-  g_windowManager.Add(new CGUIDialogPlayEjectCancel);        // window id = 148
+  g_windowManager.Add(new CGUIDialogPlayEject);
 
   g_windowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   g_windowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
@@ -3140,7 +3140,7 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
     g_windowManager.Delete(WINDOW_DIALOG_TEXT_VIEWER);
 
-    g_windowManager.Delete(WINDOW_DIALOG_PLAY_EJECT_CANCEL);
+    g_windowManager.Delete(WINDOW_DIALOG_PLAY_EJECT);
 
     g_windowManager.Delete(WINDOW_STARTUP_ANIM);
     g_windowManager.Delete(WINDOW_LOGIN_SCREEN);
@@ -3545,25 +3545,22 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
   if (item.IsDiscStub())
   {
-    // Display the Play Eject Cancel dialog
-    CGUIDialogPlayEjectCancel * pDialog =
-      (CGUIDialogPlayEjectCancel *)g_windowManager.GetWindow(WINDOW_DIALOG_PLAY_EJECT_CANCEL);
-    if (pDialog)
+    // Figure out Line 1 of the dialog
+    CStdString strLine1;
+    if (item.GetVideoInfoTag())
     {
-      pDialog->SetHeading(219);
-      pDialog->SetLine(0, 429);
-      if (item.GetVideoInfoTag())
-      {
-        pDialog->SetLine(1, item.GetVideoInfoTag()->m_strTitle);
-      }
-      else
-      {
-        CStdString strTitle = URIUtils::GetFileName(item.m_strPath);
-        URIUtils::RemoveExtension(strTitle);
-        pDialog->SetLine(1, strTitle);
-      }
-      pDialog->DoModal();
+      strLine1 = item.GetVideoInfoTag()->m_strTitle;
+    }
+    else
+    {
+      strLine1 = URIUtils::GetFileName(item.m_strPath);
+      URIUtils::RemoveExtension(strLine1);
+    }
 
+    // Display the Play Eject dialog
+    if (CGUIDialogPlayEject::ShowAndGetInput(219, 429, strLine1, NULL))
+    {
+      MEDIA_DETECT::CAutorun::PlayDisc();
       return true;
     }
     else

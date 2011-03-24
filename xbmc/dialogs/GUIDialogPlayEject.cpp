@@ -20,25 +20,24 @@
  */
 
 #include "Autorun.h"
-#include "GUIDialogPlayEjectCancel.h"
+#include "GUIDialogPlayEject.h"
 #include "GUIWindowManager.h"
 #include "storage/MediaManager.h"
 #include "storage/IoSupport.h"
 
-#define ID_BUTTON_PLAY      10
-#define ID_BUTTON_EJECT     11
-#define ID_BUTTON_CANCEL    12
+#define ID_BUTTON_PLAY      11
+#define ID_BUTTON_EJECT     10
 
-CGUIDialogPlayEjectCancel::CGUIDialogPlayEjectCancel(void)
-    : CGUIDialogBoxBase(WINDOW_DIALOG_PLAY_EJECT_CANCEL, "DialogPlayEjectCancel.xml")
+CGUIDialogPlayEject::CGUIDialogPlayEject()
+    : CGUIDialogYesNo(WINDOW_DIALOG_PLAY_EJECT)
 {
 }
 
-CGUIDialogPlayEjectCancel::~CGUIDialogPlayEjectCancel()
+CGUIDialogPlayEject::~CGUIDialogPlayEject()
 {
 }
 
-bool CGUIDialogPlayEjectCancel::OnMessage(CGUIMessage& message)
+bool CGUIDialogPlayEject::OnMessage(CGUIMessage& message)
 {
   if (message.GetMessage() == GUI_MSG_CLICKED)
   {
@@ -47,10 +46,10 @@ bool CGUIDialogPlayEjectCancel::OnMessage(CGUIMessage& message)
     {
       if (g_mediaManager.IsDiscInDrive())
       {
-        MEDIA_DETECT::CAutorun::PlayDisc();
         m_bConfirmed = true;
         Close();
       }
+
       return true;
     }
     if (iControl == ID_BUTTON_EJECT)
@@ -58,41 +57,54 @@ bool CGUIDialogPlayEjectCancel::OnMessage(CGUIMessage& message)
       CIoSupport::ToggleTray();
       return true;
     }
-    if (iControl == ID_BUTTON_CANCEL)
-    {
-      m_bConfirmed = false;
-      Close();
-      return true;
-    }
   }
 
-  return CGUIDialogBoxBase::OnMessage(message);
+  return CGUIDialogYesNo::OnMessage(message);
 }
 
-bool CGUIDialogPlayEjectCancel::OnAction(const CAction& action)
-{
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    m_bConfirmed = false;
-    Close();
-    return true;
-  }
-
-  return CGUIDialogBoxBase::OnAction(action);
-}
-
-void CGUIDialogPlayEjectCancel::FrameMove()
+void CGUIDialogPlayEject::FrameMove()
 {
   CONTROL_ENABLE_ON_CONDITION(ID_BUTTON_PLAY, g_mediaManager.IsDiscInDrive());
+
+  CGUIDialogYesNo::FrameMove();
 }
 
-void CGUIDialogPlayEjectCancel::OnInitWindow()
+void CGUIDialogPlayEject::OnInitWindow()
 {
-  if (!g_mediaManager.IsDiscInDrive())
+  if (g_mediaManager.IsDiscInDrive())
+  {
+    m_defaultControl = ID_BUTTON_PLAY;
+  }
+  else
   {
     CONTROL_DISABLE(ID_BUTTON_PLAY);
     m_defaultControl = ID_BUTTON_EJECT;
   }
 
-  CGUIDialog::OnInitWindow();
+  CGUIDialogYesNo::OnInitWindow();
+}
+
+bool CGUIDialogPlayEject::ShowAndGetInput(CVariant vHeading, CVariant vLine0,
+  CVariant vLine1, CVariant vLine2, unsigned int uiAutoCloseTime /* = 0 */)
+{
+  CGUIDialogPlayEject * pDialog = (CGUIDialogPlayEject *)g_windowManager.
+    GetWindow(WINDOW_DIALOG_PLAY_EJECT);
+
+  if (!pDialog)
+    return false;
+
+  pDialog->SetHeading(vHeading);
+  pDialog->SetLine(0, vLine0);
+  pDialog->SetLine(1, vLine1);
+  pDialog->SetLine(2, vLine2);
+
+  pDialog->SetChoice(ID_BUTTON_PLAY - 10, 208);
+  pDialog->SetChoice(ID_BUTTON_EJECT - 10, 13391);
+
+  if (uiAutoCloseTime)
+    pDialog->SetAutoClose(uiAutoCloseTime);
+
+  pDialog->DoModal();
+
+  return pDialog->IsConfirmed();
 }

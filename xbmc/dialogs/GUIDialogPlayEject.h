@@ -20,16 +20,19 @@
  *
  */
 
-#include "GUIDialogBoxBase.h"
+#include "GUIDialogYesNo.h"
+#include "Variant.h"
 
-class CGUIDialogPlayEjectCancel : public CGUIDialogBoxBase
+class CGUIDialogPlayEject : public CGUIDialogYesNo
 {
 public:
-  CGUIDialogPlayEjectCancel(void);
-  virtual ~CGUIDialogPlayEjectCancel(void);
+  CGUIDialogPlayEject();
+  virtual ~CGUIDialogPlayEject();
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction& action);
   virtual void FrameMove();
+
+  static bool ShowAndGetInput(CVariant vHeading, CVariant vLine0, CVariant vLine1,
+    CVariant vLine2, unsigned int uiAutoCloseTime = 0);
 
 protected:
   virtual void OnInitWindow();
