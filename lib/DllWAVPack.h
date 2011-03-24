@@ -34,12 +34,13 @@
 
 #if defined(WIN32) || defined(__APPLE__)
 
+#if defined(__APPLE__)
 // API changes from 4.2 to 4.60.1.
-#ifndef WavpackStreamReader
-#define WavpackStreamReader stream_reader;
-#endif
-#ifndef WavpackBlockOutput
-#define WavpackBlockOutput blockout_f;
+// Windows is using 4.2 from in tree source
+// OSX/iOS is using 4.60.1 system lib from upstream.
+// We can't tell the difference between them.
+#define stream_reader WavpackStreamReader
+#define blockout_f WavpackBlockOutput
 #endif
 
 class DllWavPackInterface
