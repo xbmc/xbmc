@@ -171,6 +171,11 @@ bool CKey::GetFromHttpApi() const
 
 void CKey::SetFromHttpApi(bool bFromHttpApi)
 {
+  if(bFromHttpApi && (m_buttonCode & KEY_ASCII) )
+  {
+      m_unicode = m_buttonCode - KEY_ASCII;      
+  }
+    
   m_fromHttpApi = bFromHttpApi;
 }
 
