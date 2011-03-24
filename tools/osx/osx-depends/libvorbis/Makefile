@@ -11,8 +11,7 @@ LIBNAME=libvorbis
 VERSION=1.2.3
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
-#BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
-BASE_URL=http://downloads.xiph.org/releases/vorbis
+BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
 ARCHIVE=$(SOURCE).tar.gz
 TARBALLS_LOCATION=/Users/Shared/xbmc-depends/tarballs
 RETRIEVE_TOOL=/usr/bin/curl
