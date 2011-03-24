@@ -258,8 +258,9 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
     if (!m_iFailedSongs)
       m_failedSongsStart = playAttempt;
     m_iFailedSongs++;
-    if ((m_iFailedSongs >= g_advancedSettings.m_playlistRetries && g_advancedSettings.m_playlistRetries >= 0)
-        || ((CTimeUtils::GetTimeMS() - m_failedSongsStart  >= (unsigned int)g_advancedSettings.m_playlistTimeout * 1000) && g_advancedSettings.m_playlistTimeout))
+    if (((m_iFailedSongs >= g_advancedSettings.m_playlistRetries && g_advancedSettings.m_playlistRetries >= 0)
+        || ((CTimeUtils::GetTimeMS() - m_failedSongsStart  >= (unsigned int)g_advancedSettings.m_playlistTimeout * 1000)
+        && g_advancedSettings.m_playlistTimeout)) && !(*item).IsDiscStub())
     {
       CLog::Log(LOGDEBUG,"Playlist Player: one or more items failed to play... aborting playback");
 
