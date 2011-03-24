@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # usage: ./mkdeb-xbmc-ios.sh release/debug (case insensitive)
-Allows us to run mkdeb-xbmc-ios.sh from anywhere in the three, rather than the tools/osx/packaging/xbmc-ios folder only
+# Allows us to run mkdeb-xbmc-ios.sh from anywhere in the three, rather than the tools/osx/packaging/xbmc-ios folder only
 SWITCH=`echo $1 | tr [A-Z] [a-z]`
 DIRNAME=`dirname $0`
 
