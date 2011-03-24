@@ -1155,7 +1155,6 @@
 		F56C8D44131F5E85000AD0F6 /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2B131F5E84000AD0F6 /* libpcre.dylib */; };
 		F56C8D45131F5E85000AD0F6 /* libpcrecpp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2C131F5E84000AD0F6 /* libpcrecpp.dylib */; };
 		F56C8D46131F5E85000AD0F6 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2D131F5E84000AD0F6 /* libcrypto.dylib */; };
-		F56C8D49131F5E85000AD0F6 /* libmpeg2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D30131F5E84000AD0F6 /* libmpeg2.dylib */; };
 		F56C8D4F131F5E85000AD0F6 /* libfribidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */; };
 		F56C8D50131F5E85000AD0F6 /* libcdio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D37131F5E85000AD0F6 /* libcdio.dylib */; };
 		F56C8D51131F5E85000AD0F6 /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D38131F5E85000AD0F6 /* libsamplerate.dylib */; };
@@ -1170,7 +1169,6 @@
 		F56C8D5C131F5E85000AD0F6 /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2B131F5E84000AD0F6 /* libpcre.dylib */; };
 		F56C8D5D131F5E85000AD0F6 /* libpcrecpp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2C131F5E84000AD0F6 /* libpcrecpp.dylib */; };
 		F56C8D5E131F5E85000AD0F6 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2D131F5E84000AD0F6 /* libcrypto.dylib */; };
-		F56C8D61131F5E85000AD0F6 /* libmpeg2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D30131F5E84000AD0F6 /* libmpeg2.dylib */; };
 		F56C8D67131F5E85000AD0F6 /* libfribidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */; };
 		F56C8D68131F5E85000AD0F6 /* libcdio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D37131F5E85000AD0F6 /* libcdio.dylib */; };
 		F56C8D69131F5E85000AD0F6 /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D38131F5E85000AD0F6 /* libsamplerate.dylib */; };
@@ -3674,7 +3672,6 @@
 		F56C8D2B131F5E84000AD0F6 /* libpcre.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libpcre.dylib"; sourceTree = "<absolute>"; };
 		F56C8D2C131F5E84000AD0F6 /* libpcrecpp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcrecpp.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libpcrecpp.dylib"; sourceTree = "<absolute>"; };
 		F56C8D2D131F5E84000AD0F6 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libcrypto.dylib"; sourceTree = "<absolute>"; };
-		F56C8D30131F5E84000AD0F6 /* libmpeg2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmpeg2.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libmpeg2.dylib"; sourceTree = "<absolute>"; };
 		F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfribidi.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libfribidi.dylib"; sourceTree = "<absolute>"; };
 		F56C8D37131F5E85000AD0F6 /* libcdio.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcdio.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libcdio.dylib"; sourceTree = "<absolute>"; };
 		F56C8D38131F5E85000AD0F6 /* libsamplerate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsamplerate.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libsamplerate.dylib"; sourceTree = "<absolute>"; };
@@ -3872,7 +3869,6 @@
 				F56C8D44131F5E85000AD0F6 /* libpcre.dylib in Frameworks */,
 				F56C8D45131F5E85000AD0F6 /* libpcrecpp.dylib in Frameworks */,
 				F56C8D46131F5E85000AD0F6 /* libcrypto.dylib in Frameworks */,
-				F56C8D49131F5E85000AD0F6 /* libmpeg2.dylib in Frameworks */,
 				F56C8D4F131F5E85000AD0F6 /* libfribidi.dylib in Frameworks */,
 				F56C8D50131F5E85000AD0F6 /* libcdio.dylib in Frameworks */,
 				F56C8D51131F5E85000AD0F6 /* libsamplerate.dylib in Frameworks */,
@@ -3931,7 +3927,6 @@
 				F56C8D5C131F5E85000AD0F6 /* libpcre.dylib in Frameworks */,
 				F56C8D5D131F5E85000AD0F6 /* libpcrecpp.dylib in Frameworks */,
 				F56C8D5E131F5E85000AD0F6 /* libcrypto.dylib in Frameworks */,
-				F56C8D61131F5E85000AD0F6 /* libmpeg2.dylib in Frameworks */,
 				F56C8D67131F5E85000AD0F6 /* libfribidi.dylib in Frameworks */,
 				F56C8D68131F5E85000AD0F6 /* libcdio.dylib in Frameworks */,
 				F56C8D69131F5E85000AD0F6 /* libsamplerate.dylib in Frameworks */,
@@ -6860,7 +6855,6 @@
 				F56C8D2C131F5E84000AD0F6 /* libpcrecpp.dylib */,
 				F56C8D2D131F5E84000AD0F6 /* libcrypto.dylib */,
 				F5B13AD0133319310045076D /* libass.dylib */,
-				F56C8D30131F5E84000AD0F6 /* libmpeg2.dylib */,
 				F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */,
 				F56C8D37131F5E85000AD0F6 /* libcdio.dylib */,
 				F56C8D38131F5E85000AD0F6 /* libsamplerate.dylib */,
