@@ -62,7 +62,7 @@ void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const PVRHANDLE ha
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL || handle == NULL || epgentry == NULL)
   {
-    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
@@ -84,7 +84,7 @@ void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const PVRHANDL
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL || handle == NULL || channel == NULL)
   {
-    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
@@ -102,7 +102,7 @@ void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const PVRHAN
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL || handle == NULL || recording == NULL)
   {
-    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
@@ -132,7 +132,7 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE 
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL || handle == NULL || timer == NULL)
   {
-    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
@@ -142,7 +142,7 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE 
 
   if (channel == NULL)
   {
-    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - cannot find channel %d on client %d",
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - cannot find channel %d on client %d",
         __FUNCTION__, timer->channelUid, client->GetClientID());
     return;
   }
@@ -175,7 +175,7 @@ void CAddonCallbacksPVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL || hook == NULL)
   {
-    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
@@ -196,7 +196,7 @@ void CAddonCallbacksPVR::PVRRecording(void *addonData, const char *strName, cons
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL)
   {
-    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
@@ -219,7 +219,7 @@ void CAddonCallbacksPVR::PVRRecording(void *addonData, const char *strName, cons
   /* display a notification for 5 seconds */
   g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, strLine1, strLine2, 5000, false);
 
-  CLog::Log(LOGDEBUG, "CAddonHelperPVR - %s - recording %s on client '%s'. name='%s' filename='%s'",
+  CLog::Log(LOGDEBUG, "CAddonCallbacksPVR - %s - recording %s on client '%s'. name='%s' filename='%s'",
       __FUNCTION__, bOnOff ? "started" : "finished", addonHelper->m_addon->Name().c_str(), strName, strFileName);
 }
 
@@ -228,7 +228,7 @@ void CAddonCallbacksPVR::PVRTriggerChannelUpdate(void *addonData)
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL)
   {
-    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
@@ -241,7 +241,7 @@ void CAddonCallbacksPVR::PVRTriggerTimerUpdate(void *addonData)
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL)
   {
-    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
@@ -254,7 +254,7 @@ void CAddonCallbacksPVR::PVRTriggerRecordingUpdate(void *addonData)
   CAddonHelpers* addon = (CAddonHelpers*) addonData;
   if (addon == NULL)
   {
-    CLog::Log(LOGERROR, "CAddonHelperPVR - %s - called with a null pointer", __FUNCTION__);
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
