@@ -1025,7 +1025,6 @@
 		E38E23960D2626E600618676 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238F0D2626E600618676 /* CoreServices.framework */; };
 		E38E23970D2626E600618676 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E23900D2626E600618676 /* Foundation.framework */; };
 		E38E23980D2626E600618676 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E23910D2626E600618676 /* OpenGL.framework */; };
-		E38E242D0D26317D00618676 /* libGLEW.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24250D26317D00618676 /* libGLEW.dylib */; };
 		E38E25350D26365C00618676 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25330D26365C00618676 /* AppKit.framework */; };
 		E38E25360D26365C00618676 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25340D26365C00618676 /* ApplicationServices.framework */; };
 		E38E25690D2639F100618676 /* libxdaap-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap-x86-osx.a */; };
@@ -1150,32 +1149,22 @@
 		F56C8CF4131F5DFD000AD0F6 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CF2131F5DFD000AD0F6 /* libiconv.dylib */; };
 		F56C8CF6131F5E0B000AD0F6 /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CF5131F5E0B000AD0F6 /* libncurses.dylib */; };
 		F56C8CF7131F5E0B000AD0F6 /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CF5131F5E0B000AD0F6 /* libncurses.dylib */; };
-		F56C8D42131F5E85000AD0F6 /* liblzo.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D29131F5E84000AD0F6 /* liblzo.dylib */; };
 		F56C8D43131F5E85000AD0F6 /* liblzo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2A131F5E84000AD0F6 /* liblzo2.dylib */; };
 		F56C8D44131F5E85000AD0F6 /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2B131F5E84000AD0F6 /* libpcre.dylib */; };
 		F56C8D45131F5E85000AD0F6 /* libpcrecpp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2C131F5E84000AD0F6 /* libpcrecpp.dylib */; };
-		F56C8D46131F5E85000AD0F6 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2D131F5E84000AD0F6 /* libcrypto.dylib */; };
-		F56C8D4F131F5E85000AD0F6 /* libfribidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */; };
-		F56C8D50131F5E85000AD0F6 /* libcdio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D37131F5E85000AD0F6 /* libcdio.dylib */; };
 		F56C8D51131F5E85000AD0F6 /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D38131F5E85000AD0F6 /* libsamplerate.dylib */; };
 		F56C8D53131F5E85000AD0F6 /* libsmbclient.dylib.0 in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3A131F5E85000AD0F6 /* libsmbclient.dylib.0 */; };
 		F56C8D55131F5E85000AD0F6 /* libfreetype.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3D131F5E85000AD0F6 /* libfreetype.dylib */; };
 		F56C8D56131F5E85000AD0F6 /* libfontconfig.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3E131F5E85000AD0F6 /* libfontconfig.dylib */; };
-		F56C8D57131F5E85000AD0F6 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */; };
 		F56C8D58131F5E85000AD0F6 /* libpython2.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D40131F5E85000AD0F6 /* libpython2.6.dylib */; };
 		F56C8D59131F5E85000AD0F6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D41131F5E85000AD0F6 /* libsqlite3.dylib */; };
-		F56C8D5A131F5E85000AD0F6 /* liblzo.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D29131F5E84000AD0F6 /* liblzo.dylib */; };
 		F56C8D5B131F5E85000AD0F6 /* liblzo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2A131F5E84000AD0F6 /* liblzo2.dylib */; };
 		F56C8D5C131F5E85000AD0F6 /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2B131F5E84000AD0F6 /* libpcre.dylib */; };
 		F56C8D5D131F5E85000AD0F6 /* libpcrecpp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2C131F5E84000AD0F6 /* libpcrecpp.dylib */; };
-		F56C8D5E131F5E85000AD0F6 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2D131F5E84000AD0F6 /* libcrypto.dylib */; };
-		F56C8D67131F5E85000AD0F6 /* libfribidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */; };
-		F56C8D68131F5E85000AD0F6 /* libcdio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D37131F5E85000AD0F6 /* libcdio.dylib */; };
 		F56C8D69131F5E85000AD0F6 /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D38131F5E85000AD0F6 /* libsamplerate.dylib */; };
 		F56C8D6B131F5E86000AD0F6 /* libsmbclient.dylib.0 in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3A131F5E85000AD0F6 /* libsmbclient.dylib.0 */; };
 		F56C8D6D131F5E86000AD0F6 /* libfreetype.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3D131F5E85000AD0F6 /* libfreetype.dylib */; };
 		F56C8D6E131F5E86000AD0F6 /* libfontconfig.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3E131F5E85000AD0F6 /* libfontconfig.dylib */; };
-		F56C8D6F131F5E86000AD0F6 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */; };
 		F56C8D70131F5E86000AD0F6 /* libpython2.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D40131F5E85000AD0F6 /* libpython2.6.dylib */; };
 		F56C8D71131F5E86000AD0F6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D41131F5E85000AD0F6 /* libsqlite3.dylib */; };
 		F57A1D1E1329B15300498CC7 /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F57A1D1D1329B15300498CC7 /* AutoPool.mm */; };
@@ -1761,7 +1750,6 @@
 		F5A1CBA70F6B06CF00A96ABD /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238F0D2626E600618676 /* CoreServices.framework */; };
 		F5A1CBA80F6B06CF00A96ABD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E23900D2626E600618676 /* Foundation.framework */; };
 		F5A1CBA90F6B06CF00A96ABD /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E23910D2626E600618676 /* OpenGL.framework */; };
-		F5A1CBAC0F6B06CF00A96ABD /* libGLEW.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24250D26317D00618676 /* libGLEW.dylib */; };
 		F5A1CBAE0F6B06CF00A96ABD /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25330D26365C00618676 /* AppKit.framework */; };
 		F5A1CBAF0F6B06CF00A96ABD /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25340D26365C00618676 /* ApplicationServices.framework */; };
 		F5A1CBB30F6B06CF00A96ABD /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
@@ -1798,12 +1786,20 @@
 		F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
 		F5AACA980FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
 		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
-		F5B13868133081390045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138641330811D0045076D /* libmicrohttpd.dylib */; };
-		F5B138691330813A0045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138641330811D0045076D /* libmicrohttpd.dylib */; };
 		F5B13AD1133319310045076D /* libass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13AD0133319310045076D /* libass.dylib */; };
 		F5B13AD2133319310045076D /* libass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13AD0133319310045076D /* libass.dylib */; };
 		F5B13C8D1334056B0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13C8C1334056B0045076D /* DarwinUtils.mm */; };
 		F5B13C8E1334056B0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13C8C1334056B0045076D /* DarwinUtils.mm */; };
+		F5B5CFF0133AF993007A4B4C /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */; };
+		F5B5CFF1133AF994007A4B4C /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */; };
+		F5B5D008133AFA95007A4B4C /* libfribidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */; };
+		F5B5D009133AFA96007A4B4C /* libfribidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */; };
+		F5B5D00C133AFAC6007A4B4C /* libcdio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D37131F5E85000AD0F6 /* libcdio.dylib */; };
+		F5B5D00D133AFAC7007A4B4C /* libcdio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D37131F5E85000AD0F6 /* libcdio.dylib */; };
+		F5B5D010133AFB02007A4B4C /* libGLEW.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24250D26317D00618676 /* libGLEW.dylib */; };
+		F5B5D011133AFB03007A4B4C /* libGLEW.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24250D26317D00618676 /* libGLEW.dylib */; };
+		F5B5D014133AFB2D007A4B4C /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138641330811D0045076D /* libmicrohttpd.dylib */; };
+		F5B5D015133AFB2E007A4B4C /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138641330811D0045076D /* libmicrohttpd.dylib */; };
 		F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB80D120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB81A1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB8191202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp */; };
@@ -3667,11 +3663,9 @@
 		F56C8CEF131F5DED000AD0F6 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		F56C8CF2131F5DFD000AD0F6 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		F56C8CF5131F5E0B000AD0F6 /* libncurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libncurses.dylib; path = usr/lib/libncurses.dylib; sourceTree = SDKROOT; };
-		F56C8D29131F5E84000AD0F6 /* liblzo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/liblzo.dylib"; sourceTree = "<absolute>"; };
 		F56C8D2A131F5E84000AD0F6 /* liblzo2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo2.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/liblzo2.dylib"; sourceTree = "<absolute>"; };
 		F56C8D2B131F5E84000AD0F6 /* libpcre.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libpcre.dylib"; sourceTree = "<absolute>"; };
 		F56C8D2C131F5E84000AD0F6 /* libpcrecpp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcrecpp.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libpcrecpp.dylib"; sourceTree = "<absolute>"; };
-		F56C8D2D131F5E84000AD0F6 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libcrypto.dylib"; sourceTree = "<absolute>"; };
 		F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfribidi.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libfribidi.dylib"; sourceTree = "<absolute>"; };
 		F56C8D37131F5E85000AD0F6 /* libcdio.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcdio.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libcdio.dylib"; sourceTree = "<absolute>"; };
 		F56C8D38131F5E85000AD0F6 /* libsamplerate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsamplerate.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libsamplerate.dylib"; sourceTree = "<absolute>"; };
@@ -3839,7 +3833,6 @@
 				E38E23960D2626E600618676 /* CoreServices.framework in Frameworks */,
 				E38E23970D2626E600618676 /* Foundation.framework in Frameworks */,
 				E38E23980D2626E600618676 /* OpenGL.framework in Frameworks */,
-				E38E242D0D26317D00618676 /* libGLEW.dylib in Frameworks */,
 				E38E25350D26365C00618676 /* AppKit.framework in Frameworks */,
 				E38E25360D26365C00618676 /* ApplicationServices.framework in Frameworks */,
 				E38E25690D2639F100618676 /* libxdaap-x86-osx.a in Frameworks */,
@@ -3864,24 +3857,23 @@
 				F56C8CF0131F5DED000AD0F6 /* libxml2.dylib in Frameworks */,
 				F56C8CF3131F5DFD000AD0F6 /* libiconv.dylib in Frameworks */,
 				F56C8CF6131F5E0B000AD0F6 /* libncurses.dylib in Frameworks */,
-				F56C8D42131F5E85000AD0F6 /* liblzo.dylib in Frameworks */,
 				F56C8D43131F5E85000AD0F6 /* liblzo2.dylib in Frameworks */,
 				F56C8D44131F5E85000AD0F6 /* libpcre.dylib in Frameworks */,
 				F56C8D45131F5E85000AD0F6 /* libpcrecpp.dylib in Frameworks */,
-				F56C8D46131F5E85000AD0F6 /* libcrypto.dylib in Frameworks */,
-				F56C8D4F131F5E85000AD0F6 /* libfribidi.dylib in Frameworks */,
-				F56C8D50131F5E85000AD0F6 /* libcdio.dylib in Frameworks */,
 				F56C8D51131F5E85000AD0F6 /* libsamplerate.dylib in Frameworks */,
 				F56C8D53131F5E85000AD0F6 /* libsmbclient.dylib.0 in Frameworks */,
 				F56C8D55131F5E85000AD0F6 /* libfreetype.dylib in Frameworks */,
 				F56C8D56131F5E85000AD0F6 /* libfontconfig.dylib in Frameworks */,
-				F56C8D57131F5E85000AD0F6 /* libmysqlclient.dylib in Frameworks */,
 				F56C8D58131F5E85000AD0F6 /* libpython2.6.dylib in Frameworks */,
 				F56C8D59131F5E85000AD0F6 /* libsqlite3.dylib in Frameworks */,
 				F57A1E3A132AAB0E00498CC7 /* libSDL.dylib in Frameworks */,
 				F57A1E3D132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */,
-				F5B13868133081390045076D /* libmicrohttpd.dylib in Frameworks */,
 				F5B13AD1133319310045076D /* libass.dylib in Frameworks */,
+				F5B5CFF0133AF993007A4B4C /* libmysqlclient.dylib in Frameworks */,
+				F5B5D008133AFA95007A4B4C /* libfribidi.dylib in Frameworks */,
+				F5B5D00C133AFAC6007A4B4C /* libcdio.dylib in Frameworks */,
+				F5B5D010133AFB02007A4B4C /* libGLEW.dylib in Frameworks */,
+				F5B5D014133AFB2D007A4B4C /* libmicrohttpd.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3897,7 +3889,6 @@
 				F5A1CBA70F6B06CF00A96ABD /* CoreServices.framework in Frameworks */,
 				F5A1CBA80F6B06CF00A96ABD /* Foundation.framework in Frameworks */,
 				F5A1CBA90F6B06CF00A96ABD /* OpenGL.framework in Frameworks */,
-				F5A1CBAC0F6B06CF00A96ABD /* libGLEW.dylib in Frameworks */,
 				F5A1CBAE0F6B06CF00A96ABD /* AppKit.framework in Frameworks */,
 				F5A1CBAF0F6B06CF00A96ABD /* ApplicationServices.framework in Frameworks */,
 				F5A1CBB30F6B06CF00A96ABD /* IOKit.framework in Frameworks */,
@@ -3922,24 +3913,23 @@
 				F56C8CF1131F5DED000AD0F6 /* libxml2.dylib in Frameworks */,
 				F56C8CF4131F5DFD000AD0F6 /* libiconv.dylib in Frameworks */,
 				F56C8CF7131F5E0B000AD0F6 /* libncurses.dylib in Frameworks */,
-				F56C8D5A131F5E85000AD0F6 /* liblzo.dylib in Frameworks */,
 				F56C8D5B131F5E85000AD0F6 /* liblzo2.dylib in Frameworks */,
 				F56C8D5C131F5E85000AD0F6 /* libpcre.dylib in Frameworks */,
 				F56C8D5D131F5E85000AD0F6 /* libpcrecpp.dylib in Frameworks */,
-				F56C8D5E131F5E85000AD0F6 /* libcrypto.dylib in Frameworks */,
-				F56C8D67131F5E85000AD0F6 /* libfribidi.dylib in Frameworks */,
-				F56C8D68131F5E85000AD0F6 /* libcdio.dylib in Frameworks */,
 				F56C8D69131F5E85000AD0F6 /* libsamplerate.dylib in Frameworks */,
 				F56C8D6B131F5E86000AD0F6 /* libsmbclient.dylib.0 in Frameworks */,
 				F56C8D6D131F5E86000AD0F6 /* libfreetype.dylib in Frameworks */,
 				F56C8D6E131F5E86000AD0F6 /* libfontconfig.dylib in Frameworks */,
-				F56C8D6F131F5E86000AD0F6 /* libmysqlclient.dylib in Frameworks */,
 				F56C8D70131F5E86000AD0F6 /* libpython2.6.dylib in Frameworks */,
 				F56C8D71131F5E86000AD0F6 /* libsqlite3.dylib in Frameworks */,
 				F57A1E3B132AAB0E00498CC7 /* libSDL.dylib in Frameworks */,
 				F57A1E3E132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */,
-				F5B138691330813A0045076D /* libmicrohttpd.dylib in Frameworks */,
 				F5B13AD2133319310045076D /* libass.dylib in Frameworks */,
+				F5B5CFF1133AF994007A4B4C /* libmysqlclient.dylib in Frameworks */,
+				F5B5D009133AFA96007A4B4C /* libfribidi.dylib in Frameworks */,
+				F5B5D00D133AFAC7007A4B4C /* libcdio.dylib in Frameworks */,
+				F5B5D011133AFB03007A4B4C /* libGLEW.dylib in Frameworks */,
+				F5B5D015133AFB2E007A4B4C /* libmicrohttpd.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6849,11 +6839,9 @@
 		F56C8CCD131F5BC3000AD0F6 /* External Libs */ = {
 			isa = PBXGroup;
 			children = (
-				F56C8D29131F5E84000AD0F6 /* liblzo.dylib */,
 				F56C8D2A131F5E84000AD0F6 /* liblzo2.dylib */,
 				F56C8D2B131F5E84000AD0F6 /* libpcre.dylib */,
 				F56C8D2C131F5E84000AD0F6 /* libpcrecpp.dylib */,
-				F56C8D2D131F5E84000AD0F6 /* libcrypto.dylib */,
 				F5B13AD0133319310045076D /* libass.dylib */,
 				F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */,
 				F56C8D37131F5E85000AD0F6 /* libcdio.dylib */,
@@ -6864,10 +6852,10 @@
 				F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */,
 				F56C8D40131F5E85000AD0F6 /* libpython2.6.dylib */,
 				F56C8D41131F5E85000AD0F6 /* libsqlite3.dylib */,
+				F5B138641330811D0045076D /* libmicrohttpd.dylib */,
 				E38E24250D26317D00618676 /* libGLEW.dylib */,
 				F57A1E39132AAB0E00498CC7 /* libSDL.dylib */,
 				F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */,
-				F5B138641330811D0045076D /* libmicrohttpd.dylib */,
 			);
 			name = "External Libs";
 			sourceTree = "<group>";
@@ -9021,6 +9009,8 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib/mysql\"",
+					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$XBMC_DEPENDS/lib\"";
@@ -9107,6 +9097,8 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib/mysql\"",
+					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$XBMC_DEPENDS/lib\"";
@@ -9254,6 +9246,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
 					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib/mysql\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib/mysql\"";
@@ -9336,6 +9329,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
 					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib/mysql\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib/mysql\"";
