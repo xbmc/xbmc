@@ -660,6 +660,11 @@ private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
 
+  /*! \brief (Re)Create the generic database views for movies, tvshows,
+     episodes and music videos
+   */
+  void CreateViews();
+
   /*! \brief Run a query on the main dataset and return the number of rows
    If no rows are found we close the dataset and return 0.
    \param sql the sql query to run
@@ -676,7 +681,7 @@ private:
    */
   void UpdateBasePath(const char *table, const char *id, int column, bool shows = false);
 
-  virtual int GetMinVersion() const { return 48; };
+  virtual int GetMinVersion() const { return 49; };
   virtual int GetExportVersion() const { return 1; };
   const char *GetBaseDBName() const { return "MyVideos"; };
 
