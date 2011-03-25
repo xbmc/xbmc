@@ -681,7 +681,7 @@ private:
    */
   void UpdateBasePath(const char *table, const char *id, int column, bool shows = false);
 
-  virtual int GetMinVersion() const { return 49; };
+  virtual int GetMinVersion() const { return 50; };
   virtual int GetExportVersion() const { return 1; };
   const char *GetBaseDBName() const { return "MyVideos"; };
 
