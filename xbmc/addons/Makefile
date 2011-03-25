@@ -1,8 +1,8 @@
 SRCS=Addon.cpp \
+     AddonCallbacks.cpp \
      AddonCallbacksAddon.cpp \
+     AddonCallbacksGUI.cpp \
      AddonCallbacksPVR.cpp \
-     AddonHelpers_GUI.cpp \
-     AddonHelpers_local.cpp \
      AddonDatabase.cpp \
      AddonInstaller.cpp \
      AddonManager.cpp \

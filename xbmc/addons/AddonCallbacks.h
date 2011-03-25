@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -228,14 +228,14 @@ namespace ADDON
 
 class CAddon;
 class CAddonCallbacksAddon;
-class CAddonHelpers_GUI;
+class CAddonCallbacksGUI;
 class CAddonCallbacksPVR;
 
-class CAddonHelpers
+class CAddonCallbacks
 {
 public:
-  CAddonHelpers(CAddon* addon);
-  ~CAddonHelpers();
+  CAddonCallbacks(CAddon* addon);
+  ~CAddonCallbacks();
   AddonCB *GetCallbacks() { return m_callbacks; }
 
   static CB_AddOnLib* AddOnLib_RegisterMe(void *addonData);
@@ -246,14 +246,14 @@ public:
   static void PVRLib_UnRegisterMe(void *addonData, CB_PVRLib *cbTable);
 
   CAddonCallbacksAddon *GetHelperAddon() { return m_helperAddon; }
-  CAddonHelpers_GUI *GetHelperGUI() { return m_helperGUI; }
+  CAddonCallbacksGUI *GetHelperGUI() { return m_helperGUI; }
   CAddonCallbacksPVR *GetHelperPVR() { return m_helperPVR; }
 
 private:
   AddonCB             *m_callbacks;
   CAddon              *m_addon;
   CAddonCallbacksAddon *m_helperAddon;
-  CAddonHelpers_GUI   *m_helperGUI;
+  CAddonCallbacksGUI   *m_helperGUI;
   CAddonCallbacksPVR   *m_helperPVR;
 };
 

@@ -50,7 +50,7 @@ CAddonCallbacksAddon::~CAddonCallbacksAddon()
 
 void CAddonCallbacksAddon::AddOnLog(void *addonData, const addon_log_t addonLogLevel, const char *strMessage)
 {
-  CAddonHelpers* addon = (CAddonHelpers*) addonData;
+  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
   if (addon == NULL || strMessage == NULL)
   {
     CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - called with a null pointer", __FUNCTION__);
@@ -92,7 +92,7 @@ void CAddonCallbacksAddon::AddOnLog(void *addonData, const addon_log_t addonLogL
 
 void CAddonCallbacksAddon::QueueNotification(void *addonData, const queue_msg_t type, const char *strMessage)
 {
-  CAddonHelpers* addon = (CAddonHelpers*) addonData;
+  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
   if (addon == NULL || strMessage == NULL)
   {
     CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - called with a null pointer", __FUNCTION__);
@@ -131,7 +131,7 @@ void CAddonCallbacksAddon::QueueNotification(void *addonData, const queue_msg_t 
 
 bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSettingName, void *settingValue)
 {
-  CAddonHelpers* addon = (CAddonHelpers*) addonData;
+  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
   if (addon == NULL || strSettingName == NULL || settingValue == NULL)
   {
     CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - called with a null pointer", __FUNCTION__);
@@ -209,7 +209,7 @@ char* CAddonCallbacksAddon::UnknownToUTF8(const char *strSource)
 
 const char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long dwCode)
 {
-  CAddonHelpers* helper = (CAddonHelpers*) addonData;
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
   if (!helper)
     return NULL;
 
@@ -230,7 +230,7 @@ const char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long
 
 const char* CAddonCallbacksAddon::GetDVDMenuLanguage(const void* addonData)
 {
-  CAddonHelpers* helper = (CAddonHelpers*) addonData;
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
   if (!helper)
     return NULL;
 

@@ -20,7 +20,7 @@
  *
  */
 
-#include "AddonHelpers_local.h"
+#include "AddonCallbacks.h"
 
 namespace ADDON
 {

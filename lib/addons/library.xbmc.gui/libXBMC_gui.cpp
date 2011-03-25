@@ -24,7 +24,7 @@
 #include <stdarg.h>
 #include <string>
 #include "../../../addons/library.xbmc.gui/libXBMC_gui.h"
-#include "addons/AddonHelpers_local.h"
+#include "addons/AddonCallbacks.h"
 
 #ifdef _WIN32
 #include <windows.h>

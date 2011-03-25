@@ -20,7 +20,7 @@
  *
  */
 
-#include "AddonHelpers_local.h"
+#include "AddonCallbacks.h"
 #include "windows/GUIMediaWindow.h"
 
 class CGUISpinControlEx;
@@ -32,11 +32,11 @@ class CGUIEditControl;
 namespace ADDON
 {
 
-class CAddonHelpers_GUI
+class CAddonCallbacksGUI
 {
 public:
-  CAddonHelpers_GUI(CAddon* addon);
-  ~CAddonHelpers_GUI();
+  CAddonCallbacksGUI(CAddon* addon);
+  ~CAddonCallbacksGUI();
 
   /**! \name General Functions */
   CB_GUILib *GetCallbacks() { return m_callbacks; }
@@ -113,7 +113,7 @@ private:
 
 class CGUIAddonWindow : public CGUIMediaWindow
 {
-friend class CAddonHelpers_GUI;
+friend class CAddonCallbacksGUI;
 
 public:
   CGUIAddonWindow(int id, CStdString strXML, CAddon* addon);

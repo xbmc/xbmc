@@ -20,7 +20,7 @@
  *
  */
 
-#include "AddonHelpers_local.h"
+#include "AddonCallbacks.h"
 #include "include/xbmc_pvr_types.h"
 
 namespace ADDON
