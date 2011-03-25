@@ -1309,49 +1309,50 @@ bool MysqlDataset::query(const char *query) {
       field_value &v = res->at(i);
       switch (fields[i].type)
       {
-      case MYSQL_TYPE_LONGLONG:
-      case MYSQL_TYPE_DECIMAL:
-      case MYSQL_TYPE_NEWDECIMAL:
-      case MYSQL_TYPE_TINY:
-      case MYSQL_TYPE_SHORT:
-      case MYSQL_TYPE_INT24:
-      case MYSQL_TYPE_LONG:
-        if (row[i] != NULL)
-        {
-          v.set_asInt(atoi(row[i]));
-        }
-        else
-        {
-          v.set_asInt(0);
-        }
-        break;
-      case MYSQL_TYPE_FLOAT:
-      case MYSQL_TYPE_DOUBLE:
-        if (row[i] != NULL)
-        {
-          v.set_asDouble(atof(row[i]));
-        }
-        else
-        {
-          v.set_asDouble(0);
-        }
-        break;
-      case MYSQL_TYPE_STRING:
-      case MYSQL_TYPE_VAR_STRING:
-      case MYSQL_TYPE_VARCHAR:
-        if (row[i] != NULL) v.set_asString((const char *)row[i] );
-        break;
-      case MYSQL_TYPE_TINY_BLOB:
-      case MYSQL_TYPE_MEDIUM_BLOB:
-      case MYSQL_TYPE_LONG_BLOB:
-      case MYSQL_TYPE_BLOB:
-        if (row[i] != NULL) v.set_asString((const char *)row[i]);
-        break;
-      case MYSQL_TYPE_NULL:
-      default:
-        v.set_asString("");
-        v.set_isNull();
-        break;
+        case MYSQL_TYPE_LONGLONG:
+        case MYSQL_TYPE_DECIMAL:
+        case MYSQL_TYPE_NEWDECIMAL:
+        case MYSQL_TYPE_TINY:
+        case MYSQL_TYPE_SHORT:
+        case MYSQL_TYPE_INT24:
+        case MYSQL_TYPE_LONG:
+          if (row[i] != NULL)
+          {
+            v.set_asInt(atoi(row[i]));
+          }
+          else
+          {
+            v.set_asInt(0);
+          }
+          break;
+        case MYSQL_TYPE_FLOAT:
+        case MYSQL_TYPE_DOUBLE:
+          if (row[i] != NULL)
+          {
+            v.set_asDouble(atof(row[i]));
+          }
+          else
+          {
+            v.set_asDouble(0);
+          }
+          break;
+        case MYSQL_TYPE_STRING:
+        case MYSQL_TYPE_VAR_STRING:
+        case MYSQL_TYPE_VARCHAR:
+          if (row[i] != NULL) v.set_asString((const char *)row[i] );
+          break;
+        case MYSQL_TYPE_TINY_BLOB:
+        case MYSQL_TYPE_MEDIUM_BLOB:
+        case MYSQL_TYPE_LONG_BLOB:
+        case MYSQL_TYPE_BLOB:
+          if (row[i] != NULL) v.set_asString((const char *)row[i]);
+          break;
+        case MYSQL_TYPE_NULL:
+        default:
+          CLog::Log(LOGDEBUG,"MYSQL: Unknown field type: %u", fields[i].type);
+          v.set_asString("");
+          v.set_isNull();
+          break;
       }
     }
     result.records.push_back(res);
