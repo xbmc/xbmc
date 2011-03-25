@@ -762,7 +762,7 @@ bool CGUIDialogKeyboard::ShowAndGetFilter(CStdString &filter, bool searching)
     return false;
 
   pKeyboard->m_filtering = searching ? FILTERING_SEARCH : FILTERING_CURRENT;
-  bool ret = ShowAndGetInput(filter, true);
+  bool ret = ShowAndGetInput(filter, searching ? 16017 : 16028, true);
   pKeyboard->m_filtering = FILTERING_NONE;
   return ret;
 }
