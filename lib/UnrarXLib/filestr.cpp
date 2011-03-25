@@ -113,7 +113,7 @@ bool ReadTextFile(char *Name,StringList *List,bool Config,bool AbortOnError,
             CurStr++;
           }
         }
-#if defined(_WIN_32) && !defined(_XBOX) && !defined(_LINUX)
+#if defined(_WIN_32) && !defined(_LINUX)
         if (ConvertToAnsi)
           OemToChar(CurStr,CurStr);
 #endif

@@ -22,7 +22,7 @@ char *IntNameToExt(const char *Name)
 
 void ExtToInt(const char *Src,char *Dest)
 {
-#if defined(_WIN_32) && !defined(_XBOX)
+#if defined(_WIN_32)
   CharToOem(Src,Dest);
 #else
   if (Dest!=Src)
@@ -33,7 +33,7 @@ void ExtToInt(const char *Src,char *Dest)
 
 void IntToExt(const char *Src,char *Dest)
 {
-#if defined(_WIN_32) && !defined(_XBOX)
+#if defined(_WIN_32)
   OemToChar(Src,Dest);
 #else
   if (Dest!=Src)

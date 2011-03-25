@@ -157,11 +157,6 @@ void CEventServer::Run()
   CSocketListener listener;
   int packetSize = 0;
 
-#ifndef _XBOX
-  if (!g_guiSettings.GetBool("services.esallinterfaces"))
-    any_addr.SetAddress ("127.0.0.1");  // only listen on localhost
-#endif
-
   CLog::Log(LOGNOTICE, "ES: Starting UDP Event server on %s:%d", any_addr.Address(), m_iPort);
 
   Cleanup();

@@ -160,12 +160,9 @@ int vm_get_subp_stream(vm_t *vm, int subpN, int mode);
 int vm_get_audio_active_stream(vm_t *vm);
 int vm_get_subp_active_stream(vm_t *vm, int mode);
 void vm_get_angle_info(vm_t *vm, int *current, int *num_avail);
-// XBOX #if 0
-// XBOX /* currently unused */
 void vm_get_audio_info(vm_t *vm, int *current, int *num_avail);
 void vm_get_subp_info(vm_t *vm, int *current, int *num_avail);
 void vm_get_video_res(vm_t *vm, int *width, int *height);
-// XBOX #endif
 int  vm_get_video_aspect(vm_t *vm);
 int  vm_get_video_scale_permission(vm_t *vm);
 video_attr_t vm_get_video_attr(vm_t *vm);

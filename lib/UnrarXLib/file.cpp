@@ -52,6 +52,8 @@ void File::operator = (File &SrcFile)
 
 bool File::Open(const char *Name,const wchar *NameW,bool OpenShared,bool Update)
 {
+ // Below commented code was left behind on spiffs request for possible later usage
+ 
   /*ErrorType=FILE_SUCCESS;
   FileHandle hNewFile;
   if (File::OpenShared)
@@ -146,6 +148,7 @@ bool File::WOpen(const char *Name,const wchar *NameW)
 
 bool File::Create(const char *Name,const wchar *NameW)
 {
+// Below commented code was left behind on spiffs request for possible later usage 
 /*#ifdef _WIN_32
 #ifndef _XBOX
   if (WinNT() && NameW!=NULL && *NameW!=0)
@@ -286,6 +289,7 @@ bool File::Rename(const char *NewName)
 
 void File::Write(const void *Data,int Size)
 {
+// Below commented code was left behind on spiffs request for possible later usage
   /*if (Size==0)
     return;
 //#ifndef _WIN_CE
@@ -417,6 +421,8 @@ int File::DirectRead(void *Data,int Size)
   #ifdef _WIN_32
   const int MaxDeviceRead=20000;
 #endif
+// Below commented code was left behind on spiffs request for possible later usage
+ 
 //#ifndef _WIN_CE
 /*#if !defined(_WIN_CE) && !defined(_XBOX)
   if (HandleType==FILE_HANDLESTD)
@@ -561,6 +567,8 @@ bool File::Truncate()
 void File::SetOpenFileTime(RarTime *ftm,RarTime *ftc,RarTime *fta)
 {
 #ifdef _WIN_32
+// Below commented code was left behind on spiffs request for possible later usage
+ 
   /*bool sm=ftm!=NULL && ftm->IsSet();
   bool sc=ftc!=NULL && ftc->IsSet();
   bool sa=fta!=NULL && fta->IsSet();

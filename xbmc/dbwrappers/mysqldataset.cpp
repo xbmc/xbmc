@@ -1435,9 +1435,6 @@ void MysqlDataset::prev(void) {
 }
 
 void MysqlDataset::next(void) {
-#ifdef _XBOX
-  free_row();
-#endif
   Dataset::next();
   if (!eof())
       fill_fields();
