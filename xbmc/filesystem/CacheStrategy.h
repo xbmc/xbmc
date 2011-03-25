@@ -35,7 +35,6 @@
 namespace XFILE {
 
 #define CACHE_RC_OK  0
-#define CACHE_RC_EOF 0
 #define CACHE_RC_ERROR -1
 #define CACHE_RC_WOULD_BLOCK -2
 #define CACHE_RC_TIMEOUT -3

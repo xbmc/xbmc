@@ -259,7 +259,7 @@ retry:
     return 0;
   }
 
-  if (iRc == CACHE_RC_EOF || iRc == 0)
+  if (iRc == 0)
     return 0;
 
   // unknown error code
