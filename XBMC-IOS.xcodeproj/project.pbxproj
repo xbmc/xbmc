@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3255316612B2D02400837CD2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255316512B2D02400837CD2 /* CoreAudio.framework */; };
 		4D5D2E1E1301758F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */; };
+		7C99B6E9133D36E200FC2B16 /* CacheCircular.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B6E7133D36E200FC2B16 /* CacheCircular.cpp */; };
 		F54D9E8112B713F8006870F9 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8012B713F8006870F9 /* libc.dylib */; };
 		F56B143412CAF279009B4C96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B143312CAF279009B4C96 /* CoreVideo.framework */; };
 		F56B14A512CAF523009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B14A412CAF523009B4C96 /* AudioToolbox.framework */; };
@@ -925,6 +926,8 @@
 /* Begin PBXFileReference section */
 		3255316512B2D02400837CD2 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		7C99B6E7133D36E200FC2B16 /* CacheCircular.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CacheCircular.cpp; sourceTree = "<group>"; };
+		7C99B6E8133D36E200FC2B16 /* CacheCircular.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheCircular.h; sourceTree = "<group>"; };
 		8D576316048677EA00EA77CD /* XBMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F54D9E8012B713F8006870F9 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		F56B143312CAF279009B4C96 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -4315,6 +4318,8 @@
 				F56C838B131F42E8000AD0F6 /* MythFile.cpp */,
 				F56C838C131F42E8000AD0F6 /* MythFile.h */,
 				F56C838D131F42E8000AD0F6 /* FileShoutcast.cpp */,
+				7C99B6E7133D36E200FC2B16 /* CacheCircular.cpp */,
+				7C99B6E8133D36E200FC2B16 /* CacheCircular.h */,
 				F56C838E131F42E8000AD0F6 /* CacheMemBuffer.cpp */,
 				F56C838F131F42E8000AD0F6 /* CacheMemBuffer.h */,
 				F56C8390131F42E8000AD0F6 /* CacheStrategy.cpp */,
@@ -6697,6 +6702,7 @@
 				F56C8BAB131F4466000AD0F6 /* XBMCEAGLView.mm in Sources */,
 				F57A1DB81329FAF700498CC7 /* SourcesDirectory.cpp in Sources */,
 				F5B13DCF1334490D0045076D /* DarwinUtils.mm in Sources */,
+				7C99B6E9133D36E200FC2B16 /* CacheCircular.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
