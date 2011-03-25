@@ -29,7 +29,7 @@
 
 class CURL;
 class TiXmlElement;
-class CAddonHelpers_Addon;
+class CAddonCallbacksAddon;
 
 typedef struct cp_plugin_info_t cp_plugin_info_t;
 typedef struct cp_extension_t cp_extension_t;
@@ -193,7 +193,7 @@ public:
   bool MeetsVersion(const AddonVersion &version) const;
 
 protected:
-  friend class CAddonHelpers_Addon;
+  friend class CAddonCallbacksAddon;
 
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
   CAddon(const CAddon&, const AddonPtr&);

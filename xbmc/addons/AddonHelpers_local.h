@@ -227,7 +227,7 @@ namespace ADDON
 {
 
 class CAddon;
-class CAddonHelpers_Addon;
+class CAddonCallbacksAddon;
 class CAddonHelpers_GUI;
 class CAddonCallbacksPVR;
 
@@ -245,14 +245,14 @@ public:
   static CB_PVRLib* PVRLib_RegisterMe(void *addonData);
   static void PVRLib_UnRegisterMe(void *addonData, CB_PVRLib *cbTable);
 
-  CAddonHelpers_Addon *GetHelperAddon() { return m_helperAddon; }
+  CAddonCallbacksAddon *GetHelperAddon() { return m_helperAddon; }
   CAddonHelpers_GUI *GetHelperGUI() { return m_helperGUI; }
   CAddonCallbacksPVR *GetHelperPVR() { return m_helperPVR; }
 
 private:
   AddonCB             *m_callbacks;
   CAddon              *m_addon;
-  CAddonHelpers_Addon *m_helperAddon;
+  CAddonCallbacksAddon *m_helperAddon;
   CAddonHelpers_GUI   *m_helperGUI;
   CAddonCallbacksPVR   *m_helperPVR;
 };

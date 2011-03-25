@@ -21,7 +21,7 @@
 
 #include "Addon.h"
 #include "AddonHelpers_local.h"
-#include "AddonHelpers_Addon.h"
+#include "AddonCallbacksAddon.h"
 #include "AddonHelpers_GUI.h"
 #include "AddonCallbacksPVR.h"
 #include "filesystem/SpecialProtocol.h"
@@ -69,7 +69,7 @@ CB_AddOnLib* CAddonHelpers::AddOnLib_RegisterMe(void *addonData)
     return NULL;
   }
 
-  helper->m_helperAddon = new CAddonHelpers_Addon(helper->m_addon);
+  helper->m_helperAddon = new CAddonCallbacksAddon(helper->m_addon);
   return helper->m_helperAddon->GetCallbacks();
 }
 
