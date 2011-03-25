@@ -77,6 +77,25 @@ int CCacheCircular::Close()
   return CACHE_RC_OK;
 }
 
+/**
+ * Function will write to m_buf at m_end % m_size location
+ * it will write at maximum m_size, but it will only write
+ * as much it can without wrapping around in the buffer
+ *
+ * It will always leave m_size_back of the backbuffer intact
+ * but if the back buffer is less than that, that space is
+ * usable to write.
+ *
+ * If back buffer is filled to an larger extent than
+ * m_size_back, it will allow it to be overwritten
+ * until only m_size_back data remains.
+ *
+ * The following always apply:
+ *  * m_end <= m_cur <= m_end
+ *  * m_end - m_beg <= m_size
+ *
+ * Multiple calls may be needed to fill buffer completely.
+ */
 int CCacheCircular::WriteToCache(const char *buf, size_t len)
 {
   CSingleLock lock(m_sync);
@@ -107,6 +126,11 @@ int CCacheCircular::WriteToCache(const char *buf, size_t len)
   return len;
 }
 
+/**
+ * Reads data from cache. Will only read up till
+ * the buffer wrap point. So multiple calls
+ * may be needed to empty the whole cache
+ */
 int CCacheCircular::ReadFromCache(char *buf, size_t len)
 {
   CSingleLock lock(m_sync);
