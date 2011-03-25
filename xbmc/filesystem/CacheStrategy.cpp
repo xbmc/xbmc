@@ -115,7 +115,7 @@ int CSimpleFileCache::Open()
   return CACHE_RC_OK;
 }
 
-int CSimpleFileCache::Close()
+void CSimpleFileCache::Close()
 {
   if (m_hDataAvailEvent)
     CloseHandle(m_hDataAvailEvent);
@@ -131,8 +131,6 @@ int CSimpleFileCache::Close()
     CloseHandle(m_hCacheFileRead);
 
   m_hCacheFileRead = NULL;
-
-  return CACHE_RC_OK;
 }
 
 int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)

@@ -64,7 +64,7 @@ int CCacheCircular::Open()
   return CACHE_RC_OK;
 }
 
-int CCacheCircular::Close()
+void CCacheCircular::Close()
 {
 #ifdef _WIN32
   UnmapViewOfFile(m_buf);
@@ -74,7 +74,6 @@ int CCacheCircular::Close()
   delete[] m_buf;
 #endif
   m_buf = NULL;
-  return CACHE_RC_OK;
 }
 
 /**

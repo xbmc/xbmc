@@ -56,7 +56,7 @@ public:
   virtual ~CCacheStrategy();
 
   virtual int Open() = 0;
-  virtual int Close() = 0;
+  virtual void Close() = 0;
 
   virtual int WriteToCache(const char *pBuffer, size_t iSize) = 0;
   virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) = 0;
@@ -84,7 +84,7 @@ public:
   virtual ~CSimpleFileCache();
 
   virtual int Open() ;
-  virtual int Close() ;
+  virtual void Close() ;
 
   virtual int WriteToCache(const char *pBuffer, size_t iSize) ;
   virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) ;

@@ -60,12 +60,11 @@ int CacheMemBuffer::Open()
   return CACHE_RC_OK;
 }
 
-int CacheMemBuffer::Close()
+void CacheMemBuffer::Close()
 {
   m_buffer.Clear();
   m_HistoryBuffer.Clear();
   m_forwardBuffer.Clear();
-  return CACHE_RC_OK;
 }
 
 int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize)

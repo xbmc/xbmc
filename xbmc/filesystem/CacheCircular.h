@@ -35,7 +35,7 @@ public:
     virtual ~CCacheCircular();
 
     virtual int Open() ;
-    virtual int Close();
+    virtual void Close();
 
     virtual int WriteToCache(const char *buf, size_t len) ;
     virtual int ReadFromCache(char *buf, size_t len) ;

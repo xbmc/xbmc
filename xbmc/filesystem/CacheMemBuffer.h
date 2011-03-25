@@ -39,7 +39,7 @@ public:
     virtual ~CacheMemBuffer();
 
     virtual int Open() ;
-    virtual int Close();
+    virtual void Close();
 
     virtual int WriteToCache(const char *pBuffer, size_t iSize) ;
     virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) ;
