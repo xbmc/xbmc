@@ -144,15 +144,8 @@ int64_t CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int millis)
   return m_buffer.getMaxReadSize();
 }
 
-int64_t CacheMemBuffer::Seek(int64_t iFilePosition, int iWhence)
+int64_t CacheMemBuffer::Seek(int64_t iFilePosition)
 {
-  if (iWhence != SEEK_SET)
-  {
-    // sanity. we should always get here with SEEK_SET
-    CLog::Log(LOGERROR, "%s, only SEEK_SET supported.", __FUNCTION__);
-    return CACHE_RC_ERROR;
-  }
-
   CSingleLock lock(m_sync);
 
   // if seek is a bit over what we have, try to wait a few seconds for the data to be available.

@@ -41,7 +41,7 @@ public:
     virtual int ReadFromCache(char *buf, size_t len) ;
     virtual int64_t WaitForData(unsigned int minimum, unsigned int iMillis) ;
 
-    virtual int64_t Seek(int64_t pos, int iWhence) ;
+    virtual int64_t Seek(int64_t pos) ;
     virtual void Reset(int64_t pos) ;
 
 protected:

@@ -45,7 +45,7 @@ public:
     virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) ;
     virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
 
-    virtual int64_t Seek(int64_t iFilePosition, int iWhence) ;
+    virtual int64_t Seek(int64_t iFilePosition) ;
     virtual void Reset(int64_t iSourcePosition) ;
 
 protected:

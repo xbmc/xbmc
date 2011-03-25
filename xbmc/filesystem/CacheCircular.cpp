@@ -190,11 +190,8 @@ int64_t CCacheCircular::WaitForData(unsigned int minumum, unsigned int millis)
   return avail;
 }
 
-int64_t CCacheCircular::Seek(int64_t pos, int iWhence)
+int64_t CCacheCircular::Seek(int64_t pos)
 {
-  if (iWhence != SEEK_SET)
-    return CACHE_RC_ERROR;
-
   CSingleLock lock(m_sync);
 
   // if seek is a bit over what we have, try to wait a few seconds for the data to be available.

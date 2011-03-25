@@ -205,19 +205,12 @@ int64_t CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMill
   return CACHE_RC_TIMEOUT;
 }
 
-int64_t CSimpleFileCache::Seek(int64_t iFilePosition, int iWhence)
+int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
 {
 
   CLog::Log(LOGDEBUG,"CSimpleFileCache::Seek, seeking to %"PRId64, iFilePosition);
 
   int64_t iTarget = iFilePosition - m_nStartPosition;
-  if (SEEK_END == iWhence)
-  {
-    CLog::Log(LOGERROR,"%s, cant seek relative to end", __FUNCTION__);
-    return CACHE_RC_ERROR;
-  }
-  else if (SEEK_CUR == iWhence)
-    iTarget = iFilePosition + m_nReadPosition;
 
   if (iTarget < 0)
   {
@@ -227,7 +220,7 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition, int iWhence)
 
   int64_t nDiff = iTarget - m_nWritePosition;
   if ( nDiff > 500000 || (nDiff > 0 && WaitForData((unsigned int)nDiff, 5000) == CACHE_RC_TIMEOUT)  ) {
-    CLog::Log(LOGWARNING,"%s - attempt to seek pass read data (seek to %"PRId64". max: %"PRId64". reset read pointer. (%"PRId64":%d)", __FUNCTION__, iTarget, m_nWritePosition, iFilePosition, iWhence);
+    CLog::Log(LOGWARNING,"%s - attempt to seek pass read data (seek to %"PRId64". max: %"PRId64". reset read pointer. (%"PRId64")", __FUNCTION__, iTarget, m_nWritePosition, iFilePosition);
     return  CACHE_RC_ERROR;
   }
 
