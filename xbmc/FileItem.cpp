@@ -1163,6 +1163,7 @@ CFileItemList::CFileItemList()
   m_cacheToDisc=CACHE_IF_SLOW;
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
+  m_sortIgnoreFolders = false;
   m_replaceListing = false;
 }
 
@@ -1174,6 +1175,7 @@ CFileItemList::CFileItemList(const CStdString& strPath)
   m_cacheToDisc=CACHE_IF_SLOW;
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
+  m_sortIgnoreFolders = false;
   m_replaceListing = false;
 }
 
@@ -1246,6 +1248,7 @@ void CFileItemList::Clear()
   ClearItems();
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
+  m_sortIgnoreFolders = false;
   m_cacheToDisc=CACHE_IF_SLOW;
   m_sortDetails.clear();
   m_replaceListing = false;
@@ -1368,6 +1371,7 @@ bool CFileItemList::Copy(const CFileItemList& items)
   m_sortDetails    = items.m_sortDetails;
   m_sortMethod     = items.m_sortMethod;
   m_sortOrder      = items.m_sortOrder;
+  m_sortIgnoreFolders = items.m_sortIgnoreFolders;
 
   // make a copy of each item
   for (int i = 0; i < items.Size(); i++)
@@ -1599,7 +1603,8 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   if (sortMethod == SORT_METHOD_FILE        ||
       sortMethod == SORT_METHOD_VIDEO_SORT_TITLE ||
       sortMethod == SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE ||
-      sortMethod == SORT_METHOD_LABEL_IGNORE_FOLDERS)
+      sortMethod == SORT_METHOD_LABEL_IGNORE_FOLDERS ||
+      m_sortIgnoreFolders)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::IgnoreFoldersAscending : SSortFileItem::IgnoreFoldersDescending);
   else if (sortMethod != SORT_METHOD_NONE && sortMethod != SORT_METHOD_UNSORTED)
     Sort(sortOrder==SORT_ORDER_ASC ? SSortFileItem::Ascending : SSortFileItem::Descending);
@@ -1631,6 +1636,7 @@ void CFileItemList::Archive(CArchive& ar)
 
     ar << (int)m_sortMethod;
     ar << (int)m_sortOrder;
+    ar << m_sortIgnoreFolders;
     ar << (int)m_cacheToDisc;
 
     ar << (int)m_sortDetails.size();
@@ -1690,6 +1696,7 @@ void CFileItemList::Archive(CArchive& ar)
     m_sortMethod = SORT_METHOD(tempint);
     ar >> (int&)tempint;
     m_sortOrder = SORT_ORDER(tempint);
+    ar >> m_sortIgnoreFolders;
     ar >> (int&)tempint;
     m_cacheToDisc = CACHE_TYPE(tempint);
 

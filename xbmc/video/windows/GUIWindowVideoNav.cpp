@@ -433,9 +433,11 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       if (m_database.GetItemForPath(content, pItem->m_strPath, item))
       { // copy info across
         pItem->UpdateInfo(item);
-        // TODO: we may wish to use a playable_url parameter here rather than
-        //       switching the path of the item (eg movie as a folder)
         pItem->m_strPath = item.m_strPath;
+        // if we switch from a file to a folder item it means we really shouldn't be sorting files and
+        // folders separately
+        if (pItem->m_bIsFolder != item.m_bIsFolder)
+          items.SetSortIgnoreFolders(true);
         pItem->m_bIsFolder = item.m_bIsFolder;
       }
       else
