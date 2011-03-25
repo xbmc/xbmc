@@ -2477,18 +2477,6 @@
     <ClCompile Include="..\..\xbmc\epg\EpgSearchFilter.cpp">
       <Filter>epg</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_Addon.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_GUI.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_local.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_PVR.cpp">
-      <Filter>addons</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\PVRDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -2632,6 +2620,18 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\addons\PVRClients.cpp">
       <Filter>pvr\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacks.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAddon.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksGUI.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksPVR.cpp">
+      <Filter>addons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5079,18 +5079,6 @@
     <ClInclude Include="..\..\xbmc\epg\EpgInfoTag.h">
       <Filter>epg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonHelpers_Addon.h">
-      <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonHelpers_GUI.h">
-      <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonHelpers_local.h">
-      <Filter>addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\AddonHelpers_PVR.h">
-      <Filter>addons</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\PVRFile.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -5238,6 +5226,18 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\addons\PVRClients.h">
       <Filter>pvr\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacks.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAddon.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksGUI.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksPVR.h">
+      <Filter>addons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
