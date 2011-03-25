@@ -4,8 +4,8 @@ CXXFLAGS+=-D__STDC_FORMAT_MACROS \
 
 SRCS=AddonsDirectory.cpp \
      ASAPFileDirectory.cpp \
-     CacheMemBuffer.cpp \
      CacheCircular.cpp \
+     CacheMemBuffer.cpp \
      CacheStrategy.cpp \
      CDDADirectory.cpp \
      DAAPDirectory.cpp \
