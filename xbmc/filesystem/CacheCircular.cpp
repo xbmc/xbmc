@@ -102,7 +102,10 @@ int CCacheCircular::WriteToCache(const char *buf, size_t len)
 
   // where are we in the buffer
   size_t pos   = m_end % m_size;
-  size_t limit = m_size - m_size_back - (size_t)(m_end - m_cur);
+  size_t back  = (size_t)(m_cur - m_beg);
+  size_t front = (size_t)(m_end - m_cur);
+
+  size_t limit = m_size - std::min(back, m_size_back) - front;
   size_t wrap  = m_size - pos;
 
   // limit by max forward size
@@ -112,6 +115,9 @@ int CCacheCircular::WriteToCache(const char *buf, size_t len)
   // limit to wrap point
   if(len > wrap)
     len = wrap;
+
+  if(len == 0)
+    return 0;
 
   // write the data
   memcpy(m_buf + pos, buf, len);
@@ -136,7 +142,8 @@ int CCacheCircular::ReadFromCache(char *buf, size_t len)
   CSingleLock lock(m_sync);
 
   size_t pos   = m_cur % m_size;
-  size_t avail = std::min(m_size - pos, (size_t)(m_end - m_cur));
+  size_t front = (size_t)(m_end - m_cur);
+  size_t avail = std::min(m_size - pos, front);
 
   if(avail == 0)
   {
@@ -149,11 +156,13 @@ int CCacheCircular::ReadFromCache(char *buf, size_t len)
   if(len > avail)
     len = avail;
 
+  if(len == 0)
+    return 0;
+
   memcpy(buf, m_buf + pos, len);
   m_cur += len;
 
-  if (len > 0)
-    m_space.Set();
+  m_space.Set();
 
   return len;
 }
