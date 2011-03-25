@@ -335,13 +335,6 @@ int64_t CFileCache::GetLength()
   return m_source.GetLength();
 }
 
-ICacheInterface* CFileCache::GetCache()
-{
-  if(m_pCache)
-    return m_pCache->GetInterface();
-  return NULL;
-}
-
 void CFileCache::StopThread(bool bWait /*= true*/)
 {
   m_bStop = true;

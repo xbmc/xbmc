@@ -39,17 +39,6 @@ namespace XFILE {
 #define CACHE_RC_WOULD_BLOCK -2
 #define CACHE_RC_TIMEOUT -3
 
-/**
-*/
-class ICacheInterface
-{
-public:
-  ICacheInterface() { }
-  virtual ~ICacheInterface() { }
-  virtual int GetCacheLevel() { return -1; }
-
-};
-
 class CCacheStrategy{
 public:
   CCacheStrategy();
@@ -69,8 +58,6 @@ public:
   virtual bool IsEndOfInput();
   virtual void ClearEndOfInput();
 
-  virtual ICacheInterface* GetInterface() { return NULL; }
-
   CEvent m_space;
 protected:
   bool  m_bEndOfInput;
@@ -78,7 +65,7 @@ protected:
 
 /**
 */
-class CSimpleFileCache : public CCacheStrategy, ICacheInterface {
+class CSimpleFileCache : public CCacheStrategy {
 public:
   CSimpleFileCache();
   virtual ~CSimpleFileCache();
@@ -93,7 +80,6 @@ public:
   virtual int64_t Seek(int64_t iFilePosition);
   virtual void Reset(int64_t iSourcePosition);
   virtual void EndOfInput();
-  virtual ICacheInterface* GetInterface() { return (ICacheInterface*)this; }
 
   int64_t  GetAvailableRead();
 

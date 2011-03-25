@@ -44,8 +44,6 @@
 namespace XFILE
 {
 
-class ICacheInterface;
-
 class IFile
 {
 public:
@@ -80,7 +78,6 @@ public:
   virtual bool Rename(const CURL& url, const CURL& urlnew) { return false; }
   virtual bool SetHidden(const CURL& url, bool hidden) { return false; }
 
-  virtual ICacheInterface* GetCache() {return NULL;}
   virtual int IoControl(int request, void* param) { return -1; }
 
   virtual CStdString GetContent()                            { return "application/octet-stream"; }
