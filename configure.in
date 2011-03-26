@@ -1388,6 +1388,7 @@ OUTPUT_FILES="Makefile \
     lib/libRTV/Makefile \
     lib/libexif/Makefile \
     lib/libXDAAP/Makefile \
+    lib/cmyth/Makefile \
     lib/libhdhomerun/Makefile \
     lib/jsoncpp/src/lib_json/Makefile \
     lib/libsquish/Makefile \

@@ -46,8 +46,6 @@ BIN_DIRS=	\
 	xbmc/storage \
 	xbmc/storage/linux \
 	xbmc/storage/osx \
-	lib/cmyth/libcmyth \
-	lib/cmyth/librefmem \
 	lib/libhts \
 	xbmc/interfaces \
 	xbmc/interfaces/http-api \
@@ -118,6 +116,7 @@ endif
 LIB_DIRS=\
 	lib/cximage-6.0 \
 	lib/libexif \
+	lib/cmyth \
 	lib/libhdhomerun \
 	lib/libid3tag \
 	lib/libapetag \
@@ -316,10 +315,6 @@ xbmc/dialogs/dialogs.a: force
 	$(MAKE) -C xbmc/dialogs
 xbmc/windows/windows.a: force
 	$(MAKE) -C xbmc/windows
-lib/cmyth/libcmyth/libcmyth.a: force
-	$(MAKE) -C lib/cmyth/libcmyth
-lib/cmyth/librefmem/librefmem.a: force
-	$(MAKE) -C lib/cmyth/librefmem
 lib/libhts/libhts.a: force
 	$(MAKE) -C lib/libhts
 xbmc/interfaces/interfaces.a: force
@@ -427,6 +422,8 @@ else
 endif
 libexif: dllloader
 	$(MAKE) -C lib/libexif
+cmyth: dllloader
+	$(MAKE) -C lib/cmyth
 libhdhomerun: dllloader
 	$(MAKE) -C lib/libhdhomerun
 libid3tag: dllloader
@@ -452,15 +449,13 @@ imagelib: dllloader
 	$(MAKE) -C lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-@ARCH@.so
+libs: cmyth libhdhomerun libid3tag imagelib libexif python system/libcpluff-@ARCH@.so
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
 	codecs libs python visualizations screensavers eventclients skins \
 	lib/libsquish/libsquish-@ARCH@.a \
 	lib/libapetag/.libs/libapetag.a \
-	lib/cmyth/libcmyth/libcmyth.a \
-	lib/cmyth/librefmem/librefmem.a \
 	lib/libXBMS/libxbms-@ARCH@.a \
 	lib/libRTV/librtv-@ARCH@.a \
 	lib/libXDAAP/libxdaap-@ARCH@.a \
@@ -571,8 +566,6 @@ endif
 endif
 
 DYNOBJSXBMC= \
-	lib/cmyth/libcmyth/libcmyth.a \
-	lib/cmyth/librefmem/librefmem.a \
 	xbmc/linux/linux.a \
 	xbmc/network/network.a \
 	xbmc/video/windows/videowindows.a \
