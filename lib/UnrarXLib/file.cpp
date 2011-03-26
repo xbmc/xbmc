@@ -3,6 +3,7 @@
 // BE WARNED THIS FILE IS HEAVILY MODIFIED TO BE USED WITH XBMC
 
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
 
@@ -10,6 +11,8 @@
 static int RemoveCreatedActive=0;
 
 File::File()
+  :  m_File(*(new XFILE::CFile()))
+
 {
 //  hFile=BAD_HANDLE;
   *FileName=0;
@@ -35,6 +38,7 @@ File::~File()
     else
       Close();*/
   m_File.Close();
+  delete &m_File;
 }
 
 

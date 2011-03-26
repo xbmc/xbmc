@@ -2,6 +2,7 @@
 #include "UnrarX.hpp"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "filesystem/File.h"
 
 #include "smallfn.cpp"
 
