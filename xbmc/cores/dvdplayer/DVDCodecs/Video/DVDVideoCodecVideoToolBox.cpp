@@ -108,15 +108,26 @@ extern void VTDecompressionSessionInvalidate(VTDecompressionSessionRef session);
 extern void VTDecompressionSessionRelease(VTDecompressionSessionRef session);
 extern VTDecompressionSessionRef VTDecompressionSessionRetain(VTDecompressionSessionRef session);
 extern OSStatus VTDecompressionSessionWaitForAsynchronousFrames(VTDecompressionSessionRef session);
+
 //-----------------------------------------------------------------------------------
 // /System/Library/Frameworks/CoreMedia.framework
+union
+{
+  void* lpAddress;
+  // iOS <= 4.2
+  OSStatus (*FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom1)(
+    CFAllocatorRef allocator, UInt32 formatId, UInt32 width, UInt32 height,
+    UInt32 atomId, const UInt8 *data, CFIndex len, CMFormatDescriptionRef *formatDesc);
+  // iOS >= 4.3
+  OSStatus (*FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom2)(
+    CFAllocatorRef allocator, UInt32 formatId, UInt32 width, UInt32 height,
+    UInt32 atomId, const UInt8 *data, CFIndex len, CFDictionaryRef extensions, CMFormatDescriptionRef *formatDesc);
+} FigVideoHack;
 extern OSStatus FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom(
   CFAllocatorRef allocator, UInt32 formatId, UInt32 width, UInt32 height,
   UInt32 atomId, const UInt8 *data, CFIndex len, CMFormatDescriptionRef *formatDesc);
-extern void FigFormatDescriptionRelease(CMFormatDescriptionRef desc);
+
 extern CMSampleBufferRef FigSampleBufferRetain(CMSampleBufferRef buf);
-extern void FigSampleBufferRelease(CMSampleBufferRef buf);
-extern void FigBlockBufferRelease(CMBlockBufferRef buf);
 //-----------------------------------------------------------------------------------
 #pragma pack(pop)
     
@@ -138,6 +149,7 @@ int CheckNP2( unsigned x )
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
 // helper functions for debuging VTDecompression
+#if _DEBUG
 char* vtutil_string_to_utf8(CFStringRef s)
 {
   char *result;
@@ -223,7 +235,7 @@ void vtdec_session_dump_properties(VTDecompressionSessionRef session)
 error:
   CLog::Log(LOGDEBUG, "failed to dump properties\n");
 }
-
+#endif
 //-----------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------
 // helper function that inserts an int32_t into a dictionary
@@ -324,15 +336,35 @@ CreateFormatDescriptionFromCodecData(VTFormatId format_id, int width, int height
   CMFormatDescriptionRef fmt_desc;
   OSStatus status;
 
-  status = FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom(
-    NULL,             // CFAllocatorRef allocator ???
-    format_id,
-    width,
-    height,
-    atom,
-    extradata,
-    extradata_size,
-    &fmt_desc);
+  FigVideoHack.lpAddress = (void*)FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom;
+  
+  if (GetIOSVersion() < 4.3)
+  {
+    CLog::Log(LOGDEBUG, "%s - GetIOSVersion says < 4.3", __FUNCTION__);
+    status = FigVideoHack.FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom1(
+      NULL,
+      format_id,
+      width,
+      height,
+      atom,
+      extradata,
+      extradata_size,
+      &fmt_desc);
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "%s - GetIOSVersion says >= 4.3", __FUNCTION__);
+    status = FigVideoHack.FigVideoFormatDescriptionCreateWithSampleDescriptionExtensionAtom2(
+      NULL,
+      format_id,
+      width,
+      height,
+      atom,
+      extradata,
+      extradata_size,
+      NULL,
+      &fmt_desc);
+  }
 
   if (status == kVTDecoderNoErr)
     return fmt_desc;
@@ -375,7 +407,7 @@ CreateSampleBufferFrom(CMFormatDescriptionRef fmt_desc, void *demux_buff, size_t
       &sBufOut);      // CMSampleBufferRef *sBufOut
   }
 
-  FigBlockBufferRelease(newBBufOut);
+  CFRelease(newBBufOut);
 
   /*
   CLog::Log(LOGDEBUG, "%s - CreateSampleBufferFrom size %ld demux_buff [0x%08x] sBufOut [0x%08x]",
@@ -909,7 +941,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     {
       if (m_fmt_desc)
       {
-        FigFormatDescriptionRelease(m_fmt_desc);
+        CFRelease(m_fmt_desc);
         m_fmt_desc = NULL;
       }
       m_pFormatName = "";
@@ -945,7 +977,7 @@ void CDVDVideoCodecVideoToolBox::Dispose()
   DestroyVTSession();
   if (m_fmt_desc)
   {
-    FigFormatDescriptionRelease(m_fmt_desc);
+    CFRelease(m_fmt_desc);
     m_fmt_desc = NULL;
   }
   
@@ -1048,7 +1080,7 @@ int CDVDVideoCodecVideoToolBox::Decode(BYTE* pData, int iSize, double dts, doubl
       CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionDecodeFrame returned(%d)",
         __FUNCTION__, (int)status);
       CFRelease(frameInfo);
-      FigSampleBufferRelease(sampleBuff);
+      CFRelease(sampleBuff);
       if (demux_size)
         m_dllAvUtil->av_free(demux_buff);
       return VC_ERROR;
@@ -1065,14 +1097,14 @@ int CDVDVideoCodecVideoToolBox::Decode(BYTE* pData, int iSize, double dts, doubl
       CLog::Log(LOGNOTICE, "%s - VTDecompressionSessionWaitForAsynchronousFrames returned(%d)",
         __FUNCTION__, (int)status);
       CFRelease(frameInfo);
-      FigSampleBufferRelease(sampleBuff);
+      CFRelease(sampleBuff);
       if (demux_size)
         m_dllAvUtil->av_free(demux_buff);
       return VC_ERROR;
     }
 
     CFRelease(frameInfo);
-    FigSampleBufferRelease(sampleBuff);
+    CFRelease(sampleBuff);
     if (demux_size)
       m_dllAvUtil->av_free(demux_buff);
   }
