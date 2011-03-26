@@ -362,6 +362,7 @@ lib/cmyth/Makefile
 /system/players/dvdplayer/swscale-0.6.1.dll
 /system/players/dvdplayer/libbluray.dll
 /system/players/dvdplayer/libmpeg2-0.dll
+/system/players/dvdplayer/libmad.dll
 
 # /system/players/paplayer
 /system/players/paplayer/wavpack.dll
@@ -373,7 +374,6 @@ lib/cmyth/Makefile
 /system/players/paplayer/libsidplay2.dll
 /system/players/paplayer/adpcm.dll
 /system/players/paplayer/timidity.dll
-/system/players/dvdplayer/libmad.dll
 
 # /system/players/dsplayer
 /system/players/dsplayer/libsubs.dll
