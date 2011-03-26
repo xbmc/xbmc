@@ -3558,15 +3558,13 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     }
 
     // Display the Play Eject dialog
-    if (CGUIDialogPlayEject::ShowAndGetInput(219, 429, strLine1, NULL))
-    {
+    bool bError;
+    if (CGUIDialogPlayEject::ShowAndGetInput(219, 429, strLine1, NULL, &bError))
       MEDIA_DETECT::CAutorun::PlayDisc();
-      return true;
-    }
-    else
-    {
+    if (bError)
       return false;
-    }
+
+    return true;
   }
 
   if (item.IsPlayList())

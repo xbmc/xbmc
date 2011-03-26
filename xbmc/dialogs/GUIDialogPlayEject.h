@@ -32,7 +32,7 @@ public:
   virtual void FrameMove();
 
   static bool ShowAndGetInput(CVariant vHeading, CVariant vLine0, CVariant vLine1,
-    CVariant vLine2, unsigned int uiAutoCloseTime = 0);
+    CVariant vLine2, bool * bError = NULL, unsigned int uiAutoCloseTime = 0);
 
 protected:
   virtual void OnInitWindow();
