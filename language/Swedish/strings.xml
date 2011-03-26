@@ -1394,6 +1394,8 @@ den här visualiseringen</string>
   <string id="16317">Temporal (Halv)</string>
   <string id="16318">Temporal/Spatial (Halv)</string>
   <string id="16319">DXVA</string>
+  <string id="16321">VDPAU Bob</string>
+  <string id="16322">VDPAU None</string>
   <string id="16400">Efterbearbetning</string>
   <string id="17500">Visa insommningstimeout</string>
   <string id="19000">Byt till kanal</string>

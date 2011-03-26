@@ -571,7 +571,8 @@ bool CVDPAU::Supports(VdpVideoMixerFeature feature)
 bool CVDPAU::Supports(EINTERLACEMETHOD method)
 {
   if(method == VS_INTERLACEMETHOD_VDPAU_BOB
-  || method == VS_INTERLACEMETHOD_AUTO)
+  || method == VS_INTERLACEMETHOD_AUTO
+  || method == VS_INTERLACEMETHOD_VDPAU_NONE)
     return true;
 
   if (hasVdpauGlInterop)

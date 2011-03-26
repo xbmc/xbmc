@@ -1557,6 +1557,8 @@
   <string id="16317">Zeitlich (Hälfte)</string>
   <string id="16318">Zeitlich/Räumlich (Hälfte)</string>
   <string id="16319">DXVA</string>
+  <string id="16321">VDPAU Bob</string>
+  <string id="16322">VDPAU None</string>
 
   <string id="16400">Video Nachbearbeitung</string>
   <string id="16401">Deaktiviert</string>
