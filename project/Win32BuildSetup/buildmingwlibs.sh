@@ -63,6 +63,13 @@ setfilepath /xbmc/system/players/dvdplayer
 checkfiles libmpeg2-0.dll
 echo "##### building of libmpeg2 dlls done #####"
 
+echo "##### building timidity dlls #####"
+cd /xbmc/lib/timidity/
+make -f Makefile.win32
+setfilepath /xbmc/system/players/paplayer
+checkfiles timidity.dll
+echo "##### building of timidity dlls done #####"
+
 # wait for key press
 if [ $NOPROMPT == 0 ]; then
   echo press a key to close the window
