@@ -768,6 +768,14 @@ bool CFile::SetHidden(const CStdString& fileName, bool hidden)
   return false;
 }
 
+int CFile::IoControl(EIoControl request, void* param)
+{
+  int result = -1;
+  if (m_pFile)
+    result = m_pFile->IoControl(request, param);
+
+  return result;
+}
 //*********************************************************************************************
 //*************** Stream IO for CFile objects *************************************************
 //*********************************************************************************************
