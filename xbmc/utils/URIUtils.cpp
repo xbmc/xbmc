@@ -471,9 +471,9 @@ bool URIUtils::IsHD(const CStdString& strFileName)
 bool URIUtils::IsDVD(const CStdString& strFile)
 {
 #if defined(_WIN32)
-  if(strFile.Mid(1) != ":\\"
-  && strFile.Mid(1) != ":")
-    return false;
+  if(strFile.Mid(1) == ":\\"
+  && strFile.Mid(1) == ":")
+    return true;
 
   if((GetDriveType(strFile.c_str()) == DRIVE_CDROM) || strFile.Left(6).Equals("dvd://"))
     return true;
