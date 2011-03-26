@@ -165,7 +165,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   if (m_timeCodePosition > 0 && action.GetButtonCode())
   { // check whether we have a mapping in our virtual videotimeseek "window" and have a select action
     CKey key(action.GetButtonCode());
-    CAction timeSeek = CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_TIME_SEEK, key, false);
+    CAction timeSeek = CButtonTranslator::GetInstance().GetAction(WINDOW_TIME_SEEK, key, false);
     if (timeSeek.GetID() == ACTION_SELECT_ITEM)
     {
       SeekToTimeCodeStamp(SEEK_ABSOLUTE);

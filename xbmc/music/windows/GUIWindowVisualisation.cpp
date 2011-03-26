@@ -28,6 +28,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "input/ButtonTranslator.h"
+#include "utils/TimeUtils.h"
 
 using namespace MUSIC_INFO;
 
@@ -35,16 +37,35 @@ using namespace MUSIC_INFO;
 
 #define CONTROL_VIS          2
 
+#define BLUE_BAR                          0
+#define LABEL_ROW1                       10
+#define LABEL_ROW2                       11
+#define LABEL_ROW3                       12
+
 CGUIWindowVisualisation::CGUIWindowVisualisation(void)
     : CGUIWindow(WINDOW_VISUALISATION, "MusicVisualisation.xml"),
       m_initTimer(true), m_lockedTimer(true)
 {
   m_bShowPreset = false;
+  m_timeCodeShow = false;
+  m_timeCodeTimeout = 0;
+  m_timeCodePosition = 0;
+  m_timeCodeStamp[0] = 0;
 }
 
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
   bool passToVis = false;
+  if (m_timeCodePosition > 0 && action.GetButtonCode())
+  { // check whether we have a mapping in our virtual timeseek "window" and have a select action
+    CKey key(action.GetButtonCode());
+    CAction timeSeek = CButtonTranslator::GetInstance().GetAction(WINDOW_TIME_SEEK, key, false);
+    if (timeSeek.GetID() == ACTION_SELECT_ITEM)
+    {
+      g_application.m_pPlayer->SeekTime(GetTimeCodeStamp());
+      return true;
+    }
+  }
   switch (action.GetID())
   {
   case ACTION_VIS_PRESET_NEXT:
@@ -55,6 +76,14 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     passToVis = true;
     break;
 
+  case ACTION_PLAYER_PLAY:
+  case ACTION_PAUSE:
+    if (m_timeCodePosition > 0)
+    {
+      g_application.m_pPlayer->SeekTime(GetTimeCodeStamp());
+      return true;
+    }
+    break;
   case ACTION_SHOW_INFO:
     {
       m_initTimer.Stop();
@@ -97,6 +126,18 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
       m_initTimer.StartZero();
       g_infoManager.SetShowInfo(true);
     }
+    break;
+  case REMOTE_0:
+  case REMOTE_1:
+  case REMOTE_2:
+  case REMOTE_3:
+  case REMOTE_4:
+  case REMOTE_5:
+  case REMOTE_6:
+  case REMOTE_7:
+  case REMOTE_8:
+  case REMOTE_9:
+    ChangetheTimeCode(action.GetID());
     break;
     // TODO: These should be mapped to it's own function - at the moment it's overriding
     // the global action of fastforward/rewind and OSD.
@@ -236,5 +277,66 @@ void CGUIWindowVisualisation::FrameMove()
       g_infoManager.SetShowCodec(false);
     }
   }
+  if (m_timeCodeShow && m_timeCodePosition != 0)
+  {
+    if ( (CTimeUtils::GetTimeMS() - m_timeCodeTimeout) >= 2500)
+    {
+      m_timeCodeShow = false;
+      m_timeCodePosition = 0;
+    }
+    CStdString strDispTime = "00:00:00";
+
+    CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
+
+    for (int pos = 7, i = m_timeCodePosition; pos >= 0 && i > 0; pos--)
+    {
+      if (strDispTime[pos] != ':')
+      {
+        i -= 1;
+        strDispTime[pos] = (char)m_timeCodeStamp[i] + '0';
+      }
+    }
+
+    strDispTime += "/" + g_infoManager.GetDuration(TIME_FORMAT_HH_MM_SS) + " [" + g_infoManager.GetCurrentPlayTime(TIME_FORMAT_HH_MM_SS) + "]"; // duration [ time ]
+    msg.SetLabel(strDispTime);
+    OnMessage(msg);
+    SET_CONTROL_VISIBLE(LABEL_ROW1);
+    SET_CONTROL_HIDDEN(LABEL_ROW2);
+    SET_CONTROL_HIDDEN(LABEL_ROW3);
+    SET_CONTROL_VISIBLE(BLUE_BAR);
+  }
   CGUIWindow::FrameMove();
+}
+
+void CGUIWindowVisualisation::ChangetheTimeCode(int remote)
+{
+  if (remote >= REMOTE_0 && remote <= REMOTE_9)
+  {
+    m_timeCodeShow = true;
+    m_timeCodeTimeout = CTimeUtils::GetTimeMS();
+
+    if (m_timeCodePosition < 6)
+      m_timeCodeStamp[m_timeCodePosition++] = remote - REMOTE_0;
+    else
+    {
+      // rotate around
+      for (int i = 0; i < 5; i++)
+        m_timeCodeStamp[i] = m_timeCodeStamp[i+1];
+      m_timeCodeStamp[5] = remote - REMOTE_0;
+    }
+  }
+}
+
+double CGUIWindowVisualisation::GetTimeCodeStamp()
+{
+  // Convert the timestamp into an integer
+  int tot = 0;
+  for (int i = 0; i < m_timeCodePosition; i++)
+    tot = tot * 10 + m_timeCodeStamp[i];
+
+  // Interpret result as HHMMSS
+  int s = tot % 100; tot /= 100;
+  int m = tot % 100; tot /= 100;
+  int h = tot % 100;
+  return (h * 3600 + m * 60 + s)*1000;
 }

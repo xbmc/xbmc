@@ -401,7 +401,9 @@
 #define WINDOW_VIDEO_MENU                 12902
 #define WINDOW_DIALOG_MUSIC_OVERLAY       12903
 #define WINDOW_DIALOG_VIDEO_OVERLAY       12904
-#define WINDOW_VIDEO_TIME_SEEK            12905 // virtual window for time seeking during fullscreen video
+
+// virtual window for time seeking during fullscreen video/music
+#define WINDOW_TIME_SEEK                  12905 
 
 #define WINDOW_START                      12998 // first window to load
 #define WINDOW_STARTUP_ANIM               12999 // for startup animations
