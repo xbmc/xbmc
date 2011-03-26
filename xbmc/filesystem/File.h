@@ -93,7 +93,7 @@ public:
   bool SkipNext(){if (m_pFile) return m_pFile->SkipNext(); return false;}
   BitstreamStats* GetBitstreamStats() { return m_bitStreamStats; }
 
-  int IoControl(int request, void* param) { if (m_pFile) return m_pFile->IoControl(request, param); return -1; }
+  int IoControl(EIoControl request, void* param);
 
   IFile *GetImplemenation() { return m_pFile; }
 

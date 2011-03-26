@@ -314,7 +314,7 @@ void CWINFileSMB::Flush()
   ::FlushFileBuffers(m_hFile);
 }
 
-int CWINFileSMB::IoControl(int request, void* param)
+int CWINFileSMB::IoControl(EIoControl request, void* param)
 { 
   return -1;
 }
