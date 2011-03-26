@@ -14,7 +14,7 @@ CC=gcc
 lib: $(LIB)
 
 $(LIB): $(OBJS) exports.def
-	g++ -shared -o $@ $(OBJS)
+	g++ -shared -static-libgcc -o $@ $(OBJS)
 	
 clean: 
 	rm -rf *.o
