@@ -7,7 +7,7 @@ OBJS=timidity/aq.o timidity/audio_cnv.o timidity/buffer_a.o timidity/common.o ti
 	libarc/url.o libarc/url_mem.o libarc/url_file.o \
 	utils/mblock.o utils/strtab.o utils/fft4g.o utils/timer.o utils/getopt.o \
 	timidity_codec.o
-LIB=../../../../system/players/paplayer/timidity.dll
+LIB=../../system/players/paplayer/timidity.dll
 CLEAN_FILES=$(OBJS)
 CC=gcc
 
@@ -15,4 +15,9 @@ lib: $(LIB)
 
 $(LIB): $(OBJS) exports.def
 	g++ -shared -o $@ $(OBJS)
- 
+	
+clean: 
+	rm -rf *.o
+	rm -rf timidity/*.o
+	rm -rf utils/*.o
+	rm -rf libarc/*.o
