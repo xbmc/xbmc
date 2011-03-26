@@ -39,7 +39,6 @@
 #include <sys/stat.h>
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
-#define SEEK_BUFFERED 0x11 // how many bytes forward is buffered
 
 namespace XFILE
 {
@@ -50,8 +49,14 @@ struct SNativeIoControl
   void* param;
 };
 
+struct SCacheStatus
+{
+  uint64_t forward;  /**< number of bytes cached forward of current position */
+};
+
 typedef enum {
   IOCTRL_NATIVE        = 1, /**< SNativeIoControl structure, containing what should be passed to native ioctrl */
+  IOCTRL_CACHE_STATUS  = 3, /**< SCacheStatus structure */
 } EIoControl;
 
 class IFile

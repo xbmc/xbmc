@@ -288,8 +288,6 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
     iTarget = iCurPos + iTarget;
   else if (iWhence == SEEK_POSSIBLE)
     return m_seekPossible;
-  else if (iWhence == SEEK_BUFFERED)
-    return m_pCache->WaitForData(0, 0);
   else if (iWhence != SEEK_SET)
     return -1;
 
@@ -353,4 +351,16 @@ CStdString CFileCache::GetContent()
     return IFile::GetContent();
 
   return m_source.GetImplemenation()->GetContent();
+}
+
+int CFileCache::IoControl(EIoControl request, void* param)
+{
+  if(request == IOCTRL_CACHE_STATUS)
+  {
+    SCacheStatus* status = (SCacheStatus*)param;
+    status->forward = m_pCache->WaitForData(0, 0);
+    return 0;
+  }
+
+  return -1;
 }
