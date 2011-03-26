@@ -372,6 +372,7 @@ lib/cmyth/Makefile
 /system/players/paplayer/NoseFart.dll
 /system/players/paplayer/libsidplay2.dll
 /system/players/paplayer/adpcm.dll
+/system/players/paplayer/timidity.dll
 /system/players/dvdplayer/libmad.dll
 
 # /system/players/dsplayer
