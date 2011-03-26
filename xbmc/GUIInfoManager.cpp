@@ -3766,7 +3766,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     {
       CStdString disc;
       if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDiscNumber() > 0)
-        disc.Format("%02i", item->GetMusicInfoTag()->GetDiscNumber());
+        disc.Format("%i", item->GetMusicInfoTag()->GetDiscNumber());
       return disc;
     }
   case LISTITEM_ARTIST:
