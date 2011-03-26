@@ -48,6 +48,7 @@
 #include "TextureCache.h"
 #include "addons/AddonInstaller.h"
 #include "interfaces/AnnouncementManager.h"
+#include "dbwrappers/dataset.h"
 
 using namespace std;
 using namespace dbiplus;

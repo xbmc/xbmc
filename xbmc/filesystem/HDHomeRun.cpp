@@ -27,6 +27,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "Util.h"
 
 using namespace XFILE;
 using namespace std;

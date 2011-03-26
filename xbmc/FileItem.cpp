@@ -3073,7 +3073,7 @@ CStdString CFileItem::FindTrailer() const
   return strTrailer;
 }
 
-VIDEODB_CONTENT_TYPE CFileItem::GetVideoContentType() const
+int CFileItem::GetVideoContentType() const
 {
   VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;
   if (HasVideoInfoTag() && !GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow

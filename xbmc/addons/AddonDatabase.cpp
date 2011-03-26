@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "DateTime.h"
 #include "addons/Service.h"
+#include "dbwrappers/dataset.h"
 
 using namespace ADDON;
 using namespace std;

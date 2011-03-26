@@ -31,6 +31,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
+#include "XBIRRemote.h"
 
 using namespace std;
 using namespace XFILE;

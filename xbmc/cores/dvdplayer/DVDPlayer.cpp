@@ -66,6 +66,7 @@
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "utils/StringUtils.h"
+#include "Util.h"
 
 using namespace std;
 

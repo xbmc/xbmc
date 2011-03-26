@@ -60,6 +60,7 @@
 #include "addons/AddonInstaller.h"
 #include "utils/AutoPtrHandle.h"
 #include "interfaces/AnnouncementManager.h"
+#include "dbwrappers/dataset.h"
 
 using namespace std;
 using namespace AUTOPTR;
