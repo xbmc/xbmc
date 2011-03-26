@@ -952,6 +952,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("originaltitle")) return LISTITEM_ORIGINALTITLE;
   else if (info.Equals("lastplayed")) return LISTITEM_LASTPLAYED;
   else if (info.Equals("playcount")) return LISTITEM_PLAYCOUNT;
+  else if (info.Equals("discnumber")) return LISTITEM_DISC_NUMBER;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -3065,15 +3066,7 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
     }
     break;
   case MUSICPLAYER_DISC_NUMBER:
-    {
-      CStdString strDisc;
-      if (tag.Loaded() && tag.GetDiscNumber() > 0)
-      {
-        strDisc.Format("%02i", tag.GetDiscNumber());
-        return strDisc;
-      }
-    }
-    break;
+    return GetItemLabel(item, LISTITEM_DISC_NUMBER);
   case MUSICPLAYER_RATING:
     return GetItemLabel(item, LISTITEM_RATING);
   case MUSICPLAYER_COMMENT:
@@ -3768,6 +3761,13 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         track.Format("%i", item->GetMusicInfoTag()->GetTrackNumber());
 
       return track;
+    }
+  case LISTITEM_DISC_NUMBER:
+    {
+      CStdString disc;
+      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDiscNumber() > 0)
+        disc.Format("%02i", item->GetMusicInfoTag()->GetDiscNumber());
+      return disc;
     }
   case LISTITEM_ARTIST:
     if (item->HasVideoInfoTag())
