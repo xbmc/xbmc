@@ -63,6 +63,7 @@ ifneq ($(V), 1)
 	SILENT_S  =@echo "S       $@";
 	SILENT_GCH=@echo "GCH     $@";
 	SILENT_MM =@echo "MM      $@";
+	SILENT_AR =@echo "AR      $@";
 endif
 
 
@@ -130,7 +131,7 @@ OBJS+=$(filter %.o,$(SRCS:.m=.o))
 .PHONY : lib pch clean distclean distclean_evil
 
 $(LIB): $(OBJS)
-	$(AR) $(ARFLAGS) $(LIB) $(OBJS)
+	$(SILENT_AR) $(AR) $(ARFLAGS) $(LIB) $(OBJS)
 
 pch: $(PCH:.h=.h.gch)
 	for d in $(DIRS); do (cd "$$d"; $(MAKE) pch ); done
