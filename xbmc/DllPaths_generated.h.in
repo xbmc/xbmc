@@ -55,13 +55,8 @@
 #define DLL_PATH_SID_CODEC     "special://xbmcbin/system/players/paplayer/libsidplay2-@ARCH@.so"
 #define DLL_PATH_SPC_CODEC     "special://xbmcbin/system/players/paplayer/SNESAPU-@ARCH@.so"
 #define DLL_PATH_VGM_CODEC     "special://xbmcbin/system/players/paplayer/vgmstream-@ARCH@.so"
-#if defined(_LINUX) && !defined(__APPLE__)
-#define DLL_PATH_WAVPACK_CODEC "special://xbmcbin/system/players/paplayer/wavpack-@ARCH@.so"
-#else
 #define DLL_PATH_WAVPACK_CODEC "@WAVPACK_SONAME@"
-#endif
 #define DLL_PATH_YM_CODEC      "special://xbmcbin/system/players/paplayer/stsoundlibrary-@ARCH@.so"
-#define DLL_PATH_SHN_CODEC     "special://xbmcbin/system/players/paplayer/libshnplay-@ARCH@.so"
 
 #define DLL_PATH_FLAC_CODEC    "@FLAC_SONAME@"
 #define DLL_PATH_MODPLUG_CODEC "@MODPLUG_SONAME@"
