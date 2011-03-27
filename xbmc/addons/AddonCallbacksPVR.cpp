@@ -21,6 +21,7 @@
 
 #include "Application.h"
 #include "AddonCallbacksPVR.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 
 #include "pvr/epg/PVREpg.h"
@@ -57,7 +58,7 @@ CAddonCallbacksPVR::~CAddonCallbacksPVR()
   delete m_callbacks;
 }
 
-void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const PVRHANDLE handle, const PVR_PROGINFO *epgentry)
+void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const PVR_HANDLE handle, const EPG_TAG *epgentry)
 {
   CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
   if (addon == NULL || handle == NULL || epgentry == NULL)
@@ -66,20 +67,16 @@ void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const PVRHANDLE ha
     return;
   }
 
-  CPVRClient* client = (CPVRClient*) handle->CALLER_ADDRESS;
-  CPVREpg *xbmcEpg   = (CPVREpg*) handle->DATA_ADDRESS;
+  CPVREpg *xbmcEpg   = (CPVREpg*) handle->dataAddress;
 
-  PVR_PROGINFO *epgentry2 = (PVR_PROGINFO*) epgentry;
-  epgentry2->starttime   += client->GetTimeCorrection(); // XXX time correction
-  epgentry2->endtime     += client->GetTimeCorrection(); // XXX time correction
-
-  bool bUpdateDatabase = handle->DATA_IDENTIFIER == 1;
+  EPG_TAG *epgentry2 = (EPG_TAG*) epgentry;
+  bool bUpdateDatabase = handle->dataIdentifier == 1;
 
   /* transfer this entry to the epg */
   xbmcEpg->UpdateFromClient(epgentry2, bUpdateDatabase);
 }
 
-void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const PVRHANDLE handle, const PVR_CHANNEL *channel)
+void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL *channel)
 {
   CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
   if (addon == NULL || handle == NULL || channel == NULL)
@@ -88,8 +85,8 @@ void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const PVRHANDL
     return;
   }
 
-  CPVRClient* client                     = (CPVRClient*) handle->CALLER_ADDRESS;
-  CPVRChannelGroupInternal *xbmcChannels = (CPVRChannelGroupInternal*) handle->DATA_ADDRESS;
+  CPVRClient* client                     = (CPVRClient*) handle->callerAddress;
+  CPVRChannelGroupInternal *xbmcChannels = (CPVRChannelGroupInternal*) handle->dataAddress;
 
   CPVRChannel channelTag(*channel, client->GetClientID());
 
@@ -97,7 +94,7 @@ void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const PVRHANDL
   xbmcChannels->UpdateFromClient(channelTag);
 }
 
-void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording)
+void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const PVR_HANDLE handle, const PVR_RECORDING *recording)
 {
   CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
   if (addon == NULL || handle == NULL || recording == NULL)
@@ -106,28 +103,16 @@ void CAddonCallbacksPVR::PVRTransferRecordingEntry(void *addonData, const PVRHAN
     return;
   }
 
-  CPVRClient* client             = (CPVRClient*) handle->CALLER_ADDRESS;
-  CPVRRecordings *xbmcRecordings = (CPVRRecordings*) handle->DATA_ADDRESS;
+  CPVRClient* client             = (CPVRClient*) handle->callerAddress;
+  CPVRRecordings *xbmcRecordings = (CPVRRecordings*) handle->dataAddress;
 
-  CPVRRecording tag;
-  tag.m_clientIndex    = recording->index;
-  tag.m_clientID       = client->GetClientID();
-  tag.m_strTitle       = recording->title;
-  tag.m_recordingTime  = recording->recording_time;
-  tag.m_duration       = CDateTimeSpan(0, 0, recording->duration / 60, recording->duration % 60);
-  tag.m_Priority       = recording->priority;
-  tag.m_Lifetime       = recording->lifetime;
-  tag.m_strDirectory   = recording->directory;
-  tag.m_strPlot        = recording->description;
-  tag.m_strPlotOutline = recording->subtitle;
-  tag.m_strStreamURL   = recording->stream_url;
-  tag.m_strChannel     = recording->channel_name;
+  CPVRRecording tag(*recording, client->GetClientID());
 
   /* transfer this entry to the recordings container */
   xbmcRecordings->UpdateFromClient(tag);
 }
 
-void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE handle, const PVR_TIMERINFO *timer)
+void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const PVR_HANDLE handle, const PVR_TIMER *timer)
 {
   CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
   if (addon == NULL || handle == NULL || timer == NULL)
@@ -136,35 +121,18 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE 
     return;
   }
 
-  CPVRTimers *xbmcTimers     = (CPVRTimers*) handle->DATA_ADDRESS;
-  CPVRClient* client         = (CPVRClient*) handle->CALLER_ADDRESS;
-  const CPVRChannel *channel = CPVRManager::GetChannelGroups()->GetByUniqueID(timer->channelUid, client->GetClientID());
+  CPVRTimers *xbmcTimers     = (CPVRTimers*) handle->dataAddress;
+  CPVRClient* client         = (CPVRClient*) handle->callerAddress;
+  const CPVRChannel *channel = CPVRManager::GetChannelGroups()->GetByUniqueID(timer->iClientChannelUid, client->GetClientID());
 
   if (channel == NULL)
   {
     CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - cannot find channel %d on client %d",
-        __FUNCTION__, timer->channelUid, client->GetClientID());
+        __FUNCTION__, timer->iClientChannelUid, client->GetClientID());
     return;
   }
 
-  CPVRTimerInfoTag tag;
-  tag.m_iClientID         = client->GetClientID();
-  tag.m_iClientIndex      = timer->index;
-  tag.m_bIsActive         = timer->active == 1;
-  tag.m_strTitle          = timer->title;
-  tag.m_strDir            = timer->directory;
-  tag.m_iClientNumber     = timer->channelNum;
-  tag.m_iClientChannelUid = timer->channelUid;
-  tag.m_StartTime         = (time_t) (timer->starttime+client->GetTimeCorrection());
-  tag.m_StopTime          = (time_t) (timer->endtime+client->GetTimeCorrection());
-  tag.m_FirstDay          = (time_t) (timer->firstday+client->GetTimeCorrection());
-  tag.m_iPriority         = timer->priority;
-  tag.m_iLifetime         = timer->lifetime;
-  tag.m_bIsRecording      = timer->recording == 1;
-  tag.m_bIsRepeating      = timer->repeat == 1;
-  tag.m_iWeekdays         = timer->repeatflags;
-  tag.m_strFileNameAndPath.Format("pvr://client%i/timers/%i", tag.m_iClientID, tag.m_iClientIndex);
-  tag.UpdateSummary();
+  CPVRTimerInfoTag tag(*timer, client->GetClientID());
 
   /* transfer this entry to the timers container */
   xbmcTimers->UpdateFromClient(tag);
@@ -184,8 +152,8 @@ void CAddonCallbacksPVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)
   PVR_MENUHOOKS *hooks = client->GetMenuHooks();
 
   PVR_MENUHOOK hookInt;
-  hookInt.hook_id   = hook->hook_id;
-  hookInt.string_id = hook->string_id;
+  hookInt.iHookId            = hook->iHookId;
+  hookInt.iLocalizedStringId = hook->iLocalizedStringId;
 
   /* add this new hook */
   hooks->push_back(hookInt);

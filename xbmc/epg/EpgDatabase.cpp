@@ -291,10 +291,10 @@ int CEpgDatabase::Get(CEpg *epg, const CDateTime &start /* = NULL */, const CDat
         newTag.m_iParentalRating    = m_pDS->fv("iParentalRating").get_asInt();
         newTag.m_iStarRating        = m_pDS->fv("iStarRating").get_asInt();
         newTag.m_bNotify            = m_pDS->fv("bNotify").get_asBool();
-        newTag.m_iEpisodeNum        = m_pDS->fv("iEpisodeId").get_asInt();
+        newTag.m_iEpisodeNumber        = m_pDS->fv("iEpisodeId").get_asInt();
         newTag.m_iEpisodePart       = m_pDS->fv("iEpisodePart").get_asInt();
         newTag.m_strEpisodeName     = m_pDS->fv("sEpisodeName").get_asString().c_str();
-        newTag.m_iSeriesNum         = m_pDS->fv("iSeriesId").get_asInt();
+        newTag.m_iSeriesNumber         = m_pDS->fv("iSeriesId").get_asInt();
 
         epg->AddEntry(newTag);
         ++iReturn;

@@ -66,7 +66,7 @@ DLLEXPORT void PVR_unregister_me()
     m_Handle->PVRLib_UnRegisterMe(m_Handle->addonData, m_cb);
 }
 
-DLLEXPORT void PVR_transfer_epg_entry(const PVRHANDLE handle, const PVR_PROGINFO *epgentry)
+DLLEXPORT void PVR_transfer_epg_entry(const PVR_HANDLE handle, const EPG_TAG *epgentry)
 {
   if (m_cb == NULL)
     return;
@@ -74,7 +74,7 @@ DLLEXPORT void PVR_transfer_epg_entry(const PVRHANDLE handle, const PVR_PROGINFO
   m_cb->TransferEpgEntry(m_Handle->addonData, handle, epgentry);
 }
 
-DLLEXPORT void PVR_transfer_channel_entry(const PVRHANDLE handle, const PVR_CHANNEL *chan)
+DLLEXPORT void PVR_transfer_channel_entry(const PVR_HANDLE handle, const PVR_CHANNEL *chan)
 {
   if (m_cb == NULL)
     return;
@@ -82,7 +82,7 @@ DLLEXPORT void PVR_transfer_channel_entry(const PVRHANDLE handle, const PVR_CHAN
   m_cb->TransferChannelEntry(m_Handle->addonData, handle, chan);
 }
 
-DLLEXPORT void PVR_transfer_timer_entry(const PVRHANDLE handle, const PVR_TIMERINFO *timer)
+DLLEXPORT void PVR_transfer_timer_entry(const PVR_HANDLE handle, const PVR_TIMER *timer)
 {
   if (m_cb == NULL)
     return;
@@ -90,7 +90,7 @@ DLLEXPORT void PVR_transfer_timer_entry(const PVRHANDLE handle, const PVR_TIMERI
   m_cb->TransferTimerEntry(m_Handle->addonData, handle, timer);
 }
 
-DLLEXPORT void PVR_transfer_recording_entry(const PVRHANDLE handle, const PVR_RECORDINGINFO *recording)
+DLLEXPORT void PVR_transfer_recording_entry(const PVR_HANDLE handle, const PVR_RECORDING *recording)
 {
   if (m_cb == NULL)
     return;

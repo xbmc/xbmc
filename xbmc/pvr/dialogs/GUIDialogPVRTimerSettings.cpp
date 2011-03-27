@@ -244,8 +244,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
     if (channeltag)
     {
       tag->m_iClientChannelUid = channeltag->UniqueID();
-      tag->m_iClientNumber     = channeltag->ClientChannelNumber();
-      tag->m_iClientID         = channeltag->ClientID();
+      tag->m_iClientId         = channeltag->ClientID();
       tag->m_bIsRadio          = channeltag->IsRadio();
       tag->m_iChannelNumber    = channeltag->ChannelNumber();
     }
@@ -257,8 +256,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
     if (channeltag)
     {
       tag->m_iClientChannelUid = channeltag->UniqueID();
-      tag->m_iClientNumber     = channeltag->ClientChannelNumber();
-      tag->m_iClientID         = channeltag->ClientID();
+      tag->m_iClientId         = channeltag->ClientID();
       tag->m_bIsRadio          = channeltag->IsRadio();
       tag->m_iChannelNumber    = channeltag->ChannelNumber();
     }
@@ -381,5 +379,5 @@ void CGUIDialogPVRTimerSettings::OnOkay()
   m_cancelled = false;
   CPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
   if (tag->m_strTitle == g_localizeStrings.Get(19056))
-    tag->m_strTitle = CPVRManager::GetChannelGroups()->GetByUniqueID(tag->m_iClientChannelUid, tag->m_iClientID)->ChannelName();
+    tag->m_strTitle = CPVRManager::GetChannelGroups()->GetByUniqueID(tag->m_iClientChannelUid, tag->m_iClientId)->ChannelName();
 }

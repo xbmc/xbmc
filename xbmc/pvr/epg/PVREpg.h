@@ -81,8 +81,8 @@ public:
    * @param bUpdateDatabase If set to true, this event will be persisted in the database.
    * @return True if it was updated successfully, false otherwise.
    */
-  bool UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase = false);
-  bool UpdateFromClient(const PVR_PROGINFO *data, bool bUpdateDatabase = false) { return UpdateEntry(data, bUpdateDatabase); };
+  bool UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase = false);
+  bool UpdateFromClient(const EPG_TAG *data, bool bUpdateDatabase = false) { return UpdateEntry(data, bUpdateDatabase); };
 
   /*!
    * @brief True if this is a table for a radio channel, false if it's for TV.

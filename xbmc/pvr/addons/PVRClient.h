@@ -42,12 +42,15 @@ public:
  *
  * Also translates XBMC's C++ structures to the addon's C structures.
  */
-class CPVRClient : public ADDON::CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>
+class CPVRClient : public ADDON::CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>
 {
 public:
   CPVRClient(const ADDON::AddonProps& props);
   CPVRClient(const cp_extension_t *ext);
   ~CPVRClient(void);
+
+  /** @name PVR add-on methods */
+  //@{
 
   /*!
    * @brief Initialise the instance of this add-on.
@@ -86,12 +89,23 @@ public:
    */
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
 
+  //@}
+  /** @name PVR server methods */
+  //@{
+
   /*!
    * @brief Query this add-on's capabilities.
-   * @param props The add-on properties.
+   * @param pCapabilities The add-on properties.
    * @return PVR_ERROR_NO_ERROR if the properties were fetched successfully.
    */
-  PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
+  PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES *pCapabilities);
+
+  /*!
+   * @brief Get the stream properties of the stream that's currently being read.
+   * @param pProperties The properties.
+   * @return PVR_ERROR_NO_ERROR if the properties have been fetched successfully.
+   */
+  PVR_ERROR GetStreamProperties(PVR_STREAM_PROPERTIES *pProperties);
 
   /*!
    * @return The name reported by the backend.
@@ -121,25 +135,19 @@ public:
    */
   PVR_ERROR GetDriveSpace(long long *iTotal, long long *iUsed);
 
-  /*!
-   * @brief Get the time reported by the backend.
-   * @param localTime The local time.
-   * @param iGmtOffset The GMT offset used.
-   * @return PVR_ERROR_NO_ERROR if the time has been fetched successfully.
-   */
-  PVR_ERROR GetBackendTime(time_t *localTime, int *iGmtOffset);
+//  /*!
+//   * @brief Get the time reported by the backend.
+//   * @param localTime The local time.
+//   * @param iGmtOffset The GMT offset used.
+//   * @return PVR_ERROR_NO_ERROR if the time has been fetched successfully.
+//   */
+//  PVR_ERROR GetBackendTime(time_t *localTime, int *iGmtOffset);
 
   /*!
    * @brief Start a channel scan on the server.
    * @return PVR_ERROR_NO_ERROR if the channel scan has been started successfully.
    */
   PVR_ERROR StartChannelScan(void);
-
-  /*!
-   * @brief Get the correction to use to convert local time.
-   * @return The correction in seconds.
-   */
-  int GetTimeCorrection(void);
 
   /*!
    * @return The ID of the client.
@@ -162,6 +170,10 @@ public:
    */
   void CallMenuHook(const PVR_MENUHOOK &hook);
 
+  //@}
+  /** @name PVR EPG methods */
+  //@{
+
   /*!
    * @brief Request an EPG table for a channel from the client.
    * @param channel The channel to get the EPG table for.
@@ -173,10 +185,18 @@ public:
    */
   PVR_ERROR GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start = 0, time_t end = 0, bool bSaveInDb = false);
 
+  //@}
+  /** @name PVR channel group methods */
+  //@{
+
+  //@}
+  /** @name PVR channel methods */
+  //@{
+
   /*!
-   * @return The total amount of channels on the server or -1 on error.
-   */
-  int GetNumChannels(void);
+    * @return The total amount of channels on the server or -1 on error.
+    */
+  int GetChannelsAmount(void);
 
   /*!
    * @brief Request the list of all channels from the backend.
@@ -184,19 +204,23 @@ public:
    * @param bRadio True to get the radio channels, false to get the TV channels.
    * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
    */
-  PVR_ERROR GetChannelList(CPVRChannelGroup &channels, bool bRadio);
+  PVR_ERROR GetChannels(CPVRChannelGroup &channels, bool bRadio);
+
+  //@}
+  /** @name PVR recording methods */
+  //@{
 
   /*!
    * @return The total amount of channels on the server or -1 on error.
    */
-  int GetNumRecordings(void);
+  int GetRecordingsAmount(void);
 
   /*!
    * @brief Request the list of all recordings from the backend.
    * @param results The container to add the recordings to.
    * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
    */
-  PVR_ERROR GetAllRecordings(CPVRRecordings *results);
+  PVR_ERROR GetRecordings(CPVRRecordings *results);
 
   /*!
    * @brief Delete a recording on the backend.
@@ -208,22 +232,25 @@ public:
   /*!
    * @brief Rename a recording on the backend.
    * @param recording The recording to rename.
-   * @param strNewName The new name.
    * @return PVR_ERROR_NO_ERROR if the recording has been renamed successfully.
    */
-  PVR_ERROR RenameRecording(const CPVRRecording &recording, const CStdString &strNewName);
+  PVR_ERROR RenameRecording(const CPVRRecording &recording);
+
+  //@}
+  /** @name PVR timer methods */
+  //@{
 
   /*!
    * @return The total amount of timers on the backend or -1 on error.
    */
-  int GetNumTimers(void);
+  int GetTimersAmount(void);
 
   /*!
    * @brief Request the list of all timers from the backend.
    * @param results The container to store the result in.
    * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
    */
-  PVR_ERROR GetAllTimers(CPVRTimers *results);
+  PVR_ERROR GetTimers(CPVRTimers *results);
 
   /*!
    * @brief Add a timer on the backend.
@@ -254,6 +281,10 @@ public:
    * @return PVR_ERROR_NO_ERROR if the timer has been updated successfully.
    */
   PVR_ERROR UpdateTimer(const CPVRTimerInfoTag &timer);
+
+  //@}
+  /** @name PVR live stream methods */
+  //@{
 
   /*!
    * @brief Open a live stream on the server.
@@ -310,7 +341,7 @@ public:
    * @param qualityinfo The signal quality.
    * @return True if the signal quality has been read successfully, false otherwise.
    */
-  bool SignalQuality(PVR_SIGNALQUALITY &qualityinfo);
+  bool SignalQuality(PVR_SIGNAL_STATUS &qualityinfo);
 
   /*!
    * @brief Get the stream URL for a channel from the server. Used by the MediaPortal add-on.
@@ -318,6 +349,10 @@ public:
    * @return The requested URL.
    */
   const char *GetLiveStreamURL(const CPVRChannel &channel);
+
+  //@}
+  /** @name PVR recording stream methods */
+  //@{
 
   /*!
    * @brief Open a recording on the server.
@@ -357,12 +392,9 @@ public:
    */
   int64_t LengthRecordedStream(void);
 
-  /*!
-   * @brief Get the stream properties of the stream that's currently being read.
-   * @param props The properties.
-   * @return PVR_ERROR_NO_ERROR if the properties have been fetched successfully.
-   */
-  PVR_ERROR GetStreamProperties(PVR_STREAMPROPS *props);
+  //@}
+  /** @name PVR demultiplexer methods */
+  //@{
 
   /*!
    * @brief Reset the demultiplexer in the add-on.
@@ -385,6 +417,8 @@ public:
    */
   DemuxPacket *DemuxRead(void);
 
+  //@}
+
 protected:
   bool                  m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
   IPVRClientCallback   *m_manager;              /*!< the callback to use for this add-on */
@@ -393,8 +427,6 @@ protected:
   PVR_MENUHOOKS         m_menuhooks;            /*!< the menu hooks for this add-on */
 
   /* cached data */
-  int                   m_iTimeCorrection;      /*!< the cached time correction value */
-  bool                  m_bGotTimeCorrection;   /*!< true if the time correction value has already been fetched */
   CStdString            m_strBackendName;       /*!< the cached backend version */
   bool                  m_bGotBackendName;      /*!< true if the backend name has already been fetched */
   CStdString            m_strBackendVersion;    /*!< the cached backend version */
@@ -403,7 +435,7 @@ protected:
   bool                  m_bGotConnectionString; /*!< true if the connection string has already been fetched */
   CStdString            m_strFriendlyName;      /*!< the cached friendly name */
   bool                  m_bGotFriendlyName;     /*!< true if the friendly name has already been fetched */
-  PVR_SERVERPROPS       m_serverProperties;     /*!< the cached server properties */
+  PVR_ADDON_CAPABILITIES m_serverProperties;     /*!< the cached server properties */
   bool                  m_bGotServerProperties; /*!< true if the server properties have already been fetched */
 
 private:
@@ -419,19 +451,14 @@ private:
    * @param xbmcTimer The timer on XBMC's side.
    * @param addonTimer The timer on the addon's side.
    */
-  void WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIMERINFO &addonTimer);
+  void WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIMER &addonTimer);
 
   /*!
    * @brief Copy over recording info from xbmcRecording to addonRecording.
    * @param xbmcRecording The recording on XBMC's side.
    * @param addonRecording The recording on the addon's side.
    */
-  void WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PVR_RECORDINGINFO &addonRecording);
-
-  /*!
-   * @brief Get the time correction value from the server and store it locally.
-   */
-  void SetTimeCorrection(void);
+  void WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PVR_RECORDING &addonRecording);
 
   /*!
    * @brief Get the backend name from the server and store it locally.

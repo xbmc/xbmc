@@ -31,7 +31,7 @@ public:
   cVNSIRecording();
   ~cVNSIRecording();
 
-  bool Open(const PVR_RECORDINGINFO& recinfo);
+  bool Open(const PVR_RECORDING& recinfo);
   void Close();
 
   int Read(unsigned char* buf, uint32_t buf_size);

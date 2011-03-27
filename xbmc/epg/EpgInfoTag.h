@@ -56,8 +56,8 @@ private:
   int                        m_iParentalRating;    /*!< parental rating */
   int                        m_iStarRating;        /*!< star rating */
   bool                       m_bNotify;            /*!< notify on start */
-  int                        m_iSeriesNum;         /*!< series number */
-  int                        m_iEpisodeNum;        /*!< episode number */
+  int                        m_iSeriesNumber;      /*!< series number */
+  int                        m_iEpisodeNumber;     /*!< episode number */
   int                        m_iEpisodePart;       /*!< episode part number */
   CStdString                 m_strEpisodeName;     /*!< episode name */
 
@@ -132,7 +132,7 @@ public:
 
   /*!
    * @brief Change the unique broadcast ID of this event.
-   * @param iUniqueBroadcastID The new unique broadcast ID.
+   * @param iUniqueBroadcastId The new unique broadcast ID.
    */
   void SetUniqueBroadcastID(int iUniqueBroadcastID);
 
@@ -297,7 +297,7 @@ public:
    * @brief The series number of this event.
    * @return The series number.
    */
-  int SeriesNum(void) const { return m_iSeriesNum; }
+  int SeriesNum(void) const { return m_iSeriesNumber; }
 
   /*!
    * @brief Change the series number of this event.
@@ -309,7 +309,7 @@ public:
    * @brief The episode number of this event.
    * @return The episode number.
    */
-  int EpisodeNum(void) const { return m_iEpisodeNum; }
+  int EpisodeNum(void) const { return m_iEpisodeNumber; }
 
   /*!
    * @brief Change the episode number of this event.

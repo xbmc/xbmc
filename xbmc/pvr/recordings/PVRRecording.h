@@ -43,17 +43,18 @@
 class CPVRRecording : public CVideoInfoTag
 {
 public:
-  int           m_clientID;           /*!< ID of the backend */
-  int           m_clientIndex;        /*!< index number of the recording on the client, -1 for unknown */
-  CStdString    m_strChannel;         /*!< name of the channel this was recorded from */
-  CDateTime     m_recordingTime;      /*!< start time of the recording */
-  CDateTimeSpan m_duration;           /*!< duration of this recording */
-  int           m_Priority;           /*!< priority of this recording */
-  int           m_Lifetime;           /*!< lifetime of this recording */
-  CStdString    m_strStreamURL;       /*!< stream URL. if empty use pvr client */
-  CStdString    m_strDirectory;       /*!< directory of this recording on the client */
+  int           m_iClientId;      /*!< ID of the backend */
+  int           m_iClientIndex;   /*!< index number of the recording on the client, -1 for unknown */
+  CStdString    m_strChannelName; /*!< name of the channel this was recorded from */
+  CDateTime     m_recordingTime;  /*!< start time of the recording */
+  CDateTimeSpan m_duration;       /*!< duration of this recording */
+  int           m_iPriority;      /*!< priority of this recording */
+  int           m_iLifetime;      /*!< lifetime of this recording */
+  CStdString    m_strStreamURL;   /*!< stream URL. if empty use pvr client */
+  CStdString    m_strDirectory;   /*!< directory of this recording on the client */
 
-  CPVRRecording();
+  CPVRRecording(void);
+  CPVRRecording(const PVR_RECORDING &recording, unsigned int iClientId);
   virtual ~CPVRRecording() {};
 
   bool operator ==(const CPVRRecording& right) const;

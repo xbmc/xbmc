@@ -51,51 +51,50 @@ public:
   bool IsUp();
 
   /* General handling */
-  const char* GetBackendName();
-  const char* GetBackendVersion();
-  const char* GetConnectionString();
-  PVR_ERROR GetDriveSpace(long long *total, long long *used);
+  const char* GetBackendName(void);
+  const char* GetBackendVersion(void);
+  const char* GetConnectionString(void);
+  PVR_ERROR GetDriveSpace(long long *iTotal, long long *iUsed);
   PVR_ERROR GetMPTVTime(time_t *localTime, int *gmtOffset);
 
   /* EPG handling */
-  PVR_ERROR RequestEPGForChannel(const PVR_CHANNEL &channel, PVRHANDLE handle, time_t start = NULL, time_t end = NULL);
+  PVR_ERROR GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart = NULL, time_t iEnd = NULL);
 
   /* Channel handling */
   int GetNumChannels(void);
-  PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio = 0);
+  PVR_ERROR GetChannels(PVR_HANDLE handle, bool bRadio);
 
   /* Record handling **/
   int GetNumRecordings(void);
-  PVR_ERROR RequestRecordingsList(PVRHANDLE handle);
-  PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo);
-  PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname);
+  PVR_ERROR GetRecordings(PVR_HANDLE handle);
+  PVR_ERROR DeleteRecording(const PVR_RECORDING &recording);
+  PVR_ERROR RenameRecording(const PVR_RECORDING &recording, const char *strNewName);
 
   /* Timer handling */
   int GetNumTimers(void);
-  PVR_ERROR RequestTimerList(PVRHANDLE handle);
-  PVR_ERROR GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &tag);
-  PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo);
-  PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force = false);
-  PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname);
-  PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo);
+  PVR_ERROR GetTimers(PVR_HANDLE handle);
+  PVR_ERROR GetTimerInfo(unsigned int timernumber, PVR_TIMER &timer);
+  PVR_ERROR AddTimer(const PVR_TIMER &timer);
+  PVR_ERROR DeleteTimer(const PVR_TIMER &timer, bool bForceDelete = false);
+  PVR_ERROR UpdateTimer(const PVR_TIMER &timer);
 
   /* Live stream handling */
-  bool OpenLiveStream(const PVR_CHANNEL &channelinfo);
+  bool OpenLiveStream(const PVR_CHANNEL &channel);
   void CloseLiveStream();
-  int ReadLiveStream(unsigned char* buf, int buf_size);
+  int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize);
   int GetCurrentClientChannel();
-  bool SwitchChannel(const PVR_CHANNEL &channelinfo);
-  PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo);
+  bool SwitchChannel(const PVR_CHANNEL &channel);
+  PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus);
 
   /* Record stream handling */
-  bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo);
+  bool OpenRecordedStream(const PVR_RECORDING &recording);
   void CloseRecordedStream(void);
-  int ReadRecordedStream(unsigned char* buf, int buf_size);
-  long long SeekRecordedStream(long long pos, int whence=SEEK_SET);
+  int ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize);
+  long long SeekRecordedStream(long long iPosition, int iWhence = SEEK_SET);
   long long LengthRecordedStream(void);
 
   //MG: Added for MediaPortal streaming
-  const char* GetLiveStreamURL(const PVR_CHANNEL &channelinfo);
+  const char* GetLiveStreamURL(const PVR_CHANNEL &channel);
 
 protected:
   MPTV::Socket           *m_tcpclient;

@@ -142,7 +142,7 @@ bool CPVRClients::HasTimerSupport(int iClientId)
 {
   CSingleLock lock(m_critSection);
 
-  return m_clientsProps[iClientId].SupportTimers;
+  return m_clientsProps[iClientId].bSupportsTimers;
 }
 
 bool CPVRClients::IsValidClient(int iClientId)
@@ -308,8 +308,8 @@ bool CPVRClients::LoadClients(void)
     if (addon && addon->Create(iClientId, this))
     {
       /* get the client's properties */
-      PVR_SERVERPROPS props;
-      if (addon->GetProperties(&props) == PVR_ERROR_NO_ERROR)
+      PVR_ADDON_CAPABILITIES props;
+      if (addon->GetAddonCapabilities(&props) == PVR_ERROR_NO_ERROR)
       {
         m_clientMap.insert(std::make_pair(iClientId, addon));
         m_clientsProps.insert(std::make_pair(iClientId, props));
@@ -382,21 +382,21 @@ void CPVRClients::ResetQualityData(void)
 {
   if (g_guiSettings.GetBool("pvrplayback.signalquality"))
   {
-    strncpy(m_qualityInfo.frontend_name, g_localizeStrings.Get(13205).c_str(), 1024);
-    strncpy(m_qualityInfo.frontend_status, g_localizeStrings.Get(13205).c_str(), 1024);
+    strncpy(m_qualityInfo.strAdapterName, g_localizeStrings.Get(13205).c_str(), 1024);
+    strncpy(m_qualityInfo.strAdapterStatus, g_localizeStrings.Get(13205).c_str(), 1024);
   }
   else
   {
-    strncpy(m_qualityInfo.frontend_name, g_localizeStrings.Get(13106).c_str(), 1024);
-    strncpy(m_qualityInfo.frontend_status, g_localizeStrings.Get(13106).c_str(), 1024);
+    strncpy(m_qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(), 1024);
+    strncpy(m_qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(), 1024);
   }
-  m_qualityInfo.snr           = 0;
-  m_qualityInfo.signal        = 0;
-  m_qualityInfo.ber           = 0;
-  m_qualityInfo.unc           = 0;
-  m_qualityInfo.video_bitrate = 0;
-  m_qualityInfo.audio_bitrate = 0;
-  m_qualityInfo.dolby_bitrate = 0;
+  m_qualityInfo.iSNR          = 0;
+  m_qualityInfo.iSignal       = 0;
+  m_qualityInfo.iSNR          = 0;
+  m_qualityInfo.iUNC          = 0;
+  m_qualityInfo.dVideoBitrate = 0;
+  m_qualityInfo.dAudioBitrate = 0;
+  m_qualityInfo.dDolbyBitrate = 0;
 }
 
 void CPVRClients::UpdateSignalQuality(void)
@@ -431,7 +431,7 @@ bool CPVRClients::OpenLiveStream(const CPVRChannel &tag)
 
   /* try to open the stream on the client */
   if (tag.StreamURL().IsEmpty() &&
-      m_clientsProps[tag.ClientID()].HandleInputStream &&
+      m_clientsProps[tag.ClientID()].bHandlesInputStream &&
       m_clientMap[tag.ClientID()]->OpenLiveStream(tag))
   {
     m_currentChannel = &tag;
@@ -491,10 +491,10 @@ bool CPVRClients::OpenRecordedStream(const CPVRRecording &tag)
     delete m_currentRecording;
 
   /* try to open the recording stream on the client */
-  if (m_clientMap[tag.m_clientID]->OpenRecordedStream(tag))
+  if (m_clientMap[tag.m_iClientId]->OpenRecordedStream(tag))
   {
     m_currentRecording = &tag;
-    m_strPlayingClientName = GetClientName(tag.m_clientID);
+    m_strPlayingClientName = GetClientName(tag.m_iClientId);
     m_scanStart = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
     bReturn = true;
   }
@@ -505,7 +505,7 @@ bool CPVRClients::OpenRecordedStream(const CPVRRecording &tag)
 int CPVRClients::ReadRecordedStream(void* lpBuf, int64_t uiBufSize)
 {
   CSingleLock lock(m_critSection);
-  return m_currentRecording ? m_clientMap[m_currentRecording->m_clientID]->ReadRecordedStream(lpBuf, uiBufSize) : 0;
+  return m_currentRecording ? m_clientMap[m_currentRecording->m_iClientId]->ReadRecordedStream(lpBuf, uiBufSize) : 0;
 }
 
 bool CPVRClients::CloseRecordedStream(void)
@@ -516,9 +516,9 @@ bool CPVRClients::CloseRecordedStream(void)
   if (!m_currentRecording)
     return bReturn;
 
-  if (m_currentRecording->m_clientID > 0 && m_clientMap[m_currentRecording->m_clientID])
+  if (m_currentRecording->m_iClientId > 0 && m_clientMap[m_currentRecording->m_iClientId])
   {
-    m_clientMap[m_currentRecording->m_clientID]->CloseRecordedStream();
+    m_clientMap[m_currentRecording->m_iClientId]->CloseRecordedStream();
     bReturn = true;
   }
 
@@ -555,7 +555,7 @@ int CPVRClients::ReadStream(void* lpBuf, int64_t uiBufSize)
   if (m_currentChannel)
     return m_clientMap[m_currentChannel->ClientID()]->ReadLiveStream(lpBuf, uiBufSize);
   else if (m_currentRecording)
-    return m_clientMap[m_currentRecording->m_clientID]->ReadRecordedStream(lpBuf, uiBufSize);
+    return m_clientMap[m_currentRecording->m_iClientId]->ReadRecordedStream(lpBuf, uiBufSize);
 
   return 0;
 }
@@ -597,7 +597,7 @@ int64_t CPVRClients::LengthStream(void)
   if (m_currentChannel)
     streamLength = 0;
   else if (m_currentRecording)
-    streamLength = m_clientMap[m_currentRecording->m_clientID]->LengthRecordedStream();
+    streamLength = m_clientMap[m_currentRecording->m_iClientId]->LengthRecordedStream();
 
   return streamLength;
 }
@@ -609,7 +609,7 @@ int64_t CPVRClients::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*
   if (m_currentChannel)
     streamNewPos = 0;
   else if (m_currentRecording)
-    streamNewPos = m_clientMap[m_currentRecording->m_clientID]->SeekRecordedStream(iFilePosition, iWhence);
+    streamNewPos = m_clientMap[m_currentRecording->m_iClientId]->SeekRecordedStream(iFilePosition, iWhence);
 
   return streamNewPos;
 }
@@ -621,7 +621,7 @@ int64_t CPVRClients::GetStreamPosition(void)
   if (m_currentChannel)
     streamPos = 0;
   else if (m_currentRecording)
-    streamPos = m_clientMap[m_currentRecording->m_clientID]->PositionRecordedStream();
+    streamPos = m_clientMap[m_currentRecording->m_iClientId]->PositionRecordedStream();
 
   return streamPos;
 }
@@ -631,14 +631,14 @@ bool CPVRClients::AddTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
   *error = PVR_ERROR_UNKOWN;
   CSingleLock lock(m_critSection);
 
-  if (IsValidClient(timer.m_iClientID))
+  if (IsValidClient(timer.m_iClientId))
   {
-    boost::shared_ptr<CPVRClient> client = m_clientMap.find(timer.m_iClientID)->second;
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(timer.m_iClientId)->second;
     lock.Leave();
     *error = client->AddTimer(timer);
   }
   else
-    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, timer.m_iClientID);
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, timer.m_iClientId);
 
   return *error == PVR_ERROR_NO_ERROR;
 }
@@ -648,14 +648,14 @@ bool CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
   *error = PVR_ERROR_UNKOWN;
   CSingleLock lock(m_critSection);
 
-  if (IsValidClient(timer.m_iClientID))
+  if (IsValidClient(timer.m_iClientId))
   {
-    boost::shared_ptr<CPVRClient> client = m_clientMap.find(timer.m_iClientID)->second;
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(timer.m_iClientId)->second;
     lock.Leave();
     *error = client->UpdateTimer(timer);
   }
   else
-    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, timer.m_iClientID);
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, timer.m_iClientId);
 
   return *error == PVR_ERROR_NO_ERROR;
 }
@@ -665,14 +665,14 @@ bool CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, PVR_ER
   *error = PVR_ERROR_UNKOWN;
   CSingleLock lock(m_critSection);
 
-  if (IsValidClient(timer.m_iClientID))
+  if (IsValidClient(timer.m_iClientId))
   {
-    boost::shared_ptr<CPVRClient> client = m_clientMap.find(timer.m_iClientID)->second;
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(timer.m_iClientId)->second;
     lock.Leave();
     *error = client->DeleteTimer(timer, bForce);
   }
   else
-    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, timer.m_iClientID);
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, timer.m_iClientId);
 
   return *error == PVR_ERROR_NO_ERROR;
 }
@@ -682,14 +682,14 @@ bool CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &s
   *error = PVR_ERROR_UNKOWN;
   CSingleLock lock(m_critSection);
 
-  if (IsValidClient(timer.m_iClientID))
+  if (IsValidClient(timer.m_iClientId))
   {
-    boost::shared_ptr<CPVRClient> client = m_clientMap.find(timer.m_iClientID)->second;
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(timer.m_iClientId)->second;
     lock.Leave();
     *error = client->RenameTimer(timer, strNewName);
   }
   else
-    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, timer.m_iClientID);
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, timer.m_iClientId);
 
   return *error == PVR_ERROR_NO_ERROR;
 }
@@ -704,14 +704,14 @@ int CPVRClients::GetTimers(CPVRTimers *timers)
   CLIENTMAPITR itrClients = clients.begin();
   while (itrClients != clients.end())
   {
-    if (!GetClientProperties((*itrClients).second->GetID())->SupportTimers ||
-        (*itrClients).second->GetNumTimers() <= 0)
+    if (!GetClientProperties((*itrClients).second->GetID())->bSupportsTimers ||
+        (*itrClients).second->GetTimersAmount() <= 0)
     {
       ++itrClients;
       continue;
     }
 
-    (*itrClients).second->GetAllTimers(timers);
+    (*itrClients).second->GetTimers(timers);
     ++itrClients;
   }
 
@@ -728,9 +728,9 @@ int CPVRClients::GetRecordings(CPVRRecordings *recordings)
   while (itr != clients.end())
   {
     /* Load only if the client have Recordings */
-    if ((*itr).second->GetNumRecordings() > 0)
+    if ((*itr).second->GetRecordingsAmount() > 0)
     {
-      (*itr).second->GetAllRecordings(recordings);
+      (*itr).second->GetRecordings(recordings);
     }
     itr++;
   }
@@ -738,19 +738,19 @@ int CPVRClients::GetRecordings(CPVRRecordings *recordings)
   return recordings->size() - iCurSize;
 }
 
-bool CPVRClients::RenameRecording(const CPVRRecording &recording, const CStdString &strNewName, PVR_ERROR *error)
+bool CPVRClients::RenameRecording(const CPVRRecording &recording, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
   CSingleLock lock(m_critSection);
 
-  if (IsValidClient(recording.m_clientID))
+  if (IsValidClient(recording.m_iClientId))
   {
-    boost::shared_ptr<CPVRClient> client = m_clientMap.find(recording.m_clientID)->second;
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(recording.m_iClientId)->second;
     lock.Leave();
-    *error = client->RenameRecording(recording, strNewName);
+    *error = client->RenameRecording(recording);
   }
   else
-    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, recording.m_clientID);
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, recording.m_iClientId);
 
   return *error == PVR_ERROR_NO_ERROR;
 }
@@ -760,14 +760,14 @@ bool CPVRClients::DeleteRecording(const CPVRRecording &recording, PVR_ERROR *err
   *error = PVR_ERROR_UNKOWN;
   CSingleLock lock(m_critSection);
 
-  if (IsValidClient(recording.m_clientID))
+  if (IsValidClient(recording.m_iClientId))
   {
-    boost::shared_ptr<CPVRClient> client = m_clientMap.find(recording.m_clientID)->second;
+    boost::shared_ptr<CPVRClient> client = m_clientMap.find(recording.m_iClientId)->second;
     lock.Leave();
     *error = client->DeleteRecording(recording);
   }
   else
-    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, recording.m_clientID);
+    CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, recording.m_iClientId);
 
   return *error == PVR_ERROR_NO_ERROR;
 }
@@ -800,8 +800,8 @@ int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)
   CLIENTMAPITR itrClients = clients.begin();
   while (itrClients != clients.end())
   {
-    if ((*itrClients).second->ReadyToUse() && (*itrClients).second->GetNumChannels() > 0)
-      (*itrClients).second->GetChannelList(*group, group->IsRadio());
+    if ((*itrClients).second->ReadyToUse())
+      (*itrClients).second->GetChannels(*group, group->IsRadio());
 
     itrClients++;
   }
@@ -862,19 +862,19 @@ const char *CPVRClients::CharInfoBackendNumber(void)
           m_strBackendDiskspace = g_localizeStrings.Get(19055);
         }
 
-        int NumChannels = m_clientMap[(*itr).first]->GetNumChannels();
+        int NumChannels = m_clientMap[(*itr).first]->GetChannelsAmount();
         if (NumChannels >= 0)
           m_strBackendChannels.Format("%i", NumChannels);
         else
           m_strBackendChannels = g_localizeStrings.Get(161);
 
-        int NumTimers = m_clientMap[(*itr).first]->GetNumTimers();
+        int NumTimers = m_clientMap[(*itr).first]->GetTimersAmount();
         if (NumTimers >= 0)
           m_strBackendTimers.Format("%i", NumTimers);
         else
           m_strBackendTimers = g_localizeStrings.Get(161);
 
-        int NumRecordings = m_clientMap[(*itr).first]->GetNumRecordings();
+        int NumRecordings = m_clientMap[(*itr).first]->GetRecordingsAmount();
         if (NumRecordings >= 0)
           m_strBackendRecordings.Format("%i", NumRecordings);
         else
@@ -945,7 +945,7 @@ void CPVRClients::StartChannelScan(void)
   CLIENTMAPITR itr = m_clientMap.begin();
   while (itr != m_clientMap.end())
   {
-    if (m_clientMap[(*itr).first]->ReadyToUse() && GetClientProperties(m_clientMap[(*itr).first]->GetID())->SupportChannelScan)
+    if (m_clientMap[(*itr).first]->ReadyToUse() && GetClientProperties(m_clientMap[(*itr).first]->GetID())->bSupportsChannelScan)
       clients.push_back(m_clientMap[(*itr).first]->GetID());
 
     itr++;
@@ -1001,22 +1001,22 @@ void CPVRClients::StartChannelScan(void)
   m_bChannelScanRunning = false;
 }
 
-PVR_SERVERPROPS *CPVRClients::GetCurrentClientProperties(void)
+PVR_ADDON_CAPABILITIES *CPVRClients::GetCurrentClientProperties(void)
 {
-  PVR_SERVERPROPS * props = NULL;
+  PVR_ADDON_CAPABILITIES * props = NULL;
   CSingleLock lock(m_critSection);
 
   if (m_currentChannel)
     props = &m_clientsProps[m_currentChannel->ClientID()];
   else if (m_currentRecording)
-    props = &m_clientsProps[m_currentRecording->m_clientID];
+    props = &m_clientsProps[m_currentRecording->m_iClientId];
 
   return props;
 }
 
-PVR_STREAMPROPS *CPVRClients::GetCurrentStreamProperties(void)
+PVR_STREAM_PROPERTIES *CPVRClients::GetCurrentStreamProperties(void)
 {
-  PVR_STREAMPROPS *props = NULL;
+  PVR_STREAM_PROPERTIES *props = NULL;
   CSingleLock lock(m_critSection);
 
   if (m_currentChannel)
@@ -1059,7 +1059,7 @@ int CPVRClients::GetPlayingClientID(void) const
   if (m_currentChannel)
     iReturn = m_currentChannel->ClientID();
   else if (m_currentRecording)
-    iReturn = m_currentRecording->m_clientID;
+    iReturn = m_currentRecording->m_iClientId;
 
   return iReturn;
 }
@@ -1128,7 +1128,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID)
     pDialog->Reset();
     pDialog->SetHeading(19196);
     for (unsigned int i = 0; i < hooks->size(); i++)
-      pDialog->Add(client->GetString(hooks->at(i).string_id));
+      pDialog->Add(client->GetString(hooks->at(i).iLocalizedStringId));
     pDialog->DoModal();
 
     int selection = pDialog->GetSelectedLabel();
@@ -1146,7 +1146,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID)
 bool CPVRClients::CanRecordInstantly(void)
 {
   return m_currentChannel != NULL &&
-      m_clientsProps[m_currentChannel->ClientID()].SupportTimers;
+      m_clientsProps[m_currentChannel->ClientID()].bSupportsTimers;
 }
 
 
@@ -1250,20 +1250,20 @@ bool CPVRClients::RequestRemoval(AddonPtr addon)
 int CPVRClients::GetSignalLevel(void) const
 {
   CSingleLock lock(m_critSection);
-  return (int) ((float) m_qualityInfo.signal / 0xFFFF * 100);
+  return (int) ((float) m_qualityInfo.iSignal / 0xFFFF * 100);
 }
 
 int CPVRClients::GetSNR(void) const
 {
   CSingleLock lock(m_critSection);
-  return (int) ((float) m_qualityInfo.snr / 0xFFFF * 100);
+  return (int) ((float) m_qualityInfo.iSNR / 0xFFFF * 100);
 }
 
 const char *CPVRClients::CharInfoVideoBR(void) const
 {
   static CStdString strReturn = "";
-  if (m_qualityInfo.video_bitrate > 0)
-    strReturn.Format("%.2f Mbit/s", m_qualityInfo.video_bitrate);
+  if (m_qualityInfo.dVideoBitrate > 0)
+    strReturn.Format("%.2f Mbit/s", m_qualityInfo.dVideoBitrate);
 
   return strReturn;
 }
@@ -1271,8 +1271,8 @@ const char *CPVRClients::CharInfoVideoBR(void) const
 const char *CPVRClients::CharInfoAudioBR(void) const
 {
   static CStdString strReturn = "";
-  if (m_qualityInfo.audio_bitrate > 0)
-    strReturn.Format("%.0f kbit/s", m_qualityInfo.audio_bitrate);
+  if (m_qualityInfo.dAudioBitrate > 0)
+    strReturn.Format("%.0f kbit/s", m_qualityInfo.dAudioBitrate);
 
   return strReturn;
 }
@@ -1280,8 +1280,8 @@ const char *CPVRClients::CharInfoAudioBR(void) const
 const char *CPVRClients::CharInfoDolbyBR(void) const
 {
   static CStdString strReturn = "";
-  if (m_qualityInfo.dolby_bitrate > 0)
-    strReturn.Format("%.0f kbit/s", m_qualityInfo.dolby_bitrate);
+  if (m_qualityInfo.dDolbyBitrate > 0)
+    strReturn.Format("%.0f kbit/s", m_qualityInfo.dDolbyBitrate);
 
   return strReturn;
 }
@@ -1289,8 +1289,8 @@ const char *CPVRClients::CharInfoDolbyBR(void) const
 const char *CPVRClients::CharInfoSignal(void) const
 {
   static CStdString strReturn = "";
-  if (m_qualityInfo.signal > 0)
-    strReturn.Format("%d %%", m_qualityInfo.signal / 655);
+  if (m_qualityInfo.iSignal > 0)
+    strReturn.Format("%d %%", m_qualityInfo.iSignal / 655);
 
   return strReturn;
 }
@@ -1298,8 +1298,8 @@ const char *CPVRClients::CharInfoSignal(void) const
 const char *CPVRClients::CharInfoSNR(void) const
 {
   static CStdString strReturn = "";
-  if (m_qualityInfo.snr > 0)
-    strReturn.Format("%d %%", m_qualityInfo.snr / 655);
+  if (m_qualityInfo.iSNR > 0)
+    strReturn.Format("%d %%", m_qualityInfo.iSNR / 655);
 
   return strReturn;
 }
@@ -1307,7 +1307,7 @@ const char *CPVRClients::CharInfoSNR(void) const
 const char *CPVRClients::CharInfoBER(void) const
 {
   static CStdString strReturn = "";
-  strReturn.Format("%08X", m_qualityInfo.ber);
+  strReturn.Format("%08X", m_qualityInfo.iBER);
 
   return strReturn;
 }
@@ -1315,14 +1315,14 @@ const char *CPVRClients::CharInfoBER(void) const
 const char *CPVRClients::CharInfoUNC(void) const
 {
   static CStdString strReturn = "";
-  strReturn.Format("%08X", m_qualityInfo.unc);
+  strReturn.Format("%08X", m_qualityInfo.iUNC);
 
   return strReturn;
 }
 
 const char *CPVRClients::CharInfoFrontendName(void) const
 {
-  static CStdString strReturn = m_qualityInfo.frontend_name;
+  static CStdString strReturn = m_qualityInfo.strAdapterName;
   if (strReturn == "")
     strReturn = g_localizeStrings.Get(13205);
 
@@ -1331,7 +1331,7 @@ const char *CPVRClients::CharInfoFrontendName(void) const
 
 const char *CPVRClients::CharInfoFrontendStatus(void) const
 {
-  static CStdString strReturn = m_qualityInfo.frontend_status;
+  static CStdString strReturn = m_qualityInfo.strAdapterStatus;
   if (strReturn == "")
     strReturn = g_localizeStrings.Get(13205);
 

@@ -46,7 +46,7 @@ private:
   time_t m_UTCdiff;
 
 public:
-  cRecording(const PVR_RECORDINGINFO *Recording);
+  cRecording(const PVR_RECORDING *Recording);
   cRecording();
   virtual ~cRecording();
 

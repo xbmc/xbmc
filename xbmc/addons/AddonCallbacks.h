@@ -174,10 +174,10 @@ typedef struct CB_GUILib
 
 } CB_GUILib;
 
-typedef void (*PVRTransferEpgEntry)(void *userData, const PVRHANDLE handle, const PVR_PROGINFO *epgentry);
-typedef void (*PVRTransferChannelEntry)(void *userData, const PVRHANDLE handle, const PVR_CHANNEL *chan);
-typedef void (*PVRTransferTimerEntry)(void *userData, const PVRHANDLE handle, const PVR_TIMERINFO *timer);
-typedef void (*PVRTransferRecordingEntry)(void *userData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
+typedef void (*PVRTransferEpgEntry)(void *userData, const PVR_HANDLE handle, const EPG_TAG *epgentry);
+typedef void (*PVRTransferChannelEntry)(void *userData, const PVR_HANDLE handle, const PVR_CHANNEL *chan);
+typedef void (*PVRTransferTimerEntry)(void *userData, const PVR_HANDLE handle, const PVR_TIMER *timer);
+typedef void (*PVRTransferRecordingEntry)(void *userData, const PVR_HANDLE handle, const PVR_RECORDING *recording);
 typedef void (*PVRAddMenuHook)(void *addonData, PVR_MENUHOOK *hook);
 typedef void (*PVRRecording)(void *addonData, const char *Name, const char *FileName, bool On);
 typedef void (*PVRTriggerChannelUpdate)(void *addonData);

@@ -61,7 +61,7 @@ bool EpgSearchFilter::FilterEntry(const CEpgInfoTag &tag) const
   {
     if (tag.GenreType() != m_iGenreType &&
         (!m_bIncludeUnknownGenres &&
-        ((tag.GenreType() < EVCONTENTMASK_USERDEFINED || tag.GenreType() >= EVCONTENTMASK_MOVIEDRAMA))))
+        ((tag.GenreType() < EPG_EVENT_CONTENTMASK_USERDEFINED || tag.GenreType() >= EPG_EVENT_CONTENTMASK_MOVIEDRAMA))))
     {
       return false;
     }

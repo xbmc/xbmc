@@ -60,7 +60,7 @@ void CPVREpg::Cleanup(const CDateTime &Time)
   }
 }
 
-bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = false */)
+bool CPVREpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
 {
   if (!data)
     return false;
@@ -75,7 +75,7 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
 
   if (m_Channel && m_Channel->EPGEnabled() && ScraperName() == "client")
   {
-    if (CPVRManager::GetClients()->GetClientProperties(m_Channel->ClientID())->SupportEPG)
+    if (CPVRManager::GetClients()->GetClientProperties(m_Channel->ClientID())->bSupportsEPG)
     {
       CLog::Log(LOGINFO, "%s - updating EPG for channel '%s' from client '%i'",
           __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->ClientID());

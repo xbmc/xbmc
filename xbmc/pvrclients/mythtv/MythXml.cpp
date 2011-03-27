@@ -70,7 +70,7 @@ int MythXml::getNumChannels(){
 	return result.getNumberOfChannels();
 }
 
-PVR_ERROR MythXml::requestChannelList(PVRHANDLE handle, int radio){
+PVR_ERROR MythXml::requestChannelList(PVR_HANDLE handle, bool bRadio){
   if(!checkConnection())
 		return PVR_ERROR_SERVER_ERROR;
 	GetChannelListCommand cmd;
@@ -87,25 +87,24 @@ PVR_ERROR MythXml::requestChannelList(PVRHANDLE handle, int radio){
 	for( it = channellist.begin(); it != channellist.end(); ++it){
 	  const SChannel& channel = *it; 
 	  memset(&tag, 0 , sizeof(tag));
-	  tag.uid           = channel.id;
-	  tag.number        = channel.id;
-	  tag.name          = channel.name.c_str();
-	  tag.callsign      = channel.callsign.c_str();;
-	  tag.radio         = false;
-	  tag.input_format  = "";
-	  tag.stream_url    = "";
-	  tag.bouquet       = 0;
+	  tag.iUniqueId           = channel.id;
+	  tag.iChannelNumber        = channel.id;
+	  tag.strChannelName          = channel.name.c_str();
+//	  tag.callsign      = channel.callsign.c_str();;
+	  tag.bIsRadio         = false;
+	  tag.strInputFormat  = "";
+	  tag.strStreamURL    = "";
 
 	  PVR->TransferChannelEntry(handle, &tag);
 	}
 	return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR MythXml::requestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end){
+PVR_ERROR MythXml::requestEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd){
   if(!checkConnection())
 		return PVR_ERROR_SERVER_ERROR;
 	GetProgramGuideCommand cmd;
-	GetProgramGuideParameters params(channel.uid, CDateTime(start), CDateTime(end), true);
+	GetProgramGuideParameters params(channel.iUniqueId, CDateTime(iStart), CDateTime(iEnd), true);
 	GetProgramGuideResult result;
 	
 	cmd.execute(hostname_, port_, params, result, timeout_);
@@ -113,7 +112,7 @@ PVR_ERROR MythXml::requestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &cha
 	if(!result.isSuccess())
 	  return PVR_ERROR_UNKOWN;
 	
-	PVR_PROGINFO guideItem;
+	EPG_TAG guideItem;
 	const vector<SEpg>& epgInfo = result.getEpg();
 	vector<SEpg>::const_iterator it;
 	for( it = epgInfo.begin(); it != epgInfo.end(); ++it)
@@ -124,16 +123,16 @@ PVR_ERROR MythXml::requestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &cha
 	  epg.start_time.GetAsTime(itemStart);
 	  epg.end_time.GetAsTime(itemEnd);
 	  
-	  guideItem.channum         = epg.chan_num;
-	  guideItem.uid             = epg.id;
-	  guideItem.title           = epg.title;
-	  guideItem.subtitle        = epg.subtitle;
-	  guideItem.description     = epg.description;
-	  guideItem.genre_type      = epg.genre_type;
-	  guideItem.genre_sub_type  = epg.genre_subtype;
-	  guideItem.parental_rating = epg.parental_rating;
-	  guideItem.starttime       = itemStart;
-	  guideItem.endtime         = itemEnd;
+	  guideItem.iChannelNumber         = epg.chan_num;
+	  guideItem.iUniqueBroadcastId             = epg.id;
+	  guideItem.strTitle           = epg.title;
+	  guideItem.strPlotOutline        = epg.subtitle;
+	  guideItem.strPlot     = epg.description;
+	  guideItem.iGenreType      = epg.genre_type;
+	  guideItem.iGenreSubType  = epg.genre_subtype;
+	  guideItem.iParentalRating = epg.parental_rating;
+	  guideItem.startTime       = itemStart;
+	  guideItem.endTime         = itemEnd;
 	  PVR->TransferEpgEntry(handle, &guideItem);
 	}
 	return PVR_ERROR_NO_ERROR;

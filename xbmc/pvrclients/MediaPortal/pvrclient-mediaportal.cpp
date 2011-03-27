@@ -245,7 +245,7 @@ void* cPVRClientMediaPortal::Process(void*)
 /** General handling */
 
 // Used among others for the server name string in the "Recordings" view
-const char* cPVRClientMediaPortal::GetBackendName()
+const char* cPVRClientMediaPortal::GetBackendName(void)
 {
   if (!m_tcpclient->is_valid())
   {
@@ -264,7 +264,7 @@ const char* cPVRClientMediaPortal::GetBackendName()
   return m_BackendName.c_str();
 }
 
-const char* cPVRClientMediaPortal::GetBackendVersion()
+const char* cPVRClientMediaPortal::GetBackendVersion(void)
 {
   if (!IsUp())
     return "0.0";
@@ -279,20 +279,20 @@ const char* cPVRClientMediaPortal::GetBackendVersion()
   return m_BackendVersion.c_str();
 }
 
-const char* cPVRClientMediaPortal::GetConnectionString()
+const char* cPVRClientMediaPortal::GetConnectionString(void)
 {
   XBMC->Log(LOG_DEBUG, "->GetConnectionString()");
 
   return m_ConnectionString.c_str();
 }
 
-PVR_ERROR cPVRClientMediaPortal::GetDriveSpace(long long *total, long long *used)
+PVR_ERROR cPVRClientMediaPortal::GetDriveSpace(long long *iTotal, long long *iUsed)
 {
   string result;
   vector<string> fields;
 
-  *total = 0;
-  *used = 0;
+  *iTotal = 0;
+  *iUsed = 0;
 
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
@@ -303,8 +303,8 @@ PVR_ERROR cPVRClientMediaPortal::GetDriveSpace(long long *total, long long *used
 
     Tokenize(result, fields, "|");
 
-    *total = (long long) atoi(fields[0].c_str());
-    *used = (long long) atoi(fields[1].c_str());
+    *iTotal = (long long) atoi(fields[0].c_str());
+    *iUsed = (long long) atoi(fields[1].c_str());
   }
 
   return PVR_ERROR_NO_ERROR;
@@ -379,20 +379,20 @@ PVR_ERROR cPVRClientMediaPortal::GetMPTVTime(time_t *localTime, int *gmtOffset)
 /************************************************************/
 /** EPG handling */
 
-PVR_ERROR cPVRClientMediaPortal::RequestEPGForChannel(const PVR_CHANNEL &channel, PVRHANDLE handle, time_t start, time_t end)
+PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
 {
   vector<string> lines;
   char           command[256];
   string         result;
   cEpg           epg;
-  PVR_PROGINFO   broadcast;
+  EPG_TAG   broadcast;
 
-  XBMC->Log(LOG_DEBUG, "->RequestEPGForChannel(%i)", channel.number);
+  XBMC->Log(LOG_DEBUG, "->RequestEPGForChannel(%i)", channel.iChannelNumber);
 
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
 
-  snprintf(command, 256, "GetEPG:%i\n", channel.number);
+  snprintf(command, 256, "GetEPG:%i\n", channel.iChannelNumber);
 
   result = SendCommand(command);
 
@@ -402,7 +402,7 @@ PVR_ERROR cPVRClientMediaPortal::RequestEPGForChannel(const PVR_CHANNEL &channel
     {
       Tokenize(result, lines, ",");
 
-      XBMC->Log(LOG_DEBUG, "Found %i EPG items for channel %i\n", lines.size(), channel.number);
+      XBMC->Log(LOG_DEBUG, "Found %i EPG items for channel %i\n", lines.size(), channel.iChannelNumber);
 
       for (vector<string>::iterator it = lines.begin(); it < lines.end(); it++)
       {
@@ -416,27 +416,35 @@ PVR_ERROR cPVRClientMediaPortal::RequestEPGForChannel(const PVR_CHANNEL &channel
 
           if (isEnd && epg.StartTime() != 0)
           {
-            broadcast.channum         = channel.number;
-            broadcast.uid             = epg.UniqueId();
-            broadcast.title           = epg.Title();
-            broadcast.subtitle        = epg.ShortText();
-            broadcast.description     = epg.Description();
-            broadcast.starttime       = epg.StartTime();
-            broadcast.endtime         = epg.EndTime();
-            broadcast.genre_type      = epg.GenreType();
-            broadcast.genre_sub_type  = epg.GenreSubType();
-            //broadcast.genre_text      = epg.Genre();
-            broadcast.parental_rating = 0;
+            broadcast.iChannelNumber     = channel.iChannelNumber;
+            broadcast.iUniqueBroadcastId = epg.UniqueId();
+            broadcast.strTitle           = epg.Title();
+            broadcast.strPlotOutline     = epg.ShortText();
+            broadcast.strPlot            = epg.Description();
+            broadcast.startTime          = epg.StartTime();
+            broadcast.endTime            = epg.EndTime();
+            broadcast.iGenreType         = epg.GenreType();
+            broadcast.iGenreSubType      = epg.GenreSubType();
+            //broadcast.genre_text       = epg.Genre();
+            broadcast.iParentalRating    = 0;
+            broadcast.iEpisodeNumber        = 0;
+            broadcast.iEpisodePartNumber       = 0;
+            broadcast.iSeriesNumber         = 0;
+            broadcast.iStarRating        = 0;
+            broadcast.bNotify            = false;
+            broadcast.strEpisodeName     = "";
+            broadcast.strIconPath        = "";
+
             PVR->TransferEpgEntry(handle, &broadcast);
           }
           epg.Reset();
         }
       }
     } else {
-      XBMC->Log(LOG_DEBUG, "No EPG items found for channel %i", channel.number);
+      XBMC->Log(LOG_DEBUG, "No EPG items found for channel %i", channel.iChannelNumber);
     }
   } else {
-    XBMC->Log(LOG_DEBUG, "RequestEPGForChannel(%i) %s", channel.number, result.c_str());
+    XBMC->Log(LOG_DEBUG, "RequestEPGForChannel(%i) %s", channel.iChannelNumber, result.c_str());
   }
 
   return PVR_ERROR_NO_ERROR;
@@ -446,7 +454,7 @@ PVR_ERROR cPVRClientMediaPortal::RequestEPGForChannel(const PVR_CHANNEL &channel
 /************************************************************/
 /** Channel handling */
 
-int cPVRClientMediaPortal::GetNumChannels()
+int cPVRClientMediaPortal::GetNumChannels(void)
 {
   string result;
   //CStdString      command;
@@ -462,7 +470,7 @@ int cPVRClientMediaPortal::GetNumChannels()
   return atol(result.c_str());
 }
 
-PVR_ERROR cPVRClientMediaPortal::RequestChannelList(PVRHANDLE handle, int radio)
+PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
 {
   vector<string>  lines;
   CStdString      command;
@@ -471,7 +479,7 @@ PVR_ERROR cPVRClientMediaPortal::RequestChannelList(PVRHANDLE handle, int radio)
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
 
-  if(radio)
+  if(bRadio)
   {
     XBMC->Log(LOG_DEBUG, "RequestChannelList for Radio group:%s", g_szRadioGroup.c_str());
     command.Format("ListRadioChannels:%s\n", uri::encode(uri::PATH_TRAITS, g_szRadioGroup).c_str());
@@ -486,7 +494,7 @@ PVR_ERROR cPVRClientMediaPortal::RequestChannelList(PVRHANDLE handle, int radio)
     string& data(*it);
 
     if (data.length() == 0) {
-      if(radio)
+      if(bRadio)
         XBMC->Log(LOG_DEBUG, "TVServer returned no data. Empty/non existing radio group '%s'?", g_szRadioGroup.c_str());
       else
         XBMC->Log(LOG_DEBUG, "TVServer returned no data. Empty/non existing tv group '%s'?", g_szTVGroup.c_str());
@@ -494,7 +502,7 @@ PVR_ERROR cPVRClientMediaPortal::RequestChannelList(PVRHANDLE handle, int radio)
     }
 
     uri::decode(data);
-    //if(radio) {
+    //if(bRadio) {
     //  XBMC->Log(LOG_DEBUG, "Radio channel: %s", data.c_str() );
     //} else {
     //  XBMC->Log(LOG_DEBUG, "TV channel: %s", data.c_str() );
@@ -504,33 +512,30 @@ PVR_ERROR cPVRClientMediaPortal::RequestChannelList(PVRHANDLE handle, int radio)
     if( channel.Parse(data) )
     {
       PVR_CHANNEL tag;
-      tag.uid = channel.UID();
-      tag.number = channel.UID(); //channel.ExternalID();
-      tag.name = channel.Name();
-      tag.callsign = channel.Name(); //Used for automatic channel icon search
-      tag.iconpath = "";
-      tag.encryption = channel.Encrypted();
-      tag.radio = (radio > 0 ? true : false) ; //TODO:(channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
-      tag.hide = false;
-      tag.recording = false;
-      tag.bouquet = 0;
-      tag.multifeed = false;
+      tag.iUniqueId = channel.UID();
+      tag.iChannelNumber = channel.UID(); //channel.ExternalID();
+      tag.strChannelName = channel.Name();
+      tag.strIconPath = "";
+      tag.iEncryptionSystem = channel.Encrypted();
+      tag.bIsRadio = bRadio; //TODO:(channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
+      tag.bIsHidden = false;
+      tag.bIsRecording = false;
 
       if(channel.IsWebstream())
       {
-        tag.stream_url = channel.URL();
+        tag.strStreamURL = channel.URL();
       }
       else
       {
         //Use GetLiveStreamURL to fetch an rtsp stream
-        if(radio)
-          tag.stream_url = "pvr://stream/radio/%i.ts"; //stream.c_str();
+        if(bRadio)
+          tag.strStreamURL = "pvr://stream/radio/%i.ts"; //stream.c_str();
         else
-          tag.stream_url = "pvr://stream/tv/%i.ts"; //stream.c_str();
+          tag.strStreamURL = "pvr://stream/tv/%i.ts"; //stream.c_str();
       }
-      tag.input_format = "";
+      tag.strInputFormat = "";
 
-      if( (!g_bOnlyFTA) || (tag.encryption==0))
+      if( (!g_bOnlyFTA) || (tag.iEncryptionSystem==0))
       {
         PVR->TransferChannelEntry(handle, &tag);
       }
@@ -556,7 +561,7 @@ int cPVRClientMediaPortal::GetNumRecordings(void)
   return atol(result.c_str());
 }
 
-PVR_ERROR cPVRClientMediaPortal::RequestRecordingsList(PVRHANDLE handle)
+PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
 {
   vector<string>  lines;
   string          result;
@@ -589,33 +594,33 @@ PVR_ERROR cPVRClientMediaPortal::RequestRecordingsList(PVRHANDLE handle)
     cRecording recording;
     if (recording.ParseLine(data))
     {
-      PVR_RECORDINGINFO tag;
-      tag.index           = recording.Index();
-      tag.channel_name    = recording.ChannelName();
-      tag.lifetime        = MAXLIFETIME; //TODO: recording.Lifetime();
-      tag.priority        = 0; //TODO? recording.Priority();
-      tag.recording_time  = recording.StartTime();
-      tag.duration        = (int) recording.Duration();
-      tag.description     = recording.Description();
-      tag.title           = recording.Title();
-      tag.subtitle        = tag.title;
-      tag.directory       = ""; //used in XBMC as directory structure below "Server X - hostname"
+      PVR_RECORDING tag;
+      tag.iClientIndex   = recording.Index();
+      tag.strChannelName = recording.ChannelName();
+      tag.iLifetime      = MAXLIFETIME; //TODO: recording.Lifetime();
+      tag.iPriority      = 0; //TODO? recording.Priority();
+      tag.recordingTime  = recording.StartTime();
+      tag.iDuration      = (int) recording.Duration();
+      tag.strDirectory   = recording.Description();
+      tag.strTitle       = recording.Title();
+      tag.strPlot        = tag.strTitle;
+      tag.strDirectory   = ""; //used in XBMC as directory structure below "Server X - hostname"
 
       if (g_bUseRecordingsDir == true)
       { //Replace path by given path in g_szRecordingsDir
         if (g_szRecordingsDir.length() > 0)
         {
           recording.SetDirectory(g_szRecordingsDir);
-          tag.stream_url  = recording.FilePath();
+          tag.strStreamURL  = recording.FilePath();
         }
         else
         {
-          tag.stream_url  = recording.FilePath();
+          tag.strStreamURL  = recording.FilePath();
         }
       }
       else
       {
-        tag.stream_url    = recording.Stream();
+        tag.strStreamURL    = recording.Stream();
       }
 
       PVR->TransferRecordingEntry(handle, &tag);
@@ -625,7 +630,7 @@ PVR_ERROR cPVRClientMediaPortal::RequestRecordingsList(PVRHANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cPVRClientMediaPortal::DeleteRecording(const PVR_RECORDINGINFO &recinfo)
+PVR_ERROR cPVRClientMediaPortal::DeleteRecording(const PVR_RECORDING &recording)
 {
   char            command[256];
   string          result;
@@ -633,7 +638,7 @@ PVR_ERROR cPVRClientMediaPortal::DeleteRecording(const PVR_RECORDINGINFO &recinf
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
 
-  snprintf(command, 256, "DeleteRecordedTV:%i\n", recinfo.index);
+  snprintf(command, 256, "DeleteRecordedTV:%i\n", recording.iClientIndex);
 
   result = SendCommand(command);
 
@@ -645,7 +650,7 @@ PVR_ERROR cPVRClientMediaPortal::DeleteRecording(const PVR_RECORDINGINFO &recinf
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cPVRClientMediaPortal::RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname)
+PVR_ERROR cPVRClientMediaPortal::RenameRecording(const PVR_RECORDING &recording, const char *strNewName)
 {
   char           command[512];
   string         result;
@@ -654,17 +659,17 @@ PVR_ERROR cPVRClientMediaPortal::RenameRecording(const PVR_RECORDINGINFO &recinf
     return PVR_ERROR_SERVER_ERROR;
 
   snprintf(command, 512, "UpdateRecording:%i|%s\n",
-    recinfo.index,
-    uri::encode(uri::PATH_TRAITS, newname).c_str());
+      recording.iClientIndex,
+    uri::encode(uri::PATH_TRAITS, strNewName).c_str());
 
   result = SendCommand(command);
 
   if(result.find("True") == string::npos)
   {
-    XBMC->Log(LOG_DEBUG, "RenameRecording(%i) to %s [failed]", recinfo.index, newname);
+    XBMC->Log(LOG_DEBUG, "RenameRecording(%i) to %s [failed]", recording.iClientIndex, strNewName);
     return PVR_ERROR_NOT_DELETED;
   }
-  XBMC->Log(LOG_DEBUG, "RenameRecording(%i) to %s [done]", recinfo.index, newname);
+  XBMC->Log(LOG_DEBUG, "RenameRecording(%i) to %s [done]", recording.iClientIndex, strNewName);
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -685,7 +690,7 @@ int cPVRClientMediaPortal::GetNumTimers(void)
   return atol(result.c_str());
 }
 
-PVR_ERROR cPVRClientMediaPortal::RequestTimerList(PVRHANDLE handle)
+PVR_ERROR cPVRClientMediaPortal::GetTimers(PVR_HANDLE handle)
 {
   vector<string>  lines;
   string          result;
@@ -705,7 +710,7 @@ PVR_ERROR cPVRClientMediaPortal::RequestTimerList(PVRHANDLE handle)
     XBMC->Log(LOG_DEBUG, "SCHEDULED: %s", data.c_str() );
 
     cTimer timer;
-    PVR_TIMERINFO tag;
+    PVR_TIMER tag;
 
     timer.ParseLine(data.c_str());
     timer.GetPVRtimerinfo(tag);
@@ -716,7 +721,7 @@ PVR_ERROR cPVRClientMediaPortal::RequestTimerList(PVRHANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cPVRClientMediaPortal::GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &tag)
+PVR_ERROR cPVRClientMediaPortal::GetTimerInfo(unsigned int timernumber, PVR_TIMER &timerinfo)
 {
   string         result;
   char           command[256];
@@ -732,19 +737,19 @@ PVR_ERROR cPVRClientMediaPortal::GetTimerInfo(unsigned int timernumber, PVR_TIME
 
   cTimer timer;
   timer.ParseLine(result.c_str());
-  timer.GetPVRtimerinfo(tag);
+  timer.GetPVRtimerinfo(timerinfo);
 
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cPVRClientMediaPortal::AddTimer(const PVR_TIMERINFO &timerinfo)
+PVR_ERROR cPVRClientMediaPortal::AddTimer(const PVR_TIMER &timerinfo)
 {
   string         result;
 
 #ifdef _TIME32_T_DEFINED
   XBMC->Log(LOG_DEBUG, "->AddTimer Channel: %i, starttime: %i endtime: %i program: %s", timerinfo.channelNum, timerinfo.starttime, timerinfo.endtime, timerinfo.title);
 #else
-  XBMC->Log(LOG_DEBUG, "->AddTimer Channel: %i, 64 bit times not yet supported!", timerinfo.channelNum);
+  XBMC->Log(LOG_DEBUG, "->AddTimer Channel: %i, 64 bit times not yet supported!", timerinfo.iClientChannelUid);
 #endif
 
   if (!IsUp())
@@ -758,10 +763,10 @@ PVR_ERROR cPVRClientMediaPortal::AddTimer(const PVR_TIMERINFO &timerinfo)
 
     if(result.find("True") ==  string::npos)
     {
-      XBMC->Log(LOG_DEBUG, "AddTimer for channel: %i [failed]", timerinfo.channelNum);
+      XBMC->Log(LOG_DEBUG, "AddTimer for channel: %i [failed]", timerinfo.iClientChannelUid);
       return PVR_ERROR_NOT_SAVED;
     }
-    XBMC->Log(LOG_DEBUG, "AddTimer for channel: %i [done]", timerinfo.channelNum);
+    XBMC->Log(LOG_DEBUG, "AddTimer for channel: %i [done]", timerinfo.iClientChannelUid);
   //}
   //else
   //{
@@ -772,7 +777,7 @@ PVR_ERROR cPVRClientMediaPortal::AddTimer(const PVR_TIMERINFO &timerinfo)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cPVRClientMediaPortal::DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
+PVR_ERROR cPVRClientMediaPortal::DeleteTimer(const PVR_TIMER &timer, bool bForceDelete)
 {
   char           command[256];
   string         result;
@@ -780,22 +785,22 @@ PVR_ERROR cPVRClientMediaPortal::DeleteTimer(const PVR_TIMERINFO &timerinfo, boo
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
 
-  snprintf(command, 256, "DeleteSchedule:%i\n",timerinfo.index);
+  snprintf(command, 256, "DeleteSchedule:%i\n",timer.iClientIndex);
 
-  if (timerinfo.index == -1)
+  if (timer.iClientIndex == -1)
   {
-    XBMC->Log(LOG_DEBUG, "DeleteTimer: schedule index = -1", timerinfo.index);
+    XBMC->Log(LOG_DEBUG, "DeleteTimer: schedule index = -1", timer.iClientIndex);
     return PVR_ERROR_NOT_DELETED;
   } else {
-    XBMC->Log(LOG_DEBUG, "DeleteTimer: About to delete MediaPortal schedule index=%i", timerinfo.index);
+    XBMC->Log(LOG_DEBUG, "DeleteTimer: About to delete MediaPortal schedule index=%i", timer.iClientIndex);
     result = SendCommand(command);
 
     if(result.find("True") ==  string::npos)
     {
-      XBMC->Log(LOG_DEBUG, "DeleteTimer %i [failed]", timerinfo.index);
+      XBMC->Log(LOG_DEBUG, "DeleteTimer %i [failed]", timer.iClientIndex);
       return PVR_ERROR_NOT_DELETED;
     }
-    XBMC->Log(LOG_DEBUG, "DeleteTimer %i [done]", timerinfo.index);
+    XBMC->Log(LOG_DEBUG, "DeleteTimer %i [done]", timer.iClientIndex);
 
   }
 
@@ -807,29 +812,14 @@ PVR_ERROR cPVRClientMediaPortal::DeleteTimer(const PVR_TIMERINFO &timerinfo, boo
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cPVRClientMediaPortal::RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname)
-{
-  XBMC->Log(LOG_DEBUG, "RenameTimer %i for channel: %i", timerinfo.index, timerinfo.channelNum);
-  if (!IsUp())
-    return PVR_ERROR_SERVER_ERROR;
-
-  PVR_TIMERINFO timerinfo1;
-  PVR_ERROR ret = GetTimerInfo(timerinfo.index, timerinfo1);
-  if (ret != PVR_ERROR_NO_ERROR)
-    return ret;
-
-  timerinfo1.title = newname;
-  return UpdateTimer(timerinfo1);
-}
-
-PVR_ERROR cPVRClientMediaPortal::UpdateTimer(const PVR_TIMERINFO &timerinfo)
+PVR_ERROR cPVRClientMediaPortal::UpdateTimer(const PVR_TIMER &timerinfo)
 {
   string         result;
 
 #ifdef _TIME32_T_DEFINED
   XBMC->Log(LOG_DEBUG, "->UpdateTimer Index: %i Channel: %i, starttime: %i endtime: %i program: %s", timerinfo.index, timerinfo.channelNum, timerinfo.starttime, timerinfo.endtime, timerinfo.title);
 #else
-  XBMC->Log(LOG_DEBUG, "->UpdateTimer Channel: %i, 64 bit times not yet supported!", timerinfo.channelNum);
+  XBMC->Log(LOG_DEBUG, "->UpdateTimer Channel: %i, 64 bit times not yet supported!", timerinfo.iClientChannelUid);
 #endif
 
   if (!IsUp())
@@ -840,10 +830,10 @@ PVR_ERROR cPVRClientMediaPortal::UpdateTimer(const PVR_TIMERINFO &timerinfo)
   result = SendCommand(timer.UpdateScheduleCommand());
   if(result.find("True") ==  string::npos)
   {
-    XBMC->Log(LOG_DEBUG, "UpdateTimer for channel: %i [failed]", timerinfo.channelNum);
+    XBMC->Log(LOG_DEBUG, "UpdateTimer for channel: %i [failed]", timerinfo.iClientChannelUid);
     return PVR_ERROR_NOT_SAVED;
   }
-  XBMC->Log(LOG_DEBUG, "UpdateTimer for channel: %i [done]", timerinfo.channelNum);
+  XBMC->Log(LOG_DEBUG, "UpdateTimer for channel: %i [done]", timerinfo.iClientChannelUid);
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -863,7 +853,7 @@ PVR_ERROR cPVRClientMediaPortal::UpdateTimer(const PVR_TIMERINFO &timerinfo)
 // at the same time.
 bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
-  unsigned int channel = channelinfo.number;
+  unsigned int channel = channelinfo.iChannelNumber;
 
   string result;
   char   command[256] = "";
@@ -920,12 +910,12 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
   }
 }
 
-int cPVRClientMediaPortal::ReadLiveStream(unsigned char* buf, int buf_size)
+int cPVRClientMediaPortal::ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
 {
   return 0;
 }
 
-void cPVRClientMediaPortal::CloseLiveStream()
+void cPVRClientMediaPortal::CloseLiveStream(void)
 {
   string result;
 
@@ -943,11 +933,11 @@ void cPVRClientMediaPortal::CloseLiveStream()
 }
 
 
-bool cPVRClientMediaPortal::SwitchChannel(const PVR_CHANNEL &channelinfo)
+bool cPVRClientMediaPortal::SwitchChannel(const PVR_CHANNEL &channel)
 {
-  XBMC->Log(LOG_DEBUG, "->SwitchChannel(%i)", channelinfo.number);
+  XBMC->Log(LOG_DEBUG, "->SwitchChannel(%i)", channel.iChannelNumber);
 
-  return OpenLiveStream(channelinfo);
+  return OpenLiveStream(channel);
 }
 
 
@@ -957,7 +947,7 @@ int cPVRClientMediaPortal::GetCurrentClientChannel()
   return m_iCurrentChannel;
 }
 
-PVR_ERROR cPVRClientMediaPortal::SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
+PVR_ERROR cPVRClientMediaPortal::SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 {
   //XBMC->Log(LOG_DEBUG, "->SignalQuality(): Not yet supported.");
 
@@ -970,10 +960,10 @@ PVR_ERROR cPVRClientMediaPortal::SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
 // MediaPortal recordings are also rtsp streams. Main difference here with
 // respect to the live tv streams is that the URLs for the recordings
 // can be requested on beforehand (done in the TVserverXBMC plugin).
-// These URLs are stored in the field PVR_RECORDINGINFO.stream_url
-bool cPVRClientMediaPortal::OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
+// These URLs are stored in the field PVR_RECORDINGINFO_OLD.stream_url
+bool cPVRClientMediaPortal::OpenRecordedStream(const PVR_RECORDING &recording)
 {
-  XBMC->Log(LOG_DEBUG, "->OpenRecordedStream(index=%i)", recinfo.index);
+  XBMC->Log(LOG_DEBUG, "->OpenRecordedStream(index=%i)", recording.iClientIndex);
   if (!IsUp())
      return false;
 
@@ -989,7 +979,7 @@ void cPVRClientMediaPortal::CloseRecordedStream(void)
 
 }
 
-int cPVRClientMediaPortal::ReadRecordedStream(unsigned char* buf, int buf_size)
+int cPVRClientMediaPortal::ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize)
 {
   return -1;
 }
@@ -1002,7 +992,7 @@ int cPVRClientMediaPortal::ReadRecordedStream(unsigned char* buf, int buf_size)
  */
 const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
 {
-  unsigned int channel = channelinfo.number;
+  unsigned int channel = channelinfo.iChannelNumber;
 
   string result;
   char   command[256] = "";

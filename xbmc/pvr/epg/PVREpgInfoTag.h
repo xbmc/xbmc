@@ -48,7 +48,7 @@ public:
    * @brief Create a new EPG infotag with 'data' as content.
    * @param data The tag's content.
    */
-  CPVREpgInfoTag(const PVR_PROGINFO &data);
+  CPVREpgInfoTag(const EPG_TAG &data);
 
   /*!
    * @brief Clear this event.
@@ -88,7 +88,7 @@ public:
    * @brief Update the information in this tag with the info in the given tag.
    * @param tag The new info.
    */
-  void Update(const PVR_PROGINFO &tag);
+  void Update(const EPG_TAG &tag);
 
   const CStdString &Icon(void) const;
 };

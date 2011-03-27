@@ -61,15 +61,12 @@ class CPVRTimerInfoTag
 {
 public:
   CStdString            m_strTitle;           /* name of this timer */
-  CStdString            m_strDir;             /* directory where the recording must be stored */
+  CStdString            m_strDirectory;       /* directory where the recording must be stored */
   CStdString            m_strSummary;         /* summary string with the time to show inside a GUI list */
   bool                  m_bIsActive;          /* active flag, if it is false backend ignore the timer */
-  int                   m_iChannelNumber;     /* integer value of the channel number */
-  int                   m_iClientID;          /* ID of the backend */
+  int                   m_iClientId;          /* ID of the backend */
   int                   m_iClientIndex;       /* index number of the tag, given by the backend, -1 for new */
-  int                   m_iClientNumber;      /* integer value of the client number */
   int                   m_iClientChannelUid;  /* channel uid */
-  bool                  m_bIsRadio;           /* is radio channel if set */
   bool                  m_bIsRecording;       /* is this timer recording? */
   int                   m_iPriority;          /* priority of the timer */
   int                   m_iLifetime;          /* lifetime of the timer in days */
@@ -79,9 +76,13 @@ public:
   CDateTime             m_FirstDay;           /* if it is a repeating timer the first date it starts */
   int                   m_iWeekdays;          /* bit based store of weekdays to repeat */
   CStdString            m_strFileNameAndPath; /* filename is only for reference */
-  CPVREpgInfoTag *      m_EpgInfo;
+  int                   m_iChannelNumber;     /* integer value of the channel number */
+  bool                  m_bIsRadio;           /* is radio channel if set */
+  CPVREpgInfoTag *      m_epgInfo;
+  const CPVRChannel *   m_channel;
 
-  CPVRTimerInfoTag();
+  CPVRTimerInfoTag(void);
+  CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientId);
 
   void Reset();
 
