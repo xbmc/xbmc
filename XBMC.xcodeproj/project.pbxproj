@@ -384,8 +384,7 @@
 		43348AAD1077486D00F859CF /* PlayerSelectionRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AAA1077486D00F859CF /* PlayerSelectionRule.cpp */; };
 		43348AAE1077486D00F859CF /* PlayerCoreFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AA81077486D00F859CF /* PlayerCoreFactory.cpp */; };
 		43348AAF1077486D00F859CF /* PlayerSelectionRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AAA1077486D00F859CF /* PlayerSelectionRule.cpp */; };
-		43352CEE1071634600706B8A /* libsquish-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish-x86-osx.a */; };
-		43352CF01071639400706B8A /* libsquish-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CEF1071639400706B8A /* libsquish-powerpc-osx.a */; };
+		43352CEE1071634600706B8A /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish.a */; };
 		43BF08EB1080C6BA00E25290 /* Neptune.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF08A41080C6B900E25290 /* Neptune.cpp */; };
 		43BF08EC1080C6BA00E25290 /* NptBase64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF08A71080C6B900E25290 /* NptBase64.cpp */; };
 		43BF08ED1080C6BA00E25290 /* NptBufferedStreams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF08A91080C6B900E25290 /* NptBufferedStreams.cpp */; };
@@ -1027,8 +1026,8 @@
 		E38E23980D2626E600618676 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E23910D2626E600618676 /* OpenGL.framework */; };
 		E38E25350D26365C00618676 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25330D26365C00618676 /* AppKit.framework */; };
 		E38E25360D26365C00618676 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25340D26365C00618676 /* ApplicationServices.framework */; };
-		E38E25690D2639F100618676 /* libxdaap-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap-x86-osx.a */; };
-		E38E256D0D263A1C00618676 /* librtv-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv-x86-osx.a */; };
+		E38E25690D2639F100618676 /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap.a */; };
+		E38E256D0D263A1C00618676 /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv.a */; };
 		E38E25780D263BF600618676 /* unpack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25770D263BF600618676 /* unpack.cpp */; };
 		E38E257C0D263C4400618676 /* rar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E257B0D263C4400618676 /* rar.cpp */; };
 		E38E259D0D263CE000618676 /* action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E257E0D263CE000618676 /* action.cpp */; };
@@ -1756,9 +1755,6 @@
 		F5A1CBB40F6B06CF00A96ABD /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */; };
 		F5A1CBB50F6B06CF00A96ABD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF3230D380E1E00DB5CD5 /* Carbon.framework */; };
 		F5A1CBBB0F6B06CF00A96ABD /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6580DE013C4003396A7 /* DiskArbitration.framework */; };
-		F5A1CC020F6B1FB600A96ABD /* librtv-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC010F6B1FB600A96ABD /* librtv-powerpc-osx.a */; };
-		F5A1CC060F6B203100A96ABD /* libxbms-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC050F6B203100A96ABD /* libxbms-powerpc-osx.a */; };
-		F5A1CC080F6B209400A96ABD /* libxdaap-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC070F6B209400A96ABD /* libxdaap-powerpc-osx.a */; };
 		F5A2BD0E0F7AD9140006ABA0 /* ZeroconfOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */; };
 		F5A2BD0F0F7AD92C0006ABA0 /* Zeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C280F77217400C25D29 /* Zeroconf.cpp */; };
 		F5A7A6211127980A0059D6AA /* posix-realtime-stub.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */; };
@@ -1798,6 +1794,10 @@
 		F5B5D011133AFB03007A4B4C /* libGLEW.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24250D26317D00618676 /* libGLEW.dylib */; };
 		F5B5D014133AFB2D007A4B4C /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138641330811D0045076D /* libmicrohttpd.dylib */; };
 		F5B5D015133AFB2E007A4B4C /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138641330811D0045076D /* libmicrohttpd.dylib */; };
+		F5B5D64D133FC2C1007A4B4C /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish.a */; };
+		F5B5D64E133FC2E7007A4B4C /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv.a */; };
+		F5B5D64F133FC2EF007A4B4C /* libxbms.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC8816110A4B8900EE1B15 /* libxbms.a */; };
+		F5B5D650133FC312007A4B4C /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap.a */; };
 		F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB80D120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB81A1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB8191202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp */; };
@@ -1818,7 +1818,7 @@
 		F5DC8810110A4A0B00EE1B15 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC880E110A4A0B00EE1B15 /* FileXBMSP.cpp */; };
 		F5DC8813110A4A2400EE1B15 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC8812110A4A2400EE1B15 /* XBMSDirectory.cpp */; };
 		F5DC8814110A4A2400EE1B15 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC8812110A4A2400EE1B15 /* XBMSDirectory.cpp */; };
-		F5DC8817110A4B8900EE1B15 /* libxbms-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC8816110A4B8900EE1B15 /* libxbms-x86-osx.a */; };
+		F5DC8817110A4B8900EE1B15 /* libxbms.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC8816110A4B8900EE1B15 /* libxbms.a */; };
 		F5DC888B110A654000EE1B15 /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC888A110A654000EE1B15 /* libapetag.a */; };
 		F5DC888C110A654000EE1B15 /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC888A110A654000EE1B15 /* libapetag.a */; };
 		F5E55B5D10741272006E788A /* DVDPlayerTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */; };
@@ -2252,8 +2252,7 @@
 		43348AAA1077486D00F859CF /* PlayerSelectionRule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PlayerSelectionRule.cpp; path = playercorefactory/PlayerSelectionRule.cpp; sourceTree = "<group>"; };
 		43348AAB1077486D00F859CF /* PlayerSelectionRule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayerSelectionRule.h; path = playercorefactory/PlayerSelectionRule.h; sourceTree = "<group>"; };
 		43352CE61071545C00706B8A /* squish.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = squish.h; path = libsquish/squish.h; sourceTree = "<group>"; };
-		43352CED1071634600706B8A /* libsquish-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsquish-x86-osx.a"; path = "lib/libsquish/libsquish-x86-osx.a"; sourceTree = "<group>"; };
-		43352CEF1071639400706B8A /* libsquish-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsquish-powerpc-osx.a"; path = "lib/libsquish/libsquish-powerpc-osx.a"; sourceTree = "<group>"; };
+		43352CED1071634600706B8A /* libsquish.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsquish.a; path = lib/libsquish/libsquish.a; sourceTree = "<group>"; };
 		4367218F12D6691F002508E6 /* ISemaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISemaphore.h; sourceTree = "<group>"; };
 		436721A612D66A09002508E6 /* IAnnouncer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAnnouncer.h; sourceTree = "<group>"; };
 		436B38F3106628850049AB3B /* EndianSwap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndianSwap.h; sourceTree = "<group>"; };
@@ -3514,8 +3513,8 @@
 		E38E24250D26317D00618676 /* libGLEW.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libGLEW.dylib"; sourceTree = "<absolute>"; };
 		E38E25330D26365C00618676 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		E38E25340D26365C00618676 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
-		E38E25680D2639F100618676 /* libxdaap-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxdaap-x86-osx.a"; path = "lib/libXDAAP/libxdaap-x86-osx.a"; sourceTree = "<group>"; };
-		E38E256C0D263A1C00618676 /* librtv-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "librtv-x86-osx.a"; path = "lib/libRTV/librtv-x86-osx.a"; sourceTree = "<group>"; };
+		E38E25680D2639F100618676 /* libxdaap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxdaap.a; path = lib/libXDAAP/libxdaap.a; sourceTree = "<group>"; };
+		E38E256C0D263A1C00618676 /* librtv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librtv.a; path = lib/libRTV/librtv.a; sourceTree = "<group>"; };
 		E38E25770D263BF600618676 /* unpack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unpack.cpp; sourceTree = "<group>"; };
 		E38E257B0D263C4400618676 /* rar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rar.cpp; sourceTree = "<group>"; };
 		E38E257E0D263CE000618676 /* action.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = action.cpp; sourceTree = "<group>"; };
@@ -3709,9 +3708,6 @@
 		F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NullDirectSound.cpp; path = xbmc/cores/AudioRenderers/NullDirectSound.cpp; sourceTree = SOURCE_ROOT; };
 		F5A00B250EFDE44100CD59F3 /* NullDirectSound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NullDirectSound.h; path = xbmc/cores/AudioRenderers/NullDirectSound.h; sourceTree = SOURCE_ROOT; };
 		F5A1CBD20F6B06CF00A96ABD /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
-		F5A1CC010F6B1FB600A96ABD /* librtv-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "librtv-powerpc-osx.a"; path = "lib/libRTV/librtv-powerpc-osx.a"; sourceTree = "<group>"; };
-		F5A1CC050F6B203100A96ABD /* libxbms-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxbms-powerpc-osx.a"; path = "lib/libXBMS/libxbms-powerpc-osx.a"; sourceTree = "<group>"; };
-		F5A1CC070F6B209400A96ABD /* libxdaap-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxdaap-powerpc-osx.a"; path = "lib/libXDAAP/libxdaap-powerpc-osx.a"; sourceTree = "<group>"; };
 		F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "posix-realtime-stub.c"; sourceTree = "<group>"; };
 		F5A7A6201127980A0059D6AA /* posix-realtime-stub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "posix-realtime-stub.h"; sourceTree = "<group>"; };
 		F5A7A6F0112893330059D6AA /* libjsoncpp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjsoncpp.a; path = lib/jsoncpp/src/lib_json/libjsoncpp.a; sourceTree = "<group>"; };
@@ -3760,7 +3756,7 @@
 		F5DC880E110A4A0B00EE1B15 /* FileXBMSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileXBMSP.cpp; sourceTree = "<group>"; };
 		F5DC8811110A4A2400EE1B15 /* XBMSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMSDirectory.h; sourceTree = "<group>"; };
 		F5DC8812110A4A2400EE1B15 /* XBMSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMSDirectory.cpp; sourceTree = "<group>"; };
-		F5DC8816110A4B8900EE1B15 /* libxbms-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxbms-x86-osx.a"; path = "lib/libXBMS/libxbms-x86-osx.a"; sourceTree = "<group>"; };
+		F5DC8816110A4B8900EE1B15 /* libxbms.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxbms.a; path = lib/libXBMS/libxbms.a; sourceTree = "<group>"; };
 		F5DC888A110A654000EE1B15 /* libapetag.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libapetag.a; path = lib/libapetag/.libs/libapetag.a; sourceTree = "<group>"; };
 		F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerTeletext.cpp; sourceTree = "<group>"; };
 		F5E55B5C10741272006E788A /* DVDPlayerTeletext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerTeletext.h; sourceTree = "<group>"; };
@@ -3830,15 +3826,15 @@
 				E38E23980D2626E600618676 /* OpenGL.framework in Frameworks */,
 				E38E25350D26365C00618676 /* AppKit.framework in Frameworks */,
 				E38E25360D26365C00618676 /* ApplicationServices.framework in Frameworks */,
-				E38E25690D2639F100618676 /* libxdaap-x86-osx.a in Frameworks */,
-				E38E256D0D263A1C00618676 /* librtv-x86-osx.a in Frameworks */,
+				E38E25690D2639F100618676 /* libxdaap.a in Frameworks */,
+				E38E256D0D263A1C00618676 /* librtv.a in Frameworks */,
 				E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */,
 				E35EF2550D380C3D00DB5CD5 /* QuickTime.framework in Frameworks */,
 				E35EF3240D380E1E00DB5CD5 /* Carbon.framework in Frameworks */,
 				88ECB6590DE013C4003396A7 /* DiskArbitration.framework in Frameworks */,
 				F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
-				43352CEE1071634600706B8A /* libsquish-x86-osx.a in Frameworks */,
-				F5DC8817110A4B8900EE1B15 /* libxbms-x86-osx.a in Frameworks */,
+				43352CEE1071634600706B8A /* libsquish.a in Frameworks */,
+				F5DC8817110A4B8900EE1B15 /* libxbms.a in Frameworks */,
 				F5DC888B110A654000EE1B15 /* libapetag.a in Frameworks */,
 				F5A7A6F1112893330059D6AA /* libjsoncpp.a in Frameworks */,
 				F5A7A6F4112893440059D6AA /* json-rpc.a in Frameworks */,
@@ -3887,11 +3883,7 @@
 				F5A1CBB40F6B06CF00A96ABD /* QuickTime.framework in Frameworks */,
 				F5A1CBB50F6B06CF00A96ABD /* Carbon.framework in Frameworks */,
 				F5A1CBBB0F6B06CF00A96ABD /* DiskArbitration.framework in Frameworks */,
-				F5A1CC020F6B1FB600A96ABD /* librtv-powerpc-osx.a in Frameworks */,
-				F5A1CC060F6B203100A96ABD /* libxbms-powerpc-osx.a in Frameworks */,
-				F5A1CC080F6B209400A96ABD /* libxdaap-powerpc-osx.a in Frameworks */,
 				F59879090FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
-				43352CF01071639400706B8A /* libsquish-powerpc-osx.a in Frameworks */,
 				F5DC888C110A654000EE1B15 /* libapetag.a in Frameworks */,
 				F5A7A6F2112893330059D6AA /* libjsoncpp.a in Frameworks */,
 				F5A7A6F5112893440059D6AA /* json-rpc.a in Frameworks */,
@@ -3919,6 +3911,10 @@
 				F5B5D00D133AFAC7007A4B4C /* libcdio.dylib in Frameworks */,
 				F5B5D011133AFB03007A4B4C /* libGLEW.dylib in Frameworks */,
 				F5B5D015133AFB2E007A4B4C /* libmicrohttpd.dylib in Frameworks */,
+				F5B5D64D133FC2C1007A4B4C /* libsquish.a in Frameworks */,
+				F5B5D64E133FC2E7007A4B4C /* librtv.a in Frameworks */,
+				F5B5D64F133FC2EF007A4B4C /* libxbms.a in Frameworks */,
+				F5B5D650133FC312007A4B4C /* libxdaap.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6857,8 +6853,10 @@
 				F5A7A6F61128934C0059D6AA /* http-api.a */,
 				F5A7A6F3112893440059D6AA /* json-rpc.a */,
 				F5A7A6F0112893330059D6AA /* libjsoncpp.a */,
-				F5A1C86A0F6B048000A96ABD /* x86 */,
-				F5A1C8690F6B047D00A96ABD /* ppc */,
+				43352CED1071634600706B8A /* libsquish.a */,
+				E38E256C0D263A1C00618676 /* librtv.a */,
+				F5DC8816110A4B8900EE1B15 /* libxbms.a */,
+				E38E25680D2639F100618676 /* libxdaap.a */,
 			);
 			name = "internal libs";
 			sourceTree = "<group>";
@@ -6875,28 +6873,6 @@
 				F5A00B250EFDE44100CD59F3 /* NullDirectSound.h */,
 			);
 			name = AudioRenderers;
-			sourceTree = "<group>";
-		};
-		F5A1C8690F6B047D00A96ABD /* ppc */ = {
-			isa = PBXGroup;
-			children = (
-				43352CEF1071639400706B8A /* libsquish-powerpc-osx.a */,
-				F5A1CC010F6B1FB600A96ABD /* librtv-powerpc-osx.a */,
-				F5A1CC050F6B203100A96ABD /* libxbms-powerpc-osx.a */,
-				F5A1CC070F6B209400A96ABD /* libxdaap-powerpc-osx.a */,
-			);
-			name = ppc;
-			sourceTree = "<group>";
-		};
-		F5A1C86A0F6B048000A96ABD /* x86 */ = {
-			isa = PBXGroup;
-			children = (
-				43352CED1071634600706B8A /* libsquish-x86-osx.a */,
-				E38E256C0D263A1C00618676 /* librtv-x86-osx.a */,
-				F5DC8816110A4B8900EE1B15 /* libxbms-x86-osx.a */,
-				E38E25680D2639F100618676 /* libxdaap-x86-osx.a */,
-			);
-			name = x86;
 			sourceTree = "<group>";
 		};
 		F5E55E601076B34F006E788A /* libsquish */ = {
@@ -9234,6 +9210,10 @@
 					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib/mysql\"",
+					"\"$(SRCROOT)/lib/libsquish\"",
+					"\"$(SRCROOT)/lib/libRTV\"",
+					"\"$(SRCROOT)/lib/libXBMS\"",
+					"\"$(SRCROOT)/lib/libXDAAP\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib/mysql\"";
@@ -9317,6 +9297,10 @@
 					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib/mysql\"",
+					"\"$(SRCROOT)/lib/libsquish\"",
+					"\"$(SRCROOT)/lib/libRTV\"",
+					"\"$(SRCROOT)/lib/libXBMS\"",
+					"\"$(SRCROOT)/lib/libXDAAP\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib/mysql\"";

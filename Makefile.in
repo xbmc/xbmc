@@ -325,13 +325,13 @@ xbmc/interfaces/python/xbmcmodule/xbmcmodule.a: force
 	$(MAKE) -C xbmc/interfaces/python/xbmcmodule
 xbmc/network/libscrobbler/scrobbler.a: force
 	$(MAKE) -C xbmc/network/libscrobbler
-lib/libRTV/librtv-@ARCH@.a: force
+lib/libRTV/librtv.a: force
 	$(MAKE) -C lib/libRTV
-lib/libUPnP/libupnp-@ARCH@.a: force
+lib/libUPnP/libupnp.a: force
 	$(MAKE) -C lib/libUPnP
-lib/libXBMS/libxbms-@ARCH@.a: force
+lib/libXBMS/libxbms.a: force
 	$(MAKE) -C lib/libXBMS
-lib/libXDAAP/libxdaap-@ARCH@.a: force
+lib/libXDAAP/libxdaap.a: force
 	$(MAKE) -C lib/libXDAAP
 lib/jsoncpp/src/lib_json/libjsoncpp.a: force
 	$(MAKE) -C lib/jsoncpp/src/lib_json
@@ -343,7 +343,7 @@ xbmc/dbwrappers/dbwrappers.a: force
 	$(MAKE) -C xbmc/dbwrappers
 lib/UnrarXLib/UnrarXLib.a: force
 	$(MAKE) -C lib/UnrarXLib
-lib/libsquish/libsquish-@ARCH@.a: force
+lib/libsquish/libsquish.a: force
 	$(MAKE) -C lib/libsquish
 xbmc/linux/linux.a: force
 	$(MAKE) -C xbmc/linux
@@ -455,11 +455,11 @@ externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
 	codecs libs python visualizations screensavers eventclients skins \
-	lib/libsquish/libsquish-@ARCH@.a \
+	lib/libsquish/libsquish.a \
 	lib/libapetag/.libs/libapetag.a \
-	lib/libXBMS/libxbms-@ARCH@.a \
-	lib/libRTV/librtv-@ARCH@.a \
-	lib/libXDAAP/libxdaap-@ARCH@.a \
+	lib/libXBMS/libxbms.a \
+	lib/libRTV/librtv.a \
+	lib/libXDAAP/libxdaap.a \
 	xbmc/interfaces/interfaces.a \
 	xbmc/interfaces/http-api/http-api.a \
 	xbmc/interfaces/json-rpc/json-rpc.a \
@@ -508,16 +508,16 @@ OBJSXBMC=	\
 	xbmc/windows/windows.a \
 	xbmc/interfaces/python/xbmcmodule/xbmcmodule.a \
 	xbmc/network/libscrobbler/scrobbler.a \
-	lib/libRTV/librtv-@ARCH@.a \
-	lib/libUPnP/libupnp-@ARCH@.a \
-	lib/libXDAAP/libxdaap-@ARCH@.a \
+	lib/libRTV/librtv.a \
+	lib/libUPnP/libupnp.a \
+	lib/libXDAAP/libxdaap.a \
 	xbmc/interfaces/interfaces.a \
 	xbmc/cdrip/cdrip.a \
 	xbmc/interfaces/json-rpc/json-rpc.a \
 	lib/jsoncpp/src/lib_json/libjsoncpp.a \
 	xbmc/interfaces/http-api/http-api.a \
 	xbmc/dbwrappers/dbwrappers.a \
-	lib/libsquish/libsquish-@ARCH@.a \
+	lib/libsquish/libsquish.a \
 	lib/libapetag/.libs/libapetag.a \
 	lib/xbmc-dll-symbols/dll-symbols.a \
         xbmc/rendering/rendering.a \
@@ -535,7 +535,7 @@ endif
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 OBJSXBMC+= \
-	lib/libXBMS/libxbms-@ARCH@.a \
+	lib/libXBMS/libxbms.a \
 	lib/UnrarXLib/UnrarXLib.a
 endif
 
@@ -606,7 +606,7 @@ else
 	$(MAKE) -C tools/XBMCTex/
 endif
 
-tools/TexturePacker/TexturePacker: xbmc/guilib/guilib.a lib/libsquish/libsquish-@ARCH@.a
+tools/TexturePacker/TexturePacker: xbmc/guilib/guilib.a lib/libsquish/libsquish.a
 	$(MAKE) -C tools/TexturePacker/
 
 

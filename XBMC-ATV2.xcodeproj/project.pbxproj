@@ -910,10 +910,10 @@
 		F589AE531288E20900D8079E /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE521288E20900D8079E /* libsqlite3.dylib */; };
 		F589AE6A128909F000D8079E /* libfreetype.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE1E1288DE2700D8079E /* libfreetype.dylib */; };
 		F589AE7712890B9E00D8079E /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7012890B9E00D8079E /* libapetag.a */; };
-		F589AE8212890BEF00D8079E /* libsquish-arm-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7D12890BEF00D8079E /* libsquish-arm-osx.a */; };
-		F589AE8312890BEF00D8079E /* librtv-arm-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7E12890BEF00D8079E /* librtv-arm-osx.a */; settings = {ATTRIBUTES = (Required, ); }; };
-		F589AE8412890BEF00D8079E /* libxbms-arm-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7F12890BEF00D8079E /* libxbms-arm-osx.a */; settings = {ATTRIBUTES = (Required, ); }; };
-		F589AE8512890BEF00D8079E /* libxdaap-arm-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE8012890BEF00D8079E /* libxdaap-arm-osx.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		F589AE8212890BEF00D8079E /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7D12890BEF00D8079E /* libsquish.a */; };
+		F589AE8312890BEF00D8079E /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7E12890BEF00D8079E /* librtv.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		F589AE8412890BEF00D8079E /* libxbms.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE7F12890BEF00D8079E /* libxbms.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		F589AE8512890BEF00D8079E /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F589AE8012890BEF00D8079E /* libxdaap.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		F5A29EC312A7221B003A610C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29EC212A7221B003A610C /* CoreMedia.framework */; };
 		F5A29F2712A72246003A610C /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29F2612A72246003A610C /* VideoToolbox.framework */; };
 		F5B13837133080CB0045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13835133080CA0045076D /* libmicrohttpd.dylib */; };
@@ -2837,10 +2837,10 @@
 		F589AE4C1288E0A300D8079E /* libm.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libm.dylib; path = usr/lib/libm.dylib; sourceTree = SDKROOT; };
 		F589AE521288E20900D8079E /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libsqlite3.dylib"; sourceTree = "<absolute>"; };
 		F589AE7012890B9E00D8079E /* libapetag.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libapetag.a; path = lib/libapetag/.libs/libapetag.a; sourceTree = "<group>"; };
-		F589AE7D12890BEF00D8079E /* libsquish-arm-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsquish-arm-osx.a"; path = "lib/libsquish/libsquish-arm-osx.a"; sourceTree = "<group>"; };
-		F589AE7E12890BEF00D8079E /* librtv-arm-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "librtv-arm-osx.a"; path = "lib/libRTV/librtv-arm-osx.a"; sourceTree = "<group>"; };
-		F589AE7F12890BEF00D8079E /* libxbms-arm-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; name = "libxbms-arm-osx.a"; path = "lib/libXBMS/libxbms-arm-osx.a"; sourceTree = "<group>"; };
-		F589AE8012890BEF00D8079E /* libxdaap-arm-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxdaap-arm-osx.a"; path = "lib/libXDAAP/libxdaap-arm-osx.a"; sourceTree = "<group>"; };
+		F589AE7D12890BEF00D8079E /* libsquish.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsquish.a; path = lib/libsquish/libsquish.a; sourceTree = "<group>"; };
+		F589AE7E12890BEF00D8079E /* librtv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librtv.a; path = lib/libRTV/librtv.a; sourceTree = "<group>"; };
+		F589AE7F12890BEF00D8079E /* libxbms.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; name = libxbms.a; path = lib/libXBMS/libxbms.a; sourceTree = "<group>"; };
+		F589AE8012890BEF00D8079E /* libxdaap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxdaap.a; path = lib/libXDAAP/libxdaap.a; sourceTree = "<group>"; };
 		F5A29EC212A7221B003A610C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		F5A29F2612A72246003A610C /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/PrivateFrameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		F5B13835133080CA0045076D /* libmicrohttpd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmicrohttpd.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmicrohttpd.dylib"; sourceTree = "<absolute>"; };
@@ -2874,10 +2874,10 @@
 				F589AE531288E20900D8079E /* libsqlite3.dylib in Frameworks */,
 				F589AE6A128909F000D8079E /* libfreetype.dylib in Frameworks */,
 				F589AE7712890B9E00D8079E /* libapetag.a in Frameworks */,
-				F589AE8212890BEF00D8079E /* libsquish-arm-osx.a in Frameworks */,
-				F589AE8312890BEF00D8079E /* librtv-arm-osx.a in Frameworks */,
-				F589AE8412890BEF00D8079E /* libxbms-arm-osx.a in Frameworks */,
-				F589AE8512890BEF00D8079E /* libxdaap-arm-osx.a in Frameworks */,
+				F589AE8212890BEF00D8079E /* libsquish.a in Frameworks */,
+				F589AE8312890BEF00D8079E /* librtv.a in Frameworks */,
+				F589AE8412890BEF00D8079E /* libxbms.a in Frameworks */,
+				F589AE8512890BEF00D8079E /* libxdaap.a in Frameworks */,
 				F5A29EC312A7221B003A610C /* CoreMedia.framework in Frameworks */,
 				F5A29F2712A72246003A610C /* VideoToolbox.framework in Frameworks */,
 				F54D9E0712B65FFF006870F9 /* libc.dylib in Frameworks */,
@@ -5695,20 +5695,12 @@
 				F56C7EDC131F0942000AD0F6 /* http-api.a */,
 				F56C7EDE131F0959000AD0F6 /* json-rpc.a */,
 				F56C7EE0131F0965000AD0F6 /* libjsoncpp.a */,
-				F589AE7C12890BDA00D8079E /* arm */,
+				F589AE7D12890BEF00D8079E /* libsquish.a */,
+				F589AE7E12890BEF00D8079E /* librtv.a */,
+				F589AE7F12890BEF00D8079E /* libxbms.a */,
+				F589AE8012890BEF00D8079E /* libxdaap.a */,
 			);
 			name = "Internal Libs";
-			sourceTree = "<group>";
-		};
-		F589AE7C12890BDA00D8079E /* arm */ = {
-			isa = PBXGroup;
-			children = (
-				F589AE7D12890BEF00D8079E /* libsquish-arm-osx.a */,
-				F589AE7E12890BEF00D8079E /* librtv-arm-osx.a */,
-				F589AE7F12890BEF00D8079E /* libxbms-arm-osx.a */,
-				F589AE8012890BEF00D8079E /* libxdaap-arm-osx.a */,
-			);
-			name = arm;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
