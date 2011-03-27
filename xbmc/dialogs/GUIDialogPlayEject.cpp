@@ -85,19 +85,13 @@ void CGUIDialogPlayEject::OnInitWindow()
 }
 
 bool CGUIDialogPlayEject::ShowAndGetInput(CVariant vHeading, CVariant vLine0,
-  CVariant vLine1, CVariant vLine2, bool * bError /* = NULL */,
-  unsigned int uiAutoCloseTime /* = 0 */)
+  CVariant vLine1, CVariant vLine2, unsigned int uiAutoCloseTime /* = 0 */)
 {
   CGUIDialogPlayEject * pDialog = (CGUIDialogPlayEject *)g_windowManager.
     GetWindow(WINDOW_DIALOG_PLAY_EJECT);
 
   if (!pDialog)
-  {
-    if (bError)
-      *bError = true;
-
     return false;
-  }
 
   pDialog->SetHeading(vHeading);
   pDialog->SetLine(0, vLine0);
@@ -111,9 +105,6 @@ bool CGUIDialogPlayEject::ShowAndGetInput(CVariant vHeading, CVariant vLine0,
     pDialog->SetAutoClose(uiAutoCloseTime);
 
   pDialog->DoModal();
-
-  if (bError)
-    *bError = false;
 
   return pDialog->IsConfirmed();
 }
