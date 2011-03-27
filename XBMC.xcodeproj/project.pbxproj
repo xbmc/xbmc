@@ -9017,8 +9017,6 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
 					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib/mysql\"",
-					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$XBMC_DEPENDS/lib\"";
@@ -9106,8 +9104,6 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
 					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib/mysql\"",
-					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$XBMC_DEPENDS/lib\"";
