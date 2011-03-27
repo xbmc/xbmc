@@ -138,7 +138,7 @@
 				<aligny>center</aligny>
 				<font>font13</font>
 				<textcolor>white</textcolor>
-				<label fallback="161">$INFO[ListItem.Album]$INFO[musicplayer.discnumber, - $LOCALIZE[427]:]</label>
+				<label fallback="161">$INFO[ListItem.Album]$INFO[listitem.discnumber, - $LOCALIZE[427] ]</label>
 			</control>
 			<control type="label">
 				<description>Genre Title</description>
