@@ -1235,6 +1235,12 @@ int MysqlDataset::exec(const string &sql) {
     qry = qry.insert(loc + 19, " auto_increment ");
   }
 
+  // force the charset and collation to UTF-8
+  if ( qry.find("CREATE TABLE") != string::npos )
+  {
+    qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
+  }
+
   // sqlite3 requires the BEGIN and END pragmas when creating triggers. mysql does not.
   if ( qry.find("CREATE TRIGGER") != string::npos )
   {
