@@ -375,6 +375,7 @@ lib/cmyth/Makefile
 /system/players/paplayer/adpcm.dll
 /system/players/paplayer/timidity.dll
 /system/players/paplayer/libFLAC.dll
+/system/players/paplayer/xbmc_asap.dll
 
 # /system/players/dsplayer
 /system/players/dsplayer/libsubs.dll
