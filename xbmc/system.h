@@ -95,6 +95,7 @@
 #define HAVE_LIBSSH
 #define HAS_LIBRTMP
 #define HAVE_LIBBLURAY
+#define HAS_ASAP_CODEC
 #endif
 
 /*****************

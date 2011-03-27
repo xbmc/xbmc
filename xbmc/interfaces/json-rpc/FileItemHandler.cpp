@@ -27,6 +27,9 @@
 #include "utils/URIUtils.h"
 #include "utils/ISerializable.h"
 #include "utils/Variant.h"
+#include "video/VideoInfoTag.h"
+#include "music/tags/MusicInfoTag.h"
+
 
 using namespace MUSIC_INFO;
 using namespace Json;

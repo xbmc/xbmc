@@ -33,7 +33,6 @@
 #include "utils/LabelFormatter.h"
 #include "GUIPassword.h"
 #include "threads/CriticalSection.h"
-#include "video/VideoDatabase.h"
 
 #include <vector>
 #include "boost/shared_ptr.hpp"
@@ -163,7 +162,7 @@ public:
   virtual void SetLabel(const CStdString &strLabel);
   virtual void SetLabel2(const CStdString &strLabel);
   CURL GetAsUrl() const;
-  VIDEODB_CONTENT_TYPE GetVideoContentType() const;
+  int GetVideoContentType() const; /* return VIDEODB_CONTENT_TYPE, but don't want to include videodb in this header */
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
   bool SortsOnTop() const { return m_specialSort == SORT_ON_TOP; }
@@ -516,6 +515,14 @@ public:
   void AddSortMethod(SORT_METHOD method, int buttonLabel, const LABEL_MASKS &labelMasks);
   bool HasSortDetails() const { return m_sortDetails.size() != 0; };
   const std::vector<SORT_METHOD_DETAILS> &GetSortDetails() const { return m_sortDetails; };
+
+  /*! \brief Specify whether this list should be sorted with folders separate from files
+   By default we sort with folders listed (and sorted separately) except for those sort modes
+   which should be explicitly sorted with folders interleaved with files (eg SORT_METHOD_FILES).
+   With this set the folder state will be ignored, allowing folders and files to sort interleaved.
+   \param sort whether to ignore the folder state.
+   */
+  void SetSortIgnoreFolders(bool sort) { m_sortIgnoreFolders = sort; };
   bool GetReplaceListing() const { return m_replaceListing; };
   void SetReplaceListing(bool replace);
   void SetContent(const CStdString &content) { m_content = content; };
@@ -532,6 +539,7 @@ private:
   bool m_fastLookup;
   SORT_METHOD m_sortMethod;
   SORT_ORDER m_sortOrder;
+  bool m_sortIgnoreFolders;
   CACHE_TYPE m_cacheToDisc;
   bool m_replaceListing;
   CStdString m_content;

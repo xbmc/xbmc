@@ -57,9 +57,19 @@ ifeq ($(ARCH), powerpc-osx)
 	BUNDLE1_O=-lbundle1.o
 endif
 
+ifneq ($(V), 1)
+	SILENT_CPP=@echo "CPP     $@";
+	SILENT_CC =@echo "CC      $@";
+	SILENT_S  =@echo "S       $@";
+	SILENT_GCH=@echo "GCH     $@";
+	SILENT_MM =@echo "MM      $@";
+	SILENT_AR =@echo "AR      $@";
+endif
+
+
 .cpp.o:
 	@rm -f ${<:.cpp=.o}
-	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}
+	$(SILENT_CPP) $(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
@@ -67,7 +77,7 @@ endif
 
 .cc.o:
 	@rm -f ${<:.cc=.o}
-	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cc=.o}
+	$(SILENT_CC) $(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cc=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
@@ -75,7 +85,7 @@ endif
 
 .c.o:
 	@rm -f ${<:.c=.o}
-	$(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
+	$(SILENT_CC) $(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
@@ -83,22 +93,22 @@ endif
 
 .C.o:
 	@rm -f ${<:.C=.o}
-	$(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.C=.o}
+	$(SILENT_CC) $(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.C=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
 	  rm -f $*.d
 
 .S.o:
-	rm -f ${<:.S=.o}
-	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.S=.o}
+	@rm -f ${<:.S=.o}
+	$(SILENT_CC) $(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.S=.o}
 
 %.h.gch : %.h
-	$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@
+	$(SILENT_GCH) $(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@
 
 .m.o:
 	@rm -f ${<:.m=.o}
-	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.m=.o}
+	$(SILENT_MM) $(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.m=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
@@ -106,7 +116,7 @@ endif
 
 .mm.o:
 	@rm -f ${<:.mm=.o}
-	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.mm=.o}
+	$(SILENT_MM) $(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.mm=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
@@ -121,7 +131,7 @@ OBJS+=$(filter %.o,$(SRCS:.m=.o))
 .PHONY : lib pch clean distclean distclean_evil
 
 $(LIB): $(OBJS)
-	$(AR) $(ARFLAGS) $(LIB) $(OBJS)
+	$(SILENT_AR) $(AR) $(ARFLAGS) $(LIB) $(OBJS)
 
 pch: $(PCH:.h=.h.gch)
 	for d in $(DIRS); do (cd "$$d"; $(MAKE) pch ); done

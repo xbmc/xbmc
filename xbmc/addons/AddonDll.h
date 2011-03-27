@@ -92,8 +92,6 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
     m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_windx");
 #elif defined(__APPLE__)
     m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_osx");
-#elif defined(_XBOX)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_xbox");
 #endif
   }
 

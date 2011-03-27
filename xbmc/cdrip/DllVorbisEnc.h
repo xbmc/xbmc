@@ -40,7 +40,7 @@ public:
   virtual ~DllVorbisEncInterface() {}
 };
 
-#if (!defined WIN32)
+#if !(defined(WIN32) || defined(__APPLE__))
 
 class DllVorbisEnc : public DllDynamic, DllVorbisEncInterface
 {

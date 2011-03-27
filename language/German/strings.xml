@@ -708,6 +708,8 @@
   <string id="851">Gültige Ports: 1-65535</string>
   <string id="852">Gültige Ports: 1024-65535</string>
 
+  <string id="998">Musik hinzufügen...</string>
+  <string id="999">Videos hinzufügen...</string>
   <string id="1000">- Vorschau</string>
   <string id="1001">Verbindung nicht möglich</string>
   <string id="1002">XBMC konnte sich nicht mit der Netzwerkfreigabe verbinden.</string>
@@ -1255,6 +1257,7 @@
   <string id="13429">Hardwarebeschleunigung erlauben (VDADecoder)</string>
   <string id="13430">Hardwarebeschleunigung erlauben (OpenMax)</string>
   <string id="13431">Pixel Shaders</string>
+  <string id="13432">Hardwarebeschleunigung erlauben (VideoToolbox)</string>
 
   <string id="13500">A/V Sync Methode</string>
   <string id="13501">Audio Takt</string>
@@ -1324,7 +1327,7 @@
   <string id="14038">Netzwerkeinstellungen wurden geändert</string>
   <string id="14039">XBMC muss neu gestartet werden, damit die Änderung</string>
   <string id="14040">wirksam wird. Soll jetzt neu gestartet werden?</string>
-  <string id="14041"></string>
+  <string id="14041">Internetverbindung Bandbreitenbegrenzung</string>
   <string id="14043">- Auch während der Wiedergabe ausschalten</string>
   <string id="14044">%i Min</string>
   <string id="14045">%i Sek</string>
@@ -2606,6 +2609,8 @@
   <string id="24041">Aus ZIP Datei installieren</string>
   <string id="24042">Herunterladen %i%%</string>
   <string id="24043">Verfügbare Updates</string>
+  <string id="24044">Abhängigkeiten nicht erfüllt</string>
+  <string id="24045">Add-on verfügt nicht über die richtige Struktur</string>
 
   <string id="24050">Verfügbare Add-ons</string>
   <string id="24051">Version:</string>

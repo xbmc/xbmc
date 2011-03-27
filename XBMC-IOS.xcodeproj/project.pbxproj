@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3255316612B2D02400837CD2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255316512B2D02400837CD2 /* CoreAudio.framework */; };
 		4D5D2E1E1301758F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */; };
+		7C99B6E9133D36E200FC2B16 /* CacheCircular.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B6E7133D36E200FC2B16 /* CacheCircular.cpp */; };
 		F54D9E8112B713F8006870F9 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8012B713F8006870F9 /* libc.dylib */; };
 		F56B143412CAF279009B4C96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B143312CAF279009B4C96 /* CoreVideo.framework */; };
 		F56B14A512CAF523009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B14A412CAF523009B4C96 /* AudioToolbox.framework */; };
@@ -882,40 +883,26 @@
 		F56C8BAA131F4466000AD0F6 /* XBMCController.mm in Sources */ = {isa = PBXBuildFile; fileRef = F56C8BA2131F4466000AD0F6 /* XBMCController.mm */; };
 		F56C8BAB131F4466000AD0F6 /* XBMCEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F56C8BA5131F4466000AD0F6 /* XBMCEAGLView.mm */; };
 		F56C8BB9131F44AA000AD0F6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F56C8BB7131F44AA000AD0F6 /* InfoPlist.strings */; };
-		F56C8BE8131F4796000AD0F6 /* liblzo.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BCF131F4795000AD0F6 /* liblzo.dylib */; };
 		F56C8BE9131F4796000AD0F6 /* liblzo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD0131F4795000AD0F6 /* liblzo2.dylib */; };
 		F56C8BEA131F4796000AD0F6 /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD1131F4795000AD0F6 /* libpcre.dylib */; };
 		F56C8BEB131F4796000AD0F6 /* libpcrecpp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD2131F4795000AD0F6 /* libpcrecpp.dylib */; };
-		F56C8BEC131F4796000AD0F6 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD3131F4795000AD0F6 /* libcrypto.dylib */; };
-		F56C8BED131F4796000AD0F6 /* libmad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD4131F4795000AD0F6 /* libmad.dylib */; };
-		F56C8BEE131F4796000AD0F6 /* libfaad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD5131F4796000AD0F6 /* libfaad.dylib */; };
-		F56C8BEF131F4796000AD0F6 /* libmpeg2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD6131F4796000AD0F6 /* libmpeg2.dylib */; };
-		F56C8BF0131F4796000AD0F6 /* libwavpack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD7131F4796000AD0F6 /* libwavpack.dylib */; };
-		F56C8BF1131F4796000AD0F6 /* libogg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD8131F4796000AD0F6 /* libogg.dylib */; };
-		F56C8BF2131F4796000AD0F6 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BD9131F4796000AD0F6 /* libvorbis.dylib */; };
-		F56C8BF3131F4796000AD0F6 /* libvorbisfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BDA131F4796000AD0F6 /* libvorbisfile.dylib */; };
-		F56C8BF4131F4796000AD0F6 /* libvorbisenc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BDB131F4796000AD0F6 /* libvorbisenc.dylib */; };
 		F56C8BF5131F4796000AD0F6 /* libfribidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BDC131F4796000AD0F6 /* libfribidi.dylib */; };
 		F56C8BF6131F4796000AD0F6 /* libcdio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BDD131F4796000AD0F6 /* libcdio.dylib */; };
 		F56C8BF7131F4796000AD0F6 /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BDE131F4796000AD0F6 /* libsamplerate.dylib */; };
-		F56C8BF8131F4796000AD0F6 /* libcurl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BDF131F4796000AD0F6 /* libcurl.dylib */; };
 		F56C8BF9131F4796000AD0F6 /* libsmbclient.dylib.0 in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BE0131F4796000AD0F6 /* libsmbclient.dylib.0 */; };
-		F56C8BFA131F4796000AD0F6 /* libtalloc.dylib.2 in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BE1131F4796000AD0F6 /* libtalloc.dylib.2 */; };
 		F56C8BFC131F4796000AD0F6 /* libfreetype.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BE3131F4796000AD0F6 /* libfreetype.dylib */; };
 		F56C8BFD131F4797000AD0F6 /* libfontconfig.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BE4131F4796000AD0F6 /* libfontconfig.dylib */; };
 		F56C8BFE131F4797000AD0F6 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BE5131F4796000AD0F6 /* libmysqlclient.dylib */; };
 		F56C8BFF131F4797000AD0F6 /* libpython2.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BE6131F4796000AD0F6 /* libpython2.6.dylib */; };
 		F56C8C00131F4797000AD0F6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BE7131F4796000AD0F6 /* libsqlite3.dylib */; };
-		F56C8C07131F47EA000AD0F6 /* libcmyth.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C01131F47EA000AD0F6 /* libcmyth.a */; };
-		F56C8C08131F47EA000AD0F6 /* librefmem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C02131F47EA000AD0F6 /* librefmem.a */; };
 		F56C8C09131F47EA000AD0F6 /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C03131F47EA000AD0F6 /* libapetag.a */; };
 		F56C8C0A131F47EA000AD0F6 /* http-api.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C04131F47EA000AD0F6 /* http-api.a */; };
 		F56C8C0B131F47EA000AD0F6 /* json-rpc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C05131F47EA000AD0F6 /* json-rpc.a */; };
 		F56C8C0C131F47EA000AD0F6 /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C06131F47EA000AD0F6 /* libjsoncpp.a */; };
-		F56C8C11131F4811000AD0F6 /* libsquish-arm-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C0D131F4811000AD0F6 /* libsquish-arm-osx.a */; };
-		F56C8C12131F4811000AD0F6 /* librtv-arm-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C0E131F4811000AD0F6 /* librtv-arm-osx.a */; };
-		F56C8C13131F4811000AD0F6 /* libxbms-arm-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C0F131F4811000AD0F6 /* libxbms-arm-osx.a */; };
-		F56C8C14131F4811000AD0F6 /* libxdaap-arm-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C10131F4811000AD0F6 /* libxdaap-arm-osx.a */; };
+		F56C8C11131F4811000AD0F6 /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C0D131F4811000AD0F6 /* libsquish.a */; };
+		F56C8C12131F4811000AD0F6 /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C0E131F4811000AD0F6 /* librtv.a */; };
+		F56C8C13131F4811000AD0F6 /* libxbms.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C0F131F4811000AD0F6 /* libxbms.a */; };
+		F56C8C14131F4811000AD0F6 /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C10131F4811000AD0F6 /* libxdaap.a */; };
 		F57A1DB81329FAF700498CC7 /* SourcesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57A1DB61329FAF700498CC7 /* SourcesDirectory.cpp */; };
 		F5899DCE1287212700D8079E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5899DCA1287212700D8079E /* QuartzCore.framework */; };
 		F5899DCF1287212700D8079E /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5899DCB1287212700D8079E /* OpenGLES.framework */; };
@@ -930,15 +917,14 @@
 		F5A29EC312A7221B003A610C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29EC212A7221B003A610C /* CoreMedia.framework */; };
 		F5A29F2712A72246003A610C /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29F2612A72246003A610C /* VideoToolbox.framework */; };
 		F5B1380D13306B890045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B1380C13306B890045076D /* libmicrohttpd.dylib */; };
-		F5B138131330732A0045076D /* libmodplug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138121330732A0045076D /* libmodplug.dylib */; };
-		F5B13AFE1333247D0045076D /* libass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13AFD1333247D0045076D /* libass.dylib */; };
-		F5B13B2E13332B4C0045076D /* libbluray.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13B2D13332B4C0045076D /* libbluray.dylib */; };
 		F5B13DCF1334490D0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13DCE1334490D0045076D /* DarwinUtils.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3255316512B2D02400837CD2 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		7C99B6E7133D36E200FC2B16 /* CacheCircular.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CacheCircular.cpp; sourceTree = "<group>"; };
+		7C99B6E8133D36E200FC2B16 /* CacheCircular.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheCircular.h; sourceTree = "<group>"; };
 		8D576316048677EA00EA77CD /* XBMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F54D9E8012B713F8006870F9 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		F56B143312CAF279009B4C96 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -2823,41 +2809,26 @@
 		F56C8BA5131F4466000AD0F6 /* XBMCEAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XBMCEAGLView.mm; sourceTree = "<group>"; };
 		F56C8BA6131F4466000AD0F6 /* XBMCIOS-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "XBMCIOS-Info.plist"; sourceTree = "<group>"; };
 		F56C8BB8131F44AA000AD0F6 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = InfoPlist.strings; sourceTree = "<group>"; };
-		F56C8BCF131F4795000AD0F6 /* liblzo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/liblzo.dylib"; sourceTree = "<absolute>"; };
 		F56C8BD0131F4795000AD0F6 /* liblzo2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo2.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/liblzo2.dylib"; sourceTree = "<absolute>"; };
 		F56C8BD1131F4795000AD0F6 /* libpcre.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libpcre.dylib"; sourceTree = "<absolute>"; };
 		F56C8BD2131F4795000AD0F6 /* libpcrecpp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcrecpp.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libpcrecpp.dylib"; sourceTree = "<absolute>"; };
-		F56C8BD3131F4795000AD0F6 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libcrypto.dylib"; sourceTree = "<absolute>"; };
-		F56C8BD4131F4795000AD0F6 /* libmad.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmad.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmad.dylib"; sourceTree = "<absolute>"; };
-		F56C8BD5131F4796000AD0F6 /* libfaad.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfaad.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libfaad.dylib"; sourceTree = "<absolute>"; };
-		F56C8BD6131F4796000AD0F6 /* libmpeg2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmpeg2.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmpeg2.dylib"; sourceTree = "<absolute>"; };
-		F56C8BD7131F4796000AD0F6 /* libwavpack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwavpack.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libwavpack.dylib"; sourceTree = "<absolute>"; };
-		F56C8BD8131F4796000AD0F6 /* libogg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libogg.dylib"; sourceTree = "<absolute>"; };
-		F56C8BD9131F4796000AD0F6 /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libvorbis.dylib"; sourceTree = "<absolute>"; };
-		F56C8BDA131F4796000AD0F6 /* libvorbisfile.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbisfile.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libvorbisfile.dylib"; sourceTree = "<absolute>"; };
-		F56C8BDB131F4796000AD0F6 /* libvorbisenc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbisenc.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libvorbisenc.dylib"; sourceTree = "<absolute>"; };
 		F56C8BDC131F4796000AD0F6 /* libfribidi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfribidi.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libfribidi.dylib"; sourceTree = "<absolute>"; };
 		F56C8BDD131F4796000AD0F6 /* libcdio.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcdio.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libcdio.dylib"; sourceTree = "<absolute>"; };
 		F56C8BDE131F4796000AD0F6 /* libsamplerate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsamplerate.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libsamplerate.dylib"; sourceTree = "<absolute>"; };
-		F56C8BDF131F4796000AD0F6 /* libcurl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurl.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libcurl.dylib"; sourceTree = "<absolute>"; };
 		F56C8BE0131F4796000AD0F6 /* libsmbclient.dylib.0 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsmbclient.dylib.0; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libsmbclient.dylib.0"; sourceTree = "<absolute>"; };
-		F56C8BE1131F4796000AD0F6 /* libtalloc.dylib.2 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtalloc.dylib.2; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libtalloc.dylib.2"; sourceTree = "<absolute>"; };
-		F56C8BE2131F4796000AD0F6 /* libtdb.dylib.1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; fileEncoding = 4; name = libtdb.dylib.1; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libtdb.dylib.1"; sourceTree = "<absolute>"; };
 		F56C8BE3131F4796000AD0F6 /* libfreetype.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreetype.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libfreetype.dylib"; sourceTree = "<absolute>"; };
 		F56C8BE4131F4796000AD0F6 /* libfontconfig.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfontconfig.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libfontconfig.dylib"; sourceTree = "<absolute>"; };
 		F56C8BE5131F4796000AD0F6 /* libmysqlclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/mysql/libmysqlclient.dylib"; sourceTree = "<absolute>"; };
 		F56C8BE6131F4796000AD0F6 /* libpython2.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpython2.6.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libpython2.6.dylib"; sourceTree = "<absolute>"; };
 		F56C8BE7131F4796000AD0F6 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libsqlite3.dylib"; sourceTree = "<absolute>"; };
-		F56C8C01131F47EA000AD0F6 /* libcmyth.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcmyth.a; path = lib/cmyth/libcmyth/libcmyth.a; sourceTree = "<group>"; };
-		F56C8C02131F47EA000AD0F6 /* librefmem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librefmem.a; path = lib/cmyth/librefmem/librefmem.a; sourceTree = "<group>"; };
 		F56C8C03131F47EA000AD0F6 /* libapetag.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libapetag.a; path = lib/libapetag/.libs/libapetag.a; sourceTree = "<group>"; };
 		F56C8C04131F47EA000AD0F6 /* http-api.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "http-api.a"; path = "xbmc/interfaces/http-api/http-api.a"; sourceTree = "<group>"; };
 		F56C8C05131F47EA000AD0F6 /* json-rpc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "json-rpc.a"; path = "xbmc/interfaces/json-rpc/json-rpc.a"; sourceTree = "<group>"; };
 		F56C8C06131F47EA000AD0F6 /* libjsoncpp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjsoncpp.a; path = lib/jsoncpp/src/lib_json/libjsoncpp.a; sourceTree = "<group>"; };
-		F56C8C0D131F4811000AD0F6 /* libsquish-arm-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsquish-arm-osx.a"; path = "lib/libsquish/libsquish-arm-osx.a"; sourceTree = "<group>"; };
-		F56C8C0E131F4811000AD0F6 /* librtv-arm-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "librtv-arm-osx.a"; path = "lib/libRTV/librtv-arm-osx.a"; sourceTree = "<group>"; };
-		F56C8C0F131F4811000AD0F6 /* libxbms-arm-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxbms-arm-osx.a"; path = "lib/libXBMS/libxbms-arm-osx.a"; sourceTree = "<group>"; };
-		F56C8C10131F4811000AD0F6 /* libxdaap-arm-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libxdaap-arm-osx.a"; path = "lib/libXDAAP/libxdaap-arm-osx.a"; sourceTree = "<group>"; };
+		F56C8C0D131F4811000AD0F6 /* libsquish.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsquish.a; path = lib/libsquish/libsquish.a; sourceTree = "<group>"; };
+		F56C8C0E131F4811000AD0F6 /* librtv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librtv.a; path = lib/libRTV/librtv.a; sourceTree = "<group>"; };
+		F56C8C0F131F4811000AD0F6 /* libxbms.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxbms.a; path = lib/libXBMS/libxbms.a; sourceTree = "<group>"; };
+		F56C8C10131F4811000AD0F6 /* libxdaap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxdaap.a; path = lib/libXDAAP/libxdaap.a; sourceTree = "<group>"; };
 		F57A1DB61329FAF700498CC7 /* SourcesDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SourcesDirectory.cpp; sourceTree = "<group>"; };
 		F57A1DB71329FAF700498CC7 /* SourcesDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourcesDirectory.h; sourceTree = "<group>"; };
 		F5899DCA1287212700D8079E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -2873,9 +2844,6 @@
 		F5A29EC212A7221B003A610C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		F5A29F2612A72246003A610C /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/PrivateFrameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		F5B1380C13306B890045076D /* libmicrohttpd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmicrohttpd.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmicrohttpd.dylib"; sourceTree = "<absolute>"; };
-		F5B138121330732A0045076D /* libmodplug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmodplug.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmodplug.dylib"; sourceTree = "<absolute>"; };
-		F5B13AFD1333247D0045076D /* libass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libass.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libass.dylib"; sourceTree = "<absolute>"; };
-		F5B13B2D13332B4C0045076D /* libbluray.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbluray.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libbluray.dylib"; sourceTree = "<absolute>"; };
 		F5B13DCD1334490D0045076D /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
 		F5B13DCE1334490D0045076D /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -2904,44 +2872,27 @@
 				F56B15D512CD67A9009B4C96 /* CoreGraphics.framework in Frameworks */,
 				F56B160812CD6999009B4C96 /* ImageIO.framework in Frameworks */,
 				4D5D2E1E1301758F006ABC13 /* CFNetwork.framework in Frameworks */,
-				F56C8BE8131F4796000AD0F6 /* liblzo.dylib in Frameworks */,
 				F56C8BE9131F4796000AD0F6 /* liblzo2.dylib in Frameworks */,
 				F56C8BEA131F4796000AD0F6 /* libpcre.dylib in Frameworks */,
 				F56C8BEB131F4796000AD0F6 /* libpcrecpp.dylib in Frameworks */,
-				F56C8BEC131F4796000AD0F6 /* libcrypto.dylib in Frameworks */,
-				F56C8BED131F4796000AD0F6 /* libmad.dylib in Frameworks */,
-				F56C8BEE131F4796000AD0F6 /* libfaad.dylib in Frameworks */,
-				F56C8BEF131F4796000AD0F6 /* libmpeg2.dylib in Frameworks */,
-				F56C8BF0131F4796000AD0F6 /* libwavpack.dylib in Frameworks */,
-				F56C8BF1131F4796000AD0F6 /* libogg.dylib in Frameworks */,
-				F56C8BF2131F4796000AD0F6 /* libvorbis.dylib in Frameworks */,
-				F56C8BF3131F4796000AD0F6 /* libvorbisfile.dylib in Frameworks */,
-				F56C8BF4131F4796000AD0F6 /* libvorbisenc.dylib in Frameworks */,
 				F56C8BF5131F4796000AD0F6 /* libfribidi.dylib in Frameworks */,
 				F56C8BF6131F4796000AD0F6 /* libcdio.dylib in Frameworks */,
 				F56C8BF7131F4796000AD0F6 /* libsamplerate.dylib in Frameworks */,
-				F56C8BF8131F4796000AD0F6 /* libcurl.dylib in Frameworks */,
 				F56C8BF9131F4796000AD0F6 /* libsmbclient.dylib.0 in Frameworks */,
-				F56C8BFA131F4796000AD0F6 /* libtalloc.dylib.2 in Frameworks */,
 				F56C8BFC131F4796000AD0F6 /* libfreetype.dylib in Frameworks */,
 				F56C8BFD131F4797000AD0F6 /* libfontconfig.dylib in Frameworks */,
 				F56C8BFE131F4797000AD0F6 /* libmysqlclient.dylib in Frameworks */,
 				F56C8BFF131F4797000AD0F6 /* libpython2.6.dylib in Frameworks */,
 				F56C8C00131F4797000AD0F6 /* libsqlite3.dylib in Frameworks */,
-				F56C8C07131F47EA000AD0F6 /* libcmyth.a in Frameworks */,
-				F56C8C08131F47EA000AD0F6 /* librefmem.a in Frameworks */,
 				F56C8C09131F47EA000AD0F6 /* libapetag.a in Frameworks */,
 				F56C8C0A131F47EA000AD0F6 /* http-api.a in Frameworks */,
 				F56C8C0B131F47EA000AD0F6 /* json-rpc.a in Frameworks */,
 				F56C8C0C131F47EA000AD0F6 /* libjsoncpp.a in Frameworks */,
-				F56C8C11131F4811000AD0F6 /* libsquish-arm-osx.a in Frameworks */,
-				F56C8C12131F4811000AD0F6 /* librtv-arm-osx.a in Frameworks */,
-				F56C8C13131F4811000AD0F6 /* libxbms-arm-osx.a in Frameworks */,
-				F56C8C14131F4811000AD0F6 /* libxdaap-arm-osx.a in Frameworks */,
+				F56C8C11131F4811000AD0F6 /* libsquish.a in Frameworks */,
+				F56C8C12131F4811000AD0F6 /* librtv.a in Frameworks */,
+				F56C8C13131F4811000AD0F6 /* libxbms.a in Frameworks */,
+				F56C8C14131F4811000AD0F6 /* libxdaap.a in Frameworks */,
 				F5B1380D13306B890045076D /* libmicrohttpd.dylib in Frameworks */,
-				F5B138131330732A0045076D /* libmodplug.dylib in Frameworks */,
-				F5B13AFE1333247D0045076D /* libass.dylib in Frameworks */,
-				F5B13B2E13332B4C0045076D /* libbluray.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4358,6 +4309,8 @@
 				F56C838B131F42E8000AD0F6 /* MythFile.cpp */,
 				F56C838C131F42E8000AD0F6 /* MythFile.h */,
 				F56C838D131F42E8000AD0F6 /* FileShoutcast.cpp */,
+				7C99B6E7133D36E200FC2B16 /* CacheCircular.cpp */,
+				7C99B6E8133D36E200FC2B16 /* CacheCircular.h */,
 				F56C838E131F42E8000AD0F6 /* CacheMemBuffer.cpp */,
 				F56C838F131F42E8000AD0F6 /* CacheMemBuffer.h */,
 				F56C8390131F42E8000AD0F6 /* CacheStrategy.cpp */,
@@ -5718,35 +5671,19 @@
 		F589AE0A1288DC1300D8079E /* External Libs */ = {
 			isa = PBXGroup;
 			children = (
-				F56C8BCF131F4795000AD0F6 /* liblzo.dylib */,
 				F56C8BD0131F4795000AD0F6 /* liblzo2.dylib */,
 				F56C8BD1131F4795000AD0F6 /* libpcre.dylib */,
 				F56C8BD2131F4795000AD0F6 /* libpcrecpp.dylib */,
-				F56C8BD3131F4795000AD0F6 /* libcrypto.dylib */,
-				F5B13AFD1333247D0045076D /* libass.dylib */,
-				F56C8BD4131F4795000AD0F6 /* libmad.dylib */,
-				F56C8BD5131F4796000AD0F6 /* libfaad.dylib */,
-				F56C8BD6131F4796000AD0F6 /* libmpeg2.dylib */,
-				F56C8BD7131F4796000AD0F6 /* libwavpack.dylib */,
-				F56C8BD8131F4796000AD0F6 /* libogg.dylib */,
-				F56C8BD9131F4796000AD0F6 /* libvorbis.dylib */,
-				F56C8BDA131F4796000AD0F6 /* libvorbisfile.dylib */,
-				F56C8BDB131F4796000AD0F6 /* libvorbisenc.dylib */,
 				F56C8BDC131F4796000AD0F6 /* libfribidi.dylib */,
 				F56C8BDD131F4796000AD0F6 /* libcdio.dylib */,
 				F56C8BDE131F4796000AD0F6 /* libsamplerate.dylib */,
-				F56C8BDF131F4796000AD0F6 /* libcurl.dylib */,
 				F56C8BE0131F4796000AD0F6 /* libsmbclient.dylib.0 */,
-				F56C8BE1131F4796000AD0F6 /* libtalloc.dylib.2 */,
-				F56C8BE2131F4796000AD0F6 /* libtdb.dylib.1 */,
 				F56C8BE3131F4796000AD0F6 /* libfreetype.dylib */,
 				F56C8BE4131F4796000AD0F6 /* libfontconfig.dylib */,
 				F56C8BE5131F4796000AD0F6 /* libmysqlclient.dylib */,
 				F56C8BE6131F4796000AD0F6 /* libpython2.6.dylib */,
 				F56C8BE7131F4796000AD0F6 /* libsqlite3.dylib */,
-				F5B138121330732A0045076D /* libmodplug.dylib */,
 				F5B1380C13306B890045076D /* libmicrohttpd.dylib */,
-				F5B13B2D13332B4C0045076D /* libbluray.dylib */,
 			);
 			name = "External Libs";
 			sourceTree = "<group>";
@@ -5754,26 +5691,16 @@
 		F589AE6D12890B6700D8079E /* Internal Libs */ = {
 			isa = PBXGroup;
 			children = (
-				F56C8C01131F47EA000AD0F6 /* libcmyth.a */,
-				F56C8C02131F47EA000AD0F6 /* librefmem.a */,
 				F56C8C03131F47EA000AD0F6 /* libapetag.a */,
 				F56C8C04131F47EA000AD0F6 /* http-api.a */,
 				F56C8C05131F47EA000AD0F6 /* json-rpc.a */,
 				F56C8C06131F47EA000AD0F6 /* libjsoncpp.a */,
-				F589AE7C12890BDA00D8079E /* arm */,
+				F56C8C0D131F4811000AD0F6 /* libsquish.a */,
+				F56C8C0E131F4811000AD0F6 /* librtv.a */,
+				F56C8C0F131F4811000AD0F6 /* libxbms.a */,
+				F56C8C10131F4811000AD0F6 /* libxdaap.a */,
 			);
 			name = "Internal Libs";
-			sourceTree = "<group>";
-		};
-		F589AE7C12890BDA00D8079E /* arm */ = {
-			isa = PBXGroup;
-			children = (
-				F56C8C0D131F4811000AD0F6 /* libsquish-arm-osx.a */,
-				F56C8C0E131F4811000AD0F6 /* librtv-arm-osx.a */,
-				F56C8C0F131F4811000AD0F6 /* libxbms-arm-osx.a */,
-				F56C8C10131F4811000AD0F6 /* libxdaap-arm-osx.a */,
-			);
-			name = arm;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -5863,7 +5790,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\nTARGET_NAME=$PRODUCT_NAME.$WRAPPER_EXTENSION\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *x86-osx.so --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \n#SYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*  --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude skin.confluence --exclude screensaver.rsxs*\"\n\n# binary name is XBMC but we build XBMC.bin so to get a clean binary each time\nmv $TARGET_BUILD_DIR/$TARGET_NAME/XBMC.bin $TARGET_BUILD_DIR/$TARGET_NAME/XBMC\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/tools/osx\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\tmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Resources/XBMC/extras/user\"\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/extras/user\"\nfi\n\nfi";
+			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\nTARGET_NAME=$PRODUCT_NAME.$WRAPPER_EXTENSION\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -aq --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *x86-osx.so --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \n#SYNCSKIN=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\nSYNCSKIN=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*  --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude skin.confluence --exclude screensaver.rsxs*\"\n\n# binary name is XBMC but we build XBMC.bin so to get a clean binary each time\nmv $TARGET_BUILD_DIR/$TARGET_NAME/XBMC.bin $TARGET_BUILD_DIR/$TARGET_NAME/XBMC\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/tools/osx\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\tmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Resources/XBMC/extras/user\"\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/extras/user\"\nfi\n\nfi";
 			showEnvVarsInLog = 0;
 		};
 		F589B48D128A697C00D8079E /* copy frameworks */ = {
@@ -5878,7 +5805,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#set -x\n\nTARGET_NAME=$PRODUCT_NAME.$WRAPPER_EXTENSION\nBUILD_LIB=/Users/Shared/xbmc-depends/ios-4.2_arm7\nRUNTIME_PATH=@executable_path\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# start clean so we don't keep old dylibs\nrm -rf \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks\"\n\n# rsync command for packaging external python\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Frameworks/lib\nPYTHONSYNC=\"rsync -av --exclude .DS_Store --exclude *.a --exclude *.exe --exclude test --exclude tests\"\n${PYTHONSYNC} \"$BUILD_LIB/lib/python2.6\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/lib/\"\nrm -rf \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/lib/python2.6/config\"\n\n# Copy all of XBMC's dynamic dependencies and rename their locations to inside the Framework\necho \"Checking $TARGET_BUILD_DIR/$TARGET_NAME/XBMC\"\nfor a in $(otool -L \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMC\"  | grep \"$BUILD_LIB\" | awk ' { print $1 } ') ; do \n\techo \"Processing $a\"\n\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks\"\n\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/$(basename $a)\"\n\tinstall_name_tool -change \"$a\" $RUNTIME_PATH/Frameworks/$(basename $a) \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMC\"\ndone\nls $TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/*\n\nREWIND=\"1\"\n# Copy all the python *.so dynamic dependencies and rename their locations to inside the Framework\necho \"Checking $TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/lib for so files\"\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Frameworks/lib -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep \"$BUILD_LIB\" | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\techo \"    changing $a to $RUNTIME_PATH/Frameworks/$(basename $a)\"\n\t\t\tinstall_name_tool -change \"$a\" \"$RUNTIME_PATH/Frameworks/$(basename $a)\" \"$b\"\n\t\tdone \n\tdone\ndone\nls $TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/*\n\nREWIND=\"1\"\n# Copy all the *osx.so dynamic dependencies and rename their locations to inside the Framework\necho \"Checking $TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/system for so files\"\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/XBMCData/XBMCHome/system -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep \"$BUILD_LIB\" | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\techo \"    changing $a to $RUNTIME_PATH/Frameworks/$(basename $a)\"\n\t\t\tinstall_name_tool -change \"$a\" \"$RUNTIME_PATH/Frameworks/$(basename $a)\" \"$b\"\n\t\tdone \n\tdone\ndone\nls $TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/*\n\nREWIND=\"1\"\n# Copy all the addon/*.so dynamic dependencies and rename their locations to inside the Framework\necho \"Checking $TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addon for so files\"\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/XBMCData/XBMCHome/addons -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep \"$BUILD_LIB\" | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\techo \"    changing $a to $RUNTIME_PATH/Frameworks/$(basename $a)\"\n\t\t\tinstall_name_tool -change \"$a\" \"$RUNTIME_PATH/Frameworks/$(basename $a)\" \"$b\"\n\t\tdone \n\tdone\ndone\nls $TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/*\n\nREWIND=\"1\"\n# Copy all the addon/*.xbs dynamic dependencies and rename their locations to inside the Framework\necho \"Checking $TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addon for xbs files\"\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/XBMCData/XBMCHome/addons -name \"*.xbs\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep \"$BUILD_LIB\" | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\techo \"    changing $a to $RUNTIME_PATH/Frameworks/$(basename $a)\"\n\t\t\tinstall_name_tool -change \"$a\" \"$RUNTIME_PATH/Frameworks/$(basename $a)\" \"$b\"\n\t\tdone \n\tdone\ndone\nls $TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/*\n\nREWIND=\"1\"\n# Copy all the dynamic dependencies and rename their locations to inside the Framework\necho \"Checking $TARGET_BUILD_DIR/$TARGET_NAME/Frameworks for dylib files\"\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/\"*dylib* ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep \"$BUILD_LIB\" | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\techo \"    changing $a to $RUNTIME_PATH/Frameworks/$(basename $a)\"\n\t\t\tinstall_name_tool -change \"$a\" \"$RUNTIME_PATH/Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/$(basename $b)\"\n\t\tdone \n\tdone\ndone\nls $TARGET_BUILD_DIR/$TARGET_NAME/Frameworks/*\n\n";
+			shellScript = "#set -x\n\nfunction check_dyloaded_depends\n{\n  b=$(find \"$EXTERNAL_LIBS\" -name $1 -print)\n  if [ -f \"$b\" ]; then\n    #echo \"Processing $b\"\n    if [ ! -f  \"$TARGET_FRAMEWORKS/$(basename $b)\" ]; then\n      echo \"    Packaging $b\"\n      cp -f \"$b\" \"$TARGET_FRAMEWORKS/\"\n      chmod u+w \"$TARGET_FRAMEWORKS/$(basename $b)\"\n    fi\n    for a in $(otool -L \"$b\"  | grep \"$EXTERNAL_LIBS\" | awk ' { print $1 } ') ; do\n      if [ -f \"$a\" ]; then\n        if [ ! -f  \"$TARGET_FRAMEWORKS/$(basename $a)\" ]; then\n          echo \"    Packaging $a\"\n          cp -f \"$a\" \"$TARGET_FRAMEWORKS/\"\n          chmod u+w \"$TARGET_FRAMEWORKS/$(basename $a)\"\n          install_name_tool -change \"$a\" \"$DYLIB_NAMEPATH/$(basename $a)\" \"$TARGET_FRAMEWORKS/$(basename $b)\"\n        fi\n      fi\n    done \n  fi\n}\n\nfunction check_xbmc_dylib_depends\n{\n  REWIND=\"1\"\n  while [ $REWIND = \"1\" ]\n  do\n    let REWIND=\"0\"\n    for b in $(find \"$1\" -name \"$2\" -print) ; do\n      #echo \"Processing $b\"\n      for a in $(otool -L \"$b\"  | grep \"$EXTERNAL_LIBS\" | awk ' { print $1 } ') ; do\n        #echo \"    Packaging $a\"\n        if [ ! -f  \"$TARGET_FRAMEWORKS/$(basename $a)\" ]; then\n          echo \"    Packaging $a\"\n          cp -f \"$a\" \"$TARGET_FRAMEWORKS/\"\n          chmod u+w \"$TARGET_FRAMEWORKS/$(basename $a)\"\n          let REWIND=\"1\"\n        fi\n        install_name_tool -change \"$a\" \"$DYLIB_NAMEPATH/$(basename $a)\" \"$b\"\n      done\n    done\n  done\n}\n\nEXTERNAL_LIBS=/Users/Shared/xbmc-depends/ios-4.2_arm7\n\nTARGET_NAME=$PRODUCT_NAME.$WRAPPER_EXTENSION\nTARGET_CONTENTS=$TARGET_BUILD_DIR/$TARGET_NAME\n\nTARGET_BINARY=$TARGET_CONTENTS/XBMC\nTARGET_FRAMEWORKS=$TARGET_CONTENTS/Frameworks\nDYLIB_NAMEPATH=@executable_path/Frameworks\nXBMC_HOME=$TARGET_CONTENTS/XBMCData/XBMCHome\n\nmkdir -p \"$TARGET_CONTENTS\"\nmkdir -p \"$TARGET_CONTENTS/XBMCData/XBMCHome\"\n# start clean so we don't keep old dylibs\nrm -rf \"$TARGET_CONTENTS/Frameworks\"\nmkdir -p \"$TARGET_CONTENTS/Frameworks\"\n\necho \"Package $TARGET_BUILD_DIR/XBMC\"\n\n# Copy all of XBMC's dylib dependencies and rename their locations to inside the Framework\necho \"Checking $TARGET_BINARY dylib dependencies\"\nfor a in $(otool -L \"$TARGET_BINARY\"  | grep \"$EXTERNAL_LIBS\" | awk ' { print $1 } ') ; do \n\techo \"    Packaging $a\"\n\tcp -f \"$a\" \"$TARGET_FRAMEWORKS/\"\n\tchmod u+w \"$TARGET_FRAMEWORKS/$(basename $a)\"\n\tinstall_name_tool -change \"$a\" \"$DYLIB_NAMEPATH/$(basename $a)\" \"$TARGET_BINARY\"\ndone\n\necho \"Package $EXTERNAL_LIBS/lib/python2.6\"\nmkdir -p \"$TARGET_CONTENTS/Frameworks/lib\"\nPYTHONSYNC=\"rsync -aq --exclude .DS_Store --exclude *.a --exclude *.exe --exclude test --exclude tests\"\n${PYTHONSYNC} \"$EXTERNAL_LIBS/lib/python2.6\" \"$TARGET_FRAMEWORKS/lib/\"\nrm -rf \"$TARGET_FRAMEWORKS/lib/python2.6/config\"\n\necho \"Checking $TARGET_FRAMEWORKS/lib/python2.6 *.so for dylib dependencies\"\ncheck_xbmc_dylib_depends \"$TARGET_FRAMEWORKS\"/lib/python2.6 \"*.so\"\n\necho \"Checking $XBMC_HOME/system *.so for dylib dependencies\"\ncheck_xbmc_dylib_depends \"$XBMC_HOME\"/system \"*.so\"\n\necho \"Checking $XBMC_HOME/addons *.so for dylib dependencies\"\ncheck_xbmc_dylib_depends \"$XBMC_HOME\"/addons \"*.so\"\n\necho \"Checking $XBMC_HOME/addons *.xbs for dylib dependencies\"\ncheck_xbmc_dylib_depends \"$XBMC_HOME\"/addons \"*.xbs\"\n\necho \"Checking xbmc/DllPaths_generated.h for dylib dependencies\"\nfor a in $(grep .dylib \"$SRCROOT\"/xbmc/DllPaths_generated.h | awk '{print $3}' | sed s/\\\"//g) ; do\n  check_dyloaded_depends $a\ndone\n\necho \"Checking $TARGET_FRAMEWORKS for missing dylib dependencies\"\nREWIND=\"1\"\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in \"$TARGET_FRAMEWORKS/\"*dylib* ; do\n\t\t#echo \"  Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep \"$EXTERNAL_LIBS\" | awk ' { print $1 } ') ; do\n\t\t\t#echo \"Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_FRAMEWORKS/$(basename $a)\" ]; then\n\t\t\t\techo \"    Packaging $a\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_FRAMEWORKS/\"\n\t\t\t\tchmod u+w \"$TARGET_FRAMEWORKS/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"$DYLIB_NAMEPATH/$(basename $a)\" \"$TARGET_FRAMEWORKS/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -6755,6 +6682,7 @@
 				F56C8BAB131F4466000AD0F6 /* XBMCEAGLView.mm in Sources */,
 				F57A1DB81329FAF700498CC7 /* SourcesDirectory.cpp in Sources */,
 				F5B13DCF1334490D0045076D /* DarwinUtils.mm in Sources */,
+				7C99B6E9133D36E200FC2B16 /* CacheCircular.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6825,11 +6753,10 @@
 					"\"$(SRCROOT)/lib/libapetag/.libs\"",
 					"\"$(SRCROOT)/lib/libsquish\"",
 					"\"$(SRCROOT)/lib/jsoncpp/src/lib_json\"",
-					"\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"",
-					"\"$XBMC_DEPENDS/lib\"",
-					"\"$XBMC_DEPENDS/lib/mysql\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
+					"\"$XBMC_DEPENDS/lib\"",
+					"\"$XBMC_DEPENDS/lib/mysql\"",
 				);
 				OTHER_LDFLAGS = "-Wl,-all_load";
 				PLIST_FILE_OUTPUT_FORMAT = xml;
@@ -6895,11 +6822,10 @@
 					"\"$(SRCROOT)/lib/libapetag/.libs\"",
 					"\"$(SRCROOT)/lib/libsquish\"",
 					"\"$(SRCROOT)/lib/jsoncpp/src/lib_json\"",
-					"\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"",
-					"\"$XBMC_DEPENDS/lib\"",
-					"\"$XBMC_DEPENDS/lib/mysql\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
+					"\"$XBMC_DEPENDS/lib\"",
+					"\"$XBMC_DEPENDS/lib/mysql\"",
 				);
 				OTHER_LDFLAGS = "-Wl,-all_load";
 				PLIST_FILE_OUTPUT_FORMAT = xml;

@@ -25,7 +25,6 @@
 #include "Util.h"
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
-#include <ostream>
 
 class CURL;
 class TiXmlElement;

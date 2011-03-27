@@ -33,6 +33,7 @@
 #include "TextureCache.h"
 #include "utils/log.h"
 #include "programs/Shortcut.h"
+#include "video/VideoInfoTag.h"
 
 #include "cores/dvdplayer/DVDFileInfo.h"
 

@@ -121,9 +121,6 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 #elif defined(__APPLE__)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_osx")) && value.empty())
           break;
-#elif defined(_XBOX)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_xbox")) && value.empty())
-          break;
 #endif
         if (type == ADDON_VIZ)
         {

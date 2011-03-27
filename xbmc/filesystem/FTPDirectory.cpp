@@ -27,6 +27,7 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "utils/CharsetConverter.h"
+#include "climits"
 
 using namespace XFILE;
 

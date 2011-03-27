@@ -29,6 +29,9 @@
 #include "utils/AutoPtrHandle.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "mysqldataset.h"
+#include "sqlitedataset.h"
+
 
 using namespace AUTOPTR;
 using namespace dbiplus;

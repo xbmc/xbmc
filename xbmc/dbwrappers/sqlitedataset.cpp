@@ -656,9 +656,6 @@ void SqliteDataset::prev(void) {
 }
 
 void SqliteDataset::next(void) {
-#ifdef _XBOX
-  free_row();
-#endif
   Dataset::next();
   if (!eof()) 
       fill_fields();

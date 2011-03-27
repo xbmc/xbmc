@@ -194,6 +194,10 @@ public:
   double GetTotalTime() const;
   double GetTime() const;
   float GetPercentage() const;
+
+  // Get the percentage of data currently cached/buffered (aq/vq + FileCache) from the input stream if applicable.
+  float GetCachePercentage() const;
+
   void SeekPercentage(float percent);
   void SeekTime( double dTime = 0.0 );
   void ResetPlayTime();

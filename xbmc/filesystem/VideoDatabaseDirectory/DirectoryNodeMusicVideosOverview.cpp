@@ -27,7 +27,7 @@ using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 Node MusicVideoChildren[] = {
                               { NODE_TYPE_GENRE,             1, 135 },
-                              { NODE_TYPE_TITLE_MOVIES,      2, 369 },
+                              { NODE_TYPE_TITLE_MUSICVIDEOS, 2, 369 },
                               { NODE_TYPE_YEAR,              3, 562 },
                               { NODE_TYPE_ACTOR,             4, 133 },
                               { NODE_TYPE_MUSICVIDEOS_ALBUM, 5, 132 },

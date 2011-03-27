@@ -25,7 +25,7 @@
 #ifndef FILERAR_H_
 #define FILERAR_H_
 
-#include "IFile.h"
+#include "File.h"
 #include "UnrarXLib/rar.hpp"
 #include "threads/Thread.h"
 

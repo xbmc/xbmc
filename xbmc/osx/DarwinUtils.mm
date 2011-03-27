@@ -28,6 +28,7 @@
 #if defined(__APPLE__)
 #if defined(__arm__)
   #import <Foundation/Foundation.h>
+  #import <UIKit/UIKit.h>
   #import <mach/mach_host.h>
   #import <sys/sysctl.h>
 #else
@@ -35,6 +36,18 @@
 #endif
 
 #import "DarwinUtils.h"
+
+float GetIOSVersion(void)
+{
+  float version;
+#if defined(__arm__)
+  version = [[[UIDevice currentDevice] systemVersion] floatValue];
+#else
+  version = 0.0f;
+#endif
+
+  return(version);
+}
 
 int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
 {

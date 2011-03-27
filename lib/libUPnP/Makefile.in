@@ -76,7 +76,7 @@ SRCS= Platinum/Source/Core/PltAction.cpp \
 
 INCLUDES=-I./Neptune/Source/Core -I./Platinum/Source/Core -I./Platinum/Source/Platinum -I./Platinum/Source/Devices/MediaServer -I./Neptune/Source/System/Posix
 
-LIB=libupnp-@ARCH@.a
+LIB=libupnp.a
 
 include ../../Makefile.include
 -include $(filter %.P, $(OBJS:.o=.P))

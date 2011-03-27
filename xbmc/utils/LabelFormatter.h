@@ -31,9 +31,9 @@ namespace MUSIC_INFO
 
 class CFileItem;  // forward
 
-typedef struct _LABEL_MASKS
+struct LABEL_MASKS
 {
-  _LABEL_MASKS(const CStdString& strLabelFile="", const CStdString& strLabel2File="", const CStdString& strLabelFolder="", const CStdString& strLabel2Folder="")
+  LABEL_MASKS(const CStdString& strLabelFile="", const CStdString& strLabel2File="", const CStdString& strLabelFolder="", const CStdString& strLabel2Folder="")
   {
     m_strLabelFile=strLabelFile;
     m_strLabel2File=strLabel2File;
@@ -44,7 +44,7 @@ typedef struct _LABEL_MASKS
   CStdString m_strLabel2File;
   CStdString m_strLabelFolder;
   CStdString m_strLabel2Folder;
-} LABEL_MASKS;
+};
 
 class CLabelFormatter
 {

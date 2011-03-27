@@ -34,7 +34,7 @@ void SetDirTime(const char *Name,RarTime *ftm,RarTime *ftc,RarTime *fta)
 
 bool IsRemovable(const char *Name)
 {
-#if defined(_XBOX) || defined(_LINUX)
+#if defined(_LINUX)
   return false;
 //#ifdef _WIN_32
 #elif defined(_WIN_32)
@@ -54,7 +54,7 @@ bool IsRemovable(const char *Name)
 #ifndef SFX_MODULE
 Int64 GetFreeDisk(const char *Name)
 {
-#if  defined(_XBOX) || defined(_LINUX)
+#if defined(_LINUX)
   char Root[NM];
   GetPathRoot(Name,Root);
 
@@ -146,7 +146,7 @@ Int64 GetFreeDisk(const char *Name)
 bool FileExist(const char *Name,const wchar *NameW)
 {
 #ifdef _WIN_32
-#if !defined(_XBOX) && !defined(_LINUX)
+#if !defined(_LINUX)
     if (WinNT() && NameW!=NULL && *NameW!=0)
       return(GetFileAttributesW(NameW)!=0xffffffff);
     else
@@ -242,7 +242,7 @@ void PrepareToDelete(const char *Name,const wchar *NameW)
 uint GetFileAttr(const char *Name,const wchar *NameW)
 {
 #ifdef _WIN_32
-#if !defined(_XBOX) && !defined(_LINUX)
+#if !defined(_LINUX)
     if (WinNT() && NameW!=NULL && *NameW!=0)
       return(GetFileAttributesW(NameW));
     else
@@ -267,7 +267,7 @@ bool SetFileAttr(const char *Name,const wchar *NameW,uint Attr)
 {
   bool success;
 #ifdef _WIN_32
-#if !defined(_XBOX) && !defined(_LINUX)
+#if !defined(_LINUX)
     if (WinNT() && NameW!=NULL && *NameW!=0)
       success=SetFileAttributesW(NameW,Attr)!=0;
     else
@@ -290,7 +290,7 @@ void ConvertNameToFull(const char *Src,char *Dest)
 {
 #ifdef _WIN_32
 //#ifndef _WIN_CE
-#if !defined(_WIN_CE) && !defined(_XBOX) && !defined(_LINUX)
+#if !defined(_WIN_CE) && !defined(_LINUX)
   char FullName[NM],*NamePtr;
   if (GetFullPathName(Src,sizeof(FullName),FullName,&NamePtr))
     strcpy(Dest,FullName);
@@ -329,7 +329,7 @@ void ConvertNameToFull(const wchar *Src,wchar *Dest)
 #endif
   {
 //#ifndef _WIN_CE
-#if !defined(_WIN_CE) && !defined(_XBOX) && !defined(_LINUX)
+#if !defined(_WIN_CE) && !defined(_LINUX)
     wchar FullName[NM],*NamePtr;
     if (GetFullPathNameW(Src,sizeof(FullName)/sizeof(FullName[0]),FullName,&NamePtr))
       strcpyw(Dest,FullName);

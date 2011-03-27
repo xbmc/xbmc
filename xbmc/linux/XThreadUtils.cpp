@@ -32,13 +32,6 @@
 #include <pthread.h>
 #include <limits.h>
 
-// 64 slots is apparently the max on windows, so this should make it compatible.
-#define TLS_INDEXES 64
-#define TLS_OUT_OF_INDEXES (DWORD)0xFFFFFFFF
-
-static pthread_key_t tls[TLS_INDEXES];
-static BOOL tls_used[TLS_INDEXES];
-
 HANDLE WINAPI CreateThread(
       LPSECURITY_ATTRIBUTES lpThreadAttributes,
         SIZE_T dwStackSize,

@@ -32,6 +32,7 @@
 #include "utils/log.h"
 #include "URL.h"
 #include "settings/GUISettings.h"
+#include "climits"
 
 using namespace XFILE;
 using namespace std;

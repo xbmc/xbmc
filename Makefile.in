@@ -47,8 +47,6 @@ BIN_DIRS=	\
 	xbmc/storage \
 	xbmc/storage/linux \
 	xbmc/storage/osx \
-	lib/cmyth/libcmyth \
-	lib/cmyth/librefmem \
 	lib/libhts \
 	xbmc/interfaces \
 	xbmc/interfaces/http-api \
@@ -125,14 +123,10 @@ PAPCODEC_DIRS+= \
 	lib/asap
 endif
 
-ifeq ($(findstring osx,@ARCH@),osx)
-PAPCODEC_DIRS+= \
-	lib/libflac
-endif
-
 LIB_DIRS=\
 	lib/cximage-6.0 \
 	lib/libexif \
+	lib/cmyth \
 	lib/libhdhomerun \
 	lib/libid3tag \
 	lib/libapetag \
@@ -343,10 +337,6 @@ xbmc/dialogs/dialogs.a: force
 	$(MAKE) -C xbmc/dialogs
 xbmc/windows/windows.a: force
 	$(MAKE) -C xbmc/windows
-lib/cmyth/libcmyth/libcmyth.a: force
-	$(MAKE) -C lib/cmyth/libcmyth
-lib/cmyth/librefmem/librefmem.a: force
-	$(MAKE) -C lib/cmyth/librefmem
 lib/libhts/libhts.a: force
 	$(MAKE) -C lib/libhts
 xbmc/interfaces/interfaces.a: force
@@ -357,13 +347,13 @@ xbmc/interfaces/python/xbmcmodule/xbmcmodule.a: force
 	$(MAKE) -C xbmc/interfaces/python/xbmcmodule
 xbmc/network/libscrobbler/scrobbler.a: force
 	$(MAKE) -C xbmc/network/libscrobbler
-lib/libRTV/librtv-@ARCH@.a: force
+lib/libRTV/librtv.a: force
 	$(MAKE) -C lib/libRTV
-lib/libUPnP/libupnp-@ARCH@.a: force
+lib/libUPnP/libupnp.a: force
 	$(MAKE) -C lib/libUPnP
-lib/libXBMS/libxbms-@ARCH@.a: force
+lib/libXBMS/libxbms.a: force
 	$(MAKE) -C lib/libXBMS
-lib/libXDAAP/libxdaap-@ARCH@.a: force
+lib/libXDAAP/libxdaap.a: force
 	$(MAKE) -C lib/libXDAAP
 lib/jsoncpp/src/lib_json/libjsoncpp.a: force
 	$(MAKE) -C lib/jsoncpp/src/lib_json
@@ -375,7 +365,7 @@ xbmc/dbwrappers/dbwrappers.a: force
 	$(MAKE) -C xbmc/dbwrappers
 lib/UnrarXLib/UnrarXLib.a: force
 	$(MAKE) -C lib/UnrarXLib
-lib/libsquish/libsquish-@ARCH@.a: force
+lib/libsquish/libsquish.a: force
 	$(MAKE) -C lib/libsquish
 xbmc/linux/linux.a: force
 	$(MAKE) -C xbmc/linux
@@ -484,15 +474,15 @@ else
 endif
 libexif: dllloader
 	$(MAKE) -C lib/libexif
+cmyth: dllloader
+	$(MAKE) -C lib/cmyth
 libhdhomerun: dllloader
 	$(MAKE) -C lib/libhdhomerun
 libid3tag: dllloader
 	$(MAKE) -C lib/libid3tag
 papcodecs: dllloader dvdpcodecs
+	test -d system/players/paplayer || mkdir system/players/paplayer
 	$(MAKE) -C lib/xbadpcm
-ifeq ($(findstring osx,@ARCH@), osx)
-	$(MAKE) -C lib/libflac
-endif
 	$(MAKE) -C lib/vgmstream
 	$(MAKE) -C lib/timidity
 	$(MAKE) -C lib/nosefart 
@@ -512,18 +502,16 @@ imagelib: dllloader
 	$(MAKE) -C lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-@ARCH@.so
+libs: cmyth libhdhomerun libid3tag imagelib libexif python system/libcpluff-@ARCH@.so
 externals: libaddon codecs libs python pvrclients visualizations screensavers
 
 xcode_depends: \
 	codecs libs python pvrclients visualizations screensavers eventclients skins \
-	lib/libsquish/libsquish-@ARCH@.a \
+	lib/libsquish/libsquish.a \
 	lib/libapetag/.libs/libapetag.a \
-	lib/cmyth/libcmyth/libcmyth.a \
-	lib/cmyth/librefmem/librefmem.a \
-	lib/libXBMS/libxbms-@ARCH@.a \
-	lib/libRTV/librtv-@ARCH@.a \
-	lib/libXDAAP/libxdaap-@ARCH@.a \
+	lib/libXBMS/libxbms.a \
+	lib/libRTV/librtv.a \
+	lib/libXDAAP/libxdaap.a \
 	xbmc/interfaces/interfaces.a \
 	xbmc/interfaces/http-api/http-api.a \
 	xbmc/interfaces/json-rpc/json-rpc.a \
@@ -579,16 +567,16 @@ OBJSXBMC=	\
 	xbmc/windows/windows.a \
 	xbmc/interfaces/python/xbmcmodule/xbmcmodule.a \
 	xbmc/network/libscrobbler/scrobbler.a \
-	lib/libRTV/librtv-@ARCH@.a \
-	lib/libUPnP/libupnp-@ARCH@.a \
-	lib/libXDAAP/libxdaap-@ARCH@.a \
+	lib/libRTV/librtv.a \
+	lib/libUPnP/libupnp.a \
+	lib/libXDAAP/libxdaap.a \
 	xbmc/interfaces/interfaces.a \
 	xbmc/cdrip/cdrip.a \
 	xbmc/interfaces/json-rpc/json-rpc.a \
 	lib/jsoncpp/src/lib_json/libjsoncpp.a \
 	xbmc/interfaces/http-api/http-api.a \
 	xbmc/dbwrappers/dbwrappers.a \
-	lib/libsquish/libsquish-@ARCH@.a \
+	lib/libsquish/libsquish.a \
 	lib/libapetag/.libs/libapetag.a \
 	lib/xbmc-dll-symbols/dll-symbols.a \
         xbmc/rendering/rendering.a \
@@ -606,7 +594,7 @@ endif
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 OBJSXBMC+= \
-	lib/libXBMS/libxbms-@ARCH@.a \
+	lib/libXBMS/libxbms.a \
 	lib/UnrarXLib/UnrarXLib.a
 endif
 
@@ -638,8 +626,6 @@ endif
 endif
 
 DYNOBJSXBMC= \
-	lib/cmyth/libcmyth/libcmyth.a \
-	lib/cmyth/librefmem/librefmem.a \
 	xbmc/linux/linux.a \
 	xbmc/network/network.a \
 	xbmc/video/windows/videowindows.a \
@@ -681,7 +667,7 @@ else
 	$(MAKE) -C tools/XBMCTex/
 endif
 
-tools/TexturePacker/TexturePacker: xbmc/guilib/guilib.a lib/libsquish/libsquish-@ARCH@.a
+tools/TexturePacker/TexturePacker: xbmc/guilib/guilib.a lib/libsquish/libsquish.a
 	$(MAKE) -C tools/TexturePacker/
 
 

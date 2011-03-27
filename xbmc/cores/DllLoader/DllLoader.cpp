@@ -33,16 +33,11 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #define fopen_utf8 fopen
 #endif
 
-#ifdef _XBOX
-#include "xbox/undocumented.h"
-#include "XbDm.h"
-#else
 typedef struct _UNICODE_STRING {
   USHORT  Length;
   USHORT  MaximumLength;
   PWSTR  Buffer;
 } UNICODE_STRING, *PUNICODE_STRING;
-#endif
 #include "utils/Win32Exception.h"
 
 #ifdef min
@@ -58,122 +53,6 @@ typedef struct _UNICODE_STRING {
 #define DLL_THREAD_DETACH    3
 #define DLL_PROCESS_VERIFIER 4
 
-#ifdef _XBOX
-// uncomment this to enable symbol loading for dlls
-//#define ENABLE_SYMBOL_LOADING 1
-
-// uncomment this to enable symbol unloading for dlls
-// This is not working properly. If a dll is loaded
-// multiple times, vs.net will not link your solution
-// again until you restart vs.net.
-//#define ENABLE_SYMBOL_UNLOADING 1
-
-// internal structure of xbdm.dll
-// which represents the HANDLE to
-// a dll. Used for symbol loading.
-typedef struct _LDR_DATA_TABLE_ENTRY
-{
-  LIST_ENTRY InLoadOrderLinks;
-  LIST_ENTRY InMemoryOrderLinks;
-  LIST_ENTRY InInitializationOrderLinks;
-  void* DllBase;
-  void* EntryPoint;
-  ULONG SizeOfImage;
-  UNICODE_STRING FullDllName;
-  UNICODE_STRING BaseDllName;
-  ULONG Flags;
-  USHORT LoadCount;
-  USHORT TlsIndex;
-  LIST_ENTRY HashLinks;
-  void* SectionPointer;
-  ULONG CheckSum;
-  ULONG TimeDateStamp;
-  void* LoadedImports;
-} LDR_DATA_TABLE_ENTRY, *LPLDR_DATA_TABLE_ENTRY;
-
-// Raw offset within the xbdm.dll to the
-// FFinishImageLoad function.
-// Dll baseaddress + offset = function
-int finishimageloadOffsets[][2] = {
-// dll checksum, function offset
-   {0x000652DE,  0x00016E1B}, // xdk version 5558
-   {0x0006BFBE,  0x00016E5A}, // xdk version 5788
-   {0,0}
-};
-
-// Raw offset within the xbdm.dll to the
-// g_dmi struct.
-// Dll baseaddress + offset = struct
-int dmiOffsets[][2] = {
-// dll checksum, function offset
-   {0x000652DE,  0x0005A0E0}, // xdk version 5558
-   {0x0006BFBE,  0x0005A4A0}, // xdk version 5788
-   {0,0}
-};
-
-// To get the checksum of xbdm.dll from an other xdk version then the ones above,
-// use dumpbin /HEADERS on it and look at the OPTIONAL HEADER VALUES for the checksum
-// To get the offset use dia2dump (installed with vs.net) and dump the xbdm.pdb
-// of your xdk version to a textfile. Open the textfile and search for
-// FFinishImageLoad until you get a result with an address in front of it,
-// this is the offset you need.
-
-// Helper function to get the offset by using the checksum of the dll
-int GetFFinishImageLoadOffset(int dllchecksum)
-{
-  for (int i=0; finishimageloadOffsets[i][0]!=0; i++)
-  {
-    if (finishimageloadOffsets[i][0]==dllchecksum)
-      return finishimageloadOffsets[i][1];
-  }
-
-  return 0;
-}
-
-// Helper function to get the offset by using the checksum of the dll
-int GetDmiOffset(int dllchecksum)
-{
-  for (int i=0; dmiOffsets[i][0]!=0; i++)
-  {
-    if (dmiOffsets[i][0]==dllchecksum)
-      return dmiOffsets[i][1];
-  }
-
-  return 0;
-}
-
-typedef void (WINAPI *fnFFinishImageLoad)(LPLDR_DATA_TABLE_ENTRY pldteT,
-                                          const char * szName,
-                                          LPLDR_DATA_TABLE_ENTRY* ppldteout);
-
-
-#ifdef ENABLE_SYMBOL_LOADING
-LPVOID GetXbdmBaseAddress()
-{
-  PDM_WALK_MODULES pWalkMod = NULL;
-  LPVOID pBaseAddress=NULL;
-  DMN_MODLOAD modLoad;
-  HRESULT error;
-
-  // Look for xbdm.dll, if its loaded...
-  while((error=DmWalkLoadedModules(&pWalkMod, &modLoad))==XBDM_NOERR)
-  {
-    if (stricmp(modLoad.Name, "xbdm.dll")==0)
-    {
-      // ... and get its base address
-      // where the dll is loaded into
-      // memory.
-      pBaseAddress=modLoad.BaseAddress;
-      break;
-    }
-  }
-  if (pWalkMod)
-    DmCloseLoadedModules(pWalkMod);
-
-  return pBaseAddress;
-}
-#endif
-#endif
 
 #ifndef APIENTRY
 #define APIENTRY __stdcall
@@ -219,22 +98,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   if(!bSystemDll)
   {
     // Initialize FS segment, important for quicktime dll's
-#if defined(_XBOX)
-    // is it really needed?
-    static void* fs_seg = NULL;
-    if (fs_seg == NULL)
-    {
-      CLog::Log(LOGDEBUG, "Initializing FS_SEG..");
-      fs_seg = malloc(0x1000);
-      RtlZeroMemory(fs_seg, 0x1000);
-      __asm {
-        mov eax, fs_seg;
-        mov fs: [18h], eax;
-        xor eax, eax
-      }
-      CLog::Log(LOGDEBUG, "FS segment @ 0x%x", fs_seg);
-    }
-#elif defined(USE_LDT_KEEPER)
+#if defined(USE_LDT_KEEPER)
     m_ldt_fs = Setup_LDT_Keeper();
 #endif
   }

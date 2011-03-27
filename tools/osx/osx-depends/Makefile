@@ -6,7 +6,7 @@ SUBDIRS = \
 	liblzo liblzo2 freetype2 fontconfig \
 	openssl libssh2 curl \
 	jpeg tiff libpng libogg \
-	libvorbis libmad fribidi libwavpack libmpeg2 \
+	libvorbis libflac libmad fribidi libwavpack libmpeg2 \
 	faad2 libass libcdio libsamplerate librtmp \
 	libGLEW libsdl libsdl_mixer libsdl_image \
 	libmicrohttpd libmodplug libbluray \

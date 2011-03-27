@@ -5219,6 +5219,14 @@ float CApplication::GetPercentage() const
   return 0.0f;
 }
 
+float CApplication::GetCachePercentage() const
+{
+  if (IsPlaying() && m_pPlayer)
+    return m_pPlayer->GetCachePercentage();
+
+  return 0.0f;
+}
+
 void CApplication::SeekPercentage(float percent)
 {
   if (IsPlaying() && m_pPlayer && (percent >= 0.0))
