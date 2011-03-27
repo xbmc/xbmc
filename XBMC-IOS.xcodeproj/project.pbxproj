@@ -895,8 +895,6 @@
 		F56C8BFE131F4797000AD0F6 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BE5131F4796000AD0F6 /* libmysqlclient.dylib */; };
 		F56C8BFF131F4797000AD0F6 /* libpython2.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BE6131F4796000AD0F6 /* libpython2.6.dylib */; };
 		F56C8C00131F4797000AD0F6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8BE7131F4796000AD0F6 /* libsqlite3.dylib */; };
-		F56C8C07131F47EA000AD0F6 /* libcmyth.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C01131F47EA000AD0F6 /* libcmyth.a */; };
-		F56C8C08131F47EA000AD0F6 /* librefmem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C02131F47EA000AD0F6 /* librefmem.a */; };
 		F56C8C09131F47EA000AD0F6 /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C03131F47EA000AD0F6 /* libapetag.a */; };
 		F56C8C0A131F47EA000AD0F6 /* http-api.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C04131F47EA000AD0F6 /* http-api.a */; };
 		F56C8C0B131F47EA000AD0F6 /* json-rpc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C05131F47EA000AD0F6 /* json-rpc.a */; };
@@ -919,7 +917,6 @@
 		F5A29EC312A7221B003A610C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29EC212A7221B003A610C /* CoreMedia.framework */; };
 		F5A29F2712A72246003A610C /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A29F2612A72246003A610C /* VideoToolbox.framework */; };
 		F5B1380D13306B890045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B1380C13306B890045076D /* libmicrohttpd.dylib */; };
-		F5B13AFE1333247D0045076D /* libass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13AFD1333247D0045076D /* libass.dylib */; };
 		F5B13DCF1334490D0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13DCE1334490D0045076D /* DarwinUtils.mm */; };
 /* End PBXBuildFile section */
 
@@ -2824,8 +2821,6 @@
 		F56C8BE5131F4796000AD0F6 /* libmysqlclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/mysql/libmysqlclient.dylib"; sourceTree = "<absolute>"; };
 		F56C8BE6131F4796000AD0F6 /* libpython2.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpython2.6.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libpython2.6.dylib"; sourceTree = "<absolute>"; };
 		F56C8BE7131F4796000AD0F6 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libsqlite3.dylib"; sourceTree = "<absolute>"; };
-		F56C8C01131F47EA000AD0F6 /* libcmyth.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcmyth.a; path = lib/cmyth/libcmyth/libcmyth.a; sourceTree = "<group>"; };
-		F56C8C02131F47EA000AD0F6 /* librefmem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librefmem.a; path = lib/cmyth/librefmem/librefmem.a; sourceTree = "<group>"; };
 		F56C8C03131F47EA000AD0F6 /* libapetag.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libapetag.a; path = lib/libapetag/.libs/libapetag.a; sourceTree = "<group>"; };
 		F56C8C04131F47EA000AD0F6 /* http-api.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "http-api.a"; path = "xbmc/interfaces/http-api/http-api.a"; sourceTree = "<group>"; };
 		F56C8C05131F47EA000AD0F6 /* json-rpc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "json-rpc.a"; path = "xbmc/interfaces/json-rpc/json-rpc.a"; sourceTree = "<group>"; };
@@ -2849,7 +2844,6 @@
 		F5A29EC212A7221B003A610C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		F5A29F2612A72246003A610C /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/PrivateFrameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		F5B1380C13306B890045076D /* libmicrohttpd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmicrohttpd.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmicrohttpd.dylib"; sourceTree = "<absolute>"; };
-		F5B13AFD1333247D0045076D /* libass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libass.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libass.dylib"; sourceTree = "<absolute>"; };
 		F5B13DCD1334490D0045076D /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
 		F5B13DCE1334490D0045076D /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -2890,8 +2884,6 @@
 				F56C8BFE131F4797000AD0F6 /* libmysqlclient.dylib in Frameworks */,
 				F56C8BFF131F4797000AD0F6 /* libpython2.6.dylib in Frameworks */,
 				F56C8C00131F4797000AD0F6 /* libsqlite3.dylib in Frameworks */,
-				F56C8C07131F47EA000AD0F6 /* libcmyth.a in Frameworks */,
-				F56C8C08131F47EA000AD0F6 /* librefmem.a in Frameworks */,
 				F56C8C09131F47EA000AD0F6 /* libapetag.a in Frameworks */,
 				F56C8C0A131F47EA000AD0F6 /* http-api.a in Frameworks */,
 				F56C8C0B131F47EA000AD0F6 /* json-rpc.a in Frameworks */,
@@ -2901,7 +2893,6 @@
 				F56C8C13131F4811000AD0F6 /* libxbms-arm-osx.a in Frameworks */,
 				F56C8C14131F4811000AD0F6 /* libxdaap-arm-osx.a in Frameworks */,
 				F5B1380D13306B890045076D /* libmicrohttpd.dylib in Frameworks */,
-				F5B13AFE1333247D0045076D /* libass.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5683,7 +5674,6 @@
 				F56C8BD0131F4795000AD0F6 /* liblzo2.dylib */,
 				F56C8BD1131F4795000AD0F6 /* libpcre.dylib */,
 				F56C8BD2131F4795000AD0F6 /* libpcrecpp.dylib */,
-				F5B13AFD1333247D0045076D /* libass.dylib */,
 				F56C8BDC131F4796000AD0F6 /* libfribidi.dylib */,
 				F56C8BDD131F4796000AD0F6 /* libcdio.dylib */,
 				F56C8BDE131F4796000AD0F6 /* libsamplerate.dylib */,
@@ -5701,8 +5691,6 @@
 		F589AE6D12890B6700D8079E /* Internal Libs */ = {
 			isa = PBXGroup;
 			children = (
-				F56C8C01131F47EA000AD0F6 /* libcmyth.a */,
-				F56C8C02131F47EA000AD0F6 /* librefmem.a */,
 				F56C8C03131F47EA000AD0F6 /* libapetag.a */,
 				F56C8C04131F47EA000AD0F6 /* http-api.a */,
 				F56C8C05131F47EA000AD0F6 /* json-rpc.a */,

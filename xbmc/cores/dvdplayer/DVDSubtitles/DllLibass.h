@@ -70,7 +70,7 @@ public:
                                 , void *data)=0;
 };
 
-#if !defined(WIN32)
+#if !(defined(WIN32) || defined(__APPLE__))
 
 class DllLibass : public DllDynamic, DllLibassInterface
 {

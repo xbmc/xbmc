@@ -552,7 +552,6 @@ AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([wavpack/wavpack.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([ass],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
@@ -620,6 +619,7 @@ AS_CASE([x$use_libbluray],
 
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
+  AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([mpeg2dec/mpeg2.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
@@ -628,6 +628,7 @@ if test "$host_vendor" = "apple" ; then
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
   fi
 else
+  AC_CHECK_LIB([ass],        [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer],  [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dl],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
@@ -689,6 +690,7 @@ XB_FIND_SONAME([VORBISENC],   [vorbisenc])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([MODPLUG],     [modplug])
 if test "$host_vendor" = "apple"; then
+  XB_FIND_SONAME([ASS],       [ass])
   XB_FIND_SONAME([MPEG2],     [mpeg2])
   XB_FIND_SONAME([WAVPACK],   [wavpack])
 fi
@@ -1442,6 +1444,7 @@ AC_SUBST(LIBOGG_BASENAME)
 AC_SUBST(LIBVORBISENC_BASENAME)
 AC_SUBST(LIBVORBIS_BASENAME)
 AC_SUBST(LIBWAVPACK_BASENAME)
+AC_SUBST(LIBASS_BASENAME)
 AC_SUBST(LIBMEPG2_BASENAME)
 AC_SUBST_FILE(XBMC_STANDALONE_SH_PULSE)
 AC_SUBST(USE_OPENGL)

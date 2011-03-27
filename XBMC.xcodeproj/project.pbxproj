@@ -484,8 +484,6 @@
 		43BF09A31080D1E900E25290 /* RenderingControlSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF099F1080D1E900E25290 /* RenderingControlSCPD.cpp */; };
 		43BF09AA1080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF09A81080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp */; };
 		43BF09AB1080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF09A81080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp */; };
-		60CF88BF10CB49F3000921B6 /* libcmyth.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 60CF88BE10CB49F3000921B6 /* libcmyth.a */; };
-		60CF88C110CB4A16000921B6 /* librefmem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 60CF88C010CB4A16000921B6 /* librefmem.a */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		7C45DBEA10F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
@@ -1788,8 +1786,6 @@
 		F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
 		F5AACA980FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
 		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
-		F5B13AD1133319310045076D /* libass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13AD0133319310045076D /* libass.dylib */; };
-		F5B13AD2133319310045076D /* libass.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13AD0133319310045076D /* libass.dylib */; };
 		F5B13C8D1334056B0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13C8C1334056B0045076D /* DarwinUtils.mm */; };
 		F5B13C8E1334056B0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13C8C1334056B0045076D /* DarwinUtils.mm */; };
 		F5B5CFF0133AF993007A4B4C /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */; };
@@ -1865,8 +1861,6 @@
 		F5FAB0710EFABAC800BAD4AE /* VTPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB0700EFABAC800BAD4AE /* VTPFile.cpp */; };
 		F5FAB0760EFABE2C00BAD4AE /* VTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB0750EFABE2C00BAD4AE /* VTPDirectory.cpp */; };
 		F5FAB07A0EFABE4A00BAD4AE /* VTPSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB0790EFABE4A00BAD4AE /* VTPSession.cpp */; };
-		F5FDE83510CC706F006A3E83 /* libcmyth.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 60CF88BE10CB49F3000921B6 /* libcmyth.a */; };
-		F5FDE83610CC7076006A3E83 /* librefmem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 60CF88C010CB4A16000921B6 /* librefmem.a */; };
 		F5FDF51D0E7218950005B0A6 /* AsyncFileCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */; };
 /* End PBXBuildFile section */
 
@@ -2366,8 +2360,6 @@
 		43BF09A91080D2ED00E25290 /* RenderingControlSCPD_Full.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = RenderingControlSCPD_Full.xml; sourceTree = "<group>"; };
 		43BF09DD1080D39300E25290 /* fastmemcpy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fastmemcpy.h; sourceTree = "<group>"; };
 		43FAC87112D6349400F67914 /* IStorageProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IStorageProvider.h; sourceTree = "<group>"; };
-		60CF88BE10CB49F3000921B6 /* libcmyth.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcmyth.a; path = lib/cmyth/libcmyth/libcmyth.a; sourceTree = "<group>"; };
-		60CF88C010CB4A16000921B6 /* librefmem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librefmem.a; path = lib/cmyth/librefmem/librefmem.a; sourceTree = "<group>"; };
 		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
 		6E97BDC00DA2B620003A2A89 /* EventPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPacket.h; sourceTree = "<group>"; };
@@ -3745,7 +3737,6 @@
 		F5AD1EA60F488A1A0065EB5D /* GUIWindowKaraokeLyrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowKaraokeLyrics.h; sourceTree = "<group>"; };
 		F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowKaraokeLyrics.cpp; sourceTree = "<group>"; };
 		F5B138641330811D0045076D /* libmicrohttpd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmicrohttpd.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libmicrohttpd.dylib"; sourceTree = "<absolute>"; };
-		F5B13AD0133319310045076D /* libass.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libass.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libass.dylib"; sourceTree = "<absolute>"; };
 		F5B13C8B1334056B0045076D /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
 		F5B13C8C1334056B0045076D /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
 		F5B413131065900C0035D105 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
@@ -3847,8 +3838,6 @@
 				88ECB6590DE013C4003396A7 /* DiskArbitration.framework in Frameworks */,
 				F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
 				43352CEE1071634600706B8A /* libsquish-x86-osx.a in Frameworks */,
-				60CF88BF10CB49F3000921B6 /* libcmyth.a in Frameworks */,
-				60CF88C110CB4A16000921B6 /* librefmem.a in Frameworks */,
 				F5DC8817110A4B8900EE1B15 /* libxbms-x86-osx.a in Frameworks */,
 				F5DC888B110A654000EE1B15 /* libapetag.a in Frameworks */,
 				F5A7A6F1112893330059D6AA /* libjsoncpp.a in Frameworks */,
@@ -3872,7 +3861,6 @@
 				F56C8D59131F5E85000AD0F6 /* libsqlite3.dylib in Frameworks */,
 				F57A1E3A132AAB0E00498CC7 /* libSDL.dylib in Frameworks */,
 				F57A1E3D132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */,
-				F5B13AD1133319310045076D /* libass.dylib in Frameworks */,
 				F5B5CFF0133AF993007A4B4C /* libmysqlclient.dylib in Frameworks */,
 				F5B5D008133AFA95007A4B4C /* libfribidi.dylib in Frameworks */,
 				F5B5D00C133AFAC6007A4B4C /* libcdio.dylib in Frameworks */,
@@ -3904,8 +3892,6 @@
 				F5A1CC080F6B209400A96ABD /* libxdaap-powerpc-osx.a in Frameworks */,
 				F59879090FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
 				43352CF01071639400706B8A /* libsquish-powerpc-osx.a in Frameworks */,
-				F5FDE83510CC706F006A3E83 /* libcmyth.a in Frameworks */,
-				F5FDE83610CC7076006A3E83 /* librefmem.a in Frameworks */,
 				F5DC888C110A654000EE1B15 /* libapetag.a in Frameworks */,
 				F5A7A6F2112893330059D6AA /* libjsoncpp.a in Frameworks */,
 				F5A7A6F5112893440059D6AA /* json-rpc.a in Frameworks */,
@@ -3928,7 +3914,6 @@
 				F56C8D71131F5E86000AD0F6 /* libsqlite3.dylib in Frameworks */,
 				F57A1E3B132AAB0E00498CC7 /* libSDL.dylib in Frameworks */,
 				F57A1E3E132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */,
-				F5B13AD2133319310045076D /* libass.dylib in Frameworks */,
 				F5B5CFF1133AF994007A4B4C /* libmysqlclient.dylib in Frameworks */,
 				F5B5D009133AFA96007A4B4C /* libfribidi.dylib in Frameworks */,
 				F5B5D00D133AFAC7007A4B4C /* libcdio.dylib in Frameworks */,
@@ -6848,7 +6833,6 @@
 				F56C8D2A131F5E84000AD0F6 /* liblzo2.dylib */,
 				F56C8D2B131F5E84000AD0F6 /* libpcre.dylib */,
 				F56C8D2C131F5E84000AD0F6 /* libpcrecpp.dylib */,
-				F5B13AD0133319310045076D /* libass.dylib */,
 				F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */,
 				F56C8D37131F5E85000AD0F6 /* libcdio.dylib */,
 				F56C8D38131F5E85000AD0F6 /* libsamplerate.dylib */,
@@ -6869,8 +6853,6 @@
 		F57E1ED20E36E8FD00700C9D /* internal libs */ = {
 			isa = PBXGroup;
 			children = (
-				60CF88BE10CB49F3000921B6 /* libcmyth.a */,
-				60CF88C010CB4A16000921B6 /* librefmem.a */,
 				F5DC888A110A654000EE1B15 /* libapetag.a */,
 				F5A7A6F61128934C0059D6AA /* http-api.a */,
 				F5A7A6F3112893440059D6AA /* json-rpc.a */,
