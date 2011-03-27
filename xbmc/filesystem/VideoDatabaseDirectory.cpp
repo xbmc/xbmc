@@ -267,6 +267,8 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
     return "DefaultStudios.png";
   case NODE_TYPE_MUSICVIDEOS_OVERVIEW: // Music Videos
     return "DefaultMusicVideos.png";
+  case NODE_TYPE_MUSICVIDEOS_ALBUM: // Music Videos - Albums
+    return "DefaultMusicAlbums.png";
   default:
     CLog::Log(LOGWARNING, "%s - Unknown nodetype requested %s", __FUNCTION__, strDirectory.c_str());
     break;
