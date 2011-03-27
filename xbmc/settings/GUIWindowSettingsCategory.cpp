@@ -1302,13 +1302,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
 #endif
   }
-#if defined(_LINUX)
+#if defined(_LINUX) && !defined(__arm__)
   else if (strSetting.Equals("audiooutput.passthroughdevice"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-#if defined(_LINUX) && !defined(__APPLE__)
+#if !defined(__APPLE__)
       g_guiSettings.SetString("audiooutput.passthroughdevice", m_DigitalAudioSinkMap[pControl->GetCurrentLabel()]);
-#elif !defined(__arm__)
+#else
       g_guiSettings.SetString("audiooutput.passthroughdevice", pControl->GetCurrentLabel());
 #endif
   }

@@ -408,7 +408,7 @@ int CoffLoader::RVA2Section(unsigned long RVA)
         if ( RVA < SectionHeader[i + 1].VirtualAddress )
         {
           if ( SectionHeader[i].VirtualAddress + SectionHeader[i].VirtualSize <= RVA )
-            printf("Warning! Address outside of Section: %x!\n", RVA);
+            printf("Warning! Address outside of Section: %lx!\n", RVA);
           //                    else
           return i;
         }
@@ -416,7 +416,7 @@ int CoffLoader::RVA2Section(unsigned long RVA)
       else
       {
         if ( SectionHeader[i].VirtualAddress + SectionHeader[i].VirtualSize <= RVA )
-          printf("Warning! Address outside of Section: %x!\n", RVA);
+          printf("Warning! Address outside of Section: %lx!\n", RVA);
         //                else
         return i;
       }
@@ -516,7 +516,7 @@ void CoffLoader::PrintSymbolTable(void)
   for (SymIndex = 0; SymIndex < NumberOfSymbols; SymIndex++)
   {
     printf("%03X ", SymIndex);
-    printf("%08X ", SymTable[SymIndex].Value);
+    printf("%08lX ", SymTable[SymIndex].Value);
 
     if (SymTable[SymIndex].SectionNumber == IMAGE_SYM_ABSOLUTE)
       printf("ABS     ");
@@ -615,9 +615,9 @@ void CoffLoader::PrintFileHeader(COFF_FileHeader_t *FileHeader)
 
   printf("MachineType:            0x%04X\n", FileHeader->MachineType);
   printf("NumberOfSections:       0x%04X\n", FileHeader->NumberOfSections);
-  printf("TimeDateStamp:          0x%08X\n", FileHeader->TimeDateStamp);
-  printf("PointerToSymbolTable:   0x%08X\n", FileHeader->PointerToSymbolTable);
-  printf("NumberOfSymbols:        0x%08X\n", FileHeader->NumberOfSymbols);
+  printf("TimeDateStamp:          0x%08lX\n", FileHeader->TimeDateStamp);
+  printf("PointerToSymbolTable:   0x%08lX\n", FileHeader->PointerToSymbolTable);
+  printf("NumberOfSymbols:        0x%08lX\n", FileHeader->NumberOfSymbols);
   printf("SizeOfOptionHeader:     0x%04X\n", FileHeader->SizeOfOptionHeader);
   printf("Characteristics:        0x%04X\n", FileHeader->Characteristics);
 
@@ -677,12 +677,12 @@ void CoffLoader::PrintOptionHeader(OptionHeader_t *OptHdr)
   printf("Magic:              0x%04X\n", OptHdr->Magic);
   printf("Linker Major Ver:   0x%02X\n", VERSION_MAJOR(OptHdr->LinkVersion));
   printf("Linker Minor Ver:   0x%02X\n", VERSION_MINOR(OptHdr->LinkVersion));
-  printf("Code Size:          0x%08X\n", OptHdr->CodeSize);
-  printf("Data Size:          0x%08X\n", OptHdr->DataSize);
-  printf("BSS Size:           0x%08X\n", OptHdr->BssSize);
-  printf("Entry:              0x%08X\n", OptHdr->Entry);
-  printf("Code Base:          0x%08X\n", OptHdr->CodeBase);
-  printf("Data Base:          0x%08X\n", OptHdr->DataBase);
+  printf("Code Size:          0x%08lX\n", OptHdr->CodeSize);
+  printf("Data Size:          0x%08lX\n", OptHdr->DataSize);
+  printf("BSS Size:           0x%08lX\n", OptHdr->BssSize);
+  printf("Entry:              0x%08lX\n", OptHdr->Entry);
+  printf("Code Base:          0x%08lX\n", OptHdr->CodeBase);
+  printf("Data Base:          0x%08lX\n", OptHdr->DataBase);
   printf("\n");
 }
 
@@ -691,23 +691,23 @@ void CoffLoader::PrintWindowsHeader(WindowsHeader_t *WinHdr)
   printf("Windows Specific Option Header\n");
   printf("------------------------------------------\n\n");
 
-  printf("Image Base:         0x%08X\n", WinHdr->ImageBase);
-  printf("Section Alignment:  0x%08X\n", WinHdr->SectionAlignment);
-  printf("File Alignment:     0x%08X\n", WinHdr->FileAlignment);
+  printf("Image Base:         0x%08lX\n", WinHdr->ImageBase);
+  printf("Section Alignment:  0x%08lX\n", WinHdr->SectionAlignment);
+  printf("File Alignment:     0x%08lX\n", WinHdr->FileAlignment);
   printf("OS Version:         %d.%08d\n", BIGVERSION_MAJOR(WinHdr->OSVer), BIGVERSION_MINOR(WinHdr->OSVer));
   printf("Image Version:      %d.%08d\n", BIGVERSION_MAJOR(WinHdr->ImgVer), BIGVERSION_MINOR(WinHdr->ImgVer));
   printf("SubSystem Version:  %d.%08d\n", BIGVERSION_MAJOR(WinHdr->SubSysVer), BIGVERSION_MINOR(WinHdr->SubSysVer));
-  printf("Size of Image:      0x%08X\n", WinHdr->SizeOfImage);
-  printf("Size of Headers:    0x%08X\n", WinHdr->SizeOfHeaders);
-  printf("Checksum:           0x%08X\n", WinHdr->CheckSum);
+  printf("Size of Image:      0x%08lX\n", WinHdr->SizeOfImage);
+  printf("Size of Headers:    0x%08lX\n", WinHdr->SizeOfHeaders);
+  printf("Checksum:           0x%08lX\n", WinHdr->CheckSum);
   printf("Subsystem:          0x%04X\n", WinHdr->Subsystem);
   printf("DLL Flags:          0x%04X\n", WinHdr->DLLFlags);
-  printf("Sizeof Stack Resv:  0x%08X\n", WinHdr->SizeOfStackReserve);
-  printf("Sizeof Stack Comm:  0x%08X\n", WinHdr->SizeOfStackCommit);
-  printf("Sizeof Heap Resv:   0x%08X\n", WinHdr->SizeOfHeapReserve);
-  printf("Sizeof Heap Comm:   0x%08X\n", WinHdr->SizeOfHeapCommit);
-  printf("Loader Flags:       0x%08X\n", WinHdr->LoaderFlags);
-  printf("Num Directories:    %d\n", WinHdr->NumDirectories);
+  printf("Sizeof Stack Resv:  0x%08lX\n", WinHdr->SizeOfStackReserve);
+  printf("Sizeof Stack Comm:  0x%08lX\n", WinHdr->SizeOfStackCommit);
+  printf("Sizeof Heap Resv:   0x%08lX\n", WinHdr->SizeOfHeapReserve);
+  printf("Sizeof Heap Comm:   0x%08lX\n", WinHdr->SizeOfHeapCommit);
+  printf("Loader Flags:       0x%08lX\n", WinHdr->LoaderFlags);
+  printf("Num Directories:    %ld\n", WinHdr->NumDirectories);
   printf("\n");
 }
 
@@ -720,15 +720,15 @@ void CoffLoader::PrintSection(SectionHeader_t *ScnHdr, char* data)
   printf("Section: %s\n", SectionName);
   printf("------------------------------------------\n\n");
 
-  printf("Virtual Size:       0x%08X\n", ScnHdr->VirtualSize);
-  printf("Virtual Address:    0x%08X\n", ScnHdr->VirtualAddress);
-  printf("Sizeof Raw Data:    0x%08X\n", ScnHdr->SizeOfRawData);
-  printf("Ptr To Raw Data:    0x%08X\n", ScnHdr->PtrToRawData);
-  printf("Ptr To Relocations: 0x%08X\n", ScnHdr->PtrToRelocations);
-  printf("Ptr To Line Nums:   0x%08X\n", ScnHdr->PtrToLineNums);
+  printf("Virtual Size:       0x%08lX\n", ScnHdr->VirtualSize);
+  printf("Virtual Address:    0x%08lX\n", ScnHdr->VirtualAddress);
+  printf("Sizeof Raw Data:    0x%08lX\n", ScnHdr->SizeOfRawData);
+  printf("Ptr To Raw Data:    0x%08lX\n", ScnHdr->PtrToRawData);
+  printf("Ptr To Relocations: 0x%08lX\n", ScnHdr->PtrToRelocations);
+  printf("Ptr To Line Nums:   0x%08lX\n", ScnHdr->PtrToLineNums);
   printf("Num Relocations:    0x%04X\n", ScnHdr->NumRelocations);
   printf("Num Line Numbers:   0x%04X\n", ScnHdr->NumLineNumbers);
-  printf("Characteristics:    0x%08X\n", ScnHdr->Characteristics);
+  printf("Characteristics:    0x%08lX\n", ScnHdr->Characteristics);
   if (ScnHdr->Characteristics & IMAGE_SCN_CNT_CODE)
     printf("                    IMAGE_SCN_CNT_CODE\n");
   if (ScnHdr->Characteristics & IMAGE_SCN_CNT_DATA)

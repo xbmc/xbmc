@@ -279,11 +279,10 @@ static void logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDe
       // Apperently a string can get longer during this transformation
       // so make sure we allocate the maximum possible character utf8
       // can generate atleast, should cover all bases
-      char *result = strDest.GetBuffer(len*4);
+      strDest.GetBuffer(len*4);
 
       // Convert back from Unicode to the charset
-      int len2 = fribidi_unicode_to_charset(fribidiCharset, visual, len, result);
-      ASSERT(len2 <= len*4);
+      ASSERT(fribidi_unicode_to_charset(fribidiCharset, visual, len, result) <= len*4);
       strDest.ReleaseBuffer();
 
       resultString += strDest;

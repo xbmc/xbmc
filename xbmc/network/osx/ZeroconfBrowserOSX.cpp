@@ -43,8 +43,7 @@ namespace
                                                             kCFStringEncodingUTF8);
     char *buffer = new char[buf_len];
     assert(buffer);
-    Boolean bool2 = CFStringGetCString(cfstr, buffer, buf_len, kCFStringEncodingUTF8);
-    assert(bool2);
+    assert(CFStringGetCString(cfstr, buffer, buf_len, kCFStringEncodingUTF8));
     CStdString myString(buffer);
     delete[] buffer;
     return myString;
@@ -150,7 +149,7 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
     }
   } else
   {
-    CLog::Log(LOGERROR, "CZeroconfBrowserOSX::BrowserCallback returned (domain = %d, error = %ld)\n", error->domain, error->error);
+    CLog::Log(LOGERROR, "CZeroconfBrowserOSX::BrowserCallback returned (domain = %d, error = %ld)\n", (int)error->domain, error->error);
   }
 }
 
@@ -230,7 +229,7 @@ bool CZeroconfBrowserOSX::doAddServiceType(const CStdString& fcr_service_type)
     CFNetServiceBrowserUnscheduleFromRunLoop(p_browser, m_runloop, kCFRunLoopCommonModes);         
     CFRelease(p_browser);
     p_browser = NULL;
-    CLog::Log(LOGERROR, "CFNetServiceBrowserSearchForServices returned (domain = %d, error = %ld)\n", error.domain, error.error);
+    CLog::Log(LOGERROR, "CFNetServiceBrowserSearchForServices returned (domain = %d, error = %ld)\n", (int)error.domain, error.error);
   } else
   {
     //store the browser
