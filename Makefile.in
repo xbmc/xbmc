@@ -429,6 +429,7 @@ libhdhomerun: dllloader
 libid3tag: dllloader
 	$(MAKE) -C lib/libid3tag
 papcodecs: dllloader dvdpcodecs
+	test -d system/players/paplayer || mkdir system/players/paplayer
 	$(MAKE) -C lib/xbadpcm
 	$(MAKE) -C lib/vgmstream
 	$(MAKE) -C lib/timidity
