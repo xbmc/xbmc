@@ -86,6 +86,8 @@ bool ASAPCodec::CanInit()
 
 bool ASAPCodec::IsSupportedFormat(const CStdString &strExt)
 {
+  if(strExt.empty())
+    return false;
   CStdString ext = strExt;
   if (ext[0] == '.')
     ext.erase(0, 1);
