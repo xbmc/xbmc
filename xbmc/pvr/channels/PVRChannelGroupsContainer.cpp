@@ -20,7 +20,9 @@
  */
 
 #include "PVRChannelGroupsContainer.h"
+#include "URL.h"
 #include "dialogs/GUIDialogOK.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 

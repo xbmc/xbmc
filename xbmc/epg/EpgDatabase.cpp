@@ -19,6 +19,7 @@
  *
  */
 
+#include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/VideoSettings.h"
 #include "utils/log.h"

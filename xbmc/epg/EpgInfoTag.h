@@ -188,7 +188,7 @@ public:
    * @brief Get the title of this event.
    * @return The title.
    */
-  const CStdString &Title(void) const { return (m_strTitle.IsEmpty()) ? g_localizeStrings.Get(19055) : m_strTitle; }
+  const CStdString &Title(void) const;
 
   /*!
    * @brief Change the title of this event.

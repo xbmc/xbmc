@@ -24,6 +24,7 @@
 #include "GUIControlFactory.h"
 #include "GUIListItem.h"
 #include "GUIFontManager.h"
+#include "lib/tinyXML/tinyxml.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "GUIInfoManager.h"

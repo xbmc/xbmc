@@ -104,6 +104,13 @@ int CEpgInfoTag::GetDuration() const
   return end - start > 0 ? end - start : 3600;
 }
 
+const CStdString &CEpgInfoTag::Title(void) const
+{
+  return (m_strTitle.IsEmpty()) ?
+      g_localizeStrings.Get(19055) :
+      m_strTitle;
+}
+
 const CEpgInfoTag *CEpgInfoTag::GetNextEvent() const
 {
   return m_nextEvent;
