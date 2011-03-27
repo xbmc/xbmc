@@ -26,9 +26,9 @@
 #include "utils/TimeUtils.h"
 
 #include "PVREpg.h"
-#include "pvr/channels/PVRChannel.h"
 #include "pvr/PVRManager.h"
-
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/addons/PVRClients.h"
 #include "epg/EpgContainer.h"
 #include "epg/EpgDatabase.h"
 

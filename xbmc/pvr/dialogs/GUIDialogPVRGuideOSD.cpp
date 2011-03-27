@@ -25,6 +25,7 @@
 #include "GUIDialogPVRGuideInfo.h"
 #include "guilib/GUIWindowManager.h"
 #include "ViewState.h"
+#include "epg/EpgInfoTag.h"
 
 #include "pvr/PVRManager.h"
 

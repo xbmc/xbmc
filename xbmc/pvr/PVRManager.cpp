@@ -46,9 +46,9 @@
 #include "PVRManager.h"
 #include "addons/PVRClients.h"
 #include "channels/PVRChannelGroupsContainer.h"
-#include "epg/PVREpgInfoTag.h"
-#include "recordings/PVRRecording.h"
-#include "timers/PVRTimerInfoTag.h"
+#include "epg/PVREpgContainer.h"
+#include "recordings/PVRRecordings.h"
+#include "timers/PVRTimers.h"
 
 using namespace std;
 using namespace XFILE;

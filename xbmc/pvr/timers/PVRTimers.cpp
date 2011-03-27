@@ -23,13 +23,14 @@
 #include "settings/GUISettings.h"
 #include "dialogs/GUIDialogOK.h"
 #include "threads/SingleLock.h"
+#include "utils/log.h"
+#include "utils/URIUtils.h"
 
 #include "PVRTimers.h"
-#include "PVRTimerInfoTag.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/channels/PVRChannel.h"
 #include "pvr/PVRManager.h"
-#include "pvr/epg/PVREpgInfoTag.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/PVREpgContainer.h"
+#include "pvr/addons/PVRClients.h"
 
 using namespace std;
 

@@ -33,6 +33,7 @@
 #endif
 #include "DVDDemuxPVRClient.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 
 using namespace std;
 

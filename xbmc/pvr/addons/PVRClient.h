@@ -23,11 +23,15 @@
 #include "addons/Addon.h"
 #include "addons/AddonDll.h"
 #include "addons/DllPVRClient.h"
-#include "pvr/epg/PVREpgContainer.h"
-#include "pvr/channels/PVRChannelGroup.h"
-#include "pvr/timers/PVRTimers.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
-#include "pvr/recordings/PVRRecordings.h"
+
+class CPVREpg;
+class CPVRChannelGroup;
+class CPVRChannelGroupInternal;
+class CPVRTimers;
+class CPVRTimerInfoTag;
+class CPVRRecordings;
+class CPVRRecording;
+class CPVREpgContainer;
 
 typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
 

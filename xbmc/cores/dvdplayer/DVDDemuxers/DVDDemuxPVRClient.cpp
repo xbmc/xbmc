@@ -21,7 +21,10 @@
 
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDDemuxPVRClient.h"
+#include "DVDDemuxUtils.h"
+#include "utils/log.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #ifdef _WIN32
 #include <libavcodec/avcodec.h>
 #endif

@@ -28,8 +28,6 @@
 
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/epg/PVREpgContainer.h"
-#include "pvr/epg/PVREpg.h"
-#include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 

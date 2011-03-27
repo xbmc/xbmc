@@ -84,8 +84,8 @@
 #endif
 #endif
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "network/GUIDialogAccessPoints.h"
 #include "filesystem/Directory.h"
 

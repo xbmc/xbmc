@@ -34,9 +34,13 @@
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 #include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/windows/GUIWindowPVR.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
+#include "utils/log.h"
+#include "utils/URIUtils.h"
 
 using namespace std;
 

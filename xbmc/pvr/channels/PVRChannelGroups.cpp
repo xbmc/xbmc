@@ -26,12 +26,10 @@
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
-#include "Util.h"
 #include "URL.h"
 #include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"
 
-#include "PVRChannelGroupInternal.h"
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
@@ -306,7 +304,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
 
   if (group.IsInternalGroup())
   {
-    CLog::Log(LOG_ERROR, "CPVRChannelGroups - %s - cannot delete internal group '%s'",
+    CLog::Log(LOGERROR, "CPVRChannelGroups - %s - cannot delete internal group '%s'",
         __FUNCTION__, group.GroupName().c_str());
     return bReturn;
   }
@@ -314,7 +312,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
   if (!database || !database->Open())
   {
-    CLog::Log(LOG_ERROR, "CPVRChannelGroups - %s - unable to open the database", __FUNCTION__);
+    CLog::Log(LOGERROR, "CPVRChannelGroups - %s - unable to open the database", __FUNCTION__);
     return bReturn;
   }
 

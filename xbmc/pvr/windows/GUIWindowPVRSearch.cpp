@@ -25,11 +25,13 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
 #include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
-#include "pvr/epg/PVREpgInfoTag.h"
-#include "pvr/recordings/PVRRecording.h"
+#include "pvr/epg/PVREpgContainer.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "GUIWindowPVR.h"
+#include "utils/log.h"
+#include "pvr/addons/PVRClients.h"
 
 CGUIWindowPVRSearch::CGUIWindowPVRSearch(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_SEARCH, CONTROL_BTNSEARCH, CONTROL_LIST_SEARCH)

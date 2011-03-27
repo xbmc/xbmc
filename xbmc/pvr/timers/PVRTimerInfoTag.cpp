@@ -23,11 +23,13 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "settings/AdvancedSettings.h"
+#include "utils/log.h"
 
 #include "PVRTimerInfoTag.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/PVRManager.h"
-#include "pvr/epg/PVREpgInfoTag.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/PVREpgContainer.h"
+#include "pvr/addons/PVRClients.h"
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(void)
 {

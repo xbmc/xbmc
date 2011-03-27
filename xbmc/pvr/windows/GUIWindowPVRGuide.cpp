@@ -26,12 +26,15 @@
 #include "guilib/GUIWindowManager.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/epg/PVREpgInfoTag.h"
+#include "pvr/epg/PVREpgContainer.h"
 #include "pvr/windows/GUIWindowPVR.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
+#include "utils/log.h"
+#include "pvr/addons/PVRClients.h"
+#include "pvr/timers/PVRTimers.h"
 
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_EPG, CONTROL_BTNGUIDE, CONTROL_LIST_GUIDE_NOW_NEXT),

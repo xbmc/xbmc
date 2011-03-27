@@ -23,10 +23,11 @@
 #include "PVREpgContainer.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
-#include "pvr/recordings/PVRRecording.h"
+#include "pvr/timers/PVRTimers.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "pvr/windows/GUIWindowPVR.h"
 #include "guilib/GUIWindowManager.h"
+#include "utils/log.h"
 
 using namespace std;
 

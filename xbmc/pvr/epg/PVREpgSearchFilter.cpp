@@ -23,8 +23,8 @@
 #include "utils/TextSearch.h"
 
 #include "PVREpgSearchFilter.h"
-#include "PVREpgInfoTag.h"
 #include "pvr/PVRManager.h"
+#include "PVREpgContainer.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace std;

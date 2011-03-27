@@ -34,7 +34,7 @@
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
-#include "pvr/epg/PVREpgInfoTag.h"
+#include "pvr/epg/PVREpgContainer.h"
 
 using namespace MUSIC_INFO;
 

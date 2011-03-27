@@ -20,6 +20,7 @@
  */
 
 #include "PVRClients.h"
+#include "PVRClient.h"
 
 #include "Application.h"
 #include "settings/GUISettings.h"
@@ -30,6 +31,10 @@
 #include "pvr/PVRDatabase.h"
 #include "utils/TimeUtils.h"
 #include "guilib/GUIWindowManager.h"
+#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/recordings/PVRRecordings.h"
+#include "pvr/timers/PVRTimers.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 
 using namespace std;

@@ -29,6 +29,9 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/addons/PVRClient.h"
+#include "pvr/recordings/PVRRecordings.h"
+#include "pvr/timers/PVRTimers.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 
 namespace ADDON
 {

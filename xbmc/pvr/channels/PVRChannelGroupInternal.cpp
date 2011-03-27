@@ -25,10 +25,11 @@
 #include "dialogs/GUIDialogOK.h"
 #include "utils/log.h"
 
-#include "PVRChannelGroupInternal.h"
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
+#include "pvr/timers/PVRTimers.h"
+#include "pvr/addons/PVRClients.h"
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
   CPVRChannelGroup(bRadio)

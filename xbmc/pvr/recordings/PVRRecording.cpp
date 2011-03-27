@@ -23,7 +23,7 @@
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
 #include "PVRRecordings.h"
-#include "PVRRecording.h"
+#include "pvr/addons/PVRClients.h"
 
 CPVRRecording::CPVRRecording()
 {

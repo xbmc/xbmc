@@ -30,6 +30,7 @@
 
 #include "utils/URIUtils.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "PVRRecordings.h"
 
 void CPVRRecordings::UpdateFromClients(void)

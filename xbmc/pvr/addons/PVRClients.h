@@ -20,8 +20,8 @@
  *
  */
 
-#include "PVRClient.h"
 #include "threads/CriticalSection.h"
+#include "PVRClient.h"
 
 #include <vector>
 #include <deque>
