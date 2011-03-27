@@ -68,7 +68,7 @@ public:
   int GetNumRecordings(void);
   PVR_ERROR GetRecordings(PVR_HANDLE handle);
   PVR_ERROR DeleteRecording(const PVR_RECORDING &recording);
-  PVR_ERROR RenameRecording(const PVR_RECORDING &recording, const char *strNewName);
+  PVR_ERROR RenameRecording(const PVR_RECORDING &recording);
 
   /* Timer handling */
   int GetNumTimers(void);

@@ -438,7 +438,7 @@ PVR_ERROR GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t
 /*******************************************/
 /** PVR Channel Functions                 **/
 
-int GetNumChannels()
+int GetChannelsAmount()
 {
   return g_client->GetNumChannels();
 }
@@ -477,7 +477,7 @@ int GetRecordingsAmount(void)
   return g_client->GetNumRecordings();
 }
 
-PVR_ERROR RequestRecordingsList(PVR_HANDLE handle)
+PVR_ERROR GetRecordings(PVR_HANDLE handle)
 {
   return g_client->GetRecordings(handle);
 }
@@ -489,7 +489,7 @@ PVR_ERROR DeleteRecording(const PVR_RECORDING &recording)
 
 PVR_ERROR RenameRecording(const PVR_RECORDING &recording)
 {
-  return g_client->RenameRecording(recording, recording.strChannelName);
+  return g_client->RenameRecording(recording);
 }
 
 
@@ -501,7 +501,7 @@ int GetTimersAmount(void)
   return g_client->GetNumTimers();
 }
 
-PVR_ERROR RequestTimerList(PVR_HANDLE handle)
+PVR_ERROR GetTimers(PVR_HANDLE handle)
 {
   return g_client->GetTimers(handle);
 }
@@ -535,7 +535,7 @@ void CloseLiveStream()
   return g_client->CloseLiveStream();
 }
 
-int ReadLiveStreamReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
+int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
 {
   return g_client->ReadLiveStream(pBuffer, iBufferSize);
 }
@@ -579,6 +579,10 @@ const char * GetLiveStreamURL(const PVR_CHANNEL &channel)
 }
 
 /** UNUSED API FUNCTIONS */
+PVR_ERROR MoveChannel(const PVR_CHANNEL &channel) { return PVR_ERROR_NOT_IMPLEMENTED; }
+int GetChannelGroupsAmount(void) { return -1; }
+PVR_ERROR GetChannelGroups(PVR_HANDLE handle, bool bRadio) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group) { return PVR_ERROR_NOT_IMPLEMENTED; }
 DemuxPacket* DemuxRead(void) { return NULL; }
 void DemuxAbort(void) {}
 void DemuxReset(void) {}

@@ -650,7 +650,7 @@ PVR_ERROR cPVRClientMediaPortal::DeleteRecording(const PVR_RECORDING &recording)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cPVRClientMediaPortal::RenameRecording(const PVR_RECORDING &recording, const char *strNewName)
+PVR_ERROR cPVRClientMediaPortal::RenameRecording(const PVR_RECORDING &recording)
 {
   char           command[512];
   string         result;
@@ -660,16 +660,16 @@ PVR_ERROR cPVRClientMediaPortal::RenameRecording(const PVR_RECORDING &recording,
 
   snprintf(command, 512, "UpdateRecording:%i|%s\n",
       recording.iClientIndex,
-    uri::encode(uri::PATH_TRAITS, strNewName).c_str());
+    uri::encode(uri::PATH_TRAITS, recording.strTitle).c_str());
 
   result = SendCommand(command);
 
   if(result.find("True") == string::npos)
   {
-    XBMC->Log(LOG_DEBUG, "RenameRecording(%i) to %s [failed]", recording.iClientIndex, strNewName);
+    XBMC->Log(LOG_DEBUG, "RenameRecording(%i) to %s [failed]", recording.iClientIndex, recording.strTitle);
     return PVR_ERROR_NOT_DELETED;
   }
-  XBMC->Log(LOG_DEBUG, "RenameRecording(%i) to %s [done]", recording.iClientIndex, strNewName);
+  XBMC->Log(LOG_DEBUG, "RenameRecording(%i) to %s [done]", recording.iClientIndex, recording.strTitle);
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -747,7 +747,7 @@ PVR_ERROR cPVRClientMediaPortal::AddTimer(const PVR_TIMER &timerinfo)
   string         result;
 
 #ifdef _TIME32_T_DEFINED
-  XBMC->Log(LOG_DEBUG, "->AddTimer Channel: %i, starttime: %i endtime: %i program: %s", timerinfo.channelNum, timerinfo.starttime, timerinfo.endtime, timerinfo.title);
+  XBMC->Log(LOG_DEBUG, "->AddTimer Channel: %i, starttime: %i endtime: %i program: %s", timerinfo.iClientChannelUid, timerinfo.startTime, timerinfo.endTime, timerinfo.strTitle);
 #else
   XBMC->Log(LOG_DEBUG, "->AddTimer Channel: %i, 64 bit times not yet supported!", timerinfo.iClientChannelUid);
 #endif
@@ -817,7 +817,7 @@ PVR_ERROR cPVRClientMediaPortal::UpdateTimer(const PVR_TIMER &timerinfo)
   string         result;
 
 #ifdef _TIME32_T_DEFINED
-  XBMC->Log(LOG_DEBUG, "->UpdateTimer Index: %i Channel: %i, starttime: %i endtime: %i program: %s", timerinfo.index, timerinfo.channelNum, timerinfo.starttime, timerinfo.endtime, timerinfo.title);
+  XBMC->Log(LOG_DEBUG, "->UpdateTimer Index: %i Channel: %i, starttime: %i endtime: %i program: %s", timerinfo.iClientIndex, timerinfo.iClientChannelUid, timerinfo.startTime, timerinfo.endTime, timerinfo.strTitle);
 #else
   XBMC->Log(LOG_DEBUG, "->UpdateTimer Channel: %i, 64 bit times not yet supported!", timerinfo.iClientChannelUid);
 #endif
