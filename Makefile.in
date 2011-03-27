@@ -164,7 +164,6 @@ endif
 PVR_DIRS=\
 	xbmc/pvrclients/MediaPortal \
 	xbmc/pvrclients/mythtv \
-	xbmc/pvrclients/vdr-streamdev \
 	xbmc/pvrclients/vdr-vnsi \
 	xbmc/pvrclients/tvheadend
 
@@ -455,7 +454,6 @@ endif
 pvrclients: exports
 	$(MAKE) -C xbmc/pvrclients/MediaPortal
 	$(MAKE) -C xbmc/pvrclients/mythtv
-	$(MAKE) -C xbmc/pvrclients/vdr-streamdev
 	$(MAKE) -C xbmc/pvrclients/vdr-vnsi
 	$(MAKE) -C xbmc/pvrclients/tvheadend
 screensavers: exports
