@@ -4674,15 +4674,15 @@ bool CVideoDatabase::GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& 
 {
   CStdString where;
   if (idGenre != -1)
-    where = PrepareSQL("join genrelinktvshow on genrelinktvshow.idShow=tvshow.idShow where genrelinktvshow.idGenre=%i ", idGenre);
+    where = PrepareSQL("join genrelinktvshow on genrelinktvshow.idShow=tvshowview.idShow where genrelinktvshow.idGenre=%i ", idGenre);
   else if (idStudio != -1)
-    where = PrepareSQL("join studiolinktvshow on studiolinktvshow.idShow=tvshow.idShow where studiolinktvshow.idStudio=%i", idStudio);
+    where = PrepareSQL("join studiolinktvshow on studiolinktvshow.idShow=tvshowview.idShow where studiolinktvshow.idStudio=%i", idStudio);
   else if (idDirector != -1)
-    where = PrepareSQL("join directorlinktvshow on directorlinktvshow.idShow=tvshow.idShow where directorlinktvshow.idDirector=%i", idDirector);
+    where = PrepareSQL("join directorlinktvshow on directorlinktvshow.idShow=tvshowview.idShow where directorlinktvshow.idDirector=%i", idDirector);
   else if (idYear != -1)
     where = PrepareSQL("where c%02d like '%%%i%%'", VIDEODB_ID_TV_PREMIERED,idYear);
   else if (idActor != -1)
-    where = PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow=tvshow.idShow join actors on actors.idActor=actorlinktvshow.idActor where actors.idActor=%i",idActor);
+    where = PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow=tvshowview.idShow join actors on actors.idActor=actorlinktvshow.idActor where actors.idActor=%i",idActor);
 
   return GetTvShowsByWhere(strBaseDir, where, items);
 }

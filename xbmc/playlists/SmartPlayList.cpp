@@ -524,11 +524,11 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase &db, const CStdString& s
   else if (strType == "tvshows")
   {
     if (m_field == FIELD_GENRE)
-      query = "tvshow.idShow" + negate + " in (select idShow from genrelinktvshow join genre on genre.idGenre=genrelinktvshow.idGenre where genre.strGenre" + parameter + ")";
+      query = "idShow" + negate + " in (select idShow from genrelinktvshow join genre on genre.idGenre=genrelinktvshow.idGenre where genre.strGenre" + parameter + ")";
     else if (m_field == FIELD_DIRECTOR)
-      query = "tvshow.idShow" + negate + " in (select idShow from directorlinktvshow join actors on actors.idActor=directorlinktvshow.idDirector where actors.strActor" + parameter + ")";
+      query = "idShow" + negate + " in (select idShow from directorlinktvshow join actors on actors.idActor=directorlinktvshow.idDirector where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_ACTOR)
-      query = "tvshow.idShow" + negate + " in (select idShow from actorlinktvshow join actors on actors.idActor=actorlinktvshow.idActor where actors.strActor" + parameter + ")";
+      query = "idShow" + negate + " in (select idShow from actorlinktvshow join actors on actors.idActor=actorlinktvshow.idActor where actors.strActor" + parameter + ")";
   }
   else if (strType == "episodes")
   {
