@@ -132,7 +132,7 @@ class Main:
         totals_xml = xbmc.executehttpapi( "QueryVideoDatabase(%s)" % quote_plus( sql_totals ), )
         mvideos_totals = re.findall( "<field>(.+?)</field>", totals_xml, re.DOTALL )
         # sql statement for tv shows/episodes totals
-        sql_totals = "SELECT tvshow.*, path.strPath AS strPath, counts.totalcount AS totalCount, counts.watchedcount AS watchedCount, counts.totalcount=counts.watchedcount AS watched FROM tvshow JOIN tvshowlinkpath ON tvshow.idShow=tvshowlinkpath.idShow JOIN path ON path.idpath=tvshowlinkpath.idPath LEFT OUTER join (SELECT tvshow.idShow AS idShow, count(1) AS totalCount, count(files.playCount) AS watchedCount FROM tvshow JOIN tvshowlinkepisode ON tvshow.idShow=tvshowlinkepisode.idShow JOIN episode ON episode.idEpisode=tvshowlinkepisode.idEpisode JOIN files ON files.idFile=episode.idFile GROUP BY tvshow.idShow) counts ON tvshow.idShow=counts.idShow"
+        sql_totals = "SELECT tvshow.*, path.strPath AS strPath, counts.totalcount AS totalCount, counts.watchedcount AS watchedCount, counts.totalcount=counts.watchedcount AS watched FROM tvshow JOIN tvshowlinkpath ON tvshow.idShow=tvshowlinkpath.idShow JOIN path ON path.idPath=tvshowlinkpath.idPath LEFT OUTER join (SELECT tvshow.idShow AS idShow, count(1) AS totalCount, count(files.playCount) AS watchedCount FROM tvshow JOIN tvshowlinkepisode ON tvshow.idShow=tvshowlinkepisode.idShow JOIN episode ON episode.idEpisode=tvshowlinkepisode.idEpisode JOIN files ON files.idFile=episode.idFile GROUP BY tvshow.idShow) counts ON tvshow.idShow=counts.idShow"
         totals_xml = xbmc.executehttpapi( "QueryVideoDatabase(%s)" % quote_plus( sql_totals ), )
         # initialize our list
         tvshows_totals = [ 0 ] * 4
@@ -227,7 +227,7 @@ class Main:
             sql_episodes = "select * from episodeview %sorder by RANDOM() limit %d" % ( unplayed, self.LIMIT, )
         elif ( self.RECENT ):
             # recently added
-            sql_episodes = "select * from episodeview %sorder by idepisode desc limit %d" % ( unplayed, self.LIMIT, )
+            sql_episodes = "select * from episodeview %sorder by idEpisode desc limit %d" % ( unplayed, self.LIMIT, )
         else:
             # tv shows not finished
             sql_episodes = "select episodeview.*, bookmark.timeInSeconds from episodeview join bookmark on (episodeview.idFile = bookmark.idFile) %sorder by episodeview.strTitle limit %d" % ( unplayed, self.LIMIT, )
