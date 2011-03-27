@@ -247,6 +247,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_NUMWATCHED);
     fields.push_back(FIELD_PLAYCOUNT);
     fields.push_back(FIELD_PATH);
+    fields.push_back(FIELD_STUDIO);
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
   else if (type == "episodes")
@@ -271,6 +272,8 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_SEASON);
     fields.push_back(FIELD_FILENAME);
     fields.push_back(FIELD_PATH);
+    fields.push_back(FIELD_STUDIO);
+    fields.push_back(FIELD_MPAA);
     isVideo = true;
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
@@ -529,6 +532,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase &db, const CStdString& s
       query = "idShow" + negate + " in (select idShow from directorlinktvshow join actors on actors.idActor=directorlinktvshow.idDirector where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_ACTOR)
       query = "idShow" + negate + " in (select idShow from actorlinktvshow join actors on actors.idActor=actorlinktvshow.idActor where actors.strActor" + parameter + ")";
+    else if (m_field == FIELD_STUDIO)
+      query = "idShow" + negate + " IN (SELECT idShow FROM tvshowview WHERE " + GetDatabaseField(m_field, strType) + parameter + ")";
   }
   else if (strType == "episodes")
   {
@@ -544,6 +549,10 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase &db, const CStdString& s
       query = "lastPlayed is NULL or lastPlayed" + parameter;
     else if (m_field == FIELD_INPROGRESS)
       query = "idFile " + negate + " in (select idFile from bookmark where type = 1)";
+    else if (m_field == FIELD_STUDIO)
+      query = "idEpisode" + negate + " IN (SELECT idEpisode FROM episodeview WHERE strStudio" + parameter + ")";
+    else if (m_field == FIELD_MPAA)
+      query = "idEpisode" + negate + " IN (SELECT idEpisode FROM episodeview WHERE mpaa" + parameter + ")";
   }
   if (m_field == FIELD_VIDEORESOLUTION)
     query = "idFile" + negate + GetVideoResolutionQuery();
