@@ -320,7 +320,7 @@ int CPVRClient::GetChannelsAmount(void)
 
   try
   {
-    iReturn = m_pStruct->GetNumChannels();
+    iReturn = m_pStruct->GetChannelsAmount();
   }
   catch (exception &e)
   {
@@ -369,7 +369,7 @@ int CPVRClient::GetRecordingsAmount(void)
 
   try
   {
-    iReturn = m_pStruct->GetNumRecordings();
+    iReturn = m_pStruct->GetRecordingsAmount();
   }
   catch (exception &e)
   {
@@ -494,7 +494,7 @@ int CPVRClient::GetTimersAmount(void)
 
   try
   {
-    iReturn = m_pStruct->GetNumTimers();
+    iReturn = m_pStruct->GetTimersAmount();
   }
   catch (exception &e)
   {
