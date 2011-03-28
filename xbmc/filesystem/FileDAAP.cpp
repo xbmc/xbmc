@@ -215,9 +215,6 @@ int64_t CFileDAAP::Seek(int64_t iFilePosition, int iWhence)
 {
   CSingleLock lock(g_DaapClient);
 
-  if(iWhence == SEEK_POSSIBLE)
-    return 1; //m_curl.Seek(iFilePosition, iWhence);
-
   int requestid = ++m_thisHost->request_id;
 
   char hash[33] = {0};
@@ -248,5 +245,13 @@ bool CFileDAAP::Exists(const CURL& url)
 
 int CFileDAAP::Stat(const CURL& url, struct __stat64* buffer)
 {
+  return -1;
+}
+
+int CFileDAAP::IoControl(EIoControl request, void* param)
+{
+  if(request == IOCTRL_SEEK_POSSIBLE)
+    return 1;
+
   return -1;
 }

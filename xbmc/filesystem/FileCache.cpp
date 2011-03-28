@@ -111,7 +111,7 @@ bool CFileCache::Open(const CURL& url)
   }
 
   // check if source can seek
-  m_seekPossible = m_source.Seek(0, SEEK_POSSIBLE);
+  m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
 
   m_readPos = 0;
   m_seekEvent.Reset();
@@ -151,7 +151,7 @@ void CFileCache::Process()
       if (m_nSeekResult != m_seekPos)
       {
         CLog::Log(LOGERROR,"%s, error %d seeking. seek returned %"PRId64, __FUNCTION__, (int)GetLastError(), m_nSeekResult);
-        m_seekPossible = m_source.Seek(0, SEEK_POSSIBLE);
+        m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
       }
       else
         m_pCache->Reset(m_seekPos);
@@ -286,8 +286,6 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
     iTarget = GetLength() + iTarget;
   else if (iWhence == SEEK_CUR)
     iTarget = iCurPos + iTarget;
-  else if (iWhence == SEEK_POSSIBLE)
-    return m_seekPossible;
   else if (iWhence != SEEK_SET)
     return -1;
 
@@ -361,6 +359,9 @@ int CFileCache::IoControl(EIoControl request, void* param)
     status->forward = m_pCache->WaitForData(0, 0);
     return 0;
   }
+
+  if(request == IOCTRL_SEEK_POSSIBLE)
+    return m_seekPossible;
 
   return -1;
 }

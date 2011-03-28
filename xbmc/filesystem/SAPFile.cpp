@@ -130,8 +130,6 @@ int64_t CSAPFile::Seek(int64_t iFilePosition, int iWhence)
     case SEEK_END:
       m_stream.seekg((int)iFilePosition, ios_base::end);
       break;
-    case SEEK_POSSIBLE:
-      return 1;
     default:
       return -1;
   }
@@ -171,3 +169,10 @@ bool CSAPFile::Rename(const CURL& url, const CURL& urlnew)
   return false;
 }
 
+int CSAPFile::IoControl(EIoControl request, void* param)
+{
+  if(request == IOCTRL_SEEK_POSSIBLE)
+    return 1;
+
+  return -1;
+}
