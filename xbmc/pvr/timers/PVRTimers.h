@@ -23,12 +23,14 @@
 #include "PVRTimerInfoTag.h"
 #include "DateTime.h"
 #include "addons/include/xbmc_pvr_types.h"
+#include "utils/Observer.h"
 
 class CFileItem;
 class CPVREpgInfoTag;
 class CGUIDialogPVRTimerSettings;
 
-class CPVRTimers : public std::vector<CPVRTimerInfoTag *>
+class CPVRTimers : public std::vector<CPVRTimerInfoTag *>,
+                   private Observer
 {
 private:
   CCriticalSection m_critSection;
@@ -169,4 +171,5 @@ public:
   CPVRTimerInfoTag *GetByClient(int iClientId, int iClientTimerId);
   CPVRTimerInfoTag *GetMatch(const CEpgInfoTag *Epg);
   CPVRTimerInfoTag *GetMatch(const CFileItem *item);
+  virtual void Notify(const Observable &obs, const CStdString& msg);
 };

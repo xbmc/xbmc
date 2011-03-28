@@ -42,6 +42,7 @@ CPVRTimers::CPVRTimers(void)
 int CPVRTimers::Load()
 {
   Unload();
+  CPVRManager::GetEpg()->AddObserver(this);
   return Update();
 }
 
@@ -503,3 +504,11 @@ CPVRTimerInfoTag *CPVRTimers::GetMatch(const CFileItem *item)
   return returnTag;
 }
 
+void CPVRTimers::Notify(const Observable &obs, const CStdString& msg)
+{
+  if (msg.Equals("epg"))
+  {
+    //TODO do this via the pvrmanager for now
+    CPVRManager::Get()->TriggerTimersUpdate();
+  }
+}
