@@ -59,7 +59,7 @@ public:
   virtual int            GetStartTime()              { return 0; }
   virtual bool           UpdateItem(CFileItem& item) { return false; }
 
-
+  virtual int            IoControl(EIoControl request, void* param);
 protected:
   CVTPSession* m_session;
   SOCKET       m_socket;

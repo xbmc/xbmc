@@ -518,21 +518,7 @@ int64_t CFile::Seek(int64_t iFilePosition, int iWhence)
 
   try
   {
-    if(iWhence == SEEK_POSSIBLE)
-    {
-      int64_t ret = m_pFile->Seek(iFilePosition, iWhence);
-      if(ret >= 0)
-        return ret;
-      else
-      {
-        if(m_pFile->GetLength() && m_pFile->Seek(0, SEEK_CUR) >= 0)
-          return 1;
-        else
-          return 0;
-      }
-    }
-    else
-      return m_pFile->Seek(iFilePosition, iWhence);
+    return m_pFile->Seek(iFilePosition, iWhence);
   }
 #ifndef _LINUX
   catch (const win32_exception &e)
@@ -772,6 +758,14 @@ int CFile::IoControl(EIoControl request, void* param)
   int result = -1;
   if (m_pFile)
     result = m_pFile->IoControl(request, param);
+
+  if(result == -1 && request == IOCTRL_SEEK_POSSIBLE)
+  {
+    if(m_pFile->GetLength() >= 0 && m_pFile->Seek(0, SEEK_CUR) >= 0)
+      return 1;
+    else
+      return 0;
+  }
 
   return result;
 }

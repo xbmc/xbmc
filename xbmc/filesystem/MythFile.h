@@ -80,6 +80,7 @@ public:
   virtual bool           GetCommBreakList(cmyth_commbreaklist_t& commbreaklist);
   virtual bool           GetCutList(cmyth_commbreaklist_t& commbreaklist);
 
+  virtual int            IoControl(EIoControl request, void* param);
 protected:
   virtual void OnEvent(int event, const std::string& data);
 

@@ -38,8 +38,6 @@
 #include <stdint.h>
 #include <sys/stat.h>
 
-#define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
-
 namespace XFILE
 {
 
@@ -56,6 +54,7 @@ struct SCacheStatus
 
 typedef enum {
   IOCTRL_NATIVE        = 1, /**< SNativeIoControl structure, containing what should be passed to native ioctrl */
+  IOCTRL_SEEK_POSSIBLE = 2, /**< return 0 if known not to work, 1 if it should work */
   IOCTRL_CACHE_STATUS  = 3, /**< SCacheStatus structure */
 } EIoControl;
 

@@ -41,6 +41,8 @@ enum DVDStreamType
   DVDSTREAM_TYPE_BLURAY = 11,
 };
 
+#define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
+
 #define DVDSTREAM_BLOCK_SIZE_FILE (2048 * 16)
 #define DVDSTREAM_BLOCK_SIZE_DVD  2048
 
