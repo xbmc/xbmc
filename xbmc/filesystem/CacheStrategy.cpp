@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
+#include "SpecialProtocol.h"
 #ifdef _WIN32
 #include "PlatformDefs.h" //for PRIdS, PRId64
 #endif
@@ -76,7 +77,7 @@ int CSimpleFileCache::Open()
 
   m_hDataAvailEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
-  CStdString fileName = CUtil::GetNextFilename("special://temp/filecache%03d.cache", 999);
+  CStdString fileName = CSpecialProtocol::TranslatePath(CUtil::GetNextFilename("special://temp/filecache%03d.cache", 999));
   if(fileName.empty())
   {
     CLog::Log(LOGERROR, "%s - Unable to generate a new filename", __FUNCTION__);
