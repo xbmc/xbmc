@@ -30,22 +30,11 @@ extern "C" {
 
 cHTSPData::cHTSPData()
 {
-  m_bGotGmtOffset = false;
 }
 
 cHTSPData::~cHTSPData()
 {
   Close();
-}
-
-void cHTSPData::GetGmtOffset(void)
-{
-  if (!m_bGotGmtOffset)
-  {
-    time_t localTime;
-    GetTime(&localTime, &m_iGmtOffset);
-    m_bGotGmtOffset = true;
-  }
 }
 
 bool cHTSPData::Open(CStdString hostname, int port, CStdString user, CStdString pass, long timeout)
@@ -161,10 +150,7 @@ bool cHTSPData::GetTime(time_t *localTime, int *gmtOffset)
     return false;
 
   XBMC->Log(LOG_DEBUG, "%s - tvheadend reported time=%u, timezone=%d, correction=%d"
-      , __FUNCTION__, secs, offset, g_iEpgOffsetCorrection * 60);
-
-  /* XBMC needs the timezone difference in seconds from GMT */
-  offset = (offset - (g_iEpgOffsetCorrection * 60)) * 60;
+      , __FUNCTION__, secs, offset);
 
   *localTime = secs + offset;
   *gmtOffset = -offset;
@@ -213,7 +199,6 @@ PVR_ERROR cHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_
   if (!CheckConnection())
     return PVR_ERROR_SERVER_ERROR;
 
-  GetGmtOffset();
   SChannels channels = GetChannels();
 
   if (channels.find(channel.iUniqueId) != channels.end())
@@ -236,8 +221,8 @@ PVR_ERROR cHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_
         broadcast.iUniqueBroadcastId = event.id;
         broadcast.strTitle           = event.title.c_str();
         broadcast.iChannelNumber     = event.chan_id >= 0 ? event.chan_id : channel.iUniqueId;
-        broadcast.startTime          = event.start + m_iGmtOffset;
-        broadcast.endTime            = event.stop + m_iGmtOffset;
+        broadcast.startTime          = event.start;
+        broadcast.endTime            = event.stop;
         broadcast.strPlotOutline     = "";
         broadcast.strPlot            = event.descs.c_str();
         broadcast.strIconPath        = "";
@@ -293,7 +278,6 @@ int cHTSPData::GetNumRecordings()
 
 PVR_ERROR cHTSPData::GetRecordings(PVR_HANDLE handle)
 {
-  GetGmtOffset();
   SRecordings recordings = GetDVREntries(true, false);
 
   for(SRecordings::const_iterator it = recordings.begin(); it != recordings.end(); ++it)
@@ -333,7 +317,7 @@ PVR_ERROR cHTSPData::GetRecordings(PVR_HANDLE handle)
     tag.strPlotOutline = "";
     tag.strPlot        = recording.description.c_str();
     tag.strChannelName = strChannelName.c_str();
-    tag.recordingTime  = recording.start + m_iGmtOffset;
+    tag.recordingTime  = recording.start;
     tag.iDuration      = recording.stop - recording.start;
     tag.iPriority      = 0;
     tag.iLifetime      = 0;
@@ -375,7 +359,6 @@ int cHTSPData::GetNumTimers()
 
 PVR_ERROR cHTSPData::GetTimers(PVR_HANDLE handle)
 {
-  GetGmtOffset();
   SRecordings recordings = GetDVREntries(false, true);
 
   for(SRecordings::const_iterator it = recordings.begin(); it != recordings.end(); ++it)
@@ -387,8 +370,8 @@ PVR_ERROR cHTSPData::GetTimers(PVR_HANDLE handle)
 
     tag.iClientIndex      = recording.id;
     tag.iClientChannelUid = recording.channel;
-    tag.startTime         = recording.start + m_iGmtOffset;
-    tag.endTime           = recording.stop + m_iGmtOffset;
+    tag.startTime         = recording.start;
+    tag.endTime           = recording.stop;
     tag.strTitle          = recording.title.c_str();
     tag.strDirectory            = "/";
     tag.strSummary        = "";
@@ -434,14 +417,12 @@ PVR_ERROR cHTSPData::AddTimer(const PVR_TIMER &timer)
 {
   XBMC->Log(LOG_DEBUG, "%s - channelUid=%d title=%s epgid=%d", __FUNCTION__, timer.iClientChannelUid, timer.strTitle, timer.iEpgUid);
 
-  GetGmtOffset();
-
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method",      "addDvrEntry");
   htsmsg_add_u32(msg, "eventId",     timer.iEpgUid);
   htsmsg_add_str(msg, "title",       timer.strTitle);
-  htsmsg_add_u32(msg, "start",       timer.startTime + m_iGmtOffset);
-  htsmsg_add_u32(msg, "stop",        timer.endTime + m_iGmtOffset);
+  htsmsg_add_u32(msg, "start",       timer.startTime);
+  htsmsg_add_u32(msg, "stop",        timer.endTime);
   htsmsg_add_u32(msg, "channelId",   timer.iClientChannelUid);
   htsmsg_add_u32(msg, "priority",    timer.iPriority);
   htsmsg_add_str(msg, "description", timer.strSummary);
@@ -474,14 +455,12 @@ PVR_ERROR cHTSPData::UpdateTimer(const PVR_TIMER &timer)
 {
   XBMC->Log(LOG_DEBUG, "%s - channelUid=%d title=%s epgid=%d", __FUNCTION__, timer.iClientChannelUid, timer.strTitle, timer.iEpgUid);
 
-  GetGmtOffset();
-
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "updateDvrEntry");
   htsmsg_add_u32(msg, "id",     timer.iClientIndex);
   htsmsg_add_str(msg, "title",  timer.strTitle);
-  htsmsg_add_u32(msg, "start",  timer.startTime + m_iGmtOffset);
-  htsmsg_add_u32(msg, "stop",   timer.endTime + m_iGmtOffset);
+  htsmsg_add_u32(msg, "start",  timer.startTime);
+  htsmsg_add_u32(msg, "stop",   timer.endTime);
   
   if ((msg = ReadResult(msg)) == NULL)
   {

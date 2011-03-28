@@ -40,7 +40,6 @@ int g_iPortHTSP               = DEFAULT_HTSP_PORT;
 int g_iPortHTTP               = DEFAULT_HTTP_PORT;
 int g_iConnectTimout          = DEFAULT_TIMEOUT;
 int g_iSkipIFrame             = DEFAULT_SKIP_I_FRAME;
-int g_iEpgOffsetCorrection    = DEFAULT_EPG_OFFSET_CORRECTION;
 CStdString g_szUsername       = "";
 CStdString g_szPassword       = "";
 CStdString g_szUserPath       = "";
@@ -137,17 +136,6 @@ ADDON_STATUS Create(void* hdl, void* props)
     g_iSkipIFrame = DEFAULT_SKIP_I_FRAME;
   }
 
-  /* Read setting "epg_offset_correction" from settings.xml */
-  if (!XBMC->GetSetting("epg_offset_correction", &g_iEpgOffsetCorrection))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "%s - Couldn't get 'epg_offset_correction' setting, falling back to '%i' as default", __FUNCTION__, DEFAULT_EPG_OFFSET_CORRECTION);
-    g_iEpgOffsetCorrection = DEFAULT_EPG_OFFSET_CORRECTION;
-  }else
-  {
-    g_iEpgOffsetCorrection -= 12;
-  }
-
   HTSPData = new cHTSPData;
   if (!HTSPData->Open(g_szHostname, g_iPortHTSP, g_szUsername, g_szPassword, g_iConnectTimout))
   {
@@ -238,15 +226,6 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     {
       g_iSkipIFrame = *(int*) settingValue;
       return STATUS_OK;
-    }
-  }
-  else if (str == "epg_offset_correction")
-  {
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'epg_offset_correction' from %d to %d", __FUNCTION__, g_iEpgOffsetCorrection, *(int*) settingValue);
-    if (g_iEpgOffsetCorrection != *(int*) settingValue - 12)
-    {
-      g_iEpgOffsetCorrection = *(int*) settingValue - 12;
-      return STATUS_NEED_RESTART;
     }
   }
 

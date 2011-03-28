@@ -58,8 +58,6 @@ protected:
   virtual void Action(void);
 
 private:
-  void GetGmtOffset(void);
-
   struct SMessage
   {
     cCondWait * event;
@@ -82,7 +80,4 @@ private:
   SEvents         m_events;
   SMessages       m_queue;
   SRecordings     m_recordings;
-
-  bool            m_bGotGmtOffset;
-  int             m_iGmtOffset;
 };
