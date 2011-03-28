@@ -226,13 +226,13 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
   LARGE_INTEGER pos;
   pos.QuadPart = iTarget;
 
-  if(!SetFilePointerEx(m_hCacheFileRead, pos, &pos, FILE_BEGIN))
+  if(!SetFilePointerEx(m_hCacheFileRead, pos, NULL, FILE_BEGIN))
     return CACHE_RC_ERROR;
 
   m_nReadPosition = iTarget;
   m_space.Set();
 
-  return pos.QuadPart;
+  return iFilePosition;
 }
 
 void CSimpleFileCache::Reset(int64_t iSourcePosition)
