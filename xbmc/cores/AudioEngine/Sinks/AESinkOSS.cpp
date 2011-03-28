@@ -30,7 +30,7 @@
 
 #include <sys/ioctl.h>
 
-#ifdef OSS4
+#if defined(OSS4) || defined(__FreeBSD__)
   #include <sys/soundcard.h>
 #else
   #include <linux/soundcard.h>
