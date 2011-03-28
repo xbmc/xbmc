@@ -29,11 +29,13 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
+#include "utils/TimeUtils.h"
 
 using namespace AUTOPTR;
 using namespace XFILE;
 
 #define READ_CACHE_CHUNK_SIZE (64*1024)
+#define WRITE_CACHE_UPGRADE_TIMEOUT 2000
 
 CFileCache::CFileCache()
 {
@@ -122,6 +124,37 @@ bool CFileCache::Open(const CURL& url)
   return true;
 }
 
+static bool CopyCacheStrategy(CCacheStrategy *dst, CCacheStrategy *src)
+{
+  if(dst->Open() != CACHE_RC_OK)
+    return false;
+
+  dst->Reset(src->GetCacheStart());
+  if(src->Seek(src->GetCacheStart()) < 0)
+    return false;
+
+  const size_t    data_size = 32 * 1024;
+  auto_aptr<char> data(new char[data_size]);
+
+  while(1)
+  {
+    int res_r = src->ReadFromCache(data.get(), data_size);
+    if(res_r == 0 || res_r == CACHE_RC_WOULD_BLOCK)
+      break;
+
+    if(res_r < 0)
+      return false;
+
+    for(int pos = 0, res_w = 0; pos < res_r; pos += res_w)
+    {
+      res_w = dst->WriteToCache(data.get()+pos, res_r - pos);
+      if(res_w <= 0)
+        return false;
+    }
+  }
+  return true;
+}
+
 void CFileCache::Process()
 {
   if (!m_pCache) {
@@ -181,6 +214,7 @@ void CFileCache::Process()
       m_bStop = true;
 
     int iTotalWrite=0;
+    unsigned iTimeBlocked = 0;
     while (!m_bStop && (iTotalWrite < iRead))
     {
       int iWrite = 0;
@@ -195,9 +229,40 @@ void CFileCache::Process()
         break;
       }
       else if (iWrite == 0)
-        m_pCache->m_space.WaitMSec(5);
+      {
+        if(!m_pCache->m_space.WaitMSec(5))
+        {
+          if(iTimeBlocked == 0)
+            iTimeBlocked = CTimeUtils::GetTimeMS();
 
-      iTotalWrite += iWrite;
+          if(iTimeBlocked + WRITE_CACHE_UPGRADE_TIMEOUT < CTimeUtils::GetTimeMS() && typeid(*m_pCache) != typeid(CSimpleFileCache) )
+          {
+            iTimeBlocked = 0;
+
+            CSingleLock lock(m_sync);
+            CCacheStrategy *cache = new CSimpleFileCache();
+            if(CopyCacheStrategy(cache, m_pCache))
+            {
+              CLog::Log(LOGDEBUG, "CFileCache::Process - dumped memory cache to file");
+              delete m_pCache;
+              m_pCache = cache;
+            }
+            else
+            {
+              CLog::Log(LOGERROR, "CFileCache::Process - failed to dump memory cache to file");
+              delete cache;
+            }
+            /* restore correct position */
+            if(m_pCache->Seek(m_readPos) < 0)
+              CLog::Log(LOGERROR, "CFileCache::Process - failed to restore file position");
+          }
+        }
+      }
+      else
+      {
+        iTimeBlocked = 0;
+        iTotalWrite += iWrite;
+      }
 
       // check if seek was asked. otherwise if cache is full we'll freeze.
       if (m_seekEvent.WaitMSec(0))

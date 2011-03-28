@@ -43,6 +43,7 @@ public:
 
     virtual int64_t Seek(int64_t pos) ;
     virtual void Reset(int64_t pos) ;
+    virtual int64_t GetCacheStart() { return m_beg; }
 
 protected:
     uint64_t          m_beg;       /**< index in file (not buffer) of beginning of valid data */
