@@ -32,7 +32,6 @@
 #define DEFAULT_HTSP_PORT             9982
 #define DEFAULT_TIMEOUT               30000
 #define DEFAULT_SKIP_I_FRAME          0
-#define DEFAULT_EPG_OFFSET_CORRECTION 0
 
 extern bool         m_bCreated;
 extern CStdString   g_szHostname;
@@ -42,7 +41,6 @@ extern CStdString   g_szUsername;
 extern CStdString   g_szPassword;
 extern int          g_iConnectTimout;
 extern int          g_iSkipIFrame;
-extern int          g_iEpgOffsetCorrection;
 extern int          g_clientID;
 extern CStdString   g_szUserPath;
 extern CStdString   g_szClientPath;

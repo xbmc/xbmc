@@ -28,6 +28,7 @@
 #include "GUIWindowPVRTimers.h"
 
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"

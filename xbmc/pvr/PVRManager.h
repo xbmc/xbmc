@@ -22,17 +22,16 @@
 
 #include "FileItem.h"
 #include "PVRDatabase.h"
-#include "addons/Addon.h"
-#include "addons/PVRClients.h"
-#include "addons/AddonManager.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 #include "windows/GUIWindowPVRCommon.h"
 
+class CPVRClients;
 class CPVRChannelGroupsContainer;
 class CPVRChannelGroup;
 class CPVRRecordings;
 class CPVRTimers;
+class CPVREpgContainer;
 
 #define INFO_TOGGLE_TIME 1500
 

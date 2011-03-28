@@ -750,15 +750,15 @@ void CGUIEPGGridContainer::UpdateItems()
         if (tag == NULL)
           progIdx++;
 
-        if (m_gridEnd <= tag->Start())
+        if (m_gridEnd <= tag->StartAsLocalTime())
         {
           break;
         }
-        else if (gridCursor >= tag->End())
+        else if (gridCursor >= tag->EndAsLocalTime())
         {
           progIdx++;
         }
-        else if (gridCursor < tag->End())
+        else if (gridCursor < tag->EndAsLocalTime())
         {
           m_gridIndex[row][block].item = item;
           break;

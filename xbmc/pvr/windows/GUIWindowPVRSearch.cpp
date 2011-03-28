@@ -25,11 +25,13 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
 #include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
-#include "pvr/epg/PVREpgInfoTag.h"
-#include "pvr/recordings/PVRRecording.h"
+#include "pvr/epg/PVREpgContainer.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "GUIWindowPVR.h"
+#include "utils/log.h"
+#include "pvr/addons/PVRClients.h"
 
 CGUIWindowPVRSearch::CGUIWindowPVRSearch(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_SEARCH, CONTROL_BTNSEARCH, CONTROL_LIST_SEARCH)
@@ -46,18 +48,18 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
 
   if (pItem->GetLabel() != g_localizeStrings.Get(19027))
   {
-    if (pItem->GetEPGInfoTag()->End() > CDateTime::GetCurrentDateTime())
+    if (pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
     {
       if (((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->Timer() == NULL)
       {
-        if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
+        if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
           buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* RECORD programme */
         else
           buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061); /* Create a Timer */
       }
       else
       {
-        if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
+        if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
           buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* Stop recording */
         else
           buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060); /* Delete Timer */

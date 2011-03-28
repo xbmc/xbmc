@@ -61,27 +61,25 @@ class CPVRTimerInfoTag
 {
 public:
   CStdString            m_strTitle;           /* name of this timer */
-  CStdString            m_strDir;             /* directory where the recording must be stored */
+  CStdString            m_strDirectory;       /* directory where the recording must be stored */
   CStdString            m_strSummary;         /* summary string with the time to show inside a GUI list */
   bool                  m_bIsActive;          /* active flag, if it is false backend ignore the timer */
-  int                   m_iChannelNumber;     /* integer value of the channel number */
-  int                   m_iClientID;          /* ID of the backend */
+  int                   m_iClientId;          /* ID of the backend */
   int                   m_iClientIndex;       /* index number of the tag, given by the backend, -1 for new */
-  int                   m_iClientNumber;      /* integer value of the client number */
   int                   m_iClientChannelUid;  /* channel uid */
-  bool                  m_bIsRadio;           /* is radio channel if set */
   bool                  m_bIsRecording;       /* is this timer recording? */
   int                   m_iPriority;          /* priority of the timer */
   int                   m_iLifetime;          /* lifetime of the timer in days */
   bool                  m_bIsRepeating;       /* repeating timer if true, use the m_FirstDay and repeat flags */
-  CDateTime             m_StartTime;          /* start time */
-  CDateTime             m_StopTime;           /* stop time */
-  CDateTime             m_FirstDay;           /* if it is a repeating timer the first date it starts */
   int                   m_iWeekdays;          /* bit based store of weekdays to repeat */
   CStdString            m_strFileNameAndPath; /* filename is only for reference */
-  CPVREpgInfoTag *      m_EpgInfo;
+  int                   m_iChannelNumber;     /* integer value of the channel number */
+  bool                  m_bIsRadio;           /* is radio channel if set */
+  CPVREpgInfoTag *      m_epgInfo;
+  const CPVRChannel *   m_channel;
 
-  CPVRTimerInfoTag();
+  CPVRTimerInfoTag(void);
+  CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientId);
 
   void Reset();
 
@@ -95,10 +93,6 @@ public:
 
   const CStdString &GetStatus() const;
 
-  time_t StartTime(void) const;
-  time_t StopTime(void) const;
-  time_t FirstDayTime(void) const;
-
   bool SetDuration(int iDuration);
 
   static CPVRTimerInfoTag *CreateFromEpg(const CPVREpgInfoTag &tag);
@@ -111,12 +105,32 @@ public:
 
   void UpdateEpgEvent(bool bClear = false);
 
-  bool IsActive(void) const { return m_bIsActive && m_StopTime > CDateTime::GetCurrentDateTime(); }
-  bool IsRecording(void) const { return IsActive() && m_StartTime < CDateTime::GetCurrentDateTime(); }
+  bool IsActive(void) const { return m_bIsActive && EndAsLocalTime() > CDateTime::GetCurrentDateTime(); }
+  bool IsRecording(void) const { return IsActive() && StartAsLocalTime() < CDateTime::GetCurrentDateTime(); }
+
+  const CDateTime &StartAsUTC(void) const { return m_StartTime; }
+  const CDateTime &StartAsLocalTime(void) const;
+  void SetStartFromUTC(CDateTime &start) { m_StartTime = start; }
+  void SetStartFromLocalTime(CDateTime &start) { m_StartTime = start.GetAsUTCDateTime(); }
+
+  const CDateTime &EndAsUTC(void) const { return m_StopTime; }
+  const CDateTime &EndAsLocalTime(void) const;
+  void SetEndFromUTC(CDateTime &end) { m_StopTime = end; }
+  void SetEndFromLocalTime(CDateTime &end) { m_StopTime = end.GetAsUTCDateTime(); }
+
+  const CDateTime &FirstDayAsUTC(void) const { return m_FirstDay; }
+  const CDateTime &FirstDayAsLocalTime(void) const;
+  void SetFirstDayFromUTC(CDateTime &firstDay) { m_FirstDay = firstDay; }
+  void SetFirstDayFromLocalTime(CDateTime &firstDay) { m_FirstDay = firstDay.GetAsUTCDateTime(); }
 
   /* Client control functions */
   bool AddToClient();
   bool DeleteFromClient(bool bForce = false);
   bool RenameOnClient(const CStdString &strNewName);
   bool UpdateOnClient();
+
+private:
+  CDateTime m_StartTime; /* start time */
+  CDateTime m_StopTime;  /* stop time */
+  CDateTime m_FirstDay;  /* if it is a repeating timer the first date it starts */
 };

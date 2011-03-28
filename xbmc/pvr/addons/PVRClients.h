@@ -20,16 +20,16 @@
  *
  */
 
-#include "PVRClient.h"
 #include "threads/CriticalSection.h"
+#include "PVRClient.h"
 
 #include <vector>
 #include <deque>
 
 typedef std::map< long, boost::shared_ptr<CPVRClient> >           CLIENTMAP;
 typedef std::map< long, boost::shared_ptr<CPVRClient> >::iterator CLIENTMAPITR;
-typedef std::map< long, PVR_SERVERPROPS >                         CLIENTPROPS;
-typedef std::map< long, PVR_STREAMPROPS >                         STREAMPROPS;
+typedef std::map< long, PVR_ADDON_CAPABILITIES >                  CLIENTPROPS;
+typedef std::map< long, PVR_STREAM_PROPERTIES >                   STREAMPROPS;
 
 #define XBMC_VIRTUAL_CLIENTID -1
 
@@ -153,7 +153,7 @@ public:
   bool RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &strNewName, PVR_ERROR *error);
 
   int GetRecordings(CPVRRecordings *recordings);
-  bool RenameRecording(const CPVRRecording &recording, const CStdString &strNewName, PVR_ERROR *error);
+  bool RenameRecording(const CPVRRecording &recording, PVR_ERROR *error);
   bool DeleteRecording(const CPVRRecording &recording, PVR_ERROR *error);
 
   bool GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end, PVR_ERROR *error);
@@ -244,7 +244,7 @@ public:
    * @brief Get the properties of the current playing client.
    * @return A pointer to the properties or NULL if no stream is playing.
    */
-  PVR_SERVERPROPS *GetCurrentClientProperties(void);
+  PVR_ADDON_CAPABILITIES*GetCurrentClientProperties(void);
 
   /*!
    * @brief Get the ID of the client that is currently being used to play.
@@ -257,13 +257,13 @@ public:
    * @param clientID The ID of the client.
    * @return A pointer to the properties or NULL if no stream is playing.
    */
-  PVR_SERVERPROPS *GetClientProperties(int iClientId) { return &m_clientsProps[iClientId]; }
+  PVR_ADDON_CAPABILITIES *GetClientProperties(int iClientId) { return &m_clientsProps[iClientId]; }
 
   /*!
    * @brief Get the properties of the current playing stream content.
    * @return A pointer to the properties or NULL if no stream is playing.
    */
-  PVR_STREAMPROPS *GetCurrentStreamProperties(void);
+  PVR_STREAM_PROPERTIES *GetCurrentStreamProperties(void);
 
   /*!
    * @brief Get the input format name of the current playing stream content.
@@ -343,7 +343,7 @@ private:
   CCriticalSection      m_critSection;
   CLIENTMAP             m_clientMap;
   CLIENTPROPS           m_clientsProps;      /*!< store the properties of each client locally */
-  PVR_SIGNALQUALITY     m_qualityInfo;       /*!< stream quality information */
+  PVR_SIGNAL_STATUS     m_qualityInfo;       /*!< stream quality information */
   bool                  m_bChannelScanRunning;      /*!< true if a channel scan is currently running, false otherwise */
   STREAMPROPS           m_streamProps;              /*!< the current stream's properties */
 

@@ -38,7 +38,7 @@ cHTSPDemux::cHTSPDemux()
   , m_StatusCount(0)
   , m_SkipIFrame(0)
 {
-  m_Streams.nstreams = 0;
+  m_Streams.iStreamCount = 0;
 }
 
 cHTSPDemux::~cHTSPDemux()
@@ -48,8 +48,8 @@ cHTSPDemux::~cHTSPDemux()
 
 bool cHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
 {
-  m_channel = channelinfo.uid;
-  m_tag     = channelinfo.bouquet;
+  m_channel = channelinfo.iUniqueId;
+//  m_tag     = channelinfo.bouquet;
 
   if(!m_session.Connect(g_szHostname, g_iPortHTSP))
     return false;
@@ -63,7 +63,7 @@ bool cHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
   m_StatusCount = 0;
   m_SkipIFrame = 0;
 
-  while(m_Streams.nstreams == 0 && m_StatusCount == 0 )
+  while(m_Streams.iStreamCount == 0 && m_StatusCount == 0 )
   {
     DemuxPacket* pkg = Read();
     if(!pkg)
@@ -82,29 +82,29 @@ void cHTSPDemux::Close()
   m_session.Close();
 }
 
-bool cHTSPDemux::GetStreamProperties(PVR_STREAMPROPS* props)
+bool cHTSPDemux::GetStreamProperties(PVR_STREAM_PROPERTIES* props)
 {
-  props->nstreams = m_Streams.nstreams;
-  for (int i = 0; i < m_Streams.nstreams; i++)
+  props->iStreamCount = m_Streams.iStreamCount;
+  for (unsigned int i = 0; i < m_Streams.iStreamCount; i++)
   {
-    props->stream[i].id           = m_Streams.stream[i].id;
-    props->stream[i].physid       = m_Streams.stream[i].physid;
-    props->stream[i].codec_type   = m_Streams.stream[i].codec_type;
-    props->stream[i].codec_id     = m_Streams.stream[i].codec_id;
-    props->stream[i].height       = m_Streams.stream[i].height;
-    props->stream[i].width        = m_Streams.stream[i].width;
-    props->stream[i].language[0]  = m_Streams.stream[i].language[0];
-    props->stream[i].language[1]  = m_Streams.stream[i].language[1];
-    props->stream[i].language[2]  = m_Streams.stream[i].language[2];
-    props->stream[i].language[3]  = m_Streams.stream[i].language[3];
-    props->stream[i].identifier   = m_Streams.stream[i].identifier;
+    props->stream[i].iStreamIndex   = m_Streams.stream[i].iStreamIndex;
+    props->stream[i].iPhysicalId    = m_Streams.stream[i].iPhysicalId;
+    props->stream[i].iCodecType     = m_Streams.stream[i].iCodecType;
+    props->stream[i].iCodecId       = m_Streams.stream[i].iCodecId;
+    props->stream[i].iHeight        = m_Streams.stream[i].iHeight;
+    props->stream[i].iWidth         = m_Streams.stream[i].iWidth;
+    props->stream[i].strLanguage[0] = m_Streams.stream[i].strLanguage[0];
+    props->stream[i].strLanguage[1] = m_Streams.stream[i].strLanguage[1];
+    props->stream[i].strLanguage[2] = m_Streams.stream[i].strLanguage[2];
+    props->stream[i].strLanguage[3] = m_Streams.stream[i].strLanguage[3];
+    props->stream[i].iIdentifier    = m_Streams.stream[i].iIdentifier;
   }
-  return (props->nstreams > 0);
+  return (props->iStreamCount > 0);
 }
 
 void cHTSPDemux::Abort()
 {
-  m_Streams.nstreams = 0;
+  m_Streams.iStreamCount = 0;
   m_session.Abort();
 }
 
@@ -185,9 +185,9 @@ DemuxPacket* cHTSPDemux::Read()
         pkt->pts = DVD_NOPTS_VALUE;
 
       pkt->iStreamId = -1;
-      for(int i = 0; i < m_Streams.nstreams; i++)
+      for(unsigned int i = 0; i < m_Streams.iStreamCount; i++)
       {
-        if(m_Streams.stream[i].physid == (int)index)
+        if(m_Streams.stream[i].iPhysicalId == (unsigned int)index)
         {
           pkt->iStreamId = i;
           break;
@@ -212,20 +212,20 @@ DemuxPacket* cHTSPDemux::Read()
 
 bool cHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
-  XBMC->Log(LOG_DEBUG, "%s - changing to channel '%s'", __FUNCTION__, channelinfo.name);
+  XBMC->Log(LOG_DEBUG, "%s - changing to channel '%s'", __FUNCTION__, channelinfo.strChannelName);
 
   if (!m_session.SendUnsubscribe(m_subs))
     XBMC->Log(LOG_ERROR, "%s - failed to unsubscribe from previous channel", __FUNCTION__);
 
-  if (!m_session.SendSubscribe(m_subs+1, channelinfo.uid))
+  if (!m_session.SendSubscribe(m_subs+1, channelinfo.iUniqueId))
     XBMC->Log(LOG_ERROR, "%s - failed to set channel", __FUNCTION__);
   else
   {
-    m_channel           = channelinfo.number;
+    m_channel           = channelinfo.iChannelNumber;
     m_subs              = m_subs+1;
-    m_Streams.nstreams  = 0;
+    m_Streams.iStreamCount  = 0;
     m_StatusCount       = 0;
-    while (m_Streams.nstreams == 0 && m_StatusCount == 0)
+    while (m_Streams.iStreamCount == 0 && m_StatusCount == 0)
     {
       DemuxPacket* pkg = Read();
       if (!pkg)
@@ -239,20 +239,20 @@ bool cHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
   return false;
 }
 
-bool cHTSPDemux::GetSignalStatus(PVR_SIGNALQUALITY &qualityinfo)
+bool cHTSPDemux::GetSignalStatus(PVR_SIGNAL_STATUS &qualityinfo)
 {
   if (m_SourceInfo.si_adapter.IsEmpty() || m_Quality.fe_status.IsEmpty())
     return false;
 
-  strncpy(qualityinfo.frontend_name, m_SourceInfo.si_adapter.c_str(), sizeof(qualityinfo.frontend_name));
-  strncpy(qualityinfo.frontend_status, m_Quality.fe_status.c_str(), sizeof(qualityinfo.frontend_status));
-  qualityinfo.signal = (uint16_t)m_Quality.fe_signal;
-  qualityinfo.snr = (uint16_t)m_Quality.fe_snr;
-  qualityinfo.ber = (uint32_t)m_Quality.fe_ber;
-  qualityinfo.unc = (uint32_t)m_Quality.fe_unc;
-  qualityinfo.video_bitrate = 0;
-  qualityinfo.audio_bitrate = 0;
-  qualityinfo.dolby_bitrate = 0;
+  strncpy(qualityinfo.strAdapterName, m_SourceInfo.si_adapter.c_str(), sizeof(qualityinfo.strAdapterName));
+  strncpy(qualityinfo.strAdapterStatus, m_Quality.fe_status.c_str(), sizeof(qualityinfo.strAdapterStatus));
+  qualityinfo.iSignal       = (uint16_t)m_Quality.fe_signal;
+  qualityinfo.iSNR          = (uint16_t)m_Quality.fe_snr;
+  qualityinfo.iBER          = (uint32_t)m_Quality.fe_ber;
+  qualityinfo.iUNC          = (uint32_t)m_Quality.fe_unc;
+  qualityinfo.dVideoBitrate = 0;
+  qualityinfo.dAudioBitrate = 0;
+  qualityinfo.dDolbyBitrate = 0;
 
   return true;
 }
@@ -267,7 +267,7 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
     return;
   }
 
-  m_Streams.nstreams = 0;
+  m_Streams.iStreamCount = 0;
 
   HTSMSG_FOREACH(f, streams)
   {
@@ -289,139 +289,139 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
     const char *language = htsmsg_get_str(sub, "language");
     XBMC->Log(LOG_DEBUG, "%s - id: %d, type: %s, language: %s", __FUNCTION__, index, type, language);
 
-    m_Streams.stream[m_Streams.nstreams].fpsscale         = 0;
-    m_Streams.stream[m_Streams.nstreams].fpsrate          = 0;
-    m_Streams.stream[m_Streams.nstreams].height           = 0;
-    m_Streams.stream[m_Streams.nstreams].width            = 0;
-    m_Streams.stream[m_Streams.nstreams].aspect           = 0.0;
+    m_Streams.stream[m_Streams.iStreamCount].iFPSScale         = 0;
+    m_Streams.stream[m_Streams.iStreamCount].iFPSRate          = 0;
+    m_Streams.stream[m_Streams.iStreamCount].iHeight           = 0;
+    m_Streams.stream[m_Streams.iStreamCount].iWidth            = 0;
+    m_Streams.stream[m_Streams.iStreamCount].fAspect           = 0.0;
 
-    m_Streams.stream[m_Streams.nstreams].channels         = 0;
-    m_Streams.stream[m_Streams.nstreams].samplerate       = 0;
-    m_Streams.stream[m_Streams.nstreams].blockalign       = 0;
-    m_Streams.stream[m_Streams.nstreams].bitrate          = 0;
-    m_Streams.stream[m_Streams.nstreams].bits_per_sample  = 0;
+    m_Streams.stream[m_Streams.iStreamCount].iChannels         = 0;
+    m_Streams.stream[m_Streams.iStreamCount].iSampleRate       = 0;
+    m_Streams.stream[m_Streams.iStreamCount].iBlockAlign       = 0;
+    m_Streams.stream[m_Streams.iStreamCount].iBitRate          = 0;
+    m_Streams.stream[m_Streams.iStreamCount].iBitsPerSample  = 0;
 
     if(!strcmp(type, "AC3"))
     {
-      m_Streams.stream[m_Streams.nstreams].id         = m_Streams.nstreams;
-      m_Streams.stream[m_Streams.nstreams].physid     = index;
-      m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_AUDIO;
-      m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_AC3;
+      m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
+      m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_AUDIO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_AC3;
       if (language == NULL)
       {
-        m_Streams.stream[m_Streams.nstreams].language[0]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[1]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[2]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       }
       else
       {
-        m_Streams.stream[m_Streams.nstreams].language[0]= language[0];
-        m_Streams.stream[m_Streams.nstreams].language[1]= language[1];
-        m_Streams.stream[m_Streams.nstreams].language[2]= language[2];
-        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= language[0];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= language[1];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= language[2];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       }
-      m_Streams.stream[m_Streams.nstreams].identifier = -1;
-      m_Streams.nstreams++;
+      m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
+      m_Streams.iStreamCount++;
     }
     else if(!strcmp(type, "EAC3"))
     {
-      m_Streams.stream[m_Streams.nstreams].id         = m_Streams.nstreams;
-      m_Streams.stream[m_Streams.nstreams].physid     = index;
-      m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_AUDIO;
-      m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_EAC3;
+      m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
+      m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_AUDIO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_EAC3;
       if (language == NULL)
       {
-        m_Streams.stream[m_Streams.nstreams].language[0]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[1]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[2]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       }
       else
       {
-        m_Streams.stream[m_Streams.nstreams].language[0]= language[0];
-        m_Streams.stream[m_Streams.nstreams].language[1]= language[1];
-        m_Streams.stream[m_Streams.nstreams].language[2]= language[2];
-        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= language[0];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= language[1];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= language[2];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       }
-      m_Streams.stream[m_Streams.nstreams].identifier = -1;
-      m_Streams.nstreams++;
+      m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
+      m_Streams.iStreamCount++;
     }
     else if(!strcmp(type, "MPEG2AUDIO"))
     {
-      m_Streams.stream[m_Streams.nstreams].id         = m_Streams.nstreams;
-      m_Streams.stream[m_Streams.nstreams].physid     = index;
-      m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_AUDIO;
-      m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_MP2;
+      m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
+      m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_AUDIO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_MP2;
       if (language == NULL)
       {
-        m_Streams.stream[m_Streams.nstreams].language[0]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[1]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[2]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       }
       else
       {
-        m_Streams.stream[m_Streams.nstreams].language[0]= language[0];
-        m_Streams.stream[m_Streams.nstreams].language[1]= language[1];
-        m_Streams.stream[m_Streams.nstreams].language[2]= language[2];
-        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= language[0];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= language[1];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= language[2];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       }
-      m_Streams.stream[m_Streams.nstreams].identifier = -1;
-      m_Streams.nstreams++;
+      m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
+      m_Streams.iStreamCount++;
     }
     else if(!strcmp(type, "AAC"))
     {
-      m_Streams.stream[m_Streams.nstreams].id         = m_Streams.nstreams;
-      m_Streams.stream[m_Streams.nstreams].physid     = index;
-      m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_AUDIO;
-      m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_AAC;
+      m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
+      m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_AUDIO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_AAC;
       if (language == NULL)
       {
-        m_Streams.stream[m_Streams.nstreams].language[0]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[1]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[2]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       }
       else
       {
-        m_Streams.stream[m_Streams.nstreams].language[0]= language[0];
-        m_Streams.stream[m_Streams.nstreams].language[1]= language[1];
-        m_Streams.stream[m_Streams.nstreams].language[2]= language[2];
-        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= language[0];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= language[1];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= language[2];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       }
-      m_Streams.stream[m_Streams.nstreams].identifier = -1;
-      m_Streams.nstreams++;
+      m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
+      m_Streams.iStreamCount++;
     }
     else if(!strcmp(type, "MPEG2VIDEO"))
     {
-      m_Streams.stream[m_Streams.nstreams].id         = m_Streams.nstreams;
-      m_Streams.stream[m_Streams.nstreams].physid     = index;
-      m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_VIDEO;
-      m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_MPEG2VIDEO;
-      m_Streams.stream[m_Streams.nstreams].width      = htsmsg_get_u32_or_default(sub, "width" , 0);
-      m_Streams.stream[m_Streams.nstreams].height     = htsmsg_get_u32_or_default(sub, "height" , 0);
-      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
-      m_Streams.stream[m_Streams.nstreams].identifier = -1;
-      m_Streams.nstreams++;
+      m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
+      m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_VIDEO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_MPEG2VIDEO;
+      m_Streams.stream[m_Streams.iStreamCount].iWidth      = htsmsg_get_u32_or_default(sub, "width" , 0);
+      m_Streams.stream[m_Streams.iStreamCount].iHeight     = htsmsg_get_u32_or_default(sub, "height" , 0);
+      m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= 0;
+      m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= 0;
+      m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= 0;
+      m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
+      m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
+      m_Streams.iStreamCount++;
     }
     else if(!strcmp(type, "H264"))
     {
-      m_Streams.stream[m_Streams.nstreams].id         = m_Streams.nstreams;
-      m_Streams.stream[m_Streams.nstreams].physid     = index;
-      m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_VIDEO;
-      m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_H264;
-      m_Streams.stream[m_Streams.nstreams].width      = htsmsg_get_u32_or_default(sub, "width" , 0);
-      m_Streams.stream[m_Streams.nstreams].height     = htsmsg_get_u32_or_default(sub, "height" , 0);
-      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
-      m_Streams.stream[m_Streams.nstreams].identifier = -1;
-      m_Streams.nstreams++;
+      m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
+      m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_VIDEO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_H264;
+      m_Streams.stream[m_Streams.iStreamCount].iWidth      = htsmsg_get_u32_or_default(sub, "width" , 0);
+      m_Streams.stream[m_Streams.iStreamCount].iHeight     = htsmsg_get_u32_or_default(sub, "height" , 0);
+      m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= 0;
+      m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= 0;
+      m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= 0;
+      m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
+      m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
+      m_Streams.iStreamCount++;
     }
     else if(!strcmp(type, "DVBSUB"))
     {
@@ -429,65 +429,65 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       htsmsg_get_u32(sub, "composition_id", &composition_id);
       htsmsg_get_u32(sub, "ancillary_id"  , &ancillary_id);
 
-      m_Streams.stream[m_Streams.nstreams].id         = m_Streams.nstreams;
-      m_Streams.stream[m_Streams.nstreams].physid     = index;
-      m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_SUBTITLE;
-      m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_DVB_SUBTITLE;
+      m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
+      m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_SUBTITLE;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_DVB_SUBTITLE;
       if (language == NULL)
       {
-        m_Streams.stream[m_Streams.nstreams].language[0]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[1]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[2]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       }
       else
       {
-        m_Streams.stream[m_Streams.nstreams].language[0]= language[0];
-        m_Streams.stream[m_Streams.nstreams].language[1]= language[1];
-        m_Streams.stream[m_Streams.nstreams].language[2]= language[2];
-        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= language[0];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= language[1];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= language[2];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       }
-      m_Streams.stream[m_Streams.nstreams].identifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
-      m_Streams.nstreams++;
+      m_Streams.stream[m_Streams.iStreamCount].iIdentifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
+      m_Streams.iStreamCount++;
     }
     else if(!strcmp(type, "TEXTSUB"))
     {
-      m_Streams.stream[m_Streams.nstreams].id         = m_Streams.nstreams;
-      m_Streams.stream[m_Streams.nstreams].physid     = index;
-      m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_SUBTITLE;
-      m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_TEXT;
+      m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
+      m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_SUBTITLE;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_TEXT;
       if (language == NULL)
       {
-        m_Streams.stream[m_Streams.nstreams].language[0]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[1]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[2]= 0;
-        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       }
       else
       {
-        m_Streams.stream[m_Streams.nstreams].language[0]= language[0];
-        m_Streams.stream[m_Streams.nstreams].language[1]= language[1];
-        m_Streams.stream[m_Streams.nstreams].language[2]= language[2];
-        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= language[0];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= language[1];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= language[2];
+        m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       }
-      m_Streams.stream[m_Streams.nstreams].identifier = -1;
-      m_Streams.nstreams++;
+      m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
+      m_Streams.iStreamCount++;
     }
     else if(!strcmp(type, "TELETEXT"))
     {
-      m_Streams.stream[m_Streams.nstreams].id         = m_Streams.nstreams;
-      m_Streams.stream[m_Streams.nstreams].physid     = index;
-      m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_SUBTITLE;
-      m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_DVB_TELETEXT;
-      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
-      m_Streams.stream[m_Streams.nstreams].identifier = -1;
-      m_Streams.nstreams++;
+      m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
+      m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_SUBTITLE;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_DVB_TELETEXT;
+      m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= 0;
+      m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= 0;
+      m_Streams.stream[m_Streams.iStreamCount].strLanguage[2]= 0;
+      m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
+      m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
+      m_Streams.iStreamCount++;
     }
 
-    if (m_Streams.nstreams >= PVR_STREAM_MAX_STREAMS)
+    if (m_Streams.iStreamCount >= PVR_STREAM_MAX_STREAMS)
     {
       XBMC->Log(LOG_ERROR, "%s - max amount of streams reached", __FUNCTION__);
       break;
@@ -510,7 +510,7 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
 void cHTSPDemux::SubscriptionStop  (htsmsg_t *m)
 {
   XBMC->Log(LOG_DEBUG, "%s - subscription ended on adapter %s", __FUNCTION__, m_SourceInfo.si_adapter.c_str());
-  m_Streams.nstreams = 0;
+  m_Streams.iStreamCount = 0;
 
   /* reset the signal status */
   m_Quality.fe_status = "";

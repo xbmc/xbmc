@@ -21,8 +21,8 @@ public:
 	void cleanup();
 	bool open(CStdString hostname, int port, CStdString user, CStdString pass, int pin, long timeout);
 	int getNumChannels();
-	PVR_ERROR requestChannelList(PVRHANDLE handle, int radio);
-	PVR_ERROR requestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
+	PVR_ERROR requestChannelList(PVR_HANDLE handle, bool bRadio);
+	PVR_ERROR requestEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd);
 private:
 	bool checkConnection();
 	CStdString hostname_;

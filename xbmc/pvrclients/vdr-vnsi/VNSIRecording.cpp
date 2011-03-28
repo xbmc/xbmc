@@ -37,7 +37,7 @@ cVNSIRecording::~cVNSIRecording()
   Close();
 }
 
-bool cVNSIRecording::Open(const PVR_RECORDINGINFO& recinfo)
+bool cVNSIRecording::Open(const PVR_RECORDING& recinfo)
 {
   bool ret = false;
 
@@ -46,7 +46,7 @@ bool cVNSIRecording::Open(const PVR_RECORDINGINFO& recinfo)
 
   cRequestPacket vrp;
   if (!vrp.init(VDR_RECSTREAM_OPEN) ||
-      !vrp.add_U32(recinfo.index))
+      !vrp.add_U32(recinfo.iClientIndex))
   {
     return ret;
   }
@@ -66,7 +66,7 @@ bool cVNSIRecording::Open(const PVR_RECORDINGINFO& recinfo)
   }
   else
   {
-    XBMC->Log(LOG_ERROR, "%s - Can't open recording '%s'", __FUNCTION__, recinfo.title);
+    XBMC->Log(LOG_ERROR, "%s - Can't open recording '%s'", __FUNCTION__, recinfo.strTitle);
     ret = false;
   }
 

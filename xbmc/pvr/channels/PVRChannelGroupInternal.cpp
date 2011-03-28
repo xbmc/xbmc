@@ -25,10 +25,11 @@
 #include "dialogs/GUIDialogOK.h"
 #include "utils/log.h"
 
-#include "PVRChannelGroupInternal.h"
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
+#include "pvr/timers/PVRTimers.h"
+#include "pvr/addons/PVRClients.h"
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
   CPVRChannelGroup(bRadio)
@@ -97,9 +98,9 @@ bool CPVRChannelGroupInternal::UpdateTimers(void)
   for (unsigned int ptr = 0; ptr < timers->size(); ptr++)
   {
     CPVRTimerInfoTag *timer = timers->at(ptr);
-    const CPVRChannel *tag = GetByClient(timer->m_iChannelNumber, timer->m_iClientID);
+    const CPVRChannel *tag = GetByClient(timer->m_iClientChannelUid, timer->m_iClientId);
     if (tag)
-      timer->m_iChannelNumber = tag->ChannelNumber();
+      timer->m_channel = tag;
   }
 
   return true;

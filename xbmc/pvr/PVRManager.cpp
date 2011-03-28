@@ -46,9 +46,9 @@
 #include "PVRManager.h"
 #include "addons/PVRClients.h"
 #include "channels/PVRChannelGroupsContainer.h"
-#include "epg/PVREpgInfoTag.h"
-#include "recordings/PVRRecording.h"
-#include "timers/PVRTimerInfoTag.h"
+#include "epg/PVREpgContainer.h"
+#include "recordings/PVRRecordings.h"
+#include "timers/PVRTimers.h"
 
 using namespace std;
 using namespace XFILE;
@@ -946,7 +946,7 @@ int CPVRManager::GetStartTime()
     /* Calculate here the position we have of the running live TV event.
      * "position in ms" = ("current local time" - "event start local time") * 1000
      */
-    CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->Start();
+    CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->StartAsLocalTime();
     return time.GetDays()    * 1000 * 60 * 60 * 24
          + time.GetHours()   * 1000 * 60 * 60
          + time.GetMinutes() * 1000 * 60
@@ -1098,7 +1098,7 @@ void CPVRManager::UpdateTimersCache(void)
       const CPVRTimerInfoTag *tag = m_NowRecording.at(0);
       m_strActiveTimerTitle.Format("%s",       tag->m_strTitle);
       m_strActiveTimerChannelName.Format("%s", tag->ChannelName());
-      m_strActiveTimerTime.Format("%s",        tag->m_StartTime.GetAsLocalizedDateTime(false, false));
+      m_strActiveTimerTime.Format("%s",        tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
     }
 
     /* set the next timer info locally if there is a next timer */
@@ -1107,13 +1107,13 @@ void CPVRManager::UpdateTimersCache(void)
     {
       m_strNextRecordingTitle.Format("%s",       m_NextRecording->m_strTitle);
       m_strNextRecordingChannelName.Format("%s", m_NextRecording->ChannelName());
-      m_strNextRecordingTime.Format("%s",        m_NextRecording->m_StartTime.GetAsLocalizedDateTime(false, false));
+      m_strNextRecordingTime.Format("%s",        m_NextRecording->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
 
       m_strNextTimerInfo.Format("%s %s %s %s",
           g_localizeStrings.Get(19106),
-          m_NextRecording->m_StartTime.GetAsLocalizedDate(true),
+          m_NextRecording->StartAsLocalTime().GetAsLocalizedDate(true),
           g_localizeStrings.Get(19107),
-          m_NextRecording->m_StartTime.GetAsLocalizedTime("HH:mm", false));
+          m_NextRecording->StartAsLocalTime().GetAsLocalizedTime("HH:mm", false));
     }
   }
 }
@@ -1155,7 +1155,7 @@ void CPVRManager::UpdateRecordingToggle(void)
     const CPVRTimerInfoTag *tag = m_NowRecording.at(m_recordingToggleCurrent);
     m_strActiveTimerTitle       = tag->m_strTitle;
     m_strActiveTimerChannelName = tag->ChannelName();
-    m_strActiveTimerTime        = tag->m_StartTime.GetAsLocalizedDateTime(false, false);
+    m_strActiveTimerTime        = tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false);
   }
   else
   {

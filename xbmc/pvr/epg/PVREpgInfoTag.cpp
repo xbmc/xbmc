@@ -25,12 +25,13 @@
 #include "PVREpgInfoTag.h"
 #include "pvr/PVRManager.h"
 #include "pvr/timers/PVRTimers.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
-#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace std;
 
-CPVREpgInfoTag::CPVREpgInfoTag(const PVR_PROGINFO &data)
+CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG &data) :
+    CEpgInfoTag()
 {
   Reset();
   Update(data);
@@ -68,16 +69,23 @@ void CPVREpgInfoTag::UpdatePath(void)
   SetPath(path);
 }
 
-void CPVREpgInfoTag::Update(const PVR_PROGINFO &tag)
+void CPVREpgInfoTag::Update(const EPG_TAG &tag)
 {
-  SetStart((time_t)tag.starttime);
-  SetEnd((time_t)tag.endtime);
-  SetTitle(tag.title);
-  SetPlotOutline(tag.subtitle);
-  SetPlot(tag.description);
-  SetGenre(tag.genre_type, tag.genre_sub_type);
-  SetParentalRating(tag.parental_rating);
-  SetUniqueBroadcastID(tag.uid);
+  SetStartFromUTC(tag.startTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection);
+  SetEndFromUTC(tag.endTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection);
+  SetTitle(tag.strTitle);
+  SetPlotOutline(tag.strPlotOutline);
+  SetPlot(tag.strPlot);
+  SetGenre(tag.iGenreType, tag.iGenreSubType);
+  SetParentalRating(tag.iParentalRating);
+  SetUniqueBroadcastID(tag.iUniqueBroadcastId);
+  SetNotify(tag.bNotify);
+  SetFirstAiredFromUTC(tag.firstAired + g_advancedSettings.m_iUserDefinedEPGTimeCorrection);
+  SetEpisodeNum(tag.iEpisodeNumber);
+  SetEpisodePart(tag.iEpisodePartNumber);
+  SetEpisodeName(tag.strEpisodeName);
+  SetStarRating(tag.iStarRating);
+  SetIcon(tag.strIconPath);
 }
 
 const CStdString &CPVREpgInfoTag::Icon(void) const

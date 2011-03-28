@@ -23,7 +23,8 @@
 #include "Util.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/recordings/PVRRecording.h"
+#include "pvr/recordings/PVRRecordings.h"
+#include "pvr/addons/PVRClients.h"
 #include "utils/log.h"
 
 using namespace XFILE;

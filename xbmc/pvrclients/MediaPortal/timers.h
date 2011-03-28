@@ -62,10 +62,10 @@ class cTimer
 {
   public:
     cTimer();
-    cTimer(const PVR_TIMERINFO &timerinfo);
+    cTimer(const PVR_TIMER &timerinfo);
     virtual ~cTimer();
 
-    void GetPVRtimerinfo(PVR_TIMERINFO &tag);
+    void GetPVRtimerinfo(PVR_TIMER &tag);
     int Index(void) const { return m_index; }
     unsigned int Channel(void) const { return m_channel; }
     int Priority(void) { return Mepo2XBMCPriority(m_priority); }

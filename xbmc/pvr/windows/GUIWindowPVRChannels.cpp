@@ -30,9 +30,12 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 #include "pvr/windows/GUIWindowPVR.h"
+#include "pvr/addons/PVRClients.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
+#include "utils/log.h"
+
 
 CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio) :
   CGUIWindowPVRCommon(parent,

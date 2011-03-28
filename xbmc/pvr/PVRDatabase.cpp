@@ -27,7 +27,6 @@
 
 #include "PVRManager.h"
 #include "channels/PVRChannelGroupsContainer.h"
-#include "channels/PVRChannelGroupInternal.h"
 
 using namespace std;
 using namespace dbiplus;

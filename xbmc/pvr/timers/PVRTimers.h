@@ -20,13 +20,13 @@
  *
  */
 
+#include "PVRTimerInfoTag.h"
 #include "DateTime.h"
 #include "addons/include/xbmc_pvr_types.h"
 
 class CFileItem;
 class CPVREpgInfoTag;
 class CGUIDialogPVRTimerSettings;
-class CPVRTimerInfoTag;
 
 class CPVRTimers : public std::vector<CPVRTimerInfoTag *>
 {

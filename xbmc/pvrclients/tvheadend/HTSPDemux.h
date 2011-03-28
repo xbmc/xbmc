@@ -32,12 +32,12 @@ public:
 
   bool Open(const PVR_CHANNEL &channelinfo);
   void Close();
-  bool GetStreamProperties(PVR_STREAMPROPS* props);
+  bool GetStreamProperties(PVR_STREAM_PROPERTIES* props);
   void Abort();
   DemuxPacket* Read();
   bool SwitchChannel(const PVR_CHANNEL &channelinfo);
   int CurrentChannel() { return m_channel; }
-  bool GetSignalStatus(PVR_SIGNALQUALITY &qualityinfo);
+  bool GetSignalStatus(PVR_SIGNAL_STATUS &qualityinfo);
 
 protected:
   void SubscriptionStart (htsmsg_t *m);
@@ -47,16 +47,16 @@ protected:
   htsmsg_t* ReadStream();
 
 private:
-  unsigned        m_subs;
-  cHTSPSession    m_session;
-  int             m_channel;
-  int             m_tag;
-  int             m_StatusCount;
-  int             m_SkipIFrame;
-  CStdString      m_Status;
-  PVR_STREAMPROPS m_Streams;
-  SChannels       m_channels;
-  SQueueStatus    m_QueueStatus;
-  SQuality        m_Quality;
-  SSourceInfo     m_SourceInfo;
+  unsigned              m_subs;
+  cHTSPSession          m_session;
+  int                   m_channel;
+  int                   m_tag;
+  int                   m_StatusCount;
+  int                   m_SkipIFrame;
+  CStdString            m_Status;
+  PVR_STREAM_PROPERTIES m_Streams;
+  SChannels             m_channels;
+  SQueueStatus          m_QueueStatus;
+  SQuality              m_Quality;
+  SSourceInfo           m_SourceInfo;
 };

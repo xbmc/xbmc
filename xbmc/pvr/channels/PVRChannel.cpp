@@ -28,8 +28,6 @@
 
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/epg/PVREpgContainer.h"
-#include "pvr/epg/PVREpg.h"
-#include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 
@@ -87,17 +85,17 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
 CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
 {
   m_iChannelId              = -1;
-  m_bIsRadio                = channel.radio;
-  m_bIsHidden               = channel.hide;
-  m_bClientIsRecording      = channel.recording;
-  m_strIconPath             = channel.iconpath;
-  m_strChannelName          = channel.name;
-  m_iUniqueId               = channel.uid;
-  m_iClientChannelNumber    = channel.number;
-  m_strClientChannelName    = channel.callsign;
-  m_strInputFormat          = channel.input_format;
-  m_strStreamURL            = channel.stream_url;
-  m_iClientEncryptionSystem = channel.encryption;
+  m_bIsRadio                = channel.bIsRadio;
+  m_bIsHidden               = channel.bIsHidden;
+  m_bClientIsRecording      = channel.bIsRecording;
+  m_strIconPath             = channel.strIconPath;
+  m_strChannelName          = channel.strChannelName;
+  m_iUniqueId               = channel.iUniqueId;
+  m_iClientChannelNumber    = channel.iChannelNumber;
+  m_strClientChannelName    = channel.strChannelName;
+  m_strInputFormat          = channel.strInputFormat;
+  m_strStreamURL            = channel.strStreamURL;
+  m_iClientEncryptionSystem = channel.iEncryptionSystem;
   m_iClientId               = iClientId;
   m_strFileNameAndPath      = "";
   m_bIsVirtual              = false;

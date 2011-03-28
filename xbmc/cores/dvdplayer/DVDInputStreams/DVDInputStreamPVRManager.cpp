@@ -24,6 +24,9 @@
 #include "filesystem/PVRFile.h"
 #include "URL.h"
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannel.h"
+#include "utils/log.h"
+#include "pvr/addons/PVRClients.h"
 
 using namespace XFILE;
 

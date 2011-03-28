@@ -26,7 +26,8 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 #include "pvr/PVRManager.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/timers/PVRTimers.h"
+#include "pvr/addons/PVRClients.h"
 #include "GUIWindowPVR.h"
 
 CGUIWindowPVRTimers::CGUIWindowPVRTimers(CGUIWindowPVR *parent) :
@@ -60,7 +61,7 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
     buttons.Add(CONTEXT_BUTTON_DELETE, 117);            /* delete timer */
     buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* sort by name */
     buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* sort by date */
-    if (CPVRManager::GetClients()->HasMenuHooks(pItem->GetPVRTimerInfoTag()->m_iClientID))
+    if (CPVRManager::GetClients()->HasMenuHooks(pItem->GetPVRTimerInfoTag()->m_iClientId))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);    /* PVR client specific action */
   }
 }

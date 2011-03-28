@@ -50,22 +50,22 @@ public:
   bool        GetDriveSpace(long long *total, long long *used);
 
   int         GetChannelsCount();
-  bool        GetChannelsList(PVRHANDLE handle, bool radio = false);
-  bool        GetEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
+  bool        GetChannelsList(PVR_HANDLE handle, bool radio = false);
+  bool        GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
 
-  bool        GetTimersList(PVRHANDLE handle);
+  bool        GetTimersList(PVR_HANDLE handle);
   int         GetTimersCount();
-  PVR_ERROR   AddTimer(const PVR_TIMERINFO &timerinfo);
-  PVR_ERROR   GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &tag);
-  PVR_ERROR   DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force = false);
-  PVR_ERROR   RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname);
-  PVR_ERROR   UpdateTimer(const PVR_TIMERINFO &timerinfo);
+  PVR_ERROR   AddTimer(const PVR_TIMER &timerinfo);
+  PVR_ERROR   GetTimerInfo(unsigned int timernumber, PVR_TIMER &tag);
+  PVR_ERROR   DeleteTimer(const PVR_TIMER &timerinfo, bool force = false);
+  PVR_ERROR   RenameTimer(const PVR_TIMER &timerinfo, const char *newname);
+  PVR_ERROR   UpdateTimer(const PVR_TIMER &timerinfo);
 
   int         GetRecordingsCount();
-  PVR_ERROR   GetRecordingsList(PVRHANDLE handle);
+  PVR_ERROR   GetRecordingsList(PVR_HANDLE handle);
   //const std::string& GetRecordingPath(uint32_t index);
-  PVR_ERROR   RenameRecording(const PVR_RECORDINGINFO& recinfo, const char* newname);
-  PVR_ERROR   DeleteRecording(const PVR_RECORDINGINFO& recinfo);
+  PVR_ERROR   RenameRecording(const PVR_RECORDING& recinfo, const char* newname);
+  PVR_ERROR   DeleteRecording(const PVR_RECORDING& recinfo);
 
 
 protected:

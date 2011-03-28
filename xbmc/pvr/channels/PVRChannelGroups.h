@@ -25,6 +25,7 @@
 #include "DateTime.h"
 #include "FileItem.h"
 #include "PVRChannelGroup.h"
+#include "PVRChannelGroupInternal.h"
 
 class CPVRChannelGroupsContainer;
 

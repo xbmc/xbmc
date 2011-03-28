@@ -1411,7 +1411,6 @@ OUTPUT_FILES="Makefile \
     xbmc/pvrclients/MediaPortal/Makefile \
     xbmc/pvrclients/mythtv/Makefile \
     xbmc/pvrclients/tvheadend/Makefile \
-    xbmc/pvrclients/vdr-streamdev/Makefile \
     xbmc/pvrclients/vdr-vnsi/Makefile \
     tools/Linux/xbmc.sh \
     tools/Linux/xbmc-standalone.sh \

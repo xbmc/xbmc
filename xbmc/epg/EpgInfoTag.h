@@ -56,8 +56,8 @@ private:
   int                        m_iParentalRating;    /*!< parental rating */
   int                        m_iStarRating;        /*!< star rating */
   bool                       m_bNotify;            /*!< notify on start */
-  int                        m_iSeriesNum;         /*!< series number */
-  int                        m_iEpisodeNum;        /*!< episode number */
+  int                        m_iSeriesNumber;      /*!< series number */
+  int                        m_iEpisodeNumber;     /*!< episode number */
   int                        m_iEpisodePart;       /*!< episode part number */
   CStdString                 m_strEpisodeName;     /*!< episode name */
 
@@ -132,7 +132,7 @@ public:
 
   /*!
    * @brief Change the unique broadcast ID of this event.
-   * @param iUniqueBroadcastID The new unique broadcast ID.
+   * @param iUniqueBroadcastId The new unique broadcast ID.
    */
   void SetUniqueBroadcastID(int iUniqueBroadcastID);
 
@@ -158,25 +158,29 @@ public:
    * @brief Get the event's start time.
    * @return The new start time.
    */
-  const CDateTime &Start(void) const { return m_startTime; }
+  const CDateTime &StartAsUTC(void) const { return m_startTime; }
+  const CDateTime &StartAsLocalTime(void) const;
 
   /*!
    * @brief Change the event's start time.
    * @param start The new start time.
    */
-  void SetStart(const CDateTime &start);
+  void SetStartFromUTC(const CDateTime &start);
+  void SetStartFromLocalTime(const CDateTime &start);
 
   /*!
    * @brief Get the event's end time.
    * @return The new start time.
    */
-  const CDateTime &End(void) const { return m_endTime; }
+  const CDateTime &EndAsUTC(void) const { return m_endTime; }
+  const CDateTime &EndAsLocalTime(void) const;
 
   /*!
    * @brief Change the event's end time.
    * @param end The new end time.
    */
-  void SetEnd(const CDateTime &end);
+  void SetEndFromUTC(const CDateTime &end);
+  void SetEndFromLocalTime(const CDateTime &end);
 
   /*!
    * @brief Get the duration of this event in seconds.
@@ -249,13 +253,15 @@ public:
    * @brief Get the first air date of this event.
    * @return The first air date.
    */
-  const CDateTime &FirstAired(void) const { return m_firstAired; }
+  const CDateTime &FirstAiredAsUTC(void) const { return m_firstAired; }
+  const CDateTime &FirstAiredAsLocalTime(void) const;
 
   /*!
    * @brief Change the first air date of this event.
    * @param firstAired The new first air date.
    */
-  void SetFirstAired(const CDateTime &firstAired);
+  void SetFirstAiredFromUTC(const CDateTime &firstAired);
+  void SetFirstAiredFromLocalTime(const CDateTime &firstAired);
 
   /*!
    * @brief Get the parental rating of this event.
@@ -297,7 +303,7 @@ public:
    * @brief The series number of this event.
    * @return The series number.
    */
-  int SeriesNum(void) const { return m_iSeriesNum; }
+  int SeriesNum(void) const { return m_iSeriesNumber; }
 
   /*!
    * @brief Change the series number of this event.
@@ -309,7 +315,7 @@ public:
    * @brief The episode number of this event.
    * @return The episode number.
    */
-  int EpisodeNum(void) const { return m_iEpisodeNum; }
+  int EpisodeNum(void) const { return m_iEpisodeNumber; }
 
   /*!
    * @brief Change the episode number of this event.

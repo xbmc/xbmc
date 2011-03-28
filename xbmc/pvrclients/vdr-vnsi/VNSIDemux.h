@@ -44,12 +44,12 @@ public:
 
   bool Open(const PVR_CHANNEL &channelinfo);
   void Close();
-  bool GetStreamProperties(PVR_STREAMPROPS* props);
+  bool GetStreamProperties(PVR_STREAM_PROPERTIES* props);
   void Abort();
   DemuxPacket* Read();
   bool SwitchChannel(const PVR_CHANNEL &channelinfo);
   int CurrentChannel() { return m_channel; }
-  bool GetSignalStatus(PVR_SIGNALQUALITY &qualityinfo);
+  bool GetSignalStatus(PVR_SIGNAL_STATUS &qualityinfo);
 
 protected:
   void StreamChange(cResponsePacket *resp);
@@ -63,6 +63,6 @@ private:
   int             m_channel;
   int             m_StatusCount;
   std::string     m_Status;
-  PVR_STREAMPROPS m_Streams;
+  PVR_STREAM_PROPERTIES m_Streams;
   SQuality        m_Quality;
 };

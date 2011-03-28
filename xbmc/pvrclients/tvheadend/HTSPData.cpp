@@ -30,22 +30,11 @@ extern "C" {
 
 cHTSPData::cHTSPData()
 {
-  m_bGotGmtOffset = false;
 }
 
 cHTSPData::~cHTSPData()
 {
   Close();
-}
-
-void cHTSPData::GetGmtOffset(void)
-{
-  if (!m_bGotGmtOffset)
-  {
-    time_t localTime;
-    GetTime(&localTime, &m_iGmtOffset);
-    m_bGotGmtOffset = true;
-  }
 }
 
 bool cHTSPData::Open(CStdString hostname, int port, CStdString user, CStdString pass, long timeout)
@@ -161,10 +150,7 @@ bool cHTSPData::GetTime(time_t *localTime, int *gmtOffset)
     return false;
 
   XBMC->Log(LOG_DEBUG, "%s - tvheadend reported time=%u, timezone=%d, correction=%d"
-      , __FUNCTION__, secs, offset, g_iEpgOffsetCorrection * 60);
-
-  /* XBMC needs the timezone difference in seconds from GMT */
-  offset = (offset - (g_iEpgOffsetCorrection * 60)) * 60;
+      , __FUNCTION__, secs, offset);
 
   *localTime = secs + offset;
   *gmtOffset = -offset;
@@ -176,7 +162,7 @@ int cHTSPData::GetNumChannels()
   return GetChannels().size();
 }
 
-PVR_ERROR cHTSPData::RequestChannelList(PVRHANDLE handle, int radio)
+PVR_ERROR cHTSPData::GetChannels(PVR_HANDLE handle, bool bRadio)
 {
   if (!CheckConnection())
     return PVR_ERROR_SERVER_ERROR;
@@ -185,42 +171,42 @@ PVR_ERROR cHTSPData::RequestChannelList(PVRHANDLE handle, int radio)
   for(SChannels::iterator it = channels.begin(); it != channels.end(); ++it)
   {
     SChannel& channel = it->second;
+    if(bRadio != channel.radio)
+      continue;
 
     PVR_CHANNEL tag;
-    memset(&tag, 0 , sizeof(tag));
-    tag.uid           = channel.id;
-    tag.number        = channel.num;
-    tag.name          = channel.name.c_str();
-    tag.callsign      = channel.name.c_str();
-    tag.radio         = channel.radio;
-    tag.encryption    = channel.caid;
-    tag.iconpath      = channel.icon.c_str();
-    tag.input_format  = "";
-    tag.stream_url    = "";
-    tag.bouquet       = 0;
+    memset(&tag, 0 , sizeof(PVR_CHANNEL));
 
-    if(((bool)radio) == tag.radio)
-    {
-      PVR->TransferChannelEntry(handle, &tag);
-    }
+    tag.iUniqueId         = channel.id;
+    tag.bIsRadio          = channel.radio;
+    tag.iChannelNumber    = channel.num;
+    tag.strChannelName    = channel.name.c_str();
+    tag.strInputFormat    = "";
+    tag.strStreamURL      = "";
+    tag.iEncryptionSystem = channel.caid;
+    tag.strIconPath       = channel.icon.c_str();
+    tag.bIsHidden         = false;
+    tag.bIsRecording      = false;
+
+    PVR->TransferChannelEntry(handle, &tag);
   }
 
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cHTSPData::RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end)
+PVR_ERROR cHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
 {
   if (!CheckConnection())
     return PVR_ERROR_SERVER_ERROR;
 
   SChannels channels = GetChannels();
 
-  if (channels.find(channel.uid) != channels.end())
+  if (channels.find(channel.iUniqueId) != channels.end())
   {
     time_t stop;
 
     SEvent event;
-    event.id = channels[channel.uid].event;
+    event.id = channels[channel.iUniqueId].event;
     if (event.id == 0)
       return PVR_ERROR_NO_ERROR;
 
@@ -229,18 +215,28 @@ PVR_ERROR cHTSPData::RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &c
       bool success = GetEvent(event, event.id);
       if (success)
       {
-        PVR_PROGINFO broadcast;
-        memset(&broadcast, 0, sizeof(PVR_PROGINFO));
+        EPG_TAG broadcast;
+        memset(&broadcast, 0, sizeof(EPG_TAG));
 
-        broadcast.channum         = event.chan_id >= 0 ? event.chan_id : channel.number;
-        broadcast.uid             = event.id;
-        broadcast.title           = event.title.c_str();
-        broadcast.subtitle        = event.title.c_str();
-        broadcast.description     = event.descs.c_str();
-        broadcast.starttime       = event.start;
-        broadcast.endtime         = event.stop;
-        broadcast.genre_type      = (event.content & 0x0F) << 4;
-        broadcast.genre_sub_type  = event.content & 0xF0;
+        broadcast.iUniqueBroadcastId = event.id;
+        broadcast.strTitle           = event.title.c_str();
+        broadcast.iChannelNumber     = event.chan_id >= 0 ? event.chan_id : channel.iUniqueId;
+        broadcast.startTime          = event.start;
+        broadcast.endTime            = event.stop;
+        broadcast.strPlotOutline     = "";
+        broadcast.strPlot            = event.descs.c_str();
+        broadcast.strIconPath        = "";
+        broadcast.iGenreType         = (event.content & 0x0F) << 4;
+        broadcast.iGenreSubType      = event.content & 0xF0;
+        broadcast.firstAired         = 0;
+        broadcast.iParentalRating    = 0;
+        broadcast.iStarRating        = 0;
+        broadcast.bNotify            = false;
+        broadcast.iSeriesNumber         = 0;
+        broadcast.iEpisodeNumber        = 0;
+        broadcast.iEpisodePartNumber       = 0;
+        broadcast.strEpisodeName     = "";
+
         PVR->TransferEpgEntry(handle, &broadcast);
 
         event.id = event.next;
@@ -249,7 +245,7 @@ PVR_ERROR cHTSPData::RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &c
       else
         break;
 
-    } while(end > stop);
+    } while(iEnd > stop);
 
     return PVR_ERROR_NO_ERROR;
   }
@@ -280,47 +276,51 @@ int cHTSPData::GetNumRecordings()
   return recordings.size();
 }
 
-PVR_ERROR cHTSPData::RequestRecordingsList(PVRHANDLE handle)
+PVR_ERROR cHTSPData::GetRecordings(PVR_HANDLE handle)
 {
-  GetGmtOffset();
   SRecordings recordings = GetDVREntries(true, false);
 
   for(SRecordings::const_iterator it = recordings.begin(); it != recordings.end(); ++it)
   {
     SRecording recording = it->second;
 
-    PVR_RECORDINGINFO tag;
-    tag.index           = recording.id;
-    tag.directory       = "/";
-    tag.subtitle        = "";
-    tag.channel_name    = "";
-    tag.recording_time  = recording.start + m_iGmtOffset;
-    tag.duration        = recording.stop - recording.start;
-    tag.description     = recording.description.c_str();
-    tag.title           = recording.title.c_str();
+    CStdString strStreamURL = "http://";
+    CStdString strChannelName = "";
 
-    CStdString streamURL = "http://";
+    /* lock */
     {
       CMD_LOCK;
       SChannels::const_iterator itr = m_channels.find(recording.channel);
       if (itr != m_channels.end())
-        tag.channel_name = itr->second.name.c_str();
-      else
-        tag.channel_name = "";
+        strChannelName = itr->second.name.c_str();
 
       if (g_szUsername != "")
       {
-        streamURL += g_szUsername;
+        strStreamURL += g_szUsername;
         if (g_szPassword != "")
         {
-          streamURL += ":";
-          streamURL += g_szPassword;
+          strStreamURL += ":";
+          strStreamURL += g_szPassword;
         }
-        streamURL += "@";
+        strStreamURL += "@";
       }
-      streamURL.Format("%s%s:%i/dvrfile/%i", streamURL.c_str(), g_szHostname.c_str(), g_iPortHTTP, recording.id);
+      strStreamURL.Format("%s%s:%i/dvrfile/%i", strStreamURL.c_str(), g_szHostname.c_str(), g_iPortHTTP, recording.id);
     }
-    tag.stream_url      = streamURL.c_str();
+
+    PVR_RECORDING tag;
+    memset(&tag, 0, sizeof(PVR_RECORDING));
+
+    tag.iClientIndex   = recording.id;
+    tag.strTitle       = recording.title.c_str();
+    tag.strStreamURL   = strStreamURL.c_str();
+    tag.strDirectory   = "/";
+    tag.strPlotOutline = "";
+    tag.strPlot        = recording.description.c_str();
+    tag.strChannelName = strChannelName.c_str();
+    tag.recordingTime  = recording.start;
+    tag.iDuration      = recording.stop - recording.start;
+    tag.iPriority      = 0;
+    tag.iLifetime      = 0;
 
     PVR->TransferRecordingEntry(handle, &tag);
   }
@@ -328,13 +328,13 @@ PVR_ERROR cHTSPData::RequestRecordingsList(PVRHANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cHTSPData::DeleteRecording(const PVR_RECORDINGINFO &recinfo)
+PVR_ERROR cHTSPData::DeleteRecording(const PVR_RECORDING &recording)
 {
   XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
 
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "deleteDvrEntry");
-  htsmsg_add_u32(msg, "id", recinfo.index);
+  htsmsg_add_u32(msg, "id", recording.iClientIndex);
   if ((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get deleteDvrEntry", __FUNCTION__);
@@ -357,28 +357,32 @@ int cHTSPData::GetNumTimers()
   return recordings.size();
 }
 
-PVR_ERROR cHTSPData::RequestTimerList(PVRHANDLE handle)
+PVR_ERROR cHTSPData::GetTimers(PVR_HANDLE handle)
 {
-  //GetGmtOfsset();
   SRecordings recordings = GetDVREntries(false, true);
 
   for(SRecordings::const_iterator it = recordings.begin(); it != recordings.end(); ++it)
   {
     SRecording recording = it->second;
 
-    PVR_TIMERINFO tag;
-    tag.index       = recording.id;
-    tag.channelUid  = recording.channel;
-    tag.starttime   = recording.start;
-    tag.endtime     = recording.stop;
-    tag.active      = recording.state == ST_SCHEDULED || recording.state == ST_RECORDING;
-    tag.recording   = recording.state == ST_RECORDING;
-    tag.title       = recording.title.c_str();
-    tag.directory   = "/";
-    tag.priority    = 0;
-    tag.lifetime    = tag.endtime - tag.starttime;
-    tag.repeat      = false;
-    tag.repeatflags = 0;
+    PVR_TIMER tag;
+    memset(&tag, 0, sizeof(PVR_TIMER));
+
+    tag.iClientIndex      = recording.id;
+    tag.iClientChannelUid = recording.channel;
+    tag.startTime         = recording.start;
+    tag.endTime           = recording.stop;
+    tag.strTitle          = recording.title.c_str();
+    tag.strDirectory            = "/";
+    tag.strSummary        = "";
+    tag.bIsActive         = recording.state == ST_SCHEDULED || recording.state == ST_RECORDING;
+    tag.bIsRecording      = recording.state == ST_RECORDING;
+    tag.iPriority         = 0;
+    tag.iLifetime         = 0;
+    tag.bIsRepeating      = false;
+    tag.firstDay          = 0;
+    tag.iWeekdays         = 0;
+    tag.iEpgUid           = 0;
 
     PVR->TransferTimerEntry(handle, &tag);
   }
@@ -386,13 +390,13 @@ PVR_ERROR cHTSPData::RequestTimerList(PVRHANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cHTSPData::DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
+PVR_ERROR cHTSPData::DeleteTimer(const PVR_TIMER &timer, bool bForce)
 {
   XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
 
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "deleteDvrEntry");
-  htsmsg_add_u32(msg, "id", timerinfo.index);
+  htsmsg_add_u32(msg, "id", timer.iClientIndex);
   if ((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get deleteDvrEntry", __FUNCTION__);
@@ -409,20 +413,20 @@ PVR_ERROR cHTSPData::DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
 }
 
-PVR_ERROR cHTSPData::AddTimer(const PVR_TIMERINFO &timerinfo)
+PVR_ERROR cHTSPData::AddTimer(const PVR_TIMER &timer)
 {
-  XBMC->Log(LOG_DEBUG, "%s - channelNumber=%d channelUid=%d title=%s epgid=%d", __FUNCTION__, timerinfo.channelUid, timerinfo.channelUid, timerinfo.title, timerinfo.epgid);
+  XBMC->Log(LOG_DEBUG, "%s - channelUid=%d title=%s epgid=%d", __FUNCTION__, timer.iClientChannelUid, timer.strTitle, timer.iEpgUid);
 
   htsmsg_t *msg = htsmsg_create_map();
-  htsmsg_add_str(msg, "method", "addDvrEntry");
-  htsmsg_add_u32(msg, "eventId", timerinfo.epgid);
-  htsmsg_add_str(msg, "title", timerinfo.title);
-  htsmsg_add_u32(msg, "start", timerinfo.starttime);
-  htsmsg_add_u32(msg, "stop", timerinfo.endtime);
-  htsmsg_add_u32(msg, "channelId", timerinfo.channelUid);
-  htsmsg_add_u32(msg, "priority", timerinfo.priority);
-  htsmsg_add_str(msg, "description", timerinfo.description);
-  htsmsg_add_str(msg, "creator", "XBMC");
+  htsmsg_add_str(msg, "method",      "addDvrEntry");
+  htsmsg_add_u32(msg, "eventId",     timer.iEpgUid);
+  htsmsg_add_str(msg, "title",       timer.strTitle);
+  htsmsg_add_u32(msg, "start",       timer.startTime);
+  htsmsg_add_u32(msg, "stop",        timer.endTime);
+  htsmsg_add_u32(msg, "channelId",   timer.iClientChannelUid);
+  htsmsg_add_u32(msg, "priority",    timer.iPriority);
+  htsmsg_add_str(msg, "description", timer.strSummary);
+  htsmsg_add_str(msg, "creator",     "XBMC");
 
   if ((msg = ReadResult(msg)) == NULL)
   {
@@ -447,16 +451,16 @@ PVR_ERROR cHTSPData::AddTimer(const PVR_TIMERINFO &timerinfo)
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
 }
 
-PVR_ERROR cHTSPData::UpdateTimer(const PVR_TIMERINFO &timerinfo)
+PVR_ERROR cHTSPData::UpdateTimer(const PVR_TIMER &timer)
 {
-  XBMC->Log(LOG_DEBUG, "%s - id=%d", __FUNCTION__, timerinfo.index);
+  XBMC->Log(LOG_DEBUG, "%s - channelUid=%d title=%s epgid=%d", __FUNCTION__, timer.iClientChannelUid, timer.strTitle, timer.iEpgUid);
 
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "updateDvrEntry");
-  htsmsg_add_u32(msg, "id", timerinfo.index);
-  htsmsg_add_str(msg, "title", timerinfo.title);
-  htsmsg_add_u32(msg, "start", timerinfo.starttime);
-  htsmsg_add_u32(msg, "stop", timerinfo.endtime);
+  htsmsg_add_u32(msg, "id",     timer.iClientIndex);
+  htsmsg_add_str(msg, "title",  timer.strTitle);
+  htsmsg_add_u32(msg, "start",  timer.startTime);
+  htsmsg_add_u32(msg, "stop",   timer.endTime);
   
   if ((msg = ReadResult(msg)) == NULL)
   {
@@ -474,14 +478,14 @@ PVR_ERROR cHTSPData::UpdateTimer(const PVR_TIMERINFO &timerinfo)
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_SAVED;
 }
 
-PVR_ERROR cHTSPData::RenameRecording(const PVR_RECORDINGINFO &recinfo, const char* newname)
+PVR_ERROR cHTSPData::RenameRecording(const PVR_RECORDING &recording, const char *strNewName)
 {
-  XBMC->Log(LOG_DEBUG, "%s - id=%d", __FUNCTION__, recinfo.index);
+  XBMC->Log(LOG_DEBUG, "%s - id=%d", __FUNCTION__, recording.iClientIndex);
 
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "updateDvrEntry");
-  htsmsg_add_u32(msg, "id", recinfo.index);
-  htsmsg_add_str(msg, "title", newname);
+  htsmsg_add_u32(msg, "id",     recording.iClientIndex);
+  htsmsg_add_str(msg, "title",  recording.strTitle);
   
   if ((msg = ReadResult(msg)) == NULL)
   {
