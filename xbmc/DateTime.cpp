@@ -862,6 +862,34 @@ CStdString CDateTime::GetAsDBDateTime() const
   return date;
 }
 
+void CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
+{
+  TIME_ZONE_INFORMATION tz;
+  CDateTime tmp(dateTime);
+
+  switch(GetTimeZoneInformation(&tz))
+  {
+    case TIME_ZONE_ID_DAYLIGHT:
+        tmp -= CDateTimeSpan(0, 0, tz.Bias + tz.DaylightBias, 0);
+        break;
+    case TIME_ZONE_ID_STANDARD:
+        tmp -= CDateTimeSpan(0, 0, tz.Bias + tz.StandardBias, 0);
+        break;
+    case TIME_ZONE_ID_UNKNOWN:
+        tmp -= CDateTimeSpan(0, 0, tz.Bias, 0);
+        break;
+  }
+
+  m_time = tmp.m_time;
+  m_state = tmp.m_state;
+}
+
+void CDateTime::SetFromUTCDateTime(const time_t &dateTime)
+{
+  CDateTime tmp(dateTime);
+  SetFromUTCDateTime(tmp);
+}
+
 void CDateTime::SetFromW3CDate(const CStdString &dateTime)
 {
   CStdString date, time, zone;
