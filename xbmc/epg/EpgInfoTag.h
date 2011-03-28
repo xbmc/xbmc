@@ -158,25 +158,29 @@ public:
    * @brief Get the event's start time.
    * @return The new start time.
    */
-  const CDateTime &Start(void) const { return m_startTime; }
+  const CDateTime &StartAsUTC(void) const { return m_startTime; }
+  const CDateTime &StartAsLocalTime(void) const;
 
   /*!
    * @brief Change the event's start time.
    * @param start The new start time.
    */
-  void SetStart(const CDateTime &start);
+  void SetStartFromUTC(const CDateTime &start);
+  void SetStartFromLocalTime(const CDateTime &start);
 
   /*!
    * @brief Get the event's end time.
    * @return The new start time.
    */
-  const CDateTime &End(void) const { return m_endTime; }
+  const CDateTime &EndAsUTC(void) const { return m_endTime; }
+  const CDateTime &EndAsLocalTime(void) const;
 
   /*!
    * @brief Change the event's end time.
    * @param end The new end time.
    */
-  void SetEnd(const CDateTime &end);
+  void SetEndFromUTC(const CDateTime &end);
+  void SetEndFromLocalTime(const CDateTime &end);
 
   /*!
    * @brief Get the duration of this event in seconds.
@@ -249,13 +253,15 @@ public:
    * @brief Get the first air date of this event.
    * @return The first air date.
    */
-  const CDateTime &FirstAired(void) const { return m_firstAired; }
+  const CDateTime &FirstAiredAsUTC(void) const { return m_firstAired; }
+  const CDateTime &FirstAiredAsLocalTime(void) const;
 
   /*!
    * @brief Change the first air date of this event.
    * @param firstAired The new first air date.
    */
-  void SetFirstAired(const CDateTime &firstAired);
+  void SetFirstAiredFromUTC(const CDateTime &firstAired);
+  void SetFirstAiredFromLocalTime(const CDateTime &firstAired);
 
   /*!
    * @brief Get the parental rating of this event.

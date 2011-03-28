@@ -92,8 +92,8 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
       continue;
 
     CFileItemPtr pFileItem(new CFileItem(*current));
-    pFileItem->SetLabel2(current->m_recordingTime.GetAsLocalizedDateTime(true, false));
-    pFileItem->m_dateTime = current->m_recordingTime;
+    pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
+    pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
     pFileItem->m_strPath.Format("pvr://recordings/%05i-%05i.pvr", current->m_iClientId, current->m_iClientIndex);
     results->Add(pFileItem);
   }

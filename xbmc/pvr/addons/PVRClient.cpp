@@ -474,7 +474,7 @@ PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording &recording)
 void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PVR_RECORDING &addonRecording)
 {
   time_t recTime;
-  xbmcRecording.m_recordingTime.GetAsUTCDateTime().GetAsTime(recTime);
+  xbmcRecording.RecordingTimeAsUTC().GetAsTime(recTime);
 
   addonRecording.recordingTime = recTime - g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
   addonRecording.iClientIndex   = xbmcRecording.m_iClientIndex;

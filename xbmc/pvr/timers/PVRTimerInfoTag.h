@@ -71,9 +71,6 @@ public:
   int                   m_iPriority;          /* priority of the timer */
   int                   m_iLifetime;          /* lifetime of the timer in days */
   bool                  m_bIsRepeating;       /* repeating timer if true, use the m_FirstDay and repeat flags */
-  CDateTime             m_StartTime;          /* start time */
-  CDateTime             m_StopTime;           /* stop time */
-  CDateTime             m_FirstDay;           /* if it is a repeating timer the first date it starts */
   int                   m_iWeekdays;          /* bit based store of weekdays to repeat */
   CStdString            m_strFileNameAndPath; /* filename is only for reference */
   int                   m_iChannelNumber;     /* integer value of the channel number */
@@ -98,8 +95,10 @@ public:
 
   time_t StartTime(void) const;
   time_t StartTimeAsUTC(void) const;
+
   time_t StopTime(void) const;
   time_t StopTimeAsUTC(void) const;
+
   time_t FirstDayTime(void) const;
   time_t FirstDayTimeAsUTC(void) const;
 
@@ -118,9 +117,29 @@ public:
   bool IsActive(void) const { return m_bIsActive && m_StopTime > CDateTime::GetCurrentDateTime(); }
   bool IsRecording(void) const { return IsActive() && m_StartTime < CDateTime::GetCurrentDateTime(); }
 
+  const CDateTime &StartAsUTC(void) const { return m_StartTime; }
+  const CDateTime &StartAsLocalTime(void) const;
+  void SetStartFromUTC(CDateTime &start) { m_StartTime = start; }
+  void SetStartFromLocalTime(CDateTime &start) { m_StartTime = start.GetAsUTCDateTime(); }
+
+  const CDateTime &EndAsUTC(void) const { return m_StopTime; }
+  const CDateTime &EndAsLocalTime(void) const;
+  void SetEndFromUTC(CDateTime &end) { m_StopTime = end; }
+  void SetEndFromLocalTime(CDateTime &end) { m_StopTime = end.GetAsUTCDateTime(); }
+
+  const CDateTime &FirstDayAsUTC(void) const { return m_FirstDay; }
+  const CDateTime &FirstDayAsLocalTime(void) const;
+  void SetFirstDayFromUTC(CDateTime &firstDay) { m_FirstDay = firstDay; }
+  void SetFirstDayFromLocalTime(CDateTime &firstDay) { m_FirstDay = firstDay.GetAsUTCDateTime(); }
+
   /* Client control functions */
   bool AddToClient();
   bool DeleteFromClient(bool bForce = false);
   bool RenameOnClient(const CStdString &strNewName);
   bool UpdateOnClient();
+
+private:
+  CDateTime m_StartTime; /* start time */
+  CDateTime m_StopTime;  /* stop time */
+  CDateTime m_FirstDay;  /* if it is a repeating timer the first date it starts */
 };

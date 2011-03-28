@@ -48,18 +48,18 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
 
   if (pItem->GetLabel() != g_localizeStrings.Get(19027))
   {
-    if (pItem->GetEPGInfoTag()->End() > CDateTime::GetCurrentDateTime())
+    if (pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
     {
       if (((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->Timer() == NULL)
       {
-        if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
+        if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
           buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* RECORD programme */
         else
           buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061); /* Create a Timer */
       }
       else
       {
-        if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
+        if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
           buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059); /* Stop recording */
         else
           buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060); /* Delete Timer */

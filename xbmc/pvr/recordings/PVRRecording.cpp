@@ -34,13 +34,10 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
 {
   Reset();
 
-  CDateTime recordingTime;
-  recordingTime.SetFromUTCDateTime((time_t) (recording.recordingTime ? recording.recordingTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection : 0));
-
   m_iClientIndex   = recording.iClientIndex;
   m_strTitle       = recording.strTitle;
   m_iClientId      = iClientId;
-  m_recordingTime  = recordingTime;
+  m_recordingTime  = recording.recordingTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
   m_duration       = CDateTimeSpan(0, 0, recording.iDuration / 60, recording.iDuration % 60);
   m_iPriority      = recording.iPriority;
   m_iLifetime      = recording.iLifetime;
@@ -167,4 +164,12 @@ void CPVRRecording::UpdatePath(void)
   else
     m_strFileNameAndPath.Format("pvr://recordings/client_%04i/%s.pvr",
         m_iClientId, strTitle.c_str());
+}
+
+const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const
+{
+  static CDateTime tmp;
+  tmp.SetFromUTCDateTime(m_recordingTime);
+
+  return tmp;
 }

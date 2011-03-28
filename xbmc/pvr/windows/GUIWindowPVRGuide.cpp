@@ -75,19 +75,19 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     return;
   CFileItemPtr pItem = m_parent->m_vecItems->Get(itemNumber);
 
-  if (pItem->GetEPGInfoTag()->End() > CDateTime::GetCurrentDateTime())
+  if (pItem->GetEPGInfoTag()->EndAsLocalTime() > CDateTime::GetCurrentDateTime())
   {
     CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(pItem->GetEPGInfoTag());
     if (!timer)
     {
-      if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
+      if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
         buttons.Add(CONTEXT_BUTTON_START_RECORD, 264);   /* record program */
       else
         buttons.Add(CONTEXT_BUTTON_START_RECORD, 19061); /* stop recording */
     }
     else
     {
-      if (pItem->GetEPGInfoTag()->Start() < CDateTime::GetCurrentDateTime())
+      if (pItem->GetEPGInfoTag()->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
         buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19059);
       else
         buttons.Add(CONTEXT_BUTTON_STOP_RECORD, 19060);

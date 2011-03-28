@@ -268,8 +268,8 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteR
     CPVRTimerInfoTag *timer = at(ptr);
 
     if (bCurrentlyActiveOnly &&
-        (CDateTime::GetCurrentDateTime() < timer->m_StartTime ||
-         CDateTime::GetCurrentDateTime() > timer->m_StopTime))
+        (CDateTime::GetCurrentDateTime() < timer->StartAsLocalTime() ||
+         CDateTime::GetCurrentDateTime() > timer->EndAsLocalTime()))
       continue;
 
     if (!bDeleteRepeating && timer->m_bIsRepeating)
@@ -313,6 +313,7 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
     iLifetime   = 30;  /* default to 30 days */
 
   /* set the timer data */
+  CDateTime now = CDateTime::GetCurrentDateTime();
   newTimer->m_iClientIndex      = -1;
   newTimer->m_bIsActive         = true;
   newTimer->m_strTitle          = channel->ChannelName();
@@ -321,18 +322,18 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
   newTimer->m_iClientChannelUid = channel->UniqueID();
   newTimer->m_iClientId         = channel->ClientID();
   newTimer->m_bIsRadio          = channel->IsRadio();
-  newTimer->m_StartTime         = CDateTime::GetCurrentDateTime();
+  newTimer->SetStartFromLocalTime(now);
   newTimer->SetDuration(iDuration);
   newTimer->m_iPriority         = iPriority;
   newTimer->m_iLifetime         = iLifetime;
 
   /* generate summary string */
   newTimer->m_strSummary.Format("%s %s %s %s %s",
-      newTimer->m_StartTime.GetAsLocalizedDate(),
+      newTimer->StartAsLocalTime().GetAsLocalizedDate(),
       g_localizeStrings.Get(19159),
-      newTimer->m_StartTime.GetAsLocalizedTime("", false),
+      newTimer->StartAsLocalTime().GetAsLocalizedTime("", false),
       g_localizeStrings.Get(19160),
-      newTimer->m_StopTime.GetAsLocalizedTime("", false));
+      newTimer->EndAsLocalTime().GetAsLocalizedTime("", false));
 
   /* unused only for reference */
   newTimer->m_strFileNameAndPath = "pvr://timers/new";
@@ -482,7 +483,7 @@ CPVRTimerInfoTag *CPVRTimers::GetMatch(const CEpgInfoTag *Epg)
         || timer->m_bIsRadio != channel->IsRadio())
       continue;
 
-    if (timer->m_StartTime > Epg->Start() || timer->m_StopTime < Epg->End())
+    if (timer->StartAsUTC() > Epg->StartAsUTC() || timer->EndAsUTC() < Epg->EndAsUTC())
       continue;
 
     returnTag = timer;

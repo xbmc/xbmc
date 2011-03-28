@@ -77,7 +77,7 @@ bool EpgSearchFilter::FilterEntry(const CEpgInfoTag &tag) const
       return false;
   }
 
-  int timeTag = (tag.Start().GetHour()*60 + tag.Start().GetMinute());
+  int timeTag = (tag.StartAsLocalTime().GetHour()*60 + tag.StartAsLocalTime().GetMinute());
 
   if (timeTag < (m_startTime.wHour*60 + m_startTime.wMinute))
     return false;
@@ -85,10 +85,10 @@ bool EpgSearchFilter::FilterEntry(const CEpgInfoTag &tag) const
   if (timeTag > (m_endTime.wHour*60 + m_endTime.wMinute))
     return false;
 
-  if (tag.Start() < m_startDate)
+  if (tag.StartAsLocalTime() < m_startDate)
     return false;
 
-  if (tag.Start() > m_endDate)
+  if (tag.StartAsLocalTime() > m_endDate)
     return false;
 
   if (m_strSearchTerm != "")

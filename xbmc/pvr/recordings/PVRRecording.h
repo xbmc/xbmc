@@ -46,7 +46,6 @@ public:
   int           m_iClientId;      /*!< ID of the backend */
   int           m_iClientIndex;   /*!< index number of the recording on the client, -1 for unknown */
   CStdString    m_strChannelName; /*!< name of the channel this was recorded from */
-  CDateTime     m_recordingTime;  /*!< start time of the recording */
   CDateTimeSpan m_duration;       /*!< duration of this recording */
   int           m_iPriority;      /*!< priority of this recording */
   int           m_iLifetime;      /*!< lifetime of this recording */
@@ -90,7 +89,14 @@ public:
    */
   void Update(const CPVRRecording &tag);
 
+  const CDateTime &RecordingTimeAsUTC(void) const { return m_recordingTime; }
+  const CDateTime &RecordingTimeAsLocalTime(void) const;
+  void SetRecordingTimeFromUTC(CDateTime &recordingTime) { m_recordingTime = recordingTime; }
+  void SetRecordingTimeFromLocalTime(CDateTime &recordingTime) { m_recordingTime = recordingTime.GetAsUTCDateTime(); }
+
 private:
+  CDateTime m_recordingTime; /*!< start time of the recording */
+
   void UpdatePath(void);
   void DisplayError(PVR_ERROR err) const;
 };

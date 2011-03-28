@@ -158,8 +158,8 @@ int CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFil
         if (epgentry)
         {
           if (epgentry->ChannelTag()->ChannelNumber() != timer->ChannelNumber() ||
-              epgentry->Start()                       <  timer->m_StartTime ||
-              epgentry->End()                         >  timer->m_StopTime)
+              epgentry->StartAsUTC()                   <  timer->StartAsUTC() ||
+              epgentry->EndAsUTC()                     >  timer->EndAsUTC())
             continue;
 
           results->Remove(iResultPtr);
@@ -190,7 +190,7 @@ int CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
       continue;
 
     CFileItemPtr entry(new CFileItem(*epgNow));
-    entry->SetLabel2(epgNow->Start().GetAsLocalizedTime("", false));
+    entry->SetLabel2(epgNow->StartAsLocalTime().GetAsLocalizedTime("", false));
     entry->m_strPath = channel->ChannelName();
     entry->SetThumbnailImage(channel->IconPath());
     results->Add(entry);
@@ -217,7 +217,7 @@ int CPVREpgContainer::GetEPGNext(CFileItemList* results, bool bRadio)
       continue;
 
     CFileItemPtr entry(new CFileItem(*epgNext));
-    entry->SetLabel2(epgNext->Start().GetAsLocalizedTime("", false));
+    entry->SetLabel2(epgNext->StartAsLocalTime().GetAsLocalizedTime("", false));
     entry->m_strPath = channel->ChannelName();
     entry->SetThumbnailImage(channel->IconPath());
     results->Add(entry);

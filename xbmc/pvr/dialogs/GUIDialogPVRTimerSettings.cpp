@@ -119,7 +119,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
     daystrings.push_back(g_localizeStrings.Get(19095));
     daystrings.push_back(g_localizeStrings.Get(19096));
     CDateTime time = CDateTime::GetCurrentDateTime();
-    CDateTime timestart = tag->m_StartTime;
+    CDateTime timestart = tag->StartAsLocalTime();
 
     /* get diffence of timer in days between today and timer start date */
     time.GetAsTm(time_cur);
@@ -178,7 +178,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
     tm time_tmr;
 
     CDateTime time = CDateTime::GetCurrentDateTime();
-    CDateTime timestart = tag->m_FirstDay;
+    CDateTime timestart = tag->FirstDayAsLocalTime();
 
     /* get diffence of timer in days between today and timer start date */
     if (time < timestart)
@@ -279,8 +279,10 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
     else
       m_tmp_diff = time_tmr.tm_yday - time_cur.tm_yday + 365;
 
-    tag->m_StartTime = timestart + CDateTimeSpan(m_tmp_day-11-m_tmp_diff, 0, 0, 0);
-    tag->m_StopTime  = timestop  + CDateTimeSpan(m_tmp_day-11-m_tmp_diff, 0, 0, 0);
+    CDateTime newStart = timestart + CDateTimeSpan(m_tmp_day-11-m_tmp_diff, 0, 0, 0);
+    CDateTime newEnd = timestop  + CDateTimeSpan(m_tmp_day-11-m_tmp_diff, 0, 0, 0);
+    tag->SetStartFromLocalTime(newStart);
+    tag->SetEndFromLocalTime(newEnd);
 
     EnableSettings(CONTROL_TMR_FIRST_DAY, false);
 
@@ -322,14 +324,15 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
     if (CGUIDialogNumeric::ShowAndGetTime(timerStartTime, g_localizeStrings.Get(14066)))
     {
       CDateTime timestart = timerStartTime;
-      int start_day       = tag->m_StartTime.GetDay();
-      int start_month     = tag->m_StartTime.GetMonth();
-      int start_year      = tag->m_StartTime.GetYear();
+      int start_day       = tag->StartAsLocalTime().GetDay();
+      int start_month     = tag->StartAsLocalTime().GetMonth();
+      int start_year      = tag->StartAsLocalTime().GetYear();
       int start_hour      = timestart.GetHour();
       int start_minute    = timestart.GetMinute();
-      tag->m_StartTime.SetDateTime(start_year, start_month, start_day, start_hour, start_minute, 0);
+      CDateTime newStart(start_year, start_month, start_day, start_hour, start_minute, 0);
+      tag->SetStartFromLocalTime(newStart);
 
-      timerStartTimeStr = tag->m_StartTime.GetAsLocalizedTime("", false);
+      timerStartTimeStr = tag->StartAsLocalTime().GetAsLocalizedTime("", false);
       UpdateSetting(CONTROL_TMR_BEGIN);
     }
   }
@@ -338,23 +341,25 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
     if (CGUIDialogNumeric::ShowAndGetTime(timerEndTime, g_localizeStrings.Get(14066)))
     {
       CDateTime timestop = timerEndTime;
-      int start_day       = tag->m_StopTime.GetDay();
-      int start_month     = tag->m_StopTime.GetMonth();
-      int start_year      = tag->m_StopTime.GetYear();
+      int start_day       = tag->EndAsLocalTime().GetDay();
+      int start_month     = tag->EndAsLocalTime().GetMonth();
+      int start_year      = tag->EndAsLocalTime().GetYear();
       int start_hour      = timestop.GetHour();
       int start_minute    = timestop.GetMinute();
-      tag->m_StopTime.SetDateTime(start_year, start_month, start_day, start_hour, start_minute, 0);
+      CDateTime newEnd(start_year, start_month, start_day, start_hour, start_minute, 0);
+      tag->SetEndFromLocalTime(newEnd);
 
-      timerEndTimeStr = tag->m_StopTime.GetAsLocalizedTime("", false);
+      timerEndTimeStr = tag->EndAsLocalTime().GetAsLocalizedTime("", false);
       UpdateSetting(CONTROL_TMR_END);
     }
   }
   else if (setting.id == CONTROL_TMR_FIRST_DAY && m_tmp_day <= 10)
   {
+    CDateTime newFirstDay;
     if (m_tmp_iFirstDay > 0)
-      tag->m_FirstDay = CDateTime::GetCurrentDateTime() + CDateTimeSpan(m_tmp_iFirstDay-1, 0, 0, 0);
-    else
-      tag->m_FirstDay = NULL;
+      newFirstDay = CDateTime::GetCurrentDateTime() + CDateTimeSpan(m_tmp_iFirstDay-1, 0, 0, 0);
+
+    tag->SetFirstDayFromLocalTime(newFirstDay);
   }
 
   tag->UpdateSummary();
@@ -365,10 +370,10 @@ void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
   m_timerItem         = item;
   m_cancelled         = true;
 
-  m_timerItem->GetPVRTimerInfoTag()->m_StartTime.GetAsSystemTime(timerStartTime);
-  m_timerItem->GetPVRTimerInfoTag()->m_StopTime.GetAsSystemTime(timerEndTime);
-  timerStartTimeStr   = m_timerItem->GetPVRTimerInfoTag()->m_StartTime.GetAsLocalizedTime("", false);
-  timerEndTimeStr     = m_timerItem->GetPVRTimerInfoTag()->m_StopTime.GetAsLocalizedTime("", false);
+  m_timerItem->GetPVRTimerInfoTag()->StartAsLocalTime().GetAsSystemTime(timerStartTime);
+  m_timerItem->GetPVRTimerInfoTag()->EndAsLocalTime().GetAsSystemTime(timerEndTime);
+  timerStartTimeStr   = m_timerItem->GetPVRTimerInfoTag()->StartAsLocalTime().GetAsLocalizedTime("", false);
+  timerEndTimeStr     = m_timerItem->GetPVRTimerInfoTag()->EndAsLocalTime().GetAsLocalizedTime("", false);
 
   m_tmp_iFirstDay     = 0;
   m_tmp_day           = 11;

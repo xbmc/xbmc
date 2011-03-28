@@ -48,14 +48,19 @@ void CPVREpg::Cleanup(const CDateTime &Time)
 {
   CSingleLock lock(m_critSection);
 
-  for (unsigned int i = 0; i < size(); i++)
+  CDateTime firstDate = Time.GetAsUTCDateTime() - CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
+
+  unsigned int iSize = size();
+  for (unsigned int iTagPtr = 0; iTagPtr < iSize; iTagPtr++)
   {
-    CPVREpgInfoTag *tag = (CPVREpgInfoTag *) at(i);
+    CPVREpgInfoTag *tag = (CPVREpgInfoTag *) at(iTagPtr);
     if ( tag && /* valid tag */
         !tag->HasTimer() && /* no timer set */
-        (tag->End() + CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0) < Time))
+        tag->EndAsLocalTime() < firstDate)
     {
       DeleteInfoTag(tag);
+      iTagPtr--;
+      iSize--;
     }
   }
 }

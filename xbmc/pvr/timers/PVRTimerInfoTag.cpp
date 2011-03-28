@@ -55,11 +55,6 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientId)
 {
-  CDateTime startTime, endTime, firstDay;
-  startTime.SetFromUTCDateTime((time_t) (timer.startTime ? timer.startTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection : 0));
-  endTime.SetFromUTCDateTime((time_t) (timer.endTime ? timer.endTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection : 0));
-  firstDay.SetFromUTCDateTime((time_t) (timer.firstDay ? timer.firstDay + g_advancedSettings.m_iUserDefinedEPGTimeCorrection : 0));
-
   m_strTitle           = timer.strTitle;
   m_strDirectory       = timer.strDirectory;
   m_strSummary         = "";
@@ -68,10 +63,10 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientI
   m_iClientIndex       = timer.iClientIndex;
   m_iClientChannelUid  = timer.iClientChannelUid;
   m_bIsRecording       = timer.bIsRecording;
-  m_StartTime          = startTime;
-  m_StopTime           = endTime;
+  m_StartTime          = timer.startTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
+  m_StopTime           = timer.endTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
   m_bIsRepeating       = timer.bIsRepeating;
-  m_FirstDay           = firstDay;
+  m_FirstDay           = timer.firstDay + g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
   m_iWeekdays          = timer.iWeekdays;
   m_iPriority          = timer.iPriority;
   m_iLifetime          = timer.iLifetime;
@@ -438,7 +433,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   }
 
   /* check if the epg end date is in the future */
-  if (tag.End() < CDateTime::GetCurrentDateTime())
+  if (tag.EndAsLocalTime() < CDateTime::GetCurrentDateTime())
   {
     CLog::Log(LOGERROR, "%s - end time is in the past", __FUNCTION__);
     return NULL;
@@ -461,6 +456,8 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
     iMarginStop    = 10; /* default to 10 minutes */
 
   /* set the timer data */
+  CDateTime newStart = tag.StartAsUTC() - CDateTimeSpan(0, iMarginStart / 60, iMarginStart % 60, 0);
+  CDateTime newEnd = tag.EndAsUTC() + CDateTimeSpan(0, iMarginStop / 60, iMarginStop % 60, 0);
   newTag->m_iClientIndex      = (tag.UniqueBroadcastID() > 0 ? tag.UniqueBroadcastID() : channel->ClientID());
   newTag->m_bIsActive         = true;
   newTag->m_strTitle          = tag.Title().IsEmpty() ? channel->ChannelName() : tag.Title();
@@ -468,8 +465,8 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   newTag->m_iClientChannelUid = channel->UniqueID();
   newTag->m_iClientId         = channel->ClientID();
   newTag->m_bIsRadio          = channel->IsRadio();
-  newTag->m_StartTime         = tag.Start() - CDateTimeSpan(0, iMarginStart / 60, iMarginStart % 60, 0);
-  newTag->m_StopTime          = tag.End() + CDateTimeSpan(0, iMarginStop / 60, iMarginStop % 60, 0);
+  newTag->SetStartFromUTC(newStart);
+  newTag->SetEndFromUTC(newEnd);
   newTag->m_iPriority         = iPriority;
   newTag->m_iLifetime         = iLifetime;
 
@@ -485,4 +482,28 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   newTag->m_strFileNameAndPath = "pvr://timers/new";
 
   return newTag;
+}
+
+const CDateTime &CPVRTimerInfoTag::StartAsLocalTime(void) const
+{
+  static CDateTime tmp;
+  tmp.SetFromUTCDateTime(m_StartTime);
+
+  return tmp;
+}
+
+const CDateTime &CPVRTimerInfoTag::EndAsLocalTime(void) const
+{
+  static CDateTime tmp;
+  tmp.SetFromUTCDateTime(m_StopTime);
+
+  return tmp;
+}
+
+const CDateTime &CPVRTimerInfoTag::FirstDayAsLocalTime(void) const
+{
+  static CDateTime tmp;
+  tmp.SetFromUTCDateTime(m_FirstDay);
+
+  return tmp;
 }

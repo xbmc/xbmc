@@ -380,9 +380,9 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   }
 
   time_t iStartTime, iEndTime, iFirstAired;
-  tag.Start().GetAsTime(iStartTime);
-  tag.End().GetAsTime(iEndTime);
-  tag.FirstAired().GetAsTime(iFirstAired);
+  tag.StartAsUTC().GetAsTime(iStartTime);
+  tag.EndAsUTC().GetAsTime(iEndTime);
+  tag.FirstAiredAsUTC().GetAsTime(iFirstAired);
   int iEpgId = epg->EpgID();
 
   int iBroadcastId = tag.BroadcastId();
@@ -429,7 +429,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
         "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
         iEpgId, iStartTime, iEndTime,
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(),
-        tag.FirstAired().GetAsDBDateTime().c_str(), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
+        tag.FirstAiredAsUTC().GetAsDBDateTime().c_str(), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNum(), tag.EpisodeNum(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.UniqueBroadcastID(), iBroadcastId);
   }

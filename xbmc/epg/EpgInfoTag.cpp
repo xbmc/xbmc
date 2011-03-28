@@ -182,7 +182,15 @@ void CEpgInfoTag::SetBroadcastId(int iId)
   }
 }
 
-void CEpgInfoTag::SetStart(const CDateTime &start)
+const CDateTime &CEpgInfoTag::StartAsLocalTime(void) const
+{
+  static CDateTime tmp;
+  tmp.SetFromUTCDateTime(m_startTime);
+
+  return tmp;
+}
+
+void CEpgInfoTag::SetStartFromUTC(const CDateTime &start)
 {
   if (m_startTime != start)
   {
@@ -192,7 +200,21 @@ void CEpgInfoTag::SetStart(const CDateTime &start)
   }
 }
 
-void CEpgInfoTag::SetEnd(const CDateTime &end)
+void CEpgInfoTag::SetStartFromLocalTime(const CDateTime &start)
+{
+  CDateTime tmp = start.GetAsUTCDateTime();
+  SetStartFromUTC(tmp);
+}
+
+const CDateTime &CEpgInfoTag::EndAsLocalTime(void) const
+{
+  static CDateTime tmp;
+  tmp.SetFromUTCDateTime(m_endTime);
+
+  return tmp;
+}
+
+void CEpgInfoTag::SetEndFromUTC(const CDateTime &end)
 {
   if (m_endTime != end)
   {
@@ -200,6 +222,12 @@ void CEpgInfoTag::SetEnd(const CDateTime &end)
     m_bChanged = true;
     UpdatePath();
   }
+}
+
+void CEpgInfoTag::SetEndFromLocalTime(const CDateTime &end)
+{
+  CDateTime tmp = end.GetAsUTCDateTime();
+  SetEndFromUTC(tmp);
 }
 
 void CEpgInfoTag::SetTitle(const CStdString &strTitle)
@@ -244,7 +272,15 @@ void CEpgInfoTag::SetGenre(int iID, int iSubID)
   }
 }
 
-void CEpgInfoTag::SetFirstAired(const CDateTime &firstAired)
+const CDateTime &CEpgInfoTag::FirstAiredAsLocalTime(void) const
+{
+  static CDateTime tmp;
+  tmp.SetFromUTCDateTime(m_firstAired);
+
+  return tmp;
+}
+
+void CEpgInfoTag::SetFirstAiredFromUTC(const CDateTime &firstAired)
 {
   if (m_firstAired != firstAired)
   {
@@ -252,6 +288,12 @@ void CEpgInfoTag::SetFirstAired(const CDateTime &firstAired)
     m_bChanged = true;
     UpdatePath();
   }
+}
+
+void CEpgInfoTag::SetFirstAiredFromLocalTime(const CDateTime &firstAired)
+{
+  CDateTime tmp = firstAired.GetAsUTCDateTime();
+  SetStartFromUTC(tmp);
 }
 
 void CEpgInfoTag::SetParentalRating(int iParentalRating)
@@ -394,7 +436,7 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag)
 
 bool CEpgInfoTag::IsActive(void) const
 {
-  CDateTime now = CDateTime::GetCurrentDateTime();
+  CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
   return (m_startTime <= now && m_endTime > now);
 }
 

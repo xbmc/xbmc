@@ -194,7 +194,7 @@ void CGUIDialogPVRGuideInfo::Update()
     return;
   }
 
-  if (tag->End() <= CDateTime::GetCurrentDateTime())
+  if (tag->EndAsLocalTime() <= CDateTime::GetCurrentDateTime())
   {
     /* event has passed. hide the record button */
     SET_CONTROL_HIDDEN(CONTROL_BTN_RECORD);
@@ -205,7 +205,7 @@ void CGUIDialogPVRGuideInfo::Update()
   if (!bHasTimer)
   {
     /* no timer present on this tag */
-    if (tag->Start() < CDateTime::GetCurrentDateTime())
+    if (tag->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
       SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264);
     else
       SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19061);
@@ -213,7 +213,7 @@ void CGUIDialogPVRGuideInfo::Update()
   else
   {
     /* timer present on this tag */
-    if (tag->Start() < CDateTime::GetCurrentDateTime())
+    if (tag->StartAsLocalTime() < CDateTime::GetCurrentDateTime())
       SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19059);
     else
       SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19060);
