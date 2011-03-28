@@ -119,54 +119,13 @@ bool CPVRTimerInfoTag::operator !=(const CPVRTimerInfoTag& right) const
 
 int CPVRTimerInfoTag::Compare(const CPVRTimerInfoTag &timer) const
 {
-  int iTimerDelta = StartTime() - timer.StartTime();
+  CDateTimeSpan timerDelta = StartAsUTC() - timer.StartAsUTC();
+  int iTimerDelta = timerDelta.GetSeconds() + timerDelta.GetMinutes() * 60 + timerDelta.GetHours() * 3600 + timerDelta.GetDays() * 86400;
 
   /* if the start times are equal, compare the priority of the timers */
   return iTimerDelta == 0 ?
     timer.m_iPriority - m_iPriority :
     iTimerDelta;
-}
-
-time_t CPVRTimerInfoTag::StartTime(void) const
-{
-  time_t start;
-  m_StartTime.GetAsTime(start);
-  return start;
-}
-
-time_t CPVRTimerInfoTag::StartTimeAsUTC(void) const
-{
-  time_t start;
-  m_StartTime.GetAsUTCDateTime().GetAsTime(start);
-  return start;
-}
-
-time_t CPVRTimerInfoTag::StopTime(void) const
-{
-  time_t stop;
-  m_StopTime.GetAsTime(stop);
-  return stop;
-}
-
-time_t CPVRTimerInfoTag::StopTimeAsUTC(void) const
-{
-  time_t start;
-  m_StopTime.GetAsUTCDateTime().GetAsTime(start);
-  return start;
-}
-
-time_t CPVRTimerInfoTag::FirstDayTime(void) const
-{
-  time_t firstday;
-  m_FirstDay.GetAsTime(firstday);
-  return firstday;
-}
-
-time_t CPVRTimerInfoTag::FirstDayTimeAsUTC(void) const
-{
-  time_t firstday;
-  m_FirstDay.GetAsUTCDateTime().GetAsTime(firstday);
-  return firstday;
 }
 
 void CPVRTimerInfoTag::UpdateSummary(void)
@@ -176,11 +135,11 @@ void CPVRTimerInfoTag::UpdateSummary(void)
   if (!m_bIsRepeating)
   {
     m_strSummary.Format("%s %s %s %s %s",
-        m_StartTime.GetAsLocalizedDate(),
+        StartAsLocalTime().GetAsLocalizedDate(),
         g_localizeStrings.Get(19159),
-        m_StartTime.GetAsLocalizedTime("", false),
+        StartAsLocalTime().GetAsLocalizedTime("", false),
         g_localizeStrings.Get(19160),
-        m_StopTime.GetAsLocalizedTime("", false));
+        EndAsLocalTime().GetAsLocalizedTime("", false));
   }
   else if (m_FirstDay != NULL)
   {
@@ -193,11 +152,11 @@ void CPVRTimerInfoTag::UpdateSummary(void)
         m_iWeekdays & 0x20 ? g_localizeStrings.Get(19154) : "__",
         m_iWeekdays & 0x40 ? g_localizeStrings.Get(19155) : "__",
         g_localizeStrings.Get(19156),
-        m_FirstDay.GetAsLocalizedDate(false),
+        FirstDayAsLocalTime().GetAsLocalizedDate(false),
         g_localizeStrings.Get(19159),
-        m_StartTime.GetAsLocalizedTime("", false),
+        StartAsLocalTime().GetAsLocalizedTime("", false),
         g_localizeStrings.Get(19160),
-        m_StopTime.GetAsLocalizedTime("", false));
+        EndAsLocalTime().GetAsLocalizedTime("", false));
   }
   else
   {
@@ -210,9 +169,9 @@ void CPVRTimerInfoTag::UpdateSummary(void)
         m_iWeekdays & 0x20 ? g_localizeStrings.Get(19154) : "__",
         m_iWeekdays & 0x40 ? g_localizeStrings.Get(19155) : "__",
         g_localizeStrings.Get(19159),
-        m_StartTime.GetAsLocalizedTime("", false),
+        StartAsLocalTime().GetAsLocalizedTime("", false),
         g_localizeStrings.Get(19160),
-        m_StopTime.GetAsLocalizedTime("", false));
+        EndAsLocalTime().GetAsLocalizedTime("", false));
   }
 }
 
@@ -225,7 +184,7 @@ const CStdString &CPVRTimerInfoTag::GetStatus() const
     return g_localizeStrings.Get(19026);
   else if (!m_bIsActive)
     return g_localizeStrings.Get(13106);
-  else if (m_bIsActive && (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime()))
+  else if (m_bIsActive && (StartAsLocalTime() < CDateTime::GetCurrentDateTime() && EndAsLocalTime() > CDateTime::GetCurrentDateTime()))
     return g_localizeStrings.Get(19162);
   else
     return g_localizeStrings.Get(305);
@@ -242,7 +201,7 @@ bool CPVRTimerInfoTag::AddToClient(void)
   }
   else
   {
-    if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
+    if (StartAsLocalTime() < CDateTime::GetCurrentDateTime() && EndAsLocalTime() > CDateTime::GetCurrentDateTime())
       CPVRManager::Get()->TriggerRecordingsUpdate();
     return true;
   }
@@ -332,9 +291,9 @@ void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
     return;
 
   /* try to set the timer on the epg tag that matches */
-  m_epgInfo = (CPVREpgInfoTag *) epg->InfoTagBetween(m_StartTime, m_StopTime);
+  m_epgInfo = (CPVREpgInfoTag *) epg->InfoTagBetween(StartAsLocalTime(), EndAsLocalTime());
   if (!m_epgInfo)
-    m_epgInfo = (CPVREpgInfoTag *) epg->InfoTagAround(m_StartTime);
+    m_epgInfo = (CPVREpgInfoTag *) epg->InfoTagAround(StartAsLocalTime());
 
   if (m_epgInfo)
     m_epgInfo->SetTimer(bClear ? NULL : this);
@@ -351,7 +310,7 @@ bool CPVRTimerInfoTag::UpdateOnClient()
   }
   else
   {
-    if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
+    if (StartAsLocalTime() < CDateTime::GetCurrentDateTime() && EndAsLocalTime() > CDateTime::GetCurrentDateTime())
       CPVRManager::Get()->TriggerRecordingsUpdate();
     return true;
   }
@@ -472,11 +431,11 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
 
   /* generate summary string */
   newTag->m_strSummary.Format("%s %s %s %s %s",
-      newTag->m_StartTime.GetAsLocalizedDate(),
+      newTag->StartAsLocalTime().GetAsLocalizedDate(),
       g_localizeStrings.Get(19159),
-      newTag->m_StartTime.GetAsLocalizedTime("", false),
+      newTag->StartAsLocalTime().GetAsLocalizedTime("", false),
       g_localizeStrings.Get(19160),
-      newTag->m_StopTime.GetAsLocalizedTime("", false));
+      newTag->EndAsLocalTime().GetAsLocalizedTime("", false));
 
   /* unused only for reference */
   newTag->m_strFileNameAndPath = "pvr://timers/new";

@@ -93,15 +93,6 @@ public:
 
   const CStdString &GetStatus() const;
 
-  time_t StartTime(void) const;
-  time_t StartTimeAsUTC(void) const;
-
-  time_t StopTime(void) const;
-  time_t StopTimeAsUTC(void) const;
-
-  time_t FirstDayTime(void) const;
-  time_t FirstDayTimeAsUTC(void) const;
-
   bool SetDuration(int iDuration);
 
   static CPVRTimerInfoTag *CreateFromEpg(const CPVREpgInfoTag &tag);
@@ -114,8 +105,8 @@ public:
 
   void UpdateEpgEvent(bool bClear = false);
 
-  bool IsActive(void) const { return m_bIsActive && m_StopTime > CDateTime::GetCurrentDateTime(); }
-  bool IsRecording(void) const { return IsActive() && m_StartTime < CDateTime::GetCurrentDateTime(); }
+  bool IsActive(void) const { return m_bIsActive && EndAsLocalTime() > CDateTime::GetCurrentDateTime(); }
+  bool IsRecording(void) const { return IsActive() && StartAsLocalTime() < CDateTime::GetCurrentDateTime(); }
 
   const CDateTime &StartAsUTC(void) const { return m_StartTime; }
   const CDateTime &StartAsLocalTime(void) const;
