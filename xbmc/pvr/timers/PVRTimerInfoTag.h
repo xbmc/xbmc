@@ -97,8 +97,11 @@ public:
   const CStdString &GetStatus() const;
 
   time_t StartTime(void) const;
+  time_t StartTimeAsUTC(void) const;
   time_t StopTime(void) const;
+  time_t StopTimeAsUTC(void) const;
   time_t FirstDayTime(void) const;
+  time_t FirstDayTimeAsUTC(void) const;
 
   bool SetDuration(int iDuration);
 

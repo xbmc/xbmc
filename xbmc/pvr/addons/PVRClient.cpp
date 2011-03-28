@@ -474,7 +474,7 @@ PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording &recording)
 void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PVR_RECORDING &addonRecording)
 {
   time_t recTime;
-  xbmcRecording.m_recordingTime.GetAsTime(recTime);
+  xbmcRecording.m_recordingTime.GetAsUTCDateTime().GetAsTime(recTime);
 
   addonRecording.recordingTime = recTime - g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
   addonRecording.iClientIndex   = xbmcRecording.m_iClientIndex;
@@ -694,14 +694,14 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
   addonTimer.iClientChannelUid = xbmcTimer.m_iClientChannelUid;
   addonTimer.bIsRecording      = xbmcTimer.m_bIsRecording;
   addonTimer.strTitle          = xbmcTimer.m_strTitle;
-  addonTimer.strDirectory            = xbmcTimer.m_strDirectory;
+  addonTimer.strDirectory      = xbmcTimer.m_strDirectory;
   addonTimer.iPriority         = xbmcTimer.m_iPriority;
   addonTimer.iLifetime         = xbmcTimer.m_iLifetime;
   addonTimer.bIsRepeating      = xbmcTimer.m_bIsRepeating;
   addonTimer.iWeekdays         = xbmcTimer.m_iWeekdays;
-  addonTimer.startTime         = xbmcTimer.StartTime() - g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
-  addonTimer.endTime           = xbmcTimer.StopTime() - g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
-  addonTimer.firstDay          = xbmcTimer.FirstDayTime() - g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
+  addonTimer.startTime         = xbmcTimer.StartTimeAsUTC() - g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
+  addonTimer.endTime           = xbmcTimer.StopTimeAsUTC() - g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
+  addonTimer.firstDay          = xbmcTimer.FirstDayTimeAsUTC() - g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
   addonTimer.iEpgUid           = xbmcTimer.m_epgInfo ? xbmcTimer.m_epgInfo->UniqueBroadcastID() : -1;
   addonTimer.strSummary        = xbmcTimer.m_strSummary.c_str();
 }

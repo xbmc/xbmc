@@ -55,6 +55,11 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientId)
 {
+  CDateTime startTime, endTime, firstDay;
+  startTime.SetFromUTCDateTime((time_t) (timer.startTime ? timer.startTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection : 0));
+  endTime.SetFromUTCDateTime((time_t) (timer.endTime ? timer.endTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection : 0));
+  firstDay.SetFromUTCDateTime((time_t) (timer.firstDay ? timer.firstDay + g_advancedSettings.m_iUserDefinedEPGTimeCorrection : 0));
+
   m_strTitle           = timer.strTitle;
   m_strDirectory       = timer.strDirectory;
   m_strSummary         = "";
@@ -63,10 +68,10 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientI
   m_iClientIndex       = timer.iClientIndex;
   m_iClientChannelUid  = timer.iClientChannelUid;
   m_bIsRecording       = timer.bIsRecording;
-  m_StartTime          = (time_t) (timer.startTime ? timer.startTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection : 0);
-  m_StopTime           = (time_t) (timer.endTime ? timer.endTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection : 0);
+  m_StartTime          = startTime;
+  m_StopTime           = endTime;
   m_bIsRepeating       = timer.bIsRepeating;
-  m_FirstDay           = (time_t) (timer.firstDay ? timer.firstDay + g_advancedSettings.m_iUserDefinedEPGTimeCorrection : 0);
+  m_FirstDay           = firstDay;
   m_iWeekdays          = timer.iWeekdays;
   m_iPriority          = timer.iPriority;
   m_iLifetime          = timer.iLifetime;
@@ -134,6 +139,13 @@ time_t CPVRTimerInfoTag::StartTime(void) const
   return start;
 }
 
+time_t CPVRTimerInfoTag::StartTimeAsUTC(void) const
+{
+  time_t start;
+  m_StartTime.GetAsUTCDateTime().GetAsTime(start);
+  return start;
+}
+
 time_t CPVRTimerInfoTag::StopTime(void) const
 {
   time_t stop;
@@ -141,10 +153,24 @@ time_t CPVRTimerInfoTag::StopTime(void) const
   return stop;
 }
 
+time_t CPVRTimerInfoTag::StopTimeAsUTC(void) const
+{
+  time_t start;
+  m_StopTime.GetAsUTCDateTime().GetAsTime(start);
+  return start;
+}
+
 time_t CPVRTimerInfoTag::FirstDayTime(void) const
 {
   time_t firstday;
   m_FirstDay.GetAsTime(firstday);
+  return firstday;
+}
+
+time_t CPVRTimerInfoTag::FirstDayTimeAsUTC(void) const
+{
+  time_t firstday;
+  m_FirstDay.GetAsUTCDateTime().GetAsTime(firstday);
   return firstday;
 }
 
