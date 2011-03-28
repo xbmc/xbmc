@@ -41,7 +41,11 @@ CFileCache::CFileCache()
    m_nSeekResult = 0;
    m_seekPos = 0;
    m_readPos = 0;
-   m_pCache = new CCacheCircular(g_advancedSettings.m_cacheMemBufferSize, g_advancedSettings.m_cacheMemBufferSize);
+   if(g_advancedSettings.m_cacheMemBufferSize == 0)
+     m_pCache = new CSimpleFileCache();
+   else
+     m_pCache = new CCacheCircular(std::max<unsigned int>( g_advancedSettings.m_cacheMemBufferSize / 4, 1024 * 1024)
+                                 , g_advancedSettings.m_cacheMemBufferSize);
    m_seekPossible = 0;
 }
 
