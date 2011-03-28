@@ -173,7 +173,7 @@ void CDVDDemuxPVRClient::RequestStreams()
       m_streams[props->stream[i].iStreamIndex] = new CDemuxStream();
 
     m_streams[props->stream[i].iStreamIndex]->codec       = (CodecID)props->stream[i].iCodecId;
-    m_streams[props->stream[i].iStreamIndex]->iId         = props->stream[i].iIdentifier;
+    m_streams[props->stream[i].iStreamIndex]->iId         = props->stream[i].iStreamIndex;
     m_streams[props->stream[i].iStreamIndex]->iPhysicalId = props->stream[i].iPhysicalId;
     m_streams[props->stream[i].iStreamIndex]->language[0] = props->stream[i].strLanguage[0];
     m_streams[props->stream[i].iStreamIndex]->language[1] = props->stream[i].strLanguage[1];
