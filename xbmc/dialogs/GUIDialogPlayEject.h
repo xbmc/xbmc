@@ -21,7 +21,7 @@
  */
 
 #include "GUIDialogYesNo.h"
-#include "Variant.h"
+#include "utils/Variant.h"
 
 class CGUIDialogPlayEject : public CGUIDialogYesNo
 {

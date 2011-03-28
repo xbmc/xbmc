@@ -21,7 +21,7 @@
 
 #include "Autorun.h"
 #include "GUIDialogPlayEject.h"
-#include "GUIWindowManager.h"
+#include "guilib/GUIWindowManager.h"
 #include "storage/MediaManager.h"
 #include "storage/IoSupport.h"
 
