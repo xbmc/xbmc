@@ -19,12 +19,6 @@
  *
  */
 
-#if (defined USE_EXTERNAL_FFMPEG)
-  #include <libavutil/avutil.h>
-#else
-  #include "lib/ffmpeg/libavutil/avutil.h"
-#endif
-
 #include "AESound.h"
 
 #include <samplerate.h>
@@ -37,6 +31,7 @@
 #include "AEConvert.h"
 #include "AERemap.h"
 #include "AEUtil.h"
+#include "DllAvCore.h"
 
 #include "SoftAE.h"
 #include "SoftAESound.h"

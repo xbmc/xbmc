@@ -20,12 +20,7 @@
  *
  */
 
-#if (defined USE_EXTERNAL_FFMPEG)
-  #include <libavcodec/avcodec.h>
-#else
-  #include "lib/ffmpeg/libavcodec/avcodec.h"
-#endif
-
+#include "DllAvCodec.h"
 #include "AEAudioFormat.h"
 
 /**

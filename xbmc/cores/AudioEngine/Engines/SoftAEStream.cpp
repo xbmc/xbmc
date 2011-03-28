@@ -19,15 +19,10 @@
  *
  */
 
-#if (defined USE_EXTERNAL_FFMPEG)
-  #include <libavutil/avutil.h>
-#else
-  #include "lib/ffmpeg/libavutil/avutil.h"
-#endif
-
 #include "system.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "DllAvCore.h"
 
 #include "AEFactory.h"
 #include "AEUtil.h"

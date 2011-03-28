@@ -19,11 +19,6 @@
  *
  */
 
-#if (defined USE_EXTERNAL_FFMPEG)
-  #include <libavutil/avutil.h>
-#else
-  #include "lib/ffmpeg/libavutil/avutil.h"
-#endif
 #include <string.h>
 
 #include "system.h"
@@ -34,6 +29,7 @@
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "DllAvCore.h"
 
 #include "SoftAE.h"
 #include "SoftAESound.h"

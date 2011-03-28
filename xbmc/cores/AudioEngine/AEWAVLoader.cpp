@@ -21,11 +21,6 @@
 
 #include "AEWAVLoader.h"
 
-#if (defined USE_EXTERNAL_FFMPEG)
-  #include <libavutil/avutil.h>
-#else
-  #include "lib/ffmpeg/libavutil/avutil.h"
-#endif
 
 #include "system.h"
 #include "utils/log.h"
@@ -34,6 +29,7 @@
 #include "filesystem/IFile.h"
 #include <samplerate.h>
 
+#include "DllAvCore.h"
 #include "AEConvert.h"
 #include "AEUtil.h"
 #include "AERemap.h"
