@@ -273,7 +273,7 @@ void CAdvancedSettings::Initialize()
 
   m_measureRefreshrate = false;
 
-  m_cacheMemBufferSize = (1048576 * 5);
+  m_cacheMemBufferSize = 1024 * 1024 * 20;
 
   m_jsonOutputCompact = true;
   m_jsonTcpPort = 9090;
