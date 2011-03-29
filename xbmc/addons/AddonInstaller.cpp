@@ -381,15 +381,16 @@ bool CAddonInstallJob::DoWork()
     installFrom = archivedFiles[0]->m_strPath;
   }
 
+  bool update;
   // run any pre-install functions
-  bool reloadAddon = OnPreInstall();
+  bool reloadAddon = OnPreInstall(update);
 
   // perform install
   if (!Install(installFrom))
     return false; // something went wrong
 
   // run any post-install guff
-  OnPostInstall(reloadAddon);
+  OnPostInstall(reloadAddon,update);
 
   // and we're done!
   return true;
@@ -404,8 +405,10 @@ bool CAddonInstallJob::DownloadPackage(const CStdString &path, const CStdString 
   return CFileOperationJob::DoWork();
 }
 
-bool CAddonInstallJob::OnPreInstall()
+bool CAddonInstallJob::OnPreInstall(bool& update)
 {
+  AddonPtr addon;
+  update = CAddonMgr::Get().GetAddon(m_addon->ID(),addon,m_addon->Type(),false);
   // check whether this is an active skin - we need to unload it if so
   if (g_guiSettings.GetString("lookandfeel.skin") == m_addon->ID())
   {
@@ -468,7 +471,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom)
   return true;
 }
 
-void CAddonInstallJob::OnPostInstall(bool reloadAddon)
+void CAddonInstallJob::OnPostInstall(bool reloadAddon, bool update)
 {
   if (m_addon->Type() < ADDON_VIZ_LIBRARY && g_settings.m_bAddonNotifications)
   {
@@ -480,8 +483,9 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
   }
   if (m_addon->Type() == ADDON_SKIN)
   {
-    if (reloadAddon || CGUIDialogYesNo::ShowAndGetInput(m_addon->Name(),
-                                                        g_localizeStrings.Get(24099),"",""))
+    if (reloadAddon || (!update &&
+                        CGUIDialogYesNo::ShowAndGetInput(m_addon->Name(),
+                                                        g_localizeStrings.Get(24099),"","")))
     {
       g_guiSettings.SetString("lookandfeel.skin",m_addon->ID().c_str());
       g_application.m_guiDialogKaiToast.ResetTimer();

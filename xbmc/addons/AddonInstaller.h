@@ -128,8 +128,12 @@ public:
   CStdString AddonID() const;
 
 private:
-  bool OnPreInstall();
-  void OnPostInstall(bool reloadAddon);
+  /*! \brief Do preinstall tasks
+   \param update - on return this holds whether or not this is a new install
+   \return true if we should reload the add-on after install
+   */
+  bool OnPreInstall(bool& update);
+  void OnPostInstall(bool reloadAddon, bool update);
   bool Install(const CStdString &installFrom);
   bool DownloadPackage(const CStdString &path, const CStdString &dest);
 
