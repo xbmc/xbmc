@@ -219,6 +219,7 @@
 #include "guilib/GUIControlFactory.h"
 #include "dialogs/GUIDialogCache.h"
 #include "dialogs/GUIDialogPlayEject.h"
+#include "utils/XMLUtils.h"
 #include "addons/AddonInstaller.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -3569,8 +3570,34 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       URIUtils::RemoveExtension(strLine1);
     }
 
+    // Figure out Line 2 of the dialog
+    CStdString strLine2;
+
+    CFile discStubFile;
+    discStubFile.Open(item.m_strPath);
+    int iSize = discStubFile.GetLength();
+    discStubFile.Close();
+
+    if (iSize > 0)
+    {
+      TiXmlDocument discStubXML;
+      if (!discStubXML.LoadFile(item.m_strPath))
+      {
+        CLog::Log(LOGERROR, "Error loading %s at line %d\n%s", item.m_strPath.c_str(),
+          discStubXML.ErrorRow(), discStubXML.ErrorDesc());
+      }
+      else
+      {
+        TiXmlElement * pRootElement = discStubXML.RootElement();
+        if (!pRootElement || strcmpi(pRootElement->Value(), "discstub") != 0)
+          CLog::Log(LOGERROR, "Error loading %s, no <discstub> node", item.m_strPath.c_str());
+        else
+          XMLUtils::GetString(pRootElement, "message", strLine2);
+      }
+    }
+
     // Display the Play Eject dialog
-    if (CGUIDialogPlayEject::ShowAndGetInput(219, 429, strLine1, NULL))
+    if (CGUIDialogPlayEject::ShowAndGetInput(219, 429, strLine1, strLine2))
       MEDIA_DETECT::CAutorun::PlayDisc();
 
     return true;
