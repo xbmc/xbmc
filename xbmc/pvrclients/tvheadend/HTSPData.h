@@ -53,6 +53,9 @@ public:
   int        GetNumTimers();
   PVR_ERROR  GetTimers(PVR_HANDLE handle);
   PVR_ERROR  DeleteTimer(const PVR_TIMER &timerinfo, bool force);
+  int        GetNumChannelGroups(void);
+  PVR_ERROR  GetChannelGroups(PVR_HANDLE handle);
+  PVR_ERROR  GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group);
 
 protected:
   virtual void Action(void);

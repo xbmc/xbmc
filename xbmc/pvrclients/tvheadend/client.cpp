@@ -451,12 +451,41 @@ DemuxPacket* DemuxRead(void)
   return HTSPDemuxer->Read();
 }
 
+int GetChannelGroupsAmount(void)
+{
+  if (!HTSPData)
+    return PVR_ERROR_SERVER_ERROR;
+
+  return HTSPData->GetNumChannelGroups();
+}
+
+PVR_ERROR GetChannelGroups(PVR_HANDLE handle, bool bRadio)
+{
+  /* tvheadend doesn't support separated groups, so we only support TV groups */
+  if (bRadio)
+    return PVR_ERROR_NO_ERROR;
+
+  if (!HTSPData)
+    return PVR_ERROR_SERVER_ERROR;
+
+  return HTSPData->GetChannelGroups(handle);
+}
+
+PVR_ERROR GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
+{
+  /* tvheadend doesn't support separated groups, so we only support TV groups */
+  if (group.bIsRadio)
+    return PVR_ERROR_NO_ERROR;
+
+  if (!HTSPData)
+    return PVR_ERROR_SERVER_ERROR;
+
+  return HTSPData->GetChannelGroupMembers(handle, group);
+}
+
 /** UNUSED API FUNCTIONS */
 PVR_ERROR DialogChannelScan(void) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR CallMenuHook(const PVR_MENUHOOK &menuhook) { return PVR_ERROR_NOT_IMPLEMENTED; }
-int GetChannelGroupsAmount(void) { return -1; }
-PVR_ERROR GetChannelGroups(PVR_HANDLE handle, bool bRadio) { return PVR_ERROR_NOT_IMPLEMENTED; }
-PVR_ERROR GetChannelGroupMembers(PVR_HANDLE hanlde, const PVR_CHANNEL_GROUP &group) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DeleteChannel(const PVR_CHANNEL &channel) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR RenameChannel(const PVR_CHANNEL &channel) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR MoveChannel(const PVR_CHANNEL &channel) { return PVR_ERROR_NOT_IMPLEMENTED; }

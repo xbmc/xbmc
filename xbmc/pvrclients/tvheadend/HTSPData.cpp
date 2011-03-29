@@ -357,6 +357,54 @@ int cHTSPData::GetNumTimers()
   return recordings.size();
 }
 
+int cHTSPData::GetNumChannelGroups(void)
+{
+  return (int) m_tags.size();
+}
+
+PVR_ERROR cHTSPData::GetChannelGroups(PVR_HANDLE handle)
+{
+  for(unsigned int iTagPtr = 0; iTagPtr < m_tags.size(); iTagPtr++)
+  {
+    PVR_CHANNEL_GROUP tag;
+    memset(&tag, 0 , sizeof(PVR_CHANNEL_GROUP));
+
+    tag.bIsRadio = false;
+    tag.strGroupName = m_tags[iTagPtr].name.c_str();
+
+    PVR->TransferChannelGroup(handle, &tag);
+  }
+
+  return PVR_ERROR_NO_ERROR;
+}
+
+PVR_ERROR cHTSPData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
+{
+  for(unsigned int iTagPtr = 0; iTagPtr < m_tags.size(); iTagPtr++)
+  {
+    if (m_tags[iTagPtr].name != group.strGroupName)
+      continue;
+
+    std::vector<int>::iterator itTags;
+    for(itTags = m_tags[iTagPtr].channels.begin(); itTags != m_tags[iTagPtr].channels.end(); itTags++)
+    {
+      SChannels::iterator itChannels = m_channels.find(*itTags);
+      if (itChannels != m_channels.end())
+      {
+        PVR_CHANNEL_GROUP_MEMBER tag;
+        memset(&tag,0 , sizeof(PVR_CHANNEL_GROUP_MEMBER));
+        tag.strGroupName = group.strGroupName;
+        tag.iChannelUniqueId = itChannels->second.id;
+        tag.iChannelNumber = itChannels->second.num;
+
+        PVR->TransferChannelGroupMember(handle, &tag);
+      }
+    }
+  }
+
+  return PVR_ERROR_NO_ERROR;
+}
+
 PVR_ERROR cHTSPData::GetTimers(PVR_HANDLE handle)
 {
   SRecordings recordings = GetDVREntries(false, true);
