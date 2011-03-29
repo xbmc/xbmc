@@ -35,9 +35,6 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 
-using namespace XFILE;
-using namespace MUSIC_INFO;
-
 CPVRChannelGroups::CPVRChannelGroups(bool bRadio)
 {
   m_bRadio = bRadio;
