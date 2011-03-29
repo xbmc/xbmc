@@ -33,6 +33,7 @@
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
@@ -160,6 +161,10 @@ void CPVRChannelGroups::RemoveFromAllGroups(CPVRChannel *channel)
 bool CPVRChannelGroups::Update(void)
 {
   bool bReturn = true;
+
+  /* get new groups from add-ons */
+  PVR_ERROR error;
+  CPVRManager::GetClients()->GetChannelGroups(this, &error);
 
   /* system groups are updated first, so new channels are added before anything is done with user defined groups */
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
