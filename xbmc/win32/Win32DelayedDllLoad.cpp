@@ -52,7 +52,7 @@ FARPROC WINAPI delayHookFailureFunc (unsigned dliNotify, PDelayLoadInfo pdli)
   switch (dliNotify)
   {
     case dliFailLoadLib:
-      g_application.Stop();
+      g_application.Stop(1);
       CStdString strError;
       strError.Format("Uh oh, can't load %s, exiting.", pdli->szDll);
       MessageBox(NULL, strError.c_str(), "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
