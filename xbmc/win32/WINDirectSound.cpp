@@ -22,8 +22,8 @@
 #include "system.h"
 #include "WINDirectSound.h"
 #include "threads/SingleLock.h"
-#include "log.h"
-#include "CharsetConverter.h"
+#include "utils/log.h"
+#include "utils/CharsetConverter.h"
 
 
 BOOL CALLBACK direct_sound_enumerator_callback( LPGUID lpGuid, LPCTSTR lpcstrDescription, LPCTSTR lpcstrModule, LPVOID lpContext)

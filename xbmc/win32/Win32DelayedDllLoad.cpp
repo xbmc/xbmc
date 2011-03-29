@@ -21,7 +21,7 @@
 
 #include <DelayImp.h>
 #include "DllPaths_win32.h"
-#include "SpecialProtocol.h"
+#include "filesystem/SpecialProtocol.h"
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
 

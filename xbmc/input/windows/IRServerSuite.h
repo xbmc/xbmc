@@ -21,7 +21,7 @@
  */
 
 #include <winsock2.h>
-#include "StdString.h"
+#include "utils/StdString.h"
 #include "IrssMessage.h"
 #include "threads/Thread.h"
 

@@ -24,7 +24,7 @@
  */
 
 #include "LibraryLoader.h"
-#include "StdString.h"
+#include "utils/StdString.h"
 
 class Win32DllLoader : public LibraryLoader
 {

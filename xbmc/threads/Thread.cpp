@@ -21,7 +21,7 @@
 #include "Thread.h"
 #ifndef _LINUX
 #include <process.h>
-#include "win32exception.h"
+#include "utils/win32exception.h"
 #ifndef _MT
 #pragma message( "Please compile using multithreaded run-time libraries" )
 #endif
