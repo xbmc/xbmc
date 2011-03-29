@@ -1477,7 +1477,7 @@ void CVideoDatabase::GetMoviesByActor(const CStdString& strActor, CFileItemList&
 
 void CVideoDatabase::GetTvShowsByActor(const CStdString& strActor, CFileItemList& items)
 {
-  CStdString where = PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow=tvshow.idShow "
+  CStdString where = PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow=tvshowview.idShow "
                                "join actors on actors.idActor=actorlinktvshow.idActor "
                                "where actors.strActor='%s'", strActor.c_str());
   GetTvShowsByWhere("videodb://2/2/", where, items);
