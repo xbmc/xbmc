@@ -249,6 +249,10 @@ PVR_ERROR CPVRClient::StartChannelScan(void)
   if (!m_bReadyToUse)
     return PVR_ERROR_UNKOWN;
 
+  SetProperties();
+  if (!m_serverProperties.bSupportsChannelScan)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
   try
   {
     return m_pStruct->DialogChannelScan();
@@ -286,6 +290,10 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg,
   if (!m_bReadyToUse)
     return retVal;
 
+  SetProperties();
+  if (!m_serverProperties.bSupportsEPG)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
   try
   {
     PVR_CHANNEL addonChannel;
@@ -322,6 +330,10 @@ int CPVRClient::GetChannelGroupsAmount(void)
   if (!m_bReadyToUse)
     return iReturn;
 
+  SetProperties();
+  if (!m_serverProperties.bSupportsChannelGroups)
+    return iReturn;
+
   try
   {
     iReturn = m_pStruct->GetChannelGroupsAmount();
@@ -341,6 +353,10 @@ PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups &groups)
   CSingleLock lock(m_critSection);
   if (!m_bReadyToUse)
     return retVal;
+
+  SetProperties();
+  if (!m_serverProperties.bSupportsChannelGroups)
+    return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
   {
@@ -370,6 +386,10 @@ PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup &group)
   CSingleLock lock(m_critSection);
   if (!m_bReadyToUse)
     return retVal;
+
+  SetProperties();
+  if (!m_serverProperties.bSupportsChannelGroups)
+    return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
   {
@@ -428,6 +448,11 @@ PVR_ERROR CPVRClient::GetChannels(CPVRChannelGroup &channels, bool radio)
   if (!m_bReadyToUse)
     return retVal;
 
+  SetProperties();
+  if ((!m_serverProperties.bSupportsRadio && radio) ||
+      (!m_serverProperties.bSupportsTV && !radio))
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
   try
   {
     PVR_HANDLE_STRUCT handle;
@@ -457,6 +482,10 @@ int CPVRClient::GetRecordingsAmount(void)
   if (!m_bReadyToUse)
     return iReturn;
 
+  SetProperties();
+  if (!m_serverProperties.bSupportsRecordings)
+    return iReturn;
+
   try
   {
     iReturn = m_pStruct->GetRecordingsAmount();
@@ -476,6 +505,10 @@ PVR_ERROR CPVRClient::GetRecordings(CPVRRecordings *results)
   CSingleLock lock(m_critSection);
   if (!m_bReadyToUse)
     return retVal;
+
+  SetProperties();
+  if (!m_serverProperties.bSupportsRecordings)
+    return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
   {
@@ -506,6 +539,10 @@ PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording &recording)
   if (!m_bReadyToUse)
     return retVal;
 
+  SetProperties();
+  if (!m_serverProperties.bSupportsRecordings)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
   try
   {
     PVR_RECORDING tag;
@@ -534,6 +571,10 @@ PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording &recording)
   CSingleLock lock(m_critSection);
   if (!m_bReadyToUse)
     return retVal;
+
+  SetProperties();
+  if (!m_serverProperties.bSupportsRecordings)
+    return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
   {
@@ -582,6 +623,10 @@ int CPVRClient::GetTimersAmount(void)
   if (!m_bReadyToUse)
     return iReturn;
 
+  SetProperties();
+  if (!m_serverProperties.bSupportsTimers)
+    return iReturn;
+
   try
   {
     iReturn = m_pStruct->GetTimersAmount();
@@ -601,6 +646,10 @@ PVR_ERROR CPVRClient::GetTimers(CPVRTimers *results)
   CSingleLock lock(m_critSection);
   if (!m_bReadyToUse)
     return retVal;
+
+  SetProperties();
+  if (!m_serverProperties.bSupportsTimers)
+    return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
   {
@@ -630,6 +679,10 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timer)
   CSingleLock lock(m_critSection);
   if (!m_bReadyToUse)
     return retVal;
+
+  SetProperties();
+  if (!m_serverProperties.bSupportsTimers)
+    return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
   {
@@ -668,6 +721,10 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* 
   if (!m_bReadyToUse)
     return retVal;
 
+  SetProperties();
+  if (!m_serverProperties.bSupportsTimers)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
   try
   {
     PVR_TIMER tag;
@@ -705,6 +762,10 @@ PVR_ERROR CPVRClient::RenameTimer(const CPVRTimerInfoTag &timer, const CStdStrin
   if (!m_bReadyToUse)
     return retVal;
 
+  SetProperties();
+  if (!m_serverProperties.bSupportsTimers)
+    return PVR_ERROR_NOT_IMPLEMENTED;
+
   try
   {
     PVR_TIMER tag;
@@ -741,6 +802,10 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timer)
   CSingleLock lock(m_critSection);
   if (!m_bReadyToUse)
     return retVal;
+
+  SetProperties();
+  if (!m_serverProperties.bSupportsTimers)
+    return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
   {
@@ -805,6 +870,11 @@ bool CPVRClient::OpenLiveStream(const CPVRChannel &channel)
   CSingleLock lock(m_critSection);
   if (!m_bReadyToUse)
     return bReturn;
+
+  SetProperties();
+  if ((!m_serverProperties.bSupportsTV && !channel.IsRadio()) ||
+      (!m_serverProperties.bSupportsRadio && channel.IsRadio()))
+    return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
   {
@@ -942,6 +1012,10 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHAN
 bool CPVRClient::OpenRecordedStream(const CPVRRecording &recording)
 {
   CSingleLock lock(m_critSection);
+
+  SetProperties();
+  if (!m_serverProperties.bSupportsRecordings)
+    return false;
 
   PVR_RECORDING tag;
   WriteClientRecordingInfo(recording, tag);
