@@ -191,4 +191,6 @@ public:
    * @return True if everything was persisted, false otherwise.
    */
   bool PersistAll(void);
+
+  bool IsRadio(void) const { return m_bRadio; }
 };

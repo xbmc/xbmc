@@ -31,10 +31,9 @@
 #include "pvr/PVRDatabase.h"
 #include "utils/TimeUtils.h"
 #include "guilib/GUIWindowManager.h"
-#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 
 using namespace std;
@@ -792,6 +791,26 @@ bool CPVRClients::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, tim
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel.ClientID());
 
   return *error == PVR_ERROR_NO_ERROR;
+}
+
+int CPVRClients::GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error)
+{
+  *error = PVR_ERROR_UNKOWN;
+  int iCurSize = groups->size();
+  CLIENTMAP clients;
+  GetActiveClients(&clients);
+
+  /* get the channel list from each client */
+  CLIENTMAPITR itrClients = clients.begin();
+  while (itrClients != clients.end())
+  {
+    if ((*itrClients).second->ReadyToUse())
+      (*itrClients).second->GetChannelGroups(*groups);
+
+    itrClients++;
+  }
+
+  return groups->size() - iCurSize;
 }
 
 int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)

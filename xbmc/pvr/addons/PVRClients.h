@@ -157,6 +157,7 @@ public:
   bool DeleteRecording(const CPVRRecording &recording, PVR_ERROR *error);
 
   bool GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end, PVR_ERROR *error);
+  int GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error);
   int GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error);
 
   int GetClients(std::map<long, CStdString> *clients);

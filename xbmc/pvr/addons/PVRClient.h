@@ -27,6 +27,7 @@
 class CPVREpg;
 class CPVRChannelGroup;
 class CPVRChannelGroupInternal;
+class CPVRChannelGroups;
 class CPVRTimers;
 class CPVRTimerInfoTag;
 class CPVRRecordings;
@@ -193,13 +194,25 @@ public:
   /** @name PVR channel group methods */
   //@{
 
+  /*!
+    * @return The total amount of channel groups on the server or -1 on error.
+    */
+  int GetChannelGroupsAmount(void);
+
+  /*!
+   * @brief Request the list of all channel groups from the backend.
+   * @param groups The groups container to get the groups for.
+   * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
+   */
+  PVR_ERROR GetChannelGroups(CPVRChannelGroups &groups);
+
   //@}
   /** @name PVR channel methods */
   //@{
 
   /*!
-    * @return The total amount of channels on the server or -1 on error.
-    */
+   * @return The total amount of channels on the server or -1 on error.
+   */
   int GetChannelsAmount(void);
 
   /*!
