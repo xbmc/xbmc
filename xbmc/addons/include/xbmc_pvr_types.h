@@ -226,14 +226,15 @@ extern "C" {
 
   typedef struct PVR_CHANNEL_GROUP
   {
-    unsigned int iGroupId;             /*!< @brief (required) identifier for this channel group */
     const char * strGroupName;         /*!< @brief (required) name of this channel group */
+    bool         bIsRadio;             /*!< @brief (required) true if this is a radio channel group, false otherwise. */
   } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP;
 
   typedef struct PVR_CHANNEL_GROUP_MEMBER
   {
-    unsigned int iGroupId;             /*!< @brief (required) identifier of the channel group */
+    const char * strGroupName;         /*!< @brief (required) name of the channel group to add the channel to */
     unsigned int iChannelUniqueId;     /*!< @brief (required) unique id of the member */
+    unsigned int iChannelNumber;       /*!< @brief (optional) channel number within the group */
   } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP_MEMBER;
 
   /*!

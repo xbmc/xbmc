@@ -60,6 +60,17 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio)
   clear();
 }
 
+CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group)
+{
+  m_bRadio          = group.bIsRadio;
+  m_iGroupId        = -1;
+  m_strGroupName    = group.strGroupName;
+  m_iSortOrder      = -1;
+  m_bInhibitSorting = false;
+  m_bLoaded         = false;
+  clear();
+}
+
 CPVRChannelGroup::~CPVRChannelGroup(void)
 {
   Unload();

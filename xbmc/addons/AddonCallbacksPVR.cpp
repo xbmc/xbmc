@@ -61,6 +61,41 @@ CAddonCallbacksPVR::~CAddonCallbacksPVR()
   delete m_callbacks;
 }
 
+void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP *group)
+{
+  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
+  if (addon == NULL || handle == NULL || group == NULL)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
+    return;
+  }
+
+  CPVRChannelGroups *xbmcGroups = (CPVRChannelGroups *) handle->dataAddress;
+  CPVRChannelGroup xbmcGroup(*group);
+
+  /* transfer this entry to the groups container */
+  xbmcGroups->UpdateFromClient(xbmcGroup);
+}
+
+void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
+{
+  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
+  if (addon == NULL || handle == NULL || member == NULL)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
+    return;
+  }
+
+  CPVRChannelGroups *xbmcGroups = (CPVRChannelGroups *) handle->dataAddress;
+  CPVRChannelGroup *group = (CPVRChannelGroup *) xbmcGroups->GetByName(member->strGroupName);
+  CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByChannelIDFromAll(member->iChannelUniqueId);
+  if (group != NULL && channel != NULL)
+  {
+    /* transfer this entry to the group */
+    group->AddToGroup(channel, member->iChannelNumber);
+  }
+}
+
 void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const PVR_HANDLE handle, const EPG_TAG *epgentry)
 {
   CAddonCallbacks* addon = (CAddonCallbacks*) addonData;

@@ -43,6 +43,22 @@ public:
   CB_PVRLib *GetCallbacks() { return m_callbacks; }
 
   /*!
+   * @brief Transfer a channel group from the add-on to XBMC. The group will be created if it doesn't exist.
+   * @param addonData A pointer to the add-on.
+   * @param handle The handle that initiated this action.
+   * @param group The entry to transfer.
+   */
+  void PVRTransferChannelGroup(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP *group);
+
+  /*!
+   * @brief Transfer a channel group member from the add-on to XBMC. The channel will be added to the group if the group can be found.
+   * @param addonData A pointer to the add-on.
+   * @param handle The handle that initiated this action.
+   * @param member The entry to transfer.
+   */
+  void PVRTransferChannelGroupMember(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member);
+
+  /*!
    * @brief Transfer an EPG entry from the add-on to XBMC.
    * @param addonData A pointer to the add-on.
    * @param handle The handle that initiated this action.

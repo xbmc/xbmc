@@ -116,7 +116,7 @@ private:
 
 public:
   /*!
-   * Create a new channel group instance.
+   * @brief Create a new channel group instance.
    * @param bRadio True if this group holds radio channels.
    * @param iGroupId The database ID of this group.
    * @param strGroupName The name of this group.
@@ -129,6 +129,12 @@ public:
    * @param bRadio True if this group holds radio channels.
    */
   CPVRChannelGroup(bool bRadio);
+
+  /*!
+   * @brief Create a new channel group instance from a channel group provided by an add-on.
+   * @param group The channel group provided by the add-on.
+   */
+  CPVRChannelGroup(const PVR_CHANNEL_GROUP &group);
 
   /*!
    * @brief Destruct this channel group.

@@ -57,7 +57,8 @@ void CPVRChannelGroups::Clear(void)
 
 bool CPVRChannelGroups::Update(const CPVRChannelGroup &group)
 {
-  int iIndex = GetIndexForGroupID(group.GroupID());
+  CSingleLock lock(m_critSection);
+  int iIndex = group.GroupID() > 0 ? GetIndexForGroupID(group.GroupID()) : GetIndexForGroupName(group.GroupName());
 
   if (iIndex < 0)
   {
@@ -71,6 +72,7 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group)
     CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - updating %s channel group '%s'",
         __FUNCTION__, m_bRadio ? "radio" : "TV", group.GroupName().c_str());
 
+    at(iIndex)->SetGroupID(group.GroupID());
     at(iIndex)->SetGroupName(group.GroupName());
     at(iIndex)->SetSortOrder(group.SortOrder());
   }
@@ -119,6 +121,22 @@ int CPVRChannelGroups::GetIndexForGroupID(int iGroupId) const
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
     if (at(iGroupPtr)->GroupID() == iGroupId)
+    {
+      iReturn = iGroupPtr;
+      break;
+    }
+  }
+
+  return iReturn;
+}
+
+int CPVRChannelGroups::GetIndexForGroupName(const CStdString &strName) const
+{
+  int iReturn = -1;
+
+  for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
+  {
+    if (at(iGroupPtr)->GroupName().Equals(strName))
     {
       iReturn = iGroupPtr;
       break;
