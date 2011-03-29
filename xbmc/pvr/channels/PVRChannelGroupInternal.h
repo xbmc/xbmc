@@ -50,12 +50,6 @@ private:
   int LoadFromClients(void);
 
   /*!
-   * @brief Add client channels to this container.
-   * @return The amount of channels that were added.
-   */
-  int GetFromClients(void);
-
-  /*!
    * @brief Check if this group is the internal group containing all channels.
    * @return True if it's the internal group, false otherwise.
    */

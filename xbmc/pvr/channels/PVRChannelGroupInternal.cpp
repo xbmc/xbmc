@@ -215,8 +215,10 @@ int CPVRChannelGroupInternal::LoadFromClients(void)
 {
   int iCurSize = size();
 
-  /* no channels returned */
-  if (GetFromClients() == -1)
+  /* get the channels from the backends */
+  PVR_ERROR error;
+  CPVRManager::GetClients()->GetChannels(this, &error);
+  if (error != PVR_ERROR_NO_ERROR)
     return -1;
 
   /* sort by client channel number if this is the first time */
@@ -254,12 +256,6 @@ void CPVRChannelGroupInternal::Renumber(void)
       at(ptr).channel->UpdatePath(iChannelNumber);
     }
   }
-}
-
-int CPVRChannelGroupInternal::GetFromClients(void)
-{
-  PVR_ERROR error;
-  return CPVRManager::GetClients()->GetChannels(this, &error);
 }
 
 bool CPVRChannelGroupInternal::IsGroupMember(const CPVRChannel *channel) const

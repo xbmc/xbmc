@@ -34,6 +34,7 @@
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/epg/PVREpgContainer.h"
 
 using namespace MUSIC_INFO;
@@ -116,8 +117,7 @@ void CPVRChannelGroup::Unload()
 
 bool CPVRChannelGroup::Update()
 {
-  // TODO implement method to get channel groups from clients
-  return true;
+  return LoadFromClients(true) > 0;
 }
 
 bool CPVRChannelGroup::Update(const CPVRChannelGroup &group)
@@ -397,13 +397,21 @@ int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 
 int CPVRChannelGroup::LoadFromClients(bool bAddToDb /* = true */)
 {
-  // TODO add support to load channel groups from clients
-  return -1;
-}
+  int iCurSize = size();
 
-int CPVRChannelGroup::GetFromClients(void)
-{
-  return -1;
+  /* get the channels from the backends */
+  PVR_ERROR error;
+  CPVRManager::GetClients()->GetChannelGroupMembers(this, &error);
+  if (error != PVR_ERROR_NO_ERROR)
+    return -1;
+
+  SortByChannelNumber();
+  Renumber();
+
+  if (bAddToDb)
+    Persist();
+
+  return size() - iCurSize;
 }
 
 bool CPVRChannelGroup::RemoveByUniqueID(int iUniqueID)
