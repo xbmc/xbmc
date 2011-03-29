@@ -364,6 +364,43 @@ PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups &groups)
   return retVal;
 }
 
+PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup &group)
+{
+  PVR_ERROR retVal = PVR_ERROR_UNKOWN;
+  CSingleLock lock(m_critSection);
+  if (!m_bReadyToUse)
+    return retVal;
+
+  try
+  {
+    PVR_HANDLE_STRUCT handle;
+    handle.callerAddress = this;
+    handle.dataAddress = (CPVRChannelGroup*) &group;
+
+    PVR_CHANNEL_GROUP tag;
+    WriteClientGroupInfo(group, tag);
+
+    //Workaround for string transfer to PVRclient
+    CStdString myName(group.GroupName());
+    tag.strGroupName = myName.c_str();
+
+    retVal = m_pStruct->GetChannelGroupMembers(&handle, tag);
+
+    if (retVal != PVR_ERROR_NO_ERROR)
+    {
+      CLog::Log(LOGERROR, "PVRClient - %s - addon '%s' returns bad error (%i) from GetChannelGroupMembers()",
+          __FUNCTION__, GetFriendlyName(), retVal);
+    }
+  }
+  catch (exception &e)
+  {
+    CLog::Log(LOGERROR, "PVRClient - %s - exception '%s' caught while trying to call GetChannelGroupMembers() on addon '%s'. please contact the developer of this addon: %s",
+        __FUNCTION__, e.what(), GetFriendlyName(), Author().c_str());
+  }
+
+  return retVal;
+}
+
 int CPVRClient::GetChannelsAmount(void)
 {
   int iReturn = -1;
@@ -1118,4 +1155,10 @@ PVR_ERROR CPVRClient::SetProperties(void)
   }
 
   return PVR_ERROR_SERVER_ERROR;
+}
+
+void CPVRClient::WriteClientGroupInfo(const CPVRChannelGroup &xbmcGroup, PVR_CHANNEL_GROUP &addonGroup)
+{
+  addonGroup.bIsRadio     = xbmcGroup.IsRadio();
+  addonGroup.strGroupName = xbmcGroup.GroupName();
 }

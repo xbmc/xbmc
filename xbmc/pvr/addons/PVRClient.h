@@ -206,6 +206,13 @@ public:
    */
   PVR_ERROR GetChannelGroups(CPVRChannelGroups &groups);
 
+  /*!
+   * @brief Request the list of all group members from the backend.
+   * @param groups The group to get the members for.
+   * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
+   */
+  PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup &group);
+
   //@}
   /** @name PVR channel methods */
   //@{
@@ -476,6 +483,13 @@ private:
    * @param addonRecording The recording on the addon's side.
    */
   void WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PVR_RECORDING &addonRecording);
+
+  /*!
+   * @brief Copy over group info from xbmcGroup to addonGroup.
+   * @param xbmcGroup The group on XBMC's side.
+   * @param addonGroup The group on the addon's side.
+   */
+  void WriteClientGroupInfo(const CPVRChannelGroup &xbmcGroup, PVR_CHANNEL_GROUP &addonGroup);
 
   /*!
    * @brief Get the backend name from the server and store it locally.

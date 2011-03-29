@@ -158,6 +158,7 @@ public:
 
   bool GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end, PVR_ERROR *error);
   int GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error);
+  int GetChannelGroupMembers(CPVRChannelGroup *group, PVR_ERROR *error);
   int GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error);
 
   int GetClients(std::map<long, CStdString> *clients);

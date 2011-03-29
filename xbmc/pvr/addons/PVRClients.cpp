@@ -800,7 +800,7 @@ int CPVRClients::GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error)
   CLIENTMAP clients;
   GetActiveClients(&clients);
 
-  /* get the channel list from each client */
+  /* get the channel groups list from each client */
   CLIENTMAPITR itrClients = clients.begin();
   while (itrClients != clients.end())
   {
@@ -811,6 +811,26 @@ int CPVRClients::GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error)
   }
 
   return groups->size() - iCurSize;
+}
+
+int CPVRClients::GetChannelGroupMembers(CPVRChannelGroup *group, PVR_ERROR *error)
+{
+  *error = PVR_ERROR_UNKOWN;
+  int iCurSize = group->Size();
+  CLIENTMAP clients;
+  GetActiveClients(&clients);
+
+  /* get the member list from each client */
+  CLIENTMAPITR itrClients = clients.begin();
+  while (itrClients != clients.end())
+  {
+    if ((*itrClients).second->ReadyToUse())
+      (*itrClients).second->GetChannelGroupMembers(*group);
+
+    itrClients++;
+  }
+
+  return group->Size() - iCurSize;
 }
 
 int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)
