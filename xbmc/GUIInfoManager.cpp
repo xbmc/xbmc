@@ -3261,7 +3261,10 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   if (item == VIDEOPLAYER_TITLE)
   {
     if (m_currentFile->HasPVRChannelInfoTag())
-      return m_currentFile->GetPVRChannelInfoTag()->GetEPGNow() ? m_currentFile->GetPVRChannelInfoTag()->GetEPGNow()->Title() : g_localizeStrings.Get(19055);
+    {
+      const CPVREpgInfoTag *tag = m_currentFile->GetPVRChannelInfoTag()->GetEPGNow();
+      return tag ? tag->Title() : g_localizeStrings.Get(19055);
+    }
     if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strTitle.IsEmpty())
       return m_currentFile->GetVideoInfoTag()->m_strTitle;
     // don't have the title, so use dvdplayer, label, or drop down to title from path
