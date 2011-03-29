@@ -538,7 +538,9 @@ fi
 AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, "yes", "no")
 if test $MYSQL_CONFIG = "yes"; then
   INCLUDES="$INCLUDES `mysql_config --include`"
-  LIBS="$LIBS `mysql_config --libs`"
+  MYSQL_LIBS=`mysql_config --libs`
+  LIBS="$LIBS $MYSQL_LIBS"
+  AC_SUBST(MYSQL_LIBS)
 else
   AC_MSG_ERROR($missing_program)
 fi
