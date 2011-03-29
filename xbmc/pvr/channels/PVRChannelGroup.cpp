@@ -37,8 +37,6 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/epg/PVREpgContainer.h"
 
-using namespace MUSIC_INFO;
-
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder)
 {
   m_bRadio          = bRadio;
