@@ -804,7 +804,7 @@ void CDVDPlayerVideo::Flush()
 void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, double pts)
 {
   // remove any overlays that are out of time
-  m_pOverlayContainer->CleanUp(min(pts, pts - m_iSubtitleDelay));
+  m_pOverlayContainer->CleanUp(pts - m_iSubtitleDelay);
 
   enum EOverlay
   { OVERLAY_AUTO // select mode auto
