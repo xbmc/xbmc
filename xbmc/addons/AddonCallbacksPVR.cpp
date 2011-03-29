@@ -42,17 +42,19 @@ CAddonCallbacksPVR::CAddonCallbacksPVR(CAddon* addon)
   m_callbacks = new CB_PVRLib;
 
   /* write XBMC PVR specific add-on function addresses to callback table */
-  m_callbacks->TransferEpgEntry       = PVRTransferEpgEntry;
-  m_callbacks->TransferChannelEntry   = PVRTransferChannelEntry;
-  m_callbacks->TransferTimerEntry     = PVRTransferTimerEntry;
-  m_callbacks->TransferRecordingEntry = PVRTransferRecordingEntry;
-  m_callbacks->AddMenuHook            = PVRAddMenuHook;
-  m_callbacks->Recording              = PVRRecording;
-  m_callbacks->TriggerChannelUpdate   = PVRTriggerChannelUpdate;
-  m_callbacks->TriggerTimerUpdate     = PVRTriggerTimerUpdate;
-  m_callbacks->TriggerRecordingUpdate = PVRTriggerRecordingUpdate;
-  m_callbacks->FreeDemuxPacket        = PVRFreeDemuxPacket;
-  m_callbacks->AllocateDemuxPacket    = PVRAllocateDemuxPacket;
+  m_callbacks->TransferEpgEntry           = PVRTransferEpgEntry;
+  m_callbacks->TransferChannelEntry       = PVRTransferChannelEntry;
+  m_callbacks->TransferTimerEntry         = PVRTransferTimerEntry;
+  m_callbacks->TransferRecordingEntry     = PVRTransferRecordingEntry;
+  m_callbacks->AddMenuHook                = PVRAddMenuHook;
+  m_callbacks->Recording                  = PVRRecording;
+  m_callbacks->TriggerChannelUpdate       = PVRTriggerChannelUpdate;
+  m_callbacks->TriggerTimerUpdate         = PVRTriggerTimerUpdate;
+  m_callbacks->TriggerRecordingUpdate     = PVRTriggerRecordingUpdate;
+  m_callbacks->FreeDemuxPacket            = PVRFreeDemuxPacket;
+  m_callbacks->AllocateDemuxPacket        = PVRAllocateDemuxPacket;
+  m_callbacks->TransferChannelGroup       = PVRTransferChannelGroup;
+  m_callbacks->TransferChannelGroupMember = PVRTransferChannelGroupMember;
 }
 
 CAddonCallbacksPVR::~CAddonCallbacksPVR()

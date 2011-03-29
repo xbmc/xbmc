@@ -131,6 +131,14 @@ public:
       dlsym(m_libXBMC_pvr, "PVR_trigger_channel_update");
     if (TriggerChannelUpdate == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+    TransferChannelGroup  = (void (*)(const PVR_HANDLE handle, const PVR_CHANNEL_GROUP *group))
+      dlsym(m_libXBMC_pvr, "PVR_transfer_channel_group");
+    if (TransferChannelGroup == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+    TransferChannelGroupMember  = (void (*)(const PVR_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member))
+      dlsym(m_libXBMC_pvr, "PVR_transfer_channel_group_member");
+    if (TransferChannelGroupMember == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
 #ifdef USE_DEMUX
     FreeDemuxPacket         = (void (*)(DemuxPacket* pPacket))
       dlsym(m_libXBMC_pvr, "PVR_free_demux_packet");
@@ -153,6 +161,8 @@ public:
   void (*TriggerTimerUpdate)();
   void (*TriggerRecordingUpdate)();
   void (*TriggerChannelUpdate)();
+  void (*TransferChannelGroup)(const PVR_HANDLE handle, const PVR_CHANNEL_GROUP *group);
+  void (*TransferChannelGroupMember)(const PVR_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member);
 #ifdef USE_DEMUX
   void (*FreeDemuxPacket)(DemuxPacket* pPacket);
   DemuxPacket* (*AllocateDemuxPacket)(int iDataSize);
