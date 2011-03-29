@@ -709,6 +709,8 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
   addonTimer.firstDay          = firstDay - g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
   addonTimer.iEpgUid           = xbmcTimer.m_epgInfo ? xbmcTimer.m_epgInfo->UniqueBroadcastID() : -1;
   addonTimer.strSummary        = xbmcTimer.m_strSummary.c_str();
+  addonTimer.iMarginStart      = xbmcTimer.m_iMarginStart;
+  addonTimer.iMarginEnd        = xbmcTimer.m_iMarginEnd;
 }
 
 bool CPVRClient::OpenLiveStream(const CPVRChannel &channel)

@@ -60,23 +60,26 @@ class CPVRChannel;
 class CPVRTimerInfoTag
 {
 public:
-  CStdString            m_strTitle;           /* name of this timer */
-  CStdString            m_strDirectory;       /* directory where the recording must be stored */
-  CStdString            m_strSummary;         /* summary string with the time to show inside a GUI list */
-  bool                  m_bIsActive;          /* active flag, if it is false backend ignore the timer */
-  int                   m_iClientId;          /* ID of the backend */
-  int                   m_iClientIndex;       /* index number of the tag, given by the backend, -1 for new */
-  int                   m_iClientChannelUid;  /* channel uid */
-  bool                  m_bIsRecording;       /* is this timer recording? */
-  int                   m_iPriority;          /* priority of the timer */
-  int                   m_iLifetime;          /* lifetime of the timer in days */
-  bool                  m_bIsRepeating;       /* repeating timer if true, use the m_FirstDay and repeat flags */
-  int                   m_iWeekdays;          /* bit based store of weekdays to repeat */
-  CStdString            m_strFileNameAndPath; /* filename is only for reference */
-  int                   m_iChannelNumber;     /* integer value of the channel number */
-  bool                  m_bIsRadio;           /* is radio channel if set */
+  CStdString            m_strTitle;           /*!< @brief name of this timer */
+  CStdString            m_strDirectory;       /*!< @brief directory where the recording must be stored */
+  CStdString            m_strSummary;         /*!< @brief summary string with the time to show inside a GUI list */
+  bool                  m_bIsActive;          /*!< @brief active flag, if it is false backend ignore the timer */
+  int                   m_iClientId;          /*!< @brief ID of the backend */
+  int                   m_iClientIndex;       /*!< @brief index number of the tag, given by the backend, -1 for new */
+  int                   m_iClientChannelUid;  /*!< @brief channel uid */
+  bool                  m_bIsRecording;       /*!< @brief is this timer recording? */
+  int                   m_iPriority;          /*!< @brief priority of the timer */
+  int                   m_iLifetime;          /*!< @brief lifetime of the timer in days */
+  bool                  m_bIsRepeating;       /*!< @brief repeating timer if true, use the m_FirstDay and repeat flags */
+  int                   m_iWeekdays;          /*!< @brief bit based store of weekdays to repeat */
+  CStdString            m_strFileNameAndPath; /*!< @brief filename is only for reference */
+  int                   m_iChannelNumber;     /*!< @brief integer value of the channel number */
+  bool                  m_bIsRadio;           /*!< @brief is radio channel if set */
   CPVREpgInfoTag *      m_epgInfo;
   const CPVRChannel *   m_channel;
+  unsigned int          m_iMarginStart;       /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
+  unsigned int          m_iMarginEnd;         /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
+
 
   CPVRTimerInfoTag(void);
   CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientId);
@@ -122,6 +125,12 @@ public:
   const CDateTime &FirstDayAsLocalTime(void) const;
   void SetFirstDayFromUTC(CDateTime &firstDay) { m_FirstDay = firstDay; }
   void SetFirstDayFromLocalTime(CDateTime &firstDay) { m_FirstDay = firstDay.GetAsUTCDateTime(); }
+
+  unsigned int MarginStart(void) const { return m_iMarginStart; }
+  void SetMarginStart(unsigned int iMinutes) { m_iMarginStart = iMinutes; }
+
+  unsigned int MarginEnd(void) const { return m_iMarginEnd; }
+  void SetMarginEnd(unsigned int iMinutes) { m_iMarginEnd = iMinutes; }
 
   /* Client control functions */
   bool AddToClient();

@@ -455,7 +455,9 @@ bool cVNSIData::GetTimersList(PVR_HANDLE handle)
       tag.iWeekdays         = vresp->extract_U32();
       tag.bIsRepeating      = tag.iWeekdays == 0 ? false : true;
       tag.strTitle          = vresp->extract_String();
-      tag.strDirectory            = "";
+      tag.strDirectory      = "";
+      tag.iMarginStart      = 0;
+      tag.iMarginEnd        = 0;
 
       PVR->TransferTimerEntry(handle, &tag);
       delete[] tag.strTitle;

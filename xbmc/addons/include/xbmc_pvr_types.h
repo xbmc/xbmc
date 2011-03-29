@@ -280,6 +280,8 @@ extern "C" {
     time_t        firstDay;            /*!< @brief (optional) the first day this recording is active in case of a repeating event */
     int           iWeekdays;           /*!< @brief (optional) weekday mask */
     int           iEpgUid;             /*!< @brief (optional) epg event id */
+    unsigned int  iMarginStart;        /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
+    unsigned int  iMarginEnd;          /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
   } ATTRIBUTE_PACKED PVR_TIMER;
 
   /*!

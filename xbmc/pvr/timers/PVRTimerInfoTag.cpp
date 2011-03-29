@@ -48,6 +48,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_iWeekdays          = 0;
   m_iPriority          = -1;
   m_iLifetime          = -1;
+  m_iMarginStart       = 0;
+  m_iMarginEnd         = 0;
   m_epgInfo            = NULL;
   m_channel            = NULL;
   m_strFileNameAndPath = "";
@@ -70,6 +72,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientI
   m_iWeekdays          = timer.iWeekdays;
   m_iPriority          = timer.iPriority;
   m_iLifetime          = timer.iLifetime;
+  m_iMarginStart       = timer.iMarginStart;
+  m_iMarginEnd         = timer.iMarginEnd;
   m_epgInfo            = NULL;
   m_channel            = NULL;
   m_strFileNameAndPath.Format("pvr://client%i/timers/%i", m_iClientId, m_iClientIndex);
@@ -104,6 +108,8 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
           m_strTitle           == right.m_strTitle &&
           m_iClientId          == right.m_iClientId &&
+          m_iMarginStart       == right.m_iMarginStart &&
+          m_iMarginEnd         == right.m_iMarginEnd &&
           bChannelsMatch);
 }
 
@@ -271,6 +277,8 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
   m_iWeekdays         = tag.m_iWeekdays;
   m_iChannelNumber    = tag.m_iChannelNumber;
   m_bIsRadio          = tag.m_bIsRadio;
+  m_iMarginStart      = tag.m_iMarginStart;
+  m_iMarginEnd        = tag.m_iMarginEnd;
 
   /* try to find an epg event */
   UpdateEpgEvent();
@@ -415,8 +423,8 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
     iMarginStop    = 10; /* default to 10 minutes */
 
   /* set the timer data */
-  CDateTime newStart = tag.StartAsUTC() - CDateTimeSpan(0, iMarginStart / 60, iMarginStart % 60, 0);
-  CDateTime newEnd = tag.EndAsUTC() + CDateTimeSpan(0, iMarginStop / 60, iMarginStop % 60, 0);
+  CDateTime newStart = tag.StartAsUTC();
+  CDateTime newEnd = tag.EndAsUTC();
   newTag->m_iClientIndex      = (tag.UniqueBroadcastID() > 0 ? tag.UniqueBroadcastID() : channel->ClientID());
   newTag->m_bIsActive         = true;
   newTag->m_strTitle          = tag.Title().IsEmpty() ? channel->ChannelName() : tag.Title();
@@ -428,6 +436,8 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   newTag->SetEndFromUTC(newEnd);
   newTag->m_iPriority         = iPriority;
   newTag->m_iLifetime         = iLifetime;
+  newTag->m_iMarginStart      = iMarginStart;
+  newTag->m_iMarginEnd        = iMarginStop;
 
   /* generate summary string */
   newTag->m_strSummary.Format("%s %s %s %s %s",

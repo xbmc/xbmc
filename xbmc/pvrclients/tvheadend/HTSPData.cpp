@@ -373,7 +373,7 @@ PVR_ERROR cHTSPData::GetTimers(PVR_HANDLE handle)
     tag.startTime         = recording.start;
     tag.endTime           = recording.stop;
     tag.strTitle          = recording.title.c_str();
-    tag.strDirectory            = "/";
+    tag.strDirectory      = "/";
     tag.strSummary        = "";
     tag.bIsActive         = recording.state == ST_SCHEDULED || recording.state == ST_RECORDING;
     tag.bIsRecording      = recording.state == ST_RECORDING;
@@ -383,6 +383,8 @@ PVR_ERROR cHTSPData::GetTimers(PVR_HANDLE handle)
     tag.firstDay          = 0;
     tag.iWeekdays         = 0;
     tag.iEpgUid           = 0;
+    tag.iMarginStart      = 0;
+    tag.iMarginEnd        = 0;
 
     PVR->TransferTimerEntry(handle, &tag);
   }
