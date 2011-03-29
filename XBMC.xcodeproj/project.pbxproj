@@ -1763,10 +1763,6 @@
 		F5A7A6221127980A0059D6AA /* posix-realtime-stub.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */; };
 		F5A7A6F1112893330059D6AA /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F0112893330059D6AA /* libjsoncpp.a */; };
 		F5A7A6F2112893330059D6AA /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F0112893330059D6AA /* libjsoncpp.a */; };
-		F5A7A6F4112893440059D6AA /* json-rpc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F3112893440059D6AA /* json-rpc.a */; };
-		F5A7A6F5112893440059D6AA /* json-rpc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F3112893440059D6AA /* json-rpc.a */; };
-		F5A7A6F71128934C0059D6AA /* http-api.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F61128934C0059D6AA /* http-api.a */; };
-		F5A7A6F81128934D0059D6AA /* http-api.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F61128934C0059D6AA /* http-api.a */; };
 		F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
 		F5A7A703112893E50059D6AA /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
 		F5A7A85B112908F00059D6AA /* WebServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A859112908F00059D6AA /* WebServer.cpp */; };
@@ -1784,6 +1780,34 @@
 		F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
 		F5AACA980FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
 		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
+		F5AE407613415D8D0004BD79 /* HttpApi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE406F13415D8C0004BD79 /* HttpApi.cpp */; };
+		F5AE407913415D8D0004BD79 /* XBMChttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE407413415D8C0004BD79 /* XBMChttp.cpp */; };
+		F5AE407A13415D8D0004BD79 /* HttpApi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE406F13415D8C0004BD79 /* HttpApi.cpp */; };
+		F5AE407D13415D8D0004BD79 /* XBMChttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE407413415D8C0004BD79 /* XBMChttp.cpp */; };
+		F5AE409C13415D9E0004BD79 /* AudioLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */; };
+		F5AE409D13415D9E0004BD79 /* AVPlayerOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408213415D9E0004BD79 /* AVPlayerOperations.cpp */; };
+		F5AE409E13415D9E0004BD79 /* AVPlaylistOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408413415D9E0004BD79 /* AVPlaylistOperations.cpp */; };
+		F5AE409F13415D9E0004BD79 /* FileItemHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408613415D9E0004BD79 /* FileItemHandler.cpp */; };
+		F5AE40A013415D9E0004BD79 /* FileOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408813415D9E0004BD79 /* FileOperations.cpp */; };
+		F5AE40A113415D9E0004BD79 /* JSONRPC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408C13415D9E0004BD79 /* JSONRPC.cpp */; };
+		F5AE40A313415D9E0004BD79 /* PicturePlayerOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409013415D9E0004BD79 /* PicturePlayerOperations.cpp */; };
+		F5AE40A413415D9E0004BD79 /* PlayerOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409213415D9E0004BD79 /* PlayerOperations.cpp */; };
+		F5AE40A513415D9E0004BD79 /* PlaylistOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409413415D9E0004BD79 /* PlaylistOperations.cpp */; };
+		F5AE40A613415D9E0004BD79 /* SystemOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409613415D9E0004BD79 /* SystemOperations.cpp */; };
+		F5AE40A713415D9E0004BD79 /* VideoLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409813415D9E0004BD79 /* VideoLibrary.cpp */; };
+		F5AE40A813415D9E0004BD79 /* XBMCOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409A13415D9E0004BD79 /* XBMCOperations.cpp */; };
+		F5AE40A913415D9E0004BD79 /* AudioLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */; };
+		F5AE40AA13415D9E0004BD79 /* AVPlayerOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408213415D9E0004BD79 /* AVPlayerOperations.cpp */; };
+		F5AE40AB13415D9E0004BD79 /* AVPlaylistOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408413415D9E0004BD79 /* AVPlaylistOperations.cpp */; };
+		F5AE40AC13415D9E0004BD79 /* FileItemHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408613415D9E0004BD79 /* FileItemHandler.cpp */; };
+		F5AE40AD13415D9E0004BD79 /* FileOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408813415D9E0004BD79 /* FileOperations.cpp */; };
+		F5AE40AE13415D9E0004BD79 /* JSONRPC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE408C13415D9E0004BD79 /* JSONRPC.cpp */; };
+		F5AE40B013415D9E0004BD79 /* PicturePlayerOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409013415D9E0004BD79 /* PicturePlayerOperations.cpp */; };
+		F5AE40B113415D9E0004BD79 /* PlayerOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409213415D9E0004BD79 /* PlayerOperations.cpp */; };
+		F5AE40B213415D9E0004BD79 /* PlaylistOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409413415D9E0004BD79 /* PlaylistOperations.cpp */; };
+		F5AE40B313415D9E0004BD79 /* SystemOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409613415D9E0004BD79 /* SystemOperations.cpp */; };
+		F5AE40B413415D9E0004BD79 /* VideoLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409813415D9E0004BD79 /* VideoLibrary.cpp */; };
+		F5AE40B513415D9E0004BD79 /* XBMCOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409A13415D9E0004BD79 /* XBMCOperations.cpp */; };
 		F5B13C8D1334056B0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13C8C1334056B0045076D /* DarwinUtils.mm */; };
 		F5B13C8E1334056B0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13C8C1334056B0045076D /* DarwinUtils.mm */; };
 		F5B5CFF0133AF993007A4B4C /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */; };
@@ -3715,8 +3739,6 @@
 		F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "posix-realtime-stub.c"; sourceTree = "<group>"; };
 		F5A7A6201127980A0059D6AA /* posix-realtime-stub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "posix-realtime-stub.h"; sourceTree = "<group>"; };
 		F5A7A6F0112893330059D6AA /* libjsoncpp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjsoncpp.a; path = lib/jsoncpp/src/lib_json/libjsoncpp.a; sourceTree = "<group>"; };
-		F5A7A6F3112893440059D6AA /* json-rpc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "json-rpc.a"; path = "xbmc/interfaces/json-rpc/json-rpc.a"; sourceTree = "<group>"; };
-		F5A7A6F61128934C0059D6AA /* http-api.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "http-api.a"; path = "xbmc/interfaces/http-api/http-api.a"; sourceTree = "<group>"; };
 		F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnnouncementManager.cpp; sourceTree = "<group>"; };
 		F5A7A701112893E50059D6AA /* AnnouncementManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnouncementManager.h; sourceTree = "<group>"; };
 		F5A7A859112908F00059D6AA /* WebServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WebServer.cpp; sourceTree = "<group>"; };
@@ -3736,6 +3758,37 @@
 		F5ACB5370FC3DF3D00AAA056 /* eprintf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = eprintf.cpp; sourceTree = "<group>"; };
 		F5AD1EA60F488A1A0065EB5D /* GUIWindowKaraokeLyrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowKaraokeLyrics.h; sourceTree = "<group>"; };
 		F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowKaraokeLyrics.cpp; sourceTree = "<group>"; };
+		F5AE406F13415D8C0004BD79 /* HttpApi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpApi.cpp; sourceTree = "<group>"; };
+		F5AE407013415D8C0004BD79 /* HttpApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpApi.h; sourceTree = "<group>"; };
+		F5AE407413415D8C0004BD79 /* XBMChttp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMChttp.cpp; sourceTree = "<group>"; };
+		F5AE407513415D8C0004BD79 /* XBMChttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMChttp.h; sourceTree = "<group>"; };
+		F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioLibrary.cpp; sourceTree = "<group>"; };
+		F5AE408113415D9E0004BD79 /* AudioLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioLibrary.h; sourceTree = "<group>"; };
+		F5AE408213415D9E0004BD79 /* AVPlayerOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AVPlayerOperations.cpp; sourceTree = "<group>"; };
+		F5AE408313415D9E0004BD79 /* AVPlayerOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVPlayerOperations.h; sourceTree = "<group>"; };
+		F5AE408413415D9E0004BD79 /* AVPlaylistOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AVPlaylistOperations.cpp; sourceTree = "<group>"; };
+		F5AE408513415D9E0004BD79 /* AVPlaylistOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVPlaylistOperations.h; sourceTree = "<group>"; };
+		F5AE408613415D9E0004BD79 /* FileItemHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileItemHandler.cpp; sourceTree = "<group>"; };
+		F5AE408713415D9E0004BD79 /* FileItemHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileItemHandler.h; sourceTree = "<group>"; };
+		F5AE408813415D9E0004BD79 /* FileOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileOperations.cpp; sourceTree = "<group>"; };
+		F5AE408913415D9E0004BD79 /* FileOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileOperations.h; sourceTree = "<group>"; };
+		F5AE408A13415D9E0004BD79 /* IClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IClient.h; sourceTree = "<group>"; };
+		F5AE408B13415D9E0004BD79 /* ITransportLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITransportLayer.h; sourceTree = "<group>"; };
+		F5AE408C13415D9E0004BD79 /* JSONRPC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONRPC.cpp; sourceTree = "<group>"; };
+		F5AE408D13415D9E0004BD79 /* JSONRPC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRPC.h; sourceTree = "<group>"; };
+		F5AE408E13415D9E0004BD79 /* JSONUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONUtils.h; sourceTree = "<group>"; };
+		F5AE409013415D9E0004BD79 /* PicturePlayerOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PicturePlayerOperations.cpp; sourceTree = "<group>"; };
+		F5AE409113415D9E0004BD79 /* PicturePlayerOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PicturePlayerOperations.h; sourceTree = "<group>"; };
+		F5AE409213415D9E0004BD79 /* PlayerOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerOperations.cpp; sourceTree = "<group>"; };
+		F5AE409313415D9E0004BD79 /* PlayerOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerOperations.h; sourceTree = "<group>"; };
+		F5AE409413415D9E0004BD79 /* PlaylistOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlaylistOperations.cpp; sourceTree = "<group>"; };
+		F5AE409513415D9E0004BD79 /* PlaylistOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistOperations.h; sourceTree = "<group>"; };
+		F5AE409613415D9E0004BD79 /* SystemOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemOperations.cpp; sourceTree = "<group>"; };
+		F5AE409713415D9E0004BD79 /* SystemOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemOperations.h; sourceTree = "<group>"; };
+		F5AE409813415D9E0004BD79 /* VideoLibrary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoLibrary.cpp; sourceTree = "<group>"; };
+		F5AE409913415D9E0004BD79 /* VideoLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibrary.h; sourceTree = "<group>"; };
+		F5AE409A13415D9E0004BD79 /* XBMCOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCOperations.cpp; sourceTree = "<group>"; };
+		F5AE409B13415D9E0004BD79 /* XBMCOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCOperations.h; sourceTree = "<group>"; };
 		F5B138641330811D0045076D /* libmicrohttpd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmicrohttpd.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libmicrohttpd.dylib"; sourceTree = "<absolute>"; };
 		F5B13C8B1334056B0045076D /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
 		F5B13C8C1334056B0045076D /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
@@ -3841,8 +3894,6 @@
 				F5DC8817110A4B8900EE1B15 /* libxbms.a in Frameworks */,
 				F5DC888B110A654000EE1B15 /* libapetag.a in Frameworks */,
 				F5A7A6F1112893330059D6AA /* libjsoncpp.a in Frameworks */,
-				F5A7A6F4112893440059D6AA /* json-rpc.a in Frameworks */,
-				F5A7A6F71128934C0059D6AA /* http-api.a in Frameworks */,
 				F56C8CE2131F5DAF000AD0F6 /* libc.dylib in Frameworks */,
 				F56C8CE7131F5DC6000AD0F6 /* libz.dylib in Frameworks */,
 				F56C8CEA131F5DCC000AD0F6 /* libm.dylib in Frameworks */,
@@ -3890,8 +3941,6 @@
 				F59879090FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
 				F5DC888C110A654000EE1B15 /* libapetag.a in Frameworks */,
 				F5A7A6F2112893330059D6AA /* libjsoncpp.a in Frameworks */,
-				F5A7A6F5112893440059D6AA /* json-rpc.a in Frameworks */,
-				F5A7A6F81128934D0059D6AA /* http-api.a in Frameworks */,
 				F56C8CE3131F5DAF000AD0F6 /* libc.dylib in Frameworks */,
 				F56C8CE8131F5DC6000AD0F6 /* libz.dylib in Frameworks */,
 				F56C8CEB131F5DCC000AD0F6 /* libm.dylib in Frameworks */,
@@ -4668,7 +4717,9 @@
 				F5A7A701112893E50059D6AA /* AnnouncementManager.h */,
 				7CCF7F1B1069F3AE00992676 /* Builtins.cpp */,
 				7CCF7F1C1069F3AE00992676 /* Builtins.h */,
+				F5AE406E13415D8C0004BD79 /* http-api */,
 				436721A612D66A09002508E6 /* IAnnouncer.h */,
+				F5AE407F13415D9E0004BD79 /* json-rpc */,
 			);
 			path = interfaces;
 			sourceTree = "<group>";
@@ -6856,8 +6907,6 @@
 			isa = PBXGroup;
 			children = (
 				F5DC888A110A654000EE1B15 /* libapetag.a */,
-				F5A7A6F61128934C0059D6AA /* http-api.a */,
-				F5A7A6F3112893440059D6AA /* json-rpc.a */,
 				F5A7A6F0112893330059D6AA /* libjsoncpp.a */,
 				43352CED1071634600706B8A /* libsquish.a */,
 				E38E256C0D263A1C00618676 /* librtv.a */,
@@ -6879,6 +6928,51 @@
 				F5A00B250EFDE44100CD59F3 /* NullDirectSound.h */,
 			);
 			name = AudioRenderers;
+			sourceTree = "<group>";
+		};
+		F5AE406E13415D8C0004BD79 /* http-api */ = {
+			isa = PBXGroup;
+			children = (
+				F5AE406F13415D8C0004BD79 /* HttpApi.cpp */,
+				F5AE407013415D8C0004BD79 /* HttpApi.h */,
+				F5AE407413415D8C0004BD79 /* XBMChttp.cpp */,
+				F5AE407513415D8C0004BD79 /* XBMChttp.h */,
+			);
+			path = "http-api";
+			sourceTree = "<group>";
+		};
+		F5AE407F13415D9E0004BD79 /* json-rpc */ = {
+			isa = PBXGroup;
+			children = (
+				F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */,
+				F5AE408113415D9E0004BD79 /* AudioLibrary.h */,
+				F5AE408213415D9E0004BD79 /* AVPlayerOperations.cpp */,
+				F5AE408313415D9E0004BD79 /* AVPlayerOperations.h */,
+				F5AE408413415D9E0004BD79 /* AVPlaylistOperations.cpp */,
+				F5AE408513415D9E0004BD79 /* AVPlaylistOperations.h */,
+				F5AE408613415D9E0004BD79 /* FileItemHandler.cpp */,
+				F5AE408713415D9E0004BD79 /* FileItemHandler.h */,
+				F5AE408813415D9E0004BD79 /* FileOperations.cpp */,
+				F5AE408913415D9E0004BD79 /* FileOperations.h */,
+				F5AE408A13415D9E0004BD79 /* IClient.h */,
+				F5AE408B13415D9E0004BD79 /* ITransportLayer.h */,
+				F5AE408C13415D9E0004BD79 /* JSONRPC.cpp */,
+				F5AE408D13415D9E0004BD79 /* JSONRPC.h */,
+				F5AE408E13415D9E0004BD79 /* JSONUtils.h */,
+				F5AE409013415D9E0004BD79 /* PicturePlayerOperations.cpp */,
+				F5AE409113415D9E0004BD79 /* PicturePlayerOperations.h */,
+				F5AE409213415D9E0004BD79 /* PlayerOperations.cpp */,
+				F5AE409313415D9E0004BD79 /* PlayerOperations.h */,
+				F5AE409413415D9E0004BD79 /* PlaylistOperations.cpp */,
+				F5AE409513415D9E0004BD79 /* PlaylistOperations.h */,
+				F5AE409613415D9E0004BD79 /* SystemOperations.cpp */,
+				F5AE409713415D9E0004BD79 /* SystemOperations.h */,
+				F5AE409813415D9E0004BD79 /* VideoLibrary.cpp */,
+				F5AE409913415D9E0004BD79 /* VideoLibrary.h */,
+				F5AE409A13415D9E0004BD79 /* XBMCOperations.cpp */,
+				F5AE409B13415D9E0004BD79 /* XBMCOperations.h */,
+			);
+			path = "json-rpc";
 			sourceTree = "<group>";
 		};
 		F5E55E601076B34F006E788A /* libsquish */ = {
@@ -8035,6 +8129,20 @@
 				F5B13C8D1334056B0045076D /* DarwinUtils.mm in Sources */,
 				7C99B6A4133D342100FC2B16 /* CacheCircular.cpp in Sources */,
 				7C99B7951340723F00FC2B16 /* GUIDialogPlayEject.cpp in Sources */,
+				F5AE407613415D8D0004BD79 /* HttpApi.cpp in Sources */,
+				F5AE407913415D8D0004BD79 /* XBMChttp.cpp in Sources */,
+				F5AE409C13415D9E0004BD79 /* AudioLibrary.cpp in Sources */,
+				F5AE409D13415D9E0004BD79 /* AVPlayerOperations.cpp in Sources */,
+				F5AE409E13415D9E0004BD79 /* AVPlaylistOperations.cpp in Sources */,
+				F5AE409F13415D9E0004BD79 /* FileItemHandler.cpp in Sources */,
+				F5AE40A013415D9E0004BD79 /* FileOperations.cpp in Sources */,
+				F5AE40A113415D9E0004BD79 /* JSONRPC.cpp in Sources */,
+				F5AE40A313415D9E0004BD79 /* PicturePlayerOperations.cpp in Sources */,
+				F5AE40A413415D9E0004BD79 /* PlayerOperations.cpp in Sources */,
+				F5AE40A513415D9E0004BD79 /* PlaylistOperations.cpp in Sources */,
+				F5AE40A613415D9E0004BD79 /* SystemOperations.cpp in Sources */,
+				F5AE40A713415D9E0004BD79 /* VideoLibrary.cpp in Sources */,
+				F5AE40A813415D9E0004BD79 /* XBMCOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8907,6 +9015,20 @@
 				F5B13C8E1334056B0045076D /* DarwinUtils.mm in Sources */,
 				7C99B6A5133D342100FC2B16 /* CacheCircular.cpp in Sources */,
 				7C99B7961340723F00FC2B16 /* GUIDialogPlayEject.cpp in Sources */,
+				F5AE407A13415D8D0004BD79 /* HttpApi.cpp in Sources */,
+				F5AE407D13415D8D0004BD79 /* XBMChttp.cpp in Sources */,
+				F5AE40A913415D9E0004BD79 /* AudioLibrary.cpp in Sources */,
+				F5AE40AA13415D9E0004BD79 /* AVPlayerOperations.cpp in Sources */,
+				F5AE40AB13415D9E0004BD79 /* AVPlaylistOperations.cpp in Sources */,
+				F5AE40AC13415D9E0004BD79 /* FileItemHandler.cpp in Sources */,
+				F5AE40AD13415D9E0004BD79 /* FileOperations.cpp in Sources */,
+				F5AE40AE13415D9E0004BD79 /* JSONRPC.cpp in Sources */,
+				F5AE40B013415D9E0004BD79 /* PicturePlayerOperations.cpp in Sources */,
+				F5AE40B113415D9E0004BD79 /* PlayerOperations.cpp in Sources */,
+				F5AE40B213415D9E0004BD79 /* PlaylistOperations.cpp in Sources */,
+				F5AE40B313415D9E0004BD79 /* SystemOperations.cpp in Sources */,
+				F5AE40B413415D9E0004BD79 /* VideoLibrary.cpp in Sources */,
+				F5AE40B513415D9E0004BD79 /* XBMCOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
