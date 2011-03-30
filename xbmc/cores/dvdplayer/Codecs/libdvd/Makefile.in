@@ -49,12 +49,12 @@ $(SYSDIR)/libdvdnav-$(ARCH).so: $(WRAPPER_OSX) $(DVDCSS_A) libdvdread/obj/libdvd
 else
 
 $(SYSDIR)/libdvdcss-$(ARCH).so: $(WRAPPER) libdvdcss/src/.libs/libdvdcss.a
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ \
+	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ \
 		libdvdcss/src/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/libdvdnav-$(ARCH).so: $(WRAPPER) $(DVDCSS_A) libdvdread/obj/libdvdread.a libdvdnav/obj/libdvdnav.a
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ $(DVDCSS_O) libdvdread/obj/*.o libdvdnav/obj/*.o \
+	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ $(DVDCSS_O) libdvdread/obj/*.o libdvdnav/obj/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 endif

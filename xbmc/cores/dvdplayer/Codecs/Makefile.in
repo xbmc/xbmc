@@ -148,32 +148,32 @@ liba52:
 else
 
 $(SYSDIR)/avutil-50-$(ARCH).so: ffmpeg/libavutil/libavutil.so
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ -Wl,-Bsymbolic \
+	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ -Wl,-Bsymbolic \
 		ffmpeg/libavutil/*.o `cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/avcodec-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavcodec/libavcodec.so
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ -Wl,-Bsymbolic \
+	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ -Wl,-Bsymbolic \
 		ffmpeg/libavcodec/*.o ffmpeg/libavcodec/$(ARCH_DIR)/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.so
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ -Wl,-Bsymbolic \
+	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ -Wl,-Bsymbolic \
 		ffmpeg/libavformat/*.o `cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 ifneq ($(ARCH), arm)
 $(SYSDIR)/swscale-0.6.1-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ -Wl,-Bsymbolic \
+	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ -Wl,-Bsymbolic \
 		ffmpeg/libswscale/*.o ffmpeg/libswscale/$(ARCH_DIR)/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 else # No ARM version of swscale available yet.
 $(SYSDIR)/swscale-0.6.1-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ -Wl,-Bsymbolic \
+	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ -Wl,-Bsymbolic \
 		ffmpeg/libswscale/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 endif
 
 $(SYSDIR)/postproc-51-$(ARCH).so: $(WRAPPER) ffmpeg/libpostproc/libpostproc.so
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ -Wl,-Bsymbolic \
+	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ -Wl,-Bsymbolic \
 		ffmpeg/libpostproc/*.o `cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 ffmpeg/libavutil/libavutil.so     : ffmpeg;
@@ -185,17 +185,17 @@ ffmpeg:
 	$(MAKE) -C $@
 
 $(SYSDIR)/libdts-$(ARCH).so: $(WRAPPER) libdts/libdts/libdts.a
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ \
+	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ \
 		libdts/libdts/bitstream.o \
 		libdts/libdts/downmix.o libdts/libdts/parse.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/liba52-$(ARCH).so: $(WRAPPER) liba52/liba52/liba52.la
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ liba52/liba52/.libs/*.o \
+	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ liba52/liba52/.libs/*.o \
 		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/libao-$(ARCH).so: $(WRAPPER) liba52/libao/libao.a
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ liba52/libao/libao.a \
+	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ liba52/libao/libao.a \
 		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 libdts/libdts/libdts.a : libdts;
