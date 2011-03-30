@@ -385,7 +385,7 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
   char           command[256];
   string         result;
   cEpg           epg;
-  EPG_TAG   broadcast;
+  EPG_TAG        broadcast;
 
   XBMC->Log(LOG_DEBUG, "->RequestEPGForChannel(%i)", channel.iChannelNumber);
 
@@ -400,6 +400,8 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
   {
     if( result.length() != 0)
     {
+      memset(&broadcast, NULL, sizeof(EPG_TAG));
+
       Tokenize(result, lines, ",");
 
       XBMC->Log(LOG_DEBUG, "Found %i EPG items for channel %i\n", lines.size(), channel.iChannelNumber);
@@ -416,24 +418,25 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
 
           if (isEnd && epg.StartTime() != 0)
           {
-            broadcast.iChannelNumber     = channel.iChannelNumber;
             broadcast.iUniqueBroadcastId = epg.UniqueId();
             broadcast.strTitle           = epg.Title();
-            broadcast.strPlotOutline     = epg.ShortText();
-            broadcast.strPlot            = epg.Description();
+            broadcast.iChannelNumber     = channel.iChannelNumber;
             broadcast.startTime          = epg.StartTime();
             broadcast.endTime            = epg.EndTime();
+            broadcast.strPlotOutline     = epg.ShortText();
+            broadcast.strPlot            = epg.Description();
+            broadcast.strIconPath        = "";
             broadcast.iGenreType         = epg.GenreType();
             broadcast.iGenreSubType      = epg.GenreSubType();
             //broadcast.genre_text       = epg.Genre();
+            broadcast.firstAired         = 0;
             broadcast.iParentalRating    = 0;
-            broadcast.iEpisodeNumber        = 0;
-            broadcast.iEpisodePartNumber       = 0;
-            broadcast.iSeriesNumber         = 0;
             broadcast.iStarRating        = 0;
             broadcast.bNotify            = false;
+            broadcast.iSeriesNumber      = 0;
+            broadcast.iEpisodeNumber     = 0;
+            broadcast.iEpisodePartNumber = 0;
             broadcast.strEpisodeName     = "";
-            broadcast.strIconPath        = "";
 
             PVR->TransferEpgEntry(handle, &broadcast);
           }
@@ -475,6 +478,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
   vector<string>  lines;
   CStdString      command;
   int             code;
+  PVR_CHANNEL     tag;
 
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
@@ -488,6 +492,8 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
     command.Format("ListTVChannels:%s\n", uri::encode(uri::PATH_TRAITS, g_szTVGroup).c_str());
   }
   SendCommand2(command.c_str(), code, lines);
+
+  memset(&tag, NULL, sizeof(PVR_CHANNEL));
 
   for (vector<string>::iterator it = lines.begin(); it < lines.end(); it++)
   {
@@ -511,7 +517,6 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
     cChannel channel;
     if( channel.Parse(data) )
     {
-      PVR_CHANNEL tag;
       tag.iUniqueId = channel.UID();
       tag.iChannelNumber = channel.UID(); //channel.ExternalID();
       tag.strChannelName = channel.Name();
@@ -565,6 +570,7 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
 {
   vector<string>  lines;
   string          result;
+  PVR_RECORDING   tag;
 
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
@@ -580,6 +586,8 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
 
   Tokenize(result, lines, ",");
 
+  memset(&tag, NULL, sizeof(PVR_RECORDING));
+
   for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
   {
     string& data(*it);
@@ -594,17 +602,16 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
     cRecording recording;
     if (recording.ParseLine(data))
     {
-      PVR_RECORDING tag;
       tag.iClientIndex   = recording.Index();
+      tag.strTitle       = recording.Title();
+      tag.strDirectory   = ""; //used in XBMC as directory structure below "Server X - hostname"
+      tag.strPlotOutline = recording.Description();
+      tag.strPlot        = tag.strTitle;
       tag.strChannelName = recording.ChannelName();
-      tag.iLifetime      = MAXLIFETIME; //TODO: recording.Lifetime();
-      tag.iPriority      = 0; //TODO? recording.Priority();
       tag.recordingTime  = recording.StartTime();
       tag.iDuration      = (int) recording.Duration();
-      tag.strDirectory   = recording.Description();
-      tag.strTitle       = recording.Title();
-      tag.strPlot        = tag.strTitle;
-      tag.strDirectory   = ""; //used in XBMC as directory structure below "Server X - hostname"
+      tag.iPriority      = 0; //TODO? recording.Priority();
+      tag.iLifetime      = MAXLIFETIME; //TODO: recording.Lifetime();
 
       if (g_bUseRecordingsDir == true)
       { //Replace path by given path in g_szRecordingsDir
