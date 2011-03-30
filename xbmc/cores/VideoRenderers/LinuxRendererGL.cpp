@@ -573,7 +573,17 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     m_iLastRenderBuffer = index;
 
   if (clear)
-    DrawBlackBars();
+  {
+    //draw black bars when video is not transparent, clear the entire backbuffer when it is
+    if (alpha == 255)
+      DrawBlackBars();
+    else
+    {
+      glClearColor(m_clearColour, m_clearColour, m_clearColour, 0);
+      glClear(GL_COLOR_BUFFER_BIT);
+      glClearColor(0,0,0,0);
+    }
+  }
 
   if (alpha<255)
   {
