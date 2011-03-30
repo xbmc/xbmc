@@ -160,6 +160,7 @@ protected:
   void         ClearBackBuffer();
   void         DrawBlackBars();
 
+  bool ValidateRenderer();
   virtual void ManageTextures();
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
