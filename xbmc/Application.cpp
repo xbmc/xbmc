@@ -3558,47 +3558,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #ifdef HAS_DVD_DRIVE
   if (item.IsDiscStub())
   {
-    // Figure out Line 1 of the dialog
-    CStdString strLine1;
-    if (item.GetVideoInfoTag())
-    {
-      strLine1 = item.GetVideoInfoTag()->m_strTitle;
-    }
-    else
-    {
-      strLine1 = URIUtils::GetFileName(item.m_strPath);
-      URIUtils::RemoveExtension(strLine1);
-    }
-
-    // Figure out Line 2 of the dialog
-    CStdString strLine2;
-
-    CFile discStubFile;
-    discStubFile.Open(item.m_strPath);
-    int iSize = discStubFile.GetLength();
-    discStubFile.Close();
-
-    if (iSize > 0)
-    {
-      TiXmlDocument discStubXML;
-      if (!discStubXML.LoadFile(item.m_strPath))
-      {
-        CLog::Log(LOGERROR, "Error loading %s at line %d\n%s", item.m_strPath.c_str(),
-          discStubXML.ErrorRow(), discStubXML.ErrorDesc());
-      }
-      else
-      {
-        TiXmlElement * pRootElement = discStubXML.RootElement();
-        if (!pRootElement || strcmpi(pRootElement->Value(), "discstub") != 0)
-          CLog::Log(LOGERROR, "Error loading %s, no <discstub> node", item.m_strPath.c_str());
-        else
-          XMLUtils::GetString(pRootElement, "message", strLine2);
-      }
-    }
-
     // Display the Play Eject dialog
-    if (CGUIDialogPlayEject::ShowAndGetInput(219, 429, strLine1, strLine2))
-      MEDIA_DETECT::CAutorun::PlayDisc();
+    if (CGUIDialogPlayEject::ShowAndGetInput(item))
+      return MEDIA_DETECT::CAutorun::PlayDisc();
 
     return true;
   }
