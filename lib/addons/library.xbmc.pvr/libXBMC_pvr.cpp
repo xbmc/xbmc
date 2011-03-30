@@ -154,4 +154,20 @@ DLLEXPORT DemuxPacket* PVR_allocate_demux_packet(int iDataSize)
   return m_cb->AllocateDemuxPacket(m_Handle->addonData, iDataSize);
 }
 
+DLLEXPORT void PVR_transfer_channel_group(const PVR_HANDLE handle, const PVR_CHANNEL_GROUP *group)
+{
+  if (m_cb == NULL)
+    return;
+
+  m_cb->TransferChannelGroup(m_Handle->addonData, handle, group);
+}
+
+DLLEXPORT void PVR_transfer_channel_group_member(const PVR_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
+{
+  if (m_cb == NULL)
+    return;
+
+  m_cb->TransferChannelGroupMember(m_Handle->addonData, handle, member);
+}
+
 };
