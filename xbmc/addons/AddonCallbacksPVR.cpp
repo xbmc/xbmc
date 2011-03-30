@@ -72,6 +72,12 @@ void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const PVR_HAND
     return;
   }
 
+  if (strlen(group->strGroupName) == 0)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - empty group name", __FUNCTION__);
+    return;
+  }
+
   CPVRChannelGroups *xbmcGroups = (CPVRChannelGroups *) handle->dataAddress;
   CPVRChannelGroup xbmcGroup(*group);
 
