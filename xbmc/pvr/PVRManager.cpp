@@ -417,10 +417,6 @@ void CPVRManager::Process()
 
       /* get recordings from the backend */
       m_recordings->Load();
-
-      /* start the EPG thread */
-      m_epg->AddObserver(this);
-      m_epg->Start();
     }
 
     /* check if there are (still) any enabled addons */
@@ -432,6 +428,10 @@ void CPVRManager::Process()
   }
 
   m_bLoaded = true;
+
+  /* start the EPG thread */
+  m_epg->AddObserver(this);
+  m_epg->Start();
 
   /* continue last watched channel after first startup */
   if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
