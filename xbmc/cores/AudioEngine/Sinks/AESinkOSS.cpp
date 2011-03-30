@@ -166,7 +166,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
     return false;
   }
 
-#ifndef OSS4
+#if !defined(OSS4) && !defined(__FreeBSD__)
   int mask = 0;
   for(unsigned int i = 0; format.m_channelLayout[i] != AE_CH_NULL; ++i)
     switch(format.m_channelLayout[i])
