@@ -66,7 +66,7 @@ CAddonCallbacksPVR::~CAddonCallbacksPVR()
 void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP *group)
 {
   CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL || handle == NULL || group == NULL)
+  if (addon == NULL || handle == NULL || group == NULL || handle->dataAddress == NULL)
   {
     CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
     return;
@@ -88,19 +88,28 @@ void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const PVR_HAND
 void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
 {
   CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL || handle == NULL || member == NULL)
+  if (addon == NULL || handle == NULL || member == NULL || handle->dataAddress == NULL)
   {
     CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
   CPVRChannelGroups *xbmcGroups = (CPVRChannelGroups *) handle->dataAddress;
-  CPVRChannelGroup *group = (CPVRChannelGroup *) xbmcGroups->GetByName(member->strGroupName);
+  //CPVRChannelGroup *group = (CPVRChannelGroup *) xbmcGroups->GetByName(member->strGroupName);
+  //XXX find out why we're getting a copy of the group here
+  CPVRChannelGroup *group = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->Get(xbmcGroups->IsRadio())->GetByName(member->strGroupName);
   CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByChannelIDFromAll(member->iChannelUniqueId);
   if (group != NULL && channel != NULL)
   {
     /* transfer this entry to the group */
+    CLog::Log(LOGDEBUG, "CAddonCallbacksPVR - %s - add channel '%s' to group '%s' at position %d",
+        __FUNCTION__, channel->ChannelName().c_str(), group->GroupName().c_str(), member->iChannelNumber);
     group->AddToGroup(channel, member->iChannelNumber);
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - cannot find group '%s' or channel '%d'",
+        __FUNCTION__, member->strGroupName, member->iChannelUniqueId);
   }
 }
 

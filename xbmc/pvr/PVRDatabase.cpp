@@ -494,6 +494,10 @@ bool CPVRDatabase::GetChannelGroupList(CPVRChannelGroups &results, bool bRadio)
         data.SetSortOrder(m_pDS->fv("iSortOrder").get_asInt());
 
         results.Update(data);
+
+        CLog::Log(LOGDEBUG, "PVRDB - %s - group '%s' loaded from the database",
+            __FUNCTION__, data.GroupName().c_str());
+
         m_pDS->next();
       }
       m_pDS->close();

@@ -805,7 +805,7 @@ int CPVRClients::GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error)
   while (itrClients != clients.end())
   {
     if ((*itrClients).second->ReadyToUse())
-      (*itrClients).second->GetChannelGroups(*groups);
+      (*itrClients).second->GetChannelGroups(groups);
 
     itrClients++;
   }
@@ -825,7 +825,7 @@ int CPVRClients::GetChannelGroupMembers(CPVRChannelGroup *group, PVR_ERROR *erro
   while (itrClients != clients.end())
   {
     if ((*itrClients).second->ReadyToUse())
-      (*itrClients).second->GetChannelGroupMembers(*group);
+      (*itrClients).second->GetChannelGroupMembers(group);
 
     itrClients++;
   }

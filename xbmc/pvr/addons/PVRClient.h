@@ -204,14 +204,14 @@ public:
    * @param groups The groups container to get the groups for.
    * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
    */
-  PVR_ERROR GetChannelGroups(CPVRChannelGroups &groups);
+  PVR_ERROR GetChannelGroups(CPVRChannelGroups *groups);
 
   /*!
    * @brief Request the list of all group members from the backend.
    * @param groups The group to get the members for.
    * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
    */
-  PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup &group);
+  PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup *group);
 
   //@}
   /** @name PVR channel methods */

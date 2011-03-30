@@ -403,7 +403,10 @@ int CPVRChannelGroup::LoadFromClients(bool bAddToDb /* = true */)
   if (error != PVR_ERROR_NO_ERROR)
     return -1;
 
-  SortByChannelNumber();
+  if (iCurSize == 0)
+    SortByClientChannelNumber();
+  else
+    SortByChannelNumber();
   Renumber();
 
   if (bAddToDb)
@@ -501,6 +504,7 @@ bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 
       // TODO notify observers
       push_back(newMember);
       SortByChannelNumber();
+      Renumber();
       bReturn = true;
     }
   }

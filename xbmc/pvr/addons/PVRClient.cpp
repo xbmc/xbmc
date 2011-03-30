@@ -347,7 +347,7 @@ int CPVRClient::GetChannelGroupsAmount(void)
   return iReturn;
 }
 
-PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups &groups)
+PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups *groups)
 {
   PVR_ERROR retVal = PVR_ERROR_UNKOWN;
   CSingleLock lock(m_critSection);
@@ -362,8 +362,8 @@ PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups &groups)
   {
     PVR_HANDLE_STRUCT handle;
     handle.callerAddress = this;
-    handle.dataAddress = (CPVRChannelGroups*) &groups;
-    retVal = m_pStruct->GetChannelGroups(&handle, groups.IsRadio());
+    handle.dataAddress = groups;
+    retVal = m_pStruct->GetChannelGroups(&handle, groups->IsRadio());
 
     if (retVal != PVR_ERROR_NO_ERROR)
     {
@@ -380,7 +380,7 @@ PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups &groups)
   return retVal;
 }
 
-PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup &group)
+PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup *group)
 {
   PVR_ERROR retVal = PVR_ERROR_UNKOWN;
   CSingleLock lock(m_critSection);
@@ -395,13 +395,13 @@ PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup &group)
   {
     PVR_HANDLE_STRUCT handle;
     handle.callerAddress = this;
-    handle.dataAddress = (CPVRChannelGroup*) &group;
+    handle.dataAddress = group;
 
     PVR_CHANNEL_GROUP tag;
-    WriteClientGroupInfo(group, tag);
+    WriteClientGroupInfo(*group, tag);
 
     //Workaround for string transfer to PVRclient
-    CStdString myName(group.GroupName());
+    CStdString myName(group->GroupName());
     tag.strGroupName = myName.c_str();
 
     retVal = m_pStruct->GetChannelGroupMembers(&handle, tag);

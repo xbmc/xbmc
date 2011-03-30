@@ -221,21 +221,6 @@ int CPVRChannelGroupInternal::LoadFromClients(void)
   if (error != PVR_ERROR_NO_ERROR)
     return -1;
 
-  /* sort by client channel number if this is the first time */
-  if (iCurSize == 0)
-    SortByClientChannelNumber();
-  else
-    SortByChannelNumber();
-
-  /* remove invalid channels */
-  RemoveInvalidChannels();
-
-  /* set channel numbers */
-  Renumber();
-
-  /* try to find channel icons */
-  SearchAndSetChannelIcons();
-
   return size() - iCurSize;
 }
 
@@ -282,6 +267,7 @@ bool CPVRChannelGroupInternal::UpdateChannel(const CPVRChannel &channel)
 bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
 {
   bool bChanged = false;
+  int iCurSize = size();
 
   CPVRChannelGroup *newChannels = new CPVRChannelGroup(m_bRadio);
 
@@ -357,9 +343,19 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
 
   if (bChanged)
   {
+    /* remove invalid channels */
+    RemoveInvalidChannels();
+
+    /* sort by client channel number if this is the first time */
+    if (iCurSize == 0)
+      SortByClientChannelNumber();
+
     /* renumber to make sure all channels have a channel number.
        new channels were added at the back, so they'll get the highest numbers */
     Renumber();
+
+    /* try to find channel icons */
+    SearchAndSetChannelIcons();
 
     return Persist();
   }
