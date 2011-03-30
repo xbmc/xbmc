@@ -3555,16 +3555,15 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       CUtil::ClearSubtitles();
   }
 
-#ifdef HAS_DVD_DRIVE
   if (item.IsDiscStub())
   {
+#ifdef HAS_DVD_DRIVE
     // Display the Play Eject dialog
     if (CGUIDialogPlayEject::ShowAndGetInput(item))
       return MEDIA_DETECT::CAutorun::PlayDisc();
-
+#endif
     return true;
   }
-#endif
 
   if (item.IsPlayList())
     return false;
