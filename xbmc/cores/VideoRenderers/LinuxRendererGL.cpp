@@ -578,11 +578,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     if (alpha == 255)
       DrawBlackBars();
     else
-    {
-      glClearColor(m_clearColour, m_clearColour, m_clearColour, 0);
-      glClear(GL_COLOR_BUFFER_BIT);
-      glClearColor(0,0,0,0);
-    }
+      ClearBackBuffer();
   }
 
   if (alpha<255)
@@ -617,6 +613,14 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   glFlush();
 
   g_graphicsContext.EndPaint();
+}
+
+void CLinuxRendererGL::ClearBackBuffer()
+{
+  //set the entire backbuffer to black
+  glClearColor(m_clearColour, m_clearColour, m_clearColour, 0);
+  glClear(GL_COLOR_BUFFER_BIT);
+  glClearColor(0,0,0,0);
 }
 
 //draw black bars around the video quad, this is more efficient than glClear()
