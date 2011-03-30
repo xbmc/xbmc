@@ -20,18 +20,26 @@
  *
  */
 
+#include "PVRTimerInfoTag.h"
 #include "DateTime.h"
 #include "addons/include/xbmc_pvr_types.h"
+#include "utils/Observer.h"
 
 class CFileItem;
 class CPVREpgInfoTag;
 class CGUIDialogPVRTimerSettings;
-class CPVRTimerInfoTag;
 
-class CPVRTimers : public std::vector<CPVRTimerInfoTag *>
+class CPVRTimers : public std::vector<CPVRTimerInfoTag *>,
+                   private Observer
 {
 private:
   CCriticalSection m_critSection;
+
+  /*!
+   * @brief Add timers to this container.
+   * @return The amount of timers that were added.
+   */
+  int LoadFromClients(void);
 
 public:
   CPVRTimers(void);
@@ -49,14 +57,15 @@ public:
 
   /**
    * Refresh the channel list from the clients.
-   * Returns the amount of timers that were added.
+   * True if anything was changed.
    */
-  int Update();
+  bool Update();
 
   /**
    * Update a timer entry in this container.
    */
-  bool Update(const CPVRTimerInfoTag &timer);
+  bool UpdateEntry(const CPVRTimerInfoTag &timer);
+  bool UpdateFromClient(const CPVRTimerInfoTag &timer) { return UpdateEntry(timer); }
 
   /********** getters **********/
 
@@ -67,9 +76,11 @@ public:
 
   /**
    * The timer that will be active next.
-   * Returns null if there is none.
+   * Returns false if there is none.
    */
-  CPVRTimerInfoTag *GetNextActiveTimer(void);
+  const CPVRTimerInfoTag *GetNextActiveTimer(void);
+
+  int GetActiveTimers(std::vector<CPVRTimerInfoTag *> *tags);
 
   /**
    * The amount of timers in this container.
@@ -129,7 +140,7 @@ public:
    * Delete a timer on the client.
    * True if it was sent correctly, false if not.
    */
-  static bool DeleteTimer(const CPVRTimerInfoTag &item, bool bForce = false);
+  static bool DeleteTimer(CPVRTimerInfoTag &item, bool bForce = false);
 
   /**
    * Rename a timer on the client.
@@ -155,6 +166,10 @@ public:
    */
   static bool UpdateTimer(CPVRTimerInfoTag &item);
 
+  bool IsRecording(void);
+  bool UpdateEntries(CPVRTimers *timers);
+  CPVRTimerInfoTag *GetByClient(int iClientId, int iClientTimerId);
   CPVRTimerInfoTag *GetMatch(const CEpgInfoTag *Epg);
   CPVRTimerInfoTag *GetMatch(const CFileItem *item);
+  virtual void Notify(const Observable &obs, const CStdString& msg);
 };

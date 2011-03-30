@@ -19,9 +19,18 @@
  *
  */
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "responsepacket.h"
 #include "vdrcommand.h"
 #include "tools.h"
+
+#ifdef __WINDOWS__
+#include <winsock2.h>
+#else
+#include <arpa/inet.h>
+#endif
 
 cResponsePacket::cResponsePacket()
 {

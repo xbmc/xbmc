@@ -20,11 +20,7 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-export CFLAGS+=-undefined dynamic_lookup
-export CXXFLAGS+=-undefined dynamic_lookup
-export LDFLAGS+=-Wl,-read_only_relocs,suppress
-CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared=yes \
-  ac_cv_func_gethrtime=no
+CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared=yes 
 
 LIBDYLIB=$(SOURCE)/.libs/libgcrypt.dylib
 

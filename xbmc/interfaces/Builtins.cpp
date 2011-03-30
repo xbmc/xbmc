@@ -39,6 +39,7 @@
 #include "video/windows/GUIWindowVideoBase.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "addons/Addon.h" // for TranslateType, TranslateContent
+#include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
 #include "music/LastFmManager.h"
@@ -330,6 +331,10 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       // disable the screensaver
       g_application.WakeUpScreenSaverAndDPMS();
+#if defined(__APPLE__) && defined(__arm__)
+      if (params[0].Equals("shutdownmenu"))
+        CBuiltins::Execute("Quit");
+#endif     
       g_windowManager.ActivateWindow(iWindow, params, !execute.Equals("activatewindow"));
     }
     else
@@ -342,7 +347,7 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     int controlID = atol(params[0].c_str());
     int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
-    CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetActiveWindow(), controlID, subItem);
+    CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetFocusedWindow(), controlID, subItem);
     g_windowManager.SendMessage(msg);
   }
 #ifdef HAS_PYTHON
@@ -1437,7 +1442,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("updateaddonrepos"))
   {
-    CAddonMgr::Get().UpdateRepos(true);
+    CAddonInstaller::Get().UpdateRepos(true);
   }
   else if (execute.Equals("toggledpms"))
   {

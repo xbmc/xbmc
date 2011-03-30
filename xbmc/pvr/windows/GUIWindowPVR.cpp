@@ -28,6 +28,7 @@
 #include "GUIWindowPVRTimers.h"
 
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
@@ -108,7 +109,7 @@ bool CGUIWindowPVR::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIWindowPVR::OnInitWindow(void)
 {
-  if (!CPVRManager::Get()->IsStarted() || !CPVRManager::Get()->HasActiveClients())
+  if (!CPVRManager::Get()->IsStarted() || !CPVRManager::GetClients()->HasActiveClients())
   {
     g_windowManager.PreviousWindow();
     CGUIDialogOK::ShowAndGetInput(19033,0,19045,19044);
@@ -280,4 +281,11 @@ void CGUIWindowPVR::CreateViews(void)
     m_windowSearch        = new CGUIWindowPVRSearch(this);
     m_windowTimers        = new CGUIWindowPVRTimers(this);
   }
+}
+
+void CGUIWindowPVR::InitializeEpgCache(void)
+{
+  CreateViews();
+
+  m_windowGuide->InitializeEpgCache();
 }

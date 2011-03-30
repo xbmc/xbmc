@@ -26,6 +26,7 @@
 #include "utils/Variant.h"
 #include "FileItem.h"
 #include "music/tags/MusicInfoTag.h"
+#include "video/VideoDatabase.h"
 
 using namespace std;
 using namespace ANNOUNCEMENT;
@@ -81,7 +82,7 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
 
   if (item->HasVideoInfoTag())
   {
-    CVideoDatabase::VideoContentTypeToString(item->GetVideoContentType(), type);
+    CVideoDatabase::VideoContentTypeToString((VIDEODB_CONTENT_TYPE)item->GetVideoContentType(), type);
     id = item->GetVideoInfoTag()->m_iDbId;
   }
   else if (item->HasMusicInfoTag())

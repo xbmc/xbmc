@@ -725,6 +725,9 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     return false;
   }
 
+  if (items.GetLabel().IsEmpty())
+    items.SetLabel(CUtil::GetTitleFromPath(items.m_strPath, true));
+
   ClearFileItems();
   m_vecItems->Copy(items);
 

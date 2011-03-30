@@ -15,6 +15,7 @@ SOURCE=$(LIBNAME)-$(VERSION)
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
 ARCHIVE=$(SOURCE).tar.bz2
 TARBALLS_LOCATION=/Users/Shared/xbmc-depends/tarballs
+
 RETRIEVE_TOOL=/usr/bin/curl
 RETRIEVE_TOOL_FLAGS=-Ls --create-dirs --output $(TARBALLS_LOCATION)/$(ARCHIVE)
 ARCHIVE_TOOL=tar
@@ -23,7 +24,7 @@ ARCHIVE_TOOL_FLAGS=xf
 # configuration settings
 export EXTRA_CFLAGS=$(CFLAGS)
 CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared \
-  --disable-toolbox-glue
+  --disable-toolbox-glue --enable-unicode=ucs4
 
 LIBDYLIB=$(SOURCE)/libpython2.6.dylib
 
@@ -39,6 +40,10 @@ $(LIBDYLIB): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); $(CONFIGURE)
+	# python2.6 has an issue detecting and using the same version of openssl in configure and setup.py
+	# this forces python2.6 hashlib to be compatible with osx 10.4 boxes.
+	sed -ie "s|openssl_ver >= 0x00907000)|openssl_ver >= 0x00907000 and False)|" "$(SOURCE)/setup.py"
+	sed -ie "s|(openssl_ver < 0x00908000)|(True or openssl_ver < 0x00908000)|" "$(SOURCE)/setup.py"
 	cd $(SOURCE); make
 
 .installed:

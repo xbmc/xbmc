@@ -88,7 +88,6 @@ IMAGES= \
 	diffuse_mirror.png \
 	diffuse_mirror2.png \
 	diffuse_mirror3.png \
-	Fanart_Diffuse.png \
 	Fanart_Fallback_Music_Small.jpg \
 	Fanart_Fallback_Small.jpg \
 	flagging/aspectratio/1.33.png \
@@ -192,8 +191,6 @@ IMAGES= \
 	MediaBladeSub.png \
 	MediaBladeSub_Part1.png \
 	MediaBladeSub_Part2.png \
-	MediaInfoBackLower.png \
-	MediaInfoBackUpper.png \
 	MediaItemDetailBG.png \
 	MediaSubSet.png \
 	MediaSubSetNF.png \
@@ -307,7 +304,6 @@ IMAGES= \
 	ThumbBG.png \
 	ThumbBorder.png \
 	ThumbShadow.png \
-	twc-logo.png \
 	unknown-user.png \
 	VisOsdPanel.png \
 	VolumeIcon-Mute.png \

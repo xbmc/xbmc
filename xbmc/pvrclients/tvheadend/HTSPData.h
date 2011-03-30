@@ -35,25 +35,27 @@ public:
   void Close();
   bool CheckConnection();
 
-  htsmsg_t* ReadResult(htsmsg_t* m);
-  int GetProtocol()   { return m_session.GetProtocol(); }
+  htsmsg_t*  ReadResult(htsmsg_t* m);
+  int        GetProtocol()   { return m_session.GetProtocol(); }
   CStdString GetServerName() { return m_session.GetServerName(); }
   CStdString GetVersion()    { return m_session.GetVersion(); }
-  bool GetDriveSpace(long long *total, long long *used);
-  bool GetTime(time_t *localTime, int *gmtOffset);
-  int GetNumChannels();
-  int GetNumRecordings();
-  PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio);
-  PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
-  PVR_ERROR RequestRecordingsList(PVRHANDLE handle);
-  PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo);
-  PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo);
-  PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo);
-  PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char* newname);
-
-  int GetNumTimers();
-  PVR_ERROR RequestTimerList(PVRHANDLE handle);
-  PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force);
+  bool       GetDriveSpace(long long *total, long long *used);
+  bool       GetTime(time_t *localTime, int *gmtOffset);
+  int        GetNumChannels();
+  PVR_ERROR  GetChannels(PVR_HANDLE handle, bool bRadio);
+  PVR_ERROR  GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd);
+  int        GetNumRecordings();
+  PVR_ERROR  GetRecordings(PVR_HANDLE handle);
+  PVR_ERROR  DeleteRecording(const PVR_RECORDING &recinfo);
+  PVR_ERROR  AddTimer(const PVR_TIMER &timerinfo);
+  PVR_ERROR  UpdateTimer(const PVR_TIMER &timerinfo);
+  PVR_ERROR  RenameRecording(const PVR_RECORDING &recinfo, const char* newname);
+  int        GetNumTimers();
+  PVR_ERROR  GetTimers(PVR_HANDLE handle);
+  PVR_ERROR  DeleteTimer(const PVR_TIMER &timerinfo, bool force);
+  int        GetNumChannelGroups(void);
+  PVR_ERROR  GetChannelGroups(PVR_HANDLE handle);
+  PVR_ERROR  GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group);
 
 protected:
   virtual void Action(void);

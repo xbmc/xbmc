@@ -23,8 +23,11 @@
 #include "PVREpgContainer.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
-#include "pvr/recordings/PVRRecording.h"
+#include "pvr/timers/PVRTimers.h"
+#include "pvr/recordings/PVRRecordings.h"
+#include "pvr/windows/GUIWindowPVR.h"
+#include "guilib/GUIWindowManager.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -74,10 +77,10 @@ int CPVREpgContainer::GetEPGAll(CFileItemList* results, bool bRadio /* = false *
   for (unsigned int iChannelPtr = 0; iChannelPtr < group->Size(); iChannelPtr++)
   {
     CPVRChannel *channel = (CPVRChannel *) group->GetByIndex(iChannelPtr);
-    if (!channel || !channel->GetEPG())
+    if (!channel)
       continue;
 
-    channel->GetEPG()->Get(results);
+    channel->GetEPG(results);
   }
 
   return results->Size() - iInitialSize;
@@ -155,8 +158,8 @@ int CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFil
         if (epgentry)
         {
           if (epgentry->ChannelTag()->ChannelNumber() != timer->ChannelNumber() ||
-              epgentry->Start()                       <  timer->m_StartTime ||
-              epgentry->End()                         >  timer->m_StopTime)
+              epgentry->StartAsUTC()                   <  timer->StartAsUTC() ||
+              epgentry->EndAsUTC()                     >  timer->EndAsUTC())
             continue;
 
           results->Remove(iResultPtr);
@@ -187,7 +190,7 @@ int CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
       continue;
 
     CFileItemPtr entry(new CFileItem(*epgNow));
-    entry->SetLabel2(epgNow->Start().GetAsLocalizedTime("", false));
+    entry->SetLabel2(epgNow->StartAsLocalTime().GetAsLocalizedTime("", false));
     entry->m_strPath = channel->ChannelName();
     entry->SetThumbnailImage(channel->IconPath());
     results->Add(entry);
@@ -214,11 +217,25 @@ int CPVREpgContainer::GetEPGNext(CFileItemList* results, bool bRadio)
       continue;
 
     CFileItemPtr entry(new CFileItem(*epgNext));
-    entry->SetLabel2(epgNext->Start().GetAsLocalizedTime("", false));
+    entry->SetLabel2(epgNext->StartAsLocalTime().GetAsLocalizedTime("", false));
     entry->m_strPath = channel->ChannelName();
     entry->SetThumbnailImage(channel->IconPath());
     results->Add(entry);
   }
 
   return results->Size() - iInitialSize;
+}
+
+bool CPVREpgContainer::UpdateEPG(bool bShowProgress /* = false */)
+{
+  bool bReturn = CEpgContainer::UpdateEPG(bShowProgress);
+
+  if (bReturn)
+  {
+    CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
+    if (pWindow)
+      pWindow->InitializeEpgCache();
+  }
+
+  return bReturn;
 }

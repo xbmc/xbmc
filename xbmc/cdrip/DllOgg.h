@@ -44,7 +44,7 @@ public:
   virtual ~DllOggInterface() {}
 };
 
-#if (!defined WIN32)
+#if !(defined(WIN32) || defined(__APPLE__))
 
 class DllOgg : public DllDynamic, DllOggInterface
 {

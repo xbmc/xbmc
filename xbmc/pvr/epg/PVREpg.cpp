@@ -26,9 +26,9 @@
 #include "utils/TimeUtils.h"
 
 #include "PVREpg.h"
-#include "pvr/channels/PVRChannel.h"
 #include "pvr/PVRManager.h"
-
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/addons/PVRClients.h"
 #include "epg/EpgContainer.h"
 #include "epg/EpgDatabase.h"
 
@@ -48,19 +48,24 @@ void CPVREpg::Cleanup(const CDateTime &Time)
 {
   CSingleLock lock(m_critSection);
 
-  for (unsigned int i = 0; i < size(); i++)
+  CDateTime firstDate = Time.GetAsUTCDateTime() - CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
+
+  unsigned int iSize = size();
+  for (unsigned int iTagPtr = 0; iTagPtr < iSize; iTagPtr++)
   {
-    CPVREpgInfoTag *tag = (CPVREpgInfoTag *) at(i);
+    CPVREpgInfoTag *tag = (CPVREpgInfoTag *) at(iTagPtr);
     if ( tag && /* valid tag */
         !tag->HasTimer() && /* no timer set */
-        (tag->End() + CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0) < Time))
+        tag->EndAsLocalTime() < firstDate)
     {
       DeleteInfoTag(tag);
+      iTagPtr--;
+      iSize--;
     }
   }
 }
 
-bool CPVREpg::UpdateEntry(const PVR_PROGINFO *data, bool bUpdateDatabase /* = false */)
+bool CPVREpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
 {
   if (!data)
     return false;
@@ -75,12 +80,13 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
 
   if (m_Channel && m_Channel->EPGEnabled() && ScraperName() == "client")
   {
-    if (CPVRManager::Get()->GetClientProperties(m_Channel->ClientID())->SupportEPG &&
-        CPVRManager::Get()->Clients()->find(m_Channel->ClientID())->second->ReadyToUse())
+    if (CPVRManager::GetClients()->GetClientProperties(m_Channel->ClientID())->bSupportsEPG)
     {
       CLog::Log(LOGINFO, "%s - updating EPG for channel '%s' from client '%i'",
           __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->ClientID());
-      bGrabSuccess = CPVRManager::Get()->Clients()->find(m_Channel->ClientID())->second->GetEPGForChannel(*m_Channel, this, start, end) == PVR_ERROR_NO_ERROR;
+      PVR_ERROR error;
+      CPVRManager::GetClients()->GetEPGForChannel(*m_Channel, this, start, end, &error);
+      bGrabSuccess = error == PVR_ERROR_NO_ERROR;
     }
     else
     {

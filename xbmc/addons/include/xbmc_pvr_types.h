@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,14 +20,6 @@
  *
  */
 
-/**
- * \file xbmc_pvr_types.h
- * \brief Implementation of a PVR Client API Interface.
- * It at common data structures which a shared between XBMC and PVR clients
- *
- * \author Team XBMC
- */
-
 #ifndef __PVRCLIENT_TYPES_H__
 #define __PVRCLIENT_TYPES_H__
 
@@ -43,9 +35,9 @@
 #endif
 #include <string.h>
 
-/*! \note Define "USE_DEMUX" on compile time if demuxing inside pvr
- * addon is used. Also XBMC's "DVDDemuxPacket.h" file must be inside
- * the include path of the pvr addon.
+/*! @note Define "USE_DEMUX" on compile time if demuxing inside pvr
+ *        addon is used. Also XBMC's "DVDDemuxPacket.h" file must be inside
+ *        the include path of the pvr addon.
  */
 #ifdef USE_DEMUX
 #include "DVDDemuxPacket.h"
@@ -69,356 +61,334 @@ struct DemuxPacket;
 #define PRAGMA_PACK 1
 #endif
 
-  /*! \brief PVR Event contents, used to identify the genre of a epg entry
-   */
-#define EVCONTENTMASK_MOVIEDRAMA               0x10
-#define EVCONTENTMASK_NEWSCURRENTAFFAIRS       0x20
-#define EVCONTENTMASK_SHOW                     0x30
-#define EVCONTENTMASK_SPORTS                   0x40
-#define EVCONTENTMASK_CHILDRENYOUTH            0x50
-#define EVCONTENTMASK_MUSICBALLETDANCE         0x60
-#define EVCONTENTMASK_ARTSCULTURE              0x70
-#define EVCONTENTMASK_SOCIALPOLITICALECONOMICS 0x80
-#define EVCONTENTMASK_EDUCATIONALSCIENCE       0x90
-#define EVCONTENTMASK_LEISUREHOBBIES           0xA0
-#define EVCONTENTMASK_SPECIAL                  0xB0
-#define EVCONTENTMASK_USERDEFINED              0xF0
+/*! @name PVR entry content event types */
+//@{
+#define EPG_EVENT_CONTENTMASK_MOVIEDRAMA               0x10
+#define EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS       0x20
+#define EPG_EVENT_CONTENTMASK_SHOW                     0x30
+#define EPG_EVENT_CONTENTMASK_SPORTS                   0x40
+#define EPG_EVENT_CONTENTMASK_CHILDRENYOUTH            0x50
+#define EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE         0x60
+#define EPG_EVENT_CONTENTMASK_ARTSCULTURE              0x70
+#define EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS 0x80
+#define EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE       0x90
+#define EPG_EVENT_CONTENTMASK_LEISUREHOBBIES           0xA0
+#define EPG_EVENT_CONTENTMASK_SPECIAL                  0xB0
+#define EPG_EVENT_CONTENTMASK_USERDEFINED              0xF0
+//@}
+
+#define PVR_STREAM_MAX_STREAMS 16
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-  /*! \brief PVR Client Return Data handle
+  /*!
+   * @brief Handle used to return data from the PVR add-on to CPVRClient
    */
-  struct PVRHANDLE_STRUCT
+  struct PVR_HANDLE_STRUCT
   {
-    void* CALLER_ADDRESS;
-    void* DATA_ADDRESS;
-    int   DATA_IDENTIFIER;
+    void *callerAddress;  /*!< address of the caller */
+    void *dataAddress;    /*!< address to store data in */
+    int   dataIdentifier; /*!< parameter to pass back when calling the callback */
   };
-  typedef PVRHANDLE_STRUCT* PVRHANDLE;
-
-  /*! \brief PVR Client startup properties
-   * Passed to the Create function
-   */
-  struct PVR_PROPS
-  {
-    int clientID;
-    const char *userpath;
-    const char *clientpath;
-  };
+  typedef PVR_HANDLE_STRUCT *PVR_HANDLE;
 
   /*! \brief PVR Client Error Codes
    */
-  typedef enum {
-    PVR_ERROR_NO_ERROR             = 0,
-    PVR_ERROR_UNKOWN               = -1,
-    PVR_ERROR_NOT_IMPLEMENTED      = -2,
-    PVR_ERROR_SERVER_ERROR         = -3,
-    PVR_ERROR_SERVER_TIMEOUT       = -4,
-    PVR_ERROR_NOT_SYNC             = -5,
-    PVR_ERROR_NOT_DELETED          = -6,
-    PVR_ERROR_NOT_SAVED            = -7,
-    PVR_ERROR_RECORDING_RUNNING    = -8,
-    PVR_ERROR_ALREADY_PRESENT      = -9,
-    PVR_ERROR_NOT_POSSIBLE         = -10,
+  typedef enum
+  {
+    PVR_ERROR_NO_ERROR          = 0,
+    PVR_ERROR_UNKOWN            = -1,
+    PVR_ERROR_NOT_IMPLEMENTED   = -2,
+    PVR_ERROR_SERVER_ERROR      = -3,
+    PVR_ERROR_SERVER_TIMEOUT    = -4,
+    PVR_ERROR_NOT_SYNC          = -5,
+    PVR_ERROR_NOT_DELETED       = -6,
+    PVR_ERROR_NOT_SAVED         = -7,
+    PVR_ERROR_RECORDING_RUNNING = -8,
+    PVR_ERROR_ALREADY_PRESENT   = -9,
+    PVR_ERROR_NOT_POSSIBLE      = -10
   } PVR_ERROR;
 
-  /*! \brief PVR Client Event Codes
-   * Sent via PVRManager callback
+  /*!
+   * @brief Properties passed to the Create() method of an add-on.
    */
-  typedef enum {
-    PVR_EVENT_UNKNOWN              = 0,
-    PVR_EVENT_CLOSE                = 1,
-    PVR_EVENT_RECORDINGS_CHANGE    = 2,
-    PVR_EVENT_CHANNELS_CHANGE      = 3,
-    PVR_EVENT_TIMERS_CHANGE        = 4,
+  typedef struct PVR_PROPERTIES
+  {
+    int         iClienId;              /*!< @brief (required) database ID of the client */
+    const char *strUserPath;           /*!< @brief (required) path to the user profile */
+    const char *strClientPath;         /*!< @brief (required) path to this add-on */
+  } PVR_PROPERTIES;
+
+  /*!
+   * @brief PVR add-on event codes, sent via PVRManager callback.
+   */
+  typedef enum
+  {
+    PVR_EVENT_UNKNOWN           = 0,
+    PVR_EVENT_CLOSE             = 1,
+    PVR_EVENT_RECORDINGS_CHANGE = 2,
+    PVR_EVENT_CHANNELS_CHANGE   = 3,
+    PVR_EVENT_TIMERS_CHANGE     = 4
   } PVR_EVENT;
 
-#if PRAGMA_PACK
-#pragma pack(1)
-#endif
-
-  /*! \brief PVR Client Properties
-   * Returned on client initialization
+  /*!
+   * @brief PVR add-on capabilities.
    */
-  typedef struct PVR_SERVERPROPS {
-    bool SupportChannelLogo;            /**< \brief Client support transfer of channel logos */
-    bool SupportChannelSettings;        /**< \brief Client support changing channels on backend */
-    bool SupportTimeShift;              /**< \brief Client handle Live TV Timeshift, otherwise it is handled by XBMC */
-    bool SupportEPG;                    /**< \brief Client provide EPG information */
-    bool SupportTV;                     /**< \brief Client provide TV Channels, is false for Radio only clients */
-    bool SupportRadio;                  /**< \brief Client provide also Radio Channels */
-    bool SupportRecordings;             /**< \brief Client support playback of recordings stored on the backend */
-    bool SupportTimers;                 /**< \brief Client support creation and editing of timers */
-    bool SupportDirector;               /**< \brief Client provide information about multifeed channels, like Sky Select */
-    bool SupportBouquets;               /**< \brief Client support Bouqets */
-    bool SupportChannelScan;            /**< \brief Client support Channelscan */
-    bool HandleInputStream;             /**< \brief Input stream is handled by the client if set, can be false for http */
-    bool HandleDemuxing;                /**< \brief Demux of stream is handled by the client, as example TVFrontend (htsp protocol) */
-  } ATTRIBUTE_PACKED PVR_SERVERPROPS;
+  typedef struct PVR_ADDON_CAPABILITIES
+  {
+    bool bSupportsChannelLogo;         /*!< @brief (required) true if this add-on supports channel logos */
+    bool bSupportsChannelSettings;     /*!< @brief (required) true if this add-on supports changing channel settings on the backend */
+    bool bSupportsTimeshift;           /*!< @brief (required) true if the backend will handle timeshift. false if XBMC should handle it. */
+    bool bSupportsEPG;                 /*!< @brief (required) true if the add-on provides EPG information */
+    bool bSupportsTV;                  /*!< @brief (required) true if this add-on provides TV channels */
+    bool bSupportsRadio;               /*!< @brief (required) true if this add-on supports radio channels */
+    bool bSupportsRecordings;          /*!< @brief (required) true if this add-on supports playback of recordings stored on the backend */
+    bool bSupportsTimers;              /*!< @brief (required) true if this add-on supports the creation and editing of timers */
+    bool bSupportsChannelGroups;       /*!< @brief (required) true if this add-on supports channel groups */
+    bool bSupportsChannelScan;         /*!< @brief (required) true if this add-on support scanning for new channels on the backend */
+    bool bHandlesInputStream;          /*!< @brief (required) true if this add-on provides an input stream. false if XBMC handles the stream. */
+    bool bHandlesDemuxing;             /*!< @brief (required) true if this add-on demultiplexes packets. */
+  } ATTRIBUTE_PACKED PVR_ADDON_CAPABILITIES;
 
-  /*! \brief  PVR Stream Properties
-   * Returned on request
+  /*!
+   * @brief PVR stream properties
    */
-  typedef struct PVR_STREAMPROPS {
-#define PVR_STREAM_MAX_STREAMS 16
-    int nstreams;
-    struct PVR_STREAM {
-      int id;
-      int physid;
-      unsigned int codec_type;
-      unsigned int codec_id;
-      char language[4];
-      int identifier;
+  typedef struct PVR_STREAM_PROPERTIES
+  {
+    unsigned int iStreamCount;
+    struct PVR_STREAM
+    {
+      unsigned int iStreamIndex;       /*!< @brief (required) stream index */
+      unsigned int iPhysicalId;        /*!< @brief (required) physical index */
+      unsigned int iCodecType;         /*!< @brief (required) codec type id */
+      unsigned int iCodecId;           /*!< @brief (required) codec id */
+      char         strLanguage[4];     /*!< @brief (required) language id */
+      unsigned int iIdentifier;        /*!< @brief (required) stream id */
+      unsigned int iFPSScale;          /*!< @brief (required) scale of 1000 and a rate of 29970 will result in 29.97 fps */
+      unsigned int iFPSRate;           /*!< @brief (required) FPS rate */
+      unsigned int iHeight;            /*!< @brief (required) height of the stream reported by the demuxer */
+      unsigned int iWidth;             /*!< @brief (required) width of the stream reported by the demuxer */
+      float        fAspect;            /*!< @brief (required) display aspect ratio of the stream */
+      unsigned int iChannels;          /*!< @brief (required) amount of channels */
+      unsigned int iSampleRate;        /*!< @brief (required) sample rate */
+      unsigned int iBlockAlign;        /*!< @brief (required) block alignment */
+      unsigned int iBitRate;           /*!< @brief (required) bit rate */
+      unsigned int iBitsPerSample;     /*!< @brief (required) bits per sample */
+     } stream[PVR_STREAM_MAX_STREAMS]; /*!< @brief (required) the streams */
+   } ATTRIBUTE_PACKED PVR_STREAM_PROPERTIES;
 
-      int fpsscale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
-      int fpsrate;
-      int height; // height of the stream reported by the demuxer
-      int width; // width of the stream reported by the demuxer
-      float aspect; // display aspect of stream
-
-      int channels;
-      int samplerate;
-      int blockalign;
-      int bitrate;
-      int bits_per_sample;
-    } stream[PVR_STREAM_MAX_STREAMS];
-  } ATTRIBUTE_PACKED PVR_STREAMPROPS;
-
-
-  /*! \brief PVR channel defination
-   *
-   * Is used by the TransferChannelEntry function to inform XBMC that this
-   * channel is present, also if a channel is opened this structure is passed in.
+  /*!
+   * @brief Signal status information
    */
-  typedef struct PVR_CHANNEL {
-    int             uid;                /**< \brief Unique identifier for this channel */
-    int             number;             /**< \brief The backend channel number */
+  typedef struct PVR_SIGNAL_STATUS
+  {
+    char   strAdapterName[1024];       /*!< @brief (optional) name of the adapter that's being used */
+    char   strAdapterStatus[1024];     /*!< @brief (optional) status of the adapter that's being used */
+    int    iSNR;                       /*!< @brief (optional) signal/noise ratio */
+    int    iSignal;                    /*!< @brief (optional) signal strength */
+    long   iBER;                       /*!< @brief (optional) bit error rate */
+    long   iUNC;                       /*!< @brief (optional) uncorrected blocks */
+    double dVideoBitrate;              /*!< @brief (optional) video bitrate */
+    double dAudioBitrate;              /*!< @brief (optional) audio bitrate */
+    double dDolbyBitrate;              /*!< @brief (optional) dolby bitrate */
+  } ATTRIBUTE_PACKED PVR_SIGNAL_STATUS;
 
-    const char     *name;               /**< \brief Channel name provided by the Broadcast */
-    const char     *callsign;           /**< \brief Channel name provided by the user (if present) */
-    const char     *iconpath;           /**< \brief Path to the channel icon (if present) */
-
-    int             encryption;         /**< \brief This is a encrypted channel and have a CA Id */
-    bool            radio;              /**< \brief This is a radio channel */
-    bool            hide;               /**< \brief This channel is hidden by the user */
-    bool            recording;          /**< \brief This channel is currently recording */
-
-    int             bouquet;            /**< \brief Bouquet ID this channel have (if supported) */
-
-    bool            multifeed;          /**< \brief This is a multifeed channel */
-    int             multifeed_master;   /**< \brief The Master multifeed channel, multifeed_master==number for master itself */
-    int             multifeed_number;   /**< \brief The own number inside multifeed channel list */
-
-    const char     *input_format;       /**< \brief Input format type based upon ffmpeg/libavformat/allformats.c
-                                             if it is unknown leave it empty */
-
-    const char     *stream_url;         /**< \brief The Stream URL to access this channel, it can be all types of protocol
-                                             and types are supported by XBMC or in case the client read the stream leave
-                                             it empty as URL. */
-  } ATTRIBUTE_PACKED PVR_CHANNEL;
-
-  /*! \brief EPG Bouquet Definition
+  /*!
+   * @brief Menu hooks that are available in the context menus while playing a stream via this add-on.
    */
-  typedef struct PVR_BOUQUET {
-    char*  Name;
-    char*  Category;
-    int    Number;
-  } ATTRIBUTE_PACKED PVR_BOUQUET;
-
-  /*! \brief EPG Programme Definition
-   *
-   * Used to signify an individual broadcast, whether it is also a recording, timer etc.
-   */
-  typedef struct PVR_PROGINFO {
-    unsigned int  uid;
-    int           channum;
-    const char   *title;
-    const char   *subtitle;
-    const char   *description;
-    time_t        starttime;
-    time_t        endtime;
-    int           genre_type;
-    int           genre_sub_type;
-    int           parental_rating;
-  } ATTRIBUTE_PACKED PVR_PROGINFO;
-
-  /*! \brief TV Timer Definition
-   */
-  typedef struct PVR_TIMERINFO {
-    int           index;
-    int           active;
-    const char   *title;
-    const char   *directory;
-    int           channelNum;
-    int           channelUid;
-    time_t        starttime;
-    time_t        endtime;
-    time_t        firstday;
-    int           recording;
-    int           priority;
-    int           lifetime;
-    int           repeat;
-    int           repeatflags;
-    int           epgid;
-    const char   *description;
-  } ATTRIBUTE_PACKED PVR_TIMERINFO;
-
-  /*! \brief PVR recording defination
-   *
-   * Is used by the TransferRecordinglEntry function to inform XBMC about this
-   * recording, also if a recording is opened this structure is passed in.
-   */
-  typedef struct PVR_RECORDINGINFO {
-    int             index;              /**< \brief The index number of this recording, it must always set and
-                                             is used to identify this recording later */
-    const char     *directory;          /**< \brief The directory of this recording (used to create a organized structure).
-                                             It is not required, if it is not supported on the backend
-                                             leave it open */
-    const char     *title;              /**< \brief The name of this recording */
-    const char     *subtitle;           /**< \brief Optional subtitle */
-    const char     *description;        /**< \brief Optional description of the recording content */
-    const char     *channel_name;       /**< \brief Optional channel name */
-    time_t          recording_time;     /**< \brief Optional time where this recording was taken */
-    int             duration;           /**< \brief The duration in seconds of this recording */
-    int             priority;           /**< \brief Optional priority of this recording (from 0 - 100) */
-    int             lifetime;           /**< \brief Optional life time in days of this recording */
-    const char     *stream_url;         /**< \brief The Stream URL to access this recording, it can be all types of protocol
-                                             and types are supported by XBMC or in case the client read the stream leave
-                                             it empty as URL. You can also define to play all files inside a folder if you
-                                             use a asterix, as example: "/media/disk/recordings/Alien/ *.ts", in this example
-                                             all files in the directory "/media/disk/recordings/Alien" with the "ts" extensions
-                                             are played by XBMC. */
-  } ATTRIBUTE_PACKED PVR_RECORDINGINFO;
-
-  /*! \brief TV Stream Signal Quality Information
-   */
-  typedef struct PVR_SIGNALQUALITY {
-    char          frontend_name[1024];
-    char          frontend_status[1024];
-    int           snr;
-    int           signal;
-    long          ber;
-    long          unc;
-    double        video_bitrate;
-    double        audio_bitrate;
-    double        dolby_bitrate;
-  } ATTRIBUTE_PACKED PVR_SIGNALQUALITY;
-
-  /*! \brief PVR Addon menu hook element
-   *
-   * Are available in the context menus of the TV window, to perfrom a addon related action.
-   */
-  typedef struct PVR_MENUHOOK {
-    int           hook_id;              /**< \brief An identifier to know what hook is called back to the addon */
-    int           string_id;            /**< \brief The id to a name for this item inside the language files */
+  typedef struct PVR_MENUHOOK
+  {
+    unsigned int iHookId;              /*!< @brief (required) this hook's identifier */
+    unsigned int iLocalizedStringId;   /*!< @brief (required) the id of the label for this hook in g_localizeStrings */
   } ATTRIBUTE_PACKED PVR_MENUHOOK;
 
-  /*! \brief PVR Recordings cut mark action types.
+  /*!
+   * @brief Representation of a TV or radio channel.
    */
-  typedef enum {
-    CUT         = 0,
-    MUTE        = 1,
-    SCENE       = 2,
-    COMM_BREAK  = 3
-  } CUT_MARK_ACTION;
+  typedef struct PVR_CHANNEL
+  {
+    unsigned int iUniqueId;            /*!< @brief (required) unique identifier for this channel */
+    bool         bIsRadio;             /*!< @brief (required) true if this is a radio channel, false if it's a TV channel */
+    unsigned int iChannelNumber;       /*!< @brief (optional) channel number of this channel on the backend */
+    const char * strChannelName;       /*!< @brief (optional) channel name given to this channel */
+    const char * strInputFormat;       /*!< @brief (optional) input format type. types can be found in ffmpeg/libavformat/allformats.c
+                                                              leave empty if unknown */
+    const char * strStreamURL;         /*!< @brief (optional) the URL to use to access this channel.
+                                                              leave empty to use this add-on to access the stream.
+                                                              set to a path that's supported by XBMC otherwise. */
+    unsigned int iEncryptionSystem;    /*!< @brief (optional) the encryption ID or CaID of this channel */
+    const char * strIconPath;          /*!< @brief (optional) path to the channel icon (if present) */
+    bool         bIsHidden;            /*!< @brief (optional) true if this channel is marked as hidden */
+    bool         bIsRecording;         /*!< @brief (optional) true if a recording is currently running on this channel*/
+  } ATTRIBUTE_PACKED PVR_CHANNEL;
 
-  /*! \brief PVR Recordings cut mark element.
+  typedef struct PVR_CHANNEL_GROUP
+  {
+    const char * strGroupName;         /*!< @brief (required) name of this channel group */
+    bool         bIsRadio;             /*!< @brief (required) true if this is a radio channel group, false otherwise. */
+  } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP;
+
+  typedef struct PVR_CHANNEL_GROUP_MEMBER
+  {
+    const char * strGroupName;         /*!< @brief (required) name of the channel group to add the channel to */
+    unsigned int iChannelUniqueId;     /*!< @brief (required) unique id of the member */
+    unsigned int iChannelNumber;       /*!< @brief (optional) channel number within the group */
+  } ATTRIBUTE_PACKED PVR_CHANNEL_GROUP_MEMBER;
+
+  /*!
+   * @brief Representation of an EPG event.
    */
-  typedef struct PVR_CUT_MARK {
-    long long       start;              /**< \brief Start position in milliseconds */
-    long long       stop;               /**< \brief Stop position in milliseconds */
-    CUT_MARK_ACTION action;             /**< \brief the action to be performed */
-  } ATTRIBUTE_PACKED PVR_CUT_MARK;
+  typedef struct EPG_TAG {
+    unsigned int  iUniqueBroadcastId;  /*!< @brief (required) identifier for this event */
+    const char *  strTitle;            /*!< @brief (required) this event's title */
+    unsigned int  iChannelNumber;      /*!< @brief (required) the number of the channel this event occurs on */
+    time_t        startTime;           /*!< @brief (required) start time in UTC */
+    time_t        endTime;             /*!< @brief (required) end time in UTC */
+    const char *  strPlotOutline;      /*!< @brief (optional) plot outline */
+    const char *  strPlot;             /*!< @brief (optional) plot */
+    const char *  strIconPath;         /*!< @brief (optional) icon path */
+    int           iGenreType;          /*!< @brief (optional) genre type */
+    int           iGenreSubType;       /*!< @brief (optional) genre sub type */
+    time_t        firstAired;          /*!< @brief (optional) first aired in UTC */
+    int           iParentalRating;     /*!< @brief (optional) parental rating */
+    int           iStarRating;         /*!< @brief (optional) star rating */
+    bool          bNotify;             /*!< @brief (optional) notify the user when this event starts */
+    int           iSeriesNumber;       /*!< @brief (optional) series number */
+    int           iEpisodeNumber;      /*!< @brief (optional) episode number */
+    int           iEpisodePartNumber;  /*!< @brief (optional) episode part number */
+    const char *  strEpisodeName;      /*!< @brief (optional) episode name */
+  } ATTRIBUTE_PACKED EPG_TAG;
 
-#if PRAGMA_PACK
-#pragma pack()
-#endif
+  /*!
+   * @brief Representation of a timer event.
+   */
+  typedef struct PVR_TIMER {
+    unsigned int  iClientIndex;        /*!< @brief (required) the index of this timer given by the client */
+    int           iClientChannelUid;   /*!< @brief (required) unique identifier of the channel to record on */
+    time_t        startTime;           /*!< @brief (required) start time of the recording in UTC */
+    time_t        endTime;             /*!< @brief (required) end time of the recording in UTC */
+    bool          bIsActive;           /*!< @brief (required) true if this timer is active, false if it's inactive */
+    const char *  strTitle;            /*!< @brief (optional) title of this timer */
+    const char *  strDirectory;        /*!< @brief (optional) the directory where the recording will be stored in */
+    const char *  strSummary;          /*!< @brief (optional) the summary for this timer */
+    bool          bIsRecording;        /*!< @brief (optional) true if this timer is currently recording, false otherwise */
+    int           iPriority;           /*!< @brief (optional) the priority of this timer */
+    int           iLifetime;           /*!< @brief (optional) lifetimer of this timer in days */
+    bool          bIsRepeating;        /*!< @brief (optional) true if this is a recurring timer */
+    time_t        firstDay;            /*!< @brief (optional) the first day this recording is active in case of a repeating event */
+    int           iWeekdays;           /*!< @brief (optional) weekday mask */
+    int           iEpgUid;             /*!< @brief (optional) epg event id */
+    unsigned int  iMarginStart;        /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
+    unsigned int  iMarginEnd;          /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
+  } ATTRIBUTE_PACKED PVR_TIMER;
 
-  /*! \brief Structure to transfer the PVR functions to XBMC
+  /*!
+   * @brief Representation of a recording.
+   */
+  typedef struct PVR_RECORDING {
+    int          iClientIndex;         /*!< @brief (required) index number of the recording on the client */
+    const char * strTitle;             /*!< @brief (required) the title of this recording */
+    const char * strStreamURL;         /*!< @brief (required) stream URL to access this recording */
+    const char * strDirectory;         /*!< @brief (optional) directory of this recording on the client */
+    const char * strPlotOutline;       /*!< @brief (optional) plot outline */
+    const char * strPlot;              /*!< @brief (optional) plot */
+    const char * strChannelName;       /*!< @brief (optional) channel name */
+    time_t       recordingTime;        /*!< @brief (optional) start time of the recording */
+    int          iDuration;            /*!< @brief (optional) duration of the recording */
+    int          iPriority;            /*!< @brief (optional) priority of this recording (from 0 - 100) */
+    int          iLifetime;            /*!< @brief (optional) life time in days of this recording */
+  } ATTRIBUTE_PACKED PVR_RECORDING;
+
+  /*!
+   * @brief Structure to transfer the PVR functions to XBMC
    */
   typedef struct PVRClient
   {
-    /** \name PVR General Functions */
-    PVR_ERROR (__cdecl* GetProperties)(PVR_SERVERPROPS *props);
-    PVR_ERROR (__cdecl* GetStreamProperties)(PVR_STREAMPROPS *props);
-    const char* (__cdecl* GetBackendName)();
-    const char* (__cdecl* GetBackendVersion)();
-    const char* (__cdecl* GetConnectionString)();
-    PVR_ERROR (__cdecl* GetDriveSpace)(long long *total, long long *used);
-    PVR_ERROR (__cdecl* GetBackendTime)(time_t *localTime, int *gmtOffset);
-    PVR_ERROR (__cdecl* DialogChannelScan)();
-    PVR_ERROR (__cdecl* MenuHook)(const PVR_MENUHOOK &menuhook);
+    /** @name PVR server methods */
+    //@{
+    PVR_ERROR    (__cdecl* GetAddonCapabilities)(PVR_ADDON_CAPABILITIES *pCapabilities);
+    PVR_ERROR    (__cdecl* GetStreamProperties)(PVR_STREAM_PROPERTIES *pProperties);
+    const char * (__cdecl* GetBackendName)(void);
+    const char * (__cdecl* GetBackendVersion)(void);
+    const char * (__cdecl* GetConnectionString)(void);
+    PVR_ERROR    (__cdecl* GetDriveSpace)(long long *iTotal, long long *iUsed);
+    PVR_ERROR    (__cdecl* DialogChannelScan)(void);
+    PVR_ERROR    (__cdecl* MenuHook)(const PVR_MENUHOOK &menuhook);
+    //@}
 
-    /** \name PVR EPG Functions */
-    PVR_ERROR (__cdecl* RequestEPGForChannel)(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
+    /** @name PVR EPG methods */
+    //@{
+    PVR_ERROR    (__cdecl* GetEpg)(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd);
+    //@}
 
-    /** \name PVR Bouquets Functions */
-    int (__cdecl* GetNumBouquets)();
-    PVR_ERROR (__cdecl* RequestBouquetsList)(PVRHANDLE handle, int radio);
+    /** @name PVR channel group methods */
+    //@{
+    int          (__cdecl* GetChannelGroupsAmount)(void);
+    PVR_ERROR    (__cdecl* GetChannelGroups)(PVR_HANDLE handle, bool bRadio);
+    PVR_ERROR    (__cdecl* GetChannelGroupMembers)(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group);
+    //@}
 
-    /** \name PVR Channel Functions */
-    int (__cdecl* GetNumChannels)();
-    PVR_ERROR (__cdecl* RequestChannelList)(PVRHANDLE handle, int radio);
-    PVR_ERROR (__cdecl* DeleteChannel)(unsigned int number);
-    PVR_ERROR (__cdecl* RenameChannel)(unsigned int number, const char *newname);
-    PVR_ERROR (__cdecl* MoveChannel)(unsigned int number, unsigned int newnumber);
-    PVR_ERROR (__cdecl* DialogChannelSettings)(const PVR_CHANNEL &channelinfo);
-    PVR_ERROR (__cdecl* DialogAddChannel)(const PVR_CHANNEL &channelinfo);
+    /** @name PVR channel methods */
+    //@{
+    int          (__cdecl* GetChannelsAmount)(void);
+    PVR_ERROR    (__cdecl* GetChannels)(PVR_HANDLE handle, bool bRadio);
+    PVR_ERROR    (__cdecl* DeleteChannel)(const PVR_CHANNEL &channel);
+    PVR_ERROR    (__cdecl* RenameChannel)(const PVR_CHANNEL &channel);
+    PVR_ERROR    (__cdecl* MoveChannel)(const PVR_CHANNEL &channel);
+    PVR_ERROR    (__cdecl* DialogChannelSettings)(const PVR_CHANNEL &channel);
+    PVR_ERROR    (__cdecl* DialogAddChannel)(const PVR_CHANNEL &channel);
+    //@}
 
-    /** \name PVR Recording Functions */
-    int (__cdecl* GetNumRecordings)();
-    PVR_ERROR (__cdecl* RequestRecordingsList)(PVRHANDLE handle);
-    PVR_ERROR (__cdecl* DeleteRecording)(const PVR_RECORDINGINFO &recinfo);
-    PVR_ERROR (__cdecl* RenameRecording)(const PVR_RECORDINGINFO &recinfo, const char *newname);
+    /** @name PVR recording methods */
+    //@{
+    int          (__cdecl* GetRecordingsAmount)(void);
+    PVR_ERROR    (__cdecl* GetRecordings)(PVR_HANDLE handle);
+    PVR_ERROR    (__cdecl* DeleteRecording)(const PVR_RECORDING &recording);
+    PVR_ERROR    (__cdecl* RenameRecording)(const PVR_RECORDING &recording);
+    //@}
 
-    /** \name PVR Recording cut marks Functions */
-    bool (__cdecl* HaveCutmarks)();
-    PVR_ERROR (__cdecl* RequestCutMarksList)(PVRHANDLE handle);
-    PVR_ERROR (__cdecl* AddCutMark)(const PVR_CUT_MARK &cutmark);
-    PVR_ERROR (__cdecl* DeleteCutMark)(const PVR_CUT_MARK &cutmark);
-    PVR_ERROR (__cdecl* StartCut)();
+    /** @name PVR timer methods */
+    //@{
+    int          (__cdecl* GetTimersAmount)(void);
+    PVR_ERROR    (__cdecl* GetTimers)(PVR_HANDLE handle);
+    PVR_ERROR    (__cdecl* AddTimer)(const PVR_TIMER &timer);
+    PVR_ERROR    (__cdecl* DeleteTimer)(const PVR_TIMER &timer, bool bForceDelete);
+    PVR_ERROR    (__cdecl* UpdateTimer)(const PVR_TIMER &timer);
+    //@}
 
-    /** \name PVR Timer Functions */
-    int (__cdecl* GetNumTimers)();
-    PVR_ERROR (__cdecl* RequestTimerList)(PVRHANDLE handle);
-    PVR_ERROR (__cdecl* AddTimer)(const PVR_TIMERINFO &timerinfo);
-    PVR_ERROR (__cdecl* DeleteTimer)(const PVR_TIMERINFO &timerinfo, bool force);
-    PVR_ERROR (__cdecl* RenameTimer)(const PVR_TIMERINFO &timerinfo, const char *newname);
-    PVR_ERROR (__cdecl* UpdateTimer)(const PVR_TIMERINFO &timerinfo);
+    /** @name PVR live stream methods */
+    //@{
+    bool         (__cdecl* OpenLiveStream)(const PVR_CHANNEL &channel);
+    void         (__cdecl* CloseLiveStream)(void);
+    int          (__cdecl* ReadLiveStream)(unsigned char *pBuffer, unsigned int iBufferSize);
+    long long    (__cdecl* SeekLiveStream)(long long iPosition, int iWhence /* = SEEK_SET */);
+    long long    (__cdecl* PositionLiveStream)(void);
+    long long    (__cdecl* LengthLiveStream)(void);
+    int          (__cdecl* GetCurrentClientChannel)(void);
+    bool         (__cdecl* SwitchChannel)(const PVR_CHANNEL &channel);
+    PVR_ERROR    (__cdecl* SignalStatus)(PVR_SIGNAL_STATUS &signalStatus);
+    const char*  (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL &channel);
+    //@}
 
-    /** \name PVR Live Stream Functions */
-    bool (__cdecl* OpenLiveStream)(const PVR_CHANNEL &channelinfo);
-    void (__cdecl* CloseLiveStream)();
-    int (__cdecl* ReadLiveStream)(unsigned char* buf, int buf_size);
-    long long (__cdecl* SeekLiveStream)(long long pos, int whence);
-    long long (__cdecl* PositionLiveStream)(void);
-    long long (__cdecl* LengthLiveStream)(void);
-    int (__cdecl* GetCurrentClientChannel)();
-    bool (__cdecl* SwitchChannel)(const PVR_CHANNEL &channelinfo);
-    PVR_ERROR (__cdecl* SignalQuality)(PVR_SIGNALQUALITY &qualityinfo);
-    const char* (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL &channelinfo);
+    /** @name PVR recording stream methods */
+    //@{
+    bool         (__cdecl* OpenRecordedStream)(const PVR_RECORDING &recording);
+    void         (__cdecl* CloseRecordedStream)(void);
+    int          (__cdecl* ReadRecordedStream)(unsigned char *pBuffer, unsigned int iBufferSize);
+    long long    (__cdecl* SeekRecordedStream)(long long iPosition, int iWhence /* = SEEK_SET */);
+    long long    (__cdecl* PositionRecordedStream)(void);
+    long long    (__cdecl* LengthRecordedStream)(void);
+    //@}
 
-    /** \name PVR Secondary Stream Functions */
-    bool (__cdecl* SwapLiveTVSecondaryStream)();
-    bool (__cdecl* OpenSecondaryStream)(const PVR_CHANNEL &channelinfo);
-    void (__cdecl* CloseSecondaryStream)();
-    int (__cdecl* ReadSecondaryStream)(unsigned char* buf, int buf_size);
-
-    /** \name PVR Recording Stream Functions */
-    bool (__cdecl* OpenRecordedStream)(const PVR_RECORDINGINFO &recinfo);
-    void (__cdecl* CloseRecordedStream)(void);
-    int (__cdecl* ReadRecordedStream)(unsigned char* buf, int buf_size);
-    long long (__cdecl* SeekRecordedStream)(long long pos, int whence);
-    long long (__cdecl* PositionRecordedStream)(void);
-    long long (__cdecl* LengthRecordedStream)(void);
-
-    /** \name Demuxer Interface */
-    void (__cdecl* DemuxReset)();
-    void (__cdecl* DemuxAbort)();
-    void (__cdecl* DemuxFlush)();
-    DemuxPacket* (__cdecl* DemuxRead)();
+    /** @name PVR demultiplexer methods */
+    //@{
+    void         (__cdecl* DemuxReset)(void);
+    void         (__cdecl* DemuxAbort)(void);
+    void         (__cdecl* DemuxFlush)(void);
+    DemuxPacket* (__cdecl* DemuxRead)(void);
+    //@}
 
   } PVRClient;
 

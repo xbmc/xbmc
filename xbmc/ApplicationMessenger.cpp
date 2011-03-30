@@ -51,7 +51,8 @@
 #elif defined __APPLE__
 #include "CocoaInterface.h"
 #endif
-#include "addons/AddonHelpers_GUI.h"
+#include "addons/AddonCallbacks.h"
+#include "addons/AddonCallbacksGUI.h"
 #include "storage/MediaManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
@@ -234,8 +235,10 @@ case TMSG_POWERDOWN:
         g_application.Stop();
         Sleep(200);
         g_Windowing.DestroyWindow();
+        #if !(defined(__APPLE__) && defined(__arm__))
         g_powerManager.Powerdown();
         exit(64);
+        #endif
       }
       break;
 
@@ -243,7 +246,9 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
+        #if !(defined(__APPLE__) && defined(__arm__))
         exit(0);
+        #endif
       }
       break;
 
@@ -265,8 +270,10 @@ case TMSG_POWERDOWN:
         g_application.Stop();
         Sleep(200);
         g_Windowing.DestroyWindow();
+        #if !(defined(__APPLE__) && defined(__arm__))
         g_powerManager.Reboot();
         exit(66);
+        #endif
       }
       break;
 
@@ -276,7 +283,9 @@ case TMSG_POWERDOWN:
         g_application.Stop();
         Sleep(200);
 #endif
+        #if !(defined(__APPLE__) && defined(__arm__))
         exit(65);
+        #endif
         // TODO
       }
       break;
@@ -641,7 +650,7 @@ case TMSG_POWERDOWN:
       {
         if (pMsg->lpVoid)
         { // TODO: This is ugly - really these python dialogs should just be normal XBMC dialogs
-          ((ADDON::CGUIAddonWindowDialog *)pMsg->lpVoid)->Show_Internal(pMsg->dwParam2 > 0);
+          ((ADDON::CGUIAddonWindowDialog *) pMsg->lpVoid)->Show_Internal(pMsg->dwParam2 > 0);
         }
       }
       break;

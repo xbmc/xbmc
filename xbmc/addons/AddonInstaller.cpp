@@ -51,6 +51,7 @@ struct find_map : public binary_function<CAddonInstaller::JobMap::value_type, un
 
 CAddonInstaller::CAddonInstaller()
 {
+  m_repoUpdateJob = 0;
 }
 
 CAddonInstaller::~CAddonInstaller()
@@ -63,13 +64,21 @@ CAddonInstaller &CAddonInstaller::Get()
   return addonInstaller;
 }
 
-void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job2)
+void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
   CSingleLock lock(m_critSection);
-  JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
-  if (i != m_downloadJobs.end())
-    m_downloadJobs.erase(i);
-  lock.Leave();
+  if (strncmp(job->GetType(), "repoupdate", 10) == 0)
+  { // repo job finished
+    m_repoUpdateDone.Set();
+    m_repoUpdateJob = 0;
+  }
+  else
+  { // download job
+    JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), bind2nd(find_map(), jobID));
+    if (i != m_downloadJobs.end())
+      m_downloadJobs.erase(i);
+    lock.Leave();
+  }
 
   if (success)
     CAddonMgr::Get().FindAddons();
@@ -144,12 +153,12 @@ bool CAddonInstaller::Cancel(const CStdString &addonID)
   return false;
 }
 
-void CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdString &referer, bool background)
+bool CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdString &referer, bool background)
 {
   AddonPtr addon;
   bool addonInstalled = CAddonMgr::Get().GetAddon(addonID, addon);
   if (addonInstalled && !force)
-    return;
+    return true;
 
   // check whether we have it available in a repository
   CAddonDatabase database;
@@ -164,30 +173,47 @@ void CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdS
     CStdString hash;
     if (therepo)
       hash = therepo->GetAddonHash(addon);
-
-    // check whether we already have the addon installing
-    CSingleLock lock(m_critSection);
-    if (m_downloadJobs.find(addonID) != m_downloadJobs.end())
-      return; // already installing this addon
-
-    if (background)
-    {
-      unsigned int jobID = CJobManager::GetInstance().AddJob(new CAddonInstallJob(addon, hash, addonInstalled, referer), this);
-      m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(jobID)));
-    }
-    else
-    {
-      m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(0)));
-      lock.Leave();
-      CAddonInstallJob job(addon, hash, addonInstalled, referer);
-      if (!job.DoWork())
-      { // TODO: dump something to debug log?
-      }
-      lock.Enter();
-      JobMap::iterator i = m_downloadJobs.find(addon->ID());
-      m_downloadJobs.erase(i);
-    }
+    return DoInstall(addon, hash, addonInstalled, referer, background);
   }
+  return false;
+}
+
+bool CAddonInstaller::DoInstall(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer, bool background)
+{
+  // check whether we already have the addon installing
+  CSingleLock lock(m_critSection);
+  if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
+    return false;
+
+  // check whether all the dependencies are available or not
+  // TODO: we currently assume that dependencies will install correctly (and each of their dependencies and so on).
+  //       it may be better to install the dependencies first to minimise the chance of an addon becoming orphaned due to
+  //       missing deps.
+  if (!CheckDependencies(addon))
+  {
+    g_application.m_guiDialogKaiToast.QueueNotification(addon->Icon(), addon->Name(), g_localizeStrings.Get(24044), TOAST_DISPLAY_TIME, false);
+    return false;
+  }
+
+  if (background)
+  {
+    unsigned int jobID = CJobManager::GetInstance().AddJob(new CAddonInstallJob(addon, hash, update, referer), this);
+    m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(jobID)));
+  }
+  else
+  {
+    m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(0)));
+    lock.Leave();
+    CAddonInstallJob job(addon, hash, update, referer);
+    if (!job.DoWork())
+    { // TODO: dump something to debug log?
+      return false;
+    }
+    lock.Enter();
+    JobMap::iterator i = m_downloadJobs.find(addon->ID());
+    m_downloadJobs.erase(i);
+  }
+  return true;
 }
 
 bool CAddonInstaller::InstallFromZip(const CStdString &path)
@@ -198,7 +224,10 @@ bool CAddonInstaller::InstallFromZip(const CStdString &path)
   CStdString zipDir;
   URIUtils::CreateArchivePath(zipDir, "zip", path, "");
   if (!CDirectory::GetDirectory(zipDir, items) || items.Size() != 1 || !items[0]->m_bIsFolder)
+  {
+    g_application.m_guiDialogKaiToast.QueueNotification("", path, g_localizeStrings.Get(24045), TOAST_DISPLAY_TIME, false);
     return false;
+  }
 
   // TODO: possibly add support for github generated zips here?
   CStdString archive = URIUtils::AddFileToFolder(items[0]->m_strPath, "addon.xml");
@@ -211,35 +240,87 @@ bool CAddonInstaller::InstallFromZip(const CStdString &path)
     addon->Props().path = path;
 
     // install the addon
-    CSingleLock lock(m_critSection);
-    if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
-      return false;
-
-    unsigned int jobID = CJobManager::GetInstance().AddJob(new CAddonInstallJob(addon), this);
-    m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(jobID)));
-    return true;
+    return DoInstall(addon);
   }
+  g_application.m_guiDialogKaiToast.QueueNotification("", path, g_localizeStrings.Get(24045), TOAST_DISPLAY_TIME, false);
   return false;
 }
 
 void CAddonInstaller::InstallFromXBMCRepo(const set<CStdString> &addonIDs)
 {
-  // first check we have the main repository updated...
-  AddonPtr addon;
-  if (CAddonMgr::Get().GetAddon("repository.xbmc.org", addon))
-  {
-    VECADDONS addons;
-    CAddonDatabase database;
-    database.Open();
-    if (!database.GetRepository(addon->ID(), addons))
-    {
-      RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addon);
-      addons = CRepositoryUpdateJob::GrabAddons(repo, false);
-    }
-  }
+  // first check we have the our repositories up to date (and wait until we do)
+  UpdateRepos(false, true);
+
   // now install the addons
   for (set<CStdString>::const_iterator i = addonIDs.begin(); i != addonIDs.end(); ++i)
-    CAddonInstaller::Get().Install(*i);
+    Install(*i);
+}
+
+bool CAddonInstaller::CheckDependencies(const AddonPtr &addon)
+{
+  assert(addon.get());
+  ADDONDEPS deps = addon->GetDeps();
+  CAddonDatabase database;
+  database.Open();
+  for (ADDONDEPS::const_iterator i = deps.begin(); i != deps.end(); ++i)
+  {
+    const CStdString &addonID = i->first;
+    const AddonVersion &version = i->second.first;
+    bool optional = i->second.second;
+    AddonPtr dep;
+    bool haveAddon = CAddonMgr::Get().GetAddon(addonID, dep);
+    if ((haveAddon && !dep->MeetsVersion(version)) || (!haveAddon && !optional))
+    { // we have it but our version isn't good enough, or we don't have it and we need it
+      if (!database.GetAddon(addonID, dep) || !dep->MeetsVersion(version))
+      { // we don't have it in a repo, or we have it but the version isn't good enough, so dep isn't satisfied.
+        CLog::Log(LOGDEBUG, "Addon %s requires %s version %s which is not available", addon->ID().c_str(), addonID.c_str(), version.c_str());
+        return false;
+      }
+    }
+    // at this point we have our dep, so check that it's OK as well
+    // TODO: should we assume that installed deps are OK?
+    if (!CheckDependencies(dep))
+      return false;
+  }
+  return true;
+}
+
+void CAddonInstaller::UpdateRepos(bool force, bool wait)
+{
+  CSingleLock lock(m_critSection);
+  if (m_repoUpdateJob)
+  {
+    if (wait)
+    { // wait for our job to complete
+      lock.Leave();
+      CLog::Log(LOGDEBUG, "%s - waiting for repository update job to finish...", __FUNCTION__);
+      m_repoUpdateDone.Wait();
+    }
+    return;
+  }
+  if (!force && m_repoUpdateWatch.IsRunning() && m_repoUpdateWatch.GetElapsedSeconds() < 600)
+    return;
+  m_repoUpdateWatch.StartZero();
+  VECADDONS addons;
+  CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons);
+  for (unsigned int i=0;i<addons.size();++i)
+  {
+    CAddonDatabase database;
+    database.Open();
+    CDateTime lastUpdate = database.GetRepoTimestamp(addons[i]->ID());
+    if (force || !lastUpdate.IsValid() || lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
+    {
+      CLog::Log(LOGDEBUG,"Checking repositories for updates (triggered by %s)",addons[i]->Name().c_str());
+      m_repoUpdateJob = CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), this);
+      if (wait)
+      { // wait for our job to complete
+        lock.Leave();
+        CLog::Log(LOGDEBUG, "%s - waiting for this repository update job to finish...", __FUNCTION__);
+        m_repoUpdateDone.Wait();
+      }
+      return;
+    }
+  }
 }
 
 CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer)
@@ -334,6 +415,14 @@ bool CAddonInstallJob::OnPreInstall()
   return false;
 }
 
+void CAddonInstallJob::DeleteAddon(const CStdString &addonFolder)
+{
+  CFileItemList list;
+  list.Add(CFileItemPtr(new CFileItem(addonFolder, true)));
+  list[0]->Select(true);
+  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete, list, ""), NULL);
+}
+
 bool CAddonInstallJob::Install(const CStdString &installFrom)
 {
   CStdString addonFolder(installFrom);
@@ -352,10 +441,7 @@ bool CAddonInstallJob::Install(const CStdString &installFrom)
     CStdString addonID = URIUtils::GetFileName(addonFolder);
     ReportInstallError(addonID, addonID);
     CLog::Log(LOGERROR,"Could not read addon description of %s", addonID.c_str());
-    CFileItemList list;
-    list.Add(CFileItemPtr(new CFileItem(addonFolder, true)));
-    list[0]->Select(true);
-    CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete, list, ""), NULL);
+    DeleteAddon(addonFolder);
     return false;
   }
 
@@ -363,14 +449,21 @@ bool CAddonInstallJob::Install(const CStdString &installFrom)
   CAddonMgr::Get().FindAddons(); // needed as GetDeps() grabs directly from c-pluff via the addon manager
   ADDONDEPS deps = addon->GetDeps();
   CStdString referer;
-  referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().str.c_str());
+  referer.Format("Referer=%s-%s.zip",addon->ID().c_str(),addon->Version().c_str());
   for (ADDONDEPS::iterator it  = deps.begin(); it != deps.end(); ++it)
   {
     if (it->first.Equals("xbmc.metadata"))
       continue;
     AddonPtr dependency;
-    if (!CAddonMgr::Get().GetAddon(it->first,dependency))
-      CAddonInstaller::Get().Install(it->first, false, referer, false); // no new job for these
+    if (!CAddonMgr::Get().GetAddon(it->first,dependency) || dependency->Version() < it->second.first)
+    {
+      // don't have the addon or the addon isn't new enough - grab it (no new job for these)
+      if (!CAddonInstaller::Get().Install(it->first, dependency != NULL, referer, false))
+      {
+        DeleteAddon(addonFolder);
+        return false;
+      }
+    }
   }
   return true;
 }

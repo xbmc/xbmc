@@ -20,9 +20,12 @@
  *
  */
 
-#include "client.h"
-#include "thread.h"
 #include "VNSISession.h"
+#include "thread.h"
+#include "client.h"
+
+#include <string>
+#include <map>
 
 class cResponsePacket;
 class cRequestPacket;
@@ -33,50 +36,44 @@ public:
   cVNSIData();
   ~cVNSIData();
 
-  bool Open(const CStdString& hostname, int port);
+  bool Open(const std::string& hostname, int port);
   void Close();
-  bool CheckConnection();
 
   cResponsePacket*  ReadResult(cRequestPacket* vrp);
   int         GetProtocol()   { return m_session.GetProtocol(); }
-  const CStdString& GetServerName() { return m_session.GetServerName(); }
-  const CStdString& GetVersion()    { return m_session.GetVersion(); }
+  const std::string& GetServerName() { return m_session.GetServerName(); }
+  const std::string& GetVersion()    { return m_session.GetVersion(); }
   bool        SupportChannelScan();
   bool        EnableStatusInterface(bool onOff);
   bool        EnableOSDInterface(bool onOff);
   bool        GetTime(time_t *localTime, int *gmtOffset);
   bool        GetDriveSpace(long long *total, long long *used);
-  int         GetGroupsCount();
-  int         GetChannelsCount();
-  bool        GetGroupsList(PVRHANDLE handle, bool radio = false);
-  bool        GetChannelsList(PVRHANDLE handle, bool radio = false);
-  bool        GetEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
-  bool        GetTimersList(PVRHANDLE handle);
 
+  int         GetChannelsCount();
+  bool        GetChannelsList(PVR_HANDLE handle, bool radio = false);
+  bool        GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
+
+  bool        GetTimersList(PVR_HANDLE handle);
   int         GetTimersCount();
-  PVR_ERROR   AddTimer(const PVR_TIMERINFO &timerinfo);
-  PVR_ERROR   GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &tag);
-  PVR_ERROR   DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force = false);
-  PVR_ERROR   RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname);
-  PVR_ERROR   UpdateTimer(const PVR_TIMERINFO &timerinfo);
+  PVR_ERROR   AddTimer(const PVR_TIMER &timerinfo);
+  PVR_ERROR   GetTimerInfo(unsigned int timernumber, PVR_TIMER &tag);
+  PVR_ERROR   DeleteTimer(const PVR_TIMER &timerinfo, bool force = false);
+  PVR_ERROR   RenameTimer(const PVR_TIMER &timerinfo, const char *newname);
+  PVR_ERROR   UpdateTimer(const PVR_TIMER &timerinfo);
 
   int         GetRecordingsCount();
-  PVR_ERROR   GetRecordingsList(PVRHANDLE handle);
-  const CStdString& GetRecordingPath(uint32_t index);
-  PVR_ERROR   DeleteRecording(const CStdString& path);
+  PVR_ERROR   GetRecordingsList(PVR_HANDLE handle);
+  //const std::string& GetRecordingPath(uint32_t index);
+  PVR_ERROR   RenameRecording(const PVR_RECORDING& recinfo, const char* newname);
+  PVR_ERROR   DeleteRecording(const PVR_RECORDING& recinfo);
 
 
 protected:
+  bool TryReconnect();
   virtual void Action(void);
 
 private:
   bool readData(uint8_t* buffer, int totalBytes);
-  bool sendKA(uint32_t timeStamp);
-
-  struct {
-	  uint32_t channel;
-	  uint32_t timestamp;
-  } m_headerKA;
 
   struct SMessage
   {
@@ -84,12 +81,12 @@ private:
     cResponsePacket *pkt;
   };
   typedef std::map<int, SMessage> SMessages;
-  typedef std::vector<CStdString> RecordPaths;
 
   cVNSISession    m_session;
   cMutex          m_Mutex;
   SMessages       m_queue;
-  RecordPaths     m_RecordsPaths;
-  CStdString      m_videodir;
-  int             m_recIndex;
+  std::string     m_videodir;
+  bool            m_connectionLost;
+  std::string     m_hostname;
+  int             m_port;
 };

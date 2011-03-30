@@ -735,7 +735,7 @@ void CGUIDialogKeyboard::ResetShiftAndSymbols()
   m_lastRemoteClickTime = 0;
 }
 
-const char* CGUIDialogKeyboard::s_charsSeries[10] = { " !@#$%^&*()[]{}<>/\\|0", ".,;:\'\"-+_=?`~1", "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };
+const char* CGUIDialogKeyboard::s_charsSeries[10] = { " 0!@#$%^&*()[]{}<>/\\|", ".,1;:\'\"-+_=?`~", "ABC2", "DEF3", "GHI4", "JKL5", "MNO6", "PQRS7", "TUV8", "WXYZ9" };
 
 void CGUIDialogKeyboard::SetControlLabel(int id, const CStdString &label)
 { // find all controls with this id, and set all their labels
@@ -762,7 +762,7 @@ bool CGUIDialogKeyboard::ShowAndGetFilter(CStdString &filter, bool searching)
     return false;
 
   pKeyboard->m_filtering = searching ? FILTERING_SEARCH : FILTERING_CURRENT;
-  bool ret = ShowAndGetInput(filter, true);
+  bool ret = ShowAndGetInput(filter, searching ? 16017 : 16028, true);
   pKeyboard->m_filtering = FILTERING_NONE;
   return ret;
 }

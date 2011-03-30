@@ -333,10 +333,12 @@ void CGUIDialogPVRGroupManager::Update()
   m_viewChannelGroups.SetItems(*m_channelGroups);
   m_viewChannelGroups.SetSelectedItem(m_iSelectedChannelGroup);
 
+  /* select a group or select the default group if no group was selected */
   CFileItemPtr pItem = m_channelGroups->Get(m_viewChannelGroups.GetSelectedItem());
   m_selectedGroup = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->Get(m_bIsRadio)->GetByName(pItem->m_strTitle);
-  if (m_selectedGroup)
+  if (m_selectedGroup != NULL)
   {
+    /* set this group in the pvrmanager, so it becomes the selected group in other dialogs too */
     CPVRManager::Get()->SetPlayingGroup(m_selectedGroup);
     SET_CONTROL_LABEL(CONTROL_CURRENT_GROUP_LABEL, m_selectedGroup->GroupName());
 

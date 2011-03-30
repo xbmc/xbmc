@@ -23,7 +23,8 @@
 #include "Util.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/recordings/PVRRecording.h"
+#include "pvr/recordings/PVRRecordings.h"
+#include "pvr/addons/PVRClients.h"
 #include "utils/log.h"
 
 using namespace XFILE;
@@ -50,7 +51,7 @@ bool CPVRFile::Open(const CURL& url)
     const CPVRChannel *tag = CPVRManager::GetChannelGroups()->GetByPath(strURL);
     if (tag)
     {
-      if (!CPVRManager::Get()->OpenLiveStream(tag))
+      if (!CPVRManager::Get()->OpenLiveStream(*tag))
         return false;
 
       m_isPlayRecording = false;
@@ -67,7 +68,7 @@ bool CPVRFile::Open(const CURL& url)
     const CPVRChannel *tag = CPVRManager::GetChannelGroups()->GetByPath(strURL);
     if (tag)
     {
-      if (!CPVRManager::Get()->OpenLiveStream(tag))
+      if (!CPVRManager::Get()->OpenLiveStream(*tag))
         return false;
 
       m_isPlayRecording = false;
@@ -84,7 +85,7 @@ bool CPVRFile::Open(const CURL& url)
     CPVRRecording *tag = CPVRManager::GetRecordings()->GetByPath(strURL);
     if (tag)
     {
-      if (!CPVRManager::Get()->OpenRecordedStream(tag))
+      if (!CPVRManager::Get()->OpenRecordedStream(*tag))
         return false;
 
       m_isPlayRecording = true;
@@ -107,24 +108,24 @@ bool CPVRFile::Open(const CURL& url)
 
 void CPVRFile::Close()
 {
-  CPVRManager::Get()->CloseStream();
+  CPVRManager::GetClients()->CloseStream();
 }
 
 unsigned int CPVRFile::Read(void* buffer, int64_t size)
 {
-  return CPVRManager::Get()->ReadStream((BYTE*)buffer, size);
+  return CPVRManager::GetClients()->ReadStream((BYTE*)buffer, size);
 }
 
 int64_t CPVRFile::GetLength()
 {
-  return CPVRManager::Get()->LengthStream();
+  return CPVRManager::GetClients()->LengthStream();
 }
 
 int64_t CPVRFile::Seek(int64_t pos, int whence)
 {
   if (whence == SEEK_POSSIBLE)
   {
-    int64_t ret = CPVRManager::Get()->SeekStream(pos, whence);
+    int64_t ret = CPVRManager::GetClients()->SeekStream(pos, whence);
 
     if (ret >= 0)
     {
@@ -132,7 +133,7 @@ int64_t CPVRFile::Seek(int64_t pos, int whence)
     }
     else
     {
-      if (CPVRManager::Get()->LengthStream() && CPVRManager::Get()->SeekStream(0, SEEK_CUR) >= 0)
+      if (CPVRManager::GetClients()->LengthStream() && CPVRManager::GetClients()->SeekStream(0, SEEK_CUR) >= 0)
         return 1;
       else
         return 0;
@@ -140,14 +141,14 @@ int64_t CPVRFile::Seek(int64_t pos, int whence)
   }
   else
   {
-    return CPVRManager::Get()->SeekStream(pos, whence);
+    return CPVRManager::GetClients()->SeekStream(pos, whence);
   }
   return 0;
 }
 
 int64_t CPVRFile::GetPosition()
 {
-  return CPVRManager::Get()->GetStreamPosition();
+  return CPVRManager::GetClients()->GetStreamPosition();
 }
 
 int CPVRFile::GetTotalTime()
@@ -255,7 +256,10 @@ CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
           // This function was added to retrieve the stream URL for this item
           // Is is used for the MediaPortal PVR addon
           // see PVRManager.cpp
-          return CPVRManager::Get()->GetLiveStreamURL(tag);
+          if (CPVRManager::Get()->OpenLiveStream(*tag))
+            return CPVRManager::GetClients()->GetStreamURL(*tag);
+          else
+            return "";
         }
         else
         {
@@ -274,12 +278,12 @@ bool CPVRFile::CanRecord()
     return false;
   }
 
-  return CPVRManager::Get()->CanRecordInstantly();
+  return CPVRManager::GetClients()->CanRecordInstantly();
 }
 
 bool CPVRFile::IsRecording()
 {
-  return CPVRManager::Get()->IsRecordingOnPlayingChannel();
+  return CPVRManager::GetClients()->IsRecordingOnPlayingChannel();
 }
 
 bool CPVRFile::Record(bool bOnOff)

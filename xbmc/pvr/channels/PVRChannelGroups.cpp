@@ -26,18 +26,14 @@
 #include "dialogs/GUIDialogOK.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
-#include "Util.h"
 #include "URL.h"
 #include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"
 
-#include "PVRChannelGroupInternal.h"
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
-
-using namespace XFILE;
-using namespace MUSIC_INFO;
+#include "pvr/addons/PVRClients.h"
 
 CPVRChannelGroups::CPVRChannelGroups(bool bRadio)
 {
@@ -59,7 +55,8 @@ void CPVRChannelGroups::Clear(void)
 
 bool CPVRChannelGroups::Update(const CPVRChannelGroup &group)
 {
-  int iIndex = GetIndexForGroupID(group.GroupID());
+  CSingleLock lock(m_critSection);
+  int iIndex = group.GroupID() > 0 ? GetIndexForGroupID(group.GroupID()) : GetIndexForGroupName(group.GroupName());
 
   if (iIndex < 0)
   {
@@ -73,6 +70,7 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group)
     CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - updating %s channel group '%s'",
         __FUNCTION__, m_bRadio ? "radio" : "TV", group.GroupName().c_str());
 
+    at(iIndex)->SetGroupID(group.GroupID());
     at(iIndex)->SetGroupName(group.GroupName());
     at(iIndex)->SetSortOrder(group.SortOrder());
   }
@@ -130,10 +128,42 @@ int CPVRChannelGroups::GetIndexForGroupID(int iGroupId) const
   return iReturn;
 }
 
+int CPVRChannelGroups::GetIndexForGroupName(const CStdString &strName) const
+{
+  int iReturn = -1;
+
+  for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
+  {
+    if (at(iGroupPtr)->GroupName().Equals(strName))
+    {
+      iReturn = iGroupPtr;
+      break;
+    }
+  }
+
+  return iReturn;
+}
+
+void CPVRChannelGroups::RemoveFromAllGroups(CPVRChannel *channel)
+{
+  /* start at position 2 because channels are only deleted from non-system groups.
+   system groups are entries 0 and 1 */
+  for (unsigned int iGroupPtr = 2; iGroupPtr < size(); iGroupPtr++)
+  {
+    CPVRChannelGroup *group = (CPVRChannelGroup *) at(iGroupPtr);
+    group->RemoveFromGroup(channel);
+  }
+}
+
 bool CPVRChannelGroups::Update(void)
 {
   bool bReturn = true;
 
+  /* get new groups from add-ons */
+  PVR_ERROR error;
+  CPVRManager::GetClients()->GetChannelGroups(this, &error);
+
+  /* system groups are updated first, so new channels are added before anything is done with user defined groups */
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
     bReturn = at(iGroupPtr)->Update() && bReturn;
 
@@ -166,7 +196,7 @@ bool CPVRChannelGroups::Load(void)
   }
 
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d %s channel groups loaded",
-      __FUNCTION__, size(), m_bRadio ? "radio" : "TV");
+      __FUNCTION__, (int) size(), m_bRadio ? "radio" : "TV");
 
   return true;
 }
@@ -294,7 +324,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
 
   if (group.IsInternalGroup())
   {
-    CLog::Log(LOG_ERROR, "CPVRChannelGroups - %s - cannot delete internal group '%s'",
+    CLog::Log(LOGERROR, "CPVRChannelGroups - %s - cannot delete internal group '%s'",
         __FUNCTION__, group.GroupName().c_str());
     return bReturn;
   }
@@ -302,7 +332,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
   if (!database || !database->Open())
   {
-    CLog::Log(LOG_ERROR, "CPVRChannelGroups - %s - unable to open the database", __FUNCTION__);
+    CLog::Log(LOGERROR, "CPVRChannelGroups - %s - unable to open the database", __FUNCTION__);
     return bReturn;
   }
 

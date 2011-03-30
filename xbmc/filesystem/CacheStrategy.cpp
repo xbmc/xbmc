@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
+#include "SpecialProtocol.h"
 #ifdef _WIN32
 #include "PlatformDefs.h" //for PRIdS, PRId64
 #endif
@@ -76,7 +77,7 @@ int CSimpleFileCache::Open()
 
   m_hDataAvailEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
-  CStdString fileName = CUtil::GetNextFilename("special://temp/filecache%03d.cache", 999);
+  CStdString fileName = CSpecialProtocol::TranslatePath(CUtil::GetNextFilename("special://temp/filecache%03d.cache", 999));
   if(fileName.empty())
   {
     CLog::Log(LOGERROR, "%s - Unable to generate a new filename", __FUNCTION__);
@@ -115,7 +116,7 @@ int CSimpleFileCache::Open()
   return CACHE_RC_OK;
 }
 
-int CSimpleFileCache::Close()
+void CSimpleFileCache::Close()
 {
   if (m_hDataAvailEvent)
     CloseHandle(m_hDataAvailEvent);
@@ -131,8 +132,6 @@ int CSimpleFileCache::Close()
     CloseHandle(m_hCacheFileRead);
 
   m_hCacheFileRead = NULL;
-
-  return CACHE_RC_OK;
 }
 
 int CSimpleFileCache::WriteToCache(const char *pBuffer, size_t iSize)
@@ -161,7 +160,7 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
 {
   int64_t iAvailable = GetAvailableRead();
   if ( iAvailable <= 0 ) {
-    return m_bEndOfInput?CACHE_RC_EOF : CACHE_RC_WOULD_BLOCK;
+    return m_bEndOfInput? 0 : CACHE_RC_WOULD_BLOCK;
   }
 
   if (iMaxSize > (size_t)iAvailable)
@@ -205,19 +204,12 @@ int64_t CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMill
   return CACHE_RC_TIMEOUT;
 }
 
-int64_t CSimpleFileCache::Seek(int64_t iFilePosition, int iWhence)
+int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
 {
 
   CLog::Log(LOGDEBUG,"CSimpleFileCache::Seek, seeking to %"PRId64, iFilePosition);
 
   int64_t iTarget = iFilePosition - m_nStartPosition;
-  if (SEEK_END == iWhence)
-  {
-    CLog::Log(LOGERROR,"%s, cant seek relative to end", __FUNCTION__);
-    return CACHE_RC_ERROR;
-  }
-  else if (SEEK_CUR == iWhence)
-    iTarget = iFilePosition + m_nReadPosition;
 
   if (iTarget < 0)
   {
@@ -227,20 +219,20 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition, int iWhence)
 
   int64_t nDiff = iTarget - m_nWritePosition;
   if ( nDiff > 500000 || (nDiff > 0 && WaitForData((unsigned int)nDiff, 5000) == CACHE_RC_TIMEOUT)  ) {
-    CLog::Log(LOGWARNING,"%s - attempt to seek pass read data (seek to %"PRId64". max: %"PRId64". reset read pointer. (%"PRId64":%d)", __FUNCTION__, iTarget, m_nWritePosition, iFilePosition, iWhence);
+    CLog::Log(LOGWARNING,"%s - attempt to seek pass read data (seek to %"PRId64". max: %"PRId64". reset read pointer. (%"PRId64")", __FUNCTION__, iTarget, m_nWritePosition, iFilePosition);
     return  CACHE_RC_ERROR;
   }
 
   LARGE_INTEGER pos;
   pos.QuadPart = iTarget;
 
-  if(!SetFilePointerEx(m_hCacheFileRead, pos, &pos, FILE_BEGIN))
+  if(!SetFilePointerEx(m_hCacheFileRead, pos, NULL, FILE_BEGIN))
     return CACHE_RC_ERROR;
 
   m_nReadPosition = iTarget;
   m_space.Set();
 
-  return pos.QuadPart;
+  return iFilePosition;
 }
 
 void CSimpleFileCache::Reset(int64_t iSourcePosition)

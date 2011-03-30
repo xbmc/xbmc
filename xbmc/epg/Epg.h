@@ -128,7 +128,7 @@ public:
    * @param strName The name of this table.
    * @param strScraperName The name of the scraper to use.
    */
-  CEpg(int iEpgID, const CStdString &strName = CStdString(), const CStdString &strScraperName = CStdString());
+  CEpg(int iEpgID, const CStdString &strName = "", const CStdString &strScraperName = "");
 
   /*!
    * @brief Destroy this EPG instance.

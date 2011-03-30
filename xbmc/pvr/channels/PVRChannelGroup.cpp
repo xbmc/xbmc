@@ -34,9 +34,8 @@
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
-#include "pvr/epg/PVREpgInfoTag.h"
-
-using namespace MUSIC_INFO;
+#include "pvr/addons/PVRClients.h"
+#include "pvr/epg/PVREpgContainer.h"
 
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder)
 {
@@ -54,6 +53,17 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio)
   m_bRadio          = bRadio;
   m_iGroupId        = -1;
   m_strGroupName.clear();
+  m_iSortOrder      = -1;
+  m_bInhibitSorting = false;
+  m_bLoaded         = false;
+  clear();
+}
+
+CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group)
+{
+  m_bRadio          = group.bIsRadio;
+  m_iGroupId        = -1;
+  m_strGroupName    = group.strGroupName;
   m_iSortOrder      = -1;
   m_bInhibitSorting = false;
   m_bLoaded         = false;
@@ -86,17 +96,16 @@ int CPVRChannelGroup::Load(void)
   CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels loaded from the database for group '%s'",
         __FUNCTION__, iChannelCount, m_strGroupName.c_str());
 
-  int iClientChannelCount = LoadFromClients();
-  if (iClientChannelCount > 0)
+  Update();
+  if (size() - iChannelCount > 0)
   {
     CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels added from clients to group '%s'",
-        __FUNCTION__, iClientChannelCount, m_strGroupName.c_str());
-    iChannelCount += iClientChannelCount;
+        __FUNCTION__, (int) size() - iChannelCount, m_strGroupName.c_str());
   }
 
   m_bLoaded = true;
 
-  return iChannelCount;
+  return size();
 }
 
 void CPVRChannelGroup::Unload()
@@ -106,7 +115,7 @@ void CPVRChannelGroup::Unload()
 
 bool CPVRChannelGroup::Update()
 {
-  return (Load() >= 0);
+  return LoadFromClients(true) > 0;
 }
 
 bool CPVRChannelGroup::Update(const CPVRChannelGroup &group)
@@ -386,13 +395,21 @@ int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 
 int CPVRChannelGroup::LoadFromClients(bool bAddToDb /* = true */)
 {
-  // TODO add support to load channel groups from clients
-  return -1;
-}
+  int iCurSize = size();
 
-int CPVRChannelGroup::GetFromClients(void)
-{
-  return -1;
+  /* get the channels from the backends */
+  PVR_ERROR error;
+  CPVRManager::GetClients()->GetChannelGroupMembers(this, &error);
+  if (error != PVR_ERROR_NO_ERROR)
+    return -1;
+
+  SortByChannelNumber();
+  Renumber();
+
+  if (bAddToDb)
+    Persist();
+
+  return size() - iCurSize;
 }
 
 bool CPVRChannelGroup::RemoveByUniqueID(int iUniqueID)

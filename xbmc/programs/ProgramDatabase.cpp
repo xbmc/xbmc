@@ -27,6 +27,7 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "dbwrappers/dataset.h"
 
 using namespace XFILE;
 

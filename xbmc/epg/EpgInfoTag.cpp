@@ -41,6 +41,38 @@ CEpgInfoTag::~CEpgInfoTag()
   m_previousEvent = NULL;
 }
 
+bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
+{
+  if (this == &right) return true;
+
+  return (m_iBroadcastId       == right.m_iBroadcastId &&
+          m_strTitle           == right.m_strTitle &&
+          m_strPlotOutline     == right.m_strPlotOutline &&
+          m_strPlot            == right.m_strPlot &&
+          m_strGenre           == right.m_strGenre &&
+          m_startTime          == right.m_startTime &&
+          m_endTime            == right.m_endTime &&
+          m_strIconPath        == right.m_strIconPath &&
+          m_strFileNameAndPath == right.m_strFileNameAndPath &&
+          m_iGenreType         == right.m_iGenreType &&
+          m_iGenreSubType      == right.m_iGenreSubType &&
+          m_firstAired         == right.m_firstAired &&
+          m_iParentalRating    == right.m_iParentalRating &&
+          m_iStarRating        == right.m_iStarRating &&
+          m_bNotify            == right.m_bNotify &&
+          m_iSeriesNumber      == right.m_iSeriesNumber &&
+          m_iEpisodeNumber     == right.m_iEpisodeNumber &&
+          m_iEpisodePart       == right.m_iEpisodePart &&
+          m_iUniqueBroadcastID == right.m_iUniqueBroadcastID);
+}
+
+bool CEpgInfoTag::operator !=(const CEpgInfoTag& right) const
+{
+  if (this == &right) return false;
+
+  return !(*this == right);
+}
+
 void CEpgInfoTag::Reset()
 {
   m_iBroadcastId        = -1;
@@ -56,8 +88,8 @@ void CEpgInfoTag::Reset()
   m_iParentalRating     = 0;
   m_iStarRating         = 0;
   m_bNotify             = false;
-  m_iSeriesNum          = 0;
-  m_iEpisodeNum         = 0;
+  m_iSeriesNumber       = 0;
+  m_iEpisodeNumber      = 0;
   m_iEpisodePart        = 0;
   m_strEpisodeName      = "";
   m_bChanged            = false;
@@ -70,6 +102,13 @@ int CEpgInfoTag::GetDuration() const
   m_startTime.GetAsTime(start);
   m_endTime.GetAsTime(end);
   return end - start > 0 ? end - start : 3600;
+}
+
+const CStdString &CEpgInfoTag::Title(void) const
+{
+  return (m_strTitle.IsEmpty()) ?
+      g_localizeStrings.Get(19055) :
+      m_strTitle;
 }
 
 const CEpgInfoTag *CEpgInfoTag::GetNextEvent() const
@@ -87,40 +126,40 @@ const CStdString &CEpgInfoTag::ConvertGenreIdToString(int iID, int iSubID) const
   unsigned int iLabelId = 19499;
   switch (iID)
   {
-    case EVCONTENTMASK_MOVIEDRAMA:
+    case EPG_EVENT_CONTENTMASK_MOVIEDRAMA:
       iLabelId = (iSubID <= 8) ? 19500 + iSubID : 19500;
       break;
-    case EVCONTENTMASK_NEWSCURRENTAFFAIRS:
+    case EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS:
       iLabelId = (iSubID <= 4) ? 19516 + iSubID : 19516;
       break;
-    case EVCONTENTMASK_SHOW:
+    case EPG_EVENT_CONTENTMASK_SHOW:
       iLabelId = (iSubID <= 3) ? 19532 + iSubID : 19532;
       break;
-    case EVCONTENTMASK_SPORTS:
+    case EPG_EVENT_CONTENTMASK_SPORTS:
       iLabelId = (iSubID <= 11) ? 19548 + iSubID : 19548;
       break;
-    case EVCONTENTMASK_CHILDRENYOUTH:
+    case EPG_EVENT_CONTENTMASK_CHILDRENYOUTH:
       iLabelId = (iSubID <= 5) ? 19564 + iSubID : 19564;
       break;
-    case EVCONTENTMASK_MUSICBALLETDANCE:
+    case EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE:
       iLabelId = (iSubID <= 6) ? 19580 + iSubID : 19580;
       break;
-    case EVCONTENTMASK_ARTSCULTURE:
+    case EPG_EVENT_CONTENTMASK_ARTSCULTURE:
       iLabelId = (iSubID <= 11) ? 19596 + iSubID : 19596;
       break;
-    case EVCONTENTMASK_SOCIALPOLITICALECONOMICS:
+    case EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS:
       iLabelId = (iSubID <= 3) ? 19612 + iSubID : 19612;
       break;
-    case EVCONTENTMASK_EDUCATIONALSCIENCE:
+    case EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE:
       iLabelId = (iSubID <= 7) ? 19628 + iSubID : 19628;
       break;
-    case EVCONTENTMASK_LEISUREHOBBIES:
+    case EPG_EVENT_CONTENTMASK_LEISUREHOBBIES:
       iLabelId = (iSubID <= 7) ? 19644 + iSubID : 19644;
       break;
-    case EVCONTENTMASK_SPECIAL:
+    case EPG_EVENT_CONTENTMASK_SPECIAL:
       iLabelId = (iSubID <= 3) ? 19660 + iSubID : 19660;
       break;
-    case EVCONTENTMASK_USERDEFINED:
+    case EPG_EVENT_CONTENTMASK_USERDEFINED:
       iLabelId = (iSubID <= 3) ? 19676 + iSubID : 19676;
       break;
     default:
@@ -150,7 +189,15 @@ void CEpgInfoTag::SetBroadcastId(int iId)
   }
 }
 
-void CEpgInfoTag::SetStart(const CDateTime &start)
+const CDateTime &CEpgInfoTag::StartAsLocalTime(void) const
+{
+  static CDateTime tmp;
+  tmp.SetFromUTCDateTime(m_startTime);
+
+  return tmp;
+}
+
+void CEpgInfoTag::SetStartFromUTC(const CDateTime &start)
 {
   if (m_startTime != start)
   {
@@ -160,7 +207,21 @@ void CEpgInfoTag::SetStart(const CDateTime &start)
   }
 }
 
-void CEpgInfoTag::SetEnd(const CDateTime &end)
+void CEpgInfoTag::SetStartFromLocalTime(const CDateTime &start)
+{
+  CDateTime tmp = start.GetAsUTCDateTime();
+  SetStartFromUTC(tmp);
+}
+
+const CDateTime &CEpgInfoTag::EndAsLocalTime(void) const
+{
+  static CDateTime tmp;
+  tmp.SetFromUTCDateTime(m_endTime);
+
+  return tmp;
+}
+
+void CEpgInfoTag::SetEndFromUTC(const CDateTime &end)
 {
   if (m_endTime != end)
   {
@@ -168,6 +229,12 @@ void CEpgInfoTag::SetEnd(const CDateTime &end)
     m_bChanged = true;
     UpdatePath();
   }
+}
+
+void CEpgInfoTag::SetEndFromLocalTime(const CDateTime &end)
+{
+  CDateTime tmp = end.GetAsUTCDateTime();
+  SetEndFromUTC(tmp);
 }
 
 void CEpgInfoTag::SetTitle(const CStdString &strTitle)
@@ -212,7 +279,15 @@ void CEpgInfoTag::SetGenre(int iID, int iSubID)
   }
 }
 
-void CEpgInfoTag::SetFirstAired(const CDateTime &firstAired)
+const CDateTime &CEpgInfoTag::FirstAiredAsLocalTime(void) const
+{
+  static CDateTime tmp;
+  tmp.SetFromUTCDateTime(m_firstAired);
+
+  return tmp;
+}
+
+void CEpgInfoTag::SetFirstAiredFromUTC(const CDateTime &firstAired)
 {
   if (m_firstAired != firstAired)
   {
@@ -220,6 +295,12 @@ void CEpgInfoTag::SetFirstAired(const CDateTime &firstAired)
     m_bChanged = true;
     UpdatePath();
   }
+}
+
+void CEpgInfoTag::SetFirstAiredFromLocalTime(const CDateTime &firstAired)
+{
+  CDateTime tmp = firstAired.GetAsUTCDateTime();
+  SetStartFromUTC(tmp);
 }
 
 void CEpgInfoTag::SetParentalRating(int iParentalRating)
@@ -254,9 +335,9 @@ void CEpgInfoTag::SetNotify(bool bNotify)
 
 void CEpgInfoTag::SetSeriesNum(int iSeriesNum)
 {
-  if (m_iSeriesNum != iSeriesNum)
+  if (m_iSeriesNumber != iSeriesNum)
   {
-    m_iSeriesNum = iSeriesNum;
+    m_iSeriesNumber = iSeriesNum;
     m_bChanged = true;
     UpdatePath();
   }
@@ -264,9 +345,9 @@ void CEpgInfoTag::SetSeriesNum(int iSeriesNum)
 
 void CEpgInfoTag::SetEpisodeNum(int iEpisodeNum)
 {
-  if (m_iEpisodeNum != iEpisodeNum)
+  if (m_iEpisodeNumber != iEpisodeNum)
   {
-    m_iEpisodeNum = iEpisodeNum;
+    m_iEpisodeNumber = iEpisodeNum;
     m_bChanged = true;
     UpdatePath();
   }
@@ -326,9 +407,9 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag)
       m_iParentalRating    != tag.m_iParentalRating ||
       m_iStarRating        != tag.m_iStarRating ||
       m_bNotify            != tag.m_bNotify ||
-      m_iEpisodeNum        != tag.m_iEpisodeNum ||
+      m_iEpisodeNumber     != tag.m_iEpisodeNumber ||
       m_iEpisodePart       != tag.m_iEpisodePart ||
-      m_iSeriesNum         != tag.m_iSeriesNum ||
+      m_iSeriesNumber      != tag.m_iSeriesNumber ||
       m_strEpisodeName     != tag.m_strEpisodeName ||
       m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID
   );
@@ -347,9 +428,9 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag)
     m_iParentalRating    = tag.m_iParentalRating;
     m_iStarRating        = tag.m_iStarRating;
     m_bNotify            = tag.m_bNotify;
-    m_iEpisodeNum        = tag.m_iEpisodeNum;
+    m_iEpisodeNumber     = tag.m_iEpisodeNumber;
     m_iEpisodePart       = tag.m_iEpisodePart;
-    m_iSeriesNum         = tag.m_iSeriesNum;
+    m_iSeriesNumber      = tag.m_iSeriesNumber;
     m_strEpisodeName     = tag.m_strEpisodeName;
     m_iUniqueBroadcastID = tag.m_iUniqueBroadcastID;
 
@@ -362,7 +443,7 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag)
 
 bool CEpgInfoTag::IsActive(void) const
 {
-  CDateTime now = CDateTime::GetCurrentDateTime();
+  CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
   return (m_startTime <= now && m_endTime > now);
 }
 

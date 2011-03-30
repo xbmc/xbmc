@@ -41,7 +41,7 @@
 #import "XBMCEAGLView.h"
 #import "XBMCAppliance.h"
 #import "XBMCController.h"
-#import "iOSUtils.h"
+#import "AutoPool.h"
 
 //--------------------------------------------------------------
 @interface XBMCEAGLView (PrivateMethods)

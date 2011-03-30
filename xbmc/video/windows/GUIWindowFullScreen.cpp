@@ -54,6 +54,7 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/addons/PVRClients.h"
 
 #include <stdio.h>
 
@@ -701,7 +702,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         CStdString strLabel = msg.GetLabel();
         if (msg.GetParam1() != 0)
         {
-          const CPVRChannelGroups *groups = CPVRManager::GetChannelGroups()->Get(CPVRManager::Get()->IsPlayingRadio());
+          const CPVRChannelGroups *groups = CPVRManager::GetChannelGroups()->Get(CPVRManager::GetClients()->IsPlayingRadio());
           CPVRChannelGroup *selectedGroup = (CPVRChannelGroup *) groups->GetByName(strLabel);
 
           // Switch to the first channel of the new group if the new group ID is
@@ -1111,7 +1112,7 @@ void CGUIWindowFullScreen::FillInTVGroups()
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_GROUP_CHOOSER);
   g_windowManager.SendMessage(msgReset);
 
-  const CPVRChannelGroups *groups = CPVRManager::GetChannelGroups()->Get(CPVRManager::Get()->IsPlayingRadio());
+  const CPVRChannelGroups *groups = CPVRManager::GetChannelGroups()->Get(CPVRManager::GetClients()->IsPlayingRadio());
 
   int iGroup        = 0;
   int iCurrentGroup = 0;

@@ -18,6 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#if !defined(__arm__)
 #import <unistd.h>
 #import <sys/mount.h>
 
@@ -30,6 +31,8 @@
 #import "CocoaInterface.h"
 #import "DllPaths_generated.h"
 
+#import "AutoPool.h"
+
 // hack for Cocoa_GL_ResizeWindow
 //extern "C" void SDL_SetWidthHeight(int w, int h);
 
@@ -40,31 +43,6 @@
 static CVDisplayLinkRef displayLink = NULL; 
 
 CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen);
-
-CCocoaAutoPool::CCocoaAutoPool()
-{
-  m_opaque_pool = [[NSAutoreleasePool alloc] init];
-}
-CCocoaAutoPool::~CCocoaAutoPool()
-{
-  [(NSAutoreleasePool*)m_opaque_pool release];
-}
-
-
-void* Cocoa_Create_AutoReleasePool(void)
-{
-  // Original Author: Elan Feingold
-	// Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  return pool;
-}
-
-void Cocoa_Destroy_AutoReleasePool(void* aPool)
-{
-  // Original Author: Elan Feingold
-  NSAutoreleasePool* pool = (NSAutoreleasePool* )aPool;
-  [pool release];
-}
 
 int Cocoa_GL_GetCurrentDisplayID(void)
 {
@@ -92,7 +70,6 @@ int Cocoa_GL_GetCurrentDisplayID(void)
   
   return((int)display_id);
 }
-
 
 /* 10.5 only
 void Cocoa_SetSystemSleep(bool enable)
@@ -125,7 +102,7 @@ void Cocoa_SetDisplaySleep(bool enable)
 void Cocoa_UpdateSystemActivity(void)
 {
   // Original Author: Elan Feingold
-  UpdateSystemActivity(UsrActivity);   
+  UpdateSystemActivity(UsrActivity);
 }
 
 bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkContext)
@@ -682,3 +659,4 @@ OSStatus SendAppleEventToSystemProcess(AEEventID EventToSend)
 
   return(error); 
 }
+#endif

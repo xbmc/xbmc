@@ -26,6 +26,7 @@
 #include "FileCache.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/BitstreamStats.h"
 #include "Util.h"
 
 #ifndef _LINUX

@@ -11,10 +11,12 @@ SRCS=AlarmClock.cpp \
      DownloadQueueManager.cpp \
      Fanart.cpp \
      fastmemcpy.c \
+     fastmemcpy-arm.S \
      FileOperationJob.cpp \
      FileUtils.cpp \
      fstrcmp.c \
      fft.cpp \
+     GLUtils.cpp \
      HTMLTable.cpp \
      HTMLUtil.cpp \
      HttpHeader.cpp \
@@ -50,9 +52,8 @@ SRCS=AlarmClock.cpp \
      Weather.cpp \
      Win32Exception.cpp \
      XMLUtils.cpp \
-     GLUtils.cpp \
 
 LIB=utils.a
 
 include ../../Makefile.include
--include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(patsubst %.S,,$(SRCS))))

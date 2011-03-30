@@ -438,7 +438,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, m_referer.c_str());
   else
   {
-    g_curlInterface.easy_setopt(h, CURLOPT_REFERER, "");
+    g_curlInterface.easy_setopt(h, CURLOPT_REFERER, NULL);
     g_curlInterface.easy_setopt(h, CURLOPT_AUTOREFERER, TRUE);
   }
 
@@ -1293,16 +1293,6 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
     {
       case CURLM_OK:
       {
-        // hack for broken curl, that thinks there is data all the time
-        // happens especially on ftp during initial connection
-#ifndef _LINUX
-        SwitchToThread();
-#elif __APPLE__
-        sched_yield();
-#else
-        pthread_yield();
-#endif
-
         int maxfd = -1;
         FD_ZERO(&fdread);
         FD_ZERO(&fdwrite);

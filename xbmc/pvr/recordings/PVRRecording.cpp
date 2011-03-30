@@ -21,30 +21,49 @@
 
 #include "dialogs/GUIDialogOK.h"
 #include "pvr/PVRManager.h"
+#include "settings/AdvancedSettings.h"
 #include "PVRRecordings.h"
-#include "PVRRecording.h"
+#include "pvr/addons/PVRClients.h"
 
 CPVRRecording::CPVRRecording()
 {
   Reset();
 }
 
+CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClientId)
+{
+  Reset();
+
+  m_iClientIndex   = recording.iClientIndex;
+  m_strTitle       = recording.strTitle;
+  m_iClientId      = iClientId;
+  m_recordingTime  = recording.recordingTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
+  m_duration       = CDateTimeSpan(0, 0, recording.iDuration / 60, recording.iDuration % 60);
+  m_iPriority      = recording.iPriority;
+  m_iLifetime      = recording.iLifetime;
+  m_strDirectory   = recording.strDirectory;
+  m_strPlot        = recording.strPlot;
+  m_strPlotOutline = recording.strPlotOutline;
+  m_strStreamURL   = recording.strStreamURL;
+  m_strChannelName = recording.strChannelName;
+}
+
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
 {
   return (this == &right) ||
-      (m_clientIndex         == right.m_clientIndex &&
-       m_clientID            == right.m_clientID &&
-       m_strChannel          == right.m_strChannel &&
-       m_recordingTime       == right.m_recordingTime &&
-       m_duration            == right.m_duration &&
-       m_strPlotOutline      == right.m_strPlotOutline &&
-       m_strPlot             == right.m_strPlot &&
-       m_strStreamURL        == right.m_strStreamURL &&
-       m_Priority            == right.m_Priority &&
-       m_Lifetime            == right.m_Lifetime &&
-       m_strDirectory        == right.m_strDirectory &&
-       m_strFileNameAndPath  == right.m_strFileNameAndPath &&
-       m_strTitle            == right.m_strTitle);
+      (m_iClientIndex       == right.m_iClientIndex &&
+       m_iClientId          == right.m_iClientId &&
+       m_strChannelName     == right.m_strChannelName &&
+       m_recordingTime      == right.m_recordingTime &&
+       m_duration           == right.m_duration &&
+       m_strPlotOutline     == right.m_strPlotOutline &&
+       m_strPlot            == right.m_strPlot &&
+       m_strStreamURL       == right.m_strStreamURL &&
+       m_iPriority          == right.m_iPriority &&
+       m_iLifetime          == right.m_iLifetime &&
+       m_strDirectory       == right.m_strDirectory &&
+       m_strFileNameAndPath == right.m_strFileNameAndPath &&
+       m_strTitle           == right.m_strTitle);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -54,15 +73,15 @@ bool CPVRRecording::operator !=(const CPVRRecording& right) const
 
 void CPVRRecording::Reset(void)
 {
-  m_clientIndex           = -1;
-  m_clientID              = CPVRManager::Get()->GetFirstClientID(); // Temporary until we support multiple backends
-  m_strChannel            = "";
-  m_strDirectory          = "";
-  m_recordingTime         = NULL;
-  m_strStreamURL          = "";
-  m_Priority              = -1;
-  m_Lifetime              = -1;
-  m_strFileNameAndPath    = "";
+  m_iClientIndex       = -1;
+  m_iClientId          = CPVRManager::GetClients()->GetFirstID(); // Temporary until we support multiple backends
+  m_strChannelName     = "";
+  m_strDirectory       = "";
+  m_recordingTime      = NULL;
+  m_strStreamURL       = "";
+  m_iPriority          = -1;
+  m_iLifetime          = -1;
+  m_strFileNameAndPath = "";
 
   CVideoInfoTag::Reset();
 }
@@ -75,47 +94,31 @@ int CPVRRecording::GetDuration() const
       m_duration.GetSeconds()) / 60;
 }
 
-bool CPVRRecording::Delete(void) const
+bool CPVRRecording::Delete(void)
 {
-  try
+  PVR_ERROR error;
+  if (!CPVRManager::GetClients()->DeleteRecording(*this, &error))
   {
-    CLIENTMAP *clients = CPVRManager::Get()->Clients();
-
-    /* and write it to the backend */
-    PVR_ERROR err = clients->find(m_clientID)->second->DeleteRecording(*this);
-
-    if (err != PVR_ERROR_NO_ERROR)
-      throw err;
-
-    return true;
+    DisplayError(error);
+    return false;
   }
-  catch (PVR_ERROR err)
-  {
-    DisplayError(err);
-  }
-  return false;
+
+  CPVRManager::GetRecordings()->Update(true); // async update
+  return true;
 }
 
-bool CPVRRecording::Rename(const CStdString &strNewName) const
+bool CPVRRecording::Rename(const CStdString &strNewName)
 {
-  try
+  PVR_ERROR error;
+  m_strTitle.Format("%s", strNewName);
+  if (!CPVRManager::GetClients()->RenameRecording(*this, &error))
   {
-    CLIENTMAP *clients = CPVRManager::Get()->Clients();
-
-    /* and write it to the backend */
-    PVR_ERROR err = clients->find(m_clientID)->second->RenameRecording(*this, strNewName);
-
-    if (err != PVR_ERROR_NO_ERROR)
-      throw err;
-
-    CPVRManager::GetRecordings()->Update(true); // async update
-    return true;
+    DisplayError(error);
+    return false;
   }
-  catch (PVR_ERROR err)
-  {
-    DisplayError(err);
-  }
-  return false;
+
+  CPVRManager::GetRecordings()->Update(true); // async update
+  return true;
 }
 
 void CPVRRecording::DisplayError(PVR_ERROR err) const
@@ -134,18 +137,18 @@ void CPVRRecording::DisplayError(PVR_ERROR err) const
 
 void CPVRRecording::Update(const CPVRRecording &tag)
 {
-  m_clientIndex    = tag.m_clientIndex;
-  m_clientID       = tag.m_clientID;
+  m_iClientIndex   = tag.m_iClientIndex;
+  m_iClientId      = tag.m_iClientId;
   m_strTitle       = tag.m_strTitle;
   m_recordingTime  = tag.m_recordingTime;
   m_duration       = tag.m_duration;
-  m_Priority       = tag.m_Priority;
-  m_Lifetime       = tag.m_Lifetime;
+  m_iPriority      = tag.m_iPriority;
+  m_iLifetime      = tag.m_iLifetime;
   m_strDirectory   = tag.m_strDirectory;
   m_strPlot        = tag.m_strPlot;
   m_strPlotOutline = tag.m_strPlotOutline;
   m_strStreamURL   = tag.m_strStreamURL;
-  m_strChannel     = tag.m_strChannel;
+  m_strChannelName = tag.m_strChannelName;
 
   UpdatePath();
 }
@@ -157,8 +160,16 @@ void CPVRRecording::UpdatePath(void)
 
   if (m_strDirectory != "")
     m_strFileNameAndPath.Format("pvr://recordings/client_%04i/%s/%s.pvr",
-        m_clientID, m_strDirectory.c_str(), strTitle.c_str());
+        m_iClientId, m_strDirectory.c_str(), strTitle.c_str());
   else
     m_strFileNameAndPath.Format("pvr://recordings/client_%04i/%s.pvr",
-        m_clientID, strTitle.c_str());
+        m_iClientId, strTitle.c_str());
+}
+
+const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const
+{
+  static CDateTime tmp;
+  tmp.SetFromUTCDateTime(m_recordingTime);
+
+  return tmp;
 }

@@ -11,7 +11,7 @@ else
 CXXFLAGS+=-I. -DSQUISH_USE_SSE=2 -msse2
 endif
 endif
-LIB=libsquish-@ARCH@.a
+LIB=libsquish.a
 
 include ../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

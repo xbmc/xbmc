@@ -20,13 +20,7 @@
  *
  */
 
-#include <stdlib.h>
-#ifndef WIN32
-#include <arpa/inet.h>
-#else
-
-#endif
-#include <stdio.h>
+#include <stdint.h>
 
 class cRequestPacket
 {

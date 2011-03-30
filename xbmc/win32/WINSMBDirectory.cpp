@@ -30,6 +30,7 @@
 #include "log.h"
 #include "CharsetConverter.h"
 #include "PasswordManager.h"
+#include "Util.h"
 
 #ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)

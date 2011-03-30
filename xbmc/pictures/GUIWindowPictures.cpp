@@ -271,6 +271,18 @@ bool CGUIWindowPictures::OnClick(int iItem)
   return false;
 }
 
+bool CGUIWindowPictures::GetDirectory(const CStdString &strDirectory, CFileItemList& items)
+{
+  if (!CGUIMediaWindow::GetDirectory(strDirectory, items))
+    return false;
+
+  CStdString label;
+  if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.m_strPath, g_settings.GetSourcesFromType("pictures"), &label)) 
+    items.SetLabel(label);
+
+  return true;
+}
+
 bool CGUIWindowPictures::OnPlayMedia(int iItem)
 {
   if (m_vecItems->Get(iItem)->IsVideo())

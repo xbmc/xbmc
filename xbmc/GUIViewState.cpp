@@ -365,7 +365,7 @@ void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString 
     source.strName = label;
     if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
       source.m_strThumbnailImage = thumb;
-    source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
+    source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     source.m_ignore = true;
     m_sources.push_back(source);
   }
@@ -403,6 +403,8 @@ void CGUIViewState::SetSortOrder(SORT_ORDER sortOrder)
 {
   if (GetSortMethod() == SORT_METHOD_NONE)
     m_sortOrder = SORT_ORDER_NONE;
+  else if (sortOrder == SORT_ORDER_NONE)
+    m_sortOrder = SORT_ORDER_ASC;
   else
     m_sortOrder = sortOrder;
 }

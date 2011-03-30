@@ -2,7 +2,7 @@
 TOP := $(dir $(lastword $(MAKEFILE_LIST)))
 
 platform_os=iPhoneOS
-platform_sdk_version=4.2
+platform_sdk_version:=$(shell xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $$2}')
 platform_min_version=iphoneos-version-min=4.1
 platform_gcc_version=4.2.1
 platform_host=arm-apple-darwin10
@@ -21,7 +21,7 @@ export CPPFLAGS=-I${platform_sdk_path}/usr/include  -I${prefix_path}/include
 export CC=${platform_bin_path}/${platform_host}-gcc-${platform_gcc_version}
 export CFLAGS=-std=gnu99 -no-cpp-precomp -m${platform_min_version} -isysroot ${platform_sdk_path} -I${platform_sdk_path}/usr/include ${platform_os_cflags}
 export LD=${platform_bin_path}/ld
-export LDFLAGS=-m${platform_min_version} -isysroot ${platform_sdk_path} -L${platform_sdk_path}/usr/lib ${platform_os_ldflags} -L${prefix_path}/lib
+export LDFLAGS=-m${platform_min_version} -isysroot ${platform_sdk_path} -L${platform_sdk_path}/usr/lib -L${platform_sdk_path}/usr/lib/system ${platform_os_ldflags} -L${prefix_path}/lib
 export CXX=${platform_bin_path}/${platform_host}-g++-${platform_gcc_version} -I${platform_sdk_path}/usr/include/c++/${platform_gcc_version}/${platform_host}
 export CXXFLAGS=-m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}
 export AR=${platform_bin_path}/ar
@@ -29,7 +29,7 @@ export AS=${prefix_path}/bin/gas-preprocessor.pl ${CC}
 export CCAS=--tag CC ${prefix_path}/bin/gas-preprocessor.pl ${CC}
 export STRIP=${platform_bin_path}/strip
 export RANLIB=${platform_bin_path}/ranlib
-export ACLOCAL=aclocal -I /Developer/usr/share/aclocal -I ${prefix_path}/share/aclocal
+export ACLOCAL=aclocal -I ${prefix_path}/share/aclocal -I /Developer/usr/share/aclocal
 export LIBTOOL=/Developer/usr/bin/glibtool
 export LIBTOOLIZE=/Developer/usr/bin/glibtoolize
 export HOST=${platform_host}

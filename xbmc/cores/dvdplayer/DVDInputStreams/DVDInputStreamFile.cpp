@@ -114,6 +114,14 @@ __int64 CDVDInputStreamFile::GetLength()
   return 0;
 }
 
+__int64 CDVDInputStreamFile::GetCachedBytes()
+{
+  if(!m_pFile)
+    return -1;
+
+  return m_pFile->Seek(0, SEEK_BUFFERED);
+}
+
 BitstreamStats CDVDInputStreamFile::GetBitstreamStats() const
 {
   if (!m_pFile)

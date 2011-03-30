@@ -34,9 +34,13 @@
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 #include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/windows/GUIWindowPVR.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
+#include "utils/log.h"
+#include "utils/URIUtils.h"
 
 using namespace std;
 
@@ -286,13 +290,13 @@ bool CGUIWindowPVRCommon::OnContextButtonMenuHooks(CFileItem *item, CONTEXT_BUTT
     bReturn = true;
 
     if (item->IsEPG())
-      CPVRManager::Get()->ProcessMenuHooks(((CPVREpgInfoTag *) item->GetEPGInfoTag())->ChannelTag()->ClientID());
+      CPVRManager::GetClients()->ProcessMenuHooks(((CPVREpgInfoTag *) item->GetEPGInfoTag())->ChannelTag()->ClientID());
     else if (item->IsPVRChannel())
-      CPVRManager::Get()->ProcessMenuHooks(item->GetPVRChannelInfoTag()->ClientID());
+      CPVRManager::GetClients()->ProcessMenuHooks(item->GetPVRChannelInfoTag()->ClientID());
     else if (item->IsPVRRecording())
-      CPVRManager::Get()->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->m_clientID);
+      CPVRManager::GetClients()->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->m_iClientId);
     else if (item->IsPVRTimer())
-      CPVRManager::Get()->ProcessMenuHooks(item->GetPVRTimerInfoTag()->m_iClientID);
+      CPVRManager::GetClients()->ProcessMenuHooks(item->GetPVRTimerInfoTag()->m_iClientId);
   }
 
   return bReturn;
@@ -424,7 +428,7 @@ bool CGUIWindowPVRCommon::ActionDeleteRecording(CFileItem *item)
 
   /* check if the recording tag is valid */
   CPVRRecording *recTag = (CPVRRecording *) item->GetPVRRecordingInfoTag();
-  if (!recTag || recTag->m_clientIndex < 0)
+  if (!recTag || recTag->m_iClientIndex < 0)
     return bReturn;
 
   /* show a confirmation dialog */

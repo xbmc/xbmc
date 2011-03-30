@@ -28,8 +28,6 @@
 
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/epg/PVREpgContainer.h"
-#include "pvr/epg/PVREpg.h"
-#include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 
@@ -84,6 +82,52 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_iClientEncryptionSystem = -1;
 }
 
+CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
+{
+  m_iChannelId              = -1;
+  m_bIsRadio                = channel.bIsRadio;
+  m_bIsHidden               = channel.bIsHidden;
+  m_bClientIsRecording      = channel.bIsRecording;
+  m_strIconPath             = channel.strIconPath;
+  m_strChannelName          = channel.strChannelName;
+  m_iUniqueId               = channel.iUniqueId;
+  m_iClientChannelNumber    = channel.iChannelNumber;
+  m_strClientChannelName    = channel.strChannelName;
+  m_strInputFormat          = channel.strInputFormat;
+  m_strStreamURL            = channel.strStreamURL;
+  m_iClientEncryptionSystem = channel.iEncryptionSystem;
+  m_iClientId               = iClientId;
+  m_strFileNameAndPath      = "";
+  m_bIsVirtual              = false;
+  m_iLastWatched            = 0;
+  m_bEPGEnabled             = true;
+  m_strEPGScraper           = "client";
+  m_EPG                     = NULL;
+}
+
+CPVRChannel::CPVRChannel(const CPVRChannel &channel)
+{
+  m_iChannelId              = channel.m_iChannelId;
+  m_bIsRadio                = channel.m_bIsRadio;
+  m_bIsHidden               = channel.m_bIsHidden;
+  m_bClientIsRecording      = channel.m_bClientIsRecording;
+  m_strIconPath             = channel.m_strIconPath;
+  m_strChannelName          = channel.m_strChannelName;
+  m_bIsVirtual              = channel.m_bIsVirtual;
+  m_iLastWatched            = channel.m_iLastWatched;
+  m_bEPGEnabled             = channel.m_bEPGEnabled;
+  m_strEPGScraper           = channel.m_strEPGScraper;
+  m_iUniqueId               = channel.m_iUniqueId;
+  m_iClientId               = channel.m_iClientId;
+  m_iClientChannelNumber    = channel.m_iClientChannelNumber;
+  m_strClientChannelName    = channel.m_strClientChannelName;
+  m_strInputFormat          = channel.m_strInputFormat;
+  m_strStreamURL            = channel.m_strStreamURL;
+  m_strFileNameAndPath      = channel.m_strFileNameAndPath;
+  m_iClientEncryptionSystem = channel.m_iClientEncryptionSystem;
+  m_EPG                     = NULL;
+}
+
 /********** XBMC related channel methods **********/
 
 bool CPVRChannel::Delete(void)
@@ -117,19 +161,13 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   bChanged = SetInputFormat(channel.InputFormat()) || bChanged;
   bChanged = SetStreamURL(channel.StreamURL()) || bChanged;
   bChanged = SetEncryptionSystem(channel.EncryptionSystem()) || bChanged;
-  bChanged = SetRecording(channel.IsRecording()) || bChanged;
-
   if (m_strChannelName.IsEmpty())
-  {
-    m_strChannelName = channel.ClientChannelName();
-    bChanged = true;
-  }
-
+    bChanged = SetChannelName(channel.ClientChannelName()) || bChanged;
   if (m_strIconPath.IsEmpty())
-  {
-    m_strIconPath = channel.IconPath();
-    bChanged = true;
-  }
+    bChanged = SetIconPath(channel.IconPath()) || bChanged;
+
+  /* don't set bChanged to true because this is not persisted */
+  SetRecording(channel.IsRecording());
 
   return bChanged;
 }
@@ -233,7 +271,7 @@ bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bSaveInDb /* =
   if (m_strIconPath != strIconPath)
   {
     /* update the path */
-    m_strIconPath = CStdString(strIconPath);
+    m_strIconPath.Format("%s", strIconPath);
     SetChanged();
 
     /* persist the changes */
@@ -387,7 +425,7 @@ bool CPVRChannel::SetClientChannelName(const CStdString &strClientChannelName, b
   if (m_strClientChannelName != strClientChannelName)
   {
     /* update the client channel name */
-    m_strClientChannelName = CStdString(strClientChannelName);
+    m_strClientChannelName.Format("%s", strClientChannelName);
     SetChanged();
 
     /* persist the changes */
@@ -407,7 +445,7 @@ bool CPVRChannel::SetInputFormat(const CStdString &strInputFormat, bool bSaveInD
   if (m_strInputFormat != strInputFormat)
   {
     /* update the input format */
-    m_strInputFormat = CStdString(strInputFormat);
+    m_strInputFormat.Format("%s", strInputFormat);
     SetChanged();
 
     /* persist the changes */
@@ -427,7 +465,7 @@ bool CPVRChannel::SetStreamURL(const CStdString &strStreamURL, bool bSaveInDb /*
   if (m_strStreamURL != strStreamURL)
   {
     /* update the stream url */
-    m_strStreamURL = CStdString(strStreamURL);
+    m_strStreamURL.Format("%s", strStreamURL);
     SetChanged();
 
     /* persist the changes */
@@ -600,7 +638,7 @@ int CPVRChannel::GetEPG(CFileItemList *results)
   CPVREpg *epg = GetEPG();
   if (!epg)
   {
-    CLog::Log(LOGERROR, "PVR - %s - cannot get EPG for channel '%s'",
+    CLog::Log(LOGDEBUG, "PVR - %s - cannot get EPG for channel '%s'",
         __FUNCTION__, m_strChannelName.c_str());
     return -1;
   }
@@ -669,7 +707,7 @@ bool CPVRChannel::SetEPGScraper(const CStdString &strScraper, bool bSaveInDb /* 
     bool bCleanEPG = !m_strEPGScraper.IsEmpty() || strScraper.IsEmpty();
 
     /* update the scraper name */
-    m_strEPGScraper = CStdString(strScraper);
+    m_strEPGScraper.Format("%s", strScraper);
     SetChanged();
 
     /* persist the changes */

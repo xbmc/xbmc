@@ -19,6 +19,7 @@
  *
  */
 
+#include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/VideoSettings.h"
 #include "utils/log.h"
@@ -291,10 +292,10 @@ int CEpgDatabase::Get(CEpg *epg, const CDateTime &start /* = NULL */, const CDat
         newTag.m_iParentalRating    = m_pDS->fv("iParentalRating").get_asInt();
         newTag.m_iStarRating        = m_pDS->fv("iStarRating").get_asInt();
         newTag.m_bNotify            = m_pDS->fv("bNotify").get_asBool();
-        newTag.m_iEpisodeNum        = m_pDS->fv("iEpisodeId").get_asInt();
+        newTag.m_iEpisodeNumber        = m_pDS->fv("iEpisodeId").get_asInt();
         newTag.m_iEpisodePart       = m_pDS->fv("iEpisodePart").get_asInt();
         newTag.m_strEpisodeName     = m_pDS->fv("sEpisodeName").get_asString().c_str();
-        newTag.m_iSeriesNum         = m_pDS->fv("iSeriesId").get_asInt();
+        newTag.m_iSeriesNumber         = m_pDS->fv("iSeriesId").get_asInt();
 
         epg->AddEntry(newTag);
         ++iReturn;
@@ -362,7 +363,7 @@ int CEpgDatabase::Persist(const CEpg &epg, bool bQueueWrite /* = false */)
   else
   {
     if (ExecuteQuery(strQuery))
-      iReturn = epg.EpgID() <= 0 ? m_pDS->lastinsertid() : epg.EpgID();
+      iReturn = epg.EpgID() <= 0 ? (int) m_pDS->lastinsertid() : epg.EpgID();
   }
 
   return iReturn;
@@ -380,9 +381,9 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   }
 
   time_t iStartTime, iEndTime, iFirstAired;
-  tag.Start().GetAsTime(iStartTime);
-  tag.End().GetAsTime(iEndTime);
-  tag.FirstAired().GetAsTime(iFirstAired);
+  tag.StartAsUTC().GetAsTime(iStartTime);
+  tag.EndAsUTC().GetAsTime(iEndTime);
+  tag.FirstAiredAsUTC().GetAsTime(iFirstAired);
   int iEpgId = epg->EpgID();
 
   int iBroadcastId = tag.BroadcastId();
@@ -429,7 +430,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
         "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
         iEpgId, iStartTime, iEndTime,
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(),
-        tag.FirstAired().GetAsDBDateTime().c_str(), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
+        tag.FirstAiredAsUTC().GetAsDBDateTime().c_str(), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNum(), tag.EpisodeNum(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.UniqueBroadcastID(), iBroadcastId);
   }
@@ -437,7 +438,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   if (bSingleUpdate)
   {
     if (ExecuteQuery(strQuery))
-      iReturn = m_pDS->lastinsertid();
+      iReturn = (int) m_pDS->lastinsertid();
   }
   else
   {

@@ -354,9 +354,13 @@ public:
   bool HasMusicVideoInfo(const CStdString& strFilenameAndPath);
 
   void GetFilePathById(int idMovie, CStdString &filePath, VIDEODB_CONTENT_TYPE iType);
-  bool GetGenreById(int idGenre, CStdString& strGenre);
-  bool GetCountryById(int idCountry, CStdString& strCountry);
-  bool GetSetById(int idSet, CStdString& strSet);
+  CStdString GetGenreById(int id);
+  CStdString GetCountryById(int id);
+  CStdString GetSetById(int id);
+  CStdString GetPersonById(int id);
+  CStdString GetStudioById(int id);
+  CStdString GetTvShowTitleById(int id);
+  CStdString GetMusicVideoAlbumById(int id);
   int GetTvShowForEpisode(int idEpisode);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMovie = -1);
@@ -656,6 +660,11 @@ private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
 
+  /*! \brief (Re)Create the generic database views for movies, tvshows,
+     episodes and music videos
+   */
+  void CreateViews();
+
   /*! \brief Run a query on the main dataset and return the number of rows
    If no rows are found we close the dataset and return 0.
    \param sql the sql query to run
@@ -672,7 +681,8 @@ private:
    */
   void UpdateBasePath(const char *table, const char *id, int column, bool shows = false);
 
-  virtual int GetMinVersion() const { return 46; };
+  virtual int GetMinVersion() const { return 50; };
+  virtual int GetExportVersion() const { return 1; };
   const char *GetBaseDBName() const { return "MyVideos"; };
 
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);

@@ -32,6 +32,13 @@
 #include "utils/TimeUtils.h"
 #include "filesystem/SpecialProtocol.h"
 
+#ifndef HAS_SDL
+#define SDL_memset4(dst, val, len) memset(dst, val, (len)*4)
+#define SDL_memcpy4(dst, src, len) memcpy(dst, src, (len)*4)
+#define SDL_memcpy4(dst, src, len) memcpy(dst, src, (len)*4)
+#define SDL_memset4(dst, val, len) memset(dst, val, (len)*4)
+#endif
+
 using namespace std;
 
 static const char *TeletextFont = "special://xbmc/media/Fonts/teletext.ttf";

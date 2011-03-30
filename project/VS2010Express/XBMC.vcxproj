@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (DirectX)|Win32">
@@ -102,7 +102,7 @@
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores;..\..\xbmc\cores\dvdplayer;..\..\xbmc\dialogs;..\..\xbmc\FileSystem;..\..\xbmc\guilib\;..\..\xbmc\utils;..\..\xbmc\win32;..\..\xbmc\windowing;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\freetype\include;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libflac\flac-1.2.1\include;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\Python\PC;..\..\lib\win32\boost;..\..\lib\win32\libbluray_win32;..\..\lib\win32\libcdio\include;..\..\lib\win32\libiconv\include;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\libsamplerate\src;..\..\lib\win32\libssh_win32\include;..\..\lib\win32\libwavpack;..\..\lib\win32\pcre;..\..\lib\win32\sqlite;..\..\lib\win32\vorbisfile\libvorbis\include;..\..\lib\win32\vorbisfile\ogg\include;..\..\lib\jsoncpp\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores;..\..\xbmc\cores\dvdplayer;..\..\xbmc\dialogs;..\..\xbmc\FileSystem;..\..\xbmc\guilib\;..\..\xbmc\utils;..\..\xbmc\win32;..\..\xbmc\windowing;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\freetype\include;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\Python\PC;..\..\lib\win32\boost;..\..\lib\win32\libbluray_win32;..\..\lib\win32\libcdio\include;..\..\lib\win32\libiconv\include;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\libsamplerate\src;..\..\lib\win32\libssh_win32\include;..\..\lib\win32\libwavpack;..\..\lib\win32\pcre;..\..\lib\win32\sqlite;..\..\lib\win32\vorbisfile\libvorbis\include;..\..\lib\win32\vorbisfile\ogg\include;..\..\lib\jsoncpp\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -146,7 +146,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores;..\..\xbmc\cores\dvdplayer;..\..\xbmc\dialogs;..\..\xbmc\FileSystem;..\..\xbmc\guilib\;..\..\xbmc\utils;..\..\xbmc\win32;..\..\xbmc\windowing;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\freetype\include;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libflac\flac-1.2.1\include;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\Python\PC;..\..\lib\win32\boost;..\..\lib\win32\libbluray_win32;..\..\lib\win32\libcdio\include;..\..\lib\win32\libiconv\include;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\libsamplerate\src;..\..\lib\win32\libssh_win32\include;..\..\lib\win32\libwavpack;..\..\lib\win32\pcre;..\..\lib\win32\sqlite;..\..\lib\win32\vorbisfile\libvorbis\include;..\..\lib\win32\vorbisfile\ogg\include;..\..\lib\jsoncpp\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores;..\..\xbmc\cores\dvdplayer;..\..\xbmc\dialogs;..\..\xbmc\FileSystem;..\..\xbmc\guilib\;..\..\xbmc\utils;..\..\xbmc\win32;..\..\xbmc\windowing;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\freetype\include;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\Python\PC;..\..\lib\win32\boost;..\..\lib\win32\libbluray_win32;..\..\lib\win32\libcdio\include;..\..\lib\win32\libiconv\include;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\libsamplerate\src;..\..\lib\win32\libssh_win32\include;..\..\lib\win32\libwavpack;..\..\lib\win32\pcre;..\..\lib\win32\sqlite;..\..\lib\win32\vorbisfile\libvorbis\include;..\..\lib\win32\vorbisfile\ogg\include;..\..\lib\jsoncpp\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;Py_NO_ENABLE_SHARED;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -192,7 +192,7 @@
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores;..\..\xbmc\cores\dvdplayer;..\..\xbmc\dialogs;..\..\xbmc\FileSystem;..\..\xbmc\guilib\;..\..\xbmc\utils;..\..\xbmc\win32;..\..\xbmc\windowing;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\freetype\include;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libflac\flac-1.2.1\include;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\Python\PC;..\..\lib\win32\boost;..\..\lib\win32\libbluray_win32;..\..\lib\win32\libcdio\include;..\..\lib\win32\libiconv\include;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\libsamplerate\src;..\..\lib\win32\libssh_win32\include;..\..\lib\win32\libwavpack;..\..\lib\win32\pcre;..\..\lib\win32\sqlite;..\..\lib\win32\vorbisfile\libvorbis\include;..\..\lib\win32\vorbisfile\ogg\include;..\..\lib\jsoncpp\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores;..\..\xbmc\cores\dvdplayer;..\..\xbmc\dialogs;..\..\xbmc\FileSystem;..\..\xbmc\guilib\;..\..\xbmc\utils;..\..\xbmc\win32;..\..\xbmc\windowing;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\freetype\include;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\Python\PC;..\..\lib\win32\boost;..\..\lib\win32\libbluray_win32;..\..\lib\win32\libcdio\include;..\..\lib\win32\libiconv\include;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\libsamplerate\src;..\..\lib\win32\libssh_win32\include;..\..\lib\win32\libwavpack;..\..\lib\win32\pcre;..\..\lib\win32\sqlite;..\..\lib\win32\vorbisfile\libvorbis\include;..\..\lib\win32\vorbisfile\ogg\include;..\..\lib\jsoncpp\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
@@ -235,7 +235,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores;..\..\xbmc\cores\dvdplayer;..\..\xbmc\dialogs;..\..\xbmc\FileSystem;..\..\xbmc\guilib\;..\..\xbmc\utils;..\..\xbmc\win32;..\..\xbmc\windowing;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\freetype\include;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libflac\flac-1.2.1\include;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\Python\PC;..\..\lib\win32\boost;..\..\lib\win32\libbluray_win32;..\..\lib\win32\libcdio\include;..\..\lib\win32\libiconv\include;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\libsamplerate\src;..\..\lib\win32\libssh_win32\include;..\..\lib\win32\libwavpack;..\..\lib\win32\pcre;..\..\lib\win32\sqlite;..\..\lib\win32\vorbisfile\libvorbis\include;..\..\lib\win32\vorbisfile\ogg\include;..\..\lib\jsoncpp\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores;..\..\xbmc\cores\dvdplayer;..\..\xbmc\dialogs;..\..\xbmc\FileSystem;..\..\xbmc\guilib\;..\..\xbmc\utils;..\..\xbmc\win32;..\..\xbmc\windowing;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\freetype\include;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\Python\PC;..\..\lib\win32\boost;..\..\lib\win32\libbluray_win32;..\..\lib\win32\libcdio\include;..\..\lib\win32\libiconv\include;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\libsamplerate\src;..\..\lib\win32\libssh_win32\include;..\..\lib\win32\libwavpack;..\..\lib\win32\pcre;..\..\lib\win32\sqlite;..\..\lib\win32\vorbisfile\libvorbis\include;..\..\lib\win32\vorbisfile\ogg\include;..\..\lib\jsoncpp\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;Py_NO_ENABLE_SHARED;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -283,11 +283,11 @@
     <ClCompile Include="..\..\lib\tinyXML\tinyxml.cpp" />
     <ClCompile Include="..\..\lib\tinyXML\tinyxmlerror.cpp" />
     <ClCompile Include="..\..\lib\tinyXML\tinyxmlparser.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacks.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksAddon.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksGUI.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksPVR.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonDatabase.cpp" />
-    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_Addon.cpp" />
-    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_GUI.cpp" />
-    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_local.cpp" />
-    <ClCompile Include="..\..\xbmc\addons\AddonHelpers_PVR.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonInstaller.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonInfo.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonSettings.cpp" />
@@ -330,6 +330,7 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMuteBug.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogNumeric.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogOK.cpp" />
+    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayerControls.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogProgress.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogSeekBar.cpp" />
@@ -349,6 +350,7 @@
     <ClCompile Include="..\..\xbmc\epg\EpgSearchFilter.cpp" />
     <ClCompile Include="..\..\xbmc\Favourites.cpp" />
     <ClCompile Include="..\..\xbmc\FileItem.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\iso9660.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\ISO9660Directory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\FileUDF.cpp" />
@@ -621,6 +623,7 @@
     <ClCompile Include="..\..\xbmc\programs\ProgramDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\programs\Shortcut.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\addons\PVRClient.cpp" />
+    <ClCompile Include="..\..\xbmc\pvr\addons\PVRClients.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannel.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannelGroup.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\channels\PVRChannelGroupInternal.cpp" />
@@ -678,7 +681,6 @@
     <ClCompile Include="..\..\xbmc\SortFileItem.cpp" />
     <ClCompile Include="..\..\xbmc\storage\AutorunMediaJob.cpp" />
     <ClCompile Include="..\..\xbmc\storage\cdioSupport.cpp" />
-    <ClCompile Include="..\..\xbmc\storage\DetectDVDType.cpp" />
     <ClCompile Include="..\..\xbmc\storage\IoSupport.cpp" />
     <ClCompile Include="..\..\xbmc\storage\MediaManager.cpp" />
     <ClCompile Include="..\..\xbmc\storage\windows\Win32StorageProvider.cpp" />
@@ -1135,11 +1137,11 @@
     <ClInclude Include="..\..\lib\tinyXML\tinystr.h" />
     <ClInclude Include="..\..\lib\tinyXML\tinyxml.h" />
     <ClInclude Include="..\..\lib\win32\sqlite\sqlite3.h" />
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacks.h" />
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksAddon.h" />
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksGUI.h" />
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksPVR.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonDatabase.h" />
-    <ClInclude Include="..\..\xbmc\addons\AddonHelpers_Addon.h" />
-    <ClInclude Include="..\..\xbmc\addons\AddonHelpers_GUI.h" />
-    <ClInclude Include="..\..\xbmc\addons\AddonHelpers_local.h" />
-    <ClInclude Include="..\..\xbmc\addons\AddonHelpers_PVR.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonInstaller.h" />
     <ClInclude Include="..\..\xbmc\addons\DllLibCPluff.h" />
     <ClInclude Include="..\..\xbmc\addons\DllPVRClient.h" />
@@ -1184,6 +1186,7 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMuteBug.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogNumeric.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogOK.h" />
+    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayEject.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayerControls.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogProgress.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogSeekBar.h" />
@@ -1203,6 +1206,7 @@
     <ClInclude Include="..\..\xbmc\epg\EpgSearchFilter.h" />
     <ClInclude Include="..\..\xbmc\Favourites.h" />
     <ClInclude Include="..\..\xbmc\FileItem.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\CacheCircular.h" />
     <ClInclude Include="..\..\xbmc\filesystem\Directory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\DirectoryHistory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FactoryDirectory.h" />
@@ -1502,6 +1506,7 @@
     <ClInclude Include="..\..\xbmc\programs\ProgramDatabase.h" />
     <ClInclude Include="..\..\xbmc\programs\Shortcut.h" />
     <ClInclude Include="..\..\xbmc\pvr\addons\PVRClient.h" />
+    <ClInclude Include="..\..\xbmc\pvr\addons\PVRClients.h" />
     <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannel.h" />
     <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannelGroup.h" />
     <ClInclude Include="..\..\xbmc\pvr\channels\PVRChannelGroupInternal.h" />
@@ -1559,7 +1564,6 @@
     <ClInclude Include="..\..\xbmc\SortFileItem.h" />
     <ClInclude Include="..\..\xbmc\storage\AutorunMediaJob.h" />
     <ClInclude Include="..\..\xbmc\storage\cdioSupport.h" />
-    <ClInclude Include="..\..\xbmc\storage\DetectDVDType.h" />
     <ClInclude Include="..\..\xbmc\storage\IoSupport.h" />
     <ClInclude Include="..\..\xbmc\storage\IStorageProvider.h" />
     <ClInclude Include="..\..\xbmc\storage\MediaManager.h" />

@@ -6,8 +6,8 @@
 #
 
 LIBS   = -ldl
-LIBDIR = ../../../addons/pvr.hts
-LIB    = ../../../addons/pvr.hts/XBMC_Tvheadend.pvr
+LIBDIR = ../../../addons/pvr.mythtv
+LIB    = ../../../addons/pvr.mythtv/XBMC_Mythtv.pvr
 
 SRCS=client.cpp \
 	MythXml.cpp

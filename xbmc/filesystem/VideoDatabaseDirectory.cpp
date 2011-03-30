@@ -61,6 +61,7 @@ bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
         item->SetIconImage(strImage);
     }
   }
+  items.SetLabel(pNode->GetLocalizedName());
 
   return bResult;
 }
@@ -148,30 +149,21 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
     return false;
 
   // get genre
-  CStdString strTemp;
   if (params.GetGenreId() != -1)
-  {
-    videodatabase.GetGenreById(params.GetGenreId(), strTemp);
-    strLabel += strTemp;
-  }
+    strLabel += videodatabase.GetGenreById(params.GetGenreId());
 
   // get country
   if (params.GetCountryId() != -1)
-  {
-    videodatabase.GetCountryById(params.GetCountryId(), strTemp);
-    strLabel += strTemp;
-  }
+    strLabel += videodatabase.GetCountryById(params.GetCountryId());
 
   // get set
   if (params.GetSetId() != -1)
-  {
-    videodatabase.GetSetById(params.GetSetId(), strTemp);
-    strLabel += strTemp;
-  }
+    strLabel += videodatabase.GetSetById(params.GetSetId());
 
   // get year
   if (params.GetYear() != -1)
   {
+    CStdString strTemp;
     strTemp.Format("%i",params.GetYear());
     if (!strLabel.IsEmpty())
       strLabel += " / ";
@@ -275,6 +267,8 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
     return "DefaultStudios.png";
   case NODE_TYPE_MUSICVIDEOS_OVERVIEW: // Music Videos
     return "DefaultMusicVideos.png";
+  case NODE_TYPE_MUSICVIDEOS_ALBUM: // Music Videos - Albums
+    return "DefaultMusicAlbums.png";
   default:
     CLog::Log(LOGWARNING, "%s - Unknown nodetype requested %s", __FUNCTION__, strDirectory.c_str());
     break;

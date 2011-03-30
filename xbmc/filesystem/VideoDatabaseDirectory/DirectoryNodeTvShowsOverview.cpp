@@ -25,44 +25,47 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
+Node TvShowChildren[] = {
+                          { NODE_TYPE_GENRE,         1, 135 },
+                          { NODE_TYPE_TITLE_TVSHOWS, 2, 369 },
+                          { NODE_TYPE_YEAR,          3, 562 },
+                          { NODE_TYPE_ACTOR,         4, 344 },
+                          { NODE_TYPE_STUDIO,        5, 20388 },
+                        };
+
 CDirectoryNodeTvShowsOverview::CDirectoryNodeTvShowsOverview(const CStdString& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_TVSHOWS_OVERVIEW, strName, pParent)
 {
 
 }
 
-NODE_TYPE CDirectoryNodeTvShowsOverview::GetChildType()
+NODE_TYPE CDirectoryNodeTvShowsOverview::GetChildType() const
 {
   if (GetName()=="0")
     return NODE_TYPE_EPISODES;
-  else if (GetName()=="1")
-    return NODE_TYPE_GENRE;
-  else if (GetName()=="2")
-    return NODE_TYPE_TITLE_TVSHOWS;
-  else if (GetName()=="3")
-    return NODE_TYPE_YEAR;
-  else if (GetName()=="4")
-    return NODE_TYPE_ACTOR;
-  else if (GetName()=="5")
-    return NODE_TYPE_STUDIO;
+
+  for (unsigned int i = 0; i < sizeof(TvShowChildren) / sizeof(Node); ++i)
+    if (GetID() == TvShowChildren[i].id)
+      return TvShowChildren[i].node;
 
   return NODE_TYPE_NONE;
 }
 
-bool CDirectoryNodeTvShowsOverview::GetContent(CFileItemList& items)
+CStdString CDirectoryNodeTvShowsOverview::GetLocalizedName() const
 {
-  CStdStringArray vecRoot;
-  vecRoot.push_back(g_localizeStrings.Get(135));  // Genres
-  vecRoot.push_back(g_localizeStrings.Get(369));  // Title
-  vecRoot.push_back(g_localizeStrings.Get(562));  // Year
-  vecRoot.push_back(g_localizeStrings.Get(344));  // Actors
-  vecRoot.push_back(g_localizeStrings.Get(20388));// Studios
+  for (unsigned int i = 0; i < sizeof(TvShowChildren) / sizeof(Node); ++i)
+    if (GetID() == TvShowChildren[i].id)
+      return g_localizeStrings.Get(TvShowChildren[i].label);
+  return "";
+}
 
-  for (int i = 0; i < (int)vecRoot.size(); ++i)
+bool CDirectoryNodeTvShowsOverview::GetContent(CFileItemList& items) const
+{
+  for (unsigned int i = 0; i < sizeof(TvShowChildren) / sizeof(Node); ++i)
   {
-    CFileItemPtr pItem(new CFileItem(vecRoot[i]));
+    CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(TvShowChildren[i].label)));
     CStdString strDir;
-    strDir.Format("%i/", i+1);
+    strDir.Format("%ld/", TvShowChildren[i].id);
     pItem->m_strPath = BuildPath() + strDir;
     pItem->m_bIsFolder = true;
     pItem->SetCanQueue(false);

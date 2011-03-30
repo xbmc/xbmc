@@ -25,9 +25,10 @@
 #include "File.h"
 #include "URL.h"
 
-#include "CacheMemBuffer.h"
+#include "CacheCircular.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace AUTOPTR;
 using namespace XFILE;
@@ -40,7 +41,11 @@ CFileCache::CFileCache()
    m_nSeekResult = 0;
    m_seekPos = 0;
    m_readPos = 0;
-   m_pCache = new CacheMemBuffer();
+   if(g_advancedSettings.m_cacheMemBufferSize == 0)
+     m_pCache = new CSimpleFileCache();
+   else
+     m_pCache = new CCacheCircular(std::max<unsigned int>( g_advancedSettings.m_cacheMemBufferSize / 4, 1024 * 1024)
+                                 , g_advancedSettings.m_cacheMemBufferSize);
    m_seekPossible = 0;
 }
 
@@ -258,7 +263,7 @@ retry:
     return 0;
   }
 
-  if (iRc == CACHE_RC_EOF || iRc == 0)
+  if (iRc == 0)
     return 0;
 
   // unknown error code
@@ -283,13 +288,15 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
     iTarget = iCurPos + iTarget;
   else if (iWhence == SEEK_POSSIBLE)
     return m_seekPossible;
+  else if (iWhence == SEEK_BUFFERED)
+    return m_pCache->WaitForData(0, 0);
   else if (iWhence != SEEK_SET)
     return -1;
 
   if (iTarget == m_readPos)
     return m_readPos;
 
-  if ((m_nSeekResult = m_pCache->Seek(iTarget, SEEK_SET)) != iTarget)
+  if ((m_nSeekResult = m_pCache->Seek(iTarget)) != iTarget)
   {
     if(m_seekPossible == 0)
       return m_nSeekResult;
@@ -330,13 +337,6 @@ int64_t CFileCache::GetPosition()
 int64_t CFileCache::GetLength()
 {
   return m_source.GetLength();
-}
-
-ICacheInterface* CFileCache::GetCache()
-{
-  if(m_pCache)
-    return m_pCache->GetInterface();
-  return NULL;
 }
 
 void CFileCache::StopThread(bool bWait /*= true*/)

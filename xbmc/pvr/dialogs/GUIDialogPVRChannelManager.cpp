@@ -40,10 +40,11 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogKeyboard.h"
 
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/epg/PVREpg.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRDatabase.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/epg/PVREpgContainer.h"
+#include "pvr/addons/PVRClients.h"
 
 #define BUTTON_OK                 4
 #define BUTTON_APPLY              5
@@ -476,14 +477,17 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         pDlgSelect->SetHeading(19213); // Select Client
         pDlgSelect->Add(g_localizeStrings.Get(19209));
         clients.push_back(XBMC_VIRTUAL_CLIENTID);
-        CLIENTMAPITR itr;
-        for (itr = CPVRManager::Get()->Clients()->begin() ; itr != CPVRManager::Get()->Clients()->end(); itr++)
-        {
-          CStdString strClient = (*itr).second->GetBackendName() + ":" + (*itr).second->GetConnectionString();
-          clients.push_back((*itr).first);
-          pDlgSelect->Add(strClient);
-        }
 
+        std::map<long, CStdString> clientMap;
+        if (CPVRManager::GetClients()->GetClients(&clientMap) > 0)
+        {
+          std::map<long,CStdString>::iterator itr;
+          for (itr = clientMap.begin() ; itr != clientMap.end(); itr++)
+          {
+            clients.push_back((*itr).first);
+            pDlgSelect->Add(clientMap[(*itr).first]);
+          }
+        }
         pDlgSelect->DoModal();
 
         int selection = pDlgSelect->GetSelectedLabel();
@@ -679,7 +683,7 @@ void CGUIDialogPVRChannelManager::Update()
     if (channel->ClientID() == XBMC_VIRTUAL_CLIENTID) /* XBMC internal */
       clientName = g_localizeStrings.Get(19209);
     else
-      clientName = CPVRManager::Get()->Clients()->find(channel->ClientID())->second->GetBackendName() + ":" + CPVRManager::Get()->Clients()->find(channel->ClientID())->second->GetConnectionString();
+      clientName = CPVRManager::GetClients()->GetClientName(channel->ClientID());
     channelFile->SetProperty("ClientName", clientName);
 
     m_channelItems->Add(channelFile);

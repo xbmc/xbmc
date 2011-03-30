@@ -42,7 +42,7 @@
 #import <OpenGLES/ES2/glext.h>
 #import "XBMCEAGLView.h"
 #import "XBMCController.h"
-#import "iOSUtils.h"
+#import "AutoPool.h"
 
 //--------------------------------------------------------------
 @interface XBMCEAGLView (PrivateMethods)

@@ -25,6 +25,7 @@
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "log.h"
 #include "TimeUtils.h"
 
@@ -37,7 +38,8 @@ using namespace std;
 
 CEpgContainer g_EpgContainer;
 
-CEpgContainer::CEpgContainer(void)
+CEpgContainer::CEpgContainer(void) :
+    Observable()
 {
   m_bStop = true;
   Clear(false);
@@ -140,7 +142,7 @@ void CEpgContainer::Process(void)
   m_iLastEpgUpdate  = 0;
   CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgCleanup);
 
-  UpdateEPG(true);
+  bool bInitialLoadSucess = UpdateEPG(true);
 
   while (!m_bStop)
   {
@@ -148,7 +150,10 @@ void CEpgContainer::Process(void)
 
     /* load or update the EPG */
     if (!m_bStop && (iNow > m_iLastEpgUpdate + g_advancedSettings.m_iEpgUpdateCheckInterval || !m_bDatabaseLoaded))
-      UpdateEPG(false);
+    {
+      UpdateEPG(!bInitialLoadSucess);
+      bInitialLoadSucess = true;
+    }
 
     /* clean up old entries */
     if (!m_bStop && iNow > m_iLastEpgCleanup + g_advancedSettings.m_iEpgCleanupInterval)
@@ -327,6 +332,8 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     progress->SetHeader(g_localizeStrings.Get(19004));
   }
 
+  int iUpdatedTables = 0;
+
   /* load or update all EPG tables */
   for (unsigned int iEpgPtr = 0; iEpgPtr < iEpgCount; iEpgPtr++)
   {
@@ -351,6 +358,8 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
           __FUNCTION__, at(iEpgPtr)->Name().c_str());
 
     bUpdateSuccess = bCurrent && bUpdateSuccess;
+    if (bCurrent)
+      ++iUpdatedTables;
 
     if (bShowProgress)
     {
@@ -359,6 +368,8 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
       progress->SetTitle(at(iEpgPtr)->Name());
       progress->UpdateState();
     }
+
+    Sleep(25); /* give other threads a chance to get a lock on tables */
   }
 
   /* update the last scan time if we did a full update */
@@ -381,6 +392,13 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 
   /* only try to load the database once */
   m_bDatabaseLoaded = true;
+
+  /* notify observers */
+  if (iUpdatedTables > 0)
+  {
+    SetChanged();
+    NotifyObservers("epg");
+  }
 
   return bUpdateSuccess;
 }

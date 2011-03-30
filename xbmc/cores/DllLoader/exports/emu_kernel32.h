@@ -28,7 +28,7 @@
 #define MAX_LEADBYTES             12
 #define MAX_DEFAULTCHAR           2
 
-#if defined (_XBOX) || defined (_LINUX)
+#if defined (_LINUX)
 typedef struct _STARTUPINFOA
 {
   DWORD cb;
@@ -91,7 +91,7 @@ SYSTEM_INFO, *LPSYSTEM_INFO;
 #endif
 
 typedef DWORD LCTYPE;
-#if defined (_XBOX) || defined (_LINUX)
+#if defined (_LINUX)
 typedef BOOL (*PHANDLER_ROUTINE)(DWORD);
 
 typedef struct _OSVERSIONINFO
@@ -176,7 +176,7 @@ typedef struct _EXCEPTION_RECORD {
 // LOCAL defines from mingw
 #define MAX_LEADBYTES 	12
 #define MAX_DEFAULTCHAR	2
-#if defined (_XBOX) || defined (_LINUX)
+#if defined (_LINUX)
 #define LOCALE_NOUSEROVERRIDE	0x80000000
 #define LOCALE_USE_CP_ACP	0x40000000
 #if (WINVER >= 0x0400)
@@ -714,9 +714,6 @@ extern "C" UINT WINAPI dllGetConsoleCP();
 extern "C" UINT WINAPI dllGetConsoleOutputCP();
 extern "C" UINT WINAPI dllSetConsoleCtrlHandler(PHANDLER_ROUTINE HandlerRoutine, BOOL Add);
 
-#ifdef _XBOX
-extern "C" HANDLE xboxopendvdrom();
-#endif
 extern "C" void WINAPI dllSleep(DWORD dwTime);
 extern "C" PVOID WINAPI dllEncodePointer(PVOID ptr);
 extern "C" PVOID WINAPI dllDecodePointer(PVOID ptr);

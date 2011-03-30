@@ -18,7 +18,8 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-PREFIX:=/Users/Shared/xbmc-depends/ios-4.2_arm7
+PREFIX:=/Users/Shared/xbmc-depends/osx-10.4_i386
+export PATH:=$(PREFIX)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(PREFIX)
 
 LIBDYLIB=$(SOURCE)/bin/autoconf

@@ -20,9 +20,11 @@
  *
  */
 
-#include "client.h"
 #include "VNSISession.h"
 #include "thread.h"
+#include "client.h"
+#include <string>
+#include <map>
 
 typedef enum scantype
 {
@@ -78,27 +80,27 @@ private:
   SMessages       m_queue;
   cMutex          m_Mutex;
   cVNSISession    m_session;
-  CStdString      m_header;
-  CStdString      m_Signal;
+  std::string     m_header;
+  std::string     m_Signal;
   bool            m_running;
   bool            m_stopped;
   bool            m_Canceled;
 
-  cGUIWindow      *m_window;
-  cGUISpinControl *m_spinSourceType;
-  cGUISpinControl *m_spinCountries;
-  cGUISpinControl *m_spinSatellites;
-  cGUISpinControl *m_spinDVBCInversion;
-  cGUISpinControl *m_spinDVBCSymbolrates;
-  cGUISpinControl *m_spinDVBCqam;
-  cGUISpinControl *m_spinDVBTInversion;
-  cGUISpinControl *m_spinATSCType;
-  cGUIRadioButton *m_radioButtonTV;
-  cGUIRadioButton *m_radioButtonRadio;
-  cGUIRadioButton *m_radioButtonFTA;
-  cGUIRadioButton *m_radioButtonScrambled;
-  cGUIRadioButton *m_radioButtonHD;
-  cGUIProgressControl *m_progressDone;
-  cGUIProgressControl *m_progressSignal;
+  CAddonGUIWindow      *m_window;
+  CAddonGUISpinControl *m_spinSourceType;
+  CAddonGUISpinControl *m_spinCountries;
+  CAddonGUISpinControl *m_spinSatellites;
+  CAddonGUISpinControl *m_spinDVBCInversion;
+  CAddonGUISpinControl *m_spinDVBCSymbolrates;
+  CAddonGUISpinControl *m_spinDVBCqam;
+  CAddonGUISpinControl *m_spinDVBTInversion;
+  CAddonGUISpinControl *m_spinATSCType;
+  CAddonGUIRadioButton *m_radioButtonTV;
+  CAddonGUIRadioButton *m_radioButtonRadio;
+  CAddonGUIRadioButton *m_radioButtonFTA;
+  CAddonGUIRadioButton *m_radioButtonScrambled;
+  CAddonGUIRadioButton *m_radioButtonHD;
+  CAddonGUIProgressControl *m_progressDone;
+  CAddonGUIProgressControl *m_progressSignal;
 
 };

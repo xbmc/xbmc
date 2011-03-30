@@ -49,6 +49,8 @@ private:
    */
   CEpg *CreateEpg(int iEpgId);
 
+  bool UpdateEPG(bool bShowProgress = false);
+
 public:
 
   /*!

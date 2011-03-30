@@ -20,16 +20,16 @@
  *
  */
 
-#include "client.h"
 #include "VNSISession.h"
-#include "thread.h"
+#include "client.h"
+#include <string>
 
 class cResponsePacket;
 
 struct SQuality
 {
-  CStdString  fe_name;
-  CStdString  fe_status;
+  std::string fe_name;
+  std::string fe_status;
   uint32_t    fe_snr;
   uint32_t    fe_signal;
   uint32_t    fe_ber;
@@ -44,12 +44,12 @@ public:
 
   bool Open(const PVR_CHANNEL &channelinfo);
   void Close();
-  bool GetStreamProperties(PVR_STREAMPROPS* props);
+  bool GetStreamProperties(PVR_STREAM_PROPERTIES* props);
   void Abort();
   DemuxPacket* Read();
   bool SwitchChannel(const PVR_CHANNEL &channelinfo);
   int CurrentChannel() { return m_channel; }
-  bool GetSignalStatus(PVR_SIGNALQUALITY &qualityinfo);
+  bool GetSignalStatus(PVR_SIGNAL_STATUS &qualityinfo);
 
 protected:
   void StreamChange(cResponsePacket *resp);
@@ -62,7 +62,7 @@ private:
   cVNSISession    m_session;
   int             m_channel;
   int             m_StatusCount;
-  CStdString      m_Status;
-  PVR_STREAMPROPS m_Streams;
+  std::string     m_Status;
+  PVR_STREAM_PROPERTIES m_Streams;
   SQuality        m_Quality;
 };

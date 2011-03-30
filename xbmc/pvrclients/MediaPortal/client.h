@@ -64,8 +64,8 @@ extern std::string  g_szRecordingsDir;
 extern std::string  g_szTVGroup;
 extern std::string  g_szRadioGroup;
 
-extern cHelper_libXBMC_addon *XBMC;
-extern cHelper_libXBMC_pvr   *PVR;
+extern CHelper_libXBMC_addon *XBMC;
+extern CHelper_libXBMC_pvr   *PVR;
 
 extern int          g_iTVServerXBMCBuild;
 

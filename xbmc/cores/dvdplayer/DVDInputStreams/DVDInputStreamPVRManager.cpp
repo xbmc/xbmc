@@ -24,6 +24,9 @@
 #include "filesystem/PVRFile.h"
 #include "URL.h"
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannel.h"
+#include "utils/log.h"
+#include "pvr/addons/PVRClients.h"
 
 using namespace XFILE;
 
@@ -227,7 +230,7 @@ bool CDVDInputStreamPVRManager::SelectChannel(const CPVRChannel &channel)
   return false;
 }
 
-bool CDVDInputStreamPVRManager::GetSelectedChannel(const CPVRChannel *channel)
+bool CDVDInputStreamPVRManager::GetSelectedChannel(CPVRChannel *channel)
 {
   return CPVRManager::Get()->GetCurrentChannel(channel);
 }
@@ -282,5 +285,5 @@ CStdString CDVDInputStreamPVRManager::GetInputFormat()
   if (m_pOtherStream)
     return "";
   else
-    return CPVRManager::Get()->GetCurrentInputFormat();
+    return CPVRManager::GetClients()->GetCurrentInputFormat();
 }

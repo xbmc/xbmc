@@ -20,6 +20,7 @@ ARCHIVE_TOOL_FLAGS=xf
 
 export LIBTOOL=builds/unix/libtool
 PREFIX:=/Users/Shared/xbmc-depends/ios-4.2_arm7
+export PATH:=$(PREFIX)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(PREFIX) \
 --program-transform-name=s/tar/gtar/ --disable-dependency-tracking
 
@@ -41,7 +42,7 @@ $(SOURCE)/src/tar: $(SOURCE)
 
 .installed:
 	make -C $(SOURCE) install
-	cd $(PREFIX)/bin; ln -s gtar tar; ln -s gtar gnutar
+	cd $(PREFIX)/bin; ln -sf gtar tar; ln -sf gtar gnutar
 	touch $@
 
 clean:

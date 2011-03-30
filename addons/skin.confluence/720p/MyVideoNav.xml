@@ -14,7 +14,7 @@
 				<height>720</height>
 				<texture border="20">black-back.png</texture>
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(50) | Control.IsVisible(500) | Control.IsVisible(505)</visible>
+				<visible>Control.IsVisible(50) | Control.IsVisible(51) | Control.IsVisible(500) | Control.IsVisible(505)</visible>
 			</control>
 			<control type="image">
 				<posx>0</posx>
@@ -23,7 +23,7 @@
 				<height>128</height>
 				<texture>floor.png</texture>
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(50) | Control.IsVisible(500) | Control.IsVisible(505) | Control.IsVisible(508)</visible>
+				<visible>Control.IsVisible(50) | Control.IsVisible(51) | Control.IsVisible(500) | Control.IsVisible(505) | Control.IsVisible(508)</visible>
 			</control>
 			<control type="group">
 				<include>VisibleFadeEffect</include>
@@ -385,7 +385,7 @@
 		<control type="group">
 			<posx>470</posx>
 			<posy>0</posy>
-			<visible>Container.Content(Episodes)</visible>
+			<visible>Container.Content(Episodes) + !IsEmpty(ListItem.Season)</visible>
 			<include>VisibleFadeEffect</include>
 			<animation effect="slide" end="-710,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="slide" start="-710,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
@@ -406,6 +406,7 @@
 			<posx>240</posx>
 			<posy>0</posy>
 			<visible>Container.Content(Seasons) | Container.Content(Episodes)</visible>
+			<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
 			<include>VisibleFadeEffect</include>
 			<animation effect="slide" end="-600,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="slide" start="-600,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>

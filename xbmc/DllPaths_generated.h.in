@@ -22,6 +22,9 @@
  *
  */
 
+/* prefix install location */
+#define PREFIX_USR_PATH        "@prefix@"
+
 /* libraries */
 #define DLL_PATH_CPLUFF        "special://xbmcbin/system/libcpluff-@ARCH@.so"
 #define DLL_PATH_IMAGELIB      "special://xbmcbin/system/ImageLib-@ARCH@.so"
@@ -29,13 +32,9 @@
 #define DLL_PATH_LIBID3TAG     "special://xbmcbin/system/libid3tag-@ARCH@.so"
 #define DLL_PATH_LIBHDHOMERUN  "special://xbmcbin/system/hdhomerun-@ARCH@.so"
 #define DLL_PATH_MEDIAINFO     "special://xbmcbin/system/mediainfo-@ARCH@.so"
-#define DLL_PATH_LIBCMYTH      "xbmc.so"
+#define DLL_PATH_LIBCMYTH      "special://xbmcbin/system/libcmyth-@ARCH@.so"
 
-#if defined(_LINUX) && !defined(__APPLE__)
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
-#else
-#define DLL_PATH_LIBRTMP       "librtmp.so"
-#endif
 
 #ifndef DLL_PATH_LIBCURL
 #define DLL_PATH_LIBCURL       "@CURL_SONAME@"
@@ -56,22 +55,17 @@
 #define DLL_PATH_SID_CODEC     "special://xbmcbin/system/players/paplayer/libsidplay2-@ARCH@.so"
 #define DLL_PATH_SPC_CODEC     "special://xbmcbin/system/players/paplayer/SNESAPU-@ARCH@.so"
 #define DLL_PATH_VGM_CODEC     "special://xbmcbin/system/players/paplayer/vgmstream-@ARCH@.so"
-#define DLL_PATH_WAVPACK_CODEC "special://xbmcbin/system/players/paplayer/wavpack-@ARCH@.so"
+#define DLL_PATH_WAVPACK_CODEC "@WAVPACK_SONAME@"
 #define DLL_PATH_YM_CODEC      "special://xbmcbin/system/players/paplayer/stsoundlibrary-@ARCH@.so"
-#define DLL_PATH_SHN_CODEC     "special://xbmcbin/system/players/paplayer/libshnplay-@ARCH@.so"
-#if defined(_LINUX) && !defined(__APPLE__)
+
 #define DLL_PATH_FLAC_CODEC    "@FLAC_SONAME@"
 #define DLL_PATH_MODPLUG_CODEC "@MODPLUG_SONAME@"
-#else
-#define DLL_PATH_FLAC_CODEC    "special://xbmcbin/system/players/paplayer/libFLAC-@ARCH@.so"
-#define DLL_PATH_MODPLUG_CODEC "special://xbmcbin/system/players/paplayer/libmodplug-@ARCH@.so"
-#endif
 #define DLL_PATH_OGG_CODEC     "@VORBISFILE_SONAME@"
 
 /* dvdplayer */
-#define DLL_PATH_LIBASS        "special://xbmcbin/system/players/dvdplayer/libass-@ARCH@.so"
-#define DLL_PATH_LIBMPEG2      "special://xbmcbin/system/players/dvdplayer/libmpeg2-@ARCH@.so"
+#define DLL_PATH_LIBASS        "@ASS_SONAME@"
 #define DLL_PATH_LIBDVDNAV     "special://xbmcbin/system/players/dvdplayer/libdvdnav-@ARCH@.so"
+#define DLL_PATH_LIBMPEG2      "@MPEG2_SONAME@"
 #define DLL_PATH_LIBMAD        "@MAD_SONAME@"
 
 /* ffmpeg */
@@ -94,19 +88,15 @@
 
 /* broadcom crystalhd */
 #if defined(_LINUX) && !defined(__APPLE__)
-#define DLL_PATH_LIBCRYSTALHD "@CRYSTALHD_SONAME@"
+#define DLL_PATH_LIBCRYSTALHD  "@CRYSTALHD_SONAME@"
 #else
-#define DLL_PATH_LIBCRYSTALHD "libcrystalhd.dylib"
+#define DLL_PATH_LIBCRYSTALHD  "libcrystalhd.dylib"
 #endif
 
 /* libbluray */
-#if defined(_LINUX) && !defined(__APPLE__)
-#define DLL_PATH_LIBBLURAY "@BLURAY_SONAME@"
-#else
-#define DLL_PATH_LIBBLURAY "libbluray.dylib"
-#endif
+#define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"
 
 /* apple vdadecoder */
-#define DLL_PATH_LIBVDADECODER  "/System/Library/Frameworks/VideoDecodeAcceleration.framework/Versions/Current/VideoDecodeAcceleration"
+#define DLL_PATH_LIBVDADECODER "/System/Library/Frameworks/VideoDecodeAcceleration.framework/Versions/Current/VideoDecodeAcceleration"
 
 #endif

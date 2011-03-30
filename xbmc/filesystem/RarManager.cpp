@@ -33,6 +33,7 @@
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#include "filesystem/File.h"
 
 #include <set>
 

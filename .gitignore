@@ -148,6 +148,9 @@ autom4te.cache
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Release
 /lib/addons/library.xbmc.pvr/project/VS2010Express/Debug
 
+# /lib/cmyth/
+lib/cmyth/Makefile
+
 # /lib/cpluff/
 /lib/cpluff/ABOUT-NLS
 /lib/cpluff/aclocal.m4
@@ -384,6 +387,7 @@ autom4te.cache
 /system/players/dvdplayer/swscale-0.6.1.dll
 /system/players/dvdplayer/libbluray.dll
 /system/players/dvdplayer/libmpeg2-0.dll
+/system/players/dvdplayer/libmad.dll
 
 # /system/players/paplayer
 /system/players/paplayer/wavpack.dll
@@ -394,7 +398,9 @@ autom4te.cache
 /system/players/paplayer/NoseFart.dll
 /system/players/paplayer/libsidplay2.dll
 /system/players/paplayer/adpcm.dll
-/system/players/dvdplayer/libmad.dll
+/system/players/paplayer/timidity.dll
+/system/players/paplayer/libFLAC.dll
+/system/players/paplayer/xbmc_asap.dll
 
 # /system/players/dsplayer
 /system/players/dsplayer/libsubs.dll

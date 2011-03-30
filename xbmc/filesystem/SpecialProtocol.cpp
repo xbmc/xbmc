@@ -262,6 +262,8 @@ void CSpecialProtocol::LogPaths()
   CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", GetPath("home").c_str());
   CLog::Log(LOGNOTICE, "special://temp/ is mapped to: %s", GetPath("temp").c_str());
   //CLog::Log(LOGNOTICE, "special://userhome/ is mapped to: %s", GetPath("userhome").c_str());
+  if (!CUtil::GetFrameworksPath().IsEmpty())
+    CLog::Log(LOGNOTICE, "special://frameworks/ is mapped to: %s", GetPath("frameworks").c_str());
 }
 
 // private routines, to ensure we only set/get an appropriate path

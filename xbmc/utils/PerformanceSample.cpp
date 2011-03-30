@@ -26,7 +26,6 @@
 #include "linux/PlatformInclude.h"
 #endif
 
-#include <SDL/SDL.h>
 #include "Application.h"
 #include "log.h"
 #include "TimeUtils.h"

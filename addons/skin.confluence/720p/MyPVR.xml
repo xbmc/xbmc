@@ -5,7 +5,7 @@
 		<include>CommonTVBackground</include>
 
 		<control type="group">
-			<visible>Control.IsVisible(11) | Control.IsVisible(12)</visible>
+			<visible>!Control.IsVisible(11) + !Control.IsVisible(12)</visible>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>

@@ -47,10 +47,10 @@ cTimer::cTimer()
   m_UTCdiff            = GetUTCdifftime();
 }
 
-cTimer::cTimer(const PVR_TIMERINFO& timerinfo)
+cTimer::cTimer(const PVR_TIMER& timerinfo)
 {
-  m_index = timerinfo.index;
-  m_active = timerinfo.active;
+  m_index = timerinfo.iClientIndex;
+  m_active = timerinfo.bIsActive;
   if(!m_active)
   {
     time(&m_canceled);
@@ -61,36 +61,26 @@ cTimer::cTimer(const PVR_TIMERINFO& timerinfo)
     m_canceled = cUndefinedDate;
   }
  
-  m_title = timerinfo.title;
+  m_title = timerinfo.strTitle;
   //m_title.Replace(",","");  //Remove commas from title field => still needed?
-  m_directory = timerinfo.directory;
-  m_channel = timerinfo.channelNum;
-  m_starttime = timerinfo.starttime;
-  m_endtime = timerinfo.endtime;
+  m_directory = timerinfo.strDirectory;
+  m_channel = timerinfo.iClientChannelUid;
+  m_starttime = timerinfo.startTime;
+  m_endtime = timerinfo.endTime;
   //m_firstday = timerinfo.firstday;
-  m_isrecording = (timerinfo.recording != 0);
-  m_priority = XBMC2MepoPriority(timerinfo.priority);
+  m_isrecording = timerinfo.bIsRecording;
+  m_priority = XBMC2MepoPriority(timerinfo.iPriority);
 
-  SetKeepMethod(timerinfo.lifetime);
-  if(timerinfo.repeat)
+  SetKeepMethod(timerinfo.iLifetime);
+  if(timerinfo.bIsRepeating)
   {
-    m_schedtype = RepeatFlags2SchedRecType(timerinfo.repeatflags);
+    m_schedtype = RepeatFlags2SchedRecType(timerinfo.iWeekdays);
   } else {
     m_schedtype = Once;
   }
 
-
-  //m_prerecordinterval = timerinfo.marginstart;
-  //m_postrecordinterval = timerinfo.marginstop;
-
-  // Correct starttime and stoptime for marginstart and marginstop
-  // XBMC's start and stop times include the margins already, but
-  // this results in wrong names for the recordings in MediaPortal,
-  // because MediaPortal uses the starttime to retrieve the title
-  // from the EPG information, so without correction, this will
-  // result in the EPG title for the previous program.
-  m_starttime += (m_prerecordinterval * 60); //correction in seconds since 1-1-1970 (unix timestamp)
-  m_endtime -= (m_postrecordinterval * 60); //correction in seconds since 1-1-1970 (unix timestamp)
+  m_prerecordinterval = timerinfo.iMarginStart;
+  m_postrecordinterval = timerinfo.iMarginEnd;
 
   m_UTCdiff = GetUTCdifftime();
 }
@@ -101,35 +91,34 @@ cTimer::~cTimer()
 }
 
 /**
- * @brief Fills the PVR_TIMERINFO struct with information from this timer
- * @param tag A reference to the PVR_TIMERINFO struct
+ * @brief Fills the PVR_TIMERINFO_OLD struct with information from this timer
+ * @param tag A reference to the PVR_TIMERINFO_OLD struct
  */
-void cTimer::GetPVRtimerinfo(PVR_TIMERINFO &tag)
+void cTimer::GetPVRtimerinfo(PVR_TIMER &tag)
 {
-  tag.index       = m_index;
-  tag.active      = m_active;
-  tag.channelNum  = m_channel;
-  tag.title       = m_title.c_str();
-  tag.directory   = m_directory.c_str();
-  // XBMC expects the marginstart and marginstop included in the start and end time
-  tag.starttime   = m_starttime - (m_prerecordinterval * 60);
-  tag.endtime     = m_endtime + (m_postrecordinterval * 60);
+  tag.iClientIndex      = m_index;
+  tag.bIsActive         = m_active;
+  tag.iClientChannelUid = m_channel;
+  tag.strTitle          = m_title.c_str();
+  tag.strDirectory      = m_directory.c_str();
+  tag.startTime         = m_starttime ;
+  tag.endTime           = m_endtime ;
   // From the VDR manual
   // firstday: The date of the first day when this timer shall start recording
   //           (only available for repeating timers).
   if(Repeat())
   {
-    tag.firstday  = m_starttime;
+    tag.firstDay        = m_starttime;
   } else {
-    tag.firstday  = 0;
+    tag.firstDay        = 0;
   }
-  tag.recording   = IsRecording();
-  tag.priority    = Priority();
-  tag.lifetime    = GetLifetime();
-  tag.repeat      = Repeat();
-  tag.repeatflags = RepeatFlags();
-  //tag.marginstart = m_prerecordinterval;
-  //tag.marginstop  = m_postrecordinterval;
+  tag.bIsRecording      = IsRecording();
+  tag.iPriority         = Priority();
+  tag.iLifetime         = GetLifetime();
+  tag.bIsRepeating      = Repeat();
+  tag.iWeekdays         = RepeatFlags();
+  tag.iMarginStart      = m_prerecordinterval * 60;
+  tag.iMarginEnd        = m_postrecordinterval * 60;
 }
 
 time_t cTimer::StartTime(void) const

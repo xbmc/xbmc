@@ -49,6 +49,9 @@
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "Application.h"
+#include "IoSupport.h"
+#include "cdioSupport.h"
+
 
 using namespace XFILE;
 using namespace MEDIA_DETECT;

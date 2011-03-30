@@ -56,6 +56,7 @@ public:
   virtual void OnWindowLoaded(void);
   virtual void OnWindowUnload(void);
   virtual void UpdateWindow(PVRWindow window);
+  virtual void InitializeEpgCache(void);
 
   CGUIEPGGridContainer *m_guideGrid;
 

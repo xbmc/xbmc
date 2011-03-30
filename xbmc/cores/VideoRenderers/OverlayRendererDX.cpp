@@ -29,6 +29,7 @@
 #include "windowing/WindowingFactory.h"
 #include "settings/Settings.h"
 #include "MathUtils.h"
+#include "RenderManager.h"
 
 #ifdef HAS_DX
 
@@ -118,26 +119,20 @@ static bool LoadTexture(int width, int height, int stride
 
 COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
 {
-  RESOLUTION_INFO& res = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
+  CRect src, dst;
+  g_renderManager.GetVideoRect(src, dst);
 
-  int width  = res.iWidth;
-  int height = res.iHeight;
+  m_width  = 1.0;
+  m_height = 1.0;
+  m_align  = ALIGN_VIDEO;
+  m_pos    = POSITION_RELATIVE;
+  m_x      = 0.0f;
+  m_y      = 0.0f;
 
-  m_width  = (float)width;
-  m_height = (float)height;
-  m_count  = 0;
-
-  if     (res.fPixelRatio > 1.0)
-    width  = MathUtils::round_int(width  * res.fPixelRatio);
-  else if(res.fPixelRatio < 1.0)
-    height = MathUtils::round_int(height / res.fPixelRatio);
+  int width  = MathUtils::round_int(dst.Width());
+  int height = MathUtils::round_int(dst.Height());
 
   m_fvf    = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
-  m_align  = ALIGN_SCREEN;
-  m_pos    = POSITION_ABSOLUTE;
-  m_x      = (float)0.0f;
-  m_y      = (float)0.0f;
-
 
   SQuads quads;
   if(!convert_quad(o, pts, width, height, quads))

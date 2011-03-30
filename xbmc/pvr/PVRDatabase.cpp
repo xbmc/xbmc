@@ -20,13 +20,13 @@
  */
 
 #include "PVRDatabase.h"
+#include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/VideoSettings.h"
 #include "utils/log.h"
 
 #include "PVRManager.h"
 #include "channels/PVRChannelGroupsContainer.h"
-#include "channels/PVRChannelGroupInternal.h"
 
 using namespace std;
 using namespace dbiplus;

@@ -36,6 +36,7 @@ class CPVRManager;
 
 class CEpgContainer : public std::vector<CEpg *>,
                  public Observer,
+                 public Observable,
                  private CThread
 {
   friend class CEpg;

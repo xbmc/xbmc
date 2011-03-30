@@ -20,12 +20,8 @@
  */
 
 #pragma once
-#include "pvrclient-vdrVNSI_os.h"
-#include "StdString.h"
-
-#include <algorithm>
-#include <vector>
-#include <map>
+#include <stdint.h>
+#include <string>
 
 class cResponsePacket;
 class cRequestPacket;
@@ -36,7 +32,7 @@ public:
   cVNSISession();
   ~cVNSISession();
 
-  bool              Open(const CStdString& hostname, int port, const char *name = NULL);
+  bool              Open(const std::string& hostname, int port, const char *name = NULL);
   void              Close();
   void              Abort();
 
@@ -48,14 +44,14 @@ public:
   cResponsePacket*  ReadResult(cRequestPacket* vrp, bool sequence = true);
   bool              ReadSuccess(cRequestPacket* m, bool sequence = true);
   int               GetProtocol()   { return m_protocol; }
-  const CStdString& GetServerName() { return m_server; }
-  const CStdString& GetVersion()    { return m_version; }
+  const std::string& GetServerName() { return m_server; }
+  const std::string& GetVersion()    { return m_version; }
 
 private:
-  SOCKET      m_fd;
+  int         m_fd;
   int         m_protocol;
-  CStdString  m_server;
-  CStdString  m_version;
+  std::string m_server;
+  std::string m_version;
 
   struct {
         uint32_t opCodeID;

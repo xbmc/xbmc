@@ -20,9 +20,8 @@
  *
  */
 
-#include "client.h"
 #include "VNSISession.h"
-#include "thread.h"
+#include "client.h"
 
 class cResponsePacket;
 
@@ -32,7 +31,7 @@ public:
   cVNSIRecording();
   ~cVNSIRecording();
 
-  bool Open(const CStdString& path);
+  bool Open(const PVR_RECORDING& recinfo);
   void Close();
 
   int Read(unsigned char* buf, uint32_t buf_size);

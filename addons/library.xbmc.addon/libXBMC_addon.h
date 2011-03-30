@@ -63,16 +63,16 @@ typedef enum queue_msg {
   QUEUE_ERROR
 } queue_msg_t;
 
-class cHelper_libXBMC_addon
+class CHelper_libXBMC_addon
 {
 public:
-  cHelper_libXBMC_addon()
+  CHelper_libXBMC_addon()
   {
     m_libXBMC_addon = NULL;
     m_Handle        = NULL;
   }
 
-  ~cHelper_libXBMC_addon()
+  ~CHelper_libXBMC_addon()
   {
     if (m_libXBMC_addon)
     {

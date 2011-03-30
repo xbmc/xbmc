@@ -33,14 +33,14 @@
 
 #ifdef HAS_DVD_DRIVE
 
-#include "IoSupport.h"
-#include "cdioSupport.h"
 #include "threads/CriticalSection.h"
 
 #include "threads/Thread.h"
 
 namespace MEDIA_DETECT
 {
+class CCdInfo;
+class CLibcdio;
 
 class CDetectDVDMedia : public CThread
 {

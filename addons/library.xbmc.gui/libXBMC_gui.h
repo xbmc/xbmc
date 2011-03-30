@@ -53,22 +53,22 @@ typedef void* GUIHANDLE;
 #define ADDON_ACTION_PREVIOUS_MENU          10
 #define ADDON_ACTION_CLOSE_DIALOG           51
 
-class cGUIWindow;
-class cGUISpinControl;
-class cGUIRadioButton;
-class cGUIProgressControl;
-class cListItem;
+class CAddonGUIWindow;
+class CAddonGUISpinControl;
+class CAddonGUIRadioButton;
+class CAddonGUIProgressControl;
+class CAddonListItem;
 
-class cHelper_libXBMC_gui
+class CHelper_libXBMC_gui
 {
 public:
-  cHelper_libXBMC_gui()
+  CHelper_libXBMC_gui()
   {
     m_libXBMC_gui = NULL;
     m_Handle      = NULL;
   }
 
-  ~cHelper_libXBMC_gui()
+  ~CHelper_libXBMC_gui()
   {
     if (m_libXBMC_gui)
     {
@@ -120,43 +120,43 @@ public:
       dlsym(m_libXBMC_gui, "GUI_get_video_resolution");
     if (GetVideoResolution == NULL)   { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    Window_create           = (cGUIWindow* (*)(const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog))
+    Window_create           = (CAddonGUIWindow* (*)(const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog))
       dlsym(m_libXBMC_gui, "GUI_Window_create");
     if (Window_create == NULL)        { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    Window_destroy          = (void (*)(cGUIWindow* p))
+    Window_destroy          = (void (*)(CAddonGUIWindow* p))
       dlsym(m_libXBMC_gui, "GUI_Window_destroy");
     if (Window_destroy == NULL)       { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    Control_getSpin         = (cGUISpinControl* (*)(cGUIWindow *window, int controlId))
+    Control_getSpin         = (CAddonGUISpinControl* (*)(CAddonGUIWindow *window, int controlId))
       dlsym(m_libXBMC_gui, "GUI_control_get_spin");
     if (Control_getSpin == NULL)      { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    Control_releaseSpin     = (void (*)(cGUISpinControl* p))
+    Control_releaseSpin     = (void (*)(CAddonGUISpinControl* p))
       dlsym(m_libXBMC_gui, "GUI_control_release_spin");
     if (Control_releaseSpin == NULL)  { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    Control_getRadioButton  = (cGUIRadioButton* (*)(cGUIWindow *window, int controlId))
+    Control_getRadioButton  = (CAddonGUIRadioButton* (*)(CAddonGUIWindow *window, int controlId))
       dlsym(m_libXBMC_gui, "GUI_control_get_radiobutton");
     if (Control_getRadioButton == NULL)      { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    Control_releaseRadioButton = (void (*)(cGUIRadioButton* p))
+    Control_releaseRadioButton = (void (*)(CAddonGUIRadioButton* p))
       dlsym(m_libXBMC_gui, "GUI_control_release_radiobutton");
     if (Control_releaseRadioButton == NULL)  { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    Control_getProgress     = (cGUIProgressControl* (*)(cGUIWindow *window, int controlId))
+    Control_getProgress     = (CAddonGUIProgressControl* (*)(CAddonGUIWindow *window, int controlId))
       dlsym(m_libXBMC_gui, "GUI_control_get_progress");
     if (Control_getProgress == NULL)  { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    Control_releaseProgress = (void (*)(cGUIProgressControl* p))
+    Control_releaseProgress = (void (*)(CAddonGUIProgressControl* p))
       dlsym(m_libXBMC_gui, "GUI_control_release_progress");
     if (Control_releaseProgress == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    ListItem_create         = (cListItem* (*)(const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path))
+    ListItem_create         = (CAddonListItem* (*)(const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path))
       dlsym(m_libXBMC_gui, "GUI_ListItem_create");
     if (ListItem_create == NULL)      { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    ListItem_destroy        = (void (*)(cListItem* p))
+    ListItem_destroy        = (void (*)(CAddonListItem* p))
       dlsym(m_libXBMC_gui, "GUI_ListItem_destroy");
     if (ListItem_destroy == NULL)     { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
@@ -169,16 +169,16 @@ public:
   int (*GetScreenHeight)();
   int (*GetScreenWidth)();
   int (*GetVideoResolution)();
-  cGUIWindow* (*Window_create)(const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog);
-  void (*Window_destroy)(cGUIWindow* p);
-  cGUISpinControl* (*Control_getSpin)(cGUIWindow *window, int controlId);
-  void (*Control_releaseSpin)(cGUISpinControl* p);
-  cGUIRadioButton* (*Control_getRadioButton)(cGUIWindow *window, int controlId);
-  void (*Control_releaseRadioButton)(cGUIRadioButton* p);
-  cGUIProgressControl* (*Control_getProgress)(cGUIWindow *window, int controlId);
-  void (*Control_releaseProgress)(cGUIProgressControl* p);
-  cListItem* (*ListItem_create)(const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path);
-  void (*ListItem_destroy)(cListItem* p);
+  CAddonGUIWindow* (*Window_create)(const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog);
+  void (*Window_destroy)(CAddonGUIWindow* p);
+  CAddonGUISpinControl* (*Control_getSpin)(CAddonGUIWindow *window, int controlId);
+  void (*Control_releaseSpin)(CAddonGUISpinControl* p);
+  CAddonGUIRadioButton* (*Control_getRadioButton)(CAddonGUIWindow *window, int controlId);
+  void (*Control_releaseRadioButton)(CAddonGUIRadioButton* p);
+  CAddonGUIProgressControl* (*Control_getProgress)(CAddonGUIWindow *window, int controlId);
+  void (*Control_releaseProgress)(CAddonGUIProgressControl* p);
+  CAddonListItem* (*ListItem_create)(const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path);
+  void (*ListItem_destroy)(CAddonListItem* p);
 
 protected:
   int (*GUI_register_me)(void *HANDLE);
@@ -193,11 +193,11 @@ private:
   };
 };
 
-class cGUISpinControl
+class CAddonGUISpinControl
 {
 public:
-  cGUISpinControl(cGUIWindow *window, int controlId);
-  virtual ~cGUISpinControl(void) {}
+  CAddonGUISpinControl(CAddonGUIWindow *window, int controlId);
+  virtual ~CAddonGUISpinControl(void) {}
 
   virtual void SetVisible(bool yesNo);
   virtual void SetText(const char *label);
@@ -207,16 +207,16 @@ public:
   virtual void SetValue(int iValue);
 
 private:
-  cGUIWindow *m_Window;
+  CAddonGUIWindow *m_Window;
   int         m_ControlId;
   GUIHANDLE   m_SpinHandle;
 };
 
-class cGUIRadioButton
+class CAddonGUIRadioButton
 {
 public:
-  cGUIRadioButton(cGUIWindow *window, int controlId);
-  ~cGUIRadioButton() {}
+  CAddonGUIRadioButton(CAddonGUIWindow *window, int controlId);
+  ~CAddonGUIRadioButton() {}
 
   virtual void SetVisible(bool yesNo);
   virtual void SetText(const char *label);
@@ -224,16 +224,16 @@ public:
   virtual bool IsSelected();
 
 private:
-  cGUIWindow *m_Window;
+  CAddonGUIWindow *m_Window;
   int         m_ControlId;
   GUIHANDLE   m_ButtonHandle;
 };
 
-class cGUIProgressControl
+class CAddonGUIProgressControl
 {
 public:
-  cGUIProgressControl(cGUIWindow *window, int controlId);
-  virtual ~cGUIProgressControl(void) {}
+  CAddonGUIProgressControl(CAddonGUIWindow *window, int controlId);
+  virtual ~CAddonGUIProgressControl(void) {}
 
   virtual void SetPercentage(float fPercent);
   virtual float GetPercentage() const;
@@ -242,18 +242,18 @@ public:
   virtual std::string GetDescription() const;
 
 private:
-  cGUIWindow *m_Window;
+  CAddonGUIWindow *m_Window;
   int         m_ControlId;
   GUIHANDLE   m_ProgressHandle;
 };
 
-class cListItem
+class CAddonListItem
 {
-friend class cGUIWindow;
+friend class CAddonGUIWindow;
 
 public:
-  cListItem(const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path);
-  virtual ~cListItem(void) {}
+  CAddonListItem(const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path);
+  virtual ~CAddonListItem(void) {}
 
   virtual const char  *GetLabel();
   virtual void         SetLabel(const char *label);
@@ -272,15 +272,15 @@ protected:
   GUIHANDLE   m_ListItemHandle;
 };
 
-class cGUIWindow
+class CAddonGUIWindow
 {
-friend class cGUISpinControl;
-friend class cGUIRadioButton;
-friend class cGUIProgressControl;
+friend class CAddonGUISpinControl;
+friend class CAddonGUIRadioButton;
+friend class CAddonGUIProgressControl;
 
 public:
-  cGUIWindow(const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog);
-  ~cGUIWindow();
+  CAddonGUIWindow(const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog);
+  ~CAddonGUIWindow();
 
   virtual bool         Show();
   virtual void         Close();
@@ -301,7 +301,7 @@ public:
   virtual void         ClearList();
   virtual GUIHANDLE    AddStringItem(const char *name, int itemPosition = -1);
   virtual void         AddItem(GUIHANDLE item, int itemPosition = -1);
-  virtual void         AddItem(cListItem *item, int itemPosition = -1);
+  virtual void         AddItem(CAddonListItem *item, int itemPosition = -1);
   virtual void         RemoveItem(int itemPosition);
   virtual GUIHANDLE    GetListItem(int listPos);
   virtual void         SetCurrentListPosition(int listPos);

@@ -23,6 +23,7 @@
 #include "utils/log.h"
 #include "utils/Crc32.h"
 #include "DateTime.h"
+#include "dbwrappers/dataset.h"
 
 CTextureDatabase::CTextureDatabase()
 {

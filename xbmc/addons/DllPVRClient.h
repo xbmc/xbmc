@@ -23,7 +23,7 @@
 #include "DllAddon.h"
 #include "include/xbmc_pvr_types.h"
 
-class DllPVRClient : public DllAddon<PVRClient, PVR_PROPS>
+class DllPVRClient : public DllAddon<PVRClient, PVR_PROPERTIES>
 {
   // this is populated via Macro calls in DllAddon.h
 };

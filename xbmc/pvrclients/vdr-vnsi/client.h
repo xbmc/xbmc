@@ -23,7 +23,6 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "StdString.h"
 #include "../../../addons/library.xbmc.addon/libXBMC_addon.h"
 #include "../../../addons/library.xbmc.gui/libXBMC_gui.h"
 #include "../../../addons/library.xbmc.pvr/libXBMC_pvr.h"
@@ -36,20 +35,19 @@
 #define DEFAULT_TIMEOUT       3
 
 extern bool IsClientConnected(bool forceReconnect = false);
-extern void SetClientConnected(bool yesNo);
 
 extern bool         m_bCreated;
-extern CStdString   g_szHostname;
+extern std::string  g_szHostname;
 extern int          g_iPort;
 extern int          g_iConnectTimeout;
 extern int          g_clientID;
-extern CStdString   g_szUserPath;
-extern CStdString   g_szClientPath;
+extern std::string  g_szUserPath;
+extern std::string  g_szClientPath;
 extern int          g_iPriority;          ///< The Priority this client have in response to other clients
 extern bool         g_bCharsetConv;       ///< Convert VDR's incoming strings to UTF8 character set
 extern bool         g_bHandleMessages;    ///< Send VDR's OSD status messages to XBMC OSD
-extern cHelper_libXBMC_addon *XBMC;
-extern cHelper_libXBMC_gui   *GUI;
-extern cHelper_libXBMC_pvr   *PVR;
+extern CHelper_libXBMC_addon *XBMC;
+extern CHelper_libXBMC_gui   *GUI;
+extern CHelper_libXBMC_pvr   *PVR;
 
 #endif /* CLIENT_H */

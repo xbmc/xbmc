@@ -713,6 +713,15 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="progress">
+				<description>ProgressbarCache</description>
+				<posx>230</posx>
+				<posy>40r</posy>
+				<width>820</width>
+				<height>14</height>
+				<info>Player.ProgressCache</info>
+				<midtexture border="6,0,6,0">OSDProgressMidLight.png</midtexture>
+			</control>
+			<control type="progress">
 				<description>Progressbar</description>
 				<posx>230</posx>
 				<posy>40r</posy>

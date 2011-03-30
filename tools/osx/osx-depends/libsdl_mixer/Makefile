@@ -20,9 +20,6 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-export CFLAGS+=-undefined dynamic_lookup 
-export CXXFLAGS+=-undefined dynamic_lookup
-export LDFLAGS+=-liconv -Wl,-read_only_relocs,suppress -Wl,-undefined,dynamic_lookup
 CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) \
   --disable-music-ogg --disable-music-mp3 \
   --disable-music-mod --disable-music-midi --disable-smpegtest --disable-sdltest

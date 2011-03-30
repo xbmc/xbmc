@@ -56,7 +56,7 @@ public:
     virtual bool PrevChannel(bool preview = false) = 0;
     virtual bool SelectChannelByNumber(unsigned int channel) = 0;
     virtual bool SelectChannel(const CPVRChannel &channel) = 0;
-    virtual bool GetSelectedChannel(const CPVRChannel *) = 0;
+    virtual bool GetSelectedChannel(CPVRChannel *) = 0;
     virtual int GetTotalTime() = 0;
     virtual int GetStartTime() = 0;
     virtual bool UpdateItem(CFileItem& item) = 0;
@@ -103,6 +103,12 @@ public:
   virtual bool NextStream() { return false; }
   virtual void Abort() {}
   virtual int GetBlockSize() { return 0; }
+
+  /*! \brief Get the number of bytes currently cached/buffered ahead from
+   the current position in the input stream if applicable.
+   \return number of cached ahead data bytes (-1 if not available)
+   */
+  virtual __int64 GetCachedBytes() { return -1; }
 
   bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
   virtual bool IsEOF() = 0;

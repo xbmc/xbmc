@@ -503,11 +503,13 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
           object.m_Recorded.series_title = tag.m_strShowTitle;
           object.m_Recorded.episode_number = tag.m_iSeason * 100 + tag.m_iEpisode;
           object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
+          object.m_Date = tag.m_strFirstAired;
           if(tag.m_iSeason != -1)
               object.m_ReferenceID = NPT_String::Format("videodb://2/0/%i", tag.m_iDbId);
         } else {
           object.m_ObjectClass.type = "object.item.videoItem.movie";
           object.m_Title = tag.m_strTitle;
+          object.m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
           object.m_ReferenceID = NPT_String::Format("videodb://1/2/%i", tag.m_iDbId);
         }
     }
@@ -532,7 +534,8 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
 
     object.m_Description.description = tag.m_strTagLine;
     object.m_Description.long_description = tag.m_strPlot;
-    if (resource) resource->m_Duration = StringUtils::TimeStringToSeconds(tag.m_strRuntime.c_str());
+    if (resource) resource->m_Duration = tag.m_streamDetails.GetVideoDuration();
+    if (resource) resource->m_Resolution = NPT_String::FromInteger(tag.m_streamDetails.GetVideoWidth()) + "x" + NPT_String::FromInteger(tag.m_streamDetails.GetVideoHeight());
 
     return NPT_SUCCESS;
 }
@@ -623,7 +626,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
           resource.m_Size = (NPT_LargeSize)-1;
 
         // set date
-        if (item.m_dateTime.IsValid()) {
+        if (object->m_Date.IsEmpty() && item.m_dateTime.IsValid()) {
             object->m_Date = item.m_dateTime.GetAsLocalizedDate();
         }
 
@@ -764,6 +767,13 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         object->m_ExtraInfo.album_art_uri = upnp_server->BuildSafeResourceUri(
             (*ips.GetFirstItem()).ToString(),
             item.GetThumbnailImage());
+        // Set DLNA profileID by extension, defaulting to JPEG.
+        NPT_String ext = URIUtils::GetExtension(item.GetThumbnailImage()).c_str();
+        if (strcmp(ext, ".png") == 0) {
+            object->m_ExtraInfo.album_art_uri_dlna_profile = "PNG_TN";
+        } else {
+            object->m_ExtraInfo.album_art_uri_dlna_profile = "JPEG_TN";
+        }
     }
 
     return object;

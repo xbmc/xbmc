@@ -24,6 +24,7 @@
 #include "GUIControlFactory.h"
 #include "GUIListItem.h"
 #include "GUIFontManager.h"
+#include "lib/tinyXML/tinyxml.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "GUIInfoManager.h"
@@ -749,15 +750,15 @@ void CGUIEPGGridContainer::UpdateItems()
         if (tag == NULL)
           progIdx++;
 
-        if (m_gridEnd <= tag->Start())
+        if (m_gridEnd <= tag->StartAsLocalTime())
         {
           break;
         }
-        else if (gridCursor >= tag->End())
+        else if (gridCursor >= tag->EndAsLocalTime())
         {
           progIdx++;
         }
-        else if (gridCursor < tag->End())
+        else if (gridCursor < tag->EndAsLocalTime())
         {
           m_gridIndex[row][block].item = item;
           break;
@@ -914,6 +915,9 @@ bool CGUIEPGGridContainer::MoveProgrammes(bool direction)
 
   if (direction)
   {
+    if (m_channelCursor + m_channelOffset < 0 || m_blockOffset < 0)
+      return false;
+
     if (m_item->item != m_gridIndex[m_channelCursor + m_channelOffset][m_blockOffset].item)
     {
       // this is not first item on page
@@ -1490,10 +1494,11 @@ void CGUIEPGGridContainer::GoToEnd()
 
 void CGUIEPGGridContainer::SetStartEnd(CDateTime start, CDateTime end)
 {
-  m_gridStart = start;
-  m_gridEnd = end;
+  m_gridStart = CDateTime(start.GetYear(), start.GetMonth(), start.GetDay(), start.GetHour(), 0, 0);
+  m_gridEnd = CDateTime(end.GetYear(), end.GetMonth(), end.GetDay(), end.GetHour(), 0, 0);
+
   CLog::Log(LOGDEBUG, "CGUIEPGGridContainer - %s - start=%s end=%s",
-      __FUNCTION__, start.GetAsLocalizedDateTime(false, true).c_str(), end.GetAsLocalizedDateTime(false, true).c_str());
+      __FUNCTION__, m_gridStart.GetAsLocalizedDateTime(false, true).c_str(), m_gridEnd.GetAsLocalizedDateTime(false, true).c_str());
 }
 
 void CGUIEPGGridContainer::CalculateLayout()

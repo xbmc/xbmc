@@ -26,7 +26,7 @@
 #include <stdarg.h>
 #include <string>
 #include "../../../addons/library.xbmc.pvr/libXBMC_pvr.h"
-#include "addons/AddonHelpers_local.h"
+#include "addons/AddonCallbacks.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxPacket.h"
 
 #ifdef _WIN32
@@ -66,7 +66,7 @@ DLLEXPORT void PVR_unregister_me()
     m_Handle->PVRLib_UnRegisterMe(m_Handle->addonData, m_cb);
 }
 
-DLLEXPORT void PVR_transfer_epg_entry(const PVRHANDLE handle, const PVR_PROGINFO *epgentry)
+DLLEXPORT void PVR_transfer_epg_entry(const PVR_HANDLE handle, const EPG_TAG *epgentry)
 {
   if (m_cb == NULL)
     return;
@@ -74,7 +74,7 @@ DLLEXPORT void PVR_transfer_epg_entry(const PVRHANDLE handle, const PVR_PROGINFO
   m_cb->TransferEpgEntry(m_Handle->addonData, handle, epgentry);
 }
 
-DLLEXPORT void PVR_transfer_channel_entry(const PVRHANDLE handle, const PVR_CHANNEL *chan)
+DLLEXPORT void PVR_transfer_channel_entry(const PVR_HANDLE handle, const PVR_CHANNEL *chan)
 {
   if (m_cb == NULL)
     return;
@@ -82,7 +82,7 @@ DLLEXPORT void PVR_transfer_channel_entry(const PVRHANDLE handle, const PVR_CHAN
   m_cb->TransferChannelEntry(m_Handle->addonData, handle, chan);
 }
 
-DLLEXPORT void PVR_transfer_timer_entry(const PVRHANDLE handle, const PVR_TIMERINFO *timer)
+DLLEXPORT void PVR_transfer_timer_entry(const PVR_HANDLE handle, const PVR_TIMER *timer)
 {
   if (m_cb == NULL)
     return;
@@ -90,7 +90,7 @@ DLLEXPORT void PVR_transfer_timer_entry(const PVRHANDLE handle, const PVR_TIMERI
   m_cb->TransferTimerEntry(m_Handle->addonData, handle, timer);
 }
 
-DLLEXPORT void PVR_transfer_recording_entry(const PVRHANDLE handle, const PVR_RECORDINGINFO *recording)
+DLLEXPORT void PVR_transfer_recording_entry(const PVR_HANDLE handle, const PVR_RECORDING *recording)
 {
   if (m_cb == NULL)
     return;
@@ -112,6 +112,14 @@ DLLEXPORT void PVR_recording(const char *Name, const char *FileName, bool On)
     return;
 
   m_cb->Recording(m_Handle->addonData, Name, FileName, On);
+}
+
+DLLEXPORT void PVR_trigger_channel_update()
+{
+  if (m_cb == NULL)
+    return;
+
+  m_cb->TriggerChannelUpdate(m_Handle->addonData);
 }
 
 DLLEXPORT void PVR_trigger_timer_update()
@@ -144,6 +152,22 @@ DLLEXPORT DemuxPacket* PVR_allocate_demux_packet(int iDataSize)
     return NULL;
 
   return m_cb->AllocateDemuxPacket(m_Handle->addonData, iDataSize);
+}
+
+DLLEXPORT void PVR_transfer_channel_group(const PVR_HANDLE handle, const PVR_CHANNEL_GROUP *group)
+{
+  if (m_cb == NULL)
+    return;
+
+  m_cb->TransferChannelGroup(m_Handle->addonData, handle, group);
+}
+
+DLLEXPORT void PVR_transfer_channel_group_member(const PVR_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
+{
+  if (m_cb == NULL)
+    return;
+
+  m_cb->TransferChannelGroupMember(m_Handle->addonData, handle, member);
 }
 
 };

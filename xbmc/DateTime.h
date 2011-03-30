@@ -167,6 +167,8 @@ public:
   void SetFromDBDate(const CStdString &date);
   void SetFromDBTime(const CStdString &time);
   void SetFromW3CDate(const CStdString &date);
+  void SetFromUTCDateTime(const CDateTime &dateTime);
+  void SetFromUTCDateTime(const time_t &dateTime);
 
   /*! \brief set from a database datetime format YYYY-MM-DD HH:MM:SS
    \sa GetAsDBDateTime()

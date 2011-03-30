@@ -38,7 +38,7 @@ ___wrap_readdir _readdir
 ___wrap_closedir _closedir
 ___wrap_rewinddir _rewinddir
 ___wrap_rewind _rewind
-___wrap_stat _stat
+___wrap__stat _stat
 ___wrap_fstat _fstat
 ___wrap_ungetc _ungetc
 ___wrap_vfprintf _vfprintf
@@ -48,6 +48,6 @@ ___wrap__IO_getc _getc
 ___wrap__IO_getc_unlocked _getc_unlocked
 ___wrap_fwrite _fwrite$UNIX2003
 ___wrap_close _close$UNIX2003
-___wrap_fcntl _fcntl$UNIX2003
+#___wrap_fcntl _fcntl$UNIX2003
 ___wrap_open _open$UNIX2003
 

@@ -23,7 +23,7 @@
 #include "DllAddon.h"
 #include "AddonManager.h"
 #include "AddonStatusHandler.h"
-#include "AddonHelpers_local.h"
+#include "AddonCallbacks.h"
 #include "settings/GUIDialogSettings.h"
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
@@ -60,7 +60,7 @@ namespace ADDON
     virtual bool LoadSettings();
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
-    CAddonHelpers* m_pHelpers;
+    CAddonCallbacks* m_pHelpers;
 
   private:
     TheDll* m_pDll;
@@ -92,8 +92,6 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
     m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_windx");
 #elif defined(__APPLE__)
     m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_osx");
-#elif defined(_XBOX)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_xbox");
 #endif
   }
 
@@ -190,7 +188,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
 
   /* Allocate the helper function class to allow crosstalk over
      helper libraries */
-  m_pHelpers = new CAddonHelpers(this);
+  m_pHelpers = new CAddonCallbacks(this);
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */

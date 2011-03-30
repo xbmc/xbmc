@@ -49,23 +49,22 @@ diff -uNr rtmpdump-2.3/librtmp/Makefile rtmpdump-2.3-org/librtmp/Makefile
  
  SYS=posix
  CRYPTO=OPENSSL
-@@ -27,8 +27,15 @@
+@@ -27,8 +27,14 @@
  
  SO_posix=so.0
  SO_mingw=dll
-+SO_darwin=so.0
++SO_darwin=0.dylib
  SO_EXT=$(SO_$(SYS))
  
 +SO_LDFLAGS_posix=-shared -Wl,-soname,$@
 +SO_LDFLAGS_mingw=
-+SO_LDFLAGS_darwin=-bundle -flat_namespace -undefined suppress -fno-common \
-+  -headerpad_max_install_names $(XLDFLAGS)
++SO_LDFLAGS_darwin=-dynamiclib -twolevel_namespace $(XLDFLAGS)
 +SO_LDFLAGS=$(SO_LDFLAGS_$(SYS))
 +
  SHARED=yes
  SODEF_yes=-fPIC
  SOLIB_yes=librtmp.$(SO_EXT)
-@@ -61,7 +68,7 @@
+@@ -61,7 +67,7 @@
  	$(AR) rs $@ $?
  
  librtmp.$(SO_EXT): $(OBJS)
@@ -74,3 +73,13 @@ diff -uNr rtmpdump-2.3/librtmp/Makefile rtmpdump-2.3-org/librtmp/Makefile
  	ln -sf $@ librtmp.so
  
  log.o: log.c log.h Makefile
+@@ -87,5 +93,9 @@
+ 	cp librtmp.so.0 $(LIBDIR)
+ 	cd $(LIBDIR); ln -sf librtmp.so.0 librtmp.so
+ 
++install_0.dylib:	librtmp.0.dylib
++	cp librtmp.0.dylib $(LIBDIR)
++	cd $(LIBDIR); ln -sf librtmp.0.dylib librtmp.dylib
++
+ install_dll:	librtmp.dll
+	cp librtmp.dll $(BINDIR)

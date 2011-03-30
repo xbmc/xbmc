@@ -20,8 +20,6 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-#export CFLAGS+=-undefined dynamic_lookup 
-#export LDFLAGS+=-Wl,-read_only_relocs,suppress
 export GLEW_DEST=$(PREFIX)
 export CC.ARCH=/usr/bin/gcc-4.0
 export CFLAGS.ARCH=$(CFLAGS)

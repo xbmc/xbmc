@@ -23,16 +23,30 @@
  * Most of this code is taken from thread.c in the Video Disk Recorder ('VDR')
  */
 
+#include <errno.h>
 #include "tools.h"
 #include "thread.h"
-#include <errno.h>
+#include "client.h"
+
 #ifndef __APPLE__
 #include <malloc.h>
 #endif
 
 #include <stdarg.h>
 #include <stdlib.h>
-#include "StdString.h"
+#include <sys/time.h>
+#include <pthread.h>
+#include <signal.h>
+
+#ifdef __WINDOWS__
+#include <process.h>
+#define getpid _getpid
+#else
+#include <sys/syscall.h>
+#include <sys/resource.h>
+#endif
+
+template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
 
 static bool GetAbsTime(struct timespec *Abstime, int MillisecondsFromNow)
 {
@@ -195,7 +209,7 @@ cThread::cThread(const char *Description)
   childThreadId = 0;
   description = NULL;
   if (Description)
-     SetDescription("%s", Description);
+     SetDescription(Description);
 }
 
 cThread::~cThread()
@@ -229,10 +243,18 @@ void cThread::SetDescription(const char *Description, ...)
   if (Description)
   {
      va_list ap;
+
+     // get string size
      va_start(ap, Description);
-     CStdString desc;
-     desc.FormatV(Description, ap);
-     description = strdup(desc.c_str());
+     int s = vsnprintf(NULL, 0, Description, ap);
+     va_end(ap);
+
+     if(s <= 0)
+       return;
+
+     va_start(ap, Description);
+     description = (char*)malloc(s+1);
+     vsnprintf(description, s+1, Description, ap);
      va_end(ap);
   }
 }

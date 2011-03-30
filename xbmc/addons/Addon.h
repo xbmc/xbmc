@@ -25,11 +25,10 @@
 #include "Util.h"
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
-#include <ostream>
 
 class CURL;
 class TiXmlElement;
-class CAddonHelpers_Addon;
+class CAddonCallbacksAddon;
 
 typedef struct cp_plugin_info_t cp_plugin_info_t;
 typedef struct cp_extension_t cp_extension_t;
@@ -57,21 +56,25 @@ public:
   bool operator<(const AddonVersion &rhs) const;
   bool operator<=(const AddonVersion &rhs) const;
   CStdString Print() const;
-  const CStdString str;
+  const char *c_str() const { return str.c_str(); };
+private:
+  CStdString str;
 };
 
 class AddonProps
 {
 public:
-  AddonProps(const CStdString &id, TYPE type, const CStdString &versionstr)
+  AddonProps(const CStdString &id, TYPE type, const CStdString &versionstr, const CStdString &minversionstr)
     : id(id)
     , type(type)
     , version(versionstr)
+    , minversion(minversionstr)
     , stars(0)
   {
   }
 
   AddonProps(const cp_extension_t *ext);
+  AddonProps(const cp_plugin_info_t *plugin);
 
   bool operator==(const AddonProps &rhs)
   { 
@@ -83,6 +86,7 @@ public:
   CStdString id;
   TYPE type;
   AddonVersion version;
+  AddonVersion minversion;
   CStdString name;
   CStdString parent;
   CStdString license;
@@ -100,6 +104,8 @@ public:
   CStdString broken;
   InfoMap    extrainfo;
   int        stars;
+private:
+  void BuildDependencies(const cp_plugin_info_t *plugin);
 };
 
 typedef std::vector<class AddonProps> VECADDONPROPS;
@@ -109,6 +115,7 @@ class CAddon : public IAddon
 public:
   CAddon(const AddonProps &addonprops);
   CAddon(const cp_extension_t *ext);
+  CAddon(const cp_plugin_info_t *plugin);
   virtual ~CAddon() {}
   virtual AddonPtr Clone(const AddonPtr& parent) const;
 
@@ -162,7 +169,8 @@ public:
   const CStdString Name() const { return m_props.name; }
   bool Enabled() const { return m_enabled; }
   virtual bool IsInUse() const { return false; };
-  const AddonVersion Version();
+  const AddonVersion Version() const { return m_props.version; }
+  const AddonVersion MinVersion() const { return m_props.minversion; }
   const CStdString Summary() const { return m_props.summary; }
   const CStdString Description() const { return m_props.description; }
   const CStdString Path() const { return m_props.path; }
@@ -175,10 +183,16 @@ public:
   int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }
   const InfoMap &ExtraInfo() const { return m_props.extrainfo; }
-  ADDONDEPS GetDeps();
+  const ADDONDEPS &GetDeps() const { return m_props.dependencies; }
+
+  /*! \brief return whether or not this addon satisfies the given version requirements
+   \param version the version to meet.
+   \return true if  min_version <= version <= current_version, false otherwise.
+   */
+  bool MeetsVersion(const AddonVersion &version) const;
 
 protected:
-  friend class CAddonHelpers_Addon;
+  friend class CAddonCallbacksAddon;
 
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
   CAddon(const CAddon&, const AddonPtr&);

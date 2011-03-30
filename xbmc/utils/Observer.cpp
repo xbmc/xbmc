@@ -20,29 +20,45 @@
  */
 
 #include "Observer.h"
+#include "threads/SingleLock.h"
+
+using namespace std;
 
 Observable::Observable()
 {
-  erase(begin(), end());
+  m_observers.clear();
 }
 
 Observable::~Observable()
 {
-  erase(begin(), end());
+  m_observers.clear();
+}
+
+Observable &Observable::operator=(const Observable &observable)
+{
+  CSingleLock lock(m_critSection);
+
+  m_bObservableChanged = observable.m_bObservableChanged;
+  for (unsigned int iObsPtr = 0; iObsPtr < m_observers.size(); iObsPtr++)
+    m_observers.push_back(observable.m_observers.at(iObsPtr));
+
+  return *this;
 }
 
 void Observable::AddObserver(Observer *o)
 {
-  push_back(o);
+  CSingleLock lock(m_critSection);
+  m_observers.push_back(o);
 }
 
 void Observable::RemoveObserver(Observer *o)
 {
-  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  CSingleLock lock(m_critSection);
+  for (unsigned int ptr = 0; ptr < m_observers.size(); ptr++)
   {
-    if (at(ptr) == o)
+    if (m_observers.at(ptr) == o)
     {
-      erase(begin() + ptr);
+      m_observers.erase(m_observers.begin() + ptr);
       break;
     }
   }
@@ -50,13 +66,14 @@ void Observable::RemoveObserver(Observer *o)
 
 void Observable::NotifyObservers(const CStdString& msg)
 {
+  CSingleLock lock(m_critSection);
   if (m_bObservableChanged)
   {
-    for(unsigned int ptr = 0; ptr < size(); ptr++)
+    for(unsigned int ptr = 0; ptr < m_observers.size(); ptr++)
     {
-      Observer *obs = at(ptr);
+      Observer *obs = m_observers.at(ptr);
       if (obs)
-        at(ptr)->Notify(*this, msg);
+        obs->Notify(*this, msg);
     }
 
     m_bObservableChanged = false;
@@ -65,5 +82,6 @@ void Observable::NotifyObservers(const CStdString& msg)
 
 void Observable::SetChanged(bool SetTo)
 {
+  CSingleLock lock(m_critSection);
   m_bObservableChanged = SetTo;
 }

@@ -25,6 +25,8 @@
 #include "DateTime.h"
 #include "FileItem.h"
 #include "PVRChannelGroup.h"
+#include "PVRChannelGroupInternal.h"
+#include "threads/SingleLock.h"
 
 class CPVRChannelGroupsContainer;
 
@@ -35,7 +37,8 @@ class CPVRChannelGroups : public std::vector<CPVRChannelGroup *>
   friend class CPVRChannelGroupsContainer;
 
 private:
-  bool  m_bRadio; /*!< true if this is a container for radio channels, false if it is for tv channels */
+  bool             m_bRadio;      /*!< true if this is a container for radio channels, false if it is for tv channels */
+  CCriticalSection m_critSection;
 
   /*!
    * @brief Get the index in this container of the channel group with the given ID.
@@ -43,6 +46,7 @@ private:
    * @return The index or -1 if it wasn't found.
    */
   int GetIndexForGroupID(int iGroupId) const;
+  int GetIndexForGroupName(const CStdString &strName) const;
 
 protected:
   /*!
@@ -76,6 +80,7 @@ public:
    * @return True if the group was added or update successfully, false otherwise.
    */
   bool Update(const CPVRChannelGroup &group);
+  bool UpdateFromClient(const CPVRChannelGroup &group) { return Update(group); }
 
   /*!
    * @brief Get a pointer to a channel group given it's ID.
@@ -176,8 +181,16 @@ public:
   int GetGroupId(CStdString strGroupName) const;
 
   /*!
+   * @brief Remove a channel from all non-system groups.
+   * @param channel The channel to remove.
+   */
+  void RemoveFromAllGroups(CPVRChannel *channel);
+
+  /*!
    * @brief Persist all changes in channel groups.
    * @return True if everything was persisted, false otherwise.
    */
   bool PersistAll(void);
+
+  bool IsRadio(void) const { return m_bRadio; }
 };

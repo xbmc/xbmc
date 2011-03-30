@@ -39,6 +39,7 @@
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "RenderManager.h"
 
 #if defined(HAS_GL) || HAS_GLES == 2
 
@@ -58,6 +59,7 @@ static void LoadTexture(GLenum target
 {
   int width2  = NP2(width);
   int height2 = NP2(height);
+  char *pixelVector = NULL;
 
 #ifdef HAS_GLES
   /** OpenGL ES does not support strided texture input. Make a copy without stride **/
@@ -79,9 +81,10 @@ static void LoadTexture(GLenum target
 
     int bytesPerLine = bytesPerPixel * width;
 
-    std::vector<char> pixelVector( width * height * bytesPerLine ); // reserve temporary memory for unstrided image
-    const char *src = reinterpret_cast<const char *>(pixels);
-    char *dst = &pixelVector[0];
+    pixelVector = (char *)malloc(width * height * bytesPerLine);
+    
+    const char *src = (const char*)pixels;
+    char *dst = pixelVector;
     for (int y = 0;y < height;++y)
     {
       memcpy(dst, src, bytesPerLine);
@@ -89,7 +92,7 @@ static void LoadTexture(GLenum target
       dst += bytesPerLine;
     }
 
-    pixelData = reinterpret_cast<const GLvoid *>(&pixelVector[0]);
+    pixelData = pixelVector;
     stride = width;
   }
 #else
@@ -131,6 +134,8 @@ static void LoadTexture(GLenum target
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 #endif
 
+  free(pixelVector);
+  
   *u = (GLfloat)width  / width2;
   *v = (GLfloat)height / height2;
 }
@@ -262,24 +267,18 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
 
 COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
 {
-  RESOLUTION_INFO& res = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
+  CRect src, dst;
+  g_renderManager.GetVideoRect(src, dst);
 
-  int width  = res.iWidth;
-  int height = res.iHeight;
+  m_width  = 1.0;
+  m_height = 1.0;
+  m_align  = ALIGN_VIDEO;
+  m_pos    = POSITION_RELATIVE;
+  m_x      = 0.0f;
+  m_y      = 0.0f;
 
-  m_width  = (float)width;
-  m_height = (float)height;
-
-  if     (res.fPixelRatio > 1.0)
-    width  = MathUtils::round_int(width  * res.fPixelRatio);
-  else if(res.fPixelRatio < 1.0)
-    height = MathUtils::round_int(height / res.fPixelRatio);
-
-  m_vertex = NULL;
-  m_align  = ALIGN_SCREEN;
-  m_pos    = POSITION_ABSOLUTE;
-  m_x      = (float)0.0f;
-  m_y      = (float)0.0f;
+  int width  = MathUtils::round_int(dst.Width());
+  int height = MathUtils::round_int(dst.Height());
 
   m_texture = ~(GLuint)0;
 

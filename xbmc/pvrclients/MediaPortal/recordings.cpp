@@ -33,7 +33,7 @@ cRecording::cRecording()
   m_UTCdiff = GetUTCdifftime();
 }
 
-cRecording::cRecording(const PVR_RECORDINGINFO *Recording)
+cRecording::cRecording(const PVR_RECORDING *Recording)
 {
 
 }

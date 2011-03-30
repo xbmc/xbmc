@@ -396,6 +396,9 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
     else
     { // load info from the database
+      CStdString label;
+      if (items.GetLabel().IsEmpty() && m_rootDir.IsSource(items.m_strPath, g_settings.GetSourcesFromType("video"), &label)) 
+        items.SetLabel(label);
       LoadVideoInfo(items);
     }
   }
@@ -406,7 +409,15 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
 {
   // TODO: this could possibly be threaded as per the music info loading,
   //       we could also cache the info
+  if (!items.GetContent().IsEmpty())
+    return; // don't load for listings that have content set
+
   CStdString content = m_database.GetContentForPath(items.m_strPath);
+  if (content.IsEmpty())
+  {
+    items.SetContent("files");
+    return;
+  }
   items.SetContent(content);
 
   bool clean = (g_guiSettings.GetBool("myvideos.cleanstrings") &&
@@ -422,9 +433,11 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       if (m_database.GetItemForPath(content, pItem->m_strPath, item))
       { // copy info across
         pItem->UpdateInfo(item);
-        // TODO: we may wish to use a playable_url parameter here rather than
-        //       switching the path of the item (eg movie as a folder)
         pItem->m_strPath = item.m_strPath;
+        // if we switch from a file to a folder item it means we really shouldn't be sorting files and
+        // folders separately
+        if (pItem->m_bIsFolder != item.m_bIsFolder)
+          items.SetSortIgnoreFolders(true);
         pItem->m_bIsFolder = item.m_bIsFolder;
       }
       else

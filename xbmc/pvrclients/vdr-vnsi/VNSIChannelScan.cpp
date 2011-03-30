@@ -19,12 +19,20 @@
  *
  */
 
-#include "VNSIChannelScan.h"
 #include <limits.h>
-#include "tools.h"
+#include "VNSIChannelScan.h"
 #include "responsepacket.h"
 #include "requestpacket.h"
 #include "vdrcommand.h"
+
+#include <sstream>
+
+#ifdef __WINDOWS__
+#include <winsock2.h>
+#undef SendMessage
+#else
+#include <arpa/inet.h>
+#endif
 
 #define BUTTON_START                    5
 #define BUTTON_BACK                     6
@@ -203,26 +211,28 @@ void cVNSIChannelScan::ReturnFromProcessView()
   }
 }
 
-void cVNSIChannelScan::SetProgress(int procent)
+void cVNSIChannelScan::SetProgress(int percent)
 {
   if (!m_progressDone)
     m_progressDone = GUI->Control_getProgress(m_window, PROGRESS_DONE);
 
-  CStdString header;
-  header.Format(m_header, procent);
-  m_window->SetControlLabel(HEADER_LABEL, header.c_str());
-  m_progressDone->SetPercentage((float)procent);
+  std::stringstream header;
+  header << percent;
+
+  m_window->SetControlLabel(HEADER_LABEL, header.str().c_str());
+  m_progressDone->SetPercentage((float)percent);
 }
 
-void cVNSIChannelScan::SetSignal(int procent, bool locked)
+void cVNSIChannelScan::SetSignal(int percent, bool locked)
 {
   if (!m_progressSignal)
     m_progressSignal = GUI->Control_getProgress(m_window, PROGRESS_SIGNAL);
 
-  CStdString signal;
-  signal.Format(m_Signal, procent);
-  m_window->SetControlLabel(LABEL_SIGNAL, signal.c_str());
-  m_progressSignal->SetPercentage((float)procent);
+  std::stringstream signal;
+  signal << percent;
+
+  m_window->SetControlLabel(LABEL_SIGNAL, signal.str().c_str());
+  m_progressSignal->SetPercentage((float)percent);
 
   if (locked)
     m_window->SetProperty("Locked", "true");
@@ -411,8 +421,8 @@ bool cVNSIChannelScan::ReadCountries()
   m_spinCountries = GUI->Control_getSpin(m_window, CONTROL_SPIN_COUNTRIES);
   m_spinCountries->Clear();
 
-  CStdString dvdlang = XBMC->GetDVDMenuLanguage();
-  dvdlang = dvdlang.ToUpper();
+  std::string dvdlang = XBMC->GetDVDMenuLanguage();
+  //dvdlang = dvdlang.ToUpper();
 
   cRequestPacket vrp;
   if (!vrp.init(VDR_SCAN_GETCOUNTRIES))
@@ -514,7 +524,7 @@ void cVNSIChannelScan::Action()
   while (Running())
   {
     readSuccess = readData((uint8_t*)&channelID, sizeof(uint32_t));
-    if (!readSuccess && !IsClientConnected())
+    if (!readSuccess)
       return; // return to stop this thread
 
     if (!readSuccess) continue; // no data was read but the connection is ok.
@@ -603,7 +613,7 @@ void cVNSIChannelScan::Action()
         char* str = new char[length + 1];
         strcpy(str, (char*)&userData[12]);
 
-        cListItem* item = GUI->ListItem_create(str, NULL, NULL, NULL, NULL);
+        CAddonListItem* item = GUI->ListItem_create(str, NULL, NULL, NULL, NULL);
         if (isEncrypted)
           item->SetProperty("IsEncrypted", "yes");
         if (isRadio)
@@ -706,6 +716,5 @@ bool cVNSIChannelScan::readData(uint8_t* buffer, int totalBytes)
   else if (ret == 0)
     return false;
 
-  SetClientConnected(false);
   return false;
 }

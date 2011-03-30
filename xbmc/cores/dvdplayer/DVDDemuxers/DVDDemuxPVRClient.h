@@ -24,7 +24,7 @@
 #include <map>
 
 class CDVDDemuxPVRClient;
-struct PVR_STREAMPROPS;
+struct PVR_STREAM_PROPERTIES;
 
 class CDemuxStreamVideoPVRClient : public CDemuxStreamVideo
 {
@@ -86,6 +86,6 @@ protected:
 
 private:
   void RequestStreams();
-  void UpdateStreams(PVR_STREAMPROPS *props);
+  void UpdateStreams(PVR_STREAM_PROPERTIES *props);
 };
 

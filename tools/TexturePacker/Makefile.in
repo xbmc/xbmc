@@ -1,9 +1,9 @@
 ARCH=@ARCH@
 DEFINES = 
 ifeq ($(findstring osx,$(ARCH)),osx)
-LIBS = @abs_top_srcdir@/lib/libsquish/libsquish-@ARCH@.a -L/Users/Shared/xbmc-depends/osx-10.4_i386/lib -lSDL_image -lSDL -llzo2
+LIBS = @abs_top_srcdir@/lib/libsquish/libsquish.a -L/Users/Shared/xbmc-depends/osx-10.4_i386/lib -lSDL_image -lSDL -llzo2
 else
-LIBS = @abs_top_srcdir@/lib/libsquish/libsquish-@ARCH@.a -lSDL_image -lSDL -llzo2
+LIBS = @abs_top_srcdir@/lib/libsquish/libsquish.a -lSDL_image -lSDL -llzo2
 endif
 
 OBJS = \

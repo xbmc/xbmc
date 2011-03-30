@@ -20,8 +20,6 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-export CFLAGS+=-undefined dynamic_lookup
-export LDFLAGS+=-Wl,-read_only_relocs,suppress
 CONFIGURE=./Configure darwin-i386-cc zlib no-asm no-krb5 shared --openssldir=$(PREFIX)
 
 LIBDYLIB=$(SOURCE)/src/.libs/lib$(LIBNAME).dylib
@@ -43,7 +41,7 @@ $(LIBDYLIB): $(SOURCE)
 	make -C $(SOURCE)
 
 .installed:
-	make -C $(SOURCE) install
+	make -C $(SOURCE) install_sw
 	touch $@
 
 clean:
