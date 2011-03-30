@@ -853,61 +853,11 @@ PVR_ERROR cPVRClientMediaPortal::UpdateTimer(const PVR_TIMER &timerinfo)
 // at the same time.
 bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
-  unsigned int channel = channelinfo.iChannelNumber;
-
-  string result;
-  char   command[256] = "";
-
-  XBMC->Log(LOG_DEBUG, "->OpenLiveStream(%i)", channel);
-  if (!IsUp())
-  {
-    return false;
-  }
-
-  // Start the timeshift
-  if (g_iTVServerXBMCBuild>=90)
-  { //Use the optimized TimeshiftChannel call (don't stop a running timeshift)
-    snprintf(command, 256, "TimeshiftChannel:%i|False|False\n", channel);
-  } else {
-    snprintf(command, 256, "TimeshiftChannel:%i|True\n", channel);
-  }
-  result = SendCommand(command);
-
-  if (result.find("ERROR") != std::string::npos || result.length() == 0)
-  {
-    XBMC->Log(LOG_ERROR, "Could not start the timeshift for channel %i. %s", channel, result.c_str());
-    return false;
-  }
-  else
-  {
-    if (g_iSleepOnRTSPurl > 0)
-    {
-      XBMC->Log(LOG_DEBUG, "Sleeping %i ms before opening stream: %s", g_iSleepOnRTSPurl, result.c_str());
-      usleep(g_iSleepOnRTSPurl * 1000);
-    }
-
-    vector<string> timeshiftfields;
-
-    Tokenize(result, timeshiftfields, "|");
-
-    //[0] = rtsp url
-    //[1] = original (unresolved) rtsp url
-    //[2] = timeshift buffer filename
-
-    XBMC->Log(LOG_INFO, "Channel stream URL: %s, timeshift buffer: %s", timeshiftfields[0].c_str(), timeshiftfields[2].c_str());
-    m_iCurrentChannel = channel;
-
-    // Check the returned stream URL. When the URL is an rtsp stream, we need
-    // to close it again after watching to stop the timeshift.
-    // A radio web stream (added to the TV Server) will return the web stream
-    // URL without starting a timeshift.
-    if(timeshiftfields[0].compare(0,4, "rtsp") == 0)
-    {
-      m_bTimeShiftStarted = true;
-    }
-
-    return true;
-  }
+  // Just return true for now. XBMC will later ask for the stream URL and then we will
+  // actually ask MediaPortal for the rtsp URL.
+  // TODO: optimization: request the channel stream already here and return it to
+  //       XBMC via GetLiveStreamURL
+  return true;
 }
 
 int cPVRClientMediaPortal::ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)

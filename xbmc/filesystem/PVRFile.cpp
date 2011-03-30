@@ -254,12 +254,9 @@ CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
         {
           // pvr://stream
           // This function was added to retrieve the stream URL for this item
-          // Is is used for the MediaPortal PVR addon
+          // Is is used for the MediaPortal (ffmpeg) PVR addon
           // see PVRManager.cpp
-          if (CPVRManager::Get()->OpenLiveStream(*tag))
-            return CPVRManager::GetClients()->GetStreamURL(*tag);
-          else
-            return "";
+          return CPVRManager::GetClients()->GetStreamURL(*tag);
         }
         else
         {
