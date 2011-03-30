@@ -166,7 +166,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
     return false;
   }
 
-#if !defined(OSS4) && !defined(__FreeBSD__)
+#ifndef OSS4
   int mask = 0;
   for(unsigned int i = 0; format.m_channelLayout[i] != AE_CH_NULL; ++i)
     switch(format.m_channelLayout[i])
@@ -190,6 +190,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
         break;
     }
 
+#ifndef __FreeBSD__
   /* try to set the channel mask, not all cards support this */
   if (ioctl(m_fd, SNDCTL_DSP_BIND_CHANNEL, &mask) == -1)
   {
@@ -202,6 +203,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
       mask = DSP_BIND_FRONT;
     }
   }
+#endif
 
   /* fix the channel count */
   format.m_channelCount =
