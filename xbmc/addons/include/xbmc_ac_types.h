@@ -33,6 +33,7 @@ extern "C"
     int channels;
     int samplerate;
     int bitrate;
+    int bitpersample;
     int64_t totaltime;
     void* mod;
     char name[128];
