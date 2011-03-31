@@ -255,7 +255,7 @@ PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
   pCapabilities->bSupportsRadio           = true;
   pCapabilities->bSupportsRecordings      = true;
   pCapabilities->bSupportsTimers          = true;
-  pCapabilities->bSupportsChannelGroups   = false;
+  pCapabilities->bSupportsChannelGroups   = true;
   pCapabilities->bSupportsChannelScan     = false;
   pCapabilities->bHandlesInputStream      = true;
   pCapabilities->bHandlesDemuxing         = true;
