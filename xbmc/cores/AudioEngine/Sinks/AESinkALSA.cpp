@@ -19,6 +19,9 @@
  *
  */
 
+#include "system.h"
+#ifdef HAS_ALSA
+
 #include "AESinkALSA.h"
 #include <stdint.h>
 #include <limits.h>
@@ -514,4 +517,5 @@ void CAESinkALSA::GenSoundLabel(AEDeviceList& devices, CStdString sink, CStdStri
     devices.push_back(AEDevice(label, finalSink));
   }
 }
+#endif
 

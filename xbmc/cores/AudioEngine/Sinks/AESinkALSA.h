@@ -20,6 +20,9 @@
  *
  */
 
+#include "system.h"
+#ifdef HAS_ALSA
+
 #include "AESink.h"
 #include <stdint.h>
 
@@ -65,4 +68,5 @@ private:
   static bool SoundDeviceExists(const CStdString& device);
   static void GenSoundLabel(AEDeviceList& devices, CStdString sink, CStdString card, CStdString readableCard);
 };
+#endif
 

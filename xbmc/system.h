@@ -132,6 +132,9 @@
 #define HAS_LINUX_NETWORK
 #define HAS_LIRC
 #define HAS_SDL_WIN_EVENTS
+#ifdef HAVE_ALSA
+#define HAS_ALSA
+#endif
 #ifdef HAVE_LIBPULSE
 #define HAS_PULSEAUDIO
 #endif

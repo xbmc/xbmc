@@ -28,7 +28,9 @@
   #include "Sinks/AESinkWASAPI.h"
   #include "Sinks/AESinkDirectSound.h"
 #elif defined _LINUX
-  #include "Sinks/AESinkALSA.h"
+  #ifdef HAS_ALSA
+    #include "Sinks/AESinkALSA.h"
+  #endif
   #include "Sinks/AESinkOSS.h"
 #elif defined __APPLE__
   #include "Sinks/AESinkCoreAudio.h"
@@ -73,13 +75,17 @@ IAESink *CAESinkFactory::Create(CStdString &driver, CStdString &device, AEAudioF
   else
     TRY_SINK(DirectSound)
 #elif defined _LINUX
+#ifdef HAS_ALSA
   if (driver == "ALSA")
     TRY_SINK(ALSA)
-  else if (driver == "OSS")
+#endif
+  if (driver == "OSS")
     TRY_SINK(OSS)
 
+#ifdef HAS_ALSA
   if(driver != "ALSA")
       TRY_SINK(ALSA)
+#endif
   if(driver != "OSS" )
     TRY_SINK(OSS)
 #elif defined __APPLE__
@@ -101,7 +107,9 @@ void CAESinkFactory::Enumerate(AEDeviceList &devices, bool passthrough)
     
 #elif defined _LINUX
 
+#ifdef HAS_ALSA
   CAESinkALSA::EnumerateDevices(devices, passthrough);
+#endif
   CAESinkOSS ::EnumerateDevices(devices, passthrough);
 
 #elif defined __APPLE__
