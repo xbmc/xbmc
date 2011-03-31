@@ -398,10 +398,16 @@ int CPVRChannelGroup::LoadFromClients(bool bAddToDb /* = true */)
   int iCurSize = size();
 
   /* get the channels from the backends */
+  CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - requesting group members for group '%s' from add-ons",
+      __FUNCTION__, GroupName().c_str());
   PVR_ERROR error;
   CPVRManager::GetClients()->GetChannelGroupMembers(this, &error);
+
   if (error != PVR_ERROR_NO_ERROR)
-    return -1;
+    CLog::Log(LOGWARNING, "PVRChannelGroup - %s - got bad error (%d) on call to GetChannelGroupMembers", __FUNCTION__, error);
+
+  CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d members added to group '%s' by add-ons",
+      __FUNCTION__, size() - iCurSize, GroupName().c_str());
 
   if (iCurSize == 0)
     SortByClientChannelNumber();
@@ -483,7 +489,7 @@ bool CPVRChannelGroup::RemoveFromGroup(CPVRChannel *channel)
   return bReturn;
 }
 
-bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */)
+bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */, bool bSortAndRenumber /* = true */)
 {
   bool bReturn = false;
   if (!channel)
@@ -501,10 +507,15 @@ bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 
     if (realChannel)
     {
       PVRChannelGroupMember newMember = { realChannel, iChannelNumber };
-      // TODO notify observers
       push_back(newMember);
-      SortByChannelNumber();
-      Renumber();
+
+      if (bSortAndRenumber)
+      {
+        SortByChannelNumber();
+        Renumber();
+      }
+
+      // TODO notify observers
       bReturn = true;
     }
   }

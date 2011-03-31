@@ -172,9 +172,10 @@ public:
    * @brief Add a channel to this container.
    * @param channel The channel to add.
    * @param iChannelNumber The channel number of the channel number to add. Use -1 to add it at the end.
+   * @param bSortAndRenumber Set to false to keep the channel list unsorted after adding a new channel.
    * @return True if the channel was added, false otherwise.
    */
-  virtual bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0);
+  virtual bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
 
   /*!
    * @brief Change the name of this group.

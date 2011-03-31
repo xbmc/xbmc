@@ -105,7 +105,7 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const PV
     /* transfer this entry to the group */
     CLog::Log(LOGDEBUG, "CAddonCallbacksPVR - %s - add channel '%s' to group '%s' at position %d",
         __FUNCTION__, channel->ChannelName().c_str(), group->GroupName().c_str(), member->iChannelNumber);
-    group->AddToGroup(channel, member->iChannelNumber);
+    group->AddToGroup(channel, member->iChannelNumber, false);
   }
   else
   {
