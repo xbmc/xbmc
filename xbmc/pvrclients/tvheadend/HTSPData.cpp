@@ -232,9 +232,9 @@ PVR_ERROR cHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_
         broadcast.iParentalRating    = 0;
         broadcast.iStarRating        = 0;
         broadcast.bNotify            = false;
-        broadcast.iSeriesNumber         = 0;
-        broadcast.iEpisodeNumber        = 0;
-        broadcast.iEpisodePartNumber       = 0;
+        broadcast.iSeriesNumber      = 0;
+        broadcast.iEpisodeNumber     = 0;
+        broadcast.iEpisodePartNumber = 0;
         broadcast.strEpisodeName     = "";
 
         PVR->TransferEpgEntry(handle, &broadcast);
