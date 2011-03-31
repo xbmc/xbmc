@@ -66,15 +66,15 @@ namespace JSONRPC
   {
     ReadData = 0x1,
     ControlPlayback = 0x2,
-    ControlAnnounce = 0x4,
+    ControlNotify = 0x4,
     ControlPower = 0x8,
     Logging = 0x10,
     ScanLibrary = 0x20,
   };
 
-  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlAnnounce | ControlPower | Logging | ScanLibrary);
+  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | Logging | ScanLibrary);
 
-  static const int OPERATION_PERMISSION_ANNOUNCEMENT = (ControlPlayback | ControlAnnounce | ControlPower | Logging | ScanLibrary);
+  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | Logging | ScanLibrary);
 
   /*!
    \brief Possible value types of a parameter or return type
@@ -184,8 +184,8 @@ namespace JSONRPC
         return "ReadData";
       case ControlPlayback:
         return "ControlPlayback";
-      case ControlAnnounce:
-        return "ControlAnnounce";
+      case ControlNotify:
+        return "ControlNotify";
       case ControlPower:
         return "ControlPower";
       case Logging:
@@ -207,8 +207,8 @@ namespace JSONRPC
     {
       if (permission.compare("ControlPlayback") == 0)
         return ControlPlayback;
-      if (permission.compare("ControlAnnounce") == 0)
-        return ControlAnnounce;
+      if (permission.compare("ControlNotify") == 0)
+        return ControlNotify;
       if (permission.compare("ControlPower") == 0)
         return ControlPower;
       if (permission.compare("Logging") == 0)
@@ -222,12 +222,12 @@ namespace JSONRPC
     /*!
      \brief Returns a string representation for the 
      given EAnnouncementFlag
-     \param announcement Specific EAnnouncementFlag
+     \param notification Specific EAnnouncementFlag
      \return String representation of the given EAnnouncementFlag
      */
-    static inline std::string AnnouncementFlagToString(const EAnnouncementFlag &announcement)
+    static inline std::string NotificationFlagToString(const EAnnouncementFlag &notification)
     {
-      switch (announcement)
+      switch (notification)
       {
       case Playback:
         return "Playback";

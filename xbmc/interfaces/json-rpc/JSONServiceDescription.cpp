@@ -244,12 +244,12 @@ void CJSONServiceDescription::Print(Json::Value &result, ITransportLayer *transp
   }
 }
 
-JSON_STATUS CJSONServiceDescription::CheckCall(const char* const method, const Json::Value &requestParameters, IClient *client, bool announcement, MethodCall &methodCall, Json::Value &outputParameters)
+JSON_STATUS CJSONServiceDescription::CheckCall(const char* const method, const Json::Value &requestParameters, IClient *client, bool notification, MethodCall &methodCall, Json::Value &outputParameters)
 {
   CJsonRpcMethodMap::JsonRpcMethodIterator iter = m_actionMap.find(method);
   if (iter != m_actionMap.end())
   {
-    if (client != NULL && (client->GetPermissionFlags() & iter->second.permission) && (!announcement || (iter->second.permission & OPERATION_PERMISSION_ANNOUNCEMENT)))
+    if (client != NULL && (client->GetPermissionFlags() & iter->second.permission) && (!notification || (iter->second.permission & OPERATION_PERMISSION_NOTIFICATION)))
     {
       methodCall = iter->second.method;
 

@@ -306,17 +306,17 @@ namespace JSONRPC
      \param method Called method
      \param requestParameters Parameters from the request
      \param client Client who sent the request
-     \param announcement Whether the request was sent as an announcement or not
+     \param notification Whether the request was sent as a notification or not
      \param methodCall Object which will contain the actual C/C++ method to be called
      \param outputParameters Cleaned up parameter list
      \return OK if the validation of the request succeeded otherwise an appropriate error code
 
      Checks if the given method is a valid json rpc method, if the client has the permission
-     to call this method, if the method can be called as an announcement or not, assigns the
+     to call this method, if the method can be called as a notification or not, assigns the
      actual C/C++ implementation of the method to the "methodCall" parameter and checks the
      given parameters from the request against the json schema description for the given method.
      */
-    static JSON_STATUS CheckCall(const char* const method, const Json::Value &requestParameters, IClient *client, bool announcement, MethodCall &methodCall, Json::Value &outputParameters);
+    static JSON_STATUS CheckCall(const char* const method, const Json::Value &requestParameters, IClient *client, bool notification, MethodCall &methodCall, Json::Value &outputParameters);
 
   private:
     static void printType(const JSONSchemaTypeDefinition &type, bool isParameter, bool isGlobal, bool printDefault, bool printDescriptions, Json::Value &output);

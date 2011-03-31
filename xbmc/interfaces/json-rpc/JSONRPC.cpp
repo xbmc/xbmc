@@ -50,9 +50,9 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "JSONRPC.Version",                              CJSONRPC::Version },
   { "JSONRPC.Permission",                           CJSONRPC::Permission },
   { "JSONRPC.Ping",                                 CJSONRPC::Ping },
-  { "JSONRPC.GetAnnouncementFlags",                 CJSONRPC::GetAnnouncementFlags },
-  { "JSONRPC.SetAnnouncementFlags",                 CJSONRPC::SetAnnouncementFlags },
-  { "JSONRPC.Announce",                             CJSONRPC::Announce },
+  { "JSONRPC.GetNotificationFlags",                 CJSONRPC::GetNotificationFlags },
+  { "JSONRPC.SetNotificationFlags",                 CJSONRPC::SetNotificationFlags },
+  { "JSONRPC.Notify",                             CJSONRPC::Notify },
 
 // Player
   { "Player.GetActivePlayers",                      CPlayerOperations::GetActivePlayers },
@@ -196,21 +196,6 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "XBMC.Quit",                                    CXBMCOperations::Quit }
 };
 
-/*Command CJSONRPC::m_commands[] = {
-// AudioPlaylist
-  { "AudioPlaylist.Play",                           CAVPlaylistOperations::Play,                         Response,     ControlPlayback, "" },
-  { "AudioPlaylist.SkipPrevious",                   CAVPlaylistOperations::SkipPrevious,                 Response,     ControlPlayback, "" },
-  { "AudioPlaylist.SkipNext",                       CAVPlaylistOperations::SkipNext,                     Response,     ControlPlayback, "" },
-
-  { "AudioPlaylist.GetItems",                       CAVPlaylistOperations::GetItems,                     Response,     ReadData,        "" },
-  { "AudioPlaylist.Add",                            CAVPlaylistOperations::Add,                          Response,     ControlPlayback, "" },
-  { "AudioPlaylist.Insert",                         CAVPlaylistOperations::Insert,                       Response,     ControlPlayback, "Insert item(s) into playlist" },
-  { "AudioPlaylist.Clear",                          CAVPlaylistOperations::Clear,                        Response,     ControlPlayback, "Clear audio playlist" },
-  { "AudioPlaylist.Shuffle",                        CAVPlaylistOperations::Shuffle,                      Response,     ControlPlayback, "Shuffle audio playlist" },
-  { "AudioPlaylist.UnShuffle",                      CAVPlaylistOperations::UnShuffle,                    Response,     ControlPlayback, "UnShuffle audio playlist" },
-  { "AudioPlaylist.Remove",                         CAVPlaylistOperations::Remove,                       Response,     ControlPlayback, "Remove entry from playlist" },
-};*/
-
 void CJSONRPC::Initialize()
 {
   if (m_initialized)
@@ -260,17 +245,17 @@ JSON_STATUS CJSONRPC::Ping(const CStdString &method, ITransportLayer *transport,
   return OK;
 }
 
-JSON_STATUS CJSONRPC::GetAnnouncementFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CJSONRPC::GetNotificationFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   int flags = client->GetAnnouncementFlags();
 
   for (int i = 1; i <= ANNOUNCE_ALL; i *= 2)
-    result[AnnouncementFlagToString((EAnnouncementFlag)i)] = (flags & i) > 0;
+    result[NotificationFlagToString((EAnnouncementFlag)i)] = (flags & i) > 0;
 
   return OK;
 }
 
-JSON_STATUS CJSONRPC::SetAnnouncementFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CJSONRPC::SetNotificationFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   int flags = 0;
 
@@ -286,12 +271,12 @@ JSON_STATUS CJSONRPC::SetAnnouncementFlags(const CStdString &method, ITransportL
     flags |= Other;
 
   if (client->SetAnnouncementFlags(flags))
-    return GetAnnouncementFlags(method, transport, client, parameterObject, result);
+    return GetNotificationFlags(method, transport, client, parameterObject, result);
 
   return BadPermission;
 }
 
-JSON_STATUS CJSONRPC::Announce(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CJSONRPC::Notify(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   if (parameterObject["data"].isNull())
     CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(),  
@@ -366,11 +351,11 @@ bool CJSONRPC::HandleMethodCall(Value& request, Value& response, ITransportLayer
 {
   JSON_STATUS errorCode = OK;
   Value result;
-  bool isAnnouncement = false;
+  bool isNotification = false;
 
   if (IsProperJSONRPC(request))
   {
-    isAnnouncement = !request.isMember("id");
+    isNotification = !request.isMember("id");
 
     CStdString methodName = request.get("method", "").asString();
     methodName = methodName.ToLower();
@@ -378,7 +363,7 @@ bool CJSONRPC::HandleMethodCall(Value& request, Value& response, ITransportLayer
     JSONRPC::MethodCall method;
     Json::Value params;
 
-    if ((errorCode = CJSONServiceDescription::CheckCall(methodName, request["params"], client, isAnnouncement, method, params)) == OK)
+    if ((errorCode = CJSONServiceDescription::CheckCall(methodName, request["params"], client, isNotification, method, params)) == OK)
       errorCode = method(methodName, transport, client, params, result);
     else
       result = params;
@@ -392,7 +377,7 @@ bool CJSONRPC::HandleMethodCall(Value& request, Value& response, ITransportLayer
 
   BuildResponse(request, errorCode, result, response);
 
-  return !isAnnouncement;
+  return !isNotification;
 }
 
 inline bool CJSONRPC::IsProperJSONRPC(const Json::Value& inputroot)
