@@ -75,7 +75,7 @@ bool CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannel &channel)
   else
     realChannel = new CPVRChannel(channel);
 
-  return InsertInGroup(realChannel);
+  return CPVRChannelGroup::AddToGroup(realChannel, 0, false);
 }
 
 bool CPVRChannelGroupInternal::InsertInGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */)
@@ -301,11 +301,12 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
       newChannel->SetUniqueID(channel->UniqueID(), false);
       newChannel->UpdateFromClient(*channel);
       newChannels->AddToGroup(newChannel);
-      InsertInGroup(newChannel);
+      InsertInGroup(newChannel, iCurSize == 0 ? channel->ClientChannelNumber() : 0);
       bChanged = true;
 
-      CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - added %s channel '%s'",
-          __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str());
+      CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - added %s channel '%s' on position %d",
+          __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str(),
+          iCurSize == 0 ? channel->ClientChannelNumber() : 0);
     }
   }
 
