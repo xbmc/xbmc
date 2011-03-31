@@ -285,6 +285,7 @@
     <ClCompile Include="..\..\lib\tinyXML\tinyxmlparser.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonInstaller.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\AudioCodec.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonInfo.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonSettings.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIViewStateAddonBrowser.cpp" />
@@ -300,6 +301,7 @@
     <ClCompile Include="..\..\xbmc\BackgroundInfoLoader.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\paplayer\AddonCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.cpp" />
     <ClCompile Include="..\..\xbmc\CueDocument.cpp" />
@@ -341,6 +343,7 @@
     <ClCompile Include="..\..\xbmc\FileSystem\iso9660.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\ISO9660Directory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\FileUDF.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\MultiTrackDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\udf25.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\UDFDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.cpp" />
@@ -1160,6 +1163,7 @@
     <ClInclude Include="..\..\lib\tinyXML\tinyxml.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonDatabase.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonInstaller.h" />
+    <ClInclude Include="..\..\xbmc\addons\AudioCodec.h" />
     <ClInclude Include="..\..\xbmc\addons\DllLibCPluff.h" />
     <ClInclude Include="..\..\xbmc\addons\GUIDialogAddonInfo.h" />
     <ClInclude Include="..\..\xbmc\addons\GUIDialogAddonSettings.h" />
@@ -1176,6 +1180,7 @@
     <ClInclude Include="..\..\xbmc\BackgroundInfoLoader.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.h" />
+    <ClInclude Include="..\..\xbmc\cores\paplayer\AddonCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.h" />
     <ClInclude Include="..\..\xbmc\CueDocument.h" />
@@ -1228,6 +1233,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\iso9660.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\ISO9660Directory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\FileUDF.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\MultiTrackDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\udf25.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\UDFDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.h" />

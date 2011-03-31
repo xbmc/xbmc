@@ -2434,6 +2434,14 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp">
       <Filter>dialogs</Filter>
+    <ClCompile Include="..\..\xbmc\cores\paplayer\AddonCodec.cpp">
+      <Filter>cores\paplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AudioCodec.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MultiTrackDirectory.cpp">
+      <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\JSONServiceDescription.cpp">
@@ -4887,6 +4895,14 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayEject.h">
       <Filter>dialogs</Filter>
+    <ClInclude Include="..\..\xbmc\cores\paplayer\AddonCodec.h">
+      <Filter>cores\paplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AudioCodec.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MultiTrackDirectory.h">
+      <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\JSONServiceDescription.h">
       <Filter>interfaces\json-rpc</Filter>
