@@ -380,25 +380,28 @@ PVR_ERROR cHTSPData::GetChannelGroups(PVR_HANDLE handle)
 
 PVR_ERROR cHTSPData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
 {
+  XBMC->Log(LOG_DEBUG, "%s - group '%s'", __FUNCTION__, group.strGroupName);
   for(unsigned int iTagPtr = 0; iTagPtr < m_tags.size(); iTagPtr++)
   {
     if (m_tags[iTagPtr].name != group.strGroupName)
       continue;
 
-    std::vector<int>::iterator itTags;
-    for(itTags = m_tags[iTagPtr].channels.begin(); itTags != m_tags[iTagPtr].channels.end(); itTags++)
-    {
-      SChannels::iterator itChannels = m_channels.find(*itTags);
-      if (itChannels != m_channels.end())
-      {
-        PVR_CHANNEL_GROUP_MEMBER tag;
-        memset(&tag,0 , sizeof(PVR_CHANNEL_GROUP_MEMBER));
-        tag.strGroupName = group.strGroupName;
-        tag.iChannelUniqueId = itChannels->second.id;
-        tag.iChannelNumber = itChannels->second.num;
+    SChannels channels = GetChannels(m_tags[iTagPtr].id);
 
-        PVR->TransferChannelGroupMember(handle, &tag);
-      }
+    for(SChannels::iterator it = channels.begin(); it != channels.end(); ++it)
+    {
+      SChannel& channel = it->second;
+
+      PVR_CHANNEL_GROUP_MEMBER tag;
+      memset(&tag,0 , sizeof(PVR_CHANNEL_GROUP_MEMBER));
+      tag.strGroupName = group.strGroupName;
+      tag.iChannelUniqueId = channel.id;
+      tag.iChannelNumber = channel.num;
+
+      XBMC->Log(LOG_DEBUG, "%s - add channel %s (%d) to group '%s' channel number %d",
+          __FUNCTION__, channel.name.c_str(), tag.iChannelUniqueId, group.strGroupName, channel.num);
+
+      PVR->TransferChannelGroupMember(handle, &tag);
     }
   }
 
