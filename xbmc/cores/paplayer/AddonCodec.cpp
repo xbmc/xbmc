@@ -47,7 +47,8 @@ bool AddonCodec::Init(const CFileItem& file, unsigned int filecache)
   {
     m_Channels = m_info->channels;
     m_SampleRate = m_info->samplerate;
-    m_BitsPerSample = m_info->bitrate;
+    m_BitsPerSample = m_info->bitpersample;
+    m_Bitrate = m_info->bitrate;
     m_TotalTime = m_info->totaltime;
     m_CodecName = m_info->name;
   }
