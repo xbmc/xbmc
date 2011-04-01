@@ -219,7 +219,7 @@ int CPVRChannelGroupInternal::LoadFromClients(void)
   PVR_ERROR error;
   CPVRManager::GetClients()->GetChannels(this, &error);
   if (error != PVR_ERROR_NO_ERROR)
-    return -1;
+    CLog::Log(LOGWARNING, "CPVRChannelGroupInternal - %s - got bad error (%d) on call to GetChannels", __FUNCTION__, error);
 
   return size() - iCurSize;
 }
@@ -304,7 +304,7 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
       InsertInGroup(newChannel, iCurSize == 0 ? channel->ClientChannelNumber() : 0);
       bChanged = true;
 
-      CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - added %s channel '%s' on position %d",
+      CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - added %s channel '%s' at position %d",
           __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str(),
           iCurSize == 0 ? channel->ClientChannelNumber() : 0);
     }
@@ -403,4 +403,3 @@ bool CPVRChannelGroupInternal::Persist(void)
 
   return bReturn;
 }
-

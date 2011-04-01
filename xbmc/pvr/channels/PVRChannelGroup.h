@@ -94,10 +94,9 @@ private:
 
   /*!
    * @brief Load the channels from the clients.
-   * @param bAddToDb If true, add the new channels to the database too.
    * @return The amount of channels that were added.
    */
-  virtual int LoadFromClients(bool bAddToDb = true);
+  virtual int LoadFromClients(void);
 
   /*!
    * @brief Remove invalid channels and updates the channel numbers.

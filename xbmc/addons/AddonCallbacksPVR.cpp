@@ -94,17 +94,12 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const PV
     return;
   }
 
-  CPVRClient* client            = (CPVRClient*) handle->callerAddress;
-  CPVRChannelGroups *xbmcGroups = (CPVRChannelGroups *) handle->dataAddress;
-  //CPVRChannelGroup *group     = (CPVRChannelGroup *) xbmcGroups->GetByName(member->strGroupName);
-  //XXX find out why we're getting a copy of the group here
-  CPVRChannelGroup *group       = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->Get(xbmcGroups->IsRadio())->GetByName(member->strGroupName);
-  CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByUniqueID(member->iChannelUniqueId, client->GetClientID());
+  CPVRClient* client      = (CPVRClient*) handle->callerAddress;
+  CPVRChannelGroup *group = (CPVRChannelGroup *) handle->dataAddress;
+  CPVRChannel *channel    = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByUniqueID(member->iChannelUniqueId, client->GetClientID());
   if (group != NULL && channel != NULL)
   {
     /* transfer this entry to the group */
-    CLog::Log(LOGDEBUG, "CAddonCallbacksPVR - %s - add channel '%s' to group '%s' at position %d",
-        __FUNCTION__, channel->ChannelName().c_str(), group->GroupName().c_str(), member->iChannelNumber);
     group->AddToGroup(channel, member->iChannelNumber, false);
   }
   else

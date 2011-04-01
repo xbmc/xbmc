@@ -404,6 +404,8 @@ PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup *group)
     CStdString myName(group->GroupName());
     tag.strGroupName = myName.c_str();
 
+    CLog::Log(LOGDEBUG, "PVRClient - %s - get group members for group '%s' from add-on '%s'",
+        __FUNCTION__, tag.strGroupName, GetFriendlyName());
     retVal = m_pStruct->GetChannelGroupMembers(&handle, tag);
 
     if (retVal != PVR_ERROR_NO_ERROR)

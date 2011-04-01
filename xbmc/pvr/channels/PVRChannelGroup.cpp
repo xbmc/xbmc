@@ -115,7 +115,10 @@ void CPVRChannelGroup::Unload()
 
 bool CPVRChannelGroup::Update()
 {
-  return LoadFromClients(true) > 0;
+  CPVRChannelGroup PVRChannels_tmp(m_bRadio, m_iGroupId, m_strGroupName, m_iSortOrder);
+  PVRChannels_tmp.LoadFromClients();
+
+  return UpdateGroupEntries(&PVRChannels_tmp);
 }
 
 bool CPVRChannelGroup::Update(const CPVRChannelGroup &group)
@@ -393,30 +396,15 @@ int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
   return size() - iChannelCount;
 }
 
-int CPVRChannelGroup::LoadFromClients(bool bAddToDb /* = true */)
+int CPVRChannelGroup::LoadFromClients(void)
 {
   int iCurSize = size();
 
   /* get the channels from the backends */
-  CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - requesting group members for group '%s' from add-ons",
-      __FUNCTION__, GroupName().c_str());
   PVR_ERROR error;
   CPVRManager::GetClients()->GetChannelGroupMembers(this, &error);
-
   if (error != PVR_ERROR_NO_ERROR)
     CLog::Log(LOGWARNING, "PVRChannelGroup - %s - got bad error (%d) on call to GetChannelGroupMembers", __FUNCTION__, error);
-
-  CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d members added to group '%s' by add-ons",
-      __FUNCTION__, size() - iCurSize, GroupName().c_str());
-
-  if (iCurSize == 0)
-    SortByClientChannelNumber();
-  else
-    SortByChannelNumber();
-  Renumber();
-
-  if (bAddToDb)
-    Persist();
 
   return size() - iCurSize;
 }
@@ -437,8 +425,63 @@ bool CPVRChannelGroup::RemoveByUniqueID(int iUniqueID)
 
 bool CPVRChannelGroup::UpdateGroupEntries(CPVRChannelGroup *channels)
 {
-  // TODO
-  return false;
+  int iCurSize = size();
+
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  if (!database || !database->Open())
+    return false;
+
+  /* go through the channel list and check for updated or new channels */
+  for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
+  {
+    CPVRChannel *channel     = channels->at(iChannelPtr).channel;
+    int iChannelNumber       = channels->at(iChannelPtr).iChannelNumber;
+    if (!channel)
+      continue;
+
+    CPVRChannel *realChannel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio)->GetByClient(channel->UniqueID(), channel->ClientID());
+    if (!realChannel)
+      continue;
+
+    if (!IsGroupMember(realChannel))
+    {
+      AddToGroup(realChannel, iChannelNumber, false);
+
+      CLog::Log(LOGINFO,"PVRChannelGroup - %s - added %s channel '%s' at position %d in group '%s'",
+          __FUNCTION__, m_bRadio ? "radio" : "TV", realChannel->ChannelName().c_str(), iChannelNumber, GroupName().c_str());
+    }
+  }
+
+  /* check for deleted channels */
+  unsigned int iSize = size();
+  for (unsigned int iChannelPtr = 0; iChannelPtr < iSize; iChannelPtr++)
+  {
+    CPVRChannel *channel = (CPVRChannel *) GetByIndex(iChannelPtr);
+    if (!channel)
+      continue;
+    if (channels->GetByClient(channel->UniqueID(), channel->ClientID()) == NULL)
+    {
+      /* channel was not found */
+      CLog::Log(LOGINFO,"PVRChannelGroup - %s - deleted %s channel '%s' from group '%s'",
+          __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str(), GroupName().c_str());
+
+      /* remove this channel from all non-system groups */
+      RemoveFromGroup(channel);
+
+      iChannelPtr--;
+      iSize--;
+    }
+  }
+
+  /* sort by client channel number if this is the first time */
+  if (iCurSize == 0)
+    SortByClientChannelNumber();
+
+  /* renumber to make sure all channels have a channel number.
+     new channels were added at the back, so they'll get the highest numbers */
+  Renumber();
+
+  return Persist();
 }
 
 void CPVRChannelGroup::RemoveInvalidChannels(void)

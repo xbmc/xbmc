@@ -223,6 +223,27 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
   return true;
 }
 
+bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
+{
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  if (!database->Open())
+  {
+    CLog::Log(LOGERROR, "PVRChannelGroups - %s - cannot open the database", __FUNCTION__);
+    return false;
+  }
+
+  /* load the other groups from the database */
+  database->GetChannelGroupList(*this, m_bRadio);
+  CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d user defined groups %s fetched from the database",
+      __FUNCTION__, size() - 1, m_bRadio ? "radio" : "TV");
+
+  /* load group members */
+  for (unsigned int iGroupPtr = 1; iGroupPtr < size(); iGroupPtr++)
+    at(iGroupPtr)->Load();
+
+  return true;
+}
+
 bool CPVRChannelGroups::Load(void)
 {
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - loading all %s channel groups",
@@ -231,33 +252,17 @@ bool CPVRChannelGroups::Load(void)
   Clear();
 
   /* create and load the internal channel group */
-  CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - loading internal %s group",
-      __FUNCTION__, m_bRadio ? "radio" : "TV");
   CPVRChannelGroupInternal *internalChannels = new CPVRChannelGroupInternal(m_bRadio);
   push_back(internalChannels);
-  int iChannelsLoaded = internalChannels->Load();
-  CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d channels added to the internal %s group",
-      __FUNCTION__, iChannelsLoaded, m_bRadio ? "radio" : "TV");
+  internalChannels->Load();
 
   /* load the other groups from the database */
-  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
-  if (database->Open())
-  {
-    database->GetChannelGroupList(*this, m_bRadio);
-    CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d user defined groups %s fetched from the database",
-        __FUNCTION__, size() - 1, m_bRadio ? "radio" : "TV");
-
-    /* load group members */
-    for (unsigned int iGroupPtr = 1; iGroupPtr < size(); iGroupPtr++)
-      at(iGroupPtr)->Load();
-
-    database->Close();
-  }
+  LoadUserDefinedChannelGroups();
 
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d %s channel groups loaded",
       __FUNCTION__, (int) size(), m_bRadio ? "radio" : "TV");
 
-  return true;
+  return size() > 0;
 }
 
 bool CPVRChannelGroups::PersistAll(void)

@@ -47,6 +47,7 @@ private:
    */
   int GetIndexForGroupID(int iGroupId) const;
   int GetIndexForGroupName(const CStdString &strName) const;
+  bool LoadUserDefinedChannelGroups(void);
 
 protected:
   /*!
