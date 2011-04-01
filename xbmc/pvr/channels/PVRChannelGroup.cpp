@@ -209,17 +209,17 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 
 struct sortByClientChannelNumber
 {
-  bool operator()(PVRChannelGroupMember channel1, PVRChannelGroupMember channel2)
+  bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2)
   {
-    return channel1.channel->ClientChannelNumber() > 0 && channel1.channel->ClientChannelNumber() < channel2.channel->ClientChannelNumber();
+    return channel1.channel->ClientChannelNumber() < channel2.channel->ClientChannelNumber();
   }
 };
 
 struct sortByChannelNumber
 {
-  bool operator()(PVRChannelGroupMember channel1, PVRChannelGroupMember channel2)
+  bool operator()(const PVRChannelGroupMember &channel1, const PVRChannelGroupMember &channel2)
   {
-    return channel1.iChannelNumber > 0 && channel1.iChannelNumber < channel2.iChannelNumber;
+    return channel1.iChannelNumber < channel2.iChannelNumber;
   }
 };
 
@@ -423,8 +423,8 @@ bool CPVRChannelGroup::UpdateGroupEntries(CPVRChannelGroup *channels)
   /* go through the channel list and check for updated or new channels */
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
   {
-    CPVRChannel *channel     = channels->at(iChannelPtr).channel;
-    int iChannelNumber       = channels->at(iChannelPtr).iChannelNumber;
+    CPVRChannel *channel = channels->at(iChannelPtr).channel;
+    int iChannelNumber   = channels->at(iChannelPtr).iChannelNumber;
     if (!channel)
       continue;
 
@@ -529,7 +529,7 @@ bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 
 
   if (!CPVRChannelGroup::IsGroupMember(channel))
   {
-    if (iChannelNumber <= 0)
+    if (iChannelNumber <= 0 || iChannelNumber > (int) size() + 1)
       iChannelNumber = size() + 1;
 
     CPVRChannel *realChannel = (IsInternalGroup()) ?

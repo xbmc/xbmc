@@ -78,9 +78,9 @@ bool CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannel &channel)
   return CPVRChannelGroup::AddToGroup(realChannel, 0, false);
 }
 
-bool CPVRChannelGroupInternal::InsertInGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */)
+bool CPVRChannelGroupInternal::InsertInGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */, bool bSortAndRenumber /* = true */)
 {
-  return CPVRChannelGroup::AddToGroup(channel, iChannelNumber);
+  return CPVRChannelGroup::AddToGroup(channel, iChannelNumber, bSortAndRenumber);
 }
 
 bool CPVRChannelGroupInternal::Update()
@@ -301,12 +301,12 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
       newChannel->SetUniqueID(channel->UniqueID(), false);
       newChannel->UpdateFromClient(*channel);
       newChannels->AddToGroup(newChannel);
-      InsertInGroup(newChannel, iCurSize == 0 ? channel->ClientChannelNumber() : 0);
+      int iChannelNumber = iCurSize == 0 ? channel->ClientChannelNumber() : 0;
+      InsertInGroup(newChannel, iChannelNumber, false);
       bChanged = true;
 
       CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - added %s channel '%s' at position %d",
-          __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str(),
-          iCurSize == 0 ? channel->ClientChannelNumber() : 0);
+          __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str(), iChannelNumber);
     }
   }
 
@@ -369,7 +369,6 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
 bool CPVRChannelGroupInternal::Persist(void)
 {
   bool bReturn = false;
-  bool bRefreshChannelList = false;
   CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
 
   if (!database || !database->Open())
@@ -380,25 +379,12 @@ bool CPVRChannelGroupInternal::Persist(void)
   bReturn = true;
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
-    /* if this channel has an invalid ID, reload the list afterwards */
-    bRefreshChannelList = at(iChannelPtr).channel->ChannelID() <= 0;
-
-    bReturn = at(iChannelPtr).channel->Persist(true) && bReturn;
+    bReturn = at(iChannelPtr).channel->Persist() && bReturn;
   }
 
   if (bReturn)
-  {
-    if (bRefreshChannelList)
-    {
-      database->CommitInsertQueries();
-      CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - reloading the channels list to get channel IDs", __FUNCTION__);
-      Unload();
-      bReturn = LoadFromDb(true) > 0;
-    }
+    bReturn = CPVRChannelGroup::Persist();
 
-    if (bReturn)
-      bReturn = CPVRChannelGroup::Persist();
-  }
   database->Close();
 
   return bReturn;

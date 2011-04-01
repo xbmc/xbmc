@@ -127,8 +127,10 @@ public:
 
   /*!
    * @brief Add a channel to this internal group.
+   * @param iChannelNumber The channel number to use for this channel or 0 to add it to the back.
+   * @param bSortAndRenumber Set to false to not to sort the group after adding a channel
    */
-  bool InsertInGroup(CPVRChannel *channel, int iChannelNumber = 0);
+  bool InsertInGroup(CPVRChannel *channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
 
   bool UpdateFromClient(const CPVRChannel &channel);
 
