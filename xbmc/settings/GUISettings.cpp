@@ -794,7 +794,8 @@ void CGUISettings::Initialize()
   // tv settings (access over TV menu from home window)
   AddGroup(8, 19180);
   CSettingsCategory* pvr = AddCategory(8, "pvrmanager", 128);
-  AddBool(pvr, "pvrmanager.enabled", 449  , false);
+  AddBool(pvr, "pvrmanager.enabled", 449, false);
+  AddBool(pvr, "pvrmanager.syncchannelgroups", 19221, true);
   AddString(pvr, "pvrmanager.channelmanager", 19199, "", BUTTON_CONTROL_STANDARD);
   AddString(pvr, "pvrmanager.channelscan", 19117, "", BUTTON_CONTROL_STANDARD);
   AddString(pvr, "pvrmanager.resetdb", 19185, "", BUTTON_CONTROL_STANDARD);
