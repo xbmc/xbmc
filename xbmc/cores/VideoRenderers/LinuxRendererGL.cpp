@@ -714,11 +714,11 @@ void CLinuxRendererGL::FlipPage(int source)
 
   m_buffers[m_iYV12RenderBuffer].flipindex = ++m_flipindex;
 
-#ifdef HAVE_LIBVDPAU  
+#ifdef HAVE_LIBVDPAU
   if (((m_renderMethod & RENDER_VDPAU)
       || CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VDPAU_420)
       && m_buffers[m_iYV12RenderBuffer].vdpau)
-    m_buffers[m_iYV12RenderBuffer].vdpau->Present();
+    m_buffers[m_iYV12RenderBuffer].vdpau->Flip();
 #endif
 
   return;

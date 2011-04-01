@@ -1648,18 +1648,16 @@ bool CVDPAU::AllowDecoderDrop()
 
 void CVDPAU::Present()
 {
-  //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
+//  CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
 
   if (!m_presentPicture)
     CLog::Log(LOGWARNING, "CVDPAU::Present: present picture is NULL");
 
-  m_flipBufferIdx = NextBuffer();;
-  int index = m_flipBufferIdx;
+  int index = NextBuffer();
 
   if (m_flipBuffer[index])
   {
-    CLog::Log(LOGDEBUG, "CVDPAU::Present - buffer not empty!!");
     if (m_flipBuffer[index]->render)
     {
       CSingleLock lock(m_videoSurfaceSec);
@@ -1673,7 +1671,6 @@ void CVDPAU::Present()
 
   m_flipBuffer[index] = m_presentPicture;
   m_presentPicture = NULL;
-  m_bsurfaceMapped = false;
 
   if (hasVdpauGlInterop)
     return;

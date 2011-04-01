@@ -93,7 +93,7 @@ public:
     return 0;
   }
 
-  void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
+  void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE, bool bIsVdpau = false);
   unsigned int PreInit();
   void UnInit();
 
@@ -256,6 +256,11 @@ protected:
   EPRESENTSTEP     m_presentstep;
   int        m_presentsource;
   CEvent     m_presentevent;
+  EPRESENTSTEP     m_vdpauflip;
+  double     m_iPts;
+  EFIELDSYNC m_Sync;
+  CEvent     m_flipEvent;
+  CCriticalSection m_flipSection;
 
 
   OVERLAY::CRenderer m_overlays;
@@ -267,6 +272,13 @@ protected:
   //set to true when adding something to m_captures, set to false when m_captures is made empty
   //std::list::empty() isn't thread safe, using an extra bool will save a lock per render when no captures are requested
   bool                       m_hasCaptures; 
+
+  void ResetVdpauFlip();
+  bool FlipVdpau(double pts, EFIELDSYNC sync);
+  void SetVdpauFlipValues();
+public:
+  bool WaitVdpauFlip(unsigned int timeout);
+
 };
 
 extern CXBMCRenderManager g_renderManager;

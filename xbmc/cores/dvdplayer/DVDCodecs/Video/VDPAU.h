@@ -127,6 +127,7 @@ public:
   static void             VDPPreemptionCallbackFunction(VdpDevice device, void* context);
 
   void Present();
+  void Flip();
   bool ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();
   void InitCSCMatrix(int Height);

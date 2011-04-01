@@ -100,6 +100,7 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_presentmethod = VS_INTERLACEMETHOD_NONE;
   m_bReconfigured = false;
   m_hasCaptures = false;
+  m_vdpauflip = PRESENT_IDLE;
 }
 
 CXBMCRenderManager::~CXBMCRenderManager()
@@ -242,6 +243,8 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_bReconfigured = true;
     m_presentstep = PRESENT_IDLE;
     m_presentevent.Set();
+    m_vdpauflip = PRESENT_IDLE;
+    m_flipEvent.Reset();
   }
 
   return result;
@@ -273,12 +276,16 @@ void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     if (!m_pRenderer)
       return;
 
+    if(m_presentstep == PRESENT_IDLE)
+       SetVdpauFlipValues();
+
     if(m_presentstep == PRESENT_FLIP)
     {
       m_overlays.Flip();
       m_pRenderer->FlipPage(m_presentsource);
       m_presentstep = PRESENT_FRAME;
       m_presentevent.Set();
+      ResetVdpauFlip();
     }
   }
 
@@ -480,8 +487,14 @@ void CXBMCRenderManager::RemoveCapture(CRenderCapture* capture)
     m_captures.erase(it);
 }
 
-void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
+void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/, bool bIsVdpau /*= false*/)
 {
+  if (bIsVdpau)
+  {
+    FlipVdpau(timestamp, sync);
+    return;
+  }
+
   if(timestamp - GetPresentTime() > MAXPRESENTDELAY)
     timestamp =  GetPresentTime() + MAXPRESENTDELAY;
 
@@ -568,9 +581,12 @@ float CXBMCRenderManager::GetMaximumFPS()
 
 void CXBMCRenderManager::Present()
 {
-  { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+   { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
     if (!m_pRenderer)
       return;
+
+    if(m_presentstep == PRESENT_IDLE)
+      SetVdpauFlipValues();
 
     if(m_presentstep == PRESENT_FLIP)
     {
@@ -578,6 +594,7 @@ void CXBMCRenderManager::Present()
       m_pRenderer->FlipPage(m_presentsource);
       m_presentstep = PRESENT_FRAME;
       m_presentevent.Set();
+      ResetVdpauFlip();
     }
   }
 
@@ -595,10 +612,13 @@ void CXBMCRenderManager::Present()
     PresentSingle();
 
   m_overlays.Render();
+  lock.Leave();
 
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo())
     WaitPresentTime(m_presenttime);
+
+//  ResetVdpauFlip();
 
   m_presentevent.Set();
 }
@@ -606,7 +626,7 @@ void CXBMCRenderManager::Present()
 /* simple present method */
 void CXBMCRenderManager::PresentSingle()
 {
-  CSingleLock lock(g_graphicsContext);
+//  CSingleLock lock(g_graphicsContext);
 
   m_pRenderer->RenderUpdate(true, 0, 255);
   m_presentstep = PRESENT_IDLE;
@@ -684,3 +704,84 @@ void CXBMCRenderManager::UpdateResolution()
     m_bReconfigured = false;
   }
 }
+
+bool CXBMCRenderManager::WaitVdpauFlip(unsigned int timeout)
+{
+  CSingleLock lock(m_flipSection);
+  if (m_vdpauflip == PRESENT_IDLE)
+    return true;
+  lock.Leave();
+
+  if (!m_flipEvent.WaitMSec(timeout))
+    return false;
+
+  m_vdpauflip = PRESENT_IDLE;
+
+  if(!g_graphicsContext.IsFullScreenVideo())
+    WaitPresentTime(m_presenttime);
+
+  return true;
+}
+
+void CXBMCRenderManager::ResetVdpauFlip()
+{
+  m_flipEvent.Set();
+}
+
+bool CXBMCRenderManager::FlipVdpau(double pts, EFIELDSYNC sync)
+{
+  CSingleLock lock(m_flipSection);
+  m_vdpauflip = PRESENT_FLIP;
+  m_iPts = pts;
+  m_Sync = sync;
+  m_flipEvent.Reset();
+  lock.Leave();
+
+  g_application.NewFrame();
+  return true;
+}
+
+void CXBMCRenderManager::SetVdpauFlipValues()
+{
+  CSingleLock lock(m_flipSection);
+  if (m_vdpauflip != PRESENT_FLIP)
+  {
+    return;
+  }
+  m_vdpauflip = PRESENT_FRAME;
+  lock.Leave();
+
+  m_presenttime = m_iPts;
+
+  m_presentfield = m_Sync;
+
+  m_presentstep  = PRESENT_FLIP;
+  m_presentsource = -1;
+  m_presentmethod = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+
+  /* select render method for auto */
+  if(m_presentmethod == VS_INTERLACEMETHOD_AUTO)
+  {
+    if(m_presentfield == FS_NONE)
+      m_presentmethod = VS_INTERLACEMETHOD_NONE;
+    else if(m_pRenderer->Supports(VS_INTERLACEMETHOD_RENDER_BOB))
+      m_presentmethod = VS_INTERLACEMETHOD_RENDER_BOB;
+    else
+      m_presentmethod = VS_INTERLACEMETHOD_NONE;
+  }
+
+  /* default to odd field if we want to deinterlace and don't know better */
+  if(m_presentfield == FS_NONE && m_presentmethod != VS_INTERLACEMETHOD_NONE)
+    m_presentfield = FS_TOP;
+
+  /* invert present field if we have one of those methods */
+  if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
+   || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
+  {
+    if( m_presentfield == FS_BOT )
+      m_presentfield = FS_TOP;
+    else
+      m_presentfield = FS_BOT;
+  }
+}
+
