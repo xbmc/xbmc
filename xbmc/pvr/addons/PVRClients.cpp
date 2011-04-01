@@ -841,7 +841,7 @@ int CPVRClients::GetChannelGroupMembers(CPVRChannelGroup *group, PVR_ERROR *erro
 
 int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)
 {
-  *error = PVR_ERROR_UNKOWN;
+  *error = PVR_ERROR_NO_ERROR;
   int iCurSize = group->Size();
   CLIENTMAP clients;
   GetActiveClients(&clients);
@@ -851,7 +851,13 @@ int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)
   while (itrClients != clients.end())
   {
     if ((*itrClients).second->ReadyToUse())
-      (*itrClients).second->GetChannels(*group, group->IsRadio());
+    {
+      PVR_ERROR currentError;
+      currentError = (*itrClients).second->GetChannels(*group, group->IsRadio());
+
+      if (currentError != PVR_ERROR_NO_ERROR)
+        *error = currentError;
+    }
 
     itrClients++;
   }
