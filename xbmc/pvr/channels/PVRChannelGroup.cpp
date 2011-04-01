@@ -43,7 +43,6 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CSt
   m_iGroupId        = iGroupId;
   m_strGroupName    = strGroupName;
   m_iSortOrder      = iSortOrder;
-  m_bInhibitSorting = false;
   m_bLoaded         = false;
   clear();
 }
@@ -54,7 +53,6 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio)
   m_iGroupId        = -1;
   m_strGroupName.clear();
   m_iSortOrder      = -1;
-  m_bInhibitSorting = false;
   m_bLoaded         = false;
   clear();
 }
@@ -65,7 +63,6 @@ CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group)
   m_iGroupId        = -1;
   m_strGroupName    = group.strGroupName;
   m_iSortOrder      = -1;
-  m_bInhibitSorting = false;
   m_bLoaded         = false;
   clear();
 }
@@ -228,17 +225,11 @@ struct sortByChannelNumber
 
 void CPVRChannelGroup::SortByClientChannelNumber(void)
 {
-  if (m_bInhibitSorting)
-    return;
-
   sort(begin(), end(), sortByClientChannelNumber());
 }
 
 void CPVRChannelGroup::SortByChannelNumber(void)
 {
-  if (m_bInhibitSorting)
-    return;
-
   sort(begin(), end(), sortByChannelNumber());
 }
 
@@ -388,10 +379,8 @@ int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 
   int iChannelCount = size();
 
-  m_bInhibitSorting = true;
   database->GetChannelsInGroup(this);
   database->Close();
-  m_bInhibitSorting = false;
 
   return size() - iChannelCount;
 }
