@@ -103,17 +103,6 @@ void CEpgContainer::Start(void)
   LoadSettings();
   g_guiSettings.AddObserver(this);
 
-  if (m_database.Open())
-  {
-    m_database.DeleteOldEpgEntries();
-    m_database.Get(this);
-    m_database.Close();
-  }
-
-  AutoCreateTablesHook();
-
-  lock.Leave();
-
   Create();
   SetName("XBMC EPG thread");
   SetPriority(-1);
@@ -141,6 +130,15 @@ void CEpgContainer::Process(void)
   time_t iNow       = 0;
   m_iLastEpgUpdate  = 0;
   CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgCleanup);
+
+  if (m_database.Open())
+  {
+    m_database.DeleteOldEpgEntries();
+    m_database.Get(this);
+    m_database.Close();
+  }
+
+  AutoCreateTablesHook();
 
   bool bInitialLoadSucess = UpdateEPG(true);
 
