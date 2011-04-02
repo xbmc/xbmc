@@ -191,9 +191,6 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
   for (unsigned int iGroupPtr = 0; iGroupPtr < iUpdateGroups; iGroupPtr++)
     bReturn = at(iGroupPtr)->Update() && bReturn;
 
-  /* persist all changes */
-  PersistAll();
-
   return bReturn;
 }
 
