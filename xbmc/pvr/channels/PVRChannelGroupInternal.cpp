@@ -287,7 +287,6 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
       /* if it's present, update the current tag */
       if (existingChannel->UpdateFromClient(*channel))
       {
-        existingChannel->Persist(true);
         bChanged = true;
 
         CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - updated %s channel '%s'",
@@ -311,7 +310,6 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
   }
 
   /* persist changes */
-  database->CommitInsertQueries();
   for (unsigned int iChannelPtr = 0; iChannelPtr < newChannels->size(); iChannelPtr++)
     ((CPVRChannel *) newChannels->GetByIndex(iChannelPtr))->Persist(false); /* write immediately to get a db id */
   delete newChannels;
