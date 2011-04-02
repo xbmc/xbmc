@@ -448,10 +448,8 @@ bool CPVRDatabase::PersistChannelSettings(const CPVRChannel &channel, const CVid
 
 bool CPVRDatabase::RemoveChannelsFromGroup(int iGroupId)
 {
-  CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all channels from group %d from the database", __FUNCTION__, iGroupId);
-
-   CStdString strWhereClause = FormatSQL("idGroup = %u", iGroupId);
-   return DeleteValues("map_channelgroups_channels", strWhereClause);
+  CStdString strWhereClause = FormatSQL("idGroup = %u", iGroupId);
+  return DeleteValues("map_channelgroups_channels", strWhereClause);
 }
 
 bool CPVRDatabase::DeleteChannelGroups(bool bRadio /* = false */)

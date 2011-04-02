@@ -414,6 +414,7 @@ bool CPVRChannelGroup::RemoveByUniqueID(int iUniqueID)
 
 bool CPVRChannelGroup::UpdateGroupEntries(CPVRChannelGroup *channels)
 {
+  bool bChanged = false;
   int iCurSize = size();
 
   CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
@@ -436,6 +437,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(CPVRChannelGroup *channels)
     {
       AddToGroup(realChannel, iChannelNumber, false);
 
+      bChanged = true;
       CLog::Log(LOGINFO,"PVRChannelGroup - %s - added %s channel '%s' at position %d in group '%s'",
           __FUNCTION__, m_bRadio ? "radio" : "TV", realChannel->ChannelName().c_str(), iChannelNumber, GroupName().c_str());
     }
@@ -457,20 +459,26 @@ bool CPVRChannelGroup::UpdateGroupEntries(CPVRChannelGroup *channels)
       /* remove this channel from all non-system groups */
       RemoveFromGroup(channel);
 
+      bChanged = true;
       iChannelPtr--;
       iSize--;
     }
   }
 
-  /* sort by client channel number if this is the first time */
-  if (iCurSize == 0)
-    SortByClientChannelNumber();
+  if (bChanged)
+  {
+    /* sort by client channel number if this is the first time */
+    if (iCurSize == 0)
+      SortByClientChannelNumber();
 
-  /* renumber to make sure all channels have a channel number.
-     new channels were added at the back, so they'll get the highest numbers */
-  Renumber();
+    /* renumber to make sure all channels have a channel number.
+       new channels were added at the back, so they'll get the highest numbers */
+    Renumber();
 
-  return Persist();
+    return Persist();
+  }
+
+  return true;
 }
 
 void CPVRChannelGroup::RemoveInvalidChannels(void)
@@ -606,6 +614,8 @@ bool CPVRChannelGroup::Persist(void)
   CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
   if (database && database->Open())
   {
+    CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - persisting channel group '%s' with %d channels",
+        __FUNCTION__, GroupName().c_str(), size());
     database->Persist(this);
     database->Close();
 
