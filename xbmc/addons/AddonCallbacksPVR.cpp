@@ -49,6 +49,7 @@ CAddonCallbacksPVR::CAddonCallbacksPVR(CAddon* addon)
   m_callbacks->AddMenuHook                = PVRAddMenuHook;
   m_callbacks->Recording                  = PVRRecording;
   m_callbacks->TriggerChannelUpdate       = PVRTriggerChannelUpdate;
+  m_callbacks->TriggerChannelGroupsUpdate = PVRTriggerChannelGroupsUpdate;
   m_callbacks->TriggerTimerUpdate         = PVRTriggerTimerUpdate;
   m_callbacks->TriggerRecordingUpdate     = PVRTriggerRecordingUpdate;
   m_callbacks->FreeDemuxPacket            = PVRFreeDemuxPacket;
@@ -279,6 +280,19 @@ void CAddonCallbacksPVR::PVRTriggerRecordingUpdate(void *addonData)
 
   /* update the recordings table in the next iteration of the pvrmanager's main loop */
   CPVRManager::Get()->TriggerRecordingsUpdate();
+}
+
+void CAddonCallbacksPVR::PVRTriggerChannelGroupsUpdate(void *addonData)
+{
+  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
+  if (addon == NULL)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
+    return;
+  }
+
+  /* update all channel groups in the next iteration of the pvrmanager's main loop */
+  CPVRManager::Get()->TriggerChannelGroupsUpdate();
 }
 
 void CAddonCallbacksPVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket)

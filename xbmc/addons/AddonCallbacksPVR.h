@@ -125,6 +125,12 @@ public:
   static void PVRTriggerRecordingUpdate(void *addonData);
 
   /*!
+   * @brief Ask the PVRManager to refresh it's channel groups list.
+   * @param addonData A pointer to the add-on.
+   */
+  static void PVRTriggerChannelGroupsUpdate(void *addonData);
+
+  /*!
    * @brief Free an allocated demux packet.
    * @param addonData A pointer to the add-on.
    * @param pPacket The packet to free.

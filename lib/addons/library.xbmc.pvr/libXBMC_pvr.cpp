@@ -122,6 +122,14 @@ DLLEXPORT void PVR_trigger_channel_update()
   m_cb->TriggerChannelUpdate(m_Handle->addonData);
 }
 
+DLLEXPORT void PVR_trigger_channel_groups_update()
+{
+  if (m_cb == NULL)
+    return;
+
+  m_cb->TriggerChannelGroupsUpdate(m_Handle->addonData);
+}
+
 DLLEXPORT void PVR_trigger_timer_update()
 {
   if (m_cb == NULL)
