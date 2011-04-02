@@ -117,13 +117,23 @@
 					<height>210</height>
 					<texture border="5">button-nofocus.png</texture>
 				</control>
-				<control type="image">
-					<posx>250</posx>
-					<posy>465</posy>
-					<width>410</width>
-					<height>200</height>
-					<aspectratio>keep</aspectratio>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
+				<control type="image"> 
+					<posx>250</posx> 
+					<posy>465</posy> 
+					<width>410</width> 
+					<height>200</height> 
+					<aspectratio>keep</aspectratio> 
+					<texture background="true">$INFO[ListItem.Icon]</texture> 
+					<visible>!SubString(Control.GetLabel(416),*)</visible> 
+				</control> 
+				<control type="image"> 
+					<posx>250</posx> 
+					<posy>465</posy> 
+					<width>410</width> 
+					<height>200</height> 
+					<aspectratio>keep</aspectratio> 
+					<texture background="true" flipx="true">$INFO[ListItem.Icon]</texture> 
+					<visible>SubString(Control.GetLabel(416),*)</visible> 
 				</control>
 				<control type="panel" id="450">
 					<posx>20</posx>
