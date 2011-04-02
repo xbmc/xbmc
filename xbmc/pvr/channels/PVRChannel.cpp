@@ -157,7 +157,6 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
 
   bChanged = SetClientID(channel.ClientID()) || bChanged;
   bChanged = SetClientChannelNumber(channel.ClientChannelNumber()) || bChanged;
-  bChanged = SetClientChannelName(channel.ClientChannelName()) || bChanged;
   bChanged = SetInputFormat(channel.InputFormat()) || bChanged;
   bChanged = SetStreamURL(channel.StreamURL()) || bChanged;
   bChanged = SetEncryptionSystem(channel.EncryptionSystem()) || bChanged;
@@ -166,8 +165,9 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   if (m_strIconPath.IsEmpty())
     bChanged = SetIconPath(channel.IconPath()) || bChanged;
 
-  /* don't set bChanged to true because this is not persisted */
+  /* don't set bChanged to true because these are not persisted */
   SetRecording(channel.IsRecording());
+  SetClientChannelName(channel.ClientChannelName());
 
   return bChanged;
 }
