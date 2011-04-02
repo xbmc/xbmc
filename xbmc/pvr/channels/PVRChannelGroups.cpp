@@ -53,6 +53,15 @@ void CPVRChannelGroups::Clear(void)
   clear();
 }
 
+bool CPVRChannelGroups::GetGroupsFromClients(void)
+{
+  /* get new groups from add-ons */
+  PVR_ERROR error;
+  CPVRChannelGroups groupsTmp(m_bRadio);
+  CPVRManager::GetClients()->GetChannelGroups(&groupsTmp, &error);
+  return UpdateGroupsEntries(groupsTmp);
+}
+
 bool CPVRChannelGroups::UpdateFromClient(const CPVRChannelGroup &group)
 {
   CPVRChannelGroup *newGroup = new CPVRChannelGroup(group.IsRadio(), -1, group.GroupName(), group.SortOrder());
@@ -176,13 +185,7 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
   bool bReturn = true;
 
   if (!bChannelsOnly)
-  {
-    /* get new groups from add-ons */
-    PVR_ERROR error;
-    CPVRChannelGroups groupsTmp(m_bRadio);
-    CPVRManager::GetClients()->GetChannelGroups(&groupsTmp, &error);
-    UpdateGroupsEntries(groupsTmp);
-  }
+    GetGroupsFromClients();
 
   /* only update the internal group if group syncing is disabled */
   unsigned int iUpdateGroups = !bChannelsOnly && g_guiSettings.GetBool("pvrmanager.syncchannelgroups") ? size() : 1;
@@ -237,8 +240,13 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 
   /* load the other groups from the database */
   database->GetChannelGroupList(*this, m_bRadio);
+  int iSize = size();
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d user defined groups %s fetched from the database",
-      __FUNCTION__, size() - 1, m_bRadio ? "radio" : "TV");
+      __FUNCTION__, iSize - 1, m_bRadio ? "radio" : "TV");
+
+  GetGroupsFromClients();
+  CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d user defined groups %s fetched from clients",
+      __FUNCTION__, size() - iSize - 1, m_bRadio ? "radio" : "TV");
 
   /* load group members */
   for (unsigned int iGroupPtr = 1; iGroupPtr < size(); iGroupPtr++)
@@ -271,6 +279,8 @@ bool CPVRChannelGroups::Load(void)
 bool CPVRChannelGroups::PersistAll(void)
 {
   bool bReturn = true;
+
+  CLog::Log(LOGDEBUG, "CPVRChannelGroups - %s - persisting all changes in channel groups", __FUNCTION__);
 
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
     bReturn = at(iGroupPtr)->Persist() && bReturn;
