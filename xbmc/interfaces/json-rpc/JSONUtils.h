@@ -502,7 +502,7 @@ namespace JSONRPC
 
         for (unsigned int i = 0; i < other.size(); i++)
         {
-          if ((result = value.get(i, NULL).compare(other[i])) != 0)
+          if ((result = Compare(value.get(i, NULL), other.get(i, NULL))) != 0)
             return result;
         }
 
@@ -519,7 +519,7 @@ namespace JSONRPC
           if (!other.isMember(members.at(i)))
             return -1;
 
-          if ((result = value.get(members.at(i), NULL).compare(other[members.at(i)])) != 0)
+          if ((result = Compare(value.get(members.at(i), NULL), other.get(members.at(i), NULL))) != 0)
             return result;
         }
 
