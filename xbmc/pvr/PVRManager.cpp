@@ -411,12 +411,15 @@ void CPVRManager::Process()
 
       /* load all channels and groups */
       m_channelGroups->Load();
+      m_bTriggerChannelsUpdate = false;
 
       /* get timers from the backends */
       m_timers->Load();
+      m_bTriggerTimersUpdate = false;
 
       /* get recordings from the backend */
       m_recordings->Load();
+      m_bTriggerRecordingsUpdate = false;
     }
 
     /* check if there are (still) any enabled addons */
