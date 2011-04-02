@@ -122,7 +122,7 @@ const BUILT_IN commands[] = {
 #if defined(__APPLE__)
   { "RunAppleScript",             true,   "Run the specified AppleScript command" },
 #endif
-  { "RunPlugin",                  true,   "Run the specified plugin. This command is deprecated, use PlayMedia instead" },
+  { "RunPlugin",                  true,   "Run the specified plugin" },
   { "RunAddon",                   true,   "Run the specified plugin/script" },
   { "Extract",                    true,   "Extracts the specified archive" },
   { "PlayMedia",                  true,   "Play the specified media file (or playlist)" },
@@ -433,13 +433,14 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("runplugin"))
   {
-    CLog::Log(LOGWARNING,"RunPlugin() is deprecated, use PlayMedia() instead");
-    
     if (params.size())
     {
-      CStdString cmd(execString);
-      cmd.Replace("RunPlugin","PlayMedia");
-      return Execute(cmd);
+      CFileItem item(params[0]);
+      if (!item.m_bIsFolder)
+      {
+        item.m_strPath = params[0];
+        CPluginDirectory::RunScriptWithParams(item.m_strPath);
+      }
     }
     else
     {

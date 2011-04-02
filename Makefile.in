@@ -510,9 +510,6 @@ xcode_depends: \
 	lib/libXBMS/libxbms.a \
 	lib/libRTV/librtv.a \
 	lib/libXDAAP/libxdaap.a \
-	xbmc/interfaces/interfaces.a \
-	xbmc/interfaces/http-api/http-api.a \
-	xbmc/interfaces/json-rpc/json-rpc.a \
 	lib/jsoncpp/src/lib_json/libjsoncpp.a
 
 # platform independend objects

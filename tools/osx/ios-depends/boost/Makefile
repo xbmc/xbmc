@@ -21,7 +21,7 @@ ARCHIVE_TOOL_FLAGS=xf
 
 SDK_VERSION:=$(shell xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $$2}')
 
-LIBDYLIB=$(PREFIX)/lib/libboost_thread.dylib
+LIBDYLIB=$(PREFIX)/lib/libboost_thread.a
 
 all: $(LIBDYLIB)
 

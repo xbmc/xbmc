@@ -23,6 +23,14 @@
 
 #include "guilib/IWindowManagerCallback.h"
 
+// Do not change the numbering, external scripts depend on them
+enum {
+  EXITCODE_QUIT      = 0,
+  EXITCODE_POWERDOWN = 64,
+  EXITCODE_RESTARTAPP= 65,
+  EXITCODE_REBOOT    = 66,
+};
+
 class CXBApplicationEx : public IWindowManagerCallback
 {
 public:
@@ -31,6 +39,7 @@ public:
 
   // Variables for timing
   bool m_bStop;
+  int  m_ExitCode;
   bool m_AppActive;
   bool m_AppFocused;
 

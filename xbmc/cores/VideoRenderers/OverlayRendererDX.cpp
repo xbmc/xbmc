@@ -28,7 +28,7 @@
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/Settings.h"
-#include "MathUtils.h"
+#include "utils/MathUtils.h"
 #include "RenderManager.h"
 
 #ifdef HAS_DX

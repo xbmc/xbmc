@@ -498,6 +498,9 @@ AC_CHECK_SIZEOF([size_t])
 # Add top source directory for all builds so we can use config.h
 INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 
+# Check inotify availability
+AC_CHECK_HEADER([sys/inotify.h], AC_DEFINE([HAVE_INOTIFY],[1],[Define if we have inotify]),)
+
 # Checks for boost headers using CXX instead of CC
 AC_LANG_PUSH([C++])
 AC_CHECK_HEADER([boost/shared_ptr.hpp],, AC_MSG_ERROR($missing_library))
@@ -538,7 +541,9 @@ fi
 AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, "yes", "no")
 if test $MYSQL_CONFIG = "yes"; then
   INCLUDES="$INCLUDES `mysql_config --include`"
-  LIBS="$LIBS `mysql_config --libs`"
+  MYSQL_LIBS=`mysql_config --libs`
+  LIBS="$LIBS $MYSQL_LIBS"
+  AC_SUBST(MYSQL_LIBS)
 else
   AC_MSG_ERROR($missing_program)
 fi

@@ -1,2 +1,2 @@
-; filename                        source of the file
-fribidi-0.19.2-lib.zip         http://xbmcwindeps.googlecode.com/files/
+; filename                      mirror                                      source of the file
+fribidi-0.19.2-lib.zip          http://mirrors.xbmc.org/build-deps/win32/   http://xbmcwindeps.googlecode.com/files/

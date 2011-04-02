@@ -61,7 +61,7 @@ class DllVorbis : public DllDynamic, DllVorbisInterface
 public:
     virtual ~DllVorbis() {};
     virtual void vorbis_info_init(vorbis_info *vi)
-        { vorbis_info_init(vi); }
+        { ::vorbis_info_init(vi); }
     virtual int vorbis_bitrate_flushpacket(vorbis_dsp_state *vd, ogg_packet *op)
         { return ::vorbis_bitrate_flushpacket(vd, op); }
     virtual int vorbis_bitrate_addblock(vorbis_block *vb)

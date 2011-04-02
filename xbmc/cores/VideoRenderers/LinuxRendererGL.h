@@ -157,8 +157,10 @@ public:
 
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
+  void         ClearBackBuffer();
   void         DrawBlackBars();
 
+  bool ValidateRenderer();
   virtual void ManageTextures();
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();

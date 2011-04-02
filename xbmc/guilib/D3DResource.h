@@ -22,7 +22,7 @@
 #pragma once
 
 #ifdef HAS_DX
-#include "StdString.h"
+#include "utils/StdString.h"
 #include <map>
 
 class ID3DResource

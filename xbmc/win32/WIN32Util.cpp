@@ -28,7 +28,7 @@
 #include "WindowHelper.h"
 #include "Application.h"
 #include <shlobj.h>
-#include "SpecialProtocol.h"
+#include "filesystem/SpecialProtocol.h"
 #include "my_ntddscsi.h"
 #if _MSC_VER > 1400
 #include "Setupapi.h"
@@ -36,8 +36,8 @@
 #include "storage/MediaManager.h"
 #include "windowing/WindowingFactory.h"
 #include "guilib/LocalizeStrings.h"
-#include "log.h"
-#include "StringUtils.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "DllPaths_win32.h"
 #include "FileSystem/File.h"
 

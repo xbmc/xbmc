@@ -614,14 +614,14 @@ protected:
   int AddMusicVideo(const CStdString& strFilenameAndPath);
 
   // link functions - these two do all the work
-  void AddLinkToActor(const char *table, int actorID, const char *secondField, int secondID, const CStdString &role);
+  void AddLinkToActor(const char *table, int actorID, const char *secondField, int secondID, const CStdString &role, int order);
   void AddToLinkTable(const char *table, const char *firstField, int firstID, const char *secondField, int secondID);
 
   void AddSetToMovie(int idMovie, int idSet);
 
-  void AddActorToMovie(int idMovie, int idActor, const CStdString& strRole);
-  void AddActorToTvShow(int idTvShow, int idActor, const CStdString& strRole);
-  void AddActorToEpisode(int idEpisode, int idActor, const CStdString& strRole);
+  void AddActorToMovie(int idMovie, int idActor, const CStdString& strRole, int order);
+  void AddActorToTvShow(int idTvShow, int idActor, const CStdString& strRole, int order);
+  void AddActorToEpisode(int idEpisode, int idActor, const CStdString& strRole, int order);
   void AddArtistToMusicVideo(int lMVideo, int idArtist);
 
   void AddDirectorToMovie(int idMovie, int idDirector);
@@ -681,7 +681,7 @@ private:
    */
   void UpdateBasePath(const char *table, const char *id, int column, bool shows = false);
 
-  virtual int GetMinVersion() const { return 50; };
+  virtual int GetMinVersion() const { return 51; };
   virtual int GetExportVersion() const { return 1; };
   const char *GetBaseDBName() const { return "MyVideos"; };
 
