@@ -383,7 +383,8 @@ void CPVRManager::UpdateChannels(void)
   UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
 
   lock.Enter();
-  m_bTriggerChannelsUpdate = false;
+  m_bTriggerChannelsUpdate      = false;
+  m_bTriggerChannelGroupsUpdate = false;
   lock.Leave();
 }
 
