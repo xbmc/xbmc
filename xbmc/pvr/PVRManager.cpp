@@ -375,7 +375,7 @@ void CPVRManager::UpdateChannels(void)
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating channel list", __FUNCTION__);
 
-  m_channelGroups->Update();
+  m_channelGroups->Update(true);
   UpdateTimersCache();
   UpdateWindow(PVR_WINDOW_CHANNELS_TV);
   UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);

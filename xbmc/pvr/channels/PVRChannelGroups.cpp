@@ -171,18 +171,21 @@ void CPVRChannelGroups::RemoveFromAllGroups(CPVRChannel *channel)
   }
 }
 
-bool CPVRChannelGroups::Update(void)
+bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
 {
   bool bReturn = true;
 
-  /* get new groups from add-ons */
-  PVR_ERROR error;
-  CPVRChannelGroups groupsTmp(m_bRadio);
-  CPVRManager::GetClients()->GetChannelGroups(&groupsTmp, &error);
-  UpdateGroupsEntries(groupsTmp);
+  if (!bChannelsOnly)
+  {
+    /* get new groups from add-ons */
+    PVR_ERROR error;
+    CPVRChannelGroups groupsTmp(m_bRadio);
+    CPVRManager::GetClients()->GetChannelGroups(&groupsTmp, &error);
+    UpdateGroupsEntries(groupsTmp);
+  }
 
   /* only update the internal group if group syncing is disabled */
-  unsigned int iUpdateGroups = g_guiSettings.GetBool("pvrmanager.syncchannelgroups") ? size() : 1;
+  unsigned int iUpdateGroups = !bChannelsOnly && g_guiSettings.GetBool("pvrmanager.syncchannelgroups") ? size() : 1;
 
   /* system groups are updated first, so new channels are added before anything is done with user defined groups */
   for (unsigned int iGroupPtr = 0; iGroupPtr < iUpdateGroups; iGroupPtr++)

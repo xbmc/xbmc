@@ -36,9 +36,10 @@ private:
 protected:
   /*!
    * @brief Update the contents of all the groups in this container.
+   * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
    * @return True if the update was successful, false otherwise.
    */
-  bool Update(void);
+  bool Update(bool bChannelsOnly = false);
 
 public:
   /*!

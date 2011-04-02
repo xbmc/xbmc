@@ -39,10 +39,10 @@ CPVRChannelGroupsContainer::~CPVRChannelGroupsContainer(void)
   delete m_groupsTV;
 }
 
-bool CPVRChannelGroupsContainer::Update(void)
+bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
 {
-  return m_groupsRadio->Update() &&
-         m_groupsTV->Update();
+  return m_groupsRadio->Update(bChannelsOnly) &&
+         m_groupsTV->Update(bChannelsOnly);
 }
 
 bool CPVRChannelGroupsContainer::Load(void)
