@@ -339,4 +339,8 @@ public:
   virtual unsigned int Size() const { return size(); }
 
   int GetId(void) const { return m_iGroupId; }
+
+  virtual bool HasChangedChannels(void) const;
+
+  virtual bool HasNewChannels(void) const;
 };

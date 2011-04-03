@@ -225,6 +225,8 @@ public:
    * @return True if this channel has no file or stream name
    */
   bool IsEmpty() const;
+
+  bool IsChanged() const { return m_bChanged; }
   //@}
 
   /*! @name Client related channel methods

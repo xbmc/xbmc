@@ -633,3 +633,35 @@ void CPVRChannelGroup::Renumber(void)
     at(ptr).iChannelNumber = ++iChannelNumber;
   }
 }
+
+bool CPVRChannelGroup::HasChangedChannels(void) const
+{
+  bool bReturn = false;
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    if (at(iChannelPtr).channel->IsChanged())
+    {
+      bReturn = true;
+      break;
+    }
+  }
+
+  return bReturn;
+}
+
+bool CPVRChannelGroup::HasNewChannels(void) const
+{
+  bool bReturn = false;
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    if (at(iChannelPtr).channel->ChannelID() <= 0)
+    {
+      bReturn = true;
+      break;
+    }
+  }
+
+  return bReturn;
+}

@@ -374,10 +374,32 @@ bool CPVRChannelGroupInternal::Persist(void)
 
   CLog::Log(LOGDEBUG, "CPVRChannelGroupInternal - %s - persisting %d channels",
       __FUNCTION__, (int) size());
-  bReturn = true;
-  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+
+  if (HasNewChannels())
   {
-    bReturn = at(iChannelPtr).channel->Persist() && bReturn;
+    CLog::Log(LOGDEBUG, "CPVRChannelGroupInternal - %s - group '%s' has new channels. writing changes directly",
+        __FUNCTION__, GroupName().c_str());
+    /* write directly to get channel ids */
+    bReturn = true;
+    for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+    {
+      if (!at(iChannelPtr).channel->Persist())
+      {
+        CLog::Log(LOGERROR, "CPVRChannelGroupInternal - %s - failed to persist channel '%s'",
+            __FUNCTION__, at(iChannelPtr).channel->ChannelName().c_str());
+        bReturn = false;
+      }
+    }
+  }
+  else
+  {
+    /* queue queries */
+    for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+      at(iChannelPtr).channel->Persist(true);
+    /* and commit them */
+    bReturn = database->CommitInsertQueries();
+    if (!bReturn)
+      CLog::Log(LOGERROR, "CPVRChannelGroupInternal - %s - failed to persist channels", __FUNCTION__);
   }
 
   if (bReturn)
