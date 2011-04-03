@@ -583,8 +583,8 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
 
     vector<pair<int,int> > chosenSongIDs;
     GetRandomSelection(songIDs, iMissingSongs, chosenSongIDs);
-    CStdString sqlWhereMusic = "where songview.idsong in (";
-    CStdString sqlWhereVideo = "where idmvideo in (";
+    CStdString sqlWhereMusic = "where songview.idSong in (";
+    CStdString sqlWhereVideo = "where idMVideo in (";
 
     for (vector< pair<int,int> >::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); it++)
     {
@@ -633,13 +633,13 @@ pair<CStdString,CStdString> CPartyModeManager::GetWhereClauseWithHistory() const
   if (m_history.size())
   {
     if (m_strCurrentFilterMusic.IsEmpty())
-      historyWhereMusic = "where songview.idsong not in (";
+      historyWhereMusic = "where songview.idSong not in (";
     else
-      historyWhereMusic = m_strCurrentFilterMusic + " and songview.idsong not in (";
+      historyWhereMusic = m_strCurrentFilterMusic + " and songview.idSong not in (";
     if (m_strCurrentFilterVideo.IsEmpty())
-      historyWhereVideo = "where idmvideo not in (";
+      historyWhereVideo = "where idMVideo not in (";
     else
-      historyWhereVideo = m_strCurrentFilterVideo + " and idmvideo not in (";
+      historyWhereVideo = m_strCurrentFilterVideo + " and idMVideo not in (";
 
     for (unsigned int i = 0; i < m_history.size(); i++)
     {

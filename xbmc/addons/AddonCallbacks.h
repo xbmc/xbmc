@@ -183,6 +183,7 @@ typedef void (*PVRRecording)(void *addonData, const char *Name, const char *File
 typedef void (*PVRTriggerChannelUpdate)(void *addonData);
 typedef void (*PVRTriggerTimerUpdate)(void *addonData);
 typedef void (*PVRTriggerRecordingUpdate)(void *addonData);
+typedef void (*PVRTriggerChannelGroupsUpdate)(void *addonData);
 
 typedef void (*PVRTransferChannelGroup)(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP *group);
 typedef void (*PVRTransferChannelGroupMember)(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member);
@@ -201,6 +202,7 @@ typedef struct CB_PVRLib
   PVRTriggerChannelUpdate       TriggerChannelUpdate;
   PVRTriggerTimerUpdate         TriggerTimerUpdate;
   PVRTriggerRecordingUpdate     TriggerRecordingUpdate;
+  PVRTriggerChannelGroupsUpdate TriggerChannelGroupsUpdate;
   PVRFreeDemuxPacket            FreeDemuxPacket;
   PVRAllocateDemuxPacket        AllocateDemuxPacket;
   PVRTransferChannelGroup       TransferChannelGroup;

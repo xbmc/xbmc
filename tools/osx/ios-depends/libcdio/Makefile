@@ -20,9 +20,6 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-export CFLAGS+=-undefined dynamic_lookup
-export CXXFLAGS+=-undefined dynamic_lookup
-export LDFLAGS+=-Wl,-read_only_relocs,suppress
 CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared=yes \
   --without-cd-drive --without-cd-info --without-cd-read --without-cd-paranoia --without-cdda-player --without-iso-info --without-iso-read
 
@@ -52,7 +49,7 @@ $(LIBDYLIB): $(SOURCE)
 
 clean:
 	make -C $(SOURCE) clean
-	rm  .installed
+	rm -f .installed
 
 distclean::
 	rm -rf $(SOURCE) .installed

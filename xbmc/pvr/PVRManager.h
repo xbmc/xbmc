@@ -235,6 +235,11 @@ public:
   void TriggerChannelsUpdate(void);
 
   /*!
+   * @brief Let the background thread update the channel groups list.
+   */
+  void TriggerChannelGroupsUpdate(void);
+
+  /*!
    * @brief Update the channel that is currently active.
    * @param item The new channel.
    * @return True if it was updated correctly, false otherwise.
@@ -387,29 +392,30 @@ private:
 
   /** @name General PVRManager data */
   //@{
-  static CPVRManager *            m_instance;                 /*!< singleton instance */
+  static CPVRManager *            m_instance;                    /*!< singleton instance */
   CFileItem *                     m_currentFile;
-  CPVRChannelGroupsContainer *    m_channelGroups;            /*!< pointer to the channel groups container */
-  CPVREpgContainer *              m_epg;                      /*!< pointer to the EPG container */
-  CPVRRecordings *                m_recordings;               /*!< pointer to the recordings container */
-  CPVRTimers *                    m_timers;                   /*!< pointer to the timers container */
-  CPVRClients *                   m_addons;                   /*!< pointer to the pvr addon container */
-  CPVRDatabase                    m_database;                 /*!< the database for all PVR related data */
-  CCriticalSection                m_critSection;              /*!< critical section for all changes to this class */
-  CCriticalSection                m_critSectionTriggers;      /*!< critical section for triggers */
-  CCriticalSection                m_critSectionAddons;        /*!< critical section for addons */
-  bool                            m_bFirstStart;              /*!< true when the PVR manager was started first, false otherwise */
+  CPVRChannelGroupsContainer *    m_channelGroups;               /*!< pointer to the channel groups container */
+  CPVREpgContainer *              m_epg;                         /*!< pointer to the EPG container */
+  CPVRRecordings *                m_recordings;                  /*!< pointer to the recordings container */
+  CPVRTimers *                    m_timers;                      /*!< pointer to the timers container */
+  CPVRClients *                   m_addons;                      /*!< pointer to the pvr addon container */
+  CPVRDatabase                    m_database;                    /*!< the database for all PVR related data */
+  CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class */
+  CCriticalSection                m_critSectionTriggers;         /*!< critical section for triggers */
+  CCriticalSection                m_critSectionAddons;           /*!< critical section for addons */
+  bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
   bool                            m_bLoaded;
 
-  bool                            m_bTriggerChannelsUpdate;   /*!< set to true to let the background thread update the channels list */
-  bool                            m_bTriggerRecordingsUpdate; /*!< set to true to let the background thread update the recordings list */
-  bool                            m_bTriggerTimersUpdate;     /*!< set to true to let the background thread update the timer list */
+  bool                            m_bTriggerChannelsUpdate;      /*!< set to true to let the background thread update the channels list */
+  bool                            m_bTriggerRecordingsUpdate;    /*!< set to true to let the background thread update the recordings list */
+  bool                            m_bTriggerTimersUpdate;        /*!< set to true to let the background thread update the timer list */
+  bool                            m_bTriggerChannelGroupsUpdate; /*!< set to true to let the background thread update the channel groups list */
   //@}
 
   /** @name GUIInfoManager data */
   //@{
-  DWORD                           m_recordingToggleStart;   /* Time to toggle currently running pvr recordings */
-  unsigned int                    m_recordingToggleCurrent; /* The current item showed by the GUIInfoManager */
+  DWORD                           m_recordingToggleStart;        /*!< time to toggle currently running pvr recordings */
+  unsigned int                    m_recordingToggleCurrent;      /*!< the current item showed by the GUIInfoManager */
 
   std::vector<CPVRTimerInfoTag *> m_NowRecording;
   const CPVRTimerInfoTag *        m_NextRecording;

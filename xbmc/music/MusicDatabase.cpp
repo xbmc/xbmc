@@ -898,7 +898,7 @@ int CMusicDatabase::GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist,
 {
   try
   {
-    CStdString strSQL=PrepareSQL("select idsong from songview "
+    CStdString strSQL=PrepareSQL("select idSong from songview "
                                 "where strArtist like '%s' and strAlbum like '%s' and "
                                 "strTitle like '%s'",strArtist.c_str(),strAlbum.c_str(),strTitle.c_str());
 
@@ -1159,7 +1159,7 @@ bool CMusicDatabase::GetArtistInfo(int idArtist, CArtist &info, bool needAll)
       return false; // not in the database
 
     CStdString strSQL=PrepareSQL("select * from artistinfo "
-                                "join artist on artist.idartist=artistinfo.idArtist "
+                                "join artist on artist.idArtist=artistinfo.idArtist "
                                 "where artistinfo.idArtist = %i"
                                 , idArtist);
 
@@ -1199,7 +1199,7 @@ bool CMusicDatabase::DeleteArtistInfo(int idArtist)
     if (idArtist == -1)
       return false; // not in the database
 
-    CStdString strSQL = PrepareSQL("delete from artistinfo where idartist=%i",idArtist);
+    CStdString strSQL = PrepareSQL("delete from artistinfo where idArtist=%i",idArtist);
 
     if (!m_pDS2->exec(strSQL.c_str()))
       return false;
@@ -1338,7 +1338,7 @@ bool CMusicDatabase::GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItem
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idalbum order by sum(song.iTimesPlayed) desc limit 100) order by albumview.idalbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idalbum order by sum(song.iTimesPlayed) desc limit 100)");
+    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idAlbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idAlbum order by sum(song.iTimesPlayed) desc limit 100) order by albumview.idAlbum in (select song.idAlbum from song where song.iTimesPlayed>0 group by idAlbum order by sum(song.iTimesPlayed) desc limit 100)");
     CLog::Log(LOGDEBUG,"GetTop100AlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1413,7 +1413,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in (select distinct albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
+    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idAlbum in (select distinct albumview.idAlbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyPlayedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1490,7 +1490,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select songview.* from albumview join songview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in ( select idAlbum from albumview order by idAlbum desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
+    strSQL.Format("select songview.* from albumview join songview on (songview.idAlbum = albumview.idAlbum) where albumview.idAlbum in ( select idAlbum from albumview order by idAlbum desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyAddedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1897,7 +1897,7 @@ bool CMusicDatabase::CleanupSongs()
     int iLIMIT = 1000;
     for (int i=0;;i+=iLIMIT)
     {
-      CStdString strSQL=PrepareSQL("select song.idsong from song order by song.idsong limit %i offset %i",iLIMIT,i);
+      CStdString strSQL=PrepareSQL("select song.idSong from song order by song.idSong limit %i offset %i",iLIMIT,i);
       if (!m_pDS->query(strSQL.c_str())) return false;
       int iRowsFound = m_pDS->num_rows();
       // keep going until no rows are left!
@@ -3269,7 +3269,7 @@ unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<pair<
     if (NULL == m_pDB.get()) return 0;
     if (NULL == m_pDS.get()) return 0;
 
-    CStdString strSQL = "select idsong from songview " + strWhere;
+    CStdString strSQL = "select idSong from songview " + strWhere;
     if (!m_pDS->query(strSQL.c_str())) return 0;
     songIDs.clear();
     if (m_pDS->num_rows() == 0)
@@ -3501,7 +3501,7 @@ int CMusicDatabase::GetAlbumByName(const CStdString& strAlbum, const CStdString&
     if (strArtist.IsEmpty())
       strSQL=PrepareSQL("select idAlbum from album where album.strAlbum like '%s'", strAlbum.c_str());
     else
-      strSQL=PrepareSQL("select album.idAlbum from album join artist on artist.idartist = album.idartist where album.strAlbum like '%s' and artist.strArtist like '%s'", strAlbum.c_str(),strArtist.c_str());
+      strSQL=PrepareSQL("select album.idAlbum from album join artist on artist.idArtist = album.idArtist where album.strAlbum like '%s' and artist.strArtist like '%s'", strAlbum.c_str(),strArtist.c_str());
     // run query
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
@@ -4085,7 +4085,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
     if (NULL == m_pDS2.get()) return;
 
     // find all albums
-    CStdString sql = "select albumview.*,albuminfo.strImage,albuminfo.idalbuminfo from albuminfo "
+    CStdString sql = "select albumview.*,albuminfo.strImage,albuminfo.idAlbumInfo from albuminfo "
                      "join albumview on albuminfo.idAlbum=albumview.idAlbum "
                      "join genre on albuminfo.idGenre=genre.idGenre";
 
@@ -4173,7 +4173,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
 
     // find all artists
     sql = "select * from artistinfo "
-          "join artist on artist.idartist=artistinfo.idArtist";
+          "join artist on artist.idArtist=artistinfo.idArtist";
 
     // needed due to getartistpath
     auto_ptr<dbiplus::Dataset> pDS;

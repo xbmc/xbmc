@@ -25,10 +25,10 @@
 #include <initguid.h>
 #include <Mmreg.h>
 #include "threads/SingleLock.h"
-#include "SystemInfo.h"
+#include "utils/SystemInfo.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 
 #pragma comment(lib, "dxguid.lib")
 

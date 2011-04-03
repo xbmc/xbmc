@@ -53,26 +53,51 @@ void CPVRChannelGroups::Clear(void)
   clear();
 }
 
-bool CPVRChannelGroups::Update(const CPVRChannelGroup &group)
+bool CPVRChannelGroups::GetGroupsFromClients(void)
+{
+  /* get new groups from add-ons */
+  PVR_ERROR error;
+  CPVRChannelGroups groupsTmp(m_bRadio);
+  CPVRManager::GetClients()->GetChannelGroups(&groupsTmp, &error);
+  return UpdateGroupsEntries(groupsTmp);
+}
+
+bool CPVRChannelGroups::UpdateFromClient(const CPVRChannelGroup &group)
+{
+  CPVRChannelGroup *newGroup = new CPVRChannelGroup(group.IsRadio(), -1, group.GroupName(), group.SortOrder());
+  push_back(newGroup);
+
+  return true;
+}
+
+bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
 {
   CSingleLock lock(m_critSection);
-  int iIndex = group.GroupID() > 0 ? GetIndexForGroupID(group.GroupID()) : GetIndexForGroupName(group.GroupName());
+
+  int iIndex = -1;
+  /* try to find the group by id */
+  if (group.GroupID() > 0)
+    iIndex = GetIndexForGroupID(group.GroupID());
+  /* try to find the group by name if we didn't find it yet */
+  if (iIndex < 0)
+    iIndex = GetIndexForGroupName(group.GroupName());
 
   if (iIndex < 0)
   {
-    CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - new %s channel group '%s'",
-        __FUNCTION__, m_bRadio ? "radio" : "TV", group.GroupName().c_str());
+    CPVRChannelGroup *newGroup = new CPVRChannelGroup(m_bRadio, group.GroupID(), group.GroupName(), group.SortOrder());
+    if (bSaveInDb)
+      newGroup->Persist();
 
-    push_back(new CPVRChannelGroup(m_bRadio, group.GroupID(), group.GroupName(), group.SortOrder()));
+    push_back(newGroup);
   }
   else
   {
-    CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - updating %s channel group '%s'",
-        __FUNCTION__, m_bRadio ? "radio" : "TV", group.GroupName().c_str());
-
     at(iIndex)->SetGroupID(group.GroupID());
     at(iIndex)->SetGroupName(group.GroupName());
     at(iIndex)->SetSortOrder(group.SortOrder());
+
+    if (bSaveInDb)
+      at(iIndex)->Persist();
   }
 
   return true;
@@ -102,7 +127,7 @@ const CPVRChannelGroup *CPVRChannelGroups::GetByName(const CStdString &strName) 
 
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
-    if (at(iGroupPtr)->GroupName() == strName)
+    if (at(iGroupPtr)->GroupName().Equals(strName))
     {
       group = at(iGroupPtr);
       break;
@@ -155,19 +180,79 @@ void CPVRChannelGroups::RemoveFromAllGroups(CPVRChannel *channel)
   }
 }
 
-bool CPVRChannelGroups::Update(void)
+bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
 {
   bool bReturn = true;
 
-  /* get new groups from add-ons */
-  PVR_ERROR error;
-  CPVRManager::GetClients()->GetChannelGroups(this, &error);
+  if (!bChannelsOnly)
+    GetGroupsFromClients();
+
+  /* only update the internal group if group syncing is disabled */
+  unsigned int iUpdateGroups = !bChannelsOnly && g_guiSettings.GetBool("pvrmanager.syncchannelgroups") ? size() : 1;
 
   /* system groups are updated first, so new channels are added before anything is done with user defined groups */
-  for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
+  for (unsigned int iGroupPtr = 0; iGroupPtr < iUpdateGroups; iGroupPtr++)
     bReturn = at(iGroupPtr)->Update() && bReturn;
 
   return bReturn;
+}
+
+bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
+{
+  /* go through the groups list and check for new groups */
+  for (unsigned int iGroupPtr = 0; iGroupPtr < groups.size(); iGroupPtr++)
+  {
+    CPVRChannelGroup *group = groups.at(iGroupPtr);
+
+    /* check if this group is present in this container */
+    CPVRChannelGroup *existingGroup = (CPVRChannelGroup *) GetByName(group->GroupName());
+    if (existingGroup == NULL)
+    {
+      CPVRChannelGroup *newGroup = new CPVRChannelGroup(m_bRadio);
+      newGroup->SetGroupName(group->GroupName());
+      newGroup->SetSortOrder(group->SortOrder());
+
+      if (newGroup->Persist())
+      {
+        push_back(newGroup);
+        CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - new %s channel group '%s', id %d",
+            __FUNCTION__, m_bRadio ? "radio" : "TV", newGroup->GroupName().c_str(), newGroup->GroupID());
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "PVRChannelGroups - %s - couldn't persist new %s channel group '%s'",
+            __FUNCTION__, m_bRadio ? "radio" : "TV", newGroup->GroupName().c_str());
+      }
+    }
+  }
+
+  return true;
+}
+
+bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
+{
+  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  if (!database->Open())
+  {
+    CLog::Log(LOGERROR, "PVRChannelGroups - %s - cannot open the database", __FUNCTION__);
+    return false;
+  }
+
+  /* load the other groups from the database */
+  database->GetChannelGroupList(*this, m_bRadio);
+  int iSize = size();
+  CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d user defined groups %s fetched from the database",
+      __FUNCTION__, iSize - 1, m_bRadio ? "radio" : "TV");
+
+  GetGroupsFromClients();
+  CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d user defined groups %s fetched from clients",
+      __FUNCTION__, size() - iSize - 1, m_bRadio ? "radio" : "TV");
+
+  /* load group members */
+  for (unsigned int iGroupPtr = 1; iGroupPtr < size(); iGroupPtr++)
+    at(iGroupPtr)->Load();
+
+  return true;
 }
 
 bool CPVRChannelGroups::Load(void)
@@ -177,33 +262,25 @@ bool CPVRChannelGroups::Load(void)
 
   Clear();
 
-  /* create internal channel group */
+  /* create and load the internal channel group */
   CPVRChannelGroupInternal *internalChannels = new CPVRChannelGroupInternal(m_bRadio);
   push_back(internalChannels);
   internalChannels->Load();
 
   /* load the other groups from the database */
-  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
-  if (database->Open())
-  {
-    database->GetChannelGroupList(*this, m_bRadio);
-
-    /* load group members */
-    for (unsigned int iGroupPtr = 1; iGroupPtr < size(); iGroupPtr++)
-      at(iGroupPtr)->Load();
-
-    database->Close();
-  }
+  LoadUserDefinedChannelGroups();
 
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d %s channel groups loaded",
       __FUNCTION__, (int) size(), m_bRadio ? "radio" : "TV");
 
-  return true;
+  return size() > 0;
 }
 
 bool CPVRChannelGroups::PersistAll(void)
 {
   bool bReturn = true;
+
+  CLog::Log(LOGDEBUG, "CPVRChannelGroups - %s - persisting all changes in channel groups", __FUNCTION__);
 
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
     bReturn = at(iGroupPtr)->Persist() && bReturn;

@@ -521,6 +521,7 @@ void cHTSPSession::ParseTagUpdate(htsmsg_t* msg, STags &tags)
   XBMC->Log(LOG_DEBUG, "%s - id:%u, name:'%s', icon:'%s'"
       , __FUNCTION__, id, name ? name : "(null)", icon ? icon : "(null)");
 
+  PVR->TriggerChannelGroupsUpdate();
 }
 
 void cHTSPSession::ParseTagRemove(htsmsg_t* msg, STags &tags)
@@ -535,6 +536,8 @@ void cHTSPSession::ParseTagRemove(htsmsg_t* msg, STags &tags)
   XBMC->Log(LOG_DEBUG, "%s - id:%u", __FUNCTION__, id);
 
   tags.erase(id);
+
+  PVR->TriggerChannelGroupsUpdate();
 }
 
 bool cHTSPSession::ParseSignalStatus (htsmsg_t* msg, SQuality &quality)

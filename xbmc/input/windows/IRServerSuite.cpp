@@ -22,7 +22,7 @@
 #include "IRServerSuite.h"
 #include "IrssMessage.h"
 #include "input/ButtonTranslator.h"
-#include "log.h"
+#include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/TimeUtils.h"
 #include <Ws2tcpip.h>

@@ -103,17 +103,6 @@ void CEpgContainer::Start(void)
   LoadSettings();
   g_guiSettings.AddObserver(this);
 
-  if (m_database.Open())
-  {
-    m_database.DeleteOldEpgEntries();
-    m_database.Get(this);
-    m_database.Close();
-  }
-
-  AutoCreateTablesHook();
-
-  lock.Leave();
-
   Create();
   SetName("XBMC EPG thread");
   SetPriority(-1);
@@ -141,6 +130,15 @@ void CEpgContainer::Process(void)
   time_t iNow       = 0;
   m_iLastEpgUpdate  = 0;
   CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgCleanup);
+
+  if (m_database.Open())
+  {
+    m_database.DeleteOldEpgEntries();
+    m_database.Get(this);
+    m_database.Close();
+  }
+
+  AutoCreateTablesHook();
 
   bool bInitialLoadSucess = UpdateEPG(true);
 
@@ -352,6 +350,10 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     bool bCurrent = m_bDatabaseLoaded || m_bIgnoreDbForClient ?
         at(iEpgPtr)->Update(start, end, m_iUpdateTime, !m_bIgnoreDbForClient) :
         at(iEpgPtr)->Load() && bUpdateSuccess;
+
+    /* try to update the table from clients if nothing was loaded from the db */
+    if (!m_bDatabaseLoaded && !m_bIgnoreDbForClient && !bCurrent)
+      bCurrent = at(iEpgPtr)->Update(start, end, m_iUpdateTime, !m_bIgnoreDbForClient);
 
     if (!bCurrent && m_bDatabaseLoaded)
       CLog::Log(LOGERROR, "EpgContainer - %s - failed to update table '%s'",

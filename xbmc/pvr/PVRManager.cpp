@@ -164,7 +164,7 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
     const CPVRChannelGroup *group = GetPlayingGroup(currentChannel.IsRadio());
     if (group)
     {
-      const CPVRChannel *newChannel = bUp ? group->GetByChannelUp(&currentChannel) : group->GetByChannelDown(&currentChannel);
+      const CPVRChannel *newChannel = bUp ? group->GetByChannelUp(currentChannel) : group->GetByChannelDown(currentChannel);
       if (PerformChannelSwitch(*newChannel, bPreview))
       {
         *iNewChannelNumber = newChannel->ChannelNumber();
@@ -304,6 +304,7 @@ void CPVRManager::ResetProperties(void)
   m_bTriggerChannelsUpdate      = false;
   m_bTriggerRecordingsUpdate    = false;
   m_bTriggerTimersUpdate        = false;
+  m_bTriggerChannelGroupsUpdate = false;
   m_currentFile                 = NULL;
   m_NextRecording               = NULL;
   m_strActiveTimerTitle         = "";
@@ -369,19 +370,21 @@ void CPVRManager::UpdateRecordings(void)
 void CPVRManager::UpdateChannels(void)
 {
   CSingleLock lock(m_critSectionTriggers);
-  if (!m_bTriggerChannelsUpdate)
+  if (!m_bTriggerChannelsUpdate && !m_bTriggerChannelGroupsUpdate)
     return;
   lock.Leave();
 
-  CLog::Log(LOGDEBUG, "PVRManager - %s - updating channel list", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "PVRManager - %s - updating %s list",
+      __FUNCTION__, m_bTriggerChannelGroupsUpdate ? "channels" : "channel groups");
 
-  m_channelGroups->Update();
+  m_channelGroups->Update(!m_bTriggerChannelGroupsUpdate);
   UpdateTimersCache();
   UpdateWindow(PVR_WINDOW_CHANNELS_TV);
   UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
 
   lock.Enter();
-  m_bTriggerChannelsUpdate = false;
+  m_bTriggerChannelsUpdate      = false;
+  m_bTriggerChannelGroupsUpdate = false;
   lock.Leave();
 }
 
@@ -411,16 +414,16 @@ void CPVRManager::Process()
 
       /* load all channels and groups */
       m_channelGroups->Load();
+      m_bTriggerChannelsUpdate = false;
+      m_bTriggerChannelGroupsUpdate = false;
 
       /* get timers from the backends */
       m_timers->Load();
+      m_bTriggerTimersUpdate = false;
 
       /* get recordings from the backend */
       m_recordings->Load();
-
-      /* start the EPG thread */
-      m_epg->AddObserver(this);
-      m_epg->Start();
+      m_bTriggerRecordingsUpdate = false;
     }
 
     /* check if there are (still) any enabled addons */
@@ -432,6 +435,10 @@ void CPVRManager::Process()
   }
 
   m_bLoaded = true;
+
+  /* start the EPG thread */
+  m_epg->AddObserver(this);
+  m_epg->Start();
 
   /* continue last watched channel after first startup */
   if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
@@ -747,6 +754,16 @@ void CPVRManager::TriggerChannelsUpdate(void)
   {
     m_bTriggerChannelsUpdate = true;
     CLog::Log(LOGDEBUG, "PVRManager - %s - channels update scheduled", __FUNCTION__);
+  }
+}
+
+void CPVRManager::TriggerChannelGroupsUpdate(void)
+{
+  CSingleLock lock(m_critSectionTriggers);
+  if (!m_bTriggerChannelGroupsUpdate)
+  {
+    m_bTriggerChannelGroupsUpdate = true;
+    CLog::Log(LOGDEBUG, "PVRManager - %s - channel groups update scheduled", __FUNCTION__);
   }
 }
 

@@ -20,8 +20,8 @@
  */
 #include "Win32StorageProvider.h"
 #include "WIN32Util.h"
-#include "LocalizeStrings.h"
-#include "SpecialProtocol.h"
+#include "guilib/LocalizeStrings.h"
+#include "filesystem/SpecialProtocol.h"
 
 bool CWin32StorageProvider::event = false;
 

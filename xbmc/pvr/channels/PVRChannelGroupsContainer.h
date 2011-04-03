@@ -36,9 +36,10 @@ private:
 protected:
   /*!
    * @brief Update the contents of all the groups in this container.
+   * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
    * @return True if the update was successful, false otherwise.
    */
-  bool Update(void);
+  bool Update(bool bChannelsOnly = false);
 
 public:
   /*!
@@ -159,6 +160,8 @@ public:
    * @return The channel or NULL if it wasn't found.
    */
   const CPVRChannel *GetByChannelIDFromAll(int iChannelID);
+
+  const CPVRChannel *GetByClientFromAll(unsigned int iClientId, unsigned int iChannelUid);
 
   /*!
    * @brief Get a channel given it's unique ID.

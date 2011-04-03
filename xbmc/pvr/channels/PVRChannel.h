@@ -50,6 +50,7 @@ private:
   CStdString m_strChannelName;          /*!< the name for this channel used by XBMC */
   bool       m_bIsVirtual;              /*!< true if this channel is marked as virtual, false if not */
   time_t     m_iLastWatched;            /*!< last time channel has been watched */
+  bool       m_bChanged;                /*!< true if anything in this entry was changed that needs to be persisted */
   //@}
 
   /*! @name EPG related channel data
@@ -224,6 +225,8 @@ public:
    * @return True if this channel has no file or stream name
    */
   bool IsEmpty() const;
+
+  bool IsChanged() const { return m_bChanged; }
   //@}
 
   /*! @name Client related channel methods
@@ -293,10 +296,9 @@ public:
    * It will only be changed in this tag and won't change anything on the client.
    *
    * @param strClientChannelName The new channel name
-   * @param bSaveInDb Save in the database or not.
    * @return True if the something changed, false otherwise.
    */
-  bool SetClientChannelName(const CStdString &strClientChannelName, bool bSaveInDb = false);
+  bool SetClientChannelName(const CStdString &strClientChannelName);
 
   /*!
    * @brief The stream input type

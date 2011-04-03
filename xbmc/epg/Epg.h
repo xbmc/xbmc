@@ -218,6 +218,13 @@ public:
   virtual const CEpgInfoTag *InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) const;
 
   /*!
+   * @brief Get a tag given it's id.
+   * @param iTagId The id of the tag.
+   * @return The requested tag or NULL if it wasn't found.
+   */
+  virtual const CEpgInfoTag *GetTagById(int iTagId) const;
+
+  /*!
    * @brief Update an entry in this EPG.
    * @param tag The tag to update.
    * @param bUpdateDatabase If set to true, this event will be persisted in the database.

@@ -38,7 +38,7 @@
 #include "../../../VideoRenderers/WinRenderer.h"
 #include "settings/Settings.h"
 #include "boost/shared_ptr.hpp"
-#include "AutoPtrHandle.h"
+#include "utils/AutoPtrHandle.h"
 #include "settings/AdvancedSettings.h"
 
 #define ALLOW_ADDING_SURFACES 0

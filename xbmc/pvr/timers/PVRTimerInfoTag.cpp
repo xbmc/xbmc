@@ -78,6 +78,13 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientI
   m_channel            = NULL;
   m_strFileNameAndPath.Format("pvr://client%i/timers/%i", m_iClientId, m_iClientIndex);
 
+  if (timer.iEpgUid > 0)
+  {
+    CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByClientFromAll(iClientId, timer.iClientChannelUid);
+    if (channel)
+      m_epgInfo = (CPVREpgInfoTag *) channel->GetEPG()->GetTagById(timer.iEpgUid);
+  }
+
   UpdateSummary();
 }
 
@@ -279,9 +286,11 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
   m_bIsRadio          = tag.m_bIsRadio;
   m_iMarginStart      = tag.m_iMarginStart;
   m_iMarginEnd        = tag.m_iMarginEnd;
+  m_epgInfo           = tag.m_epgInfo;
 
   /* try to find an epg event */
-  UpdateEpgEvent();
+  if (m_epgInfo == NULL)
+    UpdateEpgEvent();
 
   return true;
 }

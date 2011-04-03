@@ -21,7 +21,7 @@
  */
 
 
-#include "IDirectory.h"
+#include "filesystem/IDirectory.h"
 #include "URL.h"
 
 namespace XFILE

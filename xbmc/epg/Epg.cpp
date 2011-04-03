@@ -255,6 +255,24 @@ const CEpgInfoTag *CEpg::InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) 
   return returnTag;
 }
 
+const CEpgInfoTag *CEpg::GetTagById(int iTagId) const
+{
+  CEpgInfoTag *returnTag = NULL;
+
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+  {
+    if (at(iTagPtr)->m_iBroadcastId == iTagId)
+    {
+      returnTag = at(iTagPtr);
+      break;
+    }
+  }
+
+  return returnTag;
+}
+
 const CEpgInfoTag *CEpg::InfoTagAround(CDateTime Time) const
 {
   CEpgInfoTag *returnTag = NULL;

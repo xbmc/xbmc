@@ -47,13 +47,18 @@ private:
    */
   int GetIndexForGroupID(int iGroupId) const;
   int GetIndexForGroupName(const CStdString &strName) const;
+  bool LoadUserDefinedChannelGroups(void);
+  bool GetGroupsFromClients(void);
 
 protected:
   /*!
    * @brief Update the contents of the groups in this container.
+   * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
    * @return True if the update was successful, false otherwise.
    */
-  bool Update(void);
+  bool Update(bool bChannelsOnly = false);
+
+  bool UpdateGroupsEntries(const CPVRChannelGroups &groups);
 
 public:
   /*!
@@ -77,10 +82,11 @@ public:
   /*!
    * @brief Update a group or add it if it's not in here yet.
    * @param group The group to update.
+   * @param bSaveInDb True to save the changes in the db.
    * @return True if the group was added or update successfully, false otherwise.
    */
-  bool Update(const CPVRChannelGroup &group);
-  bool UpdateFromClient(const CPVRChannelGroup &group) { return Update(group); }
+  bool Update(const CPVRChannelGroup &group, bool bSaveInDb = false);
+  bool UpdateFromClient(const CPVRChannelGroup &group);
 
   /*!
    * @brief Get a pointer to a channel group given it's ID.

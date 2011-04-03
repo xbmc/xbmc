@@ -194,6 +194,32 @@ CLinuxRendererGL::~CLinuxRendererGL()
   delete m_dllSwScale;
 }
 
+bool CLinuxRendererGL::ValidateRenderer()
+{
+  if (!m_bConfigured)
+    return false;
+
+  // if its first pass, just init textures and return
+  if (ValidateRenderTarget())
+    return false;
+
+  // this needs to be checked after texture validation
+  if (!m_bImageReady)
+    return false;
+
+  int index = m_iYV12RenderBuffer;
+  YUVBUFFER& buf =  m_buffers[index];
+
+  if (!buf.fields[FIELD_FULL][0].id)
+    return false;
+
+  if (buf.image.flags==0)
+    return false;
+
+  return true;
+}
+
+
 void CLinuxRendererGL::ManageTextures()
 {
   m_NumYV12Buffers = 2;
@@ -536,22 +562,15 @@ void CLinuxRendererGL::Update(bool bPauseDrawing)
 
 void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  if (!m_bConfigured) return;
-
-  // if its first pass, just init textures and return
-  if (ValidateRenderTarget())
-    return;
-
-  // this needs to be checked after texture validation
-  if (!m_bImageReady) return;
-
   int index = m_iYV12RenderBuffer;
-  YUVBUFFER& buf =  m_buffers[index];
 
-  if (!buf.fields[FIELD_FULL][0].id) return ;
+  if (!ValidateRenderer())
+  {
+    if (clear) //if clear is set, we're expected to overwrite all backbuffer pixels, even if we have nothing to render
+      ClearBackBuffer();
 
-  if (buf.image.flags==0)
     return;
+  }
 
   ManageDisplay();
   ManageTextures();
@@ -573,7 +592,13 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     m_iLastRenderBuffer = index;
 
   if (clear)
-    DrawBlackBars();
+  {
+    //draw black bars when video is not transparent, clear the entire backbuffer when it is
+    if (alpha == 255)
+      DrawBlackBars();
+    else
+      ClearBackBuffer();
+  }
 
   if (alpha<255)
   {
@@ -607,6 +632,14 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   glFlush();
 
   g_graphicsContext.EndPaint();
+}
+
+void CLinuxRendererGL::ClearBackBuffer()
+{
+  //set the entire backbuffer to black
+  glClearColor(m_clearColour, m_clearColour, m_clearColour, 0);
+  glClear(GL_COLOR_BUFFER_BIT);
+  glClearColor(0,0,0,0);
 }
 
 //draw black bars around the video quad, this is more efficient than glClear()

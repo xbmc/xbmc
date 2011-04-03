@@ -21,7 +21,7 @@
 
 #include <DelayImp.h>
 #include "DllPaths_win32.h"
-#include "SpecialProtocol.h"
+#include "filesystem/SpecialProtocol.h"
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
 
@@ -52,7 +52,7 @@ FARPROC WINAPI delayHookFailureFunc (unsigned dliNotify, PDelayLoadInfo pdli)
   switch (dliNotify)
   {
     case dliFailLoadLib:
-      g_application.Stop();
+      g_application.Stop(1);
       CStdString strError;
       strError.Format("Uh oh, can't load %s, exiting.", pdli->szDll);
       MessageBox(NULL, strError.c_str(), "XBMC: Fatal Error", MB_OK|MB_ICONERROR);

@@ -39,10 +39,10 @@ CPVRChannelGroupsContainer::~CPVRChannelGroupsContainer(void)
   delete m_groupsTV;
 }
 
-bool CPVRChannelGroupsContainer::Update(void)
+bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
 {
-  return m_groupsRadio->Update() &&
-         m_groupsTV->Update();
+  return m_groupsRadio->Update(bChannelsOnly) &&
+         m_groupsTV->Update(bChannelsOnly);
 }
 
 bool CPVRChannelGroupsContainer::Load(void)
@@ -230,6 +230,18 @@ const CPVRChannel *CPVRChannelGroupsContainer::GetByChannelIDFromAll(int iChanne
 
   if (channel == NULL)
     channel = GetGroupAllRadio()->GetByChannelID(iChannelID);
+
+  return channel;
+}
+
+const CPVRChannel *CPVRChannelGroupsContainer::GetByClientFromAll(unsigned int iClientId, unsigned int iChannelUid)
+{
+  const CPVRChannel *channel = NULL;
+
+  channel = GetGroupAllTV()->GetByClient(iChannelUid, iClientId);
+
+  if (channel == NULL)
+    channel = GetGroupAllRadio()->GetByClient(iChannelUid, iClientId);
 
   return channel;
 }

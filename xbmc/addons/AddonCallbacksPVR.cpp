@@ -49,6 +49,7 @@ CAddonCallbacksPVR::CAddonCallbacksPVR(CAddon* addon)
   m_callbacks->AddMenuHook                = PVRAddMenuHook;
   m_callbacks->Recording                  = PVRRecording;
   m_callbacks->TriggerChannelUpdate       = PVRTriggerChannelUpdate;
+  m_callbacks->TriggerChannelGroupsUpdate = PVRTriggerChannelGroupsUpdate;
   m_callbacks->TriggerTimerUpdate         = PVRTriggerTimerUpdate;
   m_callbacks->TriggerRecordingUpdate     = PVRTriggerRecordingUpdate;
   m_callbacks->FreeDemuxPacket            = PVRFreeDemuxPacket;
@@ -66,9 +67,15 @@ CAddonCallbacksPVR::~CAddonCallbacksPVR()
 void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP *group)
 {
   CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL || handle == NULL || group == NULL)
+  if (addon == NULL || handle == NULL || group == NULL || handle->dataAddress == NULL)
   {
     CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
+    return;
+  }
+
+  if (strlen(group->strGroupName) == 0)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - empty group name", __FUNCTION__);
     return;
   }
 
@@ -82,19 +89,24 @@ void CAddonCallbacksPVR::PVRTransferChannelGroup(void *addonData, const PVR_HAND
 void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL_GROUP_MEMBER *member)
 {
   CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
-  if (addon == NULL || handle == NULL || member == NULL)
+  if (addon == NULL || handle == NULL || member == NULL || handle->dataAddress == NULL)
   {
     CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
     return;
   }
 
-  CPVRChannelGroups *xbmcGroups = (CPVRChannelGroups *) handle->dataAddress;
-  CPVRChannelGroup *group = (CPVRChannelGroup *) xbmcGroups->GetByName(member->strGroupName);
-  CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByChannelIDFromAll(member->iChannelUniqueId);
+  CPVRClient* client      = (CPVRClient*) handle->callerAddress;
+  CPVRChannelGroup *group = (CPVRChannelGroup *) handle->dataAddress;
+  CPVRChannel *channel    = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByUniqueID(member->iChannelUniqueId, client->GetClientID());
   if (group != NULL && channel != NULL)
   {
     /* transfer this entry to the group */
-    group->AddToGroup(channel, member->iChannelNumber);
+    group->AddToGroup(channel, member->iChannelNumber, false);
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - cannot find group '%s' or channel '%d'",
+        __FUNCTION__, member->strGroupName, member->iChannelUniqueId);
   }
 }
 
@@ -268,6 +280,19 @@ void CAddonCallbacksPVR::PVRTriggerRecordingUpdate(void *addonData)
 
   /* update the recordings table in the next iteration of the pvrmanager's main loop */
   CPVRManager::Get()->TriggerRecordingsUpdate();
+}
+
+void CAddonCallbacksPVR::PVRTriggerChannelGroupsUpdate(void *addonData)
+{
+  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
+  if (addon == NULL)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacksPVR - %s - called with a null pointer", __FUNCTION__);
+    return;
+  }
+
+  /* update all channel groups in the next iteration of the pvrmanager's main loop */
+  CPVRManager::Get()->TriggerChannelGroupsUpdate();
 }
 
 void CAddonCallbacksPVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket)

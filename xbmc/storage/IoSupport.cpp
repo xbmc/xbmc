@@ -28,7 +28,7 @@
 #ifdef _WIN32
 #include "my_ntddcdrm.h"
 #include "WIN32Util.h"
-#include "CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 #endif
 #if defined (_LINUX) && !defined(__APPLE__)
 #include <linux/limits.h>
