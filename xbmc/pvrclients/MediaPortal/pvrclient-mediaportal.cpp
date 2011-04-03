@@ -725,6 +725,8 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
       tag.iDuration      = (int) recording.Duration();
       tag.iPriority      = 0; //TODO? recording.Priority();
       tag.iLifetime      = MAXLIFETIME; //TODO: recording.Lifetime();
+      tag.iGenreType     = 0; //TODO?
+      tag.iGenreSubType  = 0; //TODO?
 
       if (g_bUseRecordingsDir == true)
       { //Replace path by given path in g_szRecordingsDir
@@ -814,6 +816,7 @@ PVR_ERROR cPVRClientMediaPortal::GetTimers(PVR_HANDLE handle)
 {
   vector<string>  lines;
   string          result;
+  PVR_TIMER       tag;
 
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
@@ -821,6 +824,8 @@ PVR_ERROR cPVRClientMediaPortal::GetTimers(PVR_HANDLE handle)
   result = SendCommand("ListSchedules:\n");
 
   Tokenize(result, lines, ",");
+
+  memset(&tag, 0, sizeof(PVR_TIMER));
 
   for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
   {
@@ -830,7 +835,6 @@ PVR_ERROR cPVRClientMediaPortal::GetTimers(PVR_HANDLE handle)
     XBMC->Log(LOG_DEBUG, "SCHEDULED: %s", data.c_str() );
 
     cTimer timer;
-    PVR_TIMER tag;
 
     timer.ParseLine(data.c_str());
     timer.GetPVRtimerinfo(tag);
