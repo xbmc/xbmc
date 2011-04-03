@@ -108,7 +108,7 @@ bool CGUIWindowPVRTimers::OnClickButton(CGUIMessage &message)
   if (IsSelectedButton(message))
   {
     bReturn = true;
-    CPVRManager::GetTimers()->Update();
+    CPVRManager::Get()->TriggerTimersUpdate();
     UpdateData();
   }
 

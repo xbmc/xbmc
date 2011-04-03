@@ -103,7 +103,7 @@ bool CPVRRecording::Delete(void)
     return false;
   }
 
-  CPVRManager::GetRecordings()->Update(true); // async update
+  CPVRManager::Get()->TriggerRecordingsUpdate();
   return true;
 }
 
@@ -117,7 +117,7 @@ bool CPVRRecording::Rename(const CStdString &strNewName)
     return false;
   }
 
-  CPVRManager::GetRecordings()->Update(true); // async update
+  CPVRManager::Get()->TriggerRecordingsUpdate();
   return true;
 }
 

@@ -85,10 +85,6 @@ CPVRManager::~CPVRManager()
 
 void CPVRManager::Notify(const Observable &obs, const CStdString& msg)
 {
-  if (!m_bStop && msg.Equals("epg"))
-  {
-    TriggerTimersUpdate();
-  }
 }
 
 CPVRManager *CPVRManager::Get(void)

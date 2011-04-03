@@ -408,7 +408,7 @@ bool CGUIWindowPVRCommon::ActionRecord(CFileItem *item)
     CFileItem *item = new CFileItem(*newtimer);
 
     if (CPVRManager::GetTimers()->AddTimer(*item))
-      CPVRManager::GetTimers()->Update();
+      CPVRManager::Get()->TriggerTimersUpdate();
 
     bReturn = true;
   }
@@ -448,8 +448,7 @@ bool CGUIWindowPVRCommon::ActionDeleteRecording(CFileItem *item)
   /* delete the recording */
   if (CPVRManager::GetRecordings()->DeleteRecording(*item))
   {
-    CPVRManager::GetRecordings()->Update();
-    UpdateData();
+    CPVRManager::Get()->TriggerRecordingsUpdate();
     bReturn = true;
   }
 
@@ -683,7 +682,7 @@ bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
   CFileItem *newTimerItem = new CFileItem(*newtimer);
   if (CPVRManager::GetTimers()->AddTimer(*newTimerItem))
   {
-    CPVRManager::GetTimers()->Update();
+    CPVRManager::Get()->TriggerTimersUpdate();
     bReturn = true;
   }
 
@@ -707,7 +706,7 @@ bool CGUIWindowPVRCommon::StopRecordFile(CFileItem *item)
 
   if (CPVRManager::GetTimers()->DeleteTimer(*timer))
   {
-    CPVRManager::GetTimers()->Update();
+    CPVRManager::Get()->TriggerTimersUpdate();
     bReturn = true;
   }
 

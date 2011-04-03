@@ -26,6 +26,7 @@
 #include "utils/Observer.h"
 
 class CFileItem;
+class CEpgInfoTag;
 class CPVREpgInfoTag;
 class CGUIDialogPVRTimerSettings;
 
@@ -42,7 +43,7 @@ private:
   int LoadFromClients(void);
 
 public:
-  CPVRTimers(void);
+  CPVRTimers(void) {}
 
   /**
    * Load the timers from the clients.
@@ -56,10 +57,9 @@ public:
   void Unload();
 
   /**
-   * Refresh the channel list from the clients.
-   * True if anything was changed.
+   * @brief refresh the channel list from the clients.
    */
-  bool Update();
+  bool Update(void);
 
   /**
    * Update a timer entry in this container.

@@ -25,7 +25,7 @@
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 
-#include "PVRTimerInfoTag.h"
+#include "PVRTimers.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/PVREpgContainer.h"
@@ -215,7 +215,7 @@ bool CPVRTimerInfoTag::AddToClient(void)
   else
   {
     if (StartAsLocalTime() < CDateTime::GetCurrentDateTime() && EndAsLocalTime() > CDateTime::GetCurrentDateTime())
-      CPVRManager::Get()->TriggerRecordingsUpdate();
+      CPVRManager::Get()->TriggerTimersUpdate();
     return true;
   }
 }
@@ -240,7 +240,13 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */)
     return false;
   }
 
-  CPVRManager::Get()->TriggerRecordingsUpdate();
+  if (m_epgInfo)
+  {
+    m_epgInfo->SetTimer(NULL);
+    m_epgInfo = NULL;
+  }
+
+  CPVRManager::Get()->TriggerTimersUpdate();
   return true;
 }
 
@@ -328,7 +334,7 @@ bool CPVRTimerInfoTag::UpdateOnClient()
   else
   {
     if (StartAsLocalTime() < CDateTime::GetCurrentDateTime() && EndAsLocalTime() > CDateTime::GetCurrentDateTime())
-      CPVRManager::Get()->TriggerRecordingsUpdate();
+      CPVRManager::Get()->TriggerTimersUpdate();
     return true;
   }
 }
