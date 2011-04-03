@@ -53,6 +53,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_epgInfo            = NULL;
   m_channel            = NULL;
   m_strFileNameAndPath = "";
+  m_strGenre           = "";
 }
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientId)
@@ -74,6 +75,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientI
   m_iLifetime          = timer.iLifetime;
   m_iMarginStart       = timer.iMarginStart;
   m_iMarginEnd         = timer.iMarginEnd;
+  m_strGenre           = CPVRManager::ConvertGenreIdToString(timer.iGenreType, timer.iGenreSubType);
   m_epgInfo            = NULL;
   m_channel            = NULL;
   m_strFileNameAndPath.Format("pvr://client%i/timers/%i", m_iClientId, m_iClientIndex);
@@ -83,6 +85,9 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientI
     CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByClientFromAll(iClientId, timer.iClientChannelUid);
     if (channel)
       m_epgInfo = (CPVREpgInfoTag *) channel->GetEPG()->GetTagById(timer.iEpgUid);
+
+    if (m_epgInfo)
+      m_strGenre = m_epgInfo->Genre();
   }
 
   UpdateSummary();
@@ -293,10 +298,15 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
   m_iMarginStart      = tag.m_iMarginStart;
   m_iMarginEnd        = tag.m_iMarginEnd;
   m_epgInfo           = tag.m_epgInfo;
+  m_strGenre          = tag.m_strGenre;
 
   /* try to find an epg event */
   if (m_epgInfo == NULL)
+  {
     UpdateEpgEvent();
+    if (m_epgInfo != NULL)
+      m_strGenre = m_epgInfo->Genre();
+  }
 
   return true;
 }

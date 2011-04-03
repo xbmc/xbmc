@@ -46,6 +46,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strPlotOutline = recording.strPlotOutline;
   m_strStreamURL   = recording.strStreamURL;
   m_strChannelName = recording.strChannelName;
+  m_strGenre       = CPVRManager::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType);
 }
 
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
@@ -149,6 +150,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_strPlotOutline = tag.m_strPlotOutline;
   m_strStreamURL   = tag.m_strStreamURL;
   m_strChannelName = tag.m_strChannelName;
+  m_strGenre       = tag.m_strGenre;
 
   UpdatePath();
 }

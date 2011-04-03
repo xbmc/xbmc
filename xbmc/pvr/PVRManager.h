@@ -297,6 +297,14 @@ public:
    */
   const CPVREpgInfoTag *GetPlayingTag(void);
 
+  /*!
+   * @brief Convert a genre id and subid to a human readable name.
+   * @param iID The genre ID.
+   * @param iSubID The genre sub ID.
+   * @return A human readable name.
+   */
+  static const CStdString &ConvertGenreIdToString(int iID, int iSubID);
+
 protected:
   /*!
    * @brief PVR update and control thread.
