@@ -181,8 +181,8 @@ PVR_ERROR cHTSPData::GetChannels(PVR_HANDLE handle, bool bRadio)
     tag.bIsRadio          = channel.radio;
     tag.iChannelNumber    = channel.num;
     tag.strChannelName    = channel.name.c_str();
-    tag.strInputFormat    = "";
-    tag.strStreamURL      = "";
+    tag.strInputFormat    = ""; // unused
+    tag.strStreamURL      = ""; // unused
     tag.iEncryptionSystem = channel.caid;
     tag.strIconPath       = channel.icon.c_str();
     tag.bIsHidden         = false;
@@ -223,19 +223,19 @@ PVR_ERROR cHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_
         broadcast.iChannelNumber     = event.chan_id >= 0 ? event.chan_id : channel.iUniqueId;
         broadcast.startTime          = event.start;
         broadcast.endTime            = event.stop;
-        broadcast.strPlotOutline     = "";
+        broadcast.strPlotOutline     = ""; // unused
         broadcast.strPlot            = event.descs.c_str();
-        broadcast.strIconPath        = "";
+        broadcast.strIconPath        = ""; // unused
         broadcast.iGenreType         = (event.content & 0x0F) << 4;
         broadcast.iGenreSubType      = event.content & 0xF0;
-        broadcast.firstAired         = 0;
-        broadcast.iParentalRating    = 0;
-        broadcast.iStarRating        = 0;
+        broadcast.firstAired         = 0;  // unused
+        broadcast.iParentalRating    = 0;  // unused
+        broadcast.iStarRating        = 0;  // unused
         broadcast.bNotify            = false;
-        broadcast.iSeriesNumber      = 0;
-        broadcast.iEpisodeNumber     = 0;
-        broadcast.iEpisodePartNumber = 0;
-        broadcast.strEpisodeName     = "";
+        broadcast.iSeriesNumber      = 0;  // unused
+        broadcast.iEpisodeNumber     = 0;  // unused
+        broadcast.iEpisodePartNumber = 0;  // unused
+        broadcast.strEpisodeName     = ""; // unused
 
         PVR->TransferEpgEntry(handle, &broadcast);
 
@@ -321,6 +321,8 @@ PVR_ERROR cHTSPData::GetRecordings(PVR_HANDLE handle)
     tag.iDuration      = recording.stop - recording.start;
     tag.iPriority      = 0;
     tag.iLifetime      = 0;
+    tag.iGenreType     = 0;
+    tag.iGenreSubType  = 0;
 
     PVR->TransferRecordingEntry(handle, &tag);
   }
@@ -369,7 +371,7 @@ PVR_ERROR cHTSPData::GetChannelGroups(PVR_HANDLE handle)
     PVR_CHANNEL_GROUP tag;
     memset(&tag, 0 , sizeof(PVR_CHANNEL_GROUP));
 
-    tag.bIsRadio = false;
+    tag.bIsRadio     = false;
     tag.strGroupName = m_tags[iTagPtr].name.c_str();
 
     PVR->TransferChannelGroup(handle, &tag);
@@ -394,9 +396,10 @@ PVR_ERROR cHTSPData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL
 
       PVR_CHANNEL_GROUP_MEMBER tag;
       memset(&tag,0 , sizeof(PVR_CHANNEL_GROUP_MEMBER));
-      tag.strGroupName = group.strGroupName;
+
+      tag.strGroupName     = group.strGroupName;
       tag.iChannelUniqueId = channel.id;
-      tag.iChannelNumber = channel.num;
+      tag.iChannelNumber   = channel.num;
 
       XBMC->Log(LOG_DEBUG, "%s - add channel %s (%d) to group '%s' channel number %d",
           __FUNCTION__, channel.name.c_str(), tag.iChannelUniqueId, group.strGroupName, channel.num);
@@ -424,18 +427,20 @@ PVR_ERROR cHTSPData::GetTimers(PVR_HANDLE handle)
     tag.startTime         = recording.start;
     tag.endTime           = recording.stop;
     tag.strTitle          = recording.title.c_str();
-    tag.strDirectory      = "/";
-    tag.strSummary        = "";
+    tag.strDirectory      = "/";   // unused
+    tag.strSummary        = "";    // unused
     tag.bIsActive         = recording.state == ST_SCHEDULED || recording.state == ST_RECORDING;
     tag.bIsRecording      = recording.state == ST_RECORDING;
-    tag.iPriority         = 0;
-    tag.iLifetime         = 0;
-    tag.bIsRepeating      = false;
-    tag.firstDay          = 0;
-    tag.iWeekdays         = 0;
-    tag.iEpgUid           = 0;
-    tag.iMarginStart      = 0;
-    tag.iMarginEnd        = 0;
+    tag.iPriority         = 0;     // unused
+    tag.iLifetime         = 0;     // unused
+    tag.bIsRepeating      = false; // unused
+    tag.firstDay          = 0;     // unused
+    tag.iWeekdays         = 0;     // unused
+    tag.iEpgUid           = 0;     // unused
+    tag.iMarginStart      = 0;     // unused
+    tag.iMarginEnd        = 0;     // unused
+    tag.iGenreType        = 0;     // unused
+    tag.iGenreSubType     = 0;     // unused
 
     PVR->TransferTimerEntry(handle, &tag);
   }
