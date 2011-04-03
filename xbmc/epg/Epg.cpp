@@ -22,8 +22,8 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "threads/SingleLock.h"
-#include "log.h"
-#include "TimeUtils.h"
+#include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 #include "EpgDatabase.h"
 #include "EpgContainer.h"

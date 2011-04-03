@@ -20,7 +20,7 @@
  */
 
 #include "guilib/LocalizeStrings.h"
-#include "TextSearch.h"
+#include "utils/TextSearch.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
 #include "EpgSearchFilter.h"
