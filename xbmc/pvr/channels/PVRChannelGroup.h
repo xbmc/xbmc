@@ -49,6 +49,7 @@ private:
   CStdString m_strGroupName;    /*!< The name of this group */
   int        m_iSortOrder;      /*!< The sort order to use */
   bool       m_bLoaded;         /*!< True if this container is loaded, false otherwise */
+  bool       m_bChanged;    /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
 
   /*!
    * @brief Load the channels stored in the database.
@@ -343,4 +344,6 @@ public:
   virtual bool HasChangedChannels(void) const;
 
   virtual bool HasNewChannels(void) const;
+
+  virtual bool HasChanges(void) const;
 };
