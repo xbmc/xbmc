@@ -816,7 +816,7 @@ int CPVRClients::GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error)
 int CPVRClients::GetChannelGroupMembers(CPVRChannelGroup *group, PVR_ERROR *error)
 {
   *error = PVR_ERROR_NO_ERROR;
-  int iCurSize = group->Size();
+  int iCurSize = group->GetNumChannels();
   CLIENTMAP clients;
   GetActiveClients(&clients);
 
@@ -836,13 +836,13 @@ int CPVRClients::GetChannelGroupMembers(CPVRChannelGroup *group, PVR_ERROR *erro
     itrClients++;
   }
 
-  return group->Size() - iCurSize;
+  return group->GetNumChannels() - iCurSize;
 }
 
 int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)
 {
   *error = PVR_ERROR_NO_ERROR;
-  int iCurSize = group->Size();
+  int iCurSize = group->GetNumChannels();
   CLIENTMAP clients;
   GetActiveClients(&clients);
 
@@ -862,7 +862,7 @@ int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)
     itrClients++;
   }
 
-  return group->Size() - iCurSize;
+  return group->GetNumChannels() - iCurSize;
 }
 
 const CStdString CPVRClients::GetStreamURL(const CPVRChannel &tag)

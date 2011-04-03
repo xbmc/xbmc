@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -40,7 +40,7 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
   m_iSortOrder      = 0;
 }
 
-int CPVRChannelGroupInternal::Load()
+int CPVRChannelGroupInternal::Load(void)
 {
   int iChannelCount = CPVRChannelGroup::Load();
   UpdateChannelPaths();
@@ -83,12 +83,12 @@ bool CPVRChannelGroupInternal::InsertInGroup(CPVRChannel *channel, int iChannelN
   return CPVRChannelGroup::AddToGroup(channel, iChannelNumber, bSortAndRenumber);
 }
 
-bool CPVRChannelGroupInternal::Update()
+bool CPVRChannelGroupInternal::Update(void)
 {
   CPVRChannelGroupInternal PVRChannels_tmp(m_bRadio);
   PVRChannels_tmp.LoadFromClients();
 
-  return UpdateGroupEntries(&PVRChannels_tmp);
+  return UpdateGroupEntries(PVRChannels_tmp);
 }
 
 bool CPVRChannelGroupInternal::UpdateTimers(void)
@@ -114,8 +114,11 @@ bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel *channel, int iChannelNumb
     return false;
 
   /* switch the hidden flag */
-  realChannel->SetHidden(false, true);
-  m_iHiddenChannels--;
+  if (realChannel->IsHidden())
+  {
+    realChannel->SetHidden(false, true);
+    m_iHiddenChannels--;
+  }
 
   /* renumber this list */
   Renumber();
@@ -243,9 +246,9 @@ void CPVRChannelGroupInternal::Renumber(void)
   }
 }
 
-bool CPVRChannelGroupInternal::IsGroupMember(const CPVRChannel *channel) const
+bool CPVRChannelGroupInternal::IsGroupMember(const CPVRChannel &channel) const
 {
-  return channel && !channel->IsHidden();
+  return !channel.IsHidden();
 }
 
 bool CPVRChannelGroupInternal::UpdateChannel(const CPVRChannel &channel)
@@ -264,7 +267,7 @@ bool CPVRChannelGroupInternal::UpdateChannel(const CPVRChannel &channel)
   return updateChannel->Persist(!m_bLoaded);
 }
 
-bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
+bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channels)
 {
   bool bChanged = false;
   int iCurSize = size();
@@ -276,9 +279,9 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
     return bChanged;
 
   /* go through the channel list and check for updated or new channels */
-  for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < channels.size(); iChannelPtr++)
   {
-    const CPVRChannel *channel = channels->at(iChannelPtr).channel;
+    const CPVRChannel *channel = channels.at(iChannelPtr).channel;
 
     /* check if this channel is present in this container */
     CPVRChannel *existingChannel = (CPVRChannel *) GetByClient(channel->UniqueID(), channel->ClientID());
@@ -321,7 +324,7 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(CPVRChannelGroup *channels)
     CPVRChannel *channel = (CPVRChannel *) GetByIndex(iChannelPtr);
     if (!channel)
       continue;
-    if (channels->GetByClient(channel->UniqueID(), channel->ClientID()) == NULL)
+    if (channels.GetByClient(channel->UniqueID(), channel->ClientID()) == NULL)
     {
       /* channel was not found */
       CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - deleted %s channel '%s'",

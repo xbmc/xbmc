@@ -224,7 +224,7 @@ int CPVRChannel::ChannelNumber(void) const
   int iReturn = -1;
   const CPVRChannelGroup *group = CPVRManager::Get()->GetPlayingGroup(m_bIsRadio);
   if (group)
-    iReturn = group->GetChannelNumber(this);
+    iReturn = group->GetChannelNumber(*this);
 
   return iReturn;
 }

@@ -164,7 +164,7 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
     const CPVRChannelGroup *group = GetPlayingGroup(currentChannel.IsRadio());
     if (group)
     {
-      const CPVRChannel *newChannel = bUp ? group->GetByChannelUp(&currentChannel) : group->GetByChannelDown(&currentChannel);
+      const CPVRChannel *newChannel = bUp ? group->GetByChannelUp(currentChannel) : group->GetByChannelDown(currentChannel);
       if (PerformChannelSwitch(*newChannel, bPreview))
       {
         *iNewChannelNumber = newChannel->ChannelNumber();

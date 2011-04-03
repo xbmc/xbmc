@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -64,12 +64,12 @@ private:
    * @param channels The channels to use to update this list.
    * @return True if everything went well, false otherwise.
    */
-  bool UpdateGroupEntries(CPVRChannelGroup *channels);
+  bool UpdateGroupEntries(const CPVRChannelGroup &channels);
 
   /*!
    * @brief Refresh the channel list from the clients.
    */
-  bool Update();
+  bool Update(void);
 
   /*!
    * @brief Remove invalid channels and updates the channel numbers.
@@ -84,8 +84,11 @@ private:
    *
    * @return The amount of channels that were added.
    */
-  int Load();
+  int Load(void);
 
+  /*!
+   * @brief Update the vfs paths of all channels.
+   */
   void UpdateChannelPaths(void);
 
   /*!
@@ -132,11 +135,35 @@ public:
    */
   bool InsertInGroup(CPVRChannel *channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
 
+  /*!
+   * @brief Callback for add-ons to update a channel.
+   * @param channel The updated channel.
+   * @return True if the channel has been updated succesfully, false otherwise.
+   */
   bool UpdateFromClient(const CPVRChannel &channel);
 
-  bool IsGroupMember(const CPVRChannel *channel) const;
+  /*!
+   * @see CPVRChannelGroup::IsGroupMember
+   */
+  bool IsGroupMember(const CPVRChannel &channel) const;
+
+  /*!
+   * @see CPVRChannelGroup::AddToGroup
+   */
   bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0);
+
+  /*!
+   * @see CPVRChannelGroup::RemoveFromGroup
+   */
   bool RemoveFromGroup(CPVRChannel *channel);
+
+  /*!
+   * @see CPVRChannelGroup::MoveChannel
+   */
   bool MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb = true);
+
+  /*!
+   * @see CPVRChannelGroup::GetMembers
+   */
   int GetMembers(CFileItemList *results, bool bGroupMembers = true) const;
 };
