@@ -424,6 +424,7 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag)
     m_endTime            = tag.m_endTime;
     m_iGenreType         = tag.m_iGenreType;
     m_iGenreSubType      = tag.m_iGenreSubType;
+    m_strGenre           = ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType);
     m_firstAired         = tag.m_firstAired;
     m_iParentalRating    = tag.m_iParentalRating;
     m_iStarRating        = tag.m_iStarRating;
