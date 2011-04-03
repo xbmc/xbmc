@@ -39,17 +39,17 @@
 #include "ccbuffer.h"
 #include "ccxclient.h"
 
-#ifndef _XBOX
+#if !defined(_WIN32)
 #define CC_XSTREAM_SOCKET_FD_TYPE          int
 #define CC_XSTREAM_SOCKET_CLOSE            close
 #define CC_XSTREAM_SOCKET_WRITE(s, b, l)   write((s), (b), (l))
 #define CC_XSTREAM_SOCKET_READ(s, b, l)    read((s), (b), (l))
-#else /* ! _XBOX */
+#else /* _WIN32 */
 #define CC_XSTREAM_SOCKET_FD_TYPE          SOCKET
 #define CC_XSTREAM_SOCKET_CLOSE            closesocket
 #define CC_XSTREAM_SOCKET_WRITE(s, b, l)   send((s), (b), (l), 0)
 #define CC_XSTREAM_SOCKET_READ(s, b, l)    recv((s), (b), (l), 0)
-#endif /* ! _XBOX */
+#endif
 
 static void cc_xstream_client_socket_setup(CC_XSTREAM_SOCKET_FD_TYPE sock)
 {
