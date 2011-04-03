@@ -66,10 +66,10 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientI
   m_iClientIndex       = timer.iClientIndex;
   m_iClientChannelUid  = timer.iClientChannelUid;
   m_bIsRecording       = timer.bIsRecording;
-  m_StartTime          = timer.startTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
-  m_StopTime           = timer.endTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
+  m_StartTime          = timer.startTime + g_advancedSettings.m_iPVRTimeCorrection;
+  m_StopTime           = timer.endTime + g_advancedSettings.m_iPVRTimeCorrection;
   m_bIsRepeating       = timer.bIsRepeating;
-  m_FirstDay           = timer.firstDay + g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
+  m_FirstDay           = timer.firstDay + g_advancedSettings.m_iPVRTimeCorrection;
   m_iWeekdays          = timer.iWeekdays;
   m_iPriority          = timer.iPriority;
   m_iLifetime          = timer.iLifetime;

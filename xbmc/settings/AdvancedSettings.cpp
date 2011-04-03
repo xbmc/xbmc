@@ -275,8 +275,8 @@ void CAdvancedSettings::Initialize()
 
   m_bgInfoLoaderMaxThreads = 5;
 
-  m_bDisableEPGTimeCorrection = false;
-  m_iUserDefinedEPGTimeCorrection = 0;
+  m_iPVRTimeCorrection = 0;
+  m_iPVRInputStreamDelay = 200;
 
   m_measureRefreshrate = false;
 
@@ -866,8 +866,8 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", m_bgInfoLoaderMaxThreads);
   m_bgInfoLoaderMaxThreads = std::max(1, m_bgInfoLoaderMaxThreads);
 
-  XMLUtils::GetBoolean(pRootElement, "noepgtimecorrection", m_bDisableEPGTimeCorrection);
-  XMLUtils::GetInt(pRootElement, "userepgtimecorrection", m_iUserDefinedEPGTimeCorrection, 0, 1440);
+  XMLUtils::GetInt(pRootElement, "timecorrection", m_iPVRTimeCorrection, 0, 1440);
+  XMLUtils::GetInt(pRootElement, "inputstreamdelay", m_iPVRInputStreamDelay, 0, 10000);
 
   XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
 

@@ -285,8 +285,8 @@ class CAdvancedSettings
     int m_bgInfoLoaderMaxThreads;
 
     /* PVR/TV related advanced settings */
-    bool m_bDisableEPGTimeCorrection;
-    int m_iUserDefinedEPGTimeCorrection;
+    int m_iPVRTimeCorrection;   /*!< @brief correct all times (epg tags, timer tags, recording tags) by this amount of minutes. */
+    int m_iPVRInputStreamDelay; /*!< @brief delay the playback of the pvr streams by this amount of milliseconds. increase if the pvr streams buffer a lot when starting them */
 
     bool m_measureRefreshrate; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
                                //otherwise it will use the windows refreshrate

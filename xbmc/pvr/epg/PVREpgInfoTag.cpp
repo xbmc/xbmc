@@ -71,8 +71,8 @@ void CPVREpgInfoTag::UpdatePath(void)
 
 void CPVREpgInfoTag::Update(const EPG_TAG &tag)
 {
-  SetStartFromUTC(tag.startTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection);
-  SetEndFromUTC(tag.endTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection);
+  SetStartFromUTC(tag.startTime + g_advancedSettings.m_iPVRTimeCorrection);
+  SetEndFromUTC(tag.endTime + g_advancedSettings.m_iPVRTimeCorrection);
   SetTitle(tag.strTitle);
   SetPlotOutline(tag.strPlotOutline);
   SetPlot(tag.strPlot);
@@ -80,7 +80,7 @@ void CPVREpgInfoTag::Update(const EPG_TAG &tag)
   SetParentalRating(tag.iParentalRating);
   SetUniqueBroadcastID(tag.iUniqueBroadcastId);
   SetNotify(tag.bNotify);
-  SetFirstAiredFromUTC(tag.firstAired + g_advancedSettings.m_iUserDefinedEPGTimeCorrection);
+  SetFirstAiredFromUTC(tag.firstAired + g_advancedSettings.m_iPVRTimeCorrection);
   SetEpisodeNum(tag.iEpisodeNumber);
   SetEpisodePart(tag.iEpisodePartNumber);
   SetEpisodeName(tag.strEpisodeName);
