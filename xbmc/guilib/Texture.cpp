@@ -29,6 +29,7 @@
 #if defined(__APPLE__) && defined(__arm__)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
+#include "osx/DarwinUtils.h"
 #endif
 
 /************************************************************************/
@@ -213,6 +214,43 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   }
 
   CGImageRef image = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
+  
+  //get the orientation of the image for displaying it correctly
+  CFDictionaryRef imagePropertiesDictionary = CGImageSourceCopyPropertiesAtIndex(imageSource,0, NULL);
+  if (imagePropertiesDictionary != nil)
+  {
+    CFNumberRef orientation = (CFNumberRef)CFDictionaryGetValue(imagePropertiesDictionary, kCGImagePropertyOrientation);
+    if (orientation != nil)
+    {
+      int switchValue = 0;
+      int rotationAngle = 0;
+     	CFNumberGetValue(orientation, kCFNumberIntType, &switchValue);  
+      // possible values taken from
+      // http://developer.apple.com/library/mac/#samplecode/ImageApp/Listings/ImageDoc_m.html
+      switch(switchValue)
+      {
+        case 3: //rotated 180°
+          rotationAngle = 180;
+          break;
+        case 6: //rotated 90°
+          rotationAngle = 270;
+          break;
+        case 8: //rotated 270°
+          rotationAngle = 90;
+          break;
+      }
+      
+      //rotate the image if needed        
+      if (rotationAngle != 0)
+      {
+        CLog::Log(LOGDEBUG,"Rotating the image about %i degrees", rotationAngle);
+        CGImageRef rotatedImage = CGImageCreateRotatedByAngle(image, (float)rotationAngle);
+        CFRelease(image);
+        image = rotatedImage;
+      }
+    }
+  }
+
   CFRelease(imageSource);
 
   unsigned int width  = CGImageGetWidth(image);
@@ -220,9 +258,6 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
 
   m_hasAlpha = (CGImageGetAlphaInfo(image) != kCGImageAlphaNone);
 
-// not sure what to do here :)
-//  if (autoRotate && image.exifInfo.Orientation)
-//    m_orientation = image.exifInfo.Orientation - 1;
   if (originalWidth)
     *originalWidth = width;
   if (originalHeight)
