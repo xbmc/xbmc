@@ -861,6 +861,20 @@ bool CPVRManager::UpdateItem(CFileItem& item)
       musictag->SetLyrics("");
     }
   }
+  else
+  {
+    CVideoInfoTag *videotag = item.GetVideoInfoTag();
+    if (videotag)
+    {
+      videotag->m_strTitle = epgTagNow ? epgTagNow->Title() : g_localizeStrings.Get(19055);
+      videotag->m_strGenre = epgTagNow ? epgTagNow->Genre() : "";
+      videotag->m_strPath = channelTag->Path();
+      videotag->m_strFileNameAndPath = channelTag->Path();
+      videotag->m_strPlot = epgTagNow ? epgTagNow->Plot() : "";
+      videotag->m_strPlotOutline = epgTagNow ? epgTagNow->PlotOutline() : "";
+      videotag->m_iEpisode = epgTagNow ? epgTagNow->EpisodeNum() : 0;
+    }
+  }
 
   CPVRChannel* tagPrev = item.GetPVRChannelInfoTag();
   if (tagPrev && tagPrev->ChannelNumber() != m_LastChannel)
