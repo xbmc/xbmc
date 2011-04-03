@@ -126,11 +126,12 @@ extern "C" {
    */
   typedef enum
   {
-    PVR_EVENT_UNKNOWN           = 0,
-    PVR_EVENT_CLOSE             = 1,
-    PVR_EVENT_RECORDINGS_CHANGE = 2,
-    PVR_EVENT_CHANNELS_CHANGE   = 3,
-    PVR_EVENT_TIMERS_CHANGE     = 4
+    PVR_EVENT_UNKNOWN               = 0,
+    PVR_EVENT_CLOSE                 = 1,
+    PVR_EVENT_RECORDINGS_CHANGE     = 2,
+    PVR_EVENT_CHANNELS_CHANGE       = 3,
+    PVR_EVENT_TIMERS_CHANGE         = 4,
+    PVR_EVENT_CHANNEL_GROUPS_CHANGE = 5
   } PVR_EVENT;
 
   /*!
