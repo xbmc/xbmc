@@ -315,7 +315,13 @@ void CGUISettings::Initialize()
   AddString(scr, "scrobbler.librefmpass", 15219, "", EDIT_CONTROL_MD5_INPUT, false, 15219);
 
   CSettingsCategory* acd = AddCategory(3, "audiocds", 620);
-  AddBool(acd, "audiocds.autorun", 14085, false);
+  map<int,int> autocd;
+  autocd.insert(make_pair(16018, AUTOCD_NONE));
+  autocd.insert(make_pair(14098, AUTOCD_PLAY));
+#ifdef HAS_CDDA_RIPPER
+  autocd.insert(make_pair(14096, AUTOCD_RIP));
+#endif
+  AddInt(acd,"audiocds.autoaction",14097,AUTOCD_NONE, autocd, SPIN_CONTROL_TEXT);
   AddBool(acd, "audiocds.usecddb", 227, true);
   AddSeparator(acd, "audiocds.sep1");
   AddPath(acd,"audiocds.recordingpath",20000,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
