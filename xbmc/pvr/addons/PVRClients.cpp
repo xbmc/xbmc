@@ -882,7 +882,7 @@ const CStdString CPVRClients::GetStreamURL(const CPVRChannel &tag)
   return strReturn;
 }
 
-const char *CPVRClients::CharInfoBackendNumber(void)
+void CPVRClients::UpdateCharInfo(void)
 {
   CSingleLock lock(m_critSection);
 
@@ -890,84 +890,71 @@ const char *CPVRClients::CharInfoBackendNumber(void)
   {
     m_iInfoToggleStart = CTimeUtils::GetTimeMS();
     m_iInfoToggleCurrent = 0;
+    return;
   }
-  else
+
+  if (CTimeUtils::GetTimeMS() - m_iInfoToggleStart > INFO_TOGGLE_TIME)
   {
-    if (CTimeUtils::GetTimeMS() - m_iInfoToggleStart > INFO_TOGGLE_TIME)
+    if (m_clientMap.size() > 0)
     {
-      if (m_clientMap.size() > 0)
+      m_iInfoToggleCurrent++;
+      if (m_iInfoToggleCurrent > m_clientMap.size()-1)
+        m_iInfoToggleCurrent = 0;
+
+      CLIENTMAPITR itr = m_clientMap.begin();
+      for (unsigned int i = 0; i < m_iInfoToggleCurrent; i++)
+        itr++;
+
+      long long kBTotal = 0;
+      long long kBUsed  = 0;
+      if (m_clientMap[(*itr).first]->GetDriveSpace(&kBTotal, &kBUsed) == PVR_ERROR_NO_ERROR)
       {
-        m_iInfoToggleCurrent++;
-        if (m_iInfoToggleCurrent > m_clientMap.size()-1)
-          m_iInfoToggleCurrent = 0;
-
-        CLIENTMAPITR itr = m_clientMap.begin();
-        for (unsigned int i = 0; i < m_iInfoToggleCurrent; i++)
-          itr++;
-
-        long long kBTotal = 0;
-        long long kBUsed  = 0;
-        if (m_clientMap[(*itr).first]->GetDriveSpace(&kBTotal, &kBUsed) == PVR_ERROR_NO_ERROR)
-        {
-          kBTotal /= 1024; // Convert to MBytes
-          kBUsed /= 1024;  // Convert to MBytes
-          m_strBackendDiskspace.Format("%s %.1f GByte - %s: %.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
-        }
-        else
-        {
-          m_strBackendDiskspace = g_localizeStrings.Get(19055);
-        }
-
-        int NumChannels = m_clientMap[(*itr).first]->GetChannelsAmount();
-        if (NumChannels >= 0)
-          m_strBackendChannels.Format("%i", NumChannels);
-        else
-          m_strBackendChannels = g_localizeStrings.Get(161);
-
-        int NumTimers = m_clientMap[(*itr).first]->GetTimersAmount();
-        if (NumTimers >= 0)
-          m_strBackendTimers.Format("%i", NumTimers);
-        else
-          m_strBackendTimers = g_localizeStrings.Get(161);
-
-        int NumRecordings = m_clientMap[(*itr).first]->GetRecordingsAmount();
-        if (NumRecordings >= 0)
-          m_strBackendRecordings.Format("%i", NumRecordings);
-        else
-          m_strBackendRecordings = g_localizeStrings.Get(161);
-
-        m_strBackendName         = m_clientMap[(*itr).first]->GetBackendName();
-        m_strBackendVersion      = m_clientMap[(*itr).first]->GetBackendVersion();
-        m_strBackendHost         = m_clientMap[(*itr).first]->GetConnectionString();
+        kBTotal /= 1024; // Convert to MBytes
+        kBUsed /= 1024;  // Convert to MBytes
+        m_strBackendDiskspace.Format("%s %.1f GByte - %s: %.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
       }
       else
       {
-        m_strBackendName         = "";
-        m_strBackendVersion      = "";
-        m_strBackendHost         = "";
-        m_strBackendDiskspace    = "";
-        m_strBackendTimers       = "";
-        m_strBackendRecordings   = "";
-        m_strBackendChannels     = "";
+        m_strBackendDiskspace = g_localizeStrings.Get(19055);
       }
-      m_iInfoToggleStart = CTimeUtils::GetTimeMS();
+
+      int NumChannels = m_clientMap[(*itr).first]->GetChannelsAmount();
+      if (NumChannels >= 0)
+        m_strBackendChannels.Format("%i", NumChannels);
+      else
+        m_strBackendChannels = g_localizeStrings.Get(161);
+
+      int NumTimers = m_clientMap[(*itr).first]->GetTimersAmount();
+      if (NumTimers >= 0)
+        m_strBackendTimers.Format("%i", NumTimers);
+      else
+        m_strBackendTimers = g_localizeStrings.Get(161);
+
+      int NumRecordings = m_clientMap[(*itr).first]->GetRecordingsAmount();
+      if (NumRecordings >= 0)
+        m_strBackendRecordings.Format("%i", NumRecordings);
+      else
+        m_strBackendRecordings = g_localizeStrings.Get(161);
+
+      m_strBackendName         = m_clientMap[(*itr).first]->GetBackendName();
+      m_strBackendVersion      = m_clientMap[(*itr).first]->GetBackendVersion();
+      m_strBackendHost         = m_clientMap[(*itr).first]->GetConnectionString();
     }
+    else
+    {
+      m_strBackendName         = "";
+      m_strBackendVersion      = "";
+      m_strBackendHost         = "";
+      m_strBackendDiskspace    = "";
+      m_strBackendTimers       = "";
+      m_strBackendRecordings   = "";
+      m_strBackendChannels     = "";
+    }
+    m_iInfoToggleStart = CTimeUtils::GetTimeMS();
   }
 
-  static CStdString backendClients;
-  if (m_clientMap.size() > 0)
-    backendClients.Format("%u %s %u", m_iInfoToggleCurrent+1, g_localizeStrings.Get(20163), m_clientMap.size());
-  else
-    backendClients = g_localizeStrings.Get(14023);
-
-  return backendClients;
-}
-
-const char *CPVRClients::CharInfoTotalDiskSpace(void)
-{
   long long kBTotal = 0;
   long long kBUsed  = 0;
-  CSingleLock lock(m_critSection);
 
   CLIENTMAPITR itr = m_clientMap.begin();
   while (itr != m_clientMap.end())
@@ -985,8 +972,26 @@ const char *CPVRClients::CharInfoTotalDiskSpace(void)
   kBTotal /= 1024; // Convert to MBytes
   kBUsed /= 1024;  // Convert to MBytes
   m_strTotalDiskspace.Format("%s %0.1f GByte - %s: %0.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
+}
 
-  return m_strTotalDiskspace;
+const char *CPVRClients::CharInfoBackendNumber(void) const
+{
+  static CStdString backendClients;
+  CSingleLock lock(m_critSection);
+  if (m_clientMap.size() > 0)
+    backendClients.Format("%u %s %u", m_iInfoToggleCurrent+1, g_localizeStrings.Get(20163), m_clientMap.size());
+  else
+    backendClients = g_localizeStrings.Get(14023);
+
+  return backendClients;
+}
+
+const char *CPVRClients::CharInfoTotalDiskSpace(void) const
+{
+  static CStdString strTotalDiskSpace;
+  strTotalDiskSpace = m_strTotalDiskspace;
+
+  return strTotalDiskSpace;
 }
 
 
