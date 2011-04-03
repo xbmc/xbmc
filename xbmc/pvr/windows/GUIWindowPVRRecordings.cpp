@@ -125,7 +125,6 @@ bool CGUIWindowPVRRecordings::OnClickButton(CGUIMessage &message)
   {
     bReturn = true;
     CPVRManager::Get()->TriggerRecordingsUpdate();
-    UpdateData();
   }
 
   return bReturn;
@@ -184,8 +183,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonDelete(CFileItem *item, CONTEXT_BUT
 
     if (CPVRManager::GetRecordings()->DeleteRecording(*item))
     {
-      CPVRManager::GetRecordings()->Update();
-      UpdateData();
+      CPVRManager::Get()->TriggerRecordingsUpdate();
     }
   }
 

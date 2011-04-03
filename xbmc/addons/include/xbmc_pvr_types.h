@@ -126,11 +126,12 @@ extern "C" {
    */
   typedef enum
   {
-    PVR_EVENT_UNKNOWN           = 0,
-    PVR_EVENT_CLOSE             = 1,
-    PVR_EVENT_RECORDINGS_CHANGE = 2,
-    PVR_EVENT_CHANNELS_CHANGE   = 3,
-    PVR_EVENT_TIMERS_CHANGE     = 4
+    PVR_EVENT_UNKNOWN               = 0,
+    PVR_EVENT_CLOSE                 = 1,
+    PVR_EVENT_RECORDINGS_CHANGE     = 2,
+    PVR_EVENT_CHANNELS_CHANGE       = 3,
+    PVR_EVENT_TIMERS_CHANGE         = 4,
+    PVR_EVENT_CHANNEL_GROUPS_CHANGE = 5
   } PVR_EVENT;
 
   /*!
@@ -282,23 +283,27 @@ extern "C" {
     int           iEpgUid;             /*!< @brief (optional) epg event id */
     unsigned int  iMarginStart;        /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
     unsigned int  iMarginEnd;          /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
+    int           iGenreType;          /*!< @brief (optional) genre type */
+    int           iGenreSubType;       /*!< @brief (optional) genre sub type */
   } ATTRIBUTE_PACKED PVR_TIMER;
 
   /*!
    * @brief Representation of a recording.
    */
   typedef struct PVR_RECORDING {
-    int          iClientIndex;         /*!< @brief (required) index number of the recording on the client */
-    const char * strTitle;             /*!< @brief (required) the title of this recording */
-    const char * strStreamURL;         /*!< @brief (required) stream URL to access this recording */
-    const char * strDirectory;         /*!< @brief (optional) directory of this recording on the client */
-    const char * strPlotOutline;       /*!< @brief (optional) plot outline */
-    const char * strPlot;              /*!< @brief (optional) plot */
-    const char * strChannelName;       /*!< @brief (optional) channel name */
-    time_t       recordingTime;        /*!< @brief (optional) start time of the recording */
-    int          iDuration;            /*!< @brief (optional) duration of the recording */
-    int          iPriority;            /*!< @brief (optional) priority of this recording (from 0 - 100) */
-    int          iLifetime;            /*!< @brief (optional) life time in days of this recording */
+    int           iClientIndex;         /*!< @brief (required) index number of the recording on the client */
+    const char *  strTitle;             /*!< @brief (required) the title of this recording */
+    const char *  strStreamURL;         /*!< @brief (required) stream URL to access this recording */
+    const char *  strDirectory;         /*!< @brief (optional) directory of this recording on the client */
+    const char *  strPlotOutline;       /*!< @brief (optional) plot outline */
+    const char *  strPlot;              /*!< @brief (optional) plot */
+    const char *  strChannelName;       /*!< @brief (optional) channel name */
+    time_t        recordingTime;        /*!< @brief (optional) start time of the recording */
+    int           iDuration;            /*!< @brief (optional) duration of the recording */
+    int           iPriority;            /*!< @brief (optional) priority of this recording (from 0 - 100) */
+    int           iLifetime;            /*!< @brief (optional) life time in days of this recording */
+    int           iGenreType;           /*!< @brief (optional) genre type */
+    int           iGenreSubType;        /*!< @brief (optional) genre sub type */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!

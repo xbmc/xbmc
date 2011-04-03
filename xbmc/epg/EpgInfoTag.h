@@ -68,15 +68,6 @@ private:
   bool                       m_bChanged;           /*!< keep track of changes to this entry */
 
   /*!
-   * @brief Convert a genre id and subid to a human readable name.
-   * @param iID The genre ID.
-   * @param iSubID The genre sub ID.
-   * @return A human readable name.
-   */
-  const CStdString &ConvertGenreIdToString(int iID, int iSubID) const;
-
-
-  /*!
    * @brief Hook that is called when the start date changed.
    */
   virtual void UpdatePath() {}

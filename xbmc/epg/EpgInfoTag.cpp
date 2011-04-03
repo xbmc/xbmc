@@ -25,6 +25,7 @@
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
 #include "utils/log.h"
+#include "pvr/PVRManager.h"
 
 using namespace std;
 
@@ -119,54 +120,6 @@ const CEpgInfoTag *CEpgInfoTag::GetNextEvent() const
 const CEpgInfoTag *CEpgInfoTag::GetPreviousEvent() const
 {
   return m_previousEvent;
-}
-
-const CStdString &CEpgInfoTag::ConvertGenreIdToString(int iID, int iSubID) const
-{
-  unsigned int iLabelId = 19499;
-  switch (iID)
-  {
-    case EPG_EVENT_CONTENTMASK_MOVIEDRAMA:
-      iLabelId = (iSubID <= 8) ? 19500 + iSubID : 19500;
-      break;
-    case EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS:
-      iLabelId = (iSubID <= 4) ? 19516 + iSubID : 19516;
-      break;
-    case EPG_EVENT_CONTENTMASK_SHOW:
-      iLabelId = (iSubID <= 3) ? 19532 + iSubID : 19532;
-      break;
-    case EPG_EVENT_CONTENTMASK_SPORTS:
-      iLabelId = (iSubID <= 11) ? 19548 + iSubID : 19548;
-      break;
-    case EPG_EVENT_CONTENTMASK_CHILDRENYOUTH:
-      iLabelId = (iSubID <= 5) ? 19564 + iSubID : 19564;
-      break;
-    case EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE:
-      iLabelId = (iSubID <= 6) ? 19580 + iSubID : 19580;
-      break;
-    case EPG_EVENT_CONTENTMASK_ARTSCULTURE:
-      iLabelId = (iSubID <= 11) ? 19596 + iSubID : 19596;
-      break;
-    case EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS:
-      iLabelId = (iSubID <= 3) ? 19612 + iSubID : 19612;
-      break;
-    case EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE:
-      iLabelId = (iSubID <= 7) ? 19628 + iSubID : 19628;
-      break;
-    case EPG_EVENT_CONTENTMASK_LEISUREHOBBIES:
-      iLabelId = (iSubID <= 7) ? 19644 + iSubID : 19644;
-      break;
-    case EPG_EVENT_CONTENTMASK_SPECIAL:
-      iLabelId = (iSubID <= 3) ? 19660 + iSubID : 19660;
-      break;
-    case EPG_EVENT_CONTENTMASK_USERDEFINED:
-      iLabelId = (iSubID <= 3) ? 19676 + iSubID : 19676;
-      break;
-    default:
-      break;
-  }
-
-  return g_localizeStrings.Get(iLabelId);
 }
 
 void CEpgInfoTag::SetUniqueBroadcastID(int iUniqueBroadcastID)
@@ -273,7 +226,7 @@ void CEpgInfoTag::SetGenre(int iID, int iSubID)
   {
     m_iGenreType    = iID;
     m_iGenreSubType = iSubID;
-    m_strGenre      = ConvertGenreIdToString(iID, iSubID);
+    m_strGenre      = CPVRManager::ConvertGenreIdToString(iID, iSubID);
     m_bChanged = true;
     UpdatePath();
   }
@@ -424,6 +377,7 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag)
     m_endTime            = tag.m_endTime;
     m_iGenreType         = tag.m_iGenreType;
     m_iGenreSubType      = tag.m_iGenreSubType;
+    m_strGenre           = CPVRManager::ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType);
     m_firstAired         = tag.m_firstAired;
     m_iParentalRating    = tag.m_iParentalRating;
     m_iStarRating        = tag.m_iStarRating;

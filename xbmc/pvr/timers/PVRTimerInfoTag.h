@@ -79,7 +79,7 @@ public:
   const CPVRChannel *   m_channel;
   unsigned int          m_iMarginStart;       /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
   unsigned int          m_iMarginEnd;         /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
-
+  CStdString            m_strGenre;           /*!< @brief genre of the timer */
 
   CPVRTimerInfoTag(void);
   CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientId);

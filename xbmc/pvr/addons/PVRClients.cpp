@@ -1286,6 +1286,14 @@ void CPVRClients::OnClientMessage(const int iClientId, const PVR_EVENT clientEve
     }
     break;
 
+    case PVR_EVENT_CHANNEL_GROUPS_CHANGE:
+    {
+      CLog::Log(LOGDEBUG, "PVR - %s - channel groups list changed on client '%d'",
+          __FUNCTION__, iClientId);
+      CPVRManager::Get()->TriggerChannelGroupsUpdate();
+    }
+    break;
+
     default:
       CLog::Log(LOGWARNING, "PVR - %s - client '%d' sent unknown event '%s'",
           __FUNCTION__, iClientId, strMessage);

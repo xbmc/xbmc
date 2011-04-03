@@ -143,10 +143,11 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
   }
 }
 
-void CPVRRecordings::Process()
+int CPVRRecordings::Load(void)
 {
-  CSingleLock lock(m_critSection);
-  UpdateFromClients();
+  Update();
+
+  return size();
 }
 
 void CPVRRecordings::Unload()
@@ -154,20 +155,10 @@ void CPVRRecordings::Unload()
   Clear();
 }
 
-bool CPVRRecordings::Update(bool bAsync /* = false */)
+void CPVRRecordings::Update(void)
 {
-  if (!bAsync)
-  {
-    Process();
-    return true;
-  }
-  else
-  {
-    Create();
-    SetName("PVR Recordings Update");
-    SetPriority(-1);
-  }
-  return false;
+  CSingleLock lock(m_critSection);
+  UpdateFromClients();
 }
 
 int CPVRRecordings::GetNumRecordings()

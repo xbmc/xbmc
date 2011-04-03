@@ -85,10 +85,6 @@ CPVRManager::~CPVRManager()
 
 void CPVRManager::Notify(const Observable &obs, const CStdString& msg)
 {
-  if (!m_bStop && msg.Equals("epg"))
-  {
-    TriggerTimersUpdate();
-  }
 }
 
 CPVRManager *CPVRManager::Get(void)
@@ -868,6 +864,20 @@ bool CPVRManager::UpdateItem(CFileItem& item)
       musictag->SetLyrics("");
     }
   }
+  else
+  {
+    CVideoInfoTag *videotag = item.GetVideoInfoTag();
+    if (videotag)
+    {
+      videotag->m_strTitle = epgTagNow ? epgTagNow->Title() : g_localizeStrings.Get(19055);
+      videotag->m_strGenre = epgTagNow ? epgTagNow->Genre() : "";
+      videotag->m_strPath = channelTag->Path();
+      videotag->m_strFileNameAndPath = channelTag->Path();
+      videotag->m_strPlot = epgTagNow ? epgTagNow->Plot() : "";
+      videotag->m_strPlotOutline = epgTagNow ? epgTagNow->PlotOutline() : "";
+      videotag->m_iEpisode = epgTagNow ? epgTagNow->EpisodeNum() : 0;
+    }
+  }
 
   CPVRChannel* tagPrev = item.GetPVRChannelInfoTag();
   if (tagPrev && tagPrev->ChannelNumber() != m_LastChannel)
@@ -1183,4 +1193,53 @@ void CPVRManager::UpdateRecordingToggle(void)
     m_strActiveTimerChannelName = "";
     m_strActiveTimerTime        = "";
   }
+}
+
+
+const CStdString &CPVRManager::ConvertGenreIdToString(int iID, int iSubID)
+{
+  unsigned int iLabelId = 19499;
+  switch (iID)
+  {
+    case EPG_EVENT_CONTENTMASK_MOVIEDRAMA:
+      iLabelId = (iSubID <= 8) ? 19500 + iSubID : 19500;
+      break;
+    case EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS:
+      iLabelId = (iSubID <= 4) ? 19516 + iSubID : 19516;
+      break;
+    case EPG_EVENT_CONTENTMASK_SHOW:
+      iLabelId = (iSubID <= 3) ? 19532 + iSubID : 19532;
+      break;
+    case EPG_EVENT_CONTENTMASK_SPORTS:
+      iLabelId = (iSubID <= 11) ? 19548 + iSubID : 19548;
+      break;
+    case EPG_EVENT_CONTENTMASK_CHILDRENYOUTH:
+      iLabelId = (iSubID <= 5) ? 19564 + iSubID : 19564;
+      break;
+    case EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE:
+      iLabelId = (iSubID <= 6) ? 19580 + iSubID : 19580;
+      break;
+    case EPG_EVENT_CONTENTMASK_ARTSCULTURE:
+      iLabelId = (iSubID <= 11) ? 19596 + iSubID : 19596;
+      break;
+    case EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS:
+      iLabelId = (iSubID <= 3) ? 19612 + iSubID : 19612;
+      break;
+    case EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE:
+      iLabelId = (iSubID <= 7) ? 19628 + iSubID : 19628;
+      break;
+    case EPG_EVENT_CONTENTMASK_LEISUREHOBBIES:
+      iLabelId = (iSubID <= 7) ? 19644 + iSubID : 19644;
+      break;
+    case EPG_EVENT_CONTENTMASK_SPECIAL:
+      iLabelId = (iSubID <= 3) ? 19660 + iSubID : 19660;
+      break;
+    case EPG_EVENT_CONTENTMASK_USERDEFINED:
+      iLabelId = (iSubID <= 3) ? 19676 + iSubID : 19676;
+      break;
+    default:
+      break;
+  }
+
+  return g_localizeStrings.Get(iLabelId);
 }

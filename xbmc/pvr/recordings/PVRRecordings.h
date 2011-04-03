@@ -21,15 +21,12 @@
  */
 
 #include "PVRRecording.h"
-#include "threads/Thread.h"
 #include "DateTime.h"
 
 class CPVRRecordings : public std::vector<CPVRRecording *>
-                     , private CThread
 {
 private:
   CCriticalSection  m_critSection;
-  virtual void Process();
   virtual void UpdateFromClients(void);
 
   virtual CStdString TrimSlashes(const CStdString &strOrig) const;
@@ -39,15 +36,19 @@ private:
   virtual void GetSubDirectories(const CStdString &strBase, CFileItemList *results, bool bAutoSkip = true) const;
 
 public:
-  CPVRRecordings(void) {};
+  CPVRRecordings(void) {}
   virtual ~CPVRRecordings(void) { Clear(); };
 
-  bool Load() { return Update(); }
+  int Load();
   void Unload();
   void Clear();
   void UpdateEntry(const CPVRRecording &tag);
   void UpdateFromClient(const CPVRRecording &tag) { UpdateEntry(tag); }
-  bool Update(bool bAsync = false);
+
+  /**
+   * @brief refresh the recordings list from the clients.
+   */
+  void Update(void);
 
   int GetNumRecordings();
   int GetRecordings(CFileItemList* results);
