@@ -1,3 +1,9 @@
+v1.1.2.102:
+- Added: Channel group support
+- Fixed: live stream playback
+- Fixed: recording retrieval
+- Changed: sources adapted for PVR API changes
+
 v1.1.2.101:
 - Fixed: "Include radio" setting
 - Changed: cleanup unused settings

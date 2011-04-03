@@ -64,6 +64,11 @@ public:
   int GetNumChannels(void);
   PVR_ERROR GetChannels(PVR_HANDLE handle, bool bRadio);
 
+  /* Channel group handling */
+  int GetChannelGroupsAmount(void);
+  PVR_ERROR GetChannelGroups(PVR_HANDLE handle, bool bRadio);
+  PVR_ERROR GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group);
+
   /* Record handling **/
   int GetNumRecordings(void);
   PVR_ERROR GetRecordings(PVR_HANDLE handle);

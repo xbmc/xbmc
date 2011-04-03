@@ -552,6 +552,119 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
 }
 
 /************************************************************/
+/** Channel group handling **/
+
+int cPVRClientMediaPortal::GetChannelGroupsAmount(void)
+{
+  // Not directly possible at the moment
+  XBMC->Log(LOG_DEBUG, "GetChannelGroupsAmount: TODO");
+
+  if (!IsUp())
+    return PVR_ERROR_SERVER_ERROR;
+
+  // just tell XBMC that we have groups
+  return 1;
+  //return -1; // not implemented
+}
+
+PVR_ERROR cPVRClientMediaPortal::GetChannelGroups(PVR_HANDLE handle, bool bRadio)
+{
+  vector<string>  lines;
+  int code;
+  PVR_CHANNEL_GROUP tag;
+
+  if (!IsUp())
+    return PVR_ERROR_SERVER_ERROR;
+
+  if(bRadio)
+  {
+    XBMC->Log(LOG_DEBUG, "GetChannelGroups for radio");
+    SendCommand2("ListRadioGroups\n", code, lines);
+  } else {
+    XBMC->Log(LOG_DEBUG, "RequestChannelList for TV group:%s", g_szTVGroup.c_str());
+    SendCommand2("ListRadioGroups\n", code, lines);
+  }
+
+  memset(&tag, 0 , sizeof(PVR_CHANNEL_GROUP));
+
+  for (vector<string>::iterator it = lines.begin(); it < lines.end(); it++)
+  {
+    string& data(*it);
+
+    if (data.length() == 0) {
+      if(bRadio)
+        XBMC->Log(LOG_DEBUG, "TVServer returned no data. No radio groups found?");
+      else
+        XBMC->Log(LOG_DEBUG, "TVServer returned no data. No TVo groups found?");
+      break;
+    }
+
+    uri::decode(data);
+
+    tag.bIsRadio = bRadio;
+    tag.strGroupName = data.c_str();
+
+    PVR->TransferChannelGroup(handle, &tag);
+  }
+
+  return PVR_ERROR_NO_ERROR;
+}
+
+PVR_ERROR cPVRClientMediaPortal::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
+{
+  //TODO: code below is similar to GetChannels code. Refactor and combine...
+  vector<string>           lines;
+  CStdString               command;
+  int                      code;
+  PVR_CHANNEL_GROUP_MEMBER tag;
+
+  if (!IsUp())
+    return PVR_ERROR_SERVER_ERROR;
+
+  if(group.bIsRadio)
+  {
+    XBMC->Log(LOG_DEBUG, "%s: for group '%s', radio=%i", __FUNCTION__, group.strGroupName, group.bIsRadio);
+    command.Format("ListRadioChannels:%s\n", uri::encode(uri::PATH_TRAITS, group.strGroupName).c_str());
+  } else {
+    XBMC->Log(LOG_DEBUG, "%s: for group '%s', radio=%i", __FUNCTION__, group.strGroupName, group.bIsRadio);
+    command.Format("ListTVChannels:%s\n", uri::encode(uri::PATH_TRAITS, group.strGroupName).c_str());
+  }
+  SendCommand2(command.c_str(), code, lines);
+
+  memset(&tag,0 , sizeof(PVR_CHANNEL_GROUP_MEMBER));
+
+  for (vector<string>::iterator it = lines.begin(); it < lines.end(); it++)
+  {
+    string& data(*it);
+
+    if (data.length() == 0) {
+      if(group.bIsRadio)
+        XBMC->Log(LOG_DEBUG, "TVServer returned no data. Empty/non existing radio group '%s'?", g_szRadioGroup.c_str());
+      else
+        XBMC->Log(LOG_DEBUG, "TVServer returned no data. Empty/non existing tv group '%s'?", g_szTVGroup.c_str());
+      break;
+    }
+
+    uri::decode(data);
+
+    cChannel channel;
+    if( channel.Parse(data) )
+    {
+      tag.iChannelUniqueId = channel.UID();
+      tag.iChannelNumber = channel.UID(); //channel.ExternalID();
+      tag.strGroupName = group.strGroupName;
+
+      XBMC->Log(LOG_DEBUG, "%s - add channel %s (%d) to group '%s' channel number %d",
+        __FUNCTION__, channel.Name(), tag.iChannelUniqueId, group.strGroupName, channel.UID());
+
+      PVR->TransferChannelGroupMember(handle, &tag);
+    }
+  }
+
+  return PVR_ERROR_NO_ERROR;
+}
+
+/************************************************************/
 /** Record handling **/
 
 int cPVRClientMediaPortal::GetNumRecordings(void)
