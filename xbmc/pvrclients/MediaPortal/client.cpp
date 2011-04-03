@@ -365,7 +365,7 @@ PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES *pCapabilities)
   pCapabilities->bSupportsTV                 = true;
   pCapabilities->bSupportsRadio              = g_bRadioEnabled;
   pCapabilities->bSupportsChannelSettings    = true;
-  pCapabilities->bSupportsChannelGroups      = false;
+  pCapabilities->bSupportsChannelGroups      = true;
   pCapabilities->bHandlesInputStream         = true;
   pCapabilities->bHandlesDemuxing            = false;
   pCapabilities->bSupportsChannelScan        = false;
@@ -466,6 +466,25 @@ PVR_ERROR DialogChannelSettings(const PVR_CHANNEL &channelinfo)
 PVR_ERROR DialogAddChannel(const PVR_CHANNEL &channelinfo)
 {
   return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+
+/*******************************************/
+/** PVR Channel group Functions           **/
+
+int GetChannelGroupsAmount(void)
+{
+  return g_client->GetChannelGroupsAmount();
+}
+
+PVR_ERROR GetChannelGroups(PVR_HANDLE handle, bool bRadio)
+{
+  return g_client->GetChannelGroups(handle, bRadio);
+}
+
+PVR_ERROR GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
+{
+  return g_client->GetChannelGroupMembers(handle, group);
 }
 
 
@@ -580,9 +599,6 @@ const char * GetLiveStreamURL(const PVR_CHANNEL &channel)
 
 /** UNUSED API FUNCTIONS */
 PVR_ERROR MoveChannel(const PVR_CHANNEL &channel) { return PVR_ERROR_NOT_IMPLEMENTED; }
-int GetChannelGroupsAmount(void) { return -1; }
-PVR_ERROR GetChannelGroups(PVR_HANDLE handle, bool bRadio) { return PVR_ERROR_NOT_IMPLEMENTED; }
-PVR_ERROR GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group) { return PVR_ERROR_NOT_IMPLEMENTED; }
 DemuxPacket* DemuxRead(void) { return NULL; }
 void DemuxAbort(void) {}
 void DemuxReset(void) {}

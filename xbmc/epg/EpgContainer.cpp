@@ -26,8 +26,8 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "log.h"
-#include "TimeUtils.h"
+#include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 #include "EpgContainer.h"
 #include "Epg.h"

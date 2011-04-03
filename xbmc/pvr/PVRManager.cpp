@@ -773,7 +773,10 @@ bool CPVRManager::OpenLiveStream(const CPVRChannel &tag)
 
   if ((bReturn = m_addons->OpenLiveStream(tag)) != false)
   {
-    delete m_currentFile;
+    if(m_currentFile)
+    {
+      delete m_currentFile;
+    }
     m_currentFile = new CFileItem(tag);
 
     LoadCurrentChannelSettings();

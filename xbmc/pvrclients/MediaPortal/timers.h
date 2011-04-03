@@ -116,7 +116,7 @@ class cTimer
     //                                      skipped: idParentSchedule: not yet supported in XBMC
 
     // XBMC asks for these fields:
-    int         m_active;
+    bool        m_active;
     bool        m_done;
     bool        m_ismanual;
     bool        m_isrecording;

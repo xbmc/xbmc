@@ -434,8 +434,8 @@ bool CPVRClients::OpenLiveStream(const CPVRChannel &tag)
   ResetQualityData();
 
   /* try to open the stream on the client */
-  if (tag.StreamURL().IsEmpty() &&
-      m_clientsProps[tag.ClientID()].bHandlesInputStream &&
+  if ((tag.StreamURL().IsEmpty() == false ||
+      m_clientsProps[tag.ClientID()].bHandlesInputStream) &&
       m_clientMap[tag.ClientID()]->OpenLiveStream(tag))
   {
     m_currentChannel = &tag;

@@ -119,6 +119,8 @@ void cTimer::GetPVRtimerinfo(PVR_TIMER &tag)
   tag.iWeekdays         = RepeatFlags();
   tag.iMarginStart      = m_prerecordinterval * 60;
   tag.iMarginEnd        = m_postrecordinterval * 60;
+  tag.iGenreType        = 0;
+  tag.iGenreSubType     = 0;
 }
 
 time_t cTimer::StartTime(void) const
