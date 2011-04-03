@@ -161,6 +161,8 @@ public:
    */
   const CPVRChannel *GetByChannelIDFromAll(int iChannelID);
 
+  const CPVRChannel *GetByClientFromAll(unsigned int iClientId, unsigned int iChannelUid);
+
   /*!
    * @brief Get a channel given it's unique ID.
    * @param iUniqueID The unique ID of the channel.

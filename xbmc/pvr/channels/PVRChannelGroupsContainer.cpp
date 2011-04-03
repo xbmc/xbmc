@@ -234,6 +234,18 @@ const CPVRChannel *CPVRChannelGroupsContainer::GetByChannelIDFromAll(int iChanne
   return channel;
 }
 
+const CPVRChannel *CPVRChannelGroupsContainer::GetByClientFromAll(unsigned int iClientId, unsigned int iChannelUid)
+{
+  const CPVRChannel *channel = NULL;
+
+  channel = GetGroupAllTV()->GetByClient(iChannelUid, iClientId);
+
+  if (channel == NULL)
+    channel = GetGroupAllRadio()->GetByClient(iChannelUid, iClientId);
+
+  return channel;
+}
+
 const CPVRChannel *CPVRChannelGroupsContainer::GetByUniqueIDFromAll(int iUniqueID)
 {
   const CPVRChannel *channel;
