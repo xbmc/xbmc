@@ -77,7 +77,7 @@ int CPVREpgContainer::GetEPGAll(CFileItemList* results, bool bRadio /* = false *
   for (unsigned int iChannelPtr = 0; iChannelPtr < group->Size(); iChannelPtr++)
   {
     CPVRChannel *channel = (CPVRChannel *) group->GetByIndex(iChannelPtr);
-    if (!channel)
+    if (!channel || channel->IsHidden())
       continue;
 
     channel->GetEPG(results);
