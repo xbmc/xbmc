@@ -457,6 +457,7 @@ void CPVRManager::Process()
     UpdateRecordings();
     UpdateTimers();
     m_addons->UpdateSignalQuality();
+    m_addons->UpdateCharInfo();
 
     Sleep(1000);
   }

@@ -305,8 +305,8 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg,
     handle.dataIdentifier = bSaveInDb ? 1 : 0; // used by the callback method CAddonCallbacksPVR::PVRTransferEpgEntry()
     retVal = m_pStruct->GetEpg(&handle,
         addonChannel,
-        start ? start - g_advancedSettings.m_iUserDefinedEPGTimeCorrection : 0,
-        end ? end - g_advancedSettings.m_iUserDefinedEPGTimeCorrection : 0);
+        start ? start - g_advancedSettings.m_iPVRTimeCorrection : 0,
+        end ? end - g_advancedSettings.m_iPVRTimeCorrection : 0);
 
     if (retVal != PVR_ERROR_NO_ERROR)
     {
@@ -605,7 +605,7 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PV
   time_t recTime;
   xbmcRecording.RecordingTimeAsUTC().GetAsTime(recTime);
 
-  addonRecording.recordingTime = recTime - g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
+  addonRecording.recordingTime = recTime - g_advancedSettings.m_iPVRTimeCorrection;
   addonRecording.iClientIndex   = xbmcRecording.m_iClientIndex;
   addonRecording.strTitle       = xbmcRecording.m_strTitle.c_str();
   addonRecording.strPlotOutline = xbmcRecording.m_strPlotOutline.c_str();
@@ -857,9 +857,9 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
   addonTimer.iLifetime         = xbmcTimer.m_iLifetime;
   addonTimer.bIsRepeating      = xbmcTimer.m_bIsRepeating;
   addonTimer.iWeekdays         = xbmcTimer.m_iWeekdays;
-  addonTimer.startTime         = start - g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
-  addonTimer.endTime           = end - g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
-  addonTimer.firstDay          = firstDay - g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
+  addonTimer.startTime         = start - g_advancedSettings.m_iPVRTimeCorrection;
+  addonTimer.endTime           = end - g_advancedSettings.m_iPVRTimeCorrection;
+  addonTimer.firstDay          = firstDay - g_advancedSettings.m_iPVRTimeCorrection;
   addonTimer.iEpgUid           = xbmcTimer.m_epgInfo ? xbmcTimer.m_epgInfo->UniqueBroadcastID() : -1;
   addonTimer.strSummary        = xbmcTimer.m_strSummary.c_str();
   addonTimer.iMarginStart      = xbmcTimer.m_iMarginStart;

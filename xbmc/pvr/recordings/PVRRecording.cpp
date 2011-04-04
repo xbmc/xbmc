@@ -37,7 +37,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_iClientIndex   = recording.iClientIndex;
   m_strTitle       = recording.strTitle;
   m_iClientId      = iClientId;
-  m_recordingTime  = recording.recordingTime + g_advancedSettings.m_iUserDefinedEPGTimeCorrection;
+  m_recordingTime  = recording.recordingTime + g_advancedSettings.m_iPVRTimeCorrection;
   m_duration       = CDateTimeSpan(0, 0, recording.iDuration / 60, recording.iDuration % 60);
   m_iPriority      = recording.iPriority;
   m_iLifetime      = recording.iLifetime;

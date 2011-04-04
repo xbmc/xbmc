@@ -288,6 +288,8 @@ public:
 
   void Unload(void);
 
+  void UpdateCharInfo(void);
+
   const char *CharInfoVideoBR(void) const;
   const char *CharInfoAudioBR(void) const;
   const char *CharInfoDolbyBR(void) const;
@@ -298,8 +300,8 @@ public:
   const char *CharInfoFrontendName(void) const;
   const char *CharInfoFrontendStatus(void) const;
   const char *CharInfoBackendName(void) const;
-  const char *CharInfoBackendNumber(void);
-  const char *CharInfoTotalDiskSpace(void);
+  const char *CharInfoBackendNumber(void) const;
+  const char *CharInfoTotalDiskSpace(void) const;
   const char *CharInfoEncryption(void) const;
   const char *CharInfoBackendVersion(void) const;
   const char *CharInfoBackendHost(void) const;
