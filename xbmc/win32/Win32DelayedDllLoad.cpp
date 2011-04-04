@@ -42,6 +42,18 @@ FARPROC WINAPI delayHookNotifyFunc (unsigned dliNotify, PDelayLoadInfo pdli)
        HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
        return (FARPROC)hMod;
      }
+	 if (stricmp(pdli->szDll, "sqlite3.dll") == 0)
+     {
+       CStdString strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/sqlite3.dll");
+       HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
+       return (FARPROC)hMod;
+     }
+	  if (stricmp(pdli->szDll, "libsamplerate-0.dll") == 0)
+     {
+       CStdString strDll = CSpecialProtocol::TranslatePath("special://xbmcbin/system/libsamplerate-0.dll");
+       HMODULE hMod = LoadLibraryEx(strDll.c_str(), 0, LOAD_WITH_ALTERED_SEARCH_PATH);
+       return (FARPROC)hMod;
+     }
      break;
   }
   return NULL;

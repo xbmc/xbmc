@@ -9,5 +9,6 @@ cd %TMP_PATH%
 
 xcopy include "%CUR_PATH%\include" /E /Q /I /Y
 copy lib\sqlite3.lib "%CUR_PATH%\lib\" /Y
+copy bin\sqlite3.dll "%XBMC_PATH%\system\" /Y
 
 cd %LOC_PATH%

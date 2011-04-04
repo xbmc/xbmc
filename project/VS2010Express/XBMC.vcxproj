@@ -169,7 +169,7 @@
       <IgnoreSpecificDefaultLibraries>libc;msvcrt;libcmt;msvcrtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
-      <DelayLoadDLLs>dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <DelayLoadDLLs>dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;libsamplerate-0.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)XBMC.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
