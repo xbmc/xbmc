@@ -21,6 +21,7 @@
  */
 
 #include "threads/CriticalSection.h"
+#include "threads/Thread.h"
 #include "PVRClient.h"
 
 #include <vector>
@@ -34,7 +35,8 @@ typedef std::map< long, PVR_STREAM_PROPERTIES >                   STREAMPROPS;
 #define XBMC_VIRTUAL_CLIENTID -1
 
 class CPVRClients : IPVRClientCallback,
-                    public ADDON::IAddonMgrCallback
+                    public ADDON::IAddonMgrCallback,
+                    private CThread
 {
 public:
   CPVRClients(void);
@@ -288,8 +290,6 @@ public:
 
   void Unload(void);
 
-  void UpdateCharInfo(void);
-
   const char *CharInfoVideoBR(void) const;
   const char *CharInfoAudioBR(void) const;
   const char *CharInfoDolbyBR(void) const;
@@ -317,16 +317,18 @@ public:
   bool IsValidClient(int iClientId);
   bool ClientLoaded(const CStdString &strClientId);
 
-  /*!
-   * @brief Update the signal quality info.
-   */
-  void UpdateSignalQuality(void);
+  void Start(void);
+  void Stop(void);
 
 private:
   int AddClientToDb(const CStdString &strClientId, const CStdString &strName);
   int ReadLiveStream(void* lpBuf, int64_t uiBufSize);
   int ReadRecordedStream(void* lpBuf, int64_t uiBufSize);
   bool GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks);
+
+  void UpdateCharInfoDiskSpace(void);
+  void UpdateCharInfoSignalStatus(void);
+  void UpdateCharInfoBackendStatus(void);
 
   /*!
    * @brief Load and initialise all clients.
@@ -338,6 +340,11 @@ private:
    * @brief Reset the signal quality data to the initial values.
    */
   void ResetQualityData(void);
+
+  /*!
+   * @brief Updates the backend information
+   */
+  void Process(void);
 
   int GetActiveClients(CLIENTMAP *clients);
 
@@ -363,6 +370,8 @@ private:
 
   unsigned int          m_iInfoToggleStart;
   unsigned int          m_iInfoToggleCurrent;
+
+  unsigned int          m_iUpdateTick; /*!< increased by 1 every time UpdateCharInfo() is called. reset to 0 when it reaches 1000 */
 
   DWORD                 m_scanStart;                /* Scan start time to check for non present streams */
 };

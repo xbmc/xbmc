@@ -280,6 +280,7 @@ void CPVRManager::StartThreads()
 void CPVRManager::StopThreads()
 {
   m_epg->StopThread();
+  m_addons->Stop();
   StopThread();
 }
 
@@ -432,6 +433,9 @@ void CPVRManager::Process()
 
   m_bLoaded = true;
 
+  /* start the add-on info updater */
+  m_addons->Start();
+
   /* start the EPG thread */
   m_epg->AddObserver(this);
   m_epg->Start();
@@ -456,8 +460,6 @@ void CPVRManager::Process()
     UpdateChannels();
     UpdateRecordings();
     UpdateTimers();
-    m_addons->UpdateSignalQuality();
-    m_addons->UpdateCharInfo();
 
     Sleep(1000);
   }

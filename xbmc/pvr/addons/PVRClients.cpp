@@ -48,6 +48,7 @@ CPVRClients::CPVRClients(void)
   m_iInfoToggleStart    = 0;
   m_iInfoToggleCurrent  = 0;
   m_scanStart           = 0;
+  m_iUpdateTick         = 0;
   m_clientsProps.clear();
   m_clientMap.clear();
   ResetQualityData();
@@ -401,18 +402,6 @@ void CPVRClients::ResetQualityData(void)
   m_qualityInfo.dVideoBitrate = 0;
   m_qualityInfo.dAudioBitrate = 0;
   m_qualityInfo.dDolbyBitrate = 0;
-}
-
-void CPVRClients::UpdateSignalQuality(void)
-{
-  CSingleLock lock(m_critSection);
-
-  if (!m_currentChannel || !g_guiSettings.GetBool("pvrplayback.signalquality"))
-    ResetQualityData();
-  else if (!m_currentChannel->IsVirtual() && m_currentChannel->ClientID() >= 0 && m_clientMap[m_currentChannel->ClientID()])
-    m_clientMap[m_currentChannel->ClientID()]->SignalQuality(m_qualityInfo);
-  else
-    ResetQualityData();
 }
 
 bool CPVRClients::IsReadingLiveStream(void) const
@@ -882,7 +871,86 @@ const CStdString CPVRClients::GetStreamURL(const CPVRChannel &tag)
   return strReturn;
 }
 
-void CPVRClients::UpdateCharInfo(void)
+void CPVRClients::Start(void)
+{
+  Stop();
+
+  Create();
+  SetName("XBMC PVR backend info");
+  SetPriority(-1);
+}
+
+void CPVRClients::Stop(void)
+{
+  StopThread();
+}
+
+void CPVRClients::Process(void)
+{
+  bool bInitialised(false);
+
+  while (!m_bStop)
+  {
+    if (++m_iUpdateTick > 1000)
+      m_iUpdateTick = 0;
+
+    UpdateCharInfoSignalStatus(); /* update every second while playing */
+
+    if (!bInitialised || m_iUpdateTick % 100 == 0)
+    {
+      /* update every 100 seconds */
+      Sleep(25);
+      UpdateCharInfoBackendStatus();
+      Sleep(25);
+      UpdateCharInfoDiskSpace();
+    }
+
+    bInitialised = true;
+    Sleep(1000);
+  }
+}
+
+void CPVRClients::UpdateCharInfoDiskSpace(void)
+{
+  long long kBTotal = 0;
+  long long kBUsed  = 0;
+  CSingleLock lock(m_critSection);
+
+  CLIENTMAPITR itr = m_clientMap.begin();
+  while (itr != m_clientMap.end())
+  {
+    long long clientKBTotal = 0;
+    long long clientKBUsed  = 0;
+
+    if (m_clientMap[(*itr).first]->GetDriveSpace(&clientKBTotal, &clientKBUsed) == PVR_ERROR_NO_ERROR)
+    {
+      kBTotal += clientKBTotal;
+      kBUsed += clientKBUsed;
+    }
+    itr++;
+  }
+  kBTotal /= 1024; // Convert to MBytes
+  kBUsed /= 1024;  // Convert to MBytes
+  m_strTotalDiskspace.Format("%s %0.1f GByte - %s: %0.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
+}
+
+void CPVRClients::UpdateCharInfoSignalStatus(void)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_currentChannel && g_guiSettings.GetBool("pvrplayback.signalquality") &&
+      !m_currentChannel->IsVirtual() && m_currentChannel->ClientID() >= 0 &&
+      m_clientMap[m_currentChannel->ClientID()])
+  {
+    m_clientMap[m_currentChannel->ClientID()]->SignalQuality(m_qualityInfo);
+  }
+  else
+  {
+    ResetQualityData();
+  }
+}
+
+void CPVRClients::UpdateCharInfoBackendStatus(void)
 {
   CSingleLock lock(m_critSection);
 
@@ -952,26 +1020,6 @@ void CPVRClients::UpdateCharInfo(void)
     }
     m_iInfoToggleStart = CTimeUtils::GetTimeMS();
   }
-
-  long long kBTotal = 0;
-  long long kBUsed  = 0;
-
-  CLIENTMAPITR itr = m_clientMap.begin();
-  while (itr != m_clientMap.end())
-  {
-    long long clientKBTotal = 0;
-    long long clientKBUsed  = 0;
-
-    if (m_clientMap[(*itr).first]->GetDriveSpace(&clientKBTotal, &clientKBUsed) == PVR_ERROR_NO_ERROR)
-    {
-      kBTotal += clientKBTotal;
-      kBUsed += clientKBUsed;
-    }
-    itr++;
-  }
-  kBTotal /= 1024; // Convert to MBytes
-  kBUsed /= 1024;  // Convert to MBytes
-  m_strTotalDiskspace.Format("%s %0.1f GByte - %s: %0.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
 }
 
 const char *CPVRClients::CharInfoBackendNumber(void) const
