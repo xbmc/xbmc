@@ -342,6 +342,7 @@ lib/cmyth/Makefile
 /system/libssh2.dll
 /system/libssl32.dll
 /system/hdhomerun.dll
+/system/ssh.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
