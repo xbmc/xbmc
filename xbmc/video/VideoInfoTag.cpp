@@ -387,10 +387,13 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["votes"] = m_strVotes;
   value["studio"] = m_strStudio;
   value["trailer"] = m_strTrailer;
+  value["cast"] = CVariant(CVariant::VariantTypeArray);
   for (unsigned int i = 0; i < m_cast.size(); ++i)
   {
-    value["cast"][i]["name"] = m_cast[i].strName;
-    value["cast"][i]["role"] = m_cast[i].strRole;
+    CVariant actor;
+    actor["name"] = m_cast[i].strName;
+    actor["role"] = m_cast[i].strRole;
+    value["cast"].push_back(actor);
   }
   value["set"] = m_strSet;
   value["runtime"] = m_strRuntime;

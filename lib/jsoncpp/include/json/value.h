@@ -1,3 +1,8 @@
+// Copyright 2007-2010 Baptiste Lepilleur
+// Distributed under MIT license, or public domain if desired and
+// recognized in your jurisdiction.
+// See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
+
 #ifndef CPPTL_JSON_H_INCLUDED
 # define CPPTL_JSON_H_INCLUDED
 
@@ -117,16 +122,39 @@ namespace Json {
 # endif
    public:
       typedef std::vector<std::string> Members;
-      typedef int Int;
-      typedef unsigned int UInt;
       typedef ValueIterator iterator;
       typedef ValueConstIterator const_iterator;
-      typedef UInt ArrayIndex;
+      typedef Json::UInt UInt;
+      typedef Json::Int Int;
+# if defined(JSON_HAS_INT64)
+      typedef Json::UInt64 UInt64;
+      typedef Json::Int64 Int64;
+#endif // defined(JSON_HAS_INT64)
+	  typedef Json::LargestInt LargestInt;
+	  typedef Json::LargestUInt LargestUInt;
+      typedef Json::ArrayIndex ArrayIndex;
 
       static const Value null;
-      static const Int minInt;
+	  /// Minimum signed integer value that can be stored in a Json::Value.
+	  static const LargestInt minLargestInt;
+	  /// Maximum signed integer value that can be stored in a Json::Value.
+      static const LargestInt maxLargestInt;
+	  /// Maximum unsigned integer value that can be stored in a Json::Value.
+      static const LargestUInt maxLargestUInt;
+
+	  /// Minimum signed int value that can be stored in a Json::Value.
+	  static const Int minInt;
+	  /// Maximum signed int value that can be stored in a Json::Value.
       static const Int maxInt;
+	  /// Maximum unsigned int value that can be stored in a Json::Value.
       static const UInt maxUInt;
+
+	  /// Minimum signed 64 bits int value that can be stored in a Json::Value.
+	  static const Int64 minInt64;
+	  /// Maximum signed 64 bits int value that can be stored in a Json::Value.
+      static const Int64 maxInt64;
+	  /// Maximum unsigned 64 bits int value that can be stored in a Json::Value.
+      static const UInt64 maxUInt64;
 
    private:
 #ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
@@ -140,20 +168,20 @@ namespace Json {
             duplicate,
             duplicateOnCopy
          };
-         CZString( int index );
+         CZString( ArrayIndex index );
          CZString( const char *cstr, DuplicationPolicy allocate );
          CZString( const CZString &other );
          ~CZString();
          CZString &operator =( const CZString &other );
          bool operator<( const CZString &other ) const;
          bool operator==( const CZString &other ) const;
-         int index() const;
+         ArrayIndex index() const;
          const char *c_str() const;
          bool isStaticString() const;
       private:
          void swap( CZString &other );
          const char *cstr_;
-         int index_;
+         ArrayIndex index_;
       };
 
    public:
@@ -184,8 +212,13 @@ namespace Json {
       Value( ValueType type = nullValue );
       Value( Int value );
       Value( UInt value );
+#if defined(JSON_HAS_INT64)
+      Value( Int64 value );
+      Value( UInt64 value );
+#endif // if defined(JSON_HAS_INT64)
       Value( double value );
       Value( const char *value );
+      Value( const char *beginValue, const char *endValue );
       /** \brief Constructs a value from a static string.
 
        * Like other value string constructor but do not duplicate the string for
@@ -230,6 +263,11 @@ namespace Json {
 # endif
       Int asInt() const;
       UInt asUInt() const;
+      Int64 asInt64() const;
+      UInt64 asUInt64() const;
+      LargestInt asLargestInt() const;
+      LargestUInt asLargestUInt() const;
+      float asFloat() const;
       double asDouble() const;
       bool asBool() const;
 
@@ -247,7 +285,7 @@ namespace Json {
       bool isConvertibleTo( ValueType other ) const;
 
       /// Number of values in array or object
-      UInt size() const;
+      ArrayIndex size() const;
 
       /// \brief Return true if empty array, empty object, or null;
       /// otherwise, false.
@@ -266,24 +304,38 @@ namespace Json {
       /// May only be called on nullValue or arrayValue.
       /// \pre type() is arrayValue or nullValue
       /// \post type() is arrayValue
-      void resize( UInt size );
+      void resize( ArrayIndex size );
 
       /// Access an array element (zero based index ).
       /// If the array contains less than index element, then null value are inserted
       /// in the array so that its size is index+1.
       /// (You may need to say 'value[0u]' to get your compiler to distinguish
       ///  this from the operator[] which takes a string.)
-      Value &operator[]( UInt index );
-      /// Access an array element (zero based index )
+      Value &operator[]( ArrayIndex index );
+
+	  /// Access an array element (zero based index ).
+      /// If the array contains less than index element, then null value are inserted
+      /// in the array so that its size is index+1.
       /// (You may need to say 'value[0u]' to get your compiler to distinguish
       ///  this from the operator[] which takes a string.)
-      const Value &operator[]( UInt index ) const;
-      /// If the array contains at least index+1 elements, returns the element value, 
+      Value &operator[]( int index );
+
+	  /// Access an array element (zero based index )
+      /// (You may need to say 'value[0u]' to get your compiler to distinguish
+      ///  this from the operator[] which takes a string.)
+      const Value &operator[]( ArrayIndex index ) const;
+
+	  /// Access an array element (zero based index )
+      /// (You may need to say 'value[0u]' to get your compiler to distinguish
+      ///  this from the operator[] which takes a string.)
+      const Value &operator[]( int index ) const;
+
+	  /// If the array contains at least index+1 elements, returns the element value, 
       /// otherwise returns defaultValue.
-      Value get( UInt index, 
+      Value get( ArrayIndex index, 
                  const Value &defaultValue ) const;
       /// Return true if index < size().
-      bool isValidIndex( UInt index ) const;
+      bool isValidIndex( ArrayIndex index ) const;
       /// \brief Append value to array at the end.
       ///
       /// Equivalent to jsonvalue[jsonvalue.size()] = value;
@@ -423,8 +475,8 @@ namespace Json {
 
       union ValueHolder
       {
-         Int int_;
-         UInt uint_;
+         LargestInt int_;
+         LargestUInt uint_;
          double real_;
          bool bool_;
          char *string_;
@@ -453,7 +505,7 @@ namespace Json {
       friend class Path;
 
       PathArgument();
-      PathArgument( Value::UInt index );
+      PathArgument( ArrayIndex index );
       PathArgument( const char *key );
       PathArgument( const std::string &key );
 
@@ -465,7 +517,7 @@ namespace Json {
          kindKey
       };
       std::string key_;
-      Value::UInt index_;
+      ArrayIndex index_;
       Kind kind_;
    };
 
@@ -512,26 +564,7 @@ namespace Json {
       Args args_;
    };
 
-   /** \brief Allocator to customize member name and string value memory management done by Value.
-    *
-    * - makeMemberName() and releaseMemberName() are called to respectively duplicate and
-    *   free an Json::objectValue member name.
-    * - duplicateStringValue() and releaseStringValue() are called similarly to
-    *   duplicate and free a Json::stringValue value.
-    */
-   class ValueAllocator
-   {
-   public:
-      enum { unknown = (unsigned)-1 };
 
-      virtual ~ValueAllocator();
-
-      virtual char *makeMemberName( const char *memberName ) = 0;
-      virtual void releaseMemberName( char *memberName ) = 0;
-      virtual char *duplicateStringValue( const char *value, 
-                                          unsigned int length = unknown ) = 0;
-      virtual void releaseStringValue( char *value ) = 0;
-   };
 
 #ifdef JSON_VALUE_USE_INTERNAL_MAP
    /** \brief Allocator to customize Value internal map.
@@ -784,7 +817,7 @@ namespace Json {
       PageIndex pageCount_;
    };
 
-   /** \brief Allocator to customize Value internal array.
+   /** \brief Experimental: do not use. Allocator to customize Value internal array.
     * Below is an example of a simple implementation (actual implementation use
     * memory pool).
       \code
@@ -872,7 +905,7 @@ public: // overridden from ValueArrayAllocator
 #endif // #ifdef JSON_VALUE_USE_INTERNAL_MAP
 
 
-   /** \brief Experimental and untested: base class for Value iterators.
+   /** \brief base class for Value iterators.
     *
     */
    class ValueIteratorBase
@@ -909,7 +942,7 @@ public: // overridden from ValueArrayAllocator
       Value key() const;
 
       /// Return the index of the referenced Value. -1 if it is not an arrayValue.
-      Value::UInt index() const;
+      UInt index() const;
 
       /// Return the member name of the referenced Value. "" if it is not an objectValue.
       const char *memberName() const;
@@ -942,7 +975,7 @@ public: // overridden from ValueArrayAllocator
 #endif
    };
 
-   /** \brief Experimental and untested: const iterator for object and array value.
+   /** \brief const iterator for object and array value.
     *
     */
    class ValueConstIterator : public ValueIteratorBase
@@ -1001,7 +1034,7 @@ public: // overridden from ValueArrayAllocator
    };
 
 
-   /** \brief Experimental and untested: iterator for object and array value.
+   /** \brief Iterator for object and array value.
     */
    class ValueIterator : public ValueIteratorBase
    {

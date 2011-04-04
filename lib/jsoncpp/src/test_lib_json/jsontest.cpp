@@ -1,3 +1,8 @@
+// Copyright 2007-2010 Baptiste Lepilleur
+// Distributed under MIT license, or public domain if desired and
+// recognized in your jurisdiction.
+// See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
+
 #define _CRT_SECURE_NO_WARNINGS 1 // Prevents deprecation warning with MSVC
 #include "jsontest.h"
 #include <stdio.h>
@@ -300,6 +305,11 @@ TestResult::operator << ( const std::string &value )
 
 TestCase::TestCase()
    : result_( 0 )
+{
+}
+
+
+TestCase::~TestCase()
 {
 }
 

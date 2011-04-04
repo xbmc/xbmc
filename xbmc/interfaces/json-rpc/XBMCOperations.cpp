@@ -38,11 +38,7 @@ JSON_STATUS CXBMCOperations::GetVolume(const CStdString &method, ITransportLayer
 
 JSON_STATUS CXBMCOperations::SetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!parameterObject.isInt())
-    return InvalidParams;
-
-  int percentage = parameterObject.asInt();
-  g_application.SetVolume(percentage);
+  g_application.SetVolume(parameterObject["value"].asInt());
   return GetVolume(method, transport, client, parameterObject, result);
 }
 
@@ -68,22 +64,15 @@ JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransport
 {
   CStdString exec = "slideShow(";
 
-  if (parameterObject.isString())
-    exec += parameterObject.asString();
-  else if (parameterObject.isObject() && parameterObject.isMember("directory") && parameterObject["directory"].isString())
-  {
-    exec += parameterObject["directory"].asString();
+  exec += parameterObject["directory"].asString();
 
-    if (parameterObject.get("random", true).asBool())
-      exec += ", random";
-    else
-      exec += ", notrandom";
-
-    if (parameterObject.get("recursive", true).asBool())
-      exec += ", recursive";
-  }
+  if (parameterObject["random"].asBool())
+    exec += ", random";
   else
-    return InvalidParams;
+    exec += ", notrandom";
+
+  if (parameterObject["recursive"].asBool())
+    exec += ", recursive";
 
   exec += ")";
   ThreadMessage msg = { TMSG_EXECUTE_BUILT_IN, (DWORD)0, (DWORD)0, exec };
@@ -94,20 +83,14 @@ JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransport
 
 JSON_STATUS CXBMCOperations::Log(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (parameterObject.isString())
-    CLog::Log(LOGDEBUG, "%s", parameterObject.asString().c_str());
-  else if (parameterObject.isObject() && parameterObject.isMember("message") && parameterObject["message"].isString())
-  {
-    if (parameterObject.isMember("level") && !parameterObject["level"].isString())
-      return InvalidParams;
-
-    CStdString strlevel = parameterObject.get("level", "debug").asString();
-    int level = ParseLogLevel(strlevel.ToLower().c_str());
-
-    CLog::Log(level, "%s", parameterObject["message"].asString().c_str());
-  }
-  else
+  CStdString message = parameterObject["message"].asString();
+  if (message.IsEmpty())
     return InvalidParams;
+
+  CStdString strLevel = parameterObject["level"].asString();
+  int level = ParseLogLevel(strLevel.ToLower().c_str());
+
+  CLog::Log(level, "%s", message.c_str());
 
   return ACK;
 }
