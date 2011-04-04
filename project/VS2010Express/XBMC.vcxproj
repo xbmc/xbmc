@@ -1084,7 +1084,6 @@
     <ClInclude Include="..\..\lib\ffmpeg\include-xbmc-win32\libavutil\avconfig.h" />
     <ClInclude Include="..\..\lib\tinyXML\tinystr.h" />
     <ClInclude Include="..\..\lib\tinyXML\tinyxml.h" />
-    <ClInclude Include="..\..\lib\win32\sqlite\sqlite3.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonDatabase.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonInstaller.h" />
     <ClInclude Include="..\..\xbmc\addons\DllLibCPluff.h" />
@@ -1970,10 +1969,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\lib\libXDAAP\libXDAAP_win32\libXDAAP_win32.vcxproj">
       <Project>{19b16cd0-3b47-47b7-ab0e-81ef2bf1b187}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\..\lib\win32\sqlite\libsqlite_win32\libsqlite_win32.vcxproj">
-      <Project>{9e74df3b-9343-4689-b0ec-4451617f9489}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="libPlatinum.vcxproj">
