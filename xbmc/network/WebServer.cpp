@@ -28,9 +28,11 @@
 #include "URL.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "../pictures/Picture.h"
 #include "threads/SingleLock.h"
 #include "DateTime.h"
 #include "addons/AddonManager.h"
+#include <sstream>
 
 #ifdef _WIN32
 #pragma comment(lib, "../../lib/win32/libmicrohttpd_win32/lib/libmicrohttpd.dll.lib")
@@ -298,23 +300,86 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 {
   int ret = MHD_NO;
   CFile *file = new CFile();
-
+  CStdString ext = URIUtils::GetExtension(strURL);
+  /*****************************************
+  The changes below check for the url parameters w, h, q, and f. If any of these is present,
+  normalize them for missing/incorrect input, and then run the image processing to resize the image.
+  Output options are png/jpg/bmp and width/height. JPG also has a quality setting.
+  The acceptable values are:
+  f: "jpg" "png" "bmp"
+  w: positive integer
+  h: positive integer
+  q: 1-100 (default 65)
+  
+  The mime type is set based on the requested format by changing the extension value.
+  Here's an example request:
+  http://127.0.0.1:8080/vfs/special://masterprofile/Thumbnails/Video/7/7277cc81.tbn?f=jpg&w=192&h=240&q=80
+	  
+  PS- The old way still works (no url parameters).
+  *******************************************/
   if (file->Open(strURL, READ_NO_CACHE))
   {
     struct MHD_Response *response;
-    if (methodType != HEAD)
-    {
-      response = MHD_create_response_from_callback ( file->GetLength(),
-                                                     2048,
-                                                     &CWebServer::ContentReaderCallback, file,
-                                                     &CWebServer::ContentReaderFreeCallback); 
+	if (methodType != HEAD)
+	{
+	  const char* widthstr = MHD_lookup_connection_value (connection, MHD_GET_ARGUMENT_KIND, "w");
+	  const char* heightstr = MHD_lookup_connection_value (connection, MHD_GET_ARGUMENT_KIND, "h");
+	  const char* qualitystr = MHD_lookup_connection_value (connection, MHD_GET_ARGUMENT_KIND, "q");
+	  const char* format = MHD_lookup_connection_value (connection, MHD_GET_ARGUMENT_KIND, "f");
+	  if (widthstr || heightstr || qualitystr || format)
+	  {
+	    int width = -1, height = -1, quality = 65;
+		unsigned char * data = NULL;
+		  
+		if (widthstr)
+		{
+		  istringstream convert(widthstr);
+		  if (!(convert >> width) || width <= 0)
+		    width = -1;
+		}
+		if (heightstr)
+		{
+		  istringstream convert(heightstr);
+		  if (!(convert >> height) || height <= 0)
+		    height = -1;
+		}
+		if (qualitystr)
+		{
+		  istringstream convert(qualitystr);
+		  if (!(convert >> quality) || quality <= 0 || quality > 100)
+	        quality = 65;
+		}
+		if (format != NULL)
+		{
+		  if (strcmp(format, "jpg") && strcmp(format, "png") && strcmp(format, "bmp"))
+		    format = "jpg";
+		} else {
+		  format = "jpg";
+		}
+		ext = CStdString(format);
+		long size = 0;
+		CPicture::EncodeImageToBuffer(strURL, data, size, width, height, format, quality);
+		file->Close();
+		delete file;
+		if (size)
+		{
+		  response = MHD_create_response_from_data (size, data, MHD_YES, MHD_YES);
+		} else {
+		  response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+								             }
+		  free(data);
+		} else {
+		  response = MHD_create_response_from_callback (file->GetLength(),
+		                                                2048,
+                                                        &CWebServer::ContentReaderCallback, file,
+														&CWebServer::ContentReaderFreeCallback);
+		}
     } else {
       file->Close();
       delete file;
       response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
     }
 
-    CStdString ext = URIUtils::GetExtension(strURL);
     ext = ext.ToLower();
     const char *mime = CreateMimeTypeFromExtension(ext.c_str());
     if (mime)

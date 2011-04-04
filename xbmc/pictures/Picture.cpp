@@ -140,6 +140,25 @@ int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile,
   return ret;
 }
 
+/***This is a new method for writing an image from disk into a buffer. The buffer that is passed in should be empty,
+and it will need to be freed via a call to free()
+This is just a wrapper for loading the DLL and doing the encoding/transform.
+***/
+int CPicture::EncodeImageToBuffer(const CStdString &srcFile, unsigned char *&buffer, long &size, int width, int height, const char * format, unsigned int quality)
+{
+  DllImageLib dll;
+  if (!dll.Load()) return false;
+  BYTE * bytes;
+  int ret = dll.EncodeImageToBuffer(srcFile.c_str(), bytes, &size, width, height, format, quality);
+  buffer = (unsigned char *)bytes;
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "%s: Error %i encoding image to buffer %s", __FUNCTION__, ret, srcFile.c_str());
+    return ret;
+  }
+  return ret;
+}
+
 CThumbnailWriter::CThumbnailWriter(unsigned char* buffer, int width, int height, int stride, const CStdString& thumbFile)
 {
   m_buffer    = buffer;
