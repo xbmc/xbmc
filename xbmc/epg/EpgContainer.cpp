@@ -34,6 +34,9 @@
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
 
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+
 using namespace std;
 
 CEpgContainer g_EpgContainer;
@@ -335,8 +338,8 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   /* load or update all EPG tables */
   for (unsigned int iEpgPtr = 0; iEpgPtr < iEpgCount; iEpgPtr++)
   {
-    /* interrupt the update on exit */
-    if (m_bStop)
+    /* interrupt the update on exit or when livetv is playing */
+    if (m_bStop || (CPVRManager::Get()->IsStarted() && CPVRManager::GetClients()->IsPlaying()))
     {
       CLog::Log(LOGNOTICE, "EpgContainer - %s - EPG load/update interrupted", __FUNCTION__);
       bUpdateSuccess = false;
@@ -371,18 +374,14 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
       progress->UpdateState();
     }
 
-    Sleep(25); /* give other threads a chance to get a lock on tables */
+    if (m_bDatabaseLoaded)
+      Sleep(50); /* give other threads a chance to get a lock on tables */
   }
 
+  CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgUpdate);
   /* update the last scan time if we did a full update */
-  if (m_bDatabaseLoaded || m_bIgnoreDbForClient)
-  {
-    if (!m_bIgnoreDbForClient)
+  if (bUpdateSuccess && m_bDatabaseLoaded && !m_bIgnoreDbForClient)
       m_database.PersistLastEpgScanTime(0);
-
-    CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgUpdate);
-  }
-
   m_database.Close();
 
   if (bShowProgress)
