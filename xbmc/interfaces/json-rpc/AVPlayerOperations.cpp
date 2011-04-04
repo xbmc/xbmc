@@ -169,8 +169,6 @@ JSON_STATUS CAVPlayerOperations::SeekPercentage(const CStdString &method, ITrans
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
 
-  float percentage = parameterObject.isDouble() ? (float)parameterObject.asDouble() : (float)parameterObject.asInt();
-
   g_application.SeekPercentage(parameterObject["value"].asFloat());
   return ACK;
 }

@@ -533,7 +533,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
         JSON_STATUS status = checkType(value[arrayIndex], type.items.at(arrayIndex), outputValue[arrayIndex], errorData["property"]);
         if (status != OK)
         {
-          CLog::Log(LOGWARNING, "JSONRPC: Array element at index %u does not match with items schema in type %s", arrayIndex, type.name);
+          CLog::Log(LOGWARNING, "JSONRPC: Array element at index %u does not match with items schema in type %s", arrayIndex, type.name.c_str());
           return status;
         }
       }
@@ -648,7 +648,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
 
     if (!valid)
     {
-      CLog::Log(LOGWARNING, "JSONRPC: Value does not match any of the enum values in type %s", type.name);
+      CLog::Log(LOGWARNING, "JSONRPC: Value does not match any of the enum values in type %s", type.name.c_str());
       errorData["message"] = "Received value does not match any of the defined enum values";
       return InvalidParams;
     }
@@ -714,7 +714,7 @@ bool CJSONServiceDescription::parseMethod(const Json::Value &value, JsonRpcMetho
           !parameter["type"].isArray()) || (parameter.isMember("$ref") &&
           !parameter["$ref"].isString()))
       {
-        CLog::Log(LOGWARNING, "JSONRPC: Method %s has a badly defined parameter", method.name);
+        CLog::Log(LOGWARNING, "JSONRPC: Method %s has a badly defined parameter", method.name.c_str());
         return false;
       }
 
@@ -820,7 +820,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
       if (value["type"][typeIndex].isString())
         parsedType |= StringToSchemaValueType(value["type"][typeIndex].asString());
       else
-        CLog::Log(LOGWARNING, "JSONRPC: Invalid type in union type definition of type %s", type.name);
+        CLog::Log(LOGWARNING, "JSONRPC: Invalid type in union type definition of type %s", type.name.c_str());
     }
 
     type.type = (JSONSchemaType)parsedType;
@@ -900,7 +900,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
         // If it is not a (array of) schema and not a bool (default value is false)
         // it has an invalid value
         else if (!value["additionalItems"].isBool())
-          CLog::Log(LOGWARNING, "Invalid \"additionalItems\" value for type %s", type.name);
+          CLog::Log(LOGWARNING, "Invalid \"additionalItems\" value for type %s", type.name.c_str());
       }
 
       // If the "items" field is a single object
@@ -1010,7 +1010,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
       // If the type of the default value definition does not
       // match the type of the parameter we have to log this
       if (value.isMember("default") && !IsType(value["default"], type.type))
-        CLog::Log(LOGWARNING, "JSONRPC: Parameter %s has an invalid default value", type.name);
+        CLog::Log(LOGWARNING, "JSONRPC: Parameter %s has an invalid default value", type.name.c_str());
       
       // If the type contains an "enum" we need to get the
       // default value from the first enum value
