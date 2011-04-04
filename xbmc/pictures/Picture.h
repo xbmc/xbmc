@@ -28,6 +28,7 @@ public:
   static bool CreateThumbnailFromMemory(const unsigned char* buffer, int bufSize, const CStdString& extension, const CStdString& thumbFile);
   static bool CreateThumbnailFromSurface(const unsigned char* buffer, int width, int height, int stride, const CStdString &thumbFile);
   static int ConvertFile(const CStdString& srcFile, const CStdString& destFile, float rotateDegrees, int width, int height, unsigned int quality, bool mirror=false);
+  static int EncodeImageToBuffer(const CStdString& srcFile, unsigned char* &buffer, long& size, int width, int height, const char * format="jpg", unsigned int quality=65);
 
   static void CreateFolderThumb(const CStdString *thumbs, const CStdString &folderThumb);
   static bool CreateThumbnail(const CStdString& file, const CStdString& thumbFile, bool checkExistence = false);
