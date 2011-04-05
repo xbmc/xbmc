@@ -271,7 +271,7 @@
 			<visible>Control.IsVisible(508)</visible>
 			<include>VisibleFadeEffect</include>
 			<posx>0</posx>
-			<posy>440</posy>
+			<posy>460</posy>
 			<control type="fixedlist" id="508">
 				<visible>Container.Content(Movies) | [Container.Content(TVShows) + Skin.HasSetting(TVShowsUsePosters)]</visible>
 				<posx>-20</posx>
@@ -377,22 +377,9 @@
 				<include>AudioCodecFlaggingConditions</include>
 				<visible>Skin.HasSetting(View508HideInfo)</visible>
 			</control>
-			<control type="label">
-				<posx>40</posx>
-				<posy>188</posy>
-				<width>1200</width>
-				<height>30</height>
-				<font>font24_title</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scroll>true</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Label]</label>
-			</control>
 			<control type="scrollbar" id="60">
 				<posx>310</posx>
-				<posy>220</posy>
+				<posy>185</posy>
 				<width>660</width>
 				<height>25</height>
 				<texturesliderbackground border="14,0,14,0">ScrollBarH.png</texturesliderbackground>
@@ -409,7 +396,7 @@
 		</control>
 		<control type="group">
 			<posx>180</posx>
-			<posy>30</posy>
+			<posy>40</posy>
 			<visible>Control.IsVisible(508) + !Skin.HasSetting(View508HideInfo) + ![ListItem.IsFolder + Container.Content(Movies)]</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="image">
@@ -419,9 +406,22 @@
 				<height>410</height>
 				<texture border="20">ContentPanel.png</texture>
 			</control>
-			<control type="group">
+			<control type="label">
 				<posx>40</posx>
 				<posy>20</posy>
+				<width>840</width>
+				<height>20</height>
+				<font>font24_title</font>
+				<textcolor>blue</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="group">
+				<posx>40</posx>
+				<posy>50</posy>
 				<visible>Container.Content(Movies)</visible>
 				<control type="label">
 					<posx>0</posx>
@@ -499,7 +499,7 @@
 			</control>
 			<control type="group">
 				<posx>480</posx>
-				<posy>20</posy>
+				<posy>50</posy>
 				<visible>Container.Content(Movies)</visible>
 				<control type="label">
 					<posx>0</posx>
@@ -556,7 +556,7 @@
 			</control>
 			<control type="group">
 				<posx>40</posx>
-				<posy>20</posy>
+				<posy>50</posy>
 				<visible>Container.Content(TVShows)</visible>
 				<control type="label">
 					<posx>0</posx>
@@ -619,7 +619,7 @@
 			</control>
 			<control type="group">
 				<posx>480</posx>
-				<posy>20</posy>
+				<posy>50</posy>
 				<visible>Container.Content(TVShows)</visible>
 				<control type="label">
 					<posx>0</posx>
@@ -676,7 +676,7 @@
 			</control>
 			<control type="group">
 				<posx>40</posx>
-				<posy>180</posy>
+				<posy>200</posy>
 				<control type="label">
 					<posx>0</posx>
 					<posy>0</posy>
@@ -706,7 +706,7 @@
 			<control type="grouplist">
 				<description>Media Codec Flagging Images</description>
 				<posx>40</posx>
-				<posy>350</posy>
+				<posy>360</posy>
 				<width>800</width>
 				<align>left</align>
 				<itemgap>0</itemgap>
@@ -719,7 +719,7 @@
 			<control type="grouplist">
 				<description>MPAA Rating Flagging Images</description>
 				<posx>80</posx>
-				<posy>350</posy>
+				<posy>360</posy>
 				<width>800</width>
 				<align>right</align>
 				<itemgap>0</itemgap>
