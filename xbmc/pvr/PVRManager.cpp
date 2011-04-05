@@ -366,15 +366,19 @@ void CPVRManager::UpdateRecordings(void)
 
 void CPVRManager::UpdateChannels(void)
 {
+  bool bUpdateGroups(false);
+
   CSingleLock lock(m_critSectionTriggers);
   if (!m_bTriggerChannelsUpdate && !m_bTriggerChannelGroupsUpdate)
     return;
+
+  bUpdateGroups = m_bTriggerChannelGroupsUpdate;
   lock.Leave();
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating %s list",
-      __FUNCTION__, m_bTriggerChannelGroupsUpdate ? "channels" : "channel groups");
+      __FUNCTION__, bUpdateGroups ? "channel groups" : "channels");
 
-  m_channelGroups->Update(!m_bTriggerChannelGroupsUpdate);
+  m_channelGroups->Update(!bUpdateGroups);
   UpdateTimersCache();
   UpdateWindow(PVR_WINDOW_CHANNELS_TV);
   UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
