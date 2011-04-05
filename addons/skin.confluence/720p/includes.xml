@@ -223,7 +223,7 @@
 	</include>
 	<include name="WindowTitleHomeButton">
 		<control type="group">
-			<posx>20</posx>
+			<posx>0</posx>
 			<posy>0</posy>
 			<animation effect="slide" end="-270,0" time="400" tween="quadratic" easing="out" condition="Window.Next(Home)">WindowClose</animation>
 			<animation effect="slide" start="-270,0" time="400" tween="quadratic" easing="out" condition="Window.Previous(Home)">WindowOpen</animation>
@@ -253,7 +253,7 @@
 		<textoffsetx>10</textoffsetx>
 		<textwidth>200</textwidth>
 		<aligny>center</aligny>
-		<font>font13caps</font>
+		<font>font13</font>
 		<texturefocus border="5">button-focus.png</texturefocus>
 		<texturenofocus>-</texturenofocus>
 		<pulseonselect>false</pulseonselect>
@@ -304,11 +304,22 @@
 	</include>
 	<include name="SideBladeLeft">
 		<control type="image">
-			<posx>-820</posx>
+			<posx>-295</posx>
 			<posy>0</posy>
-			<width>846</width>
+			<width>300</width>
 			<height>720</height>
-			<texture>HomeBlade.png</texture>
+			<texture border="0,0,10,0">MediaBladeSub.png</texture>
+			<animation effect="slide" start="-26,0" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" start="0,0" end="-26,0" time="200" delay="200" tween="quadratic" easing="out">WindowClose</animation>
+		</control>
+		<control type="button" id="9002">
+			<posx>5</posx>
+			<posy>260</posy>
+			<width>42</width>
+			<height>128</height>
+			<font>-</font>
+			<texturefocus>HomeHasSub2.png</texturefocus>
+			<texturenofocus>HomeHasSub2.png</texturenofocus>
 			<animation effect="slide" start="-26,0" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
 			<animation effect="slide" start="0,0" end="-26,0" time="200" delay="200" tween="quadratic" easing="out">WindowClose</animation>
 		</control>
@@ -316,10 +327,10 @@
 	<include name="CommonPageCount">
 		<control type="label">
 			<posx>40</posx>
-			<posy>30r</posy>
+			<posy>55r</posy>
 			<width>700</width>
 			<height>20</height>
-			<label>([COLOR=blue]$INFO[Player.Time] / $INFO[Player.Duration,][/COLOR]) - $INFO[MusicPlayer.Title]$INFO[VideoPlayer.Title]</label>
+			<label>$INFO[MusicPlayer.Artist] - $INFO[MusicPlayer.Album]</label>
 			<align>left</align>
 			<aligny>center</aligny>
 			<font>font12</font>
@@ -327,10 +338,39 @@
 			<shadowcolor>black</shadowcolor>
 			<visible>Player.HasMedia</visible>
 			<include>VisibleFadeEffect</include>
-			<include>Window_OpenClose_Animation</include>		
+			<include>Window_OpenClose_Animation</include>
+		</control>
+		<control type="label">
+			<posx>40</posx>
+			<posy>30r</posy>
+			<width>700</width>
+			<height>20</height>
+			<label>$INFO[MusicPlayer.Title]$INFO[VideoPlayer.Title] - ([COLOR=blue]$INFO[Player.Time] / $INFO[Player.Duration,][/COLOR])</label>
+			<align>left</align>
+			<aligny>center</aligny>
+			<font>font12</font>
+			<textcolor>grey</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<visible>Player.HasMedia</visible>
+			<include>VisibleFadeEffect</include>
+			<include>Window_OpenClose_Animation</include>
 		</control>
 		<control type="label">
 			<description>Page Count Label</description>
+			<posx>40r</posx>
+			<posy>55r</posy>
+			<width>500</width>
+			<height>20</height>
+			<font>font12</font>
+			<textcolor>grey</textcolor>
+			<scroll>false</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>([COLOR=blue]$INFO[Container.NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container.CurrentPage]/$INFO[Container.NumPages][/COLOR])</label>
+			<include>Window_OpenClose_Animation</include>
+		</control>
+		<control type="label">
+			<description>Container Duration Label</description>
 			<posx>40r</posx>
 			<posy>30r</posy>
 			<width>500</width>
@@ -340,8 +380,8 @@
 			<scroll>false</scroll>
 			<align>right</align>
 			<aligny>center</aligny>
-			<label>([COLOR=blue]$INFO[Container.NumItems][/COLOR]) $LOCALIZE[31025]$INFO[Container.TotalTime, - $LOCALIZE[180] ([COLOR=blue],[/COLOR])] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container.CurrentPage]/$INFO[Container.NumPages][/COLOR])</label>
-			<include>Window_OpenClose_Animation</include>		
+			<label>$INFO[Container.TotalTime,$LOCALIZE[180] ([COLOR=blue],[/COLOR])]</label>
+			<include>Window_OpenClose_Animation</include>
 		</control>
 	</include>
 	<include name="SmallMusicInfo">
@@ -564,24 +604,25 @@
 		</control>
 	</include>
 	<include name="CommonNowPlaying_Controls">
-		<visible>[Player.HasAudio | Player.HasVideo]</visible>
-		<include>VisibleFadeEffect</include>
-		<control type="label">
-			<posx>250</posx>
-			<posy>0</posy>
+		<control type="label" id="202">
 			<width>250</width>
-			<height>40</height>
-			<font>font28_title</font>
-			<textcolor>grey2</textcolor>
-			<align>right</align>
-			<aligny>center</aligny>
+			<height>45</height>
+			<font>font12caps</font>
 			<label>31023</label>
+			<textcolor>blue</textcolor>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>[Player.HasAudio | Player.HasVideo]</visible>
+			<include>VisibleFadeEffect</include>
 		</control>
 		<control type="group" id="9005">
-			<posx>12</posx>
-			<posy>40</posy>
+			<visible>[Player.HasAudio | Player.HasVideo]</visible>
+			<include>VisibleFadeEffect</include>
+			<width>250</width>
+			<height>39</height>
+			<defaultcontrol always="true">603</defaultcontrol>
 			<control type="button" id="600">
-				<posx>0</posx>
+				<posx>5</posx>
 				<posy>2</posy>
 				<width>39</width>
 				<height>39</height>
@@ -591,11 +632,11 @@
 				<onleft>50</onleft>
 				<onright>606</onright>
 				<onup>610</onup>
-				<ondown>608</ondown>
+				<ondown>611</ondown>
 				<onclick>XBMC.PlayerControl(Previous)</onclick>
 			</control>
 			<control type="button" id="606">
-				<posx>40</posx>
+				<posx>45</posx>
 				<posy>2</posy>
 				<width>39</width>
 				<height>39</height>
@@ -605,14 +646,14 @@
 				<onleft>600</onleft>
 				<onright>603</onright>
 				<onup>610</onup>
-				<ondown>608</ondown>
+				<ondown>611</ondown>
 				<onclick>XBMC.PlayerControl(Rewind)</onclick>
 				<visible>Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo</visible>
 			</control>
 			<control type="group">
 				<animation effect="slide" start="0,0" end="40,0" time="0" condition="Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo">Conditional</animation>
 				<control type="togglebutton" id="603">
-					<posx>40</posx>
+					<posx>45</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -625,11 +666,11 @@
 					<onleft>606</onleft>
 					<onright>601</onright>
 					<onup>610</onup>
-					<ondown>608</ondown>
+					<ondown>611</ondown>
 					<onclick>XBMC.PlayerControl(Play)</onclick>
 				</control>
 				<control type="button" id="601">
-					<posx>80</posx>
+					<posx>85</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -639,12 +680,12 @@
 					<onleft>603</onleft>
 					<onright>607</onright>
 					<onup>610</onup>
-					<ondown>608</ondown>
+					<ondown>611</ondown>
 					<onclick>down</onclick>
 					<onclick>XBMC.PlayerControl(Stop)</onclick>
 				</control>
 				<control type="button" id="607">
-					<posx>120</posx>
+					<posx>125</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -654,12 +695,12 @@
 					<onleft>601</onleft>
 					<onright>602</onright>
 					<onup>610</onup>
-					<ondown>608</ondown>
+					<ondown>611</ondown>
 					<onclick>XBMC.PlayerControl(Forward)</onclick>
 					<visible>Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo</visible>
 				</control>
 				<control type="button" id="602">
-					<posx>120</posx>
+					<posx>125</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -669,7 +710,7 @@
 					<onleft>607</onleft>
 					<onright>604</onright>
 					<onup>610</onup>
-					<ondown>608</ondown>
+					<ondown>611</ondown>
 					<onclick>XBMC.PlayerControl(Next)</onclick>
 					<animation effect="slide" start="0,0" end="40,0" time="0" condition="Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo">Conditional</animation>
 				</control>
@@ -677,7 +718,7 @@
 			<control type="group">
 				<visible>!Window.IsVisible(MusicPlaylist) + !Window.IsVisible(VideoPlaylist) + !Player.HasVideo</visible>
 				<control type="button" id="604">
-					<posx>160</posx>
+					<posx>165</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -688,10 +729,10 @@
 					<onleft>602</onleft>
 					<onright>605</onright>
 					<onup>610</onup>
-					<ondown>608</ondown>
+					<ondown>611</ondown>
 				</control>
 				<control type="image">
-					<posx>160</posx>
+					<posx>165</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -700,7 +741,7 @@
 					<visible>!Control.HasFocus(604)</visible>
 				</control>
 				<control type="image">
-					<posx>160</posx>
+					<posx>165</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -709,7 +750,7 @@
 					<visible>Control.HasFocus(604)</visible>
 				</control>
 				<control type="image">
-					<posx>160</posx>
+					<posx>165</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -718,7 +759,7 @@
 					<visible>!Control.HasFocus(604)</visible>
 				</control>
 				<control type="image">
-					<posx>160</posx>
+					<posx>165</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -727,7 +768,7 @@
 					<visible>Control.HasFocus(604)</visible>
 				</control>
 				<control type="image">
-					<posx>160</posx>
+					<posx>165</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -736,7 +777,7 @@
 					<visible>!Control.HasFocus(604)</visible>
 				</control>
 				<control type="image">
-					<posx>160</posx>
+					<posx>165</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -745,7 +786,7 @@
 					<visible>Control.HasFocus(604)</visible>
 				</control>
 				<control type="togglebutton" id="605">
-					<posx>200</posx>
+					<posx>205</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -759,7 +800,7 @@
 					<onleft>604</onleft>
 					<onright>50</onright>
 					<onup>610</onup>
-					<ondown>608</ondown>
+					<ondown>611</ondown>
 				</control>
 			</control>
 		</control>
