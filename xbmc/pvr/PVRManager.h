@@ -32,6 +32,7 @@ class CPVRChannelGroup;
 class CPVRRecordings;
 class CPVRTimers;
 class CPVREpgContainer;
+class CPVRGUIInfo;
 
 #define INFO_TOGGLE_TIME 1500
 
@@ -122,21 +123,21 @@ public:
    * @param dwInfo The string to get.
    * @return The requested string or an empty one if it wasn't found.
    */
-  const char* TranslateCharInfo(DWORD dwInfo);
+  const char* TranslateCharInfo(DWORD dwInfo) const;
 
   /*!
    * @brief Get a GUIInfoManager integer.
    * @param dwInfo The integer to get.
    * @return The requested integer or 0 if it wasn't found.
    */
-  int TranslateIntInfo(DWORD dwInfo);
+  int TranslateIntInfo(DWORD dwInfo) const;
 
   /*!
    * @brief Get a GUIInfoManager boolean.
    * @param dwInfo The boolean to get.
    * @return The requested boolean or false if it wasn't found.
    */
-  bool TranslateBoolInfo(DWORD dwInfo);
+  bool TranslateBoolInfo(DWORD dwInfo) const;
 
   /*!
    * @brief Reset the TV database to it's initial state and delete all the data inside.
@@ -198,13 +199,13 @@ public:
    * @brief Check whether there are active timers.
    * @return True if there are active timers, false otherwise.
    */
-  bool HasTimer() { return m_bHasTimers; }
+  bool HasTimer(void) const;
 
   /*!
    * @brief Check whether there are active recordings.
    * @return True if there are active recordings, false otherwise.
    */
-  bool IsRecording() { return m_bIsRecording; }
+  bool IsRecording(void) const;
 
   /*!
    * @brief Set the current playing group, used to load the right channel.
@@ -395,9 +396,6 @@ private:
    */
   void UpdateTimers(void);
 
-  void UpdateTimersCache(void);
-  void UpdateRecordingToggle(void);
-
   /** @name General PVRManager data */
   //@{
   static CPVRManager *            m_instance;                    /*!< singleton instance */
@@ -407,6 +405,7 @@ private:
   CPVRRecordings *                m_recordings;                  /*!< pointer to the recordings container */
   CPVRTimers *                    m_timers;                      /*!< pointer to the timers container */
   CPVRClients *                   m_addons;                      /*!< pointer to the pvr addon container */
+  CPVRGUIInfo *                   m_guiInfo;                     /*!< pointer to the guiinfo data */
   CPVRDatabase                    m_database;                    /*!< the database for all PVR related data */
   CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class */
   CCriticalSection                m_critSectionTriggers;         /*!< critical section for triggers */
@@ -418,28 +417,6 @@ private:
   bool                            m_bTriggerRecordingsUpdate;    /*!< set to true to let the background thread update the recordings list */
   bool                            m_bTriggerTimersUpdate;        /*!< set to true to let the background thread update the timer list */
   bool                            m_bTriggerChannelGroupsUpdate; /*!< set to true to let the background thread update the channel groups list */
-  //@}
-
-  /** @name GUIInfoManager data */
-  //@{
-  DWORD                           m_recordingToggleStart;        /*!< time to toggle currently running pvr recordings */
-  unsigned int                    m_recordingToggleCurrent;      /*!< the current item showed by the GUIInfoManager */
-
-  std::vector<CPVRTimerInfoTag *> m_NowRecording;
-  const CPVRTimerInfoTag *        m_NextRecording;
-
-  CStdString                      m_strPlayingDuration;
-  CStdString                      m_strPlayingTime;
-  CStdString                      m_strActiveTimerTitle;
-  CStdString                      m_strActiveTimerChannelName;
-  CStdString                      m_strActiveTimerTime;
-  CStdString                      m_strNextTimerInfo;
-  CStdString                      m_strNextRecordingTitle;
-  CStdString                      m_strNextRecordingChannelName;
-  CStdString                      m_strNextRecordingTime;
-  bool                            m_bIsRecording;
-  bool                            m_bHasRecordings;
-  bool                            m_bHasTimers;
   //@}
 
   /*--- Previous Channel data ---*/

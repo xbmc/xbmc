@@ -49,6 +49,7 @@
 #include "epg/PVREpgContainer.h"
 #include "recordings/PVRRecordings.h"
 #include "timers/PVRTimers.h"
+#include "PVRGUIInfo.h"
 
 using namespace std;
 using namespace XFILE;
@@ -68,6 +69,7 @@ CPVRManager::CPVRManager() :
   m_epg                         = new CPVREpgContainer();
   m_recordings                  = new CPVRRecordings();
   m_timers                      = new CPVRTimers();
+  m_guiInfo                     = new CPVRGUIInfo();
 
   ResetProperties();
 }
@@ -80,6 +82,7 @@ CPVRManager::~CPVRManager()
   delete m_timers;
   delete m_channelGroups;
   delete m_addons;
+  delete m_guiInfo;
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
 
@@ -100,6 +103,8 @@ void CPVRManager::Cleanup(void)
   /* stop and clean up the EPG thread */
   m_epg->RemoveObserver(this);
   m_epg->Stop();
+
+  m_guiInfo->Stop();
 
   /* unload the rest */
   m_recordings->Unload();
@@ -273,13 +278,16 @@ void CPVRManager::Stop()
 
 void CPVRManager::StartThreads()
 {
+  m_addons->Start();
   m_epg->Create();
+  m_guiInfo->Start();
   Create();
 }
 
 void CPVRManager::StopThreads()
 {
   m_epg->StopThread();
+  m_guiInfo->Stop();
   m_addons->Stop();
   StopThread();
 }
@@ -303,28 +311,12 @@ void CPVRManager::ResetProperties(void)
   m_bTriggerTimersUpdate        = false;
   m_bTriggerChannelGroupsUpdate = false;
   m_currentFile                 = NULL;
-  m_NextRecording               = NULL;
-  m_strActiveTimerTitle         = "";
-  m_strActiveTimerChannelName   = "";
-  m_strActiveTimerTime          = "";
-  m_strNextRecordingTitle       = "";
-  m_strNextRecordingChannelName = "";
-  m_strNextRecordingTime        = "";
-  m_strNextTimerInfo            = "";
-  m_strPlayingDuration          = "";
-  m_strPlayingTime              = "";
-  m_NowRecording.clear();
 
-  m_bHasRecordings              = false;
-  m_bIsRecording                = false;
-  m_bHasTimers                  = false;
   m_currentRadioGroup           = NULL;
   m_currentTVGroup              = NULL;
   m_PreviousChannel[0]          = -1;
   m_PreviousChannel[1]          = -1;
   m_PreviousChannelIndex        = 0;
-  m_recordingToggleStart        = NULL;
-  m_recordingToggleCurrent      = 0;
   m_LastChannel                 = 0;
 }
 
@@ -338,7 +330,6 @@ void CPVRManager::UpdateTimers(void)
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating timers", __FUNCTION__);
 
   m_timers->Update();
-  UpdateTimersCache();
   UpdateWindow(PVR_WINDOW_TIMERS);
 
   lock.Enter();
@@ -356,7 +347,6 @@ void CPVRManager::UpdateRecordings(void)
   CLog::Log(LOGDEBUG, "PVRManager - %s - updating recordings list", __FUNCTION__);
 
   m_recordings->Update();
-  UpdateRecordingsCache();
   UpdateWindow(PVR_WINDOW_RECORDINGS);
 
   lock.Enter();
@@ -379,7 +369,6 @@ void CPVRManager::UpdateChannels(void)
       __FUNCTION__, bUpdateGroups ? "channel groups" : "channels");
 
   m_channelGroups->Update(!bUpdateGroups);
-  UpdateTimersCache();
   UpdateWindow(PVR_WINDOW_CHANNELS_TV);
   UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
 
@@ -439,6 +428,7 @@ void CPVRManager::Process()
 
   /* start the add-on info updater */
   m_addons->Start();
+  m_guiInfo->Start();
 
   /* start the EPG thread */
   m_epg->AddObserver(this);
@@ -995,214 +985,6 @@ int CPVRManager::GetStartTime()
   }
 }
 
-const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
-{
-  if      (dwInfo == PVR_NOW_RECORDING_TITLE)
-  {
-    UpdateRecordingToggle();
-    static CStdString strReturn = m_strActiveTimerTitle;
-    return strReturn.c_str();
-  }
-  else if (dwInfo == PVR_NOW_RECORDING_CHANNEL)
-  {
-    static CStdString strReturn = m_strActiveTimerChannelName;
-    return strReturn.c_str();
-  }
-  else if (dwInfo == PVR_NOW_RECORDING_DATETIME)
-  {
-    static CStdString strReturn = m_strActiveTimerTime;
-    return strReturn.c_str();
-  }
-  else if (dwInfo == PVR_NEXT_RECORDING_TITLE)
-  {
-    static CStdString strReturn = m_strNextRecordingTitle;
-    return strReturn.c_str();
-  }
-  else if (dwInfo == PVR_NEXT_RECORDING_CHANNEL)
-  {
-    static CStdString strReturn = m_strNextRecordingChannelName;
-    return strReturn.c_str();
-  }
-  else if (dwInfo == PVR_NEXT_RECORDING_DATETIME)
-  {
-    static CStdString strReturn = m_strNextRecordingTime;
-    return strReturn.c_str();
-  }
-  else if (dwInfo == PVR_PLAYING_DURATION)       return CharInfoPlayingDuration();
-  else if (dwInfo == PVR_PLAYING_TIME)           return CharInfoPlayingTime();
-  else if (dwInfo == PVR_NEXT_TIMER)             return CharInfoNextTimer();
-  else if (dwInfo == PVR_ACTUAL_STREAM_VIDEO_BR) return m_addons->CharInfoVideoBR();
-  else if (dwInfo == PVR_ACTUAL_STREAM_AUDIO_BR) return m_addons->CharInfoAudioBR();
-  else if (dwInfo == PVR_ACTUAL_STREAM_DOLBY_BR) return m_addons->CharInfoDolbyBR();
-  else if (dwInfo == PVR_ACTUAL_STREAM_SIG)      return m_addons->CharInfoSignal();
-  else if (dwInfo == PVR_ACTUAL_STREAM_SNR)      return m_addons->CharInfoSNR();
-  else if (dwInfo == PVR_ACTUAL_STREAM_BER)      return m_addons->CharInfoBER();
-  else if (dwInfo == PVR_ACTUAL_STREAM_UNC)      return m_addons->CharInfoUNC();
-  else if (dwInfo == PVR_ACTUAL_STREAM_CLIENT)   return m_addons->CharInfoPlayingClientName();
-  else if (dwInfo == PVR_ACTUAL_STREAM_DEVICE)   return m_addons->CharInfoFrontendName();
-  else if (dwInfo == PVR_ACTUAL_STREAM_STATUS)   return m_addons->CharInfoFrontendStatus();
-  else if (dwInfo == PVR_ACTUAL_STREAM_CRYPTION) return m_addons->CharInfoEncryption();
-  else if (dwInfo == PVR_BACKEND_NAME)           return m_addons->CharInfoBackendName();
-  else if (dwInfo == PVR_BACKEND_VERSION)        return m_addons->CharInfoBackendVersion();
-  else if (dwInfo == PVR_BACKEND_HOST)           return m_addons->CharInfoBackendHost();
-  else if (dwInfo == PVR_BACKEND_DISKSPACE)      return m_addons->CharInfoBackendDiskspace();
-  else if (dwInfo == PVR_BACKEND_CHANNELS)       return m_addons->CharInfoBackendChannels();
-  else if (dwInfo == PVR_BACKEND_TIMERS)         return m_addons->CharInfoBackendTimers();
-  else if (dwInfo == PVR_BACKEND_RECORDINGS)     return m_addons->CharInfoBackendRecordings();
-  else if (dwInfo == PVR_BACKEND_NUMBER)         return m_addons->CharInfoBackendNumber();
-  else if (dwInfo == PVR_TOTAL_DISKSPACE)        return m_addons->CharInfoTotalDiskSpace();
-  return "";
-}
-
-bool CPVRManager::TranslateBoolInfo(DWORD dwInfo)
-{
-  bool bReturn = false;
-
-  if (dwInfo == PVR_IS_RECORDING)
-    bReturn = m_bLoaded && m_bIsRecording;
-  else if (dwInfo == PVR_HAS_TIMER)
-    bReturn = m_bLoaded && m_bHasTimers;
-  else if (dwInfo == PVR_IS_PLAYING_TV)
-    bReturn = m_bLoaded && m_addons->IsPlayingTV();
-  else if (dwInfo == PVR_IS_PLAYING_RADIO)
-    bReturn = m_bLoaded && m_addons->IsPlayingRadio();
-  else if (dwInfo == PVR_IS_PLAYING_RECORDING)
-    bReturn = m_bLoaded && m_addons->IsPlayingRecording();
-  else if (dwInfo == PVR_ACTUAL_STREAM_ENCRYPTED)
-    bReturn = m_bLoaded && m_addons->IsEncrypted();
-
-  return bReturn;
-}
-
-int CPVRManager::TranslateIntInfo(DWORD dwInfo)
-{
-  int iReturn = 0;
-
-  if (dwInfo == PVR_PLAYING_PROGRESS)
-    iReturn = (int) ((float) GetStartTime() / GetTotalTime() * 100);
-  else if (dwInfo == PVR_ACTUAL_STREAM_SIG_PROGR)
-    iReturn = m_addons->GetSignalLevel();
-  else if (dwInfo == PVR_ACTUAL_STREAM_SNR_PROGR)
-    iReturn = m_addons->GetSNR();
-
-  return iReturn;
-}
-
-const char *CPVRManager::CharInfoPlayingDuration(void)
-{
-  m_strPlayingDuration = StringUtils::SecondsToTimeString(GetTotalTime()/1000, TIME_FORMAT_GUESS);
-  return m_strPlayingDuration.c_str();
-}
-
-const char *CPVRManager::CharInfoPlayingTime(void)
-{
-  m_strPlayingTime = StringUtils::SecondsToTimeString(GetStartTime()/1000, TIME_FORMAT_GUESS);
-  return m_strPlayingTime.c_str();
-}
-
-const char *CPVRManager::CharInfoNextTimer(void)
-{
-  static CStdString strReturn = m_strNextTimerInfo;
-  return strReturn.c_str();
-}
-
-void CPVRManager::UpdateTimersCache(void)
-{
-  CSingleLock lock(m_critSection);
-
-  /* reset values */
-  m_strActiveTimerTitle         = "";
-  m_strActiveTimerChannelName   = "";
-  m_strActiveTimerTime          = "";
-  m_strNextRecordingTitle       = "";
-  m_strNextRecordingChannelName = "";
-  m_strNextRecordingTime        = "";
-  m_strNextTimerInfo            = "";
-  m_bIsRecording = false;
-  m_NowRecording.clear();
-  m_NextRecording = NULL;
-
-  /* fill values */
-  m_bHasTimers = m_timers->GetNumTimers() > 0;
-  if (m_bHasTimers)
-  {
-    m_timers->GetActiveTimers(&m_NowRecording);
-
-    /* set the active timer info locally if we're recording right now */
-    m_bIsRecording = m_timers->IsRecording();
-    if (m_bIsRecording)
-    {
-      const CPVRTimerInfoTag *tag = m_NowRecording.at(0);
-      m_strActiveTimerTitle.Format("%s",       tag->m_strTitle);
-      m_strActiveTimerChannelName.Format("%s", tag->ChannelName());
-      m_strActiveTimerTime.Format("%s",        tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
-    }
-
-    /* set the next timer info locally if there is a next timer */
-    m_NextRecording = m_timers->GetNextActiveTimer();
-    if (m_NextRecording != NULL)
-    {
-      m_strNextRecordingTitle.Format("%s",       m_NextRecording->m_strTitle);
-      m_strNextRecordingChannelName.Format("%s", m_NextRecording->ChannelName());
-      m_strNextRecordingTime.Format("%s",        m_NextRecording->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
-
-      m_strNextTimerInfo.Format("%s %s %s %s",
-          g_localizeStrings.Get(19106),
-          m_NextRecording->StartAsLocalTime().GetAsLocalizedDate(true),
-          g_localizeStrings.Get(19107),
-          m_NextRecording->StartAsLocalTime().GetAsLocalizedTime("HH:mm", false));
-    }
-  }
-}
-
-void CPVRManager::UpdateRecordingsCache(void)
-{
-  CSingleLock lock(m_critSection);
-  m_bHasRecordings = m_recordings->GetNumRecordings() > 0;
-}
-
-void CPVRManager::UpdateRecordingToggle(void)
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_recordingToggleStart == 0)
-  {
-    /* set initial values */
-    m_recordingToggleStart = CTimeUtils::GetTimeMS();
-    m_recordingToggleCurrent = 0;
-  }
-  else
-  {
-    if (CTimeUtils::GetTimeMS() - m_recordingToggleStart > INFO_TOGGLE_TIME)
-    {
-      /* switch */
-      if (m_NowRecording.size() > 0)
-      {
-        m_recordingToggleCurrent++;
-        if (m_recordingToggleCurrent > m_NowRecording.size()-1)
-          m_recordingToggleCurrent = 0;
-
-        m_recordingToggleStart = CTimeUtils::GetTimeMS();
-      }
-    }
-  }
-
-  if (m_NowRecording.size() > 0 && m_recordingToggleCurrent < m_NowRecording.size())
-  {
-    const CPVRTimerInfoTag *tag = m_NowRecording.at(m_recordingToggleCurrent);
-    m_strActiveTimerTitle       = tag->m_strTitle;
-    m_strActiveTimerChannelName = tag->ChannelName();
-    m_strActiveTimerTime        = tag->StartAsLocalTime().GetAsLocalizedDateTime(false, false);
-  }
-  else
-  {
-    m_strActiveTimerTitle       = "";
-    m_strActiveTimerChannelName = "";
-    m_strActiveTimerTime        = "";
-  }
-}
-
-
 const CStdString &CPVRManager::ConvertGenreIdToString(int iID, int iSubID)
 {
   unsigned int iLabelId = 19499;
@@ -1249,4 +1031,30 @@ const CStdString &CPVRManager::ConvertGenreIdToString(int iID, int iSubID)
   }
 
   return g_localizeStrings.Get(iLabelId);
+}
+
+
+bool CPVRManager::TranslateBoolInfo(DWORD dwInfo) const
+{
+  return m_guiInfo->TranslateBoolInfo(dwInfo);
+}
+
+const char* CPVRManager::TranslateCharInfo(DWORD dwInfo) const
+{
+  return m_guiInfo->TranslateCharInfo(dwInfo);
+}
+
+int CPVRManager::TranslateIntInfo(DWORD dwInfo) const
+{
+  return m_guiInfo->TranslateIntInfo(dwInfo);
+}
+
+bool CPVRManager::HasTimer(void) const
+{
+  return m_guiInfo->HasTimers();
+}
+
+bool CPVRManager::IsRecording(void) const
+{
+  return m_guiInfo->IsRecording();
 }

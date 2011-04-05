@@ -31,7 +31,8 @@ class CPVREpgInfoTag;
 class CGUIDialogPVRTimerSettings;
 
 class CPVRTimers : public std::vector<CPVRTimerInfoTag *>,
-                   private Observer
+                   public Observer,
+                   public Observable
 {
 private:
   CCriticalSection m_critSection;

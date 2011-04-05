@@ -143,6 +143,12 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
     }
   }
 
+  if (bChanged)
+  {
+    SetChanged();
+    NotifyObservers("timers");
+  }
+
   return bChanged;
 }
 

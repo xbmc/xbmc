@@ -27,6 +27,8 @@
 #include <vector>
 #include <deque>
 
+class CPVRGUIInfo;
+
 typedef std::map< long, boost::shared_ptr<CPVRClient> >           CLIENTMAP;
 typedef std::map< long, boost::shared_ptr<CPVRClient> >::iterator CLIENTMAPITR;
 typedef std::map< long, PVR_ADDON_CAPABILITIES >                  CLIENTPROPS;
@@ -38,6 +40,8 @@ class CPVRClients : IPVRClientCallback,
                     public ADDON::IAddonMgrCallback,
                     private CThread
 {
+  friend class CPVRGUIInfo;
+
 public:
   CPVRClients(void);
   virtual ~CPVRClients(void);
@@ -146,6 +150,7 @@ public:
   bool IsPlaying(void) const;
   bool AllClientsLoaded(void) const;
   bool IsReadingLiveStream(void) const;
+  const CStdString GetPlayingClientName(void) const { return m_strPlayingClientName; }
   bool SwitchChannel(const CPVRChannel &channel);
 
   int GetTimers(CPVRTimers *timers);
@@ -183,6 +188,11 @@ public:
    * @return True if it can, false otherwise.
    */
   bool CanRecordInstantly(void);
+
+  /*!
+   * @return The amount of active clients.
+   */
+  int ActiveClientAmount(void);
 
   /*!
    * @brief Check whether there are any active clients.
@@ -290,32 +300,13 @@ public:
 
   void Unload(void);
 
-  const char *CharInfoVideoBR(void) const;
-  const char *CharInfoAudioBR(void) const;
-  const char *CharInfoDolbyBR(void) const;
-  const char *CharInfoSignal(void) const;
-  const char *CharInfoSNR(void) const;
-  const char *CharInfoBER(void) const;
-  const char *CharInfoUNC(void) const;
-  const char *CharInfoFrontendName(void) const;
-  const char *CharInfoFrontendStatus(void) const;
-  const char *CharInfoBackendName(void) const;
-  const char *CharInfoBackendNumber(void) const;
-  const char *CharInfoTotalDiskSpace(void) const;
-  const char *CharInfoEncryption(void) const;
-  const char *CharInfoBackendVersion(void) const;
-  const char *CharInfoBackendHost(void) const;
-  const char *CharInfoBackendDiskspace(void) const;
-  const char *CharInfoBackendChannels(void) const;
-  const char *CharInfoBackendTimers(void) const;
-  const char *CharInfoBackendRecordings(void) const;
-  const char *CharInfoPlayingClientName(void) const;
-
   bool GetPlayingChannel(CPVRChannel *channel) const;
   bool GetPlayingRecording(CPVRRecording *recording) const;
   int GetPlayingClientID(void) const;
   bool IsValidClient(int iClientId);
   bool ClientLoaded(const CStdString &strClientId);
+
+  void GetQualityData(PVR_SIGNAL_STATUS *status) const;
 
   void Start(void);
   void Stop(void);
@@ -326,9 +317,7 @@ private:
   int ReadRecordedStream(void* lpBuf, int64_t uiBufSize);
   bool GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks);
 
-  void UpdateCharInfoDiskSpace(void);
   void UpdateCharInfoSignalStatus(void);
-  void UpdateCharInfoBackendStatus(void);
 
   /*!
    * @brief Load and initialise all clients.
@@ -350,6 +339,7 @@ private:
 
   const CPVRChannel *   m_currentChannel;
   const CPVRRecording * m_currentRecording;
+  CStdString            m_strPlayingClientName;
   bool                  m_bAllClientsLoaded; /*!< true if all clients are loaded, false otherwise */
   CCriticalSection      m_critSection;
   CLIENTMAP             m_clientMap;
@@ -357,21 +347,6 @@ private:
   PVR_SIGNAL_STATUS     m_qualityInfo;       /*!< stream quality information */
   bool                  m_bChannelScanRunning;      /*!< true if a channel scan is currently running, false otherwise */
   STREAMPROPS           m_streamProps;              /*!< the current stream's properties */
-
-  CStdString            m_strPlayingClientName;
-  CStdString            m_strBackendName;
-  CStdString            m_strBackendVersion;
-  CStdString            m_strBackendHost;
-  CStdString            m_strBackendDiskspace;
-  CStdString            m_strBackendTimers;
-  CStdString            m_strBackendRecordings;
-  CStdString            m_strBackendChannels;
-  CStdString            m_strTotalDiskspace;
-
-  unsigned int          m_iInfoToggleStart;
-  unsigned int          m_iInfoToggleCurrent;
-
-  unsigned int          m_iUpdateTick; /*!< increased by 1 every time UpdateCharInfo() is called. reset to 0 when it reaches 1000 */
 
   DWORD                 m_scanStart;                /* Scan start time to check for non present streams */
 };
