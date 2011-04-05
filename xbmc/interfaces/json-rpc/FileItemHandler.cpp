@@ -19,6 +19,7 @@
  *
  */
 
+#include <string.h>
 #include "FileItemHandler.h"
 #include "PlaylistOperations.h"
 #include "AudioLibrary.h"
@@ -139,7 +140,7 @@ void CFileItemHandler::HandleFileItem(const char *id, bool allowFile, const char
 
   if (id)
   {
-    if (id == "genreid")
+    if (stricmp(id, "genreid") == 0)
       object[id] = atoi(item->m_strPath.TrimRight('/').c_str());
     else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
       object[id] = (int)item->GetMusicInfoTag()->GetDatabaseId();
