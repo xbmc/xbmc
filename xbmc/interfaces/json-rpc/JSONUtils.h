@@ -25,8 +25,11 @@
 #include "utils/StdString.h"
 #include "interfaces/IAnnouncer.h"
 #include "ITransportLayer.h"
+#include "jsoncpp/include/json/json.h"
+#include "utils/Variant.h"
 
 using namespace ANNOUNCEMENT;
+using namespace Json;
 
 namespace JSONRPC
 {
@@ -527,6 +530,27 @@ namespace JSONRPC
       }
 
       return -1;  // unreachable
+    }
+
+    static std::string AnnouncementToJSON(EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data, bool compactOutput)
+    {
+      Value root;
+      root["jsonrpc"] = "2.0";
+      root["method"]  = "Announcement";
+      root["params"]["sender"] = sender;
+      root["params"]["message"] = message;
+      if (!data.isNull())
+        data.toJsonValue(root["params"]["data"]);
+
+      Writer *writer;
+      if (compactOutput)
+        writer = new FastWriter();
+      else
+        writer = new StyledWriter();
+
+      std::string str = writer->write(root);
+      delete writer;
+      return str;
     }
   };
 }
