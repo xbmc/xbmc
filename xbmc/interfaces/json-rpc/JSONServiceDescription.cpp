@@ -179,7 +179,7 @@ int CJSONServiceDescription::GetVersion()
 void CJSONServiceDescription::Print(Json::Value &result, ITransportLayer *transport, IClient *client, bool printDescriptions, bool printMetadata, bool filterByTransport)
 {
   // Print the header
-  result["id"] = m_header.id;
+  result["id"] = m_header.ID;
   result["version"] = m_header.version;
   result["description"] = m_header.description;
 
@@ -298,10 +298,10 @@ void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bo
     output["name"] = type.name;
 
   if (isGlobal)
-    output["id"] = type.id;
-  else if (!type.id.empty())
+    output["id"] = type.ID;
+  else if (!type.ID.empty())
   {
-    output["$ref"] = type.id;
+    output["$ref"] = type.ID;
     typeReference = true;
   }
 
@@ -687,7 +687,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
 
 void CJSONServiceDescription::parseHeader(const Json::Value &descriptionObject)
 {
-  m_header.id = GetString(descriptionObject["id"], "");
+  m_header.ID = GetString(descriptionObject["id"], "");
   m_header.version = descriptionObject.get("version", 0).asInt();
   m_header.description = GetString(descriptionObject["description"], "");
 }
@@ -768,7 +768,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
   }
   else if (value.isMember("id") && value["id"].isString())
   {
-    type.id = GetString(value["id"], "");
+    type.ID = GetString(value["id"], "");
     isReferenceType = true;
   }
 
@@ -1039,15 +1039,15 @@ void CJSONServiceDescription::addReferenceTypeDefinition(JSONSchemaTypeDefinitio
 {
   // If the given json value is no object or does not contain an "id" field
   // of type string it is no valid type definition
-  if (typeDefinition.id.empty())
+  if (typeDefinition.ID.empty())
     return;
 
   // If the id has already been defined we ignore the type definition
-  if (m_types.find(typeDefinition.id) != m_types.end())
+  if (m_types.find(typeDefinition.ID) != m_types.end())
     return;
 
   // Add the type to the list of type definitions
-  m_types[typeDefinition.id] = typeDefinition;
+  m_types[typeDefinition.ID] = typeDefinition;
   if (m_unresolvedMethods.size() > 0)
     m_newReferenceType = true;
 }

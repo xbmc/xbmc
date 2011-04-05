@@ -42,8 +42,10 @@ namespace JSONRPC
     /*!
      \brief Identification of the published
      service containing json rpc methods.
+     Renamed from "id" because of possible
+     issues with Objective-C.
      */
-    std::string id;
+    std::string ID;
     /*!
      \brief Description of the published
      service containing json rpc methods.
@@ -78,8 +80,10 @@ namespace JSONRPC
     /*!
      \brief Id of the type (for
      referenced types)
+     Renamed from "id" because of possible
+     issues with Objective-C.
      */
-    std::string id;
+    std::string ID;
 
     /*!
      \brief Description of the parameter
