@@ -41,10 +41,10 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_iClientIndex       = -1;
   m_iClientChannelUid  = -1;
   m_bIsRecording       = false;
-  m_StartTime          = NULL;
-  m_StopTime           = NULL;
+  m_StartTime.SetValid(false);
+  m_StopTime.SetValid(false);
   m_bIsRepeating       = false;
-  m_FirstDay           = NULL;
+  m_FirstDay.SetValid(false);
   m_iWeekdays          = 0;
   m_iPriority          = -1;
   m_iLifetime          = -1;
@@ -159,7 +159,7 @@ void CPVRTimerInfoTag::UpdateSummary(void)
         g_localizeStrings.Get(19160),
         EndAsLocalTime().GetAsLocalizedTime("", false));
   }
-  else if (m_FirstDay != NULL)
+  else if (m_FirstDay.IsValid())
   {
     m_strSummary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s %s %s",
         m_iWeekdays & 0x01 ? g_localizeStrings.Get(19149) : "__",
@@ -397,7 +397,7 @@ CStdString CPVRTimerInfoTag::ChannelName() const
 
 bool CPVRTimerInfoTag::SetDuration(int iDuration)
 {
-  if (m_StartTime != NULL)
+  if (m_StartTime.IsValid())
   {
     m_StopTime = m_StartTime + CDateTimeSpan(0, iDuration / 60, iDuration % 60, 0);
     return true;
