@@ -179,7 +179,7 @@ namespace JSONRPC
      \param permission Specific OperationPermission
      \return String representation of the given OperationPermission
      */
-    static inline std::string PermissionToString(const OperationPermission &permission)
+    static inline const char *PermissionToString(const OperationPermission &permission)
     {
       switch (permission)
       {
@@ -228,7 +228,7 @@ namespace JSONRPC
      \param notification Specific EAnnouncementFlag
      \return String representation of the given EAnnouncementFlag
      */
-    static inline std::string NotificationFlagToString(const EAnnouncementFlag &notification)
+    static inline const char *NotificationFlagToString(const EAnnouncementFlag &notification)
     {
       switch (notification)
       {
@@ -369,7 +369,7 @@ namespace JSONRPC
         jsonObject = jsonObject[0];
     }
 
-    static inline std::string ValueTypeToString(Json::ValueType valueType)
+    static inline const char *ValueTypeToString(Json::ValueType valueType)
     {
       switch (valueType)
       {
