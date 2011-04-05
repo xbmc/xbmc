@@ -532,15 +532,18 @@ namespace JSONRPC
       return -1;  // unreachable
     }
 
-    static std::string AnnouncementToJSON(EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data, bool compactOutput)
+    static std::string AnnouncementToJSON(EAnnouncementFlag flag, const char *sender, const char *method, const CVariant &data, bool compactOutput)
     {
       Value root;
       root["jsonrpc"] = "2.0";
-      root["method"]  = "Announcement";
+
+      CStdString namespaceMethod;
+      namespaceMethod.Format("%s.%s", NotificationFlagToString(flag), method);
+      root["method"]  = namespaceMethod.c_str();
+
+      if (data.isObject())
+        data.toJsonValue(root["params"]);
       root["params"]["sender"] = sender;
-      root["params"]["message"] = message;
-      if (!data.isNull())
-        data.toJsonValue(root["params"]["data"]);
 
       Writer *writer;
       if (compactOutput)
