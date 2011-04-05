@@ -38,6 +38,8 @@
   <string id="31047">Current Preset</string>
   <string id="31048">Visualization Presets</string>
   <string id="31049">End Time</string>
+  <string id="31050">Sort: Ascending</string>
+  <string id="31051">Sort: Descending</string>
 
 
   <!-- Playlist Editor labels -->
