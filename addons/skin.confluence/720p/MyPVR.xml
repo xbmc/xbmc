@@ -227,7 +227,7 @@
 					<posy>80</posy>
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
-					<label>$LOCALIZE[19029]: $LOCALIZE[19030]</label>
+					<label>$LOCALIZE[19222]: $LOCALIZE[19030]</label>
 					<onleft>10</onleft>
 					<onright>10</onright>
 					<onup>33</onup>

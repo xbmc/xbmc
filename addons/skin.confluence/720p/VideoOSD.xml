@@ -233,7 +233,7 @@
 					<posy>0</posy>
 					<width>45</width>
 					<height>45</height>
-					<label>$LOCALIZE[19029]$INFO[VideoPlayer.ChannelName, - ]</label>
+					<label>$LOCALIZE[19222]$INFO[VideoPlayer.ChannelName, - ]</label>
 					<font>-</font>
 					<texturefocus>OSDepgFO.png</texturefocus>
 					<texturenofocus>OSDepgNF.png</texturenofocus>
