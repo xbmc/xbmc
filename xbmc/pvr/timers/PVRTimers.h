@@ -43,6 +43,8 @@ private:
    */
   int LoadFromClients(void);
 
+  void Sort(void);
+
 public:
   CPVRTimers(void) {}
 

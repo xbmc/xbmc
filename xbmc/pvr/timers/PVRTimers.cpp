@@ -56,6 +56,19 @@ int CPVRTimers::LoadFromClients(void)
   return CPVRManager::GetClients()->GetTimers(this);
 }
 
+struct sortByStartTime
+{
+  bool operator()(const CPVRTimerInfoTag *timer1, const CPVRTimerInfoTag *timer2)
+  {
+    return timer1->StartAsUTC() < timer2->StartAsUTC();
+  }
+};
+
+void CPVRTimers::Sort(void)
+{
+  sort(begin(), end(), sortByStartTime());
+}
+
 bool CPVRTimers::Update(void)
 {
   CPVRTimers PVRTimers_tmp;
@@ -145,6 +158,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
 
   if (bChanged)
   {
+    Sort();
     SetChanged();
     NotifyObservers("timers");
   }
