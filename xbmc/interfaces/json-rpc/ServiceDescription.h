@@ -84,7 +84,7 @@ namespace JSONRPC
             "\"id\": \"Notification.Flags\","
             "\"type\": \"object\","
             "\"properties\": {"
-                "\"Playback\": { \"type\": \"boolean\", \"required\": true, \"description\": \"\" },"
+                "\"Player\": { \"type\": \"boolean\", \"required\": true, \"description\": \"\" },"
                 "\"GUI\": { \"type\": \"boolean\", \"required\": true, \"description\": \"\" },"
                 "\"System\": { \"type\": \"boolean\", \"required\": true, \"description\": \"\" },"
                 "\"Library\": { \"type\": \"boolean\", \"required\": true, \"description\": \"\" },"

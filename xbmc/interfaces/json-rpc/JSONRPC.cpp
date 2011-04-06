@@ -260,8 +260,8 @@ JSON_STATUS CJSONRPC::SetNotificationFlags(const CStdString &method, ITransportL
 {
   int flags = 0;
 
-  if (parameterObject["Playback"].asBool())
-    flags |= Playback;
+  if (parameterObject["Player"].asBool())
+    flags |= Player;
   if (parameterObject["GUI"].asBool())
     flags |= GUI;
   if (parameterObject["System"].asBool())

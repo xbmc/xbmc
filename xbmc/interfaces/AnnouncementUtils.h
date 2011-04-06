@@ -37,8 +37,8 @@ namespace ANNOUNCEMENT
     {
       switch (notification)
       {
-      case Playback:
-        return "Playback";
+      case Player:
+        return "Player";
       case GUI:
         return "GUI";
       case System:
