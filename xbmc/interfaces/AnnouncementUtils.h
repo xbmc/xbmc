@@ -43,8 +43,10 @@ namespace ANNOUNCEMENT
         return "GUI";
       case System:
         return "System";
-      case Library:
-        return "Library";
+      case VideoLibrary:
+        return "VideoLibrary";
+      case AudioLibrary:
+        return "AudioLibrary";
       case Other:
         return "Other";
       default:

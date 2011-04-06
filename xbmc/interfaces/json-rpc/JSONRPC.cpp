@@ -266,8 +266,10 @@ JSON_STATUS CJSONRPC::SetNotificationFlags(const CStdString &method, ITransportL
     flags |= GUI;
   if (parameterObject["System"].asBool())
     flags |= System;
-  if (parameterObject["Library"].asBool())
-    flags |= Library;
+  if (parameterObject["VideoLibrary"].asBool())
+    flags |= VideoLibrary;
+  if (parameterObject["AudioLibrary"].asBool())
+    flags |= AudioLibrary;
   if (parameterObject["Other"].asBool())
     flags |= Other;
 
