@@ -32,6 +32,7 @@
 #include "XBMCOperations.h"
 #include "settings/AdvancedSettings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/AnnouncementUtils.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include <string.h>
@@ -250,7 +251,7 @@ JSON_STATUS CJSONRPC::GetNotificationFlags(const CStdString &method, ITransportL
   int flags = client->GetAnnouncementFlags();
 
   for (int i = 1; i <= ANNOUNCE_ALL; i *= 2)
-    result[NotificationFlagToString((EAnnouncementFlag)i)] = (flags & i) > 0;
+    result[CAnnouncementUtils::AnnouncementFlagToString((EAnnouncementFlag)i)] = (flags & i) > 0;
 
   return OK;
 }

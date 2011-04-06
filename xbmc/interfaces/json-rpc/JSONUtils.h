@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include "utils/StdString.h"
 #include "interfaces/IAnnouncer.h"
+#include "interfaces/AnnouncementUtils.h"
 #include "ITransportLayer.h"
 #include "jsoncpp/include/json/json.h"
 #include "utils/Variant.h"
@@ -220,31 +221,6 @@ namespace JSONRPC
         return ScanLibrary;
 
       return ReadData;
-    }
-
-    /*!
-     \brief Returns a string representation for the 
-     given EAnnouncementFlag
-     \param notification Specific EAnnouncementFlag
-     \return String representation of the given EAnnouncementFlag
-     */
-    static inline const char *NotificationFlagToString(const EAnnouncementFlag &notification)
-    {
-      switch (notification)
-      {
-      case Playback:
-        return "Playback";
-      case GUI:
-        return "GUI";
-      case System:
-        return "System";
-      case Library:
-        return "Library";
-      case Other:
-        return "Other";
-      default:
-        return "Unknown";
-      }
     }
 
     /*!
@@ -538,7 +514,7 @@ namespace JSONRPC
       root["jsonrpc"] = "2.0";
 
       CStdString namespaceMethod;
-      namespaceMethod.Format("%s.%s", NotificationFlagToString(flag), method);
+      namespaceMethod.Format("%s.%s", CAnnouncementUtils::AnnouncementFlagToString(flag), method);
       root["method"]  = namespaceMethod.c_str();
 
       if (data.isObject())
