@@ -656,7 +656,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
 
   // If we have a number or an integer type, we need
   // to check the minimum and maximum values
-  if (HasType(type.type, NumberValue) || HasType(type.type, IntegerValue) && value.isNumeric())
+  if ((HasType(type.type, NumberValue) || HasType(type.type, IntegerValue)) && value.isNumeric())
   {
     double numberValue = value.asDouble();
     // Check minimum
