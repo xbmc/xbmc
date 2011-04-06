@@ -2757,6 +2757,9 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
   pDS->close();
   details.DetermineBestStreams();
 
+  if (details.GetVideoDuration() > 0)
+    tag.m_strRuntime.Format("%i", details.GetVideoDuration() / 60 );
+
   return retVal;
 }
 
