@@ -1,25 +1,22 @@
 <includes>
 	<include name="PosterWrapView">
-		<control type="group">
+		<control type="grouplist">
 			<visible>Control.IsVisible(501)</visible>
-			<include>VisibleFadeEffect</include>
-			<posx>0</posx>
+			<posx>60</posx>
 			<posy>80</posy>
-			<control type="image">
-				<posx>240</posx>
-				<posy>420</posy>
-				<width>800</width>
-				<height>70</height>
-				<aspectratio>stretch</aspectratio>
-				<texture>GlassTitleBar.png</texture>
-			</control>
-			<control type="wraplist" id="501">
+			<width>1160</width>
+			<height>460</height>
+			<onup>9000</onup>
+			<ondown>61</ondown>
+			<usecontrolcoords>true</usecontrolcoords>
+			<include>VisibleFadeEffect</include>
+			<control type="fixedlist" id="501">
 				<visible>Container.Content(Movies) | Container.Content(Seasons) | [Container.Content(TVShows) + Skin.HasSetting(TVShowsUsePosters)]</visible>
 				<visible>!Container.Content(LiveTV)</visible>
-				<posx>-123</posx>
+				<posx>-183</posx>
 				<posy>0</posy>
 				<width>1526</width>
-				<height>460</height>
+				<height>390</height>
 				<onleft>57</onleft>
 				<onright>57</onright>
 				<onup>2</onup>
@@ -66,7 +63,7 @@
 						<animation reversible="false" effect="zoom" end="6,44,170,180" start="-24,4,240,250" time="200">unfocus</animation>
 					</control>
 					<control type="image">
-						<posx>205</posx>
+						<posx>185</posx>
 						<posy>310</posy>
 						<width>35</width>
 						<height>35</height>
@@ -84,8 +81,8 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="60">
-				<posx>200</posx>
-				<posy>390</posy>
+				<posx>140</posx>
+				<posy>0</posy>
 				<width>880</width>
 				<height>25</height>
 				<texturesliderbackground border="14,0,14,0">ScrollBarH.png</texturesliderbackground>
@@ -101,14 +98,31 @@
 			</control>
 		</control>
 		<control type="group">
+			<visible>Control.IsVisible(501)</visible>
+			<control type="image">
+				<posx>56</posx>
+				<posy>120</posy>
+				<width>128</width>
+				<height>310</height>
+				<texture>SideFade.png</texture>
+			</control>
+			<control type="image">
+				<posx>1094</posx>
+				<posy>120</posy>
+				<width>128</width>
+				<height>310</height>
+				<texture flipx="true">SideFade.png</texture>
+			</control>
+		</control>
+		<control type="group">
 			<visible>Control.IsVisible(501) + Container.Content(Movies)</visible>
 			<control type="label">
 				<posx>30</posx>
-				<posy>510</posy>
+				<posy>500</posy>
 				<width>1220</width>
 				<height>35</height>
-				<font>font30_title</font>
-				<textcolor>white</textcolor>
+				<font>font28_title</font>
+				<textcolor>blue</textcolor>
 				<shadowcolor>black</shadowcolor>
 				<scroll>true</scroll>
 				<align>center</align>
@@ -117,7 +131,7 @@
 			</control>
 			<control type="label">
 				<posx>0</posx>
-				<posy>550</posy>
+				<posy>540</posy>
 				<width>1280</width>
 				<height>35</height>
 				<font>font30</font>
@@ -128,18 +142,23 @@
 				<aligny>center</aligny>
 				<label>$INFO[ListItem.Year]</label>
 			</control>
-			<control type="image">
-				<description>Rating value</description>
-				<posx>580</posx>
-				<posy>590</posy>
-				<width>120</width>
-				<height>24</height>
-				<texture>CenterRating/$INFO[ListItem.StarRating]</texture>
+			<control type="label">
+				<posx>0</posx>
+				<posy>580</posy>
+				<width>1280</width>
+				<height>20</height>
+				<font>font13caps</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Duration,$LOCALIZE[2050] , $LOCALIZE[12391]]</label>
 			</control>
 			<control type="grouplist">
 				<description>Media Codec Flagging Images</description>
 				<posx>0</posx>
-				<posy>620</posy>
+				<posy>610</posy>
 				<width>1280</width>
 				<align>center</align>
 				<itemgap>0</itemgap>
@@ -149,29 +168,16 @@
 				<include>AspectCodecFlaggingConditions</include>
 				<include>VideoTypeHackFlaggingConditions</include>
 			</control>
-			<control type="label">
-				<posx>0</posx>
-				<posy>650</posy>
-				<width>1280</width>
-				<height>35</height>
-				<font>font13caps</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scroll>true</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Duration,$LOCALIZE[2050] , $LOCALIZE[12391]]</label>
-			</control>
 		</control>
 		<control type="group">
 			<visible>Control.IsVisible(501) + Container.Content(Seasons)</visible>
 			<control type="label">
 				<posx>30</posx>
-				<posy>530</posy>
+				<posy>500</posy>
 				<width>1220</width>
 				<height>35</height>
-				<font>font30_title</font>
-				<textcolor>white</textcolor>
+				<font>font28_title</font>
+				<textcolor>blue</textcolor>
 				<scroll>true</scroll>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -179,7 +185,7 @@
 			</control>
 			<control type="label">
 				<posx>0</posx>
-				<posy>570</posy>
+				<posy>540</posy>
 				<width>1280</width>
 				<height>35</height>
 				<font>font30</font>
@@ -191,7 +197,7 @@
 			</control>
 			<control type="label">
 				<posx>0</posx>
-				<posy>610</posy>
+				<posy>575</posy>
 				<width>1280</width>
 				<height>35</height>
 				<font>font13caps</font>
@@ -203,7 +209,7 @@
 			</control>
 			<control type="label">
 				<posx>0</posx>
-				<posy>640</posy>
+				<posy>605</posy>
 				<width>1280</width>
 				<height>35</height>
 				<font>font12caps</font>
@@ -218,11 +224,11 @@
 			<visible>Control.IsVisible(501) + Container.Content(TVShows)</visible>
 			<control type="label">
 				<posx>30</posx>
-				<posy>530</posy>
+				<posy>500</posy>
 				<width>1220</width>
 				<height>35</height>
-				<font>font30_title</font>
-				<textcolor>white</textcolor>
+				<font>font28_title</font>
+				<textcolor>blue</textcolor>
 				<scroll>true</scroll>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -230,7 +236,7 @@
 			</control>
 			<control type="label">
 				<posx>0</posx>
-				<posy>570</posy>
+				<posy>540</posy>
 				<width>1280</width>
 				<height>35</height>
 				<font>font30</font>
@@ -242,7 +248,7 @@
 			</control>
 			<control type="label">
 				<posx>0</posx>
-				<posy>610</posy>
+				<posy>575</posy>
 				<width>1280</width>
 				<height>35</height>
 				<font>font13caps</font>
@@ -254,7 +260,7 @@
 			</control>
 			<control type="label">
 				<posx>0</posx>
-				<posy>640</posy>
+				<posy>605</posy>
 				<width>1280</width>
 				<height>35</height>
 				<font>font12caps</font>
