@@ -644,6 +644,7 @@
     <ClCompile Include="..\..\xbmc\pvr\epg\PVREpgInfoTag.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\epg\PVREpgSearchFilter.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\PVRDatabase.cpp" />
+    <ClCompile Include="..\..\xbmc\pvr\PVRGUIInfo.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\PVRManager.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\recordings\PVRRecording.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\recordings\PVRRecordings.cpp" />
@@ -1527,6 +1528,7 @@
     <ClInclude Include="..\..\xbmc\pvr\epg\PVREpgInfoTag.h" />
     <ClInclude Include="..\..\xbmc\pvr\epg\PVREpgSearchFilter.h" />
     <ClInclude Include="..\..\xbmc\pvr\PVRDatabase.h" />
+    <ClInclude Include="..\..\xbmc\pvr\PVRGUIInfo.h" />
     <ClInclude Include="..\..\xbmc\pvr\PVRManager.h" />
     <ClInclude Include="..\..\xbmc\pvr\recordings\PVRRecording.h" />
     <ClInclude Include="..\..\xbmc\pvr\recordings\PVRRecordings.h" />
