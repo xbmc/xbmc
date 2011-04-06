@@ -573,6 +573,7 @@
 		8DD76F790486A8DE00D96B5E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
 		C80425711158A0DE00D158A6 /* controlslider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80425701158A0DE00D158A6 /* controlslider.cpp */; };
 		C80425721158A0DE00D158A6 /* controlslider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80425701158A0DE00D158A6 /* controlslider.cpp */; };
+		C84BF7341349BB74006D6FC9 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84BF7321349BB74006D6FC9 /* JSONServiceDescription.cpp */; };
 		C85EB75C1174614E0008E5A5 /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
 		C85EB75D1174614E0008E5A5 /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
 		C8D0B2AF1265A9A800F0C0AC /* SystemGlobals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */; };
@@ -1889,10 +1890,6 @@
 		F5DC87E3110A287400EE1B15 /* RingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */; };
 		F5DC8801110A46C700EE1B15 /* ModplugCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC8800110A46C700EE1B15 /* ModplugCodec.cpp */; };
 		F5DC8802110A46C700EE1B15 /* ModplugCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC8800110A46C700EE1B15 /* ModplugCodec.cpp */; };
-		F5DC880F110A4A0B00EE1B15 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC880E110A4A0B00EE1B15 /* FileXBMSP.cpp */; };
-		F5DC8810110A4A0B00EE1B15 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC880E110A4A0B00EE1B15 /* FileXBMSP.cpp */; };
-		F5DC8813110A4A2400EE1B15 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC8812110A4A2400EE1B15 /* XBMSDirectory.cpp */; };
-		F5DC8814110A4A2400EE1B15 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC8812110A4A2400EE1B15 /* XBMSDirectory.cpp */; };
 		F5DC8817110A4B8900EE1B15 /* libxbms.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC8816110A4B8900EE1B15 /* libxbms.a */; };
 		F5DC888B110A654000EE1B15 /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC888A110A654000EE1B15 /* libapetag.a */; };
 		F5DC888C110A654000EE1B15 /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC888A110A654000EE1B15 /* libapetag.a */; };
@@ -2563,6 +2560,8 @@
 		88ECB6580DE013C4003396A7 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		C80425701158A0DE00D158A6 /* controlslider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlslider.cpp; sourceTree = "<group>"; };
+		C84BF7321349BB74006D6FC9 /* JSONServiceDescription.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONServiceDescription.cpp; sourceTree = "<group>"; };
+		C84BF7331349BB74006D6FC9 /* JSONServiceDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONServiceDescription.h; sourceTree = "<group>"; };
 		C85EB75A1174614E0008E5A5 /* Repository.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Repository.cpp; sourceTree = "<group>"; };
 		C85EB75B1174614E0008E5A5 /* Repository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Repository.h; sourceTree = "<group>"; };
 		C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemGlobals.cpp; sourceTree = "<group>"; };
@@ -3959,10 +3958,6 @@
 		F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RingBuffer.cpp; sourceTree = "<group>"; };
 		F5DC87FF110A46C700EE1B15 /* ModplugCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModplugCodec.h; sourceTree = "<group>"; };
 		F5DC8800110A46C700EE1B15 /* ModplugCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ModplugCodec.cpp; sourceTree = "<group>"; };
-		F5DC880D110A4A0B00EE1B15 /* FileXBMSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileXBMSP.h; sourceTree = "<group>"; };
-		F5DC880E110A4A0B00EE1B15 /* FileXBMSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileXBMSP.cpp; sourceTree = "<group>"; };
-		F5DC8811110A4A2400EE1B15 /* XBMSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMSDirectory.h; sourceTree = "<group>"; };
-		F5DC8812110A4A2400EE1B15 /* XBMSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMSDirectory.cpp; sourceTree = "<group>"; };
 		F5DC8816110A4B8900EE1B15 /* libxbms.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxbms.a; path = lib/libXBMS/libxbms.a; sourceTree = "<group>"; };
 		F5DC888A110A654000EE1B15 /* libapetag.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libapetag.a; path = lib/libapetag/.libs/libapetag.a; sourceTree = "<group>"; };
 		F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerTeletext.cpp; sourceTree = "<group>"; };
@@ -5981,8 +5976,6 @@
 				E38E16DF0D25F9FA00618676 /* FileTuxBox.h */,
 				433219D112E4C6A500CD7486 /* FileUDF.cpp */,
 				433219D212E4C6A500CD7486 /* FileUDF.h */,
-				F5DC880E110A4A0B00EE1B15 /* FileXBMSP.cpp */,
-				F5DC880D110A4A0B00EE1B15 /* FileXBMSP.h */,
 				E38E16E20D25F9FA00618676 /* FileZip.cpp */,
 				E38E16E30D25F9FA00618676 /* FileZip.h */,
 				E38E16E40D25F9FA00618676 /* FTPDirectory.cpp */,
@@ -6067,8 +6060,6 @@
 				E38E178D0D25F9FA00618676 /* VirtualDirectory.h */,
 				E38E178E0D25F9FA00618676 /* VirtualPathDirectory.cpp */,
 				E38E178F0D25F9FA00618676 /* VirtualPathDirectory.h */,
-				F5DC8812110A4A2400EE1B15 /* XBMSDirectory.cpp */,
-				F5DC8811110A4A2400EE1B15 /* XBMSDirectory.h */,
 				E49ACD8A100745C400A86ECD /* ZeroconfDirectory.h */,
 				E49ACD8B100745C400A86ECD /* ZeroconfDirectory.cpp */,
 				E38E17920D25F9FA00618676 /* zconf.h */,
@@ -7267,6 +7258,8 @@
 		F5AE407F13415D9E0004BD79 /* json-rpc */ = {
 			isa = PBXGroup;
 			children = (
+				C84BF7321349BB74006D6FC9 /* JSONServiceDescription.cpp */,
+				C84BF7331349BB74006D6FC9 /* JSONServiceDescription.h */,
 				F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */,
 				F5AE408113415D9E0004BD79 /* AudioLibrary.h */,
 				F5AE408213415D9E0004BD79 /* AVPlayerOperations.cpp */,
@@ -8242,8 +8235,6 @@
 				E435380411076A2900792AB8 /* eprintf.cpp in Sources */,
 				F5DC87E2110A287400EE1B15 /* RingBuffer.cpp in Sources */,
 				F5DC8801110A46C700EE1B15 /* ModplugCodec.cpp in Sources */,
-				F5DC880F110A4A0B00EE1B15 /* FileXBMSP.cpp in Sources */,
-				F5DC8813110A4A2400EE1B15 /* XBMSDirectory.cpp in Sources */,
 				F5F240EF110A4F76009126C6 /* CrystalHD.cpp in Sources */,
 				F5F244651110DC6B009126C6 /* FileOperationJob.cpp in Sources */,
 				F5F245DA1112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp in Sources */,
@@ -8516,6 +8507,7 @@
 				F5AE40A613415D9E0004BD79 /* SystemOperations.cpp in Sources */,
 				F5AE40A713415D9E0004BD79 /* VideoLibrary.cpp in Sources */,
 				F5AE40A813415D9E0004BD79 /* XBMCOperations.cpp in Sources */,
+				C84BF7341349BB74006D6FC9 /* JSONServiceDescription.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9181,8 +9173,6 @@
 				E435380311076A2900792AB8 /* eprintf.cpp in Sources */,
 				F5DC87E3110A287400EE1B15 /* RingBuffer.cpp in Sources */,
 				F5DC8802110A46C700EE1B15 /* ModplugCodec.cpp in Sources */,
-				F5DC8810110A4A0B00EE1B15 /* FileXBMSP.cpp in Sources */,
-				F5DC8814110A4A2400EE1B15 /* XBMSDirectory.cpp in Sources */,
 				F5F244661110DC6B009126C6 /* FileOperationJob.cpp in Sources */,
 				F5F245DB1112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp in Sources */,
 				F5F245EF1112C9AB009126C6 /* FileUtils.cpp in Sources */,

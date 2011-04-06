@@ -32,6 +32,9 @@ extern "C"
   int     GetDarwinExecutablePath(char* path, uint32_t *pathsize);
 
   bool    DarwinHasVideoToolboxDecoder(void);
+  
+  typedef struct CGImage *CGImageRef;
+  CGImageRef CGImageCreateRotatedByAngle(CGImageRef imgRef, float angle);
 #ifdef __cplusplus
 }
 #endif

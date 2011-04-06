@@ -34,102 +34,96 @@ using namespace JSONRPC;
 
 JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
-  CStdString media = param.get("media", "null").asString();
+  CStdString media = parameterObject["media"].asString();
   media = media.ToLower();
 
-  if (media.Equals("video") || media.Equals("music") || media.Equals("pictures") || media.Equals("files") || media.Equals("programs"))
+  VECSOURCES *sources = g_settings.GetSourcesFromType(media);
+  if (sources)
   {
-    VECSOURCES *sources = g_settings.GetSourcesFromType(media);
-    if (sources)
+    CFileItemList items;
+    for (unsigned int i = 0; i < (unsigned int)sources->size(); i++)
+      items.Add(CFileItemPtr(new CFileItem(sources->at(i))));
+
+    for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
     {
-      CFileItemList items;
-      for (unsigned int i = 0; i < (unsigned int)sources->size(); i++)
-        items.Add(CFileItemPtr(new CFileItem(sources->at(i))));
-
-      for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
+      if (items[i]->IsSmb())
       {
-        if (items[i]->IsSmb())
-        {
-          CURL url(items[i]->m_strPath);
-          items[i]->m_strPath = url.GetWithoutUserDetails();
-        }
+        CURL url(items[i]->m_strPath);
+        items[i]->m_strPath = url.GetWithoutUserDetails();
       }
-
-      HandleFileItemList(NULL, true, "shares", items, parameterObject, result);
     }
 
-    return OK;
+    HandleFileItemList(NULL, true, "shares", items, parameterObject, result);
   }
-  else
-    return InvalidParams;
+
+  return OK;
 }
 
 JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (parameterObject.isObject() && parameterObject.isMember("directory"))
+  CStdString media = parameterObject["media"].asString();
+  media = media.ToLower();
+
+  CDirectory directory;
+  CFileItemList items;
+  CStdString strPath = parameterObject["directory"].asString();
+
+  CStdStringArray regexps;
+  CStdString extensions = "";
+  if (media.Equals("video"))
   {
-    CStdString media = "files";
-    if (parameterObject.isMember("media"))
+    regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
+    extensions = g_settings.m_videoExtensions;
+  }
+  else if (media.Equals("music"))
+  {
+    regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+    extensions = g_settings.m_musicExtensions;
+  }
+  else if (media.Equals("pictures"))
+  {
+    regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+    extensions = g_settings.m_pictureExtensions;
+  }
+
+  if (directory.GetDirectory(strPath, items, extensions))
+  {
+    CFileItemList filteredDirectories, filteredFiles;
+    for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
     {
-      if (parameterObject["media"].isString())
-        media = parameterObject["media"].asString();
+      if (CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
+        continue;
+
+      if (items[i]->IsSmb())
+      {
+        CURL url(items[i]->m_strPath);
+        items[i]->m_strPath = url.GetWithoutUserDetails();
+      }
+
+      if (items[i]->m_bIsFolder)
+        filteredDirectories.Add(items[i]);
       else
-        return InvalidParams;
+        filteredFiles.Add(items[i]);
     }
 
-    media = media.ToLower();
-
-    if (media.Equals("video") || media.Equals("music") || media.Equals("pictures") || media.Equals("files") || media.Equals("programs"))
+    HandleFileItemList(NULL, true, "files", filteredDirectories, parameterObject, result);
+    for (unsigned int index = 0; index < result["files"].size(); index++)
     {
-      CDirectory directory;
-      CFileItemList items;
-      CStdString strPath = parameterObject["directory"].asString();
-
-      CStdStringArray regexps;
-      CStdString extensions = "";
-      if (media.Equals("video"))
-      {
-        regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
-        extensions = g_settings.m_videoExtensions;
-      }
-      else if (media.Equals("music"))
-      {
-        regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
-        extensions = g_settings.m_musicExtensions;
-      }
-      else if (media.Equals("pictures"))
-      {
-        regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
-        extensions = g_settings.m_pictureExtensions;
-      }
-
-      if (directory.GetDirectory(strPath, items, extensions))
-      {
-        CFileItemList filteredDirectories, filteredFiles;
-        for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
-        {
-          if (CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
-            continue;
-
-          if (items[i]->IsSmb())
-          {
-            CURL url(items[i]->m_strPath);
-            items[i]->m_strPath = url.GetWithoutUserDetails();
-          }
-
-          if (items[i]->m_bIsFolder)
-            filteredDirectories.Add(items[i]);
-          else
-            filteredFiles.Add(items[i]);
-        }
-
-        HandleFileItemList(NULL, true, "directories", filteredDirectories, parameterObject, result);
-        HandleFileItemList(NULL, true, "files", filteredFiles, parameterObject, result);
-
-        return OK;
-      }
+      result["files"][index]["filetype"] = "directory";
     }
+    int count = result["limits"]["total"].asInt();
+
+    HandleFileItemList(NULL, true, "files", filteredFiles, parameterObject, result);
+    for (unsigned int index = count; index < result["files"].size(); index++)
+    {
+      result["files"][index]["filetype"] = "file";
+    }
+    count += result["limits"]["total"].asInt();
+
+    result["limits"]["end"] = count;
+    result["limits"]["total"] = count;
+
+    return OK;
   }
 
   return InvalidParams;
@@ -137,10 +131,7 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
 
 JSON_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!parameterObject.isString())
-    return InvalidParams;
-
-  return transport->Download(parameterObject.asString().c_str(), &result) ? OK : InvalidParams;
+  return transport->Download(parameterObject["path"].asString().c_str(), &result) ? OK : InvalidParams;
 }
 
 bool CFileOperations::FillFileItemList(const Value &parameterObject, CFileItemList &list)

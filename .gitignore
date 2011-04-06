@@ -367,6 +367,7 @@ lib/cmyth/Makefile
 /system/libssh2.dll
 /system/libssl32.dll
 /system/hdhomerun.dll
+/system/ssh.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
@@ -1091,11 +1092,6 @@ lib/cmyth/Makefile
 /lib/libsquish/vs7/squish/Release
 
 /lib/libUPnP/Makefile
-
-# /lib/libXBMS
-/lib/libXBMS/Makefile
-/lib/libXBMS/libXBMS/Debug
-/lib/libXBMS/libXBMS/Release
 
 # /lib/libXDAAP
 /lib/libXDAAP/Makefile

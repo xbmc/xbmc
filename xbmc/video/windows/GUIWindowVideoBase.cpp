@@ -1570,6 +1570,11 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
     for (int i=0;i<items.Size();++i)
     {
       CFileItemPtr pItem=items[i];
+      if (pItem->m_bIsFolder)
+      {
+        MarkWatched(pItem, bMark);
+        continue;
+      }
 
       if (pItem->HasVideoInfoTag() &&
           (( bMark && pItem->GetVideoInfoTag()->m_playCount) ||

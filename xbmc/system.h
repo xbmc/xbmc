@@ -72,11 +72,9 @@
 #if defined(_LINUX) || defined(__APPLE__)
   #if defined(HAVE_XBMC_NONFREE)
     #define HAS_FILESYSTEM_RAR
-    #define HAS_FILESYSTEM_CCX
   #endif
 #else
   #define HAS_FILESYSTEM_RAR
-  #define HAS_FILESYSTEM_CCX
 #endif
 
 /*****************

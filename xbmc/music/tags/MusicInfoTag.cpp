@@ -401,6 +401,7 @@ void CMusicInfoTag::Serialize(CVariant& value)
   value["comment"] = m_strComment;
   value["rating"] = m_rating;
   value["playcount"] = m_iTimesPlayed;
+  value["lyrics"] = m_strLyrics;
 }
 void CMusicInfoTag::Archive(CArchive& ar)
 {

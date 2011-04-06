@@ -1,5 +1,11 @@
+// Copyright 2007-2010 Baptiste Lepilleur
+// Distributed under MIT license, or public domain if desired and
+// recognized in your jurisdiction.
+// See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
+
 #include <json/reader.h>
 #include <json/value.h>
+#include "json_tool.h"
 #include <utility>
 #include <cstdio>
 #include <cassert>
@@ -64,42 +70,6 @@ containsNewLine( Reader::Location begin,
       if ( *begin == '\n'  ||  *begin == '\r' )
          return true;
    return false;
-}
-
-static std::string codePointToUTF8(unsigned int cp)
-{
-   std::string result;
-   
-   // based on description from http://en.wikipedia.org/wiki/UTF-8
-
-   if (cp <= 0x7f) 
-   {
-      result.resize(1);
-      result[0] = static_cast<char>(cp);
-   } 
-   else if (cp <= 0x7FF) 
-   {
-      result.resize(2);
-      result[1] = static_cast<char>(0x80 | (0x3f & cp));
-      result[0] = static_cast<char>(0xC0 | (0x1f & (cp >> 6)));
-   } 
-   else if (cp <= 0xFFFF) 
-   {
-      result.resize(3);
-      result[2] = static_cast<char>(0x80 | (0x3f & cp));
-      result[1] = 0x80 | static_cast<char>((0x3f & (cp >> 6)));
-      result[0] = 0xE0 | static_cast<char>((0xf & (cp >> 12)));
-   }
-   else if (cp <= 0x10FFFF) 
-   {
-      result.resize(4);
-      result[3] = static_cast<char>(0x80 | (0x3f & cp));
-      result[2] = static_cast<char>(0x80 | (0x3f & (cp >> 6)));
-      result[1] = static_cast<char>(0x80 | (0x3f & (cp >> 12)));
-      result[0] = static_cast<char>(0xF0 | (0x7 & (cp >> 18)));
-   }
-
-   return result;
 }
 
 
@@ -590,26 +560,41 @@ Reader::decodeNumber( Token &token )
    }
    if ( isDouble )
       return decodeDouble( token );
+   // Attempts to parse the number as an integer. If the number is
+   // larger than the maximum supported value of an integer then
+   // we decode the number as a double.
    Location current = token.start_;
    bool isNegative = *current == '-';
    if ( isNegative )
       ++current;
-   Value::UInt threshold = (isNegative ? Value::UInt(-Value::minInt) 
-                                       : Value::maxUInt) / 10;
-   Value::UInt value = 0;
+   Value::LargestUInt maxIntegerValue = isNegative ? Value::LargestUInt(-Value::minLargestInt) 
+                                                   : Value::maxLargestUInt;
+   Value::LargestUInt threshold = maxIntegerValue / 10;
+   Value::UInt lastDigitThreshold = Value::UInt( maxIntegerValue % 10 );
+   assert( lastDigitThreshold >=0  &&  lastDigitThreshold <= 9 );
+   Value::LargestUInt value = 0;
    while ( current < token.end_ )
    {
       Char c = *current++;
       if ( c < '0'  ||  c > '9' )
          return addError( "'" + std::string( token.start_, token.end_ ) + "' is not a number.", token );
+      Value::UInt digit(c - '0');
       if ( value >= threshold )
-         return decodeDouble( token );
-      value = value * 10 + Value::UInt(c - '0');
+      {
+         // If the current digit is not the last one, or if it is
+         // greater than the last digit of the maximum integer value,
+         // the parse the number as a double.
+         if ( current != token.end_  ||  digit > lastDigitThreshold )
+         {
+            return decodeDouble( token );
+         }
+      }
+      value = value * 10 + digit;
    }
    if ( isNegative )
-      currentValue() = -Value::Int( value );
-   else if ( value <= Value::UInt(Value::maxInt) )
-      currentValue() = Value::Int( value );
+      currentValue() = -Value::LargestInt( value );
+   else if ( value <= Value::LargestUInt(Value::maxInt) )
+      currentValue() = Value::LargestInt( value );
    else
       currentValue() = value;
    return true;

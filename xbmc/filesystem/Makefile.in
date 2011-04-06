@@ -91,10 +91,8 @@ SRCS=AddonsDirectory.cpp \
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 SRCS+=FileRar.cpp \
-      FileXBMSP.cpp \
       RarDirectory.cpp \
       RarManager.cpp \
-      XBMSDirectory.cpp \
 
 endif
 

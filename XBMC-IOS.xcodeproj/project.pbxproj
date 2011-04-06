@@ -382,7 +382,6 @@
 		F56C897D131F42ED000AD0F6 /* FileSpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C83C3131F42E8000AD0F6 /* FileSpecialProtocol.cpp */; };
 		F56C897E131F42ED000AD0F6 /* FileTuxBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C83C5131F42E8000AD0F6 /* FileTuxBox.cpp */; };
 		F56C897F131F42ED000AD0F6 /* FileUDF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C83C7131F42E8000AD0F6 /* FileUDF.cpp */; };
-		F56C8980131F42ED000AD0F6 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C83C9131F42E8000AD0F6 /* FileXBMSP.cpp */; };
 		F56C8981131F42ED000AD0F6 /* FileZip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C83CB131F42E8000AD0F6 /* FileZip.cpp */; };
 		F56C8982131F42ED000AD0F6 /* FTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C83CD131F42E8000AD0F6 /* FTPDirectory.cpp */; };
 		F56C8983131F42ED000AD0F6 /* FTPParse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C83CF131F42E8000AD0F6 /* FTPParse.cpp */; };
@@ -468,7 +467,6 @@
 		F56C89D3131F42ED000AD0F6 /* VideoDatabaseDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8473131F42E8000AD0F6 /* VideoDatabaseDirectory.cpp */; };
 		F56C89D4131F42ED000AD0F6 /* VirtualDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8475131F42E8000AD0F6 /* VirtualDirectory.cpp */; };
 		F56C89D5131F42ED000AD0F6 /* VirtualPathDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8477131F42E8000AD0F6 /* VirtualPathDirectory.cpp */; };
-		F56C89D6131F42ED000AD0F6 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8479131F42E9000AD0F6 /* XBMSDirectory.cpp */; };
 		F56C89D7131F42ED000AD0F6 /* ZeroconfDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C847C131F42E9000AD0F6 /* ZeroconfDirectory.cpp */; };
 		F56C89D8131F42ED000AD0F6 /* ZipDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C847E131F42E9000AD0F6 /* ZipDirectory.cpp */; };
 		F56C89D9131F42ED000AD0F6 /* ZipManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8480131F42E9000AD0F6 /* ZipManager.cpp */; };
@@ -1797,8 +1795,6 @@
 		F56C83C6131F42E8000AD0F6 /* FileTuxBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileTuxBox.h; sourceTree = "<group>"; };
 		F56C83C7131F42E8000AD0F6 /* FileUDF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUDF.cpp; sourceTree = "<group>"; };
 		F56C83C8131F42E8000AD0F6 /* FileUDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUDF.h; sourceTree = "<group>"; };
-		F56C83C9131F42E8000AD0F6 /* FileXBMSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileXBMSP.cpp; sourceTree = "<group>"; };
-		F56C83CA131F42E8000AD0F6 /* FileXBMSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileXBMSP.h; sourceTree = "<group>"; };
 		F56C83CB131F42E8000AD0F6 /* FileZip.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileZip.cpp; sourceTree = "<group>"; };
 		F56C83CC131F42E8000AD0F6 /* FileZip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileZip.h; sourceTree = "<group>"; };
 		F56C83CD131F42E8000AD0F6 /* FTPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FTPDirectory.cpp; sourceTree = "<group>"; };
@@ -1971,8 +1967,6 @@
 		F56C8476131F42E8000AD0F6 /* VirtualDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VirtualDirectory.h; sourceTree = "<group>"; };
 		F56C8477131F42E8000AD0F6 /* VirtualPathDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VirtualPathDirectory.cpp; sourceTree = "<group>"; };
 		F56C8478131F42E8000AD0F6 /* VirtualPathDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VirtualPathDirectory.h; sourceTree = "<group>"; };
-		F56C8479131F42E9000AD0F6 /* XBMSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMSDirectory.cpp; sourceTree = "<group>"; };
-		F56C847A131F42E9000AD0F6 /* XBMSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMSDirectory.h; sourceTree = "<group>"; };
 		F56C847B131F42E9000AD0F6 /* ZeroconfDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfDirectory.h; sourceTree = "<group>"; };
 		F56C847C131F42E9000AD0F6 /* ZeroconfDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfDirectory.cpp; sourceTree = "<group>"; };
 		F56C847D131F42E9000AD0F6 /* zconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zconf.h; sourceTree = "<group>"; };
@@ -4414,8 +4408,6 @@
 				F56C83C6131F42E8000AD0F6 /* FileTuxBox.h */,
 				F56C83C7131F42E8000AD0F6 /* FileUDF.cpp */,
 				F56C83C8131F42E8000AD0F6 /* FileUDF.h */,
-				F56C83C9131F42E8000AD0F6 /* FileXBMSP.cpp */,
-				F56C83CA131F42E8000AD0F6 /* FileXBMSP.h */,
 				F56C83CB131F42E8000AD0F6 /* FileZip.cpp */,
 				F56C83CC131F42E8000AD0F6 /* FileZip.h */,
 				F56C83CD131F42E8000AD0F6 /* FTPDirectory.cpp */,
@@ -4500,8 +4492,6 @@
 				F56C8476131F42E8000AD0F6 /* VirtualDirectory.h */,
 				F56C8477131F42E8000AD0F6 /* VirtualPathDirectory.cpp */,
 				F56C8478131F42E8000AD0F6 /* VirtualPathDirectory.h */,
-				F56C8479131F42E9000AD0F6 /* XBMSDirectory.cpp */,
-				F56C847A131F42E9000AD0F6 /* XBMSDirectory.h */,
 				F56C847B131F42E9000AD0F6 /* ZeroconfDirectory.h */,
 				F56C847C131F42E9000AD0F6 /* ZeroconfDirectory.cpp */,
 				F56C847D131F42E9000AD0F6 /* zconf.h */,
@@ -6269,7 +6259,6 @@
 				F56C897D131F42ED000AD0F6 /* FileSpecialProtocol.cpp in Sources */,
 				F56C897E131F42ED000AD0F6 /* FileTuxBox.cpp in Sources */,
 				F56C897F131F42ED000AD0F6 /* FileUDF.cpp in Sources */,
-				F56C8980131F42ED000AD0F6 /* FileXBMSP.cpp in Sources */,
 				F56C8981131F42ED000AD0F6 /* FileZip.cpp in Sources */,
 				F56C8982131F42ED000AD0F6 /* FTPDirectory.cpp in Sources */,
 				F56C8983131F42ED000AD0F6 /* FTPParse.cpp in Sources */,
@@ -6355,7 +6344,6 @@
 				F56C89D3131F42ED000AD0F6 /* VideoDatabaseDirectory.cpp in Sources */,
 				F56C89D4131F42ED000AD0F6 /* VirtualDirectory.cpp in Sources */,
 				F56C89D5131F42ED000AD0F6 /* VirtualPathDirectory.cpp in Sources */,
-				F56C89D6131F42ED000AD0F6 /* XBMSDirectory.cpp in Sources */,
 				F56C89D7131F42ED000AD0F6 /* ZeroconfDirectory.cpp in Sources */,
 				F56C89D8131F42ED000AD0F6 /* ZipDirectory.cpp in Sources */,
 				F56C89D9131F42ED000AD0F6 /* ZipManager.cpp in Sources */,

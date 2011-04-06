@@ -765,9 +765,6 @@
     <ClCompile Include="..\..\xbmc\FileSystem\FileTuxBox.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\FileXBMSP.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\FileZip.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -907,9 +904,6 @@
       <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\VTPSession.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\XBMSDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\ZipDirectory.cpp">
@@ -2642,6 +2636,10 @@
     <ClCompile Include="..\..\xbmc\pvr\PVRGUIInfo.cpp">
       <Filter>pvr</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\json-rpc\JSONServiceDescription.cpp">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -3265,9 +3263,6 @@
     <ClInclude Include="..\..\xbmc\FileSystem\FileTuxBox.h">
       <Filter>filesystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\FileXBMSP.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\FileZip.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -3389,9 +3384,6 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\VTPSession.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\XBMSDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\ZipDirectory.h">
@@ -3630,9 +3622,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\music\karaoke\karaokewindowbackground.h">
       <Filter>music\karaoke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\win32\sqlite\sqlite3.h">
-      <Filter>libs\sqlite</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dbwrappers\Database.h">
       <Filter>database</Filter>
@@ -5254,8 +5243,16 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayEject.h">
       <Filter>dialogs</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="..\..\xbmc\pvr\PVRGUIInfo.h">
       <Filter>pvr</Filter>
+=======
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\JSONServiceDescription.h">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ServiceDescription.h">
+      <Filter>interfaces\json-rpc</Filter>
+>>>>>>> upstream-ro/master
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

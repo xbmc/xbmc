@@ -4,7 +4,7 @@
 
 <a HREF="http://www.json.org/">JSON (JavaScript Object Notation)</a>
  is a lightweight data-interchange format. 
-It can represents integer, real number, string, an ordered sequence of value, and
+It can represent integer, real number, string, an ordered sequence of value, and
 a collection of name/value pairs.
 
 Here is an example of JSON data:
@@ -22,13 +22,21 @@ Here is an example of JSON data:
         ],
         
     // Tab indent size
-    "indent" : { "length" : 3, "use_space" = true }
+    "indent" : { "length" : 3, "use_space": true }
 }
 \endverbatim
 
 \section _features Features
 - read and write JSON document
+- attach C and C++ style comments to element during parsing
 - rewrite JSON document preserving original comments
+
+Notes: Comments used to be supported in JSON but where removed for 
+portability (C like comments are not supported in Python). Since
+comments are useful in configuration/input file, this feature was
+preserved.
+
+\section _example Code example
 
 \code
 Json::Value root;   // will contains the root value after parsing.
@@ -57,7 +65,7 @@ setIndentUseSpace( root["indent"].get("use_space", true).asBool() );
 // ...
 // At application shutdown to make the new configuration document:
 // Since Json::Value has implicit constructor for all value types, it is not
-// necessary to explicitely construct the Json::Value object:
+// necessary to explicitly construct the Json::Value object:
 root["encoding"] = getCurrentEncoding();
 root["indent"]["length"] = getCurrentIndentLength();
 root["indent"]["use_space"] = getCurrentIndentUseSpace();
@@ -74,16 +82,34 @@ std::cin >> root["subtree"];
 std::cout << root;
 \endcode
 
-\section _plinks Build instructions
-The build instruction are located in the file 
+\section _pbuild Build instructions
+The build instructions are located in the file 
 <a HREF="README.txt">README.txt</a> in the top-directory of the project.
 
-Permanent link to the lastest revision of the file in subversion: 
-<a HREF="http://svn.sourceforge.net/viewcvs.cgi/jsoncpp/README.txt?view=markup">lastest README.txt</a>
+Permanent link to the latest revision of the file in subversion: 
+<a HREF="http://svn.sourceforge.net/viewcvs.cgi/jsoncpp/README.txt?view=markup">latest README.txt</a>
+
+\section _pdownload Download
+The sources can be downloaded from 
+<a HREF="http://sourceforge.net/projects/jsoncpp/files/">SourceForge download page</a>.
+
+The latest version of the source is available in the project's subversion repository: 
+<a HREF="http://jsoncpp.svn.sourceforge.net/svnroot/jsoncpp/trunk/">
+http://jsoncpp.svn.sourceforge.net/svnroot/jsoncpp/trunk/</a>
+
+To checkout the source, see the following 
+<a HREF="http://sourceforge.net/scm/?type=svn&group_id=144446">instructions</a>.
+
+\section _news What's New?
+The description of latest changes can be found in 
+<a HREF="NEWS.txt">NEWS.txt</a> in the top-directory of the project.
+
+Permanent link to the latest revision of the file in subversion: 
+<a HREF="http://svn.sourceforge.net/viewcvs.cgi/jsoncpp/README.txt?view=markup">latest NEWS.txt</a>
 
 \section _plinks Project links
 - <a HREF="http://jsoncpp.sourceforge.net">json-cpp home</a>
-- <a HREF="http://www.sourceforge.net/projects/jsoncpp">json-cpp sourceforge project</a>
+- <a HREF="http://www.sourceforge.net/projects/jsoncpp/">json-cpp sourceforge project</a>
 
 \section _rlinks Related links
 - <a HREF="http://www.json.org/">JSON</a> Specification and alternate language implementations.
@@ -91,7 +117,10 @@ Permanent link to the lastest revision of the file in subversion:
 - <a HREF="http://www.cl.cam.ac.uk/~mgk25/unicode.html">UTF-8 and Unicode FAQ</a>.
 
 \section _license License
-The json-cpp library and this documentation are in Public Domain.
+See file <a HREF="LICENSE">LICENSE</a> in the top-directory of the project.
+
+Basically JsonCpp is licensed under MIT license, or public domain if desired 
+and recognized in your jurisdiction.
 
 \author Baptiste Lepilleur <blep@users.sourceforge.net>
 */

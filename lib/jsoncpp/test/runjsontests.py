@@ -4,7 +4,6 @@ import os.path
 from glob import glob
 import optparse
 
-RUN_JSONCHECKER = False
 VALGRIND_CMD = 'valgrind --tool=memcheck --leak-check=yes --undef-value-errors=yes '
 
 def compareOutputs( expected, actual, message ):
@@ -39,12 +38,12 @@ def safeReadFile( path ):
         return '<File "%s" is missing: %s>' % (path,e)
 
 def runAllTests( jsontest_executable_path, input_dir = None,
-                 use_valgrind=False ):
+                 use_valgrind=False, with_json_checker=False ):
     if not input_dir:
         input_dir = os.path.join( os.getcwd(), 'data' )
     tests = glob( os.path.join( input_dir, '*.json' ) )
-    if RUN_JSONCHECKER:
-        test_jsonchecker = glob( os.path.join( input_dir, 'jsonchecker', '*.json' ) )
+    if with_json_checker:
+        test_jsonchecker = glob( os.path.join( input_dir, '../jsonchecker', '*.json' ) )
     else:
         test_jsonchecker = []
     failed_tests = []
@@ -112,6 +111,9 @@ def main():
     parser.add_option("--valgrind",
                   action="store_true", dest="valgrind", default=False,
                   help="run all the tests using valgrind to detect memory leaks")
+    parser.add_option("-c", "--with-json-checker",
+                  action="store_true", dest="with_json_checker", default=False,
+                  help="run all the tests from the official JSONChecker test suite of json.org")
     parser.enable_interspersed_args()
     options, args = parser.parse_args()
 
@@ -125,7 +127,7 @@ def main():
     else:
         input_path = None
     status = runAllTests( jsontest_executable_path, input_path,
-                          use_valgrind=options.valgrind )
+                          use_valgrind=options.valgrind, with_json_checker=options.with_json_checker )
     sys.exit( status )
 
 if __name__ == '__main__':

@@ -32,6 +32,10 @@
 #include "sqlitedataset.h"
 #include "system.h" // for Sleep(), OutputDebugString() and GetLastError()
 
+#ifdef _WIN32
+#pragma comment(lib, "sqlite3.lib")
+#endif
+
 using namespace std;
 
 namespace dbiplus {
