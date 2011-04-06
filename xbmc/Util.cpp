@@ -1296,6 +1296,9 @@ bool CUtil::TestSplitExec()
   CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\\\\\\\test\\\\\\foo\\\\\")", function, params);
   if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\\\test\\\\foo\\")
     return false;
+  CUtil::SplitExecFunction("SetProperty(Foo,\"\")", function, params);
+  if (function != "SetProperty" || params.size() != 2 || params[0] != "Foo" || params[1] != "")
+   return false;
   return true;
 }
 #endif
@@ -1385,7 +1388,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
     CLog::Log(LOGWARNING, "%s(%s) - end of string while searching for ) or \"", __FUNCTION__, execString.c_str());
   if (whiteSpacePos)
     parameter = parameter.Left(whiteSpacePos);
-  if (!parameter.IsEmpty())
+  if (!parameter.IsEmpty() || parameters.size())
     parameters.push_back(parameter);
 }
 
