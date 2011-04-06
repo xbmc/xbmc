@@ -301,18 +301,19 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
   m_strGenre          = tag.m_strGenre;
 
   /* try to find an epg event */
-  if (m_epgInfo == NULL)
-  {
-    UpdateEpgEvent();
-    if (m_epgInfo != NULL)
-      m_strGenre = m_epgInfo->Genre();
-  }
+  UpdateEpgEvent();
+  if (m_epgInfo != NULL)
+    m_strGenre = m_epgInfo->Genre();
 
   return true;
 }
 
 void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
 {
+  /* already got an epg event set */
+  if (m_epgInfo)
+    return;
+
   /* try to get the channel */
   CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByUniqueID(m_iClientChannelUid, m_iClientId);
   if (!channel)
