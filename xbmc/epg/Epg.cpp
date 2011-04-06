@@ -306,26 +306,26 @@ void CEpg::AddEntry(const CEpgInfoTag &tag)
 
 bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false */)
 {
-  bool bReturn = false;
+  bool bReturn(false);
+  CSingleLock lock(m_critSection);
 
-  /* XXX tags aren't always fetched correctly here */
-  CEpgInfoTag *InfoTag = (CEpgInfoTag *) this->InfoTag(tag.UniqueBroadcastID(), tag.StartAsUTC());
+  CEpgInfoTag *infoTag = (CEpgInfoTag *) InfoTag(tag.UniqueBroadcastID(), tag.StartAsUTC());
+
   /* create a new tag if no tag with this ID exists */
-  if (!InfoTag)
+  if (!infoTag)
   {
-    CSingleLock lock(m_critSection);
-    InfoTag = CreateTag();
-    InfoTag->SetUniqueBroadcastID(tag.UniqueBroadcastID());
-    push_back(InfoTag);
+    infoTag = CreateTag();
+    infoTag->SetUniqueBroadcastID(tag.UniqueBroadcastID());
+    push_back(infoTag);
   }
 
-  InfoTag->m_Epg = this;
-  InfoTag->Update(tag);
+  infoTag->m_Epg = this;
+  infoTag->Update(tag);
 
   Sort();
 
   if (bUpdateDatabase)
-    bReturn = InfoTag->Persist();
+    bReturn = infoTag->Persist();
   else
     bReturn = true;
 
