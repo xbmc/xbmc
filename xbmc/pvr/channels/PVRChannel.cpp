@@ -25,6 +25,8 @@
 #include "Util.h"
 #include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"
+#include "pictures/Picture.h"
+#include "settings/GUISettings.h"
 
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/epg/PVREpgContainer.h"
@@ -129,6 +131,27 @@ CPVRChannel::CPVRChannel(const CPVRChannel &channel)
   m_iClientEncryptionSystem = channel.m_iClientEncryptionSystem;
   m_EPG                     = NULL;
   m_bChanged                = false;
+}
+
+bool CPVRChannel::CacheIcon(void)
+{
+  bool bReturn(true);
+  CStdString strBasePath = g_guiSettings.GetString("pvrmenu.iconpath");
+  if (strBasePath.IsEmpty())
+    return bReturn;
+
+  if (!m_strIconPath.Left(strBasePath.length()).Equals(strBasePath))
+  {
+    CStdString strNewFileName;
+    strNewFileName.Format("%s/icon_%s_%d_%d.tbn", strBasePath, m_bIsRadio ? "radio" : "tv", m_iClientId, m_iUniqueId);
+
+    if (CPicture::CacheThumb(m_strIconPath, strNewFileName))
+      SetIconPath(strNewFileName);
+    else
+      bReturn = false;
+  }
+
+  return bReturn;
 }
 
 /********** XBMC related channel methods **********/
@@ -278,6 +301,7 @@ bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bSaveInDb /* =
   {
     /* update the path */
     m_strIconPath.Format("%s", strIconPath);
+    CacheIcon();
     SetChanged();
     m_bChanged = true;
 

@@ -349,6 +349,8 @@ public:
   const CStdString &Path(void) const { return m_strFileNameAndPath; }
 
 private:
+  bool CacheIcon(void);
+
   /*!
    * @brief Update the path after the channel number in the internal group changed.
    */
