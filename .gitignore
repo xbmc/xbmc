@@ -1067,11 +1067,6 @@ lib/cmyth/Makefile
 
 /lib/libUPnP/Makefile
 
-# /lib/libXBMS
-/lib/libXBMS/Makefile
-/lib/libXBMS/libXBMS/Debug
-/lib/libXBMS/libXBMS/Release
-
 # /lib/libXDAAP
 /lib/libXDAAP/Makefile
 /lib/libXDAAP/libXDAAP_win32/Debug

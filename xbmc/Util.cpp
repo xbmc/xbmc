@@ -176,10 +176,6 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
       strFilename = url.GetHostName();
     }
   }
-  // XBMSP Network
-  else if (url.GetProtocol() == "xbms" && strFilename.IsEmpty())
-    strFilename = "XBMSP Network";
-
   // iTunes music share (DAAP)
   else if (url.GetProtocol() == "daap" && strFilename.IsEmpty())
     strFilename = g_localizeStrings.Get(20174);

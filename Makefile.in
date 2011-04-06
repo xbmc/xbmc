@@ -55,7 +55,6 @@ BIN_DIRS=	\
 	lib/libRTV \
 	xbmc/network/libscrobbler \
 	lib/libUPnP \
-	lib/libXBMS \
 	lib/libXDAAP \
 	xbmc/dbwrappers \
 	lib/UnrarXLib \
@@ -329,8 +328,6 @@ lib/libRTV/librtv.a: force
 	$(MAKE) -C lib/libRTV
 lib/libUPnP/libupnp.a: force
 	$(MAKE) -C lib/libUPnP
-lib/libXBMS/libxbms.a: force
-	$(MAKE) -C lib/libXBMS
 lib/libXDAAP/libxdaap.a: force
 	$(MAKE) -C lib/libXDAAP
 lib/jsoncpp/src/lib_json/libjsoncpp.a: force
@@ -457,7 +454,6 @@ xcode_depends: \
 	codecs libs python visualizations screensavers eventclients skins \
 	lib/libsquish/libsquish.a \
 	lib/libapetag/.libs/libapetag.a \
-	lib/libXBMS/libxbms.a \
 	lib/libRTV/librtv.a \
 	lib/libXDAAP/libxdaap.a \
 	lib/jsoncpp/src/lib_json/libjsoncpp.a
@@ -532,7 +528,6 @@ endif
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 OBJSXBMC+= \
-	lib/libXBMS/libxbms.a \
 	lib/UnrarXLib/UnrarXLib.a
 endif
 

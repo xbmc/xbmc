@@ -1029,8 +1029,6 @@ void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem)
 
     if (pItem->m_iDriveType != CMediaSource::SOURCE_TYPE_REMOTE) //  Local shares incl. dvd drive
       idMessageText=15300;
-    else if (url.GetProtocol() == "xbms" && strHostName.IsEmpty()) //  xbms server discover
-      idMessageText=15302;
     else if (url.GetProtocol() == "smb" && strHostName.IsEmpty()) //  smb workgroup
       idMessageText=15303;
     else  //  All other remote shares

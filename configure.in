@@ -1391,7 +1391,6 @@ OUTPUT_FILES="Makefile \
     xbmc/guilib/Makefile \
     xbmc/interfaces/Makefile \
     xbmc/network/Makefile \
-    lib/libXBMS/Makefile \
     lib/libRTV/Makefile \
     lib/libexif/Makefile \
     lib/libXDAAP/Makefile \
