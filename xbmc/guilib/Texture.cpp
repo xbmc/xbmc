@@ -214,39 +214,20 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   }
 
   CGImageRef image = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
-  
-  //get the orientation of the image for displaying it correctly
-  CFDictionaryRef imagePropertiesDictionary = CGImageSourceCopyPropertiesAtIndex(imageSource,0, NULL);
-  if (imagePropertiesDictionary != nil)
-  {
-    CFNumberRef orientation = (CFNumberRef)CFDictionaryGetValue(imagePropertiesDictionary, kCGImagePropertyOrientation);
-    if (orientation != nil)
+
+  int rotate = 0;
+  if (autoRotate)
+  { // get the orientation of the image for displaying it correctly
+    CFDictionaryRef imagePropertiesDictionary = CGImageSourceCopyPropertiesAtIndex(imageSource,0, NULL);
+    if (imagePropertiesDictionary != nil)
     {
-      int switchValue = 0;
-      int rotationAngle = 0;
-     	CFNumberGetValue(orientation, kCFNumberIntType, &switchValue);  
-      // possible values taken from
-      // http://developer.apple.com/library/mac/#samplecode/ImageApp/Listings/ImageDoc_m.html
-      switch(switchValue)
+      CFNumberRef orientation = (CFNumberRef)CFDictionaryGetValue(imagePropertiesDictionary, kCGImagePropertyOrientation);
+      if (orientation != nil)
       {
-        case 3: //rotated 180°
-          rotationAngle = 180;
-          break;
-        case 6: //rotated 90°
-          rotationAngle = 270;
-          break;
-        case 8: //rotated 270°
-          rotationAngle = 90;
-          break;
-      }
-      
-      //rotate the image if needed        
-      if (rotationAngle != 0)
-      {
-        CLog::Log(LOGDEBUG,"Rotating the image about %i degrees", rotationAngle);
-        CGImageRef rotatedImage = CGImageCreateRotatedByAngle(image, (float)rotationAngle);
-        CFRelease(image);
-        image = rotatedImage;
+        int value = 0;
+        CFNumberGetValue(orientation, kCFNumberIntType, &value);
+        if (value)
+          rotate = value - 1;
       }
     }
   }
@@ -283,7 +264,8 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     CLog::Log(LOGDEBUG, "Texture manager texture clamp:new texture size: %i x %i", width, height);
   }
 
-  Allocate(width, height, XB_FMT_A8R8G8B8);    
+  Allocate(width, height, XB_FMT_A8R8G8B8);
+  m_orientation = rotate;
     
   CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 
