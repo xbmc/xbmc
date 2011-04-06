@@ -24,6 +24,8 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
+
+#if (!defined USE_EXTERNAL_PYTHON)
 #define DATA_OBJECT(data) unsigned long pointer_##data;
 
 #define _Py_NoneStruct (*((PyObject*)pointer__Py_NoneStruct))
@@ -46,6 +48,10 @@
 #define PyExc_KeyboardInterrupt ((PyObject*)(*(long*)pointer_PyExc_KeyboardInterrupt))
 #define PyExc_RuntimeError ((PyObject*)(*(long*)pointer_PyExc_RuntimeError))
 #define PyExc_ReferenceError ((PyObject*)(*(long*)pointer_PyExc_ReferenceError))
+
+#if defined(_WIN32) && defined(Py_TRACE_REFS)
+#define _Py_RefTotal (*((Py_ssize_t*)pointer__Py_RefTotal))
+#endif
 
 #if (defined USE_EXTERNAL_PYTHON) && (!defined HAVE_LIBPYTHON2_4)
   /* Upstream Python rename Py_InitModule4 for 64-bit systems for Python
@@ -90,9 +96,14 @@ class LibraryLoader;
   extern DATA_OBJECT(PyExc_RuntimeError)
   extern DATA_OBJECT(PyExc_ReferenceError)
 
+#if defined(_WIN32) && defined(Py_TRACE_REFS)
+  extern DATA_OBJECT(_Py_RefTotal)
+#endif
+
   bool python_load_dll(LibraryLoader& dll);
 
 #ifdef __cplusplus
 }
 #endif
 
+#endif

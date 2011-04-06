@@ -7,7 +7,8 @@ SOURCE=../../../../
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) \
    --enable-external-python \
-  PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig
+  PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig \
+  PYTHON=$(PREFIX)/bin/python
 
 all: configure
 

@@ -19,23 +19,14 @@
  *
  */
 
-// python.h should always be included first before any other includes
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/Python.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
-#else
-  #include "python/Include/Python.h"
-#endif
+
+// python.h should always be included first before any other includes
+#include <Python.h>
+
+#include "system.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIPassword.h"
 
@@ -50,9 +41,7 @@
 #include "Util.h"
 
 #ifndef _LINUX
-#if (defined USE_EXTERNAL_PYTHON) && (defined HAVE_LIBPYTHON2_6)
-#define PYTHON_DLL "special://xbmcbin/system/python/python26.dll"
-#else
+#if !defined(USE_EXTERNAL_PYTHON)
 #define PYTHON_DLL "special://xbmcbin/system/python/python24.dll"
 #endif
 #else
@@ -333,10 +322,13 @@ void XBPython::InitializeInterpreter()
         "\t\txbmc.output('.')\n"
         "\tdef flush(self):\n"
         "\t\txbmc.output('.')\n"
-        "\n"
         "import sys\n"
         "sys.stdout = xbmcout()\n"
         "sys.stderr = xbmcout()\n"
+        "def xbmcclosefilehack(f):\n"
+//        "\txbmc.output(\"Closing Script File.\")\n"
+        "\tf.close()\n"
+        "\n"
         "print '-->Python Interpreter Initialized<--'\n"
         "") == -1)
   {
@@ -363,6 +355,7 @@ void XBPython::Initialize()
   m_iDllScriptCounter++;
   if (!m_bInitialized)
   {
+#if !defined(USE_EXTERNAL_PYTHON)
       m_pDll = DllLoaderContainer::LoadModule(PYTHON_DLL, NULL, true);
 
       if (!m_pDll || !python_load_dll(*m_pDll))
@@ -371,6 +364,7 @@ void XBPython::Initialize()
         Finalize();
         return;
       }
+#endif
 
       // first we check if all necessary files are installed
 #ifndef _LINUX
@@ -379,9 +373,6 @@ void XBPython::Initialize()
         !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/select.pyd") ||
-#ifndef HAVE_LIBPYTHON2_6
-        !FileExist("special://xbmc/system/python/DLLs/zlib.pyd") ||
-#endif
         !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd"))
       {
         CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
@@ -425,21 +416,35 @@ void XBPython::Initialize()
       }
       setenv("PYTHONCASEOK", "1", 1); //This line should really be removed
       CLog::Log(LOGDEBUG, "Python wrapper library linked with system Python library");
+#elif defined(_WIN32)
+      // because the third party build of python is compiled with vs2008 we need
+      // a hack to set the PYTHONPATH
+      // buf is corrupted after putenv and might need a strdup but it seems to
+      // work this way
+      CStdString buf;
+      buf = "PYTHONPATH=" + _P("special://xbmc/system/python/DLLs") + ";" + _P("special://xbmc/system/python/Lib");
+      pgwin32_putenv(buf.c_str());
+      buf = "PYTHONOPTIMIZE=1";
+      pgwin32_putenv(buf.c_str());
+      buf = "PYTHONHOME=" + _P("special://xbmc/system/python");
+      pgwin32_putenv(buf.c_str());
+      buf = "OS=win32";
+      pgwin32_putenv(buf.c_str());
+
 #endif /* USE_EXTERNAL_PYTHON */
 
-      Py_Initialize();
-      // If this is not the first time we initialize Python, the interpreter
-      // lock already exists and we need to lock it as PyEval_InitThreads
-      // would not do that in that case.
-#if defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON)
-      // grrr, we hang at PyEval_ThreadsInitialized after unloading/loading python
-      PyEval_InitThreads();
-#else
       if (PyEval_ThreadsInitialized())
         PyEval_AcquireLock();
       else
         PyEval_InitThreads();
-#endif
+
+      Py_Initialize();
+      PyEval_ReleaseLock();
+
+      // If this is not the first time we initialize Python, the interpreter
+      // lock already exists and we need to lock it as PyEval_InitThreads
+      // would not do that in that case.
+      PyEval_AcquireLock();
       char* python_argv[1] = { (char*)"" } ;
       PySys_SetArgv(1, python_argv);
 
@@ -473,20 +478,20 @@ void XBPython::Finalize()
 {
   if (m_bInitialized)
   {
-    CLog::Log(LOGINFO, "Python, unloading python24.dll because no scripts are running anymore");
+    CLog::Log(LOGINFO, "Python, unloading python shared library because no scripts are running anymore");
 
     PyEval_AcquireLock();
-    PyThreadState_Swap(m_mainThreadState);
+    PyThreadState_Swap((PyThreadState*)m_mainThreadState);
 
     Py_Finalize();
     PyEval_ReleaseLock();
 
-#if !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
+#if !((defined(__APPLE__) || defined(_WIN32)) && defined(USE_EXTERNAL_PYTHON))
     UnloadExtensionLibs();
 #endif
 
     // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
-#if !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
+#if !((defined(__APPLE__) || defined(_WIN32)) && defined(USE_EXTERNAL_PYTHON))
     DllLoaderContainer::UnloadPythonDlls();
 #endif
 #if defined(_LINUX) && !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
@@ -647,7 +652,7 @@ void XBPython::stopScript(int id)
   }
 }
 
-PyThreadState *XBPython::getMainThreadState()
+void* XBPython::getMainThreadState()
 {
   CSingleLock lock(m_critSection);
   return m_mainThreadState;

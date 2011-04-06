@@ -119,10 +119,13 @@ LIB_DIRS=\
 	lib/libhdhomerun \
 	lib/libid3tag \
 	lib/libapetag \
-	xbmc/interfaces/python/linux \
 	lib/cpluff \
 	lib/xbmc-dll-symbols \
 	lib/jsoncpp/src/lib_json
+
+ifneq (@USE_EXTERNAL_PYTHON@,1)
+LIB_DIRS+=xbmc/interfaces/python/linux
+endif
 
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
@@ -166,6 +169,12 @@ DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
         lib/python/configure.lineno \
         lib/python/libpython2.4.so.1.0 \
         system/libcpluff-@ARCH@.so
+
+ifneq (@USE_EXTERNAL_PYTHON@,1)
+	PYTHON_TARGET=python
+else
+	PYTHON_TARGET=
+endif
 
 all : Makefile externals xbmc.bin xbmc-xrandr skins
 
@@ -404,8 +413,10 @@ endif
 libpython: dllloader
 	$(MAKE) -C xbmc/interfaces/python
 	$(MAKE) -C xbmc/interfaces/python/xbmcmodule
+ifneq (@USE_EXTERNAL_PYTHON@,1)
 python: dllloader
 	$(MAKE) -C xbmc/interfaces/python/linux
+endif
 dvdpcodecs: dllloader
 	$(MAKE) -C lib 
 	$(MAKE) -C lib/libdvd
@@ -447,11 +458,11 @@ imagelib: dllloader
 	$(MAKE) -C lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-libs: cmyth libhdhomerun libid3tag imagelib libexif python system/libcpluff-@ARCH@.so
-externals: codecs libs python visualizations screensavers
+libs: cmyth libhdhomerun libid3tag imagelib libexif  $(PYTHON_TARGET) system/libcpluff-@ARCH@.so
+externals: codecs libs $(PYTHON_TARGET) visualizations screensavers
 
 xcode_depends: \
-	codecs libs python visualizations screensavers eventclients skins \
+	codecs libs $(PYTHON_TARGET) visualizations screensavers eventclients skins \
 	lib/libsquish/libsquish.a \
 	lib/libapetag/.libs/libapetag.a \
 	lib/libRTV/librtv.a \
@@ -572,6 +583,10 @@ DYNOBJSXBMC= \
 ifeq ($(findstring arm,@ARCH@), arm)
 # Force external python2.6 for now!
 LIBS +=-lpython2.6
+endif
+
+ifeq (@USE_EXTERNAL_PYTHON@,1)
+LIBS += @PYTHON_LDFLAGS@
 endif
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)

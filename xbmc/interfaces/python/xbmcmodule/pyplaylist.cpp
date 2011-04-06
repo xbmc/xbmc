@@ -19,26 +19,14 @@
  *
  */
 
-#include "system.h"
+#include <Python.h>
+
+#include "pyutil.h"
 #include "PlayListPlayer.h"
 #include "utils/URIUtils.h"
 #include "pyplaylist.h"
-#if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/structmember.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
-#else
-  #include "python/Include/structmember.h"
-#endif
 #include "../XBPythonDll.h"
 #include "playlists/PlayListFactory.h"
-#include "pyutil.h"
 #include "listitem.h"
 #include "playlists/PlayList.h"
 #include "video/VideoInfoTag.h"

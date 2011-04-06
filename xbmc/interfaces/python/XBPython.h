@@ -98,7 +98,7 @@ public:
   // returns -1 if no scripts exist with specified filename
   int getScriptId(const CStdString &strFile);
 
-  PyThreadState *getMainThreadState();
+  void* getMainThreadState();
 
   bool m_bLogin;
   CCriticalSection    m_critSection;
@@ -106,7 +106,7 @@ private:
   bool              FileExist(const char* strFile);
 
   int               m_nextid;
-  PyThreadState*    m_mainThreadState;
+  void*             m_mainThreadState;
   ThreadIdentifier  m_ThreadId;
   bool              m_bInitialized;
   HANDLE            m_hEvent;

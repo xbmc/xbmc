@@ -24,7 +24,7 @@
 #include "threads/Thread.h"
 #include "VideoInfoTag.h"
 #include "addons/Scraper.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "filesystem/FileCurl.h"
 
 // forward definitions
