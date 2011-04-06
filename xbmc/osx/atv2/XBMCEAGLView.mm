@@ -72,7 +72,7 @@
     
     eaglLayer.opaque = TRUE;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-      //[NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking,
+      [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking,
       //kEAGLColorFormatRGB565, kEAGLDrawablePropertyColorFormat,
       kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
       nil];
