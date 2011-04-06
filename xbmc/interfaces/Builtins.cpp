@@ -1398,7 +1398,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (window)
       window->SetProperty(params[0],params[1]);
   }
-  else if (execute.Equals("clearproperty") && params.size() == 2)
+  else if (execute.Equals("clearproperty") && params.size())
   {
     CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
     if (window)
