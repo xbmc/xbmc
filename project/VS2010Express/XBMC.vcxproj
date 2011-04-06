@@ -927,7 +927,6 @@
     <ClCompile Include="..\..\xbmc\FileSystem\FileShoutcast.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\FileSpecialProtocol.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\FileTuxBox.cpp" />
-    <ClCompile Include="..\..\xbmc\FileSystem\FileXBMSP.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\FileZip.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\FTPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\FTPParse.cpp" />
@@ -973,7 +972,6 @@
     <ClCompile Include="..\..\xbmc\FileSystem\VTPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VTPFile.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VTPSession.cpp" />
-    <ClCompile Include="..\..\xbmc\FileSystem\XBMSDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\ZipDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\ZipManager.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNode.cpp" />
@@ -1782,7 +1780,6 @@
     <ClInclude Include="..\..\xbmc\FileSystem\FileShoutcast.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\FileSpecialProtocol.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\FileTuxBox.h" />
-    <ClInclude Include="..\..\xbmc\FileSystem\FileXBMSP.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\FileZip.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\FTPDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\FTPParse.h" />
@@ -1823,7 +1820,6 @@
     <ClInclude Include="..\..\xbmc\FileSystem\VTPDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VTPFile.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VTPSession.h" />
-    <ClInclude Include="..\..\xbmc\FileSystem\XBMSDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\ZipDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\ZipManager.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNode.h" />
