@@ -25,6 +25,7 @@
 #include "threads/Thread.h"
 #include "addons/include/xbmc_pvr_types.h"
 
+class CPVREpgInfoTag;
 class CPVRTimerInfoTag;
 class CPVRRecording;
 
@@ -46,11 +47,25 @@ public:
 
   bool IsRecording(void) const { return m_bIsRecording; };
   bool HasTimers(void) const { return m_bHasTimers; };
+  const CPVREpgInfoTag *GetPlayingTag(void) const { return m_playingEpgTag; }
+
+  /*!
+   * @brief Get the total duration of the currently playing LiveTV item.
+   * @return The total duration in milliseconds or NULL if no channel is playing.
+   */
+  int GetTotalTime(void) const;
+
+  /*!
+   * @brief Get the current position in milliseconds since the start of a LiveTV item.
+   * @return The position in milliseconds or NULL if no channel is playing.
+   */
+  int GetStartTime(void) const;
 
 private:
   void ResetProperties(void);
   void Process(void);
 
+  void UpdatePlayingTag(void);
   void UpdateTimersCache(void);
   void UpdateBackendCache(void);
 
@@ -120,6 +135,7 @@ private:
   unsigned int                    m_iAddonInfoToggleCurrent;
   unsigned int                    m_iTimerInfoToggleStart;
   unsigned int                    m_iTimerInfoToggleCurrent;
+  mutable const CPVREpgInfoTag *  m_playingEpgTag;
 
   CCriticalSection                m_critSection;
 };

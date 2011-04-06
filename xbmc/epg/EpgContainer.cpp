@@ -53,6 +53,12 @@ CEpgContainer::~CEpgContainer(void)
   Clear();
 }
 
+void CEpgContainer::Unload(void)
+{
+  Stop();
+  Clear(false);
+}
+
 void CEpgContainer::Clear(bool bClearDb /* = false */)
 {
   CSingleLock lock(m_critSection);

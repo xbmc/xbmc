@@ -345,12 +345,12 @@ bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
       CLog::Log(LOGINFO, "PVRManager - %s - %s client '%s'",
           __FUNCTION__, bRestart ? "restarting" : "removing", m_clientMap[(*itr).first]->Name().c_str());
 
-      CPVRManager::Get()->StopThreads();
+      CPVRManager::Get()->StopUpdateThreads();
       if (bRestart)
         m_clientMap[(*itr).first]->ReCreate();
       else
         m_clientMap[(*itr).first]->Destroy();
-      CPVRManager::Get()->StartThreads();
+      CPVRManager::Get()->StartUpdateThreads();
 
       bReturn = true;
       break;
@@ -958,7 +958,7 @@ void CPVRClients::StartChannelScan(void)
   long perfCnt = CTimeUtils::GetTimeMS();
 
   /* stop the supervisor thread */
-  CPVRManager::Get()->StopThreads();
+  CPVRManager::Get()->StopUpdateThreads();
 
   /* do the scan */
   if (m_clientMap[scanningClientID]->StartChannelScan() != PVR_ERROR_NO_ERROR)
@@ -966,7 +966,7 @@ void CPVRClients::StartChannelScan(void)
     CGUIDialogOK::ShowAndGetInput(19111,0,19193,0);
 
   /* restart the supervisor thread */
-  CPVRManager::Get()->StartThreads();
+  CPVRManager::Get()->StartUpdateThreads();
 
   CLog::Log(LOGNOTICE, "PVRManager - %s - channel scan finished after %li.%li seconds",
       __FUNCTION__, (CTimeUtils::GetTimeMS()-perfCnt)/1000, (CTimeUtils::GetTimeMS()-perfCnt)%1000);

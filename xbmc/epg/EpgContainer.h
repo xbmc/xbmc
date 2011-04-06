@@ -143,6 +143,11 @@ public:
   virtual void Clear(bool bClearDb = false);
 
   /*!
+   * @brief Stop the update thread and unload all data.
+   */
+  virtual void Unload(void);
+
+  /*!
    * @brief Clear the EPG and all it's database entries.
    */
   virtual void Reset(void) { Clear(true); }

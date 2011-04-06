@@ -30,6 +30,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/epg/PVREpgInfoTag.h"
 
 CPVRGUIInfo::CPVRGUIInfo(void)
 {
@@ -67,6 +68,7 @@ void CPVRGUIInfo::ResetProperties(void)
   m_iAddonInfoToggleCurrent     = 0;
   m_iTimerInfoToggleStart       = 0;
   m_iTimerInfoToggleCurrent     = 0;
+  m_playingEpgTag               = NULL;
   CPVRManager::GetClients()->GetQualityData(&m_qualityInfo);
 }
 
@@ -132,11 +134,12 @@ bool CPVRGUIInfo::TimerInfoToggle(void)
 void CPVRGUIInfo::Process(void)
 {
   unsigned int mLoop(0);
-  CPVRRecordings *recordings = CPVRManager::GetRecordings();
-  CPVRClients *clients = CPVRManager::GetClients();
+  CPVRManager *manager = CPVRManager::Get();
+  CPVRRecordings *recordings = manager->GetRecordings();
+  CPVRClients *clients = manager->GetClients();
 
   /* updated on request */
-  CPVRManager::GetTimers()->AddObserver(this);
+  manager->GetTimers()->AddObserver(this);
   UpdateTimersCache();
 
   while (!m_bStop)
@@ -144,7 +147,7 @@ void CPVRGUIInfo::Process(void)
     m_strPlayingClientName = clients->GetPlayingClientName();
     m_bHasRecordings = recordings->GetNumRecordings() > 0;
     clients->GetQualityData(&m_qualityInfo);
-
+    UpdatePlayingTag();
     UpdateTimersToggle();
 
     if (mLoop % 10 == 0)
@@ -215,10 +218,8 @@ int CPVRGUIInfo::TranslateIntInfo(DWORD dwInfo) const
 {
   int iReturn = 0;
 
-  CPVRManager *manager = CPVRManager::Get();
-
   if (dwInfo == PVR_PLAYING_PROGRESS)
-    iReturn = (int) ((float) manager->GetStartTime() / manager->GetTotalTime() * 100);
+    iReturn = (int) ((float) GetStartTime() / GetTotalTime() * 100);
   else if (dwInfo == PVR_ACTUAL_STREAM_SIG_PROGR)
     iReturn = CPVRManager::GetClients()->GetSignalLevel();
   else if (dwInfo == PVR_ACTUAL_STREAM_SNR_PROGR)
@@ -265,13 +266,13 @@ const char *CPVRGUIInfo::CharInfoNextTimerDateTime(void) const
 
 const char *CPVRGUIInfo::CharInfoPlayingDuration(void) const
 {
-  static CStdString strReturn = StringUtils::SecondsToTimeString(CPVRManager::Get()->GetTotalTime()/1000, TIME_FORMAT_GUESS);
+  static CStdString strReturn = StringUtils::SecondsToTimeString(GetTotalTime() / 1000, TIME_FORMAT_GUESS);
   return strReturn.c_str();
 }
 
 const char *CPVRGUIInfo::CharInfoPlayingTime(void) const
 {
-  static CStdString strReturn = StringUtils::SecondsToTimeString(CPVRManager::Get()->GetStartTime()/1000, TIME_FORMAT_GUESS);
+  static CStdString strReturn = StringUtils::SecondsToTimeString(GetStartTime()/1000, TIME_FORMAT_GUESS);
   return strReturn.c_str();
 }
 
@@ -593,5 +594,43 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
     m_strActiveTimerTitle       = "";
     m_strActiveTimerChannelName = "";
     m_strActiveTimerTime        = "";
+  }
+}
+
+int CPVRGUIInfo::GetTotalTime(void) const
+{
+  return m_playingEpgTag ? m_playingEpgTag->GetDuration() * 1000 : 0;
+}
+
+int CPVRGUIInfo::GetStartTime(void) const
+{
+  if (m_playingEpgTag)
+  {
+    /* Calculate here the position we have of the running live TV event.
+     * "position in ms" = ("current local time" - "event start local time") * 1000
+     */
+    CDateTimeSpan time = CDateTime::GetCurrentDateTime() - m_playingEpgTag->StartAsLocalTime();
+    return time.GetDays()    * 1000 * 60 * 60 * 24
+         + time.GetHours()   * 1000 * 60 * 60
+         + time.GetMinutes() * 1000 * 60
+         + time.GetSeconds() * 1000;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+void CPVRGUIInfo::UpdatePlayingTag(void)
+{
+  if (m_playingEpgTag && m_playingEpgTag->IsActive())
+    return;
+
+  CPVRChannel currentChannel;
+  if (CPVRManager::Get()->GetCurrentChannel(&currentChannel))
+  {
+    m_playingEpgTag = currentChannel.GetEPGNow();
+//    CSingleLock lock(m_critSectionStreams);
+//    UpdateItem(*m_currentFile);
   }
 }
