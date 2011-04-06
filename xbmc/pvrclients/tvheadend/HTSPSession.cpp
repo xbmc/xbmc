@@ -456,7 +456,6 @@ void cHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
         channel.radio = !strcmp(service_type, "Radio");
       }
 
-      uint32_t caid;
       if(!htsmsg_get_u32(service, "caid", &caid))
         channel.caid = (int) caid;
     }
