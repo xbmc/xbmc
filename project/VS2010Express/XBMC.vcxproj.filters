@@ -5243,16 +5243,14 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogPlayEject.h">
       <Filter>dialogs</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\..\xbmc\pvr\PVRGUIInfo.h">
       <Filter>pvr</Filter>
-=======
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\JSONServiceDescription.h">
       <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ServiceDescription.h">
       <Filter>interfaces\json-rpc</Filter>
->>>>>>> upstream-ro/master
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
