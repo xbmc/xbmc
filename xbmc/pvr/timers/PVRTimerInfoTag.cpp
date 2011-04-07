@@ -84,7 +84,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientI
   {
     CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByClientFromAll(iClientId, timer.iClientChannelUid);
     if (channel)
-      m_epgInfo = (CPVREpgInfoTag *) channel->GetEPG()->GetTagById(timer.iEpgUid);
+      m_epgInfo = (CPVREpgInfoTag *) channel->GetEPG()->GetTag(timer.iEpgUid, m_StartTime);
 
     if (m_epgInfo)
       m_strGenre = m_epgInfo->Genre();
@@ -325,9 +325,9 @@ void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
     return;
 
   /* try to set the timer on the epg tag that matches */
-  m_epgInfo = (CPVREpgInfoTag *) epg->InfoTagBetween(StartAsLocalTime(), EndAsLocalTime());
+  m_epgInfo = (CPVREpgInfoTag *) epg->GetTagBetween(StartAsLocalTime(), EndAsLocalTime());
   if (!m_epgInfo)
-    m_epgInfo = (CPVREpgInfoTag *) epg->InfoTagAround(StartAsLocalTime());
+    m_epgInfo = (CPVREpgInfoTag *) epg->GetTagAround(StartAsLocalTime());
 
   if (m_epgInfo)
     m_epgInfo->SetTimer(bClear ? NULL : this);

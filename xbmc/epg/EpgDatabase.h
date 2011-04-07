@@ -76,7 +76,7 @@ public:
    * @param end Remove entries before this time if set.
    * @return True if the entries were removed successfully, false otherwise.
    */
-  virtual bool Delete(const CEpg &table, const CDateTime &start = NULL, const CDateTime &end = NULL);
+  virtual bool Delete(const CEpg &table, const time_t start = 0, const time_t end = 0);
 
   /*!
    * @brief Erase all EPG entries older than 1 day.

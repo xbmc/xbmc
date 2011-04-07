@@ -102,7 +102,7 @@ bool CPVRGUIInfo::AddonInfoToggle(void)
 
   if (CTimeUtils::GetTimeMS() - m_iAddonInfoToggleStart > INFO_TOGGLE_TIME)
   {
-    if (++m_iAddonInfoToggleCurrent > m_iActiveClients - 1)
+    if (((int) ++m_iAddonInfoToggleCurrent) > m_iActiveClients - 1)
       m_iAddonInfoToggleCurrent = 0;
 
     return true;

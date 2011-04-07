@@ -46,6 +46,8 @@ private:
    */
   CEpgInfoTag *CreateTag(void);
 
+  bool LoadFromClients(time_t start, time_t end);
+
 protected:
   /*!
    * @brief Update this table's info with the given info. Doesn't change the EpgID.

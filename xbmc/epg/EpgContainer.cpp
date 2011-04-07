@@ -356,13 +356,16 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     if (!epg)
       continue;
 
+    if (m_bDatabaseLoaded)
+      at(iEpgPtr)->Cleanup();
+
     bool bCurrent = m_bDatabaseLoaded || m_bIgnoreDbForClient ?
-        at(iEpgPtr)->Update(start, end, m_iUpdateTime, !m_bIgnoreDbForClient) :
+        at(iEpgPtr)->Update(start, end, m_iUpdateTime) :
         at(iEpgPtr)->Load() && bUpdateSuccess;
 
     /* try to update the table from clients if nothing was loaded from the db */
     if (!m_bDatabaseLoaded && !m_bIgnoreDbForClient && !bCurrent)
-      bCurrent = at(iEpgPtr)->Update(start, end, m_iUpdateTime, !m_bIgnoreDbForClient);
+      bCurrent = at(iEpgPtr)->Update(start, end, m_iUpdateTime);
 
     if (!bCurrent && m_bDatabaseLoaded)
       CLog::Log(LOGERROR, "EpgContainer - %s - failed to update table '%s'",

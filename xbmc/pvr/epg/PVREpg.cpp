@@ -131,3 +131,13 @@ CEpgInfoTag *CPVREpg::CreateTag(void)
 
   return newTag;
 }
+
+bool CPVREpg::LoadFromClients(time_t start, time_t end)
+{
+  bool bReturn(false);
+  CPVREpg tmpEpg(m_Channel);
+  if (tmpEpg.UpdateFromScraper(start, end))
+    bReturn = UpdateEntries(tmpEpg, !g_guiSettings.GetBool("epg.ignoredbforclient"));
+
+  return bReturn;
+}
