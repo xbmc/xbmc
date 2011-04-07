@@ -180,8 +180,11 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
   if (parameterObject["file"].isString())
   {
     CStdString file = parameterObject["file"].asString();
-    CFileItemPtr item = CFileItemPtr(new CFileItem(file, URIUtils::HasSlashAtEnd(file)));
-    list.Add(item);
+    if (!file.empty())
+    {
+      CFileItemPtr item = CFileItemPtr(new CFileItem(file, URIUtils::HasSlashAtEnd(file)));
+      list.Add(item);
+    }
   }
 
   CPlaylistOperations::FillFileItemList(parameterObject, list);
