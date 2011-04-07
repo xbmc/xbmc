@@ -1,0 +1,3 @@
+[submodule "lib/libarchive"]
+	path = lib/libarchive
+	url = https://ceros@github.com/ceros/libarchive.git
