@@ -6926,8 +6926,6 @@
 		F5AE407F13415D9E0004BD79 /* json-rpc */ = {
 			isa = PBXGroup;
 			children = (
-				C84BF7321349BB74006D6FC9 /* JSONServiceDescription.cpp */,
-				C84BF7331349BB74006D6FC9 /* JSONServiceDescription.h */,
 				F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */,
 				F5AE408113415D9E0004BD79 /* AudioLibrary.h */,
 				F5AE408213415D9E0004BD79 /* AVPlayerOperations.cpp */,
@@ -6942,6 +6940,8 @@
 				F5AE408B13415D9E0004BD79 /* ITransportLayer.h */,
 				F5AE408C13415D9E0004BD79 /* JSONRPC.cpp */,
 				F5AE408D13415D9E0004BD79 /* JSONRPC.h */,
+				C84BF7321349BB74006D6FC9 /* JSONServiceDescription.cpp */,
+				C84BF7331349BB74006D6FC9 /* JSONServiceDescription.h */,
 				F5AE408E13415D9E0004BD79 /* JSONUtils.h */,
 				F5AE409013415D9E0004BD79 /* PicturePlayerOperations.cpp */,
 				F5AE409113415D9E0004BD79 /* PicturePlayerOperations.h */,
@@ -9063,6 +9063,7 @@
 					$XBMC_DEPENDS/include,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
+					$XBMC_DEPENDS/include/python2.6,
 				);
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
@@ -9101,7 +9102,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = XBMC;
-				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/mysql";
+				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/osx-10.4_i386";
 				ZERO_LINK = NO;
 			};
@@ -9150,6 +9151,7 @@
 					$XBMC_DEPENDS/include,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
+					$XBMC_DEPENDS/include/python2.6,
 				);
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
@@ -9188,7 +9190,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = XBMC;
-				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/mysql";
+				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/osx-10.4_i386";
 				ZERO_LINK = NO;
 			};
