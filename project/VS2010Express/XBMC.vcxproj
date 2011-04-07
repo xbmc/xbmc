@@ -929,7 +929,6 @@
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\emu_dummy.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\emu_kernel32.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\emu_msvcrt.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\exports_python_win32.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\win32-dirent.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_aton.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CompileAsCpp</CompileAs>
@@ -1389,7 +1388,6 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\window.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\winxml.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\XBPython.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\python\XBPythonDll.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\XBPyThread.h" />
     <ClInclude Include="..\..\xbmc\IProgressCallback.h" />
     <ClInclude Include="..\..\xbmc\LangInfo.h" />
