@@ -25,7 +25,7 @@
 #define WINDOW_SYSTEM_IOSEGL_H
 
 #if defined(__APPLE__) && defined(__arm__)
-#include "WinSystem.h"
+#include "windowing/WinSystem.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GlobalsHandling.h"
 

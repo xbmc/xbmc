@@ -24,7 +24,7 @@
 #ifndef WINDOW_EVENTS_IOS_H
 #define WINDOW_EVENTS_IOS_H
 
-#include "WinEvents.h"
+#include "windowing/WinEvents.h"
 
 class CWinEventsIOS : public CWinEventsBase
 {
