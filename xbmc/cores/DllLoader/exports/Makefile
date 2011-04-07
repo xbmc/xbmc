@@ -1,7 +1,6 @@
 SRCS=emu_dummy.cpp \
      emu_kernel32.cpp \
      emu_msvcrt.cpp \
-     exports_python_linux.cpp \
      wrapper.c
 
 LIB=exports.a

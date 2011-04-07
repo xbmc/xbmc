@@ -615,7 +615,6 @@
 		E38E1F580D25F9FD00618676 /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
 		E38E1F5A0D25F9FD00618676 /* emu_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */; };
 		E38E1F5C0D25F9FD00618676 /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */; };
-		E38E1F6A0D25F9FD00618676 /* exports_python_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14D90D25F9F900618676 /* exports_python_linux.cpp */; };
 		E38E1F6F0D25F9FD00618676 /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
 		E38E1F710D25F9FD00618676 /* wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E80D25F9F900618676 /* wrapper.c */; };
 		E38E1F720D25F9FD00618676 /* ldt_keeper.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14EB0D25F9F900618676 /* ldt_keeper.c */; };
@@ -1224,7 +1223,6 @@
 		F5A1C8D80F6B06CF00A96ABD /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
 		F5A1C8DA0F6B06CF00A96ABD /* emu_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */; };
 		F5A1C8DB0F6B06CF00A96ABD /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */; };
-		F5A1C8DE0F6B06CF00A96ABD /* exports_python_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14D90D25F9F900618676 /* exports_python_linux.cpp */; };
 		F5A1C8DF0F6B06CF00A96ABD /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
 		F5A1C8E00F6B06CF00A96ABD /* wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E80D25F9F900618676 /* wrapper.c */; };
 		F5A1C8E10F6B06CF00A96ABD /* ldt_keeper.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14EB0D25F9F900618676 /* ldt_keeper.c */; };
@@ -2580,7 +2578,6 @@
 		E38E14BE0D25F9F900618676 /* emu_kernel32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_kernel32.h; sourceTree = "<group>"; };
 		E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = emu_msvcrt.cpp; sourceTree = "<group>"; };
 		E38E14C20D25F9F900618676 /* emu_msvcrt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_msvcrt.h; sourceTree = "<group>"; };
-		E38E14D90D25F9F900618676 /* exports_python_linux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = exports_python_linux.cpp; sourceTree = "<group>"; };
 		E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmuFileWrapper.cpp; sourceTree = "<group>"; };
 		E38E14E40D25F9F900618676 /* EmuFileWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuFileWrapper.h; sourceTree = "<group>"; };
 		E38E14E80D25F9F900618676 /* wrapper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wrapper.c; sourceTree = "<group>"; };
@@ -3143,7 +3140,6 @@
 		E38E1A080D25F9FB00618676 /* winxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = winxml.h; sourceTree = "<group>"; };
 		E38E1A0D0D25F9FB00618676 /* XBPython.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBPython.cpp; sourceTree = "<group>"; };
 		E38E1A0E0D25F9FB00618676 /* XBPython.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBPython.h; sourceTree = "<group>"; };
-		E38E1A100D25F9FB00618676 /* XBPythonDll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBPythonDll.h; sourceTree = "<group>"; };
 		E38E1A110D25F9FB00618676 /* XBPyThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBPyThread.cpp; sourceTree = "<group>"; };
 		E38E1A120D25F9FB00618676 /* XBPyThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBPyThread.h; sourceTree = "<group>"; };
 		E38E1A140D25F9FB00618676 /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
@@ -5163,7 +5159,6 @@
 				E38E14BE0D25F9F900618676 /* emu_kernel32.h */,
 				E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */,
 				E38E14C20D25F9F900618676 /* emu_msvcrt.h */,
-				E38E14D90D25F9F900618676 /* exports_python_linux.cpp */,
 				E38E14E20D25F9F900618676 /* util */,
 				E38E14E80D25F9F900618676 /* wrapper.c */,
 			);
@@ -5906,7 +5901,6 @@
 				E38E19DA0D25F9FB00618676 /* xbmcmodule */,
 				E38E1A0D0D25F9FB00618676 /* XBPython.cpp */,
 				E38E1A0E0D25F9FB00618676 /* XBPython.h */,
-				E38E1A100D25F9FB00618676 /* XBPythonDll.h */,
 				E38E1A110D25F9FB00618676 /* XBPyThread.cpp */,
 				E38E1A120D25F9FB00618676 /* XBPyThread.h */,
 			);
@@ -7260,7 +7254,6 @@
 				E38E1F580D25F9FD00618676 /* emu_dummy.cpp in Sources */,
 				E38E1F5A0D25F9FD00618676 /* emu_kernel32.cpp in Sources */,
 				E38E1F5C0D25F9FD00618676 /* emu_msvcrt.cpp in Sources */,
-				E38E1F6A0D25F9FD00618676 /* exports_python_linux.cpp in Sources */,
 				E38E1F6F0D25F9FD00618676 /* EmuFileWrapper.cpp in Sources */,
 				E38E1F710D25F9FD00618676 /* wrapper.c in Sources */,
 				E38E1F720D25F9FD00618676 /* ldt_keeper.c in Sources */,
@@ -8147,7 +8140,6 @@
 				F5A1C8D80F6B06CF00A96ABD /* emu_dummy.cpp in Sources */,
 				F5A1C8DA0F6B06CF00A96ABD /* emu_kernel32.cpp in Sources */,
 				F5A1C8DB0F6B06CF00A96ABD /* emu_msvcrt.cpp in Sources */,
-				F5A1C8DE0F6B06CF00A96ABD /* exports_python_linux.cpp in Sources */,
 				F5A1C8DF0F6B06CF00A96ABD /* EmuFileWrapper.cpp in Sources */,
 				F5A1C8E00F6B06CF00A96ABD /* wrapper.c in Sources */,
 				F5A1C8E10F6B06CF00A96ABD /* ldt_keeper.c in Sources */,

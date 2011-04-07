@@ -21,7 +21,6 @@
 
 #include <Python.h>
 
-#include "../XBPythonDll.h"
 #include "player.h"
 #include "pyplaylist.h"
 #include "keyboard.h"

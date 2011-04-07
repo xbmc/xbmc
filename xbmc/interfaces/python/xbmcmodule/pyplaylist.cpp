@@ -25,7 +25,6 @@
 #include "PlayListPlayer.h"
 #include "utils/URIUtils.h"
 #include "pyplaylist.h"
-#include "../XBPythonDll.h"
 #include "playlists/PlayListFactory.h"
 #include "listitem.h"
 #include "playlists/PlayList.h"

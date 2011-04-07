@@ -561,9 +561,6 @@
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\emu_msvcrt.cpp">
       <Filter>cores\DllLoader\exports</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\exports_python_win32.cpp">
-      <Filter>cores\DllLoader\exports</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\win32-dirent.cpp">
       <Filter>cores\DllLoader\exports</Filter>
     </ClCompile>
@@ -4896,9 +4893,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ServiceDescription.h">
       <Filter>interfaces\json-rpc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\interfaces\python\XBPythonDll.h">
-      <Filter>interfaces\python</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\XBDateTime.h">
       <Filter>utils</Filter>

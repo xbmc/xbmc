@@ -21,7 +21,6 @@
 
 #include <Python.h>
 
-#include "../XBPythonDll.h"
 #include "listitem.h"
 #include "pyutil.h"
 #include "video/VideoInfoTag.h"

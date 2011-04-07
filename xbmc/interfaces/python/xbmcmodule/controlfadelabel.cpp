@@ -21,7 +21,6 @@
 
 #include <Python.h>
 
-#include "../XBPythonDll.h"
 #include "guilib/GUIFadeLabelControl.h"
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUIWindowManager.h"

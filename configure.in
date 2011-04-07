@@ -96,8 +96,6 @@ external_libraries_enabled="== Use of all supported external libraries enabled. 
 external_libraries_disabled="== Use of all supported external libraries disabled. =="
 external_ffmpeg_enabled="== Use of external ffmpeg enabled. =="
 external_ffmpeg_disabled="== Use of external ffmpeg disabled. =="
-external_python_enabled="== Use of external python enabled. =="
-external_python_disabled="== Use of external python disabled. =="
 ffmpeg_vdpau_not_supported="== External ffmpeg doesn't support VDPAU. VDPAU support disabled. =="
 dashes="------------------------"
 final_message="\n  XBMC Configuration:"
@@ -303,12 +301,6 @@ AC_ARG_ENABLE([external-ffmpeg],
   [enable use of external ffmpeg libraries (default is no) 'Linux only'])],
   [use_external_ffmpeg=$enableval],
   [use_external_ffmpeg=$use_external_libraries])
-
-AC_ARG_ENABLE([external-python],
-  [AS_HELP_STRING([--enable-external-python],
-  [enable use of external python library (default is no) 'Linux only'])],
-  [use_external_python=$enableval],
-  [use_external_python=$use_external_libraries])
 
 ### End of external library options
 
@@ -895,28 +887,16 @@ else
   AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
 fi
 
-# External Python
-if test "$use_external_python" = "yes"; then
+# Python
 if test -z "$PYTHON_NOVERSIONCHECK"; then
   AX_PYTHON_DEVEL([>= 2.4])
   PYTHON_VERSION=$ac_python_version
-
-  if test -z "$PYTHON_VERSION"; then
-    AC_MSG_NOTICE($external_python_disabled)
-    USE_EXTERNAL_PYTHON=0
-  else
-    AC_MSG_NOTICE($external_python_enabled)
-    AC_MSG_NOTICE([Using Python $PYTHON_VERSION])
-    USE_EXTERNAL_PYTHON=1
-    AC_DEFINE([USE_EXTERNAL_PYTHON], [1], [Whether to use external python library.])
-  fi
-else
- USE_EXTERNAL_PYTHON=1
- AC_DEFINE([USE_EXTERNAL_PYTHON], [1], [Whether to use external python library.])
 fi
+
+if test -z "$PYTHON_VERSION"; then
+  AC_MSG_ERROR([Can't find a Python version.])
 else
-  USE_EXTERNAL_PYTHON=0
-  PYTHON_CPPFLAGS="-I\$(abs_top_srcdir)/lib/python/Include"
+  AC_MSG_NOTICE([Using Python $PYTHON_VERSION])
 fi
 
 # VDPAU
@@ -1355,11 +1335,6 @@ if test "$use_external_ffmpeg" = "yes"; then
 else
   final_message="$final_message\n  External FFmpeg:\tNo"
 fi
-if test "$use_external_python" = "yes"; then
-  final_message="$final_message\n  External Python:\tYes"
-else
-  final_message="$final_message\n  External Python:\tNo"
-fi
 
 OUTPUT_FILES="Makefile \
     Makefile.include \
@@ -1404,7 +1379,6 @@ OUTPUT_FILES="Makefile \
     lib/libid3tag/Makefile \
     lib/cximage-6.0/Makefile \
     xbmc/interfaces/python/Makefile \
-    xbmc/interfaces/python/linux/Makefile \
     xbmc/interfaces/python/xbmcmodule/Makefile \
     lib/libUPnP/Makefile \
     xbmc/DllPaths_generated.h \
@@ -1437,7 +1411,6 @@ AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(BUILD_GOOM)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
-AC_SUBST(USE_EXTERNAL_PYTHON)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
 AC_SUBST(HAVE_XBMC_NONFREE)
@@ -1512,53 +1485,6 @@ else
 fi
 ])
 ])
-
-XB_CONFIG_MODULE([lib/python], [
-  if test "$host_vendor" = "apple" ; then
-    ./configure \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \
-      --enable-ipv6 \
-      --enable-unicode=ucs4 \
-      --without-cxx \
-      --enable-shared \
-      --without-pymalloc \
-      --with-suffix=.exe \
-      LDFLAGS="-L/opt/local/lib" \
-      OPT="-Wno-deprecated-declarations -I/opt/local/include" \
-      CFLAGS="$CFLAGS" &&
-    sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h && 
-    sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h &&
-    sed -i bak -e "s/define HAVE_FTELLO 1/undef HAVE_FTELLO/" pyconfig.h &&
-    sed -i bak -e "s/define HAVE_FTRUNCATE 1/undef HAVE_FTRUNCATE/" pyconfig.h &&
-    sed -i bak -e "s/define HAVE_FPATHCONF 1/undef HAVE_FPATHCONF/" pyconfig.h &&
-    sed -i bak -e "s/define HAVE_FSYNC 1/undef HAVE_FSYNC/" pyconfig.h &&
-    sed -i bak -e "s/define HAVE_FCHDIR 1/undef HAVE_FCHDIR/" pyconfig.h &&
-    sed -i bak -e "s/define _POSIX_C_SOURCE 200112L/undef _POSIX_C_SOURCE/" pyconfig.h &&
-    sed -i bak -e "s/define _XOPEN_SOURCE 600/undef _XOPEN_SOURCE/" pyconfig.h &&
-    sed -i bak -e "s/define _XOPEN_SOURCE_EXTENDED 1/undef _XOPEN_SOURCE_EXTENDED/" pyconfig.h &&
-    echo "#define   SETPGRP_HAVE_ARG 1" >> pyconfig.h &&
-    cp pyconfig.h Include	
-  else
-    ./configure \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \
-      --disable-ipv6 \
-      --enable-unicode=ucs4 \
-      --without-cxx \
-      --enable-shared \
-      --without-pymalloc \
-      --prefix=`pwd`/../../xbmc/interfaces/python/linux/python-lib CFLAGS="$CFLAGS" \
-      CC="$CC" \
-      CXX="$CXX" &&
-    sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
-    sed -i -e "s/define _POSIX_C_SOURCE 200112L/undef _POSIX_C_SOURCE/" pyconfig.h &&
-    sed -i -e "s/define _XOPEN_SOURCE 600/undef _XOPEN_SOURCE/" pyconfig.h &&
-    cp pyconfig.h Include
-  fi
-], [$USE_EXTERNAL_PYTHON])
 
 XB_CONFIG_MODULE([lib/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
