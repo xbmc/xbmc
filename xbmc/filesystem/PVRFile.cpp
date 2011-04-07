@@ -108,7 +108,7 @@ bool CPVRFile::Open(const CURL& url)
 
 void CPVRFile::Close()
 {
-  CPVRManager::GetClients()->CloseStream();
+  CPVRManager::Get()->CloseStream();
 }
 
 unsigned int CPVRFile::Read(void* buffer, int64_t size)

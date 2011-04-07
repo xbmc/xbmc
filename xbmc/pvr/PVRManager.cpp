@@ -610,20 +610,26 @@ void CPVRManager::SaveCurrentChannelSettings(void)
   if (!m_addons->GetPlayingChannel(&channel))
     return;
 
-  if (g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings &&
-      m_database.Open())
+  if (!m_database.Open())
   {
-    /* only save settings if they differ from the default settings */
+    CLog::Log(LOGERROR, "PVR - %s - could not open the database", __FUNCTION__);
+    return;
+  }
+
+  if (g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings)
+  {
+    CLog::Log(LOGDEBUG, "PVR - %s - persisting custom channel settings for channel '%s'",
+        __FUNCTION__, channel.ChannelName().c_str());
     m_database.PersistChannelSettings(channel, g_settings.m_currentVideoSettings);
-    m_database.Close();
   }
-  else if (!(g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings) &&
-      m_database.Open())
+  else
   {
-    /* delete record which might differ from the default settings */
+    CLog::Log(LOGDEBUG, "PVR - %s - no custom channel settings for channel '%s'",
+        __FUNCTION__, channel.ChannelName().c_str());
     m_database.DeleteChannelSettings(channel);
-    m_database.Close();
   }
+
+  m_database.Close();
 }
 
 void CPVRManager::LoadCurrentChannelSettings()
@@ -632,17 +638,20 @@ void CPVRManager::LoadCurrentChannelSettings()
   if (!m_addons->GetPlayingChannel(&channel))
     return;
 
+  if (!m_database.Open())
+  {
+    CLog::Log(LOGERROR, "PVR - %s - could not open the database", __FUNCTION__);
+    return;
+  }
+
   if (g_application.m_pPlayer)
   {
     /* set the default settings first */
     CVideoSettings loadedChannelSettings = g_settings.m_defaultVideoSettings;
 
     /* try to load the settings from the database */
-    if (m_database.Open())
-    {
-      m_database.GetChannelSettings(channel, loadedChannelSettings);
-      m_database.Close();
-    }
+    m_database.GetChannelSettings(channel, loadedChannelSettings);
+    m_database.Close();
 
     g_settings.m_currentVideoSettings = g_settings.m_defaultVideoSettings;
     g_settings.m_currentVideoSettings.m_Brightness          = loadedChannelSettings.m_Brightness;
@@ -674,7 +683,7 @@ void CPVRManager::LoadCurrentChannelSettings()
       g_settings.m_currentVideoSettings.m_CustomPixelRatio = g_settings.m_fPixelRatio;
     }
 
-    /* only change the subtitle strea, if it's different */
+    /* only change the subtitle stream, if it's different */
     if (g_settings.m_currentVideoSettings.m_SubtitleStream != loadedChannelSettings.m_SubtitleStream)
     {
       g_settings.m_currentVideoSettings.m_SubtitleStream = loadedChannelSettings.m_SubtitleStream;
