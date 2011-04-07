@@ -347,6 +347,11 @@ case $host in
      ARCHTYPE=$HOSTTYPE
      AC_SUBST([ARCHTYPE])
      AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
+     PYTHON_VERSION=2.6
+     PYTHON_CPPFLAGS=-I${prefix}/include/python2.6
+     PYTHON_LDFLAGS=-L${prefix}/lib -lpython2.6
+     PYTHON_SITE_PKG=${prefix}/lib/python2.6/site-packages
+     PYTHON_NOVERSIONCHECK="no-check"
      ;;
   i386-apple-darwin*)
      use_joystick=no
@@ -892,6 +897,7 @@ fi
 
 # External Python
 if test "$use_external_python" = "yes"; then
+if test -z "$PYTHON_NOVERSIONCHECK"; then
   AX_PYTHON_DEVEL([>= 2.4])
   PYTHON_VERSION=$ac_python_version
 
@@ -904,6 +910,10 @@ if test "$use_external_python" = "yes"; then
     USE_EXTERNAL_PYTHON=1
     AC_DEFINE([USE_EXTERNAL_PYTHON], [1], [Whether to use external python library.])
   fi
+else
+ USE_EXTERNAL_PYTHON=1
+ AC_DEFINE([USE_EXTERNAL_PYTHON], [1], [Whether to use external python library.])
+fi
 else
   USE_EXTERNAL_PYTHON=0
   PYTHON_CPPFLAGS="-I\$(abs_top_srcdir)/lib/python/Include"
