@@ -349,8 +349,6 @@ public:
   const CStdString &Path(void) const { return m_strFileNameAndPath; }
 
 private:
-  bool CacheIcon(void);
-
   /*!
    * @brief Update the path after the channel number in the internal group changed.
    */
@@ -485,4 +483,6 @@ public:
   bool SetEPGScraper(const CStdString &strScraper, bool bSaveInDb = false);
 
   //@}
+
+  bool CacheIcon(void);
 };

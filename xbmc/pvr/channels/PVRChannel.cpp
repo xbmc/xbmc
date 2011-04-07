@@ -27,6 +27,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/Picture.h"
 #include "settings/GUISettings.h"
+#include "utils/URIUtils.h"
 
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/epg/PVREpgContainer.h"
@@ -140,7 +141,7 @@ bool CPVRChannel::CacheIcon(void)
   if (strBasePath.IsEmpty())
     return bReturn;
 
-  if (!m_strIconPath.Left(strBasePath.length()).Equals(strBasePath))
+  if (URIUtils::IsInternetStream(m_strIconPath, true))
   {
     CStdString strNewFileName;
     strNewFileName.Format("%s/icon_%s_%d_%d.tbn", strBasePath, m_bIsRadio ? "radio" : "tv", m_iClientId, m_iUniqueId);

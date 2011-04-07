@@ -44,6 +44,7 @@ int CPVRChannelGroupInternal::Load(void)
 {
   int iChannelCount = CPVRChannelGroup::Load();
   UpdateChannelPaths();
+  CacheIcons();
 
   return iChannelCount;
 }
@@ -343,7 +344,11 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
 
   database->Close();
 
-  if (bChanged)
+  /* try to find channel icons */
+  SearchAndSetChannelIcons();
+  CacheIcons();
+
+  if (bChanged || HasChanges())
   {
     /* remove invalid channels */
     RemoveInvalidChannels();
@@ -355,9 +360,6 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
     /* renumber to make sure all channels have a channel number.
        new channels were added at the back, so they'll get the highest numbers */
     Renumber();
-
-    /* try to find channel icons */
-    SearchAndSetChannelIcons();
 
     return Persist();
   }
