@@ -303,7 +303,10 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
   /* try to find an epg event */
   UpdateEpgEvent();
   if (m_epgInfo != NULL)
+  {
     m_strGenre = m_epgInfo->Genre();
+    m_epgInfo->SetTimer(this);
+  }
 
   return true;
 }
