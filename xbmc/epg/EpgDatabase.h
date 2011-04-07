@@ -101,11 +101,9 @@ public:
   /*!
    * @brief Get all EPG entries for a table.
    * @param epg The EPG table to get the entries for.
-   * @param start Get entries after this time if set.
-   * @param end Get entries before this time if set.
    * @return The amount of entries that was added.
    */
-  virtual int Get(CEpg *epg, const CDateTime &start = NULL, const CDateTime &end = NULL);
+  virtual int Get(CEpg *epg);
 
   /*!
    * @brief Get the last stored EPG scan time.
