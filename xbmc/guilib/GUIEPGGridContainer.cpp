@@ -713,7 +713,7 @@ void CGUIEPGGridContainer::UpdateItems()
   /* check for invalid start and end time */
   if (m_gridStart >= m_gridEnd)
   {
-    CLog::Log(LOGERROR, "CGUIEPGGridContainer - %s - invalid start and end time set");
+    CLog::Log(LOGERROR, "CGUIEPGGridContainer - %s - invalid start and end time set", __FUNCTION__);
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), GetParentID()); // message the window
     SendWindowMessage(msg);
     return;

@@ -386,7 +386,7 @@ bool CEpg::Load(void)
   else
   {
     CLog::Log(LOGDEBUG, "Epg - %s - %d entries loaded for table '%s'.",
-        __FUNCTION__, size(), m_strName.c_str());
+        __FUNCTION__, (int) size(), m_strName.c_str());
     Sort();
     UpdateFirstAndLastDates();
     bReturn = true;
