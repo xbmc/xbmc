@@ -21,7 +21,6 @@
 
 #include <Python.h>
 
-#include "../XBPythonDll.h"
 
 #include "winxml.h"
 #include "pyutil.h"

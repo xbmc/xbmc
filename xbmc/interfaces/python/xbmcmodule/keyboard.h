@@ -21,7 +21,6 @@
 
 #include <Python.h>
 
-#include "../XBPythonDll.h"
 #include <string>
 #pragma once
 

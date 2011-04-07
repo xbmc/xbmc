@@ -22,7 +22,6 @@
 #include <Python.h>
 #include <structmember.h>
 
-#include "../XBPythonDll.h"
 #include "control.h"
 #include "window.h"
 #include "dialog.h"

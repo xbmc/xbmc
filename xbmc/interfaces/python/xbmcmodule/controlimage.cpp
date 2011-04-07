@@ -21,7 +21,6 @@
 
 #include <Python.h>
 
-#include "../XBPythonDll.h"
 #include "guilib/GUIImage.h"
 #include "control.h"
 #include "pyutil.h"

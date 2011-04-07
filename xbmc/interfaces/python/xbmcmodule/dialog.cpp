@@ -21,7 +21,6 @@
 
 #include "dialog.h"
 
-#include "../XBPythonDll.h"
 #include "Application.h"
 #include "settings/Settings.h"
 #include "pyutil.h"

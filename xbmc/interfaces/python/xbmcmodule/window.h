@@ -21,7 +21,6 @@
 
 #include <Python.h>
 
-#include "../XBPythonDll.h"
 #include "GUIPythonWindow.h"
 #include "GUIPythonWindowXML.h"
 #include "GUIPythonWindowXMLDialog.h"

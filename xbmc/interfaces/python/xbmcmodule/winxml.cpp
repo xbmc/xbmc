@@ -22,7 +22,6 @@
 #include <Python.h>
 
 #include "winxml.h"
-#include "../XBPythonDll.h"
 #include "pyutil.h"
 #include "GUIPythonWindowXML.h"
 #include "addons/Skin.h"

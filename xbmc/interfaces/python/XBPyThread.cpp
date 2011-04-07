@@ -28,7 +28,6 @@
 #include <osdefs.h>
 
 #include "system.h"
-#include "XBPythonDll.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -166,7 +165,6 @@ void XBPyThread::Process()
   // and add on whatever our default path is
   path += PY_PATH_SEP;
 
-#if (defined USE_EXTERNAL_PYTHON)
   {
     // we want to use sys.path so it includes site-packages
     // if this fails, default to using Py_GetPath
@@ -192,9 +190,6 @@ void XBPyThread::Process()
     }
     Py_DECREF(sysMod); // release ref to sysMod
   }
-#else
-  path += Py_GetPath();
-#endif
 
   // set current directory and python's path.
   if (m_argv != NULL)
@@ -223,22 +218,16 @@ void XBPyThread::Process()
   PyEval_AcquireLock();
   PyThreadState_Swap(state);
 
-  xbp_chdir(scriptDir.c_str());
-
   if (!stopping)
   {
     if (m_type == 'F')
     {
-#ifdef USE_EXTERNAL_PYTHON
       // run script from file
       // We need to have python open the file because on Windows the DLL that python
       //  is linked against may not be the DLL that xbmc is linked against so 
       //  passing a FILE* to python from an fopen has the potential to crash.
       PyObject* file = PyFile_FromString((char *) _P(m_source).c_str(), (char*)"r");
       FILE *fp = PyFile_AsFile(file);
-#else
-      FILE *fp = fopen_utf8(_P(m_source).c_str(), "r");      
-#endif
 
       if (fp)
       {
@@ -247,7 +236,6 @@ void XBPyThread::Process()
         Py_DECREF(f);
         PyRun_File(fp, _P(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict);
 
-#ifdef USE_EXTERNAL_PYTHON
         // Get a reference to the main module
         // and global dictionary
         PyObject* main_module = PyImport_AddModule((char*)"__main__");
@@ -259,9 +247,6 @@ void XBPyThread::Process()
 
         if (!PyObject_CallFunction(expression,(char*)"(O)",file))
           CLog::Log(LOGERROR,"Failed to close the script file %s",_P(m_source).c_str());
-#else
-        fclose(fp);
-#endif
       }
       else
         CLog::Log(LOGERROR, "%s not found!", m_source);

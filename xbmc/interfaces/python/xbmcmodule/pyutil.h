@@ -21,7 +21,6 @@
 
 #include <Python.h>
 
-#include "../XBPythonDll.h"
 #include "utils/StdString.h"
 
 #ifdef __cplusplus
