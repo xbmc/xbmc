@@ -19,31 +19,25 @@
  *
  */
 
-#include "XSyncUtils.h"
-#include "XTimeUtils.h"
-#include "PlatformDefs.h"
-#include "XHandle.h"
-#include "XEventUtils.h"
+#ifndef _WIN32
 
-#if (defined(__APPLE__) && defined(__arm__))
-  #include <threads/XBMC_cond.h>
-  #include <threads/XBMC_mutex.h>
-#else
-  #ifdef __APPLE__
-    #include <mach/mach.h>
-    #include <SDL/SDL.h>
-  #else
-    #include <SDL.h>
-  #endif
-#endif
-
-#ifdef _LINUX
 
 #include <semaphore.h>
 #include <time.h>
 #include <errno.h>
 #include <stack>
 #include <functional>
+#ifdef __APPLE__
+#include <mach/mach.h>
+#endif
+
+#include "XSyncUtils.h"
+#include "XTimeUtils.h"
+#include "PlatformDefs.h"
+#include "XHandle.h"
+#include "XEventUtils.h"
+#include "threads/XBMC_mutex.h"
+
 
 using namespace std;
 

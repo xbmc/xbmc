@@ -925,7 +925,6 @@
 		F5AE4165134175520004BD79 /* VideoLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4157134175520004BD79 /* VideoLibrary.cpp */; };
 		F5AE4166134175520004BD79 /* XBMCOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4159134175520004BD79 /* XBMCOperations.cpp */; };
 		F5AE4530134D2E3E0004BD79 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE452E134D2E3E0004BD79 /* JSONServiceDescription.cpp */; };
-		F5AE45BE134D638C0004BD79 /* XBMC_cond.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86F6131F42EB000AD0F6 /* XBMC_cond.cpp */; };
 		F5B1380D13306B890045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B1380C13306B890045076D /* libmicrohttpd.dylib */; };
 		F5B13DCF1334490D0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13DCE1334490D0045076D /* DarwinUtils.mm */; };
 /* End PBXBuildFile section */
@@ -2554,8 +2553,6 @@
 		F56C86F3131F42EB000AD0F6 /* SingleLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleLock.h; sourceTree = "<group>"; };
 		F56C86F4131F42EB000AD0F6 /* Thread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Thread.cpp; sourceTree = "<group>"; };
 		F56C86F5131F42EB000AD0F6 /* Thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Thread.h; sourceTree = "<group>"; };
-		F56C86F6131F42EB000AD0F6 /* XBMC_cond.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_cond.cpp; sourceTree = "<group>"; };
-		F56C86F7131F42EB000AD0F6 /* XBMC_cond.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_cond.h; sourceTree = "<group>"; };
 		F56C86F8131F42EB000AD0F6 /* XBMC_mutex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_mutex.cpp; sourceTree = "<group>"; };
 		F56C86F9131F42EB000AD0F6 /* XBMC_mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_mutex.h; sourceTree = "<group>"; };
 		F56C86FB131F42EB000AD0F6 /* GlobalsHandling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalsHandling.h; sourceTree = "<group>"; };
@@ -5402,8 +5399,6 @@
 				F56C86F3131F42EB000AD0F6 /* SingleLock.h */,
 				F56C86F4131F42EB000AD0F6 /* Thread.cpp */,
 				F56C86F5131F42EB000AD0F6 /* Thread.h */,
-				F56C86F6131F42EB000AD0F6 /* XBMC_cond.cpp */,
-				F56C86F7131F42EB000AD0F6 /* XBMC_cond.h */,
 				F56C86F8131F42EB000AD0F6 /* XBMC_mutex.cpp */,
 				F56C86F9131F42EB000AD0F6 /* XBMC_mutex.h */,
 			);
@@ -6770,7 +6765,6 @@
 				F5AE4165134175520004BD79 /* VideoLibrary.cpp in Sources */,
 				F5AE4166134175520004BD79 /* XBMCOperations.cpp in Sources */,
 				F5AE4530134D2E3E0004BD79 /* JSONServiceDescription.cpp in Sources */,
-				F5AE45BE134D638C0004BD79 /* XBMC_cond.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

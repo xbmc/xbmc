@@ -925,7 +925,6 @@
 		F5AE41121341751E0004BD79 /* VideoLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE41041341751E0004BD79 /* VideoLibrary.cpp */; };
 		F5AE41131341751E0004BD79 /* XBMCOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE41061341751E0004BD79 /* XBMCOperations.cpp */; };
 		F5AE453B134D2E720004BD79 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4539134D2E720004BD79 /* JSONServiceDescription.cpp */; };
-		F5AE45BB134D622C0004BD79 /* XBMC_cond.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BED131EC4CE000AD0F6 /* XBMC_cond.cpp */; };
 		F5B13837133080CB0045076D /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B13835133080CA0045076D /* libmicrohttpd.dylib */; };
 		F5B13E0113344F310045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13E0013344F310045076D /* DarwinUtils.mm */; };
 /* End PBXBuildFile section */
@@ -2614,8 +2613,6 @@
 		F56C7BE8131EC46E000AD0F6 /* yuv2rgb.neon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = yuv2rgb.neon.h; sourceTree = "<group>"; };
 		F56C7BEA131EC495000AD0F6 /* IOSAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IOSAudioRenderer.cpp; path = AudioRenderers/IOSAudioRenderer.cpp; sourceTree = "<group>"; };
 		F56C7BEB131EC495000AD0F6 /* IOSAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSAudioRenderer.h; path = AudioRenderers/IOSAudioRenderer.h; sourceTree = "<group>"; };
-		F56C7BED131EC4CE000AD0F6 /* XBMC_cond.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_cond.cpp; sourceTree = "<group>"; };
-		F56C7BEE131EC4CE000AD0F6 /* XBMC_cond.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_cond.h; sourceTree = "<group>"; };
 		F56C7BEF131EC4CE000AD0F6 /* XBMC_mutex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_mutex.cpp; sourceTree = "<group>"; };
 		F56C7BF0131EC4CE000AD0F6 /* XBMC_mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_mutex.h; sourceTree = "<group>"; };
 		F56C7BF3131EC4E8000AD0F6 /* fastmemcpy-arm.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "fastmemcpy-arm.S"; sourceTree = "<group>"; };
@@ -5034,8 +5031,6 @@
 				F56C7708131EC153000AD0F6 /* SingleLock.h */,
 				F56C7709131EC153000AD0F6 /* Thread.cpp */,
 				F56C770A131EC153000AD0F6 /* Thread.h */,
-				F56C7BED131EC4CE000AD0F6 /* XBMC_cond.cpp */,
-				F56C7BEE131EC4CE000AD0F6 /* XBMC_cond.h */,
 				F56C7BEF131EC4CE000AD0F6 /* XBMC_mutex.cpp */,
 				F56C7BF0131EC4CE000AD0F6 /* XBMC_mutex.h */,
 			);
@@ -6755,7 +6750,6 @@
 				F5AE41121341751E0004BD79 /* VideoLibrary.cpp in Sources */,
 				F5AE41131341751E0004BD79 /* XBMCOperations.cpp in Sources */,
 				F5AE453B134D2E720004BD79 /* JSONServiceDescription.cpp in Sources */,
-				F5AE45BB134D622C0004BD79 /* XBMC_cond.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
