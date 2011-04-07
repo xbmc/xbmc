@@ -25,6 +25,7 @@
 #include "utils/TimeUtils.h"
 #include "GUIInfoManager.h"
 #include "Util.h"
+#include "threads/SingleLock.h"
 #include "PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/timers/PVRTimers.h"
@@ -135,8 +136,6 @@ void CPVRGUIInfo::Process(void)
 {
   unsigned int mLoop(0);
   CPVRManager *manager = CPVRManager::Get();
-  CPVRRecordings *recordings = manager->GetRecordings();
-  CPVRClients *clients = manager->GetClients();
 
   /* updated on request */
   manager->GetTimers()->AddObserver(this);
@@ -144,11 +143,17 @@ void CPVRGUIInfo::Process(void)
 
   while (!m_bStop)
   {
-    m_strPlayingClientName = clients->GetPlayingClientName();
-    m_bHasRecordings = recordings->GetNumRecordings() > 0;
-    clients->GetQualityData(&m_qualityInfo);
+    UpdateQualityData();
+    Sleep(0);
+
+    UpdateMisc();
+    Sleep(0);
+
     UpdatePlayingTag();
+    Sleep(0);
+
     UpdateTimersToggle();
+    Sleep(0);
 
     if (mLoop % 10 == 0)
       UpdateBackendCache();    /* updated every 10 iterations */
@@ -160,8 +165,25 @@ void CPVRGUIInfo::Process(void)
   }
 }
 
+void CPVRGUIInfo::UpdateQualityData(void)
+{
+  CSingleLock lock(m_critSection);
+
+  CPVRManager::GetClients()->GetQualityData(&m_qualityInfo);
+}
+
+void CPVRGUIInfo::UpdateMisc(void)
+{
+  CSingleLock lock(m_critSection);
+
+  m_strPlayingClientName = CPVRManager::GetClients()->GetPlayingClientName();
+  m_bHasRecordings = CPVRManager::GetRecordings()->GetNumRecordings() > 0;
+}
+
 const char* CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo) const
 {
+  CSingleLock lock(m_critSection);
+
   if      (dwInfo == PVR_NOW_RECORDING_TITLE)     return CharInfoActiveTimerTitle();
   else if (dwInfo == PVR_NOW_RECORDING_CHANNEL)   return CharInfoActiveTimerChannelName();
   else if (dwInfo == PVR_NOW_RECORDING_DATETIME)  return CharInfoActiveTimerDateTime();
@@ -196,7 +218,8 @@ const char* CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo) const
 
 bool CPVRGUIInfo::TranslateBoolInfo(DWORD dwInfo) const
 {
-  bool bReturn = false;
+  bool bReturn(false);
+  CSingleLock lock(m_critSection);
 
   if (dwInfo == PVR_IS_RECORDING)
     bReturn = CPVRManager::Get()->IsStarted() && m_bIsRecording;
@@ -216,7 +239,8 @@ bool CPVRGUIInfo::TranslateBoolInfo(DWORD dwInfo) const
 
 int CPVRGUIInfo::TranslateIntInfo(DWORD dwInfo) const
 {
-  int iReturn = 0;
+  int iReturn(0);
+  CSingleLock lock(m_critSection);
 
   if (dwInfo == PVR_PLAYING_PROGRESS)
     iReturn = (int) ((float) GetStartTime() / GetTotalTime() * 100);
@@ -464,6 +488,8 @@ const char *CPVRGUIInfo::CharInfoEncryption(void) const
 
 void CPVRGUIInfo::UpdateBackendCache(void)
 {
+  CSingleLock lock(m_critSection);
+
   if (!AddonInfoToggle())
     return;
 
@@ -531,6 +557,8 @@ void CPVRGUIInfo::UpdateBackendCache(void)
 
 void CPVRGUIInfo::UpdateTimersCache(void)
 {
+  CSingleLock lock(m_critSection);
+
   /* reset values */
   m_strActiveTimerTitle         = "";
   m_strActiveTimerChannelName   = "";
@@ -579,6 +607,8 @@ void CPVRGUIInfo::UpdateTimersCache(void)
 
 void CPVRGUIInfo::UpdateTimersToggle(void)
 {
+  CSingleLock lock(m_critSection);
+
   if (!TimerInfoToggle())
     return;
 
@@ -599,11 +629,15 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
 
 int CPVRGUIInfo::GetTotalTime(void) const
 {
+  CSingleLock lock(m_critSection);
+
   return m_playingEpgTag ? m_playingEpgTag->GetDuration() * 1000 : 0;
 }
 
 int CPVRGUIInfo::GetStartTime(void) const
 {
+  CSingleLock lock(m_critSection);
+
   if (m_playingEpgTag)
   {
     /* Calculate here the position we have of the running live TV event.
@@ -623,6 +657,8 @@ int CPVRGUIInfo::GetStartTime(void) const
 
 void CPVRGUIInfo::UpdatePlayingTag(void)
 {
+  CSingleLock lock(m_critSection);
+
   if (m_playingEpgTag && m_playingEpgTag->IsActive())
     return;
 
@@ -630,7 +666,27 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
   if (CPVRManager::Get()->GetCurrentChannel(&currentChannel))
   {
     m_playingEpgTag = currentChannel.GetEPGNow();
-//    CSingleLock lock(m_critSectionStreams);
-//    UpdateItem(*m_currentFile);
+    CPVRManager::Get()->UpdateCurrentFile();
   }
+}
+
+bool CPVRGUIInfo::IsRecording(void) const
+{
+  CSingleLock lock(m_critSection);
+
+  return m_bIsRecording;
+}
+
+bool CPVRGUIInfo::HasTimers(void) const
+{
+  CSingleLock lock(m_critSection);
+
+  return m_bHasTimers;
+}
+
+const CPVREpgInfoTag *CPVRGUIInfo::GetPlayingTag(void) const
+{
+  CSingleLock lock(m_critSection);
+
+  return m_playingEpgTag;
 }

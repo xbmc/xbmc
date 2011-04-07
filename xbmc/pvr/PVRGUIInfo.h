@@ -45,9 +45,9 @@ public:
   const char* TranslateCharInfo(DWORD dwInfo) const;
   int TranslateIntInfo(DWORD dwInfo) const;
 
-  bool IsRecording(void) const { return m_bIsRecording; };
-  bool HasTimers(void) const { return m_bHasTimers; };
-  const CPVREpgInfoTag *GetPlayingTag(void) const { return m_playingEpgTag; }
+  bool IsRecording(void) const;
+  bool HasTimers(void) const;
+  const CPVREpgInfoTag *GetPlayingTag(void) const;
 
   /*!
    * @brief Get the total duration of the currently playing LiveTV item.
@@ -68,6 +68,8 @@ private:
   void UpdatePlayingTag(void);
   void UpdateTimersCache(void);
   void UpdateBackendCache(void);
+  void UpdateQualityData(void);
+  void UpdateMisc(void);
 
   bool AddonInfoToggle(void);
   bool TimerInfoToggle(void);
