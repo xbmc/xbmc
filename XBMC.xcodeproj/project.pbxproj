@@ -1818,7 +1818,6 @@
 		F5B5D015133AFB2E007A4B4C /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138641330811D0045076D /* libmicrohttpd.dylib */; };
 		F5B5D64D133FC2C1007A4B4C /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish.a */; };
 		F5B5D64E133FC2E7007A4B4C /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv.a */; };
-		F5B5D64F133FC2EF007A4B4C /* libxbms.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC8816110A4B8900EE1B15 /* libxbms.a */; };
 		F5B5D650133FC312007A4B4C /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap.a */; };
 		F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB80D120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
@@ -1836,7 +1835,6 @@
 		F5DC87E3110A287400EE1B15 /* RingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */; };
 		F5DC8801110A46C700EE1B15 /* ModplugCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC8800110A46C700EE1B15 /* ModplugCodec.cpp */; };
 		F5DC8802110A46C700EE1B15 /* ModplugCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5DC8800110A46C700EE1B15 /* ModplugCodec.cpp */; };
-		F5DC8817110A4B8900EE1B15 /* libxbms.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC8816110A4B8900EE1B15 /* libxbms.a */; };
 		F5DC888B110A654000EE1B15 /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC888A110A654000EE1B15 /* libapetag.a */; };
 		F5DC888C110A654000EE1B15 /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC888A110A654000EE1B15 /* libapetag.a */; };
 		F5E55B5D10741272006E788A /* DVDPlayerTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */; };
@@ -3801,7 +3799,6 @@
 		F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RingBuffer.cpp; sourceTree = "<group>"; };
 		F5DC87FF110A46C700EE1B15 /* ModplugCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModplugCodec.h; sourceTree = "<group>"; };
 		F5DC8800110A46C700EE1B15 /* ModplugCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ModplugCodec.cpp; sourceTree = "<group>"; };
-		F5DC8816110A4B8900EE1B15 /* libxbms.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxbms.a; path = lib/libXBMS/libxbms.a; sourceTree = "<group>"; };
 		F5DC888A110A654000EE1B15 /* libapetag.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libapetag.a; path = lib/libapetag/.libs/libapetag.a; sourceTree = "<group>"; };
 		F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerTeletext.cpp; sourceTree = "<group>"; };
 		F5E55B5C10741272006E788A /* DVDPlayerTeletext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerTeletext.h; sourceTree = "<group>"; };
@@ -3879,7 +3876,6 @@
 				88ECB6590DE013C4003396A7 /* DiskArbitration.framework in Frameworks */,
 				F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
 				43352CEE1071634600706B8A /* libsquish.a in Frameworks */,
-				F5DC8817110A4B8900EE1B15 /* libxbms.a in Frameworks */,
 				F5DC888B110A654000EE1B15 /* libapetag.a in Frameworks */,
 				F5A7A6F1112893330059D6AA /* libjsoncpp.a in Frameworks */,
 				F56C8CE2131F5DAF000AD0F6 /* libc.dylib in Frameworks */,
@@ -3954,7 +3950,6 @@
 				F5B5D015133AFB2E007A4B4C /* libmicrohttpd.dylib in Frameworks */,
 				F5B5D64D133FC2C1007A4B4C /* libsquish.a in Frameworks */,
 				F5B5D64E133FC2E7007A4B4C /* librtv.a in Frameworks */,
-				F5B5D64F133FC2EF007A4B4C /* libxbms.a in Frameworks */,
 				F5B5D650133FC312007A4B4C /* libxdaap.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6892,7 +6887,6 @@
 				F5A7A6F0112893330059D6AA /* libjsoncpp.a */,
 				43352CED1071634600706B8A /* libsquish.a */,
 				E38E256C0D263A1C00618676 /* librtv.a */,
-				F5DC8816110A4B8900EE1B15 /* libxbms.a */,
 				E38E25680D2639F100618676 /* libxdaap.a */,
 			);
 			name = "internal libs";

@@ -895,7 +895,6 @@
 		F56C8C0C131F47EA000AD0F6 /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C06131F47EA000AD0F6 /* libjsoncpp.a */; };
 		F56C8C11131F4811000AD0F6 /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C0D131F4811000AD0F6 /* libsquish.a */; };
 		F56C8C12131F4811000AD0F6 /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C0E131F4811000AD0F6 /* librtv.a */; };
-		F56C8C13131F4811000AD0F6 /* libxbms.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C0F131F4811000AD0F6 /* libxbms.a */; };
 		F56C8C14131F4811000AD0F6 /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C10131F4811000AD0F6 /* libxdaap.a */; };
 		F57A1DB81329FAF700498CC7 /* SourcesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57A1DB61329FAF700498CC7 /* SourcesDirectory.cpp */; };
 		F5899DCE1287212700D8079E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5899DCA1287212700D8079E /* QuartzCore.framework */; };
@@ -2827,7 +2826,6 @@
 		F56C8C06131F47EA000AD0F6 /* libjsoncpp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjsoncpp.a; path = lib/jsoncpp/src/lib_json/libjsoncpp.a; sourceTree = "<group>"; };
 		F56C8C0D131F4811000AD0F6 /* libsquish.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsquish.a; path = lib/libsquish/libsquish.a; sourceTree = "<group>"; };
 		F56C8C0E131F4811000AD0F6 /* librtv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librtv.a; path = lib/libRTV/librtv.a; sourceTree = "<group>"; };
-		F56C8C0F131F4811000AD0F6 /* libxbms.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxbms.a; path = lib/libXBMS/libxbms.a; sourceTree = "<group>"; };
 		F56C8C10131F4811000AD0F6 /* libxdaap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxdaap.a; path = lib/libXDAAP/libxdaap.a; sourceTree = "<group>"; };
 		F57A1DB61329FAF700498CC7 /* SourcesDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SourcesDirectory.cpp; sourceTree = "<group>"; };
 		F57A1DB71329FAF700498CC7 /* SourcesDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourcesDirectory.h; sourceTree = "<group>"; };
@@ -2921,7 +2919,6 @@
 				F56C8C0C131F47EA000AD0F6 /* libjsoncpp.a in Frameworks */,
 				F56C8C11131F4811000AD0F6 /* libsquish.a in Frameworks */,
 				F56C8C12131F4811000AD0F6 /* librtv.a in Frameworks */,
-				F56C8C13131F4811000AD0F6 /* libxbms.a in Frameworks */,
 				F56C8C14131F4811000AD0F6 /* libxdaap.a in Frameworks */,
 				F5B1380D13306B890045076D /* libmicrohttpd.dylib in Frameworks */,
 			);
@@ -5721,7 +5718,6 @@
 				F56C8C06131F47EA000AD0F6 /* libjsoncpp.a */,
 				F56C8C0D131F4811000AD0F6 /* libsquish.a */,
 				F56C8C0E131F4811000AD0F6 /* librtv.a */,
-				F56C8C0F131F4811000AD0F6 /* libxbms.a */,
 				F56C8C10131F4811000AD0F6 /* libxdaap.a */,
 			);
 			name = "Internal Libs";
