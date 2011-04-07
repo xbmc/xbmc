@@ -246,7 +246,7 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 
   GetGroupsFromClients();
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d user defined groups %s fetched from clients",
-      __FUNCTION__, size() - iSize - 1, m_bRadio ? "radio" : "TV");
+      __FUNCTION__, (int) (size() - iSize - 1), m_bRadio ? "radio" : "TV");
 
   /* load group members */
   for (unsigned int iGroupPtr = 1; iGroupPtr < size(); iGroupPtr++)

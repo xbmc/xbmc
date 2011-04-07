@@ -635,7 +635,7 @@ bool CPVRChannelGroup::Persist(void)
   if (database && database->Open())
   {
     CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - persisting channel group '%s' with %d channels",
-        __FUNCTION__, GroupName().c_str(), size());
+        __FUNCTION__, GroupName().c_str(), (int) size());
     database->Persist(this);
     database->Close();
 
