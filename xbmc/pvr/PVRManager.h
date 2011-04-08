@@ -428,7 +428,7 @@ private:
   //@{
   CFileItem *                     m_currentFile;
   CPVRDatabase                    m_database;                    /*!< the database for all PVR related data */
-  CCriticalSection                m_critSectionStreams;          /*!< critical section for all changes to this class */
+  CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class */
   bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
   bool                            m_bLoaded;
   //@}

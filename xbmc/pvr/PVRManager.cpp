@@ -269,6 +269,7 @@ void CPVRManager::Process(void)
 bool CPVRManager::ChannelSwitch(unsigned int iChannel)
 {
   const CPVRChannel *channel = NULL;
+  CSingleLock lock(m_critSection);
 
   if (m_addons->IsPlayingRadio())
   {
@@ -704,6 +705,8 @@ void CPVRManager::LoadCurrentChannelSettings()
 
 void CPVRManager::SetPlayingGroup(CPVRChannelGroup *group)
 {
+  CSingleLock lock(m_critSection);
+
   if (group && group->IsRadio())
     m_currentRadioGroup = group;
   else if (group && !group->IsRadio())
@@ -712,6 +715,8 @@ void CPVRManager::SetPlayingGroup(CPVRChannelGroup *group)
 
 const CPVRChannelGroup *CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
 {
+  CSingleLock lock(m_critSection);
+
   if (bRadio && !m_currentRadioGroup)
     m_currentRadioGroup = (CPVRChannelGroup *) GetChannelGroups()->GetGroupAllRadio();
   else if (!bRadio &&!m_currentTVGroup)
@@ -763,7 +768,7 @@ void CPVRManager::TriggerChannelGroupsUpdate(void)
 bool CPVRManager::OpenLiveStream(const CPVRChannel &tag)
 {
   bool bReturn = false;
-  CSingleLock lock(m_critSectionStreams);
+  CSingleLock lock(m_critSection);
 
   CLog::Log(LOGDEBUG,"PVRManager - %s - opening live stream on channel '%s'",
       __FUNCTION__, tag.ChannelName().c_str());
@@ -785,7 +790,7 @@ bool CPVRManager::OpenLiveStream(const CPVRChannel &tag)
 bool CPVRManager::OpenRecordedStream(const CPVRRecording &tag)
 {
   bool bReturn = false;
-  CSingleLock lock(m_critSectionStreams);
+  CSingleLock lock(m_critSection);
 
   CLog::Log(LOGDEBUG,"PVRManager - %s - opening recorded stream '%s'",
       __FUNCTION__, tag.m_strFile.c_str());
@@ -801,7 +806,7 @@ bool CPVRManager::OpenRecordedStream(const CPVRRecording &tag)
 
 void CPVRManager::CloseStream(void)
 {
-  CSingleLock lock(m_critSectionStreams);
+  CSingleLock lock(m_critSection);
 
   if (m_addons->IsReadingLiveStream())
   {
@@ -828,7 +833,7 @@ void CPVRManager::CloseStream(void)
 
 void CPVRManager::UpdateCurrentFile(void)
 {
-  CSingleLock lock(m_critSectionStreams);
+  CSingleLock lock(m_critSection);
   if (m_currentFile)
     UpdateItem(*m_currentFile);
 }
@@ -845,7 +850,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     return false;
   }
 
-  CSingleLock lock(m_critSectionStreams);
+  CSingleLock lock(m_critSection);
   g_application.CurrentFileItem() = *m_currentFile;
   g_infoManager.SetCurrentItem(*m_currentFile);
 
@@ -917,7 +922,7 @@ bool CPVRManager::StartPlayback(const CPVRChannel *channel, bool bPreview /* = f
 
 bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview)
 {
-  CSingleLock lock(m_critSectionStreams);
+  CSingleLock lock(m_critSection);
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - switching to channel '%s'",
       __FUNCTION__, channel.ChannelName().c_str());
