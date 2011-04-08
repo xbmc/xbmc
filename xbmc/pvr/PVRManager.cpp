@@ -274,7 +274,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   const CPVRChannelGroup *playingGroup = GetPlayingGroup(m_addons->IsPlayingRadio());
   if (playingGroup == NULL)
   {
-    CLog::Log(LOGERROR, "PVRManager - %s - cannot a selected group", __FUNCTION__);
+    CLog::Log(LOGERROR, "PVRManager - %s - cannot get the selected group", __FUNCTION__);
     return false;
   }
 
