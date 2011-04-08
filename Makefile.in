@@ -563,11 +563,6 @@ DYNOBJSXBMC= \
 	xbmc/video/video.a \
 	xbmc/guilib/guilib.a # must be dynamic to avoid linker errors
 
-ifeq ($(findstring arm,@ARCH@), arm)
-# Force external python2.6 for now!
-LIBS +=-lpython2.6
-endif
-
 LIBS += @PYTHON_LDFLAGS@
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
