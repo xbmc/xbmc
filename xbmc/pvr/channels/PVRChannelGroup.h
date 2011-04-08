@@ -267,6 +267,9 @@ public:
 
   //@}
 
+  virtual void SetSelectedGroup(void);
+  virtual void ResetChannelNumbers(void);
+
   /*! @name getters
    */
   //@{

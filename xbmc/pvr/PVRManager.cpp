@@ -271,24 +271,14 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   const CPVRChannel *channel = NULL;
   CSingleLock lock(m_critSection);
 
-  if (m_addons->IsPlayingRadio())
+  const CPVRChannelGroup *playingGroup = GetPlayingGroup(m_addons->IsPlayingRadio());
+  if (playingGroup == NULL)
   {
-    if (m_currentRadioGroup != NULL)
-      channel = m_currentRadioGroup->GetByChannelNumber(iChannel);
-
-    if (channel == NULL)
-      channel = GetChannelGroups()->GetGroupAllRadio()->GetByChannelNumber(iChannel);
-  }
-  else
-  {
-    /* always use the TV group if we're not playing a radio channel */
-    if (m_currentTVGroup != NULL)
-      channel = m_currentTVGroup->GetByChannelNumber(iChannel);
-
-    if (channel == NULL)
-      channel = GetChannelGroups()->GetGroupAllTV()->GetByChannelNumber(iChannel);
+    CLog::Log(LOGERROR, "PVRManager - %s - cannot a selected group", __FUNCTION__);
+    return false;
   }
 
+  channel = playingGroup->GetByChannelNumber(iChannel);
   if (channel == NULL)
   {
     CLog::Log(LOGERROR, "PVRManager - %s - cannot find channel %d", __FUNCTION__, iChannel);
@@ -707,10 +697,24 @@ void CPVRManager::SetPlayingGroup(CPVRChannelGroup *group)
 {
   CSingleLock lock(m_critSection);
 
-  if (group && group->IsRadio())
+  if (group == NULL)
+    return;
+
+  bool bChanged(false);
+  if (group->IsRadio())
+  {
+    bChanged = m_currentRadioGroup == NULL || *m_currentRadioGroup != *group;
     m_currentRadioGroup = group;
-  else if (group && !group->IsRadio())
+  }
+  else
+  {
+    bChanged = m_currentTVGroup == NULL || *m_currentTVGroup != *group;
     m_currentTVGroup = group;
+  }
+
+  /* set this group as selected group and set channel numbers */
+  if (bChanged)
+    group->SetSelectedGroup();
 }
 
 const CPVRChannelGroup *CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
@@ -718,9 +722,9 @@ const CPVRChannelGroup *CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
   CSingleLock lock(m_critSection);
 
   if (bRadio && !m_currentRadioGroup)
-    m_currentRadioGroup = (CPVRChannelGroup *) GetChannelGroups()->GetGroupAllRadio();
+    SetPlayingGroup((CPVRChannelGroup *) GetChannelGroups()->GetGroupAllRadio());
   else if (!bRadio &&!m_currentTVGroup)
-    m_currentTVGroup = (CPVRChannelGroup *) GetChannelGroups()->GetGroupAllTV();
+    SetPlayingGroup((CPVRChannelGroup *) GetChannelGroups()->GetGroupAllTV());
 
   return bRadio ? m_currentRadioGroup : m_currentTVGroup;
 }

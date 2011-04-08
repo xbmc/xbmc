@@ -724,8 +724,29 @@ bool CPVRChannelGroup::HasChanges(void) const
 
 void CPVRChannelGroup::CacheIcons(void)
 {
+  CSingleLock lock(m_critSection);
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
     at(iChannelPtr).channel->CacheIcon();
   }
+}
+
+void CPVRChannelGroup::ResetChannelNumbers(void)
+{
+  CSingleLock lock(m_critSection);
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+    at(iChannelPtr).channel->SetCachedChannelNumber(0);
+}
+
+void CPVRChannelGroup::SetSelectedGroup(void)
+{
+  CSingleLock lock(m_critSection);
+
+  /* reset all channel numbers */
+  ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio))->ResetChannelNumbers();
+
+  /* set all channel numbers on members of this group */
+  unsigned int iChannelNumber(1);
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+    at(iChannelPtr).channel->SetCachedChannelNumber(iChannelNumber++);
 }

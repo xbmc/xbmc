@@ -28,6 +28,7 @@
 
 class CPVREpgInfoTag;
 class CPVREpg;
+class CPVRChannelGroup;
 class CPVRChannelGroupInternal;
 
 /** PVR Channel class */
@@ -35,6 +36,7 @@ class CPVRChannelGroupInternal;
 class CPVRChannel : public Observable
 {
   friend class CPVREpgContainer;
+  friend class CPVRChannelGroup;
   friend class CPVRChannelGroupInternal;
   friend class CPVRDatabase;
 
@@ -42,15 +44,16 @@ private:
   /*! @name XBMC related channel data
    */
   //@{
-  int        m_iChannelId;              /*!< the identifier given to this channel by the TV database */
-  bool       m_bIsRadio;                /*!< true if this channel is a radio channel, false if not */
-  bool       m_bIsHidden;               /*!< true if this channel is hidden, false if not */
-  bool       m_bClientIsRecording;      /*!< true if a recording is currently running on this channel, false if not */
-  CStdString m_strIconPath;             /*!< the path to the icon for this channel */
-  CStdString m_strChannelName;          /*!< the name for this channel used by XBMC */
-  bool       m_bIsVirtual;              /*!< true if this channel is marked as virtual, false if not */
-  time_t     m_iLastWatched;            /*!< last time channel has been watched */
-  bool       m_bChanged;                /*!< true if anything in this entry was changed that needs to be persisted */
+  int          m_iChannelId;              /*!< the identifier given to this channel by the TV database */
+  bool         m_bIsRadio;                /*!< true if this channel is a radio channel, false if not */
+  bool         m_bIsHidden;               /*!< true if this channel is hidden, false if not */
+  bool         m_bClientIsRecording;      /*!< true if a recording is currently running on this channel, false if not */
+  CStdString   m_strIconPath;             /*!< the path to the icon for this channel */
+  CStdString   m_strChannelName;          /*!< the name for this channel used by XBMC */
+  bool         m_bIsVirtual;              /*!< true if this channel is marked as virtual, false if not */
+  time_t       m_iLastWatched;            /*!< last time channel has been watched */
+  bool         m_bChanged;                /*!< true if anything in this entry was changed that needs to be persisted */
+  unsigned int m_iCachedChannelNumber;    /*!< the cached channel number in the selected group */
   //@}
 
   /*! @name EPG related channel data
@@ -359,6 +362,9 @@ private:
    */
   void UpdateEncryptionName(void);
 
+  void SetCachedChannelNumber(unsigned int iChannelNumber);
+  bool CacheIcon(void);
+
 public:
   /*!
    * @brief Return true if this channel is encrypted.
@@ -483,6 +489,4 @@ public:
   bool SetEPGScraper(const CStdString &strScraper, bool bSaveInDb = false);
 
   //@}
-
-  bool CacheIcon(void);
 };

@@ -71,6 +71,7 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_bIsVirtual              = false;
   m_iLastWatched            = 0;
   m_bChanged                = false;
+  m_iCachedChannelNumber    = 0;
 
   m_EPG                     = NULL;
   m_bEPGEnabled             = true;
@@ -245,12 +246,7 @@ bool CPVRChannel::SetChannelID(int iChannelId, bool bSaveInDb /* = false */)
 
 int CPVRChannel::ChannelNumber(void) const
 {
-  int iReturn = -1;
-  const CPVRChannelGroup *group = CPVRManager::Get()->GetPlayingGroup(m_bIsRadio);
-  if (group)
-    iReturn = group->GetChannelNumber(*this);
-
-  return iReturn;
+  return m_iCachedChannelNumber;
 }
 
 bool CPVRChannel::SetHidden(bool bIsHidden, bool bSaveInDb /* = false */)
@@ -761,4 +757,9 @@ bool CPVRChannel::SetEPGScraper(const CStdString &strScraper, bool bSaveInDb /* 
   }
 
   return bReturn;
+}
+
+void CPVRChannel::SetCachedChannelNumber(unsigned int iChannelNumber)
+{
+  m_iCachedChannelNumber = iChannelNumber;
 }
