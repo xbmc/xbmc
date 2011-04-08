@@ -25,58 +25,62 @@
 #include "FileItem.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "utils/Observer.h"
+#include "threads/CriticalSection.h"
 
-class CPVREpgInfoTag;
-class CPVREpg;
 class CPVRChannelGroup;
 class CPVRChannelGroupInternal;
+class CPVRDatabase;
+class CPVREpg;
+class CPVREpgContainer;
 
 /** PVR Channel class */
 
 class CPVRChannel : public Observable
 {
-  friend class CPVREpgContainer;
   friend class CPVRChannelGroup;
   friend class CPVRChannelGroupInternal;
   friend class CPVRDatabase;
+  friend class CPVREpgContainer;
 
 private:
   /*! @name XBMC related channel data
    */
   //@{
-  int          m_iChannelId;              /*!< the identifier given to this channel by the TV database */
-  bool         m_bIsRadio;                /*!< true if this channel is a radio channel, false if not */
-  bool         m_bIsHidden;               /*!< true if this channel is hidden, false if not */
-  bool         m_bClientIsRecording;      /*!< true if a recording is currently running on this channel, false if not */
-  CStdString   m_strIconPath;             /*!< the path to the icon for this channel */
-  CStdString   m_strChannelName;          /*!< the name for this channel used by XBMC */
-  bool         m_bIsVirtual;              /*!< true if this channel is marked as virtual, false if not */
-  time_t       m_iLastWatched;            /*!< last time channel has been watched */
-  bool         m_bChanged;                /*!< true if anything in this entry was changed that needs to be persisted */
-  unsigned int m_iCachedChannelNumber;    /*!< the cached channel number in the selected group */
+  int              m_iChannelId;              /*!< the identifier given to this channel by the TV database */
+  bool             m_bIsRadio;                /*!< true if this channel is a radio channel, false if not */
+  bool             m_bIsHidden;               /*!< true if this channel is hidden, false if not */
+  bool             m_bClientIsRecording;      /*!< true if a recording is currently running on this channel, false if not */
+  CStdString       m_strIconPath;             /*!< the path to the icon for this channel */
+  CStdString       m_strChannelName;          /*!< the name for this channel used by XBMC */
+  bool             m_bIsVirtual;              /*!< true if this channel is marked as virtual, false if not */
+  time_t           m_iLastWatched;            /*!< last time channel has been watched */
+  bool             m_bChanged;                /*!< true if anything in this entry was changed that needs to be persisted */
+  unsigned int     m_iCachedChannelNumber;    /*!< the cached channel number in the selected group */
   //@}
 
   /*! @name EPG related channel data
    */
   //@{
-  CPVREpg *  m_EPG;                     /*!< the EPG table for this channel */
-  bool       m_bEPGEnabled;             /*!< don't use an EPG for this channel if set to false */
-  CStdString m_strEPGScraper;           /*!< the name of the scraper to be used for this channel */
+  CPVREpg *        m_EPG;                     /*!< the EPG table for this channel */
+  bool             m_bEPGEnabled;             /*!< don't use an EPG for this channel if set to false */
+  CStdString       m_strEPGScraper;           /*!< the name of the scraper to be used for this channel */
   //@}
 
   /*! @name Client related channel data
    */
   //@{
-  int        m_iUniqueId;               /*!< the unique identifier for this channel */
-  int        m_iClientId;               /*!< the identifier of the client that serves this channel */
-  int        m_iClientChannelNumber;    /*!< the channel number on the client */
-  CStdString m_strClientChannelName;    /*!< the name of this channel on the client */
-  CStdString m_strInputFormat;          /*!< the stream input type based on ffmpeg/libavformat/allformats.c */
-  CStdString m_strStreamURL;            /*!< URL of the stream. Use the client to read stream if this is empty */
-  CStdString m_strFileNameAndPath;      /*!< the filename to be used by PVRManager to open and read the stream */
-  int        m_iClientEncryptionSystem; /*!< the encryption system used by this channel. 0 for FreeToAir, -1 for unknown */
-  CStdString m_strClientEncryptionName; /*!< the name of the encryption system used by this channel */
+  int              m_iUniqueId;               /*!< the unique identifier for this channel */
+  int              m_iClientId;               /*!< the identifier of the client that serves this channel */
+  int              m_iClientChannelNumber;    /*!< the channel number on the client */
+  CStdString       m_strClientChannelName;    /*!< the name of this channel on the client */
+  CStdString       m_strInputFormat;          /*!< the stream input type based on ffmpeg/libavformat/allformats.c */
+  CStdString       m_strStreamURL;            /*!< URL of the stream. Use the client to read stream if this is empty */
+  CStdString       m_strFileNameAndPath;      /*!< the filename to be used by PVRManager to open and read the stream */
+  int              m_iClientEncryptionSystem; /*!< the encryption system used by this channel. 0 for FreeToAir, -1 for unknown */
+  CStdString       m_strClientEncryptionName; /*!< the name of the encryption system used by this channel */
   //@}
+
+  CCriticalSection m_critSection;
 
 public:
   /*! @brief Create a new channel */
@@ -86,6 +90,7 @@ public:
 
   bool operator ==(const CPVRChannel &right) const;
   bool operator !=(const CPVRChannel &right) const;
+  CPVRChannel &operator=(const CPVRChannel &channel);
 
   /*! @name XBMC related channel methods
    */
