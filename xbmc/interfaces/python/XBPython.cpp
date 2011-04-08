@@ -315,7 +315,6 @@ void XBPython::Initialize()
         CLog::Log(LOGDEBUG, "PYTHONPATH -> %s", _P("special://frameworks").c_str());
       }
       setenv("PYTHONCASEOK", "1", 1); //This line should really be removed
-      CLog::Log(LOGDEBUG, "Python wrapper library linked with system Python library");
 #elif defined(_WIN32)
       // because the third party build of python is compiled with vs2008 we need
       // a hack to set the PYTHONPATH
