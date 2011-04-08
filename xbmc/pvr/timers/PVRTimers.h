@@ -24,6 +24,7 @@
 #include "XBDateTime.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "utils/Observer.h"
+#include "threads/Thread.h"
 
 class CFileItem;
 class CEpgInfoTag;
@@ -32,10 +33,12 @@ class CGUIDialogPVRTimerSettings;
 
 class CPVRTimers : public std::vector<CPVRTimerInfoTag *>,
                    public Observer,
-                   public Observable
+                   public Observable,
+                   private CThread
 {
 private:
   CCriticalSection m_critSection;
+  bool             m_bIsUpdating;
 
   /*!
    * @brief Add timers to this container.
@@ -44,9 +47,11 @@ private:
   int LoadFromClients(void);
 
   void Sort(void);
+  virtual bool ExecuteUpdate(void);
+  virtual void Process(void);
 
 public:
-  CPVRTimers(void) {}
+  CPVRTimers(void);
 
   /**
    * Load the timers from the clients.
@@ -61,8 +66,9 @@ public:
 
   /**
    * @brief refresh the channel list from the clients.
+   * @param bAsyncUpdate Try to update the timers async.
    */
-  bool Update(void);
+  bool Update(bool bAsyncUpdate = false);
 
   /**
    * Update a timer entry in this container.

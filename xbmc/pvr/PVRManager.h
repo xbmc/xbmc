@@ -308,6 +308,13 @@ public:
 
   void UpdateCurrentFile(void);
 
+  void UpdateWindow(PVRWindow window);
+
+  void CallbackRecordingsUpdated(void);
+  void CallbackTimersUpdated(void);
+  void CallbackChannelsUpdated(void);
+  void CallbackChannelGroupsUpdated(void);
+
 protected:
   /*!
    * @brief PVR update and control thread.
@@ -316,11 +323,29 @@ protected:
 
   bool DisableIfNoClients(void);
 
-  void UpdateWindow(PVRWindow window);
-
 private:
 
   bool Load(void);
+
+  /*!
+   * @brief Update all recordings.
+   */
+  void UpdateRecordings(void);
+
+  /*!
+   * @brief Update all timers.
+   */
+  void UpdateTimers(void);
+
+  /*!
+   * @brief Update all channels.
+   */
+  void UpdateChannels(void);
+
+  /*!
+   * @brief Update all channel groups and channels in them.
+   */
+  void UpdateChannelGroups(void);
 
   const char *CharInfoNowRecordingTitle(void);
   const char *CharInfoNowRecordingChannel(void);
@@ -385,21 +410,6 @@ private:
    */
   void Unload(void);
 
-  /*!
-   * @brief Update all channels.
-   */
-  void UpdateChannels(void);
-
-  /*!
-   * @brief Update all recordings.
-   */
-  void UpdateRecordings(void);
-
-  /*!
-   * @brief Update all timers.
-   */
-  void UpdateTimers(void);
-
   /** @name singleton instance */
   //@{
   static CPVRManager *            m_instance;                    /*!< singleton instance */
@@ -415,14 +425,17 @@ private:
   CPVRGUIInfo *                   m_guiInfo;                     /*!< pointer to the guiinfo data */
   //@}
 
-  /** @name update triggers */
+  /** @name containers */
   //@{
-  bool                            m_bTriggerChannelsUpdate;      /*!< set to true to let the background thread update the channels list */
-  bool                            m_bTriggerRecordingsUpdate;    /*!< set to true to let the background thread update the recordings list */
-  bool                            m_bTriggerTimersUpdate;        /*!< set to true to let the background thread update the timer list */
-  bool                            m_bTriggerChannelGroupsUpdate; /*!< set to true to let the background thread update the channel groups list */
-  CCriticalSection                m_critSectionTriggers;         /*!< critical section for triggers */
-  //@}
+  CCriticalSection                m_critSectionTriggers;
+  bool                            m_bTriggerRecordingsUpdate;
+  bool                            m_bRecordingsUpdating;
+  bool                            m_bTriggerTimersUpdate;
+  bool                            m_bTimersUpdating;
+  bool                            m_bTriggerChannelsUpdate;
+  bool                            m_bChannelsUpdating;
+  bool                            m_bTriggerChannelGroupsUpdate;
+  bool                            m_bChannelGroupsUpdating;
 
   /** @name General PVRManager data */
   //@{
