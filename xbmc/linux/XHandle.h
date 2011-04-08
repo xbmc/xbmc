@@ -24,19 +24,14 @@
 
 #ifndef _WIN32
 
-#include "utils/StdString.h"
-#if defined(__APPLE__) && defined(__arm__)
-#include <threads/XBMC_cond.h>
-#include <threads/XBMC_mutex.h>
-#else
-#include <SDL/SDL_mutex.h>
-#endif
+#include <list>
 #include <pthread.h>
 
 #include "PlatformDefs.h"
 #include "XHandlePublic.h"
 #include "threads/Semaphore.hpp"
-#include <list>
+#include "threads/XBMC_mutex.h"
+#include "utils/StdString.h"
 
 struct CXHandle {
 

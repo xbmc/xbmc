@@ -129,7 +129,6 @@ LIB_DIRS=\
 	lib/libhdhomerun \
 	lib/libid3tag \
 	lib/libapetag \
-	xbmc/interfaces/python/linux \
 	lib/cpluff \
 	lib/xbmc-dll-symbols \
 	lib/jsoncpp/src/lib_json
@@ -183,9 +182,6 @@ CLEAN_FILES=xbmc.bin xbmc-xrandr
 
 DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
         tools/Linux/xbmc-standalone.sh autom4te.cache config.h.in~ \
-        lib/python/Include/pyconfig.h \
-        lib/python/configure.lineno \
-        lib/python/libpython2.4.so.1.0 \
         system/libcpluff-@ARCH@.so
 
 all : Makefile externals xbmc.bin xbmc-xrandr skins
@@ -454,8 +450,6 @@ libaddon: exports
 libpython: dllloader
 	$(MAKE) -C xbmc/interfaces/python
 	$(MAKE) -C xbmc/interfaces/python/xbmcmodule
-python: dllloader
-	$(MAKE) -C xbmc/interfaces/python/linux
 dvdpcodecs: dllloader
 	$(MAKE) -C lib 
 	$(MAKE) -C lib/libdvd
@@ -497,8 +491,8 @@ imagelib: dllloader
 	$(MAKE) -C lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-libs: cmyth libhdhomerun libid3tag imagelib libexif python system/libcpluff-@ARCH@.so
-externals: libaddon codecs libs python pvrclients visualizations screensavers
+libs: cmyth libhdhomerun libid3tag imagelib libexif system/libcpluff-@ARCH@.so
+externals: libaddon codecs libs pvrclients visualizations screensavers
 
 xcode_depends: \
 	codecs libs python pvrclients visualizations screensavers eventclients skins \
@@ -628,10 +622,7 @@ DYNOBJSXBMC= \
 	xbmc/pvr/windows/pvrwindows.a \
 	xbmc/guilib/guilib.a # must be dynamic to avoid linker errors
 
-ifeq ($(findstring arm,@ARCH@), arm)
-# Force external python2.6 for now!
-LIBS +=-lpython2.6
-endif
+LIBS += @PYTHON_LDFLAGS@
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,@ARCH@), osx)
@@ -681,17 +672,15 @@ endif
 install-arch:
 	@# Arch dependent files
 ifeq ($(findstring freebsd,@ARCH@), freebsd)
-	@find -E system addons -type f -not -iregex ".*svn.*|.*script\.module\..*" \
-		-iregex ".*@ARCH@.*|.*\.pvr|.*\.vis|.*\.xbs|.*python.*\.zip" \
+	@find -E system addons -type f -not -iregex ".*svn.*" \
+		-iregex ".*@ARCH@.*|.*\.pvr|.*\.vis|.*\.xbs" \
 		-exec sh -c "install -d \"$(DESTDIR)$(libdir)/xbmc/\`dirname '{}'\`\"" \; \
 		-and \
 		-exec install "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
-	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*script\.module\..*" -iregex ".*@ARCH@.*|.*\.pvr|.*\.vis|.*\.xbs|.*python.*\.zip" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*|.*\.pvr|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 endif
-	@cp -r addons/script.module.pil $(DESTDIR)$(libdir)/xbmc/addons/
-	@cp -r addons/script.module.pysqlite $(DESTDIR)$(libdir)/xbmc/addons/
 
 install-scripts:
 	@install -d $(DESTDIR)$(bindir)
@@ -713,13 +702,14 @@ install-datas: install-scripts
 	@# Arch independent files
 ifeq ($(findstring bsd,@ARCH@), bsd)
 	@find -E addons language media sounds userdata system -type f \
-		-not -iregex ".*script\.module\..*|.*@ARCH@.*|.*\.pvr|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python.*\.zip" \
+		-not -iregex ".*@ARCH@.*|.*\.pvr|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll" \
+		-not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll" \
 		-exec sh -c "install -d \"$(DESTDIR)$(datarootdir)/xbmc/\`dirname '{}'\`\"" \; \
 		-and \
 		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
-	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*script\.module\..*|.*@ARCH@.*|.*\.pvr|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python.*\.zip" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.pvr|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 endif	
 	@# Icons and links
 	@install -d $(DESTDIR)$(datarootdir)/applications

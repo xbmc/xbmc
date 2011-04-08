@@ -106,14 +106,34 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
         filteredFiles.Add(items[i]);
     }
 
-    HandleFileItemList(NULL, true, "files", filteredDirectories, parameterObject, result);
+    // Check if the "fields" list exists
+    // and make sure it contains the "file"
+    // field
+    Value param = parameterObject;
+    if (!param.isMember("fields"))
+      param["fields"] = Value(arrayValue);
+
+    bool hasFileField = false;
+    for (unsigned int i = 0; i < param["fields"].size(); i++)
+    {
+      if (param["fields"][i].asString().compare("file") == 0)
+      {
+        hasFileField = true;
+        break;
+      }
+    }
+
+    if (!hasFileField)
+      param["fields"].append("file");
+
+    HandleFileItemList(NULL, true, "files", filteredDirectories, param, result);
     for (unsigned int index = 0; index < result["files"].size(); index++)
     {
       result["files"][index]["filetype"] = "directory";
     }
     int count = result["limits"]["total"].asInt();
 
-    HandleFileItemList(NULL, true, "files", filteredFiles, parameterObject, result);
+    HandleFileItemList(NULL, true, "files", filteredFiles, param, result);
     for (unsigned int index = count; index < result["files"].size(); index++)
     {
       result["files"][index]["filetype"] = "file";

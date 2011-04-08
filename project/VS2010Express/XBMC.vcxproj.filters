@@ -264,9 +264,6 @@
     <ClCompile Include="..\..\xbmc\win32\strverscmp.cpp">
       <Filter>win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\Win32DelayedDllLoad.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\win32\WIN32Util.cpp">
       <Filter>win32</Filter>
     </ClCompile>
@@ -589,9 +586,6 @@
       <Filter>cores\DllLoader\exports</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\emu_msvcrt.cpp">
-      <Filter>cores\DllLoader\exports</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\exports_python_win32.cpp">
       <Filter>cores\DllLoader\exports</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\win32-dirent.cpp">
@@ -1550,9 +1544,6 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\XBPyThread.cpp">
       <Filter>interfaces\python</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\WIN32XBPythonDll.cpp">
-      <Filter>interfaces\python</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\music\dialogs\GUIDialogMusicInfo.cpp">
       <Filter>music\dialogs</Filter>
     </ClCompile>
@@ -2324,9 +2315,6 @@
     <ClCompile Include="..\..\xbmc\CueDocument.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\DateTime.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\DynamicDll.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -2639,6 +2627,15 @@
     <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\JSONServiceDescription.cpp">
       <Filter>interfaces\json-rpc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\XBDateTime.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\Win32DelayedDllLoad.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\win32env.cpp">
+      <Filter>win32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4144,9 +4141,6 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\XBPython.h">
       <Filter>interfaces\python</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\interfaces\python\XBPythonDll.h">
-      <Filter>interfaces\python</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\python\XBPyThread.h">
       <Filter>interfaces\python</Filter>
     </ClInclude>
@@ -4921,9 +4915,6 @@
     <ClInclude Include="..\..\xbmc\CueDocument.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\DateTime.h">
-      <Filter>utils</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\DynamicDll.h">
       <Filter>utils</Filter>
     </ClInclude>
@@ -5251,6 +5242,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ServiceDescription.h">
       <Filter>interfaces\json-rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\XBDateTime.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

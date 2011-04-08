@@ -22,7 +22,7 @@
  */
 
 #include "guilib/GUIDialog.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 
 class CGUIDialogSeekBar : public CGUIDialog
 {

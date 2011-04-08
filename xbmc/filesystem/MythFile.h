@@ -23,7 +23,7 @@
 #include "IFile.h"
 #include "ILiveTV.h"
 #include "MythSession.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "video/VideoInfoTag.h"
 #include <queue>
 

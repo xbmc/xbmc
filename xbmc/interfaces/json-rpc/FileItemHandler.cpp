@@ -83,7 +83,7 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
       }
     }
 
-    if (serialization.isMember(field))
+    if (serialization.isMember(field) && !result.isMember(field))
       result[field] = serialization[field];
   }
 }
@@ -127,7 +127,20 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
 void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const Json::Value &parameterObject, const Json::Value &validFields, Json::Value &result)
 {
   Value object;
-  if (allowFile)
+  bool hasFileField = false;
+  bool hasThumbnailField = false;
+
+  for (unsigned int i = 0; i < validFields.size(); i++)
+  {
+    CStdString field = validFields[i].asString();
+
+    if (field == "file")
+      hasFileField = true;
+    if (field == "thumbnail")
+      hasThumbnailField = true;
+  }
+
+  if (allowFile && hasFileField)
   {
     if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
       object["file"] = item->GetVideoInfoTag()->m_strFileNameAndPath.c_str();
@@ -148,7 +161,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
       object[ID] = item->GetVideoInfoTag()->m_iDbId;
   }
 
-  if (!item->GetThumbnailImage().IsEmpty())
+  if (hasThumbnailField && !item->GetThumbnailImage().IsEmpty())
     object["thumbnail"] = item->GetThumbnailImage().c_str();
 
   if (item->HasVideoInfoTag())
@@ -167,8 +180,11 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
   if (parameterObject["file"].isString())
   {
     CStdString file = parameterObject["file"].asString();
-    CFileItemPtr item = CFileItemPtr(new CFileItem(file, URIUtils::HasSlashAtEnd(file)));
-    list.Add(item);
+    if (!file.empty())
+    {
+      CFileItemPtr item = CFileItemPtr(new CFileItem(file, URIUtils::HasSlashAtEnd(file)));
+      list.Add(item);
+    }
   }
 
   CPlaylistOperations::FillFileItemList(parameterObject, list);

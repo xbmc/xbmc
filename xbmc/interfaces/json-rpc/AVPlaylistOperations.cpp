@@ -96,7 +96,7 @@ JSON_STATUS CAVPlaylistOperations::GetItems(const CStdString &method, ITransport
 JSON_STATUS CAVPlaylistOperations::Add(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   CFileItemList list;
-  if (!FillFileItemList(parameterObject, list))
+  if (!FillFileItemList(parameterObject["item"], list))
     return InvalidParams;
 
   g_application.getApplicationMessenger().PlayListPlayerAdd(GetPlaylist(method), list);
@@ -108,7 +108,7 @@ JSON_STATUS CAVPlaylistOperations::Add(const CStdString &method, ITransportLayer
 JSON_STATUS CAVPlaylistOperations::Insert(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   CFileItemList list;
-  if (!FillFileItemList(parameterObject, list))
+  if (!FillFileItemList(parameterObject["item"], list))
     return InvalidParams;
 
   g_application.getApplicationMessenger().PlayListPlayerInsert(GetPlaylist(method), list, parameterObject["index"].asInt());

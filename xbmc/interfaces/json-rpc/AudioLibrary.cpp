@@ -157,6 +157,7 @@ JSON_STATUS CAudioLibrary::GetGenres(const CStdString &method, ITransportLayer *
   if (!param.isMember("fields"))
     param["fields"] = Value(arrayValue);
   param["fields"].append("genre");
+  param["fields"].append("thumbnail");
 
   CFileItemList items;
   if (musicdatabase.GetGenresNav("", items))

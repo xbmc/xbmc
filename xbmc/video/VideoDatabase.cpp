@@ -2698,17 +2698,18 @@ CVideoInfoTag CVideoDatabase::GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, i
   return details;
 }
 
-bool CVideoDatabase::GetStreamDetailsForFileId(CStreamDetails& details, int idFile) const
+bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
 {
-  if (idFile < 0)
+  if (tag.m_iFileId < 0)
     return false;
 
   bool retVal = false;
 
   dbiplus::Dataset *pDS = m_pDB->CreateDataset();
-  CStdString strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i", idFile);
+  CStdString strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i", tag.m_iFileId);
   pDS->query(strSQL);
 
+  CStreamDetails& details = tag.m_streamDetails;
   details.Reset();
   while (!pDS->eof())
   {
@@ -2756,6 +2757,9 @@ bool CVideoDatabase::GetStreamDetailsForFileId(CStreamDetails& details, int idFi
   pDS->close();
   details.DetermineBestStreams();
 
+  if (details.GetVideoDuration() > 0)
+    tag.m_strRuntime.Format("%i", details.GetVideoDuration() / 60 );
+
   return retVal;
 }
 
@@ -2773,7 +2777,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
   GetCommonDetails(pDS, details);
   movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
 
-  GetStreamDetailsForFileId(details.m_streamDetails, details.m_iFileId);
+  GetStreamDetails(details);
 
   if (needsCast)
   {
@@ -2879,7 +2883,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   details.m_strStudio = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO).get_asString();
   details.m_strPremiered = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString();
 
-  GetStreamDetailsForFileId(details.m_streamDetails, details.m_iFileId);
+  GetStreamDetails(details);
 
   if (needsCast)
   {
@@ -2943,7 +2947,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS)
   GetCommonDetails(pDS, details);
   movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
 
-  GetStreamDetailsForFileId(details.m_streamDetails, details.m_iFileId);
+  GetStreamDetails(details);
 
   details.m_strPictureURL.Parse();
   return details;
