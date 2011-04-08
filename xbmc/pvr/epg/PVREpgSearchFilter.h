@@ -21,7 +21,7 @@
  *
  */
 
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "epg/EpgSearchFilter.h"
 
 class CPVREpgInfoTag;

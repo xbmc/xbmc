@@ -21,7 +21,7 @@
  *
  */
 
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "epg/EpgInfoTag.h"
 #include "addons/include/xbmc_pvr_types.h"
 

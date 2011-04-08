@@ -21,7 +21,7 @@
  */
 
 #include "PVRRecording.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 
 class CPVRRecordings : public std::vector<CPVRRecording *>
 {

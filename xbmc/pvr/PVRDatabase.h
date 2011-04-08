@@ -21,7 +21,7 @@
  */
 
 #include "dbwrappers/Database.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 
 class CPVRChannelGroup;
 class CPVRChannelGroupInternal;

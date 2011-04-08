@@ -9,7 +9,7 @@
 #define XBMC_PVRCLIENTS_MYTHTV_LIBMYTHXML_MYTHXMLCOMMANDRESULT_H_
 
 #include <vector>
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "../StdString.h"
 
 using std::vector;

@@ -21,7 +21,7 @@
  */
 
 #include "PVRTimerInfoTag.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "utils/Observer.h"
 

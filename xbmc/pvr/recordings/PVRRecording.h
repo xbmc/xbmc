@@ -38,7 +38,7 @@
 
 #include "addons/include/xbmc_pvr_types.h"
 #include "video/VideoInfoTag.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 
 class CPVRRecording : public CVideoInfoTag
 {
