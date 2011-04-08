@@ -53,7 +53,7 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "JSONRPC.Ping",                                 CJSONRPC::Ping },
   { "JSONRPC.GetNotificationFlags",                 CJSONRPC::GetNotificationFlags },
   { "JSONRPC.SetNotificationFlags",                 CJSONRPC::SetNotificationFlags },
-  { "JSONRPC.Notify",                             CJSONRPC::Notify },
+  { "JSONRPC.NotifyAll",                            CJSONRPC::NotifyAll },
 
 // Player
   { "Player.GetActivePlayers",                      CPlayerOperations::GetActivePlayers },
@@ -279,7 +279,7 @@ JSON_STATUS CJSONRPC::SetNotificationFlags(const CStdString &method, ITransportL
   return BadPermission;
 }
 
-JSON_STATUS CJSONRPC::Notify(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CJSONRPC::NotifyAll(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   if (parameterObject["data"].isNull())
     CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(),  
