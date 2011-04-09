@@ -195,46 +195,7 @@
 		<include>ScrollOffsetLabel</include>
 		<control type="group">
 			<posx>-250</posx>
-			<animation effect="slide" start="0,0" end="250,0" time="400" tween="quadratic" easing="out" condition="ControlGroup(9000).HasFocus | Control.HasFocus(9001) | Control.HasFocus(8999)">Conditional</animation>
-			<animation effect="slide" start="0,0" end="-300,0" time="400" tween="quadratic" easing="out" condition="ControlGroup(9000).HasFocus | Control.HasFocus(9001)">WindowClose</animation>
-			<animation effect="slide" start="-50,0" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
-			<control type="button" id="8999">
-				<description>Fake button for mouse control</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>250</width>
-				<height>720</height>
-				<label>-</label>
-				<font>-</font>
-				<texturenofocus>-</texturenofocus>
-				<texturefocus>-</texturefocus>
-				<visible>true</visible>
-			</control>
-			<control type="button" id="9001">
-				<posx>250</posx>
-				<posy>260</posy>
-				<width>42</width>
-				<height>128</height>
-				<font>-</font>
-				<texturefocus>HomeHasSub2.png</texturefocus>
-				<texturenofocus>HomeHasSub2.png</texturenofocus>
-			</control>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>260</width>
-				<height>720</height>
-				<texture border="0,0,10,0">MediaBladeSub.png</texture>
-			</control>
-			<control type="image">
-				<description>LOGO</description>
-				<posx>15</posx>
-				<posy>50</posy>
-				<width>220</width>
-				<height>80</height>
-				<aspectratio>keep</aspectratio>
-				<texture>Confluence_Logo.png</texture>
-			</control>
+			<include>SideBladeLeft</include>
 			<control type="grouplist" id="9000">
 				<posx>0</posx>
 				<posy>110</posy>
