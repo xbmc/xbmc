@@ -29,6 +29,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/windows/GUIWindowPVR.h"
 #include "utils/log.h"
+#include "threads/SingleLock.h"
 
 CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_RECORDINGS, CONTROL_BTNRECORDINGS, CONTROL_LIST_RECORDINGS)
@@ -99,6 +100,7 @@ void CGUIWindowPVRRecordings::OnWindowUnload(void)
 
 void CGUIWindowPVRRecordings::UpdateData(void)
 {
+  CSingleLock lock(m_critSection);
   if (m_bIsFocusing)
     return;
 

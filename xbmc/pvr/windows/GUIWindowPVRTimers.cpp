@@ -29,6 +29,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/addons/PVRClients.h"
 #include "GUIWindowPVR.h"
+#include "threads/SingleLock.h"
 
 CGUIWindowPVRTimers::CGUIWindowPVRTimers(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_TIMERS, CONTROL_BTNTIMERS, CONTROL_LIST_TIMERS)
@@ -82,6 +83,7 @@ bool CGUIWindowPVRTimers::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIWindowPVRTimers::UpdateData(void)
 {
+  CSingleLock lock(m_critSection);
   if (m_bIsFocusing)
     return;
 

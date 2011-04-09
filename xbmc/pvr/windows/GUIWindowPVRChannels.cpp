@@ -35,6 +35,7 @@
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
 #include "utils/log.h"
+#include "threads/SingleLock.h"
 
 
 CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio) :
@@ -132,6 +133,7 @@ const CPVRChannelGroup *CGUIWindowPVRChannels::SelectNextGroup(void)
 
 void CGUIWindowPVRChannels::UpdateData(void)
 {
+  CSingleLock lock(m_critSection);
   if (m_bIsFocusing)
     return;
 
@@ -159,6 +161,8 @@ void CGUIWindowPVRChannels::UpdateData(void)
     {
       /* show the visible channels instead */
       m_bShowHiddenChannels = false;
+      lock.Leave();
+
       UpdateData();
       return;
     }

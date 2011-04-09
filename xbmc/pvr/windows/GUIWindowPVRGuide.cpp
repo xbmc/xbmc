@@ -241,6 +241,7 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
 
 void CGUIWindowPVRGuide::UpdateData(void)
 {
+  CSingleLock lock(m_critSection);
   if (m_bIsFocusing)
     return;
   CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
