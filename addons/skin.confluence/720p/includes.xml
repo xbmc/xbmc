@@ -332,6 +332,9 @@
 			<width>50</width>
 			<height>50</height>
 			<texture>NowPlayingIcon.png</texture>
+			<visible>Player.HasMedia</visible>
+			<include>VisibleFadeEffect</include>
+			<include>Window_OpenClose_Animation</include>
 		</control>
 		<control type="label">
 			<posx>85</posx>
