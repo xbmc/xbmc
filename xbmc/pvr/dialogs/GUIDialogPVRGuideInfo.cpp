@@ -64,6 +64,7 @@ bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CPVREpgInfoTag *tag)
 
     if (pDialog->IsConfirmed())
     {
+      Close();
       CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
       bReturn = CPVRTimers::AddTimer(*newTimer);
       delete newTimer;
@@ -90,6 +91,7 @@ bool CGUIDialogPVRGuideInfo::ActionCancelTimer(const CPVRTimerInfoTag *tag)
 
     if (pDialog->IsConfirmed())
     {
+      Close();
       bReturn = CPVRTimers::DeleteTimer(*tag);
     }
   }
@@ -134,8 +136,6 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
       ActionStartTimer(tag);
     else
       ActionCancelTimer(timerTag);
-
-    Close();
   }
 
   return bReturn;
