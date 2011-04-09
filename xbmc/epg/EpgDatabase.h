@@ -21,7 +21,7 @@
  */
 
 #include "dbwrappers/Database.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 
 class CEpg;
 class CEpgInfoTag;
@@ -76,7 +76,7 @@ public:
    * @param end Remove entries before this time if set.
    * @return True if the entries were removed successfully, false otherwise.
    */
-  virtual bool Delete(const CEpg &table, const CDateTime &start = NULL, const CDateTime &end = NULL);
+  virtual bool Delete(const CEpg &table, const time_t start = 0, const time_t end = 0);
 
   /*!
    * @brief Erase all EPG entries older than 1 day.
@@ -101,11 +101,9 @@ public:
   /*!
    * @brief Get all EPG entries for a table.
    * @param epg The EPG table to get the entries for.
-   * @param start Get entries after this time if set.
-   * @param end Get entries before this time if set.
    * @return The amount of entries that was added.
    */
-  virtual int Get(CEpg *epg, const CDateTime &start = NULL, const CDateTime &end = NULL);
+  virtual int Get(CEpg *epg);
 
   /*!
    * @brief Get the last stored EPG scan time.

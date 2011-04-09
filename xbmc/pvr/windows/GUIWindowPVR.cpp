@@ -202,7 +202,7 @@ void CGUIWindowPVR::UpdateWindow(PVRWindow window)
 
   if (updateWindow)
   {
-    if (updateWindow->IsActive())
+    if (updateWindow->IsVisible())
       updateWindow->UpdateData();
     else
       updateWindow->m_bUpdateRequired = true;

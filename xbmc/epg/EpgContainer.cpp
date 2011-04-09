@@ -34,6 +34,9 @@
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
 
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
+
 using namespace std;
 
 CEpgContainer g_EpgContainer;
@@ -48,6 +51,12 @@ CEpgContainer::CEpgContainer(void) :
 CEpgContainer::~CEpgContainer(void)
 {
   Clear();
+}
+
+void CEpgContainer::Unload(void)
+{
+  Stop();
+  Clear(false);
 }
 
 void CEpgContainer::Clear(bool bClearDb /* = false */)
@@ -335,8 +344,8 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   /* load or update all EPG tables */
   for (unsigned int iEpgPtr = 0; iEpgPtr < iEpgCount; iEpgPtr++)
   {
-    /* interrupt the update on exit */
-    if (m_bStop)
+    /* interrupt the update on exit or when livetv is playing */
+    if (m_bStop || (CPVRManager::Get()->IsStarted() && CPVRManager::GetClients()->IsPlaying()))
     {
       CLog::Log(LOGNOTICE, "EpgContainer - %s - EPG load/update interrupted", __FUNCTION__);
       bUpdateSuccess = false;
@@ -347,13 +356,16 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     if (!epg)
       continue;
 
+    if (m_bDatabaseLoaded)
+      at(iEpgPtr)->Cleanup();
+
     bool bCurrent = m_bDatabaseLoaded || m_bIgnoreDbForClient ?
-        at(iEpgPtr)->Update(start, end, m_iUpdateTime, !m_bIgnoreDbForClient) :
+        at(iEpgPtr)->Update(start, end, m_iUpdateTime) :
         at(iEpgPtr)->Load() && bUpdateSuccess;
 
     /* try to update the table from clients if nothing was loaded from the db */
     if (!m_bDatabaseLoaded && !m_bIgnoreDbForClient && !bCurrent)
-      bCurrent = at(iEpgPtr)->Update(start, end, m_iUpdateTime, !m_bIgnoreDbForClient);
+      bCurrent = at(iEpgPtr)->Update(start, end, m_iUpdateTime);
 
     if (!bCurrent && m_bDatabaseLoaded)
       CLog::Log(LOGERROR, "EpgContainer - %s - failed to update table '%s'",
@@ -371,18 +383,14 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
       progress->UpdateState();
     }
 
-    Sleep(25); /* give other threads a chance to get a lock on tables */
+    if (m_bDatabaseLoaded)
+      Sleep(50); /* give other threads a chance to get a lock on tables */
   }
 
+  CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgUpdate);
   /* update the last scan time if we did a full update */
-  if (m_bDatabaseLoaded || m_bIgnoreDbForClient)
-  {
-    if (!m_bIgnoreDbForClient)
+  if (bUpdateSuccess && m_bDatabaseLoaded && !m_bIgnoreDbForClient)
       m_database.PersistLastEpgScanTime(0);
-
-    CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgUpdate);
-  }
-
   m_database.Close();
 
   if (bShowProgress)

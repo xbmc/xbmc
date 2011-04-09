@@ -19,12 +19,12 @@
  *
  */
 
+#include "pyutil.h"
 #include "Application.h"
 #include "GUIInfoManager.h"
 #include "PlayListPlayer.h"
 #include "player.h"
 #include "pyplaylist.h"
-#include "pyutil.h"
 #include "infotagvideo.h"
 #include "infotagmusic.h"
 #include "listitem.h"

@@ -79,14 +79,7 @@ JSON_STATUS CPicturePlayerOperations::ZoomIn(const CStdString &method, ITranspor
 
 JSON_STATUS CPicturePlayerOperations::Zoom(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!(parameterObject.isInt() || parameterObject.isNull()))
-    return InvalidParams;
-
-  int zoom = parameterObject.isInt() ? parameterObject.asInt() : 1;
-  if (zoom > 10 || zoom <= 0)
-    return InvalidParams;
-
-  return SendAction(ACTION_ZOOM_LEVEL_NORMAL + (zoom - 1));
+  return SendAction(ACTION_ZOOM_LEVEL_NORMAL + (parameterObject["value"].asInt() - 1));
 }
 
 JSON_STATUS CPicturePlayerOperations::Rotate(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)

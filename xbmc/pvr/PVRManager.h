@@ -32,6 +32,7 @@ class CPVRChannelGroup;
 class CPVRRecordings;
 class CPVRTimers;
 class CPVREpgContainer;
+class CPVRGUIInfo;
 
 #define INFO_TOGGLE_TIME 1500
 
@@ -63,31 +64,31 @@ public:
    * @brief Get the channel groups container.
    * @return The groups container.
    */
-  static CPVRChannelGroupsContainer *GetChannelGroups(void);
+  static CPVRChannelGroupsContainer *GetChannelGroups(void) { return Get()->m_channelGroups; }
 
   /*!
    * @brief Get the EPG container.
    * @return The EPG container.
    */
-  static CPVREpgContainer *GetEpg(void);
+  static CPVREpgContainer *GetEpg(void) { return Get()->m_epg; }
 
   /*!
    * @brief Get the recordings container.
    * @return The recordings container.
    */
-  static CPVRRecordings *GetRecordings(void);
+  static CPVRRecordings *GetRecordings(void) { return Get()->m_recordings; }
 
   /*!
    * @brief Get the timers container.
    * @return The timers container.
    */
-  static CPVRTimers *GetTimers(void);
+  static CPVRTimers *GetTimers(void) { return Get()->m_timers; }
 
   /*!
    * @brief Get the timers container.
    * @return The timers container.
    */
-  static CPVRClients *GetClients(void);
+  static CPVRClients *GetClients(void) { return Get()->m_addons; }
 
   /*!
    * @brief Clean up and destroy the PVRManager.
@@ -122,21 +123,21 @@ public:
    * @param dwInfo The string to get.
    * @return The requested string or an empty one if it wasn't found.
    */
-  const char* TranslateCharInfo(DWORD dwInfo);
+  const char* TranslateCharInfo(DWORD dwInfo) const;
 
   /*!
    * @brief Get a GUIInfoManager integer.
    * @param dwInfo The integer to get.
    * @return The requested integer or 0 if it wasn't found.
    */
-  int TranslateIntInfo(DWORD dwInfo);
+  int TranslateIntInfo(DWORD dwInfo) const;
 
   /*!
    * @brief Get a GUIInfoManager boolean.
    * @param dwInfo The boolean to get.
    * @return The requested boolean or false if it wasn't found.
    */
-  bool TranslateBoolInfo(DWORD dwInfo);
+  bool TranslateBoolInfo(DWORD dwInfo) const;
 
   /*!
    * @brief Reset the TV database to it's initial state and delete all the data inside.
@@ -183,7 +184,7 @@ public:
   bool PerformChannelSwitch(const CPVRChannel &channel, bool bPreview);
 
   bool IsRunningChannelScan(void);
-  void CloseStream();
+  void CloseStream(void);
   bool OpenLiveStream(const CPVRChannel &tag);
   bool OpenRecordedStream(const CPVRRecording &tag);
   bool StartRecordingOnPlayingChannel(bool bOnOff);
@@ -192,19 +193,19 @@ public:
    * @brief Get the channel number of the previously selected channel.
    * @return The requested channel number or -1 if it wasn't found.
    */
-  int GetPreviousChannel();
+  int GetPreviousChannel(void);
 
   /*!
    * @brief Check whether there are active timers.
    * @return True if there are active timers, false otherwise.
    */
-  bool HasTimer() { return m_bHasTimers; }
+  bool HasTimer(void) const;
 
   /*!
    * @brief Check whether there are active recordings.
    * @return True if there are active recordings, false otherwise.
    */
-  bool IsRecording() { return m_bIsRecording; }
+  bool IsRecording(void) const;
 
   /*!
    * @brief Set the current playing group, used to load the right channel.
@@ -255,33 +256,33 @@ public:
 
   /*!
    * @brief Switch to the next channel in this group.
-   * @param newchannel The new channel number after the switch.
-   * @param preview If true, don't do the actual switch but just update channel pointers.
+   * @param iNewChannelNumber The new channel number after the switch.
+   * @param bPreview If true, don't do the actual switch but just update channel pointers.
    *                Used to display event info while doing "fast channel switching"
    * @return True if the channel was switched, false otherwise.
    */
-  bool ChannelUp(unsigned int *newchannel, bool preview = false);
+  bool ChannelUp(unsigned int *iNewChannelNumber, bool bPreview = false) { return ChannelUpDown(iNewChannelNumber, bPreview, true); }
 
   /*!
    * @brief Switch to the previous channel in this group.
-   * @param newchannel The new channel number after the switch.
-   * @param preview If true, don't do the actual switch but just update channel pointers.
+   * @param iNewChannelNumber The new channel number after the switch.
+   * @param bPreview If true, don't do the actual switch but just update channel pointers.
    *                Used to display event info while doing "fast channel switching"
    * @return True if the channel was switched, false otherwise.
    */
-  bool ChannelDown(unsigned int *newchannel, bool preview = false);
+  bool ChannelDown(unsigned int *iNewChannelNumber, bool bPreview = false) { return ChannelUpDown(iNewChannelNumber, bPreview, false); }
 
   /*!
    * @brief Get the total duration of the currently playing LiveTV item.
    * @return The total duration in milliseconds or NULL if no channel is playing.
    */
-  int GetTotalTime();
+  int GetTotalTime(void) const;
 
   /*!
    * @brief Get the current position in milliseconds since the start of a LiveTV item.
    * @return The position in milliseconds or NULL if no channel is playing.
    */
-  int GetStartTime();
+  int GetStartTime(void) const;
 
   /*!
    * @brief Start playback on a channel.
@@ -295,7 +296,7 @@ public:
    * @brief Get the currently playing EPG tag and update it if needed.
    * @return The currently playing EPG tag or NULL if there is none.
    */
-  const CPVREpgInfoTag *GetPlayingTag(void);
+  const CPVREpgInfoTag *GetPlayingTag(void) const;
 
   /*!
    * @brief Convert a genre id and subid to a human readable name.
@@ -305,17 +306,46 @@ public:
    */
   static const CStdString &ConvertGenreIdToString(int iID, int iSubID);
 
+  void UpdateCurrentFile(void);
+
+  void UpdateWindow(PVRWindow window);
+
+  void CallbackRecordingsUpdated(void);
+  void CallbackTimersUpdated(void);
+  void CallbackChannelsUpdated(void);
+  void CallbackChannelGroupsUpdated(void);
+
 protected:
   /*!
    * @brief PVR update and control thread.
    */
-  virtual void Process();
+  virtual void Process(void);
 
   bool DisableIfNoClients(void);
 
-  void UpdateWindow(PVRWindow window);
-
 private:
+
+  bool Load(void);
+
+  /*!
+   * @brief Update all recordings.
+   */
+  void UpdateRecordings(void);
+
+  /*!
+   * @brief Update all timers.
+   */
+  void UpdateTimers(void);
+
+  /*!
+   * @brief Update all channels.
+   */
+  void UpdateChannels(void);
+
+  /*!
+   * @brief Update all channel groups and channels in them.
+   */
+  void UpdateChannelGroups(void);
 
   const char *CharInfoNowRecordingTitle(void);
   const char *CharInfoNowRecordingChannel(void);
@@ -352,12 +382,12 @@ private:
   /*!
    * @brief Stop the EPG and PVR threads but do not remove their data.
    */
-  void StopThreads(void);
+  void StopUpdateThreads(void);
 
   /*!
-   * @brief Restart the EPG and PVR threads after they've been stopped by StopThreads()
+   * @brief Restart the EPG and PVR threads after they've been stopped by StopUpdateThreads()
    */
-  void StartThreads(void);
+  bool StartUpdateThreads(void);
 
   /*!
    * @brief Persist the current channel settings in the database.
@@ -378,68 +408,42 @@ private:
   /*!
    * @brief Clean up all data that was created by the PVRManager.
    */
-  void Cleanup(void);
+  void Unload(void);
 
-  /*!
-   * @brief Update all channels.
-   */
-  void UpdateChannels(void);
-
-  /*!
-   * @brief Update all recordings.
-   */
-  void UpdateRecordings(void);
-
-  /*!
-   * @brief Update all timers.
-   */
-  void UpdateTimers(void);
-
-  void UpdateTimersCache(void);
-  void UpdateRecordingToggle(void);
-
-  /** @name General PVRManager data */
+  /** @name singleton instance */
   //@{
   static CPVRManager *            m_instance;                    /*!< singleton instance */
-  CFileItem *                     m_currentFile;
+  //@}
+
+  /** @name containers */
+  //@{
   CPVRChannelGroupsContainer *    m_channelGroups;               /*!< pointer to the channel groups container */
   CPVREpgContainer *              m_epg;                         /*!< pointer to the EPG container */
   CPVRRecordings *                m_recordings;                  /*!< pointer to the recordings container */
   CPVRTimers *                    m_timers;                      /*!< pointer to the timers container */
   CPVRClients *                   m_addons;                      /*!< pointer to the pvr addon container */
-  CPVRDatabase                    m_database;                    /*!< the database for all PVR related data */
-  CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class */
-  CCriticalSection                m_critSectionTriggers;         /*!< critical section for triggers */
-  CCriticalSection                m_critSectionAddons;           /*!< critical section for addons */
-  bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
-  bool                            m_bLoaded;
-
-  bool                            m_bTriggerChannelsUpdate;      /*!< set to true to let the background thread update the channels list */
-  bool                            m_bTriggerRecordingsUpdate;    /*!< set to true to let the background thread update the recordings list */
-  bool                            m_bTriggerTimersUpdate;        /*!< set to true to let the background thread update the timer list */
-  bool                            m_bTriggerChannelGroupsUpdate; /*!< set to true to let the background thread update the channel groups list */
+  CPVRGUIInfo *                   m_guiInfo;                     /*!< pointer to the guiinfo data */
   //@}
 
-  /** @name GUIInfoManager data */
+  /** @name containers */
   //@{
-  DWORD                           m_recordingToggleStart;        /*!< time to toggle currently running pvr recordings */
-  unsigned int                    m_recordingToggleCurrent;      /*!< the current item showed by the GUIInfoManager */
+  CCriticalSection                m_critSectionTriggers;
+  bool                            m_bTriggerRecordingsUpdate;
+  bool                            m_bRecordingsUpdating;
+  bool                            m_bTriggerTimersUpdate;
+  bool                            m_bTimersUpdating;
+  bool                            m_bTriggerChannelsUpdate;
+  bool                            m_bChannelsUpdating;
+  bool                            m_bTriggerChannelGroupsUpdate;
+  bool                            m_bChannelGroupsUpdating;
 
-  std::vector<CPVRTimerInfoTag *> m_NowRecording;
-  const CPVRTimerInfoTag *        m_NextRecording;
-
-  CStdString                      m_strPlayingDuration;
-  CStdString                      m_strPlayingTime;
-  CStdString                      m_strActiveTimerTitle;
-  CStdString                      m_strActiveTimerChannelName;
-  CStdString                      m_strActiveTimerTime;
-  CStdString                      m_strNextTimerInfo;
-  CStdString                      m_strNextRecordingTitle;
-  CStdString                      m_strNextRecordingChannelName;
-  CStdString                      m_strNextRecordingTime;
-  bool                            m_bIsRecording;
-  bool                            m_bHasRecordings;
-  bool                            m_bHasTimers;
+  /** @name General PVRManager data */
+  //@{
+  CFileItem *                     m_currentFile;
+  CPVRDatabase                    m_database;                    /*!< the database for all PVR related data */
+  CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class */
+  bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
+  bool                            m_bLoaded;
   //@}
 
   /*--- Previous Channel data ---*/

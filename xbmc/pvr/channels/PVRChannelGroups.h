@@ -22,7 +22,7 @@
  */
 
 #include "video/VideoInfoTag.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "FileItem.h"
 #include "PVRChannelGroup.h"
 #include "PVRChannelGroupInternal.h"

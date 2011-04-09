@@ -24,6 +24,7 @@
 #include "FileItem.h"
 #include "windows/GUIMediaWindow.h"
 #include "GUIWindowPVRCommon.h"
+#include "threads/CriticalSection.h"
 
 enum PVRWindow
 {
@@ -75,6 +76,7 @@ public:
 
   virtual const char *GetName(void) const;
   virtual PVRWindow GetWindowId(void) const { return m_window; }
+  virtual bool IsVisible(void) const;
   virtual bool IsActive(void) const;
   virtual bool IsSavedView(void) const;
   virtual bool IsSelectedButton(CGUIMessage &message) const;
@@ -119,13 +121,14 @@ protected:
   virtual bool OnContextButtonSortByName(CFileItem *item, CONTEXT_BUTTON button);
   virtual bool OnContextButtonSortByChannel(CFileItem *item, CONTEXT_BUTTON button);
 
-  CGUIWindowPVR *m_parent;
-  PVRWindow      m_window;
-  unsigned int   m_iControlButton;
-  unsigned int   m_iControlList;
-  bool           m_bUpdateRequired;
-  int            m_iSelected;
-  SORT_ORDER     m_iSortOrder;
-  SORT_METHOD    m_iSortMethod;
-  bool           m_bIsFocusing;
+  CGUIWindowPVR *  m_parent;
+  PVRWindow        m_window;
+  unsigned int     m_iControlButton;
+  unsigned int     m_iControlList;
+  bool             m_bUpdateRequired;
+  int              m_iSelected;
+  SORT_ORDER       m_iSortOrder;
+  SORT_METHOD      m_iSortMethod;
+  bool             m_bIsFocusing;
+  CCriticalSection m_critSection;
 };

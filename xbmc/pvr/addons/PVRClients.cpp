@@ -41,13 +41,12 @@ using namespace ADDON;
 
 CPVRClients::CPVRClients(void)
 {
-  m_bChannelScanRunning = false;
-  m_bAllClientsLoaded   = false;
-  m_currentChannel      = NULL;
-  m_currentRecording    = NULL;
-  m_iInfoToggleStart    = 0;
-  m_iInfoToggleCurrent  = 0;
-  m_scanStart           = 0;
+  m_bChannelScanRunning  = false;
+  m_bAllClientsLoaded    = false;
+  m_currentChannel       = NULL;
+  m_currentRecording     = NULL;
+  m_scanStart            = 0;
+  m_strPlayingClientName = "";
   m_clientsProps.clear();
   m_clientMap.clear();
   ResetQualityData();
@@ -101,6 +100,9 @@ int CPVRClients::GetClients(map<long, CStdString> *clients)
 
   for (itr = m_clientMap.begin() ; itr != m_clientMap.end(); itr++)
   {
+    if (!m_clientMap[(*itr).first]->ReadyToUse())
+      continue;
+
     CStdString strClient = (*itr).second->GetFriendlyName();
     clients->insert(std::make_pair(m_clientMap[(*itr).first]->GetID(), strClient));
   }
@@ -120,10 +122,9 @@ bool CPVRClients::HasClients(void) const
   return !m_clientMap.empty();
 }
 
-
-bool CPVRClients::HasActiveClients(void)
+int CPVRClients::ActiveClientAmount(void)
 {
-  bool bReturn = false;
+  int iReturn = 0;
   CSingleLock lock(m_critSection);
   if (!m_clientMap.empty())
   {
@@ -131,15 +132,17 @@ bool CPVRClients::HasActiveClients(void)
     while (itr != m_clientMap.end())
     {
       if (m_clientMap[(*itr).first]->ReadyToUse())
-      {
-        bReturn = true;
-        break;
-      }
+        ++iReturn;
       itr++;
     }
   }
 
-  return bReturn;
+  return iReturn;
+}
+
+bool CPVRClients::HasActiveClients(void)
+{
+  return ActiveClientAmount() > 0;
 }
 
 bool CPVRClients::HasTimerSupport(int iClientId)
@@ -191,17 +194,6 @@ bool CPVRClients::IsEncrypted(void) const
 {
   CSingleLock lock(m_critSection);
   return m_currentChannel != NULL && m_currentChannel->IsEncrypted();
-}
-
-const char *CPVRClients::CharInfoEncryption(void) const
-{
-  static CStdString strReturn = "";
-  CSingleLock lock(m_critSection);
-
-  if (m_currentChannel)
-    strReturn = m_currentChannel->EncryptionName();
-
-  return strReturn;
 }
 
 bool CPVRClients::TryLoadClients(int iMaxTime /* = 0 */)
@@ -353,12 +345,12 @@ bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
       CLog::Log(LOGINFO, "PVRManager - %s - %s client '%s'",
           __FUNCTION__, bRestart ? "restarting" : "removing", m_clientMap[(*itr).first]->Name().c_str());
 
-      CPVRManager::Get()->StopThreads();
+      CPVRManager::Get()->StopUpdateThreads();
       if (bRestart)
         m_clientMap[(*itr).first]->ReCreate();
       else
         m_clientMap[(*itr).first]->Destroy();
-      CPVRManager::Get()->StartThreads();
+      CPVRManager::Get()->StartUpdateThreads();
 
       bReturn = true;
       break;
@@ -403,16 +395,9 @@ void CPVRClients::ResetQualityData(void)
   m_qualityInfo.dDolbyBitrate = 0;
 }
 
-void CPVRClients::UpdateSignalQuality(void)
+void CPVRClients::GetQualityData(PVR_SIGNAL_STATUS *status) const
 {
-  CSingleLock lock(m_critSection);
-
-  if (!m_currentChannel || !g_guiSettings.GetBool("pvrplayback.signalquality"))
-    ResetQualityData();
-  else if (!m_currentChannel->IsVirtual() && m_currentChannel->ClientID() >= 0 && m_clientMap[m_currentChannel->ClientID()])
-    m_clientMap[m_currentChannel->ClientID()]->SignalQuality(m_qualityInfo);
-  else
-    ResetQualityData();
+  *status = m_qualityInfo;
 }
 
 bool CPVRClients::IsReadingLiveStream(void) const
@@ -882,118 +867,44 @@ const CStdString CPVRClients::GetStreamURL(const CPVRChannel &tag)
   return strReturn;
 }
 
-void CPVRClients::UpdateCharInfo(void)
+void CPVRClients::Start(void)
 {
-  CSingleLock lock(m_critSection);
+  Stop();
 
-  if (m_iInfoToggleStart == 0)
-  {
-    m_iInfoToggleStart = CTimeUtils::GetTimeMS();
-    m_iInfoToggleCurrent = 0;
-    return;
-  }
-
-  if (CTimeUtils::GetTimeMS() - m_iInfoToggleStart > INFO_TOGGLE_TIME)
-  {
-    if (m_clientMap.size() > 0)
-    {
-      m_iInfoToggleCurrent++;
-      if (m_iInfoToggleCurrent > m_clientMap.size()-1)
-        m_iInfoToggleCurrent = 0;
-
-      CLIENTMAPITR itr = m_clientMap.begin();
-      for (unsigned int i = 0; i < m_iInfoToggleCurrent; i++)
-        itr++;
-
-      long long kBTotal = 0;
-      long long kBUsed  = 0;
-      if (m_clientMap[(*itr).first]->GetDriveSpace(&kBTotal, &kBUsed) == PVR_ERROR_NO_ERROR)
-      {
-        kBTotal /= 1024; // Convert to MBytes
-        kBUsed /= 1024;  // Convert to MBytes
-        m_strBackendDiskspace.Format("%s %.1f GByte - %s: %.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
-      }
-      else
-      {
-        m_strBackendDiskspace = g_localizeStrings.Get(19055);
-      }
-
-      int NumChannels = m_clientMap[(*itr).first]->GetChannelsAmount();
-      if (NumChannels >= 0)
-        m_strBackendChannels.Format("%i", NumChannels);
-      else
-        m_strBackendChannels = g_localizeStrings.Get(161);
-
-      int NumTimers = m_clientMap[(*itr).first]->GetTimersAmount();
-      if (NumTimers >= 0)
-        m_strBackendTimers.Format("%i", NumTimers);
-      else
-        m_strBackendTimers = g_localizeStrings.Get(161);
-
-      int NumRecordings = m_clientMap[(*itr).first]->GetRecordingsAmount();
-      if (NumRecordings >= 0)
-        m_strBackendRecordings.Format("%i", NumRecordings);
-      else
-        m_strBackendRecordings = g_localizeStrings.Get(161);
-
-      m_strBackendName         = m_clientMap[(*itr).first]->GetBackendName();
-      m_strBackendVersion      = m_clientMap[(*itr).first]->GetBackendVersion();
-      m_strBackendHost         = m_clientMap[(*itr).first]->GetConnectionString();
-    }
-    else
-    {
-      m_strBackendName         = "";
-      m_strBackendVersion      = "";
-      m_strBackendHost         = "";
-      m_strBackendDiskspace    = "";
-      m_strBackendTimers       = "";
-      m_strBackendRecordings   = "";
-      m_strBackendChannels     = "";
-    }
-    m_iInfoToggleStart = CTimeUtils::GetTimeMS();
-  }
-
-  long long kBTotal = 0;
-  long long kBUsed  = 0;
-
-  CLIENTMAPITR itr = m_clientMap.begin();
-  while (itr != m_clientMap.end())
-  {
-    long long clientKBTotal = 0;
-    long long clientKBUsed  = 0;
-
-    if (m_clientMap[(*itr).first]->GetDriveSpace(&clientKBTotal, &clientKBUsed) == PVR_ERROR_NO_ERROR)
-    {
-      kBTotal += clientKBTotal;
-      kBUsed += clientKBUsed;
-    }
-    itr++;
-  }
-  kBTotal /= 1024; // Convert to MBytes
-  kBUsed /= 1024;  // Convert to MBytes
-  m_strTotalDiskspace.Format("%s %0.1f GByte - %s: %0.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
+  Create();
+  SetName("XBMC PVR backend info");
+  SetPriority(-1);
 }
 
-const char *CPVRClients::CharInfoBackendNumber(void) const
+void CPVRClients::Stop(void)
 {
-  static CStdString backendClients;
+  StopThread();
+}
+
+void CPVRClients::Process(void)
+{
+  while (!m_bStop)
+  {
+    UpdateCharInfoSignalStatus();
+    Sleep(1000);
+  }
+}
+
+void CPVRClients::UpdateCharInfoSignalStatus(void)
+{
   CSingleLock lock(m_critSection);
-  if (m_clientMap.size() > 0)
-    backendClients.Format("%u %s %u", m_iInfoToggleCurrent+1, g_localizeStrings.Get(20163), m_clientMap.size());
+
+  if (m_currentChannel && g_guiSettings.GetBool("pvrplayback.signalquality") &&
+      !m_currentChannel->IsVirtual() && m_currentChannel->ClientID() >= 0 &&
+      m_clientMap[m_currentChannel->ClientID()])
+  {
+    m_clientMap[m_currentChannel->ClientID()]->SignalQuality(m_qualityInfo);
+  }
   else
-    backendClients = g_localizeStrings.Get(14023);
-
-  return backendClients;
+  {
+    ResetQualityData();
+  }
 }
-
-const char *CPVRClients::CharInfoTotalDiskSpace(void) const
-{
-  static CStdString strTotalDiskSpace;
-  strTotalDiskSpace = m_strTotalDiskspace;
-
-  return strTotalDiskSpace;
-}
-
 
 void CPVRClients::StartChannelScan(void)
 {
@@ -1047,7 +958,7 @@ void CPVRClients::StartChannelScan(void)
   long perfCnt = CTimeUtils::GetTimeMS();
 
   /* stop the supervisor thread */
-  CPVRManager::Get()->StopThreads();
+  CPVRManager::Get()->StopUpdateThreads();
 
   /* do the scan */
   if (m_clientMap[scanningClientID]->StartChannelScan() != PVR_ERROR_NO_ERROR)
@@ -1055,7 +966,7 @@ void CPVRClients::StartChannelScan(void)
     CGUIDialogOK::ShowAndGetInput(19111,0,19193,0);
 
   /* restart the supervisor thread */
-  CPVRManager::Get()->StartThreads();
+  CPVRManager::Get()->StartUpdateThreads();
 
   CLog::Log(LOGNOTICE, "PVRManager - %s - channel scan finished after %li.%li seconds",
       __FUNCTION__, (CTimeUtils::GetTimeMS()-perfCnt)/1000, (CTimeUtils::GetTimeMS()-perfCnt)%1000);
@@ -1326,157 +1237,6 @@ int CPVRClients::GetSNR(void) const
 {
   CSingleLock lock(m_critSection);
   return (int) ((float) m_qualityInfo.iSNR / 0xFFFF * 100);
-}
-
-const char *CPVRClients::CharInfoVideoBR(void) const
-{
-  static CStdString strReturn = "";
-  if (m_qualityInfo.dVideoBitrate > 0)
-    strReturn.Format("%.2f Mbit/s", m_qualityInfo.dVideoBitrate);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoAudioBR(void) const
-{
-  static CStdString strReturn = "";
-  if (m_qualityInfo.dAudioBitrate > 0)
-    strReturn.Format("%.0f kbit/s", m_qualityInfo.dAudioBitrate);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoDolbyBR(void) const
-{
-  static CStdString strReturn = "";
-  if (m_qualityInfo.dDolbyBitrate > 0)
-    strReturn.Format("%.0f kbit/s", m_qualityInfo.dDolbyBitrate);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoSignal(void) const
-{
-  static CStdString strReturn = "";
-  if (m_qualityInfo.iSignal > 0)
-    strReturn.Format("%d %%", m_qualityInfo.iSignal / 655);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoSNR(void) const
-{
-  static CStdString strReturn = "";
-  if (m_qualityInfo.iSNR > 0)
-    strReturn.Format("%d %%", m_qualityInfo.iSNR / 655);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoBER(void) const
-{
-  static CStdString strReturn = "";
-  strReturn.Format("%08X", m_qualityInfo.iBER);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoUNC(void) const
-{
-  static CStdString strReturn = "";
-  strReturn.Format("%08X", m_qualityInfo.iUNC);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoFrontendName(void) const
-{
-  static CStdString strReturn = m_qualityInfo.strAdapterName;
-  if (strReturn == "")
-    strReturn = g_localizeStrings.Get(13205);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoFrontendStatus(void) const
-{
-  static CStdString strReturn = m_qualityInfo.strAdapterStatus;
-  if (strReturn == "")
-    strReturn = g_localizeStrings.Get(13205);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoBackendName(void) const
-{
-  static CStdString strReturn = m_strBackendName;
-  if (strReturn == "")
-    strReturn = g_localizeStrings.Get(13205);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoBackendVersion(void) const
-{
-  static CStdString strReturn = m_strBackendVersion;
-  if (strReturn == "")
-    strReturn = g_localizeStrings.Get(13205);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoBackendHost(void) const
-{
-  static CStdString strReturn = m_strBackendHost;
-  if (strReturn == "")
-    strReturn = g_localizeStrings.Get(13205);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoBackendDiskspace(void) const
-{
-  static CStdString strReturn = m_strBackendDiskspace;
-  if (strReturn == "")
-    strReturn = g_localizeStrings.Get(13205);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoBackendChannels(void) const
-{
-  static CStdString strReturn = m_strBackendChannels;
-  if (strReturn == "")
-    strReturn = g_localizeStrings.Get(13205);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoBackendTimers(void) const
-{
-  static CStdString strReturn = m_strBackendTimers;
-  if (strReturn == "")
-    strReturn = g_localizeStrings.Get(13205);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoBackendRecordings(void) const
-{
-  static CStdString strReturn = m_strBackendRecordings;
-  if (strReturn == "")
-    strReturn = g_localizeStrings.Get(13205);
-
-  return strReturn;
-}
-
-const char *CPVRClients::CharInfoPlayingClientName(void) const
-{
-  static CStdString strReturn = m_strPlayingClientName;
-  if (strReturn == "")
-    strReturn = g_localizeStrings.Get(13205);
-
-  return strReturn;
 }
 
 int CPVRClients::GetActiveClients(CLIENTMAP *clients)

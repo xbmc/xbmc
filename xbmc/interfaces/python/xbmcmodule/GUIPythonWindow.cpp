@@ -19,8 +19,8 @@
  *
  */
 
-#include "GUIPythonWindow.h"
 #include "pyutil.h"
+#include "GUIPythonWindow.h"
 #include "window.h"
 #include "control.h"
 #include "action.h"
@@ -31,7 +31,7 @@
 
 using namespace PYXBMC;
 
-PyXBMCAction::PyXBMCAction(PyObject*& callback)
+PyXBMCAction::PyXBMCAction(void*& callback)
   : param(0), pCallbackWindow(NULL), pObject(NULL), controlId(0), type(0)
 {
   // this is ugly, but we can't grab python lock
@@ -43,15 +43,16 @@ PyXBMCAction::PyXBMCAction(PyObject*& callback)
   // callback can become null while we are trying
   // to grab python lock above, so anything using
   // this should allow that situation
-  pCallbackWindow = callback;
-  Py_XINCREF(callback);
+  void* tmp = callback; // copy the referenced value
+  pCallbackWindow = (PyObject*)tmp; // assign internally
+  Py_XINCREF((PyObject*)callback);
 
   PyEval_ReleaseLock();
 }
 
 PyXBMCAction::~PyXBMCAction() {
-  Py_XDECREF(pObject);
-  Py_XDECREF(pCallbackWindow);
+  Py_XDECREF((PyObject*)pObject);
+  Py_XDECREF((PyObject*)pCallbackWindow);
 }
 
 CGUIPythonWindow::CGUIPythonWindow(int id)
@@ -85,7 +86,7 @@ bool CGUIPythonWindow::OnAction(const CAction &action)
     inf->pObject = Action_FromAction(action);
 
     // aquire lock?
-    PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnAction, inf);
+    PyXBMC_AddPendingCall((PyThreadState*)m_threadState, Py_XBMC_Event_OnAction, inf);
     PulseActionEvent();
   }
   return ret;
@@ -122,8 +123,8 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
           Control* pControl = *it;
           if (pControl->iControlId == iControl)
           {
-            inf->pObject = (PyObject*)pControl;
-            Py_INCREF(inf->pObject);
+            inf->pObject = pControl;
+            Py_INCREF((PyObject*)inf->pObject);
             break;
           }
           ++it;
@@ -132,12 +133,12 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
         if (inf->pObject)
         {
           // currently we only accept messages from a button or controllist with a select action
-          if ((ControlList_CheckExact(inf->pObject) && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)) ||
-            ControlButton_CheckExact(inf->pObject) || ControlRadioButton_CheckExact(inf->pObject) ||
-            ControlCheckMark_CheckExact(inf->pObject))
+          if ((ControlList_CheckExact((PyObject*)inf->pObject) && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)) ||
+            ControlButton_CheckExact((PyObject*)inf->pObject) || ControlRadioButton_CheckExact((PyObject*)inf->pObject) ||
+            ControlCheckMark_CheckExact((PyObject*)inf->pObject))
           {
             // aquire lock?
-            PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnControl, inf);
+            PyXBMC_AddPendingCall((PyThreadState*)m_threadState, Py_XBMC_Event_OnControl, inf);
             PulseActionEvent();
 
             // return true here as we are handling the event
@@ -155,7 +156,7 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIPythonWindow::SetCallbackWindow(PyThreadState *state, PyObject *object)
+void CGUIPythonWindow::SetCallbackWindow(void *state, void *object)
 {
   pCallbackWindow = object;
   m_threadState   = state;
@@ -236,7 +237,7 @@ int Py_XBMC_Event_OnControl(void* arg)
   if (action->pCallbackWindow)
   {
     PyXBMCAction* action = (PyXBMCAction*)arg;
-    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onControl", (char*)"(O)", action->pObject);
+    PyObject *ret = PyObject_CallMethod((PyObject*)action->pCallbackWindow, (char*)"onControl", (char*)"(O)", (PyObject*)action->pObject);
     if (ret) {
        Py_DECREF(ret);
     }
@@ -258,7 +259,7 @@ int Py_XBMC_Event_OnAction(void* arg)
   {
     Action *pAction= (Action *)action->pObject;
 
-    PyObject *ret = PyObject_CallMethod(action->pCallbackWindow, (char*)"onAction", (char*)"(O)", pAction);
+    PyObject *ret = PyObject_CallMethod((PyObject*)action->pCallbackWindow, (char*)"onAction", (char*)"(O)", (PyObject*)pAction);
     if (ret) {
       Py_DECREF(ret);
     }

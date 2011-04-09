@@ -19,17 +19,16 @@
 *
 */
 
-#include "config.h"
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#ifdef HAVE_INOTIFY
-#include <sys/inotify.h>
-#endif
 #include <limits.h>
 #include <unistd.h>
 #include "LIRC.h"
+#ifdef HAVE_INOTIFY
+#include <sys/inotify.h>
+#endif
 #include "input/ButtonTranslator.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"

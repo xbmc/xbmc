@@ -22,24 +22,33 @@
  */
 
 #include "PVRChannelGroups.h"
+#include "threads/Thread.h"
+#include "threads/CriticalSection.h"
 
 class CPVRManager;
 
-class CPVRChannelGroupsContainer
+class CPVRChannelGroupsContainer : private CThread
 {
   friend class CPVRManager;
 
 private:
   CPVRChannelGroups *m_groupsRadio; /*!< all radio channel groups */
   CPVRChannelGroups *m_groupsTV;    /*!< all TV channel groups */
+  CCriticalSection   m_critSection;
+  bool               m_bUpdateChannelsOnly;
+  bool               m_bIsUpdating;
+
+  virtual bool ExecuteUpdate(bool bChannelsOnly);
+  virtual void Process(void);
 
 protected:
   /*!
    * @brief Update the contents of all the groups in this container.
    * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
+   * @param bAsyncUpdate Try to update the channel groups async.
    * @return True if the update was successful, false otherwise.
    */
-  bool Update(bool bChannelsOnly = false);
+  bool Update(bool bChannelsOnly = false, bool bAsyncUpdate = false);
 
 public:
   /*!

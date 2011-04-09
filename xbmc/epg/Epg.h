@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -53,6 +53,8 @@ private:
 
   CPVRChannel *              m_Channel;         /*!< the channel this EPG belongs to */
   bool                       m_bHasChannel;     /*!< true if this table has a channel tag set, false otherwise */
+  CDateTime                  m_firstDate;       /*!< start time of the first epg event in this table */
+  CDateTime                  m_lastDate;        /*!< end time of the last epg event in this table */
 
   /*!
    * @brief Update the EPG from a scraper set in the channel tag.
@@ -95,16 +97,38 @@ private:
   virtual void AddEntry(const CEpgInfoTag &tag);
 
   /*!
-   * @brief Get the infotag with the given ID.
-   *
-   * Get the infotag with the given ID.
-   * If it wasn't found, try finding the event with the given start time
-   *
-   * @param uniqueID The unique ID of the event to find.
-   * @param StartTime The start time of the event to find if it wasn't found by it's unique ID.
-   * @return The found tag or NULL if it wasn't found.
+   * @brief Remove all tags between begin and end from this table.
+   * @param begin Remove all entries after this start time. Use 0 to remove all entries before "end".
+   * @param end Remove all entries before this end time. Use 0 to remove all before after "begin". If both "begin" and "end" are 0, all entries will be removed.
+   * @param bRemoveFromDb Set to true to remove these entries from the database too.
    */
-  virtual const CEpgInfoTag *InfoTag(int uniqueID, const CDateTime &StartTime) const;
+  virtual void RemoveTagsBetween(time_t begin, time_t end, bool bRemoveFromDb = false);
+
+  /*!
+   * @see RemoveTagsBetween(time_t begin, time_t end, bool bRemoveFromDb = false)
+   */
+  virtual void RemoveTagsBetween(const CDateTime &begin, const CDateTime &end, bool bRemoveFromDb = false);
+
+  /*!
+   * @brief Load all EPG entries from clients into a temporary table and update this table with the contents of that temporary table.
+   * @param start Only get entries after this start time. Use 0 to get all entries before "end".
+   * @param end Only get entries before this end time. Use 0 to get all entries after "begin". If both "begin" and "end" are 0, all entries will be updated.
+   * @return True if the update was successful, false otherwise.
+   */
+  virtual bool LoadFromClients(time_t start, time_t end);
+
+  /*!
+   * @brief Update the contents of this table with the contents provided in "epg"
+   * @param epg The updated contents.
+   * @param bStoreInDb True to store the updated contents in the db, false otherwise.
+   * @return True if the update was successful, false otherwise.
+   */
+  virtual bool UpdateEntries(const CEpg &epg, bool bStoreInDb = true);
+
+  /*!
+   * @brief Update the cached first and last date.
+   */
+  virtual void UpdateFirstAndLastDates(void);
 
 protected:
   /*!
@@ -204,25 +228,30 @@ public:
 
   /*!
    * @brief Get the event that occurs at the given time.
-   * @param Time The time to find the event for.
+   * @param time The time to find the event for.
    * @return The found tag or NULL if it wasn't found.
    */
-  virtual const CEpgInfoTag *InfoTagAround(CDateTime Time) const;
+  virtual const CEpgInfoTag *GetTagAround(const CDateTime &time) const;
 
   /*!
    * Get the event that occurs between the given begin and end time.
-   * @param BeginTime Minimum start time of the event.
-   * @param EndTime Maximum end time of the event.
+   * @param beginTime Minimum start time of the event.
+   * @param endTime Maximum end time of the event.
    * @return The found tag or NULL if it wasn't found.
    */
-  virtual const CEpgInfoTag *InfoTagBetween(CDateTime BeginTime, CDateTime EndTime) const;
+  virtual const CEpgInfoTag *GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime) const;
 
   /*!
-   * @brief Get a tag given it's id.
-   * @param iTagId The id of the tag.
-   * @return The requested tag or NULL if it wasn't found.
+   * @brief Get the infotag with the given ID.
+   *
+   * Get the infotag with the given ID.
+   * If it wasn't found, try finding the event with the given start time
+   *
+   * @param uniqueID The unique ID of the event to find.
+   * @param beginTime The start time of the event to find if it wasn't found by it's unique ID.
+   * @return The found tag or NULL if it wasn't found.
    */
-  virtual const CEpgInfoTag *GetTagById(int iTagId) const;
+  virtual const CEpgInfoTag *GetTag(int uniqueID, const CDateTime &beginTime) const;
 
   /*!
    * @brief Update an entry in this EPG.
@@ -237,10 +266,9 @@ public:
    * @param start The start time.
    * @param end The end time.
    * @param iUpdateTime Update the table after the given amount of time has passed.
-   * @param bStoreInDb Store in the database if true.
    * @return True if the update was successful, false otherwise.
    */
-  virtual bool Update(time_t start, time_t end, int iUpdateTime, bool bStoreInDb = true);
+  virtual bool Update(const time_t start, const time_t end, int iUpdateTime);
 
   /*!
    * @brief Get all EPG entries.
@@ -269,11 +297,16 @@ public:
    * @brief Get the start time of the first entry in this table.
    * @return The first date.
    */
-  virtual CDateTime GetFirstDate(void);
+  virtual const CDateTime &GetFirstDate(void) const;
 
   /*!
    * @brief Get the end time of the last entry in this table.
    * @return The last date.
    */
-  virtual CDateTime GetLastDate(void);
+  virtual const CDateTime &GetLastDate(void) const;
+
+  /*!
+   * @return The last time this table was scanned.
+   */
+  virtual const CDateTime &GetLastScanTime(void);
 };

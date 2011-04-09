@@ -20,7 +20,7 @@
  */
 
 #include "TimeUtils.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 
 #ifdef __APPLE__
 #if defined(__ppc__) || defined(__arm__)

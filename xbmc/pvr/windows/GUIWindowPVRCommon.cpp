@@ -89,6 +89,12 @@ const char *CGUIWindowPVRCommon::GetName(void) const
   }
 }
 
+bool CGUIWindowPVRCommon::IsVisible(void) const
+{
+  return g_windowManager.GetActiveWindow() == WINDOW_PVR &&
+      IsActive();
+}
+
 bool CGUIWindowPVRCommon::IsActive(void) const
 {
   CGUIWindowPVRCommon *window = m_parent->GetActiveView();

@@ -130,7 +130,7 @@ void CGUIWindowPVRGuide::UpdateViewChannel(void)
   m_parent->m_guideGrid = NULL;
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_CHANNEL);
 
-  m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19029));
+  m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19029));
   if (bGotCurrentChannel)
     m_parent->SetLabel(CONTROL_LABELGROUP, CurrentChannel.ChannelName().c_str());
 
@@ -154,7 +154,7 @@ void CGUIWindowPVRGuide::UpdateViewNow(void)
   m_parent->m_guideGrid = NULL;
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
 
-  m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19030));
+  m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19030));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19030));
 
   if (CPVRManager::GetEpg()->GetEPGNow(m_parent->m_vecItems, bRadio) == 0)
@@ -177,7 +177,7 @@ void CGUIWindowPVRGuide::UpdateViewNext(void)
   m_parent->m_guideGrid = NULL;
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_GUIDE_NOW_NEXT);
 
-  m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19031));
+  m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19031));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19031));
 
   if (CPVRManager::GetEpg()->GetEPGNext(m_parent->m_vecItems, bRadio) == 0)
@@ -197,7 +197,7 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
   bool bGotCurrentChannel = CPVRManager::Get()->GetCurrentChannel(&CurrentChannel);
   bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
 
-  m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19032));
+  m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
 
   CSingleLock lock(m_critSection);
@@ -241,12 +241,14 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
 
 void CGUIWindowPVRGuide::UpdateData(void)
 {
+  CSingleLock lock(m_critSection);
   if (m_bIsFocusing)
     return;
   CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
 
   m_bIsFocusing = true;
   m_bUpdateRequired = false;
+  m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
 
   if (m_iGuideView == GUIDE_VIEW_CHANNEL)
@@ -258,7 +260,7 @@ void CGUIWindowPVRGuide::UpdateData(void)
   else if (m_iGuideView == GUIDE_VIEW_TIMELINE)
     UpdateViewTimeline();
 
-  m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19029));
+  m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19222));
   UpdateButtons();
 
   m_bIsFocusing = false;
@@ -432,13 +434,13 @@ bool CGUIWindowPVRGuide::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTT
 void CGUIWindowPVRGuide::UpdateButtons(void)
 {
   if (m_iGuideView == GUIDE_VIEW_CHANNEL)
-    m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19029));
+    m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19029));
   else if (m_iGuideView == GUIDE_VIEW_NOW)
-    m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19030));
+    m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19030));
   else if (m_iGuideView == GUIDE_VIEW_NEXT)
-    m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19031));
+    m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19031));
   else if (m_iGuideView == GUIDE_VIEW_TIMELINE)
-    m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19032));
+    m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
 }
 
 void CGUIWindowPVRGuide::InitializeEpgCache(bool bRadio /* = false */)

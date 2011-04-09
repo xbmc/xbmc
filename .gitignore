@@ -367,6 +367,7 @@ lib/cmyth/Makefile
 /system/libssh2.dll
 /system/libssl32.dll
 /system/hdhomerun.dll
+/system/ssh.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
@@ -409,15 +410,7 @@ lib/cmyth/Makefile
 /system/profiles.xml
 
 # /system/python
-/system/python/Lib/
-/system/python/python24.zip
-/system/python/python24.dll
-/system/python/DLLs/_socket.pyd
-/system/python/DLLs/pyexpat.pyd
-/system/python/DLLs/select.pyd
-/system/python/DLLs/unicodedata.pyd
-/system/python/DLLs/zlib.pyd
-/system/python/DLLs/bz2.pyd
+/system/python/
 
 # /system/webserver
 /system/webserver
@@ -1054,6 +1047,8 @@ lib/cmyth/Makefile
 
 # /xbmc/interfaces/
 /xbmc/interfaces/Makefile
+/xbmc/interfaces/python/Makefile
+/xbmc/interfaces/python/xbmcmodule/Makefile
 /xbmc/interfaces/python/linux/Makefile
 /xbmc/interfaces/python/linux/wrapper_python.def
 
@@ -1091,11 +1086,6 @@ lib/cmyth/Makefile
 /lib/libsquish/vs7/squish/Release
 
 /lib/libUPnP/Makefile
-
-# /lib/libXBMS
-/lib/libXBMS/Makefile
-/lib/libXBMS/libXBMS/Debug
-/lib/libXBMS/libXBMS/Release
 
 # /lib/libXDAAP
 /lib/libXDAAP/Makefile

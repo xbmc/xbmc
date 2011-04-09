@@ -28,83 +28,58 @@
 #include "ITransportLayer.h"
 #include "interfaces/IAnnouncer.h"
 #include "jsoncpp/include/json/json.h"
+#include "JSONUtils.h"
+#include "JSONServiceDescription.h"
 
 namespace JSONRPC
 {
-  enum JSON_STATUS
-  {
-    OK = 0,
-    ACK = -1,
-    InvalidRequest = -32600,
-    MethodNotFound = -32601,
-    InvalidParams = -32602,
-    InternalError = -32603,
-    ParseError = -32700,
-  //-32099..-32000 Reserved for implementation-defined server-errors.
-    BadPermission = -32099,
-    FailedToExecute = -32100
-  };
+  /*!
+   \ingroup jsonrpc
+   \brief JSON RPC handler
 
-  /* The method call needs to be perfectly threadsafe
-     The method will only be called if the caller has the correct permissions. The method will need to check parameters for bad parametervalues.
-  */
-  typedef JSON_STATUS (*MethodCall) (const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
-
-  enum OperationPermission
-  {
-    ReadData = 0x1,
-    ControlPlayback = 0x2,
-    ControlAnnounce = 0x4,
-    ControlPower = 0x8,
-    Logging = 0x10,
-    ScanLibrary = 0x20,
-  };
-
-  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlAnnounce | ControlPower | Logging | ScanLibrary);
-
-  typedef struct
-  {
-    const char* command;
-    MethodCall method;
-    TransportLayerCapability transportneed;
-    OperationPermission permission;
-    const char* description;
-  } Command;
-
-  class CJSONRPC
+   Sets up and manages all needed information to process
+   JSON RPC requests and answering with the appropriate
+   JSON RPC response (actual response or error message).
+   */
+  class CJSONRPC : public CJSONUtils
   {
   public:
+    /*!
+     \brief Initializes the JSON RPC handler
+     */
+    static void Initialize();
+
+    /*
+     \brief Handles an incoming JSON RPC request
+     \param inputString received JSON RPC request
+     \param transport Transport protocol on which the request arrived
+     \param client Client which sent the request
+     \return JSON RPC response to be sent back to the client
+
+     Parses the received input string for the called method and provided
+     parameters. If the request does not conform to the JSON RPC 2.0
+     specification an error is returned. Otherwise the parameters provided
+     in the request are checked for validity and completeness. If the request
+     is valid and the requested method exists it is called and executed.
+     */
     static CStdString MethodCall(const CStdString &inputString, ITransportLayer *transport, IClient *client);
 
     static JSON_STATUS Introspect(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS Version(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS Permission(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS Ping(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS GetAnnouncementFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS SetAnnouncementFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS Announce(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS GetNotificationFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS SetNotificationFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS Notify(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+  
   private:
+    static void setup();
     static bool HandleMethodCall(Json::Value& request, Json::Value& response, ITransportLayer *transport, IClient *client);
-    static JSON_STATUS InternalMethodCall(const CStdString& method, Json::Value& o, Json::Value &result, ITransportLayer *transport, IClient *client);
     static inline bool IsProperJSONRPC(const Json::Value& inputroot);
 
     inline static void BuildResponse(const Json::Value& request, JSON_STATUS code, const Json::Value& result, Json::Value& response);
-    inline static const char *PermissionToString(const OperationPermission &permission);
-    inline static const char *AnnouncementFlagToString(const ANNOUNCEMENT::EAnnouncementFlag &announcement);
 
-    class CActionMap
-    {
-    public:
-      CActionMap(const Command commands[], int length);
-
-      typedef std::map<CStdString, Command>::const_iterator const_iterator;
-      const_iterator find(const CStdString& key) const;
-      const_iterator end() const;
-    private:
-      std::map<CStdString, Command> m_actionmap;
-    };
-
-    static Command    m_commands[];
-    static CActionMap m_actionMap;
+    static JsonRpcMethodMap m_methodMaps[];
+    static bool m_initialized;
   };
 }

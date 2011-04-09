@@ -6,7 +6,7 @@
  */
 
 #include "MythXmlCommandParameters.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 
 MythXmlCommandParameters::MythXmlCommandParameters(bool hasParameters) {
 	hasParameters_ = hasParameters;

@@ -58,21 +58,21 @@
   <string id="62">joulu</string>
 
   <string id="71">Pohjoisesta</string>
-  <string id="72">Pohjoiskoillisesta</string>
+  <string id="72">Pohjoisen ja koillisen välistä</string>
   <string id="73">Koillisesta</string>
-  <string id="74">Itäkoillisesta</string>
+  <string id="74">Idän ja koillisen välistä</string>
   <string id="75">Idästä</string>
-  <string id="76">Itäkaakosta</string>
+  <string id="76">Idän ja kaakon välistä</string>
   <string id="77">Kaakosta</string>
-  <string id="78">Eteläkaakosta</string>
+  <string id="78">Etelän ja kaakon välistä</string>
   <string id="79">Etelästä</string>
-  <string id="80">Etelälounaasta</string>
-  <string id="81">Lounaaasta</string>
-  <string id="82">Länsilounaasta</string>
+  <string id="80">Etelän ja lounaan välistä</string>
+  <string id="81">Lounaasta</string>
+  <string id="82">Lännen ja lounaan välistä</string>
   <string id="83">Lännestä</string>
-  <string id="84">Länsiluoteesta</string>
+  <string id="84">Lännen ja luoteen välistä</string>
   <string id="85">Luoteesta</string>
-  <string id="86">Pohjoisluoteesta</string>
+  <string id="86">Pohjoisen ja luoteen välistä</string>
   <string id="87">Vaihteleva</string>
 
   <string id="98">Näytä: Autom.</string>
@@ -217,7 +217,7 @@
   <string id="241">Kokoruutu #%d</string>
   <string id="242">Ikkuna</string>
   <string id="243">Päivitysnopeus</string>
-  <string id="244">Kokonäyttö</string>
+  <string id="244">Kokoruutu</string>
   <string id="245">Mitoitus: (%i,%i)->(%i,%i) (Zoomaus x%2.2f) Kuvasuhde:%2.2f:1 (Pikselit: %2.2f:1) (Pystysiirto: %2.2f)</string>
 
   <string id="247">Skriptit</string>
@@ -341,15 +341,15 @@
   <string id="372">enimmäkseen</string>
   <string id="373">aurinkoista</string>
   <string id="374">pilvistä</string>
-  <string id="375">lunta</string>
-  <string id="376">sataa</string>
-  <string id="377">heikosti</string>
+  <string id="375">lumisadetta</string>
+  <string id="376">vesisadetta</string>
+  <string id="377">heikkoa</string>
   <string id="378">aamupäivällä</string>
   <string id="379">iltapäivällä</string>
   <string id="380">sadekuuroja</string>
   <string id="381">joitakin</string>
   <string id="382">hajanaisia</string>
-  <string id="383">tuulta</string>
+  <string id="383">tuulista</string>
   <string id="384">voimakasta</string>
   <string id="385">poutaa</string>
   <string id="386">selkeää</string>
@@ -357,9 +357,9 @@
   <string id="388">aamulla</string>
   <string id="389">sadekuuro</string>
   <string id="390">lumipyryä</string>
-  <string id="391">matala</string>
-  <string id="392">keskimääräinen</string>
-  <string id="393">korkea</string>
+  <string id="391">Matala</string>
+  <string id="392">Keskimääräinen</string>
+  <string id="393">Korkea</string>
   <string id="394">sumua</string>
   <string id="395">usvaa</string>
   <string id="396">Valitse sijainti</string>
@@ -399,7 +399,7 @@
   <string id="431">Ei välimuistia</string>
   <string id="432">Poista elokuva kirjastosta</string>
   <string id="433">Haluatko varmasti poistaa kohteen[CR]'%s'?</string>
-  <string id="434">%s nopeudella %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
+  <string id="434">%s %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
 
   <string id="437">Siirrettävä levy</string>
   <string id="438">Avataan tiedosto</string>
@@ -844,10 +844,10 @@
   <string id="1417">rakeita</string>
   <string id="1418">ukkosmyrskyjä</string>
   <string id="1419">ukkoskuuroja</string>
-  <string id="1420">keskimääräinen</string>
-  <string id="1421">erittäin kovaa</string>
+  <string id="1420">Kohtalainen</string>
+  <string id="1421">Hyvin voimakas</string>
   <string id="1422">tuulinen</string>
-  <string id="1423">sumua</string>
+  <string id="1423">utua</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 

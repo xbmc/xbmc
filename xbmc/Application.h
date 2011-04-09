@@ -69,14 +69,7 @@ namespace ADDON
 #include "network/WebServer.h"
 #endif
 
-#if (defined(__APPLE__) && defined(__arm__))
-#include "threads/XBMC_cond.h"
 #include "threads/XBMC_mutex.h"
-#else
-#ifdef HAS_SDL
-#include <SDL/SDL_mutex.h>
-#endif
-#endif
 
 class CKaraokeLyricsManager;
 class CApplicationMessenger;

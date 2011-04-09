@@ -710,6 +710,15 @@ void CGUIEPGGridContainer::UpdateItems()
 {
   CDateTimeSpan blockDuration, gridDuration;
 
+  /* check for invalid start and end time */
+  if (m_gridStart >= m_gridEnd)
+  {
+    CLog::Log(LOGERROR, "CGUIEPGGridContainer - %s - invalid start and end time set", __FUNCTION__);
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), GetParentID()); // message the window
+    SendWindowMessage(msg);
+    return;
+  }
+
   gridDuration = m_gridEnd - m_gridStart;
 
   m_blocks = (gridDuration.GetDays()*24*60 + gridDuration.GetHours()*60 + gridDuration.GetMinutes()) / MINSPERBLOCK;

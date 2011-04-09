@@ -21,7 +21,7 @@
  *
  */
 
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
@@ -141,6 +141,11 @@ public:
    * @param bClearDb Clear the database too if true.
    */
   virtual void Clear(bool bClearDb = false);
+
+  /*!
+   * @brief Stop the update thread and unload all data.
+   */
+  virtual void Unload(void);
 
   /*!
    * @brief Clear the EPG and all it's database entries.

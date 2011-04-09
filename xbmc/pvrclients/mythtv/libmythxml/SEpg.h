@@ -2,7 +2,7 @@
 #define XBMC_PVRCLIENTS_MYTHTV_LIBMYTHXML_SEPG_H_
 
 #include "../StdString.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 
 struct SEpg
 {

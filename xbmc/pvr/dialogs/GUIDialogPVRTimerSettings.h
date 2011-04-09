@@ -20,7 +20,7 @@
  *
  */
 
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "settings/GUIDialogSettings.h"
 #include "guilib/GUIListItem.h"
 

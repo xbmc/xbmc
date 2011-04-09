@@ -49,7 +49,7 @@
  *
  */
 
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
 class CFileItem;

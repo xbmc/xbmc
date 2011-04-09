@@ -597,16 +597,6 @@ bool URIUtils::IsURL(const CStdString& strFile)
   return strFile.Find("://") >= 0;
 }
 
-bool URIUtils::IsXBMS(const CStdString& strFile)
-{
-  CStdString strFile2(strFile);
-
-  if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
-
-  return strFile2.Left(5).Equals("xbms:");
-}
-
 bool URIUtils::IsFTP(const CStdString& strFile)
 {
   CStdString strFile2(strFile);

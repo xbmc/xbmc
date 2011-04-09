@@ -20,7 +20,7 @@
  *
  */
 #include "addons/Addon.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "utils/ScraperParser.h"
 
 typedef enum

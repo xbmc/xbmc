@@ -44,12 +44,13 @@ class CPVRChannelGroup : private std::vector<PVRChannelGroupMember>
   friend class CPVRDatabase;
 
 private:
-  bool       m_bRadio;          /*!< true if this container holds radio channels, false if it holds TV channels */
-  int        m_iGroupId;        /*!< The ID of this group in the database */
-  CStdString m_strGroupName;    /*!< The name of this group */
-  int        m_iSortOrder;      /*!< The sort order to use */
-  bool       m_bLoaded;         /*!< True if this container is loaded, false otherwise */
-  bool       m_bChanged;    /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
+  bool             m_bRadio;       /*!< true if this container holds radio channels, false if it holds TV channels */
+  int              m_iGroupId;     /*!< The ID of this group in the database */
+  CStdString       m_strGroupName; /*!< The name of this group */
+  int              m_iSortOrder;   /*!< The sort order to use */
+  bool             m_bLoaded;      /*!< True if this container is loaded, false otherwise */
+  bool             m_bChanged;     /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
+  CCriticalSection m_critSection;
 
   /*!
    * @brief Load the channels stored in the database.
@@ -102,6 +103,11 @@ private:
    * @brief Remove invalid channels and updates the channel numbers.
    */
   void Renumber(void);
+
+  /*!
+   * @return Cache all channel icons in this group if guisetting "pvrmenu.iconpath" is set.
+   */
+  void CacheIcons(void);
 
 public:
   /*!
@@ -260,6 +266,9 @@ public:
   virtual void SortByChannelNumber(void);
 
   //@}
+
+  virtual void SetSelectedGroup(void);
+  virtual void ResetChannelNumbers(void);
 
   /*! @name getters
    */

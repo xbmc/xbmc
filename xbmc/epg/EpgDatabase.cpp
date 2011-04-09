@@ -138,7 +138,7 @@ bool CEpgDatabase::DeleteEpg(void)
   return bReturn;
 }
 
-bool CEpgDatabase::Delete(const CEpg &table, const CDateTime &start /* = NULL */, const CDateTime &end /* = NULL */)
+bool CEpgDatabase::Delete(const CEpg &table, const time_t start /* = 0 */, const time_t end /* = 0 */)
 {
   /* invalid channel */
   if (table.EpgID() <= 0)
@@ -154,19 +154,11 @@ bool CEpgDatabase::Delete(const CEpg &table, const CDateTime &start /* = NULL */
   CStdString strWhereClause;
   strWhereClause = FormatSQL("idEpg = %u", table.EpgID());
 
-  if (start != NULL)
-  {
-    time_t iStartTime;
-    start.GetAsTime(iStartTime);
-    strWhereClause.append(FormatSQL(" AND iStartTime < %u", iStartTime).c_str());
-  }
+  if (start != 0)
+    strWhereClause.append(FormatSQL(" AND iStartTime < %u", start).c_str());
 
-  if (end != NULL)
-  {
-    time_t iEndTime;
-    end.GetAsTime(iEndTime);
-    strWhereClause.append(FormatSQL(" AND iEndTime > %u", iEndTime).c_str());
-  }
+  if (end != 0)
+    strWhereClause.append(FormatSQL(" AND iEndTime > %u", end).c_str());
 
   return DeleteValues("epgtags", strWhereClause);
 }
@@ -236,26 +228,12 @@ int CEpgDatabase::Get(CEpgContainer *container)
   return iReturn;
 }
 
-int CEpgDatabase::Get(CEpg *epg, const CDateTime &start /* = NULL */, const CDateTime &end /* = NULL */)
+int CEpgDatabase::Get(CEpg *epg)
 {
   int iReturn = -1;
 
   CStdString strWhereClause;
   strWhereClause = FormatSQL("idEpg = %u", epg->EpgID());
-
-  if (start != NULL)
-  {
-    time_t iStartTime;
-    start.GetAsTime(iStartTime);
-    strWhereClause.append(FormatSQL(" AND iStartTime < %u", iStartTime).c_str());
-  }
-
-  if (end != NULL)
-  {
-    time_t iEndTime;
-    end.GetAsTime(iEndTime);
-    strWhereClause.append(FormatSQL(" AND iEndTime > %u", iEndTime).c_str());
-  }
 
   CStdString strQuery;
   strQuery.Format("SELECT * FROM epgtags WHERE %s ORDER BY iStartTime ASC;", strWhereClause.c_str());

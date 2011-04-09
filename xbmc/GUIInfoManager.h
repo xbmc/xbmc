@@ -31,7 +31,7 @@
 #include "threads/CriticalSection.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "inttypes.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 
 #include <list>
 #include <map>

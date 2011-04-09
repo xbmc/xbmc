@@ -44,6 +44,7 @@ int CPVRChannelGroupInternal::Load(void)
 {
   int iChannelCount = CPVRChannelGroup::Load();
   UpdateChannelPaths();
+  CacheIcons();
 
   return iChannelCount;
 }
@@ -69,6 +70,7 @@ void CPVRChannelGroupInternal::Unload()
 
 bool CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannel &channel)
 {
+  CSingleLock lock(m_critSection);
   CPVRChannel *realChannel = (CPVRChannel *) GetByClient(channel.UniqueID(), channel.ClientID());
   if (realChannel != NULL)
     realChannel->UpdateFromClient(channel);
@@ -80,6 +82,7 @@ bool CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannel &channel)
 
 bool CPVRChannelGroupInternal::InsertInGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */, bool bSortAndRenumber /* = true */)
 {
+  CSingleLock lock(m_critSection);
   return CPVRChannelGroup::AddToGroup(channel, iChannelNumber, bSortAndRenumber);
 }
 
@@ -93,6 +96,8 @@ bool CPVRChannelGroupInternal::Update(void)
 
 bool CPVRChannelGroupInternal::UpdateTimers(void)
 {
+  CSingleLock lock(m_critSection);
+
   /* update the timers with the new channel numbers */
   CPVRTimers *timers = CPVRManager::GetTimers();
   for (unsigned int ptr = 0; ptr < timers->size(); ptr++)
@@ -108,6 +113,8 @@ bool CPVRChannelGroupInternal::UpdateTimers(void)
 
 bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */)
 {
+  CSingleLock lock(m_critSection);
+
   /* get the actual channel since this is called from a fileitemlist copy */
   CPVRChannel *realChannel = (CPVRChannel *) GetByChannelID(channel->ChannelID());
   if (!realChannel)
@@ -135,6 +142,8 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(CPVRChannel *channel)
   if (!channel)
     return false;
 
+  CSingleLock lock(m_critSection);
+
   /* check if this channel is currently playing if we are hiding it */
   CPVRChannel currentChannel;
   if (CPVRManager::Get()->GetCurrentChannel(&currentChannel) && currentChannel == *channel)
@@ -161,6 +170,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(CPVRChannel *channel)
 
 bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb /* = true */)
 {
+  CSingleLock lock(m_critSection);
   /* new channel number out of range */
   if (iNewChannelNumber > size() - m_iHiddenChannels)
     iNewChannelNumber = size() - m_iHiddenChannels;
@@ -171,6 +181,7 @@ bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldChannelNumber, unsig
 int CPVRChannelGroupInternal::GetMembers(CFileItemList *results, bool bGroupMembers /* = true */) const
 {
   int iOrigSize = results->Size();
+  CSingleLock lock(m_critSection);
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
@@ -253,6 +264,7 @@ bool CPVRChannelGroupInternal::IsGroupMember(const CPVRChannel &channel) const
 
 bool CPVRChannelGroupInternal::UpdateChannel(const CPVRChannel &channel)
 {
+  CSingleLock lock(m_critSection);
   CPVRChannel *updateChannel = (CPVRChannel *) GetByUniqueID(channel.UniqueID());
 
   if (!updateChannel)
@@ -343,7 +355,11 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
 
   database->Close();
 
-  if (bChanged)
+  /* try to find channel icons */
+  SearchAndSetChannelIcons();
+  CacheIcons();
+
+  if (bChanged || HasChanges())
   {
     /* remove invalid channels */
     RemoveInvalidChannels();
@@ -356,9 +372,6 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
        new channels were added at the back, so they'll get the highest numbers */
     Renumber();
 
-    /* try to find channel icons */
-    SearchAndSetChannelIcons();
-
     return Persist();
   }
   else
@@ -369,7 +382,8 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
 
 bool CPVRChannelGroupInternal::Persist(void)
 {
-  bool bReturn = false;
+  bool bReturn(false);
+  CSingleLock lock(m_critSection);
   CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
 
   if (!database || !database->Open())

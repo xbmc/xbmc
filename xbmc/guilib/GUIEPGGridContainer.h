@@ -21,7 +21,7 @@
  *
  */
 
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "FileItem.h"
 #include "guilib/GUIControl.h"
 #include "guilib/GUIListItemLayout.h"

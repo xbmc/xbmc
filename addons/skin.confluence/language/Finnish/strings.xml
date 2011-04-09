@@ -84,6 +84,7 @@
   <string id="31128">Sanoitukset</string>
   <string id="31129"></string>
   <string id="31130"></string>
+  
   <string id="31131"></string>
   <string id="31132">Sanoitukset-lisäosa</string>
   <string id="31133">Tekstitykset-lisäosa</string>
@@ -114,7 +115,7 @@
   <string id="31308">Elokuvan tiedot</string>
   <string id="31309">Käytetty muisti:</string>
   <string id="31310">Kappalenumero</string>
-  <string id="31011">Fanitaide kuvaa[CR][CR]ei ole saatavilla[CR][CR]Klikkaa asettaaksesi</string>
+  <string id="31311">Fanitaide kuvaa[CR][CR]ei ole saatavilla[CR][CR]Klikkaa asettaaksesi</string>
   <string id="31312">Nykyinen hakupaikka</string>
   <string id="31313">Valitse hakupaikka</string>
   <string id="31314">Sisällön hakuasetukset</string>
@@ -143,6 +144,11 @@
   <string id="31355">Elokuvavalikko</string>
   <string id="31356">Lataa tekstitykset</string>
   <string id="31357"></string>
+
+  <!-- Skin Fontsets -->
+  <string id="31390">Ulkoasun oletus</string>
+  <string id="31391">Ulkoasun oletus ilman isoja kirjaimia</string>
+  <string id="31392">Arial pohjainen</string>
 
   <!-- Description Labels  -->
   <string id="31400">[B]Muokkaa käyttöliittymän asetuksia[/B][CR][CR]Vaihda ulkoasua · Vaihda kieliasetuksia · Aseta tiedostolistauksen asetukset[CR]Aseta ruudunsäästäjä</string>

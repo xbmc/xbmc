@@ -33,8 +33,14 @@
 #include "pvr/addons/PVRClients.h"
 #include "PVRRecordings.h"
 
+CPVRRecordings::CPVRRecordings(void)
+{
+  m_bIsUpdating = false;
+}
+
 void CPVRRecordings::UpdateFromClients(void)
 {
+  CSingleLock lock(m_critSection);
   Clear();
   CPVRManager::GetClients()->GetRecordings(this);
 }
@@ -155,10 +161,43 @@ void CPVRRecordings::Unload()
   Clear();
 }
 
-void CPVRRecordings::Update(void)
+void CPVRRecordings::Update(bool bAsyncUpdate /* = false */)
 {
   CSingleLock lock(m_critSection);
+  if (m_bIsUpdating)
+    return;
+  m_bIsUpdating = true;
+  lock.Leave();
+
+  if (bAsyncUpdate)
+  {
+    StopThread();
+    Create();
+    SetName("XBMC PVR recordings update");
+    SetPriority(-1);
+  }
+  else
+  {
+    ExecuteUpdate();
+  }
+}
+
+void CPVRRecordings::ExecuteUpdate(void)
+{
+  CLog::Log(LOGDEBUG, "CPVRTimers - %s - updating recordings", __FUNCTION__);
   UpdateFromClients();
+
+  CSingleLock lock(m_critSection);
+  m_bIsUpdating = false;
+  lock.Leave();
+
+  CPVRManager::Get()->CallbackRecordingsUpdated();
+  CPVRManager::Get()->UpdateWindow(PVR_WINDOW_RECORDINGS);
+}
+
+void CPVRRecordings::Process(void)
+{
+  Update(false);
 }
 
 int CPVRRecordings::GetNumRecordings()

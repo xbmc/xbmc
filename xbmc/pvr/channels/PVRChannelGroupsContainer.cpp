@@ -25,12 +25,15 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "pvr/PVRManager.h"
 
 CPVRChannelGroupsContainer::CPVRChannelGroupsContainer(void)
 {
 
-  m_groupsRadio = new CPVRChannelGroups(true);
-  m_groupsTV    = new CPVRChannelGroups(false);
+  m_groupsRadio         = new CPVRChannelGroups(true);
+  m_groupsTV            = new CPVRChannelGroups(false);
+  m_bUpdateChannelsOnly = false;
+  m_bIsUpdating         = false;
 }
 
 CPVRChannelGroupsContainer::~CPVRChannelGroupsContainer(void)
@@ -39,10 +42,53 @@ CPVRChannelGroupsContainer::~CPVRChannelGroupsContainer(void)
   delete m_groupsTV;
 }
 
-bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
+bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */, bool bAsyncUpdate /* = false */)
 {
-  return m_groupsRadio->Update(bChannelsOnly) &&
-         m_groupsTV->Update(bChannelsOnly);
+  CSingleLock lock(m_critSection);
+  if (m_bIsUpdating)
+    return false;
+  m_bIsUpdating = true;
+  m_bUpdateChannelsOnly = bChannelsOnly;
+  lock.Leave();
+
+  if (bAsyncUpdate)
+  {
+    StopThread();
+    Create();
+    SetName("XBMC PVR channels update");
+    SetPriority(-1);
+    return false;
+  }
+  else
+  {
+    return ExecuteUpdate(bChannelsOnly);
+  }
+}
+
+bool CPVRChannelGroupsContainer::ExecuteUpdate(bool bChannelsOnly)
+{
+  CLog::Log(LOGDEBUG, "CPVRTimers - %s - updating %s", __FUNCTION__, bChannelsOnly ? "channels" : "channel groups");
+  bool bReturn = m_groupsRadio->Update(bChannelsOnly) &&
+       m_groupsTV->Update(bChannelsOnly);
+
+  CSingleLock lock(m_critSection);
+  m_bIsUpdating = false;
+  lock.Leave();
+
+  CPVRManager *manager = CPVRManager::Get();
+  if (bChannelsOnly)
+    manager->CallbackChannelsUpdated();
+  else
+    manager->CallbackChannelGroupsUpdated();
+  manager->UpdateWindow(PVR_WINDOW_CHANNELS_TV);
+  manager->UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
+
+  return bReturn;
+}
+
+void CPVRChannelGroupsContainer::Process(void)
+{
+  ExecuteUpdate(m_bUpdateChannelsOnly);
 }
 
 bool CPVRChannelGroupsContainer::Load(void)

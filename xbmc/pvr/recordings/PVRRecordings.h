@@ -21,22 +21,28 @@
  */
 
 #include "PVRRecording.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
+#include "threads/Thread.h"
 
-class CPVRRecordings : public std::vector<CPVRRecording *>
+class CPVRRecordings : public std::vector<CPVRRecording *>,
+                       private CThread
 {
 private:
-  CCriticalSection  m_critSection;
-  virtual void UpdateFromClients(void);
+  CCriticalSection m_critSection;
+  bool             m_bIsUpdating;
 
+  virtual void UpdateFromClients(void);
   virtual CStdString TrimSlashes(const CStdString &strOrig) const;
   virtual const CStdString GetDirectoryFromPath(const CStdString &strPath, const CStdString &strBase) const;
   virtual bool IsDirectoryMember(const CStdString &strDirectory, const CStdString &strEntryDirectory, bool bDirectMember = true) const;
   virtual void GetContents(const CStdString &strDirectory, CFileItemList *results) const;
   virtual void GetSubDirectories(const CStdString &strBase, CFileItemList *results, bool bAutoSkip = true) const;
 
+  virtual void ExecuteUpdate(void);
+  virtual void Process(void);
+
 public:
-  CPVRRecordings(void) {}
+  CPVRRecordings(void);
   virtual ~CPVRRecordings(void) { Clear(); };
 
   int Load();
@@ -47,8 +53,9 @@ public:
 
   /**
    * @brief refresh the recordings list from the clients.
+   * @param bAsyncUpdate Try to update the recordings async.
    */
-  void Update(void);
+  void Update(bool bAsyncUpdate = false);
 
   int GetNumRecordings();
   int GetRecordings(CFileItemList* results);

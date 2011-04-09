@@ -19,28 +19,18 @@
  *
  */
 
-// python.h should always be included first before any other includes
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/Python.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
-#else
-  #include "python/Include/Python.h"
-#endif
+
+// python.h should always be included first before any other includes
+#include <Python.h>
+
+#include "system.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIPassword.h"
 
 #include "XBPython.h"
-#include "XBPythonDll.h"
 #include "settings/Settings.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
@@ -48,82 +38,6 @@
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"
-
-#ifndef _LINUX
-#if (defined USE_EXTERNAL_PYTHON) && (defined HAVE_LIBPYTHON2_6)
-#define PYTHON_DLL "special://xbmcbin/system/python/python26.dll"
-#else
-#define PYTHON_DLL "special://xbmcbin/system/python/python24.dll"
-#endif
-#else
-#if defined(__APPLE__)
-#if defined(__POWERPC__)
-#if (defined HAVE_LIBPYTHON2_6)
-  #define PYTHON_DLL "special://xbmcbin/system/python/python26-powerpc-osx.so"
-#elif (defined HAVE_LIBPYTHON2_5)
-  #define PYTHON_DLL "special://xbmcbin/system/python/python25-powerpc-osx.so"
-#else
-  #define PYTHON_DLL "special://xbmcbin/system/python/python24-powerpc-osx.so"
-#endif
-#elif defined(__arm__)
-#if (defined HAVE_LIBPYTHON2_6)
-  #define PYTHON_DLL "special://xbmcbin/system/python/python26-arm-osx.so"
-#elif (defined HAVE_LIBPYTHON2_5)
-  #define PYTHON_DLL "special://xbmcbin/system/python/python25-arm-osx.so"
-#else
-  #define PYTHON_DLL "special://xbmcbin/system/python/python24-arm-osx.so"
-#endif
-#else
-#if (defined HAVE_LIBPYTHON2_6)
-  #define PYTHON_DLL "special://xbmcbin/system/python/python26-x86-osx.so"
-#elif (defined HAVE_LIBPYTHON2_5)
-  #define PYTHON_DLL "special://xbmcbin/system/python/python25-x86-osx.so"
-#else
-  #define PYTHON_DLL "special://xbmcbin/system/python/python24-x86-osx.so"
-#endif
-#endif
-#elif defined(__x86_64__)
-#if (defined HAVE_LIBPYTHON2_6)
-#define PYTHON_DLL "special://xbmcbin/system/python/python26-x86_64-linux.so"
-#elif (defined HAVE_LIBPYTHON2_5)
-#define PYTHON_DLL "special://xbmcbin/system/python/python25-x86_64-linux.so"
-#else
-#define PYTHON_DLL "special://xbmcbin/system/python/python24-x86_64-linux.so"
-#endif
-#elif defined(_POWERPC)
-#if (defined HAVE_LIBPYTHON2_6)
-#define PYTHON_DLL "special://xbmcbin/system/python/python26-powerpc-linux.so"
-#elif (defined HAVE_LIBPYTHON2_5)
-#define PYTHON_DLL "special://xbmcbin/system/python/python25-powerpc-linux.so"
-#else
-#define PYTHON_DLL "special://xbmcbin/system/python/python24-powerpc-linux.so"
-#endif
-#elif defined(_POWERPC64)
-#if (defined HAVE_LIBPYTHON2_6)
-#define PYTHON_DLL "special://xbmcbin/system/python/python26-powerpc64-linux.so"
-#elif (defined HAVE_LIBPYTHON2_5)
-#define PYTHON_DLL "special://xbmcbin/system/python/python25-powerpc64-linux.so"
-#else
-#define PYTHON_DLL "special://xbmcbin/system/python/python24-powerpc64-linux.so"
-#endif
-#elif defined(_ARMEL) && !defined(__APPLE__)
-#if (defined HAVE_LIBPYTHON2_6)
-#define PYTHON_DLL "special://xbmc/system/python/python26-arm.so"
-#elif (defined HAVE_LIBPYTHON2_5)
-#define PYTHON_DLL "special://xbmc/system/python/python25-arm.so"
-#else
-#define PYTHON_DLL "special://xbmc/system/python/python24-arm.so"
-#endif
-#else /* !__x86_64__ && !__powerpc__ */
-#if (defined HAVE_LIBPYTHON2_6)
-#define PYTHON_DLL "special://xbmcbin/system/python/python26-i486-linux.so"
-#elif (defined HAVE_LIBPYTHON2_5)
-#define PYTHON_DLL "special://xbmcbin/system/python/python25-i486-linux.so"
-#else
-#define PYTHON_DLL "special://xbmcbin/system/python/python24-i486-linux.so"
-#endif
-#endif /* __x86_64__ */
-#endif /* _LINUX */
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
@@ -333,10 +247,13 @@ void XBPython::InitializeInterpreter()
         "\t\txbmc.output('.')\n"
         "\tdef flush(self):\n"
         "\t\txbmc.output('.')\n"
-        "\n"
         "import sys\n"
         "sys.stdout = xbmcout()\n"
         "sys.stderr = xbmcout()\n"
+        "def xbmcclosefilehack(f):\n"
+//        "\txbmc.output(\"Closing Script File.\")\n"
+        "\tf.close()\n"
+        "\n"
         "print '-->Python Interpreter Initialized<--'\n"
         "") == -1)
   {
@@ -363,15 +280,6 @@ void XBPython::Initialize()
   m_iDllScriptCounter++;
   if (!m_bInitialized)
   {
-      m_pDll = DllLoaderContainer::LoadModule(PYTHON_DLL, NULL, true);
-
-      if (!m_pDll || !python_load_dll(*m_pDll))
-      {
-        CLog::Log(LOGFATAL, "Python: error loading python24.dll");
-        Finalize();
-        return;
-      }
-
       // first we check if all necessary files are installed
 #ifndef _LINUX
       if(!FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
@@ -379,9 +287,6 @@ void XBPython::Initialize()
         !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/select.pyd") ||
-#ifndef HAVE_LIBPYTHON2_6
-        !FileExist("special://xbmc/system/python/DLLs/zlib.pyd") ||
-#endif
         !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd"))
       {
         CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
@@ -394,21 +299,7 @@ void XBPython::Initialize()
       // Info about interesting python envvars available
       // at http://docs.python.org/using/cmdline.html#environment-variables
 
-#if (!defined USE_EXTERNAL_PYTHON)
-#ifdef _LINUX
-      // Required for python to find optimized code (pyo) files
-      setenv("PYTHONOPTIMIZE", "1", 1);
-      setenv("PYTHONHOME", _P("special://xbmc/system/python").c_str(), 1);
-#ifdef __APPLE__
-      // OSX uses contents from extracted zip, 3X to 4X times faster during Py_Initialize
-      setenv("PYTHONPATH", _P("special://xbmc/system/python/Lib").c_str(), 1);
-#else
-      setenv("PYTHONPATH", _P("special://xbmcbin/system/python/python24.zip").c_str(), 1);
-#endif /* __APPLE__ */
-      setenv("PYTHONCASEOK", "1", 1);
-      CLog::Log(LOGDEBUG, "Python wrapper library linked with internal Python library");
-#endif /* _LINUX */
-#elif !defined(_WIN32)
+#if !defined(_WIN32)
       /* PYTHONOPTIMIZE is set off intentionally when using external Python.
          Reason for this is because we cannot be sure what version of Python
          was used to compile the various Python object files (i.e. .pyo,
@@ -424,22 +315,35 @@ void XBPython::Initialize()
         CLog::Log(LOGDEBUG, "PYTHONPATH -> %s", _P("special://frameworks").c_str());
       }
       setenv("PYTHONCASEOK", "1", 1); //This line should really be removed
-      CLog::Log(LOGDEBUG, "Python wrapper library linked with system Python library");
-#endif /* USE_EXTERNAL_PYTHON */
+#elif defined(_WIN32)
+      // because the third party build of python is compiled with vs2008 we need
+      // a hack to set the PYTHONPATH
+      // buf is corrupted after putenv and might need a strdup but it seems to
+      // work this way
+      CStdString buf;
+      buf = "PYTHONPATH=" + _P("special://xbmc/system/python/DLLs") + ";" + _P("special://xbmc/system/python/Lib");
+      pgwin32_putenv(buf.c_str());
+      buf = "PYTHONOPTIMIZE=1";
+      pgwin32_putenv(buf.c_str());
+      buf = "PYTHONHOME=" + _P("special://xbmc/system/python");
+      pgwin32_putenv(buf.c_str());
+      buf = "OS=win32";
+      pgwin32_putenv(buf.c_str());
 
-      Py_Initialize();
-      // If this is not the first time we initialize Python, the interpreter
-      // lock already exists and we need to lock it as PyEval_InitThreads
-      // would not do that in that case.
-#if defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON)
-      // grrr, we hang at PyEval_ThreadsInitialized after unloading/loading python
-      PyEval_InitThreads();
-#else
+#endif
+
       if (PyEval_ThreadsInitialized())
         PyEval_AcquireLock();
       else
         PyEval_InitThreads();
-#endif
+
+      Py_Initialize();
+      PyEval_ReleaseLock();
+
+      // If this is not the first time we initialize Python, the interpreter
+      // lock already exists and we need to lock it as PyEval_InitThreads
+      // would not do that in that case.
+      PyEval_AcquireLock();
       char* python_argv[1] = { (char*)"" } ;
       PySys_SetArgv(1, python_argv);
 
@@ -473,23 +377,23 @@ void XBPython::Finalize()
 {
   if (m_bInitialized)
   {
-    CLog::Log(LOGINFO, "Python, unloading python24.dll because no scripts are running anymore");
+    CLog::Log(LOGINFO, "Python, unloading python shared library because no scripts are running anymore");
 
     PyEval_AcquireLock();
-    PyThreadState_Swap(m_mainThreadState);
+    PyThreadState_Swap((PyThreadState*)m_mainThreadState);
 
     Py_Finalize();
     PyEval_ReleaseLock();
 
-#if !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
+#if !(defined(__APPLE__) || defined(_WIN32))
     UnloadExtensionLibs();
 #endif
 
     // first free all dlls loaded by python, after that python24.dll (this is done by UnloadPythonDlls
-#if !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
+#if !(defined(__APPLE__) || defined(_WIN32))
     DllLoaderContainer::UnloadPythonDlls();
 #endif
-#if defined(_LINUX) && !(defined(__APPLE__) && defined(USE_EXTERNAL_PYTHON))
+#if defined(_LINUX) && !defined(__APPLE__)
     // we can't release it on windows, as this is done in UnloadPythonDlls() for win32 (see above).
     // The implementation for linux needs looking at - UnloadPythonDlls() currently only searches for "python24.dll"
     // The implementation for osx can never unload the python dylib.
@@ -647,7 +551,7 @@ void XBPython::stopScript(int id)
   }
 }
 
-PyThreadState *XBPython::getMainThreadState()
+void* XBPython::getMainThreadState()
 {
   CSingleLock lock(m_critSection);
   return m_mainThreadState;
