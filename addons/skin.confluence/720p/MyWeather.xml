@@ -12,7 +12,6 @@
 			<texture>floor.png</texture>
 			<include>VisibleFadeEffect</include>
 		</control>
-		<include>CommonPageCount</include>
 		<control type="group">
 			<animation type="WindowOpen" reversible="false">
 				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
@@ -702,6 +701,7 @@
 				</control>
 			</control>
 		</control>
+		<include>CommonPageCount</include>
 		<control type="group">
 			<posx>-250</posx>
 			<include>SideBladeLeft</include>
