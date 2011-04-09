@@ -250,12 +250,6 @@ void CPVRManager::Process(void)
     if (!m_addons->AllClientsLoaded())
       m_addons->TryLoadClients(1);
 
-    /* check whether we have to update anything */
-    UpdateChannelGroups();
-    UpdateChannels();
-    UpdateTimers();
-    UpdateRecordings();
-
     /* check if the (still) are any enabled addons */
     if (DisableIfNoClients())
     {
@@ -264,7 +258,7 @@ void CPVRManager::Process(void)
       return;
     }
 
-    Sleep(50);
+    Sleep(1000);
   }
 
 }
@@ -366,10 +360,6 @@ void CPVRManager::ResetProperties(void)
   m_PreviousChannelIndex        = 0;
   m_LastChannel                 = 0;
 
-  m_bTriggerRecordingsUpdate    = false;
-  m_bTriggerTimersUpdate        = false;
-  m_bTriggerChannelsUpdate      = false;
-  m_bTriggerChannelGroupsUpdate = false;
   m_bRecordingsUpdating         = false;
   m_bTimersUpdating             = false;
   m_bChannelGroupsUpdating      = false;
@@ -678,119 +668,108 @@ const CPVRChannelGroup *CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
   return bRadio ? m_currentRadioGroup : m_currentTVGroup;
 }
 
-void CPVRManager::UpdateRecordings(void)
-{
-  CSingleLock lock(m_critSectionTriggers);
-  if (!m_bTriggerRecordingsUpdate || m_bRecordingsUpdating)
-    return;
-  m_bTriggerRecordingsUpdate = false;
-  m_bRecordingsUpdating = true;
-  lock.Leave();
-
-  m_recordings->Update(true);
-}
-
 void CPVRManager::TriggerRecordingsUpdate(void)
 {
   CSingleLock lock(m_critSectionTriggers);
-  if (!m_bLoaded || m_bTriggerRecordingsUpdate)
+  if (!m_bLoaded || m_bRecordingsUpdating)
     return;
-  m_bTriggerRecordingsUpdate = true;
+  m_bRecordingsUpdating = true;
 
-  CLog::Log(LOGDEBUG, "PVRManager - %s - recordings update scheduled", __FUNCTION__);
+  CJobManager::GetInstance().AddJob(new CPVRRecordingsUpdateJob(), this);
 }
 
-void CPVRManager::CallbackRecordingsUpdated(void)
+bool CPVRRecordingsUpdateJob::DoWork(void)
 {
-  CSingleLock lock(m_critSectionTriggers);
-  m_bRecordingsUpdating = false;
-}
-
-void CPVRManager::UpdateTimers(void)
-{
-  CSingleLock lock(m_critSectionTriggers);
-  if (!m_bTriggerTimersUpdate || m_bTimersUpdating)
-    return;
-  m_bTriggerTimersUpdate = false;
-  m_bTimersUpdating = true;
-  lock.Leave();
-
-  m_timers->Update(true);
+  CPVRManager::GetRecordings()->Update();
+  return true;
 }
 
 void CPVRManager::TriggerTimersUpdate(void)
 {
   CSingleLock lock(m_critSectionTriggers);
-  if (!m_bLoaded || m_bTriggerTimersUpdate)
+  if (!m_bLoaded || m_bTimersUpdating)
     return;
-  m_bTriggerTimersUpdate = true;
+  m_bTimersUpdating = true;
 
-  CLog::Log(LOGDEBUG, "PVRManager - %s - timers update scheduled", __FUNCTION__);
+  CJobManager::GetInstance().AddJob(new CPVRTimersUpdateJob(), this);
 }
 
-void CPVRManager::CallbackTimersUpdated(void)
+bool CPVRTimersUpdateJob::DoWork(void)
 {
-  CSingleLock lock(m_critSectionTriggers);
-  m_bTimersUpdating = false;
-}
-
-void CPVRManager::UpdateChannels(void)
-{
-  CSingleLock lock(m_critSectionTriggers);
-  if (!m_bTriggerChannelsUpdate || m_bChannelsUpdating)
-    return;
-  m_bTriggerChannelsUpdate = false;
-  m_bChannelsUpdating = true;
-  lock.Leave();
-
-  m_channelGroups->Update(true, true);
+  return CPVRManager::GetTimers()->Update();
 }
 
 void CPVRManager::TriggerChannelsUpdate(void)
 {
   CSingleLock lock(m_critSectionTriggers);
-  if (!m_bLoaded || m_bTriggerChannelsUpdate)
+  if (!m_bLoaded || m_bChannelsUpdating)
     return;
-  m_bTriggerChannelsUpdate = true;
-
-  CLog::Log(LOGDEBUG, "PVRManager - %s - channels update scheduled", __FUNCTION__);
-}
-
-void CPVRManager::CallbackChannelsUpdated(void)
-{
-  CSingleLock lock(m_critSectionTriggers);
-  m_bChannelsUpdating = false;
-}
-
-void CPVRManager::UpdateChannelGroups(void)
-{
-  CSingleLock lock(m_critSectionTriggers);
-  if (!m_bTriggerChannelGroupsUpdate || m_bChannelGroupsUpdating)
-    return;
-  m_bTriggerChannelGroupsUpdate = false;
-  m_bTriggerChannelsUpdate = false;
-  m_bChannelGroupsUpdating = true;
   m_bChannelsUpdating = true;
-  lock.Leave();
 
-  m_channelGroups->Update(false, true);
+  CJobManager::GetInstance().AddJob(new CPVRChannelsUpdateJob(), this);
+}
+
+bool CPVRChannelsUpdateJob::DoWork(void)
+{
+  return CPVRManager::GetChannelGroups()->Update(true);
 }
 
 void CPVRManager::TriggerChannelGroupsUpdate(void)
 {
   CSingleLock lock(m_critSectionTriggers);
-  if (!m_bLoaded || m_bTriggerChannelGroupsUpdate)
+  if (!m_bLoaded || m_bChannelGroupsUpdating)
     return;
-  m_bTriggerChannelGroupsUpdate = true;
+  m_bChannelGroupsUpdating = true;
+  m_bChannelsUpdating = true;
 
-  CLog::Log(LOGDEBUG, "PVRManager - %s - channel groups update scheduled", __FUNCTION__);
+  CJobManager::GetInstance().AddJob(new CPVRChannelGroupsUpdateJob(), this);
 }
 
-void CPVRManager::CallbackChannelGroupsUpdated(void)
+bool CPVRChannelGroupsUpdateJob::DoWork(void)
 {
-  CSingleLock lock(m_critSectionTriggers);
-  m_bChannelGroupsUpdating = false;
-  m_bChannelsUpdating = false;
+  return CPVRManager::GetChannelGroups()->Update(false);
+}
+
+void CPVRManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
+{
+  if (!strcmp(job->GetType(), "pvr-update-channelgroups"))
+  {
+    CSingleLock lock(m_critSectionTriggers);
+    m_bChannelGroupsUpdating = false;
+    m_bChannelsUpdating = false;
+    lock.Leave();
+
+    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_TV);
+    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
+  }
+  else if (!strcmp(job->GetType(), "pvr-update-channels"))
+  {
+    CSingleLock lock(m_critSectionTriggers);
+    m_bChannelsUpdating = false;
+    lock.Leave();
+
+    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_TV);
+    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
+  }
+  else if (!strcmp(job->GetType(), "pvr-update-timers"))
+  {
+    CSingleLock lock(m_critSectionTriggers);
+    m_bTimersUpdating = false;
+    lock.Leave();
+
+    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_TIMERS);
+    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_EPG);
+    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_TV);
+    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
+  }
+  else if (!strcmp(job->GetType(), "pvr-update-recordings"))
+  {
+    CSingleLock lock(m_critSectionTriggers);
+    m_bRecordingsUpdating = false;
+    lock.Leave();
+
+    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_RECORDINGS);
+  }
 }
 
 bool CPVRManager::OpenLiveStream(const CPVRChannel &tag)

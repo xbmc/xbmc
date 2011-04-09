@@ -197,12 +197,6 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
     lock.Leave();
 
     NotifyObservers("timers");
-    CPVRManager *manager = CPVRManager::Get();
-    manager->CallbackTimersUpdated();
-    manager->UpdateWindow(PVR_WINDOW_TIMERS);
-    manager->UpdateWindow(PVR_WINDOW_EPG);
-    manager->UpdateWindow(PVR_WINDOW_CHANNELS_TV);
-    manager->UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
   }
 
   return bChanged;
