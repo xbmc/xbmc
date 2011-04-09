@@ -35,7 +35,7 @@
 			</control>
 			<control type="group">
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(504)</visible>
+				<visible>Control.IsVisible(504) | Control.IsVisible(550)</visible>
 				<control type="image">
 					<posx>50</posx>
 					<posy>60</posy>
@@ -122,7 +122,7 @@
 				<height>725</height>
 				<texture border="0,5,0,0">ContentPanel4.png</texture>
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(511) | Control.IsVisible(550) | Control.IsVisible(560)</visible>
+				<visible>Control.IsVisible(511) | Control.IsVisible(560)</visible>
 			</control>
 			<control type="group">
 				<include>VisibleFadeEffect</include>
