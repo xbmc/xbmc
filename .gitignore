@@ -287,6 +287,9 @@ lib/cmyth/Makefile
 # /project/Win32BuildSetup/dependencies
 /project/Win32BuildSetup/dependencies/SDL.dll
 /project/Win32BuildSetup/dependencies/glew32.dll
+/project/Win32BuildSetup/dependencies/pcre.dll
+/project/Win32BuildSetup/dependencies/pcrecpp.dll
+/project/Win32BuildSetup/dependencies/python26.dll
 
 # /project/Win32BuildSetup/
 /project/Win32BuildSetup/BuildLog.htm
