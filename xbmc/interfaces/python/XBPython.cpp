@@ -250,10 +250,6 @@ void XBPython::InitializeInterpreter()
         "import sys\n"
         "sys.stdout = xbmcout()\n"
         "sys.stderr = xbmcout()\n"
-        "def xbmcclosefilehack(f):\n"
-//        "\txbmc.output(\"Closing Script File.\")\n"
-        "\tf.close()\n"
-        "\n"
         "print '-->Python Interpreter Initialized<--'\n"
         "") == -1)
   {
