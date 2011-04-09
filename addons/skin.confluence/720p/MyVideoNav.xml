@@ -305,7 +305,7 @@
 			</control>
 		</control>
 		<control type="group">
-			<posx>240</posx>
+			<posx>220</posx>
 			<posy>0</posy>
 			<visible>Container.Content(MusicVideos)</visible>
 			<include>VisibleFadeEffect</include>
