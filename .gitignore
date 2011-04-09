@@ -343,6 +343,8 @@ lib/cmyth/Makefile
 /system/libssl32.dll
 /system/hdhomerun.dll
 /system/ssh.dll
+/system/sqlite3.dll
+/system/libsamplerate-0.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
