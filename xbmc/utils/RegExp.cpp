@@ -19,6 +19,10 @@
  *
  */
 
+#if _WIN32
+#pragma comment(lib, "pcre.lib")
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 #include "RegExp.h"
