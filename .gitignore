@@ -348,6 +348,9 @@ lib/cmyth/Makefile
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
+/system/cdrip/ogg.dll
+/system/cdrip/vorbis.dll
+/system/cdrip/vorbisenc.dll
 
 # /system/players/dvdplayer
 /system/players/dvdplayer/avcodec-52.dll
