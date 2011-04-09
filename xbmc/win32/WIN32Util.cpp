@@ -55,6 +55,7 @@
                      "special://xbmc/system/;" \
                      "special://xbmc/system/players/dvdplayer/;" \
                      "special://xbmc/system/players/paplayer/;" \
+                     "special://xbmc/system/cdrip/;" \
                      "special://xbmc/system/python/;" \
                      "special://xbmc/"
 
