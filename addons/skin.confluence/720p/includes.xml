@@ -325,9 +325,17 @@
 		</control>
 	</include>
 	<include name="CommonPageCount">
+		<control type="image">
+			<description>gradient</description>
+			<posx>30</posx>
+			<posy>56r</posy>
+			<width>50</width>
+			<height>50</height>
+			<texture>NowPlayingIcon.png</texture>
+		</control>
 		<control type="label">
-			<posx>40</posx>
-			<posy>55r</posy>
+			<posx>85</posx>
+			<posy>53r</posy>
 			<width>700</width>
 			<height>20</height>
 			<label>$INFO[MusicPlayer.Artist] - $INFO[MusicPlayer.Album]</label>
@@ -341,7 +349,7 @@
 			<include>Window_OpenClose_Animation</include>
 		</control>
 		<control type="label">
-			<posx>40</posx>
+			<posx>85</posx>
 			<posy>30r</posy>
 			<width>700</width>
 			<height>20</height>
@@ -358,7 +366,7 @@
 		<control type="label">
 			<description>Page Count Label</description>
 			<posx>40r</posx>
-			<posy>55r</posy>
+			<posy>53r</posy>
 			<width>500</width>
 			<height>20</height>
 			<font>font12</font>
