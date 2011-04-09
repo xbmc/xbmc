@@ -248,6 +248,7 @@ void CGUIWindowPVRGuide::UpdateData(void)
 
   m_bIsFocusing = true;
   m_bUpdateRequired = false;
+  m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
 
   if (m_iGuideView == GUIDE_VIEW_CHANNEL)
