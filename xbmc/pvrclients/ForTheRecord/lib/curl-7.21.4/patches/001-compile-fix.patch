@@ -1,0 +1,13 @@
+--- lib/config-win32.h.orig	Sat Jan 15 16:44:04 2011
++++ lib/config-win32.h	Sat Jan 15 16:37:39 2011
+@@ -1,6 +1,10 @@
+ #ifndef __LIB_CONFIG_WIN32_H
+ #define __LIB_CONFIG_WIN32_H
+ 
++//Added by margro:
++#define CURL_DISABLE_GOPHER
++#define HTTP_ONLY
++
+ /* ================================================================ */
+ /*    lib/config-win32.h - Hand crafted config file for Windows     */
+ /* ================================================================ */

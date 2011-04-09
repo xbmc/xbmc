@@ -1,0 +1,5 @@
+cURL 7-21.4
+http://curl.haxx.se/
+
+JSONcpp 0.50
+http://jsoncpp.sourceforge.net/

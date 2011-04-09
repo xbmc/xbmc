@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>pvrclient_fortherecord</ProjectName>
+    <ProjectGuid>{897FF040-CCA8-4573-8785-FB1747BCC8E6}</ProjectGuid>
+    <RootNamespace>XBMC_ForTheRecord</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\..\addons\pvr.fortherecord.argus\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</IgnoreImportLibrary>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\..\addons\pvr.fortherecord.argus\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.pvr</TargetExt>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.pvr</TargetExt>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">XBMC_ForTheRecord_win32</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">XBMC_ForTheRecord_win32.pvr</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\;..\..\lib\jsoncpp\include;..\..\..\MediaPortal;..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\lib\curl-7.21.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;_WIN32PC;_USE_32BIT_TIME_T;TSREADER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libcurld.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>..\..\..\..\..\addons\pvr.fortherecord.argus\XBMC_ForTheRecord_win32.pvr</OutputFile>
+      <AdditionalLibraryDirectories>..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)XBMC_ForTheRecord.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)XBMC_ForTheRecord.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\;..\..\lib\jsoncpp\include;..\..\..\MediaPortal;..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\lib\curl-7.21.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_WINDOWS;_WIN32PC;_USE_32BIT_TIME_T;TSREADER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>..\..\..\..\..\addons\pvr.fortherecord.argus\XBMC_ForTheRecord_win32.pvr</OutputFile>
+      <AdditionalLibraryDirectories>..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)XBMC_ForTheRecord.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>
+      </OptimizeReferences>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)XBMC_ForTheRecord.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\AutoLock.cpp" />
+    <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\CritSec.cpp" />
+    <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\FileReader.cpp" />
+    <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\MemoryBuffer.cpp" />
+    <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\MemoryReader.cpp" />
+    <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\MemorySink.cpp" />
+    <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\MultiFileReader.cpp" />
+    <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\RTSPClient.cpp" />
+    <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\TSReader.cpp" />
+    <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\TSThread.cpp" />
+    <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\WaitEvent.cpp" />
+    <ClCompile Include="..\..\channel.cpp" />
+    <ClCompile Include="..\..\client.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
+    <ClCompile Include="..\..\epg.cpp" />
+    <ClCompile Include="..\..\fortherecordrpc.cpp" />
+    <ClCompile Include="..\..\guideprogram.cpp" />
+    <ClCompile Include="..\..\KeepAliveThread.cpp" />
+    <ClCompile Include="..\..\pvrclient-fortherecord.cpp" />
+    <ClCompile Include="..\..\recording.cpp" />
+    <ClCompile Include="..\..\recordinggroup.cpp" />
+    <ClCompile Include="..\..\recordingsummary.cpp" />
+    <ClCompile Include="..\..\upcomingrecording.cpp" />
+    <ClCompile Include="..\..\uri.cpp" />
+    <ClCompile Include="..\..\utils.cpp" />
+    <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_reader.cpp" />
+    <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_value.cpp" />
+    <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_writer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\AutoLock.h" />
+    <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\CritSec.h" />
+    <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\FileReader.h" />
+    <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\MemoryBuffer.h" />
+    <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\MemoryReader.h" />
+    <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\MemorySink.h" />
+    <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\MultiFileReader.h" />
+    <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\RTSPClient.h" />
+    <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\TSReader.h" />
+    <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\TSThread.h" />
+    <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\WaitEvent.h" />
+    <ClInclude Include="..\..\channel.h" />
+    <ClInclude Include="..\..\client.h" />
+    <ClInclude Include="..\..\epg.h" />
+    <ClInclude Include="..\..\fortherecordrpc.h" />
+    <ClInclude Include="..\..\guideprogram.h" />
+    <ClInclude Include="..\..\KeepAliveThread.h" />
+    <ClInclude Include="..\..\os-dependent.h" />
+    <ClInclude Include="..\..\pvrclient-fortherecord.h" />
+    <ClInclude Include="..\..\recording.h" />
+    <ClInclude Include="..\..\recordinggroup.h" />
+    <ClInclude Include="..\..\recordingsummary.h" />
+    <ClInclude Include="..\..\upcomingrecording.h" />
+    <ClInclude Include="..\..\uri.h" />
+    <ClInclude Include="..\..\utils.h" />
+    <ClInclude Include="..\..\lib\jsoncpp\src\lib_json\json_batchallocator.h" />
+    <ClInclude Include="..\..\windows\os_windows.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\lib\jsoncpp\src\lib_json\json_internalarray.inl" />
+    <None Include="..\..\lib\jsoncpp\src\lib_json\json_internalmap.inl" />
+    <None Include="..\..\lib\jsoncpp\src\lib_json\json_valueiterator.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\lib\curl-7.21.4\lib\libcurl.vcxproj">
+      <Project>{87ee9da4-de1e-4448-8324-183c98dca588}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

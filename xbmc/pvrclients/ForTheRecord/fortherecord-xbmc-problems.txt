@@ -1,0 +1,6 @@
+API mismatches:
+Overall:
+-XBMC accepts only integer id's; The guid hexadecimal string id's are therefore useless
+
+Channels:
+-How to determine whether a channel is Free-to-air or encrypted?
