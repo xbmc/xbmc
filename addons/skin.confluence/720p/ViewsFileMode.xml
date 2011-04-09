@@ -268,7 +268,7 @@
 			<visible>Control.IsVisible(505)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="panel" id="505">
-				<visible>!Container.Content(LiveTV) + !Container.Content(Movies) + !Container.Content(Episodes) + !Container.Content(Seasons) + !Container.Content(MusicVideos) + !Skin.HasSetting(TVShowsUsePosters)</visible>
+				<visible>!Container.Content(LiveTV) + !Container.Content(Movies) + !Container.Content(Episodes) + !Container.Content(Seasons) + !Container.Content(MusicVideos) + !Container.Content(Addons) + !Skin.HasSetting(TVShowsUsePosters)</visible>
 				<posx>95</posx>
 				<posy>80</posy>
 				<width>1080</width>
