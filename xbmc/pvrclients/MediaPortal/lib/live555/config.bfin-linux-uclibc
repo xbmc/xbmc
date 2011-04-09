@@ -1,0 +1,18 @@
+CROSS_COMPILER     = bfin-linux-uclibc-
+COMPILE_OPTS       = $(INCLUDES) -I. -DSOCKLEN_T=socklen_t -D_LARGEFILE_SOURCE=1 -DUCLINUX -D_FILE_OFFSET_BITS=64
+C                  = c
+C_COMPILER         = $(CROSS_COMPILER)gcc
+C_FLAGS            = $(COMPILE_OPTS) -Wall
+CPP                = cpp
+CPLUSPLUS_COMPILER = $(CROSS_COMPILER)g++
+CPLUSPLUS_FLAGS    = $(COMPILE_OPTS) -Wall
+OBJ                = o
+LINK               = $(CROSS_COMPILER)g++ -o
+LINK_OPTS          = -L.
+CONSOLE_LINK_OPTS  = $(LINK_OPTS)
+LIBRARY_LINK       = $(CROSS_COMPILER)ar cr 
+LIBRARY_LINK_OPTS  = 
+LIB_SUFFIX         = a
+LIBS_FOR_CONSOLE_APPLICATION =
+LIBS_FOR_GUI_APPLICATION =
+EXE =

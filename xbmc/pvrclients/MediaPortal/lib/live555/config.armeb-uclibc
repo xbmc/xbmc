@@ -1,0 +1,19 @@
+CROSS_COMPILE=         armeb-linux-uclibc-
+COMPILE_OPTS =          $(INCLUDES) -I. -Os -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D
+LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64
+C =                    c
+C_COMPILER =           $(CROSS_COMPILE)gcc
+C_FLAGS =              $(COMPILE_OPTS)
+CPP =                  cpp
+CPLUSPLUS_COMPILER =   $(CROSS_COMPILE)g++
+CPLUSPLUS_FLAGS =      $(COMPILE_OPTS) -Wall -DBSD=1
+OBJ =                  o
+LINK =                 $(CROSS_COMPILE)gcc -o
+LINK_OPTS =            -L.
+CONSOLE_LINK_OPTS =    $(LINK_OPTS)
+LIBRARY_LINK =         $(CROSS_COMPILE)ar cr 
+LIBRARY_LINK_OPTS =    
+LIB_SUFFIX =                   a
+LIBS_FOR_CONSOLE_APPLICATION =
+LIBS_FOR_GUI_APPLICATION =
+EXE =

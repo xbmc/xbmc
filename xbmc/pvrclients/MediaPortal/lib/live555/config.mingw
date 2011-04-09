@@ -1,0 +1,17 @@
+COMPILE_OPTS =         $(INCLUDES) -I. -O -DSOCKLEN_T=int -DLOCALE_NOT_USED
+C =                    c
+C_COMPILER =           $(CC)
+C_FLAGS =              $(COMPILE_OPTS) -DUSE_OUR_BZERO=1 -D__MINGW32__
+CPP =                  cpp
+CPLUSPLUS_COMPILER =   $(CXX)
+CPLUSPLUS_FLAGS =      $(COMPILE_OPTS) -D__MINGW32__ -Wall -Wno-deprecated
+OBJ =                  o
+LINK =                 $(CXX) -o 
+LINK_OPTS =            -L.
+CONSOLE_LINK_OPTS =    $(LINK_OPTS)
+LIBRARY_LINK =         $(LD) -o 
+LIBRARY_LINK_OPTS =    $(LINK_OPTS) -r -Bstatic
+LIB_SUFFIX =                   a
+LIBS_FOR_CONSOLE_APPLICATION = -lws2_32
+LIBS_FOR_GUI_APPLICATION = -lws2_32
+EXE =

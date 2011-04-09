@@ -1,0 +1,2 @@
+INCLUDES = -I../UsageEnvironment/include -I../groupsock/include -I../liveMedia/include -I../BasicUsageEnvironment/include
+##### Change the following for your environment: 

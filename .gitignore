@@ -1188,3 +1188,7 @@ lib/cmyth/Makefile
 /xbmc/pvrclients/tvheadend/project/VS2010Express/Release
 /xbmc/pvrclients/vdr-streamdev/project/VS2010Express/Debug
 /xbmc/pvrclients/vdr-streamdev/project/VS2010Express/Release
+
+/xbmc/pvrclients/MediaPortal/lib/live555/obj
+/xbmc/pvrclients/MediaPortal/lib/live555/shared
+/xbmc/pvrclients/MediaPortal/project/VS2010Express/Debug-tsreader

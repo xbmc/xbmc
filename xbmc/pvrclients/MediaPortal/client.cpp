@@ -78,7 +78,11 @@ ADDON_STATUS Create(void* hdl, void* props)
   if (!PVR->RegisterMe(hdl))
     return STATUS_UNKNOWN;
 
+#ifdef TSREADER
+  XBMC->Log(LOG_DEBUG, "Creating MediaPortal PVR-Client (TSReader version)");
+#else
   XBMC->Log(LOG_DEBUG, "Creating MediaPortal PVR-Client (ffmpeg rtsp version)");
+#endif
 
   m_CurStatus    = STATUS_UNKNOWN;
   g_client       = new cPVRClientMediaPortal();
@@ -149,6 +153,7 @@ ADDON_STATUS Create(void* hdl, void* props)
     g_szRadioGroup = buffer;
   }
 
+#ifndef TSREADER
   /* Read setting "resolvertsphostname" from settings.xml */
   if (!XBMC->GetSetting("resolvertsphostname", &g_bResolveRTSPHostname))
   {
@@ -156,6 +161,7 @@ ADDON_STATUS Create(void* hdl, void* props)
     XBMC->Log(LOG_ERROR, "Couldn't get 'resolvertsphostname' setting, falling back to 'true' as default");
     g_bResolveRTSPHostname = DEFAULT_RESOLVE_RTSP_HOSTNAME;
   }
+#endif
 
   /* Read setting "readgenre" from settings.xml */
   if (!XBMC->GetSetting("readgenre", &g_bReadGenre))
@@ -188,7 +194,17 @@ ADDON_STATUS Create(void* hdl, void* props)
   } else {
     g_szRecordingsDir = buffer;
   }
+#ifdef TSREADER
+  /* Read setting "directtsfileread" from settings.xml */
+  if (!XBMC->GetSetting("directtsfileread", &g_bDirectTSFileRead))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'directtsfileread' setting, falling back to 'false' as default");
+    g_bDirectTSFileRead = DEFAULT_DIRECT_TS_FR;
+  }
+#else
   g_bDirectTSFileRead = false;
+#endif
   /* Create connection to MediaPortal XBMC TV client */
   if (!g_client->Connect())
   {
@@ -308,11 +324,13 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     XBMC->Log(LOG_INFO, "Changed setting 'radiogroup' from %s to %s", g_szRadioGroup.c_str(), (const char*) settingValue);
     g_szRadioGroup = (const char*) settingValue;
   }
+#ifndef TSREADER
   else if (str == "resolvertsphostname")
   {
     XBMC->Log(LOG_INFO, "Changed setting 'resolvertsphostname' from %u to %u", g_bResolveRTSPHostname, *(bool*) settingValue);
     g_bResolveRTSPHostname = *(bool*) settingValue;
   }
+#endif
   else if (str == "readgenre")
   {
     XBMC->Log(LOG_INFO, "Changed setting 'readgenre' from %u to %u", g_bReadGenre, *(bool*) settingValue);
@@ -333,6 +351,13 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     XBMC->Log(LOG_INFO, "Changed setting 'recordingsdir' from %s to %s", g_szRecordingsDir.c_str(), (const char*) settingValue);
     g_szRecordingsDir = (const char*) settingValue;
   }
+#ifdef TSREADER
+  else if (str == "directtsfileread")
+  {
+    XBMC->Log(LOG_INFO, "Changed setting 'directtsfileread' from %u to %u", g_bDirectTSFileRead, *(bool*) settingValue);
+    g_bDirectTSFileRead = *(bool*) settingValue;
+  }
+#endif
   return STATUS_OK;
 }
 

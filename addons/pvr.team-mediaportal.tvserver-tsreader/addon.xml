@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="pvr.team-mediaportal.tvserver-tsreader"
+  version="1.1.2.101"
+  name="MediaPortal PVR Client (TSReader)"
+  provider-name="Marcel Groothuis">
+  <requires>
+    <c-pluff version="0.1"/>
+  </requires>
+  <extension
+    point="xbmc.pvrclient"
+    library_wingl="XBMC_MPTV-tsreader_win32.pvr"
+    library_windx="XBMC_MPTV-tsreader_win32.pvr"/>
+  <extension point="xbmc.addon.metadata">
+    <summary>XBMC frontend for the MediaPortal TV Server (TSReader version)</summary>
+    <description>MediaPortal TV Server frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels, EPG and Timers.</description>
+    <description lang="nl">MediaPortal TV Server frontend. Ondersteunt het bekijken van Live TV en opnames, het luisteren van radio zenders, het tonen van de EPG en het inplannen/beheren van nieuwe opnames (Timers).</description>
+    <disclaimer>This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects..</disclaimer>
+    <platform>all</platform>
+  </extension>
+</addon>

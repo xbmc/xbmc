@@ -46,6 +46,12 @@ cPVRClientMediaPortal::cPVRClientMediaPortal()
   m_BackendUTCoffset       = 0;
   m_BackendTime            = 0;
   m_bStop                  = true;
+#ifdef TSREADER
+  m_noSignalStreamSize     = 0;
+  m_noSignalStreamReadPos  = 0;
+  m_bPlayingNoSignal       = false;
+  m_tsreader               = NULL;
+#endif
 }
 
 cPVRClientMediaPortal::~cPVRClientMediaPortal()
@@ -303,8 +309,11 @@ PVR_ERROR cPVRClientMediaPortal::GetDriveSpace(long long *iTotal, long long *iUs
 
     Tokenize(result, fields, "|");
 
-    *iTotal = (long long) atoi(fields[0].c_str());
-    *iUsed = (long long) atoi(fields[1].c_str());
+    if(fields.size() >= 2)
+    {
+      *iTotal = (long long) atoi(fields[0].c_str());
+      *iUsed = (long long) atoi(fields[1].c_str());
+    }
   }
 
   return PVR_ERROR_NO_ERROR;
@@ -526,6 +535,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
       tag.bIsHidden = false;
       tag.bIsRecording = false;
 
+#ifndef TSREADER
       if(channel.IsWebstream())
       {
         tag.strStreamURL = channel.URL();
@@ -539,7 +549,19 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
           tag.strStreamURL = "pvr://stream/tv/%i.ts"; //stream.c_str();
       }
       tag.strInputFormat = "";
-
+#else
+      if(channel.IsWebstream())
+      {
+        tag.strStreamURL = channel.URL();
+        tag.strInputFormat = "";
+      }
+      else
+      {
+        //Use OpenLiveStream to read from the timeshift .ts file or an rtsp stream
+        tag.strStreamURL = "";
+        tag.strInputFormat = "mpegts";
+      }
+#endif
       if( (!g_bOnlyFTA) || (tag.iEncryptionSystem==0))
       {
         PVR->TransferChannelEntry(handle, &tag);
@@ -728,6 +750,24 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
       tag.iGenreType     = 0; //TODO?
       tag.iGenreSubType  = 0; //TODO?
 
+#ifdef TSREADER
+      if (g_bUseRecordingsDir == true)
+      { //Replace path by given path in g_szRecordingsDir
+        if (g_szRecordingsDir.length() > 0)
+        {
+          recording.SetDirectory(g_szRecordingsDir);
+          tag.strStreamURL  = recording.FilePath();
+        }
+        else
+        {
+          tag.strStreamURL  = recording.FilePath();
+        }
+      }
+      else
+      { //Use rtsp url
+        tag.strStreamURL = "";
+      }
+#else
       if (g_bUseRecordingsDir == true)
       { //Replace path by given path in g_szRecordingsDir
         if (g_szRecordingsDir.length() > 0)
@@ -744,7 +784,7 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
       {
         tag.strStreamURL    = recording.Stream();
       }
-
+#endif
       PVR->TransferRecordingEntry(handle, &tag);
     }
   }
@@ -975,18 +1015,147 @@ PVR_ERROR cPVRClientMediaPortal::UpdateTimer(const PVR_TIMER &timerinfo)
 // stream itself changes. Example URL: rtsp://tvserverhost/stream2.0
 // The number 2.0 may change when the tvserver is streaming multiple tv channels
 // at the same time.
+//
+// The rtsp code from ffmpeg does not function well enough for this addon.
+// Therefore the new TSReader version uses the Live555 library here to open rtsp
+// urls or it can read directly from the timeshift buffer file.
 bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
+  //Case ffmpeg:
   // Just return true for now. XBMC will later ask for the stream URL and then we will
   // actually ask MediaPortal for the rtsp URL.
   // TODO: optimization: request the channel stream already here and return it to
   //       XBMC via GetLiveStreamURL
+#ifdef TSREADER
+  unsigned int channel = channelinfo.iChannelNumber;
+
+  string result;
+  char   command[256] = "";
+
+  XBMC->Log(LOG_DEBUG, "->OpenLiveStream(%i)", channel);
+  if (!IsUp())
+  {
+    return false;
+  }
+
+  // Start the timeshift
+  if (g_iTVServerXBMCBuild>=90)
+  {
+    //Use the optimized TimeshiftChannel call (don't stop a running timeshift)
+    snprintf(command, 256, "TimeshiftChannel:%i|False|False\n", channel);
+  } else {
+    snprintf(command, 256, "TimeshiftChannel:%i|True\n", channel);
+  }
+  result = SendCommand(command);
+
+  if (result.find("ERROR") != std::string::npos || result.length() == 0)
+  {
+    XBMC->Log(LOG_ERROR, "Could not start the timeshift for channel %i. %s", channel, result.c_str());
+    return false;
+  }
+  else
+  {
+    if (g_iSleepOnRTSPurl > 0)
+    {
+      XBMC->Log(LOG_DEBUG, "Sleeping %i ms before opening stream: %s", g_iSleepOnRTSPurl, result.c_str());
+      usleep(g_iSleepOnRTSPurl * 1000);
+    }
+
+    vector<string> timeshiftfields;
+
+    Tokenize(result, timeshiftfields, "|");
+
+    //[0] = rtsp url
+    //[1] = original (unresolved) rtsp url
+    //[2] = timeshift buffer filename
+
+    XBMC->Log(LOG_INFO, "Channel stream URL: %s, timeshift buffer: %s", timeshiftfields[0].c_str(), timeshiftfields[2].c_str());
+    m_iCurrentChannel = channel;
+    m_ConnectionString = timeshiftfields[0];
+
+    // Check the returned stream URL. When the URL is an rtsp stream, we need
+    // to close it again after watching to stop the timeshift.
+    // A radio web stream (added to the TV Server) will return the web stream
+    // URL without starting a timeshift.
+    if(timeshiftfields[0].compare(0,4, "rtsp") == 0)
+    {
+      m_bTimeShiftStarted = true;
+    }
+
+    if (m_tsreader != NULL)
+    {
+      //TODO: add check for changed rtsp url or timeshift buffer file...
+      //      In that case, we should open a new TsReader...
+      if (g_iTVServerXBMCBuild >=90 )
+      { // Continue with the existing TsReader.
+        XBMC->Log(LOG_INFO, "Re-using existing TsReader...");
+        return true;
+      } else {
+        m_tsreader->Close();
+        delete m_tsreader;
+        m_tsreader = new CTsReader();
+      }
+    } else {
+      m_tsreader = new CTsReader();
+    }
+
+    if(g_bDirectTSFileRead)
+    { // Timeshift buffer
+      m_tsreader->Open(timeshiftfields[2].c_str());
+    } else {
+      // RTSP url
+      m_tsreader->Open(timeshiftfields[0].c_str());
+      usleep(400000);
+    }
+  }
+#endif //TSREADER
   return true;
 }
 
 int cPVRClientMediaPortal::ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
 {
+#ifdef TSREADER
+  unsigned long read_wanted = iBufferSize;
+  unsigned long read_done   = 0;
+  static int read_timeouts  = 0;
+  unsigned char* bufptr = pBuffer;
+
+  //XBMC->Log(LOG_DEBUG, "->ReadLiveStream(buf_size=%i)", buf_size);
+  if (!m_tsreader)
+    return -1;
+
+  while (read_done < (unsigned long) iBufferSize)
+  {
+    read_wanted = iBufferSize - read_done;
+
+    if (m_tsreader->Read(bufptr, read_wanted, &read_wanted) > 0)
+    {
+      usleep(400000);
+      read_timeouts++;
+      return read_wanted; //writeNoSignalStream(buf, (buf_size - read_done));
+    }
+    read_done += read_wanted;
+
+    if ( read_done < (unsigned long) iBufferSize )
+    {
+      if (read_timeouts > 25)
+      {
+        XBMC->Log(LOG_INFO, "No data in 1 second");
+        read_timeouts = 0;
+        m_bPlayingNoSignal = true;
+        return read_done; //writeNoSignalStream(bufptr, read_wanted);
+      }
+      bufptr += read_wanted;
+      read_timeouts++;
+      usleep(40000);
+    }
+  }
+  read_timeouts = 0;
+  m_bPlayingNoSignal = false;
+  return read_done;//TSReadDone*TS_SIZE;
+#else
   return 0;
+#endif //TSREADER
 }
 
 void cPVRClientMediaPortal::CloseLiveStream(void)
@@ -998,6 +1167,13 @@ void cPVRClientMediaPortal::CloseLiveStream(void)
 
   if (m_bTimeShiftStarted)
   {
+#ifdef TSREADER
+    if (m_tsreader)
+    {
+      m_tsreader->Close();
+      delete_null(m_tsreader);
+    }
+#endif
     result = SendCommand("StopTimeshift:\n");
     XBMC->Log(LOG_INFO, "CloseLiveStream: %s", result.c_str());
     m_bTimeShiftStarted = false;
@@ -1010,6 +1186,18 @@ void cPVRClientMediaPortal::CloseLiveStream(void)
 bool cPVRClientMediaPortal::SwitchChannel(const PVR_CHANNEL &channel)
 {
   XBMC->Log(LOG_DEBUG, "->SwitchChannel(%i)", channel.iChannelNumber);
+
+#ifdef TSREADER
+  if ((g_iTVServerXBMCBuild < 90))
+  {
+    if (m_tsreader)
+    {
+      //Only remove the TSReader for TVServerXBMC older than v1.1.0.90
+      m_tsreader->Close();
+      delete_null(m_tsreader);
+    }
+  }
+#endif
 
   return OpenLiveStream(channel);
 }
@@ -1040,6 +1228,103 @@ bool cPVRClientMediaPortal::OpenRecordedStream(const PVR_RECORDING &recording)
   XBMC->Log(LOG_DEBUG, "->OpenRecordedStream(index=%i)", recording.iClientIndex);
   if (!IsUp())
      return false;
+#ifdef TSREADER
+
+  std::string recfile = "";
+
+  if (g_iTVServerXBMCBuild < 90)
+  { //TVServerXBMC older than v1.1.0.90
+    vector<string>  lines;
+    string          result;
+
+    result = SendCommand("ListRecordings:False\n");
+
+    Tokenize(result, lines, ",");
+
+    for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
+    {
+      string& data(*it);
+      uri::decode(data);
+
+      ///* Convert to UTF8 string format */
+      //if (m_bCharsetConv)
+      //  XBMC_unknown_to_utf8(str_result);
+
+      cRecording myrecording;
+      if (myrecording.ParseLine(data))
+      {
+        if( myrecording.Index() == recording.iClientIndex)
+        {
+          XBMC->Log(LOG_DEBUG, "RECORDING: %s", data.c_str() );
+
+          if (g_bUseRecordingsDir == true)
+          { //Replace path by given path in g_szRecordingsDir
+            if (g_szRecordingsDir.length() > 0)
+            {
+              myrecording.SetDirectory(g_szRecordingsDir);
+              recfile = myrecording.FilePath();
+            }
+            else
+            {
+              recfile  = myrecording.FilePath();
+            }
+          }
+          else
+          {
+            recfile = myrecording.Stream();
+          }
+
+        }
+        break;
+      }
+    }
+  }
+  else
+  {
+    // TVServerXBMC v1.1.0.90 or higher
+    string         result;
+    char           command[256];
+
+    if(g_bUseRecordingsDir)
+      snprintf(command, 256, "GetRecordingInfo:%i|False\n", recording.iClientIndex);
+    else
+      snprintf(command, 256, "GetRecordingInfo:%i|True\n", recording.iClientIndex);
+    result = SendCommand(command);
+
+    if(result.length() > 0)
+    {
+      cRecording myrecording;
+      if (myrecording.ParseLine(result))
+      {
+        XBMC->Log(LOG_DEBUG, "RECORDING: %s", result.c_str() );
+
+        if (g_bUseRecordingsDir == true)
+        { //Replace path by given path in g_szRecordingsDir
+          if (g_szRecordingsDir.length() > 0)
+          {
+            myrecording.SetDirectory(g_szRecordingsDir);
+            recfile = myrecording.FilePath();
+          }
+          else
+          {
+            recfile  = myrecording.FilePath();
+          }
+        }
+        else
+        {
+          recfile = myrecording.Stream();
+        }
+      }
+    }
+  }
+
+  if (recfile.length() > 0)
+  {
+    m_tsreader = new CTsReader();
+    m_tsreader->Open(recfile.c_str());
+    return true;
+  }
+#endif
 
   return false;
 }
@@ -1051,11 +1336,51 @@ void cPVRClientMediaPortal::CloseRecordedStream(void)
   if (!IsUp())
      return;
 
+#ifdef TSREADER
+  if (m_tsreader)
+  {
+    XBMC->Log(LOG_DEBUG, "CloseRecordedStream: Stop TSReader...");
+    m_tsreader->Close();
+  }
+  else
+  {
+    XBMC->Log(LOG_DEBUG, "CloseRecordedStream: Nothing to do.");
+  }
+#endif
 }
 
 int cPVRClientMediaPortal::ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize)
 {
+#ifdef TSREADER
+  unsigned long read_wanted = iBufferSize;
+  unsigned long read_done   = 0;
+  unsigned char* bufptr = pBuffer;
+
+  while (read_done < (unsigned long) iBufferSize)
+  {
+    read_wanted = iBufferSize - read_done;
+    if (!m_tsreader)
+      return -1;
+
+    if (m_tsreader->Read(bufptr, read_wanted, &read_wanted) > 0)
+    {
+      usleep(20000);
+      return read_wanted; //writeNoSignalStream(buf, (buf_size - read_done));
+    }
+    read_done += read_wanted;
+
+    if ( read_done < (unsigned long) iBufferSize )
+    {
+      bufptr += read_wanted;
+      usleep(20000);
+    }
+  }
+  //read_timeouts = 0;
+  m_bPlayingNoSignal = false;
+  return read_done;//TSReadDone*TS_SIZE;
+#else
   return -1;
+#endif
 }
 
 /*
@@ -1080,7 +1405,6 @@ const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelin
   // Closing existing timeshift streams will be done in the MediaPortal TV
   // Server plugin, so we can request the new channel stream directly without
   // stopping the existing stream
-
   if(g_bResolveRTSPHostname == false)
   {
     if (g_iTVServerXBMCBuild < 90)

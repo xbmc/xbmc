@@ -1,0 +1,15 @@
+CROSS_COMPILE=        avr32-linux-uclibc-
+COMPILE_OPTS =        -Os  $(INCLUDES) -msoft-float -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 C =            c
+C_COMPILER =        $(CROSS_COMPILE)gcc
+C_FLAGS =        $(COMPILE_OPTS)
+CPP =            cpp
+CPLUSPLUS_COMPILER =    $(CROSS_COMPILE)c++
+CPLUSPLUS_FLAGS =    $(COMPILE_OPTS) -Wall -fuse-cxa-atexit -DBSD=1 OBJ =            o
+LINK =            $(CROSS_COMPILE)c++ -o
+LINK_OPTS =         
+CONSOLE_LINK_OPTS =    $(LINK_OPTS)
+LIBRARY_LINK =        $(CROSS_COMPILE)ar cr LIBRARY_LINK_OPTS =     
+LIB_SUFFIX =        a
+LIBS_FOR_CONSOLE_APPLICATION =
+LIBS_FOR_GUI_APPLICATION =
+EXE =

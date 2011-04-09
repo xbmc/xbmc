@@ -1,0 +1,23 @@
+# Note: AXIS_TOP_DIR is assumed to already be set in your environment.
+# You can set this using the "init_env" script.
+# See http://developer.axis.com/doc/software/apps/apps-howto.html
+# for more information.
+AXIS_DIR = $(AXIS_TOP_DIR)/target/cris-axis-linux-gnu
+COMPILE_OPTS = $(INCLUDES) -I. -mlinux -isystem $(AXIS_DIR)/include -Wall -O2 -DSOCKLEN_T=socklen_t -DCRIS -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64
+C =			c
+C_COMPILER =		gcc-cris
+C_FLAGS =		$(COMPILE_OPTS)
+CPP =			cpp
+CPLUSPLUS_COMPILER =	c++-cris
+CPLUSPLUS_FLAGS =	$(COMPILE_OPTS) -Wno-ctor-dtor-privacy -ansi -pipe
+OBJ =			o
+LINK =			c++-cris -static -o
+AXIS_LINK_OPTS =	-L$(AXIS_DIR)/lib
+LINK_OPTS =		-L.
+CONSOLE_LINK_OPTS =	$(LINK_OPTS) -L$(AXIS_DIR)/lib -mlinux
+LIBRARY_LINK =		ld-cris -mcrislinux -o
+LIBRARY_LINK_OPTS =	$(LINK_OPTS) -r -Bstatic
+LIB_SUFFIX =			a
+LIBS_FOR_CONSOLE_APPLICATION =
+LIBS_FOR_GUI_APPLICATION =
+EXE =

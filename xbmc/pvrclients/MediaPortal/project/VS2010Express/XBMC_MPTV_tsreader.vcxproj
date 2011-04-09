@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>pvrclient_mptv_tsreader</ProjectName>
+    <ProjectGuid>{2C2D2B7F-EC8F-4614-86D9-C0FDA61678CA}</ProjectGuid>
+    <RootNamespace>XBMC_MPTV_tsreader</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\..\addons\pvr.team-mediaportal.tvserver-tsreader\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug-tsreader\</IntDir>
+    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</IgnoreImportLibrary>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\..\addons\pvr.team-mediaportal.tvserver\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release-tsreader\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">XBMC_MPTV-tsreader_win32</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.pvr</TargetExt>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">XBMC_MPTV-tsreader_win32</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.pvr</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\;..\..\tsreader;..\..\lib\live555\liveMedia\include;..\..\lib\live555\BasicUsageEnvironment\include;..\..\lib\live555\UsageEnvironment\include;..\..\lib\live555\groupsock\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;MPTV_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T;TSREADER;LIVE555;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>..\..\..\..\..\addons\pvr.team-mediaportal.tvserver-tsreader\XBMC_MPTV-tsreader_win32.pvr</OutputFile>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)XBMC_MPTV.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)XBMC_MPTV.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\;..\..\tsreader;..\..\lib\live555\liveMedia\include;..\..\lib\live555\BasicUsageEnvironment\include;..\..\lib\live555\UsageEnvironment\include;..\..\lib\live555\groupsock\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_WINDOWS;MPTV_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T;TSREADER;LIVE555;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>..\..\..\..\..\addons\pvr.team-mediaportal.tvserver-tsreader\XBMC_MPTV-tsreader_win32.pvr</OutputFile>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)XBMC_MPTV.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>
+      </OptimizeReferences>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)XBMC_MPTV.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\channels.cpp" />
+    <ClCompile Include="..\..\client.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
+    <ClCompile Include="..\..\epg.cpp" />
+    <ClCompile Include="..\..\lib\tsreader\AutoLock.cpp" />
+    <ClCompile Include="..\..\lib\tsreader\CritSec.cpp" />
+    <ClCompile Include="..\..\lib\tsreader\FileReader.cpp" />
+    <ClCompile Include="..\..\lib\tsreader\MemoryBuffer.cpp" />
+    <ClCompile Include="..\..\lib\tsreader\MemoryReader.cpp" />
+    <ClCompile Include="..\..\lib\tsreader\MemorySink.cpp" />
+    <ClCompile Include="..\..\lib\tsreader\MultiFileReader.cpp" />
+    <ClCompile Include="..\..\lib\tsreader\RTSPClient.cpp" />
+    <ClCompile Include="..\..\lib\tsreader\TSReader.cpp" />
+    <ClCompile Include="..\..\lib\tsreader\TSThread.cpp" />
+    <ClCompile Include="..\..\lib\tsreader\WaitEvent.cpp" />
+    <ClCompile Include="..\..\pvrclient-mediaportal.cpp" />
+    <ClCompile Include="..\..\recordings.cpp" />
+    <ClCompile Include="..\..\Socket.cpp" />
+    <ClCompile Include="..\..\timers.cpp" />
+    <ClCompile Include="..\..\uri.cpp" />
+    <ClCompile Include="..\..\utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\channels.h" />
+    <ClInclude Include="..\..\client.h" />
+    <ClInclude Include="..\..\epg.h" />
+    <ClInclude Include="..\..\lib\tsreader\AutoLock.h" />
+    <ClInclude Include="..\..\lib\tsreader\CritSec.h" />
+    <ClInclude Include="..\..\lib\tsreader\FileReader.h" />
+    <ClInclude Include="..\..\lib\tsreader\MemoryBuffer.h" />
+    <ClInclude Include="..\..\lib\tsreader\MemoryReader.h" />
+    <ClInclude Include="..\..\lib\tsreader\MemorySink.h" />
+    <ClInclude Include="..\..\lib\tsreader\MultiFileReader.h" />
+    <ClInclude Include="..\..\lib\tsreader\RTSPClient.h" />
+    <ClInclude Include="..\..\lib\tsreader\TSReader.h" />
+    <ClInclude Include="..\..\lib\tsreader\TSThread.h" />
+    <ClInclude Include="..\..\lib\tsreader\WaitEvent.h" />
+    <ClInclude Include="..\..\os-dependent.h" />
+    <ClInclude Include="..\..\uri.h" />
+    <ClInclude Include="..\..\windows\os_windows.h" />
+    <ClInclude Include="..\..\pvrclient-mediaportal.h" />
+    <ClInclude Include="..\..\recordings.h" />
+    <ClInclude Include="..\..\Socket.h" />
+    <ClInclude Include="..\..\StdString.h" />
+    <ClInclude Include="..\..\timers.h" />
+    <ClInclude Include="..\..\utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\README" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\lib\live555\LiveMedia555.vcxproj">
+      <Project>{3c398bd4-5714-4802-ab86-d43add15b3c0}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

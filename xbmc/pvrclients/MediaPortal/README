@@ -6,8 +6,8 @@ Supported platforms (pvrclient):
 - OSX (should work, not tested by me)
 
 Dependencies:
-- MediaPortal TVServer 1.1.0 or higher
-- TVServerXBMC v1.1.0.90 or higher
+- MediaPortal TVServer 1.1.0, 1.1.1, 1.1.2 or 1.1.3. May work also on newer versions
+- TVServerXBMC v1.1.0.100 or higher
 
 THIS IS A PRELIMINARY README AND IS SUBJECT TO CHANGE!!!
 

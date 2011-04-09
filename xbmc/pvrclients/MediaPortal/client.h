@@ -34,7 +34,11 @@
 #define DEFAULT_RADIO                 true
 #define DEFAULT_TIMEOUT               6
 #define DEFAULT_HANDLE_MSG            false
+#ifdef TSREADER
+#define DEFAULT_RESOLVE_RTSP_HOSTNAME false
+#else
 #define DEFAULT_RESOLVE_RTSP_HOSTNAME true
+#endif
 #define DEFAULT_READ_GENRE            false
 #define DEFAULT_SLEEP_RTSP_URL        0
 #define DEFAULT_USE_REC_DIR           false

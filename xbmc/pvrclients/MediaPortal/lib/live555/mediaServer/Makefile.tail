@@ -1,0 +1,37 @@
+##### End of variables to change
+
+MEDIA_SERVER = live555MediaServer$(EXE)
+
+ALL = $(MEDIA_SERVER)
+all: $(ALL)
+
+.$(C).$(OBJ):
+	$(C_COMPILER) -c $(C_FLAGS) $<       
+
+.$(CPP).$(OBJ):
+	$(CPLUSPLUS_COMPILER) -c $(CPLUSPLUS_FLAGS) $<
+
+MEDIA_SERVER_OBJS = live555MediaServer.$(OBJ) DynamicRTSPServer.$(OBJ)
+
+live555MediaServer,$(CPP):	DynamicRTSPServer.hh version.hh
+DynamicRTSPServer.$(CPP):	DynamicRTSPServer.hh
+
+USAGE_ENVIRONMENT_DIR = ../UsageEnvironment
+USAGE_ENVIRONMENT_LIB = $(USAGE_ENVIRONMENT_DIR)/libUsageEnvironment.$(LIB_SUFFIX)
+BASIC_USAGE_ENVIRONMENT_DIR = ../BasicUsageEnvironment
+BASIC_USAGE_ENVIRONMENT_LIB = $(BASIC_USAGE_ENVIRONMENT_DIR)/libBasicUsageEnvironment.$(LIB_SUFFIX)
+LIVEMEDIA_DIR = ../liveMedia
+LIVEMEDIA_LIB = $(LIVEMEDIA_DIR)/libliveMedia.$(LIB_SUFFIX)
+GROUPSOCK_DIR = ../groupsock
+GROUPSOCK_LIB = $(GROUPSOCK_DIR)/libgroupsock.$(LIB_SUFFIX)
+LOCAL_LIBS =	$(LIVEMEDIA_LIB) $(GROUPSOCK_LIB) \
+		$(BASIC_USAGE_ENVIRONMENT_LIB) $(USAGE_ENVIRONMENT_LIB)
+LIBS =			$(LOCAL_LIBS) $(LIBS_FOR_CONSOLE_APPLICATION)
+
+live555MediaServer$(EXE):	$(MEDIA_SERVER_OBJS) $(LOCAL_LIBS)
+	$(LINK)$@ $(CONSOLE_LINK_OPTS) $(MEDIA_SERVER_OBJS) $(LIBS)
+
+clean:
+	-rm -rf *.$(OBJ) $(ALL) core *.core *~ include/*~
+
+##### Any additional, platform-specific rules come here:

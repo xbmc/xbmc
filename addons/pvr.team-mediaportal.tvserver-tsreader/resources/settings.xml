@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <setting id="host" type="text" label="30000" option="urlencoded" default="127.0.0.1" />
+    <setting id="port" type="integer" label="30001" default="9596" />
+    <setting id="ftaonly" type="bool" label="30002" default="false" />
+    <setting id="useradio" type="bool" label="30003" default="true" />
+
+    <setting id="timeout" type="enum" label="30005" values="0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15" default="6"/>
+    <setting id="tvgroup" type="text" label="30006" default="" />
+    <setting id="radiogroup" type="text" label="30007" default="" />
+
+    <setting id="readgenre" type="bool" label="30009" default="false" />
+    <setting id="sleeponrtspurl" type="enum" label="30010" values="0|100|200|300|400|500|600|700|800|900|1000|1200|1500|2000|2500" default="0"/>
+    <setting id="userecordingsdir" type="bool" label="30011" default="true" />
+    <setting id="recordingsdir" type="folder" label="30012" default="" />
+    <setting id="directtsfileread" type="bool" label="30013" default="true" />
+</settings>

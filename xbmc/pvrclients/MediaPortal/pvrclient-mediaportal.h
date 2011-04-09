@@ -35,6 +35,10 @@
 /* Local includes */
 #include "Socket.h"
 
+#ifdef TSREADER
+#include "lib/tsreader/TSReader.h"
+#endif
+
 class cPVRClientMediaPortal
 {
 public:
@@ -117,7 +121,14 @@ private:
   std::string             m_BackendVersion;
   time_t                  m_BackendUTCoffset;
   time_t                  m_BackendTime;
+#ifdef TSREADER
+  CTsReader*              m_tsreader;
 
+  char                    m_noSignalStreamData[ 6 + 0xffff ];
+  long                    m_noSignalStreamSize;
+  long                    m_noSignalStreamReadPos;
+  bool                    m_bPlayingNoSignal;
+#endif //TSREADER
   void Close();
 
   //Used for TV Server communication:

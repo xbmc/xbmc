@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Mediaportal Hostname</string>
+    <string id="30001">Mediaportal XBMC plugin Port</string>
+    <string id="30002">Free-to-air only</string>
+    <string id="30003">Include Radio</string>
+
+    <string id="30005">Connect timeout (s)</string>
+    <string id="30006">Import only TV Channels from group</string>
+    <string id="30007">Import only Radio Channels from group</string>
+
+    <string id="30009">EPG: Read genre strings (slow)</string>
+    <string id="30010">Wait time after tuning a channel (ms)</string>
+    <string id="30011">Play recordings directly (no streaming)</string>
+    <string id="30012">Mediaportal recordings directory</string>
+    <string id="30013">Direct playback from Timeshift buffer (no rtsp)</string>
+</strings>

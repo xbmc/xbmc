@@ -1,0 +1,2 @@
+INCLUDES = -Iinclude -I../UsageEnvironment/include
+##### Change the following for your environment: 

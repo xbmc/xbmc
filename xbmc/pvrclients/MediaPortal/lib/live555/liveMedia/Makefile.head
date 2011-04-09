@@ -1,0 +1,2 @@
+INCLUDES = -Iinclude -I../UsageEnvironment/include -I../groupsock/include
+##### Change the following for your environment: 

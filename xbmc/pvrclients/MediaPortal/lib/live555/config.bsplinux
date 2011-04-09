@@ -1,0 +1,18 @@
+CROSS_COMPILE=
+COMPILE_OPTS =          $(INCLUDES) -I. -O2 -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64
+C =                     c
+C_COMPILER =            $(CROSS_COMPILE)ecc
+C_FLAGS =               $(COMPILE_OPTS)
+CPP =                   cpp
+CPLUSPLUS_COMPILER =    $(CROSS_COMPILE)e++
+CPLUSPLUS_FLAGS =       $(COMPILE_OPTS) -Wall -DBSD=1
+OBJ =                   o
+LINK =                  $(CROSS_COMPILE)e++ -o
+LINK_OPTS =             -L.
+CONSOLE_LINK_OPTS =     $(LINK_OPTS)
+LIBRARY_LINK =          $(CROSS_COMPILE)eld -o
+LIBRARY_LINK_OPTS =     $(LINK_OPTS) -r -Bstatic
+LIB_SUFFIX =                    a
+LIBS_FOR_CONSOLE_APPLICATION = -lm
+LIBS_FOR_GUI_APPLICATION =
+EXE =

@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\tsreader">
+      <UniqueIdentifier>{7f01a5af-f47e-4397-9c32-0d3c444937d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\tsreader">
+      <UniqueIdentifier>{73044b03-a94f-415e-9888-a080452a1acd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\channels.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\epg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\pvrclient-mediaportal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\recordings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Socket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\timers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tsreader\AutoLock.cpp">
+      <Filter>Source Files\tsreader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tsreader\CritSec.cpp">
+      <Filter>Source Files\tsreader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tsreader\FileReader.cpp">
+      <Filter>Source Files\tsreader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tsreader\MemoryBuffer.cpp">
+      <Filter>Source Files\tsreader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tsreader\MemoryReader.cpp">
+      <Filter>Source Files\tsreader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tsreader\MemorySink.cpp">
+      <Filter>Source Files\tsreader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tsreader\MultiFileReader.cpp">
+      <Filter>Source Files\tsreader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tsreader\RTSPClient.cpp">
+      <Filter>Source Files\tsreader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tsreader\TSReader.cpp">
+      <Filter>Source Files\tsreader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tsreader\TSThread.cpp">
+      <Filter>Source Files\tsreader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tsreader\WaitEvent.cpp">
+      <Filter>Source Files\tsreader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\uri.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\channels.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\epg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\os-dependent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\windows\os_windows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\pvrclient-mediaportal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\recordings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Socket.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\StdString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\timers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tsreader\WaitEvent.h">
+      <Filter>Header Files\tsreader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tsreader\AutoLock.h">
+      <Filter>Header Files\tsreader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tsreader\CritSec.h">
+      <Filter>Header Files\tsreader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tsreader\FileReader.h">
+      <Filter>Header Files\tsreader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tsreader\MemoryBuffer.h">
+      <Filter>Header Files\tsreader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tsreader\MemoryReader.h">
+      <Filter>Header Files\tsreader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tsreader\MemorySink.h">
+      <Filter>Header Files\tsreader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tsreader\MultiFileReader.h">
+      <Filter>Header Files\tsreader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tsreader\RTSPClient.h">
+      <Filter>Header Files\tsreader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tsreader\TSReader.h">
+      <Filter>Header Files\tsreader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tsreader\TSThread.h">
+      <Filter>Header Files\tsreader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\uri.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\README" />
+  </ItemGroup>
+</Project>

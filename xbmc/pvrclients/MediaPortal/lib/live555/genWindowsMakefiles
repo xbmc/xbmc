@@ -1,0 +1,31 @@
+#!/bin/sh
+
+cd liveMedia
+/bin/rm -f liveMedia.mak
+/bin/rm -f Makefile
+cat Makefile.head ../win32config Makefile.tail > liveMedia.mak
+
+cd ../groupsock
+/bin/rm -f groupsock.mak
+/bin/rm -f Makefile
+cat Makefile.head ../win32config Makefile.tail > groupsock.mak
+
+cd ../UsageEnvironment
+/bin/rm -f UsageEnvironment.mak
+/bin/rm -f Makefile
+cat Makefile.head ../win32config Makefile.tail > UsageEnvironment.mak
+
+cd ../BasicUsageEnvironment
+/bin/rm -f BasicUsageEnvironment.mak
+/bin/rm -f Makefile
+cat Makefile.head ../win32config Makefile.tail > BasicUsageEnvironment.mak
+
+cd ../testProgs
+/bin/rm -f testProgs.mak
+/bin/rm -f Makefile
+cat Makefile.head ../win32config Makefile.tail > testProgs.mak
+
+cd ../mediaServer
+/bin/rm -f mediaServer.mak
+/bin/rm -f Makefile
+cat Makefile.head ../win32config Makefile.tail > mediaServer.mak
