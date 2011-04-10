@@ -20,7 +20,7 @@
  */
 
 #if _WIN32
-#pragma comment(lib, "pcrecpp.lib")
+#define PCRE_STATIC
 #endif
 #include <pcrecpp.h>
 #include <cmath>

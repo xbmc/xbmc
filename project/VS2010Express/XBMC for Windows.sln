@@ -20,6 +20,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visMilkdrop", "..\..\xbmc\v
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcmyth_dll", "..\..\lib\cmyth\Win32\libcmyth.vcxproj", "{F9E6874D-60A8-49BA-9393-A2105E63ABCF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpcre", "..\..\lib\win32\pcre\libpcre\libpcre.vcxproj", "{D8097C41-605D-4917-8957-9DF7F44A18CD}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXDAAP", "..\..\lib\libXDAAP\libXDAAP_win32\libXDAAP_win32.vcxproj", "{19B16CD0-3B47-47B7-AB0E-81EF2BF1B187}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libenca", "..\..\lib\enca\libenca_win32\libenca_win32.vcxproj", "{22B25AEC-7223-46FC-8356-4418327EFDE1}"
@@ -146,6 +148,14 @@ Global
 		{F9E6874D-60A8-49BA-9393-A2105E63ABCF}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{F9E6874D-60A8-49BA-9393-A2105E63ABCF}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{F9E6874D-60A8-49BA-9393-A2105E63ABCF}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{D8097C41-605D-4917-8957-9DF7F44A18CD}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{19B16CD0-3B47-47B7-AB0E-81EF2BF1B187}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{19B16CD0-3B47-47B7-AB0E-81EF2BF1B187}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{19B16CD0-3B47-47B7-AB0E-81EF2BF1B187}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32

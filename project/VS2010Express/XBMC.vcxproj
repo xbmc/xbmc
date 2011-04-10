@@ -2008,6 +2008,10 @@
       <Project>{7a74ed4b-2bf5-47d7-b43e-c80f714417fb}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\..\lib\win32\pcre\libpcre\libpcre.vcxproj">
+      <Project>{d8097c41-605d-4917-8957-9df7f44a18cd}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
     <ProjectReference Include="..\..\lib\libapetag\libapetag.vcxproj">
       <Project>{bdd2cb99-93c5-4a70-acbf-396ffb961ad3}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
