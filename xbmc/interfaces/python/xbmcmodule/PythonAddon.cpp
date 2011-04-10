@@ -24,6 +24,7 @@
 #include "pythreadstate.h"
 #include "addons/AddonManager.h"
 #include "addons/GUIDialogAddonSettings.h"
+#include "utils/log.h"
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
@@ -41,6 +42,22 @@ using ADDON::CAddonMgr;
 
 namespace PYXBMC
 {
+
+  static const char* getDefaultId()
+  {
+    const char* id = NULL;
+
+    // Get a reference to the main module
+    // and global dictionary
+    PyObject* main_module = PyImport_AddModule((char*)"__main__");
+    PyObject* global_dict = PyModule_GetDict(main_module);
+    // Extract a reference to the function "func_name"
+    // from the global dictionary
+    PyObject* pyid = PyDict_GetItemString(global_dict, "__xbmcaddonid__");
+    id = PyString_AsString(pyid);
+    return id;
+  }
+
   PyObject* Addon_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
     Addon *self;
@@ -66,22 +83,18 @@ namespace PYXBMC
 
     // if the id wasn't passed then get the id from
     //   the global dictionary
-    if (id == NULL)
+    if (!id || !CAddonMgr::Get().GetAddon(id, self->pAddon))
     {
-      // Get a reference to the main module
-      // and global dictionary
-      PyObject* main_module = PyImport_AddModule((char*)"__main__");
-      PyObject* global_dict = PyModule_GetDict(main_module);
-      // Extract a reference to the function "func_name"
-      // from the global dictionary
-      PyObject* pyid = PyDict_GetItemString(global_dict, "__xbmcaddonid__");
-      id = PyString_AsString(pyid);
-    }
+      // try the default ...
+      id = getDefaultId();
 
-    if (!CAddonMgr::Get().GetAddon(id, self->pAddon))
-    {
-      PyErr_SetString(PyExc_Exception, "Could not get AddonPtr!");
-      return NULL;
+      if (!CAddonMgr::Get().GetAddon(id, self->pAddon))
+      {
+        PyErr_SetString(PyExc_Exception, "Could not get AddonPtr!");
+        return NULL;
+      }
+      else
+        CLog::Log(LOGERROR,"Use of deprecated functionality. Please to not assume that \"os.getcwd\" will return the script directory.");
     }
 
     return (PyObject*)self;
