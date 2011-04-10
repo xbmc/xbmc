@@ -23,15 +23,19 @@
 #include "threads/SingleLock.h"
 
 using namespace std;
+using namespace ANNOUNCEMENT;
 
 Observable::Observable()
 {
   m_observers.clear();
+  m_bAsyncAllowed = true;
+  CAnnouncementManager::AddAnnouncer(this);
 }
 
 Observable::~Observable()
 {
   m_observers.clear();
+  CAnnouncementManager::RemoveAnnouncer(this);
 }
 
 Observable &Observable::operator=(const Observable &observable)
@@ -69,7 +73,7 @@ void Observable::NotifyObservers(const CStdString& strMessage /* = "" */, bool b
   CSingleLock lock(m_critSection);
   if (m_bObservableChanged)
   {
-    if (bAsync)
+    if (bAsync && m_bAsyncAllowed)
     {
       CJobManager::GetInstance().AddJob(new ObservableMessageJob(*this, strMessage), this);
     }
@@ -86,6 +90,15 @@ void Observable::SetChanged(bool SetTo)
 {
   CSingleLock lock(m_critSection);
   m_bObservableChanged = SetTo;
+}
+
+void Observable::Announce(EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+  if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "ApplicationStop"))
+  {
+    CSingleLock lock(m_critSection);
+    m_bAsyncAllowed = false;
+  }
 }
 
 ObservableMessageJob::ObservableMessageJob(const Observable &obs, const CStdString &strMessage)
