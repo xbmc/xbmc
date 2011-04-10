@@ -406,44 +406,68 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   }
 
   if (bShowProgress)
+  {
     pDlgProgress->SetPercentage(10);
+    pDlgProgress->Progress();
+  }
 
   /* stop the thread */
   Stop();
   if (bShowProgress)
+  {
     pDlgProgress->SetPercentage(20);
+    pDlgProgress->Progress();
+  }
 
   if (m_database.Open())
   {
     /* clean the EPG database */
     m_epg->Clear(true);
     if (bShowProgress)
+    {
       pDlgProgress->SetPercentage(30);
+      pDlgProgress->Progress();
+    }
 
     /* delete all TV channel groups */
     m_database.DeleteChannelGroups(false);
     if (bShowProgress)
+    {
       pDlgProgress->SetPercentage(50);
+      pDlgProgress->Progress();
+    }
 
     /* delete all radio channel groups */
     m_database.DeleteChannelGroups(true);
     if (bShowProgress)
+    {
       pDlgProgress->SetPercentage(60);
+      pDlgProgress->Progress();
+    }
 
     /* delete all channels */
     m_database.DeleteChannels();
     if (bShowProgress)
+    {
       pDlgProgress->SetPercentage(70);
+      pDlgProgress->Progress();
+    }
 
     /* delete all channel settings */
     m_database.DeleteChannelSettings();
     if (bShowProgress)
+    {
       pDlgProgress->SetPercentage(80);
+      pDlgProgress->Progress();
+    }
 
     /* delete all client information */
     m_database.DeleteClients();
     if (bShowProgress)
+    {
       pDlgProgress->SetPercentage(90);
+      pDlgProgress->Progress();
+    }
 
     m_database.Close();
   }
