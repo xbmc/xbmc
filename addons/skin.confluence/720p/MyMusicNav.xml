@@ -18,6 +18,7 @@
 			<include>AddonInfoListView1</include> <!-- view id = 550 -->
 		</control>
 		<include>CommonPageCount</include>
+		<include>CommonNowPlaying</include>
 		<include>BehindDialogFadeOut</include>
 		<include>ScrollOffsetLabel</include>
 		<control type="group">

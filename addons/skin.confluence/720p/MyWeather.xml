@@ -701,7 +701,7 @@
 				</control>
 			</control>
 		</control>
-		<include>CommonPageCount</include>
+		<include>CommonNowPlaying</include>
 		<control type="group">
 			<posx>-250</posx>
 			<include>SideBladeLeft</include>

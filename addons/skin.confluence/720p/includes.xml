@@ -345,48 +345,86 @@
 			<texture>Confluence_Logo.png</texture>
 		</control>
 	</include>
+	<include name="CommonNowPlaying">
+		<control type="group">
+			<visible>Player.HasMedia</visible>
+			<include>VisibleFadeEffect</include>
+			<include>Window_OpenClose_Animation</include>
+			<control type="image">
+				<description>Icon</description>
+				<posx>30</posx>
+				<posy>56r</posy>
+				<width>50</width>
+				<height>50</height>
+				<texture>NowPlayingIcon.png</texture>
+			</control>
+			<control type="label">
+				<posx>85</posx>
+				<posy>53r</posy>
+				<width>700</width>
+				<height>20</height>
+				<label>$INFO[MusicPlayer.Title]$INFO[VideoPlayer.Title] - ([COLOR=blue]$INFO[Player.Time] / $INFO[Player.Duration,][/COLOR])</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<posx>85</posx>
+				<posy>30r</posy>
+				<width>700</width>
+				<height>20</height>
+				<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Album, - ]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>Player.HasAudio</visible>
+			</control>
+			<control type="label">
+				<posx>85</posx>
+				<posy>30r</posy>
+				<width>700</width>
+				<height>20</height>
+				<label>$INFO[VideoPlayer.Studio]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>Player.HasVideo + VideoPlayer.Content(Movies)</visible>
+			</control>
+			<control type="label">
+				<posx>85</posx>
+				<posy>30r</posy>
+				<width>700</width>
+				<height>20</height>
+				<label>$INFO[VideoPlayer.TVShowTitle]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>Player.HasVideo + VideoPlayer.Content(Episodes)</visible>
+			</control>
+			<control type="label">
+				<posx>85</posx>
+				<posy>30r</posy>
+				<width>700</width>
+				<height>20</height>
+				<label>$INFO[VideoPlayer.Artist]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>Player.HasVideo + VideoPlayer.Content(MusicVideos)</visible>
+			</control>
+		</control>
+	</include>
 	<include name="CommonPageCount">
-		<control type="image">
-			<description>Icon</description>
-			<posx>30</posx>
-			<posy>56r</posy>
-			<width>50</width>
-			<height>50</height>
-			<texture>NowPlayingIcon.png</texture>
-			<visible>Player.HasMedia</visible>
-			<include>VisibleFadeEffect</include>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<posx>85</posx>
-			<posy>53r</posy>
-			<width>700</width>
-			<height>20</height>
-			<label>$INFO[MusicPlayer.Artist] - $INFO[MusicPlayer.Album]</label>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>font12</font>
-			<textcolor>grey</textcolor>
-			<shadowcolor>black</shadowcolor>
-			<visible>Player.HasMedia</visible>
-			<include>VisibleFadeEffect</include>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<posx>85</posx>
-			<posy>30r</posy>
-			<width>700</width>
-			<height>20</height>
-			<label>$INFO[MusicPlayer.Title]$INFO[VideoPlayer.Title] - ([COLOR=blue]$INFO[Player.Time] / $INFO[Player.Duration,][/COLOR])</label>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>font12</font>
-			<textcolor>grey</textcolor>
-			<shadowcolor>black</shadowcolor>
-			<visible>Player.HasMedia</visible>
-			<include>VisibleFadeEffect</include>
-			<include>Window_OpenClose_Animation</include>
-		</control>
 		<control type="label">
 			<description>Page Count Label</description>
 			<posx>40r</posx>
@@ -834,136 +872,6 @@
 					<onup>610</onup>
 					<ondown>611</ondown>
 				</control>
-			</control>
-		</control>
-	</include>
-	<include name="CommonNowPlaying">
-		<control type="group">
-			<posx>10</posx>
-			<posy>345</posy>
-			<visible>Player.HasAudio</visible>
-			<include>VisibleFadeEffect</include>
-			<control type="button" id="608">
-				<posx>38</posx>
-				<posy>0</posy>
-				<width>164</width>
-				<height>164</height>
-				<label>-</label>
-				<texturefocus border="5">folder-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<onleft>50</onleft>
-				<onright>50</onright>
-				<onup>603</onup>
-				<ondown>611</ondown>
-				<onclick>fullscreen</onclick>
-			</control>
-			<control type="image">
-				<posx>40</posx>
-				<posy>2</posy>
-				<width>160</width>
-				<height>160</height>
-				<texture>$INFO[MusicPlayer.Cover]</texture>
-				<bordertexture border="3">black-back2.png</bordertexture>
-				<bordersize>5</bordersize>
-				<aspectratio align="center">keep</aspectratio>
-			</control>
-			<control type="fadelabel">
-				<posx>0</posx>
-				<posy>170</posy>
-				<width>240</width>
-				<height>20</height>
-				<label>$INFO[MusicPlayer.Title]</label>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font12</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scrollout>false</scrollout>
-				<pauseatend>2000</pauseatend>
-			</control>
-			<control type="fadelabel">
-				<posx>0</posx>
-				<posy>190</posy>
-				<width>240</width>
-				<height>20</height>
-				<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Album, | ]</label>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font10</font>
-				<textcolor>grey2</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scrollout>false</scrollout>
-				<pauseatend>2000</pauseatend>
-			</control>
-		</control>
-		<control type="group">
-			<posx>10</posx>
-			<posy>345</posy>
-			<visible>Player.HasVideo</visible>
-			<include>VisibleFadeEffect</include>
-			<control type="button" id="608">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>240</width>
-				<height>164</height>
-				<label>-</label>
-				<texturefocus border="5">folder-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<onleft>50</onleft>
-				<onright>50</onright>
-				<onup>603</onup>
-				<ondown>611</ondown>
-				<onclick>fullscreen</onclick>
-			</control>
-			<control type="videowindow">
-				<posx>2</posx>
-				<posy>2</posy>
-				<width>236</width>
-				<height>160</height>
-			</control>
-			<control type="fadelabel">
-				<posx>0</posx>
-				<posy>170</posy>
-				<width>240</width>
-				<height>20</height>
-				<label>$INFO[VideoPlayer.Title]</label>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font12</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scrollout>false</scrollout>
-				<pauseatend>2000</pauseatend>
-			</control>
-			<control type="fadelabel">
-				<posx>0</posx>
-				<posy>190</posy>
-				<width>240</width>
-				<height>20</height>
-				<label>$INFO[VideoPlayer.TVShowTitle,, - ]$INFO[VideoPlayer.Season,,x]$INFO[VideoPlayer.Episode]</label>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font10</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scrollout>false</scrollout>
-				<pauseatend>2000</pauseatend>
-				<visible>VideoPlayer.Content(Episodes)</visible>
-			</control>
-			<control type="fadelabel">
-				<posx>0</posx>
-				<posy>190</posy>
-				<width>240</width>
-				<height>20</height>
-				<label>$INFO[VideoPlayer.Year]$INFO[VideoPlayer.Director, | ]$INFO[VideoPlayer.Genre, | ]</label>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font10</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scrollout>false</scrollout>
-				<pauseatend>2000</pauseatend>
-				<visible>VideoPlayer.Content(Movies)</visible>
 			</control>
 		</control>
 	</include>
