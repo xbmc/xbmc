@@ -84,7 +84,6 @@ class DllLibOpenMax : public DllDynamic, DllLibOpenMaxInterface
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-// debug spew defines
 #define OMX_INIT_STRUCTURE(a) \
   memset(&(a), 0, sizeof(a)); \
   (a).nSize = sizeof(a); \
