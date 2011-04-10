@@ -360,29 +360,6 @@
 					</control>
 				</focusedlayout>
 			</control>
-			<control type="grouplist">
-				<description>Media Codec Flagging Images</description>
-				<posx>10</posx>
-				<posy>215</posy>
-				<width>290</width>
-				<align>right</align>
-				<itemgap>0</itemgap>
-				<orientation>horizontal</orientation>
-				<include>VideoCodecFlaggingConditions</include>
-				<include>VideoTypeHackFlaggingConditions</include>
-				<visible>Skin.HasSetting(View508HideInfo)</visible>
-			</control>
-			<control type="grouplist">
-				<description>Media Codec Flagging Images</description>
-				<posx>300r</posx>
-				<posy>215</posy>
-				<width>290</width>
-				<align>left</align>
-				<itemgap>0</itemgap>
-				<orientation>horizontal</orientation>
-				<include>AudioCodecFlaggingConditions</include>
-				<visible>Skin.HasSetting(View508HideInfo)</visible>
-			</control>
 			<control type="scrollbar" id="60">
 				<posx>310</posx>
 				<posy>185</posy>
@@ -403,7 +380,7 @@
 		<control type="group">
 			<posx>180</posx>
 			<posy>40</posy>
-			<visible>Control.IsVisible(508) + !Skin.HasSetting(View508HideInfo) + ![ListItem.IsFolder + Container.Content(Movies)]</visible>
+			<visible>Control.IsVisible(508) + ![ListItem.IsFolder + Container.Content(Movies)]</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="image">
 				<posx>0</posx>

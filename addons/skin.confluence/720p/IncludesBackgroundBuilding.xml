@@ -30,7 +30,7 @@
 			</control>
 			<control type="group">
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(504) | Control.IsVisible(550)</visible>
+				<visible>Control.IsVisible(504) | Control.IsVisible(550) | Control.IsVisible(512)</visible>
 				<control type="image">
 					<posx>50</posx>
 					<posy>60</posy>
@@ -62,7 +62,7 @@
 			</control>
 			<control type="group">
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(551) | Control.IsVisible(560) | Control.IsVisible(511)</visible>
+				<visible>Control.IsVisible(551) | Control.IsVisible(560) | Control.IsVisible(511) | Control.IsVisible(506) | Control.IsVisible(513)</visible>
 				<control type="image">
 					<posx>50</posx>
 					<posy>60</posy>
