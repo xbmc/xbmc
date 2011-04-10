@@ -377,6 +377,7 @@ bool CPVRManager::DisableIfNoClients(void)
   {
     g_guiSettings.SetBool("pvrmanager.enabled", false);
     CLog::Log(LOGNOTICE,"PVRManager - no clients enabled. pvrmanager disabled.");
+    CGUIDialogOK::ShowAndGetInput(257,0,19223,0);
     bReturn = true;
   }
 
