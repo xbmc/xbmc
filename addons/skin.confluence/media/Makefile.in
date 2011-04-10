@@ -166,6 +166,7 @@ IMAGES= \
 	HomeIcon.png \
 	HomeNowPlayingBack.png \
 	icon-mute.png \
+	icon-rss.png \
 	InfoMessagePanel.png \
 	KeyboardCornerBottom.png \
 	KeyboardCornerBottomNF.png \
