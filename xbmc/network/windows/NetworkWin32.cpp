@@ -75,8 +75,9 @@ bool CNetworkInterfaceWin32::IsConnected()
 
 CStdString CNetworkInterfaceWin32::GetMacAddress()
 {
-  CStdString result = "";
-  result = CStdString((char*)m_adapter.Address);
+  CStdString result;
+  unsigned char* mAddr = m_adapter.Address;
+  result.Format("%02X:%02X:%02X:%02X:%02X:%02X", mAddr[0], mAddr[1], mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
   return result;
 }
 
