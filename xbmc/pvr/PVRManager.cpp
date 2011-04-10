@@ -737,7 +737,6 @@ void CPVRManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
     CSingleLock lock(m_critSectionTriggers);
     m_bChannelGroupsUpdating = false;
     m_bChannelsUpdating = false;
-    lock.Leave();
 
     CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_TV);
     CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
@@ -746,7 +745,6 @@ void CPVRManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
   {
     CSingleLock lock(m_critSectionTriggers);
     m_bChannelsUpdating = false;
-    lock.Leave();
 
     CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_TV);
     CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
@@ -755,7 +753,6 @@ void CPVRManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
   {
     CSingleLock lock(m_critSectionTriggers);
     m_bTimersUpdating = false;
-    lock.Leave();
 
     CPVRManager::Get()->UpdateWindow(PVR_WINDOW_TIMERS);
     CPVRManager::Get()->UpdateWindow(PVR_WINDOW_EPG);
@@ -766,7 +763,6 @@ void CPVRManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
   {
     CSingleLock lock(m_critSectionTriggers);
     m_bRecordingsUpdating = false;
-    lock.Leave();
 
     CPVRManager::Get()->UpdateWindow(PVR_WINDOW_RECORDINGS);
   }

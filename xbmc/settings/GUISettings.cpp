@@ -1317,13 +1317,13 @@ void CGUISettings::Clear()
   settingsGroups.clear();
 
   SetChanged();
-  NotifyObservers("settings");
+  NotifyObservers("settings", true);
 }
 
 void CGUISettings::SetChangedAndNotify(void)
 {
   SetChanged();
-  NotifyObservers("settings");
+  NotifyObservers("settings", true);
 }
 
 float square_error(float x, float y)

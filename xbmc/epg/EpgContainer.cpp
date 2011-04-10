@@ -407,7 +407,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   if (iUpdatedTables > 0)
   {
     SetChanged();
-    NotifyObservers("epg");
+    NotifyObservers("epg", false);
   }
 
   return bUpdateSuccess;

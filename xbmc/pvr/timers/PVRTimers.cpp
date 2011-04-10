@@ -196,7 +196,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
     SetChanged();
     lock.Leave();
 
-    NotifyObservers("timers");
+    NotifyObservers("timers", false);
   }
 
   return bChanged;
