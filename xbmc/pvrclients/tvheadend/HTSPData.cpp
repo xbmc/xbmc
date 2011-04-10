@@ -90,9 +90,9 @@ htsmsg_t* cHTSPData::ReadResult(htsmsg_t* m)
     return NULL;
   }
 
-  if(!message.event->Wait(2000))
+  if(!message.event->Wait(g_iResponseTimeout * 1000))
   {
-    XBMC->Log(LOG_ERROR, "%s - Timeout waiting for response", __FUNCTION__);
+    XBMC->Log(LOG_ERROR, "%s - request timed out after %d seconds", __FUNCTION__, g_iResponseTimeout);
     m_session.Close();
   }
   m_Mutex.Lock();
