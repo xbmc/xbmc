@@ -729,6 +729,7 @@
 		<control type="group">
 			<posx>420</posx>
 			<posy>35r</posy>
+			<visible>system.getbool(lookandfeel.enablerssfeeds)</visible>
 			<animation effect="slide" end="0,35" time="300" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="slide" start="0,35" time="300" tween="quadratic" easing="out">WindowOpen</animation>
 			<control type="image">
@@ -738,20 +739,18 @@
 				<width>860</width>
 				<height>35</height>
 				<texture border="32,0,0,0">Rss_Back.png</texture>
-				<visible>system.getbool(lookandfeel.enablerssfeeds)</visible>
 			</control>
 			<control type="rss">
 				<description>RSS feed</description>
 				<posx>35</posx>
 				<posy>6</posy>
 				<height>35</height>
-				<width>825</width>
+				<width>790</width>
 				<font>font12</font>
 				<urlset>1</urlset>
 				<textcolor>blue</textcolor>
 				<titlecolor>blue</titlecolor>
 				<headlinecolor>white</headlinecolor>
-				<visible>system.getbool(lookandfeel.enablerssfeeds)</visible>
 			</control>
 			<control type="image">
 				<description>RSS background</description>
@@ -760,7 +759,14 @@
 				<width>100</width>
 				<height>35</height>
 				<texture border="32,0,0,0">Rss_Back_Overlay.png</texture>
-				<visible>system.getbool(lookandfeel.enablerssfeeds)</visible>
+			</control>
+			<control type="image">
+				<description>RSS background</description>
+				<posx>832</posx>
+				<posy>8</posy>
+				<width>24</width>
+				<height>24</height>
+				<texture>icon-rss.png</texture>
 			</control>
 		</control>
 		<control type="group">
