@@ -530,7 +530,6 @@ bool CDVDPlayer::OpenDemuxStream()
       m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
       if(!m_pDemuxer && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
       {
-        Sleep(g_advancedSettings.m_iPVRInputStreamDelay);
         continue;
       }
       else if(!m_pDemuxer && m_pInputStream->NextStream())
