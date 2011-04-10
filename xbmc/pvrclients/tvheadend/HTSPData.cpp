@@ -60,8 +60,8 @@ bool cHTSPData::Open(CStdString hostname, int port, CStdString user, CStdString 
 
 void cHTSPData::Close()
 {
-  Cancel(3);
   m_session.Abort();
+  Cancel(1);
   m_session.Close();
 }
 
