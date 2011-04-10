@@ -151,8 +151,11 @@ void CPVRManager::Start(void)
 
 void CPVRManager::Stop(void)
 {
+  CSingleLock lock(m_critSectionTriggers);
   if (!m_bLoaded)
     return;
+  m_bLoaded = false;
+  lock.Leave();
 
   CLog::Log(LOGNOTICE, "PVRManager - stopping");
 
