@@ -18,7 +18,7 @@
 					<posy>0</posy>
 					<width>250</width>
 					<height>300</height>
-					<texture border="10">RecentAddedNF.png</texture>
+					<texture border="10">RecentAddedBack.png</texture>
 				</control>
 				<control type="label">
 					<description>Title label</description>
@@ -172,7 +172,7 @@
 					<posy>0</posy>
 					<width>250</width>
 					<height>300</height>
-					<texture border="10">RecentAddedNF.png</texture>
+					<texture border="10">RecentAddedBack.png</texture>
 				</control>
 				<control type="label">
 					<description>Title label</description>
