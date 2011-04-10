@@ -107,7 +107,6 @@
 		F56C78D6131EC154000AD0F6 /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7235131EC151000AD0F6 /* emu_dummy.cpp */; };
 		F56C78D7131EC154000AD0F6 /* emu_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7237131EC151000AD0F6 /* emu_kernel32.cpp */; };
 		F56C78D8131EC154000AD0F6 /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7239131EC151000AD0F6 /* emu_msvcrt.cpp */; };
-		F56C78D9131EC154000AD0F6 /* exports_python_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C723B131EC151000AD0F6 /* exports_python_linux.cpp */; };
 		F56C78DA131EC154000AD0F6 /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C723D131EC151000AD0F6 /* EmuFileWrapper.cpp */; };
 		F56C78DB131EC154000AD0F6 /* wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = F56C723F131EC151000AD0F6 /* wrapper.c */; };
 		F56C78DC131EC154000AD0F6 /* ldt_keeper.c in Sources */ = {isa = PBXBuildFile; fileRef = F56C7240131EC151000AD0F6 /* ldt_keeper.c */; };
@@ -1195,7 +1194,6 @@
 		F56C7238131EC151000AD0F6 /* emu_kernel32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_kernel32.h; sourceTree = "<group>"; };
 		F56C7239131EC151000AD0F6 /* emu_msvcrt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = emu_msvcrt.cpp; sourceTree = "<group>"; };
 		F56C723A131EC151000AD0F6 /* emu_msvcrt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_msvcrt.h; sourceTree = "<group>"; };
-		F56C723B131EC151000AD0F6 /* exports_python_linux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = exports_python_linux.cpp; sourceTree = "<group>"; };
 		F56C723D131EC151000AD0F6 /* EmuFileWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmuFileWrapper.cpp; sourceTree = "<group>"; };
 		F56C723E131EC151000AD0F6 /* EmuFileWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuFileWrapper.h; sourceTree = "<group>"; };
 		F56C723F131EC151000AD0F6 /* wrapper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wrapper.c; sourceTree = "<group>"; };
@@ -3473,7 +3471,6 @@
 				F56C7238131EC151000AD0F6 /* emu_kernel32.h */,
 				F56C7239131EC151000AD0F6 /* emu_msvcrt.cpp */,
 				F56C723A131EC151000AD0F6 /* emu_msvcrt.h */,
-				F56C723B131EC151000AD0F6 /* exports_python_linux.cpp */,
 				F56C723C131EC151000AD0F6 /* util */,
 				F56C723F131EC151000AD0F6 /* wrapper.c */,
 			);
@@ -5956,7 +5953,6 @@
 				F56C78D6131EC154000AD0F6 /* emu_dummy.cpp in Sources */,
 				F56C78D7131EC154000AD0F6 /* emu_kernel32.cpp in Sources */,
 				F56C78D8131EC154000AD0F6 /* emu_msvcrt.cpp in Sources */,
-				F56C78D9131EC154000AD0F6 /* exports_python_linux.cpp in Sources */,
 				F56C78DA131EC154000AD0F6 /* EmuFileWrapper.cpp in Sources */,
 				F56C78DB131EC154000AD0F6 /* wrapper.c in Sources */,
 				F56C78DC131EC154000AD0F6 /* ldt_keeper.c in Sources */,

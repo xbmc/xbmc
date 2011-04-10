@@ -31,14 +31,10 @@
 #include "utils/EndianSwap.h"
 #include "utils/URIUtils.h"
 #include "XBTF.h"
-#ifndef _LINUX
-#include "lib/win32/liblzo/LZO1X.H"
-#else
 #include <lzo/lzo1x.h>
-#endif
 
-#if !defined(__GNUC__)
-#pragma comment(lib,"../../lib/win32/liblzo/lzo.lib")
+#ifdef _WIN32
+#pragma comment(lib,"liblzo2.lib")
 #endif
 
 CTextureBundleXBT::CTextureBundleXBT(void)

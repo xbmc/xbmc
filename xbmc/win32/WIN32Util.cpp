@@ -47,14 +47,10 @@
 #define BC_BCM_DLL        "bcmDIL.dll"
 #define BC_REG_INST_PATH  "InstallPath"
 
-#define DLL_ENV_PATH "special://xbmcbin/system/;" \
-                     "special://xbmcbin/system/players/dvdplayer/;" \
-                     "special://xbmcbin/system/players/paplayer/;" \
-                     "special://xbmcbin/system/python/;" \
-                     "special://xbmcbin/;" \
-                     "special://xbmc/system/;" \
+#define DLL_ENV_PATH "special://xbmc/system/;" \
                      "special://xbmc/system/players/dvdplayer/;" \
                      "special://xbmc/system/players/paplayer/;" \
+                     "special://xbmc/system/cdrip/;" \
                      "special://xbmc/system/python/;" \
                      "special://xbmc/"
 
