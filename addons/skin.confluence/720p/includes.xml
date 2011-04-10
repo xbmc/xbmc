@@ -292,17 +292,6 @@
 		<texturenofocus border="5">button-nofocus.png</texturenofocus>
 		<pulseonselect>false</pulseonselect>
 	</include>
-	<include name="SideBladeRight">
-		<control type="image">
-			<posx>26r</posx>
-			<posy>0</posy>
-			<width>846</width>
-			<height>720</height>
-			<texture flipx="true">HomeBlade.png</texture>
-			<animation effect="slide" start="26,0" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
-			<animation effect="slide" start="0,0" end="26,0" time="200" delay="200" tween="quadratic" easing="out">WindowClose</animation>
-		</control>
-	</include>
 	<include name="SideBladeLeft">
 		<animation effect="slide" start="0,0" end="250,0" time="400" tween="quadratic" easing="out" condition="ControlGroup(9000).HasFocus | Control.HasFocus(9001) | Control.HasFocus(8999)">Conditional</animation>
 		<animation effect="slide" start="0,0" end="-300,0" time="400" tween="quadratic" easing="out" condition="ControlGroup(9000).HasFocus | Control.HasFocus(9001)">WindowClose</animation>
@@ -325,8 +314,8 @@
 			<width>42</width>
 			<height>128</height>
 			<font>-</font>
-			<texturefocus>HomeHasSub2.png</texturefocus>
-			<texturenofocus>HomeHasSub2.png</texturenofocus>
+			<texturefocus>HasSub.png</texturefocus>
+			<texturenofocus>HasSub.png</texturenofocus>
 		</control>
 		<control type="image">
 			<posx>0</posx>
