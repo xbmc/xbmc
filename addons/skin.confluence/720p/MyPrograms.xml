@@ -1,7 +1,7 @@
 <window id="1">
 	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
-	<views>50,51,500,550</views>
+	<views>50,51,500,550,551</views>
 	<controls>
 		<include>CommonProgramsBackground</include>
 		<include>CommonMediaPlayingBackground</include>
@@ -12,6 +12,7 @@
 			<include>FullWidthList</include> <!-- view id = 51 -->
 			<include>ThumbnailView</include> <!-- view id = 500 -->
 			<include>AddonInfoListView1</include> <!-- view id = 550 -->
+			<include>AddonInfoThumbView1</include> <!-- view id = 551 -->
 		</control>
 		<include>CommonPageCount</include>
 		<include>CommonNowPlaying</include>
