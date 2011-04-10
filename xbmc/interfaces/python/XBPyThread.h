@@ -37,6 +37,8 @@ public:
   bool isStopping();
   void stop();
 
+  void setAddonId(const char* _addonid) { addonid = _addonid; }
+
 protected:
   XBPython *m_pExecuter;
   void *m_threadState;
@@ -47,6 +49,7 @@ protected:
   unsigned int  m_argc;
   bool m_stopping;
   int  m_id;
+  CStdString addonid;
 
   virtual void OnStartup();
   virtual void Process();

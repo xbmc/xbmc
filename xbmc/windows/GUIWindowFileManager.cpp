@@ -621,7 +621,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
 #ifdef HAS_PYTHON
   if (pItem->IsPythonScript())
   {
-    g_pythonParser.evalFile(pItem->m_strPath.c_str());
+    g_pythonParser.evalFile(pItem->m_strPath.c_str(),NULL);
     return ;
   }
 #endif

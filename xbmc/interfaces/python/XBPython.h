@@ -64,8 +64,8 @@ public:
 
   int ScriptsSize();
   int GetPythonScriptId(int scriptPosition);
-  int evalFile(const CStdString &src);
-  int evalFile(const CStdString &src, const std::vector<CStdString> &argv);
+  int evalFile(const CStdString &src, const char* addonId);
+  int evalFile(const CStdString &src, const std::vector<CStdString> &argv, const char* addonId);
   int evalString(const CStdString &src, const std::vector<CStdString> &argv);
 
   bool isRunning(int scriptId);

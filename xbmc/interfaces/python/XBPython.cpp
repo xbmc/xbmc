@@ -250,25 +250,6 @@ void XBPython::InitializeInterpreter()
         "import sys\n"
         "sys.stdout = xbmcout()\n"
         "sys.stderr = xbmcout()\n"
-        ""
-        "import os\n"
-        "def getcwd_xbmc():\n"
-        "  import __main__\n"
-        "  import warnings\n"
-        "  if hasattr(__main__, \"__file__\"):\n"
-        "    warnings.warn(\"os.getcwd() is depreciated for getting addon directory use os.path.dirname(__main__.__file__)\", DeprecationWarning, stacklevel=2)\n"
-        "    return os.path.dirname(__main__.__file__)\n"
-        "  else:\n"
-        "    return os.getcwd_original()\n"
-        ""
-        "def chdir_xbmc(dir):\n"
-        "  raise RuntimeError(\"os.chdir not supported in xbmc\")\n"
-        ""
-        "os_getcwd_original = os.getcwd\n"
-        "os.getcwd          = getcwd_xbmc\n"
-        "os.chdir_orignal   = os.chdir\n"
-        "os.chdir           = chdir_xbmc\n"
-        ""
         "print '-->Python Interpreter Initialized<--'\n"
         "") == -1)
   {
@@ -448,7 +429,7 @@ void XBPython::Process()
     CStdString strAutoExecPy = _P("special://profile/autoexec.py");
 
     if ( XFILE::CFile::Exists(strAutoExecPy) )
-      evalFile(strAutoExecPy);
+      evalFile(strAutoExecPy,NULL);
     else
       CLog::Log(LOGDEBUG, "%s - no profile autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy.c_str());
   }
@@ -492,13 +473,13 @@ bool XBPython::StopScript(const CStdString &path)
   return false;
 }
 
-int XBPython::evalFile(const CStdString &src)
+int XBPython::evalFile(const CStdString &src, const char* addonId)
 {
   std::vector<CStdString> argv;
-  return evalFile(src, argv);
+  return evalFile(src, argv, addonId);
 }
 // execute script, returns -1 if script doesn't exist
-int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &argv)
+int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &argv, const char* addonId)
 {
   CSingleExit ex(g_graphicsContext);
   CSingleLock lock(m_critSection);
@@ -520,6 +501,7 @@ int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &arg
   m_nextid++;
   XBPyThread *pyThread = new XBPyThread(this, m_nextid);
   pyThread->setArgv(argv);
+  pyThread->setAddonId(addonId);
   pyThread->evalFile(src);
   PyElem inf;
   inf.id        = m_nextid;

@@ -233,6 +233,12 @@ void XBPyThread::Process()
       {
         PyObject *f = PyString_FromString(_P(m_source).c_str());
         PyDict_SetItemString(moduleDict, "__file__", f);
+        if (addonid)
+        {
+          PyObject *pyaddonid = PyString_FromString(addonid.c_str());
+          PyDict_SetItemString(moduleDict, "__xbmcaddonid__", pyaddonid);
+          CLog::Log(LOGDEBUG,"Instantiating addon using automatically obtained id of \"%s\"",addonid.c_str());
+        }
         Py_DECREF(f);
         PyRun_FileExFlags(fp, _P(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict,1,NULL);
       }

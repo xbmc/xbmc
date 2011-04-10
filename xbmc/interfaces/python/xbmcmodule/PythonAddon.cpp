@@ -49,20 +49,34 @@ namespace PYXBMC
     if (!self) return NULL;
 
     static const char *keywords[] = { "id", NULL };
-    char *id = NULL;
+    const char *id = NULL;
 
     // parse arguments
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"s",
+      (char*)"|s",
       (char**)keywords,
-      &id
+      (char**)&id
       ))
     {
       Py_DECREF(self);
       return NULL;
     };
+
+    // if the id wasn't passed then get the id from
+    //   the global dictionary
+    if (id == NULL)
+    {
+      // Get a reference to the main module
+      // and global dictionary
+      PyObject* main_module = PyImport_AddModule((char*)"__main__");
+      PyObject* global_dict = PyModule_GetDict(main_module);
+      // Extract a reference to the function "func_name"
+      // from the global dictionary
+      PyObject* pyid = PyDict_GetItemString(global_dict, "__xbmcaddonid__");
+      id = PyString_AsString(pyid);
+    }
 
     if (!CAddonMgr::Get().GetAddon(id, self->pAddon))
     {
