@@ -10,8 +10,8 @@
 				<posy>5</posy>
 				<width>1330</width>
 				<height>250</height>
-				<onleft>508</onleft>
-				<onright>508</onright>
+				<onleft>510</onleft>
+				<onright>510</onright>
 				<onup>2</onup>
 				<ondown>60</ondown>
 				<viewtype label="31032">wrap</viewtype>
@@ -95,8 +95,8 @@
 				<height>576</height>
 				<onleft>2</onleft>
 				<onright>60</onright>
-				<onup>511</onup>
-				<ondown>511</ondown>
+				<onup>514</onup>
+				<ondown>514</ondown>
 				<viewtype label="$LOCALIZE[31031]">list</viewtype>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
