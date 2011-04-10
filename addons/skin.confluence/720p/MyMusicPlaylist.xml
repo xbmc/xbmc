@@ -13,6 +13,7 @@
 			<include>MusicInfoListView</include> <!-- view id = 506 -->
 		</control>
 		<include>CommonPageCount</include>
+		<include>CommonNowPlaying</include>
 		<include>BehindDialogFadeOut</include>
 		<include>ScrollOffsetLabel</include>
 		<control type="group">

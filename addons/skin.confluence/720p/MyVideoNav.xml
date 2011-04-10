@@ -22,6 +22,7 @@
 			<include>LiveTVView1</include> <!-- view id = 560 -->
 		</control>
 		<include>CommonPageCount</include>
+		<include>CommonNowPlaying</include>
 		<include>BehindDialogFadeOut</include>
 		<include>ScrollOffsetLabel</include>
 		<control type="group">
