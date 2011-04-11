@@ -128,22 +128,6 @@ void XBPyThread::OnStartup()
   CThread::SetName("Python Thread");
 }
 
-static CStdString getXbmcApiVersionDependency(ADDON::AddonPtr addon)
-{
-  const ADDON::ADDONDEPS &deps = addon->GetDeps();
-  ADDON::ADDONDEPS::const_iterator it;
-  CStdString key("xbmc.python");
-  CStdString version("1.0");
-  it = deps.find(key);
-  if (!(it == deps.end()))
-  {
-    const ADDON::AddonVersion * xbmcApiVersion = &(it->second.first);
-    version = xbmcApiVersion->c_str();
-  }
-
-  return version;
-}
-
 void XBPyThread::Process()
 {
   CLog::Log(LOGDEBUG,"Python thread: start processing");
@@ -162,7 +146,7 @@ void XBPyThread::Process()
   // swap in my thread state
   PyThreadState_Swap(state);
 
-  m_pExecuter->InitializeInterpreter();
+  m_pExecuter->InitializeInterpreter(addon);
 
   CLog::Log(LOGDEBUG, "%s - The source file to load is %s", __FUNCTION__, m_source);
 
@@ -255,7 +239,7 @@ void XBPyThread::Process()
           PyObject *pyaddonid = PyString_FromString(addon->ID().c_str());
           PyDict_SetItemString(moduleDict, "__xbmcaddonid__", pyaddonid);
 
-          CStdString version = getXbmcApiVersionDependency(addon);
+          CStdString version = ADDON::getXbmcApiVersionDependency(addon);
           PyObject *pyxbmcapiversion = PyString_FromString(version.c_str());
           PyDict_SetItemString(moduleDict, "__xbmcapiversion__", pyxbmcapiversion);
 

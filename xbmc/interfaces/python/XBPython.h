@@ -81,7 +81,7 @@ public:
 
   // inject xbmc stuff into the interpreter.
   // should be called for every new interpreter
-  void InitializeInterpreter();
+  void InitializeInterpreter(ADDON::AddonPtr addon);
 
   // remove modules and references when interpreter done
   void DeInitializeInterpreter();

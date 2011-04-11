@@ -666,5 +666,25 @@ TYPE CAddonLibrary::SetAddonType()
     return ADDON_UNKNOWN;
 }
 
+CStdString getXbmcApiVersionDependency(ADDON::AddonPtr addon)
+{
+  CStdString version("1.0");
+  if (addon.get() != NULL)
+  {
+    const ADDON::ADDONDEPS &deps = addon->GetDeps();
+    ADDON::ADDONDEPS::const_iterator it;
+    CStdString key("xbmc.python");
+    it = deps.find(key);
+    if (!(it == deps.end()))
+    {
+      const ADDON::AddonVersion * xbmcApiVersion = &(it->second.first);
+      version = xbmcApiVersion->c_str();
+    }
+  }
+
+  return version;
+}
+
+
 } /* namespace ADDON */
 
