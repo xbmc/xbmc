@@ -493,7 +493,7 @@ bool CPVRTimers::UpdateTimer(const CFileItem &item)
   if (!tag)
     return false;
 
-  return UpdateTimer(*tag);
+  return UpdateTimer((CPVRTimerInfoTag &) *tag);
 }
 
 bool CPVRTimers::UpdateTimer(CPVRTimerInfoTag &item)
