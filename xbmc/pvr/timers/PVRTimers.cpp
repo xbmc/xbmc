@@ -352,42 +352,40 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
       return NULL;
   }
 
-  CPVRTimerInfoTag *newTimer = new CPVRTimerInfoTag();
-
-  int iDuration = g_guiSettings.GetInt("pvrrecord.instantrecordtime");
-  if (!iDuration)
-    iDuration   = 180; /* default to 180 minutes */
-
+  const CPVREpgInfoTag *epgTag = channel->GetEPGNow();
+  int iMarginEnd = g_guiSettings.GetInt("pvrrecord.marginend");
   int iPriority = g_guiSettings.GetInt("pvrrecord.defaultpriority");
-  if (!iPriority)
-    iPriority   = 50;  /* default to 50 */
-
   int iLifetime = g_guiSettings.GetInt("pvrrecord.defaultlifetime");
-  if (!iLifetime)
-    iLifetime   = 30;  /* default to 30 days */
+  int iDuration = g_guiSettings.GetInt("pvrrecord.instantrecordtime");
 
-  /* set the timer data */
-  CDateTime now = CDateTime::GetCurrentDateTime();
-  newTimer->m_iClientIndex      = -1;
-  newTimer->m_bIsActive         = true;
-  newTimer->m_strTitle          = channel->ChannelName();
-  newTimer->m_strTitle          = g_localizeStrings.Get(19056);
-  newTimer->m_iChannelNumber    = channel->ChannelNumber();
-  newTimer->m_iClientChannelUid = channel->UniqueID();
-  newTimer->m_iClientId         = channel->ClientID();
-  newTimer->m_bIsRadio          = channel->IsRadio();
-  newTimer->SetStartFromLocalTime(now);
-  newTimer->SetDuration(iDuration);
-  newTimer->m_iPriority         = iPriority;
-  newTimer->m_iLifetime         = iLifetime;
+  CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*epgTag);
+  if (!newTimer)
+  {
+    newTimer = new CPVRTimerInfoTag;
+    /* set the timer data */
+    newTimer->m_iClientIndex      = -1;
+    newTimer->m_bIsActive         = true;
+    newTimer->m_strTitle          = channel->ChannelName();
+    newTimer->m_strSummary        = g_localizeStrings.Get(19056);
+    newTimer->m_iMarginEnd        = iMarginEnd ? iMarginEnd : 5; /* use 5 minutes as default */
+    newTimer->m_iChannelNumber    = channel->ChannelNumber();
+    newTimer->m_iClientChannelUid = channel->UniqueID();
+    newTimer->m_iClientId         = channel->ClientID();
+    newTimer->m_bIsRadio          = channel->IsRadio();
+    newTimer->m_iPriority         = iPriority ? iPriority : 50;  /* default to 50 */
+    newTimer->m_iLifetime         = iLifetime ? iLifetime : 30;  /* default to 30 days */
 
-  /* generate summary string */
-  newTimer->m_strSummary.Format("%s %s %s %s %s",
-      newTimer->StartAsLocalTime().GetAsLocalizedDate(),
-      g_localizeStrings.Get(19159),
-      newTimer->StartAsLocalTime().GetAsLocalizedTime("", false),
-      g_localizeStrings.Get(19160),
-      newTimer->EndAsLocalTime().GetAsLocalizedTime("", false));
+    /* generate summary string */
+    newTimer->m_strSummary.Format("%s %s %s %s %s",
+        newTimer->StartAsLocalTime().GetAsLocalizedDate(),
+        g_localizeStrings.Get(19159),
+        newTimer->StartAsLocalTime().GetAsLocalizedTime("", false),
+        g_localizeStrings.Get(19160),
+        newTimer->EndAsLocalTime().GetAsLocalizedTime("", false));
+  }
+
+  newTimer->m_iMarginStart = 0;
+  newTimer->SetDuration(iDuration ? iDuration : 120); /* use 120 minutes as default */
 
   /* unused only for reference */
   newTimer->m_strFileNameAndPath = "pvr://timers/new";

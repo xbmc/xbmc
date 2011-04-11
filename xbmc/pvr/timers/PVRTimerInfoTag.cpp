@@ -423,7 +423,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   }
 
   /* check if a valid channel is set */
-  const CPVRChannel *channel = tag.ChannelTag();
+  CPVRChannel *channel = (CPVRChannel *) tag.ChannelTag();
   if (channel == NULL)
   {
     CLog::Log(LOGERROR, "%s - no channel set", __FUNCTION__);
@@ -456,7 +456,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   /* set the timer data */
   CDateTime newStart = tag.StartAsUTC();
   CDateTime newEnd = tag.EndAsUTC();
-  newTag->m_iClientIndex      = (tag.UniqueBroadcastID() > 0 ? tag.UniqueBroadcastID() : channel->ClientID());
+  newTag->m_iClientIndex      = -1;
   newTag->m_bIsActive         = true;
   newTag->m_strTitle          = tag.Title().IsEmpty() ? channel->ChannelName() : tag.Title();
   newTag->m_iChannelNumber    = channel->ChannelNumber();
@@ -469,6 +469,10 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   newTag->m_iLifetime         = iLifetime;
   newTag->m_iMarginStart      = iMarginStart;
   newTag->m_iMarginEnd        = iMarginStop;
+
+  /* we might have a copy of the tag here, so get the real one from the pvrmanager */
+  const CPVREpg *epgTable = channel->GetEPG();
+  newTag->m_epgInfo = epgTable ? (CPVREpgInfoTag *) epgTable->GetTag(tag.UniqueBroadcastID(), tag.StartAsUTC()) : NULL;
 
   /* generate summary string */
   newTag->m_strSummary.Format("%s %s %s %s %s",
