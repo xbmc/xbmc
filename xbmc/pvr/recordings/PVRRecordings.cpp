@@ -189,10 +189,6 @@ void CPVRRecordings::ExecuteUpdate(void)
 
   CSingleLock lock(m_critSection);
   m_bIsUpdating = false;
-  lock.Leave();
-
-  CPVRManager::Get()->CallbackRecordingsUpdated();
-  CPVRManager::Get()->UpdateWindow(PVR_WINDOW_RECORDINGS);
 }
 
 void CPVRRecordings::Process(void)

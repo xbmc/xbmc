@@ -26,10 +26,14 @@
 #include "threads/CriticalSection.h"
 
 class CPVRManager;
+class CPVRChannelsUpdateJob;
+class CPVRChannelGroupsUpdateJob;
 
 class CPVRChannelGroupsContainer : private CThread
 {
   friend class CPVRManager;
+  friend class CPVRChannelsUpdateJob;
+  friend class CPVRChannelGroupsUpdateJob;
 
 private:
   CPVRChannelGroups *m_groupsRadio; /*!< all radio channel groups */

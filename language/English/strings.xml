@@ -1749,6 +1749,7 @@
   <string id="19220">Channels in</string>
   <string id="19221">Synchronise channel groups with backends</string>
   <string id="19222">EPG</string>
+  <string id="19223">No PVR add-on could be enabled. Check your settings or the log for more info.</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>

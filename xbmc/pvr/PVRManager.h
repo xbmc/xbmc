@@ -25,6 +25,7 @@
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 #include "windows/GUIWindowPVRCommon.h"
+#include "utils/JobManager.h"
 
 class CPVRClients;
 class CPVRChannelGroupsContainer;
@@ -36,7 +37,7 @@ class CPVRGUIInfo;
 
 #define INFO_TOGGLE_TIME 1500
 
-class CPVRManager : public Observer, private CThread
+class CPVRManager : public Observer, private CThread, public IJobCallback
 {
   friend class CPVRClients;
 
@@ -310,11 +311,6 @@ public:
 
   void UpdateWindow(PVRWindow window);
 
-  void CallbackRecordingsUpdated(void);
-  void CallbackTimersUpdated(void);
-  void CallbackChannelsUpdated(void);
-  void CallbackChannelGroupsUpdated(void);
-
 protected:
   /*!
    * @brief PVR update and control thread.
@@ -405,10 +401,7 @@ private:
    */
   bool ContinueLastChannel(void);
 
-  /*!
-   * @brief Clean up all data that was created by the PVRManager.
-   */
-  void Unload(void);
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 
   /** @name singleton instance */
   //@{
@@ -428,13 +421,9 @@ private:
   /** @name containers */
   //@{
   CCriticalSection                m_critSectionTriggers;
-  bool                            m_bTriggerRecordingsUpdate;
   bool                            m_bRecordingsUpdating;
-  bool                            m_bTriggerTimersUpdate;
   bool                            m_bTimersUpdating;
-  bool                            m_bTriggerChannelsUpdate;
   bool                            m_bChannelsUpdating;
-  bool                            m_bTriggerChannelGroupsUpdate;
   bool                            m_bChannelGroupsUpdating;
 
   /** @name General PVRManager data */
@@ -456,3 +445,44 @@ private:
   CPVRChannelGroup *              m_currentRadioGroup;        /* The current selected radio channel group list */
   CPVRChannelGroup *              m_currentTVGroup;           /* The current selected TV channel group list */
 };
+
+class CPVRRecordingsUpdateJob : public CJob
+{
+public:
+  CPVRRecordingsUpdateJob(void) {}
+  virtual ~CPVRRecordingsUpdateJob() {}
+  virtual const char *GetType() const { return "pvr-update-recordings"; }
+
+  virtual bool DoWork();
+};
+
+class CPVRTimersUpdateJob : public CJob
+{
+public:
+  CPVRTimersUpdateJob(void) {}
+  virtual ~CPVRTimersUpdateJob() {}
+  virtual const char *GetType() const { return "pvr-update-timers"; }
+
+  virtual bool DoWork();
+};
+
+class CPVRChannelsUpdateJob : public CJob
+{
+public:
+  CPVRChannelsUpdateJob(void) {}
+  virtual ~CPVRChannelsUpdateJob() {}
+  virtual const char *GetType() const { return "pvr-update-channels"; }
+
+  virtual bool DoWork();
+};
+
+class CPVRChannelGroupsUpdateJob : public CJob
+{
+public:
+  CPVRChannelGroupsUpdateJob(void) {}
+  virtual ~CPVRChannelGroupsUpdateJob() {}
+  virtual const char *GetType() const { return "pvr-update-channelgroups"; }
+
+  virtual bool DoWork();
+};
+

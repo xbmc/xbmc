@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -38,12 +38,14 @@ int g_clientID                = -1;
 CStdString g_szHostname       = DEFAULT_HOST;
 int g_iPortHTSP               = DEFAULT_HTSP_PORT;
 int g_iPortHTTP               = DEFAULT_HTTP_PORT;
-int g_iConnectTimout          = DEFAULT_TIMEOUT;
+int g_iConnectTimeout         = DEFAULT_CONNECT_TIMEOUT;
+int g_iResponseTimeout        = DEFAULT_RESPONSE_TIMEOUT;
 int g_iSkipIFrame             = DEFAULT_SKIP_I_FRAME;
 CStdString g_szUsername       = "";
 CStdString g_szPassword       = "";
 CStdString g_szUserPath       = "";
 CStdString g_szClientPath     = "";
+
 CHelper_libXBMC_addon *XBMC   = NULL;
 CHelper_libXBMC_pvr   *PVR    = NULL;
 cHTSPDemux *HTSPDemuxer       = NULL;
@@ -51,9 +53,54 @@ cHTSPData  *HTSPData          = NULL;
 
 extern "C" {
 
-/***********************************************************
- * Standart AddOn related public library functions
- ***********************************************************/
+void ReadSettings(void)
+{
+  /* read setting "host" from settings.xml */
+  char * buffer;
+  buffer = (char*) malloc (1024);
+  buffer[0] = 0; /* Set the end of string */
+
+  if (XBMC->GetSetting("host", buffer))
+    g_szHostname = buffer;
+  else
+    g_szHostname = DEFAULT_HOST;
+  buffer[0] = 0; /* Set the end of string */
+
+  /* read setting "user" from settings.xml */
+  if (XBMC->GetSetting("user", buffer))
+    g_szUsername = buffer;
+  else
+    g_szUsername = "";
+  buffer[0] = 0; /* Set the end of string */
+
+  /* read setting "pass" from settings.xml */
+  if (XBMC->GetSetting("pass", buffer))
+    g_szPassword = buffer;
+  else
+    g_szPassword = "";
+
+  free (buffer);
+
+  /* read setting "htsp_port" from settings.xml */
+  if (!XBMC->GetSetting("htsp_port", &g_iPortHTSP))
+    g_iPortHTSP = DEFAULT_HTSP_PORT;
+
+  /* read setting "http_port" from settings.xml */
+  if (!XBMC->GetSetting("http_port", &g_iPortHTTP))
+    g_iPortHTTP = DEFAULT_HTTP_PORT;
+
+  /* read setting "skip_I_frame_count" from settings.xml */
+  if (!XBMC->GetSetting("skip_I_frame_count", &g_iSkipIFrame))
+    g_iSkipIFrame = DEFAULT_SKIP_I_FRAME;
+
+  /* read setting "connect_timeout" from settings.xml */
+  if (!XBMC->GetSetting("connect_timeout", &g_iConnectTimeout))
+    g_iConnectTimeout = DEFAULT_CONNECT_TIMEOUT;
+
+  /* read setting "read_timeout" from settings.xml */
+  if (!XBMC->GetSetting("response_timeout", &g_iResponseTimeout))
+    g_iResponseTimeout = DEFAULT_RESPONSE_TIMEOUT;
+}
 
 ADDON_STATUS Create(void* hdl, void* props)
 {
@@ -77,67 +124,10 @@ ADDON_STATUS Create(void* hdl, void* props)
   g_szUserPath   = pvrprops->strUserPath;
   g_szClientPath = pvrprops->strClientPath;
 
-  /* Read setting "host" from settings.xml */
-  char * buffer;
-  buffer = (char*) malloc (1024);
-  buffer[0] = 0; /* Set the end of string */
-
-  if (XBMC->GetSetting("host", buffer))
-    g_szHostname = buffer;
-  else
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "%s - Couldn't get 'host' setting, falling back to '%s' as default", __FUNCTION__, DEFAULT_HOST);
-    g_szHostname = DEFAULT_HOST;
-  }
-  buffer[0] = 0; /* Set the end of string */
-
-  if (XBMC->GetSetting("user", buffer))
-    g_szUsername = buffer;
-  else
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "%s - Couldn't get 'user' setting", __FUNCTION__);
-    g_szUsername = "";
-  }
-  buffer[0] = 0; /* Set the end of string */
-
-  if (XBMC->GetSetting("pass", buffer))
-    g_szPassword = buffer;
-  else
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "%s - Couldn't get 'pass' setting", __FUNCTION__);
-    g_szPassword = "";
-  }
-  free (buffer);
-
-  /* Read setting "port" from settings.xml */
-  if (!XBMC->GetSetting("htsp_port", &g_iPortHTSP))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "%s - Couldn't get 'htsp_port' setting, falling back to '%i' as default", __FUNCTION__, DEFAULT_HTSP_PORT);
-    g_iPortHTSP = DEFAULT_HTSP_PORT;
-  }
-
-  /* Read setting "port" from settings.xml */
-  if (!XBMC->GetSetting("http_port", &g_iPortHTTP))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "%s - Couldn't get 'http_port' setting, falling back to '%i' as default", __FUNCTION__, DEFAULT_HTTP_PORT);
-    g_iPortHTTP = DEFAULT_HTTP_PORT;
-  }
-
-  /* Read setting "skip_I_frame_count" from settings.xml */
-  if (!XBMC->GetSetting("skip_I_frame_count", &g_iSkipIFrame))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "%s - Couldn't get 'skip_I_frame_count' setting, falling back to '%d' as default", __FUNCTION__, DEFAULT_SKIP_I_FRAME);
-    g_iSkipIFrame = DEFAULT_SKIP_I_FRAME;
-  }
+  ReadSettings();
 
   HTSPData = new cHTSPData;
-  if (!HTSPData->Open(g_szHostname, g_iPortHTSP, g_szUsername, g_szPassword, g_iConnectTimout))
+  if (!HTSPData->Open(g_szHostname, g_iPortHTSP, g_szUsername, g_szPassword, g_iConnectTimeout * 1000))
   {
     m_CurStatus = STATUS_LOST_CONNECTION;
     return m_CurStatus;
@@ -203,7 +193,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "htsp_port")
   {
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'port' from %u to %u", __FUNCTION__, g_iPortHTSP, *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "%s - Changed Setting 'htsp_port' from %u to %u", __FUNCTION__, g_iPortHTSP, *(int*) settingValue);
     if (g_iPortHTSP != *(int*) settingValue)
     {
       g_iPortHTSP = *(int*) settingValue;
@@ -221,10 +211,31 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "skip_I_frame_count")
   {
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'skip_I_frame_count' from %u to %u", __FUNCTION__, g_iSkipIFrame, *(int*) settingValue);
-    if (g_iSkipIFrame != *(int*) settingValue)
+    int iNewValue = *(int*) settingValue;
+    XBMC->Log(LOG_INFO, "%s - Changed Setting 'skip_I_frame_count' from %u to %u", __FUNCTION__, g_iSkipIFrame, iNewValue);
+    if (g_iSkipIFrame != iNewValue)
     {
-      g_iSkipIFrame = *(int*) settingValue;
+      g_iSkipIFrame = iNewValue;
+      return STATUS_OK;
+    }
+  }
+  else if (str == "connect_timeout")
+  {
+    int iNewValue = *(int*) settingValue + 1;
+    XBMC->Log(LOG_INFO, "%s - Changed Setting 'connect_timeout' from %u to %u", __FUNCTION__, g_iConnectTimeout, iNewValue);
+    if (g_iConnectTimeout != iNewValue)
+    {
+      g_iConnectTimeout = iNewValue;
+      return STATUS_OK;
+    }
+  }
+  else if (str == "response_timeout")
+  {
+    int iNewValue = *(int*) settingValue + 1;
+    XBMC->Log(LOG_INFO, "%s - Changed Setting 'response_timeout' from %u to %u", __FUNCTION__, g_iResponseTimeout, iNewValue);
+    if (g_iResponseTimeout != iNewValue)
+    {
+      g_iResponseTimeout = iNewValue;
       return STATUS_OK;
     }
   }

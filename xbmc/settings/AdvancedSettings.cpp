@@ -866,8 +866,12 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", m_bgInfoLoaderMaxThreads);
   m_bgInfoLoaderMaxThreads = std::max(1, m_bgInfoLoaderMaxThreads);
 
-  XMLUtils::GetInt(pRootElement, "timecorrection", m_iPVRTimeCorrection, 0, 1440);
-  XMLUtils::GetInt(pRootElement, "inputstreamdelay", m_iPVRInputStreamDelay, 0, 10000);
+  TiXmlElement *pPVR = pRootElement->FirstChildElement("pvr");
+  if (pPVR)
+  {
+    XMLUtils::GetInt(pPVR, "timecorrection", m_iPVRTimeCorrection, 0, 1440);
+    XMLUtils::GetInt(pPVR, "inputstreamdelay", m_iPVRInputStreamDelay, 0, 10000);
+  }
 
   XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
 

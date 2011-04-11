@@ -23,8 +23,11 @@
 
 #include "StdString.h"
 #include "threads/CriticalSection.h"
+#include "utils/JobManager.h"
+#include "interfaces/AnnouncementManager.h"
 
 class Observable;
+class ObservableMessageJob;
 
 class Observer
 {
@@ -32,8 +35,10 @@ public:
   virtual void Notify(const Observable &obs, const CStdString& msg) = 0;
 };
 
-class Observable
+class Observable : public IJobCallback, public ANNOUNCEMENT::IAnnouncer
 {
+  friend class ObservableMessageJob;
+
 public:
   Observable();
   virtual ~Observable();
@@ -41,11 +46,29 @@ public:
 
   void AddObserver(Observer *o);
   void RemoveObserver(Observer *o);
-  void NotifyObservers(const CStdString& msg = CStdString());
+  void NotifyObservers(const CStdString& msg = "", bool bAsync = false);
   void SetChanged(bool bSetTo = true);
+
+  virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job) { }
 
 private:
   bool                    m_bObservableChanged;
   std::vector<Observer *> m_observers;
   CCriticalSection        m_critSection;
+  bool                    m_bAsyncAllowed;
+};
+
+class ObservableMessageJob : public CJob
+{
+private:
+  Observable              m_observable;
+  std::vector<Observer *> m_observers;
+  CStdString              m_strMessage;
+public:
+  ObservableMessageJob(const Observable &obs, const CStdString &strMessage);
+  virtual ~ObservableMessageJob() {}
+  virtual const char *GetType() const { return "observable-message-job"; }
+
+  virtual bool DoWork();
 };

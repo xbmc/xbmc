@@ -75,14 +75,6 @@ bool CPVRChannelGroupsContainer::ExecuteUpdate(bool bChannelsOnly)
   m_bIsUpdating = false;
   lock.Leave();
 
-  CPVRManager *manager = CPVRManager::Get();
-  if (bChannelsOnly)
-    manager->CallbackChannelsUpdated();
-  else
-    manager->CallbackChannelGroupsUpdated();
-  manager->UpdateWindow(PVR_WINDOW_CHANNELS_TV);
-  manager->UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
-
   return bReturn;
 }
 

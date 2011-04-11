@@ -27,12 +27,7 @@
 #include <vector>
 
 namespace PCRE {
-#ifdef _WIN32
-#define PCRE_STATIC
-#include "lib/win32/pcre/pcre.h"
-#else
 #include <pcre.h>
-#endif
 }
 
 // maximum of 20 backreferences

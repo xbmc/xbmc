@@ -278,7 +278,9 @@ htsmsg_t* cHTSPSession::ReadResult(htsmsg_t* m, bool sequence)
   uint32_t noaccess;
   if(m && !htsmsg_get_u32(m, "noaccess", &noaccess) && noaccess)
   {
+
     XBMC->Log(LOG_ERROR, "%s - access denied (%d)", __FUNCTION__, noaccess);
+    XBMC->QueueNotification(QUEUE_ERROR, "access denied (%d)", noaccess);
     htsmsg_destroy(m);
     return NULL;
   }

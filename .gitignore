@@ -312,6 +312,9 @@ lib/cmyth/Makefile
 # /project/Win32BuildSetup/dependencies
 /project/Win32BuildSetup/dependencies/SDL.dll
 /project/Win32BuildSetup/dependencies/glew32.dll
+/project/Win32BuildSetup/dependencies/pcre.dll
+/project/Win32BuildSetup/dependencies/pcrecpp.dll
+/project/Win32BuildSetup/dependencies/python26.dll
 
 # /project/Win32BuildSetup/
 /project/Win32BuildSetup/BuildLog.htm
@@ -368,9 +371,14 @@ lib/cmyth/Makefile
 /system/libssl32.dll
 /system/hdhomerun.dll
 /system/ssh.dll
+/system/sqlite3.dll
+/system/libsamplerate-0.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
+/system/cdrip/ogg.dll
+/system/cdrip/vorbis.dll
+/system/cdrip/vorbisenc.dll
 
 # /system/players/dvdplayer
 /system/players/dvdplayer/avcodec-52.dll

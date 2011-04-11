@@ -23,15 +23,19 @@
 #include "threads/SingleLock.h"
 
 using namespace std;
+using namespace ANNOUNCEMENT;
 
 Observable::Observable()
 {
   m_observers.clear();
+  m_bAsyncAllowed = true;
+  CAnnouncementManager::AddAnnouncer(this);
 }
 
 Observable::~Observable()
 {
   m_observers.clear();
+  CAnnouncementManager::RemoveAnnouncer(this);
 }
 
 Observable &Observable::operator=(const Observable &observable)
@@ -64,18 +68,20 @@ void Observable::RemoveObserver(Observer *o)
   }
 }
 
-void Observable::NotifyObservers(const CStdString& msg)
+void Observable::NotifyObservers(const CStdString& strMessage /* = "" */, bool bAsync /* = false */)
 {
   CSingleLock lock(m_critSection);
   if (m_bObservableChanged)
   {
-    for(unsigned int ptr = 0; ptr < m_observers.size(); ptr++)
+    if (bAsync && m_bAsyncAllowed)
     {
-      Observer *obs = m_observers.at(ptr);
-      if (obs)
-        obs->Notify(*this, msg);
+      CJobManager::GetInstance().AddJob(new ObservableMessageJob(*this, strMessage), this);
     }
-
+    else
+    {
+      for(unsigned int ptr = 0; ptr < m_observers.size(); ptr++)
+        m_observers.at(ptr)->Notify(*this, strMessage);
+    }
     m_bObservableChanged = false;
   }
 }
@@ -84,4 +90,30 @@ void Observable::SetChanged(bool SetTo)
 {
   CSingleLock lock(m_critSection);
   m_bObservableChanged = SetTo;
+}
+
+void Observable::Announce(EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+  if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "ApplicationStop"))
+  {
+    CSingleLock lock(m_critSection);
+    m_bAsyncAllowed = false;
+  }
+}
+
+ObservableMessageJob::ObservableMessageJob(const Observable &obs, const CStdString &strMessage)
+{
+  m_strMessage = strMessage;
+  m_observable = obs;
+
+  for (unsigned int iObserverPtr = 0; iObserverPtr < obs.m_observers.size(); iObserverPtr++)
+    m_observers.push_back(obs.m_observers.at(iObserverPtr));
+}
+
+bool ObservableMessageJob::DoWork()
+{
+  for(unsigned int ptr = 0; ptr < m_observers.size(); ptr++)
+    m_observers.at(ptr)->Notify(m_observable, m_strMessage);
+
+  return true;
 }
