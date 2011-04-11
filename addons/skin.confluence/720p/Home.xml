@@ -689,6 +689,7 @@
 					<onright>9000</onright>
 					<onup>9000</onup>
 					<ondown>9000</ondown>
+					<animation effect="slide" start="0,0" end="-45,0" time="0" condition="!System.HasMediaDVD">conditional</animation>
 				</control>
 				<control type="button" id="21">
 					<description>Favourites push button</description>
@@ -706,6 +707,7 @@
 					<onright>20</onright>
 					<onup>9000</onup>
 					<ondown>9000</ondown>
+					<animation effect="slide" start="0,0" end="-45,0" time="0" condition="!System.HasMediaDVD">conditional</animation>
 				</control>
 				<control type="button" id="22">
 					<description>Play Disc Media push button</description>
@@ -723,6 +725,7 @@
 					<onright>21</onright>
 					<onup>9000</onup>
 					<ondown>9000</ondown>
+					<visible>System.HasMediaDVD</visible>
 				</control>
 			</control>
 		</control>
