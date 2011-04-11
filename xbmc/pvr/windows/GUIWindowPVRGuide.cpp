@@ -248,6 +248,9 @@ void CGUIWindowPVRGuide::UpdateData(void)
 
   m_bIsFocusing = true;
   m_bUpdateRequired = false;
+
+  /* lock the graphics context while updating */
+  CSingleLock graphicsLock(g_graphicsContext);
   m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
 

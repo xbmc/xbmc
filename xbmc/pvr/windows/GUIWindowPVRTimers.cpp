@@ -90,6 +90,9 @@ void CGUIWindowPVRTimers::UpdateData(void)
   CLog::Log(LOGDEBUG, "CGUIWindowPVRTimers - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
   m_bIsFocusing = true;
   m_bUpdateRequired = false;
+
+  /* lock the graphics context while updating */
+  CSingleLock graphicsLock(g_graphicsContext);
   m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
@@ -98,6 +101,7 @@ void CGUIWindowPVRTimers::UpdateData(void)
   m_parent->m_vecItems->Sort(m_iSortMethod, m_iSortOrder);
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
   m_parent->m_viewControl.SetSelectedItem(m_iSelected);
+  graphicsLock.Leave();
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19025));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");

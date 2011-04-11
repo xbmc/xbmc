@@ -141,6 +141,9 @@ void CGUIWindowPVRChannels::UpdateData(void)
       __FUNCTION__, GetName(), m_iControlList);
   m_bIsFocusing = true;
   m_bUpdateRequired = false;
+
+  /* lock the graphics context while updating */
+  CSingleLock graphicsLock(g_graphicsContext);
   m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
@@ -163,6 +166,7 @@ void CGUIWindowPVRChannels::UpdateData(void)
       /* show the visible channels instead */
       m_bShowHiddenChannels = false;
       lock.Leave();
+      graphicsLock.Leave();
 
       UpdateData();
       return;
