@@ -401,11 +401,6 @@ private:
    */
   bool ContinueLastChannel(void);
 
-  /*!
-   * @brief Clean up all data that was created by the PVRManager.
-   */
-  void Unload(void);
-
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 
   /** @name singleton instance */

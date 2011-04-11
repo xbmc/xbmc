@@ -109,31 +109,6 @@ void CPVRManager::Destroy(void)
   }
 }
 
-void CPVRManager::Unload(void)
-{
-  CLog::Log(LOGNOTICE, "PVRManager - stopping");
-
-  /* stop playback if a pvr file is playing */
-  if (IsPlaying())
-  {
-    CLog::Log(LOGNOTICE,"PVRManager - %s - stopping PVR playback", __FUNCTION__);
-    g_application.StopPlaying();
-  }
-
-  /* stop all update threads */
-  StopUpdateThreads();
-
-  m_epg->RemoveObserver(this);
-  m_epg->Unload();
-
-  m_recordings->Unload();
-  m_timers->Unload();
-  m_channelGroups->Unload();
-  m_addons->Unload();
-
-  m_bLoaded = false;
-}
-
 void CPVRManager::Start(void)
 {
   /* first stop and remove any clients */
@@ -152,8 +127,6 @@ void CPVRManager::Start(void)
 void CPVRManager::Stop(void)
 {
   CSingleLock lock(m_critSectionTriggers);
-  if (!m_bLoaded)
-    return;
   m_bLoaded = false;
   lock.Leave();
 
@@ -166,7 +139,14 @@ void CPVRManager::Stop(void)
   }
 
   StopUpdateThreads();
-  Unload();
+
+  m_epg->RemoveObserver(this);
+  m_epg->Unload();
+
+  m_recordings->Unload();
+  m_timers->Unload();
+  m_channelGroups->Unload();
+  m_addons->Unload();
 }
 
 bool CPVRManager::StartUpdateThreads(void)
