@@ -103,6 +103,7 @@ namespace PYXBMC
     if (!id)
     {
         PyErr_SetString(PyExc_Exception, "No valid addon id could be obtained. None was passed and the script wasn't executed in a normal xbmc manner.");
+        Py_DECREF(self);
         return NULL;
     }
 
@@ -121,6 +122,7 @@ namespace PYXBMC
         if (!CAddonMgr::Get().GetAddon(id, self->pAddon))
         {
           PyErr_SetString(PyExc_Exception, "Could not get AddonPtr!");
+          Py_DECREF(self);
           return NULL;
         }
         else
@@ -134,6 +136,7 @@ namespace PYXBMC
         errorMessage += version.Print();
         errorMessage += " plugin.";
         PyErr_SetString(PyExc_Exception, errorMessage.c_str());
+        Py_DECREF(self);
         return NULL;
       }
     }
