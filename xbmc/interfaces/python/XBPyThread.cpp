@@ -36,6 +36,7 @@
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
 #include "addons/AddonManager.h"
+#include "addons/Addon.h"
 
 #include "XBPyThread.h"
 #include "XBPython.h"
@@ -125,6 +126,22 @@ int XBPyThread::setArgv(const std::vector<CStdString> &argv)
 void XBPyThread::OnStartup()
 {
   CThread::SetName("Python Thread");
+}
+
+static CStdString getXbmcApiVersionDependency(ADDON::AddonPtr addon)
+{
+  const ADDON::ADDONDEPS &deps = addon->GetDeps();
+  ADDON::ADDONDEPS::const_iterator it;
+  CStdString key("xbmc.python");
+  CStdString version("1.0");
+  it = deps.find(key);
+  if (!(it == deps.end()))
+  {
+    const ADDON::AddonVersion * xbmcApiVersion = &(it->second.first);
+    version = xbmcApiVersion->c_str();
+  }
+
+  return version;
 }
 
 void XBPyThread::Process()
@@ -233,11 +250,16 @@ void XBPyThread::Process()
       {
         PyObject *f = PyString_FromString(_P(m_source).c_str());
         PyDict_SetItemString(moduleDict, "__file__", f);
-        if (addonid)
+        if (addon.get() != NULL)
         {
-          PyObject *pyaddonid = PyString_FromString(addonid.c_str());
+          PyObject *pyaddonid = PyString_FromString(addon->ID().c_str());
           PyDict_SetItemString(moduleDict, "__xbmcaddonid__", pyaddonid);
-          CLog::Log(LOGDEBUG,"Instantiating addon using automatically obtained id of \"%s\"",addonid.c_str());
+
+          CStdString version = getXbmcApiVersionDependency(addon);
+          PyObject *pyxbmcapiversion = PyString_FromString(version.c_str());
+          PyDict_SetItemString(moduleDict, "__xbmcapiversion__", pyxbmcapiversion);
+
+          CLog::Log(LOGDEBUG,"Instantiating addon using automatically obtained id of \"%s\" dependent on version %s of the xbmc.python api",addon->ID().c_str(),version.c_str());
         }
         Py_DECREF(f);
         PyRun_FileExFlags(fp, _P(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict,1,NULL);

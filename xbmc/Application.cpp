@@ -4651,7 +4651,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
 #ifdef HAS_PYTHON
         if (item.IsPythonScript())
         { // a python script
-          g_pythonParser.evalFile(item.m_strPath.c_str(),NULL);
+          g_pythonParser.evalFile(item.m_strPath.c_str(),ADDON::AddonPtr());
         }
         else
 #endif

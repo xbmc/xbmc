@@ -429,7 +429,7 @@ void XBPython::Process()
     CStdString strAutoExecPy = _P("special://profile/autoexec.py");
 
     if ( XFILE::CFile::Exists(strAutoExecPy) )
-      evalFile(strAutoExecPy,NULL);
+      evalFile(strAutoExecPy,ADDON::AddonPtr());
     else
       CLog::Log(LOGDEBUG, "%s - no profile autoexec.py (%s) found, skipping", __FUNCTION__, strAutoExecPy.c_str());
   }
@@ -473,13 +473,13 @@ bool XBPython::StopScript(const CStdString &path)
   return false;
 }
 
-int XBPython::evalFile(const CStdString &src, const char* addonId)
+int XBPython::evalFile(const CStdString &src, ADDON::AddonPtr addon)
 {
   std::vector<CStdString> argv;
-  return evalFile(src, argv, addonId);
+  return evalFile(src, argv, addon);
 }
 // execute script, returns -1 if script doesn't exist
-int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &argv, const char* addonId)
+int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &argv, ADDON::AddonPtr addon)
 {
   CSingleExit ex(g_graphicsContext);
   CSingleLock lock(m_critSection);
@@ -501,7 +501,7 @@ int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &arg
   m_nextid++;
   XBPyThread *pyThread = new XBPyThread(this, m_nextid);
   pyThread->setArgv(argv);
-  pyThread->setAddonId(addonId);
+  pyThread->setAddon(addon);
   pyThread->evalFile(src);
   PyElem inf;
   inf.id        = m_nextid;

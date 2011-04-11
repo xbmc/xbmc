@@ -505,7 +505,7 @@ case TMSG_POWERDOWN:
 
     case TMSG_EXECUTE_SCRIPT:
 #ifdef HAS_PYTHON
-      g_pythonParser.evalFile(pMsg->strParam.c_str(),NULL);
+      g_pythonParser.evalFile(pMsg->strParam.c_str(),ADDON::AddonPtr());
 #endif
       break;
 

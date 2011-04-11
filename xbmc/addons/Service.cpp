@@ -50,7 +50,7 @@ bool CService::Start()
   {
 #ifdef HAS_PYTHON
   case PYTHON:
-    ret = (g_pythonParser.evalFile(LibPath(),ID()) != -1);
+    ret = (g_pythonParser.evalFile(LibPath(),ADDON::AddonPtr(this)) != -1);
     break;
 #endif
 

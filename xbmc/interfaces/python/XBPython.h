@@ -24,6 +24,7 @@
 #include "XBPyThread.h"
 #include "cores/IPlayer.h"
 #include "threads/CriticalSection.h"
+#include "addons/IAddon.h"
 
 #include <vector>
 
@@ -64,8 +65,8 @@ public:
 
   int ScriptsSize();
   int GetPythonScriptId(int scriptPosition);
-  int evalFile(const CStdString &src, const char* addonId);
-  int evalFile(const CStdString &src, const std::vector<CStdString> &argv, const char* addonId);
+  int evalFile(const CStdString &src, ADDON::AddonPtr addon);
+  int evalFile(const CStdString &src, const std::vector<CStdString> &argv, ADDON::AddonPtr addon);
   int evalString(const CStdString &src, const std::vector<CStdString> &argv);
 
   bool isRunning(int scriptId);

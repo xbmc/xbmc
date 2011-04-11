@@ -58,6 +58,19 @@ namespace PYXBMC
     return id;
   }
 
+  static CStdString getAddonVersion()
+  {
+    // Get a reference to the main module
+    // and global dictionary
+    PyObject* main_module = PyImport_AddModule((char*)"__main__");
+    PyObject* global_dict = PyModule_GetDict(main_module);
+    // Extract a reference to the function "func_name"
+    // from the global dictionary
+    PyObject* pyversion = PyDict_GetItemString(global_dict, "__xbmcapiversion__");
+    CStdString version(PyString_AsString(pyversion));
+    return version;
+  }
+
   PyObject* Addon_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
     Addon *self;
@@ -83,18 +96,46 @@ namespace PYXBMC
 
     // if the id wasn't passed then get the id from
     //   the global dictionary
-    if (!id || !CAddonMgr::Get().GetAddon(id, self->pAddon))
-    {
-      // try the default ...
+    if (!id)
       id = getDefaultId();
 
-      if (!CAddonMgr::Get().GetAddon(id, self->pAddon))
-      {
-        PyErr_SetString(PyExc_Exception, "Could not get AddonPtr!");
+    // if we still don't have an id then bail
+    if (!id)
+    {
+        PyErr_SetString(PyExc_Exception, "No valid addon id could be obtained. None was passed and the script wasn't executed in a normal xbmc manner.");
         return NULL;
+    }
+
+    // if we still fail we MAY be able to recover.
+    if (!CAddonMgr::Get().GetAddon(id, self->pAddon))
+    {
+      // we need to check the version prior to trying a bw compatibility trick
+      ADDON::AddonVersion version(getAddonVersion());
+      ADDON::AddonVersion allowable("1.0");
+
+      if (version <= allowable)
+      {
+        // try the default ...
+        id = getDefaultId();
+
+        if (!CAddonMgr::Get().GetAddon(id, self->pAddon))
+        {
+          PyErr_SetString(PyExc_Exception, "Could not get AddonPtr!");
+          return NULL;
+        }
+        else
+          CLog::Log(LOGERROR,"Use of deprecated functionality. Please to not assume that \"os.getcwd\" will return the script directory.");
       }
       else
-        CLog::Log(LOGERROR,"Use of deprecated functionality. Please to not assume that \"os.getcwd\" will return the script directory.");
+      {
+        CStdString errorMessage ("Could not get AddonPtr given a script id of ");
+        errorMessage += id;
+        errorMessage += ". If you are trying to use 'os.getcwd' to set the path, you cannot do that in a ";
+        errorMessage += version.Print();
+        errorMessage += " plugin.";
+        PyErr_SetString(PyExc_Exception, errorMessage.c_str());
+        return NULL;
+      }
     }
 
     return (PyObject*)self;
