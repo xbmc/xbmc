@@ -1,0 +1,49 @@
+ifeq ("@use_sdk@", "10.4")
+  ifeq ("@use_arch@", "ppc")
+    host_alias=powerpc-apple-darwin8
+  else
+    host_alias=i386-apple-darwin8
+  endif
+  platform_gcc_version=4.0
+  platform_sdk_version=@use_sdk@u
+else
+  host_alias=i686-apple-darwin
+  platform_gcc_version=4.2
+  platform_sdk_version=@use_sdk@
+endif
+
+platform_min_version=macosx-version-min=@use_sdk@
+platform_path=/Developer
+platform_os_cflags=-arch @use_arch@ -no_compact_linkedit
+platform_os_ldflags=-arch @use_arch@ -no_compact_linkedit
+platform_sdk_path=${platform_path}/SDKs/MacOSX${platform_sdk_version}.sdk
+
+export NM=/usr/bin/nm
+export CPP=/usr/bin/cpp-${platform_gcc_version}
+export CXXCPP=${CPP}
+export CPPFLAGS=-no-cpp-precomp -I${PREFIX}/include
+export CC=/usr/bin/gcc-${platform_gcc_version}
+export CFLAGS=-std=gnu89 -no-cpp-precomp -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags} -I${platform_sdk_path}/usr/include
+export LD=${platform_path}/usr/bin/ld
+export LDFLAGS=-m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_ldflags} -L${PREFIX}/lib -L${platform_sdk_path}/usr/lib
+export CXX=/usr/bin/g++-${platform_gcc_version}
+export CXXFLAGS=-m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}
+export AR=${platform_path}/usr/bin/ar
+export AS=${platform_path}/usr/bin/as
+export STRIP=${platform_path}/usr/bin/strip
+export RANLIB=${platform_path}/usr/bin/ranlib
+export ACLOCAL=aclocal -I ${PREFIX}/share/aclocal -I @use_toolchain@share/aclocal -I ${platform_path}/usr/share/aclocal
+export LIBTOOL=@use_toolchain@/bin/glibtool
+export LIBTOOLIZE=@use_toolchain@/bin/glibtoolize
+export PKG_CONFIG_PATH=${PREFIX}/usr/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
+export PATH:=@use_toolchain@/bin:${PREFIX}/bin:${platform_path}/usr/bin:/Developer/usr/bin:${PATH}
+export MACOSX_DEPLOYMENT_TARGET=@use_sdk@
+
+# tweaks for boost
+ifeq ("@use_arch@", "ppc")
+  boost_architecture=power
+else
+  boost_architecture=x86
+endif
+bjam_args=toolset=darwin-${platform_gcc_version} --architecture=${boost_architecture} address-model=32 target-os=darwin macosx-version=@use_sdk@ macosx-version-min=@use_sdk@ --link=static
+boost_flags=${platform_sdk_path} -arch @use_arch@
