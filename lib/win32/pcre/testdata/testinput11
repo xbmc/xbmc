@@ -1,0 +1,339 @@
+/-- These tests are for the Perl 5.10 features that PCRE supports. --/
+
+/\H\h\V\v/
+    X X\x0a
+    X\x09X\x0b
+    ** Failers
+    \xa0 X\x0a   
+    
+/\H*\h+\V?\v{3,4}/ 
+    \x09\x20\xa0X\x0a\x0b\x0c\x0d\x0a
+    \x09\x20\xa0\x0a\x0b\x0c\x0d\x0a
+    \x09\x20\xa0\x0a\x0b\x0c
+    ** Failers 
+    \x09\x20\xa0\x0a\x0b
+     
+/\H{3,4}/
+    XY  ABCDE
+    XY  PQR ST 
+    
+/.\h{3,4}./
+    XY  AB    PQRS
+
+/\h*X\h?\H+Y\H?Z/
+    >XNNNYZ
+    >  X NYQZ
+    ** Failers
+    >XYZ   
+    >  X NY Z
+
+/\v*X\v?Y\v+Z\V*\x0a\V+\x0b\V{2,3}\x0c/
+    >XY\x0aZ\x0aA\x0bNN\x0c
+    >\x0a\x0dX\x0aY\x0a\x0bZZZ\x0aAAA\x0bNNN\x0c
+
+/(foo)\Kbar/
+    foobar
+   
+/(foo)(\Kbar|baz)/
+    foobar
+    foobaz 
+
+/(foo\Kbar)baz/
+    foobarbaz
+
+/abc\K|def\K/g+
+    Xabcdefghi
+
+/ab\Kc|de\Kf/g+
+    Xabcdefghi
+    
+/(?=C)/g+
+    ABCDECBA
+    
+/^abc\K/+
+    abcdef
+    ** Failers
+    defabcxyz   
+
+/^(a(b))\1\g1\g{1}\g-1\g{-1}\g{-02}Z/
+    ababababbbabZXXXX
+
+/(?<A>tom|bon)-\g{A}/
+    tom-tom
+    bon-bon 
+    
+/(^(a|b\g{-1}))/
+    bacxxx
+
+/(?|(abc)|(xyz))\1/
+    abcabc
+    xyzxyz 
+    ** Failers
+    abcxyz
+    xyzabc   
+    
+/(?|(abc)|(xyz))(?1)/
+    abcabc
+    xyzabc 
+    ** Failers 
+    xyzxyz 
+ 
+/^X(?5)(a)(?|(b)|(q))(c)(d)(Y)/
+    XYabcdY
+
+/^X(?7)(a)(?|(b|(r)(s))|(q))(c)(d)(Y)/
+    XYabcdY
+
+/^X(?7)(a)(?|(b|(?|(r)|(t))(s))|(q))(c)(d)(Y)/
+    XYabcdY
+
+/(?'abc'\w+):\k<abc>{2}/
+    a:aaxyz
+    ab:ababxyz
+    ** Failers
+    a:axyz
+    ab:abxyz
+
+/(?'abc'\w+):\g{abc}{2}/
+    a:aaxyz
+    ab:ababxyz
+    ** Failers
+    a:axyz
+    ab:abxyz
+
+/^(?<ab>a)? (?(<ab>)b|c) (?('ab')d|e)/x
+    abd
+    ce
+
+/^(a.)\g-1Z/
+    aXaXZ
+
+/^(a.)\g{-1}Z/
+    aXaXZ
+
+/^(?(DEFINE) (?<A> a) (?<B> b) )  (?&A) (?&B) /x
+    abcd
+
+/(?<NAME>(?&NAME_PAT))\s+(?<ADDR>(?&ADDRESS_PAT))
+  (?(DEFINE)
+  (?<NAME_PAT>[a-z]+)
+  (?<ADDRESS_PAT>\d+)
+  )/x
+    metcalfe 33
+
+/(?(DEFINE)(?<byte>2[0-4]\d|25[0-5]|1\d\d|[1-9]?\d))\b(?&byte)(\.(?&byte)){3}/
+    1.2.3.4
+    131.111.10.206
+    10.0.0.0
+    ** Failers
+    10.6
+    455.3.4.5
+
+/\b(?&byte)(\.(?&byte)){3}(?(DEFINE)(?<byte>2[0-4]\d|25[0-5]|1\d\d|[1-9]?\d))/
+    1.2.3.4
+    131.111.10.206
+    10.0.0.0
+    ** Failers
+    10.6
+    455.3.4.5
+
+/^(\w++|\s++)*$/
+    now is the time for all good men to come to the aid of the party
+    *** Failers
+    this is not a line with only words and spaces!
+
+/(\d++)(\w)/
+    12345a
+    *** Failers
+    12345+
+
+/a++b/
+    aaab
+
+/(a++b)/
+    aaab
+
+/(a++)b/
+    aaab
+
+/([^()]++|\([^()]*\))+/
+    ((abc(ade)ufh()()x
+
+/\(([^()]++|\([^()]+\))+\)/
+    (abc)
+    (abc(def)xyz)
+    *** Failers
+    ((()aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+/^([^()]|\((?1)*\))*$/
+    abc
+    a(b)c
+    a(b(c))d
+    *** Failers)
+    a(b(c)d
+
+/^>abc>([^()]|\((?1)*\))*<xyz<$/
+   >abc>123<xyz<
+   >abc>1(2)3<xyz<
+   >abc>(1(2)3)<xyz<
+
+/^(?:((.)(?1)\2|)|((.)(?3)\4|.))$/i
+    1221
+    Satanoscillatemymetallicsonatas
+    AmanaplanacanalPanama
+    AblewasIereIsawElba
+    *** Failers
+    Thequickbrownfox
+
+/^(\d+|\((?1)([+*-])(?1)\)|-(?1))$/
+    12
+    (((2+2)*-3)-7)
+    -12
+    *** Failers
+    ((2+2)*-3)-7)
+
+/^(x(y|(?1){2})z)/
+    xyz
+    xxyzxyzz
+    *** Failers
+    xxyzz
+    xxyzxyzxyzz
+
+/((< (?: (?(R) \d++  | [^<>]*+) | (?2)) * >))/x
+    <>
+    <abcd>
+    <abc <123> hij>
+    <abc <def> hij>
+    <abc<>def>
+    <abc<>
+    *** Failers
+    <abc
+
+/^a+(*FAIL)/
+    aaaaaa
+    
+/a+b?c+(*FAIL)/
+    aaabccc
+
+/a+b?(*PRUNE)c+(*FAIL)/
+    aaabccc
+
+/a+b?(*COMMIT)c+(*FAIL)/
+    aaabccc
+    
+/a+b?(*SKIP)c+(*FAIL)/
+    aaabcccaaabccc
+
+/^(?:aaa(*THEN)\w{6}|bbb(*THEN)\w{5}|ccc(*THEN)\w{4}|\w{3})/
+    aaaxxxxxx
+    aaa++++++ 
+    bbbxxxxx
+    bbb+++++ 
+    cccxxxx
+    ccc++++ 
+    dddddddd   
+
+/^(aaa(*THEN)\w{6}|bbb(*THEN)\w{5}|ccc(*THEN)\w{4}|\w{3})/
+    aaaxxxxxx
+    aaa++++++ 
+    bbbxxxxx
+    bbb+++++ 
+    cccxxxx
+    ccc++++ 
+    dddddddd   
+
+/a+b?(*THEN)c+(*FAIL)/
+    aaabccc
+
+/(A (A|B(*ACCEPT)|C) D)(E)/x
+    ABX
+    AADE
+    ACDE
+    ** Failers
+    AD 
+        
+/^\W*+(?:((.)\W*+(?1)\W*+\2|)|((.)\W*+(?3)\W*+\4|\W*+.\W*+))\W*+$/i
+    1221
+    Satan, oscillate my metallic sonatas!
+    A man, a plan, a canal: Panama!
+    Able was I ere I saw Elba.
+    *** Failers
+    The quick brown fox
+
+/^((.)(?1)\2|.)$/
+    a
+    aba
+    aabaa  
+    abcdcba 
+    pqaabaaqp  
+    ablewasiereisawelba
+    rhubarb
+    the quick brown fox  
+
+/(a)(?<=b(?1))/
+    baz
+    ** Failers
+    caz  
+    
+/(?<=b(?1))(a)/
+    zbaaz
+    ** Failers
+    aaa  
+    
+/(?<X>a)(?<=b(?&X))/
+    baz
+
+/^(?|(abc)|(def))\1/
+    abcabc
+    defdef 
+    ** Failers
+    abcdef
+    defabc   
+    
+/^(?|(abc)|(def))(?1)/
+    abcabc
+    defabc
+    ** Failers
+    defdef
+    abcdef    
+
+/(?:a(?<quote> (?<apostrophe>')|(?<realquote>")) |b(?<quote> (?<apostrophe>')|(?<realquote>")) ) (?('quote')[a-z]+|[0-9]+)/xJ
+    a\"aaaaa
+    b\"aaaaa 
+    ** Failers 
+    b\"11111
+
+/(?:(?1)|B)(A(*F)|C)/
+    ABCD
+    CCD
+    ** Failers
+    CAD   
+
+/^(?:(?1)|B)(A(*F)|C)/
+    CCD
+    BCD 
+    ** Failers
+    ABCD
+    CAD
+    BAD    
+
+/(?:(?1)|B)(A(*ACCEPT)XX|C)D/
+    AAD
+    ACD
+    BAD
+    BCD
+    BAX  
+    ** Failers
+    ACX
+    ABC   
+
+/(?(DEFINE)(A))B(?1)C/
+    BAC
+
+/(?(DEFINE)((A)\2))B(?1)C/
+    BAAC
+
+/(?<pn> \( ( [^()]++ | (?&pn) )* \) )/x
+    (ab(cd)ef)
+
+/-- End of testinput11 --/
