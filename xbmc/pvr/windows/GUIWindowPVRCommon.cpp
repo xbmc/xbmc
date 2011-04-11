@@ -310,12 +310,10 @@ bool CGUIWindowPVRCommon::OnContextButtonMenuHooks(CFileItem *item, CONTEXT_BUTT
 
 bool CGUIWindowPVRCommon::ActionDeleteTimer(CFileItem *item)
 {
-  bool bReturn = false;
-
   /* check if the timer tag is valid */
   CPVRTimerInfoTag *timerTag = item->GetPVRTimerInfoTag();
   if (!timerTag || timerTag->m_iClientIndex < 0)
-    return bReturn;
+    return false;
 
   /* show a confirmation dialog */
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -329,16 +327,10 @@ bool CGUIWindowPVRCommon::ActionDeleteTimer(CFileItem *item)
 
   /* prompt for the user's confirmation */
   if (!pDialog->IsConfirmed())
-    return bReturn;
+    return false;
 
   /* delete the timer */
-  if (CPVRManager::GetTimers()->DeleteTimer(*item))
-  {
-    UpdateData();
-    bReturn = true;
-  }
-
-  return bReturn;
+  return CPVRManager::GetTimers()->DeleteTimer(*item);
 }
 
 bool CGUIWindowPVRCommon::ActionShowTimer(CFileItem *item)
@@ -358,9 +350,7 @@ bool CGUIWindowPVRCommon::ActionShowTimer(CFileItem *item)
       if (ShowTimerSettings(newItem))
       {
         /* Add timer to backend */
-        CPVRManager::GetTimers()->AddTimer(*newItem);
-        UpdateData();
-        bReturn = true;
+        bReturn = CPVRManager::GetTimers()->AddTimer(*newItem);
       }
 
       delete newItem;
@@ -372,9 +362,7 @@ bool CGUIWindowPVRCommon::ActionShowTimer(CFileItem *item)
     if (ShowTimerSettings(item))
     {
       /* Update timer on pvr backend */
-      CPVRManager::GetTimers()->UpdateTimer(*item);
-      UpdateData();
-      bReturn = true;
+      bReturn = CPVRManager::GetTimers()->UpdateTimer(*item);
     }
   }
 

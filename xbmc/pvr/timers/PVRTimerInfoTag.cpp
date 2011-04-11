@@ -219,8 +219,7 @@ bool CPVRTimerInfoTag::AddToClient(void)
   }
   else
   {
-    if (StartAsLocalTime() < CDateTime::GetCurrentDateTime() && EndAsLocalTime() > CDateTime::GetCurrentDateTime())
-      CPVRManager::Get()->TriggerTimersUpdate();
+    CPVRManager::Get()->TriggerTimersUpdate();
     return true;
   }
 }
@@ -266,6 +265,10 @@ bool CPVRTimerInfoTag::RenameOnClient(const CStdString &strNewName)
 
     DisplayError(error);
     return false;
+  }
+  else
+  {
+    CPVRManager::Get()->TriggerTimersUpdate();
   }
 
   return true;
@@ -347,8 +350,7 @@ bool CPVRTimerInfoTag::UpdateOnClient()
   }
   else
   {
-    if (StartAsLocalTime() < CDateTime::GetCurrentDateTime() && EndAsLocalTime() > CDateTime::GetCurrentDateTime())
-      CPVRManager::Get()->TriggerTimersUpdate();
+    CPVRManager::Get()->TriggerTimersUpdate();
     return true;
   }
 }
