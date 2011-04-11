@@ -38,10 +38,9 @@
 #include "settings/Settings.h"
 #include "filesystem/StackDirectory.h"
 
-/* GUI Messages includes */
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
-#include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogBusy.h"
 
 #include "PVRManager.h"
 #include "addons/PVRClients.h"
@@ -153,6 +152,9 @@ bool CPVRManager::StartUpdateThreads(void)
 {
   CLog::Log(LOGNOTICE, "PVRManager - starting up");
 
+  m_loadingBusyDialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+  m_loadingBusyDialog->Show();
+
   Create();
   SetName("XBMC PVRManager");
   SetPriority(-1);
@@ -210,6 +212,11 @@ void CPVRManager::Process(void)
   /* load the pvr data from the db and clients if it's not already loaded */
   if (!Load())
   {
+    if (m_loadingBusyDialog && m_loadingBusyDialog->IsActive())
+    {
+      m_loadingBusyDialog->Close();
+      m_loadingBusyDialog = NULL;
+    }
     CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data", __FUNCTION__);
     return;
   }
@@ -223,6 +230,12 @@ void CPVRManager::Process(void)
   /* continue last watched channel after first startup */
   if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
     ContinueLastChannel();
+
+  if (m_loadingBusyDialog && m_loadingBusyDialog->IsActive())
+  {
+    m_loadingBusyDialog->Close();
+    m_loadingBusyDialog = NULL;
+  }
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
 
