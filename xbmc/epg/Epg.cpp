@@ -245,6 +245,8 @@ const CEpgInfoTag *CEpg::InfoTagNow(void) const
 
 const CEpgInfoTag *CEpg::InfoTagNext(void) const
 {
+  CSingleLock lock(m_critSection);
+
   const CEpgInfoTag *nowTag = InfoTagNow();
 
   return nowTag ? nowTag->GetNextEvent() : NULL;
