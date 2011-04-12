@@ -463,7 +463,7 @@ void CGUISettings::Initialize()
   AddString(ao, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
   AddString(ao, "audiooutput.customdevice", 1300, "", EDIT_CONTROL_INPUT);
   AddSeparator(ao, "audiooutput.sep2");
-  AddString(ao, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
+  AddString(ao, "audiooutput.passthroughdevice", 546, "default", SPIN_CONTROL_TEXT);
   AddString(ao, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
   AddSeparator(ao, "audiooutput.sep3");
 #elif defined(_WIN32)

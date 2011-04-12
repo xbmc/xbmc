@@ -32,7 +32,7 @@
 #include "threads/SingleLock.h"
 #include "settings/GUISettings.h"
 
-#define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_RESAMPLE)
+#define ALSA_OPTIONS (SND_PCM_NONBLOCK | SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_RESAMPLE)
 #define ALSA_PERIODS 32
 
 static enum AEChannel ALSAChannelMap[9] =
@@ -213,6 +213,21 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
   snd_pcm_hw_params_any(m_pcm, hw_params);
   snd_pcm_hw_params_set_access(m_pcm, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED);
 
+  unsigned int sampleRate   = format.m_sampleRate;
+  unsigned int channelCount = format.m_channelCount;
+  snd_pcm_hw_params_set_rate_near    (m_pcm, hw_params, &sampleRate, NULL);
+  snd_pcm_hw_params_set_channels_near(m_pcm, hw_params, &channelCount);
+
+  if (format.m_channelCount != channelCount)
+  {
+    format.m_channelCount = channelCount;
+    CLog::Log(LOGERROR, "CAESinkALSA::InitializeHW - Unable to open the required number of channels");
+    snd_pcm_hw_params_free(hw_params);
+    return false;
+  }
+
+
+
   snd_pcm_format_t fmt = AEFormatToALSAFormat(format.m_dataFormat);
   if (fmt == SND_PCM_FORMAT_UNKNOWN)
   {
@@ -263,18 +278,15 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
     }
   }
 
-  snd_pcm_hw_params_t *hw_params_copy;
-  snd_pcm_hw_params_malloc(&hw_params_copy);
-
-  unsigned int sampleRate = format.m_sampleRate;
-  snd_pcm_hw_params_set_rate_near(m_pcm, hw_params, &sampleRate          , NULL);
-  snd_pcm_hw_params_set_channels (m_pcm, hw_params, format.m_channelCount      );
-
   unsigned int frames  = sampleRate / 1000; /* 1 ms of audio */
   unsigned int periods = ALSA_PERIODS;
 
   snd_pcm_uframes_t periodSize = frames * 4; /* 4 ms */
   snd_pcm_uframes_t bufferSize = periodSize * periods;
+
+  /* work on a copy of the hw params */
+  snd_pcm_hw_params_t *hw_params_copy;
+  snd_pcm_hw_params_malloc(&hw_params_copy);
 
   /* try to set the buffer size then the period size */
   snd_pcm_hw_params_copy(hw_params_copy, hw_params);
@@ -306,7 +318,7 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
           snd_pcm_hw_params_free(hw_params_copy);
           snd_pcm_hw_params_free(hw_params     );
           return false;
-	      }
+	}
       }
     }
   }
@@ -437,6 +449,7 @@ void CAESinkALSA::EnumerateDevices (AEDeviceList &devices, bool passthrough)
   }
   else
   {
+    devices.push_back(AEDevice("default", "alsa:default"));
     devices.push_back(AEDevice("iec958" , "alsa:iec958"));
     devices.push_back(AEDevice("hdmi"   , "alsa:hdmi"));
   }

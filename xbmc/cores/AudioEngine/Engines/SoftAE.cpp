@@ -245,10 +245,10 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   {
     /* we failed, set the data format to defaults so the thread does not block */
     newFormat.m_dataFormat    = (m_rawPassthrough || m_passthrough) ? AE_FMT_S16NE : AE_FMT_FLOAT;
-    newFormat.m_channelLayout = CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0);
+    newFormat.m_channelLayout = CAEUtil::GetStdChLayout(stdChLayout);
     newFormat.m_channelCount  = (m_rawPassthrough || m_passthrough) ? 2 : m_channelCount;
     newFormat.m_sampleRate    = sampleRate;
-    newFormat.m_frames        = (sampleRate / 1000) * DELAY_FRAME_TIME;
+    newFormat.m_frames        = (unsigned int)(((float)sampleRate / 1000.0f) * (float)DELAY_FRAME_TIME);
     newFormat.m_frameSamples  = newFormat.m_frames * newFormat.m_channelCount;
     newFormat.m_frameSize     = (CAEUtil::DataFormatToBits(newFormat.m_dataFormat) >> 3) * newFormat.m_channelCount;
   }
