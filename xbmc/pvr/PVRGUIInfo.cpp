@@ -659,14 +659,15 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
 {
   CSingleLock lock(m_critSection);
 
-  if (m_playingEpgTag && m_playingEpgTag->IsActive())
-    return;
-
   CPVRChannel currentChannel;
   if (CPVRManager::Get()->GetCurrentChannel(&currentChannel))
   {
-    m_playingEpgTag = currentChannel.GetEPGNow();
-    CPVRManager::Get()->UpdateCurrentFile();
+    if (!m_playingEpgTag || !m_playingEpgTag->IsActive() ||
+        !(*m_playingEpgTag->ChannelTag() == currentChannel))
+    {
+      m_playingEpgTag = currentChannel.GetEPGNow();
+      CPVRManager::Get()->UpdateCurrentFile();
+    }
   }
 }
 
