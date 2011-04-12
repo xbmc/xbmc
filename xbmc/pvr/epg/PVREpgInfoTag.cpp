@@ -65,7 +65,7 @@ void CPVREpgInfoTag::UpdatePath(void)
     return;
 
   CStdString path;
-  path.Format("pvr://guide/channel-%04i/%s.epg", ((CPVREpg *)m_Epg)->Channel()->ChannelNumber(), m_startTime.GetAsDBDateTime().c_str());
+  path.Format("pvr://guide/channel-%04i/%s.epg", m_Epg->EpgID(), m_startTime.GetAsDBDateTime().c_str());
   SetPath(path);
 }
 
