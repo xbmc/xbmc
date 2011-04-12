@@ -193,6 +193,15 @@
 					<label>$INFO[Player.Time(hh:mm:ss)]</label>
 				</control>
 				<control type="progress" id="1">
+					<description>ProgressbarCache</description>
+					<posx>100</posx>
+					<posy>15</posy>
+					<width>720</width>
+					<height>16</height>
+					<info>Player.ProgressCache</info>
+					<midtexture border="6,0,6,0">OSDProgressMidLight.png</midtexture>
+				</control>
+				<control type="progress" id="1">
 					<description>Progressbar</description>
 					<posx>100</posx>
 					<posy>15</posy>
