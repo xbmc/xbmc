@@ -201,16 +201,6 @@ unsigned int CAEStreamInfo::DetectType(uint8_t *data, unsigned int size)
   unsigned int possible = 0;
 
   while(size > 0) {
-    /* if it could be AC3 */
-    if (size > 6 && data[0] == 0x0b && data[1] == 0x77)
-    {
-      unsigned int skip = SyncAC3(data, size);
-      if (m_hasSync)
-        return skipped + skip;
-      else
-        possible = skipped;
-    }
-
     /* if it could be DTS */
     if (size > 8)
     {
@@ -226,6 +216,16 @@ unsigned int CAEStreamInfo::DetectType(uint8_t *data, unsigned int size)
         else
           possible = skipped;
       }
+    }
+
+    /* if it could be AC3 */
+    if (size > 6 && data[0] == 0x0b && data[1] == 0x77)
+    {
+      unsigned int skip = SyncAC3(data, size);
+      if (m_hasSync)
+        return skipped + skip;
+      else
+        possible = skipped;
     }
 
     /* move along one byte */
@@ -388,7 +388,7 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
       /* 16bit BE */
       case DTS_PREAMBLE_16BE:
         m_dataIsLE = false;
-        blocks     = (data[5] >> 2) & 0x7f;
+        blocks     = ((data[5] >> 2) & 0x7f) + 1;
         m_fsize    = ((((data[5] & 0x3) << 8 | data[6]) << 4) | ((data[7] & 0xF0) >> 4)) + 1;
         srate_code = (data[8] & 0x3C) >> 2;
         m_dataIsLE = false;
@@ -397,7 +397,7 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
       /* 16bit LE */
       case DTS_PREAMBLE_16LE:
         m_dataIsLE = true;
-        blocks     = (data[4] >> 2) & 0x7f;
+        blocks     = ((data[4] >> 2) & 0x7f) + 1;
         m_fsize    = ((((data[4] & 0x3) << 8 | data[7]) << 4) | ((data[6] & 0xF0) >> 4)) + 1;
         srate_code = (data[9] & 0x3C) >> 2;
         m_dataIsLE = true;
