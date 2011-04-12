@@ -758,34 +758,21 @@ void CPVRManager::OnJobComplete(unsigned int jobID, bool success, CJob* job)
     CSingleLock lock(m_critSectionTriggers);
     m_bChannelGroupsUpdating = false;
     m_bChannelsUpdating = false;
-
-    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_TV);
-    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
   }
   else if (!strcmp(job->GetType(), "pvr-update-channels"))
   {
     CSingleLock lock(m_critSectionTriggers);
     m_bChannelsUpdating = false;
-
-    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_TV);
-    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
   }
   else if (!strcmp(job->GetType(), "pvr-update-timers"))
   {
     CSingleLock lock(m_critSectionTriggers);
     m_bTimersUpdating = false;
-
-    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_TIMERS);
-    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_EPG);
-    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_TV);
-    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
   }
   else if (!strcmp(job->GetType(), "pvr-update-recordings"))
   {
     CSingleLock lock(m_critSectionTriggers);
     m_bRecordingsUpdating = false;
-
-    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_RECORDINGS);
   }
 }
 

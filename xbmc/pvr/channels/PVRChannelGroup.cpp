@@ -504,6 +504,10 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
        new channels were added at the back, so they'll get the highest numbers */
     Renumber();
 
+    lock.Leave();
+
+    CPVRManager::Get()->UpdateWindow(m_bRadio ? PVR_WINDOW_CHANNELS_RADIO : PVR_WINDOW_CHANNELS_TV);
+
     return Persist();
   }
 
