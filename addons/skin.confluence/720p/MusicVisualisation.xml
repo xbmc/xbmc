@@ -76,8 +76,8 @@
 				<height>230</height>
 				<info>MusicPlayer.Cover</info>
 				<aspectratio aligny="bottom">keep</aspectratio>
-				<bordertexture border="19,3,19,3">thumb-border.png</bordertexture>
-				<bordersize>17,1,17,1</bordersize>
+				<bordertexture border="8">ThumbShadow.png</bordertexture>
+				<bordersize>8</bordersize>
 			</control>
 			<control type="group">
 				<posx>330</posx>
