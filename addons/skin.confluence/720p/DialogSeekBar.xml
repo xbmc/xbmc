@@ -1,34 +1,66 @@
 <window id="115">
 	<defaultcontrol>1</defaultcontrol>
 	<visible>[Player.Seeking | Player.DisplayAfterSeek | Player.Paused | Player.Forwarding | Player.Rewinding] + ![Window.IsVisible(VideoOSD) | Window.IsVisible(MusicOSD)]</visible>
-	<animation effect="slide" start="0,80" end="0,0" time="100">WindowOpen</animation>
-	<animation effect="slide" start="0,0" end="0,80" time="100">WindowClose</animation>
-	<coordinates>
-		<system>1</system>
-		<posx>820</posx>
-		<posy>650</posy>
-	</coordinates>
+	<animation effect="fade" start="0" end="100" time="200">WindowOpen</animation>
+	<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 	<controls>
 		<control type="group">
+			<visible>player.chaptercount + Window.IsVisible(FullScreenVideo)</visible>
+			<posx>540r</posx>
+			<posy>20</posy>
+			<include>VisibleFadeEffect</include>
+			<animation effect="slide" start="0,0" end="0,15" time="200" condition="Player.ShowInfo | Window.IsVisible(VolumeBar)">Conditional</animation>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>150</width>
+				<height>70</height>
+				<colordiffuse>EEFFFFFF</colordiffuse>
+				<texture border="12">OverlayDialogBackground.png</texture>
+			</control>
+			<control type="label" id="1">
+				<description>Chapter Pos No</description>
+				<posx>20</posx>
+				<posy>10</posy>
+				<width>110</width>
+				<height>20</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font12_title</font>
+				<textcolor>blue</textcolor>
+				<label>$LOCALIZE[21396]</label>
+				<visible>player.chaptercount</visible>
+			</control>
+			<control type="label" id="1">
+				<description>Chapter Pos No</description>
+				<posx>20</posx>
+				<posy>30</posy>
+				<width>110</width>
+				<height>20</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font13_title</font>
+				<textcolor>grey2</textcolor>
+				<label>$INFO[player.chapter]$INFO[player.chaptercount, / ]</label>
+				<visible>player.chaptercount</visible>
+			</control>
+		</control>
+		<control type="group">
+			<posx>390r</posx>
+			<posy>20</posy>
+			<animation effect="slide" start="0,0" end="-115,-26" time="200" condition="![Window.IsVisible(FullScreenVideo) | Window.IsVisible(Visualisation)]">Conditional</animation>
+			<animation effect="slide" start="0,0" end="0,15" time="200" condition="[Window.IsVisible(FullScreenVideo) | Window.IsVisible(Visualisation)] + [Player.ShowInfo | Window.IsVisible(VolumeBar)]">Conditional</animation>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
 				<width>370</width>
-				<height>80</height>
-				<texture border="20,20,20,2">InfoMessagePanel.png</texture>
-				<visible>!player.chaptercount</visible>
-			</control>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>450</width>
-				<height>80</height>
-				<texture border="20,20,20,2">InfoMessagePanel.png</texture>
-				<visible>player.chaptercount</visible>
+				<height>70</height>
+				<colordiffuse>EEFFFFFF</colordiffuse>
+				<texture border="12">OverlayDialogBackground.png</texture>
 			</control>
 			<control type="group">
 				<posx>260</posx>
-				<posy>15</posy>
+				<posy>10</posy>
 				<control type="image">
 					<posx>10</posx>
 					<posy>0</posy>
@@ -155,12 +187,12 @@
 			<control type="label">
 				<description>Playing Label</description>
 				<posx>20</posx>
-				<posy>8</posy>
+				<posy>7</posy>
 				<width>240</width>
 				<height>20</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font12_title</font>
+				<font>font10_title</font>
 				<textcolor>blue</textcolor>
 				<label>$LOCALIZE[31042]</label>
 				<visible>Player.Playing + !Player.Seeking + !Player.DisplayAfterSeek</visible>
@@ -168,12 +200,12 @@
 			<control type="label">
 				<description>Paused Label</description>
 				<posx>20</posx>
-				<posy>8</posy>
+				<posy>7</posy>
 				<width>240</width>
 				<height>20</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font12_title</font>
+				<font>font10_title</font>
 				<textcolor>blue</textcolor>
 				<label>31043</label>
 				<visible>[Player.Paused + !Player.Caching] + !Player.Seeking + !Player.DisplayAfterSeek</visible>
@@ -181,12 +213,12 @@
 			<control type="label">
 				<description>Cache Label</description>
 				<posx>20</posx>
-				<posy>8</posy>
+				<posy>7</posy>
 				<width>240</width>
 				<height>20</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font12_title</font>
+				<font>font10_title</font>
 				<textcolor>blue</textcolor>
 				<label>$LOCALIZE[15107] $INFO[Player.CacheLevel]%</label>
 				<visible>[Player.Paused + Player.Caching] + !Player.Seeking</visible>
@@ -194,12 +226,12 @@
 			<control type="label">
 				<description>Seeking Label</description>
 				<posx>20</posx>
-				<posy>8</posy>
+				<posy>7</posy>
 				<width>240</width>
 				<height>20</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font12_title</font>
+				<font>font10_title</font>
 				<textcolor>blue</textcolor>
 				<label>[UPPERCASE]$LOCALIZE[773][/UPPERCASE]</label>
 				<visible>Player.Seeking</visible>
@@ -207,12 +239,12 @@
 			<control type="label">
 				<description>Final Seek amount Label</description>
 				<posx>20</posx>
-				<posy>8</posy>
+				<posy>7</posy>
 				<width>240</width>
 				<height>20</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font12_title</font>
+				<font>font10_title</font>
 				<textcolor>blue</textcolor>
 				<label>[UPPERCASE]$LOCALIZE[773][/UPPERCASE][COLOR=grey] $INFO[Player.SeekOffset][/COLOR]</label>
 				<visible>Player.DisplayAfterSeek + ![player.forwarding | player.rewinding]</visible>
@@ -220,12 +252,12 @@
 			<control type="label">
 				<description>FF Label</description>
 				<posx>20</posx>
-				<posy>8</posy>
+				<posy>7</posy>
 				<width>240</width>
 				<height>20</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font12_title</font>
+				<font>font10_title</font>
 				<textcolor>blue</textcolor>
 				<label>31044</label>
 				<visible>Player.Forwarding</visible>
@@ -233,12 +265,12 @@
 			<control type="label">
 				<description>RW Label</description>
 				<posx>20</posx>
-				<posy>8</posy>
+				<posy>7</posy>
 				<width>240</width>
 				<height>20</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<font>font12_title</font>
+				<font>font10_title</font>
 				<textcolor>blue</textcolor>
 				<label>31045</label>
 				<visible>Player.Rewinding</visible>
@@ -246,7 +278,7 @@
 			<control type="label">
 				<description>Elapsed Time Label</description>
 				<posx>20</posx>
-				<posy>27</posy>
+				<posy>23</posy>
 				<width>240</width>
 				<height>20</height>
 				<font>font13_title</font>
@@ -259,7 +291,7 @@
 			<control type="label">
 				<description>Seek Time Label</description>
 				<posx>20</posx>
-				<posy>27</posy>
+				<posy>23</posy>
 				<width>240</width>
 				<height>20</height>
 				<font>font13_title</font>
@@ -272,7 +304,7 @@
 			<control type="progress">
 				<description>ProgressbarCache</description>
 				<posx>20</posx>
-				<posy>50</posy>
+				<posy>45</posy>
 				<width>240</width>
 				<height>15</height>
 				<info>Player.ProgressCache</info>
@@ -282,7 +314,7 @@
 			<control type="progress" id="23">
 				<description>Progressbar</description>
 				<posx>20</posx>
-				<posy>50</posy>
+				<posy>45</posy>
 				<width>240</width>
 				<height>15</height>
 				<info>Player.Progress</info>
@@ -291,43 +323,13 @@
 			<control type="slider" id="401">
 				<description>Seek Slider</description>
 				<posx>20</posx>
-				<posy>47</posy>
+				<posy>42</posy>
 				<width>240</width>
 				<height>12</height>
 				<texturesliderbar>seekslider.png</texturesliderbar>
 				<textureslidernib>osd_slider_nib.png</textureslidernib>
 				<textureslidernibfocus>osd_slider_nib.png</textureslidernibfocus>
 				<visible>Player.Seeking</visible>
-			</control>
-		</control>
-		<control type="group">
-			<!-- Chapter Count images -->
-			<visible>player.chaptercount</visible>
-			<control type="label" id="1">
-				<description>Chapter Pos No</description>
-				<posx>435</posx>
-				<posy>8</posy>
-				<width>200</width>
-				<height>20</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font12_title</font>
-				<textcolor>blue</textcolor>
-				<label>$LOCALIZE[21396]</label>
-				<visible>player.chaptercount</visible>
-			</control>
-			<control type="label" id="1">
-				<description>Chapter Pos No</description>
-				<posx>435</posx>
-				<posy>27</posy>
-				<width>200</width>
-				<height>20</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font13_title</font>
-				<textcolor>grey2</textcolor>
-				<label>$INFO[player.chapter]$INFO[player.chaptercount, / ]</label>
-				<visible>player.chaptercount</visible>
 			</control>
 		</control>
 	</controls>
