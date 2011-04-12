@@ -57,7 +57,6 @@ using namespace std;
 
 CSoftAE::CSoftAE():
   m_thread             (NULL ),
-  m_reopen             (0    ),
   m_running            (false),
   m_reOpened           (false),
   m_sink               (NULL ),
@@ -128,6 +127,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
 
   /* lock the sink so the thread gets held up */
   m_sinkLock.EnterExclusive();
+  LoadSettings();
 
   /* load the configuration */
   enum AEStdChLayout stdChLayout = AE_CH_LAYOUT_2_0;
@@ -303,14 +303,16 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
       m_chLayout     = m_encoderFormat.m_channelLayout;
       m_channelCount = m_encoderFormat.m_channelCount;
       m_convertFn    = CAEConvert::FrFloat(m_encoderFormat.m_dataFormat);
-      m_buffer       = _aligned_malloc(m_encoderFormat.m_frames * sizeof(float) * m_channelCount, 16);
+      m_bufferSize   = m_encoderFormat.m_frames * sizeof(float) * m_channelCount;
+      m_buffer       = _aligned_malloc(m_bufferSize, 16);
       
       CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Encoding using layout: %s", CAEUtil::GetChLayoutStr(m_chLayout).c_str());
     }
     else
     {
-      m_convertFn = CAEConvert::FrFloat(newFormat.m_dataFormat);
-      m_buffer    = _aligned_malloc(newFormat.m_frames * sizeof(float) * m_channelCount, 16);
+      m_convertFn  = CAEConvert::FrFloat(newFormat.m_dataFormat);
+      m_bufferSize = newFormat.m_frames * sizeof(float) * m_channelCount;
+      m_buffer     = _aligned_malloc(m_bufferSize, 16);
       
       CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(stdChLayout));
     }
@@ -381,7 +383,6 @@ bool CSoftAE::Initialize()
 {
   /* get the current volume level */
   m_volume = g_settings.m_fVolumeLevel;
-  OnSettingsChange("");
 
   /* we start even if we failed to open a sink */
   OpenSink();
@@ -401,53 +402,60 @@ void CSoftAE::OnSettingsChange(CStdString setting)
     list<CSoftAEStream*>::iterator itt;
     for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
       (*itt)->InitializeRemap();
-
-    /* we dont want to re-open the sink for this */
-    return;
   }
 
-  if (setting.IsEmpty() || setting == "audiooutput.passthroughdevice" || setting == "audiooutput.custompassthrough")
+  if (setting == "audiooutput.passthroughdevice" ||
+      setting == "audiooutput.custompassthrough" ||
+      setting == "audiooutput.audiodevice"       ||
+      setting == "audiooutput.customdevice"      ||
+      setting == "audiooutput.mode"              ||
+      setting == "audiooutput.ac3passthrough"    ||
+      setting == "audiooutput.channellayout")
   {
-    m_passthroughDevice = g_guiSettings.GetString("audiooutput.passthroughdevice");
-    if (m_passthroughDevice == "custom")
-      m_passthroughDevice = g_guiSettings.GetString("audiooutput.custompassthrough");
-
-    if (m_passthroughDevice.IsEmpty())
-      m_passthroughDevice = g_guiSettings.GetString("audiooutput.audiodevice");
-
-    int pos = m_passthroughDevice.find_first_of(':');
-    if (pos > 0)
-    {
-      m_passthroughDriver = m_passthroughDevice.substr(0, pos);
-      m_passthroughDriver = m_passthroughDriver.ToUpper();
-      m_passthroughDevice = m_passthroughDevice.substr(pos + 1, m_passthroughDevice.length() - pos - 1);
-    }
-    else
-      m_passthroughDriver.Empty();
-
-    if (m_passthroughDevice.IsEmpty())
-      m_passthroughDevice = "default";
+    OpenSink();
   }
+}
 
-  if (setting.IsEmpty() || setting == "audiooutput.audiodevice" || setting == "audiooutput.customdevice")
+void CSoftAE::LoadSettings()
+{
+  int pos;
+
+  m_passthroughDevice = g_guiSettings.GetString("audiooutput.passthroughdevice");
+  if (m_passthroughDevice == "custom")
+    m_passthroughDevice = g_guiSettings.GetString("audiooutput.custompassthrough");
+
+  if (m_passthroughDevice.IsEmpty())
+    m_passthroughDevice = g_guiSettings.GetString("audiooutput.audiodevice");
+
+  pos = m_passthroughDevice.find_first_of(':');
+  if (pos > 0)
   {
-    m_device = g_guiSettings.GetString("audiooutput.audiodevice");
-    if (m_device == "custom")
-      m_device = g_guiSettings.GetString("audiooutput.customdevice");
-
-    int pos = m_device.find_first_of(':');
-    if (pos > 0)
-    {
-      m_driver = m_device.substr(0, pos);
-      m_driver = m_driver.ToUpper();
-      m_device = m_device.substr(pos + 1, m_device.length() - pos - 1);
-    }
-    else
-      m_driver.Empty();
-
-    if (m_device.IsEmpty())
-      m_device = "default";
+    m_passthroughDriver = m_passthroughDevice.substr(0, pos);
+    m_passthroughDriver = m_passthroughDriver.ToUpper();
+    m_passthroughDevice = m_passthroughDevice.substr(pos + 1, m_passthroughDevice.length() - pos - 1);
   }
+  else
+    m_passthroughDriver.Empty();
+
+  if (m_passthroughDevice.IsEmpty())
+    m_passthroughDevice = "default";
+
+  m_device = g_guiSettings.GetString("audiooutput.audiodevice");
+  if (m_device == "custom")
+    m_device = g_guiSettings.GetString("audiooutput.customdevice");
+
+  pos = m_device.find_first_of(':');
+  if (pos > 0)
+  {
+    m_driver = m_device.substr(0, pos);
+    m_driver = m_driver.ToUpper();
+    m_device = m_device.substr(pos + 1, m_device.length() - pos - 1);
+  }
+  else
+    m_driver.Empty();
+
+  if (m_device.IsEmpty())
+    m_device = "default";
 
   m_passthrough =
     g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958 &&
@@ -455,9 +463,6 @@ void CSoftAE::OnSettingsChange(CStdString setting)
 
   if (m_passthrough)
 	CLog::Log(LOGINFO, "CSoftAE::OnSettingsChange - Transcode Enabled");
-
-  if (!setting.IsEmpty())
-    m_reopen = CTimeUtils::GetTimeMS() + 500;
 }
 
 void CSoftAE::Deinitialize()
@@ -618,11 +623,6 @@ void CSoftAE::FreeSound(IAESound *sound)
 
 void CSoftAE::GarbageCollect()
 {
-  if (m_reopen && m_reopen < CTimeUtils::GetTimeMS())
-  {
-    m_reopen = 0;
-    OpenSink();
-  }
 }
 
 unsigned int CSoftAE::GetSampleRate()

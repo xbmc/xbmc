@@ -100,8 +100,8 @@ public:
 
 private:
   CThread *m_thread;
-  unsigned int m_reopen; /* reopen timeout for on setting change */
 
+  void LoadSettings();
   bool OpenSink(unsigned int sampleRate = 44100, bool forceRaw = false);
   bool SetupEncoder(AEAudioFormat &format);
   void Deinitialize();
@@ -153,7 +153,9 @@ private:
   bool                                      m_passthrough;
   std::list<CSoftAEStream*>                 m_streams;
   std::list<CSoftAESound*>                  m_sounds;
+
   /* this will contain either float, or uint8_t depending on if we are in raw mode or not */
+  unsigned int                              m_bufferSize;
   void                                     *m_buffer;
   unsigned int                              m_bufferSamples;
 
