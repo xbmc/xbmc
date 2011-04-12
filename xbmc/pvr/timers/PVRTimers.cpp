@@ -363,7 +363,7 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
   int iLifetime = g_guiSettings.GetInt("pvrrecord.defaultlifetime");
   int iDuration = g_guiSettings.GetInt("pvrrecord.instantrecordtime");
 
-  CPVRTimerInfoTag *newTimer = CPVRTimerInfoTag::CreateFromEpg(*epgTag);
+  CPVRTimerInfoTag *newTimer = epgTag ? CPVRTimerInfoTag::CreateFromEpg(*epgTag) : NULL;
   if (!newTimer)
   {
     newTimer = new CPVRTimerInfoTag;
