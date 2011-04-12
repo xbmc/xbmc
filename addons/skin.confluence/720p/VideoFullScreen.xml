@@ -54,20 +54,20 @@
 				<height>230</height>
 				<info>VideoPlayer.Cover</info>
 				<aspectratio aligny="bottom">keep</aspectratio>
-				<bordertexture border="19,3,19,3">thumb-border.png</bordertexture>
-				<bordersize>17,1,17,1</bordersize>
+				<bordertexture border="8">ThumbShadow.png</bordertexture>
+				<bordersize>8</bordersize>
 				<visible>!VideoPlayer.Content(Movies)</visible>
 			</control>
 			<control type="image" id="1">
 				<description>Movie cover image</description>
 				<posx>20</posx>
-				<posy>370r</posy>
+				<posy>350r</posy>
 				<width>300</width>
-				<height>350</height>
+				<height>330</height>
 				<info>VideoPlayer.Cover</info>
 				<aspectratio aligny="bottom">keep</aspectratio>
-				<bordertexture border="19,3,19,3">thumb-border.png</bordertexture>
-				<bordersize>17,1,17,1</bordersize>
+				<bordertexture border="8">ThumbShadow.png</bordertexture>
+				<bordersize>8</bordersize>
 				<visible>VideoPlayer.Content(Movies)</visible>
 			</control>
 			<control type="group" id="1">
