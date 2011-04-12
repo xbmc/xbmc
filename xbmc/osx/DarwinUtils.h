@@ -27,6 +27,7 @@
 extern "C"
 {
 #endif
+  float   GetIOSVersion(void);
   int     GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize);
   int     GetDarwinExecutablePath(char* path, uint32_t *pathsize);
 

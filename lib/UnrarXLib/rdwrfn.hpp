@@ -4,9 +4,8 @@
 class CmdAdd;
 class Unpack;
 
-#ifndef _LINUX
-#include <process.h>
-#endif
+#include "system.h"
+
 class CGUIDialogProgress;
 
 class ComprDataIO

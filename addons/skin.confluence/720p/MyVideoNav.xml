@@ -152,7 +152,7 @@
 				</control>
 				<control type="image">
 					<posx>185</posx>
-					<posy>240</posy>
+					<posy>200</posy>
 					<width>40</width>
 					<height>40</height>
 					<texture>MediaSubSet.png</texture>
@@ -307,7 +307,7 @@
 				</control>
 				<control type="radiobutton" id="98">
 					<description>Extra Options</description>
-					<hitrect x="0" y="160" w="265" h="40" />
+					<hitrect x="0" y="120" w="265" h="40" />
 					<posx>0</posx>
 					<posy>120</posy>
 					<include>ButtonCommonValues</include>

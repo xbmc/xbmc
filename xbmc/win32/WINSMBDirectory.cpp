@@ -26,10 +26,11 @@
 #include "settings/GUISettings.h"
 #include "FileItem.h"
 #include "WIN32Util.h"
-#include "AutoPtrHandle.h"
-#include "log.h"
-#include "CharsetConverter.h"
+#include "utils/AutoPtrHandle.h"
+#include "utils/log.h"
+#include "utils/CharsetConverter.h"
 #include "PasswordManager.h"
+#include "Util.h"
 
 #ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)

@@ -2,9 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([xbmc], [9.11], [http://trac.xbmc.org])
+AC_INIT([xbmc], [11.0], [http://trac.xbmc.org])
 AC_CONFIG_HEADERS([xbmc/config.h])
 AH_TOP([#pragma once])
+m4_include([m4/ax_python_devel.m4])
 
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([foreign])
@@ -95,8 +96,6 @@ external_libraries_enabled="== Use of all supported external libraries enabled. 
 external_libraries_disabled="== Use of all supported external libraries disabled. =="
 external_ffmpeg_enabled="== Use of external ffmpeg enabled. =="
 external_ffmpeg_disabled="== Use of external ffmpeg disabled. =="
-external_python_enabled="== Use of external python enabled. =="
-external_python_disabled="== Use of external python disabled. =="
 ffmpeg_vdpau_not_supported="== External ffmpeg doesn't support VDPAU. VDPAU support disabled. =="
 dashes="------------------------"
 final_message="\n  XBMC Configuration:"
@@ -303,12 +302,6 @@ AC_ARG_ENABLE([external-ffmpeg],
   [use_external_ffmpeg=$enableval],
   [use_external_ffmpeg=$use_external_libraries])
 
-AC_ARG_ENABLE([external-python],
-  [AS_HELP_STRING([--enable-external-python],
-  [enable use of external python library (default is no) 'Linux only'])],
-  [use_external_python=$enableval],
-  [use_external_python=$use_external_libraries])
-
 ### End of external library options
 
 if test "x$host_vendor" != "xapple"; then
@@ -346,6 +339,11 @@ case $host in
      ARCHTYPE=$HOSTTYPE
      AC_SUBST([ARCHTYPE])
      AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
+     PYTHON_VERSION=2.6
+     PYTHON_CPPFLAGS=-I${prefix}/include/python2.6
+     PYTHON_LDFLAGS=-L${prefix}/lib -lpython2.6
+     PYTHON_SITE_PKG=${prefix}/lib/python2.6/site-packages
+     PYTHON_NOVERSIONCHECK="no-check"
      ;;
   i386-apple-darwin*)
      use_joystick=no
@@ -498,6 +496,9 @@ AC_CHECK_SIZEOF([size_t])
 # Add top source directory for all builds so we can use config.h
 INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 
+# Check inotify availability
+AC_CHECK_HEADER([sys/inotify.h], AC_DEFINE([HAVE_INOTIFY],[1],[Define if we have inotify]),)
+
 # Checks for boost headers using CXX instead of CC
 AC_LANG_PUSH([C++])
 AC_CHECK_HEADER([boost/shared_ptr.hpp],, AC_MSG_ERROR($missing_library))
@@ -538,7 +539,9 @@ fi
 AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, "yes", "no")
 if test $MYSQL_CONFIG = "yes"; then
   INCLUDES="$INCLUDES `mysql_config --include`"
-  LIBS="$LIBS `mysql_config --libs`"
+  MYSQL_LIBS=`mysql_config --libs`
+  LIBS="$LIBS $MYSQL_LIBS"
+  AC_SUBST(MYSQL_LIBS)
 else
   AC_MSG_ERROR($missing_program)
 fi
@@ -549,7 +552,9 @@ AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([ass],         [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([wavpack/wavpack.h],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))
@@ -558,16 +563,9 @@ AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssl],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([wavpack],     [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([mpeg2],       [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
-AC_CHECK_LIB([modplug],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([smbclient],   [main],, AC_MSG_ERROR($missing_library))
-PKG_CHECK_MODULES([MAD],        [mad],
-  [INCLUDES="$INCLUDES $MAD_CFLAGS"; LIBS="$LIBS $MAD_LIBS"],
-  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
   [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"],
   AC_MSG_ERROR($missing_library))
@@ -597,15 +595,6 @@ PKG_CHECK_MODULES([SAMPLERATE], [samplerate],
 PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
   [INCLUDES="$INCLUDES $FREETYPE2_CFLAGS"; LIBS="$LIBS $FREETYPE2_LIBS"],
   AC_MSG_ERROR($missing_library))
-PKG_CHECK_MODULES([OGG],        [ogg],
-  [INCLUDES="$INCLUDES $OGG_CFLAGS"; LIBS="$LIBS $OGG_LIBS"],
-  AC_MSG_ERROR($missing_library))
-PKG_CHECK_MODULES([VORBIS],     [vorbis],
-  [INCLUDES="$INCLUDES $VORBIS_CFLAGS"; LIBS="$LIBS $VORBIS_LIBS"],
-  AC_MSG_ERROR($missing_library))
-PKG_CHECK_MODULES([VORBISENC],  [vorbisenc],
-  [INCLUDES="$INCLUDES $VORBISENC_CFLAGS"; LIBS="$LIBS $VORBISENC_LIBS"],
-  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([CURL],       [libcurl],
   [INCLUDES="$INCLUDES $CURL_CFLAGS"],
   AC_MSG_ERROR($missing_library))
@@ -633,22 +622,26 @@ AS_CASE([x$use_libbluray],
 
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
+  AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_HEADER([mpeg2dec/mpeg2.h],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([VORBISFILE],     [vorbisfile],
-    [INCLUDES="$INCLUDES $VORBISFILE_CFLAGS"; LIBS="$LIBS $VORBISFILE_LIBS"],
-    AC_MSG_ERROR($missing_library))
   if test "$use_arch" != "arm"; then
     AC_CHECK_LIB([SDL_mixer],[main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
   fi
 else
-  AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([ass],        [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer],  [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dl],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
   AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image],  [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([modplug],    [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([wavpack],    [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([mpeg2],       [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
 
   PKG_CHECK_MODULES([ALSA],  [alsa],
     [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"],
@@ -671,6 +664,18 @@ else
   PKG_CHECK_MODULES([SDL],   [sdl],
     [INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"],
     AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([MAD],   [mad],
+    [INCLUDES="$INCLUDES $MAD_CFLAGS"; LIBS="$LIBS $MAD_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([OGG],   [ogg],
+    [INCLUDES="$INCLUDES $OGG_CFLAGS"; LIBS="$LIBS $OGG_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([VORBIS],[vorbis],
+    [INCLUDES="$INCLUDES $VORBIS_CFLAGS"; LIBS="$LIBS $VORBIS_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([VORBISENC],[vorbisenc],
+    [INCLUDES="$INCLUDES $VORBISENC_CFLAGS"; LIBS="$LIBS $VORBISENC_LIBS"],
+    AC_MSG_ERROR($missing_library))
 fi
 
 # This is used to skip some submodule configuration on non-Apple hardware
@@ -679,16 +684,19 @@ if [[ "$host_vendor" = "apple" ]]; then
   HOST_NOT_APPLE=0
 fi
 
-if test "$host_vendor" != "apple"; then
-  XB_FIND_SONAME([FLAC],        [FLAC])
-fi
 XB_FIND_SONAME([MAD],         [mad])
 XB_FIND_SONAME([OGG],         [ogg])
 XB_FIND_SONAME([CURL],        [curl])
+XB_FIND_SONAME([FLAC],        [FLAC])
 XB_FIND_SONAME([VORBIS],      [vorbis])
 XB_FIND_SONAME([VORBISENC],   [vorbisenc])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([MODPLUG],     [modplug])
+if test "$host_vendor" = "apple"; then
+  XB_FIND_SONAME([ASS],       [ass])
+  XB_FIND_SONAME([MPEG2],     [mpeg2])
+  XB_FIND_SONAME([WAVPACK],   [wavpack])
+fi
 
 # WebServer
 if test "$use_webserver" = "yes"; then
@@ -839,8 +847,8 @@ if test "$use_external_ffmpeg" = "yes"; then
   [AC_CHECK_HEADERS([ffmpeg/avcodec.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h],,
   [AC_MSG_ERROR($missing_headers)])])
 
-  # libavcore is optional
-  AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h])
+  # optional
+  AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h libavutil/samplefmt.h])
 
   # old FFmpeg have this in libavcodec/opt.h instead:
   AC_CHECK_HEADERS([libavutil/opt.h])
@@ -879,31 +887,16 @@ else
   AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
 fi
 
-# External Python
-if test "$use_external_python" = "yes"; then
-  AC_CHECK_LIB([python2.6], [main],
-    [AC_DEFINE([HAVE_LIBPYTHON2_6], [1],
-    [Define to 1 if you have the 'python2.6' library.])
-    USE_PYTHON2_6=1],
-  [AC_CHECK_LIB([python2.5], [main],
-    [AC_DEFINE([HAVE_LIBPYTHON2_5], [1],
-    [Define to 1 if you have the 'python2.5' library.])
-    USE_PYTHON2_5=1],
-  [AC_CHECK_LIB([python2.4], [main],
-    [AC_DEFINE([HAVE_LIBPYTHON2_4], [1],
-    [Define to 1 if you have the 'python2.4' library.])
-    USE_PYTHON2_4=1],
-  [AC_MSG_ERROR($missing_library)] )] )] )
+# Python
+if test -z "$PYTHON_NOVERSIONCHECK"; then
+  AX_PYTHON_DEVEL([>= 2.4])
+  PYTHON_VERSION=$ac_python_version
+fi
 
-  AC_MSG_NOTICE($external_python_enabled)
-  test "$USE_PYTHON2_6" && AC_MSG_NOTICE([Using Python 2.6])
-  test "$USE_PYTHON2_5" && AC_MSG_NOTICE([Using Python 2.5])
-  test "$USE_PYTHON2_4" && AC_MSG_NOTICE([Using Python 2.4])
-  USE_EXTERNAL_PYTHON=1
-  AC_DEFINE([USE_EXTERNAL_PYTHON], [1], [Whether to use external python library.])
+if test -z "$PYTHON_VERSION"; then
+  AC_MSG_ERROR([Can't find a Python version.])
 else
-  AC_MSG_NOTICE($external_python_disabled)
-  USE_EXTERNAL_PYTHON=0
+  AC_MSG_NOTICE([Using Python $PYTHON_VERSION])
 fi
 
 # VDPAU
@@ -1281,7 +1274,7 @@ else
 fi
 
 if test "$HAVE_GIT" = "yes"; then
-  GIT_REV=$(git --no-pager log --abbrev=7 -1 --pretty=format:"%h %ci" HEAD | awk '{gsub("-", "");print $2"-"$1}')
+  GIT_REV=$(git --no-pager log --abbrev=7 -n 1 --pretty=format:"%h %ci" HEAD | awk '{gsub("-", "");print $2"-"$1}')
 fi
 if test "$GIT_REV" = ""; then
   GIT_REV="Unknown"
@@ -1342,11 +1335,6 @@ if test "$use_external_ffmpeg" = "yes"; then
 else
   final_message="$final_message\n  External FFmpeg:\tNo"
 fi
-if test "$use_external_python" = "yes"; then
-  final_message="$final_message\n  External Python:\tYes"
-else
-  final_message="$final_message\n  External Python:\tNo"
-fi
 
 OUTPUT_FILES="Makefile \
     Makefile.include \
@@ -1381,16 +1369,17 @@ OUTPUT_FILES="Makefile \
     xbmc/guilib/Makefile \
     xbmc/interfaces/Makefile \
     xbmc/network/Makefile \
-    lib/libXBMS/Makefile \
     lib/libRTV/Makefile \
     lib/libexif/Makefile \
     lib/libXDAAP/Makefile \
+    lib/cmyth/Makefile \
     lib/libhdhomerun/Makefile \
     lib/jsoncpp/src/lib_json/Makefile \
     lib/libsquish/Makefile \
     lib/libid3tag/Makefile \
     lib/cximage-6.0/Makefile \
-    xbmc/interfaces/python/linux/Makefile \
+    xbmc/interfaces/python/Makefile \
+    xbmc/interfaces/python/xbmcmodule/Makefile \
     lib/libUPnP/Makefile \
     xbmc/DllPaths_generated.h \
     xbmc/linux/Makefile \
@@ -1405,11 +1394,6 @@ OUTPUT_FILES="Makefile \
     tools/Linux/xbmc-standalone.sh \
     tools/TexturePacker/Makefile \
     tools/EventClients/Clients/OSXRemote/Makefile"
-
-if test "$host_vendor" = "apple"; then
-  OUTPUT_FILES="$OUTPUT_FILES \
-    lib/libflac/Makefile"
-fi
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
 # .dummy.am does nothing.
@@ -1427,12 +1411,7 @@ AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(BUILD_GOOM)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
-AC_SUBST(USE_EXTERNAL_LIBMPEG2)
-AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
-AC_SUBST(USE_EXTERNAL_PYTHON)
-AC_SUBST(USE_PYTHON2_6)
-AC_SUBST(USE_PYTHON2_5)
-AC_SUBST(USE_PYTHON2_4)
+AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
 AC_SUBST(HAVE_XBMC_NONFREE)
 AC_SUBST(USE_ASAP_CODEC)
@@ -1444,6 +1423,9 @@ AC_SUBST(LIBMAD_BASENAME)
 AC_SUBST(LIBOGG_BASENAME)
 AC_SUBST(LIBVORBISENC_BASENAME)
 AC_SUBST(LIBVORBIS_BASENAME)
+AC_SUBST(LIBWAVPACK_BASENAME)
+AC_SUBST(LIBASS_BASENAME)
+AC_SUBST(LIBMEPG2_BASENAME)
 AC_SUBST_FILE(XBMC_STANDALONE_SH_PULSE)
 AC_SUBST(USE_OPENGL)
 AC_SUBST(USE_OPENGLES)
@@ -1504,71 +1486,6 @@ fi
 ])
 ])
 
-XB_CONFIG_MODULE([lib/python], [
-  if test "$host_vendor" = "apple" ; then
-    ./configure \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \
-      --enable-ipv6 \
-      --enable-unicode=ucs4 \
-      --without-cxx \
-      --enable-shared \
-      --without-pymalloc \
-      --with-suffix=.exe \
-      LDFLAGS="-L/opt/local/lib" \
-      OPT="-Wno-deprecated-declarations -I/opt/local/include" \
-      CFLAGS="$CFLAGS" &&
-    sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h && 
-    sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h &&
-    sed -i bak -e "s/define HAVE_FTELLO 1/undef HAVE_FTELLO/" pyconfig.h &&
-    sed -i bak -e "s/define HAVE_FTRUNCATE 1/undef HAVE_FTRUNCATE/" pyconfig.h &&
-    sed -i bak -e "s/define HAVE_FPATHCONF 1/undef HAVE_FPATHCONF/" pyconfig.h &&
-    sed -i bak -e "s/define HAVE_FSYNC 1/undef HAVE_FSYNC/" pyconfig.h &&
-    sed -i bak -e "s/define HAVE_FCHDIR 1/undef HAVE_FCHDIR/" pyconfig.h &&
-    sed -i bak -e "s/define _POSIX_C_SOURCE 200112L/undef _POSIX_C_SOURCE/" pyconfig.h &&
-    sed -i bak -e "s/define _XOPEN_SOURCE 600/undef _XOPEN_SOURCE/" pyconfig.h &&
-    sed -i bak -e "s/define _XOPEN_SOURCE_EXTENDED 1/undef _XOPEN_SOURCE_EXTENDED/" pyconfig.h &&
-    echo "#define   SETPGRP_HAVE_ARG 1" >> pyconfig.h &&
-    cp pyconfig.h Include	
-  else
-    ./configure \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \
-      --disable-ipv6 \
-      --enable-unicode=ucs4 \
-      --without-cxx \
-      --enable-shared \
-      --without-pymalloc \
-      --prefix=`pwd`/../../xbmc/interfaces/python/linux/python-lib CFLAGS="$CFLAGS" \
-      CC="$CC" \
-      CXX="$CXX" &&
-    sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
-    sed -i -e "s/define _POSIX_C_SOURCE 200112L/undef _POSIX_C_SOURCE/" pyconfig.h &&
-    sed -i -e "s/define _XOPEN_SOURCE 600/undef _XOPEN_SOURCE/" pyconfig.h &&
-    cp pyconfig.h Include
-  fi
-], [$USE_EXTERNAL_PYTHON])
-
-XB_CONFIG_MODULE([lib/libflac/flac-1.2.1], [
-  if test "$host_vendor" = "apple" ; then
-    rm -f config.cache
-    CFLAGS="$CFLAGS -fno-common" \ 
-    LDFLAGS="$LDFLAGS" \
-    ./configure -C \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \
-      --with-pic \
-      --disable-asm-optimizations \
-      --disable-xmms-plugin \
-      --disable-cpplibs \
-      CC="$CC" \
-      CXX="$CXX"
-  fi
-], [$HOST_NOT_APPLE])
-
 XB_CONFIG_MODULE([lib/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
     ./configure \
@@ -1591,6 +1508,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --enable-encoder=aac \
       `if test "$use_ffmpeg_libvorbis" == "yes"; then echo --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis; else echo --disable-libvorbis; fi` \
       --disable-devices \
+      --disable-ffprobe \
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
@@ -1626,6 +1544,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       `if test "$use_ffmpeg_libvorbis" == "yes"; then echo --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis; else echo --disable-libvorbis; fi` \
       --disable-decoder=mpeg_xvmc \
       --disable-devices \
+      --disable-ffprobe \
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \

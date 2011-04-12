@@ -251,7 +251,7 @@
     [self deinitDisplayLink];
 		animating = FALSE;
     if (!g_application.m_bStop)
-      g_application.Stop();
+      g_application.Stop(0);
     // wait for animation thread to die
     if ([animationThread isFinished] == NO)
       [animationThreadLock lockWhenCondition:TRUE];

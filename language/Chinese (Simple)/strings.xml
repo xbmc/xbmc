@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Date of translation: 03/10/2011-->
+<!--Date of translation: 03/25/2011-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1222,6 +1222,7 @@
   <string id="13429">允许硬件加速（VDADecoder）</string>
   <string id="13430">允许硬件加速（OpenMax）</string>
   <string id="13431">像素着色器</string>
+  <string id="13432">允许硬件加速（VideoToolbox）</string>
 
   <string id="13500">影音同步方式</string>
   <string id="13501">音频时钟</string>
@@ -2165,6 +2166,8 @@
   <string id="24041">从zip文件安装</string>
   <string id="24042">正在下载 %i%%</string>
   <string id="24043">可更新项</string>
+  <string id="24044">依赖项目未找到</string>
+  <string id="24045">扩展功能程序结构不完整</string>
 
   <string id="24050">可用扩展功能</string>
   <string id="24051">版本：</string>

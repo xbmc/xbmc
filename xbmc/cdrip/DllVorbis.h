@@ -24,12 +24,8 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#if (defined WIN32)
-  #include "cdrip/oggvorbis/vorbisenc.h"
-#else
-  #include <vorbis/vorbisenc.h>
-  #include "utils/log.h"
-#endif
+#include <vorbis/vorbisenc.h>
+#include "utils/log.h"
 #include "DynamicDll.h"
 
 class DllVorbisInterface
@@ -54,14 +50,14 @@ public:
   virtual ~DllVorbisInterface() {}
 };
 
-#if (!defined WIN32)
+#if !(defined(WIN32) || defined(__APPLE__))
 
 class DllVorbis : public DllDynamic, DllVorbisInterface
 {
 public:
     virtual ~DllVorbis() {};
     virtual void vorbis_info_init(vorbis_info *vi)
-        { vorbis_info_init(vi); }
+        { ::vorbis_info_init(vi); }
     virtual int vorbis_bitrate_flushpacket(vorbis_dsp_state *vd, ogg_packet *op)
         { return ::vorbis_bitrate_flushpacket(vd, op); }
     virtual int vorbis_bitrate_addblock(vorbis_block *vb)

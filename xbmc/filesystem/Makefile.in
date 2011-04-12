@@ -4,6 +4,7 @@ CXXFLAGS+=-D__STDC_FORMAT_MACROS \
 
 SRCS=AddonsDirectory.cpp \
      ASAPFileDirectory.cpp \
+     CacheCircular.cpp \
      CacheMemBuffer.cpp \
      CacheStrategy.cpp \
      CDDADirectory.cpp \
@@ -88,10 +89,8 @@ SRCS=AddonsDirectory.cpp \
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 SRCS+=FileRar.cpp \
-      FileXBMSP.cpp \
       RarDirectory.cpp \
       RarManager.cpp \
-      XBMSDirectory.cpp \
 
 endif
 

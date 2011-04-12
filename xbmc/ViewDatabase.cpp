@@ -27,6 +27,8 @@
 #ifdef _LINUX
 #include "linux/ConvUtils.h" // GetLastError()
 #endif
+#include "dbwrappers/dataset.h"
+
 
 //********************************************************************************************************************************
 CViewDatabase::CViewDatabase(void)

@@ -166,7 +166,7 @@ bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
         return false;
 
     PLT_MediaObjectList::Iterator entry = list->GetFirstItem();
-    if (entry == NULL)
+    if (entry == 0)
         return false;
 
     PLT_MediaItemResource resource;

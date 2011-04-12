@@ -29,7 +29,7 @@
 #include <fcntl.h>
 
 #ifdef _WIN32
-#pragma comment(lib, "../../lib/win32/libssh_win32/lib/libssh.lib")
+#pragma comment(lib, "ssh.lib")
 #endif
 
 #ifdef _MSC_VER

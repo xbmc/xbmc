@@ -20,10 +20,10 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-export CFLAGS+=-undefined dynamic_lookup
-export CXXFLAGS+=-undefined dynamic_lookup
-export LDFLAGS+=-Wl,-read_only_relocs,suppress -Wl,-undefined,dynamic_lookup
-CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared --disable-csharp --disable-native-java --without-emacs --disable-java --disable-libasprintf --disable-csharp --disable-openmp --without-emacs --with-included-gettext --without-git --without-cvs ac_cv_func___fsetlocking=no
+CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared \
+  --disable-csharp --disable-native-java --without-emacs --disable-java \
+  --disable-libasprintf --disable-csharp --disable-openmp --with-included-gettext \
+  --without-git --without-cvs
 
 LIBDYLIB=$(SOURCE)/.libs/lib$(LIBNAME).dylib
 
@@ -39,7 +39,6 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); patch -p0 <../01-gettext-tools-Makefile.in.patch
-	cd $(SOURCE); patch -p1 <../02-gettext-tools-stpncpy.patch
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)
@@ -51,7 +50,7 @@ $(LIBDYLIB): $(SOURCE)
 
 clean:
 	make -C $(SOURCE) clean
-	rm  .installed
+	rm -f .installed
 
 distclean::
 	rm -rf $(SOURCE) .installed

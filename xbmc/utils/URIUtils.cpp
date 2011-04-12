@@ -471,11 +471,14 @@ bool URIUtils::IsHD(const CStdString& strFileName)
 bool URIUtils::IsDVD(const CStdString& strFile)
 {
 #if defined(_WIN32)
+  if (strFile.Left(6).Equals("dvd://"))
+    return true;
+
   if(strFile.Mid(1) != ":\\"
   && strFile.Mid(1) != ":")
     return false;
 
-  if((GetDriveType(strFile.c_str()) == DRIVE_CDROM) || strFile.Left(6).Equals("dvd://"))
+  if(GetDriveType(strFile.c_str()) == DRIVE_CDROM)
     return true;
 #else
   CStdString strFileLow = strFile;
@@ -592,16 +595,6 @@ bool URIUtils::IsSmb(const CStdString& strFile)
 bool URIUtils::IsURL(const CStdString& strFile)
 {
   return strFile.Find("://") >= 0;
-}
-
-bool URIUtils::IsXBMS(const CStdString& strFile)
-{
-  CStdString strFile2(strFile);
-
-  if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
-
-  return strFile2.Left(5).Equals("xbms:");
 }
 
 bool URIUtils::IsFTP(const CStdString& strFile)

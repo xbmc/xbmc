@@ -22,9 +22,9 @@
 #include <errno.h>
 #include "PlatformDefs.h"
 #include "NetworkWin32.h"
-#include "log.h"
+#include "utils/log.h"
 #include "threads/SingleLock.h"
-#include "CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 
 // undefine if you want to build without the wlan stuff
 // might be needed for VS2003
@@ -75,8 +75,9 @@ bool CNetworkInterfaceWin32::IsConnected()
 
 CStdString CNetworkInterfaceWin32::GetMacAddress()
 {
-  CStdString result = "";
-  result = CStdString((char*)m_adapter.Address);
+  CStdString result;
+  unsigned char* mAddr = m_adapter.Address;
+  result.Format("%02X:%02X:%02X:%02X:%02X:%02X", mAddr[0], mAddr[1], mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
   return result;
 }
 

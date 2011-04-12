@@ -10,6 +10,8 @@ INCLUDES=-I$(abs_top_srcdir) \
 SRCS = \
 	SDLMain.mm \
 	XBMCHelper.m \
+	AutoPool.mm \
+	DarwinUtils.mm \
 	CocoaInterface.mm \
 	CoreAudio.cpp \
 	OSXGNUReplacements.c \

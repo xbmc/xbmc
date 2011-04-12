@@ -20,9 +20,6 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-export CFLAGS+=-undefined dynamic_lookup
-export CXXFLAGS+=-undefined dynamic_lookup
-export LDFLAGS+=-Wl,-read_only_relocs,suppress
 CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared=yes
 
 LIBDYLIB=$(SOURCE)/.libs/(LIBNAME).dylib
@@ -49,7 +46,7 @@ $(LIBDYLIB): $(SOURCE)
 
 clean:
 	make -C $(SOURCE) clean
-	rm  .installed
+	rm -f .installed
 
 distclean::
 	rm -rf $(SOURCE) .installed

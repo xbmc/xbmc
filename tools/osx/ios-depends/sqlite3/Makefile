@@ -12,7 +12,6 @@ VERSION=3.6.11
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
-#BASE_URL=http://www.sqlite.org
 ARCHIVE=$(SOURCE).tar.gz
 TARBALLS_LOCATION=/Users/Shared/xbmc-depends/tarballs
 RETRIEVE_TOOL=/usr/bin/curl
@@ -21,9 +20,7 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-export CFLAGS+=-undefined dynamic_lookup
-export CXXFLAGS+=-undefined dynamic_lookup -DSQLITE_ENABLE_COLUMN_METADATA=1
-export LDFLAGS+=-Wl,-read_only_relocs,suppress
+export CXXFLAGS+=-DSQLITE_ENABLE_COLUMN_METADATA=1
 export TCLLIBDIR=/dev/null
 CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared \
   --enable-threadsafe --disable-tcl \

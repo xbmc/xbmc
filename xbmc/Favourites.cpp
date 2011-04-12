@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "video/VideoInfoTag.h"
 
 bool CFavourites::Load(CFileItemList &items)
 {

@@ -43,7 +43,9 @@
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
 #include "threads/SingleLock.h"
 #include "RenderCapture.h"
+#if defined(__ARM_NEON__)
 #include "yuv2rgb.neon.h"
+#endif
 #ifdef HAVE_VIDEOTOOLBOXDECODER
 #include "DVDCodecs/Video/DVDVideoCodecVideoToolBox.h"
 #include <CoreVideo/CoreVideo.h>
@@ -1642,7 +1644,7 @@ void CLinuxRendererGLES::UploadCVRefTexture(int index)
     #endif
 
     // Using BGRA extension to pull in video frame data directly
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, bufferWidth, bufferHeight, GL_BGRA, GL_UNSIGNED_BYTE, bufferBase);
+    glTexSubImage2D(m_textureTarget, 0, 0, 0, bufferWidth, bufferHeight, GL_BGRA_EXT, GL_UNSIGNED_BYTE, bufferBase);
 
     #if !TARGET_OS_IPHONE
       #ifdef GL_UNPACK_ROW_LENGTH
@@ -1726,7 +1728,7 @@ bool CLinuxRendererGLES::CreateCVRefTexture(int index)
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-  glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+  glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, NULL);
 
   #if !TARGET_OS_IPHONE
     // turn off client storage so it doesn't get picked up for the next texture

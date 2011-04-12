@@ -11,3 +11,6 @@ echo test>>py_exclude.txt
 echo plat->>py_exclude.txt
 xcopy "%XBMC_PATH%\lib\Python\Lib" "%XBMC_PATH%\system\python\Lib" /E /Q /I /Y /EXCLUDE:py_exclude.txt > NUL
 del py_exclude.txt
+
+rem create directories
+IF NOT EXIST "%XBMC_PATH%\system\players\paplayer" md "%XBMC_PATH%\system\players\paplayer"

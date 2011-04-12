@@ -27,7 +27,7 @@ class CGUIDialogYesNo :
       public CGUIDialogBoxBase
 {
 public:
-  CGUIDialogYesNo(void);
+  CGUIDialogYesNo(int overrideId = -1);
   virtual ~CGUIDialogYesNo(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction& action);

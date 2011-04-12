@@ -20,8 +20,7 @@
  *
  */
 #include "addons/Addon.h"
-#include "utils/ScraperUrl.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "utils/ScraperParser.h"
 
 typedef enum
@@ -33,6 +32,13 @@ typedef enum
   CONTENT_ARTISTS,
   CONTENT_NONE,
 } CONTENT_TYPE;
+
+namespace XFILE
+{
+  class CFileCurl;
+}
+
+class CScraperUrl;
 
 namespace ADDON
 {

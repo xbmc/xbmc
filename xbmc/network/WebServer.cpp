@@ -29,7 +29,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "threads/SingleLock.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "addons/AddonManager.h"
 
 #ifdef _WIN32

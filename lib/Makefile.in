@@ -114,7 +114,7 @@ $(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
 	cp ffmpeg/libswscale/libswscale.so $@
 else # No ARM version of swscale available yet.
 $(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ -Wl,-Bsymbolic \
+	$(CC) -o $@ $(LDFLAGS) -Wl,--soname,$@ -Wl,-Bsymbolic \
 		ffmpeg/libswscale/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 endif

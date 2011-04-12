@@ -1,7 +1,7 @@
 #ifndef _RAR_RAROS_
 #define _RAR_RAROS_
 
-#if defined(_XBOX) || defined(_XBMC)
+#if defined(_XBMC)
 #ifndef _WIN_32
   #define _WIN_32
 #endif

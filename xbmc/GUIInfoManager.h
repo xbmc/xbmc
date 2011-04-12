@@ -31,7 +31,7 @@
 #include "threads/CriticalSection.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "inttypes.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 
 #include <list>
 #include <map>
@@ -100,6 +100,7 @@ class CDateTime;
 #define PLAYER_PATH                  45
 #define PLAYER_FILEPATH              46
 #define PLAYER_SEEKOFFSET            47
+#define PLAYER_PROGRESS_CACHE        48
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -500,6 +501,7 @@ class CDateTime;
 #define LISTITEM_PLAYCOUNT          (LISTITEM_START + 56)
 #define LISTITEM_LASTPLAYED         (LISTITEM_START + 57)
 #define LISTITEM_FOLDERPATH         (LISTITEM_START + 58)
+#define LISTITEM_DISC_NUMBER        (LISTITEM_START + 59)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)

@@ -30,9 +30,7 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifdef _XBOX
-#include <xtl.h>
-#elif defined(_WIN32)
+#if defined(_WIN32)
 #include <windows.h>
 #else
 #include "PlatformInclude.h"

@@ -28,7 +28,7 @@
 #ifdef _WIN32
 #include "my_ntddcdrm.h"
 #include "WIN32Util.h"
-#include "CharsetConverter.h"
+#include "utils/CharsetConverter.h"
 #endif
 #if defined (_LINUX) && !defined(__APPLE__)
 #include <linux/limits.h>
@@ -72,17 +72,7 @@ typedef struct
 }
 stDriveMapping;
 
-#ifdef _XBOX
-stDriveMapping driveMapping[] =
-  {
-    { 'C', "Harddisk0\\Partition2", 2},
-    { 'D', "Cdrom0", -1},
-    { 'E', "Harddisk0\\Partition1", 1},
-    { 'X', "Harddisk0\\Partition3", 3},
-    { 'Y', "Harddisk0\\Partition4", 4},
-    { 'Z', "Harddisk0\\Partition5", 5},
-  };
-#elif defined(WIN32)
+#if defined(WIN32)
 stDriveMapping driveMapping[] =
   {
     {'P', "", 0},
@@ -117,28 +107,7 @@ bool CIoSupport::m_fPartitionTableIsValid;
 // szDevice e.g. "Cdrom0" or "Harddisk0\Partition6"
 HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, const char* szDevice)
 {
-#ifdef _XBOX
-  char szSourceDevice[MAX_PATH+32];
-  char szDestinationDrive[16];
-  NTSTATUS status;
 
-  CLog::Log(LOGNOTICE, "Mapping drive %c to %s", cDriveLetter, szDevice);
-
-  sprintf(szSourceDevice, "\\Device\\%s", szDevice);
-  sprintf(szDestinationDrive, "\\??\\%c:", cDriveLetter);
-
-  ANSI_STRING DeviceName, LinkName;
-
-  RtlInitAnsiString(&DeviceName, szSourceDevice);
-  RtlInitAnsiString(&LinkName, szDestinationDrive);
-
-  status = IoCreateSymbolicLink(&LinkName, &DeviceName);
-
-  if (!NT_SUCCESS(status))
-    CLog::Log(LOGERROR, "Failed to create symbolic link!  (status=0x%08x)", status);
-
-  return status;
-#else
 #ifdef _WIN32
   // still legacy support (only used in DetectDVDType.cpp)
   if((strnicmp(szDevice, "Harddisk0",9)==0) || (strnicmp(szDevice, "Cdrom",5)==0))
@@ -155,31 +124,12 @@ HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, const char* szDevice)
       return S_OK;
     }
   return E_FAIL;
-#endif
 }
 
 // cDriveLetter e.g. 'D'
 HRESULT CIoSupport::UnmapDriveLetter(char cDriveLetter)
 {
-#ifdef _XBOX
-  char szDestinationDrive[16];
-  ANSI_STRING LinkName;
-  NTSTATUS status;
-
-  sprintf(szDestinationDrive, "\\??\\%c:", cDriveLetter);
-  RtlInitAnsiString(&LinkName, szDestinationDrive);
-
-  status =  IoDeleteSymbolicLink(&LinkName);
-
-  if (NT_SUCCESS(status))
-    CLog::Log(LOGNOTICE, "Unmapped drive %c", cDriveLetter);
-  else if(status != NT_STATUS_OBJECT_NAME_NOT_FOUND)
-    CLog::Log(LOGERROR, "Failed to delete symbolic link!  (status=0x%08x)", status);
-
-  return status;
-#else
   return S_OK;
-#endif
 }
 
 HRESULT CIoSupport::RemapDriveLetter(char cDriveLetter, const char* szDevice)
@@ -191,26 +141,7 @@ HRESULT CIoSupport::RemapDriveLetter(char cDriveLetter, const char* szDevice)
 // to be used with CdRom devices.
 HRESULT CIoSupport::Dismount(const char* szDevice)
 {
-#ifdef _XBOX
-  char szSourceDevice[MAX_PATH+32];
-  ANSI_STRING DeviceName;
-  NTSTATUS status;
-
-  sprintf(szSourceDevice, "\\Device\\%s", szDevice);
-
-  RtlInitAnsiString(&DeviceName, szSourceDevice);
-
-  status = IoDismountVolumeByName(&DeviceName);
-
-  if (NT_SUCCESS(status))
-    CLog::Log(LOGNOTICE, "Dismounted %s", szDevice);
-  else if(status != NT_STATUS_VOLUME_DISMOUNTED)
-    CLog::Log(LOGERROR, "Failed to dismount volume!  (status=0x%08x)", status);
-
-  return status;
-#else
   return S_OK;
-#endif
 }
 
 void CIoSupport::GetPartition(char cDriveLetter, char* szPartition)
@@ -295,9 +226,6 @@ HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
 HRESULT CIoSupport::CloseTray()
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef _XBOX
-  HalWriteSMBusValue(0x20, 0x0C, FALSE, 1);  // close tray
-#endif
 #ifdef __APPLE__
   // FIXME...
 #elif defined(_LINUX)
@@ -337,14 +265,6 @@ HRESULT CIoSupport::ToggleTray()
 
 HRESULT CIoSupport::Shutdown()
 {
-#ifdef _XBOX
-  // fails assertion on debug bios (symptom lockup unless running dr watson)
-  // so you can continue past the failed assertion).
-  if (IsDebug())
-    return E_FAIL;
-  KeRaiseIrqlToDpcLevel();
-  HalInitiateShutdown();
-#endif
   return S_OK;
 }
 
@@ -353,22 +273,7 @@ HANDLE CIoSupport::OpenCDROM()
   HANDLE hDevice = 0;
 
 #ifdef HAS_DVD_DRIVE
-#ifdef _XBOX
-  IO_STATUS_BLOCK status;
-  ANSI_STRING filename;
-  OBJECT_ATTRIBUTES attributes;
-  RtlInitAnsiString(&filename, "\\Device\\Cdrom0");
-  InitializeObjectAttributes(&attributes, &filename, OBJ_CASE_INSENSITIVE, NULL);
-  if (!NT_SUCCESS(NtOpenFile(&hDevice,
-                             GENERIC_READ | SYNCHRONIZE | FILE_READ_ATTRIBUTES,
-                             &attributes,
-                             &status,
-                             FILE_SHARE_READ,
-                             FILE_NON_DIRECTORY_FILE | FILE_SYNCHRONOUS_IO_NONALERT)))
-  {
-    return NULL;
-  }
-#elif defined(_LINUX)
+#if defined(_LINUX)
   int fd = open(CLibcdio::GetInstance()->GetDeviceFileName(), O_RDONLY | O_NONBLOCK);
   hDevice = new CXHandle(CXHandle::HND_FILE);
   hDevice->fd = fd;
@@ -569,33 +474,6 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
 
 INT CIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 {
-#ifdef HAS_DVD_DRIVE
-#ifdef _XBOX
-  DWORD dwBytesReturned;
-  RAW_READ_INFO rawRead;
-
-  // Oddly enough, DiskOffset uses the Red Book sector size
-  rawRead.DiskOffset.QuadPart = 2048 * dwSector;
-  rawRead.SectorCount = 1;
-  rawRead.TrackMode = CDDA;
-
-  for (int i = 0; i < 5; i++)
-  {
-    if ( DeviceIoControl( hDevice,
-                          IOCTL_CDROM_RAW_READ,
-                          &rawRead,
-                          sizeof(RAW_READ_INFO),
-                          m_rawXferBuffer,
-                          sizeof(RAW_SECTOR_SIZE),
-                          &dwBytesReturned,
-                          NULL ) != 0 )
-    {
-      memcpy(lpczBuffer, m_rawXferBuffer, RAW_SECTOR_SIZE);
-      return RAW_SECTOR_SIZE;
-    }
-  }
-#endif
-#endif
   return -1;
 }
 
@@ -607,33 +485,14 @@ VOID CIoSupport::CloseCDROM(HANDLE hDevice)
 // returns true if this is a debug machine
 BOOL CIoSupport::IsDebug()
 {
-#ifdef _XBOX
-  return (XboxKrnlVersion->Qfe & 0x8000) || ((DWORD)XboxHardwareInfo & 0x10);
-#else
   return FALSE;
-#endif
 }
 
 
 VOID CIoSupport::GetXbePath(char* szDest)
 {
-#ifdef _XBOX
-  //Function to get the XBE Path like:
-  //E:\DevKit\xbplayer\xbplayer.xbe
 
-  char szTemp[MAX_PATH];
-  char cDriveLetter = 0;
-
-  strncpy(szTemp, XeImageFileName->Buffer + 8, XeImageFileName->Length - 8);
-  szTemp[20] = 0;
-  GetDrive(szTemp, &cDriveLetter);
-
-  strncpy(szTemp, XeImageFileName->Buffer + 29, XeImageFileName->Length - 29);
-  szTemp[XeImageFileName->Length - 29] = 0;
-
-  sprintf(szDest, "%c:\\%s", cDriveLetter, szTemp);
-
-#elif WIN32
+#if WIN32
   wchar_t szAppPathW[MAX_PATH] = L"";
   ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW) - 1);
   CStdStringW strPathW = szAppPathW;
@@ -666,61 +525,7 @@ VOID CIoSupport::GetXbePath(char* szDest)
 bool CIoSupport::DriveExists(char cDriveLetter)
 {
   cDriveLetter = toupper(cDriveLetter);
-#ifdef _XBOX
-  // new kernel detection method
-  if (m_fPartitionTableIsValid)
-  {
-    char szDrive[32];
-    ANSI_STRING drive_string;
-    NTSTATUS status;
-    HANDLE hTemp;
-    OBJECT_ATTRIBUTES oa;
-    IO_STATUS_BLOCK iosb;
-
-    sprintf(szDrive, "\\??\\%c:", cDriveLetter);
-    RtlInitAnsiString(&drive_string, szDrive);
-
-    oa.Attributes = OBJ_CASE_INSENSITIVE;
-    oa.ObjectName = &drive_string;
-    oa.RootDirectory = 0;
-
-    status = NtOpenFile(&hTemp, GENERIC_READ | GENERIC_WRITE, &oa, &iosb, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_SYNCHRONOUS_IO_ALERT);
-
-    if (NT_SUCCESS(status))
-    {
-      CloseHandle(hTemp);
-      return true;
-    }
-
-    return false;
-  }
-  else
-  {
-    LARGE_INTEGER drive_size = GetDriveSize();
-    // old kernel detection method
-    if (cDriveLetter == 'F')
-    {
-      // if the drive is bigger than the old 8gb drive (plus a bit of room for error),
-      // the F drive can exist
-      if (drive_size.QuadPart >= 9000000000)
-        return true;
-    }
-
-    if (cDriveLetter == 'G')
-    {
-      // if the kernel is set to use partitions 6 and 7 by default
-      // the g drive can exist
-      if(((XboxKrnlVersion->Qfe & 67) == 67))
-        return true;
-      // not all kernel versions return 67, if the drive is bigger than
-      // 137 gb drive (plus a bit of room for error), the G drive can exist
-      else if ( drive_size.QuadPart >= 150000000000 )
-        return true;
-    }
-
-    return false;
-  }
-#elif defined(WIN32)
+#if defined(WIN32)
   if (cDriveLetter < 'A' || cDriveLetter > 'Z')
     return false;
 
@@ -740,96 +545,19 @@ bool CIoSupport::DriveExists(char cDriveLetter)
 
 bool CIoSupport::PartitionExists(int nPartition)
 {
-#ifdef _XBOX
-  char szPartition[32];
-  ANSI_STRING part_string;
-  NTSTATUS status;
-  HANDLE hTemp;
-  OBJECT_ATTRIBUTES oa;
-  IO_STATUS_BLOCK iosb;
-
-  sprintf(szPartition, "\\Device\\Harddisk0\\Partition%u", nPartition);
-  RtlInitAnsiString(&part_string, szPartition);
-
-  oa.Attributes = OBJ_CASE_INSENSITIVE;
-  oa.ObjectName = &part_string;
-  oa.RootDirectory = 0;
-
-  status = NtOpenFile(&hTemp, GENERIC_READ | GENERIC_WRITE, &oa, &iosb, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_SYNCHRONOUS_IO_ALERT);
-
-  if (NT_SUCCESS(status))
-  {
-    CloseHandle(hTemp);
-    return true;
-  }
-
   return false;
-#else
-  return false;
-#endif
 }
 
 LARGE_INTEGER CIoSupport::GetDriveSize()
 {
   LARGE_INTEGER drive_size;
-#ifdef _XBOX
-  HANDLE hDevice;
-  char szHardDrive[32] = "\\Device\\Harddisk0\\Partition0";
-  ANSI_STRING hd_string;
-  OBJECT_ATTRIBUTES oa;
-  IO_STATUS_BLOCK iosb;
-  DISK_GEOMETRY disk_geometry;
-  NTSTATUS status;
-
-  RtlInitAnsiString(&hd_string, szHardDrive);
-  drive_size.QuadPart = 0;
-
-  oa.Attributes = OBJ_CASE_INSENSITIVE;
-  oa.ObjectName = &hd_string;
-  oa.RootDirectory = 0;
-
-  status = NtOpenFile(&hDevice, GENERIC_READ | GENERIC_WRITE, &oa, &iosb, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_SYNCHRONOUS_IO_ALERT);
-  if (!NT_SUCCESS(status))
-    return drive_size;
-
-  status = NtDeviceIoControlFile(hDevice, NULL, NULL, NULL, &iosb,
-        IOCTL_DISK_GET_DRIVE_GEOMETRY, NULL, 0, &disk_geometry, sizeof(disk_geometry));
-
-  CloseHandle(hDevice);
-
-  if (!NT_SUCCESS(status))
-    return drive_size;
-
-  drive_size.QuadPart = disk_geometry.BytesPerSector *
-                        disk_geometry.SectorsPerTrack *
-                        disk_geometry.TracksPerCylinder *
-                        disk_geometry.Cylinders.QuadPart;
-
-  return drive_size;
-#endif
   drive_size.QuadPart = 0;
   return drive_size;
 }
 
 bool CIoSupport::ReadPartitionTable()
 {
-#ifdef _XBOX
-  unsigned int retval;
-
-  retval = ReadPartitionTable(&m_partitionTable);
-  if (retval == STATUS_SUCCESS)
-  {
-    m_fPartitionTableIsValid = true;
-    return true;
-  }
-  else
-  {
-    m_fPartitionTableIsValid = false;
-    return false;
-  }
-#else
   return false;
-#endif
 }
 
 bool CIoSupport::HasPartitionTable()
@@ -839,82 +567,10 @@ bool CIoSupport::HasPartitionTable()
 
 void CIoSupport::MapExtendedPartitions()
 {
-#ifdef _XBOX
-  if (!m_fPartitionTableIsValid)
-    return;
-  char szDevice[32] = "\\Harddisk0\\Partition0";
-  char driveletter;
-  // we start at 5 - the first 5 partitions are the mandatory standard Xbox partitions
-  // we don't deal with those here.
-  for (int i = EXTEND_PARTITION_BEGIN; i <= EXTEND_PARTITION_END; i++)
-  {
-    if (m_partitionTable.pt_entries[i - 1].pe_flags & PE_PARTFLAGS_IN_USE)
-    {
-      driveletter = 'A' + i - 1;
-      CLog::Log(LOGINFO, "  map drive %c:", driveletter);
-      szDevice[20] = '1' + i - 1;
-      MapDriveLetter(driveletter, szDevice);
-    }
-  }
-#endif
+
 }
 
 unsigned int CIoSupport::ReadPartitionTable(PARTITION_TABLE *p_table)
 {
-#ifdef _XBOX
-  ANSI_STRING a_file;
-  OBJECT_ATTRIBUTES obj_attr;
-  IO_STATUS_BLOCK io_stat_block;
-  HANDLE handle;
-  unsigned int stat;
-  unsigned int ioctl_cmd_in_buf[100];
-  unsigned int ioctl_cmd_out_buf[100];
-  unsigned int partition_table_addr;
-
-  memset(p_table, 0, sizeof(PARTITION_TABLE));
-
-  RtlInitAnsiString(&a_file, "\\Device\\Harddisk0\\partition0");
-  obj_attr.RootDirectory = 0;
-  obj_attr.ObjectName = &a_file;
-  obj_attr.Attributes = OBJ_CASE_INSENSITIVE;
-
-  stat = NtOpenFile(&handle, (GENERIC_READ | 0x00100000), &obj_attr, &io_stat_block, (FILE_SHARE_READ | FILE_SHARE_WRITE), 0x10);
-
-  if (stat != STATUS_SUCCESS)
-  {
-    return stat;
-  }
-
-  memset(ioctl_cmd_out_buf, 0, sizeof(ioctl_cmd_out_buf));
-  memset(ioctl_cmd_in_buf, 0, sizeof(ioctl_cmd_in_buf));
-  ioctl_cmd_in_buf[0] = IOCTL_SUBCMD_GET_INFO;
-
-
-  stat = NtDeviceIoControlFile(handle, 0, 0, 0, &io_stat_block,
-                               IOCTL_CMD_LBA48_ACCESS,
-                               ioctl_cmd_in_buf, sizeof(ioctl_cmd_in_buf),
-                               ioctl_cmd_out_buf, sizeof(ioctl_cmd_out_buf));
-
-  NtClose(handle);
-  if (stat != STATUS_SUCCESS)
-  {
-    return stat;
-  }
-
-  if ((ioctl_cmd_out_buf[LBA48_GET_INFO_MAGIC1_IDX] != LBA48_GET_INFO_MAGIC1_VAL) ||
-      (ioctl_cmd_out_buf[LBA48_GET_INFO_MAGIC2_IDX] != LBA48_GET_INFO_MAGIC2_VAL))
-  {
-
-    return STATUS_UNSUCCESSFUL;
-  }
-
-  partition_table_addr = ioctl_cmd_out_buf[LBA48_GET_INFO_LOWCODE_BASE_IDX];
-  partition_table_addr += ioctl_cmd_out_buf[LBA48_GET_INFO_PART_TABLE_OFS_IDX];
-
-  memcpy(p_table, (void *)partition_table_addr, sizeof(PARTITION_TABLE));
-
-  return STATUS_SUCCESS;
-#else
   return (unsigned int) -1;
-#endif
 }

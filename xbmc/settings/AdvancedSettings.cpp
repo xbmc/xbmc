@@ -275,7 +275,7 @@ void CAdvancedSettings::Initialize()
 
   m_measureRefreshrate = false;
 
-  m_cacheMemBufferSize = (1048576 * 5);
+  m_cacheMemBufferSize = 1024 * 1024 * 20;
 
   m_jsonOutputCompact = true;
   m_jsonTcpPort = 9090;
@@ -715,6 +715,11 @@ bool CAdvancedSettings::Load()
   pExts = pRootElement->FirstChildElement("videoextensions");
   if (pExts)
     GetCustomExtensions(pExts,g_settings.m_videoExtensions);
+
+  // stub extensions
+  pExts = pRootElement->FirstChildElement("discstubextensions");
+  if (pExts)
+    GetCustomExtensions(pExts,g_settings.m_discStubExtensions);
 
   m_vecTokens.clear();
   CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"),m_vecTokens);

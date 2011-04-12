@@ -24,12 +24,8 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#if (defined WIN32)
-  #include "oggvorbis/ogg.h"
-#else
-  #include <ogg/ogg.h>
-  #include "utils/log.h"
-#endif
+#include <ogg/ogg.h>
+#include "utils/log.h"
 #include "DynamicDll.h"
 
 class DllOggInterface
@@ -44,7 +40,7 @@ public:
   virtual ~DllOggInterface() {}
 };
 
-#if (!defined WIN32)
+#if !(defined(WIN32) || defined(__APPLE__))
 
 class DllOgg : public DllDynamic, DllOggInterface
 {

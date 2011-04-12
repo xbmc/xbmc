@@ -55,7 +55,6 @@ namespace XFILE
     virtual int64_t       GetPosition();
     virtual int64_t       GetLength();
 
-    virtual ICacheInterface* GetCache();
     IFile *GetFileImp();
 
     virtual CStdString GetContent();

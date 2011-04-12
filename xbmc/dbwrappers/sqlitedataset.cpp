@@ -32,6 +32,10 @@
 #include "sqlitedataset.h"
 #include "system.h" // for Sleep(), OutputDebugString() and GetLastError()
 
+#ifdef _WIN32
+#pragma comment(lib, "sqlite3.lib")
+#endif
+
 using namespace std;
 
 namespace dbiplus {
@@ -656,9 +660,6 @@ void SqliteDataset::prev(void) {
 }
 
 void SqliteDataset::next(void) {
-#ifdef _XBOX
-  free_row();
-#endif
   Dataset::next();
   if (!eof()) 
       fill_fields();

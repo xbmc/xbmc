@@ -24,6 +24,7 @@
 #include "guilib/GUIDialog.h"
 #include "guilib/GUIListItem.h"
 #include "ThumbLoader.h"
+#include "video/VideoDatabase.h"
 
 class CFileItem;
 

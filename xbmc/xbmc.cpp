@@ -46,6 +46,7 @@
 
 int main(int argc, char* argv[])
 {
+  int status = -1;
   //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
   //the loglevel set with the --debug flag
 #ifdef _DEBUG
@@ -155,7 +156,7 @@ int main(int argc, char* argv[])
   if (!g_application.Create())
   {
     fprintf(stderr, "ERROR: Unable to create application. Exiting\n");
-    return -1;
+    return status;
   }
 
   if (playlist.Size() > 0)
@@ -169,18 +170,15 @@ int main(int argc, char* argv[])
 
   try
   {
-    while (1)
-    {
-      g_application.Run();
-    }
+    status = g_application.Run();
   }
   catch(...)
   {
     fprintf(stderr, "ERROR: Exception caught on main loop. Exiting\n");
-    return -1;
+    status = -1;
   }
 
-  return 0;
+  return status;
 }
 
 extern "C"

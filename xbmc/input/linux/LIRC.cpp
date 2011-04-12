@@ -23,10 +23,12 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#include <sys/inotify.h>
 #include <limits.h>
 #include <unistd.h>
 #include "LIRC.h"
+#ifdef HAVE_INOTIFY
+#include <sys/inotify.h>
+#endif
 #include "input/ButtonTranslator.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
@@ -91,12 +93,14 @@ void CRemoteControl::Disconnect()
       close(m_fd);
     m_fd = -1;
     m_file = NULL;
+#ifdef HAVE_INOTIFY
     if (m_inotify_wd >= 0) {
       inotify_rm_watch(m_inotify_fd, m_inotify_wd);
       m_inotify_wd = -1;
     }
     if (m_inotify_fd >= 0)
       close(m_inotify_fd);
+#endif
 
     m_inReply = false;
     m_nrSending = 0;
@@ -147,6 +151,7 @@ void CRemoteControl::Initialize()
         {
           if ((m_file = fdopen(m_fd, "r+")) != NULL)
           {
+#ifdef HAVE_INOTIFY
             // Setup inotify so we can disconnect if lircd is restarted
             if ((m_inotify_fd = inotify_init()) >= 0)
             {
@@ -167,6 +172,10 @@ void CRemoteControl::Initialize()
                 }
               }
             }
+#else
+            m_bInitialized = true;
+            CLog::Log(LOGINFO, "LIRC %s: sucessfully started", __FUNCTION__);
+#endif
           }
           else
             CLog::Log(LOGERROR, "LIRC %s: fdopen failed: %s", __FUNCTION__, strerror(errno));
@@ -205,6 +214,7 @@ void CRemoteControl::Initialize()
 }
 
 bool CRemoteControl::CheckDevice() {
+#ifdef HAVE_INOTIFY
   if (m_inotify_fd < 0 || m_inotify_wd < 0)
     return true; // inotify wasn't setup for some reason, assume all is well
   int bufsize = sizeof(struct inotify_event) + PATH_MAX;
@@ -219,6 +229,7 @@ bool CRemoteControl::CheckDevice() {
     }
     i += sizeof(struct inotify_event)+e->len;
   }
+#endif
   return true;
 }
 

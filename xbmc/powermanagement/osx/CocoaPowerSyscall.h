@@ -21,10 +21,16 @@
 #ifndef _COCOA_POWER_SYSCALL_H_
 #define _COCOA_POWER_SYSCALL_H_
 
-#if defined (__APPLE__) && !defined(__arm__)
+#if defined (__APPLE__)
 #include "powermanagement/IPowerSyscall.h"
+#if defined(__arm__)
+#include <pthread.h>
+typedef mach_port_t io_object_t;
+typedef io_object_t io_service_t;
+#else
 #include <IOKit/pwr_mgt/IOPMLib.h>
 #include <IOKit/IOMessage.h>
+#endif
 
 class CCocoaPowerSyscall : public CPowerSyscallWithoutEvents
 {
@@ -59,10 +65,12 @@ private:
   int  m_BatteryPercent;
   bool m_SentBatteryMessage;
 
+#if !defined(__arm__)
   io_connect_t m_root_port;             // a reference to the Root Power Domain IOService
   io_object_t  m_notifier_object;       // notifier object, used to deregister later
   IONotificationPortRef m_notify_port;  // notification port allocated by IORegisterForSystemPower
   CFRunLoopSourceRef m_power_source;
+#endif
 };
 #endif
 #endif

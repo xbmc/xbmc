@@ -29,6 +29,7 @@
 #if defined(__APPLE__) && defined(__arm__)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
+#include "osx/DarwinUtils.h"
 #endif
 
 /************************************************************************/
@@ -213,6 +214,24 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   }
 
   CGImageRef image = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
+
+  int rotate = 0;
+  if (autoRotate)
+  { // get the orientation of the image for displaying it correctly
+    CFDictionaryRef imagePropertiesDictionary = CGImageSourceCopyPropertiesAtIndex(imageSource,0, NULL);
+    if (imagePropertiesDictionary != nil)
+    {
+      CFNumberRef orientation = (CFNumberRef)CFDictionaryGetValue(imagePropertiesDictionary, kCGImagePropertyOrientation);
+      if (orientation != nil)
+      {
+        int value = 0;
+        CFNumberGetValue(orientation, kCFNumberIntType, &value);
+        if (value)
+          rotate = value - 1;
+      }
+    }
+  }
+
   CFRelease(imageSource);
 
   unsigned int width  = CGImageGetWidth(image);
@@ -220,9 +239,6 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
 
   m_hasAlpha = (CGImageGetAlphaInfo(image) != kCGImageAlphaNone);
 
-// not sure what to do here :)
-//  if (autoRotate && image.exifInfo.Orientation)
-//    m_orientation = image.exifInfo.Orientation - 1;
   if (originalWidth)
     *originalWidth = width;
   if (originalHeight)
@@ -248,7 +264,8 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     CLog::Log(LOGDEBUG, "Texture manager texture clamp:new texture size: %i x %i", width, height);
   }
 
-  Allocate(width, height, XB_FMT_A8R8G8B8);    
+  Allocate(width, height, XB_FMT_A8R8G8B8);
+  m_orientation = rotate;
     
   CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 

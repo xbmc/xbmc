@@ -101,7 +101,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* p
       if(y + i >= pPicture->height)
         break;
 
-      BYTE* line = img->bitmap + img->w*i;
+      BYTE* line = img->bitmap + img->stride*i;
 
       BYTE* target[3];
       target[0] = pPicture->data[0] + pPicture->stride[0]*(i + y) + x;

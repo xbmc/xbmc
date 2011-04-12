@@ -26,6 +26,10 @@
 #include <io.h>
 #include <direct.h>
 #include <process.h>
+#else
+#ifndef __APPLE__
+#include <mntent.h>
+#endif
 #endif
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -35,7 +39,6 @@
   #ifdef _LINUX
     #include <sys/ioctl.h>
     #ifndef __APPLE__
-      #include <mntent.h>
       #include <linux/cdrom.h>
     #else
       #include <IOKit/storage/IODVDMediaBSDClient.h>
@@ -116,9 +119,7 @@ extern "C" void __stdcall init_emu_environ()
   memset(dll__environ, 0, EMU_MAX_ENVIRONMENT_ITEMS + 1);
 
   // python
-#ifdef _XBOX
-  dll_putenv("OS=xbox");
-#elif defined(_WIN32)
+#if defined(_WIN32)
   // fill our array with the windows system vars
   LPTSTR lpszVariable; 
   LPTCH lpvEnv;
@@ -2002,15 +2003,6 @@ extern "C"
   }
 
 
-#ifdef _XBOX
-  char *getenv(const char *s)
-  {
-    // some libs in the solution linked to getenv which was exported in python.lib
-    // now python is in a dll this needs the be fixed, or not
-    CLog::Log(LOGWARNING, "old getenv from python.lib called, library check needed");
-    return NULL;
-  }
-#endif
 
   char* dll_getenv(const char* szKey)
   {
@@ -2056,11 +2048,7 @@ extern "C"
 
   void (__cdecl * dll_signal(int sig, void (__cdecl *func)(int)))(int)
   {
-#ifdef _XBOX
-    // the xbox has a NSIG of 23 (+1), problem is when calling signal with
-    // one of the signals below the xbox wil crash. Just return SIG_ERR
-    if (sig == SIGILL || sig == SIGFPE || sig == SIGSEGV) return SIG_ERR;
-#elif defined(_WIN32)
+#if defined(_WIN32)
     //vs2008 asserts for known signals, return err for everything unknown to windows.
     if (sig == 5 || sig == 7 || sig == 9 || sig == 10 || sig == 12 || sig == 14 || sig == 18 || sig == 19 || sig == 20)
       return SIG_ERR;

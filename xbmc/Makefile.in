@@ -4,7 +4,6 @@ SRCS=Application.cpp \
      AutoSwitch.cpp \
      BackgroundInfoLoader.cpp \
      CueDocument.cpp \
-     DateTime.cpp \
      DynamicDll.cpp \
      Favourites.cpp \
      FileItem.cpp \
@@ -28,9 +27,10 @@ SRCS=Application.cpp \
      ThumbLoader.cpp \
      ThumbnailCache.cpp \
      URL.cpp \
-     ViewDatabase.cpp \
      Util.cpp \
+     ViewDatabase.cpp \
      XBApplicationEx.cpp \
+     XBDateTime.cpp \
      xbmc.cpp \
 
 LIB=xbmc.a

@@ -25,6 +25,7 @@
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "utils/log.h"
+#include "video/VideoInfoTag.h"
 
 #ifdef _LINUX
 #define SD_BOTH SHUT_RDWR

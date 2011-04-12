@@ -49,6 +49,15 @@
 				<visible>VideoPlayer.Content(Movies)</visible>
 			</control>
 			<control type="progress">
+				<description>ProgressbarCache</description>
+				<posx>10</posx>
+				<posy>30r</posy>
+				<width>340</width>
+				<height>14</height>
+				<info>Player.ProgressCache</info>
+				<midtexture border="6,0,6,0">OSDProgressMidLight.png</midtexture>
+			</control>
+			<control type="progress">
 				<description>Progressbar</description>
 				<posx>10</posx>
 				<posy>30r</posy>

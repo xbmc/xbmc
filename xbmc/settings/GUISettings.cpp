@@ -970,9 +970,8 @@ void CGUISettings::AddHex(CSettingsCategory* cat, const char *strSetting, int iL
 
 int CGUISettings::GetInt(const char *strSetting) const
 {
-#if !(defined(__APPLE__) && defined(__arm__))
   ASSERT(settingsMap.size());
-#endif
+
   constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {

@@ -8,7 +8,7 @@ include ../config.mk
 
 # lib name, version
 LIBNAME=libvorbis
-VERSION=1.2.0
+VERSION=1.2.3
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
@@ -20,9 +20,6 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-export CFLAGS+=-undefined dynamic_lookup
-export CXXFLAGS+=-undefined dynamic_lookup
-export LDFLAGS+=-Wl,-read_only_relocs,suppress -Wl,-undefined,dynamic_lookup
 CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared=yes --disable-oggtest --disable-docs --disable-examples
 
 LIBDYLIB=$(SOURCE)/.libs/$(LIBNAME).dylib
@@ -38,8 +35,8 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	-rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
-	cd $(SOURCE); patch -p1 < ../01-libvorbis-fix-libtool-flags.patch
-	cd $(SOURCE); patch -p1 < ../02-libvorbis-only-build-lib.patch
+	sed -ie "s|DDARWIN -fno-common -force_cpusubtype_ALL|DARWIN_NO_CARBON -fno-common -noforce_cpusubtype_ALL|" "$(SOURCE)/configure"
+	sed -ie "s|SUBDIRS = m4 include vq lib examples test doc|SUBDIRS = m4 include lib|" "$(SOURCE)/Makefile.in"
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)
@@ -51,7 +48,7 @@ $(LIBDYLIB): $(SOURCE)
 
 clean:
 	make -C $(SOURCE) clean
-	rm .installed
+	rm -f .installed
 
 distclean::
 	rm -rf $(SOURCE) .installed

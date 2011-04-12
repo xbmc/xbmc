@@ -338,7 +338,6 @@ void CFileCurl::SetBufferSize(unsigned int size)
 
 void CFileCurl::Close()
 {
-  CLog::Log(LOGDEBUG, "FileCurl::Close(%p) %s", (void*)this, m_url.c_str());
   m_state->Disconnect();
 
   m_url.Empty();
@@ -1293,16 +1292,6 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
     {
       case CURLM_OK:
       {
-        // hack for broken curl, that thinks there is data all the time
-        // happens especially on ftp during initial connection
-#ifndef _LINUX
-        SwitchToThread();
-#elif __APPLE__
-        sched_yield();
-#else
-        pthread_yield();
-#endif
-
         int maxfd = -1;
         FD_ZERO(&fdread);
         FD_ZERO(&fdwrite);

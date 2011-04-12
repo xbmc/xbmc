@@ -24,6 +24,10 @@
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 
+#ifdef _WIN32
+#pragma comment(lib, "libsamplerate-0.lib")
+#endif
+
 CDVDPlayerResampler::CDVDPlayerResampler()
 {
   m_nrchannels = -1;

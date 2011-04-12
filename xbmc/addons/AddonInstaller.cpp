@@ -156,7 +156,7 @@ bool CAddonInstaller::Cancel(const CStdString &addonID)
 bool CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdString &referer, bool background)
 {
   AddonPtr addon;
-  bool addonInstalled = CAddonMgr::Get().GetAddon(addonID, addon);
+  bool addonInstalled = CAddonMgr::Get().GetAddon(addonID, addon, ADDON_UNKNOWN, false);
   if (addonInstalled && !force)
     return true;
 
@@ -480,8 +480,8 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
   }
   if (m_addon->Type() == ADDON_SKIN)
   {
-    if (reloadAddon || CGUIDialogYesNo::ShowAndGetInput(m_addon->Name(),
-                                                        g_localizeStrings.Get(24099),"",""))
+    if (reloadAddon || (!m_update && CGUIDialogYesNo::ShowAndGetInput(m_addon->Name(),
+                                                        g_localizeStrings.Get(24099),"","")))
     {
       g_guiSettings.SetString("lookandfeel.skin",m_addon->ID().c_str());
       g_application.m_guiDialogKaiToast.ResetTimer();

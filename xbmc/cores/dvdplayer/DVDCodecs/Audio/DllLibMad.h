@@ -25,7 +25,7 @@
 #endif
 /* undefine byte from PlatformDefs.h since it's used in mad.h */
 #undef byte
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) || defined(__APPLE__)
   #include <mad.h>
 #else
   #include "libmad/mad.h"

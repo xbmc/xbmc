@@ -20,7 +20,10 @@
     slouken@libsdl.org
 */
 
-#if defined(__APPLE__) && defined(__arm__)
+#include "system.h" // for HAS_SDL
+#if defined(HAS_SDL)
+#include <SDL/SDL_mutex.h>
+#else
 #ifndef _SDL_mutex_h
 #define _SDL_mutex_h
 
@@ -82,4 +85,52 @@ int SDL_mutexV(SDL_mutex *mutex);
 void SDL_DestroyMutex(SDL_mutex *mutex);
 
 #endif /* _SDL_mutex_h */
+
+#ifndef _SDL_cond_h
+#define _SDL_cond_h
+
+#include <stdint.h>
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/* Condition variable functions                                  */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/* The SDL condition variable structure, defined in SDL_cond.c */
+typedef struct SDL_cond
+{
+	pthread_cond_t cond;
+} SDL_cond;
+
+/* Create a condition variable */
+SDL_cond *SDL_CreateCond(void);
+
+/* Destroy a condition variable */
+void SDL_DestroyCond(SDL_cond *cond);
+
+/* Restart one of the threads that are waiting on the condition variable,
+   returns 0 or -1 on error.
+ */
+int SDL_CondSignal(SDL_cond *cond);
+
+/* Restart all threads that are waiting on the condition variable,
+   returns 0 or -1 on error.
+ */
+int SDL_CondBroadcast(SDL_cond *cond);
+
+/* Wait on the condition variable, unlocking the provided mutex.
+   The mutex must be locked before entering this function!
+   The mutex is re-locked once the condition variable is signaled.
+   Returns 0 when it is signaled, or -1 on error.
+ */
+int SDL_CondWait(SDL_cond *cond, SDL_mutex *mut);
+
+/* Waits for at most 'ms' milliseconds, and returns 0 if the condition
+   variable is signaled, SDL_MUTEX_TIMEDOUT if the condition is not
+   signaled in the allotted time, and -1 on error.
+   On some platforms this function is implemented by looping with a delay
+   of 1 ms, and so should be avoided if possible.
+*/
+int SDL_CondWaitTimeout(SDL_cond *cond, SDL_mutex *mutex, uint32_t ms);
+
+#endif /* _SDL_cond_h */
 #endif

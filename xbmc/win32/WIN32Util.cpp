@@ -28,7 +28,7 @@
 #include "WindowHelper.h"
 #include "Application.h"
 #include <shlobj.h>
-#include "SpecialProtocol.h"
+#include "filesystem/SpecialProtocol.h"
 #include "my_ntddscsi.h"
 #if _MSC_VER > 1400
 #include "Setupapi.h"
@@ -36,8 +36,8 @@
 #include "storage/MediaManager.h"
 #include "windowing/WindowingFactory.h"
 #include "guilib/LocalizeStrings.h"
-#include "log.h"
-#include "StringUtils.h"
+#include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "DllPaths_win32.h"
 #include "FileSystem/File.h"
 
@@ -47,14 +47,10 @@
 #define BC_BCM_DLL        "bcmDIL.dll"
 #define BC_REG_INST_PATH  "InstallPath"
 
-#define DLL_ENV_PATH "special://xbmcbin/system/;" \
-                     "special://xbmcbin/system/players/dvdplayer/;" \
-                     "special://xbmcbin/system/players/paplayer/;" \
-                     "special://xbmcbin/system/python/;" \
-                     "special://xbmcbin/;" \
-                     "special://xbmc/system/;" \
+#define DLL_ENV_PATH "special://xbmc/system/;" \
                      "special://xbmc/system/players/dvdplayer/;" \
                      "special://xbmc/system/players/paplayer/;" \
+                     "special://xbmc/system/cdrip/;" \
                      "special://xbmc/system/python/;" \
                      "special://xbmc/"
 

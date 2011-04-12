@@ -23,10 +23,10 @@
  */
 
 #include <vector>
-#include "StdString.h"
+#include "utils/StdString.h"
 #include "network/Network.h"
 #include "Iphlpapi.h"
-#include "stopwatch.h"
+#include "utils/stopwatch.h"
 #include "threads/CriticalSection.h"
 
 class CNetworkWin32;

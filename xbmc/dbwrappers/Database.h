@@ -22,8 +22,11 @@
  */
 
 #include "utils/StdString.h"
-#include "mysqldataset.h"
-#include "sqlitedataset.h"
+
+namespace dbiplus {
+  class Database;
+  class Dataset;
+}
 
 #include <memory>
 

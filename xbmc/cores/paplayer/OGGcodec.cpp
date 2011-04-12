@@ -209,8 +209,8 @@ bool OGGCodec::CanInit()
   return m_dll.CanLoad();
 }
 
-// OGG order : L, C, R, L", R", LFE
-// XBOX order : L, R, L", R", C, LFE
+// OGG order    : L, C, R, L", R", LFE
+// Output order : L, R, L", R", C, LFE
 void OGGCodec::RemapChannels(short *SampleBuffer, int samples)
 {
   short r1, r2, r3, r4, r5, r6;

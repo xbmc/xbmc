@@ -102,7 +102,7 @@ Section "XBMC" SecXBMC
   SetOutPath "$INSTDIR\sounds"
   File /r /x *.so "${xbmc_root}\Xbmc\sounds\*.*"
   SetOutPath "$INSTDIR\system"
-  File /r /x *.so /x mplayer "${xbmc_root}\Xbmc\system\*.*"
+  File /r /x *.so /x mplayer /x *_d.* /x tcl85g.dll /x tclpip85g.dll /x tk85g.dll "${xbmc_root}\Xbmc\system\*.*"
   
   ; delete  msvc?90.dll's in INSTDIR, we use the vcredist installer later
   Delete "$INSTDIR\msvcr90.dll"
@@ -165,6 +165,7 @@ Section "XBMC" SecXBMC
                  "HelpLink" "http://xbmc.org/support"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\XBMC" \
                  "URLInfoAbout" "http://xbmc.org"
+                 
 SectionEnd
 
 SectionGroup "Language" SecLanguages
@@ -262,8 +263,7 @@ Section "Uninstall"
   Delete "$INSTDIR\zlib1.dll"
   Delete "$INSTDIR\xbmc.log"
   Delete "$INSTDIR\xbmc.old.log"
-  Delete "$INSTDIR\msvcp71.dll"
-  Delete "$INSTDIR\msvcr71.dll"
+  Delete "$INSTDIR\python26.dll"
   RMDir /r "$INSTDIR\language"
   RMDir /r "$INSTDIR\media"
   RMDir /r "$INSTDIR\plugins"

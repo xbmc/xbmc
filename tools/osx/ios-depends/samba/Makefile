@@ -12,7 +12,6 @@ VERSION=3.5.6
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
-#BASE_URL=http://www.samba.org/samba/ftp/stable
 ARCHIVE=$(SOURCE).tar.gz
 TARBALLS_LOCATION=/Users/Shared/xbmc-depends/tarballs
 RETRIEVE_TOOL=/usr/bin/curl
@@ -21,64 +20,17 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-export CFLAGS+=-undefined dynamic_lookup
-export CXXFLAGS+=-undefined dynamic_lookup
-export LDFLAGS+=-Wl,-read_only_relocs,suppress -Wl,-unexported_symbol,_MD5* -lc
+export LDFLAGS+=-Wl,-unexported_symbol,_MD5* -lc
 # believe it or not, this is how you setup samba for cross-compile
 CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) --enable-shared=yes \
   --without-cluster-support --disable-swat --without-ldap --with-fhs \
-  samba_cv_CC_NEGATIVE_ENUM_VALUES=yes samba_cv_HAVE_OFF64_T=no \
-  samba_cv_HAVE_LINUX_READAHEAD=no \
-  samba_cv_HAVE_STRUCT_FLOCK64=no \
-  samba_cv_HAVE_LINUX_SPLICE=no \
-  samba_cv_SIZEOF_DEV_T=no \
-  samba_cv_SIZEOF_INO_T=yes \
-  samba_cv_SIZEOF_OFF_T=yes \
-  samba_cv_SIZEOF_TIME_T=no \
-  samba_cv_have_longlong=yes \
-  samba_cv_have_setresgid=no \
-  samba_cv_have_setresuid=no \
+  ac_cv_header_libunwind_h=no \
+  ac_cv_header_execinfo_h=no \
   ac_cv_header_rpcsvc_ypclnt_h=no \
-  ac_cv_func_creat64=no \
-  ac_cv_func_fseek64=no \
-  ac_cv_func_fseeko64=no \
-  ac_cv_func_ftell64=no \
-  ac_cv_func_ftello64=no \
-  ac_cv_func_open64=no \
-  ac_cv_func_fopen64=no \
-  ac_cv_func_opendir64=no \
-  ac_cv_func_readdir64=no \
-  ac_cv_func_seekdir64=no \
-  ac_cv_func_telldir64=no \
-  ac_cv_func_rewinddir64=no \
-  ac_cv_func_closedir64=no \
-  ac_cv_func_getpwanam=no \
-  ac_cv_func_getprpwnam=no \
-  ac_cv_func_getpwent_r=no \
-  ac_cv_func_getpassphrase=no \
-  ac_cv_func_llistxattr=no \
-  ac_cv_func_lremovexattr=no \
-  ac_cv_func_lsetxattr=no \
-  ac_cv_func_lgetxattr=no \
-  ac_cv_func_extattr_delete_fd=no \
-  ac_cv_func_extattr_delete_file=no \
-  ac_cv_func_extattr_delete_link=no \
-  ac_cv_func_extattr_get_fd=no \
-  ac_cv_func_extattr_get_file=no \
-  ac_cv_func_extattr_get_link=no \
-  ac_cv_func_extattr_list_fd=no \
-  ac_cv_func_extattr_list_file=no \
-  ac_cv_func_extattr_list_link=no \
-  ac_cv_func_extattr_set_fd=no \
-  ac_cv_func_extattr_set_file=no \
-  ac_cv_func_extattr_set_link=no \
-  ac_cv_func_strndup=no \
-  ac_cv_func_strnlen=no \
-  ac_cv_have_splice_decl=no \
-  ac_cv_func_yp_get_default_domain=no \
-  fu_cv_sys_stat_statvfs64=no \
-  libreplace_cv_HAVE_C99_VSNPRINTF=yes
-
+  libreplace_cv_HAVE_C99_VSNPRINTF=yes \
+  samba_cv_SYSCONF_SC_NPROCESSORS_ONLN=no \
+  samba_cv_CC_NEGATIVE_ENUM_VALUES=yes \
+  
 LIBDYLIB=$(SOURCE)/source3/bin/libsmbclient.dylib
 
 CLEAN_FILES=$(ARCHIVE) $(SOURCE)

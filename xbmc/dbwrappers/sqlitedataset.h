@@ -31,11 +31,7 @@
 
 #include <stdio.h>
 #include "dataset.h"
-#ifndef _LINUX
-#include "sqlite3.h"
-#else
 #include <sqlite3.h>
-#endif
 
 namespace dbiplus {
 /***************** Class SqliteDatabase definition ******************

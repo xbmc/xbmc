@@ -31,7 +31,7 @@ CDirectoryNodeYearAlbum::CDirectoryNodeYearAlbum(const CStdString& strName, CDir
 
 }
 
-NODE_TYPE CDirectoryNodeYearAlbum::GetChildType()
+NODE_TYPE CDirectoryNodeYearAlbum::GetChildType() const
 {
   if (GetName()=="-1")
     return NODE_TYPE_YEAR_SONG;
@@ -39,7 +39,17 @@ NODE_TYPE CDirectoryNodeYearAlbum::GetChildType()
   return NODE_TYPE_SONG;
 }
 
-bool CDirectoryNodeYearAlbum::GetContent(CFileItemList& items)
+CStdString CDirectoryNodeYearAlbum::GetLocalizedName() const
+{
+  if (GetID() == -1)
+    return g_localizeStrings.Get(15102); // All Albums
+  CMusicDatabase db;
+  if (db.Open())
+    return db.GetAlbumById(GetID());
+  return "";
+}
+
+bool CDirectoryNodeYearAlbum::GetContent(CFileItemList& items) const
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())

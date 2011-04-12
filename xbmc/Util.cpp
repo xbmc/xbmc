@@ -176,10 +176,6 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
       strFilename = url.GetHostName();
     }
   }
-  // XBMSP Network
-  else if (url.GetProtocol() == "xbms" && strFilename.IsEmpty())
-    strFilename = "XBMSP Network";
-
   // iTunes music share (DAAP)
   else if (url.GetProtocol() == "daap" && strFilename.IsEmpty())
     strFilename = g_localizeStrings.Get(20174);
@@ -208,13 +204,20 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   else if (url.GetProtocol() == "sap" && strFilename.IsEmpty())
     strFilename = "SAP Streams";
 
+  // Root file views
+  else if (url.GetProtocol() == "sources")
+    strFilename = g_localizeStrings.Get(744);
+
   // Music Playlists
   else if (path.Left(24).Equals("special://musicplaylists"))
-    strFilename = g_localizeStrings.Get(20011);
+    strFilename = g_localizeStrings.Get(136);
 
   // Video Playlists
   else if (path.Left(24).Equals("special://videoplaylists"))
-    strFilename = g_localizeStrings.Get(20012);
+    strFilename = g_localizeStrings.Get(136);
+
+  else if ((url.GetProtocol() == "rar" || url.GetProtocol() == "zip") && strFilename.IsEmpty())
+    strFilename = URIUtils::GetFileName(url.GetHostName());
 
   // now remove the extension if needed
   if (!g_guiSettings.GetBool("filelists.showextensions") && !bIsFolder)
@@ -1293,6 +1296,9 @@ bool CUtil::TestSplitExec()
   CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\\\\\\\test\\\\\\foo\\\\\")", function, params);
   if (function != "ActivateWindow" || params.size() != 2 || params[0] != "Video" || params[1] != "C:\\\\test\\\\foo\\")
     return false;
+  CUtil::SplitExecFunction("SetProperty(Foo,\"\")", function, params);
+  if (function != "SetProperty" || params.size() != 2 || params[0] != "Foo" || params[1] != "")
+   return false;
   return true;
 }
 #endif
@@ -1382,7 +1388,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
     CLog::Log(LOGWARNING, "%s(%s) - end of string while searching for ) or \"", __FUNCTION__, execString.c_str());
   if (whiteSpacePos)
     parameter = parameter.Left(whiteSpacePos);
-  if (!parameter.IsEmpty())
+  if (!parameter.IsEmpty() || parameters.size())
     parameters.push_back(parameter);
 }
 

@@ -52,9 +52,6 @@
 #include "SMBDirectory.h"
 #endif
 #endif
-#if defined(HAS_FILESYSTEM_CCX)
-#include "XBMSDirectory.h"
-#endif
 #ifdef HAS_FILESYSTEM_CDDA
 #include "CDDADirectory.h"
 #endif
@@ -159,9 +156,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #else
     if (strProtocol == "smb") return new CSMBDirectory();
 #endif
-#endif
-#ifdef HAS_FILESYSTEM_CCX
-    if (strProtocol == "xbms") return new CXBMSDirectory();
 #endif
 #ifdef HAS_FILESYSTEM
 #ifdef HAS_FILESYSTEM_DAAP
