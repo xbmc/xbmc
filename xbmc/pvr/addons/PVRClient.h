@@ -459,8 +459,8 @@ protected:
   bool                  m_bGotConnectionString; /*!< true if the connection string has already been fetched */
   CStdString            m_strFriendlyName;      /*!< the cached friendly name */
   bool                  m_bGotFriendlyName;     /*!< true if the friendly name has already been fetched */
-  PVR_ADDON_CAPABILITIES m_serverProperties;     /*!< the cached server properties */
-  bool                  m_bGotServerProperties; /*!< true if the server properties have already been fetched */
+  PVR_ADDON_CAPABILITIES m_addonCapabilities;     /*!< the cached add-on capabilities */
+  bool                  m_bGotAddonCapabilities; /*!< true if the add-on capabilities have already been fetched */
 
 private:
   /*!
@@ -514,5 +514,5 @@ private:
   /*!
    * @brief Get the backend properties from the server and store it locally.
    */
-  PVR_ERROR SetProperties(void);
+  PVR_ERROR SetAddonCapabilities(void);
 };
