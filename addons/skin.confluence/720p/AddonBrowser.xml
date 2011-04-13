@@ -24,7 +24,7 @@
 				<posx>0</posx>
 				<posy>110</posy>
 				<width>250</width>
-				<height>550</height>
+				<height>600</height>
 				<onleft>9000</onleft>
 				<onright>50</onright>
 				<onup>9000</onup>
@@ -32,7 +32,7 @@
 				<itemgap>0</itemgap>
 				<control type="label" id="200">
 					<width>250</width>
-					<height>45</height>
+					<height>35</height>
 					<font>font12caps</font>
 					<label>31006</label>
 					<textcolor>blue</textcolor>
@@ -61,7 +61,7 @@
 				</control>
 				<control type="label" id="201">
 					<width>250</width>
-					<height>45</height>
+					<height>35</height>
 					<font>font12caps</font>
 					<label>31026</label>
 					<textcolor>blue</textcolor>
