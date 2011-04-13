@@ -717,7 +717,7 @@
 				<itemgap>0</itemgap>
 				<control type="label" id="200">
 					<width>250</width>
-					<height>45</height>
+					<height>35</height>
 					<font>font12caps</font>
 					<label>31027</label>
 					<textcolor>blue</textcolor>
@@ -736,7 +736,7 @@
 				</control>
 				<control type="label" id="201">
 					<width>250</width>
-					<height>45</height>
+					<height>35</height>
 					<font>font12caps</font>
 					<label>31026</label>
 					<textcolor>blue</textcolor>
