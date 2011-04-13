@@ -49,7 +49,13 @@ bool cHTSPData::Open(const std::string &strHostname, unsigned int iPort, const s
   }
 
   if(!strUsername.empty())
-    m_session.Auth(strUsername, strPassword);
+  {
+    if (!m_session.Auth(strUsername, strPassword))
+    {
+      XBMC->Log(LOG_ERROR, "%s - failed to authenticate", __FUNCTION__);
+      return false;
+    }
+  }
 
   SetDescription("HTSP Data Listener");
   Start();

@@ -196,12 +196,8 @@ bool cHTSPSession::Auth(const std::string& username, const std::string& password
     struct HTSSHA1* shactx = (struct HTSSHA1*) malloc(hts_sha1_size);
     uint8_t d[20];
     hts_sha1_init(shactx);
-    hts_sha1_update(shactx
-                 , (const uint8_t *)password.c_str()
-                 , password.length());
-    hts_sha1_update(shactx
-                 , (const uint8_t *)m_challenge
-                 , m_iChallengeLength);
+    hts_sha1_update(shactx, (const uint8_t *) password.c_str(), password.length());
+    hts_sha1_update(shactx, (const uint8_t *) m_challenge, m_iChallengeLength);
     hts_sha1_final(shactx, d);
     htsmsg_add_bin(m, "digest", d, 20);
     free(shactx);
