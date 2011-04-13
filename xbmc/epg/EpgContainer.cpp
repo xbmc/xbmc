@@ -319,7 +319,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   /* set start and end time */
   time_t start;
   time_t end;
-  CDateTime::GetCurrentDateTime().GetAsTime(start); // NOTE: XBMC stores the EPG times as local time
+  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(start);
   end = start;
   start -= g_advancedSettings.m_iEpgLingerTime * 60;
   end += m_iDisplayTime;

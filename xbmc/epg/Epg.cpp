@@ -151,14 +151,14 @@ void CEpg::Clear(void)
 
 void CEpg::Cleanup(void)
 {
-  Cleanup(CDateTime::GetCurrentDateTime());
+  Cleanup(CDateTime::GetCurrentDateTime().GetAsUTCDateTime());
 }
 
 void CEpg::Cleanup(const CDateTime &Time)
 {
   CSingleLock lock(m_critSection);
 
-  CDateTime firstDate = Time.GetAsUTCDateTime() - CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
+  CDateTime firstDate = Time - CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
   CDateTime dummy; dummy.SetValid(false);
 
   RemoveTagsBetween(dummy, firstDate);

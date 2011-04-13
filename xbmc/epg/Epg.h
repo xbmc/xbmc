@@ -199,7 +199,7 @@ public:
   /*!
    * @brief Remove all entries from this EPG that finished before the given time
    *        and that have no timers set.
-   * @param Time Delete entries with an end time before this time.
+   * @param Time Delete entries with an end time before this time in UTC.
    */
   virtual void Cleanup(const CDateTime &Time);
 
