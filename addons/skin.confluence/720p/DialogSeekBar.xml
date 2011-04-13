@@ -1,15 +1,14 @@
 <window id="115">
 	<defaultcontrol>1</defaultcontrol>
-	<visible>[Player.Seeking | Player.DisplayAfterSeek | Player.Paused | Player.Forwarding | Player.Rewinding] + ![Window.IsVisible(VideoOSD) | Window.IsVisible(MusicOSD)]</visible>
+	<visible>[Player.Seeking | Player.DisplayAfterSeek | Player.Paused | Player.Forwarding | Player.Rewinding] + ![Window.IsVisible(VideoOSD) | Window.IsVisible(MusicOSD) | Window.IsVisible(VolumeBar)]</visible>
 	<animation effect="fade" start="0" end="100" time="200">WindowOpen</animation>
 	<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 	<controls>
 		<control type="group">
 			<visible>player.chaptercount + Window.IsVisible(FullScreenVideo)</visible>
-			<posx>540r</posx>
-			<posy>20</posy>
+			<posx>665r</posx>
+			<posy>-6</posy>
 			<include>VisibleFadeEffect</include>
-			<animation effect="slide" start="0,0" end="0,15" time="200" condition="Player.ShowInfo | Window.IsVisible(VolumeBar)">Conditional</animation>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
@@ -46,10 +45,8 @@
 			</control>
 		</control>
 		<control type="group">
-			<posx>390r</posx>
-			<posy>20</posy>
-			<animation effect="slide" start="0,0" end="-115,-26" time="200" condition="![Window.IsVisible(FullScreenVideo) | Window.IsVisible(Visualisation)]">Conditional</animation>
-			<animation effect="slide" start="0,0" end="0,15" time="200" condition="[Window.IsVisible(FullScreenVideo) | Window.IsVisible(Visualisation)] + [Player.ShowInfo | Window.IsVisible(VolumeBar)]">Conditional</animation>
+			<posx>520r</posx>
+			<posy>-6</posy>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
