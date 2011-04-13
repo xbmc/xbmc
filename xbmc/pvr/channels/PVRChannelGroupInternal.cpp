@@ -385,10 +385,14 @@ bool CPVRChannelGroupInternal::Persist(void)
   bool bReturn(false);
   CSingleLock lock(m_critSection);
 
+  bool bHasNewChannels = HasNewChannels();
+  bool bHasChangedChannels = HasChangedChannels();
+
+  if (bHasNewChannels || bHasChangedChannels)
   CLog::Log(LOGDEBUG, "CPVRChannelGroupInternal - %s - persisting %d channels",
       __FUNCTION__, (int) size());
 
-  if (HasNewChannels())
+  if (bHasNewChannels)
   {
     CLog::Log(LOGDEBUG, "CPVRChannelGroupInternal - %s - group '%s' has new channels. writing changes directly",
         __FUNCTION__, GroupName().c_str());
@@ -404,7 +408,7 @@ bool CPVRChannelGroupInternal::Persist(void)
       }
     }
   }
-  else if (HasChangedChannels())
+  else if (bHasChangedChannels)
   {
     /* open the database */
     CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
