@@ -20,6 +20,7 @@
  *
  */
 
+#include "FileItem.h"
 #include "GUIDialogYesNo.h"
 #include "utils/Variant.h"
 
@@ -31,8 +32,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void FrameMove();
 
-  static bool ShowAndGetInput(CVariant vHeading, CVariant vLine0, CVariant vLine1,
-    CVariant vLine2, unsigned int uiAutoCloseTime = 0);
+  static bool ShowAndGetInput(const CFileItem & item, unsigned int uiAutoCloseTime = 0);
 
 protected:
   virtual void OnInitWindow();

@@ -219,6 +219,7 @@
 #include "guilib/GUIControlFactory.h"
 #include "dialogs/GUIDialogCache.h"
 #include "dialogs/GUIDialogPlayEject.h"
+#include "utils/XMLUtils.h"
 #include "addons/AddonInstaller.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -3556,28 +3557,15 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       CUtil::ClearSubtitles();
   }
 
-#ifdef HAS_DVD_DRIVE
   if (item.IsDiscStub())
   {
-    // Figure out Line 1 of the dialog
-    CStdString strLine1;
-    if (item.GetVideoInfoTag())
-    {
-      strLine1 = item.GetVideoInfoTag()->m_strTitle;
-    }
-    else
-    {
-      strLine1 = URIUtils::GetFileName(item.m_strPath);
-      URIUtils::RemoveExtension(strLine1);
-    }
-
+#ifdef HAS_DVD_DRIVE
     // Display the Play Eject dialog
-    if (CGUIDialogPlayEject::ShowAndGetInput(219, 429, strLine1, NULL))
-      MEDIA_DETECT::CAutorun::PlayDisc();
-
+    if (CGUIDialogPlayEject::ShowAndGetInput(item))
+      return MEDIA_DETECT::CAutorun::PlayDisc();
+#endif
     return true;
   }
-#endif
 
   if (item.IsPlayList())
     return false;
