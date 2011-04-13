@@ -7,6 +7,7 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
+export PATH:=$(TOOLCHAIN)/bin:$(PATH) 
 CONFIGURE=./configure --prefix=$(PREFIX) \
   --disable-fuse
 
