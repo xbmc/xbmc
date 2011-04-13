@@ -29,8 +29,9 @@ public:
   cHTSPSession();
   ~cHTSPSession();
 
-  bool      Connect(const std::string& hostname, int port);
-  bool      IsConnected() { return m_connected; }
+  bool      Connect(const std::string &strHostname, int iPort, long iTimeout);
+  bool      IsConnected() { return m_bIsConnected; }
+  bool      CheckConnection(void);
   void      Close(bool bForce = false);
   void      Abort();
   bool      Auth(const std::string& username, const std::string& password);
@@ -46,10 +47,10 @@ public:
   bool      SendEnableAsync();
   bool      GetEvent(SEvent& event, uint32_t id);
 
-  int         GetProtocol()   { return m_protocol; }
-  const char* GetServerName() { return m_server.c_str(); }
-  const char* GetVersion()    { return m_version.c_str(); }
-  unsigned    AddSequence()   { return ++m_seq; }
+  int         GetProtocol()   { return m_iProtocol; }
+  const char* GetServerName() { return m_strServerName.c_str(); }
+  const char* GetVersion()    { return m_strVersion.c_str(); }
+  unsigned    AddSequence()   { return ++m_iSequence; }
 
   void      EnableNotifications(bool bSetTo = true) { m_bSendNotifications = bSetTo; }
   bool      SendNotifications(void) { return m_bSendNotifications; }
@@ -66,17 +67,23 @@ public:
   static void ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings, bool bNotify = false);
 
 private:
+  bool ConnectInternal(void);
+  bool SendGreeting(void);
+
   SOCKET                m_fd;
-  unsigned              m_seq;
+  unsigned int          m_iSequence;
   void*                 m_challenge;
-  int                   m_challenge_len;
-  int                   m_protocol;
+  int                   m_iChallengeLength;
+  int                   m_iProtocol;
   int                   m_iRefCount;
-  std::string           m_server;
-  std::string           m_version;
-  bool                  m_connected;
+  int                   m_iPortnumber;
+  int                   m_iConnectTimeout;
+  std::string           m_strServerName;
+  std::string           m_strVersion;
+  std::string           m_strHostname;
+  bool                  m_bIsConnected;
   bool                  m_bSendNotifications;
 
   std::deque<htsmsg_t*> m_queue;
-  const unsigned int    m_queue_size;
+  const unsigned int    m_iQueueSize;
 };

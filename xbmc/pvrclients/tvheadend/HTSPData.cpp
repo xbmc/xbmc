@@ -39,7 +39,7 @@ cHTSPData::~cHTSPData()
 
 bool cHTSPData::Open(const std::string &strHostname, unsigned int iPort, const std::string &strUsername, const std::string &strPassword, long iTimeout)
 {
-  if(!m_session.Connect(strHostname, iPort))
+  if(!m_session.Connect(strHostname, iPort, iTimeout))
     return false;
 
   if(m_session.GetProtocol() < 2)
@@ -67,10 +67,7 @@ void cHTSPData::Close()
 
 bool cHTSPData::CheckConnection()
 {
-  if (!m_session.IsConnected())
-    m_session.Connect(g_szHostname, g_iPortHTSP);
-
-  return m_session.IsConnected();
+  return m_session.CheckConnection();
 }
 
 htsmsg_t* cHTSPData::ReadResult(htsmsg_t* m)
