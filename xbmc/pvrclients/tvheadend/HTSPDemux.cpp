@@ -54,7 +54,7 @@ bool cHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
   if(!m_session.Connect(g_szHostname, g_iPortHTSP))
     return false;
 
-  if(!g_szUsername.IsEmpty())
+  if(!g_szUsername.empty())
     m_session.Auth(g_szUsername, g_szPassword);
 
   if(!m_session.SendSubscribe(m_subs, m_channel))
@@ -241,7 +241,7 @@ bool cHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
 
 bool cHTSPDemux::GetSignalStatus(PVR_SIGNAL_STATUS &qualityinfo)
 {
-  if (m_SourceInfo.si_adapter.IsEmpty() || m_Quality.fe_status.IsEmpty())
+  if (m_SourceInfo.si_adapter.empty() || m_Quality.fe_status.empty())
     return false;
 
   strncpy(qualityinfo.strAdapterName, m_SourceInfo.si_adapter.c_str(), sizeof(qualityinfo.strAdapterName));

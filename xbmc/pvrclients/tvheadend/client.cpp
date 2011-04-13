@@ -35,21 +35,21 @@ int g_clientID                = -1;
  * Default values are defined inside client.h
  * and exported to the other source files.
  */
-CStdString g_szHostname       = DEFAULT_HOST;
-int g_iPortHTSP               = DEFAULT_HTSP_PORT;
-int g_iPortHTTP               = DEFAULT_HTTP_PORT;
-int g_iConnectTimeout         = DEFAULT_CONNECT_TIMEOUT;
-int g_iResponseTimeout        = DEFAULT_RESPONSE_TIMEOUT;
-int g_iSkipIFrame             = DEFAULT_SKIP_I_FRAME;
-CStdString g_szUsername       = "";
-CStdString g_szPassword       = "";
-CStdString g_szUserPath       = "";
-CStdString g_szClientPath     = "";
+std::string g_szHostname       = DEFAULT_HOST;
+int         g_iPortHTSP        = DEFAULT_HTSP_PORT;
+int         g_iPortHTTP        = DEFAULT_HTTP_PORT;
+int         g_iConnectTimeout  = DEFAULT_CONNECT_TIMEOUT;
+int         g_iResponseTimeout = DEFAULT_RESPONSE_TIMEOUT;
+int         g_iSkipIFrame      = DEFAULT_SKIP_I_FRAME;
+std::string g_szUsername       = "";
+std::string g_szPassword       = "";
+std::string g_szUserPath       = "";
+std::string g_szClientPath     = "";
 
-CHelper_libXBMC_addon *XBMC   = NULL;
-CHelper_libXBMC_pvr   *PVR    = NULL;
-cHTSPDemux *HTSPDemuxer       = NULL;
-cHTSPData  *HTSPData          = NULL;
+CHelper_libXBMC_addon *XBMC    = NULL;
+CHelper_libXBMC_pvr   *PVR     = NULL;
+cHTSPDemux *HTSPDemuxer        = NULL;
+cHTSPData  *HTSPData           = NULL;
 
 extern "C" {
 
@@ -284,8 +284,8 @@ PVR_ERROR GetStreamProperties(PVR_STREAM_PROPERTIES* pProperties)
 
 const char * GetBackendName(void)
 {
-  static CStdString strBackendName = HTSPData ? HTSPData->GetServerName() : "unknown";
-  return strBackendName.c_str();
+  static const char *strBackendName = HTSPData ? HTSPData->GetServerName() : "unknown";
+  return strBackendName;
 }
 
 const char * GetBackendVersion(void)

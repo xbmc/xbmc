@@ -37,9 +37,9 @@ cHTSPData::~cHTSPData()
   Close();
 }
 
-bool cHTSPData::Open(CStdString hostname, int port, CStdString user, CStdString pass, long timeout)
+bool cHTSPData::Open(const std::string &strHostname, unsigned int iPort, const std::string &strUsername, const std::string &strPassword, long iTimeout)
 {
-  if(!m_session.Connect(hostname, port))
+  if(!m_session.Connect(strHostname, iPort))
     return false;
 
   if(m_session.GetProtocol() < 2)
@@ -48,13 +48,13 @@ bool cHTSPData::Open(CStdString hostname, int port, CStdString user, CStdString 
     return false;
   }
 
-  if(!user.IsEmpty())
-    m_session.Auth(user, pass);
+  if(!strUsername.empty())
+    m_session.Auth(strUsername, strPassword);
 
   SetDescription("HTSP Data Listener");
   Start();
 
-  m_started.Wait(timeout);
+  m_started.Wait(iTimeout);
   return Running();
 }
 
@@ -285,7 +285,7 @@ PVR_ERROR cHTSPData::GetRecordings(PVR_HANDLE handle)
     SRecording recording = it->second;
 
     CStdString strStreamURL = "http://";
-    CStdString strChannelName = "";
+    std::string strChannelName = "";
 
     /* lock */
     {

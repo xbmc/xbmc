@@ -23,7 +23,6 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "StdString.h"
 #include "../../../addons/library.xbmc.addon/libXBMC_addon.h"
 #include "../../../addons/library.xbmc.pvr/libXBMC_pvr.h"
 
@@ -35,17 +34,17 @@
 #define DEFAULT_SKIP_I_FRAME          0
 
 extern bool         m_bCreated;
-extern CStdString   g_szHostname;
+extern std::string  g_szHostname;
 extern int          g_iPortHTSP;
 extern int          g_iPortHTTP;
-extern CStdString   g_szUsername;
-extern CStdString   g_szPassword;
+extern std::string  g_szUsername;
+extern std::string  g_szPassword;
 extern int          g_iConnectTimeout;
 extern int          g_iResponseTimeout;
 extern int          g_iSkipIFrame;
 extern int          g_clientID;
-extern CStdString   g_szUserPath;
-extern CStdString   g_szClientPath;
+extern std::string  g_szUserPath;
+extern std::string  g_szClientPath;
 extern CHelper_libXBMC_addon *XBMC;
 extern CHelper_libXBMC_pvr   *PVR;
 
