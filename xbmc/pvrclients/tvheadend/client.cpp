@@ -35,21 +35,22 @@ int g_clientID                = -1;
  * Default values are defined inside client.h
  * and exported to the other source files.
  */
-std::string g_szHostname       = DEFAULT_HOST;
-int         g_iPortHTSP        = DEFAULT_HTSP_PORT;
-int         g_iPortHTTP        = DEFAULT_HTTP_PORT;
-int         g_iConnectTimeout  = DEFAULT_CONNECT_TIMEOUT;
-int         g_iResponseTimeout = DEFAULT_RESPONSE_TIMEOUT;
-int         g_iSkipIFrame      = DEFAULT_SKIP_I_FRAME;
-std::string g_szUsername       = "";
-std::string g_szPassword       = "";
-std::string g_szUserPath       = "";
-std::string g_szClientPath     = "";
+std::string g_szHostname              = DEFAULT_HOST;
+int         g_iPortHTSP               = DEFAULT_HTSP_PORT;
+int         g_iPortHTTP               = DEFAULT_HTTP_PORT;
+int         g_iConnectTimeout         = DEFAULT_CONNECT_TIMEOUT;
+int         g_iResponseTimeout        = DEFAULT_RESPONSE_TIMEOUT;
+int         g_iSkipIFrame             = DEFAULT_SKIP_I_FRAME;
+bool        g_bShowTimerNotifications = true;
+std::string g_szUsername              = "";
+std::string g_szPassword              = "";
+std::string g_szUserPath              = "";
+std::string g_szClientPath            = "";
 
-CHelper_libXBMC_addon *XBMC    = NULL;
-CHelper_libXBMC_pvr   *PVR     = NULL;
-cHTSPDemux *HTSPDemuxer        = NULL;
-cHTSPData  *HTSPData           = NULL;
+CHelper_libXBMC_addon *XBMC           = NULL;
+CHelper_libXBMC_pvr   *PVR            = NULL;
+cHTSPDemux *HTSPDemuxer               = NULL;
+cHTSPData  *HTSPData                  = NULL;
 
 extern "C" {
 
@@ -100,6 +101,10 @@ void ReadSettings(void)
   /* read setting "read_timeout" from settings.xml */
   if (!XBMC->GetSetting("response_timeout", &g_iResponseTimeout))
     g_iResponseTimeout = DEFAULT_RESPONSE_TIMEOUT;
+
+  /* read setting "notifications_timers" from settings.xml */
+  if (!XBMC->GetSetting("notifications_timers", &g_bShowTimerNotifications))
+    g_bShowTimerNotifications = true;
 }
 
 ADDON_STATUS Create(void* hdl, void* props)
@@ -177,34 +182,38 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "user")
   {
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'user'", __FUNCTION__);
     string tmp_sUsername = g_szUsername;
     g_szUsername = (const char*) settingValue;
     if (tmp_sUsername != g_szUsername)
+    {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'user'", __FUNCTION__);
       return STATUS_NEED_RESTART;
+    }
   }
   else if (str == "pass")
   {
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'pass'", __FUNCTION__);
     string tmp_sPassword = g_szPassword;
     g_szPassword = (const char*) settingValue;
     if (tmp_sPassword != g_szPassword)
+    {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'pass'", __FUNCTION__);
       return STATUS_NEED_RESTART;
+    }
   }
   else if (str == "htsp_port")
   {
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'htsp_port' from %u to %u", __FUNCTION__, g_iPortHTSP, *(int*) settingValue);
     if (g_iPortHTSP != *(int*) settingValue)
     {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'htsp_port' from %u to %u", __FUNCTION__, g_iPortHTSP, *(int*) settingValue);
       g_iPortHTSP = *(int*) settingValue;
       return STATUS_NEED_RESTART;
     }
   }
   else if (str == "http_port")
   {
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'port' from %u to %u", __FUNCTION__, g_iPortHTTP, *(int*) settingValue);
     if (g_iPortHTTP != *(int*) settingValue)
     {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'port' from %u to %u", __FUNCTION__, g_iPortHTTP, *(int*) settingValue);
       g_iPortHTTP = *(int*) settingValue;
       return STATUS_NEED_RESTART;
     }
@@ -212,9 +221,9 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   else if (str == "skip_I_frame_count")
   {
     int iNewValue = *(int*) settingValue;
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'skip_I_frame_count' from %u to %u", __FUNCTION__, g_iSkipIFrame, iNewValue);
     if (g_iSkipIFrame != iNewValue)
     {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'skip_I_frame_count' from %u to %u", __FUNCTION__, g_iSkipIFrame, iNewValue);
       g_iSkipIFrame = iNewValue;
       return STATUS_OK;
     }
@@ -222,9 +231,9 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   else if (str == "connect_timeout")
   {
     int iNewValue = *(int*) settingValue + 1;
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'connect_timeout' from %u to %u", __FUNCTION__, g_iConnectTimeout, iNewValue);
     if (g_iConnectTimeout != iNewValue)
     {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'connect_timeout' from %u to %u", __FUNCTION__, g_iConnectTimeout, iNewValue);
       g_iConnectTimeout = iNewValue;
       return STATUS_OK;
     }
@@ -232,10 +241,20 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   else if (str == "response_timeout")
   {
     int iNewValue = *(int*) settingValue + 1;
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'response_timeout' from %u to %u", __FUNCTION__, g_iResponseTimeout, iNewValue);
     if (g_iResponseTimeout != iNewValue)
     {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'response_timeout' from %u to %u", __FUNCTION__, g_iResponseTimeout, iNewValue);
       g_iResponseTimeout = iNewValue;
+      return STATUS_OK;
+    }
+  }
+  else if (str == "notifications_timers")
+  {
+    bool bNewValue = *(bool*) settingValue;
+    if (g_bShowTimerNotifications != bNewValue)
+    {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'notifications_timers' from %u to %u", __FUNCTION__, g_bShowTimerNotifications, bNewValue);
+      g_bShowTimerNotifications = bNewValue;
       return STATUS_OK;
     }
   }

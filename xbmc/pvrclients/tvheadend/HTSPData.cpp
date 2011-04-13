@@ -619,11 +619,11 @@ void cHTSPData::Action()
     else if(strstr(method, "initialSyncCompleted"))
       m_started.Signal();
     else if(strstr(method, "dvrEntryAdd"))
-      cHTSPSession::ParseDVREntryUpdate(msg, m_recordings, m_session.SendNotifications());
+      cHTSPSession::ParseDVREntryUpdate(msg, m_recordings, g_bShowTimerNotifications && m_session.SendNotifications());
     else if(strstr(method, "dvrEntryUpdate"))
-      cHTSPSession::ParseDVREntryUpdate(msg, m_recordings, m_session.SendNotifications());
+      cHTSPSession::ParseDVREntryUpdate(msg, m_recordings, g_bShowTimerNotifications && m_session.SendNotifications());
     else if(strstr(method, "dvrEntryDelete"))
-      cHTSPSession::ParseDVREntryDelete(msg, m_recordings, m_session.SendNotifications());
+      cHTSPSession::ParseDVREntryDelete(msg, m_recordings, g_bShowTimerNotifications && m_session.SendNotifications());
     else
       XBMC->Log(LOG_DEBUG, "%s - Unmapped action recieved '%s'", __FUNCTION__, method);
 

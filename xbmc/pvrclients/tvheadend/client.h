@@ -43,6 +43,7 @@ extern int          g_iConnectTimeout;
 extern int          g_iResponseTimeout;
 extern int          g_iSkipIFrame;
 extern int          g_clientID;
+extern bool         g_bShowTimerNotifications;
 extern std::string  g_szUserPath;
 extern std::string  g_szClientPath;
 extern CHelper_libXBMC_addon *XBMC;
