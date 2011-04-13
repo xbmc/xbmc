@@ -7,6 +7,7 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings 
+export PATH:=$(TOOLCHAIN)/bin:$(PATH) 
 CONFIGURE=./configure --prefix=$(PREFIX) \
   --disable-libxml2 --disable-docs \
   --with-freetype-config=$(PREFIX)/bin/freetype-config
