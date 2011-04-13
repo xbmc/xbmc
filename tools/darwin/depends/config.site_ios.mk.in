@@ -38,6 +38,6 @@ export ACLOCAL=aclocal -I ${PREFIX}/share/aclocal -I @use_toolchain@share/acloca
 #export ACLOCAL=aclocal -I ${PREFIX}/share/aclocal -I /Developer/usr/share/aclocal
 export LIBTOOL=/Developer/usr/bin/glibtool
 export LIBTOOLIZE=/Developer/usr/bin/glibtoolize
-export PKG_CONFIG_PATH=${PREFIX}/usr/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
+export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
 export PATH:=@use_toolchain@/bin:${PREFIX}/bin:${platform_path}/usr/bin:/Developer/usr/bin:${PATH}
 

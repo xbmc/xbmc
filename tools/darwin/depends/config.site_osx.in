@@ -34,7 +34,7 @@ export RANLIB=${platform_path}/usr/bin/ranlib
 export ACLOCAL="aclocal -I ${prefix}/share/aclocal -I @use_toolchain@/share/aclocal -I ${platform_path}/usr/share/aclocal"
 export LIBTOOL=@use_toolchain@/bin/glibtool
 export LIBTOOLIZE=@use_toolchain@/bin/glibtoolize
-export PKG_CONFIG_PATH=${prefix}/usr/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
+export PKG_CONFIG_PATH=${prefix}/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
 export PATH="@use_toolchain@/bin:${prefix}/bin:${platform_path}/usr/bin:/Developer/usr/bin:${PATH}"
 export MACOSX_DEPLOYMENT_TARGET=@use_sdk@
 
