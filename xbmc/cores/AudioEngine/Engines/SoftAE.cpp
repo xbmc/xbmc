@@ -56,8 +56,8 @@ CSoftAE::CSoftAE():
   m_running            (false),
   m_reOpened           (false),
   m_sink               (NULL ),
+  m_transcode          (false),
   m_rawPassthrough     (false),
-  m_passthrough        (false),
   m_buffer             (NULL ),
   m_encoder            (NULL ),
   m_encodedBuffer      (NULL ),
@@ -125,24 +125,6 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   m_sinkLock.EnterExclusive();
   LoadSettings();
 
-  /* load the configuration */
-  enum AEStdChLayout stdChLayout = AE_CH_LAYOUT_2_0;
-  switch(g_guiSettings.GetInt("audiooutput.channellayout"))
-  {
-    default:
-    case  0: stdChLayout = AE_CH_LAYOUT_2_0; break; /* dont alow 1_0 output */
-    case  1: stdChLayout = AE_CH_LAYOUT_2_0; break;
-    case  2: stdChLayout = AE_CH_LAYOUT_2_1; break;
-    case  3: stdChLayout = AE_CH_LAYOUT_3_0; break;
-    case  4: stdChLayout = AE_CH_LAYOUT_3_1; break;
-    case  5: stdChLayout = AE_CH_LAYOUT_4_0; break;
-    case  6: stdChLayout = AE_CH_LAYOUT_4_1; break;
-    case  7: stdChLayout = AE_CH_LAYOUT_5_0; break;
-    case  8: stdChLayout = AE_CH_LAYOUT_5_1; break;
-    case  9: stdChLayout = AE_CH_LAYOUT_7_0; break;
-    case 10: stdChLayout = AE_CH_LAYOUT_7_1; break;
-  }
-
   /* remove any deleted streams */
   CSingleLock streamLock(m_streamLock);
   list<CSoftAEStream*>::iterator itt;
@@ -170,7 +152,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   streamLock.Leave();
 
   CStdString device, driver;
-  if (m_passthrough || m_rawPassthrough)
+  if (m_transcode || m_rawPassthrough)
   {
     device = m_passthroughDevice;
     driver = m_passthroughDriver;
@@ -181,12 +163,15 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
     driver = m_driver;
   }
 
+       if (m_rawPassthrough) CLog::Log(LOGINFO, "CSoftAE::OpenSink - RAW passthrough enabled");
+  else if (m_transcode     ) CLog::Log(LOGINFO, "CSoftAE::OpenSink - Transcode passthrough enabled");
+
   /*
     try to use 48000hz if we are going to transcode, this prevents the sink
     from being re-opened repeatedly when switching sources, which locks up
     some receivers & crappy integrated sound drivers.
   */
-  if (m_passthrough && !m_rawPassthrough)
+  if (m_transcode && !m_rawPassthrough)
     sampleRate = 48000;
 
   /*
@@ -201,10 +186,10 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
 
   /* setup the desired format */
   AEAudioFormat newFormat;
-  newFormat.m_channelLayout = CAEUtil::GetStdChLayout  (stdChLayout);
+  newFormat.m_channelLayout = CAEUtil::GetStdChLayout  (m_stdChLayout);
   newFormat.m_channelCount  = CAEUtil::GetChLayoutCount(newFormat.m_channelLayout);
   newFormat.m_sampleRate    = sampleRate;
-  newFormat.m_dataFormat    = (m_rawPassthrough || m_passthrough) ? AE_FMT_RAW : AE_FMT_FLOAT;
+  newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? AE_FMT_RAW : AE_FMT_FLOAT;
 
   /* if the sink is already open and it is compatible we dont need to do anything */
   if (m_sink && m_sink->IsCompatible(newFormat, device))
@@ -236,17 +221,17 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   }
 
   /* setup the standard output layout & format */
-  m_chLayout     = CAEUtil::GetStdChLayout  (stdChLayout);
-  m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout );
+  m_chLayout     = CAEUtil::GetStdChLayout  (m_stdChLayout);
+  m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout   );
 
   /* create the new sink */
-  m_sink = GetSink(newFormat, m_passthrough || m_rawPassthrough, device);
+  m_sink = GetSink(newFormat, m_transcode || m_rawPassthrough, device);
   if (!m_sink)
   {
     /* we failed, set the data format to defaults so the thread does not block */
-    newFormat.m_dataFormat    = (m_rawPassthrough || m_passthrough) ? AE_FMT_S16NE : AE_FMT_FLOAT;
-    newFormat.m_channelLayout = CAEUtil::GetStdChLayout(stdChLayout);
-    newFormat.m_channelCount  = (m_rawPassthrough || m_passthrough) ? 2 : m_channelCount;
+    newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? AE_FMT_S16NE : AE_FMT_FLOAT;
+    newFormat.m_channelLayout = CAEUtil::GetStdChLayout(m_stdChLayout);
+    newFormat.m_channelCount  = (m_rawPassthrough || m_transcode) ? 2 : m_channelCount;
     newFormat.m_sampleRate    = sampleRate;
     newFormat.m_frames        = (unsigned int)(((float)sampleRate / 1000.0f) * (float)DELAY_FRAME_TIME);
     newFormat.m_frameSamples  = newFormat.m_frames * newFormat.m_channelCount;
@@ -286,7 +271,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   else
   {
     /* if we are transcoding */
-    if (m_passthrough)
+    if (m_transcode)
     {
       /* configure the encoder */
       m_encoderFormat.m_sampleRate    = newFormat.m_sampleRate;
@@ -310,7 +295,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
       m_bufferSize = newFormat.m_frames * sizeof(float) * m_channelCount;
       m_buffer     = _aligned_malloc(m_bufferSize, 16);
       
-      CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(stdChLayout));
+      CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(m_stdChLayout));
     }
 
     m_bytesPerSample = CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3;
@@ -363,7 +348,7 @@ bool CSoftAE::SetupEncoder(AEAudioFormat &format)
   m_encodedBufferFrames = 0;
   m_encodedPending      = false;
 
-  if (!m_passthrough)
+  if (!m_transcode)
     return false;
 
   m_encoder = new CAEEncoderFFmpeg();
@@ -406,7 +391,8 @@ void CSoftAE::OnSettingsChange(CStdString setting)
       setting == "audiooutput.customdevice"      ||
       setting == "audiooutput.mode"              ||
       setting == "audiooutput.ac3passthrough"    ||
-      setting == "audiooutput.channellayout")
+      setting == "audiooutput.channellayout"     ||
+      setting == "audiooutput.multichannellpcm")
   {
     OpenSink();
   }
@@ -415,6 +401,24 @@ void CSoftAE::OnSettingsChange(CStdString setting)
 void CSoftAE::LoadSettings()
 {
   int pos;
+
+  /* load the configuration */
+  m_stdChLayout = AE_CH_LAYOUT_2_0;
+  switch(g_guiSettings.GetInt("audiooutput.channellayout"))
+  {
+    default:
+    case  0: m_stdChLayout = AE_CH_LAYOUT_2_0; break; /* dont alow 1_0 output */
+    case  1: m_stdChLayout = AE_CH_LAYOUT_2_0; break;
+    case  2: m_stdChLayout = AE_CH_LAYOUT_2_1; break;
+    case  3: m_stdChLayout = AE_CH_LAYOUT_3_0; break;
+    case  4: m_stdChLayout = AE_CH_LAYOUT_3_1; break;
+    case  5: m_stdChLayout = AE_CH_LAYOUT_4_0; break;
+    case  6: m_stdChLayout = AE_CH_LAYOUT_4_1; break;
+    case  7: m_stdChLayout = AE_CH_LAYOUT_5_0; break;
+    case  8: m_stdChLayout = AE_CH_LAYOUT_5_1; break;
+    case  9: m_stdChLayout = AE_CH_LAYOUT_7_0; break;
+    case 10: m_stdChLayout = AE_CH_LAYOUT_7_1; break;
+  }
 
   m_passthroughDevice = g_guiSettings.GetString("audiooutput.passthroughdevice");
   if (m_passthroughDevice == "custom")
@@ -453,12 +457,11 @@ void CSoftAE::LoadSettings()
   if (m_device.IsEmpty())
     m_device = "default";
 
-  m_passthrough =
-    g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958 &&
-    g_guiSettings.GetBool("audiooutput.ac3passthrough");
-
-  if (m_passthrough)
-	CLog::Log(LOGINFO, "CSoftAE::OnSettingsChange - Transcode Enabled");
+  m_transcode =
+    g_guiSettings.GetBool("audiooutput.ac3passthrough") && (
+      (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958) ||
+      (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI && !g_guiSettings.GetBool("audiooutput.multichannellpcm"))
+  );
 }
 
 void CSoftAE::Deinitialize()
@@ -509,7 +512,7 @@ void CSoftAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 bool CSoftAE::SupportsRaw()
 {
   /* if we are going to encode, we dont do raw */
-  if (m_passthrough && !m_streams.empty())
+  if (m_transcode && !m_streams.empty())
     return false;
 
   return true;
@@ -623,7 +626,7 @@ void CSoftAE::GarbageCollect()
 
 unsigned int CSoftAE::GetSampleRate()
 {
-  return m_passthrough && m_encoder ? m_encoderFormat.m_sampleRate : m_sinkFormat.m_sampleRate;
+  return m_transcode && m_encoder ? m_encoderFormat.m_sampleRate : m_sinkFormat.m_sampleRate;
 }
 
 void CSoftAE::StopSound(IAESound *sound)
@@ -669,7 +672,7 @@ float CSoftAE::GetDelay()
   if (m_sink)
     delay = m_sink->GetDelay();
 
-  if (m_passthrough && m_encoder)
+  if (m_transcode && m_encoder)
     delay += m_encoder->GetDelay(m_encodedBufferFrames - m_encodedBufferPos);
 
   unsigned int buffered = m_bufferSamples / m_channelCount;
@@ -810,7 +813,7 @@ void CSoftAE::Run()
     m_reOpened = false;
 
     /* output the buffer to the sink */
-    if (m_passthrough && m_encoder)
+    if (m_transcode && m_encoder)
       RunTranscodeStage();
     else
       RunOutputStage();

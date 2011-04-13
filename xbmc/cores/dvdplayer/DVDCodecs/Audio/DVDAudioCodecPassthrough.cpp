@@ -48,6 +48,7 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 
   bool bSupportsAC3Out = false;
   bool bSupportsDTSOut = false;
+  bool bSupportsTHDOut = false; /* FIXME */
   int audioMode = g_guiSettings.GetInt("audiooutput.mode");
   if (AUDIO_IS_BITSTREAM(audioMode))
   {
@@ -62,7 +63,10 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
     (hints.codec == CODEC_ID_DTS  && bSupportsDTSOut) ||
     (
       audioMode == AUDIO_HDMI &&
-      (hints.codec == CODEC_ID_EAC3 && bSupportsAC3Out)
+      (
+        (hints.codec == CODEC_ID_EAC3   && bSupportsAC3Out) ||
+        (hints.codec == CODEC_ID_TRUEHD && bSupportsTHDOut)
+      )
     )
   )
     return true;

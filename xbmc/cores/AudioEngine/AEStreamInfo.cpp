@@ -228,6 +228,16 @@ unsigned int CAEStreamInfo::DetectType(uint8_t *data, unsigned int size)
         possible = skipped;
     }
 
+    /* if it could be MLP/TrueHD */
+    if (size > 3 && data[0] == 0xf8 && data[1] == 0x72 && data[2] == 0x6f)
+    {
+      unsigned int skip = SyncMLP(data, size);
+      if (m_hasSync)
+        return skipped + skip;
+      else
+        possible = skipped;
+    }
+
     /* move along one byte */
     --size;
     ++skipped;
@@ -447,6 +457,56 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
 
   /* lost sync */
   CLog::Log(LOGINFO, "CAEStreamInfo::SyncDTS - DTS sync lost");
+  m_hasSync = false;
+  return size;
+}
+
+unsigned int CAEStreamInfo::SyncMLP(uint8_t *data, unsigned int size)
+{
+  unsigned int skip = 0;
+
+  /* if MLP */
+  for(; size - skip > 6; ++skip, ++data)
+  {
+    if (size < 4 || data[0] != 0xf8 || data[1] != 0x72 || data[2] != 0x6f)
+      continue;
+
+    unsigned int rate;
+#if 0
+    if (data[3] == 0xbb)
+    {
+      rate         = (data[5] & 0xf0) >> 4;
+      m_dataType   = STREAM_TYPE_MLP;
+      m_sampleRate = (rate & 8 ? 44100 : 48000) << (rate & 7);
+      if (!m_hasSync)
+        CLog::Log(LOGINFO, "CAEStreamInfo::SyncMLP - MLP stream detected (%dHz)", m_sampleRate);   
+    }
+    /* if TrueHD */
+    else
+#endif
+    if (data[3] == 0xba)
+    {
+      rate         = (data[4] & 0xf0) >> 4;
+      m_dataType   = STREAM_TYPE_TRUEHD;
+      m_sampleRate = (rate & 8 ? 44100 : 48000) << (rate & 7);
+      if (!m_hasSync)
+        CLog::Log(LOGINFO, "CAEStreamInfo::SyncMLP - TrueHD stream detected (%dHz)", m_sampleRate);
+    }
+    else
+    {
+      continue;
+    }
+
+    m_hasSync    = true;
+    m_syncFunc   = &CAEStreamInfo::SyncMLP;
+    m_packFunc   = &CAEPackIEC958::PackTrueHD;
+    m_repeat     = 1;
+    m_fsize      = 40 << (rate & 7);
+printf("%d %d\n", rate, m_fsize);
+    return skip;
+  }
+
+  CLog::Log(LOGINFO, "CAEStreamInfo::SyncMLP - Sync Lost");
   m_hasSync = false;
   return size;
 }

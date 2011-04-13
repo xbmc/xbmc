@@ -115,6 +115,7 @@ private:
   friend class CSoftAEStream;
   void RemoveStream(IAEStream *stream);
 
+  enum AEStdChLayout m_stdChLayout;
   CStdString m_device, m_driver;
   CStdString m_passthroughDevice, m_passthroughDriver;
 
@@ -128,7 +129,6 @@ private:
 
   /* the current configuration */
   float               m_volume;
-  enum AEStdChLayout  m_stdChLayout;
   unsigned int        m_channelCount;
   AEChLayout          m_chLayout;
   unsigned int        m_frameSize;
@@ -149,8 +149,8 @@ private:
   std::list<SoundState> m_playing_sounds;
 
   /* the streams, sounds, output buffer and output buffer fill size */
+  bool                                      m_transcode;
   bool                                      m_rawPassthrough;
-  bool                                      m_passthrough;
   std::list<CSoftAEStream*>                 m_streams;
   std::list<CSoftAESound*>                  m_sounds;
 

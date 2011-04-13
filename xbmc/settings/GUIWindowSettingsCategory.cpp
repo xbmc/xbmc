@@ -798,10 +798,16 @@ void CGUIWindowSettingsCategory::UpdateSettings()
              strSetting.Equals("audiooutput.passthroughaac") ||
              strSetting.Equals("audiooutput.passthroughmp1") ||
              strSetting.Equals("audiooutput.passthroughmp2") ||
-             strSetting.Equals("audiooutput.passthroughmp3"))
+             strSetting.Equals("audiooutput.passthroughmp3") ||
+             strSetting.Equals("audiooutput.multichannellpcm"))
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
+      if (pControl) {
+        if (strSetting.Equals("audiooutput.multichannellpcm"))
+          pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI);
+        else
+          pControl->SetEnabled(AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
+      }
     }
 #ifdef _WIN32
     else if (strSetting.Equals("audiooutput.channellayout"))

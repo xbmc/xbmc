@@ -41,6 +41,7 @@ public:
     STREAM_TYPE_DTS_2048,
     STREAM_TYPE_DTSHD,
     STREAM_TYPE_EAC3,
+    STREAM_TYPE_MLP,
     STREAM_TYPE_TRUEHD
   };
 
@@ -78,5 +79,6 @@ private:
   unsigned int DetectType(uint8_t *data, unsigned int size);
   unsigned int SyncAC3(uint8_t *data, unsigned int size);
   unsigned int SyncDTS(uint8_t *data, unsigned int size);
+  unsigned int SyncMLP(uint8_t *data, unsigned int size);
 };
 
