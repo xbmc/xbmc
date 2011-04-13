@@ -67,6 +67,12 @@
 					<altlabel>31050</altlabel>
 					<usealtlabel>Container.SortDirection(Ascending)</usealtlabel>
 				</control>
+				<control type="radiobutton" id="19">
+					<description>Filter</description>
+					<textwidth>170</textwidth>
+					<include>ButtonCommonValues</include>
+					<label>587</label>
+				</control>
 				<control type="label" id="201">
 					<width>250</width>
 					<height>45</height>
@@ -86,12 +92,6 @@
 					<description>Search</description>
 					<include>ButtonCommonValues</include>
 					<label>137</label>
-				</control>
-				<control type="radiobutton" id="19">
-					<description>Filter</description>
-					<textwidth>170</textwidth>
-					<include>ButtonCommonValues</include>
-					<label>587</label>
 				</control>
 				<control type="radiobutton" id="7">
 					<description>Stack Toggle</description>

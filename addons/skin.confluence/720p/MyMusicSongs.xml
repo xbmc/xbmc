@@ -69,15 +69,6 @@
 					<include>ButtonCommonValues</include>
 					<enable>Library.HasContent(Music)</enable>
 				</control>
-				<control type="label" id="201">
-					<width>250</width>
-					<height>45</height>
-					<font>font12caps</font>
-					<label>31026</label>
-					<textcolor>blue</textcolor>
-					<align>center</align>
-					<aligny>center</aligny>
-				</control>
 				<control type="radiobutton" id="19">
 					<description>Filter</description>
 					<textwidth>170</textwidth>
