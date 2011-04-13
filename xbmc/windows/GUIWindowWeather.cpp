@@ -57,10 +57,6 @@ using namespace ADDON;
 #define CONTROL_LABELD0GEN            34
 #define CONTROL_IMAGED0IMG            35
 
-#define PARTNER_ID          "1004124588"   //weather.com partner id
-#define PARTNER_KEY   "079f24145f208494"  //weather.com partner key
-
-#define MAX_LOCATION                   3
 #define LOCALIZED_TOKEN_FIRSTID      370
 #define LOCALIZED_TOKEN_LASTID       395
 
