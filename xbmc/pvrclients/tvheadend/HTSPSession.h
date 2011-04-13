@@ -51,6 +51,9 @@ public:
   const char* GetVersion()    { return m_version.c_str(); }
   unsigned    AddSequence()   { return ++m_seq; }
 
+  void      EnableNotifications(bool bSetTo = true) { m_bSendNotifications = bSetTo; }
+  bool      SendNotifications(void) { return m_bSendNotifications; }
+
   static bool ParseEvent         (htsmsg_t* msg, uint32_t id, SEvent &event);
   static void ParseChannelUpdate (htsmsg_t* msg, SChannels &channels);
   static void ParseChannelRemove (htsmsg_t* msg, SChannels &channels);
@@ -59,8 +62,8 @@ public:
   static bool ParseQueueStatus   (htsmsg_t* msg, SQueueStatus &queue);
   static bool ParseSignalStatus  (htsmsg_t* msg, SQuality &quality);
   static bool ParseSourceInfo    (htsmsg_t* msg, SSourceInfo &si);
-  static void ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings);
-  static void ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings);
+  static void ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings, bool bNotify = false);
+  static void ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings, bool bNotify = false);
 
 private:
   SOCKET                m_fd;
@@ -72,6 +75,7 @@ private:
   std::string           m_server;
   std::string           m_version;
   bool                  m_connected;
+  bool                  m_bSendNotifications;
 
   std::deque<htsmsg_t*> m_queue;
   const unsigned int    m_queue_size;

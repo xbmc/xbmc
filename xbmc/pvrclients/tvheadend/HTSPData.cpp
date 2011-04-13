@@ -278,6 +278,7 @@ int cHTSPData::GetNumRecordings()
 
 PVR_ERROR cHTSPData::GetRecordings(PVR_HANDLE handle)
 {
+  m_session.EnableNotifications(true);
   SRecordings recordings = GetDVREntries(true, false);
 
   for(SRecordings::const_iterator it = recordings.begin(); it != recordings.end(); ++it)
@@ -615,11 +616,11 @@ void cHTSPData::Action()
     else if(strstr(method, "initialSyncCompleted"))
       m_started.Signal();
     else if(strstr(method, "dvrEntryAdd"))
-      cHTSPSession::ParseDVREntryUpdate(msg, m_recordings);
+      cHTSPSession::ParseDVREntryUpdate(msg, m_recordings, m_session.SendNotifications());
     else if(strstr(method, "dvrEntryUpdate"))
-      cHTSPSession::ParseDVREntryUpdate(msg, m_recordings);
+      cHTSPSession::ParseDVREntryUpdate(msg, m_recordings, m_session.SendNotifications());
     else if(strstr(method, "dvrEntryDelete"))
-      cHTSPSession::ParseDVREntryDelete(msg, m_recordings);
+      cHTSPSession::ParseDVREntryDelete(msg, m_recordings, m_session.SendNotifications());
     else
       XBMC->Log(LOG_DEBUG, "%s - Unmapped action recieved '%s'", __FUNCTION__, method);
 

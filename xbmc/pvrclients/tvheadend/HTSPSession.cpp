@@ -49,6 +49,7 @@ cHTSPSession::cHTSPSession()
   , m_protocol(0)
   , m_iRefCount(0)
   , m_connected(false)
+  , m_bSendNotifications(false)
   , m_queue_size(1000)
 {
 }
@@ -626,7 +627,7 @@ bool cHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue)
   return true;
 }
 
-void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings)
+void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings, bool bNotify /* = false */)
 {
   SRecording recording;
   const char *state;
@@ -675,6 +676,18 @@ void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings)
     recording.error.clear();
   }
 
+  if (bNotify)
+  {
+    if (recording.state == ST_ABORTED)
+      XBMC->QueueNotification(QUEUE_INFO, "recording aborted: '%s'", recording.title.c_str());
+    else if (recording.state == ST_SCHEDULED)
+      XBMC->QueueNotification(QUEUE_INFO, "recording scheduled: '%s'", recording.title.c_str());
+    else if (recording.state == ST_RECORDING)
+          XBMC->QueueNotification(QUEUE_INFO, "recording started: '%s'", recording.title.c_str());
+    else if (recording.state == ST_COMPLETED)
+      XBMC->QueueNotification(QUEUE_INFO, "recording completed: '%s'", recording.title.c_str());
+  }
+
   XBMC->Log(LOG_DEBUG, "%s - id:%u, state:'%s', title:'%s', description: '%s'"
       , __FUNCTION__, recording.id, state, recording.title.c_str()
       , recording.description.c_str());
@@ -684,7 +697,7 @@ void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings)
   PVR->TriggerTimerUpdate();
 }
 
-void cHTSPSession::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings)
+void cHTSPSession::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings, bool bNotify /* = false */)
 {
   uint32_t id;
 
@@ -696,6 +709,9 @@ void cHTSPSession::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings)
   }
 
   XBMC->Log(LOG_DEBUG, "%s - Recording %i was deleted", __FUNCTION__, id);
+
+  if (bNotify)
+    XBMC->QueueNotification(QUEUE_INFO, "recording deleted: '%s'", recordings[id].title.c_str());
 
   recordings.erase(id);
 
