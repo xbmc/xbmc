@@ -287,5 +287,5 @@ void CGUIWindowPVR::InitializeEpgCache(void)
 {
   CreateViews();
 
-  m_windowGuide->InitializeEpgCache();
+  m_windowGuide->UpdateEpgCache();
 }

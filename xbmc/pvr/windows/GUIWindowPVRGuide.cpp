@@ -56,12 +56,7 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
 {
   if (msg.Equals("epg"))
   {
-    /* update the EPG cache */
-    CSingleLock lock(m_critSection);
-    m_epgData->Clear();
-    CPVRManager::GetEpg()->GetEPGAll(m_epgData, m_bLastEpgView);
-    m_bGotInitialEpg = true;
-    lock.Leave();
+    UpdateEpgCache(m_bLastEpgView, true);
 
     /* update the current window if the EPG timeline view is active */
     if (IsActive() && m_iGuideView == GUIDE_VIEW_TIMELINE)
@@ -202,22 +197,7 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
 
   CSingleLock lock(m_critSection);
 
-  /* start observing the EPG for changes, so our cache becomes updated in the background */
-  if (!m_bObservingEpg)
-  {
-    CPVRManager::GetEpg()->AddObserver(this);
-    m_bObservingEpg = true;
-  }
-
-  if (!m_bGotInitialEpg)
-    InitializeEpgCache(bRadio);
-
-  if (bRadio != m_bLastEpgView)
-  {
-    m_epgData->Clear();
-    CPVRManager::GetEpg()->GetEPGAll(m_epgData, bRadio);
-  }
-  m_bLastEpgView = bRadio;
+  UpdateEpgCache(bRadio, false);
 
   if (m_epgData->Size() <= 0)
     return;
@@ -446,7 +426,7 @@ void CGUIWindowPVRGuide::UpdateButtons(void)
     m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
 }
 
-void CGUIWindowPVRGuide::InitializeEpgCache(bool bRadio /* = false */)
+void CGUIWindowPVRGuide::UpdateEpgCache(bool bRadio /* = false */, bool bForceUpdate /* = false */)
 {
   CSingleLock lock(m_critSection);
 
@@ -457,8 +437,9 @@ void CGUIWindowPVRGuide::InitializeEpgCache(bool bRadio /* = false */)
     m_bObservingEpg = true;
   }
 
-  if (!m_bGotInitialEpg || m_bLastEpgView != bRadio)
+  if (!m_bGotInitialEpg || m_bLastEpgView != bRadio || bForceUpdate)
   {
+    CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - updating EPG cache", __FUNCTION__);
     m_epgData->Clear();
     CPVRManager::GetEpg()->GetEPGAll(m_epgData, bRadio);
   }
