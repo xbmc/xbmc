@@ -230,6 +230,7 @@ htsmsg_t* cHTSPSession::ReadMessage(int timeout)
   if(x)
   {
     XBMC->Log(LOG_ERROR, "%s - Failed to read packet size (%d)\n", __FUNCTION__, x);
+    Close(true);
     return NULL;
   }
 
@@ -244,6 +245,7 @@ htsmsg_t* cHTSPSession::ReadMessage(int timeout)
   {
     XBMC->Log(LOG_ERROR, "%s - Failed to read packet (%d)\n", __FUNCTION__, x);
     free(buf);
+    Close(true);
     return NULL;
   }
 
