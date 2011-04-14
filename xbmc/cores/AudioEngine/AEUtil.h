@@ -24,6 +24,10 @@
 #include "utils/StdString.h"
 #include <math.h>
 
+#ifdef __SSE__
+#include <xmmintrin.h>
+#endif
+
 class CAEUtil
 {
 public:
@@ -51,5 +55,10 @@ public:
     /* return the final sample */
     return x;
   }
+
+  #ifdef __SSE__
+  static void SSEMulAddArray(float *data, float *add, const float mul, uint32_t count);
+  static void SSEMulArray(float *data, const float mul, uint32_t count);
+  #endif
 };
 

@@ -39,10 +39,6 @@
 #include "AEUtil.h"
 #include "Encoders/AEEncoderFFmpeg.h"
 
-#ifdef __SSE__
-#include <xmmintrin.h>
-#endif
-
 /*
   frame delay time in milliseconds when there is no sink
   must NOT be less then 4
@@ -694,105 +690,6 @@ void CSoftAE::SetVolume(float volume)
   m_volume = volume;
 }
 
-#ifdef __SSE__
-inline void CSoftAE::SSEMulAddArray(float *data, float *add, const float mul, uint32_t count)
-{
-  const __m128 m = _mm_set_ps1(mul);
-
-  /* work around invalid alignment */
-  while((((uintptr_t)data & 0xF) || ((uintptr_t)add & 0xF)) && count > 0)
-  {
-    data[0] += add[0] * mul;
-    ++add;
-    ++data;
-    --count;
-  }
-
-  uint32_t even = count & ~0x3;
-  for(uint32_t i = 0; i < even; i+=4, data+=4, add+=4)
-  {
-    __m128 ad      = _mm_load_ps(add );
-    __m128 to      = _mm_load_ps(data);
-    *(__m128*)data = _mm_add_ps (to, _mm_mul_ps(ad, m));
-  }
-
-  if (even != count)
-  {
-    uint32_t odd = count - even;
-    if (odd == 1)
-      data[0] += add[0] * mul;
-    else
-    {
-      __m128 ad;
-      __m128 to;
-      if (odd == 2)
-      {
-        ad = _mm_setr_ps(add [0], add [1], 0, 0);
-        to = _mm_setr_ps(data[0], data[1], 0, 0);
-        __m128 ou = _mm_add_ps(to, _mm_mul_ps(ad, m));
-        data[0] = ((float*)&ou)[0];
-        data[1] = ((float*)&ou)[1];
-      }
-      else
-      {
-        ad = _mm_setr_ps(add [0], add [1], add [2], 0);
-        to = _mm_setr_ps(data[0], data[1], data[2], 0);
-        __m128 ou = _mm_add_ps(to, _mm_mul_ps(ad, m));
-        data[0] = ((float*)&ou)[0];
-        data[1] = ((float*)&ou)[1];
-        data[2] = ((float*)&ou)[2];
-      }
-    }
-  }
-}
-
-inline void CSoftAE::SSEMulArray(float *data, const float mul, uint32_t count)
-{
-  const __m128 m = _mm_set_ps1(mul);
-
-  /* work around invalid alignment */
-  while(((uintptr_t)data & 0xF) && count > 0)
-  {
-    data[0] *= mul;
-    ++data;
-    --count;
-  }
-
-  uint32_t even = count & ~0x3;
-  for(uint32_t i = 0; i < even; i+=4, data+=4)
-  {
-    __m128 to      = _mm_load_ps(data);
-    *(__m128*)data = _mm_mul_ps (to, m);
-  }
-
-  if (even != count)
-  {
-    uint32_t odd = count - even;
-    if (odd == 1)
-      data[0] *= mul;
-    else
-    {     
-      __m128 to;
-      if (odd == 2)
-      {
-        to = _mm_setr_ps(data[0], data[1], 0, 0);
-        __m128 ou = _mm_mul_ps(to, m);
-        data[0] = ((float*)&ou)[0];
-        data[1] = ((float*)&ou)[1];
-      }
-      else
-      {
-        to = _mm_setr_ps(data[0], data[1], data[2], 0);
-        __m128 ou = _mm_mul_ps(to, m);
-        data[0] = ((float*)&ou)[0];
-        data[1] = ((float*)&ou)[1];
-        data[2] = ((float*)&ou)[2];
-      }
-    }
-  }
-}
-#endif
-
 void CSoftAE::Run()
 {
   /* we release this when we exit the thread unblocking anyone waiting on "Stop" */
@@ -896,7 +793,7 @@ void CSoftAE::MixSounds(float *buffer, unsigned int samples)
     unsigned int mixSamples = std::min(ss->sampleCount, samples);
 
     #ifdef __SSE__
-      CSoftAE::SSEMulAddArray(buffer, ss->samples, volume, mixSamples);
+      CAEUtil::SSEMulAddArray(buffer, ss->samples, volume, mixSamples);
    //   CSoftAE::SSEMulArray   (buffer, 0.5f, mixSamples);
     #else
       for(unsigned int i = 0; i < mixSamples; ++i)
@@ -915,7 +812,7 @@ void CSoftAE::FinalizeSamples(float *buffer, unsigned int samples)
   MixSounds(buffer, samples);
 
   #ifdef __SSE__
-    CSoftAE::SSEMulArray(buffer, m_volume, samples);
+    CAEUtil::SSEMulArray(buffer, m_volume, samples);
     for(unsigned int i = 0; i < samples; ++i)
       buffer[i] = CAEUtil::SoftClamp(buffer[i]);
   #else
@@ -1144,7 +1041,7 @@ unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool 
     float volume = stream->GetVolume() * stream->GetReplayGain();
     #ifdef __SSE__
     if (channelCount > 1)
-      CSoftAE::SSEMulAddArray(dst, frame, volume, channelCount);
+      CAEUtil::SSEMulAddArray(dst, frame, volume, channelCount);
     else
     #endif
     {
@@ -1168,7 +1065,7 @@ inline void CSoftAE::RunNormalizeStage(unsigned int channelCount, void *out, uns
   float mul = 1.0f / mixed;
   #ifdef __SSE__
   if (channelCount > 1)
-    CSoftAE::SSEMulArray(dst, mul, channelCount);
+    CAEUtil::SSEMulArray(dst, mul, channelCount);
   else
   #endif
   {

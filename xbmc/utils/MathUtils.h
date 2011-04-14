@@ -38,31 +38,33 @@ namespace MathUtils
   {
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
     assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
-    const float round_to_nearest = 0.5f;
     int i;
 
 #if defined(__SSE2__)
-    return _mm_cvtsd_si32(_mm_set_sd(x));
-#elif !defined(_LINUX)
-    __asm
-    {
-      fld x
-      fadd st, st (0)
-      fadd round_to_nearest
-      fistp i
-      sar i, 1
-    }
+    i = _mm_cvtsd_si32(_mm_set_sd(x));
 #else
-    #if defined(__powerpc__) || defined(__ppc__) || defined(__arm__)
-        i = floor(x + round_to_nearest);
+    const float round_to_nearest = 0.5f;
+    #if !defined(_LINUX)
+        __asm
+        {
+          fld x
+          fadd st, st (0)
+          fadd round_to_nearest
+          fistp i
+          sar i, 1
+        }
     #else
-        __asm__ __volatile__ (
-            "fadd %%st\n\t"
-            "fadd %%st(1)\n\t"
-            "fistpl %0\n\t"
-            "sarl $1, %0\n"
-            : "=m"(i) : "u"(round_to_nearest), "t"(x) : "st"
-        );
+        #if defined(__powerpc__) || defined(__ppc__) || defined(__arm__)
+            i = floor(x + round_to_nearest);
+        #else
+            __asm__ __volatile__ (
+                "fadd %%st\n\t"
+                "fadd %%st(1)\n\t"
+                "fistpl %0\n\t"
+                "sarl $1, %0\n"
+                : "=m"(i) : "u"(round_to_nearest), "t"(x) : "st"
+            );
+        #endif
     #endif
 #endif
     return (i);
