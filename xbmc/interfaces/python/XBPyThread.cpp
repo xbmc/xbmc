@@ -239,7 +239,7 @@ void XBPyThread::Process()
           PyObject *pyaddonid = PyString_FromString(addon->ID().c_str());
           PyDict_SetItemString(moduleDict, "__xbmcaddonid__", pyaddonid);
 
-          CStdString version = ADDON::getXbmcApiVersionDependency(addon);
+          CStdString version = ADDON::GetXbmcApiVersionDependency(addon);
           PyObject *pyxbmcapiversion = PyString_FromString(version.c_str());
           PyDict_SetItemString(moduleDict, "__xbmcapiversion__", pyxbmcapiversion);
 

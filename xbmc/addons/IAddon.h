@@ -129,7 +129,7 @@ namespace ADDON
    * API version. If addon is NULL, or there is no xbmc.python dependency defined,
    * then the version is assumed to be "1.0"
    */
-  CStdString getXbmcApiVersionDependency(ADDON::AddonPtr addon);
+  CStdString GetXbmcApiVersionDependency(ADDON::AddonPtr addon);
 
 };
 

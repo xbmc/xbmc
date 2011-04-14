@@ -666,7 +666,7 @@ TYPE CAddonLibrary::SetAddonType()
     return ADDON_UNKNOWN;
 }
 
-CStdString getXbmcApiVersionDependency(ADDON::AddonPtr addon)
+CStdString GetXbmcApiVersionDependency(ADDON::AddonPtr addon)
 {
   CStdString version("1.0");
   if (addon.get() != NULL)
