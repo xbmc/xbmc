@@ -121,5 +121,15 @@ namespace ADDON
     virtual bool LoadStrings() =0;
     virtual void ClearStrings() =0;
   };
+
+  // some utilitiy methods
+
+  /**
+   * This function will extract the Addon's currently assigned xbmc.python
+   * API version. If addon is NULL, or there is no xbmc.python dependency defined,
+   * then the version is assumed to be "1.0"
+   */
+  CStdString GetXbmcApiVersionDependency(ADDON::AddonPtr addon);
+
 };
 

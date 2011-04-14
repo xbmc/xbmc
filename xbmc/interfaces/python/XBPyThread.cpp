@@ -36,6 +36,7 @@
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
 #include "addons/AddonManager.h"
+#include "addons/Addon.h"
 
 #include "XBPyThread.h"
 #include "XBPython.h"
@@ -145,7 +146,7 @@ void XBPyThread::Process()
   // swap in my thread state
   PyThreadState_Swap(state);
 
-  m_pExecuter->InitializeInterpreter();
+  m_pExecuter->InitializeInterpreter(addon);
 
   CLog::Log(LOGDEBUG, "%s - The source file to load is %s", __FUNCTION__, m_source);
 
@@ -233,6 +234,17 @@ void XBPyThread::Process()
       {
         PyObject *f = PyString_FromString(_P(m_source).c_str());
         PyDict_SetItemString(moduleDict, "__file__", f);
+        if (addon.get() != NULL)
+        {
+          PyObject *pyaddonid = PyString_FromString(addon->ID().c_str());
+          PyDict_SetItemString(moduleDict, "__xbmcaddonid__", pyaddonid);
+
+          CStdString version = ADDON::GetXbmcApiVersionDependency(addon);
+          PyObject *pyxbmcapiversion = PyString_FromString(version.c_str());
+          PyDict_SetItemString(moduleDict, "__xbmcapiversion__", pyxbmcapiversion);
+
+          CLog::Log(LOGDEBUG,"Instantiating addon using automatically obtained id of \"%s\" dependent on version %s of the xbmc.python api",addon->ID().c_str(),version.c_str());
+        }
         Py_DECREF(f);
         PyRun_FileExFlags(fp, _P(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict,1,NULL);
       }
