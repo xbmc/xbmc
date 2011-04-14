@@ -315,27 +315,38 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
 
 void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
 {
-  /* already got an epg event set */
-  if (m_epgInfo)
-    return;
+  if (bClear)
+  {
+    if (m_epgInfo)
+    {
+      m_epgInfo->SetTimer(NULL);
+      m_epgInfo = NULL;
+    }
+  }
+  else
+  {
+    /* already got an epg event set */
+    if (m_epgInfo)
+      return;
 
-  /* try to get the channel */
-  CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByUniqueID(m_iClientChannelUid, m_iClientId);
-  if (!channel)
-    return;
+    /* try to get the channel */
+    CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByUniqueID(m_iClientChannelUid, m_iClientId);
+    if (!channel)
+      return;
 
-  /* try to get the EPG table */
-  CPVREpg *epg = channel->GetEPG();
-  if (!epg)
-    return;
+    /* try to get the EPG table */
+    CPVREpg *epg = channel->GetEPG();
+    if (!epg)
+      return;
 
-  /* try to set the timer on the epg tag that matches */
-  m_epgInfo = (CPVREpgInfoTag *) epg->GetTagBetween(StartAsLocalTime(), EndAsLocalTime());
-  if (!m_epgInfo)
-    m_epgInfo = (CPVREpgInfoTag *) epg->GetTagAround(StartAsLocalTime());
+    /* try to set the timer on the epg tag that matches with a 2 minute margin */
+    m_epgInfo = (CPVREpgInfoTag *) epg->GetTagBetween(StartAsLocalTime() - CDateTimeSpan(0, 0, 2, 0), EndAsLocalTime() + CDateTimeSpan(0, 0, 2, 0));
+    if (!m_epgInfo)
+      m_epgInfo = (CPVREpgInfoTag *) epg->GetTagAround(StartAsLocalTime());
 
-  if (m_epgInfo)
-    m_epgInfo->SetTimer(bClear ? NULL : this);
+    if (m_epgInfo)
+      m_epgInfo->SetTimer(this);
+  }
 }
 
 bool CPVRTimerInfoTag::UpdateOnClient()
