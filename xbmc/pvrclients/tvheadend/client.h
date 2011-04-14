@@ -28,7 +28,6 @@
 #define DEFAULT_HTSP_PORT        9982
 #define DEFAULT_CONNECT_TIMEOUT  30
 #define DEFAULT_RESPONSE_TIMEOUT 2
-#define DEFAULT_SKIP_I_FRAME     0
 
 extern bool                      m_bCreated;
 extern std::string               g_strHostname;
@@ -38,7 +37,6 @@ extern std::string               g_strUsername;
 extern std::string               g_strPassword;
 extern int                       g_iConnectTimeout;
 extern int                       g_iResponseTimeout;
-extern int                       g_iSkipIFrame;
 extern int                       g_iClientId;
 extern bool                      g_bShowTimerNotifications;
 extern std::string               g_szUserPath;

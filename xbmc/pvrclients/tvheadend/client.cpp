@@ -39,7 +39,6 @@ int         g_iPortHTSP               = DEFAULT_HTSP_PORT;
 int         g_iPortHTTP               = DEFAULT_HTTP_PORT;
 int         g_iConnectTimeout         = DEFAULT_CONNECT_TIMEOUT;
 int         g_iResponseTimeout        = DEFAULT_RESPONSE_TIMEOUT;
-int         g_iSkipIFrame             = DEFAULT_SKIP_I_FRAME;
 bool        g_bShowTimerNotifications = true;
 std::string g_strUsername             = "";
 std::string g_strPassword             = "";
@@ -88,10 +87,6 @@ void ReadSettings(void)
   /* read setting "http_port" from settings.xml */
   if (!XBMC->GetSetting("http_port", &g_iPortHTTP))
     g_iPortHTTP = DEFAULT_HTTP_PORT;
-
-  /* read setting "skip_I_frame_count" from settings.xml */
-  if (!XBMC->GetSetting("skip_I_frame_count", &g_iSkipIFrame))
-    g_iSkipIFrame = DEFAULT_SKIP_I_FRAME;
 
   /* read setting "connect_timeout" from settings.xml */
   if (!XBMC->GetSetting("connect_timeout", &g_iConnectTimeout))
@@ -219,16 +214,6 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
       XBMC->Log(LOG_INFO, "%s - Changed Setting 'port' from %u to %u", __FUNCTION__, g_iPortHTTP, *(int*) settingValue);
       g_iPortHTTP = *(int*) settingValue;
       return STATUS_NEED_RESTART;
-    }
-  }
-  else if (str == "skip_I_frame_count")
-  {
-    int iNewValue = *(int*) settingValue;
-    if (g_iSkipIFrame != iNewValue)
-    {
-      XBMC->Log(LOG_INFO, "%s - Changed Setting 'skip_I_frame_count' from %u to %u", __FUNCTION__, g_iSkipIFrame, iNewValue);
-      g_iSkipIFrame = iNewValue;
-      return STATUS_OK;
     }
   }
   else if (str == "connect_timeout")

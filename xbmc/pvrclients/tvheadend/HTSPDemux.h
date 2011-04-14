@@ -52,7 +52,6 @@ private:
   int                   m_channel;
   int                   m_tag;
   int                   m_StatusCount;
-  int                   m_SkipIFrame;
   std::string           m_Status;
   PVR_STREAM_PROPERTIES m_Streams;
   SChannels             m_channels;

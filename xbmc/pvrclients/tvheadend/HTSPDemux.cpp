@@ -36,7 +36,6 @@ cHTSPDemux::cHTSPDemux()
   , m_channel(0)
   , m_tag(0)
   , m_StatusCount(0)
-  , m_SkipIFrame(0)
 {
   m_Streams.iStreamCount = 0;
 }
@@ -60,7 +59,6 @@ bool cHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
     return false;
 
   m_StatusCount = 0;
-  m_SkipIFrame = 0;
 
   while(m_Streams.iStreamCount == 0 && m_StatusCount == 0 )
   {
@@ -120,7 +118,6 @@ DemuxPacket* cHTSPDemux::Read()
     if     (strcmp("subscriptionStart",  method) == 0)
     {
       SubscriptionStart(msg);
-      m_SkipIFrame      = 0;
       DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
       pkt->iStreamId    = DMX_SPECIALID_STREAMCHANGE;
       htsmsg_destroy(msg);
@@ -145,21 +142,6 @@ DemuxPacket* cHTSPDemux::Read()
       htsmsg_get_u32(msg, "frametype", &frametype);
       frametypechar[0] = static_cast<char>( frametype );
 //      XBMC->Log(LOG_DEBUG, "%s - Frame type %c", __FUNCTION__, frametypechar[0]);
-
-      // Not the best solution - need to find how to pause video player for longer time.
-      // This way video player could get enough audio packets in buffer to play without audio discontinuity
-
-      // Jumpy video error on channel change is fixed if first I-frame is not send to demuxer on MPEG2 stream
-      // Problem exists on some HD H264 stream, but it can help if 2 I-frames are skipped :D
-      // SD H264 stream not tested
-      if (frametypechar[0]=='I' && m_SkipIFrame < g_iSkipIFrame)
-      {
-        m_SkipIFrame++;
-        //XBMC->Log(LOG_DEBUG, "%s - Skipped first I-frame", __FUNCTION__);
-        htsmsg_destroy(msg);
-        DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
-        return pkt;
-      }
 
       if(htsmsg_get_u32(msg, "stream" , &index)  ||
          htsmsg_get_bin(msg, "payload", &bin, &binlen))
