@@ -48,7 +48,7 @@ namespace MathUtils
 #else
     const float round_to_nearest = 0.5f;
     #if defined(__SSE2__)
-        const float round_dn_to_nearest = 0.49999999999999999f;
+        const float round_dn_to_nearest = 0.4999999f;
         i = (x > 0) ? _mm_cvttsd_si64x(_mm_set_sd(x + round_to_nearest)) : _mm_cvttsd_si64x(_mm_set_sd(x - round_dn_to_nearest));
     #elif !defined(_LINUX)
         __asm
