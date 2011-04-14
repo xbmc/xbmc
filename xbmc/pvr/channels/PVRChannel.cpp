@@ -111,6 +111,8 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_strEPGScraper           = "client";
   m_EPG                     = NULL;
   m_bChanged                = false;
+
+  UpdateEncryptionName();
 }
 
 CPVRChannel::CPVRChannel(const CPVRChannel &channel)
@@ -141,6 +143,8 @@ CPVRChannel &CPVRChannel::operator=(const CPVRChannel &channel)
   m_iCachedChannelNumber    = channel.m_iCachedChannelNumber;
   m_EPG                     = channel.m_EPG;
   m_bChanged                = channel.m_bChanged;
+
+  UpdateEncryptionName();
 
   return *this;
 }
