@@ -173,9 +173,9 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const PVR_HANDLE
     return;
   }
 
-  CPVRTimers *xbmcTimers     = (CPVRTimers*) handle->dataAddress;
-  CPVRClient* client         = (CPVRClient*) handle->callerAddress;
-  const CPVRChannel *channel = CPVRManager::GetChannelGroups()->GetByUniqueID(timer->iClientChannelUid, client->GetClientID());
+  CPVRTimers *xbmcTimers = (CPVRTimers*) handle->dataAddress;
+  CPVRClient* client     = (CPVRClient*) handle->callerAddress;
+  CPVRChannel *channel   = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByUniqueID(timer->iClientChannelUid, client->GetClientID());
 
   if (channel == NULL)
   {
@@ -184,7 +184,7 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const PVR_HANDLE
     return;
   }
 
-  CPVRTimerInfoTag tag(*timer, client->GetClientID());
+  CPVRTimerInfoTag tag(*timer, channel, client->GetClientID());
 
   /* transfer this entry to the timers container */
   xbmcTimers->UpdateFromClient(tag);

@@ -56,7 +56,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_strGenre           = "";
 }
 
-CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientId)
+CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel, unsigned int iClientId)
 {
   m_strTitle           = timer.strTitle;
   m_strDirectory       = timer.strDirectory;
@@ -82,10 +82,9 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientI
 
   if (timer.iEpgUid > 0)
   {
-    CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByClientFromAll(iClientId, timer.iClientChannelUid);
-    if (channel)
-      m_epgInfo = (CPVREpgInfoTag *) channel->GetEPG()->GetTag(timer.iEpgUid, m_StartTime);
-
+    m_channel = channel;
+    m_bIsRadio = channel->IsRadio();
+    m_epgInfo = (CPVREpgInfoTag *) channel->GetEPG()->GetTag(timer.iEpgUid, m_StartTime);
     if (m_epgInfo)
       m_strGenre = m_epgInfo->Genre();
   }
