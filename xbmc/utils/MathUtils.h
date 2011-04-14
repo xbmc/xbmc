@@ -26,8 +26,11 @@
 #include <cmath>
 
 #ifdef __SSE2__
-#include <xmmintrin.h>
 #include <emmintrin.h>
+#endif
+
+#ifdef __SSE4_1__
+#include <smmintrin.h>
 #endif
 
 namespace MathUtils
@@ -40,11 +43,14 @@ namespace MathUtils
     assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
     int i;
 
-#if defined(__SSE2__)
-    i = _mm_cvtsd_si32(_mm_set_sd(x));
+#if defined(__SSE4_1__)
+    i = _mm_round_pd(_mm_set_sd(x), _MM_FROUND_NINT);
 #else
     const float round_to_nearest = 0.5f;
-    #if !defined(_LINUX)
+    #if defined(__SSE2__)
+        const float round_dn_to_nearest = 0.49999999999999999f;
+        i = (x > 0) ? _mm_cvttsd_si64x(_mm_set_sd(x + round_to_nearest)) : _mm_cvttsd_si64x(_mm_set_sd(x - round_dn_to_nearest));
+    #elif !defined(_LINUX)
         __asm
         {
           fld x
