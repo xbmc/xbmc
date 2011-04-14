@@ -346,10 +346,10 @@ case $host in
      ARCHTYPE=$HOSTTYPE
      AC_SUBST([ARCHTYPE])
      AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
-     PYTHON_VERSION=2.6
-     PYTHON_CPPFLAGS=-I${prefix}/include/python2.6
-     PYTHON_LDFLAGS=-L${prefix}/lib -lpython2.6
-     PYTHON_SITE_PKG=${prefix}/lib/python2.6/site-packages
+     PYTHON_VERSION="2.6"
+     PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.6"
+     PYTHON_CPPFLAGS="-I${prefix}/include/python2.6"
+     PYTHON_SITE_PKG="${prefix}/lib/python2.6/site-packages"
      PYTHON_NOVERSIONCHECK="no-check"
      ;;
   i386-apple-darwin*)

@@ -1,0 +1,43 @@
+
+prefix_path=/Users/Shared/xbmc-depends/ios-4.2_arm7
+
+host_alias=arm-apple-darwin10
+platform_gcc_version=4.2
+platform_sdk_version:=$(shell xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $$2}')
+
+platform_min_version=iphoneos-version-min=4.1
+platform_path=/Developer/Platforms/iPhoneOS.platform/Developer
+platform_os_cflags=-arch @use_arch@ -mcpu=cortex-a8 -mfpu=neon -ftree-vectorize -mfloat-abi=softfp -pipe -Wno-trigraphs -fpascal-strings -Os -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2
+platform_os_ldflags=-arch @use_arch@ -mcpu=cortex-a8
+platform_sdk_path=${platform_path}/SDKs/iPhoneOS${platform_sdk_version}.sdk
+
+export HOST=${host_alias}
+export PREFIX=${prefix_path}
+export DEVROOT=${platform_path}
+export SDKROOT=${platform_sdk_path}
+
+export NM=/usr/bin/nm
+export CPP=/usr/bin/cpp-${platform_gcc_version}
+export CXXCPP=${CPP}
+#export CXXCPP=${CPP} -I${platform_sdk_path}/usr/include/c++/4.2.1/${platform_host}
+export CPPFLAGS=-no-cpp-precomp -I${PREFIX}/include
+#export CPPFLAGS=-I${platform_sdk_path}/usr/include  -I${PREFIX}/include
+export CC=/usr/bin/gcc-${platform_gcc_version}
+#export CC=${platform_path}/usr/bin/${platform_host}-gcc-4.2.1
+export CFLAGS=-std=gnu99 -no-cpp-precomp -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags} -I${platform_sdk_path}/usr/include
+export LD=${platform_path}/usr/bin/ld
+export LDFLAGS=-m${platform_min_version} -isysroot ${platform_sdk_path} -L${platform_sdk_path}/usr/lib -L${platform_sdk_path}/usr/lib/system ${platform_os_ldflags} -L${PREFIX}/lib
+export CXX=${platform_path}/usr/bin/${platform_host}-g++-4.2.1 -I${platform_sdk_path}/usr/include/c++/4.2.1/${platform_host}
+export CXXFLAGS=-m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}
+export AR=${platform_path}/usr/bin/ar
+export AS=${PREFIX}/bin/gas-preprocessor.pl ${CC}
+export CCAS=--tag CC ${PREFIX}/bin/gas-preprocessor.pl ${CC}
+export STRIP=${platform_path}/usr/bin/strip
+export RANLIB=${platform_path}/usr/bin/ranlib
+export ACLOCAL=aclocal -I ${PREFIX}/share/aclocal -I @use_toolchain@share/aclocal -I ${platform_path}/usr/share/aclocal
+#export ACLOCAL=aclocal -I ${PREFIX}/share/aclocal -I /Developer/usr/share/aclocal
+export LIBTOOL=/Developer/usr/bin/glibtool
+export LIBTOOLIZE=/Developer/usr/bin/glibtoolize
+export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
+export PATH:=@use_toolchain@/bin:${PREFIX}/bin:${platform_path}/usr/bin:/Developer/usr/bin:${PATH}
+

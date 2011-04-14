@@ -50,12 +50,12 @@
 #include <time.h>
 #endif
 
+// do not move this, it will break osx build bad"
 #ifdef HAS_SDL
 #include <SDL/SDL.h>
-#include <SDL/SDL_mutex.h>
-#include <SDL/SDL_endian.h>
+#endif
 
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+#if defined(__ppc__) || defined(__powerpc__)
 #define PIXEL_ASHIFT 0
 #define PIXEL_RSHIFT 8
 #define PIXEL_GSHIFT 16
@@ -64,7 +64,6 @@
 #define RMASK 0x0000ff00
 #define GMASK 0x00ff0000
 #define BMASK 0xff000000
-
 #else
 #define PIXEL_ASHIFT 24
 #define PIXEL_RSHIFT 16
@@ -74,18 +73,6 @@
 #define RMASK 0x00ff0000
 #define GMASK 0x0000ff00
 #define BMASK 0x000000ff
-#endif
-#else
-#if defined(__arm__)
-#define PIXEL_ASHIFT 24
-#define PIXEL_RSHIFT 16
-#define PIXEL_GSHIFT 8
-#define PIXEL_BSHIFT 0
-#define AMASK 0xff000000
-#define RMASK 0x00ff0000
-#define GMASK 0x0000ff00
-#define BMASK 0x000000ff
-#endif
 #endif
 
 #include <stdint.h>

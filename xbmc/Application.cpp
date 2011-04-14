@@ -219,6 +219,7 @@
 #include "guilib/GUIControlFactory.h"
 #include "dialogs/GUIDialogCache.h"
 #include "dialogs/GUIDialogPlayEject.h"
+#include "utils/XMLUtils.h"
 #include "addons/AddonInstaller.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -321,7 +322,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
 #endif
   m_currentStack = new CFileItemList;
 
-#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
+#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   m_frameCount = 0;
   m_frameMutex = SDL_CreateMutex();
   m_frameCond = SDL_CreateCond();
@@ -344,7 +345,7 @@ CApplication::~CApplication(void)
   delete m_pKaraokeMgr;
 #endif
 
-#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
+#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   if (m_frameMutex)
     SDL_DestroyMutex(m_frameMutex);
 
@@ -1897,7 +1898,7 @@ void CApplication::RenderScreenSaver()
 bool CApplication::WaitFrame(unsigned int timeout)
 {
   bool done = false;
-#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
+#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   // Wait for all other frames to be presented
   SDL_mutexP(m_frameMutex);
   //wait until event is set, but modify remaining time
@@ -1935,7 +1936,7 @@ bool CApplication::WaitFrame(unsigned int timeout)
 
 void CApplication::NewFrame()
 {
-#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
+#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   // We just posted another frame. Keep track and notify.
   SDL_mutexP(m_frameMutex);
   m_frameCount++;
@@ -1977,7 +1978,7 @@ void CApplication::Render()
     m_bPresentFrame = false;
     if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !IsPaused())
     {
-#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
+#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
       SDL_mutexP(m_frameMutex);
 
       //wait until event is set, but modify remaining time
@@ -2082,7 +2083,7 @@ void CApplication::Render()
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();
 
-#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
+#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   SDL_mutexP(m_frameMutex);
   if(m_frameCount > 0 && decrement)
     m_frameCount--;
@@ -3529,28 +3530,15 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       CUtil::ClearSubtitles();
   }
 
-#ifdef HAS_DVD_DRIVE
   if (item.IsDiscStub())
   {
-    // Figure out Line 1 of the dialog
-    CStdString strLine1;
-    if (item.GetVideoInfoTag())
-    {
-      strLine1 = item.GetVideoInfoTag()->m_strTitle;
-    }
-    else
-    {
-      strLine1 = URIUtils::GetFileName(item.m_strPath);
-      URIUtils::RemoveExtension(strLine1);
-    }
-
+#ifdef HAS_DVD_DRIVE
     // Display the Play Eject dialog
-    if (CGUIDialogPlayEject::ShowAndGetInput(219, 429, strLine1, NULL))
-      MEDIA_DETECT::CAutorun::PlayDisc();
-
+    if (CGUIDialogPlayEject::ShowAndGetInput(item))
+      return MEDIA_DETECT::CAutorun::PlayDisc();
+#endif
     return true;
   }
-#endif
 
   if (item.IsPlayList())
     return false;
@@ -5146,7 +5134,7 @@ bool CApplication::SwitchToFullScreen()
   // See if we're playing a video, and are in GUI mode
   if ( IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
   {
-#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
+#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
     // Reset frame count so that timing is FPS will be correct.
     SDL_mutexP(m_frameMutex);
     m_frameCount = 0;
@@ -5323,7 +5311,7 @@ bool CApplication::IsCurrentThread() const
 
 bool CApplication::IsPresentFrame()
 {
-#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__)) //TODO:DIRECTX
+#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   SDL_mutexP(m_frameMutex);
   bool ret = m_bPresentFrame;
   SDL_mutexV(m_frameMutex);

@@ -23,7 +23,8 @@
 #include "PlatformDefs.h"
 #include "XEventUtils.h"
 #include "XHandle.h"
-#include "../utils/log.h"
+#include "utils/log.h"
+#include "threads/XBMC_mutex.h"
 
 using namespace std;
 
