@@ -30,7 +30,7 @@ public:
   ~cHTSPSession();
 
   bool      Connect(const std::string &strHostname, int iPort, long iTimeout);
-  bool      IsConnected() { return m_bIsConnected; }
+  bool      IsConnected(void) const { return m_bIsConnected; }
   bool      CheckConnection(void);
   void      Close(bool bForce = false);
   void      Abort();
@@ -47,10 +47,10 @@ public:
   bool      SendEnableAsync();
   bool      GetEvent(SEvent& event, uint32_t id);
 
-  int         GetProtocol()   { return m_iProtocol; }
-  const char* GetServerName() { return m_strServerName.c_str(); }
-  const char* GetVersion()    { return m_strVersion.c_str(); }
-  unsigned    AddSequence()   { return ++m_iSequence; }
+  int         GetProtocol() const { return m_iProtocol; }
+  const char* GetServerName() const { return m_strServerName.c_str(); }
+  const char* GetVersion() const { return m_strVersion.c_str(); }
+  unsigned    AddSequence() { return ++m_iSequence; }
 
   void      EnableNotifications(bool bSetTo = true) { m_bSendNotifications = bSetTo; }
   bool      SendNotifications(void) { return m_bSendNotifications; }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -50,11 +50,11 @@ bool cHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
 {
   m_channel = channelinfo.iUniqueId;
 
-  if(!m_session.Connect(g_szHostname, g_iPortHTSP, g_iConnectTimeout))
+  if(!m_session.Connect(g_strHostname, g_iPortHTSP, g_iConnectTimeout))
     return false;
 
-  if(!g_szUsername.empty())
-    m_session.Auth(g_szUsername, g_szPassword);
+  if(!g_strUsername.empty())
+    m_session.Auth(g_strUsername, g_strPassword);
 
   if(!m_session.SendSubscribe(m_subs, m_channel))
     return false;

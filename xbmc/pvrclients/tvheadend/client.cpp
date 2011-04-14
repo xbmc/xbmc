@@ -26,31 +26,30 @@
 
 using namespace std;
 
-//cPVRClientTvheadend *g_client = NULL;
-bool m_bCreated               = false;
-ADDON_STATUS m_CurStatus      = STATUS_UNKNOWN;
-int g_clientID                = -1;
+bool         m_bCreated  = false;
+ADDON_STATUS m_CurStatus = STATUS_UNKNOWN;
+int          g_iClientId = -1;
 
 /* User adjustable settings are saved here.
  * Default values are defined inside client.h
  * and exported to the other source files.
  */
-std::string g_szHostname              = DEFAULT_HOST;
+std::string g_strHostname             = DEFAULT_HOST;
 int         g_iPortHTSP               = DEFAULT_HTSP_PORT;
 int         g_iPortHTTP               = DEFAULT_HTTP_PORT;
 int         g_iConnectTimeout         = DEFAULT_CONNECT_TIMEOUT;
 int         g_iResponseTimeout        = DEFAULT_RESPONSE_TIMEOUT;
 int         g_iSkipIFrame             = DEFAULT_SKIP_I_FRAME;
 bool        g_bShowTimerNotifications = true;
-std::string g_szUsername              = "";
-std::string g_szPassword              = "";
-std::string g_szUserPath              = "";
-std::string g_szClientPath            = "";
+std::string g_strUsername             = "";
+std::string g_strPassword             = "";
+std::string g_strUserPath             = "";
+std::string g_strClientPath           = "";
 
 CHelper_libXBMC_addon *XBMC           = NULL;
 CHelper_libXBMC_pvr   *PVR            = NULL;
-cHTSPDemux *HTSPDemuxer               = NULL;
-cHTSPData  *HTSPData                  = NULL;
+cHTSPDemux *           HTSPDemuxer    = NULL;
+cHTSPData *            HTSPData       = NULL;
 
 extern "C" {
 
@@ -62,23 +61,23 @@ void ReadSettings(void)
   buffer[0] = 0; /* Set the end of string */
 
   if (XBMC->GetSetting("host", buffer))
-    g_szHostname = buffer;
+    g_strHostname = buffer;
   else
-    g_szHostname = DEFAULT_HOST;
+    g_strHostname = DEFAULT_HOST;
   buffer[0] = 0; /* Set the end of string */
 
   /* read setting "user" from settings.xml */
   if (XBMC->GetSetting("user", buffer))
-    g_szUsername = buffer;
+    g_strUsername = buffer;
   else
-    g_szUsername = "";
+    g_strUsername = "";
   buffer[0] = 0; /* Set the end of string */
 
   /* read setting "pass" from settings.xml */
   if (XBMC->GetSetting("pass", buffer))
-    g_szPassword = buffer;
+    g_strPassword = buffer;
   else
-    g_szPassword = "";
+    g_strPassword = "";
 
   free (buffer);
 
@@ -124,15 +123,15 @@ ADDON_STATUS Create(void* hdl, void* props)
 
   XBMC->Log(LOG_DEBUG, "%s - Creating Tvheadend PVR-Client", __FUNCTION__);
 
-  m_CurStatus    = STATUS_UNKNOWN;
-  g_clientID     = pvrprops->iClienId;
-  g_szUserPath   = pvrprops->strUserPath;
-  g_szClientPath = pvrprops->strClientPath;
+  m_CurStatus     = STATUS_UNKNOWN;
+  g_iClientId     = pvrprops->iClienId;
+  g_strUserPath   = pvrprops->strUserPath;
+  g_strClientPath = pvrprops->strClientPath;
 
   ReadSettings();
 
   HTSPData = new cHTSPData;
-  if (!HTSPData->Open(g_szHostname, g_iPortHTSP, g_szUsername, g_szPassword, g_iConnectTimeout * 1000))
+  if (!HTSPData->Open(g_strHostname, g_iPortHTSP, g_strUsername, g_strPassword, g_iConnectTimeout * 1000))
   {
     m_CurStatus = STATUS_LOST_CONNECTION;
     return m_CurStatus;
@@ -145,6 +144,10 @@ ADDON_STATUS Create(void* hdl, void* props)
 
 ADDON_STATUS GetStatus()
 {
+  /* check whether we're still connected */
+  if (m_CurStatus == STATUS_OK && HTSPData->IsConnected())
+    m_CurStatus = STATUS_LOST_CONNECTION;
+
   return m_CurStatus;
 }
 
@@ -174,17 +177,17 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   if (str == "host")
   {
     string tmp_sHostname;
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'host' from %s to %s", __FUNCTION__, g_szHostname.c_str(), (const char*) settingValue);
-    tmp_sHostname = g_szHostname;
-    g_szHostname = (const char*) settingValue;
-    if (tmp_sHostname != g_szHostname)
+    XBMC->Log(LOG_INFO, "%s - Changed Setting 'host' from %s to %s", __FUNCTION__, g_strHostname.c_str(), (const char*) settingValue);
+    tmp_sHostname = g_strHostname;
+    g_strHostname = (const char*) settingValue;
+    if (tmp_sHostname != g_strHostname)
       return STATUS_NEED_RESTART;
   }
   else if (str == "user")
   {
-    string tmp_sUsername = g_szUsername;
-    g_szUsername = (const char*) settingValue;
-    if (tmp_sUsername != g_szUsername)
+    string tmp_sUsername = g_strUsername;
+    g_strUsername = (const char*) settingValue;
+    if (tmp_sUsername != g_strUsername)
     {
       XBMC->Log(LOG_INFO, "%s - Changed Setting 'user'", __FUNCTION__);
       return STATUS_NEED_RESTART;
@@ -192,9 +195,9 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "pass")
   {
-    string tmp_sPassword = g_szPassword;
-    g_szPassword = (const char*) settingValue;
-    if (tmp_sPassword != g_szPassword)
+    string tmp_sPassword = g_strPassword;
+    g_strPassword = (const char*) settingValue;
+    if (tmp_sPassword != g_strPassword)
     {
       XBMC->Log(LOG_INFO, "%s - Changed Setting 'pass'", __FUNCTION__);
       return STATUS_NEED_RESTART;
@@ -319,9 +322,9 @@ const char * GetConnectionString(void)
 {
   static CStdString strConnectionString;
   if (HTSPData)
-    strConnectionString.Format("%s:%i%s", g_szHostname.c_str(), g_iPortHTSP, HTSPData->CheckConnection() ? "" : " (Not connected!)");
+    strConnectionString.Format("%s:%i%s", g_strHostname.c_str(), g_iPortHTSP, HTSPData->CheckConnection() ? "" : " (Not connected!)");
   else
-    strConnectionString.Format("%s:%i (addon error!)", g_szHostname.c_str(), g_iPortHTSP);
+    strConnectionString.Format("%s:%i (addon error!)", g_strHostname.c_str(), g_iPortHTSP);
   return strConnectionString.c_str();
 }
 
