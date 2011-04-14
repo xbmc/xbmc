@@ -6807,7 +6807,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/lib/libRTV\"",
-					"\"$(SRCROOT)/lib/libXBMS\"",
 					"\"$(SRCROOT)/lib/libXDAAP\"",
 					"\"$(SRCROOT)/lib/cmyth/libcmyth\"",
 					"\"$(SRCROOT)/lib/cmyth/librefmem\"",
@@ -6880,7 +6879,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/lib/libRTV\"",
-					"\"$(SRCROOT)/lib/libXBMS\"",
 					"\"$(SRCROOT)/lib/libXDAAP\"",
 					"\"$(SRCROOT)/lib/cmyth/libcmyth\"",
 					"\"$(SRCROOT)/lib/cmyth/librefmem\"",

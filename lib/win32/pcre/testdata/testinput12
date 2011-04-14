@@ -1,0 +1,206 @@
+/-- These tests for Unicode property support test PCRE's API and show some of
+    the compiled code. They are not Perl-compatible. --/
+
+/[\p{L}]/DZ
+
+/[\p{^L}]/DZ
+
+/[\P{L}]/DZ
+
+/[\P{^L}]/DZ
+
+/[abc\p{L}\x{0660}]/8DZ
+
+/[\p{Nd}]/8DZ
+    1234
+
+/[\p{Nd}+-]+/8DZ
+    1234
+    12-34
+    12+\x{661}-34  
+    ** Failers
+    abcd  
+
+/A\x{391}\x{10427}\x{ff3a}\x{1fb0}/8iDZ
+
+/A\x{391}\x{10427}\x{ff3a}\x{1fb0}/8DZ
+
+/AB\x{1fb0}/8DZ
+
+/AB\x{1fb0}/8DZi
+
+/[\x{105}-\x{109}]/8iDZ
+    \x{104}
+    \x{105}
+    \x{109}  
+    ** Failers
+    \x{100}
+    \x{10a} 
+    
+/[z-\x{100}]/8iDZ 
+    Z
+    z
+    \x{39c}
+    \x{178}
+    |
+    \x{80}
+    \x{ff}
+    \x{100}
+    \x{101} 
+    ** Failers
+    \x{102}
+    Y
+    y           
+
+/[z-\x{100}]/8DZi
+
+/(?:[\PPa*]*){8,}/
+
+/[\P{Any}]/BZ
+
+/[\P{Any}\E]/BZ
+
+/(\P{Yi}+\277)/
+
+/(\P{Yi}+\277)?/
+
+/(?<=\P{Yi}{3}A)X/
+
+/\p{Yi}+(\P{Yi}+)(?1)/
+
+/(\P{Yi}{2}\277)?/
+
+/[\P{Yi}A]/
+
+/[\P{Yi}\P{Yi}\P{Yi}A]/
+
+/[^\P{Yi}A]/
+
+/[^\P{Yi}\P{Yi}\P{Yi}A]/
+
+/(\P{Yi}*\277)*/
+
+/(\P{Yi}*?\277)*/
+
+/(\p{Yi}*+\277)*/
+
+/(\P{Yi}?\277)*/
+
+/(\P{Yi}??\277)*/
+
+/(\p{Yi}?+\277)*/
+
+/(\P{Yi}{0,3}\277)*/
+
+/(\P{Yi}{0,3}?\277)*/
+
+/(\p{Yi}{0,3}+\277)*/
+
+/\p{Zl}{2,3}+/8BZ
+    \xe2\x80\xa8\xe2\x80\xa8
+    \x{2028}\x{2028}\x{2028}
+    
+/\p{Zl}/8BZ
+
+/\p{Lu}{3}+/8BZ
+
+/\pL{2}+/8BZ
+
+/\p{Cc}{2}+/8BZ
+
+/^\p{Cs}/8
+    \?\x{dfff}
+    ** Failers
+    \x{09f} 
+  
+/^\p{Sc}+/8
+    $\x{a2}\x{a3}\x{a4}\x{a5}\x{a6}
+    \x{9f2}
+    ** Failers
+    X
+    \x{2c2}
+  
+/^\p{Zs}/8
+    \ \
+    \x{a0}
+    \x{1680}
+    \x{180e}
+    \x{2000}
+    \x{2001}     
+    ** Failers
+    \x{2028}
+    \x{200d} 
+  
+/-- These four are here rather than in test 6 because Perl has problems with
+    the negative versions of the properties. --/
+      
+/\p{^Lu}/8i
+    1234
+    ** Failers
+    ABC 
+
+/\P{Lu}/8i
+    1234
+    ** Failers
+    ABC 
+
+/\p{Ll}/8i 
+    a
+    Az
+    ** Failers
+    ABC   
+
+/\p{Lu}/8i
+    A
+    a\x{10a0}B 
+    ** Failers 
+    a
+    \x{1d00}  
+
+/[\x{c0}\x{391}]/8i
+    \x{c0}
+    \x{e0} 
+
+/-- The next two are special cases where the lengths of the different cases of
+the same character differ. The first went wrong with heap frame storage; the
+second was broken in all cases. --/
+
+/^\x{023a}+?(\x{0130}+)/8i
+  \x{023a}\x{2c65}\x{0130}
+  
+/^\x{023a}+([^X])/8i
+  \x{023a}\x{2c65}X
+
+/\x{c0}+\x{116}+/8i
+    \x{c0}\x{e0}\x{116}\x{117}
+
+/[\x{c0}\x{116}]+/8i
+    \x{c0}\x{e0}\x{116}\x{117}
+
+/(\x{de})\1/8i
+    \x{de}\x{de}
+    \x{de}\x{fe}
+    \x{fe}\x{fe}
+    \x{fe}\x{de}
+
+/^\x{c0}$/8i
+    \x{c0}
+    \x{e0} 
+
+/^\x{e0}$/8i
+    \x{c0}
+    \x{e0} 
+
+/-- The next two should be Perl-compatible, but it fails to match \x{e0}. PCRE
+will match it only with UCP support, because without that it has no notion
+of case for anything other than the ASCII letters. --/ 
+
+/((?i)[\x{c0}])/8
+    \x{c0}
+    \x{e0} 
+
+/(?i:[\x{c0}])/8
+    \x{c0}
+    \x{e0} 
+    
+/-- End of testinput12 --/

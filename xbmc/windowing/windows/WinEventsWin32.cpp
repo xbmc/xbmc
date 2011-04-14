@@ -383,7 +383,6 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_SETFOCUS:
     case WM_KILLFOCUS:
       g_application.m_AppFocused = uMsg == WM_SETFOCUS;
-      CLog::Log(LOGDEBUG, __FUNCTION__"Window %s focus", g_application.m_AppFocused ? "gained" : "lost");
       g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
       break;
     case WM_SYSKEYDOWN:

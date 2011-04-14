@@ -338,7 +338,6 @@ void CFileCurl::SetBufferSize(unsigned int size)
 
 void CFileCurl::Close()
 {
-  CLog::Log(LOGDEBUG, "FileCurl::Close(%p) %s", (void*)this, m_url.c_str());
   m_state->Disconnect();
 
   m_url.Empty();

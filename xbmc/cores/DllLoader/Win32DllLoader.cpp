@@ -156,7 +156,6 @@ bool Win32DllLoader::Load()
     return true;
 
   CStdString strFileName = GetFileName();
-  CLog::Log(LOGDEBUG, "%s(%s)\n", __FUNCTION__, strFileName.c_str());
 
   CStdStringW strDllW;
   g_charsetConverter.utf8ToW(_P(strFileName), strDllW);
@@ -178,8 +177,6 @@ bool Win32DllLoader::Load()
 
 void Win32DllLoader::Unload()
 {
-  CLog::Log(LOGDEBUG, "%s %s\n", __FUNCTION__, GetName());
-
   // restore our imports
   RestoreImports();
 

@@ -51,6 +51,7 @@ private:
   bool  m_bInitialized;
   SOCKET m_socket;
   bool m_isConnecting;
+  int  m_iAttempt;
   CStdString m_deviceName;
   CStdString m_keyCode;
 

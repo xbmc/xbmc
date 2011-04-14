@@ -357,7 +357,7 @@ protected:
   
   CGUITextLayout *m_debugLayout;
 
-#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
+#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   int        m_frameCount;
   SDL_mutex* m_frameMutex;
   SDL_cond*  m_frameCond;
