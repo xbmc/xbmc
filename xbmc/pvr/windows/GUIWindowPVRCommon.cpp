@@ -401,10 +401,7 @@ bool CGUIWindowPVRCommon::ActionRecord(CFileItem *item)
     CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*epgTag);
     CFileItem *item = new CFileItem(*newtimer);
 
-    if (CPVRManager::GetTimers()->AddTimer(*item))
-      CPVRManager::Get()->TriggerTimersUpdate();
-
-    bReturn = true;
+    bReturn = CPVRManager::GetTimers()->AddTimer(*item);
   }
   else
   {
@@ -644,25 +641,23 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
 
 bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
 {
-  bool bReturn = false;
-
   if (!item->HasEPGInfoTag())
-    return bReturn;
+    return false;
 
   CPVREpgInfoTag *tag = (CPVREpgInfoTag *) item->GetEPGInfoTag();
   if (!tag || !tag->ChannelTag() || tag->ChannelTag()->ChannelNumber() <= 0)
-    return bReturn;
+    return false;
 
   CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(item);
   if (timer)
   {
     CGUIDialogOK::ShowAndGetInput(19033,19034,0,0);
-    return bReturn;
+    return false;
   }
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!pDialog)
-    return bReturn;
+    return false;
   pDialog->SetHeading(264);
   pDialog->SetLine(0, tag->ChannelTag()->ChannelName());
   pDialog->SetLine(1, "");
@@ -670,41 +665,28 @@ bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
   pDialog->DoModal();
 
   if (!pDialog->IsConfirmed())
-    return bReturn;
+    return false;
 
   CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
   CFileItem *newTimerItem = new CFileItem(*newtimer);
-  if (CPVRManager::GetTimers()->AddTimer(*newTimerItem))
-  {
-    CPVRManager::Get()->TriggerTimersUpdate();
-    bReturn = true;
-  }
 
-  return bReturn;
+  return CPVRManager::GetTimers()->AddTimer(*newTimerItem);
 }
 
 bool CGUIWindowPVRCommon::StopRecordFile(CFileItem *item)
 {
-  bool bReturn = false;
-
   if (!item->HasEPGInfoTag())
-    return bReturn;
+    return false;
 
   CPVREpgInfoTag *tag = (CPVREpgInfoTag *) item->GetEPGInfoTag();
   if (!tag || !tag->ChannelTag() || tag->ChannelTag()->ChannelNumber() <= 0)
-    return bReturn;
+    return false;
 
   CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(item);
   if (!timer || timer->m_bIsRepeating)
-    return bReturn;
+    return false;
 
-  if (CPVRManager::GetTimers()->DeleteTimer(*timer))
-  {
-    CPVRManager::Get()->TriggerTimersUpdate();
-    bReturn = true;
-  }
-
-  return bReturn;
+  return CPVRManager::GetTimers()->DeleteTimer(*timer);
 }
 
 void CGUIWindowPVRCommon::ShowEPGInfo(CFileItem *item)
