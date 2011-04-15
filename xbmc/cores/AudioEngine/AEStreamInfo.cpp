@@ -229,6 +229,7 @@ unsigned int CAEStreamInfo::DetectType(uint8_t *data, unsigned int size)
     }
 
     /* if it could be MLP/TrueHD */
+#if 0
     if (size > 3 && data[0] == 0xf8 && data[1] == 0x72 && data[2] == 0x6f)
     {
       unsigned int skip = SyncMLP(data, size);
@@ -237,6 +238,7 @@ unsigned int CAEStreamInfo::DetectType(uint8_t *data, unsigned int size)
       else
         possible = skipped;
     }
+#endif
 
     /* move along one byte */
     --size;

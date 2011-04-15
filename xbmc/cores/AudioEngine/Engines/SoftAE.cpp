@@ -54,6 +54,7 @@ CSoftAE::CSoftAE():
   m_sink               (NULL ),
   m_transcode          (false),
   m_rawPassthrough     (false),
+  m_bufferSize         (0    ),
   m_buffer             (NULL ),
   m_encoder            (NULL ),
   m_encodedBuffer      (NULL ),
@@ -187,120 +188,111 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   newFormat.m_sampleRate    = sampleRate;
   newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? AE_FMT_RAW : AE_FMT_FLOAT;
 
-  /* if the sink is already open and it is compatible we dont need to do anything */
-  if (m_sink && m_sink->IsCompatible(newFormat, device))
+  /* only re-open the sink if its not compatible with what we need */
+  if (!m_sink || !m_sink->IsCompatible(newFormat, device))
   {
-    if (driver.IsEmpty() || m_sink->GetName() == driver)
+    /* let the thread know we have re-opened the sink */
+    m_reOpened = true;
+
+    /* we are going to open, so close the old sink if it was open */
+    if (m_sink)
     {
-      /* unlock the sounds */
-      for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
-        (*sitt)->UnLock();
-
-      m_sinkLock.LeaveExclusive();
-      return true;
+      m_sink->Drain();
+      m_sink->Deinitialize();
+      delete m_sink;
+      m_sink = NULL;
     }
+
+    /* create the new sink */
+    m_sink = GetSink(newFormat, m_transcode || m_rawPassthrough, device);
+    if (!m_sink)
+    {
+      /* we failed, set the data format to defaults so the thread does not block */
+      newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? AE_FMT_S16NE : AE_FMT_FLOAT;
+      newFormat.m_channelLayout = CAEUtil::GetStdChLayout(m_stdChLayout);
+      newFormat.m_channelCount  = (m_rawPassthrough || m_transcode) ? 2 : CAEUtil::GetChLayoutCount(m_chLayout);
+      newFormat.m_sampleRate    = sampleRate;
+      newFormat.m_frames        = (unsigned int)(((float)sampleRate / 1000.0f) * (float)DELAY_FRAME_TIME);
+      newFormat.m_frameSamples  = newFormat.m_frames * newFormat.m_channelCount;
+      newFormat.m_frameSize     = (CAEUtil::DataFormatToBits(newFormat.m_dataFormat) >> 3) * newFormat.m_channelCount;
+    }
+
+    CLog::Log(LOGINFO, "CSoftAE::Initialize - %s Initialized:", m_sink ? m_sink->GetName() : "NULL");
+    CLog::Log(LOGINFO, "  Output Device : %s", m_sink ? device.c_str() : "NULL");
+    CLog::Log(LOGINFO, "  Sample Rate   : %d", newFormat.m_sampleRate);
+    CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(newFormat.m_dataFormat));
+    CLog::Log(LOGINFO, "  Channel Count : %d", newFormat.m_channelCount);
+    CLog::Log(LOGINFO, "  Channel Layout: %s", CAEUtil::GetChLayoutStr(newFormat.m_channelLayout).c_str());
+    CLog::Log(LOGINFO, "  Frames        : %d", newFormat.m_frames);
+    CLog::Log(LOGINFO, "  Frame Samples : %d", newFormat.m_frameSamples);
+    CLog::Log(LOGINFO, "  Frame Size    : %d", newFormat.m_frameSize);
+
+    m_sinkFormat = newFormat;
   }
 
-  /* let the thread know we have re-opened the sink */
-  m_reOpened = true;
+  /* invalidate the buffer */
+  m_bufferSamples = 0;
 
-  /* we are going to open, so close the old sink if it was open */
-  if (m_sink)
-  {
-    m_sink->Drain();
-    m_sink->Deinitialize();
-    delete m_sink;
-    m_sink = NULL;
-
-    _aligned_free(m_buffer);
-    m_buffer = NULL;
-  }
-
-  /* setup the standard output layout & format */
-  m_chLayout     = CAEUtil::GetStdChLayout  (m_stdChLayout);
-  m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout   );
-
-  /* create the new sink */
-  m_sink = GetSink(newFormat, m_transcode || m_rawPassthrough, device);
-  if (!m_sink)
-  {
-    /* we failed, set the data format to defaults so the thread does not block */
-    newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? AE_FMT_S16NE : AE_FMT_FLOAT;
-    newFormat.m_channelLayout = CAEUtil::GetStdChLayout(m_stdChLayout);
-    newFormat.m_channelCount  = (m_rawPassthrough || m_transcode) ? 2 : m_channelCount;
-    newFormat.m_sampleRate    = sampleRate;
-    newFormat.m_frames        = (unsigned int)(((float)sampleRate / 1000.0f) * (float)DELAY_FRAME_TIME);
-    newFormat.m_frameSamples  = newFormat.m_frames * newFormat.m_channelCount;
-    newFormat.m_frameSize     = (CAEUtil::DataFormatToBits(newFormat.m_dataFormat) >> 3) * newFormat.m_channelCount;
-  }
-
-  /* if raw passthrough correct the layout and channel count and ensure there is no encoder */
+  size_t neededBufferSize = 0;
   if (m_rawPassthrough)
   {
-    m_chLayout     = newFormat.m_channelLayout;
-    m_channelCount = newFormat.m_channelCount;
+    m_chLayout     = m_sinkFormat.m_channelLayout;
+    m_channelCount = m_sinkFormat.m_channelCount;
 
     delete m_encoder;
     m_encoder = NULL;
-  }
-
-  m_sinkFormat = newFormat;
-
-  CLog::Log(LOGINFO, "CSoftAE::Initialize - %s Initialized:", m_sink ? m_sink->GetName() : "NULL");
-  CLog::Log(LOGINFO, "  Output Device : %s", m_sink ? device.c_str() : "NULL");
-  CLog::Log(LOGINFO, "  Sample Rate   : %d", newFormat.m_sampleRate);
-  CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(newFormat.m_dataFormat));
-  CLog::Log(LOGINFO, "  Channel Count : %d", newFormat.m_channelCount);
-  CLog::Log(LOGINFO, "  Channel Layout: %s", CAEUtil::GetChLayoutStr(newFormat.m_channelLayout).c_str());
-  CLog::Log(LOGINFO, "  Frames        : %d", newFormat.m_frames);
-  CLog::Log(LOGINFO, "  Frame Samples : %d", newFormat.m_frameSamples);
-  CLog::Log(LOGINFO, "  Frame Size    : %d", newFormat.m_frameSize);
-
-  m_bufferSamples = 0;
-  if (m_rawPassthrough)
-  {
+ 
     m_convertFn      = NULL;
-    m_buffer         = _aligned_malloc(newFormat.m_frames * newFormat.m_frameSize, 16);
-    m_bytesPerSample = CAEUtil::DataFormatToBits(newFormat.m_dataFormat) >> 3;  
-    m_frameSize      = newFormat.m_frameSize;
+    m_bytesPerSample = CAEUtil::DataFormatToBits(m_sinkFormat.m_dataFormat) >> 3;  
+    m_frameSize      = m_sinkFormat.m_frameSize;
+    neededBufferSize = m_sinkFormat.m_frames * m_sinkFormat.m_frameSize;
   }
   else
   {
+    /* setup the standard output layout & format */
+    m_chLayout     = CAEUtil::GetStdChLayout  (m_stdChLayout);
+    m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout   );
+
     /* if we are transcoding */
     if (m_transcode)
     {
       /* configure the encoder */
-      m_encoderFormat.m_sampleRate    = newFormat.m_sampleRate;
+      m_encoderFormat.m_sampleRate    = m_sinkFormat.m_sampleRate;
       m_encoderFormat.m_dataFormat    = AE_FMT_FLOAT;
       m_encoderFormat.m_channelLayout = m_chLayout;
       m_encoderFormat.m_channelCount  = m_channelCount;
       SetupEncoder(m_encoderFormat);
       
       /* remap directly to the format we need for encode */
-      m_chLayout     = m_encoderFormat.m_channelLayout;
-      m_channelCount = m_encoderFormat.m_channelCount;
-      m_convertFn    = CAEConvert::FrFloat(m_encoderFormat.m_dataFormat);
-      m_bufferSize   = m_encoderFormat.m_frames * sizeof(float) * m_channelCount;
-      m_buffer       = _aligned_malloc(m_bufferSize, 16);
+      m_chLayout       = m_encoderFormat.m_channelLayout;
+      m_channelCount   = m_encoderFormat.m_channelCount;
+      m_convertFn      = CAEConvert::FrFloat(m_encoderFormat.m_dataFormat);
+      neededBufferSize = m_encoderFormat.m_frames * sizeof(float) * m_channelCount;
       
       CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Encoding using layout: %s", CAEUtil::GetChLayoutStr(m_chLayout).c_str());
     }
     else
     {
-      m_convertFn  = CAEConvert::FrFloat(newFormat.m_dataFormat);
-      m_bufferSize = newFormat.m_frames * sizeof(float) * m_channelCount;
-      m_buffer     = _aligned_malloc(m_bufferSize, 16);
+      m_convertFn      = CAEConvert::FrFloat(m_sinkFormat.m_dataFormat);
+      neededBufferSize = m_sinkFormat.m_frames * sizeof(float) * m_channelCount;
       
       CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(m_stdChLayout));
+    }
+
+    if (m_bufferSize < neededBufferSize)
+    {
+      m_bufferSamples = 0;
+      _aligned_free(m_buffer);
+      m_buffer = _aligned_malloc(neededBufferSize, 16);
+      m_bufferSize = neededBufferSize;
     }
 
     m_bytesPerSample = CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3;
     m_frameSize      = m_bytesPerSample * m_channelCount;
   }
-  
-  /* initialize the final stage remapper */
-  m_remap.Initialize(m_chLayout, newFormat.m_channelLayout, true);
 
+  m_remap.Initialize(m_chLayout, m_sinkFormat.m_channelLayout, true);
+  
   /* if we in raw passthrough, we are finished */
   if (m_rawPassthrough)
   {
