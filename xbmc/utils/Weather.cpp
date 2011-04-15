@@ -663,7 +663,7 @@ CStdString CWeather::GetLocation(int iLocation)
   if (m_location[iLocation].IsEmpty())
   {
     CStdString setting;
-    setting.Format("weather.areacode%i", iLocation + 1);
+    setting.Format("weather.areacode%i", iLocation);
     m_location[iLocation] = GetAreaCity(g_guiSettings.GetString(setting));
   }
   return m_location[iLocation];
