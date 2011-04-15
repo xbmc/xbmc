@@ -21,6 +21,9 @@
 */
 #include "boost/shared_ptr.hpp"
 #include "utils/StdString.h"
+
+#include <boost/enable_shared_from_this.hpp>
+
 #include <set>
 #include <map>
 
@@ -73,7 +76,7 @@ namespace ADDON
   typedef std::map<CStdString, CStdString> InfoMap;
   class AddonProps;
 
-  class IAddon
+  class IAddon : public boost::enable_shared_from_this<IAddon>
   {
   public:
     virtual ~IAddon() {};
