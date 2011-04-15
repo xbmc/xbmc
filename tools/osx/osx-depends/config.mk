@@ -35,7 +35,7 @@ export HOST=${platform_host}
 export PREFIX=${prefix_path}
 export DEVROOT=${platform_path}
 export SDKROOT=${platform_sdk_path}
-export PKG_CONFIG_PATH=${prefix_path}:${platform_sdk_path}/usr/lib/pkgconfig
+export PKG_CONFIG_PATH=${prefix_path}/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
 export PATH:=${prefix_path}/bin:${platform_bin_path}:/Developer/usr/bin:$(PATH)
 export MACOSX_DEPLOYMENT_TARGET=10.4
 
