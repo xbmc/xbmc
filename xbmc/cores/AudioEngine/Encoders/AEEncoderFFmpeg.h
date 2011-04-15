@@ -34,6 +34,7 @@ public:
   CAEEncoderFFmpeg();
   virtual ~CAEEncoderFFmpeg();
 
+  virtual bool IsCompatible(const AEAudioFormat format);
   virtual bool Initialize(AEAudioFormat &format);
   virtual void Reset();
 
@@ -49,6 +50,7 @@ private:
   DllAvFormat m_dllAvFormat;
   DllAvUtil   m_dllAvUtil;
 
+  AEAudioFormat     m_CurrentFormat;
   AVCodecContext   *m_CodecCtx;
   enum AEChannel    m_Layout[AE_CH_MAX+1];
   uint8_t           m_Buffer[FF_MIN_BUFFER_SIZE];
@@ -57,5 +59,7 @@ private:
   float             m_OutputRatio;
 
   unsigned int      m_NeededFrames;
+
+  unsigned int BuildChannelLayout(const int64_t ffmap, AEChLayout layout);
 };
 

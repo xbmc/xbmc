@@ -40,6 +40,13 @@ public:
   virtual ~IAEEncoder() {};
 
   /**
+   * Return true if the supplied format is compatible with the current open encoder.
+   * @param format the format to compare
+   * @return true if compatible, false if not
+   */
+  virtual bool IsCompatible(const AEAudioFormat format) = 0;
+
+  /**
    * Called to setup the encoder to accept data in the specified format
    * @param format the desired audio format, may be changed to suit the encoder
    * @return true on success, false on failure

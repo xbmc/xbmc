@@ -55,7 +55,7 @@ private:
   AEAudioFormat     m_initFormat;
   AEAudioFormat     m_format;
   bool              m_passthrough;
-  enum AEChannel   *m_channelLayout;
+  enum AEChannel    m_channelLayout[AE_CH_MAX+1];
   CStdString        m_device;
   snd_pcm_t        *m_pcm;
   int               m_timeout;

@@ -325,7 +325,10 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
 }
 
 bool CSoftAE::SetupEncoder(AEAudioFormat &format)
-{  
+{
+  if (m_encoder && m_encoder->IsCompatible(format))
+    return true;
+
   delete m_encoder;
   m_encoder = NULL;
 

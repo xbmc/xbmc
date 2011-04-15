@@ -39,8 +39,7 @@ static enum AEChannel ALSAChannelMap[9] =
   {AE_CH_FL, AE_CH_FR, AE_CH_BL, AE_CH_BR, AE_CH_FC, AE_CH_LFE, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
 
 CAESinkALSA::CAESinkALSA() :
-  m_channelLayout(NULL ),
-  m_pcm          (NULL )
+  m_pcm(NULL )
 {
   /* ensure that ALSA has been initialized */
   if(!snd_config)
@@ -117,15 +116,6 @@ CStdString CAESinkALSA::GetDeviceUse(const AEAudioFormat format, CStdString devi
 
 bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
 {
-  format.m_channelCount = GetChannelCount(format);
-  m_initFormat = format;
-
-  if (format.m_channelCount == 0)
-  {
-    CLog::Log(LOGERROR, "CAESinkALSA::Initialize - Unable to open the requested channel layout");
-    return false;
-  }
-
   /* if we are raw, correct the data format */
   if (format.m_dataFormat == AE_FMT_RAW)
   {
@@ -134,14 +124,22 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
     m_passthrough         = true;
   }
   else
+  {
     m_passthrough = false;
+    format.m_channelCount = GetChannelCount(format);
 
-  m_channelLayout = new enum AEChannel[format.m_channelCount + 1];
-  memcpy(m_channelLayout, ALSAChannelMap, format.m_channelCount * sizeof(enum AEChannel));
-  m_channelLayout[format.m_channelCount] = AE_CH_NULL;
+    if (format.m_channelCount == 0)
+    {
+      CLog::Log(LOGERROR, "CAESinkALSA::Initialize - Unable to open the requested channel layout");
+      return false;
+    }
+  }
+
+  m_initFormat = format;
 
   /* set the channelLayout and the output device */
-  format.m_channelLayout = m_channelLayout;
+  memcpy(format.m_channelLayout, ALSAChannelMap, format.m_channelCount * sizeof(enum AEChannel));
+  format.m_channelLayout[format.m_channelCount] = AE_CH_NULL;
   m_device = device      = GetDeviceUse(format, device, m_passthrough);
 
   /* get the sound config */
@@ -372,9 +370,6 @@ void CAESinkALSA::Deinitialize()
     snd_pcm_close(m_pcm);
     m_pcm = NULL;
   }
-
-  delete[] m_channelLayout;
-  m_channelLayout = NULL;
 }
 
 void CAESinkALSA::Stop()

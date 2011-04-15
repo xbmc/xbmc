@@ -38,6 +38,65 @@ CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
   m_dllAvUtil.av_freep(&m_CodecCtx);
 }
 
+bool CAEEncoderFFmpeg::IsCompatible(const AEAudioFormat format)
+{
+  if (!m_CodecCtx)
+    return false;
+
+  bool match = (
+    format.m_dataFormat == m_CurrentFormat.m_dataFormat &&
+    format.m_sampleRate == m_CurrentFormat.m_sampleRate
+  );
+
+  if (match)
+  {
+    enum AEChannel layout[AE_CH_MAX+1];
+    unsigned int channels = BuildChannelLayout(AV_CH_LAYOUT_5POINT1_BACK, layout); /* hard coded for AC3 currently */
+    if (channels != m_CurrentFormat.m_channelCount)
+    {
+      match = false;
+    }
+    else
+    {
+      for(unsigned int i = 0; layout[i] != AE_CH_NULL; ++i)
+        if (format.m_channelLayout[i] != layout[i])
+        {
+          match = false;
+          break;
+        }
+    }
+  }
+
+  return match;
+}
+
+unsigned int CAEEncoderFFmpeg::BuildChannelLayout(const int64_t ffmap, AEChLayout layout)
+{
+  /* build the channel layout and count the channels */
+  unsigned int channels = 0;
+  if (ffmap & AV_CH_FRONT_LEFT           ) layout[channels++] = AE_CH_FL  ;
+  if (ffmap & AV_CH_FRONT_RIGHT          ) layout[channels++] = AE_CH_FR  ;
+  if (ffmap & AV_CH_FRONT_CENTER         ) layout[channels++] = AE_CH_FC  ;
+  if (ffmap & AV_CH_LOW_FREQUENCY        ) layout[channels++] = AE_CH_LFE ;
+  if (ffmap & AV_CH_BACK_LEFT            ) layout[channels++] = AE_CH_BL  ;
+  if (ffmap & AV_CH_BACK_RIGHT           ) layout[channels++] = AE_CH_BR  ;
+  if (ffmap & AV_CH_FRONT_LEFT_OF_CENTER ) layout[channels++] = AE_CH_FLOC;
+  if (ffmap & AV_CH_FRONT_RIGHT_OF_CENTER) layout[channels++] = AE_CH_FROC;
+  if (ffmap & AV_CH_BACK_CENTER          ) layout[channels++] = AE_CH_BC  ;
+  if (ffmap & AV_CH_SIDE_LEFT            ) layout[channels++] = AE_CH_SL  ;
+  if (ffmap & AV_CH_SIDE_RIGHT           ) layout[channels++] = AE_CH_SR  ;
+  if (ffmap & AV_CH_TOP_CENTER           ) layout[channels++] = AE_CH_TC  ;
+  if (ffmap & AV_CH_TOP_FRONT_LEFT       ) layout[channels++] = AE_CH_TFL ;
+  if (ffmap & AV_CH_TOP_FRONT_CENTER     ) layout[channels++] = AE_CH_TFC ;
+  if (ffmap & AV_CH_TOP_FRONT_RIGHT      ) layout[channels++] = AE_CH_TFR ;
+  if (ffmap & AV_CH_TOP_BACK_LEFT        ) layout[channels++] = AE_CH_TBL ;
+  if (ffmap & AV_CH_TOP_BACK_CENTER      ) layout[channels++] = AE_CH_TBC ;
+  if (ffmap & AV_CH_TOP_BACK_RIGHT       ) layout[channels++] = AE_CH_TBR ;
+  layout[channels] = AE_CH_NULL;
+
+  return channels;
+}
+
 bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
 {
   Reset();
@@ -52,7 +111,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
   if (!codec)
     return false;
 
-  m_CodecCtx = m_dllAvCodec.avcodec_alloc_context();
+  m_CodecCtx                 = m_dllAvCodec.avcodec_alloc_context();
   m_CodecCtx->bit_rate       = AC3_ENCODE_BITRATE;
   m_CodecCtx->sample_rate    = format.m_sampleRate;
   m_CodecCtx->channel_layout = AV_CH_LAYOUT_5POINT1_BACK;
@@ -113,28 +172,8 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
     }
   }
 
-  /* build the channel layout and count the channels */
-  m_CodecCtx->channels = 0;
-  if (m_CodecCtx->channel_layout & AV_CH_FRONT_LEFT           ) m_Layout[m_CodecCtx->channels++] = AE_CH_FL  ;
-  if (m_CodecCtx->channel_layout & AV_CH_FRONT_RIGHT          ) m_Layout[m_CodecCtx->channels++] = AE_CH_FR  ;
-  if (m_CodecCtx->channel_layout & AV_CH_FRONT_CENTER         ) m_Layout[m_CodecCtx->channels++] = AE_CH_FC  ;
-  if (m_CodecCtx->channel_layout & AV_CH_LOW_FREQUENCY        ) m_Layout[m_CodecCtx->channels++] = AE_CH_LFE ;
-  if (m_CodecCtx->channel_layout & AV_CH_BACK_LEFT            ) m_Layout[m_CodecCtx->channels++] = AE_CH_BL  ;
-  if (m_CodecCtx->channel_layout & AV_CH_BACK_RIGHT           ) m_Layout[m_CodecCtx->channels++] = AE_CH_BR  ;
-  if (m_CodecCtx->channel_layout & AV_CH_FRONT_LEFT_OF_CENTER ) m_Layout[m_CodecCtx->channels++] = AE_CH_FLOC;
-  if (m_CodecCtx->channel_layout & AV_CH_FRONT_RIGHT_OF_CENTER) m_Layout[m_CodecCtx->channels++] = AE_CH_FROC;
-  if (m_CodecCtx->channel_layout & AV_CH_BACK_CENTER          ) m_Layout[m_CodecCtx->channels++] = AE_CH_BC  ;
-  if (m_CodecCtx->channel_layout & AV_CH_SIDE_LEFT            ) m_Layout[m_CodecCtx->channels++] = AE_CH_SL  ;
-  if (m_CodecCtx->channel_layout & AV_CH_SIDE_RIGHT           ) m_Layout[m_CodecCtx->channels++] = AE_CH_SR  ;
-  if (m_CodecCtx->channel_layout & AV_CH_TOP_CENTER           ) m_Layout[m_CodecCtx->channels++] = AE_CH_TC  ;
-  if (m_CodecCtx->channel_layout & AV_CH_TOP_FRONT_LEFT       ) m_Layout[m_CodecCtx->channels++] = AE_CH_TFL ;
-  if (m_CodecCtx->channel_layout & AV_CH_TOP_FRONT_CENTER     ) m_Layout[m_CodecCtx->channels++] = AE_CH_TFC ;
-  if (m_CodecCtx->channel_layout & AV_CH_TOP_FRONT_RIGHT      ) m_Layout[m_CodecCtx->channels++] = AE_CH_TFR ;
-  if (m_CodecCtx->channel_layout & AV_CH_TOP_BACK_LEFT        ) m_Layout[m_CodecCtx->channels++] = AE_CH_TBL ;
-  if (m_CodecCtx->channel_layout & AV_CH_TOP_BACK_CENTER      ) m_Layout[m_CodecCtx->channels++] = AE_CH_TBC ;
-  if (m_CodecCtx->channel_layout & AV_CH_TOP_BACK_RIGHT       ) m_Layout[m_CodecCtx->channels++] = AE_CH_TBR ;
-  m_Layout[m_CodecCtx->channels] = AE_CH_NULL;
-  
+  m_CodecCtx->channels = BuildChannelLayout(m_CodecCtx->channel_layout, m_Layout);
+
   /* open the codec */
   if (m_dllAvCodec.avcodec_open(m_CodecCtx, codec))
   {
@@ -149,6 +188,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
   format.m_channelCount  = m_CodecCtx->channels;
   format.m_channelLayout = m_Layout;
 
+  m_CurrentFormat = format;
   m_NeededFrames  = format.m_frames;
   m_OutputSize    = CAEPackIEC958::PackAC3(NULL, 0, m_Buffer);
   m_OutputRatio   = (float)m_NeededFrames / m_OutputSize;
