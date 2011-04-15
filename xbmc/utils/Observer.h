@@ -53,6 +53,8 @@ public:
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job) { }
 
 private:
+  static void SendMessage(Observable *obs, const CStdString &strMessage);
+
   bool                    m_bObservableChanged;
   std::vector<Observer *> m_observers;
   CCriticalSection        m_critSection;

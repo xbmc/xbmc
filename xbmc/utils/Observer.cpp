@@ -74,14 +74,10 @@ void Observable::NotifyObservers(const CStdString& strMessage /* = "" */, bool b
   if (m_bObservableChanged)
   {
     if (bAsync && m_bAsyncAllowed)
-    {
       CJobManager::GetInstance().AddJob(new ObservableMessageJob(*this, strMessage), this);
-    }
     else
-    {
-      for(unsigned int ptr = 0; ptr < m_observers.size(); ptr++)
-        m_observers.at(ptr)->Notify(*this, strMessage);
-    }
+      SendMessage(this, strMessage);
+
     m_bObservableChanged = false;
   }
 }
@@ -101,6 +97,24 @@ void Observable::Announce(EAnnouncementFlag flag, const char *sender, const char
   }
 }
 
+void Observable::SendMessage(Observable *obs, const CStdString &strMessage)
+{
+  for(unsigned int ptr = 0; ptr < obs->m_observers.size(); ptr++)
+  {
+    Observer *observer = obs->m_observers.at(ptr);
+    if (!observer)
+    {
+      /* the observable no longer exists. delete it */
+      obs->m_observers.erase(obs->m_observers.begin() + ptr);
+      ptr--;
+    }
+    else
+    {
+      obs->m_observers.at(ptr)->Notify(*obs, strMessage);
+    }
+  }
+}
+
 ObservableMessageJob::ObservableMessageJob(const Observable &obs, const CStdString &strMessage)
 {
   m_strMessage = strMessage;
@@ -112,8 +126,7 @@ ObservableMessageJob::ObservableMessageJob(const Observable &obs, const CStdStri
 
 bool ObservableMessageJob::DoWork()
 {
-  for(unsigned int ptr = 0; ptr < m_observers.size(); ptr++)
-    m_observers.at(ptr)->Notify(m_observable, m_strMessage);
+  Observable::SendMessage(&m_observable, m_strMessage);
 
   return true;
 }
