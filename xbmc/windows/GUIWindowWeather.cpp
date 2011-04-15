@@ -75,7 +75,6 @@ CGUIWindowWeather::CGUIWindowWeather(void)
 {
   m_iCurWeather = g_guiSettings.GetInt("weather.currentarea");
   g_weatherManager.SetArea(m_iCurWeather);
-  m_bLocationFailed = false;
 }
 
 CGUIWindowWeather::~CGUIWindowWeather(void)
@@ -146,17 +145,17 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       else
         CallScript();
     }
-    else if (message.GetParam1() == GUI_MSG_LOCATION_FETCHED)
+    else if (message.GetParam1() == GUI_MSG_LOCATION_FAILED || message.GetParam1() == GUI_MSG_LOCATION_FETCHED)
     {
-      m_bLocationFailed = false;
-      break;
-    }
-    else if (message.GetParam1() == GUI_MSG_LOCATION_FAILED)
-    {
-      m_bLocationFailed = true;
-
       if (m_iCurWeather == 0 && g_windowManager.GetActiveWindow() == WINDOW_WEATHER)
       {
+        // If location was fetched, make sure we got a zip code
+        if (message.GetParam1() == GUI_MSG_LOCATION_FETCHED && g_locationManager.IsFetched()
+             && !g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE).IsEmpty())
+        {
+          break;
+        }
+
         if (CGUIDialogYesNo::ShowAndGetInput(8, 21454, 21455, 21456, 222, 186))
         {
           g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYWEATHER);
@@ -172,7 +171,6 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
           g_windowManager.PreviousWindow();
 
           // Try again, in case we have internet now
-          m_bLocationFailed = false;
           g_locationManager.Refresh();
         }
         return true;
@@ -189,10 +187,8 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       }
 
       // Check to see if we failed to get a location
-      m_bLocationFailed = !(g_locationManager.IsFetched() || g_locationManager.IsBusy())
-        && g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE).IsEmpty();
-
-      if (m_bLocationFailed && m_iCurWeather == 0)
+      if (m_iCurWeather == 0 && !(g_locationManager.IsFetched() || g_locationManager.IsBusy())
+           && g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE).IsEmpty())
       {
         // Ask the user if they want to change the weather locations
         if (CGUIDialogYesNo::ShowAndGetInput(8, 21454, 21455, 21456, 222, 186))
@@ -210,7 +206,6 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
           g_windowManager.PreviousWindow();
 
           // Try again, in case we have internet now
-          m_bLocationFailed = false;
           g_locationManager.Refresh();
         }
         return true;
@@ -245,7 +240,7 @@ void CGUIWindowWeather::UpdateLocations()
   for (unsigned int i = 0; i < MAX_LOCATION; i++)
   {
     // If we don't know the current location, don't add it to the slider
-    if (m_bLocationFailed && i == 0)
+    if (i == 0 && !g_locationManager.IsBusy() && g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE).IsEmpty())
       continue;
 
     CStdString strLabel = g_weatherManager.GetLocation(i);
