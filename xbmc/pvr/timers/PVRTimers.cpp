@@ -200,6 +200,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
 
     CPVRManager::Get()->UpdateWindow(PVR_WINDOW_TIMERS);
     CPVRManager::Get()->UpdateWindow(PVR_WINDOW_EPG);
+    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_RECORDINGS);
     CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_TV);
     CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
   }
