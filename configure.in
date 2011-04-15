@@ -567,7 +567,7 @@ AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
 AC_CHECK_LIB([smbclient],   [main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
-  [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"],
+  [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="LIBS $FONTCONFIG_LIBS"],
   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FRIBIDI],    [fribidi],
   [INCLUDES="$INCLUDES $FRIBIDI_CFLAGS"; LIBS="$LIBS $FRIBIDI_LIBS"],
@@ -596,7 +596,7 @@ PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
   [INCLUDES="$INCLUDES $FREETYPE2_CFLAGS"; LIBS="$LIBS $FREETYPE2_LIBS"],
   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([CURL],       [libcurl],
-  [INCLUDES="$INCLUDES $CURL_CFLAGS"],
+  [INCLUDES="$INCLUDES $CURL_CFLAGS"; LIBS="$LIBS CURL_LIBS"],
   AC_MSG_ERROR($missing_library))
 
 # check for libbluray
