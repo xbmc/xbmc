@@ -42,6 +42,7 @@
 #include "XBDateTime.h"
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
+#include "Location.h"
 #include "filesystem/Directory.h"
 #include "utils/TimeUtils.h"
 #include "StringUtils.h"
@@ -655,6 +656,10 @@ CStdString CWeather::GetAreaCode(const CStdString &codeAndCity)
 
 CStdString CWeather::GetLocation(int iLocation)
 {
+  if (iLocation == 0)
+  {
+    return g_locationManager.GetInfo(LOCATION_CITY);
+  }
   if (m_location[iLocation].IsEmpty())
   {
     CStdString setting;
@@ -685,13 +690,34 @@ const day_forecast &CWeather::GetForecast(int day) const
 
 CJob *CWeather::GetJob() const
 {
+  if (m_iCurWeather == 0)
+  {
+    CWeatherJob* job = NULL;
+    // Prefer zip code (generally more accurate than weather ID)
+    if (g_locationManager.IsFetched() && !g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE).IsEmpty())
+      job = new CWeatherJob(g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE));
+    else if (g_locationManager.IsFetched() && !g_locationManager.GetInfo(LOCATION_WEATHER_ID).IsEmpty())
+      job = new CWeatherJob(g_locationManager.GetInfo(LOCATION_WEATHER_ID));
+    return job;
+  }
   CStdString strSetting;
-  strSetting.Format("weather.areacode%i", m_iCurWeather + 1);
+  strSetting.Format("weather.areacode%i", m_iCurWeather);
   return new CWeatherJob(GetAreaCode(g_guiSettings.GetString(strSetting)));
 }
 
 void CWeather::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  m_info = ((CWeatherJob *)job)->GetInfo();
+  // if success is false then job->m_info is empty, so no need to store it
+  if (success)
+  {
+    m_info = ((CWeatherJob *)job)->GetInfo();
+    // Mark weather location zero as being the current location
+    if (m_iCurWeather == 0)
+    {
+      CStdString str_current(g_localizeStrings.Get(143));
+      str_current = str_current.Left(str_current.size()-1);
+      m_info.location.AppendFormat(" (%s)", str_current.c_str());
+    }
+  }
   CInfoLoader::OnJobComplete(jobID, success, job);
 }

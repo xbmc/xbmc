@@ -128,3 +128,9 @@
 
 // Sent from filesystem if a path is known to have changed
 #define GUI_MSG_UPDATE_PATH           GUI_MSG_USER + 33
+
+// Message is sent by the background info loader when it is finished with fetching the current location.
+#define GUI_MSG_LOCATION_FETCHED      GUI_MSG_USER + 34
+
+// Message is sent by the background info loader when it fails to fetch the current location
+#define GUI_MSG_LOCATION_FAILED       GUI_MSG_USER + 35

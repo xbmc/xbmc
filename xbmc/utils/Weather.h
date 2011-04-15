@@ -41,7 +41,7 @@ class TiXmlElement;
 #define PARTNER_ID        "1004124588"  //weather.com partner id
 #define PARTNER_KEY "079f24145f208494"  //weather.com partner key
 
-#define MAX_LOCATION                3
+#define MAX_LOCATION                4   // location zero is current location
 
 struct day_forecast
 {

@@ -45,4 +45,5 @@ protected:
 
   unsigned int m_iCurWeather;
   CStopWatch m_scriptTimer;
+  bool m_bLocationFailed;
 };
