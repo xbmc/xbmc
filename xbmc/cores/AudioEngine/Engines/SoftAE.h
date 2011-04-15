@@ -103,6 +103,7 @@ private:
 
   void LoadSettings();
   bool OpenSink(unsigned int sampleRate = 44100, bool forceRaw = false);
+  void ResetEncoder();
   bool SetupEncoder(AEAudioFormat &format);
   void Deinitialize();
 

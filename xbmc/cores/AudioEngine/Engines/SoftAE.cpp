@@ -112,6 +112,10 @@ IAESink *CSoftAE::GetSink(AEAudioFormat &newFormat, bool passthrough, CStdString
 
 bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false */)
 {
+  /* save off our raw/passthrough mode for checking */
+  bool wasTranscode      = m_transcode;
+  bool wasRawPassthrough = m_rawPassthrough;
+
   /* lock the sounds before we take the sink lock */
   CSingleLock soundLock(m_soundLock);
   list<CSoftAESound*>::iterator sitt;
@@ -228,20 +232,23 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
     CLog::Log(LOGINFO, "  Frame Size    : %d", newFormat.m_frameSize);
 
     m_sinkFormat = newFormat;
-  }
 
-  /* invalidate the buffer */
-  m_bufferSamples = 0;
+    /* invalidate the buffer */
+    m_bufferSamples = 0;
+  }
 
   size_t neededBufferSize = 0;
   if (m_rawPassthrough)
   {
+    if (!wasRawPassthrough)
+    {
+      /* invalidate the buffer */
+      m_bufferSamples = 0;
+    }
+
     m_chLayout     = m_sinkFormat.m_channelLayout;
     m_channelCount = m_sinkFormat.m_channelCount;
 
-    delete m_encoder;
-    m_encoder = NULL;
- 
     m_convertFn      = NULL;
     m_bytesPerSample = CAEUtil::DataFormatToBits(m_sinkFormat.m_dataFormat) >> 3;  
     m_frameSize      = m_sinkFormat.m_frameSize;
@@ -256,12 +263,26 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
     /* if we are transcoding */
     if (m_transcode)
     {
+      if (!wasTranscode || wasRawPassthrough)
+      {
+        /* invalidate the buffer */
+        m_bufferSamples = 0;
+        if (m_encoder)
+          m_encoder->Reset();
+      }
+
       /* configure the encoder */
-      m_encoderFormat.m_sampleRate    = m_sinkFormat.m_sampleRate;
-      m_encoderFormat.m_dataFormat    = AE_FMT_FLOAT;
-      m_encoderFormat.m_channelLayout = m_chLayout;
-      m_encoderFormat.m_channelCount  = m_channelCount;
-      SetupEncoder(m_encoderFormat);
+      AEAudioFormat encoderFormat;
+      encoderFormat.m_sampleRate    = m_sinkFormat.m_sampleRate;
+      encoderFormat.m_dataFormat    = AE_FMT_FLOAT;
+      encoderFormat.m_channelLayout = m_chLayout;
+      encoderFormat.m_channelCount  = m_channelCount;
+      if (!m_encoder || !m_encoder->IsCompatible(encoderFormat))
+      {
+        m_bufferSamples = 0;
+        SetupEncoder(encoderFormat);
+        m_encoderFormat = encoderFormat;
+      }
       
       /* remap directly to the format we need for encode */
       m_chLayout       = m_encoderFormat.m_channelLayout;
@@ -274,8 +295,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
     else
     {
       m_convertFn      = CAEConvert::FrFloat(m_sinkFormat.m_dataFormat);
-      neededBufferSize = m_sinkFormat.m_frames * sizeof(float) * m_channelCount;
-      
+      neededBufferSize = m_sinkFormat.m_frames * sizeof(float) * m_channelCount;      
       CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(m_stdChLayout));
     }
 
@@ -324,13 +344,10 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   return valid;
 }
 
-bool CSoftAE::SetupEncoder(AEAudioFormat &format)
+void CSoftAE::ResetEncoder()
 {
-  if (m_encoder && m_encoder->IsCompatible(format))
-    return true;
-
-  delete m_encoder;
-  m_encoder = NULL;
+  if (m_encoder)
+    m_encoder->Reset();
 
   delete[] m_encodedBuffer;
   m_encodedBuffer       = NULL;
@@ -338,6 +355,13 @@ bool CSoftAE::SetupEncoder(AEAudioFormat &format)
   m_encodedBufferPos    = 0;
   m_encodedBufferFrames = 0;
   m_encodedPending      = false;
+}
+
+bool CSoftAE::SetupEncoder(AEAudioFormat &format)
+{
+  ResetEncoder();
+  delete m_encoder;
+  m_encoder = NULL;
 
   if (!m_transcode)
     return false;
@@ -476,12 +500,7 @@ void CSoftAE::Deinitialize()
   delete m_encoder;
   m_encoder = NULL;
 
-  delete[] m_encodedBuffer;
-  m_encodedBuffer       = NULL;
-  m_encodedBufferSize   = 0;
-  m_encodedBufferPos    = 0;
-  m_encodedBufferFrames = 0;  
-  m_encodedPending      = false;
+  ResetEncoder();
 
   _aligned_free(m_buffer);
   m_buffer = NULL;
@@ -617,7 +636,7 @@ void CSoftAE::GarbageCollect()
 
 unsigned int CSoftAE::GetSampleRate()
 {
-  return m_transcode && m_encoder ? m_encoderFormat.m_sampleRate : m_sinkFormat.m_sampleRate;
+  return (m_transcode && m_encoder && !m_rawPassthrough) ? m_encoderFormat.m_sampleRate : m_sinkFormat.m_sampleRate;
 }
 
 void CSoftAE::StopSound(IAESound *sound)
@@ -663,7 +682,7 @@ float CSoftAE::GetDelay()
   if (m_sink)
     delay = m_sink->GetDelay();
 
-  if (m_transcode && m_encoder)
+  if (m_transcode && m_encoder && !m_rawPassthrough)
     delay += m_encoder->GetDelay(m_encodedBufferFrames - m_encodedBufferPos);
 
   unsigned int buffered = m_bufferSamples / m_channelCount;
@@ -705,7 +724,7 @@ void CSoftAE::Run()
     m_reOpened = false;
 
     /* output the buffer to the sink */
-    if (m_transcode && m_encoder)
+    if (m_transcode && m_encoder && !m_rawPassthrough)
       RunTranscodeStage();
     else
       RunOutputStage();
