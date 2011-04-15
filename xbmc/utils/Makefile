@@ -26,6 +26,7 @@ SRCS=AlarmClock.cpp \
      LangCodeExpander.cpp \
      LCD.cpp \
      LCDFactory.cpp \
+     Location.cpp \
      log.cpp \
      md5.cpp \
      PCMAmplifier.cpp \

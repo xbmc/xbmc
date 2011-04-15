@@ -759,6 +759,7 @@
     <ClCompile Include="..\..\xbmc\utils\LabelFormatter.cpp" />
     <ClCompile Include="..\..\xbmc\utils\LangCodeExpander.cpp" />
     <ClCompile Include="..\..\xbmc\utils\LCD.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\Location.cpp" />
     <ClCompile Include="..\..\xbmc\utils\log.cpp" />
     <ClCompile Include="..\..\xbmc\utils\md5.cpp" />
     <ClCompile Include="..\..\xbmc\utils\PCMAmplifier.cpp" />
@@ -1587,6 +1588,7 @@
     <ClInclude Include="..\..\xbmc\utils\LabelFormatter.h" />
     <ClInclude Include="..\..\xbmc\utils\LangCodeExpander.h" />
     <ClInclude Include="..\..\xbmc\utils\LCD.h" />
+    <ClInclude Include="..\..\xbmc\utils\Location.h" />
     <ClInclude Include="..\..\xbmc\utils\log.h" />
     <ClInclude Include="..\..\xbmc\utils\MathUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\md5.h" />

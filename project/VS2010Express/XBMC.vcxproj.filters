@@ -459,6 +459,9 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\ADPCMCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\paplayer\AIFFcodec.cpp">
+      <Filter>cores\paplayer</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\ASAPCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
@@ -2432,6 +2435,7 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\JSONServiceDescription.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>
@@ -2453,6 +2457,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\input\XBMC_keytable.cpp">
       <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\Location.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2781,6 +2788,9 @@
       <Filter>cores\dvdplayer\DVDSubtitles</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\ADPCMCodec.h">
+      <Filter>cores\paplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\paplayer\AIFFcodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\ASAPCodec.h">
@@ -4906,6 +4916,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\XBMC_keytable.h">
       <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\Location.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1983,6 +1983,9 @@
   <string id="21451">Internet connection required.</string>
   <string id="21452">Get More...</string>
   <string id="21453">Root filesystem</string>
+  <string id="21454">XBMC could not automatically determine your location.</string>
+  <string id="21455">Would you like to go to the settings page and set</string>
+  <string id="21456">your location?</string>
 
   <string id="21800">File name</string>
   <string id="21801">File path</string>
