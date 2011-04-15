@@ -8,7 +8,7 @@ Echo .svn>exclude.txt
 Echo Thumbs.db>>exclude.txt
 Echo Desktop.ini>>exclude.txt
 Echo dsstdfx.bin>>exclude.txt
-Echo BUILD>>exclude.txt
+Echo build.bat>>exclude.txt
 Echo \skin.confluence\media\>>exclude.txt
 Echo exclude.txt>>exclude.txt
 
