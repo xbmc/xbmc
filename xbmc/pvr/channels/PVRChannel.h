@@ -41,6 +41,7 @@ class CPVRChannel : public Observable
   friend class CPVRChannelGroupInternal;
   friend class CPVRDatabase;
   friend class CPVREpgContainer;
+  friend class CPVREpg;
 
 private:
   /*! @name XBMC related channel data

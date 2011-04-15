@@ -67,6 +67,16 @@ void CPVREpg::Cleanup(const CDateTime &Time)
   }
 }
 
+void CPVREpg::Clear(void)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_Channel)
+    m_Channel->m_EPG = NULL;
+
+  CEpg::Clear();
+}
+
 bool CPVREpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
 {
   if (!data)
