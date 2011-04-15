@@ -1927,7 +1927,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
       CPVRManager::Get()->ResetDatabase();
   }
-  else if (strSetting.Equals("pvrepg.resetepg"))
+  else if (strSetting.Equals("epg.resetepg"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188, 750, 0))
       CPVRManager::Get()->ResetEPG();

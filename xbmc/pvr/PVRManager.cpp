@@ -479,6 +479,8 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
 
 void CPVRManager::ResetEPG(void)
 {
+  CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the EPG database", __FUNCTION__);
+
   StopUpdateThreads();
   m_epg->Reset();
   StartUpdateThreads();
