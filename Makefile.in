@@ -573,9 +573,8 @@ else
 endif
 
 xbmc-xrandr: xbmc-xrandr.c
-ifeq ($(findstring osx,@ARCH@), osx)
+ifneq (1,@USE_XRANDR@)
 	# xbmc-xrandr.c gets picked up by the default make rules
-	#  so only exclude it for osx builds
 	@echo "excluding xbmc-xrandr"
 else
 	$(CC) $(CFLAGS) $(LDFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lX11 
@@ -606,7 +605,9 @@ install-binaries: install-scripts
 	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/xbmc.bin"
 	@install -d $(DESTDIR)$(libdir)/xbmc
 	@install xbmc.bin $(DESTDIR)$(libdir)/xbmc/xbmc.bin
+ifeq (1,@USE_XRANDR@)
 	@install xbmc-xrandr $(DESTDIR)$(libdir)/xbmc/xbmc-xrandr
+endif
 	@echo "You can run XBMC with the command 'xbmc'"
 endif
 

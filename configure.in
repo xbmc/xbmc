@@ -773,12 +773,13 @@ else
 fi
 
 # XRandR
+USE_XRANDR=0
 if test "$host_vendor" = "apple" ; then
   use_xrandr="no"
   AC_MSG_RESULT($xrandr_disabled)
 else
   if test "$use_xrandr" = "yes" ; then
-    AC_CHECK_LIB([Xrandr], [main],, 
+    AC_CHECK_LIB([Xrandr], [main],USE_XRANDR=1,
       use_xrandr="no";AC_MSG_RESULT($xrandr_not_found))
   else
     AC_MSG_RESULT($xrandr_disabled)
@@ -1439,6 +1440,7 @@ AC_SUBST(USE_CRYSTALHD)
 AC_SUBST(USE_VDA)
 AC_SUBST(USE_OPENMAX)
 AC_SUBST(USE_PULSE)
+AC_SUBST(USE_XRANDR)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
