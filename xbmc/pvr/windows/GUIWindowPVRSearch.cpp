@@ -66,7 +66,7 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
       }
     }
 
-    buttons.Add(CONTEXT_BUTTON_INFO, 658);                /* Epg info button */
+    buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Epg info button */
     buttons.Add(CONTEXT_BUTTON_SORTBY_CHANNEL, 19062);    /* Sort by channel */
     buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);         /* Sort by Name */
     buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);         /* Sort by Date */

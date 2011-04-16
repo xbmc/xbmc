@@ -89,7 +89,7 @@ void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &butt
     }
   }
 
-  buttons.Add(CONTEXT_BUTTON_INFO, 658);                /* epg info */
+  buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* epg info */
   buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 19000);         /* switch channel */
   buttons.Add(CONTEXT_BUTTON_FIND, 19003);              /* find similar program */
   if (m_iGuideView == GUIDE_VIEW_TIMELINE)
