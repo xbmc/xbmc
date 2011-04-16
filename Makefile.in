@@ -380,19 +380,7 @@ exports:
 dllloader: exports
 	$(MAKE) xbmc/cores/DllLoader/dllloader.a
 visualizations: exports
-ifneq ($(findstring arm,@ARCH@), arm)
-	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
-	$(MAKE) -C xbmc/visualizations/WaveForm
-	$(MAKE) -C xbmc/visualizations/XBMCProjectM
-ifeq ($(findstring osx,@ARCH@), osx)
-	$(MAKE) -C xbmc/visualizations/iTunes
-endif
-ifneq (@DISABLE_GOOM@,1)
-ifeq ($(or $(findstring powerpc-linux,@ARCH@),$(findstring powerpc64-linux,@ARCH@)),)
-	$(MAKE) -C xbmc/visualizations/Goom
-endif
-endif
-endif
+	for d in $(VIS_DIRS); do $(MAKE) -C $$d; done
 screensavers: exports
 ifneq ($(findstring arm,@ARCH@), arm)
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
