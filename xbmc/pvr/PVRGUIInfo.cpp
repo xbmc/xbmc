@@ -650,7 +650,7 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
   if (g_PVRManager.GetCurrentChannel(&currentChannel))
   {
     if (!m_playingEpgTag || !m_playingEpgTag->IsActive() ||
-        !(*m_playingEpgTag->ChannelTag() == currentChannel))
+        (*m_playingEpgTag->ChannelTag() != currentChannel))
     {
       m_playingEpgTag = currentChannel.GetEPGNow();
       g_PVRManager.UpdateCurrentFile();
