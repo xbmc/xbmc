@@ -325,13 +325,7 @@ bool CEpgContainer::UpdateSingleTable(CEpg *epg, const time_t start, const time_
 
 bool CEpgContainer::InterruptUpdate(void) const
 {
-  if (m_bStop || (g_PVRManager.IsStarted() && g_PVRClients->IsPlaying()))
-  {
-    CLog::Log(LOGNOTICE, "EpgContainer - %s - EPG load/update interrupted", __FUNCTION__);
-    return true;
-  }
-
-  return false;
+  return (m_bStop || (g_PVRManager.IsStarted() && g_PVRClients->IsPlaying()));;
 }
 
 bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
@@ -385,6 +379,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   {
     if (InterruptUpdate())
     {
+      CLog::Log(LOGNOTICE, "EpgContainer - %s - EPG load/update interrupted", __FUNCTION__);
       bInterrupted = true;
       break;
     }
