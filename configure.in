@@ -422,7 +422,6 @@ if test "$host_vendor" = "apple" ; then
   else
     LIBS="$LIBS -framework IOKit"
     LIBS="$LIBS -framework Cocoa"
-    LIBS="$LIBS -framework OpenGL"
     LIBS="$LIBS -framework AppKit"
     LIBS="$LIBS -framework Carbon"
     LIBS="$LIBS -framework CoreAudio"
@@ -519,6 +518,7 @@ else
   if test "$use_gl" = "yes"; then
     if test "$host_vendor" = "apple" ; then
       # linking to OpenGL.framework instead of libGL, libGLU so AC_CHECK_LIB will fail
+      LIBS="$LIBS -framework OpenGL"
       AC_DEFINE([HAVE_LIBGL],[1],["Define to 1 if you have the `GL' library (-lGL)."])
       AC_MSG_RESULT(== WARNING: OpenGL support is assumed.)
       AC_DEFINE([HAVE_LIBGLU],[1],["Define to 1 if you have the `GLU' library (-lGLU)."])
@@ -1267,6 +1267,10 @@ else
   SKIP_CONFIG_DVDCSS=1
   DVDREAD_CFLAGS="-D_XBMC -UHAVE_DVDCSS_DVDCSS_H"
 fi
+if test "$host_vendor" = "apple"; then
+ DVDREAD_CFLAGS="$DVDREAD_CFLAGS -D__DARWIN__"
+fi
+
 if test "$use_avahi" = "yes"; then
   final_message="$final_message\n  Avahi:\tYes"
 else
@@ -1566,120 +1570,66 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
 ], [$USE_EXTERNAL_FFMPEG])
 
 XB_CONFIG_MODULE([lib/libdvd/libdvdcss], [
-  if test "$host_vendor" = "apple" ; then
-    ./configure \
-    CFLAGS="$CFLAGS -fno-common" \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \
-      --disable-doc \
-      --enable-static \
-      --with-pic
-  else
-    ./configure \
-      CC="$CC" \
-      CXX="$CXX" \
-      CFLAGS="$CFLAGS" \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \      
-      --disable-doc \
-      --enable-static \
-      --with-pic
-  fi
+  ./configure \
+    CC="$CC" \
+    CXX="$CXX" \
+    CFLAGS="$CFLAGS" \
+    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+    --host=$host_alias \
+    --build=$build_alias \
+    --target=$target_alias \      
+    --disable-doc \
+    --enable-static \
+    --with-pic
 ], [$SKIP_CONFIG_DVDCSS])
 
 XB_CONFIG_MODULE([lib/libdvd/libdvdread], [
-  if test "$host_vendor" = "apple" ; then
-    ./configure2 \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \
-      --extra-cflags="$CFLAGS -fno-common $DVDREAD_CFLAGS -D__DARWIN__ -I`pwd`/../libdvdcss/src" \
-      --enable-static \
-      --disable-shared \
-      --cc="$CC" &&
-    $MAKE dvdread-config &&
-    mkdir -p `pwd`/../includes/dvdread
-    cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
-  else
-    ./configure2 \
-      --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../libdvdcss/src" \
-      --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \      
-      --enable-static \
-      --disable-shared \
-      --disable-strip \
-      --disable-opts \
-      --cc="$CC" &&
-    $MAKE dvdread-config &&
-    mkdir -p `pwd`/../includes/dvdread
-    cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
-  fi
-
+  ./configure2 \
+    --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../libdvdcss/src" \
+    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+    --host=$host_alias \
+    --build=$build_alias \
+    --target=$target_alias \      
+    --enable-static \
+    --disable-shared \
+    --disable-strip \
+    --disable-opts \
+    --cc="$CC" &&
+  $MAKE dvdread-config &&
+  mkdir -p `pwd`/../includes/dvdread
+  cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
 ], [0])
 
 XB_CONFIG_MODULE([lib/libdvd/libdvdnav], [
-  if test "$host_vendor" = "apple" ; then
-    ./configure2 \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \
-      --extra-cflags="$CFLAGS -fno-common $DVDREAD_CFLAGS -I`pwd`/../includes" \
-      --extra-ldflags="-L`pwd`/../libdvdread/obj" \
-      --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
-      --enable-static \
-      --disable-shared \
-      --cc="$CC"
-  else
-    ./configure2 \
-      --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../includes" \
-      --extra-ldflags="-L`pwd`/../libdvdread/obj" \
-      --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \      
-      --enable-static \
-      --disable-shared \
-      --cc="$CC"
-  fi
+  ./configure2 \
+    --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../includes" \
+    --extra-ldflags="-L`pwd`/../libdvdread/obj" \
+    --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
+    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+    --host=$host_alias \
+    --build=$build_alias \
+    --target=$target_alias \      
+    --enable-static \
+    --disable-shared \
+    --cc="$CC"
 ], [0])
 
 XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="$CFLAGS -fno-common" \
-    LDFLAGS="-Wl,-read_only_relocs,suppress" \
-    ./configure \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \
-      --disable-static \
-      --disable-debugging \
-      --with-pic
-  else
-    ./configure \
-      CC="$CC" \
-      CXX="$CXX" \
-      CFLAGS="$CFLAGS" \ 
-      CXXFLAGS="$CXXFLAGS" \
-      --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \      
-      --disable-static \
-      --with-pic
-  fi
+  ./configure \
+    CC="$CC" \
+    CXX="$CXX" \
+    CFLAGS="$CFLAGS" \ 
+    CXXFLAGS="$CXXFLAGS" \
+    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+    --host=$host_alias \
+    --build=$build_alias \
+    --target=$target_alias \      
+    --disable-static \
+    --with-pic
 ], [0])
 
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
-  if test "$host_vendor" = "apple" ; then
-  if test "$use_arch" != "arm" ; then
-    rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
-      -DCMAKE_C_FLAGS:STRING="${CPPFLAGS} ${CFLAGS} -fno-common" -DCMAKE_CXX_FLAGS:STRING="${CPPFLAGS} ${CXXFLAGS} -fno-common"
-  fi
-  else
+if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
 set -x
     rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
       -DCMAKE_C_FLAGS:STRING="${CFLAGS}" -DCMAKE_CXX_FLAGS:STRING="${CXXFLAGS}" \
@@ -1687,97 +1637,63 @@ set -x
       -DINCLUDE_INSTALL_DIR:PATH="${includedir}" -DLIB_INSTALL_DIR:PATH="${libdir}" \
       -DSYSCONF_INSTALL_DIR:PATH="${sysconfdir}" -DSHARE_INSTALL_PREFIX:PATH="${datadir}" .
 set +x
-  fi
+fi
 ], [0])
 
 XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
-  if test "$host_vendor" != "apple" ; then
-    ./configure  \
-        CFLAGS="$CFLAGS" \ 
-        CXXFLAGS="$CXXFLAGS" \
-      --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \      
-      --disable-shared \
-      --enable-static \
-      --with-pic
-  fi
+  ./configure  \
+    CFLAGS="$CFLAGS" \ 
+    CXXFLAGS="$CXXFLAGS" \
+    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+    --host=$host_alias \
+    --build=$build_alias \
+    --target=$target_alias \      
+    --disable-shared \
+    --enable-static \
+    --with-pic
 ], [$BUILD_GOOM])
 
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
 if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
-  if test "$host_vendor" = "apple" ; then
-    ./configure \
-      CFLAGS="$CFLAGS" \
-      CXXFLAGS="$CXXFLAGS" \
-      LDFLAGS="$LDFLAGS" \
-      LIBS="-lz" \
-      --x-includes=/usr/X11/include --x-libraries=/usr/X11/lib \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \
-      --without-xscreensaver \
-      --disable-sound \
-      --disable-cyclone \
-      --disable-fieldlines \
-      --disable-flocks \
-      --disable-flux \
-      --disable-helios \
-      --disable-hyperspace \
-      --disable-lattice \
-      --disable-skyrocket
-  else
-    ./configure \
-      CC="$CC" \
-      CXX="$CXX" \
-      CFLAGS="$CFLAGS" \ 
-      CXXFLAGS="$CXXFLAGS" \
-      --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias \      
-      --without-xscreensaver \
-      --disable-sound \
-      --disable-cyclone \
-      --disable-fieldlines \
-      --disable-flocks \
-      --disable-flux \
-      --disable-helios \
-      --disable-hyperspace \
-      --disable-lattice \
-      --disable-skyrocket
-  fi
+  ./configure \
+    CC="$CC" \
+    CXX="$CXX" \
+    CFLAGS="$CFLAGS" \ 
+    CXXFLAGS="$CXXFLAGS" \
+    `if test "$host_vendor" = "apple"; then echo --x-includes=/usr/X11/include --x-libraries=/usr/X11/lib; fi` \
+    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+    --host=$host_alias \
+    --build=$build_alias \
+    --target=$target_alias \      
+    --without-xscreensaver \
+    --disable-sound \
+    --disable-cyclone \
+    --disable-fieldlines \
+    --disable-flocks \
+    --disable-flux \
+    --disable-helios \
+    --disable-hyperspace \
+    --disable-lattice \
+    --disable-skyrocket
 fi
 ], [0])
 
 XB_CONFIG_MODULE([lib/libapetag], [
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="$CFLAGS -fno-common" \
-    ./configure --disable-shared \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
-  else
-    ./configure \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
-  fi
+  ./configure \
+    `if test "$host_vendor" = "apple"; then echo --disable-shared; fi` \
+    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+    --host=$host_alias \
+    --build=$build_alias \
+    --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
 ], [0])
 
 XB_CONFIG_MODULE([lib/cpluff], [
-  if test "$host_vendor" = "apple" ; then
-    ./configure --disable-nls \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX" LDFLAGS="$LDFLAGS -Wl,-read_only_relocs,suppress"    
-  else
-    ./configure --disable-nls \
-      --host=$host_alias \
-      --build=$build_alias \
-      --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
-  fi
+  ./configure --disable-nls \
+    --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+    --host=$host_alias \
+    --build=$build_alias \
+    --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
+    #LDFLAGS="$LDFLAGS -Wl,-read_only_relocs,suppress"    
 ], [0])
 
 AC_OUTPUT
