@@ -1750,6 +1750,11 @@
   <string id="19221">Synchronise channel groups with backends</string>
   <string id="19222">EPG</string>
   <string id="19223">No PVR add-on could be enabled. Check your settings or the log for more info.</string>
+  <string id="19224">Recording aborted</string>
+  <string id="19225">Recording scheduled</string>
+  <string id="19226">Recording started</string>
+  <string id="19227">Recording completed</string>
+  <string id="19228">Recording deleted</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>
