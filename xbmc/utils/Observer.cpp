@@ -74,7 +74,7 @@ void Observable::NotifyObservers(const CStdString& strMessage /* = "" */, bool b
   if (m_bObservableChanged)
   {
     if (bAsync && m_bAsyncAllowed)
-      CJobManager::GetInstance().AddJob(new ObservableMessageJob(*this, strMessage), this);
+      CJobManager::GetInstance().AddJob(new ObservableMessageJob(*this, strMessage), NULL);
     else
       SendMessage(this, strMessage);
 

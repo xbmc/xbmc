@@ -35,7 +35,7 @@ public:
   virtual void Notify(const Observable &obs, const CStdString& msg) = 0;
 };
 
-class Observable : public IJobCallback, public ANNOUNCEMENT::IAnnouncer
+class Observable : public ANNOUNCEMENT::IAnnouncer
 {
   friend class ObservableMessageJob;
 
@@ -50,7 +50,6 @@ public:
   void SetChanged(bool bSetTo = true);
 
   virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job) { }
 
 private:
   static void SendMessage(Observable *obs, const CStdString &strMessage);
