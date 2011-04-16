@@ -1152,7 +1152,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case PVR_ACTUAL_STREAM_CRYPTION:
   case PVR_ACTUAL_STREAM_SIG:
   case PVR_ACTUAL_STREAM_SNR:
-    CPVRManager::Get()->TranslateCharInfo(info, strLabel);
+    g_PVRManager.TranslateCharInfo(info, strLabel);
     break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
@@ -1843,7 +1843,7 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
     case PVR_PLAYING_PROGRESS:
     case PVR_ACTUAL_STREAM_SIG_PROGR:
     case PVR_ACTUAL_STREAM_SNR_PROGR:
-      return CPVRManager::Get()->TranslateIntInfo(info);
+      return g_PVRManager.TranslateIntInfo(info);
   }
   return 0;
 }
@@ -1966,7 +1966,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (condition >= PVR_IS_RECORDING && condition <= PVR_IS_RECORDING+20)
-    bReturn = CPVRManager::Get()->TranslateBoolInfo(condition);
+    bReturn = g_PVRManager.TranslateBoolInfo(condition);
 
   else if (condition == SYSTEM_INTERNET_STATE)
   {
@@ -3242,7 +3242,7 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
     {
       CPVRChannel* channeltag = m_currentFile->GetPVRChannelInfoTag();
       if (channeltag && channeltag->IsRadio())
-        return CPVRManager::Get()->GetPlayingGroup(true)->GroupName();
+        return g_PVRManager.GetPlayingGroup(true)->GroupName();
     }
     break;
   case MUSICPLAYER_PLAYCOUNT:
@@ -3347,7 +3347,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_CHANNEL_GROUP:
       {
         if (tag && !tag->IsRadio())
-          return CPVRManager::Get()->GetPlayingGroup(false)->GroupName();
+          return g_PVRManager.GetPlayingGroup(false)->GroupName();
       }
     }
   }
@@ -4561,7 +4561,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       }
       else if (pItem->HasEPGInfoTag())
       {
-        CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(pItem);
+        CPVRTimerInfoTag *timer = g_PVRTimers->GetMatch(pItem);
         if (timer)
           return timer->IsRecording();
       }
@@ -4576,7 +4576,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     {
       if (pItem->HasEPGInfoTag())
       {
-        CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(pItem);
+        CPVRTimerInfoTag *timer = g_PVRTimers->GetMatch(pItem);
         if (timer)
           return timer->IsActive();
       }

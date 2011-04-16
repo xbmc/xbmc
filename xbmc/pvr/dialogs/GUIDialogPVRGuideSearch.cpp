@@ -108,7 +108,7 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
         if (pSpin)
         {
           CFileItemList channelslist_tv;
-          const CPVRChannelGroup *group = CPVRManager::GetChannelGroups()->GetById(false, m_searchfilter->m_iChannelGroup);
+          const CPVRChannelGroup *group = g_PVRChannelGroups->GetById(false, m_searchfilter->m_iChannelGroup);
           if (group)
             group->GetMembers(&channelslist_tv);
 
@@ -321,7 +321,7 @@ void CGUIDialogPVRGuideSearch::Update()
   if (pSpin)
   {
     CFileItemList channelslist_tv;
-    const CPVRChannelGroup *group = CPVRManager::GetChannelGroups()->GetById(false, m_searchfilter->m_iChannelGroup);
+    const CPVRChannelGroup *group = g_PVRChannelGroups->GetById(false, m_searchfilter->m_iChannelGroup);
     if (group)
       group->GetMembers(&channelslist_tv);
 
@@ -345,7 +345,7 @@ void CGUIDialogPVRGuideSearch::Update()
   if (pSpin)
   {
     CFileItemList grouplist;
-    CPVRManager::GetChannelGroups()->GetTV()->GetGroupList(&grouplist);
+    g_PVRChannelGroups->GetTV()->GetGroupList(&grouplist);
 
     pSpin->Clear();
     pSpin->AddLabel(g_localizeStrings.Get(593), -1);

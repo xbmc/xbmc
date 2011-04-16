@@ -534,7 +534,7 @@ int CPVRDatabase::GetChannelsInGroup(CPVRChannelGroup *group)
       {
         int iChannelId = m_pDS->fv("idChannel").get_asInt();
         int iChannelNumber = m_pDS->fv("iChannelNumber").get_asInt();
-        CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByChannelIDFromAll(iChannelId);
+        CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups->GetByChannelIDFromAll(iChannelId);
 
         if (channel && group->AddToGroup(channel, iChannelNumber))
           ++iReturn;

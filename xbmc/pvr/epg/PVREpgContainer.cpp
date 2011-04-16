@@ -36,7 +36,7 @@ void CPVREpgContainer::Clear(bool bClearDb /* = false */)
   CSingleLock lock(m_critSection);
   // XXX stop the timers from being updated while clearing tags
   /* remove all pointers to epg tables on timers */
-  CPVRTimers *timers = CPVRManager::GetTimers();
+  CPVRTimers *timers = g_PVRTimers;
   for (unsigned int iTimerPtr = 0; iTimerPtr < timers->size(); iTimerPtr++)
     timers->at(iTimerPtr)->SetEpgInfoTag(NULL);
 
@@ -47,7 +47,7 @@ bool CPVREpgContainer::CreateChannelEpgs(void)
 {
   for (int radio = 0; radio <= 1; radio++)
   {
-    const CPVRChannelGroup *channels = CPVRManager::GetChannelGroups()->GetGroupAll(radio == 1);
+    const CPVRChannelGroup *channels = g_PVRChannelGroups->GetGroupAll(radio == 1);
     for (int iChannelPtr = 0; iChannelPtr < channels->GetNumChannels(); iChannelPtr++)
     {
       CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
@@ -69,7 +69,7 @@ bool CPVREpgContainer::CreateChannelEpgs(void)
 int CPVREpgContainer::GetEPGAll(CFileItemList* results, bool bRadio /* = false */)
 {
   int iInitialSize = results->Size();
-  const CPVRChannelGroup *group = CPVRManager::GetChannelGroups()->GetGroupAll(bRadio);
+  const CPVRChannelGroup *group = g_PVRChannelGroups->GetGroupAll(bRadio);
   if (!group)
     return -1;
 
@@ -93,7 +93,7 @@ bool CPVREpgContainer::AutoCreateTablesHook(void)
 
 CEpg* CPVREpgContainer::CreateEpg(int iEpgId)
 {
-  CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetChannelById(iEpgId);
+  CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups->GetChannelById(iEpgId);
   if (channel)
   {
     return new CPVREpg(channel);
@@ -123,14 +123,14 @@ int CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFil
   CEpgContainer::GetEPGSearch(results, filter);
 
   /* filter recordings */
-  if (filter.m_bIgnorePresentRecordings && CPVRManager::GetRecordings()->size() > 0)
+  if (filter.m_bIgnorePresentRecordings && g_PVRRecordings->size() > 0)
   {
-    for (unsigned int iRecordingPtr = 0; iRecordingPtr < CPVRManager::GetRecordings()->size(); iRecordingPtr++)
+    for (unsigned int iRecordingPtr = 0; iRecordingPtr < g_PVRRecordings->size(); iRecordingPtr++)
     {
       for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
       {
         const CPVREpgInfoTag *epgentry  = (CPVREpgInfoTag *) results->Get(iResultPtr)->GetEPGInfoTag();
-        CPVRRecording *recording = CPVRManager::GetRecordings()->at(iRecordingPtr);
+        CPVRRecording *recording = g_PVRRecordings->at(iRecordingPtr);
         if (epgentry)
         {
           if (epgentry->Title()       != recording->m_strTitle ||
@@ -148,7 +148,7 @@ int CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFil
   /* filter timers */
   if (filter.m_bIgnorePresentTimers)
   {
-    CPVRTimers *timers = CPVRManager::GetTimers();
+    CPVRTimers *timers = g_PVRTimers;
     for (unsigned int iTimerPtr = 0; iTimerPtr < timers->size(); iTimerPtr++)
     {
       for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
@@ -174,7 +174,7 @@ int CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFil
 
 int CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
 {
-  CPVRChannelGroup *channels = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(bRadio);
+  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannelGroups->GetGroupAll(bRadio);
   CSingleLock lock(m_critSection);
   int iInitialSize           = results->Size();
 
@@ -201,7 +201,7 @@ int CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
 
 int CPVREpgContainer::GetEPGNext(CFileItemList* results, bool bRadio)
 {
-  CPVRChannelGroup *channels = (CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(bRadio);
+  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannelGroups->GetGroupAll(bRadio);
   CSingleLock lock(m_critSection);
   int iInitialSize           = results->Size();
 

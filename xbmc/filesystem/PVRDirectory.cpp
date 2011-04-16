@@ -85,15 +85,15 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
   else if (fileName.Left(10) == "recordings")
   {
-    return CPVRManager::GetRecordings()->GetDirectory(strPath, items) > 0;
+    return g_PVRRecordings->GetDirectory(strPath, items) > 0;
   }
   else if (fileName.Left(8) == "channels")
   {
-    return CPVRManager::GetChannelGroups()->GetDirectory(strPath, items) > 0;
+    return g_PVRChannelGroups->GetDirectory(strPath, items) > 0;
   }
   else if (fileName.Left(6) == "timers")
   {
-    return CPVRManager::GetTimers()->GetDirectory(strPath, items) > 0;
+    return g_PVRTimers->GetDirectory(strPath, items) > 0;
   }
 
   return false;
@@ -117,5 +117,5 @@ bool CPVRDirectory::IsLiveTV(const CStdString& strPath)
 
 bool CPVRDirectory::HasRecordings()
 {
-  return CPVRManager::GetRecordings()->GetNumRecordings() > 0;
+  return g_PVRRecordings->GetNumRecordings() > 0;
 }

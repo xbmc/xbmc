@@ -176,7 +176,7 @@ bool CPVRChannel::CacheIcon(void)
 bool CPVRChannel::Delete(void)
 {
   bool bReturn = false;
-  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   if (!database || !database->Open())
     return bReturn;
 
@@ -185,7 +185,7 @@ bool CPVRChannel::Delete(void)
   /* delete the EPG table */
   if (m_EPG)
   {
-    CPVRManager::GetEpg()->DeleteEpg(*m_EPG, true);
+    g_PVREpg->DeleteEpg(*m_EPG, true);
     m_EPG = NULL;
   }
 
@@ -222,7 +222,7 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
   if (!m_bChanged)
     return true;
 
-  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   if (database)
   {
     if (!bQueueWrite)
@@ -550,7 +550,7 @@ void CPVRChannel::UpdatePath(unsigned int iNewChannelNumber)
   CStdString strFileNameAndPath;
   CSingleLock lock(m_critSection);
 
-  strFileNameAndPath.Format("pvr://channels/%s/%s/%i.pvr", (m_bIsRadio ? "radio" : "tv"), CPVRManager::GetChannelGroups()->GetGroupAll(m_bIsRadio)->GroupName().c_str(), iNewChannelNumber);
+  strFileNameAndPath.Format("pvr://channels/%s/%s/%i.pvr", (m_bIsRadio ? "radio" : "tv"), g_PVRChannelGroups->GetGroupAll(m_bIsRadio)->GroupName().c_str(), iNewChannelNumber);
   if (m_strFileNameAndPath != strFileNameAndPath)
   {
     m_strFileNameAndPath = strFileNameAndPath;
@@ -692,14 +692,14 @@ CPVREpg *CPVRChannel::GetEPG(void)
   CSingleLock lock(m_critSection);
   if (m_EPG == NULL)
   {
-    m_EPG = (CPVREpg *) CPVRManager::GetEpg()->GetById(m_iChannelId);
+    m_EPG = (CPVREpg *) g_PVREpg->GetById(m_iChannelId);
 
     if (m_EPG == NULL)
     {
       /* will be cleaned up by CPVREpgContainer on exit */
       m_EPG = new CPVREpg(this);
       m_EPG->Persist();
-      CPVRManager::GetEpg()->push_back(m_EPG);
+      g_PVREpg->push_back(m_EPG);
     }
   }
 

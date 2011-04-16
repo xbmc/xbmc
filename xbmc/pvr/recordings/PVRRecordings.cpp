@@ -42,7 +42,7 @@ void CPVRRecordings::UpdateFromClients(void)
 {
   CSingleLock lock(m_critSection);
   Clear();
-  CPVRManager::GetClients()->GetRecordings(this);
+  g_PVRClients->GetRecordings(this);
 }
 
 CStdString CPVRRecordings::TrimSlashes(const CStdString &strOrig) const
@@ -191,7 +191,7 @@ void CPVRRecordings::ExecuteUpdate(void)
   m_bIsUpdating = false;
   lock.Leave();
 
-  CPVRManager::Get()->UpdateWindow(PVR_WINDOW_RECORDINGS);
+  g_PVRManager.UpdateWindow(PVR_WINDOW_RECORDINGS);
 }
 
 void CPVRRecordings::Process(void)

@@ -180,7 +180,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   if (g_guiSettings.GetString("pvrmenu.iconpath") == "")
     return;
 
-  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
   CSingleLock lock(m_critSection);
 
@@ -377,7 +377,7 @@ int CPVRChannelGroup::GetMembers(CFileItemList *results, bool bGroupMembers /* =
   int iOrigSize = results->Size();
   CSingleLock lock(m_critSection);
 
-  const CPVRChannelGroup *channels = bGroupMembers ? this : CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio);
+  const CPVRChannelGroup *channels = bGroupMembers ? this : g_PVRChannelGroups->GetGroupAll(m_bRadio);
   for (unsigned int iChannelPtr = 0; iChannelPtr < channels->size(); iChannelPtr++)
   {
     CPVRChannel *channel = channels->at(iChannelPtr).channel;
@@ -398,7 +398,7 @@ int CPVRChannelGroup::GetMembers(CFileItemList *results, bool bGroupMembers /* =
 
 int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 {
-  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   if (!database || !database->Open())
     return -1;
 
@@ -416,7 +416,7 @@ int CPVRChannelGroup::LoadFromClients(void)
 
   /* get the channels from the backends */
   PVR_ERROR error;
-  CPVRManager::GetClients()->GetChannelGroupMembers(this, &error);
+  g_PVRClients->GetChannelGroupMembers(this, &error);
   if (error != PVR_ERROR_NO_ERROR)
     CLog::Log(LOGWARNING, "PVRChannelGroup - %s - got bad error (%d) on call to GetChannelGroupMembers", __FUNCTION__, error);
 
@@ -444,7 +444,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
   CSingleLock lock(m_critSection);
   int iCurSize = size();
 
-  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   if (!database || !database->Open())
     return false;
 
@@ -456,7 +456,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
     if (!channel)
       continue;
 
-    CPVRChannel *realChannel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio)->GetByClient(channel->UniqueID(), channel->ClientID());
+    CPVRChannel *realChannel = (CPVRChannel *) g_PVRChannelGroups->GetGroupAll(m_bRadio)->GetByClient(channel->UniqueID(), channel->ClientID());
     if (!realChannel)
       continue;
 
@@ -506,7 +506,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 
     lock.Leave();
 
-    CPVRManager::Get()->UpdateWindow(m_bRadio ? PVR_WINDOW_CHANNELS_RADIO : PVR_WINDOW_CHANNELS_TV);
+    g_PVRManager.UpdateWindow(m_bRadio ? PVR_WINDOW_CHANNELS_RADIO : PVR_WINDOW_CHANNELS_TV);
 
     return Persist();
   }
@@ -581,7 +581,7 @@ bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 
 
     CPVRChannel *realChannel = (IsInternalGroup()) ?
         channel :
-        (CPVRChannel *) CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio)->GetByChannelID(channel->ChannelID());
+        (CPVRChannel *) g_PVRChannelGroups->GetGroupAll(m_bRadio)->GetByChannelID(channel->ChannelID());
 
     if (realChannel)
     {
@@ -659,7 +659,7 @@ bool CPVRChannelGroup::Persist(void)
   if (!HasChanges())
     return true;
 
-  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   if (database && database->Open())
   {
     CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - persisting channel group '%s' with %d channels",
@@ -747,7 +747,7 @@ void CPVRChannelGroup::SetSelectedGroup(void)
   CSingleLock lock(m_critSection);
 
   /* reset all channel numbers */
-  ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(m_bRadio))->ResetChannelNumbers();
+  ((CPVRChannelGroup *) g_PVRChannelGroups->GetGroupAll(m_bRadio))->ResetChannelNumbers();
 
   /* set all channel numbers on members of this group */
   unsigned int iChannelNumber(1);

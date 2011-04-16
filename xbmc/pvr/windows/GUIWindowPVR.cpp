@@ -109,7 +109,7 @@ bool CGUIWindowPVR::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIWindowPVR::OnInitWindow(void)
 {
-  if (!CPVRManager::Get()->IsStarted() || !CPVRManager::GetClients()->HasActiveClients())
+  if (!g_PVRManager.IsStarted() || !g_PVRClients->HasActiveClients())
   {
     g_windowManager.PreviousWindow();
     CGUIDialogOK::ShowAndGetInput(19033,0,19045,19044);

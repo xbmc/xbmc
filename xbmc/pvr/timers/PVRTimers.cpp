@@ -42,7 +42,7 @@ CPVRTimers::CPVRTimers(void)
 int CPVRTimers::Load()
 {
   Unload();
-  CPVRManager::GetEpg()->AddObserver(this);
+  g_PVREpg->AddObserver(this);
   Update();
 
   return size();
@@ -58,7 +58,7 @@ void CPVRTimers::Unload()
 
 int CPVRTimers::LoadFromClients(void)
 {
-  return CPVRManager::GetClients()->GetTimers(this);
+  return g_PVRClients->GetTimers(this);
 }
 
 struct sortByStartTime
@@ -198,11 +198,11 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
 
     NotifyObservers("timers", false);
 
-    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_TIMERS);
-    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_EPG);
-    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_RECORDINGS);
-    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_TV);
-    CPVRManager::Get()->UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
+    g_PVRManager.UpdateWindow(PVR_WINDOW_TIMERS);
+    g_PVRManager.UpdateWindow(PVR_WINDOW_EPG);
+    g_PVRManager.UpdateWindow(PVR_WINDOW_RECORDINGS);
+    g_PVRManager.UpdateWindow(PVR_WINDOW_CHANNELS_TV);
+    g_PVRManager.UpdateWindow(PVR_WINDOW_CHANNELS_RADIO);
   }
 
   return bChanged;
@@ -398,8 +398,8 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
 {
   if (!channel)
   {
-    if (!CPVRManager::Get()->GetCurrentChannel(channel))
-      channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetGroupAllTV()->GetFirstChannel();
+    if (!g_PVRManager.GetCurrentChannel(channel))
+      channel = (CPVRChannel *) g_PVRChannelGroups->GetGroupAllTV()->GetFirstChannel();
 
     /* no channels present */
     if (!channel)
@@ -481,7 +481,7 @@ bool CPVRTimers::AddTimer(const CFileItem &item)
 
 bool CPVRTimers::AddTimer(CPVRTimerInfoTag &item)
 {
-  if (!CPVRManager::GetClients()->GetClientProperties(item.m_iClientId)->bSupportsTimers)
+  if (!g_PVRClients->GetClientProperties(item.m_iClientId)->bSupportsTimers)
   {
     CGUIDialogOK::ShowAndGetInput(19033,0,19215,0);
     return false;

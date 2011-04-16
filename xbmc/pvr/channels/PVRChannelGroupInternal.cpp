@@ -99,7 +99,7 @@ bool CPVRChannelGroupInternal::UpdateTimers(void)
   CSingleLock lock(m_critSection);
 
   /* update the timers with the new channel numbers */
-  CPVRTimers *timers = CPVRManager::GetTimers();
+  CPVRTimers *timers = g_PVRTimers;
   for (unsigned int ptr = 0; ptr < timers->size(); ptr++)
   {
     CPVRTimerInfoTag *timer = timers->at(ptr);
@@ -146,7 +146,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(CPVRChannel *channel)
 
   /* check if this channel is currently playing if we are hiding it */
   CPVRChannel currentChannel;
-  if (CPVRManager::Get()->GetCurrentChannel(&currentChannel) && currentChannel == *channel)
+  if (g_PVRManager.GetCurrentChannel(&currentChannel) && currentChannel == *channel)
   {
     CGUIDialogOK::ShowAndGetInput(19098,19101,0,19102);
     return false;
@@ -201,7 +201,7 @@ int CPVRChannelGroupInternal::GetMembers(CFileItemList *results, bool bGroupMemb
 
 int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 {
-  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   if (!database || !database->Open())
     return -1;
 
@@ -231,7 +231,7 @@ int CPVRChannelGroupInternal::LoadFromClients(void)
 
   /* get the channels from the backends */
   PVR_ERROR error;
-  CPVRManager::GetClients()->GetChannels(this, &error);
+  g_PVRClients->GetChannels(this, &error);
   if (error != PVR_ERROR_NO_ERROR)
     CLog::Log(LOGWARNING, "CPVRChannelGroupInternal - %s - got bad error (%d) on call to GetChannels", __FUNCTION__, error);
 
@@ -286,7 +286,7 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
 
   CPVRChannelGroup *newChannels = new CPVRChannelGroup(m_bRadio);
 
-  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   if (!database || !database->Open())
     return bChanged;
 
@@ -343,7 +343,7 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
           __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str());
 
       /* remove this channel from all non-system groups */
-      ((CPVRChannelGroups *) CPVRManager::GetChannelGroups()->Get(m_bRadio))->RemoveFromAllGroups(channel);
+      ((CPVRChannelGroups *) g_PVRChannelGroups->Get(m_bRadio))->RemoveFromAllGroups(channel);
 
       delete at(iChannelPtr).channel;
       erase(begin() + iChannelPtr);
@@ -411,7 +411,7 @@ bool CPVRChannelGroupInternal::Persist(void)
   else if (bHasChangedChannels)
   {
     /* open the database */
-    CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+    CPVRDatabase *database = g_PVRManager.GetTVDatabase();
     if (!database || !database->Open())
     {
       CLog::Log(LOGERROR, "CPVRChannelGroupInternal - %s - failed to open the database", __FUNCTION__);

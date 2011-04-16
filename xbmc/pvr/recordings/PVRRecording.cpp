@@ -75,7 +75,7 @@ bool CPVRRecording::operator !=(const CPVRRecording& right) const
 void CPVRRecording::Reset(void)
 {
   m_iClientIndex       = -1;
-  m_iClientId          = CPVRManager::GetClients()->GetFirstID(); // Temporary until we support multiple backends
+  m_iClientId          = g_PVRClients->GetFirstID(); // Temporary until we support multiple backends
   m_strChannelName     = "";
   m_strDirectory       = "";
   m_recordingTime      = NULL;
@@ -98,13 +98,13 @@ int CPVRRecording::GetDuration() const
 bool CPVRRecording::Delete(void)
 {
   PVR_ERROR error;
-  if (!CPVRManager::GetClients()->DeleteRecording(*this, &error))
+  if (!g_PVRClients->DeleteRecording(*this, &error))
   {
     DisplayError(error);
     return false;
   }
 
-  CPVRManager::Get()->TriggerRecordingsUpdate();
+  g_PVRManager.TriggerRecordingsUpdate();
   return true;
 }
 
@@ -112,13 +112,13 @@ bool CPVRRecording::Rename(const CStdString &strNewName)
 {
   PVR_ERROR error;
   m_strTitle.Format("%s", strNewName);
-  if (!CPVRManager::GetClients()->RenameRecording(*this, &error))
+  if (!g_PVRClients->RenameRecording(*this, &error))
   {
     DisplayError(error);
     return false;
   }
 
-  CPVRManager::Get()->TriggerRecordingsUpdate();
+  g_PVRManager.TriggerRecordingsUpdate();
   return true;
 }
 

@@ -296,13 +296,13 @@ bool CGUIWindowPVRCommon::OnContextButtonMenuHooks(CFileItem *item, CONTEXT_BUTT
     bReturn = true;
 
     if (item->IsEPG())
-      CPVRManager::GetClients()->ProcessMenuHooks(((CPVREpgInfoTag *) item->GetEPGInfoTag())->ChannelTag()->ClientID());
+      g_PVRClients->ProcessMenuHooks(((CPVREpgInfoTag *) item->GetEPGInfoTag())->ChannelTag()->ClientID());
     else if (item->IsPVRChannel())
-      CPVRManager::GetClients()->ProcessMenuHooks(item->GetPVRChannelInfoTag()->ClientID());
+      g_PVRClients->ProcessMenuHooks(item->GetPVRChannelInfoTag()->ClientID());
     else if (item->IsPVRRecording())
-      CPVRManager::GetClients()->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->m_iClientId);
+      g_PVRClients->ProcessMenuHooks(item->GetPVRRecordingInfoTag()->m_iClientId);
     else if (item->IsPVRTimer())
-      CPVRManager::GetClients()->ProcessMenuHooks(item->GetPVRTimerInfoTag()->m_iClientId);
+      g_PVRClients->ProcessMenuHooks(item->GetPVRTimerInfoTag()->m_iClientId);
   }
 
   return bReturn;
@@ -330,7 +330,7 @@ bool CGUIWindowPVRCommon::ActionDeleteTimer(CFileItem *item)
     return false;
 
   /* delete the timer */
-  return CPVRManager::GetTimers()->DeleteTimer(*item);
+  return g_PVRTimers->DeleteTimer(*item);
 }
 
 bool CGUIWindowPVRCommon::ActionShowTimer(CFileItem *item)
@@ -342,7 +342,7 @@ bool CGUIWindowPVRCommon::ActionShowTimer(CFileItem *item)
      open settings for selected timer entry */
   if (item->m_strPath == "pvr://timers/add.timer")
   {
-    CPVRTimerInfoTag *newTimer = CPVRManager::GetTimers()->InstantTimer(NULL, false);
+    CPVRTimerInfoTag *newTimer = g_PVRTimers->InstantTimer(NULL, false);
     if (newTimer)
     {
       CFileItem *newItem = new CFileItem(*newTimer);
@@ -350,7 +350,7 @@ bool CGUIWindowPVRCommon::ActionShowTimer(CFileItem *item)
       if (ShowTimerSettings(newItem))
       {
         /* Add timer to backend */
-        bReturn = CPVRManager::GetTimers()->AddTimer(*newItem);
+        bReturn = g_PVRTimers->AddTimer(*newItem);
       }
 
       delete newItem;
@@ -362,7 +362,7 @@ bool CGUIWindowPVRCommon::ActionShowTimer(CFileItem *item)
     if (ShowTimerSettings(item))
     {
       /* Update timer on pvr backend */
-      bReturn = CPVRManager::GetTimers()->UpdateTimer(*item);
+      bReturn = g_PVRTimers->UpdateTimer(*item);
     }
   }
 
@@ -401,7 +401,7 @@ bool CGUIWindowPVRCommon::ActionRecord(CFileItem *item)
     CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*epgTag);
     CFileItem *item = new CFileItem(*newtimer);
 
-    bReturn = CPVRManager::GetTimers()->AddTimer(*item);
+    bReturn = g_PVRTimers->AddTimer(*item);
   }
   else
   {
@@ -437,9 +437,9 @@ bool CGUIWindowPVRCommon::ActionDeleteRecording(CFileItem *item)
     return bReturn;
 
   /* delete the recording */
-  if (CPVRManager::GetRecordings()->DeleteRecording(*item))
+  if (g_PVRRecordings->DeleteRecording(*item))
   {
-    CPVRManager::Get()->TriggerRecordingsUpdate();
+    g_PVRManager.TriggerRecordingsUpdate();
     bReturn = true;
   }
 
@@ -510,7 +510,7 @@ bool CGUIWindowPVRCommon::ActionDeleteChannel(CFileItem *item)
   if (!pDialog->IsConfirmed())
     return false;
 
-  ((CPVRChannelGroup *) CPVRManager::GetChannelGroups()->GetGroupAll(channel->IsRadio()))->RemoveFromGroup(channel);
+  ((CPVRChannelGroup *) g_PVRChannelGroups->GetGroupAll(channel->IsRadio()))->RemoveFromGroup(channel);
   UpdateData();
 
   return true;
@@ -648,7 +648,7 @@ bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
   if (!tag || !tag->ChannelTag() || tag->ChannelTag()->ChannelNumber() <= 0)
     return false;
 
-  CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(item);
+  CPVRTimerInfoTag *timer = g_PVRTimers->GetMatch(item);
   if (timer)
   {
     CGUIDialogOK::ShowAndGetInput(19033,19034,0,0);
@@ -670,7 +670,7 @@ bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
   CPVRTimerInfoTag *newtimer = CPVRTimerInfoTag::CreateFromEpg(*tag);
   CFileItem *newTimerItem = new CFileItem(*newtimer);
 
-  return CPVRManager::GetTimers()->AddTimer(*newTimerItem);
+  return g_PVRTimers->AddTimer(*newTimerItem);
 }
 
 bool CGUIWindowPVRCommon::StopRecordFile(CFileItem *item)
@@ -682,11 +682,11 @@ bool CGUIWindowPVRCommon::StopRecordFile(CFileItem *item)
   if (!tag || !tag->ChannelTag() || tag->ChannelTag()->ChannelNumber() <= 0)
     return false;
 
-  CPVRTimerInfoTag *timer = CPVRManager::GetTimers()->GetMatch(item);
+  CPVRTimerInfoTag *timer = g_PVRTimers->GetMatch(item);
   if (!timer || timer->m_bIsRepeating)
     return false;
 
-  return CPVRManager::GetTimers()->DeleteTimer(*timer);
+  return g_PVRTimers->DeleteTimer(*timer);
 }
 
 void CGUIWindowPVRCommon::ShowEPGInfo(CFileItem *item)

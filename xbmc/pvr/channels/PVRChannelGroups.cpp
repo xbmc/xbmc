@@ -58,7 +58,7 @@ bool CPVRChannelGroups::GetGroupsFromClients(void)
   /* get new groups from add-ons */
   PVR_ERROR error;
   CPVRChannelGroups groupsTmp(m_bRadio);
-  CPVRManager::GetClients()->GetChannelGroups(&groupsTmp, &error);
+  g_PVRClients->GetChannelGroups(&groupsTmp, &error);
   return UpdateGroupsEntries(groupsTmp);
 }
 
@@ -231,7 +231,7 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
 
 bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 {
-  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   if (!database->Open())
   {
     CLog::Log(LOGERROR, "PVRChannelGroups - %s - cannot open the database", __FUNCTION__);
@@ -406,7 +406,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
     return bReturn;
   }
 
-  CPVRDatabase *database = CPVRManager::Get()->GetTVDatabase();
+  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
   if (!database || !database->Open())
   {
     CLog::Log(LOGERROR, "CPVRChannelGroups - %s - unable to open the database", __FUNCTION__);

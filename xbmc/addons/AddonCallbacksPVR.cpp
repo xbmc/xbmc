@@ -97,7 +97,7 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const PV
 
   CPVRClient* client      = (CPVRClient*) handle->callerAddress;
   CPVRChannelGroup *group = (CPVRChannelGroup *) handle->dataAddress;
-  CPVRChannel *channel    = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByUniqueID(member->iChannelUniqueId, client->GetClientID());
+  CPVRChannel *channel    = (CPVRChannel *) g_PVRChannelGroups->GetByUniqueID(member->iChannelUniqueId, client->GetClientID());
   if (group != NULL && channel != NULL)
   {
     /* transfer this entry to the group */
@@ -175,7 +175,7 @@ void CAddonCallbacksPVR::PVRTransferTimerEntry(void *addonData, const PVR_HANDLE
 
   CPVRTimers *xbmcTimers = (CPVRTimers*) handle->dataAddress;
   CPVRClient* client     = (CPVRClient*) handle->callerAddress;
-  CPVRChannel *channel   = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByUniqueID(timer->iClientChannelUid, client->GetClientID());
+  CPVRChannel *channel   = (CPVRChannel *) g_PVRChannelGroups->GetByUniqueID(timer->iClientChannelUid, client->GetClientID());
 
   if (channel == NULL)
   {
@@ -253,7 +253,7 @@ void CAddonCallbacksPVR::PVRTriggerChannelUpdate(void *addonData)
   }
 
   /* update the channels table in the next iteration of the pvrmanager's main loop */
-  CPVRManager::Get()->TriggerChannelsUpdate();
+  g_PVRManager.TriggerChannelsUpdate();
 }
 
 void CAddonCallbacksPVR::PVRTriggerTimerUpdate(void *addonData)
@@ -266,7 +266,7 @@ void CAddonCallbacksPVR::PVRTriggerTimerUpdate(void *addonData)
   }
 
   /* update the timers table in the next iteration of the pvrmanager's main loop */
-  CPVRManager::Get()->TriggerTimersUpdate();
+  g_PVRManager.TriggerTimersUpdate();
 }
 
 void CAddonCallbacksPVR::PVRTriggerRecordingUpdate(void *addonData)
@@ -279,7 +279,7 @@ void CAddonCallbacksPVR::PVRTriggerRecordingUpdate(void *addonData)
   }
 
   /* update the recordings table in the next iteration of the pvrmanager's main loop */
-  CPVRManager::Get()->TriggerRecordingsUpdate();
+  g_PVRManager.TriggerRecordingsUpdate();
 }
 
 void CAddonCallbacksPVR::PVRTriggerChannelGroupsUpdate(void *addonData)
@@ -292,7 +292,7 @@ void CAddonCallbacksPVR::PVRTriggerChannelGroupsUpdate(void *addonData)
   }
 
   /* update all channel groups in the next iteration of the pvrmanager's main loop */
-  CPVRManager::Get()->TriggerChannelGroupsUpdate();
+  g_PVRManager.TriggerChannelGroupsUpdate();
 }
 
 void CAddonCallbacksPVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket)

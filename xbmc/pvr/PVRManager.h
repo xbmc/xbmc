@@ -36,7 +36,12 @@ class CPVREpgContainer;
 class CPVRGUIInfo;
 class CGUIDialogBusy;
 
-#define INFO_TOGGLE_TIME 1500
+#define g_PVRManager       CPVRManager::Get()
+#define g_PVRChannelGroups g_PVRManager.ChannelGroups()
+#define g_PVREpg           g_PVRManager.EPG()
+#define g_PVRTimers        g_PVRManager.Timers()
+#define g_PVRRecordings    g_PVRManager.Recordings()
+#define g_PVRClients       g_PVRManager.Clients()
 
 class CPVRManager : public Observer, private CThread, public IJobCallback
 {
@@ -60,42 +65,37 @@ public:
    * @brief Get the instance of the PVRManager.
    * @return The PVRManager instance.
    */
-  static CPVRManager *Get(void);
+  static CPVRManager &Get(void);
 
   /*!
    * @brief Get the channel groups container.
    * @return The groups container.
    */
-  static CPVRChannelGroupsContainer *GetChannelGroups(void) { return Get()->m_channelGroups; }
+  CPVRChannelGroupsContainer *ChannelGroups(void) const { return m_channelGroups; }
 
   /*!
    * @brief Get the EPG container.
    * @return The EPG container.
    */
-  static CPVREpgContainer *GetEpg(void) { return Get()->m_epg; }
+  CPVREpgContainer *EPG(void) const { return m_epg; }
 
   /*!
    * @brief Get the recordings container.
    * @return The recordings container.
    */
-  static CPVRRecordings *GetRecordings(void) { return Get()->m_recordings; }
+  CPVRRecordings *Recordings(void) const { return m_recordings; }
 
   /*!
    * @brief Get the timers container.
    * @return The timers container.
    */
-  static CPVRTimers *GetTimers(void) { return Get()->m_timers; }
+  CPVRTimers *Timers(void) const { return m_timers; }
 
   /*!
    * @brief Get the timers container.
    * @return The timers container.
    */
-  static CPVRClients *GetClients(void) { return Get()->m_addons; }
-
-  /*!
-   * @brief Clean up and destroy the PVRManager.
-   */
-  static void Destroy(void);
+  CPVRClients *Clients(void) const { return m_addons; }
 
   /*!
    * @brief Start the PVRManager
@@ -397,11 +397,6 @@ private:
   bool ContinueLastChannel(void);
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
-
-  /** @name singleton instance */
-  //@{
-  static CPVRManager *            m_instance;                    /*!< singleton instance */
-  //@}
 
   /** @name containers */
   //@{

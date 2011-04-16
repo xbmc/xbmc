@@ -33,6 +33,8 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/PVREpgInfoTag.h"
 
+#define INFO_TOGGLE_TIME 1500
+
 CPVRGUIInfo::CPVRGUIInfo(void)
 {
 }
@@ -68,7 +70,7 @@ void CPVRGUIInfo::ResetProperties(void)
   m_iTimerInfoToggleStart       = 0;
   m_iTimerInfoToggleCurrent     = 0;
   m_playingEpgTag               = NULL;
-  CPVRManager::GetClients()->GetQualityData(&m_qualityInfo);
+  g_PVRClients->GetQualityData(&m_qualityInfo);
 }
 
 void CPVRGUIInfo::Start(void)
@@ -136,10 +138,9 @@ bool CPVRGUIInfo::TimerInfoToggle(void)
 void CPVRGUIInfo::Process(void)
 {
   unsigned int mLoop(0);
-  CPVRManager *manager = CPVRManager::Get();
 
   /* updated on request */
-  manager->GetTimers()->AddObserver(this);
+  g_PVRTimers->AddObserver(this);
   UpdateTimersCache();
 
   while (!m_bStop)
@@ -173,15 +174,15 @@ void CPVRGUIInfo::UpdateQualityData(void)
 {
   CSingleLock lock(m_critSection);
 
-  CPVRManager::GetClients()->GetQualityData(&m_qualityInfo);
+  g_PVRClients->GetQualityData(&m_qualityInfo);
 }
 
 void CPVRGUIInfo::UpdateMisc(void)
 {
   CSingleLock lock(m_critSection);
 
-  m_strPlayingClientName = CPVRManager::GetClients()->GetPlayingClientName();
-  m_bHasRecordings = CPVRManager::GetRecordings()->GetNumRecordings() > 0;
+  m_strPlayingClientName = g_PVRClients->GetPlayingClientName();
+  m_bHasRecordings = g_PVRRecordings->GetNumRecordings() > 0;
 }
 
 bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const
@@ -232,17 +233,17 @@ bool CPVRGUIInfo::TranslateBoolInfo(DWORD dwInfo) const
   CSingleLock lock(m_critSection);
 
   if (dwInfo == PVR_IS_RECORDING)
-    bReturn = CPVRManager::Get()->IsStarted() && IsRecording();
+    bReturn = g_PVRManager.IsStarted() && IsRecording();
   else if (dwInfo == PVR_HAS_TIMER)
-    bReturn = CPVRManager::Get()->IsStarted() && HasTimers();
+    bReturn = g_PVRManager.IsStarted() && HasTimers();
   else if (dwInfo == PVR_IS_PLAYING_TV)
-    bReturn = CPVRManager::Get()->IsStarted() && CPVRManager::GetClients()->IsPlayingTV();
+    bReturn = g_PVRManager.IsStarted() && g_PVRClients->IsPlayingTV();
   else if (dwInfo == PVR_IS_PLAYING_RADIO)
-    bReturn = CPVRManager::Get()->IsStarted() && CPVRManager::GetClients()->IsPlayingRadio();
+    bReturn = g_PVRManager.IsStarted() && g_PVRClients->IsPlayingRadio();
   else if (dwInfo == PVR_IS_PLAYING_RECORDING)
-    bReturn = CPVRManager::Get()->IsStarted() && CPVRManager::GetClients()->IsPlayingRecording();
+    bReturn = g_PVRManager.IsStarted() && g_PVRClients->IsPlayingRecording();
   else if (dwInfo == PVR_ACTUAL_STREAM_ENCRYPTED)
-    bReturn = CPVRManager::Get()->IsStarted() && CPVRManager::GetClients()->IsEncrypted();
+    bReturn = g_PVRManager.IsStarted() && g_PVRClients->IsEncrypted();
 
   return bReturn;
 }
@@ -255,9 +256,9 @@ int CPVRGUIInfo::TranslateIntInfo(DWORD dwInfo) const
   if (dwInfo == PVR_PLAYING_PROGRESS)
     iReturn = (int) ((float) GetStartTime() / GetTotalTime() * 100);
   else if (dwInfo == PVR_ACTUAL_STREAM_SIG_PROGR)
-    iReturn = CPVRManager::GetClients()->GetSignalLevel();
+    iReturn = g_PVRClients->GetSignalLevel();
   else if (dwInfo == PVR_ACTUAL_STREAM_SNR_PROGR)
-    iReturn = CPVRManager::GetClients()->GetSNR();
+    iReturn = g_PVRClients->GetSNR();
 
   return iReturn;
 }
@@ -480,7 +481,7 @@ void CPVRGUIInfo::CharInfoEncryption(CStdString &strValue) const
   CSingleLock lock(m_critSection);
 
   CPVRChannel channel;
-  if (CPVRManager::GetClients()->GetPlayingChannel(&channel))
+  if (g_PVRClients->GetPlayingChannel(&channel))
     strValue.Format("%s", channel.EncryptionName());
   else
     strValue = "";
@@ -501,7 +502,7 @@ void CPVRGUIInfo::UpdateBackendCache(void)
   m_strBackendRecordings   = "";
   m_strBackendChannels     = "";
 
-  CPVRClients *clients = CPVRManager::GetClients();
+  CPVRClients *clients = g_PVRClients;
   std::map<long, CStdString> activeClients;
   clients->GetClients(&activeClients);
 
@@ -559,8 +560,8 @@ void CPVRGUIInfo::UpdateTimersCache(void)
 {
   CSingleLock lock(m_critSection);
 
-  m_iTimerAmount          = CPVRManager::GetTimers()->GetNumActiveTimers();
-  m_iRecordingTimerAmount = CPVRManager::GetTimers()->GetNumActiveRecordings();
+  m_iTimerAmount          = g_PVRTimers->GetNumActiveTimers();
+  m_iRecordingTimerAmount = g_PVRTimers->GetNumActiveRecordings();
   m_iTimerInfoToggleStart = 0;
 
   UpdateTimersToggle();
@@ -575,7 +576,7 @@ void CPVRGUIInfo::UpdateNextTimer(void)
   m_strNextTimerInfo            = "";
 
   CPVRTimerInfoTag tag;
-  if (CPVRManager::GetTimers()->GetNextActiveTimer(&tag))
+  if (g_PVRTimers->GetNextActiveTimer(&tag))
   {
     m_strNextRecordingTitle.Format("%s",       tag.m_strTitle);
     m_strNextRecordingChannelName.Format("%s", tag.ChannelName());
@@ -606,7 +607,7 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
   if (m_iTimerInfoToggleCurrent < iBoundary)
   {
     CPVRTimerInfoTag tag;
-    if (CPVRManager::GetTimers()->GetTimerByIndex(m_iTimerInfoToggleCurrent, &tag))
+    if (g_PVRTimers->GetTimerByIndex(m_iTimerInfoToggleCurrent, &tag))
     {
       m_strActiveTimerTitle.Format("%s",       tag.m_strTitle);
       m_strActiveTimerChannelName.Format("%s", tag.ChannelName());
@@ -648,13 +649,13 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
   CSingleLock lock(m_critSection);
 
   CPVRChannel currentChannel;
-  if (CPVRManager::Get()->GetCurrentChannel(&currentChannel))
+  if (g_PVRManager.GetCurrentChannel(&currentChannel))
   {
     if (!m_playingEpgTag || !m_playingEpgTag->IsActive() ||
         !(*m_playingEpgTag->ChannelTag() == currentChannel))
     {
       m_playingEpgTag = currentChannel.GetEPGNow();
-      CPVRManager::Get()->UpdateCurrentFile();
+      g_PVRManager.UpdateCurrentFile();
     }
   }
 }

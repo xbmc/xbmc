@@ -325,7 +325,7 @@ bool CEpgContainer::UpdateSingleTable(CEpg *epg, const time_t start, const time_
 
 bool CEpgContainer::InterruptUpdate(void) const
 {
-  if (m_bStop || (CPVRManager::Get()->IsStarted() && CPVRManager::GetClients()->IsPlaying()))
+  if (m_bStop || (g_PVRManager.IsStarted() && g_PVRClients->IsPlaying()))
   {
     CLog::Log(LOGNOTICE, "EpgContainer - %s - EPG load/update interrupted", __FUNCTION__);
     return true;
