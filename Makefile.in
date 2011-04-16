@@ -79,6 +79,10 @@ BIN_DIRS += xbmc/rendering/gles
 BIN_DIRS += xbmc/windowing/egl
 endif
 
+ifeq (@HAVE_PKGKIT@,1)
+BIN_DIRS += xbmc/addons/pkgkit
+endif
+
 ifeq ($(findstring osx,@ARCH@),osx)
 BIN_DIRS += xbmc/windowing/osx
 BIN_DIRS += xbmc/network/osx
@@ -345,6 +349,8 @@ xbmc/threads/darwin/threads_darwin.a: force
 	$(MAKE) -C xbmc/threads/darwin
 xbmc/addons/addons.a: force
 	$(MAKE) -C xbmc/addons
+xbmc/addons/pkgkit/pkgkit.a: force
+	$(MAKE) -C xbmc/addons/pkgkit
 xbmc/settings/settings.a: force
 	$(MAKE) -C xbmc/settings
 xbmc/utils/utils.a: force
@@ -510,6 +516,11 @@ endif
 ifeq (@HAVE_XBMC_NONFREE@,1)
 OBJSXBMC+= \
 	lib/UnrarXLib/UnrarXLib.a
+endif
+
+ifeq (@HAVE_PKGKIT@,1)
+OBJSXBMC+= \
+	xbmc/addons/pkgkit/pkgkit.a
 endif
 
 OBJSXBMC+= \

@@ -676,6 +676,19 @@ else
   PKG_CHECK_MODULES([VORBISENC],[vorbisenc],
     [INCLUDES="$INCLUDES $VORBISENC_CFLAGS"; LIBS="$LIBS $VORBISENC_LIBS"],
     AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([PKGKIT],  [packagekit-glib2],
+    [use_pkgkit="yes"],
+    AC_MSG_ERROR($missing_library))
+
+  AS_CASE([x$use_pkgkit],
+  [xyes],[
+    INCLUDES="$INCLUDES $PKGKIT_CFLAGS";
+    LIBS="$LIBS $PKGKIT_LIBS";
+    AC_DEFINE([HAVE_PKGKIT], 1, [System has packagekit library])
+    AC_SUBST([HAVE_PKGKIT], 1)
+  ],[
+  ]
+)
 fi
 
 # This is used to skip some submodule configuration on non-Apple hardware
