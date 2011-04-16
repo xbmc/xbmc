@@ -233,6 +233,7 @@
 					<posy>0</posy>
 					<width>160</width>
 					<height>32</height>
+					<aspectratio align="left">keep</aspectratio>
 					<texture>LeftRating/$INFO[ListItem.StarRating]</texture>
 				</control>
 				<control type="button" id="14">

@@ -17,7 +17,8 @@
 				<posy>0</posy>
 				<width>600</width>
 				<height>720</height>
-				<texture border="20,0,0,0" flipx="true">VisOsdPanel.png</texture>
+				<colordiffuse>BBFFFFFF</colordiffuse>
+				<texture border="20,0,0,0" flipx="true">MediaBladeSub.png</texture>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>

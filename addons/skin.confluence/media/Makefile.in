@@ -34,8 +34,7 @@ IMAGES= \
 	CenterRating/rating5.png \
 	Confluence_Logo.png \
 	ContentPanel.png \
-	ContentPanel2.png \
-	ContentPanel4.png \
+	ContentPanelMirror.png \
 	DefaultActor.png \
 	DefaultAddon.png \
 	DefaultAddonNone.png \
@@ -85,7 +84,6 @@ IMAGES= \
 	DialogContextBottom.png \
 	DialogContextMiddle.png \
 	DialogContextTop.png \
-	diffuse_mirror.png \
 	diffuse_mirror2.png \
 	diffuse_mirror3.png \
 	Fanart_Fallback_Music_Small.jpg \
@@ -149,6 +147,7 @@ IMAGES= \
 	folder-focus.png \
 	GlassOverlay.png \
 	GlassTitleBar.png \
+	HasSub.png \
 	header.png \
 	home-favourites-FO.png \
 	home-favourites.png \
@@ -156,7 +155,6 @@ IMAGES= \
 	home-playmedia.png \
 	home-power-FO.png \
 	home-power.png \
-	HomeBlade.png \
 	HomeBlade_bottom.png \
 	HomeBlade_middle.png \
 	HomeBlade_top.png \
@@ -164,12 +162,11 @@ IMAGES= \
 	HomeBladeSub_Part1.png \
 	HomeBladeSub_Part2.png \
 	HomeButtonsBack.png \
-	HomeHasSub.png \
-	HomeHasSub2.png \
 	HomeIcon-Focus.png \
 	HomeIcon.png \
 	HomeNowPlayingBack.png \
 	icon-mute.png \
+	icon-rss.png \
 	InfoMessagePanel.png \
 	KeyboardCornerBottom.png \
 	KeyboardCornerBottomNF.png \
@@ -192,10 +189,9 @@ IMAGES= \
 	MediaBladeSub_Part1.png \
 	MediaBladeSub_Part2.png \
 	MediaItemDetailBG.png \
-	MediaSubSet.png \
-	MediaSubSetNF.png \
 	MenuItemFO.png \
 	MenuItemNF.png \
+	NowPlayingIcon.png \
 	OSD16x.png \
 	OSD2x.png \
 	OSD32x.png \
@@ -271,8 +267,7 @@ IMAGES= \
 	pointer-nofocus.png \
 	radiobutton-focus.png \
 	radiobutton-nofocus.png \
-	RecentAddedFO.png \
-	RecentAddedNF.png \
+	RecentAddedBack.png \
 	Rss_Back.png \
 	Rss_Back_Overlay.png \
 	scroll-down-2.png \
@@ -298,13 +293,13 @@ IMAGES= \
 	separator.png \
 	separator2.png \
 	separator_vertical.png \
+	SideFade.png \
 	StackFO.png \
 	StackNF.png \
 	ThumbBG.png \
 	ThumbBorder.png \
 	ThumbShadow.png \
 	unknown-user.png \
-	VisOsdPanel.png \
 	VolumeIcon-Mute.png \
 	VolumeIcon.png \
 	XBMC_Logo.png
