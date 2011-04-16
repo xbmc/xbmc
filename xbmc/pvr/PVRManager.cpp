@@ -1027,9 +1027,9 @@ bool CPVRManager::TranslateBoolInfo(DWORD dwInfo) const
   return m_guiInfo->TranslateBoolInfo(dwInfo);
 }
 
-const char* CPVRManager::TranslateCharInfo(DWORD dwInfo) const
+bool CPVRManager::TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const
 {
-  return m_guiInfo->TranslateCharInfo(dwInfo);
+  return m_guiInfo->TranslateCharInfo(dwInfo, strValue);
 }
 
 int CPVRManager::TranslateIntInfo(DWORD dwInfo) const

@@ -236,19 +236,25 @@ int CPVRTimers::GetTimers(CFileItemList* results)
   return size();
 }
 
-const CPVRTimerInfoTag *CPVRTimers::GetNextActiveTimer(void)
+bool CPVRTimers::GetNextActiveTimer(CPVRTimerInfoTag *tag)
 {
-  CPVRTimerInfoTag *tag = NULL;
+  bool bReturn(false);
+  bool bGotFirst(false);
   CSingleLock lock(m_critSection);
 
   for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
   {
     CPVRTimerInfoTag *current = at(iTimerPtr);
-    if (current->IsActive() && (tag == NULL || current->Compare(*tag) < 0))
-      tag = at(iTimerPtr);
+    if (current->IsActive() && !current->IsRecording() &&
+        (!bGotFirst || current->Compare(*tag) < 0))
+    {
+      *tag = *at(iTimerPtr);
+      bGotFirst = true;
+      bReturn = true;
+    }
   }
 
-  return tag;
+  return bReturn;
 }
 
 int CPVRTimers::GetActiveTimers(vector<CPVRTimerInfoTag *> *tags)
@@ -265,7 +271,49 @@ int CPVRTimers::GetActiveTimers(vector<CPVRTimerInfoTag *> *tags)
   return tags->size() - iInitialSize;
 }
 
-int CPVRTimers::GetNumTimers()
+int CPVRTimers::GetNumActiveTimers(void) const
+{
+  int iReturn(0);
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
+  {
+    if (at(iTimerPtr)->IsActive())
+      ++iReturn;
+  }
+
+  return iReturn;
+}
+
+int CPVRTimers::GetNumActiveRecordings(void) const
+{
+  int iReturn(0);
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
+  {
+    if (at(iTimerPtr)->IsActive() && at(iTimerPtr)->IsRecording())
+      ++iReturn;
+  }
+
+  return iReturn;
+}
+
+bool CPVRTimers::GetTimerByIndex(unsigned int iIndex, CPVRTimerInfoTag *timer) const
+{
+  bool bReturn(false);
+  CSingleLock lock(m_critSection);
+
+  if (iIndex < size())
+  {
+    *timer = *at(iIndex);
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
+int CPVRTimers::GetNumTimers() const
 {
   CSingleLock lock(m_critSection);
   return size();

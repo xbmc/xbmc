@@ -1152,7 +1152,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case PVR_ACTUAL_STREAM_CRYPTION:
   case PVR_ACTUAL_STREAM_SIG:
   case PVR_ACTUAL_STREAM_SNR:
-    strLabel = CPVRManager::Get()->TranslateCharInfo(info);
+    CPVRManager::Get()->TranslateCharInfo(info, strLabel);
     break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);

@@ -42,7 +42,7 @@ public:
   void Notify(const Observable &obs, const CStdString& msg);
 
   bool TranslateBoolInfo(DWORD dwInfo) const;
-  const char* TranslateCharInfo(DWORD dwInfo) const;
+  bool TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const;
   int TranslateIntInfo(DWORD dwInfo) const;
 
   bool IsRecording(void) const;
@@ -70,46 +70,44 @@ private:
   void UpdateBackendCache(void);
   void UpdateQualityData(void);
   void UpdateMisc(void);
+  void UpdateNextTimer(void);
 
   bool AddonInfoToggle(void);
   bool TimerInfoToggle(void);
   void UpdateTimersToggle(void);
 
-  const char *CharInfoActiveTimerTitle(void) const;
-  const char *CharInfoActiveTimerChannelName(void) const;
-  const char *CharInfoActiveTimerDateTime(void) const;
-  const char *CharInfoNextTimerTitle(void) const;
-  const char *CharInfoNextTimerChannelName(void) const;
-  const char *CharInfoNextTimerDateTime(void) const;
-  const char *CharInfoPlayingDuration(void) const;
-  const char *CharInfoPlayingTime(void) const;
-  const char *CharInfoNextTimer(void) const;
-  const char *CharInfoBackendNumber(void) const;
-  const char *CharInfoTotalDiskSpace(void) const;
-  const char *CharInfoVideoBR(void) const;
-  const char *CharInfoAudioBR(void) const;
-  const char *CharInfoDolbyBR(void) const;
-  const char *CharInfoSignal(void) const;
-  const char *CharInfoSNR(void) const;
-  const char *CharInfoBER(void) const;
-  const char *CharInfoUNC(void) const;
-  const char *CharInfoFrontendName(void) const;
-  const char *CharInfoFrontendStatus(void) const;
-  const char *CharInfoBackendName(void) const;
-  const char *CharInfoBackendVersion(void) const;
-  const char *CharInfoBackendHost(void) const;
-  const char *CharInfoBackendDiskspace(void) const;
-  const char *CharInfoBackendChannels(void) const;
-  const char *CharInfoBackendTimers(void) const;
-  const char *CharInfoBackendRecordings(void) const;
-  const char *CharInfoPlayingClientName(void) const;
-  const char *CharInfoEncryption(void) const;
+  void CharInfoActiveTimerTitle(CStdString &strValue) const;
+  void CharInfoActiveTimerChannelName(CStdString &strValue) const;
+  void CharInfoActiveTimerDateTime(CStdString &strValue) const;
+  void CharInfoNextTimerTitle(CStdString &strValue) const;
+  void CharInfoNextTimerChannelName(CStdString &strValue) const;
+  void CharInfoNextTimerDateTime(CStdString &strValue) const;
+  void CharInfoPlayingDuration(CStdString &strValue) const;
+  void CharInfoPlayingTime(CStdString &strValue) const;
+  void CharInfoNextTimer(CStdString &strValue) const;
+  void CharInfoBackendNumber(CStdString &strValue) const;
+  void CharInfoTotalDiskSpace(CStdString &strValue) const;
+  void CharInfoVideoBR(CStdString &strValue) const;
+  void CharInfoAudioBR(CStdString &strValue) const;
+  void CharInfoDolbyBR(CStdString &strValue) const;
+  void CharInfoSignal(CStdString &strValue) const;
+  void CharInfoSNR(CStdString &strValue) const;
+  void CharInfoBER(CStdString &strValue) const;
+  void CharInfoUNC(CStdString &strValue) const;
+  void CharInfoFrontendName(CStdString &strValue) const;
+  void CharInfoFrontendStatus(CStdString &strValue) const;
+  void CharInfoBackendName(CStdString &strValue) const;
+  void CharInfoBackendVersion(CStdString &strValue) const;
+  void CharInfoBackendHost(CStdString &strValue) const;
+  void CharInfoBackendDiskspace(CStdString &strValue) const;
+  void CharInfoBackendChannels(CStdString &strValue) const;
+  void CharInfoBackendTimers(CStdString &strValue) const;
+  void CharInfoBackendRecordings(CStdString &strValue) const;
+  void CharInfoPlayingClientName(CStdString &strValue) const;
+  void CharInfoEncryption(CStdString &strValue) const;
 
   /** @name GUIInfoManager data */
   //@{
-  std::vector<CPVRTimerInfoTag *> m_NowRecording;
-  const CPVRTimerInfoTag *        m_NextRecording;
-
   CStdString                      m_strActiveTimerTitle;
   CStdString                      m_strActiveTimerChannelName;
   CStdString                      m_strActiveTimerTime;
@@ -117,9 +115,9 @@ private:
   CStdString                      m_strNextRecordingTitle;
   CStdString                      m_strNextRecordingChannelName;
   CStdString                      m_strNextRecordingTime;
-  bool                            m_bIsRecording;
   bool                            m_bHasRecordings;
-  bool                            m_bHasTimers;
+  unsigned int                    m_iTimerAmount;
+  unsigned int                    m_iRecordingTimerAmount;
   int                             m_iActiveClients;
   CStdString                      m_strPlayingClientName;
   CStdString                      m_strBackendName;

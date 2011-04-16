@@ -136,8 +136,12 @@ bool CPVRTimerInfoTag::operator !=(const CPVRTimerInfoTag& right) const
 
 int CPVRTimerInfoTag::Compare(const CPVRTimerInfoTag &timer) const
 {
-  CDateTimeSpan timerDelta = StartAsUTC() - timer.StartAsUTC();
-  int iTimerDelta = timerDelta.GetSeconds() + timerDelta.GetMinutes() * 60 + timerDelta.GetHours() * 3600 + timerDelta.GetDays() * 86400;
+  int iTimerDelta = 0;
+  if (StartAsUTC() != timer.StartAsUTC())
+  {
+    CDateTimeSpan timerDelta = StartAsUTC() - timer.StartAsUTC();
+    iTimerDelta = (timerDelta.GetSeconds() + timerDelta.GetMinutes() * 60 + timerDelta.GetHours() * 3600 + timerDelta.GetDays() * 86400);
+  }
 
   /* if the start times are equal, compare the priority of the timers */
   return iTimerDelta == 0 ?

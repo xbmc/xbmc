@@ -125,7 +125,7 @@ public:
    * @param dwInfo The string to get.
    * @return The requested string or an empty one if it wasn't found.
    */
-  const char* TranslateCharInfo(DWORD dwInfo) const;
+  bool TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const;
 
   /*!
    * @brief Get a GUIInfoManager integer.
