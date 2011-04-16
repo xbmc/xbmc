@@ -587,8 +587,6 @@ void CPVRGUIInfo::UpdateNextTimer(void)
         tag.StartAsLocalTime().GetAsLocalizedDate(true),
         g_localizeStrings.Get(19107),
         tag.StartAsLocalTime().GetAsLocalizedTime("HH:mm", false));
-
-    CLog::Log(LOGDEBUG, "next active timer: %s on %s", m_strNextRecordingTitle.c_str(), m_strNextRecordingChannelName.c_str());
   }
 }
 
