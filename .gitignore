@@ -107,7 +107,6 @@ config.log
 /addons/visualization.waveform/Waveform_win32.vis
 /addons/visualization.itunes/iTunes.mvis
 /addons/script.module.pil/
-/addons/script.module.pysqlite/
 
 # /xbmc/guilib/
 /xbmc/guilib/Makefile
@@ -129,8 +128,6 @@ config.log
 # /lib/addons/
 /lib/addons/script.module.pil/
 !/lib/addons/script.module.pil/Makefile
-/lib/addons/script.module.pysqlite/
-!/lib/addons/script.module.pysqlite/Makefile
 
 # /lib/asap/
 /lib/asap/Makefile
