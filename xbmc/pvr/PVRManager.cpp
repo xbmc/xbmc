@@ -1046,8 +1046,3 @@ bool CPVRManager::IsRecording(void) const
 {
   return m_guiInfo->IsRecording();
 }
-
-const CPVREpgInfoTag *CPVRManager::GetPlayingTag(void) const
-{
-  return m_guiInfo->GetPlayingTag();
-}

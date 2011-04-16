@@ -47,7 +47,6 @@ public:
 
   bool IsRecording(void) const;
   bool HasTimers(void) const;
-  const CPVREpgInfoTag *GetPlayingTag(void) const;
 
   /*!
    * @brief Get the total duration of the currently playing LiveTV item.

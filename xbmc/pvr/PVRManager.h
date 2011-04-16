@@ -295,12 +295,6 @@ public:
   bool StartPlayback(const CPVRChannel *channel, bool bPreview = false);
 
   /*!
-   * @brief Get the currently playing EPG tag and update it if needed.
-   * @return The currently playing EPG tag or NULL if there is none.
-   */
-  const CPVREpgInfoTag *GetPlayingTag(void) const;
-
-  /*!
    * @brief Convert a genre id and subid to a human readable name.
    * @param iID The genre ID.
    * @param iSubID The genre sub ID.

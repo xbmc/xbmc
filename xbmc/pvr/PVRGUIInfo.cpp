@@ -672,10 +672,3 @@ bool CPVRGUIInfo::HasTimers(void) const
 
   return m_iTimerAmount > 0;
 }
-
-const CPVREpgInfoTag *CPVRGUIInfo::GetPlayingTag(void) const
-{
-  CSingleLock lock(m_critSection);
-
-  return m_playingEpgTag;
-}
