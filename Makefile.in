@@ -138,7 +138,7 @@ ifeq ($(findstring osx,@ARCH@), osx)
 VIS_DIRS+=xbmc/visualizations/iTunes \
 
 endif
-ifneq (@BUILD_GOOM@,1)
+ifneq (@DISABLE_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom \
 
 endif
@@ -387,7 +387,7 @@ ifneq ($(findstring arm,@ARCH@), arm)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(MAKE) -C xbmc/visualizations/iTunes
 endif
-ifneq (@BUILD_GOOM@,1)
+ifneq (@DISABLE_GOOM@,1)
 ifeq ($(or $(findstring powerpc-linux,@ARCH@),$(findstring powerpc64-linux,@ARCH@)),)
 	$(MAKE) -C xbmc/visualizations/Goom
 endif

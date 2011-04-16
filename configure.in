@@ -789,14 +789,14 @@ fi
 # GOOM
 if test "$host_vendor" = "apple" ; then
   AC_MSG_NOTICE($goom_disabled)
-  BUILD_GOOM=1
+  DISABLE_GOOM=1
 else
   if test "$use_goom" = "yes" && test "use_gl" == "yes"; then
     AC_MSG_NOTICE($goom_enabled)
-    BUILD_GOOM=0
+    DISABLE_GOOM=0
   else
     AC_MSG_NOTICE($goom_disabled)
-    BUILD_GOOM=1
+    DISABLE_GOOM=1
   fi
 fi
 
@@ -1414,7 +1414,7 @@ AC_SUBST(LDFLAGS)
 AC_SUBST(SYSROOT)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
-AC_SUBST(BUILD_GOOM)
+AC_SUBST(DISABLE_GOOM)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
@@ -1653,7 +1653,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
     --disable-shared \
     --enable-static \
     --with-pic
-], [$BUILD_GOOM])
+], [$DISABLE_GOOM])
 
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
 if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
