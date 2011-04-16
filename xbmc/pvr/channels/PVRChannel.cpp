@@ -223,8 +223,6 @@ bool CPVRChannel::Delete(void)
 
 bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
 {
-  CSingleLock lock(m_critSection);
-
   SetClientID(channel.ClientID());
   SetClientChannelNumber(channel.ClientChannelNumber());
   SetInputFormat(channel.InputFormat());
@@ -233,6 +231,7 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
   SetRecording(channel.IsRecording());
   SetClientChannelName(channel.ClientChannelName());
 
+  CSingleLock lock(m_critSection);
   if (m_strChannelName.IsEmpty())
     SetChannelName(channel.ClientChannelName());
   if (m_strIconPath.IsEmpty())
