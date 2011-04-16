@@ -1,5 +1,5 @@
 <window id="0">
-	<defaultcontrol always="true">8999</defaultcontrol>
+	<defaultcontrol always="true">9000</defaultcontrol>
 	<allowoverlay>no</allowoverlay>	
 	<controls>
 		<control type="multiimage">
@@ -13,34 +13,6 @@
 			<fadetime>1000</fadetime>
 		</control>
 		<include>CommonMediaPlayingBackground</include>
-		<!-- weather Info -->
-		<control type="button" id="8999">
-			<description>Run Recently added</description>
-			<posx>-20</posx>
-			<posy>-20</posy>
-			<width>1</width>
-			<height>1</height>
-			<label>-</label>
-			<font>-</font>
-			<onfocus>XBMC.RunScript(script.recentlyadded,limit=4)</onfocus>
-			<onfocus>SetFocus(9000)</onfocus>
-			<texturenofocus>-</texturenofocus>
-			<texturefocus>-</texturefocus>
-			<visible>Skin.HasSetting(homepageShowRecentlyAdded)</visible>
-		</control>
-		<control type="button" id="8999">
-			<description>Don't run Recently added</description>
-			<posx>-20</posx>
-			<posy>-20</posy>
-			<width>1</width>
-			<height>1</height>
-			<label>-</label>
-			<font>-</font>
-			<onfocus>SetFocus(9000)</onfocus>
-			<texturenofocus>-</texturenofocus>
-			<texturefocus>-</texturefocus>
-			<visible>!Skin.HasSetting(homepageShowRecentlyAdded)</visible>
-		</control>
 		<!-- Music Info -->
 		<control type="group">
 			<posx>0</posx>

@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,20 +20,23 @@
  *
  */
 
-#include "guilib/GUIWindow.h"
-#include "interfaces/IAnnouncer.h"
+#include "Job.h"
 
-class CGUIWindowHome :
-      public CGUIWindow,
-      public ANNOUNCEMENT::IAnnouncer
+enum ERecentlyAddedFlag
+{
+  Audio = 0x1,
+  Video = 0x2,
+  Totals = 0x4
+};
+
+class CRecentlyAddedJob : public CJob
 {
 public:
-  CGUIWindowHome(void);
-  virtual ~CGUIWindowHome(void);
-  virtual void OnInitWindow();
-  virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
-
+  CRecentlyAddedJob(int flag);
+  bool UpdateVideo();
+  bool UpdateMusic();
+  bool UpdateTotal();
+  virtual bool DoWork();
 private:
-  int m_updateRA; // flag for which recently added items needs to be queried
-  void AddRecentlyAddedJobs(int flag);
+  int m_flag;
 };
