@@ -72,7 +72,7 @@
 				<control type="button" id="22">
 					<description>Clear button</description>
 					<label>192</label>
-					<onclick>ReplaceWindow(music)</onclick>
+					<onclick>ReplaceWindow(Videos)</onclick>
 					<textwidth>235</textwidth>
 					<include>ButtonCommonValues</include>
 				</control>
