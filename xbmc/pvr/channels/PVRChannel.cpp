@@ -86,6 +86,7 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_strStreamURL            = "";
   m_strFileNameAndPath      = "";
   m_iClientEncryptionSystem = -1;
+  m_bIsCachingIcon          = false;
 }
 
 CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
@@ -111,6 +112,7 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_strEPGScraper           = "client";
   m_EPG                     = NULL;
   m_bChanged                = false;
+  m_bIsCachingIcon          = false;
 
   UpdateEncryptionName();
 }
@@ -149,23 +151,46 @@ CPVRChannel &CPVRChannel::operator=(const CPVRChannel &channel)
   return *this;
 }
 
+bool CPVRChannel::CheckCachedIcon(void)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_bIsCachingIcon)
+    return false;
+
+  if (URIUtils::IsInternetStream(m_strIconPath, true))
+  {
+    m_bIsCachingIcon = true;
+    CJobManager::GetInstance().AddJob(new CPVRChannelIconCacheJob(this), this);
+  }
+
+  return true;
+}
+
 bool CPVRChannel::CacheIcon(void)
 {
-  bool bReturn(true);
+  bool bReturn(false);
+
+  CSingleLock lock(m_critSection);
+  if (!m_bIsCachingIcon)
+    return bReturn;
+
   CStdString strBasePath = g_guiSettings.GetString("pvrmenu.iconpath");
   if (strBasePath.IsEmpty())
     return bReturn;
 
-  CSingleLock lock(m_critSection);
-  if (URIUtils::IsInternetStream(m_strIconPath, true))
+  CStdString strIconPath(m_strIconPath);
+  if (URIUtils::IsInternetStream(strIconPath, true))
   {
     CStdString strNewFileName;
     strNewFileName.Format("%s/icon_%s_%d_%d.tbn", strBasePath, m_bIsRadio ? "radio" : "tv", m_iClientId, m_iUniqueId);
+    lock.Leave();
 
-    if (CPicture::CacheThumb(m_strIconPath, strNewFileName))
+    if (CPicture::CacheThumb(strIconPath, strNewFileName))
+    {
       SetIconPath(strNewFileName);
-    else
-      bReturn = false;
+      bReturn = true;
+    }
   }
 
   return bReturn;
@@ -323,13 +348,14 @@ bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bSaveInDb /* =
   {
     /* update the path */
     m_strIconPath.Format("%s", strIconPath);
-    CacheIcon();
     SetChanged();
     m_bChanged = true;
 
     /* persist the changes */
     if (bSaveInDb)
       Persist();
+
+    CheckCachedIcon();
 
     bReturn = true;
   }
@@ -808,4 +834,18 @@ void CPVRChannel::SetCachedChannelNumber(unsigned int iChannelNumber)
 {
   CSingleLock lock(m_critSection);
   m_iCachedChannelNumber = iChannelNumber;
+}
+
+void CPVRChannel::OnJobComplete(unsigned int jobID, bool success, CJob* job)
+{
+  if (!strcmp(job->GetType(), "pvr-channel-icon-update"))
+  {
+    CSingleLock lock(m_critSection);
+    m_bIsCachingIcon = false;
+  }
+}
+
+bool CPVRChannelIconCacheJob::DoWork(void)
+{
+  return m_channel->CacheIcon();
 }

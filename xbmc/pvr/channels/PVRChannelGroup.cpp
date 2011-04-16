@@ -731,8 +731,10 @@ void CPVRChannelGroup::CacheIcons(void)
   CSingleLock lock(m_critSection);
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
-    at(iChannelPtr).channel->CacheIcon();
+    at(iChannelPtr).channel->CheckCachedIcon();
   }
+
+  Persist();
 }
 
 void CPVRChannelGroup::ResetChannelNumbers(void)
