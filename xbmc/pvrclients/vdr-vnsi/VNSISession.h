@@ -34,24 +34,40 @@ class cVNSISession
 {
 public:
   cVNSISession();
-  ~cVNSISession();
+  virtual ~cVNSISession();
 
-  bool              Open(const std::string& hostname, int port, const char *name = NULL);
-  void              Close();
+  virtual bool      Open(const std::string& hostname, int port, const char *name = NULL);
+  virtual void      Close();
   void              Abort();
 
   cResponsePacket*  ReadMessage();
   bool              SendMessage(cRequestPacket* vrp);
-  int               sendData(void* bufR, size_t count);
-  int               readData(uint8_t* buffer, int totalBytes);
 
-  cResponsePacket*  ReadResult(cRequestPacket* vrp, bool sequence = true);
-  bool              ReadSuccess(cRequestPacket* m, bool sequence = true);
-  int               GetProtocol()   { return m_protocol; }
+  cResponsePacket*  ReadResult(cRequestPacket* vrp);
+  bool              ReadSuccess(cRequestPacket* m);
+
+  int                GetProtocol()   { return m_protocol; }
   const std::string& GetServerName() { return m_server; }
   const std::string& GetVersion()    { return m_version; }
 
+protected:
+
+  int sendData(void* buf, size_t count);
+  bool readData(uint8_t* buffer, int totalBytes);
+
+  virtual void OnDisconnect();
+  virtual void OnReconnect();
+
+  bool ConnectionLost() { return m_connectionLost; }
+
+  bool            m_connectionLost;
+  std::string     m_hostname;
+  int             m_port;
+
 private:
+
+  bool TryReconnect();
+
   socket_t    m_fd;
   int         m_protocol;
   std::string m_server;

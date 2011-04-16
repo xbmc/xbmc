@@ -30,7 +30,7 @@ extern "C" {
 
 #define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
 
-cVNSIData::cVNSIData() : m_connectionLost(false)
+cVNSIData::cVNSIData()
 {
 }
 
@@ -39,16 +39,14 @@ cVNSIData::~cVNSIData()
   Close();
 }
 
-bool cVNSIData::Open(const std::string& hostname, int port)
+bool cVNSIData::Open(const std::string& hostname, int port, const char* name)
 {
-  if(!m_session.Open(hostname, port))
+  if(!cVNSISession::Open(hostname, port, name))
     return false;
 
-  // store connection data for TryReconnect()
-  m_hostname = hostname;
-  m_port = port;
-
-  SetDescription("VNSI Data Listener");
+  if(name != NULL) {
+    SetDescription(name);
+  }
   Start();
   return true;
 }
@@ -56,25 +54,8 @@ bool cVNSIData::Open(const std::string& hostname, int port)
 void cVNSIData::Close()
 {
   Cancel(1);
-  m_session.Abort();
-  m_session.Close();
-}
-
-bool cVNSIData::TryReconnect() {
-  m_session.Abort();
-  m_session.Close();
-
-  if(!Open(m_hostname, m_port)) {
-    return false;
-  }
-
-  XBMC->Log(LOG_DEBUG, "%s - reconnected", __FUNCTION__);
-
-  PVR->TriggerTimerUpdate();
-  PVR->TriggerRecordingUpdate();
-  PVR->TriggerChannelUpdate();
-
-  return true;
+  cVNSISession::Abort();
+  cVNSISession::Close();
 }
 
 cResponsePacket* cVNSIData::ReadResult(cRequestPacket* vrp)
@@ -87,7 +68,7 @@ cResponsePacket* cVNSIData::ReadResult(cRequestPacket* vrp)
 
   m_Mutex.Unlock();
 
-  if(!m_session.SendMessage(vrp))
+  if(!cVNSISession::SendMessage(vrp))
   {
     m_queue.erase(vrp->getSerial());
     return NULL;
@@ -775,6 +756,11 @@ PVR_ERROR cVNSIData::DeleteRecording(const PVR_RECORDING& recinfo)
   return PVR_ERROR_NO_ERROR;
 }
 
+bool cVNSIData::onResponsePacket(cResponsePacket* pkt)
+{
+  return false;
+}
+
 void cVNSIData::Action()
 {
   uint32_t channelID;
@@ -792,7 +778,7 @@ void cVNSIData::Action()
     readSuccess = readData((uint8_t*)&channelID, sizeof(uint32_t));
 
     // just wait if we're currently not connected
-    if (m_connectionLost)
+    if (ConnectionLost())
     {
       usleep(1000 * 1000); // 1000 ms to relax
       continue;
@@ -914,31 +900,10 @@ void cVNSIData::Action()
 
     // UNKOWN CHANNELID
 
-    else
+    else if (!onResponsePacket(vresp))
     {
       XBMC->Log(LOG_ERROR, "%s - Rxd a response packet on channel %lu !!", __FUNCTION__, channelID);
+      delete vresp;
     }
   }
-}
-
-bool cVNSIData::readData(uint8_t* buffer, int totalBytes)
-{
-  if(m_connectionLost) {
-    if(TryReconnect()) {
-      m_connectionLost = false;
-    }
-    else {
-      return false;
-    }
-  }
-
-  int ret = m_session.readData(buffer, totalBytes);
-  if (ret == 1)
-    return true;
-  else if (ret == 0)
-    return false;
-
-  XBMC->Log(LOG_ERROR, "%s - connection lost !!!", __FUNCTION__);
-  m_connectionLost = true;
-  return false;
 }

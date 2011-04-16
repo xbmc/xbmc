@@ -39,7 +39,8 @@
 #endif
 
 cVNSISession::cVNSISession()
-  : m_fd(INVALID_SOCKET)
+  : m_connectionLost(false)
+  , m_fd(INVALID_SOCKET)
   , m_protocol(0)
 {
 }
@@ -121,11 +122,15 @@ bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
   }
   catch (const char * str)
   {
-    XBMC->Log(LOG_ERROR, "cVNSISession::Open - %s", str);
+    XBMC->Log(LOG_ERROR, "%s - %s", __FUNCTION__,str);
     tcp_close(m_fd);
     m_fd = INVALID_SOCKET;
     return false;
   }
+
+  // store connection data for TryReconnect()
+  m_hostname = hostname;
+  m_port = port;
 
   return true;
 }
@@ -212,7 +217,7 @@ cResponsePacket* cVNSISession::ReadMessage()
   }
   else
   {
-    XBMC->Log(LOG_ERROR, "cVNSISession::ReadMessage() - Rxd a response packet on channel %lu !!", channelID);
+    XBMC->Log(LOG_ERROR, "%s - Rxd a response packet on channel %lu !!", __FUNCTION__, channelID);
   }
 
   return vresp;
@@ -220,13 +225,13 @@ cResponsePacket* cVNSISession::ReadMessage()
 
 bool cVNSISession::SendMessage(cRequestPacket* vrp)
 {
-  if (sendData(vrp->getPtr(), vrp->getLen()) != vrp->getLen())
+  if (sendData(vrp->getPtr(), vrp->getLen()) != (int)vrp->getLen())
     return false;
 
   return true;
 }
 
-cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp, bool sequence)
+cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp)
 {
   if(!SendMessage(vrp))
     return NULL;
@@ -236,8 +241,7 @@ cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp, bool sequence)
   while((pkt = ReadMessage()))
   {
     /* Discard everything other as response packets until it is received */
-    if (pkt->getChannelID() == CHANNEL_REQUEST_RESPONSE
-        && (!sequence || pkt->getRequestID() == vrp->getSerial()))
+    if (pkt->getChannelID() == CHANNEL_REQUEST_RESPONSE && pkt->getRequestID() == vrp->getSerial())
     {
       return pkt;
     }
@@ -247,10 +251,10 @@ cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp, bool sequence)
   return NULL;
 }
 
-bool cVNSISession::ReadSuccess(cRequestPacket* vrp, bool sequence)
+bool cVNSISession::ReadSuccess(cRequestPacket* vrp)
 {
   cResponsePacket *pkt = NULL;
-  if((pkt = ReadResult(vrp, sequence)) == NULL)
+  if((pkt = ReadResult(vrp)) == NULL)
   {
     return false;
   }
@@ -259,7 +263,7 @@ bool cVNSISession::ReadSuccess(cRequestPacket* vrp, bool sequence)
 
   if(retCode != VDR_RET_OK)
   {
-    XBMC->Log(LOG_ERROR, "cVNSISession::ReadSuccess - failed with error code '%i'", retCode);
+    XBMC->Log(LOG_ERROR, "%s - failed with error code '%i'", __FUNCTION__, retCode);
     return false;
   }
   return true;
@@ -269,7 +273,6 @@ int cVNSISession::sendData(void* bufR, size_t count)
 {
   size_t bytes_sent = 0;
   int this_write;
-  int temp_write;
 
   unsigned char* buf = (unsigned char*)bufR;
 
@@ -278,11 +281,11 @@ int cVNSISession::sendData(void* bufR, size_t count)
 #ifdef __WINDOWS__
     do
     {
-      temp_write = this_write = send(m_fd,(char*) buf, count- bytes_sent,0);
+      this_write = send(m_fd,(char*) buf, count- bytes_sent,0);
     } while ( (this_write == SOCKET_ERROR) && (WSAGetLastError() == WSAEINTR) );
 #else
     {
-      temp_write = this_write = write(m_fd, buf, count - bytes_sent);
+      this_write = write(m_fd, buf, count - bytes_sent);
     } while ( (this_write < 0) && (errno == EINTR) );
 #endif
     if (this_write <= 0)
@@ -296,42 +299,78 @@ int cVNSISession::sendData(void* bufR, size_t count)
   return(count);
 }
 
-int cVNSISession::readData(uint8_t* buffer, int totalBytes)
+void cVNSISession::OnReconnect() {
+}
+
+void cVNSISession::OnDisconnect() {
+}
+
+bool cVNSISession::TryReconnect() {
+  Abort();
+  Close();
+
+  if(!Open(m_hostname, m_port)) {
+    return false;
+  }
+
+  XBMC->Log(LOG_DEBUG, "%s - reconnected", __FUNCTION__);
+
+  OnReconnect();
+
+  return true;
+}
+
+bool cVNSISession::readData(uint8_t* buffer, int totalBytes)
 {
+  if(m_connectionLost) {
+    if(TryReconnect()) {
+      m_connectionLost = false;
+    }
+    else {
+      return false;
+    }
+  }
+
   int bytesRead = 0;
   int thisRead;
   int success;
   fd_set readSet;
   struct timeval timeout;
 
-  while(1)
+  while(bytesRead < totalBytes)
   {
     FD_ZERO(&readSet);
     FD_SET(m_fd, &readSet);
     timeout.tv_sec = g_iConnectTimeout;
     timeout.tv_usec = 0;
+
     success = select(m_fd + 1, &readSet, NULL, NULL, &timeout);
     if (success < 1)
     {
-      return 0;  // error, or timeout
+      return false;  // error, or timeout
     }
+
 #ifdef __WINDOWS__
     thisRead = recv(m_fd, (char*)&buffer[bytesRead], totalBytes - bytesRead, 0);
 #else
     thisRead = read(m_fd, &buffer[bytesRead], totalBytes - bytesRead);
 #endif
-    if (!thisRead)
+
+    // if read returns 0 then connection is closed
+    if(thisRead == 0)
     {
-      // if read returns 0 then connection is closed
-      // in non-blocking mode if read is called with no data available, it returns -1
-      // and sets errno to EGAGAIN. but we use select so it wouldn't do that anyway.
-      XBMC->Log(LOG_ERROR, "cVNSISession::readData - Detected connection closed");
-      return -1;
+      XBMC->Log(LOG_ERROR, "%s - connection lost !!!", __FUNCTION__);
+      m_connectionLost = true;
+      OnDisconnect();
+	  return false;
     }
+
+    // in non-blocking mode if read is called with no data available, it returns -1
+    // and sets errno to EGAGAIN. but we use select so it wouldn't do that anyway.
+	if(thisRead == -1)
+	  continue;
+
     bytesRead += thisRead;
-    if (bytesRead == totalBytes)
-    {
-      return 1;
-    }
   }
+  return true;
 }

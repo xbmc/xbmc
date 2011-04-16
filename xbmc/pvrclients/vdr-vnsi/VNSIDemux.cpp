@@ -423,7 +423,7 @@ void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
 {
   for (unsigned int i = 0; i < m_Streams.iStreamCount && !resp->end(); i++)
   {
-    int32_t index = resp->extract_U32();
+    uint32_t index = resp->extract_U32();
     if (index == m_Streams.stream[i].iPhysicalId)
     {
       if (m_Streams.stream[i].iCodecType == CODEC_TYPE_AUDIO)

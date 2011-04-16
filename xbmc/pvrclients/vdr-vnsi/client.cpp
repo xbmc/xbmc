@@ -314,7 +314,7 @@ PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
 PVR_ERROR DialogChannelScan(void)
 {
   cVNSIChannelScan scanner;
-  scanner.Open();
+  scanner.Open(g_szHostname, g_iPort);
   return PVR_ERROR_NO_ERROR;
 }
 
