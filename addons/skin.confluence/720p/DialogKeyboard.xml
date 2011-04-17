@@ -8,7 +8,95 @@
 	</coordinates>
 	<controls>
 		<control type="group">
+			<posx>-65</posx>
+			<posy>100</posy>
 			<include>VisibleFadeEffect</include>
+			<visible>Skin.HasSetting(HardwareKeyboard)</visible>
+			<visible>!Window.IsVisible(numericinput)</visible>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>890</width>
+				<height>160</height>
+				<texture border="40">DialogBack.png</texture>
+			</control>
+			<control type="image">
+				<posx>80</posx>
+				<posy>10</posy>
+				<width>730</width>
+				<height>70</height>
+				<aspectratio>stretch</aspectratio>
+				<texture>GlassTitleBar.png</texture>
+			</control>
+			<control type="label" id="311">
+				<description>dialog Heading</description>
+				<posx>20</posx>
+				<posy>20</posy>
+				<width>850</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="button">
+				<description>Close Window button</description>
+				<posx>800</posx>
+				<posy>9</posy>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>3</onleft>
+				<onright>3</onright>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<visible>system.getbool(input.enablemouse)</visible>
+			</control>
+			<control type="image">
+				<posx>40</posx>
+				<posy>60</posy>
+				<width>660</width>
+				<height>50</height>
+				<aspectratio>stretch</aspectratio>
+				<texture border="20">KeyboardEditArea.png</texture>
+			</control>
+			<control type="label" id="310">
+				<description>Edit Text</description>
+				<posx>45</posx>
+				<posy>60</posy>
+				<width>650</width>
+				<height>50</height>
+				<font>font13</font>
+				<align>left</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="button" id="300">
+				<description>DONE button</description>
+				<posx>710</posx>
+				<posy>60</posy>
+				<width>150</width>
+				<height>50</height>
+				<label>20177</label>
+				<onleft>57</onleft>
+				<onright>48</onright>
+				<onup>307</onup>
+				<ondown>302</ondown>
+				<texturenofocus border="3">KeyboardKeyNF.png</texturenofocus>
+				<texturefocus border="5">KeyboardKey.png</texturefocus>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<focusedcolor>black</focusedcolor>
+			</control>
+		</control>
+		<control type="group">
+			<include>VisibleFadeEffect</include>
+			<visible>!Skin.HasSetting(HardwareKeyboard)</visible>
 			<visible>!Window.IsVisible(numericinput)</visible>
 			<control type="image">
 				<posx>0</posx>
