@@ -1565,6 +1565,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       // also tell our weather and skin to reload as these are localized
       g_weatherManager.Refresh();
       g_application.ReloadSkin();
+      g_PVRManager.LocalizationChanged();
     }
   }
   else if (strSetting.Equals("lookandfeel.skintheme"))

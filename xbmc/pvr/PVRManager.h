@@ -306,6 +306,8 @@ public:
 
   void UpdateWindow(PVRWindow window);
 
+  void LocalizationChanged(void);
+
 protected:
   /*!
    * @brief PVR update and control thread.

@@ -174,7 +174,7 @@ int CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFil
 
 int CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
 {
-  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannelGroups->GetGroupAll(bRadio);
+  CPVRChannelGroup *channels = g_PVRChannelGroups->GetGroupAll(bRadio);
   CSingleLock lock(m_critSection);
   int iInitialSize           = results->Size();
 
@@ -201,7 +201,7 @@ int CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
 
 int CPVREpgContainer::GetEPGNext(CFileItemList* results, bool bRadio)
 {
-  CPVRChannelGroup *channels = (CPVRChannelGroup *) g_PVRChannelGroups->GetGroupAll(bRadio);
+  CPVRChannelGroup *channels = g_PVRChannelGroups->GetGroupAll(bRadio);
   CSingleLock lock(m_critSection);
   int iInitialSize           = results->Size();
 

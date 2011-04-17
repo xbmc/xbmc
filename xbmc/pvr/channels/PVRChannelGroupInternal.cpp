@@ -49,6 +49,19 @@ int CPVRChannelGroupInternal::Load(void)
   return iChannelCount;
 }
 
+void CPVRChannelGroupInternal::CheckGroupName(void)
+{
+  CSingleLock lock(m_critSection);
+
+  /* check whether the group name is still correct, or channels will fail to load after the language setting changed */
+  CStdString strNewGroupName = g_localizeStrings.Get(m_bRadio ? 19216 : 19217);
+  if (!m_strGroupName.Equals(strNewGroupName))
+  {
+    SetGroupName(strNewGroupName, true);
+    UpdateChannelPaths();
+  }
+}
+
 void CPVRChannelGroupInternal::UpdateChannelPaths(void)
 {
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
@@ -382,7 +395,7 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
 
 bool CPVRChannelGroupInternal::Persist(void)
 {
-  bool bReturn(false);
+  bool bReturn(true);
   CSingleLock lock(m_critSection);
 
   bool bHasNewChannels = HasNewChannels();
@@ -397,7 +410,6 @@ bool CPVRChannelGroupInternal::Persist(void)
     CLog::Log(LOGDEBUG, "CPVRChannelGroupInternal - %s - group '%s' has new channels. writing changes directly",
         __FUNCTION__, GroupName().c_str());
     /* write directly to get channel ids */
-    bReturn = true;
     for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
     {
       if (!at(iChannelPtr).channel->Persist())

@@ -232,13 +232,13 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
     {
       EnableSettings(CONTROL_TMR_CHNAME_TV, true);
       EnableSettings(CONTROL_TMR_CHNAME_RADIO, false);
-      channeltag = ((CPVRChannelGroup *) g_PVRChannelGroups->GetGroupAll(false))->GetByChannelNumber(tag->m_iChannelNumber);
+      channeltag = g_PVRChannelGroups->GetGroupAllTV()->GetByChannelNumber(tag->m_iChannelNumber);
     }
     else
     {
       EnableSettings(CONTROL_TMR_CHNAME_TV, false);
       EnableSettings(CONTROL_TMR_CHNAME_RADIO, true);
-      channeltag = ((CPVRChannelGroup *) g_PVRChannelGroups->GetGroupAll(true))->GetByChannelNumber(tag->m_iChannelNumber);
+      channeltag = g_PVRChannelGroups->GetGroupAllRadio()->GetByChannelNumber(tag->m_iChannelNumber);
     }
 
     if (channeltag)

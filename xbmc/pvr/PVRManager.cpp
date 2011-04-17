@@ -1043,3 +1043,9 @@ bool CPVRManager::IsRecording(void) const
 {
   return m_guiInfo->IsRecording();
 }
+
+void CPVRManager::LocalizationChanged(void)
+{
+  m_channelGroups->GetGroupAllRadio()->CheckGroupName();
+  m_channelGroups->GetGroupAllTV()->CheckGroupName();
+}

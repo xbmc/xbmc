@@ -72,7 +72,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
     if (m_parent->m_vecItems->Size() > 1 && !m_bShowHiddenChannels)
       buttons.Add(CONTEXT_BUTTON_MOVE, 116);                                          /* move channel up or down */
 
-    if (m_bShowHiddenChannels || g_PVRChannelGroups->GetGroupAll(false)->GetNumHiddenChannels() > 0)
+    if (m_bShowHiddenChannels || g_PVRChannelGroups->GetGroupAllTV()->GetNumHiddenChannels() > 0)
       buttons.Add(CONTEXT_BUTTON_SHOW_HIDDEN, m_bShowHiddenChannels ? 19050 : 19051); /* show hidden/visible channels */
 
     if (g_PVRClients->HasMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID()))

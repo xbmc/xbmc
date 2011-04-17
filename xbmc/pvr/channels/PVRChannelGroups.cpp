@@ -288,10 +288,10 @@ bool CPVRChannelGroups::PersistAll(void)
   return bReturn;
 }
 
-const CPVRChannelGroup *CPVRChannelGroups::GetGroupAll(void) const
+CPVRChannelGroupInternal *CPVRChannelGroups::GetGroupAll(void) const
 {
   if (size() > 0)
-    return at(0);
+    return (CPVRChannelGroupInternal *) at(0);
   else
     return NULL;
 }
