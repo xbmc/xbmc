@@ -77,26 +77,27 @@ CPVRClient::~CPVRClient(void)
 
 bool CPVRClient::Create(int iClientId, IPVRClientCallback *pvrCB)
 {
-  bool bReturn = false;
+  bool bReturn(false);
   CSingleLock lock(m_critSection);
-  CLog::Log(LOGDEBUG, "PVRClient - %s - creating PVR add-on instance '%s'", __FUNCTION__, Name().c_str());
+  CLog::Log(LOGDEBUG, "PVR - %s - creating PVR add-on instance '%s'", __FUNCTION__, Name().c_str());
 
   /* initialise members */
-  m_manager             = pvrCB;
-  m_pInfo               = new PVR_PROPERTIES;
-  m_pInfo->iClienId     = iClientId;
-  CStdString userpath   = _P(Profile());
-  m_pInfo->strUserPath     = userpath.c_str();
-  CStdString clientpath = _P(Path());
-  m_pInfo->strClientPath   = clientpath.c_str();
+  m_manager              = pvrCB;
+  if (!m_pInfo)
+    m_pInfo              = new PVR_PROPERTIES;
+  m_pInfo->iClienId      = iClientId;
+  CStdString userpath    = _P(Profile());
+  m_pInfo->strUserPath   = userpath.c_str();
+  CStdString clientpath  = _P(Path());
+  m_pInfo->strClientPath = clientpath.c_str();
 
   /* initialise the add-on */
   if (CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>::Create())
   {
     m_strHostName = m_pStruct->GetConnectionString();
-    SetAddonCapabilities();
     m_bReadyToUse = true;
-    bReturn = true;
+    bReturn       = true;
+    SetAddonCapabilities();
   }
   /* don't log failed inits here because it will spam the log file as this is called in a loop */
 
@@ -106,7 +107,7 @@ bool CPVRClient::Create(int iClientId, IPVRClientCallback *pvrCB)
 void CPVRClient::Destroy(void)
 {
   CSingleLock lock(m_critSection);
-  CLog::Log(LOGDEBUG, "PVRClient - %s - destroying PVR add-on '%s'", __FUNCTION__, GetFriendlyName());
+  CLog::Log(LOGDEBUG, "PVR - %s - destroying PVR add-on '%s'", __FUNCTION__, GetFriendlyName());
   m_bReadyToUse = false;
 
   try
