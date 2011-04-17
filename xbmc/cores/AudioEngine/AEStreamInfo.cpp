@@ -476,7 +476,7 @@ unsigned int CAEStreamInfo::SyncTrueHD(uint8_t *data, unsigned int size)
 
     /* if its a major audio unit */
     uint16_t length   = ((data[0] & 0x0F) << 8 | data[1]) << 1;
-    uint32_t syncword = ((((data[0] << 8 | data[1]) << 8) | data[2]) << 8) | data[3];
+    uint32_t syncword = ((((data[4] << 8 | data[5]) << 8) | data[6]) << 8) | data[7];
     if (syncword == 0xf8726fba)
     {
       /* we need 32 bytes to sync on a master audio unit */
@@ -505,6 +505,7 @@ unsigned int CAEStreamInfo::SyncTrueHD(uint8_t *data, unsigned int size)
       m_fsize      = length;
       m_dataType   = STREAM_TYPE_TRUEHD;
       m_syncFunc   = &CAEStreamInfo::SyncTrueHD;
+      m_packFunc   = &CAEPackIEC958::PackTrueHD;
       m_repeat     = 1;
       return skip;
     }
@@ -536,8 +537,6 @@ unsigned int CAEStreamInfo::SyncTrueHD(uint8_t *data, unsigned int size)
       if ((((check >> 4) ^ check) & 0xF) != 0xF)
       {
         /* lost sync */
-        m_dataType = STREAM_TYPE_NULL;
-        m_syncFunc = &CAEStreamInfo::DetectType;
         m_hasSync  = false;
         CLog::Log(LOGINFO, "CAEStreamInfo::SyncTrueHD - Sync Lost");
         continue;
@@ -551,8 +550,6 @@ unsigned int CAEStreamInfo::SyncTrueHD(uint8_t *data, unsigned int size)
   }
 
   /* lost sync */
-  m_dataType = STREAM_TYPE_NULL;
-  m_syncFunc = &CAEStreamInfo::DetectType;
   m_hasSync  = false;
   return size;
 }
