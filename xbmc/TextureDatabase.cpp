@@ -67,23 +67,6 @@ bool CTextureDatabase::CreateTables()
 
 bool CTextureDatabase::UpdateOldVersion(int version)
 {
-  if (version < 4)
-  {
-    m_pDS->exec("DROP TABLE texture");
-    m_pDS->exec("CREATE TABLE texture (id integer primary key, urlhash integer, url text, cachedurl text, usecount integer, lastusetime text, imagehash text)\n");
-  }
-  if (version < 5)
-  {
-    CLog::Log(LOGINFO, "create path table");
-    m_pDS->exec("CREATE TABLE path (id integer primary key, urlhash integer, url text, texture text)\n");
-
-    CLog::Log(LOGINFO, "create path index");
-    m_pDS->exec("CREATE INDEX idxPath ON path(urlhash)");
-  }
-  if (version < 6)
-  {
-    m_pDS->exec("ALTER TABLE texture ADD lasthashcheck text");
-  }
   return true;
 }
 
