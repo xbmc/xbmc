@@ -148,9 +148,6 @@ bool CEpgDatabase::Delete(const CEpg &table, const time_t start /* = 0 */, const
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "EpgDB - %s - clearing the EPG '%d'",
-      __FUNCTION__, table.EpgID());
-
   CStdString strWhereClause;
   strWhereClause = FormatSQL("idEpg = %u", table.EpgID());
 
