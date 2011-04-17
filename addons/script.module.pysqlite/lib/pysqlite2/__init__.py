@@ -22,8 +22,8 @@ if (float(xbmcapiversion) <= 1.0):
         warnings.warn("Unable to import sqlite3. This probably means you're on a version of python prior to 2.5 and trying to run an old script.")
         raise e
 
-    # whine like a sissy ...
-    warnings.warn("DeprecationWarning: the pysqlite2 module is deprecated; stop being lazy and change your script to use sqlite3.")
+    # ask politely :)
+    warnings.warn("DeprecationWarning: the pysqlite2 module is deprecated; please change your script to use sqlite3.")
 else:
     raise DeprecationWarning("You cannot use pysqlite2 while depending on version " + str(xbmcapiversion) + " of the xbmc.python api. Please use sqlite3 instead.")
 
