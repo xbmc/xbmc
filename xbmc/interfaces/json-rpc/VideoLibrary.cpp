@@ -343,7 +343,7 @@ JSON_STATUS CVideoLibrary::ScanForContent(const CStdString &method, ITransportLa
 bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
   CVideoDatabase videodatabase;
-  if ((parameterObject["movieid"].isInt() || parameterObject["episodeid"].isInt() || parameterObject["musicvideoid"].isInt()) && videodatabase.Open())
+  if (videodatabase.Open())
   {
     int movieID       = parameterObject.get("movieid", -1).asInt();
     int episodeID     = parameterObject.get("episodeid", -1).asInt();
