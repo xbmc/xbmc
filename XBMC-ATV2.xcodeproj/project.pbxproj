@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18ACF8E313597B0000B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF8E113597B0000B67371 /* RecentlyAddedJob.cpp */; };
 		4D5D2E131301753F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E121301753F006ABC13 /* CFNetwork.framework */; };
 		7C99B73F133D372300FC2B16 /* CacheCircular.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B73D133D372300FC2B16 /* CacheCircular.cpp */; };
 		7C99B7AA134072CD00FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */; };
@@ -928,6 +929,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		18ACF8E113597B0000B67371 /* RecentlyAddedJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RecentlyAddedJob.cpp; sourceTree = "<group>"; };
+		18ACF8E213597B0000B67371 /* RecentlyAddedJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentlyAddedJob.h; sourceTree = "<group>"; };
 		4D5D2E121301753F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		7C99B73D133D372300FC2B16 /* CacheCircular.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CacheCircular.cpp; sourceTree = "<group>"; };
 		7C99B73E133D372300FC2B16 /* CacheCircular.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheCircular.h; sourceTree = "<group>"; };
@@ -5115,6 +5118,8 @@
 				F56C7753131EC154000AD0F6 /* PerformanceSample.h */,
 				F56C7754131EC154000AD0F6 /* PerformanceStats.cpp */,
 				F56C7755131EC154000AD0F6 /* PerformanceStats.h */,
+				18ACF8E113597B0000B67371 /* RecentlyAddedJob.cpp */,
+				18ACF8E213597B0000B67371 /* RecentlyAddedJob.h */,
 				F56C7758131EC154000AD0F6 /* RegExp.cpp */,
 				F56C7759131EC154000AD0F6 /* RegExp.h */,
 				F56C775A131EC154000AD0F6 /* RingBuffer.cpp */,
@@ -6742,6 +6747,7 @@
 				F5AE41121341751E0004BD79 /* VideoLibrary.cpp in Sources */,
 				F5AE41131341751E0004BD79 /* XBMCOperations.cpp in Sources */,
 				F5AE453B134D2E720004BD79 /* JSONServiceDescription.cpp in Sources */,
+				18ACF8E313597B0000B67371 /* RecentlyAddedJob.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

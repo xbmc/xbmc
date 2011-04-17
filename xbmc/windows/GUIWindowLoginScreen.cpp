@@ -30,6 +30,7 @@
 #include "interfaces/python/XBPython.h"
 #endif
 #include "interfaces/Builtins.h"
+#include "interfaces/AnnouncementManager.h"
 #include "utils/Weather.h"
 #include "network/Network.h"
 #include "addons/Skin.h"
@@ -291,4 +292,6 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   g_windowManager.ChangeActiveWindow(g_SkinInfo->GetFirstWindow());
 
   g_application.UpdateLibraries();
+
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::System, "xbmc", "ProfileChange");
 }
