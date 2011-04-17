@@ -25,6 +25,7 @@
 #include "guilib/GUIListItem.h"
 
 class CFileItem;
+class CPVRTimerInfoTag;
 
 class CGUIDialogPVRTimerSettings : public CGUIDialogSettings
 {
@@ -39,6 +40,9 @@ protected:
   virtual void OnSettingChanged(SettingInfo &setting);
   virtual void OnOkay();
   virtual void OnCancel() { m_cancelled = true; }
+  virtual void AddChannelNames(CFileItemList &channelsList, SETTINGSTRINGS &channelNames, bool bRadio);
+  virtual void SetWeekdaySettingFromTimer(const CPVRTimerInfoTag &timer);
+  virtual void SetTimerFromWeekdaySetting(CPVRTimerInfoTag &timer);
 
   SYSTEMTIME      timerStartTime;
   SYSTEMTIME      timerEndTime;

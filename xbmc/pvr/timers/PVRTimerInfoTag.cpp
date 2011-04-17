@@ -54,6 +54,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_channel            = NULL;
   m_strFileNameAndPath = "";
   m_strGenre           = "";
+  m_iChannelNumber     = 0;
 }
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel, unsigned int iClientId)
@@ -64,7 +65,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel,
   m_bIsActive          = timer.bIsActive;
   m_iClientId          = iClientId;
   m_iClientIndex       = timer.iClientIndex;
-  m_iClientChannelUid  = timer.iClientChannelUid;
+  m_iClientChannelUid  = channel ? channel->UniqueID() : timer.iClientChannelUid;
+  m_iChannelNumber     = channel ? g_PVRChannelGroups->GetGroupAll(channel->IsRadio())->GetChannelNumber(*channel) : 0;
   m_bIsRecording       = timer.bIsRecording;
   m_StartTime          = timer.startTime + g_advancedSettings.m_iPVRTimeCorrection;
   m_StopTime           = timer.endTime + g_advancedSettings.m_iPVRTimeCorrection;
@@ -77,13 +79,12 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel,
   m_iMarginEnd         = timer.iMarginEnd;
   m_strGenre           = CPVRManager::ConvertGenreIdToString(timer.iGenreType, timer.iGenreSubType);
   m_epgInfo            = NULL;
-  m_channel            = NULL;
+  m_channel            = channel;
+  m_bIsRadio           = channel && channel->IsRadio();
   m_strFileNameAndPath.Format("pvr://client%i/timers/%i", m_iClientId, m_iClientIndex);
 
   if (timer.iEpgUid > 0)
   {
-    m_channel = channel;
-    m_bIsRadio = channel->IsRadio();
     m_epgInfo = (CPVREpgInfoTag *) channel->GetEPG()->GetTag(timer.iEpgUid, m_StartTime);
     if (m_epgInfo)
       m_strGenre = m_epgInfo->Genre();
