@@ -61,7 +61,7 @@ using namespace std;
 #ifndef HAS_DVD_DRIVE
 extern "C"
 {
-  void cdio_warn(const char* msg, ...) { CLog::Log(LOGWARNING, msg); }
+  void cdio_warn(const char* msg, ...) { CLog::Log(LOGWARNING, "%s", msg); }
 }
 #endif
 

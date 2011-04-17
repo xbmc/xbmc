@@ -166,4 +166,9 @@ public:
    * @see CPVRChannelGroup::GetMembers
    */
   int GetMembers(CFileItemList *results, bool bGroupMembers = true) const;
+
+  /*!
+   * @brief Check whether the group name is still correct after the language setting changed.
+   */
+  void CheckGroupName(void);
 };

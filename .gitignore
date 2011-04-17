@@ -45,6 +45,13 @@ config.log
 /build/
 .DS_Store
 *.dSYM
+/tools/darwin/depends/config.site
+/tools/darwin/depends/config.site.mk
+/tools/darwin/depends/Makefile
+/tools/darwin/depends/Makefile.include
+/tools/darwin/depends/configure
+/tools/darwin/depends/**/.gitignore
+/tools/darwin/depends/**/.installed
 /tools/osx/osx-depends/**/.gitignore
 /tools/osx/osx-depends/**/.installed
 /tools/osx/ios-depends/**/.gitignore

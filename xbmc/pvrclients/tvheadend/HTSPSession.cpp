@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -41,15 +41,18 @@ extern "C" {
 
 using namespace std;
 
-cHTSPSession::cHTSPSession()
-  : m_fd(INVALID_SOCKET)
-  , m_seq(0)
-  , m_challenge(NULL)
-  , m_challenge_len(0)
-  , m_protocol(0)
-  , m_iRefCount(0)
-  , m_connected(false)
-  , m_queue_size(1000)
+cHTSPSession::cHTSPSession() :
+    m_fd(INVALID_SOCKET),
+    m_iSequence(0),
+    m_challenge(NULL),
+    m_iChallengeLength(0),
+    m_iProtocol(0),
+    m_iRefCount(0),
+    m_iPortnumber(0),
+    m_iConnectTimeout(0),
+    m_bIsConnected(false),
+    m_bSendNotifications(false),
+    m_iQueueSize(1000)
 {
 }
 
@@ -60,15 +63,16 @@ cHTSPSession::~cHTSPSession()
 
 void cHTSPSession::Abort()
 {
-  shutdown(m_fd, SHUT_RDWR);
+  if(m_bIsConnected)
+    shutdown(m_fd, SHUT_RDWR);
 }
 
 void cHTSPSession::Close(bool bForce /* = false */)
 {
-  if (!bForce && (--m_iRefCount > 0 || !m_connected))
+  if (!bForce && (--m_iRefCount > 0 || !m_bIsConnected))
     return;
 
-  m_connected = false;
+  m_bIsConnected = false;
   m_iRefCount = 0;
 
   if(m_fd != INVALID_SOCKET)
@@ -81,74 +85,104 @@ void cHTSPSession::Close(bool bForce /* = false */)
   {
     free(m_challenge);
     m_challenge     = NULL;
-    m_challenge_len = 0;
+    m_iChallengeLength = 0;
   }
 }
 
-bool cHTSPSession::Connect(const std::string& hostname, int port)
+bool cHTSPSession::Connect(const std::string &strHostname, int iPortnumber, long iTimeout)
 {
   ++m_iRefCount;
 
-  if (m_connected)
+  if (m_bIsConnected)
     return true;
 
-  char errbuf[1024];
-  int  errlen = sizeof(errbuf);
+  if (!strHostname.empty())
+    m_strHostname = strHostname;
+
+  if (iPortnumber > 0)
+    m_iPortnumber = iPortnumber;
+  if(m_iPortnumber <= 0)
+    m_iPortnumber = 9982;
+
+  if (iTimeout > 0)
+    m_iConnectTimeout = iTimeout;
+
+  return ConnectInternal();
+}
+
+bool cHTSPSession::CheckConnection(void)
+{
+  if (!m_bIsConnected)
+    ConnectInternal();
+
+  return m_bIsConnected;
+}
+
+bool cHTSPSession::SendGreeting(void)
+{
   htsmsg_t *m;
   const char *method, *server, *version;
   const void * chall = NULL;
   size_t chall_len = 0;
   int32_t proto = 0;
 
-  if(port == 0)
-    port = 9982;
-
-  XBMC->Log(LOG_DEBUG, "%s - connecting to '%s', port '%d'\n", __FUNCTION__, hostname.c_str(), port);
-
-  m_fd = htsp_tcp_connect(hostname.c_str()
-                        , port
-                        , errbuf, errlen, 3000);
-  if(m_fd == INVALID_SOCKET)
-  {
-    XBMC->Log(LOG_ERROR, "%s - failed to connect to server (%s)\n", __FUNCTION__, errbuf);
-    return false;
-  }
-
-  // send hello
+  /* send hello */
   m = htsmsg_create_map();
   htsmsg_add_str(m, "method", "hello");
   htsmsg_add_str(m, "clientname", "XBMC Media Center");
   htsmsg_add_u32(m, "htspversion", 1);
 
-  // read welcome
+  /* read welcome */
   if((m = ReadResult(m)) == NULL)
-  {
-    XBMC->Log(LOG_ERROR, "%s - failed to read greeting from server", __FUNCTION__);
     return false;
-  }
+
   method  = htsmsg_get_str(m, "method");
             htsmsg_get_s32(m, "htspversion", &proto);
   server  = htsmsg_get_str(m, "servername");
   version = htsmsg_get_str(m, "serverversion");
             htsmsg_get_bin(m, "challenge", &chall, &chall_len);
 
-  XBMC->Log(LOG_DEBUG, "%s - connected to server: [%s], version: [%s], proto: %d"
-      , __FUNCTION__, server ? server : "", version ? version : "", proto);
-
-  m_server   = server;
-  m_version  = version;
-  m_protocol = proto;
+  m_strServerName = server;
+  m_strVersion    = version;
+  m_iProtocol     = proto;
 
   if(chall && chall_len)
   {
-    m_challenge     = malloc(chall_len);
-    m_challenge_len = chall_len;
+    m_challenge        = malloc(chall_len);
+    m_iChallengeLength = chall_len;
     memcpy(m_challenge, chall, chall_len);
   }
 
   htsmsg_destroy(m);
-  m_connected = true;
+
   return true;
+}
+
+bool cHTSPSession::ConnectInternal(void)
+{
+  char errbuf[1024];
+  int  errlen = sizeof(errbuf);
+
+  XBMC->Log(LOG_DEBUG, "%s - connecting to '%s', port '%d'\n", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
+
+  m_fd = htsp_tcp_connect(m_strHostname.c_str(), m_iPortnumber, errbuf, errlen, m_iConnectTimeout);
+  if(m_fd == INVALID_SOCKET)
+  {
+    XBMC->Log(LOG_ERROR, "%s - failed to connect to the backend (%s)\n", __FUNCTION__, errbuf);
+    return false;
+  }
+
+  if (SendGreeting())
+  {
+    m_bIsConnected = true;
+    XBMC->Log(LOG_DEBUG, "%s - connected to '%s', port '%d'\n", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
+    return true;
+  }
+  else
+  {
+    XBMC->Log(LOG_ERROR, "%s - failed to read greeting from the backend", __FUNCTION__);
+    return false;
+  }
 }
 
 bool cHTSPSession::Auth(const std::string& username, const std::string& password)
@@ -162,12 +196,8 @@ bool cHTSPSession::Auth(const std::string& username, const std::string& password
     struct HTSSHA1* shactx = (struct HTSSHA1*) malloc(hts_sha1_size);
     uint8_t d[20];
     hts_sha1_init(shactx);
-    hts_sha1_update(shactx
-                 , (const uint8_t *)password.c_str()
-                 , password.length());
-    hts_sha1_update(shactx
-                 , (const uint8_t *)m_challenge
-                 , m_challenge_len);
+    hts_sha1_update(shactx, (const uint8_t *) password.c_str(), password.length());
+    hts_sha1_update(shactx, (const uint8_t *) m_challenge, m_iChallengeLength);
     hts_sha1_final(shactx, d);
     htsmsg_add_bin(m, "digest", d, 20);
     free(shactx);
@@ -196,6 +226,7 @@ htsmsg_t* cHTSPSession::ReadMessage(int timeout)
   if(x)
   {
     XBMC->Log(LOG_ERROR, "%s - Failed to read packet size (%d)\n", __FUNCTION__, x);
+    Close(true);
     return NULL;
   }
 
@@ -210,6 +241,7 @@ htsmsg_t* cHTSPSession::ReadMessage(int timeout)
   {
     XBMC->Log(LOG_ERROR, "%s - Failed to read packet (%d)\n", __FUNCTION__, x);
     free(buf);
+    Close(true);
     return NULL;
   }
 
@@ -241,7 +273,7 @@ bool cHTSPSession::SendMessage(htsmsg_t* m)
 htsmsg_t* cHTSPSession::ReadResult(htsmsg_t* m, bool sequence)
 {
   if(sequence)
-    htsmsg_add_u32(m, "seq", ++m_seq);
+    htsmsg_add_u32(m, "seq", ++m_iSequence);
 
   if(!SendMessage(m))
     return NULL;
@@ -254,13 +286,13 @@ htsmsg_t* cHTSPSession::ReadResult(htsmsg_t* m, bool sequence)
     uint32_t seq;
     if(!sequence)
       break;
-    if(!htsmsg_get_u32(m, "seq", &seq) && seq == m_seq)
+    if(!htsmsg_get_u32(m, "seq", &seq) && seq == m_iSequence)
       break;
 
     queue.push_back(m);
-    if(queue.size() >= m_queue_size)
+    if(queue.size() >= m_iQueueSize)
     {
-      XBMC->Log(LOG_ERROR, "%s - maximum queue size (%u) reached", __FUNCTION__, m_queue_size);
+      XBMC->Log(LOG_ERROR, "%s - maximum queue size (%u) reached", __FUNCTION__, m_iQueueSize);
       m_queue.swap(queue);
       return NULL;
     }
@@ -626,7 +658,7 @@ bool cHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue)
   return true;
 }
 
-void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings)
+void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings, bool bNotify /* = false */)
 {
   SRecording recording;
   const char *state;
@@ -675,6 +707,18 @@ void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings)
     recording.error.clear();
   }
 
+  if (bNotify)
+  {
+    if (recording.state == ST_ABORTED)
+      XBMC->QueueNotification(QUEUE_INFO, "%s: '%s'", XBMC->GetLocalizedString(19224), recording.title.c_str());
+    else if (recording.state == ST_SCHEDULED)
+      XBMC->QueueNotification(QUEUE_INFO, "%s: '%s'", XBMC->GetLocalizedString(19225), recording.title.c_str());
+    else if (recording.state == ST_RECORDING)
+      XBMC->QueueNotification(QUEUE_INFO, "%s: '%s'", XBMC->GetLocalizedString(19226), recording.title.c_str());
+    else if (recording.state == ST_COMPLETED)
+      XBMC->QueueNotification(QUEUE_INFO, "%s: '%s'", XBMC->GetLocalizedString(19227), recording.title.c_str());
+  }
+
   XBMC->Log(LOG_DEBUG, "%s - id:%u, state:'%s', title:'%s', description: '%s'"
       , __FUNCTION__, recording.id, state, recording.title.c_str()
       , recording.description.c_str());
@@ -684,7 +728,7 @@ void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings)
   PVR->TriggerTimerUpdate();
 }
 
-void cHTSPSession::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings)
+void cHTSPSession::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings, bool bNotify /* = false */)
 {
   uint32_t id;
 
@@ -696,6 +740,9 @@ void cHTSPSession::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings)
   }
 
   XBMC->Log(LOG_DEBUG, "%s - Recording %i was deleted", __FUNCTION__, id);
+
+  if (bNotify)
+    XBMC->QueueNotification(QUEUE_INFO, "%s: '%s'", XBMC->GetLocalizedString(19228), recordings[id].title.c_str());
 
   recordings.erase(id);
 

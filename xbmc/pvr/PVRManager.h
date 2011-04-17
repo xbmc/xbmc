@@ -34,8 +34,14 @@ class CPVRRecordings;
 class CPVRTimers;
 class CPVREpgContainer;
 class CPVRGUIInfo;
+class CGUIDialogBusy;
 
-#define INFO_TOGGLE_TIME 1500
+#define g_PVRManager       CPVRManager::Get()
+#define g_PVRChannelGroups g_PVRManager.ChannelGroups()
+#define g_PVREpg           g_PVRManager.EPG()
+#define g_PVRTimers        g_PVRManager.Timers()
+#define g_PVRRecordings    g_PVRManager.Recordings()
+#define g_PVRClients       g_PVRManager.Clients()
 
 class CPVRManager : public Observer, private CThread, public IJobCallback
 {
@@ -59,42 +65,37 @@ public:
    * @brief Get the instance of the PVRManager.
    * @return The PVRManager instance.
    */
-  static CPVRManager *Get(void);
+  static CPVRManager &Get(void);
 
   /*!
    * @brief Get the channel groups container.
    * @return The groups container.
    */
-  static CPVRChannelGroupsContainer *GetChannelGroups(void) { return Get()->m_channelGroups; }
+  CPVRChannelGroupsContainer *ChannelGroups(void) const { return m_channelGroups; }
 
   /*!
    * @brief Get the EPG container.
    * @return The EPG container.
    */
-  static CPVREpgContainer *GetEpg(void) { return Get()->m_epg; }
+  CPVREpgContainer *EPG(void) const { return m_epg; }
 
   /*!
    * @brief Get the recordings container.
    * @return The recordings container.
    */
-  static CPVRRecordings *GetRecordings(void) { return Get()->m_recordings; }
+  CPVRRecordings *Recordings(void) const { return m_recordings; }
 
   /*!
    * @brief Get the timers container.
    * @return The timers container.
    */
-  static CPVRTimers *GetTimers(void) { return Get()->m_timers; }
+  CPVRTimers *Timers(void) const { return m_timers; }
 
   /*!
    * @brief Get the timers container.
    * @return The timers container.
    */
-  static CPVRClients *GetClients(void) { return Get()->m_addons; }
-
-  /*!
-   * @brief Clean up and destroy the PVRManager.
-   */
-  static void Destroy(void);
+  CPVRClients *Clients(void) const { return m_addons; }
 
   /*!
    * @brief Start the PVRManager
@@ -124,7 +125,7 @@ public:
    * @param dwInfo The string to get.
    * @return The requested string or an empty one if it wasn't found.
    */
-  const char* TranslateCharInfo(DWORD dwInfo) const;
+  bool TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const;
 
   /*!
    * @brief Get a GUIInfoManager integer.
@@ -294,12 +295,6 @@ public:
   bool StartPlayback(const CPVRChannel *channel, bool bPreview = false);
 
   /*!
-   * @brief Get the currently playing EPG tag and update it if needed.
-   * @return The currently playing EPG tag or NULL if there is none.
-   */
-  const CPVREpgInfoTag *GetPlayingTag(void) const;
-
-  /*!
    * @brief Convert a genre id and subid to a human readable name.
    * @param iID The genre ID.
    * @param iSubID The genre sub ID.
@@ -310,6 +305,8 @@ public:
   void UpdateCurrentFile(void);
 
   void UpdateWindow(PVRWindow window);
+
+  void LocalizationChanged(void);
 
 protected:
   /*!
@@ -403,11 +400,6 @@ private:
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 
-  /** @name singleton instance */
-  //@{
-  static CPVRManager *            m_instance;                    /*!< singleton instance */
-  //@}
-
   /** @name containers */
   //@{
   CPVRChannelGroupsContainer *    m_channelGroups;               /*!< pointer to the channel groups container */
@@ -433,6 +425,7 @@ private:
   CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class */
   bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
   bool                            m_bLoaded;
+  CGUIDialogBusy *                m_loadingBusyDialog;
   //@}
 
   /*--- Previous Channel data ---*/

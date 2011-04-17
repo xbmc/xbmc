@@ -42,6 +42,7 @@ CGUIWindowPVR::CGUIWindowPVR(void) :
   m_bViewsCreated    = false;
   m_currentSubwindow = NULL;
   m_savedSubwindow   = NULL;
+  m_bDialogOKActive  = false;
 }
 
 CGUIWindowPVR::~CGUIWindowPVR(void)
@@ -109,10 +110,12 @@ bool CGUIWindowPVR::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIWindowPVR::OnInitWindow(void)
 {
-  if (!CPVRManager::Get()->IsStarted() || !CPVRManager::GetClients()->HasActiveClients())
+  if (!g_PVRManager.IsStarted() || !g_PVRClients->HasActiveClients())
   {
+    m_bDialogOKActive = true;
     g_windowManager.PreviousWindow();
     CGUIDialogOK::ShowAndGetInput(19033,0,19045,19044);
+    m_bDialogOKActive = false;
     return;
   }
 
@@ -287,5 +290,18 @@ void CGUIWindowPVR::InitializeEpgCache(void)
 {
   CreateViews();
 
-  m_windowGuide->InitializeEpgCache();
+  m_windowGuide->UpdateEpgCache();
+}
+
+void CGUIWindowPVR::UnlockWindow(void)
+{
+  if (m_bDialogOKActive)
+  {
+    CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (dialog)
+    {
+      dialog->Close();
+      g_windowManager.ActivateWindow(WINDOW_PVR);
+    }
+  }
 }

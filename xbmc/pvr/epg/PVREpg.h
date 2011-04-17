@@ -78,6 +78,11 @@ public:
   void Cleanup(const CDateTime &Time);
 
   /*!
+   * @brief Remove all entries from this EPG.
+   */
+  void Clear(void);
+
+  /*!
    * @brief Update an entry in this EPG.
    * @param data The tag to update.
    * @param bUpdateDatabase If set to true, this event will be persisted in the database.

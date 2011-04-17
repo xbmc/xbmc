@@ -107,6 +107,11 @@ void CGUIWindowPVRRecordings::UpdateData(void)
   CLog::Log(LOGDEBUG, "CGUIWindowPVRRecordings - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
   m_bIsFocusing = true;
   m_bUpdateRequired = false;
+
+  /* lock the graphics context while updating */
+  CSingleLock graphicsLock(g_graphicsContext);
+
+  m_iSelected = m_parent->m_viewControl.GetSelectedItem();
   m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
@@ -127,7 +132,7 @@ bool CGUIWindowPVRRecordings::OnClickButton(CGUIMessage &message)
   if (IsSelectedButton(message))
   {
     bReturn = true;
-    CPVRManager::Get()->TriggerRecordingsUpdate();
+    g_PVRManager.TriggerRecordingsUpdate();
   }
 
   return bReturn;
@@ -184,9 +189,9 @@ bool CGUIWindowPVRRecordings::OnContextButtonDelete(CFileItem *item, CONTEXT_BUT
     if (!pDialog->IsConfirmed())
       return bReturn;
 
-    if (CPVRManager::GetRecordings()->DeleteRecording(*item))
+    if (g_PVRRecordings->DeleteRecording(*item))
     {
-      CPVRManager::Get()->TriggerRecordingsUpdate();
+      g_PVRManager.TriggerRecordingsUpdate();
     }
   }
 
@@ -231,7 +236,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonRename(CFileItem *item, CONTEXT_BUT
     CStdString strNewName = recording->m_strTitle;
     if (CGUIDialogKeyboard::ShowAndGetInput(strNewName, g_localizeStrings.Get(19041), false))
     {
-      if (CPVRManager::GetRecordings()->RenameRecording(*item, strNewName))
+      if (g_PVRRecordings->RenameRecording(*item, strNewName))
         UpdateData();
     }
   }

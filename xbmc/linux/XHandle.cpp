@@ -19,13 +19,10 @@
  *
  */
 
-#if !(defined(__APPLE__) && defined(__arm__))
-#include <SDL/SDL.h>
-#endif
-
 #include "XHandle.h"
 #include "XThreadUtils.h"
-#include "../utils/log.h"
+#include "utils/log.h"
+#include "threads/XBMC_mutex.h"
 
 int CXHandle::m_objectTracker[10] = {0};
 

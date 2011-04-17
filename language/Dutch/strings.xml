@@ -1620,6 +1620,13 @@
   <string id="19219">Ongegroepeerde kanalen</string>
   <string id="19220">Kanalen in</string>
   <string id="19221">Synchroniseer groepen met backends</string>
+  <string id="19222">Gids</string>
+  <string id="19223">Kon geen PVR client inschakelen. Kijk je instellingen na of je log.</string>
+  <string id="19224">Opname geannuleerd</string>
+  <string id="19225">Opname gepland</string>
+  <string id="19226">Opname gestart</string>
+  <string id="19227">Opname voltooid</string>
+  <string id="19228">Opname verwijderd</string>
 
   <string id="19499">Anders/Onbekend</string>
   <string id="19500">Film/Drama</string>

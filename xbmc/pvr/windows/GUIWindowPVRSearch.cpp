@@ -66,12 +66,12 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
       }
     }
 
-    buttons.Add(CONTEXT_BUTTON_INFO, 658);                /* Epg info button */
+    buttons.Add(CONTEXT_BUTTON_INFO, 19047);              /* Epg info button */
     buttons.Add(CONTEXT_BUTTON_SORTBY_CHANNEL, 19062);    /* Sort by channel */
     buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);         /* Sort by Name */
     buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);         /* Sort by Date */
     buttons.Add(CONTEXT_BUTTON_CLEAR, 20375);             /* Clear search results */
-    if (CPVRManager::GetClients()->HasMenuHooks(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ClientID()))
+    if (g_PVRClients->HasMenuHooks(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ClientID()))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
   }
 }
@@ -109,6 +109,11 @@ void CGUIWindowPVRSearch::UpdateData(void)
   CLog::Log(LOGDEBUG, "CGUIWindowPVRSearch - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
   m_bIsFocusing = true;
   m_bUpdateRequired = false;
+
+  /* lock the graphics context while updating */
+  CSingleLock graphicsLock(g_graphicsContext);
+
+  m_iSelected = m_parent->m_viewControl.GetSelectedItem();
   m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
@@ -126,7 +131,7 @@ void CGUIWindowPVRSearch::UpdateData(void)
       dlgProgress->Progress();
     }
 
-    CPVRManager::GetEpg()->GetEPGSearch(m_parent->m_vecItems, m_searchfilter);
+    g_PVREpg->GetEPGSearch(m_parent->m_vecItems, m_searchfilter);
     if (dlgProgress)
       dlgProgress->Close();
 

@@ -129,7 +129,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
       return bReturn;
     }
 
-    const CPVRTimerInfoTag *timerTag = CPVRManager::GetTimers()->GetMatch(tag);
+    const CPVRTimerInfoTag *timerTag = g_PVRTimers->GetMatch(tag);
     bool bHasTimer = timerTag != NULL;
 
     if (!bHasTimer)
@@ -201,7 +201,7 @@ void CGUIDialogPVRGuideInfo::Update()
     return;
   }
 
-  bool bHasTimer = CPVRManager::GetTimers()->GetMatch(tag) != NULL;
+  bool bHasTimer = g_PVRTimers->GetMatch(tag) != NULL;
   if (!bHasTimer)
   {
     /* no timer present on this tag */

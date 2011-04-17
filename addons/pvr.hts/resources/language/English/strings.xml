@@ -6,7 +6,7 @@
     <string id="30002">HTSP port</string>
     <string id="30003">Username</string>
     <string id="30004">Password</string>
-    <string id="30005">Skip first I-frames</string>
     <string id="30006">Connect timeout in seconds</string>
     <string id="30007">Response timeout in seconds</string>
+    <string id="30008">Display a notification on timer updates</string>
 </strings>

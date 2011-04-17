@@ -82,7 +82,7 @@ public:
   CStdString            m_strGenre;           /*!< @brief genre of the timer */
 
   CPVRTimerInfoTag(void);
-  CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientId);
+  CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel, unsigned int iClientId);
 
   void Reset();
 

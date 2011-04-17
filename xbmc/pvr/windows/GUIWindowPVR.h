@@ -58,6 +58,8 @@ public:
   virtual void UpdateWindow(PVRWindow window);
   virtual void InitializeEpgCache(void);
 
+  void UnlockWindow();
+
   CGUIEPGGridContainer *m_guideGrid;
 
 protected:
@@ -83,4 +85,5 @@ private:
 
   bool                     m_bViewsCreated;
   CCriticalSection         m_critSection;
+  bool                     m_bDialogOKActive;
 };

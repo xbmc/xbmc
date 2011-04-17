@@ -302,7 +302,7 @@ bool cVNSIData::GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, 
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return false;
   }
-  if (!vrp.add_U32(channel.iChannelNumber) || !vrp.add_U32(start) || !vrp.add_U32(end - start))
+  if (!vrp.add_U32(channel.iUniqueId) || !vrp.add_U32(start) || !vrp.add_U32(end - start))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't add parameter to cRequestPacket", __FUNCTION__);
     return false;
@@ -510,12 +510,16 @@ PVR_ERROR cVNSIData::AddTimer(const PVR_TIMER &timerinfo)
     return PVR_ERROR_UNKOWN;
   }
 
+  // use timer margin to calculate start/end times
+  uint32_t starttime = timerinfo.startTime - timerinfo.iMarginStart;
+  uint32_t endtime = timerinfo.endTime + timerinfo.iMarginEnd;
+
   if (!vrp.add_U32(timerinfo.bIsActive))     return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iPriority))   return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iLifetime))   return PVR_ERROR_UNKOWN;
-//  if (!vrp.add_U32(timerinfo.channelNum)) return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.startTime))  return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.endTime))    return PVR_ERROR_UNKOWN;
+  if (!vrp.add_U32(timerinfo.iClientChannelUid)) return PVR_ERROR_UNKOWN;
+  if (!vrp.add_U32(starttime))  return PVR_ERROR_UNKOWN;
+  if (!vrp.add_U32(endtime))    return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.bIsRepeating ? timerinfo.firstDay : 0))   return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iWeekdays))return PVR_ERROR_UNKOWN;
   if (!vrp.add_String(path.c_str()))      return PVR_ERROR_UNKOWN;
@@ -587,15 +591,19 @@ PVR_ERROR cVNSIData::RenameTimer(const PVR_TIMER &timerinfo, const char *newname
 
 PVR_ERROR cVNSIData::UpdateTimer(const PVR_TIMER &timerinfo)
 {
+  // use timer margin to calculate start/end times
+  uint32_t starttime = timerinfo.startTime - timerinfo.iMarginStart;
+  uint32_t endtime = timerinfo.endTime + timerinfo.iMarginEnd;
+
   cRequestPacket vrp;
   if (!vrp.init(VDR_TIMER_UPDATE))        return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iClientIndex))      return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.bIsActive))     return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iPriority))   return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iLifetime))   return PVR_ERROR_UNKOWN;
-//  if (!vrp.add_U32(timerinfo.channelNum)) return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.startTime))  return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.endTime))    return PVR_ERROR_UNKOWN;
+  if (!vrp.add_U32(timerinfo.iClientChannelUid)) return PVR_ERROR_UNKOWN;
+  if (!vrp.add_U32(starttime))  return PVR_ERROR_UNKOWN;
+  if (!vrp.add_U32(endtime))    return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.bIsRepeating ? timerinfo.firstDay : 0))   return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iWeekdays))return PVR_ERROR_UNKOWN;
   if (!vrp.add_String(timerinfo.strTitle))   return PVR_ERROR_UNKOWN;

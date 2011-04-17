@@ -26,30 +26,29 @@
 
 using namespace std;
 
-//cPVRClientTvheadend *g_client = NULL;
-bool m_bCreated               = false;
-ADDON_STATUS m_CurStatus      = STATUS_UNKNOWN;
-int g_clientID                = -1;
+bool         m_bCreated  = false;
+ADDON_STATUS m_CurStatus = STATUS_UNKNOWN;
+int          g_iClientId = -1;
 
 /* User adjustable settings are saved here.
  * Default values are defined inside client.h
  * and exported to the other source files.
  */
-CStdString g_szHostname       = DEFAULT_HOST;
-int g_iPortHTSP               = DEFAULT_HTSP_PORT;
-int g_iPortHTTP               = DEFAULT_HTTP_PORT;
-int g_iConnectTimeout         = DEFAULT_CONNECT_TIMEOUT;
-int g_iResponseTimeout        = DEFAULT_RESPONSE_TIMEOUT;
-int g_iSkipIFrame             = DEFAULT_SKIP_I_FRAME;
-CStdString g_szUsername       = "";
-CStdString g_szPassword       = "";
-CStdString g_szUserPath       = "";
-CStdString g_szClientPath     = "";
+std::string g_strHostname             = DEFAULT_HOST;
+int         g_iPortHTSP               = DEFAULT_HTSP_PORT;
+int         g_iPortHTTP               = DEFAULT_HTTP_PORT;
+int         g_iConnectTimeout         = DEFAULT_CONNECT_TIMEOUT;
+int         g_iResponseTimeout        = DEFAULT_RESPONSE_TIMEOUT;
+bool        g_bShowTimerNotifications = true;
+std::string g_strUsername             = "";
+std::string g_strPassword             = "";
+std::string g_strUserPath             = "";
+std::string g_strClientPath           = "";
 
-CHelper_libXBMC_addon *XBMC   = NULL;
-CHelper_libXBMC_pvr   *PVR    = NULL;
-cHTSPDemux *HTSPDemuxer       = NULL;
-cHTSPData  *HTSPData          = NULL;
+CHelper_libXBMC_addon *XBMC           = NULL;
+CHelper_libXBMC_pvr   *PVR            = NULL;
+cHTSPDemux *           HTSPDemuxer    = NULL;
+cHTSPData *            HTSPData       = NULL;
 
 extern "C" {
 
@@ -61,23 +60,23 @@ void ReadSettings(void)
   buffer[0] = 0; /* Set the end of string */
 
   if (XBMC->GetSetting("host", buffer))
-    g_szHostname = buffer;
+    g_strHostname = buffer;
   else
-    g_szHostname = DEFAULT_HOST;
+    g_strHostname = DEFAULT_HOST;
   buffer[0] = 0; /* Set the end of string */
 
   /* read setting "user" from settings.xml */
   if (XBMC->GetSetting("user", buffer))
-    g_szUsername = buffer;
+    g_strUsername = buffer;
   else
-    g_szUsername = "";
+    g_strUsername = "";
   buffer[0] = 0; /* Set the end of string */
 
   /* read setting "pass" from settings.xml */
   if (XBMC->GetSetting("pass", buffer))
-    g_szPassword = buffer;
+    g_strPassword = buffer;
   else
-    g_szPassword = "";
+    g_strPassword = "";
 
   free (buffer);
 
@@ -89,10 +88,6 @@ void ReadSettings(void)
   if (!XBMC->GetSetting("http_port", &g_iPortHTTP))
     g_iPortHTTP = DEFAULT_HTTP_PORT;
 
-  /* read setting "skip_I_frame_count" from settings.xml */
-  if (!XBMC->GetSetting("skip_I_frame_count", &g_iSkipIFrame))
-    g_iSkipIFrame = DEFAULT_SKIP_I_FRAME;
-
   /* read setting "connect_timeout" from settings.xml */
   if (!XBMC->GetSetting("connect_timeout", &g_iConnectTimeout))
     g_iConnectTimeout = DEFAULT_CONNECT_TIMEOUT;
@@ -100,6 +95,10 @@ void ReadSettings(void)
   /* read setting "read_timeout" from settings.xml */
   if (!XBMC->GetSetting("response_timeout", &g_iResponseTimeout))
     g_iResponseTimeout = DEFAULT_RESPONSE_TIMEOUT;
+
+  /* read setting "notifications_timers" from settings.xml */
+  if (!XBMC->GetSetting("notifications_timers", &g_bShowTimerNotifications))
+    g_bShowTimerNotifications = true;
 }
 
 ADDON_STATUS Create(void* hdl, void* props)
@@ -119,15 +118,15 @@ ADDON_STATUS Create(void* hdl, void* props)
 
   XBMC->Log(LOG_DEBUG, "%s - Creating Tvheadend PVR-Client", __FUNCTION__);
 
-  m_CurStatus    = STATUS_UNKNOWN;
-  g_clientID     = pvrprops->iClienId;
-  g_szUserPath   = pvrprops->strUserPath;
-  g_szClientPath = pvrprops->strClientPath;
+  m_CurStatus     = STATUS_UNKNOWN;
+  g_iClientId     = pvrprops->iClienId;
+  g_strUserPath   = pvrprops->strUserPath;
+  g_strClientPath = pvrprops->strClientPath;
 
   ReadSettings();
 
   HTSPData = new cHTSPData;
-  if (!HTSPData->Open(g_szHostname, g_iPortHTSP, g_szUsername, g_szPassword, g_iConnectTimeout * 1000))
+  if (!HTSPData->Open(g_strHostname, g_iPortHTSP, g_strUsername, g_strPassword, g_iConnectTimeout * 1000))
   {
     m_CurStatus = STATUS_LOST_CONNECTION;
     return m_CurStatus;
@@ -140,6 +139,10 @@ ADDON_STATUS Create(void* hdl, void* props)
 
 ADDON_STATUS GetStatus()
 {
+  /* check whether we're still connected */
+  if (m_CurStatus == STATUS_OK && HTSPData->IsConnected())
+    m_CurStatus = STATUS_LOST_CONNECTION;
+
   return m_CurStatus;
 }
 
@@ -169,62 +172,56 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   if (str == "host")
   {
     string tmp_sHostname;
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'host' from %s to %s", __FUNCTION__, g_szHostname.c_str(), (const char*) settingValue);
-    tmp_sHostname = g_szHostname;
-    g_szHostname = (const char*) settingValue;
-    if (tmp_sHostname != g_szHostname)
+    XBMC->Log(LOG_INFO, "%s - Changed Setting 'host' from %s to %s", __FUNCTION__, g_strHostname.c_str(), (const char*) settingValue);
+    tmp_sHostname = g_strHostname;
+    g_strHostname = (const char*) settingValue;
+    if (tmp_sHostname != g_strHostname)
       return STATUS_NEED_RESTART;
   }
   else if (str == "user")
   {
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'user'", __FUNCTION__);
-    string tmp_sUsername = g_szUsername;
-    g_szUsername = (const char*) settingValue;
-    if (tmp_sUsername != g_szUsername)
+    string tmp_sUsername = g_strUsername;
+    g_strUsername = (const char*) settingValue;
+    if (tmp_sUsername != g_strUsername)
+    {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'user'", __FUNCTION__);
       return STATUS_NEED_RESTART;
+    }
   }
   else if (str == "pass")
   {
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'pass'", __FUNCTION__);
-    string tmp_sPassword = g_szPassword;
-    g_szPassword = (const char*) settingValue;
-    if (tmp_sPassword != g_szPassword)
+    string tmp_sPassword = g_strPassword;
+    g_strPassword = (const char*) settingValue;
+    if (tmp_sPassword != g_strPassword)
+    {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'pass'", __FUNCTION__);
       return STATUS_NEED_RESTART;
+    }
   }
   else if (str == "htsp_port")
   {
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'htsp_port' from %u to %u", __FUNCTION__, g_iPortHTSP, *(int*) settingValue);
     if (g_iPortHTSP != *(int*) settingValue)
     {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'htsp_port' from %u to %u", __FUNCTION__, g_iPortHTSP, *(int*) settingValue);
       g_iPortHTSP = *(int*) settingValue;
       return STATUS_NEED_RESTART;
     }
   }
   else if (str == "http_port")
   {
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'port' from %u to %u", __FUNCTION__, g_iPortHTTP, *(int*) settingValue);
     if (g_iPortHTTP != *(int*) settingValue)
     {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'port' from %u to %u", __FUNCTION__, g_iPortHTTP, *(int*) settingValue);
       g_iPortHTTP = *(int*) settingValue;
       return STATUS_NEED_RESTART;
-    }
-  }
-  else if (str == "skip_I_frame_count")
-  {
-    int iNewValue = *(int*) settingValue;
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'skip_I_frame_count' from %u to %u", __FUNCTION__, g_iSkipIFrame, iNewValue);
-    if (g_iSkipIFrame != iNewValue)
-    {
-      g_iSkipIFrame = iNewValue;
-      return STATUS_OK;
     }
   }
   else if (str == "connect_timeout")
   {
     int iNewValue = *(int*) settingValue + 1;
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'connect_timeout' from %u to %u", __FUNCTION__, g_iConnectTimeout, iNewValue);
     if (g_iConnectTimeout != iNewValue)
     {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'connect_timeout' from %u to %u", __FUNCTION__, g_iConnectTimeout, iNewValue);
       g_iConnectTimeout = iNewValue;
       return STATUS_OK;
     }
@@ -232,10 +229,20 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   else if (str == "response_timeout")
   {
     int iNewValue = *(int*) settingValue + 1;
-    XBMC->Log(LOG_INFO, "%s - Changed Setting 'response_timeout' from %u to %u", __FUNCTION__, g_iResponseTimeout, iNewValue);
     if (g_iResponseTimeout != iNewValue)
     {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'response_timeout' from %u to %u", __FUNCTION__, g_iResponseTimeout, iNewValue);
       g_iResponseTimeout = iNewValue;
+      return STATUS_OK;
+    }
+  }
+  else if (str == "notifications_timers")
+  {
+    bool bNewValue = *(bool*) settingValue;
+    if (g_bShowTimerNotifications != bNewValue)
+    {
+      XBMC->Log(LOG_INFO, "%s - Changed Setting 'notifications_timers' from %u to %u", __FUNCTION__, g_bShowTimerNotifications, bNewValue);
+      g_bShowTimerNotifications = bNewValue;
       return STATUS_OK;
     }
   }
@@ -284,8 +291,8 @@ PVR_ERROR GetStreamProperties(PVR_STREAM_PROPERTIES* pProperties)
 
 const char * GetBackendName(void)
 {
-  static CStdString strBackendName = HTSPData ? HTSPData->GetServerName() : "unknown";
-  return strBackendName.c_str();
+  static const char *strBackendName = HTSPData ? HTSPData->GetServerName() : "unknown";
+  return strBackendName;
 }
 
 const char * GetBackendVersion(void)
@@ -300,9 +307,9 @@ const char * GetConnectionString(void)
 {
   static CStdString strConnectionString;
   if (HTSPData)
-    strConnectionString.Format("%s:%i%s", g_szHostname.c_str(), g_iPortHTSP, HTSPData->CheckConnection() ? "" : " (Not connected!)");
+    strConnectionString.Format("%s:%i%s", g_strHostname.c_str(), g_iPortHTSP, HTSPData->CheckConnection() ? "" : " (Not connected!)");
   else
-    strConnectionString.Format("%s:%i (addon error!)", g_szHostname.c_str(), g_iPortHTSP);
+    strConnectionString.Format("%s:%i (addon error!)", g_strHostname.c_str(), g_iPortHTSP);
   return strConnectionString.c_str();
 }
 

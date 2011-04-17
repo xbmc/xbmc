@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -31,31 +31,37 @@ public:
   cHTSPData();
   ~cHTSPData();
 
-  bool Open(CStdString hostname, int port, CStdString user, CStdString pass, long timeout);
+  bool Open(const std::string &strHostname, unsigned int iPort, const std::string &strUsername, const std::string &strPassword, long iTimeout);
   void Close();
-  bool CheckConnection();
+  bool CheckConnection(void)   { return m_session.CheckConnection(); }
+  bool IsConnected(void) const { return m_session.IsConnected(); }
 
-  htsmsg_t*  ReadResult(htsmsg_t* m);
-  int        GetProtocol()   { return m_session.GetProtocol(); }
-  CStdString GetServerName() { return m_session.GetServerName(); }
-  CStdString GetVersion()    { return m_session.GetVersion(); }
-  bool       GetDriveSpace(long long *total, long long *used);
-  bool       GetTime(time_t *localTime, int *gmtOffset);
-  int        GetNumChannels();
-  PVR_ERROR  GetChannels(PVR_HANDLE handle, bool bRadio);
-  PVR_ERROR  GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd);
-  int        GetNumRecordings();
-  PVR_ERROR  GetRecordings(PVR_HANDLE handle);
-  PVR_ERROR  DeleteRecording(const PVR_RECORDING &recinfo);
-  PVR_ERROR  AddTimer(const PVR_TIMER &timerinfo);
-  PVR_ERROR  UpdateTimer(const PVR_TIMER &timerinfo);
-  PVR_ERROR  RenameRecording(const PVR_RECORDING &recinfo, const char* newname);
-  int        GetNumTimers();
-  PVR_ERROR  GetTimers(PVR_HANDLE handle);
-  PVR_ERROR  DeleteTimer(const PVR_TIMER &timerinfo, bool force);
-  int        GetNumChannelGroups(void);
-  PVR_ERROR  GetChannelGroups(PVR_HANDLE handle);
-  PVR_ERROR  GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group);
+  /*!
+   * @brief Send a message to the backend and read the result.
+   * @param message The message to send.
+   * @return The returned message or NULL if an error occured or nothing was received.
+   */
+  htsmsg_t *   ReadResult(htsmsg_t *message);
+  int          GetProtocol(void) const   { return m_session.GetProtocol(); }
+  const char * GetServerName(void) const { return m_session.GetServerName(); }
+  const char * GetVersion(void) const    { return m_session.GetVersion(); }
+  bool         GetDriveSpace(long long *total, long long *used);
+  bool         GetTime(time_t *localTime, int *gmtOffset);
+  unsigned int GetNumChannels(void);
+  PVR_ERROR    GetChannels(PVR_HANDLE handle, bool bRadio);
+  PVR_ERROR    GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd);
+  unsigned int GetNumRecordings();
+  PVR_ERROR    GetRecordings(PVR_HANDLE handle);
+  PVR_ERROR    DeleteRecording(const PVR_RECORDING &recinfo);
+  PVR_ERROR    AddTimer(const PVR_TIMER &timerinfo);
+  PVR_ERROR    UpdateTimer(const PVR_TIMER &timerinfo);
+  PVR_ERROR    RenameRecording(const PVR_RECORDING &recinfo, const char* newname);
+  unsigned int GetNumTimers();
+  PVR_ERROR    GetTimers(PVR_HANDLE handle);
+  PVR_ERROR    DeleteTimer(const PVR_TIMER &timerinfo, bool force);
+  unsigned int GetNumChannelGroups(void);
+  PVR_ERROR    GetChannelGroups(PVR_HANDLE handle);
+  PVR_ERROR    GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group);
 
 protected:
   virtual void Action(void);

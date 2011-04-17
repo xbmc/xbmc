@@ -106,7 +106,7 @@ public:
    * @brief Get the group that contains all channels.
    * @return The group that contains all channels.
    */
-  const CPVRChannelGroup *GetGroupAll(void) const;
+  CPVRChannelGroupInternal *GetGroupAll(void) const;
 
   /*!
    * @brief Get the list of groups.

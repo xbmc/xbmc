@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -47,13 +47,14 @@ protected:
   htsmsg_t* ReadStream();
 
 private:
+  void SetLanguageInfo(const char *strLanguage, char *strDestination);
+
   unsigned              m_subs;
   cHTSPSession          m_session;
   int                   m_channel;
   int                   m_tag;
   int                   m_StatusCount;
-  int                   m_SkipIFrame;
-  CStdString            m_Status;
+  std::string           m_Status;
   PVR_STREAM_PROPERTIES m_Streams;
   SChannels             m_channels;
   SQueueStatus          m_QueueStatus;

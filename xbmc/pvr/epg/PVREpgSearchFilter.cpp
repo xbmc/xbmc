@@ -66,7 +66,7 @@ bool PVREpgSearchFilter::FilterEntry(const CPVREpgInfoTag &tag) const
     }
     if (m_iChannelGroup != -1)
     {
-      const CPVRChannelGroup *group = CPVRManager::GetChannelGroups()->GetById(tag.ChannelTag()->IsRadio(), m_iChannelGroup);
+      const CPVRChannelGroup *group = g_PVRChannelGroups->GetById(tag.ChannelTag()->IsRadio(), m_iChannelGroup);
       if (!group || !group->IsGroupMember(tag.ChannelTag()))
         bReturn = false;
     }

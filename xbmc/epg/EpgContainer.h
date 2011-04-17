@@ -85,6 +85,20 @@ private:
   virtual bool UpdateEPG(bool bShowProgress = false);
 
   /*!
+   * @return True if a running update should be interrupted, false otherwise.
+   */
+  virtual bool InterruptUpdate(void) const;
+
+  /*!
+   * @brief Load or update a single table.
+   * @param epg The table to update.
+   * @param start The start time to use.
+   * @param end The end time to use.
+   * @return True if the load or update was successful, false otherwise.
+   */
+  virtual bool UpdateSingleTable(CEpg *epg, const time_t start, const time_t end);
+
+  /*!
    * @brief A hook that will be called on every update thread iteration.
    */
   virtual void ProcessHook(const CDateTime &time) {};

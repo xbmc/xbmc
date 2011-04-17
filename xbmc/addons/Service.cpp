@@ -50,7 +50,7 @@ bool CService::Start()
   {
 #ifdef HAS_PYTHON
   case PYTHON:
-    ret = (g_pythonParser.evalFile(LibPath()) != -1);
+    ret = (g_pythonParser.evalFile(LibPath(),this->shared_from_this()) != -1);
     break;
 #endif
 

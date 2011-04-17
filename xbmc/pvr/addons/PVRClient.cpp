@@ -39,8 +39,6 @@
 using namespace std;
 using namespace ADDON;
 
-/* TODO factor out the annoying time conversion */
-
 CPVRClient::CPVRClient(const AddonProps& props) :
     CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>(props),
     m_bReadyToUse(false),
@@ -53,7 +51,7 @@ CPVRClient::CPVRClient(const AddonProps& props) :
     m_bGotConnectionString(false),
     m_strFriendlyName("unknown"),
     m_bGotFriendlyName(false),
-    m_bGotServerProperties(false)
+    m_bGotAddonCapabilities(false)
 {
 }
 
@@ -69,7 +67,7 @@ CPVRClient::CPVRClient(const cp_extension_t *ext) :
     m_bGotConnectionString(false),
     m_strFriendlyName("unknown"),
     m_bGotFriendlyName(false),
-    m_bGotServerProperties(false)
+    m_bGotAddonCapabilities(false)
 {
 }
 
@@ -96,6 +94,7 @@ bool CPVRClient::Create(int iClientId, IPVRClientCallback *pvrCB)
   if (CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>::Create())
   {
     m_strHostName = m_pStruct->GetConnectionString();
+    SetAddonCapabilities();
     m_bReadyToUse = true;
     bReturn = true;
   }
@@ -150,11 +149,9 @@ PVR_ERROR CPVRClient::GetAddonCapabilities(PVR_ADDON_CAPABILITIES *pCapabilities
 {
   CSingleLock lock(m_critSection);
 
-  /* cached locally */
-  PVR_ERROR retVal = SetProperties();
-  *pCapabilities = m_serverProperties;
+  *pCapabilities = m_addonCapabilities;
 
-  return retVal;
+  return PVR_ERROR_NO_ERROR;
 }
 
 const char *CPVRClient::GetBackendName(void)
@@ -249,8 +246,7 @@ PVR_ERROR CPVRClient::StartChannelScan(void)
   if (!m_bReadyToUse)
     return PVR_ERROR_UNKOWN;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsChannelScan)
+  if (!m_addonCapabilities.bSupportsChannelScan)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
@@ -290,8 +286,7 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg,
   if (!m_bReadyToUse)
     return retVal;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsEPG)
+  if (!m_addonCapabilities.bSupportsEPG)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
@@ -330,8 +325,7 @@ int CPVRClient::GetChannelGroupsAmount(void)
   if (!m_bReadyToUse)
     return iReturn;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsChannelGroups)
+  if (!m_addonCapabilities.bSupportsChannelGroups)
     return iReturn;
 
   try
@@ -354,8 +348,7 @@ PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups *groups)
   if (!m_bReadyToUse)
     return retVal;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsChannelGroups)
+  if (!m_addonCapabilities.bSupportsChannelGroups)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
@@ -387,8 +380,7 @@ PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup *group)
   if (!m_bReadyToUse)
     return retVal;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsChannelGroups)
+  if (!m_addonCapabilities.bSupportsChannelGroups)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
@@ -450,9 +442,8 @@ PVR_ERROR CPVRClient::GetChannels(CPVRChannelGroup &channels, bool radio)
   if (!m_bReadyToUse)
     return retVal;
 
-  SetProperties();
-  if ((!m_serverProperties.bSupportsRadio && radio) ||
-      (!m_serverProperties.bSupportsTV && !radio))
+  if ((!m_addonCapabilities.bSupportsRadio && radio) ||
+      (!m_addonCapabilities.bSupportsTV && !radio))
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
@@ -484,8 +475,7 @@ int CPVRClient::GetRecordingsAmount(void)
   if (!m_bReadyToUse)
     return iReturn;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsRecordings)
+  if (!m_addonCapabilities.bSupportsRecordings)
     return iReturn;
 
   try
@@ -508,8 +498,7 @@ PVR_ERROR CPVRClient::GetRecordings(CPVRRecordings *results)
   if (!m_bReadyToUse)
     return retVal;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsRecordings)
+  if (!m_addonCapabilities.bSupportsRecordings)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
@@ -541,8 +530,7 @@ PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording &recording)
   if (!m_bReadyToUse)
     return retVal;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsRecordings)
+  if (!m_addonCapabilities.bSupportsRecordings)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
@@ -574,8 +562,7 @@ PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording &recording)
   if (!m_bReadyToUse)
     return retVal;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsRecordings)
+  if (!m_addonCapabilities.bSupportsRecordings)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
@@ -625,8 +612,7 @@ int CPVRClient::GetTimersAmount(void)
   if (!m_bReadyToUse)
     return iReturn;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsTimers)
+  if (!m_addonCapabilities.bSupportsTimers)
     return iReturn;
 
   try
@@ -649,8 +635,7 @@ PVR_ERROR CPVRClient::GetTimers(CPVRTimers *results)
   if (!m_bReadyToUse)
     return retVal;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsTimers)
+  if (!m_addonCapabilities.bSupportsTimers)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
@@ -682,8 +667,7 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timer)
   if (!m_bReadyToUse)
     return retVal;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsTimers)
+  if (!m_addonCapabilities.bSupportsTimers)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
@@ -723,8 +707,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* 
   if (!m_bReadyToUse)
     return retVal;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsTimers)
+  if (!m_addonCapabilities.bSupportsTimers)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
@@ -764,8 +747,7 @@ PVR_ERROR CPVRClient::RenameTimer(const CPVRTimerInfoTag &timer, const CStdStrin
   if (!m_bReadyToUse)
     return retVal;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsTimers)
+  if (!m_addonCapabilities.bSupportsTimers)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
@@ -805,8 +787,7 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timer)
   if (!m_bReadyToUse)
     return retVal;
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsTimers)
+  if (!m_addonCapabilities.bSupportsTimers)
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
@@ -873,9 +854,8 @@ bool CPVRClient::OpenLiveStream(const CPVRChannel &channel)
   if (!m_bReadyToUse)
     return bReturn;
 
-  SetProperties();
-  if ((!m_serverProperties.bSupportsTV && !channel.IsRadio()) ||
-      (!m_serverProperties.bSupportsRadio && channel.IsRadio()))
+  if ((!m_addonCapabilities.bSupportsTV && !channel.IsRadio()) ||
+      (!m_addonCapabilities.bSupportsRadio && channel.IsRadio()))
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   try
@@ -1015,8 +995,7 @@ bool CPVRClient::OpenRecordedStream(const CPVRRecording &recording)
 {
   CSingleLock lock(m_critSection);
 
-  SetProperties();
-  if (!m_serverProperties.bSupportsRecordings)
+  if (!m_addonCapabilities.bSupportsRecordings)
     return false;
 
   PVR_RECORDING tag;
@@ -1197,30 +1176,33 @@ void CPVRClient::SetFriendlyName(void)
   m_strFriendlyName.Format("%s:%s", GetBackendName(), GetConnectionString());
 }
 
-PVR_ERROR CPVRClient::SetProperties(void)
+PVR_ERROR CPVRClient::SetAddonCapabilities(void)
 {
   CSingleLock lock(m_critSection);
 
-  if (m_bGotServerProperties)
+  if (m_bGotAddonCapabilities)
     return PVR_ERROR_NO_ERROR;
 
   /* reset all properties to disabled */
-  m_serverProperties.bSupportsChannelLogo     = false;
-  m_serverProperties.bSupportsTimeshift       = false;
-  m_serverProperties.bSupportsEPG             = false;
-  m_serverProperties.bSupportsRecordings      = false;
-  m_serverProperties.bSupportsTimers          = false;
-  m_serverProperties.bSupportsRadio           = false;
-  m_serverProperties.bSupportsChannelSettings = false;
-  m_serverProperties.bSupportsChannelGroups   = false;
-  m_serverProperties.bSupportsChannelScan     = false;
+  m_addonCapabilities.bSupportsChannelLogo          = false;
+  m_addonCapabilities.bSupportsChannelSettings      = false;
+  m_addonCapabilities.bSupportsTimeshift            = false;
+  m_addonCapabilities.bSupportsEPG                  = false;
+  m_addonCapabilities.bSupportsTV                   = false;
+  m_addonCapabilities.bSupportsRadio                = false;
+  m_addonCapabilities.bSupportsRecordings           = false;
+  m_addonCapabilities.bSupportsTimers               = false;
+  m_addonCapabilities.bSupportsChannelGroups        = false;
+  m_addonCapabilities.bSupportsChannelScan          = false;
+  m_addonCapabilities.bHandlesInputStream           = false;
+  m_addonCapabilities.bHandlesDemuxing              = false;
 
   /* try to get the addon properties */
   try
   {
-    PVR_ERROR retVal = m_pStruct->GetAddonCapabilities(&m_serverProperties);
+    PVR_ERROR retVal = m_pStruct->GetAddonCapabilities(&m_addonCapabilities);
     if (retVal == PVR_ERROR_NO_ERROR)
-      m_bGotServerProperties = true;
+      m_bGotAddonCapabilities = true;
 
     return retVal;
   }

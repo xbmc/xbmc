@@ -1353,7 +1353,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
   if (item.m_strPath.Left(17) == "pvr://recordings/")
   {
     /* For recordings we check here for a available stream URL */
-    CPVRRecording *tag = CPVRManager::GetRecordings()->GetByPath(item.m_strPath);
+    CPVRRecording *tag = g_PVRRecordings->GetByPath(item.m_strPath);
     if (tag && !tag->m_strStreamURL.IsEmpty())
     {
       CStdString stream = tag->m_strStreamURL;

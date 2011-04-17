@@ -11,5 +11,5 @@ all: .installed
 
 clean:
 distclean::
-	rm -rf $(SOURCE) .installed
+	rm -f .installed
 

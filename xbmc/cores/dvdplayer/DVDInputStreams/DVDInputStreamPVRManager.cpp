@@ -232,7 +232,7 @@ bool CDVDInputStreamPVRManager::SelectChannel(const CPVRChannel &channel)
 
 bool CDVDInputStreamPVRManager::GetSelectedChannel(CPVRChannel *channel)
 {
-  return CPVRManager::Get()->GetCurrentChannel(channel);
+  return g_PVRManager.GetCurrentChannel(channel);
 }
 
 bool CDVDInputStreamPVRManager::UpdateItem(CFileItem& item)
@@ -285,5 +285,5 @@ CStdString CDVDInputStreamPVRManager::GetInputFormat()
   if (m_pOtherStream)
     return "";
   else
-    return CPVRManager::GetClients()->GetCurrentInputFormat();
+    return g_PVRClients->GetCurrentInputFormat();
 }

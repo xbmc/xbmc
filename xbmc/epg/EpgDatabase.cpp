@@ -148,9 +148,6 @@ bool CEpgDatabase::Delete(const CEpg &table, const time_t start /* = 0 */, const
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "EpgDB - %s - clearing the EPG '%d'",
-      __FUNCTION__, table.EpgID());
-
   CStdString strWhereClause;
   strWhereClause = FormatSQL("idEpg = %u", table.EpgID());
 
@@ -165,11 +162,12 @@ bool CEpgDatabase::Delete(const CEpg &table, const time_t start /* = 0 */, const
 
 bool CEpgDatabase::DeleteOldEpgEntries(void)
 {
-  time_t iYesterday;
-  CDateTime yesterday = CDateTime::GetCurrentDateTime() - CDateTimeSpan(1, 0, 0, 0);
-  yesterday.GetAsTime(iYesterday);
-  CStdString strWhereClause = FormatSQL("iEndTime < %u", iYesterday);
+  time_t iCleanupTime;
+  CDateTime cleanupTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() -
+      CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0);
+  cleanupTime.GetAsTime(iCleanupTime);
 
+  CStdString strWhereClause = FormatSQL("iEndTime < %u", iCleanupTime);
   return DeleteValues("epgtags", strWhereClause);
 }
 

@@ -1565,6 +1565,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       // also tell our weather and skin to reload as these are localized
       g_weatherManager.Refresh();
       g_application.ReloadSkin();
+      g_PVRManager.LocalizationChanged();
     }
   }
   else if (strSetting.Equals("lookandfeel.skintheme"))
@@ -1920,22 +1921,22 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("pvrmenu.searchicons"))
   {
-    CPVRManager::GetChannelGroups()->SearchMissingChannelIcons();
+    g_PVRChannelGroups->SearchMissingChannelIcons();
   }
   else if (strSetting.Equals("pvrmanager.resetdb"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
-      CPVRManager::Get()->ResetDatabase();
+      g_PVRManager.ResetDatabase();
   }
-  else if (strSetting.Equals("pvrepg.resetepg"))
+  else if (strSetting.Equals("epg.resetepg"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188, 750, 0))
-      CPVRManager::Get()->ResetEPG();
+      g_PVRManager.ResetEPG();
   }
   else if (strSetting.Equals("pvrmanager.channelscan"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19118, 19194, 0))
-      CPVRManager::GetClients()->StartChannelScan();
+      g_PVRClients->StartChannelScan();
   }
   else if (strSetting.Equals("pvrmanager.channelmanager"))
   {

@@ -777,7 +777,7 @@
 						<width>20</width>
 						<height>20</height>
 						<texture>PVR-HasTimer.png</texture>
-						<visible>ListItem.HasTimer</visible>
+						<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
 					</control>
 				</itemlayout>
 				<focusedlayout height="52" width="40">
@@ -821,7 +821,7 @@
 						<width>20</width>
 						<height>20</height>
 						<texture>PVR-HasTimer.png</texture>
-						<visible>ListItem.HasTimer</visible>
+						<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
 					</control>
 				</focusedlayout>
 			</control>
@@ -1262,7 +1262,7 @@
 							<width>20</width>
 							<height>20</height>
 							<texture>PVR-HasTimer.png</texture>
-							<visible>ListItem.HasTimer</visible>
+							<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
 						</control>
 						<control type="label">
 							<posx>1000</posx>
@@ -1392,7 +1392,7 @@
 							<width>20</width>
 							<height>20</height>
 							<texture>PVR-HasTimer.png</texture>
-							<visible>ListItem.HasTimer</visible>
+							<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
 						</control>
 						<control type="label">
 							<posx>1000</posx>
@@ -1583,7 +1583,7 @@
 							<width>20</width>
 							<height>20</height>
 							<texture>PVR-HasTimer.png</texture>
-							<visible>ListItem.HasTimer</visible>
+							<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
 						</control>
 						<control type="label">
 							<posx>1000</posx>
@@ -1715,7 +1715,7 @@
 							<width>20</width>
 							<height>20</height>
 							<texture>PVR-HasTimer.png</texture>
-							<visible>ListItem.HasTimer</visible>
+							<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
 						</control>
 						<control type="label">
 							<posx>1000</posx>
@@ -1938,7 +1938,7 @@
 							<width>20</width>
 							<height>20</height>
 							<texture>PVR-HasTimer.png</texture>
-							<visible>ListItem.HasTimer</visible>
+							<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
 						</control>
 						<control type="label">
 							<posx>1000</posx>
@@ -2089,7 +2089,7 @@
 							<width>20</width>
 							<height>20</height>
 							<texture>PVR-HasTimer.png</texture>
-							<visible>ListItem.HasTimer</visible>
+							<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
 						</control>
 						<control type="label">
 							<posx>1000</posx>

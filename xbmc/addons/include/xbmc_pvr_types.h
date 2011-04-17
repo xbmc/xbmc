@@ -135,22 +135,22 @@ extern "C" {
   } PVR_EVENT;
 
   /*!
-   * @brief PVR add-on capabilities.
+   * @brief PVR add-on capabilities. All capabilities are set to "false" as default.
    */
   typedef struct PVR_ADDON_CAPABILITIES
   {
-    bool bSupportsChannelLogo;         /*!< @brief (required) true if this add-on supports channel logos */
-    bool bSupportsChannelSettings;     /*!< @brief (required) true if this add-on supports changing channel settings on the backend */
-    bool bSupportsTimeshift;           /*!< @brief (required) true if the backend will handle timeshift. false if XBMC should handle it. */
-    bool bSupportsEPG;                 /*!< @brief (required) true if the add-on provides EPG information */
-    bool bSupportsTV;                  /*!< @brief (required) true if this add-on provides TV channels */
-    bool bSupportsRadio;               /*!< @brief (required) true if this add-on supports radio channels */
-    bool bSupportsRecordings;          /*!< @brief (required) true if this add-on supports playback of recordings stored on the backend */
-    bool bSupportsTimers;              /*!< @brief (required) true if this add-on supports the creation and editing of timers */
-    bool bSupportsChannelGroups;       /*!< @brief (required) true if this add-on supports channel groups */
-    bool bSupportsChannelScan;         /*!< @brief (required) true if this add-on support scanning for new channels on the backend */
-    bool bHandlesInputStream;          /*!< @brief (required) true if this add-on provides an input stream. false if XBMC handles the stream. */
-    bool bHandlesDemuxing;             /*!< @brief (required) true if this add-on demultiplexes packets. */
+    bool bSupportsChannelLogo;          /*!< @brief (optional) true if this add-on supports channel logos */
+    bool bSupportsChannelSettings;      /*!< @brief (optional) true if this add-on supports changing channel settings on the backend */
+    bool bSupportsTimeshift;            /*!< @brief (optional) true if the backend will handle timeshift. false if XBMC should handle it. */
+    bool bSupportsEPG;                  /*!< @brief (optional) true if the add-on provides EPG information */
+    bool bSupportsTV;                   /*!< @brief (optional) true if this add-on provides TV channels */
+    bool bSupportsRadio;                /*!< @brief (optional) true if this add-on supports radio channels */
+    bool bSupportsRecordings;           /*!< @brief (optional) true if this add-on supports playback of recordings stored on the backend */
+    bool bSupportsTimers;               /*!< @brief (optional) true if this add-on supports the creation and editing of timers */
+    bool bSupportsChannelGroups;        /*!< @brief (optional) true if this add-on supports channel groups */
+    bool bSupportsChannelScan;          /*!< @brief (optional) true if this add-on support scanning for new channels on the backend */
+    bool bHandlesInputStream;           /*!< @brief (optional) true if this add-on provides an input stream. false if XBMC handles the stream. */
+    bool bHandlesDemuxing;              /*!< @brief (optional) true if this add-on demultiplexes packets. */
   } ATTRIBUTE_PACKED PVR_ADDON_CAPABILITIES;
 
   /*!

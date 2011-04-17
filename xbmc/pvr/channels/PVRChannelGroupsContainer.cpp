@@ -102,9 +102,9 @@ const CPVRChannelGroups *CPVRChannelGroupsContainer::Get(bool bRadio) const
   return bRadio ? m_groupsRadio : m_groupsTV;
 }
 
-const CPVRChannelGroup *CPVRChannelGroupsContainer::GetGroupAll(bool bRadio) const
+CPVRChannelGroupInternal *CPVRChannelGroupsContainer::GetGroupAll(bool bRadio) const
 {
-  const CPVRChannelGroup *group = NULL;
+  CPVRChannelGroupInternal *group = NULL;
   const CPVRChannelGroups *groups = Get(bRadio);
   if (groups)
     group = groups->GetGroupAll();

@@ -37,7 +37,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_strDirectory       = "/";
   m_strSummary         = "";
   m_bIsActive          = false;
-  m_iClientId          = CPVRManager::GetClients()->GetFirstID();
+  m_iClientId          = g_PVRClients->GetFirstID();
   m_iClientIndex       = -1;
   m_iClientChannelUid  = -1;
   m_bIsRecording       = false;
@@ -56,7 +56,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_strGenre           = "";
 }
 
-CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientId)
+CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel, unsigned int iClientId)
 {
   m_strTitle           = timer.strTitle;
   m_strDirectory       = timer.strDirectory;
@@ -82,10 +82,9 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, unsigned int iClientI
 
   if (timer.iEpgUid > 0)
   {
-    CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByClientFromAll(iClientId, timer.iClientChannelUid);
-    if (channel)
-      m_epgInfo = (CPVREpgInfoTag *) channel->GetEPG()->GetTag(timer.iEpgUid, m_StartTime);
-
+    m_channel = channel;
+    m_bIsRadio = channel->IsRadio();
+    m_epgInfo = (CPVREpgInfoTag *) channel->GetEPG()->GetTag(timer.iEpgUid, m_StartTime);
     if (m_epgInfo)
       m_strGenre = m_epgInfo->Genre();
   }
@@ -137,8 +136,12 @@ bool CPVRTimerInfoTag::operator !=(const CPVRTimerInfoTag& right) const
 
 int CPVRTimerInfoTag::Compare(const CPVRTimerInfoTag &timer) const
 {
-  CDateTimeSpan timerDelta = StartAsUTC() - timer.StartAsUTC();
-  int iTimerDelta = timerDelta.GetSeconds() + timerDelta.GetMinutes() * 60 + timerDelta.GetHours() * 3600 + timerDelta.GetDays() * 86400;
+  int iTimerDelta = 0;
+  if (StartAsUTC() != timer.StartAsUTC())
+  {
+    CDateTimeSpan timerDelta = StartAsUTC() - timer.StartAsUTC();
+    iTimerDelta = (timerDelta.GetSeconds() + timerDelta.GetMinutes() * 60 + timerDelta.GetHours() * 3600 + timerDelta.GetDays() * 86400);
+  }
 
   /* if the start times are equal, compare the priority of the timers */
   return iTimerDelta == 0 ?
@@ -212,15 +215,14 @@ bool CPVRTimerInfoTag::AddToClient(void)
 {
   UpdateEpgEvent();
   PVR_ERROR error;
-  if (!CPVRManager::GetClients()->AddTimer(*this, &error))
+  if (!g_PVRClients->AddTimer(*this, &error))
   {
     DisplayError(error);
     return false;
   }
   else
   {
-    if (StartAsLocalTime() < CDateTime::GetCurrentDateTime() && EndAsLocalTime() > CDateTime::GetCurrentDateTime())
-      CPVRManager::Get()->TriggerTimersUpdate();
+    g_PVRManager.TriggerTimersUpdate();
     return true;
   }
 }
@@ -230,11 +232,11 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */)
   bool bRemoved = false;
   PVR_ERROR error;
 
-  bRemoved = CPVRManager::GetClients()->DeleteTimer(*this, bForce, &error);
+  bRemoved = g_PVRClients->DeleteTimer(*this, bForce, &error);
   if (!bRemoved && error == PVR_ERROR_RECORDING_RUNNING)
   {
     if (CGUIDialogYesNo::ShowAndGetInput(122,0,19122,0))
-      bRemoved = CPVRManager::GetClients()->DeleteTimer(*this, true, &error);
+      bRemoved = g_PVRClients->DeleteTimer(*this, true, &error);
     else
       return false;
   }
@@ -251,7 +253,7 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */)
     m_epgInfo = NULL;
   }
 
-  CPVRManager::Get()->TriggerTimersUpdate();
+  g_PVRManager.TriggerTimersUpdate();
   return true;
 }
 
@@ -259,13 +261,17 @@ bool CPVRTimerInfoTag::RenameOnClient(const CStdString &strNewName)
 {
   PVR_ERROR error;
   m_strTitle.Format("%s", strNewName);
-  if (!CPVRManager::GetClients()->RenameTimer(*this, m_strTitle, &error))
+  if (!g_PVRClients->RenameTimer(*this, m_strTitle, &error))
   {
     if (error == PVR_ERROR_NOT_IMPLEMENTED)
       return UpdateOnClient();
 
     DisplayError(error);
     return false;
+  }
+  else
+  {
+    g_PVRManager.TriggerTimersUpdate();
   }
 
   return true;
@@ -313,42 +319,52 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
 
 void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
 {
-  /* already got an epg event set */
-  if (m_epgInfo)
-    return;
+  if (bClear)
+  {
+    if (m_epgInfo)
+    {
+      m_epgInfo->SetTimer(NULL);
+      m_epgInfo = NULL;
+    }
+  }
+  else
+  {
+    /* already got an epg event set */
+    if (m_epgInfo)
+      return;
 
-  /* try to get the channel */
-  CPVRChannel *channel = (CPVRChannel *) CPVRManager::GetChannelGroups()->GetByUniqueID(m_iClientChannelUid, m_iClientId);
-  if (!channel)
-    return;
+    /* try to get the channel */
+    CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId);
+    if (!channel)
+      return;
 
-  /* try to get the EPG table */
-  CPVREpg *epg = channel->GetEPG();
-  if (!epg)
-    return;
+    /* try to get the EPG table */
+    CPVREpg *epg = channel->GetEPG();
+    if (!epg)
+      return;
 
-  /* try to set the timer on the epg tag that matches */
-  m_epgInfo = (CPVREpgInfoTag *) epg->GetTagBetween(StartAsLocalTime(), EndAsLocalTime());
-  if (!m_epgInfo)
-    m_epgInfo = (CPVREpgInfoTag *) epg->GetTagAround(StartAsLocalTime());
+    /* try to set the timer on the epg tag that matches with a 2 minute margin */
+    m_epgInfo = (CPVREpgInfoTag *) epg->GetTagBetween(StartAsLocalTime() - CDateTimeSpan(0, 0, 2, 0), EndAsLocalTime() + CDateTimeSpan(0, 0, 2, 0));
+    if (!m_epgInfo)
+      m_epgInfo = (CPVREpgInfoTag *) epg->GetTagAround(StartAsLocalTime());
 
-  if (m_epgInfo)
-    m_epgInfo->SetTimer(bClear ? NULL : this);
+    if (m_epgInfo)
+      m_epgInfo->SetTimer(this);
+  }
 }
 
 bool CPVRTimerInfoTag::UpdateOnClient()
 {
   UpdateEpgEvent();
   PVR_ERROR error;
-  if (!CPVRManager::GetClients()->UpdateTimer(*this, &error))
+  if (!g_PVRClients->UpdateTimer(*this, &error))
   {
     DisplayError(error);
     return false;
   }
   else
   {
-    if (StartAsLocalTime() < CDateTime::GetCurrentDateTime() && EndAsLocalTime() > CDateTime::GetCurrentDateTime())
-      CPVRManager::Get()->TriggerTimersUpdate();
+    g_PVRManager.TriggerTimersUpdate();
     return true;
   }
 }
@@ -383,7 +399,7 @@ void CPVRTimerInfoTag::SetEpgInfoTag(CPVREpgInfoTag *tag)
 
 int CPVRTimerInfoTag::ChannelNumber() const
 {
-  const CPVRChannel *channeltag = CPVRManager::GetChannelGroups()->GetByUniqueID(m_iClientChannelUid, m_iClientId);
+  const CPVRChannel *channeltag = g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId);
   if (channeltag)
     return channeltag->ChannelNumber();
   else
@@ -392,7 +408,7 @@ int CPVRTimerInfoTag::ChannelNumber() const
 
 CStdString CPVRTimerInfoTag::ChannelName() const
 {
-  const CPVRChannel *channeltag = CPVRManager::GetChannelGroups()->GetByUniqueID(m_iClientChannelUid, m_iClientId);
+  const CPVRChannel *channeltag = g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId);
   if (channeltag)
     return channeltag->ChannelName();
   else
@@ -421,7 +437,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   }
 
   /* check if a valid channel is set */
-  const CPVRChannel *channel = tag.ChannelTag();
+  CPVRChannel *channel = (CPVRChannel *) tag.ChannelTag();
   if (channel == NULL)
   {
     CLog::Log(LOGERROR, "%s - no channel set", __FUNCTION__);
@@ -454,7 +470,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   /* set the timer data */
   CDateTime newStart = tag.StartAsUTC();
   CDateTime newEnd = tag.EndAsUTC();
-  newTag->m_iClientIndex      = (tag.UniqueBroadcastID() > 0 ? tag.UniqueBroadcastID() : channel->ClientID());
+  newTag->m_iClientIndex      = -1;
   newTag->m_bIsActive         = true;
   newTag->m_strTitle          = tag.Title().IsEmpty() ? channel->ChannelName() : tag.Title();
   newTag->m_iChannelNumber    = channel->ChannelNumber();
@@ -467,6 +483,10 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   newTag->m_iLifetime         = iLifetime;
   newTag->m_iMarginStart      = iMarginStart;
   newTag->m_iMarginEnd        = iMarginStop;
+
+  /* we might have a copy of the tag here, so get the real one from the pvrmanager */
+  const CPVREpg *epgTable = channel->GetEPG();
+  newTag->m_epgInfo = epgTable ? (CPVREpgInfoTag *) epgTable->GetTag(tag.UniqueBroadcastID(), tag.StartAsUTC()) : NULL;
 
   /* generate summary string */
   newTag->m_strSummary.Format("%s %s %s %s %s",

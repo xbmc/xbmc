@@ -99,20 +99,20 @@ public:
    * @brief Get the group containing all TV channels.
    * @return The group containing all TV channels.
    */
-  const CPVRChannelGroup *GetGroupAllTV(void)  const{ return GetGroupAll(false); }
+  CPVRChannelGroupInternal *GetGroupAllTV(void)  const{ return GetGroupAll(false); }
 
   /*!
    * @brief Get the group containing all radio channels.
    * @return The group containing all radio channels.
    */
-  const CPVRChannelGroup *GetGroupAllRadio(void)  const{ return GetGroupAll(true); }
+  CPVRChannelGroupInternal *GetGroupAllRadio(void)  const{ return GetGroupAll(true); }
 
   /*!
    * @brief Get the group containing all TV or radio channels.
    * @param bRadio If true, get the group containing all radio channels. Get the group containing all TV channels otherwise.
    * @return The requested group.
    */
-  const CPVRChannelGroup *GetGroupAll(bool bRadio) const;
+  CPVRChannelGroupInternal *GetGroupAll(bool bRadio) const;
 
   /*!
    * @brief Get a group given it's ID.

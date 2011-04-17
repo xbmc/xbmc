@@ -914,6 +914,7 @@ namespace JSONRPC
                     "\"file\": { \"type\": \"string\" },"
                     "\"artistid\": { \"$ref\": \"Library.Id\" },"
                     "\"albumid\": { \"$ref\": \"Library.Id\" },"
+                    "\"songid\": { \"$ref\": \"Library.Id\" },"
                     "\"genreid\": { \"$ref\": \"Library.Id\" },"
                     "\"playlist\": { \"$ref\": \"Playlist.Id\" }"
                 "}"

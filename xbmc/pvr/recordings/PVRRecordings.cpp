@@ -42,7 +42,7 @@ void CPVRRecordings::UpdateFromClients(void)
 {
   CSingleLock lock(m_critSection);
   Clear();
-  CPVRManager::GetClients()->GetRecordings(this);
+  g_PVRClients->GetRecordings(this);
 }
 
 CStdString CPVRRecordings::TrimSlashes(const CStdString &strOrig) const
@@ -189,6 +189,9 @@ void CPVRRecordings::ExecuteUpdate(void)
 
   CSingleLock lock(m_critSection);
   m_bIsUpdating = false;
+  lock.Leave();
+
+  g_PVRManager.UpdateWindow(PVR_WINDOW_RECORDINGS);
 }
 
 void CPVRRecordings::Process(void)
@@ -217,32 +220,16 @@ int CPVRRecordings::GetRecordings(CFileItemList* results)
 
 bool CPVRRecordings::DeleteRecording(const CFileItem &item)
 {
-  bool bReturn = false;
-
   if (!item.IsPVRRecording())
   {
     CLog::Log(LOGERROR, "CPVRRecordings - %s - cannot delete file: no valid recording tag", __FUNCTION__);
-    return bReturn;
+    return false;
   }
 
   CPVRRecording *tag = (CPVRRecording *)item.GetPVRRecordingInfoTag();
   CSingleLock lock(m_critSection);
-  if (tag->Delete())
-  {
-    bReturn = true;
 
-    for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
-    {
-      if (*at(iRecordingPtr) == *tag)
-      {
-        delete at(iRecordingPtr);
-        erase(begin() + iRecordingPtr);
-        break;
-      }
-    }
-  }
-
-  return bReturn;
+  return tag->Delete();
 }
 
 bool CPVRRecordings::RenameRecording(CFileItem &item, CStdString &strNewName)

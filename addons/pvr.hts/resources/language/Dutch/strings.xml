@@ -6,7 +6,7 @@
     <string id="30002">HTSP poort</string>
     <string id="30003">Gebruikersnaam</string>
     <string id="30004">Wachtwoord</string>
-    <string id="30005">Sla eerste I-frames over</string>
     <string id="30006">Verbinding timeout in seconden</string>
     <string id="30007">Antwoord timeout in seconden</string>
+    <string id="30008">Toon een melding bij timer updates</string>
 </strings>

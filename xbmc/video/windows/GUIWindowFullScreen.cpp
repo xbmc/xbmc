@@ -426,11 +426,11 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       {
         CPVRChannel channel;
         int iChannelNumber = -1;
-        CPVRManager::Get()->GetCurrentChannel(&channel);
+        g_PVRManager.GetCurrentChannel(&channel);
 
         if (action.GetID() == REMOTE_0)
         {
-          iChannelNumber = CPVRManager::Get()->GetPreviousChannel();
+          iChannelNumber = g_PVRManager.GetPreviousChannel();
         }
         else
         {
@@ -702,14 +702,14 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         CStdString strLabel = msg.GetLabel();
         if (msg.GetParam1() != 0)
         {
-          const CPVRChannelGroups *groups = CPVRManager::GetChannelGroups()->Get(CPVRManager::GetClients()->IsPlayingRadio());
+          const CPVRChannelGroups *groups = g_PVRChannelGroups->Get(g_PVRClients->IsPlayingRadio());
           CPVRChannelGroup *selectedGroup = (CPVRChannelGroup *) groups->GetByName(strLabel);
 
           // Switch to the first channel of the new group if the new group ID is
           // different from the current one.
-          if (selectedGroup && *selectedGroup != *CPVRManager::Get()->GetPlayingGroup(selectedGroup->IsRadio()))
+          if (selectedGroup && *selectedGroup != *g_PVRManager.GetPlayingGroup(selectedGroup->IsRadio()))
           {
-            CPVRManager::Get()->SetPlayingGroup(selectedGroup);
+            g_PVRManager.SetPlayingGroup(selectedGroup);
             OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) groups->GetFirstChannelForGroupID(selectedGroup->GroupID())));
           }
 
@@ -1112,11 +1112,11 @@ void CGUIWindowFullScreen::FillInTVGroups()
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_GROUP_CHOOSER);
   g_windowManager.SendMessage(msgReset);
 
-  const CPVRChannelGroups *groups = CPVRManager::GetChannelGroups()->Get(CPVRManager::GetClients()->IsPlayingRadio());
+  const CPVRChannelGroups *groups = g_PVRChannelGroups->Get(g_PVRClients->IsPlayingRadio());
 
   int iGroup        = 0;
   int iCurrentGroup = 0;
-  const CPVRChannelGroup *currentGroup = CPVRManager::Get()->GetPlayingGroup(false);
+  const CPVRChannelGroup *currentGroup = g_PVRManager.GetPlayingGroup(false);
   for (int i = 0; i < (int) groups->size(); ++i)
   {
     if (*groups->at(i) == *currentGroup)
