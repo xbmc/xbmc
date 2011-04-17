@@ -541,6 +541,9 @@ int CEpg::Get(CFileItemList *results) const
 
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
+    if (at(iTagPtr)->EndAsLocalTime() < CDateTime::GetCurrentDateTime() - CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0))
+      continue;
+
     CFileItemPtr entry(new CFileItem(*at(iTagPtr)));
     entry->SetLabel2(at(iTagPtr)->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
     results->Add(entry);
