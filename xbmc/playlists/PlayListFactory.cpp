@@ -63,7 +63,7 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
     || strMimeType == "text/html")
       return new CPlayListPLS();
 
-    if (strMimeType == "audio/x-mpegurl")
+    if (strMimeType == "audio/x-mpegurl" && !item.IsType(".m3u8"))
       return new CPlayListM3U();
 
     if (strMimeType == "application/vnd.ms-wpl")
@@ -120,7 +120,7 @@ bool CPlayListFactory::IsPlaylist(const CFileItem& item)
 
   if(strMimeType == "audio/x-pn-realaudio"
   || strMimeType == "playlist"
-  || strMimeType == "audio/x-mpegurl")
+  || (strMimeType == "audio/x-mpegurl") && !item.IsType(".m3u8"))
     return true;
 
   return IsPlaylist(item.m_strPath);
