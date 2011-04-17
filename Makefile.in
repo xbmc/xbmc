@@ -134,9 +134,8 @@ VIS_DIRS+=\
 	xbmc/visualizations/XBMCProjectM \
 
 endif
-ifeq ($(findstring osx,@ARCH@), osx)
-VIS_DIRS+=xbmc/visualizations/iTunes \
-
+ifeq (($(findstring osx,@ARCH@), osx),(@USE_OPENGL@,1)) 
+VIS_DIRS+=xbmc/visualizations/iTunes
 endif
 ifneq (@DISABLE_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom \
