@@ -70,15 +70,16 @@ private:
   unsigned int            m_sampleRate;
   unsigned int            m_fsize;
   unsigned int            m_repeat;
+  int                     m_substreams;       /* used for TrueHD  */
+  AVCRC                   m_crcTrueHD[1024];  /* TrueHD crc table */
   DataType                m_dataType;
   bool                    m_dataIsLE;
   CAEPackIEC958::PackFunc m_packFunc;
 
-
   void GetPacket(uint8_t **buffer, unsigned int *bufferSize);
   unsigned int DetectType(uint8_t *data, unsigned int size);
-  unsigned int SyncAC3(uint8_t *data, unsigned int size);
-  unsigned int SyncDTS(uint8_t *data, unsigned int size);
-  unsigned int SyncMLP(uint8_t *data, unsigned int size);
+  unsigned int SyncAC3   (uint8_t *data, unsigned int size);
+  unsigned int SyncDTS   (uint8_t *data, unsigned int size);
+  unsigned int SyncTrueHD(uint8_t *data, unsigned int size);
 };
 

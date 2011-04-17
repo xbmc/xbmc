@@ -455,7 +455,9 @@ void CGUISettings::Initialize()
   AddBool(NULL, "audiooutput.passthroughmp1", 300, false);
   AddBool(NULL, "audiooutput.passthroughmp2", 301, false);
   AddBool(NULL, "audiooutput.passthroughmp3", 302, false);
+
   AddBool(ao, "audiooutput.multichannellpcm", 348, true);
+  AddBool(ao, "audiooutput.truehdpassthrough", 349, true);
 
 #ifdef __APPLE__
   AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
@@ -1128,6 +1130,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "MP2 pass through is %s" , GetBool("audiooutput.passthroughmp2") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "MP3 pass through is %s" , GetBool("audiooutput.passthroughmp3") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "Multichannel LPCM is %s", GetBool("audiooutput.multichannellpcm") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "TrueHD pass through is %s", GetBool("audiooutput.truehdpassthrough") ? "enabled" : "disabled");
 
   g_guiSettings.m_LookAndFeelResolution = GetResolution();
 #ifdef __APPLE__

@@ -46,14 +46,19 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   if (!AE.SupportsRaw())
     return false;
 
-  bool bSupportsAC3Out = false;
-  bool bSupportsDTSOut = false;
-  bool bSupportsTHDOut = false; /* FIXME */
+  bool bSupportsAC3Out    = false;
+  bool bSupportsDTSOut    = false;
+  bool bSupportsTrueHDOut = false;
   int audioMode = g_guiSettings.GetInt("audiooutput.mode");
   if (AUDIO_IS_BITSTREAM(audioMode))
   {
     bSupportsAC3Out = g_guiSettings.GetBool("audiooutput.ac3passthrough");
     bSupportsDTSOut = g_guiSettings.GetBool("audiooutput.dtspassthrough");
+  }
+
+  if (audioMode == AUDIO_HDMI)
+  {
+    bSupportsTrueHDOut = g_guiSettings.GetBool("audiooutput.truehdpassthrough");
   }
 
   m_bufferSize = 0;
@@ -64,8 +69,8 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
     (
       audioMode == AUDIO_HDMI &&
       (
-        (hints.codec == CODEC_ID_EAC3   && bSupportsAC3Out) ||
-        (hints.codec == CODEC_ID_TRUEHD && bSupportsTHDOut)
+        (hints.codec == CODEC_ID_EAC3   && bSupportsAC3Out   ) ||
+        (hints.codec == CODEC_ID_TRUEHD && bSupportsTrueHDOut)
       )
     )
   )

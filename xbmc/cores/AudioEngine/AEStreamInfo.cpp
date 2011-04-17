@@ -63,6 +63,7 @@ CAEStreamInfo::CAEStreamInfo() :
   m_packFunc  (NULL)
 {
   m_dllAvUtil.Load();
+  m_dllAvUtil.av_crc_init(m_crcTrueHD, 0, 16, 0x2D, sizeof(m_crcTrueHD));
 }
 
 CAEStreamInfo::~CAEStreamInfo()
@@ -228,17 +229,15 @@ unsigned int CAEStreamInfo::DetectType(uint8_t *data, unsigned int size)
         possible = skipped;
     }
 
-    /* if it could be MLP/TrueHD */
-#if 0
-    if (size > 3 && data[0] == 0xf8 && data[1] == 0x72 && data[2] == 0x6f)
+    /* if it could be TrueHD */
+    if (size > 7 && data[4] == 0xf8 && data[5] == 0x72 && data[6] == 0x6f && data[7] == 0xba)
     {
-      unsigned int skip = SyncMLP(data, size);
+      unsigned int skip = SyncTrueHD(data, size);
       if (m_hasSync)
         return skipped + skip;
       else
         possible = skipped;
     }
-#endif
 
     /* move along one byte */
     --size;
@@ -463,53 +462,98 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
   return size;
 }
 
-unsigned int CAEStreamInfo::SyncMLP(uint8_t *data, unsigned int size)
+unsigned int CAEStreamInfo::SyncTrueHD(uint8_t *data, unsigned int size)
 {
+  unsigned int left = size;
   unsigned int skip = 0;
 
   /* if MLP */
-  for(; size - skip > 6; ++skip, ++data)
+  for(; left; ++skip, ++data, --left)
   {
-    if (size < 4 || data[0] != 0xf8 || data[1] != 0x72 || data[2] != 0x6f)
-      continue;
+    /* if we dont have sync and there is less the 8 bytes, then break out */
+    if (!m_hasSync && left < 8)
+      return size;
 
-    unsigned int rate;
-#if 0
-    if (data[3] == 0xbb)
+    /* if its a major audio unit */
+    uint16_t length   = ((data[0] & 0x0F) << 8 | data[1]) << 1;
+    uint32_t syncword = ((((data[0] << 8 | data[1]) << 8) | data[2]) << 8) | data[3];
+    if (syncword == 0xf8726fba)
     {
-      rate         = (data[5] & 0xf0) >> 4;
-      m_dataType   = STREAM_TYPE_MLP;
-      m_sampleRate = (rate & 8 ? 44100 : 48000) << (rate & 7);
-      if (!m_hasSync)
-        CLog::Log(LOGINFO, "CAEStreamInfo::SyncMLP - MLP stream detected (%dHz)", m_sampleRate);   
-    }
-    /* if TrueHD */
-    else
-#endif
-    if (data[3] == 0xba)
-    {
-      rate         = (data[4] & 0xf0) >> 4;
-      m_dataType   = STREAM_TYPE_TRUEHD;
-      m_sampleRate = (rate & 8 ? 44100 : 48000) << (rate & 7);
+      /* we need 32 bytes to sync on a master audio unit */
+      if (left < 32)
+        return skip;
+
+      /* get the rate and ensure its valid */
+      int rate = (data[8] & 0xf0) >> 4;
+      if (rate == 0xF)
+        continue;
+
+      /* verify the crc of the audio unit */
+      uint16_t crc = m_dllAvUtil.av_crc(m_crcTrueHD, 0, data + 4, 24);
+      crc ^= (data[29] << 8) | data[28];
+      if (((data[31] << 8) | data[30]) != crc)
+        continue;
+
+      /* get the sample rate and substreams, we have a valid master audio unit */
+      m_sampleRate = (rate & 8 ? 44100 : 48000) << (data[8] & 7);
+      m_substreams = (data[20] & 0xF0) >> 4;
+
       if (!m_hasSync)
         CLog::Log(LOGINFO, "CAEStreamInfo::SyncMLP - TrueHD stream detected (%dHz)", m_sampleRate);
+
+      m_hasSync    = true;
+      m_fsize      = length;
+      m_dataType   = STREAM_TYPE_TRUEHD;
+      m_syncFunc   = &CAEStreamInfo::SyncTrueHD;
+      m_repeat     = 1;
+      return skip;
     }
     else
     {
-      continue;
-    }
+      /* we cant sink to a subframe until we have the information from a master audio unit */
+      if (!m_hasSync)
+        continue;
 
-    m_hasSync    = true;
-    m_syncFunc   = &CAEStreamInfo::SyncMLP;
-    m_packFunc   = &CAEPackIEC958::PackTrueHD;
-    m_repeat     = 1;
-    m_fsize      = 40 << (rate & 7);
-printf("%d %d\n", rate, m_fsize);
-    return skip;
+      /* if there is not enough data left to verify the packet, just return the skip amount */
+      if (left < (unsigned int)m_substreams * 4)
+        return skip;
+
+      /* verify the parity */
+      int     p     = 0;
+      uint8_t check = 0;
+      for(int i = -1; i < m_substreams; ++i)
+      {
+        check ^= data[p++];
+        check ^= data[p++];
+        if (i == -1 || data[p - 2] & 0x80)
+        {
+          check ^= data[p++];
+          check ^= data[p++];
+        }
+      }
+
+      /* if the parity nibble does not match */
+      if ((((check >> 4) ^ check) & 0xF) != 0xF)
+      {
+        /* lost sync */
+        m_dataType = STREAM_TYPE_NULL;
+        m_syncFunc = &CAEStreamInfo::DetectType;
+        m_hasSync  = false;
+        CLog::Log(LOGINFO, "CAEStreamInfo::SyncTrueHD - Sync Lost");
+        continue;
+      }
+      else
+      {
+        m_fsize = length;
+        return skip;
+      }
+    }
   }
 
-  CLog::Log(LOGINFO, "CAEStreamInfo::SyncMLP - Sync Lost");
-  m_hasSync = false;
+  /* lost sync */
+  m_dataType = STREAM_TYPE_NULL;
+  m_syncFunc = &CAEStreamInfo::DetectType;
+  m_hasSync  = false;
   return size;
 }
 

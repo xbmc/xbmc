@@ -189,6 +189,7 @@ enum AEDataFormat CDVDAudioCodecFFmpeg::GetDataFormat()
     case SAMPLE_FMT_FLT: return AE_FMT_FLOAT;
     case SAMPLE_FMT_DBL: return AE_FMT_DOUBLE;
     default:
+      printf("%x\n", m_pCodecContext->sample_fmt);
       assert(false);
   }
 }

@@ -72,6 +72,7 @@ public:
   virtual void av_freep(void *ptr)=0;
   virtual int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding)=0;
   virtual int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq)=0;
+  virtual int av_crc_init(AVCRC *ctx, int le, int bits, uint32_t poly, int ctx_size)=0;
   virtual const AVCRC* av_crc_get_table(AVCRCId crc_id)=0;
   virtual uint32_t av_crc(const AVCRC *ctx, uint32_t crc, const uint8_t *buffer, size_t length)=0;
   virtual int av_set_string3(void *obj, const char *name, const char *val, int alloc, const AVOption **o_out)=0;
@@ -99,6 +100,7 @@ public:
    virtual void av_freep(void *ptr) { ::av_freep(ptr); }
    virtual int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding d) { return ::av_rescale_rnd(a, b, c, d); }
    virtual int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq) { return ::av_rescale_q(a, bq, cq); }
+   virtual int av_crc_init(AVCRC *ctx, int le, int bits, uint32_t poly, int ctx_size) { return ::av_crc_init(ctx, le, bits, poly, ctx_size); }
    virtual const AVCRC* av_crc_get_table(AVCRCId crc_id) { return ::av_crc_get_table(crc_id); }
    virtual uint32_t av_crc(const AVCRC *ctx, uint32_t crc, const uint8_t *buffer, size_t length) { return ::av_crc(ctx, crc, buffer, length); }
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,7,0)
@@ -142,6 +144,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
   DEFINE_METHOD4(int64_t, av_rescale_rnd, (int64_t p1, int64_t p2, int64_t p3, enum AVRounding p4));
   DEFINE_METHOD3(int64_t, av_rescale_q, (int64_t p1, AVRational p2, AVRational p3));
   DEFINE_METHOD1(const AVCRC*, av_crc_get_table, (AVCRCId p1))
+  DEFINE_METHOD5(int, av_crc_init, (AVCRC *p1, int p2, int p3, uint32_t p4, int p5));
   DEFINE_METHOD4(uint32_t, av_crc, (const AVCRC *p1, uint32_t p2, const uint8_t *p3, size_t p4));
   DEFINE_METHOD5(int, av_set_string3, (void *p1, const char *p2, const char *p3, int p4, const AVOption **p5));
   DEFINE_METHOD1(AVFifoBuffer*, av_fifo_alloc, (unsigned int p1))
@@ -161,6 +164,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
     RESOLVE_METHOD(av_freep)
     RESOLVE_METHOD(av_rescale_rnd)
     RESOLVE_METHOD(av_rescale_q)
+    RESOLVE_METHOD(av_crc_init)
     RESOLVE_METHOD(av_crc_get_table)
     RESOLVE_METHOD(av_crc)
     RESOLVE_METHOD(av_set_string3)
