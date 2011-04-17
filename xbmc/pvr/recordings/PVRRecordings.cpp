@@ -227,8 +227,6 @@ bool CPVRRecordings::DeleteRecording(const CFileItem &item)
   }
 
   CPVRRecording *tag = (CPVRRecording *)item.GetPVRRecordingInfoTag();
-  CSingleLock lock(m_critSection);
-
   return tag->Delete();
 }
 

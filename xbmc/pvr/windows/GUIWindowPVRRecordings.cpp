@@ -175,7 +175,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonDelete(CFileItem *item, CONTEXT_BUT
 
   if (button == CONTEXT_BUTTON_DELETE)
   {
-    bReturn = true;
+    bReturn = false;
 
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialog)
@@ -189,10 +189,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonDelete(CFileItem *item, CONTEXT_BUT
     if (!pDialog->IsConfirmed())
       return bReturn;
 
-    if (g_PVRRecordings->DeleteRecording(*item))
-    {
-      g_PVRManager.TriggerRecordingsUpdate();
-    }
+    bReturn = g_PVRRecordings->DeleteRecording(*item);
   }
 
   return bReturn;
