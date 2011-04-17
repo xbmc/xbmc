@@ -450,13 +450,6 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
     delete newTimer;
     newTimer = NULL;
   }
-  else
-  {
-    CSingleLock lock(m_critSection);
-    push_back(newTimer);
-    if (bStartTimer)
-      channel->SetRecording(true);
-  }
 
   return newTimer;
 }
