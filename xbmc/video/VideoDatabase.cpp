@@ -7746,7 +7746,7 @@ void CVideoDatabase::AnnounceRemove(std::string content, int id)
   CVariant data;
   data["content"] = content;
   data[content + "id"] = id;
-  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "RemoveVideo", data);
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnRemove", data);
 }
 
 void CVideoDatabase::AnnounceUpdate(std::string content, int id)
@@ -7754,7 +7754,7 @@ void CVideoDatabase::AnnounceUpdate(std::string content, int id)
   CVariant data;
   data["content"] = content;
   data[content + "id"] = id;
-  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateVideo", data);
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
 }
 
 bool CVideoDatabase::GetItemForPath(const CStdString &content, const CStdString &strPath, CFileItem &item)
