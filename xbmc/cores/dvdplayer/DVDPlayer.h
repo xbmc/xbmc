@@ -58,6 +58,8 @@ class CCurrentStream
 public:
   int              id;     // demuxerid of current playing stream
   int              source;
+  int              width;
+  int              height;
   double           dts;    // last dts from demuxer, used to find disncontinuities
   CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
@@ -79,6 +81,7 @@ public:
   {
     id     = -1;
     source = STREAM_SOURCE_NONE;
+    width = height = 0;
     dts    = DVD_NOPTS_VALUE;
     hint.Clear();
     stream = NULL;

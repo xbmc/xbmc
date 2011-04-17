@@ -824,6 +824,12 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
     if(current.type == STREAM_TELETEXT)
       return false;
 
+    if(current.type == STREAM_VIDEO)
+    {
+      CDemuxStreamVideo* vstream = static_cast<CDemuxStreamVideo*>(stream);
+      if(vstream->iHeight > current.height)
+        return true;
+    }
     if(current.id < 0)
       return true;
   }
@@ -2622,6 +2628,9 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
   m_CurrentVideo.id = iStream;
   m_CurrentVideo.source = source;
   m_CurrentVideo.hint = hint;
+  CDemuxStreamVideo* stream = static_cast<CDemuxStreamVideo*>(pStream);
+  m_CurrentVideo.width = stream->iWidth;
+  m_CurrentVideo.height = stream->iHeight;
   m_CurrentVideo.stream = (void*)pStream;
   m_CurrentVideo.started = false;
 
