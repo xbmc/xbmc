@@ -8,7 +8,7 @@
   <string id="31003">电源选项</string>
   <string id="31004">工作中...</string>
   <string id="31005">隐藏信息</string>
-
+  <string id="31006">视图选项</string>
   <string id="31007">插件</string>
 
   <string id="31020">最新增加</string>
@@ -39,6 +39,8 @@
   <string id="31047">当前预设</string>
   <string id="31048">可视化效果设置</string>
   <string id="31049">结束时间</string>
+  <string id="31050">排序：升序</string>
+  <string id="31051">排序：降序</string>
 
 
   <!-- Playlist Editor labels -->
@@ -134,6 +136,7 @@
   <string id="31328">最新增加</string>
   <string id="31329">[B]时钟设置！[/B] [COLOR=grey2] - 系统自动关闭于[/COLOR]</string>
   <string id="31330">点此按钮播放预告片</string>
+  <string id="31331">专辑详情</string>
 
   <!-- Video and Music OSD Labels  -->
   <string id="31351">暂停</string>

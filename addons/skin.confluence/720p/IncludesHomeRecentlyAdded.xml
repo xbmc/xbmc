@@ -16,18 +16,18 @@
 					<description>background</description>
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>250</width>
-					<height>300</height>
-					<texture border="10">RecentAddedNF.png</texture>
+					<width>260</width>
+					<height>330</height>
+					<texture border="15">RecentAddedBack.png</texture>
 				</control>
 				<control type="label">
 					<description>Title label</description>
 					<posx>10</posx>
-					<posy>5</posy>
+					<posy>8</posy>
 					<height>20</height>
-					<width>230</width>
+					<width>240</width>
 					<label>31323</label>
-					<align>left</align>
+					<align>center</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
 					<textcolor>white</textcolor>
@@ -35,8 +35,8 @@
 				</control>
 				<control type="image">
 					<description>Main Icon -3</description>
-					<posx>165</posx>
-					<posy>60</posy>
+					<posx>170</posx>
+					<posy>65</posy>
 					<width>75</width>
 					<height>110</height>
 					<aspectratio align="left">keep</aspectratio>
@@ -46,8 +46,8 @@
 				</control>
 				<control type="image">
 					<description>Main Icon -2</description>
-					<posx>130</posx>
-					<posy>50</posy>
+					<posx>135</posx>
+					<posy>55</posy>
 					<width>86</width>
 					<height>130</height>
 					<aspectratio align="left">keep</aspectratio>
@@ -57,8 +57,8 @@
 				</control>
 				<control type="image">
 					<description>Main Icon -1</description>
-					<posx>80</posx>
-					<posy>40</posy>
+					<posx>85</posx>
+					<posy>45</posy>
 					<width>100</width>
 					<height>150</height>
 					<aspectratio align="left">keep</aspectratio>
@@ -68,8 +68,8 @@
 				</control>
 				<control type="image">
 					<description>Main Icon</description>
-					<posx>10</posx>
-					<posy>25</posy>
+					<posx>15</posx>
+					<posy>30</posy>
 					<width>120</width>
 					<height>180</height>
 					<aspectratio align="left">keep</aspectratio>
@@ -78,10 +78,10 @@
 					<bordersize>8</bordersize>
 				</control>
 				<control type="list" id="8000">
-					<posx>0</posx>
-					<posy>200</posy>
-					<width>250</width>
-					<height>92</height>
+					<posx>10</posx>
+					<posy>208</posy>
+					<width>240</width>
+					<height>114</height>
 					<onleft>9000</onleft>
 					<onright>8001</onright>
 					<onup>8000</onup>
@@ -89,12 +89,19 @@
 					<viewtype label="535">list</viewtype>
 					<pagecontrol>-</pagecontrol>
 					<scrolltime>0</scrolltime>
-					<itemlayout height="23" width="230">
+					<itemlayout height="28" width="240">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>240</width>
+							<height>29</height>
+							<texture border="0,2,0,2">MenuItemNF.png</texture>
+						</control>
 						<control type="label">
-							<posx>10</posx>
+							<posx>5</posx>
 							<posy>0</posy>
 							<width>230</width>
-							<height>23</height>
+							<height>28</height>
 							<font>font12</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
@@ -104,21 +111,29 @@
 							<label>$INFO[ListItem.Label]</label>
 						</control>
 					</itemlayout>
-					<focusedlayout height="23" width="230">
+					<focusedlayout height="28" width="240">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
-							<width>250</width>
-							<height>23</height>
+							<width>240</width>
+							<height>29</height>
+							<texture border="0,2,0,2">MenuItemNF.png</texture>
+							<visible>!Control.HasFocus(8000)</visible>
+						</control>
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>240</width>
+							<height>28</height>
 							<texture border="0,2,0,2">MenuItemFO.png</texture>
 							<visible>Control.HasFocus(8000)</visible>
 							<include>VisibleFadeEffect</include>
 						</control>
 						<control type="label">
-							<posx>10</posx>
+							<posx>5</posx>
 							<posy>0</posy>
 							<width>230</width>
-							<height>23</height>
+							<height>28</height>
 							<font>font12</font>
 							<textcolor>white</textcolor>
 							<shadowcolor>black</shadowcolor>
@@ -170,18 +185,18 @@
 					<description>background</description>
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>250</width>
-					<height>300</height>
-					<texture border="10">RecentAddedNF.png</texture>
+					<width>260</width>
+					<height>330</height>
+					<texture border="15">RecentAddedBack.png</texture>
 				</control>
 				<control type="label">
 					<description>Title label</description>
 					<posx>10</posx>
-					<posy>5</posy>
+					<posy>8</posy>
 					<height>20</height>
-					<width>230</width>
+					<width>240</width>
 					<label>31324</label>
-					<align>left</align>
+					<align>center</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
 					<textcolor>white</textcolor>
@@ -190,31 +205,35 @@
 				<control type="image">
 					<description>Main Icon</description>
 					<posx>10</posx>
-					<posy>30</posy>
-					<width>230</width>
-					<height>120</height>
+					<posy>25</posy>
+					<width>240</width>
+					<height>135</height>
 					<aspectratio>keep</aspectratio>
 					<texture background="true">$INFO[Window.Property(LatestEpisode.1.Thumb)]</texture>
 					<visible>!Control.HasFocus(8001)</visible>
 					<include>VisibleFadeEffect</include>
+					<bordertexture border="8">ThumbShadow.png</bordertexture>
+					<bordersize>8</bordersize>
 				</control>
 				<control type="image">
 					<description>Main Icon</description>
 					<posx>10</posx>
-					<posy>30</posy>
-					<width>230</width>
-					<height>120</height>
+					<posy>25</posy>
+					<width>240</width>
+					<height>135</height>
 					<aspectratio>keep</aspectratio>
 					<fadetime>200</fadetime>
 					<texture background="true">$INFO[Container(8001).ListItem.Thumb]</texture>
 					<visible>Control.HasFocus(8001)</visible>
 					<include>VisibleFadeEffect</include>
+					<bordertexture border="8">ThumbShadow.png</bordertexture>
+					<bordersize>8</bordersize>
 				</control>
 				<control type="list" id="8001">
-					<posx>0</posx>
-					<posy>155</posy>
-					<width>250</width>
-					<height>136</height>
+					<posx>10</posx>
+					<posy>160</posy>
+					<width>240</width>
+					<height>161</height>
 					<onleft>8000</onleft>
 					<onright>8001</onright>
 					<onup>8001</onup>
@@ -222,10 +241,17 @@
 					<viewtype label="535">list</viewtype>
 					<pagecontrol>-</pagecontrol>
 					<scrolltime>0</scrolltime>
-					<itemlayout height="34" width="230">
+					<itemlayout height="40" width="240">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>240</width>
+							<height>41</height>
+							<texture border="0,2,0,2">MenuItemNF.png</texture>
+						</control>
 						<control type="label">
-							<posx>10</posx>
-							<posy>2</posy>
+							<posx>5</posx>
+							<posy>6</posy>
 							<width>230</width>
 							<height>10</height>
 							<font>font10</font>
@@ -237,8 +263,8 @@
 							<label>$INFO[ListItem.Label2]</label>
 						</control>
 						<control type="label">
-							<posx>10</posx>
-							<posy>12</posy>
+							<posx>5</posx>
+							<posy>16</posy>
 							<width>230</width>
 							<height>20</height>
 							<font>font12</font>
@@ -250,19 +276,27 @@
 							<label>$INFO[ListItem.Label]</label>
 						</control>
 					</itemlayout>
-					<focusedlayout height="34" width="230">
+					<focusedlayout height="40" width="240">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
-							<width>250</width>
-							<height>34</height>
+							<width>240</width>
+							<height>41</height>
+							<texture border="0,2,0,2">MenuItemNF.png</texture>
+							<visible>!Control.HasFocus(8001)</visible>
+						</control>
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>240</width>
+							<height>41</height>
 							<texture border="0,2,0,2">MenuItemFO.png</texture>
 							<visible>Control.HasFocus(8001)</visible>
 							<include>VisibleFadeEffect</include>
 						</control>
 						<control type="label">
-							<posx>10</posx>
-							<posy>2</posy>
+							<posx>5</posx>
+							<posy>6</posy>
 							<width>230</width>
 							<height>10</height>
 							<font>font10</font>
@@ -274,8 +308,8 @@
 							<label>$INFO[ListItem.Label2]</label>
 						</control>
 						<control type="label">
-							<posx>10</posx>
-							<posy>12</posy>
+							<posx>5</posx>
+							<posy>16</posy>
 							<width>230</width>
 							<height>20</height>
 							<font>font12</font>

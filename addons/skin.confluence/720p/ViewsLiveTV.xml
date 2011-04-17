@@ -2143,10 +2143,10 @@
 			<visible>Control.IsVisible(560)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="list" id="560">
-				<posx>460</posx>
-				<posy>60</posy>
+				<posx>70</posx>
+				<posy>75</posy>
 				<width>760</width>
-				<height>601</height>
+				<height>561</height>
 				<onleft>2</onleft>
 				<onright>60</onright>
 				<onup>560</onup>
@@ -2241,83 +2241,56 @@
 					</control>
 				</focusedlayout>
 			</control>
+			<control type="scrollbar" id="60">
+				<posx>850</posx>
+				<posy>78</posy>
+				<width>25</width>
+				<height>560</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>560</onleft>
+				<onright>2</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<visible>Control.IsVisible(560)</visible>
+			</control>
 			<control type="group">
 				<visible>Control.IsVisible(560)</visible>
-				<control type="scrollbar" id="60">
-					<posx>1220</posx>
-					<posy>60</posy>
-					<width>25</width>
-					<height>600</height>
-					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
-					<texturesliderbar border="2,16,2,16">ScrollBarV_bar.png</texturesliderbar>
-					<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
-					<textureslidernib>ScrollBarNib.png</textureslidernib>
-					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-					<onleft>560</onleft>
-					<onright>2</onright>
-					<showonepage>false</showonepage>
-					<orientation>vertical</orientation>
-					<visible>Control.IsVisible(560)</visible>
-				</control>
+				<posx>910</posx>
+				<posy>80</posy>
 				<control type="image">
-					<posx>40</posx>
-					<posy>60</posy>
-					<width>400</width>
-					<height>300</height>
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>290</width>
+					<height>290</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
 					<texture background="true">$INFO[ListItem.Icon]</texture>
 					<bordertexture border="8">ThumbShadow.png</bordertexture>
 					<bordersize>8</bordersize>
 				</control>
-				<control type="image">
-					<posx>40</posx>
-					<posy>350</posy>
-					<width>400</width>
-					<height>100</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>GlassTitleBar.png</texture>
-					<colordiffuse>AAFFFFFF</colordiffuse>
-				</control>
-				<control type="image">
-					<posx>48</posx>
-					<posy>352</posy>
-					<width>384</width>
-					<height>284</height>
-					<aspectratio aligny="top">keep</aspectratio>
-					<fadetime>IconCrossfadeTime</fadetime>
-					<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
-				</control>
-				<control type="label">
-					<posx>40</posx>
-					<posy>380</posy>
-					<width>400</width>
-					<height>25</height>
-					<label>$INFO[ListItem.Label]</label>
-					<scroll>true</scroll>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13_title</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<posx>40</posx>
-					<posy>410</posy>
-					<width>400</width>
+				<control type="fadelabel">
+					<posx>10</posx>
+					<posy>300</posy>
+					<width>290</width>
 					<height>25</height>
 					<label>$INFO[ListItem.Label2]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font13</font>
-					<textcolor>grey2</textcolor>
+					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
+					<scrollout>false</scrollout>
+					<pauseatend>1000</pauseatend>
 				</control>
 				<control type="textbox">
 					<description>Description Value for TV Show</description>
-					<posx>40</posx>
-					<posy>450</posy>
-					<width>400</width>
+					<posx>10</posx>
+					<posy>330</posy>
+					<width>290</width>
 					<height>220</height>
 					<font>font12</font>
 					<align>justify</align>

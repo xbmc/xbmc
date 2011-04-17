@@ -9,208 +9,11 @@
 	<include file="IncludesCodecFlagging.xml" />
 	<include file="IncludesHomeRecentlyAdded.xml" />
 	<include file="IncludesHomeMenuItems.xml" />
+	<include file="IncludesBackgroundBuilding.xml" />
 
 	<constant name="FanartCrossfadeTime">500</constant>
 	<constant name="IconCrossfadeTime">400</constant>
 
-	<include name="CommonMediaPlayingBackground">
-		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<texture>special://skin/backgrounds/media-overlay.png</texture>
-			<visible>Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)</visible>
-		</control>
-		<control type="visualisation">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<visible>Player.HasAudio + !Skin.HasSetting(ShowBackgroundVis)</visible>
-		</control>
-		<control type="videowindow">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<visible>Player.HasVideo + !Skin.HasSetting(ShowBackgroundVideo)</visible>
-		</control>
-	</include>
-	<include name="CommonVideoBackground">
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath fallback="special://skin/backgrounds/videos.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</imagepath>
-			<timeperimage>10000</timeperimage>
-			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
-		</control>
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath fallback="special://skin/backgrounds/videos.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_Movies_Folder)]</imagepath>
-			<timeperimage>10000</timeperimage>
-			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
-			<visible>Container.Content(Movies) + [!IsEmpty(Skin.String(Home_Custom_Back_Movies_Folder)) + Skin.HasSetting(HomeMenuNoMoviesButton)]</visible>
-		</control>
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath fallback="special://skin/backgrounds/videos.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_TVShow_Folder)]</imagepath>
-			<timeperimage>10000</timeperimage>
-			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
-			<visible>[Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes)] + [!IsEmpty(Skin.String(Home_Custom_Back_TVShow_Folder) + Skin.HasSetting(HomeMenuNoTVShowsButton)])</visible>
-		</control>
-		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-			<include>backgroundfade</include>
-			<fadetime>FanartCrossfadeTime</fadetime>
-			<visible>!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))</visible>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-	</include>
-	<include name="CommonTVBackground">
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath fallback="special://skin/backgrounds/tv.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</imagepath>
-			<timeperimage>10000</timeperimage>
-			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
-		</control>
-	</include>
-	<include name="CommonMusicBackground">
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath fallback="special://skin/backgrounds/music.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</imagepath>
-			<timeperimage>10000</timeperimage>
-			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
-		</control>
-		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-			<include>backgroundfade</include>
-			<fadetime>FanartCrossfadeTime</fadetime>
-			<visible>!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))</visible>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-	</include>
-	<include name="CommonPictureBackground">
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath fallback="special://skin/backgrounds/pictures.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_Pictures_Folder)]</imagepath>
-			<timeperimage>10000</timeperimage>
-			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
-		</control>
-		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-			<include>backgroundfade</include>
-			<fadetime>FanartCrossfadeTime</fadetime>
-			<visible>!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))</visible>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-	</include>
-	<include name="CommonProgramsBackground">
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath fallback="special://skin/backgrounds/programs.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</imagepath>
-			<timeperimage>10000</timeperimage>
-			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
-		</control>
-		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-			<include>backgroundfade</include>
-			<fadetime>FanartCrossfadeTime</fadetime>
-			<visible>!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))</visible>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-	</include>
-	<include name="CommonWeatherBackground">
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath fallback="special://skin/backgrounds/weather.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_Weather_Folder)]</imagepath>
-			<timeperimage>10000</timeperimage>
-			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
-			<visible>![Skin.HasSetting(ShowWeatherFanart) + !IsEmpty(Skin.String(WeatherFanartDir))]</visible>
-		</control>
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath background="true">$INFO[Skin.String(WeatherFanartDir)]$INFO[Weather.FanartCode]</imagepath>
-			<timeperimage>10000</timeperimage>
-			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
-			<visible>Skin.HasSetting(ShowWeatherFanart) + !IsEmpty(Skin.String(WeatherFanartDir))</visible>
-			<animation effect="fade" time="200">WindowClose</animation>
-		</control>
-	</include>
-	<include name="CommonSettingsBackground">
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath fallback="special://skin/backgrounds/settings.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_Settings_Folder)]</imagepath>
-			<timeperimage>10000</timeperimage>
-			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
-		</control>
-		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-			<include>backgroundfade</include>
-			<fadetime>FanartCrossfadeTime</fadetime>
-			<visible>!Skin.HasSetting(HideBackGroundFanart) + !IsEmpty(ListItem.Property(Fanart_Image))</visible>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-	</include>
 	<include name="BehindDialogFadeOut">
 		<control type="image">
 			<posx>0</posx>
@@ -235,7 +38,7 @@
 	</include>
 	<include name="WindowTitleHomeButton">
 		<control type="group">
-			<posx>20</posx>
+			<posx>0</posx>
 			<posy>0</posy>
 			<animation effect="slide" end="-270,0" time="400" tween="quadratic" easing="out" condition="Window.Next(Home)">WindowClose</animation>
 			<animation effect="slide" start="-270,0" time="400" tween="quadratic" easing="out" condition="Window.Previous(Home)">WindowOpen</animation>
@@ -265,7 +68,7 @@
 		<textoffsetx>10</textoffsetx>
 		<textwidth>200</textwidth>
 		<aligny>center</aligny>
-		<font>font13caps</font>
+		<font>font13</font>
 		<texturefocus border="5">button-focus.png</texturefocus>
 		<texturenofocus>-</texturenofocus>
 		<pulseonselect>false</pulseonselect>
@@ -303,46 +106,145 @@
 		<texturenofocus border="5">button-nofocus.png</texturenofocus>
 		<pulseonselect>false</pulseonselect>
 	</include>
-	<include name="SideBladeRight">
-		<control type="image">
-			<posx>26r</posx>
+	<include name="SideBladeLeft">
+		<animation effect="slide" start="0,0" end="250,0" time="400" tween="quadratic" easing="out" condition="ControlGroup(9000).HasFocus | Control.HasFocus(9001) | Control.HasFocus(8999)">Conditional</animation>
+		<animation effect="slide" start="0,0" end="-300,0" time="400" tween="quadratic" easing="out" condition="ControlGroup(9000).HasFocus | Control.HasFocus(9001)">WindowClose</animation>
+		<animation effect="slide" start="0,0" end="-50,0" time="300" tween="quadratic" easing="out" condition="![ControlGroup(9000).HasFocus | Control.HasFocus(9001)]">WindowClose</animation>
+		<animation effect="slide" start="-50,0" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
+		<control type="button" id="8999">
+			<description>Fake button for mouse control</description>
+			<posx>0</posx>
 			<posy>0</posy>
-			<width>846</width>
+			<width>250</width>
 			<height>720</height>
-			<texture flipx="true">HomeBlade.png</texture>
-			<animation effect="slide" start="26,0" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
-			<animation effect="slide" start="0,0" end="26,0" time="200" delay="200" tween="quadratic" easing="out">WindowClose</animation>
+			<label>-</label>
+			<font>-</font>
+			<texturenofocus>-</texturenofocus>
+			<texturefocus>-</texturefocus>
+			<visible>true</visible>
+		</control>
+		<control type="button" id="9001">
+			<posx>250</posx>
+			<posy>260</posy>
+			<width>42</width>
+			<height>128</height>
+			<font>-</font>
+			<texturefocus>HasSub.png</texturefocus>
+			<texturenofocus>HasSub.png</texturenofocus>
+		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>260</width>
+			<height>720</height>
+			<texture border="0,0,10,0">MediaBladeSub.png</texture>
+		</control>
+		<control type="image">
+			<description>LOGO</description>
+			<posx>15</posx>
+			<posy>50</posy>
+			<width>220</width>
+			<height>80</height>
+			<aspectratio>keep</aspectratio>
+			<texture>Confluence_Logo.png</texture>
 		</control>
 	</include>
-	<include name="SideBladeLeft">
-		<control type="image">
-			<posx>-820</posx>
-			<posy>0</posy>
-			<width>846</width>
-			<height>720</height>
-			<texture>HomeBlade.png</texture>
-			<animation effect="slide" start="-26,0" end="0,0" time="300" tween="quadratic" easing="out">WindowOpen</animation>
-			<animation effect="slide" start="0,0" end="-26,0" time="200" delay="200" tween="quadratic" easing="out">WindowClose</animation>
+	<include name="CommonNowPlaying">
+		<control type="group">
+			<visible>Player.HasMedia</visible>
+			<include>VisibleFadeEffect</include>
+			<include>Window_OpenClose_Animation</include>
+			<control type="image">
+				<description>Icon</description>
+				<posx>30</posx>
+				<posy>56r</posy>
+				<width>50</width>
+				<height>50</height>
+				<texture>NowPlayingIcon.png</texture>
+			</control>
+			<control type="label">
+				<posx>85</posx>
+				<posy>53r</posy>
+				<width>700</width>
+				<height>20</height>
+				<label>$INFO[MusicPlayer.Title]$INFO[VideoPlayer.Title] - ([COLOR=blue]$INFO[Player.Time] / $INFO[Player.Duration,][/COLOR])</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<posx>85</posx>
+				<posy>30r</posy>
+				<width>700</width>
+				<height>20</height>
+				<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Album, - ]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>Player.HasAudio</visible>
+			</control>
+			<control type="label">
+				<posx>85</posx>
+				<posy>30r</posy>
+				<width>700</width>
+				<height>20</height>
+				<label>$INFO[VideoPlayer.Studio]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>Player.HasVideo + VideoPlayer.Content(Movies)</visible>
+			</control>
+			<control type="label">
+				<posx>85</posx>
+				<posy>30r</posy>
+				<width>700</width>
+				<height>20</height>
+				<label>$INFO[VideoPlayer.TVShowTitle]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>Player.HasVideo + VideoPlayer.Content(Episodes)</visible>
+			</control>
+			<control type="label">
+				<posx>85</posx>
+				<posy>30r</posy>
+				<width>700</width>
+				<height>20</height>
+				<label>$INFO[VideoPlayer.Artist]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>Player.HasVideo + VideoPlayer.Content(MusicVideos)</visible>
+			</control>
 		</control>
 	</include>
 	<include name="CommonPageCount">
 		<control type="label">
-			<posx>40</posx>
-			<posy>30r</posy>
-			<width>700</width>
+			<description>Page Count Label</description>
+			<posx>40r</posx>
+			<posy>53r</posy>
+			<width>500</width>
 			<height>20</height>
-			<label>([COLOR=blue]$INFO[Player.Time] / $INFO[Player.Duration,][/COLOR]) - $INFO[MusicPlayer.Title]$INFO[VideoPlayer.Title]</label>
-			<align>left</align>
-			<aligny>center</aligny>
 			<font>font12</font>
 			<textcolor>grey</textcolor>
-			<shadowcolor>black</shadowcolor>
-			<visible>Player.HasMedia</visible>
-			<include>VisibleFadeEffect</include>
-			<include>Window_OpenClose_Animation</include>		
+			<scroll>false</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>$INFO[Window.Property(filter),$LOCALIZE[587] ([COLOR=blue],[/COLOR]) - ]$INFO[Container.NumItems,([COLOR=blue],[/COLOR]) $LOCALIZE[31025]]$INFO[Container.CurrentPage, - $LOCALIZE[31024] ([COLOR=blue]]$INFO[Container.NumPages,/,[/COLOR])]</label>
+			<include>Window_OpenClose_Animation</include>
 		</control>
 		<control type="label">
-			<description>Page Count Label</description>
+			<description>Container Duration Label</description>
 			<posx>40r</posx>
 			<posy>30r</posy>
 			<width>500</width>
@@ -352,8 +254,8 @@
 			<scroll>false</scroll>
 			<align>right</align>
 			<aligny>center</aligny>
-			<label>([COLOR=blue]$INFO[Container.NumItems][/COLOR]) $LOCALIZE[31025]$INFO[Container.TotalTime, - $LOCALIZE[180] ([COLOR=blue],[/COLOR])] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container.CurrentPage]/$INFO[Container.NumPages][/COLOR])</label>
-			<include>Window_OpenClose_Animation</include>		
+			<label>$INFO[Container.TotalTime,$LOCALIZE[180] ([COLOR=blue],[/COLOR])]</label>
+			<include>Window_OpenClose_Animation</include>
 		</control>
 	</include>
 	<include name="SmallMusicInfo">
@@ -473,7 +375,7 @@
 			<font>font12_title</font>
 			<textcolor>grey2</textcolor>
 			<shadowcolor>black</shadowcolor>
-			<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos) + !videoplayer.content(LiveTV)</visible>
+			<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos)</visible>
 		</control>
 		<control type="label">
 			<description>TV Show Title label</description>
@@ -502,22 +404,6 @@
 			<textcolor>white</textcolor>
 			<shadowcolor>black</shadowcolor>
 			<visible>videoplayer.content(musicvideos)</visible>
-			<scrollout>false</scrollout>
-			<pauseatend>2000</pauseatend>
-		</control>
-		<control type="fadelabel">
-			<description>Channel label</description>
-			<posx>160</posx>
-			<posy>20</posy>
-			<height>30</height>
-			<width>325</width>
-			<label>$INFO[VideoPlayer.ChannelName]</label>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>font12_title</font>
-			<textcolor>white</textcolor>
-			<shadowcolor>black</shadowcolor>
-			<visible>videoplayer.content(LiveTV)</visible>
 			<scrollout>false</scrollout>
 			<pauseatend>2000</pauseatend>
 		</control>
@@ -592,89 +478,25 @@
 		</control>
 	</include>
 	<include name="CommonNowPlaying_Controls">
-		<visible>[Player.HasAudio | Player.HasVideo]</visible>
-		<include>VisibleFadeEffect</include>
-		<control type="label">
-			<posx>250</posx>
-			<posy>0</posy>
+		<control type="label" id="202">
 			<width>250</width>
-			<height>40</height>
-			<font>font28_title</font>
-			<textcolor>grey2</textcolor>
-			<align>right</align>
-			<aligny>center</aligny>
+			<height>45</height>
+			<font>font12caps</font>
 			<label>31023</label>
-		</control>
-		<control type="group">
-			<posx>12</posx>
-			<posy>40</posy>
-			<visible>VideoPlayer.Content(LiveTV)</visible>
-			<control type="button" id="600">
-				<posx>20</posx>
-				<posy>2</posy>
-				<width>39</width>
-				<height>39</height>
-				<label>-</label>
-				<texturefocus>OSDChannelUPFO.png</texturefocus>
-				<texturenofocus>OSDChannelUPNF.png</texturenofocus>
-				<onleft>50</onleft>
-				<onright>606</onright>
-				<onup>610</onup>
-				<ondown>608</ondown>
-				<onclick>XBMC.PlayerControl(Previous)</onclick>
-			</control>
-			<control type="button" id="601">
-				<posx>60</posx>
-				<posy>2</posy>
-				<width>39</width>
-				<height>39</height>
-				<label>-</label>
-				<texturefocus>OSDChannelDownFO.png</texturefocus>
-				<texturenofocus>OSDChannelDownNF.png</texturenofocus>
-				<onleft>600</onleft>
-				<onright>603</onright>
-				<onup>610</onup>
-				<ondown>608</ondown>
-				<onclick>XBMC.PlayerControl(Next)</onclick>
-			</control>
-			<control type="button" id="603">
-				<posx>100</posx>
-				<posy>2</posy>
-				<width>39</width>
-				<height>39</height>
-				<label>-</label>
-				<texturefocus>OSDStopFO.png</texturefocus>
-				<texturenofocus>OSDStopNF.png</texturenofocus>
-				<onleft>601</onleft>
-				<onright>604</onright>
-				<onup>610</onup>
-				<ondown>608</ondown>
-				<onclick>down</onclick>
-				<onclick>XBMC.PlayerControl(Stop)</onclick>
-			</control>
-			<control type="button" id="604">
-				<posx>180</posx>
-				<posy>2</posy>
-				<width>39</width>
-				<height>39</height>
-				<label>-</label>
-				<texturefocus>OSDRecordFO.png</texturefocus>
-				<texturenofocus>OSDRecordNF.png</texturenofocus>
-				<onleft>603</onleft>
-				<onright>50</onright>
-				<onup>610</onup>
-				<ondown>608</ondown>
-				<onclick>XBMC.PlayerControl(record)</onclick>
-				<enable>Player.CanRecord</enable>
-				<animation effect="fade" start="100" end="30" time="100" condition="!Player.CanRecord">Conditional</animation>
-			</control>
+			<textcolor>blue</textcolor>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>[Player.HasAudio | Player.HasVideo]</visible>
+			<include>VisibleFadeEffect</include>
 		</control>
 		<control type="group" id="9005">
-			<posx>12</posx>
-			<posy>40</posy>
-			<visible>!VideoPlayer.Content(LiveTV)</visible>
+			<visible>[Player.HasAudio | Player.HasVideo]</visible>
+			<include>VisibleFadeEffect</include>
+			<width>250</width>
+			<height>39</height>
+			<defaultcontrol always="true">603</defaultcontrol>
 			<control type="button" id="600">
-				<posx>0</posx>
+				<posx>5</posx>
 				<posy>2</posy>
 				<width>39</width>
 				<height>39</height>
@@ -684,11 +506,11 @@
 				<onleft>50</onleft>
 				<onright>606</onright>
 				<onup>610</onup>
-				<ondown>608</ondown>
+				<ondown>611</ondown>
 				<onclick>XBMC.PlayerControl(Previous)</onclick>
 			</control>
 			<control type="button" id="606">
-				<posx>40</posx>
+				<posx>45</posx>
 				<posy>2</posy>
 				<width>39</width>
 				<height>39</height>
@@ -698,14 +520,14 @@
 				<onleft>600</onleft>
 				<onright>603</onright>
 				<onup>610</onup>
-				<ondown>608</ondown>
+				<ondown>611</ondown>
 				<onclick>XBMC.PlayerControl(Rewind)</onclick>
 				<visible>Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo</visible>
 			</control>
 			<control type="group">
 				<animation effect="slide" start="0,0" end="40,0" time="0" condition="Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo">Conditional</animation>
 				<control type="togglebutton" id="603">
-					<posx>40</posx>
+					<posx>45</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -718,11 +540,11 @@
 					<onleft>606</onleft>
 					<onright>601</onright>
 					<onup>610</onup>
-					<ondown>608</ondown>
+					<ondown>611</ondown>
 					<onclick>XBMC.PlayerControl(Play)</onclick>
 				</control>
 				<control type="button" id="601">
-					<posx>80</posx>
+					<posx>85</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -732,12 +554,12 @@
 					<onleft>603</onleft>
 					<onright>607</onright>
 					<onup>610</onup>
-					<ondown>608</ondown>
+					<ondown>611</ondown>
 					<onclick>down</onclick>
 					<onclick>XBMC.PlayerControl(Stop)</onclick>
 				</control>
 				<control type="button" id="607">
-					<posx>120</posx>
+					<posx>125</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -747,12 +569,12 @@
 					<onleft>601</onleft>
 					<onright>602</onright>
 					<onup>610</onup>
-					<ondown>608</ondown>
+					<ondown>611</ondown>
 					<onclick>XBMC.PlayerControl(Forward)</onclick>
 					<visible>Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo</visible>
 				</control>
 				<control type="button" id="602">
-					<posx>120</posx>
+					<posx>125</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -762,7 +584,7 @@
 					<onleft>607</onleft>
 					<onright>604</onright>
 					<onup>610</onup>
-					<ondown>608</ondown>
+					<ondown>611</ondown>
 					<onclick>XBMC.PlayerControl(Next)</onclick>
 					<animation effect="slide" start="0,0" end="40,0" time="0" condition="Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo">Conditional</animation>
 				</control>
@@ -770,7 +592,7 @@
 			<control type="group">
 				<visible>!Window.IsVisible(MusicPlaylist) + !Window.IsVisible(VideoPlaylist) + !Player.HasVideo</visible>
 				<control type="button" id="604">
-					<posx>160</posx>
+					<posx>165</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -781,10 +603,10 @@
 					<onleft>602</onleft>
 					<onright>605</onright>
 					<onup>610</onup>
-					<ondown>608</ondown>
+					<ondown>611</ondown>
 				</control>
 				<control type="image">
-					<posx>160</posx>
+					<posx>165</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -793,7 +615,7 @@
 					<visible>!Control.HasFocus(604)</visible>
 				</control>
 				<control type="image">
-					<posx>160</posx>
+					<posx>165</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -802,7 +624,7 @@
 					<visible>Control.HasFocus(604)</visible>
 				</control>
 				<control type="image">
-					<posx>160</posx>
+					<posx>165</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -811,7 +633,7 @@
 					<visible>!Control.HasFocus(604)</visible>
 				</control>
 				<control type="image">
-					<posx>160</posx>
+					<posx>165</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -820,7 +642,7 @@
 					<visible>Control.HasFocus(604)</visible>
 				</control>
 				<control type="image">
-					<posx>160</posx>
+					<posx>165</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -829,7 +651,7 @@
 					<visible>!Control.HasFocus(604)</visible>
 				</control>
 				<control type="image">
-					<posx>160</posx>
+					<posx>165</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -838,7 +660,7 @@
 					<visible>Control.HasFocus(604)</visible>
 				</control>
 				<control type="togglebutton" id="605">
-					<posx>200</posx>
+					<posx>205</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -852,138 +674,8 @@
 					<onleft>604</onleft>
 					<onright>50</onright>
 					<onup>610</onup>
-					<ondown>608</ondown>
+					<ondown>611</ondown>
 				</control>
-			</control>
-		</control>
-	</include>
-	<include name="CommonNowPlaying">
-		<control type="group">
-			<posx>10</posx>
-			<posy>345</posy>
-			<visible>Player.HasAudio</visible>
-			<include>VisibleFadeEffect</include>
-			<control type="button" id="608">
-				<posx>38</posx>
-				<posy>0</posy>
-				<width>164</width>
-				<height>164</height>
-				<label>-</label>
-				<texturefocus border="5">folder-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<onleft>50</onleft>
-				<onright>50</onright>
-				<onup>603</onup>
-				<ondown>611</ondown>
-				<onclick>fullscreen</onclick>
-			</control>
-			<control type="image">
-				<posx>40</posx>
-				<posy>2</posy>
-				<width>160</width>
-				<height>160</height>
-				<texture>$INFO[MusicPlayer.Cover]</texture>
-				<bordertexture border="3">black-back2.png</bordertexture>
-				<bordersize>5</bordersize>
-				<aspectratio align="center">keep</aspectratio>
-			</control>
-			<control type="fadelabel">
-				<posx>0</posx>
-				<posy>170</posy>
-				<width>240</width>
-				<height>20</height>
-				<label>$INFO[MusicPlayer.Title]</label>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font12</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scrollout>false</scrollout>
-				<pauseatend>2000</pauseatend>
-			</control>
-			<control type="fadelabel">
-				<posx>0</posx>
-				<posy>190</posy>
-				<width>240</width>
-				<height>20</height>
-				<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Album, | ]</label>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font10</font>
-				<textcolor>grey2</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scrollout>false</scrollout>
-				<pauseatend>2000</pauseatend>
-			</control>
-		</control>
-		<control type="group">
-			<posx>10</posx>
-			<posy>345</posy>
-			<visible>Player.HasVideo</visible>
-			<include>VisibleFadeEffect</include>
-			<control type="button" id="608">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>240</width>
-				<height>164</height>
-				<label>-</label>
-				<texturefocus border="5">folder-focus.png</texturefocus>
-				<texturenofocus>-</texturenofocus>
-				<onleft>50</onleft>
-				<onright>50</onright>
-				<onup>603</onup>
-				<ondown>611</ondown>
-				<onclick>fullscreen</onclick>
-			</control>
-			<control type="videowindow">
-				<posx>2</posx>
-				<posy>2</posy>
-				<width>236</width>
-				<height>160</height>
-			</control>
-			<control type="fadelabel">
-				<posx>0</posx>
-				<posy>170</posy>
-				<width>240</width>
-				<height>20</height>
-				<label>$INFO[VideoPlayer.Title]</label>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font12</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scrollout>false</scrollout>
-				<pauseatend>2000</pauseatend>
-			</control>
-			<control type="fadelabel">
-				<posx>0</posx>
-				<posy>190</posy>
-				<width>240</width>
-				<height>20</height>
-				<label>$INFO[VideoPlayer.TVShowTitle,, - ]$INFO[VideoPlayer.Season,,x]$INFO[VideoPlayer.Episode]</label>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font10</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scrollout>false</scrollout>
-				<pauseatend>2000</pauseatend>
-				<visible>VideoPlayer.Content(Episodes)</visible>
-			</control>
-			<control type="fadelabel">
-				<posx>0</posx>
-				<posy>190</posy>
-				<width>240</width>
-				<height>20</height>
-				<label>$INFO[VideoPlayer.Year]$INFO[VideoPlayer.Director, | ]$INFO[VideoPlayer.Genre, | ]</label>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font10</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scrollout>false</scrollout>
-				<pauseatend>2000</pauseatend>
-				<visible>VideoPlayer.Content(Movies)</visible>
 			</control>
 		</control>
 	</include>
