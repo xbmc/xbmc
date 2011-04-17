@@ -107,7 +107,6 @@ IMAGES= \
 	flagging/audio/ape.png \
 	flagging/audio/avc.png \
 	flagging/audio/cdda.png \
-	flagging/audio/dolbydigital.png \
 	flagging/audio/dts.png \
 	flagging/audio/flac.png \
 	flagging/audio/mp1.png \
