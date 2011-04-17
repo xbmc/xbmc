@@ -490,8 +490,74 @@
 			<visible>[Player.HasAudio | Player.HasVideo]</visible>
 			<include>VisibleFadeEffect</include>
 		</control>
+		<control type="group" id="9006">
+			<width>250</width>
+			<height>39</height>
+			<visible>VideoPlayer.Content(LiveTV)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="button" id="600">
+				<posx>20</posx>
+				<posy>2</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDChannelUPFO.png</texturefocus>
+				<texturenofocus>OSDChannelUPNF.png</texturenofocus>
+				<onleft>50</onleft>
+				<onright>601</onright>
+				<onup>610</onup>
+				<ondown>611</ondown>
+				<onclick>XBMC.PlayerControl(Previous)</onclick>
+			</control>
+			<control type="button" id="601">
+				<posx>60</posx>
+				<posy>2</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDChannelDownFO.png</texturefocus>
+				<texturenofocus>OSDChannelDownNF.png</texturenofocus>
+				<onleft>600</onleft>
+				<onright>603</onright>
+				<onup>610</onup>
+				<ondown>611</ondown>
+				<onclick>XBMC.PlayerControl(Next)</onclick>
+			</control>
+			<control type="button" id="603">
+				<posx>100</posx>
+				<posy>2</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDStopFO.png</texturefocus>
+				<texturenofocus>OSDStopNF.png</texturenofocus>
+				<onleft>601</onleft>
+				<onright>604</onright>
+				<onup>610</onup>
+				<ondown>611</ondown>
+				<onclick>down</onclick>
+				<onclick>XBMC.PlayerControl(Stop)</onclick>
+			</control>
+			<control type="button" id="604">
+				<posx>180</posx>
+				<posy>2</posy>
+				<width>39</width>
+				<height>39</height>
+				<label>-</label>
+				<texturefocus>OSDRecordFO.png</texturefocus>
+				<texturenofocus>OSDRecordNF.png</texturenofocus>
+				<onleft>603</onleft>
+				<onright>50</onright>
+				<onup>610</onup>
+				<ondown>611</ondown>
+				<onclick>XBMC.PlayerControl(record)</onclick>
+				<enable>Player.CanRecord</enable>
+				<animation effect="fade" start="100" end="30" time="100" condition="!Player.CanRecord">Conditional</animation>
+			</control>
+		</control>
 		<control type="group" id="9005">
 			<visible>[Player.HasAudio | Player.HasVideo]</visible>
+			<visible>!VideoPlayer.Content(LiveTV)</visible>
 			<include>VisibleFadeEffect</include>
 			<width>250</width>
 			<height>39</height>
