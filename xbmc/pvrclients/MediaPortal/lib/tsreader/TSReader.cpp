@@ -226,4 +226,10 @@ void CTsReader::Close()
     delete_null(m_fileReader);
   }
 }
+
+void CTsReader::OnZap(void)
+{
+  m_fileReader->SetFilePointer(0LL, FILE_END);
+}
+
 #endif //TSREADER
