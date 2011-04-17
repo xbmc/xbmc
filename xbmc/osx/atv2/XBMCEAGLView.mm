@@ -246,6 +246,7 @@
   // OSX scheduler will monitor SCHED_RR threads and drop to SCHED_OTHER if it detects
   // the thread running away. OSX automatically does this with the CoreAudio audio
   // device handler thread.
+
   int32_t result;
   thread_extended_policy_data_t theFixedPolicy;
 
@@ -347,7 +348,7 @@
     displayLinkWithTarget:self
     selector:@selector(runDisplayLink)];
   [displayLink setFrameInterval:1];
-  [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+  [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
   displayFPS = 60;
 }
 //--------------------------------------------------------------

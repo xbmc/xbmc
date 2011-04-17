@@ -369,7 +369,7 @@
     displayLinkWithTarget:self
     selector:@selector(runDisplayLink)];
   [displayLink setFrameInterval:1];
-  [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+  [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
   displayFPS = 60;
 }
 //--------------------------------------------------------------
