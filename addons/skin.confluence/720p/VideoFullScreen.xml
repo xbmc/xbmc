@@ -24,7 +24,21 @@
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 				<label>$INFO[Player.Chapter,$LOCALIZE[21396]: ]$INFO[Player.ChapterCount, / ]$INFO[Player.ChapterName,[COLOR=grey] - (,)[/COLOR]]</label>
-				<visible>Player.ChapterCount</visible>
+				<visible>Player.ChapterCount + !VideoPlayer.Content(LiveTV)</visible>
+			</control>
+			<control type="label" id="1">
+				<description>Channel Group label</description>
+				<posx>30</posx>
+				<posy>5</posy>
+				<width>1000</width>
+				<height>25</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<label>$INFO[VideoPlayer.ChannelGroup,$LOCALIZE[31509]: ]</label>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="label" id="1">
 				<description>Clock label</description>
@@ -84,7 +98,7 @@
 					<label>$LOCALIZE[31040]</label>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
-					<animation effect="slide" start="0,0" end="0,25" time="0" condition="!VideoPlayer.Content(Movies) + !VideoPlayer.Content(Episodes) + !VideoPlayer.Content(MusicVideos)">conditional</animation>
+					<animation effect="slide" start="0,0" end="0,25" time="0" condition="!VideoPlayer.Content(Movies) + !VideoPlayer.Content(Episodes) + !VideoPlayer.Content(MusicVideos) + !VideoPlayer.Content(LiveTV)">conditional</animation>
 				</control>
 				<control type="label" id="1">
 					<description>Studio label</description>
@@ -124,6 +138,19 @@
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<visible>VideoPlayer.Content(MusicVideos)</visible>
+				</control>
+				<control type="label" id="1">
+					<description>LiveTV Info label</description>
+					<posx>20</posx>
+					<posy>30</posy>
+					<width>910</width>
+					<height>25</height>
+					<align>left</align>
+					<font>font12</font>
+					<label>$INFO[VideoPlayer.ChannelName]$INFO[VideoPlayer.ChannelNumber, - ([COLOR=blue],[/COLOR])]</label>
+					<textcolor>grey2</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<visible>VideoPlayer.Content(LiveTV)</visible>
 				</control>
 				<control type="grouplist" id="1">
 					<posx>20</posx>
@@ -175,7 +202,21 @@
 					<font>font12</font>
 					<textcolor>grey</textcolor>
 					<scroll>true</scroll>
-					<visible>!Window.IsVisible(VideoOSD)</visible>
+					<visible>!Window.IsVisible(VideoOSD) + !VideoPlayer.Content(LiveTV)</visible>
+					<animation effect="fade" time="200">VisibleChange</animation>
+				</control>
+				<control type="label" id="1">
+					<posx>0</posx>
+					<posy>120</posy>
+					<width>910</width>
+					<height>25</height>
+					<label>$INFO[VideoPlayer.NextTitle,$LOCALIZE[209]: ]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<scroll>true</scroll>
+					<visible>!Window.IsVisible(VideoOSD) + VideoPlayer.Content(LiveTV)</visible>
 					<animation effect="fade" time="200">VisibleChange</animation>
 				</control>
 			</control>
