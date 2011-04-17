@@ -147,6 +147,7 @@ long CTsReader::Open(const char* pszFileName)//, const AM_MEDIA_TYPE *pmt)
     //m_duration.Set(pcrstart, pcrEnd, pcrMax);    //Load()
 #else
     XBMC->Log(LOG_DEBUG, "Failed to open %s. PVR client is compiled without LIVE555 RTSP support.", url);
+    XBMC->QueueNotification(QUEUE_ERROR, "PVR client has no RTSP support: %s", url);
     return E_FAIL;
 #endif
   }

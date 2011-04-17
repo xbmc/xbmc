@@ -175,6 +175,7 @@ bool cPVRClientMediaPortal::Connect()
       if( g_iTVServerXBMCBuild < 70 ) //major < 1 || minor < 1 || revision < 0 || build < 70
       {
         XBMC->Log(LOG_ERROR, "Your TVServerXBMC version '%s' is too old. Please upgrade to 1.1.0.70 or higher!", fields[1].c_str());
+        XBMC->QueueNotification(QUEUE_ERROR, "Your TVServerXBMC version '%s' is too old. Please upgrade to 1.1.0.70 or higher!", fields[1].c_str());
         return false;
       }
       else
@@ -182,13 +183,14 @@ bool cPVRClientMediaPortal::Connect()
         XBMC->Log(LOG_INFO, "Your TVServerXBMC version is '%s'", fields[1].c_str());
         
         // Advice to upgrade:
-        if( g_iTVServerXBMCBuild < 100 )
+        if( g_iTVServerXBMCBuild < 102 )
         {
-          XBMC->Log(LOG_INFO, "It is adviced to upgrade your TVServerXBMC version '%s' to 1.1.0.100 or higher!", fields[1].c_str());
+          XBMC->Log(LOG_INFO, "It is adviced to upgrade your TVServerXBMC version '%s' to 1.1.3.102 or higher!", fields[1].c_str());
         }
       }
     } else {
       XBMC->Log(LOG_ERROR, "Your TVServerXBMC version is too old. Please upgrade.");
+      XBMC->QueueNotification(QUEUE_ERROR, "Your TVServerXBMC version is too old. Please upgrade to 1.1.0.70 or higher!");
       return false;
     }
   }
@@ -396,12 +398,12 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
   cEpg           epg;
   EPG_TAG        broadcast;
 
-  XBMC->Log(LOG_DEBUG, "->RequestEPGForChannel(%i)", channel.iChannelNumber);
+  XBMC->Log(LOG_DEBUG, "->RequestEPGForChannel(%i)", channel.iUniqueId);
 
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
 
-  snprintf(command, 256, "GetEPG:%i\n", channel.iChannelNumber);
+  snprintf(command, 256, "GetEPG:%i\n", channel.iUniqueId);
 
   result = SendCommand(command);
 
@@ -413,7 +415,7 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
 
       Tokenize(result, lines, ",");
 
-      XBMC->Log(LOG_DEBUG, "Found %i EPG items for channel %i\n", lines.size(), channel.iChannelNumber);
+      XBMC->Log(LOG_DEBUG, "Found %i EPG items for channel %i\n", lines.size(), channel.iUniqueId);
 
       for (vector<string>::iterator it = lines.begin(); it < lines.end(); it++)
       {
@@ -453,10 +455,10 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
         }
       }
     } else {
-      XBMC->Log(LOG_DEBUG, "No EPG items found for channel %i", channel.iChannelNumber);
+      XBMC->Log(LOG_DEBUG, "No EPG items found for channel %i", channel.iUniqueId);
     }
   } else {
-    XBMC->Log(LOG_DEBUG, "RequestEPGForChannel(%i) %s", channel.iChannelNumber, result.c_str());
+    XBMC->Log(LOG_DEBUG, "RequestEPGForChannel(%i) %s", channel.iUniqueId, result.c_str());
   }
 
   return PVR_ERROR_NO_ERROR;
@@ -527,7 +529,14 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
     if( channel.Parse(data) )
     {
       tag.iUniqueId = channel.UID();
-      tag.iChannelNumber = channel.UID(); //channel.ExternalID();
+      if (g_iTVServerXBMCBuild >= 102)
+      {
+        tag.iChannelNumber = channel.ExternalID();
+      }
+      else
+      {
+        tag.iChannelNumber = channel.UID(); //channel.ExternalID();
+      }
       tag.strChannelName = channel.Name();
       tag.strIconPath = "";
       tag.iEncryptionSystem = channel.Encrypted();
@@ -673,7 +682,14 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroupMembers(PVR_HANDLE handle, const
     if( channel.Parse(data) )
     {
       tag.iChannelUniqueId = channel.UID();
-      tag.iChannelNumber = channel.UID(); //channel.ExternalID();
+      if( g_iTVServerXBMCBuild >= 102 )
+      {
+        tag.iChannelNumber = channel.ExternalID();
+      }
+      else
+      {
+        tag.iChannelNumber = channel.UID(); //channel.ExternalID();
+      }
       tag.strGroupName = group.strGroupName;
 
       XBMC->Log(LOG_DEBUG, "%s - add channel %s (%d) to group '%s' channel number %d",
@@ -1027,7 +1043,7 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
   // TODO: optimization: request the channel stream already here and return it to
   //       XBMC via GetLiveStreamURL
 #ifdef TSREADER
-  unsigned int channel = channelinfo.iChannelNumber;
+  unsigned int channel = channelinfo.iUniqueId;
 
   string result;
   char   command[256] = "";
@@ -1051,6 +1067,16 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
   if (result.find("ERROR") != std::string::npos || result.length() == 0)
   {
     XBMC->Log(LOG_ERROR, "Could not start the timeshift for channel %i. %s", channel, result.c_str());
+    if (result.find("[ERROR]: TVServer answer: ") != std::string::npos)
+    {
+      //Skip first part: "[ERROR]: TVServer answer: "
+      XBMC->QueueNotification(QUEUE_ERROR, "TVServer: %s", result.substr(26).c_str());
+    }
+    else
+    {
+      //Skip first part: "[ERROR]: "
+      XBMC->QueueNotification(QUEUE_ERROR, result.substr(7).c_str());
+    }
     return false;
   }
   else
@@ -1177,6 +1203,7 @@ void cPVRClientMediaPortal::CloseLiveStream(void)
     result = SendCommand("StopTimeshift:\n");
     XBMC->Log(LOG_INFO, "CloseLiveStream: %s", result.c_str());
     m_bTimeShiftStarted = false;
+    m_iCurrentChannel = 0;
   } else {
     XBMC->Log(LOG_DEBUG, "CloseLiveStream: Nothing to do.");
   }
@@ -1185,7 +1212,7 @@ void cPVRClientMediaPortal::CloseLiveStream(void)
 
 bool cPVRClientMediaPortal::SwitchChannel(const PVR_CHANNEL &channel)
 {
-  XBMC->Log(LOG_DEBUG, "->SwitchChannel(%i)", channel.iChannelNumber);
+  XBMC->Log(LOG_DEBUG, "->SwitchChannel(%i)", channel.iUniqueId);
 
 #ifdef TSREADER
   if ((g_iTVServerXBMCBuild < 90))
@@ -1391,7 +1418,7 @@ int cPVRClientMediaPortal::ReadRecordedStream(unsigned char *pBuffer, unsigned i
  */
 const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
 {
-  unsigned int channel = channelinfo.iChannelNumber;
+  unsigned int channel = channelinfo.iUniqueId;
 
   string result;
   char   command[256] = "";
@@ -1433,6 +1460,16 @@ const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelin
   if (result.find("ERROR") != std::string::npos || result.length() == 0)
   {
     XBMC->Log(LOG_ERROR, "Could not stream channel %i. %s", channel, result.c_str());
+    if (result.find("[ERROR]: TVServer answer: ") != std::string::npos)
+    {
+      //Skip first part: "[ERROR]: TVServer answer: "
+      XBMC->QueueNotification(QUEUE_ERROR, "TVServer: %s", result.substr(26).c_str());
+    }
+    else
+    {
+      //Skip first part: "[ERROR]: "
+      XBMC->QueueNotification(QUEUE_ERROR, result.substr(7).c_str());
+    }
     return "";
   }
   else

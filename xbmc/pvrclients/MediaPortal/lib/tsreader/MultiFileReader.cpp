@@ -100,6 +100,7 @@ long MultiFileReader::OpenFile()
     if (GetTickCount()-tc>MAX_BUFFER_TIMEOUT)
     {
       XBMC->Log(LOG_DEBUG, "MultiFileReader: timedout while waiting for buffer file to become available");
+      XBMC->QueueNotification(QUEUE_ERROR, "Time out while waiting for buffer file");
       return S_FALSE;
     }
   }
@@ -200,6 +201,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
   if(!file)
   {
     XBMC->Log(LOG_DEBUG, "MultiFileReader::no file");
+    XBMC->QueueNotification(QUEUE_ERROR, "No buffer file");
     return S_FALSE;
   }
   if (m_currentPosition < (file->startPosition + file->length))
@@ -615,6 +617,7 @@ long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
     //swprintf((LPWSTR)&msg, L"Failed to open file %s : 0x%x\n", pFilename, dwErr);
     //::OutputDebugString(W2T((LPWSTR)&msg));
     XBMC->Log(LOG_DEBUG, "Failed to open file %s : 0x%x\n", pFilename, dwErr);
+    XBMC->QueueNotification(QUEUE_ERROR, "Failed to open file %s", pFilename);
     return HRESULT_FROM_WIN32(dwErr);
   }
   return S_OK;
