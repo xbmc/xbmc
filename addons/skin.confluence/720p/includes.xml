@@ -5,7 +5,7 @@
 	<include file="ViewsFileMode.xml" />
 	<include file="ViewsPictures.xml" />
 	<include file="ViewsAddonBrowser.xml" />
-	<include file="ViewsPVR.xml" />
+	<include file="ViewsLiveTV.xml" />
 	<include file="IncludesCodecFlagging.xml" />
 	<include file="IncludesHomeRecentlyAdded.xml" />
 	<include file="IncludesHomeMenuItems.xml" />
