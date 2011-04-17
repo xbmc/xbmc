@@ -66,6 +66,7 @@ namespace ADDON
     TheDll* m_pDll;
     bool m_initialized;
     bool LoadDll();
+    bool m_needsavedsettings;
 
     virtual ADDON_STATUS TransferSettings();
     TiXmlElement MakeSetting(DllSetting& setting) const;
@@ -99,6 +100,7 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
   m_initialized = false;
   m_pDll        = NULL;
   m_pInfo       = NULL;
+  m_needsavedsettings = false;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -110,6 +112,7 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const AddonProps &props)
   m_pDll        = NULL;
   m_pInfo       = NULL;
   m_pHelpers    = NULL;
+  m_needsavedsettings = false;
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
@@ -197,8 +200,9 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
     ADDON_STATUS status = m_pDll->Create(m_pHelpers->GetCallbacks(), m_pInfo);
     if (status == STATUS_OK)
       m_initialized = true;
-    else if (status == STATUS_NEED_SETTINGS)
+    else if ((status == STATUS_NEED_SETTINGS) || (status == STATUS_NEED_SAVEDSETTINGS))
     {
+      m_needsavedsettings = (status == STATUS_NEED_SAVEDSETTINGS);
       if (TransferSettings() == STATUS_OK)
         m_initialized = true;
       else
@@ -224,6 +228,20 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
   /* Inform dll to stop all activities */
   try
   {
+    if (m_needsavedsettings)  // If the addon supports it we save some settings to settings.xml before stop
+    {
+      char   str_id[64];
+      char   str_value[1024];
+      CAddon::LoadUserSettings();
+      for (unsigned int i=0; (strcmp(str_id,"###End") != 0); i++)
+      {
+        strcpy(str_id, "###GetSavedSettings");
+        sprintf (str_value, "%i", i);
+        m_pDll->SetSetting((const char*)&str_id, (void*)&str_value);
+        if (strcmp(str_id,"###End") != 0) UpdateSetting(str_id, str_value);
+      }
+      CAddon::SaveSettings();
+    }
     if (m_pDll) m_pDll->Stop();
   }
   catch (std::exception &e)
@@ -251,7 +269,7 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
   }
   delete m_pHelpers;
   m_pHelpers = NULL;
-  free(m_pStruct);
+  delete m_pStruct;
   m_pStruct = NULL;
   delete m_pDll;
   m_pDll = NULL;
@@ -403,7 +421,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
           status = m_pDll->SetSetting(id, (const char*) GetSetting(id).c_str());
         }
         else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
-          strcmpi(type, "labelenum") == 0)
+          strcmpi(type, "labelenum") == 0 || strcmpi(type, "rangeofnum") == 0)
         {
           int tmp = atoi(GetSetting(id));
           status = m_pDll->SetSetting(id, (int*) &tmp);
