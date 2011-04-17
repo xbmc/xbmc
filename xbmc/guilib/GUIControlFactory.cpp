@@ -1275,7 +1275,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   {
     control = new CGUIEPGGridContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, timeBlocks, rulerUnit);
     ((CGUIEPGGridContainer *)control)->LoadLayout(pControlNode);
-//    ((CGUIEPGGridContainer *)control)->LoadContent(pControlNode); ///
+    ((CGUIEPGGridContainer *)control)->SetRenderOffset(offset);
   }
   else if (type == CGUIControl::GUICONTAINER_FIXEDLIST)
   {
