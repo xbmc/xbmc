@@ -248,8 +248,21 @@ const CEpgInfoTag *CEpg::InfoTagNext(void) const
   CSingleLock lock(m_critSection);
 
   const CEpgInfoTag *nowTag = InfoTagNow();
+  if (nowTag != NULL)
+  {
+    return nowTag->GetNextEvent();
+  }
+  else if (size() >  0)
+  {
+    CDateTime now = CDateTime::GetCurrentDateTime();
+    for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+    {
+      if (at(iTagPtr)->StartAsLocalTime() > now)
+        return at(iTagPtr);
+    }
+  }
 
-  return nowTag ? nowTag->GetNextEvent() : NULL;
+  return NULL;
 }
 
 const CEpgInfoTag *CEpg::GetTag(int uniqueID, const CDateTime &StartTime) const
