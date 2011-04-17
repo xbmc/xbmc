@@ -1046,6 +1046,10 @@ bool CPVRManager::IsRecording(void) const
 
 void CPVRManager::LocalizationChanged(void)
 {
-  m_channelGroups->GetGroupAllRadio()->CheckGroupName();
-  m_channelGroups->GetGroupAllTV()->CheckGroupName();
+  CSingleLock lock(m_critSection);
+  if (m_bLoaded)
+  {
+    m_channelGroups->GetGroupAllRadio()->CheckGroupName();
+    m_channelGroups->GetGroupAllTV()->CheckGroupName();
+  }
 }
