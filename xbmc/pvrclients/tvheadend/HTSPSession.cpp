@@ -398,8 +398,8 @@ bool cHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
 
   if (desc && ext_desc)
   {
-    char buf[strlen(desc) + strlen(ext_desc) + 1];
-    sprintf(buf, "%s\n%s", desc, ext_desc);
+    char buf[strlen(desc) + strlen(ext_desc)];
+    sprintf(buf, "%s%s", desc, ext_desc);
     event.descs = buf;
   }
   else if (desc)
