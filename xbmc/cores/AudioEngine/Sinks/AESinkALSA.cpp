@@ -119,8 +119,8 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
   /* if we are raw, correct the data format */
   if (AE_IS_RAW(format.m_dataFormat))
   {
-    format.m_dataFormat   = AE_FMT_S16NE;
     format.m_channelCount = (format.m_dataFormat == AE_FMT_RAW) ? 2 : 8;
+    format.m_dataFormat   = AE_FMT_S16NE;
     m_passthrough         = true;
   }
   else
