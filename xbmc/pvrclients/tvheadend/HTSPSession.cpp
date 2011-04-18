@@ -377,7 +377,7 @@ bool cHTSPSession::GetEvent(SEvent& event, uint32_t id)
 bool cHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
 {
   uint32_t start, stop, next, chan_id, content;
-  const char *title, *desc;
+  const char *title, *desc, *ext_desc;
   if(         htsmsg_get_u32(msg, "start", &start)
   ||          htsmsg_get_u32(msg, "stop" , &stop)
   || (title = htsmsg_get_str(msg, "title")) == NULL)
@@ -393,9 +393,21 @@ bool cHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
   event.stop  = stop;
   event.title = title;
 
-  if((desc = htsmsg_get_str(msg, "ext_text")) ||
-     (desc = htsmsg_get_str(msg, "description")))
+  desc     = htsmsg_get_str(msg, "description");
+  ext_desc = htsmsg_get_str(msg, "ext_text");
+
+  if (desc && ext_desc)
+  {
+    char buf[strlen(desc) + strlen(ext_desc) + 1];
+    sprintf(buf, "%s\n%s", desc, ext_desc);
+    event.descs = buf;
+  }
+  else if (desc)
     event.descs = desc;
+  else if (ext_desc)
+    event.descs = ext_desc;
+  else
+    event.descs = "";
 
   if(htsmsg_get_u32(msg, "nextEventId", &next))
     event.next = 0;
