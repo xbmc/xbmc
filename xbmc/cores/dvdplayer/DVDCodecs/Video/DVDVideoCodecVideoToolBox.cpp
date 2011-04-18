@@ -1200,15 +1200,14 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   OSStatus status;
 
   #if defined(__arm__)
-    // decoding, scaling and rendering above 720p runs into
+    // decoding, scaling and rendering above 1920 x 900 runs into
     // some bandwidth limit. detect and scale down to reduce
     // the bandwidth requirements.
-    int width_clamp_hack = 1280;
+    int width_clamp = 1280;
+    if ((width * height) > (1920 * 900))
+      width_clamp = 1024;
+
     int new_width = CheckNP2(width);
-
-    if (new_width > 1280)
-      width_clamp_hack = 1024;
-
     if (width != new_width)
     {
       // force picture width to power of two and scale up height
@@ -1220,10 +1219,10 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
       height = height * w_scaler;
     }
     // scale output pictures down to 720p size for display
-    if (width > width_clamp_hack)
+    if (width > width_clamp)
     {
-      double w_scaler = (float)width_clamp_hack / width;
-      width = width_clamp_hack;
+      double w_scaler = (float)width_clamp / width;
+      width = width_clamp;
       height = height * w_scaler;
     }
   #endif
