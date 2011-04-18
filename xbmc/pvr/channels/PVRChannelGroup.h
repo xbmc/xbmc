@@ -297,6 +297,12 @@ public:
   virtual const CPVRChannel *GetByUniqueID(int iUniqueID) const;
 
   /*!
+   * @brief The channel that was played last that has a valid client or NULL if there was none.
+   * @return The requested channel.
+   */
+  virtual const CPVRChannel *GetLastPlayedChannel(void) const;
+
+  /*!
    * @brief Get a channel given it's channel number.
    * @param iChannelNumber The channel number.
    * @return The channel or NULL if it wasn't found.

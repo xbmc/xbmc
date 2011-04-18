@@ -187,4 +187,10 @@ public:
    * @brief Try to find missing channel icons automatically
    */
   void SearchMissingChannelIcons(void);
+
+  /*!
+   * @brief The channel that was played last that has a valid client or NULL if there was none.
+   * @return The requested channel.
+   */
+  virtual const CPVRChannel *GetLastPlayedChannel(void) const;
 };

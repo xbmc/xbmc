@@ -987,7 +987,6 @@ void CPVRClient::WriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHAN
   addonChannel.iEncryptionSystem = xbmcChannel.EncryptionSystem();
   addonChannel.bIsRadio          = xbmcChannel.IsRadio();
   addonChannel.bIsHidden         = xbmcChannel.IsHidden();
-  addonChannel.bIsRecording      = xbmcChannel.IsRecording();
   addonChannel.strInputFormat    = xbmcChannel.InputFormat().c_str();
   addonChannel.strStreamURL      = xbmcChannel.StreamURL().c_str();
 }

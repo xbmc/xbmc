@@ -564,6 +564,24 @@ CPVRTimerInfoTag *CPVRTimers::GetByClient(int iClientId, int iClientTimerId)
   return returnTag;
 }
 
+bool CPVRTimers::IsRecordingOnChannel(const CPVRChannel &channel) const
+{
+  bool bReturn(false);
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    CPVRTimerInfoTag *timer = at(ptr);
+
+    if (timer->IsRecording() && *timer->m_channel == channel)
+    {
+      bReturn = true;
+      break;
+    }
+  }
+
+  return bReturn;
+}
 
 CPVRTimerInfoTag *CPVRTimers::GetMatch(const CEpgInfoTag *Epg)
 {

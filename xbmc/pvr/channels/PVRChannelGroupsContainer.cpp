@@ -317,3 +317,14 @@ void CPVRChannelGroupsContainer::SearchMissingChannelIcons(void)
 
   CGUIDialogOK::ShowAndGetInput(19103,0,20177,0);
 }
+
+const CPVRChannel *CPVRChannelGroupsContainer::GetLastPlayedChannel(void) const
+{
+  const CPVRChannel *lastChannel = GetGroupAllTV()->GetLastPlayedChannel();
+
+  const CPVRChannel *lastRadioChannel = GetGroupAllRadio()->GetLastPlayedChannel();
+  if (!lastChannel || (lastRadioChannel && lastChannel->LastWatched() < lastRadioChannel->LastWatched()))
+    lastChannel = lastRadioChannel;
+
+  return lastChannel;
+}

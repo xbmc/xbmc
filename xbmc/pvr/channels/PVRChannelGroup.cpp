@@ -305,6 +305,34 @@ const CPVRChannel *CPVRChannelGroup::GetByUniqueID(int iUniqueID) const
   return channel;
 }
 
+const CPVRChannel *CPVRChannelGroup::GetLastPlayedChannel(void) const
+{
+  CPVRChannel *channel = NULL;
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    PVRChannelGroupMember groupMember = at(iChannelPtr);
+
+    /* check whether the client is loaded */
+    if (!g_PVRClients->IsValidClient(groupMember.channel->ClientID()))
+      continue;
+
+    /* always get the first channel */
+    if (channel == NULL)
+    {
+      channel = groupMember.channel;
+      continue;
+    }
+
+    /* check whether this channel has a later LastWatched time */
+    if (groupMember.channel->LastWatched() > channel->LastWatched())
+      channel = groupMember.channel;
+  }
+
+  return channel;
+}
+
 
 unsigned int CPVRChannelGroup::GetChannelNumber(const CPVRChannel &channel) const
 {

@@ -222,7 +222,6 @@ extern "C" {
     unsigned int iEncryptionSystem;    /*!< @brief (optional) the encryption ID or CaID of this channel */
     const char * strIconPath;          /*!< @brief (optional) path to the channel icon (if present) */
     bool         bIsHidden;            /*!< @brief (optional) true if this channel is marked as hidden */
-    bool         bIsRecording;         /*!< @brief (optional) true if a recording is currently running on this channel*/
   } ATTRIBUTE_PACKED PVR_CHANNEL;
 
   typedef struct PVR_CHANNEL_GROUP

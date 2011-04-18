@@ -193,7 +193,6 @@ PVR_ERROR cHTSPData::GetChannels(PVR_HANDLE handle, bool bRadio)
     tag.iEncryptionSystem = channel.caid;
     tag.strIconPath       = channel.icon.c_str();
     tag.bIsHidden         = false;
-    tag.bIsRecording      = false;
 
     PVR->TransferChannelEntry(handle, &tag);
   }
