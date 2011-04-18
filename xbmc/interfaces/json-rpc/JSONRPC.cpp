@@ -29,6 +29,7 @@
 #include "AudioLibrary.h"
 #include "VideoLibrary.h"
 #include "SystemOperations.h"
+#include "InputOperations.h"
 #include "XBMCOperations.h"
 #include "settings/AdvancedSettings.h"
 #include "interfaces/AnnouncementManager.h"
@@ -186,6 +187,15 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "System.Reboot",                                CSystemOperations::Reboot },
   { "System.GetInfoLabels",                         CSystemOperations::GetInfoLabels },
   { "System.GetInfoBooleans",                       CSystemOperations::GetInfoBooleans },
+
+// Input operations
+  { "Input.Left",                                   CInputOperations::Left },
+  { "Input.Right",                                  CInputOperations::Right },
+  { "Input.Down",                                   CInputOperations::Down },
+  { "Input.Up",                                     CInputOperations::Up },
+  { "Input.Select",                                 CInputOperations::Select },
+  { "Input.Back",                                   CInputOperations::Back },
+  { "Input.Home",                                   CInputOperations::Home },
 
 // XBMC operations
   { "XBMC.GetVolume",                               CXBMCOperations::GetVolume },

@@ -9,6 +9,7 @@ SRCS=AudioLibrary.cpp \
      PlayerOperations.cpp \
      PlaylistOperations.cpp \
      SystemOperations.cpp \
+     InputOperations.cpp \
      VideoLibrary.cpp \
      XBMCOperations.cpp \
 
