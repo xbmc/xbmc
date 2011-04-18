@@ -285,8 +285,9 @@ class CAdvancedSettings
     int m_bgInfoLoaderMaxThreads;
 
     /* PVR/TV related advanced settings */
-    int m_iPVRTimeCorrection;   /*!< @brief correct all times (epg tags, timer tags, recording tags) by this amount of minutes. */
-    int m_iPVRInputStreamDelay; /*!< @brief delay the playback of the pvr streams by this amount of milliseconds. increase if the pvr streams buffer a lot when starting them */
+    int m_iPVRTimeCorrection;     /*!< @brief correct all times (epg tags, timer tags, recording tags) by this amount of minutes. defaults to 0. */
+    int m_iPVRInputStreamDelay;   /*!< @brief delay the playback of the pvr streams by this amount of milliseconds. increase if the pvr streams buffer a lot when starting them. defaults to 200. */
+    int m_iPVRInfoToggleInterval; /*!< @brief if there are more than 1 pvr gui info item available (e.g. multiple recordings active at the same time), use this toggle delay in milliseconds. defaults to 3000. */
 
     bool m_measureRefreshrate; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
                                //otherwise it will use the windows refreshrate

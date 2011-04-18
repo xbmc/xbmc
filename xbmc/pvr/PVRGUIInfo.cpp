@@ -32,8 +32,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/PVREpgInfoTag.h"
-
-#define INFO_TOGGLE_TIME 1500
+#include "settings/AdvancedSettings.h"
 
 CPVRGUIInfo::CPVRGUIInfo(void)
 {
@@ -101,7 +100,7 @@ bool CPVRGUIInfo::AddonInfoToggle(void)
     return true;
   }
 
-  if (CTimeUtils::GetTimeMS() - m_iAddonInfoToggleStart > INFO_TOGGLE_TIME)
+  if ((int) (CTimeUtils::GetTimeMS() - m_iAddonInfoToggleStart) > g_advancedSettings.m_iPVRInfoToggleInterval)
   {
     unsigned int iPrevious = m_iAddonInfoToggleCurrent;
     if (((int) ++m_iAddonInfoToggleCurrent) > m_iActiveClients - 1)
@@ -122,7 +121,7 @@ bool CPVRGUIInfo::TimerInfoToggle(void)
     return true;
   }
 
-  if (CTimeUtils::GetTimeMS() - m_iTimerInfoToggleStart > INFO_TOGGLE_TIME)
+  if ((int) (CTimeUtils::GetTimeMS() - m_iTimerInfoToggleStart) > g_advancedSettings.m_iPVRInfoToggleInterval)
   {
     unsigned int iPrevious = m_iTimerInfoToggleCurrent;
     unsigned int iBoundary = m_iRecordingTimerAmount > 0 ? m_iRecordingTimerAmount : m_iTimerAmount;
