@@ -58,33 +58,33 @@ bool CRecentlyAddedJob::UpdateVideo()
       CFileItemPtr item = items.Get(i);
       CStdString   value;
       CStdString   strRating;
-      value.Format("%i", i+1);
+      value.Format("%i", i + 1);
       strRating.Format("%.1f", item->GetVideoInfoTag()->m_fRating);
       
-      home->SetProperty( "LatestMovie." + value + ".Title"       , item->GetLabel());
-      home->SetProperty( "LatestMovie." + value + ".Thumb"       , item->GetThumbnailImage());
-      home->SetProperty( "LatestMovie." + value + ".Rating"      , strRating);
-      home->SetProperty( "LatestMovie." + value + ".Year"        , item->GetVideoInfoTag()->m_iYear);
-      home->SetProperty( "LatestMovie." + value + ".Plot"        , item->GetVideoInfoTag()->m_strPlot);
-      home->SetProperty( "LatestMovie." + value + ".RunningTime" , item->GetVideoInfoTag()->m_strRuntime);
-      home->SetProperty( "LatestMovie." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
-      home->SetProperty( "LatestMovie." + value + ".Trailer"     , item->GetVideoInfoTag()->m_strTrailer);
-      home->SetProperty( "LatestMovie." + value + ".Fanart"      , item->GetCachedFanart());
+      home->SetProperty("LatestMovie." + value + ".Title"       , item->GetLabel());
+      home->SetProperty("LatestMovie." + value + ".Thumb"       , item->GetThumbnailImage());
+      home->SetProperty("LatestMovie." + value + ".Rating"      , strRating);
+      home->SetProperty("LatestMovie." + value + ".Year"        , item->GetVideoInfoTag()->m_iYear);
+      home->SetProperty("LatestMovie." + value + ".Plot"        , item->GetVideoInfoTag()->m_strPlot);
+      home->SetProperty("LatestMovie." + value + ".RunningTime" , item->GetVideoInfoTag()->m_strRuntime);
+      home->SetProperty("LatestMovie." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
+      home->SetProperty("LatestMovie." + value + ".Trailer"     , item->GetVideoInfoTag()->m_strTrailer);
+      home->SetProperty("LatestMovie." + value + ".Fanart"      , item->GetCachedFanart());
     }
   } 
-  for (i; i<5; ++i)
+  for (i; i < 5; ++i)
   {
     CStdString value;
-    value.Format("%i", i+1);
-    home->SetProperty( "LatestMovie." + value + ".Title"       , "");
-    home->SetProperty( "LatestMovie." + value + ".Thumb"       , "");
-    home->SetProperty( "LatestMovie." + value + ".Rating"      , "");
-    home->SetProperty( "LatestMovie." + value + ".Year"        , "");
-    home->SetProperty( "LatestMovie." + value + ".Plot"        , "");
-    home->SetProperty( "LatestMovie." + value + ".RunningTime" , "");
-    home->SetProperty( "LatestMovie." + value + ".Path"        , "");
-    home->SetProperty( "LatestMovie." + value + ".Trailer"     , "");
-    home->SetProperty( "LatestMovie." + value + ".Fanart"      , "");
+    value.Format("%i", i + 1);
+    home->SetProperty("LatestMovie." + value + ".Title"       , "");
+    home->SetProperty("LatestMovie." + value + ".Thumb"       , "");
+    home->SetProperty("LatestMovie." + value + ".Rating"      , "");
+    home->SetProperty("LatestMovie." + value + ".Year"        , "");
+    home->SetProperty("LatestMovie." + value + ".Plot"        , "");
+    home->SetProperty("LatestMovie." + value + ".RunningTime" , "");
+    home->SetProperty("LatestMovie." + value + ".Path"        , "");
+    home->SetProperty("LatestMovie." + value + ".Trailer"     , "");
+    home->SetProperty("LatestMovie." + value + ".Fanart"      , "");
   }
  
   i = 0;
@@ -101,35 +101,35 @@ bool CRecentlyAddedJob::UpdateVideo()
       CStdString   value;
       CStdString   strRating;
       EpisodeNo.Format("s%02de%02d", EpisodeSeason, EpisodeNumber);
-      value.Format("%i", i+1);
+      value.Format("%i", i + 1);
       strRating.Format("%.1f", item->GetVideoInfoTag()->m_fRating);
       
-      home->SetProperty( "LatestEpisode." + value + ".ShowTitle"     , item->GetVideoInfoTag()->m_strShowTitle);
-      home->SetProperty( "LatestEpisode." + value + ".EpisodeTitle"  , item->GetVideoInfoTag()->m_strTitle);
-      home->SetProperty( "LatestEpisode." + value + ".Rating"        , strRating);      
-      home->SetProperty( "LatestEpisode." + value + ".Plot"          , item->GetVideoInfoTag()->m_strPlot);
-      home->SetProperty( "LatestEpisode." + value + ".EpisodeNo"     , EpisodeNo);
-      home->SetProperty( "LatestEpisode." + value + ".EpisodeSeason" , EpisodeSeason);
-      home->SetProperty( "LatestEpisode." + value + ".EpisodeNumber" , EpisodeNumber);
-      home->SetProperty( "LatestEpisode." + value + ".Path"          , item->GetVideoInfoTag()->m_strFileNameAndPath);
-      home->SetProperty( "LatestEpisode." + value + ".Thumb"         , item->GetCachedVideoThumb());
-      home->SetProperty( "LatestEpisode." + value + ".Fanart"        , item->GetCachedFanart());
+      home->SetProperty("LatestEpisode." + value + ".ShowTitle"     , item->GetVideoInfoTag()->m_strShowTitle);
+      home->SetProperty("LatestEpisode." + value + ".EpisodeTitle"  , item->GetVideoInfoTag()->m_strTitle);
+      home->SetProperty("LatestEpisode." + value + ".Rating"        , strRating);      
+      home->SetProperty("LatestEpisode." + value + ".Plot"          , item->GetVideoInfoTag()->m_strPlot);
+      home->SetProperty("LatestEpisode." + value + ".EpisodeNo"     , EpisodeNo);
+      home->SetProperty("LatestEpisode." + value + ".EpisodeSeason" , EpisodeSeason);
+      home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , EpisodeNumber);
+      home->SetProperty("LatestEpisode." + value + ".Path"          , item->GetVideoInfoTag()->m_strFileNameAndPath);
+      home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetCachedVideoThumb());
+      home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetCachedFanart());
     }
   } 
-  for (i; i<5; ++i)
+  for (i; i < 5; ++i)
   {
     CStdString value;
-    value.Format("%i", i+1);
-    home->SetProperty( "LatestEpisode." + value + ".ShowTitle"     , "");
-    home->SetProperty( "LatestEpisode." + value + ".EpisodeTitle"  , "");
-    home->SetProperty( "LatestEpisode." + value + ".Rating"        , "");      
-    home->SetProperty( "LatestEpisode." + value + ".Plot"          , "");
-    home->SetProperty( "LatestEpisode." + value + ".EpisodeNo"     , "");
-    home->SetProperty( "LatestEpisode." + value + ".EpisodeSeason" , "");
-    home->SetProperty( "LatestEpisode." + value + ".EpisodeNumber" , "");
-    home->SetProperty( "LatestEpisode." + value + ".Path"          , "");
-    home->SetProperty( "LatestEpisode." + value + ".Thumb"         , "");
-    home->SetProperty( "LatestEpisode." + value + ".Fanart"        , "");
+    value.Format("%i", i + 1);
+    home->SetProperty("LatestEpisode." + value + ".ShowTitle"     , "");
+    home->SetProperty("LatestEpisode." + value + ".EpisodeTitle"  , "");
+    home->SetProperty("LatestEpisode." + value + ".Rating"        , "");      
+    home->SetProperty("LatestEpisode." + value + ".Plot"          , "");
+    home->SetProperty("LatestEpisode." + value + ".EpisodeNo"     , "");
+    home->SetProperty("LatestEpisode." + value + ".EpisodeSeason" , "");
+    home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , "");
+    home->SetProperty("LatestEpisode." + value + ".Path"          , "");
+    home->SetProperty("LatestEpisode." + value + ".Thumb"         , "");
+    home->SetProperty("LatestEpisode." + value + ".Fanart"        , "");
   }  
   
   videodatabase.Close();
@@ -157,7 +157,7 @@ bool CRecentlyAddedJob::UpdateMusic()
     {  
       CFileItemPtr item = musicItems.Get(i);
       CStdString   value;
-      value.Format("%i", i+1);
+      value.Format("%i", i + 1);
       
       CStdString   strThumb;
       CStdString   strRating;
@@ -170,36 +170,36 @@ bool CRecentlyAddedJob::UpdateMusic()
       
       strRating.Format("%c", item->GetMusicInfoTag()->GetRating());
       
-      home->SetProperty( "LatestSong." + value + ".Title"   , item->GetMusicInfoTag()->GetTitle());
-      home->SetProperty( "LatestSong." + value + ".Year"    , item->GetMusicInfoTag()->GetYear());
-      home->SetProperty( "LatestSong." + value + ".Artist"  , strArtist);      
-      home->SetProperty( "LatestSong." + value + ".Album"   , strAlbum);
-      home->SetProperty( "LatestSong." + value + ".Rating"  , strRating);
-      home->SetProperty( "LatestSong." + value + ".Path"    , item->GetMusicInfoTag()->GetURL());
-      home->SetProperty( "LatestSong." + value + ".Thumb"   , strThumb);
-      home->SetProperty( "LatestSong." + value + ".Fanart"  , item->GetCachedFanart());
+      home->SetProperty("LatestSong." + value + ".Title"   , item->GetMusicInfoTag()->GetTitle());
+      home->SetProperty("LatestSong." + value + ".Year"    , item->GetMusicInfoTag()->GetYear());
+      home->SetProperty("LatestSong." + value + ".Artist"  , strArtist);      
+      home->SetProperty("LatestSong." + value + ".Album"   , strAlbum);
+      home->SetProperty("LatestSong." + value + ".Rating"  , strRating);
+      home->SetProperty("LatestSong." + value + ".Path"    , item->GetMusicInfoTag()->GetURL());
+      home->SetProperty("LatestSong." + value + ".Thumb"   , strThumb);
+      home->SetProperty("LatestSong." + value + ".Fanart"  , item->GetCachedFanart());
     }
   }
-  for (i; i<5; ++i)
+  for (i; i < 5; ++i)
   {
     CStdString value;
-    value.Format("%i", i+1);
-    home->SetProperty( "LatestSong." + value + ".Title"   , "");
-    home->SetProperty( "LatestSong." + value + ".Year"    , "");
-    home->SetProperty( "LatestSong." + value + ".Artist"  , "");      
-    home->SetProperty( "LatestSong." + value + ".Album"   , "");
-    home->SetProperty( "LatestSong." + value + ".Rating"  , "");
-    home->SetProperty( "LatestSong." + value + ".Path"    , "");
-    home->SetProperty( "LatestSong." + value + ".Thumb"   , "");
-    home->SetProperty( "LatestSong." + value + ".Fanart"  , "");
+    value.Format("%i", i + 1);
+    home->SetProperty("LatestSong." + value + ".Title"   , "");
+    home->SetProperty("LatestSong." + value + ".Year"    , "");
+    home->SetProperty("LatestSong." + value + ".Artist"  , "");      
+    home->SetProperty("LatestSong." + value + ".Album"   , "");
+    home->SetProperty("LatestSong." + value + ".Rating"  , "");
+    home->SetProperty("LatestSong." + value + ".Path"    , "");
+    home->SetProperty("LatestSong." + value + ".Thumb"   , "");
+    home->SetProperty("LatestSong." + value + ".Fanart"  , "");
   }
   
-  i=0;
+  i = 0;
   VECALBUMS albums;
   
   if (musicdatabase.GetRecentlyAddedAlbums(albums, 5))
   { 
-    for (i; i<(int)albums.size(); ++i)
+    for (i; i < (int)albums.size(); ++i)
     {
       CStdString value;
       CStdString strPath;
@@ -208,33 +208,33 @@ bool CRecentlyAddedJob::UpdateMusic()
       CStdString strSQLAlbum;
       CAlbum&    album=albums[i];     
       
-      value.Format("%i", i+1);
+      value.Format("%i", i + 1);
       musicdatabase.GetAlbumThumb(album.idAlbum,strThumb);
       strDBpath.Format("musicdb://3/%i/", album.idAlbum);
       strSQLAlbum.Format("idAlbum=%i", album.idAlbum);
       
       CStdString strArtist = musicdatabase.GetSingleValue("albumview", "strArtist", strSQLAlbum);
       
-      home->SetProperty( "LatestAlbum." + value + ".Title"   , musicdatabase.GetAlbumById(album.idAlbum));
-      home->SetProperty( "LatestAlbum." + value + ".Year"    , atoi(musicdatabase.GetSingleValue("album", "iYear", strSQLAlbum)));
-      home->SetProperty( "LatestAlbum." + value + ".Artist"  , strArtist);      
-      home->SetProperty( "LatestAlbum." + value + ".Rating"  , musicdatabase.GetSingleValue("albumview", "iRating", strSQLAlbum));
-      home->SetProperty( "LatestAlbum." + value + ".Path"    , strDBpath);
-      home->SetProperty( "LatestAlbum." + value + ".Thumb"   , strThumb);
-      home->SetProperty( "LatestAlbum." + value + ".Fanart"  , CFileItem::GetCachedThumb(strArtist,g_settings.GetMusicFanartFolder()));
+      home->SetProperty("LatestAlbum." + value + ".Title"   , musicdatabase.GetAlbumById(album.idAlbum));
+      home->SetProperty("LatestAlbum." + value + ".Year"    , atoi(musicdatabase.GetSingleValue("album", "iYear", strSQLAlbum)));
+      home->SetProperty("LatestAlbum." + value + ".Artist"  , strArtist);      
+      home->SetProperty("LatestAlbum." + value + ".Rating"  , musicdatabase.GetSingleValue("albumview", "iRating", strSQLAlbum));
+      home->SetProperty("LatestAlbum." + value + ".Path"    , strDBpath);
+      home->SetProperty("LatestAlbum." + value + ".Thumb"   , strThumb);
+      home->SetProperty("LatestAlbum." + value + ".Fanart"  , CFileItem::GetCachedThumb(strArtist,g_settings.GetMusicFanartFolder()));
     }
   }
-  for (i; i<5; ++i)
+  for (i; i < 5; ++i)
   {
     CStdString value;
-    value.Format("%i", i+1);
-    home->SetProperty( "LatestAlbum." + value + ".Title"   , "");
-    home->SetProperty( "LatestAlbum." + value + ".Year"    , "");
-    home->SetProperty( "LatestAlbum." + value + ".Artist"  , "");      
-    home->SetProperty( "LatestAlbum." + value + ".Rating"  , "");
-    home->SetProperty( "LatestAlbum." + value + ".Path"    , "");
-    home->SetProperty( "LatestAlbum." + value + ".Thumb"   , "");
-    home->SetProperty( "LatestAlbum." + value + ".Fanart"  , "");            
+    value.Format("%i", i + 1);
+    home->SetProperty("LatestAlbum." + value + ".Title"   , "");
+    home->SetProperty("LatestAlbum." + value + ".Year"    , "");
+    home->SetProperty("LatestAlbum." + value + ".Artist"  , "");      
+    home->SetProperty("LatestAlbum." + value + ".Rating"  , "");
+    home->SetProperty("LatestAlbum." + value + ".Path"    , "");
+    home->SetProperty("LatestAlbum." + value + ".Thumb"   , "");
+    home->SetProperty("LatestAlbum." + value + ".Fanart"  , "");            
   }
   
   musicdatabase.Close();
@@ -254,38 +254,37 @@ bool CRecentlyAddedJob::UpdateTotal()
   CMusicDatabase musicdatabase;
   
   musicdatabase.Open();
+  int MusSongTotals   = atoi(musicdatabase.GetSingleValue("songview"       , "count(1)"));
+  int MusAlbumTotals  = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strAlbum)"));
+  int MusArtistTotals = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strArtist)"));
+  musicdatabase.Close();
+ 
   videodatabase.Open();
-  
   int tvShowCount     = atoi(videodatabase.GetSingleValue("tvshowview"     , "count(1)"));
   int movieTotals     = atoi(videodatabase.GetSingleValue("movieview"      , "count(1)"));
   int movieWatched    = atoi(videodatabase.GetSingleValue("movieview"      , "count(playCount)"));
   int MusVidTotals    = atoi(videodatabase.GetSingleValue("musicvideoview" , "count(1)"));
   int MusVidWatched   = atoi(videodatabase.GetSingleValue("musicvideoview" , "count(playCount)"));
-  int MusSongTotals   = atoi(musicdatabase.GetSingleValue("songview"       , "count(1)"));
-  int MusAlbumTotals  = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strAlbum)"));
-  int MusArtistTotals = atoi(musicdatabase.GetSingleValue("songview"       , "count(distinct strArtist)"));
   int EpWatched       = atoi(videodatabase.GetSingleValue("tvshowview"     , "sum(watchedcount)"));
   int EpCount         = atoi(videodatabase.GetSingleValue("tvshowview"     , "sum(totalcount)"));
   int TvShowsWatched  = atoi(videodatabase.GetSingleValue("tvshowview"     , "sum(watchedcount = totalcount)"));
-  
-  musicdatabase.Close();
   videodatabase.Close();
   
-  home->SetProperty( "TVShows.Count"         , tvShowCount);
-  home->SetProperty( "TVShows.Watched"       , TvShowsWatched);
-  home->SetProperty( "TVShows.UnWatched"     , tvShowCount - TvShowsWatched);
-  home->SetProperty( "Episodes.Count"        , EpCount);
-  home->SetProperty( "Episodes.Watched"      , EpWatched);
-  home->SetProperty( "Episodes.UnWatched"    , EpCount-EpWatched);  
-  home->SetProperty( "Movies.Count"          , movieTotals);
-  home->SetProperty( "Movies.Watched"        , movieWatched);
-  home->SetProperty( "Movies.UnWatched"      , movieTotals - movieWatched);
-  home->SetProperty( "MusicVideos.Count"     , MusVidTotals);
-  home->SetProperty( "MusicVideos.Watched"   , MusVidWatched);
-  home->SetProperty( "MusicVideos.UnWatched" , MusVidTotals - MusVidWatched);
-  home->SetProperty( "Music.SongsCount"      , MusSongTotals);
-  home->SetProperty( "Music.AlbumsCount"     , MusAlbumTotals);
-  home->SetProperty( "Music.ArtistsCount"    , MusArtistTotals);
+  home->SetProperty("TVShows.Count"         , tvShowCount);
+  home->SetProperty("TVShows.Watched"       , TvShowsWatched);
+  home->SetProperty("TVShows.UnWatched"     , tvShowCount - TvShowsWatched);
+  home->SetProperty("Episodes.Count"        , EpCount);
+  home->SetProperty("Episodes.Watched"      , EpWatched);
+  home->SetProperty("Episodes.UnWatched"    , EpCount-EpWatched);  
+  home->SetProperty("Movies.Count"          , movieTotals);
+  home->SetProperty("Movies.Watched"        , movieWatched);
+  home->SetProperty("Movies.UnWatched"      , movieTotals - movieWatched);
+  home->SetProperty("MusicVideos.Count"     , MusVidTotals);
+  home->SetProperty("MusicVideos.Watched"   , MusVidWatched);
+  home->SetProperty("MusicVideos.UnWatched" , MusVidTotals - MusVidWatched);
+  home->SetProperty("Music.SongsCount"      , MusSongTotals);
+  home->SetProperty("Music.AlbumsCount"     , MusAlbumTotals);
+  home->SetProperty("Music.ArtistsCount"    , MusArtistTotals);
   
   return true;
 }
