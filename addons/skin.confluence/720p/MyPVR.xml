@@ -230,12 +230,12 @@
 		</control>
 
 		<control type="group">
-			<posx>440</posx>
+			<posx>500</posx>
 			<posy>0</posy>
-			<visible>!IsEmpty(Control.GetLabel(30)) + [Control.IsVisible(10) | Control.IsVisible(11) | Control.IsVisible(12) | Control.IsVisible(15) | Control.IsVisible(16)]</visible>
+			<visible>!IsEmpty(Control.GetLabel(30))</visible>
 			<include>VisibleFadeEffect</include>
-			<animation effect="slide" end="-710,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-710,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" end="-750,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="-750,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
@@ -252,24 +252,23 @@
 		<control type="group">
 			<posx>240</posx>
 			<posy>0</posy>
-			<animation effect="slide" end="-510,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="-510,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
-			<animation effect="slide" end="70,0" time="200" tween="quadratic" easing="out" condition="Control.IsVisible(14)">Conditional</animation>
+			<animation effect="slide" end="-540,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="-540,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
-				<width>250</width>
+				<width>300</width>
 				<height>35</height>
 				<texture border="0,0,32,0">header.png</texture>
 			</control>
 			<control type="label" id="29">
 				<include>WindowTitleCommons</include>
-				<posx>220</posx>
+				<posx>270</posx>
 			</control>
 		</control>
 
 		<control type="group">
-			<posx>60</posx>
+			<posx>40</posx>
 			<posy>0</posy>
 			<animation effect="slide" end="-310,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="slide" start="-310,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
