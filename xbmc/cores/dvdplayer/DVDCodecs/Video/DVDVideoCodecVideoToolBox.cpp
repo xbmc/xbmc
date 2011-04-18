@@ -1200,7 +1200,15 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   OSStatus status;
 
   #if defined(__arm__)
+    // decoding, scaling and rendering above 720p runs into
+    // some bandwidth limit. detect and scale down to reduce
+    // the bandwidth requirements.
+    int width_clamp_hack = 1280;
     int new_width = CheckNP2(width);
+
+    if (new_width > 1280)
+      width_clamp_hack = 1024;
+
     if (width != new_width)
     {
       // force picture width to power of two and scale up height
@@ -1212,10 +1220,10 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
       height = height * w_scaler;
     }
     // scale output pictures down to 720p size for display
-    if (width > 1280)
+    if (width > width_clamp_hack)
     {
-      double w_scaler = 1280.0 / width;
-      width = 1280;
+      double w_scaler = (float)width_clamp_hack / width;
+      width = width_clamp_hack;
       height = height * w_scaler;
     }
   #endif
@@ -1234,8 +1242,8 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
     kCVPixelBufferWidthKey, width);
   CFDictionarySetSInt32(destinationPixelBufferAttributes,
     kCVPixelBufferHeightKey, height);
-  CFDictionarySetValue(destinationPixelBufferAttributes,
-    kCVPixelBufferOpenGLCompatibilityKey, kCFBooleanTrue);
+  //CFDictionarySetValue(destinationPixelBufferAttributes,
+  //  kCVPixelBufferOpenGLCompatibilityKey, kCFBooleanTrue);
 
   outputCallback.callback = VTDecoderCallback;
   outputCallback.refcon = this;
