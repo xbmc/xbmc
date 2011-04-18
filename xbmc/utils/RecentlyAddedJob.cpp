@@ -51,7 +51,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   
   videodatabase.Open();
 
-  if (videodatabase.GetRecentlyAddedMoviesNav("videodb://1/", items, 5))
+  if (videodatabase.GetRecentlyAddedMoviesNav("videodb://1/", items, 10))
   {  
     for (i; i < items.Size(); ++i)
     {
@@ -72,7 +72,7 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestMovie." + value + ".Fanart"      , item->GetCachedFanart());
     }
   } 
-  for (i; i < 5; ++i)
+  for (i; i < 10; ++i)
   {
     CStdString value;
     value.Format("%i", i + 1);
@@ -90,7 +90,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   i = 0;
   CFileItemList  TVShowItems; 
  
-  if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://1/", TVShowItems, 5))
+  if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://1/", TVShowItems, 10))
   {  
     for (i; i < TVShowItems.Size(); ++i)
     {    
@@ -116,7 +116,7 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetCachedFanart());
     }
   } 
-  for (i; i < 5; ++i)
+  for (i; i < 10; ++i)
   {
     CStdString value;
     value.Format("%i", i + 1);
@@ -151,7 +151,7 @@ bool CRecentlyAddedJob::UpdateMusic()
   
   musicdatabase.Open();
   
-  if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://", musicItems, 5))
+  if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://", musicItems, 10))
   { 
     for (i; i < musicItems.Size(); ++i)
     {  
@@ -180,7 +180,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       home->SetProperty("LatestSong." + value + ".Fanart"  , item->GetCachedFanart());
     }
   }
-  for (i; i < 5; ++i)
+  for (i; i < 10; ++i)
   {
     CStdString value;
     value.Format("%i", i + 1);
@@ -197,7 +197,7 @@ bool CRecentlyAddedJob::UpdateMusic()
   i = 0;
   VECALBUMS albums;
   
-  if (musicdatabase.GetRecentlyAddedAlbums(albums, 5))
+  if (musicdatabase.GetRecentlyAddedAlbums(albums, 10))
   { 
     for (i; i < (int)albums.size(); ++i)
     {
@@ -224,7 +224,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       home->SetProperty("LatestAlbum." + value + ".Fanart"  , CFileItem::GetCachedThumb(strArtist,g_settings.GetMusicFanartFolder()));
     }
   }
-  for (i; i < 5; ++i)
+  for (i; i < 10; ++i)
   {
     CStdString value;
     value.Format("%i", i + 1);
