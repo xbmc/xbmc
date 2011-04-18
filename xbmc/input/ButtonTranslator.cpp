@@ -25,6 +25,7 @@
 #include "utils/URIUtils.h"
 #include "settings/Settings.h"
 #include "guilib/Key.h"
+#include "input/XBMC_keysym.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "FileItem.h"
@@ -1115,23 +1116,28 @@ uint32_t CButtonTranslator::TranslateKeyboardString(const char *szButton)
     else if (strKey.Equals("backslash") || strKey.Equals("pipe")) buttonCode = 0xEC;
     else if (strKey.Equals("closesquarebracket") || strKey.Equals("closebrace")) buttonCode = 0xED;
     else if (strKey.Equals("quote") || strKey.Equals("doublequote")) buttonCode = 0xEE;
-    else if (strKey.Equals("launch_mail")) buttonCode = 0xB4;
-    else if (strKey.Equals("browser_home")) buttonCode = 0xAC;
-    else if (strKey.Equals("browser_favorites")) buttonCode = 0xAB;
-    else if (strKey.Equals("browser_refresh")) buttonCode = 0xA8;
-    else if (strKey.Equals("browser_search")) buttonCode = 0xAA;
-    else if (strKey.Equals("browser_forward")) buttonCode = 0xA7;
-    else if (strKey.Equals("launch_app1_pc_icon")) buttonCode = 0xB6;
-    else if (strKey.Equals("launch_media_select")) buttonCode = 0xB5;
+
+    // Multimedia keys
+    else if (strKey.Equals("browser_back"))        buttonCode = XBMCK_BROWSER_BACK;
+    else if (strKey.Equals("browser_forward"))     buttonCode = XBMCK_BROWSER_FORWARD;
+    else if (strKey.Equals("browser_refresh"))     buttonCode = XBMCK_BROWSER_REFRESH;
+    else if (strKey.Equals("browser_stop"))        buttonCode = XBMCK_BROWSER_STOP;
+    else if (strKey.Equals("browser_search"))      buttonCode = XBMCK_BROWSER_SEARCH;
+    else if (strKey.Equals("browser_favorites"))   buttonCode = XBMCK_BROWSER_FAVORITES;
+    else if (strKey.Equals("browser_home"))        buttonCode = XBMCK_BROWSER_HOME;
+    else if (strKey.Equals("volume_mute"))         buttonCode = XBMCK_VOLUME_MUTE;
+    else if (strKey.Equals("volume_down"))         buttonCode = XBMCK_VOLUME_DOWN;
+    else if (strKey.Equals("volume_up"))           buttonCode = XBMCK_VOLUME_UP;
+    else if (strKey.Equals("next_track"))          buttonCode = XBMCK_MEDIA_NEXT_TRACK;
+    else if (strKey.Equals("prev_track"))          buttonCode = XBMCK_MEDIA_PREV_TRACK;
+    else if (strKey.Equals("stop"))                buttonCode = XBMCK_MEDIA_STOP;
+    else if (strKey.Equals("play_pause"))          buttonCode = XBMCK_MEDIA_PLAY_PAUSE;
+    else if (strKey.Equals("launch_mail"))         buttonCode = XBMCK_LAUNCH_MAIL;
+    else if (strKey.Equals("launch_media_select")) buttonCode = XBMCK_LAUNCH_MEDIA_SELECT;
+    else if (strKey.Equals("launch_app1_pc_icon")) buttonCode = XBMCK_LAUNCH_APP1;
+    else if (strKey.Equals("launch_app2_pc_icon")) buttonCode = XBMCK_LAUNCH_APP2;
     else if (strKey.Equals("launch_file_browser")) buttonCode = 0xB8;
     else if (strKey.Equals("launch_media_center")) buttonCode = 0xB9;
-    else if (strKey.Equals("play_pause")) buttonCode = 0xB3;
-    else if (strKey.Equals("stop")) buttonCode = 0xB2;
-    else if (strKey.Equals("volume_up")) buttonCode = 0xAF;
-    else if (strKey.Equals("volume_mute")) buttonCode = 0xAD;
-    else if (strKey.Equals("volume_down")) buttonCode = 0xAE;
-    else if (strKey.Equals("prev_track")) buttonCode = 0xB1;
-    else if (strKey.Equals("next_track")) buttonCode = 0xB0;
     else
       CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", strKey.c_str());
 
