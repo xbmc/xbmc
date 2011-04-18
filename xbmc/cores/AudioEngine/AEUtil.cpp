@@ -151,7 +151,8 @@ const unsigned int CAEUtil::DataFormatToBits(const enum AEDataFormat dataFormat)
     sizeof(double) << 3, /* DOUBLE */
     sizeof(float ) << 3, /* FLOAT  */
 
-    8                    /* RAW    */
+    8,                   /* RAW    */
+    8                    /* RAW8   */
   };
 
   return formats[dataFormat];
@@ -187,7 +188,8 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
     "AE_FMT_FLOAT",
 
     /* for passthrough streams and the like */
-    "AE_FMT_RAW"
+    "AE_FMT_RAW",
+    "AE_FMT_RAW8"
   };
 
   return formats[dataFormat];

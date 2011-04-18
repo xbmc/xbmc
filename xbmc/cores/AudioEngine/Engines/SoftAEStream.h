@@ -75,11 +75,11 @@ public:
   virtual void PrependPostProc(IAEPostProc *pp);
   virtual void RemovePostProc (IAEPostProc *pp);
 
-  unsigned int      GetFrameSamples() { return m_format.m_frameSamples;        }
-  virtual unsigned int      GetChannelCount() { return m_initChannelCount;             }
-  virtual unsigned int      GetSampleRate()   { return m_initSampleRate;               }
-  virtual enum AEDataFormat GetDataFormat()   { return m_initDataFormat;               }
-  virtual bool              IsRaw()           { return m_initDataFormat == AE_FMT_RAW; }
+  unsigned int              GetFrameSamples() { return m_format.m_frameSamples;     }
+  virtual unsigned int      GetChannelCount() { return m_initChannelCount;          }
+  virtual unsigned int      GetSampleRate()   { return m_initSampleRate;            }
+  virtual enum AEDataFormat GetDataFormat()   { return m_initDataFormat;            }
+  virtual bool              IsRaw()           { return AE_IS_RAW(m_initDataFormat); }
 
   /* for dynamic sample rate changes (smoothvideo) */
   virtual double GetResampleRatio();

@@ -53,8 +53,8 @@ CAESinkALSA::~CAESinkALSA()
 
 inline unsigned int CAESinkALSA::GetChannelCount(const AEAudioFormat format)
 {
-  if (format.m_dataFormat == AE_FMT_RAW)
-    return 2;
+       if (format.m_dataFormat == AE_FMT_RAW ) return 2;
+  else if (format.m_dataFormat == AE_FMT_RAW8) return 8;
   else
   {
     unsigned int out = 0;
@@ -72,7 +72,7 @@ inline unsigned int CAESinkALSA::GetChannelCount(const AEAudioFormat format)
 
 CStdString CAESinkALSA::GetDeviceUse(const AEAudioFormat format, CStdString device, bool passthrough)
 {
-  if (format.m_dataFormat == AE_FMT_RAW || passthrough)
+  if (AE_IS_RAW(format.m_dataFormat) || passthrough)
   {
     if (device == "default")
     {
@@ -117,10 +117,10 @@ CStdString CAESinkALSA::GetDeviceUse(const AEAudioFormat format, CStdString devi
 bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
 {
   /* if we are raw, correct the data format */
-  if (format.m_dataFormat == AE_FMT_RAW)
+  if (AE_IS_RAW(format.m_dataFormat))
   {
     format.m_dataFormat   = AE_FMT_S16NE;
-    format.m_channelCount = 2;
+    format.m_channelCount = (format.m_dataFormat == AE_FMT_RAW) ? 2 : 8;
     m_passthrough         = true;
   }
   else
@@ -197,6 +197,7 @@ snd_pcm_format_t CAESinkALSA::AEFormatToALSAFormat(const enum AEDataFormat forma
     case AE_FMT_S32NE : return SND_PCM_FORMAT_S32;
     case AE_FMT_FLOAT : return SND_PCM_FORMAT_FLOAT;
     case AE_FMT_RAW   : return SND_PCM_FORMAT_S16_LE;
+    case AE_FMT_RAW8  : return SND_PCM_FORMAT_S16_LE;
 
     default:
       return SND_PCM_FORMAT_UNKNOWN;
@@ -241,7 +242,7 @@ bool CAESinkALSA::InitializeHW(AEAudioFormat &format)
     CLog::Log(LOGINFO, "CAESinkALSA::InitializeHW - Your hardware does not support %s, trying other formats", CAEUtil::DataFormatToStr(format.m_dataFormat));
     for(enum AEDataFormat i = AE_FMT_MAX; i > AE_FMT_INVALID; i = (enum AEDataFormat)((int)i - 1))
     {
-      if (i == AE_FMT_RAW || i == AE_FMT_MAX) continue;
+      if (AE_IS_RAW(i) || i == AE_FMT_MAX) continue;
       fmt = AEFormatToALSAFormat(i);
 
       if (fmt == SND_PCM_FORMAT_UNKNOWN || snd_pcm_hw_params_set_format(m_pcm, hw_params, fmt) < 0)

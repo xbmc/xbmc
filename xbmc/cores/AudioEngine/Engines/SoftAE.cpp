@@ -110,7 +110,7 @@ IAESink *CSoftAE::GetSink(AEAudioFormat &newFormat, bool passthrough, CStdString
   return sink;
 }
 
-bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false */)
+bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false */, enum AEDataFormat rawFormat/* = AE_FMT_RAW */)
 {
   /* save off our raw/passthrough mode for checking */
   bool wasTranscode      = m_transcode;
@@ -190,7 +190,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   newFormat.m_channelLayout = CAEUtil::GetStdChLayout  (m_stdChLayout);
   newFormat.m_channelCount  = CAEUtil::GetChLayoutCount(newFormat.m_channelLayout);
   newFormat.m_sampleRate    = sampleRate;
-  newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? AE_FMT_RAW : AE_FMT_FLOAT;
+  newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? rawFormat : AE_FMT_FLOAT;
 
   /* only re-open the sink if its not compatible with what we need */
   if (!m_sink || !m_sink->IsCompatible(newFormat, device))
@@ -214,7 +214,10 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
       /* we failed, set the data format to defaults so the thread does not block */
       newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? AE_FMT_S16NE : AE_FMT_FLOAT;
       newFormat.m_channelLayout = CAEUtil::GetStdChLayout(m_stdChLayout);
-      newFormat.m_channelCount  = (m_rawPassthrough || m_transcode) ? 2 : CAEUtil::GetChLayoutCount(m_chLayout);
+      if (m_rawPassthrough || m_transcode)
+        newFormat.m_channelCount = (rawFormat == AE_FMT_RAW) ? 2 : 8;
+      else
+        newFormat.m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout);
       newFormat.m_sampleRate    = sampleRate;
       newFormat.m_frames        = (unsigned int)(((float)sampleRate / 1000.0f) * (float)DELAY_FRAME_TIME);
       newFormat.m_frameSamples  = newFormat.m_frames * newFormat.m_channelCount;
@@ -562,8 +565,8 @@ IAEStream *CSoftAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleR
   m_streams.push_back(stream);
   streamLock.Leave();
 
-  if (dataFormat == AE_FMT_RAW)
-    OpenSink(sampleRate, true);
+  if (AE_IS_RAW(dataFormat))
+    OpenSink(sampleRate, true, dataFormat);
   else if (wasEmpty)
     OpenSink(sampleRate);
 

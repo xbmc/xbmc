@@ -95,10 +95,13 @@ enum AEDataFormat
   AE_FMT_FLOAT,
 
   /* for passthrough streams and the like */
-  AE_FMT_RAW,
+  AE_FMT_RAW,  /* 2 raw channels */
+  AE_FMT_RAW8, /* 8 raw channels */
 
   AE_FMT_MAX
 };
+
+#define AE_IS_RAW(x) ((x) == AE_FMT_RAW || (x) == AE_FMT_RAW8)
 
 /* Future HD audio support.
 

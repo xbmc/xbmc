@@ -81,11 +81,45 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   return false;
 }
 
+int CDVDAudioCodecPassthrough::GetSampleRate()
+{
+  int rate = m_info.GetSampleRate();
+
+  /* TrueHD uses a base sample rate of 96 or 88.2 kHz across 8 channels (96 kHz * 8 = 768, 88.2 kHz * 8 = 705.6 kHz) */
+  if(m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+  {
+    if (rate == 48000 || rate == 96000 || rate == 192000)
+      return 96000;
+    else
+      return 88200;
+  }
+
+  return m_info.GetSampleRate();
+}
+
+enum AEDataFormat CDVDAudioCodecPassthrough::GetDataFormat()
+{
+  /* TrueHD needs 8 channel RAW */
+  if(m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+    return AE_FMT_RAW8;
+
+  return AE_FMT_RAW;
+}
+
 void CDVDAudioCodecPassthrough::Dispose()
 {
-  delete[] m_buffer;
-  delete[] m_trueHD;
-  m_buffer     = NULL;
+  if (m_buffer)
+  {
+    delete[] m_buffer;
+    m_buffer = NULL;
+  }
+
+  if (m_trueHD)
+  {
+    delete[] m_trueHD;
+    m_trueHD = NULL;
+  }
+
   m_bufferSize = 0;
   m_trueHDPos  = 0;
 }
@@ -118,7 +152,7 @@ int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
       if (!m_trueHD)
       {
         /* create the buffer and copy in the MAT codes */
-        m_trueHD = new uint8_t[OUT_FRAMESTOBYTES(MAT_FRAME_SIZE)];
+        m_trueHD = new uint8_t[MAT_FRAME_SIZE];
         memcpy(m_trueHD, mat_start_code, sizeof(mat_start_code));
         memcpy(m_trueHD + (12 * TRUEHD_FRAME_OFFSET) + MAT_MIDDLE_CODE_OFFSET, mat_middle_code, sizeof(mat_middle_code));
         memcpy(m_trueHD + MAT_FRAME_SIZE - sizeof(mat_end_code), mat_end_code, sizeof(mat_end_code));
@@ -132,7 +166,7 @@ int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
       if (++m_trueHDPos == 24)
       {
         m_trueHDPos = 0;
-        m_dataSize = CAEPackIEC958::PackTrueHD(m_trueHD, OUT_FRAMESTOBYTES(MAT_FRAME_SIZE), m_packedBuffer);
+        m_dataSize = CAEPackIEC958::PackTrueHD(m_trueHD, MAT_FRAME_SIZE, m_packedBuffer);
       }
     }
     else

@@ -76,7 +76,7 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
 void CSoftAEStream::InitializeRemap()
 {
   CSingleLock lock(m_critSection);
-  if (m_initDataFormat != AE_FMT_RAW)
+  if (!AE_IS_RAW(m_initDataFormat))
   {
     /* re-init the remappers */
     m_remap   .Initialize(m_initChannelLayout, AE.GetChannelLayout(), false);
@@ -115,7 +115,7 @@ void CSoftAEStream::Initialize()
   }
 
   enum AEDataFormat useDataFormat = m_initDataFormat;
-  if (m_initDataFormat == AE_FMT_RAW)
+  if (AE_IS_RAW(m_initDataFormat))
   {
     /* we are raw, which means we need to work in the output format */
     useDataFormat       = ((CSoftAE*)&AE)->GetSinkDataFormat();
@@ -152,7 +152,7 @@ void CSoftAEStream::Initialize()
   m_format.m_frameSamples  = m_format.m_frames * m_initChannelCount;
   m_format.m_frameSize     = m_bytesPerFrame;
 
-  if (m_initDataFormat != AE_FMT_RAW)
+  if (!AE_IS_RAW(m_initDataFormat))
   {
     if (
       !m_remap   .Initialize(m_initChannelLayout, m_aeChannelLayout, false) ||
@@ -176,8 +176,8 @@ void CSoftAEStream::Initialize()
   if (!m_frameBuffer)
     m_frameBuffer = (uint8_t*)_aligned_malloc(m_format.m_frames * m_bytesPerFrame, 16);
 
-  m_resample      = (m_forceResample || m_initSampleRate != AE.GetSampleRate()) && m_initDataFormat != AE_FMT_RAW;
-  m_convert       = m_initDataFormat != AE_FMT_FLOAT && m_initDataFormat != AE_FMT_RAW;
+  m_resample      = (m_forceResample || m_initSampleRate != AE.GetSampleRate()) && !AE_IS_RAW(m_initDataFormat);
+  m_convert       = m_initDataFormat != AE_FMT_FLOAT && !AE_IS_RAW(m_initDataFormat);
 
   /* if we need to convert, set it up */
   if (m_convert)
@@ -204,7 +204,7 @@ void CSoftAEStream::Initialize()
   }
 
   /* re-initialize post-proc objects */
-  if (m_initDataFormat != AE_FMT_RAW)
+  if (!AE_IS_RAW(m_initDataFormat))
   {
     list<IAEPostProc*>::iterator pitt;
     for(pitt = m_postProc.begin(); pitt != m_postProc.end();)
@@ -357,7 +357,7 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
     return 0;
 
   /* post-process the data */
-  if (m_initDataFormat != AE_FMT_RAW)
+  if (!AE_IS_RAW(m_initDataFormat))
   {
     list<IAEPostProc*>::iterator pitt;
     for(pitt = m_postProc.begin(); pitt != m_postProc.end(); ++pitt)
@@ -392,7 +392,7 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
     unsigned int room = m_format.m_frameSamples - m_newPacket.samples;
     unsigned int copy = std::min(room, samples);
 
-    if (m_initDataFormat == AE_FMT_RAW)
+    if (AE_IS_RAW(m_initDataFormat))
     {
       unsigned int size = copy * m_bytesPerSample;
       memcpy(m_newPacket.data + (m_newPacket.samples * m_bytesPerSample), data, size);
@@ -411,7 +411,7 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
     /* if we have a full block of data */
     if (m_newPacket.samples == m_format.m_frameSamples)
     {
-      if (m_initDataFormat == AE_FMT_RAW)
+      if (AE_IS_RAW(m_initDataFormat))
       {
         m_outBuffer.push_back(m_newPacket);
         m_newPacket.samples = 0;
@@ -515,7 +515,7 @@ uint8_t* CSoftAEStream::GetFrame()
   float   *vizData  = m_vizPacketPos;
 
   m_packet.samples -= m_aeChannelCount;
-  if (m_initDataFormat == AE_FMT_RAW)
+  if (AE_IS_RAW(m_initDataFormat))
     m_packetPos += m_bytesPerFrame;
   else
   {
