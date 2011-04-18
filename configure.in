@@ -505,6 +505,7 @@ AC_LANG_POP([C++])
 
 # Checks for platforms libraries.
 if test "$use_gles" = "yes"; then
+  use_gl="no"
   # GLES overwrites GL if both set to yes.
   if test "$host_vendor" = "apple" ; then
     AC_DEFINE([HAVE_LIBEGL],[1],["Define to 1 if you have the `EGL' library (-lEGL)."])
