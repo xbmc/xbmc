@@ -74,11 +74,12 @@ namespace JSONRPC
     ControlPower = 0x8,
     Logging = 0x10,
     ScanLibrary = 0x20,
+    Navigate = 0x40
   };
 
-  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | Logging | ScanLibrary);
+  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | Logging | ScanLibrary | Navigate);
 
-  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | Logging | ScanLibrary);
+  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | Logging | ScanLibrary | Navigate);
 
   /*!
    \brief Possible value types of a parameter or return type
@@ -196,6 +197,8 @@ namespace JSONRPC
         return "Logging";
       case ScanLibrary:
         return "ScanLibrary";
+      case Navigate:
+        return "Navigate";
       default:
         return "Unknown";
       }
@@ -219,6 +222,8 @@ namespace JSONRPC
         return Logging;
       if (permission.compare("ScanLibrary") == 0)
         return ScanLibrary;
+      if (permission.compare("Navigate") == 0)
+        return Navigate;
 
       return ReadData;
     }
