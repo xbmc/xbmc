@@ -31,6 +31,8 @@
 CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(void) :
   m_buffer    (NULL),
   m_bufferSize(0),
+  m_trueHDPos (0),
+  m_trueHD    (NULL),
   m_dataSize  (0)
 {
 }
@@ -82,9 +84,15 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 void CDVDAudioCodecPassthrough::Dispose()
 {
   delete[] m_buffer;
+  delete[] m_trueHD;
   m_buffer     = NULL;
   m_bufferSize = 0;
+  m_trueHDPos  = 0;
 }
+
+#define TRUEHD_FRAME_OFFSET     2560
+#define MAT_MIDDLE_CODE_OFFSET -4
+#define MAT_FRAME_SIZE          61424
 
 int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
 {
@@ -97,10 +105,43 @@ int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
   /* if we have a frame */
   if (size)
   {
-    /* pack the data into an IEC958 frame */
-    CAEPackIEC958::PackFunc pack = m_info.GetPackFunc();
-    if (pack)
-      m_dataSize = pack(m_buffer, size, m_packedBuffer);
+    /* FIXME: this should be moved into a MAT packer class */
+    /* we need to pack 24 TrueHD audio units into the unknown MAT format before packing into IEC958 */
+    if (m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+    {
+      /* magic MAT format values, meaning is unknown at this point */
+      const uint8_t mat_start_code [20] = { 0x07, 0x9E, 0x00, 0x03, 0x84, 0x01, 0x01, 0x01, 0x80, 0x00, 0x56, 0xA5, 0x3B, 0xF4, 0x81, 0x83, 0x49, 0x80, 0x77, 0xE0 };
+      const uint8_t mat_middle_code[12] = { 0xC3, 0xC1, 0x42, 0x49, 0x3B, 0xFA, 0x82, 0x83, 0x49, 0x80, 0x77, 0xE0 };
+      const uint8_t mat_end_code   [16] = { 0xC3, 0xC2, 0xC0, 0xC4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x97, 0x11 };
+
+      /* if the buffer has not been setup yet */
+      if (!m_trueHD)
+      {
+        /* create the buffer and copy in the MAT codes */
+        m_trueHD = new uint8_t[OUT_FRAMESTOBYTES(MAT_FRAME_SIZE)];
+        memcpy(m_trueHD, mat_start_code, sizeof(mat_start_code));
+        memcpy(m_trueHD + (12 * TRUEHD_FRAME_OFFSET) + MAT_MIDDLE_CODE_OFFSET, mat_middle_code, sizeof(mat_middle_code));
+        memcpy(m_trueHD + MAT_FRAME_SIZE - sizeof(mat_end_code), mat_end_code, sizeof(mat_end_code));
+      }
+
+           if (m_trueHDPos ==  0) memcpy(m_trueHD + (m_trueHDPos * TRUEHD_FRAME_OFFSET) + sizeof(mat_start_code), m_buffer, size);
+      else if (m_trueHDPos == 12) memcpy(m_trueHD + (m_trueHDPos * TRUEHD_FRAME_OFFSET) + sizeof(mat_middle_code) + MAT_MIDDLE_CODE_OFFSET, m_buffer, size);
+      else                        memcpy(m_trueHD + (m_trueHDPos * TRUEHD_FRAME_OFFSET), m_buffer, size);
+
+      /* if we have a full frame */
+      if (++m_trueHDPos == 24)
+      {
+        m_trueHDPos = 0;
+        m_dataSize = CAEPackIEC958::PackTrueHD(m_trueHD, OUT_FRAMESTOBYTES(MAT_FRAME_SIZE), m_packedBuffer);
+      }
+    }
+    else
+    {
+      /* pack the data into an IEC958 frame */
+      CAEPackIEC958::PackFunc pack = m_info.GetPackFunc();
+      if (pack)
+        m_dataSize = pack(m_buffer, size, m_packedBuffer);
+    }
   }
 
   return used;

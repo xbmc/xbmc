@@ -21,6 +21,8 @@
  *
  */
 
+#include <list>
+
 #include "system.h"
 #include "DVDAudioCodec.h"
 #include "cores/AudioEngine/AEAudioFormat.h"
@@ -49,6 +51,9 @@ private:
 
   uint8_t      *m_buffer;
   unsigned int  m_bufferSize;
+
+  unsigned int  m_trueHDPos;
+  uint8_t      *m_trueHD;
 
   unsigned int  m_dataSize;
   uint8_t       m_packedBuffer[MAX_IEC958_PACKET];
