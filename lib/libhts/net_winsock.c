@@ -24,15 +24,16 @@
 #include <string.h>
 #include <stdarg.h>
 
+#include "../../lib/libTcpSocket/os-dependent_socket.h"
 #include <winsock2.h>
 #include <Ws2tcpip.h>
 #include "msvc.h"
 #include "net.h"
 
-#define EINPROGRESS WSAEINPROGRESS
-#define ECONNRESET  WSAECONNRESET
-#define ETIMEDOUT   WSAETIMEDOUT
-#define EAGAIN      WSAEWOULDBLOCK
+//#define EINPROGRESS WSAEINPROGRESS
+//#define ECONNRESET  WSAECONNRESET
+//#define ETIMEDOUT   WSAETIMEDOUT
+//#define EAGAIN      WSAEWOULDBLOCK
 
 #ifndef MSG_WAITALL
 #define MSG_WAITALL 0x8
@@ -59,138 +60,6 @@ static int recv_fixed (SOCKET s, char * buf, int len, int flags)
   return buf - org;
 }
 #define recv(s, buf, len, flags) recv_fixed(s, buf, len, flags)
-
-/**
- *
- */
-socket_t
-htsp_tcp_connect_addr(struct addrinfo* addr, char *errbuf, size_t errbufsize,
-	    int timeout)
-{
-  socket_t fd;
-  int r, err, val;
-  socklen_t errlen = sizeof(int);
-
-  fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
-  if(fd == -1) {
-    snprintf(errbuf, errbufsize, "Unable to create socket: %s",
-	     strerror(WSAGetLastError()));
-    return -1;
-  }
-
-  /**
-   * Switch to nonblocking
-   */
-  val = 1;
-  ioctlsocket(fd, FIONBIO, &val);
-
-  r = connect(fd, addr->ai_addr, addr->ai_addrlen);
-
-  if(r == -1) {
-    if(WSAGetLastError() == EINPROGRESS ||
-       WSAGetLastError() == EAGAIN) {
-      fd_set fd_write, fd_except;
-      struct timeval tv;
-
-      tv.tv_sec  =         timeout / 1000;
-      tv.tv_usec = 1000 * (timeout % 1000);
-
-      FD_ZERO(&fd_write);
-      FD_ZERO(&fd_except);
-
-      FD_SET(fd, &fd_write);
-      FD_SET(fd, &fd_except);
-
-      r = select((int)fd+1, NULL, &fd_write, &fd_except, &tv);
-
-      if(r == 0) {
-        /* Timeout */
-        snprintf(errbuf, errbufsize, "Connection attempt timed out");
-        closesocket(fd);
-        return -1;
-      }
-
-      if(r == -1) {
-        snprintf(errbuf, errbufsize, "select() error: %s", strerror(WSAGetLastError()));
-        closesocket(fd);
-        return -1;
-      }
-
-      getsockopt(fd, SOL_SOCKET, SO_ERROR, (void *)&err, &errlen);
-    } else {
-      err = WSAGetLastError();
-    }
-  } else {
-    err = 0;
-  }
-
-  if(err != 0) {
-    snprintf(errbuf, errbufsize, "%s", strerror(err));
-    closesocket(fd);
-    return -1;
-  }
-
-  val = 0;
-  ioctlsocket(fd, FIONBIO, &val);
-
-  val = 1;
-  setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const char*)&val, sizeof(val));
-
-  return fd;
-}
-
-
-socket_t
-htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize,
-	    int timeout)
-{
-  struct   addrinfo hints;
-  struct   addrinfo *result, *addr;
-  char     service[33];
-  int      res;
-  socket_t fd = INVALID_SOCKET;
-
-  memset(&hints, 0, sizeof(hints));
-  hints.ai_family   = AF_UNSPEC;
-  hints.ai_socktype = SOCK_STREAM;
-  hints.ai_protocol = IPPROTO_TCP;
-  sprintf(service, "%d", port);
-
-  res = getaddrinfo(hostname, service, &hints, &result);
-  if(res) {
-    switch(res) {
-    case EAI_NONAME:
-      snprintf(errbuf, errbufsize, "The specified host is unknown");
-      break;
-
-    case EAI_FAIL:
-      snprintf(errbuf, errbufsize, "A nonrecoverable failure in name resolution occurred");
-      break;
-
-    case EAI_MEMORY:
-      snprintf(errbuf, errbufsize, "A memory allocation failure occurred");
-      break;
-
-    case EAI_AGAIN:
-      snprintf(errbuf, errbufsize, "A temporary error occurred on an authoritative name server");
-      break;
-
-    default:
-      snprintf(errbuf, errbufsize, "Unknown error %d", res);
-      break;
-    }
-    return -1;
-  }
-
-  for(addr = result; addr; addr = addr->ai_next) {
-    fd = htsp_tcp_connect_addr(addr, errbuf, errbufsize, timeout);
-    if(fd != INVALID_SOCKET)
-      break;
-  }
-
-  freeaddrinfo(result);
-  return fd;
-}
 
 
 /**
@@ -305,77 +174,4 @@ htsp_tcp_read_data(socket_t fd, char *buf, const size_t bufsize, htsbuf_queue_t 
     return -1;
 
   return 0;
-}
-
-/**
- *
- */
-int
-htsp_tcp_read(socket_t fd, void *buf, size_t len)
-{
-  int x = recv(fd, buf, len, MSG_WAITALL);
-
-  if(x == -1)
-    return WSAGetLastError();
-  if(x != len)
-    return ECONNRESET;
-  return 0;
-
-}
-
-/**
- *
- */
-int
-htsp_tcp_read_timeout(socket_t fd, char *buf, size_t len, int timeout)
-{
-  int x, tot = 0, val, err;
-  fd_set fd_read;
-  struct timeval tv;
-
-  assert(timeout > 0);
-
-  while(tot != len) {
-
-    tv.tv_sec  =         timeout / 1000;
-    tv.tv_usec = 1000 * (timeout % 1000);
-
-    FD_ZERO(&fd_read);
-    FD_SET(fd, &fd_read);
-
-    x = select((int)fd+1, &fd_read, NULL, NULL, &tv);
-
-    if(x == 0)
-      return ETIMEDOUT;
-
-    val = 1;
-    ioctlsocket(fd, FIONBIO, &val);
-
-    x   = recv(fd, buf + tot, len - tot, 0);
-    err = WSAGetLastError();
-
-    val = 0;
-    ioctlsocket(fd, FIONBIO, &val);
-
-    if(x == 0)
-      return ECONNRESET;
-    else if(x == -1)
-    {
-      if(err == EAGAIN)
-        continue;
-      return err;
-    }
-
-    tot += x;
-  }
-  return 0;
-}
-
-/**
- *
- */
-void
-htsp_tcp_close(socket_t fd)
-{
-  closesocket(fd);
 }

@@ -1,5 +1,6 @@
+#pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,25 +20,22 @@
  *
  */
 
-#include "os_windows.h"
-#include <sys/timeb.h>
+#ifndef _WINSOCKAPI_
+#define _WINSOCKAPI_
+#endif
+#pragma warning(disable:4005) // Disable "warning C4005: '_WINSOCKAPI_' : macro redefinition"
+#include <winsock2.h>
+#pragma warning(default:4005)
+#include <ws2spi.h>
+#include <ws2ipdef.h>
+#include <ws2tcpip.h>
+#include <io.h>
 
-THREADLOCAL int ws32_result;
-THREADLOCAL int _so_err;
-THREADLOCAL int _so_err_siz = sizeof(int);
+#define SHUT_RDWR SD_BOTH
 
-int gettimeofday(struct timeval *pcur_time, struct timezone *tz)
-{
-  struct _timeb current;
+#ifndef ETIMEDOUT
+#define ETIMEDOUT WSAETIMEDOUT
+#endif
 
-  _ftime(&current);
-
-  pcur_time->tv_sec = current.time;
-  pcur_time->tv_usec = current.millitm * 1000L;
-  if (tz)
-  {
-    tz->tz_minuteswest = current.timezone;	/* minutes west of Greenwich  */
-    tz->tz_dsttime = current.dstflag;	/* type of dst correction  */
-  }
-  return 0;
-}
+typedef SOCKET socket_t;
+typedef int socklen_t;

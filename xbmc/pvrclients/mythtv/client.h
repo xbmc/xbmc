@@ -23,7 +23,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "StdString.h"
+#include "utils/StdString.h"
 #include "../../../addons/library.xbmc.addon/libXBMC_addon.h"
 #include "../../../addons/library.xbmc.pvr/libXBMC_pvr.h"
 

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -14,23 +14,20 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
-#ifndef PVRCLIENT_MYTHTV_OS_H
-#define PVRCLIENT_MYTHTV_OS_H
-
 #if defined(_WIN32) || defined(_WIN64)
+#ifndef __WINDOWS__
 #define __WINDOWS__
+#endif
 #endif
 
 #if defined(__WINDOWS__)
-/* windows code not in yet */
+#include "windows/os_windows.h"
 #else
-#include "linux/pvrclient-mythtv_os_posix.h"
+#include "linux/os_posix.h"
 #endif
 
 #if !defined(TRUE)
@@ -39,6 +36,4 @@
 
 #if !defined(FALSE)
 #define FALSE 0
-#endif
-
 #endif

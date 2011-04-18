@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,20 +18,17 @@
  *
  */
 
-#if defined(_WIN32) || defined(_WIN64)
-#define __WINDOWS__
-#endif
+#define _FILE_OFFSET_BITS 64
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <stdint.h>
+#include <errno.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <poll.h>
 
-#if defined(__WINDOWS__)
-#include "windows/os_windows.h"
-#else
-#include "linux/os_posix.h"
-#endif
+typedef int socket_t;
+typedef socket_t SOCKET;
 
-#if !defined(TRUE)
-#define TRUE 1
-#endif
-
-#if !defined(FALSE)
-#define FALSE 0
-#endif

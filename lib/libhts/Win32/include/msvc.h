@@ -2,8 +2,8 @@
 
 #define strtoll(p, e, b) _strtoi64(p, e, b)
 #define snprintf _snprintf
-#define strcasecmp stricmp
-#define strncasecmp strnicmp
+//#define strcasecmp stricmp
+//#define strncasecmp strnicmp
 #define strdup _strdup
 #if _MSC_VER < 1500
 #define vsnprintf _vsnprintf

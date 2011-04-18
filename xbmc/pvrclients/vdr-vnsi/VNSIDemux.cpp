@@ -432,7 +432,7 @@ void cVNSIDemux::StreamSignalInfo(cResponsePacket *resp)
 
 void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
 {
-  for (int i = 0; i < m_Streams.iStreamCount && !resp->end(); i++)
+  for (unsigned int i = 0; i < m_Streams.iStreamCount && !resp->end(); i++)
   {
     int32_t index = resp->extract_U32();
     if (index == m_Streams.stream[i].iPhysicalId)

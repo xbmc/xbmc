@@ -18,8 +18,6 @@
     <ClCompile Include="..\..\HTSPSession.cpp" />
     <ClCompile Include="..\..\thread.cpp" />
     <ClCompile Include="..\..\tools.cpp" />
-    <ClCompile Include="..\..\windows\dirent.cpp" />
-    <ClCompile Include="..\..\windows\os_windows.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.h" />
@@ -27,17 +25,8 @@
     <ClInclude Include="..\..\HTSPData.h" />
     <ClInclude Include="..\..\HTSPDemux.h" />
     <ClInclude Include="..\..\HTSPSession.h" />
-    <ClInclude Include="..\..\pvrclient-tvheadend_os.h" />
-    <ClInclude Include="..\..\StdString.h" />
     <ClInclude Include="..\..\thread.h" />
     <ClInclude Include="..\..\tools.h" />
-    <ClInclude Include="..\..\windows\dirent.h" />
-    <ClInclude Include="..\..\windows\os_windows.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\lib\libhts\Win32\libhts_2010.vcxproj">
-      <Project>{00700e12-a63b-4e54-b962-4011a90584bd}</Project>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C04B0FB1-667D-4F1C-BDAE-A07CDFFA74A3}</ProjectGuid>
@@ -77,25 +66,27 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ExtensionsToDeleteOnClean>*.cdf;*.cache;*.obj;*.ilk;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.pvr</ExtensionsToDeleteOnClean>
+    <IncludePath>$(SolutionDir)\..\..\xbmc;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\..\..\..\..\addons\pvr.hts\</OutDir>
     <TargetName>XBMC_Tvheadend_win32</TargetName>
     <TargetExt>.pvr</TargetExt>
     <ExtensionsToDeleteOnClean>*.cdf;*.cache;*.obj;*.ilk;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.pvr</ExtensionsToDeleteOnClean>
+    <IncludePath>$(SolutionDir)\..\..\xbmc;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;_WINSOCKAPI_;USE_DEMUX;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\..\..\lib\ffmpeg;..\..\..\..\..\lib\ffmpeg\include;..\..\..\..\..\lib\ffmpeg\include-xbmc-win32;..\..\;..\..\pthread_win32;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\xbmc;..\..\..\..\..\lib;..\..\..\..\..\lib\libhts\Win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;_WINSOCKAPI_;USE_DEMUX;__STDC_CONSTANT_MACROS;__WINDOWS__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\..\lib\ffmpeg;..\..\..\..\..\lib\ffmpeg\include;..\..\..\..\..\lib\ffmpeg\include-xbmc-win32;..\..\;..\..\pthread_win32;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\lib;..\..\..\..\..\lib\libhts\Win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>..\..\..\..\..\addons\pvr.hts\XBMC_Tvheadend_win32.pvr</OutputFile>
-      <AdditionalDependencies>ws2_32.lib;..\..\pthread_win32\pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;$(SolutionDir)\..\..\lib\libPlatform\pthread_win32\pthreadVC2d.lib;$(SolutionDir)\libs\libTcpSocket\$(Configuration)\libTcpSocket.lib;$(SolutionDir)\libs\libPlatform\$(Configuration)\libPlatform.lib;$(SolutionDir)\libs\libhts\$(Configuration)\libhts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmtd</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -105,8 +96,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\..\..\..\lib\ffmpeg;..\..\..\..\..\lib\ffmpeg\include;..\..\..\..\..\lib\ffmpeg\include-xbmc-win32;..\..\;..\..\pthread_win32;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\lib;..\..\..\..\..\xbmc;..\..\..\..\..\lib\libhts\Win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;_WINSOCKAPI_;USE_DEMUX;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\..\lib\ffmpeg;..\..\..\..\..\lib\ffmpeg\include;..\..\..\..\..\lib\ffmpeg\include-xbmc-win32;..\..\;..\..\pthread_win32;..\..\windows;..\..\..\..\addons\include;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\..\lib;..\..\..\..\..\lib\libhts\Win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;_WINSOCKAPI_;USE_DEMUX;__STDC_CONSTANT_MACROS;__WINDOWS__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -114,7 +105,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>..\..\..\..\..\addons\pvr.hts\XBMC_Tvheadend_win32.pvr</OutputFile>
-      <AdditionalDependencies>ws2_32.lib;..\..\pthread_win32\pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;$(SolutionDir)\..\..\lib\libPlatform\pthread_win32\pthreadVC2.lib;$(SolutionDir)\libs\libTcpSocket\$(Configuration)\libTcpSocket.lib;$(SolutionDir)\libs\libPlatform\$(Configuration)\libPlatform.lib;$(SolutionDir)\libs\libhts\$(Configuration)\libhts.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>

@@ -9,9 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Header Files\windows">
-      <UniqueIdentifier>{5297b017-6707-4a57-8235-ba4e67000ae2}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\channels.cpp">
@@ -67,20 +64,11 @@
     <ClInclude Include="..\..\Socket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\StdString.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\timers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\utils.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\os-dependent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windows\os_windows.h">
-      <Filter>Header Files\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\uri.h">
       <Filter>Header Files</Filter>

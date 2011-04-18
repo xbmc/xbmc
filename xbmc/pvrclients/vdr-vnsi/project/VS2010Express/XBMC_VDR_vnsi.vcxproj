@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\requestpacket.cpp" />
+    <ClCompile Include="..\..\client.cpp" />
+    <ClCompile Include="..\..\responsepacket.cpp" />
+    <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
+    <ClCompile Include="..\..\VNSIChannelScan.cpp" />
+    <ClCompile Include="..\..\VNSIData.cpp" />
+    <ClCompile Include="..\..\VNSIDemux.cpp" />
+    <ClCompile Include="..\..\VNSIRecording.cpp" />
+    <ClCompile Include="..\..\VNSISession.cpp" />
+    <ClCompile Include="..\..\thread.cpp" />
+    <ClCompile Include="..\..\tools.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\requestpacket.h" />
+    <ClInclude Include="..\..\client.h" />
+    <ClInclude Include="..\..\responsepacket.h" />
+    <ClInclude Include="..\..\VNSIChannelScan.h" />
+    <ClInclude Include="..\..\VNSIData.h" />
+    <ClInclude Include="..\..\VNSIDemux.h" />
+    <ClInclude Include="..\..\VNSIRecording.h" />
+    <ClInclude Include="..\..\VNSISession.h" />
+    <ClInclude Include="..\..\vdrcommand.h" />
+    <ClInclude Include="..\..\thread.h" />
+    <ClInclude Include="..\..\tools.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\README" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>pvrclient_vnsi</ProjectName>
+    <ProjectGuid>{3AD3147B-8E7F-4C70-B049-19FA1916BF12}</ProjectGuid>
+    <RootNamespace>XBMC_VDR_vnsi</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\..\..\..\addons\pvr.vdr.vnsi\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>XBMC_VDR_vnsi_win32</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetExt>.pvr</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ExtensionsToDeleteOnClean>*.cdf;*.cache;*.obj;*.ilk;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.pvr</ExtensionsToDeleteOnClean>
+    <IncludePath>..\..\..\..\..\lib\ffmpeg;..\..\..\..\..\lib\ffmpeg\include-xbmc-win32;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\win32;$(SolutionDir)\..\..\lib;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\..\..\..\addons\pvr.vdr.vnsi\</OutDir>
+    <TargetName>XBMC_VDR_vnsi_win32</TargetName>
+    <TargetExt>.pvr</TargetExt>
+    <ExtensionsToDeleteOnClean>*.cdf;*.cache;*.obj;*.ilk;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.pvr</ExtensionsToDeleteOnClean>
+    <IncludePath>..\..\..\..\..\lib\ffmpeg;..\..\..\..\..\lib\ffmpeg\include-xbmc-win32;..\..\..\..\cores\dvdplayer\DVDDemuxers;..\..\..\..\win32;$(SolutionDir)\..\..\lib;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;_WINSOCKAPI_;_WIN32;__WINDOWS__;USE_DEMUX;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\addons\include;.;..\..\win32;..\..\windows;..\..\</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>..\..\..\..\..\addons\pvr.vdr.vnsi\XBMC_VDR_vnsi_win32.pvr</OutputFile>
+      <AdditionalDependencies>ws2_32.lib;$(SolutionDir)\..\..\lib\libPlatform\pthread_win32\pthreadVC2d.lib;$(SolutionDir)\libs\libTcpSocket\$(Configuration)\libTcpSocket.lib;$(SolutionDir)\libs\libPlatform\$(Configuration)\libPlatform.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>libcmtd</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..\..\..\addons\include;.;..\..\win32;..\..\windows;..\..\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;_WINSOCKAPI_;_WIN32;__WINDOWS__;USE_DEMUX;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <OutputFile>..\..\..\..\..\addons\pvr.vdr.vnsi\XBMC_VDR_vnsi_win32.pvr</OutputFile>
+      <AdditionalDependencies>ws2_32.lib;$(SolutionDir)\..\..\lib\libPlatform\pthread_win32\pthreadVC2.lib;$(SolutionDir)\libs\libTcpSocket\$(Configuration)\libTcpSocket.lib;$(SolutionDir)\libs\libPlatform\$(Configuration)\libPlatform.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>libcmt</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -23,15 +23,8 @@
 #include <sys/types.h>
 #include <stdint.h>
 #include "htsbuf.h"
+#include "../libTcpSocket/os-dependent_socket.h"
 
-#ifdef _MSC_VER
-typedef SOCKET socket_t;
-#else
-typedef int socket_t;
-#endif
-
-socket_t htsp_tcp_connect(const char *hostname, int port, char *errbuf,
-		size_t errbufsize, int timeout);
 
 int htsp_tcp_write_queue(socket_t fd, htsbuf_queue_t *q);
 
@@ -40,12 +33,5 @@ int htsp_tcp_read_line(socket_t fd, char *buf, const size_t bufsize,
 
 int htsp_tcp_read_data(socket_t fd, char *buf, const size_t bufsize,
 		  htsbuf_queue_t *spill);
-
-int htsp_tcp_read(socket_t fd, void *buf, size_t len);
-
-int htsp_tcp_read_timeout(socket_t fd, void *buf, size_t len, int timeout);
-
-void htsp_tcp_close(socket_t fd);
-
 
 #endif /* NET_H__ */

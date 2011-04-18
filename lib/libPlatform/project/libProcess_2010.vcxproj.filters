@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{b33e3ace-f8ae-4a71-acc0-8c5156b4981f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\windows">
+      <UniqueIdentifier>{cc151dfb-0b0b-4c7a-b72a-6091b45d0ca6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{0ead3d2e-a104-491e-81d1-d9ecbf137a08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\windows">
+      <UniqueIdentifier>{26818d35-a058-447e-a5ec-1b1e28c00ab3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\pthread_win32">
+      <UniqueIdentifier>{813923f7-0fdc-4009-948f-f5a0c8ac4028}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\os-dependent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\windows\os_windows.h">
+      <Filter>Header Files\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pthread_win32\semaphore.h">
+      <Filter>Header Files\pthread_win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pthread_win32\pthread.h">
+      <Filter>Header Files\pthread_win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pthread_win32\sched.h">
+      <Filter>Header Files\pthread_win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\windows\os_windows.cpp">
+      <Filter>Source Files\windows</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

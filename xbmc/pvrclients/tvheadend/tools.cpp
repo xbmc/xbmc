@@ -24,6 +24,7 @@
  */
 
 #include "tools.h"
+#include "libPlatform/os-dependent.h"
 
 // --- cTimeMs ---------------------------------------------------------------
 
