@@ -35,29 +35,12 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
     return InternalError;
 
   CFileItemList items;
+  JSON_STATUS ret = OK;
   if (videodatabase.GetMoviesByWhere("videodb://", "", "", items))
-  {
-    bool additionalInfo = false;
-    Json::ValueConstIterator it;
-    for (it = parameterObject["fields"].begin(); it != parameterObject["fields"].end(); it++)
-    {
-      CStdString fieldValue = parameterObject["fields"][it.index()].asString();
-      if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "showlink")
-        additionalInfo = true;
-    }
-
-    if (additionalInfo)
-    {
-      for (int index = 0; index < items.Size(); index++)
-      {
-        videodatabase.GetMovieInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-      }
-    }
-    HandleFileItemList("movieid", true, "movies", items, parameterObject, result);
-  }
+    ret = GetAdditionalMovieDetails(parameterObject, items, result);
 
   videodatabase.Close();
-  return OK;
+  return ret;
 }
 
 JSON_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
@@ -82,6 +65,53 @@ JSON_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITransportL
 
   videodatabase.Close();
   return OK;
+}
+
+JSON_STATUS CVideoLibrary::GetMovieSets(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CFileItemList items;
+  if (videodatabase.GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES))
+    HandleFileItemList("setid", false, "sets", items, parameterObject, result);
+
+  videodatabase.Close();
+  return OK;
+}
+
+JSON_STATUS CVideoLibrary::GetMovieSetDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  int id = parameterObject["setid"].asInt();
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  // Get movie set details
+  CVideoInfoTag infos;
+  videodatabase.GetSetInfo(id, infos);
+  if (infos.m_iDbId <= 0)
+  {
+    videodatabase.Close();
+    return InvalidParams;
+  }
+
+  Value validFields = Value(arrayValue);
+  MakeFieldsList(parameterObject, validFields);
+  HandleFileItem("setid", false, "setdetails", CFileItemPtr(new CFileItem(infos)), parameterObject, validFields, result, false);
+
+  // Get movies from the set
+  CFileItemList items;
+  JSON_STATUS ret = OK;
+  if (videodatabase.GetMoviesNav("", items, -1, -1, -1, -1, -1, -1, id))
+  {
+    ret = GetAdditionalMovieDetails(parameterObject["movies"], items, result["setdetails"]["items"]);
+  }
+
+  videodatabase.Close();
+  return ret;
 }
 
 JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
@@ -391,4 +421,31 @@ bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
   }
 
   return false;
+}
+
+JSON_STATUS CVideoLibrary::GetAdditionalMovieDetails(const Value &parameterObject, CFileItemList &items, Value &result)
+{
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  bool additionalInfo = false;
+  Json::ValueConstIterator it;
+  for (it = parameterObject["fields"].begin(); it != parameterObject["fields"].end(); it++)
+  {
+    CStdString fieldValue = parameterObject["fields"][it.index()].asString();
+    if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "showlink")
+      additionalInfo = true;
+  }
+
+  if (additionalInfo)
+  {
+    for (int index = 0; index < items.Size(); index++)
+    {
+      videodatabase.GetMovieInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+    }
+  }
+  HandleFileItemList("movieid", true, "movies", items, parameterObject, result);
+
+  return OK;
 }

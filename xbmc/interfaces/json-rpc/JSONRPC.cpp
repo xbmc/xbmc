@@ -168,6 +168,8 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
 // Video Library
   { "VideoLibrary.GetMovies",                       CVideoLibrary::GetMovies },
   { "VideoLibrary.GetMovieDetails",                 CVideoLibrary::GetMovieDetails },
+  { "VideoLibrary.GetMovieSets",                    CVideoLibrary::GetMovieSets },
+  { "VideoLibrary.GetMovieSetDetails",              CVideoLibrary::GetMovieSetDetails },
   { "VideoLibrary.GetTVShows",                      CVideoLibrary::GetTVShows },
   { "VideoLibrary.GetTVShowDetails",                CVideoLibrary::GetTVShowDetails },
   { "VideoLibrary.GetSeasons",                      CVideoLibrary::GetSeasons },
