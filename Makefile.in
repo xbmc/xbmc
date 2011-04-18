@@ -381,7 +381,7 @@ dllloader: exports
 visualizations: exports
 	for d in $(VIS_DIRS); do $(MAKE) -C $$d; done
 screensavers: exports
-ifneq ($(findstring arm,@ARCH@), arm)
+ifeq (@USE_OPENGL@,1)
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 endif
 libpython: dllloader

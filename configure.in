@@ -1632,7 +1632,7 @@ XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
 ], [0])
 
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
-if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
+if test "$use_gl" = "no"; then :; else
 set -x
     rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
       -DCMAKE_C_FLAGS:STRING="${CFLAGS}" -DCMAKE_CXX_FLAGS:STRING="${CXXFLAGS}" \
@@ -1657,7 +1657,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
 ], [$DISABLE_GOOM])
 
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
-if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
+if test "$use_gl" = "no"; then :; else
   ./configure \
     CC="$CC" \
     CXX="$CXX" \
