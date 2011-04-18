@@ -193,6 +193,9 @@ bool CRepositoryUpdateJob::DoWork()
   // check for updates
   CAddonDatabase database;
   database.Open();
+#ifdef HAVE_PKGKIT
+  bool updated=false;
+#endif
   for (unsigned int i=0;i<addons.size();++i)
   {
     if (!CAddonInstaller::Get().CheckDependencies(addons[i]))
@@ -202,6 +205,15 @@ bool CRepositoryUpdateJob::DoWork()
     CAddonMgr::Get().GetAddon(addons[i]->ID(),addon);
     if (addon && addons[i]->Version() > addon->Version())
     {
+#ifdef HAVE_PKGKIT
+      if (addon->Props().extrainfo.find("systempkg") !=
+          addon->Props().extrainfo.end() && !updated)
+      {
+        CPackageKitManager::Get().UpdateRepos(this);
+        m_systemUpdateDone.Wait();
+        updated = true;
+      }
+#endif
       if (g_settings.m_bAddonAutoUpdate || addon->Type() >= ADDON_VIZ_LIBRARY)
       {
         CStdString referer;
@@ -259,3 +271,19 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo)
   return addons;
 }
 
+#ifdef HAVE_PKGKIT
+void CRepositoryUpdateJob::DownloadProgress(unsigned int progress,
+                                            unsigned int total)
+{
+}
+
+void CRepositoryUpdateJob::InstallProgress(unsigned int progress,
+                                           unsigned int total)
+{
+}
+
+void CRepositoryUpdateJob::Done(bool success)
+{
+  m_systemUpdateDone.Set();
+}
+#endif
