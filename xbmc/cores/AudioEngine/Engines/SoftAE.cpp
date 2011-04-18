@@ -302,16 +302,16 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
       CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Using speaker layout: %s", CAEUtil::GetStdChLayoutName(m_stdChLayout));
     }
 
-    if (m_bufferSize < neededBufferSize)
-    {
-      m_bufferSamples = 0;
-      _aligned_free(m_buffer);
-      m_buffer = _aligned_malloc(neededBufferSize, 16);
-      m_bufferSize = neededBufferSize;
-    }
-
     m_bytesPerSample = CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3;
     m_frameSize      = m_bytesPerSample * m_channelCount;
+  }
+
+  if (m_bufferSize < neededBufferSize)
+  {
+    m_bufferSamples = 0;
+    _aligned_free(m_buffer);
+    m_buffer = _aligned_malloc(neededBufferSize, 16);
+    m_bufferSize = neededBufferSize;
   }
 
   m_remap.Initialize(m_chLayout, m_sinkFormat.m_channelLayout, true);
