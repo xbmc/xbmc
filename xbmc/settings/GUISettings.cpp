@@ -831,7 +831,7 @@ void CGUISettings::Initialize()
   AddInt(pvrr, "pvrrecord.defaultpriority", 19173, 50, 1, 1, 100, SPIN_CONTROL_INT_PLUS);
   AddInt(pvrr, "pvrrecord.defaultlifetime", 19174, 99, 1, 1, 365, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
   AddInt(pvrr, "pvrrecord.marginstart", 19175, 2, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddInt(pvrr, "pvrrecord.marginstop", 19176, 10, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(pvrr, "pvrrecord.marginend", 19176, 10, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
 }
 
 CGUISettings::~CGUISettings(void)

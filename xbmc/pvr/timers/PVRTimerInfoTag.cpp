@@ -464,7 +464,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   if (!iMarginStart)
     iMarginStart   = 5;  /* default to 5 minutes */
 
-  int iMarginStop  = g_guiSettings.GetInt("pvrrecord.marginstop");
+  int iMarginStop  = g_guiSettings.GetInt("pvrrecord.marginend");
   if (!iMarginStop)
     iMarginStop    = 10; /* default to 10 minutes */
 
