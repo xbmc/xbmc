@@ -5,12 +5,12 @@
 			<visible>Control.IsVisible(11)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="group">
-				<posx>85</posx>
+				<posx>530</posx>
 				<posy>490</posy>
 				<control type="label">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>700</width>
+					<width>690</width>
 					<height>30</height>
 					<font>font13</font>
 					<textcolor>white</textcolor>
@@ -24,8 +24,8 @@
 					<description>Plot Value for TVShow</description>
 					<posx>0</posx>
 					<posy>30</posy>
-					<width>700</width>
-					<height>90</height>
+					<width>690</width>
+					<height>110</height>
 					<font>font12</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -36,7 +36,7 @@
 				</control>
 			</control>
 			<control type="list" id="11">
-				<posx>800</posx>
+				<posx>70</posx>
 				<posy>85</posy>
 				<width>390</width>
 				<height>541</height>
@@ -47,7 +47,7 @@
 				<viewtype label="535">list</viewtype>
 				<pagecontrol>70</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="60" width="400">
+				<itemlayout height="60" width="390">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
@@ -91,11 +91,12 @@
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Title]</label>
+						<visible>IsEmpty(Listitem.Icon)</visible>
 					</control>
 					<control type="label">
 						<posx>50</posx>
 						<posy>30</posy>
-						<width>270</width>
+						<width>280</width>
 						<height>30</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
@@ -103,16 +104,17 @@
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Title]</label>
+						<visible>!IsEmpty(Listitem.Icon)</visible>
 					</control>
 					<control type="image">
-						<posx>330</posx>
+						<posx>340</posx>
 						<posy>4</posy>
 						<width>50</width>
 						<height>50</height>
 						<texture>$INFO[ListItem.Icon]</texture>
 					</control>
 				</itemlayout>
-				<focusedlayout height="60" width="500">
+				<focusedlayout height="60" width="390">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
@@ -171,7 +173,7 @@
 					<control type="label">
 						<posx>50</posx>
 						<posy>30</posy>
-						<width>270</width>
+						<width>280</width>
 						<height>30</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
@@ -182,7 +184,7 @@
 						<label>$INFO[ListItem.Title]</label>
 					</control>
 					<control type="image">
-						<posx>330</posx>
+						<posx>340</posx>
 						<posy>4</posy>
 						<width>50</width>
 						<height>50</height>
@@ -191,7 +193,7 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="70">
-				<posx>1190</posx>
+				<posx>465</posx>
 				<posy>85</posy>
 				<width>25</width>
 				<height>540</height>
@@ -208,7 +210,7 @@
 			<control type="label">
 				<description>Page Count Label</description>
 				<posx>40r</posx>
-				<posy>30r</posy>
+				<posy>53r</posy>
 				<width>500</width>
 				<height>20</height>
 				<font>font12</font>
@@ -217,7 +219,7 @@
 				<align>right</align>
 				<aligny>center</aligny>
 				<label>([COLOR=blue]$INFO[Container(11).NumItems][/COLOR]) $LOCALIZE[19019] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages][/COLOR])</label>
-				<include>Window_OpenClose_Animation</include>		
+				<include>Window_OpenClose_Animation</include>
 			</control>
 		</control>
 	</include>
@@ -228,12 +230,12 @@
 			<visible>Control.IsVisible(12)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="group">
-				<posx>85</posx>
+				<posx>530</posx>
 				<posy>490</posy>
 				<control type="label">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>700</width>
+					<width>690</width>
 					<height>30</height>
 					<font>font13</font>
 					<textcolor>white</textcolor>
@@ -247,8 +249,8 @@
 					<description>Plot Value for TVShow</description>
 					<posx>0</posx>
 					<posy>30</posy>
-					<width>700</width>
-					<height>90</height>
+					<width>690</width>
+					<height>110</height>
 					<font>font12</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
@@ -259,7 +261,7 @@
 				</control>
 			</control>
 			<control type="list" id="12">
-				<posx>800</posx>
+				<posx>70</posx>
 				<posy>85</posy>
 				<width>390</width>
 				<height>541</height>
@@ -270,7 +272,7 @@
 				<viewtype label="535">list</viewtype>
 				<pagecontrol>71</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="60" width="400">
+				<itemlayout height="60" width="390">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
@@ -313,31 +315,31 @@
 						<selectedcolor>grey</selectedcolor>
 						<align>left</align>
 						<aligny>center</aligny>
-						<visible>IsEmpty(Listitem.Icon)</visible>
 						<label>$INFO[ListItem.Title]</label>
+						<visible>IsEmpty(Listitem.Icon)</visible>
 					</control>
 					<control type="label">
 						<posx>50</posx>
 						<posy>30</posy>
-						<width>270</width>
+						<width>280</width>
 						<height>30</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>grey</selectedcolor>
 						<align>left</align>
 						<aligny>center</aligny>
-						<visible>!IsEmpty(Listitem.Icon)</visible>
 						<label>$INFO[ListItem.Title]</label>
+						<visible>!IsEmpty(Listitem.Icon)</visible>
 					</control>
 					<control type="image">
-						<posx>330</posx>
+						<posx>340</posx>
 						<posy>4</posy>
 						<width>50</width>
 						<height>50</height>
 						<texture>$INFO[ListItem.Icon]</texture>
 					</control>
 				</itemlayout>
-				<focusedlayout height="60" width="500">
+				<focusedlayout height="60" width="390">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
@@ -396,7 +398,7 @@
 					<control type="label">
 						<posx>50</posx>
 						<posy>30</posy>
-						<width>270</width>
+						<width>280</width>
 						<height>30</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
@@ -407,7 +409,7 @@
 						<label>$INFO[ListItem.Title]</label>
 					</control>
 					<control type="image">
-						<posx>330</posx>
+						<posx>340</posx>
 						<posy>4</posy>
 						<width>50</width>
 						<height>50</height>
@@ -416,7 +418,7 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="71">
-				<posx>1190</posx>
+				<posx>465</posx>
 				<posy>85</posy>
 				<width>25</width>
 				<height>540</height>
@@ -433,7 +435,7 @@
 			<control type="label">
 				<description>Page Count Label</description>
 				<posx>40r</posx>
-				<posy>30r</posy>
+				<posy>53r</posy>
 				<width>500</width>
 				<height>20</height>
 				<font>font12</font>
@@ -453,10 +455,10 @@
 			<visible>Control.IsVisible(13)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="list" id="13">
-				<posx>490</posx>
-				<posy>100</posy>
-				<width>700</width>
-				<height>521</height>
+				<posx>70</posx>
+				<posy>75</posy>
+				<width>760</width>
+				<height>561</height>
 				<onleft>34</onleft>
 				<onright>72</onright>
 				<onup>13</onup>
@@ -464,11 +466,11 @@
 				<viewtype label="535">list</viewtype>
 				<pagecontrol>72</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="40" width="700">
+				<itemlayout height="40" width="760">
 				<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>700</width>
+						<width>760</width>
 						<height>41</height>
 						<texture border="2">MenuItemNF.png</texture>
 						<include>VisibleFadeEffect</include>
@@ -493,7 +495,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>690</posx>
+						<posx>750</posx>
 						<posy>0</posy>
 						<width>500</width>
 						<height>40</height>
@@ -505,11 +507,11 @@
 						<label>$INFO[ListItem.Date]</label>
 					</control>
 				</itemlayout>
-				<focusedlayout height="40" width="700">
+				<focusedlayout height="40" width="760">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>700</width>
+						<width>760</width>
 						<height>41</height>
 						<texture border="2">MenuItemFO.png</texture>
 						<visible>Control.HasFocus(13)</visible>
@@ -518,14 +520,14 @@
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>700</width>
+						<width>760</width>
 						<height>41</height>
 						<texture border="2">MenuItemNF.png</texture>
 						<include>VisibleFadeEffect</include>
 						<visible>!Control.HasFocus(13)</visible>
 					</control>
 					<control type="image">
-						<posx>500</posx>
+						<posx>560</posx>
 						<posy>5</posy>
 						<width>200</width>
 						<height>31</height>
@@ -552,7 +554,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>690</posx>
+						<posx>750</posx>
 						<posy>0</posy>
 						<width>500</width>
 						<height>40</height>
@@ -566,10 +568,10 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="72">
-				<posx>1190</posx>
-				<posy>100</posy>
+				<posx>850</posx>
+				<posy>78</posy>
 				<width>25</width>
-				<height>521</height>
+				<height>560</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
 				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
 				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
@@ -583,7 +585,7 @@
 			<control type="label">
 				<description>Page Count Label</description>
 				<posx>40r</posx>
-				<posy>30r</posy>
+				<posy>53r</posy>
 				<width>500</width>
 				<height>20</height>
 				<font>font12</font>
@@ -595,54 +597,44 @@
 				<include>Window_OpenClose_Animation</include>		
 			</control>
 			<control type="group">
-				<posx>80</posx>
-				<posy>100</posy>
+				<posx>910</posx>
+				<posy>80</posy>
 				<control type="image">
-					<posx>0</posx>
+					<posx>10</posx>
 					<posy>0</posy>
-					<width>380</width>
-					<height>270</height>
+					<width>290</width>
+					<height>230</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
 					<texture fallback="DefaultVideoCover.png">$INFO[Container(13).ListItem.Icon]</texture>
 					<bordertexture border="8">ThumbShadow.png</bordertexture>
 					<bordersize>8</bordersize>
 				</control>
-				<control type="image">
-					<posx>0</posx>
-					<posy>263</posy>
-					<width>380</width>
-					<height>80</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>GlassTitleBar.png</texture>
-					<colordiffuse>AAFFFFFF</colordiffuse>
-				</control>
-				<control type="label">
-					<posx>0</posx>
-					<posy>290</posy>
-					<width>380</width>
+				<control type="fadelabel">
+					<posx>10</posx>
+					<posy>230</posy>
+					<width>290</width>
 					<height>25</height>
 					<label>$INFO[Container(13).ListItem.Title]</label>
-					<scroll>true</scroll>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
+					<font>font13</font>
+					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
+					<scrollout>false</scrollout>
+					<pauseatend>1000</pauseatend>
 				</control>
 				<control type="textbox">
-					<description>Plot Value for TVShow</description>
-					<posx>0</posx>
-					<posy>330</posy>
-					<width>380</width>
-					<height>190</height>
+					<description>Description Value for TV Show</description>
+					<posx>10</posx>
+					<posy>270</posy>
+					<width>290</width>
+					<height>280</height>
 					<font>font12</font>
 					<align>justify</align>
 					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-					<pagecontrol>9999999999</pagecontrol>
 					<label>$INFO[Container(13).ListItem.Plot]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 				</control>
 			</control>
 		</control>
@@ -1074,7 +1066,7 @@
 			<control type="label">
 				<description>Page Count Label</description>
 				<posx>40r</posx>
-				<posy>30r</posy>
+				<posy>53r</posy>
 				<width>500</width>
 				<height>20</height>
 				<font>font12</font>
@@ -1428,7 +1420,7 @@
 			<control type="label">
 				<description>Page Count Label</description>
 				<posx>40r</posx>
-				<posy>30r</posy>
+				<posy>53r</posy>
 				<width>500</width>
 				<height>20</height>
 				<font>font12</font>
@@ -1751,7 +1743,7 @@
 			<control type="label">
 				<description>Page Count Label</description>
 				<posx>40r</posx>
-				<posy>30r</posy>
+				<posy>53r</posy>
 				<width>500</width>
 				<height>20</height>
 				<font>font12</font>
@@ -2125,7 +2117,7 @@
 			<control type="label">
 				<description>Page Count Label</description>
 				<posx>40r</posx>
-				<posy>30r</posy>
+				<posy>53r</posy>
 				<width>500</width>
 				<height>20</height>
 				<font>font12</font>
