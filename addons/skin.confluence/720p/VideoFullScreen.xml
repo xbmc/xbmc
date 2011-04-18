@@ -273,7 +273,6 @@
 				<posy>0</posy>
 				<width>1280</width>
 				<height>140</height>
-				<colordiffuse>AAFFFFFF</colordiffuse>
 				<texture>black-back.png</texture>
 			</control>
 			<control type="label" id="10">
@@ -326,7 +325,7 @@
 		</control>
 		<control type="group">
 			<visible>Player.ShowCodec + VideoPlayer.Content(LiveTV) + system.getbool(pvrplayback.signalquality)</visible>
-			<posy>160</posy>
+			<posy>165</posy>
 			<control type="image">
 				<description>media info background image</description>
 				<posx>0</posx>
