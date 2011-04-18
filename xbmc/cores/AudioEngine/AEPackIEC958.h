@@ -31,7 +31,7 @@
   #define E_PACK __pragma(pack(pop))
 #endif
 
-#define MAX_IEC958_PACKET  24576
+#define MAX_IEC958_PACKET  61440
 #define IEC958_DATA_OFFSET 8
 
 #define DTS1_FRAME_SIZE   512
