@@ -2448,6 +2448,10 @@
     <ClCompile Include="..\..\xbmc\win32\win32env.cpp">
       <Filter>win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\RecentlyAddedJob.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\json-rpc\InputOperations.cpp">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4896,6 +4900,10 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\XBDateTime.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\RecentlyAddedJob.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\InputOperations.h">
+      <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -59,12 +59,17 @@ void CGUIWindowHome::Announce(EAnnouncementFlag flag, const char *sender, const 
 
   CLog::Log(LOGDEBUG, "GOT ANNOUNCEMENT, type: %i, from %s, message %s",(int)flag, sender, message);
 
-  if (flag & Library)
+  if (flag & VideoLibrary)
   {
     if ((strcmp(message, "UpdateVideo") == 0) ||
         (strcmp(message, "RemoveVideo") == 0))
       ra_flag |= (Video | Totals);
 
+    if (strcmp(message, "NewPlayCount") == 0)
+      ra_flag |= Totals;
+  }
+  else if (flag & AudioLibrary)
+  {
     if ((strcmp(message, "UpdateAudio") == 0) ||
         (strcmp(message, "RemoveAudio") == 0))
       ra_flag |= ( Audio | Totals );

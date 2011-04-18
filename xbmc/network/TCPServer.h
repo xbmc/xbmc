@@ -13,11 +13,12 @@
 #include "interfaces/json-rpc/ITransportLayer.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
+#include "interfaces/json-rpc/JSONUtils.h"
 
 class CVariant;
 namespace JSONRPC
 {
-  class CTCPServer : public ITransportLayer, public ANNOUNCEMENT::IAnnouncer, public CThread
+  class CTCPServer : public ITransportLayer, public ANNOUNCEMENT::IAnnouncer, public CThread, protected CJSONUtils
   {
   public:
     static bool StartServer(int port, bool nonlocal);

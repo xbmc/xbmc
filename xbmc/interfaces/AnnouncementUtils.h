@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,26 +20,38 @@
  *
  */
 
-class CVariant;
+#include "IAnnouncer.h"
+
 namespace ANNOUNCEMENT
 {
-  enum EAnnouncementFlag
-  {
-    Player = 0x1,
-    GUI = 0x2,
-    System = 0x4,
-    VideoLibrary = 0x8,
-    AudioLibrary = 0x10,
-    Other = 0x20
-  };
-
-  #define ANNOUNCE_ALL (Player | GUI | System | VideoLibrary | AudioLibrary | Other)
-
-  class IAnnouncer
+  class CAnnouncementUtils
   {
   public:
-    IAnnouncer() { };
-    virtual ~IAnnouncer() { };
-    virtual void Announce(EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) = 0;
+    /*!
+     \brief Returns a string representation for the 
+     given EAnnouncementFlag
+     \param notification Specific EAnnouncementFlag
+     \return String representation of the given EAnnouncementFlag
+     */
+    static inline const char *AnnouncementFlagToString(const EAnnouncementFlag &notification)
+    {
+      switch (notification)
+      {
+      case Player:
+        return "Player";
+      case GUI:
+        return "GUI";
+      case System:
+        return "System";
+      case VideoLibrary:
+        return "VideoLibrary";
+      case AudioLibrary:
+        return "AudioLibrary";
+      case Other:
+        return "Other";
+      default:
+        return "Unknown";
+      }
+    }
   };
 }
