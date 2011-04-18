@@ -83,14 +83,11 @@ CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
 {
   if (ext)
   {
-#if defined(_LINUX) && !defined(__APPLE__)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");
-#elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_wingl");
-#elif defined(_WIN32) && defined(HAS_DX)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_windx");
-#elif defined(__APPLE__)
-    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_osx");
+    m_strLibName = URIUtils::AddFileToFolder("lib",m_strLibName);
+#if defined(_WIN32)
+    m_strLibName += ".dll";
+#else
+    m_strLibName += ".so";
 #endif
   }
 
