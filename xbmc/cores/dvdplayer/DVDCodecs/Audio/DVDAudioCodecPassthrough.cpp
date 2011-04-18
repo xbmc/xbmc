@@ -84,14 +84,12 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 int CDVDAudioCodecPassthrough::GetSampleRate()
 {
   int rate = m_info.GetSampleRate();
-
-  /* TrueHD uses a base sample rate of 96 or 88.2 kHz across 8 channels (96 kHz * 8 = 768, 88.2 kHz * 8 = 705.6 kHz) */
   if(m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD)
   {
     if (rate == 48000 || rate == 96000 || rate == 192000)
-      return 96000;
+      return 192000;
     else
-      return 88200;
+      return 176400;
   }
 
   return m_info.GetSampleRate();
