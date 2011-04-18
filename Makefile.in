@@ -144,9 +144,8 @@ VIS_DIRS+=\
 	xbmc/visualizations/XBMCProjectM \
 
 endif
-ifeq ($(findstring osx,@ARCH@), osx)
-VIS_DIRS+=xbmc/visualizations/iTunes \
-
+ifeq (($(findstring osx,@ARCH@), osx),(@USE_OPENGL@,1)) 
+VIS_DIRS+=xbmc/visualizations/iTunes
 endif
 ifneq (@DISABLE_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom \
@@ -428,7 +427,7 @@ pvrclients: exports
 	$(MAKE) -C xbmc/pvrclients/vdr-vnsi
 	$(MAKE) -C xbmc/pvrclients/tvheadend
 screensavers: exports
-ifneq ($(findstring arm,@ARCH@), arm)
+ifeq (@USE_OPENGL@,1)
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 endif
 libaddon: exports

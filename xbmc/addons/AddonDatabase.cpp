@@ -104,62 +104,6 @@ bool CAddonDatabase::UpdateOldVersion(int version)
   
   try
   {
-    if (version < 2)
-    {
-      m_pDS->exec("alter table addon add description text");
-    }
-    if (version < 3)
-    {
-      m_pDS->exec("alter table addon add changelog text");
-    }
-    if (version < 4)
-    {
-      m_pDS->exec("alter table addon add fanart text");
-    }
-    if (version < 5)
-    {
-      m_pDS->exec("alter table addon add author text");
-    }
-    if (version < 6)
-    {
-      m_pDS->exec("alter table addon add content text");
-    }
-    if (version < 7)
-    {
-      m_pDS->exec("CREATE TABLE addonnew (id integer primary key, type text,"
-		  "name text, summary text, description text, stars integer,"
-		  "path text, addonID text, icon text, version text, "
-		  "changelog text, fanart text, author text)\n");
-      m_pDS->exec("INSERT INTO addonnew select id,type,name,summary,description,stars,path,addonID,icon,version,changelog,fanart,author from addon");
-      m_pDS->exec("DROP TABLE addon");
-      m_pDS->exec("ALTER TABLE addonnew RENAME TO addon");
-    }
-    if (version < 8)
-    {
-      m_pDS->exec("CREATE TABLE disabled (id integer primary key, addonID text)\n");
-      m_pDS->exec("CREATE INDEX idxDisabled ON disabled(addonID)");
-    }
-    if (version < 9)
-    {
-      m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_1 ON addonlinkrepo ( idAddon, idRepo )\n");
-      m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_2 ON addonlinkrepo ( idRepo, idAddon )\n");
-      m_pDS->exec("DROP INDEX idxDisabled");
-      m_pDS->exec("CREATE UNIQUE INDEX idxDisabled ON disabled(addonID)");
-    }
-    if (version < 10)
-    {
-      m_pDS->exec("CREATE TABLE broken (id integer primary key, addonID text, reason text)\n");
-      m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON broken(addonID)");
-    }
-    if (version < 11)
-    {
-      m_pDS->exec("CREATE TABLE addonextra (id integer, key text, value text)\n");
-      m_pDS->exec("CREATE INDEX idxAddonExtra ON addonextra(id)");
-    }
-    if (version < 12)
-    {
-      m_pDS->exec("alter table addon add disclaimer text");
-    }
     if (version < 13)
     {
       m_pDS->exec("CREATE TABLE pvrenabled (id integer primary key, addonID text)\n");

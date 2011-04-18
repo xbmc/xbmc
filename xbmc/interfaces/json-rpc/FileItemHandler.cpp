@@ -124,7 +124,7 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
   }
 }
 
-void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const Json::Value &parameterObject, const Json::Value &validFields, Json::Value &result)
+void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const Json::Value &parameterObject, const Json::Value &validFields, Json::Value &result, bool append /* = true */)
 {
   Value object;
   bool hasFileField = false;
@@ -172,7 +172,12 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
   object["label"] = item->GetLabel().c_str();
 
   if (resultname)
-    result[resultname].append(object);
+  {
+    if (append)
+      result[resultname].append(object);
+    else
+      result[resultname] = object;
+  }
 }
 
 bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemList &list)

@@ -171,7 +171,10 @@ static XBMC_KeyMapping g_mapping_ubuntu[] =
 , { 117, 0x5d } // right click
 };
 
-// OSX defines unicode values for non-printing keys which breaks the key parser, set m_wUnicode
+// Set the vkey value for non-printing keys that do not have vkey or
+// ascii equivalent.
+// OSX defines unicode values for non-printing keys which breaks the
+// key parser, set m_wUnicode
 static XBMC_KeyMapping g_mapping_npc[] =
 { { XBMCK_BACKSPACE, 0x08 }
 , { XBMCK_TAB, 0x09 }
@@ -220,6 +223,24 @@ static XBMC_KeyMapping g_mapping_npc[] =
 , { XBMCK_PRINT, 0x2a }
 , { XBMCK_LSHIFT, 0xa0 }
 , { XBMCK_RSHIFT, 0xa1 }
+, { XBMCK_BROWSER_BACK,        XBMCK_BROWSER_BACK }
+, { XBMCK_BROWSER_FORWARD,     XBMCK_BROWSER_FORWARD }
+, { XBMCK_BROWSER_REFRESH,     XBMCK_BROWSER_REFRESH }
+, { XBMCK_BROWSER_STOP,        XBMCK_BROWSER_STOP }
+, { XBMCK_BROWSER_SEARCH,      XBMCK_BROWSER_SEARCH }
+, { XBMCK_BROWSER_FAVORITES,   XBMCK_BROWSER_FAVORITES }
+, { XBMCK_BROWSER_HOME,        XBMCK_BROWSER_HOME }
+, { XBMCK_VOLUME_MUTE,         XBMCK_VOLUME_MUTE }
+, { XBMCK_VOLUME_DOWN,         XBMCK_VOLUME_DOWN }
+, { XBMCK_VOLUME_UP,           XBMCK_VOLUME_UP }
+, { XBMCK_MEDIA_NEXT_TRACK,    XBMCK_MEDIA_NEXT_TRACK }
+, { XBMCK_MEDIA_PREV_TRACK,    XBMCK_MEDIA_PREV_TRACK }
+, { XBMCK_MEDIA_STOP,          XBMCK_MEDIA_STOP }
+, { XBMCK_MEDIA_PLAY_PAUSE,    XBMCK_MEDIA_PLAY_PAUSE }
+, { XBMCK_LAUNCH_MAIL,         XBMCK_LAUNCH_MAIL }
+, { XBMCK_LAUNCH_MEDIA_SELECT, XBMCK_LAUNCH_MEDIA_SELECT }
+, { XBMCK_LAUNCH_APP1,         XBMCK_LAUNCH_APP1 }
+, { XBMCK_LAUNCH_APP2,         XBMCK_LAUNCH_APP2 }
 };
 
 #define NUM_KEYNAMES 0x100
@@ -391,24 +412,24 @@ static const char *keynames[NUM_KEYNAMES] =
   "rcontrol",           // 0xA3
   "lalt",               // 0xA4
   "ralt",               // 0xA5
-  NULL,                 // 0xA6
-  NULL,                 // 0xA7
-  NULL,                 // 0xA8
-  NULL,                 // 0xA9
-  NULL,                 // 0xAA
-  NULL,                 // 0xAB
-  NULL,                 // 0xAC
-  NULL,                 // 0xAD
-  NULL,                 // 0xAE
-  NULL,                 // 0xAF
-  NULL,                 // 0xB0
-  NULL,                 // 0xB1
-  NULL,                 // 0xB2
-  NULL,                 // 0xB3
-  NULL,                 // 0xB4
-  NULL,                 // 0xB5
-  NULL,                 // 0xB6
-  NULL,                 // 0xB7
+  "browser_back",       // 0xA6
+  "browser_forward",    // 0xA7
+  "browser_refresh",    // 0xA8
+  "browser_stop",       // 0xA9
+  "browser_search",     // 0xAA
+  "browser_favorites",  // 0xAB
+  "browser_home",       // 0xAC
+  "volume_mute",        // 0xAD
+  "volume_down",        // 0xAE
+  "volume_up",          // 0xAF
+  "next_track",         // 0xB0
+  "prev_track",         // 0xB1
+  "stop",               // 0xB2
+  "play_pause",         // 0xB3
+  "launch_mail",        // 0xB4
+  "launch_media_select",// 0xB5
+  "launch_app1_pc_icon",// 0xB6
+  "launch_app2_pc_icon",// 0xB7
   NULL,                 // 0xB8
   NULL,                 // 0xB9
   "semicolon",          // 0xBA

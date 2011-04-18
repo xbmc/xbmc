@@ -35,10 +35,12 @@
   #import <Cocoa/Cocoa.h>
 #endif
 
+#import "AutoPool.h"
 #import "DarwinUtils.h"
 
 float GetIOSVersion(void)
 {
+  CCocoaAutoPool pool;
   float version;
 #if defined(__arm__)
   version = [[[UIDevice currentDevice] systemVersion] floatValue];
@@ -51,6 +53,7 @@ float GetIOSVersion(void)
 
 int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
 {
+  CCocoaAutoPool pool;
   // see if we can figure out who we are
   NSString *pathname;
 
@@ -110,6 +113,7 @@ int  GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize)
 
 int  GetDarwinExecutablePath(char* path, uint32_t *pathsize)
 {
+  CCocoaAutoPool pool;
   // see if we can figure out who we are
   NSString *pathname;
 

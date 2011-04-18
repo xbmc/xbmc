@@ -505,6 +505,7 @@ AC_LANG_POP([C++])
 
 # Checks for platforms libraries.
 if test "$use_gles" = "yes"; then
+  use_gl="no"
   # GLES overwrites GL if both set to yes.
   if test "$host_vendor" = "apple" ; then
     AC_DEFINE([HAVE_LIBEGL],[1],["Define to 1 if you have the `EGL' library (-lEGL)."])
@@ -545,7 +546,6 @@ if test $MYSQL_CONFIG = "yes"; then
 else
   AC_MSG_ERROR($missing_program)
 fi
-AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
@@ -1636,7 +1636,7 @@ XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
 ], [0])
 
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
-if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
+if test "$use_gl" = "no"; then :; else
 set -x
     rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
       -DCMAKE_C_FLAGS:STRING="${CFLAGS}" -DCMAKE_CXX_FLAGS:STRING="${CXXFLAGS}" \
@@ -1661,7 +1661,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
 ], [$DISABLE_GOOM])
 
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
-if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
+if test "$use_gl" = "no"; then :; else
   ./configure \
     CC="$CC" \
     CXX="$CXX" \

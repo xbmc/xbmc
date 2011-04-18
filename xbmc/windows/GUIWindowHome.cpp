@@ -21,12 +21,75 @@
 
 #include "GUIWindowHome.h"
 #include "guilib/Key.h"
+#include "utils/JobManager.h"
+#include "utils/RecentlyAddedJob.h"
+#include "interfaces/AnnouncementManager.h"
+#include "utils/log.h"
+#include "settings/AdvancedSettings.h"
+
+using namespace ANNOUNCEMENT;
 
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
 {
+  m_updateRA = (Audio | Video | Totals);
+  
+  CAnnouncementManager::AddAnnouncer(this);
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
 {
+  CAnnouncementManager::RemoveAnnouncer(this);
 }
 
+void CGUIWindowHome::OnInitWindow()
+{  
+  // for shared databases (ie mysql) always force an update on return to home
+  // this is a temporary solution until remote announcements can be delivered
+  if ( g_advancedSettings.m_databaseVideo.type.Equals("mysql") ||
+       g_advancedSettings.m_databaseMusic.type.Equals("mysql") )
+    m_updateRA = (Audio | Video | Totals);
+  AddRecentlyAddedJobs( m_updateRA );
+
+  CGUIWindow::OnInitWindow();
+}
+
+void CGUIWindowHome::Announce(EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+{
+  int ra_flag = 0;
+
+  CLog::Log(LOGDEBUG, "GOT ANNOUNCEMENT, type: %i, from %s, message %s",(int)flag, sender, message);
+
+  if (flag & Library)
+  {
+    if ((strcmp(message, "UpdateVideo") == 0) ||
+        (strcmp(message, "RemoveVideo") == 0))
+      ra_flag |= (Video | Totals);
+
+    if ((strcmp(message, "UpdateAudio") == 0) ||
+        (strcmp(message, "RemoveAudio") == 0))
+      ra_flag |= ( Audio | Totals );
+
+    if (strcmp(message, "NewPlayCount") == 0)
+      ra_flag |= Totals;
+  }
+  else if (flag & System)
+  {
+    if (strcmp(message, "ProfileChange") == 0)
+      ra_flag |= (Video | Audio | Totals);
+  }
+
+  // add the job immediatedly if the home window is active
+  // otherwise defer it to the next initialisation
+
+  if (IsActive())
+    AddRecentlyAddedJobs(ra_flag);
+  else
+    m_updateRA |= ra_flag;
+}
+
+void CGUIWindowHome::AddRecentlyAddedJobs(int flag)
+{
+  if (flag != 0)
+    CJobManager::GetInstance().AddJob(new CRecentlyAddedJob(flag), NULL);
+  m_updateRA = 0;
+}
