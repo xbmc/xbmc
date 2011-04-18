@@ -616,7 +616,8 @@ AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info)
   // grab a relevant extension point, ignoring our xbmc.addon.metadata extension point
   for (unsigned int i = 0; i < info->num_extensions; ++i)
   {
-    if (0 != strcmp("xbmc.addon.metadata", info->extensions[i].ext_point_id))
+    if (0 != strcmp("xbmc.addon.metadata", info->extensions[i].ext_point_id) &&
+        0 != strcmp("system.pkgkit", info->extensions[i].ext_point_id))
     { // note that Factory takes care of whether or not we have platform support
       return Factory(&info->extensions[i]);
     }

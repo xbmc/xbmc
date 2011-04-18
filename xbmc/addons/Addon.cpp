@@ -197,6 +197,11 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     EMPTY_IF("noicon",icon)
     EMPTY_IF("nochangelog",changelog)
   }
+  const cp_extension_t *pkgkit = CAddonMgr::Get().GetExtension(ext->plugin, "system.pkgkit");
+  if (pkgkit)
+    extrainfo.insert(make_pair("systempkg",
+                               CAddonMgr::Get().GetExtValue(
+                                          pkgkit->configuration, "@package")));
   BuildDependencies(ext->plugin);
 }
 
