@@ -668,7 +668,7 @@
 				<onup>10</onup>
 				<ondown>10</ondown>
 				<rulerlayout height="35" width="40">
-					<control type="image">
+					<control type="image" id="1">
 						<width>40</width>
 						<height>29</height>
 						<posx>0</posx>
