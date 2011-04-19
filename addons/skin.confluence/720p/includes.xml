@@ -480,7 +480,7 @@
 	<include name="CommonNowPlaying_Controls">
 		<control type="label" id="202">
 			<width>250</width>
-			<height>45</height>
+			<height>35</height>
 			<font>font12caps</font>
 			<label>31023</label>
 			<textcolor>blue</textcolor>
@@ -489,11 +489,15 @@
 			<visible>[Player.HasAudio | Player.HasVideo]</visible>
 			<include>VisibleFadeEffect</include>
 		</control>
+		<control type="button" id="610">
+			<description>Fake Button to fix Player Controls Navigation</description>
+			<visible>false</visible>
+		</control>
 		<control type="group" id="9005">
 			<visible>[Player.HasAudio | Player.HasVideo]</visible>
 			<include>VisibleFadeEffect</include>
 			<width>250</width>
-			<height>39</height>
+			<height>45</height>
 			<defaultcontrol always="true">603</defaultcontrol>
 			<control type="button" id="600">
 				<posx>5</posx>
@@ -677,6 +681,15 @@
 					<ondown>611</ondown>
 				</control>
 			</control>
+		</control>
+		<control type="radiobutton" id="611">
+			<description>Go to fullscreen Playback</description>
+			<include>ButtonCommonValues</include>
+			<label>31008</label>
+			<onclick>fullscreen</onclick>
+			<textureradiofocus>GoFullscreen.png</textureradiofocus>
+			<textureradionofocus>GoFullscreen.png</textureradionofocus>
+			<visible>Player.HasMedia</visible>
 		</control>
 	</include>
 	<include name="ScrollOffsetLabel">
