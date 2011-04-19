@@ -563,7 +563,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
                 encryption = ENC_WEP;
              break;
 
-         // Generic IEEE 802.11 informatiom element (IE) for WPA, RSN, WMM, ...
+         // Generic IEEE 802.11 information element (IE) for WPA, RSN, WMM, ...
          case IWEVGENIE:
          {
             int offset = 0;
