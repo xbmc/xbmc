@@ -147,7 +147,7 @@ int CAEPackIEC958::PackTrueHD(uint8_t *data, unsigned int size, uint8_t *dest)
   packet->m_preamble1 = IEC958_PREAMBLE1;
   packet->m_preamble2 = IEC958_PREAMBLE2;
   packet->m_type      = IEC958_TYPE_TRUEHD;
-  packet->m_length    = size << 3;
+  packet->m_length    = size;
 
   if (data == NULL)
     data = packet->m_data;
