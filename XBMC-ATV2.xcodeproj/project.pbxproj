@@ -11,6 +11,7 @@
 		4D5D2E131301753F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E121301753F006ABC13 /* CFNetwork.framework */; };
 		7C99B73F133D372300FC2B16 /* CacheCircular.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B73D133D372300FC2B16 /* CacheCircular.cpp */; };
 		7C99B7AA134072CD00FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */; };
+		C807119F135DB842002F601B /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C807119D135DB842002F601B /* InputOperations.cpp */; };
 		F51BD1F112CA77B500B8BD20 /* libpython2.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F51BD1F012CA77B500B8BD20 /* libpython2.6.dylib */; };
 		F54D9E0712B65FFF006870F9 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E0612B65FFF006870F9 /* libc.dylib */; };
 		F54D9E8E12B71457006870F9 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8D12B71457006870F9 /* CoreAudio.framework */; };
@@ -937,6 +938,9 @@
 		7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPlayEject.cpp; sourceTree = "<group>"; };
 		7C99B7A9134072CD00FC2B16 /* GUIDialogPlayEject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPlayEject.h; sourceTree = "<group>"; };
 		8D576316048677EA00EA77CD /* XBMC.frappliance */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XBMC.frappliance; sourceTree = BUILT_PRODUCTS_DIR; };
+		C807119D135DB842002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
+		C807119E135DB842002F601B /* InputOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputOperations.h; sourceTree = "<group>"; };
+		C80711A0135DB848002F601B /* AnnouncementUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnouncementUtils.h; sourceTree = "<group>"; };
 		F51BD1F012CA77B500B8BD20 /* libpython2.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpython2.6.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libpython2.6.dylib"; sourceTree = "<absolute>"; };
 		F54D9E0612B65FFF006870F9 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		F54D9E8D12B71457006870F9 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -4454,6 +4458,7 @@
 				F56C7564131EC152000AD0F6 /* python */,
 				F56C75A3131EC152000AD0F6 /* AnnouncementManager.cpp */,
 				F56C75A4131EC152000AD0F6 /* AnnouncementManager.h */,
+				C80711A0135DB848002F601B /* AnnouncementUtils.h */,
 				F56C75A5131EC153000AD0F6 /* Builtins.cpp */,
 				F56C75A6131EC153000AD0F6 /* Builtins.h */,
 				F5AE40E5134175160004BD79 /* http-api */,
@@ -5750,6 +5755,8 @@
 				F5AE40F51341751E0004BD79 /* FileOperations.cpp */,
 				F5AE40F61341751E0004BD79 /* FileOperations.h */,
 				F5AE40F71341751E0004BD79 /* IClient.h */,
+				C807119D135DB842002F601B /* InputOperations.cpp */,
+				C807119E135DB842002F601B /* InputOperations.h */,
 				F5AE40F81341751E0004BD79 /* ITransportLayer.h */,
 				F5AE40F91341751E0004BD79 /* JSONRPC.cpp */,
 				F5AE40FA1341751E0004BD79 /* JSONRPC.h */,
@@ -6748,6 +6755,7 @@
 				F5AE41131341751E0004BD79 /* XBMCOperations.cpp in Sources */,
 				F5AE453B134D2E720004BD79 /* JSONServiceDescription.cpp in Sources */,
 				18ACF8E313597B0000B67371 /* RecentlyAddedJob.cpp in Sources */,
+				C807119F135DB842002F601B /* InputOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
