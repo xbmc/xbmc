@@ -382,7 +382,7 @@ bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
         return true;
       }
     }
-    CLog::Log(LOGERROR,"Could not find FILE referenced in cue, case sensitive issue?");
+    CLog::Log(LOGERROR,"Could not find FILE referenced in cue, case sensitivity issue?");
     return false;
   }
 
