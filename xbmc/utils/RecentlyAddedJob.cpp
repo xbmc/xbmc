@@ -55,7 +55,7 @@ bool CRecentlyAddedJob::UpdateVideo()
 
   if (videodatabase.GetRecentlyAddedMoviesNav("videodb://1/", items, NUM_ITEMS))
   {  
-    for (i; i < NUM_ITEMS; ++i)
+    for (i; i < items.Size(); ++i)
     {
       CFileItemPtr item = items.Get(i);
       CStdString   value;
@@ -94,7 +94,7 @@ bool CRecentlyAddedJob::UpdateVideo()
  
   if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://1/", TVShowItems, NUM_ITEMS))
   {  
-    for (i; i < NUM_ITEMS; ++i)
+    for (i; i < TVShowItems.Size(); ++i)
     {    
       CFileItemPtr item          = TVShowItems.Get(i);
       int          EpisodeSeason = item->GetVideoInfoTag()->m_iSeason;
@@ -155,7 +155,7 @@ bool CRecentlyAddedJob::UpdateMusic()
   
   if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://", musicItems, NUM_ITEMS))
   { 
-    for (i; i < NUM_ITEMS; ++i)
+    for (i; i < musicItems.Size(); ++i)
     {  
       CFileItemPtr item = musicItems.Get(i);
       CStdString   value;
@@ -201,7 +201,7 @@ bool CRecentlyAddedJob::UpdateMusic()
   
   if (musicdatabase.GetRecentlyAddedAlbums(albums, NUM_ITEMS))
   { 
-    for (i; i < NUM_ITEMS; ++i)
+    for (i; i < (int)albums.size(); ++i)
     {
       CStdString value;
       CStdString strPath;
