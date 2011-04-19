@@ -30,7 +30,6 @@
 #include "utils/Variant.h"
 
 using namespace ANNOUNCEMENT;
-using namespace Json;
 
 namespace JSONRPC
 {
@@ -515,7 +514,7 @@ namespace JSONRPC
 
     static std::string AnnouncementToJSON(EAnnouncementFlag flag, const char *sender, const char *method, const CVariant &data, bool compactOutput)
     {
-      Value root;
+      Json::Value root;
       root["jsonrpc"] = "2.0";
 
       CStdString namespaceMethod;
@@ -526,11 +525,11 @@ namespace JSONRPC
         data.toJsonValue(root["params"]);
       root["params"]["sender"] = sender;
 
-      Writer *writer;
+      Json::Writer *writer;
       if (compactOutput)
-        writer = new FastWriter();
+        writer = new Json::FastWriter();
       else
-        writer = new StyledWriter();
+        writer = new Json::StyledWriter();
 
       std::string str = writer->write(root);
       delete writer;
