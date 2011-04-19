@@ -573,7 +573,7 @@ bool CPVRTimers::IsRecordingOnChannel(const CPVRChannel &channel) const
   {
     CPVRTimerInfoTag *timer = at(ptr);
 
-    if (timer->IsRecording() && *timer->m_channel == channel)
+    if (timer->IsRecording() && timer->m_channel && *timer->m_channel == channel)
     {
       bReturn = true;
       break;
