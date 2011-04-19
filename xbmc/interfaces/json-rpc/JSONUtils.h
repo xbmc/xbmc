@@ -29,7 +29,6 @@
 #include "jsoncpp/include/json/json.h"
 #include "utils/Variant.h"
 
-using namespace ANNOUNCEMENT;
 
 namespace JSONRPC
 {
@@ -512,13 +511,13 @@ namespace JSONRPC
       return -1;  // unreachable
     }
 
-    static std::string AnnouncementToJSON(EAnnouncementFlag flag, const char *sender, const char *method, const CVariant &data, bool compactOutput)
+    static std::string AnnouncementToJSON(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *method, const CVariant &data, bool compactOutput)
     {
       Json::Value root;
       root["jsonrpc"] = "2.0";
 
       CStdString namespaceMethod;
-      namespaceMethod.Format("%s.%s", CAnnouncementUtils::AnnouncementFlagToString(flag), method);
+      namespaceMethod.Format("%s.%s", ANNOUNCEMENT::CAnnouncementUtils::AnnouncementFlagToString(flag), method);
       root["method"]  = namespaceMethod.c_str();
 
       if (data.isObject())
