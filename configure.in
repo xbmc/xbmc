@@ -773,13 +773,12 @@ else
 fi
 
 # XRandR
-USE_XRANDR=0
 if test "$host_vendor" = "apple" ; then
   use_xrandr="no"
   AC_MSG_RESULT($xrandr_disabled)
 else
   if test "$use_xrandr" = "yes" ; then
-    AC_CHECK_LIB([Xrandr], [main],USE_XRANDR=1,
+    AC_CHECK_LIB([Xrandr], [main],,
       use_xrandr="no";AC_MSG_RESULT($xrandr_not_found))
   else
     AC_MSG_RESULT($xrandr_disabled)
@@ -1198,8 +1197,10 @@ fi
 
 if test "$use_xrandr" = "yes"; then
   final_message="$final_message\n  XRandR:\tYes"
+  USE_XRANDR=1
 else
   final_message="$final_message\n  XRandR:\tNo"
+  USE_XRANDR=0
 fi
 
 if test "$use_goom" = "yes"; then
