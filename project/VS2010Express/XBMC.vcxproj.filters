@@ -2435,7 +2435,6 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\JSONServiceDescription.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>
@@ -2451,6 +2450,9 @@
     <ClCompile Include="..\..\xbmc\utils\RecentlyAddedJob.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\InputOperations.cpp">
       <Filter>interfaces\json-rpc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp">
+      <Filter>filesystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
