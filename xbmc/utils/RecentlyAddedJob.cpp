@@ -31,6 +31,8 @@
 #include "music/tags/MusicInfoTag.h"
 #include "settings/Settings.h"
 
+#define NUM_ITEMS 10
+
 CRecentlyAddedJob::CRecentlyAddedJob(int flag)
 {
   m_flag = flag;
@@ -51,9 +53,9 @@ bool CRecentlyAddedJob::UpdateVideo()
   
   videodatabase.Open();
 
-  if (videodatabase.GetRecentlyAddedMoviesNav("videodb://1/", items, 10))
+  if (videodatabase.GetRecentlyAddedMoviesNav("videodb://1/", items, NUM_ITEMS))
   {  
-    for (i; i < items.Size(); ++i)
+    for (i; i < NUM_ITEMS; ++i)
     {
       CFileItemPtr item = items.Get(i);
       CStdString   value;
@@ -72,7 +74,7 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestMovie." + value + ".Fanart"      , item->GetCachedFanart());
     }
   } 
-  for (i; i < 10; ++i)
+  for (i; i < NUM_ITEMS; ++i)
   {
     CStdString value;
     value.Format("%i", i + 1);
@@ -90,9 +92,9 @@ bool CRecentlyAddedJob::UpdateVideo()
   i = 0;
   CFileItemList  TVShowItems; 
  
-  if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://1/", TVShowItems, 10))
+  if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://1/", TVShowItems, NUM_ITEMS))
   {  
-    for (i; i < TVShowItems.Size(); ++i)
+    for (i; i < NUM_ITEMS; ++i)
     {    
       CFileItemPtr item          = TVShowItems.Get(i);
       int          EpisodeSeason = item->GetVideoInfoTag()->m_iSeason;
@@ -116,7 +118,7 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetCachedFanart());
     }
   } 
-  for (i; i < 10; ++i)
+  for (i; i < NUM_ITEMS; ++i)
   {
     CStdString value;
     value.Format("%i", i + 1);
@@ -151,9 +153,9 @@ bool CRecentlyAddedJob::UpdateMusic()
   
   musicdatabase.Open();
   
-  if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://", musicItems, 10))
+  if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://", musicItems, NUM_ITEMS))
   { 
-    for (i; i < musicItems.Size(); ++i)
+    for (i; i < NUM_ITEMS; ++i)
     {  
       CFileItemPtr item = musicItems.Get(i);
       CStdString   value;
@@ -180,7 +182,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       home->SetProperty("LatestSong." + value + ".Fanart"  , item->GetCachedFanart());
     }
   }
-  for (i; i < 10; ++i)
+  for (i; i < NUM_ITEMS; ++i)
   {
     CStdString value;
     value.Format("%i", i + 1);
@@ -197,9 +199,9 @@ bool CRecentlyAddedJob::UpdateMusic()
   i = 0;
   VECALBUMS albums;
   
-  if (musicdatabase.GetRecentlyAddedAlbums(albums, 10))
+  if (musicdatabase.GetRecentlyAddedAlbums(albums, NUM_ITEMS))
   { 
-    for (i; i < (int)albums.size(); ++i)
+    for (i; i < NUM_ITEMS; ++i)
     {
       CStdString value;
       CStdString strPath;
@@ -224,7 +226,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       home->SetProperty("LatestAlbum." + value + ".Fanart"  , CFileItem::GetCachedThumb(strArtist,g_settings.GetMusicFanartFolder()));
     }
   }
-  for (i; i < 10; ++i)
+  for (i; i < NUM_ITEMS; ++i)
   {
     CStdString value;
     value.Format("%i", i + 1);
