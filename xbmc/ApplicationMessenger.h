@@ -182,7 +182,7 @@ public:
   void Show(CGUIDialog *pDialog);
   void Close(CGUIDialog *pDialog, bool forceClose, bool waitResult=true);
   void ActivateWindow(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
-  void SendAction(const CAction &action, int windowID = WINDOW_INVALID);
+  void SendAction(const CAction &action, int windowID = WINDOW_INVALID, bool waitResult=true);
   std::vector<CStdString> GetInfoLabels(const std::vector<CStdString> &properties);
   std::vector<bool> GetInfoBooleans(const std::vector<CStdString> &properties);
 

@@ -97,15 +97,7 @@
 					<label>589</label>
 					<include>ButtonCommonValues</include>
 				</control>
-				<control type="button" id="610">
-					<description>Fake Button to fix Player Controls Navigation</description>
-					<visible>false</visible>
-				</control>
 				<include>CommonNowPlaying_Controls</include>
-				<control type="button" id="611">
-					<description>Fake Button to fix Player Controls Navigation</description>
-					<visible>false</visible>
-				</control>
 			</control>
 		</control>
 		<control type="group">

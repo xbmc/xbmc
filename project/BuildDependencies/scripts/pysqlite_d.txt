@@ -1,2 +1,0 @@
-; filename                        mirror                                      source of the file
-pysqlite-2.6.0.win32-py2.6.exe    http://mirrors.xbmc.org/build-deps/win32/   http://pysqlite.googlecode.com/
