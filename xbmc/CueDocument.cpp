@@ -54,13 +54,18 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include "CueDocument.h"
+#include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/CharsetConverter.h"
+#include "filesystem/File.h"
+#include "filesystem/Directory.h"
+#include "FileItem.h"
 
 #include <set>
 
 using namespace std;
+using namespace XFILE;
 
 CCueDocument::CCueDocument(void)
 {
@@ -363,6 +368,23 @@ bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
   URIUtils::GetFileName(strFilename);
 
   URIUtils::AddFileToFolder(strDirectory, strFilename, strPath);
+
+  // i *hate* windows
+  if (!CFile::Exists(strPath))
+  {
+    CFileItemList items;
+    CDirectory::GetDirectory(strDirectory,items);
+    for (int i=0;i<items.Size();++i)
+    {
+      if (items[i]->m_strPath.Equals(strPath))
+      {
+        strPath = items[i]->m_strPath;
+        return true;
+      }
+    }
+    CLog::Log(LOGERROR,"Could not FILE referenced in cue, case sensitive issue?");
+    return false;
+  }
 
   return true;
 }
