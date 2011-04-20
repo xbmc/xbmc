@@ -2304,8 +2304,8 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
       int64_t remain = m_State.file_length - m_State.file_position - queued;
 
       strBuf.AppendFormat(" buf:%s/%s"
-                         , StringUtils::SizeToString(std::min(remain, cached)).c_str()
-                         , StringUtils::SizeToString(std::max(remain, (int64_t)0)).c_str());
+                         , StringUtils::SizeToString(cached).c_str()
+                         , StringUtils::SizeToString(std::max(remain, cached)).c_str());
     }
 
     strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s )"
