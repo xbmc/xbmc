@@ -38,6 +38,10 @@ namespace JSONRPC
    */
   typedef struct JSONSchemaTypeDefinition
   {
+    JSONSchemaTypeDefinition()
+      : type(AnyValue)
+    { }
+
     /*!
      \brief Name of the parameter (for 
      by-name calls)
@@ -51,6 +55,12 @@ namespace JSONRPC
      issues with Objective-C.
      */
     std::string ID;
+
+    /*!
+     \brief Array of reference types
+     which are extended by this type.
+     */
+    std::vector<JSONSchemaTypeDefinition> extends;
 
     /*!
      \brief Description of the parameter
@@ -162,6 +172,17 @@ namespace JSONRPC
      parameter is an object)
      */
     CJsonSchemaPropertiesMap properties;
+
+    /*!
+     \brief Whether the type can have additional properties
+     or not
+     */
+    bool hasAdditionalProperties;
+
+    /*!
+     \brief Type definition for additional properties
+     */
+    JSONSchemaTypeDefinition* additionalProperties;
   } JSONSchemaTypeDefinition;
 
   /*! 

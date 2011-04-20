@@ -285,7 +285,8 @@ bool CJSONServiceDescription::prepareDescription(std::string &description, CVari
   if (member != descriptionObject.end_map())
     name = member->first;
 
-  if (name.empty() || !descriptionObject[name].isMember("type"))
+  if (name.empty() ||
+     (!descriptionObject[name].isMember("type") && !descriptionObject[name].isMember("$ref") && !descriptionObject[name].isMember("extends")))
   {
     CLog::Log(LOGERROR, "JSONRPC: Invalid JSON Schema definition for \"%s\"", name.c_str());
     return false;
@@ -675,7 +676,18 @@ void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bo
 
   if (!typeReference)
   {
-    SchemaValueTypeToJson(type.type, output["type"]);
+    if (type.extends.size() == 1)
+    {
+      output["extends"] = type.extends.at(0).ID;
+    }
+    else if (type.extends.size() > 1)
+    {
+      output["extends"] = CVariant(CVariant::VariantTypeArray);
+      for (unsigned int extendsIndex = 0; extendsIndex < type.extends.size(); extendsIndex++)
+        output["extends"].append(type.extends.at(extendsIndex).ID);
+    }
+    else
+      SchemaValueTypeToJson(type.type, output["type"]);
 
     // Printing enum field
     if (type.enums.size() > 0)
@@ -764,6 +776,11 @@ void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bo
       {
         printType(propertiesIterator->second, false, false, true, printDescriptions, output["properties"][propertiesIterator->first]);
       }
+
+      if (!type.hasAdditionalProperties)
+        output["additionalProperties"] = false;
+      else if (type.additionalProperties != NULL && type.additionalProperties->type != AnyValue)
+        printType(*(type.additionalProperties), false, false, true, printDescriptions, output["additionalProperties"]);
     }
   }
 }
@@ -820,6 +837,25 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
     CLog::Log(LOGWARNING, "JSONRPC: Value is NULL in type %s", type.name.c_str());
     errorData["message"] = "Received value is null";
     return InvalidParams;
+  }
+
+  // First we need to check if this type extends another
+  // type and if so we need to check against the extended
+  // type first
+  if (type.extends.size() > 0)
+  {
+    for (unsigned int extendsIndex = 0; extendsIndex < type.extends.size(); extendsIndex++)
+    {
+      JSON_STATUS status = checkType(value, type.extends.at(extendsIndex), outputValue, errorData);
+
+      if (status != OK)
+      {
+        CLog::Log(LOGWARNING, "JSONRPC: Value does not match extended type %s of type %s", type.extends.at(extendsIndex).ID.c_str(), type.name.c_str());
+        errorMessage.Format("value does not match extended type %s", type.extends.at(extendsIndex).ID.c_str(), type.name.c_str());
+        errorData["message"] = errorMessage.c_str();
+        return status;
+      }
+    }
   }
 
   // If it is an array we need to
@@ -983,8 +1019,42 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
     // Additional properties are not allowed
     if (handled < value.size())
     {
-      errorData["message"] = "Unexpected additional properties received";
-      return InvalidParams;
+      // If additional properties are allowed we need to check if
+      // they match the defined schema
+      if (type.hasAdditionalProperties && type.additionalProperties != NULL)
+      {
+        CVariant::const_iterator_map iter;
+        CVariant::const_iterator_map iterEnd = value.end_map();
+        for (iter = value.begin_map(); iter != iterEnd; iter++)
+        {
+          if (type.properties.find(iter->first) != type.properties.end())
+            continue;
+
+          // If the additional property is of type "any"
+          // we can simply copy its value to the output
+          // object
+          if (type.additionalProperties->type == AnyValue)
+          {
+            outputValue[iter->first] = value[iter->first];
+            continue;
+          }
+
+          JSON_STATUS status = checkType(value[iter->first], *(type.additionalProperties), outputValue[iter->first], errorData["property"]);
+          if (status != OK)
+          {
+            CLog::Log(LOGWARNING, "JSONRPC: Invalid additional property \"%s\" in type %s", iter->first.c_str(), type.name.c_str());
+            return status;
+          }
+        }
+      }
+      // If we still have unchecked properties but additional
+      // properties are not allowed, we have invalid parameters
+      else if (!type.hasAdditionalProperties || type.additionalProperties == NULL)
+      {
+        errorData["message"] = "Unexpected additional properties received";
+        errorData.erase("property");
+        return InvalidParams;
+      }
     }
 
     return OK;
@@ -1090,10 +1160,10 @@ bool CJSONServiceDescription::parseMethod(const CVariant &value, JsonRpcMethod &
       // If the parameter definition does not contain a valid "name" or
       // "type" element we will ignore it
       if (!parameter.isMember("name") || !parameter["name"].isString() ||
-          (!parameter.isMember("type") && !parameter.isMember("$ref")) ||
-          (parameter.isMember("type") && !parameter["type"].isString() &&
-          !parameter["type"].isArray()) || (parameter.isMember("$ref") &&
-          !parameter["$ref"].isString()))
+         (!parameter.isMember("type") && !parameter.isMember("$ref") && !parameter.isMember("extends")) ||
+         (parameter.isMember("type") && !parameter["type"].isString() && !parameter["type"].isArray()) || 
+         (parameter.isMember("$ref") && !parameter["$ref"].isString()) ||
+         (parameter.isMember("extends") && !parameter["extends"].isString() && !parameter["extends"].isArray()))
       {
         CLog::Log(LOGWARNING, "JSONRPC: Method %s has a badly defined parameter", method.name.c_str());
         return false;
@@ -1189,8 +1259,66 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
     return true;
   }
 
-  // Get the defined type of the parameter
-  type.type = parseJSONSchemaType(value["type"]);
+  // Check whether this type extends an existing type
+  if (value.isMember("extends"))
+  {
+    if (value["extends"].isString())
+    {
+      std::string extends = GetString(value["extends"], "");
+      if (!extends.empty())
+      {
+        std::map<std::string, JSONSchemaTypeDefinition>::const_iterator iter = m_types.find(extends);
+        if (iter == m_types.end())
+        {
+          CLog::Log(LOGDEBUG, "JSONRPC: JSON schema type %s extends an unknown type %s", type.name.c_str(), extends.c_str());
+          return false;
+        }
+
+        type.type = iter->second.type;
+        type.extends.push_back(iter->second);
+      }
+    }
+    else if (value["extends"].isArray())
+    {
+      std::string extends;
+      JSONSchemaType extendedType;
+      for (unsigned int extendsIndex = 0; extendsIndex < value["extends"].size(); extendsIndex++)
+      {
+        extends = GetString(value["extends"][extendsIndex], "");
+        if (!extends.empty())
+        {
+          std::map<std::string, JSONSchemaTypeDefinition>::const_iterator iter = m_types.find(extends);
+          if (iter == m_types.end())
+          {
+            type.extends.clear();
+            CLog::Log(LOGDEBUG, "JSONRPC: JSON schema type %s extends an unknown type %s", type.name.c_str(), extends.c_str());
+            return false;
+          }
+
+          if (extendsIndex == 0)
+            extendedType = iter->second.type;
+          else if (extendedType != iter->second.type)
+          {
+            type.extends.clear();
+            CLog::Log(LOGDEBUG, "JSONRPC: JSON schema type %s extends multiple JSON schema types of mismatching types", type.name.c_str());
+            return false;
+          }
+
+          type.extends.push_back(iter->second);
+        }
+      }
+
+      type.type = extendedType;
+    }
+  }
+
+  // Only read the "type" attribute if it's
+  // not an extending type
+  if (type.extends.size() <= 0)
+  {
+    // Get the defined type of the parameter
+    type.type = parseJSONSchemaType(value["type"]);
+  }
 
   if (type.type == ObjectValue)
   {
@@ -1214,6 +1342,33 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
         type.defaultValue[itr->first] = propertyType.defaultValue;
         type.properties.add(propertyType);
       }
+    }
+
+    type.hasAdditionalProperties = true;
+    type.additionalProperties = new JSONSchemaTypeDefinition();
+    if (value.isMember("additionalProperties"))
+    {
+      if (value["additionalProperties"].isBoolean())
+      {
+        type.hasAdditionalProperties = value["additionalProperties"].asBoolean();
+        if (!type.hasAdditionalProperties)
+        {
+          delete type.additionalProperties;
+          type.additionalProperties = NULL;
+        }
+      }
+      else if (value["additionalProperties"].isObject() && !value["additionalProperties"].isNull())
+      {
+        if (!parseTypeDefinition(value["additionalProperties"], *(type.additionalProperties), false))
+        {
+          type.hasAdditionalProperties = false;
+          delete type.additionalProperties;
+          type.additionalProperties = NULL;
+          CLog::Log(LOGWARNING, "JSONRPC: Invalid additionalProperties schema definition in type %s", type.name.c_str());
+        }
+      }
+      else
+        CLog::Log(LOGWARNING, "JSONRPC: Invalid additionalProperties definition in type %s", type.name.c_str());
     }
   }
   else 
@@ -1475,6 +1630,10 @@ void CJSONServiceDescription::getReferencedTypes(const JSONSchemaTypeDefinition 
     for (index = 0; index < type.additionalItems.size(); index++)
       getReferencedTypes(type.additionalItems.at(index), referencedTypes);
   }
+
+  // If the current type extends others type we need to check those types
+  for (unsigned int index = 0; index < type.extends.size(); index++)
+    getReferencedTypes(type.extends.at(index), referencedTypes);
 }
 
 CJSONServiceDescription::CJsonRpcMethodMap::CJsonRpcMethodMap()
