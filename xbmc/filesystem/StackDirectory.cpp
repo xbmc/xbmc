@@ -26,8 +26,6 @@
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 
-#define PRE_2_1_STACK_COMPATIBILITY
-
 using namespace std;
 namespace XFILE
 {
@@ -58,15 +56,6 @@ namespace XFILE
       CStdString file = files[i];
       if (i == 0)
         file = file.Mid(8);
-#ifdef PRE_2_1_STACK_COMPATIBILITY
-      if (i > 0 && file.Find("\\") == -1 && file.Find('/') == -1)
-      {
-        CStdString strPath;
-        URIUtils::GetDirectory(items[0]->m_strPath,strPath);
-        CStdString strFile = file;
-        URIUtils::AddFileToFolder(strPath,strFile,file);
-      }
-#endif
       // replace double comma's with single ones.
       file.Replace(",,", ",");
       CFileItemPtr item(new CFileItem(file));

@@ -505,7 +505,7 @@ case TMSG_POWERDOWN:
 
     case TMSG_EXECUTE_SCRIPT:
 #ifdef HAS_PYTHON
-      g_pythonParser.evalFile(pMsg->strParam.c_str());
+      g_pythonParser.evalFile(pMsg->strParam.c_str(),ADDON::AddonPtr());
 #endif
       break;
 
@@ -642,16 +642,18 @@ case TMSG_POWERDOWN:
       {
         if (pMsg->lpVoid)
         {
+          CAction *action = (CAction *)pMsg->lpVoid;
           if (pMsg->dwParam1 == WINDOW_INVALID)
-            g_application.OnAction(*(CAction *)pMsg->lpVoid);
+            g_application.OnAction(*action);
           else
           {
             CGUIWindow *pWindow = g_windowManager.GetWindow(pMsg->dwParam1);  
             if (pWindow)
-              pWindow->OnAction(*(CAction *)pMsg->lpVoid);
+              pWindow->OnAction(*action);
             else
               CLog::Log(LOGWARNING, "Failed to get window with ID %i to send an action to", pMsg->dwParam1);
           }
+          delete action;
         }
       }
       break;
@@ -1062,12 +1064,12 @@ void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::SendAction(const CAction &action, int windowID)
+void CApplicationMessenger::SendAction(const CAction &action, int windowID, bool waitResult)
 {
   ThreadMessage tMsg = {TMSG_GUI_ACTION};
   tMsg.dwParam1 = windowID;
-  tMsg.lpVoid = (void*)&action;
-  SendMessage(tMsg, true);
+  tMsg.lpVoid = new CAction(action);
+  SendMessage(tMsg, waitResult);
 }
 
 vector<CStdString> CApplicationMessenger::GetInfoLabels(const vector<CStdString> &properties)

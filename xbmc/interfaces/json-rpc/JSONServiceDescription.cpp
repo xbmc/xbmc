@@ -454,7 +454,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
   if (!IsType(value, type.type))
   {
     CLog::Log(LOGWARNING, "JSONRPC: Type mismatch in type %s", type.name.c_str());
-    errorMessage.Format("Invalid type %s received", ValueTypeToString(value.type()).c_str());
+    errorMessage.Format("Invalid type %s received", ValueTypeToString(value.type()));
     errorData["message"] = errorMessage.c_str();
     return InvalidParams;
   }
@@ -499,7 +499,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
         if (status != OK)
         {
           CLog::Log(LOGWARNING, "JSONRPC: Array element at index %u does not match in type %s", arrayIndex, type.name.c_str());
-          errorMessage.Format("%s expected for array element at index %u but %s received", SchemaValueTypeToString(type.type).c_str(), arrayIndex, ValueTypeToString(value.type()).c_str());
+          errorMessage.Format("%s expected for array element at index %u but %s received", SchemaValueTypeToString(type.type), arrayIndex, ValueTypeToString(value.type()));
           errorData["message"] = errorMessage.c_str();
           return status;
         }
@@ -656,7 +656,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
 
   // If we have a number or an integer type, we need
   // to check the minimum and maximum values
-  if (HasType(type.type, NumberValue) || HasType(type.type, IntegerValue) && value.isNumeric())
+  if ((HasType(type.type, NumberValue) || HasType(type.type, IntegerValue)) && value.isNumeric())
   {
     double numberValue = value.asDouble();
     // Check minimum

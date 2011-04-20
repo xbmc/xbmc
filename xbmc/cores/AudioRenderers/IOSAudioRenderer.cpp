@@ -45,6 +45,7 @@ CIOSAudioRenderer::CIOSAudioRenderer() :
   m_SamplesPerSec(0),
   m_DoRunout(0)
 {
+  m_Mutex = SDL_CreateMutex();
   m_dllAvUtil = new DllAvUtil;
 }
 
@@ -52,6 +53,9 @@ CIOSAudioRenderer::~CIOSAudioRenderer()
 {
   Deinitialize();
   delete m_dllAvUtil;
+  if (m_Mutex)
+    SDL_DestroyMutex(m_Mutex);
+  m_Mutex = NULL;
 }
 
 //***********************************************************************************************
@@ -196,7 +200,6 @@ bool CIOSAudioRenderer::Deinitialize()
 
   Stop();
 
-  //m_AudioDevice.Close();
   Sleep(10);
   m_AudioDevice.Close();
   m_Initialized = false;
@@ -217,13 +220,14 @@ bool CIOSAudioRenderer::Deinitialize()
 
 void CIOSAudioRenderer::Flush()
 {
-  if(!m_Buffer)
+  if (!m_Buffer)
     return;
 
-  CSingleLock lock (m_critSection);
-
   Pause();
+
+  SDL_mutexP(m_Mutex);
   m_dllAvUtil->av_fifo_reset(m_Buffer);
+  SDL_mutexV(m_Mutex);
 }
 
 //***********************************************************************************************
@@ -287,34 +291,47 @@ unsigned int CIOSAudioRenderer::GetSpace()
 
 unsigned int CIOSAudioRenderer::AddPackets(const void* data, DWORD len)
 {
-
-  CSingleLock lock (m_critSection);
-
   int free = m_BufferLen - m_dllAvUtil->av_fifo_size(m_Buffer);
 
-  len = (len / m_DataChannels) * m_Channels;
-
-  int length = std::min(free, (int)len);
-  int frames = length / m_Channels / (m_BitsPerChannel >> 3);
-
-  if(frames == 0)
-    return 0;
-
-  // Call channel remapping routine if available available and required
-  if(m_remap.CanRemap() && !m_Passthrough)
+  // call channel remapping routine if available available and required
+  if (m_remap.CanRemap() && !m_Passthrough)
   {
+    int length, frames;
+
+    // we might be up or down converting, so convert to number of bytes
+    // that we will get out of remapping the channels and see if that fits. 
+    length = (len / m_DataChannels) * m_Channels;
+    if (length > free)
+      return 0;
+    // check buffer fit, we can only accept unit frames, so if less than
+    // a complete frame, we punt.
+    frames = length / m_Channels / (m_BitsPerChannel >> 3);
+    if (frames == 0)
+      return 0;
+
     uint8_t outData[length];
+    // remap the audio channels using the frame count
     m_remap.Remap((void*)data, outData, frames);
+    SDL_mutexP(m_Mutex);
     m_dllAvUtil->av_fifo_generic_write(m_Buffer, outData, length, NULL);
+    SDL_mutexV(m_Mutex);
+    // return the number of input bytes we accepted
+    len = (length / m_Channels) * m_DataChannels;
   }
   else
   {
-    m_dllAvUtil->av_fifo_generic_write(m_Buffer, (unsigned char *)data, length, NULL);
+    // simple case, not remaping or passthough, only have to check 
+    // that we have free space in our buffer.
+    if (len > free)
+      return 0;
+    SDL_mutexP(m_Mutex);
+    m_dllAvUtil->av_fifo_generic_write(m_Buffer, (unsigned char *)data, len, NULL);
+    SDL_mutexV(m_Mutex);
   }
 
   Resume();
   
-  return (length / m_Channels) * m_DataChannels;
+  return len;
 }
 
 float CIOSAudioRenderer::GetDelay()
@@ -339,7 +356,10 @@ unsigned int CIOSAudioRenderer::GetChunkLen()
 
 void CIOSAudioRenderer::WaitCompletion()
 {
-  if (m_dllAvUtil->av_fifo_size(m_Buffer) == 0) // The cache is already empty. There is nothing to wait for.
+  // we don't lock here as we are just checking for zero or non-zero.
+
+  // The cache is already empty. There is nothing to wait for.
+  if (m_dllAvUtil->av_fifo_size(m_Buffer) == 0) 
     return;
 
   m_DoRunout = 1;
@@ -369,7 +389,8 @@ OSStatus CIOSAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags, 
     return noErr;
   }
 
-  if(m_Pause) {
+  if(m_Pause)
+  {
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
     return noErr;
   }
@@ -379,7 +400,9 @@ OSStatus CIOSAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags, 
 
   if (bytesRead < bytesRequested)
   {
-    Pause(); // Stop further requests until we have more data.  The AddPackets method will resume playback
+    // Stop further requests until we have more data.
+    // The AddPackets method will resume playback
+    Pause();
     m_RunoutEvent.Set(); // Tell anyone who cares that the cache is empty
     if (m_DoRunout) // We were waiting for a runout. This is not an error.
     {
@@ -389,32 +412,15 @@ OSStatus CIOSAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags, 
     return noErr;
   } 
   
-  CSingleLock lock (m_critSection);
-
+  SDL_mutexP(m_Mutex);
   m_dllAvUtil->av_fifo_generic_read(m_Buffer, (unsigned char *)ioData->mBuffers[m_OutputBufferIndex].mData, bytesRequested, NULL);    
-
+  SDL_mutexV(m_Mutex);
+  
   if (!m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM)
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
   else
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = bytesRequested;
  
-  /*
-	// walk the samples
-	for (int bufCount=0; bufCount<ioData->mNumberBuffers; bufCount++) {
-		AudioBuffer buf = ioData->mBuffers[bufCount];
-		// AudioSampleType* bufferedSample = (AudioSampleType*) &buf.mData;
-		int currentFrame = 0;
-		while ( currentFrame < inNumberFrames ) {
-			// copy sample to buffer, across all channels
-			for (int currentChannel=0; currentChannel<buf.mNumberChannels; currentChannel++) {
-        //CLog::Log(LOGERROR, "CIOSAudioRenderer::OnRender: Channel %d size %ld.\n", currentChannel, sizeof(AudioSampleType));
-        m_dllAvUtil->av_fifo_generic_read(m_Buffer, (unsigned char *)(buf.mData) + (currentFrame * 4) + (currentChannel*2), sizeof(AudioSampleType), NULL);
-			}	
-			currentFrame++;
-		}
-  }
-  */
-  
   return noErr;
 }
 
@@ -424,14 +430,13 @@ OSStatus CIOSAudioRenderer::RenderCallback(void *inRefCon, AudioUnitRenderAction
 }
 
 // Static Callback from AudioUnit
-void  CIOSAudioRenderer::PropertyChanged(AudioSessionPropertyID inID, UInt32 inDataSize, const void* inPropertyValue)
+void CIOSAudioRenderer::PropertyChanged(AudioSessionPropertyID inID, UInt32 inDataSize, const void* inPropertyValue)
 {
   CLog::Log(LOGERROR, "CIOSAudioRenderer::PropertyChanged: inID %d.", (int)inID);
 }
 
 void  CIOSAudioRenderer::PropertyChangeCallback(void* inClientData, AudioSessionPropertyID inID, UInt32 inDataSize, const void* inPropertyValue)
 {
-
   ((CIOSAudioRenderer*)inClientData)->PropertyChanged(inID, inDataSize, inPropertyValue);
 }
 

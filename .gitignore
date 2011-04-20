@@ -39,6 +39,7 @@ config.log
 *.vcxproj.user
 *.obj
 *ReSharper*
+*.idb
 
 # osx specifics
 /build/
@@ -87,6 +88,7 @@ config.log
 /xbmc-xrandr
 /git_revision.h
 /libtool
+/*.patch
 
 # /addons/
 /addons/com.nullsoft.milkdrop.xbmc/*.vis
@@ -107,7 +109,6 @@ config.log
 /addons/visualization.waveform/Waveform_win32.vis
 /addons/visualization.itunes/iTunes.mvis
 /addons/script.module.pil/
-/addons/script.module.pysqlite/
 
 # /xbmc/guilib/
 /xbmc/guilib/Makefile
@@ -129,8 +130,6 @@ config.log
 # /lib/addons/
 /lib/addons/script.module.pil/
 !/lib/addons/script.module.pil/Makefile
-/lib/addons/script.module.pysqlite/
-!/lib/addons/script.module.pysqlite/Makefile
 
 # /lib/asap/
 /lib/asap/Makefile
@@ -531,6 +530,7 @@ lib/cmyth/Makefile
 
 # /lib/libdvd/includes/
 /lib/libdvd/includes/dv
+/lib/libdvd/includes/dvdcss/dvdcss.h
 
 # /lib/libdvd/includes/dvdread/
 /lib/libdvd/includes/dvdread/ifo_print.h
@@ -575,6 +575,7 @@ lib/cmyth/Makefile
 /lib/libdvd/libdvdcss/test/Makefile
 /lib/libdvd/libdvdcss/doc/doxygen.cfg
 /lib/libdvd/libdvdcss/test/csstest
+/lib/libdvd/libdvdcss/test/csstest.exe
 
 # /lib/libdvd/libdvdnav/
 /lib/libdvd/libdvdnav/conf

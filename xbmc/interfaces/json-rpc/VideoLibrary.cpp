@@ -78,7 +78,7 @@ JSON_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITransportL
 
   Json::Value validFields = Value(arrayValue);
   MakeFieldsList(parameterObject, validFields);
-  HandleFileItem("movieid", true, "moviedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, validFields, result);
+  HandleFileItem("movieid", true, "moviedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, validFields, result, false);
 
   videodatabase.Close();
   return OK;
@@ -134,7 +134,7 @@ JSON_STATUS CVideoLibrary::GetTVShowDetails(const CStdString &method, ITransport
 
   Json::Value validFields = Value(arrayValue);
   MakeFieldsList(parameterObject, validFields);
-  HandleFileItem("tvshowid", true, "tvshowdetails", CFileItemPtr(new CFileItem(infos)), parameterObject, validFields, result);
+  HandleFileItem("tvshowid", true, "tvshowdetails", CFileItemPtr(new CFileItem(infos)), parameterObject, validFields, result, false);
 
   videodatabase.Close();
   return OK;
@@ -209,7 +209,7 @@ JSON_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITranspor
 
   Json::Value validFields = Value(arrayValue);
   MakeFieldsList(parameterObject, validFields);
-  HandleFileItem("episodeid", true, "episodedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, validFields, result);
+  HandleFileItem("episodeid", true, "episodedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, validFields, result, false);
 
   videodatabase.Close();
   return OK;
@@ -250,7 +250,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideoDetails(const CStdString &method, ITrans
 
   Json::Value validFields = Value(arrayValue);
   MakeFieldsList(parameterObject, validFields);
-  HandleFileItem("musicvideoid", true, "musicvideodetails", CFileItemPtr(new CFileItem(infos)), parameterObject, validFields, result);
+  HandleFileItem("musicvideoid", true, "musicvideodetails", CFileItemPtr(new CFileItem(infos)), parameterObject, validFields, result, false);
 
   videodatabase.Close();
   return OK;
@@ -343,7 +343,7 @@ JSON_STATUS CVideoLibrary::ScanForContent(const CStdString &method, ITransportLa
 bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
   CVideoDatabase videodatabase;
-  if ((parameterObject["movieid"].isInt() || parameterObject["episodeid"].isInt() || parameterObject["musicvideoid"].isInt()) && videodatabase.Open())
+  if (videodatabase.Open())
   {
     int movieID       = parameterObject.get("movieid", -1).asInt();
     int episodeID     = parameterObject.get("episodeid", -1).asInt();

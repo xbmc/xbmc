@@ -375,7 +375,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if (CAddonMgr::Get().GetAddon(params[0], script))
         scriptpath = script->LibPath();
 
-      g_pythonParser.evalFile(scriptpath, argv);
+      g_pythonParser.evalFile(scriptpath, argv,script);
     }
   }
 #endif

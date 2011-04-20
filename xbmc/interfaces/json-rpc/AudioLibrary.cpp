@@ -99,7 +99,7 @@ JSON_STATUS CAudioLibrary::GetAlbumDetails(const CStdString &method, ITransportL
   m_albumItem->SetLabel(album.strAlbum);
   CMusicDatabase::SetPropertiesFromAlbum(*m_albumItem, album);
   m_albumItem->SetMusicThumb();
-  HandleFileItem("albumid", false, "albumdetails", m_albumItem, parameterObject, validFields, result);
+  HandleFileItem("albumid", false, "albumdetails", m_albumItem, parameterObject, validFields, result, false);
 
   musicdatabase.Close();
   return OK;
@@ -140,7 +140,7 @@ JSON_STATUS CAudioLibrary::GetSongDetails(const CStdString &method, ITransportLa
 
   Json::Value validFields;
   MakeFieldsList(parameterObject, validFields);
-  HandleFileItem("songid", false, "songdetails", CFileItemPtr( new CFileItem(song) ), parameterObject, validFields, result);
+  HandleFileItem("songid", false, "songdetails", CFileItemPtr( new CFileItem(song) ), parameterObject, validFields, result, false);
 
   musicdatabase.Close();
   return OK;
@@ -180,25 +180,21 @@ bool CAudioLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
 
   if (musicdatabase.Open())
   {
-    if (parameterObject["artistid"].isInt() || parameterObject["albumid"].isInt() || parameterObject["genreid"].isInt())
-    {
-      int artistID = parameterObject.get("artistid", -1).asInt();
-      int albumID  = parameterObject.get("albumid", -1).asInt();
-      int genreID  = parameterObject.get("genreid", -1).asInt();
+    int artistID = parameterObject.get("artistid", -1).asInt();
+    int albumID  = parameterObject.get("albumid", -1).asInt();
+    int genreID  = parameterObject.get("genreid", -1).asInt();
 
+    if (artistID != -1 || albumID != -1 || genreID != -1)
       success = musicdatabase.GetSongsNav("", list, genreID, artistID, albumID);
-    }
-    if (parameterObject["songid"].isInt())
+
+    int songID = parameterObject.get("songid", -1).asInt();
+    if (songID != -1)
     {
-      int songID = parameterObject.get("songid", -1).asInt();
-      if (songID != -1)
+      CSong song;
+      if (musicdatabase.GetSongById(songID, song))
       {
-        CSong song;
-        if (musicdatabase.GetSongById(songID, song))
-        {
-          list.Add(CFileItemPtr(new CFileItem(song)));
-          success = true;
-        }
+        list.Add(CFileItemPtr(new CFileItem(song)));
+        success = true;
       }
     }
 

@@ -882,7 +882,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     {
 #ifdef HAS_PYTHON
       if (!g_pythonParser.StopScript(addon->LibPath()))
-        g_pythonParser.evalFile(addon->LibPath());
+        g_pythonParser.evalFile(addon->LibPath(),addon);
 #endif
       return true;
     }

@@ -34,6 +34,8 @@
 #include "network/Network.h"
 #include "addons/Skin.h"
 #include "settings/Profile.h"
+#include "guilib/GUIMessage.h"
+#include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "settings/Settings.h"

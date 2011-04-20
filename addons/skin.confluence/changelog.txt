@@ -1,3 +1,17 @@
+[B]1.2.0[/B]
+
+- All media views now follow a similar layout off File List on the Left hand side and icons/data on the right
+- Views are all now in content panels (no fullscreen black)
+- Added a thumb view for addons
+- Non full screen Now Playing Media info (Bottom left) has more info
+- Full screen Now Playing Media info trimmed down
+- Fullscreen Player controls changed
+- Media windows side menu is completely redesigned (and also lower case)
+- Added a "filter" button to all media windows
+- Added Filter (BLAH) text to the item/page count bottom right
+- Removed the Disc Play button from home (which relies on !System.HasMediaDVD to appear)
+- Repositioned the seekbar from lower right to upper right
+
 [B]1.1.0[/B]
 
 - Redesigned the video and Music OSD Info and controls

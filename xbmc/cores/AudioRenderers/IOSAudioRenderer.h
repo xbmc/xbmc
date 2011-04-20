@@ -27,7 +27,7 @@
 #include "IAudioRenderer.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
-#include "threads/LockFree.h"
+#include "threads/XBMC_mutex.h"
 
 class DllAvUtil;
 struct AVFifoBuffer;
@@ -99,7 +99,7 @@ class CIOSAudioRenderer : public IAudioRenderer
 
     DllAvUtil *m_dllAvUtil;
 
-    CCriticalSection m_critSection;
+    SDL_mutex *m_Mutex;
   };
 
 #endif
