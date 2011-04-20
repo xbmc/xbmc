@@ -33,6 +33,8 @@
 #include "pvr/addons/PVRClients.h"
 #include "PVRRecordings.h"
 
+using namespace PVR;
+
 CPVRRecordings::CPVRRecordings(void)
 {
   m_bIsUpdating = false;

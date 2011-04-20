@@ -33,6 +33,8 @@
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 
+using namespace PVR;
+
 #define RETURN_IF_NULL(x,y) if ((x) == NULL) { CLog::Log(LOGWARNING, "%s, sort item is null", __FUNCTION__); return y; }
 
 CStdString SSortFileItem::RemoveArticles(const CStdString &label)

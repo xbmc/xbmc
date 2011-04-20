@@ -34,6 +34,7 @@
 #include "pvr/epg/PVREpgInfoTag.h"
 
 using namespace std;
+using namespace PVR;
 
 CGUIDialogPVRDirectorOSD::CGUIDialogPVRDirectorOSD()
     : CGUIDialog(WINDOW_DIALOG_PVR_OSD_DIRECTOR, "DialogPVRDirectorOSD.xml")

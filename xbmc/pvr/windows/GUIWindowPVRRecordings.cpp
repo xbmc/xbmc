@@ -31,6 +31,8 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 
+using namespace PVR;
+
 CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_RECORDINGS, CONTROL_BTNRECORDINGS, CONTROL_LIST_RECORDINGS)
 {

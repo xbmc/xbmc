@@ -33,6 +33,8 @@
 #include "utils/log.h"
 #include "pvr/addons/PVRClients.h"
 
+using namespace PVR;
+
 CGUIWindowPVRSearch::CGUIWindowPVRSearch(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_SEARCH, CONTROL_BTNSEARCH, CONTROL_LIST_SEARCH)
 {

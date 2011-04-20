@@ -38,6 +38,7 @@
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
+using namespace PVR;
 
 bool CPVRChannel::operator==(const CPVRChannel& right) const
 {

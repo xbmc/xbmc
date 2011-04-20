@@ -49,6 +49,7 @@
 
 using namespace std;
 using namespace MUSIC_INFO;
+using namespace PVR;
 
 CPVRManager::CPVRManager(void)
 {
@@ -157,7 +158,7 @@ void CPVRManager::StopUpdateThreads(void)
 {
   StopThread();
   m_epg->RemoveObserver(this);
-  m_epg->StopThread();
+  m_epg->Stop();
   m_guiInfo->Stop();
   m_addons->Stop();
 }

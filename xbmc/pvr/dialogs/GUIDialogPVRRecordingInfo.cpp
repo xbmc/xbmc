@@ -24,6 +24,7 @@
 #include "FileItem.h"
 
 using namespace std;
+using namespace PVR;
 
 #define CONTROL_BTN_OK  10
 

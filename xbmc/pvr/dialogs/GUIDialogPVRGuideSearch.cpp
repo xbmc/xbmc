@@ -33,6 +33,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace std;
+using namespace PVR;
 
 #define CONTROL_EDIT_SEARCH       9
 #define CONTROL_BTN_INC_DESC      10

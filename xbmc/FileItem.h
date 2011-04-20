@@ -43,10 +43,13 @@ namespace MUSIC_INFO
 }
 class CVideoInfoTag;
 class CEpgInfoTag;
-class CPVREpgInfoTag;
-class CPVRChannel;
-class CPVRRecording;
-class CPVRTimerInfoTag;
+namespace PVR
+{
+  class CPVREpgInfoTag;
+  class CPVRChannel;
+  class CPVRRecording;
+  class CPVRTimerInfoTag;
+}
 class CPictureInfoTag;
 
 class CAlbum;
@@ -79,11 +82,11 @@ public:
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
   CFileItem(const CVideoInfoTag& movie);
-  CFileItem(const CPVREpgInfoTag& tag);
+  CFileItem(const PVR::CPVREpgInfoTag& tag);
   CFileItem(const CEpgInfoTag& tag);
-  CFileItem(const CPVRChannel& channel);
-  CFileItem(const CPVRRecording& record);
-  CFileItem(const CPVRTimerInfoTag& timer);
+  CFileItem(const PVR::CPVRChannel& channel);
+  CFileItem(const PVR::CPVRRecording& record);
+  CFileItem(const PVR::CPVRTimerInfoTag& timer);
   CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
   virtual CGUIListItem *Clone() const { return new CFileItem(*this); };
@@ -211,9 +214,9 @@ public:
     return m_pvrChannelInfoTag != NULL;
   }
 
-  CPVRChannel* GetPVRChannelInfoTag();
+  PVR::CPVRChannel* GetPVRChannelInfoTag();
 
-  inline const CPVRChannel* GetPVRChannelInfoTag() const
+  inline const PVR::CPVRChannel* GetPVRChannelInfoTag() const
   {
     return m_pvrChannelInfoTag;
   }
@@ -223,9 +226,9 @@ public:
     return m_pvrRecordingInfoTag != NULL;
   }
 
-  CPVRRecording* GetPVRRecordingInfoTag();
+  PVR::CPVRRecording* GetPVRRecordingInfoTag();
 
-  inline const CPVRRecording* GetPVRRecordingInfoTag() const
+  inline const PVR::CPVRRecording* GetPVRRecordingInfoTag() const
   {
     return m_pvrRecordingInfoTag;
   }
@@ -235,9 +238,9 @@ public:
     return m_pvrTimerInfoTag != NULL;
   }
 
-  CPVRTimerInfoTag* GetPVRTimerInfoTag();
+  PVR::CPVRTimerInfoTag* GetPVRTimerInfoTag();
 
-  inline const CPVRTimerInfoTag* GetPVRTimerInfoTag() const
+  inline const PVR::CPVRTimerInfoTag* GetPVRTimerInfoTag() const
   {
     return m_pvrTimerInfoTag;
   }
@@ -369,9 +372,9 @@ private:
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
   CEpgInfoTag* m_epgInfoTag;
-  CPVRChannel* m_pvrChannelInfoTag;
-  CPVRRecording* m_pvrRecordingInfoTag;
-  CPVRTimerInfoTag * m_pvrTimerInfoTag;
+  PVR::CPVRChannel* m_pvrChannelInfoTag;
+  PVR::CPVRRecording* m_pvrRecordingInfoTag;
+  PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   bool m_bIsAlbum;
 };

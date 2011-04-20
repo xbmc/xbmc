@@ -22,29 +22,31 @@
 
 #include "guilib/GUIDialog.h"
 
-class CPVREpgInfoTag;
-class CPVRTimerInfoTag;
-
-class CGUIDialogPVRGuideInfo : public CGUIDialog
+namespace PVR
 {
-public:
-  CGUIDialogPVRGuideInfo(void);
-  virtual ~CGUIDialogPVRGuideInfo(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool HasListItems() const { return true; };
-  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+  class CPVREpgInfoTag;
+  class CPVRTimerInfoTag;
 
-  void SetProgInfo(const CFileItem *item);
+  class CGUIDialogPVRGuideInfo : public CGUIDialog
+  {
+  public:
+    CGUIDialogPVRGuideInfo(void);
+    virtual ~CGUIDialogPVRGuideInfo(void);
+    virtual bool OnMessage(CGUIMessage& message);
+    virtual bool HasListItems() const { return true; };
+    virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
-protected:
-  void Update();
-  bool ActionStartTimer(const CPVREpgInfoTag *tag);
-  bool ActionCancelTimer(const CPVRTimerInfoTag *tag);
+    void SetProgInfo(const CFileItem *item);
 
-  bool OnClickButtonOK(CGUIMessage &message);
-  bool OnClickButtonRecord(CGUIMessage &message);
-  bool OnClickButtonSwitch(CGUIMessage &message);
+  protected:
+    void Update();
+    bool ActionStartTimer(const CPVREpgInfoTag *tag);
+    bool ActionCancelTimer(const CPVRTimerInfoTag *tag);
 
-  CFileItemPtr m_progItem;
-};
+    bool OnClickButtonOK(CGUIMessage &message);
+    bool OnClickButtonRecord(CGUIMessage &message);
+    bool OnClickButtonSwitch(CGUIMessage &message);
 
+    CFileItemPtr m_progItem;
+  };
+}

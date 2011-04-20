@@ -23,30 +23,33 @@
 
 #include "GUIWindowPVRCommon.h"
 
-class CGUIWindowPVR;
-
-class CGUIWindowPVRRecordings : public CGUIWindowPVRCommon
+namespace PVR
 {
-  friend class CGUIWindowPVR;
+  class CGUIWindowPVR;
 
-public:
-  CGUIWindowPVRRecordings(CGUIWindowPVR *parent);
-  virtual ~CGUIWindowPVRRecordings(void) {};
+  class CGUIWindowPVRRecordings : public CGUIWindowPVRCommon
+  {
+    friend class CGUIWindowPVR;
 
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
-  virtual bool OnAction(const CAction &action);
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual void OnWindowUnload(void);
-  virtual void UpdateData(void);
+  public:
+    CGUIWindowPVRRecordings(CGUIWindowPVR *parent);
+    virtual ~CGUIWindowPVRRecordings(void) {};
 
-private:
-  virtual bool OnClickButton(CGUIMessage &message);
-  virtual bool OnClickList(CGUIMessage &message);
+    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
+    virtual bool OnAction(const CAction &action);
+    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+    virtual void OnWindowUnload(void);
+    virtual void UpdateData(void);
 
-  virtual bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
+  private:
+    virtual bool OnClickButton(CGUIMessage &message);
+    virtual bool OnClickList(CGUIMessage &message);
 
-  CStdString     m_strSelectedPath;
-};
+    virtual bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
+
+    CStdString     m_strSelectedPath;
+  };
+}

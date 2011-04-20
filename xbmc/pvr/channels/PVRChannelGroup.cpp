@@ -38,6 +38,8 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/epg/PVREpgContainer.h"
 
+using namespace PVR;
+
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder)
 {
   m_bRadio       = bRadio;

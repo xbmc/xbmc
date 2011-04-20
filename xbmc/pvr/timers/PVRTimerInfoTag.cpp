@@ -31,6 +31,8 @@
 #include "pvr/epg/PVREpgContainer.h"
 #include "pvr/addons/PVRClients.h"
 
+using namespace PVR;
+
 CPVRTimerInfoTag::CPVRTimerInfoTag(void)
 {
   m_strTitle           = "";

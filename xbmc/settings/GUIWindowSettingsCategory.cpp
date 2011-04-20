@@ -116,6 +116,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
+using namespace PVR;
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1

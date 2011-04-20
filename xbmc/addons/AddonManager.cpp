@@ -50,6 +50,7 @@
 #include "Service.h"
 
 using namespace std;
+using namespace PVR;
 
 namespace ADDON
 {

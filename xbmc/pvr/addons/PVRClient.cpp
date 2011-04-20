@@ -38,6 +38,7 @@
 
 using namespace std;
 using namespace ADDON;
+using namespace PVR;
 
 CPVRClient::CPVRClient(const AddonProps& props) :
     CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>(props),

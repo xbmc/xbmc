@@ -30,9 +30,13 @@
 #include "EpgDatabase.h"
 
 class CFileItemList;
-class CPVREpg;
-class CPVREpgContainer;
-class CPVRManager;
+
+namespace PVR
+{
+  class CPVREpg;
+  class CPVREpgContainer;
+  class CPVRManager;
+}
 
 class CEpgContainer : public std::vector<CEpg *>,
                  public Observer,
@@ -42,11 +46,11 @@ class CEpgContainer : public std::vector<CEpg *>,
   friend class CEpg;
   friend class CEpgDatabase;
 
-  friend class CPVREpg;
-  friend class CPVREpgContainer;
-  friend class CPVRManager;
+  friend class PVR::CPVREpg;
+  friend class PVR::CPVREpgContainer;
+  friend class PVR::CPVRManager;
 
-private:
+protected:
   CEpgDatabase m_database;           /*!< the EPG database */
 
   /** @name Configuration */

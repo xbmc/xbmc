@@ -22,13 +22,16 @@
 
 #include "guilib/GUIDialog.h"
 
-class CGUIDialogPVRCutterOSD : public CGUIDialog
+namespace PVR
 {
-public:
-  CGUIDialogPVRCutterOSD(void);
-  virtual ~CGUIDialogPVRCutterOSD(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction& action);
-  virtual void OnInitWindow();
-  virtual void OnDeinitWindow(int nextWindowID);
-};
+  class CGUIDialogPVRCutterOSD : public CGUIDialog
+  {
+  public:
+    CGUIDialogPVRCutterOSD(void);
+    virtual ~CGUIDialogPVRCutterOSD(void);
+    virtual bool OnMessage(CGUIMessage& message);
+    virtual bool OnAction(const CAction& action);
+    virtual void OnInitWindow();
+    virtual void OnDeinitWindow(int nextWindowID);
+  };
+}

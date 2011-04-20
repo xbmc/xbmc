@@ -34,6 +34,8 @@
 #include "pvr/epg/PVREpgInfoTag.h"
 #include "settings/AdvancedSettings.h"
 
+using namespace PVR;
+
 CPVRGUIInfo::CPVRGUIInfo(void)
 {
 }

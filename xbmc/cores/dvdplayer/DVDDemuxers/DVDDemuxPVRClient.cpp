@@ -29,6 +29,8 @@
 #include <libavcodec/avcodec.h>
 #endif
 
+using namespace PVR;
+
 void CDemuxStreamVideoPVRClient::GetStreamInfo(std::string& strInfo)
 {
 }

@@ -140,7 +140,7 @@ public:
 
   //@}
 
-private:
+protected:
   /*!
    * @brief Create the EPG database tables.
    * @return True if the tables were created successfully, false otherwise.

@@ -22,25 +22,28 @@
 
 #include "guilib/GUIDialog.h"
 
-struct PVREpgSearchFilter;
-
-class CGUIDialogPVRGuideSearch : public CGUIDialog
+namespace PVR
 {
-public:
-  CGUIDialogPVRGuideSearch(void);
-  virtual ~CGUIDialogPVRGuideSearch(void) {}
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnWindowLoaded();
+  struct PVREpgSearchFilter;
 
-  void SetFilterData(PVREpgSearchFilter *searchfilter) { m_searchfilter = searchfilter; }
-  bool IsConfirmed() const { return m_bConfirmed; }
-  bool IsCanceled() const { return m_bCanceled; }
-  void OnSearch();
+  class CGUIDialogPVRGuideSearch : public CGUIDialog
+  {
+  public:
+    CGUIDialogPVRGuideSearch(void);
+    virtual ~CGUIDialogPVRGuideSearch(void) {}
+    virtual bool OnMessage(CGUIMessage& message);
+    virtual void OnWindowLoaded();
 
-protected:
-  void Update();
+    void SetFilterData(PVREpgSearchFilter *searchfilter) { m_searchfilter = searchfilter; }
+    bool IsConfirmed() const { return m_bConfirmed; }
+    bool IsCanceled() const { return m_bCanceled; }
+    void OnSearch();
 
-  bool m_bConfirmed;
-  bool m_bCanceled;
-  PVREpgSearchFilter *m_searchfilter;
-};
+  protected:
+    void Update();
+
+    bool m_bConfirmed;
+    bool m_bCanceled;
+    PVREpgSearchFilter *m_searchfilter;
+  };
+}

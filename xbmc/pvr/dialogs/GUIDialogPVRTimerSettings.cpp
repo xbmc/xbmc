@@ -30,6 +30,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace std;
+using namespace PVR;
 
 #define CONTROL_TMR_ACTIVE              20
 #define CONTROL_TMR_CHNAME_TV           21

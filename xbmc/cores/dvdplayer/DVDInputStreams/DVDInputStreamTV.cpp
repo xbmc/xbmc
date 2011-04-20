@@ -26,6 +26,7 @@
 #include "URL.h"
 
 using namespace XFILE;
+using namespace PVR;
 
 CDVDInputStreamTV::CDVDInputStreamTV() : CDVDInputStream(DVDSTREAM_TYPE_TV)
 {

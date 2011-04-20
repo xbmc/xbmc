@@ -24,6 +24,7 @@
 #include "Application.h"
 
 using namespace std;
+using namespace PVR;
 
 CGUIDialogPVRCutterOSD::CGUIDialogPVRCutterOSD()
     : CGUIDialog(WINDOW_DIALOG_PVR_OSD_CUTTER, "DialogPVRCutterOSD.xml")

@@ -43,6 +43,7 @@
 #include "utils/URIUtils.h"
 
 using namespace std;
+using namespace PVR;
 
 CGUIWindowPVRCommon::CGUIWindowPVRCommon(CGUIWindowPVR *parent, PVRWindow window,
     unsigned int iControlButton, unsigned int iControlList)

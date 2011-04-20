@@ -29,8 +29,12 @@
 #include "EpgSearchFilter.h"
 
 class CEpgContainer;
-class CPVREpgContainer;
-class CPVREpg;
+
+namespace PVR
+{
+  class CPVREpgContainer;
+  class CPVREpg;
+}
 
 /** EPG container for CEpgInfoTag instances */
 
@@ -41,7 +45,7 @@ class CEpg : public std::vector<CEpgInfoTag*>
   friend class CEpgContainer;
   friend class CPVREpg;
 
-private:
+protected:
   CStdString                 m_strName;         /*!< the name of this table */
   CStdString                 m_strScraperName;  /*!< the name of the scraper to use */
   int                        m_iEpgID;          /*!< the database ID of this table */
@@ -51,8 +55,7 @@ private:
 
   mutable CCriticalSection   m_critSection;     /*!< critical section for changes in this table */
 
-  CPVRChannel *              m_Channel;         /*!< the channel this EPG belongs to */
-  bool                       m_bHasChannel;     /*!< true if this table has a channel tag set, false otherwise */
+  PVR::CPVRChannel *         m_Channel;         /*!< the channel this EPG belongs to */
   CDateTime                  m_firstDate;       /*!< start time of the first epg event in this table */
   CDateTime                  m_lastDate;        /*!< end time of the last epg event in this table */
 
@@ -163,7 +166,13 @@ public:
    * @brief The channel this EPG belongs to.
    * @return The channel this EPG belongs to
    */
-  const CPVRChannel *Channel(void) const { return m_bHasChannel ? m_Channel : NULL; }
+  const PVR::CPVRChannel *Channel(void) const { return m_Channel; }
+
+  /*!
+   * @brief Channel the channel tag linked to this EPG table.
+   * @param channel The new channel tag.
+   */
+  virtual void SetChannel(PVR::CPVRChannel *channel) { m_Channel = channel; }
 
   /*!
    * @brief Get the name of the scraper to use for this table.

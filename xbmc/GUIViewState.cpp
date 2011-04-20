@@ -48,6 +48,7 @@
 
 using namespace std;
 using namespace ADDON;
+using namespace PVR;
 
 CStdString CGUIViewState::m_strPlaylistDirectory;
 VECSOURCES CGUIViewState::m_sources;

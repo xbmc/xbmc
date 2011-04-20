@@ -66,6 +66,7 @@ using namespace std;
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MUSIC_INFO;
+using namespace PVR;
 
 CFileItem::CFileItem(const CSong& song)
 {

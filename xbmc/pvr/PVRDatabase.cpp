@@ -30,6 +30,7 @@
 
 using namespace std;
 using namespace dbiplus;
+using namespace PVR;
 
 CPVRDatabase::CPVRDatabase(void)
 {

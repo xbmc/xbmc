@@ -22,18 +22,20 @@
 
 #include "guilib/GUIDialog.h"
 
-class CGUIDialogPVRRecordingInfo : public CGUIDialog
+namespace PVR
 {
-public:
-  CGUIDialogPVRRecordingInfo(void);
-  virtual ~CGUIDialogPVRRecordingInfo(void) {}
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool HasListItems() const { return true; };
-  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+  class CGUIDialogPVRRecordingInfo : public CGUIDialog
+  {
+  public:
+    CGUIDialogPVRRecordingInfo(void);
+    virtual ~CGUIDialogPVRRecordingInfo(void) {}
+    virtual bool OnMessage(CGUIMessage& message);
+    virtual bool HasListItems() const { return true; };
+    virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
-  void SetRecording(const CFileItem *item);
+    void SetRecording(const CFileItem *item);
 
-protected:
-  CFileItemPtr m_recordItem;
-};
-
+  protected:
+    CFileItemPtr m_recordItem;
+  };
+}

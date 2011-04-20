@@ -74,6 +74,7 @@
 #include "Util.h"
 
 using namespace std;
+using namespace PVR;
 
 void CSelectionStreams::Clear(StreamType type, StreamSource source)
 {

@@ -36,6 +36,7 @@
 #include "pvr/addons/PVRClients.h"
 
 using namespace std;
+using namespace PVR;
 
 CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
 {

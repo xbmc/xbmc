@@ -25,116 +25,119 @@
 #include "threads/Thread.h"
 #include "addons/include/xbmc_pvr_types.h"
 
-class CPVREpgInfoTag;
-class CPVRTimerInfoTag;
-class CPVRRecording;
-
-class CPVRGUIInfo : private CThread,
-                    private Observer
+namespace PVR
 {
-public:
-  CPVRGUIInfo(void);
-  virtual ~CPVRGUIInfo(void);
+  class CPVREpgInfoTag;
+  class CPVRTimerInfoTag;
+  class CPVRRecording;
 
-  void Start(void);
-  void Stop(void);
+  class CPVRGUIInfo : private CThread,
+                      private Observer
+  {
+  public:
+    CPVRGUIInfo(void);
+    virtual ~CPVRGUIInfo(void);
 
-  void Notify(const Observable &obs, const CStdString& msg);
+    void Start(void);
+    void Stop(void);
 
-  bool TranslateBoolInfo(DWORD dwInfo) const;
-  bool TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const;
-  int TranslateIntInfo(DWORD dwInfo) const;
+    void Notify(const Observable &obs, const CStdString& msg);
 
-  bool IsRecording(void) const;
-  bool HasTimers(void) const;
+    bool TranslateBoolInfo(DWORD dwInfo) const;
+    bool TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const;
+    int TranslateIntInfo(DWORD dwInfo) const;
 
-  /*!
-   * @brief Get the total duration of the currently playing LiveTV item.
-   * @return The total duration in milliseconds or NULL if no channel is playing.
-   */
-  int GetTotalTime(void) const;
+    bool IsRecording(void) const;
+    bool HasTimers(void) const;
 
-  /*!
-   * @brief Get the current position in milliseconds since the start of a LiveTV item.
-   * @return The position in milliseconds or NULL if no channel is playing.
-   */
-  int GetStartTime(void) const;
+    /*!
+     * @brief Get the total duration of the currently playing LiveTV item.
+     * @return The total duration in milliseconds or NULL if no channel is playing.
+     */
+    int GetTotalTime(void) const;
 
-private:
-  void ResetProperties(void);
-  void Process(void);
+    /*!
+     * @brief Get the current position in milliseconds since the start of a LiveTV item.
+     * @return The position in milliseconds or NULL if no channel is playing.
+     */
+    int GetStartTime(void) const;
 
-  void UpdatePlayingTag(void);
-  void UpdateTimersCache(void);
-  void UpdateBackendCache(void);
-  void UpdateQualityData(void);
-  void UpdateMisc(void);
-  void UpdateNextTimer(void);
+  private:
+    void ResetProperties(void);
+    void Process(void);
 
-  bool AddonInfoToggle(void);
-  bool TimerInfoToggle(void);
-  void UpdateTimersToggle(void);
+    void UpdatePlayingTag(void);
+    void UpdateTimersCache(void);
+    void UpdateBackendCache(void);
+    void UpdateQualityData(void);
+    void UpdateMisc(void);
+    void UpdateNextTimer(void);
 
-  void CharInfoActiveTimerTitle(CStdString &strValue) const;
-  void CharInfoActiveTimerChannelName(CStdString &strValue) const;
-  void CharInfoActiveTimerDateTime(CStdString &strValue) const;
-  void CharInfoNextTimerTitle(CStdString &strValue) const;
-  void CharInfoNextTimerChannelName(CStdString &strValue) const;
-  void CharInfoNextTimerDateTime(CStdString &strValue) const;
-  void CharInfoPlayingDuration(CStdString &strValue) const;
-  void CharInfoPlayingTime(CStdString &strValue) const;
-  void CharInfoNextTimer(CStdString &strValue) const;
-  void CharInfoBackendNumber(CStdString &strValue) const;
-  void CharInfoTotalDiskSpace(CStdString &strValue) const;
-  void CharInfoVideoBR(CStdString &strValue) const;
-  void CharInfoAudioBR(CStdString &strValue) const;
-  void CharInfoDolbyBR(CStdString &strValue) const;
-  void CharInfoSignal(CStdString &strValue) const;
-  void CharInfoSNR(CStdString &strValue) const;
-  void CharInfoBER(CStdString &strValue) const;
-  void CharInfoUNC(CStdString &strValue) const;
-  void CharInfoFrontendName(CStdString &strValue) const;
-  void CharInfoFrontendStatus(CStdString &strValue) const;
-  void CharInfoBackendName(CStdString &strValue) const;
-  void CharInfoBackendVersion(CStdString &strValue) const;
-  void CharInfoBackendHost(CStdString &strValue) const;
-  void CharInfoBackendDiskspace(CStdString &strValue) const;
-  void CharInfoBackendChannels(CStdString &strValue) const;
-  void CharInfoBackendTimers(CStdString &strValue) const;
-  void CharInfoBackendRecordings(CStdString &strValue) const;
-  void CharInfoPlayingClientName(CStdString &strValue) const;
-  void CharInfoEncryption(CStdString &strValue) const;
+    bool AddonInfoToggle(void);
+    bool TimerInfoToggle(void);
+    void UpdateTimersToggle(void);
 
-  /** @name GUIInfoManager data */
-  //@{
-  CStdString                      m_strActiveTimerTitle;
-  CStdString                      m_strActiveTimerChannelName;
-  CStdString                      m_strActiveTimerTime;
-  CStdString                      m_strNextTimerInfo;
-  CStdString                      m_strNextRecordingTitle;
-  CStdString                      m_strNextRecordingChannelName;
-  CStdString                      m_strNextRecordingTime;
-  bool                            m_bHasRecordings;
-  unsigned int                    m_iTimerAmount;
-  unsigned int                    m_iRecordingTimerAmount;
-  int                             m_iActiveClients;
-  CStdString                      m_strPlayingClientName;
-  CStdString                      m_strBackendName;
-  CStdString                      m_strBackendVersion;
-  CStdString                      m_strBackendHost;
-  CStdString                      m_strBackendDiskspace;
-  CStdString                      m_strBackendTimers;
-  CStdString                      m_strBackendRecordings;
-  CStdString                      m_strBackendChannels;
-  CStdString                      m_strTotalDiskspace;
-  //@}
+    void CharInfoActiveTimerTitle(CStdString &strValue) const;
+    void CharInfoActiveTimerChannelName(CStdString &strValue) const;
+    void CharInfoActiveTimerDateTime(CStdString &strValue) const;
+    void CharInfoNextTimerTitle(CStdString &strValue) const;
+    void CharInfoNextTimerChannelName(CStdString &strValue) const;
+    void CharInfoNextTimerDateTime(CStdString &strValue) const;
+    void CharInfoPlayingDuration(CStdString &strValue) const;
+    void CharInfoPlayingTime(CStdString &strValue) const;
+    void CharInfoNextTimer(CStdString &strValue) const;
+    void CharInfoBackendNumber(CStdString &strValue) const;
+    void CharInfoTotalDiskSpace(CStdString &strValue) const;
+    void CharInfoVideoBR(CStdString &strValue) const;
+    void CharInfoAudioBR(CStdString &strValue) const;
+    void CharInfoDolbyBR(CStdString &strValue) const;
+    void CharInfoSignal(CStdString &strValue) const;
+    void CharInfoSNR(CStdString &strValue) const;
+    void CharInfoBER(CStdString &strValue) const;
+    void CharInfoUNC(CStdString &strValue) const;
+    void CharInfoFrontendName(CStdString &strValue) const;
+    void CharInfoFrontendStatus(CStdString &strValue) const;
+    void CharInfoBackendName(CStdString &strValue) const;
+    void CharInfoBackendVersion(CStdString &strValue) const;
+    void CharInfoBackendHost(CStdString &strValue) const;
+    void CharInfoBackendDiskspace(CStdString &strValue) const;
+    void CharInfoBackendChannels(CStdString &strValue) const;
+    void CharInfoBackendTimers(CStdString &strValue) const;
+    void CharInfoBackendRecordings(CStdString &strValue) const;
+    void CharInfoPlayingClientName(CStdString &strValue) const;
+    void CharInfoEncryption(CStdString &strValue) const;
 
-  PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */
-  unsigned int                    m_iAddonInfoToggleStart;
-  unsigned int                    m_iAddonInfoToggleCurrent;
-  unsigned int                    m_iTimerInfoToggleStart;
-  unsigned int                    m_iTimerInfoToggleCurrent;
-  mutable const CPVREpgInfoTag *  m_playingEpgTag;
+    /** @name GUIInfoManager data */
+    //@{
+    CStdString                      m_strActiveTimerTitle;
+    CStdString                      m_strActiveTimerChannelName;
+    CStdString                      m_strActiveTimerTime;
+    CStdString                      m_strNextTimerInfo;
+    CStdString                      m_strNextRecordingTitle;
+    CStdString                      m_strNextRecordingChannelName;
+    CStdString                      m_strNextRecordingTime;
+    bool                            m_bHasRecordings;
+    unsigned int                    m_iTimerAmount;
+    unsigned int                    m_iRecordingTimerAmount;
+    int                             m_iActiveClients;
+    CStdString                      m_strPlayingClientName;
+    CStdString                      m_strBackendName;
+    CStdString                      m_strBackendVersion;
+    CStdString                      m_strBackendHost;
+    CStdString                      m_strBackendDiskspace;
+    CStdString                      m_strBackendTimers;
+    CStdString                      m_strBackendRecordings;
+    CStdString                      m_strBackendChannels;
+    CStdString                      m_strTotalDiskspace;
+    //@}
 
-  CCriticalSection                m_critSection;
-};
+    PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */
+    unsigned int                    m_iAddonInfoToggleStart;
+    unsigned int                    m_iAddonInfoToggleCurrent;
+    unsigned int                    m_iTimerInfoToggleStart;
+    unsigned int                    m_iTimerInfoToggleCurrent;
+    mutable const CPVREpgInfoTag *  m_playingEpgTag;
+
+    CCriticalSection                m_critSection;
+  };
+}

@@ -28,6 +28,7 @@
 #include "pvr/PVRManager.h"
 
 using namespace std;
+using namespace PVR;
 
 CEpgInfoTag::CEpgInfoTag(int iUniqueBroadcastId)
 {

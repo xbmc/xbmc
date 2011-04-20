@@ -25,22 +25,26 @@
 
 class CFileItemList;
 
-class CGUIDialogPVRChannelsOSD : public CGUIDialog
+namespace PVR
 {
-public:
-  CGUIDialogPVRChannelsOSD(void);
-  virtual ~CGUIDialogPVRChannelsOSD(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnWindowLoaded();
-  virtual void OnWindowUnload();
+  class CGUIDialogPVRChannelsOSD : public CGUIDialog
+  {
+  public:
+    CGUIDialogPVRChannelsOSD(void);
+    virtual ~CGUIDialogPVRChannelsOSD(void);
+    virtual bool OnMessage(CGUIMessage& message);
+    virtual void OnWindowLoaded();
+    virtual void OnWindowUnload();
 
-protected:
-  void GotoChannel(int iItem);
-  void ShowInfo(int item);
-  void Clear();
-  void Update();
-  CGUIControl *GetFirstFocusableControl(int id);
+  protected:
+    void GotoChannel(int iItem);
+    void ShowInfo(int item);
+    void Clear();
+    void Update();
+    CGUIControl *GetFirstFocusableControl(int id);
 
-  CFileItemList    *m_vecItems;
-  CGUIViewControl   m_viewControl;
-};
+    CFileItemList    *m_vecItems;
+    CGUIViewControl   m_viewControl;
+  };
+}
+

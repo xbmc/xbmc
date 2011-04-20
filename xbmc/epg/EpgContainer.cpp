@@ -38,6 +38,7 @@
 #include "pvr/addons/PVRClients.h"
 
 using namespace std;
+using namespace PVR;
 
 CEpgContainer g_EpgContainer;
 

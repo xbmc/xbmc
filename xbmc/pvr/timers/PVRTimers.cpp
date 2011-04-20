@@ -33,6 +33,7 @@
 #include "pvr/addons/PVRClients.h"
 
 using namespace std;
+using namespace PVR;
 
 CPVRTimers::CPVRTimers(void)
 {

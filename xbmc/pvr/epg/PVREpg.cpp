@@ -32,11 +32,12 @@
 #include "epg/EpgContainer.h"
 #include "epg/EpgDatabase.h"
 
+using namespace PVR;
+
 CPVREpg::CPVREpg(CPVRChannel *channel) :
   CEpg(channel->ChannelID(), channel->ChannelName(), channel->EPGScraper())
 {
-  m_Channel     = channel;
-  m_bHasChannel = true;
+  SetChannel(channel);
 }
 
 bool CPVREpg::HasValidEntries(void) const
@@ -123,8 +124,7 @@ bool CPVREpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
 {
   bool bReturn = CEpg::Update(epg, false); // don't update the db yet
 
-  m_Channel     = epg.m_Channel;
-  m_bHasChannel = true;
+  SetChannel((CPVRChannel*) epg.Channel());
 
   if (bUpdateDb)
     bReturn = Persist(false);

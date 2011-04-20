@@ -58,6 +58,7 @@
 
 #include <stdio.h>
 
+using namespace PVR;
 
 #define BLUE_BAR                          0
 #define LABEL_ROW1                       10

@@ -37,6 +37,7 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 
+using namespace PVR;
 
 CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio) :
   CGUIWindowPVRCommon(parent,

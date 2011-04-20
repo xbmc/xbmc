@@ -35,6 +35,8 @@
 #include "dialogs/GUIDialogBusy.h"
 #include "threads/SingleLock.h"
 
+using namespace PVR;
+
 CGUIWindowPVR::CGUIWindowPVR(void) :
   CGUIMediaWindow(WINDOW_PVR, "MyPVR.xml")
 {

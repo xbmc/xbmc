@@ -25,6 +25,8 @@
 #include "PVRRecordings.h"
 #include "pvr/addons/PVRClients.h"
 
+using namespace PVR;
+
 CPVRRecording::CPVRRecording()
 {
   Reset();

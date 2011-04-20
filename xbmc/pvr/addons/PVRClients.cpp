@@ -39,6 +39,7 @@
 
 using namespace std;
 using namespace ADDON;
+using namespace PVR;
 
 CPVRClients::CPVRClients(void)
 {

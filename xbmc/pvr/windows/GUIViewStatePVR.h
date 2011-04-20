@@ -24,15 +24,17 @@
 #include "GUIViewState.h"
 #include "GUIWindowPVRCommon.h"
 
-
-class CGUIViewStatePVR : public CGUIViewState
+namespace PVR
 {
-public:
-  CGUIViewStatePVR(const CFileItemList& items);
-  virtual ~CGUIViewStatePVR(void) {}
-  virtual PVRWindow GetActiveView(void);
-protected:
-  virtual bool AutoPlayNextItem(void) { return false; };
-  virtual bool HideParentDirItems(void) { return true; }
-  virtual void SaveViewState(void) {};
-};
+  class CGUIViewStatePVR : public CGUIViewState
+  {
+  public:
+    CGUIViewStatePVR(const CFileItemList& items);
+    virtual ~CGUIViewStatePVR(void) {}
+    virtual PVRWindow GetActiveView(void);
+  protected:
+    virtual bool AutoPlayNextItem(void) { return false; };
+    virtual bool HideParentDirItems(void) { return true; }
+    virtual void SaveViewState(void) {};
+  };
+}

@@ -27,8 +27,9 @@
 #include "pvr/addons/PVRClients.h"
 #include "utils/log.h"
 
-using namespace XFILE;
 using namespace std;
+using namespace XFILE;
+using namespace PVR;
 
 CPVRFile::CPVRFile()
 {

@@ -304,6 +304,7 @@ using namespace DBUSSERVER;
 using namespace JSONRPC;
 #endif
 using namespace ANNOUNCEMENT;
+using namespace PVR;
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory

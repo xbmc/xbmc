@@ -30,6 +30,7 @@
 #include "pvr/PVRManager.h"
 
 using namespace std;
+using namespace PVR;
 
 #define CONTROL_LIST  11
 

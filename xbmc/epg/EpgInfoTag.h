@@ -25,8 +25,12 @@
 #include "Epg.h"
 
 class CEpg;
-class CPVREpg;
-class CPVREpgInfoTag;
+
+namespace PVR
+{
+  class CPVREpg;
+  class CPVREpgInfoTag;
+}
 
 /** an EPG info tag */
 
@@ -35,10 +39,10 @@ class CEpgInfoTag
   friend class CEpg;
   friend class CEpgDatabase;
 
-  friend class CPVREpg;
-  friend class CPVREpgInfoTag;
+  friend class PVR::CPVREpg;
+  friend class PVR::CPVREpgInfoTag;
 
-private:
+protected:
   const CEpg *               m_Epg;                /*!< the schedule this event belongs to */
 
   int                        m_iBroadcastId;       /*!< database ID */

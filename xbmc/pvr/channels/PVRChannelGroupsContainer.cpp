@@ -27,6 +27,8 @@
 #include "utils/log.h"
 #include "pvr/PVRManager.h"
 
+using namespace PVR;
+
 CPVRChannelGroupsContainer::CPVRChannelGroupsContainer(void)
 {
 

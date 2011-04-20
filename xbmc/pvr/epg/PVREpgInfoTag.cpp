@@ -29,6 +29,7 @@
 #include "settings/AdvancedSettings.h"
 
 using namespace std;
+using namespace PVR;
 
 CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG &data) :
     CEpgInfoTag()
