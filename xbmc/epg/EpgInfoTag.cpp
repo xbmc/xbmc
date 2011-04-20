@@ -20,7 +20,7 @@
  */
 
 #include "guilib/LocalizeStrings.h"
-#include "../addons/include/xbmc_pvr_types.h"
+#include "../addons/include/xbmc_pvr_types.h" // TODO extract the epg specific stuff
 #include "EpgInfoTag.h"
 #include "EpgContainer.h"
 #include "EpgDatabase.h"

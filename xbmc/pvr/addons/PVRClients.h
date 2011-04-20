@@ -243,6 +243,9 @@ namespace PVR
      */
     bool IsPlayingRecording(void) const;
 
+    /*!
+     * @return True when a channel scan is currently running, false otherwise.
+     */
     bool IsRunningChannelScan(void) const;
 
     /*!
@@ -260,7 +263,7 @@ namespace PVR
      * @brief Get the properties of the current playing client.
      * @return A pointer to the properties or NULL if no stream is playing.
      */
-    PVR_ADDON_CAPABILITIES*GetCurrentClientProperties(void);
+    PVR_ADDON_CAPABILITIES *GetCurrentClientProperties(void);
 
     /*!
      * @brief Get the ID of the client that is currently being used to play.

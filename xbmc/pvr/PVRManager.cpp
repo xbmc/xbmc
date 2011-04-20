@@ -338,11 +338,6 @@ void CPVRManager::UpdateWindow(PVRWindow window)
     pWindow->UpdateWindow(window);
 }
 
-bool CPVRManager::IsRunningChannelScan(void) const
-{
-  return m_addons->IsRunningChannelScan();
-}
-
 void CPVRManager::ResetProperties(void)
 {
   m_currentFile            = NULL;
@@ -1060,4 +1055,39 @@ bool CPVRManager::IsRunning(void) const
 {
   CSingleLock lock(m_critSection);
   return !m_bStop;
+}
+
+bool CPVRManager::IsPlayingTV(void) const
+{
+  return m_addons->IsPlayingTV();
+}
+
+bool CPVRManager::IsPlayingRadio(void) const
+{
+  return m_addons->IsPlayingRadio();
+}
+
+bool CPVRManager::IsPlayingRecording(void) const
+{
+  return m_addons->IsPlayingRecording();
+}
+
+bool CPVRManager::IsRunningChannelScan(void) const
+{
+  return m_addons->IsRunningChannelScan();
+}
+
+PVR_ADDON_CAPABILITIES *CPVRManager::GetCurrentClientProperties(void)
+{
+  return m_addons->GetCurrentClientProperties();
+}
+
+void CPVRManager::StartChannelScan(void)
+{
+  return m_addons->StartChannelScan();
+}
+
+void CPVRManager::SearchMissingChannelIcons(void)
+{
+  return m_channelGroups->SearchMissingChannelIcons();
 }

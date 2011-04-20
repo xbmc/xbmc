@@ -24,6 +24,7 @@
 #include "utils/Observer.h"
 #include "utils/JobManager.h"
 #include "windows/GUIWindowPVRCommon.h"
+#include "addons/include/xbmc_pvr_types.h"
 
 class CGUIDialogBusy;
 
@@ -200,11 +201,6 @@ namespace PVR
     bool PerformChannelSwitch(const CPVRChannel &channel, bool bPreview);
 
     /*!
-     * @return True if a channel scan is running.
-     */
-    bool IsRunningChannelScan(void) const;
-
-    /*!
      * @brief Close an open PVR stream.
      */
     void CloseStream(void);
@@ -356,6 +352,45 @@ namespace PVR
      * @brief Check whether names are still correct after the language settings changed.
      */
     void LocalizationChanged(void);
+
+    /*!
+     * @brief Check if a TV channel is playing.
+     * @return True if it's playing, false otherwise.
+     */
+    bool IsPlayingTV(void) const;
+
+    /*!
+     * @brief Check if a radio channel is playing.
+     * @return True if it's playing, false otherwise.
+     */
+    bool IsPlayingRadio(void) const;
+
+    /*!
+     * @brief Check if a recording is playing.
+     * @return True if it's playing, false otherwise.
+     */
+    bool IsPlayingRecording(void) const;
+
+    /*!
+     * @return True when a channel scan is currently running, false otherwise.
+     */
+    bool IsRunningChannelScan(void) const;
+
+    /*!
+     * @brief Get the properties of the current playing client.
+     * @return A pointer to the properties or NULL if no stream is playing.
+     */
+    PVR_ADDON_CAPABILITIES *GetCurrentClientProperties(void);
+
+    /*!
+     * @brief Open a selection dialog and start a channel scan on the selected client.
+     */
+    void StartChannelScan(void);
+
+    /*!
+     * @brief Try to find missing channel icons automatically
+     */
+    void SearchMissingChannelIcons(void);
 
   protected:
     /*!

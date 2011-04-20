@@ -26,7 +26,6 @@
 #include "URL.h"
 
 using namespace XFILE;
-using namespace PVR;
 
 CDVDInputStreamTV::CDVDInputStreamTV() : CDVDInputStream(DVDSTREAM_TYPE_TV)
 {
@@ -148,12 +147,6 @@ bool CDVDInputStreamTV::SelectChannelByNumber(unsigned int channel)
 {
   if(!m_pLiveTV) return false;
   return m_pLiveTV->SelectChannel(channel);
-}
-
-bool CDVDInputStreamTV::SelectChannel(const CPVRChannel &channel)
-{
-  if(!m_pLiveTV) return false;
-  return m_pLiveTV->SelectChannel(channel.ChannelNumber());
 }
 
 bool CDVDInputStreamTV::UpdateItem(CFileItem& item)
