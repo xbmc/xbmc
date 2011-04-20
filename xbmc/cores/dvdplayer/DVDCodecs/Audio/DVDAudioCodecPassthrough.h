@@ -40,8 +40,8 @@ public:
   virtual int  Decode(BYTE* pData, int iSize);
   virtual int  GetData(BYTE** dst);
   virtual void Reset();
-  virtual int  GetChannels               () { return 1; }
-  virtual AEChLayout GetChannelMap       () { static enum AEChannel map[] = {AE_CH_RAW, AE_CH_NULL}; return map; }
+  virtual int  GetChannels               ();
+  virtual AEChLayout GetChannelMap       ();
   virtual int  GetSampleRate             ();
   virtual enum AEDataFormat GetDataFormat();
   virtual bool NeedPassthrough           () { return true;          }

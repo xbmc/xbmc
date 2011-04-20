@@ -104,6 +104,28 @@ enum AEDataFormat CDVDAudioCodecPassthrough::GetDataFormat()
   return AE_FMT_RAW;
 }
 
+int CDVDAudioCodecPassthrough::GetChannels()
+{
+  if (m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+    return 8;
+
+  return 2;
+}
+
+AEChLayout CDVDAudioCodecPassthrough::GetChannelMap()
+{
+  static enum AEChannel map[2][9] = {
+    {AE_CH_RAW, AE_CH_RAW, AE_CH_NULL},
+    {AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_RAW, AE_CH_NULL}
+  };
+
+  if (m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+    return map[1];
+
+  return map[0];
+}
+
+
 void CDVDAudioCodecPassthrough::Dispose()
 {
   if (m_buffer)

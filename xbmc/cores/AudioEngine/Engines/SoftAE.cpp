@@ -639,7 +639,10 @@ void CSoftAE::GarbageCollect()
 
 unsigned int CSoftAE::GetSampleRate()
 {
-  return (m_transcode && m_encoder && !m_rawPassthrough) ? m_encoderFormat.m_sampleRate : m_sinkFormat.m_sampleRate;
+  if (m_transcode && m_encoder && !m_rawPassthrough)
+    return m_encoderFormat.m_sampleRate;
+  
+  return m_sinkFormat.m_sampleRate;
 }
 
 void CSoftAE::StopSound(IAESound *sound)
