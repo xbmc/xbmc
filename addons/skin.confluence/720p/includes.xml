@@ -503,9 +503,13 @@
 			<visible>[Player.HasAudio | Player.HasVideo]</visible>
 			<include>VisibleFadeEffect</include>
 		</control>
+		<control type="button" id="610">
+			<description>Fake Button to fix Player Controls Navigation</description>
+			<visible>false</visible>
+		</control>
 		<control type="group" id="9006">
 			<width>250</width>
-			<height>39</height>
+			<height>45</height>
 			<visible>VideoPlayer.Content(LiveTV)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="button" id="600">
