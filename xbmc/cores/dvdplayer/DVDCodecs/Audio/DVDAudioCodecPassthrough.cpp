@@ -161,8 +161,8 @@ int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
       }
 
       size_t offset;
-           if (m_trueHDPos == 0 ) offset  = (m_trueHDPos * TRUEHD_FRAME_OFFSET) + sizeof(mat_start_code);
-      else if (m_trueHDPos == 12) offset  = (m_trueHDPos * TRUEHD_FRAME_OFFSET) + sizeof(mat_middle_code) - BURST_HEADER_SIZE + MAT_MIDDLE_CODE_OFFSET;
+           if (m_trueHDPos == 0 ) offset = (m_trueHDPos * TRUEHD_FRAME_OFFSET) + sizeof(mat_start_code);
+      else if (m_trueHDPos == 12) offset = (m_trueHDPos * TRUEHD_FRAME_OFFSET) + sizeof(mat_middle_code) - BURST_HEADER_SIZE + MAT_MIDDLE_CODE_OFFSET;
       else                        offset = (m_trueHDPos * TRUEHD_FRAME_OFFSET) - BURST_HEADER_SIZE;
 
       memcpy(m_trueHD + offset, m_buffer, size );
