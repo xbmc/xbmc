@@ -73,11 +73,10 @@ bool cHTSPData::Open(const std::string &strHostname, unsigned int iPort, const s
 void cHTSPData::Close()
 {
   if (IsConnected())
-  {
     m_session.Abort();
-    Cancel(1);
-    m_session.Close();
-  }
+
+  Cancel(1);
+  m_session.Close();
 }
 
 htsmsg_t* cHTSPData::ReadResult(htsmsg_t *m)

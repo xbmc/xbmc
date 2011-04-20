@@ -265,5 +265,7 @@ void CDVDDemuxPVRClient::GetStreamCodecName(int iStreamId, CStdString &strName)
       strName = "mpeg2video";
     else if (stream->codec == CODEC_ID_H264)
       strName = "h264";
+    else if (stream->codec == CODEC_ID_EAC3)
+      strName = "eac3";
   }
 }

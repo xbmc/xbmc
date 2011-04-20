@@ -272,7 +272,7 @@ void cHTSPDemux::SubscriptionStart(htsmsg_t *m)
   {
     uint32_t    index;
     const char* type;
-    htsmsg_t* sub;
+    htsmsg_t*   sub;
 
     if (f->hmf_type != HMF_MAP)
       continue;
@@ -313,6 +313,9 @@ void cHTSPDemux::SubscriptionStart(htsmsg_t *m)
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId      = index;
       m_Streams.stream[m_Streams.iStreamCount].iCodecType       = CODEC_TYPE_AUDIO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId         = CODEC_ID_AC3;
+      m_Streams.stream[m_Streams.iStreamCount].iChannels        = htsmsg_get_u32_or_default(sub, "channels" , 0);
+      m_Streams.stream[m_Streams.iStreamCount].iSampleRate      = htsmsg_get_u32_or_default(sub, "rate" , 0);
+      XBMC->Log(LOG_DEBUG, "channels = %d, rate = %d", m_Streams.stream[m_Streams.iStreamCount].iChannels, m_Streams.stream[m_Streams.iStreamCount].iSampleRate);
       SetLanguageInfo(language, m_Streams.stream[m_Streams.iStreamCount].strLanguage);
       m_Streams.iStreamCount++;
     }
@@ -322,6 +325,9 @@ void cHTSPDemux::SubscriptionStart(htsmsg_t *m)
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId      = index;
       m_Streams.stream[m_Streams.iStreamCount].iCodecType       = CODEC_TYPE_AUDIO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId         = CODEC_ID_EAC3;
+      m_Streams.stream[m_Streams.iStreamCount].iChannels        = htsmsg_get_u32_or_default(sub, "channels" , 0);
+      m_Streams.stream[m_Streams.iStreamCount].iSampleRate      = htsmsg_get_u32_or_default(sub, "rate" , 0);
+      XBMC->Log(LOG_DEBUG, "channels = %d, rate = %d", m_Streams.stream[m_Streams.iStreamCount].iChannels, m_Streams.stream[m_Streams.iStreamCount].iSampleRate);
       SetLanguageInfo(language, m_Streams.stream[m_Streams.iStreamCount].strLanguage);
       m_Streams.iStreamCount++;
     }
@@ -331,6 +337,9 @@ void cHTSPDemux::SubscriptionStart(htsmsg_t *m)
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId      = index;
       m_Streams.stream[m_Streams.iStreamCount].iCodecType       = CODEC_TYPE_AUDIO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId         = CODEC_ID_MP2;
+      m_Streams.stream[m_Streams.iStreamCount].iChannels        = htsmsg_get_u32_or_default(sub, "channels" , 0);
+      m_Streams.stream[m_Streams.iStreamCount].iSampleRate      = htsmsg_get_u32_or_default(sub, "rate" , 0);
+      XBMC->Log(LOG_DEBUG, "channels = %d, rate = %d", m_Streams.stream[m_Streams.iStreamCount].iChannels, m_Streams.stream[m_Streams.iStreamCount].iSampleRate);
       SetLanguageInfo(language, m_Streams.stream[m_Streams.iStreamCount].strLanguage);
       m_Streams.iStreamCount++;
     }
@@ -340,6 +349,9 @@ void cHTSPDemux::SubscriptionStart(htsmsg_t *m)
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId      = index;
       m_Streams.stream[m_Streams.iStreamCount].iCodecType       = CODEC_TYPE_AUDIO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId         = CODEC_ID_AAC;
+      m_Streams.stream[m_Streams.iStreamCount].iChannels        = htsmsg_get_u32_or_default(sub, "channels" , 0);
+      m_Streams.stream[m_Streams.iStreamCount].iSampleRate      = htsmsg_get_u32_or_default(sub, "rate" , 0);
+      XBMC->Log(LOG_DEBUG, "channels = %d, rate = %d", m_Streams.stream[m_Streams.iStreamCount].iChannels, m_Streams.stream[m_Streams.iStreamCount].iSampleRate);
       SetLanguageInfo(language, m_Streams.stream[m_Streams.iStreamCount].strLanguage);
       m_Streams.iStreamCount++;
     }
@@ -351,6 +363,7 @@ void cHTSPDemux::SubscriptionStart(htsmsg_t *m)
       m_Streams.stream[m_Streams.iStreamCount].iCodecId         = CODEC_ID_MPEG2VIDEO;
       m_Streams.stream[m_Streams.iStreamCount].iWidth           = htsmsg_get_u32_or_default(sub, "width" , 0);
       m_Streams.stream[m_Streams.iStreamCount].iHeight          = htsmsg_get_u32_or_default(sub, "height" , 0);
+      m_Streams.stream[m_Streams.iStreamCount].fAspect          = (float) (htsmsg_get_u32_or_default(sub, "aspect_num", 1) / htsmsg_get_u32_or_default(sub, "aspect_den", 1));
       m_Streams.iStreamCount++;
     }
     else if(!strcmp(type, "H264"))
@@ -361,6 +374,7 @@ void cHTSPDemux::SubscriptionStart(htsmsg_t *m)
       m_Streams.stream[m_Streams.iStreamCount].iCodecId         = CODEC_ID_H264;
       m_Streams.stream[m_Streams.iStreamCount].iWidth           = htsmsg_get_u32_or_default(sub, "width" , 0);
       m_Streams.stream[m_Streams.iStreamCount].iHeight          = htsmsg_get_u32_or_default(sub, "height" , 0);
+      m_Streams.stream[m_Streams.iStreamCount].fAspect          = (float) (htsmsg_get_u32_or_default(sub, "aspect_num", 1) / htsmsg_get_u32_or_default(sub, "aspect_den", 1));
       m_Streams.iStreamCount++;
     }
     else if(!strcmp(type, "DVBSUB"))
