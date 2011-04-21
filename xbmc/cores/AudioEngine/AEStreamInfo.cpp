@@ -495,7 +495,7 @@ unsigned int CAEStreamInfo::SyncTrueHD(uint8_t *data, unsigned int size)
         continue;
 
       /* get the sample rate and substreams, we have a valid master audio unit */
-      m_sampleRate = (rate & 8 ? 44100 : 48000) << (data[8] & 7);
+      m_sampleRate = (rate & 0x8 ? 44100 : 48000) << (rate & 0x7);
       m_substreams = (data[20] & 0xF0) >> 4;
 
       if (!m_hasSync)
