@@ -43,6 +43,10 @@
 #include <stdio.h>
 #include <sys/sysctl.h>
 #include <mach/mach.h>
+#elif defined(__FreeBSD__)
+#include <stdio.h>
+#include <sys/sysctl.h>
+#include <sys/types.h>
 #else
 #include <sys/sysinfo.h>
 #endif
@@ -166,7 +170,7 @@
 #define CALLBACK    __stdcall
 #define WINAPI      __stdcall
 #define WINAPIV     __cdecl
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(__FreeBSD__)
 #define APIENTRY    WINAPI
 #else
 #define APIENTRY
@@ -188,7 +192,11 @@ typedef CXHandle* HANDLE;
 typedef void* HINSTANCE;
 typedef void* HMODULE;
 
+#if defined(__FreeBSD__)
+typedef unsigned long  DWORD;
+#else
 typedef unsigned int  DWORD;
+#endif
 typedef unsigned short  WORD;
 typedef unsigned char   BYTE;
 typedef char        CHAR;
@@ -237,7 +245,11 @@ typedef __int64     __time64_t;
 typedef intptr_t (*FARPROC)(void);
 
 #define MAXWORD   0xffff
+#if defined(__FreeBSD__) && defined(__amd64__)
+#define MAXDWORD  0xffffffffffffffff
+#else
 #define MAXDWORD  0xffffffff
+#endif
 
 typedef DWORD LCID;
 typedef WORD* LPWORD;
@@ -292,7 +304,11 @@ typedef struct _TIME_ZONE_INFORMATION {
   LONG DaylightBias;
 } TIME_ZONE_INFORMATION, *PTIME_ZONE_INFORMATION, *LPTIME_ZONE_INFORMATION;
 
+#if defined(__FreeBSD__) && defined(__amd64__)
+#define TIME_ZONE_ID_INVALID    ((DWORD)0xFFFFFFFFFFFFFFFF)
+#else
 #define TIME_ZONE_ID_INVALID    ((DWORD)0xFFFFFFFF)
+#endif
 #define TIME_ZONE_ID_UNKNOWN    0
 #define TIME_ZONE_ID_STANDARD   1
 #define TIME_ZONE_ID_DAYLIGHT   2
@@ -354,6 +370,15 @@ typedef int (*LPTHREAD_START_ROUTINE)(void *);
   #if (MAC_OS_X_VERSION_MAX_ALLOWED < 1050) || defined(TARGET_DARWIN_IOS)
     #define statfs64 statfs
   #endif
+  #define fstat64 fstat
+#elif defined(__FreeBSD__)
+  typedef int64_t   off64_t;
+  typedef off_t     __off_t;
+  typedef off64_t   __off64_t;
+  typedef fpos_t fpos64_t;
+  #define __stat64 stat
+  #define stat64 stat
+  #define statfs64 statfs
   #define fstat64 fstat
 #else
   #define __stat64 stat64
