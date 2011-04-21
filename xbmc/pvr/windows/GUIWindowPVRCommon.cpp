@@ -123,6 +123,12 @@ bool CGUIWindowPVRCommon::IsSelectedList(CGUIMessage &message) const
   return (message.GetSenderId() == (int) m_iControlList);
 }
 
+void CGUIWindowPVRCommon::SetInvalid()
+{
+  for (int iItemPtr = 0; iItemPtr < m_parent->m_vecItems->Size(); iItemPtr++)
+    m_parent->m_vecItems->Get(iItemPtr)->SetInvalid();
+}
+
 void CGUIWindowPVRCommon::OnInitWindow()
 {
   m_parent->m_viewControl.SetCurrentView(m_iControlList);

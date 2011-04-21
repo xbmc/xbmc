@@ -90,6 +90,7 @@ namespace PVR
 
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const = 0;
     virtual void UpdateData(void) = 0;
+    virtual void SetInvalid(void);
 
     virtual void OnInitWindow(void);
     virtual void OnWindowUnload(void);

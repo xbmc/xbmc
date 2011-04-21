@@ -345,8 +345,9 @@ namespace PVR
     /*!
      * @brief Update the data in a pvr window if that window is currently visible.
      * @param window The window to update.
+     * @param bResetContents True to reset the contents of the given window, false to just mark all the window's items invalid.
      */
-    void UpdateWindow(PVRWindow window);
+    void UpdateWindow(PVRWindow window, bool bResetContents = true);
 
     /*!
      * @brief Check whether names are still correct after the language settings changed.

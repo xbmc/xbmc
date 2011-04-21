@@ -331,11 +331,12 @@ bool CPVRManager::ContinueLastChannel(void)
   return bReturn;
 }
 
-void CPVRManager::UpdateWindow(PVRWindow window)
+void CPVRManager::UpdateWindow(PVRWindow window, bool bResetContents /* = true */)
 {
+  /* TODO use an observable for this! */
   CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
   if (pWindow)
-    pWindow->UpdateWindow(window);
+    pWindow->UpdateWindow(window, bResetContents);
 }
 
 void CPVRManager::ResetProperties(void)

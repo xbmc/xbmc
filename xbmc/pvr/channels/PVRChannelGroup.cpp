@@ -471,6 +471,7 @@ bool CPVRChannelGroup::RemoveByUniqueID(int iUniqueID)
 bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 {
   bool bChanged(false);
+  bool bAddedOrDeleted(false);
   CSingleLock lock(m_critSection);
   int iCurSize = size();
 
@@ -496,6 +497,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 
       bChanged = true;
       m_bChanged = true;
+      bAddedOrDeleted = true;
       CLog::Log(LOGINFO,"PVRChannelGroup - %s - added %s channel '%s' at position %d in group '%s'",
           __FUNCTION__, m_bRadio ? "radio" : "TV", realChannel->ChannelName().c_str(), iChannelNumber, GroupName().c_str());
     }
@@ -518,6 +520,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
       RemoveFromGroup(channel);
 
       m_bChanged = true;
+      bAddedOrDeleted = true;
       bChanged = true;
       iChannelPtr--;
       iSize--;
@@ -536,7 +539,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 
     lock.Leave();
 
-    g_PVRManager.UpdateWindow(m_bRadio ? PVR_WINDOW_CHANNELS_RADIO : PVR_WINDOW_CHANNELS_TV);
+    g_PVRManager.UpdateWindow(m_bRadio ? PVR_WINDOW_CHANNELS_RADIO : PVR_WINDOW_CHANNELS_TV, bAddedOrDeleted);
 
     return Persist();
   }
