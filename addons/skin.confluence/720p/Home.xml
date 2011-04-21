@@ -15,6 +15,14 @@
 		<include>CommonMediaPlayingBackground</include>
 		<control type="image">
 			<posx>0</posx>
+			<posy>340r</posy>
+			<width>1280</width>
+			<height>250</height>
+			<colordiffuse>AAFFFFFF</colordiffuse>
+			<texture>HomeNowPlayingBack.png</texture>
+		</control>
+		<control type="image">
+			<posx>0</posx>
 			<posy>90r</posy>
 			<width>1280</width>
 			<height>90</height>
@@ -36,24 +44,24 @@
 		<!-- Music Info -->
 		<control type="group">
 			<posx>0</posx>
-			<posy>400r</posy>
+			<posy>20</posy>
 			<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
-			<animation effect="slide" end="0,30" time="0" condition="!system.getbool(lookandfeel.enablerssfeeds)">conditional</animation>
 			<control type="image">
 				<posx>0</posx>
-				<posy>150</posy>
+				<posy>105</posy>
 				<width>1280</width>
 				<height>250</height>
+				<colordiffuse>AAFFFFFF</colordiffuse>
 				<texture>HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="image">
 				<description>Cover image</description>
-				<posx>200r</posx>
-				<posy>60</posy>
-				<width>180</width>
-				<height>280</height>
+				<posx>20</posx>
+				<posy>40</posy>
+				<width>160</width>
+				<height>300</height>
 				<aspectratio aligny="bottom">keep</aspectratio>
 				<texture>$INFO[MusicPlayer.Cover]</texture>
 				<bordertexture border="8">ThumbBorder.png</bordertexture>
@@ -61,12 +69,12 @@
 			</control>
 			<control type="label">
 				<description>NowPlaying label</description>
-				<posx>210r</posx>
+				<posx>200</posx>
 				<posy>210</posy>
 				<height>30</height>
 				<width>660</width>
 				<label>$LOCALIZE[31040]</label>
-				<align>right</align>
+				<align>left</align>
 				<aligny>center</aligny>
 				<font>font12_title</font>
 				<textcolor>blue</textcolor>
@@ -74,10 +82,10 @@
 			</control>
 			<control type="label">
 				<description>Artist label</description>
-				<posx>210r</posx>
+				<posx>200</posx>
 				<posy>235</posy>
 				<height>30</height>
-				<width>660</width>
+				<width>left</width>
 				<label>$INFO[MusicPlayer.Artist]</label>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -87,10 +95,10 @@
 			</control>
 			<control type="label">
 				<description>Album Label</description>
-				<posx>210r</posx>
+				<posx>200</posx>
 				<posy>260</posy>
 				<height>30</height>
-				<width>660</width>
+				<width>left</width>
 				<label>$INFO[MusicPlayer.Album]$INFO[musicplayer.discnumber, - $LOCALIZE[427]:]</label>
 				<align>right</align>
 				<aligny>center</aligny>
@@ -100,12 +108,12 @@
 			</control>
 			<control type="label">
 				<description>Title label</description>
-				<posx>210r</posx>
+				<posx>200</posx>
 				<posy>285</posy>
 				<height>30</height>
-				<width>660</width>
+				<width>left</width>
 				<label>$INFO[MusicPlayer.Title]</label>
-				<align>right</align>
+				<align>left</align>
 				<aligny>center</aligny>
 				<font>font13_title</font>
 				<textcolor>white</textcolor>
@@ -113,12 +121,12 @@
 			</control>
 			<control type="label">
 				<description>Time Label</description>
-				<posx>210r</posx>
+				<posx>200</posx>
 				<posy>310</posy>
 				<height>30</height>
 				<width>325</width>
 				<label>$INFO[Player.Time]$INFO[Player.Duration, / ]</label>
-				<align>right</align>
+				<align>left</align>
 				<aligny>center</aligny>
 				<font>font12</font>
 				<textcolor>white</textcolor>
@@ -128,26 +136,26 @@
 		<!-- Video Info -->
 		<control type="group">
 			<posx>0</posx>
-			<posy>400r</posy>
+			<posy>20</posy>
 			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
-			<animation effect="slide" end="0,30" time="0" condition="!system.getbool(lookandfeel.enablerssfeeds)">conditional</animation>
 			<control type="image">
 				<posx>0</posx>
-				<posy>150</posy>
+				<posy>105</posy>
 				<width>1280</width>
 				<height>250</height>
+				<colordiffuse>AAFFFFFF</colordiffuse>
 				<texture>HomeNowPlayingBack.png</texture>
 			</control>
 			<control type="group">
 				<visible>!VideoPlayer.Content(Movies) + !VideoPlayer.Content(Episodes)</visible>
 				<control type="image">
 					<description>Cover image</description>
-					<posx>200r</posx>
-					<posy>160</posy>
+					<posx>20</posx>
+					<posy>120</posy>
 					<width>180</width>
-					<height>180</height>
+					<height>220</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<texture>$INFO[VideoPlayer.Cover]</texture>
 					<bordertexture border="8">ThumbBorder.png</bordertexture>
@@ -155,12 +163,12 @@
 				</control>
 				<control type="label">
 					<description>NowPlaying label</description>
-					<posx>210r</posx>
+					<posx>220</posx>
 					<posy>260</posy>
 					<height>30</height>
 					<width>660</width>
 					<label>$LOCALIZE[31040]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
 					<textcolor>blue</textcolor>
@@ -168,12 +176,12 @@
 				</control>
 				<control type="label">
 					<description>Title label</description>
-					<posx>210r</posx>
+					<posx>220</posx>
 					<posy>285</posy>
 					<height>30</height>
 					<width>660</width>
 					<label>$INFO[VideoPlayer.Title]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
@@ -181,12 +189,12 @@
 				</control>
 				<control type="label">
 					<description>Time Label</description>
-					<posx>210r</posx>
+					<posx>220</posx>
 					<posy>310</posy>
 					<height>30</height>
 					<width>325</width>
 					<label>$INFO[Player.Time]$INFO[Player.Duration, / ]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12</font>
 					<textcolor>white</textcolor>
@@ -197,7 +205,7 @@
 				<visible>VideoPlayer.Content(Movies)</visible>
 				<control type="image">
 					<description>Cover image</description>
-					<posx>200r</posx>
+					<posx>20</posx>
 					<posy>0</posy>
 					<width>180</width>
 					<height>340</height>
@@ -208,12 +216,12 @@
 				</control>
 				<control type="label">
 					<description>NowPlaying label</description>
-					<posx>210r</posx>
+					<posx>220</posx>
 					<posy>210</posy>
 					<height>30</height>
 					<width>660</width>
 					<label>$LOCALIZE[31040]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
 					<textcolor>blue</textcolor>
@@ -221,12 +229,12 @@
 				</control>
 				<control type="label">
 					<description>Studio label</description>
-					<posx>210r</posx>
+					<posx>220</posx>
 					<posy>235</posy>
 					<height>30</height>
 					<width>660</width>
 					<label>$INFO[VideoPlayer.Studio]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
 					<textcolor>white</textcolor>
@@ -234,12 +242,12 @@
 				</control>
 				<control type="label">
 					<description>Genre Label</description>
-					<posx>210r</posx>
+					<posx>220</posx>
 					<posy>260</posy>
 					<height>30</height>
 					<width>660</width>
 					<label>$INFO[VideoPlayer.Genre]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12</font>
 					<textcolor>white</textcolor>
@@ -247,12 +255,12 @@
 				</control>
 				<control type="label">
 					<description>Title label</description>
-					<posx>210r</posx>
+					<posx>220</posx>
 					<posy>285</posy>
 					<height>30</height>
 					<width>660</width>
 					<label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year,[COLOR=grey] (,)[/COLOR]]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
@@ -260,12 +268,12 @@
 				</control>
 				<control type="label">
 					<description>Time Label</description>
-					<posx>210r</posx>
+					<posx>220</posx>
 					<posy>310</posy>
 					<height>30</height>
 					<width>325</width>
 					<label>$INFO[Player.Time]$INFO[Player.Duration, / ]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12</font>
 					<textcolor>white</textcolor>
@@ -276,7 +284,7 @@
 				<visible>VideoPlayer.Content(Episodes)</visible>
 				<control type="image">
 					<description>Cover image</description>
-					<posx>250r</posx>
+					<posx>20</posx>
 					<posy>0</posy>
 					<width>230</width>
 					<height>340</height>
@@ -287,12 +295,12 @@
 				</control>
 				<control type="label">
 					<description>NowPlaying label</description>
-					<posx>260r</posx>
+					<posx>270</posx>
 					<posy>210</posy>
 					<height>30</height>
 					<width>610</width>
 					<label>$LOCALIZE[31040]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
 					<textcolor>blue</textcolor>
@@ -300,12 +308,12 @@
 				</control>
 				<control type="label">
 					<description>TV Show label</description>
-					<posx>260r</posx>
+					<posx>270</posx>
 					<posy>235</posy>
 					<height>30</height>
 					<width>610</width>
 					<label>$INFO[VideoPlayer.TVShowTitle]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
 					<textcolor>white</textcolor>
@@ -313,12 +321,12 @@
 				</control>
 				<control type="label">
 					<description>Season Ep Label</description>
-					<posx>260r</posx>
+					<posx>270</posx>
 					<posy>260</posy>
 					<height>30</height>
 					<width>610</width>
 					<label>$LOCALIZE[20373] $INFO[VideoPlayer.Season] - $LOCALIZE[20359] $INFO[VideoPlayer.episode]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12</font>
 					<textcolor>white</textcolor>
@@ -326,12 +334,12 @@
 				</control>
 				<control type="label">
 					<description>Title label</description>
-					<posx>260r</posx>
+					<posx>270</posx>
 					<posy>285</posy>
 					<height>30</height>
 					<width>610</width>
 					<label>$INFO[VideoPlayer.Title]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
@@ -339,12 +347,12 @@
 				</control>
 				<control type="label">
 					<description>Time Label</description>
-					<posx>260r</posx>
+					<posx>270</posx>
 					<posy>310</posy>
 					<height>30</height>
 					<width>325</width>
 					<label>$INFO[Player.Time]$INFO[Player.Duration, / ]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12</font>
 					<textcolor>white</textcolor>
@@ -355,7 +363,6 @@
 		<include condition="Skin.HasSetting(homepageShowRecentlyAdded)">HomeRecentlyAddedInfo</include>
 		<control type="group">
 			<posy>370</posy>
-			<animation effect="slide" start="0,0" end="0,-50"time="0" condition="!Skin.HasSetting(homepageShowRecentlyAdded)">conditional</animation>
 			<control type="group" id="9001">
 				<posx>0</posx>
 				<posy>70</posy>
@@ -655,6 +662,41 @@
 					<icon>$INFO[system.addonicon(Skin.String(HomeVideosButton5))]</icon>
 					<thumb>-</thumb>
 					<visible>Container(9000).HasFocus(2) + !IsEmpty(Skin.String(HomeVideosButton5))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomeMusicButton1))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomeMusicButton1)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomeMusicButton1))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(3) + !IsEmpty(Skin.String(HomeMusicButton1))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomeMusicButton2))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomeMusicButton2)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomeMusicButton2))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(3) + !IsEmpty(Skin.String(HomeMusicButton2))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomeMusicButton3))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomeMusicButton3)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomeMusicButton3))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(3) + !IsEmpty(Skin.String(HomeMusicButton3))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomeMusicButton4))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomeMusicButton4)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomeMusicButton4))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(3) + !IsEmpty(Skin.String(HomeMusicButton4))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomeMusicButton5))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomeMusicButton5)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomeMusicButton5))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(3) + !IsEmpty(Skin.String(HomeMusicButton5))</visible>
 				</item>
 			</content>
 		</control>
