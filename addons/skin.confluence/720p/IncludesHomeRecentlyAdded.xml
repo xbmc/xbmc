@@ -7,7 +7,7 @@
 			<animation effect="fade" time="200">WindowClose</animation>
 			<control type="group">
 				<posx>275r</posx>
-				<posy>50</posy>
+				<posy>40</posy>
 				<visible>Library.HasContent(Movies)</visible>
 				<visible>[Container(9000).Hasfocus(2) + !Skin.HasSetting(HomeMenuNoMoviesButton)] | Container(9000).Hasfocus(10)</visible>
 				<include>VisibleFadeEffect</include>
@@ -177,7 +177,7 @@
 			</control>
 			<control type="group">
 				<posx>275r</posx>
-				<posy>50</posy>
+				<posy>40</posy>
 				<visible>Library.HasContent(TVShows)</visible>
 				<visible>[Container(9000).Hasfocus(2) + !Skin.HasSetting(HomeMenuNoTVShowsButton)] | Container(9000).Hasfocus(11)</visible>
 				<include>VisibleFadeEffect</include>
