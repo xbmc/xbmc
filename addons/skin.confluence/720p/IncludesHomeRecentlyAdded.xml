@@ -9,9 +9,9 @@
 				<posx>275r</posx>
 				<posy>40</posy>
 				<visible>Library.HasContent(Movies)</visible>
-				<visible>[Container(9000).Hasfocus(2) + !Skin.HasSetting(HomeMenuNoMoviesButton)] | Container(9000).Hasfocus(10)</visible>
+				<visible>Container(9000).Hasfocus(2)</visible>
 				<include>VisibleFadeEffect</include>
-				<animation effect="slide" time="0" start="0,0" end="-260,0" condition="[Library.HasContent(TVShows) + ![Skin.HasSetting(HomeMenuNoMoviesButton) | Skin.HasSetting(HomeMenuNoTVShowsButton)]]">Conditional</animation>
+				<animation effect="slide" time="0" start="0,0" end="-260,0" condition="Library.HasContent(TVShows)">Conditional</animation>
 				<control type="image">
 					<description>background</description>
 					<posx>0</posx>
@@ -179,7 +179,7 @@
 				<posx>275r</posx>
 				<posy>40</posy>
 				<visible>Library.HasContent(TVShows)</visible>
-				<visible>[Container(9000).Hasfocus(2) + !Skin.HasSetting(HomeMenuNoTVShowsButton)] | Container(9000).Hasfocus(11)</visible>
+				<visible>Container(9000).Hasfocus(2)</visible>
 				<include>VisibleFadeEffect</include>
 				<control type="image">
 					<description>background</description>
