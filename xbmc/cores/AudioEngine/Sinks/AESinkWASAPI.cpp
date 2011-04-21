@@ -155,7 +155,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, CStdString &device)
   hr = m_pDevice->Activate(IID_IAudioClient, CLSCTX_ALL, NULL, (void**)&m_pAudioClient);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Activating the WASAPI endpoint device failed.")
 
-  if(g_guiSettings.GetBool("audiooutput.useexclusivemode") || format.m_dataFormat == AE_FMT_RAW)
+  if(g_guiSettings.GetBool("audiooutput.useexclusivemode") || AE_IS_RAW(format.m_dataFormat))
   {
     if(!InitializeExclusive(format))
       goto failed;
@@ -212,16 +212,16 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const CStdString de
   //Shared mode has one mix format used to open the device and used internally by Windows.
   //Don't change unless we are switching to passthrough or changing output modes. 
   if(!m_isExclusive && g_guiSettings.GetBool("audiooutput.useexclusivemode") ==  m_isExclusive &&
-    format.m_dataFormat != AE_FMT_RAW)
+    !AE_IS_RAW(format.m_dataFormat))
     return true;
 
   if(m_device == device &&
      m_isExclusive == g_guiSettings.GetBool("audiooutput.useexclusivemode") &&
      m_format.m_sampleRate   == format.m_sampleRate  &&
-     ((format.m_dataFormat   == AE_FMT_RAW           && 
+     ((AE_IS_RAW(format.m_dataFormat)                && 
        m_format.m_dataFormat == AE_FMT_RAW)          ||
       (format.m_dataFormat   == AE_FMT_FLOAT         &&
-       m_format.m_dataFormat != AE_FMT_RAW))         &&
+       !AE_IS_RAW(m_format.m_dataFormat))         &&
      m_format.m_channelCount == format.m_channelCount)
      return true;
 
@@ -446,7 +446,7 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
 {
   wfxex.Format.cbSize            = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
 
-  if (format.m_dataFormat != AE_FMT_RAW) // PCM data
+  if (!AE_IS_RAW(format.m_dataFormat)) // PCM data
   {
     wfxex.dwChannelMask          = SpeakerMaskFromAEChannels(format.m_channelLayout);
     wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
@@ -464,7 +464,7 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
     wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
     wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
     wfxex.Format.wBitsPerSample  = 16;
-    wfxex.Format.nChannels       = 2;
+    wfxex.Format.nChannels       = (format.m_dataFormat == AE_FMT_RAW) ? 2 : 8;
     wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
     /*}
     else if(format.m_encodedFormat == AE_ENCFMT_EAC3 || format.m_encodedFormat == AE_ENCFMT_MLP || format.m_encodedFormat == AE_ENCFMT_DTSHD)
@@ -536,7 +536,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 
   if(SUCCEEDED(hr))
     goto initialize;
-  else if(format.m_dataFormat == AE_FMT_RAW) //No sense in trying other formats for passthrough.
+  else if(AE_IS_RAW(format.m_dataFormat)) //No sense in trying other formats for passthrough.
     return false;
 
   int closestMatch;
@@ -588,7 +588,7 @@ initialize:
 
   AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
 
-  if(format.m_dataFormat == AE_FMT_RAW)
+  if(AE_IS_RAW(format.m_dataFormat))
   {
     format.m_dataFormat = AE_FMT_S16NE;
     format.m_channelCount = 2;

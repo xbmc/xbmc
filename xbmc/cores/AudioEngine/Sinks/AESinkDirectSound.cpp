@@ -120,13 +120,13 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, CStdString &device)
   wfxex.Format.cbSize          = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
   wfxex.Format.nChannels       = format.m_channelCount;
   wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
-  if (format.m_dataFormat == AE_FMT_RAW)
+  if (AE_IS_RAW(format.m_dataFormat))
   {
     wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
     wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
     wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF;
     wfxex.Format.wBitsPerSample  = 16;
-    wfxex.Format.nChannels       = 2;
+    wfxex.Format.nChannels       = (format.m_dataFormat == AE_FMT_RAW) ? 2 : 8;
   }
   else
   {
