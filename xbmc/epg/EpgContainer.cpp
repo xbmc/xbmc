@@ -147,7 +147,7 @@ void CEpgContainer::Process(void)
   if (m_database.Open())
   {
     m_database.DeleteOldEpgEntries();
-    m_database.Get(this);
+    m_database.Get(*this);
     m_database.Close();
   }
 

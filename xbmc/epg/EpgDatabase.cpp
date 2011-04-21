@@ -176,7 +176,7 @@ bool CEpgDatabase::Delete(const CEpgInfoTag &tag)
   return DeleteValues("epgtags", strWhereClause);
 }
 
-int CEpgDatabase::Get(CEpgContainer *container)
+int CEpgDatabase::Get(CEpgContainer &container)
 {
   int iReturn = -1;
 
@@ -194,7 +194,7 @@ int CEpgDatabase::Get(CEpgContainer *container)
         CStdString strScraperName = m_pDS->fv("sScraperName").get_asString().c_str();
 
         CEpg newEpg(iEpgID, strName, strScraperName);
-        if (container->UpdateEntry(newEpg))
+        if (container.UpdateEntry(newEpg))
           ++iReturn;
         else
         {
@@ -219,12 +219,12 @@ int CEpgDatabase::Get(CEpgContainer *container)
   return iReturn;
 }
 
-int CEpgDatabase::Get(CEpg *epg)
+int CEpgDatabase::Get(CEpg &epg)
 {
   int iReturn = -1;
 
   CStdString strWhereClause;
-  strWhereClause = FormatSQL("idEpg = %u", epg->EpgID());
+  strWhereClause = FormatSQL("idEpg = %u", epg.EpgID());
 
   CStdString strQuery;
   strQuery.Format("SELECT * FROM epgtags WHERE %s ORDER BY iStartTime ASC;", strWhereClause.c_str());
@@ -261,12 +261,12 @@ int CEpgDatabase::Get(CEpg *epg)
         newTag.m_iParentalRating    = m_pDS->fv("iParentalRating").get_asInt();
         newTag.m_iStarRating        = m_pDS->fv("iStarRating").get_asInt();
         newTag.m_bNotify            = m_pDS->fv("bNotify").get_asBool();
-        newTag.m_iEpisodeNumber        = m_pDS->fv("iEpisodeId").get_asInt();
+        newTag.m_iEpisodeNumber     = m_pDS->fv("iEpisodeId").get_asInt();
         newTag.m_iEpisodePart       = m_pDS->fv("iEpisodePart").get_asInt();
         newTag.m_strEpisodeName     = m_pDS->fv("sEpisodeName").get_asString().c_str();
-        newTag.m_iSeriesNumber         = m_pDS->fv("iSeriesId").get_asInt();
+        newTag.m_iSeriesNumber      = m_pDS->fv("iSeriesId").get_asInt();
 
-        epg->AddEntry(newTag);
+        epg.AddEntry(newTag);
         ++iReturn;
 
         m_pDS->next();

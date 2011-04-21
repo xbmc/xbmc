@@ -98,14 +98,14 @@ namespace EPG
      * @param container The container to fill.
      * @return The amount of entries that was added.
      */
-    virtual int Get(CEpgContainer *container);
+    virtual int Get(CEpgContainer &container);
 
     /*!
      * @brief Get all EPG entries for a table.
      * @param epg The EPG table to get the entries for.
      * @return The amount of entries that was added.
      */
-    virtual int Get(CEpg *epg);
+    virtual int Get(CEpg &epg);
 
     /*!
      * @brief Get the last stored EPG scan time.
