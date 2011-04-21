@@ -676,6 +676,7 @@
 					<thumb>-</thumb>
 					<visible>Container(9000).HasFocus(2) + !IsEmpty(Skin.String(HomeVideosButton5))</visible>
 				</item>
+
 				<item>
 					<label>$INFO[system.addontitle(Skin.String(HomeMusicButton1))]</label>
 					<onclick>RunAddon($INFO[Skin.String(HomeMusicButton1)])</onclick>
@@ -710,6 +711,78 @@
 					<icon>$INFO[system.addonicon(Skin.String(HomeMusicButton5))]</icon>
 					<thumb>-</thumb>
 					<visible>Container(9000).HasFocus(3) + !IsEmpty(Skin.String(HomeMusicButton5))</visible>
+				</item>
+
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomePictureButton1))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomePictureButton1)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomePictureButton1))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(4) + !IsEmpty(Skin.String(HomePictureButton1))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomePictureButton2))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomePictureButton2)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomePictureButton2))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(4) + !IsEmpty(Skin.String(HomePictureButton2))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomePictureButton3))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomePictureButton3)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomePictureButton3))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(4) + !IsEmpty(Skin.String(HomePictureButton3))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomePictureButton4))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomePictureButton4)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomePictureButton4))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(4) + !IsEmpty(Skin.String(HomePictureButton4))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomePictureButton5))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomePictureButton5)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomePictureButton5))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(4) + !IsEmpty(Skin.String(HomePictureButton5))</visible>
+				</item>
+
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomeProgramButton1))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomeProgramButton1)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomeProgramButton1))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(1) + !IsEmpty(Skin.String(HomeProgramButton1))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomeProgramButton2))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomeProgramButton2)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomeProgramButton2))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(1) + !IsEmpty(Skin.String(HomeProgramButton2))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomeProgramButton3))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomeProgramButton3)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomeProgramButton3))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(1) + !IsEmpty(Skin.String(HomeProgramButton3))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomeProgramButton4))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomeProgramButton4)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomeProgramButton4))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(1) + !IsEmpty(Skin.String(HomeProgramButton4))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomeProgramButton5))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomeProgramButton5)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomeProgramButton5))]</icon>
+					<thumb>-</thumb>
+					<visible>Container(9000).HasFocus(1) + !IsEmpty(Skin.String(HomeProgramButton5))</visible>
 				</item>
 			</content>
 		</control>
