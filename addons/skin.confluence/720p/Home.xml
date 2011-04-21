@@ -625,6 +625,19 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Label]</label>
+					<visible>Control.HasFocus(9002)</visible>
+				</control>
+				<control type="label">
+					<posx>91</posx>
+					<posy>125</posy>
+					<width>180</width>
+					<height>20</height>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>!Control.HasFocus(9002)</visible>
 				</control>
 			</focusedlayout>
 			<content>
