@@ -1003,6 +1003,7 @@ void CDVDPlayer::Process()
         {
           FlushBuffers(false);
           SAFE_DELETE(m_pDemuxer);
+          SetCaching(CACHESTATE_INIT);
           continue;
         }
         else
