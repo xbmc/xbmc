@@ -474,10 +474,12 @@ case $host in
   i386-*-freebsd*)
      ARCH="x86-freebsd"
      MAKE="gmake"
+     use_external_ffmpeg="yes"
      ;;
   amd64-*-freebsd*)
      ARCH="x86_64-freebsd"
      MAKE="gmake"
+     use_external_ffmpeg="yes"
      ;;
   arm-apple-darwin*)
      use_joystick=no
