@@ -42,12 +42,12 @@ struct sortEPGbyDate
 };
 
 CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &strScraperName /* = "" */) :
+    m_bInhibitSorting(false),
     m_iEpgID(iEpgID),
     m_strName(strName),
     m_strScraperName(strScraperName),
     m_nowActive(NULL),
-    m_Channel(NULL),
-    m_bInhibitSorting(false)
+    m_Channel(NULL)
 {
   m_lastScanTime.SetValid(false);
   m_firstDate.SetValid(false);

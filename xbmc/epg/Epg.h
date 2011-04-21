@@ -51,18 +51,19 @@ namespace EPG
     friend class CPVREpg;
 
   protected:
+    bool                       m_bInhibitSorting; /*!< don't sort the table if this is true */
+    int                        m_iEpgID;          /*!< the database ID of this table */
     CStdString                 m_strName;         /*!< the name of this table */
     CStdString                 m_strScraperName;  /*!< the name of the scraper to use */
-    int                        m_iEpgID;          /*!< the database ID of this table */
-    CDateTime                  m_lastScanTime;    /*!< the last time the EPG has been updated */
-    bool                       m_bInhibitSorting; /*!< don't sort the table if this is true */
     mutable const CEpgInfoTag *m_nowActive;       /*!< the tag that is currently active */
 
-    mutable CCriticalSection   m_critSection;     /*!< critical section for changes in this table */
-
-    PVR::CPVRChannel *         m_Channel;         /*!< the channel this EPG belongs to */
+    CDateTime                  m_lastScanTime;    /*!< the last time the EPG has been updated */
     CDateTime                  m_firstDate;       /*!< start time of the first epg event in this table */
     CDateTime                  m_lastDate;        /*!< end time of the last epg event in this table */
+
+    PVR::CPVRChannel *         m_Channel;         /*!< the channel this EPG belongs to */
+
+    mutable CCriticalSection   m_critSection;     /*!< critical section for changes in this table */
 
     /*!
      * @brief Update the EPG from a scraper set in the channel tag.
