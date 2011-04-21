@@ -22,7 +22,7 @@
  */
 
 #include "GUIWindowPVRCommon.h"
-#include "guilib/GUIEPGGridContainer.h"
+#include "epg/GUIEPGGridContainer.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 

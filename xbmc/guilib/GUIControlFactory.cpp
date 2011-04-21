@@ -50,7 +50,7 @@
 #include "GUIListContainer.h"
 #include "GUIFixedListContainer.h"
 #include "GUIWrappingListContainer.h"
-#include "GUIEPGGridContainer.h"
+#include "epg/GUIEPGGridContainer.h"
 #include "GUIPanelContainer.h"
 #include "GUIMultiSelectText.h"
 #include "GUIListLabel.h"

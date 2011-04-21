@@ -4,7 +4,8 @@ SRCS=EpgInfoTag.cpp \
 	EpgSearchFilter.cpp \
 	Epg.cpp \
 	EpgContainer.cpp \
-	EpgDatabase.cpp
+	EpgDatabase.cpp \
+	GUIEPGGridContainer.cpp
 
 LIB=epg.a
 
