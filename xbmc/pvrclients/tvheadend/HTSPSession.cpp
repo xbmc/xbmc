@@ -738,6 +738,9 @@ void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings, b
   recordings[recording.id] = recording;
 
   PVR->TriggerTimerUpdate();
+
+  if (recording.state == ST_RECORDING)
+   PVR->TriggerRecordingUpdate();
 }
 
 void cHTSPSession::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings, bool bNotify /* = false */)
@@ -759,4 +762,5 @@ void cHTSPSession::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings, b
   recordings.erase(id);
 
   PVR->TriggerTimerUpdate();
+  PVR->TriggerRecordingUpdate();
 }

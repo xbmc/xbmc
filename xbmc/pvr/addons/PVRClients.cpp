@@ -687,8 +687,9 @@ int CPVRClients::GetTimers(CPVRTimers *timers)
 {
   int iCurSize = timers->size();
   CLIENTMAP clients;
-  GetActiveClients(&clients);
+  CSingleLock lock(m_critSection);
 
+  GetActiveClients(&clients);
   /* get the timer list from each client */
   CLIENTMAPITR itrClients = clients.begin();
   while (itrClients != clients.end())
@@ -711,8 +712,9 @@ int CPVRClients::GetRecordings(CPVRRecordings *recordings)
 {
   int iCurSize = recordings->size();
   CLIENTMAP clients;
-  GetActiveClients(&clients);
+  CSingleLock lock(m_critSection);
 
+  GetActiveClients(&clients);
   CLIENTMAPITR itr = clients.begin();
   while (itr != clients.end())
   {
