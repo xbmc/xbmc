@@ -20,6 +20,7 @@
 			<height>250</height>
 			<colordiffuse>AAFFFFFF</colordiffuse>
 			<texture>HomeNowPlayingBack.png</texture>
+			<include>Window_OpenClose_Animation</include>
 		</control>
 		<control type="image">
 			<posx>0</posx>
@@ -40,6 +41,7 @@
 			<texture>xbmc-logo.png</texture>
 			<visible>!IntegerGreaterThan(Container(9002).NumItems,0)</visible>
 			<include>VisibleFadeEffect</include>
+			<include>Window_OpenClose_Animation</include>
 		</control>
 		<!-- Music Info -->
 		<control type="group">
@@ -363,6 +365,14 @@
 		<include condition="Skin.HasSetting(homepageShowRecentlyAdded)">HomeRecentlyAddedInfo</include>
 		<control type="group">
 			<posy>370</posy>
+			<animation type="WindowOpen" reversible="false">
+				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
+				<effect type="fade" start="0" end="100" time="300" />
+			</animation>
+			<animation type="WindowClose" reversible="false">
+				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300" />
+				<effect type="fade" start="100" end="0" time="300" />
+			</animation>			
 			<control type="group" id="9001">
 				<posx>0</posx>
 				<posy>70</posy>
@@ -396,9 +406,9 @@
 				</control>
 			</control>
 			<control type="image">
-				<posx>0</posx>
+				<posx>-100</posx>
 				<posy>0</posy>
-				<width>1280</width>
+				<width>1480</width>
 				<height>75</height>
 				<texture border="0,6,0,6">Homeback.png</texture>
 			</control>
@@ -546,6 +556,7 @@
 		</control>
 		<control type="fixedlist" id="9002">
 			<animation effect="slide" start="0,0" end="-91,0" time="0" condition="StringCompare(Container(9002).NumItems,2) | StringCompare(Container(9002).NumItems,4)">conditional</animation>
+			<include>Window_OpenClose_Animation</include>
 			<posx>0</posx>
 			<posy>190r</posy>
 			<width>1280</width>
@@ -796,8 +807,7 @@
 			<posx>0</posx>
 			<posy>30r</posy>
 			<visible>system.getbool(lookandfeel.enablerssfeeds)</visible>
-			<animation effect="slide" end="0,35" time="300" tween="quadratic" easing="out">WindowClose</animation>
-			<animation effect="slide" start="0,35" time="300" tween="quadratic" easing="out">WindowOpen</animation>
+			<include>Window_OpenClose_Animation</include>
 			<control type="rss">
 				<description>RSS feed</description>
 				<posx>0</posx>
@@ -822,7 +832,7 @@
 		<control type="group" id="10">
 			<posx>0</posx>
 			<posy>60r</posy>
-			<visible>true</visible>
+			<include>Window_OpenClose_Animation</include>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
