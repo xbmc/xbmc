@@ -109,11 +109,18 @@ DemuxPacket* cHTSPDemux::Read()
 {
   htsmsg_t *  msg;
   const char* method;
-  while((msg = ReadStream()))
+  while((msg = m_session.ReadMessage(1000)))
   {
     method = htsmsg_get_str(msg, "method");
     if(method == NULL)
       break;
+
+    uint32_t subs;
+    if(htsmsg_get_u32(msg, "subscriptionId", &subs) || subs != m_subs)
+    {
+      htsmsg_destroy(msg);
+      continue;
+    }
 
     if     (strcmp("subscriptionStart",  method) == 0)
     {
@@ -133,48 +140,7 @@ DemuxPacket* cHTSPDemux::Read()
       cHTSPSession::ParseSignalStatus(msg, m_Quality);
     else if(strcmp("muxpkt"            , method) == 0)
     {
-      uint32_t    index, duration, frametype;
-      const void* bin;
-      size_t      binlen;
-      int64_t     ts;
-      char        frametypechar[1];
-
-      htsmsg_get_u32(msg, "frametype", &frametype);
-      frametypechar[0] = static_cast<char>( frametype );
-//      XBMC->Log(LOG_DEBUG, "%s - Frame type %c", __FUNCTION__, frametypechar[0]);
-
-      if(htsmsg_get_u32(msg, "stream" , &index)  ||
-         htsmsg_get_bin(msg, "payload", &bin, &binlen))
-        break;
-
-      DemuxPacket* pkt = PVR->AllocateDemuxPacket(binlen);
-      memcpy(pkt->pData, bin, binlen);
-
-      pkt->iSize = binlen;
-
-      if(!htsmsg_get_u32(msg, "duration", &duration))
-        pkt->duration = (double)duration * DVD_TIME_BASE / 1000000;
-
-      if(!htsmsg_get_s64(msg, "dts", &ts))
-        pkt->dts = (double)ts * DVD_TIME_BASE / 1000000;
-      else
-        pkt->dts = DVD_NOPTS_VALUE;
-
-      if(!htsmsg_get_s64(msg, "pts", &ts))
-        pkt->pts = (double)ts * DVD_TIME_BASE / 1000000;
-      else
-        pkt->pts = DVD_NOPTS_VALUE;
-
-      pkt->iStreamId = -1;
-      for(unsigned int i = 0; i < m_Streams.iStreamCount; i++)
-      {
-        if(m_Streams.stream[i].iPhysicalId == (unsigned int)index)
-        {
-          pkt->iStreamId = i;
-          break;
-        }
-      }
-
+      DemuxPacket *pkt = ParseMuxPacket(msg);
       htsmsg_destroy(msg);
       return pkt;
     }
@@ -189,6 +155,55 @@ DemuxPacket* cHTSPDemux::Read()
     return pkt;
   }
   return NULL;
+}
+
+DemuxPacket *cHTSPDemux::ParseMuxPacket(htsmsg_t *msg)
+{
+  DemuxPacket* pkt = NULL;
+  uint32_t    index, duration, frametype;
+  const void* bin;
+  size_t      binlen;
+  int64_t     ts;
+  char        frametypechar[1];
+
+  htsmsg_get_u32(msg, "frametype", &frametype);
+  frametypechar[0] = static_cast<char>( frametype );
+
+  if(htsmsg_get_u32(msg, "stream" , &index)  ||
+     htsmsg_get_bin(msg, "payload", &bin, &binlen))
+  {
+    return pkt;
+  }
+
+  pkt = PVR->AllocateDemuxPacket(binlen);
+  memcpy(pkt->pData, bin, binlen);
+
+  pkt->iSize = binlen;
+
+  if(!htsmsg_get_u32(msg, "duration", &duration))
+    pkt->duration = (double)duration * DVD_TIME_BASE / 1000000;
+
+  if(!htsmsg_get_s64(msg, "dts", &ts))
+    pkt->dts = (double)ts * DVD_TIME_BASE / 1000000;
+  else
+    pkt->dts = DVD_NOPTS_VALUE;
+
+  if(!htsmsg_get_s64(msg, "pts", &ts))
+    pkt->pts = (double)ts * DVD_TIME_BASE / 1000000;
+  else
+    pkt->pts = DVD_NOPTS_VALUE;
+
+  pkt->iStreamId = -1;
+  for(unsigned int i = 0; i < m_Streams.iStreamCount; i++)
+  {
+    if(m_Streams.stream[i].iPhysicalId == (unsigned int)index)
+    {
+      pkt->iStreamId = i;
+      break;
+    }
+  }
+
+  return pkt;
 }
 
 bool cHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
@@ -462,29 +477,4 @@ void cHTSPDemux::SubscriptionStatus(htsmsg_t *m)
     XBMC->Log(LOG_DEBUG, "%s - %s", __FUNCTION__, status);
     XBMC->QueueNotification(QUEUE_INFO, status);
   }
-}
-
-htsmsg_t* cHTSPDemux::ReadStream()
-{
-  htsmsg_t* msg;
-
-  /* after anything has started reading, *
-   * we can guarantee a new stream       */
-
-  while((msg = m_session.ReadMessage(1000)))
-  {
-    const char* method;
-    if((method = htsmsg_get_str(msg, "method")) == NULL)
-      return msg;
-
-    uint32_t subs;
-    if(htsmsg_get_u32(msg, "subscriptionId", &subs) || subs != m_subs)
-    {
-      htsmsg_destroy(msg);
-      continue;
-    }
-
-    return msg;
-  }
-  return NULL;
 }

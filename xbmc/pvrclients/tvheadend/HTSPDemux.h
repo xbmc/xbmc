@@ -43,8 +43,7 @@ protected:
   void SubscriptionStart (htsmsg_t *m);
   void SubscriptionStop  (htsmsg_t *m);
   void SubscriptionStatus(htsmsg_t *m);
-
-  htsmsg_t* ReadStream();
+  DemuxPacket *ParseMuxPacket(htsmsg_t *m);
 
 private:
   void SetLanguageInfo(const char *strLanguage, char *strDestination);
