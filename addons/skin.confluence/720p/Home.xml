@@ -544,10 +544,10 @@
 			<posy>190r</posy>
 			<width>1280</width>
 			<height>200</height>
-			<onleft>20</onleft>
-			<onright>22</onright>
+			<onleft>9002</onleft>
+			<onright>9002</onright>
 			<onup>9001</onup>
-			<ondown>9000</ondown>
+			<ondown>20</ondown>
 			<pagecontrol>-</pagecontrol>
 			<scrolltime>300</scrolltime>
 			<focusposition>3</focusposition>
@@ -786,63 +786,6 @@
 				</item>
 			</content>
 		</control>
-		<control type="group" id="10">
-			<posx>150r</posx>
-			<posy>78r</posy>
-			<visible>true</visible>
-			<control type="button" id="22">
-				<description>Play Disc Media push button</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>43</width>
-				<height>43</height>
-				<label>16004</label>
-				<font>-</font>
-				<aligny>-</aligny>
-				<onclick>ActivateWindow(1113)</onclick>
-				<texturefocus>home-playmedia-FO.png</texturefocus>
-				<texturenofocus>home-playmedia.png</texturenofocus>
-				<onleft>9002</onleft>
-				<onright>21</onright>
-				<onup>9000</onup>
-				<ondown>9000</ondown>
-				<visible>System.HasMediaDVD</visible>
-			</control>
-			<control type="button" id="21">
-				<description>Favourites push button</description>
-				<posx>45</posx>
-				<posy>0</posy>
-				<width>43</width>
-				<height>43</height>
-				<label>1036</label>
-				<font>-</font>
-				<aligny>-</aligny>
-				<onclick>ActivateWindow(Favourites)</onclick>
-				<texturefocus>home-favourites-FO.png</texturefocus>
-				<texturenofocus>home-favourites.png</texturenofocus>
-				<onleft>22</onleft>
-				<onright>20</onright>
-				<onup>9000</onup>
-				<ondown>9000</ondown>
-			</control>
-			<control type="button" id="20">
-				<description>Power push button</description>
-				<posx>90</posx>
-				<posy>0</posy>
-				<width>43</width>
-				<height>43</height>
-				<label>31003</label>
-				<font>-</font>
-				<aligny>-</aligny>
-				<onclick>ActivateWindow(ShutdownMenu)</onclick>
-				<texturefocus>home-power-FO.png</texturefocus>
-				<texturenofocus>home-power.png</texturenofocus>
-				<onleft>21</onleft>
-				<onright>9002</onright>
-				<onup>9000</onup>
-				<ondown>9000</ondown>
-			</control>
-		</control>
 		<control type="group">
 			<posx>0</posx>
 			<posy>30r</posy>
@@ -868,6 +811,52 @@
 				<width>24</width>
 				<height>24</height>
 				<texture>icon-rss.png</texture>
+			</control>
+		</control>
+		<control type="group" id="10">
+			<posx>0</posx>
+			<posy>60r</posy>
+			<visible>true</visible>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>150</width>
+				<height>60</height>
+				<texture>HomeButtonsBack.png</texture>
+			</control>
+			<control type="button" id="20">
+				<description>Power push button</description>
+				<posx>55</posx>
+				<posy>15</posy>
+				<width>43</width>
+				<height>43</height>
+				<label>31003</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<onclick>ActivateWindow(ShutdownMenu)</onclick>
+				<texturefocus>home-power-FO.png</texturefocus>
+				<texturenofocus>home-power.png</texturenofocus>
+				<onleft>21</onleft>
+				<onright>21</onright>
+				<onup>9002</onup>
+				<ondown>9000</ondown>
+			</control>
+			<control type="button" id="21">
+				<description>Favourites push button</description>
+				<posx>10</posx>
+				<posy>15</posy>
+				<width>43</width>
+				<height>43</height>
+				<label>1036</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<onclick>ActivateWindow(Favourites)</onclick>
+				<texturefocus>home-favourites-FO.png</texturefocus>
+				<texturenofocus>home-favourites.png</texturenofocus>
+				<onleft>20</onleft>
+				<onright>20</onright>
+				<onup>9002</onup>
+				<ondown>9000</ondown>
 			</control>
 		</control>
 		<control type="group">
