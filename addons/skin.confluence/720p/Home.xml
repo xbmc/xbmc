@@ -545,6 +545,7 @@
 			</control>
 		</control>
 		<control type="fixedlist" id="9002">
+			<animation effect="slide" start="0,0" end="-91,0" time="0" condition="StringCompare(Container(9002).NumItems,2) | StringCompare(Container(9002).NumItems,4)">conditional</animation>
 			<posx>0</posx>
 			<posy>190r</posy>
 			<width>1280</width>
