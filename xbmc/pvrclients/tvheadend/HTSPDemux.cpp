@@ -477,13 +477,6 @@ htsmsg_t* cHTSPDemux::ReadStream()
     if((method = htsmsg_get_str(msg, "method")) == NULL)
       return msg;
 
-    if     (strstr(method, "channelAdd"))
-      cHTSPSession::ParseChannelUpdate(msg, m_channels);
-    else if(strstr(method, "channelUpdate"))
-      cHTSPSession::ParseChannelUpdate(msg, m_channels);
-    else if(strstr(method, "channelDelete"))
-      cHTSPSession::ParseChannelRemove(msg, m_channels);
-
     uint32_t subs;
     if(htsmsg_get_u32(msg, "subscriptionId", &subs) || subs != m_subs)
     {
