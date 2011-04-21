@@ -30,6 +30,17 @@ using namespace PVR;
 
 void CDemuxStreamVideoPVRClient::GetStreamInfo(std::string& strInfo)
 {
+  switch (codec)
+  {
+    case CODEC_ID_MPEG2VIDEO:
+      strInfo = "MPEG2VIDEO";
+      break;
+    case CODEC_ID_H264:
+      strInfo = "H264";
+      break;
+    default:
+      break;
+  }
 }
 
 void CDemuxStreamAudioPVRClient::GetStreamInfo(std::string& strInfo)
@@ -38,6 +49,18 @@ void CDemuxStreamAudioPVRClient::GetStreamInfo(std::string& strInfo)
   {
     case CODEC_ID_AC3:
       strInfo = "AC3";
+      break;
+    case CODEC_ID_EAC3:
+      strInfo = "EAC3";
+      break;
+    case CODEC_ID_MP2:
+      strInfo = "MPEG2AUDIO";
+      break;
+    case CODEC_ID_AAC:
+      strInfo = "AAC";
+      break;
+    case CODEC_ID_DTS:
+      strInfo = "DTS";
       break;
     default:
       break;
