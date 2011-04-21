@@ -200,8 +200,8 @@ bool CPVRChannel::CacheIcon(void)
 bool CPVRChannel::Delete(void)
 {
   bool bReturn = false;
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (!database || !database->Open())
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
     return bReturn;
 
   CSingleLock lock(m_critSection);
@@ -244,8 +244,7 @@ bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
   if (!m_bChanged)
     return true;
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (database)
+  if (CPVRDatabase *database = OpenPVRDatabase())
   {
     if (!bQueueWrite)
     {

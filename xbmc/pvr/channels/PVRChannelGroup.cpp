@@ -182,8 +182,10 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   if (g_guiSettings.GetString("pvrmenu.iconpath") == "")
     return;
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  database->Open();
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
+    return;
+
   CSingleLock lock(m_critSection);
 
   for (unsigned int ptr = 0; ptr < size(); ptr++)
@@ -428,8 +430,8 @@ int CPVRChannelGroup::GetMembers(CFileItemList *results, bool bGroupMembers /* =
 
 int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 {
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (!database || !database->Open())
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
     return -1;
 
   int iChannelCount = size();
@@ -475,8 +477,8 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
   CSingleLock lock(m_critSection);
   int iCurSize = size();
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (!database || !database->Open())
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
     return false;
 
   /* go through the channel list and check for updated or new channels */
@@ -692,8 +694,7 @@ bool CPVRChannelGroup::Persist(void)
   if (!HasChanges())
     return true;
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (database && database->Open())
+  if (CPVRDatabase *database = OpenPVRDatabase())
   {
     CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - persisting channel group '%s' with %d channels",
         __FUNCTION__, GroupName().c_str(), (int) size());

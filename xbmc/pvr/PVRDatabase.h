@@ -20,8 +20,10 @@
  *
  */
 
+#include "PVRManager.h"
 #include "dbwrappers/Database.h"
 #include "XBDateTime.h"
+#include "utils/log.h"
 
 class CVideoSettings;
 
@@ -226,4 +228,20 @@ namespace PVR
      */
     virtual bool UpdateOldVersion(int version);
   };
+
+  /*!
+   * @brief Try to open the PVR database.
+   * @return The opened database or NULL if the database failed to open.
+   */
+  inline CPVRDatabase *OpenPVRDatabase(void)
+  {
+    CPVRDatabase *database = g_PVRManager.GetTVDatabase();
+    if (!database || !database->Open())
+    {
+      CLog::Log(LOGERROR, "PVR - failed to open the database");
+      database = NULL;
+    }
+
+    return database;
+  }
 }

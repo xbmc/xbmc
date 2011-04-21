@@ -39,7 +39,6 @@ namespace PVR
   class CPVRGUIInfo;
   class CPVRDatabase;
 
-
   #define g_PVRManager       CPVRManager::Get()
   #define g_PVRChannelGroups g_PVRManager.ChannelGroups()
   #define g_PVREpg           g_PVRManager.EPG()

@@ -254,7 +254,8 @@ bool CPVRClients::ClientLoaded(const CStdString &strClientId)
 int CPVRClients::AddClientToDb(const CStdString &strClientId, const CStdString &strName)
 {
   /* add this client to the database if it's not in there yet */
-  int iClientDbId = g_PVRManager.GetTVDatabase()->AddClient(strName, strClientId);
+  CPVRDatabase *database = OpenPVRDatabase();
+  int iClientDbId = database ? database->AddClient(strName, strClientId) : -1;
   if (iClientDbId == -1)
   {
     CLog::Log(LOGERROR, "PVR - %s - can't add client '%s' to the database",
@@ -278,12 +279,9 @@ bool CPVRClients::LoadClients(void)
     return false;
 
   /* load and initialise the clients */
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (!database || !database->Open())
-  {
-    CLog::Log(LOGERROR, "PVR - %s - cannot open the database", __FUNCTION__);
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
     return false;
-  }
 
   m_bAllClientsLoaded = true;
   for (unsigned iClientPtr = 0; iClientPtr < addons.size(); iClientPtr++)

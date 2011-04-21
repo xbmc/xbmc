@@ -233,12 +233,9 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
 
 bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 {
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (!database->Open())
-  {
-    CLog::Log(LOGERROR, "PVRChannelGroups - %s - cannot open the database", __FUNCTION__);
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
     return false;
-  }
 
   /* load the other groups from the database */
   database->Get(*this);
@@ -408,12 +405,9 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
     return bReturn;
   }
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (!database || !database->Open())
-  {
-    CLog::Log(LOGERROR, "CPVRChannelGroups - %s - unable to open the database", __FUNCTION__);
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
     return bReturn;
-  }
 
   /* remove all channels from the group */
   database->RemoveChannelsFromGroup(group);
