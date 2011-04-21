@@ -30,20 +30,21 @@
 
 using namespace std;
 using namespace PVR;
+using namespace EPG;
 
-CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG &data) :
-    CEpgInfoTag()
+CPVREpgInfoTag::CPVREpgInfoTag(void) :
+    CEpgInfoTag(),
+    m_Timer(NULL),
+    m_isRecording(false)
 {
-  Reset();
-  Update(data);
 }
 
-void CPVREpgInfoTag::Reset()
+CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG &data) :
+    CEpgInfoTag(),
+    m_Timer(NULL),
+    m_isRecording(false)
 {
-  CEpgInfoTag::Reset();
-
-  m_isRecording = false;
-  m_Timer       = NULL;
+  Update(data);
 }
 
 const CPVRChannel *CPVREpgInfoTag::ChannelTag(void) const

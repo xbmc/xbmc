@@ -62,7 +62,7 @@ namespace PVR
 
     void UnlockWindow();
 
-    CGUIEPGGridContainer *m_guideGrid;
+    EPG::CGUIEPGGridContainer *m_guideGrid;
 
   protected:
     virtual void SetLabel(int iControl, const CStdString &strLabel);

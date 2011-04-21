@@ -29,6 +29,7 @@
 
 using namespace std;
 using namespace PVR;
+using namespace EPG;
 
 void PVREpgSearchFilter::Reset()
 {

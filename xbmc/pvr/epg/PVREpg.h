@@ -31,7 +31,7 @@ namespace PVR
 
   /** PVR EPG class */
 
-  class CPVREpg : public CEpg
+  class CPVREpg : public EPG::CEpg
   {
   private:
     /*!
@@ -46,7 +46,7 @@ namespace PVR
      * @brief Create a new tag.
      * @return The new tag.
      */
-    CEpgInfoTag *CreateTag(void);
+    EPG::CEpgInfoTag *CreateTag(void);
 
     bool LoadFromClients(time_t start, time_t end);
 

@@ -65,6 +65,7 @@
 #include "utils/StringUtils.h"
 
 using namespace std;
+using namespace EPG;
 
 typedef struct
 {

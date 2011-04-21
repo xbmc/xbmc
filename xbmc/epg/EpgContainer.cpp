@@ -38,11 +38,9 @@
 
 using namespace std;
 using namespace PVR;
+using namespace EPG;
 
-CEpgContainer g_EpgContainer;
-
-CEpgContainer::CEpgContainer(void) :
-    Observable()
+CEpgContainer::CEpgContainer(void)
 {
   m_bStop = true;
   Clear(false);
@@ -51,6 +49,12 @@ CEpgContainer::CEpgContainer(void) :
 CEpgContainer::~CEpgContainer(void)
 {
   Clear();
+}
+
+CEpgContainer &CEpgContainer::Get(void)
+{
+  static CEpgContainer epgInstance;
+  return epgInstance;
 }
 
 void CEpgContainer::Unload(void)

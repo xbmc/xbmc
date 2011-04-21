@@ -32,7 +32,7 @@ namespace PVR
 
   /** an EPG info tag */
 
-  class CPVREpgInfoTag : public CEpgInfoTag
+  class CPVREpgInfoTag : public EPG::CEpgInfoTag
   {
     friend class CPVREpg;
 
@@ -44,18 +44,13 @@ namespace PVR
     /*!
      * @brief Create a new empty EPG infotag.
      */
-    CPVREpgInfoTag(void) { Reset(); };
+    CPVREpgInfoTag(void);
 
     /*!
      * @brief Create a new EPG infotag with 'data' as content.
      * @param data The tag's content.
      */
     CPVREpgInfoTag(const EPG_TAG &data);
-
-    /*!
-     * @brief Clear this event.
-     */
-    void Reset();
 
     /*!
      * @brief Get the channel that plays this event.

@@ -34,6 +34,7 @@
 
 using namespace std;
 using namespace PVR;
+using namespace EPG;
 
 CPVRTimers::CPVRTimers(void)
 {

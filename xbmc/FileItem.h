@@ -42,7 +42,10 @@ namespace MUSIC_INFO
   class CMusicInfoTag;
 }
 class CVideoInfoTag;
-class CEpgInfoTag;
+namespace EPG
+{
+  class CEpgInfoTag;
+}
 namespace PVR
 {
   class CPVREpgInfoTag;
@@ -83,7 +86,7 @@ public:
   CFileItem(const CGenre& genre);
   CFileItem(const CVideoInfoTag& movie);
   CFileItem(const PVR::CPVREpgInfoTag& tag);
-  CFileItem(const CEpgInfoTag& tag);
+  CFileItem(const EPG::CEpgInfoTag& tag);
   CFileItem(const PVR::CPVRChannel& channel);
   CFileItem(const PVR::CPVRRecording& record);
   CFileItem(const PVR::CPVRTimerInfoTag& timer);
@@ -202,9 +205,9 @@ public:
     return m_epgInfoTag != NULL;
   }
 
-  CEpgInfoTag* GetEPGInfoTag();
+  EPG::CEpgInfoTag* GetEPGInfoTag();
 
-  inline const CEpgInfoTag* GetEPGInfoTag() const
+  inline const EPG::CEpgInfoTag* GetEPGInfoTag() const
   {
     return m_epgInfoTag;
   }
@@ -371,7 +374,7 @@ private:
   CStdString m_extrainfo;
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
-  CEpgInfoTag* m_epgInfoTag;
+  EPG::CEpgInfoTag* m_epgInfoTag;
   PVR::CPVRChannel* m_pvrChannelInfoTag;
   PVR::CPVRRecording* m_pvrRecordingInfoTag;
   PVR::CPVRTimerInfoTag * m_pvrTimerInfoTag;

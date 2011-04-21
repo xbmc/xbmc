@@ -33,6 +33,7 @@
 
 using namespace std;
 using namespace PVR;
+using namespace EPG;
 
 #define CONTROL_BTN_SWITCH              5
 #define CONTROL_BTN_RECORD              6

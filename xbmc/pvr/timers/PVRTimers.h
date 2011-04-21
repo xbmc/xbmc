@@ -27,7 +27,10 @@
 #include "threads/Thread.h"
 
 class CFileItem;
-class CEpgInfoTag;
+namespace EPG
+{
+  class CEpgInfoTag;
+}
 
 namespace PVR
 {
@@ -187,7 +190,7 @@ namespace PVR
     bool IsRecording(void);
     bool UpdateEntries(CPVRTimers *timers);
     CPVRTimerInfoTag *GetByClient(int iClientId, int iClientTimerId);
-    CPVRTimerInfoTag *GetMatch(const CEpgInfoTag *Epg);
+    CPVRTimerInfoTag *GetMatch(const EPG::CEpgInfoTag *Epg);
     CPVRTimerInfoTag *GetMatch(const CFileItem *item);
     virtual void Notify(const Observable &obs, const CStdString& msg);
     bool IsRecordingOnChannel(const CPVRChannel &channel) const;

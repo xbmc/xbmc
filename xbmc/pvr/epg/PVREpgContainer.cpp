@@ -31,6 +31,7 @@
 
 using namespace std;
 using namespace PVR;
+using namespace EPG;
 
 void CPVREpgContainer::Clear(bool bClearDb /* = false */)
 {

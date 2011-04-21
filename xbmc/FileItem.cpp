@@ -67,6 +67,7 @@ using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MUSIC_INFO;
 using namespace PVR;
+using namespace EPG;
 
 CFileItem::CFileItem(const CSong& song)
 {

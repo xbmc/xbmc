@@ -35,6 +35,7 @@
 #include "GUIEPGGridContainer.h"
 
 using namespace PVR;
+using namespace EPG;
 
 #define SHORTGAP     5 // how many blocks is considered a short-gap in nav logic
 #define MINSPERBLOCK 5 /// would be nice to offer zooming of busy schedules /// performance cost to increase resolution 5 fold?

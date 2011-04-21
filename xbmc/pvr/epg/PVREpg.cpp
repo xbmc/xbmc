@@ -33,6 +33,7 @@
 #include "epg/EpgDatabase.h"
 
 using namespace PVR;
+using namespace EPG;
 
 CPVREpg::CPVREpg(CPVRChannel *channel) :
   CEpg(channel->ChannelID(), channel->ChannelName(), channel->EPGScraper())

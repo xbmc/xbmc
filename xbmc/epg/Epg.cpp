@@ -28,6 +28,8 @@
 #include "EpgDatabase.h"
 #include "EpgContainer.h"
 
+using namespace EPG;
+
 struct sortEPGbyDate
 {
   bool operator()(CEpgInfoTag* strItem1, CEpgInfoTag* strItem2)
@@ -39,14 +41,14 @@ struct sortEPGbyDate
   }
 };
 
-CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &strScraperName /* = "" */)
+CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &strScraperName /* = "" */) :
+    m_iEpgID(iEpgID),
+    m_strName(strName),
+    m_strScraperName(strScraperName),
+    m_nowActive(NULL),
+    m_Channel(NULL),
+    m_bInhibitSorting(false)
 {
-  m_iEpgID          = iEpgID;
-  m_strName         = strName;
-  m_strScraperName  = strScraperName;
-  m_nowActive       = NULL;
-  m_Channel         = NULL;
-  m_bInhibitSorting = false;
   m_lastScanTime.SetValid(false);
   m_firstDate.SetValid(false);
   m_lastDate.SetValid(false);

@@ -27,7 +27,7 @@
 
 namespace PVR
 {
-  class CPVREpgContainer : public CEpgContainer
+  class CPVREpgContainer : public EPG::CEpgContainer
   {
     friend class CPVREpg;
 
@@ -49,7 +49,7 @@ namespace PVR
      * @param iEpgId The table ID or -1 to create a new one.
      * @return The new table.
      */
-    CEpg *CreateEpg(int iEpgId);
+    EPG::CEpg *CreateEpg(int iEpgId);
 
     bool UpdateEPG(bool bShowProgress = false);
 

@@ -30,7 +30,7 @@ namespace PVR
 
   /** Filter to apply with on a CPVREpgInfoTag */
 
-  struct PVREpgSearchFilter : public EpgSearchFilter
+  struct PVREpgSearchFilter : public EPG::EpgSearchFilter
   {
     /*!
      * @brief Clear this filter.

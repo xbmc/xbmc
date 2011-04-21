@@ -37,6 +37,7 @@
 #include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
+using namespace EPG;
 
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_EPG, CONTROL_BTNGUIDE, CONTROL_LIST_GUIDE_NOW_NEXT),

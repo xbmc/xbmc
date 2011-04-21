@@ -29,14 +29,7 @@
 
 using namespace std;
 using namespace dbiplus;
-
-CEpgDatabase::CEpgDatabase(void)
-{
-}
-
-CEpgDatabase::~CEpgDatabase(void)
-{
-}
+using namespace EPG;
 
 bool CEpgDatabase::Open(void)
 {
