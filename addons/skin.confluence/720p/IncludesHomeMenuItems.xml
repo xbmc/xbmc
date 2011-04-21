@@ -130,4 +130,21 @@
 			<texture border="0,0,0,3">HomeSubEnd.png</texture>
 		</control>
 	</include>
+	<include name="HomeSubMenuPlayDisc">
+		<control type="image" id="90131">
+			<width>35</width>
+			<height>35</height>
+			<texture border="0,0,0,3" flipx="true">HomeSubEnd.png</texture>
+		</control>
+		<control type="button" id="90132">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>13391</label>
+			<onclick>EjectTray()</onclick>
+		</control>
+		<control type="image" id="90126">
+			<width>35</width>
+			<height>35</height>
+			<texture border="0,0,0,3">HomeSubEnd.png</texture>
+		</control>
+	</include>
 </includes>

@@ -387,6 +387,13 @@
 					<visible>Container(9000).HasFocus(5)</visible>
 					<include>HomeSubMenuSystem</include> <!-- Buttons for the grouplist -->
 				</control>
+				<control type="grouplist" id="9013">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9013</onleft>
+					<onright>9013</onright>
+					<visible>Container(9000).HasFocus(6)</visible>
+					<include>HomeSubMenuPlayDisc</include> <!-- Buttons for the grouplist -->
+				</control>
 			</control>
 			<control type="image">
 				<posx>0</posx>
@@ -515,6 +522,13 @@
 						<icon>special://skin/backgrounds/programs.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton)</visible>
+					</item>
+					<item id="6">
+						<label>341</label>
+						<onclick>XBMC.PlayDVD()</onclick>
+						<icon>special://skin/backgrounds/playdisc.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_PlayDisc_Folder)]</thumb>
+						<visible>System.HasMediaDVD</visible>
 					</item>
 					<item id="5">
 						<label>13000</label>
