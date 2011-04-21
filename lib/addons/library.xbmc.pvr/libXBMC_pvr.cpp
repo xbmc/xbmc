@@ -143,7 +143,7 @@ DLLEXPORT void PVR_trigger_recording_update()
   if (m_cb == NULL)
     return;
 
-  m_cb->TriggerTimerUpdate(m_Handle->addonData);
+  m_cb->TriggerRecordingUpdate(m_Handle->addonData);
 }
 
 DLLEXPORT void PVR_free_demux_packet(DemuxPacket* pPacket)

@@ -186,7 +186,7 @@ void CPVRRecordings::Update(bool bAsyncUpdate /* = false */)
 
 void CPVRRecordings::ExecuteUpdate(void)
 {
-  CLog::Log(LOGDEBUG, "CPVRTimers - %s - updating recordings", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CPVRRecordings - %s - updating recordings", __FUNCTION__);
   UpdateFromClients();
 
   CSingleLock lock(m_critSection);
