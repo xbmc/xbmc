@@ -241,7 +241,7 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
   }
 
   /* load the other groups from the database */
-  database->GetChannelGroupList(*this, m_bRadio);
+  database->Get(*this);
   int iSize = size();
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d user defined groups %s fetched from the database",
       __FUNCTION__, iSize - 1, m_bRadio ? "radio" : "TV");
@@ -416,10 +416,10 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   }
 
   /* remove all channels from the group */
-  database->RemoveChannelsFromGroup(group.GroupID());
+  database->RemoveChannelsFromGroup(group);
 
   /* delete the group from the database */
-  bReturn = database->DeleteChannelGroup(group.GroupID(), m_bRadio);
+  bReturn = database->Delete(group);
 
   database->Close();
 

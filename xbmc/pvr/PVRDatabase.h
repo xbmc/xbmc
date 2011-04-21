@@ -32,6 +32,7 @@ namespace PVR
   class CPVRChannelsContainer;
   class CPVRChannel;
   class CPVRChannelGroups;
+  class CPVRClient;
 
   /** The PVR database */
 
@@ -69,14 +70,14 @@ namespace PVR
      * @brief Remove all channels from the database.
      * @return True if all channels were removed, false otherwise.
      */
-    bool DeleteChannels();
+    bool DeleteChannels(void);
 
     /*!
      * @brief Remove all channels from a client from the database.
-     * @param iClientId The ID of the client to delete the channels for.
+     * @param client The client to delete the channels for.
      * @return True if the channels were deleted, false otherwise.
      */
-    bool DeleteClientChannels(int iClientId);
+    bool DeleteClientChannels(const CPVRClient &client);
 
     /*!
      * @brief Add or update a channel entry in the database
@@ -96,10 +97,9 @@ namespace PVR
     /*!
      * @brief Get the list of channels from the database
      * @param results The channel group to store the results in.
-     * @param bIsRadio Get the radio channels if true. Get the TV channels otherwise.
      * @return The amount of channels that were added.
      */
-    int GetChannels(CPVRChannelGroupInternal *results, bool bIsRadio);
+    int Get(CPVRChannelGroupInternal &results);
 
     //@}
 
@@ -139,7 +139,7 @@ namespace PVR
     /*! @name Channel group methods */
     //@{
 
-    bool RemoveChannelsFromGroup(int iGroupId);
+    bool RemoveChannelsFromGroup(const CPVRChannelGroup &group);
 
     /*!
      * @brief Remove all channel groups from the database
@@ -150,26 +150,24 @@ namespace PVR
 
     /*!
      * @brief Delete a channel group from the database.
-     * @param iGroupId The id of the group to delete.
-     * @param bRadio True if it's a radio channel group, false otherwise.
+     * @param group The group to delete.
      * @return True if the group was deleted successfully, false otherwise.
      */
-    bool DeleteChannelGroup(int iGroupId, bool bRadio = false);
+    bool Delete(const CPVRChannelGroup &group);
 
     /*!
      * @brief Get the channel groups.
      * @param results The container to store the results in.
-     * @param bRadio Get radio channel groups if true.
      * @return True if the list was fetched successfully, false otherwise.
      */
-    bool GetChannelGroupList(CPVRChannelGroups &results, bool bRadio);
+    bool Get(CPVRChannelGroups &results);
 
     /*!
      * @brief Add the group members to a group.
      * @param group The group to get the channels for.
      * @return The amount of channels that were added.
      */
-    int GetChannelsInGroup(CPVRChannelGroup *group);
+    int GetGroupMembers(CPVRChannelGroup &group);
 
     /*!
      * @brief Add or update a channel group entry in the database.
@@ -178,14 +176,6 @@ namespace PVR
      */
     int Persist(CPVRChannelGroup *group);
 
-  protected:
-    /*!
-     * @brief Get the Id of a channel group
-     * @param strGroupName The name of the group.
-     * @param bRadio True if it's a radio channel group, false otherwise.
-     * @return
-     */
-    int GetChannelGroupId(const CStdString &strGroupName, bool bRadio = false);
     //@}
 
     /*! @name Client methods */
