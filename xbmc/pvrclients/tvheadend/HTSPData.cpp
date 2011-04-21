@@ -440,11 +440,11 @@ PVR_ERROR CHTSPData::DeleteTimer(const PVR_TIMER &timer, bool bForce)
   XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
 
   htsmsg_t *msg = htsmsg_create_map();
-  htsmsg_add_str(msg, "method", "deleteDvrEntry");
+  htsmsg_add_str(msg, "method", "cancelDvrEntry");
   htsmsg_add_u32(msg, "id", timer.iClientIndex);
   if ((msg = ReadResult(msg)) == NULL)
   {
-    XBMC->Log(LOG_DEBUG, "%s - Failed to get deleteDvrEntry", __FUNCTION__);
+    XBMC->Log(LOG_DEBUG, "%s - Failed to get cancelDvrEntry", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
   }
 
