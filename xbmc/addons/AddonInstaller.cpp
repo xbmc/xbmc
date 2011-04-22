@@ -330,6 +330,9 @@ CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const CStdString &hash
 
 bool CAddonInstallJob::DoWork()
 {
+  if (m_remove)
+    return DeleteAddon();
+
   // Addons are installed by downloading the .zip package on the server to the local
   // packages folder, then extracting from the local .zip package into the addons folder
   // Both these functions are achieved by "copying" using the vfs.

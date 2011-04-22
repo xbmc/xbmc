@@ -118,7 +118,7 @@ private:
 class CAddonInstallJob : public CFileOperationJob
 {
 public:
-  CAddonInstallJob(const ADDON::AddonPtr &addon, const CStdString &hash = "", bool update = false, const CStdString &referer = "");
+  CAddonInstallJob(const ADDON::AddonPtr &addon, const CStdString &hash = "", bool update = false, const CStdString &referer = "", bool remove=false);
 
   virtual bool DoWork();
 
@@ -152,5 +152,6 @@ private:
   ADDON::AddonPtr m_addon;
   CStdString m_hash;
   bool m_update;
+  bool m_remove;
   CStdString m_referer;
 };
