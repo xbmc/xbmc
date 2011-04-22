@@ -2477,9 +2477,6 @@
     <ClCompile Include="..\..\xbmc\utils\TextSearch.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUIEPGGridContainer.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\GLUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -2642,6 +2639,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp">
       <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\epg\GUIEPGGridContainer.cpp">
+      <Filter>epg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5095,9 +5095,6 @@
     <ClInclude Include="..\..\xbmc\utils\TextSearch.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUIEPGGridContainer.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\GLUtils.h">
       <Filter>utils</Filter>
     </ClInclude>
@@ -5255,6 +5252,9 @@
     <ClInclude Include="..\..\xbmc\utils\RecentlyAddedJob.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\InputOperations.h">
       <Filter>interfaces\json-rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\epg\GUIEPGGridContainer.h">
+      <Filter>epg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
