@@ -330,7 +330,6 @@ void cHTSPDemux::SubscriptionStart(htsmsg_t *m)
       m_Streams.stream[m_Streams.iStreamCount].iCodecId         = CODEC_ID_AC3;
       m_Streams.stream[m_Streams.iStreamCount].iChannels        = htsmsg_get_u32_or_default(sub, "channels" , 0);
       m_Streams.stream[m_Streams.iStreamCount].iSampleRate      = htsmsg_get_u32_or_default(sub, "rate" , 0);
-      XBMC->Log(LOG_DEBUG, "channels = %d, rate = %d", m_Streams.stream[m_Streams.iStreamCount].iChannels, m_Streams.stream[m_Streams.iStreamCount].iSampleRate);
       SetLanguageInfo(language, m_Streams.stream[m_Streams.iStreamCount].strLanguage);
       m_Streams.iStreamCount++;
     }
