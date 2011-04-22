@@ -913,6 +913,7 @@ namespace JSONRPC
             "{ \"name\": \"item\", \"type\": \"object\", \"id\": \"Playlist.Audio.Item\", \"required\": true,"
                 "\"properties\": {"
                     "\"file\": { \"type\": \"string\" },"
+                    "\"directory\": { \"type\": \"string\" },"
                     "\"artistid\": { \"$ref\": \"Library.Id\" },"
                     "\"albumid\": { \"$ref\": \"Library.Id\" },"
                     "\"songid\": { \"$ref\": \"Library.Id\" },"

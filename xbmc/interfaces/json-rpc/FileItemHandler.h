@@ -36,6 +36,8 @@ namespace JSONRPC
     static void MakeFieldsList(const Json::Value &parameterObject, Json::Value &validFields);
 
     static bool FillFileItemList(const Json::Value &parameterObject, CFileItemList &list);
+    static bool FillDirectoryItemList(CFileItemPtr directory, CFileItemList &list);
+
   private:
     static bool ParseSortMethods(const CStdString &method, const bool &ignorethe, const CStdString &order, SORT_METHOD &sortmethod, SORT_ORDER &sortorder);
     static void Sort(CFileItemList &items, const Json::Value& parameterObject);

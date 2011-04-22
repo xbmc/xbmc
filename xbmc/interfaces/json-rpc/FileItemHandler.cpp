@@ -30,8 +30,10 @@
 #include "utils/Variant.h"
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
+#include "settings/Settings.h"
+#include "filesystem/Directory.h"
 
-
+using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace Json;
 using namespace JSONRPC;
@@ -180,6 +182,21 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
   }
 }
 
+bool CFileItemHandler::FillDirectoryItemList(CFileItemPtr directory, CFileItemList &list)
+{
+  CFileItemList items;
+  CDirectory::GetDirectory(directory->m_strPath, items, g_settings.m_musicExtensions);
+
+  for ( int i = 0; i < items.Size(); ++i)
+  {
+    if ((CFileItem*)items[i]->m_bIsFolder)
+      FillDirectoryItemList(items[i], list);
+    else
+      list.Add(items[i]);
+  }
+  return true;
+}
+
 bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
   if (parameterObject["file"].isString())
@@ -190,6 +207,16 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
       CFileItemPtr item = CFileItemPtr(new CFileItem(file, URIUtils::HasSlashAtEnd(file)));
       list.Add(item);
     }
+  }
+
+  if (parameterObject["directory"].isString())
+  {
+    CStdString directory = parameterObject["directory"].asString();
+	if (!directory.empty())
+	{
+        CFileItemPtr item = CFileItemPtr(new CFileItem(directory, URIUtils::HasSlashAtEnd(directory)));
+		FillDirectoryItemList(item, list);
+	}
   }
 
   CPlaylistOperations::FillFileItemList(parameterObject, list);
