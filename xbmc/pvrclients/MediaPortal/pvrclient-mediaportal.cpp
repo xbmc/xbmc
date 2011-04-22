@@ -1115,7 +1115,7 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
       if (g_iTVServerXBMCBuild >=90 )
       { // Continue with the existing TsReader.
         XBMC->Log(LOG_INFO, "Re-using existing TsReader...");
-        m_tsreader->OnSwap();
+        m_tsreader->OnZap();
         usleep(100000);
         return true;
       } else {
