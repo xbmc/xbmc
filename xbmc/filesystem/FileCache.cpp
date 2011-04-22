@@ -170,7 +170,7 @@ void CFileCache::Process()
       m_seekEnded.Set();
     }
 
-    while(1)
+    while(m_writeRate)
     {
       unsigned timestamp = CTimeUtils::GetTimeMS();
       if(m_writePos - m_readPos < m_writeRate)
@@ -393,11 +393,15 @@ int CFileCache::IoControl(EIoControl request, void* param)
   {
     SCacheStatus* status = (SCacheStatus*)param;
     status->forward = m_pCache->WaitForData(0, 0);
+    status->maxrate = m_writeRate;
     return 0;
   }
 
   if(request == IOCTRL_SEEK_POSSIBLE)
     return m_seekPossible;
+
+  if(request == IOCTRL_CACHE_SETRATE)
+    m_writeRate = *(unsigned*)param;
 
   return -1;
 }

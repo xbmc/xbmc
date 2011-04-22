@@ -104,6 +104,12 @@ public:
    */
   virtual __int64 GetCachedBytes() { return -1; }
 
+  /*! \brief Indicate expected read rate in bytes per second.
+   *  This could be used to throttle caching rate. Should
+   *  be seen as only a hint
+   */
+  virtual void SetReadRate(unsigned rate) {}
+
   bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
   virtual bool IsEOF() = 0;
   virtual int GetCurrentGroupId() { return 0; }

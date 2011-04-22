@@ -546,6 +546,11 @@ bool CDVDPlayer::OpenDemuxStream()
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
   m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
 
+  int64_t len = m_pInputStream->GetLength();
+  int64_t tim = m_pDemuxer->GetStreamLength();
+  if(len > 0 && tim > 0)
+    m_pInputStream->SetReadRate(len * 1000 / tim);
+
   return true;
 }
 

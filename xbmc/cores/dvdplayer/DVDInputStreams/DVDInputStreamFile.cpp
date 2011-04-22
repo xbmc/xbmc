@@ -22,6 +22,7 @@
 #include "DVDInputStreamFile.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 
@@ -146,3 +147,9 @@ int CDVDInputStreamFile::GetBlockSize()
     return 0;
 }
 
+void CDVDInputStreamFile::SetReadRate(unsigned rate)
+{
+  unsigned maxrate = rate * 2;
+  if(m_pFile->IoControl(IOCTRL_CACHE_SETRATE, &maxrate) >= 0)
+    CLog::Log(LOGDEBUG, "CDVDInputStreamFile::SetReadRate - set cache throttle rate to %u bytes per second", maxrate);
+}
