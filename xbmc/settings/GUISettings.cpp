@@ -817,6 +817,7 @@ void CGUISettings::Initialize()
   AddInt(pvre, "epg.epgupdate", 19071, 120, 15, 15, 480, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddBool(pvre, "epg.ignoredbforclient", 19072, false);
   AddString(pvre, "epg.resetepg", 19187, "", BUTTON_CONTROL_STANDARD);
+  AddBool(pvre, "epg.preventupdateswhileplayingtv", 19230, false);
 
   CSettingsCategory* pvrp = AddCategory(8, "pvrplayback", 19177);
   AddBool(pvrp, "pvrplayback.switchautoclose", 19168, true);

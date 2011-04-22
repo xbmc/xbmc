@@ -27,6 +27,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/windows/GUIWindowPVR.h"
 #include "guilib/GUIWindowManager.h"
+#include "settings/GUISettings.h"
 #include "utils/log.h"
 
 using namespace std;
@@ -244,5 +245,7 @@ bool PVR::CPVREpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 bool PVR::CPVREpgContainer::InterruptUpdate(void) const
 {
   return (CEpgContainer::InterruptUpdate() ||
-      (g_PVRManager.IsStarted() && g_PVRManager.IsPlaying()));
+      (g_guiSettings.GetBool("epg.preventupdateswhileplayingtv") &&
+       g_PVRManager.IsStarted() &&
+       g_PVRManager.IsPlaying()));
 }
