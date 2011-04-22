@@ -27,164 +27,172 @@
 #include "threads/Thread.h"
 
 class CFileItem;
-class CEpgInfoTag;
-class CPVREpgInfoTag;
-class CGUIDialogPVRTimerSettings;
-
-class CPVRTimers : public std::vector<CPVRTimerInfoTag *>,
-                   public Observer,
-                   public Observable,
-                   private CThread
+namespace EPG
 {
-private:
-  CCriticalSection m_critSection;
-  bool             m_bIsUpdating;
+  class CEpgInfoTag;
+}
 
-  /*!
-   * @brief Add timers to this container.
-   * @return The amount of timers that were added.
-   */
-  int LoadFromClients(void);
+namespace PVR
+{
+  class CPVREpgInfoTag;
+  class CGUIDialogPVRTimerSettings;
 
-  void Sort(void);
-  virtual bool ExecuteUpdate(void);
-  virtual void Process(void);
+  class CPVRTimers : public std::vector<CPVRTimerInfoTag *>,
+                     public Observer,
+                     public Observable,
+                     private CThread
+  {
+  private:
+    CCriticalSection m_critSection;
+    bool             m_bIsUpdating;
 
-public:
-  CPVRTimers(void);
+    /*!
+     * @brief Add timers to this container.
+     * @return The amount of timers that were added.
+     */
+    int LoadFromClients(void);
 
-  /**
-   * Load the timers from the clients.
-   * Returns the amount of timers that were added.
-   */
-  int Load();
+    void Sort(void);
+    virtual bool ExecuteUpdate(void);
+    virtual void Process(void);
 
-  /**
-   * Clear this timer list.
-   */
-  void Unload();
+  public:
+    CPVRTimers(void);
 
-  /**
-   * @brief refresh the channel list from the clients.
-   * @param bAsyncUpdate Try to update the timers async.
-   */
-  bool Update(bool bAsyncUpdate = false);
+    /**
+     * Load the timers from the clients.
+     * Returns the amount of timers that were added.
+     */
+    int Load();
 
-  /**
-   * Update a timer entry in this container.
-   */
-  bool UpdateEntry(const CPVRTimerInfoTag &timer);
-  bool UpdateFromClient(const CPVRTimerInfoTag &timer) { return UpdateEntry(timer); }
+    /**
+     * Clear this timer list.
+     */
+    void Unload();
 
-  /********** getters **********/
+    /**
+     * @brief refresh the channel list from the clients.
+     * @param bAsyncUpdate Try to update the timers async.
+     */
+    bool Update(bool bAsyncUpdate = false);
 
-  /**
-   * Get all known timers.
-   */
-  int GetTimers(CFileItemList* results);
+    /**
+     * Update a timer entry in this container.
+     */
+    bool UpdateEntry(const CPVRTimerInfoTag &timer);
+    bool UpdateFromClient(const CPVRTimerInfoTag &timer) { return UpdateEntry(timer); }
 
-  /**
-   * The timer that will be active next.
-   * Returns false if there is none.
-   */
-  bool GetNextActiveTimer(CPVRTimerInfoTag *tag);
+    /********** getters **********/
 
-  int GetActiveTimers(std::vector<CPVRTimerInfoTag *> *tags);
+    /**
+     * Get all known timers.
+     */
+    int GetTimers(CFileItemList* results);
 
-  /**
-   * The amount of timers in this container.
-   */
-  int GetNumTimers() const;
+    /**
+     * The timer that will be active next.
+     * Returns false if there is none.
+     */
+    bool GetNextActiveTimer(CPVRTimerInfoTag *tag);
 
-  int GetNumActiveTimers(void) const;
+    int GetActiveTimers(std::vector<CPVRTimerInfoTag *> *tags);
 
-  int GetNumActiveRecordings(void) const;
+    /**
+     * The amount of timers in this container.
+     */
+    int GetNumTimers() const;
 
-  bool GetTimerByIndex(unsigned int iIndex, CPVRTimerInfoTag *timer) const;
+    int GetNumActiveTimers(void) const;
 
-  /**
-   * Get the directory for a path.
-   */
-  bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+    int GetNumActiveRecordings(void) const;
 
-  /********** channel methods **********/
+    bool GetTimerByIndex(unsigned int iIndex, CPVRTimerInfoTag *timer) const;
 
-  /**
-   * Check if there are any active timers on a channel.
-   */
-  bool ChannelHasTimers(const CPVRChannel &channel);
+    /**
+     * Get the directory for a path.
+     */
+    bool GetDirectory(const CStdString& strPath, CFileItemList &items);
 
-  /*!
-   * @brief Delete all timers on a channel.
-   * @param channel The channel to delete the timers for.
-   * @param bDeleteRepeating True to delete repeating events too, false otherwise.
-   * @param bCurrentlyActiveOnly True to delete timers that are currently running only.
-   * @return True if timers any were deleted, false otherwise.
-   */
-  bool DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteRepeating = true, bool bCurrentlyActiveOnly = false);
+    /********** channel methods **********/
 
-  /*!
-   * @brief Create a new instant timer on a channel.
-   * @param channel The channel to create the timer on.
-   * @param bStartTimer True to start the timer instantly, false otherwise.
-   * @return The new timer or NULL if it couldn't be created.
-   */
-  CPVRTimerInfoTag *InstantTimer(CPVRChannel *channel, bool bStartTimer = true);
+    /**
+     * Check if there are any active timers on a channel.
+     */
+    bool ChannelHasTimers(const CPVRChannel &channel);
 
-  /********** static methods **********/
+    /*!
+     * @brief Delete all timers on a channel.
+     * @param channel The channel to delete the timers for.
+     * @param bDeleteRepeating True to delete repeating events too, false otherwise.
+     * @param bCurrentlyActiveOnly True to delete timers that are currently running only.
+     * @return True if timers any were deleted, false otherwise.
+     */
+    bool DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteRepeating = true, bool bCurrentlyActiveOnly = false);
 
-  /**
-   * Add a timer to the client.
-   * True if it was sent correctly, false if not.
-   */
-  static bool AddTimer(const CFileItem &item);
+    /*!
+     * @brief Create a new instant timer on a channel.
+     * @param channel The channel to create the timer on.
+     * @param bStartTimer True to start the timer instantly, false otherwise.
+     * @return The new timer or NULL if it couldn't be created.
+     */
+    CPVRTimerInfoTag *InstantTimer(CPVRChannel *channel, bool bStartTimer = true);
 
-  /**
-   * Add a timer to the client.
-   * True if it was sent correctly, false if not.
-   */
-  static bool AddTimer(CPVRTimerInfoTag &item);
+    /********** static methods **********/
 
-  /**
-   * Delete a timer on the client.
-   * True if it was sent correctly, false if not.
-   */
-  static bool DeleteTimer(const CFileItem &item, bool bForce = false);
+    /**
+     * Add a timer to the client.
+     * True if it was sent correctly, false if not.
+     */
+    static bool AddTimer(const CFileItem &item);
 
-  /**
-   * Delete a timer on the client.
-   * True if it was sent correctly, false if not.
-   */
-  static bool DeleteTimer(CPVRTimerInfoTag &item, bool bForce = false);
+    /**
+     * Add a timer to the client.
+     * True if it was sent correctly, false if not.
+     */
+    static bool AddTimer(CPVRTimerInfoTag &item);
 
-  /**
-   * Rename a timer on the client.
-   * True if it was sent correctly, false if not.
-   */
-  static bool RenameTimer(CFileItem &item, const CStdString &strNewName);
+    /**
+     * Delete a timer on the client.
+     * True if it was sent correctly, false if not.
+     */
+    static bool DeleteTimer(const CFileItem &item, bool bForce = false);
 
-  /**
-   * Rename a timer on the client.
-   * True if it was sent correctly, false if not.
-   */
-  static bool RenameTimer(CPVRTimerInfoTag &item, const CStdString &strNewName);
+    /**
+     * Delete a timer on the client.
+     * True if it was sent correctly, false if not.
+     */
+    static bool DeleteTimer(CPVRTimerInfoTag &item, bool bForce = false);
 
-  /**
-   * Get updated timer information from the client.
-   * True if it was requested correctly, false if not.
-   */
-  static bool UpdateTimer(const CFileItem &item);
+    /**
+     * Rename a timer on the client.
+     * True if it was sent correctly, false if not.
+     */
+    static bool RenameTimer(CFileItem &item, const CStdString &strNewName);
 
-  /**
-   * Get updated timer information from the client.
-   * True if it was requested correctly, false if not.
-   */
-  static bool UpdateTimer(CPVRTimerInfoTag &item);
+    /**
+     * Rename a timer on the client.
+     * True if it was sent correctly, false if not.
+     */
+    static bool RenameTimer(CPVRTimerInfoTag &item, const CStdString &strNewName);
 
-  bool IsRecording(void);
-  bool UpdateEntries(CPVRTimers *timers);
-  CPVRTimerInfoTag *GetByClient(int iClientId, int iClientTimerId);
-  CPVRTimerInfoTag *GetMatch(const CEpgInfoTag *Epg);
-  CPVRTimerInfoTag *GetMatch(const CFileItem *item);
-  virtual void Notify(const Observable &obs, const CStdString& msg);
-};
+    /**
+     * Get updated timer information from the client.
+     * True if it was requested correctly, false if not.
+     */
+    static bool UpdateTimer(const CFileItem &item);
+
+    /**
+     * Get updated timer information from the client.
+     * True if it was requested correctly, false if not.
+     */
+    static bool UpdateTimer(CPVRTimerInfoTag &item);
+
+    bool IsRecording(void);
+    bool UpdateEntries(CPVRTimers *timers);
+    CPVRTimerInfoTag *GetByClient(int iClientId, int iClientTimerId);
+    CPVRTimerInfoTag *GetMatch(const EPG::CEpgInfoTag *Epg);
+    CPVRTimerInfoTag *GetMatch(const CFileItem *item);
+    virtual void Notify(const Observable &obs, const CStdString& msg);
+    bool IsRecordingOnChannel(const CPVRChannel &channel) const;
+  };
+}

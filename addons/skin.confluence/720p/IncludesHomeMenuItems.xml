@@ -255,6 +255,11 @@
 		</control>
 	</include>
 	<include name="HomeSubMenuMovies">
+		<control type="button" id="90166">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>31328</label>
+			<onclick>ActivateWindow(VideoLibrary,RecentlyAddedMovies,return)</onclick>
+		</control>
 		<control type="button" id="90161">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>369</label>
@@ -280,13 +285,13 @@
 			<label>20348</label>
 			<onclick>ActivateWindow(VideoLibrary,MovieDirectors,return)</onclick>
 		</control>
-		<control type="button" id="90166">
-			<include>ButtonHomeSubCommonValues</include>
-			<label>31328</label>
-			<onclick>ActivateWindow(VideoLibrary,RecentlyAddedMovies,return)</onclick>
-		</control>
 	</include>
 	<include name="HomeSubMenuTVShows">
+		<control type="button" id="90175">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>31328</label>
+			<onclick>ActivateWindow(VideoLibrary,RecentlyAddedEpisodes,return)</onclick>
+		</control>
 		<control type="button" id="90171">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>369</label>
@@ -306,11 +311,6 @@
 			<include>ButtonHomeSubCommonValues</include>
 			<label>344</label>
 			<onclick>ActivateWindow(VideoLibrary,TVShowActors,return)</onclick>
-		</control>
-		<control type="button" id="90175">
-			<include>ButtonHomeSubCommonValues</include>
-			<label>31328</label>
-			<onclick>ActivateWindow(VideoLibrary,RecentlyAddedEpisodes,return)</onclick>
 		</control>
 	</include>
 </includes>

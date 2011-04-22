@@ -25,6 +25,8 @@
 #include "PVRRecordings.h"
 #include "pvr/addons/PVRClients.h"
 
+using namespace PVR;
+
 CPVRRecording::CPVRRecording()
 {
   Reset();
@@ -104,7 +106,6 @@ bool CPVRRecording::Delete(void)
     return false;
   }
 
-  g_PVRManager.TriggerRecordingsUpdate();
   return true;
 }
 
@@ -118,7 +119,6 @@ bool CPVRRecording::Rename(const CStdString &strNewName)
     return false;
   }
 
-  g_PVRManager.TriggerRecordingsUpdate();
   return true;
 }
 

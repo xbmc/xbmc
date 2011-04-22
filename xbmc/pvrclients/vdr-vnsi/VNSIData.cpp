@@ -284,7 +284,7 @@ bool cVNSIData::GetChannelsList(PVR_HANDLE handle, bool radio)
     tag.strStreamURL      = "";
     tag.strIconPath       = "";
     tag.bIsHidden         = false;
-    tag.bIsRecording      = false;
+//    tag.bIsRecording      = false;
 
     PVR->TransferChannelEntry(handle, &tag);
     delete[] tag.strChannelName;

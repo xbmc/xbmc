@@ -35,6 +35,8 @@
 #include "dialogs/GUIDialogBusy.h"
 #include "threads/SingleLock.h"
 
+using namespace PVR;
+
 CGUIWindowPVR::CGUIWindowPVR(void) :
   CGUIMediaWindow(WINDOW_PVR, "MyPVR.xml")
 {
@@ -172,7 +174,7 @@ void CGUIWindowPVR::OnWindowUnload(void)
   CGUIMediaWindow::OnWindowUnload();
 }
 
-void CGUIWindowPVR::UpdateWindow(PVRWindow window)
+void CGUIWindowPVR::UpdateWindow(PVRWindow window, bool bResetContents /* = true */)
 {
   CSingleLock lock(m_critSection);
   if (!m_bViewsCreated)
@@ -206,9 +208,16 @@ void CGUIWindowPVR::UpdateWindow(PVRWindow window)
   if (updateWindow)
   {
     if (updateWindow->IsVisible())
-      updateWindow->UpdateData();
+    {
+      if (bResetContents)
+        updateWindow->UpdateData();
+      else
+        updateWindow->SetInvalid();
+    }
     else
+    {
       updateWindow->m_bUpdateRequired = true;
+    }
   }
 }
 

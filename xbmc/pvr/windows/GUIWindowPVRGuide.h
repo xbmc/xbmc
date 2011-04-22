@@ -22,49 +22,54 @@
  */
 
 #include "GUIWindowPVRCommon.h"
-#include "guilib/GUIEPGGridContainer.h"
+#include "epg/GUIEPGGridContainer.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
-class CGUIWindowPVR;
-
-class CGUIWindowPVRGuide : public CGUIWindowPVRCommon, public Observer
+namespace PVR
 {
-  friend class CGUIWindowPVR;
+  class CGUIWindowPVR;
 
-public:
-  CGUIWindowPVRGuide(CGUIWindowPVR *parent);
-  virtual ~CGUIWindowPVRGuide(void);
+  class CGUIWindowPVRGuide : public CGUIWindowPVRCommon, public Observer
+  {
+    friend class CGUIWindowPVR;
 
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual void UpdateData(void);
-  virtual void Notify(const Observable &obs, const CStdString& msg);
+  public:
+    CGUIWindowPVRGuide(CGUIWindowPVR *parent);
+    virtual ~CGUIWindowPVRGuide(void);
 
-private:
-  virtual bool IsSelectedButton(CGUIMessage &message) const;
-  virtual bool IsSelectedList(CGUIMessage &message) const;
-  virtual bool OnClickButton(CGUIMessage &message);
-  virtual bool OnClickList(CGUIMessage &message);
+    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
+    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+    virtual void UpdateData(void);
+    virtual void Notify(const Observable &obs, const CStdString& msg);
+    virtual void SetInvalid(void) { UpdateData(); }
 
-  virtual bool OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonEnd(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
+  private:
+    virtual bool IsSelectedButton(CGUIMessage &message) const;
+    virtual bool IsSelectedList(CGUIMessage &message) const;
+    virtual bool OnClickButton(CGUIMessage &message);
+    virtual bool OnClickList(CGUIMessage &message);
+    virtual bool PlayEpgItem(CFileItem *item);
 
-  virtual void UpdateButtons(void);
-  virtual void UpdateViewChannel(void);
-  virtual void UpdateViewNow(void);
-  virtual void UpdateViewNext(void);
-  virtual void UpdateViewTimeline(void);
-  virtual void UpdateEpgCache(bool bRadio = false, bool bForceUpdate = false);
+    virtual bool OnContextButtonBegin(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonEnd(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
 
-  int              m_iGuideView;
-  CFileItemList *  m_epgData;
-  bool             m_bLastEpgView; /*!< true for radio, false for tv */
-  bool             m_bGotInitialEpg;
-  bool             m_bObservingEpg;
-  CCriticalSection m_critSection;
-};
+    virtual void UpdateButtons(void);
+    virtual void UpdateViewChannel(void);
+    virtual void UpdateViewNow(void);
+    virtual void UpdateViewNext(void);
+    virtual void UpdateViewTimeline(void);
+    virtual void UpdateEpgCache(bool bRadio = false, bool bForceUpdate = false);
+
+    int              m_iGuideView;
+    CFileItemList *  m_epgData;
+    bool             m_bLastEpgView; /*!< true for radio, false for tv */
+    bool             m_bGotInitialEpg;
+    bool             m_bObservingEpg;
+    CCriticalSection m_critSection;
+  };
+}

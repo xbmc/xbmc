@@ -30,6 +30,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace std;
+using namespace PVR;
 
 #define CONTROL_TMR_ACTIVE              20
 #define CONTROL_TMR_CHNAME_TV           21
@@ -50,6 +51,84 @@ CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings(void)
   m_tmp_day   = 11;
 }
 
+void CGUIDialogPVRTimerSettings::AddChannelNames(CFileItemList &channelsList, SETTINGSTRINGS &channelNames, bool bRadio)
+{
+  g_PVRChannelGroups->GetGroupAll(bRadio)->GetMembers(&channelsList);
+
+  channelNames.push_back("0 dummy");
+  for (int i = 0; i < channelsList.Size(); i++)
+  {
+    CStdString string;
+    CFileItemPtr item = channelsList[i];
+    const CPVRChannel *channel = item->GetPVRChannelInfoTag();
+    string.Format("%i %s", channel->ChannelNumber(), channel->ChannelName().c_str());
+    channelNames.push_back(string);
+  }
+
+  int iControl = bRadio ? CONTROL_TMR_CHNAME_RADIO : CONTROL_TMR_CHNAME_TV;
+  AddSpin(iControl, 19078, &m_timerItem->GetPVRTimerInfoTag()->m_iChannelNumber, channelNames.size(), channelNames);
+  EnableSettings(iControl, m_timerItem->GetPVRTimerInfoTag()->m_bIsRadio == bRadio);
+}
+
+void CGUIDialogPVRTimerSettings::SetWeekdaySettingFromTimer(const CPVRTimerInfoTag &timer)
+{
+  if (timer.m_bIsRepeating)
+  {
+    if (timer.m_iWeekdays == 0x01)
+      m_tmp_day = 0;
+    else if (timer.m_iWeekdays == 0x02)
+      m_tmp_day = 1;
+    else if (timer.m_iWeekdays == 0x04)
+      m_tmp_day = 2;
+    else if (timer.m_iWeekdays == 0x08)
+      m_tmp_day = 3;
+    else if (timer.m_iWeekdays == 0x10)
+      m_tmp_day = 4;
+    else if (timer.m_iWeekdays == 0x20)
+      m_tmp_day = 5;
+    else if (timer.m_iWeekdays == 0x40)
+      m_tmp_day = 6;
+    else if (timer.m_iWeekdays == 0x1F)
+      m_tmp_day = 7;
+    else if (timer.m_iWeekdays == 0x3F)
+      m_tmp_day = 8;
+    else if (timer.m_iWeekdays == 0x7F)
+      m_tmp_day = 9;
+    else if (timer.m_iWeekdays == 0x60)
+      m_tmp_day = 10;
+  }
+}
+
+void CGUIDialogPVRTimerSettings::SetTimerFromWeekdaySetting(CPVRTimerInfoTag &timer)
+{
+  timer.m_bIsRepeating = true;
+
+  if (m_tmp_day == 0)
+    timer.m_iWeekdays = 0x01;
+  else if (m_tmp_day == 1)
+    timer.m_iWeekdays = 0x02;
+  else if (m_tmp_day == 2)
+    timer.m_iWeekdays = 0x04;
+  else if (m_tmp_day == 3)
+    timer.m_iWeekdays = 0x08;
+  else if (m_tmp_day == 4)
+    timer.m_iWeekdays = 0x10;
+  else if (m_tmp_day == 5)
+    timer.m_iWeekdays = 0x20;
+  else if (m_tmp_day == 6)
+    timer.m_iWeekdays = 0x40;
+  else if (m_tmp_day == 7)
+    timer.m_iWeekdays = 0x1F;
+  else if (m_tmp_day == 8)
+    timer.m_iWeekdays = 0x3F;
+  else if (m_tmp_day == 9)
+    timer.m_iWeekdays = 0x7F;
+  else if (m_tmp_day == 10)
+    timer.m_iWeekdays = 0x60;
+  else
+    timer.m_iWeekdays = 0;
+}
+
 void CGUIDialogPVRTimerSettings::CreateSettings()
 {
   CPVRTimerInfoTag* tag = m_timerItem->GetPVRTimerInfoTag();
@@ -67,38 +146,12 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
     // For TV
     CFileItemList channelslist_tv;
     SETTINGSTRINGS channelstrings_tv;
-    g_PVRChannelGroups->GetGroupAll(false)->GetMembers(&channelslist_tv);
-
-    channelstrings_tv.push_back("0 dummy");
-
-    for (int i = 0; i < channelslist_tv.Size(); i++)
-    {
-      CStdString string;
-      CFileItemPtr item = channelslist_tv[i];
-      string.Format("%i %s", item->GetPVRChannelInfoTag()->ChannelNumber(), item->GetPVRChannelInfoTag()->ChannelName().c_str());
-      channelstrings_tv.push_back(string);
-    }
-
-    AddSpin(CONTROL_TMR_CHNAME_TV, 19078, &tag->m_iChannelNumber, channelstrings_tv.size(), channelstrings_tv);
-    EnableSettings(CONTROL_TMR_CHNAME_TV, !tag->m_bIsRadio);
+    AddChannelNames(channelslist_tv, channelstrings_tv, false);
 
     // For Radio
     CFileItemList channelslist_radio;
     SETTINGSTRINGS channelstrings_radio;
-    g_PVRChannelGroups->GetGroupAll(true)->GetMembers(&channelslist_radio);
-
-    channelstrings_radio.push_back("0 dummy");
-
-    for (int i = 0; i < channelslist_radio.Size(); i++)
-    {
-      CStdString string;
-      CFileItemPtr item = channelslist_radio[i];
-      string.Format("%i %s", item->GetPVRChannelInfoTag()->ChannelNumber(), item->GetPVRChannelInfoTag()->ChannelName().c_str());
-      channelstrings_radio.push_back(string);
-    }
-
-    AddSpin(CONTROL_TMR_CHNAME_RADIO, 19078, &tag->m_iChannelNumber, channelstrings_radio.size(), channelstrings_radio);
-    EnableSettings(CONTROL_TMR_CHNAME_RADIO, tag->m_bIsRadio);
+    AddChannelNames(channelslist_radio, channelstrings_radio, true);
   }
 
   /// Day
@@ -107,17 +160,8 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
     tm time_cur;
     tm time_tmr;
 
-    daystrings.push_back(g_localizeStrings.Get(19086));
-    daystrings.push_back(g_localizeStrings.Get(19087));
-    daystrings.push_back(g_localizeStrings.Get(19088));
-    daystrings.push_back(g_localizeStrings.Get(19089));
-    daystrings.push_back(g_localizeStrings.Get(19090));
-    daystrings.push_back(g_localizeStrings.Get(19091));
-    daystrings.push_back(g_localizeStrings.Get(19092));
-    daystrings.push_back(g_localizeStrings.Get(19093));
-    daystrings.push_back(g_localizeStrings.Get(19094));
-    daystrings.push_back(g_localizeStrings.Get(19095));
-    daystrings.push_back(g_localizeStrings.Get(19096));
+    for (unsigned int iDayPtr = 19086; iDayPtr <= 19096; iDayPtr++)
+      daystrings.push_back(g_localizeStrings.Get(iDayPtr));
     CDateTime time = CDateTime::GetCurrentDateTime();
     CDateTime timestart = tag->StartAsLocalTime();
 
@@ -125,10 +169,9 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
     time.GetAsTm(time_cur);
     timestart.GetAsTm(time_tmr);
 
-    if (time_tmr.tm_yday - time_cur.tm_yday >= 0)
-      m_tmp_day += time_tmr.tm_yday - time_cur.tm_yday;
-    else
-      m_tmp_day += time_tmr.tm_yday - time_cur.tm_yday + 365;
+    m_tmp_day += time_tmr.tm_yday - time_cur.tm_yday;
+    if (time_tmr.tm_yday - time_cur.tm_yday < 0)
+      m_tmp_day += 365;
 
     for (int i = 1; i < 365; ++i)
     {
@@ -137,31 +180,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
       time += CDateTimeSpan(1, 0, 0, 0);
     }
 
-    if (tag->m_bIsRepeating)
-    {
-      if (tag->m_iWeekdays == 0x01)
-        m_tmp_day = 0;
-      else if (tag->m_iWeekdays == 0x02)
-        m_tmp_day = 1;
-      else if (tag->m_iWeekdays == 0x04)
-        m_tmp_day = 2;
-      else if (tag->m_iWeekdays == 0x08)
-        m_tmp_day = 3;
-      else if (tag->m_iWeekdays == 0x10)
-        m_tmp_day = 4;
-      else if (tag->m_iWeekdays == 0x20)
-        m_tmp_day = 5;
-      else if (tag->m_iWeekdays == 0x40)
-        m_tmp_day = 6;
-      else if (tag->m_iWeekdays == 0x1F)
-        m_tmp_day = 7;
-      else if (tag->m_iWeekdays == 0x3F)
-        m_tmp_day = 8;
-      else if (tag->m_iWeekdays == 0x7F)
-        m_tmp_day = 9;
-      else if (tag->m_iWeekdays == 0x60)
-        m_tmp_day = 10;
-    }
+    SetWeekdaySettingFromTimer(*tag);
 
     AddSpin(CONTROL_TMR_DAY, 19079, &m_tmp_day, daystrings.size(), daystrings);
   }
@@ -186,14 +205,9 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
       time.GetAsTm(time_cur);
       timestart.GetAsTm(time_tmr);
 
-      if (time_tmr.tm_yday - time_cur.tm_yday >= 0)
-      {
-        m_tmp_iFirstDay += time_tmr.tm_yday - time_cur.tm_yday + 1;
-      }
-      else
-      {
-        m_tmp_iFirstDay += time_tmr.tm_yday - time_cur.tm_yday + 365 + 1;
-      }
+      m_tmp_iFirstDay += time_tmr.tm_yday - time_cur.tm_yday + 1;
+      if (time_tmr.tm_yday - time_cur.tm_yday < 0)
+        m_tmp_iFirstDay += 365;
     }
 
     daystrings.push_back(g_localizeStrings.Get(19030));
@@ -274,10 +288,9 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
     time.GetAsTm(time_cur);
     timestart.GetAsTm(time_tmr);
 
-    if (time_tmr.tm_yday - time_cur.tm_yday >= 0)
-      m_tmp_diff = time_tmr.tm_yday - time_cur.tm_yday;
-    else
-      m_tmp_diff = time_tmr.tm_yday - time_cur.tm_yday + 365;
+    m_tmp_diff = time_tmr.tm_yday - time_cur.tm_yday;
+    if (time_tmr.tm_yday - time_cur.tm_yday < 0)
+      m_tmp_diff = 365;
 
     CDateTime newStart = timestart + CDateTimeSpan(m_tmp_day-11-m_tmp_diff, 0, 0, 0);
     CDateTime newEnd = timestop  + CDateTimeSpan(m_tmp_day-11-m_tmp_diff, 0, 0, 0);
@@ -292,32 +305,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
   else if (setting.id == CONTROL_TMR_DAY && m_tmp_day <= 10)
   {
     EnableSettings(CONTROL_TMR_FIRST_DAY, true);
-    tag->m_bIsRepeating = true;
-
-    if (m_tmp_day == 0)
-      tag->m_iWeekdays = 0x01;
-    else if (m_tmp_day == 1)
-      tag->m_iWeekdays = 0x02;
-    else if (m_tmp_day == 2)
-      tag->m_iWeekdays = 0x04;
-    else if (m_tmp_day == 3)
-      tag->m_iWeekdays = 0x08;
-    else if (m_tmp_day == 4)
-      tag->m_iWeekdays = 0x10;
-    else if (m_tmp_day == 5)
-      tag->m_iWeekdays = 0x20;
-    else if (m_tmp_day == 6)
-      tag->m_iWeekdays = 0x40;
-    else if (m_tmp_day == 7)
-      tag->m_iWeekdays = 0x1F;
-    else if (m_tmp_day == 8)
-      tag->m_iWeekdays = 0x3F;
-    else if (m_tmp_day == 9)
-      tag->m_iWeekdays = 0x7F;
-    else if (m_tmp_day == 10)
-      tag->m_iWeekdays = 0x60;
-    else
-      tag->m_iWeekdays = 0;
+    SetTimerFromWeekdaySetting(*tag);
   }
   else if (setting.id == CONTROL_TMR_BEGIN)
   {

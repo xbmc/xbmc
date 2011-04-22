@@ -23,40 +23,43 @@
 
 #include "GUIWindowPVRCommon.h"
 
-class CPVRChannelGroup;
-class CGUIWindowPVR;
-
-class CGUIWindowPVRChannels : public CGUIWindowPVRCommon
+namespace PVR
 {
-  friend class CGUIWindowPVR;
+  class CPVRChannelGroup;
+  class CGUIWindowPVR;
 
-public:
-  CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio);
-  virtual ~CGUIWindowPVRChannels(void) {};
+  class CGUIWindowPVRChannels : public CGUIWindowPVRCommon
+  {
+    friend class CGUIWindowPVR;
 
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual const CPVRChannelGroup *SelectedGroup(void);
-  virtual void SetSelectedGroup(CPVRChannelGroup *group);
-  virtual const CPVRChannelGroup *SelectNextGroup(void);
-  virtual void UpdateData(void);
+  public:
+    CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio);
+    virtual ~CGUIWindowPVRChannels(void) {};
 
-private:
-  virtual bool OnClickButton(CGUIMessage &message);
-  virtual bool OnClickList(CGUIMessage &message);
+    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
+    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+    virtual const CPVRChannelGroup *SelectedGroup(void);
+    virtual void SetSelectedGroup(CPVRChannelGroup *group);
+    virtual const CPVRChannelGroup *SelectNextGroup(void);
+    virtual void UpdateData(void);
 
-  virtual bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonGroupManager(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonHide(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonMove(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonShowHidden(CFileItem *item, CONTEXT_BUTTON button);
+  private:
+    virtual bool OnClickButton(CGUIMessage &message);
+    virtual bool OnClickList(CGUIMessage &message);
 
-  virtual void ShowGroupManager(void);
+    virtual bool OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonGroupManager(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonHide(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonMove(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonSetThumb(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonShowHidden(CFileItem *item, CONTEXT_BUTTON button);
 
-  CPVRChannelGroup *m_selectedGroup;
-  bool              m_bShowHiddenChannels;
-  bool              m_bRadio;
-};
+    virtual void ShowGroupManager(void);
+
+    CPVRChannelGroup *m_selectedGroup;
+    bool              m_bShowHiddenChannels;
+    bool              m_bRadio;
+  };
+}

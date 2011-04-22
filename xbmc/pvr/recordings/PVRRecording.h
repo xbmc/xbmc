@@ -40,63 +40,66 @@
 #include "video/VideoInfoTag.h"
 #include "XBDateTime.h"
 
-class CPVRRecording : public CVideoInfoTag
+namespace PVR
 {
-public:
-  int           m_iClientId;      /*!< ID of the backend */
-  int           m_iClientIndex;   /*!< index number of the recording on the client, -1 for unknown */
-  CStdString    m_strChannelName; /*!< name of the channel this was recorded from */
-  CDateTimeSpan m_duration;       /*!< duration of this recording */
-  int           m_iPriority;      /*!< priority of this recording */
-  int           m_iLifetime;      /*!< lifetime of this recording */
-  CStdString    m_strStreamURL;   /*!< stream URL. if empty use pvr client */
-  CStdString    m_strDirectory;   /*!< directory of this recording on the client */
+  class CPVRRecording : public CVideoInfoTag
+  {
+  public:
+    int           m_iClientId;      /*!< ID of the backend */
+    int           m_iClientIndex;   /*!< index number of the recording on the client, -1 for unknown */
+    CStdString    m_strChannelName; /*!< name of the channel this was recorded from */
+    CDateTimeSpan m_duration;       /*!< duration of this recording */
+    int           m_iPriority;      /*!< priority of this recording */
+    int           m_iLifetime;      /*!< lifetime of this recording */
+    CStdString    m_strStreamURL;   /*!< stream URL. if empty use pvr client */
+    CStdString    m_strDirectory;   /*!< directory of this recording on the client */
 
-  CPVRRecording(void);
-  CPVRRecording(const PVR_RECORDING &recording, unsigned int iClientId);
-  virtual ~CPVRRecording() {};
+    CPVRRecording(void);
+    CPVRRecording(const PVR_RECORDING &recording, unsigned int iClientId);
+    virtual ~CPVRRecording() {};
 
-  bool operator ==(const CPVRRecording& right) const;
-  bool operator !=(const CPVRRecording& right) const;
+    bool operator ==(const CPVRRecording& right) const;
+    bool operator !=(const CPVRRecording& right) const;
 
-  /*!
-   * @brief Reset this tag to it's initial state.
-   */
-  void Reset(void);
+    /*!
+     * @brief Reset this tag to it's initial state.
+     */
+    void Reset(void);
 
-  /*!
-   * @brief The duration of this recording in minutes.
-   * @return The duration.
-   */
-  int GetDuration() const;
+    /*!
+     * @brief The duration of this recording in minutes.
+     * @return The duration.
+     */
+    int GetDuration() const;
 
-  /*!
-   * @brief Delete this recording on the client (if supported).
-   * @return True if it was deleted successfully, false otherwise.
-   */
-  bool Delete(void);
+    /*!
+     * @brief Delete this recording on the client (if supported).
+     * @return True if it was deleted successfully, false otherwise.
+     */
+    bool Delete(void);
 
-  /*!
-   * @brief Rename this recording on the client (if supported).
-   * @param strNewName The new name.
-   * @return True if it was renamed successfully, false otherwise.
-   */
-  bool Rename(const CStdString &strNewName);
+    /*!
+     * @brief Rename this recording on the client (if supported).
+     * @param strNewName The new name.
+     * @return True if it was renamed successfully, false otherwise.
+     */
+    bool Rename(const CStdString &strNewName);
 
-  /*!
-   * @brief Update this tag with the contents of the given tag.
-   * @param tag The new tag info.
-   */
-  void Update(const CPVRRecording &tag);
+    /*!
+     * @brief Update this tag with the contents of the given tag.
+     * @param tag The new tag info.
+     */
+    void Update(const CPVRRecording &tag);
 
-  const CDateTime &RecordingTimeAsUTC(void) const { return m_recordingTime; }
-  const CDateTime &RecordingTimeAsLocalTime(void) const;
-  void SetRecordingTimeFromUTC(CDateTime &recordingTime) { m_recordingTime = recordingTime; }
-  void SetRecordingTimeFromLocalTime(CDateTime &recordingTime) { m_recordingTime = recordingTime.GetAsUTCDateTime(); }
+    const CDateTime &RecordingTimeAsUTC(void) const { return m_recordingTime; }
+    const CDateTime &RecordingTimeAsLocalTime(void) const;
+    void SetRecordingTimeFromUTC(CDateTime &recordingTime) { m_recordingTime = recordingTime; }
+    void SetRecordingTimeFromLocalTime(CDateTime &recordingTime) { m_recordingTime = recordingTime.GetAsUTCDateTime(); }
 
-private:
-  CDateTime m_recordingTime; /*!< start time of the recording */
+  private:
+    CDateTime m_recordingTime; /*!< start time of the recording */
 
-  void UpdatePath(void);
-  void DisplayError(PVR_ERROR err) const;
-};
+    void UpdatePath(void);
+    void DisplayError(PVR_ERROR err) const;
+  };
+}

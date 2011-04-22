@@ -99,7 +99,7 @@ JSON_STATUS CAudioLibrary::GetAlbumDetails(const CStdString &method, ITransportL
   m_albumItem->SetLabel(album.strAlbum);
   CMusicDatabase::SetPropertiesFromAlbum(*m_albumItem, album);
   m_albumItem->SetMusicThumb();
-  HandleFileItem("albumid", false, "albumdetails", m_albumItem, parameterObject, validFields, result);
+  HandleFileItem("albumid", false, "albumdetails", m_albumItem, parameterObject, validFields, result, false);
 
   musicdatabase.Close();
   return OK;
@@ -140,7 +140,7 @@ JSON_STATUS CAudioLibrary::GetSongDetails(const CStdString &method, ITransportLa
 
   Json::Value validFields;
   MakeFieldsList(parameterObject, validFields);
-  HandleFileItem("songid", false, "songdetails", CFileItemPtr( new CFileItem(song) ), parameterObject, validFields, result);
+  HandleFileItem("songid", false, "songdetails", CFileItemPtr( new CFileItem(song) ), parameterObject, validFields, result, false);
 
   musicdatabase.Close();
   return OK;

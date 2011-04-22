@@ -35,6 +35,8 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 
+using namespace PVR;
+
 CPVRChannelGroups::CPVRChannelGroups(bool bRadio)
 {
   m_bRadio = bRadio;
@@ -231,15 +233,12 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
 
 bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 {
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (!database->Open())
-  {
-    CLog::Log(LOGERROR, "PVRChannelGroups - %s - cannot open the database", __FUNCTION__);
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
     return false;
-  }
 
   /* load the other groups from the database */
-  database->GetChannelGroupList(*this, m_bRadio);
+  database->Get(*this);
   int iSize = size();
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d user defined groups %s fetched from the database",
       __FUNCTION__, iSize - 1, m_bRadio ? "radio" : "TV");
@@ -406,18 +405,15 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
     return bReturn;
   }
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (!database || !database->Open())
-  {
-    CLog::Log(LOGERROR, "CPVRChannelGroups - %s - unable to open the database", __FUNCTION__);
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
     return bReturn;
-  }
 
   /* remove all channels from the group */
-  database->RemoveChannelsFromGroup(group.GroupID());
+  database->RemoveChannelsFromGroup(group);
 
   /* delete the group from the database */
-  bReturn = database->DeleteChannelGroup(group.GroupID(), m_bRadio);
+  bReturn = database->Delete(group);
 
   database->Close();
 

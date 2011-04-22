@@ -63,6 +63,7 @@
 #define BUTTON_RADIO_TV           34
 
 using namespace std;
+using namespace PVR;
 
 CGUIDialogPVRChannelManager::CGUIDialogPVRChannelManager()
     : CGUIDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER, "DialogPVRChannelManager.xml")
@@ -452,10 +453,11 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         {
           if (pItem->GetPropertyBOOL("Virtual"))
           {
-            CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-            database->Open();
-            database->Delete(*pItem->GetPVRChannelInfoTag());
-            database->Close();
+            if (CPVRDatabase *database = OpenPVRDatabase())
+            {
+              database->Delete(*pItem->GetPVRChannelInfoTag());
+              database->Close();
+            }
 
             m_channelItems->Remove(m_iSelected);
             m_viewControl.SetItems(*m_channelItems);
@@ -508,12 +510,14 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
                 newchannel.SetStreamURL(strURL);
                 newchannel.SetClientID(XBMC_VIRTUAL_CLIENTID);
 
-                CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-                database->Open();
+                CPVRDatabase *database = OpenPVRDatabase();
+                if (!database)
+                  return false;
+
                 database->Persist(newchannel);
                 database->Close();
-                CFileItemPtr channel(new CFileItem(newchannel));
 
+                CFileItemPtr channel(new CFileItem(newchannel));
                 if (channel)
                 {
                   channel->SetProperty("ActiveChannel", true);
@@ -715,8 +719,8 @@ void CGUIDialogPVRChannelManager::SaveList() // XXX investigate: renumbering doe
   if (!m_bContainsChanges)
    return;
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (!database || !database->Open())
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
     return;
 
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);

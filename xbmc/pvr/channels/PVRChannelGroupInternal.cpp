@@ -31,6 +31,8 @@
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/addons/PVRClients.h"
 
+using namespace PVR;
+
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
   CPVRChannelGroup(bRadio)
 {
@@ -214,13 +216,13 @@ int CPVRChannelGroupInternal::GetMembers(CFileItemList *results, bool bGroupMemb
 
 int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 {
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (!database || !database->Open())
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
     return -1;
 
   int iChannelCount = size();
 
-  if (database->GetChannels(this, m_bRadio) > 0)
+  if (database->Get(*this) > 0)
   {
     if (bCompress)
       database->Compress(true);
@@ -299,8 +301,8 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
 
   CPVRChannelGroup *newChannels = new CPVRChannelGroup(m_bRadio);
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (!database || !database->Open())
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
     return bChanged;
 
   /* go through the channel list and check for updated or new channels */
@@ -423,12 +425,9 @@ bool CPVRChannelGroupInternal::Persist(void)
   else if (bHasChangedChannels)
   {
     /* open the database */
-    CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-    if (!database || !database->Open())
-    {
-      CLog::Log(LOGERROR, "CPVRChannelGroupInternal - %s - failed to open the database", __FUNCTION__);
+    CPVRDatabase *database = OpenPVRDatabase();
+    if (!database)
       return false;
-    }
 
     /* queue queries */
     for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)

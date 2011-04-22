@@ -20,7 +20,7 @@
  */
 
 #include "guilib/LocalizeStrings.h"
-#include "../addons/include/xbmc_pvr_types.h"
+#include "../addons/include/xbmc_pvr_types.h" // TODO extract the epg specific stuff
 #include "EpgInfoTag.h"
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
@@ -28,11 +28,57 @@
 #include "pvr/PVRManager.h"
 
 using namespace std;
+using namespace PVR;
+using namespace EPG;
 
-CEpgInfoTag::CEpgInfoTag(int iUniqueBroadcastId)
+CEpgInfoTag::CEpgInfoTag(int iUniqueBroadcastId) :
+    m_bNotify(false),
+    m_bChanged(false),
+    m_iBroadcastId(-1),
+    m_iGenreType(0),
+    m_iGenreSubType(0),
+    m_iParentalRating(0),
+    m_iStarRating(0),
+    m_iSeriesNumber(0),
+    m_iEpisodeNumber(0),
+    m_iEpisodePart(0),
+    m_iUniqueBroadcastID(iUniqueBroadcastId),
+    m_strTitle(""),
+    m_strPlotOutline(""),
+    m_strPlot(""),
+    m_strGenre(""),
+    m_strEpisodeName(""),
+    m_strIconPath(""),
+    m_strFileNameAndPath(""),
+    m_nextEvent(NULL),
+    m_previousEvent(NULL),
+    m_Epg(NULL)
 {
-  Reset();
-  m_iUniqueBroadcastID = iUniqueBroadcastId;
+}
+
+CEpgInfoTag::CEpgInfoTag(void) :
+    m_bNotify(false),
+    m_bChanged(false),
+    m_iBroadcastId(-1),
+    m_iGenreType(0),
+    m_iGenreSubType(0),
+    m_iParentalRating(0),
+    m_iStarRating(0),
+    m_iSeriesNumber(0),
+    m_iEpisodeNumber(0),
+    m_iEpisodePart(0),
+    m_iUniqueBroadcastID(-1),
+    m_strTitle(""),
+    m_strPlotOutline(""),
+    m_strPlot(""),
+    m_strGenre(""),
+    m_strEpisodeName(""),
+    m_strIconPath(""),
+    m_strFileNameAndPath(""),
+    m_nextEvent(NULL),
+    m_previousEvent(NULL),
+    m_Epg(NULL)
+{
 }
 
 CEpgInfoTag::~CEpgInfoTag()
@@ -72,29 +118,6 @@ bool CEpgInfoTag::operator !=(const CEpgInfoTag& right) const
   if (this == &right) return false;
 
   return !(*this == right);
-}
-
-void CEpgInfoTag::Reset()
-{
-  m_iBroadcastId        = -1;
-  m_strTitle            = "";
-  m_strGenre            = "";
-  m_strPlotOutline      = "";
-  m_strPlot             = "";
-  m_iGenreType          = 0;
-  m_iGenreSubType       = 0;
-  m_strFileNameAndPath  = "";
-  m_strIconPath         = "";
-  m_Epg                 = NULL;
-  m_iParentalRating     = 0;
-  m_iStarRating         = 0;
-  m_bNotify             = false;
-  m_iSeriesNumber       = 0;
-  m_iEpisodeNumber      = 0;
-  m_iEpisodePart        = 0;
-  m_strEpisodeName      = "";
-  m_bChanged            = false;
-  m_iUniqueBroadcastID  = -1;
 }
 
 int CEpgInfoTag::GetDuration() const

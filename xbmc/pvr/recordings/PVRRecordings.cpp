@@ -33,6 +33,8 @@
 #include "pvr/addons/PVRClients.h"
 #include "PVRRecordings.h"
 
+using namespace PVR;
+
 CPVRRecordings::CPVRRecordings(void)
 {
   m_bIsUpdating = false;
@@ -184,7 +186,7 @@ void CPVRRecordings::Update(bool bAsyncUpdate /* = false */)
 
 void CPVRRecordings::ExecuteUpdate(void)
 {
-  CLog::Log(LOGDEBUG, "CPVRTimers - %s - updating recordings", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "CPVRRecordings - %s - updating recordings", __FUNCTION__);
   UpdateFromClients();
 
   CSingleLock lock(m_critSection);
@@ -227,8 +229,6 @@ bool CPVRRecordings::DeleteRecording(const CFileItem &item)
   }
 
   CPVRRecording *tag = (CPVRRecording *)item.GetPVRRecordingInfoTag();
-  CSingleLock lock(m_critSection);
-
   return tag->Delete();
 }
 

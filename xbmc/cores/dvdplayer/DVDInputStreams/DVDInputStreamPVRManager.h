@@ -54,10 +54,10 @@ public:
   virtual bool    NextStream();
 
   bool            SelectChannelByNumber(unsigned int iChannel);
-  bool            SelectChannel(const CPVRChannel &channel);
+  bool            SelectChannel(const PVR::CPVRChannel &channel);
   bool            NextChannel(bool preview = false);
   bool            PrevChannel(bool preview = false);
-  bool            GetSelectedChannel(CPVRChannel *channel);
+  bool            GetSelectedChannel(PVR::CPVRChannel *channel);
 
   int             GetTotalTime();
   int             GetStartTime();

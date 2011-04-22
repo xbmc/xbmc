@@ -46,7 +46,6 @@
 #include "network/libscrobbler/librefmscrobbler.h"
 #include "GUIPassword.h"
 #include "GUIInfoManager.h"
-#include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "dialogs/GUIDialogGamepad.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogFileBrowser.h"
@@ -83,9 +82,8 @@
 #include "XBMCHelper.h"
 #endif
 #endif
-#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
 #include "network/GUIDialogAccessPoints.h"
 #include "filesystem/Directory.h"
 
@@ -116,6 +114,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
+using namespace PVR;
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -1921,7 +1920,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("pvrmenu.searchicons"))
   {
-    g_PVRChannelGroups->SearchMissingChannelIcons();
+    g_PVRManager.SearchMissingChannelIcons();
   }
   else if (strSetting.Equals("pvrmanager.resetdb"))
   {
@@ -1936,7 +1935,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("pvrmanager.channelscan"))
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19118, 19194, 0))
-      g_PVRClients->StartChannelScan();
+      g_PVRManager.StartChannelScan();
   }
   else if (strSetting.Equals("pvrmanager.channelmanager"))
   {

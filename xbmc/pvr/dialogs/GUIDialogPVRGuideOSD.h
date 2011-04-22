@@ -25,22 +25,25 @@
 
 class CFileItemList;
 
-class CGUIDialogPVRGuideOSD : public CGUIDialog
+namespace PVR
 {
-public:
-  CGUIDialogPVRGuideOSD(void);
-  virtual ~CGUIDialogPVRGuideOSD(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnWindowLoaded();
-  virtual void OnWindowUnload();
+  class CGUIDialogPVRGuideOSD : public CGUIDialog
+  {
+  public:
+    CGUIDialogPVRGuideOSD(void);
+    virtual ~CGUIDialogPVRGuideOSD(void);
+    virtual bool OnMessage(CGUIMessage& message);
+    virtual void OnWindowLoaded();
+    virtual void OnWindowUnload();
 
-protected:
-  void ShowInfo(int iItem);
-  void Clear();
-  void Update();
+  protected:
+    void ShowInfo(int iItem);
+    void Clear();
+    void Update();
 
-  CGUIControl *GetFirstFocusableControl(int id);
+    CGUIControl *GetFirstFocusableControl(int id);
 
-  CFileItemList    *m_vecItems;
-  CGUIViewControl   m_viewControl;
-};
+    CFileItemList    *m_vecItems;
+    CGUIViewControl   m_viewControl;
+  };
+}

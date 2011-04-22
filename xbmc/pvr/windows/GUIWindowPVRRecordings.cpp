@@ -31,6 +31,8 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 
+using namespace PVR;
+
 CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_RECORDINGS, CONTROL_BTNRECORDINGS, CONTROL_LIST_RECORDINGS)
 {
@@ -175,7 +177,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonDelete(CFileItem *item, CONTEXT_BUT
 
   if (button == CONTEXT_BUTTON_DELETE)
   {
-    bReturn = true;
+    bReturn = false;
 
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialog)
@@ -189,10 +191,7 @@ bool CGUIWindowPVRRecordings::OnContextButtonDelete(CFileItem *item, CONTEXT_BUT
     if (!pDialog->IsConfirmed())
       return bReturn;
 
-    if (g_PVRRecordings->DeleteRecording(*item))
-    {
-      g_PVRManager.TriggerRecordingsUpdate();
-    }
+    bReturn = g_PVRRecordings->DeleteRecording(*item);
   }
 
   return bReturn;

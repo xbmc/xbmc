@@ -43,6 +43,7 @@
 #include "utils/URIUtils.h"
 
 using namespace std;
+using namespace PVR;
 
 CGUIWindowPVRCommon::CGUIWindowPVRCommon(CGUIWindowPVR *parent, PVRWindow window,
     unsigned int iControlButton, unsigned int iControlList)
@@ -120,6 +121,12 @@ bool CGUIWindowPVRCommon::IsSelectedControl(CGUIMessage &message) const
 bool CGUIWindowPVRCommon::IsSelectedList(CGUIMessage &message) const
 {
   return (message.GetSenderId() == (int) m_iControlList);
+}
+
+void CGUIWindowPVRCommon::SetInvalid()
+{
+  for (int iItemPtr = 0; iItemPtr < m_parent->m_vecItems->Size(); iItemPtr++)
+    m_parent->m_vecItems->Get(iItemPtr)->SetInvalid();
 }
 
 void CGUIWindowPVRCommon::OnInitWindow()

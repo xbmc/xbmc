@@ -38,6 +38,8 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/epg/PVREpgContainer.h"
 
+using namespace PVR;
+
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder)
 {
   m_bRadio       = bRadio;
@@ -180,8 +182,10 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
   if (g_guiSettings.GetString("pvrmenu.iconpath") == "")
     return;
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  database->Open();
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
+    return;
+
   CSingleLock lock(m_critSection);
 
   for (unsigned int ptr = 0; ptr < size(); ptr++)
@@ -305,6 +309,34 @@ const CPVRChannel *CPVRChannelGroup::GetByUniqueID(int iUniqueID) const
   return channel;
 }
 
+const CPVRChannel *CPVRChannelGroup::GetLastPlayedChannel(void) const
+{
+  CPVRChannel *channel = NULL;
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    PVRChannelGroupMember groupMember = at(iChannelPtr);
+
+    /* check whether the client is loaded */
+    if (!g_PVRClients->IsValidClient(groupMember.channel->ClientID()))
+      continue;
+
+    /* always get the first channel */
+    if (channel == NULL)
+    {
+      channel = groupMember.channel;
+      continue;
+    }
+
+    /* check whether this channel has a later LastWatched time */
+    if (groupMember.channel->LastWatched() > channel->LastWatched())
+      channel = groupMember.channel;
+  }
+
+  return channel;
+}
+
 
 unsigned int CPVRChannelGroup::GetChannelNumber(const CPVRChannel &channel) const
 {
@@ -398,13 +430,13 @@ int CPVRChannelGroup::GetMembers(CFileItemList *results, bool bGroupMembers /* =
 
 int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
 {
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (!database || !database->Open())
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
     return -1;
 
   int iChannelCount = size();
 
-  database->GetChannelsInGroup(this);
+  database->GetGroupMembers(*this);
   database->Close();
 
   return size() - iChannelCount;
@@ -441,11 +473,12 @@ bool CPVRChannelGroup::RemoveByUniqueID(int iUniqueID)
 bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 {
   bool bChanged(false);
+  bool bAddedOrDeleted(false);
   CSingleLock lock(m_critSection);
   int iCurSize = size();
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (!database || !database->Open())
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
     return false;
 
   /* go through the channel list and check for updated or new channels */
@@ -466,6 +499,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 
       bChanged = true;
       m_bChanged = true;
+      bAddedOrDeleted = true;
       CLog::Log(LOGINFO,"PVRChannelGroup - %s - added %s channel '%s' at position %d in group '%s'",
           __FUNCTION__, m_bRadio ? "radio" : "TV", realChannel->ChannelName().c_str(), iChannelNumber, GroupName().c_str());
     }
@@ -488,6 +522,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
       RemoveFromGroup(channel);
 
       m_bChanged = true;
+      bAddedOrDeleted = true;
       bChanged = true;
       iChannelPtr--;
       iSize--;
@@ -506,7 +541,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 
     lock.Leave();
 
-    g_PVRManager.UpdateWindow(m_bRadio ? PVR_WINDOW_CHANNELS_RADIO : PVR_WINDOW_CHANNELS_TV);
+    g_PVRManager.UpdateWindow(m_bRadio ? PVR_WINDOW_CHANNELS_RADIO : PVR_WINDOW_CHANNELS_TV, bAddedOrDeleted);
 
     return Persist();
   }
@@ -659,8 +694,7 @@ bool CPVRChannelGroup::Persist(void)
   if (!HasChanges())
     return true;
 
-  CPVRDatabase *database = g_PVRManager.GetTVDatabase();
-  if (database && database->Open())
+  if (CPVRDatabase *database = OpenPVRDatabase())
   {
     CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - persisting channel group '%s' with %d channels",
         __FUNCTION__, GroupName().c_str(), (int) size());

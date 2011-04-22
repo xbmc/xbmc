@@ -33,6 +33,8 @@
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 
+using namespace PVR;
+
 namespace ADDON
 {
 

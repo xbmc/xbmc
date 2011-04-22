@@ -29,6 +29,7 @@
 #include "pvr/addons/PVRClients.h"
 
 using namespace XFILE;
+using namespace PVR;
 
 /************************************************************************
  * Description: Class constructor, initialize member variables

@@ -19,19 +19,23 @@
 *
 */
 
-#include "Key.h"
-#include "GUIEPGGridContainer.h"
-#include "GUIControlFactory.h"
-#include "GUIListItem.h"
-#include "GUIFontManager.h"
+#include "guilib/Key.h"
+#include "guilib/GUIControlFactory.h"
+#include "guilib/GUIListItem.h"
+#include "guilib/GUIFontManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "lib/tinyXML/tinyxml.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "GUIInfoManager.h"
-#include "LocalizeStrings.h"
 
 #include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/channels/PVRChannel.h"
+
+#include "GUIEPGGridContainer.h"
+
+using namespace PVR;
+using namespace EPG;
 
 #define SHORTGAP     5 // how many blocks is considered a short-gap in nav logic
 #define MINSPERBLOCK 5 /// would be nice to offer zooming of busy schedules /// performance cost to increase resolution 5 fold?

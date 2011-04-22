@@ -35,6 +35,7 @@
 
 using namespace std;
 using namespace XFILE;
+using namespace PVR;
 
 CPVRDirectory::CPVRDirectory()
 {

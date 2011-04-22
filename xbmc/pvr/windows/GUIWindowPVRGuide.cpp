@@ -36,6 +36,9 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/timers/PVRTimers.h"
 
+using namespace PVR;
+using namespace EPG;
+
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_EPG, CONTROL_BTNGUIDE, CONTROL_LIST_GUIDE_NOW_NEXT),
   Observer()
@@ -314,7 +317,14 @@ bool CGUIWindowPVRGuide::OnClickList(CGUIMessage &message)
 
     /* process actions */
     bReturn = true;
-    if ((iAction == ACTION_SELECT_ITEM) || (iAction == ACTION_SHOW_INFO || iAction == ACTION_MOUSE_LEFT_CLICK))
+    if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+    {
+      if (g_advancedSettings.m_bPVRShowEpgInfoOnEpgItemSelect)
+        ShowEPGInfo(pItem.get());
+      else
+        PlayEpgItem(pItem.get());
+    }
+    else if (iAction == ACTION_SHOW_INFO)
       ShowEPGInfo(pItem.get());
     else if (iAction == ACTION_RECORD)
       ActionRecord(pItem.get());
@@ -372,17 +382,24 @@ bool CGUIWindowPVRGuide::OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON but
   return bReturn;
 }
 
+bool CGUIWindowPVRGuide::PlayEpgItem(CFileItem *item)
+{
+  const CPVRChannel *channel = ((CPVREpgInfoTag *)item->GetEPGInfoTag())->ChannelTag();
+  CLog::Log(LOG_DEBUG, "play channel '%s'", channel->ChannelName().c_str());
+  bool bReturn = g_application.PlayFile(CFileItem(*channel));
+  if (!bReturn)
+    CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
+
+  return bReturn;
+}
+
 bool CGUIWindowPVRGuide::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button)
 {
   bool bReturn = false;
 
   if (button == CONTEXT_BUTTON_PLAY_ITEM)
   {
-    /* play channel from an EPG tag */
-    const CPVRChannel *channel = ((CPVREpgInfoTag *)item->GetEPGInfoTag())->ChannelTag();
-    bool bReturn = g_application.PlayFile(CFileItem(*channel));
-    if (!bReturn)
-      CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
+    bReturn = PlayEpgItem(item);
   }
 
   return bReturn;

@@ -25,70 +25,68 @@
 #include "epg/EpgInfoTag.h"
 #include "addons/include/xbmc_pvr_types.h"
 
-class CPVREpg;
-class CPVRTimerInfoTag;
-
-/** an EPG info tag */
-
-class CPVREpgInfoTag : public CEpgInfoTag
+namespace PVR
 {
-  friend class CPVREpg;
+  class CPVREpg;
+  class CPVRTimerInfoTag;
 
-private:
-  const CPVRTimerInfoTag * m_Timer;       /*!< a pointer to a timer for this event or NULL if there is none */
-  bool                     m_isRecording; // XXX
+  /** an EPG info tag */
 
-public:
-  /*!
-   * @brief Create a new empty EPG infotag.
-   */
-  CPVREpgInfoTag(void) { Reset(); };
+  class CPVREpgInfoTag : public EPG::CEpgInfoTag
+  {
+    friend class CPVREpg;
 
-  /*!
-   * @brief Create a new EPG infotag with 'data' as content.
-   * @param data The tag's content.
-   */
-  CPVREpgInfoTag(const EPG_TAG &data);
+  private:
+    const CPVRTimerInfoTag * m_Timer;       /*!< a pointer to a timer for this event or NULL if there is none */
+    bool                     m_isRecording; // XXX
 
-  /*!
-   * @brief Clear this event.
-   */
-  void Reset();
+  public:
+    /*!
+     * @brief Create a new empty EPG infotag.
+     */
+    CPVREpgInfoTag(void);
 
-  /*!
-   * @brief Get the channel that plays this event.
-   * @return a pointer to the channel.
-   */
-  const CPVRChannel *ChannelTag(void) const;
+    /*!
+     * @brief Create a new EPG infotag with 'data' as content.
+     * @param data The tag's content.
+     */
+    CPVREpgInfoTag(const EPG_TAG &data);
 
-  /*!
-   * @brief Check whether this event has an active timer tag.
-   * @return True if it has an active timer tag, false if not.
-   */
-  bool HasTimer() const { return !(m_Timer == NULL); }
+    /*!
+     * @brief Get the channel that plays this event.
+     * @return a pointer to the channel.
+     */
+    const CPVRChannel *ChannelTag(void) const;
 
-  /*!
-   * @brief Set a timer for this event or NULL to clear it.
-   * @param newTimer The new timer value.
-   */
-  void SetTimer(const CPVRTimerInfoTag *newTimer);
+    /*!
+     * @brief Check whether this event has an active timer tag.
+     * @return True if it has an active timer tag, false if not.
+     */
+    bool HasTimer() const { return !(m_Timer == NULL); }
 
-  /*!
-   * @brief Get a pointer to the timer for event or NULL if there is none.
-   * @return A pointer to the timer for event or NULL if there is none.
-   */
-  const CPVRTimerInfoTag *Timer(void) const { return m_Timer; }
+    /*!
+     * @brief Set a timer for this event or NULL to clear it.
+     * @param newTimer The new timer value.
+     */
+    void SetTimer(const CPVRTimerInfoTag *newTimer);
 
-  /*!
-   * @brief Update the value of m_strFileNameAndPath after a value changed.
-   */
-  void UpdatePath(void);
+    /*!
+     * @brief Get a pointer to the timer for event or NULL if there is none.
+     * @return A pointer to the timer for event or NULL if there is none.
+     */
+    const CPVRTimerInfoTag *Timer(void) const { return m_Timer; }
 
-  /*!
-   * @brief Update the information in this tag with the info in the given tag.
-   * @param tag The new info.
-   */
-  void Update(const EPG_TAG &tag);
+    /*!
+     * @brief Update the value of m_strFileNameAndPath after a value changed.
+     */
+    void UpdatePath(void);
 
-  const CStdString &Icon(void) const;
-};
+    /*!
+     * @brief Update the information in this tag with the info in the given tag.
+     * @param tag The new info.
+     */
+    void Update(const EPG_TAG &tag);
+
+    const CStdString &Icon(void) const;
+  };
+}

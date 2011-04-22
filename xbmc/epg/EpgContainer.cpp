@@ -35,14 +35,12 @@
 #include "EpgSearchFilter.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
 
 using namespace std;
+using namespace PVR;
+using namespace EPG;
 
-CEpgContainer g_EpgContainer;
-
-CEpgContainer::CEpgContainer(void) :
-    Observable()
+CEpgContainer::CEpgContainer(void)
 {
   m_bStop = true;
   Clear(false);
@@ -51,6 +49,12 @@ CEpgContainer::CEpgContainer(void) :
 CEpgContainer::~CEpgContainer(void)
 {
   Clear();
+}
+
+CEpgContainer &CEpgContainer::Get(void)
+{
+  static CEpgContainer epgInstance;
+  return epgInstance;
 }
 
 void CEpgContainer::Unload(void)
@@ -143,7 +147,7 @@ void CEpgContainer::Process(void)
   if (m_database.Open())
   {
     m_database.DeleteOldEpgEntries();
-    m_database.Get(this);
+    m_database.Get(*this);
     m_database.Close();
   }
 
@@ -325,7 +329,7 @@ bool CEpgContainer::UpdateSingleTable(CEpg *epg, const time_t start, const time_
 
 bool CEpgContainer::InterruptUpdate(void) const
 {
-  return (m_bStop || (g_PVRManager.IsStarted() && g_PVRClients->IsPlaying()));;
+  return (m_bStop || (g_PVRManager.IsStarted() && g_PVRManager.IsPlaying()));;
 }
 
 bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)

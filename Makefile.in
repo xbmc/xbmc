@@ -144,11 +144,10 @@ VIS_DIRS+=\
 	xbmc/visualizations/XBMCProjectM \
 
 endif
-ifeq ($(findstring osx,@ARCH@), osx)
-VIS_DIRS+=xbmc/visualizations/iTunes \
-
+ifeq (($(findstring osx,@ARCH@), osx),(@USE_OPENGL@,1)) 
+VIS_DIRS+=xbmc/visualizations/iTunes
 endif
-ifneq (@BUILD_GOOM@,1)
+ifneq (@DISABLE_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom \
 
 endif
@@ -421,26 +420,14 @@ exports:
 dllloader: exports
 	$(MAKE) xbmc/cores/DllLoader/dllloader.a
 visualizations: exports
-ifneq ($(findstring arm,@ARCH@), arm)
-	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
-	$(MAKE) -C xbmc/visualizations/WaveForm
-	$(MAKE) -C xbmc/visualizations/XBMCProjectM
-ifeq ($(findstring osx,@ARCH@), osx)
-	$(MAKE) -C xbmc/visualizations/iTunes
-endif
-ifneq (@BUILD_GOOM@,1)
-ifeq ($(or $(findstring powerpc-linux,@ARCH@),$(findstring powerpc64-linux,@ARCH@)),)
-	$(MAKE) -C xbmc/visualizations/Goom
-endif
-endif
-endif
+	for d in $(VIS_DIRS); do $(MAKE) -C $$d; done
 pvrclients: exports
 	$(MAKE) -C xbmc/pvrclients/MediaPortal
 	$(MAKE) -C xbmc/pvrclients/mythtv
 	$(MAKE) -C xbmc/pvrclients/vdr-vnsi
 	$(MAKE) -C xbmc/pvrclients/tvheadend
 screensavers: exports
-ifneq ($(findstring arm,@ARCH@), arm)
+ifeq (@USE_OPENGL@,1)
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 endif
 libaddon: exports
@@ -632,9 +619,8 @@ else
 endif
 
 xbmc-xrandr: xbmc-xrandr.c
-ifeq ($(findstring osx,@ARCH@), osx)
+ifneq (1,@USE_XRANDR@)
 	# xbmc-xrandr.c gets picked up by the default make rules
-	#  so only exclude it for osx builds
 	@echo "excluding xbmc-xrandr"
 else
 	$(CC) $(CFLAGS) $(LDFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lX11 
@@ -665,7 +651,9 @@ install-binaries: install-scripts
 	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/xbmc.bin"
 	@install -d $(DESTDIR)$(libdir)/xbmc
 	@install xbmc.bin $(DESTDIR)$(libdir)/xbmc/xbmc.bin
+ifeq (1,@USE_XRANDR@)
 	@install xbmc-xrandr $(DESTDIR)$(libdir)/xbmc/xbmc-xrandr
+endif
 	@echo "You can run XBMC with the command 'xbmc'"
 endif
 

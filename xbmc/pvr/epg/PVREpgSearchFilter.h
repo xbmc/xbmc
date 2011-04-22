@@ -24,27 +24,30 @@
 #include "XBDateTime.h"
 #include "epg/EpgSearchFilter.h"
 
-class CPVREpgInfoTag;
-
-/** Filter to apply with on a CPVREpgInfoTag */
-
-struct PVREpgSearchFilter : public EpgSearchFilter
+namespace PVR
 {
-  /*!
-   * @brief Clear this filter.
-   */
-  void Reset();
+  class CPVREpgInfoTag;
 
-  /*!
-   * @brief Check if a tag will be filtered or not.
-   * @param tag The tag to check.
-   * @return True if this tag matches the filter, false if not.
-   */
-  bool FilterEntry(const CPVREpgInfoTag &tag) const;
+  /** Filter to apply with on a CPVREpgInfoTag */
 
-  int           m_iChannelNumber;           /*!< The channel number in XBMC */
-  bool          m_bFTAOnly;                 /*!< Free to air only or not */
-  int           m_iChannelGroup;            /*!< The group this channel belongs to */
-  bool          m_bIgnorePresentTimers;     /*!< True to ignore currently present timers (future recordings), false if not */
-  bool          m_bIgnorePresentRecordings; /*!< True to ignore currently active recordings, false if not */
-};
+  struct PVREpgSearchFilter : public EPG::EpgSearchFilter
+  {
+    /*!
+     * @brief Clear this filter.
+     */
+    void Reset();
+
+    /*!
+     * @brief Check if a tag will be filtered or not.
+     * @param tag The tag to check.
+     * @return True if this tag matches the filter, false if not.
+     */
+    bool FilterEntry(const CPVREpgInfoTag &tag) const;
+
+    int           m_iChannelNumber;           /*!< The channel number in XBMC */
+    bool          m_bFTAOnly;                 /*!< Free to air only or not */
+    int           m_iChannelGroup;            /*!< The group this channel belongs to */
+    bool          m_bIgnorePresentTimers;     /*!< True to ignore currently present timers (future recordings), false if not */
+    bool          m_bIgnorePresentRecordings; /*!< True to ignore currently active recordings, false if not */
+  };
+}

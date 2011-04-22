@@ -25,12 +25,22 @@
 #include "utils/log.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
-#ifdef _WIN32
-#include <libavcodec/avcodec.h>
-#endif
+
+using namespace PVR;
 
 void CDemuxStreamVideoPVRClient::GetStreamInfo(std::string& strInfo)
 {
+  switch (codec)
+  {
+    case CODEC_ID_MPEG2VIDEO:
+      strInfo = "MPEG2VIDEO";
+      break;
+    case CODEC_ID_H264:
+      strInfo = "H264";
+      break;
+    default:
+      break;
+  }
 }
 
 void CDemuxStreamAudioPVRClient::GetStreamInfo(std::string& strInfo)
@@ -39,6 +49,18 @@ void CDemuxStreamAudioPVRClient::GetStreamInfo(std::string& strInfo)
   {
     case CODEC_ID_AC3:
       strInfo = "AC3";
+      break;
+    case CODEC_ID_EAC3:
+      strInfo = "EAC3";
+      break;
+    case CODEC_ID_MP2:
+      strInfo = "MPEG2AUDIO";
+      break;
+    case CODEC_ID_AAC:
+      strInfo = "AAC";
+      break;
+    case CODEC_ID_DTS:
+      strInfo = "DTS";
       break;
     default:
       break;
@@ -52,7 +74,7 @@ void CDemuxStreamSubtitlePVRClient::GetStreamInfo(std::string& strInfo)
 CDVDDemuxPVRClient::CDVDDemuxPVRClient() : CDVDDemux()
 {
   m_pInput = NULL;
-  for (int i = 0; i < MAX_PVR_STREAMS; i++) m_streams[i] = NULL;
+  for (int i = 0; i < MAX_STREAMS; i++) m_streams[i] = NULL;
 }
 
 CDVDDemuxPVRClient::~CDVDDemuxPVRClient()
@@ -70,7 +92,7 @@ bool CDVDDemuxPVRClient::Open(CDVDInputStream* pInput)
 
 void CDVDDemuxPVRClient::Dispose()
 {
-  for (int i = 0; i < MAX_PVR_STREAMS; i++)
+  for (int i = 0; i < MAX_STREAMS; i++)
   {
     if (m_streams[i])
     {
@@ -129,7 +151,7 @@ DemuxPacket* CDVDDemuxPVRClient::Read()
 
 CDemuxStream* CDVDDemuxPVRClient::GetStream(int iStreamId)
 {
-  if (iStreamId < 0 || iStreamId >= MAX_PVR_STREAMS) return NULL;
+  if (iStreamId < 0 || iStreamId >= MAX_STREAMS) return NULL;
     return m_streams[iStreamId];
 }
 
@@ -237,7 +259,7 @@ void CDVDDemuxPVRClient::UpdateStreams(PVR_STREAM_PROPERTIES *props)
 int CDVDDemuxPVRClient::GetNrOfStreams()
 {
   int i = 0;
-  while (i < MAX_PVR_STREAMS && m_streams[i]) i++;
+  while (i < MAX_STREAMS && m_streams[i]) i++;
   return i;
 }
 
@@ -266,5 +288,7 @@ void CDVDDemuxPVRClient::GetStreamCodecName(int iStreamId, CStdString &strName)
       strName = "mpeg2video";
     else if (stream->codec == CODEC_ID_H264)
       strName = "h264";
+    else if (stream->codec == CODEC_ID_EAC3)
+      strName = "eac3";
   }
 }

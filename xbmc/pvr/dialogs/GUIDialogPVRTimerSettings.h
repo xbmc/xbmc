@@ -26,28 +26,35 @@
 
 class CFileItem;
 
-class CGUIDialogPVRTimerSettings : public CGUIDialogSettings
+namespace PVR
 {
-public:
-  CGUIDialogPVRTimerSettings(void);
-  virtual ~CGUIDialogPVRTimerSettings(void) {}
-  void SetTimer(CFileItem *item);
-  bool GetOK() { return !m_cancelled; }
+  class CPVRTimerInfoTag;
 
-protected:
-  virtual void CreateSettings();
-  virtual void OnSettingChanged(SettingInfo &setting);
-  virtual void OnOkay();
-  virtual void OnCancel() { m_cancelled = true; }
+  class CGUIDialogPVRTimerSettings : public CGUIDialogSettings
+  {
+  public:
+    CGUIDialogPVRTimerSettings(void);
+    virtual ~CGUIDialogPVRTimerSettings(void) {}
+    void SetTimer(CFileItem *item);
+    bool GetOK() { return !m_cancelled; }
 
-  SYSTEMTIME      timerStartTime;
-  SYSTEMTIME      timerEndTime;
-  CStdString      timerStartTimeStr;
-  CStdString      timerEndTimeStr;
-  int             m_tmp_iFirstDay;;
-  int             m_tmp_day;
+  protected:
+    virtual void CreateSettings();
+    virtual void OnSettingChanged(SettingInfo &setting);
+    virtual void OnOkay();
+    virtual void OnCancel() { m_cancelled = true; }
+    virtual void AddChannelNames(CFileItemList &channelsList, SETTINGSTRINGS &channelNames, bool bRadio);
+    virtual void SetWeekdaySettingFromTimer(const CPVRTimerInfoTag &timer);
+    virtual void SetTimerFromWeekdaySetting(CPVRTimerInfoTag &timer);
 
-  CFileItem      *m_timerItem;
-  bool            m_cancelled;
-};
+    SYSTEMTIME      timerStartTime;
+    SYSTEMTIME      timerEndTime;
+    CStdString      timerStartTimeStr;
+    CStdString      timerEndTimeStr;
+    int             m_tmp_iFirstDay;;
+    int             m_tmp_day;
 
+    CFileItem      *m_timerItem;
+    bool            m_cancelled;
+  };
+}

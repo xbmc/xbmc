@@ -111,21 +111,11 @@
 	</include>
 	<include name="AudioCodecFlaggingConditions">
 		<control type="image">
-			<description>Dolby Digital Image</description>
-			<width>90</width>
-			<height>33</height>
-			<aspectratio>keep</aspectratio>
-			<texture>flagging/audio/dolbydigital.png</texture>
-			<visible>[stringcompare(ListItem.AudioCodec,ac3) + stringcompare(ListItem.AudioChannels,6)]</visible>
-		</control>
-		<control type="image">
 			<description>Audio Codec Image</description>
 			<width>90</width>
 			<height>33</height>
 			<aspectratio>keep</aspectratio>
 			<texture>$INFO[ListItem.AudioCodec,flagging/audio/,.png]</texture>
-			<!-- Don't show if I want the Dolby Digital Logo -->
-			<visible>![stringcompare(ListItem.AudioCodec,ac3) + stringcompare(ListItem.AudioChannels,6)]</visible>
 		</control>
 	</include>
 	<include name="AspectCodecFlaggingConditions">

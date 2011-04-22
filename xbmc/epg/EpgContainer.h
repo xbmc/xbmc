@@ -30,205 +30,217 @@
 #include "EpgDatabase.h"
 
 class CFileItemList;
-class CPVREpg;
-class CPVREpgContainer;
-class CPVRManager;
 
-class CEpgContainer : public std::vector<CEpg *>,
-                 public Observer,
-                 public Observable,
-                 private CThread
+namespace PVR
 {
-  friend class CEpg;
-  friend class CEpgDatabase;
+  class CPVREpg;
+  class CPVREpgContainer;
+  class CPVRManager;
+}
 
-  friend class CPVREpg;
-  friend class CPVREpgContainer;
-  friend class CPVRManager;
+namespace EPG
+{
+  #define g_EpgContainer CEpgContainer::Get()
 
-private:
-  CEpgDatabase m_database;           /*!< the EPG database */
+  class CEpgContainer : public std::vector<CEpg *>,
+                   public Observer,
+                   public Observable,
+                   private CThread
+  {
+    friend class CEpg;
+    friend class CEpgDatabase;
 
-  /** @name Configuration */
-  //@{
-  bool         m_bIgnoreDbForClient; /*!< don't save the EPG data in the database */
-  int          m_iDisplayTime;       /*!< hours of EPG data to fetch */
-  int          m_iUpdateTime;        /*!< update the full EPG after this period */
-  //@}
+    friend class PVR::CPVREpg;
+    friend class PVR::CPVREpgContainer;
+    friend class PVR::CPVRManager;
 
-  /** @name Class state properties */
-  //@{
-  bool         m_bDatabaseLoaded;    /*!< true if we already loaded the EPG from the database */
-  time_t       m_iLastEpgCleanup;    /*!< the time the EPG was cleaned up */
-  time_t       m_iLastEpgUpdate;     /*!< the time the EPG was updated */
-  //@}
+  protected:
+    CEpgDatabase m_database;           /*!< the EPG database */
 
-  CCriticalSection m_critSection;    /*!< a critical section for changes to this container */
+    /** @name Configuration */
+    //@{
+    bool         m_bIgnoreDbForClient; /*!< don't save the EPG data in the database */
+    int          m_iDisplayTime;       /*!< hours of EPG data to fetch */
+    int          m_iUpdateTime;        /*!< update the full EPG after this period */
+    //@}
 
-  /*!
-   * @brief Load the EPG settings.
-   * @return True if the settings were loaded successfully, false otherwise.
-   */
-  virtual bool LoadSettings(void);
+    /** @name Class state properties */
+    //@{
+    bool         m_bDatabaseLoaded;    /*!< true if we already loaded the EPG from the database */
+    time_t       m_iLastEpgCleanup;    /*!< the time the EPG was cleaned up */
+    time_t       m_iLastEpgUpdate;     /*!< the time the EPG was updated */
+    //@}
 
-  /*!
-   * @brief Remove old EPG entries.
-   * @return True if the old entries were removed successfully, false otherwise.
-   */
-  virtual bool RemoveOldEntries(void);
+    CCriticalSection m_critSection;    /*!< a critical section for changes to this container */
 
-  /*!
-   * @brief Load and update the EPG data.
-   * @param bShowProgress Show a progress bar if true.
-   * @return True if the update was successful, false otherwise.
-   */
-  virtual bool UpdateEPG(bool bShowProgress = false);
+    /*!
+     * @brief Load the EPG settings.
+     * @return True if the settings were loaded successfully, false otherwise.
+     */
+    virtual bool LoadSettings(void);
 
-  /*!
-   * @return True if a running update should be interrupted, false otherwise.
-   */
-  virtual bool InterruptUpdate(void) const;
+    /*!
+     * @brief Remove old EPG entries.
+     * @return True if the old entries were removed successfully, false otherwise.
+     */
+    virtual bool RemoveOldEntries(void);
 
-  /*!
-   * @brief Load or update a single table.
-   * @param epg The table to update.
-   * @param start The start time to use.
-   * @param end The end time to use.
-   * @return True if the load or update was successful, false otherwise.
-   */
-  virtual bool UpdateSingleTable(CEpg *epg, const time_t start, const time_t end);
+    /*!
+     * @brief Load and update the EPG data.
+     * @param bShowProgress Show a progress bar if true.
+     * @return True if the update was successful, false otherwise.
+     */
+    virtual bool UpdateEPG(bool bShowProgress = false);
 
-  /*!
-   * @brief A hook that will be called on every update thread iteration.
-   */
-  virtual void ProcessHook(const CDateTime &time) {};
+    /*!
+     * @return True if a running update should be interrupted, false otherwise.
+     */
+    virtual bool InterruptUpdate(void) const;
 
-  /*!
-   * @brief A hook that is called after the tables have been loaded from the database.
-   * @return True if the hook was executed successfully, false otherwise.
-   */
-  virtual bool AutoCreateTablesHook(void) { return true; }
+    /*!
+     * @brief Load or update a single table.
+     * @param epg The table to update.
+     * @param start The start time to use.
+     * @param end The end time to use.
+     * @return True if the load or update was successful, false otherwise.
+     */
+    virtual bool UpdateSingleTable(CEpg *epg, const time_t start, const time_t end);
 
-  /*!
-   * @brief Create a new EPG table.
-   * @param iEpgId The table ID or -1 to create a new one.
-   * @return The new table.
-   */
-  virtual CEpg *CreateEpg(int iEpgId);
+    /*!
+     * @brief A hook that will be called on every update thread iteration.
+     */
+    virtual void ProcessHook(const CDateTime &time) {};
 
-protected:
-  /*!
-   * @brief EPG update thread
-   */
-  virtual void Process(void);
+    /*!
+     * @brief A hook that is called after the tables have been loaded from the database.
+     * @return True if the hook was executed successfully, false otherwise.
+     */
+    virtual bool AutoCreateTablesHook(void) { return true; }
 
-public:
-  /*!
-   * @brief Create a new EPG table container.
-   */
-  CEpgContainer(void);
+    /*!
+     * @brief Create a new EPG table.
+     * @param iEpgId The table ID or -1 to create a new one.
+     * @return The new table.
+     */
+    virtual CEpg *CreateEpg(int iEpgId);
 
-  /*!
-   * @brief Destroy this instance.
-   */
-  virtual ~CEpgContainer(void);
+  protected:
+    /*!
+     * @brief EPG update thread
+     */
+    virtual void Process(void);
 
-  /*!
-   * @brief Get a pointer to the database instance.
-   * @return A pointer to the database instance.
-   */
-  CEpgDatabase *GetDatabase(void) { return &m_database; }
+    /*!
+     * @brief Create a new EPG table container.
+     */
+    CEpgContainer(void);
 
-  /*!
-   * @brief Start the EPG update thread.
-   */
-  virtual void Start(void);
+  public:
+    /*!
+     * @brief Destroy this instance.
+     */
+    virtual ~CEpgContainer(void);
 
-  /*!
-   * @brief Stop the EPG update thread.
-   * @return
-   */
-  virtual bool Stop(void);
+    /*!
+     * @return An instance of this singleton.
+     */
+    static CEpgContainer &Get(void);
 
-  /*!
-   * @brief Clear all EPG entries.
-   * @param bClearDb Clear the database too if true.
-   */
-  virtual void Clear(bool bClearDb = false);
+    /*!
+     * @brief Get a pointer to the database instance.
+     * @return A pointer to the database instance.
+     */
+    CEpgDatabase *GetDatabase(void) { return &m_database; }
 
-  /*!
-   * @brief Stop the update thread and unload all data.
-   */
-  virtual void Unload(void);
+    /*!
+     * @brief Start the EPG update thread.
+     */
+    virtual void Start(void);
 
-  /*!
-   * @brief Clear the EPG and all it's database entries.
-   */
-  virtual void Reset(void) { Clear(true); }
+    /*!
+     * @brief Stop the EPG update thread.
+     * @return
+     */
+    virtual bool Stop(void);
 
-  /*!
-   * @brief Delete an EPG table from this container.
-   * @param epg The table to delete.
-   * @param bDeleteFromDatabase Delete this table from the database too if true.
-   * @return
-   */
-  virtual bool DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase = false);
+    /*!
+     * @brief Clear all EPG entries.
+     * @param bClearDb Clear the database too if true.
+     */
+    virtual void Clear(bool bClearDb = false);
 
-  /*!
-   * @brief Process a notification from an observable.
-   * @param obs The observable that sent the update.
-   * @param msg The update message.
-   */
-  virtual void Notify(const Observable &obs, const CStdString& msg);
+    /*!
+     * @brief Stop the update thread and unload all data.
+     */
+    virtual void Unload(void);
 
-  /*!
-   * @brief Update an entry in this container.
-   * @param tag The table to update.
-   * @param bUpdateDatabase If set to true, this table will be persisted in the database.
-   * @return True if it was updated successfully, false otherwise.
-   */
-  virtual bool UpdateEntry(const CEpg &entry, bool bUpdateDatabase = false);
+    /*!
+     * @brief Clear the EPG and all it's database entries.
+     */
+    virtual void Reset(void) { Clear(true); }
 
-  /*!
-   * @brief Get all EPG tables and apply a filter.
-   * @param results The fileitem list to store the results in.
-   * @param filter The filter to apply.
-   * @return The amount of entries that were added.
-   */
-  virtual int GetEPGSearch(CFileItemList* results, const EpgSearchFilter &filter);
+    /*!
+     * @brief Delete an EPG table from this container.
+     * @param epg The table to delete.
+     * @param bDeleteFromDatabase Delete this table from the database too if true.
+     * @return
+     */
+    virtual bool DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase = false);
 
-  /*!
-   * @brief Get all EPG tables.
-   * @param results The fileitem list to store the results in.
-   * @return The amount of entries that were added.
-   */
-  virtual int GetEPGAll(CFileItemList* results);
+    /*!
+     * @brief Process a notification from an observable.
+     * @param obs The observable that sent the update.
+     * @param msg The update message.
+     */
+    virtual void Notify(const Observable &obs, const CStdString& msg);
 
-  /*!
-   * @brief Get the start time of the first entry.
-   * @return The start time.
-   */
-  virtual const CDateTime GetFirstEPGDate(void) const;
+    /*!
+     * @brief Update an entry in this container.
+     * @param tag The table to update.
+     * @param bUpdateDatabase If set to true, this table will be persisted in the database.
+     * @return True if it was updated successfully, false otherwise.
+     */
+    virtual bool UpdateEntry(const CEpg &entry, bool bUpdateDatabase = false);
 
-  /*!
-    * @brief Get the end time of the last entry.
-    * @return The end time.
-    */
-  virtual const CDateTime GetLastEPGDate(void) const;
+    /*!
+     * @brief Get all EPG tables and apply a filter.
+     * @param results The fileitem list to store the results in.
+     * @param filter The filter to apply.
+     * @return The amount of entries that were added.
+     */
+    virtual int GetEPGSearch(CFileItemList* results, const EpgSearchFilter &filter);
 
-  /*!
-   * @brief Get an EPG table given it's ID.
-   * @param iEpgId The database ID of the table.
-   * @return The table or NULL if it wasn't found.
-   */
-  virtual CEpg *GetById(int iEpgId) const;
+    /*!
+     * @brief Get all EPG tables.
+     * @param results The fileitem list to store the results in.
+     * @return The amount of entries that were added.
+     */
+    virtual int GetEPGAll(CFileItemList* results);
 
-  /*!
-   * @brief Get an EPG table given it's index in this container.
-   * @param iIndex The index.
-   * @return The table or NULL if it wasn't found.
-   */
-  virtual CEpg *GetByIndex(unsigned int iIndex) const;
-};
+    /*!
+     * @brief Get the start time of the first entry.
+     * @return The start time.
+     */
+    virtual const CDateTime GetFirstEPGDate(void) const;
 
-extern CEpgContainer g_EpgContainer; /*!< The container for all EPG tables */
+    /*!
+      * @brief Get the end time of the last entry.
+      * @return The end time.
+      */
+    virtual const CDateTime GetLastEPGDate(void) const;
+
+    /*!
+     * @brief Get an EPG table given it's ID.
+     * @param iEpgId The database ID of the table.
+     * @return The table or NULL if it wasn't found.
+     */
+    virtual CEpg *GetById(int iEpgId) const;
+
+    /*!
+     * @brief Get an EPG table given it's index in this container.
+     * @param iIndex The index.
+     * @return The table or NULL if it wasn't found.
+     */
+    virtual CEpg *GetByIndex(unsigned int iIndex) const;
+  };
+}

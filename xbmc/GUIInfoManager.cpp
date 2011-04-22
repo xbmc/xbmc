@@ -79,7 +79,6 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
-#include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
 
 #include "addons/AddonManager.h"
@@ -90,6 +89,7 @@ using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace ADDON;
+using namespace PVR;
 
 CGUIInfoManager::CCombinedValue& CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
 {

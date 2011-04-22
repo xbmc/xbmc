@@ -27,6 +27,7 @@
 #include "EpgContainer.h"
 
 using namespace std;
+using namespace EPG;
 
 void EpgSearchFilter::Reset()
 {

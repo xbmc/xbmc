@@ -7,8 +7,9 @@
   <string id="31003">Power Options</string>
   <string id="31004">Working...</string>
   <string id="31005">Hide INFO</string>
-
+  <string id="31006">View Options</string>
   <string id="31007">Plugins</string>
+  <string id="31008">Fullscreen</string>
 
   <string id="31020">Recently Added</string>
   <string id="31021">Video - Files</string>
@@ -38,6 +39,8 @@
   <string id="31047">Current Preset</string>
   <string id="31048">Visualization Presets</string>
   <string id="31049">End Time</string>
+  <string id="31050">Sort: Ascending</string>
+  <string id="31051">Sort: Descending</string>
 
 
   <!-- Playlist Editor labels -->
@@ -133,6 +136,7 @@
   <string id="31328">Recently Added</string>
   <string id="31329">[B]Timer set![/B] [COLOR=grey2] - System auto shutdown in[/COLOR]</string>
   <string id="31330">Click button to play[CR][CR]Movie trailer</string>
+  <string id="31331">Album Details</string>
 
   <!-- Video and Music OSD Labels  -->
   <string id="31351">Pause</string>

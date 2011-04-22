@@ -27,6 +27,8 @@
 #include "utils/log.h"
 #include "pvr/PVRManager.h"
 
+using namespace PVR;
+
 CPVRChannelGroupsContainer::CPVRChannelGroupsContainer(void)
 {
 
@@ -316,4 +318,15 @@ void CPVRChannelGroupsContainer::SearchMissingChannelIcons(void)
     channelgroupradio->SearchAndSetChannelIcons(true);
 
   CGUIDialogOK::ShowAndGetInput(19103,0,20177,0);
+}
+
+const CPVRChannel *CPVRChannelGroupsContainer::GetLastPlayedChannel(void) const
+{
+  const CPVRChannel *lastChannel = GetGroupAllTV()->GetLastPlayedChannel();
+
+  const CPVRChannel *lastRadioChannel = GetGroupAllRadio()->GetLastPlayedChannel();
+  if (!lastChannel || (lastRadioChannel && lastChannel->LastWatched() < lastRadioChannel->LastWatched()))
+    lastChannel = lastRadioChannel;
+
+  return lastChannel;
 }

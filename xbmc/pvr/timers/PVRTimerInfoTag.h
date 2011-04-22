@@ -53,93 +53,97 @@
 #include "../addons/include/xbmc_pvr_types.h"
 
 class CFileItem;
-class CPVREpgInfoTag;
-class CGUIDialogPVRTimerSettings;
-class CPVRChannel;
 
-class CPVRTimerInfoTag
+namespace PVR
 {
-public:
-  CStdString            m_strTitle;           /*!< @brief name of this timer */
-  CStdString            m_strDirectory;       /*!< @brief directory where the recording must be stored */
-  CStdString            m_strSummary;         /*!< @brief summary string with the time to show inside a GUI list */
-  bool                  m_bIsActive;          /*!< @brief active flag, if it is false backend ignore the timer */
-  int                   m_iClientId;          /*!< @brief ID of the backend */
-  int                   m_iClientIndex;       /*!< @brief index number of the tag, given by the backend, -1 for new */
-  int                   m_iClientChannelUid;  /*!< @brief channel uid */
-  bool                  m_bIsRecording;       /*!< @brief is this timer recording? */
-  int                   m_iPriority;          /*!< @brief priority of the timer */
-  int                   m_iLifetime;          /*!< @brief lifetime of the timer in days */
-  bool                  m_bIsRepeating;       /*!< @brief repeating timer if true, use the m_FirstDay and repeat flags */
-  int                   m_iWeekdays;          /*!< @brief bit based store of weekdays to repeat */
-  CStdString            m_strFileNameAndPath; /*!< @brief filename is only for reference */
-  int                   m_iChannelNumber;     /*!< @brief integer value of the channel number */
-  bool                  m_bIsRadio;           /*!< @brief is radio channel if set */
-  CPVREpgInfoTag *      m_epgInfo;
-  const CPVRChannel *   m_channel;
-  unsigned int          m_iMarginStart;       /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
-  unsigned int          m_iMarginEnd;         /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
-  CStdString            m_strGenre;           /*!< @brief genre of the timer */
+  class CPVREpgInfoTag;
+  class CGUIDialogPVRTimerSettings;
+  class CPVRChannel;
 
-  CPVRTimerInfoTag(void);
-  CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel, unsigned int iClientId);
+  class CPVRTimerInfoTag
+  {
+  public:
+    CStdString            m_strTitle;           /*!< @brief name of this timer */
+    CStdString            m_strDirectory;       /*!< @brief directory where the recording must be stored */
+    CStdString            m_strSummary;         /*!< @brief summary string with the time to show inside a GUI list */
+    bool                  m_bIsActive;          /*!< @brief active flag, if it is false backend ignore the timer */
+    int                   m_iClientId;          /*!< @brief ID of the backend */
+    int                   m_iClientIndex;       /*!< @brief index number of the tag, given by the backend, -1 for new */
+    int                   m_iClientChannelUid;  /*!< @brief channel uid */
+    bool                  m_bIsRecording;       /*!< @brief is this timer recording? */
+    int                   m_iPriority;          /*!< @brief priority of the timer */
+    int                   m_iLifetime;          /*!< @brief lifetime of the timer in days */
+    bool                  m_bIsRepeating;       /*!< @brief repeating timer if true, use the m_FirstDay and repeat flags */
+    int                   m_iWeekdays;          /*!< @brief bit based store of weekdays to repeat */
+    CStdString            m_strFileNameAndPath; /*!< @brief filename is only for reference */
+    int                   m_iChannelNumber;     /*!< @brief integer value of the channel number */
+    bool                  m_bIsRadio;           /*!< @brief is radio channel if set */
+    CPVREpgInfoTag *      m_epgInfo;
+    const CPVRChannel *   m_channel;
+    unsigned int          m_iMarginStart;       /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
+    unsigned int          m_iMarginEnd;         /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
+    CStdString            m_strGenre;           /*!< @brief genre of the timer */
 
-  void Reset();
+    CPVRTimerInfoTag(void);
+    CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel, unsigned int iClientId);
 
-  bool operator ==(const CPVRTimerInfoTag& right) const;
-  bool operator !=(const CPVRTimerInfoTag& right) const;
-  int Compare(const CPVRTimerInfoTag &timer) const;
+    void Reset();
 
-  void UpdateSummary(void);
+    bool operator ==(const CPVRTimerInfoTag& right) const;
+    bool operator !=(const CPVRTimerInfoTag& right) const;
+    int Compare(const CPVRTimerInfoTag &timer) const;
 
-  void DisplayError(PVR_ERROR err) const;
+    void UpdateSummary(void);
 
-  const CStdString &GetStatus() const;
+    void DisplayError(PVR_ERROR err) const;
 
-  bool SetDuration(int iDuration);
+    const CStdString &GetStatus() const;
 
-  static CPVRTimerInfoTag *CreateFromEpg(const CPVREpgInfoTag &tag);
-  void SetEpgInfoTag(CPVREpgInfoTag *tag);
+    bool SetDuration(int iDuration);
 
-  int ChannelNumber(void) const;
-  CStdString ChannelName(void) const;
+    static CPVRTimerInfoTag *CreateFromEpg(const CPVREpgInfoTag &tag);
+    void SetEpgInfoTag(CPVREpgInfoTag *tag);
 
-  bool UpdateEntry(const CPVRTimerInfoTag &tag);
+    int ChannelNumber(void) const;
+    CStdString ChannelName(void) const;
 
-  void UpdateEpgEvent(bool bClear = false);
+    bool UpdateEntry(const CPVRTimerInfoTag &tag);
 
-  bool IsActive(void) const { return m_bIsActive && EndAsLocalTime() > CDateTime::GetCurrentDateTime(); }
-  bool IsRecording(void) const { return IsActive() && StartAsLocalTime() < CDateTime::GetCurrentDateTime(); }
+    void UpdateEpgEvent(bool bClear = false);
 
-  const CDateTime &StartAsUTC(void) const { return m_StartTime; }
-  const CDateTime &StartAsLocalTime(void) const;
-  void SetStartFromUTC(CDateTime &start) { m_StartTime = start; }
-  void SetStartFromLocalTime(CDateTime &start) { m_StartTime = start.GetAsUTCDateTime(); }
+    bool IsActive(void) const { return m_bIsActive && EndAsLocalTime() > CDateTime::GetCurrentDateTime(); }
+    bool IsRecording(void) const { return IsActive() && StartAsLocalTime() < CDateTime::GetCurrentDateTime(); }
 
-  const CDateTime &EndAsUTC(void) const { return m_StopTime; }
-  const CDateTime &EndAsLocalTime(void) const;
-  void SetEndFromUTC(CDateTime &end) { m_StopTime = end; }
-  void SetEndFromLocalTime(CDateTime &end) { m_StopTime = end.GetAsUTCDateTime(); }
+    const CDateTime &StartAsUTC(void) const { return m_StartTime; }
+    const CDateTime &StartAsLocalTime(void) const;
+    void SetStartFromUTC(CDateTime &start) { m_StartTime = start; }
+    void SetStartFromLocalTime(CDateTime &start) { m_StartTime = start.GetAsUTCDateTime(); }
 
-  const CDateTime &FirstDayAsUTC(void) const { return m_FirstDay; }
-  const CDateTime &FirstDayAsLocalTime(void) const;
-  void SetFirstDayFromUTC(CDateTime &firstDay) { m_FirstDay = firstDay; }
-  void SetFirstDayFromLocalTime(CDateTime &firstDay) { m_FirstDay = firstDay.GetAsUTCDateTime(); }
+    const CDateTime &EndAsUTC(void) const { return m_StopTime; }
+    const CDateTime &EndAsLocalTime(void) const;
+    void SetEndFromUTC(CDateTime &end) { m_StopTime = end; }
+    void SetEndFromLocalTime(CDateTime &end) { m_StopTime = end.GetAsUTCDateTime(); }
 
-  unsigned int MarginStart(void) const { return m_iMarginStart; }
-  void SetMarginStart(unsigned int iMinutes) { m_iMarginStart = iMinutes; }
+    const CDateTime &FirstDayAsUTC(void) const { return m_FirstDay; }
+    const CDateTime &FirstDayAsLocalTime(void) const;
+    void SetFirstDayFromUTC(CDateTime &firstDay) { m_FirstDay = firstDay; }
+    void SetFirstDayFromLocalTime(CDateTime &firstDay) { m_FirstDay = firstDay.GetAsUTCDateTime(); }
 
-  unsigned int MarginEnd(void) const { return m_iMarginEnd; }
-  void SetMarginEnd(unsigned int iMinutes) { m_iMarginEnd = iMinutes; }
+    unsigned int MarginStart(void) const { return m_iMarginStart; }
+    void SetMarginStart(unsigned int iMinutes) { m_iMarginStart = iMinutes; }
 
-  /* Client control functions */
-  bool AddToClient();
-  bool DeleteFromClient(bool bForce = false);
-  bool RenameOnClient(const CStdString &strNewName);
-  bool UpdateOnClient();
+    unsigned int MarginEnd(void) const { return m_iMarginEnd; }
+    void SetMarginEnd(unsigned int iMinutes) { m_iMarginEnd = iMinutes; }
 
-private:
-  CDateTime m_StartTime; /* start time */
-  CDateTime m_StopTime;  /* stop time */
-  CDateTime m_FirstDay;  /* if it is a repeating timer the first date it starts */
-};
+    /* Client control functions */
+    bool AddToClient();
+    bool DeleteFromClient(bool bForce = false);
+    bool RenameOnClient(const CStdString &strNewName);
+    bool UpdateOnClient();
+
+  private:
+    CDateTime m_StartTime; /* start time */
+    CDateTime m_StopTime;  /* stop time */
+    CDateTime m_FirstDay;  /* if it is a repeating timer the first date it starts */
+  };
+}

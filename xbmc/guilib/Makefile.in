@@ -18,7 +18,6 @@ SRCS=AnimatedGif.cpp \
      GUIControlProfiler.cpp \
      GUIDialog.cpp \
      GUIEditControl.cpp \
-     GUIEPGGridContainer.cpp \
      GUIFadeLabelControl.cpp \
      GUIFixedListContainer.cpp \
      GUIFont.cpp \

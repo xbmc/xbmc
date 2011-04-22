@@ -27,326 +27,332 @@
 #include <vector>
 #include <deque>
 
-class CPVRGUIInfo;
-
-typedef std::map< long, boost::shared_ptr<CPVRClient> >           CLIENTMAP;
-typedef std::map< long, boost::shared_ptr<CPVRClient> >::iterator CLIENTMAPITR;
-typedef std::map< long, PVR_ADDON_CAPABILITIES >                  CLIENTPROPS;
-typedef std::map< long, PVR_STREAM_PROPERTIES >                   STREAMPROPS;
-
-#define XBMC_VIRTUAL_CLIENTID -1
-
-class CPVRClients : IPVRClientCallback,
-                    public ADDON::IAddonMgrCallback,
-                    private CThread
+namespace PVR
 {
-  friend class CPVRGUIInfo;
+  class CPVRGUIInfo;
 
-public:
-  CPVRClients(void);
-  virtual ~CPVRClients(void);
+  typedef std::map< long, boost::shared_ptr<CPVRClient> >           CLIENTMAP;
+  typedef std::map< long, boost::shared_ptr<CPVRClient> >::iterator CLIENTMAPITR;
+  typedef std::map< long, PVR_ADDON_CAPABILITIES >                  CLIENTPROPS;
+  typedef std::map< long, PVR_STREAM_PROPERTIES >                   STREAMPROPS;
 
-  /*!
-   * @brief Get the ID of the first client.
-   * @return The ID of the first client or -1 if no clients are active;
-   */
-  int GetFirstID(void);
+  #define XBMC_VIRTUAL_CLIENTID -1
 
-  /*!
-   * @brief Try to load and initialise all clients.
-   * @param iMaxTime Maximum time to try to load clients in seconds. Use 0 to keep trying until m_bStop becomes true.
-   * @return True if all clients were loaded, false otherwise.
-   */
-  bool TryLoadClients(int iMaxTime = 0);
+  class CPVRClients : IPVRClientCallback,
+                      public ADDON::IAddonMgrCallback,
+                      private CThread
+  {
+    friend class CPVRGUIInfo;
 
-  /*!
-   * @brief Stop a client.
-   * @param addon The client to stop.
-   * @param bRestart If true, restart the client.
-   * @return True if the client was found, false otherwise.
-   */
-  bool StopClient(ADDON::AddonPtr client, bool bRestart);
+  public:
+    CPVRClients(void);
+    virtual ~CPVRClients(void);
 
-  /*!
-   * @brief Open a stream on the given channel.
-   * @param tag The channel to start playing.
-   * @return True if the stream was opened successfully, false otherwise.
-   */
-  bool OpenLiveStream(const CPVRChannel &tag);
-  bool CloseLiveStream(void);
+    /*!
+     * @brief Get the ID of the first client.
+     * @return The ID of the first client or -1 if no clients are active;
+     */
+    int GetFirstID(void);
 
-  /*!
-   * @brief Open a stream from the given recording.
-   * @param tag The recording to start playing.
-   * @return True if the stream was opened successfully, false otherwise.
-   */
-  bool OpenRecordedStream(const CPVRRecording &tag);
-  bool CloseRecordedStream(void);
+    /*!
+     * @brief Try to load and initialise all clients.
+     * @param iMaxTime Maximum time to try to load clients in seconds. Use 0 to keep trying until m_bStop becomes true.
+     * @return True if all clients were loaded, false otherwise.
+     */
+    bool TryLoadClients(int iMaxTime = 0);
 
-  /*!
-   * @brief Close a PVR stream.
-   */
-  void CloseStream(void);
+    /*!
+     * @brief Stop a client.
+     * @param addon The client to stop.
+     * @param bRestart If true, restart the client.
+     * @return True if the client was found, false otherwise.
+     */
+    bool StopClient(ADDON::AddonPtr client, bool bRestart);
 
-  /*!
-   * @brief Read from an open stream.
-   * @param lpBuf Target buffer.
-   * @param uiBufSize The size of the buffer.
-   * @return The amount of bytes that was added.
-   */
-  int ReadStream(void* lpBuf, int64_t uiBufSize);
+    /*!
+     * @brief Open a stream on the given channel.
+     * @param tag The channel to start playing.
+     * @return True if the stream was opened successfully, false otherwise.
+     */
+    bool OpenLiveStream(const CPVRChannel &tag);
+    bool CloseLiveStream(void);
 
-  /*!
-   * @brief Reset the demuxer.
-   */
-  void DemuxReset(void);
+    /*!
+     * @brief Open a stream from the given recording.
+     * @param tag The recording to start playing.
+     * @return True if the stream was opened successfully, false otherwise.
+     */
+    bool OpenRecordedStream(const CPVRRecording &tag);
+    bool CloseRecordedStream(void);
 
-  /*!
-   * @brief Abort any internal reading that might be stalling main thread.
-   *        NOTICE - this can be called from another thread.
-   */
-  void DemuxAbort(void);
+    /*!
+     * @brief Close a PVR stream.
+     */
+    void CloseStream(void);
 
-  /*!
-   * @brief Flush the demuxer. If any data is kept in buffers, this should be freed now.
-   */
-  void DemuxFlush(void);
+    /*!
+     * @brief Read from an open stream.
+     * @param lpBuf Target buffer.
+     * @param uiBufSize The size of the buffer.
+     * @return The amount of bytes that was added.
+     */
+    int ReadStream(void* lpBuf, int64_t uiBufSize);
 
-  /*!
-   * @brief Read the stream from the demuxer
-   * @return An allocated demuxer packet
-   */
-  DemuxPacket* ReadDemuxStream(void);
+    /*!
+     * @brief Reset the demuxer.
+     */
+    void DemuxReset(void);
 
-  /*!
-   * @brief Return the filesize of the currently running stream.
-   *        Limited to recordings playback at the moment.
-   * @return The size of the stream.
-   */
-  int64_t LengthStream(void);
+    /*!
+     * @brief Abort any internal reading that might be stalling main thread.
+     *        NOTICE - this can be called from another thread.
+     */
+    void DemuxAbort(void);
 
-  /*!
-   * @brief Seek to a position in a stream.
-   *        Limited to recordings playback at the moment.
-   * @param iFilePosition The position to seek to.
-   * @param iWhence Specify how to seek ("new position=pos", "new position=pos+actual postion" or "new position=filesize-pos")
-   * @return The new stream position.
-   */
-  int64_t SeekStream(int64_t iFilePosition, int iWhence = SEEK_SET);
+    /*!
+     * @brief Flush the demuxer. If any data is kept in buffers, this should be freed now.
+     */
+    void DemuxFlush(void);
 
-  /*!
-   * @brief Get the currently playing position in a stream.
-   * @return The current position.
-   */
-  int64_t GetStreamPosition(void);
+    /*!
+     * @brief Read the stream from the demuxer
+     * @return An allocated demuxer packet
+     */
+    DemuxPacket* ReadDemuxStream(void);
 
-  const CStdString GetClientName(int iClientId);
-  const CStdString GetStreamURL(const CPVRChannel &tag);
-  int GetSignalLevel(void) const;
-  int GetSNR(void) const;
-  bool HasClients(void) const;
-  bool HasTimerSupport(int iClientId);
-  bool IsEncrypted(void) const;
-  bool IsPlaying(void) const;
-  bool AllClientsLoaded(void) const;
-  bool IsReadingLiveStream(void) const;
-  const CStdString GetPlayingClientName(void) const { return m_strPlayingClientName; }
-  bool SwitchChannel(const CPVRChannel &channel);
+    /*!
+     * @brief Return the filesize of the currently running stream.
+     *        Limited to recordings playback at the moment.
+     * @return The size of the stream.
+     */
+    int64_t LengthStream(void);
 
-  int GetTimers(CPVRTimers *timers);
-  bool AddTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error);
-  bool UpdateTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error);
-  bool DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, PVR_ERROR *error);
-  bool RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &strNewName, PVR_ERROR *error);
+    /*!
+     * @brief Seek to a position in a stream.
+     *        Limited to recordings playback at the moment.
+     * @param iFilePosition The position to seek to.
+     * @param iWhence Specify how to seek ("new position=pos", "new position=pos+actual postion" or "new position=filesize-pos")
+     * @return The new stream position.
+     */
+    int64_t SeekStream(int64_t iFilePosition, int iWhence = SEEK_SET);
 
-  int GetRecordings(CPVRRecordings *recordings);
-  bool RenameRecording(const CPVRRecording &recording, PVR_ERROR *error);
-  bool DeleteRecording(const CPVRRecording &recording, PVR_ERROR *error);
+    /*!
+     * @brief Get the currently playing position in a stream.
+     * @return The current position.
+     */
+    int64_t GetStreamPosition(void);
 
-  bool GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end, PVR_ERROR *error);
-  int GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error);
-  int GetChannelGroupMembers(CPVRChannelGroup *group, PVR_ERROR *error);
-  int GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error);
+    const CStdString GetClientName(int iClientId);
+    const CStdString GetStreamURL(const CPVRChannel &tag);
+    int GetSignalLevel(void) const;
+    int GetSNR(void) const;
+    bool HasClients(void) const;
+    bool HasTimerSupport(int iClientId);
+    bool IsEncrypted(void) const;
+    bool IsPlaying(void) const;
+    bool AllClientsLoaded(void) const;
+    bool IsReadingLiveStream(void) const;
+    const CStdString GetPlayingClientName(void) const { return m_strPlayingClientName; }
+    bool SwitchChannel(const CPVRChannel &channel);
 
-  int GetClients(std::map<long, CStdString> *clients);
+    int GetTimers(CPVRTimers *timers);
+    bool AddTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error);
+    bool UpdateTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error);
+    bool DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, PVR_ERROR *error);
+    bool RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &strNewName, PVR_ERROR *error);
 
-  /*!
-   * @brief Check whether a client has any PVR specific menu entries.
-   * @param iClientId The ID of the client to get the menu entries for. Get the menu for the active channel if iClientId < 0.
-   * @return True if the client has any menu hooks, false otherwise.
-   */
-  bool HasMenuHooks(int iClientId);
+    int GetRecordings(CPVRRecordings *recordings);
+    bool RenameRecording(const CPVRRecording &recording, PVR_ERROR *error);
+    bool DeleteRecording(const CPVRRecording &recording, PVR_ERROR *error);
 
-  /*!
-   * @brief Open selection and progress PVR actions.
-   * @param iClientId The ID of the client to process the menu entries for. Process the menu entries for the active channel if iClientId < 0.
-   */
-  void ProcessMenuHooks(int iClientID);
+    bool GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end, PVR_ERROR *error);
+    int GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error);
+    int GetChannelGroupMembers(CPVRChannelGroup *group, PVR_ERROR *error);
+    int GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error);
 
-  /*!
-   * @brief Check whether the current channel can be recorded instantly.
-   * @return True if it can, false otherwise.
-   */
-  bool CanRecordInstantly(void);
+    int GetClients(std::map<long, CStdString> *clients);
 
-  /*!
-   * @return The amount of active clients.
-   */
-  int ActiveClientAmount(void);
+    /*!
+     * @brief Check whether a client has any PVR specific menu entries.
+     * @param iClientId The ID of the client to get the menu entries for. Get the menu for the active channel if iClientId < 0.
+     * @return True if the client has any menu hooks, false otherwise.
+     */
+    bool HasMenuHooks(int iClientId);
 
-  /*!
-   * @brief Check whether there are any active clients.
-   * @return True if at least one client is active.
-   */
-  bool HasActiveClients(void);
+    /*!
+     * @brief Open selection and progress PVR actions.
+     * @param iClientId The ID of the client to process the menu entries for. Process the menu entries for the active channel if iClientId < 0.
+     */
+    void ProcessMenuHooks(int iClientID);
 
-  /*!
-   * @brief Callback function from client to inform about changed timers, channels, recordings or epg.
-   * @param clientID The ID of the client that sends an update.
-   * @param clientEvent The event that just happened.
-   * @param strMessage The passed message.
-   */
-  void OnClientMessage(const int iClientId, const PVR_EVENT clientEvent, const char* strMessage);
+    /*!
+     * @brief Check whether the current channel can be recorded instantly.
+     * @return True if it can, false otherwise.
+     */
+    bool CanRecordInstantly(void);
 
-  /*!
-   * @brief Restart a single client add-on.
-   * @param addon The add-on to restart.
-   * @param bDataChanged True if the client's data changed, false otherwise (unused).
-   * @return True if the client was found and restarted, false otherwise.
-   */
-  bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged);
+    /*!
+     * @return The amount of active clients.
+     */
+    int ActiveClientAmount(void);
 
-  /*!
-   * @brief Remove a single client add-on.
-   * @param addon The add-on to remove.
-   * @return True if the client was found and removed, false otherwise.
-   */
-  bool RequestRemoval(ADDON::AddonPtr addon);
+    /*!
+     * @brief Check whether there are any active clients.
+     * @return True if at least one client is active.
+     */
+    bool HasActiveClients(void);
 
-  /*!
-   * @brief Check if a TV channel is playing.
-   * @return True if it's playing, false otherwise.
-   */
-  bool IsPlayingTV(void) const;
+    /*!
+     * @brief Callback function from client to inform about changed timers, channels, recordings or epg.
+     * @param clientID The ID of the client that sends an update.
+     * @param clientEvent The event that just happened.
+     * @param strMessage The passed message.
+     */
+    void OnClientMessage(const int iClientId, const PVR_EVENT clientEvent, const char* strMessage);
 
-  /*!
-   * @brief Check if a radio channel is playing.
-   * @return True if it's playing, false otherwise.
-   */
-  bool IsPlayingRadio(void) const;
+    /*!
+     * @brief Restart a single client add-on.
+     * @param addon The add-on to restart.
+     * @param bDataChanged True if the client's data changed, false otherwise (unused).
+     * @return True if the client was found and restarted, false otherwise.
+     */
+    bool RequestRestart(ADDON::AddonPtr addon, bool bDataChanged);
 
-  /*!
-   * @brief Check if a recording is playing.
-   * @return True if it's playing, false otherwise.
-   */
-  bool IsPlayingRecording(void) const;
+    /*!
+     * @brief Remove a single client add-on.
+     * @param addon The add-on to remove.
+     * @return True if the client was found and removed, false otherwise.
+     */
+    bool RequestRemoval(ADDON::AddonPtr addon);
 
-  bool IsRunningChannelScan(void) const;
+    /*!
+     * @brief Check if a TV channel is playing.
+     * @return True if it's playing, false otherwise.
+     */
+    bool IsPlayingTV(void) const;
 
-  /*!
-   * @brief Open a selection dialog and start a channel scan on the selected client.
-   */
-  void StartChannelScan(void);
+    /*!
+     * @brief Check if a radio channel is playing.
+     * @return True if it's playing, false otherwise.
+     */
+    bool IsPlayingRadio(void) const;
 
-  /*!
-   * @brief Check whether a channel scan is running.
-   * @return True if it's running, false otherwise.
-   */
-  bool ChannelScanRunning(void) { return m_bChannelScanRunning; }
+    /*!
+     * @brief Check if a recording is playing.
+     * @return True if it's playing, false otherwise.
+     */
+    bool IsPlayingRecording(void) const;
 
-  /*!
-   * @brief Get the properties of the current playing client.
-   * @return A pointer to the properties or NULL if no stream is playing.
-   */
-  PVR_ADDON_CAPABILITIES*GetCurrentClientProperties(void);
+    /*!
+     * @return True when a channel scan is currently running, false otherwise.
+     */
+    bool IsRunningChannelScan(void) const;
 
-  /*!
-   * @brief Get the ID of the client that is currently being used to play.
-   * @return The requested ID or -1 if no PVR item is currently being played.
-   */
-  int GetCurrentPlayingClientID(void);
+    /*!
+     * @brief Open a selection dialog and start a channel scan on the selected client.
+     */
+    void StartChannelScan(void);
 
-  /*!
-   * @brief Get the properties for a specific client.
-   * @param clientID The ID of the client.
-   * @return A pointer to the properties or NULL if no stream is playing.
-   */
-  PVR_ADDON_CAPABILITIES *GetClientProperties(int iClientId) { return &m_clientsProps[iClientId]; }
+    /*!
+     * @brief Check whether a channel scan is running.
+     * @return True if it's running, false otherwise.
+     */
+    bool ChannelScanRunning(void) { return m_bChannelScanRunning; }
 
-  /*!
-   * @brief Get the properties of the current playing stream content.
-   * @return A pointer to the properties or NULL if no stream is playing.
-   */
-  PVR_STREAM_PROPERTIES *GetCurrentStreamProperties(void);
+    /*!
+     * @brief Get the properties of the current playing client.
+     * @return A pointer to the properties or NULL if no stream is playing.
+     */
+    PVR_ADDON_CAPABILITIES *GetCurrentClientProperties(void);
 
-  /*!
-   * @brief Get the input format name of the current playing stream content.
-   * @return A pointer to the properties or NULL if no stream is playing.
-   */
-  CStdString GetCurrentInputFormat(void) const;
+    /*!
+     * @brief Get the ID of the client that is currently being used to play.
+     * @return The requested ID or -1 if no PVR item is currently being played.
+     */
+    int GetCurrentPlayingClientID(void);
 
-  /*!
-   * @brief Start an instant recording on the current channel.
-   * @param bOnOff Activate the recording if true, deactivate if false.
-   * @return True if the recording was started, false otherwise.
-   */
-  bool StartRecordingOnPlayingChannel(bool bOnOff);
+    /*!
+     * @brief Get the properties for a specific client.
+     * @param clientID The ID of the client.
+     * @return A pointer to the properties or NULL if no stream is playing.
+     */
+    PVR_ADDON_CAPABILITIES *GetClientProperties(int iClientId) { return &m_clientsProps[iClientId]; }
 
-  /*!
-   * @brief Check whether there is an active recording on the current channel.
-   * @return True if there is, false otherwise.
-   */
-  bool IsRecordingOnPlayingChannel(void) const;
+    /*!
+     * @brief Get the properties of the current playing stream content.
+     * @return A pointer to the properties or NULL if no stream is playing.
+     */
+    PVR_STREAM_PROPERTIES *GetCurrentStreamProperties(void);
 
-  void Unload(void);
+    /*!
+     * @brief Get the input format name of the current playing stream content.
+     * @return A pointer to the properties or NULL if no stream is playing.
+     */
+    CStdString GetCurrentInputFormat(void) const;
 
-  bool GetPlayingChannel(CPVRChannel *channel) const;
-  bool GetPlayingRecording(CPVRRecording *recording) const;
-  int GetPlayingClientID(void) const;
-  bool IsValidClient(int iClientId);
-  bool ClientLoaded(const CStdString &strClientId);
+    /*!
+     * @brief Start an instant recording on the current channel.
+     * @param bOnOff Activate the recording if true, deactivate if false.
+     * @return True if the recording was started, false otherwise.
+     */
+    bool StartRecordingOnPlayingChannel(bool bOnOff);
 
-  void GetQualityData(PVR_SIGNAL_STATUS *status) const;
+    /*!
+     * @brief Check whether there is an active recording on the current channel.
+     * @return True if there is, false otherwise.
+     */
+    bool IsRecordingOnPlayingChannel(void) const;
 
-  void Start(void);
-  void Stop(void);
+    void Unload(void);
 
-private:
-  int AddClientToDb(const CStdString &strClientId, const CStdString &strName);
-  int ReadLiveStream(void* lpBuf, int64_t uiBufSize);
-  int ReadRecordedStream(void* lpBuf, int64_t uiBufSize);
-  bool GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks);
+    bool GetPlayingChannel(CPVRChannel *channel) const;
+    bool GetPlayingRecording(CPVRRecording *recording) const;
+    int GetPlayingClientID(void) const;
+    bool IsValidClient(int iClientId);
+    bool ClientLoaded(const CStdString &strClientId);
 
-  void UpdateCharInfoSignalStatus(void);
+    void GetQualityData(PVR_SIGNAL_STATUS *status) const;
 
-  /*!
-   * @brief Load and initialise all clients.
-   * @return True if any clients were loaded, false otherwise.
-   */
-  bool LoadClients(void);
+    void Start(void);
+    void Stop(void);
 
-  /*!
-   * @brief Reset the signal quality data to the initial values.
-   */
-  void ResetQualityData(void);
+  private:
+    int AddClientToDb(const CStdString &strClientId, const CStdString &strName);
+    int ReadLiveStream(void* lpBuf, int64_t uiBufSize);
+    int ReadRecordedStream(void* lpBuf, int64_t uiBufSize);
+    bool GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks);
 
-  /*!
-   * @brief Updates the backend information
-   */
-  void Process(void);
+    void UpdateCharInfoSignalStatus(void);
 
-  int GetActiveClients(CLIENTMAP *clients);
+    /*!
+     * @brief Load and initialise all clients.
+     * @return True if any clients were loaded, false otherwise.
+     */
+    bool LoadClients(void);
 
-  const CPVRChannel *   m_currentChannel;
-  const CPVRRecording * m_currentRecording;
-  CStdString            m_strPlayingClientName;
-  bool                  m_bAllClientsLoaded; /*!< true if all clients are loaded, false otherwise */
-  CCriticalSection      m_critSection;
-  CLIENTMAP             m_clientMap;
-  CLIENTPROPS           m_clientsProps;      /*!< store the properties of each client locally */
-  PVR_SIGNAL_STATUS     m_qualityInfo;       /*!< stream quality information */
-  bool                  m_bChannelScanRunning;      /*!< true if a channel scan is currently running, false otherwise */
-  STREAMPROPS           m_streamProps;              /*!< the current stream's properties */
+    /*!
+     * @brief Reset the signal quality data to the initial values.
+     */
+    void ResetQualityData(void);
 
-  DWORD                 m_scanStart;                /* Scan start time to check for non present streams */
-};
+    /*!
+     * @brief Updates the backend information
+     */
+    void Process(void);
+
+    int GetActiveClients(CLIENTMAP *clients);
+
+    const CPVRChannel *   m_currentChannel;
+    const CPVRRecording * m_currentRecording;
+    CStdString            m_strPlayingClientName;
+    bool                  m_bAllClientsLoaded; /*!< true if all clients are loaded, false otherwise */
+    CCriticalSection      m_critSection;
+    CLIENTMAP             m_clientMap;
+    CLIENTPROPS           m_clientsProps;      /*!< store the properties of each client locally */
+    PVR_SIGNAL_STATUS     m_qualityInfo;       /*!< stream quality information */
+    bool                  m_bChannelScanRunning;      /*!< true if a channel scan is currently running, false otherwise */
+    STREAMPROPS           m_streamProps;              /*!< the current stream's properties */
+
+    DWORD                 m_scanStart;                /* Scan start time to check for non present streams */
+  };
+}

@@ -24,46 +24,50 @@
 #include "GUIViewControl.h"
 
 class CFileItemList;
-class CPVRChannelGroup;
 
-class CGUIDialogPVRGroupManager : public CGUIDialog
+namespace PVR
 {
-public:
-  CGUIDialogPVRGroupManager(void);
-  virtual ~CGUIDialogPVRGroupManager(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void OnWindowLoaded();
-  virtual void OnWindowUnload();
-  void SetRadio(bool IsRadio) { m_bIsRadio = IsRadio; }
+  class CPVRChannelGroup;
 
-protected:
-  void Clear();
-  void Update();
+  class CGUIDialogPVRGroupManager : public CGUIDialog
+  {
+  public:
+    CGUIDialogPVRGroupManager(void);
+    virtual ~CGUIDialogPVRGroupManager(void);
+    virtual bool OnMessage(CGUIMessage& message);
+    virtual void OnWindowLoaded();
+    virtual void OnWindowUnload();
+    void SetRadio(bool IsRadio) { m_bIsRadio = IsRadio; }
 
-private:
-  bool PersistChanges(void);
-  bool CancelChanges(void);
-  bool ActionButtonOk(CGUIMessage &message);
-  bool ActionButtonNewGroup(CGUIMessage &message);
-  bool ActionButtonDeleteGroup(CGUIMessage &message);
-  bool ActionButtonRenameGroup(CGUIMessage &message);
-  bool ActionButtonUngroupedChannels(CGUIMessage &message);
-  bool ActionButtonGroupMembers(CGUIMessage &message);
-  bool ActionButtonChannelGroups(CGUIMessage &message);
-  bool OnMessageClick(CGUIMessage &message);
+  protected:
+    void Clear();
+    void Update();
 
-  CPVRChannelGroup *m_selectedGroup;
-  bool              m_bIsRadio;
+  private:
+    bool PersistChanges(void);
+    bool CancelChanges(void);
+    bool ActionButtonOk(CGUIMessage &message);
+    bool ActionButtonNewGroup(CGUIMessage &message);
+    bool ActionButtonDeleteGroup(CGUIMessage &message);
+    bool ActionButtonRenameGroup(CGUIMessage &message);
+    bool ActionButtonUngroupedChannels(CGUIMessage &message);
+    bool ActionButtonGroupMembers(CGUIMessage &message);
+    bool ActionButtonChannelGroups(CGUIMessage &message);
+    bool OnMessageClick(CGUIMessage &message);
 
-  unsigned int      m_iSelectedUngroupedChannel;
-  unsigned int      m_iSelectedGroupMember;
-  unsigned int      m_iSelectedChannelGroup;
+    CPVRChannelGroup *m_selectedGroup;
+    bool              m_bIsRadio;
 
-  CFileItemList *   m_ungroupedChannels;
-  CFileItemList *   m_groupMembers;
-  CFileItemList *   m_channelGroups;
+    unsigned int      m_iSelectedUngroupedChannel;
+    unsigned int      m_iSelectedGroupMember;
+    unsigned int      m_iSelectedChannelGroup;
 
-  CGUIViewControl   m_viewUngroupedChannels;
-  CGUIViewControl   m_viewGroupMembers;
-  CGUIViewControl   m_viewChannelGroups;
-};
+    CFileItemList *   m_ungroupedChannels;
+    CFileItemList *   m_groupMembers;
+    CFileItemList *   m_channelGroups;
+
+    CGUIViewControl   m_viewUngroupedChannels;
+    CGUIViewControl   m_viewGroupMembers;
+    CGUIViewControl   m_viewChannelGroups;
+  };
+}

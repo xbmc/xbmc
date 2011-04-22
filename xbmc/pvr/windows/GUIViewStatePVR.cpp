@@ -26,6 +26,8 @@
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 
+using namespace PVR;
+
 CGUIViewStatePVR::CGUIViewStatePVR(const CFileItemList& items) :
   CGUIViewState(items)
 {

@@ -23,7 +23,6 @@
 #include "video/VideoInfoTag.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/PVREpg.h"
-#include "pvr/epg/PVREpgInfoTag.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
@@ -32,6 +31,8 @@
 #include "URL.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
+
+using namespace PVR;
 
 #define RETURN_IF_NULL(x,y) if ((x) == NULL) { CLog::Log(LOGWARNING, "%s, sort item is null", __FUNCTION__); return y; }
 

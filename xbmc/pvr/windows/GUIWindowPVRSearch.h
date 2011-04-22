@@ -24,36 +24,39 @@
 #include "GUIWindowPVRCommon.h"
 #include "pvr/epg/PVREpgSearchFilter.h"
 
-class CGUIWindowPVR;
-
-class CGUIWindowPVRSearch : public CGUIWindowPVRCommon
+namespace PVR
 {
-  friend class CGUIWindowPVR;
+  class CGUIWindowPVR;
 
-public:
-  CGUIWindowPVRSearch(CGUIWindowPVR *parent);
-  virtual ~CGUIWindowPVRSearch(void) {};
+  class CGUIWindowPVRSearch : public CGUIWindowPVRCommon
+  {
+    friend class CGUIWindowPVR;
 
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual void OnInitWindow(void);
-  virtual void UpdateData(void);
+  public:
+    CGUIWindowPVRSearch(CGUIWindowPVR *parent);
+    virtual ~CGUIWindowPVRSearch(void) {};
 
-private:
+    virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
+    virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+    virtual void OnInitWindow(void);
+    virtual void UpdateData(void);
 
-  virtual bool OnClickButton(CGUIMessage &message);
-  virtual bool OnClickList(CGUIMessage &message);
+  private:
 
-  virtual bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
-  virtual bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnClickButton(CGUIMessage &message);
+    virtual bool OnClickList(CGUIMessage &message);
 
-  virtual bool ActionShowSearch(CFileItem *item);
-  virtual void ShowSearchResults();
+    virtual bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
 
-  bool               m_bSearchStarted;
-  bool               m_bSearchConfirmed;
-  PVREpgSearchFilter m_searchfilter;
-};
+    virtual bool ActionShowSearch(CFileItem *item);
+    virtual void ShowSearchResults();
+
+    bool               m_bSearchStarted;
+    bool               m_bSearchConfirmed;
+    PVREpgSearchFilter m_searchfilter;
+  };
+}

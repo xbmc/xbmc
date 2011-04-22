@@ -149,12 +149,6 @@ bool CDVDInputStreamTV::SelectChannelByNumber(unsigned int channel)
   return m_pLiveTV->SelectChannel(channel);
 }
 
-bool CDVDInputStreamTV::SelectChannel(const CPVRChannel &channel)
-{
-  if(!m_pLiveTV) return false;
-  return m_pLiveTV->SelectChannel(channel.ChannelNumber());
-}
-
 bool CDVDInputStreamTV::UpdateItem(CFileItem& item)
 {
   if(m_pLiveTV)
