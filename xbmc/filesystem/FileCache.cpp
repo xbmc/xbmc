@@ -28,6 +28,7 @@
 #include "CacheCircular.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 #include "settings/AdvancedSettings.h"
 
 using namespace AUTOPTR;
@@ -114,6 +115,7 @@ bool CFileCache::Open(const CURL& url)
   m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
 
   m_readPos = 0;
+  m_writeRate = 1024 * 1024;
   m_seekEvent.Reset();
   m_seekEnded.Reset();
 
@@ -140,6 +142,9 @@ void CFileCache::Process()
     return;
   }
 
+  unsigned fill_time = CTimeUtils::GetTimeMS();
+  int64_t  fill_data = 0;
+
   while(!m_bStop)
   {
     // check for seek events
@@ -154,9 +159,41 @@ void CFileCache::Process()
         m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
       }
       else
+      {
         m_pCache->Reset(m_seekPos);
+        fill_time = CTimeUtils::GetTimeMS();
+        fill_data = m_seekPos;
+        m_writePos = m_seekPos;
+        m_readPos = m_seekPos;
+      }
 
       m_seekEnded.Set();
+    }
+
+    while(1)
+    {
+      unsigned timestamp = CTimeUtils::GetTimeMS();
+      if(m_writePos - m_readPos < m_writeRate)
+      {
+        fill_time = timestamp;
+        fill_data = m_writePos;
+        break;
+      }
+
+      int64_t  count = m_writePos - fill_data;
+      unsigned delay = timestamp  - fill_time;
+
+      if(delay == 0)
+        break;
+
+      if(count * 1000 / delay < m_writeRate)
+        break;
+
+      if(m_seekEvent.WaitMSec(100))
+      {
+        m_seekEvent.Set();
+        break;
+      }
     }
 
     int iRead = m_source.Read(buffer.get(), chunksize);
@@ -206,6 +243,7 @@ void CFileCache::Process()
         break;
       }
     }
+    m_writePos += iTotalWrite;
   }
 }
 
@@ -305,11 +343,9 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
       return -1;
     }
     m_seekEvent.Reset();
-    m_seekPos = -1;
   }
-
-  if (m_nSeekResult >= 0)
-    m_readPos = m_nSeekResult;
+  else
+    m_readPos = iTarget;
 
   return m_nSeekResult;
 }

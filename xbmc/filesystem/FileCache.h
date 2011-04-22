@@ -69,11 +69,11 @@ namespace XFILE
     CStdString    m_sourcePath;
     CEvent      m_seekEvent;
     CEvent      m_seekEnded;
-    int        m_nBytesToBuffer;
-    time_t      m_tmLastBuffering;
     int64_t      m_nSeekResult;
     int64_t      m_seekPos;
     int64_t      m_readPos;
+    int64_t      m_writePos;
+    unsigned     m_writeRate;
     CCriticalSection m_sync;
   };
 
