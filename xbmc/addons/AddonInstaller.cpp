@@ -415,12 +415,16 @@ bool CAddonInstallJob::OnPreInstall()
   return false;
 }
 
-void CAddonInstallJob::DeleteAddon(const CStdString &addonFolder)
+bool CAddonInstallJob::DeleteAddon(const CStdString &addonFolder)
 {
+  CStdString folder(addonFolder);
+  if (folder.IsEmpty())
+    folder = m_addon->Path();
   CFileItemList list;
-  list.Add(CFileItemPtr(new CFileItem(addonFolder, true)));
+  list.Add(CFileItemPtr(new CFileItem(folder, true)));
   list[0]->Select(true);
-  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete, list, ""), NULL);
+  CFileOperationJob job(CFileOperationJob::ActionDelete, list, "");
+  return job.DoWork();
 }
 
 bool CAddonInstallJob::Install(const CStdString &installFrom)

@@ -127,6 +127,10 @@ public:
    */
   CStdString AddonID() const;
 
+  /*! \brief Delete an addon following install failure
+   \param addonFolder - the folder to delete. if blank we delete m_addon
+   */
+  bool DeleteAddon(const CStdString &addonFolder="");
 private:
   bool OnPreInstall();
   void OnPostInstall(bool reloadAddon);
@@ -144,11 +148,6 @@ private:
    \return true if the hash matches (or no hash is available on the repo), false otherwise
    */
   bool CheckHash(const CStdString& addonZip);
-
-  /*! \brief Delete an addon following install failure
-   \param addonFolder - the folder to delete
-   */
-  void DeleteAddon(const CStdString &addonFolder);
 
   ADDON::AddonPtr m_addon;
   CStdString m_hash;
