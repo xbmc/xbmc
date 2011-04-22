@@ -316,7 +316,6 @@ PVR_ERROR cPVRClientForTheRecord::GetChannels(PVR_HANDLE handle, bool bRadio)
         tag.iEncryptionSystem = 0; //How to fetch this from ForTheRecord??
         tag.bIsRadio = (channel.Type() == ForTheRecord::Radio ? true : false);
         tag.bIsHidden = false;
-        tag.bIsRecording = false;
         //Use OpenLiveStream to read from the timeshift .ts file or an rtsp stream
         tag.strStreamURL = "";
         tag.strInputFormat = "mpegts";
