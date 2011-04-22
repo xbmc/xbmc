@@ -37,6 +37,7 @@ namespace PVR
     virtual void OnWindowUnload();
 
   protected:
+    void CloseOrSelect(void);
     void GotoChannel(int iItem);
     void ShowInfo(int item);
     void Clear();
