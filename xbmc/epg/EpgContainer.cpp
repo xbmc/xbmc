@@ -34,10 +34,7 @@
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
 
-#include "pvr/PVRManager.h"
-
 using namespace std;
-using namespace PVR;
 using namespace EPG;
 
 CEpgContainer::CEpgContainer(void)
@@ -284,7 +281,7 @@ bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = fal
 
   for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
   {
-    if (at(iEpgPtr)->m_iEpgID == epg.m_iEpgID)
+    if (at(iEpgPtr)->EpgID() == epg.EpgID())
     {
       if (bDeleteFromDatabase && m_database.Open())
       {
@@ -329,7 +326,7 @@ bool CEpgContainer::UpdateSingleTable(CEpg *epg, const time_t start, const time_
 
 bool CEpgContainer::InterruptUpdate(void) const
 {
-  return (m_bStop || (g_PVRManager.IsStarted() && g_PVRManager.IsPlaying()));;
+  return m_bStop;
 }
 
 bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)

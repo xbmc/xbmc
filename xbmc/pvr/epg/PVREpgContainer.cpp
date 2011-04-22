@@ -240,3 +240,9 @@ bool PVR::CPVREpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 
   return bReturn;
 }
+
+bool PVR::CPVREpgContainer::InterruptUpdate(void) const
+{
+  return (CEpgContainer::InterruptUpdate() ||
+      (g_PVRManager.IsStarted() && g_PVRManager.IsPlaying()));
+}

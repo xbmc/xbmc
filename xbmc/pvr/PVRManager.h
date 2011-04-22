@@ -329,14 +329,6 @@ namespace PVR
     bool StartPlayback(const CPVRChannel *channel, bool bPreview = false);
 
     /*!
-     * @brief Convert a genre id and subid to a human readable name.
-     * @param iID The genre ID.
-     * @param iSubID The genre sub ID.
-     * @return A human readable name.
-     */
-    static const CStdString &ConvertGenreIdToString(int iID, int iSubID);
-
-    /*!
      * @brief Update the current playing file in the guiinfomanager and application.
      */
     void UpdateCurrentFile(void);

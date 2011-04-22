@@ -31,7 +31,7 @@ namespace PVR
   {
     friend class CPVREpg;
 
-  private:
+  protected:
     /*!
      * @brief Create an EPG table for each channel.
      * @return True if all tables were created successfully, false otherwise.
@@ -52,6 +52,11 @@ namespace PVR
     EPG::CEpg *CreateEpg(int iEpgId);
 
     bool UpdateEPG(bool bShowProgress = false);
+
+    /*!
+     * @return True if a running update should be interrupted, false otherwise.
+     */
+    bool InterruptUpdate(void) const;
 
   public:
 

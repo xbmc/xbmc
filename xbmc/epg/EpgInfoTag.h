@@ -24,27 +24,15 @@
 #include "XBDateTime.h"
 #include "Epg.h"
 
-namespace EPG
-{
-  class CEpg;
-}
-
-namespace PVR
-{
-  class CPVREpg;
-  class CPVREpgInfoTag;
-}
-
 /** an EPG info tag */
 namespace EPG
 {
+  class CEpg;
+
   class CEpgInfoTag
   {
     friend class CEpg;
     friend class CEpgDatabase;
-
-    friend class PVR::CPVREpg;
-    friend class PVR::CPVREpgInfoTag;
 
   protected:
     bool                       m_bNotify;            /*!< notify on start */
