@@ -426,7 +426,7 @@
 				<height>60</height>
 				<onleft>9000</onleft>
 				<onright>9000</onright>
-				<onup>9000</onup>
+				<onup>9003</onup>
 				<ondown>9001</ondown>
 				<pagecontrol>-</pagecontrol>
 				<scrolltime>300</scrolltime>
@@ -855,7 +855,7 @@
 				<onleft>21</onleft>
 				<onright>21</onright>
 				<onup>9002</onup>
-				<ondown>9000</ondown>
+				<ondown>9003</ondown>
 			</control>
 			<control type="button" id="21">
 				<description>Favourites push button</description>
@@ -872,7 +872,7 @@
 				<onleft>20</onleft>
 				<onright>20</onright>
 				<onup>9002</onup>
-				<ondown>9000</ondown>
+				<ondown>9003</ondown>
 			</control>
 		</control>
 		<control type="group">
