@@ -31,7 +31,7 @@ using namespace std;
 using namespace PVR;
 using namespace EPG;
 
-void PVREpgSearchFilter::Reset()
+void PVR::PVREpgSearchFilter::Reset()
 {
   EpgSearchFilter::Reset();
   m_iChannelNumber           = -1;
@@ -41,7 +41,7 @@ void PVREpgSearchFilter::Reset()
   m_bIgnorePresentRecordings = true;
 }
 
-bool PVREpgSearchFilter::FilterEntry(const CPVREpgInfoTag &tag) const
+bool PVR::PVREpgSearchFilter::FilterEntry(const CPVREpgInfoTag &tag) const
 {
   bool bReturn = EpgSearchFilter::FilterEntry(tag);
 

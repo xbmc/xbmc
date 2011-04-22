@@ -35,20 +35,20 @@
 using namespace PVR;
 using namespace EPG;
 
-CPVREpg::CPVREpg(CPVRChannel *channel) :
+PVR::CPVREpg::CPVREpg(CPVRChannel *channel) :
   CEpg(channel->ChannelID(), channel->ChannelName(), channel->EPGScraper())
 {
   SetChannel(channel);
 }
 
-bool CPVREpg::HasValidEntries(void) const
+bool PVR::CPVREpg::HasValidEntries(void) const
 {
   CSingleLock lock(m_critSection);
 
   return m_Channel != NULL && m_Channel->ChannelID() > 0 && CEpg::HasValidEntries();
 }
 
-void CPVREpg::Cleanup(const CDateTime &Time)
+void PVR::CPVREpg::Cleanup(const CDateTime &Time)
 {
   CSingleLock lock(m_critSection);
 
@@ -69,7 +69,7 @@ void CPVREpg::Cleanup(const CDateTime &Time)
   }
 }
 
-void CPVREpg::Clear(void)
+void PVR::CPVREpg::Clear(void)
 {
   CSingleLock lock(m_critSection);
 
@@ -79,7 +79,7 @@ void CPVREpg::Clear(void)
   CEpg::Clear();
 }
 
-bool CPVREpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
+bool PVR::CPVREpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
 {
   if (!data)
     return false;
@@ -88,7 +88,7 @@ bool CPVREpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false *
   return CEpg::UpdateEntry(tag, bUpdateDatabase);
 }
 
-bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
+bool PVR::CPVREpg::UpdateFromScraper(time_t start, time_t end)
 {
   bool bGrabSuccess = false;
 
@@ -116,12 +116,12 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
   return bGrabSuccess;
 }
 
-bool CPVREpg::IsRadio(void) const
+bool PVR::CPVREpg::IsRadio(void) const
 {
   return m_Channel->IsRadio();
 }
 
-bool CPVREpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
+bool PVR::CPVREpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
 {
   bool bReturn = CEpg::Update(epg, false); // don't update the db yet
 
@@ -133,7 +133,7 @@ bool CPVREpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
   return bReturn;
 }
 
-CEpgInfoTag *CPVREpg::CreateTag(void)
+CEpgInfoTag *PVR::CPVREpg::CreateTag(void)
 {
   CEpgInfoTag *newTag = new CPVREpgInfoTag();
   if (!newTag)
@@ -145,7 +145,7 @@ CEpgInfoTag *CPVREpg::CreateTag(void)
   return newTag;
 }
 
-bool CPVREpg::LoadFromClients(time_t start, time_t end)
+bool PVR::CPVREpg::LoadFromClients(time_t start, time_t end)
 {
   bool bReturn(false);
   CPVREpg tmpEpg(m_Channel);
