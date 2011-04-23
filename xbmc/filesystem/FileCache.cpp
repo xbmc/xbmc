@@ -397,11 +397,14 @@ int CFileCache::IoControl(EIoControl request, void* param)
     return 0;
   }
 
+  if(request == IOCTRL_CACHE_SETRATE)
+  {
+    m_writeRate = *(unsigned*)param;
+    return 0;
+  }
+
   if(request == IOCTRL_SEEK_POSSIBLE)
     return m_seekPossible;
-
-  if(request == IOCTRL_CACHE_SETRATE)
-    m_writeRate = *(unsigned*)param;
 
   return -1;
 }
