@@ -147,6 +147,90 @@ int CPVRClient::GetID(void) const
   return m_pInfo->iClienId;
 }
 
+/*!
+ * @brief Copy over group info from xbmcGroup to addonGroup.
+ * @param xbmcGroup The group on XBMC's side.
+ * @param addonGroup The group on the addon's side.
+ */
+inline void PVRWriteClientGroupInfo(const CPVRChannelGroup &xbmcGroup, PVR_CHANNEL_GROUP &addonGroup)
+{
+  addonGroup.bIsRadio     = xbmcGroup.IsRadio();
+  addonGroup.strGroupName = xbmcGroup.GroupName();
+}
+
+/*!
+ * @brief Copy over recording info from xbmcRecording to addonRecording.
+ * @param xbmcRecording The recording on XBMC's side.
+ * @param addonRecording The recording on the addon's side.
+ */
+inline void PVRWriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PVR_RECORDING &addonRecording)
+{
+  time_t recTime;
+  xbmcRecording.RecordingTimeAsUTC().GetAsTime(recTime);
+
+  addonRecording.recordingTime = recTime - g_advancedSettings.m_iPVRTimeCorrection;
+  addonRecording.iClientIndex   = xbmcRecording.m_iClientIndex;
+  addonRecording.strTitle       = xbmcRecording.m_strTitle.c_str();
+  addonRecording.strPlotOutline = xbmcRecording.m_strPlotOutline.c_str();
+  addonRecording.strPlot        = xbmcRecording.m_strPlot.c_str();
+  addonRecording.strChannelName = xbmcRecording.m_strChannelName.c_str();
+  addonRecording.iDuration      = xbmcRecording.GetDuration();
+  addonRecording.iPriority      = xbmcRecording.m_iPriority;
+  addonRecording.iLifetime      = xbmcRecording.m_iLifetime;
+  addonRecording.strDirectory   = xbmcRecording.m_strDirectory.c_str();
+  addonRecording.strStreamURL   = xbmcRecording.m_strStreamURL.c_str();
+}
+
+/*!
+ * @brief Copy over timer info from xbmcTimer to addonTimer.
+ * @param xbmcTimer The timer on XBMC's side.
+ * @param addonTimer The timer on the addon's side.
+ */
+inline void PVRWriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIMER &addonTimer)
+{
+  time_t start, end, firstDay;
+  xbmcTimer.StartAsUTC().GetAsTime(start);
+  xbmcTimer.EndAsUTC().GetAsTime(end);
+  xbmcTimer.FirstDayAsUTC().GetAsTime(firstDay);
+
+  addonTimer.iClientIndex      = xbmcTimer.m_iClientIndex;
+  addonTimer.bIsActive         = xbmcTimer.m_bIsActive;
+  addonTimer.iClientIndex      = xbmcTimer.m_iClientIndex;
+  addonTimer.iClientChannelUid = xbmcTimer.m_iClientChannelUid;
+  addonTimer.bIsRecording      = xbmcTimer.m_bIsRecording;
+  addonTimer.strTitle          = xbmcTimer.m_strTitle;
+  addonTimer.strDirectory      = xbmcTimer.m_strDirectory;
+  addonTimer.iPriority         = xbmcTimer.m_iPriority;
+  addonTimer.iLifetime         = xbmcTimer.m_iLifetime;
+  addonTimer.bIsRepeating      = xbmcTimer.m_bIsRepeating;
+  addonTimer.iWeekdays         = xbmcTimer.m_iWeekdays;
+  addonTimer.startTime         = start - g_advancedSettings.m_iPVRTimeCorrection;
+  addonTimer.endTime           = end - g_advancedSettings.m_iPVRTimeCorrection;
+  addonTimer.firstDay          = firstDay - g_advancedSettings.m_iPVRTimeCorrection;
+  addonTimer.iEpgUid           = xbmcTimer.m_epgInfo ? xbmcTimer.m_epgInfo->UniqueBroadcastID() : -1;
+  addonTimer.strSummary        = xbmcTimer.m_strSummary.c_str();
+  addonTimer.iMarginStart      = xbmcTimer.m_iMarginStart;
+  addonTimer.iMarginEnd        = xbmcTimer.m_iMarginEnd;
+}
+
+/*!
+ * @brief Copy over channel info from xbmcChannel to addonClient.
+ * @param xbmcChannel The channel on XBMC's side.
+ * @param addonChannel The channel on the addon's side.
+ */
+inline void PVRWriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHANNEL &addonChannel)
+{
+  addonChannel.iUniqueId         = xbmcChannel.UniqueID();
+  addonChannel.iChannelNumber    = xbmcChannel.ClientChannelNumber();
+  addonChannel.strChannelName    = xbmcChannel.ClientChannelName().c_str();
+  addonChannel.strIconPath       = xbmcChannel.IconPath().c_str();
+  addonChannel.iEncryptionSystem = xbmcChannel.EncryptionSystem();
+  addonChannel.bIsRadio          = xbmcChannel.IsRadio();
+  addonChannel.bIsHidden         = xbmcChannel.IsHidden();
+  addonChannel.strInputFormat    = xbmcChannel.InputFormat().c_str();
+  addonChannel.strStreamURL      = xbmcChannel.StreamURL().c_str();
+}
+
 PVR_ERROR CPVRClient::GetAddonCapabilities(PVR_ADDON_CAPABILITIES *pCapabilities)
 {
   CSingleLock lock(m_critSection);
@@ -294,7 +378,7 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg,
   try
   {
     PVR_CHANNEL addonChannel;
-    WriteClientChannelInfo(channel, addonChannel);
+    PVRWriteClientChannelInfo(channel, addonChannel);
 
     PVR_HANDLE_STRUCT handle;
     handle.callerAddress = this;
@@ -392,11 +476,7 @@ PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup *group)
     handle.dataAddress = group;
 
     PVR_CHANNEL_GROUP tag;
-    WriteClientGroupInfo(*group, tag);
-
-    //Workaround for string transfer to PVRclient
-    CStdString myName(group->GroupName());
-    tag.strGroupName = myName.c_str();
+    PVRWriteClientGroupInfo(*group, tag);
 
     CLog::Log(LOGDEBUG, "PVRClient - %s - get group members for group '%s' from add-on '%s'",
         __FUNCTION__, tag.strGroupName, GetFriendlyName());
@@ -538,7 +618,7 @@ PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording &recording)
   try
   {
     PVR_RECORDING tag;
-    WriteClientRecordingInfo(recording, tag);
+    PVRWriteClientRecordingInfo(recording, tag);
 
     retVal = m_pStruct->DeleteRecording(tag);
 
@@ -570,7 +650,7 @@ PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording &recording)
   try
   {
     PVR_RECORDING tag;
-    WriteClientRecordingInfo(recording, tag);
+    PVRWriteClientRecordingInfo(recording, tag);
 
     retVal = m_pStruct->RenameRecording(tag);
 
@@ -587,24 +667,6 @@ PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording &recording)
   }
 
   return retVal;
-}
-
-void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PVR_RECORDING &addonRecording)
-{
-  time_t recTime;
-  xbmcRecording.RecordingTimeAsUTC().GetAsTime(recTime);
-
-  addonRecording.recordingTime = recTime - g_advancedSettings.m_iPVRTimeCorrection;
-  addonRecording.iClientIndex   = xbmcRecording.m_iClientIndex;
-  addonRecording.strTitle       = xbmcRecording.m_strTitle.c_str();
-  addonRecording.strPlotOutline = xbmcRecording.m_strPlotOutline.c_str();
-  addonRecording.strPlot        = xbmcRecording.m_strPlot.c_str();
-  addonRecording.strChannelName = xbmcRecording.m_strChannelName.c_str();
-  addonRecording.iDuration      = xbmcRecording.GetDuration();
-  addonRecording.iPriority      = xbmcRecording.m_iPriority;
-  addonRecording.iLifetime      = xbmcRecording.m_iLifetime;
-  addonRecording.strDirectory   = xbmcRecording.m_strDirectory.c_str();
-  addonRecording.strStreamURL   = xbmcRecording.m_strStreamURL.c_str();
 }
 
 int CPVRClient::GetTimersAmount(void)
@@ -675,15 +737,7 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timer)
   try
   {
     PVR_TIMER tag;
-    WriteClientTimerInfo(timer, tag);
-
-    //Workaround for string transfer to PVRclient
-    CStdString myDir(timer.m_strDirectory);
-    CStdString mySummary(timer.m_strSummary);
-    CStdString myTitle(timer.m_strTitle);
-    tag.strDirectory     = myDir.c_str();
-    tag.strSummary = mySummary.c_str();
-    tag.strTitle   = myTitle.c_str();
+    PVRWriteClientTimerInfo(timer, tag);
 
     retVal = m_pStruct->AddTimer(tag);
 
@@ -715,15 +769,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* 
   try
   {
     PVR_TIMER tag;
-    WriteClientTimerInfo(timer, tag);
-
-    //Workaround for string transfer to PVRclient
-    CStdString myDir(timer.m_strDirectory);
-    CStdString mySummary(timer.m_strSummary);
-    CStdString myTitle(timer.m_strTitle);
-    tag.strDirectory     = myDir.c_str();
-    tag.strSummary = mySummary.c_str();
-    tag.strTitle   = myTitle.c_str();
+    PVRWriteClientTimerInfo(timer, tag);
 
     retVal = m_pStruct->DeleteTimer(tag, bForce);
 
@@ -755,15 +801,7 @@ PVR_ERROR CPVRClient::RenameTimer(const CPVRTimerInfoTag &timer, const CStdStrin
   try
   {
     PVR_TIMER tag;
-    WriteClientTimerInfo(timer, tag);
-
-    //Workaround for string transfer to PVRclient
-    CStdString myDir(timer.m_strDirectory);
-    CStdString mySummary(timer.m_strSummary);
-    CStdString myTitle(timer.m_strTitle);
-    tag.strDirectory     = myDir.c_str();
-    tag.strSummary = mySummary.c_str();
-    tag.strTitle   = myTitle.c_str();
+    PVRWriteClientTimerInfo(timer, tag);
 
     retVal = m_pStruct->UpdateTimer(tag);
 
@@ -795,15 +833,7 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timer)
   try
   {
     PVR_TIMER tag;
-    WriteClientTimerInfo(timer, tag);
-
-    //Workaround for string transfer to PVRclient
-    CStdString myTitle(timer.m_strTitle);
-    CStdString myDirectory(timer.m_strDirectory);
-    CStdString mySummary(timer.m_strSummary);
-    tag.strTitle   = myTitle.c_str();
-    tag.strDirectory     = myDirectory.c_str();
-    tag.strSummary = mySummary.c_str();
+    PVRWriteClientTimerInfo(timer, tag);
 
     retVal = m_pStruct->UpdateTimer(tag);
 
@@ -822,33 +852,6 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timer)
   return retVal;
 }
 
-void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIMER &addonTimer)
-{
-  time_t start, end, firstDay;
-  xbmcTimer.StartAsUTC().GetAsTime(start);
-  xbmcTimer.EndAsUTC().GetAsTime(end);
-  xbmcTimer.FirstDayAsUTC().GetAsTime(firstDay);
-
-  addonTimer.iClientIndex      = xbmcTimer.m_iClientIndex;
-  addonTimer.bIsActive         = xbmcTimer.m_bIsActive;
-  addonTimer.iClientIndex      = xbmcTimer.m_iClientIndex;
-  addonTimer.iClientChannelUid = xbmcTimer.m_iClientChannelUid;
-  addonTimer.bIsRecording      = xbmcTimer.m_bIsRecording;
-  addonTimer.strTitle          = xbmcTimer.m_strTitle;
-  addonTimer.strDirectory      = xbmcTimer.m_strDirectory;
-  addonTimer.iPriority         = xbmcTimer.m_iPriority;
-  addonTimer.iLifetime         = xbmcTimer.m_iLifetime;
-  addonTimer.bIsRepeating      = xbmcTimer.m_bIsRepeating;
-  addonTimer.iWeekdays         = xbmcTimer.m_iWeekdays;
-  addonTimer.startTime         = start - g_advancedSettings.m_iPVRTimeCorrection;
-  addonTimer.endTime           = end - g_advancedSettings.m_iPVRTimeCorrection;
-  addonTimer.firstDay          = firstDay - g_advancedSettings.m_iPVRTimeCorrection;
-  addonTimer.iEpgUid           = xbmcTimer.m_epgInfo ? xbmcTimer.m_epgInfo->UniqueBroadcastID() : -1;
-  addonTimer.strSummary        = xbmcTimer.m_strSummary.c_str();
-  addonTimer.iMarginStart      = xbmcTimer.m_iMarginStart;
-  addonTimer.iMarginEnd        = xbmcTimer.m_iMarginEnd;
-}
-
 bool CPVRClient::OpenLiveStream(const CPVRChannel &channel)
 {
   bool bReturn = false;
@@ -863,7 +866,7 @@ bool CPVRClient::OpenLiveStream(const CPVRChannel &channel)
   try
   {
     PVR_CHANNEL tag;
-    WriteClientChannelInfo(channel, tag);
+    PVRWriteClientChannelInfo(channel, tag);
     bReturn = m_pStruct->OpenLiveStream(tag);
   }
   catch (exception &e)
@@ -924,7 +927,7 @@ bool CPVRClient::SwitchChannel(const CPVRChannel &channel)
   CSingleLock lock(m_critSection);
 
   PVR_CHANNEL tag;
-  WriteClientChannelInfo(channel, tag);
+  PVRWriteClientChannelInfo(channel, tag);
   return m_pStruct->SwitchChannel(tag);
 }
 
@@ -967,7 +970,7 @@ const char *CPVRClient::GetLiveStreamURL(const CPVRChannel &channel)
   try
   {
     PVR_CHANNEL tag;
-    WriteClientChannelInfo(channel, tag);
+    PVRWriteClientChannelInfo(channel, tag);
     strReturn = m_pStruct->GetLiveStreamURL(tag);
   }
   catch (exception &e)
@@ -979,19 +982,6 @@ const char *CPVRClient::GetLiveStreamURL(const CPVRChannel &channel)
   return strReturn.c_str();
 }
 
-void CPVRClient::WriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHANNEL &addonChannel)
-{
-  addonChannel.iUniqueId         = xbmcChannel.UniqueID();
-  addonChannel.iChannelNumber    = xbmcChannel.ClientChannelNumber();
-  addonChannel.strChannelName    = xbmcChannel.ClientChannelName().c_str();
-  addonChannel.strIconPath       = xbmcChannel.IconPath().c_str();
-  addonChannel.iEncryptionSystem = xbmcChannel.EncryptionSystem();
-  addonChannel.bIsRadio          = xbmcChannel.IsRadio();
-  addonChannel.bIsHidden         = xbmcChannel.IsHidden();
-  addonChannel.strInputFormat    = xbmcChannel.InputFormat().c_str();
-  addonChannel.strStreamURL      = xbmcChannel.StreamURL().c_str();
-}
-
 bool CPVRClient::OpenRecordedStream(const CPVRRecording &recording)
 {
   CSingleLock lock(m_critSection);
@@ -1000,7 +990,7 @@ bool CPVRClient::OpenRecordedStream(const CPVRRecording &recording)
     return false;
 
   PVR_RECORDING tag;
-  WriteClientRecordingInfo(recording, tag);
+  PVRWriteClientRecordingInfo(recording, tag);
   return m_pStruct->OpenRecordedStream(tag);
 }
 
@@ -1216,8 +1206,3 @@ PVR_ERROR CPVRClient::SetAddonCapabilities(void)
   return PVR_ERROR_SERVER_ERROR;
 }
 
-void CPVRClient::WriteClientGroupInfo(const CPVRChannelGroup &xbmcGroup, PVR_CHANNEL_GROUP &addonGroup)
-{
-  addonGroup.bIsRadio     = xbmcGroup.IsRadio();
-  addonGroup.strGroupName = xbmcGroup.GroupName();
-}

@@ -466,34 +466,6 @@ namespace PVR
 
   private:
     /*!
-     * @brief Copy over channel info from xbmcChannel to addonClient.
-     * @param xbmcChannel The channel on XBMC's side.
-     * @param addonChannel The channel on the addon's side.
-     */
-    void WriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHANNEL &addonChannel);
-
-    /*!
-     * @brief Copy over timer info from xbmcTimer to addonTimer.
-     * @param xbmcTimer The timer on XBMC's side.
-     * @param addonTimer The timer on the addon's side.
-     */
-    void WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIMER &addonTimer);
-
-    /*!
-     * @brief Copy over recording info from xbmcRecording to addonRecording.
-     * @param xbmcRecording The recording on XBMC's side.
-     * @param addonRecording The recording on the addon's side.
-     */
-    void WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PVR_RECORDING &addonRecording);
-
-    /*!
-     * @brief Copy over group info from xbmcGroup to addonGroup.
-     * @param xbmcGroup The group on XBMC's side.
-     * @param addonGroup The group on the addon's side.
-     */
-    void WriteClientGroupInfo(const CPVRChannelGroup &xbmcGroup, PVR_CHANNEL_GROUP &addonGroup);
-
-    /*!
      * @brief Get the backend name from the server and store it locally.
      */
     void SetBackendName(void);
