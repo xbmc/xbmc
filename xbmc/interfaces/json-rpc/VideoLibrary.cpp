@@ -375,11 +375,29 @@ bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
   CVideoDatabase videodatabase;
   if (videodatabase.Open())
   {
-    int movieID       = parameterObject.get("movieid", -1).asInt();
-    int episodeID     = parameterObject.get("episodeid", -1).asInt();
-    int musicVideoID  = parameterObject.get("musicvideoid", -1).asInt();
+    CStdString file   = parameterObject["file"].asString();
+    int movieID       = parameterObject["movieid"].asInt();
+    int episodeID     = parameterObject["episodeid"].asInt();
+    int musicVideoID  = parameterObject["musicvideoid"].asInt();
 
     bool success = true;
+    if (!file.empty())
+    {
+      CVideoInfoTag details;
+      if (videodatabase.HasMovieInfo(file))
+        videodatabase.GetMovieInfo(file, details);
+      else if (videodatabase.HasEpisodeInfo(file))
+        videodatabase.GetEpisodeInfo(file, details);
+      else if (videodatabase.HasMusicVideoInfo(file))
+        videodatabase.GetMusicVideoInfo(file, details);
+
+      if (!details.IsEmpty())
+      {
+        CFileItemPtr item = CFileItemPtr(new CFileItem(details));
+        list.Add(item);
+        success &= true;
+      }
+    }
     if (movieID > 0)
     {
       CVideoInfoTag details;
@@ -390,7 +408,6 @@ bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
         list.Add(item);
         success &= true;
       }
-      success = false;
     }
     if (episodeID > 0)
     {
@@ -401,7 +418,6 @@ bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
         list.Add(item);
         success &= true;
       }
-      success = false;
     }
     if (musicVideoID > 0)
     {
@@ -413,7 +429,6 @@ bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
         list.Add(item);
         success &= true;
       }
-      success = false;
     }
 
     videodatabase.Close();

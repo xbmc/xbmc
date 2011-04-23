@@ -160,17 +160,9 @@ JSON_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer 
 
 bool CFileOperations::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
-  if (parameterObject.isObject() && parameterObject.isMember("directory"))
+  if (parameterObject.isMember("directory") && parameterObject.isMember("media"))
   {
-    CStdString media = "files";
-    if (parameterObject.isMember("media"))
-    {
-      if (parameterObject["media"].isString())
-        media = parameterObject["media"].asString();
-      else
-        return false;
-    }
-
+    CStdString media = parameterObject["media"].asString();
     media = media.ToLower();
 
     if (media.Equals("video") || media.Equals("music") || media.Equals("pictures") || media.Equals("files") || media.Equals("programs"))

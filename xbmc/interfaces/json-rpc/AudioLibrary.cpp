@@ -23,6 +23,7 @@
 #include "music/MusicDatabase.h"
 #include "FileItem.h"
 #include "Util.h"
+#include "utils/URIUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/Song.h"
 #include "Application.h"
@@ -180,12 +181,43 @@ bool CAudioLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
 
   if (musicdatabase.Open())
   {
-    int artistID = parameterObject.get("artistid", -1).asInt();
-    int albumID  = parameterObject.get("albumid", -1).asInt();
-    int genreID  = parameterObject.get("genreid", -1).asInt();
+    CStdString file       = parameterObject["file"].asString();
+    CStdString directory  = parameterObject["directory"].asString();
+    int artistID          = parameterObject["artistid"].asInt();
+    int albumID           = parameterObject["albumid"].asInt();
+    int genreID           = parameterObject["genreid"].asInt();
+
+    if (!directory.empty())
+    {
+      if (!URIUtils::HasSlashAtEnd(directory))
+        URIUtils::AddSlashAtEnd(directory);
+
+      int count = list.Size();
+      CSongMap songs;
+      if (musicdatabase.GetSongsByPath(directory, songs))
+      {
+        std::map<CStdString, CSong>::const_iterator iter;
+        std::map<CStdString, CSong>::const_iterator iterEnd = songs.End();
+        for (iter = songs.Begin(); iter != iterEnd; iter++)
+          list.Add(CFileItemPtr(new CFileItem(iter->second)));
+      }
+
+      if (list.Size() > count)
+        success = true;
+    }
+
+    if (!file.empty() && !URIUtils::HasSlashAtEnd(file))
+    {
+      CSong song;
+      if (musicdatabase.GetSongByFileName(file, song))
+      {
+        list.Add(CFileItemPtr(new CFileItem(song)));
+        success &= true;
+      }
+    }
 
     if (artistID != -1 || albumID != -1 || genreID != -1)
-      success = musicdatabase.GetSongsNav("", list, genreID, artistID, albumID);
+      success &= musicdatabase.GetSongsNav("", list, genreID, artistID, albumID);
 
     int songID = parameterObject.get("songid", -1).asInt();
     if (songID != -1)
@@ -194,7 +226,7 @@ bool CAudioLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
       if (musicdatabase.GetSongById(songID, song))
       {
         list.Add(CFileItemPtr(new CFileItem(song)));
-        success = true;
+        success &= true;
       }
     }
 

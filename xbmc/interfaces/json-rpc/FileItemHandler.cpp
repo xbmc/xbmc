@@ -209,20 +209,30 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
 bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
-  if (parameterObject["file"].isString())
-  {
-    CStdString file = parameterObject["file"].asString();
-    if (!file.empty())
-    {
-      CFileItemPtr item = CFileItemPtr(new CFileItem(file, URIUtils::HasSlashAtEnd(file)));
-      list.Add(item);
-    }
-  }
-
   CPlaylistOperations::FillFileItemList(parameterObject, list);
   CAudioLibrary::FillFileItemList(parameterObject, list);
   CVideoLibrary::FillFileItemList(parameterObject, list);
   CFileOperations::FillFileItemList(parameterObject, list);
+
+  CStdString file = parameterObject["file"].asString();
+  if (!file.empty() && !URIUtils::HasSlashAtEnd(file))
+  {
+    bool added = false;
+    for (unsigned int index = 0; index < list.Size(); index++)
+    {
+      if (list[index]->m_strPath == file)
+      {
+        added = true;
+        break;
+      }
+    }
+
+    if (!added)
+    {
+      CFileItemPtr item = CFileItemPtr(new CFileItem(file, false));
+      list.Add(item);
+    }
+  }
 
   return true;
 }
