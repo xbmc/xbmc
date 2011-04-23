@@ -20,8 +20,6 @@
  *
  */
 #include "Addon.h"
-#include "include/xbmc_addon_dll.h"
-#include "tinyXML/tinyxml.h"
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
 #include <vector>
