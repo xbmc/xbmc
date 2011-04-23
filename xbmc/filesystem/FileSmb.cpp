@@ -638,8 +638,6 @@ unsigned int CFileSMB::Read(void *lpBuf, int64_t uiBufSize)
 int64_t CFileSMB::Seek(int64_t iFilePosition, int iWhence)
 {
   if (m_fd == -1) return -1;
-  if(iWhence == IOCTRL_SEEK_POSSIBLE)
-    return 1;
 
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
 #ifdef _LINUX
