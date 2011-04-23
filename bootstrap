@@ -4,6 +4,7 @@ set -e
 
 autoreconf -vif
 autoreconf -vif lib/cpluff
+autoreconf -vif lib/libarchive
 # order matters with libdvd and friends
 [ -d lib/libdvd/libdvdcss ] && \
   autoreconf -vif lib/libdvd/libdvdcss

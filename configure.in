@@ -574,6 +574,10 @@ AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
 AC_CHECK_LIB([smbclient],   [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([acl],         [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([lzma],        [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([xml2],        [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([attr],        [main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
   [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"],
   AC_MSG_ERROR($missing_library))
@@ -1848,6 +1852,40 @@ XB_CONFIG_MODULE([lib/cpluff], [
       --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX" LDFLAGS="$LDFLAGS -Wl,-read_only_relocs,suppress"    
   else
     ./configure --disable-nls \
+      --host=$host_alias \
+      --build=$build_alias \
+      --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
+  fi
+], [0])
+
+XB_CONFIG_MODULE([lib/libarchive], [
+  if test "$host_vendor" = "apple" ; then
+    ./configure --disable-bsdtar \
+      --disable-bsdcpio \
+      --enable-xattr \
+      --enable-acl \
+      --enable-largefile \
+      --with-zlib \
+      --with-bz2lib \
+      --with-lzma \
+      --with-xml2 \
+      --without-iconv \
+      --without-openssl \
+      --host=$host_alias \
+      --build=$build_alias \
+      --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX" LDFLAGS="$LDFLAGS -Wl,-read_only_relocs,suppress"
+  else
+    ./configure --disable-bsdtar \
+      --disable-bsdcpio \
+      --enable-xattr \
+      --enable-acl \
+      --enable-largefile \
+      --with-zlib \
+      --with-bz2lib \
+      --with-lzma \
+      --with-xml2 \
+      --without-iconv \
+      --without-openssl \
       --host=$host_alias \
       --build=$build_alias \
       --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
