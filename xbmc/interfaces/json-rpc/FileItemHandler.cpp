@@ -30,6 +30,7 @@
 #include "utils/Variant.h"
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
+#include "video/VideoDatabase.h"
 
 
 using namespace MUSIC_INFO;
@@ -158,7 +159,28 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
     else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
       object[ID] = (int)item->GetMusicInfoTag()->GetDatabaseId();
     else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
+    {
       object[ID] = item->GetVideoInfoTag()->m_iDbId;
+
+      if (stricmp(ID, "id") == 0)
+      {
+        CVideoDatabase dbs;
+        if (dbs.Open())
+        {
+          if (dbs.HasEpisodeInfo(item->m_strPath))
+            object["type"] = "episode";
+          else if (dbs.HasMusicVideoInfo(item->m_strPath))
+            object["type"] = "musicvideo";
+          else if (dbs.HasMovieInfo(item->m_strPath))
+            object["type"] = "movie";
+
+          dbs.Close();
+        }
+
+        if (!object.isMember("type"))
+          object["type"] = "unknown";
+      }
+    }
   }
 
   if (hasThumbnailField && !item->GetThumbnailImage().IsEmpty())

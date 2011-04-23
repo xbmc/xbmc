@@ -749,6 +749,8 @@ namespace JSONRPC
                     "\"items\": { \"type\": \"object\","
                         "\"properties\": {"
                             "\"label\": { \"type\": \"string\", \"required\": true },"
+                            "\"id\": { \"$ref\": \"Library.Id\" },"
+                            "\"type\": { \"type\": \"string\", \"enum\": [ \"unknown\", \"movie\", \"episode\", \"musicvideo\" ] },"
                             "\"file\": { \"type\": \"string\" },"
                             "\"fanart\": { \"type\": \"string\" },"
                             "\"thumbnail\": { \"type\": \"string\" },"
