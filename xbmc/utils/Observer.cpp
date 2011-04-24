@@ -76,7 +76,7 @@ void Observable::NotifyObservers(const CStdString& strMessage /* = "" */, bool b
     if (bAsync && m_bAsyncAllowed)
       CJobManager::GetInstance().AddJob(new ObservableMessageJob(*this, strMessage), NULL);
     else
-      SendMessage(this, strMessage);
+      SendMessage(this, &m_observers, strMessage);
 
     m_bObservableChanged = false;
   }
@@ -97,21 +97,13 @@ void Observable::Announce(EAnnouncementFlag flag, const char *sender, const char
   }
 }
 
-void Observable::SendMessage(Observable *obs, const CStdString &strMessage)
+void Observable::SendMessage(Observable *obs, const vector<Observer *> *observers, const CStdString &strMessage)
 {
-  for(unsigned int ptr = 0; ptr < obs->m_observers.size(); ptr++)
+  for(unsigned int ptr = 0; ptr < observers->size(); ptr++)
   {
-    Observer *observer = obs->m_observers.at(ptr);
-    if (!observer)
-    {
-      /* the observable no longer exists. delete it */
-      obs->m_observers.erase(obs->m_observers.begin() + ptr);
-      ptr--;
-    }
-    else
-    {
-      obs->m_observers.at(ptr)->Notify(*obs, strMessage);
-    }
+    Observer *observer = observers->at(ptr);
+    if (observer)
+      observer->Notify(*obs, strMessage);
   }
 }
 
@@ -119,14 +111,12 @@ ObservableMessageJob::ObservableMessageJob(const Observable &obs, const CStdStri
 {
   m_strMessage = strMessage;
   m_observable = obs;
-
-  for (unsigned int iObserverPtr = 0; iObserverPtr < obs.m_observers.size(); iObserverPtr++)
-    m_observers.push_back(obs.m_observers.at(iObserverPtr));
+  m_observers = obs.m_observers;
 }
 
 bool ObservableMessageJob::DoWork()
 {
-  Observable::SendMessage(&m_observable, m_strMessage);
+  Observable::SendMessage(&m_observable, &m_observers, m_strMessage);
 
   return true;
 }
