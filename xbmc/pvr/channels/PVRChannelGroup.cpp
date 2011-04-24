@@ -40,37 +40,37 @@
 
 using namespace PVR;
 
-CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder)
+CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder) :
+    m_bRadio(bRadio),
+    m_iGroupId(iGroupId),
+    m_strGroupName(strGroupName),
+    m_iSortOrder(iSortOrder),
+    m_bLoaded(false),
+    m_bChanged(false),
+    m_bUsingBackendChannelOrder(false)
 {
-  m_bRadio       = bRadio;
-  m_iGroupId     = iGroupId;
-  m_strGroupName = strGroupName;
-  m_iSortOrder   = iSortOrder;
-  m_bLoaded      = false;
-  m_bChanged     = false;
-  clear();
 }
 
-CPVRChannelGroup::CPVRChannelGroup(bool bRadio)
+CPVRChannelGroup::CPVRChannelGroup(bool bRadio) :
+    m_bRadio(bRadio),
+    m_iGroupId(-1),
+    m_strGroupName(""),
+    m_iSortOrder(-1),
+    m_bLoaded(false),
+    m_bChanged(false),
+    m_bUsingBackendChannelOrder(false)
 {
-  m_bRadio       = bRadio;
-  m_iGroupId     = -1;
-  m_strGroupName.clear();
-  m_iSortOrder   = -1;
-  m_bLoaded      = false;
-  m_bChanged     = false;
-  clear();
 }
 
-CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group)
+CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group) :
+    m_bRadio(group.bIsRadio),
+    m_iGroupId(-1),
+    m_strGroupName(group.strGroupName),
+    m_iSortOrder(-1),
+    m_bLoaded(false),
+    m_bChanged(false),
+    m_bUsingBackendChannelOrder(false)
 {
-  m_bRadio       = group.bIsRadio;
-  m_iGroupId     = -1;
-  m_strGroupName = group.strGroupName;
-  m_iSortOrder   = -1;
-  m_bLoaded      = false;
-  m_bChanged     = false;
-  clear();
 }
 
 CPVRChannelGroup::~CPVRChannelGroup(void)
@@ -95,6 +95,8 @@ int CPVRChannelGroup::Load(void)
   /* make sure this container is empty before loading */
   Unload();
 
+  m_bUsingBackendChannelOrder = g_guiSettings.GetBool("pvrmanager.backendchannelorder");
+
   int iChannelCount = LoadFromDb();
   CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels loaded from the database for group '%s'",
         __FUNCTION__, iChannelCount, m_strGroupName.c_str());
@@ -106,6 +108,7 @@ int CPVRChannelGroup::Load(void)
         __FUNCTION__, (int) size() - iChannelCount, m_strGroupName.c_str());
   }
 
+  g_guiSettings.AddObserver(this);
   m_bLoaded = true;
 
   return size();
@@ -532,7 +535,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
   if (bChanged)
   {
     /* sort by client channel number if this is the first time or if pvrmanager.backendchannelorder is true */
-    if (iCurSize == 0 || g_guiSettings.GetBool("pvrmanager.backendchannelorder"))
+    if (iCurSize == 0 || m_bUsingBackendChannelOrder)
       SortByClientChannelNumber();
 
     /* renumber to make sure all channels have a channel number.
@@ -626,7 +629,7 @@ bool CPVRChannelGroup::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 
 
       if (bSortAndRenumber)
       {
-        if (g_guiSettings.GetBool("pvrmanager.backendchannelorder"))
+        if (m_bUsingBackendChannelOrder)
           SortByClientChannelNumber();
         else
           SortByChannelNumber();
@@ -792,4 +795,28 @@ void CPVRChannelGroup::SetSelectedGroup(void)
   unsigned int iChannelNumber(1);
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
     at(iChannelPtr).channel->SetCachedChannelNumber(iChannelNumber++);
+}
+
+void CPVRChannelGroup::Notify(const Observable &obs, const CStdString& msg)
+{
+  if (msg.Equals("settings"))
+  {
+    bool bUsingBackendChannelOrder = g_guiSettings.GetBool("pvrmanager.backendchannelorder");
+
+    CSingleLock lock(m_critSection);
+    if (m_bUsingBackendChannelOrder != bUsingBackendChannelOrder)
+    {
+      m_bUsingBackendChannelOrder = bUsingBackendChannelOrder;
+
+      if (m_bUsingBackendChannelOrder)
+      {
+        CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - renumbering group '%s' to use the backend channel order",
+            __FUNCTION__, m_strGroupName.c_str());
+        m_bUsingBackendChannelOrder = bUsingBackendChannelOrder;
+        SortByClientChannelNumber();
+        Renumber();
+        Persist();
+      }
+    }
+  }
 }
