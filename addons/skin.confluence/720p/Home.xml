@@ -43,6 +43,16 @@
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>125</posy>
+			<width>1280</width>
+			<height>250</height>
+			<colordiffuse>AAFFFFFF</colordiffuse>
+			<texture>HomeNowPlayingBack.png</texture>
+			<visible>[Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)] | [Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)] | [Container(9000).HasFocus(2) + Skin.HasSetting(homepageShowRecentlyAdded)]</visible>
+			<include>Window_OpenClose_Animation</include>
+		</control>
 		<!-- Music Info -->
 		<control type="group">
 			<posx>0</posx>
@@ -50,14 +60,6 @@
 			<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
-			<control type="image">
-				<posx>0</posx>
-				<posy>105</posy>
-				<width>1280</width>
-				<height>250</height>
-				<colordiffuse>AAFFFFFF</colordiffuse>
-				<texture>HomeNowPlayingBack.png</texture>
-			</control>
 			<control type="image">
 				<description>Cover image</description>
 				<posx>20</posx>
@@ -142,14 +144,6 @@
 			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
-			<control type="image">
-				<posx>0</posx>
-				<posy>105</posy>
-				<width>1280</width>
-				<height>250</height>
-				<colordiffuse>AAFFFFFF</colordiffuse>
-				<texture>HomeNowPlayingBack.png</texture>
-			</control>
 			<control type="group">
 				<visible>!VideoPlayer.Content(Movies) + !VideoPlayer.Content(Episodes)</visible>
 				<control type="image">
