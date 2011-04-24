@@ -341,6 +341,7 @@ case $host in
      use_vdadecoder=no
      use_vtbdecoder=yes
      use_texturepacker=no
+     use_texturepacker_native=yes
      ARCH="arm-osx"
      SYSROOT="-miphoneos-version-min=4.1 -isysroot $SDKROOT"
      ARCHTYPE=$HOSTTYPE
@@ -1223,9 +1224,13 @@ else
   final_message="$final_message\n  Bluray:\tNo"
 fi
 
+USE_TEXTUREPACKER_NATIVE=0
 if test "x$use_texturepacker" != "xno"; then
   final_message="$final_message\n  TexturePacker:Yes"
   USE_TEXTUREPACKER=1
+  if test "x$use_texturepacker_native" = "yes"; then
+    USE_TEXTUREPACKER_NATIVE=1
+  fi
 else
   final_message="$final_message\n  TexturePacker:No"
   USE_TEXTUREPACKER=0
@@ -1459,6 +1464,7 @@ AC_SUBST(USE_OPENMAX)
 AC_SUBST(USE_PULSE)
 AC_SUBST(USE_XRANDR)
 AC_SUBST(USE_TEXTUREPACKER)
+AC_SUBST(USE_TEXTUREPACKER_NATIVE)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
