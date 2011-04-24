@@ -379,8 +379,8 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
     /* remove invalid channels */
     RemoveInvalidChannels();
 
-    /* sort by client channel number if this is the first time */
-    if (iCurSize == 0)
+    /* sort by client channel number if this is the first time or if pvrmanager.backendchannelorder is true */
+    if (iCurSize == 0 || g_guiSettings.GetBool("pvrmanager.backendchannelorder"))
       SortByClientChannelNumber();
 
     /* renumber to make sure all channels have a channel number.
