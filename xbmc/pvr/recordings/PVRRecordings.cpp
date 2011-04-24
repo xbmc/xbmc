@@ -198,7 +198,7 @@ void CPVRRecordings::ExecuteUpdate(void)
 
 void CPVRRecordings::Process(void)
 {
-  Update(false);
+  ExecuteUpdate();
 }
 
 int CPVRRecordings::GetNumRecordings()

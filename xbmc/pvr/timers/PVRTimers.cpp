@@ -628,5 +628,5 @@ CPVRTimerInfoTag *CPVRTimers::GetMatch(const CFileItem *item)
 void CPVRTimers::Notify(const Observable &obs, const CStdString& msg)
 {
   if (msg.Equals("epg"))
-    Update();
+    g_PVRManager.TriggerTimersUpdate();
 }
