@@ -1,17 +1,24 @@
-ARCH=@ARCH@
-DEFINES = 
-ifeq ($(findstring osx,$(ARCH)),osx)
-LIBS = @abs_top_srcdir@/lib/libsquish/libsquish.a -L/Users/Shared/xbmc-depends/osx-10.4_i386/lib -lSDL_image -lSDL -llzo2
-else
-LIBS = @abs_top_srcdir@/lib/libsquish/libsquish.a -lSDL_image -lSDL -llzo2
+DEFINES += -D_LINUX -DUSE_LZO_PACKING
+ifneq ($(or $(findstring powerpc,arm-osx),$(findstring ppc, arm-osx)),)
+DEFINES += -DHOST_BIGENDIAN
 endif
 
-OBJS = \
-	SDL_anigif.o \
-	XBTFWriter.o \
-	XBMCTex.o \
-	md5.o \
-	@abs_top_srcdir@/xbmc/guilib/XBTF.o
+CXXFLAGS+= \
+  -I. \
+  -I@abs_top_srcdir@/lib \
+  -I@abs_top_srcdir@/xbmc \
+  -I@abs_top_srcdir@/xbmc/linux
+
+LIBS    += -L@abs_top_srcdir@/lib/libsquish -lsquish
+LIBS    += -lSDL_image -lSDL -llzo2
+
+SRCS = \
+  md5.cpp \
+  SDL_anigif.cpp \
+  XBTFWriter.cpp \
+  XBMCTex.cpp \
+  @abs_top_srcdir@/xbmc/guilib/XBTF.cpp
+
 
 TARGET = TexturePacker
 CLEAN_FILES=$(TARGET)
@@ -20,5 +27,5 @@ all: $(TARGET)
 
 include @abs_top_srcdir@/Makefile.include
 
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
+$(TARGET): $(SRCS)
+	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCLUDES) $(SRCS) $(LDFLAGS) $(LIBS) -o $(TARGET)
