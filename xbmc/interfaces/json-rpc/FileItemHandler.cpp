@@ -159,27 +159,32 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
     else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
       object[ID] = (int)item->GetMusicInfoTag()->GetDatabaseId();
     else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
-    {
       object[ID] = item->GetVideoInfoTag()->m_iDbId;
 
-      if (stricmp(ID, "id") == 0)
+    if (stricmp(ID, "id") == 0)
+    {
+      if (item->HasMusicInfoTag())
+        object["type"] = "song";
+      else if (item->HasVideoInfoTag())
       {
-        CVideoDatabase dbs;
-        if (dbs.Open())
+        switch (item->GetVideoContentType())
         {
-          if (dbs.HasEpisodeInfo(item->m_strPath))
+          case VIDEODB_CONTENT_EPISODES:
             object["type"] = "episode";
-          else if (dbs.HasMusicVideoInfo(item->m_strPath))
+            break;
+
+          case VIDEODB_CONTENT_MUSICVIDEOS:
             object["type"] = "musicvideo";
-          else if (dbs.HasMovieInfo(item->m_strPath))
+            break;
+
+          case VIDEODB_CONTENT_MOVIES:
             object["type"] = "movie";
-
-          dbs.Close();
+            break;
         }
-
-        if (!object.isMember("type"))
-          object["type"] = "unknown";
       }
+
+      if (!object.isMember("type"))
+        object["type"] = "unknown";
     }
   }
 
