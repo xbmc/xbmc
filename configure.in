@@ -340,8 +340,8 @@ case $host in
      use_joystick=no
      use_vdadecoder=no
      use_vtbdecoder=yes
-     use_texturepacker=no
      use_texturepacker_native=yes
+     USE_TEXTUREPACKER_NATIVE_ROOT="/opt/local"
      ARCH="arm-osx"
      SYSROOT="-miphoneos-version-min=4.1 -isysroot $SDKROOT"
      ARCHTYPE=$HOSTTYPE
@@ -356,6 +356,8 @@ case $host in
   i386-apple-darwin*)
      use_joystick=no
      use_vtbdecoder=no
+     use_texturepacker_native=yes
+     USE_TEXTUREPACKER_NATIVE_ROOT="$prefix"
      ARCH="x86-osx"
      export MACOSX_DEPLOYMENT_TARGET=10.4
      SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
@@ -1232,8 +1234,11 @@ USE_TEXTUREPACKER_NATIVE=0
 if test "x$use_texturepacker" != "xno"; then
   final_message="$final_message\n  TexturePacker:Yes"
   USE_TEXTUREPACKER=1
-  if test "x$use_texturepacker_native" = "yes"; then
+  if test "x$use_texturepacker_native" = "xyes"; then
     USE_TEXTUREPACKER_NATIVE=1
+    if [[ ! -d "$USE_TEXTUREPACKER_NATIVE_ROOT" ]]; then 
+      USE_TEXTUREPACKER_NATIVE_ROOT= 
+    fi
   fi
 else
   final_message="$final_message\n  TexturePacker:No"
@@ -1469,6 +1474,7 @@ AC_SUBST(USE_PULSE)
 AC_SUBST(USE_XRANDR)
 AC_SUBST(USE_TEXTUREPACKER)
 AC_SUBST(USE_TEXTUREPACKER_NATIVE)
+AC_SUBST(USE_TEXTUREPACKER_NATIVE_ROOT)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions

@@ -9,7 +9,17 @@ CXXFLAGS+= \
   -I@abs_top_srcdir@/xbmc \
   -I@abs_top_srcdir@/xbmc/linux
 
+ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
+NATIVE_ROOT_PATH=@USE_TEXTUREPACKER_NATIVE_ROOT@
+ifdef NATIVE_ROOT_PATH
+CXXFLAGS+= -I$(NATIVE_ROOT_PATH)/include
+LIBS    += -L$(NATIVE_ROOT_PATH)/lib
+endif
+LIBS    += -L@abs_top_srcdir@/lib/libsquish -lsquish-native
+else
 LIBS    += -L@abs_top_srcdir@/lib/libsquish -lsquish
+endif
+
 LIBS    += -lSDL_image -lSDL -llzo2
 
 SRCS = \
@@ -25,7 +35,15 @@ CLEAN_FILES=$(TARGET)
 
 all: $(TARGET)
 
+ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
+# TexturePacker run native on build system, build it with native tools
+$(TARGET): $(SRCS)
+	g++ $(DEFINES) $(CXXFLAGS) $(SRCS) $(LIBS) -o $(TARGET)
+clean:
+	rm -f $(TARGET)
+else
 include @abs_top_srcdir@/Makefile.include
 
 $(TARGET): $(SRCS)
 	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCLUDES) $(SRCS) $(LDFLAGS) $(LIBS) -o $(TARGET)
+endif
