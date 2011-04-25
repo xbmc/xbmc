@@ -834,5 +834,11 @@ void CPVRChannel::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 
 bool CPVRChannelIconCacheJob::DoWork(void)
 {
-  return m_channel->CacheIcon();
+  if (m_channel->CacheIcon())
+  {
+    m_channel->Persist(false);
+    return true;
+  }
+
+  return false;
 }
