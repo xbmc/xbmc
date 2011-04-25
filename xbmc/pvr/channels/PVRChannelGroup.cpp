@@ -553,8 +553,8 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
   if (!database)
     return bReturn;
 
-  bChanged = AddAndUpdateChannels(channels, bUseBackendChannelNumbers);
-  bChanged = RemoveDeletedChannels(channels) || bChanged;
+  bChanged = RemoveDeletedChannels(channels);
+  bChanged = AddAndUpdateChannels(channels, bUseBackendChannelNumbers) || bChanged;
 
   if (bChanged)
   {
@@ -745,7 +745,9 @@ bool CPVRChannelGroup::Persist(void)
 
 void CPVRChannelGroup::Renumber(void)
 {
-  unsigned int iChannelNumber = 0;
+  unsigned int iChannelNumber(0);
+  CSingleLock lock(m_critSection);
+
   for (unsigned int ptr = 0; ptr < size();  ptr++)
   {
     if (at(ptr).iChannelNumber != iChannelNumber + 1)
@@ -753,6 +755,10 @@ void CPVRChannelGroup::Renumber(void)
 
     at(ptr).iChannelNumber = ++iChannelNumber;
   }
+
+  /* reset the channel number cache */
+  if (g_PVRManager.IsSelectedGroup(*this))
+    SetSelectedGroup();
 }
 
 bool CPVRChannelGroup::HasChangedChannels(void) const
@@ -812,9 +818,6 @@ void CPVRChannelGroup::ResetChannelNumbers(void)
 void CPVRChannelGroup::SetSelectedGroup(void)
 {
   CSingleLock lock(m_critSection);
-
-  /* reset all channel numbers */
-  g_PVRChannelGroups->GetGroupAll(m_bRadio)->ResetChannelNumbers();
 
   /* set all channel numbers on members of this group */
   unsigned int iChannelNumber(1);

@@ -384,6 +384,13 @@ namespace PVR
      */
     void SearchMissingChannelIcons(void);
 
+    /*!
+     * @brief Check whether a group is selected.
+     * @param group The group to check.
+     * @return True if it's selected, false otherwise.
+     */
+    bool IsSelectedGroup(const CPVRChannelGroup &group) const;
+
   protected:
     /*!
      * @brief PVR update and control thread.

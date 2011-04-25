@@ -683,6 +683,14 @@ CPVRChannelGroup *CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
   return bRadio ? m_currentRadioGroup : m_currentTVGroup;
 }
 
+bool CPVRManager::IsSelectedGroup(const CPVRChannelGroup &group) const
+{
+  CSingleLock lock(m_critSection);
+
+  return (group.IsRadio() && m_currentRadioGroup && *m_currentRadioGroup == group) ||
+      (!group.IsRadio() && m_currentTVGroup && *m_currentTVGroup == group);
+}
+
 void CPVRManager::TriggerRecordingsUpdate(void)
 {
   CSingleLock lock(m_critSectionTriggers);
