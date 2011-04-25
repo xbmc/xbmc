@@ -349,6 +349,44 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const CStdString &method,
   return OK;
 }
 
+JSON_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CVariant param = parameterObject;
+  if (!param.isMember("fields"))
+    param["fields"] = CVariant(CVariant::VariantTypeArray);
+  param["fields"].append("genre");
+  param["fields"].append("thumbnail");
+
+  CStdString media = parameterObject["type"].asString();
+  media = media.ToLower();
+  int idContent;
+
+  /* select which video content to get genres from*/
+  if (media.Equals("movie"))
+ 	   idContent = VIDEODB_CONTENT_MOVIES;
+   else if (media.Equals("tvshow"))
+ 	  idContent = VIDEODB_CONTENT_TVSHOWS;
+   else if (media.Equals("musicvideo"))
+ 	  idContent = VIDEODB_CONTENT_MUSICVIDEOS;
+ 
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CFileItemList items;
+  if (videodatabase.GetGenresNav("", items, idContent))
+  {
+    /* need to set strGenre in each item*/
+    for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
+		  items[i]->GetVideoInfoTag()->m_strGenre = items[i]->GetLabel();
+ 
+    HandleFileItemList("genreid", false, "genres", items, param, result);
+  }
+
+  videodatabase.Close();
+  return OK;
+}
+
 JSON_STATUS CVideoLibrary::ScanForContent(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(video)");
