@@ -799,15 +799,15 @@
 		</control>
 		<control type="group">
 			<posx>0</posx>
-			<posy>30r</posy>
+			<posy>33r</posy>
 			<visible>system.getbool(lookandfeel.enablerssfeeds)</visible>
 			<include>Window_OpenClose_Animation</include>
 			<control type="rss">
 				<description>RSS feed</description>
-				<posx>0</posx>
+				<posx>100</posx>
 				<posy>0</posy>
 				<height>30</height>
-				<width>1245</width>
+				<width>1145</width>
 				<font>font12</font>
 				<urlset>1</urlset>
 				<textcolor>blue</textcolor>
