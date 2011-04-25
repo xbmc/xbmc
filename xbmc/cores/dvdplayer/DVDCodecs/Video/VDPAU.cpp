@@ -650,6 +650,7 @@ void CVDPAU::InitVDPAUProcs()
 {
   char* error;
 
+  (void)dlerror();
   dl_vdp_device_create_x11 = (VdpStatus (*)(Display*, int, VdpDevice*, VdpStatus (**)(VdpDevice, VdpFuncId, void**)))dlsym(dl_handle, (const char*)"vdp_device_create_x11");
   error = dlerror();
   if (error)

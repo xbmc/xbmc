@@ -54,7 +54,7 @@ public:
   virtual bool Rename(const CURL& url, const CURL& urlnew);
   virtual bool SetHidden(const CURL& url, bool hidden);
 
-  virtual int IoControl(int request, void* param);
+  virtual int IoControl(EIoControl request, void* param);
 protected:
   CStdString GetLocal(const CURL &url); /* crate a properly format path from an url */
   AUTOPTR::CAutoPtrHandle m_hFile;

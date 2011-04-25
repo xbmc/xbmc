@@ -1,5 +1,5 @@
-#ifndef __XBMC_ADDON_H__
-#define __XBMC_ADDON_H__
+#ifndef __XBMC_ADDON_DLL_H__
+#define __XBMC_ADDON_DLL_H__
 
 /*
  *      Copyright (C) 2005-2010 Team XBMC
@@ -33,27 +33,11 @@
 #endif
 #endif
 
-extern "C"
-{ 
-  enum ADDON_STATUS
-  {
-    STATUS_OK,
-    STATUS_LOST_CONNECTION,
-    STATUS_NEED_RESTART,
-    STATUS_NEED_SETTINGS,
-    STATUS_UNKNOWN,
-    STATUS_NEED_SAVEDSETTINGS
-  };
+#include "xbmc_addon_types.h"
 
-  typedef struct
-  {
-    int           type;
-    char*         id;
-    char*         label;
-    int           current;
-    char**        entry;
-    unsigned int  entry_elements;
-  } StructSetting;
+#ifdef __cplusplus
+extern "C" { 
+#endif
 
   ADDON_STATUS __declspec(dllexport) Create(void *callbacks, void* props);
   void __declspec(dllexport) Stop();
@@ -63,6 +47,9 @@ extern "C"
   unsigned int __declspec(dllexport) GetSettings(StructSetting ***sSet);
   ADDON_STATUS __declspec(dllexport) SetSetting(const char *settingName, const void *settingValue);
   void __declspec(dllexport) FreeSettings();
+
+#ifdef __cplusplus
 };
+#endif
 
 #endif

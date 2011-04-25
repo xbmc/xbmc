@@ -44,6 +44,8 @@ public:
 
   virtual bool Delete(const CURL& url);
   virtual bool Rename(const CURL& url, const CURL& urlnew);
+
+  virtual int  IoControl(EIoControl request, void* param);
 protected:
   std::stringstream m_stream;
   int               m_len;

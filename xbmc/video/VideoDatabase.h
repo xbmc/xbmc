@@ -367,6 +367,7 @@ public:
   void GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, int idTvShow = -1);
   bool GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idEpisode = -1);
   void GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMVideo=-1);
+  void GetSetInfo(int idSet, CVideoInfoTag& details);
 
   int GetPathId(const CStdString& strPath);
   int GetTvShowId(const CStdString& strPath);

@@ -52,17 +52,8 @@
 		<posy>220</posy>
 		<width>410</width>
 		<height>215</height>
-		<spinwidth>18</spinwidth>
-		<spinheight>16</spinheight>
-		<spinposx>410</spinposx>
-		<spinposy>305</spinposy>
-		<spincolor>white</spincolor>
-		<spinfont>font13</spinfont>
+		<align>left</align>
 		<textcolor>white</textcolor>
-		<textureup>scroll-up.png</textureup>
-		<texturedown>scroll-down.png</texturedown>
-		<textureupfocus>scroll-up-focus.png</textureupfocus>
-		<texturedownfocus>scroll-down-focus.png</texturedownfocus>
 		<font>font13</font>
 	</default>
 	<default type="progress">
