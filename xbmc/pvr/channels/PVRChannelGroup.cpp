@@ -839,6 +839,7 @@ void CPVRChannelGroup::Notify(const Observable &obs, const CStdString& msg)
     bool bUsingBackendChannelOrder = g_guiSettings.GetBool("pvrmanager.backendchannelorder");
 
     CSingleLock lock(m_critSection);
+    /* check whether this channel group has to be renumbered */
     if (m_bUsingBackendChannelOrder != bUsingBackendChannelOrder)
     {
       m_bUsingBackendChannelOrder = bUsingBackendChannelOrder;
@@ -853,5 +854,10 @@ void CPVRChannelGroup::Notify(const Observable &obs, const CStdString& msg)
         Persist();
       }
     }
+    lock.Leave();
+
+    /* check whether cached icons are still valid */
+    if (IsInternalGroup())
+      CacheIcons();
   }
 }
