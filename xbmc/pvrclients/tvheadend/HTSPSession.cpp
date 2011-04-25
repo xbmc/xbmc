@@ -468,7 +468,7 @@ void cHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
       channel.num = num;
   }
   else
-    channel.num = id; // fallback older servers
+    channel.num = -1;
 
   htsmsg_t *tags;
 
