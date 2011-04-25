@@ -357,6 +357,22 @@
 			</control>
 		</control>
 		<include condition="Skin.HasSetting(homepageShowRecentlyAdded)">HomeRecentlyAddedInfo</include>
+		<control type="button" id="9003">
+			<description>Power push button</description>
+			<posx>-20</posx>
+			<posy>-20</posy>
+			<width>1</width>
+			<height>1</height>
+			<label>-</label>
+			<font>-</font>
+			<texturefocus>-</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<onleft>9000</onleft>
+			<onright>9000</onright>
+			<onup>20</onup>
+			<ondown>9000</ondown>
+			<visible>false</visible>
+		</control>
 		<control type="group">
 			<posy>370</posy>
 			<animation type="WindowOpen" reversible="false">
