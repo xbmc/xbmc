@@ -480,7 +480,7 @@ bool CPVRChannel::SetClientChannelNumber(int iClientChannelNumber, bool bSaveInD
   bool bReturn(false);
   CSingleLock lock(m_critSection);
 
-  if (m_iClientChannelNumber != iClientChannelNumber)
+  if (m_iClientChannelNumber != iClientChannelNumber && iClientChannelNumber > 0)
   {
     /* update the client channel number */
     m_iClientChannelNumber = iClientChannelNumber;
