@@ -82,7 +82,9 @@ bool CPVRChannelGroup::operator==(const CPVRChannelGroup& right) const
 {
   if (this == &right) return true;
 
-  return (m_bRadio == right.m_bRadio && m_iGroupId == right.m_iGroupId);
+  return (m_bRadio == right.m_bRadio &&
+      m_iGroupId == right.m_iGroupId &&
+      m_strGroupName.Equals(right.m_strGroupName));
 }
 
 bool CPVRChannelGroup::operator!=(const CPVRChannelGroup &right) const
