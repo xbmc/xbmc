@@ -745,16 +745,18 @@ bool CPVRChannelGroup::Persist(void)
 
 void CPVRChannelGroup::Renumber(void)
 {
-  unsigned int iChannelNumber(0);
+  unsigned int iChannelNumber(1);
   CSingleLock lock(m_critSection);
 
-  for (unsigned int ptr = 0; ptr < size();  ptr++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size();  iChannelPtr++)
   {
-    if (at(ptr).iChannelNumber != iChannelNumber + 1)
+    if (at(iChannelPtr).iChannelNumber != iChannelNumber)
       m_bChanged = true;
 
-    at(ptr).iChannelNumber = ++iChannelNumber;
+    at(iChannelPtr).iChannelNumber = iChannelNumber++;
   }
+
+  SortByChannelNumber();
 
   /* reset the channel number cache */
   if (g_PVRManager.IsSelectedGroup(*this))
@@ -818,6 +820,9 @@ void CPVRChannelGroup::ResetChannelNumbers(void)
 void CPVRChannelGroup::SetSelectedGroup(void)
 {
   CSingleLock lock(m_critSection);
+
+  if (!IsInternalGroup())
+    g_PVRChannelGroups->GetGroupAll(m_bRadio)->ResetChannelNumbers();
 
   /* set all channel numbers on members of this group */
   unsigned int iChannelNumber(1);
