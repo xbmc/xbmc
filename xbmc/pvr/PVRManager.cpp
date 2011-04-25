@@ -671,7 +671,7 @@ void CPVRManager::SetPlayingGroup(CPVRChannelGroup *group)
     group->SetSelectedGroup();
 }
 
-const CPVRChannelGroup *CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
+CPVRChannelGroup *CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
 {
   CSingleLock lock(m_critSection);
 

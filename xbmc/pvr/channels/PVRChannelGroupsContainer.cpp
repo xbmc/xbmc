@@ -99,7 +99,7 @@ void CPVRChannelGroupsContainer::Unload(void)
   m_groupsTV->Clear();
 }
 
-const CPVRChannelGroups *CPVRChannelGroupsContainer::Get(bool bRadio) const
+CPVRChannelGroups *CPVRChannelGroupsContainer::Get(bool bRadio) const
 {
   return bRadio ? m_groupsRadio : m_groupsTV;
 }

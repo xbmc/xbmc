@@ -63,7 +63,7 @@ CGUIDialogPVRGroupManager::~CGUIDialogPVRGroupManager()
 
 bool CGUIDialogPVRGroupManager::PersistChanges(void)
 {
-  return ((CPVRChannelGroups *) g_PVRChannelGroups->Get(m_bIsRadio))->PersistAll();
+  return g_PVRChannelGroups->Get(m_bIsRadio)->PersistAll();
 }
 
 bool CGUIDialogPVRGroupManager::CancelChanges(void)

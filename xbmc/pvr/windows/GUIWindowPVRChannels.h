@@ -40,7 +40,7 @@ namespace PVR
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     virtual const CPVRChannelGroup *SelectedGroup(void);
     virtual void SetSelectedGroup(CPVRChannelGroup *group);
-    virtual const CPVRChannelGroup *SelectNextGroup(void);
+    virtual CPVRChannelGroup *SelectNextGroup(void);
     virtual void UpdateData(void);
 
   private:

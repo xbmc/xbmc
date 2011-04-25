@@ -240,28 +240,31 @@ bool CPVRChannel::UpdateFromClient(const CPVRChannel &channel)
 
 bool CPVRChannel::Persist(bool bQueueWrite /* = false */)
 {
+  bool bReturn(true);
   CSingleLock lock(m_critSection);
-  if (!m_bChanged)
-    return true;
+  if (!m_bChanged && m_iChannelId > 0)
+    return bReturn;
 
   if (CPVRDatabase *database = OpenPVRDatabase())
   {
     if (!bQueueWrite)
     {
-      database->Open();
       m_iChannelId = database->Persist(*this, false);
       m_bChanged = false;
-      database->Close();
-      return m_iChannelId > 0;
+      bReturn = m_iChannelId > 0;
     }
     else
     {
-      database->Persist(*this, true);
-      return true;
+      bReturn = database->Persist(*this, true) > 0;
     }
+    database->Close();
+  }
+  else
+  {
+    bReturn = false;
   }
 
-  return false;
+  return bReturn;
 }
 
 bool CPVRChannel::SetChannelID(int iChannelId, bool bSaveInDb /* = false */)

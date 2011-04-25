@@ -68,6 +68,8 @@ namespace PVR
      */
     bool UpdateGroupEntries(const CPVRChannelGroup &channels);
 
+    bool AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers);
+
     /*!
      * @brief Refresh the channel list from the clients.
      */

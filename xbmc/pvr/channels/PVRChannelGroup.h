@@ -74,6 +74,9 @@ namespace PVR
      */
     virtual bool UpdateGroupEntries(const CPVRChannelGroup &channels);
 
+    virtual bool AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers);
+    virtual bool RemoveDeletedChannels(const CPVRChannelGroup &channels);
+
     /*!
      * @brief Remove invalid channels from this container.
      */

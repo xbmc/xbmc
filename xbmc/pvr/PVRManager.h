@@ -254,7 +254,7 @@ namespace PVR
      * @param bRadio True to get the current radio group, false to get the current TV group.
      * @return The current group or the group containing all channels if it's not set.
      */
-    const CPVRChannelGroup *GetPlayingGroup(bool bRadio = false);
+    CPVRChannelGroup *GetPlayingGroup(bool bRadio = false);
 
     /*!
      * @brief Let the background thread update the recordings list.

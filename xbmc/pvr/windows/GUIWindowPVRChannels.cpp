@@ -100,12 +100,8 @@ bool CGUIWindowPVRChannels::OnContextButton(int itemNumber, CONTEXT_BUTTON butto
 
 const CPVRChannelGroup *CGUIWindowPVRChannels::SelectedGroup(void)
 {
-  const CPVRChannelGroup *group = m_selectedGroup;
-
-  if (!group)
-    group = g_PVRManager.GetPlayingGroup(m_bRadio);
-
-  SetSelectedGroup((CPVRChannelGroup *) group);
+  if (!m_selectedGroup)
+    SetSelectedGroup(g_PVRManager.GetPlayingGroup(m_bRadio));
 
   return m_selectedGroup;
 }
@@ -119,10 +115,10 @@ void CGUIWindowPVRChannels::SetSelectedGroup(CPVRChannelGroup *group)
   g_PVRManager.SetPlayingGroup(m_selectedGroup);
 }
 
-const CPVRChannelGroup *CGUIWindowPVRChannels::SelectNextGroup(void)
+CPVRChannelGroup *CGUIWindowPVRChannels::SelectNextGroup(void)
 {
   const CPVRChannelGroup *currentGroup = SelectedGroup();
-  CPVRChannelGroup *nextGroup = (CPVRChannelGroup *) g_PVRChannelGroups->Get(m_bRadio)->GetNextGroup(*currentGroup);
+  CPVRChannelGroup *nextGroup = g_PVRChannelGroups->Get(m_bRadio)->GetNextGroup(*currentGroup);
   if (nextGroup && *nextGroup != *currentGroup)
   {
     SetSelectedGroup(nextGroup);
@@ -284,7 +280,7 @@ bool CGUIWindowPVRChannels::OnContextButtonHide(CFileItem *item, CONTEXT_BUTTON 
     if (!pDialog->IsConfirmed())
       return bReturn;
 
-    ((CPVRChannelGroup *) g_PVRManager.GetPlayingGroup(m_bRadio))->RemoveFromGroup(channel);
+    g_PVRManager.GetPlayingGroup(m_bRadio)->RemoveFromGroup(channel);
     UpdateData();
 
     bReturn = true;
@@ -323,7 +319,7 @@ bool CGUIWindowPVRChannels::OnContextButtonMove(CFileItem *item, CONTEXT_BUTTON 
 
     if (newIndex != channel->ChannelNumber())
     {
-      ((CPVRChannelGroup *) g_PVRManager.GetPlayingGroup())->MoveChannel(channel->ChannelNumber(), newIndex);
+      g_PVRManager.GetPlayingGroup()->MoveChannel(channel->ChannelNumber(), newIndex);
       UpdateData();
     }
 

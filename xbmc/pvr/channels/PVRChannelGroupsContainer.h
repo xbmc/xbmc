@@ -82,20 +82,20 @@ namespace PVR
      * @brief Get the TV channel groups.
      * @return The TV channel groups.
      */
-    const CPVRChannelGroups *GetTV(void) const { return Get(false); }
+    CPVRChannelGroups *GetTV(void) const { return Get(false); }
 
     /*!
      * @brief Get the radio channel groups.
      * @return The radio channel groups.
      */
-    const CPVRChannelGroups *GetRadio(void) const { return Get(true); }
+    CPVRChannelGroups *GetRadio(void) const { return Get(true); }
 
     /*!
      * @brief Get the radio or TV channel groups.
      * @param bRadio If true, get the radio channel groups. Get the TV channel groups otherwise.
      * @return The requested groups.
      */
-    const CPVRChannelGroups *Get(bool bRadio) const;
+    CPVRChannelGroups *Get(bool bRadio) const;
 
     /*!
      * @brief Get the group containing all TV channels.
