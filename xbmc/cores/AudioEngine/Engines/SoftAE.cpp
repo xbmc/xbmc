@@ -217,7 +217,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
       if (m_rawPassthrough || m_transcode)
         newFormat.m_channelCount = (rawFormat == AE_FMT_RAW) ? 2 : 8;
       else
-        newFormat.m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout);
+        newFormat.m_channelCount = CAEUtil::GetChLayoutCount(m_stdChLayout);
       newFormat.m_sampleRate    = sampleRate;
       newFormat.m_frames        = (unsigned int)(((float)sampleRate / 1000.0f) * (float)DELAY_FRAME_TIME);
       newFormat.m_frameSamples  = newFormat.m_frames * newFormat.m_channelCount;
