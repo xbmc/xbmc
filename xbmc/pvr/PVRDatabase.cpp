@@ -608,8 +608,8 @@ bool CPVRDatabase::DeleteClients()
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all clients from the database", __FUNCTION__);
 
-  return DeleteValues("clients") &&
-      DeleteValues("map_channels_clients");
+  return DeleteValues("clients");
+      //TODO && DeleteValues("map_channels_clients");
 }
 
 int CPVRDatabase::AddClient(const CStdString &strClientName, const CStdString &strClientUid)
