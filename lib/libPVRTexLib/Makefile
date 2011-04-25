@@ -1,0 +1,30 @@
+LIBNAME=PVRTexLib
+VERSION=2.08.28.0634
+SOURCE=$(LIBNAME)
+# download location and format
+BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
+ARCHIVE=$(SOURCE)_$(VERSION).tar.gz
+ARCHIVE_TOOL=tar
+ARCHIVE_TOOL_FLAGS=xf
+TARBALLS_LOCATION=/tmp
+RETRIEVE_TOOL=/usr/bin/curl
+RETRIEVE_TOOL_FLAGS=-Ls --create-dirs --output $(TARBALLS_LOCATION)/$(ARCHIVE)
+ARCHIVE_TOOL=tar
+ARCHIVE_TOOL_FLAGS=xf
+
+all: $(SOURCE)
+
+$(TARBALLS_LOCATION)/$(ARCHIVE):
+	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
+
+$(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
+	rm -rf $(SOURCE)
+	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	touch $(SOURCE)
+
+clean:
+	rm -rf $(SOURCE)
+
+distclean::
+	rm -rf $(SOURCE)
+

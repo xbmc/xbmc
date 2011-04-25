@@ -185,6 +185,9 @@ void CGUITextureBase::Render()
 
   if (!m_texture.m_texCoordsArePixels)
   {
+    // for pvr compressed images, we'll need to multiply u1,u2...v3 by
+    // m_imageActualHeight/m_imageHeight or m_imageActualWidth/m_imageWidth
+    // to achieve the actual image size.
     u1 *= m_texCoordsScaleU;
     u2 *= m_texCoordsScaleU;
     u3 *= m_texCoordsScaleU;

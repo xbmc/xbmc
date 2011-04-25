@@ -39,6 +39,9 @@
 #include "SDL_anigif.h"
 #include "cmdlineargs.h"
 #include "libsquish/squish.h"
+#ifdef USE_PVR_COMPRESSION
+#include "PVRTexLib.h"
+#endif
 
 #ifdef _WIN32
 #define strncasecmp strnicmp
@@ -88,8 +91,14 @@ const char *GetFormatString(unsigned int format)
     return "YCoCg";
   case XB_FMT_A8R8G8B8:
     return "ARGB ";
+  case XB_FMT_R8G8B8A8:
+    return "BGRA ";
   case XB_FMT_A8:
     return "A8   ";
+  case XB_FMT_PVR2:
+    return "PVR2 ";
+  case XB_FMT_PVR4:
+    return "PVR4 ";
   default:
     return "?????";
   }
@@ -320,7 +329,96 @@ CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMS
       }
     }
   }
+#if defined(USE_PVR_COMPRESSION)
+  else if (flags & FLAGS_USE_PVR)
+  {
+    // image w must == h and be a power-of-two for prv compression
+    //if ((width == height) && (width > 32))
+    if ((width == height) && (width > 32) && (width == NP2(width)))
+    {
+      unsigned char* padded_argb;
+      unsigned int   padded_h, padded_w;
 
+      // turn off fitting non-power of two into power-of-two until this is working.
+      if (width != NP2(width))
+      {
+        // 8 is the min width and height that PVRTexLib can handle
+        padded_h = 8, padded_w = 8;
+        while (padded_h < height)
+          padded_h *=2;
+        while (padded_w < width)
+          padded_w *=2;
+
+        // copy original into larger power-of-two image
+        padded_argb = new unsigned char[padded_w * padded_h * 4];
+        memset(padded_argb, 0xff, padded_w * padded_h * 4);
+        for (int i = 0; i < height; i++)
+          memcpy(padded_argb + (i * padded_w * 4), argb + (i * width * 4), width * 4);
+      }
+      else
+      {
+        padded_w = width;
+        padded_h = height;
+        padded_argb = argb;
+      }
+      
+      try {
+        pvrtexlib::PVRTextureUtilities PVRU = pvrtexlib::PVRTextureUtilities();
+
+        pvrtexlib::CPVRTexture sOriginalTexture
+        (
+          padded_w,                       // u32Width,
+          padded_h,                       // u32Height,
+          0,                              // u32MipMapCount,
+          1,                              // u32NumSurfaces,
+          false,                          // bBorder,
+          false,                          // bTwiddled,
+          false,                          // bCubeMap,
+          false,                          // bVolume,
+          false,                          // bFalseMips,
+          true,                           // bHasAlpha
+          false,                          // bVerticallyFlipped
+          pvrtexlib::DX10_R8G8B8A8_UNORM, // ePixelType,
+          0.0f,                           // fNormalMap,
+          padded_argb                     // pPixelData
+        );
+        // setup for compression
+        pvrtexlib::CPVRTextureHeader sProcessHeader(sOriginalTexture.getHeader());
+        PVRU.ProcessRawPVR(sOriginalTexture, sProcessHeader);
+        pvrtexlib::CPVRTexture sCompressedTexture(sOriginalTexture.getHeader());
+        // do the actual compression
+        sCompressedTexture.setPixelType(pvrtexlib::OGL_PVRTC4);
+        PVRU.CompressPVR(sOriginalTexture, sCompressedTexture);
+        
+        compressedSize = sCompressedTexture.getData().getDataSize();
+        compressed = new unsigned char[compressedSize];
+        memcpy(compressed, sCompressedTexture.getData().getData(), compressedSize);
+
+        compressedSize = sCompressedTexture.getData().getDataSize() + sizeof(XB_PVRHEADER);
+        compressed = new unsigned char[compressedSize];
+        memcpy(compressed + sizeof(XB_PVRHEADER), sCompressedTexture.getData().getData(), compressedSize - sizeof(XB_PVRHEADER));
+        // filling our header values
+        XB_PVRHEADER *pvrheader   = (XB_PVRHEADER*)compressed;
+        pvrheader->image_width    = width;
+        pvrheader->image_height   = height;
+        pvrheader->texture_width  = padded_w;
+        pvrheader->texture_height = padded_h;
+
+        if (padded_argb != argb)
+          delete[] padded_argb;
+
+        width  = padded_w;
+        height = padded_h;
+        format = XB_FMT_PVR4;
+      }
+      PVRCATCH(myException)
+      {
+        // handle any exceptions here
+        printf("PVR Exception: %s",myException.what());
+      }
+    }
+  }
+#endif
   CXBTFFrame frame; 
   if (format)
   {
@@ -348,6 +446,7 @@ void Usage()
   puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: on");
   puts("  -use_lzo         Use lz0 packing.     Default: on");
   puts("  -use_dxt         Use DXT compression. Default: on");
+  puts("  -use_pvr         Use PVR compression. Default: off");
   puts("  -use_none        Use No  compression. Default: off");
 }
 
@@ -520,6 +619,9 @@ int main(int argc, char* argv[])
   // setup some defaults, lzo post compression,
   // dxt unless compiled with prv, then use pvr
   flags = FLAGS_USE_DXT;
+#if defined(USE_PVR_COMPRESSION)
+  flags = FLAGS_USE_PVR;
+#endif
 #ifdef USE_LZO_PACKING
   flags |= FLAGS_USE_LZO;
 #endif
@@ -569,6 +671,12 @@ int main(int argc, char* argv[])
       flags &= ~FLAGS_USE_ETC;
       flags &= ~FLAGS_USE_PVR;
       flags |= FLAGS_USE_DXT;
+    }
+    else if (!stricmp(args[i], "-use_pvr"))
+    {
+      flags &= ~FLAGS_USE_DXT;
+      flags &= ~FLAGS_USE_ETC;
+      flags |= FLAGS_USE_PVR;
     }
 #ifdef USE_LZO_PACKING
     else if (!stricmp(args[i], "-use_lzo"))

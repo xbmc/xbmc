@@ -20,6 +20,21 @@ else
 LIBS    += -L@abs_top_srcdir@/lib/libsquish -lsquish
 endif
 
+ifeq (@USE_PVRTEXLIB@,1)
+ifeq ($(shell uname),Darwin)
+PVR_LIB  = @abs_top_srcdir@/lib/libPVRTexLib/PVRTexLib/MacOS_x86
+else
+ifeq ($(shell uname -m),x86_64)
+PVR_LIB  = @abs_top_srcdir@/lib/libPVRTexLib/PVRTexLib/Linux_x86_64
+else
+PVR_LIB  = @abs_top_srcdir@/lib/libPVRTexLib/PVRTexLib/Linux_x86_32
+endif
+endif
+DEFINES += -DUSE_PVR_COMPRESSION
+CXXFLAGS+= -I@abs_top_srcdir@/lib/libPVRTexLib/PVRTexLib
+LIBS    += -L$(PVR_LIB) -lPVRTexLib
+endif
+
 LIBS    += -lSDL_image -lSDL -llzo2
 
 SRCS = \
@@ -38,8 +53,14 @@ all: $(TARGET)
 ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
 # TexturePacker run native on build system, build it with native tools
 $(TARGET): $(SRCS)
+ifeq (@USE_PVRTEXLIB@,1)
+	make -C @abs_top_srcdir@/lib/libPVRTexLib
+endif
 	g++ $(DEFINES) $(CXXFLAGS) $(SRCS) $(LIBS) -o $(TARGET)
 clean:
+ifeq (@USE_PVRTEXLIB@,1)
+	make -C @abs_top_srcdir@/lib/libPVRTexLib clean
+endif
 	rm -f $(TARGET)
 else
 include @abs_top_srcdir@/Makefile.include
