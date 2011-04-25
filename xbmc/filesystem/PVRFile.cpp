@@ -124,7 +124,7 @@ int64_t CPVRFile::GetLength()
 
 int64_t CPVRFile::Seek(int64_t pos, int whence)
 {
-  if (whence == SEEK_POSSIBLE)
+  if (whence == IOCTRL_SEEK_POSSIBLE)
   {
     int64_t ret = g_PVRClients->SeekStream(pos, whence);
 
