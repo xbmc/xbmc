@@ -554,19 +554,19 @@ int CPVRDatabase::GetGroupMembers(CPVRChannelGroup &group)
   return iReturn;
 }
 
-int CPVRDatabase::Persist(CPVRChannelGroup *group)
+int CPVRDatabase::Persist(CPVRChannelGroup &group)
 {
   int iReturn = -1;
 
   CStdString strQuery;
 
-  if (group->GroupID() <= 0)
+  if (group.GroupID() <= 0)
   {
     /* new group */
     strQuery = FormatSQL("INSERT INTO channelgroups ("
         "bIsRadio, sName, iSortOrder) "
         "VALUES (%i, '%s', %i);",
-        (group->IsRadio() ? 1 :0), group->GroupName().c_str(), group->SortOrder());
+        (group.IsRadio() ? 1 :0), group.GroupName().c_str(), group.SortOrder());
   }
   else
   {
@@ -574,32 +574,44 @@ int CPVRDatabase::Persist(CPVRChannelGroup *group)
     strQuery = FormatSQL("REPLACE INTO channelgroups ("
         "idGroup, bIsRadio, sName, iSortOrder) "
         "VALUES (%i, %i, '%s', %i);",
-        group->GroupID(), (group->IsRadio() ? 1 :0), group->GroupName().c_str(), group->SortOrder());
+        group.GroupID(), (group.IsRadio() ? 1 :0), group.GroupName().c_str(), group.SortOrder());
   }
 
   if (ExecuteQuery(strQuery))
   {
-    if (group->GroupID() <= 0)
-      group->m_iGroupId = (int) m_pDS->lastinsertid();
+    if (group.GroupID() <= 0)
+      group.m_iGroupId = (int) m_pDS->lastinsertid();
 
-    RemoveChannelsFromGroup(*group);
-
-    for (unsigned int iChannelPtr = 0; iChannelPtr < group->size(); iChannelPtr++)
-    {
-      PVRChannelGroupMember member = group->at(iChannelPtr);
-      strQuery = FormatSQL("REPLACE INTO map_channelgroups_channels ("
-          "idGroup, idChannel, iChannelNumber) "
-          "VALUES (%i, %i, %i);",
-          group->GroupID(), member.channel->ChannelID(), member.iChannelNumber);
-      QueueInsertQuery(strQuery);
-    }
-
-    CommitInsertQueries();
-
-    iReturn = group->GroupID();
+    if (PersistGroupMembers(group))
+      iReturn = group.GroupID();
+    else
+      iReturn = -1;
   }
 
   return iReturn;
+}
+
+bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
+{
+  bool bReturn = RemoveChannelsFromGroup(group);
+  CStdString strQuery;
+
+  if (bReturn && group.size() > 0)
+  {
+    for (unsigned int iChannelPtr = 0; iChannelPtr < group.size(); iChannelPtr++)
+    {
+      PVRChannelGroupMember member = group.at(iChannelPtr);
+      strQuery = FormatSQL("REPLACE INTO map_channelgroups_channels ("
+          "idGroup, idChannel, iChannelNumber) "
+          "VALUES (%i, %i, %i);",
+          group.GroupID(), member.channel->ChannelID(), member.iChannelNumber);
+      QueueInsertQuery(strQuery);
+    }
+
+    bReturn = CommitInsertQueries();
+  }
+
+  return bReturn;
 }
 
 /********** Client methods **********/
