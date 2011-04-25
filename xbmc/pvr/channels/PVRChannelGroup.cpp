@@ -546,6 +546,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 {
   bool bReturn(false);
   bool bChanged(false);
+  bool bRemoved(false);
 
   CSingleLock lock(m_critSection);
   /* sort by client channel number if this is the first time or if pvrmanager.backendchannelorder is true */
@@ -555,8 +556,8 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
   if (!database)
     return bReturn;
 
-  bChanged = RemoveDeletedChannels(channels);
-  bChanged = AddAndUpdateChannels(channels, bUseBackendChannelNumbers) || bChanged;
+  bRemoved = RemoveDeletedChannels(channels);
+  bChanged = AddAndUpdateChannels(channels, bUseBackendChannelNumbers) || bRemoved;
 
   if (bChanged)
   {
@@ -565,11 +566,11 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 
     /* renumber to make sure all channels have a channel number.
        new channels were added at the back, so they'll get the highest numbers */
-    Renumber();
+    bool bRenumbered = Renumber();
 
     lock.Leave();
 
-    g_PVRManager.UpdateWindow(m_bRadio ? PVR_WINDOW_CHANNELS_RADIO : PVR_WINDOW_CHANNELS_TV, true); // TODO always doing a refresh now
+    g_PVRManager.UpdateWindow(m_bRadio ? PVR_WINDOW_CHANNELS_RADIO : PVR_WINDOW_CHANNELS_TV, HasNewChannels() || bRemoved || bRenumbered);
 
     bReturn = Persist();
   }
@@ -745,15 +746,19 @@ bool CPVRChannelGroup::Persist(void)
   return false;
 }
 
-void CPVRChannelGroup::Renumber(void)
+bool CPVRChannelGroup::Renumber(void)
 {
+  bool bReturn(false);
   unsigned int iChannelNumber(1);
   CSingleLock lock(m_critSection);
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < size();  iChannelPtr++)
   {
     if (at(iChannelPtr).iChannelNumber != iChannelNumber)
+    {
+      bReturn = true;
       m_bChanged = true;
+    }
 
     at(iChannelPtr).iChannelNumber = iChannelNumber++;
   }
@@ -763,6 +768,8 @@ void CPVRChannelGroup::Renumber(void)
   /* reset the channel number cache */
   if (g_PVRManager.IsSelectedGroup(*this))
     SetSelectedGroup();
+
+  return bReturn;
 }
 
 bool CPVRChannelGroup::HasChangedChannels(void) const

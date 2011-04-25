@@ -108,8 +108,9 @@ namespace PVR
 
     /*!
      * @brief Remove invalid channels and updates the channel numbers.
+     * @return True if something changed, false otherwise.
      */
-    void Renumber(void);
+    bool Renumber(void);
 
     /*!
      * @return Cache all channel icons in this group if guisetting "pvrmenu.iconpath" is set.
