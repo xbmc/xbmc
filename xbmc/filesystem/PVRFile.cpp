@@ -21,6 +21,7 @@
 
 #include "PVRFile.h"
 #include "Util.h"
+#include "cores/dvdplayer/DVDInputStreams/DVDInputStream.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
@@ -124,7 +125,7 @@ int64_t CPVRFile::GetLength()
 
 int64_t CPVRFile::Seek(int64_t pos, int whence)
 {
-  if (whence == IOCTRL_SEEK_POSSIBLE)
+  if (whence == SEEK_POSSIBLE)
   {
     int64_t ret = g_PVRClients->SeekStream(pos, whence);
 
