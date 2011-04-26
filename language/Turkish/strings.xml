@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 12/02/2011-->
-<!--Based on English strings commit c8bd047-->
+<!--Date of translation: 22/04/2011-->
+<!--Based on English strings commit 282f5a5b809ab387129f-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -393,7 +393,7 @@
   <string id="426">CD bilgisi bulunamadı</string>
   <string id="427">Disk</string>
   <string id="428">Doğru CD/DVD'yi koyunuz</string>
-  <string id="429">Lütfen sıradaki CD/DVD'yi koyunuz</string>
+  <string id="429">Lütfen sıradaki diski yerleştirin:</string>
   <string id="430">Sırala: DVD#</string>
   <string id="431">Önbellek yok</string>
   <string id="432">Filmi kitaplıktan kaldır</string>
@@ -712,6 +712,8 @@
   <string id="851">Geçerli port aralığı 1-65535</string>
   <string id="852">Geçerli port aralığı 1024-65535</string>
 
+  <string id="998">Müzik Ekle...</string>
+  <string id="999">Video Ekle...</string>
   <string id="1000">- Önizleme</string>
   <string id="1001">Bağlanamıyor</string>
   <string id="1002">XBMC ağda belirtilen klasöre bağlanamıyor.</string>
@@ -1225,6 +1227,7 @@
   <string id="13429">Donanım hızlandırmasına izin ver (VDADecoder)</string>
   <string id="13430">Donanım hızlandırmasına izin ver (OpenMax)</string>
   <string id="13431">Piksel Gölgelendiriciler</string>
+  <string id="13432">Donanım hızlandırmasına izin ver (VideoToolbox)</string>
 
   <string id="13500">Ses/Video senkron biçimi</string>
   <string id="13501">Ses saati</string>
@@ -2169,6 +2172,8 @@
   <string id="24041">Zip dosyasından yükle</string>
   <string id="24042">Karşıdan yükleniyor %i%%</string>
   <string id="24043">Kullanılabilir Güncelleştirmeler</string>
+  <string id="24044">Bağımlılıklar karşılanmadı</string>
+  <string id="24045">Eklenti doğru bir yapıya sahip değil</string>
 
   <string id="24050">Kullanılabilir Eklentiler</string>
   <string id="24051">Sürüm:</string>
@@ -2284,6 +2289,11 @@
   <string id="33081">Bu dosya yığınlandı, oynatmak istediğiniz bölümü seçin.</string>
   <string id="33082">Betik yolu</string>
   <string id="33083">Özel betik tuşunu etkinleştir</string>
+  
+  <string id="33100">Başlatılamadı</string>
+  <string id="33101">Web Sunucusu</string>
+  <string id="33102">Olay Sunucusu</string>
+  <string id="33103">Uzak iletişim sunucusu</string>
 
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
