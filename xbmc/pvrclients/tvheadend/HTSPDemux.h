@@ -46,6 +46,7 @@ protected:
   DemuxPacket *ParseMuxPacket(htsmsg_t *m);
 
 private:
+  bool                  m_bGotFirstIframe;
   unsigned              m_subs;
   cHTSPSession          m_session;
   int                   m_channel;

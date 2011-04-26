@@ -31,11 +31,12 @@ extern "C" {
 #include "libhts/sha1.h"
 }
 
-cHTSPDemux::cHTSPDemux()
-  : m_subs(0)
-  , m_channel(0)
-  , m_tag(0)
-  , m_StatusCount(0)
+cHTSPDemux::cHTSPDemux() :
+    m_bGotFirstIframe(false),
+    m_subs(0),
+    m_channel(0),
+    m_tag(0),
+    m_StatusCount(0)
 {
   m_Streams.iStreamCount = 0;
 }
@@ -170,11 +171,13 @@ DemuxPacket *cHTSPDemux::ParseMuxPacket(htsmsg_t *msg)
   frametypechar[0] = static_cast<char>( frametype );
 
   if(htsmsg_get_u32(msg, "stream" , &index)  ||
-     htsmsg_get_bin(msg, "payload", &bin, &binlen))
+     htsmsg_get_bin(msg, "payload", &bin, &binlen) ||
+     (!m_bGotFirstIframe && frametypechar[0] != 'I'))
   {
     return pkt;
   }
 
+  m_bGotFirstIframe = true;
   pkt = PVR->AllocateDemuxPacket(binlen);
   memcpy(pkt->pData, bin, binlen);
 
@@ -307,6 +310,7 @@ void cHTSPDemux::SubscriptionStart(htsmsg_t *m)
   }
 
   m_Streams.iStreamCount = 0;
+  m_bGotFirstIframe = false;
 
   HTSMSG_FOREACH(f, streams)
   {
