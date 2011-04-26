@@ -28,10 +28,10 @@
 #include <Mmreg.h>
 #include <stdint.h>
 
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #include "StdString.h"
 #include "utils/log.h"
-#include "utils/SingleLock.h"
+#include "threads/SingleLock.h"
 #include "CharsetConverter.h"
 
 #pragma comment(lib, "Avrt.lib")
@@ -199,9 +199,9 @@ void CAESinkWASAPI::Deinitialize()
 
   Stop();
 
-  SAFE_RELEASE(m_pRenderClient)
-  SAFE_RELEASE(m_pAudioClient)
-  SAFE_RELEASE(m_pDevice)
+  SAFE_RELEASE(m_pRenderClient);
+  SAFE_RELEASE(m_pAudioClient);
+  SAFE_RELEASE(m_pDevice);
 }
 
 bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const CStdString device)
@@ -209,21 +209,22 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const CStdString de
   CSingleLock lock(m_runLock);
   if(!m_initialized) return false;
 
+  bool excSetting = g_guiSettings.GetBool("audiooutput.useexclusivemode");
+
   //Shared mode has one mix format used to open the device and used internally by Windows.
   //Don't change unless we are switching to passthrough or changing output modes. 
-  if(!m_isExclusive && g_guiSettings.GetBool("audiooutput.useexclusivemode") ==  m_isExclusive &&
-    !AE_IS_RAW(format.m_dataFormat))
+  if(!m_isExclusive && excSetting ==  m_isExclusive && !AE_IS_RAW(format.m_dataFormat))
     return true;
 
-  if(m_device == device &&
-     m_isExclusive == g_guiSettings.GetBool("audiooutput.useexclusivemode") &&
-     m_format.m_sampleRate   == format.m_sampleRate  &&
-     ((AE_IS_RAW(format.m_dataFormat)                && 
-       m_format.m_dataFormat == AE_FMT_RAW)          ||
-      (format.m_dataFormat   == AE_FMT_FLOAT         &&
+  if(m_device      == device     && //Same device
+     m_isExclusive == excSetting && //No change in exclusive vs shared mode
+     m_format.m_sampleRate == format.m_sampleRate  && //Same sample rate
+     ((AE_IS_RAW(format.m_dataFormat)              && 
+       (m_format.m_dataFormat == AE_FMT_RAW || m_format.m_dataFormat == AE_FMT_RAW8)) || //No change from PCM to RAW or vice versa
+      (format.m_dataFormat    == AE_FMT_FLOAT     &&
        !AE_IS_RAW(m_format.m_dataFormat))         &&
-     m_format.m_channelCount == format.m_channelCount)
-     return true;
+     m_format.m_channelCount == format.m_channelCount)) //Same channel count.
+     return true; //We can reuse the existing sink.
 
   return false;
 }
@@ -334,7 +335,7 @@ void CAESinkWASAPI::EnumerateDevices(AEDeviceList &devices, bool passthrough)
     if(FAILED(hr))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Retrieval of WASAPI endpoint properties failed.");
-      SAFE_RELEASE(pDevice)
+      SAFE_RELEASE(pDevice);
 
       goto failed;
     }
@@ -343,8 +344,8 @@ void CAESinkWASAPI::EnumerateDevices(AEDeviceList &devices, bool passthrough)
     if(FAILED(hr))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Retrieval of WASAPI endpoint device name failed.");
-      SAFE_RELEASE(pDevice)
-      SAFE_RELEASE(pProperty)
+      SAFE_RELEASE(pDevice);
+      SAFE_RELEASE(pProperty);
 
       goto failed;
     }
@@ -375,12 +376,14 @@ void CAESinkWASAPI::EnumerateDevices(AEDeviceList &devices, bool passthrough)
       
     }
     else
+    {
       devices.push_back(AEDevice(strDevName, CStdString("WASAPI:").append(strDevName)));
+    }
 
-    SAFE_RELEASE(pDevice)
+    SAFE_RELEASE(pDevice);
 
     PropVariantClear(&varName);
-    SAFE_RELEASE(pProperty)
+    SAFE_RELEASE(pProperty);
   }
 
 failed:
