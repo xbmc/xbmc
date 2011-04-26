@@ -40,6 +40,9 @@ BIN_DIRS=	\
 	xbmc/video/windows \
 	xbmc/windows \
 	xbmc/network \
+	xbmc/network/libscrobbler \
+	xbmc/network/linux \
+	xbmc/network/osx \
 	xbmc/playlists \
 	xbmc/powermanagement \
         xbmc/powermanagement/linux \
@@ -53,7 +56,6 @@ BIN_DIRS=	\
 	xbmc/interfaces/python \
 	xbmc/interfaces/python/xbmcmodule \
 	lib/libRTV \
-	xbmc/network/libscrobbler \
 	lib/libUPnP \
 	lib/libXDAAP \
 	xbmc/dbwrappers \
