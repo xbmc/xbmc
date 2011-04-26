@@ -33,6 +33,7 @@ extern "C" {
 
 cHTSPDemux::cHTSPDemux() :
     m_bGotFirstIframe(false),
+    m_bIsRadio(false),
     m_subs(0),
     m_channel(0),
     m_tag(0),
@@ -49,6 +50,7 @@ cHTSPDemux::~cHTSPDemux()
 bool cHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
 {
   m_channel = channelinfo.iUniqueId;
+  m_bIsRadio = channelinfo.bIsRadio;
 
   if(!m_session.Connect(g_strHostname, g_iPortHTSP, g_iConnectTimeout))
     return false;
@@ -310,7 +312,7 @@ void cHTSPDemux::SubscriptionStart(htsmsg_t *m)
   }
 
   m_Streams.iStreamCount = 0;
-  m_bGotFirstIframe = false;
+  m_bGotFirstIframe = m_bIsRadio; // only wait for the first I frame when playing back a tv stream
 
   HTSMSG_FOREACH(f, streams)
   {

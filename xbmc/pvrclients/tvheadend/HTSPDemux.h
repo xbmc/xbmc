@@ -47,6 +47,7 @@ protected:
 
 private:
   bool                  m_bGotFirstIframe;
+  bool                  m_bIsRadio;
   unsigned              m_subs;
   cHTSPSession          m_session;
   int                   m_channel;
