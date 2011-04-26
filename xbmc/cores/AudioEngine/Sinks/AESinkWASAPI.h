@@ -25,7 +25,7 @@
 #include <mmdeviceapi.h>
 #include <Audioclient.h>
 
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 class CAESinkWASAPI : public IAESink
 {
