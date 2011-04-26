@@ -1019,8 +1019,11 @@ void CDVDPlayer::Process()
     }
 
     // if the queues are full, no need to read more
-    if ((!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0)
-    ||  (!m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0))
+    if ((!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0) ||
+        (!m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0) ||
+        (m_caching == CACHESTATE_PVR &&
+            m_dvdPlayerAudio.m_messageQueue.GetLevel() >= g_advancedSettings.m_iPVRMinCacheLevel &&
+            m_dvdPlayerVideo.m_messageQueue.GetLevel() >= g_advancedSettings.m_iPVRMinCacheLevel))
     {
       Sleep(10);
       if( m_caching != CACHESTATE_INIT
@@ -1412,14 +1415,13 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
   {
     if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
     {
-      /* need data in the video and audio queue or we could get sync problems */
-      if(m_dvdPlayerAudio.m_messageQueue.GetLevel() > 50 &&
-          m_dvdPlayerVideo.m_messageQueue.GetLevel() > 50)
-        return false;
+      SetCaching(CACHESTATE_PVR);
+      return true;
     }
+
     // don't start caching if it's only a single stream that has run dry
-    else if(m_dvdPlayerAudio.m_messageQueue.GetLevel() > 50 ||
-        m_dvdPlayerVideo.m_messageQueue.GetLevel() > 50)
+    if(m_dvdPlayerAudio.m_messageQueue.GetLevel() > 50 ||
+         m_dvdPlayerVideo.m_messageQueue.GetLevel() > 50)
       return false;
 
     if(current.inited)
@@ -2124,7 +2126,8 @@ void CDVDPlayer::SetCaching(ECacheState state)
 
   CLog::Log(LOGDEBUG, "CDVDPlayer::SetCaching - caching state %d", state);
   if(state == CACHESTATE_FULL
-  || state == CACHESTATE_INIT)
+  || state == CACHESTATE_INIT
+  || state == CACHESTATE_PVR)
   {
     m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
@@ -2153,7 +2156,7 @@ void CDVDPlayer::SetPlaySpeed(int speed)
 
 void CDVDPlayer::Pause()
 {
-  if(m_playSpeed != DVD_PLAYSPEED_PAUSE && m_caching == CACHESTATE_FULL)
+  if(m_playSpeed != DVD_PLAYSPEED_PAUSE && (m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR))
   {
     SetCaching(CACHESTATE_DONE);
     return;
@@ -2174,7 +2177,7 @@ void CDVDPlayer::Pause()
 
 bool CDVDPlayer::IsPaused() const
 {
-  return (m_playSpeed == DVD_PLAYSPEED_PAUSE) || m_caching == CACHESTATE_FULL;
+  return (m_playSpeed == DVD_PLAYSPEED_PAUSE) || m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR;
 }
 
 bool CDVDPlayer::HasVideo() const

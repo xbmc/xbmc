@@ -222,11 +222,12 @@ public:
   enum ECacheState
   { CACHESTATE_DONE = 0
   , CACHESTATE_FULL     // player is filling up the demux queue
+  , CACHESTATE_PVR      // player is waiting for some data in each buffer
   , CACHESTATE_INIT     // player is waiting for first packet of each stream
   , CACHESTATE_PLAY     // player is waiting for players to not be stalled
   };
 
-  virtual bool IsCaching() const { return m_caching == CACHESTATE_FULL; }
+  virtual bool IsCaching() const { return m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR; }
   virtual int GetCacheLevel() const ;
 
   virtual int OnDVDNavResult(void* pData, int iMessage);

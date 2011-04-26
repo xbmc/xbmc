@@ -289,6 +289,7 @@ class CAdvancedSettings
     int m_iPVRInputStreamDelay;   /*!< @brief delay the playback of the pvr streams by this amount of milliseconds. increase if the pvr streams buffer a lot when starting them. defaults to 200. */
     int m_iPVRInfoToggleInterval; /*!< @brief if there are more than 1 pvr gui info item available (e.g. multiple recordings active at the same time), use this toggle delay in milliseconds. defaults to 3000. */
     bool m_bPVRShowEpgInfoOnEpgItemSelect; /*!< @brief when selecting an EPG fileitem, show the EPG info dialog if this setting is true. start playback on the selected channel if false */
+    int m_iPVRMinCacheLevel;      /*!< @brief cache up to this level in each buffer before resuming playback if the buffers run dry */
 
     bool m_measureRefreshrate; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
                                //otherwise it will use the windows refreshrate
