@@ -57,7 +57,7 @@
 		<control type="group">
 			<posx>0</posx>
 			<posy>20</posy>
-			<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)</visible>
+			<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo) + ![Container(9000).HasFocus(2) + Skin.HasSetting(homepageShowRecentlyAdded)]</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 			<control type="image">
@@ -141,7 +141,7 @@
 		<control type="group">
 			<posx>0</posx>
 			<posy>20</posy>
-			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)</visible>
+			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo) + ![Container(9000).HasFocus(2) + Skin.HasSetting(homepageShowRecentlyAdded)]</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 			<control type="group">
