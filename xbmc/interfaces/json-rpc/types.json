@@ -3,6 +3,18 @@
     "type": [ "null", "boolean" ],
     "default": null
   },
+  "Optional.String": {
+    "type": [ "null", "string" ], 
+    "default": null
+  },
+  "Optional.Integer": {
+    "type": [ "null", "integer" ], 
+    "default": null
+  },
+  "Optional.Number": {
+    "type": [ "null", "number" ], 
+    "default": null
+  },
   "Array.String": {
     "type": "array",
     "items": { "type": "string", "minLength": 1 }

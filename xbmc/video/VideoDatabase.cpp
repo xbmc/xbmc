@@ -1774,21 +1774,29 @@ CStdString CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min,
 }
 
 //********************************************************************************************************************************
-int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details)
+int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idMovie /* = -1 */)
 {
   try
   {
-    int idMovie = GetMovieId(strFilenameAndPath);
-    if (idMovie > -1)
-      DeleteMovie(strFilenameAndPath, true); // true to keep the table entry
-
     BeginTransaction();
 
-    idMovie = AddMovie(strFilenameAndPath);
     if (idMovie < 0)
     {
-      CommitTransaction();
-      return idMovie;
+      idMovie = GetMovieId(strFilenameAndPath);
+      if (idMovie > -1)
+        DeleteMovie(strFilenameAndPath, true, true, idMovie); // true to keep the table entry and the thumb
+      else
+      {
+        // only add a new movie if we don't already have a valid idMovie
+        // (DeleteMovie is called with bKeepId == true so the movie won't
+        // be removed from the movie table)
+        idMovie = AddMovie(strFilenameAndPath);
+        if (idMovie < 0)
+        {
+          CommitTransaction();
+          return idMovie;
+        }
+      }
     }
 
     vector<int> vecDirectors;
@@ -1844,7 +1852,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
   return -1;
 }
 
-int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details)
+int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details, int idTvShow /*= -1 */)
 {
   try
   {
@@ -1856,9 +1864,12 @@ int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoI
 
     BeginTransaction();
 
-    int idTvShow = GetTvShowId(strPath);
     if (idTvShow < 0)
-      idTvShow = AddTvShow(strPath);
+    {
+      idTvShow = GetTvShowId(strPath);
+      if (idTvShow < 0)
+        idTvShow = AddTvShow(strPath);
+    }
 
     vector<int> vecDirectors;
     vector<int> vecGenres;
@@ -1914,13 +1925,18 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
     {
       idEpisode = GetEpisodeId(strFilenameAndPath);
       if (idEpisode > 0)
-        DeleteEpisode(strFilenameAndPath,idEpisode);
-
-      idEpisode = AddEpisode(idShow,strFilenameAndPath);
-      if (idEpisode < 0)
+        DeleteEpisode(strFilenameAndPath, idEpisode, true, true); // true to keep the table entry and the thumb
+      else
       {
-        CommitTransaction();
-        return -1;
+        // only add a new episode if we don't already have a valid idEpisode
+        // (DeleteEpisode is called with bKeepId == true so the episode won't
+        // be removed from the episode table)
+        idEpisode = AddEpisode(idShow,strFilenameAndPath);
+        if (idEpisode < 0)
+        {
+          CommitTransaction();
+          return -1;
+        }
       }
     }
 
@@ -1969,22 +1985,29 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
   return -1;
 }
 
-int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details)
+int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idMVideo /* = -1 */)
 {
   try
   {
     BeginTransaction();
 
-    int idMVideo = GetMusicVideoId(strFilenameAndPath);
-    if (idMVideo > -1)
-    {
-      DeleteMusicVideo(strFilenameAndPath);
-    }
-    idMVideo = AddMusicVideo(strFilenameAndPath);
     if (idMVideo < 0)
     {
-      CommitTransaction();
-      return -1;
+      idMVideo = GetMusicVideoId(strFilenameAndPath);
+      if (idMVideo > -1)
+        DeleteMusicVideo(strFilenameAndPath, true, true, idMVideo); // Keep id and thumb
+      else
+      {
+        // only add a new musicvideo if we don't already have a valid idMVideo
+        // (DeleteMusicVideo is called with bKeepId == true so the musicvideo won't
+        // be removed from the musicvideo table)
+        idMVideo = AddMusicVideo(strFilenameAndPath);
+        if (idMVideo < 0)
+        {
+          CommitTransaction();
+          return -1;
+        }
+      }
     }
 
     vector<int> vecDirectors;
@@ -2403,16 +2426,28 @@ void CVideoDatabase::DeleteBookMarkForEpisode(const CVideoInfoTag& tag)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+{
+  if (idMovie < 0)
+    return;
+
+  CStdString path;
+  GetFilePathById(idMovie, path, VIDEODB_CONTENT_MOVIES);
+  if (!path.empty())
+    DeleteMovie(path, bKeepId, bKeepThumb, idMovie);
+}
+
+void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId /* = false */, bool bKeepThumb /* = false */, int idMovie /* = -1 */)
 {
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    int idMovie = GetMovieId(strFilenameAndPath);
     if (idMovie < 0)
     {
-      return ;
+      idMovie = GetMovieId(strFilenameAndPath);
+      if (idMovie < 0)
+        return;
     }
 
     BeginTransaction();
@@ -2469,17 +2504,28 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
   }
 }
 
-void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+void CVideoDatabase::DeleteTvShow(int idTvShow, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+{
+  if (idTvShow < 0)
+    return;
+
+  CStdString path;
+  GetFilePathById(idTvShow, path, VIDEODB_CONTENT_TVSHOWS);
+  if (!path.empty())
+    DeleteTvShow(path, bKeepId, bKeepThumb, idTvShow);
+}
+
+void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = false */, bool bKeepThumb /* = false */, int idTvShow /* = -1 */)
 {
   try
   {
-    int idTvShow=-1;
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    idTvShow = GetTvShowId(strPath);
     if (idTvShow < 0)
     {
-      return ;
+      idTvShow = GetTvShowId(strPath);
+      if (idTvShow < 0)
+        return;
     }
 
     BeginTransaction();
@@ -2537,7 +2583,18 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
   }
 }
 
-void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idEpisode, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+{
+  if (idEpisode < 0)
+    return;
+
+  CStdString path;
+  GetFilePathById(idEpisode, path, VIDEODB_CONTENT_EPISODES);
+  if (!path.empty())
+    DeleteEpisode(path, idEpisode, bKeepId, bKeepThumb);
+}
+
+void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idEpisode /* = -1 */, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
 {
   try
   {
@@ -2586,16 +2643,28 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idE
   }
 }
 
-void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+void CVideoDatabase::DeleteMusicVideo(int idMusicVideo, bool bKeepId /* = false */, bool bKeepThumb /* = false */)
+{
+  if (idMusicVideo < 0)
+    return;
+
+  CStdString path;
+  GetFilePathById(idMusicVideo, path, VIDEODB_CONTENT_MUSICVIDEOS);
+  if (!path.empty())
+    DeleteMusicVideo(path, bKeepId, bKeepThumb, idMusicVideo);
+}
+
+void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId /* = false */, bool bKeepThumb /* = false */, int idMVideo /* = -1 */)
 {
   try
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    int idMVideo = GetMusicVideoId(strFilenameAndPath);
     if (idMVideo < 0)
     {
-      return ;
+      idMVideo = GetMusicVideoId(strFilenameAndPath);
+      if (idMVideo < 0)
+        return;
     }
 
     BeginTransaction();
