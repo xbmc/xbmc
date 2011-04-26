@@ -2879,6 +2879,7 @@
 		F5AE415A134175520004BD79 /* XBMCOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCOperations.h; sourceTree = "<group>"; };
 		F5AE452E134D2E3E0004BD79 /* JSONServiceDescription.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONServiceDescription.cpp; sourceTree = "<group>"; };
 		F5AE452F134D2E3E0004BD79 /* JSONServiceDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONServiceDescription.h; sourceTree = "<group>"; };
+		F5AE539813673FC70004BD79 /* IOSAudioRingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSAudioRingBuffer.h; path = AudioRenderers/IOSAudioRingBuffer.h; sourceTree = "<group>"; };
 		F5B1380C13306B890045076D /* libmicrohttpd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmicrohttpd.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libmicrohttpd.dylib"; sourceTree = "<absolute>"; };
 		F5B13DCD1334490D0045076D /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
 		F5B13DCE1334490D0045076D /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
@@ -3788,6 +3789,7 @@
 			children = (
 				F56C81FF131F42E6000AD0F6 /* IOSAudioRenderer.cpp */,
 				F56C8200131F42E6000AD0F6 /* IOSAudioRenderer.h */,
+				F5AE539813673FC70004BD79 /* IOSAudioRingBuffer.h */,
 				F56C8201131F42E6000AD0F6 /* IAudioRenderer.h */,
 				F56C8202131F42E6000AD0F6 /* AudioRendererFactory.h */,
 				F56C8203131F42E6000AD0F6 /* AudioRendererFactory.cpp */,
