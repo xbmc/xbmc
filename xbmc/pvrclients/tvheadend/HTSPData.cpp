@@ -81,6 +81,9 @@ void cHTSPData::Close()
 
 htsmsg_t* cHTSPData::ReadResult(htsmsg_t *m)
 {
+  if (!CheckConnection())
+    return NULL;
+
   m_Mutex.Lock();
   unsigned    seq (m_session.AddSequence());
 
@@ -170,9 +173,6 @@ unsigned int cHTSPData::GetNumChannels()
 
 PVR_ERROR cHTSPData::GetChannels(PVR_HANDLE handle, bool bRadio)
 {
-  if (!CheckConnection())
-    return PVR_ERROR_SERVER_ERROR;
-
   SChannels channels = GetChannels();
   for(SChannels::iterator it = channels.begin(); it != channels.end(); ++it)
   {
@@ -201,9 +201,6 @@ PVR_ERROR cHTSPData::GetChannels(PVR_HANDLE handle, bool bRadio)
 
 PVR_ERROR cHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
 {
-  if (!CheckConnection())
-    return PVR_ERROR_SERVER_ERROR;
-
   SChannels channels = GetChannels();
 
   if (channels.find(channel.iUniqueId) != channels.end())
@@ -389,6 +386,7 @@ PVR_ERROR cHTSPData::GetChannelGroups(PVR_HANDLE handle)
 PVR_ERROR cHTSPData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
 {
   XBMC->Log(LOG_DEBUG, "%s - group '%s'", __FUNCTION__, group.strGroupName);
+
   for(unsigned int iTagPtr = 0; iTagPtr < m_tags.size(); iTagPtr++)
   {
     if (m_tags[iTagPtr].name != group.strGroupName)
