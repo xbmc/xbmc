@@ -58,7 +58,6 @@ protected:
   void StreamContentInfo(cResponsePacket *resp);
 
 private:
-  bool            m_startup;
   cVNSISession    m_session;
   int             m_channel;
   int             m_StatusCount;

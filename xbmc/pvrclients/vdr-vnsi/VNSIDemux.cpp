@@ -28,8 +28,7 @@
 #include "vdrcommand.h"
 
 cVNSIDemux::cVNSIDemux()
-  : m_startup(false)
-  , m_channel(0)
+  : m_channel(0)
   , m_StatusCount(0)
 {
   m_Streams.iStreamCount = 0;
@@ -49,7 +48,7 @@ bool cVNSIDemux::Open(const PVR_CHANNEL &channelinfo)
 
   cRequestPacket vrp;
   if (!vrp.init(VDR_CHANNELSTREAM_OPEN) ||
-      !vrp.add_U32(m_channel) ||
+      !vrp.add_U32(channelinfo.iUniqueId) ||
       !m_session.ReadSuccess(&vrp))
   {
     XBMC->Log(LOG_ERROR, "cVNSIDemux::Open - Can't open channel %i - %s", m_channel, channelinfo.strChannelName);
@@ -57,9 +56,8 @@ bool cVNSIDemux::Open(const PVR_CHANNEL &channelinfo)
   }
 
   m_StatusCount = 0;
-  m_startup = true;
 
-  while (m_Streams.iStreamCount == 0 && m_StatusCount == 0)
+  while (m_Streams.iStreamCount == 0)
   {
     DemuxPacket* pkg = Read();
     if(!pkg)
@@ -123,15 +121,6 @@ DemuxPacket* cVNSIDemux::Read()
   if (resp->getOpCodeID() == VDR_STREAM_CHANGE)
   {
     StreamChange(resp);
-    if (!m_startup)
-    {
-      DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
-      pkt->iStreamId    = DMX_SPECIALID_STREAMCHANGE;
-      delete resp;
-      return pkt;
-    }
-    else
-      m_startup = false;
   }
   else if (resp->getOpCodeID() == VDR_STREAM_STATUS)
   {
@@ -181,16 +170,16 @@ bool cVNSIDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
   XBMC->Log(LOG_DEBUG, "changing to channel %d", channelinfo.iChannelNumber);
 
   cRequestPacket vrp;
-  if (!vrp.init(VDR_CHANNELSTREAM_OPEN) || !vrp.add_U32(channelinfo.iChannelNumber) || !m_session.ReadSuccess(&vrp))
+  if (!vrp.init(VDR_CHANNELSTREAM_OPEN) || !vrp.add_U32(channelinfo.iUniqueId) || !m_session.ReadSuccess(&vrp))
   {
     XBMC->Log(LOG_ERROR, "cVNSIDemux::SetChannel - failed to set channel");
   }
   else
   {
-    m_channel           = channelinfo.iChannelNumber;
+    m_channel = channelinfo.iChannelNumber;
     m_Streams.iStreamCount  = 0;
-    m_startup           = true;
-    while (m_Streams.iStreamCount == 0 && m_StatusCount == 0)
+
+    while (m_Streams.iStreamCount == 0)
     {
       DemuxPacket* pkg = Read();
       if(!pkg)
