@@ -32,3 +32,5 @@
 typedef int socket_t;
 typedef socket_t SOCKET;
 
+int tcp_connect_poll(struct addrinfo* addr, socket_t fdSock,
+    char *szErrbuf, size_t nErrbufSize, int nTimeout);

@@ -44,74 +44,83 @@ socket_t
 tcp_connect_addr(struct addrinfo* addr, char *szErrbuf, size_t nErrbufSize,
     int nTimeout)
 {
+  int val;
   socket_t fdSock;
 
+  /* create the socket */
   fdSock = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
-  if(fdSock == -1) {
+  if (fdSock == -1)
+  {
     snprintf(szErrbuf, nErrbufSize, "Unable to create socket: %s", strerror(errno));
     return SOCKET_ERROR;
   }
 
-  /**
-   * Switch to nonblocking
-   */
-  if (tcp_connect_addr_socket_nonblocking(addr, fdSock, szErrbuf, nErrbufSize, nTimeout) == SOCKET_ERROR)
+  /* connect to the socket */
+  if (tcp_connect_poll(addr, fdSock, szErrbuf, nErrbufSize, nTimeout) != 0)
+  {
+    close(fdSock);
     return SOCKET_ERROR;
+  }
+
+  /* set TCP_NODELAY socket option */
+  val = 1;
+  setsockopt(fdSock, SOL_TCP, TCP_NODELAY, &val, sizeof(val));
 
   return fdSock;
 }
 
 int
-tcp_connect_addr_socket_nonblocking(struct addrinfo* addr, socket_t fdSock, char *szErrbuf, size_t nErrbufSize,
+tcp_connect_poll(struct addrinfo* addr, socket_t fdSock, char *szErrbuf, size_t nErrbufSize,
     int nTimeout)
 {
-  int r, err, val;
+  int result, err = 0;
   socklen_t errlen = sizeof(int);
 
+  /* switch to non blocking */
   fcntl(fdSock, F_SETFL, fcntl(fdSock, F_GETFL) | O_NONBLOCK);
 
-  r = connect(fdSock, addr->ai_addr, addr->ai_addrlen);
+  /* connect to the other side */
+  result = connect(fdSock, addr->ai_addr, addr->ai_addrlen);
 
-  if(r == -1) {
-    if(errno == EINPROGRESS) {
+  /* poll until a connection is established */
+  if(result == -1)
+  {
+    if(errno == EINPROGRESS)
+    {
       struct pollfd pfd;
-
       pfd.fd = fdSock;
       pfd.events = POLLOUT;
       pfd.revents = 0;
 
-      r = poll(&pfd, 1, nTimeout);
-      if(r == 0) {
-        /* Timeout */
-        snprintf(szErrbuf, nErrbufSize, "Connection attempt timed out");
-        close(fdSock);
-        return SOCKET_ERROR;
+      result = poll(&pfd, 1, nTimeout);
+      if(result == 0)
+      {
+        snprintf(szErrbuf, nErrbufSize, "attempt timed out after %d milliseconds", nTimeout);
+        return -1;
+      }
+      else if(result == -1)
+      {
+        snprintf(szErrbuf, nErrbufSize, "poll() error '%s'", strerror(errno));
+        return -1;
       }
 
-      if(r == -1) {
-        snprintf(szErrbuf, nErrbufSize, "poll() error: %s", strerror(errno));
-        close(fdSock);
-        return SOCKET_ERROR;
-      }
-
+      /* check for errors */
       getsockopt(fdSock, SOL_SOCKET, SO_ERROR, (void *)&err, &errlen);
-    } else {
+    }
+    else
+    {
       err = errno;
     }
-  } else {
-    err = 0;
   }
 
-  if(err != 0) {
+  if(err != 0)
+  {
     snprintf(szErrbuf, nErrbufSize, "%s", strerror(err));
-    close(fdSock);
-    return SOCKET_ERROR;
+    return -1;
   }
 
+  /* switch back to blocking */
   fcntl(fdSock, F_SETFL, fcntl(fdSock, F_GETFL) & ~O_NONBLOCK);
-
-  val = 1;
-  setsockopt(fdSock, SOL_TCP, TCP_NODELAY, &val, sizeof(val));
 
   return 0;
 }
@@ -133,32 +142,36 @@ tcp_connect(const char *szHostname, int nPort, char *szErrbuf, size_t nErrbufSiz
   sprintf(service, "%d", nPort);
 
   res = getaddrinfo(szHostname, service, &hints, &result);
-  if(res) {
-    switch(res) {
+  if(res)
+  {
+    switch(res)
+    {
     case EAI_NONAME:
-      snprintf(szErrbuf, nErrbufSize, "The specified host is unknown");
+      snprintf(szErrbuf, nErrbufSize, "the specified host is unknown");
       break;
 
     case EAI_FAIL:
-      snprintf(szErrbuf, nErrbufSize, "A nonrecoverable failure in name resolution occurred");
+      snprintf(szErrbuf, nErrbufSize, "a nonrecoverable failure in name resolution occurred");
       break;
 
     case EAI_MEMORY:
-      snprintf(szErrbuf, nErrbufSize, "A memory allocation failure occurred");
+      snprintf(szErrbuf, nErrbufSize, "a memory allocation failure occurred");
       break;
 
     case EAI_AGAIN:
-      snprintf(szErrbuf, nErrbufSize, "A temporary error occurred on an authoritative name server");
+      snprintf(szErrbuf, nErrbufSize, "a temporary error occurred on an authoritative name server");
       break;
 
     default:
-      snprintf(szErrbuf, nErrbufSize, "Unknown error %d", res);
+      snprintf(szErrbuf, nErrbufSize, "unknown error %d", res);
       break;
     }
+
     return SOCKET_ERROR;
   }
 
-  for(addr = result; addr; addr = addr->ai_next) {
+  for(addr = result; addr; addr = addr->ai_next)
+  {
     fdSock = tcp_connect_addr(addr, szErrbuf, nErrbufSize, nTimeout);
     if(fdSock != INVALID_SOCKET)
       break;
@@ -175,8 +188,9 @@ tcp_read(socket_t fdSock, void *buf, size_t nLen)
 
   if(x == -1)
     return errno;
-  if(x != (int)nLen)
+  else if(x != (int)nLen)
     return ECONNRESET;
+
   return 0;
 }
 
@@ -193,14 +207,15 @@ tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout)
   fds.events = POLLIN;
   fds.revents = 0;
 
-  while(tot != (int)nLen) {
-
+  while(tot != (int)nLen)
+  {
     x = poll(&fds, 1, nTimeout);
     if(x == 0)
       return ETIMEDOUT;
 
     x = recv(fdSock, buf + tot, nLen - tot, MSG_DONTWAIT);
-    if(x == -1) {
+    if(x == -1)
+    {
       if(errno == EAGAIN)
         continue;
       return errno;
@@ -217,5 +232,6 @@ tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout)
 void
 tcp_close(socket_t fdSock)
 {
-  close(fdSock);
+  if (fdSock != SOCKET_ERROR)
+    close(fdSock);
 }

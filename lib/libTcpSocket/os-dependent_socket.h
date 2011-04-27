@@ -41,54 +41,39 @@
 #include <sys/types.h>
 #include <stdint.h>
 
-
 /*!
-	\brief	used to establish a connection to a host on a specified a port,
-			provides an error description if something went wrong
-	\return	valid socket_t file descriptor on success, or INVALID_SOCKET / SOCKET_ERROR on failure
-	\param	szHostname	host name to connect to
-	\param	nPort	port used for connection
-	\param	szErrbuf	error buffer
-	\param	nErrbufSize	error buffer size
-	\param	nTimeout	timeout
+ * @brief Establish a TCP connection to the specified host and portnumber.
+ * @param szHostname The name or ip address of the host to connect to.
+ * @param nPort The port number to connect to.
+ * @param szErrbuf Buffer to write an error message to.
+ * @param nErrbufSize The size of the error buffer.
+ * @param nTimeout The connection timeout in milliseconds.
+ * @return valid socket_t file descriptor on success, or INVALID_SOCKET / SOCKET_ERROR on failure.
  */
 socket_t tcp_connect(const char *szHostname, int nPort, char *szErrbuf,
       size_t nErrbufSize, int nTimeout);
 
 /*!
-	\brief	used to establish a non-blocking connection to a specified address information,
-			provides an error description if something went wrong
-	\return	0 on success, or SOCKET_ERROR on failure
-	\param	addr	points to a valid address information
-	\param	fdSock	valid socket_t file descriptor obtained from the given address information
-	\param	szErrbuf	error buffer
-	\param	nErrbufSize	error buffer size
-	\param	nTimeout	timeout
- */
-int tcp_connect_addr_socket_nonblocking(struct addrinfo* addr, socket_t fdSock,
-      char *szErrbuf, size_t nErrbufSize, int nTimeout);
-
-/*!
-	\brief	used to read data from a socket opened with tcp_connect
-	\return	0 on success, otherwise an error number
-	\param	fdSock	valid socket_t file descriptor obtained with tcp_connect
-	\param	buf	points to buffer which will receive the data
-	\param	nLen	length of the buffer
+ * @brief Read data from a socket opened with tcp_connect.
+ * @param fdSock The socket to read from.
+ * @param buf The buffer to write the received data to.
+ * @param nLen The length of the buffer.
+ * @return 0 on success, or the error number on error.
  */
 int tcp_read(socket_t fdSock, void *buf, size_t nLen);
 
 /*!
-	\brief	used to read data from a socket opened with tcp_connect
-	\return	0 on success, otherwise an error number
-	\param	fdSock	valid socket_t file descriptor obtained with tcp_connect
-	\param	buf	points to buffer which will receive the data
-	\param	nLen	length of the buffer
-	\param	nTimeout	timeout
+ * @brief Read from a socket opened with tcp_connect.
+ * @param fdSock The socket to read from.
+ * @param buf The buffer to write the received data to.
+ * @param nLen The length of the buffer.
+ * @param nTimeout The timeout in milliseconds.
+ * @return 0 on success, or the error number on error.
  */
 int tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout);
 
 /*!
-	\brief	used to close a socket connection
-	\param	fdSock	valid socket_t file descriptor obtained with tcp_connect
+ * @brief Close a socket connection opened with tcp_connect.
+ * @param fdSock The socket to close.
  */
 void tcp_close(socket_t fdSock);

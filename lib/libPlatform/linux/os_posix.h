@@ -49,12 +49,11 @@ template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
 #endif
 
 /*!
-	\brief	wraps unix gettimeofday
-	\return	current time value in µs since unix epoch
+ * @return the current time in seconds since unix epoch.
  */
 static inline uint64_t getcurrenttime(void)
 {
-      struct timeval t;
-      gettimeofday(&t, NULL);
-      return ((uint64_t)t.tv_sec * 1000) + (t.tv_usec / 1000);
+  struct timeval t;
+  gettimeofday(&t, NULL);
+  return ((uint64_t)t.tv_sec * 1000) + (t.tv_usec / 1000);
 }
