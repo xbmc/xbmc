@@ -272,7 +272,7 @@ bool cVNSIData::GetChannelsList(PVR_HANDLE handle, bool radio)
     tag.iChannelNumber    = vresp->extract_U32();
     tag.strChannelName    = vresp->extract_String();
     tag.iUniqueId         = vresp->extract_U32();
-                            vresp->extract_U32(); // bouquet currently unused
+                            vresp->extract_U32(); // still here for compatibility
     tag.iEncryptionSystem = vresp->extract_U32();
                             vresp->extract_U32(); // uint32_t vtype - currently unused
     tag.bIsRadio          = radio;
@@ -280,7 +280,6 @@ bool cVNSIData::GetChannelsList(PVR_HANDLE handle, bool radio)
     tag.strStreamURL      = "";
     tag.strIconPath       = "";
     tag.bIsHidden         = false;
-//    tag.bIsRecording      = false;
 
     PVR->TransferChannelEntry(handle, &tag);
     delete[] tag.strChannelName;
@@ -898,6 +897,11 @@ void cVNSIData::Action()
       else if (requestID == VDR_STATUS_TIMERCHANGE)
       {
         PVR->TriggerTimerUpdate();
+      }
+      else if (requestID == VDR_STATUS_CHANNELCHANGE)
+      {
+        XBMC->Log(LOG_ERROR, "Server requested channel update");
+        PVR->TriggerChannelUpdate();
       }
 
       delete vresp;
