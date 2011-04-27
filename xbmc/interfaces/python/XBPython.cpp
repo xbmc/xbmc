@@ -532,7 +532,7 @@ void XBPython::Finalize()
 #if !(defined(__APPLE__) || defined(_WIN32))
     DllLoaderContainer::UnloadPythonDlls();
 #endif
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(__APPLE__) && !defined(__FreeBSD__)
     // we can't release it on windows, as this is done in UnloadPythonDlls() for win32 (see above).
     // The implementation for linux needs looking at - UnloadPythonDlls() currently only searches for "python24.dll"
     // The implementation for osx can never unload the python dylib.
