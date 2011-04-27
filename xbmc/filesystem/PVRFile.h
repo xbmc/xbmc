@@ -67,6 +67,8 @@ public:
   virtual bool           IsRecording();
   virtual bool           Record(bool bOnOff);
 
+  virtual int            IoControl(EIoControl request, void *param);
+
   static CStdString      TranslatePVRFilename(const CStdString& pathFile);
 
 protected:

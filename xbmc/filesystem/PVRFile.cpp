@@ -125,27 +125,7 @@ int64_t CPVRFile::GetLength()
 
 int64_t CPVRFile::Seek(int64_t pos, int whence)
 {
-  if (whence == SEEK_POSSIBLE)
-  {
-    int64_t ret = g_PVRClients->SeekStream(pos, whence);
-
-    if (ret >= 0)
-    {
-      return ret;
-    }
-    else
-    {
-      if (g_PVRClients->LengthStream() && g_PVRClients->SeekStream(0, SEEK_CUR) >= 0)
-        return 1;
-      else
-        return 0;
-    }
-  }
-  else
-  {
-    return g_PVRClients->SeekStream(pos, whence);
-  }
-  return 0;
+  return g_PVRClients->SeekStream(pos, whence);
 }
 
 int64_t CPVRFile::GetPosition()
@@ -321,4 +301,17 @@ bool CPVRFile::Rename(const CURL& url, const CURL& urlnew)
       return tag->Rename(newname);
   }
   return false;
+}
+
+int CPVRFile::IoControl(EIoControl request, void *param)
+{
+  if (request == IOCTRL_SEEK_POSSIBLE)
+  {
+    if (g_PVRClients->LengthStream() && g_PVRClients->SeekStream(0, SEEK_CUR) >= 0)
+      return 1;
+    else
+      return 0;
+  }
+
+  return -1;
 }
