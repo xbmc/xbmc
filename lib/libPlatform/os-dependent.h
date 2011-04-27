@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,7 +19,9 @@
  */
 
 #if defined(_WIN32) || defined(_WIN64)
+#ifndef __WINDOWS__
 #define __WINDOWS__
+#endif
 #endif
 
 #if defined(__WINDOWS__)

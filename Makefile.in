@@ -47,6 +47,7 @@ BIN_DIRS=	\
 	xbmc/storage \
 	xbmc/storage/linux \
 	xbmc/storage/osx \
+	lib/libTcpSocket \
 	lib/libhts \
 	xbmc/interfaces \
 	xbmc/interfaces/http-api \
@@ -330,6 +331,8 @@ xbmc/dialogs/dialogs.a: force
 	$(MAKE) -C xbmc/dialogs
 xbmc/windows/windows.a: force
 	$(MAKE) -C xbmc/windows
+lib/libTcpSocket/libTcpSocket.a: force
+	$(MAKE) -C lib/libTcpSocket
 lib/libhts/libhts.a: force
 	$(MAKE) -C lib/libhts
 xbmc/interfaces/interfaces.a: force
@@ -570,6 +573,7 @@ OBJSXBMC+= \
 endif
 
 OBJSXBMC+= \
+	lib/libTcpSocket/libTcpSocket.a \
 	lib/libhts/libhts.a
 
 # platform dependend objects

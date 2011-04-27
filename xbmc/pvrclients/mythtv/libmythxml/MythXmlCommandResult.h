@@ -10,7 +10,7 @@
 
 #include <vector>
 #include "XBDateTime.h"
-#include "../StdString.h"
+#include "utils/StdString.h"
 
 using std::vector;
 class MythXmlCommandResult {

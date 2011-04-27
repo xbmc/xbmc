@@ -2127,6 +2127,10 @@
       <Project>{bdd2cb99-93c5-4a70-acbf-396ffb961ad3}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\..\lib\libTcpSocket\project\libTcpSocket_2010.vcxproj">
+      <Project>{0F78AAF3-A188-4491-8BA6-203DC0B8D7F5}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
     <ProjectReference Include="..\..\lib\libhts\Win32\libhts_2010.vcxproj">
       <Project>{00700e12-a63b-4e54-b962-4011a90584bd}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

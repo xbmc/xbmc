@@ -26,7 +26,6 @@
 #include <vector>
 #include <map>
 
-#include "pvrclient-tvheadend_os.h"
 #include "utils/StdString.h"
 
 typedef struct htsmsg htsmsg_t;

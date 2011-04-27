@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,25 +20,25 @@
  *
  */
 
-#ifndef PVRCLIENT_TVHEADEND_OS_H
-#define PVRCLIENT_TVHEADEND_OS_H
+#ifndef _WINSOCKAPI_
+#define _WINSOCKAPI_
+#endif
+#pragma warning(disable:4005) // Disable "warning C4005: '_WINSOCKAPI_' : macro redefinition"
+#include <winsock2.h>
+#pragma warning(default:4005)
+#include <ws2spi.h>
+#include <ws2ipdef.h>
+#include <ws2tcpip.h>
+#include <io.h>
 
-#if defined(_WIN32) || defined(_WIN64)
-#define __WINDOWS__
+#define SHUT_RDWR SD_BOTH
+
+#ifndef ETIMEDOUT
+#define ETIMEDOUT WSAETIMEDOUT
 #endif
 
-#if defined(__WINDOWS__)
-#include "windows/os_windows.h"
-#else
-#include "linux/os_posix.h"
-#endif
+typedef SOCKET socket_t;
+typedef int socklen_t;
 
-#if !defined(TRUE)
-#define TRUE 1
-#endif
-
-#if !defined(FALSE)
-#define FALSE 0
-#endif
-
-#endif
+int tcp_connect_addr_socket_nonblocking(struct addrinfo* addr, socket_t fdSock,
+    char *szErrbuf, size_t nErrbufSize, int nTimeout);

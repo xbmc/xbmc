@@ -27,11 +27,9 @@
 #include "vdrcommand.h"
 #include "tools.h"
 
-#ifdef __WINDOWS__
-#include <winsock2.h>
-#else
-#include <arpa/inet.h>
-#endif
+extern "C" {
+#include "libTcpSocket/os-dependent_socket.h"
+}
 
 uint32_t cRequestPacket::serialNumberCounter = 1;
 

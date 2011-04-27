@@ -19,18 +19,14 @@
  *
  */
 
-#include <unistd.h>
 #include "VNSIData.h"
 #include "responsepacket.h"
 #include "requestpacket.h"
 #include "vdrcommand.h"
 
-#ifdef __WINDOWS__
-#include <winsock2.h>
-#undef SendMessage
-#else
-#include <arpa/inet.h>
-#endif
+extern "C" {
+#include "libTcpSocket/os-dependent_socket.h"
+}
 
 #define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
 

@@ -15,7 +15,7 @@ SRCS=client.cpp \
 include ../Makefile.include
 
 clean:
-	-rm -f $(OBJS) $(LIB) *~
+	-rm -f $(OBJS) $(LIB) *.P *~
 	$(MAKE) -C libmythxml clean
 
 INCLUDES += -I../../linux

@@ -22,6 +22,10 @@
  */
 
 #include "HTSPTypes.h"
+extern "C" {
+#include "libhts/net.h"
+#include "libhts/htsmsg.h"
+}
 
 class cHTSPSession
 {

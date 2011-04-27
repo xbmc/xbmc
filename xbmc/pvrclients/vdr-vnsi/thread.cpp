@@ -32,21 +32,12 @@
 #include <malloc.h>
 #endif
 
-#include <stdarg.h>
-#include <stdlib.h>
-#include <sys/time.h>
-#include <pthread.h>
-#include <signal.h>
-
-#ifdef __WINDOWS__
-#include <process.h>
-#define getpid _getpid
-#else
-#include <sys/syscall.h>
-#include <sys/resource.h>
+#if !defined(__WINDOWS__)
+#include <sys/signal.h>
 #endif
 
-template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
+#include <stdarg.h>
+#include <stdlib.h>
 
 static bool GetAbsTime(struct timespec *Abstime, int MillisecondsFromNow)
 {

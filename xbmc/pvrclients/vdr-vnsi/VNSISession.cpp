@@ -22,25 +22,6 @@
 #include "VNSISession.h"
 #include "client.h"
 
-// windows specific
-
-#ifdef __WINDOWS__
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#define SHUT_RDWR SD_BOTH
-#undef SendMessage
-
-// other (linux) specific
-
-#else
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <netdb.h>
-#include <poll.h>
-#define closesocket close
-#endif
-
-#include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/types.h>
@@ -55,10 +36,6 @@
  
 #ifndef SOL_TCP
 #define SOL_TCP IPPROTO_TCP
-#endif
-
-#ifndef INVALID_SOCKET
-#define INVALID_SOCKET (-1)
 #endif
 
 cVNSISession::cVNSISession()
@@ -81,141 +58,34 @@ void cVNSISession::Close()
 {
   if(m_fd != INVALID_SOCKET)
   {
-    closesocket(m_fd);
+    tcp_close(m_fd);
     m_fd = INVALID_SOCKET;
   }
 }
 
 bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
 {
-  struct hostent *hp;
-  int fd, r;
-  struct sockaddr_in in;
-  struct sockaddr_in6 in6;
-
+  if(m_fd != INVALID_SOCKET)
+  {
+    return true;
+  }
+  char errbuf[1024];
+  int  errlen = sizeof(errbuf);
   if (port == 0)
     port = 34890;
 
-  hp = gethostbyname(hostname.c_str());
+  m_fd = tcp_connect(	hostname.c_str()
+                        , port
+                        , errbuf, errlen, 3000);
 
-  if(hp == NULL)
+  if (m_fd == INVALID_SOCKET)
   {
-    switch(h_errno)
-    {
-      case HOST_NOT_FOUND:
-        XBMC->Log(LOG_ERROR, "%s - The specified host is unknown", __FUNCTION__);
-        break;
-      case NO_ADDRESS:
-        XBMC->Log(LOG_ERROR, "%s - The requested name is valid but does not have an IP address", __FUNCTION__);
-        break;
-      case NO_RECOVERY:
-        XBMC->Log(LOG_ERROR, "%s - A non-recoverable name server error occurred", __FUNCTION__);
-        break;
-      case TRY_AGAIN:
-        XBMC->Log(LOG_ERROR, "%s - A temporary error occurred on an authoritative name server", __FUNCTION__);
-        break;
-      default:
-        XBMC->Log(LOG_ERROR, "%s - Unknown error", __FUNCTION__);
-        break;
-    }
-
+    XBMC->Log(LOG_ERROR, "%s - Can't connect to VSNI Server: %s", __FUNCTION__, errbuf);
     return false;
   }
-
-  fd = socket(hp->h_addrtype, SOCK_STREAM, 0);
-  if (fd == -1)
-  {
-    XBMC->Log(LOG_ERROR, "%s - Unable to create socket: %s", __FUNCTION__, strerror(errno));
-    return false;
-  }
-
-  /**
-   * Switch to nonblocking
-   */
-#ifdef __WINDOWS__
-  u_long nb = 1;
-  ioctlsocket(fd, FIONBIO, &nb);
-#else
-  fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK);
-#endif
-
-  switch(hp->h_addrtype)
-  {
-    case AF_INET:
-      memset(&in, 0, sizeof(in));
-      in.sin_family = AF_INET;
-      in.sin_port = htons(port);
-      memcpy(&in.sin_addr, hp->h_addr_list[0], sizeof(struct in_addr));
-      r = connect(fd, (struct sockaddr *)&in, sizeof(struct sockaddr_in));
-      break;
-
-    case AF_INET6:
-      memset(&in6, 0, sizeof(in6));
-      in6.sin6_family = AF_INET6;
-      in6.sin6_port = htons(port);
-      memcpy(&in6.sin6_addr, hp->h_addr_list[0], sizeof(struct in6_addr));
-      r = connect(fd, (struct sockaddr *)&in, sizeof(struct sockaddr_in6));
-      break;
-
-    default:
-      XBMC->Log(LOG_ERROR, "cVNSISession::Open - Invalid protocol family");
-      return false;
-  }
-
-  if (r == -1)
-  {
-#ifdef __WINDOWS__
-    if (WSAGetLastError() == WSAEINPROGRESS || WSAGetLastError() == EAGAIN)
-#else
-    if (errno == EINPROGRESS)
-#endif
-    {
-      fd_set fd_write, fd_except;
-      struct timeval tv;
-
-      tv.tv_sec  = g_iConnectTimeout;
-      tv.tv_usec = 0;
-
-      FD_ZERO(&fd_write);
-      FD_ZERO(&fd_except);
-
-      FD_SET(fd, &fd_write);
-      FD_SET(fd, &fd_except);
-
-      r = select((int)fd+1, NULL, &fd_write, &fd_except, &tv);
-
-      // Timeout
-      if (r == 0)
-      {
-        XBMC->Log(LOG_ERROR, "Connection attempt timed out %i", g_iConnectTimeout);
-      }
-    }
-  }
-
-  if (r <= 0)
-  {
-    XBMC->Log(LOG_ERROR, "%s", strerror(errno));
-    Close();
-    return false;
-  }
-
-#ifdef __WINDOWS__
-  nb = 0;
-  ioctlsocket(fd, FIONBIO, &nb);
-  char val = 1;
-#else
-  fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) & ~O_NONBLOCK);
-  int val = 1;
-#endif
-
-  setsockopt(fd, SOL_TCP, TCP_NODELAY, &val, sizeof(val));
 
   try
   {
-    m_fd = fd;
-    if (m_fd == INVALID_SOCKET)
-      throw "Can't connect to VSNI Server";
-
     cRequestPacket vrp;
     if (!vrp.init(VDR_LOGIN))                 throw "Can't init cRequestPacket";
     if (!vrp.add_U32(VNSIProtocolVersion))    throw "Can't add protocol version to RequestPacket";
@@ -252,7 +122,7 @@ bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
   catch (const char * str)
   {
     XBMC->Log(LOG_ERROR, "cVNSISession::Open - %s", str);
-    close(m_fd);
+    tcp_close(m_fd);
     m_fd = INVALID_SOCKET;
     return false;
   }
