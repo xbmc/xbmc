@@ -42,6 +42,7 @@ CFileCache::CFileCache()
    m_nSeekResult = 0;
    m_seekPos = 0;
    m_readPos = 0;
+   m_writePos = 0;
    if(g_advancedSettings.m_cacheMemBufferSize == 0)
      m_pCache = new CSimpleFileCache();
    else
@@ -56,6 +57,7 @@ CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache)
   m_bDeleteCache = bDeleteCache;
   m_seekPos = 0;
   m_readPos = 0;
+  m_writePos = 0;
   m_nSeekResult = 0;
 }
 
@@ -115,6 +117,7 @@ bool CFileCache::Open(const CURL& url)
   m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
 
   m_readPos = 0;
+  m_writePos = 0;
   m_writeRate = 1024 * 1024;
   m_seekEvent.Reset();
   m_seekEnded.Reset();
