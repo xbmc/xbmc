@@ -765,8 +765,6 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   v[3].z = z[2];
 #endif
 
-  RenderInternal(v);
-
   m_vertex_count+=4;
 }
 

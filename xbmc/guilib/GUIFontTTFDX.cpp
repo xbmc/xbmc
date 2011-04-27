@@ -38,35 +38,18 @@
 
 using namespace std;
 
-struct CUSTOMVERTEX 
-{
-  FLOAT x, y, z;
-  DWORD color;
-  FLOAT tu, tv;   // Texture coordinates
-};
-
-
 CGUIFontTTFDX::CGUIFontTTFDX(const CStdString& strFileName)
 : CGUIFontTTFBase(strFileName)
 {
   m_speedupTexture = NULL;
+  m_index      = NULL;
+  m_index_size = 0;
 }
 
 CGUIFontTTFDX::~CGUIFontTTFDX(void)
 {
   SAFE_DELETE(m_speedupTexture);
-}
-
-void CGUIFontTTFDX::RenderInternal(SVertex* v)
-{
-  CUSTOMVERTEX verts[4] =  {
-  { v[0].x-0.5f, v[0].y-0.5f, v[0].z, m_color, v[0].u, v[0].v},
-  { v[1].x-0.5f, v[1].y-0.5f, v[1].z, m_color, v[1].u, v[1].v},
-  { v[2].x-0.5f, v[2].y-0.5f, v[2].z, m_color, v[2].u, v[2].v},
-  { v[3].x-0.5f, v[3].y-0.5f, v[3].z, m_color, v[3].u, v[3].v}
-  };
-
-  g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+  free(m_index);
 }
 
 void CGUIFontTTFDX::Begin()
@@ -102,9 +85,10 @@ void CGUIFontTTFDX::Begin()
     pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
 
     pD3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+    m_vertex_count = 0;
   }
+
   // Keep track of the nested begin/end calls.
-  m_vertex_count = 0;
   m_nestedBeginCount++;
 }
 
@@ -117,6 +101,50 @@ void CGUIFontTTFDX::End()
 
   if (--m_nestedBeginCount > 0)
     return;
+
+  unsigned index_size = m_vertex_size * 6 / 4;
+  if(m_index_size < index_size)
+  {
+    uint16_t* id  = (uint16_t*)calloc(index_size, sizeof(uint16_t));
+    if(id == NULL)
+      return;
+
+    for(int i = 0, b = 0; i < m_vertex_size; i += 4, b += 6)
+    {
+      id[b+0] = i + 0;
+      id[b+1] = i + 1;
+      id[b+2] = i + 2;
+      id[b+3] = i + 2;
+      id[b+4] = i + 3;
+      id[b+5] = i + 0;
+    }
+    free(m_index);
+    m_index      = id;
+    m_index_size = index_size;
+  }
+
+  D3DXMATRIX orig;
+  pD3DDevice->GetTransform(D3DTS_WORLD, &orig);
+
+  D3DXMATRIX world = orig;
+  D3DXMATRIX trans;
+
+  D3DXMatrixTranslation(&trans, - 0.5f
+                              , - 0.5f
+                              ,   0.0f);
+  D3DXMatrixMultiply(&world, &world, &trans);
+
+  pD3DDevice->SetTransform(D3DTS_WORLD, &world);
+
+  pD3DDevice->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST
+                                    , 0
+                                    , m_vertex_count
+                                    , m_vertex_count / 2
+                                    , m_index
+                                    , D3DFMT_INDEX16
+                                    , m_vertex
+                                    , sizeof(SVertex));
+  pD3DDevice->SetTransform(D3DTS_WORLD, &orig);
 
   pD3DDevice->SetTexture(0, NULL);
   pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
