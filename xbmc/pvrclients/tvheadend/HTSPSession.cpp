@@ -396,9 +396,10 @@ bool cHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
   desc     = htsmsg_get_str(msg, "description");
   ext_desc = htsmsg_get_str(msg, "ext_text");
 
+  char * buf = NULL;
   if (desc && ext_desc)
   {
-    char buf[strlen(desc) + strlen(ext_desc)];
+    buf = (char *)malloc(strlen(desc) + strlen(ext_desc) + 1);
     sprintf(buf, "%s%s", desc, ext_desc);
     event.descs = buf;
   }
@@ -433,6 +434,11 @@ bool cHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
                     , event.start
                     , event.stop
                     , event.next);
+
+  if(buf)
+  {
+    free(buf);
+  }
 
   return true;
 }
