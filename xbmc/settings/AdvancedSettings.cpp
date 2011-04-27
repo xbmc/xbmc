@@ -275,10 +275,11 @@ void CAdvancedSettings::Initialize()
 
   m_bgInfoLoaderMaxThreads = 5;
 
-  m_iPVRTimeCorrection     = 0;
-  m_iPVRInputStreamDelay   = 200;
-  m_iPVRInfoToggleInterval = 3000;
+  m_iPVRTimeCorrection             = 0;
+  m_iPVRInputStreamDelay           = 200;
+  m_iPVRInfoToggleInterval         = 3000;
   m_bPVRShowEpgInfoOnEpgItemSelect = true;
+  m_iPVRMinCacheLevel              = 15;
 
   m_measureRefreshrate = false;
 
@@ -875,6 +876,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pPVR, "inputstreamdelay", m_iPVRInputStreamDelay, 0, 10000);
     XMLUtils::GetInt(pPVR, "infotoggleinterval", m_iPVRInfoToggleInterval, 0, 30000);
     XMLUtils::GetBoolean(pPVR, "showepginfoonselect", m_bPVRShowEpgInfoOnEpgItemSelect);
+    XMLUtils::GetInt(pPVR, "mincachelevel", m_iPVRMinCacheLevel, 0, 100);
   }
 
   XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);

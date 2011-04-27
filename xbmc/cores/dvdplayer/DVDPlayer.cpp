@@ -558,6 +558,11 @@ bool CDVDPlayer::OpenDemuxStream()
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
   m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
 
+  int64_t len = m_pInputStream->GetLength();
+  int64_t tim = m_pDemuxer->GetStreamLength();
+  if(len > 0 && tim > 0)
+    m_pInputStream->SetReadRate(len * 1000 / tim);
+
   return true;
 }
 
@@ -1014,8 +1019,11 @@ void CDVDPlayer::Process()
     }
 
     // if the queues are full, no need to read more
-    if ((!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0)
-    ||  (!m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0))
+    if ((!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0) ||
+        (!m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0) ||
+        (m_caching == CACHESTATE_PVR &&
+            m_dvdPlayerAudio.m_messageQueue.GetLevel() >= g_advancedSettings.m_iPVRMinCacheLevel &&
+            m_dvdPlayerVideo.m_messageQueue.GetLevel() >= g_advancedSettings.m_iPVRMinCacheLevel))
     {
       Sleep(10);
       if( m_caching != CACHESTATE_INIT
@@ -1407,14 +1415,13 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
   {
     if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
     {
-      /* need data in the video and audio queue or we could get sync problems */
-      if(m_dvdPlayerAudio.m_messageQueue.GetLevel() > 50 &&
-          m_dvdPlayerVideo.m_messageQueue.GetLevel() > 50)
-        return false;
+      SetCaching(CACHESTATE_PVR);
+      return true;
     }
+
     // don't start caching if it's only a single stream that has run dry
-    else if(m_dvdPlayerAudio.m_messageQueue.GetLevel() > 50 ||
-        m_dvdPlayerVideo.m_messageQueue.GetLevel() > 50)
+    if(m_dvdPlayerAudio.m_messageQueue.GetLevel() > 50 ||
+         m_dvdPlayerVideo.m_messageQueue.GetLevel() > 50)
       return false;
 
     if(current.inited)
@@ -2119,7 +2126,8 @@ void CDVDPlayer::SetCaching(ECacheState state)
 
   CLog::Log(LOGDEBUG, "CDVDPlayer::SetCaching - caching state %d", state);
   if(state == CACHESTATE_FULL
-  || state == CACHESTATE_INIT)
+  || state == CACHESTATE_INIT
+  || state == CACHESTATE_PVR)
   {
     m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
@@ -2148,7 +2156,7 @@ void CDVDPlayer::SetPlaySpeed(int speed)
 
 void CDVDPlayer::Pause()
 {
-  if(m_playSpeed != DVD_PLAYSPEED_PAUSE && m_caching == CACHESTATE_FULL)
+  if(m_playSpeed != DVD_PLAYSPEED_PAUSE && (m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR))
   {
     SetCaching(CACHESTATE_DONE);
     return;
@@ -2169,7 +2177,7 @@ void CDVDPlayer::Pause()
 
 bool CDVDPlayer::IsPaused() const
 {
-  return (m_playSpeed == DVD_PLAYSPEED_PAUSE) || m_caching == CACHESTATE_FULL;
+  return (m_playSpeed == DVD_PLAYSPEED_PAUSE) || m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR;
 }
 
 bool CDVDPlayer::HasVideo() const
@@ -2367,8 +2375,8 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
       int64_t remain = m_State.file_length - m_State.file_position - queued;
 
       strBuf.AppendFormat(" buf:%s/%s"
-                         , StringUtils::SizeToString(std::min(remain, cached)).c_str()
-                         , StringUtils::SizeToString(std::max(remain, (int64_t)0)).c_str());
+                         , StringUtils::SizeToString(cached).c_str()
+                         , StringUtils::SizeToString(std::max(remain, cached)).c_str());
     }
 
     strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s )"

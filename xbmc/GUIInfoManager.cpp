@@ -3578,7 +3578,8 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)",item.m_strPath.c_str());
   *m_currentFile = item;
 
-  if (!m_currentFile->HasPVRChannelInfoTag() && (!m_currentFile->HasVideoInfoTag() || m_currentFile->GetVideoInfoTag()->IsEmpty()))
+  /* also call GetMovieInfo() when a VideoInfoTag is already present or additional info won't be present in the tag */
+  if (!m_currentFile->HasPVRChannelInfoTag())
   {
     CVideoDatabase dbs;
     dbs.Open();

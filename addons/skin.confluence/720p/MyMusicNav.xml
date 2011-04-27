@@ -72,9 +72,9 @@
 					<selected>Window.IsVisible(MusicLibrary)</selected>
 					<include>ButtonCommonValues</include>
 				</control>
-				<control type="radiobutton" id="19">
+				<control type="edit" id="19">
 					<description>Filter</description>
-					<textwidth>170</textwidth>
+					<textwidth>230</textwidth>
 					<include>ButtonCommonValues</include>
 					<label>587</label>
 				</control>

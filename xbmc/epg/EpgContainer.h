@@ -31,13 +31,6 @@
 
 class CFileItemList;
 
-namespace PVR
-{
-  class CPVREpg;
-  class CPVREpgContainer;
-  class CPVRManager;
-}
-
 namespace EPG
 {
   #define g_EpgContainer CEpgContainer::Get()
@@ -47,12 +40,7 @@ namespace EPG
                    public Observable,
                    private CThread
   {
-    friend class CEpg;
     friend class CEpgDatabase;
-
-    friend class PVR::CPVREpg;
-    friend class PVR::CPVREpgContainer;
-    friend class PVR::CPVRManager;
 
   protected:
     CEpgDatabase m_database;           /*!< the EPG database */

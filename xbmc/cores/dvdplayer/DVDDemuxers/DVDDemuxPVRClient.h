@@ -28,7 +28,7 @@
 #else
 extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
-  #if (defined HAVE_LIBAVCODEC_AVFORMAT_H)
+  #if (defined HAVE_LIBAVFORMAT_AVFORMAT_H)
     #include <libavformat/avformat.h>
   #elif (defined HAVE_FFMPEG_AVFORMAT_H)
     #include <ffmpeg/avformat.h>

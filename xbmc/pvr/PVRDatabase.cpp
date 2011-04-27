@@ -296,10 +296,10 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
   CStdString strQuery = FormatSQL("SELECT channels.idChannel, channels.iUniqueId, channels.bIsRadio, channels.bIsHidden, "
       "channels.sIconPath, channels.sChannelName, channels.bIsVirtual, channels.bEPGEnabled, channels.sEPGScraper, channels.iLastWatched, channels.iClientId, "
       "channels.iClientChannelNumber, channels.sInputFormat, channels.sInputFormat, channels.sStreamURL, channels.iEncryptionSystem, map_channelgroups_channels.iChannelNumber "
-      "FROM channels "
-      "LEFT JOIN map_channelgroups_channels ON map_channelgroups_channels.idChannel = channels.idChannel AND map_channelgroups_channels.idGroup = %u "
-      "WHERE channels.bIsRadio = %u "
-      "ORDER BY map_channelgroups_channels.iChannelNumber ASC;", results.IsRadio() ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV, results.IsRadio() ? 1 : 0);
+      "FROM map_channelgroups_channels "
+      "LEFT JOIN channels ON channels.idChannel = map_channelgroups_channels.idChannel "
+      "WHERE map_channelgroups_channels.idGroup = %u "
+      "ORDER BY map_channelgroups_channels.iChannelNumber ASC", results.IsRadio() ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV);
   if (ResultQuery(strQuery))
   {
     try
@@ -554,19 +554,19 @@ int CPVRDatabase::GetGroupMembers(CPVRChannelGroup &group)
   return iReturn;
 }
 
-int CPVRDatabase::Persist(CPVRChannelGroup *group)
+int CPVRDatabase::Persist(CPVRChannelGroup &group)
 {
   int iReturn = -1;
 
   CStdString strQuery;
 
-  if (group->GroupID() <= 0)
+  if (group.GroupID() <= 0)
   {
     /* new group */
     strQuery = FormatSQL("INSERT INTO channelgroups ("
         "bIsRadio, sName, iSortOrder) "
         "VALUES (%i, '%s', %i);",
-        (group->IsRadio() ? 1 :0), group->GroupName().c_str(), group->SortOrder());
+        (group.IsRadio() ? 1 :0), group.GroupName().c_str(), group.SortOrder());
   }
   else
   {
@@ -574,32 +574,44 @@ int CPVRDatabase::Persist(CPVRChannelGroup *group)
     strQuery = FormatSQL("REPLACE INTO channelgroups ("
         "idGroup, bIsRadio, sName, iSortOrder) "
         "VALUES (%i, %i, '%s', %i);",
-        group->GroupID(), (group->IsRadio() ? 1 :0), group->GroupName().c_str(), group->SortOrder());
+        group.GroupID(), (group.IsRadio() ? 1 :0), group.GroupName().c_str(), group.SortOrder());
   }
 
   if (ExecuteQuery(strQuery))
   {
-    if (group->GroupID() <= 0)
-      group->m_iGroupId = (int) m_pDS->lastinsertid();
+    if (group.GroupID() <= 0)
+      group.m_iGroupId = (int) m_pDS->lastinsertid();
 
-    RemoveChannelsFromGroup(*group);
-
-    for (unsigned int iChannelPtr = 0; iChannelPtr < group->size(); iChannelPtr++)
-    {
-      PVRChannelGroupMember member = group->at(iChannelPtr);
-      strQuery = FormatSQL("REPLACE INTO map_channelgroups_channels ("
-          "idGroup, idChannel, iChannelNumber) "
-          "VALUES (%i, %i, %i);",
-          group->GroupID(), member.channel->ChannelID(), member.iChannelNumber);
-      QueueInsertQuery(strQuery);
-    }
-
-    CommitInsertQueries();
-
-    iReturn = group->GroupID();
+    if (PersistGroupMembers(group))
+      iReturn = group.GroupID();
+    else
+      iReturn = -1;
   }
 
   return iReturn;
+}
+
+bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
+{
+  bool bReturn = RemoveChannelsFromGroup(group);
+  CStdString strQuery;
+
+  if (bReturn && group.size() > 0)
+  {
+    for (unsigned int iChannelPtr = 0; iChannelPtr < group.size(); iChannelPtr++)
+    {
+      PVRChannelGroupMember member = group.at(iChannelPtr);
+      strQuery = FormatSQL("REPLACE INTO map_channelgroups_channels ("
+          "idGroup, idChannel, iChannelNumber) "
+          "VALUES (%i, %i, %i);",
+          group.GroupID(), member.channel->ChannelID(), member.iChannelNumber);
+      QueueInsertQuery(strQuery);
+    }
+
+    bReturn = CommitInsertQueries();
+  }
+
+  return bReturn;
 }
 
 /********** Client methods **********/
@@ -608,8 +620,8 @@ bool CPVRDatabase::DeleteClients()
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all clients from the database", __FUNCTION__);
 
-  return DeleteValues("clients") &&
-      DeleteValues("map_channels_clients");
+  return DeleteValues("clients");
+      //TODO && DeleteValues("map_channels_clients");
 }
 
 int CPVRDatabase::AddClient(const CStdString &strClientName, const CStdString &strClientUid)

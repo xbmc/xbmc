@@ -103,9 +103,9 @@ public:
 
   void StartServices();
   void StopServices();
-  void StartWebServer();
+  bool StartWebServer();
   void StopWebServer();
-  void StartJSONRPCServer();
+  bool StartJSONRPCServer();
   void StopJSONRPCServer(bool bWait);
   void StartUPnP();
   void StopUPnP(bool bWait);
@@ -115,7 +115,7 @@ public:
   void StopUPnPServer();
   void StartPVRManager();
   void StopPVRManager();
-  void StartEventServer();
+  bool StartEventServer();
   bool StopEventServer(bool bWait, bool promptuser);
   void RefreshEventServer();
   void StartDbusServer();

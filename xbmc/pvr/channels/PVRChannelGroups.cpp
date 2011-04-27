@@ -357,9 +357,9 @@ int CPVRChannelGroups::GetNextGroupID(int iGroupId) const
   return GetNextGroup(*currentGroup)->GroupID();
 }
 
-const CPVRChannelGroup *CPVRChannelGroups::GetNextGroup(const CPVRChannelGroup &group) const
+CPVRChannelGroup *CPVRChannelGroups::GetNextGroup(const CPVRChannelGroup &group) const
 {
-  const CPVRChannelGroup *returnGroup = NULL;
+  CPVRChannelGroup *returnGroup = NULL;
 
   int iCurrentGroupIndex = GetIndexForGroupID(group.GroupID());
   if (iCurrentGroupIndex + 1 >= (int)size())

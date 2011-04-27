@@ -46,8 +46,8 @@ protected:
   DemuxPacket *ParseMuxPacket(htsmsg_t *m);
 
 private:
-  void SetLanguageInfo(const char *strLanguage, char *strDestination);
-
+  bool                  m_bGotFirstIframe;
+  bool                  m_bIsRadio;
   unsigned              m_subs;
   cHTSPSession          m_session;
   int                   m_channel;

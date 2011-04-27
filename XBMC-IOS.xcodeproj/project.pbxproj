@@ -6846,7 +6846,10 @@
 					"\"$XBMC_DEPENDS/lib\"",
 					"\"$XBMC_DEPENDS/lib/mysql\"",
 				);
-				OTHER_LDFLAGS = "-Wl,-all_load";
+				OTHER_LDFLAGS = (
+					"-Wl,-all_load",
+					"-Wl,-headerpad_max_install_names",
+				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PRODUCT_NAME = XBMC;
 				SDKROOT = iphoneos;
@@ -6915,7 +6918,10 @@
 					"\"$XBMC_DEPENDS/lib\"",
 					"\"$XBMC_DEPENDS/lib/mysql\"",
 				);
-				OTHER_LDFLAGS = "-Wl,-all_load";
+				OTHER_LDFLAGS = (
+					"-Wl,-all_load",
+					"-Wl,-headerpad_max_install_names",
+				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PRODUCT_NAME = XBMC;
 				SDKROOT = iphoneos;

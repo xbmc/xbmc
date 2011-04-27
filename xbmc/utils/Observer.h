@@ -52,7 +52,7 @@ public:
   virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
 
 private:
-  static void SendMessage(Observable *obs, const CStdString &strMessage);
+  static void SendMessage(Observable *obs, const std::vector<Observer *> *observers, const CStdString &strMessage);
 
   bool                    m_bObservableChanged;
   std::vector<Observer *> m_observers;

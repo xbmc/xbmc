@@ -1565,7 +1565,7 @@
   <string id="19034">Already started recording on this channel</string>
   <string id="19035">This channel cannot be played. Check the log for details.</string>
   <string id="19036">This recording cannot be played. Check the log for details.</string>
-  <string id="19037">Show signal qualitiy</string>
+  <string id="19037">Show signal quality</string>
   <string id="19038">Not supported by the PVR backend.</string>
   <string id="19039">Are you sure you want to hide this channel?</string>
   <string id="19040">Timer</string>
@@ -1638,7 +1638,7 @@
   <string id="19107">at</string>
   <string id="19108">Recordings not in sync. Check the log for details.</string>
   <string id="19109">Couldn't save timer. Check the log for details.</string>
-  <string id="19110">An unexpected error occured. Try again later or check the log for details.</string>
+  <string id="19110">An unexpected error occurred. Try again later or check the log for details.</string>
   <string id="19111">PVR backend error. Check the log for details.</string>
   <string id="19112">Timers not in sync. Check the log for details.</string>
   <string id="19113">Next</string>
@@ -1670,7 +1670,7 @@
   <string id="19139">Name of the new group</string>
   <string id="19141">Group</string>
   <string id="19142">Search guide</string>
-  <string id="19143">Group managment</string>
+  <string id="19143">Group management</string>
   <string id="19144">No groups defined</string>
   <string id="19145">Grouped</string>
   <string id="19146">Groups</string>
@@ -1756,6 +1756,8 @@
   <string id="19227">Recording completed</string>
   <string id="19228">Recording deleted</string>
   <string id="19229">Close channel OSD after switching channels</string>
+  <string id="19230">Prevent EPG updates while playing a TV stream</string>
+  <string id="19231">Always use the channel order from the backend(s)</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>
@@ -1778,7 +1780,7 @@
   <string id="19517">News/Weather Report</string>
   <string id="19518">News Magazine</string>
   <string id="19519">Documentary</string>
-  <string id="19520">Discussion/Inverview/Debate</string>
+  <string id="19520">Discussion/Interview/Debate</string>
   <string id="19521"></string>
   <string id="19522"></string>
   <string id="19523"></string>
@@ -1841,7 +1843,7 @@
   <string id="19580">Music/Ballet/Dance</string>
   <string id="19581">Rock/Pop</string>
   <string id="19582">Serious/Classical Music</string>
-  <string id="19583">Folk/Tradional Music</string>
+  <string id="19583">Folk/Traditional Music</string>
   <string id="19584">Musical/Opera</string>
   <string id="19585">Ballet</string>
   <string id="19586"></string>
@@ -2710,6 +2712,11 @@
   <string id="33081">This file is stacked, select the part you want to play from.</string>
   <string id="33082">Path to script</string>
   <string id="33083">Enable custom script button</string>
+
+  <string id="33100">Failed to start</string>
+  <string id="33101">Webserver</string>
+  <string id="33102">Event Server</string>
+  <string id="33103">Remote communication server</string>
 
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>

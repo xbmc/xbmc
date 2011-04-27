@@ -31,7 +31,10 @@
 #include "pvr/epg/PVREpgContainer.h"
 #include "pvr/addons/PVRClients.h"
 
+#include "epg/Epg.h"
+
 using namespace PVR;
+using namespace EPG;
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(void)
 {
@@ -79,7 +82,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel,
   m_iLifetime          = timer.iLifetime;
   m_iMarginStart       = timer.iMarginStart;
   m_iMarginEnd         = timer.iMarginEnd;
-  m_strGenre           = CPVRManager::ConvertGenreIdToString(timer.iGenreType, timer.iGenreSubType);
+  m_strGenre           = CEpg::ConvertGenreIdToString(timer.iGenreType, timer.iGenreSubType);
   m_epgInfo            = NULL;
   m_channel            = channel;
   m_bIsRadio           = channel && channel->IsRadio();

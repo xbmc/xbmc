@@ -39,19 +39,21 @@ namespace PVR
 
   /** A group of channels */
 
-  class CPVRChannelGroup : private std::vector<PVRChannelGroupMember>
+  class CPVRChannelGroup : private std::vector<PVRChannelGroupMember>,
+                           private Observer
   {
     friend class CPVRChannelGroups;
     friend class CPVRChannelGroupInternal;
     friend class CPVRDatabase;
 
   private:
-    bool             m_bRadio;       /*!< true if this container holds radio channels, false if it holds TV channels */
-    int              m_iGroupId;     /*!< The ID of this group in the database */
-    CStdString       m_strGroupName; /*!< The name of this group */
-    int              m_iSortOrder;   /*!< The sort order to use */
-    bool             m_bLoaded;      /*!< True if this container is loaded, false otherwise */
-    bool             m_bChanged;     /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
+    bool             m_bRadio;                    /*!< true if this container holds radio channels, false if it holds TV channels */
+    int              m_iGroupId;                  /*!< The ID of this group in the database */
+    CStdString       m_strGroupName;              /*!< The name of this group */
+    int              m_iSortOrder;                /*!< The sort order to use */
+    bool             m_bLoaded;                   /*!< True if this container is loaded, false otherwise */
+    bool             m_bChanged;                  /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
+    bool             m_bUsingBackendChannelOrder; /*!< true to use the channel order from backends, false otherwise */
     CCriticalSection m_critSection;
 
     /*!
@@ -71,6 +73,9 @@ namespace PVR
      * @return True if everything went well, false otherwise.
      */
     virtual bool UpdateGroupEntries(const CPVRChannelGroup &channels);
+
+    virtual bool AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers);
+    virtual bool RemoveDeletedChannels(const CPVRChannelGroup &channels);
 
     /*!
      * @brief Remove invalid channels from this container.
@@ -103,8 +108,9 @@ namespace PVR
 
     /*!
      * @brief Remove invalid channels and updates the channel numbers.
+     * @return True if something changed, false otherwise.
      */
-    void Renumber(void);
+    bool Renumber(void);
 
     /*!
      * @return Cache all channel icons in this group if guisetting "pvrmenu.iconpath" is set.
@@ -271,6 +277,8 @@ namespace PVR
 
     virtual void SetSelectedGroup(void);
     virtual void ResetChannelNumbers(void);
+
+    virtual void Notify(const Observable &obs, const CStdString& msg);
 
     /*! @name getters
      */

@@ -28,27 +28,12 @@
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
 
-namespace EPG
-{
-  class CEpgContainer;
-}
-
-namespace PVR
-{
-  class CPVREpgContainer;
-  class CPVREpg;
-}
-
 /** EPG container for CEpgInfoTag instances */
-
 namespace EPG
 {
   class CEpg : public std::vector<CEpgInfoTag*>
   {
     friend class CEpgDatabase;
-    friend class CPVREpgContainer;
-    friend class CEpgContainer;
-    friend class CPVREpg;
 
   protected:
     bool                       m_bInhibitSorting; /*!< don't sort the table if this is true */
@@ -139,7 +124,7 @@ namespace EPG
      */
     virtual void UpdateFirstAndLastDates(void);
 
-  protected:
+  public:
     /*!
      * @brief Update this table's info with the given info. Doesn't change the EpgID.
      * @param epg The new info.
@@ -154,7 +139,6 @@ namespace EPG
      */
     bool Load(void);
 
-  public:
     /*!
      * @brief Create a new EPG instance.
      * @param iEpgID The ID of this table or <= 0 to create a new ID.
@@ -324,5 +308,13 @@ namespace EPG
      * @return The last time this table was scanned.
      */
     virtual const CDateTime &GetLastScanTime(void);
+
+    /*!
+     * @brief Convert a genre id and subid to a human readable name.
+     * @param iID The genre ID.
+     * @param iSubID The genre sub ID.
+     * @return A human readable name.
+     */
+    static const CStdString &ConvertGenreIdToString(int iID, int iSubID);
   };
 }

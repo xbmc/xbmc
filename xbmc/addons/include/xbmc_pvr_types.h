@@ -77,7 +77,9 @@ struct DemuxPacket;
 #define EPG_EVENT_CONTENTMASK_USERDEFINED              0xF0
 //@}
 
-#define PVR_STREAM_MAX_STREAMS 16
+
+/* using the default avformat's MAX_STREAMS value to be safe */
+#define PVR_STREAM_MAX_STREAMS 20
 
 #ifdef __cplusplus
 extern "C" {

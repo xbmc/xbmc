@@ -494,8 +494,6 @@ public:
 
   void Clear();
 
-  void SetChangedAndNotify(void);
-
 private:
   typedef std::map<CStdString, CSetting*>::iterator mapIter;
   typedef std::map<CStdString, CSetting*>::const_iterator constMapIter;

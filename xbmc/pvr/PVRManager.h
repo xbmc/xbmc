@@ -254,7 +254,7 @@ namespace PVR
      * @param bRadio True to get the current radio group, false to get the current TV group.
      * @return The current group or the group containing all channels if it's not set.
      */
-    const CPVRChannelGroup *GetPlayingGroup(bool bRadio = false);
+    CPVRChannelGroup *GetPlayingGroup(bool bRadio = false);
 
     /*!
      * @brief Let the background thread update the recordings list.
@@ -329,14 +329,6 @@ namespace PVR
     bool StartPlayback(const CPVRChannel *channel, bool bPreview = false);
 
     /*!
-     * @brief Convert a genre id and subid to a human readable name.
-     * @param iID The genre ID.
-     * @param iSubID The genre sub ID.
-     * @return A human readable name.
-     */
-    static const CStdString &ConvertGenreIdToString(int iID, int iSubID);
-
-    /*!
      * @brief Update the current playing file in the guiinfomanager and application.
      */
     void UpdateCurrentFile(void);
@@ -391,6 +383,15 @@ namespace PVR
      * @brief Try to find missing channel icons automatically
      */
     void SearchMissingChannelIcons(void);
+
+    /*!
+     * @brief Check whether a group is selected.
+     * @param group The group to check.
+     * @return True if it's selected, false otherwise.
+     */
+    bool IsSelectedGroup(const CPVRChannelGroup &group) const;
+
+    bool IsUpdating(void) const;
 
   protected:
     /*!
@@ -502,6 +503,12 @@ namespace PVR
      */
     void ShowBusyDialog(bool bShow);
 
+    void StartRecordingsUpdateJob(void);
+    void StartTimersUpdateJob(void);
+    void StartChannelsUpdateJob(void);
+    void StartChannelGroupsUpdateJob(void);
+    void StartNextPendingJob(void);
+
     void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 
     /** @name containers */
@@ -516,9 +523,13 @@ namespace PVR
 
     CCriticalSection                m_critSectionTriggers;         /*!< critical section for triggered updates */
     bool                            m_bRecordingsUpdating;         /*!< true when recordings are being updated */
+    bool                            m_bRecordingsUpdatePending;    /*!< true when another recordings update will be performed after the last one finished */
     bool                            m_bTimersUpdating;             /*!< true when timers are being updated */
+    bool                            m_bTimersUpdatePending;        /*!< true when another timers update will be performed after the last one finished */
     bool                            m_bChannelsUpdating;           /*!< true when channels are being updated */
+    bool                            m_bChannelsUpdatePending;      /*!< true when another channels update will be performed after the last one finished */
     bool                            m_bChannelGroupsUpdating;      /*!< true when channel groups are being updated */
+    bool                            m_bChannelGroupsUpdatePending; /*!< true when another channel groups update will be performed after the last one finished */
     CFileItem *                     m_currentFile;                 /*!< the PVR file that is currently playing */
     CPVRDatabase *                  m_database;                    /*!< the database for all PVR related data */
     CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */

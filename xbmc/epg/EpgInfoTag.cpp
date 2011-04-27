@@ -20,15 +20,12 @@
  */
 
 #include "guilib/LocalizeStrings.h"
-#include "../addons/include/xbmc_pvr_types.h" // TODO extract the epg specific stuff
 #include "EpgInfoTag.h"
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
 #include "utils/log.h"
-#include "pvr/PVRManager.h"
 
 using namespace std;
-using namespace PVR;
 using namespace EPG;
 
 CEpgInfoTag::CEpgInfoTag(int iUniqueBroadcastId) :
@@ -249,7 +246,7 @@ void CEpgInfoTag::SetGenre(int iID, int iSubID)
   {
     m_iGenreType    = iID;
     m_iGenreSubType = iSubID;
-    m_strGenre      = CPVRManager::ConvertGenreIdToString(iID, iSubID);
+    m_strGenre      = CEpg::ConvertGenreIdToString(iID, iSubID);
     m_bChanged = true;
     UpdatePath();
   }
@@ -400,7 +397,7 @@ bool CEpgInfoTag::Update(const CEpgInfoTag &tag)
     m_endTime            = tag.m_endTime;
     m_iGenreType         = tag.m_iGenreType;
     m_iGenreSubType      = tag.m_iGenreSubType;
-    m_strGenre           = CPVRManager::ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType);
+    m_strGenre           = CEpg::ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType);
     m_firstAired         = tag.m_firstAired;
     m_iParentalRating    = tag.m_iParentalRating;
     m_iStarRating        = tag.m_iStarRating;

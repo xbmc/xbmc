@@ -38,11 +38,27 @@
 #include <stdint.h>
 #include <sys/stat.h>
 
-#define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
-#define SEEK_BUFFERED 0x11 // how many bytes forward is buffered
-
 namespace XFILE
 {
+
+struct SNativeIoControl
+{
+  int   request;
+  void* param;
+};
+
+struct SCacheStatus
+{
+  uint64_t forward;  /**< number of bytes cached forward of current position */
+  unsigned maxrate;  /**< maximum number of bytes per second cache is allowed to fill */
+};
+
+typedef enum {
+  IOCTRL_NATIVE        = 1, /**< SNativeIoControl structure, containing what should be passed to native ioctrl */
+  IOCTRL_SEEK_POSSIBLE = 2, /**< return 0 if known not to work, 1 if it should work */
+  IOCTRL_CACHE_STATUS  = 3, /**< SCacheStatus structure */
+  IOCTRL_CACHE_SETRATE = 4, /**< unsigned int with with speed limit for caching in bytes per second */
+} EIoControl;
 
 class IFile
 {
@@ -78,7 +94,7 @@ public:
   virtual bool Rename(const CURL& url, const CURL& urlnew) { return false; }
   virtual bool SetHidden(const CURL& url, bool hidden) { return false; }
 
-  virtual int IoControl(int request, void* param) { return -1; }
+  virtual int IoControl(EIoControl request, void* param) { return -1; }
 
   virtual CStdString GetContent()                            { return "application/octet-stream"; }
 };

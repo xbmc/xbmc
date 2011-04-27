@@ -499,7 +499,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
         if (status != OK)
         {
           CLog::Log(LOGWARNING, "JSONRPC: Array element at index %u does not match in type %s", arrayIndex, type.name.c_str());
-          errorMessage.Format("%s expected for array element at index %u but %s received", SchemaValueTypeToString(type.type), arrayIndex, ValueTypeToString(value.type()));
+          errorMessage.Format("array element at index %u does not match", arrayIndex);
           errorData["message"] = errorMessage.c_str();
           return status;
         }

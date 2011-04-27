@@ -25,7 +25,10 @@
 #include "PVRRecordings.h"
 #include "pvr/addons/PVRClients.h"
 
+#include "epg/Epg.h"
+
 using namespace PVR;
+using namespace EPG;
 
 CPVRRecording::CPVRRecording()
 {
@@ -48,7 +51,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   m_strPlotOutline = recording.strPlotOutline;
   m_strStreamURL   = recording.strStreamURL;
   m_strChannelName = recording.strChannelName;
-  m_strGenre       = CPVRManager::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType);
+  m_strGenre       = CEpg::ConvertGenreIdToString(recording.iGenreType, recording.iGenreSubType);
 }
 
 bool CPVRRecording::operator ==(const CPVRRecording& right) const

@@ -176,7 +176,7 @@ namespace PVR
      * @param group The group to persist.
      * @return The database ID of the group.
      */
-    int Persist(CPVRChannelGroup *group);
+    int Persist(CPVRChannelGroup &group);
 
     //@}
 
@@ -211,6 +211,8 @@ namespace PVR
      * @return The database ID of the client or -1 if it wasn't found.
      */
     int GetClientId(const CStdString &strClientUid);
+
+    bool PersistGroupMembers(CPVRChannelGroup &group);
 
     //@}
 

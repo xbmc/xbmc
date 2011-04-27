@@ -150,7 +150,7 @@ namespace PVR
      * @param group The current group.
      * @return The next group or the group containing all channels if it wasn't found.
      */
-    const CPVRChannelGroup *GetNextGroup(const CPVRChannelGroup &group) const;
+    CPVRChannelGroup *GetNextGroup(const CPVRChannelGroup &group) const;
 
     /*!
      * @brief Add a group to this container.
