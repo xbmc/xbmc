@@ -22,6 +22,7 @@
 
 #include "AEEncoder.h"
 #include "AERemap.h"
+#include "AEPackIEC958.h"
 
 /* ffmpeg re-defines this, so undef it to squash the warning */
 #undef restrict
@@ -49,6 +50,11 @@ private:
   DllAvCodec  m_dllAvCodec;
   DllAvFormat m_dllAvFormat;
   DllAvUtil   m_dllAvUtil;
+
+  CStdString              m_CodecName;
+  CodecID                 m_CodecID;
+  unsigned int            m_BitRate;
+  CAEPackIEC958::PackFunc m_PackFunc;
 
   AEAudioFormat     m_CurrentFormat;
   AVCodecContext   *m_CodecCtx;

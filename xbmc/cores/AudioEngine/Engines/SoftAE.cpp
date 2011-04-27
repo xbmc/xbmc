@@ -409,6 +409,7 @@ void CSoftAE::OnSettingsChange(CStdString setting)
       setting == "audiooutput.customdevice"      ||
       setting == "audiooutput.mode"              ||
       setting == "audiooutput.ac3passthrough"    ||
+      setting == "audiooutput.dtspassthrough"    ||
       setting == "audiooutput.channellayout"     ||
       setting == "audiooutput.multichannellpcm")
   {
@@ -475,8 +476,10 @@ void CSoftAE::LoadSettings()
   if (m_device.IsEmpty())
     m_device = "default";
 
-  m_transcode =
-    g_guiSettings.GetBool("audiooutput.ac3passthrough") && (
+  m_transcode = (
+    g_guiSettings.GetBool("audiooutput.ac3passthrough") /*||
+    g_guiSettings.GetBool("audiooutput.dtspassthrough") */
+  ) && (
       (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958) ||
       (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_HDMI && !g_guiSettings.GetBool("audiooutput.multichannellpcm"))
   );
