@@ -47,10 +47,8 @@ bool cUpcomingRecording::Parse(const Json::Value& data)
   date = 0;
   t = data["StartTime"].asString();
   starttime = ForTheRecord::WCFDateToTimeT(t, offset);
-  starttime += ((offset/100)*3600);
   t = data["StopTime"].asString();
   stoptime = ForTheRecord::WCFDateToTimeT(t, offset);
-  stoptime += ((offset/100)*3600);
   prerecordseconds = data["PreRecordSeconds"].asInt();
   postrecordseconds = data["PostRecordSeconds"].asInt();
   title = data["Title"].asString();
