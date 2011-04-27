@@ -23,7 +23,7 @@
 
 // The array of XBMCKEYTABLEs used in XBMC.
 // scancode, sym, unicode, ascii, vkey, keyname
-XBMCKEYTABLE XBMCKeyTable[] =
+static const XBMCKEYTABLE XBMCKeyTable[] =
 { { 0x0E, 0x0008, 0x0000, 0x00, 0x08, "backspace" }
 , { 0x0f, 0x0009, 0x0009, 0x09, 0x09, "tab" }
 , { 0x1c, 0x000d, 0x000d, 0x0d, 0x0d, "return" }

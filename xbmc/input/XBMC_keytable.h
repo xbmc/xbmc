@@ -22,7 +22,7 @@
 #ifndef _XBMC_keytable_h
 #define _XBMC_keytable_h
 
-typedef struct _XBMCKEYTABLE
+typedef struct struct_XBMCKEYTABLE
 {
 
   // The scancode is the key scan code returned by the keyboard driver.
@@ -51,10 +51,6 @@ typedef struct _XBMCKEYTABLE
   const char* keyname;
 
 } XBMCKEYTABLE;
-
-// The array of XBMCKEYTABLEs used in XBMC.
-// This array is initialised in KeyboardStat.cpp.
-extern XBMCKEYTABLE XBMCKeyTable[];
 
 bool KeyTableLookupName(const char* keyname, XBMCKEYTABLE* keytable);
 bool KeyTableLookupSym(uint16_t sym, XBMCKEYTABLE* keytable);
