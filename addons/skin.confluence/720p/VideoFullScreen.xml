@@ -159,6 +159,13 @@
 					<height>35</height>
 					<itemgap>0</itemgap>
 					<orientation>horizontal</orientation>
+					<control type="image">
+						<width>70</width>
+						<height>30</height>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<texture>PVR-IsRecording.png</texture>
+						<visible>VideoPlayer.Content(LiveTV) + Player.Recording</visible> 
+					</control>
 					<control type="label" id="1">
 						<width min="10" max="680">auto</width>
 						<height>30</height>
@@ -207,7 +214,7 @@
 				</control>
 				<control type="label" id="1">
 					<posx>0</posx>
-					<posy>120</posy>
+					<posy>135</posy>
 					<width>910</width>
 					<height>25</height>
 					<label>$INFO[VideoPlayer.NextTitle,$LOCALIZE[209]: ]</label>
@@ -216,7 +223,7 @@
 					<font>font12</font>
 					<textcolor>grey</textcolor>
 					<scroll>true</scroll>
-					<visible>!Window.IsVisible(VideoOSD) + VideoPlayer.Content(LiveTV)</visible>
+					<visible>VideoPlayer.Content(LiveTV)</visible>
 					<animation effect="fade" time="200">VisibleChange</animation>
 				</control>
 			</control>
