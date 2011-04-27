@@ -650,7 +650,7 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   g_graphicsContext.ClipRect(vertex, texture);
 
   // transform our positions - note, no scaling due to GUI calibration/resolution occurs
-  float x[4];
+  float x[4], y[4], z[4];
 
   x[0] = g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1);
   x[1] = g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1);
@@ -678,15 +678,15 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     x[3] = rx3;
   }
 
-  float y1 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
-  float y2 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
-  float y3 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
-  float y4 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
+  y[0] = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
+  y[1] = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
+  y[2] = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
+  y[3] = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
 
-  float z1 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
-  float z2 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
-  float z3 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
-  float z4 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
+  z[0] = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
+  z[1] = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
+  z[2] = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
+  z[3] = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
   // tex coords converted to 0..1 range
   float tl = texture.x1 * m_textureScaleX;
@@ -720,54 +720,49 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   }
 
 #if defined(HAS_GL) || defined(HAS_DX)
+  for(int i = 0; i < 4; i++)
+  {
+    v[i].x = x[i];
+    v[i].y = y[i];
+    v[i].z = z[i];
+  }
+
   v[0].u = tl;
   v[0].v = tt;
-  v[0].x = x[0];
-  v[0].y = y1;
-  v[0].z = z1;
 
   v[1].u = tr;
   v[1].v = tt;
-  v[1].x = x[1];
-  v[1].y = y2;
-  v[1].z = z2;
 
   v[2].u = tr;
   v[2].v = tb;
-  v[2].x = x[2];
-  v[2].y = y3;
-  v[2].z = z3;
 
   v[3].u = tl;
   v[3].v = tb;
-  v[3].x = x[3];
-  v[3].y = y4;
-  v[3].z = z4;
 #else
   // GLES uses triangle strips, not quads, so have to rearrange the vertex order
   v[0].u = tl;
   v[0].v = tt;
   v[0].x = x[0];
-  v[0].y = y1;
-  v[0].z = z1;
+  v[0].y = y[0];
+  v[0].z = z[0];
 
   v[1].u = tl;
   v[1].v = tb;
   v[1].x = x[3];
-  v[1].y = y4;
-  v[1].z = z4;
+  v[1].y = y[3];
+  v[1].z = z[3];
 
   v[2].u = tr;
   v[2].v = tt;
   v[2].x = x[1];
-  v[2].y = y2;
-  v[2].z = z2;
+  v[2].y = y[1];
+  v[2].z = z[1];
 
   v[3].u = tr;
   v[3].v = tb;
   v[3].x = x[2];
-  v[3].y = y3;
-  v[3].z = z3;
+  v[3].y = y[2];
+  v[3].z = z[2];
 #endif
 
   RenderInternal(v);
