@@ -2111,7 +2111,10 @@ extern "C"
 #endif
     {
       void *p1 = va_arg(va, void*);
-      ret = pFile->IoControl(request, p1);
+      SNativeIoControl d;
+      d.request = request;
+      d.param   = p1;
+      ret = pFile->IoControl(IOCTRL_NATIVE, &d);
       if(ret<0)
         CLog::Log(LOGWARNING, "%s - %ld request failed with error [%d] %s", __FUNCTION__, request, errno, strerror(errno));
     }

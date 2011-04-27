@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Date of translation: 03/25/2011-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -388,7 +387,7 @@
   <string id="426">找不到 CD 信息！</string>
   <string id="427">光盘</string>
   <string id="428">请放入正确的 CD/DVD</string>
-  <string id="429">请放入下一张 CD/DVD</string>
+  <string id="429">请放入下一张盘片：</string>
   <string id="430">排序：DVD#</string>
   <string id="431">无缓存</string>
   <string id="432">从资料库中移除影片</string>
@@ -1041,8 +1040,8 @@
   <string id="13132">空白显示</string>
 
   <string id="13140">检测到活动连接！</string>
-  <string id="13141">如果你处理，你将不再能控制你的</string>
-  <string id="13142">XBMC，你是否确认要停止远程控制？</string>
+  <string id="13141">如果继续此操作，可能会无法控制你的</string>
+  <string id="13142">XBMC，你是否确认要停止事件服务器？</string>
 
   <string id="13144">改变 Apple 遥控器的模式？</string>
   <string id="13145">如果你现在正在使用 Apple 遥控器</string>
@@ -2283,6 +2282,11 @@
   <string id="33081">这是一个堆叠文件，请选择要播放的片段。</string>
   <string id="33082">脚本目录</string>
   <string id="33083">启用自定义脚本按钮</string>
+
+  <string id="33100">启动失败</string>
+  <string id="33101">Web服务器</string>
+  <string id="33102">事件服务器</string>
+  <string id="33103">远程通信服务器</string>
 
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>

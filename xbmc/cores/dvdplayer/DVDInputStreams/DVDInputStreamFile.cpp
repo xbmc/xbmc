@@ -22,6 +22,7 @@
 #include "DVDInputStreamFile.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 
@@ -99,6 +100,10 @@ int CDVDInputStreamFile::Read(BYTE* buf, int buf_size)
 __int64 CDVDInputStreamFile::Seek(__int64 offset, int whence)
 {
   if(!m_pFile) return -1;
+
+  if(whence == SEEK_POSSIBLE)
+    return m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
+
   __int64 ret = m_pFile->Seek(offset, whence);
 
   /* if we succeed, we are not eof anymore */
@@ -116,10 +121,11 @@ __int64 CDVDInputStreamFile::GetLength()
 
 __int64 CDVDInputStreamFile::GetCachedBytes()
 {
-  if(!m_pFile)
+  SCacheStatus status;
+  if(m_pFile && m_pFile->IoControl(IOCTRL_CACHE_STATUS, &status) >= 0)
+    return status.forward;
+  else
     return -1;
-
-  return m_pFile->Seek(0, SEEK_BUFFERED);
 }
 
 BitstreamStats CDVDInputStreamFile::GetBitstreamStats() const
@@ -141,3 +147,9 @@ int CDVDInputStreamFile::GetBlockSize()
     return 0;
 }
 
+void CDVDInputStreamFile::SetReadRate(unsigned rate)
+{
+  unsigned maxrate = rate + 1024 * 1024 / 8;
+  if(m_pFile->IoControl(IOCTRL_CACHE_SETRATE, &maxrate) >= 0)
+    CLog::Log(LOGDEBUG, "CDVDInputStreamFile::SetReadRate - set cache throttle rate to %u bytes per second", maxrate);
+}

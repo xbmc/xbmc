@@ -1567,10 +1567,7 @@ void CGUIWindowVideoBase::UpdateVideoTitle(const CFileItem* pItem)
   if (iType == VIDEODB_CONTENT_MOVIES)
     database.GetMovieInfo("", detail, pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == VIDEODB_CONTENT_MOVIE_SETS)
-  {
-    detail.m_strTitle = database.GetSetById(params.GetSetId());
-    iDbId = params.GetSetId();
-  }
+    database.GetSetInfo(params.GetSetId(), detail);
   if (iType == VIDEODB_CONTENT_EPISODES)
     database.GetEpisodeInfo(pItem->m_strPath,detail,pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == VIDEODB_CONTENT_TVSHOWS)
