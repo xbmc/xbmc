@@ -167,7 +167,7 @@
 						<visible>VideoPlayer.Content(LiveTV) + Player.Recording</visible> 
 					</control>
 					<control type="label" id="1">
-						<width min="10" max="680">auto</width>
+						<width min="10" max="610">auto</width>
 						<height>30</height>
 						<font>font30</font>
 						<align>left</align>
@@ -214,8 +214,22 @@
 				</control>
 				<control type="label" id="1">
 					<posx>0</posx>
-					<posy>135</posy>
+					<posy>133</posy>
 					<width>910</width>
+					<height>25</height>
+					<label>$INFO[VideoPlayer.NextTitle,$LOCALIZE[209]: ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<scroll>true</scroll>
+					<visible>!Window.IsVisible(VideoOSD) + VideoPlayer.Content(LiveTV)</visible>
+					<animation effect="fade" time="200">VisibleChange</animation>
+				</control>
+				<control type="label" id="1">
+					<posx>270</posx>
+					<posy>133</posy>
+					<width>470</width>
 					<height>25</height>
 					<label>$INFO[VideoPlayer.NextTitle,$LOCALIZE[209]: ]</label>
 					<align>center</align>
@@ -223,7 +237,7 @@
 					<font>font12</font>
 					<textcolor>grey</textcolor>
 					<scroll>true</scroll>
-					<visible>VideoPlayer.Content(LiveTV)</visible>
+					<visible>Window.IsVisible(VideoOSD) + VideoPlayer.Content(LiveTV)</visible>
 					<animation effect="fade" time="200">VisibleChange</animation>
 				</control>
 			</control>
