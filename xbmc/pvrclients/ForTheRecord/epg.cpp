@@ -82,9 +82,6 @@ bool cEpg::Parse(const Json::Value& data)
     m_starttime = ForTheRecord::WCFDateToTimeT(starttime, offset);
     m_endtime = ForTheRecord::WCFDateToTimeT(endtime, offset);
 
-    m_starttime+=((offset/100)*3600);
-    m_endtime+=((offset/100)*3600);
-
     //XBMC->Log(LOG_DEBUG, "Program: %s,%s Start: %s", m_title.c_str(), m_subtitle.c_str(), ctime(&m_starttime));
     //XBMC->Log(LOG_DEBUG, "End: %s", ctime(&m_endtime));
 
