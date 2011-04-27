@@ -28,6 +28,7 @@
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
+#include "pvr/epg/PVREpg.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/addons/PVRClients.h"
 
@@ -404,4 +405,23 @@ bool CPVRChannelGroupInternal::Persist(void)
   database->Close();
 
   return bReturn;
+}
+
+bool CPVRChannelGroupInternal::CreateChannelEpgs(void)
+{
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    CPVRChannel *channel = at(iChannelPtr).channel;
+    if (!channel)
+      continue;
+
+    CPVREpg *epg = channel->GetEPG();
+    if (epg)
+      epg->SetChannel(channel);
+  }
+
+  if (HasChangedChannels())
+    return Persist();
+
+  return true;
 }

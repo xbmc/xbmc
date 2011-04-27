@@ -48,24 +48,8 @@ void PVR::CPVREpgContainer::Clear(bool bClearDb /* = false */)
 
 bool PVR::CPVREpgContainer::CreateChannelEpgs(void)
 {
-  for (int radio = 0; radio <= 1; radio++)
-  {
-    const CPVRChannelGroup *channels = g_PVRChannelGroups->GetGroupAll(radio == 1);
-    for (int iChannelPtr = 0; iChannelPtr < channels->GetNumChannels(); iChannelPtr++)
-    {
-      CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
-      CEpg *epg = GetById(channel->ChannelID());
-      if (!epg)
-        channel->GetEPG();
-      else
-      {
-        channel->m_EPG = (CPVREpg *) epg;
-        epg->SetChannel(channel);
-      }
-    }
-  }
-
-  return true;
+  bool bReturn = g_PVRChannelGroups->GetGroupAllTV()->CreateChannelEpgs();
+  return g_PVRChannelGroups->GetGroupAllRadio()->CreateChannelEpgs() && bReturn;
 }
 
 int PVR::CPVREpgContainer::GetEPGAll(CFileItemList* results, bool bRadio /* = false */)

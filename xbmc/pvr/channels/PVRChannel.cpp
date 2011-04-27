@@ -49,6 +49,7 @@ bool CPVRChannel::operator==(const CPVRChannel &right) const
           m_strIconPath             == right.m_strIconPath &&
           m_strChannelName          == right.m_strChannelName &&
           m_bIsVirtual              == right.m_bIsVirtual &&
+          m_iEpgId                  == right.m_iEpgId &&
 
           m_iUniqueId               == right.m_iUniqueId &&
           m_iClientId               == right.m_iClientId &&
@@ -75,6 +76,7 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_bChanged                = false;
   m_iCachedChannelNumber    = 0;
 
+  m_iEpgId                  = -1;
   m_EPG                     = NULL;
   m_bEPGEnabled             = true;
   m_strEPGScraper           = "client";
@@ -110,6 +112,7 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_iLastWatched            = 0;
   m_bEPGEnabled             = true;
   m_strEPGScraper           = "client";
+  m_iEpgId                  = -1;
   m_EPG                     = NULL;
   m_bChanged                = false;
   m_bIsCachingIcon          = false;
@@ -142,6 +145,7 @@ CPVRChannel &CPVRChannel::operator=(const CPVRChannel &channel)
   m_strFileNameAndPath      = channel.m_strFileNameAndPath;
   m_iClientEncryptionSystem = channel.m_iClientEncryptionSystem;
   m_iCachedChannelNumber    = channel.m_iCachedChannelNumber;
+  m_iEpgId                  = channel.m_iEpgId;
   m_EPG                     = channel.m_EPG;
   m_bChanged                = channel.m_bChanged;
 
@@ -705,7 +709,8 @@ CPVREpg *CPVRChannel::GetEPG(void)
   CSingleLock lock(m_critSection);
   if (m_EPG == NULL)
   {
-    m_EPG = (CPVREpg *) g_PVREpg->GetById(m_iChannelId);
+    if (m_iEpgId > 0)
+      m_EPG = (CPVREpg *) g_PVREpg->GetById(m_iEpgId);
 
     if (m_EPG == NULL)
     {
@@ -713,6 +718,12 @@ CPVREpg *CPVRChannel::GetEPG(void)
       m_EPG = new CPVREpg(this);
       m_EPG->Persist();
       g_PVREpg->push_back(m_EPG);
+    }
+
+    if (m_EPG && m_iEpgId != m_EPG->EpgID())
+    {
+      m_iEpgId = m_EPG->EpgID();
+      m_bChanged = true;
     }
   }
 

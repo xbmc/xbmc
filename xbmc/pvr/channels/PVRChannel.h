@@ -66,6 +66,7 @@ namespace PVR
     /*! @name EPG related channel data
      */
     //@{
+    int              m_iEpgId;                  /*!< the id of the EPG for this channel */
     CPVREpg *        m_EPG;                     /*!< the EPG table for this channel */
     bool             m_bEPGEnabled;             /*!< don't use an EPG for this channel if set to false */
     CStdString       m_strEPGScraper;           /*!< the name of the scraper to be used for this channel */
@@ -409,6 +410,11 @@ namespace PVR
     /*! @name EPG methods
      */
     //@{
+
+    /*!
+     * @return The ID of the EPG table to use for this channel or -1 if it isn't set.
+     */
+    int EpgID() const { return m_iEpgId; };
 
     /*!
      * @brief Get the EPG table for this channel.
