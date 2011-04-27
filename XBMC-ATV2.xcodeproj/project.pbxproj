@@ -190,7 +190,6 @@
 		F56C7927131EC154000AD0F6 /* ASAPCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7304131EC151000AD0F6 /* ASAPCodec.cpp */; };
 		F56C7928131EC154000AD0F6 /* DVDPlayerCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7306131EC151000AD0F6 /* DVDPlayerCodec.cpp */; };
 		F56C7929131EC154000AD0F6 /* ADPCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7308131EC151000AD0F6 /* ADPCMCodec.cpp */; };
-		F56C792A131EC154000AD0F6 /* AIFFcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C730A131EC151000AD0F6 /* AIFFcodec.cpp */; };
 		F56C792B131EC154000AD0F6 /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C730C131EC151000AD0F6 /* AudioDecoder.cpp */; };
 		F56C792C131EC154000AD0F6 /* CDDAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C730F131EC151000AD0F6 /* CDDAcodec.cpp */; };
 		F56C792D131EC154000AD0F6 /* CodecFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7311131EC151000AD0F6 /* CodecFactory.cpp */; };
@@ -1395,8 +1394,6 @@
 		F56C7307131EC151000AD0F6 /* DVDPlayerCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerCodec.h; sourceTree = "<group>"; };
 		F56C7308131EC151000AD0F6 /* ADPCMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ADPCMCodec.cpp; sourceTree = "<group>"; };
 		F56C7309131EC151000AD0F6 /* ADPCMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADPCMCodec.h; sourceTree = "<group>"; };
-		F56C730A131EC151000AD0F6 /* AIFFcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AIFFcodec.cpp; sourceTree = "<group>"; };
-		F56C730B131EC151000AD0F6 /* AIFFcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIFFcodec.h; sourceTree = "<group>"; };
 		F56C730C131EC151000AD0F6 /* AudioDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioDecoder.cpp; sourceTree = "<group>"; };
 		F56C730D131EC151000AD0F6 /* AudioDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioDecoder.h; sourceTree = "<group>"; };
 		F56C730E131EC151000AD0F6 /* CachingCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CachingCodec.h; sourceTree = "<group>"; };
@@ -3787,8 +3784,6 @@
 				F56C7307131EC151000AD0F6 /* DVDPlayerCodec.h */,
 				F56C7308131EC151000AD0F6 /* ADPCMCodec.cpp */,
 				F56C7309131EC151000AD0F6 /* ADPCMCodec.h */,
-				F56C730A131EC151000AD0F6 /* AIFFcodec.cpp */,
-				F56C730B131EC151000AD0F6 /* AIFFcodec.h */,
 				F56C730C131EC151000AD0F6 /* AudioDecoder.cpp */,
 				F56C730D131EC151000AD0F6 /* AudioDecoder.h */,
 				F56C730E131EC151000AD0F6 /* CachingCodec.h */,
@@ -6052,7 +6047,6 @@
 				F56C7927131EC154000AD0F6 /* ASAPCodec.cpp in Sources */,
 				F56C7928131EC154000AD0F6 /* DVDPlayerCodec.cpp in Sources */,
 				F56C7929131EC154000AD0F6 /* ADPCMCodec.cpp in Sources */,
-				F56C792A131EC154000AD0F6 /* AIFFcodec.cpp in Sources */,
 				F56C792B131EC154000AD0F6 /* AudioDecoder.cpp in Sources */,
 				F56C792C131EC154000AD0F6 /* CDDAcodec.cpp in Sources */,
 				F56C792D131EC154000AD0F6 /* CodecFactory.cpp in Sources */,

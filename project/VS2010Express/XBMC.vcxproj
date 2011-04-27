@@ -898,7 +898,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagMicroDVD.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagSami.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\ADPCMCodec.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\paplayer\AIFFcodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\ASAPCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\AudioDecoder.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\CDDAcodec.cpp" />
@@ -1762,7 +1761,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagMicroDVD.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagSami.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ADPCMCodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\AIFFcodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ASAPCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\AudioDecoder.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\CDDAcodec.h" />

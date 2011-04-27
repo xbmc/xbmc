@@ -459,9 +459,6 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\ADPCMCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\AIFFcodec.cpp">
-      <Filter>cores\paplayer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\ASAPCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
@@ -2784,9 +2781,6 @@
       <Filter>cores\dvdplayer\DVDSubtitles</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\ADPCMCodec.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\AIFFcodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\ASAPCodec.h">

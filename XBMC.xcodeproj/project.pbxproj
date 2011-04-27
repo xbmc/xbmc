@@ -668,7 +668,6 @@
 		E38E1FAE0D25F9FD00618676 /* DVDSubtitleParserSubrip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15940D25F9FA00618676 /* DVDSubtitleParserSubrip.cpp */; };
 		E38E1FAF0D25F9FD00618676 /* DVDSubtitleStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */; };
 		E38E1FC10D25F9FD00618676 /* ADPCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */; };
-		E38E1FC30D25F9FD00618676 /* AIFFcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */; };
 		E38E1FC50D25F9FD00618676 /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E30D25F9FA00618676 /* AudioDecoder.cpp */; };
 		E38E1FC60D25F9FD00618676 /* CDDAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E60D25F9FA00618676 /* CDDAcodec.cpp */; };
 		E38E1FC70D25F9FD00618676 /* CodecFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E80D25F9FA00618676 /* CodecFactory.cpp */; };
@@ -1254,7 +1253,6 @@
 		F5A1C9130F6B06CF00A96ABD /* DVDSubtitleParserSubrip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15940D25F9FA00618676 /* DVDSubtitleParserSubrip.cpp */; };
 		F5A1C9140F6B06CF00A96ABD /* DVDSubtitleStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */; };
 		F5A1C9190F6B06CF00A96ABD /* ADPCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */; };
-		F5A1C91B0F6B06CF00A96ABD /* AIFFcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */; };
 		F5A1C91D0F6B06CF00A96ABD /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E30D25F9FA00618676 /* AudioDecoder.cpp */; };
 		F5A1C91E0F6B06CF00A96ABD /* CDDAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E60D25F9FA00618676 /* CDDAcodec.cpp */; };
 		F5A1C91F0F6B06CF00A96ABD /* CodecFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E80D25F9FA00618676 /* CodecFactory.cpp */; };
@@ -2686,8 +2684,6 @@
 		E38E15B60D25F9FA00618676 /* IPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPlayer.h; sourceTree = "<group>"; };
 		E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ADPCMCodec.cpp; sourceTree = "<group>"; };
 		E38E15DC0D25F9FA00618676 /* ADPCMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADPCMCodec.h; sourceTree = "<group>"; };
-		E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AIFFcodec.cpp; sourceTree = "<group>"; };
-		E38E15E00D25F9FA00618676 /* AIFFcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIFFcodec.h; sourceTree = "<group>"; };
 		E38E15E30D25F9FA00618676 /* AudioDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioDecoder.cpp; sourceTree = "<group>"; };
 		E38E15E40D25F9FA00618676 /* AudioDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioDecoder.h; sourceTree = "<group>"; };
 		E38E15E50D25F9FA00618676 /* CachingCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CachingCodec.h; sourceTree = "<group>"; };
@@ -5375,8 +5371,6 @@
 				E36578870D3AA7B40033CC1C /* DVDPlayerCodec.h */,
 				E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */,
 				E38E15DC0D25F9FA00618676 /* ADPCMCodec.h */,
-				E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */,
-				E38E15E00D25F9FA00618676 /* AIFFcodec.h */,
 				E38E15E30D25F9FA00618676 /* AudioDecoder.cpp */,
 				E38E15E40D25F9FA00618676 /* AudioDecoder.h */,
 				E38E15E50D25F9FA00618676 /* CachingCodec.h */,
@@ -7217,7 +7211,6 @@
 				E38E1FAE0D25F9FD00618676 /* DVDSubtitleParserSubrip.cpp in Sources */,
 				E38E1FAF0D25F9FD00618676 /* DVDSubtitleStream.cpp in Sources */,
 				E38E1FC10D25F9FD00618676 /* ADPCMCodec.cpp in Sources */,
-				E38E1FC30D25F9FD00618676 /* AIFFcodec.cpp in Sources */,
 				E38E1FC50D25F9FD00618676 /* AudioDecoder.cpp in Sources */,
 				E38E1FC60D25F9FD00618676 /* CDDAcodec.cpp in Sources */,
 				E38E1FC70D25F9FD00618676 /* CodecFactory.cpp in Sources */,
@@ -8106,7 +8099,6 @@
 				F5A1C9130F6B06CF00A96ABD /* DVDSubtitleParserSubrip.cpp in Sources */,
 				F5A1C9140F6B06CF00A96ABD /* DVDSubtitleStream.cpp in Sources */,
 				F5A1C9190F6B06CF00A96ABD /* ADPCMCodec.cpp in Sources */,
-				F5A1C91B0F6B06CF00A96ABD /* AIFFcodec.cpp in Sources */,
 				F5A1C91D0F6B06CF00A96ABD /* AudioDecoder.cpp in Sources */,
 				F5A1C91E0F6B06CF00A96ABD /* CDDAcodec.cpp in Sources */,
 				F5A1C91F0F6B06CF00A96ABD /* CodecFactory.cpp in Sources */,
