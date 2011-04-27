@@ -159,7 +159,7 @@
 					<height>35</height>
 					<itemgap>0</itemgap>
 					<orientation>horizontal</orientation>
-					<control type="image">
+					<control type="image" id="1">
 						<width>70</width>
 						<height>30</height>
 						<aspectratio align="center" aligny="center">keep</aspectratio>
