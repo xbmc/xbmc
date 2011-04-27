@@ -1020,10 +1020,7 @@ void CDVDPlayer::Process()
 
     // if the queues are full, no need to read more
     if ((!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0) ||
-        (!m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0) ||
-        (m_caching == CACHESTATE_PVR &&
-            m_dvdPlayerAudio.m_messageQueue.GetLevel() >= g_advancedSettings.m_iPVRMinCacheLevel &&
-            m_dvdPlayerVideo.m_messageQueue.GetLevel() >= g_advancedSettings.m_iPVRMinCacheLevel))
+        (!m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0))
     {
       Sleep(10);
       if( m_caching != CACHESTATE_INIT
@@ -1354,6 +1351,15 @@ void CDVDPlayer::HandlePlaySpeed()
     && (m_CurrentAudio.id < 0 || m_CurrentAudio.started))
       SetCaching(CACHESTATE_PLAY);
   }
+
+  if (m_caching == CACHESTATE_PVR)
+  {
+    /* if all streams got at least g_advancedSettings.m_iPVRMinCacheLevel in their buffers, we're done */
+    if (m_dvdPlayerAudio.m_messageQueue.GetLevel() >= g_advancedSettings.m_iPVRMinCacheLevel &&
+        m_dvdPlayerVideo.m_messageQueue.GetLevel() >= g_advancedSettings.m_iPVRMinCacheLevel)
+      SetCaching(CACHESTATE_DONE);
+  }
+
   if(m_caching == CACHESTATE_PLAY)
   {
     // if all enabled streams have started playing we are done
