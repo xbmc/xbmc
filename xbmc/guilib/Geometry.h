@@ -151,6 +151,11 @@ public:
     return y2 - y1;
   };
 
+  inline float Area() const XBMC_FORCE_INLINE
+  {
+    return Width() * Height();
+  };
+
   bool operator !=(const CRect &rect) const
   {
     if (x1 != rect.x1) return true;
