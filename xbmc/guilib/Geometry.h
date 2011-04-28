@@ -120,6 +120,22 @@ public:
     return *this;
   };
 
+  const CRect &Union(const CRect &rect)
+  {
+    if (IsEmpty())
+      *this = rect;
+    else if (!rect.IsEmpty())
+    {
+      x1 = x1 < rect.x1 ? x1 : rect.x1;
+      y1 = y1 < rect.y1 ? y1 : rect.y1;
+
+      x2 = x2 > rect.x2 ? x2 : rect.x2;
+      y2 = y2 > rect.y2 ? y2 : rect.y2;
+    }
+
+    return *this;
+  };
+
   inline bool IsEmpty() const XBMC_FORCE_INLINE
   {
     return (x2 - x1) * (y2 - y1) == 0;
