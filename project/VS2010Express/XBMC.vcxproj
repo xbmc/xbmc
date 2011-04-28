@@ -442,6 +442,7 @@
     <ClCompile Include="..\..\xbmc\input\SDLJoystick.cpp" />
     <ClCompile Include="..\..\xbmc\input\windows\IRServerSuite.cpp" />
     <ClCompile Include="..\..\xbmc\input\windows\IrssMessage.cpp" />
+    <ClCompile Include="..\..\xbmc\input\XBMC_keytable.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\AnnouncementManager.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\Builtins.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\http-api\HttpApi.cpp" />
@@ -1346,6 +1347,7 @@
     <ClInclude Include="..\..\xbmc\input\XBIRRemote.h" />
     <ClInclude Include="..\..\xbmc\input\XBMC_keyboard.h" />
     <ClInclude Include="..\..\xbmc\input\XBMC_keysym.h" />
+    <ClInclude Include="..\..\xbmc\input\XBMC_keytable.h" />
     <ClInclude Include="..\..\xbmc\input\XBMC_mouse.h" />
     <ClInclude Include="..\..\xbmc\input\XBMC_vkeys.h" />
     <ClInclude Include="..\..\xbmc\interfaces\AnnouncementManager.h" />
