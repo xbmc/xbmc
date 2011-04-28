@@ -190,6 +190,8 @@ public:
       UpdateFinalTransform(TransformMatrix());
   }
 
+  CRect generateAABB(const CRect &rect) const;
+
 protected:
   std::stack<CRect> m_viewStack;
 
