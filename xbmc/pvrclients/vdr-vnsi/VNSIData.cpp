@@ -903,6 +903,11 @@ void cVNSIData::Action()
         XBMC->Log(LOG_ERROR, "Server requested channel update");
         PVR->TriggerChannelUpdate();
       }
+      else if (requestID == VDR_STATUS_RECORDINGSCHANGE)
+      {
+        XBMC->Log(LOG_ERROR, "Server requested recordings update");
+        PVR->TriggerRecordingUpdate();
+      }
 
       delete vresp;
     }

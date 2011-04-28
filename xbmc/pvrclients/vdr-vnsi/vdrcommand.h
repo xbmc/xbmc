@@ -103,10 +103,11 @@ const static uint32_t VDR_SCANNER_FINISHED    = 6;
 const static uint32_t VDR_SCANNER_STATUS      = 7;
 
 /** Status packet types (server -> client) */
-const static uint32_t VDR_STATUS_TIMERCHANGE   = 1;
-const static uint32_t VDR_STATUS_RECORDING     = 2;
-const static uint32_t VDR_STATUS_MESSAGE       = 3;
-const static uint32_t VDR_STATUS_CHANNELCHANGE = 4;
+const static uint32_t VDR_STATUS_TIMERCHANGE      = 1;
+const static uint32_t VDR_STATUS_RECORDING        = 2;
+const static uint32_t VDR_STATUS_MESSAGE          = 3;
+const static uint32_t VDR_STATUS_CHANNELCHANGE    = 4;
+const static uint32_t VDR_STATUS_RECORDINGSCHANGE = 5;
 
 /** Packet return codes */
 const static uint32_t VDR_RET_OK              = 0;
