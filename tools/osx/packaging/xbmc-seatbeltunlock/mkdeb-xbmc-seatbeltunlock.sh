@@ -12,7 +12,7 @@ fi
 PACKAGE=org.xbmc.xbmc-seatbeltunlock
 
 VERSION=1.0
-REVISION=1
+REVISION=2
 ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_iphoneos-arm.deb
 
 echo Creating $PACKAGE package version $VERSION revision $REVISION
