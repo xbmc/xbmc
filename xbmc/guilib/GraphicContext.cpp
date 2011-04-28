@@ -669,6 +669,19 @@ void CGraphicContext::RestoreCameraPosition()
   UpdateCameraPosition(m_cameras.top());
 }
 
+CRect CGraphicContext::generateAABB(const CRect &rect) const
+{
+  CRect newRect = rect;
+
+  float z = 0.0f;
+  ScaleFinalCoords(newRect.x1, newRect.y1, z);
+
+  z = 0.0f;
+  ScaleFinalCoords(newRect.x2, newRect.y2, z);
+
+  return newRect;
+}
+
 // NOTE: This routine is currently called (twice) every time there is a <camera>
 //       tag in the skin.  It actually only has to be called before we render
 //       something, so another option is to just save the camera coordinates
