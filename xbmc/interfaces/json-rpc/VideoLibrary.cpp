@@ -380,22 +380,14 @@ bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
     int episodeID     = parameterObject["episodeid"].asInt();
     int musicVideoID  = parameterObject["musicvideoid"].asInt();
 
-    bool success = true;
+    bool success = false;
     if (!file.empty())
     {
       CVideoInfoTag details;
-      if (videodatabase.HasMovieInfo(file))
-        videodatabase.GetMovieInfo(file, details);
-      else if (videodatabase.HasEpisodeInfo(file))
-        videodatabase.GetEpisodeInfo(file, details);
-      else if (videodatabase.HasMusicVideoInfo(file))
-        videodatabase.GetMusicVideoInfo(file, details);
-
-      if (!details.IsEmpty())
+      if (videodatabase.LoadVideoInfo(file, details))
       {
-        CFileItemPtr item = CFileItemPtr(new CFileItem(details));
-        list.Add(item);
-        success &= true;
+        list.Add(CFileItemPtr(new CFileItem(details)));
+        success = true;
       }
     }
     if (movieID > 0)
@@ -404,9 +396,8 @@ bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
       videodatabase.GetMovieInfo("", details, movieID);
       if (!details.IsEmpty())
       {
-        CFileItemPtr item = CFileItemPtr(new CFileItem(details));
-        list.Add(item);
-        success &= true;
+        list.Add(CFileItemPtr(new CFileItem(details)));
+        success = true;
       }
     }
     if (episodeID > 0)
@@ -414,9 +405,8 @@ bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
       CVideoInfoTag details;
       if (videodatabase.GetEpisodeInfo("", details, episodeID) && !details.IsEmpty())
       {
-        CFileItemPtr item = CFileItemPtr(new CFileItem(details));
-        list.Add(item);
-        success &= true;
+        list.Add(CFileItemPtr(new CFileItem(details)));
+        success = true;
       }
     }
     if (musicVideoID > 0)
@@ -425,9 +415,8 @@ bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
       videodatabase.GetMusicVideoInfo("", details, musicVideoID);
       if (!details.IsEmpty())
       {
-        CFileItemPtr item = CFileItemPtr(new CFileItem(details));
-        list.Add(item);
-        success &= true;
+        list.Add(CFileItemPtr(new CFileItem(details)));
+        success = true;
       }
     }
 

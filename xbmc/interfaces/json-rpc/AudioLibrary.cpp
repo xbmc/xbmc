@@ -212,12 +212,12 @@ bool CAudioLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
       if (musicdatabase.GetSongByFileName(file, song))
       {
         list.Add(CFileItemPtr(new CFileItem(song)));
-        success &= true;
+        success = true;
       }
     }
 
     if (artistID != -1 || albumID != -1 || genreID != -1)
-      success &= musicdatabase.GetSongsNav("", list, genreID, artistID, albumID);
+      success |= musicdatabase.GetSongsNav("", list, genreID, artistID, albumID);
 
     int songID = parameterObject.get("songid", -1).asInt();
     if (songID != -1)
@@ -226,7 +226,7 @@ bool CAudioLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
       if (musicdatabase.GetSongById(songID, song))
       {
         list.Add(CFileItemPtr(new CFileItem(song)));
-        success &= true;
+        success = true;
       }
     }
 

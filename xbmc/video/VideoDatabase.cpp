@@ -1312,6 +1312,30 @@ void CVideoDatabase::AddCountryToMovie(int idMovie, int idCountry)
 }
 
 //********************************************************************************************************************************
+bool CVideoDatabase::LoadVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details)
+{
+  if (HasMovieInfo(strFilenameAndPath))
+  {
+    GetMovieInfo(strFilenameAndPath, details);
+    CLog::Log(LOGDEBUG,"%s, got movie info!", __FUNCTION__);
+    CLog::Log(LOGDEBUG,"  Title = %s", details.m_strTitle.c_str());
+  }
+  else if (HasEpisodeInfo(strFilenameAndPath))
+  {
+    GetEpisodeInfo(strFilenameAndPath, details);
+    CLog::Log(LOGDEBUG,"%s, got episode info!", __FUNCTION__);
+    CLog::Log(LOGDEBUG,"  Title = %s", details.m_strTitle.c_str());
+  }
+  else if (HasMusicVideoInfo(strFilenameAndPath))
+  {
+    GetMusicVideoInfo(strFilenameAndPath, details);
+    CLog::Log(LOGDEBUG,"%s, got music video info!", __FUNCTION__);
+    CLog::Log(LOGDEBUG,"  Title = %s", details.m_strTitle.c_str());
+  }
+
+  return !details.IsEmpty();
+}
+
 bool CVideoDatabase::HasMovieInfo(const CStdString& strFilenameAndPath)
 {
   try
