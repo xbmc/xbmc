@@ -540,6 +540,10 @@
 		7CAA20521079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
 		7CAA25361085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
+		7CBC891A139382050046CB82 /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CBC8916139382050046CB82 /* DirtyRegionSolvers.cpp */; };
+		7CBC891B139382050046CB82 /* DirtyRegionTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CBC8918139382050046CB82 /* DirtyRegionTracker.cpp */; };
+		7CBC891C139382050046CB82 /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CBC8916139382050046CB82 /* DirtyRegionSolvers.cpp */; };
+		7CBC891D139382050046CB82 /* DirtyRegionTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CBC8918139382050046CB82 /* DirtyRegionTracker.cpp */; };
 		7CBEBB8312912BA300431822 /* fstrcmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEBB8212912BA300431822 /* fstrcmp.c */; };
 		7CBEBB8412912BA400431822 /* fstrcmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEBB8212912BA300431822 /* fstrcmp.c */; };
 		7CCF7E721067643800992676 /* DirectoryNodeSets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */; };
@@ -2417,6 +2421,11 @@
 		7CAA25341085963B0096DE39 /* PasswordManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasswordManager.h; sourceTree = "<group>"; };
 		7CAA25371085971C0096DE39 /* MusicArtistInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicArtistInfo.h; sourceTree = "<group>"; };
 		7CAA25381085971C0096DE39 /* ScraperUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScraperUrl.h; sourceTree = "<group>"; };
+		7CBC8915139382050046CB82 /* DirtyRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegion.h; sourceTree = "<group>"; };
+		7CBC8916139382050046CB82 /* DirtyRegionSolvers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirtyRegionSolvers.cpp; sourceTree = "<group>"; };
+		7CBC8917139382050046CB82 /* DirtyRegionSolvers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegionSolvers.h; sourceTree = "<group>"; };
+		7CBC8918139382050046CB82 /* DirtyRegionTracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirtyRegionTracker.cpp; sourceTree = "<group>"; };
+		7CBC8919139382050046CB82 /* DirtyRegionTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegionTracker.h; sourceTree = "<group>"; };
 		7CBEBB8212912BA300431822 /* fstrcmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fstrcmp.c; sourceTree = "<group>"; };
 		7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeSets.cpp; sourceTree = "<group>"; };
 		7CCF7E711067643800992676 /* DirectoryNodeSets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeSets.h; sourceTree = "<group>"; };
@@ -3983,6 +3992,11 @@
 				18B7C6F81294222D009E7A26 /* D3DResource.h */,
 				18B7C6F91294222D009E7A26 /* DDSImage.h */,
 				18B7C6FA1294222D009E7A26 /* DirectXGraphics.h */,
+				7CBC8915139382050046CB82 /* DirtyRegion.h */,
+				7CBC8916139382050046CB82 /* DirtyRegionSolvers.cpp */,
+				7CBC8917139382050046CB82 /* DirtyRegionSolvers.h */,
+				7CBC8918139382050046CB82 /* DirtyRegionTracker.cpp */,
+				7CBC8919139382050046CB82 /* DirtyRegionTracker.h */,
 				18B7C6FB1294222D009E7A26 /* FrameBufferObject.h */,
 				18B7C6FC1294222D009E7A26 /* Geometry.h */,
 				18B7C6FD1294222D009E7A26 /* GraphicContext.h */,
@@ -8012,6 +8026,8 @@
 				18404D9E1396C13500863BBA /* Slingbox.cpp in Sources */,
 				1840B74D13993D8A007C848B /* JSONVariantParser.cpp in Sources */,
 				1840B75313993DA0007C848B /* JSONVariantWriter.cpp in Sources */,
+				7CBC891A139382050046CB82 /* DirtyRegionSolvers.cpp in Sources */,
+				7CBC891B139382050046CB82 /* DirtyRegionTracker.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8899,6 +8915,8 @@
 				18404E701396E05D00863BBA /* Slingbox.cpp in Sources */,
 				1840B74E13993D8A007C848B /* JSONVariantParser.cpp in Sources */,
 				1840B75413993DA0007C848B /* JSONVariantWriter.cpp in Sources */,
+				7CBC891C139382050046CB82 /* DirtyRegionSolvers.cpp in Sources */,
+				7CBC891D139382050046CB82 /* DirtyRegionTracker.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
