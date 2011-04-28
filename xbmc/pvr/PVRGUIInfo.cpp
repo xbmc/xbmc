@@ -70,6 +70,7 @@ void CPVRGUIInfo::ResetProperties(void)
   m_iAddonInfoToggleCurrent     = 0;
   m_iTimerInfoToggleStart       = 0;
   m_iTimerInfoToggleCurrent     = 0;
+  m_iToggleShowInfo             = 0;
   m_playingEpgTag               = NULL;
   g_PVRClients->GetQualityData(&m_qualityInfo);
 }
@@ -91,6 +92,27 @@ void CPVRGUIInfo::Notify(const Observable &obs, const CStdString& msg)
 {
   if (msg.Equals("timers"))
     UpdateTimersCache();
+}
+
+void CPVRGUIInfo::ShowPlayerInfo(int iTimeout)
+{
+  CSingleLock lock(m_critSection);
+
+  if (iTimeout > 0)
+    m_iToggleShowInfo = (int) CTimeUtils::GetTimeMS() + iTimeout * 1000;
+
+  g_infoManager.SetShowInfo(true);
+}
+
+void CPVRGUIInfo::ToggleShowInfo(void)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_iToggleShowInfo > 0 && m_iToggleShowInfo < (unsigned int) CTimeUtils::GetTimeMS())
+  {
+    m_iToggleShowInfo = 0;
+    g_infoManager.SetShowInfo(false);
+  }
 }
 
 bool CPVRGUIInfo::AddonInfoToggle(void)
@@ -146,6 +168,9 @@ void CPVRGUIInfo::Process(void)
 
   while (!m_bStop)
   {
+    ToggleShowInfo();
+    Sleep(0);
+
     UpdateQualityData();
     Sleep(0);
 

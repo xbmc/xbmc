@@ -1138,3 +1138,8 @@ void CPVRManager::StartNextPendingJob(void)
     StartRecordingsUpdateJob();
   }
 }
+
+void CPVRManager::ShowPlayerInfo(int iTimeout)
+{
+  m_guiInfo->ShowPlayerInfo(iTimeout);
+}

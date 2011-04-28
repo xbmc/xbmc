@@ -62,6 +62,13 @@ namespace PVR
      */
     int GetStartTime(void) const;
 
+    /*!
+     * @brief Show the player info.
+     * @param iTimeout Hide the player info after iTimeout seconds.
+     * @todo not really the right place for this :-)
+     */
+    void ShowPlayerInfo(int iTimeout);
+
   private:
     void ResetProperties(void);
     void Process(void);
@@ -76,6 +83,7 @@ namespace PVR
     bool AddonInfoToggle(void);
     bool TimerInfoToggle(void);
     void UpdateTimersToggle(void);
+    void ToggleShowInfo(void);
 
     void CharInfoActiveTimerTitle(CStdString &strValue) const;
     void CharInfoActiveTimerChannelName(CStdString &strValue) const;
@@ -136,6 +144,7 @@ namespace PVR
     unsigned int                    m_iAddonInfoToggleCurrent;
     unsigned int                    m_iTimerInfoToggleStart;
     unsigned int                    m_iTimerInfoToggleCurrent;
+    unsigned int                    m_iToggleShowInfo;
     mutable const CPVREpgInfoTag *  m_playingEpgTag;
 
     CCriticalSection                m_critSection;
