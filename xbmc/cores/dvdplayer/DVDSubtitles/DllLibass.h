@@ -152,9 +152,9 @@ public:
     virtual void ass_free_track(ASS_Track* track)
         { return ::ass_free_track(track); }
     virtual void ass_set_fonts(ASS_Renderer *priv, const char *default_font, const char *default_family, int fc, const char *config, int update)
-#ifndef _ARMEL
+#ifdef LIBASS_VERSION
         { return ::ass_set_fonts(priv, default_font, default_family, fc, config, update); }
-#else /* Libass version on armel is too old. */
+#else /* Legacy version. */
         { ::ass_set_fonts(priv, default_font, default_family); return; }
 #endif
     virtual void ass_set_style_overrides(ASS_Library* priv, char** list)
@@ -170,9 +170,9 @@ public:
     virtual void ass_set_message_cb(ASS_Library *priv
                                    , void (*msg_cb)(int level, const char *fmt, va_list args, void *data)
                                    , void *data)
-#ifndef _ARMEL
+#ifdef LIBASS_VERSION
         { return ::ass_set_message_cb(priv, msg_cb, data); }
-#else /* Libass version on armel is too old. */
+#else /* Legacy version. */
         { return; }
 #endif
 

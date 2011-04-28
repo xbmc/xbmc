@@ -692,7 +692,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if ( remoteMode != APPLE_REMOTE_DISABLED )
       {
         g_guiSettings.SetBool("services.esenabled", true);
-        g_application.StartEventServer();
+        if (!g_application.StartEventServer())
+          g_application.m_guiDialogKaiToast.QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
       }
 
       // if XBMC helper is running, prompt user before effecting change
@@ -1335,7 +1336,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       ValidatePortNumber(pSettingControl, "8080", "80");
     g_application.StopWebServer();
     if (g_guiSettings.GetBool("services.webserver"))
-      g_application.StartWebServer();
+      if (!g_application.StartWebServer())
+      {
+        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33101), "", g_localizeStrings.Get(33100), "");
+        g_guiSettings.SetBool("services.webserver", false);
+      }
   }
   else if (strSetting.Equals("services.webserverusername") || strSetting.Equals("services.webserverpassword"))
   {
@@ -1690,7 +1695,15 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
 #ifdef HAS_EVENT_SERVER
     if (g_guiSettings.GetBool("services.esenabled"))
-      g_application.StartEventServer();
+    {
+      if (!g_application.StartEventServer())
+      {
+        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33102), "", g_localizeStrings.Get(33100), "");
+        g_guiSettings.SetBool("services.esenabled", false);
+        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+        if (pControl) pControl->SetEnabled(false);
+      }
+    }
     else
     {
       if (!g_application.StopEventServer(true, true))
@@ -1701,10 +1714,15 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       }
     }
 #endif
+#ifdef HAS_JSONRPC
     if (g_guiSettings.GetBool("services.esenabled"))
-      g_application.StartJSONRPCServer();
+    {
+      if (!g_application.StartJSONRPCServer())
+        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33103), "", g_localizeStrings.Get(33100), "");
+    }
     else
       g_application.StopJSONRPCServer(false);
+#endif
   }
   else if (strSetting.Equals("services.esport"))
   {
@@ -1712,7 +1730,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     ValidatePortNumber(pSettingControl, "9777", "9777");
     //restart eventserver without asking user
     if (g_application.StopEventServer(true, false))
-      g_application.StartEventServer();
+    {
+      if (!g_application.StartEventServer())
+        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33102), "", g_localizeStrings.Get(33100), "");
+    }
 #if defined(__APPLE__) && !defined(__arm__)
     //reconfigure XBMCHelper for port changes
     XBMCHelper::GetInstance().Configure();
@@ -1725,7 +1746,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (g_guiSettings.GetBool("services.esenabled"))
     {
       if (g_application.StopEventServer(true, true))
-        g_application.StartEventServer();
+      {
+        if (!g_application.StartEventServer())
+          CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33102), "", g_localizeStrings.Get(33100), "");
+      }
       else
       {
         g_guiSettings.SetBool("services.esenabled", true);
@@ -1734,10 +1758,15 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       }
     }
 #endif
+#ifdef HAS_JSONRPC
     if (g_guiSettings.GetBool("services.esenabled"))
-      g_application.StartJSONRPCServer();
+    {
+      if (!g_application.StartJSONRPCServer())
+        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33103), "", g_localizeStrings.Get(33100), "");
+    }
     else
       g_application.StopJSONRPCServer(false);
+#endif
   }
   else if (strSetting.Equals("services.esinitialdelay") ||
            strSetting.Equals("services.escontinuousdelay"))

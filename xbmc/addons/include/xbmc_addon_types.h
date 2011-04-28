@@ -1,7 +1,8 @@
-#pragma once
+#ifndef __XBMC_ADDON_TYPES_H__
+#define __XBMC_ADDON_TYPES_H__
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,25 +22,32 @@
  *
  */
 
-#include "DVDInputStream.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-class CDVDInputStreamFile : public CDVDInputStream
+enum ADDON_STATUS
 {
-public:
-  CDVDInputStreamFile();
-  virtual ~CDVDInputStreamFile();
-  virtual bool Open(const char* strFile, const std::string &content);
-  virtual void Close();
-  virtual int Read(BYTE* buf, int buf_size);
-  virtual __int64 Seek(__int64 offset, int whence);
-  virtual bool Pause(double dTime) { return false; };
-  virtual bool IsEOF();
-  virtual __int64 GetLength();
-  virtual BitstreamStats GetBitstreamStats() const ;
-  virtual int GetBlockSize();
-  virtual __int64 GetCachedBytes();
-  virtual void SetReadRate(unsigned rate);
-protected:
-  XFILE::CFile* m_pFile;
-  bool m_eof;
+  STATUS_OK,
+  STATUS_LOST_CONNECTION,
+  STATUS_NEED_RESTART,
+  STATUS_NEED_SETTINGS,
+  STATUS_UNKNOWN,
+  STATUS_NEED_SAVEDSETTINGS
 };
+
+typedef struct
+{
+  int           type;
+  char*         id;
+  char*         label;
+  int           current;
+  char**        entry;
+  unsigned int  entry_elements;
+} StructSetting;
+
+#ifdef __cplusplus
+};
+#endif
+
+#endif

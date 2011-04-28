@@ -264,7 +264,7 @@
 					<font>font13</font>
 				</control>
 				<control type="label" id="52">
-					<description>XBMC XBE BUILD Version</description>
+					<description>XBMC BUILD Version</description>
 					<posx>750</posx>
 					<posy>400</posy>
 					<width>730</width>

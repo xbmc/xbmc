@@ -981,8 +981,6 @@ int64_t CFileCurl::Seek(int64_t iFilePosition, int iWhence)
       else
         return -1;
       break;
-    case SEEK_POSSIBLE:
-      return m_seekable ? 1 : 0;
     default:
       return -1;
   }
@@ -1387,4 +1385,12 @@ bool CFileCurl::GetMimeType(const CURL &url, CStdString &content, CStdString use
    CLog::Log(LOGDEBUG, "CFileCurl::GetMimeType - %s -> failed", url.Get().c_str());
    content = "";
    return false;
+}
+
+int CFileCurl::IoControl(EIoControl request, void* param)
+{
+  if(request == IOCTRL_SEEK_POSSIBLE)
+    return m_seekable ? 1 : 0;
+
+  return -1;
 }

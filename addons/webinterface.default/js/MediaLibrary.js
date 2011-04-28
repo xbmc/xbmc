@@ -43,6 +43,22 @@ MediaLibrary.prototype = {
 			$('#pictureLibrary').removeClass('selected');
 			this.hideOverlay();
 		},
+		replaceAll: function(haystack, find, replace) {
+			var parts = haystack.split(find);
+			var result = "";
+			var first = true;
+			for (index in parts)
+			{
+				if (!first)
+					result += replace;				
+				else
+					first = false;
+				
+				result += parts[index];
+			}
+			
+			return result;
+		},
 		musicLibraryOpen: function(event) {
 			this.resetPage();
 			$('#musicLibrary').addClass('selected');
@@ -54,18 +70,16 @@ MediaLibrary.prototype = {
 				libraryContainer.attr('id', 'libraryContainer')
 								.addClass('contentContainer');
 				$('#content').append(libraryContainer);
-				jQuery.post(JSON_RPC + '?GetAlbums', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "start": 0, "fields": ["album_description", "album_theme", "album_mood", "album_style", "album_type", "album_label", "album_artist", "album_genre", "album_rating", "album_title"] }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetAlbums', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "limits": { "start": 0 }, "fields": ["description", "theme", "mood", "style", "type", "label", "artist", "genre", "rating", "title", "year", "thumbnail"], "sort": { "method": "artist" } }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && data.result.albums) {
 						this.albumList = data.result.albums;
-						this.albumList.sort(jQuery.proxy(this.albumArtistSorter, this));
 						$.each($(this.albumList), jQuery.proxy(function(i, item) {
-							var floatableAlbum = this.generateThumb('album', item.thumbnail, item.album_title, item.album_artist);
+							var floatableAlbum = this.generateThumb('album', item.thumbnail, item.title, item.artist);
 							floatableAlbum.bind('click', { album: item }, jQuery.proxy(this.displayAlbumDetails, this));
 							libraryContainer.append(floatableAlbum);
 						}, this));
 						libraryContainer.append($('<div>').addClass('footerPadding'));
 						$('#spinner').hide();
-						//$('#libraryContainer img').lazyload();
 						libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));
 						libraryContainer.trigger('scroll');
 						myScroll = new iScroll('libraryContainer');
@@ -81,27 +95,27 @@ MediaLibrary.prototype = {
 		getThumbnailPath: function(thumbnail) {
 			return thumbnail ? ('/vfs/' + thumbnail) : DEFAULT_ALBUM_COVER;
 		},
-		generateThumb: function(type, thumbnail, album_title, album_artist) {
+		generateThumb: function(type, thumbnail, title, artist) {
 			var floatableAlbum = $('<div>');
 			var path = this.getThumbnailPath(thumbnail);
-			var title = album_title||'';
-			var artist = album_artist||'';
+			title = title || '';
+			artist = artist ||'';
 			if (title.length > 18 && !(title.length <= 21)) {
-				title = album_title.substring(0, 18) + '...';
+				title = title.substring(0, 18) + '...';
 			}
 			if (artist.length > 20 && !(artist.length <= 22)) {
-				artist = album_artist.substring(0, 20) + '...';
+				artist = artist.substring(0, 20) + '...';
 			}
 			var className = '';
 			var code = '';
 			switch(type) {
 				case 'album':
 					className = 'floatableAlbum';
-					code = '<p class="album" title="' + album_title + '">' + title + '</p><p class="artist" title="' + album_artist + '">' + artist + '</p>';
+					code = '<p class="album" title="' + title + '">' + title + '</p><p class="artist" title="' + artist + '">' + artist + '</p>';
 					break;
 				case 'movie':
 					className = 'floatableMovieCover';
-					code = '<p class="album" title="' + album_title + '">' + title + '</p>';
+					code = '<p class="album" title="' + title + '">' + title + '</p>';
 					break;
 				case 'tvshow':
 					className = 'floatableTVShowCover';
@@ -109,10 +123,10 @@ MediaLibrary.prototype = {
 				case 'image':
 				case 'directory':
 					className = 'floatableAlbum';
-					code = '<p class="album" title="' + album_title + '">' + title + '</p>';
+					code = '<p class="album" title="' + title + '">' + title + '</p>';
 					break;
 			}
-			return floatableAlbum.addClass(className).html('<div class="imgWrapper"><div class="inner"><img src="' + path + '" alt="" /></div></div>' + code);
+			return floatableAlbum.addClass(className).html('<div class="imgWrapper"><div class="inner"><img src="' + path + '" alt="' + title + '" /></div></div>' + code);
 		},
 		showAlbumSelectorBlock: function(album) {
 			if (album) {
@@ -144,7 +158,7 @@ MediaLibrary.prototype = {
 				if (nextAlbum) {
 					$('#albumSelector .nextAlbum').bind('click', {album: nextAlbum}, jQuery.proxy(this.displayAlbumDetails, this));
 				}
-				$('#albumSelector .activeAlbumTitle').html(album.album_title||'Unknown Album');
+				$('#albumSelector .activeAlbumTitle').html(album.title||'Unknown Album');
 				albumSelectorBlock.show();
 			}
 		},
@@ -158,7 +172,7 @@ MediaLibrary.prototype = {
 			$('#topScrollFade').hide();
 			if (!albumDetailsContainer || albumDetailsContainer.length == 0) {
 				$('#spinner').show();
-				jQuery.post(JSON_RPC + '?GetSongs', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "fields": ["title", "artist", "genre", "tracknumber", "discnumber", "duration", "year"], "albumid" : ' + event.data.album.albumid + ' }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetSongs', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "fields": ["title", "artist", "genre", "track", "duration", "year", "rating", "playcount"], "albumid" : ' + event.data.album.albumid + ' }, "id": 1}', jQuery.proxy(function(data) {
 					albumDetailsContainer = $('<div>');
 					albumDetailsContainer.attr('id', 'albumDetails' + event.data.album.albumid)
 										 .addClass('contentContainer')
@@ -167,9 +181,9 @@ MediaLibrary.prototype = {
 					$('.contentContainer').hide();
 					$('#content').append(albumDetailsContainer);
 					var albumThumbnail = event.data.album.thumbnail;
-					var albumTitle = event.data.album.album_title||'Unknown Album';
-					var albumArtist = event.data.album.album_artist||'Unknown Artist';
-					var trackCount = data.result.total;
+					var albumTitle = event.data.album.title||'Unknown Album';
+					var albumArtist = event.data.album.artist||'Unknown Artist';
+					var trackCount = data.result.limits.total;
 					$.each($(data.result.songs), jQuery.proxy(function(i, item) {
 						if (i == 0) {
 							var trackRow = $('<tr>').addClass('trackRow').addClass('tr' + i % 2);
@@ -181,25 +195,25 @@ MediaLibrary.prototype = {
 						}
 						var trackRow = $('<tr>').addClass('trackRow').addClass('tr' + i % 2);
 						var trackNumberTD = $('<td>')
-							.html(item.tracknumber)
-							.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							.html(item.track)
+							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackNumberTD);
 						var trackTitleTD = $('<td>')
-							.html(item.title)
-							.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							.html(item.title);
+							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackTitleTD);
 						var trackDurationTD = $('<td>')
 							.addClass('time')
-							.html(durationToString(item.duration))
-							.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							.html(durationToString(item.duration));
+							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackDurationTD);
 						var trackArtistTD = $('<td>')
-							.html(item.artist)
-							.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							.html(item.artist);
+							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackArtistTD);
 						var trackGenreTD = $('<td>')
-							.html(item.genre)
-							.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							.html(item.genre);
+							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
 						trackRow.append(trackGenreTD);
 						$('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
 					}, this));
@@ -233,7 +247,7 @@ MediaLibrary.prototype = {
 			$('#topScrollFade').hide();
 			if (!tvshowDetailsContainer || tvshowDetailsContainer.length == 0) {
 				$('#spinner').show();
-				jQuery.post(JSON_RPC + '?GetTVShowSeasons', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": { "fields": ["genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "showtitle", "firstaired", "duration", "season", "episode", "runtime", "year", "playcount", "rating", "writer", "studio", "mpaa", "premiered"], "tvshowid" : ' + event.data.tvshow.tvshowid + ' }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetTVShowSeasons', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": { "fields": [ "season", "showtitle", "playcount", "episode", "thumbnail" ], "tvshowid" : ' + event.data.tvshow.tvshowid + ' }, "id": 1}', jQuery.proxy(function(data) {
 					tvshowDetailsContainer = $('<div>');
 					tvshowDetailsContainer.attr('id', 'tvShowDetails' + event.data.tvshow.tvshowid)
 										  .css('display', 'none')
@@ -244,8 +258,6 @@ MediaLibrary.prototype = {
 						var absWrapper = $('<div>').addClass('showDetailsWrapper');
 						var showDetails = $('<div>').addClass('showDetails');
 						showDetails.append($('<p>').html(data.result.seasons[0].showtitle).addClass('showTitle'));
-						showDetails.append($('<p>').html('<span class="heading">Genre:</span> ' + data.result.seasons[0].genre));
-						showDetails.append($('<p>').html('<span class="heading">Studio:</span> ' + data.result.seasons[0].studio));
 						absWrapper.append(showDetails);
 						var seasonSelectionContainer = $('<div>').addClass('seasonPicker');
 						var seasonSelectionList = $('<ul>');
@@ -253,7 +265,9 @@ MediaLibrary.prototype = {
 						var firstSeason;
 						$.each($(data.result.seasons), jQuery.proxy(function(i, item) {
 							episodeCount += item.episode;
-							var season = $('<li>').html(item.title);
+							var season = $('<li>');
+							season.text(item.title);
+							alert(season.text());
 							if (i == 0) {
 								season.addClass('activeSeason');
 								firstSeason = season;
@@ -276,7 +290,7 @@ MediaLibrary.prototype = {
 				}, this), 'json');
 			} else {
 				$('.contentContainer').hide();
-				$('#tvShowDetails' + event.data.show.showid);
+				$('#tvShowDetails' + event.data.show.tvshowid);
 			}
 		},
 		displaySeasonListings: function(event) {
@@ -291,7 +305,7 @@ MediaLibrary.prototype = {
 				this.tvActiveSeason = event.data.element;
 				$(this.tvActiveSeason).addClass('activeSeason');			
 				//Populate new listings
-				jQuery.post(JSON_RPC + '?GetTVSeasonEpisodes', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": { "fields": ["genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "showtitle", "firstaired", "duration", "season", "episode", "runtime", "year", "playcount", "rating", "writer", "studio", "mpaa", "premiered"], "season" : ' + event.data.season.season + ', "tvshowid" : ' + event.data.tvshow + ' }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetTVSeasonEpisodes', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": { "fields": [ "title", "plot", "votes", "rating", "writingcredits", "firstaired", "playcount", "runtime", "director", "productioncode", "season", "episode", "showtitle", "lastplayed", "thumbnail", "file" ], "season" : ' + event.data.season.season + ', "tvshowid" : ' + event.data.tvshow + ' }, "id": 1}', jQuery.proxy(function(data) {
 					var episodeListingsContainer = $('<div>').addClass('episodeListingsContainer');
 					var list = $('<ul>');
 					$.each($(data.result.episodes), jQuery.proxy(function(i, item) {
@@ -324,7 +338,9 @@ MediaLibrary.prototype = {
 			}
 		},
 		playMovie: function(event) {
-			jQuery.post(JSON_RPC + '?PlayMovie', '{"jsonrpc": "2.0", "method": "XBMC.Play", "params": { "movieid": ' + event.data.movie.movieid + ' }, "id": 1}', jQuery.proxy(function(data) {
+			var file = this.replaceAll(event.data.movie.file, "\\", "\\\\");
+			alert(file);
+			jQuery.post(JSON_RPC + '?PlayMovie', '{"jsonrpc": "2.0", "method": "XBMC.Play", "params": { "file": "' + file + '" }, "id": 1}', jQuery.proxy(function(data) {
 				this.hideOverlay();
 			}, this), 'json');
 		},
@@ -360,9 +376,9 @@ MediaLibrary.prototype = {
 		playTrack: function(event) {
 			jQuery.post(JSON_RPC + '?ClearPlaylist', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Clear", "id": 1}', jQuery.proxy(function(data) {
 				//check that clear worked.
-				jQuery.post(JSON_RPC + '?AddAlbumToPlaylist', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Add", "params": { "albumid": ' + event.data.album.albumid + ' }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?AddAlbumToPlaylist', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Add", "params": { "item": { "albumid": ' + event.data.album.albumid + ' } }, "id": 1}', jQuery.proxy(function(data) {
 					//play specific song in playlist
-					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Play", "params": { "songid": ' + event.data.song.songid + ' }, "id": 1}', function() {}, 'json');
+					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Play", "params": { "item": { "file": ' + event.data.song.file + ' } }, "id": 1}', function() {}, 'json');
 				}, this), 'json');
 			}, this), 'json');
 		},
@@ -373,7 +389,7 @@ MediaLibrary.prototype = {
 			var libraryContainer = $('#movieLibraryContainer');
 			if (!libraryContainer || libraryContainer.length == 0) {
 				$('#spinner').show();
-				jQuery.post(JSON_RPC + '?GetMovies', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "start": 0, "fields": ["genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "showtitle", "firstaired", "duration", "season", "episode", "runtime", "year", "playcount", "rating"] }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetMovies', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "limits": { "start": 0 }, "fields": [ "genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "runtime", "year", "playcount", "rating", "thumbnail", "file" ], "sort": { "method": "sorttitle", "ignorearticle": true } }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && data.result.movies) {
 							libraryContainer = $('<div>');
 							libraryContainer.attr('id', 'movieLibraryContainer')
@@ -382,7 +398,7 @@ MediaLibrary.prototype = {
 					} else {
 						libraryContainer.html('');
 					}
-					data.result.movies.sort(jQuery.proxy(this.movieTitleSorter, this));
+					//data.result.movies.sort(jQuery.proxy(this.movieTitleSorter, this));
 					$.each($(data.result.movies), jQuery.proxy(function(i, item) {
 						var floatableMovieCover = this.generateThumb('movie', item.thumbnail, item.title);
 						floatableMovieCover.bind('click', { movie: item }, jQuery.proxy(this.displayMovieDetails, this));
@@ -407,7 +423,7 @@ MediaLibrary.prototype = {
 			var libraryContainer = $('#tvshowLibraryContainer');
 			if (!libraryContainer || libraryContainer.length == 0) {
 				$('#spinner').show();
-				jQuery.post(JSON_RPC + '?GetTVShows', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "start": 0, "fields": ["genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "showtitle", "firstaired", "duration", "season", "episode", "runtime", "year", "playcount", "rating"] }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetTVShows', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "fields": ["genre", "plot", "title", "lastplayed", "episode", "year", "playcount", "rating", "thumbnail", "studio", "mpaa", "premiered"] }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && data.result.tvshows) {
 							libraryContainer = $('<div>');
 							libraryContainer.attr('id', 'tvshowLibraryContainer')
@@ -422,7 +438,6 @@ MediaLibrary.prototype = {
 						libraryContainer.append(floatableTVShowCover);
 					}, this));
 					libraryContainer.append($('<div>').addClass('footerPadding'));
-					//$('#libraryContainer img').lazyload();
 					$('#spinner').hide();
 					libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));
 					libraryContainer.trigger('scroll');
@@ -440,40 +455,19 @@ MediaLibrary.prototype = {
 				$('#topScrollFade').fadeOut();
 			}
 		},
-		albumArtistSorter: function(a, b) {
-			var result = this.sortAlpha(a.album_artist, b.album_artist);
-			if (result == 0) {
-				return this.sortAlpha(a.album_title, b.album_title);
-			}
-			return result;
-		},
-		sortAlpha: function(aStr, bStr) {
-			aStr = aStr.toLowerCase();
-			bStr = bStr.toLowerCase();
-			if (aStr < bStr) {
-				return -1;
-			}
-			if (aStr > bStr) {
-				return 1;
-			}
-			return 0;
-		},
-		movieTitleSorter: function(a, b) {
-			return this.sortAlpha(a.title, b.title);
-		},
 		startSlideshow: function(event) {
-			var directory = event.data.directory.file;
-			jQuery.post(JSON_RPC + '?StartSlideshow', '{"jsonrpc": "2.0", "method": "XBMC.StartSlideshow", "params": { "recursive" : "true", "random":"true", "directory" : "' + directory + '" }, "id": 1}', null, 'json');
+			jQuery.post(JSON_RPC + '?StartSlideshow', '{"jsonrpc": "2.0", "method": "XBMC.StartSlideshow", "params": { "recursive" : "true", "random":"true", "directory" : "' + this.replaceAll(event.data.directory.file, "\\", "\\\\") + '" }, "id": 1}', null, 'json');
 		},
 		showDirectory: function(event) {
 			var directory = event.data.directory.file;
+			var jsonDirectory = this.replaceAll(directory, "\\", "\\\\");			
 			this.resetPage();
 			$('#pictureLibrary').addClass('selected');
 			$('.contentContainer').hide();
 			var libraryContainer = $('#pictureLibraryDirContainer' + directory);
 			if (!libraryContainer || libraryContainer.length == 0) {
 				$('#spinner').show();                           
-				jQuery.post(JSON_RPC + '?GetDirectory', '{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": { "media" : "pictures", "directory":"' + directory + '" }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetDirectory', '{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": { "media" : "pictures", "directory": "' + jsonDirectory + '" }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && ( data.result.directories || data.result.files )) {
 						libraryContainer = $('<div>');
 						libraryContainer.attr('id', 'pictureLibraryDirContainer' + directory)
@@ -492,21 +486,23 @@ MediaLibrary.prototype = {
 						});
 						libraryContainer.append(breadcrumb);
 						libraryContainer.append($('<div>').css('clear','both'));
-						if (data.result.directories) {
-							$.each($(data.result.directories), jQuery.proxy(function(i, item) {
-								var floatableShare = this.generateThumb('directory', item.thumbnail, item.label);
-								floatableShare.bind('click', { directory: item }, jQuery.proxy(this.showDirectory, this));              
-								//var slideshow = $('<div">');
-								//slideshow.html('<div>Slideshow</div>');
-								//slideshow.bind('click', { directory: item }, jQuery.proxy(this.startSlideshow, this));        
-								//floatableShare.append(slideshow);
-								libraryContainer.append(floatableShare);
-							}, this));
-						}
 						if (data.result.files) {
 							$.each($(data.result.files), jQuery.proxy(function(i, item) {
-								var floatableImage = this.generateThumb('image', item.file, item.label);
-								libraryContainer.append(floatableImage);
+								if (item.filetype == "file")
+								{
+									var floatableImage = this.generateThumb('image', item.file, item.label);
+									libraryContainer.append(floatableImage);
+								}
+								else if (item.filetype == "directory")
+								{
+									var floatableShare = this.generateThumb('directory', item.thumbnail, item.label);
+									floatableShare.bind('click', { directory: item }, jQuery.proxy(this.showDirectory, this));              
+									//var slideshow = $('<div">');
+									//slideshow.html('<div>Slideshow</div>');
+									//slideshow.bind('click', { directory: item }, jQuery.proxy(this.startSlideshow, this));        
+									//floatableShare.append(slideshow);
+									libraryContainer.append(floatableShare);
+								}
 							}, this));
 						}
 						libraryContainer.append($('<div>').addClass('footerPadding'));

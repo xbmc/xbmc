@@ -106,6 +106,7 @@ NowPlayingManager.prototype = {
 						this.playing = false;
 						this.paused = false;
 						this.trackBaseTime = 0;
+						this.trackDurationTime = 0;
 						this.showPlayButton();
 					}
 				}, this), 'json');
@@ -150,7 +151,7 @@ NowPlayingManager.prototype = {
 		playPlaylistItem: function(sender) {
 			var sequenceId = $(sender.currentTarget).attr('seq');
 			if (!this.activePlaylistItem || (this.activePlaylistItem !== undefined && sequenceId != this.activePlaylistItem.seq)) {
-				jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "' + this.activePlayer + 'Playlist.Play", "params": ' + sequenceId + ', "id": 1}', function() {}, 'json');
+				jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "' + this.activePlayer + 'Playlist.Play", "params": { "item": ' + sequenceId + '}, "id": 1}', function() {}, 'json');
 			}
 			this.hidePlaylist();
 		},
@@ -177,27 +178,27 @@ NowPlayingManager.prototype = {
 				url: JSON_RPC + '?updateAudioPlaylist', 
 				data: '{"jsonrpc": "2.0", "method": "AudioPlaylist.GetItems", "params": { "fields": ["title", "album", "artist", "duration"] }, "id": 1}', 
 				success: jQuery.proxy(function(data) {
-					if (data && data.result && data.result.items && data.result.total > 0) {
+					if (data && data.result && data.result.items && data.result.limits.total > 0) {
 						//Compare new playlist to active playlist, only redraw if a change is noticed
-						if (!this.activePlaylistItem || this.playlistChanged(data.result.items) || (this.activePlaylistItem && (this.activePlaylistItem.seq != data.result.current))) {
+						if (!this.activePlaylistItem || this.playlistChanged(data.result.items) || (this.activePlaylistItem && (this.activePlaylistItem.seq != data.result.state.current))) {
 							var ul = $('<ul>');
 							var activeItem;
 							$.each($(data.result.items), jQuery.proxy(function(i, item) {
 								var li = $('<li>');
 								var code = '<span class="duration">' + durationToString(item.duration) + '</span><div class="trackInfo" title="' + item.title + ' - ' + item.artist + '"><span class="trackTitle">' + item.title + '</span> - <span class="trackArtist">' + item.artist + '</span></div>';
-								if (i == data.result.current) {
+								if (i == data.result.state.current) {
 									activeItem = item;
 									activeItem.seq = i;
 									li.addClass('activeItem');
 								}
-								if (i == (data.result.current + 1)) {
+								if (i == (data.result.state.current + 1)) {
 									$('#nextTrack').html(code).show();
 								}
 								li.bind('click', jQuery.proxy(this.playPlaylistItem, this));
 								ul.append(li.attr('seq', i).html(code));
 							}, this));
-							if (data.result.total > 1) {
-								if (activeItem && data.result.total-1 == activeItem.seq) {
+							if (data.result.limits.total > 1) {
+								if (activeItem && data.result.limits.total-1 == activeItem.seq) {
 									$('#nextTrack').html('<div class="trackInfo">Last track in playlist</div>').show();
 								}
 								$('#nextText').show();
@@ -254,7 +255,8 @@ NowPlayingManager.prototype = {
 		updateActiveItemDuration: function() {
 			jQuery.post(JSON_RPC + '?updateDuration', '{"jsonrpc": "2.0", "method": "' + this.activePlayer + 'Player.GetTime", "id": 1}', jQuery.proxy(function(data) {
 				if (data && data.result) {
-					this.trackBaseTime = data.result.time;
+					this.trackBaseTime = timeToDuration(data.result.time);
+					this.trackDurationTime = timeToDuration(data.result.total);
 					this.playing = data.result.playing;
 					this.paused = data.result.paused;
 					if (!this.autoRefreshAudioData && !this.autoRefreshVideoData) {
@@ -310,9 +312,9 @@ NowPlayingManager.prototype = {
 					$('#audioArtistTitle').html(this.activePlaylistItem.artist);
 					$('#progressBar').attr('style', '');
 				}
-				$('#audioDuration').html(durationToString(this.trackBaseTime) + ' / ' + durationToString(this.activePlaylistItem.duration));
+				$('#audioDuration').html(durationToString(this.trackBaseTime) + ' / ' + durationToString(this.trackDurationTime));
 				var buttonWidth = $('#progressBar .progressIndicator').width();
-				var progressBarWidth = (this.trackBaseTime / this.activePlaylistItem.duration) * 100;
+				var progressBarWidth = (this.trackBaseTime / this.trackDurationTime) * 100;
 				var progressSliderPosition = Math.ceil(($('#progressBar').width() / 100) * progressBarWidth) - buttonWidth;
 				if (progressSliderPosition < 0) {
 					progressSliderPosition = 0;
@@ -354,14 +356,14 @@ NowPlayingManager.prototype = {
 					$('#videoTitle').width(365 - (imgWidth - 100));
 					$('#videoShowTitle').html(this.activePlaylistItem.showtitle||'&nbsp;');
 					var extra = '';
-					if (this.activePlaylistItem.season && this.activePlaylistItem.episode) {
+					if (this.activePlaylistItem.season >= 0 && this.activePlaylistItem.episode >= 0) {
 						extra = this.activePlaylistItem.season + 'x' + this.activePlaylistItem.episode + ' ';
 					}
 					$('#videoTitle').html(extra + this.activePlaylistItem.title);
 				}
-				$('#videoDuration').html(durationToString(this.trackBaseTime) + ' / ' + durationToString(this.activePlaylistItem.duration));
+				$('#videoDuration').html(durationToString(this.trackBaseTime) + ' / ' + durationToString(this.trackDurationTime));
 				var buttonWidth = $('#progressBar .progressIndicator').width();
-				var progressBarWidth = (this.trackBaseTime / this.activePlaylistItem.duration) * 100;
+				var progressBarWidth = (this.trackBaseTime / this.trackDurationTime) * 100;
 				var progressSliderPosition = Math.ceil(($('#progressBar').width() / 100) * progressBarWidth) - buttonWidth;
 				if (progressSliderPosition < 0) {
 					progressSliderPosition = 0;
@@ -410,9 +412,9 @@ NowPlayingManager.prototype = {
 			jQuery.ajax({
 				type: 'POST', 
 				url: JSON_RPC + '?updateVideoPlaylist', 
-				data: '{"jsonrpc": "2.0", "method": "VideoPlaylist.GetItems", "params": { "fields": ["title", "season", "episode", "plot", "duration", "showtitle"] }, "id": 1}', 
+				data: '{"jsonrpc": "2.0", "method": "VideoPlaylist.GetItems", "params": { "fields": ["title", "season", "episode", "plot", "runtime", "showtitle"] }, "id": 1}', 
 				success: jQuery.proxy(function(data) {
-					if (data && data.result && data.result.items && data.result.total > 0) {
+					if (data && data.result && data.result.items && data.result.limits.total > 0) {
 						//Compare new playlist to active playlist, only redraw if a change is noticed.
 						if (this.playlistChanged(data.result.items)) {
 							var ul = $('<ul>');
@@ -420,24 +422,24 @@ NowPlayingManager.prototype = {
 							$.each($(data.result.items), jQuery.proxy(function(i, item) {
 								var li = $('<li>');
 								var extra = '';
-								if (item.season && item.episode) {
+								if (item.season >= 0 && item.episode >= 0) {
 									extra = item.season + 'x' + item.episode + ' ';
 								}
-								var code = '<span class="duration">' + durationToString(item.duration) + '</span><div class="trackInfo" title="' + extra + item.title + '"><span class="trackTitle">' + extra + item.title + '</span></div>';
-								if (i == data.result.current) {
+								var code = '<span class="duration">' + durationToString(item.runtime) + '</span><div class="trackInfo" title="' + extra + item.title + '"><span class="trackTitle">' + extra + item.title + '</span></div>';
+								if (i == data.result.state.current) {
 									activeItem = item;
 									activeItem.seq = i;
 									li.addClass('activeItem');
 								}
-								if (i == (data.result.current + 1)) {
+								if (i == (data.result.state.current + 1)) {
 									$('#nextTrack').html(code).show();
 								}
 								li.bind('click', jQuery.proxy(this.playPlaylistItem, this));
 								ul.append(li.attr('seq', i).html(code));
 							}, this));
-							if (data.result.total > 1) {
+							if (data.result.limits.total > 1) {
 								$('#nextText').show();
-								if (activeItem && data.result.total == activeItem.seq) {
+								if (activeItem && data.result.limits.total == activeItem.seq) {
 									$('#nextTrack').html('<div class="trackInfo">Last track in playlist</div>').show();
 								}
 								$('#nowPlayingPlaylist').html('').append(ul);

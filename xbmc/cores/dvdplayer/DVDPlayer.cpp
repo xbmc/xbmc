@@ -546,6 +546,11 @@ bool CDVDPlayer::OpenDemuxStream()
   m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_NAV);
   m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
 
+  int64_t len = m_pInputStream->GetLength();
+  int64_t tim = m_pDemuxer->GetStreamLength();
+  if(len > 0 && tim > 0)
+    m_pInputStream->SetReadRate(len * 1000 / tim);
+
   return true;
 }
 
@@ -2304,8 +2309,8 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
       int64_t remain = m_State.file_length - m_State.file_position - queued;
 
       strBuf.AppendFormat(" buf:%s/%s"
-                         , StringUtils::SizeToString(std::min(remain, cached)).c_str()
-                         , StringUtils::SizeToString(std::max(remain, (int64_t)0)).c_str());
+                         , StringUtils::SizeToString(cached).c_str()
+                         , StringUtils::SizeToString(std::max(remain, cached)).c_str());
     }
 
     strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%%%s )"
