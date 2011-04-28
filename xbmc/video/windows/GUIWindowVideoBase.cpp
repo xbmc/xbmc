@@ -1038,6 +1038,12 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem)
       return OnFileAction(iItem, value);
     }
   }
+  else
+  {
+    // resuming directories isn't supported yet. play.
+    PlayItem(iItem);
+    return true;
+  }
 
   return OnFileAction(iItem, SELECT_ACTION_PLAY);
 }
