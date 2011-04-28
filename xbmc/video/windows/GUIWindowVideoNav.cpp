@@ -419,6 +419,9 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
                 !items.IsVirtualDirectoryRoot() &&
                 m_stackingAvailable);
 
+  if (content.IsEmpty())
+    m_database.GetPlayCounts(items);
+
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
@@ -434,10 +437,9 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       pItem->m_bIsFolder = item.m_bIsFolder;
     }
     else
-    { // grab the playcount and clean the label
-      int playCount = m_database.GetPlayCount(*pItem);
-      if (playCount >= 0)
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, playCount > 0);
+    { // set the watched overlay and clean the label
+      if (pItem->HasVideoInfoTag())
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
       if (clean)
         pItem->CleanString();
     }

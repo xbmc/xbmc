@@ -328,23 +328,29 @@ public:
   /*! \brief Increment the playcount of an item
    Increments the playcount and updates the last played date
    \param item CFileItem to increment the playcount for
-   \sa GetPlayCount, SetPlayCount
+   \sa GetPlayCount, SetPlayCount, GetPlayCounts
    */
   void IncrementPlayCount(const CFileItem &item);
 
   /*! \brief Get the playcount of an item
    \param item CFileItem to get the playcount for
    \return the playcount of the item, or -1 on error
-   \sa SetPlayCount, IncrementPlayCount
+   \sa SetPlayCount, IncrementPlayCount, GetPlayCounts
    */
   int GetPlayCount(const CFileItem &item);
 
   /*! \brief Update the last played time of an item
    Updates the last played date
    \param item CFileItem to update the last played time for
-   \sa GetPlayCount, SetPlayCount, IncrementPlayCount
+   \sa GetPlayCount, SetPlayCount, IncrementPlayCount, GetPlayCounts
    */
   void UpdateLastPlayed(const CFileItem &item);
+
+  /*! \brief Get the playcount of a list of items
+   \param items CFileItemList to fetch the playcounts for
+   \sa GetPlayCount, SetPlayCount, IncrementPlayCount
+   */
+  bool GetPlayCounts(CFileItemList &items);
 
   void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 
