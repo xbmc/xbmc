@@ -21,6 +21,7 @@
 
 /* DTS spec shows it suppors both BE and LE, we should not need to convert */
 
+#include <cassert>
 #include "system.h"
 #include "AEPackIEC958.h"
 
@@ -35,6 +36,7 @@ inline void SwapEndian(uint16_t *dst, uint16_t *src, unsigned int size)
 
 int CAEPackIEC958::PackAC3(uint8_t *data, unsigned int size, uint8_t *dest)
 {
+  assert(size <= OUT_FRAMESTOBYTES(AC3_FRAME_SIZE));
   struct IEC958Packet *packet = (struct IEC958Packet*)dest;
 
   packet->m_preamble1 = IEC958_PREAMBLE1;
@@ -58,6 +60,7 @@ int CAEPackIEC958::PackAC3(uint8_t *data, unsigned int size, uint8_t *dest)
 
 int CAEPackIEC958::PackEAC3(uint8_t *data, unsigned int size, uint8_t *dest)
 {
+  assert(size <= OUT_FRAMESTOBYTES(EAC3_FRAME_SIZE));
   struct IEC958Packet *packet = (struct IEC958Packet*)dest;
 
   packet->m_preamble1 = IEC958_PREAMBLE1;
@@ -80,6 +83,7 @@ int CAEPackIEC958::PackEAC3(uint8_t *data, unsigned int size, uint8_t *dest)
 
 int CAEPackIEC958::PackDTS_512(uint8_t *data, unsigned int size, uint8_t *dest)
 {
+  assert(size <= OUT_FRAMESTOBYTES(DTS1_FRAME_SIZE));
   struct IEC958Packet *packet = (struct IEC958Packet*)dest;
   packet->m_preamble1 = IEC958_PREAMBLE1;
   packet->m_preamble2 = IEC958_PREAMBLE2;
@@ -101,6 +105,7 @@ int CAEPackIEC958::PackDTS_512(uint8_t *data, unsigned int size, uint8_t *dest)
 
 int CAEPackIEC958::PackDTS_1024(uint8_t *data, unsigned int size, uint8_t *dest)
 {
+  assert(size <= OUT_FRAMESTOBYTES(DTS2_FRAME_SIZE));
   struct IEC958Packet *packet = (struct IEC958Packet*)dest;
   packet->m_preamble1 = IEC958_PREAMBLE1;
   packet->m_preamble2 = IEC958_PREAMBLE2;
@@ -122,6 +127,7 @@ int CAEPackIEC958::PackDTS_1024(uint8_t *data, unsigned int size, uint8_t *dest)
 
 int CAEPackIEC958::PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest)
 {
+  assert(size <= OUT_FRAMESTOBYTES(DTS3_FRAME_SIZE));
   struct IEC958Packet *packet = (struct IEC958Packet*)dest;
   packet->m_preamble1 = IEC958_PREAMBLE1;
   packet->m_preamble2 = IEC958_PREAMBLE2;
@@ -143,6 +149,7 @@ int CAEPackIEC958::PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest)
 
 int CAEPackIEC958::PackTrueHD(uint8_t *data, unsigned int size, uint8_t *dest)
 {
+  assert(size <= OUT_FRAMESTOBYTES(TRUEHD_FRAME_SIZE));
   struct IEC958Packet *packet = (struct IEC958Packet*)dest;
   packet->m_preamble1 = IEC958_PREAMBLE1;
   packet->m_preamble2 = IEC958_PREAMBLE2;

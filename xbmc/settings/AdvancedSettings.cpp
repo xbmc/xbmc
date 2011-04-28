@@ -341,6 +341,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "percentseekbackwardbig", m_musicPercentSeekBackwardBig, -100, 0);
 
     XMLUtils::GetInt(pElement, "resample", m_audioResample, 0, 192000);
+    XMLUtils::GetString(pElement, "transcodeto", m_audioTranscodeTo);
 
     TiXmlElement* pAudioExcludes = pElement->FirstChildElement("excludefromlisting");
     if (pAudioExcludes)

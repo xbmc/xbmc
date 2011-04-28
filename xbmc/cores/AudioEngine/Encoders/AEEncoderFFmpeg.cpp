@@ -20,11 +20,13 @@
  */
 
 #define AC3_ENCODE_BITRATE 640000
+#define DTS_ENCODE_BITRATE 1411200
 
 #include "AEEncoderFFmpeg.h"
 #include "AEUtil.h"
-#include "AEPackIEC958.h"
 #include "utils/log.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/GUISettings.h"
 #include <string.h>
 
 CAEEncoderFFmpeg::CAEEncoderFFmpeg():
@@ -51,7 +53,7 @@ bool CAEEncoderFFmpeg::IsCompatible(const AEAudioFormat format)
   if (match)
   {
     enum AEChannel layout[AE_CH_MAX+1];
-    unsigned int channels = BuildChannelLayout(AV_CH_LAYOUT_5POINT1_BACK, layout); /* hard coded for AC3 currently */
+    unsigned int channels = BuildChannelLayout(AV_CH_LAYOUT_5POINT1_BACK, layout); /* hard coded for AC3 & DTS currently */
     if (channels != m_CurrentFormat.m_channelCount)
     {
       match = false;
@@ -106,13 +108,38 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
 
   m_dllAvCodec.avcodec_register_all();
 
-  AVCodec *codec;
-  codec = m_dllAvCodec.avcodec_find_encoder(CODEC_ID_AC3);
+  bool ac3 = g_guiSettings.GetBool("audiooutput.ac3passthrough");
+
+  AVCodec *codec = NULL;
+#if 0
+  /* the DCA encoder is currently useless for transcode, it creates a 196 kHz DTS-HD like mongrel which is useless for SPDIF */
+  bool dts = g_guiSettings.GetBool("audiooutput.dtspassthrough");
+  if (dts && (!ac3 || g_advancedSettings.m_audioTranscodeTo.Equals("dts")))
+  {
+    m_CodecName = "DTS";
+    m_CodecID   = CODEC_ID_DTS;
+    m_PackFunc  = &CAEPackIEC958::PackDTS_1024;
+    m_BitRate   = DTS_ENCODE_BITRATE;
+    codec = m_dllAvCodec.avcodec_find_encoder(m_CodecID);
+  }
+#endif
+
+  /* fallback to ac3 if we support it, we might not have DTS support */
+  if (!codec && ac3)
+  {
+    m_CodecName = "AC3";
+    m_CodecID   = CODEC_ID_AC3;
+    m_PackFunc  = &CAEPackIEC958::PackAC3;
+    m_BitRate   = AC3_ENCODE_BITRATE;
+    codec = m_dllAvCodec.avcodec_find_encoder(m_CodecID);
+  }
+
+  /* check we got the codec */
   if (!codec)
     return false;
 
   m_CodecCtx                 = m_dllAvCodec.avcodec_alloc_context();
-  m_CodecCtx->bit_rate       = AC3_ENCODE_BITRATE;
+  m_CodecCtx->bit_rate       = m_BitRate;
   m_CodecCtx->sample_rate    = format.m_sampleRate;
   m_CodecCtx->channel_layout = AV_CH_LAYOUT_5POINT1_BACK;
 
@@ -167,7 +194,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
     }
     else
     {
-      CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Initialize - Unable to find a suitable data format for the codec");
+      CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Initialize - Unable to find a suitable data format for the codec (%s)", m_CodecName.c_str());
       return false;
     }
   }
@@ -190,9 +217,10 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
 
   m_CurrentFormat = format;
   m_NeededFrames  = format.m_frames;
-  m_OutputSize    = CAEPackIEC958::PackAC3(NULL, 0, m_Buffer);
+  m_OutputSize    = m_PackFunc(NULL, 0, m_Buffer);
   m_OutputRatio   = (float)m_NeededFrames / m_OutputSize;
 
+  CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Initialize - %s encoder ready", m_CodecName.c_str());
   return true;
 }
 
@@ -203,12 +231,12 @@ void CAEEncoderFFmpeg::Reset()
 
 unsigned int CAEEncoderFFmpeg::GetBitRate()
 {
-  return AC3_ENCODE_BITRATE;
+  return m_BitRate;
 }
 
 CodecID CAEEncoderFFmpeg::GetCodecID()
 {
-  return CODEC_ID_AC3;
+  return m_CodecID;
 }
 
 unsigned int CAEEncoderFFmpeg::GetFrames()
@@ -225,7 +253,7 @@ int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
   int size = m_dllAvCodec.avcodec_encode_audio(m_CodecCtx, m_Buffer + IEC958_DATA_OFFSET, FF_MIN_BUFFER_SIZE, (short*)data);
 
   /* pack it into an IEC958 frame */
-  m_BufferSize = CAEPackIEC958::PackAC3(NULL, size, m_Buffer);
+  m_BufferSize = m_PackFunc(NULL, size, m_Buffer);
   if (m_BufferSize != m_OutputSize)
   {
     m_OutputSize  = m_BufferSize;
