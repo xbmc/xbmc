@@ -948,7 +948,10 @@ void CDVDPlayer::Process()
   m_ready.Set();
 
   // make sure all selected stream have data on startup
-  SetCaching(CACHESTATE_INIT);
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+    SetCaching(CACHESTATE_PVR);
+  else
+    SetCaching(CACHESTATE_INIT);
 
   while (!m_bAbortRequest)
   {
@@ -1008,7 +1011,7 @@ void CDVDPlayer::Process()
         {
           FlushBuffers(false);
           SAFE_DELETE(m_pDemuxer);
-          SetCaching(CACHESTATE_INIT);
+          SetCaching(CACHESTATE_PVR);
           continue;
         }
         else
@@ -2063,9 +2066,9 @@ void CDVDPlayer::HandleMessages()
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
         if(input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
-
           FlushBuffers(false);
           SAFE_DELETE(m_pDemuxer);
+          SetCaching(CACHESTATE_PVR);
         }
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
@@ -2099,6 +2102,7 @@ void CDVDPlayer::HandleMessages()
               FlushBuffers(false);
               SAFE_DELETE(m_pDemuxer);
             }
+            SetCaching(CACHESTATE_PVR);
           }
         }
       }
