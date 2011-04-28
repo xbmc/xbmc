@@ -73,6 +73,8 @@ SRCS=AnimatedGif.cpp \
      VisibleEffect.cpp \
      XBTF.cpp \
      XBTFReader.cpp \
+     DirtyRegionTracker.cpp \
+     DirtyRegionSolvers.cpp \
 
 ifeq (@USE_OPENGL@,1)
 SRCS+=TextureGL.cpp \
