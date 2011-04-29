@@ -332,7 +332,16 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
     {
       CStdString strSQL1;
 
-      strSQL=PrepareSQL("insert into song (idSong,idAlbum,idPath,idArtist,strExtraArtists,idGenre,strExtraGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,strMusicBrainzArtistID,strMusicBrainzAlbumID,strMusicBrainzAlbumArtistID,strMusicBrainzTRMID,iTimesPlayed,iStartOffset,iEndOffset,idThumb,lastplayed,rating,comment) values (NULL,%i,%i,%i,'%s',%i,'%s','%s',%i,%i,%i,'%ul','%s','%s','%s','%s','%s','%s'",
+      CStdString strIdSong;
+      if (song.idSong < 0)
+        strIdSong = "NULL";
+      else
+        strIdSong.Format("%d", song.idSong);
+
+      // we use replace because it can handle both inserting a new song
+      // and replacing an existing song's record if the given idSong already exists
+      strSQL=PrepareSQL("replace into song (idSong,idAlbum,idPath,idArtist,strExtraArtists,idGenre,strExtraGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,strMusicBrainzArtistID,strMusicBrainzAlbumID,strMusicBrainzAlbumArtistID,strMusicBrainzTRMID,iTimesPlayed,iStartOffset,iEndOffset,idThumb,lastplayed,rating,comment) values (%s,%i,%i,%i,'%s',%i,'%s','%s',%i,%i,%i,'%ul','%s','%s','%s','%s','%s','%s'",
+                    strIdSong.c_str(),
                     idAlbum, idPath, idArtist, strExtraArtists.c_str(), idGenre, strExtraGenres.c_str(),
                     song.strTitle.c_str(),
                     song.iTrack, song.iDuration, song.iYear,
@@ -352,7 +361,11 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
       strSQL+=strSQL1;
 
       m_pDS->exec(strSQL.c_str());
-      idSong = (int)m_pDS->lastinsertid();
+
+      if (song.idSong < 0)
+        idSong = (int)m_pDS->lastinsertid();
+      else
+        idSong = song.idSong;
     }
 
     // add extra artists and genres
@@ -375,6 +388,36 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
   {
     CLog::Log(LOGERROR, "musicdatabase:unable to addsong (%s)", strSQL.c_str());
   }
+}
+
+int CMusicDatabase::UpdateSong(const CSong& song, int idSong /* = -1 */)
+{
+  CStdString sql;
+  if (idSong < 0)
+    idSong = song.idSong;
+
+  if (idSong < 0)
+    return -1;
+
+  // delete exartistsongs and exgenresongs and karaoke
+  // we don't delete from the song table here because
+  // AddSong will update the existing record
+  sql.Format("delete from exartistsong where idSong=%d", idSong);
+  ExecuteQuery(sql);
+  sql.Format("delete from exgenresong where idSong=%d", idSong);
+  ExecuteQuery(sql);
+  sql.Format("delete from karaokedata where idSong=%d", idSong);
+  ExecuteQuery(sql);
+
+  CSong newSong = song;
+  // Make sure newSong.idSong has a valid value (> 0)
+  newSong.idSong = idSong;
+  // re-add the song
+  AddSong(newSong, false);
+  if (newSong.idSong < 0)
+    return -1;
+
+  return newSong.idSong;
 }
 
 int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, int idArtist, const CStdString &extraArtists, const CStdString &strArtist, int idThumb, int idGenre, const CStdString &extraGenres, int year)
