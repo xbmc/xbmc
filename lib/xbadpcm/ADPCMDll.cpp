@@ -21,6 +21,7 @@
 
 #ifdef _LINUX
 #define __declspec(x)
+#define __cdecl
 #endif
 
 extern "C" 
@@ -64,7 +65,7 @@ extern "C"
 }
 
 
-  void* __declspec(dllexport) DLL_LoadXWAV(const char* szFileName)
+  __declspec(dllexport) void* __cdecl DLL_LoadXWAV(const char* szFileName)
   { 
     ADPCMInfo* info = (ADPCMInfo*)malloc(sizeof(ADPCMInfo));
     info->f = fopen(szFileName,"rb");
