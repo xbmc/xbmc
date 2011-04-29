@@ -225,8 +225,8 @@
 						<posy>30</posy>
 						<width>20</width>
 						<height>20</height>
-						<texture>PVR-HasTimer.png + !ListItem.IsRecording</texture>
-						<visible>ListItem.HasTimer</visible>
+						<texture>PVR-HasTimer.png</texture>
+						<visible>ListItem.HasTimer + !ListItem.IsRecording</visible>
 					</control>
 				</focusedlayout>
 			</control>
