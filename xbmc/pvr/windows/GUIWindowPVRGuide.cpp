@@ -457,6 +457,10 @@ void CGUIWindowPVRGuide::UpdateEpgCache(bool bRadio /* = false */, bool bForceUp
   if (!m_bGotInitialEpg || m_bLastEpgView != bRadio || bForceUpdate)
   {
     CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - updating EPG cache", __FUNCTION__);
+
+    /* lock the graphics context while updating */
+    CSingleLock graphicsLock(g_graphicsContext);
+
     m_epgData->Clear();
     g_PVREpg->GetEPGAll(m_epgData, bRadio);
   }
