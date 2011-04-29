@@ -43,7 +43,7 @@ long         m_noSignalStreamSize     = 0;
 long         m_noSignalStreamReadPos  = 0;
 bool         m_bPlayingNoSignal       = false;
 int          m_iCurrentChannel        = 1;
-ADDON_STATUS m_CurStatus              = STATUS_UNKNOWN;
+ADDON_STATUS m_CurStatus              = ADDON_STATUS_UNKNOWN;
 bool         g_bCreated               = false;
 int          g_iClientID              = -1;
 CStdString   g_szUserPath             = "";
@@ -59,24 +59,24 @@ extern "C" {
  * Standard AddOn related public library functions
  ***********************************************************/
 
-ADDON_STATUS Create(void* hdl, void* props)
+ADDON_STATUS ADDON_Create(void* hdl, void* props)
 {
   if (!props)
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   PVR_PROPERTIES* pvrprops = (PVR_PROPERTIES*)props;
 
   XBMC = new CHelper_libXBMC_addon;
   if (!XBMC->RegisterMe(hdl))
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   PVR = new CHelper_libXBMC_pvr;
   if (!PVR->RegisterMe(hdl))
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   XBMC->Log(LOG_DEBUG, "Creating MythTV PVR-Client");
 
-  m_CurStatus    = STATUS_UNKNOWN;
+  m_CurStatus    = ADDON_STATUS_UNKNOWN;
   g_iClientID    = pvrprops->iClienId;
   g_szUserPath   = pvrprops->strUserPath;
   g_szClientPath = pvrprops->strClientPath;
@@ -126,17 +126,17 @@ ADDON_STATUS Create(void* hdl, void* props)
   MythXmlApi = new MythXml();
   if (!MythXmlApi->open(g_szHostname, g_iMythXmlPort, "", "", g_iPin, g_iMythXmlConnectTimeout))
   {
-	m_CurStatus = STATUS_LOST_CONNECTION;
+	m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
     return m_CurStatus;
   }
 
-  m_CurStatus = STATUS_OK;
+  m_CurStatus = ADDON_STATUS_OK;
 
   g_bCreated = true;
   return m_CurStatus;
 }
 
-void Destroy()
+void ADDON_Destroy()
 {
   if (g_bCreated)
   {
@@ -144,25 +144,25 @@ void Destroy()
 	  MythXmlApi = NULL;
     g_bCreated = false;
   }
-  m_CurStatus = STATUS_UNKNOWN;
+  m_CurStatus = ADDON_STATUS_UNKNOWN;
 }
 
-ADDON_STATUS GetStatus()
+ADDON_STATUS ADDON_GetStatus()
 {
   return m_CurStatus;
 }
 
-bool HasSettings()
+bool ADDON_HasSettings()
 {
   return true;
 }
 
-unsigned int GetSettings(StructSetting ***sSet)
+unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
 {
   return 0;
 }
 
-ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
+ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
 {
   string str = settingName;
   if (str == "host")
@@ -172,7 +172,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     tmp_sHostname = g_szHostname;
     g_szHostname = (const char*) settingValue;
     if (tmp_sHostname != g_szHostname)
-      return STATUS_NEED_RESTART;
+      return ADDON_STATUS_NEED_RESTART;
   }
   else if (str == "mythXMLPort")
   {
@@ -180,7 +180,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     if (g_iMythXmlPort != *(int*) settingValue)
     {
 	  g_iMythXmlPort = *(int*) settingValue;
-      return STATUS_NEED_RESTART;
+      return ADDON_STATUS_NEED_RESTART;
     }
   }
   else if (str == "mythXMLTimeout")
@@ -190,7 +190,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     {
 	  g_iMythXmlConnectTimeout = *(int*) settingValue;
 	  g_iMythXmlConnectTimeout *= 1000;
-      return STATUS_NEED_RESTART;
+      return ADDON_STATUS_NEED_RESTART;
     }
   }
   else if (str == "pin")
@@ -199,18 +199,18 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     if (g_iPin != *(int*) settingValue)
     {
 	  g_iPin = *(int*) settingValue;
-      return STATUS_NEED_RESTART;
+      return ADDON_STATUS_NEED_RESTART;
     }
   }
-  return STATUS_OK;
+  return ADDON_STATUS_OK;
 }
 
-void Stop()
+void ADDON_Stop()
 {
   return;
 }
 
-void FreeSettings()
+void ADDON_FreeSettings()
 {
   return;
 }

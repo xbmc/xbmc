@@ -44,7 +44,7 @@ std::string g_szRadioGroup         = DEFAULT_RADIOGROUP;   ///< Import only radi
 bool        g_bDirectTSFileRead    = DEFAULT_DIRECT_TS_FR; ///< Open the Live-TV timeshift buffer directly (skip RTSP streaming)
 
 /* Client member variables */
-ADDON_STATUS           m_CurStatus    = STATUS_UNKNOWN;
+ADDON_STATUS           m_CurStatus    = ADDON_STATUS_UNKNOWN;
 cPVRClientMediaPortal *g_client       = NULL;
 bool                   g_bCreated     = false;
 int                    g_iClientID    = -1;
@@ -63,24 +63,24 @@ extern "C" {
 // Called after loading of the dll, all steps to become Client functional
 // must be performed here.
 //-----------------------------------------------------------------------------
-ADDON_STATUS Create(void* hdl, void* props)
+ADDON_STATUS ADDON_Create(void* hdl, void* props)
 {
   if (!hdl || !props)
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   PVR_PROPERTIES* pvrprops = (PVR_PROPERTIES*)props;
 
   XBMC = new CHelper_libXBMC_addon;
   if (!XBMC->RegisterMe(hdl))
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   PVR = new CHelper_libXBMC_pvr;
   if (!PVR->RegisterMe(hdl))
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   XBMC->Log(LOG_DEBUG, "Creating MediaPortal PVR-Client (ffmpeg rtsp version)");
 
-  m_CurStatus    = STATUS_UNKNOWN;
+  m_CurStatus    = ADDON_STATUS_UNKNOWN;
   g_client       = new cPVRClientMediaPortal();
   g_iClientID    = pvrprops->iClienId;
   g_szUserPath   = pvrprops->strUserPath;
@@ -192,11 +192,11 @@ ADDON_STATUS Create(void* hdl, void* props)
   /* Create connection to MediaPortal XBMC TV client */
   if (!g_client->Connect())
   {
-    m_CurStatus = STATUS_LOST_CONNECTION;
+    m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
   }
   else
   {
-    m_CurStatus = STATUS_OK;
+    m_CurStatus = ADDON_STATUS_OK;
   }
 
   g_bCreated = true;
@@ -208,7 +208,7 @@ ADDON_STATUS Create(void* hdl, void* props)
 // Used during destruction of the client, all steps to do clean and safe Create
 // again must be done.
 //-----------------------------------------------------------------------------
-void Destroy()
+void ADDON_Destroy()
 {
   if ((g_bCreated) && (g_client))
   {
@@ -227,26 +227,25 @@ void Destroy()
     delete_null(XBMC);
   }
 
-  m_CurStatus = STATUS_UNKNOWN;
+  m_CurStatus = ADDON_STATUS_UNKNOWN;
 }
 
 //-- GetStatus ----------------------------------------------------------------
 // Report the current Add-On Status to XBMC
 //-----------------------------------------------------------------------------
-ADDON_STATUS GetStatus()
+ADDON_STATUS ADDON_GetStatus()
 {
   return m_CurStatus;
 }
-
 //-- HasSettings --------------------------------------------------------------
 // Report "true", yes this AddOn have settings
 //-----------------------------------------------------------------------------
-bool HasSettings()
+bool ADDON_HasSettings()
 {
   return true;
 }
 
-unsigned int GetSettings(StructSetting ***sSet)
+unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
 {
   return 0;
 }
@@ -255,7 +254,7 @@ unsigned int GetSettings(StructSetting ***sSet)
 // Called everytime a setting is changed by the user and to inform AddOn about
 // new setting and to do required stuff to apply it.
 //-----------------------------------------------------------------------------
-ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
+ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
 {
   string str = settingName;
 
@@ -263,7 +262,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   // disabled. In that case the addon is not loaded, so we should not try
   // to change its settings.
   if (!g_bCreated)
-    return STATUS_OK;
+    return ADDON_STATUS_OK;
 
   if (str == "host")
   {
@@ -272,7 +271,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     tmp_sHostname = g_szHostname;
     g_szHostname = (const char*) settingValue;
     if (tmp_sHostname != g_szHostname)
-      return STATUS_NEED_RESTART;
+      return ADDON_STATUS_NEED_RESTART;
   }
   else if (str == "port")
   {
@@ -280,7 +279,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     if (g_iPort != *(int*) settingValue)
     {
       g_iPort = *(int*) settingValue;
-      return STATUS_NEED_RESTART;
+      return ADDON_STATUS_NEED_RESTART;
     }
   }
   else if (str == "ftaonly")
@@ -333,15 +332,15 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     XBMC->Log(LOG_INFO, "Changed setting 'recordingsdir' from %s to %s", g_szRecordingsDir.c_str(), (const char*) settingValue);
     g_szRecordingsDir = (const char*) settingValue;
   }
-  return STATUS_OK;
+  return ADDON_STATUS_OK;
 }
 
-void Stop()
+void ADDON_Stop()
 {
-  Destroy();
+  ADDON_Destroy();
 }
 
-void FreeSettings()
+void ADDON_FreeSettings()
 {
 
 }
