@@ -39,6 +39,3 @@
 
 typedef SOCKET socket_t;
 typedef int socklen_t;
-
-int tcp_connect_addr_socket_nonblocking(struct addrinfo* addr, socket_t fdSock,
-    char *szErrbuf, size_t nErrbufSize, int nTimeout);
