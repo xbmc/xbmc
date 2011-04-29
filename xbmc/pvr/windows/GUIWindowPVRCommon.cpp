@@ -701,7 +701,7 @@ void CGUIWindowPVRCommon::ShowEPGInfo(CFileItem *item)
   CFileItem *tag = NULL;
   if (item->IsEPG())
   {
-    tag = item;
+    tag = new CFileItem(*item);
   }
   else if (item->IsPVRChannel())
   {
@@ -722,6 +722,8 @@ void CGUIWindowPVRCommon::ShowEPGInfo(CFileItem *item)
 
     pDlgInfo->SetProgInfo(tag);
     pDlgInfo->DoModal();
+
+    delete tag;
   }
 }
 
