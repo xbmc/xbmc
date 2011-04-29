@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,46 +19,63 @@
  *
  */
 
-#include <sys/types.h>
-#include <sys/stat.h>
+//#include <sys/types.h>
+//#include <sys/stat.h>
+//#include <string>
+#include <cerrno>
+//#include <cstring>
+//#include <inttypes.h>
 #include <dirent.h>
 #include <map>
-#include <libsquish/squish.h>
-#include <string>
-#define __STDC_FORMAT_MACROS
-#include <inttypes.h>
+
+//#define __STDC_FORMAT_MACROS
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
-#include <cerrno>
-#include <cstring>
+#undef main
+
 #include "guilib/XBTF.h"
 #include "XBTFWriter.h"
+#include "md5.h"
 #include "SDL_anigif.h"
 #include "cmdlineargs.h"
+#include "libsquish/squish.h"
+#ifdef USE_PVR_COMPRESSION
+#include "PVRTexLib.h"
+#endif
+
 #ifdef _WIN32
 #define strncasecmp strnicmp
 #endif
 
-#ifdef _LINUX
-#include <lzo/lzo1x.h>
-#else
+#ifdef USE_LZO_PACKING
+#ifdef _WIN32
 #include "../../lib/win32/liblzo/LZO1X.H"
+#else
+#include <lzo/lzo1x.h>
 #endif
+#endif
+
+using namespace std;
+
+#define FLAGS_USE_LZO     1
+#define FLAGS_ALLOW_YCOCG 2
+#define FLAGS_USE_DXT     4
+#define FLAGS_USE_ETC     8
+#define FLAGS_USE_PVR    16
 
 #define DIR_SEPARATOR "/"
 #define DIR_SEPARATOR_CHAR '/'
 
-#define FLAGS_USE_LZO     1
-#define FLAGS_ALLOW_YCOCG 2
-
-#undef main
-
-extern "C" 
+int NP2( unsigned x )
 {
-#include "md5.h"
+  --x;
+  x |= x >> 1;
+  x |= x >> 2;
+  x |= x >> 4;
+  x |= x >> 8;
+  x |= x >> 16;
+  return ++x;
 }
-
-using namespace std;
 
 const char *GetFormatString(unsigned int format)
 {
@@ -74,8 +91,14 @@ const char *GetFormatString(unsigned int format)
     return "YCoCg";
   case XB_FMT_A8R8G8B8:
     return "ARGB ";
+  case XB_FMT_R8G8B8A8:
+    return "BGRA ";
   case XB_FMT_A8:
     return "A8   ";
+  case XB_FMT_PVR2:
+    return "PVR2 ";
+  case XB_FMT_PVR4:
+    return "PVR4 ";
   default:
     return "?????";
   }
@@ -120,48 +143,50 @@ void CreateSkeletonHeaderImpl(CXBTF& xbtf, std::string fullPath, std::string rel
 
   if (dirp)
   {
-  while ((dp = readdir(dirp)) != NULL)
-  {
-    if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0) 
+    while ((dp = readdir(dirp)) != NULL)
     {
-      continue;
-    }
-
-    //stat to check for dir type (reiserfs fix)
-    std::string fileN = fullPath + "/" + dp->d_name;
-    stat(fileN.c_str(), &stat_p);
-
-    if (dp->d_type == DT_DIR || stat_p.st_mode & S_IFDIR)
-    {
-      std::string tmpPath = relativePath;
-      if (tmpPath.size() > 0)
+      if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0) 
       {
-        tmpPath += "/";
+        continue;
       }
 
-      CreateSkeletonHeaderImpl(xbtf, fullPath + DIR_SEPARATOR + dp->d_name, tmpPath + dp->d_name);
-    }
-    else if (IsGraphicsFile(dp->d_name))
-    {
-      std::string fileName = "";
-      if (relativePath.size() > 0)
+      //stat to check for dir type (reiserfs fix)
+      std::string fileN = fullPath + "/" + dp->d_name;
+      stat(fileN.c_str(), &stat_p);
+
+      if (dp->d_type == DT_DIR || stat_p.st_mode & S_IFDIR)
       {
-        fileName += relativePath;
-        fileName += "/";
+        std::string tmpPath = relativePath;
+        if (tmpPath.size() > 0)
+        {
+          tmpPath += "/";
+        }
+
+        CreateSkeletonHeaderImpl(xbtf, fullPath + DIR_SEPARATOR + dp->d_name, tmpPath + dp->d_name);
       }
+      else if (IsGraphicsFile(dp->d_name))
+      {
+        std::string fileName = "";
+        if (relativePath.size() > 0)
+        {
+          fileName += relativePath;
+          fileName += "/";
+        }
 
-      fileName += dp->d_name;
+        fileName += dp->d_name;
 
-      CXBTFFile file;
-      file.SetPath(fileName);
-      xbtf.GetFiles().push_back(file);
+        CXBTFFile file;
+        file.SetPath(fileName);
+        xbtf.GetFiles().push_back(file);
+      }
     }
-  }
 
-  closedir(dirp);
+    closedir(dirp);
   }
   else
+  {
     printf("Error opening %s (%s)\n", fullPath.c_str(), strerror(errno));
+  }
 }
 
 void CreateSkeletonHeader(CXBTF& xbtf, std::string fullPath)
@@ -173,35 +198,37 @@ void CreateSkeletonHeader(CXBTF& xbtf, std::string fullPath)
 CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned char *data, unsigned int size, unsigned int format, unsigned int flags)
 {
   CXBTFFrame frame;
-  lzo_uint compressedSize = size;
+  unsigned int packedSize = size;
+#ifdef USE_LZO_PACKING
   if ((flags & FLAGS_USE_LZO) == FLAGS_USE_LZO)
   {
     // grab a temporary buffer for unpacking into
-    squish::u8 *compressed = new squish::u8[size + size / 16 + 64 + 3]; // see simple.c in lzo
-    squish::u8 *working = new squish::u8[LZO1X_999_MEM_COMPRESS];
-    if (compressed && working)
+    unsigned char *packed  = new unsigned char[size + size / 16 + 64 + 3]; // see simple.c in lzo
+    unsigned char *working = new unsigned char[LZO1X_999_MEM_COMPRESS];
+    if (packed && working)
     {
-      if (lzo1x_999_compress(data, size, compressed, (lzo_uint*)&compressedSize, working) != LZO_E_OK || compressedSize > size)
+      if (lzo1x_999_compress(data, size, packed, (lzo_uint*)&packedSize, working) != LZO_E_OK || packedSize > size)
       {
         // compression failed, or compressed size is bigger than uncompressed, so store as uncompressed
-        compressedSize = size;
+        packedSize = size;
         writer.AppendContent(data, size);
       }
       else
       { // success
         lzo_uint optimSize = size;
-        lzo1x_optimize(compressed, compressedSize, data, &optimSize, NULL);
-        writer.AppendContent(compressed, compressedSize);
+        lzo1x_optimize(packed, packedSize, data, &optimSize, NULL);
+        writer.AppendContent(packed, packedSize);
       }
       delete[] working;
-      delete[] compressed;
+      delete[] packed;
     }
   }
   else
+#endif
   {
     writer.AppendContent(data, size);
   }
-  frame.SetPackedSize(compressedSize);
+  frame.SetPackedSize(packedSize);
   frame.SetUnpackedSize(size);
   frame.SetWidth(width);
   frame.SetHeight(height);
@@ -225,16 +252,7 @@ CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMS
   argbFormat.BytesPerPixel = 4;
 
   // For DXT5 we need RGBA
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-  argbFormat.Amask = 0xff000000;
-  argbFormat.Ashift = 24;
-  argbFormat.Rmask = 0x00ff0000;
-  argbFormat.Rshift = 16;
-  argbFormat.Gmask = 0x0000ff00;
-  argbFormat.Gshift = 8;
-  argbFormat.Bmask = 0x000000ff;
-  argbFormat.Bshift = 0;
-#else
+#if defined(HOST_BIGENDIAN)
   argbFormat.Amask = 0x000000ff;
   argbFormat.Ashift = 0;
   argbFormat.Rmask = 0x0000ff00;
@@ -243,82 +261,193 @@ CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMS
   argbFormat.Gshift = 16;
   argbFormat.Bmask = 0xff000000;
   argbFormat.Bshift = 24;
+#else
+  argbFormat.Amask = 0xff000000;
+  argbFormat.Ashift = 24;
+  argbFormat.Rmask = 0x00ff0000;
+  argbFormat.Rshift = 16;
+  argbFormat.Gmask = 0x0000ff00;
+  argbFormat.Gshift = 8;
+  argbFormat.Bmask = 0x000000ff;
+  argbFormat.Bshift = 0;
 #endif
 
-  SDL_Surface *argbImage = SDL_ConvertSurface(image, &argbFormat, 0);
-
+  int width, height;
   unsigned int format = 0;
-  double colorMSE, alphaMSE;
-  squish::u8* argb = (squish::u8 *)argbImage->pixels;
-#ifndef __arm__
-  unsigned int compressedSize = squish::GetStorageRequirements(image->w, image->h, squish::kDxt5);
-  squish::u8* compressed = new squish::u8[compressedSize];
-  // first try DXT1, which is only 4bits/pixel
-  CompressImage(argb, image->w, image->h, compressed, squish::kDxt1, colorMSE, alphaMSE);
-  if (colorMSE < maxMSE && alphaMSE < maxMSE)
-  { // success - use it
-    compressedSize = squish::GetStorageRequirements(image->w, image->h, squish::kDxt1);
-    format = XB_FMT_DXT1;
-  }
-  if (!format && alphaMSE == 0 && (flags & FLAGS_ALLOW_YCOCG) == FLAGS_ALLOW_YCOCG)
-  { // no alpha channel, so DXT5YCoCg is going to be the best DXT5 format
-/*    CompressImage(argb, image->w, image->h, compressed, squish::kDxt5 | squish::kUseYCoCg, colorMSE, alphaMSE);
+  SDL_Surface *argbImage = SDL_ConvertSurface(image, &argbFormat, 0);
+  unsigned char* argb = (unsigned char*)argbImage->pixels;
+  unsigned int compressedSize = 0;
+  unsigned char* compressed = NULL;
+  
+  width  = image->w;
+  height = image->h;
+  
+  if (flags & FLAGS_USE_DXT)
+  {
+    double colorMSE, alphaMSE;
+    compressedSize = squish::GetStorageRequirements(width, height, squish::kDxt5);
+    compressed = new unsigned char[compressedSize];
+    // first try DXT1, which is only 4bits/pixel
+    CompressImage(argb, width, height, compressed, squish::kDxt1, colorMSE, alphaMSE);
     if (colorMSE < maxMSE && alphaMSE < maxMSE)
     { // success - use it
-      compressedSize = squish::GetStorageRequirements(image->w, image->h, squish::kDxt5);
-      format = XB_FMT_DXT5_YCoCg;
+      compressedSize = squish::GetStorageRequirements(width, height, squish::kDxt1);
+      format = XB_FMT_DXT1;
+    }
+    /* 
+    if (!format && alphaMSE == 0 && (flags & FLAGS_ALLOW_YCOCG) == FLAGS_ALLOW_YCOCG)
+    { 
+      // no alpha channel, so DXT5YCoCg is going to be the best DXT5 format
+      CompressImage(argb, width, height, compressed, squish::kDxt5 | squish::kUseYCoCg, colorMSE, alphaMSE);
+      if (colorMSE < maxMSE && alphaMSE < maxMSE)
+      { // success - use it
+        compressedSize = squish::GetStorageRequirements(width, height, squish::kDxt5);
+        format = XB_FMT_DXT5_YCoCg;
+      }
     }
     */
-  }
-  if (!format)
-  { // try DXT3 and DXT5 - use whichever is better (color is the same, but alpha will be different)
-    CompressImage(argb, image->w, image->h, compressed, squish::kDxt3, colorMSE, alphaMSE);
-    if (colorMSE < maxMSE)
-    { // color is fine, test DXT5 as well
-      double dxt5MSE;
-      squish::u8* compressed2 = new squish::u8[squish::GetStorageRequirements(image->w, image->h, squish::kDxt5)];
-      CompressImage(argb, image->w, image->h, compressed2, squish::kDxt5, colorMSE, dxt5MSE);
-      if (alphaMSE < maxMSE && alphaMSE < dxt5MSE)
-      { // DXT3 passes and is best
-        compressedSize = squish::GetStorageRequirements(image->w, image->h, squish::kDxt3);
-        format = XB_FMT_DXT3;
+    if (!format)
+    { // try DXT3 and DXT5 - use whichever is better (color is the same, but alpha will be different)
+      CompressImage(argb, width, height, compressed, squish::kDxt3, colorMSE, alphaMSE);
+      if (colorMSE < maxMSE)
+      { // color is fine, test DXT5 as well
+        double dxt5MSE;
+        squish::u8* compressed2 = new squish::u8[squish::GetStorageRequirements(width, height, squish::kDxt5)];
+        CompressImage(argb, width, height, compressed2, squish::kDxt5, colorMSE, dxt5MSE);
+        if (alphaMSE < maxMSE && alphaMSE < dxt5MSE)
+        { // DXT3 passes and is best
+          compressedSize = squish::GetStorageRequirements(width, height, squish::kDxt3);
+          format = XB_FMT_DXT3;
+        }
+        else if (dxt5MSE < maxMSE)
+        { // DXT5 passes
+          compressedSize = squish::GetStorageRequirements(width, height, squish::kDxt5);
+          memcpy(compressed, compressed2, compressedSize);
+          format = XB_FMT_DXT5;
+        }
+        delete[] compressed2;
       }
-      else if (dxt5MSE < maxMSE)
-      { // DXT5 passes
-        compressedSize = squish::GetStorageRequirements(image->w, image->h, squish::kDxt5);
-        memcpy(compressed, compressed2, compressedSize);
-        format = XB_FMT_DXT5;
-      }
-      delete[] compressed2;
     }
   }
+#if defined(USE_PVR_COMPRESSION)
+  else if (flags & FLAGS_USE_PVR)
+  {
+    // image w must == h and be a power-of-two for prv compression
+    //if ((width == height) && (width > 32))
+    if ((width == height) && (width > 32) && (width == NP2(width)))
+    {
+      unsigned char* padded_argb;
+      unsigned int   padded_h, padded_w;
+
+      // turn off fitting non-power of two into power-of-two until this is working.
+      if (width != NP2(width))
+      {
+        // 8 is the min width and height that PVRTexLib can handle
+        padded_h = 8, padded_w = 8;
+        while (padded_h < height)
+          padded_h *=2;
+        while (padded_w < width)
+          padded_w *=2;
+
+        // copy original into larger power-of-two image
+        padded_argb = new unsigned char[padded_w * padded_h * 4];
+        memset(padded_argb, 0xff, padded_w * padded_h * 4);
+        for (int i = 0; i < height; i++)
+          memcpy(padded_argb + (i * padded_w * 4), argb + (i * width * 4), width * 4);
+      }
+      else
+      {
+        padded_w = width;
+        padded_h = height;
+        padded_argb = argb;
+      }
+      
+      try {
+        pvrtexlib::PVRTextureUtilities PVRU = pvrtexlib::PVRTextureUtilities();
+
+        pvrtexlib::CPVRTexture sOriginalTexture
+        (
+          padded_w,                       // u32Width,
+          padded_h,                       // u32Height,
+          0,                              // u32MipMapCount,
+          1,                              // u32NumSurfaces,
+          false,                          // bBorder,
+          false,                          // bTwiddled,
+          false,                          // bCubeMap,
+          false,                          // bVolume,
+          false,                          // bFalseMips,
+          true,                           // bHasAlpha
+          false,                          // bVerticallyFlipped
+          pvrtexlib::DX10_R8G8B8A8_UNORM, // ePixelType,
+          0.0f,                           // fNormalMap,
+          padded_argb                     // pPixelData
+        );
+        // setup for compression
+        pvrtexlib::CPVRTextureHeader sProcessHeader(sOriginalTexture.getHeader());
+        PVRU.ProcessRawPVR(sOriginalTexture, sProcessHeader);
+        pvrtexlib::CPVRTexture sCompressedTexture(sOriginalTexture.getHeader());
+        // do the actual compression
+        sCompressedTexture.setPixelType(pvrtexlib::OGL_PVRTC4);
+        PVRU.CompressPVR(sOriginalTexture, sCompressedTexture);
+        
+        compressedSize = sCompressedTexture.getData().getDataSize();
+        compressed = new unsigned char[compressedSize];
+        memcpy(compressed, sCompressedTexture.getData().getData(), compressedSize);
+
+        compressedSize = sCompressedTexture.getData().getDataSize() + sizeof(XB_PVRHEADER);
+        compressed = new unsigned char[compressedSize];
+        memcpy(compressed + sizeof(XB_PVRHEADER), sCompressedTexture.getData().getData(), compressedSize - sizeof(XB_PVRHEADER));
+        // filling our header values
+        XB_PVRHEADER *pvrheader   = (XB_PVRHEADER*)compressed;
+        pvrheader->image_width    = width;
+        pvrheader->image_height   = height;
+        pvrheader->texture_width  = padded_w;
+        pvrheader->texture_height = padded_h;
+
+        if (padded_argb != argb)
+          delete[] padded_argb;
+
+        width  = padded_w;
+        height = padded_h;
+        format = XB_FMT_PVR4;
+      }
+      PVRCATCH(myException)
+      {
+        // handle any exceptions here
+        printf("PVR Exception: %s",myException.what());
+      }
+    }
+  }
+#endif
   CXBTFFrame frame; 
-  if (!format)
-  { // none of the compressed stuff works for us, so we use 32bit texture
-    format = XB_FMT_A8R8G8B8;
-    frame = appendContent(writer, image->w, image->h, argb, image->w * image->h * 4, format, flags);
+  if (format)
+  {
+    frame = appendContent(writer, width, height, compressed, compressedSize, format, flags);
+    if (compressedSize)
+      delete[] compressed;
   }
   else
   {
-    frame = appendContent(writer, image->w, image->h, compressed, compressedSize, format, flags);
+    // none of the compressed stuff works for us, so we use 32bit texture
+    format = XB_FMT_A8R8G8B8;
+    frame = appendContent(writer, width, height, argb, (width * height * 4), format, flags);
   }
-  delete[] compressed;
+
   SDL_FreeSurface(argbImage);
   return frame;
-#else // For ARM, dont use DXT compression!!!
-  CXBTFFrame frame = appendContent(writer, image->w, image->h, argb, image->w * image->h * 4, XB_FMT_A8R8G8B8, flags);
-  SDL_FreeSurface(argbImage);
-  return frame;
-#endif
 }
 
 void Usage()
 {
   puts("Usage:");
   puts("  -help            Show this screen.");
-  puts("  -dupecheck       Enable duplicate file detection. Reduces output file size.");
   puts("  -input <dir>     Input directory. Default: current dir");
   puts("  -output <dir>    Output directory/filename. Default: Textures.xpr");
+  puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: on");
+  puts("  -use_lzo         Use lz0 packing.     Default: on");
+  puts("  -use_dxt         Use DXT compression. Default: on");
+  puts("  -use_pvr         Use PVR compression. Default: off");
+  puts("  -use_none        Use No  compression. Default: off");
 }
 
 static bool checkDupe(struct MD5Context* ctx,
@@ -401,8 +530,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
         {
           printf("****  duplicate of %s\n", files[dupes[i]].GetPath());
           file.GetFrames().insert(file.GetFrames().end(),
-                                  files[dupes[i]].GetFrames().begin(),
-                                  files[dupes[i]].GetFrames().end());
+            files[dupes[i]].GetFrames().begin(), files[dupes[i]].GetFrames().end());
           skip = true;
         }
       }
@@ -411,7 +539,8 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
       {
         CXBTFFrame frame = createXBTFFrame(image, writer, maxMSE, flags);
 
-        printf("%s (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
+        printf("%s (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()),
+          frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
 
         file.SetLoop(0);
         file.GetFrames().push_back(frame);
@@ -429,16 +558,15 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
       if (dupecheck)
       {
         for (int j = 0; j < gnAG; j++)
-          MD5Update(&ctx,(const uint8_t*)gpAG[j].surface->pixels,
-                                         gpAG[j].surface->h*
-                                         gpAG[j].surface->pitch);
+          MD5Update(&ctx,
+            (const uint8_t*)gpAG[j].surface->pixels,
+            gpAG[j].surface->h * gpAG[j].surface->pitch);
 
         if (checkDupe(&ctx,hashes,dupes,i))
         {
           printf("****  duplicate of %s\n", files[dupes[i]].GetPath());
           file.GetFrames().insert(file.GetFrames().end(),
-                                  files[dupes[i]].GetFrames().begin(),
-                                  files[dupes[i]].GetFrames().end());
+            files[dupes[i]].GetFrames().begin(), files[dupes[i]].GetFrames().end());
           skip = true;
         }
       }
@@ -451,7 +579,8 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
           CXBTFFrame frame = createXBTFFrame(gpAG[j].surface, writer, maxMSE, flags);
           frame.SetDuration(gpAG[j].delay);
           file.GetFrames().push_back(frame);
-          printf("%s (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
+          printf("%s (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()),
+            frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
         }
       }
       AG_FreeSurfaces(gpAG, gnAG);
@@ -478,12 +607,24 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
 
 int main(int argc, char* argv[])
 {
+#ifdef USE_LZO_PACKING
   if (lzo_init() != LZO_E_OK)
     return 1;
-
+#endif
   bool valid = false;
+  unsigned int flags = 0;
   bool dupecheck = false;
   CmdLineArgs args(argc, (const char**)argv);
+
+  // setup some defaults, lzo post compression,
+  // dxt unless compiled with prv, then use pvr
+  flags = FLAGS_USE_DXT;
+#if defined(USE_PVR_COMPRESSION)
+  flags = FLAGS_USE_PVR;
+#endif
+#ifdef USE_LZO_PACKING
+  flags |= FLAGS_USE_LZO;
+#endif
 
   if (args.size() == 1)
   {
@@ -507,7 +648,9 @@ int main(int argc, char* argv[])
       valid = true;
     }
     else if (!strcmp(args[i], "-dupecheck"))
+    {
       dupecheck = true;
+    }
     else if (!stricmp(args[i], "-output") || !stricmp(args[i], "-o"))
     {
       OutputFilename = args[++i];
@@ -517,6 +660,30 @@ int main(int argc, char* argv[])
       while ((c = (char *)strchr(OutputFilename.c_str(), '\\')) != NULL) *c = '/';
 #endif
     }
+    else if (!stricmp(args[i], "-use_none"))
+    {
+      flags &= ~FLAGS_USE_DXT;
+      flags &= ~FLAGS_USE_ETC;
+      flags &= ~FLAGS_USE_PVR;
+    }
+    else if (!stricmp(args[i], "-use_dxt"))
+    {
+      flags &= ~FLAGS_USE_ETC;
+      flags &= ~FLAGS_USE_PVR;
+      flags |= FLAGS_USE_DXT;
+    }
+    else if (!stricmp(args[i], "-use_pvr"))
+    {
+      flags &= ~FLAGS_USE_DXT;
+      flags &= ~FLAGS_USE_ETC;
+      flags |= FLAGS_USE_PVR;
+    }
+#ifdef USE_LZO_PACKING
+    else if (!stricmp(args[i], "-use_lzo"))
+    {
+      flags |= FLAGS_USE_LZO;
+    }
+#endif
     else
     {
       printf("Unrecognized command line flag: %s\n", args[i]);
@@ -534,6 +701,5 @@ int main(int argc, char* argv[])
     InputDir += DIR_SEPARATOR;
 
   double maxMSE = 1.5;    // HQ only please
-  unsigned int flags = FLAGS_USE_LZO; // TODO: currently no YCoCg (commandline option?)
   createBundle(InputDir, OutputFilename, maxMSE, flags, dupecheck);
 }

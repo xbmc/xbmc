@@ -280,6 +280,9 @@ lib/cmyth/Makefile
 /lib/pcre/libpcre/Debug
 /lib/pcre/libpcre/Release
 
+# /libPVRTexLib
+/lib/libPVRTexLib/PVRTexLib
+
 # /lib/libapetag
 /lib/libapetag/Makefile
 /lib/libapetag/config.h

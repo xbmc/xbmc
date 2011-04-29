@@ -85,7 +85,7 @@ public:
   int GetOrientation() const { return m_orientation; }
 
   void Update(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, bool loadToGPU);
-  void Allocate(unsigned int width, unsigned int height, unsigned int format);
+  void Allocate(unsigned int width, unsigned int height, unsigned int format, const void* format_opaque = NULL);
   void ClampToEdge();
 
   static unsigned int PadPow2(unsigned int x);

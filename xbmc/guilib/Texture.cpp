@@ -51,29 +51,42 @@ CBaseTexture::~CBaseTexture()
   delete[] m_pixels;
 }
 
-void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int format)
+void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int format, const void* format_opaque)
 {
-  m_imageWidth = width;
-  m_imageHeight = height;
   m_format = format;
+  m_imageWidth  = width;
+  m_imageHeight = height;
   m_orientation = 0;
 
-  m_textureWidth = m_imageWidth;
-  m_textureHeight = m_imageHeight;
-
   if (m_format & XB_FMT_DXT_MASK)
+  {
+    m_textureWidth  = m_imageWidth;
+    m_textureHeight = m_imageHeight;
     while (GetPitch() < g_Windowing.GetMinDXTPitch())
       m_textureWidth += GetBlockSize();
 
-  if (!g_Windowing.SupportsNPOT((m_format & XB_FMT_DXT_MASK) != 0))
-  {
-    m_textureWidth = PadPow2(m_textureWidth);
-    m_textureHeight = PadPow2(m_textureHeight);
-  }
-  if (m_format & XB_FMT_DXT_MASK)
-  { // DXT textures must be a multiple of 4 in width and height
-    m_textureWidth = ((m_textureWidth + 3) / 4) * 4;
+    if (!g_Windowing.SupportsNPOT(true))
+    {
+      m_textureWidth  = PadPow2(m_textureWidth);
+      m_textureHeight = PadPow2(m_textureHeight);
+    }
+    // DXT textures must be a multiple of 4 in width and height
+    m_textureWidth  = ((m_textureWidth  + 3) / 4) * 4;
     m_textureHeight = ((m_textureHeight + 3) / 4) * 4;
+  }
+  else if ((m_format == XB_FMT_PVR2) || (m_format == XB_FMT_PVR4))
+  { // pvr compressed textures might be inset into a larger image.
+    // recover the real size and set m_imageWidth, m_imageHeight
+    XB_PVRHEADER *pvrheader = (XB_PVRHEADER*)format_opaque;
+    m_textureWidth  = m_imageWidth;
+    m_textureHeight = m_imageHeight;
+    m_imageWidth    = pvrheader->image_width;
+    m_imageHeight   = pvrheader->image_height;
+  }
+  else
+  {
+    m_textureWidth  = m_imageWidth;
+    m_textureHeight = m_imageHeight;
   }
 
   // check for max texture size
@@ -93,9 +106,18 @@ void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int 
     return;
 
   if (format & XB_FMT_DXT_MASK && !g_Windowing.SupportsDXT())
-  { // compressed format that we don't support
+  { // if we get a dxt compressed image and cannot use GPU to decompress
+    // then software decompress it here (woof, woof, dog slow)
     Allocate(width, height, XB_FMT_A8R8G8B8);
     CDDSImage::Decompress(m_pixels, std::min(width, m_textureWidth), std::min(height, m_textureHeight), GetPitch(m_textureWidth), pixels, format);
+    ClampToEdge();
+  }
+  else if ((m_format == XB_FMT_PVR2) || (m_format == XB_FMT_PVR4))
+  { // pvr compressed textures might be inset into a larger image.
+    // and we need access to real image size in Allocate,
+    // pass in pixels so we can access the real sizes.
+    Allocate(width, height, format, pixels);
+    memcpy(m_pixels, pixels + sizeof(XB_PVRHEADER), GetPitch(width) * GetRows(height));
   }
   else
   {
@@ -119,8 +141,8 @@ void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int 
         dst += dstPitch;
       }
     }
+    ClampToEdge();
   }
-  ClampToEdge();
 
   if (loadToGPU)
     LoadToGPU();
@@ -129,9 +151,9 @@ void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int 
 void CBaseTexture::ClampToEdge()
 {
   unsigned int imagePitch = GetPitch(m_imageWidth);
-  unsigned int imageRows = GetRows(m_imageHeight);
+  unsigned int imageRows  = GetRows(m_imageHeight);
   unsigned int texturePitch = GetPitch(m_textureWidth);
-  unsigned int textureRows = GetRows(m_textureHeight);
+  unsigned int textureRows  = GetRows(m_textureHeight);
   if (imagePitch < texturePitch)
   {
     unsigned int blockSize = GetBlockSize();
@@ -349,9 +371,10 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
 
 bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, unsigned char* pixels)
 {
-  m_imageWidth = width;
-  m_imageHeight = height;
   m_format = format;
+  m_imageWidth  = width;
+  m_imageHeight = height;
+
   Update(width, height, pitch, format, pixels, false);
   return true;
 }
@@ -403,6 +426,10 @@ unsigned int CBaseTexture::GetPitch(unsigned int width) const
     return ((width + 3) / 4) * 16;
   case XB_FMT_A8:
     return width;
+  case XB_FMT_PVR2:
+    return width / 4;
+  case XB_FMT_PVR4:
+    return width / 2;
   case XB_FMT_A8R8G8B8:
   default:
     return width*4;

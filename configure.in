@@ -282,6 +282,18 @@ AC_ARG_ENABLE([libbluray],
   [use_libbluray=$enableval],
   [use_libbluray=auto])
 
+AC_ARG_ENABLE([texturepacker],
+  [AS_HELP_STRING([--enable-texturepacker],
+  [enable texturepacker support (default is yes)])],
+  [use_texturepacker=$enableval],
+  [use_texturepacker=auto])
+
+AC_ARG_ENABLE([pvrtexlib],
+  [AS_HELP_STRING([--enable-pvrtexlib],
+  [enable pvr texture compression support])],
+  [use_pvrtexlib=$enableval],
+  [use_pvrtexlib=no])
+
 AC_ARG_WITH([lirc-device],
   [AS_HELP_STRING([--with-lirc-device=file],
   [specify the default LIRC device (default is /dev/lircd)])],
@@ -334,6 +346,8 @@ case $host in
      use_joystick=no
      use_vdadecoder=no
      use_vtbdecoder=yes
+     use_texturepacker_native=yes
+     USE_TEXTUREPACKER_NATIVE_ROOT="/opt/local"
      ARCH="arm-osx"
      SYSROOT="-miphoneos-version-min=4.1 -isysroot $SDKROOT"
      ARCHTYPE=$HOSTTYPE
@@ -348,6 +362,8 @@ case $host in
   i386-apple-darwin*)
      use_joystick=no
      use_vtbdecoder=no
+     use_texturepacker_native=yes
+     USE_TEXTUREPACKER_NATIVE_ROOT="$prefix"
      ARCH="x86-osx"
      export MACOSX_DEPLOYMENT_TARGET=10.4
      SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
@@ -372,6 +388,7 @@ case $host in
      AC_SUBST(ARCH_DEFINES, "-D_POWERPC64")
      ;;
   arm*-*-linux-gnu*)
+     use_texturepacker=no
      ARCH="arm"
      AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
      ;;
@@ -1215,6 +1232,29 @@ else
   final_message="$final_message\n  Bluray:\tNo"
 fi
 
+USE_TEXTUREPACKER_NATIVE=0
+if test "x$use_texturepacker" != "xno"; then
+  final_message="$final_message\n  TexturePacker:Yes"
+  USE_TEXTUREPACKER=1
+  if test "x$use_texturepacker_native" = "xyes"; then
+    USE_TEXTUREPACKER_NATIVE=1
+    if [[ ! -d "$USE_TEXTUREPACKER_NATIVE_ROOT" ]]; then 
+      USE_TEXTUREPACKER_NATIVE_ROOT= 
+    fi
+  fi
+else
+  final_message="$final_message\n  TexturePacker:No"
+  USE_TEXTUREPACKER=0
+fi
+
+if test "x$use_pvrtexlib" != "xno"; then
+  final_message="$final_message\n  PVRTexLib:\tYes"
+  USE_PVRTEXLIB=1
+else
+  final_message="$final_message\n  PVRTexLib:\tNo"
+  USE_PVRTEXLIB=0
+fi
+
 if test "$use_mid" = "yes"; then
   final_message="$final_message\n  MID Support:\tYes"
   SDL_DEFINES="$SDL_DEFINES -DMID"
@@ -1442,6 +1482,10 @@ AC_SUBST(USE_VDA)
 AC_SUBST(USE_OPENMAX)
 AC_SUBST(USE_PULSE)
 AC_SUBST(USE_XRANDR)
+AC_SUBST(USE_TEXTUREPACKER)
+AC_SUBST(USE_TEXTUREPACKER_NATIVE)
+AC_SUBST(USE_TEXTUREPACKER_NATIVE_ROOT)
+AC_SUBST(USE_PVRTEXLIB)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions

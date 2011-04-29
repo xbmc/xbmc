@@ -128,13 +128,36 @@ void CGLTexture::LoadToGPU()
     m_textureWidth = maxSize;
   }
 
+  GLenum format;
+
+  switch (m_format)
+  {
+  case XB_FMT_PVR2:
+    format = GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
+    break;
+  case XB_FMT_PVR4:
+    format = GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
+    break;
+  case XB_FMT_A8R8G8B8:
+  default:
 #if HAS_GLES == 1
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA_EXT, m_textureWidth, m_textureHeight, 0,
-		GL_BGRA_EXT, GL_UNSIGNED_BYTE, m_pixels);
+    format = GL_BGRA_EXT;
 #elif HAS_GLES == 2
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_textureWidth, m_textureHeight, 0,
-		GL_RGBA, GL_UNSIGNED_BYTE, m_pixels);
+    format = GL_RGBA;
 #endif
+    break;
+  }
+
+  if ( ((m_format & XB_FMT_PVR2) == 0)  && ((m_format & XB_FMT_PVR4) == 0) )
+  {
+    glTexImage2D(GL_TEXTURE_2D, 0, format, m_textureWidth, m_textureHeight, 0,
+      format, GL_UNSIGNED_BYTE, m_pixels);
+  }
+  else
+  {
+    glCompressedTexImage2D(GL_TEXTURE_2D, 0, format,
+      m_textureWidth, m_textureHeight, 0, GetPitch() * GetRows(), m_pixels);
+  }
 
 #endif
   VerifyGLState();

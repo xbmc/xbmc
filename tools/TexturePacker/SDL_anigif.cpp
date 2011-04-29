@@ -290,7 +290,7 @@ int AG_LoadGIF_RW( SDL_RWops* src, AG_Frame* frames, int maxFrames )
 	if ( src == NULL )
 		return 0;
 
-	gd = malloc( sizeof(*gd) );
+	gd = (gifdata*)malloc( sizeof(*gd) );
 	memset( gd, 0, sizeof(*gd) );
 	gd->src = src;
 

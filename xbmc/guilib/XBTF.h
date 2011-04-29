@@ -36,6 +36,19 @@
 #define XB_FMT_DXT5_YCoCg  8
 #define XB_FMT_A8R8G8B8   16
 #define XB_FMT_A8         32
+#define XB_FMT_R8G8B8A8   64
+#define XB_FMT_ETC        128
+#define XB_FMT_PVR2       256
+#define XB_FMT_PVR4       512
+
+// wrapper for pvr compressed images
+struct XB_PVRHEADER
+{
+  uint32_t image_width;
+  uint32_t image_height;
+  uint32_t texture_width;
+  uint32_t texture_height;
+};
 
 class CXBTFFrame
 {
