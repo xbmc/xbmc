@@ -66,7 +66,7 @@ protected:
     void *refcon, CFDictionaryRef frameInfo,
     OSStatus status, UInt32 infoFlags, CVBufferRef imageBuffer);
 
-  void              *m_vt_session;   // opaque videotoolbox session
+  void              *m_vt_session;    // opaque videotoolbox session
   CMFormatDescriptionRef m_fmt_desc;
 
   const char        *m_pFormatName;
@@ -76,7 +76,8 @@ protected:
   double            m_sort_time_offset;
   pthread_mutex_t   m_queue_mutex;    // mutex protecting queue manipulation
   frame_queue       *m_display_queue; // display-order queue - next display frame is always at the queue head
-  int32_t           m_queue_depth;    // we will try to keep the queue depth around 16+1 frames
+  int32_t           m_queue_depth;    // we will try to keep the queue depth at m_max_ref_frames
+  int32_t           m_max_ref_frames;
 
   bool              m_convert_bytestream;
   bool              m_convert_3byteTo4byteNALSize;

@@ -87,7 +87,7 @@ void CAddonStatusHandler::Process()
   heading.Format("%s: %s", TranslateType(m_addon->Type(), true).c_str(), m_addon->Name().c_str());
 
   /* AddOn lost connection to his backend (for ones that use Network) */
-  if (m_status == STATUS_LOST_CONNECTION && m_addon->Type() != ADDON_PVRDLL) // TODO display a proper message for pvr addons, but don't popup a dialog that requires user action
+  if (m_status == ADDON_STATUS_LOST_CONNECTION && m_addon->Type() != ADDON_PVRDLL) // TODO display a proper message for pvr addons, but don't popup a dialog that requires user action
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialog) return;
@@ -104,7 +104,7 @@ void CAddonStatusHandler::Process()
       CAddonMgr::Get().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, false);
   }
   /* Request to restart the AddOn and data structures need updated */
-  else if (m_status == STATUS_NEED_RESTART)
+  else if (m_status == ADDON_STATUS_NEED_RESTART)
   {
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
@@ -119,7 +119,7 @@ void CAddonStatusHandler::Process()
     CAddonMgr::Get().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
   }
   /* Some required settings are missing/invalid */
-  else if ((m_status == STATUS_NEED_SETTINGS) || (m_status == STATUS_NEED_SAVEDSETTINGS))
+  else if ((m_status == ADDON_STATUS_NEED_SETTINGS) || (m_status == ADDON_STATUS_NEED_SAVEDSETTINGS))
   {
     CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialogYesNo) return;
@@ -146,7 +146,7 @@ void CAddonStatusHandler::Process()
     }
   }
   /* A unknown event has occurred */
-  else if (m_status == STATUS_UNKNOWN)
+  else if (m_status == ADDON_STATUS_UNKNOWN)
   {
     //CAddonMgr::Get().DisableAddon(m_addon->ID());
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
