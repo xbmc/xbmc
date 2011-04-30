@@ -57,8 +57,6 @@ using namespace std;
 #define FLAGS_USE_LZO     1
 #define FLAGS_ALLOW_YCOCG 2
 #define FLAGS_USE_DXT     4
-#define FLAGS_USE_ETC     8
-#define FLAGS_USE_PVR    16
 
 #define DIR_SEPARATOR "/"
 #define DIR_SEPARATOR_CHAR '/'
@@ -517,8 +515,7 @@ int main(int argc, char* argv[])
   bool dupecheck = false;
   CmdLineArgs args(argc, (const char**)argv);
 
-  // setup some defaults, lzo post compression,
-  // dxt unless compiled with prv, then use pvr
+  // setup some defaults, dxt with lzo post packing,
   flags = FLAGS_USE_DXT;
 #ifdef USE_LZO_PACKING
   flags |= FLAGS_USE_LZO;
@@ -561,13 +558,9 @@ int main(int argc, char* argv[])
     else if (!stricmp(args[i], "-use_none"))
     {
       flags &= ~FLAGS_USE_DXT;
-      flags &= ~FLAGS_USE_ETC;
-      flags &= ~FLAGS_USE_PVR;
     }
     else if (!stricmp(args[i], "-use_dxt"))
     {
-      flags &= ~FLAGS_USE_ETC;
-      flags &= ~FLAGS_USE_PVR;
       flags |= FLAGS_USE_DXT;
     }
 #ifdef USE_LZO_PACKING
