@@ -126,7 +126,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, CStdString &device)
     wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
     wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF;
     wfxex.Format.wBitsPerSample  = 16;
-    wfxex.Format.nChannels       = (format.m_dataFormat == AE_FMT_RAW) ? 2 : 8;
+    wfxex.Format.nChannels       = 2;
   }
   else
   {

@@ -219,8 +219,7 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const CStdString de
   if(m_device      == device     && //Same device
      m_isExclusive == excSetting && //No change in exclusive vs shared mode
      m_format.m_sampleRate == format.m_sampleRate  && //Same sample rate
-     ((AE_IS_RAW(format.m_dataFormat)              && 
-       (m_format.m_dataFormat == AE_FMT_RAW || m_format.m_dataFormat == AE_FMT_RAW8)) || //No change from PCM to RAW or vice versa
+     (AE_IS_RAW(format.m_dataFormat) && AE_IS_RAW(m_format.m_dataFormat) || //No change from PCM to RAW or vice versa
       (format.m_dataFormat    == AE_FMT_FLOAT     &&
        !AE_IS_RAW(m_format.m_dataFormat))         &&
      m_format.m_channelCount == format.m_channelCount)) //Same channel count.
@@ -397,6 +396,79 @@ failed:
 
 //Private utility functions////////////////////////////////////////////////////
 
+void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex)
+{
+  wfxex.Format.cbSize            = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
+
+  if (!AE_IS_RAW(format.m_dataFormat)) // PCM data
+  {
+    wfxex.dwChannelMask          = SpeakerMaskFromAEChannels(format.m_channelLayout);
+    wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
+    wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
+    wfxex.Format.nChannels       = format.m_channelCount;
+    wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
+    wfxex.Format.wBitsPerSample  = 32;
+  }
+  else //Raw bitstream
+  {
+    if(format.m_dataFormat == AE_FMT_AC3 || format.m_dataFormat == AE_FMT_DTS)
+    {
+      wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
+      wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
+      wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
+      wfxex.Format.wBitsPerSample  = 16;
+      wfxex.Format.nChannels       = 2;
+      wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
+    }
+    else if(format.m_dataFormat == AE_FMT_EAC3 || format.m_dataFormat == AE_FMT_TRUEHD || format.m_dataFormat == AE_FMT_DTSHD)
+    {
+      //IEC 61937 transmissions.
+      //Currently these formats only run over HDMI.
+
+      wfxex.Format.wFormatTag     = WAVE_FORMAT_EXTENSIBLE;
+      wfxex.Format.nSamplesPerSec = 192000; // Link runs at 192 KHz.
+      wfxex.Format.wBitsPerSample = 16; // Always at 16 bits over IEC 60958.
+      wfxex.dwChannelMask         = 0;
+
+      switch(format.m_dataFormat)
+      {
+      case AE_FMT_EAC3:
+        wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL_PLUS;
+        wfxex.Format.nChannels      = 2; // One IEC 60958 Line.
+        break;
+      case AE_FMT_TRUEHD:
+        wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_MLP;
+        wfxex.Format.nChannels      = 8; // Four IEC 60958 Lines.
+        break;
+      case AE_FMT_DTSHD:
+        wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DTS_HD;
+        wfxex.Format.nChannels      = 8; // Four IEC 60958 Lines.
+        break;
+      }
+
+      if(format.m_channelCount == 8)
+        wfxex.dwChannelMask         = KSAUDIO_SPEAKER_7POINT1;
+      else
+        wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1;
+    }
+  }
+
+  wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
+  wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
+  wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
+}
+
+void CAESinkWASAPI::BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex)
+{
+  //Fill the common structure.
+  BuildWaveFormatExtensible(format, wfxex.FormatExt);
+
+  wfxex.FormatExt.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE_IEC61937)-sizeof(WAVEFORMATEX);
+  wfxex.dwEncodedChannelCount   = format.m_channelCount;
+  wfxex.dwEncodedSamplesPerSec  = format.m_sampleRate;
+  wfxex.dwAverageBytesPerSec    = 0; //Ignored
+}
+
 bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
 {
   WAVEFORMATEXTENSIBLE *wfxex;
@@ -445,95 +517,15 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
   return true;
 }
 
-void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex)
-{
-  wfxex.Format.cbSize            = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
-
-  if (!AE_IS_RAW(format.m_dataFormat)) // PCM data
-  {
-    wfxex.dwChannelMask          = SpeakerMaskFromAEChannels(format.m_channelLayout);
-    wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
-    wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
-    wfxex.Format.nChannels       = format.m_channelCount;
-    wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
-    wfxex.Format.wBitsPerSample  = 32;
-  }
-  else //format.m_dataFormat == AE_FMT_RAW
-  {
-    /* Future HD audio support
-    if(format.m_encodedFormat == AE_ENCFMT_AC3 || format.m_encodedFormat == AE_ENCFMT_DTS)
-    {*/
-    wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
-    wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
-    wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
-    wfxex.Format.wBitsPerSample  = 16;
-    wfxex.Format.nChannels       = (format.m_dataFormat == AE_FMT_RAW) ? 2 : 8;
-    wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
-    /*}
-    else if(format.m_encodedFormat == AE_ENCFMT_EAC3 || format.m_encodedFormat == AE_ENCFMT_MLP || format.m_encodedFormat == AE_ENCFMT_DTSHD)
-    {
-      // code here assumes that format.m_sampleRate and format.m_channelCount describe the decoded stream.
-
-      wfxex.Format.wFormatTag     = WAVE_FORMAT_EXTENSIBLE;
-      wfxex.Format.wBitsPerSample = 16;     //Link is always 16 bits.
-      wfxex.dwChannelMask         = 0;
-
-      switch(format.m_encodedFormat)
-      {
-      case AE_ENCFMT_EAC3:
-        wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL_PLUS;
-        wfxex.Format.nSamplesPerSec = 4 * format.m_sampleRate;
-        wfxex.Format.nChannels      = 2;
-        wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1; // what about 7.1 DD+?
-        break;
-      case AE_ENCFMT_MLP:
-        wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_MLP;
-        wfxex.Format.nSamplesPerSec = 192000; //Link always runs at 192Khz
-        wfxex.Format.nChannels      = 8;
-        break;
-      case AE_ENCFMT_DTSHD:
-        wfxex.SubFormat             = KSDATAFORMAT_SUBTYPE_IEC61937_DTS_HD;
-        wfxex.Format.nSamplesPerSec = 192000; //Link always runs at 192Khz
-        wfxex.Format.nChannels      = 8;
-        break;
-      }
-
-      if (wfxex.dwChannelMask == 0)
-      {
-        switch(format.m_channelCount)
-        {
-        case 8:
-          wfxex.dwChannelMask         = KSAUDIO_SPEAKER_7POINT1;
-          break;
-        case 6:
-          wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1;
-          break;
-        }
-      }
-    }*/
-  }
-
-  wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
-  wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
-  wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
-}
-
-/*
-void CAESinkWASAPI::BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex)
-{
-  //Fill the common structure.
-  BuildWaveFormatExtensible(format, wfxex.FormatExt);
-  wfxex.FormatExt.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE_IEC61937)-sizeof(WAVEFORMATEX);
-  wfxex.dwEncodedChannelCount   = format.m_channelCount;
-  wfxex.dwEncodedSamplesPerSec  = format.m_sampleRate;
-  wfxex.dwAverageBytesPerSec    = 0; //Ignored
-}
-*/
-
 bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 {
-  WAVEFORMATEXTENSIBLE wfxex;
-  BuildWaveFormatExtensible(format, wfxex);
+  WAVEFORMATEXTENSIBLE_IEC61937 wfxex_iec61937;
+  WAVEFORMATEXTENSIBLE &wfxex = wfxex_iec61937.FormatExt;
+
+  if(format.m_dataFormat <= AE_FMT_DTS)
+    BuildWaveFormatExtensible(format, wfxex);
+  else
+    BuildWaveFormatExtensibleIEC61397(format, wfxex_iec61937);
 
   HRESULT hr = m_pAudioClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
 
