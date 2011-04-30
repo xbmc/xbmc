@@ -116,6 +116,7 @@ namespace PVR
     virtual void ShowEPGInfo(CFileItem *item);
     virtual void ShowRecordingInfo(CFileItem *item);
     virtual bool ShowTimerSettings(CFileItem *item);
+    virtual bool ShowNewTimerDialog(void);
 
     virtual bool OnContextButtonMenuHooks(CFileItem *item, CONTEXT_BUTTON button);
     virtual bool OnContextButtonSortAsc(CFileItem *item, CONTEXT_BUTTON button);

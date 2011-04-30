@@ -187,14 +187,7 @@ bool CGUIWindowPVRTimers::OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON but
   bool bReturn = false;
 
   if (button == CONTEXT_BUTTON_ADD)
-  {
-    bReturn = true;
-    CPVRTimerInfoTag *newtimer = g_PVRTimers->InstantTimer(NULL, false);
-    CFileItem *item = new CFileItem(*newtimer);
-
-    if (ShowTimerSettings(item))
-      g_PVRTimers->AddTimer(*item);
-  }
+    bReturn = ShowNewTimerDialog();
 
   return bReturn;
 }

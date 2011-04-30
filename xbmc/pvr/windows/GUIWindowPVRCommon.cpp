@@ -340,6 +340,24 @@ bool CGUIWindowPVRCommon::ActionDeleteTimer(CFileItem *item)
   return g_PVRTimers->DeleteTimer(*item);
 }
 
+bool CGUIWindowPVRCommon::ShowNewTimerDialog(void)
+{
+  bool bReturn(false);
+
+  CPVRTimerInfoTag *newTimer = new CPVRTimerInfoTag;
+  CFileItem *newItem = new CFileItem(*newTimer);
+  if (ShowTimerSettings(newItem))
+  {
+    /* Add timer to backend */
+    bReturn = g_PVRTimers->AddTimer(*newItem);
+  }
+
+  delete newItem;
+  delete newTimer;
+
+  return bReturn;
+}
+
 bool CGUIWindowPVRCommon::ActionShowTimer(CFileItem *item)
 {
   bool bReturn = false;
@@ -349,20 +367,7 @@ bool CGUIWindowPVRCommon::ActionShowTimer(CFileItem *item)
      open settings for selected timer entry */
   if (item->m_strPath == "pvr://timers/add.timer")
   {
-    CPVRTimerInfoTag *newTimer = g_PVRTimers->InstantTimer(NULL, false);
-    if (newTimer)
-    {
-      CFileItem *newItem = new CFileItem(*newTimer);
-
-      if (ShowTimerSettings(newItem))
-      {
-        /* Add timer to backend */
-        bReturn = g_PVRTimers->AddTimer(*newItem);
-      }
-
-      delete newItem;
-      delete newTimer;
-    }
+    bReturn = ShowNewTimerDialog();
   }
   else
   {

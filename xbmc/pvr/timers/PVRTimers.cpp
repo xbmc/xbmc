@@ -412,10 +412,6 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
   }
 
   const CPVREpgInfoTag *epgTag = channel->GetEPGNow();
-  int iMarginEnd = g_guiSettings.GetInt("pvrrecord.marginend");
-  int iPriority = g_guiSettings.GetInt("pvrrecord.defaultpriority");
-  int iLifetime = g_guiSettings.GetInt("pvrrecord.defaultlifetime");
-  int iDuration = g_guiSettings.GetInt("pvrrecord.instantrecordtime");
 
   CPVRTimerInfoTag *newTimer = epgTag ? CPVRTimerInfoTag::CreateFromEpg(*epgTag) : NULL;
   if (!newTimer)
@@ -426,13 +422,10 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
     newTimer->m_bIsActive         = true;
     newTimer->m_strTitle          = channel->ChannelName();
     newTimer->m_strSummary        = g_localizeStrings.Get(19056);
-    newTimer->m_iMarginEnd        = iMarginEnd ? iMarginEnd : 5; /* use 5 minutes as default */
     newTimer->m_iChannelNumber    = channel->ChannelNumber();
     newTimer->m_iClientChannelUid = channel->UniqueID();
     newTimer->m_iClientId         = channel->ClientID();
     newTimer->m_bIsRadio          = channel->IsRadio();
-    newTimer->m_iPriority         = iPriority ? iPriority : 50;  /* default to 50 */
-    newTimer->m_iLifetime         = iLifetime ? iLifetime : 30;  /* default to 30 days */
 
     /* generate summary string */
     newTimer->m_strSummary.Format("%s %s %s %s %s",
@@ -443,7 +436,11 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
         newTimer->EndAsLocalTime().GetAsLocalizedTime("", false));
   }
 
-  newTimer->m_iMarginStart = 0;
+  CDateTime time;
+  newTimer->SetStartFromUTC(time);
+  newTimer->m_iMarginStart = 0; /* set the start margin to 0 for instant timers */
+
+  int iDuration = g_guiSettings.GetInt("pvrrecord.instantrecordtime");
   newTimer->SetDuration(iDuration ? iDuration : 120); /* use 120 minutes as default */
 
   /* unused only for reference */
