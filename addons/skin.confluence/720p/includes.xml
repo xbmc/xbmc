@@ -561,8 +561,8 @@
 				<width>39</width>
 				<height>39</height>
 				<label>-</label>
-				<texturefocus>OSDRecordFO.png</texturefocus>
-				<texturenofocus>OSDRecordNF.png</texturenofocus>
+				<texturefocus>OSDRecordOffFO.png</texturefocus>
+				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
 				<onleft>603</onleft>
 				<onright>50</onright>
 				<onup>610</onup>
