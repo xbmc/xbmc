@@ -209,11 +209,6 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
   unsigned int held;
   XBMCKEYTABLE keytable;
 
-  ascii = 0;
-  vkey = 0;
-  unicode = keysym.unicode;
-  held = 0;
-
   modifiers = 0;
   if (keysym.mod & XBMCKMOD_CTRL)
     modifiers |= CKey::MODIFIER_CTRL;
@@ -228,29 +223,28 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
 
   CLog::Log(LOGDEBUG, "SDLKeyboard: scancode: %02x, sym: %04x, unicode: %04x, modifier: %x", keysym.scancode, keysym.sym, keysym.unicode, keysym.mod);
 
-  // For control key combinations, e.g. ctrl-P, the UNICODE gets set
-  // to 1 for ctrl-A, 2 for ctrl-B etc. To get round this, if the
-  // control key is down lookup by sym
-  if (modifiers & CKey::MODIFIER_CTRL && KeyTableLookupSym(keysym.sym, &keytable))
-  {
-    unicode = keytable.unicode;
-    ascii   = keytable.ascii;
-    vkey    = keytable.vkey;
-  }
+  // The keysym.unicode is always valid, even if it is zero. A zero
+  // unicode just means this is a non-printing keypress. The ascii and
+  // vkey will be set below.
+  unicode = keysym.unicode;
+  ascii = 0;
+  vkey = 0;
+  held = 0;
 
-  // For printing keys look up the unicode
-  else if (KeyTableLookupUnicode(keysym.unicode, &keytable))
-  {
-    ascii = keytable.ascii;
-    vkey = keytable.vkey;
-  }
-
-  // For non-printing keys look up the sym
-  else if (KeyTableLookupSym(keysym.sym, &keytable))
+  // Lookup the sym. The mapping of the sym to vkey is unique, but there
+  // may be multiple unicode and ascii values for a given sym.
+  if (KeyTableLookupSym(keysym.sym, &keytable))
   {
     vkey = keytable.vkey;
+
+    // Now lookup the unicode. This is only required in case the ascii
+    // and unicode are different. At the moment there are no such keysyms
+    // but I'll leave the check in just in case.
+    if (KeyTableLookupUnicode(keysym.unicode, &keytable))
+      ascii = keytable.ascii;
   }
 
+  // The keysym.sym is unknown ...
   else
   {
     if (!vkey && !ascii)
@@ -283,7 +277,6 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
   }
 
   // At this point update the key hold time
-  // If XBMC_keysym was a class we could use == but memcmp it is :-(
   if (memcmp(&keysym, &m_lastKeysym, sizeof(XBMC_keysym)) == 0)
   {
     held = CTimeUtils::GetFrameTime() - m_lastKeyTime;
