@@ -29,6 +29,7 @@
 #include "cores/AudioEngine/AEFactory.h"
 
 CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(void) :
+  m_channels  (0),
   m_buffer    (NULL),
   m_bufferSize(0),
   m_trueHDPos (0),
@@ -63,6 +64,7 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
     bSupportsTrueHDOut = g_guiSettings.GetBool("audiooutput.truehdpassthrough");
   }
 
+  m_channels   = hints.channels;
   m_bufferSize = 0;
 
   if (
@@ -83,33 +85,38 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 
 int CDVDAudioCodecPassthrough::GetSampleRate()
 {
-  int rate = m_info.GetSampleRate();
-  if(m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD)
-  {
-    if (rate == 48000 || rate == 96000 || rate == 192000)
-      return 192000;
-    else
-      return 176400;
-  }
-
   return m_info.GetSampleRate();
 }
 
 enum AEDataFormat CDVDAudioCodecPassthrough::GetDataFormat()
 {
-  /* TrueHD needs 8 channel RAW */
-  if(m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD)
-    return AE_FMT_RAW8;
+  switch(m_info.GetDataType())
+  {
+  case CAEStreamInfo::STREAM_TYPE_AC3:
+    return AE_FMT_AC3;
 
-  return AE_FMT_RAW;
+  case CAEStreamInfo::STREAM_TYPE_DTS_512:
+  case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+  case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+    return AE_FMT_DTS;
+
+  case CAEStreamInfo::STREAM_TYPE_EAC3:
+    return AE_FMT_EAC3;
+
+  case CAEStreamInfo::STREAM_TYPE_TRUEHD:
+    return AE_FMT_TRUEHD;
+
+  case CAEStreamInfo::STREAM_TYPE_DTSHD:
+    return AE_FMT_DTSHD;
+
+  default:
+    return AE_FMT_INVALID; //Unknown stream type
+  }
 }
 
 int CDVDAudioCodecPassthrough::GetChannels()
 {
-  if (m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD)
-    return 8;
-
-  return 2;
+  return m_channels;
 }
 
 AEChLayout CDVDAudioCodecPassthrough::GetChannelMap()

@@ -94,30 +94,17 @@ enum AEDataFormat
   AE_FMT_DOUBLE,
   AE_FMT_FLOAT,
 
-  /* for passthrough streams and the like */
-  AE_FMT_RAW,  /* 2 raw channels */
-  AE_FMT_RAW8, /* 8 raw channels */
+  /* Bitstream formats */
+  AE_FMT_AC3,
+  AE_FMT_DTS,
+  AE_FMT_EAC3,
+  AE_FMT_TRUEHD,
+  AE_FMT_DTSHD,
 
   AE_FMT_MAX
 };
 
-#define AE_IS_RAW(x) ((x) == AE_FMT_RAW || (x) == AE_FMT_RAW8)
-
-/* Future HD audio support.
-
-enum AEEncodedDataFormat
-{
-  AE_ENCFMT_INVALID = -1,
-
-  AE_ENCFMT_AC3,   //Dolby Digital
-  AE_ENCFMT_DTS,   //DTS
-  AE_ENCFMT_EAC3,  //DD+
-  AE_ENCFMT_MLP,   //Meridian Lossless Packing (Dolby TrueHD)
-  AE_ENCFMT_DTSHD, //DTS-HD (aka DTS-MA)
-
-  AE_ENCFMT_MAX
-};
-*/
+#define AE_IS_RAW(x) ((x) >= AE_FMT_AC3 && (x) < AE_FMT_MAX)
 
 /**
  * The audio format structure that fully defines a stream's audio information
@@ -127,12 +114,6 @@ typedef struct {
    * The stream's data format (eg, AE_FMT_S16LE)
    */
   enum AEDataFormat  m_dataFormat;
-
-  /** Future HD audio support
-   * The raw stream's encoded data format
-
-  enum AEEncodedDataFormat m_encodedFormat;
-   */
 
   /**
    * The stream's sample rate (eg, 48000)
