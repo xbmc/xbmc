@@ -158,6 +158,13 @@
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
+				<control type="image">
+					<posx>15</posx>
+					<posy>72</posy>
+					<height>50</height>
+					<aspectratio align="left" aligny="center">keep</aspectratio>
+					<texture>$INFO[PVR.NextRecordingChannelIcon]</texture>
+				</control>
 				<control type="label">
 					<description>NextRecordingTitle</description>
 					<posx>460</posx>
@@ -176,11 +183,12 @@
 					<posx>460</posx>
 					<posy>70</posy>
 					<height>25</height>
-					<width>440</width>
+					<width>380</width>
 					<label>$INFO[PVR.NextRecordingChannel]</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<font>font12</font>
+					<scroll>true</scroll>
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="label">
@@ -188,11 +196,12 @@
 					<posx>460</posx>
 					<posy>95</posy>
 					<height>25</height>
-					<width>440</width>
+					<width>380</width>
 					<label>$INFO[PVR.NextRecordingDateTime,$LOCALIZE[19126] - ]</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<font>font12</font>
+					<scroll>true</scroll>
 					<shadowcolor>black</shadowcolor>
 				</control>
 			</control>
@@ -218,8 +227,15 @@
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
+				<control type="image">
+					<posx>15</posx>
+					<posy>72</posy>
+					<height>50</height>
+					<aspectratio align="left" aligny="center">keep</aspectratio>
+					<texture>$INFO[PVR.NowRecordingChannelIcon]</texture>
+				</control>
 				<control type="label">
-					<description>NextRecordingTitle</description>
+					<description>NowRecordingTitle</description>
 					<posx>460</posx>
 					<posy>40</posy>
 					<height>30</height>
@@ -232,27 +248,29 @@
 					<scroll>true</scroll>
 				</control>
 				<control type="label">
-					<description>NextRecordingChannel</description>
+					<description>NowRecordingChannel</description>
 					<posx>460</posx>
 					<posy>70</posy>
 					<height>25</height>
-					<width>440</width>
+					<width>380</width>
 					<label>$INFO[PVR.NowRecordingChannel]</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<font>font12</font>
+					<scroll>true</scroll>
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="label">
-					<description>NextRecordingDateTime</description>
+					<description>NowRecordingDateTime</description>
 					<posx>460</posx>
 					<posy>95</posy>
 					<height>25</height>
-					<width>440</width>
+					<width>380</width>
 					<label>$INFO[PVR.NowRecordingDateTime,$LOCALIZE[19126] - ]</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<font>font12</font>
+					<scroll>true</scroll>
 					<shadowcolor>black</shadowcolor>
 				</control>
 			</control>

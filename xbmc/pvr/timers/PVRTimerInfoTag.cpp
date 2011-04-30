@@ -422,6 +422,15 @@ CStdString CPVRTimerInfoTag::ChannelName() const
     return "";
 }
 
+CStdString CPVRTimerInfoTag::ChannelIcon() const
+{
+  const CPVRChannel *channeltag = g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId);
+  if (channeltag)
+    return channeltag->IconPath();
+  else
+    return "";
+}
+
 bool CPVRTimerInfoTag::SetDuration(int iDuration)
 {
   if (m_StartTime.IsValid())

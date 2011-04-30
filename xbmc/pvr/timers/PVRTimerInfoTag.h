@@ -106,6 +106,7 @@ namespace PVR
 
     int ChannelNumber(void) const;
     CStdString ChannelName(void) const;
+    CStdString ChannelIcon(void) const;
 
     bool UpdateEntry(const CPVRTimerInfoTag &tag);
 
