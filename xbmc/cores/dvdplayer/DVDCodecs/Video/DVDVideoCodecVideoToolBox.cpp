@@ -1375,6 +1375,9 @@ int CDVDVideoCodecVideoToolBox::Decode(BYTE* pData, int iSize, double dts, doubl
 
 void CDVDVideoCodecVideoToolBox::Reset(void)
 {
+  // flush decoder
+  VTDecompressionSessionWaitForAsynchronousFrames(m_vt_session);
+
   while (m_queue_depth)
     DisplayQueuePop();
   
