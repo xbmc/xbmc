@@ -1,15 +1,15 @@
 ; filename                                  mirror                                                      source of the file
 mingwrt-3.18-mingw32-dev.tar.gz             http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/RuntimeLibrary/MinGW-RT/mingwrt-3.18/
 mingwrt-3.18-mingw32-dll.tar.gz             http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/RuntimeLibrary/MinGW-RT/mingwrt-3.18/
-w32api-3.15-1-mingw32-dev.tar.lzma          http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/RuntimeLibrary/Win32-API/w32api-3.15/
-gcc-core-4.5.0-1-mingw32-bin.tar.lzma       http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.0-1/
-gcc-c++-4.5.0-1-mingw32-bin.tar.lzma        http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.0-1/
-libstdc++-4.5.0-1-mingw32-dll-6.tar.lzma    http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.0-1/
-binutils-2.21-2-mingw32-bin.tar.lzma        http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GNU-Binutils/binutils-2.21/
+w32api-3.17-2-mingw32-dev.tar.lzma          http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/RuntimeLibrary/Win32-API/w32api-3.17/
+gcc-core-4.5.2-1-mingw32-bin.tar.lzma       http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.2-1/
+gcc-c++-4.5.2-1-mingw32-bin.tar.lzma        http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.2-1/
+libstdc++-4.5.2-1-mingw32-dll-6.tar.lzma    http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.2-1/
+binutils-2.21-3-mingw32-bin.tar.lzma        http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/BaseSystem/GNU-Binutils/binutils-2.21/
 yasm-1.1.0-win32.exe                        http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://www.tortall.net/projects/yasm/releases/
 dlfcn-win32-static-r19.tar.bz2              http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://dlfcn-win32.googlecode.com/files/
 libexpat-2.0.1-1-mingw32-dev.tar.gz         http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/expat/expat-2.0.1-1/
-libz-1.2.3-1-mingw32-dev.tar.gz             http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/zlib/zlib-1.2.3-1-mingw32/
+libz-1.2.5-1-mingw32-dev.tar.lzma           http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/zlib/zlib-1.2.5-1-mingw32/
 libgmp-5.0.1-1-mingw32-dll-10.tar.lzma      http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/gmp/gmp-5.0.1-1/
 libmpc-0.8.1-1-mingw32-dll-2.tar.lzma       http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/mpc/mpc-0.8.1-1/
 libmpfr-2.4.1-1-mingw32-dll-1.tar.lzma      http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/mpfr/mpfr-2.4.1-1/
@@ -17,3 +17,5 @@ automake1.11-1.11.1-1-mingw32-bin.tar.lzma  http://mirrors.xbmc.org/build-deps/w
 libtool-2.4-1-mingw32-bin.tar.lzma          http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/libtool/libtool-2.4-1/
 mads_1.9.2.7z                               http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://mads.atari8.info/
 xasm-3.0.2-windows.zip                      http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://atariarea.krap.pl/x-asm/
+libintl-0.17-1-mingw32-dll-8.tar.lzma       http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://sourceforge.net/projects/mingw/files/MinGW/gettext/gettext-0.17-1/
+libiconv-1.13.1-1-mingw32-dll-2.tar.lzma    http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://sourceforge.net/projects/mingw/files/MinGW/libiconv/libiconv-1.13.1-1/
