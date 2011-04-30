@@ -632,7 +632,7 @@ unsigned int CAEConvert::Float_S24NE4(float *data, const unsigned int samples, u
   _mm_empty();
   #else /* no SSE */
   for(uint32_t i = 0; i < samples; ++i, ++data, ++dst)
-    *dst = safeRound(*data * ((float)INT24_MAX+.5f)) & 0xFFFFFF;
+    *dst = (safeRound(*data * ((float)INT24_MAX+.5f)) & 0xFFFFFF) << 8;
   #endif
 
   return samples << 2;
