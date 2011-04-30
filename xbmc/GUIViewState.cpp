@@ -411,7 +411,8 @@ void CGUIViewState::LoadViewState(const CStdString &path, int windowID)
   if (db.Open())
   {
     CViewState state;
-    if (db.GetViewState(path, windowID, state))
+    if (db.GetViewState(path, windowID, state, g_guiSettings.GetString("lookandfeel.skin")) ||
+        db.GetViewState(path, windowID, state, ""))
     {
       SetViewAsControl(state.m_viewMode);
       SetSortMethod(state.m_sortMethod);
@@ -429,7 +430,7 @@ void CGUIViewState::SaveViewToDb(const CStdString &path, int windowID, CViewStat
     CViewState state(m_currentViewAsControl, GetSortMethod(), m_sortOrder);
     if (viewState)
       *viewState = state;
-    db.SetViewState(path, windowID, state);
+    db.SetViewState(path, windowID, state, g_guiSettings.GetString("lookandfeel.skin"));
     db.Close();
     if (viewState)
       g_settings.Save();
