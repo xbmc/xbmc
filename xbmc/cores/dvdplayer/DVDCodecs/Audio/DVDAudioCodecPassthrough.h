@@ -49,6 +49,8 @@ public:
 private:
   CAEStreamInfo m_info;
 
+  unsigned int  m_channels;
+
   uint8_t      *m_buffer;
   unsigned int  m_bufferSize;
 

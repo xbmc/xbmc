@@ -110,7 +110,7 @@ IAESink *CSoftAE::GetSink(AEAudioFormat &newFormat, bool passthrough, CStdString
   return sink;
 }
 
-bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = false */, enum AEDataFormat rawFormat/* = AE_FMT_RAW */)
+bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, unsigned int channels/* = 2*/, bool forceRaw/* = false */, enum AEDataFormat rawFormat/* = AE_FMT_RAW */)
 {
   /* save off our raw/passthrough mode for checking */
   bool wasTranscode      = m_transcode;
@@ -188,7 +188,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
   /* setup the desired format */
   AEAudioFormat newFormat;
   newFormat.m_channelLayout = CAEUtil::GetStdChLayout  (m_stdChLayout);
-  newFormat.m_channelCount  = CAEUtil::GetChLayoutCount(newFormat.m_channelLayout);
+  newFormat.m_channelCount  = m_rawPassthrough ? channels : CAEUtil::GetChLayoutCount(newFormat.m_channelLayout);
   newFormat.m_sampleRate    = sampleRate;
   newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? rawFormat : AE_FMT_FLOAT;
 
@@ -215,7 +215,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, bool forceRaw/* = fa
       newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? AE_FMT_S16NE : AE_FMT_FLOAT;
       newFormat.m_channelLayout = CAEUtil::GetStdChLayout(m_stdChLayout);
       if (m_rawPassthrough || m_transcode)
-        newFormat.m_channelCount = (rawFormat == AE_FMT_RAW) ? 2 : 8;
+        newFormat.m_channelCount = (rawFormat == AE_FMT_AC3) ? 2 : 8;
       else
         newFormat.m_channelCount = CAEUtil::GetChLayoutCount(newFormat.m_channelLayout);
       newFormat.m_sampleRate    = sampleRate;
@@ -569,7 +569,7 @@ IAEStream *CSoftAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleR
   streamLock.Leave();
 
   if (AE_IS_RAW(dataFormat))
-    OpenSink(sampleRate, true, dataFormat);
+    OpenSink(sampleRate, channelCount, true, dataFormat);
   else if (wasEmpty)
     OpenSink(sampleRate);
 
