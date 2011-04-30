@@ -40,11 +40,67 @@
 
 #include "../os-dependent_socket.h"
 
+int
+tcp_connect_poll(struct addrinfo* addr, socket_t fdSock, char *szErrbuf, size_t nErrbufSize,
+    int nTimeout)
+{
+  int nRes, nErr = 0;
+  socklen_t errlen = sizeof(int);
+
+  /* switch to non blocking */
+  fcntl(fdSock, F_SETFL, fcntl(fdSock, F_GETFL) | O_NONBLOCK);
+
+  /* connect to the other side */
+  nRes = connect(fdSock, addr->ai_addr, addr->ai_addrlen);
+
+  /* poll until a connection is established */
+  if (nRes == -1)
+  {
+    if (errno == EINPROGRESS)
+    {
+      struct pollfd pfd;
+      pfd.fd = fdSock;
+      pfd.events = POLLOUT;
+      pfd.revents = 0;
+
+      nRes = poll(&pfd, 1, nTimeout);
+      if (nRes == 0)
+      {
+        snprintf(szErrbuf, nErrbufSize, "attempt timed out after %d milliseconds", nTimeout);
+        return SOCKET_ERROR;
+      }
+      else if (nRes == -1)
+      {
+        snprintf(szErrbuf, nErrbufSize, "poll() error '%s'", strerror(errno));
+        return SOCKET_ERROR;
+      }
+
+      /* check for errors */
+      getsockopt(fdSock, SOL_SOCKET, SO_ERROR, (void *)&nErr, &errlen);
+    }
+    else
+    {
+      nErr = errno;
+    }
+  }
+
+  if (nErr != 0)
+  {
+    snprintf(szErrbuf, nErrbufSize, "%s", strerror(nErr));
+    return SOCKET_ERROR;
+  }
+
+  /* switch back to blocking */
+  fcntl(fdSock, F_SETFL, fcntl(fdSock, F_GETFL) & ~O_NONBLOCK);
+
+  return 0;
+}
+
 socket_t
 tcp_connect_addr(struct addrinfo* addr, char *szErrbuf, size_t nErrbufSize,
     int nTimeout)
 {
-  int val;
+  int nVal;
   socket_t fdSock;
 
   /* create the socket */
@@ -63,66 +119,10 @@ tcp_connect_addr(struct addrinfo* addr, char *szErrbuf, size_t nErrbufSize,
   }
 
   /* set TCP_NODELAY socket option */
-  val = 1;
-  setsockopt(fdSock, SOL_TCP, TCP_NODELAY, &val, sizeof(val));
+  nVal = 1;
+  setsockopt(fdSock, SOL_TCP, TCP_NODELAY, &nVal, sizeof(nVal));
 
   return fdSock;
-}
-
-int
-tcp_connect_poll(struct addrinfo* addr, socket_t fdSock, char *szErrbuf, size_t nErrbufSize,
-    int nTimeout)
-{
-  int result, err = 0;
-  socklen_t errlen = sizeof(int);
-
-  /* switch to non blocking */
-  fcntl(fdSock, F_SETFL, fcntl(fdSock, F_GETFL) | O_NONBLOCK);
-
-  /* connect to the other side */
-  result = connect(fdSock, addr->ai_addr, addr->ai_addrlen);
-
-  /* poll until a connection is established */
-  if(result == -1)
-  {
-    if(errno == EINPROGRESS)
-    {
-      struct pollfd pfd;
-      pfd.fd = fdSock;
-      pfd.events = POLLOUT;
-      pfd.revents = 0;
-
-      result = poll(&pfd, 1, nTimeout);
-      if(result == 0)
-      {
-        snprintf(szErrbuf, nErrbufSize, "attempt timed out after %d milliseconds", nTimeout);
-        return -1;
-      }
-      else if(result == -1)
-      {
-        snprintf(szErrbuf, nErrbufSize, "poll() error '%s'", strerror(errno));
-        return -1;
-      }
-
-      /* check for errors */
-      getsockopt(fdSock, SOL_SOCKET, SO_ERROR, (void *)&err, &errlen);
-    }
-    else
-    {
-      err = errno;
-    }
-  }
-
-  if(err != 0)
-  {
-    snprintf(szErrbuf, nErrbufSize, "%s", strerror(err));
-    return -1;
-  }
-
-  /* switch back to blocking */
-  fcntl(fdSock, F_SETFL, fcntl(fdSock, F_GETFL) & ~O_NONBLOCK);
-
-  return 0;
 }
 
 socket_t
@@ -132,7 +132,7 @@ tcp_connect(const char *szHostname, int nPort, char *szErrbuf, size_t nErrbufSiz
   struct   addrinfo hints;
   struct   addrinfo *result, *addr;
   char     service[33];
-  int      res;
+  int      nRes;
   socket_t fdSock = INVALID_SOCKET;
 
   memset(&hints, 0, sizeof(hints));
@@ -141,10 +141,10 @@ tcp_connect(const char *szHostname, int nPort, char *szErrbuf, size_t nErrbufSiz
   hints.ai_protocol = IPPROTO_TCP;
   sprintf(service, "%d", nPort);
 
-  res = getaddrinfo(szHostname, service, &hints, &result);
-  if(res)
+  nRes = getaddrinfo(szHostname, service, &hints, &result);
+  if (nRes)
   {
-    switch(res)
+    switch(nRes)
     {
     case EAI_NONAME:
       snprintf(szErrbuf, nErrbufSize, "the specified host is unknown");
@@ -163,7 +163,7 @@ tcp_connect(const char *szHostname, int nPort, char *szErrbuf, size_t nErrbufSiz
       break;
 
     default:
-      snprintf(szErrbuf, nErrbufSize, "unknown error %d", res);
+      snprintf(szErrbuf, nErrbufSize, "unknown error %d", nRes);
       break;
     }
 
@@ -173,7 +173,7 @@ tcp_connect(const char *szHostname, int nPort, char *szErrbuf, size_t nErrbufSiz
   for(addr = result; addr; addr = addr->ai_next)
   {
     fdSock = tcp_connect_addr(addr, szErrbuf, nErrbufSize, nTimeout);
-    if(fdSock != INVALID_SOCKET)
+    if (fdSock != INVALID_SOCKET)
       break;
   }
 
@@ -186,9 +186,9 @@ tcp_read(socket_t fdSock, void *buf, size_t nLen)
 {
   int x = recv(fdSock, buf, nLen, MSG_WAITALL);
 
-  if(x == -1)
+  if (x == -1)
     return errno;
-  else if(x != (int)nLen)
+  if (x != (int)nLen)
     return ECONNRESET;
 
   return 0;
@@ -200,7 +200,7 @@ tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout)
   int x, tot = 0;
   struct pollfd fds;
 
-  if(nTimeout <= 0)
+  if (nTimeout <= 0)
     return EINVAL;
 
   fds.fd = fdSock;
@@ -210,18 +210,18 @@ tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout)
   while(tot != (int)nLen)
   {
     x = poll(&fds, 1, nTimeout);
-    if(x == 0)
+    if (x == 0)
       return ETIMEDOUT;
 
     x = recv(fdSock, buf + tot, nLen - tot, MSG_DONTWAIT);
-    if(x == -1)
+    if (x == -1)
     {
-      if(errno == EAGAIN)
+      if (errno == EAGAIN)
         continue;
       return errno;
     }
 
-    if(x == 0)
+    if (x == 0)
       return ECONNRESET;
 
     tot += x;
