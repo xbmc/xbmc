@@ -57,25 +57,26 @@ endif
 $(SYSDIR)/avutil-50-$(ARCH).so: $(WRAPPER) ffmpeg/libavutil/libavutil.dylib
 	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS) -o $@ \
 		$(WRAPPER) ffmpeg/libavutil/*.o \
-		ffmpeg/libavutil/$(ARCH_DIR)/*.o
+		ffmpeg/libavutil/$(ARCH_DIR)/*.o $(BUNDLE1_O)
 
 $(SYSDIR)/avcodec-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavcodec/libavcodec.dylib
 	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS) -o $@ \
 		$(WRAPPER) ffmpeg/libavcodec/*.o \
-		ffmpeg/libavcodec/$(ARCH_DIR)/*.o
+		ffmpeg/libavcodec/$(ARCH_DIR)/*.o $(BUNDLE1_O)
 
 $(SYSDIR)/avcore-0-$(ARCH).so: $(WRAPPER) ffmpeg/libavcore/libavcore.dylib
 	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
-		$(WRAPPER) ffmpeg/libavcore/*.o
+		$(WRAPPER) ffmpeg/libavcore/*.o $(BUNDLE1_O)
 
 $(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.dylib
 	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
-		$(WRAPPER) ffmpeg/libavformat/*.o
+		$(WRAPPER) ffmpeg/libavformat/*.o $(BUNDLE1_O)
 
 ifneq ($(findstring arm,$(ARCH)), arm)
 $(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.dylib
 	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
-		$(WRAPPER) ffmpeg/libswscale/*.o ffmpeg/libswscale/$(ARCH_DIR)/*.o
+		$(WRAPPER) ffmpeg/libswscale/*.o \
+		ffmpeg/libswscale/$(ARCH_DIR)/*.o $(BUNDLE1_O)
 else # No ARM version of swscale available yet.
 $(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.dylib
 	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
@@ -84,7 +85,7 @@ endif
 
 $(SYSDIR)/postproc-51-$(ARCH).so: $(WRAPPER) ffmpeg/libpostproc/libpostproc.dylib
 	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
-		$(WRAPPER) ffmpeg/libpostproc/*.o
+		$(WRAPPER) ffmpeg/libpostproc/*.o $(BUNDLE1_O)
 
 ffmpeg/libavutil/libavutil.dylib     : ffmpeg;
 ffmpeg/libavcodec/libavcodec.dylib   : ffmpeg;

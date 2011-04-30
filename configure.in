@@ -356,6 +356,10 @@ case $host in
      AC_SUBST([ARCHTYPE])
      ;;
   powerpc-apple-darwin*)
+     use_joystick=no
+     use_vdadecoder=no
+     use_vtbdecoder=no
+     use_crystalhd=no
      ARCH="powerpc-osx"
      export MACOSX_DEPLOYMENT_TARGET=10.4
      SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
