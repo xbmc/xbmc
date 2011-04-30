@@ -120,8 +120,8 @@
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
-				<texturefocus>OSDRecordFO.png</texturefocus>
-				<texturenofocus>OSDRecordNF.png</texturenofocus>
+				<texturefocus>OSDRecordOffFO.png</texturefocus>
+				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
 				<onleft>605</onleft>
 				<onright>607</onright>
 				<onup>300</onup>
@@ -336,8 +336,8 @@
 				<width>40</width>
 				<height>40</height>
 				<label>-</label>
-				<texturefocus>OSDRecordFO.png</texturefocus>
-				<texturenofocus>OSDRecordNF.png</texturenofocus>
+				<texturefocus>OSDRecordOffFO.png</texturefocus>
+				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
 				<onleft>705</onleft>
 				<onright>701</onright>
 				<onup>300</onup>
