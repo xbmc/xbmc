@@ -117,6 +117,9 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_bChanged                = false;
   m_bIsCachingIcon          = false;
 
+  if (m_strChannelName.IsEmpty())
+    m_strChannelName.Format("%s %d", g_localizeStrings.Get(19029), m_iUniqueId);
+
   UpdateEncryptionName();
 }
 
