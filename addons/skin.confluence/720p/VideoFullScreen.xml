@@ -216,7 +216,7 @@
 					<font>font12</font>
 					<textcolor>grey</textcolor>
 					<scroll>true</scroll>
-					<visible>!Window.IsVisible(VideoOSD) + !VideoPlayer.Content(LiveTV)</visible>
+					<visible>!Window.IsVisible(VideoOSD) + VideoPlayer.Content(LiveTV)</visible>
 					<animation effect="fade" time="200">VisibleChange</animation>
 				</control>
 			</control>
