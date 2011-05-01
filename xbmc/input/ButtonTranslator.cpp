@@ -1039,8 +1039,12 @@ uint32_t CButtonTranslator::TranslateKeyboardString(const char *szButton)
   uint32_t buttonCode = 0;
   XBMCKEYTABLE keytable;
 
+  // We need the button name to be in lowercase
+  CStdString keyname = szButton;
+  keyname.ToLower();
+
   // Look up the key name
-  if (KeyTableLookupName(szButton, &keytable))
+  if (KeyTableLookupName(keyname.c_str(), &keytable))
   {
     buttonCode = keytable.vkey;
   }
