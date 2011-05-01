@@ -356,6 +356,8 @@ void CPVRManager::ResetProperties(void)
   m_PreviousChannelIndex  = 0;
   m_LastChannel           = 0;
 
+  for (unsigned int iJobPtr = 0; iJobPtr < m_pendingUpdates.size(); iJobPtr++)
+    delete m_pendingUpdates.at(iJobPtr);
   m_pendingUpdates.clear();
 }
 
