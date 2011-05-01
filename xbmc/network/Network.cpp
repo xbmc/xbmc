@@ -89,7 +89,7 @@ bool in_ether (const char *bufp, unsigned char *addr)
 
 
 /* Returns the quality, normalized as a percentage, of the network access point */
-int NetworkAccessPoint::getQuality()
+const int NetworkAccessPoint::getQuality()
 {
   // Cisco dBm lookup table (partially nonlinear)
   // Source: Converting Signal Strength Percentage to dBm Values, 2002
@@ -105,7 +105,7 @@ int NetworkAccessPoint::getQuality()
 }
 
 /* Returns a Google Gears specific JSON string */
-CStdString NetworkAccessPoint::toJson()
+const CStdString NetworkAccessPoint::toJson()
 {
   CStdString jsonBuffer;
   if (m_macAddress.IsEmpty())
