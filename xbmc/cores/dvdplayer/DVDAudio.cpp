@@ -69,8 +69,8 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
   CSingleLock lock(m_critSection);
   m_pAudioStream = AE.GetStream(
     audioframe.data_format,
-    audioframe.sample_rate,
-    audioframe.channel_count,
+    audioframe.passthrough ? audioframe.encoded_sample_rate   : audioframe.sample_rate,
+    audioframe.passthrough ? audioframe.encoded_channel_count : audioframe.channel_count,
     audioframe.channel_layout
   );
   if (!m_pAudioStream) return false;
