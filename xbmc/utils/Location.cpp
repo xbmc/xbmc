@@ -19,6 +19,7 @@
  *
  */
 
+#include "system.h"
 #include "Location.h"
 #include "network/Network.h"
 #include "filesystem/FileCurl.h"
