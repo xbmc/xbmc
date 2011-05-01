@@ -74,6 +74,8 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_initialized(false),
   m_running(false),
   m_isExclusive(false),
+  m_encodedChannels(0),
+  m_encodedSampleRate(0),
   m_uiBufferLen(0)
 {
   m_channelLayout[0] = AE_CH_NULL;
@@ -211,18 +213,27 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const CStdString de
 
   bool excSetting = g_guiSettings.GetBool("audiooutput.useexclusivemode");
 
-  //Shared mode has one mix format used to open the device and used internally by Windows.
+  //Shared mode has one mix format used to open the device and is set by Windows.
   //Don't change unless we are switching to passthrough or changing output modes. 
   if(!m_isExclusive && excSetting ==  m_isExclusive && !AE_IS_RAW(format.m_dataFormat))
     return true;
 
   if(m_device      == device     && //Same device
      m_isExclusive == excSetting && //No change in exclusive vs shared mode
-     m_format.m_sampleRate == format.m_sampleRate  && //Same sample rate
-     (AE_IS_RAW(format.m_dataFormat) && AE_IS_RAW(m_format.m_dataFormat) || //No change from PCM to RAW or vice versa
-      (format.m_dataFormat    == AE_FMT_FLOAT     &&
-       !AE_IS_RAW(m_format.m_dataFormat))         &&
-     m_format.m_channelCount == format.m_channelCount)) //Same channel count.
+
+     AE_IS_RAW(m_format.m_dataFormat) == AE_IS_RAW(format.m_dataFormat)  && //No change from PCM to RAW or vice versa
+
+     //The current and target formats are raw and match
+     (AE_IS_RAW(format.m_dataFormat) && AE_IS_RAW(m_format.m_dataFormat) && 
+     format.m_dataFormat   == m_format.m_dataFormat  &&
+     format.m_sampleRate   == m_encodedSampleRate    &&
+     format.m_channelCount == m_encodedChannels)     ||
+     
+     //Or the current and target formats are both PCM and match
+     (!AE_IS_RAW(format.m_dataFormat) && !AE_IS_RAW(m_format.m_dataFormat) &&
+     format.m_dataFormat     == AE_FMT_FLOAT         &&
+     m_format.m_sampleRate   == format.m_sampleRate  && 
+     m_format.m_channelCount == format.m_channelCount))
      return true; //We can reuse the existing sink.
 
   return false;
@@ -414,8 +425,12 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
     if(format.m_dataFormat == AE_FMT_AC3 || format.m_dataFormat == AE_FMT_DTS)
     {
       wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
-      wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
-      wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
+
+      if(format.m_dataFormat == AE_FMT_AC3)
+        wfxex.SubFormat            = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
+      else
+        wfxex.SubFormat            = KSDATAFORMAT_SUBTYPE_IEC61937_DTS;
+
       wfxex.Format.wBitsPerSample  = 16;
       wfxex.Format.nChannels       = 2;
       wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
@@ -583,11 +598,7 @@ initialize:
 
   AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
 
-  if(AE_IS_RAW(format.m_dataFormat))
-  {
-    format.m_dataFormat = AE_FMT_S16NE;
-  }
-  else if(wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_PCM)
+  if(!AE_IS_RAW(format.m_dataFormat))
   {
     if(wfxex.Format.wBitsPerSample == 32)
     {
@@ -601,11 +612,16 @@ initialize:
       format.m_dataFormat = AE_FMT_S16NE;
     }
   }
+  else
+  { //Store the encoded stream info for the IsCompatible function.
+    m_encodedChannels   = format.m_channelCount;
+    m_encodedSampleRate = format.m_sampleRate;
+  }
 
-  format.m_channelCount = wfxex.Format.nChannels;
-  format.m_sampleRate = wfxex.Format.nSamplesPerSec;
+  format.m_channelCount  = wfxex.Format.nChannels;      //PCM: Number of channels.  RAW: Number of data lines * 2
+  format.m_sampleRate    = wfxex.Format.nSamplesPerSec; //PCM: Sample rate.         RAW: Link speed
   format.m_channelLayout = m_channelLayout;
-  format.m_frameSize = (wfxex.Format.wBitsPerSample >> 3) * wfxex.Format.nChannels;
+  format.m_frameSize     = (wfxex.Format.wBitsPerSample >> 3) * wfxex.Format.nChannels;
 
   REFERENCE_TIME hnsRequestedDuration, hnsPeriodicity;
   hr = m_pAudioClient->GetDevicePeriod(NULL, &hnsPeriodicity);
