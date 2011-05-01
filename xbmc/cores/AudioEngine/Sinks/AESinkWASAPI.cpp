@@ -28,6 +28,7 @@
 #include <Mmreg.h>
 #include <stdint.h>
 
+#include "AEUtil.h"
 #include "settings/GUISettings.h"
 #include "StdString.h"
 #include "utils/log.h"
@@ -35,9 +36,6 @@
 #include "CharsetConverter.h"
 
 #pragma comment(lib, "Avrt.lib")
-
-DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
-DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL, WAVE_FORMAT_DOLBY_AC3_SPDIF, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 
 const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
 const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
@@ -74,6 +72,7 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_initialized(false),
   m_running(false),
   m_isExclusive(false),
+  m_encodedFormat(AE_FMT_INVALID),
   m_encodedChannels(0),
   m_encodedSampleRate(0),
   m_uiBufferLen(0)
@@ -221,19 +220,19 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const CStdString de
   if(m_device      == device     && //Same device
      m_isExclusive == excSetting && //No change in exclusive vs shared mode
 
-     AE_IS_RAW(m_format.m_dataFormat) == AE_IS_RAW(format.m_dataFormat)  && //No change from PCM to RAW or vice versa
+     AE_IS_RAW(m_encodedFormat) == AE_IS_RAW(format.m_dataFormat)  && //No change from PCM to RAW or vice versa
 
-     //The current and target formats are raw and match
-     (AE_IS_RAW(format.m_dataFormat) && AE_IS_RAW(m_format.m_dataFormat) && 
-     format.m_dataFormat   == m_format.m_dataFormat  &&
-     format.m_sampleRate   == m_encodedSampleRate    &&
-     format.m_channelCount == m_encodedChannels)     ||
+     //If the current and target formats are raw and match...
+     ((AE_IS_RAW(format.m_dataFormat) && AE_IS_RAW(m_encodedFormat) && 
+     format.m_dataFormat   == m_encodedFormat     &&
+     format.m_sampleRate   == m_encodedSampleRate &&
+     format.m_channelCount == m_encodedChannels)  ||
      
-     //Or the current and target formats are both PCM and match
+     //Or the current and target formats are both PCM and match...
      (!AE_IS_RAW(format.m_dataFormat) && !AE_IS_RAW(m_format.m_dataFormat) &&
-     format.m_dataFormat     == AE_FMT_FLOAT         &&
-     m_format.m_sampleRate   == format.m_sampleRate  && 
-     m_format.m_channelCount == format.m_channelCount))
+     m_format.m_sampleRate    == format.m_sampleRate   && 
+     m_format.m_channelCount  == format.m_channelCount &&
+     CAEUtil::CompareLayouts(m_format.m_channelLayout, format.m_channelLayout))))
      return true; //We can reuse the existing sink.
 
   return false;
@@ -308,8 +307,8 @@ void CAESinkWASAPI::EnumerateDevices(AEDeviceList &devices, bool passthrough)
   wfxex.Format.cbSize          = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
   wfxex.Format.nSamplesPerSec  = 48000;
   wfxex.dwChannelMask          = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
-  wfxex.Format.wFormatTag      = WAVE_FORMAT_DOLBY_AC3_SPDIF;
-  wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
+  wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
+  wfxex.SubFormat              = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_DIGITAL;
   wfxex.Format.wBitsPerSample  = 16;
   wfxex.Samples.wValidBitsPerSample = 16;
   wfxex.Format.nChannels       = 2;
@@ -409,13 +408,15 @@ failed:
 
 void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex)
 {
+  wfxex.Format.wFormatTag        = WAVE_FORMAT_EXTENSIBLE;
   wfxex.Format.cbSize            = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
+
 
   if (!AE_IS_RAW(format.m_dataFormat)) // PCM data
   {
     wfxex.dwChannelMask          = SpeakerMaskFromAEChannels(format.m_channelLayout);
-    wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
-    wfxex.SubFormat              = _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
+    
+    wfxex.SubFormat              = KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
     wfxex.Format.nChannels       = format.m_channelCount;
     wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
     wfxex.Format.wBitsPerSample  = 32;
@@ -440,7 +441,6 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
       //IEC 61937 transmissions.
       //Currently these formats only run over HDMI.
 
-      wfxex.Format.wFormatTag     = WAVE_FORMAT_EXTENSIBLE;
       wfxex.Format.nSamplesPerSec = 192000; // Link runs at 192 KHz.
       wfxex.Format.wBitsPerSample = 16; // Always at 16 bits over IEC 60958.
       wfxex.dwChannelMask         = 0;
@@ -497,8 +497,8 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
   }
 
   //The windows mixer uses floats and that should be the mix format returned.
-  if (wfxex->Format.wFormatTag != WAVE_FORMAT_IEEE_FLOAT &&
-    (wfxex->Format.wFormatTag != WAVE_FORMAT_EXTENSIBLE ||  wfxex->SubFormat != _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT))
+  if(wfxex->Format.wFormatTag != WAVE_FORMAT_IEEE_FLOAT &&
+    (wfxex->Format.wFormatTag != WAVE_FORMAT_EXTENSIBLE ||  wfxex->SubFormat != KSDATAFORMAT_SUBTYPE_IEEE_FLOAT))
   {
     CLog::Log(LOGERROR, __FUNCTION__": Windows mixer format is not float (%i)", wfxex->Format.wFormatTag);
     return false;
@@ -506,11 +506,11 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
 
   AEChannelsFromSpeakerMask(wfxex->dwChannelMask);
 
-  format.m_channelCount = wfxex->Format.nChannels;
+  format.m_channelCount  = wfxex->Format.nChannels;
   format.m_channelLayout = m_channelLayout;
-  format.m_dataFormat = AE_FMT_FLOAT;
-  format.m_frameSize = sizeof(float) * format.m_channelCount;
-  format.m_sampleRate = wfxex->Format.nSamplesPerSec;
+  format.m_dataFormat    = AE_FMT_FLOAT;
+  format.m_frameSize     = sizeof(float) * format.m_channelCount;
+  format.m_sampleRate    = wfxex->Format.nSamplesPerSec;
 
   REFERENCE_TIME hnsRequestedDuration, hnsPeriodicity;
   hr = m_pAudioClient->GetDevicePeriod(NULL, &hnsPeriodicity);
@@ -598,24 +598,22 @@ initialize:
 
   AEChannelsFromSpeakerMask(wfxex.dwChannelMask);
 
-  if(!AE_IS_RAW(format.m_dataFormat))
+  //When the stream is raw, the values in the format structure are set to the link
+  //parameters, so store the encoded stream values here for the IsCompatible function.
+  m_encodedFormat     = format.m_dataFormat;
+  m_encodedChannels   = format.m_channelCount;
+  m_encodedSampleRate = format.m_sampleRate;
+
+  if(wfxex.Format.wBitsPerSample == 32)
   {
-    if(wfxex.Format.wBitsPerSample == 32)
-    {
-      if(wfxex.Samples.wValidBitsPerSample == 32)
-        format.m_dataFormat = AE_FMT_S32NE;
-      else // wfxex->Samples.wValidBitsPerSample == 24
-        format.m_dataFormat = AE_FMT_S24NE4;
-    }
-    else // wfxex->Samples.wBitsPerSample == 16
-    {
-      format.m_dataFormat = AE_FMT_S16NE;
-    }
+    if(wfxex.Samples.wValidBitsPerSample == 32)
+      format.m_dataFormat = AE_FMT_S32NE;
+    else // wfxex->Samples.wValidBitsPerSample == 24
+      format.m_dataFormat = AE_FMT_S24NE4;
   }
-  else
-  { //Store the encoded stream info for the IsCompatible function.
-    m_encodedChannels   = format.m_channelCount;
-    m_encodedSampleRate = format.m_sampleRate;
+  else // wfxex->Samples.wBitsPerSample == 16
+  {
+    format.m_dataFormat = AE_FMT_S16NE;
   }
 
   format.m_channelCount  = wfxex.Format.nChannels;      //PCM: Number of channels.  RAW: Number of data lines * 2

@@ -56,6 +56,7 @@ private:
   IAudioRenderClient *m_pRenderClient;
 
   AEAudioFormat       m_format;
+  enum AEDataFormat   m_encodedFormat;
   unsigned int        m_encodedChannels;
   unsigned int        m_encodedSampleRate;
   enum AEChannel      m_channelLayout[9];
