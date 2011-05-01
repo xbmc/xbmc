@@ -12,7 +12,7 @@ all: $(CMYTH_LIB)
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 $(CMYTH_LIB): libcmyth/libcmyth.a librefmem/librefmem.a
-	$(CC) $(SYSROOT) $(LDFLAGS) -bundle -o $@ @MYSQL_LIBS@ \
+	$(CC) $(LDFLAGS) -bundle -o $@ @MYSQL_LIBS@ \
 	-Wl,-all_load libcmyth/libcmyth.a librefmem/librefmem.a 
 else
 $(CMYTH_LIB): libcmyth/libcmyth.a librefmem/librefmem.a

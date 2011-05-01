@@ -376,10 +376,11 @@ case $host in
      use_vtbdecoder=no
      use_crystalhd=no
      ARCH="powerpc-osx"
+     use_arch="ppc"
      export MACOSX_DEPLOYMENT_TARGET=10.4
      SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
      # define ppc
-     ARCHTYPE=`arch`
+     ARCHTYPE="ppc"
      AC_SUBST([ARCHTYPE])
      ;;
   powerpc-*-linux-gnu*)
@@ -1536,7 +1537,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
     ./configure \
       --extra-cflags="$CFLAGS $FFMPEG_EXTRACFLAGS -w -D_DARWIN_C_SOURCE -Dattribute_deprecated=" \
-      `if test "$cross_compiling" = "yes"; then echo --enable-cross-compile; fi` \
+      `if test "$use_arch" != "no"; then echo --enable-cross-compile; fi` \
       `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
       `if test "$use_cpu" != "no"; then echo --cpu=$use_cpu; fi`\
       --target-os=$(tolower $(uname -s)) \
