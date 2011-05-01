@@ -171,7 +171,7 @@
 				<posx>90</posx>
 				<posy>80</posy>
 				<width>1080</width>
-				<height>550</height>
+				<height>558</height>
 				<onleft>2</onleft>
 				<onright>60</onright>
 				<onup>500</onup>
@@ -180,21 +180,32 @@
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<preloaditems>2</preloaditems>
-				<itemlayout height="275" width="270">
+				<itemlayout height="186" width="216">
 					<control type="image">
 						<posx>1</posx>
 						<posy>0</posy>
-						<width>268</width>
-						<height>240</height>
+						<width>214</width>
+						<height>160</height>
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>5</bordersize>
-						<fadetime>100</fadetime>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<visible>!Container.Content(Episodes)</visible>
+					</control>
+					<control type="image">
+						<posx>1</posx>
+						<posy>0</posy>
+						<width>214</width>
+						<height>160</height>
+						<aspectratio>scale</aspectratio>
+						<bordertexture border="5">button-nofocus.png</bordertexture>
+						<bordersize>5</bordersize>
+						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="label">
-						<posx>135</posx>
-						<posy>240</posy>
-						<width>260</width>
+						<posx>108</posx>
+						<posy>160</posy>
+						<width>200</width>
 						<height>25</height>
 						<font>font12</font>
 						<textcolor>grey2</textcolor>
@@ -204,29 +215,40 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="image">
-						<posx>230</posx>
-						<posy>200</posy>
-						<width>35</width>
-						<height>35</height>
+						<posx>180</posx>
+						<posy>130</posy>
+						<width>30</width>
+						<height>30</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</itemlayout>
-				<focusedlayout height="275" width="270">
+				<focusedlayout height="186" width="216">
 					<control type="image">
 						<posx>1</posx>
 						<posy>0</posy>
-						<width>268</width>
-						<height>240</height>
+						<width>214</width>
+						<height>160</height>
 						<bordertexture border="5">folder-focus.png</bordertexture>
 						<bordersize>5</bordersize>
-						<fadetime>100</fadetime>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<visible>!Container.Content(Episodes)</visible>
+					</control>
+					<control type="image">
+						<posx>1</posx>
+						<posy>0</posy>
+						<width>214</width>
+						<height>160</height>
+						<aspectratio>scale</aspectratio>
+						<bordertexture border="5">folder-focus.png</bordertexture>
+						<bordersize>5</bordersize>
+						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="label">
-						<posx>135</posx>
-						<posy>240</posy>
-						<width>260</width>
+						<posx>108</posx>
+						<posy>160</posy>
+						<width>200</width>
 						<height>25</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
@@ -236,10 +258,10 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="image">
-						<posx>230</posx>
-						<posy>200</posy>
-						<width>35</width>
-						<height>35</height>
+						<posx>180</posx>
+						<posy>130</posy>
+						<width>30</width>
+						<height>30</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
