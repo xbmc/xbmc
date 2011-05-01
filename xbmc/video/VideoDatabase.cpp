@@ -7405,13 +7405,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
       { // check the scraper exists, if so store the path
         AddonPtr addon;
         CStdString uuid;
-
-        if (!XMLUtils::GetString(path,"scraperID",uuid))
-        { // support pre addons exports
-          XMLUtils::GetString(path, "scraperpath", uuid);
-          uuid = URIUtils::GetFileName(uuid);
-        }
-
+        XMLUtils::GetString(path,"scraperID",uuid);
         if (CAddonMgr::Get().GetAddon(uuid, addon))
         {
           SScanSettings settings;
