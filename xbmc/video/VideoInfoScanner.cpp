@@ -1060,7 +1060,8 @@ namespace VIDEO
     long lResult = -1;
 
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
-    movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
+    if (movieDetails.m_basePath.IsEmpty())
+      movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
 
     if (content == CONTENT_MOVIES)
     {

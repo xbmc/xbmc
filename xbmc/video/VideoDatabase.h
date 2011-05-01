@@ -688,6 +688,12 @@ private:
    */
   void UpdateBasePath(const char *table, const char *id, int column, bool shows = false);
 
+  /*! \brief Determine whether the path is using lookup using folders
+   \param path the path to check
+   \param shows whether this path is from a tvshow (defaults to false)
+   */
+  bool LookupByFolders(const CStdString &path, bool shows = false);
+
   virtual int GetMinVersion() const { return 51; };
   virtual int GetExportVersion() const { return 1; };
   const char *GetBaseDBName() const { return "MyVideos"; };

@@ -3456,6 +3456,16 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
   return true;
 }
 
+bool CVideoDatabase::LookupByFolders(const CStdString &path, bool shows)
+{
+  SScanSettings settings;
+  bool foundDirectly = false;
+  ScraperPtr scraper = GetScraperForPath(path, settings, foundDirectly);
+  if (scraper && scraper->Content() == CONTENT_TVSHOWS && !shows)
+    return false; // episodes
+  return settings.parent_name_root; // shows, movies, musicvids
+}
+
 void CVideoDatabase::UpdateBasePath(const char *table, const char *id, int column, bool shows)
 {
   CStdString query;
@@ -3472,13 +3482,7 @@ void CVideoDatabase::UpdateBasePath(const char *table, const char *id, int colum
     map<CStdString, bool>::iterator i = paths.find(path);
     if (i == paths.end())
     {
-      SScanSettings settings;
-      bool foundDirectly = false;
-      ScraperPtr scraper = GetScraperForPath(path, settings, foundDirectly);
-      if (scraper && scraper->Content() == CONTENT_TVSHOWS && !shows)
-        paths.insert(make_pair(path, false)); // episodes
-      else
-        paths.insert(make_pair(path, settings.parent_name_root)); // shows, movies, musicvids
+      paths.insert(make_pair(path, LookupByFolders(path, shows)));
       i = paths.find(path);
     }
     CStdString filename;
@@ -7353,6 +7357,41 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
     CStdString tvshowsDir(URIUtils::AddFileToFolder(path, "tvshows"));
     CVideoInfoScanner scanner;
     set<CStdString> actors;
+    // add paths first (so we have scraper settings available)
+    TiXmlElement *path = root->FirstChildElement("paths");
+    path = path->FirstChildElement();
+    while (path)
+    {
+      CStdString strPath;
+      if (XMLUtils::GetString(path,"url",strPath))
+        if (GetPathId(strPath) < 0)
+          AddPath(strPath);
+
+      CStdString content;
+      if (XMLUtils::GetString(path,"content", content))
+      { // check the scraper exists, if so store the path
+        AddonPtr addon;
+        CStdString uuid;
+
+        if (!XMLUtils::GetString(path,"scraperID",uuid))
+        { // support pre addons exports
+          XMLUtils::GetString(path, "scraperpath", uuid);
+          uuid = URIUtils::GetFileName(uuid);
+        }
+
+        if (CAddonMgr::Get().GetAddon(uuid, addon))
+        {
+          SScanSettings settings;
+          ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addon);
+          // FIXME: scraper settings are not exported?
+          scraper->SetPathSettings(TranslateContent(content), "");
+          XMLUtils::GetInt(path,"scanrecursive",settings.recurse);
+          XMLUtils::GetBoolean(path,"usefoldernames",settings.parent_name);
+          SetScraperForPath(strPath,scraper,settings);
+        }
+      }
+      path = path->NextSiblingElement();
+    }
     movie = root->FirstChildElement();
     while (movie)
     {
@@ -7361,7 +7400,8 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
       {
         info.Load(movie);
         CFileItem item(info);
-        scanner.AddVideo(&item,CONTENT_MOVIES);
+        bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(item.m_strPath) : false;
+        scanner.AddVideo(&item, CONTENT_MOVIES, useFolders);
         SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
         CStdString strFileName(info.m_strTitle);
         if (GetExportVersion() >= 1 && info.m_iYear > 0)
@@ -7377,7 +7417,8 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
       {
         info.Load(movie);
         CFileItem item(info);
-        scanner.AddVideo(&item,CONTENT_MUSICVIDEOS);
+        bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(item.m_strPath) : false;
+        scanner.AddVideo(&item, CONTENT_MUSICVIDEOS, useFolders);
         SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
         CStdString strFileName(info.m_strArtist + "." + info.m_strTitle);
         if (GetExportVersion() >= 1 && info.m_iYear > 0)
@@ -7394,7 +7435,8 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         URIUtils::AddSlashAtEnd(info.m_strPath);
         DeleteTvShow(info.m_strPath);
         CFileItem item(info);
-        int showID = scanner.AddVideo(&item,CONTENT_TVSHOWS);
+        bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(item.m_strPath, true) : false;
+        int showID = scanner.AddVideo(&item, CONTENT_TVSHOWS, useFolders);
         current++;
         CStdString showDir(GetSafeFile(tvshowsDir, info.m_strTitle));
         CFile::Cache(URIUtils::AddFileToFolder(showDir, "folder.jpg"), item.GetCachedVideoThumb());
@@ -7420,40 +7462,6 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         }
         // and fetch season thumbs
         scanner.FetchSeasonThumbs(showID, showDir, false, true);
-      }
-      else if (strnicmp(movie->Value(), "paths", 5) == 0)
-      {
-        const TiXmlElement* path = movie->FirstChildElement("path");
-        while (path)
-        {
-          CStdString strPath;
-          XMLUtils::GetString(path,"url",strPath);
-          CStdString content;
-
-          if (XMLUtils::GetString(path,"content", content))
-          { // check the scraper exists, if so store the path
-            AddonPtr addon;
-            CStdString uuid;
-
-            if (!XMLUtils::GetString(path,"scraperID",uuid))
-            { // support pre addons exports
-              XMLUtils::GetString(path, "scraperpath", uuid);
-              uuid = URIUtils::GetFileName(uuid);
-            }
-
-            if (CAddonMgr::Get().GetAddon(uuid, addon))
-            {
-              SScanSettings settings;
-              ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addon);
-              // FIXME: scraper settings are not exported?
-              scraper->SetPathSettings(TranslateContent(content), "");
-              XMLUtils::GetInt(path,"scanrecursive",settings.recurse);
-              XMLUtils::GetBoolean(path,"usefoldernames",settings.parent_name);
-              SetScraperForPath(strPath,scraper,settings);
-            }
-          }
-          path = path->NextSiblingElement();
-        }
       }
       movie = movie->NextSiblingElement();
       if (progress && total)
