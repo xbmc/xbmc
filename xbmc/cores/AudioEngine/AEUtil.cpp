@@ -188,8 +188,11 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
     "AE_FMT_FLOAT",
 
     /* for passthrough streams and the like */
-    "AE_FMT_RAW",
-    "AE_FMT_RAW8"
+    "AE_FMT_AC3",
+    "AE_FMT_DTS",
+    "AE_FMT_EAC3",
+    "AE_FMT_TRUEHD",
+    "AE_FMT_DTSHD"
   };
 
   return formats[dataFormat];
