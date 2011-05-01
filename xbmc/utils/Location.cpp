@@ -171,11 +171,11 @@ bool CLocationJob::GetLocationByIP()
   }
   
   CStdString status;
-  GetString(pResponse, "Status", status, "Unknown Error");
+  GetString(pResponse, "Status", status);
   // If Status is not OK display the error message
   if (!status.Equals("OK"))
   {
-    CLog::Log(LOGERROR, "LOCATION: Unable to get data: %s", status.c_str());
+    CLog::Log(LOGERROR, "LOCATION: Unable to get data: %s", status.IsEmpty() ? "Unknown error" : status.c_str());
     return false;
   }
 
@@ -307,18 +307,10 @@ bool CLocationJob::ReverseGeocode(CStdString lat, CStdString lon)
   return true;
 }
 
-void CLocationJob::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value, const CStdString& strDefaultValue)
+void CLocationJob::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value)
 {
-  value = "";
-  const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-  if (pChild && pChild->FirstChild())
-  {
-    value = pChild->FirstChild()->Value();
-    if (value.Equals("-"))
-      value = "";
-  }
-  if (value.IsEmpty() && strDefaultValue)
-    value = strDefaultValue;
+  if (!XMLUtils::GetString(pRootElement, strTagName.c_str(), value) || value.Equals("-"))
+    value = "";
 }
 
 //////////////////////////////////////////////////////////////////////

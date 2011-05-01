@@ -92,7 +92,7 @@ private:
   bool GetLocationByWifi();
   bool GetLocationByIP();
   bool ReverseGeocode(CStdString lat, CStdString lon);
-  static void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value, const CStdString& strDefaultValue = "");
+  static void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value);
 
   CLocationInfo m_info;
 };
