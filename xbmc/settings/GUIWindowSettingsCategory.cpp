@@ -944,7 +944,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CSettingString *pSetting = (CSettingString *)GetSetting(strSetting)->GetSetting();
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetLabel2(CWeather::GetAreaCity(pSetting->GetData()));
+      pControl->SetLabel2(CWeather::GetAreaCityPart(pSetting->GetData()));
     }
     else if (strSetting.Equals("musicfiles.trackformat"))
     {

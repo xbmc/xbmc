@@ -135,6 +135,7 @@ public:
   static bool GetSearchResults(const CStdString &strSearch, CStdString &strResult);
 
   CStdString GetLocation(int iLocation);
+  CStdString GetAreaCode(int iLocation);
   const CStdString &GetLastUpdateTime() const { return m_info.lastUpdateTime; };
   const day_forecast &GetForecast(int day) const;
   bool IsFetched();
@@ -143,8 +144,8 @@ public:
   void SetArea(int iArea) { m_iCurWeather = iArea; };
   int GetArea() const { return m_iCurWeather; };
 
-  static CStdString GetAreaCode(const CStdString &codeAndCity);
-  static CStdString GetAreaCity(const CStdString &codeAndCity);
+  static CStdString GetAreaCodePart(const CStdString &codeAndCity);
+  static CStdString GetAreaCityPart(const CStdString &codeAndCity);
 
 protected:
   virtual CJob *GetJob() const;
