@@ -586,7 +586,6 @@ initialize:
   if(AE_IS_RAW(format.m_dataFormat))
   {
     format.m_dataFormat = AE_FMT_S16NE;
-    format.m_channelCount = 2;
   }
   else if(wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_PCM)
   {
@@ -603,6 +602,7 @@ initialize:
     }
   }
 
+  format.m_channelCount = wfxex.Format.nChannels;
   format.m_sampleRate = wfxex.Format.nSamplesPerSec;
   format.m_channelLayout = m_channelLayout;
   format.m_frameSize = (wfxex.Format.wBitsPerSample >> 3) * wfxex.Format.nChannels;
