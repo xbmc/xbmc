@@ -53,8 +53,13 @@ CAESinkALSA::~CAESinkALSA()
 
 inline unsigned int CAESinkALSA::GetChannelCount(const AEAudioFormat format)
 {
-       if (format.m_dataFormat == AE_FMT_RAW ) return 2;
-  else if (format.m_dataFormat == AE_FMT_RAW8) return 8;
+       if (format.m_dataFormat == AE_FMT_AC3 ||
+           format.m_dataFormat == AE_FMT_DTS || 
+           format.m_dataFormat == AE_FMT_EAC3) 
+           return 2;
+  else if (format.m_dataFormat == AE_FMT_TRUEHD ||
+           format.m_dataFormat == AE_FMT_DTSHD)
+           return 8;
   else
   {
     unsigned int out = 0;
@@ -119,7 +124,23 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
   /* if we are raw, correct the data format */
   if (AE_IS_RAW(format.m_dataFormat))
   {
-    format.m_channelCount = (format.m_dataFormat == AE_FMT_RAW) ? 2 : 8;
+    switch(format.m_dataFormat)
+    {
+    case AE_FMT_AC3:
+    case AE_FMT_DTS:
+      format.m_channelCount = 2;
+      break;
+    case AE_FMT_EAC3:
+      format.m_channelCount = 2;
+      format.m_sampleRate   = 192000;
+      break;
+    case AE_FMT_TRUEHD:
+    case AE_FMT_DTSHD:
+      format.m_channelCount = 8;
+      format.m_sampleRate   = 192000;
+      break;
+    }
+    
     format.m_dataFormat   = AE_FMT_S16NE;
     m_passthrough         = true;
   }
@@ -183,6 +204,9 @@ bool CAESinkALSA::IsCompatible(const AEAudioFormat format, const CStdString devi
 
 snd_pcm_format_t CAESinkALSA::AEFormatToALSAFormat(const enum AEDataFormat format)
 {
+  if(AE_IS_RAW(format))
+    return SND_PCM_FORMAT_S16_LE;
+
   switch(format)
   {
     case AE_FMT_S8    : return SND_PCM_FORMAT_S8;
@@ -196,8 +220,6 @@ snd_pcm_format_t CAESinkALSA::AEFormatToALSAFormat(const enum AEDataFormat forma
 #endif
     case AE_FMT_S32NE : return SND_PCM_FORMAT_S32;
     case AE_FMT_FLOAT : return SND_PCM_FORMAT_FLOAT;
-    case AE_FMT_RAW   : return SND_PCM_FORMAT_S16_LE;
-    case AE_FMT_RAW8  : return SND_PCM_FORMAT_S16_LE;
 
     default:
       return SND_PCM_FORMAT_UNKNOWN;
