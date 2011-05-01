@@ -7765,3 +7765,39 @@ bool CVideoDatabase::GetItemForPath(const CStdString &content, const CStdString 
   }
   return false;
 }
+
+bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString &strPath, CFileItemList &items)
+{
+  CStdString path(strPath);
+  
+  if(URIUtils::IsMultiPath(path))
+    path = CMultiPathDirectory::GetFirstPath(path);
+  
+  int pathID = GetPathId(path);
+  if (pathID < 0)
+    return false;
+
+  if (content == "movies")
+  {
+    CStdString where = PrepareSQL("where c%02d=%d", VIDEODB_ID_PARENTPATHID, pathID);
+    GetMoviesByWhere("", where, "", items);
+  }
+  else if (content == "episodes")
+  {
+    CStdString where = PrepareSQL("where c%02d=%d", VIDEODB_ID_EPISODE_PARENTPATHID, pathID);
+    GetEpisodesByWhere("", where, items);
+  }
+  else if (content == "tvshows")
+  {
+    CStdString where = PrepareSQL("where c%02d=%d", VIDEODB_ID_TV_PARENTPATHID, pathID);
+    GetTvShowsByWhere("", where, items);
+  }
+  else if (content == "musicvideos")
+  {
+    CStdString where = PrepareSQL("where c%02d=%d", VIDEODB_ID_MUSICVIDEO_PARENTPATHID, pathID);
+    GetMusicVideosByWhere("", where, items);
+  }
+  for (int i = 0; i < items.Size(); i++)
+    items[i]->m_strPath = items[i]->GetVideoInfoTag()->m_basePath;
+  return items.Size() > 0;
+}

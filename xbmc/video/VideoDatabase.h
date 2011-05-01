@@ -457,6 +457,14 @@ public:
    */
   bool GetItemForPath(const CStdString &content, const CStdString &path, CFileItem &item);
 
+  /*! \brief Get videos of the given content type from the given path
+   \param content the content type to fetch.
+   \param path the path to fetch videos from.
+   \param items the returned items
+   \return true if items are found, false otherwise.
+   */
+  bool GetItemsForPath(const CStdString &content, const CStdString &path, CFileItemList &items);
+
   /*! \brief Check whether a given scraper is in use.
    \param scraperID the scraper to check for.
    \return true if the scraper is in use, false otherwise.

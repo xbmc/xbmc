@@ -419,22 +419,32 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
                 !items.IsVirtualDirectoryRoot() &&
                 m_stackingAvailable);
 
+  CFileItemList dbItems;
   if (content.IsEmpty())
     m_database.GetPlayCounts(items);
-
+  else
+  {
+    m_database.GetItemsForPath(content, items.m_strPath, dbItems);
+    dbItems.SetFastLookup(true);
+  }
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
-    CFileItem item;
-    if (!content.IsEmpty() && m_database.GetItemForPath(content, pItem->m_strPath, item))
-    { // copy info across
-      pItem->UpdateInfo(item);
-      pItem->m_strPath = item.m_strPath;
+    CFileItemPtr match;
+    if (!content.IsEmpty())
+      match = dbItems.Get(pItem->m_strPath);
+    if (match)
+    {
+      pItem->UpdateInfo(*match);
+      if (match->m_bIsFolder)
+        pItem->m_strPath = match->GetVideoInfoTag()->m_strPath;
+      else
+        pItem->m_strPath = match->GetVideoInfoTag()->m_strFileNameAndPath;
       // if we switch from a file to a folder item it means we really shouldn't be sorting files and
       // folders separately
-      if (pItem->m_bIsFolder != item.m_bIsFolder)
+      if (pItem->m_bIsFolder != match->m_bIsFolder)
         items.SetSortIgnoreFolders(true);
-      pItem->m_bIsFolder = item.m_bIsFolder;
+      pItem->m_bIsFolder = match->m_bIsFolder;
     }
     else
     { // set the watched overlay (note: items in a folder with content set that aren't in the db
