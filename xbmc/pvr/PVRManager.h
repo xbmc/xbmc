@@ -46,7 +46,7 @@ namespace PVR
   #define g_PVRRecordings    g_PVRManager.Recordings()
   #define g_PVRClients       g_PVRManager.Clients()
 
-  class CPVRManager : public Observer, private CThread, public IJobCallback
+  class CPVRManager : public Observer, private CThread
   {
     friend class CPVRClients;
 
@@ -398,8 +398,6 @@ namespace PVR
      */
     bool IsSelectedGroup(const CPVRChannelGroup &group) const;
 
-    bool IsUpdating(void) const;
-
   protected:
     /*!
      * @brief PVR update and control thread.
@@ -512,9 +510,9 @@ namespace PVR
      */
     void ShowBusyDialog(bool bShow);
 
-    void StartNextPendingJob(void);
+    void ExecutePendingJobs(void);
 
-    void OnJobComplete(unsigned int jobID, bool success, CJob* job);
+    bool IsJobPending(const char *strJobName) const;
 
     /** @name containers */
     //@{
@@ -527,14 +525,9 @@ namespace PVR
     //@}
 
     CCriticalSection                m_critSectionTriggers;         /*!< critical section for triggered updates */
-    bool                            m_bRecordingsUpdating;         /*!< true when recordings are being updated */
-    bool                            m_bRecordingsUpdatePending;    /*!< true when another recordings update will be performed after the last one finished */
-    bool                            m_bTimersUpdating;             /*!< true when timers are being updated */
-    bool                            m_bTimersUpdatePending;        /*!< true when another timers update will be performed after the last one finished */
-    bool                            m_bChannelsUpdating;           /*!< true when channels are being updated */
-    bool                            m_bChannelsUpdatePending;      /*!< true when another channels update will be performed after the last one finished */
-    bool                            m_bChannelGroupsUpdating;      /*!< true when channel groups are being updated */
-    bool                            m_bChannelGroupsUpdatePending; /*!< true when another channel groups update will be performed after the last one finished */
+    HANDLE                          m_triggerEvent;                /*!< triggers an update */
+    std::vector<CJob *>             m_pendingUpdates;              /*!< vector of pending pvr updates */
+
     CFileItem *                     m_currentFile;                 /*!< the PVR file that is currently playing */
     CPVRDatabase *                  m_database;                    /*!< the database for all PVR related data */
     CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
