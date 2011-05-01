@@ -105,7 +105,7 @@ public:
   const CWeatherInfo &GetInfo() const;
 private:
   bool LoadWeather(const CStdString& strWeatherFile); //parse strWeatherFile
-  void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value, const CStdString& strDefaultValue);
+  void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value);
   void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue);
   void LocalizeOverview(CStdString &str);
   void LocalizeOverviewToken(CStdString &str);
