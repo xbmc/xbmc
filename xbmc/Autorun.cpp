@@ -119,12 +119,12 @@ void CAutorun::RunMedia(bool bypassSettings, bool restart)
   if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
   {
     auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "iso9660://" ));
-    bPlaying = RunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true, bypassSettings);
+    bPlaying = RunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true, bypassSettings, restart);
   }
   else
   {
     auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
-    bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true, bypassSettings);
+    bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true, bypassSettings, restart);
   }
 #endif
   if ( !bPlaying && nAddedToPlaylist > 0 )
