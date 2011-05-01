@@ -52,6 +52,7 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
 
 CGUIWindowPVRGuide::~CGUIWindowPVRGuide()
 {
+  g_PVREpg->RemoveObserver(this);
   delete m_epgData;
 }
 

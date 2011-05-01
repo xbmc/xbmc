@@ -53,6 +53,8 @@ int CPVRTimers::Load()
 void CPVRTimers::Unload()
 {
   CSingleLock lock(m_critSection);
+  g_PVREpg->RemoveObserver(this);
+
   for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
     delete at(iTimerPtr);
   clear();

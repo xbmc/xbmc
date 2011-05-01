@@ -118,6 +118,7 @@ int CPVRChannelGroup::Load(void)
 
 void CPVRChannelGroup::Unload(void)
 {
+  g_guiSettings.RemoveObserver(this);
   clear();
 }
 

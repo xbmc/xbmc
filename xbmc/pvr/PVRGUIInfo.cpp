@@ -42,6 +42,7 @@ CPVRGUIInfo::CPVRGUIInfo(void)
 
 CPVRGUIInfo::~CPVRGUIInfo(void)
 {
+  Stop();
 }
 
 void CPVRGUIInfo::ResetProperties(void)
@@ -88,6 +89,7 @@ void CPVRGUIInfo::Start(void)
 void CPVRGUIInfo::Stop(void)
 {
   StopThread();
+  g_PVRTimers->RemoveObserver(this);
 }
 
 void CPVRGUIInfo::Notify(const Observable &obs, const CStdString& msg)
