@@ -660,12 +660,13 @@ CStdString CWeather::GetAreaCode(int iLocation)
   {
     return g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE);
   }
-  else
+  if (m_location[iLocation].IsEmpty())
   {
     CStdString setting;
     setting.Format("weather.areacode%i", iLocation);
-    return GetAreaCodePart(g_guiSettings.GetString(setting));
+    m_location[iLocation] = g_guiSettings.GetString(setting);
   }
+  return GetAreaCodePart(m_location[iLocation]);
 }
 
 CStdString CWeather::GetLocation(int iLocation)
@@ -678,9 +679,9 @@ CStdString CWeather::GetLocation(int iLocation)
   {
     CStdString setting;
     setting.Format("weather.areacode%i", iLocation);
-    m_location[iLocation] = GetAreaCityPart(g_guiSettings.GetString(setting));
+    m_location[iLocation] = g_guiSettings.GetString(setting);
   }
-  return m_location[iLocation];
+  return GetAreaCityPart(m_location[iLocation]);
 }
 
 void CWeather::Reset()
