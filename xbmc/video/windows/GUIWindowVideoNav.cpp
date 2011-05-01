@@ -437,7 +437,9 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       pItem->m_bIsFolder = item.m_bIsFolder;
     }
     else
-    { // set the watched overlay and clean the label
+    { // set the watched overlay (note: items in a folder with content set that aren't in the db
+      //                                won't get picked up here - in the future all items will be returned)
+      // and clean the label
       if (pItem->HasVideoInfoTag())
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
       if (clean)
