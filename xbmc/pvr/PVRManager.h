@@ -512,10 +512,6 @@ namespace PVR
      */
     void ShowBusyDialog(bool bShow);
 
-    void StartRecordingsUpdateJob(void);
-    void StartTimersUpdateJob(void);
-    void StartChannelsUpdateJob(void);
-    void StartChannelGroupsUpdateJob(void);
     void StartNextPendingJob(void);
 
     void OnJobComplete(unsigned int jobID, bool success, CJob* job);
