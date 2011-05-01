@@ -187,8 +187,9 @@ void CreateSkeletonHeader(CXBTF& xbtf, std::string fullPath)
 CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned char *data, unsigned int size, unsigned int format, unsigned int flags)
 {
   CXBTFFrame frame;
-  unsigned int packedSize = size;
 #ifdef USE_LZO_PACKING
+  lzo_uint packedSize = size;
+
   if ((flags & FLAGS_USE_LZO) == FLAGS_USE_LZO)
   {
     // grab a temporary buffer for unpacking into
@@ -196,7 +197,7 @@ CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned ch
     unsigned char *working = new unsigned char[LZO1X_999_MEM_COMPRESS];
     if (packed && working)
     {
-      if (lzo1x_999_compress(data, size, packed, (lzo_uint*)&packedSize, working) != LZO_E_OK || packedSize > size)
+      if (lzo1x_999_compress(data, size, packed, &packedSize, working) != LZO_E_OK || packedSize > size)
       {
         // compression failed, or compressed size is bigger than uncompressed, so store as uncompressed
         packedSize = size;
@@ -213,6 +214,8 @@ CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned ch
     }
   }
   else
+#else
+  unsigned int packedSize = size;
 #endif
   {
     writer.AppendContent(data, size);
