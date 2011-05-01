@@ -145,10 +145,9 @@ namespace PVR
 
     /*!
      * @brief Remove all channel groups from the database
-     * @param bRadio Remove all radio channel groups if true. Remove TV channel groups otherwise.
      * @return True if all channel groups were removed.
      */
-    bool DeleteChannelGroups(bool bRadio = false);
+    bool DeleteChannelGroups(void);
 
     /*!
      * @brief Delete a channel group from the database.
