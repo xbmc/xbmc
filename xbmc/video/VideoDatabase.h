@@ -552,6 +552,13 @@ public:
    */
   int AddFile(const CFileItem& item);
 
+  /*! \brief Add a path to the database, if necessary
+   If the path is already in the database, we simply return it's id.
+   \param strPath the path to add
+   \return id of the file, -1 if it could not be added.
+   */
+  int AddPath(const CStdString& strPath);
+
   void ExportToXML(const CStdString &path, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
   bool ExportSkipEntry(const CStdString &nfoFile);
   void ExportActorThumbs(const CStdString &path, const CVideoInfoTag& tag, bool singleFiles, bool overwrite=false);
@@ -608,7 +615,6 @@ protected:
    */
   int GetFileId(const CStdString& url);
 
-  int AddPath(const CStdString& strPath);
   int AddToTable(const CStdString& table, const CStdString& firstField, const CStdString& secondField, const CStdString& value);
   int AddGenre(const CStdString& strGenre1);
   int AddActor(const CStdString& strActor, const CStdString& strThumb);

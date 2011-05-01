@@ -533,7 +533,10 @@ int CVideoDatabase::AddPath(const CStdString& strPath)
   CStdString strSQL;
   try
   {
-    int idPath;
+    int idPath = GetPathId(strPath);
+    if (idPath >= 0)
+      return idPath; // already have the path
+
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
@@ -590,10 +593,7 @@ int CVideoDatabase::AddFile(const CStdString& strFileNameAndPath)
     CStdString strFileName, strPath;
     SplitPath(strFileNameAndPath,strPath,strFileName);
 
-    int idPath=GetPathId(strPath);
-    if (idPath < 0)
-      idPath = AddPath(strPath);
-
+    int idPath = AddPath(strPath);
     if (idPath < 0)
       return -1;
 
@@ -639,9 +639,7 @@ bool CVideoDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
       if (!CDirectory::Exists(path))
         return false;
     }
-    int idPath = GetPathId(path);
-    if (idPath < 0)
-      idPath = AddPath(path);
+    int idPath = AddPath(path);
     if (idPath < 0) return false;
 
     CStdString strSQL=PrepareSQL("update path set strHash='%s' where idPath=%ld", hash.c_str(), idPath);
@@ -1002,9 +1000,7 @@ int CVideoDatabase::AddTvShow(const CStdString& strPath)
     m_pDS->exec(strSQL.c_str());
     int idTvShow = (int)m_pDS->lastinsertid();
 
-    int idPath = GetPathId(strPath);
-    if (idPath < 0)
-      idPath = AddPath(strPath);
+    int idPath = AddPath(strPath);
     strSQL=PrepareSQL("insert into tvshowlinkpath values (%i,%i)",idTvShow,idPath);
     m_pDS->exec(strSQL.c_str());
 
@@ -3273,12 +3269,10 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const Scraper
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    int idPath = GetPathId(filePath);
+
+    int idPath = AddPath(filePath);
     if (idPath < 0)
-    { // no path found - we have to add one
-      idPath = AddPath(filePath);
-      if (idPath < 0) return ;
-    }
+      return;
 
     // Update
     CStdString strSQL;
@@ -7364,8 +7358,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
     {
       CStdString strPath;
       if (XMLUtils::GetString(path,"url",strPath))
-        if (GetPathId(strPath) < 0)
-          AddPath(strPath);
+        AddPath(strPath);
 
       CStdString content;
       if (XMLUtils::GetString(path,"content", content))
