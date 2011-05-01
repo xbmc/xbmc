@@ -41,8 +41,10 @@ public:
   virtual int  GetData(BYTE** dst);
   virtual void Reset();
   virtual int  GetChannels               ();
+  virtual int  GetEncodedChannels        ();
   virtual AEChLayout GetChannelMap       ();
   virtual int  GetSampleRate             ();
+  virtual int  GetEncodedSampleRate      ();
   virtual enum AEDataFormat GetDataFormat();
   virtual bool NeedPassthrough           () { return true;          }
   virtual const char* GetName            () { return "passthrough"; }

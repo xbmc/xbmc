@@ -76,6 +76,11 @@ public:
   virtual int GetChannels() = 0;
 
   /*
+   * returns the nr of channels for the encoded audio stream
+   */
+  virtual int GetEncodedChannels() { return 0; }
+
+  /*
    * returns the channel mapping
    */
   virtual AEChLayout GetChannelMap() = 0;
@@ -84,6 +89,11 @@ public:
    * returns the samplerate for the decoded audio stream
    */
   virtual int GetSampleRate() = 0;
+
+  /*
+   * returns the samplerate for the encoded audio stream
+   */
+  virtual int GetEncodedSampleRate() { return 0; } 
 
   /*
    * returns the data format for the decoded audio stream (eg AE_FMT_S16LE)

@@ -85,6 +85,21 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 
 int CDVDAudioCodecPassthrough::GetSampleRate()
 {
+  int rate = m_info.GetSampleRate();
+
+  if(m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+  {
+    if (rate == 48000 || rate == 96000 || rate == 192000)
+      return 192000;
+    else
+      return 176400;
+  }
+
+  return rate;
+}
+
+int CDVDAudioCodecPassthrough::GetEncodedSampleRate()
+{
   return m_info.GetSampleRate();
 }
 
@@ -115,6 +130,14 @@ enum AEDataFormat CDVDAudioCodecPassthrough::GetDataFormat()
 }
 
 int CDVDAudioCodecPassthrough::GetChannels()
+{
+  if (m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+    return 8;
+
+  return 2;
+}
+
+int CDVDAudioCodecPassthrough::GetEncodedChannels()
 {
   return m_channels;
 }
