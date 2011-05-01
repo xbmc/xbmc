@@ -439,7 +439,6 @@ cmyth_livetv_chain_update(cmyth_recorder_t rec, char * chainid,
 	control = rec->rec_conn;
 
 	loc_prog = cmyth_recorder_get_cur_proginfo(rec);
-	pthread_mutex_lock(&mutex);
 
 	if(rec->rec_livetv_chain) {
 		if(strncmp(rec->rec_livetv_chain->chainid, chainid, strlen(chainid)) == 0) {
@@ -490,7 +489,6 @@ cmyth_livetv_chain_update(cmyth_recorder_t rec, char * chainid,
 
 	ref_release(loc_prog);
 	out:
-	pthread_mutex_unlock(&mutex);
 
 	return ret;
 }
@@ -555,8 +553,6 @@ cmyth_livetv_chain_setup(cmyth_recorder_t rec, int tcp_rcvbuf,
 		goto out;
 	}
 
-	pthread_mutex_lock(&mutex);
-
 	sprintf(url, "myth://%s:%d%s",loc_prog->proginfo_hostname, rec->rec_port,
 					loc_prog->proginfo_pathname);
 
@@ -599,7 +595,6 @@ cmyth_livetv_chain_setup(cmyth_recorder_t rec, int tcp_rcvbuf,
 
 	ref_release(loc_prog);
     out:
-	pthread_mutex_unlock(&mutex);
 
 	return new_rec;
 }
