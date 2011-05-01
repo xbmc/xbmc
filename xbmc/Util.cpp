@@ -398,70 +398,58 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 {
   //Make sure you have a full path in the filename, otherwise adds the base path before.
   CURL plItemUrl(strFilename);
-  CURL plBaseUrl(strBasePath);
-  int iDotDotLoc, iBeginCut, iEndCut;
 
-  if (plBaseUrl.IsLocal()) //Base in local directory
-  {
-    if (plItemUrl.IsLocal() ) //Filename is local or not qualified
-    {
+  if (!plItemUrl.IsLocal())
+    return; // non-local path, don't do anything
+  else if (strFilename.size() > 1)
+  { // local path - see if it's fully qualified
 #ifdef _LINUX
-      if (!( (strFilename.c_str()[1] == ':') || (strFilename.c_str()[0] == '/') ) ) //Filename not fully qualified
+    if ( (strFilename[1] == ':') || (strFilename[0] == '/') )
 #else
-      if (!( strFilename.c_str()[1] == ':')) //Filename not fully qualified
+    if ( strFilename[1] == ':' )
 #endif
-      {
-        if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || URIUtils::HasSlashAtEnd(strBasePath))
-        {
-          strFilename = strBasePath + strFilename;
-          strFilename.Replace('/', '\\');
-        }
-        else
-        {
-          strFilename = strBasePath + '\\' + strFilename;
-          strFilename.Replace('/', '\\');
-        }
-      }
-    }
-    strFilename.Replace("\\.\\", "\\");
-    while ((iDotDotLoc = strFilename.Find("\\..\\")) > 0)
-    {
-      iEndCut = iDotDotLoc + 4;
-      iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('\\') + 1;
-      strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
-    }
+      return;
   }
-  else //Base is remote
-  {
-    if (plItemUrl.IsLocal()) //Filename is local
-    {
-#ifdef _LINUX
-      if ( (strFilename.c_str()[1] == ':') || (strFilename.c_str()[0] == '/') )  //Filename not fully qualified
-#else
-      if (strFilename[1] == ':') // already fully qualified
-#endif
-        return;
-      if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || URIUtils::HasSlashAtEnd(strBasePath)) //Begins with a slash.. not good.. but we try to make the best of it..
 
-      {
-        strFilename = strBasePath + strFilename;
-        strFilename.Replace('\\', '/');
-      }
-      else
-      {
-        strFilename = strBasePath + '/' + strFilename;
-        strFilename.Replace('\\', '/');
-      }
-    }
-    strFilename.Replace("/./", "/");
-    while ((iDotDotLoc = strFilename.Find("/../")) > 0)
-    {
-      iEndCut = iDotDotLoc + 4;
-      iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('/') + 1;
-      strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
-    }
+  // add to base path and then clean
+  strFilename = URIUtils::AddFileToFolder(strBasePath, strFilename);
+
+  // get rid of any /./ or \.\ that happen to be there
+  strFilename.Replace("\\.\\", "\\");
+  strFilename.Replace("/./", "/");
+
+  // now find any "\\..\\" and remove them via GetParentPath
+  int pos;
+  while ((pos = strFilename.Find("/../")) > 0)
+  {
+    CStdString basePath = strFilename.Left(pos+1);
+    strFilename = strFilename.Mid(pos+4);
+    basePath = URIUtils::GetParentPath(basePath);
+    strFilename = URIUtils::AddFileToFolder(basePath, strFilename);
+  }
+  while ((pos = strFilename.Find("\\..\\")) > 0)
+  {
+    CStdString basePath = strFilename.Left(pos+1);
+    strFilename = strFilename.Mid(pos+4);
+    basePath = URIUtils::GetParentPath(basePath);
+    strFilename = URIUtils::AddFileToFolder(basePath, strFilename);
   }
 }
+
+#ifdef UNIT_TESTING
+bool CUtil::TestGetQualifiedFilename()
+{
+  CStdString file = "../foo"; GetQualifiedFilename("smb://", file);
+  if (file != "foo") return false;
+  file = "C:\\foo\\bar"; GetQualifiedFilename("smb://", file);
+  if (file != "C:\\foo\\bar") return false;
+  file = "../foo/./bar"; GetQualifiedFilename("smb://my/path", file);
+  if (file != "smb://my/foo/bar") return false;
+  file = "smb://foo/bar/"; GetQualifiedFilename("upnp://", file);
+  if (file != "smb://foo/bar/") return false;
+  return true;
+}
+#endif
 
 void CUtil::RunShortcut(const char* szShortcutPath)
 {

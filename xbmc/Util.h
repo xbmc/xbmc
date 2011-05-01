@@ -150,6 +150,7 @@ public:
 
 #ifdef UNIT_TESTING
   static bool TestSplitExec();
+  static bool TestGetQualifiedFilename();
 #endif
 
   static void InitRandomSeed();
