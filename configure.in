@@ -340,8 +340,13 @@ case $host in
      use_joystick=no
      use_vdadecoder=no
      use_vtbdecoder=yes
-     use_texturepacker_native=no
-     USE_TEXTUREPACKER_NATIVE_ROOT="/opt/local"
+     check_sdl_arch=[`file /opt/local/lib/libSDL_image.dylib | awk '{V=7; print $V}'`]
+     if test "x$check_sdl_arch" = "xi386"; then
+       use_texturepacker_native=yes
+       USE_TEXTUREPACKER_NATIVE_ROOT="/opt/local"
+     else
+       use_texturepacker=no
+     fi
      ARCH="arm-osx"
      SYSROOT="-miphoneos-version-min=4.1 -isysroot $SDKROOT"
      ARCHTYPE=$HOSTTYPE
