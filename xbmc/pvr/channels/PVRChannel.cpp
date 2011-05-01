@@ -712,14 +712,15 @@ CPVREpg *CPVRChannel::GetEPG(void)
   CSingleLock lock(m_critSection);
   if (m_EPG == NULL)
   {
-    if (m_iEpgId > 0)
+    if (m_iEpgId > 0 && !g_guiSettings.GetBool("epg.ignoredbforclient"))
       m_EPG = (CPVREpg *) g_PVREpg->GetById(m_iEpgId);
 
     if (m_EPG == NULL)
     {
       /* will be cleaned up by CPVREpgContainer on exit */
       m_EPG = new CPVREpg(this);
-      m_EPG->Persist();
+      if (!g_guiSettings.GetBool("epg.ignoredbforclient"))
+        m_EPG->Persist();
       g_PVREpg->push_back(m_EPG);
     }
 
