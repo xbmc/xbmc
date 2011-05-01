@@ -148,9 +148,17 @@ CEpgInfoTag *PVR::CPVREpg::CreateTag(void)
 bool PVR::CPVREpg::LoadFromClients(time_t start, time_t end)
 {
   bool bReturn(false);
-  CPVREpg tmpEpg(m_Channel);
-  if (tmpEpg.UpdateFromScraper(start, end))
-    bReturn = UpdateEntries(tmpEpg, !g_guiSettings.GetBool("epg.ignoredbforclient"));
+  if (m_Channel)
+  {
+    CPVREpg tmpEpg(m_Channel);
+    if (tmpEpg.UpdateFromScraper(start, end))
+      bReturn = UpdateEntries(tmpEpg, !g_guiSettings.GetBool("epg.ignoredbforclient"));
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "PVREPG - %s - no channel tag set for table '%s' id %d",
+        __FUNCTION__, m_strName.c_str(), m_iEpgID);
+  }
 
   return bReturn;
 }
