@@ -227,6 +227,7 @@ void CAdvancedSettings::Initialize()
   m_iEpgLingerTime = 60;           /* keep 1 hour by default */
   m_iEpgUpdateCheckInterval = 300; /* check if tables need to be updated every 5 minutes */
   m_iEpgCleanupInterval = 900;     /* remove old entries from the EPG every 15 minutes */
+  m_iEpgActiveTagCheckInterval = 60; /* check for updated active tags every minute */
 
   m_bEdlMergeShortCommBreaks = false;      // Off by default
   m_iEdlMaxCommBreakLength = 8 * 30 + 10;  // Just over 8 * 30 second commercial break.
@@ -695,6 +696,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "lingertime", m_iEpgLingerTime);
     XMLUtils::GetInt(pElement, "updatecheckinterval", m_iEpgUpdateCheckInterval);
     XMLUtils::GetInt(pElement, "cleanupinterval", m_iEpgCleanupInterval);
+    XMLUtils::GetInt(pElement, "activetagcheckinterval", m_iEpgActiveTagCheckInterval);
   }
 
   // EDL commercial break handling
