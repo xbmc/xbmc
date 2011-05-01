@@ -337,18 +337,7 @@ void CGUIWindowWeather::SetProperties()
   // Current weather
   SetProperty("Location", g_weatherManager.GetLocation(m_iCurWeather));
   SetProperty("LocationIndex", int(m_iCurWeather));
-  CStdString areaCode;
-  if (m_iCurWeather == 0)
-  {
-    areaCode = g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE);
-  }
-  else
-  {
-    CStdString strSetting;
-    strSetting.Format("weather.areacode%i", m_iCurWeather + 1);
-    areaCode = CWeather::GetAreaCode(g_guiSettings.GetString(strSetting));
-  }
-  SetProperty("AreaCode", areaCode);
+  SetProperty("AreaCode", g_weatherManager.GetAreaCode(m_iCurWeather));
   SetProperty("Updated", g_weatherManager.GetLastUpdateTime());
   SetProperty("Current.ConditionIcon", g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
   SetProperty("Current.Condition", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND));
@@ -404,18 +393,7 @@ void CGUIWindowWeather::CallScript()
     }
 
     // get the current locations area code
-    CStdString areaCode;
-    if (m_iCurWeather == 0)
-    {
-      areaCode = g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE);
-    }
-    else
-    {
-      CStdString strSetting;
-      strSetting.Format("weather.areacode%i", m_iCurWeather + 1);
-      areaCode = CWeather::GetAreaCode(g_guiSettings.GetString(strSetting));
-    }
-    argv.push_back(areaCode);
+    argv.push_back(g_weatherManager.GetAreaCode(m_iCurWeather));
 
     // call our script, passing the areacode
     g_pythonParser.evalFile(argv[0], argv,addon);

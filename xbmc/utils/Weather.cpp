@@ -636,7 +636,7 @@ CStdString CWeather::TranslateInfo(int info) const
   return "";
 }
 
-CStdString CWeather::GetAreaCity(const CStdString &codeAndCity)
+CStdString CWeather::GetAreaCityPart(const CStdString &codeAndCity)
 {
   CStdString areaCode(codeAndCity);
   int pos = areaCode.Find(" - ");
@@ -645,13 +645,27 @@ CStdString CWeather::GetAreaCity(const CStdString &codeAndCity)
   return areaCode;
 }
 
-CStdString CWeather::GetAreaCode(const CStdString &codeAndCity)
+CStdString CWeather::GetAreaCodePart(const CStdString &codeAndCity)
 {
   CStdString areaCode(codeAndCity);
   int pos = areaCode.Find(" - ");
   if (pos >= 0)
     areaCode = areaCode.Left(pos);
   return areaCode;
+}
+
+CStdString CWeather::GetAreaCode(int iLocation)
+{
+  if (iLocation == 0)
+  {
+    return g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE);
+  }
+  else
+  {
+    CStdString setting;
+    setting.Format("weather.areacode%i", iLocation);
+    return GetAreaCodePart(g_guiSettings.GetString(setting));
+  }
 }
 
 CStdString CWeather::GetLocation(int iLocation)
@@ -664,7 +678,7 @@ CStdString CWeather::GetLocation(int iLocation)
   {
     CStdString setting;
     setting.Format("weather.areacode%i", iLocation);
-    m_location[iLocation] = GetAreaCity(g_guiSettings.GetString(setting));
+    m_location[iLocation] = GetAreaCityPart(g_guiSettings.GetString(setting));
   }
   return m_location[iLocation];
 }
@@ -702,7 +716,7 @@ CJob *CWeather::GetJob() const
   }
   CStdString strSetting;
   strSetting.Format("weather.areacode%i", m_iCurWeather);
-  return new CWeatherJob(GetAreaCode(g_guiSettings.GetString(strSetting)));
+  return new CWeatherJob(GetAreaCodePart(g_guiSettings.GetString(strSetting)));
 }
 
 void CWeather::OnJobComplete(unsigned int jobID, bool success, CJob *job)
