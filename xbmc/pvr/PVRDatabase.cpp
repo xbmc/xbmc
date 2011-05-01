@@ -563,11 +563,11 @@ int CPVRDatabase::GetGroupMembers(CPVRChannelGroup &group)
   return iReturn;
 }
 
-int CPVRDatabase::Persist(CPVRChannelGroup &group)
+bool CPVRDatabase::Persist(CPVRChannelGroup &group)
 {
-  int iReturn = -1;
-
+  bool bReturn(false);
   CStdString strQuery;
+  CSingleLock lock(group.m_critSection);
 
   if (group.GroupID() <= 0)
   {
@@ -590,20 +590,19 @@ int CPVRDatabase::Persist(CPVRChannelGroup &group)
   {
     if (group.GroupID() <= 0)
       group.m_iGroupId = (int) m_pDS->lastinsertid();
+    lock.Leave();
 
-    if (PersistGroupMembers(group))
-      iReturn = group.GroupID();
-    else
-      iReturn = -1;
+    bReturn = PersistGroupMembers(group);
   }
 
-  return iReturn;
+  return bReturn;
 }
 
 bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
 {
   bool bReturn = RemoveChannelsFromGroup(group);
   CStdString strQuery;
+  CSingleLock lock(group.m_critSection);
 
   if (bReturn && group.size() > 0)
   {
@@ -616,6 +615,7 @@ bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
           group.GroupID(), member.channel->ChannelID(), member.iChannelNumber);
       QueueInsertQuery(strQuery);
     }
+    lock.Leave();
 
     bReturn = CommitInsertQueries();
   }

@@ -387,12 +387,16 @@ bool CPVRChannelGroupInternal::Persist(void)
         bReturn = false;
       }
     }
+
+    lock.Leave();
   }
   else if (bHasChangedChannels)
   {
     /* queue queries */
     for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
       at(iChannelPtr).channel->Persist(true);
+
+    lock.Leave();
 
     /* and commit them */
     bReturn = database->CommitInsertQueries();

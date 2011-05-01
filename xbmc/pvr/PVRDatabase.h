@@ -174,9 +174,9 @@ namespace PVR
     /*!
      * @brief Add or update a channel group entry in the database.
      * @param group The group to persist.
-     * @return The database ID of the group.
+     * @return True if the group was persisted successfully, false otherwise.
      */
-    int Persist(CPVRChannelGroup &group);
+    bool Persist(CPVRChannelGroup &group);
 
     //@}
 
