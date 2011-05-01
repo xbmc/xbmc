@@ -215,6 +215,8 @@ void CEpg::RemoveTagsBetween(time_t start, time_t end, bool bRemoveFromDb /* = f
     }
   }
 
+  Sort();
+
   if (bRemoveFromDb)
   {
     CEpgDatabase *database = g_EpgContainer.GetDatabase();
