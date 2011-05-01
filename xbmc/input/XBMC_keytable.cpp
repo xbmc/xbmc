@@ -23,6 +23,7 @@
 #include "input/XBMC_keytable.h"
 
 // The array of XBMCKEYTABLEs used in XBMC.
+// The entries are in ascending order of sym; just for convenience.
 // scancode, sym, unicode, ascii, vkey, keyname
 static const XBMCKEYTABLE XBMCKeyTable[] =
 { { 0x0E, 0x0008, 0x0000, 0x00, 0x08, "backspace" }
@@ -154,6 +155,30 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { 0x1b, 0x005d,    '}',  '}', 0xED, "closebrace" }
 , { 0x29, 0x0060,    '`',  '`', 0xC0, "leftquote" }
 , { 0x29, 0x0060,    '~',  '~', 0xC0, "tilde" }
+
+// Multimedia keys
+// The scan codes depend on the OS so the codes in this section of the
+// table aren't used.
+, { 0x00, 0x00A6,      0,    0, 0xA6, "browser_back" }
+, { 0x00, 0x00A7,      0,    0, 0xA7, "browser_forward" }
+, { 0x00, 0x00A8,      0,    0, 0xA8, "browser_refresh" }
+, { 0x00, 0x00A9,      0,    0, 0xA9, "browser_stop" }
+, { 0x00, 0x00AA,      0,    0, 0xAA, "browser_search" }
+, { 0x00, 0x00AB,      0,    0, 0xAB, "browser_favorites" }
+, { 0x00, 0x00AC,      0,    0, 0xAC, "browser_home" }
+, { 0x00, 0x00AD,      0,    0, 0xAD, "volume_mute" }
+, { 0x00, 0x00AE,      0,    0, 0xAE, "volume_down" }
+, { 0x00, 0x00AF,      0,    0, 0xAF, "volume_up" }
+, { 0x00, 0x00B0,      0,    0, 0xB0, "next_track" }
+, { 0x00, 0x00B1,      0,    0, 0xB1, "prev_track" }
+, { 0x00, 0x00B2,      0,    0, 0xB2, "stop" }
+, { 0x00, 0x00B3,      0,    0, 0xB3, "play_pause" }
+, { 0x00, 0x00B4,      0,    0, 0xB4, "launch_mail" }
+, { 0x00, 0x00B5,      0,    0, 0xB5, "launch_media_select" }
+, { 0x00, 0x00B6,      0,    0, 0xB6, "launch_app1_pc_icon" }
+, { 0x00, 0x00B7,      0,    0, 0xB7, "launch_app2_pc_icon" }
+, { 0x00, 0x00B8,      0,    0, 0xB8, "launch_file_browser" }
+, { 0x00, 0x00B9,      0,    0, 0xB9, "launch_media_center" }
 
 // Function keys
 , { 0x3b, 0x011a,      0,    0, 0x70, "f1"}
