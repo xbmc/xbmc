@@ -113,7 +113,7 @@ void CGUIWindowPVRSearch::UpdateData(void)
   m_bUpdateRequired = false;
 
   /* lock the graphics context while updating */
-  CSingleLock graphicsLock(g_graphicsContext);
+  g_graphicsContext.Lock();
 
   m_iSelected = m_parent->m_viewControl.GetSelectedItem();
   m_parent->m_viewControl.Clear();
@@ -163,6 +163,7 @@ void CGUIWindowPVRSearch::UpdateData(void)
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(283));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
   m_bIsFocusing = false;
+  g_graphicsContext.Unlock();
 }
 
 bool CGUIWindowPVRSearch::OnClickButton(CGUIMessage &message)

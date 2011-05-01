@@ -234,7 +234,7 @@ void CGUIWindowPVRGuide::UpdateData(void)
   m_bUpdateRequired = false;
 
   /* lock the graphics context while updating */
-  CSingleLock graphicsLock(g_graphicsContext);
+  g_graphicsContext.Lock();
   m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
 
@@ -251,6 +251,7 @@ void CGUIWindowPVRGuide::UpdateData(void)
   UpdateButtons();
 
   m_bIsFocusing = false;
+  g_graphicsContext.Unlock();
 }
 
 bool CGUIWindowPVRGuide::IsSelectedButton(CGUIMessage &message) const
@@ -460,10 +461,12 @@ void CGUIWindowPVRGuide::UpdateEpgCache(bool bRadio /* = false */, bool bForceUp
     CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - updating EPG cache", __FUNCTION__);
 
     /* lock the graphics context while updating */
-    CSingleLock graphicsLock(g_graphicsContext);
+    g_graphicsContext.Lock();
 
     m_epgData->Clear();
     g_PVREpg->GetEPGAll(m_epgData, bRadio);
+
+    g_graphicsContext.Unlock();
   }
   m_bGotInitialEpg = true;
   m_bLastEpgView = bRadio;
