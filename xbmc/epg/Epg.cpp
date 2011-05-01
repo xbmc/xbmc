@@ -482,6 +482,8 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
       database->PersistLastEpgScanTime(m_iEpgID, true);
       database->Persist(*this, true);
       PersistTags(true);
+
+      lock.Leave();
       bReturn = database->CommitInsertQueries();
       database->Close();
     }
