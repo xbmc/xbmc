@@ -409,10 +409,12 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 
   if (!bInterrupted)
   {
+    lock.Enter();
     /* only try to load the database once */
     m_bDatabaseLoaded = true;
-
     CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgUpdate);
+    lock.Leave();
+
     /* update the last scan time if we did a full update */
     if (bUpdateSuccess && m_bDatabaseLoaded && !m_bIgnoreDbForClient)
         m_database.PersistLastEpgScanTime(0);
@@ -431,7 +433,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   if (iUpdatedTables > 0)
   {
     SetChanged();
-    NotifyObservers("epg", false);
+    NotifyObservers("epg", true);
   }
 
   return bUpdateSuccess;
