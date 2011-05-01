@@ -3445,10 +3445,10 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("ALTER table episode add c23 text");
       m_pDS->exec("ALTER table musicvideo add c23 text");
       m_pDS->exec("ALTER table tvshow add c23 text");
-      m_pDS->exec("DROP INDEX IF EXISTS ixMovieBasePath");
-      m_pDS->exec("DROP INDEX IF EXISTS ixMusicVideoBasePath");
-      m_pDS->exec("DROP INDEX IF EXISTS ixEpisodeBasePath");
-      m_pDS->exec("DROP INDEX IF EXISTS ixTVShowBasePath");
+      m_pDS->exec("DROP INDEX ixMovieBasePath");
+      m_pDS->exec("DROP INDEX ixMusicVideoBasePath");
+      m_pDS->exec("DROP INDEX ixEpisodeBasePath");
+      m_pDS->exec("DROP INDEX ixTVShowBasePath");
       m_pDS->exec("CREATE INDEX ixMovieBasePath ON movie ( c23(12) )");
       m_pDS->exec("CREATE INDEX ixMusicVideoBasePath ON musicvideo ( c14(12) )");
       m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c19(12) )");
