@@ -303,10 +303,10 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_setlinkmovie_2 ON setlinkmovie ( idMovie, idSet)\n");
 
     // create basepath indices
-    m_pDS->exec("CREATE INDEX ixMovieBasePath ON movie ( c22(255) )");
-    m_pDS->exec("CREATE INDEX ixMusicVideoBasePath ON musicvideo ( c13(255) )");
-    m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c18(255) )");
-    m_pDS->exec("CREATE INDEX ixTVShowBasePath on tvshow ( c16(255) )");
+    m_pDS->exec("CREATE INDEX ixMovieBasePath ON movie ( c23(12) )");
+    m_pDS->exec("CREATE INDEX ixMusicVideoBasePath ON musicvideo ( c14(12) )");
+    m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c19(12) )");
+    m_pDS->exec("CREATE INDEX ixTVShowBasePath on tvshow ( c17(12) )");
   }
   catch (...)
   {
@@ -3439,6 +3439,26 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("ALTER TABLE actorlinktvshow ADD iOrder integer");
       m_pDS->exec("ALTER TABLE actorlinkepisode ADD iOrder integer");
     }
+    if (iVersion < 52)
+    { // Add basepath link to path table for faster content retrieval, and indicies
+      m_pDS->exec("ALTER table movie add c23 text");
+      m_pDS->exec("ALTER table episode add c23 text");
+      m_pDS->exec("ALTER table musicvideo add c23 text");
+      m_pDS->exec("ALTER table tvshow add c23 text");
+      m_pDS->exec("DROP INDEX IF EXISTS ixMovieBasePath");
+      m_pDS->exec("DROP INDEX IF EXISTS ixMusicVideoBasePath");
+      m_pDS->exec("DROP INDEX IF EXISTS ixEpisodeBasePath");
+      m_pDS->exec("DROP INDEX IF EXISTS ixTVShowBasePath");
+      m_pDS->exec("CREATE INDEX ixMovieBasePath ON movie ( c23(12) )");
+      m_pDS->exec("CREATE INDEX ixMusicVideoBasePath ON musicvideo ( c14(12) )");
+      m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c19(12) )");
+      m_pDS->exec("CREATE INDEX ixTVShowBasePath ON tvshow ( c17(12) )");
+      // now update the base path links
+      UpdateBasePathID("movie", "idMovie", VIDEODB_ID_BASEPATH, VIDEODB_ID_PARENTPATHID);
+      UpdateBasePathID("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH, VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
+      UpdateBasePathID("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH, VIDEODB_ID_EPISODE_PARENTPATHID);
+      UpdateBasePathID("tvshow", "idShow", VIDEODB_ID_TV_BASEPATH, VIDEODB_ID_TV_PARENTPATHID);
+    }
   }
   catch (...)
   {
@@ -3488,6 +3508,26 @@ void CVideoDatabase::UpdateBasePath(const char *table, const char *id, int colum
     path = item.GetBaseMoviePath(i->second);
     CStdString sql = PrepareSQL("UPDATE %s set c%02d='%s' where %s.%s=%i", table, column, path.c_str(), table, id, m_pDS2->fv(0).get_asInt());
     m_pDS->exec(sql.c_str());
+    m_pDS2->next();
+  }
+  m_pDS2->close();
+}
+
+void CVideoDatabase::UpdateBasePathID(const char *table, const char *id, int column, int idColumn)
+{
+  CStdString query = PrepareSQL("SELECT %s,c%02d from %s", id, column, table);
+  m_pDS2->query(query.c_str());
+  while (!m_pDS2->eof())
+  {
+    int rowID = m_pDS2->fv(0).get_asInt();
+    CStdString path(m_pDS2->fv(1).get_asString());
+    // find the parent path of this item
+    int pathID = AddPath(URIUtils::GetParentPath(path));
+    if (pathID >= 0)
+    {
+      CStdString sql = PrepareSQL("UPDATE %s SET c%02d=%d WHERE %s=%d", table, idColumn, pathID, id, rowID);
+      m_pDS->exec(sql.c_str());
+    }
     m_pDS2->next();
   }
   m_pDS2->close();
