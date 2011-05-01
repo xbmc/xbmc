@@ -555,7 +555,7 @@ public:
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<int>* paths=NULL);
 
   /*! \brief Add a file to the database, if necessary
-   If the file is already in the database, we simply return it's id.
+   If the file is already in the database, we simply return its id.
    \param url - full path of the file to add.
    \return id of the file, -1 if it could not be added.
    */
@@ -569,7 +569,7 @@ public:
   int AddFile(const CFileItem& item);
 
   /*! \brief Add a path to the database, if necessary
-   If the path is already in the database, we simply return it's id.
+   If the path is already in the database, we simply return its id.
    \param strPath the path to add
    \return id of the file, -1 if it could not be added.
    */
