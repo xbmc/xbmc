@@ -27,6 +27,7 @@
 #include "GUIControlFactory.h"
 #include "GUIControlGroup.h"
 #include "GUIControlProfiler.h"
+#include "settings/settings.h"
 #ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
 #include "GUIEditControl.h"
 #endif
