@@ -10,15 +10,14 @@ RETRIEVE_TOOL_FLAGS=-Ls --output $(ARCHIVE)
 ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
-PYTHONDIR=$(abs_top_srcdir)/lib/python
 ifeq ($(OSTYPE),Darwin)
 include ../../../tools/osx/osx-depends/config.mk
 PYTHON=$(prefix_path)/bin/python
 else
-PYTHON=$(PYTHONDIR)/python
+PYTHON=@PYTHON@
 endif
 
-DESTDIR=$(abs_top_srcdir)/addons/script.module.pil/lib/PIL
+DESTDIR=@abs_top_srcdir@/addons/script.module.pil/lib/PIL
 
 CLEAN_FILES=$(ARCHIVE) $(SOURCE) $(DESTDIR)
 
@@ -31,12 +30,9 @@ $(SOURCE): $(ARCHIVE)
 	-rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(ARCHIVE)
 
-$(DESTDIR): $(SOURCE) $(PYTHON)
+$(DESTDIR): $(SOURCE)
 	-rm -rf $(DESTDIR)
-	pushd $(SOURCE) && LD_LIBRARY_PATH=$(PYTHONDIR) $(PYTHON) setup.py build --build-lib $(DESTDIR); popd
-
-$(PYTHON):
-	$(MAKE) -C $(abs_top_srcdir) libpython
+	pushd $(SOURCE) && $(PYTHON) setup.py build --build-lib $(DESTDIR); popd
 
 include ../../../Makefile.include
 
