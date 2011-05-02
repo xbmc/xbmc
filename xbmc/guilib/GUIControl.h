@@ -159,6 +159,12 @@ public:
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
   virtual float GetHeight() const;
+
+  void MarkDirtyRegion();
+  virtual void SendFinalDirtyRegionToParent(const CRect &dirtyRegion, const CGUIControl *sender);
+  void FlushDirtyRegion();
+  virtual CRect GetRenderRegion();
+
   virtual void SetNavigation(int up, int down, int left, int right);
   virtual void SetTabNavigation(int next, int prev);
 
@@ -336,6 +342,8 @@ protected:
   CPoint m_camera;
   bool m_hasCamera;
   TransformMatrix m_transform;
+
+  CRect m_markedLocalRegion;
 };
 
 #endif

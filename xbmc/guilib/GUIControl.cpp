@@ -447,6 +447,49 @@ float CGUIControl::GetHeight() const
   return m_height;
 }
 
+void CGUIControl::MarkDirtyRegion()
+{
+  m_markedLocalRegion.Union(GetRenderRegion());
+}
+
+void CGUIControl::SendFinalDirtyRegionToParent(const CRect &dirtyRegion, const CGUIControl *sender)
+{
+  if (m_parentControl)
+    m_parentControl->SendFinalDirtyRegionToParent(dirtyRegion, sender);
+  else
+    g_windowManager.MarkDirtyRegion(dirtyRegion);
+}
+
+void CGUIControl::FlushDirtyRegion()
+{
+  if (!m_markedLocalRegion.IsEmpty())
+  {
+    g_graphicsContext.AddTransform(m_transform);
+    if (m_hasCamera)
+      g_graphicsContext.SetCameraPosition(m_camera);
+
+    CRect AABB = g_graphicsContext.generateAABB(m_markedLocalRegion);
+
+    if (m_hasCamera)
+      g_graphicsContext.RestoreCameraPosition();
+    g_graphicsContext.RemoveTransform();
+
+    // When we have transformed to screen cordinates we send it to
+    // the parent which may choose to ignore it or send it further down.
+    SendFinalDirtyRegionToParent(AABB, this);
+  }
+
+  m_markedLocalRegion = CRect();
+}
+
+CRect CGUIControl::GetRenderRegion()
+{
+  CPoint tl(GetXPosition(), GetYPosition());
+  CPoint br(tl.x + GetWidth(), tl.y + GetHeight());
+
+  return CRect(tl.x, tl.y, br.x, br.y);
+}
+
 void CGUIControl::SetNavigation(int up, int down, int left, int right)
 {
   m_controlUp = up;
