@@ -584,8 +584,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   start = CurrentHostCounter();
 #endif
   // use forceLoad to determine if xml file need loading
-  if (!forceLoad && m_loadOnDemand)
-    forceLoad = m_loadOnDemand;
+  forceLoad |= m_loadOnDemand;
 
   // if window is loaded (not cleared before) and we aren't forced to load
   // we will have to load it only if include conditions values were changed
