@@ -74,6 +74,7 @@ void CPVRGUIInfo::ResetProperties(void)
   m_iTimerInfoToggleStart       = 0;
   m_iTimerInfoToggleCurrent     = 0;
   m_iToggleShowInfo             = 0;
+  m_iDuration                   = 0;
   m_playingEpgTag               = NULL;
   g_PVRClients->GetQualityData(&m_qualityInfo);
 }
@@ -286,7 +287,7 @@ int CPVRGUIInfo::TranslateIntInfo(DWORD dwInfo) const
   CSingleLock lock(m_critSection);
 
   if (dwInfo == PVR_PLAYING_PROGRESS)
-    iReturn = (int) ((float) GetStartTime() / GetTotalTime() * 100);
+    iReturn = (int) ((float) GetStartTime() / GetDuration() * 100);
   else if (dwInfo == PVR_ACTUAL_STREAM_SIG_PROGR)
     iReturn = g_PVRClients->GetSignalLevel();
   else if (dwInfo == PVR_ACTUAL_STREAM_SNR_PROGR)
@@ -346,7 +347,7 @@ void CPVRGUIInfo::CharInfoNextTimerDateTime(CStdString &strValue) const
 void CPVRGUIInfo::CharInfoPlayingDuration(CStdString &strValue) const
 {
   CSingleLock lock(m_critSection);
-  strValue.Format("%s", StringUtils::SecondsToTimeString(GetTotalTime() / 1000, TIME_FORMAT_GUESS));
+  strValue.Format("%s", StringUtils::SecondsToTimeString(GetDuration() / 1000, TIME_FORMAT_GUESS));
 }
 
 void CPVRGUIInfo::CharInfoPlayingTime(CStdString &strValue) const
@@ -662,21 +663,10 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
   }
 }
 
-int CPVRGUIInfo::GetTotalTime(void) const
+int CPVRGUIInfo::GetDuration(void) const
 {
-  int iReturn(0);
-  CPVRRecording recording;
-  if (g_PVRClients->GetPlayingRecording(&recording))
-  {
-    iReturn = recording.GetDuration();
-  }
-  else
-  {
-    CSingleLock lock(m_critSection);
-    iReturn = m_playingEpgTag ? m_playingEpgTag->GetDuration() * 1000 : 0;
-  }
-
-  return iReturn;
+  CSingleLock lock(m_critSection);
+  return m_iDuration;
 }
 
 int CPVRGUIInfo::GetStartTime(void) const
@@ -705,14 +695,20 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
   CSingleLock lock(m_critSection);
 
   CPVRChannel currentChannel;
+  CPVRRecording recording;
   if (g_PVRManager.GetCurrentChannel(&currentChannel))
   {
     if (!m_playingEpgTag || !m_playingEpgTag->IsActive() ||
         (*m_playingEpgTag->ChannelTag() != currentChannel))
     {
       m_playingEpgTag = currentChannel.GetEPGNow();
+      m_iDuration = m_playingEpgTag ? m_playingEpgTag->GetDuration() * 1000 : 0;
       g_PVRManager.UpdateCurrentFile();
     }
+  }
+  else if (g_PVRClients->GetPlayingRecording(&recording))
+  {
+    m_iDuration = recording.GetDuration();
   }
 }
 

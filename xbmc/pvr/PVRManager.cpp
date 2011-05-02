@@ -900,7 +900,7 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
 
 int CPVRManager::GetTotalTime(void) const
 {
-  return m_guiInfo->GetTotalTime();
+  return m_guiInfo->GetDuration();
 }
 
 int CPVRManager::GetStartTime(void) const
