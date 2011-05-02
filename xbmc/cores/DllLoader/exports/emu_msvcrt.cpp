@@ -190,10 +190,11 @@ extern "C" void __stdcall update_emu_environ()
     const CStdString &strProxyPort = g_guiSettings.GetString("network.httpproxyport");
     // Should we check for valid strings here? should HTTPS_PROXY use https://?
 #ifdef _WIN32
-    SetEnvironmentVariable("HTTP_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
-    SetEnvironmentVariable("HTTPS_PROXY", "http://" + strProxyServer + ":" + strProxyPort);
-    dll_putenv( "HTTP_PROXY=http://" + strProxyServer + ":" + strProxyPort );
-    dll_putenv( "HTTPS_PROXY=http://" + strProxyServer + ":" + strProxyPort );
+    CStdString buf;
+    buf = "HTTP_PROXY=http://" + strProxyServer + ":" + strProxyPort;
+    pgwin32_putenv(buf.c_str());
+    buf = "HTTPS_PROXY=http://" + strProxyServer + ":" + strProxyPort;
+    dll_putenv(buf.c_str());
 #else
     setenv( "HTTP_PROXY", "http://" + strProxyServer + ":" + strProxyPort, true );
     setenv( "HTTPS_PROXY", "http://" + strProxyServer + ":" + strProxyPort, true );
@@ -201,10 +202,10 @@ extern "C" void __stdcall update_emu_environ()
     if (!g_guiSettings.GetString("network.httpproxyusername").IsEmpty())
     {
 #ifdef _WIN32
-      SetEnvironmentVariable("PROXY_USER", g_guiSettings.GetString("network.httpproxyusername"));
-      SetEnvironmentVariable("PROXY_PASS", g_guiSettings.GetString("network.httpproxypassword"));
-      dll_putenv("PROXY_USER=" + g_guiSettings.GetString("network.httpproxyusername"));
-      dll_putenv("PROXY_PASS=" + g_guiSettings.GetString("network.httpproxypassword"));
+      buf = "PROXY_USER" + g_guiSettings.GetString("network.httpproxyusername");
+      pgwin32_putenv(buf.c_str());
+      buf = "PROXY_PASS=" + g_guiSettings.GetString("network.httpproxypassword");
+      dll_putenv(buf.c_str());
 #else
       setenv("PROXY_USER", g_guiSettings.GetString("network.httpproxyusername"), true);
       setenv("PROXY_PASS", g_guiSettings.GetString("network.httpproxypassword"), true);

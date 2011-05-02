@@ -37,8 +37,7 @@ namespace ADDON
 {
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
-  typedef std::deque<cp_cfg_element_t*> DEQUEELEMENTS;
-  typedef std::deque<cp_cfg_element_t*>::iterator IDEQUEELEMENTS;
+  typedef std::vector<cp_cfg_element_t*> ELEMENTS;
 
   const CStdString ADDON_METAFILE             = "description.xml";
   const CStdString ADDON_VIS_EXT              = "*.vis";
@@ -114,6 +113,14 @@ namespace ADDON
 
     /* libcpluff */
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
+
+    /*! \brief Retrieve a vector of repeated elements from a given configuration element
+     \param base the base configuration element.
+     \param path the path to the configuration element from the base element.
+     \param result [out] returned list of elements.
+     \return true if the configuration element is present and the list of elements is non-empty
+     */
+    bool GetExtElements(cp_cfg_element_t *base, const char *path, ELEMENTS &result);
 
     /*! \brief Retrieve a list of strings from a given configuration element
      Assumes the configuration element or attribute contains a whitespace separated list of values (eg xs:list schema).

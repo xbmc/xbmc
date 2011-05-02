@@ -211,7 +211,7 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
 
   ascii = 0;
   vkey = 0;
-  unicode = keysym.unicode;
+  unicode = 0;
   held = 0;
 
   modifiers = 0;
@@ -241,6 +241,7 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
   // For printing keys look up the unicode
   else if (KeyTableLookupUnicode(keysym.unicode, &keytable))
   {
+    unicode = keytable.unicode;
     ascii = keytable.ascii;
     vkey = keytable.vkey;
   }

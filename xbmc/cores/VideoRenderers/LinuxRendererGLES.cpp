@@ -1841,6 +1841,7 @@ void CLinuxRendererGLES::AddProcessor(CDVDVideoCodecVideoToolBox* vtb, DVDVideoP
     CVBufferRelease(buf.cvBufferRef);
   buf.cvBufferRef = picture->cvBufferRef;
   // unhook corevideo buffer reference so it does not get released
+  picture->iFlags |= ~DVP_FLAG_ALLOCATED;
   picture->cvBufferRef = NULL;
 }
 #endif

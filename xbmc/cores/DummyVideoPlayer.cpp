@@ -91,7 +91,7 @@ void CDummyVideoPlayer::Process()
       g_Windowing.Get3DDevice()->BeginScene();
 #endif
       g_graphicsContext.Clear();
-      g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
+      g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
       Render();
       g_application.RenderNoPresent();
 #ifdef HAS_DX     

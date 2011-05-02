@@ -30,6 +30,7 @@
 #include "guilib/GUICheckMarkControl.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
+#include "settings/Settings.h"
 #include "Application.h"
 #include "threads/SingleLock.h"
 
@@ -853,7 +854,7 @@ namespace PYXBMC
     }
 
     CSingleLock lock(g_graphicsContext);
-    self->pWindow->SetCoordsRes((RESOLUTION)res);
+    self->pWindow->SetCoordsRes(g_settings.m_ResInfo[res]);
 
     Py_INCREF(Py_None);
     return Py_None;

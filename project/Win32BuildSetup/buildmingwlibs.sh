@@ -65,6 +65,7 @@ echo "##### building of libmpeg2 dlls done #####"
 
 echo "##### building timidity dlls #####"
 cd /xbmc/lib/timidity/
+make -f Makefile.win32 clean
 make -f Makefile.win32
 setfilepath /xbmc/system/players/paplayer
 checkfiles timidity.dll
