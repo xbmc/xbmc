@@ -480,14 +480,14 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
         pDlgSelect->Add(g_localizeStrings.Get(19209));
         clients.push_back(XBMC_VIRTUAL_CLIENTID);
 
-        std::map<long, CStdString> clientMap;
-        if (g_PVRClients->GetClients(&clientMap) > 0)
+        CLIENTMAP clientMap;
+        if (g_PVRClients->GetActiveClients(&clientMap) > 0)
         {
-          std::map<long,CStdString>::iterator itr;
+          CLIENTMAPITR itr;
           for (itr = clientMap.begin() ; itr != clientMap.end(); itr++)
           {
             clients.push_back((*itr).first);
-            pDlgSelect->Add(clientMap[(*itr).first]);
+            pDlgSelect->Add((*itr).second->Name());
           }
         }
         pDlgSelect->DoModal();

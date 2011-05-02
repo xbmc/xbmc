@@ -548,24 +548,18 @@ void CPVRGUIInfo::UpdateBackendCache(void)
   m_strBackendChannels     = "";
 
   CPVRClients *clients = g_PVRClients;
-  std::map<long, CStdString> activeClients;
-  clients->GetClients(&activeClients);
-
-  m_iActiveClients = activeClients.size();
+  CLIENTMAP activeClients;
+  m_iActiveClients = clients->GetActiveClients(&activeClients);
   if (m_iActiveClients > 0)
   {
-    std::map<long, CStdString>::iterator activeClient = activeClients.begin();
+    CLIENTMAPITR activeClient = activeClients.begin();
     for (unsigned int i = 0; i < m_iAddonInfoToggleCurrent; i++)
       activeClient++;
 
     long long kBTotal = 0;
     long long kBUsed  = 0;
-    CLIENTMAPITR current = clients->m_clientMap.find(activeClient->first);
-    if (current == clients->m_clientMap.end() ||
-        !current->second->ReadyToUse())
-      return;
 
-    if (current->second->GetDriveSpace(&kBTotal, &kBUsed) == PVR_ERROR_NO_ERROR)
+    if (activeClient->second->GetDriveSpace(&kBTotal, &kBUsed) == PVR_ERROR_NO_ERROR)
     {
       kBTotal /= 1024; // Convert to MBytes
       kBUsed /= 1024;  // Convert to MBytes
@@ -577,27 +571,27 @@ void CPVRGUIInfo::UpdateBackendCache(void)
       m_strBackendDiskspace = g_localizeStrings.Get(19055);
     }
 
-    int NumChannels = current->second->GetChannelsAmount();
+    int NumChannels = activeClient->second->GetChannelsAmount();
     if (NumChannels >= 0)
       m_strBackendChannels.Format("%i", NumChannels);
     else
       m_strBackendChannels = g_localizeStrings.Get(161);
 
-    int NumTimers = current->second->GetTimersAmount();
+    int NumTimers = activeClient->second->GetTimersAmount();
     if (NumTimers >= 0)
       m_strBackendTimers.Format("%i", NumTimers);
     else
       m_strBackendTimers = g_localizeStrings.Get(161);
 
-    int NumRecordings = current->second->GetRecordingsAmount();
+    int NumRecordings = activeClient->second->GetRecordingsAmount();
     if (NumRecordings >= 0)
       m_strBackendRecordings.Format("%i", NumRecordings);
     else
       m_strBackendRecordings = g_localizeStrings.Get(161);
 
-    m_strBackendName         = current->second->GetBackendName();
-    m_strBackendVersion      = current->second->GetBackendVersion();
-    m_strBackendHost         = current->second->GetConnectionString();
+    m_strBackendName         = activeClient->second->GetBackendName();
+    m_strBackendVersion      = activeClient->second->GetBackendVersion();
+    m_strBackendHost         = activeClient->second->GetConnectionString();
   }
 }
 
