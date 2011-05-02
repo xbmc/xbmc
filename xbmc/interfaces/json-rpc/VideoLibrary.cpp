@@ -370,6 +370,25 @@ JSON_STATUS CVideoLibrary::ScanForContent(const CStdString &method, ITransportLa
   return ACK;
 }
 
+bool CVideoLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
+{
+  CVideoDatabase videodatabase;
+  bool status = false;
+  if (!strFilename.empty() && videodatabase.Open())
+  {
+    CVideoInfoTag details;
+    if (videodatabase.LoadVideoInfo(strFilename, details))
+    {
+      item = CFileItem(details);
+      status = true;
+    }
+
+    videodatabase.Close();
+  }
+
+  return status;
+}
+
 bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
   CVideoDatabase videodatabase;
@@ -381,15 +400,13 @@ bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
     int musicVideoID  = parameterObject["musicvideoid"].asInt();
 
     bool success = false;
-    if (!file.empty())
+    CFileItem fileItem;
+    if (FillFileItem(file, fileItem))
     {
-      CVideoInfoTag details;
-      if (videodatabase.LoadVideoInfo(file, details))
-      {
-        list.Add(CFileItemPtr(new CFileItem(details)));
-        success = true;
-      }
+      success = true;
+      list.Add(CFileItemPtr(new CFileItem(fileItem)));
     }
+
     if (movieID > 0)
     {
       CVideoInfoTag details;

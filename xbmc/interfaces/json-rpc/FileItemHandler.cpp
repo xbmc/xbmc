@@ -31,11 +31,13 @@
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "video/VideoDatabase.h"
-
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
 
 using namespace MUSIC_INFO;
 using namespace Json;
 using namespace JSONRPC;
+using namespace XFILE;
 
 void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const Value& fields, Value &result)
 {
@@ -215,7 +217,7 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
   CFileOperations::FillFileItemList(parameterObject, list);
 
   CStdString file = parameterObject["file"].asString();
-  if (!file.empty() && !URIUtils::HasSlashAtEnd(file))
+  if (!file.empty() && !CDirectory::Exists(file) && (URIUtils::IsURL(file) || CFile::Exists(file)))
   {
     bool added = false;
     for (unsigned int index = 0; index < list.Size(); index++)
@@ -234,7 +236,7 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
     }
   }
 
-  return true;
+  return (list.Size() > 0);
 }
 
 bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ignorethe, const CStdString &order, SORT_METHOD &sortmethod, SORT_ORDER &sortorder)

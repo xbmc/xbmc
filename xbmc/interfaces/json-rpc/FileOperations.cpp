@@ -20,9 +20,12 @@
  */
 
 #include "FileOperations.h"
+#include "VideoLibrary.h"
+#include "AudioLibrary.h"
 #include "settings/Settings.h"
 #include "MediaSource.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "Util.h"
@@ -107,7 +110,11 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
       if (items[i]->m_bIsFolder)
         filteredDirectories.Add(items[i]);
       else
-        filteredFiles.Add(items[i]);
+      {
+        CFileItem fileItem;
+        if (FillFileItem(items[i]->m_strPath, fileItem, media))
+          filteredFiles.Add(CFileItemPtr(new CFileItem(fileItem)));
+      }
     }
 
     // Check if the "fields" list exists
@@ -137,7 +144,7 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
     }
     int count = result["limits"]["total"].asInt();
 
-    HandleFileItemList(NULL, true, "files", filteredFiles, param, result);
+    HandleFileItemList("id", true, "files", filteredFiles, param, result);
     for (unsigned int index = count; index < result["files"].size(); index++)
     {
       result["files"][index]["filetype"] = "file";
@@ -158,37 +165,59 @@ JSON_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer 
   return transport->Download(parameterObject["path"].asString().c_str(), &result) ? OK : InvalidParams;
 }
 
+bool CFileOperations::FillFileItem(const CStdString &strFilename, CFileItem &item, CStdString media /* = "" */)
+{
+  bool status = false;
+  if (!strFilename.empty() && !CDirectory::Exists(strFilename) && CFile::Exists(strFilename))
+  {
+    if (media.Equals("video"))
+      status |= CVideoLibrary::FillFileItem(strFilename, item);
+    else if (media.Equals("music"))
+      status |= CAudioLibrary::FillFileItem(strFilename, item);
+
+    if (!status)
+      item = CFileItem(strFilename, false);
+
+    status = true;
+  }
+
+  return status;
+}
+
 bool CFileOperations::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
-  if (parameterObject.isMember("directory") && parameterObject.isMember("media"))
+  if (parameterObject.isMember("directory"))
   {
-    CStdString media = parameterObject["media"].asString();
+    CStdString media =  parameterObject.get("media", "").asString();
     media = media.ToLower();
 
-    if (media.Equals("video") || media.Equals("music") || media.Equals("pictures") || media.Equals("files") || media.Equals("programs"))
+    CStdString strPath = parameterObject["directory"].asString();
+    if (!strPath.empty())
     {
-      CDirectory directory;
       CFileItemList items;
-      CStdString strPath = parameterObject["directory"].asString();
-
-      CStdStringArray regexps;
       CStdString extensions = "";
-      if (media.Equals("video"))
+      CStdStringArray regexps;
+
+      if (media.Equals("video") || media.Equals("music") || media.Equals("pictures"))
       {
-        regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
-        extensions = g_settings.m_videoExtensions;
-      }
-      else if (media.Equals("music"))
-      {
-        regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
-        extensions = g_settings.m_musicExtensions;
-      }
-      else if (media.Equals("pictures"))
-      {
-        regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
-        extensions = g_settings.m_pictureExtensions;
+        if (media.Equals("video"))
+        {
+          regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
+          extensions = g_settings.m_videoExtensions;
+        }
+        else if (media.Equals("music"))
+        {
+          regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+          extensions = g_settings.m_musicExtensions;
+        }
+        else if (media.Equals("pictures"))
+        {
+          regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+          extensions = g_settings.m_pictureExtensions;
+        }
       }
 
+      CDirectory directory;
       if (directory.GetDirectory(strPath, items, extensions))
       {
         CFileItemList filteredDirectories;
@@ -200,7 +229,11 @@ bool CFileOperations::FillFileItemList(const Value &parameterObject, CFileItemLi
           if (items[i]->m_bIsFolder)
             filteredDirectories.Add(items[i]);
           else
-            list.Add(items[i]);
+          {
+            CFileItem fileItem;
+            if (FillFileItem(items[i]->m_strPath, fileItem, media))
+              list.Add(CFileItemPtr(new CFileItem(fileItem)));
+          }
         }
 
         if (parameterObject.isMember("recursive") && parameterObject["recursive"].isBool())

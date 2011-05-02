@@ -27,10 +27,12 @@
 #include "music/tags/MusicInfoTag.h"
 #include "music/Song.h"
 #include "Application.h"
+#include "filesystem/Directory.h"
 
 using namespace MUSIC_INFO;
 using namespace Json;
 using namespace JSONRPC;
+using namespace XFILE;
 
 JSON_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
@@ -174,6 +176,25 @@ JSON_STATUS CAudioLibrary::ScanForContent(const CStdString &method, ITransportLa
   return ACK;
 }
 
+bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
+{
+  CMusicDatabase musicdatabase;
+  bool status = false;
+  if (!strFilename.empty() && !CDirectory::Exists(strFilename) && musicdatabase.Open())
+  {
+    CSong song;
+    if (musicdatabase.GetSongByFileName(strFilename, song))
+    {
+      item = CFileItem(song);
+      status = true;
+    }
+
+    musicdatabase.Close();
+  }
+
+  return status;
+}
+
 bool CAudioLibrary::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
   CMusicDatabase musicdatabase;
@@ -182,38 +203,15 @@ bool CAudioLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
   if (musicdatabase.Open())
   {
     CStdString file       = parameterObject["file"].asString();
-    CStdString directory  = parameterObject["directory"].asString();
     int artistID          = parameterObject["artistid"].asInt();
     int albumID           = parameterObject["albumid"].asInt();
     int genreID           = parameterObject["genreid"].asInt();
 
-    if (!directory.empty())
+    CFileItem fileItem;
+    if (FillFileItem(file, fileItem))
     {
-      if (!URIUtils::HasSlashAtEnd(directory))
-        URIUtils::AddSlashAtEnd(directory);
-
-      int count = list.Size();
-      CSongMap songs;
-      if (musicdatabase.GetSongsByPath(directory, songs))
-      {
-        std::map<CStdString, CSong>::const_iterator iter;
-        std::map<CStdString, CSong>::const_iterator iterEnd = songs.End();
-        for (iter = songs.Begin(); iter != iterEnd; iter++)
-          list.Add(CFileItemPtr(new CFileItem(iter->second)));
-      }
-
-      if (list.Size() > count)
-        success = true;
-    }
-
-    if (!file.empty() && !URIUtils::HasSlashAtEnd(file))
-    {
-      CSong song;
-      if (musicdatabase.GetSongByFileName(file, song))
-      {
-        list.Add(CFileItemPtr(new CFileItem(song)));
-        success = true;
-      }
+      success = true;
+      list.Add(CFileItemPtr(new CFileItem(fileItem)));
     }
 
     if (artistID != -1 || albumID != -1 || genreID != -1)
