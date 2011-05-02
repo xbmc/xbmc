@@ -1334,7 +1334,7 @@
   <string id="14082">Show EXIF picture information</string>
   <string id="14083">Use a fullscreen window rather than true fullscreen</string>
   <string id="14084">Queue songs on selection</string>
-  <string id="14085"></string>
+  <string id="14085">Play audio CDs automatically</string>
   <string id="14086">Playback</string>
   <string id="14087">DVDs</string>
   <string id="14088">Play DVDs automatically</string>
@@ -1345,9 +1345,6 @@
   <string id="14093">Security</string>
   <string id="14094">Input devices</string>
   <string id="14095">Power saving</string>
-  <string id="14096">Rip and Eject</string>
-  <string id="14097">Audio CD Insert Action</string>
-  <string id="14098">Play</string>
 
   <string id="15015">Remove</string>
   <string id="15016">Games</string>
