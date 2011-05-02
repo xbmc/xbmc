@@ -411,6 +411,7 @@ void CSoftAE::OnSettingsChange(CStdString setting)
       setting == "audiooutput.ac3passthrough"    ||
       setting == "audiooutput.dtspassthrough"    ||
       setting == "audiooutput.channellayout"     ||
+      setting == "audiooutput.useexclusivemode"  ||
       setting == "audiooutput.multichannellpcm")
   {
     OpenSink();
