@@ -63,6 +63,11 @@ class TiXmlElement;
 #define KARAOKE_COLOR_START  0
 #define KARAOKE_COLOR_END    4
 
+// CDDA Autoaction defines
+#define AUTOCD_NONE              0
+#define AUTOCD_PLAY              1
+#define AUTOCD_RIP               2
+
 // CDDA ripper defines
 #define CDDARIP_ENCODER_LAME     0
 #define CDDARIP_ENCODER_VORBIS   1

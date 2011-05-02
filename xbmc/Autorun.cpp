@@ -38,6 +38,12 @@
 #include "playlists/PlayList.h"
 #include "guilib/GUIWindowManager.h"
 #include "storage/MediaManager.h"
+#ifdef HAS_CDDA_RIPPER
+#include "cdrip/CDDARipper.h"
+#endif
+#include "storage/cdioSupport.h"
+#include "storage/IoSupport.h"
+
 
 using namespace std;
 using namespace XFILE;
@@ -67,7 +73,7 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying, bool res
 
   if ( pInfo->IsAudio( 1 ) )
   {
-    if( !bypassSettings && !g_guiSettings.GetBool("audiocds.autorun") )
+    if( !bypassSettings && g_guiSettings.GetInt("audiocds.autoaction") == AUTOCD_NONE)
       return;
 
     if (!g_passwordManager.IsMasterLockUnlocked(false))
@@ -93,15 +99,26 @@ void CAutorun::RunCdda()
   if ( vecItems.Size() <= 0 )
     return ;
 
-  g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-  g_playlistPlayer.Add(PLAYLIST_MUSIC, vecItems);
-  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
-  g_playlistPlayer.Play();
+  if ( g_guiSettings.GetInt("audiocds.autoaction") == AUTOCD_PLAY)
+  {
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.Add(PLAYLIST_MUSIC, vecItems);
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+    g_playlistPlayer.Play();
+  }
+#ifdef HAS_CDDA_RIPPER
+  if ( g_guiSettings.GetInt("audiocds.autoaction") == AUTOCD_RIP)
+  {
+    CCDDARipper ripper;
+    ripper.RipCD();
+    CIoSupport::EjectTray();
+  } 
+#endif
 }
 
 void CAutorun::RunMedia(bool bypassSettings, bool restart)
 {
-  if ( !bypassSettings && !g_guiSettings.GetBool("audiocds.autorun") && !g_guiSettings.GetBool("dvds.autorun"))
+  if ( !bypassSettings && g_guiSettings.GetInt("audiocds.autoaction") == AUTOCD_NONE && !g_guiSettings.GetBool("dvds.autorun"))
     return ;
 
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
@@ -279,7 +296,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     }
   }
   // then music
-  if (!bPlaying && (bypassSettings || g_guiSettings.GetBool("audiocds.autorun")) && bAllowMusic)
+  if (!bPlaying && (bypassSettings || g_guiSettings.GetInt("audiocds.autoaction") == AUTOCD_PLAY) && bAllowMusic)
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {
