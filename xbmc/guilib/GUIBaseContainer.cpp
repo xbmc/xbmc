@@ -784,6 +784,12 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
   }
 }
 
+void CGUIBaseContainer::SetInitialVisibility()
+{
+  UpdateVisibility();
+  CGUIControl::SetInitialVisibility();
+}
+
 void CGUIBaseContainer::CalculateLayout()
 {
   CGUIListItemLayout *oldFocusedLayout = m_focusedLayout;
