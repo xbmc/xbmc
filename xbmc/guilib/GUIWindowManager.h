@@ -32,6 +32,7 @@
 #include "GUIWindow.h"
 #include "IWindowManagerCallback.h"
 #include "IMsgTargetCallback.h"
+#include "DirtyRegionTracker.h"
 
 class CGUIDialog;
 
@@ -78,6 +79,11 @@ public:
    on screen. It should only be called from the application thread.
    */
   void FrameMove();
+
+  /*! \brief Method used to mark selected region as dirty so next pass of rendering
+   contains said region.
+   */
+  void MarkDirtyRegion(CRect region);
 
   /*! \brief Return whether the window manager is initialized.
    The window manager is initialized on skin load - if the skin isn't yet loaded,
@@ -148,6 +154,9 @@ private:
   bool m_bShowOverlay;
   int  m_iNested;
   bool m_initialized;
+
+  CDirtyRegionTracker m_tracker;
+  std::vector<CRect> m_DirtyRegion;
 };
 
 /*!
