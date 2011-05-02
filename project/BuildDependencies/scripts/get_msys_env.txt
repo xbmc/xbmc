@@ -1,6 +1,6 @@
 ; filename                                              mirror                                                    source of the file
-msysCORE-1.0.16-1-msys-1.0.16-bin.tar.lzma              http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/BaseSystem/msys-core/msys-1.0.16-1/
-msysCORE-1.0.16-1-msys-1.0.16-ext.tar.lzma              http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/BaseSystem/msys-core/msys-1.0.16-1/
+msysCORE-1.0.17-1-msys-1.0.17-bin.tar.lzma              http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/BaseSystem/msys-core/msys-1.0.17-1/
+msysCORE-1.0.17-1-msys-1.0.17-ext.tar.lzma              http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/BaseSystem/msys-core/msys-1.0.17-1/
 libregex-1.20090805-2-msys-1.0.13-dll-1.tar.lzma        http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/BaseSystem/regex/regex-1.20090805-2/
 libtermcap-0.20050421_1-2-msys-1.0.13-dll-0.tar.lzma    http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/BaseSystem/termcap/termcap-0.20050421_1-2/
 gettext-0.17-2-msys-1.0.13-bin.tar.lzma                 http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/BaseSystem/gettext/gettext-0.17-2/

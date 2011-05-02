@@ -315,7 +315,10 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   for (int i = 0; i < (int)m_vecItems->Size();++i)
   {
     CFileItemPtr pItem = m_vecItems->Get(i);
-    if (!pItem->m_bIsFolder && !(URIUtils::IsRAR(pItem->m_strPath) || URIUtils::IsZIP(pItem->m_strPath)) && pItem->IsPicture())
+    if (!pItem->m_bIsFolder && !(URIUtils::IsRAR(pItem->m_strPath) || 
+          URIUtils::IsZIP(pItem->m_strPath)) && (pItem->IsPicture() || (
+                                g_guiSettings.GetBool("pictures.showvideos") &&
+                                pItem->IsVideo())))
     {
       pSlideShow->Add(pItem.get());
     }

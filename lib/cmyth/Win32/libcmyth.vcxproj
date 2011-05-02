@@ -158,6 +158,9 @@
     <ClInclude Include="..\libcmyth\safe_string.h" />
     <ClInclude Include="..\librefmem\refmem_local.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="libcmyth.def" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

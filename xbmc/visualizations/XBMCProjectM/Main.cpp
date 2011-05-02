@@ -81,10 +81,10 @@ int lastPresetIdx;
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
-extern "C" ADDON_STATUS Create(void* hdl, void* props)
+extern "C" ADDON_STATUS ADDON_Create(void* hdl, void* props)
 {
   if (!props)
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   VIS_PROPS* visprops = (VIS_PROPS*)props;
 
@@ -100,7 +100,7 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   g_configPM.windowLeft = visprops->x;
   g_configPM.windowBottom = visprops->y;
 
-  return STATUS_NEED_SAVEDSETTINGS;
+  return ADDON_STATUS_NEED_SAVEDSETTINGS;
 }
 
 //-- Start --------------------------------------------------------------------
@@ -238,7 +238,7 @@ extern "C" bool IsLocked()
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Stop()
+extern "C" void ADDON_Stop()
 {
   if (globalPM)
   {
@@ -261,7 +261,7 @@ extern "C" void Stop()
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Destroy()
+extern "C" void ADDON_Destroy()
 {
 }
 
@@ -269,7 +269,7 @@ extern "C" void Destroy()
 // Returns true if this add-on use settings
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" bool HasSettings()
+extern "C" bool ADDON_HasSettings()
 {
   return true;
 }
@@ -278,16 +278,16 @@ extern "C" bool HasSettings()
 // Returns the current Status of this visualisation
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" ADDON_STATUS GetStatus()
+extern "C" ADDON_STATUS ADDON_GetStatus()
 {
-  return STATUS_OK;
+  return ADDON_STATUS_OK;
 }
 
 //-- GetSettings --------------------------------------------------------------
 // Return the settings for XBMC to display
 //-----------------------------------------------------------------------------
 
-extern "C" unsigned int GetSettings(StructSetting ***sSet)
+extern "C" unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
 {
   return 0;
 }
@@ -296,7 +296,7 @@ extern "C" unsigned int GetSettings(StructSetting ***sSet)
 // Free the settings struct passed from XBMC
 //-----------------------------------------------------------------------------
 
-extern "C" void FreeSettings()
+extern "C" void ADDON_FreeSettings()
 {
 }
 
@@ -365,10 +365,10 @@ bool InitProjectM()
 //-- UpdateSetting ------------------------------------------------------------
 // Handle setting change request from XBMC
 //-----------------------------------------------------------------------------
-extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
+extern "C" ADDON_STATUS ADDON_SetSetting(const char* id, const void* value)
 {
   if (!id || !value)
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   if (strcmp(id, "###GetSavedSettings") == 0) // We have some settings to be saved in the settings.xml file
   {
@@ -393,7 +393,7 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
     {
       strcpy((char*)id, "###End");
     }
-    return STATUS_OK;
+    return ADDON_STATUS_OK;
   }
   // It is now time to set the settings got from xmbc
   if (strcmp(id, "quality")==0)
@@ -420,9 +420,9 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
   {
     g_configPM.beatSensitivity = *(int*)value * 2;
     if (!InitProjectM())    //The last setting value is already set so we (re)initalize
-      return STATUS_UNKNOWN;
+      return ADDON_STATUS_UNKNOWN;
   }
-  return STATUS_OK;
+  return ADDON_STATUS_OK;
 }
 
 //-- GetSubModules ------------------------------------------------------------

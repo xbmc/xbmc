@@ -1858,7 +1858,7 @@ void CApplication::RenderNoPresent()
     m_guiPointer.Render();
 
   // reset image scaling and effect states
-  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
+  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
 
   RenderMemoryStatus();
   RenderScreenSaver();
@@ -2120,7 +2120,7 @@ void CApplication::RenderMemoryStatus()
 
   // reset the window scaling and fade status
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  g_graphicsContext.SetRenderingResolution(res, false);
+  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
 
   static int yShift = 20;
   static int xShift = 40;
@@ -2186,7 +2186,7 @@ void CApplication::RenderMemoryStatus()
       g_graphicsContext.SetScalingResolution(window->GetCoordsRes(), true);
       point.x *= g_graphicsContext.GetGUIScaleX();
       point.y *= g_graphicsContext.GetGUIScaleY();
-      g_graphicsContext.SetRenderingResolution(res, false);
+      g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
     }
     info.AppendFormat("Mouse: (%d,%d)  ", (int)point.x, (int)point.y);
     if (window)
@@ -3639,7 +3639,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       {
         options.starttime = 0.0f;
         CBookmark bookmark;
-        if(dbs.GetResumeBookMark(item.m_strPath, bookmark))
+        CStdString path = item.m_strPath;
+        if (item.IsDVD()) 
+          path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+        if(dbs.GetResumeBookMark(path, bookmark))
         {
           options.starttime = bookmark.timeInSeconds;
           options.state = bookmark.playerState;

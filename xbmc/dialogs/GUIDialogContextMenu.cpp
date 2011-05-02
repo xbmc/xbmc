@@ -42,6 +42,7 @@
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "TextureCache.h"
+#include "video/windows/GUIWindowVideoBase.h"
 
 #ifdef _WIN32
 #include "WIN32Util.h"
@@ -151,11 +152,11 @@ void CGUIDialogContextMenu::SetupButtons()
 
 void CGUIDialogContextMenu::SetPosition(float posX, float posY)
 {
-  if (posY + GetHeight() > g_settings.m_ResInfo[m_coordsRes].iHeight)
-    posY = g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight();
+  if (posY + GetHeight() > m_coordsRes.iHeight)
+    posY = m_coordsRes.iHeight - GetHeight();
   if (posY < 0) posY = 0;
-  if (posX + GetWidth() > g_settings.m_ResInfo[m_coordsRes].iWidth)
-    posX = g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth();
+  if (posX + GetWidth() > m_coordsRes.iWidth)
+    posX = m_coordsRes.iWidth - GetWidth();
   if (posX < 0) posX = 0;
   // we currently hack the positioning of the buttons from y position 0, which
   // forces skinners to place the top image at a negative y value.  Thus, we offset
@@ -217,8 +218,14 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
     if (item->IsDVD() || item->IsCDDA())
     {
       // We need to check if there is a detected is inserted!
-      if ( g_mediaManager.IsDiscInDrive() )
+      if ( g_mediaManager.IsDiscInDrive() ) 
+      {
         buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
+        if (CGUIWindowVideoBase::GetResumeItemOffset(item.get()) > 0)
+        {
+          buttons.Add(CONTEXT_BUTTON_RESUME_DISC, CGUIWindowVideoBase::GetResumeString(*(item.get())));     // Resume Disc
+        }
+      }
       buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
     }
     else // Must be HDD
@@ -312,6 +319,9 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
 
 #ifdef HAS_DVD_DRIVE
   case CONTEXT_BUTTON_PLAY_DISC:
+    return MEDIA_DETECT::CAutorun::PlayDisc(true); // restart
+
+  case CONTEXT_BUTTON_RESUME_DISC:
     return MEDIA_DETECT::CAutorun::PlayDisc();
 
   case CONTEXT_BUTTON_EJECT_DISC:
@@ -693,4 +703,3 @@ void CGUIDialogContextMenu::PositionAtCurrentFocus()
   // no control to center at, so just center the window
   CenterWindow();
 }
-

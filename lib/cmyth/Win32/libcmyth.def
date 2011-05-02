@@ -28,6 +28,7 @@ EXPORTS
 	cmyth_dbg_all
 	cmyth_dbg_none
 	cmyth_dbg
+	cmyth_set_dbg_msgcallback
 	refmem_dbg_level
 	refmem_dbg_all
 	refmem_dbg_none

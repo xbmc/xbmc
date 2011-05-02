@@ -26,6 +26,7 @@
 #include "settings/Settings.h"
 #include "guilib/Key.h"
 #include "input/XBMC_keysym.h"
+#include "input/XBMC_keytable.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "FileItem.h"
@@ -1036,89 +1037,22 @@ uint32_t CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
 uint32_t CButtonTranslator::TranslateKeyboardString(const char *szButton)
 {
   uint32_t buttonCode = 0;
-  if (strlen(szButton) == 1)
-  { // single character
-    buttonCode = (uint32_t)toupper(szButton[0]) | KEY_VKEY;
-    // FIXME It is a printable character, printable should be ASCII not VKEY! Till now it works, but how (long)?
-    // FIXME support unicode: additional parameter necessary since unicode can not be embedded into key/action-ID.
+  XBMCKEYTABLE keytable;
+
+  // Look up the key name
+  if (KeyTableLookupName(szButton, &keytable))
+  {
+    buttonCode = keytable.vkey;
   }
+
+  // The lookup failed i.e. the key name wasn't found
   else
-  { // for keys such as return etc. etc.
+  {
     CStdString strKey = szButton;
     strKey.ToLower();
 
-    if (strKey.Equals("return")) buttonCode = 0x0D;
-    else if (strKey.Equals("enter")) buttonCode = 0x6C;
-    else if (strKey.Equals("escape")) buttonCode = 0x1B;
-    else if (strKey.Equals("esc")) buttonCode = 0x1B;
-    else if (strKey.Equals("tab")) buttonCode = 0x09;
-    else if (strKey.Equals("space")) buttonCode = 0x20;
-    else if (strKey.Equals("left")) buttonCode = 0x25;
-    else if (strKey.Equals("right")) buttonCode = 0x27;
-    else if (strKey.Equals("up")) buttonCode = 0x26;
-    else if (strKey.Equals("down")) buttonCode = 0x28;
-    else if (strKey.Equals("insert")) buttonCode = 0x2D;
-    else if (strKey.Equals("delete")) buttonCode = 0x2E;
-    else if (strKey.Equals("home")) buttonCode = 0x24;
-    else if (strKey.Equals("end")) buttonCode = 0x23;
-    else if (strKey.Equals("f1")) buttonCode = 0x70;
-    else if (strKey.Equals("f2")) buttonCode = 0x71;
-    else if (strKey.Equals("f3")) buttonCode = 0x72;
-    else if (strKey.Equals("f4")) buttonCode = 0x73;
-    else if (strKey.Equals("f5")) buttonCode = 0x74;
-    else if (strKey.Equals("f6")) buttonCode = 0x75;
-    else if (strKey.Equals("f7")) buttonCode = 0x76;
-    else if (strKey.Equals("f8")) buttonCode = 0x77;
-    else if (strKey.Equals("f9")) buttonCode = 0x78;
-    else if (strKey.Equals("f10")) buttonCode = 0x79;
-    else if (strKey.Equals("f11")) buttonCode = 0x7A;
-    else if (strKey.Equals("f12")) buttonCode = 0x7B;
-    else if (strKey.Equals("numpadzero") || strKey.Equals("zero")) buttonCode = 0x60;
-    else if (strKey.Equals("numpadone") || strKey.Equals("one")) buttonCode = 0x61;
-    else if (strKey.Equals("numpadtwo") || strKey.Equals("two")) buttonCode = 0x62;
-    else if (strKey.Equals("numpadthree") || strKey.Equals("three")) buttonCode = 0x63;
-    else if (strKey.Equals("numpadfour") || strKey.Equals("four")) buttonCode = 0x64;
-    else if (strKey.Equals("numpadfive") || strKey.Equals("five")) buttonCode = 0x65;
-    else if (strKey.Equals("numpadsix") || strKey.Equals("six")) buttonCode = 0x66;
-    else if (strKey.Equals("numpadseven") || strKey.Equals("seven")) buttonCode = 0x67;
-    else if (strKey.Equals("numpadeight") || strKey.Equals("eight")) buttonCode = 0x68;
-    else if (strKey.Equals("numpadnine") || strKey.Equals("nine")) buttonCode = 0x69;
-    else if (strKey.Equals("numpadtimes")) buttonCode = 0x6A;
-    else if (strKey.Equals("numpadplus")) buttonCode = 0x6B;
-    else if (strKey.Equals("numpadminus")) buttonCode = 0x6D;
-    else if (strKey.Equals("numpadperiod")) buttonCode = 0x6E;
-    else if (strKey.Equals("numpaddivide")) buttonCode = 0x6F;
-    else if (strKey.Equals("pageup")) buttonCode = 0x21;
-    else if (strKey.Equals("pagedown")) buttonCode = 0x22;
-    else if (strKey.Equals("printscreen")) buttonCode = 0x2A;
-    else if (strKey.Equals("backspace")) buttonCode = 0x08;
-    else if (strKey.Equals("menu")) buttonCode = 0x5D;
-    else if (strKey.Equals("pause")) buttonCode = 0x13;
-    else if (strKey.Equals("leftshift")) buttonCode = 0xA0;
-    else if (strKey.Equals("rightshift")) buttonCode = 0xA1;
-    else if (strKey.Equals("leftctrl")) buttonCode = 0xA2;
-    else if (strKey.Equals("rightctrl")) buttonCode = 0xA3;
-    else if (strKey.Equals("leftalt")) buttonCode = 0xA4;
-    else if (strKey.Equals("rightalt")) buttonCode = 0xA5;
-    else if (strKey.Equals("leftwindows")) buttonCode = 0x5B;
-    else if (strKey.Equals("rightwindows")) buttonCode = 0x5C;
-    else if (strKey.Equals("capslock")) buttonCode = 0x20;
-    else if (strKey.Equals("numlock")) buttonCode = 0x90;
-    else if (strKey.Equals("scrolllock")) buttonCode = 0x91;
-    else if (strKey.Equals("semicolon") || strKey.Equals("colon")) buttonCode = 0xBA;
-    else if (strKey.Equals("equals") || strKey.Equals("plus")) buttonCode = 0xBB;
-    else if (strKey.Equals("comma") || strKey.Equals("lessthan")) buttonCode = 0xBC;
-    else if (strKey.Equals("minus") || strKey.Equals("underline")) buttonCode = 0xBD;
-    else if (strKey.Equals("period") || strKey.Equals("greaterthan")) buttonCode = 0xBE;
-    else if (strKey.Equals("forwardslash") || strKey.Equals("questionmark")) buttonCode = 0xBF;
-    else if (strKey.Equals("leftquote") || strKey.Equals("tilde")) buttonCode = 0xC0;
-    else if (strKey.Equals("opensquarebracket") || strKey.Equals("openbrace")) buttonCode = 0xEB;
-    else if (strKey.Equals("backslash") || strKey.Equals("pipe")) buttonCode = 0xEC;
-    else if (strKey.Equals("closesquarebracket") || strKey.Equals("closebrace")) buttonCode = 0xED;
-    else if (strKey.Equals("quote") || strKey.Equals("doublequote")) buttonCode = 0xEE;
-
     // Multimedia keys
-    else if (strKey.Equals("browser_back"))        buttonCode = XBMCK_BROWSER_BACK;
+    if (strKey.Equals("browser_back"))        buttonCode = XBMCK_BROWSER_BACK;
     else if (strKey.Equals("browser_forward"))     buttonCode = XBMCK_BROWSER_FORWARD;
     else if (strKey.Equals("browser_refresh"))     buttonCode = XBMCK_BROWSER_REFRESH;
     else if (strKey.Equals("browser_stop"))        buttonCode = XBMCK_BROWSER_STOP;
@@ -1140,9 +1074,10 @@ uint32_t CButtonTranslator::TranslateKeyboardString(const char *szButton)
     else if (strKey.Equals("launch_media_center")) buttonCode = 0xB9;
     else
       CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", strKey.c_str());
-
-    buttonCode |= KEY_VKEY;
   }
+
+  buttonCode |= KEY_VKEY;
+
   return buttonCode;
 }
 
