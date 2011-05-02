@@ -38,7 +38,7 @@ all: $(TARGET)
 ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
 # TexturePacker run native on build system, build it with native tools
 $(TARGET): $(SRCS)
-	g++ $(DEFINES) $(CXXFLAGS) $(SRCS) $(LIBS) -o $(TARGET)
+	g++ -m32 $(DEFINES) $(CXXFLAGS) $(SRCS) $(LIBS) -o $(TARGET)
 clean:
 	rm -f $(TARGET)
 else
