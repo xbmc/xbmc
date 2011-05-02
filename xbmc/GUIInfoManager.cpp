@@ -1374,27 +1374,13 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     strLabel = GetBuild();
     break;
   case SYSTEM_FREE_MEMORY:
-  case SYSTEM_FREE_MEMORY_PERCENT:
   case SYSTEM_USED_MEMORY:
-  case SYSTEM_USED_MEMORY_PERCENT:
   case SYSTEM_TOTAL_MEMORY:
-    {
-      MEMORYSTATUS stat;
-      GlobalMemoryStatus(&stat);
-      int iMemPercentFree = 100 - ((int)( 100.0f* (stat.dwTotalPhys - stat.dwAvailPhys)/stat.dwTotalPhys + 0.5f ));
-      int iMemPercentUsed = 100 - iMemPercentFree;
-
-      if (info == SYSTEM_FREE_MEMORY)
-        strLabel.Format("%luMB", (ULONG)(stat.dwAvailPhys/MB));
-      else if (info == SYSTEM_FREE_MEMORY_PERCENT)
-        strLabel.Format("%i%%", iMemPercentFree);
-      else if (info == SYSTEM_USED_MEMORY)
-        strLabel.Format("%luMB", (ULONG)((stat.dwTotalPhys - stat.dwAvailPhys)/MB));
-      else if (info == SYSTEM_USED_MEMORY_PERCENT)
-        strLabel.Format("%i%%", iMemPercentUsed);
-      else if (info == SYSTEM_TOTAL_MEMORY)
-        strLabel.Format("%luMB", (ULONG)(stat.dwTotalPhys/MB));
-    }
+    strLabel.Format("%luMB", CSysInfo::GetSystemMemory(info) / MB);
+    break;
+  case SYSTEM_FREE_MEMORY_PERCENT:
+  case SYSTEM_USED_MEMORY_PERCENT:
+    strLabel.Format("%i%%", CSysInfo::GetSystemMemory(info));
     break;
   case SYSTEM_SCREEN_MODE:
     strLabel = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].strMode;

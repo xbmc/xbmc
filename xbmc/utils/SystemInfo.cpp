@@ -275,6 +275,34 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
   return bRet;
 }
 
+const unsigned long CSysInfo::GetSystemMemory(const int& info)
+{
+  switch(info)
+  {
+    case SYSTEM_FREE_MEMORY:
+    case SYSTEM_FREE_MEMORY_PERCENT:
+    case SYSTEM_USED_MEMORY:
+    case SYSTEM_USED_MEMORY_PERCENT:
+    case SYSTEM_TOTAL_MEMORY:
+      MEMORYSTATUS stat;
+      GlobalMemoryStatus(&stat);
+
+      if (info == SYSTEM_FREE_MEMORY)
+        return stat.dwAvailPhys;
+      else if (info == SYSTEM_FREE_MEMORY_PERCENT)
+        return 100ul - ((unsigned long)( 100.0f* (stat.dwTotalPhys - stat.dwAvailPhys)/stat.dwTotalPhys + 0.5f ));
+      else if (info == SYSTEM_USED_MEMORY)
+        return stat.dwTotalPhys - stat.dwAvailPhys;
+      else if (info == SYSTEM_USED_MEMORY_PERCENT)
+        return ((unsigned long)( 100.0f* (stat.dwTotalPhys - stat.dwAvailPhys)/stat.dwTotalPhys + 0.5f ));
+      else if (info == SYSTEM_TOTAL_MEMORY)
+        return stat.dwTotalPhys;
+
+    default:
+      return 0; // wrong info
+  }
+}
+
 CStdString CSysInfo::GetXBVerInfo()
 {
   return "CPU: " + g_cpuInfo.getCPUModel();
