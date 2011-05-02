@@ -664,9 +664,19 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
 
 int CPVRGUIInfo::GetTotalTime(void) const
 {
-  CSingleLock lock(m_critSection);
+  int iReturn(0);
+  CPVRRecording recording;
+  if (g_PVRClients->GetPlayingRecording(&recording))
+  {
+    iReturn = recording.GetDuration();
+  }
+  else
+  {
+    CSingleLock lock(m_critSection);
+    iReturn = m_playingEpgTag ? m_playingEpgTag->GetDuration() * 1000 : 0;
+  }
 
-  return m_playingEpgTag ? m_playingEpgTag->GetDuration() * 1000 : 0;
+  return iReturn;
 }
 
 int CPVRGUIInfo::GetStartTime(void) const
