@@ -126,19 +126,22 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
   {
     switch(format.m_dataFormat)
     {
-    case AE_FMT_AC3:
-    case AE_FMT_DTS:
-      format.m_channelCount = 2;
-      break;
-    case AE_FMT_EAC3:
-      format.m_channelCount = 2;
-      format.m_sampleRate   = 192000;
-      break;
-    case AE_FMT_TRUEHD:
-    case AE_FMT_DTSHD:
-      format.m_channelCount = 8;
-      format.m_sampleRate   = 192000;
-      break;
+      case AE_FMT_AC3:
+      case AE_FMT_DTS:
+        format.m_channelCount = 2;
+        break;
+      case AE_FMT_EAC3:
+        format.m_channelCount = 2;
+        format.m_sampleRate   = 192000;
+        break;
+      case AE_FMT_TRUEHD:
+      case AE_FMT_DTSHD:
+        format.m_channelCount = 8;
+        format.m_sampleRate   = 192000;
+        break;
+
+      default:
+        break;
     }
     
     format.m_dataFormat   = AE_FMT_S16NE;
