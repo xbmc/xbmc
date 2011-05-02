@@ -21,6 +21,7 @@
 
 #ifdef _LINUX
 #define __declspec(x)
+#define __cdecl
 #endif
 
 extern "C" 
@@ -64,14 +65,14 @@ extern "C"
 }
 
 
-  long __declspec(dllexport) DLL_LoadXWAV(const char* szFileName)
+  __declspec(dllexport) void* __cdecl DLL_LoadXWAV(const char* szFileName)
   { 
     ADPCMInfo* info = (ADPCMInfo*)malloc(sizeof(ADPCMInfo));
     info->f = fopen(szFileName,"rb");
     if (!info->f)
     {
       free(info);
-      return 0;
+      return NULL;
     }
 
     int iResult = getwavinfo(info);
@@ -79,24 +80,24 @@ extern "C"
     {
       fclose(info->f);
       free(info);
-      return 0;
+      return NULL;
     }
 
     info->szBuf = (char*)malloc(XBOX_ADPCM_DSTSIZE*info->fmt.wChannels*4);
     info->szInputBuffer = (char*)malloc(XBOX_ADPCM_SRCSIZE*info->fmt.wChannels*4);
     info->szStartOfBuf = info->szBuf+XBOX_ADPCM_DSTSIZE*info->fmt.wChannels*4;
     info->bufLen = XBOX_ADPCM_DSTSIZE*info->fmt.wChannels*4;
-    return (long)info;
+    return (void*)info;
   }
 
-  void __declspec(dllexport) DLL_FreeXWAV(int info)
+  void __declspec(dllexport) DLL_FreeXWAV(void* info)
   {
     ADPCMInfo* pInfo = (ADPCMInfo*)info;
     fclose(pInfo->f);
     free(pInfo);
   }
     
-  int __declspec(dllexport) DLL_Seek(int info, int pos)
+  int __declspec(dllexport) DLL_Seek(void* info, int pos)
   {
     ADPCMInfo* pInfo = (ADPCMInfo*)info;
     int offs = pInfo->data_offset + ((((pos/ 1000) * pInfo->fmt.dwSamplesPerSec) / XBOX_ADPCM_DSTSIZE) * XBOX_ADPCM_SRCSIZE * pInfo->fmt.wChannels * (16 >> 3));
@@ -107,7 +108,7 @@ extern "C"
     return pos;
   }
 
-  long __declspec(dllexport) DLL_FillBuffer(int info, char* buffer, int size)
+  long __declspec(dllexport) DLL_FillBuffer(void* info, char* buffer, int size)
   {
     ADPCMInfo* pInfo = (ADPCMInfo*)info;
     int iCurrSize = size;
@@ -138,25 +139,25 @@ extern "C"
     return size-iCurrSize;
   }
 
-  int __declspec(dllexport) DLL_GetPlaybackRate(int info)
+  int __declspec(dllexport) DLL_GetPlaybackRate(void* info)
   {
     ADPCMInfo* pInfo = (ADPCMInfo*)info;
     return pInfo->fmt.dwSamplesPerSec;
   }
 
-  int __declspec(dllexport) DLL_GetNumberOfChannels(int info)
+  int __declspec(dllexport) DLL_GetNumberOfChannels(void* info)
   {
     ADPCMInfo* pInfo = (ADPCMInfo*)info;
     return pInfo->fmt.wChannels;
   }
 
-  int __declspec(dllexport) DLL_GetSampleSize(int info)
+  int __declspec(dllexport) DLL_GetSampleSize(void* info)
   {
     ADPCMInfo* pInfo = (ADPCMInfo*)info;
     return pInfo->fmt.wBitsPerSample;
   }
 
-  int __declspec(dllexport) DLL_GetLength(int info)
+  int __declspec(dllexport) DLL_GetLength(void* info)
   {
     ADPCMInfo* pInfo = (ADPCMInfo*)info;
     return pInfo->length;

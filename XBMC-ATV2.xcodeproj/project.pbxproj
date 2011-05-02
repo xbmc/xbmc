@@ -12,6 +12,7 @@
 		7C99B73F133D372300FC2B16 /* CacheCircular.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B73D133D372300FC2B16 /* CacheCircular.cpp */; };
 		7C99B7AA134072CD00FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */; };
 		C807119F135DB842002F601B /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C807119D135DB842002F601B /* InputOperations.cpp */; };
+		C8EC5D51136954E400CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D4F136954E400CCC10D /* XBMC_keytable.cpp */; };
 		F51BD1F112CA77B500B8BD20 /* libpython2.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F51BD1F012CA77B500B8BD20 /* libpython2.6.dylib */; };
 		F54D9E0712B65FFF006870F9 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E0612B65FFF006870F9 /* libc.dylib */; };
 		F54D9E8E12B71457006870F9 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8D12B71457006870F9 /* CoreAudio.framework */; };
@@ -189,7 +190,6 @@
 		F56C7927131EC154000AD0F6 /* ASAPCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7304131EC151000AD0F6 /* ASAPCodec.cpp */; };
 		F56C7928131EC154000AD0F6 /* DVDPlayerCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7306131EC151000AD0F6 /* DVDPlayerCodec.cpp */; };
 		F56C7929131EC154000AD0F6 /* ADPCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7308131EC151000AD0F6 /* ADPCMCodec.cpp */; };
-		F56C792A131EC154000AD0F6 /* AIFFcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C730A131EC151000AD0F6 /* AIFFcodec.cpp */; };
 		F56C792B131EC154000AD0F6 /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C730C131EC151000AD0F6 /* AudioDecoder.cpp */; };
 		F56C792C131EC154000AD0F6 /* CDDAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C730F131EC151000AD0F6 /* CDDAcodec.cpp */; };
 		F56C792D131EC154000AD0F6 /* CodecFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7311131EC151000AD0F6 /* CodecFactory.cpp */; };
@@ -938,9 +938,12 @@
 		7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPlayEject.cpp; sourceTree = "<group>"; };
 		7C99B7A9134072CD00FC2B16 /* GUIDialogPlayEject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPlayEject.h; sourceTree = "<group>"; };
 		8D576316048677EA00EA77CD /* XBMC.frappliance */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XBMC.frappliance; sourceTree = BUILT_PRODUCTS_DIR; };
+		A192FD47135E46C800D92E9B /* IOSAudioRingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSAudioRingBuffer.h; path = AudioRenderers/IOSAudioRingBuffer.h; sourceTree = "<group>"; };
 		C807119D135DB842002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
 		C807119E135DB842002F601B /* InputOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputOperations.h; sourceTree = "<group>"; };
 		C80711A0135DB848002F601B /* AnnouncementUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnouncementUtils.h; sourceTree = "<group>"; };
+		C8EC5D4F136954E400CCC10D /* XBMC_keytable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_keytable.cpp; sourceTree = "<group>"; };
+		C8EC5D50136954E400CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
 		F51BD1F012CA77B500B8BD20 /* libpython2.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpython2.6.dylib; path = "/Users/Shared/xbmc-depends/ios-4.2_arm7/lib/libpython2.6.dylib"; sourceTree = "<absolute>"; };
 		F54D9E0612B65FFF006870F9 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		F54D9E8D12B71457006870F9 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -1391,8 +1394,6 @@
 		F56C7307131EC151000AD0F6 /* DVDPlayerCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerCodec.h; sourceTree = "<group>"; };
 		F56C7308131EC151000AD0F6 /* ADPCMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ADPCMCodec.cpp; sourceTree = "<group>"; };
 		F56C7309131EC151000AD0F6 /* ADPCMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADPCMCodec.h; sourceTree = "<group>"; };
-		F56C730A131EC151000AD0F6 /* AIFFcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AIFFcodec.cpp; sourceTree = "<group>"; };
-		F56C730B131EC151000AD0F6 /* AIFFcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIFFcodec.h; sourceTree = "<group>"; };
 		F56C730C131EC151000AD0F6 /* AudioDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioDecoder.cpp; sourceTree = "<group>"; };
 		F56C730D131EC151000AD0F6 /* AudioDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioDecoder.h; sourceTree = "<group>"; };
 		F56C730E131EC151000AD0F6 /* CachingCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CachingCodec.h; sourceTree = "<group>"; };
@@ -3783,8 +3784,6 @@
 				F56C7307131EC151000AD0F6 /* DVDPlayerCodec.h */,
 				F56C7308131EC151000AD0F6 /* ADPCMCodec.cpp */,
 				F56C7309131EC151000AD0F6 /* ADPCMCodec.h */,
-				F56C730A131EC151000AD0F6 /* AIFFcodec.cpp */,
-				F56C730B131EC151000AD0F6 /* AIFFcodec.h */,
 				F56C730C131EC151000AD0F6 /* AudioDecoder.cpp */,
 				F56C730D131EC151000AD0F6 /* AudioDecoder.h */,
 				F56C730E131EC151000AD0F6 /* CachingCodec.h */,
@@ -3832,6 +3831,7 @@
 			children = (
 				F56C7BEA131EC495000AD0F6 /* IOSAudioRenderer.cpp */,
 				F56C7BEB131EC495000AD0F6 /* IOSAudioRenderer.h */,
+				A192FD47135E46C800D92E9B /* IOSAudioRingBuffer.h */,
 				F56C7338131EC151000AD0F6 /* IAudioRenderer.h */,
 				F56C7339131EC151000AD0F6 /* AudioRendererFactory.h */,
 				F56C733A131EC151000AD0F6 /* AudioRendererFactory.cpp */,
@@ -4446,6 +4446,8 @@
 				F56C755E131EC152000AD0F6 /* XBIRRemote.h */,
 				F56C755F131EC152000AD0F6 /* XBMC_keyboard.h */,
 				F56C7560131EC152000AD0F6 /* XBMC_keysym.h */,
+				C8EC5D4F136954E400CCC10D /* XBMC_keytable.cpp */,
+				C8EC5D50136954E400CCC10D /* XBMC_keytable.h */,
 				F56C7561131EC152000AD0F6 /* XBMC_mouse.h */,
 				F56C7562131EC152000AD0F6 /* XBMC_vkeys.h */,
 			);
@@ -6045,7 +6047,6 @@
 				F56C7927131EC154000AD0F6 /* ASAPCodec.cpp in Sources */,
 				F56C7928131EC154000AD0F6 /* DVDPlayerCodec.cpp in Sources */,
 				F56C7929131EC154000AD0F6 /* ADPCMCodec.cpp in Sources */,
-				F56C792A131EC154000AD0F6 /* AIFFcodec.cpp in Sources */,
 				F56C792B131EC154000AD0F6 /* AudioDecoder.cpp in Sources */,
 				F56C792C131EC154000AD0F6 /* CDDAcodec.cpp in Sources */,
 				F56C792D131EC154000AD0F6 /* CodecFactory.cpp in Sources */,
@@ -6756,6 +6757,7 @@
 				F5AE453B134D2E720004BD79 /* JSONServiceDescription.cpp in Sources */,
 				18ACF8E313597B0000B67371 /* RecentlyAddedJob.cpp in Sources */,
 				C807119F135DB842002F601B /* InputOperations.cpp in Sources */,
+				C8EC5D51136954E400CCC10D /* XBMC_keytable.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

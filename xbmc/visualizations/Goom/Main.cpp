@@ -59,10 +59,10 @@ using namespace std;
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
-extern "C" ADDON_STATUS Create(void* hdl, void* props)
+extern "C" ADDON_STATUS ADDON_Create(void* hdl, void* props)
 {
   if (!props)
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   VIS_PROPS* visprops = (VIS_PROPS*)props;
 
@@ -79,7 +79,7 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
 
   g_goom = goom_init(g_tex_width, g_tex_height);
   if (!g_goom)
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   g_goom_buffer = (unsigned char*)malloc(g_tex_width * g_tex_height * 4);
   goom_set_screenbuffer( g_goom, g_goom_buffer );
@@ -89,14 +89,14 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   g_window_xpos = visprops->x;
   g_window_ypos = visprops->y;
 
-  return STATUS_OK;
+  return ADDON_STATUS_OK;
 }
 
 //-- Destroy -------------------------------------------------------------------
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Destroy()
+extern "C" void ADDON_Destroy()
 {
   if ( g_goom )
   {
@@ -124,7 +124,7 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
 //-- Stop ---------------------------------------------------------------------
 // Called when the visualisation is closed by XBMC
 //-----------------------------------------------------------------------------
-extern "C" void Stop()
+extern "C" void ADDON_Stop()
 {
   if (g_texid)
   {
@@ -258,7 +258,7 @@ extern "C" unsigned int GetSubModules(char ***names)
 // Returns true if this add-on use settings
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" bool HasSettings()
+extern "C" bool ADDON_HasSettings()
 {
   return false;
 }
@@ -267,16 +267,16 @@ extern "C" bool HasSettings()
 // Returns the current Status of this visualisation
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" ADDON_STATUS GetStatus()
+extern "C" ADDON_STATUS ADDON_GetStatus()
 {
-  return STATUS_OK;
+  return ADDON_STATUS_OK;
 }
 
 //-- GetSettings --------------------------------------------------------------
 // Return the settings for XBMC to display
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" unsigned int GetSettings(StructSetting ***sSet)
+extern "C" unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
 {
   return 0;
 }
@@ -286,7 +286,7 @@ extern "C" unsigned int GetSettings(StructSetting ***sSet)
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
 
-extern "C" void FreeSettings()
+extern "C" void ADDON_FreeSettings()
 {
 }
 
@@ -294,7 +294,7 @@ extern "C" void FreeSettings()
 // Set a specific Setting value (called from XBMC)
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
+extern "C" ADDON_STATUS ADDON_SetSetting(const char *strSetting, const void* value)
 {
-  return STATUS_OK;
+  return ADDON_STATUS_OK;
 }

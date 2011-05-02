@@ -114,7 +114,7 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestEpisode." + value + ".EpisodeSeason" , EpisodeSeason);
       home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , EpisodeNumber);
       home->SetProperty("LatestEpisode." + value + ".Path"          , item->GetVideoInfoTag()->m_strFileNameAndPath);
-      home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetCachedVideoThumb());
+      home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetThumbnailImage());
       home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetCachedFanart());
     }
   } 

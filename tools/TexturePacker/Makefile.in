@@ -1,24 +1,49 @@
-ARCH=@ARCH@
-DEFINES = 
-ifeq ($(findstring osx,$(ARCH)),osx)
-LIBS = @abs_top_srcdir@/lib/libsquish/libsquish.a -L/Users/Shared/xbmc-depends/osx-10.4_i386/lib -lSDL_image -lSDL -llzo2
-else
-LIBS = @abs_top_srcdir@/lib/libsquish/libsquish.a -lSDL_image -lSDL -llzo2
+DEFINES += -D_LINUX -DUSE_LZO_PACKING
+ifneq ($(or $(findstring powerpc,arm-osx),$(findstring ppc, arm-osx)),)
+DEFINES += -DHOST_BIGENDIAN
 endif
 
-OBJS = \
-	SDL_anigif.o \
-	XBTFWriter.o \
-	XBMCTex.o \
-	md5.o \
-	@abs_top_srcdir@/xbmc/guilib/XBTF.o
+CXXFLAGS+= \
+  -I. \
+  -I@abs_top_srcdir@/lib \
+  -I@abs_top_srcdir@/xbmc \
+  -I@abs_top_srcdir@/xbmc/linux
+
+ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
+NATIVE_ROOT_PATH=@USE_TEXTUREPACKER_NATIVE_ROOT@
+ifdef NATIVE_ROOT_PATH
+CXXFLAGS+= -I$(NATIVE_ROOT_PATH)/include
+LIBS    += -L$(NATIVE_ROOT_PATH)/lib
+endif
+LIBS    += -L@abs_top_srcdir@/lib/libsquish -lsquish-native
+else
+LIBS    += -L@abs_top_srcdir@/lib/libsquish -lsquish
+endif
+
+LIBS    += -lSDL_image -lSDL -llzo2
+
+SRCS = \
+  md5.cpp \
+  SDL_anigif.cpp \
+  XBTFWriter.cpp \
+  XBMCTex.cpp \
+  @abs_top_srcdir@/xbmc/guilib/XBTF.cpp
+
 
 TARGET = TexturePacker
 CLEAN_FILES=$(TARGET)
 
 all: $(TARGET)
 
+ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
+# TexturePacker run native on build system, build it with native tools
+$(TARGET): $(SRCS)
+	g++ $(DEFINES) $(CXXFLAGS) $(SRCS) $(LIBS) -o $(TARGET)
+clean:
+	rm -f $(TARGET)
+else
 include @abs_top_srcdir@/Makefile.include
 
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
+$(TARGET): $(SRCS)
+	$(CXX) $(CXXFLAGS) $(DEFINES) $(INCLUDES) $(SRCS) $(LDFLAGS) $(LIBS) -o $(TARGET)
+endif

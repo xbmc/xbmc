@@ -49,7 +49,6 @@ protected:
   virtual CBaseTexture* ReallocTexture(unsigned int& newHeight);
   virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character *ch);
   virtual void DeleteHardwareTexture();
-  virtual void RenderInternal(SVertex* v) {}
 
 };
 

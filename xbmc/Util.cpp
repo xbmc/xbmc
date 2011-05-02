@@ -91,6 +91,7 @@
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
 #include "windowing/WindowingFactory.h"
+#include "video/VideoInfoTag.h"
 
 using namespace std;
 using namespace XFILE;
@@ -755,7 +756,7 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
   return CThumbnailCache::GetThumbnailCache()->IsCached(strFileName);
 }
 
-void CUtil::PlayDVD(const CStdString& strProtocol)
+void CUtil::PlayDVD(const CStdString& strProtocol, bool restart)
 {
 #if defined(HAS_DVDPLAYER) && defined(HAS_DVD_DRIVE)
   CIoSupport::Dismount("Cdrom0");
@@ -764,7 +765,10 @@ void CUtil::PlayDVD(const CStdString& strProtocol)
   strPath.Format("%s://1", strProtocol.c_str());
   CFileItem item(strPath, false);
   item.SetLabel(g_mediaManager.GetDiskLabel());
-  g_application.PlayFile(item);
+  item.GetVideoInfoTag()->m_strFileNameAndPath = "removable://"; // need to put volume label for resume point in videoInfoTag
+  item.GetVideoInfoTag()->m_strFileNameAndPath += g_mediaManager.GetDiskLabel();
+  if (!restart) item.m_lStartOffset = STARTOFFSET_RESUME;
+  g_application.PlayFile(item, restart);
 #endif
 }
 
