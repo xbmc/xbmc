@@ -567,6 +567,7 @@ public:
 
   int TranslateString(const CStdString &strCondition);
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
+  const bool ValidateConditions(std::map<int, bool>& map) const;
   int GetInt(int info, int contextWindow = 0) const;
   CStdString GetLabel(int info, int contextWindow = 0);
 

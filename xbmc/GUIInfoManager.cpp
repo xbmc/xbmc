@@ -2065,6 +2065,18 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   return bReturn;
 }
 
+/// \brief iterates through boolean conditions and compares their stored values to current values. Returns false if any condition changed value.
+const bool CGUIInfoManager::ValidateConditions(std::map<int, bool>& conditionMap) const
+{
+  for (std::map<int, bool>::iterator it = conditionMap.begin() ; it != conditionMap.end() ; it++)
+  {
+    if (g_infoManager.GetBool(it->first) != it->second)
+      return false;
+  }
+
+  return true;
+}
+
 /// \brief Examines the multi information sent and returns true or false accordingly.
 bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, const CGUIListItem *item)
 {
