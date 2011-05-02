@@ -112,8 +112,8 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
   else if ((format.m_dataFormat == AE_FMT_S16LE) && (format_mask & AFMT_S16_LE)) oss_fmt = AFMT_S16_LE;
   else if ((format.m_dataFormat == AE_FMT_S8   ) && (format_mask & AFMT_S8    )) oss_fmt = AFMT_S8;
   else if ((format.m_dataFormat == AE_FMT_U8   ) && (format_mask & AFMT_U8    )) oss_fmt = AFMT_U8;
-  else if ((format.m_dataFormat == AE_FMT_RAW  ) && (format_mask & AFMT_AC3   )) oss_fmt = AFMT_AC3;
-  else if (format.m_dataFormat == AE_FMT_RAW)
+  else if ((AE_IS_RAW(format.m_dataFormat)     ) && (format_mask & AFMT_AC3   )) oss_fmt = AFMT_AC3;
+  else if (AE_IS_RAW(format.m_dataFormat))
   {
     close(m_fd);
     CLog::Log(LOGERROR, "CAESinkOSS::Initialize - Failed to find a suitable RAW output format");
