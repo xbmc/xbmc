@@ -186,6 +186,8 @@ void CAdvancedSettings::Initialize()
   m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
   m_fanartImages = "fanart.jpg|fanart.png";
 
+  m_bDestroyWindowControls = false; // use this feature by default - it has positive influence on performance (assuming that there is enough virtual memory)
+
   m_bMusicLibraryHideAllItems = false;
   m_bMusicLibraryAllItemsOnBottom = false;
   m_bMusicLibraryAlbumsSortByArtistThenYear = false;
@@ -812,6 +814,8 @@ bool CAdvancedSettings::Load()
   TiXmlElement* pFanart = pRootElement->FirstChildElement("fanart");
   if (pFanart)
     GetCustomExtensions(pFanart,m_fanartImages);
+
+  XMLUtils::GetBoolean(pRootElement, "destroywindowcontrols", m_bDestroyWindowControls);
 
   // music filename->tag filters
   TiXmlElement* filters = pRootElement->FirstChildElement("musicfilenamefilters");
