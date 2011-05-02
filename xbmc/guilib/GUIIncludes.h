@@ -44,10 +44,9 @@ public:
    "bar" from the include file "foo".
    \param node an XML Element - all child elements are traversed.
    */
-  void ResolveIncludes(TiXmlElement *node);
-
+  void ResolveIncludes(TiXmlElement *node, std::map<int, bool>* xmlIncludeConditions = NULL);
 private:
-  void ResolveIncludesForNode(TiXmlElement *node);
+  void ResolveIncludesForNode(TiXmlElement *node, std::map<int, bool>* xmlIncludeConditions = NULL);
   CStdString ResolveConstant(const CStdString &constant) const;
   bool HasIncludeFile(const CStdString &includeFile) const;
   std::map<CStdString, TiXmlElement> m_includes;
