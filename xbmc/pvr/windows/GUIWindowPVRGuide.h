@@ -70,6 +70,5 @@ namespace PVR
     bool             m_bLastEpgView; /*!< true for radio, false for tv */
     bool             m_bGotInitialEpg;
     bool             m_bObservingEpg;
-    CCriticalSection m_critSection;
   };
 }
