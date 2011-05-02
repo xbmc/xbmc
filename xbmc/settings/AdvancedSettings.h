@@ -193,6 +193,7 @@ class CAdvancedSettings
     CStdString m_fanartImages;
 
     bool m_bDestroyWindowControls;
+    int m_iFreeMemoryThreshold;
 
     bool m_bMusicLibraryHideAllItems;
     int m_iMusicLibraryRecentlyAddedItems;

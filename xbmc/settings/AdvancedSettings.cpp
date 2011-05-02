@@ -187,6 +187,7 @@ void CAdvancedSettings::Initialize()
   m_fanartImages = "fanart.jpg|fanart.png";
 
   m_bDestroyWindowControls = false; // use this feature by default - it has positive influence on performance (assuming that there is enough virtual memory)
+  m_iFreeMemoryThreshold = 200 * 1024 * 1024; // by default set threshold on 200MB
 
   m_bMusicLibraryHideAllItems = false;
   m_bMusicLibraryAllItemsOnBottom = false;
@@ -816,6 +817,7 @@ bool CAdvancedSettings::Load()
     GetCustomExtensions(pFanart,m_fanartImages);
 
   XMLUtils::GetBoolean(pRootElement, "destroywindowcontrols", m_bDestroyWindowControls);
+  XMLUtils::GetInt(pRootElement, "freememorythreshold", m_iFreeMemoryThreshold);
 
   // music filename->tag filters
   TiXmlElement* filters = pRootElement->FirstChildElement("musicfilenamefilters");

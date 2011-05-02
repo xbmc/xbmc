@@ -32,6 +32,7 @@
 #include "Application.h"
 #include "windowing/WindowingFactory.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "CPUInfo.h"
 #include "utils/TimeUtils.h"
@@ -303,6 +304,10 @@ const unsigned long CSysInfo::GetSystemMemory(const int& info)
   }
 }
 
+const bool CSysInfo::FreeMemoryTest()
+{
+  return GetSystemMemory(SYSTEM_FREE_MEMORY) >= g_advancedSettings.m_iFreeMemoryThreshold;
+}
 CStdString CSysInfo::GetXBVerInfo()
 {
   return "CPU: " + g_cpuInfo.getCPUModel();
