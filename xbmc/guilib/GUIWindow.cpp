@@ -38,6 +38,7 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
+#include "utils/SystemInfo.h"
 #include "input/ButtonTranslator.h"
 #include "utils/XMLUtils.h"
 
@@ -627,7 +628,8 @@ void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
   CGUIControlGroup::FreeResources();
   //g_TextureManager.Dump();
   // unload the skin
-  if (m_loadOnDemand || forceUnload) ClearAll();
+  if (m_loadOnDemand || forceUnload || !CSysInfo::FreeMemoryTest())
+    ClearAll();
 }
 
 void CGUIWindow::DynamicResourceAlloc(bool bOnOff)
