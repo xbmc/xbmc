@@ -133,8 +133,8 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
   // be done with respect to the correct aspect ratio
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
 
-  // Resolve any includes that may be present
-  g_SkinInfo->ResolveIncludes(pRootElement);
+  // Resolve any includes that may be present and save conditions used to do it
+  g_SkinInfo->ResolveIncludes(pRootElement, &m_xmlIncludeConditions);
   // now load in the skin file
   SetDefaults();
 

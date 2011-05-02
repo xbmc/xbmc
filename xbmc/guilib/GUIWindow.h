@@ -289,6 +289,8 @@ protected:
   bool m_manualRunActions;
 
   int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE
+
+  std::map<int, bool> m_xmlIncludeConditions; ///< \brief used to store conditions used to resolve includes for this window
 };
 
 #endif
