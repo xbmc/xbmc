@@ -40,7 +40,6 @@
 using namespace std;
 using namespace ADDON;
 using namespace PVR;
-using namespace boost;
 
 CPVRClients::CPVRClients(void)
 {
@@ -66,7 +65,7 @@ void CPVRClients::Unload(void)
 
   for (CLIENTMAPITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
   {
-    shared_ptr<CPVRClient> client = m_clientMap[(*itr).first];
+    boost::shared_ptr<CPVRClient> client = m_clientMap[(*itr).first];
     CLog::Log(LOGDEBUG, "PVR - %s - destroying addon '%s' (%s)",
         __FUNCTION__, client->Name().c_str(), client->ID().c_str());
 
@@ -154,7 +153,7 @@ bool CPVRClients::HasTimerSupport(int iClientId)
   return m_clientsProps[iClientId].bSupportsTimers;
 }
 
-bool CPVRClients::GetValidClient(int iClientId, shared_ptr<CPVRClient> &addon)
+bool CPVRClients::GetValidClient(int iClientId, boost::shared_ptr<CPVRClient> &addon)
 {
   bool bReturn = false;
   CSingleLock lock(m_critSection);
@@ -315,7 +314,7 @@ bool CPVRClients::LoadClients(void)
       continue;
 
     /* load and initialise the client libraries */
-    shared_ptr<CPVRClient> addon = dynamic_pointer_cast<CPVRClient>(clientAddon);
+    boost::shared_ptr<CPVRClient> addon = dynamic_pointer_cast<CPVRClient>(clientAddon);
     if (addon && addon->Create(iClientId, this))
     {
       /* get the client's properties */
@@ -633,7 +632,7 @@ int64_t CPVRClients::GetStreamPosition(void)
 bool CPVRClients::AddTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
-  shared_ptr<CPVRClient> client;
+  boost::shared_ptr<CPVRClient> client;
   if (GetValidClient(timer.m_iClientId, client))
     *error = client->AddTimer(timer);
   else
@@ -645,7 +644,7 @@ bool CPVRClients::AddTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
 bool CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
-  shared_ptr<CPVRClient> client;
+  boost::shared_ptr<CPVRClient> client;
   if (GetValidClient(timer.m_iClientId, client))
     *error = client->UpdateTimer(timer);
   else
@@ -657,7 +656,7 @@ bool CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
 bool CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
-  shared_ptr<CPVRClient> client;
+  boost::shared_ptr<CPVRClient> client;
   if (GetValidClient(timer.m_iClientId, client))
     *error = client->DeleteTimer(timer, bForce);
   else
@@ -669,7 +668,7 @@ bool CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, PVR_ER
 bool CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &strNewName, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
-  shared_ptr<CPVRClient> client;
+  boost::shared_ptr<CPVRClient> client;
   if (GetValidClient(timer.m_iClientId, client))
     *error = client->RenameTimer(timer, strNewName);
   else
@@ -725,7 +724,7 @@ int CPVRClients::GetRecordings(CPVRRecordings *recordings)
 bool CPVRClients::RenameRecording(const CPVRRecording &recording, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
-  shared_ptr<CPVRClient> client;
+  boost::shared_ptr<CPVRClient> client;
   if (GetValidClient(recording.m_iClientId, client))
     *error = client->RenameRecording(recording);
   else
@@ -737,7 +736,7 @@ bool CPVRClients::RenameRecording(const CPVRRecording &recording, PVR_ERROR *err
 bool CPVRClients::DeleteRecording(const CPVRRecording &recording, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
-  shared_ptr<CPVRClient> client;
+  boost::shared_ptr<CPVRClient> client;
   if (GetValidClient(recording.m_iClientId, client))
     *error = client->DeleteRecording(recording);
   else
@@ -749,7 +748,7 @@ bool CPVRClients::DeleteRecording(const CPVRRecording &recording, PVR_ERROR *err
 bool CPVRClients::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKOWN;
-  shared_ptr<CPVRClient> client;
+  boost::shared_ptr<CPVRClient> client;
   if (GetValidClient(channel.ClientID(), client))
     *error = client->GetEPGForChannel(channel, epg, start, end);
   else
@@ -833,7 +832,7 @@ int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)
 const CStdString CPVRClients::GetStreamURL(const CPVRChannel &tag)
 {
   static CStdString strReturn;
-  shared_ptr<CPVRClient> client;
+  boost::shared_ptr<CPVRClient> client;
   if (GetValidClient(tag.ClientID(), client))
     strReturn = client->GetLiveStreamURL(tag);
   else
@@ -1018,7 +1017,7 @@ bool CPVRClients::HasMenuHooks(int iClientID)
   if (iClientID < 0)
     iClientID = GetPlayingClientID();
 
-  shared_ptr<CPVRClient> client;
+  boost::shared_ptr<CPVRClient> client;
   if (GetValidClient(iClientID, client))
     bReturn = client->HaveMenuHooks();
   else
@@ -1034,7 +1033,7 @@ bool CPVRClients::GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks)
   if (iClientID < 0)
     iClientID = GetPlayingClientID();
 
-  shared_ptr<CPVRClient> client;
+  boost::shared_ptr<CPVRClient> client;
   if (GetValidClient(iClientID, client))
   {
     if (client->HaveMenuHooks())
@@ -1060,7 +1059,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID)
 
   if (GetMenuHooks(iClientID, hooks))
   {
-    shared_ptr<CPVRClient> client;
+    boost::shared_ptr<CPVRClient> client;
     if (!GetValidClient(iClientID, client))
       return;
     std::vector<long> hookIDs;
@@ -1107,7 +1106,7 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
     return OpenLiveStream(channel);
   }
 
-  shared_ptr<CPVRClient> client;
+  boost::shared_ptr<CPVRClient> client;
   if (GetValidClient(channel.ClientID(), client))
   {
     if (client->SwitchChannel(channel))
