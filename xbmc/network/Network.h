@@ -40,17 +40,17 @@ public:
       m_channel = channel;
    }
 
-   const CStdString getEssId() { return m_essId; }
-   const CStdString getMacAddress() { return m_macAddress; }
-   const int getSignalStrength() { return m_dBm; }
-   const EncMode getEncryptionMode() { return m_encryptionMode; }
-   const int getChannel() { return m_channel; }
+   const CStdString &getEssId() const { return m_essId; }
+   const CStdString &getMacAddress() const { return m_macAddress; }
+   int getSignalStrength() const { return m_dBm; }
+   EncMode getEncryptionMode() const { return m_encryptionMode; }
+   int getChannel() const { return m_channel; }
 
    /* Returns the quality, normalized as a percentage, of the network access point */
-   const int getQuality();
+   int getQuality() const;
 
    /* Returns a Google Gears specific JSON string */
-   const CStdString toJson();
+   CStdString toJson() const;
 
    /* Translates a 802.11a+b frequency into corresponding channel */
    static int FreqToChannel(float frequency);
