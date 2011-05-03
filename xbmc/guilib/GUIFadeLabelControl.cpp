@@ -82,10 +82,12 @@ void CGUIFadeLabelControl::DoRender(unsigned int currentTime)
   CGUIControl::DoRender(currentTime);
 }
 
-void CGUIFadeLabelControl::UpdateColors()
+bool CGUIFadeLabelControl::UpdateColors()
 {
-  m_label.UpdateColors();
-  CGUIControl::UpdateColors();
+  bool changed = m_label.UpdateColors();
+  changed |= CGUIControl::UpdateColors();
+
+  return changed;
 }
 
 void CGUIFadeLabelControl::Render()

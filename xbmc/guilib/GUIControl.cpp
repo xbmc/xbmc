@@ -422,9 +422,11 @@ void CGUIControl::SetPosition(float posX, float posY)
   }
 }
 
-void CGUIControl::SetColorDiffuse(const CGUIInfoColor &color)
+bool CGUIControl::SetColorDiffuse(const CGUIInfoColor &color)
 {
+  bool changed = m_diffuseColor != color;
   m_diffuseColor = color;
+  return changed;
 }
 
 float CGUIControl::GetXPosition() const
@@ -613,9 +615,9 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
     UpdateInfo(item);
 }
 
-void CGUIControl::UpdateColors()
+bool CGUIControl::UpdateColors()
 {
-  m_diffuseColor.Update();
+  return m_diffuseColor.Update();
 }
 
 void CGUIControl::SetInitialVisibility()

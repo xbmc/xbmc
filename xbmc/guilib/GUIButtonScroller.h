@@ -82,7 +82,7 @@ public:
 
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
   int GetNext(int iCurrent) const;
   int GetPrevious(int iCurrent);
   int GetButton(int iOffset);
