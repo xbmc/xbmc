@@ -594,9 +594,9 @@ bool cHTSPSession::ParseSignalStatus (htsmsg_t* msg, SQuality &quality)
   else
     quality.fe_status = "(unknown)";
 
-  XBMC->Log(LOG_DEBUG, "%s - updated signal status: snr=%d, signal=%d, ber=%d, unc=%d, status=%s"
-      , __FUNCTION__, quality.fe_snr, quality.fe_signal, quality.fe_ber
-      , quality.fe_unc, quality.fe_status.c_str());
+//  XBMC->Log(LOG_DEBUG, "%s - updated signal status: snr=%d, signal=%d, ber=%d, unc=%d, status=%s"
+//      , __FUNCTION__, quality.fe_snr, quality.fe_signal, quality.fe_ber
+//      , quality.fe_unc, quality.fe_status.c_str());
 
   return true;
 }
