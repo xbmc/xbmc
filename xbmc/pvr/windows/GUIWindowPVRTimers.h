@@ -39,6 +39,7 @@ namespace PVR
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     virtual void UpdateData(void);
     virtual void Notify(const Observable &obs, const CStdString& msg);
+    virtual void ResetObservers(void);
 
   private:
     virtual bool OnClickButton(CGUIMessage &message);

@@ -42,6 +42,17 @@ CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(CGUIWindowPVR *parent) :
   m_bObservingTimers = false;
 }
 
+void CGUIWindowPVRRecordings::ResetObservers(void)
+{
+  CSingleLock lock(m_critSection);
+
+  m_bObservingRecordings = true;
+  g_PVRRecordings->AddObserver(this);
+
+  m_bObservingTimers = true;
+  g_PVRTimers->AddObserver(this);
+}
+
 void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons &buttons) const
 {
   if (itemNumber < 0 || itemNumber >= m_parent->m_vecItems->Size())

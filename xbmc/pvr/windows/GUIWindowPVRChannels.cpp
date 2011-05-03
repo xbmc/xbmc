@@ -52,6 +52,14 @@ CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio)
   m_bObservingTimers    = false;
 }
 
+void CGUIWindowPVRChannels::ResetObservers(void)
+{
+  CSingleLock lock(m_critSection);
+
+  m_bObservingTimers = true;
+  g_PVRTimers->AddObserver(this);
+}
+
 void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &buttons) const
 {
   if (itemNumber < 0 || itemNumber >= m_parent->m_vecItems->Size())

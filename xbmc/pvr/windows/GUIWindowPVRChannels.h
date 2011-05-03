@@ -44,6 +44,7 @@ namespace PVR
     virtual CPVRChannelGroup *SelectNextGroup(void);
     virtual void UpdateData(void);
     virtual void Notify(const Observable &obs, const CStdString& msg);
+    virtual void ResetObservers(void);
 
   private:
     virtual bool OnClickButton(CGUIMessage &message);

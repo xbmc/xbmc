@@ -43,6 +43,7 @@ namespace PVR
     virtual void UpdateData(void);
     virtual void Notify(const Observable &obs, const CStdString& msg);
     virtual void SetInvalid(void) { UpdateData(); }
+    virtual void ResetObservers(void);
 
   private:
     virtual bool IsSelectedButton(CGUIMessage &message) const;

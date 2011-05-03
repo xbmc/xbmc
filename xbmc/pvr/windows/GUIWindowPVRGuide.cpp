@@ -55,6 +55,14 @@ CGUIWindowPVRGuide::~CGUIWindowPVRGuide()
   delete m_epgData;
 }
 
+void CGUIWindowPVRGuide::ResetObservers(void)
+{
+  CSingleLock lock(m_critSection);
+
+  m_bObservingEpg = true;
+  g_PVREpg->AddObserver(this);
+}
+
 void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
 {
   if (msg.Equals("epg") || msg.Equals("timers-reset") || msg.Equals("timers"))
