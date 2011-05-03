@@ -101,10 +101,17 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
   m_label.SetText(label);
 }
 
-void CGUILabelControl::Render()
+void CGUILabelControl::Process(unsigned int currentTime)
 {
   m_label.SetColor(IsDisabled() ? CGUILabel::COLOR_DISABLED : CGUILabel::COLOR_TEXT);
   m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
+  m_label.Process(currentTime);
+
+  CGUIControl::Process(currentTime);
+}
+
+void CGUILabelControl::Render()
+{
   m_label.Render();
   CGUIControl::Render();
 }
