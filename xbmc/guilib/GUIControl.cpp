@@ -132,13 +132,43 @@ void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 
 }
 
-// the main render routine.
-// 1. animate and set the animation transform
-// 2. if visible, paint
+// the main processing routine.
+// 1. animate and set animation transform
+// 2. if visible, process
 // 3. reset the animation transform
-void CGUIControl::DoRender(unsigned int currentTime)
+void CGUIControl::DoProcess(unsigned int currentTime)
 {
   Animate(currentTime);
+
+  g_graphicsContext.AddTransform(m_transform);
+  if (m_hasCamera)
+    g_graphicsContext.SetCameraPosition(m_camera);
+
+//  GUIPROFILER_VISIBILITY_BEGIN(control);
+  UpdateVisibility();
+//  GUIPROFILER_VISIBILITY_END(control);
+
+  if (IsVisible())
+    Process(currentTime);
+
+  if (m_hasCamera)
+    g_graphicsContext.RestoreCameraPosition();
+  g_graphicsContext.RemoveTransform();
+
+  m_bInvalidated = false;
+}
+
+void CGUIControl::Process(unsigned int currentTime)
+{
+}
+
+// the main render routine.
+// 1. set the animation transform
+// 2. if visible, paint
+// 3. reset the animation transform
+void CGUIControl::DoRender()
+{
+  g_graphicsContext.AddTransform(m_transform);
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
   if (IsVisible())
@@ -832,7 +862,6 @@ void CGUIControl::Animate(unsigned int currentTime)
       }
     }*/
   }
-  g_graphicsContext.AddTransform(m_transform);
 }
 
 bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
