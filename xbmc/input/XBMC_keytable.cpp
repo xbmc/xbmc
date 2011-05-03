@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "utils/StdString.h"
 #include "input/XBMC_keytable.h"
 
 // The array of XBMCKEYTABLEs used in XBMC.
