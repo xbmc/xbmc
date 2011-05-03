@@ -22,10 +22,10 @@
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
+#include "TextureCache.h"
 #include "Util.h"
 #include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"
-#include "pictures/Picture.h"
 #include "settings/GUISettings.h"
 #include "utils/URIUtils.h"
 #include "threads/SingleLock.h"
@@ -181,22 +181,18 @@ bool CPVRChannel::CacheIcon(void)
   if (!m_bIsCachingIcon)
     return bReturn;
 
-  CStdString strBasePath = g_guiSettings.GetString("pvrmenu.iconpath");
-  if (strBasePath.IsEmpty())
-    return bReturn;
-
   CStdString strIconPath(m_strIconPath);
-  if (URIUtils::IsInternetStream(strIconPath, true))
-  {
-    CStdString strNewFileName;
-    strNewFileName.Format("%s/icon_%s_%d_%d.tbn", strBasePath, m_bIsRadio ? "radio" : "tv", m_iClientId, m_iUniqueId);
-    lock.Leave();
+  lock.Leave();
 
-    if (CPicture::CacheThumb(strIconPath, strNewFileName))
-    {
-      SetIconPath(strNewFileName);
-      bReturn = true;
-    }
+  strIconPath = CTextureCache::Get().CheckAndCacheImage(strIconPath);
+
+  lock.Enter();
+  if (!m_strIconPath.Equals(strIconPath))
+  {
+    m_strIconPath = strIconPath;
+    m_bChanged = true;
+    SetChanged();
+    bReturn = true;
   }
 
   return bReturn;
