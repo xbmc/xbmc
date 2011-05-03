@@ -175,7 +175,7 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
 
   while (m_bRunning && !g_application.m_bStop)
   {
-    g_windowManager.Process();
+    g_windowManager.ProcessRenderLoop();
   }
 }
 

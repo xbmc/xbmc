@@ -429,7 +429,7 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
       QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
       while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
       {
-        g_windowManager.Process(true);
+        g_windowManager.ProcessRenderLoop(true);
       }
     }
   }

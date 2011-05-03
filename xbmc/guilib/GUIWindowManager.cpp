@@ -575,7 +575,7 @@ void CGUIWindowManager::UpdateModelessVisibility()
   }
 }
 
-void CGUIWindowManager::Process(bool renderOnly /*= false*/)
+void CGUIWindowManager::ProcessRenderLoop(bool renderOnly /*= false*/)
 {
   if (g_application.IsCurrentThread() && m_pCallback)
   {

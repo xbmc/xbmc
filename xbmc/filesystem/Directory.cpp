@@ -167,7 +167,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
                   dialog->Close();
                   dialog = NULL;
                 }
-                g_windowManager.Process(false);
+                g_windowManager.ProcessRenderLoop(false);
               }
               else
               {
@@ -177,7 +177,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
                   if(dialog)
                     dialog->Show();
                 }
-                g_windowManager.Process(true);
+                g_windowManager.ProcessRenderLoop(true);
               }
             }
             if(dialog)

@@ -93,7 +93,7 @@ public:
   bool Initialized() const { return m_initialized; };
 
   CGUIWindow* GetWindow(int id) const;
-  void Process(bool renderOnly = false);
+  void ProcessRenderLoop(bool renderOnly = false);
   void SetCallback(IWindowManagerCallback& callback);
   void DeInitialize();
 
