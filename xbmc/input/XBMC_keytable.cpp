@@ -232,10 +232,14 @@ bool KeyTableLookupName(const char* keyname, XBMCKEYTABLE* keytable)
   if (keyname[0] == '\0')
     return false;
 
+  // We need the button name to be in lowercase
+  CStdString lkeyname = keyname;
+  lkeyname.ToLower();
+
   // Look up the key name in XBMCKeyTable
   for (int i = 0; i < XBMCKeyTableSize; i++)
   { if (XBMCKeyTable[i].keyname)
-    { if (strcmp(keyname, XBMCKeyTable[i].keyname) == 0)
+    { if (strcmp(lkeyname.c_str(), XBMCKeyTable[i].keyname) == 0)
       { *keytable = XBMCKeyTable[i];
         return true;
       }
