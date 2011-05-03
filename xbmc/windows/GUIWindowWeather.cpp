@@ -237,9 +237,12 @@ void CGUIWindowWeather::UpdateLocations()
     if (i == 0 && !g_locationManager.IsBusy() && g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE).IsEmpty())
       continue;
 
-    CStdString strLabel = g_weatherManager.GetLocation(i);
-    if (i != 0)
+    CStdString strLabel;
+    if (i == 0)
+      strLabel = g_localizeStrings.Get(14061); // Auto
+    else
     {
+      strLabel = g_weatherManager.GetLocation(i);
       if (strLabel.size() > 1) //got the location string yet?
       {
         int iPos = strLabel.ReverseFind(", ");

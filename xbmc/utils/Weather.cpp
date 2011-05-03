@@ -716,15 +716,6 @@ void CWeather::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   // if success is false then job->m_info is empty, so no need to store it
   if (success)
-  {
     m_info = ((CWeatherJob *)job)->GetInfo();
-    // Mark weather location zero as being the current location
-    if (m_iCurWeather == 0)
-    {
-      CStdString str_current(g_localizeStrings.Get(143));
-      str_current = str_current.Left(str_current.size()-1);
-      m_info.location.AppendFormat(" (%s)", str_current.c_str());
-    }
-  }
   CInfoLoader::OnJobComplete(jobID, success, job);
 }
