@@ -380,7 +380,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
       return result;
 
 #ifndef __APPLE__
-   // Query the wireless extentsions version number. It will help us when we
+   // Query the wireless extension's version number. It will help us when we
    // parse the resulting events
    struct iwreq iwr;
    char rangebuffer[sizeof(iw_range) * 2];    /* Large enough */
@@ -403,14 +403,18 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
    strncpy(iwr.ifr_name, GetName().c_str(), IFNAMSIZ);
    if (ioctl(m_network->GetSocket(), SIOCSIWSCAN, &iwr) < 0)
    {
-      CLog::Log(LOGWARNING, "Cannot initiate wireless scan: ioctl[SIOCSIWSCAN]: %s", strerror(errno));
+      // Triggering scanning is a privileged operation (root only)
+      if (errno == EPERM)
+         CLog::Log(LOGWARNING, "Cannot initiate wireless scan: ioctl[SIOCSIWSCAN]: %s. Try running with sudo.", strerror(errno));
+      else
+         CLog::Log(LOGWARNING, "Cannot initiate wireless scan: ioctl[SIOCSIWSCAN]: %s", strerror(errno));
       return result;
    }
 
    // Get the results of the scanning. Three scenarios:
    //    1. There's not enough room in the result buffer (E2BIG)
    //    2. The scanning is not complete (EAGAIN) and we need to try again. We cap this with 15 seconds.
-   //    3. Were'e good.
+   //    3. We're good.
    int duration = 0; // ms
    unsigned char* res_buf = NULL;
    int res_buf_len = IW_SCAN_MAX_DATA;
@@ -454,25 +458,29 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
       }
    }
 
-   size_t len = iwr.u.data.length;
-   char* pos = (char *) res_buf;
-   char* end = (char *) res_buf + len;
-   char* custom;
-   struct iw_event iwe_buf, *iwe = &iwe_buf;
+   size_t len = iwr.u.data.length;           // total length of the wireless events from the scan results
+   char* pos = (char *) res_buf;             // pointer to the current event (about 12 per wireless network)
+   char* end = (char *) res_buf + len;       // marks the end of the scan results
+   char* custom;                             // pointer to the event payload
+   struct iw_event iwe_buf, *iwe = &iwe_buf; // buffer to hold individual events
 
    CStdString essId;
-   int quality = 0;
+   CStdString macAddress;
+   int signalLevel = 0;
    EncMode encryption = ENC_NONE;
-   bool first = true;
+   int channel = 0;
 
    while (pos + IW_EV_LCP_LEN <= end)
    {
       /* Event data may be unaligned, so make a local, aligned copy
        * before processing. */
+
+      // copy event prefix (size of event minus IOCTL fixed payload)
       memcpy(&iwe_buf, pos, IW_EV_LCP_LEN);
       if (iwe->len <= IW_EV_LCP_LEN)
          break;
 
+      // if the payload is nontrivial (i.e. > 16 octets) assume it comes after a pointer
       custom = pos + IW_EV_POINT_LEN;
       if (range->we_version_compiled > 18 &&
           (iwe->cmd == SIOCGIWESSID ||
@@ -481,26 +489,45 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
            iwe->cmd == IWEVCUSTOM))
       {
          /* Wireless extentsions v19 removed the pointer from struct iw_point */
-         char *dpos = (char *) &iwe_buf.u.data.length;
-         int dlen = dpos - (char *) &iwe_buf;
-         memcpy(dpos, pos + IW_EV_LCP_LEN, sizeof(struct iw_event) - dlen);
+         char *data_pos = (char *) &iwe_buf.u.data.length;
+         int data_len = data_pos - (char *) &iwe_buf;
+         memcpy(data_pos, pos + IW_EV_LCP_LEN, sizeof(struct iw_event) - data_len);
       }
       else
       {
+         // copy the rest of the event and point custom toward the payload offset
          memcpy(&iwe_buf, pos, sizeof(struct iw_event));
          custom += IW_EV_POINT_OFF;
       }
 
+      // Interpret the payload based on event type. Each access point generates ~12 different events
       switch (iwe->cmd)
       {
+         // Get access point MAC addresses
          case SIOCGIWAP:
-            if (first)
-               first = false;
-            else
-               result.push_back(NetworkAccessPoint(essId, quality, encryption));
-               encryption = ENC_NONE;
+         {
+            // This even marks a new access point, so push back the old information
+            if (!macAddress.IsEmpty())
+               result.push_back(NetworkAccessPoint(essId, macAddress, signalLevel, encryption, channel));
+            unsigned char* mac = (unsigned char*)iwe->u.ap_addr.sa_data;
+            // macAddress is big-endian, write in byte chunks
+            macAddress.Format("%02x-%02x-%02x-%02x-%02x-%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+            // Reset the remaining fields
+            essId = "";
+            encryption = ENC_NONE;
+            signalLevel = 0;
+            channel = 0;
+            break;
+         }
+
+         // Get operation mode
+         case SIOCGIWMODE:
+            // Ignore Ad-Hoc networks (1 is the magic number for this)
+            if (iwe->u.mode == 1)
+               macAddress = "";
             break;
 
+         // Get ESSID
          case SIOCGIWESSID:
          {
             char essid[IW_ESSID_MAX_SIZE+1];
@@ -513,19 +540,36 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
             break;
          }
 
+         // Quality part of statistics
          case IWEVQUAL:
-             quality = iwe->u.qual.qual;
+             // u.qual.qual is scaled to a vendor-specific RSSI_Max, so use u.qual.level
+             signalLevel = iwe->u.qual.level - 0x100; // and remember we use 8-bit arithmetic
              break;
 
+         // Get channel/frequency (Hz)
+         case SIOCGIWFREQ: // This gets called twice per network -- need to find the difference between the two!
+         {
+            float freq = ((float)iwe->u.freq.m) * pow(10, iwe->u.freq.e);
+            if (freq > 1000)
+               channel = NetworkAccessPoint::FreqToChannel(freq);
+            else
+               channel = (int)freq; // Some drivers report channel instead of frequency
+            break;
+         }
+
+         // Get encoding token & mode
          case SIOCGIWENCODE:
              if (!(iwe->u.data.flags & IW_ENCODE_DISABLED) && encryption == ENC_NONE)
                 encryption = ENC_WEP;
              break;
 
+         // Generic IEEE 802.11 information element (IE) for WPA, RSN, WMM, ...
          case IWEVGENIE:
          {
             int offset = 0;
-            while (offset <= iwe_buf.u.data.length)
+
+            // Loop on each IE, each IE is minimum 2 bytes
+            while (offset <= (iwe_buf.u.data.length - 2))
             {
                switch ((unsigned char)custom[offset])
                {
@@ -536,8 +580,8 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
                   case 0x30: /* WPA2 */
                      encryption = ENC_WPA2;
                }
-
-               offset += custom[offset+1] + 2;
+               // Skip over this IE to the next one in the list
+               offset += (unsigned char)custom[offset+1] + 2;
             }
          }
       }
@@ -545,8 +589,8 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
       pos += iwe->len;
    }
 
-   if (!first)
-      result.push_back(NetworkAccessPoint(essId, quality, encryption));
+   if (!essId.IsEmpty())
+      result.push_back(NetworkAccessPoint(essId, macAddress, signalLevel, encryption, channel));
 
    free(res_buf);
    res_buf = NULL;

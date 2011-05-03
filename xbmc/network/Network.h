@@ -31,21 +31,36 @@ enum NetworkAssignment { NETWORK_DASH = 0, NETWORK_DHCP = 1, NETWORK_STATIC = 2,
 class NetworkAccessPoint
 {
 public:
-   NetworkAccessPoint(CStdString& essId, int quality, EncMode encryption)
+   NetworkAccessPoint(CStdString& essId, CStdString& macAddress, int signalStrength, EncMode encryption, int channel = 0)
    {
       m_essId = essId;
-      m_quality = quality;
+      m_macAddress = macAddress;
+      m_dBm = signalStrength;
       m_encryptionMode = encryption;
+      m_channel = channel;
    }
 
-   CStdString getEssId() { return m_essId; }
-   int getQuality() { return m_quality; }
-   EncMode getEncryptionMode() { return m_encryptionMode; }
+   const CStdString &getEssId() const { return m_essId; }
+   const CStdString &getMacAddress() const { return m_macAddress; }
+   int getSignalStrength() const { return m_dBm; }
+   EncMode getEncryptionMode() const { return m_encryptionMode; }
+   int getChannel() const { return m_channel; }
+
+   /* Returns the quality, normalized as a percentage, of the network access point */
+   int getQuality() const;
+
+   /* Returns a Google Gears specific JSON string */
+   CStdString toJson() const;
+
+   /* Translates a 802.11a+b frequency into corresponding channel */
+   static int FreqToChannel(float frequency);
 
 private:
    CStdString   m_essId;
-   int          m_quality;
+   CStdString   m_macAddress;
+   int          m_dBm;
    EncMode      m_encryptionMode;
+   int          m_channel;
 };
 
 class CNetworkInterface

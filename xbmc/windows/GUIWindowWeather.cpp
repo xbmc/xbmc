@@ -22,9 +22,12 @@
 #include "system.h"
 #include "GUIUserMessages.h"
 #include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "GUIWindowWeather.h"
 #include "guilib/GUIImage.h"
 #include "utils/Weather.h"
+#include "utils/Location.h"
+#include "utils/Location.h"
 #include "settings/GUISettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/URIUtils.h"
@@ -57,10 +60,6 @@ using namespace ADDON;
 #define CONTROL_LABELD0GEN            34
 #define CONTROL_IMAGED0IMG            35
 
-#define PARTNER_ID          "1004124588"   //weather.com partner id
-#define PARTNER_KEY   "079f24145f208494"  //weather.com partner key
-
-#define MAX_LOCATION                   3
 #define LOCALIZED_TOKEN_FIRSTID      370
 #define LOCALIZED_TOKEN_LASTID       395
 
@@ -74,7 +73,8 @@ FIXME'S
 CGUIWindowWeather::CGUIWindowWeather(void)
     : CGUIWindow(WINDOW_WEATHER, "MyWeather.xml")
 {
-  m_iCurWeather = 0;
+  m_iCurWeather = g_guiSettings.GetInt("weather.currentarea");
+  g_weatherManager.SetArea(m_iCurWeather);
 }
 
 CGUIWindowWeather::~CGUIWindowWeather(void)
@@ -112,14 +112,20 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
         m_iCurWeather = msg.GetParam1();
 
         CStdString strLabel=g_weatherManager.GetLocation(m_iCurWeather);
-        int iPos = strLabel.ReverseFind(", ");
-        if (iPos)
+        if (m_iCurWeather != 0)
         {
-          CStdString strLabel2(strLabel);
-          strLabel = strLabel2.substr(0,iPos);
+          int iPos = strLabel.ReverseFind(", ");
+          if (iPos)
+          {
+            CStdString strLabel2(strLabel);
+            strLabel = strLabel2.substr(0,iPos);
+          }
         }
 
         SET_CONTROL_LABEL(CONTROL_SELECTLOCATION,strLabel);
+        // Mark the current weather location as active and do a refresh
+        g_guiSettings.SetInt("weather.currentarea", m_iCurWeather);
+        g_settings.Save();
         Refresh();
       }
     }
@@ -139,6 +145,17 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       else
         CallScript();
     }
+    else if (message.GetParam1() == GUI_MSG_LOCATION_FAILED)
+    {
+      // Only prompt if the user is trying to view areacode 0
+      //   and location-based lookup has certainly failed (not just in progress)
+      if (g_windowManager.GetActiveWindow() == WINDOW_WEATHER && m_iCurWeather == 0 &&
+           (!g_locationManager.IsFetched() || g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE).IsEmpty()))
+      {
+        PromptLocationFailed();
+        return true;
+      }
+    }
     break;
   case GUI_MSG_WINDOW_INIT:
     {
@@ -146,6 +163,14 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       {
         CGUIDialogOK::ShowAndGetInput(8,21451,20022,20022);
         g_windowManager.PreviousWindow();
+        return true;
+      }
+
+      // Check to see if we failed to get a location
+      if (m_iCurWeather == 0 && !(g_locationManager.IsFetched() || g_locationManager.IsBusy())
+           && g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE).IsEmpty())
+      {
+        PromptLocationFailed();
         return true;
       }
     }
@@ -165,37 +190,77 @@ void CGUIWindowWeather::OnInitWindow()
   CGUIWindow::OnInitWindow();
 }
 
+/*
+ * Ask the user if they want to change the weather location. Prompt is only shown if weather areacode
+ * is 0 (auto), and location lookup fails, and the weather screen is then visited.
+ *
+ * OK: User is taken to weather settings and location is set to areacode 1 (even if nothing changed)
+ * Cancel: User is returned to previous window, triggers a location refresh in case of network problems
+ *
+ * Ideally, the user will never see this prompt twice. An exception is made if cancel is chosen
+ * (assume that location failure is temporary and the user wants to keep areacode 0).
+ */
+void CGUIWindowWeather::PromptLocationFailed()
+{
+  if (CGUIDialogYesNo::ShowAndGetInput(8, 21454, 21455, 21456, 222, 186))
+  {
+    g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYWEATHER);
+
+    // Switch to location 1 so the user has weather upon return
+    m_iCurWeather = 1;
+    g_guiSettings.SetInt("weather.currentarea", m_iCurWeather);
+    g_settings.Save();
+    Refresh();
+  }
+  else
+  {
+    g_windowManager.PreviousWindow();
+
+    // Try again, in case we have internet now
+    g_locationManager.Refresh();
+  }
+}
+
 void CGUIWindowWeather::UpdateLocations()
 {
   if (!IsActive()) return;
 
+  // Reset the spinner and clear all labels
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
   g_windowManager.SendMessage(msg);
+  // Container for the labels to be added
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
 
   for (unsigned int i = 0; i < MAX_LOCATION; i++)
   {
-    CStdString strLabel = g_weatherManager.GetLocation(i);
-    if (strLabel.size() > 1) //got the location string yet?
-    {
-      int iPos = strLabel.ReverseFind(", ");
-      if (iPos)
-      {
-        CStdString strLabel2(strLabel);
-        strLabel = strLabel2.substr(0,iPos);
-      }
-      msg2.SetParam1(i);
-      msg2.SetLabel(strLabel);
-      g_windowManager.SendMessage(msg2);
-    }
+    // If we don't know the current location, don't add it to the slider
+    if (i == 0 && !g_locationManager.IsBusy() && g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE).IsEmpty())
+      continue;
+
+    CStdString strLabel;
+    if (i == 0)
+      strLabel = g_localizeStrings.Get(14061); // Auto
     else
     {
-      strLabel.Format("AreaCode %i", i + 1);
-
-      msg2.SetLabel(strLabel);
-      msg2.SetParam1(i);
-      g_windowManager.SendMessage(msg2);
+      strLabel = g_weatherManager.GetLocation(i);
+      if (strLabel.size() > 1) //got the location string yet?
+      {
+        int iPos = strLabel.ReverseFind(", ");
+        if (iPos)
+        {
+          CStdString strLabel2(strLabel);
+          strLabel = strLabel2.substr(0,iPos);
+        }
+      }
+      else
+      {
+        strLabel.Format("AreaCode %i", i + 1);
+      }
     }
+    msg2.SetLabel(strLabel);
+    msg2.SetParam1(i);
+    g_windowManager.SendMessage(msg2);
+
     if (i==m_iCurWeather)
       SET_CONTROL_LABEL(CONTROL_SELECTLOCATION,strLabel);
   }
@@ -268,10 +333,8 @@ void CGUIWindowWeather::SetProperties()
 {
   // Current weather
   SetProperty("Location", g_weatherManager.GetLocation(m_iCurWeather));
-  SetProperty("LocationIndex", int(m_iCurWeather + 1));
-  CStdString strSetting;
-  strSetting.Format("weather.areacode%i", m_iCurWeather + 1);
-  SetProperty("AreaCode", CWeather::GetAreaCode(g_guiSettings.GetString(strSetting)));
+  SetProperty("LocationIndex", int(m_iCurWeather));
+  SetProperty("AreaCode", g_weatherManager.GetAreaCode(m_iCurWeather));
   SetProperty("Updated", g_weatherManager.GetLastUpdateTime());
   SetProperty("Current.ConditionIcon", g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
   SetProperty("Current.Condition", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND));
@@ -327,9 +390,7 @@ void CGUIWindowWeather::CallScript()
     }
 
     // get the current locations area code
-    CStdString strSetting;
-    strSetting.Format("weather.areacode%i", m_iCurWeather + 1);
-    argv.push_back(CWeather::GetAreaCode(g_guiSettings.GetString(strSetting)));
+    argv.push_back(g_weatherManager.GetAreaCode(m_iCurWeather));
 
     // call our script, passing the areacode
     g_pythonParser.evalFile(argv[0], argv,addon);

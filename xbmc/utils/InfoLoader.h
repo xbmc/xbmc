@@ -31,6 +31,7 @@ public:
   virtual ~CInfoLoader();
 
   CStdString GetInfo(int info);
+  bool IsBusy() const;
   void Refresh();
 
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
