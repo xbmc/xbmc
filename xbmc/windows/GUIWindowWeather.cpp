@@ -65,7 +65,8 @@ unsigned int timeToCallScript = 1000;
 CGUIWindowWeather::CGUIWindowWeather(void)
     : CGUIWindow(WINDOW_WEATHER, "MyWeather.xml")
 {
-  m_iCurWeather = 0;
+  m_iCurWeather = g_guiSettings.GetInt("weather.currentarea") - 1; // zero-indexed
+  g_weatherManager.SetArea(m_iCurWeather);
 }
 
 CGUIWindowWeather::~CGUIWindowWeather(void)
@@ -111,6 +112,9 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
         }
 
         SET_CONTROL_LABEL(CONTROL_SELECTLOCATION,strLabel);
+        // Mark the current weather location as active and do a refresh
+        g_guiSettings.SetInt("weather.currentarea", m_iCurWeather + 1);
+        g_settings.Save();
         Refresh();
       }
     }
@@ -160,8 +164,10 @@ void CGUIWindowWeather::UpdateLocations()
 {
   if (!IsActive()) return;
 
+  // Reset the spinner and clear all labels
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
   g_windowManager.SendMessage(msg);
+  // Container for the labels to be added
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
 
   for (unsigned int i = 0; i < MAX_LOCATION; i++)
