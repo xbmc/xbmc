@@ -53,7 +53,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\;..\..\lib\jsoncpp\include;..\..\..\MediaPortal;..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\lib\curl-7.21.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\lib\jsoncpp\include;..\..\..\MediaPortal;..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\lib\curl-7.21.4\include;..\..\..\..\..\lib;..\..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;_WIN32PC;_USE_32BIT_TIME_T;TSREADER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -86,7 +86,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\;..\..\lib\jsoncpp\include;..\..\..\MediaPortal;..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\lib\curl-7.21.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\lib\jsoncpp\include;..\..\..\MediaPortal;..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\lib\curl-7.21.4\include;..\..\..\..\..\lib;..\..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WIN32;_WINDOWS;_WIN32PC;_USE_32BIT_TIME_T;TSREADER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
