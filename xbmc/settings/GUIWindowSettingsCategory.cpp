@@ -1063,7 +1063,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       if (g_weatherManager.GetSearchResults(strSearch, strResult))
       {
         ((CSettingString *)pSettingControl->GetSetting())->SetData(strResult);
-        g_weatherManager.Refresh();
+        g_weatherManager.Reset();
       }
     }
   }
