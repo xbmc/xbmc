@@ -16,14 +16,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-extern "C" {
-#include "libTcpSocket/os-dependent_socket.h"
-}
 #include "libXBMC_addon.h"
 #include "utils.h"
+#include <string>
+#include "libTcpSocket/os-dependent_socket.h"
 #include "client.h"
 #include "Socket.h"
-#include <string>
 
 using namespace std;
 
