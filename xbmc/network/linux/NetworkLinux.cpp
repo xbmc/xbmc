@@ -537,7 +537,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
                      encryption = ENC_WPA2;
                }
 
-               offset += custom[offset+1] + 2;
+               offset += (unsigned char)custom[offset+1] + 2;
             }
          }
       }
