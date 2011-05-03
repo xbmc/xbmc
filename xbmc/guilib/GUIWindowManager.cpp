@@ -29,6 +29,7 @@
 #include "utils/URIUtils.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "addons/Skin.h"
 
 using namespace std;
@@ -509,11 +510,22 @@ void CGUIWindowManager::Process(unsigned int currentTime)
   }
 }
 
-void CGUIWindowManager::Render()
+#ifdef HAS_GL
+// TODO Need to draw this in the RenderSystems instead
+void DrawColoredQuad(const CRect & rect, float a, float r, float g, float b)
 {
-  assert(g_application.IsCurrentThread());
-  CSingleLock lock(g_graphicsContext);
+  glColor4f(r, g, b, a);
+  glBegin(GL_QUADS);
+    glVertex3f(rect.x1, rect.y1, 0.0f);	// Bottom Left Of The Texture and Quad
+    glVertex3f(rect.x2, rect.y1, 0.0f);	// Bottom Right Of The Texture and Quad
+    glVertex3f(rect.x2, rect.y2, 0.0f);	// Top Right Of The Texture and Quad
+    glVertex3f(rect.x1, rect.y2, 0.0f);	// Top Left Of The Texture and Quad
+  glEnd();
+}
+#endif
 
+void CGUIWindowManager::RenderPass()
+{
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
   {
@@ -530,6 +542,71 @@ void CGUIWindowManager::Render()
     if ((*it)->IsDialogRunning())
       (*it)->Render();
   }
+}
+
+void CGUIWindowManager::Render()
+{
+  assert(g_application.IsCurrentThread());
+  CSingleLock lock(g_graphicsContext);
+
+  CDirtyRegionList markedRegions  = m_tracker.GetMarkedRegions(); 
+  CDirtyRegionList dirtyRegions   = m_tracker.GetDirtyRegions();
+
+  // If we visualize the regions we will always render the entire viewport
+  if (g_advancedSettings.m_guiVisualizeDirtyRegions || g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_NONE)
+    RenderPass();
+  else
+  {
+    for (unsigned int i = 0; i < dirtyRegions.size(); i++)
+    {
+      CDirtyRegion currentRegion = dirtyRegions[i];
+      if (currentRegion.IsEmpty())
+          continue;
+
+      GLint oldRegion[8];
+      glGetIntegerv(GL_SCISSOR_BOX, oldRegion);
+
+      glScissor(currentRegion.x1, g_graphicsContext.GetHeight() - currentRegion.y2, currentRegion.Width(), currentRegion.Height());
+      glEnable(GL_SCISSOR_TEST);
+
+      RenderPass();
+
+      // Reset scissorbox
+      glScissor(oldRegion[0], oldRegion[1], oldRegion[2], oldRegion[3]);
+    }
+  }
+
+  if (g_advancedSettings.m_guiVisualizeDirtyRegions)
+  {
+#ifdef HAS_GL
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glOrtho(0.0f, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), 0.0f, -1.0f, 1.0f);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glEnable(GL_BLEND);          // Turn Blending On
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_TEXTURE_2D);
+
+    for (unsigned int i = 0; i <markedRegions.size(); i++)
+    {
+      CRect rect = markedRegions[i];
+      DrawColoredQuad(rect, 0.3f, 1.0f, 0.0f, 0.0f);
+    }
+
+    for (unsigned int i = 0; i <dirtyRegions.size(); i++)
+    {
+      CRect rect = dirtyRegions[i];
+      DrawColoredQuad(rect, 0.3f, 0.0f, 1.0f, 0.0f);
+    }
+#endif
+  }
+
+  m_tracker.CleanMarkedRegions();
 }
 
 void CGUIWindowManager::FrameMove()

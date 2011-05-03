@@ -128,6 +128,8 @@ public:
   void DumpTextureUse();
 #endif
 private:
+  void RenderPass();
+
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();
   void HideOverlay(CGUIWindow::OVERLAY_STATE state);
