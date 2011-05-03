@@ -42,16 +42,19 @@ CPVRGUIInfo::CPVRGUIInfo(void)
 
 CPVRGUIInfo::~CPVRGUIInfo(void)
 {
+  Stop();
 }
 
 void CPVRGUIInfo::ResetProperties(void)
 {
   m_strActiveTimerTitle         = "";
   m_strActiveTimerChannelName   = "";
+  m_strActiveTimerChannelIcon   = "";
   m_strActiveTimerTime          = "";
   m_strNextTimerInfo            = "";
   m_strNextRecordingTitle       = "";
   m_strNextRecordingChannelName = "";
+  m_strNextRecordingChannelIcon = "";
   m_strNextRecordingTime        = "";
   m_iTimerAmount                = 0;
   m_bHasRecordings              = false;
@@ -70,6 +73,7 @@ void CPVRGUIInfo::ResetProperties(void)
   m_iAddonInfoToggleCurrent     = 0;
   m_iTimerInfoToggleStart       = 0;
   m_iTimerInfoToggleCurrent     = 0;
+  m_iToggleShowInfo             = 0;
   m_playingEpgTag               = NULL;
   g_PVRClients->GetQualityData(&m_qualityInfo);
 }
@@ -85,12 +89,34 @@ void CPVRGUIInfo::Start(void)
 void CPVRGUIInfo::Stop(void)
 {
   StopThread();
+  g_PVRTimers->RemoveObserver(this);
 }
 
 void CPVRGUIInfo::Notify(const Observable &obs, const CStdString& msg)
 {
   if (msg.Equals("timers"))
     UpdateTimersCache();
+}
+
+void CPVRGUIInfo::ShowPlayerInfo(int iTimeout)
+{
+  CSingleLock lock(m_critSection);
+
+  if (iTimeout > 0)
+    m_iToggleShowInfo = (int) CTimeUtils::GetTimeMS() + iTimeout * 1000;
+
+  g_infoManager.SetShowInfo(true);
+}
+
+void CPVRGUIInfo::ToggleShowInfo(void)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_iToggleShowInfo > 0 && m_iToggleShowInfo < (unsigned int) CTimeUtils::GetTimeMS())
+  {
+    m_iToggleShowInfo = 0;
+    g_infoManager.SetShowInfo(false);
+  }
 }
 
 bool CPVRGUIInfo::AddonInfoToggle(void)
@@ -146,6 +172,9 @@ void CPVRGUIInfo::Process(void)
 
   while (!m_bStop)
   {
+    ToggleShowInfo();
+    Sleep(0);
+
     UpdateQualityData();
     Sleep(0);
 
@@ -192,9 +221,11 @@ bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const
 
   if      (dwInfo == PVR_NOW_RECORDING_TITLE)     CharInfoActiveTimerTitle(strValue);
   else if (dwInfo == PVR_NOW_RECORDING_CHANNEL)   CharInfoActiveTimerChannelName(strValue);
+  else if (dwInfo == PVR_NOW_RECORDING_CHAN_ICO)  CharInfoActiveTimerChannelIcon(strValue);
   else if (dwInfo == PVR_NOW_RECORDING_DATETIME)  CharInfoActiveTimerDateTime(strValue);
   else if (dwInfo == PVR_NEXT_RECORDING_TITLE)    CharInfoNextTimerTitle(strValue);
   else if (dwInfo == PVR_NEXT_RECORDING_CHANNEL)  CharInfoNextTimerChannelName(strValue);
+  else if (dwInfo == PVR_NEXT_RECORDING_CHAN_ICO) CharInfoNextTimerChannelIcon(strValue);
   else if (dwInfo == PVR_NEXT_RECORDING_DATETIME) CharInfoNextTimerDateTime(strValue);
   else if (dwInfo == PVR_PLAYING_DURATION)        CharInfoPlayingDuration(strValue);
   else if (dwInfo == PVR_PLAYING_TIME)            CharInfoPlayingTime(strValue);
@@ -276,6 +307,12 @@ void CPVRGUIInfo::CharInfoActiveTimerChannelName(CStdString &strValue) const
   strValue.Format("%s", m_strActiveTimerChannelName);
 }
 
+void CPVRGUIInfo::CharInfoActiveTimerChannelIcon(CStdString &strValue) const
+{
+  CSingleLock lock(m_critSection);
+  strValue.Format("%s", m_strActiveTimerChannelIcon);
+}
+
 void CPVRGUIInfo::CharInfoActiveTimerDateTime(CStdString &strValue) const
 {
   CSingleLock lock(m_critSection);
@@ -292,6 +329,12 @@ void CPVRGUIInfo::CharInfoNextTimerChannelName(CStdString &strValue) const
 {
   CSingleLock lock(m_critSection);
   strValue.Format("%s", m_strNextRecordingChannelName);
+}
+
+void CPVRGUIInfo::CharInfoNextTimerChannelIcon(CStdString &strValue) const
+{
+  CSingleLock lock(m_critSection);
+  strValue.Format("%s", m_strNextRecordingChannelIcon);
 }
 
 void CPVRGUIInfo::CharInfoNextTimerDateTime(CStdString &strValue) const
@@ -573,6 +616,7 @@ void CPVRGUIInfo::UpdateNextTimer(void)
   CSingleLock lock(m_critSection);
   m_strNextRecordingTitle       = "";
   m_strNextRecordingChannelName = "";
+  m_strNextRecordingChannelIcon = "";
   m_strNextRecordingTime        = "";
   m_strNextTimerInfo            = "";
 
@@ -581,6 +625,7 @@ void CPVRGUIInfo::UpdateNextTimer(void)
   {
     m_strNextRecordingTitle.Format("%s",       tag.m_strTitle);
     m_strNextRecordingChannelName.Format("%s", tag.ChannelName());
+    m_strNextRecordingChannelIcon.Format("%s", tag.ChannelIcon());
     m_strNextRecordingTime.Format("%s",        tag.StartAsLocalTime().GetAsLocalizedDateTime(false, false));
 
     m_strNextTimerInfo.Format("%s %s %s %s",
@@ -600,6 +645,7 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
 
   m_strActiveTimerTitle         = "";
   m_strActiveTimerChannelName   = "";
+  m_strActiveTimerChannelIcon   = "";
   m_strActiveTimerTime          = "";
 
   unsigned int iBoundary = m_iRecordingTimerAmount > 0 ? m_iRecordingTimerAmount : m_iTimerAmount;
@@ -610,6 +656,7 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
     {
       m_strActiveTimerTitle.Format("%s",       tag.m_strTitle);
       m_strActiveTimerChannelName.Format("%s", tag.ChannelName());
+      m_strActiveTimerChannelIcon.Format("%s", tag.ChannelIcon());
       m_strActiveTimerTime.Format("%s",        tag.StartAsLocalTime().GetAsLocalizedDateTime(false, false));
     }
   }

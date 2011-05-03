@@ -215,6 +215,8 @@ void CEpg::RemoveTagsBetween(time_t start, time_t end, bool bRemoveFromDb /* = f
     }
   }
 
+  Sort();
+
   if (bRemoveFromDb)
   {
     CEpgDatabase *database = g_EpgContainer.GetDatabase();
@@ -268,6 +270,19 @@ const CEpgInfoTag *CEpg::InfoTagNext(void) const
   }
 
   return NULL;
+}
+
+void CEpg::CheckPlayingEvent(void)
+{
+  CSingleLock lock(m_critSection);
+  const CEpgInfoTag *currentEvent = m_nowActive;
+  const CEpgInfoTag *updatedEvent = InfoTagNow();
+
+  if (!currentEvent || !updatedEvent || *currentEvent != *updatedEvent)
+  {
+    SetChanged();
+    NotifyObservers("epg");
+  }
 }
 
 const CEpgInfoTag *CEpg::GetTag(int uniqueID, const CDateTime &StartTime) const
@@ -482,6 +497,8 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
       database->PersistLastEpgScanTime(m_iEpgID, true);
       database->Persist(*this, true);
       PersistTags(true);
+
+      lock.Leave();
       bReturn = database->CommitInsertQueries();
       database->Close();
     }
@@ -605,7 +622,7 @@ bool CEpg::Persist(bool bPersistTags /* = false */, bool bQueueWrite /* = false 
 
   CSingleLock lock(m_critSection);
 
-  int iId = database->Persist(*this, bQueueWrite);
+  int iId = database->Persist(*this, bQueueWrite && m_iEpgID > 0);
   if (iId >= 0)
   {
     if (iId > 0)

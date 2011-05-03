@@ -115,6 +115,14 @@
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
 					</control>
+					<control type="image">
+						<posx>5</posx>
+						<posy>37</posy>
+						<width>30</width>
+						<height>20</height>
+						<texture>PVR-IsRecording.png</texture>
+						<visible>ListItem.IsRecording</visible>
+					</control>
 					<control type="label">
 						<posx>50</posx>
 						<posy>30</posy>
@@ -191,6 +199,14 @@
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="image">
+						<posx>5</posx>
+						<posy>37</posy>
+						<width>30</width>
+						<height>20</height>
+						<texture>PVR-IsRecording.png</texture>
+						<visible>ListItem.IsRecording</visible>
 					</control>
 					<control type="label">
 						<posx>50</posx>

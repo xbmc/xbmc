@@ -431,7 +431,6 @@ bool CPVRClients::OpenLiveStream(const CPVRChannel &tag)
       m_strPlayingClientName = g_localizeStrings.Get(13205);
 
     m_scanStart = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
-    Sleep(g_advancedSettings.m_iPVRInputStreamDelay);
     bReturn = true;
   }
 
@@ -1149,8 +1148,6 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
       m_currentChannel = &channel;
       m_scanStart = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
       ResetQualityData();
-
-      Sleep(g_advancedSettings.m_iPVRInputStreamDelay);
 
       bReturn = true;
     }

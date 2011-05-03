@@ -1070,7 +1070,7 @@ ADDON_STATUS CPVRClient::SetSetting(const char *settingName, const void *setting
 //  catch (exception &e)
 //  {
 //    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during SetSetting occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 //  }
 }
 

@@ -51,6 +51,8 @@
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.pvr</TargetExt>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">XBMC_MPTV_win32</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.pvr</TargetExt>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\..\xbmc\;$(SolutionDir)\..\..\lib\;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\..\..\xbmc\;$(SolutionDir)\..\..\lib\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -67,7 +69,7 @@
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;$(SolutionDir)\libs\libTcpSocket\$(Configuration)\libTcpSocket.lib;$(SolutionDir)\libs\libPlatform\$(Configuration)\libPlatform.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\..\..\..\..\addons\pvr.team-mediaportal.tvserver\XBMC_MPTV_win32.pvr</OutputFile>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -98,7 +100,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;$(SolutionDir)\libs\libTcpSocket\$(Configuration)\libTcpSocket.lib;$(SolutionDir)\libs\libPlatform\$(Configuration)\libPlatform.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\..\..\..\..\addons\pvr.team-mediaportal.tvserver\XBMC_MPTV_win32.pvr</OutputFile>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -132,15 +134,12 @@
     <ClInclude Include="..\..\client.h" />
     <ClInclude Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.h" />
     <ClInclude Include="..\..\epg.h" />
-    <ClInclude Include="..\..\os-dependent.h" />
     <ClInclude Include="..\..\pvrclient-mediaportal.h" />
     <ClInclude Include="..\..\recordings.h" />
     <ClInclude Include="..\..\Socket.h" />
-    <ClInclude Include="..\..\StdString.h" />
     <ClInclude Include="..\..\timers.h" />
     <ClInclude Include="..\..\uri.h" />
     <ClInclude Include="..\..\utils.h" />
-    <ClInclude Include="..\..\windows\os_windows.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\README" />

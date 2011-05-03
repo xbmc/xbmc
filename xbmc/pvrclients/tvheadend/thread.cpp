@@ -29,9 +29,12 @@
 #include <malloc.h>
 #endif
 
+#if !defined(__WINDOWS__)
+#include <sys/signal.h>
+#endif
+
 #include <stdarg.h>
 #include <stdlib.h>
-#include "utils/StdString.h"
 
 static bool GetAbsTime(struct timespec *Abstime, int MillisecondsFromNow)
 {

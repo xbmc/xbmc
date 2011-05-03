@@ -10,7 +10,7 @@
 
 #include "XBDateTime.h"
 
-#include "../StdString.h"
+#include "utils/StdString.h"
 
 /*!	\class MythXmlCommandParameters
 	\brief This is the base abstract class for all MythXML command parameters.

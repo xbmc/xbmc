@@ -35,7 +35,7 @@ using namespace std;
 bool m_bCreated               = false;
 bool m_connected              = false;
 int  m_retries                = 0;
-ADDON_STATUS m_CurStatus      = STATUS_UNKNOWN;
+ADDON_STATUS m_CurStatus      = ADDON_STATUS_UNKNOWN;
 int g_clientID                = -1;
 
 /* User adjustable settings are saved here.
@@ -63,28 +63,28 @@ extern "C" {
  * Standart AddOn related public library functions
  ***********************************************************/
 
-ADDON_STATUS Create(void* hdl, void* props)
+ADDON_STATUS ADDON_Create(void* hdl, void* props)
 {
   if (!hdl || !props)
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   PVR_PROPERTIES* pvrprops = (PVR_PROPERTIES*)props;
 
   XBMC = new CHelper_libXBMC_addon;
   if (!XBMC->RegisterMe(hdl))
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   GUI = new CHelper_libXBMC_gui;
   if (!GUI->RegisterMe(hdl))
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   PVR = new CHelper_libXBMC_pvr;
   if (!PVR->RegisterMe(hdl))
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   XBMC->Log(LOG_DEBUG, "Creating VDR VNSI PVR-Client");
 
-  m_CurStatus    = STATUS_UNKNOWN;
+  m_CurStatus    = ADDON_STATUS_UNKNOWN;
   g_clientID     = pvrprops->iClienId;
   g_szUserPath   = pvrprops->strUserPath;
   g_szClientPath = pvrprops->strClientPath;
@@ -147,44 +147,44 @@ ADDON_STATUS Create(void* hdl, void* props)
   VNSIData = new cVNSIData;
   if (!VNSIData->Open(g_szHostname, g_iPort))
   {
-    m_CurStatus = STATUS_LOST_CONNECTION;
+    m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
     return m_CurStatus;
   }
 
   if (!VNSIData->EnableStatusInterface(g_bHandleMessages))
     return m_CurStatus;
 
-  m_CurStatus = STATUS_OK;
+  m_CurStatus = ADDON_STATUS_OK;
   m_bCreated = true;
   return m_CurStatus;
 }
 
-ADDON_STATUS GetStatus()
+ADDON_STATUS ADDON_GetStatus()
 {
   return m_CurStatus;
 }
 
-void Destroy()
+void ADDON_Destroy()
 {
   if (m_bCreated)
   {
     delete VNSIData;
     VNSIData = NULL;
   }
-  m_CurStatus = STATUS_UNKNOWN;
+  m_CurStatus = ADDON_STATUS_UNKNOWN;
 }
 
-bool HasSettings()
+bool ADDON_HasSettings()
 {
   return true;
 }
 
-unsigned int GetSettings(StructSetting ***sSet)
+unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
 {
   return 0;
 }
 
-ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
+ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
 {
   string str = settingName;
   if (str == "host")
@@ -194,7 +194,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     tmp_sHostname = g_szHostname;
     g_szHostname = (const char*) settingValue;
     if (tmp_sHostname != g_szHostname)
-      return STATUS_NEED_RESTART;
+      return ADDON_STATUS_NEED_RESTART;
   }
   else if (str == "port")
   {
@@ -202,7 +202,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     if (g_iPort != *(int*) settingValue)
     {
       g_iPort = *(int*) settingValue;
-      return STATUS_NEED_RESTART;
+      return ADDON_STATUS_NEED_RESTART;
     }
   }
   else if (str == "priority")
@@ -227,14 +227,14 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     if (VNSIData) VNSIData->EnableStatusInterface(g_bHandleMessages);
   }
 
-  return STATUS_OK;
+  return ADDON_STATUS_OK;
 }
 
-void Stop()
+void ADDON_Stop()
 {
 }
 
-void FreeSettings()
+void ADDON_FreeSettings()
 {
 
 }

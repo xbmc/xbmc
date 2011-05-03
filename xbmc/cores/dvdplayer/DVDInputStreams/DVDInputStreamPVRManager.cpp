@@ -162,7 +162,11 @@ int CDVDInputStreamPVRManager::Read(BYTE* buf, int buf_size)
 
 __int64 CDVDInputStreamPVRManager::Seek(__int64 offset, int whence)
 {
-  if(!m_pFile) return -1;
+  if (!m_pFile)
+    return -1;
+
+  if (whence == SEEK_POSSIBLE)
+    return m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
 
   if (m_pOtherStream)
   {

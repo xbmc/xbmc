@@ -94,7 +94,7 @@ void CGUIWindowPVRTimers::UpdateData(void)
   m_bUpdateRequired = false;
 
   /* lock the graphics context while updating */
-  CSingleLock graphicsLock(g_graphicsContext);
+  g_graphicsContext.Lock();
 
   m_iSelected = m_parent->m_viewControl.GetSelectedItem();
   m_parent->m_viewControl.Clear();
@@ -105,11 +105,11 @@ void CGUIWindowPVRTimers::UpdateData(void)
   m_parent->m_vecItems->Sort(m_iSortMethod, m_iSortOrder);
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
   m_parent->m_viewControl.SetSelectedItem(m_iSelected);
-  graphicsLock.Leave();
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19025));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
   m_bIsFocusing = false;
+  g_graphicsContext.Unlock();
 }
 
 bool CGUIWindowPVRTimers::OnClickButton(CGUIMessage &message)
@@ -187,14 +187,7 @@ bool CGUIWindowPVRTimers::OnContextButtonAdd(CFileItem *item, CONTEXT_BUTTON but
   bool bReturn = false;
 
   if (button == CONTEXT_BUTTON_ADD)
-  {
-    bReturn = true;
-    CPVRTimerInfoTag *newtimer = g_PVRTimers->InstantTimer(NULL, false);
-    CFileItem *item = new CFileItem(*newtimer);
-
-    if (ShowTimerSettings(item))
-      g_PVRTimers->AddTimer(*item);
-  }
+    bReturn = ShowNewTimerDialog();
 
   return bReturn;
 }

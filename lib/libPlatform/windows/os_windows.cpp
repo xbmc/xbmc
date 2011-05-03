@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,12 +22,13 @@
 #include "os_windows.h"
 #include <sys/timeb.h>
 
-THREADLOCAL int ws32_result;
-THREADLOCAL int _so_err;
-THREADLOCAL int _so_err_siz = sizeof(int);
-
 int gettimeofday(struct timeval *pcur_time, struct timezone *tz)
 {
+  if (pcur_time == NULL)
+  {
+    SetLastError(EFAULT);
+    return -1;
+  }
   struct _timeb current;
 
   _ftime(&current);

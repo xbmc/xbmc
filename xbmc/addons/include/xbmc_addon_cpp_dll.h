@@ -103,7 +103,7 @@ class DllUtils
 {
 public:
 
-  static unsigned int VecToStruct(std::vector<DllSetting> &vecSet, StructSetting*** sSet) 
+  static unsigned int VecToStruct(std::vector<DllSetting> &vecSet, ADDON_StructSetting*** sSet) 
   {
     *sSet = NULL;
     if(vecSet.size() == 0)
@@ -111,11 +111,11 @@ public:
 
     unsigned int uiElements=0;
 
-    *sSet = (StructSetting**)malloc(vecSet.size()*sizeof(StructSetting*));
+    *sSet = (ADDON_StructSetting**)malloc(vecSet.size()*sizeof(ADDON_StructSetting*));
     for(unsigned int i=0;i<vecSet.size();i++)
     {
       (*sSet)[i] = NULL;
-      (*sSet)[i] = (StructSetting*)malloc(sizeof(StructSetting));
+      (*sSet)[i] = (ADDON_StructSetting*)malloc(sizeof(ADDON_StructSetting));
       (*sSet)[i]->id = NULL;
       (*sSet)[i]->label = NULL;
       uiElements++;
@@ -145,7 +145,7 @@ public:
     return uiElements;
   }
 
-  static void StructToVec(unsigned int iElements, StructSetting*** sSet, std::vector<DllSetting> *vecSet) 
+  static void StructToVec(unsigned int iElements, ADDON_StructSetting*** sSet, std::vector<DllSetting> *vecSet) 
   {
     if(iElements == 0)
       return;
@@ -166,7 +166,7 @@ public:
     }
   }
 
-  static void FreeStruct(unsigned int iElements, StructSetting*** sSet)
+  static void FreeStruct(unsigned int iElements, ADDON_StructSetting*** sSet)
   {
     if(iElements == 0)
       return;

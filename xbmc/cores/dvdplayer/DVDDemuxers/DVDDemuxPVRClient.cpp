@@ -33,10 +33,10 @@ void CDemuxStreamVideoPVRClient::GetStreamInfo(std::string& strInfo)
   switch (codec)
   {
     case CODEC_ID_MPEG2VIDEO:
-      strInfo = "MPEG2VIDEO";
+      strInfo = "mpeg2video";
       break;
     case CODEC_ID_H264:
-      strInfo = "H264";
+      strInfo = "h264";
       break;
     default:
       break;
@@ -48,19 +48,19 @@ void CDemuxStreamAudioPVRClient::GetStreamInfo(std::string& strInfo)
   switch (codec)
   {
     case CODEC_ID_AC3:
-      strInfo = "AC3";
+      strInfo = "ac3";
       break;
     case CODEC_ID_EAC3:
-      strInfo = "EAC3";
+      strInfo = "eac3";
       break;
     case CODEC_ID_MP2:
-      strInfo = "MPEG2AUDIO";
+      strInfo = "mpeg2audio";
       break;
     case CODEC_ID_AAC:
-      strInfo = "AAC";
+      strInfo = "aac";
       break;
     case CODEC_ID_DTS:
-      strInfo = "DTS";
+      strInfo = "dts";
       break;
     default:
       break;

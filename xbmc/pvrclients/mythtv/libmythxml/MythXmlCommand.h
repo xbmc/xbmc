@@ -12,7 +12,7 @@
 #include "MythXmlCommandResult.h"
 #include "MythXmlCommandParameters.h"
 
-#include "../StdString.h"
+#include "utils/StdString.h"
 
 /*! \class MythXmlCommand
  \brief The base class for all MythXML Commands.

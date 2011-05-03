@@ -27,12 +27,9 @@
 
 #include <sstream>
 
-#ifdef __WINDOWS__
-#include <winsock2.h>
-#undef SendMessage
-#else
-#include <arpa/inet.h>
-#endif
+extern "C" {
+#include "libTcpSocket/os-dependent_socket.h"
+}
 
 #define BUTTON_START                    5
 #define BUTTON_BACK                     6

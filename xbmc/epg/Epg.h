@@ -27,11 +27,12 @@
 
 #include "EpgInfoTag.h"
 #include "EpgSearchFilter.h"
+#include "utils/Observer.h"
 
 /** EPG container for CEpgInfoTag instances */
 namespace EPG
 {
-  class CEpg : public std::vector<CEpgInfoTag*>
+  class CEpg : public std::vector<CEpgInfoTag*>, public Observable
   {
     friend class CEpgDatabase;
 
@@ -308,6 +309,11 @@ namespace EPG
      * @return The last time this table was scanned.
      */
     virtual const CDateTime &GetLastScanTime(void);
+
+    /*!
+     * @brief Notify observers when the currently active tag changed.
+     */
+    virtual void CheckPlayingEvent(void);
 
     /*!
      * @brief Convert a genre id and subid to a human readable name.

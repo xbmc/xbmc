@@ -46,20 +46,21 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_iClientIndex       = -1;
   m_iClientChannelUid  = -1;
   m_bIsRecording       = false;
-  m_StartTime.SetValid(false);
-  m_StopTime.SetValid(false);
+  m_iPriority          = g_guiSettings.GetInt("pvrrecord.defaultpriority");
+  m_iLifetime          = g_guiSettings.GetInt("pvrrecord.defaultlifetime");
   m_bIsRepeating       = false;
-  m_FirstDay.SetValid(false);
   m_iWeekdays          = 0;
-  m_iPriority          = -1;
-  m_iLifetime          = -1;
-  m_iMarginStart       = 0;
-  m_iMarginEnd         = 0;
+  m_strFileNameAndPath = "";
+  m_iChannelNumber     = 0;
+  m_bIsRadio           = false;
   m_epgInfo            = NULL;
   m_channel            = NULL;
-  m_strFileNameAndPath = "";
+  m_iMarginStart       = g_guiSettings.GetInt("pvrrecord.marginstart");
+  m_iMarginEnd         = g_guiSettings.GetInt("pvrrecord.marginend");
   m_strGenre           = "";
-  m_iChannelNumber     = 0;
+  m_StartTime          = CDateTime::GetUTCDateTime();
+  m_StopTime           = m_StartTime;
+  m_FirstDay.SetValid(false);
 }
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel, unsigned int iClientId)
@@ -421,6 +422,15 @@ CStdString CPVRTimerInfoTag::ChannelName() const
     return "";
 }
 
+CStdString CPVRTimerInfoTag::ChannelIcon() const
+{
+  const CPVRChannel *channeltag = g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId);
+  if (channeltag)
+    return channeltag->IconPath();
+  else
+    return "";
+}
+
 bool CPVRTimerInfoTag::SetDuration(int iDuration)
 {
   if (m_StartTime.IsValid())
@@ -457,22 +467,6 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
     return NULL;
   }
 
-  int iPriority    = g_guiSettings.GetInt("pvrrecord.defaultpriority");
-  if (!iPriority)
-    iPriority      = 50; /* default to 50 */
-
-  int iLifetime    = g_guiSettings.GetInt("pvrrecord.defaultlifetime");
-  if (!iLifetime)
-    iLifetime      = 30; /* default to 30 days */
-
-  int iMarginStart = g_guiSettings.GetInt("pvrrecord.marginstart");
-  if (!iMarginStart)
-    iMarginStart   = 5;  /* default to 5 minutes */
-
-  int iMarginStop  = g_guiSettings.GetInt("pvrrecord.marginend");
-  if (!iMarginStop)
-    iMarginStop    = 10; /* default to 10 minutes */
-
   /* set the timer data */
   CDateTime newStart = tag.StartAsUTC();
   CDateTime newEnd = tag.EndAsUTC();
@@ -485,10 +479,6 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   newTag->m_bIsRadio          = channel->IsRadio();
   newTag->SetStartFromUTC(newStart);
   newTag->SetEndFromUTC(newEnd);
-  newTag->m_iPriority         = iPriority;
-  newTag->m_iLifetime         = iLifetime;
-  newTag->m_iMarginStart      = iMarginStart;
-  newTag->m_iMarginEnd        = iMarginStop;
 
   /* we might have a copy of the tag here, so get the real one from the pvrmanager */
   const CPVREpg *epgTable = channel->GetEPG();

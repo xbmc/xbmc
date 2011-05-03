@@ -387,11 +387,11 @@
 				<label>31351</label>
 				<altlabel>208</altlabel>
 				<font>-</font>
-				<texturefocus>OSDRecordFO.png</texturefocus>
-				<texturenofocus>OSDRecordNF.png</texturenofocus>
+				<texturefocus>OSDRecordOffFO.png</texturefocus>
+				<texturenofocus>OSDRecordOffNF.png</texturenofocus>
 				<usealttexture>Player.Recording</usealttexture>
-				<alttexturefocus>OSDRecord2.png</alttexturefocus>
-				<alttexturenofocus>OSDRecord2NF.png</alttexturenofocus>
+				<alttexturefocus>OSDRecordOnFO.png</alttexturefocus>
+				<alttexturenofocus>OSDRecordOnNF.png</alttexturenofocus>
 				<onleft>703</onleft>
 				<onright>600</onright>
 				<onup>704</onup>

@@ -23,6 +23,10 @@
 #include <stdint.h>
 #include <string>
 
+extern "C" {
+#include "libTcpSocket/os-dependent_socket.h"
+}
+
 class cResponsePacket;
 class cRequestPacket;
 
@@ -48,7 +52,7 @@ public:
   const std::string& GetVersion()    { return m_version; }
 
 private:
-  int         m_fd;
+  socket_t    m_fd;
   int         m_protocol;
   std::string m_server;
   std::string m_version;

@@ -175,5 +175,11 @@ namespace PVR
      * @brief Check whether the group name is still correct after the language setting changed.
      */
     void CheckGroupName(void);
+
+    /*!
+     * @brief Create an EPG table for each channel.
+     * @return True if all tables were created successfully, false otherwise.
+     */
+    bool CreateChannelEpgs(void);
   };
 }

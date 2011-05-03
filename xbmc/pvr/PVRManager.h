@@ -150,6 +150,13 @@ namespace PVR
     bool TranslateBoolInfo(DWORD dwInfo) const;
 
     /*!
+     * @brief Show the player info.
+     * @param iTimeout Hide the player info after iTimeout seconds.
+     * @todo not really the right place for this :-)
+     */
+    void ShowPlayerInfo(int iTimeout);
+
+    /*!
      * @brief Reset the TV database to it's initial state and delete all the data inside.
      * @param bShowProgress True to show a progress bar, false otherwise.
      */
@@ -440,9 +447,11 @@ namespace PVR
     //!{
     const char *CharInfoNowRecordingTitle(void);
     const char *CharInfoNowRecordingChannel(void);
+    const char *CharInfoNowRecordingChannelIcon(void);
     const char *CharInfoNowRecordingDateTime(void);
     const char *CharInfoNextRecordingTitle(void);
     const char *CharInfoNextRecordingChannel(void);
+    const char *CharInfoNextRecordingChannelIcon(void);
     const char *CharInfoNextRecordingDateTime(void);
     const char *CharInfoNextTimer(void);
     const char *CharInfoPlayingDuration(void);

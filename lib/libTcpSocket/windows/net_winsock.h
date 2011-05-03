@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,24 +20,22 @@
  *
  */
 
-#include "CachingCodec.h"
+#ifndef _WINSOCKAPI_
+#define _WINSOCKAPI_
+#endif
+#pragma warning(disable:4005) // Disable "warning C4005: '_WINSOCKAPI_' : macro redefinition"
+#include <winsock2.h>
+#pragma warning(default:4005)
+#include <ws2spi.h>
+#include <ws2ipdef.h>
+#include <ws2tcpip.h>
+#include <io.h>
 
-class AIFFCodec : public CachingCodec
-{
-public:
-  AIFFCodec();
-  virtual ~AIFFCodec();
+#define SHUT_RDWR SD_BOTH
 
-  virtual bool Init(const CStdString &strFile, unsigned int filecache);
-  virtual void DeInit();
-  virtual __int64 Seek(__int64 iSeekTime);
-  virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
-  virtual bool CanInit();
+#ifndef ETIMEDOUT
+#define ETIMEDOUT WSAETIMEDOUT
+#endif
 
-private:
-  int ConvertSampleRate(unsigned char *rate);
-
-  long m_iDataStart;
-  long m_iDataLen;
-  long m_NumSamples;
-};
+typedef SOCKET socket_t;
+typedef int socklen_t;

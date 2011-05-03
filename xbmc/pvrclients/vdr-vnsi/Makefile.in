@@ -1,11 +1,11 @@
 #
-# Makefile for the XBMC Video Disk Recorder PVR AddOn
+# Makefile for the XBMC Video Disk Recorder VNSI PVR AddOn
 #
 # See the README for copyright information and
 # how to reach the author.
 #
 
-LIBS   =-ldl
+LIBS   = ../../../lib/libTcpSocket/libTcpSocket.a -ldl
 LIBDIR = ../../../addons/pvr.vdr.vnsi
 LIB    = ../../../addons/pvr.vdr.vnsi/XBMC_VDR_vnsi.pvr
 
@@ -21,6 +21,14 @@ SRCS   = client.cpp \
 	tools.cpp
 
 include ../Makefile.include
+
+clean:
+	-rm -f $(OBJS) $(LIB) *.P *~
+	$(MAKE) -C ../../../lib/libTcpSocket clean
+
+$(LIB): $(OBJS)
+	${MAKE} -C ../../../lib/libTcpSocket
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
 
 ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
 DEFINES += -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common

@@ -21,20 +21,9 @@
 
 #include "HTSPSession.h"
 #include "client.h"
-#ifdef _MSC_VER
-#include <winsock2.h>
-#define SHUT_RDWR SD_BOTH
-#ifndef ETIMEDOUT
-#define ETIMEDOUT WSAETIMEDOUT
-#endif
-#else
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#endif
 
 extern "C" {
-#include "libhts/net.h"
-#include "libhts/htsmsg.h"
+#include "libTcpSocket/os-dependent_socket.h"
 #include "libhts/htsmsg_binary.h"
 #include "libhts/sha1.h"
 }
@@ -77,7 +66,7 @@ void cHTSPSession::Close(bool bForce /* = false */)
 
   if(m_fd != INVALID_SOCKET)
   {
-    closesocket(m_fd);
+    tcp_close(m_fd);
     m_fd = INVALID_SOCKET;
   }
 
@@ -165,7 +154,7 @@ bool cHTSPSession::ConnectInternal(void)
 
   XBMC->Log(LOG_DEBUG, "%s - connecting to '%s', port '%d'\n", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
 
-  m_fd = htsp_tcp_connect(m_strHostname.c_str(), m_iPortnumber, errbuf, errlen, m_iConnectTimeout);
+  m_fd = tcp_connect(m_strHostname.c_str(), m_iPortnumber, errbuf, errlen, m_iConnectTimeout);
   if(m_fd == INVALID_SOCKET)
   {
     XBMC->Log(LOG_ERROR, "%s - failed to connect to the backend (%s)\n", __FUNCTION__, errbuf);
@@ -219,7 +208,7 @@ htsmsg_t* cHTSPSession::ReadMessage(int timeout)
     return m;
   }
 
-  x = htsp_tcp_read_timeout(m_fd, &l, 4, timeout);
+  x = tcp_read_timeout(m_fd, &l, 4, timeout);
   if(x == ETIMEDOUT)
     return htsmsg_create_map();
 
@@ -236,7 +225,7 @@ htsmsg_t* cHTSPSession::ReadMessage(int timeout)
 
   buf = malloc(l);
 
-  x = htsp_tcp_read(m_fd, buf, l);
+  x = tcp_read(m_fd, buf, l);
   if(x)
   {
     XBMC->Log(LOG_ERROR, "%s - Failed to read packet (%d)\n", __FUNCTION__, x);
@@ -396,12 +385,11 @@ bool cHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
   desc     = htsmsg_get_str(msg, "description");
   ext_desc = htsmsg_get_str(msg, "ext_text");
 
-  char * buf = NULL;
   if (desc && ext_desc)
   {
-    buf = (char *)malloc(strlen(desc) + strlen(ext_desc) + 1);
-    sprintf(buf, "%s%s", desc, ext_desc);
-    event.descs = buf;
+    string strBuf = desc;
+    strBuf.append(ext_desc);
+    event.descs = strBuf;
   }
   else if (desc)
     event.descs = desc;
@@ -434,11 +422,6 @@ bool cHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
                     , event.start
                     , event.stop
                     , event.next);
-
-  if(buf)
-  {
-    free(buf);
-  }
 
   return true;
 }

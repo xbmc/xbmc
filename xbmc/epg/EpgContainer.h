@@ -57,6 +57,7 @@ namespace EPG
     bool         m_bDatabaseLoaded;    /*!< true if we already loaded the EPG from the database */
     time_t       m_iLastEpgCleanup;    /*!< the time the EPG was cleaned up */
     time_t       m_iLastEpgUpdate;     /*!< the time the EPG was updated */
+    time_t       m_iLastEpgActiveTagCheck; /*!< the time the EPG checked for active tag updates */
     //@}
 
     CCriticalSection m_critSection;    /*!< a critical section for changes to this container */
@@ -230,5 +231,10 @@ namespace EPG
      * @return The table or NULL if it wasn't found.
      */
     virtual CEpg *GetByIndex(unsigned int iIndex) const;
+
+    /*!
+     * @brief Notify EPG table observers when the currently active tag changed.
+     */
+    virtual void CheckPlayingEvents(void);
   };
 }

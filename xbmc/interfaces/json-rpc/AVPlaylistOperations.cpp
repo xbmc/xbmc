@@ -79,10 +79,11 @@ JSON_STATUS CAVPlaylistOperations::SkipNext(const CStdString &method, ITransport
 JSON_STATUS CAVPlaylistOperations::GetItems(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   CFileItemList list;
+  int playlist = GetPlaylist(method);
 
-  g_application.getApplicationMessenger().PlayListPlayerGetItems(GetPlaylist(method), list);
+  g_application.getApplicationMessenger().PlayListPlayerGetItems(playlist, list);
 
-  HandleFileItemList(NULL, true, "items", list, parameterObject, result);
+  HandleFileItemList("id", true, "items", list, parameterObject, result);
 
   if (g_playlistPlayer.GetCurrentPlaylist() == GetPlaylist(method))
   {

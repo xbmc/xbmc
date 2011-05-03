@@ -419,19 +419,10 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
       pDlgProgress->Progress();
     }
 
-    /* delete all TV channel groups */
-    m_database->DeleteChannelGroups(false);
+    m_database->DeleteChannelGroups();
     if (bShowProgress)
     {
       pDlgProgress->SetPercentage(50);
-      pDlgProgress->Progress();
-    }
-
-    /* delete all radio channel groups */
-    m_database->DeleteChannelGroups(true);
-    if (bShowProgress)
-    {
-      pDlgProgress->SetPercentage(60);
       pDlgProgress->Progress();
     }
 
@@ -1137,4 +1128,9 @@ void CPVRManager::StartNextPendingJob(void)
     m_bRecordingsUpdatePending = false;
     StartRecordingsUpdateJob();
   }
+}
+
+void CPVRManager::ShowPlayerInfo(int iTimeout)
+{
+  m_guiInfo->ShowPlayerInfo(iTimeout);
 }

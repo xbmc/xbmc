@@ -139,6 +139,7 @@ void CEpgContainer::Process(void)
 {
   time_t iNow       = 0;
   m_iLastEpgUpdate  = 0;
+  m_iLastEpgActiveTagCheck = 0;
   CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgCleanup);
 
   if (m_database.Open())
@@ -163,6 +164,10 @@ void CEpgContainer::Process(void)
     /* clean up old entries */
     if (!m_bStop && iNow > m_iLastEpgCleanup + g_advancedSettings.m_iEpgCleanupInterval)
       RemoveOldEntries();
+
+    /* check for updated active tag */
+    if (!m_bStop && iNow > m_iLastEpgActiveTagCheck + g_advancedSettings.m_iEpgActiveTagCheckInterval)
+      CheckPlayingEvents();
 
     /* call the update hook */
     ProcessHook(iNow);
@@ -409,10 +414,12 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 
   if (!bInterrupted)
   {
+    lock.Enter();
     /* only try to load the database once */
     m_bDatabaseLoaded = true;
-
     CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgUpdate);
+    lock.Leave();
+
     /* update the last scan time if we did a full update */
     if (bUpdateSuccess && m_bDatabaseLoaded && !m_bIgnoreDbForClient)
         m_database.PersistLastEpgScanTime(0);
@@ -431,7 +438,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   if (iUpdatedTables > 0)
   {
     SetChanged();
-    NotifyObservers("epg", false);
+    NotifyObservers("epg", true);
   }
 
   return bUpdateSuccess;
@@ -512,4 +519,12 @@ int CEpgContainer::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &f
   }
 
   return results->Size();
+}
+
+void CEpgContainer::CheckPlayingEvents(void)
+{
+  CSingleLock lock(m_critSection);
+  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+    at(iEpgPtr)->CheckPlayingEvent();
+  CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgActiveTagCheck);
 }

@@ -140,7 +140,7 @@ void CGUIWindowPVRChannels::UpdateData(void)
   m_bUpdateRequired = false;
 
   /* lock the graphics context while updating */
-  CSingleLock graphicsLock(g_graphicsContext);
+  g_graphicsContext.Lock();
 
   m_iSelected = m_parent->m_viewControl.GetSelectedItem();
   m_parent->m_viewControl.Clear();
@@ -165,7 +165,7 @@ void CGUIWindowPVRChannels::UpdateData(void)
       /* show the visible channels instead */
       m_bShowHiddenChannels = false;
       lock.Leave();
-      graphicsLock.Leave();
+      g_graphicsContext.Unlock();
 
       UpdateData();
       return;
@@ -186,6 +186,7 @@ void CGUIWindowPVRChannels::UpdateData(void)
   else
     m_parent->SetLabel(CONTROL_LABELGROUP, currentGroup->GroupName());
   m_bIsFocusing = false;
+  g_graphicsContext.Unlock();
 }
 
 bool CGUIWindowPVRChannels::OnClickButton(CGUIMessage &message)

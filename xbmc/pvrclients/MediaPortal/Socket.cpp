@@ -16,9 +16,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
-#include "os-dependent.h"
-#include "xbmc_pvr_types.h"
+extern "C" {
+#include "libTcpSocket/os-dependent_socket.h"
+}
 #include "libXBMC_addon.h"
 #include "utils.h"
 #include "client.h"
@@ -87,7 +87,7 @@ bool Socket::close()
 {
   if (is_valid())
   {
-    closesocket(_sd);
+    tcp_close(_sd);
     _sd = INVALID_SOCKET;
     osCleanup();
     return true;

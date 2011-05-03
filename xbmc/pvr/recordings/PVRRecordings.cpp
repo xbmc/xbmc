@@ -132,7 +132,10 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
     }
   }
 
-  if (bAutoSkip && results->Size() == 1)
+  CFileItemList files;
+  GetContents(strBase, &files);
+
+  if (bAutoSkip && results->Size() == 1 && files.Size() == 0)
   {
     CStdString strGetPath;
     strGetPath.Format("%s/%s/", strUseBase.c_str(), results->Get(0)->GetLabel());
@@ -145,10 +148,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
     return;
   }
 
-  if (results->Size() == 0)
-  {
-    GetContents(strUseBase, results);
-  }
+  results->Append(files);
 }
 
 int CPVRRecordings::Load(void)

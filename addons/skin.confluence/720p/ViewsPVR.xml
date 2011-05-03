@@ -113,6 +113,14 @@
 						<height>50</height>
 						<texture>$INFO[ListItem.Icon]</texture>
 					</control>
+					<control type="image">
+						<posx>5</posx>
+						<posy>37</posy>
+						<width>30</width>
+						<height>20</height>
+						<texture>PVR-IsRecording.png</texture>
+						<visible>ListItem.IsRecording</visible>
+					</control>
 				</itemlayout>
 				<focusedlayout height="60" width="390">
 					<control type="image">
@@ -189,6 +197,14 @@
 						<width>50</width>
 						<height>50</height>
 						<texture>$INFO[ListItem.Icon]</texture>
+					</control>
+					<control type="image">
+						<posx>5</posx>
+						<posy>37</posy>
+						<width>30</width>
+						<height>20</height>
+						<texture>PVR-IsRecording.png</texture>
+						<visible>ListItem.IsRecording</visible>
 					</control>
 				</focusedlayout>
 			</control>

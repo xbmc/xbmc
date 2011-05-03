@@ -25,10 +25,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include "tools.h"
-
-#ifdef __WINDOWS__
-#include "pthread.h"
-#endif
+#include "libPlatform/os-dependent.h"
+#include "client.h"
 
 class cCondWait {
 private:
@@ -118,7 +116,11 @@ public:
        ///< the thread starts and stops. The Start() function must be called
        ///< to actually start the thread.
   virtual ~cThread();
+#ifdef __WINDOWS__
   void SetDescription(const char *Description, ...);
+#else
+  void SetDescription(const char *Description, ...) __attribute__ ((format (printf, 2, 3)));
+#endif
   bool Start(void);
        ///< Actually starts the thread.
        ///< If the thread is already running, nothing happens.

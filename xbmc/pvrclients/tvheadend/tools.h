@@ -22,7 +22,6 @@
 #ifndef __TOOLS_H
 #define __TOOLS_H
 
-#include "pvrclient-tvheadend_os.h"
 #include "client.h"
 #include "utils/StdString.h"
 #include <errno.h>
@@ -31,7 +30,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <dirent.h>
 
 #define ERRNUL(e) {errno=e;return 0;}
 #define ERRSYS(e) {errno=e;return -1;}

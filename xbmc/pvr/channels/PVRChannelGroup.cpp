@@ -118,6 +118,7 @@ int CPVRChannelGroup::Load(void)
 
 void CPVRChannelGroup::Unload(void)
 {
+  g_guiSettings.RemoveObserver(this);
   clear();
 }
 
@@ -728,22 +729,28 @@ bool CPVRChannelGroup::SetGroupName(const CStdString &strGroupName, bool bSaveIn
 
 bool CPVRChannelGroup::Persist(void)
 {
+  bool bReturn(true);
   CSingleLock lock(m_critSection);
+
   if (!HasChanges())
-    return true;
+    return bReturn;
 
   if (CPVRDatabase *database = OpenPVRDatabase())
   {
     CLog::Log(LOGDEBUG, "CPVRChannelGroup - %s - persisting channel group '%s' with %d channels",
         __FUNCTION__, GroupName().c_str(), (int) size());
-    database->Persist(*this);
-    database->Close();
-
     m_bChanged = false;
-    return true;
+    lock.Leave();
+
+    bReturn = database->Persist(*this);
+    database->Close();
+  }
+  else
+  {
+    bReturn = false;
   }
 
-  return false;
+  return bReturn;
 }
 
 bool CPVRChannelGroup::Renumber(void)

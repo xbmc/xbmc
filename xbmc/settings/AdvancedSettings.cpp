@@ -227,6 +227,7 @@ void CAdvancedSettings::Initialize()
   m_iEpgLingerTime = 60;           /* keep 1 hour by default */
   m_iEpgUpdateCheckInterval = 300; /* check if tables need to be updated every 5 minutes */
   m_iEpgCleanupInterval = 900;     /* remove old entries from the EPG every 15 minutes */
+  m_iEpgActiveTagCheckInterval = 60; /* check for updated active tags every minute */
 
   m_bEdlMergeShortCommBreaks = false;      // Off by default
   m_iEdlMaxCommBreakLength = 8 * 30 + 10;  // Just over 8 * 30 second commercial break.
@@ -276,10 +277,9 @@ void CAdvancedSettings::Initialize()
   m_bgInfoLoaderMaxThreads = 5;
 
   m_iPVRTimeCorrection             = 0;
-  m_iPVRInputStreamDelay           = 200;
   m_iPVRInfoToggleInterval         = 3000;
   m_bPVRShowEpgInfoOnEpgItemSelect = true;
-  m_iPVRMinCacheLevel              = 15;
+  m_iPVRMinCacheLevel              = 5;
 
   m_measureRefreshrate = false;
 
@@ -696,6 +696,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "lingertime", m_iEpgLingerTime);
     XMLUtils::GetInt(pElement, "updatecheckinterval", m_iEpgUpdateCheckInterval);
     XMLUtils::GetInt(pElement, "cleanupinterval", m_iEpgCleanupInterval);
+    XMLUtils::GetInt(pElement, "activetagcheckinterval", m_iEpgActiveTagCheckInterval);
   }
 
   // EDL commercial break handling
@@ -873,7 +874,6 @@ bool CAdvancedSettings::Load()
   if (pPVR)
   {
     XMLUtils::GetInt(pPVR, "timecorrection", m_iPVRTimeCorrection, 0, 1440);
-    XMLUtils::GetInt(pPVR, "inputstreamdelay", m_iPVRInputStreamDelay, 0, 10000);
     XMLUtils::GetInt(pPVR, "infotoggleinterval", m_iPVRInfoToggleInterval, 0, 30000);
     XMLUtils::GetBoolean(pPVR, "showepginfoonselect", m_bPVRShowEpgInfoOnEpgItemSelect);
     XMLUtils::GetInt(pPVR, "mincachelevel", m_iPVRMinCacheLevel, 0, 100);

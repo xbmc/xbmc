@@ -23,9 +23,18 @@
  * Most of this code is taken from tools.c in the Video Disk Recorder ('VDR')
  */
 
-#include <sys/time.h>
 #include "tools.h"
+#include "libPlatform/os-dependent.h"
 #include "client.h"
+
+/* Byte order (just for windows)*/
+#ifdef __WINDOWS__
+#undef BIG_ENDIAN
+#ifndef LITTLE_ENDIAN
+#define LITTLE_ENDIAN 1234
+#endif
+#define BYTE_ORDER LITTLE_ENDIAN
+#endif
 
 uint64_t ntohll(uint64_t a)
 {
@@ -34,7 +43,7 @@ uint64_t ntohll(uint64_t a)
 
 uint64_t htonll(uint64_t a)
 {
-#if BYTE_ORDER == BIG_ENDIAN
+#if (BYTE_ORDER == BIG_ENDIAN)
   return a;
 #else
   uint64_t b = 0;

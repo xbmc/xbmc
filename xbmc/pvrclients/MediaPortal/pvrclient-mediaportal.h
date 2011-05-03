@@ -22,8 +22,6 @@
 * for DESCRIPTION see 'PVRClient-MediaPortal.cpp'
 */
 
-#include "os-dependent.h"
-
 #include <vector>
 
 /* Master defines for client control */

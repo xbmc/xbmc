@@ -457,6 +457,7 @@
     <ClCompile Include="..\..\xbmc\input\SDLJoystick.cpp" />
     <ClCompile Include="..\..\xbmc\input\windows\IRServerSuite.cpp" />
     <ClCompile Include="..\..\xbmc\input\windows\IrssMessage.cpp" />
+    <ClCompile Include="..\..\xbmc\input\XBMC_keytable.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\AnnouncementManager.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\Builtins.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\http-api\HttpApi.cpp" />
@@ -950,7 +951,6 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagMicroDVD.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagSami.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\ADPCMCodec.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\paplayer\AIFFcodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\ASAPCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\AudioDecoder.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\CDDAcodec.cpp" />
@@ -1415,6 +1415,7 @@
     <ClInclude Include="..\..\xbmc\input\XBIRRemote.h" />
     <ClInclude Include="..\..\xbmc\input\XBMC_keyboard.h" />
     <ClInclude Include="..\..\xbmc\input\XBMC_keysym.h" />
+    <ClInclude Include="..\..\xbmc\input\XBMC_keytable.h" />
     <ClInclude Include="..\..\xbmc\input\XBMC_mouse.h" />
     <ClInclude Include="..\..\xbmc\input\XBMC_vkeys.h" />
     <ClInclude Include="..\..\xbmc\interfaces\AnnouncementManager.h" />
@@ -1867,7 +1868,6 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagMicroDVD.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleTagSami.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ADPCMCodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\AIFFcodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ASAPCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\AudioDecoder.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\CDDAcodec.h" />
@@ -2125,6 +2125,10 @@
     </ProjectReference>
     <ProjectReference Include="..\..\lib\libapetag\libapetag.vcxproj">
       <Project>{bdd2cb99-93c5-4a70-acbf-396ffb961ad3}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\lib\libTcpSocket\project\libTcpSocket_2010.vcxproj">
+      <Project>{0F78AAF3-A188-4491-8BA6-203DC0B8D7F5}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\..\lib\libhts\Win32\libhts_2010.vcxproj">

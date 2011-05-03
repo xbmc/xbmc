@@ -57,7 +57,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    virtual int GetMinVersion() const { return 12; };
+    virtual int GetMinVersion() const { return 13; };
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -145,10 +145,9 @@ namespace PVR
 
     /*!
      * @brief Remove all channel groups from the database
-     * @param bRadio Remove all radio channel groups if true. Remove TV channel groups otherwise.
      * @return True if all channel groups were removed.
      */
-    bool DeleteChannelGroups(bool bRadio = false);
+    bool DeleteChannelGroups(void);
 
     /*!
      * @brief Delete a channel group from the database.
@@ -174,9 +173,9 @@ namespace PVR
     /*!
      * @brief Add or update a channel group entry in the database.
      * @param group The group to persist.
-     * @return The database ID of the group.
+     * @return True if the group was persisted successfully, false otherwise.
      */
-    int Persist(CPVRChannelGroup &group);
+    bool Persist(CPVRChannelGroup &group);
 
     //@}
 

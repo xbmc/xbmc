@@ -28,12 +28,12 @@ extern "C" {
 
 enum ADDON_STATUS
 {
-  STATUS_OK,
-  STATUS_LOST_CONNECTION,
-  STATUS_NEED_RESTART,
-  STATUS_NEED_SETTINGS,
-  STATUS_UNKNOWN,
-  STATUS_NEED_SAVEDSETTINGS
+  ADDON_STATUS_OK,
+  ADDON_STATUS_LOST_CONNECTION,
+  ADDON_STATUS_NEED_RESTART,
+  ADDON_STATUS_NEED_SETTINGS,
+  ADDON_STATUS_UNKNOWN,
+  ADDON_STATUS_NEED_SAVEDSETTINGS
 };
 
 typedef struct
@@ -44,7 +44,7 @@ typedef struct
   int           current;
   char**        entry;
   unsigned int  entry_elements;
-} StructSetting;
+} ADDON_StructSetting;
 
 #ifdef __cplusplus
 };
