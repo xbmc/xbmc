@@ -276,7 +276,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
   return bRet;
 }
 
-const unsigned long CSysInfo::GetSystemMemory(const int& info)
+unsigned long long CSysInfo::GetSystemMemory(const int& info)
 {
   switch(info)
   {
@@ -304,7 +304,7 @@ const unsigned long CSysInfo::GetSystemMemory(const int& info)
   }
 }
 
-const bool CSysInfo::FreeMemoryTest()
+bool CSysInfo::FreeMemoryTest()
 {
   return GetSystemMemory(SYSTEM_FREE_MEMORY) >= g_advancedSettings.m_iFreeMemoryThreshold;
 }

@@ -944,7 +944,6 @@ void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items)
   m_staticUpdateTime = 0;
   m_staticItems.clear();
   m_staticItems.assign(items.begin(), items.end());
-  UpdateVisibility();
 }
 
 void CGUIBaseContainer::SetRenderOffset(const CPoint &offset)

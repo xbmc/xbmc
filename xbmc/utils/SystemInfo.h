@@ -104,8 +104,8 @@ public:
   static CStdString GetKernelVersion();
   CStdString GetXBVerInfo();
   bool GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);
-  static const unsigned long GetSystemMemory(const int& info);
-  static const bool FreeMemoryTest();
+  static unsigned long long GetSystemMemory(const int& info);
+  static bool FreeMemoryTest();
   CStdString GetHddSpaceInfo(int& percent, int drive, bool shortText=false);
   CStdString GetHddSpaceInfo(int drive, bool shortText=false);
 

@@ -567,7 +567,8 @@ public:
 
   int TranslateString(const CStdString &strCondition);
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
-  const bool ValidateConditions(std::map<int, bool>& map) const;
+  /// \brief iterates through boolean conditions and compares their stored values to current values. Returns false if any condition changed value.
+  bool ValidateConditions(const std::map<int, bool>& map);
   int GetInt(int info, int contextWindow = 0) const;
   CStdString GetLabel(int info, int contextWindow = 0);
 

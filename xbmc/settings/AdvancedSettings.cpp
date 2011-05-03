@@ -817,7 +817,7 @@ bool CAdvancedSettings::Load()
     GetCustomExtensions(pFanart,m_fanartImages);
 
   XMLUtils::GetBoolean(pRootElement, "destroywindowcontrols", m_bDestroyWindowControls);
-  XMLUtils::GetInt(pRootElement, "freememorythreshold", m_iFreeMemoryThreshold);
+  XMLUtils::GetUInt(pRootElement, "freememorythreshold", m_iFreeMemoryThreshold);
 
   // music filename->tag filters
   TiXmlElement* filters = pRootElement->FirstChildElement("musicfilenamefilters");

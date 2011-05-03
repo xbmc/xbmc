@@ -2051,12 +2051,11 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   return bReturn;
 }
 
-/// \brief iterates through boolean conditions and compares their stored values to current values. Returns false if any condition changed value.
-const bool CGUIInfoManager::ValidateConditions(std::map<int, bool>& conditionMap) const
+bool CGUIInfoManager::ValidateConditions(const std::map<int, bool>& conditionMap)
 {
-  for (std::map<int, bool>::iterator it = conditionMap.begin() ; it != conditionMap.end() ; it++)
+  for (std::map<int, bool>::const_iterator it = conditionMap.begin() ; it != conditionMap.end() ; it++)
   {
-    if (g_infoManager.GetBool(it->first) != it->second)
+    if (GetBool(it->first) != it->second)
       return false;
   }
 
