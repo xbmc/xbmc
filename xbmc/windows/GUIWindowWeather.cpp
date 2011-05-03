@@ -145,34 +145,14 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       else
         CallScript();
     }
-    else if (message.GetParam1() == GUI_MSG_LOCATION_FAILED || message.GetParam1() == GUI_MSG_LOCATION_FETCHED)
+    else if (message.GetParam1() == GUI_MSG_LOCATION_FAILED)
     {
-      if (m_iCurWeather == 0 && g_windowManager.GetActiveWindow() == WINDOW_WEATHER)
+      // Only prompt if the user is trying to view areacode 0
+      //   and location-based lookup has certainly failed (not just in progress)
+      if (g_windowManager.GetActiveWindow() == WINDOW_WEATHER && m_iCurWeather == 0 &&
+           (!g_locationManager.IsFetched() || g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE).IsEmpty()))
       {
-        // If location was fetched, make sure we got a zip code
-        if (message.GetParam1() == GUI_MSG_LOCATION_FETCHED && g_locationManager.IsFetched()
-             && !g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE).IsEmpty())
-        {
-          break;
-        }
-
-        if (CGUIDialogYesNo::ShowAndGetInput(8, 21454, 21455, 21456, 222, 186))
-        {
-          g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYWEATHER);
-
-          // Switch to location 1 so the user has weather upon return
-          m_iCurWeather = 1;
-          g_guiSettings.SetInt("weather.currentarea", m_iCurWeather);
-          g_settings.Save();
-          Refresh();
-        }
-        else
-        {
-          g_windowManager.PreviousWindow();
-
-          // Try again, in case we have internet now
-          g_locationManager.Refresh();
-        }
+        PromptLocationFailed();
         return true;
       }
     }
@@ -190,24 +170,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       if (m_iCurWeather == 0 && !(g_locationManager.IsFetched() || g_locationManager.IsBusy())
            && g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE).IsEmpty())
       {
-        // Ask the user if they want to change the weather locations
-        if (CGUIDialogYesNo::ShowAndGetInput(8, 21454, 21455, 21456, 222, 186))
-        {
-          g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYWEATHER);
-
-          // Switch to location 1 so the user has weather upon return
-          m_iCurWeather = 1;
-          g_guiSettings.SetInt("weather.currentarea", m_iCurWeather);
-          g_settings.Save();
-          Refresh();
-        }
-        else
-        {
-          g_windowManager.PreviousWindow();
-
-          // Try again, in case we have internet now
-          g_locationManager.Refresh();
-        }
+        PromptLocationFailed();
         return true;
       }
     }
@@ -225,6 +188,37 @@ void CGUIWindowWeather::OnInitWindow()
   UpdateButtons();
   UpdateLocations();
   CGUIWindow::OnInitWindow();
+}
+
+/*
+ * Ask the user if they want to change the weather location. Prompt is only shown if weather areacode
+ * is 0 (auto), and location lookup fails, and the weather screen is then visited.
+ *
+ * OK: User is taken to weather settings and location is set to areacode 1 (even if nothing changed)
+ * Cancel: User is returned to previous window, triggers a location refresh in case of network problems
+ *
+ * Ideally, the user will never see this prompt twice. An exception is made if cancel is chosen
+ * (assume that location failure is temporary and the user wants to keep areacode 0).
+ */
+void CGUIWindowWeather::PromptLocationFailed()
+{
+  if (CGUIDialogYesNo::ShowAndGetInput(8, 21454, 21455, 21456, 222, 186))
+  {
+    g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYWEATHER);
+
+    // Switch to location 1 so the user has weather upon return
+    m_iCurWeather = 1;
+    g_guiSettings.SetInt("weather.currentarea", m_iCurWeather);
+    g_settings.Save();
+    Refresh();
+  }
+  else
+  {
+    g_windowManager.PreviousWindow();
+
+    // Try again, in case we have internet now
+    g_locationManager.Refresh();
+  }
 }
 
 void CGUIWindowWeather::UpdateLocations()
