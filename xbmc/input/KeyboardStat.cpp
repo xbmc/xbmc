@@ -223,7 +223,7 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
 
   CLog::Log(LOGDEBUG, "SDLKeyboard: scancode: %02x, sym: %04x, unicode: %04x, modifier: %x", keysym.scancode, keysym.sym, keysym.unicode, keysym.mod);
 
-  // The keysym.unicode is always valid, even if it is zero. A zero
+  // The keysym.unicode is usually valid, even if it is zero. A zero
   // unicode just means this is a non-printing keypress. The ascii and
   // vkey will be set below.
   unicode = keysym.unicode;
@@ -237,10 +237,16 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
   {
     vkey = keytable.vkey;
 
-    // Now lookup the unicode. This is only required in case the ascii
+    // Occasionally we get non-printing keys that have a non-zero value in
+    // the keysym.unicode. Check for this here and replace any rogue unicode
+    // values.
+    if (keytable.unicode == 0 && unicode != 0)
+      unicode = 0;
+
+    // Else lookup the unicode. This is only required in case the ascii
     // and unicode are different. At the moment there are no such keysyms
     // but I'll leave the check in just in case.
-    if (KeyTableLookupUnicode(keysym.unicode, &keytable))
+    else if (KeyTableLookupUnicode(keysym.unicode, &keytable))
       ascii = keytable.ascii;
   }
 
