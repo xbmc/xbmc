@@ -26,6 +26,8 @@
 
 #include "../os-dependent_socket.h"
 
+#include <ws2tcpip.h>
+
 #ifndef EINPROGRESS
 #define EINPROGRESS WSAEINPROGRESS
 #endif
