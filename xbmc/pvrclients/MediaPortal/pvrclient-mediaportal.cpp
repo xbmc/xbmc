@@ -17,6 +17,12 @@
  *
  */
 
+#include <ctime>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "libPlatform/os-dependent.h"
+
 #include "client.h"
 #include "timers.h"
 #include "channels.h"
@@ -24,11 +30,7 @@
 #include "epg.h"
 #include "utils.h"
 #include "pvrclient-mediaportal.h"
-#include <ctime>
-#include <stdio.h>
-#include <stdlib.h>
 
-#include "libPlatform/os-dependent.h"
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
 

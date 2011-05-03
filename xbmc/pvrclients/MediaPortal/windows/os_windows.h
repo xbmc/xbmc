@@ -21,41 +21,29 @@
 #define WIN32_LEAN_AND_MEAN           // Enable LEAN_AND_MEAN support
 #include <windows.h>
 
-#ifndef _WINSOCKAPI_
-#define _WINSOCKAPI_
-#endif
-#pragma warning(disable:4005) // Disable "warning C4005: '_WINSOCKAPI_' : macro redefinition"
-#include <winsock2.h>
-#pragma warning(default:4005)
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <signal.h>
-#include <time.h>
-#include <sys/types.h>
-#include <sys/timeb.h>
+//#ifndef _WINSOCKAPI_
+//#define _WINSOCKAPI_
+//#endif
+//#pragma warning(disable:4005) // Disable "warning C4005: '_WINSOCKAPI_' : macro redefinition"
+//#include <winsock2.h>
+//#pragma warning(default:4005)
+//#include <stdlib.h>
+//#include <stdio.h>
+//#include <stdarg.h>
+//#include <signal.h>
+//#include <time.h>
+//#include <sys/types.h>
+//#include <sys/timeb.h>
 
-#if defined(DLL_IMPORT)
-#define LIBTYPE __declspec( dllexport )
-#elif  defined(DLL_EXPORT)
-#define LIBTYPE __declspec( dllimport )
-#else
-#define LIBTYPE
-#endif
+//#if defined(DLL_IMPORT)
+//#define LIBTYPE __declspec( dllexport )
+//#elif  defined(DLL_EXPORT)
+//#define LIBTYPE __declspec( dllimport )
+//#else
+//#define LIBTYPE
+//#endif
 
-//#define SD_BOTH 2 // See winsock2.h
 
-typedef int bool_t;
-typedef signed __int8 int8_t;
-typedef signed __int16 int16_t;
-typedef signed __int32 int32_t;
-typedef signed __int64 int64_t;
-typedef unsigned __int8 uint8_t;
-typedef unsigned __int16 uint16_t;
-typedef unsigned __int32 uint32_t;
-typedef unsigned __int64 uint64_t;
-typedef HANDLE pthread_t;
-typedef HANDLE pthread_mutex_t;
 typedef HANDLE wait_event_t;
 typedef CRITICAL_SECTION criticalsection_t;
 typedef unsigned __int32 uint;
@@ -64,25 +52,10 @@ typedef unsigned __int32 uint;
 #define va_copy(x, y) x = y
 #endif
 
-#define snprintf _snprintf
 
 #define PATH_SEPARATOR_CHAR '\\'
-static inline void pthread_mutex_init(pthread_mutex_t *mutex, void *attr)
-{
-	*mutex = CreateMutex(NULL, FALSE, NULL);
-}
-
-static inline void pthread_mutex_lock(pthread_mutex_t *mutex)
-{
-	WaitForSingleObject(*mutex, INFINITE);
-}
-
-static inline void pthread_mutex_unlock(pthread_mutex_t *mutex)
-{
-	ReleaseMutex(*mutex);
-}
-
-static inline void usleep(unsigned long usec)
-{
-  Sleep(usec/1000);
-}
+//
+//static inline void usleep(unsigned long usec)
+//{
+//  Sleep(usec/1000);
+//}

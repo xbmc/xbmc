@@ -18,20 +18,13 @@
  *
  */
 
-#if defined(_WIN32) || defined(_WIN64)
-#define __WINDOWS__
-#endif
+// I don't want pthread_win32 stuff to be included
+#define PTHREAD_H
+#include "libPlatform/os-dependent.h"
 
 #if defined(__WINDOWS__)
-#include "windows/os_windows.h"
+#  include "windows/os_windows.h"
 #else
-#include "linux/os_posix.h"
+#  include "linux/os_posix.h"
 #endif
 
-#if !defined(TRUE)
-#define TRUE 1
-#endif
-
-#if !defined(FALSE)
-#define FALSE 0
-#endif

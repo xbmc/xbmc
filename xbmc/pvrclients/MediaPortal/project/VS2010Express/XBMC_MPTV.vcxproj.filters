@@ -73,6 +73,9 @@
     <ClInclude Include="..\..\uri.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\os-dependent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\README" />

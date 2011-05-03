@@ -55,8 +55,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\;..\..\tsreader;..\..\lib\live555\liveMedia\include;..\..\lib\live555\BasicUsageEnvironment\include;..\..\lib\live555\UsageEnvironment\include;..\..\lib\live555\groupsock\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;MPTV_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T;TSREADER;LIVE555;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\;..\..\tsreader;..\..\lib\live555\liveMedia\include;..\..\lib\live555\BasicUsageEnvironment\include;..\..\lib\live555\UsageEnvironment\include;..\..\lib\live555\groupsock\include;..\..\..\..\..\lib;..\..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__WINDOWS__;_WINSOCKAPI_;_DEBUG;_WINDOWS;MPTV_EXPORTS;_USE_32BIT_TIME_T;TSREADER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -86,8 +86,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\;..\..\tsreader;..\..\lib\live555\liveMedia\include;..\..\lib\live555\BasicUsageEnvironment\include;..\..\lib\live555\UsageEnvironment\include;..\..\lib\live555\groupsock\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\;..\..\tsreader;..\..\lib\live555\liveMedia\include;..\..\lib\live555\BasicUsageEnvironment\include;..\..\lib\live555\UsageEnvironment\include;..\..\lib\live555\groupsock\include;..\..\..\..\..\lib;..\..\..\..\..\xbmc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WIN32;_WINDOWS;MPTV_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T;TSREADER;LIVE555;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -167,6 +167,9 @@
     <None Include="..\..\README" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\lib\libTcpSocket\project\libTcpSocket_2010.vcxproj">
+      <Project>{0f78aaf3-a188-4491-8ba6-203dc0b8d7f5}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\lib\live555\LiveMedia555.vcxproj">
       <Project>{3c398bd4-5714-4802-ab86-d43add15b3c0}</Project>
     </ProjectReference>
