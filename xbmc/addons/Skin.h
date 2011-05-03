@@ -46,7 +46,7 @@ public:
   };
 
   //FIXME remove this, kept for current repo handling
-  CSkinInfo(const ADDON::AddonProps &props, RESOLUTION res = RES_HDTV_720p);
+  CSkinInfo(const ADDON::AddonProps &props, const RESOLUTION_INFO &res = RESOLUTION_INFO());
   CSkinInfo(const cp_extension_t *ext);
   virtual ~CSkinInfo();
 
@@ -64,7 +64,7 @@ public:
    \param baseDir [in] If non-empty, the given directory is searched instead of the skin's directory.  Defaults to empty.
    \return path to the XML file
    */
-  CStdString GetSkinPath(const CStdString& file, RESOLUTION *res = NULL, const CStdString& baseDir = "") const;
+  CStdString GetSkinPath(const CStdString& file, RESOLUTION_INFO *res = NULL, const CStdString& baseDir = "") const;
 
   double GetVersion() const { return m_Version; };
 
@@ -87,11 +87,11 @@ public:
   int GetStartWindow() const;
 
   /*! \brief Translate a resolution string
-   \param res the string to translate
-   \param def the default to use if res is invalid
-   \return the translated resolution
+   \param name the string to translate
+   \param res [out] the resolution structure if name is valid
+   \return true if the resolution is valid, false otherwise
    */
-  static RESOLUTION TranslateResolution(const CStdString &res, RESOLUTION def);
+  static bool TranslateResolution(const CStdString &name, RESOLUTION_INFO &res);
 
   void ResolveIncludes(TiXmlElement *node);
 
@@ -125,10 +125,10 @@ protected:
 
   void LoadIncludes();
   bool LoadStartupWindows(const cp_extension_t *ext);
-  bool IsWide(RESOLUTION res) const;
 
-  RESOLUTION m_DefaultResolution; // default resolution for the skin in 4:3 modes
-  RESOLUTION m_DefaultResolutionWide; // default resolution for the skin in 16:9 modes
+  RESOLUTION_INFO m_defaultRes;
+  std::vector<RESOLUTION_INFO> m_resolutions;
+
   double m_Version;
 
   float m_effectsSlowDown;

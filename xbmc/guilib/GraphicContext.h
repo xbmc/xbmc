@@ -102,8 +102,9 @@ public:
   void GetAllowedResolutions(std::vector<RESOLUTION> &res);
 
   // output scaling
-  void SetRenderingResolution(RESOLUTION res, bool needsScaling);  ///< Sets scaling up for rendering
-  void SetScalingResolution(RESOLUTION res, bool needsScaling);    ///< Sets scaling up for skin loading etc.
+  const RESOLUTION_INFO &GetResInfo() const;
+  void SetRenderingResolution(const RESOLUTION_INFO &res, bool needsScaling);  ///< Sets scaling up for rendering
+  void SetScalingResolution(const RESOLUTION_INFO &res, bool needsScaling);    ///< Sets scaling up for skin loading etc.
   float GetScalingPixelRatio() const;
   void Flip();
   void InvertFinalCoords(float &x, float &y) const;
@@ -203,7 +204,7 @@ protected:
 private:
   void UpdateCameraPosition(const CPoint &camera);
   void UpdateFinalTransform(const TransformMatrix &matrix);
-  RESOLUTION m_windowResolution;
+  RESOLUTION_INFO m_windowResolution;
   float m_guiScaleX;
   float m_guiScaleY;
   std::stack<CPoint> m_cameras;

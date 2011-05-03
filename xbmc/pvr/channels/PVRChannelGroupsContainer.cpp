@@ -69,7 +69,7 @@ bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */, bool b
 
 bool CPVRChannelGroupsContainer::ExecuteUpdate(bool bChannelsOnly)
 {
-  CLog::Log(LOGDEBUG, "CPVRTimers - %s - updating %s", __FUNCTION__, bChannelsOnly ? "channels" : "channel groups");
+  CLog::Log(LOGDEBUG, "CPVRChannelGroupsContainer - %s - updating %s", __FUNCTION__, bChannelsOnly ? "channels" : "channel groups");
   bool bReturn = m_groupsRadio->Update(bChannelsOnly) &&
        m_groupsTV->Update(bChannelsOnly);
 

@@ -171,6 +171,7 @@ namespace PVR
     int GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error);
 
     int GetClients(std::map<long, CStdString> *clients);
+    int GetActiveClients(CLIENTMAP *clients);
 
     /*!
      * @brief Check whether a client has any PVR specific menu entries.
@@ -340,7 +341,7 @@ namespace PVR
      */
     void Process(void);
 
-    int GetActiveClients(CLIENTMAP *clients);
+    bool GetValidClient(int iClientId, boost::shared_ptr<CPVRClient> &addon);
 
     const CPVRChannel *   m_currentChannel;
     const CPVRRecording * m_currentRecording;

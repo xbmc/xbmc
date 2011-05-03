@@ -54,7 +54,7 @@ namespace PVR
      * @brief Get the total duration of the currently playing LiveTV item.
      * @return The total duration in milliseconds or NULL if no channel is playing.
      */
-    int GetTotalTime(void) const;
+    int GetDuration(void) const;
 
     /*!
      * @brief Get the current position in milliseconds since the start of a LiveTV item.
@@ -141,6 +141,7 @@ namespace PVR
     CStdString                      m_strBackendRecordings;
     CStdString                      m_strBackendChannels;
     CStdString                      m_strTotalDiskspace;
+    unsigned int                    m_iDuration;
     //@}
 
     PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */

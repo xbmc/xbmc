@@ -210,7 +210,7 @@ configure: configure.in
 	@./bootstrap
 
 # skin textures
-ifneq ($(findstring arm,@ARCH@), arm)
+ifeq (@USE_TEXTUREPACKER@,1)
 skins: tools/TexturePacker/TexturePacker force
 	 $(MAKE) -C $(CONFLUENCE_MEDIA)
 else

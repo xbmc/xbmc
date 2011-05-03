@@ -880,6 +880,7 @@ void CVideoReferenceClock::VblankHandler(int64_t nowtime, double fps)
   SingleLock.Leave();
 
   SendVblankSignal();
+  UpdateRefreshrate();
 }
 #endif
 

@@ -74,6 +74,7 @@ void CPVRGUIInfo::ResetProperties(void)
   m_iTimerInfoToggleStart       = 0;
   m_iTimerInfoToggleCurrent     = 0;
   m_iToggleShowInfo             = 0;
+  m_iDuration                   = 0;
   m_playingEpgTag               = NULL;
   g_PVRClients->GetQualityData(&m_qualityInfo);
 }
@@ -286,7 +287,7 @@ int CPVRGUIInfo::TranslateIntInfo(DWORD dwInfo) const
   CSingleLock lock(m_critSection);
 
   if (dwInfo == PVR_PLAYING_PROGRESS)
-    iReturn = (int) ((float) GetStartTime() / GetTotalTime() * 100);
+    iReturn = (int) ((float) GetStartTime() / GetDuration() * 100);
   else if (dwInfo == PVR_ACTUAL_STREAM_SIG_PROGR)
     iReturn = g_PVRClients->GetSignalLevel();
   else if (dwInfo == PVR_ACTUAL_STREAM_SNR_PROGR)
@@ -346,7 +347,7 @@ void CPVRGUIInfo::CharInfoNextTimerDateTime(CStdString &strValue) const
 void CPVRGUIInfo::CharInfoPlayingDuration(CStdString &strValue) const
 {
   CSingleLock lock(m_critSection);
-  strValue.Format("%s", StringUtils::SecondsToTimeString(GetTotalTime() / 1000, TIME_FORMAT_GUESS));
+  strValue.Format("%s", StringUtils::SecondsToTimeString(GetDuration() / 1000, TIME_FORMAT_GUESS));
 }
 
 void CPVRGUIInfo::CharInfoPlayingTime(CStdString &strValue) const
@@ -547,24 +548,18 @@ void CPVRGUIInfo::UpdateBackendCache(void)
   m_strBackendChannels     = "";
 
   CPVRClients *clients = g_PVRClients;
-  std::map<long, CStdString> activeClients;
-  clients->GetClients(&activeClients);
-
-  m_iActiveClients = activeClients.size();
+  CLIENTMAP activeClients;
+  m_iActiveClients = clients->GetActiveClients(&activeClients);
   if (m_iActiveClients > 0)
   {
-    std::map<long, CStdString>::iterator activeClient = activeClients.begin();
+    CLIENTMAPITR activeClient = activeClients.begin();
     for (unsigned int i = 0; i < m_iAddonInfoToggleCurrent; i++)
       activeClient++;
 
     long long kBTotal = 0;
     long long kBUsed  = 0;
-    CLIENTMAPITR current = clients->m_clientMap.find(activeClient->first);
-    if (current == clients->m_clientMap.end() ||
-        !current->second->ReadyToUse())
-      return;
 
-    if (current->second->GetDriveSpace(&kBTotal, &kBUsed) == PVR_ERROR_NO_ERROR)
+    if (activeClient->second->GetDriveSpace(&kBTotal, &kBUsed) == PVR_ERROR_NO_ERROR)
     {
       kBTotal /= 1024; // Convert to MBytes
       kBUsed /= 1024;  // Convert to MBytes
@@ -576,27 +571,27 @@ void CPVRGUIInfo::UpdateBackendCache(void)
       m_strBackendDiskspace = g_localizeStrings.Get(19055);
     }
 
-    int NumChannels = current->second->GetChannelsAmount();
+    int NumChannels = activeClient->second->GetChannelsAmount();
     if (NumChannels >= 0)
       m_strBackendChannels.Format("%i", NumChannels);
     else
       m_strBackendChannels = g_localizeStrings.Get(161);
 
-    int NumTimers = current->second->GetTimersAmount();
+    int NumTimers = activeClient->second->GetTimersAmount();
     if (NumTimers >= 0)
       m_strBackendTimers.Format("%i", NumTimers);
     else
       m_strBackendTimers = g_localizeStrings.Get(161);
 
-    int NumRecordings = current->second->GetRecordingsAmount();
+    int NumRecordings = activeClient->second->GetRecordingsAmount();
     if (NumRecordings >= 0)
       m_strBackendRecordings.Format("%i", NumRecordings);
     else
       m_strBackendRecordings = g_localizeStrings.Get(161);
 
-    m_strBackendName         = current->second->GetBackendName();
-    m_strBackendVersion      = current->second->GetBackendVersion();
-    m_strBackendHost         = current->second->GetConnectionString();
+    m_strBackendName         = activeClient->second->GetBackendName();
+    m_strBackendVersion      = activeClient->second->GetBackendVersion();
+    m_strBackendHost         = activeClient->second->GetConnectionString();
   }
 }
 
@@ -662,11 +657,10 @@ void CPVRGUIInfo::UpdateTimersToggle(void)
   }
 }
 
-int CPVRGUIInfo::GetTotalTime(void) const
+int CPVRGUIInfo::GetDuration(void) const
 {
   CSingleLock lock(m_critSection);
-
-  return m_playingEpgTag ? m_playingEpgTag->GetDuration() * 1000 : 0;
+  return m_iDuration;
 }
 
 int CPVRGUIInfo::GetStartTime(void) const
@@ -695,14 +689,20 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
   CSingleLock lock(m_critSection);
 
   CPVRChannel currentChannel;
+  CPVRRecording recording;
   if (g_PVRManager.GetCurrentChannel(&currentChannel))
   {
     if (!m_playingEpgTag || !m_playingEpgTag->IsActive() ||
         (*m_playingEpgTag->ChannelTag() != currentChannel))
     {
       m_playingEpgTag = currentChannel.GetEPGNow();
+      m_iDuration = m_playingEpgTag ? m_playingEpgTag->GetDuration() * 1000 : 0;
       g_PVRManager.UpdateCurrentFile();
     }
+  }
+  else if (g_PVRClients->GetPlayingRecording(&recording))
+  {
+    m_iDuration = recording.GetDuration();
   }
 }
 

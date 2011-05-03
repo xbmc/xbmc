@@ -73,8 +73,8 @@
     eaglLayer.opaque = TRUE;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
       [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking,
-      //kEAGLColorFormatRGB565, kEAGLDrawablePropertyColorFormat,
-      kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
+      kEAGLColorFormatRGB565, kEAGLDrawablePropertyColorFormat,
+      //kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
       nil];
 		
     EAGLContext *aContext = [[EAGLContext alloc] 
@@ -321,18 +321,8 @@
 - (void) runDisplayLink;
 {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  /*
-  static CFTimeInterval oldtimestamp;
-  CFTimeInterval frameInterval, timestamp, duration;
 
-  duration = [displayLink duration];
-  timestamp = [displayLink timestamp];
-  frameInterval = [displayLink frameInterval];
-  NSLog(@"%s:duration(%f), delta(%f), timestamp(%f)", __PRETTY_FUNCTION__, 
-    duration, timestamp-oldtimestamp, timestamp);
-  oldtimestamp = timestamp;
-  */
-  displayFPS = 1.0 / [displayLink duration];
+  displayFPS = 1.0 / ([displayLink duration] * [displayLink frameInterval]);
   if (animationThread && [animationThread isExecuting] == YES)
   {
     if (g_VideoReferenceClock)
@@ -347,9 +337,9 @@
   displayLink = [NSClassFromString(@"CADisplayLink") 
     displayLinkWithTarget:self
     selector:@selector(runDisplayLink)];
-  [displayLink setFrameInterval:1];
+  [displayLink setFrameInterval:2];
   [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
-  displayFPS = 60;
+  displayFPS = 1.0 / ([displayLink duration] * [displayLink frameInterval]);
 }
 //--------------------------------------------------------------
 - (void) deinitDisplayLink

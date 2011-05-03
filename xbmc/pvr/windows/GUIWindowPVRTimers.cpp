@@ -94,7 +94,7 @@ void CGUIWindowPVRTimers::UpdateData(void)
   m_bUpdateRequired = false;
 
   /* lock the graphics context while updating */
-  g_graphicsContext.Lock();
+  CSingleLock graphicsLock(g_graphicsContext);
 
   m_iSelected = m_parent->m_viewControl.GetSelectedItem();
   m_parent->m_viewControl.Clear();
@@ -109,7 +109,6 @@ void CGUIWindowPVRTimers::UpdateData(void)
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19025));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
   m_bIsFocusing = false;
-  g_graphicsContext.Unlock();
 }
 
 bool CGUIWindowPVRTimers::OnClickButton(CGUIMessage &message)

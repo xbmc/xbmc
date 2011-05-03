@@ -485,6 +485,13 @@
 		43BF09A31080D1E900E25290 /* RenderingControlSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF099F1080D1E900E25290 /* RenderingControlSCPD.cpp */; };
 		43BF09AA1080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF09A81080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp */; };
 		43BF09AB1080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF09A81080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp */; };
+		43EA4276136C04D9002C82A5 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
+		43EA4279136C079A002C82A5 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84BF7321349BB74006D6FC9 /* JSONServiceDescription.cpp */; };
+		43EA427E136C07BF002C82A5 /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
+		43EA4282136C0806002C82A5 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */; };
+		43EA4297136C1D9E002C82A5 /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
+		43EA429B136C1E2F002C82A5 /* xbmcvfsmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */; };
+		43EA42B0136C2274002C82A5 /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C807114B135DB5CC002F601B /* InputOperations.cpp */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		7C45DBEA10F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
@@ -7409,7 +7416,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude skin.confluence\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/osx/XBMCHelper\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${SYNC} \"$SRCROOT/tools/osx/org.xbmc.helper.plist\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${SYNC} \"$SRCROOT/tools/osx/preflight\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\n\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
+			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n# force TARGET_NAME on ppc\nTARGET_NAME=$PRODUCT_NAME\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -aq --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *arm-osx.* --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -aq --exclude .DS_Store* --exclude skin.confluence\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/osx/XBMCHelper\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${SYNC} \"$SRCROOT/tools/osx/org.xbmc.helper.plist\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${SYNC} \"$SRCROOT/tools/osx/preflight\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\n\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
 		};
 		F5A1CBDF0F6B0B4700A96ABD /* copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -7424,7 +7431,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources\"\n\ncp -f \"$TARGET_BUILD_DIR/XBMC\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/\"\ncp -f \"$SRCROOT/media/xbmc.icns\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\ncp -f \"$SRCROOT/xbmc/osx/Info.plist\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/\"\n\n# start clean so we don't keep old dylibs\nrm -f \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/*\"\n\n# Copy all of XBMC's dynamic dependencies and rename their locations to inside the Framework\nfor a in $(otool -L \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/XBMC\"  | grep opt | awk ' { print $1 } ') ; do \n\techo \"Processing $a\"\n\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\tinstall_name_tool -change \"$a\" @executable_path/../Frameworks/$(basename $a) \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/XBMC\"\ndone\n\nREWIND=\"1\"\n# Copy all the *osx.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/system -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the system/python/Lib/*.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/system/python/Lib -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system/python/Lib/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the addon/*.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/addons -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$b\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the addon/*.xbs dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/addons -name \"*.xbs\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$b\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/\"*dylib ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\n";
+			shellScript = "#set -x\n\nfunction check_dyloaded_depends\n{\n  b=$(find \"$EXTERNAL_LIBS\" -name $1 -print)\n  if [ -f \"$b\" ]; then\n    #echo \"Processing $b\"\n    if [ ! -f  \"$TARGET_FRAMEWORKS/$(basename $b)\" ]; then\n      echo \"    Packaging $b\"\n      cp -f \"$b\" \"$TARGET_FRAMEWORKS/\"\n      chmod u+w \"$TARGET_FRAMEWORKS/$(basename $b)\"\n    fi\n    for a in $(otool -L \"$b\"  | grep \"$EXTERNAL_LIBS\" | awk ' { print $1 } ') ; do\n      if [ -f \"$a\" ]; then\n        if [ ! -f  \"$TARGET_FRAMEWORKS/$(basename $a)\" ]; then\n          echo \"    Packaging $a\"\n          cp -f \"$a\" \"$TARGET_FRAMEWORKS/\"\n          chmod u+w \"$TARGET_FRAMEWORKS/$(basename $a)\"\n          install_name_tool -change \"$a\" \"$DYLIB_NAMEPATH/$(basename $a)\" \"$TARGET_FRAMEWORKS/$(basename $b)\"\n        fi\n      fi\n    done \n  fi\n}\n\nfunction check_xbmc_dylib_depends\n{\n  REWIND=\"1\"\n  while [ $REWIND = \"1\" ]\n  do\n    let REWIND=\"0\"\n    for b in $(find \"$1\" -name \"$2\" -print) ; do\n      #echo \"Processing $b\"\n      for a in $(otool -L \"$b\"  | grep \"$EXTERNAL_LIBS\" | awk ' { print $1 } ') ; do\n        #echo \"    Packaging $a\"\n        if [ ! -f  \"$TARGET_FRAMEWORKS/$(basename $a)\" ]; then\n          echo \"    Packaging $a\"\n          cp -f \"$a\" \"$TARGET_FRAMEWORKS/\"\n          chmod u+w \"$TARGET_FRAMEWORKS/$(basename $a)\"\n          let REWIND=\"1\"\n        fi\n        install_name_tool -change \"$a\" \"$DYLIB_NAMEPATH/$(basename $a)\" \"$b\"\n      done\n    done\n  done\n}\n\nEXTERNAL_LIBS=/Users/Shared/xbmc-depends/osx-10.4_ppc\n\nTARGET_NAME=$PRODUCT_NAME\nTARGET_CONTENTS=$TARGET_BUILD_DIR/$TARGET_NAME/Contents\n\nTARGET_BINARY=$TARGET_CONTENTS/MacOS/XBMC\nTARGET_FRAMEWORKS=$TARGET_CONTENTS/Frameworks\nDYLIB_NAMEPATH=@executable_path/../Frameworks\nXBMC_HOME=$TARGET_CONTENTS/Resources/XBMC\n\nmkdir -p \"$TARGET_CONTENTS/MacOS\"\nmkdir -p \"$TARGET_CONTENTS/Resources\"\n# start clean so we don't keep old dylibs\nrm -rf \"$TARGET_CONTENTS/Frameworks\"\nmkdir -p \"$TARGET_CONTENTS/Frameworks\"\n\necho \"Package $TARGET_BUILD_DIR/XBMC\"\ncp -f \"$TARGET_BUILD_DIR/XBMC\" \"$TARGET_BINARY\"\ncp -f \"$SRCROOT/media/xbmc.icns\" \"$TARGET_CONTENTS/Resources/\"\ncp -f \"$SRCROOT/xbmc/osx/Info.plist\" \"$TARGET_CONTENTS/\"\n\n# Copy all of XBMC's dylib dependencies and rename their locations to inside the Framework\necho \"Checking $TARGET_BINARY dylib dependencies\"\nfor a in $(otool -L \"$TARGET_BINARY\"  | grep \"$EXTERNAL_LIBS\" | awk ' { print $1 } ') ; do \n\techo \"    Packaging $a\"\n\tcp -f \"$a\" \"$TARGET_FRAMEWORKS/\"\n\tchmod u+w \"$TARGET_FRAMEWORKS/$(basename $a)\"\n\tinstall_name_tool -change \"$a\" \"$DYLIB_NAMEPATH/$(basename $a)\" \"$TARGET_BINARY\"\ndone\n\necho \"Package $EXTERNAL_LIBS/lib/python2.6\"\nmkdir -p \"$TARGET_CONTENTS/Frameworks/lib\"\nPYTHONSYNC=\"rsync -aq --exclude .DS_Store --exclude *.a --exclude *.exe --exclude test --exclude tests\"\n${PYTHONSYNC} \"$EXTERNAL_LIBS/lib/python2.6\" \"$TARGET_FRAMEWORKS/lib/\"\nrm -rf \"$TARGET_FRAMEWORKS/lib/python2.6/config\"\n\necho \"Checking $TARGET_FRAMEWORKS/lib/python2.6 *.so for dylib dependencies\"\ncheck_xbmc_dylib_depends \"$TARGET_FRAMEWORKS\"/lib/python2.6 \"*.so\"\n\necho \"Checking $XBMC_HOME/system *.so for dylib dependencies\"\ncheck_xbmc_dylib_depends \"$XBMC_HOME\"/system \"*.so\"\n\necho \"Checking $XBMC_HOME/addons *.so for dylib dependencies\"\ncheck_xbmc_dylib_depends \"$XBMC_HOME\"/addons \"*.so\"\n\necho \"Checking $XBMC_HOME/addons *.xbs for dylib dependencies\"\ncheck_xbmc_dylib_depends \"$XBMC_HOME\"/addons \"*.xbs\"\n\necho \"Checking xbmc/DllPaths_generated.h for dylib dependencies\"\nfor a in $(grep .dylib \"$SRCROOT\"/xbmc/DllPaths_generated.h | awk '{print $3}' | sed s/\\\"//g) ; do\n  check_dyloaded_depends $a\ndone\n\necho \"Checking $TARGET_FRAMEWORKS for missing dylib dependencies\"\nREWIND=\"1\"\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in \"$TARGET_FRAMEWORKS/\"*dylib* ; do\n\t\t#echo \"  Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep \"$EXTERNAL_LIBS\" | awk ' { print $1 } ') ; do\n\t\t\t#echo \"Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_FRAMEWORKS/$(basename $a)\" ]; then\n\t\t\t\techo \"    Packaging $a\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_FRAMEWORKS/\"\n\t\t\t\tchmod u+w \"$TARGET_FRAMEWORKS/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"$DYLIB_NAMEPATH/$(basename $a)\" \"$TARGET_FRAMEWORKS/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n";
 		};
 		F5A1CBE00F6B0B4700A96ABD /* update version info */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -9271,6 +9278,13 @@
 				F5AE40B313415D9E0004BD79 /* SystemOperations.cpp in Sources */,
 				F5AE40B413415D9E0004BD79 /* VideoLibrary.cpp in Sources */,
 				F5AE40B513415D9E0004BD79 /* XBMCOperations.cpp in Sources */,
+				43EA4276136C04D9002C82A5 /* XBDateTime.cpp in Sources */,
+				43EA4279136C079A002C82A5 /* JSONServiceDescription.cpp in Sources */,
+				43EA427E136C07BF002C82A5 /* XBMC_keytable.cpp in Sources */,
+				43EA4282136C0806002C82A5 /* RecentlyAddedJob.cpp in Sources */,
+				43EA4297136C1D9E002C82A5 /* RenderCapture.cpp in Sources */,
+				43EA429B136C1E2F002C82A5 /* xbmcvfsmodule.cpp in Sources */,
+				43EA42B0136C2274002C82A5 /* InputOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9528,6 +9542,7 @@
 				ARCHS = ppc;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -9551,59 +9566,62 @@
 					HAS_SPC_CODEC,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = 4.0;
 				GENERATE_PROFILING_CODE = NO;
 				HEADER_SEARCH_PATHS = (
-					xbmc/osx,
 					$SRCROOT,
-					lib,
 					xbmc,
-					lib/ffmpeg,
+					xbmc/osx,
 					xbmc/linux,
 					xbmc/cores/dvdplayer,
-					"lib/darwin/libcurl-OSX/include",
+					lib,
+					lib/ffmpeg,
+					$XBMC_DEPENDS/include,
+					$XBMC_DEPENDS/include/mysql,
+					$XBMC_DEPENDS/include/freetype2,
+					$XBMC_DEPENDS/include/python2.6,
 				);
-				INFOPLIST_FILE = "/Users/Shared/xbmc/xbmc_svn/xbmc/osx/Info copy.plist";
+				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
-					lib/libRTV,
-					lib/libXBMS,
-					lib/libXDAAP,
-					lib/cmyth/libcmyth,
-					lib/cmyth/librefmem,
-					lib/libapetag/.libs,
-					lib/libsquish,
-					lib/jsoncpp/src/lib_json,
-					"xbmc/interfaces/http-api",
-					"xbmc/interfaces/json-rpc",
-					/opt/local/lib,
-					/opt/local/lib/mysql5/mysql,
-					/opt/local/lib/samba3,
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
-					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib/mysql\"",
-					"\"$(SRCROOT)/lib/libsquish\"",
-					"\"$(SRCROOT)/lib/libRTV\"",
-					"\"$(SRCROOT)/lib/libXBMS\"",
-					"\"$(SRCROOT)/lib/libXDAAP\"",
+					"$(SRCROOT)",
+					"$(SRCROOT)/lib/libRTV",
+					"$(SRCROOT)/lib/libXDAAP",
+					"$(SRCROOT)/lib/cmyth/libcmyth",
+					"$(SRCROOT)/lib/cmyth/librefmem",
+					"$(SRCROOT)/lib/libapetag/.libs",
+					"$(SRCROOT)/lib/libsquish",
+					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
+					"$(SRCROOT)/xbmc/interfaces/http-api",
+					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib/mysql\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
 					"-all_load",
+					"-L$XBMC_DEPENDS/lib",
+					"-llzo2",
+					"-lpcre",
+					"-lpcrecpp",
+					"-lfribidi",
+					"-lcdio",
+					"-lfreetype",
+					"-lfontconfig",
+					"-lsqlite3",
+					"-lsamplerate",
+					"-lmicrohttpd",
+					"-lGLEW",
+					"-lSDL",
+					"-lSDL_mixer",
+					"-lsmbclient",
+					"-lpython2.6",
+					"-L$XBMC_DEPENDS/lib/mysql",
+					"-lmysqlclient",
 				);
 				PRODUCT_NAME = XBMC;
-				USER_HEADER_SEARCH_PATHS = ". /opt/local/include /opt/local/include/freetype2 /opt/local/include/mysql5 /opt/local/include/glib-2.0 /opt/local/lib/glib-2.0/include /usr/X11R6/include";
+				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				VALID_ARCHS = ppc;
+				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/osx-10.4_ppc";
 				ZERO_LINK = NO;
 			};
 			name = Debug;
@@ -9614,7 +9632,7 @@
 				ARCHS = ppc;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -9639,58 +9657,61 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
-					xbmc/osx,
 					$SRCROOT,
-					lib,
 					xbmc,
-					lib/ffmpeg,
+					xbmc/osx,
 					xbmc/linux,
 					xbmc/cores/dvdplayer,
-					"lib/darwin/libcurl-OSX/include",
+					lib,
+					lib/ffmpeg,
+					$XBMC_DEPENDS/include,
+					$XBMC_DEPENDS/include/mysql,
+					$XBMC_DEPENDS/include/freetype2,
+					$XBMC_DEPENDS/include/python2.6,
 				);
-				INFOPLIST_FILE = "/Users/Shared/xbmc/xbmc_svn/xbmc/osx/Info copy.plist";
+				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
-					lib/libRTV,
-					lib/libXBMS,
-					lib/libXDAAP,
-					lib/cmyth/libcmyth,
-					lib/cmyth/librefmem,
-					lib/libapetag/.libs,
-					lib/libsquish,
-					lib/jsoncpp/src/lib_json,
-					"xbmc/interfaces/http-api",
-					"xbmc/interfaces/json-rpc",
-					/opt/local/lib,
-					/opt/local/lib/mysql5/mysql,
-					/opt/local/lib/samba3,
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
-					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib/mysql\"",
-					"\"$(SRCROOT)/lib/libsquish\"",
-					"\"$(SRCROOT)/lib/libRTV\"",
-					"\"$(SRCROOT)/lib/libXBMS\"",
-					"\"$(SRCROOT)/lib/libXDAAP\"",
+					"$(SRCROOT)",
+					"$(SRCROOT)/lib/libRTV",
+					"$(SRCROOT)/lib/libXDAAP",
+					"$(SRCROOT)/lib/cmyth/libcmyth",
+					"$(SRCROOT)/lib/cmyth/librefmem",
+					"$(SRCROOT)/lib/libapetag/.libs",
+					"$(SRCROOT)/lib/libsquish",
+					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
+					"$(SRCROOT)/xbmc/interfaces/http-api",
+					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib/mysql\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
 					"-all_load",
+					"-L$XBMC_DEPENDS/lib",
+					"-llzo2",
+					"-lpcre",
+					"-lpcrecpp",
+					"-lfribidi",
+					"-lcdio",
+					"-lfreetype",
+					"-lfontconfig",
+					"-lsqlite3",
+					"-lsamplerate",
+					"-lmicrohttpd",
+					"-lGLEW",
+					"-lSDL",
+					"-lSDL_mixer",
+					"-lsmbclient",
+					"-lpython2.6",
+					"-L$XBMC_DEPENDS/lib/mysql",
+					"-lmysqlclient",
 				);
 				PRODUCT_NAME = XBMC;
-				USER_HEADER_SEARCH_PATHS = ". /opt/local/include /opt/local/include/freetype2 /opt/local/include/mysql5 /opt/local/include/glib-2.0 /opt/local/lib/glib-2.0/include /usr/X11R6/include";
+				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				VALID_ARCHS = ppc;
+				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/osx-10.4_ppc";
 				ZERO_LINK = NO;
 			};
 			name = Release;

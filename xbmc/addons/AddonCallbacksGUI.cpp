@@ -169,7 +169,7 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
 
   CAddonCallbacksGUI* guiHelper = helper->GetHelperGUI();
 
-  RESOLUTION res;
+  RESOLUTION_INFO res;
   CStdString strSkinPath;
   if (!forceFallback)
   {
