@@ -29,7 +29,6 @@ CGUIControlGroup::CGUIControlGroup()
   m_defaultControl = 0;
   m_defaultAlways = false;
   m_focusedControl = 0;
-  m_renderTime = 0;
   m_renderFocusedLast = false;
   ControlType = GUICONTROL_GROUP;
 }
@@ -40,7 +39,6 @@ CGUIControlGroup::CGUIControlGroup(int parentID, int controlID, float posX, floa
   m_defaultControl = 0;
   m_defaultAlways = false;
   m_focusedControl = 0;
-  m_renderTime = 0;
   m_renderFocusedLast = false;
   ControlType = GUICONTROL_GROUP;
 }
@@ -58,7 +56,6 @@ CGUIControlGroup::CGUIControlGroup(const CGUIControlGroup &from)
 
   // defaults
   m_focusedControl = 0;
-  m_renderTime = 0;
   ControlType = GUICONTROL_GROUP;
 }
 
@@ -97,6 +94,21 @@ void CGUIControlGroup::DynamicResourceAlloc(bool bOnOff)
   }
 }
 
+void CGUIControlGroup::Process(unsigned int currentTime)
+{
+  CPoint pos(GetPosition());
+  g_graphicsContext.SetOrigin(pos.x, pos.y);
+
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    CGUIControl *control = *it;
+    control->DoProcess(currentTime);
+  }
+
+  g_graphicsContext.RestoreOrigin();
+  CGUIControl::Process(currentTime);
+}
+
 void CGUIControlGroup::Render()
 {
   CPoint pos(GetPosition());
@@ -105,16 +117,13 @@ void CGUIControlGroup::Render()
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *control = *it;
-    GUIPROFILER_VISIBILITY_BEGIN(control);
-    control->UpdateVisibility();
-    GUIPROFILER_VISIBILITY_END(control);
     if (m_renderFocusedLast && control->HasFocus())
       focusedControl = control;
     else
-      control->DoRender(m_renderTime);
+      control->DoRender();
   }
   if (focusedControl)
-    focusedControl->DoRender(m_renderTime);
+    focusedControl->DoRender();
   CGUIControl::Render();
   g_graphicsContext.RestoreOrigin();
 }
@@ -281,12 +290,6 @@ bool CGUIControlGroup::CanFocus() const
       return true;
   }
   return false;
-}
-
-void CGUIControlGroup::DoRender(unsigned int currentTime)
-{
-  m_renderTime = currentTime;
-  CGUIControl::DoRender(currentTime);
 }
 
 void CGUIControlGroup::SetInitialVisibility()
