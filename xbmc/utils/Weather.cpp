@@ -78,10 +78,6 @@ using namespace XFILE;
 #define CONTROL_LABELD0GEN  34
 #define CONTROL_IMAGED0IMG  35
 
-#define PARTNER_ID    "1004124588"   //weather.com partner id
-#define PARTNER_KEY    "079f24145f208494"  //weather.com partner key
-
-#define MAX_LOCATION   3
 #define LOCALIZED_TOKEN_FIRSTID    370
 #define LOCALIZED_TOKEN_LASTID     395
 #define LOCALIZED_TOKEN_FIRSTID2  1396
@@ -90,12 +86,6 @@ using namespace XFILE;
 #define LOCALIZED_TOKEN_LASTID3     17
 #define LOCALIZED_TOKEN_FIRSTID4    71
 #define LOCALIZED_TOKEN_LASTID4     89
-
-/*
-FIXME'S
->strings are not centered
->weather.com dev account is mine not a general xbmc one
-*/
 
 // USE THESE FOR ZIP
 #define WEATHER_BASE_PATH "special://temp/weather/"

@@ -28,7 +28,7 @@
 
 class TiXmlElement;
 
-#define WEATHER_LABEL_LOCATION   10
+#define WEATHER_LABEL_LOCATION     10
 #define WEATHER_IMAGE_CURRENT_ICON 21
 #define WEATHER_LABEL_CURRENT_COND 22
 #define WEATHER_LABEL_CURRENT_TEMP 23
@@ -37,6 +37,12 @@ class TiXmlElement;
 #define WEATHER_LABEL_CURRENT_WIND 26
 #define WEATHER_LABEL_CURRENT_DEWP 27
 #define WEATHER_LABEL_CURRENT_HUMI 28
+
+// weather.com dev account is mine not a general xbmc one
+#define PARTNER_ID        "1004124588"  //weather.com partner id
+#define PARTNER_KEY "079f24145f208494"  //weather.com partner key
+
+#define MAX_LOCATION                3
 
 struct day_forecast
 {
@@ -149,7 +155,7 @@ protected:
 
 private:
 
-  CStdString m_location[3];
+  CStdString m_location[MAX_LOCATION];
   unsigned int m_iCurWeather;
 
   CWeatherInfo m_info;
