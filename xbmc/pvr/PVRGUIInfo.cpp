@@ -95,7 +95,7 @@ void CPVRGUIInfo::Stop(void)
 
 void CPVRGUIInfo::Notify(const Observable &obs, const CStdString& msg)
 {
-  if (msg.Equals("timers"))
+  if (msg.Equals("timers") || msg.Equals("timers-reset"))
     UpdateTimersCache();
 }
 

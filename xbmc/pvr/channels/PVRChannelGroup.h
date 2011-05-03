@@ -40,7 +40,8 @@ namespace PVR
   /** A group of channels */
 
   class CPVRChannelGroup : private std::vector<PVRChannelGroupMember>,
-                           private Observer
+                           private Observer,
+                           public Observable
   {
     friend class CPVRChannelGroups;
     friend class CPVRChannelGroupInternal;

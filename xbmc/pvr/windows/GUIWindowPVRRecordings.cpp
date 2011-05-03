@@ -27,6 +27,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "pvr/timers/PVRTimers.h"
 #include "pvr/windows/GUIWindowPVR.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
@@ -37,6 +38,25 @@ CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_RECORDINGS, CONTROL_BTNRECORDINGS, CONTROL_LIST_RECORDINGS)
 {
   m_strSelectedPath = "pvr://recordings/";
+  m_bObservingRecordings = false;
+  m_bObservingTimers = false;
+}
+
+CGUIWindowPVRRecordings::~CGUIWindowPVRRecordings(void)
+{
+  if (m_bObservingRecordings)
+  {
+    CPVRRecordings *recordings = g_PVRRecordings;
+    if (recordings)
+      recordings->RemoveObserver(this);
+  }
+
+  if (m_bObservingTimers)
+  {
+    CPVRTimers *timers = g_PVRTimers;
+    if (timers)
+      timers->RemoveObserver(this);
+  }
 }
 
 void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons &buttons) const
@@ -106,6 +126,18 @@ void CGUIWindowPVRRecordings::UpdateData(void)
   if (m_bIsFocusing)
     return;
 
+  if (!m_bObservingRecordings)
+  {
+    m_bObservingRecordings = true;
+    g_PVRRecordings->AddObserver(this);
+  }
+
+  if (!m_bObservingTimers)
+  {
+    m_bObservingTimers = true;
+    g_PVRTimers->AddObserver(this);
+  }
+
   CLog::Log(LOGDEBUG, "CGUIWindowPVRRecordings - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
   m_bIsFocusing = true;
   m_bUpdateRequired = false;
@@ -125,6 +157,24 @@ void CGUIWindowPVRRecordings::UpdateData(void)
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19017));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");
   m_bIsFocusing = false;
+}
+
+void CGUIWindowPVRRecordings::Notify(const Observable &obs, const CStdString& msg)
+{
+  if (msg.Equals("recordings") || msg.Equals("timers"))
+  {
+    if (IsVisible())
+      SetInvalid();
+    else
+      m_bUpdateRequired = true;
+  }
+  else if (msg.Equals("recordings-reset") || msg.Equals("timers-reset"))
+  {
+    if (IsVisible())
+      UpdateData();
+    else
+      m_bUpdateRequired = true;
+  }
 }
 
 bool CGUIWindowPVRRecordings::OnClickButton(CGUIMessage &message)

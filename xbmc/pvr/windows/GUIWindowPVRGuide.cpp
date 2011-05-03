@@ -52,13 +52,26 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
 
 CGUIWindowPVRGuide::~CGUIWindowPVRGuide()
 {
-  g_PVREpg->RemoveObserver(this);
+  if (m_bObservingEpg)
+  {
+    CPVREpgContainer *epg = g_PVREpg;
+    if (epg)
+      epg->RemoveObserver(this);
+  }
+
+  if (m_bObservingTimers)
+  {
+    CPVRTimers *timers = g_PVRTimers;
+    if (timers)
+      timers->RemoveObserver(this);
+  }
+
   delete m_epgData;
 }
 
 void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
 {
-  if (msg.Equals("epg"))
+  if (msg.Equals("epg") || msg.Equals("timers-reset") || msg.Equals("timers"))
   {
     UpdateEpgCache(m_bLastEpgView, true);
 
@@ -451,8 +464,14 @@ void CGUIWindowPVRGuide::UpdateEpgCache(bool bRadio /* = false */, bool bForceUp
   /* start observing the EPG for changes, so our cache becomes updated in the background */
   if (!m_bObservingEpg)
   {
-    g_PVREpg->AddObserver(this);
     m_bObservingEpg = true;
+    g_PVREpg->AddObserver(this);
+  }
+
+  if (!m_bObservingTimers)
+  {
+    m_bObservingTimers = true;
+    g_PVRTimers->AddObserver(this);
   }
 
   if (!m_bGotInitialEpg || m_bLastEpgView != bRadio || bForceUpdate)

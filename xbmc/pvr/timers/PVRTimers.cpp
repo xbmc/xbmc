@@ -203,13 +203,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
     SetChanged();
     lock.Leave();
 
-    NotifyObservers("timers", false);
-
-    g_PVRManager.UpdateWindow(PVR_WINDOW_TIMERS, bAddedOrDeleted);
-    g_PVRManager.UpdateWindow(PVR_WINDOW_EPG, false);
-    g_PVRManager.UpdateWindow(PVR_WINDOW_RECORDINGS, bAddedOrDeleted);
-    g_PVRManager.UpdateWindow(PVR_WINDOW_CHANNELS_TV, false);
-    g_PVRManager.UpdateWindow(PVR_WINDOW_CHANNELS_RADIO, false);
+    NotifyObservers(bAddedOrDeleted ? "timers-reset" : "timers", false);
   }
 
   return bChanged;

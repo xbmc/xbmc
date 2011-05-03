@@ -36,6 +36,17 @@ using namespace PVR;
 CGUIWindowPVRTimers::CGUIWindowPVRTimers(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_TIMERS, CONTROL_BTNTIMERS, CONTROL_LIST_TIMERS)
 {
+  m_bObservingTimers = false;
+}
+
+CGUIWindowPVRTimers::~CGUIWindowPVRTimers(void)
+{
+  if (m_bObservingTimers)
+  {
+    CPVRTimers *timers = g_PVRTimers;
+    if (timers)
+      timers->RemoveObserver(this);
+  }
 }
 
 void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &buttons) const
@@ -88,6 +99,12 @@ void CGUIWindowPVRTimers::UpdateData(void)
   CSingleLock lock(m_critSection);
   if (m_bIsFocusing)
     return;
+
+  if (!m_bObservingTimers)
+  {
+    m_bObservingTimers = true;
+    g_PVRTimers->AddObserver(this);
+  }
 
   CLog::Log(LOGDEBUG, "CGUIWindowPVRTimers - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
   m_bIsFocusing = true;
@@ -253,4 +270,22 @@ bool CGUIWindowPVRTimers::OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON 
   }
 
   return bReturn;
+}
+
+void CGUIWindowPVRTimers::Notify(const Observable &obs, const CStdString& msg)
+{
+  if (msg.Equals("timers"))
+  {
+    if (IsVisible())
+      SetInvalid();
+    else
+      m_bUpdateRequired = true;
+  }
+  else if (msg.Equals("timers-reset"))
+  {
+    if (IsVisible())
+      UpdateData();
+    else
+      m_bUpdateRequired = true;
+  }
 }
