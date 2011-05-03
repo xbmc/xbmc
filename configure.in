@@ -1571,6 +1571,10 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
     sed -i "" -e "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak &&
     sed -i "" -e "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak &&
     sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
+    if test "$use_arch" = "ppc"; then
+      sed -i "" -e "s/HAVE_GNU_AS 1/HAVE_GNU_AS 0/" config.h
+      sed -i "" -e "s/^HAVE_GNU_AS=yes/!HAVE_GNU_AS=yes/" config.mak
+    fi
   else
     CFLAGS="" \
     LDFLAGS="$(echo "$LDFLAGS" | sed "s/-Wl,-Bsymbolic-functions//g")" \
