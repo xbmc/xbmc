@@ -64,10 +64,12 @@ void CGUIMultiSelectTextControl::DoRender(unsigned int currentTime)
   CGUIControl::DoRender(currentTime);
 }
 
-void CGUIMultiSelectTextControl::UpdateColors()
+bool CGUIMultiSelectTextControl::UpdateColors()
 {
-  m_label.UpdateColors();
-  CGUIControl::UpdateColors();
+  bool changed = m_label.UpdateColors();
+  changed |= CGUIControl::UpdateColors();
+
+  return changed;
 }
 
 void CGUIMultiSelectTextControl::Render()

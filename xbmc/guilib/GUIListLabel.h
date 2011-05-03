@@ -57,7 +57,7 @@ public:
   }
   
 protected:
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
 
   CGUILabel     m_label;
   CGUIInfoLabel m_info;

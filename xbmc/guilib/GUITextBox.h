@@ -65,7 +65,7 @@ public:
 
 protected:
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
   void UpdatePageControl();
   void ScrollToOffset(int offset, bool autoScroll = false);
