@@ -80,6 +80,7 @@ static const TypeMapping types[] =
    {"xbmc.addon.audio",                  ADDON_AUDIO,                1038, "DefaultAddonMusic.png" },
    {"xbmc.addon.image",                  ADDON_IMAGE,                1039, "DefaultAddonPicture.png" },
    {"xbmc.addon.executable",             ADDON_EXECUTABLE,           1043, "DefaultAddonProgram.png" },
+   {"binary.library",                    ADDON_BINARY_LIBRARY,       1043, "DefaultAddonProgram.png" },
    {"xbmc.service",                      ADDON_SERVICE,             24018, "DefaultAddonService.png" }};
 
 const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
@@ -197,6 +198,11 @@ AddonProps::AddonProps(const cp_extension_t *ext)
     EMPTY_IF("noicon",icon)
     EMPTY_IF("nochangelog",changelog)
   }
+  const cp_extension_t *pkgkit = CAddonMgr::Get().GetExtension(ext->plugin, "system.pkgkit");
+  if (pkgkit)
+    extrainfo.insert(make_pair("systempkg",
+                               CAddonMgr::Get().GetExtValue(
+                                          pkgkit->configuration, "@package")));
   BuildDependencies(ext->plugin);
 }
 
@@ -360,6 +366,8 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_SCRAPER_LIBRARY:
       case ADDON_PLUGIN:
       case ADDON_SERVICE:
+      case ADDON_VIZ:
+      case ADDON_BINARY_LIBRARY:
         {
           CStdString temp = CAddonMgr::Get().GetExtValue(extension->configuration, "@library");
           m_strLibName = temp;

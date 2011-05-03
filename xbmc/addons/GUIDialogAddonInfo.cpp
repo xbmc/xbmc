@@ -163,10 +163,9 @@ void CGUIDialogAddonInfo::OnUninstall()
   database.Open();
   database.DisableAddon(m_localAddon->ID(), false);
 
-  CFileItemList list;
-  list.Add(CFileItemPtr(new CFileItem(m_localAddon->Path(),true)));
-  list[0]->Select(true);
-  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""), &CAddonInstaller::Get());
+  CJobManager::GetInstance().AddJob(
+    new CAddonInstallJob(m_localAddon,"",false,"",true),
+                         &CAddonInstaller::Get());
   CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
   Close();
 }

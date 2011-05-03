@@ -105,19 +105,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         { // built in screensaver
           return AddonPtr(new CAddon(props));
         }
-#if defined(_LINUX) && !defined(__APPLE__)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
+        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library")) && value.empty())
           break;
-#elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_wingl")) && value.empty())
-          break;
-#elif defined(_WIN32) && defined(HAS_DX)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_windx")) && value.empty())
-          break;
-#elif defined(__APPLE__)
-        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_osx")) && value.empty())
-          break;
-#endif
         if (type == ADDON_VIZ)
         {
 #if defined(HAS_VISUALISATION)
@@ -610,7 +599,8 @@ AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info)
   // grab a relevant extension point, ignoring our xbmc.addon.metadata extension point
   for (unsigned int i = 0; i < info->num_extensions; ++i)
   {
-    if (0 != strcmp("xbmc.addon.metadata", info->extensions[i].ext_point_id))
+    if (0 != strcmp("xbmc.addon.metadata", info->extensions[i].ext_point_id) &&
+        0 != strcmp("system.pkgkit", info->extensions[i].ext_point_id))
     { // note that Factory takes care of whether or not we have platform support
       return Factory(&info->extensions[i]);
     }

@@ -20,6 +20,12 @@
  *
  */
 
+#include "system.h"
+
+#ifdef HAVE_PKGKIT
+#include "pkgkit/PackageKitManager.h"
+#endif
+
 #include "utils/FileOperationJob.h"
 #include "addons/Addon.h"
 #include "utils/Stopwatch.h"
@@ -116,9 +122,12 @@ private:
 };
 
 class CAddonInstallJob : public CFileOperationJob
+#ifdef HAVE_PKGKIT
+                         , public IInstallCallback
+#endif
 {
 public:
-  CAddonInstallJob(const ADDON::AddonPtr &addon, const CStdString &hash = "", bool update = false, const CStdString &referer = "");
+  CAddonInstallJob(const ADDON::AddonPtr &addon, const CStdString &hash = "", bool update = false, const CStdString &referer = "", bool remove=false);
 
   virtual bool DoWork();
 
@@ -126,6 +135,17 @@ public:
    \return id of the installing addon
    */
   CStdString AddonID() const;
+
+  /*! \brief Delete an addon following install failure
+   \param addonFolder - the folder to delete. if blank we delete m_addon
+   */
+  bool DeleteAddon(const CStdString &addonFolder="");
+
+#ifdef HAVE_PKGKIT
+  virtual void DownloadProgress(unsigned int progress, unsigned int total);
+  virtual void InstallProgress(unsigned int progress, unsigned int total);
+  virtual void Done(bool success);
+#endif
 
 private:
   bool OnPreInstall();
@@ -145,13 +165,14 @@ private:
    */
   bool CheckHash(const CStdString& addonZip);
 
-  /*! \brief Delete an addon following install failure
-   \param addonFolder - the folder to delete
-   */
-  void DeleteAddon(const CStdString &addonFolder);
-
   ADDON::AddonPtr m_addon;
   CStdString m_hash;
   bool m_update;
+  bool m_remove;
   CStdString m_referer;
+#ifdef HAVE_PKGKIT
+  CEvent m_systemInstallDone;
+  bool m_systemsuccess;
+  GCancellable* m_systemjob;
+#endif
 };

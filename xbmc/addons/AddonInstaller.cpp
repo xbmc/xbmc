@@ -67,7 +67,7 @@ CAddonInstaller &CAddonInstaller::Get()
 void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
   CSingleLock lock(m_critSection);
-  if (strncmp(job->GetType(), "repoupdate", 10) == 0)
+  if (job && strncmp(job->GetType(), "repoupdate", 10) == 0)
   { // repo job finished
     m_repoUpdateDone.Set();
     m_repoUpdateJob = 0;
@@ -324,69 +324,94 @@ void CAddonInstaller::UpdateRepos(bool force, bool wait)
 }
 
 CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer)
-: m_addon(addon), m_hash(hash), m_update(update), m_referer(referer)
+: m_addon(addon), m_hash(hash), m_update(update), m_referer(referer) 
+#ifdef HAVE_PKGKIT
+  ,m_systemsuccess(false)
+#endif
 {
 }
 
 bool CAddonInstallJob::DoWork()
 {
-  // Addons are installed by downloading the .zip package on the server to the local
-  // packages folder, then extracting from the local .zip package into the addons folder
-  // Both these functions are achieved by "copying" using the vfs.
-
-  CStdString dest="special://home/addons/packages/";
-  CStdString package = URIUtils::AddFileToFolder("special://home/addons/packages/",
-                                              URIUtils::GetFileName(m_addon->Path()));
+  if (m_remove)
+    return DeleteAddon();
 
   CStdString installFrom;
-  if (URIUtils::HasSlashAtEnd(m_addon->Path()))
-  { // passed in a folder - all we need do is copy it across
-    installFrom = m_addon->Path();
-  }
-  else
+#ifdef HAVE_PKGKIT
+  InfoMap::const_iterator it = m_addon->Props().extrainfo.find("systempkg");
+  if (it == m_addon->Props().extrainfo.end())
+#endif
   {
-    // zip passed in - download + extract
-    CStdString path(m_addon->Path());
-    if (!m_referer.IsEmpty() && URIUtils::IsInternetStream(path))
+    // Addons are installed by downloading the .zip package on the server to the local
+    // packages folder, then extracting from the local .zip package into the addons folder
+    // Both these functions are achieved by "copying" using the vfs.
+
+    CStdString dest="special://home/addons/packages/";
+    CStdString package = URIUtils::AddFileToFolder("special://home/addons/packages/",
+                                                URIUtils::GetFileName(m_addon->Path()));
+
+    if (URIUtils::HasSlashAtEnd(m_addon->Path()))
+    { // passed in a folder - all we need do is copy it across
+      installFrom = m_addon->Path();
+    }
+    else
     {
-      CURL url(path);
-      url.SetProtocolOptions(m_referer);
-      path = url.Get();
-    }
-    if (!CFile::Exists(package) && !DownloadPackage(path, dest))
-    {
-      CFile::Delete(package);
-      return false;
-    }
+      // zip passed in - download + extract
+      CStdString path(m_addon->Path());
+      if (!m_referer.IsEmpty() && URIUtils::IsInternetStream(path))
+      {
+        CURL url(path);
+        url.SetProtocolOptions(m_referer);
+        path = url.Get();
+      }
+      if (!CFile::Exists(package) && !DownloadPackage(path, dest))
+      {
+        CFile::Delete(package);
+        return false;
+      }
 
-    // at this point we have the package - check that it is valid
-    if (!CFile::Exists(package) || !CheckHash(package))
-    {
-      CFile::Delete(package);
-      return false;
+      // at this point we have the package - check that it is valid
+      if (!CFile::Exists(package) || !CheckHash(package))
+      {
+        CFile::Delete(package);
+        return false;
+      }
+
+      // check the archive as well - should have just a single folder in the root
+      CStdString archive;
+      URIUtils::CreateArchivePath(archive,"zip",package,"");
+
+      CFileItemList archivedFiles;
+      CDirectory::GetDirectory(archive, archivedFiles);
+
+      if (archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder)
+      { // invalid package
+        CFile::Delete(package);
+        return false;
+      }
+      installFrom = archivedFiles[0]->m_strPath;
     }
-
-    // check the archive as well - should have just a single folder in the root
-    CStdString archive;
-    URIUtils::CreateArchivePath(archive,"zip",package,"");
-
-    CFileItemList archivedFiles;
-    CDirectory::GetDirectory(archive, archivedFiles);
-
-    if (archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder)
-    { // invalid package
-      CFile::Delete(package);
-      return false;
-    }
-    installFrom = archivedFiles[0]->m_strPath;
   }
-
   // run any pre-install functions
   bool reloadAddon = OnPreInstall();
 
+#ifdef HAVE_PKGKIT
   // perform install
-  if (!Install(installFrom))
-    return false; // something went wrong
+  if (it != m_addon->Props().extrainfo.end())
+  {
+    m_systemjob = CPackageKitManager::Get().transaction(it->second,
+                                    m_addon->Props().version.c_str(),this,true);
+
+    m_systemInstallDone.Wait();
+    if (!m_systemsuccess)
+      return false;
+  }
+  else
+#endif
+  {
+    if (!Install(installFrom))
+      return false; // something went wrong
+  }
 
   // run any post-install guff
   OnPostInstall(reloadAddon);
@@ -415,12 +440,31 @@ bool CAddonInstallJob::OnPreInstall()
   return false;
 }
 
-void CAddonInstallJob::DeleteAddon(const CStdString &addonFolder)
+bool CAddonInstallJob::DeleteAddon(const CStdString &addonFolder)
 {
-  CFileItemList list;
-  list.Add(CFileItemPtr(new CFileItem(addonFolder, true)));
-  list[0]->Select(true);
-  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete, list, ""), NULL);
+  CStdString folder(addonFolder);
+  if (folder.IsEmpty())
+    folder = m_addon->Path();
+
+#ifdef HAVE_PKGKIT
+  InfoMap::const_iterator it = m_addon->Props().extrainfo.find("systempkg");
+  if (it != m_addon->Props().extrainfo.end())
+  {
+    m_systemInstallDone.Reset();
+    CPackageKitManager::Get().transaction(it->second,
+                                     m_addon->Props().version.c_str(),this,false);
+    m_systemInstallDone.Wait();
+    return m_systemsuccess;
+  }
+  else
+#endif
+  {
+    CFileItemList list;
+    list.Add(CFileItemPtr(new CFileItem(folder, true)));
+    list[0]->Select(true);
+    CFileOperationJob job(CFileOperationJob::ActionDelete, list, "");
+    return job.DoWork();
+  }
 }
 
 bool CAddonInstallJob::Install(const CStdString &installFrom)
@@ -537,3 +581,25 @@ CStdString CAddonInstallJob::AddonID() const
 {
   return (m_addon) ? m_addon->ID() : "";
 }
+
+#ifdef HAVE_PKGKIT
+void CAddonInstallJob::DownloadProgress(unsigned int progress,
+                                        unsigned int total)
+{
+  if (ShouldCancel(progress/2,total))
+    CPackageKitManager::Get().Cancel(m_systemjob);
+}
+
+void CAddonInstallJob::InstallProgress(unsigned int progress,
+                                       unsigned int total)
+{
+  if (ShouldCancel(50+progress/2,total))
+    CPackageKitManager::Get().Cancel(m_systemjob);
+}
+
+void CAddonInstallJob::Done(bool success)
+{
+  m_systemsuccess = success;
+  m_systemInstallDone.Set();
+}
+#endif

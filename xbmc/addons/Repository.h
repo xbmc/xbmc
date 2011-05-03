@@ -20,6 +20,12 @@
  *
  */
 
+#include "system.h"
+
+#ifdef HAVE_PKGKIT
+#include "pkgkit/PackageKitManager.h"
+#endif
+
 #include "Addon.h"
 #include "AddonManager.h"
 #include "XBDateTime.h"
@@ -61,6 +67,9 @@ namespace ADDON
   };
 
   class CRepositoryUpdateJob : public CJob
+#ifdef HAVE_PKGKIT
+                             , public IInstallCallback
+#endif
   {
   public:
     CRepositoryUpdateJob(const VECADDONS& repos);
@@ -68,6 +77,14 @@ namespace ADDON
 
     virtual const char *GetType() const { return "repoupdate"; };
     virtual bool DoWork();
+
+#ifdef HAVE_PKGKIT
+  virtual void DownloadProgress(unsigned int progress, unsigned int total);
+  virtual void InstallProgress(unsigned int progress, unsigned int total);
+  virtual void Done(bool success);
+
+    CEvent m_systemUpdateDone;
+#endif
   private:
     VECADDONS GrabAddons(RepositoryPtr& repo);
 
