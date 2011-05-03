@@ -314,7 +314,7 @@ bool CPVRClients::LoadClients(void)
       continue;
 
     /* load and initialise the client libraries */
-    boost::shared_ptr<CPVRClient> addon = dynamic_pointer_cast<CPVRClient>(clientAddon);
+    boost::shared_ptr<CPVRClient> addon = boost::dynamic_pointer_cast<CPVRClient>(clientAddon);
     if (addon && addon->Create(iClientId, this))
     {
       /* get the client's properties */
