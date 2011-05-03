@@ -504,6 +504,17 @@ int SqliteDataset::exec(const string &sql) {
       }
     }
   }
+  // Strip ON table from DROP INDEX statements:
+  // before: DROP INDEX foo ON table
+  // after:  DROP INDEX foo
+  size_t pos = qry.find("DROP INDEX ");
+  if ( pos != string::npos )
+  {
+    pos = qry.find(" ON ", pos+1);
+
+    if ( pos != string::npos )
+      qry = qry.substr(0, pos);
+  }
 
   if((res = db->setErr(sqlite3_exec(handle(),qry.c_str(),&callback,&exec_res,&errmsg),qry.c_str())) == SQLITE_OK)
     return res;
