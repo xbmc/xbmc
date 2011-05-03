@@ -52,19 +52,6 @@ CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio)
   m_bObservingTimers    = false;
 }
 
-CGUIWindowPVRChannels::~CGUIWindowPVRChannels(void)
-{
-  if (m_bObservingTimers)
-  {
-    CPVRTimers *timers = g_PVRTimers;
-    if (timers)
-      timers->RemoveObserver(this);
-  }
-
-  if (m_selectedGroup)
-    m_selectedGroup->RemoveObserver(this);
-}
-
 void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &buttons) const
 {
   if (itemNumber < 0 || itemNumber >= m_parent->m_vecItems->Size())

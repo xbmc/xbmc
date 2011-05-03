@@ -34,7 +34,6 @@ namespace PVR
 
   public:
     CGUIWindowPVRTimers(CGUIWindowPVR *parent);
-    virtual ~CGUIWindowPVRTimers(void);
 
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);

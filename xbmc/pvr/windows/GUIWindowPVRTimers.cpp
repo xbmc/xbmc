@@ -39,16 +39,6 @@ CGUIWindowPVRTimers::CGUIWindowPVRTimers(CGUIWindowPVR *parent) :
   m_bObservingTimers = false;
 }
 
-CGUIWindowPVRTimers::~CGUIWindowPVRTimers(void)
-{
-  if (m_bObservingTimers)
-  {
-    CPVRTimers *timers = g_PVRTimers;
-    if (timers)
-      timers->RemoveObserver(this);
-  }
-}
-
 void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &buttons) const
 {
   if (itemNumber < 0 || itemNumber >= m_parent->m_vecItems->Size())

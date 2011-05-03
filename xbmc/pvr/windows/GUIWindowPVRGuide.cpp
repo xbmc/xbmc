@@ -52,20 +52,6 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
 
 CGUIWindowPVRGuide::~CGUIWindowPVRGuide()
 {
-  if (m_bObservingEpg)
-  {
-    CPVREpgContainer *epg = g_PVREpg;
-    if (epg)
-      epg->RemoveObserver(this);
-  }
-
-  if (m_bObservingTimers)
-  {
-    CPVRTimers *timers = g_PVRTimers;
-    if (timers)
-      timers->RemoveObserver(this);
-  }
-
   delete m_epgData;
 }
 
