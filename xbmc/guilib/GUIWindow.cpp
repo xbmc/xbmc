@@ -429,6 +429,10 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
       QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
       while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
       {
+        // TODO This shouldn't be handled like this
+        // The processing should be done from WindowManager and deinit
+        // should probably be called from there.
+        g_windowManager.Process(CTimeUtils::GetFrameTime());
         g_windowManager.ProcessRenderLoop(true);
       }
     }
