@@ -46,12 +46,22 @@ CGUIScrollBar::~CGUIScrollBar(void)
 {
 }
 
-
-void CGUIScrollBar::Render()
+void CGUIScrollBar::Process(unsigned int currentTime)
 {
   if (m_bInvalidated)
     UpdateBarSize();
 
+  m_guiBackground.Process(currentTime);
+  m_guiBarNoFocus.Process(currentTime);
+  m_guiBarFocus.Process(currentTime);
+  m_guiNibNoFocus.Process(currentTime);
+  m_guiNibFocus.Process(currentTime);
+
+  CGUIControl::Process(currentTime);
+}
+
+void CGUIScrollBar::Render()
+{
   m_guiBackground.Render();
   if (m_bHasFocus)
   {

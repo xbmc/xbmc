@@ -44,7 +44,7 @@ CGUIButtonControl::~CGUIButtonControl(void)
 {
 }
 
-void CGUIButtonControl::Render()
+void CGUIButtonControl::Process(unsigned int currentTime)
 {
   if (m_bInvalidated)
   {
@@ -79,11 +79,24 @@ void CGUIButtonControl::Render()
     m_imgFocus.SetVisible(false);
     m_imgNoFocus.SetVisible(true);
   }
-  // render both so the visibility settings cause the frame counter to resetcorrectly
-  m_imgFocus.Render();
-  m_imgNoFocus.Render();
 
-  RenderText();
+  m_imgFocus.Process(currentTime);
+  m_imgNoFocus.Process(currentTime);
+
+  ProcessText(currentTime);
+  CGUIControl::Process(currentTime);
+}
+
+void CGUIButtonControl::Render()
+{
+  if (HasFocus())
+    m_imgFocus.Render();
+  else
+    m_imgNoFocus.Render();
+
+  m_label.Render();
+  m_label2.Render();
+
   CGUIControl::Render();
 }
 
@@ -96,7 +109,7 @@ CGUILabel::COLOR CGUIButtonControl::GetTextColor() const
   return CGUILabel::COLOR_TEXT;
 }
 
-void CGUIButtonControl::RenderText()
+void CGUIButtonControl::ProcessText(unsigned int currentTime)
 {
   m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
   m_label.SetText(m_info.GetLabel(m_parentID));
@@ -114,10 +127,8 @@ void CGUIButtonControl::RenderText()
     CGUILabel::CheckAndCorrectOverlap(m_label, m_label2);
 
     m_label2.SetColor(GetTextColor());
-    m_label2.Render();
   }
   m_label.SetColor(GetTextColor());
-  m_label.Render();
 }
 
 bool CGUIButtonControl::OnAction(const CAction &action)

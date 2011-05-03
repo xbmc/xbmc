@@ -38,7 +38,6 @@ CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float po
   m_scrollSpeed = 0;
   m_scrollLastTime = 0;
   m_scrollTime = scrollTime ? scrollTime : 1;
-  m_renderTime = 0;
   m_useControlPositions = useControlPositions;
   ControlType = GUICONTROL_GROUPLIST;
 }
@@ -47,11 +46,11 @@ CGUIControlGroupList::~CGUIControlGroupList(void)
 {
 }
 
-void CGUIControlGroupList::Render()
+void CGUIControlGroupList::Process(unsigned int currentTime)
 {
   if (m_scrollSpeed != 0)
   {
-    m_offset += m_scrollSpeed * (m_renderTime - m_scrollLastTime);
+    m_offset += m_scrollSpeed * (currentTime - m_scrollLastTime);
     if ((m_scrollSpeed < 0 && m_offset < m_scrollOffset) ||
         (m_scrollSpeed > 0 && m_offset > m_scrollOffset))
     {
@@ -59,7 +58,7 @@ void CGUIControlGroupList::Render()
       m_scrollSpeed = 0;
     }
   }
-  m_scrollLastTime = m_renderTime;
+  m_scrollLastTime = currentTime;
 
   // first we update visibility of all our items, to ensure our size and
   // alignment computations are correct.
@@ -79,6 +78,28 @@ void CGUIControlGroupList::Render()
     CGUIMessage message2(GUI_MSG_ITEM_SELECT, GetParentID(), m_pageControl, (int)m_offset);
     SendWindowMessage(message2);
   }
+  // we run through the controls, rendering as we go
+  float pos = GetAlignOffset();
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    // note we render all controls, even if they're offscreen, as then they'll be updated
+    // with respect to animations
+    CGUIControl *control = *it;
+    if (m_orientation == VERTICAL)
+      g_graphicsContext.SetOrigin(m_posX, m_posY + pos - m_offset);
+    else
+      g_graphicsContext.SetOrigin(m_posX + pos - m_offset, m_posY);
+    control->DoProcess(currentTime);
+
+    if (control->IsVisible())
+      pos += Size(control) + m_itemGap;
+    g_graphicsContext.RestoreOrigin();
+  }
+  CGUIControl::Process(currentTime);
+}
+
+void CGUIControlGroupList::Render()
+{
   // we run through the controls, rendering as we go
   bool render(g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height));
   float pos = GetAlignOffset();
@@ -100,7 +121,7 @@ void CGUIControlGroupList::Render()
         g_graphicsContext.SetOrigin(m_posX, m_posY + pos - m_offset);
       else
         g_graphicsContext.SetOrigin(m_posX + pos - m_offset, m_posY);
-      control->DoRender(m_renderTime);
+      control->DoRender();
     }
     if (control->IsVisible())
       pos += Size(control) + m_itemGap;
@@ -112,7 +133,7 @@ void CGUIControlGroupList::Render()
       g_graphicsContext.SetOrigin(m_posX, m_posY + focusedPos - m_offset);
     else
       g_graphicsContext.SetOrigin(m_posX + focusedPos - m_offset, m_posY);
-    focusedControl->DoRender(m_renderTime);
+    focusedControl->DoRender();
   }
   if (render) g_graphicsContext.RestoreClipRegion();
   CGUIControl::Render();

@@ -41,6 +41,15 @@ CGUICheckMarkControl::CGUICheckMarkControl(int parentID, int controlID, float po
 CGUICheckMarkControl::~CGUICheckMarkControl(void)
 {}
 
+void CGUICheckMarkControl::Process(unsigned int currentTime)
+{
+  m_imgCheckMark.Process(currentTime);
+  m_imgCheckMarkNoFocus.Process(currentTime);
+  m_label.Process(currentTime);
+
+  CGUIControl::Process(currentTime);
+}
+
 void CGUICheckMarkControl::Render()
 {
   m_label.SetText(m_strLabel);

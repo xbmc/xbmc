@@ -59,7 +59,6 @@ public:
   void SetSound(bool OnOff) { m_enableSound = OnOff; };
 
 protected:
-  virtual bool RenderAnimation(unsigned int time);
   virtual void SetDefaults();
   virtual void OnWindowLoaded();
 

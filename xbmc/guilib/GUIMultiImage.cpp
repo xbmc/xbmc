@@ -106,7 +106,7 @@ void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
   }
 }
 
-void CGUIMultiImage::Render()
+void CGUIMultiImage::Process(unsigned int currentTime)
 {
   // Set a viewport so that we don't render outside the defined area
   if (!m_files.empty() && g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
@@ -130,9 +130,24 @@ void CGUIMultiImage::Render()
       }
     }
     m_image.SetColorDiffuse(m_diffuseColor);
+    m_image.DoProcess(currentTime);
+
+    g_graphicsContext.RestoreClipRegion();
+  }
+
+  CGUIControl::Process(currentTime);
+}
+
+void CGUIMultiImage::Render()
+{
+  if (!m_files.empty())
+  {
+    // Set a viewport so that we don't render outside the defined area
+    g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
     m_image.Render();
     g_graphicsContext.RestoreClipRegion();
   }
+
   CGUIControl::Render();
 }
 

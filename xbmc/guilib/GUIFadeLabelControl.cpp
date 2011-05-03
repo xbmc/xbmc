@@ -76,10 +76,10 @@ void CGUIFadeLabelControl::AddLabel(const string &label)
   m_infoLabels.push_back(CGUIInfoLabel(label));
 }
 
-void CGUIFadeLabelControl::DoRender(unsigned int currentTime)
+void CGUIFadeLabelControl::Process(unsigned int currentTime)
 {
   m_renderTime = currentTime;
-  CGUIControl::DoRender(currentTime);
+  CGUIControl::Process(currentTime);
 }
 
 bool CGUIFadeLabelControl::UpdateColors()

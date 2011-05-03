@@ -67,6 +67,7 @@ public:
   virtual ~CGUIImage(void);
   virtual CGUIImage *Clone() const { return new CGUIImage(*this); };
 
+  virtual void Process(unsigned int currentTime);
   virtual void Render();
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual bool OnAction(const CAction &action) ;
@@ -100,7 +101,7 @@ protected:
   virtual void FreeTextures(bool immediately = false);
   void FreeResourcesButNotAnims();
   unsigned char GetFadeLevel(unsigned int time) const;
-  bool RenderFading(CFadingTexture *texture, unsigned int frameTime);
+  bool ProcessFading(CFadingTexture *texture, unsigned int frameTime);
 
   bool m_bDynamicResourceAlloc;
 

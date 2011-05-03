@@ -68,6 +68,10 @@ public:
   // currently focused window(s).  Returns true only if the message is handled.
   bool OnAction(const CAction &action);
 
+  /*! \brief Process active controls allowing them to animate before rendering.
+   */
+  void Process(unsigned int currentTime);
+
   /*! \brief Rendering of the current window and any dialogs
    Render is called every frame to draw the current window and any dialogs.
    It should only be called from the application thread.

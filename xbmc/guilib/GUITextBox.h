@@ -49,7 +49,9 @@ public:
   virtual ~CGUITextBox(void);
   virtual CGUITextBox *Clone() const { return new CGUITextBox(*this); };
 
-  virtual void DoRender(unsigned int currentTime);
+  virtual void DoProcess(unsigned int currentTime);
+  virtual void Process(unsigned int currentTime);
+  virtual void DoRender();
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
 
@@ -83,6 +85,8 @@ protected:
   unsigned int m_lastRenderTime;
 
   CLabelInfo m_label;
+
+  TransformMatrix m_textMatrix;
 
   // autoscrolling
   int          m_autoScrollCondition;
