@@ -196,6 +196,9 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
   for (unsigned int iGroupPtr = 0; iGroupPtr < iUpdateGroups; iGroupPtr++)
     bReturn = at(iGroupPtr)->Update() && bReturn;
 
+  if (bReturn)
+    PersistAll();
+
   return bReturn;
 }
 
@@ -213,18 +216,7 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
       CPVRChannelGroup *newGroup = new CPVRChannelGroup(m_bRadio);
       newGroup->SetGroupName(group->GroupName());
       newGroup->SetSortOrder(group->SortOrder());
-
-      if (newGroup->Persist())
-      {
-        push_back(newGroup);
-        CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - new %s channel group '%s', id %d",
-            __FUNCTION__, m_bRadio ? "radio" : "TV", newGroup->GroupName().c_str(), newGroup->GroupID());
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "PVRChannelGroups - %s - couldn't persist new %s channel group '%s'",
-            __FUNCTION__, m_bRadio ? "radio" : "TV", newGroup->GroupName().c_str());
-      }
+      push_back(newGroup);
     }
   }
 
@@ -238,20 +230,21 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
     return false;
 
   /* load the other groups from the database */
-  database->Get(*this);
   int iSize = size();
+  database->Get(*this);
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d user defined groups %s fetched from the database",
-      __FUNCTION__, iSize - 1, m_bRadio ? "radio" : "TV");
+      __FUNCTION__, (int) (size() - iSize), m_bRadio ? "radio" : "TV");
 
+  iSize = size();
   GetGroupsFromClients();
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d user defined groups %s fetched from clients",
-      __FUNCTION__, (int) (size() - iSize - 1), m_bRadio ? "radio" : "TV");
+      __FUNCTION__, (int) (size() - iSize), m_bRadio ? "radio" : "TV");
 
   /* load group members */
   for (unsigned int iGroupPtr = 1; iGroupPtr < size(); iGroupPtr++)
     at(iGroupPtr)->Load();
 
-  return true;
+  return PersistAll();
 }
 
 bool CPVRChannelGroups::Load(void)
