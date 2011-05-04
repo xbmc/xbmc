@@ -332,6 +332,70 @@ void CVariant::append(CVariant variant)
   push_back(variant);
 }
 
+CVariant::iterator_array CVariant::begin_array()
+{
+  if (m_type == VariantTypeArray)
+    return m_data.array->begin();
+  else
+    return iterator_array();
+}
+
+CVariant::const_iterator_array CVariant::begin_array() const
+{
+  if (m_type == VariantTypeArray)
+    return m_data.array->begin();
+  else
+    return const_iterator_array();
+}
+
+CVariant::iterator_array CVariant::end_array()
+{
+  if (m_type == VariantTypeArray)
+    return m_data.array->end();
+  else
+    return iterator_array();
+}
+
+CVariant::const_iterator_array CVariant::end_array() const
+{
+  if (m_type == VariantTypeArray)
+    return m_data.array->end();
+  else
+    return const_iterator_array();
+}
+
+CVariant::iterator_map CVariant::begin_map()
+{
+  if (m_type == VariantTypeObject)
+    return m_data.map->begin();
+  else
+    return iterator_map();
+}
+
+CVariant::const_iterator_map CVariant::begin_map() const
+{
+  if (m_type == VariantTypeObject)
+    return m_data.map->begin();
+  else
+    return const_iterator_map();
+}
+
+CVariant::iterator_map CVariant::end_map()
+{
+  if (m_type == VariantTypeObject)
+    return m_data.map->end();
+  else
+    return iterator_map();
+}
+
+CVariant::const_iterator_map CVariant::end_map() const
+{
+  if (m_type == VariantTypeObject)
+    return m_data.map->end();
+  else
+    return const_iterator_map();
+}
+
 unsigned int CVariant::size() const
 {
   if (isObject())
