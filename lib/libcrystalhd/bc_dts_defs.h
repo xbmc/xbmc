@@ -243,7 +243,7 @@ typedef struct _BC_PIB_EXT_VC1 {
 /*------------------------------------------------------*
  *    Picture Information Block				*
  *------------------------------------------------------*/
-#if defined(_WIN32) || defined(_WIN64) || defined(__LINUX_USER__)
+#if defined(__LINUX_USER__)
 /* Values for 'pulldown' field.  '0' means no pulldown information
  * was present for this picture. */
 enum {
@@ -271,6 +271,8 @@ enum {
 	vdecFrameRate50,
 	vdecFrameRate59_94,
 	vdecFrameRate60,
+	vdecFrameRate14_985,
+	vdecFrameRate7_496,
 };
 
 /* Values for the 'aspect_ratio' field. */
@@ -363,7 +365,7 @@ enum {
 
 #define VDEC_FLAG_PICTURE_META_DATA_PRESENT	(0x40000)
 
-#endif /* _WIN32 || _WIN64 */
+#endif /* __LINUX_USER__ */
 
 typedef struct _BC_PIC_INFO_BLOCK {
 	/* Common fields. */
@@ -403,6 +405,8 @@ enum _POUT_OPTIONAL_IN_FLAGS_{
 	BC_POUT_FLAGS_SIZE	  = 0x04,	/* Take size information from Application */
 	BC_POUT_FLAGS_INTERLACED  = 0x08,	/* copy only half the bytes */
 	BC_POUT_FLAGS_INTERLEAVED = 0x10,	/* interleaved frame */
+	BC_POUT_FLAGS_STRIDE_UV	  = 0x20,	/* Stride size is valid (for UV buffers). */
+	BC_POUT_FLAGS_MODE	  = 0x40,	/* Take output mode from Application, overrides YV12 flag if on */
 
 	/* Flags from Device to APP */
 	BC_POUT_FLAGS_FMT_CHANGE  = 0x10000,	/* Data is not VALID when this flag is set */
@@ -457,6 +461,7 @@ typedef struct _BC_DTS_PROC_OUT {
 	uint8_t		b422Mode;		/* Picture output Mode */
 	uint8_t		bPibEnc;		/* PIB encrypted */
 	uint8_t		bRevertScramble;
+	uint32_t	StrideSzUV;		/* Caller supplied Stride Size */
 
 } BC_DTS_PROC_OUT;
 
@@ -487,7 +492,11 @@ typedef struct _BC_DTS_STATUS {
 					 * Reported back from the driver */
 	uint8_t		TxBufData;
 
-	uint8_t		reserved__[15];
+	uint8_t		reserved__[3];
+
+	uint32_t	picNumFlags; /* Picture number and flags of the next picture to be delivered from the driver */
+
+	uint8_t		reserved___[8];
 
 } BC_DTS_STATUS;
 
@@ -513,6 +522,7 @@ typedef enum _BC_OUTPUT_FORMAT {
 	OUTPUT_MODE420		= 0x0,
 	OUTPUT_MODE422_YUY2	= 0x1,
 	OUTPUT_MODE422_UYVY	= 0x2,
+	OUTPUT_MODE420_NV12	= 0x0,
 	OUTPUT_MODE_INVALID	= 0xFF,
 } BC_OUTPUT_FORMAT;
 
@@ -584,6 +594,7 @@ typedef struct _BC_INPUT_FORMAT_ {
 	uint8_t     *pMetaData;     /*Metadata buffer that is used to pass sequence header*/
 	uint32_t    metaDataSz;     /*Metadata size*/
 	uint8_t     bEnableScaling;
+	BC_SCALING_PARAMS ScalingParams;
 } BC_INPUT_FORMAT;
 
 typedef struct _BC_INFO_CRYSTAL_ {

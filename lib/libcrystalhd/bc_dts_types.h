@@ -29,15 +29,6 @@
 #include <stdint.h>
 #endif
 
-#if defined(_WIN64) || defined(_WIN32)
-typedef uint32_t		U32;
-typedef int32_t			S32;
-typedef uint16_t		U16;
-typedef int16_t			S16;
-typedef unsigned char		U8;
-typedef char			S8;
-#endif
-
 #ifndef PVOID
 typedef void	*PVOID;
 #endif
@@ -45,22 +36,6 @@ typedef void	*PVOID;
 #ifndef BOOL
 typedef int	BOOL;
 #endif
-
-#ifdef WIN32
-    typedef unsigned __int64	U64;
-#elif defined(_WIN64)
-    typedef uint64_t U64;
-#endif
-
-#ifdef _WIN64
-#if !(defined(POINTER_32))
-#define POINTER_32	__ptr32
-#endif
-#else	/* _WIN32 */
-#define POINTER_32
-#endif
-
-#if defined(__KERNEL__) || defined(__LINUX_USER__)
 
 #ifdef __LINUX_USER__	/* Don't include these for KERNEL */
 typedef uint32_t	ULONG;
@@ -83,38 +58,11 @@ typedef unsigned char	*PUCHAR;
 	#define FALSE		0
 #endif
 
-#else
+#else /* !__LINUX_USER__ */
 
 /* For Kernel usage.. */
 typedef bool	bc_bool_t;
-#endif
-
-#else
-
-#ifndef uint64_t
-// typedef struct _uint64_t {
-// 	uint32_t low_dw;
-// 	uint32_t hi_dw;
-// } uint64_t;
-typedef unsigned long long uint64_t;
-#endif
-
-#ifndef int32_t
-typedef signed long		int32_t;
-#endif
-
-#ifndef uint32_t
-typedef unsigned long	uint32_t;
-#endif
-
-#ifndef uint16_t
-typedef unsigned short	uint16_t;
-#endif
-
-#ifndef uint8_t
-typedef unsigned char	uint8_t;
-#endif
-#endif
+#endif /* __LINUX_USER__ */
 
 #endif
 

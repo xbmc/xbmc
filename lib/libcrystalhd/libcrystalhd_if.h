@@ -468,7 +468,7 @@ Description:
     Sets input video's various parameters that would be used by a subsequent call
     to DtsStartDecoder.
 
-    DtsSetInputFormat must always be called before DtsStartDecoder for the
+    DtsSetInputFormat must always be called before DtsOpenDecoder for the
     decoder to start processing input data. The device must have been
     previously opened for this call to succeed.
 
@@ -1506,6 +1506,30 @@ DRVIFLIB_API BC_STATUS
 DtsCrystalHDVersion(
     HANDLE  hDevice,
     PBC_INFO_CRYSTAL bCrystalInfo
+);
+
+/*****************************************************************************
+
+Function name:
+
+    DtsTxFreeSize
+
+Description:
+
+    This API returns the amount of free space in the tx circular buffer
+Parameters:
+
+    hDevice     Handle to device. This is obtained via a prior call to
+                    DtsDeviceOpen.
+
+Return:
+
+    uint32_t value of number of free bytes in the tx circular buffer
+
+*****************************************************************************/
+DRVIFLIB_API uint32_t
+DtsTxFreeSize(
+    HANDLE  hDevice
 );
 
 #ifdef __cplusplus
