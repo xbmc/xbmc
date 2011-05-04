@@ -243,7 +243,7 @@ typedef struct _BC_PIB_EXT_VC1 {
 /*------------------------------------------------------*
  *    Picture Information Block				*
  *------------------------------------------------------*/
-#if defined(__LINUX_USER__)
+#if defined(__LINUX_USER__) || defined(_WIN32)
 /* Values for 'pulldown' field.  '0' means no pulldown information
  * was present for this picture. */
 enum {
