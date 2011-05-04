@@ -32,7 +32,7 @@ CAEStreamWrapper::CAEStreamWrapper(enum AEDataFormat dataFormat, unsigned int sa
   m_stream          (NULL),
   m_volume          (1.0f),
   m_replayGain      (1.0f),
-  m_resampleRatio   (1.0f),
+  m_resampleRatio   (-1.0),
   m_callback        (NULL),
   m_dataCallback    (NULL),
   m_dataCallbackArg (NULL),
@@ -80,7 +80,9 @@ void CAEStreamWrapper::Initialize()
   {
     m_stream->SetVolume       (m_volume       );
     m_stream->SetReplayGain   (m_replayGain   );
-    m_stream->SetResampleRatio(m_resampleRatio);
+
+    if(m_resampleRatio > 0.0)
+      m_stream->SetResampleRatio(m_resampleRatio);
 
     for(std::list<IAEPostProc*>::iterator itt = m_postproc.begin(); itt != m_postproc.end(); ++itt)
       m_stream->AppendPostProc(*itt);
@@ -410,7 +412,7 @@ void CAEStreamWrapper::UnRegisterAudioCallback()
 {
   CSharedLock lock(m_lock);
   m_callback = NULL;
-  if (m_stream);
+  if (m_stream)
     m_stream->UnRegisterAudioCallback();
 }
 
