@@ -45,8 +45,8 @@ CVariant::CVariant(VariantType type)
     case VariantTypeString:
       m_data.string = NULL;
       break;
-    case VariantTypeFloat:
-      m_data.fFloat = 0.0;
+    case VariantTypeDouble:
+      m_data.dvalue = 0.0;
       break;
     case VariantTypeArray:
       m_data.array = new VariantArray();
@@ -84,10 +84,16 @@ CVariant::CVariant(uint64_t unsignedinteger)
   m_data.unsignedinteger = unsignedinteger;
 }
 
-CVariant::CVariant(float fFloat)
+CVariant::CVariant(double value)
 {
-  m_type = VariantTypeFloat;
-  m_data.fFloat = fFloat;
+  m_type = VariantTypeDouble;
+  m_data.dvalue = value;
+}
+
+CVariant::CVariant(float value)
+{
+  m_type = VariantTypeDouble;
+  m_data.dvalue = (double)value;
 }
 
 CVariant::CVariant(bool boolean)
@@ -154,9 +160,9 @@ bool CVariant::isBoolean() const
   return m_type == VariantTypeBoolean;
 }
 
-bool CVariant::isFloat() const
+bool CVariant::isDouble() const
 {
-  return m_type == VariantTypeFloat;
+  return m_type == VariantTypeDouble;
 }
 
 bool CVariant::isString() const
@@ -195,10 +201,18 @@ uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
     return fallback;
 }
 
+double CVariant::asDouble(double fallback) const
+{
+  if (m_type == VariantTypeDouble)
+    return m_data.dvalue;
+  else
+    return fallback;
+}
+
 float CVariant::asFloat(float fallback) const
 {
-  if (m_type == VariantTypeFloat)
-    return m_data.fFloat;
+  if (m_type == VariantTypeDouble)
+    return (float)m_data.dvalue;
   else
     return fallback;
 }
@@ -315,8 +329,8 @@ CVariant &CVariant::operator=(const CVariant &rhs)
   case VariantTypeBoolean:
     m_data.boolean = rhs.m_data.boolean;
     break;
-  case VariantTypeFloat:
-    m_data.fFloat = rhs.m_data.fFloat;
+  case VariantTypeDouble:
+    m_data.dvalue = rhs.m_data.dvalue;
     break;
   case VariantTypeString:
     m_data.string = new string(rhs.m_data.string->c_str());
@@ -349,8 +363,8 @@ bool CVariant::operator==(const CVariant &rhs) const
     case VariantTypeBoolean:
       return m_data.boolean == rhs.m_data.boolean;
       break;
-    case VariantTypeFloat:
-      return m_data.fFloat == rhs.m_data.fFloat;
+    case VariantTypeDouble:
+      return m_data.dvalue == rhs.m_data.dvalue;
       break;
     case VariantTypeString:
       return (*m_data.string) == (*rhs.m_data.string);

@@ -38,7 +38,7 @@ public:
     VariantTypeUnsignedInteger,
     VariantTypeBoolean,
     VariantTypeString,
-    VariantTypeFloat,
+    VariantTypeDouble,
     VariantTypeArray,
     VariantTypeObject,
     VariantTypeNull,
@@ -50,7 +50,8 @@ public:
   CVariant(int64_t integer);
   CVariant(unsigned int unsignedinteger);
   CVariant(uint64_t unsignedinteger);
-  CVariant(float fFloat);
+  CVariant(double value);
+  CVariant(float value);
   CVariant(bool boolean);
   CVariant(const char *str);
   CVariant(const char *str, unsigned int length);
@@ -63,7 +64,7 @@ public:
   bool isUnsignedInteger() const;
   bool isBoolean() const;
   bool isString() const;
-  bool isFloat() const;
+  bool isDouble() const;
   bool isArray() const;
   bool isObject() const;
   bool isNull() const;
@@ -72,6 +73,7 @@ public:
   uint64_t asUnsignedInteger(uint64_t fallback = 0u) const;
   bool asBoolean(bool fallback = false) const;
   const char *asString(const char *fallback = "") const;
+  double asDouble(double fallback = 0.0) const;
   float asFloat(float fallback = 0.0f) const;
 
   CVariant &operator[](std::string key);
@@ -123,7 +125,7 @@ private:
     int64_t integer;
     uint64_t unsignedinteger;
     bool boolean;
-    float fFloat;
+    double dvalue;
     std::string *string;
     VariantArray *array;
     VariantMap *map;
