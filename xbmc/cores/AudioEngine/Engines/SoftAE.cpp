@@ -263,6 +263,13 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, unsigned int channel
     m_chLayout     = CAEUtil::GetStdChLayout  (m_stdChLayout);
     m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout   );
 
+    //The sink should have the final say in the channel count.
+    if(m_channelCount != m_sinkFormat.m_channelCount)
+    {
+      m_chLayout     = m_sinkFormat.m_channelLayout;
+      m_channelCount = m_sinkFormat.m_channelCount;
+    }
+
     /* if we are transcoding */
     if (m_transcode)
     {
