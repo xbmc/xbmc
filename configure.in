@@ -587,6 +587,7 @@ AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
 AC_CHECK_LIB([smbclient],   [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([yajl],        [main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
   [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
   AC_MSG_ERROR($missing_library))
