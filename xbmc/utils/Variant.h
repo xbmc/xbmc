@@ -88,6 +88,8 @@ public:
   void erase(std::string key);
   void erase(unsigned int position);
 
+  bool isMember(std::string key) const;
+
   void toJsonValue(Json::Value& value) const;
 private:
   VariantType m_type;

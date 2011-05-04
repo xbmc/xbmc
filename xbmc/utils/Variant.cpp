@@ -371,3 +371,11 @@ void CVariant::erase(unsigned int position)
   if (isArray() && position < size())
     m_data.array->erase(m_data.array->begin() + position);
 }
+
+bool CVariant::isMember(string key) const
+{
+  if (m_type == VariantTypeObject)
+    return m_data.map->find(key) != m_data.map->end();
+
+  return false;
+}
