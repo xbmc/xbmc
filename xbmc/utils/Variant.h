@@ -80,6 +80,7 @@ public:
   const CVariant &operator[](unsigned int position) const;
 
   CVariant &operator=(const CVariant &rhs);
+  bool operator==(const CVariant &rhs) const;
 
   void push_back(CVariant variant);
   void append(CVariant variant);

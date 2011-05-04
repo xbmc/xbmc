@@ -315,6 +315,41 @@ CVariant &CVariant::operator=(const CVariant &rhs)
   return *this;
 }
 
+bool CVariant::operator==(const CVariant &rhs) const
+{
+  if (m_type == rhs.m_type)
+  {
+    switch (m_type)
+    {
+    case VariantTypeInteger:
+      return m_data.integer == rhs.m_data.integer;
+      break;
+    case VariantTypeUnsignedInteger:
+      return m_data.unsignedinteger == rhs.m_data.unsignedinteger;
+      break;
+    case VariantTypeBoolean:
+      return m_data.boolean == rhs.m_data.boolean;
+      break;
+    case VariantTypeFloat:
+      return m_data.fFloat == rhs.m_data.fFloat;
+      break;
+    case VariantTypeString:
+      return (*m_data.string) == (*rhs.m_data.string);
+      break;
+    case VariantTypeArray:
+      return (*m_data.array) == (*rhs.m_data.array);
+      break;
+    case VariantTypeObject:
+      return (*m_data.map) == (*rhs.m_data.map);
+      break;
+    default:
+      break;
+    }
+  }
+
+  return false;
+}
+
 void CVariant::push_back(CVariant variant)
 {
   if (m_type == VariantTypeNull)
