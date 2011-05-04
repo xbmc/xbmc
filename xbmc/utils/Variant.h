@@ -24,11 +24,6 @@
 #include <string>
 #include <stdint.h>
 
-namespace Json
-{
-  class Value;
-}
-
 class CVariant
 {
 public:
@@ -122,7 +117,6 @@ public:
 
   bool isMember(std::string key) const;
 
-  void toJsonValue(Json::Value& value) const;
 private:
   union VariantUnion
   {

@@ -19,9 +19,7 @@
  *
  */
 #include "Variant.h"
-#include "PlatformDefs.h"
 #include <string.h>
-#include "jsoncpp/include/json/value.h"
 
 using namespace std;
 
@@ -236,46 +234,6 @@ const char *CVariant::asString(const char *fallback) const
     return m_data.string->c_str();
   else
     return fallback;
-}
-
-void CVariant::toJsonValue(Json::Value& value) const
-{
-  switch (m_type)
-  {
-  case VariantTypeInteger:
-    value = (int32_t) m_data.integer;
-    break;
-  case VariantTypeUnsignedInteger:
-    value = (uint32_t) m_data.unsignedinteger;
-    break;
-  case VariantTypeBoolean:
-    value = m_data.boolean;
-    break;
-  case VariantTypeFloat:
-    value = m_data.fFloat;
-    break;
-  case VariantTypeString:
-    value = (*m_data.string);
-    break;
-  case VariantTypeArray:
-    for (unsigned int i = 0; i < size(); i++)
-    {
-      Json::Value array;
-      (*m_data.array)[i].toJsonValue(array);
-      value.append(array);
-    }
-    break;
-  case VariantTypeObject:
-    for (VariantMap::iterator itr = m_data.map->begin(); itr != m_data.map->end(); itr++)
-    {
-      Json::Value object;
-      itr->second.toJsonValue(object);
-      value[itr->first] = object;
-    }
-    break;
-  default:
-    break;
-  }
 }
 
 CVariant &CVariant::operator[](string key)
