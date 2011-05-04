@@ -110,8 +110,8 @@ void CEpgContainer::Start(void)
   CSingleLock lock(m_critSection);
 
   m_bStop = false;
-  LoadSettings();
   g_guiSettings.AddObserver(this);
+  LoadSettings();
 
   Create();
   SetName("XBMC EPG thread");

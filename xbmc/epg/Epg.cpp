@@ -646,7 +646,8 @@ bool CEpg::Persist(bool bPersistTags /* = false */, bool bQueueWrite /* = false 
   CSingleLock lock(m_critSection);
   if (m_iEpgID <= 0 || m_bChanged)
   {
-    if (int iId = database->Persist(*this, bQueueWrite && m_iEpgID > 0) > 0)
+    int iId = database->Persist(*this, bQueueWrite && m_iEpgID > 0);
+    if (iId > 0)
     {
       m_iEpgID = iId;
       m_bChanged = false;
