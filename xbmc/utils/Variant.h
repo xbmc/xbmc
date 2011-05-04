@@ -74,7 +74,9 @@ public:
   float asFloat(float fallback = 0.0f) const;
 
   CVariant &operator[](std::string key);
+  const CVariant &operator[](std::string key) const;
   CVariant &operator[](unsigned int position);
+  const CVariant &operator[](unsigned int position) const;
 
   CVariant &operator=(const CVariant &rhs);
 

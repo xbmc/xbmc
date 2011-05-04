@@ -248,7 +248,23 @@ CVariant &CVariant::operator[](string key)
     return ConstNullVariant;
 }
 
+const CVariant &CVariant::operator[](std::string key) const
+{
+  if (isObject())
+    return (*m_data.map)[key];
+  else
+    return ConstNullVariant;
+}
+
 CVariant &CVariant::operator[](unsigned int position)
+{
+  if (isArray() && size() > position)
+    return (*m_data.array)[position];
+  else
+    return ConstNullVariant;
+}
+
+const CVariant &CVariant::operator[](unsigned int position) const
 {
   if (isArray() && size() > position)
     return (*m_data.array)[position];
