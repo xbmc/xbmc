@@ -83,6 +83,12 @@ CVariant::CVariant(const char *str)
   m_data.string = new string(str);
 }
 
+CVariant::CVariant(const char *str, unsigned int length)
+{
+  m_type = VariantTypeString;
+  m_data.string = new string(str, length);
+}
+
 CVariant::CVariant(const string &str)
 {
   m_type = VariantTypeString;
