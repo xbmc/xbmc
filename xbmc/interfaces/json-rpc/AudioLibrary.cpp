@@ -23,13 +23,16 @@
 #include "music/MusicDatabase.h"
 #include "FileItem.h"
 #include "Util.h"
+#include "utils/URIUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/Song.h"
 #include "Application.h"
+#include "filesystem/Directory.h"
 
 using namespace MUSIC_INFO;
 using namespace Json;
 using namespace JSONRPC;
+using namespace XFILE;
 
 JSON_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
@@ -173,6 +176,25 @@ JSON_STATUS CAudioLibrary::ScanForContent(const CStdString &method, ITransportLa
   return ACK;
 }
 
+bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
+{
+  CMusicDatabase musicdatabase;
+  bool status = false;
+  if (!strFilename.empty() && !CDirectory::Exists(strFilename) && musicdatabase.Open())
+  {
+    CSong song;
+    if (musicdatabase.GetSongByFileName(strFilename, song))
+    {
+      item = CFileItem(song);
+      status = true;
+    }
+
+    musicdatabase.Close();
+  }
+
+  return status;
+}
+
 bool CAudioLibrary::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
   CMusicDatabase musicdatabase;
@@ -180,12 +202,20 @@ bool CAudioLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
 
   if (musicdatabase.Open())
   {
-    int artistID = parameterObject.get("artistid", -1).asInt();
-    int albumID  = parameterObject.get("albumid", -1).asInt();
-    int genreID  = parameterObject.get("genreid", -1).asInt();
+    CStdString file       = parameterObject["file"].asString();
+    int artistID          = parameterObject["artistid"].asInt();
+    int albumID           = parameterObject["albumid"].asInt();
+    int genreID           = parameterObject["genreid"].asInt();
+
+    CFileItem fileItem;
+    if (FillFileItem(file, fileItem))
+    {
+      success = true;
+      list.Add(CFileItemPtr(new CFileItem(fileItem)));
+    }
 
     if (artistID != -1 || albumID != -1 || genreID != -1)
-      success = musicdatabase.GetSongsNav("", list, genreID, artistID, albumID);
+      success |= musicdatabase.GetSongsNav("", list, genreID, artistID, albumID);
 
     int songID = parameterObject.get("songid", -1).asInt();
     if (songID != -1)

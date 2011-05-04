@@ -31,11 +31,13 @@
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "video/VideoDatabase.h"
-
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
 
 using namespace MUSIC_INFO;
 using namespace Json;
 using namespace JSONRPC;
+using namespace XFILE;
 
 void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const Value& fields, Value &result)
 {
@@ -209,22 +211,32 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
 bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
-  if (parameterObject["file"].isString())
-  {
-    CStdString file = parameterObject["file"].asString();
-    if (!file.empty())
-    {
-      CFileItemPtr item = CFileItemPtr(new CFileItem(file, URIUtils::HasSlashAtEnd(file)));
-      list.Add(item);
-    }
-  }
-
   CPlaylistOperations::FillFileItemList(parameterObject, list);
   CAudioLibrary::FillFileItemList(parameterObject, list);
   CVideoLibrary::FillFileItemList(parameterObject, list);
   CFileOperations::FillFileItemList(parameterObject, list);
 
-  return true;
+  CStdString file = parameterObject["file"].asString();
+  if (!file.empty() && !CDirectory::Exists(file) && (URIUtils::IsURL(file) || CFile::Exists(file)))
+  {
+    bool added = false;
+    for (unsigned int index = 0; index < list.Size(); index++)
+    {
+      if (list[index]->m_strPath == file)
+      {
+        added = true;
+        break;
+      }
+    }
+
+    if (!added)
+    {
+      CFileItemPtr item = CFileItemPtr(new CFileItem(file, false));
+      list.Add(item);
+    }
+  }
+
+  return (list.Size() > 0);
 }
 
 bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ignorethe, const CStdString &order, SORT_METHOD &sortmethod, SORT_ORDER &sortorder)
