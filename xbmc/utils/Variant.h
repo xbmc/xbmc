@@ -85,6 +85,8 @@ public:
   void push_back(CVariant variant);
   void append(CVariant variant);
 
+  void swap(CVariant &rhs);
+
 private:
   typedef std::vector<CVariant> VariantArray;
   typedef std::map<std::string, CVariant> VariantMap;
@@ -116,9 +118,7 @@ public:
 
   void toJsonValue(Json::Value& value) const;
 private:
-  VariantType m_type;
-
-  union
+  union VariantUnion
   {
     int64_t integer;
     uint64_t unsignedinteger;
@@ -127,7 +127,10 @@ private:
     std::string *string;
     VariantArray *array;
     VariantMap *map;
-  } m_data;
+  };
+
+  VariantType m_type;
+  VariantUnion m_data;
 
   static CVariant ConstNullVariant;
 };

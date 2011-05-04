@@ -386,6 +386,18 @@ void CVariant::append(CVariant variant)
   push_back(variant);
 }
 
+void CVariant::swap(CVariant &rhs)
+{
+  VariantType  temp_type = m_type;
+  VariantUnion temp_data = m_data;
+
+  m_type = rhs.m_type;
+  m_data = rhs.m_data;
+
+  rhs.m_type = temp_type;
+  rhs.m_data = temp_data;
+}
+
 CVariant::iterator_array CVariant::begin_array()
 {
   if (m_type == VariantTypeArray)
