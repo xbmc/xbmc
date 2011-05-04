@@ -37,7 +37,7 @@ cHTSPData::~cHTSPData()
   Close();
 }
 
-bool cHTSPData::Open(const std::string &strHostname, unsigned int iPort, const std::string &strUsername, const std::string &strPassword, long iTimeout)
+bool cHTSPData::Open(const std::string &strHostname, unsigned int iPort, const std::string &strUsername, const std::string &strPassword, int iTimeout)
 {
   if(!m_session.Connect(strHostname, iPort, iTimeout))
   {

@@ -33,7 +33,7 @@ public:
   cHTSPSession();
   ~cHTSPSession();
 
-  bool      Connect(const std::string &strHostname, int iPort, long iTimeout);
+  bool      Connect(const std::string &strHostname, int iPort, int iTimeout);
   bool      IsConnected(void) const { return m_bIsConnected; }
   bool      CheckConnection(void);
   void      Close(bool bForce = false);
