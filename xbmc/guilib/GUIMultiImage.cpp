@@ -126,10 +126,15 @@ void CGUIMultiImage::Process(unsigned int currentTime)
         // grab a new image
         m_currentImage = nextImage;
         m_image.SetFileName(m_files[m_currentImage]);
+        MarkDirtyRegion();
+
         m_imageTimer.StartZero();
       }
     }
-    m_image.SetColorDiffuse(m_diffuseColor);
+
+    if (m_image.SetColorDiffuse(m_diffuseColor))
+      MarkDirtyRegion();
+
     m_image.DoProcess(currentTime);
 
     g_graphicsContext.RestoreClipRegion();
