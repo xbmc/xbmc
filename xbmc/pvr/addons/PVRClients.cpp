@@ -61,6 +61,8 @@ void CPVRClients::Start(void)
 {
   Stop();
 
+  ResetQualityData();
+
   Create();
   SetName("XBMC PVR backend info");
   SetPriority(-1);
@@ -155,7 +157,6 @@ void CPVRClients::Unload(void)
 
   m_clientsProps.clear();
   m_clientMap.clear();
-  ResetQualityData();
 }
 
 int CPVRClients::GetFirstID(void)
