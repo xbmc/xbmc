@@ -967,7 +967,7 @@ bool CPVRManager::IsRunningChannelScan(void) const
 
 PVR_ADDON_CAPABILITIES *CPVRManager::GetCurrentClientProperties(void)
 {
-  return m_addons->GetCurrentClientProperties();
+  return m_addons->GetCurrentAddonCapabilities();
 }
 
 void CPVRManager::StartChannelScan(void)

@@ -38,12 +38,6 @@ namespace PVR
 
   typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
 
-  class IPVRClientCallback
-  {
-  public:
-    virtual void OnClientMessage(const int clientID, const PVR_EVENT clientEvent, const char* msg)=0;
-  };
-
   /*!
    * Interface from XBMC to a PVR add-on.
    *
@@ -62,10 +56,9 @@ namespace PVR
     /*!
      * @brief Initialise the instance of this add-on.
      * @param iClientId The ID of this add-on.
-     * @param pvrCB The call-back to use.
      * @return True if it was created successfully, false otherwise.
      */
-    bool Create(int iClientId, IPVRClientCallback *pvrCB);
+    bool Create(int iClientId);
 
     /*!
      * @brief Destroy the instance of this add-on.
@@ -447,7 +440,6 @@ namespace PVR
 
   protected:
     bool                  m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
-    IPVRClientCallback   *m_manager;              /*!< the callback to use for this add-on */
     CStdString            m_strHostName;          /*!< the host name */
     CCriticalSection      m_critSection;          /*!< mutex for this class */
     PVR_MENUHOOKS         m_menuhooks;            /*!< the menu hooks for this add-on */
