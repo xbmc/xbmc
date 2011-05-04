@@ -464,6 +464,12 @@ bool CPVRDatabase::RemoveChannelsFromGroup(const CPVRChannelGroup &group)
   return DeleteValues("map_channelgroups_channels", strWhereClause);
 }
 
+bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
+{
+  CStdString strWhereClause = FormatSQL("idGroup = %u AND iChannelNumber > %u", group.GroupID(), group.size());
+  return DeleteValues("map_channelgroups_channels", strWhereClause);
+}
+
 bool CPVRDatabase::DeleteChannelGroups(void)
 {
   CLog::Log(LOGDEBUG, "PVRDB - %s - deleting all channel groups from the database", __FUNCTION__);
@@ -600,27 +606,36 @@ bool CPVRDatabase::Persist(CPVRChannelGroup &group)
 
 bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
 {
-  bool bReturn = RemoveChannelsFromGroup(group);
+	bool bReturn = false;
+	bool bRemoveChannels = false;
   CStdString strQuery;
   CSingleLock lock(group.m_critSection);
 
-  if (bReturn && group.size() > 0)
+  if (group.size() > 0)
   {
     for (unsigned int iChannelPtr = 0; iChannelPtr < group.size(); iChannelPtr++)
     {
       PVRChannelGroupMember member = group.at(iChannelPtr);
-      strQuery = FormatSQL("REPLACE INTO map_channelgroups_channels ("
-          "idGroup, idChannel, iChannelNumber) "
-          "VALUES (%i, %i, %i);",
-          group.GroupID(), member.channel->ChannelID(), member.iChannelNumber);
-      QueueInsertQuery(strQuery);
+
+      CStdString strWhereClause = FormatSQL("idChannel = %u AND idGroup = %u AND iChannelNumber = %u",
+      		member.channel->ChannelID(), group.GroupID(), member.iChannelNumber);
+
+      CStdString strValue = GetSingleValue("map_channelgroups_channels", "idChannel", strWhereClause);
+      if (strValue.IsEmpty()) {
+        strQuery = FormatSQL("REPLACE INTO map_channelgroups_channels ("
+            "idGroup, idChannel, iChannelNumber) "
+            "VALUES (%i, %i, %i);",
+            group.GroupID(), member.channel->ChannelID(), member.iChannelNumber);
+        QueueInsertQuery(strQuery);
+      }
     }
     lock.Leave();
 
     bReturn = CommitInsertQueries();
+    bRemoveChannels = RemoveStaleChannelsFromGroup(group);
   }
 
-  return bReturn;
+  return bReturn && bRemoveChannels;
 }
 
 /********** Client methods **********/
