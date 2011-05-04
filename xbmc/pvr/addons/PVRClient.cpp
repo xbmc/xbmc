@@ -126,7 +126,7 @@ void CPVRClient::Destroy(void)
 
 bool CPVRClient::ReCreate(void)
 {
-  long clientID             = m_pInfo->iClienId;
+  int clientID              = m_pInfo->iClienId;
   IPVRClientCallback *pvrCB = m_manager;
 
   Destroy();
