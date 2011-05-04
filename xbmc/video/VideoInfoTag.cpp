@@ -488,6 +488,9 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetString(movie, "trailer", m_strTrailer);
   XMLUtils::GetString(movie, "basepath", m_basePath);
 
+  int iThumbCount= m_strPictureURL.m_url.size();
+  CStdString sXmlAdd;
+  
   const TiXmlElement* thumb = movie->FirstChildElement("thumb");
   while (thumb)
   {
@@ -495,6 +498,15 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
     thumb = thumb->NextSiblingElement("thumb");
   }
 
+  // if there are thumbs in the nfo, we should place them on top of the list
+  if ((iThumbCount!=m_strPictureURL.m_url.size()) && (m_strPictureURL.m_url.size()>1) && (iThumbCount>0) )
+  {
+    rotate(m_strPictureURL.m_url.begin(), m_strPictureURL.m_url.begin()+iThumbCount, m_strPictureURL.m_url.end());   
+    // rebuild xml string for database
+    sXmlAdd+=m_strPictureURL.m_xml;
+    m_strPictureURL.m_xml=sXmlAdd;
+  }
+  
   XMLUtils::GetAdditiveString(movie,"genre",g_advancedSettings.m_videoItemSeparator,m_strGenre);
   XMLUtils::GetAdditiveString(movie,"country",g_advancedSettings.m_videoItemSeparator,m_strCountry);
   XMLUtils::GetAdditiveString(movie,"credits",g_advancedSettings.m_videoItemSeparator,m_strWritingCredits);
@@ -610,7 +622,19 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   const TiXmlElement *fanart = movie->FirstChildElement("fanart");
   if (fanart)
   {
-    m_fanart.m_xml << *fanart;
+    if (!m_fanart.m_xml.IsEmpty())
+    {
+      // we need to replace the scraper results with the nfo results
+      // combining them does not work properly, as the scraper result
+      // might contain an url attribut which prevents to load a filesystem file
+      m_fanart.m_xml.clear();
+      m_fanart.m_xml << *fanart;
+    }
+    else
+    {
+      // This just works , if m_xml is empty, as otherwise we add a further <fanart> block
+      m_fanart.m_xml << *fanart;
+    }
     m_fanart.Unpack();
   }
 }
