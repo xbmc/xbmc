@@ -714,7 +714,7 @@ CPVREpg *CPVRChannel::GetEPG(void)
     if (m_EPG == NULL)
     {
       /* will be cleaned up by CPVREpgContainer on exit */
-      m_EPG = new CPVREpg(this);
+      m_EPG = new CPVREpg(this, false);
       if (!g_guiSettings.GetBool("epg.ignoredbforclient"))
         m_EPG->Persist();
       g_PVREpg->push_back(m_EPG);

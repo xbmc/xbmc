@@ -37,6 +37,7 @@ namespace EPG
     friend class CEpgDatabase;
 
   protected:
+    bool                       m_bChanged;        /*!< true if anything changed that needs to be persisted, false otherwise */
     bool                       m_bInhibitSorting; /*!< don't sort the table if this is true */
     int                        m_iEpgID;          /*!< the database ID of this table */
     CStdString                 m_strName;         /*!< the name of this table */
@@ -145,8 +146,9 @@ namespace EPG
      * @param iEpgID The ID of this table or <= 0 to create a new ID.
      * @param strName The name of this table.
      * @param strScraperName The name of the scraper to use.
+     * @param bLoadedFromDb True if this table was loaded from the database, false otherwise.
      */
-    CEpg(int iEpgID, const CStdString &strName = "", const CStdString &strScraperName = "");
+    CEpg(int iEpgID, const CStdString &strName = "", const CStdString &strScraperName = "", bool bLoadedFromDb = false);
 
     /*!
      * @brief Destroy this EPG instance.
@@ -172,10 +174,22 @@ namespace EPG
     const CStdString &ScraperName(void) const { return m_strScraperName; }
 
     /*!
+     * @brief Change the name of the scraper to use.
+     * @param strScraperName The new scraper.
+     */
+    void SetScraperName(const CStdString &strScraperName);
+
+    /*!
      * @brief Get the name of this table.
      * @return The name of this table.
      */
     const CStdString &Name(void) const { return m_strName; }
+
+    /*!
+     * @brief Changed the name of this table.
+     * @param strName The new name.
+     */
+    void SetName(const CStdString &strName);
 
     /*!
      * @brief Get the database ID of this table.

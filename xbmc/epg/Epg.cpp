@@ -44,7 +44,8 @@ struct sortEPGbyDate
   }
 };
 
-CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &strScraperName /* = "" */) :
+CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &strScraperName /* = "" */, bool bLoadedFromDb /* = false */) :
+    m_bChanged(!bLoadedFromDb),
     m_bInhibitSorting(false),
     m_iEpgID(iEpgID),
     m_strName(strName),
@@ -64,6 +65,28 @@ CEpg::~CEpg(void)
 
 /** @name Public methods */
 //@{
+
+void CEpg::SetName(const CStdString &strName)
+{
+  CSingleLock lock(m_critSection);
+
+  if (!m_strName.Equals(strName))
+  {
+    m_bChanged = true;
+    m_strName = strName;
+  }
+}
+
+void CEpg::SetScraperName(const CStdString &strScraperName)
+{
+  CSingleLock lock(m_critSection);
+
+  if (!m_strScraperName.Equals(strScraperName))
+  {
+    m_bChanged = true;
+    m_strScraperName = strScraperName;
+  }
+}
 
 bool CEpg::HasValidEntries(void) const
 {
@@ -621,18 +644,19 @@ bool CEpg::Persist(bool bPersistTags /* = false */, bool bQueueWrite /* = false 
   }
 
   CSingleLock lock(m_critSection);
-
-  int iId = database->Persist(*this, bQueueWrite && m_iEpgID > 0);
-  if (iId >= 0)
+  if (m_iEpgID <= 0 || m_bChanged)
   {
-    if (iId > 0)
+    if (int iId = database->Persist(*this, bQueueWrite && m_iEpgID > 0) > 0)
+    {
       m_iEpgID = iId;
-
-    if (bPersistTags)
-      bReturn = PersistTags(bQueueWrite);
-    else
-      bReturn = true;
+      m_bChanged = false;
+    }
   }
+
+  if (bPersistTags)
+    bReturn = PersistTags(bQueueWrite);
+  else
+    bReturn = true;
 
   database->Close();
 

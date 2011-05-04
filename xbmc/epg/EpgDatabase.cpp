@@ -193,7 +193,7 @@ int CEpgDatabase::Get(CEpgContainer &container)
         CStdString strName        = m_pDS->fv("sName").get_asString().c_str();
         CStdString strScraperName = m_pDS->fv("sScraperName").get_asString().c_str();
 
-        CEpg newEpg(iEpgID, strName, strScraperName);
+        CEpg newEpg(iEpgID, strName, strScraperName, true);
         if (container.UpdateEntry(newEpg))
           ++iReturn;
         else

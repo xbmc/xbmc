@@ -35,8 +35,8 @@
 using namespace PVR;
 using namespace EPG;
 
-PVR::CPVREpg::CPVREpg(CPVRChannel *channel) :
-  CEpg(channel->EpgID(), channel->ChannelName(), channel->EPGScraper())
+PVR::CPVREpg::CPVREpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
+  CEpg(channel->EpgID(), channel->ChannelName(), channel->EPGScraper(), bLoadedFromDb)
 {
   SetChannel(channel);
 }
