@@ -81,6 +81,7 @@ public:
   CVariant &operator=(const CVariant &rhs);
 
   void push_back(CVariant variant);
+  void append(CVariant variant);
 
   unsigned int size() const;
   bool empty() const;

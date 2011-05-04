@@ -321,6 +321,11 @@ void CVariant::push_back(CVariant variant)
     m_data.array->push_back(variant);
 }
 
+void CVariant::append(CVariant variant)
+{
+  push_back(variant);
+}
+
 unsigned int CVariant::size() const
 {
   if (isObject())
