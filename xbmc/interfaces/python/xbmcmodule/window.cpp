@@ -60,8 +60,7 @@ namespace PYXBMC
   // used by Dialog to to create a new dialogWindow
   bool Window_CreateNewWindow(Window* pWindow, bool bAsDialog)
   {
-    CPyThreadState tsg;
-    CSingleLock lock(g_graphicsContext);
+    GIL_SAFE_SINGLELOCK(g_graphicsContext);
 
     if (pWindow->iWindowId != -1)
     {
@@ -102,7 +101,7 @@ namespace PYXBMC
           pWindow->pWindow = new CGUIPythonWindowXMLDialog(id,pWindow->sXMLFileName,pWindow->sFallBackPath);
         else
           pWindow->pWindow = new CGUIPythonWindowXML(id,pWindow->sXMLFileName,pWindow->sFallBackPath);
-        ((CGUIPythonWindowXML*)pWindow->pWindow)->SetCallbackWindow(tsg.GetState(), (PyObject*)pWindow);
+        ((CGUIPythonWindowXML*)pWindow->pWindow)->SetCallbackWindow(PyThreadState_Get(), (PyObject*)pWindow);
       }
       else
       {
@@ -110,7 +109,7 @@ namespace PYXBMC
           pWindow->pWindow = new CGUIPythonWindowDialog(id);
         else
           pWindow->pWindow = new CGUIPythonWindow(id);
-        ((CGUIPythonWindow*)pWindow->pWindow)->SetCallbackWindow(tsg.GetState(), (PyObject*)pWindow);
+        ((CGUIPythonWindow*)pWindow->pWindow)->SetCallbackWindow(PyThreadState_Get(), (PyObject*)pWindow);
       }
 
       g_windowManager.Add(pWindow->pWindow);
