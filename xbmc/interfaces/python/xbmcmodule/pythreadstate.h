@@ -56,6 +56,8 @@ class CPyThreadState
       }
     }
 
+    PyThreadState* GetState() { return m_threadState; }
+
   private:
     PyThreadState* m_threadState;
 };
