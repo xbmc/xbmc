@@ -81,5 +81,5 @@ void tcp_close(socket_t fdSock);
 #if defined(__WINDOWS__)
 int tcp_send(__in SOCKET fdSock, __in_bcount(len) const char FAR * buf, __in int len, __in int flags);
 #else
-int tcp_send(socket_t fdSock, void *buf, size_t len, int flags);
+ssize_t tcp_send(socket_t fdSock, __const void *buf, size_t len, int flags);
 #endif
