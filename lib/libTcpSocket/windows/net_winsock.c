@@ -286,8 +286,8 @@ tcp_close(socket_t fdSock)
     closesocket(fdSock);
 }
 
-ssize_t
-tcp_send(socket_t fdSock, __const void *buf, size_t len, int flags)
+int
+tcp_send(__in SOCKET fdSock, __in_bcount(len) const char FAR * buf, __in int len, __in int flags)
 {
   if (fdSock != SOCKET_ERROR)
     return send(fdSock, buf, len, flags);
