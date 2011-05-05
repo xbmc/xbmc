@@ -185,6 +185,11 @@ bool CVariant::isNull() const
   return m_type == VariantTypeNull || m_type == VariantTypeConstNull;
 }
 
+CVariant::VariantType CVariant::type() const
+{
+  return m_type;
+}
+
 int64_t CVariant::asInteger(int64_t fallback) const
 {
   if (m_type == VariantTypeInteger)

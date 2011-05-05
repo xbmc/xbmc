@@ -69,6 +69,8 @@ public:
   bool isObject() const;
   bool isNull() const;
 
+  VariantType type() const;
+
   int64_t asInteger(int64_t fallback = 0) const;
   uint64_t asUnsignedInteger(uint64_t fallback = 0u) const;
   bool asBoolean(bool fallback = false) const;
