@@ -116,22 +116,8 @@
 			<posx>490r</posx>
 			<posy>40</posy>
 			<visible>Container(9000).HasFocus(12) + [PVR.IsRecording | PVR.HasTimer]</visible>
-			<animation type="Visible" reversible="false">
-				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
-				<effect type="fade" start="0" end="100" time="300" />
-			</animation>
-			<animation type="Hidden" reversible="false">
-				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300" />
-				<effect type="fade" start="100" end="0" time="300" />
-			</animation>		    
-			<animation type="WindowOpen" reversible="false">
-				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
-				<effect type="fade" start="0" end="100" time="300" />
-			</animation>
-			<animation type="WindowClose" reversible="false">
-				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300" />
-				<effect type="fade" start="100" end="0" time="300" />
-			</animation>		    
+			<include>VisibleFadeEffect</include>
+			<include>Window_OpenClose_Animation</include>
 			<animation effect="fade" start="100" end="0" time="200" condition="Window.IsActive(Favourites)">conditional</animation>
 			<control type="image">
 				<description>background</description>
@@ -332,7 +318,7 @@
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 				<control type="image">
 					<description>Cover image</description>
-					<posx>200r</posx>
+					<posx>20</posx>
 					<posy>0</posy>
 					<width>180</width>
 					<height>340</height>
@@ -343,12 +329,12 @@
 				</control>
 				<control type="label">
 					<description>NowPlaying label</description>
-					<posx>210r</posx>
+					<posx>220</posx>
 					<posy>210</posy>
 					<height>30</height>
 					<width>660</width>
 					<label>$LOCALIZE[31040] ($LOCALIZE[31502])</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
 					<textcolor>blue</textcolor>
@@ -356,12 +342,12 @@
 				</control>
 				<control type="label">
 					<description>Channel label</description>
-					<posx>210r</posx>
+					<posx>220</posx>
 					<posy>235</posy>
 					<height>30</height>
 					<width>660</width>
 					<label>$INFO[VideoPlayer.ChannelName]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
 					<textcolor>white</textcolor>
@@ -369,12 +355,12 @@
 				</control>
 				<control type="label">
 					<description>Title label</description>
-					<posx>210r</posx>
+					<posx>220</posx>
 					<posy>260</posy>
 					<height>30</height>
 					<width>660</width>
 					<label>$INFO[VideoPlayer.Title]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
@@ -382,12 +368,12 @@
 				</control>
 				<control type="label">
 					<description>Next Label</description>
-					<posx>210r</posx>
+					<posx>220</posx>
 					<posy>285</posy>
 					<height>30</height>
 					<width>660</width>
 					<label>$LOCALIZE[209] : $INFO[VideoPlayer.NextTitle]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12</font>
 					<textcolor>grey2</textcolor>
@@ -395,12 +381,12 @@
 				</control>
 				<control type="label">
 					<description>Time Label</description>
-					<posx>210r</posx>
+					<posx>220</posx>
 					<posy>310</posy>
 					<height>30</height>
 					<width>325</width>
 					<label>$INFO[Player.Time]$INFO[Player.Duration, / ]</label>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12</font>
 					<textcolor>white</textcolor>
@@ -726,6 +712,13 @@
 					<onright>9013</onright>
 					<visible>Container(9000).HasFocus(6)</visible>
 					<include>HomeSubMenuPlayDisc</include> <!-- Buttons for the grouplist -->
+				</control>
+				<control type="grouplist" id="9014">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9014</onleft>
+					<onright>9014</onright>
+					<visible>Container(9000).HasFocus(12)</visible>
+					<include>HomeSubMenuLiveTV</include> <!-- Buttons for the grouplist -->
 				</control>
 			</control>
 			<control type="image">

@@ -147,4 +147,44 @@
 			<texture border="0,0,0,3">HomeSubEnd.png</texture>
 		</control>
 	</include>
+	<include name="HomeSubMenuLiveTV">
+		<control type="image" id="90141">
+			<width>35</width>
+			<height>35</height>
+			<texture border="0,0,0,3" flipx="true">HomeSubEnd.png</texture>
+		</control>
+		<control type="button" id="90142">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>19023</label>
+			<onclick>ActivateWindow(TV)</onclick>
+			<onclick>Setfocus(32)</onclick>
+			<onclick>Setfocus(11)</onclick>
+		</control>
+		<control type="button" id="90143">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>19024</label>
+			<onclick>ActivateWindow(TV)</onclick>
+			<onclick>Setfocus(33)</onclick>
+			<onclick>Setfocus(12)</onclick>
+		</control>
+		<control type="button" id="90144">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>19163</label>
+			<onclick>ActivateWindow(TV)</onclick>
+			<onclick>Setfocus(34)</onclick>
+			<onclick>Setfocus(13)</onclick>
+		</control>
+		<control type="button" id="90145">
+			<include>ButtonHomeSubCommonValues</include>
+			<label>19040</label>
+			<onclick>ActivateWindow(TV)</onclick>
+			<onclick>Setfocus(35)</onclick>
+			<onclick>Setfocus(14)</onclick>
+		</control>
+		<control type="image" id="90146">
+			<width>35</width>
+			<height>35</height>
+			<texture border="0,0,0,3">HomeSubEnd.png</texture>
+		</control>
+	</include>
 </includes>
