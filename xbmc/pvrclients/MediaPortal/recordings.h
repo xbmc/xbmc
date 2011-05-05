@@ -43,7 +43,7 @@ private:
   string m_title;             // Title of this event
   string m_shortText;         // Short description of this event (typically the episode name in case of a series)
   string m_description;       // Description of this event
-  time_t m_UTCdiff;
+  //time_t m_UTCdiff;
 
 public:
   cRecording(const PVR_RECORDING *Recording);

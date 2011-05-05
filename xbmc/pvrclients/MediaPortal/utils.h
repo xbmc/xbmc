@@ -35,7 +35,7 @@ void Tokenize(const string& str, vector<string>& tokens, const string& delimiter
  * GetUTCdifftime
  * \return time_t value with the difference between local time and UTC in seconds
  */
-time_t GetUTCdifftime(void);
+//time_t GetUTCdifftime(void);
 
 std::wstring StringToWString(const std::string& s);
 std::string WStringToString(const std::wstring& s);

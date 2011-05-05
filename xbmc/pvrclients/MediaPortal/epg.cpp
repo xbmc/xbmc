@@ -100,13 +100,7 @@ using namespace std;
 
 cEpg::cEpg()
 {
-  m_uid             = 0;
-  m_StartTime       = 0;
-  m_EndTime         = 0;
-  m_Duration        = 0;
-  m_genre_type      = 0;
-  m_genre_subtype   = 0;
-  m_UTCdiff = GetUTCdifftime();
+  Reset();
 }
 
 cEpg::~cEpg()
@@ -119,13 +113,19 @@ void cEpg::Reset()
   m_title.clear();
   m_shortText.clear();
   m_description.clear();
+  m_episodePart.clear();
 
+  m_uid             = 0;
   m_StartTime       = 0;
   m_EndTime         = 0;
+  m_originalAirDate = 0;
   m_Duration        = 0;
   m_genre_type      = 0;
   m_genre_subtype   = 0;
-  m_uid             = 0;
+  m_seriesNumber    = 0;
+  m_episodeNumber   = 0;
+  m_starRating      = 0;
+  m_parentalRating  = 0;
 }
 
 bool cEpg::ParseLine(string& data)
@@ -141,7 +141,7 @@ bool cEpg::ParseLine(string& data)
 
     Tokenize(data, epgfields, "|");
 
-    if( epgfields.size() == 5 )
+    if( epgfields.size() >= 5 )
     {
       //XBMC->Log(LOG_DEBUG, "%s: %s", epgfields[0].c_str(), epgfields[2].c_str());
       // field 0 = start date + time
@@ -149,6 +149,16 @@ bool cEpg::ParseLine(string& data)
       // field 2 = title
       // field 3 = description
       // field 4 = genre string
+      // field 5 = idProgram (int)
+      // field 6 = idChannel (int)
+      // field 7 = seriesNum (string)
+      // field 8 = episodeNumber (string)
+      // field 9 = episodeName (string)
+      // field 10 = episodePart (string)
+      // field 11 = originalAirDate (date + time)
+      // field 12 = classification (string)
+      // field 13 = starRating (int)
+      // field 14 = parentalRating (int)
 
       count = sscanf(epgfields[0].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
 
@@ -166,7 +176,7 @@ bool cEpg::ParseLine(string& data)
       timeinfo.tm_wday = 0;
       timeinfo.tm_yday = 0;
 
-      m_StartTime = mktime (&timeinfo);// + m_UTCdiff; //m_StartTime should be localtime, MP TV returns UTC
+      m_StartTime = mktime (&timeinfo);
 
       if(m_StartTime < 0)
       {
@@ -199,12 +209,42 @@ bool cEpg::ParseLine(string& data)
       }
 
       m_Duration  = m_EndTime - m_StartTime;
-      m_uid       = 0;
 
       m_title = epgfields[2];
       m_description = epgfields[3];
       m_shortText = epgfields[2];
       SetGenre(epgfields[4], 0, 0);
+
+      if( epgfields.size() >= 15 )
+      {
+        //Since TVServerXBMC v1.x.x.104
+        m_uid = (unsigned int) atol(epgfields[5].c_str());
+        m_seriesNumber = atoi(epgfields[7].c_str());
+        m_episodeNumber = atoi(epgfields[8].c_str());
+        m_episodeName = epgfields[9];
+        m_episodePart = epgfields[10];
+        m_starRating = atoi(epgfields[13].c_str());
+        m_parentalRating = atoi(epgfields[14].c_str());
+
+        //originalAirDate
+        count = sscanf(epgfields[11].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
+
+        if(count != 6)
+          return false;
+
+        timeinfo.tm_hour = hour;
+        timeinfo.tm_min = minute;
+        timeinfo.tm_sec = second;
+        timeinfo.tm_year = year - 1900;
+        timeinfo.tm_mon = month - 1;
+        timeinfo.tm_mday = day;
+        // Make the other fields empty:
+        timeinfo.tm_isdst = -1;
+        timeinfo.tm_wday = 0;
+        timeinfo.tm_yday = 0;
+
+        m_originalAirDate = mktime (&timeinfo);
+      }
 
       return true;
     }
