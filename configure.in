@@ -1417,7 +1417,6 @@ OUTPUT_FILES="Makefile \
     lib/libXDAAP/Makefile \
     lib/cmyth/Makefile \
     lib/libhdhomerun/Makefile \
-    lib/jsoncpp/src/lib_json/Makefile \
     lib/libsquish/Makefile \
     lib/libid3tag/Makefile \
     lib/cximage-6.0/Makefile \
