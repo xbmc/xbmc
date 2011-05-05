@@ -51,7 +51,7 @@ bool CHTSPData::Open()
   SetDescription("HTSP Data Listener");
   Start();
 
-  m_started.WaitMSec(g_iConnectTimeout * 1000);
+  m_started.Wait(g_iConnectTimeout * 1000);
 
   return Running();
 }
@@ -68,7 +68,7 @@ htsmsg_t* CHTSPData::ReadResult(htsmsg_t *m)
     return NULL;
 
   m_Mutex.Lock();
-  unsigned    seq (m_session.AddSequence());
+  unsigned seq (m_session->AddSequence());
 
   SMessage &message(m_queue[seq]);
   message.event = new cCondWait();

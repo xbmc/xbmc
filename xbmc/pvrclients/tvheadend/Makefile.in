@@ -14,7 +14,8 @@ SRCS=client.cpp \
      HTSPConnection.cpp \
      HTSPData.cpp \
      HTSPDemux.cpp \
-     thread.cpp
+     thread.cpp \
+     tools.cpp
 
 include ../Makefile.include
 
