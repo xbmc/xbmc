@@ -6,7 +6,7 @@
 #
 
 LIBS   = ../../../lib/libTcpSocket/libTcpSocket.a \
-	../../../lib/libhts/libhts.a -ldl
+	../../../lib/libhts/libhts.a ../../threads/threads.a -ldl
 LIBDIR = ../../../addons/pvr.hts
 LIB    = ../../../addons/pvr.hts/XBMC_Tvheadend.pvr
 
@@ -14,7 +14,6 @@ SRCS=client.cpp \
 	HTSPSession.cpp \
 	HTSPData.cpp \
 	HTSPDemux.cpp \
-	thread.cpp \
 	tools.cpp
 
 include ../Makefile.include
@@ -27,6 +26,7 @@ clean:
 $(LIB): $(OBJS)
 	${MAKE} -C ../../../lib/libTcpSocket
 	${MAKE} -C ../../../lib/libhts
+	${MAKE} -C ../../threads
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
 
 ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)

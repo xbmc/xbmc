@@ -22,10 +22,11 @@
  */
 
 #include "client.h"
-#include "thread.h"
+#include "threads/Thread.h"
+#include "threads/CriticalSection.h"
 #include "HTSPSession.h"
 
-class cHTSPData : public cThread
+class cHTSPData : public CThread
 {
 public:
   cHTSPData();
@@ -64,12 +65,12 @@ public:
   PVR_ERROR    GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group);
 
 protected:
-  virtual void Action(void);
+  virtual void Process(void);
 
 private:
   struct SMessage
   {
-    cCondWait * event;
+    CEvent *    event;
     htsmsg_t  * msg;
   };
   typedef std::map<int, SMessage> SMessages;
@@ -81,13 +82,13 @@ private:
   bool GetEvent(SEvent& event, uint32_t id);
   SRecordings GetDVREntries(bool recorded, bool scheduled);
 
-  cHTSPSession    m_session;
-  cCondWait       m_started;
-  cMutex          m_Mutex;
-  SChannels       m_channels;
-  STags           m_tags;
-  SEvents         m_events;
-  SMessages       m_queue;
-  SRecordings     m_recordings;
-  int             m_iReconnectRetries;
+  cHTSPSession     m_session;
+  CEvent           m_started;
+  CCriticalSection m_critSection;
+  SChannels        m_channels;
+  STags            m_tags;
+  SEvents          m_events;
+  SMessages        m_queue;
+  SRecordings      m_recordings;
+  int              m_iReconnectRetries;
 };
