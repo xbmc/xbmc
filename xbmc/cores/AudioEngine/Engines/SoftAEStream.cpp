@@ -22,6 +22,7 @@
 #include "system.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/MathUtils.h"
 #include "DllAvCore.h"
 
 #include "AEFactory.h"
@@ -197,9 +198,9 @@ void CSoftAEStream::Initialize()
     int err;
     m_ssrc                   = src_new(SRC_SINC_MEDIUM_QUALITY, m_initChannelCount, &err);
     m_ssrcData.data_in       = m_convertBuffer;
-    m_ssrcData.data_out      = (float*)_aligned_malloc(m_format.m_frameSamples * 2 * sizeof(float), 16);
-    m_ssrcData.output_frames = m_format.m_frames * 2;
     m_ssrcData.src_ratio     = (double)AE.GetSampleRate() / (double)m_initSampleRate;
+    m_ssrcData.data_out      = (float*)_aligned_malloc(m_format.m_frameSamples * MathUtils::ceil_int(m_ssrcData.src_ratio) * sizeof(float), 16);
+    m_ssrcData.output_frames = m_format.m_frames * MathUtils::ceil_int(m_ssrcData.src_ratio);
     m_ssrcData.end_of_input  = 0;
   }
 
