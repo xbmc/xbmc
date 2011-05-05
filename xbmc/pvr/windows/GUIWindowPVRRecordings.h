@@ -22,24 +22,26 @@
  */
 
 #include "GUIWindowPVRCommon.h"
+#include "utils/Observer.h"
 
 namespace PVR
 {
   class CGUIWindowPVR;
 
-  class CGUIWindowPVRRecordings : public CGUIWindowPVRCommon
+  class CGUIWindowPVRRecordings : public CGUIWindowPVRCommon, private Observer
   {
     friend class CGUIWindowPVR;
 
   public:
     CGUIWindowPVRRecordings(CGUIWindowPVR *parent);
-    virtual ~CGUIWindowPVRRecordings(void) {};
 
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
     virtual bool OnAction(const CAction &action);
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
     virtual void OnWindowUnload(void);
     virtual void UpdateData(void);
+    virtual void Notify(const Observable &obs, const CStdString& msg);
+    virtual void ResetObservers(void);
 
   private:
     virtual bool OnClickButton(CGUIMessage &message);
@@ -50,6 +52,8 @@ namespace PVR
     virtual bool OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTON button);
     virtual bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
 
-    CStdString     m_strSelectedPath;
+    CStdString m_strSelectedPath;
+    bool       m_bObservingRecordings;
+    bool       m_bObservingTimers;
   };
 }

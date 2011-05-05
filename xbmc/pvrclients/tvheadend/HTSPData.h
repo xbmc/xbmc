@@ -31,7 +31,7 @@ public:
   cHTSPData();
   ~cHTSPData();
 
-  bool Open(const std::string &strHostname, unsigned int iPort, const std::string &strUsername, const std::string &strPassword, long iTimeout);
+  bool Open(const std::string &strHostname, unsigned int iPort, const std::string &strUsername, const std::string &strPassword, int iTimeout);
   void Close();
   bool CheckConnection(void)   { return m_session.CheckConnection(); }
   bool IsConnected(void) const { return m_session.IsConnected(); }

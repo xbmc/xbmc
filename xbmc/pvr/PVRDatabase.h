@@ -142,6 +142,7 @@ namespace PVR
     //@{
 
     bool RemoveChannelsFromGroup(const CPVRChannelGroup &group);
+    bool RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group);
 
     /*!
      * @brief Remove all channel groups from the database

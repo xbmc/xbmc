@@ -31,6 +31,7 @@
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 #include "pvr/windows/GUIWindowPVR.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/timers/PVRTimers.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
@@ -48,6 +49,15 @@ CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio)
   m_bRadio              = bRadio;
   m_selectedGroup       = NULL;
   m_bShowHiddenChannels = false;
+  m_bObservingTimers    = false;
+}
+
+void CGUIWindowPVRChannels::ResetObservers(void)
+{
+  CSingleLock lock(m_critSection);
+
+  m_bObservingTimers = true;
+  g_PVRTimers->AddObserver(this);
 }
 
 void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &buttons) const
@@ -111,8 +121,29 @@ void CGUIWindowPVRChannels::SetSelectedGroup(CPVRChannelGroup *group)
   if (!group)
     return;
 
+  if (m_selectedGroup)
+    m_selectedGroup->RemoveObserver(this);
   m_selectedGroup = group;
+  m_selectedGroup->AddObserver(this);
   g_PVRManager.SetPlayingGroup(m_selectedGroup);
+}
+
+void CGUIWindowPVRChannels::Notify(const Observable &obs, const CStdString& msg)
+{
+  if (msg.Equals("channelgroup") || msg.Equals("timers-reset") || msg.Equals("timers"))
+  {
+    if (IsVisible())
+      SetInvalid();
+    else
+      m_bUpdateRequired = true;
+  }
+  else if (msg.Equals("channelgroup-reset"))
+  {
+    if (IsVisible())
+      UpdateData();
+    else
+      m_bUpdateRequired = true;
+  }
 }
 
 CPVRChannelGroup *CGUIWindowPVRChannels::SelectNextGroup(void)
@@ -133,6 +164,12 @@ void CGUIWindowPVRChannels::UpdateData(void)
   CSingleLock lock(m_critSection);
   if (m_bIsFocusing)
     return;
+
+  if (!m_bObservingTimers)
+  {
+    m_bObservingTimers = true;
+    g_PVRTimers->AddObserver(this);
+  }
 
   CLog::Log(LOGDEBUG, "CGUIWindowPVRChannels - %s - update window '%s'. set view to %d",
       __FUNCTION__, GetName(), m_iControlList);

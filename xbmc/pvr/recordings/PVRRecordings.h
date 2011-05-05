@@ -23,11 +23,13 @@
 #include "PVRRecording.h"
 #include "XBDateTime.h"
 #include "threads/Thread.h"
+#include "utils/Observer.h"
 
 namespace PVR
 {
   class CPVRRecordings : public std::vector<CPVRRecording *>,
-                         private CThread
+                         private CThread,
+                         public Observable
   {
   private:
     CCriticalSection m_critSection;

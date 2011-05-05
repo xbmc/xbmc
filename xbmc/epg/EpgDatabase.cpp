@@ -193,7 +193,7 @@ int CEpgDatabase::Get(CEpgContainer &container)
         CStdString strName        = m_pDS->fv("sName").get_asString().c_str();
         CStdString strScraperName = m_pDS->fv("sScraperName").get_asString().c_str();
 
-        CEpg newEpg(iEpgID, strName, strScraperName);
+        CEpg newEpg(iEpgID, strName, strScraperName, true);
         if (container.UpdateEntry(newEpg))
           ++iReturn;
         else
@@ -223,12 +223,9 @@ int CEpgDatabase::Get(CEpg &epg)
 {
   int iReturn = -1;
 
-  CStdString strWhereClause;
-  strWhereClause = FormatSQL("idEpg = %u", epg.EpgID());
+  CLog::Log(LOGDEBUG, "get table '%s' id %d", epg.Name().c_str(), epg.EpgID());
 
-  CStdString strQuery;
-  strQuery.Format("SELECT * FROM epgtags WHERE %s ORDER BY iStartTime ASC;", strWhereClause.c_str());
-
+  CStdString strQuery = FormatSQL("SELECT * FROM epgtags WHERE idEpg = %u ORDER BY iStartTime ASC;", epg.EpgID());
   if (ResultQuery(strQuery))
   {
     iReturn = 0;
@@ -314,15 +311,11 @@ int CEpgDatabase::Persist(const CEpg &epg, bool bQueueWrite /* = false */)
 
   CStdString strQuery;
   if (epg.EpgID() > 0)
-  {
     strQuery = FormatSQL("REPLACE INTO epg (idEpg, sName, sScraperName) "
         "VALUES (%u, '%s', '%s');", epg.EpgID(), epg.Name().c_str(), epg.ScraperName().c_str());
-  }
   else
-  {
-    strQuery = FormatSQL("REPLACE INTO epg (sName, sScraperName) "
+    strQuery = FormatSQL("INSERT INTO epg (sName, sScraperName) "
         "VALUES ('%s', '%s');", epg.Name().c_str(), epg.ScraperName().c_str());
-  }
 
   if (bQueueWrite)
   {

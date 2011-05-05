@@ -43,6 +43,7 @@ namespace PVR
     virtual void UpdateData(void);
     virtual void Notify(const Observable &obs, const CStdString& msg);
     virtual void SetInvalid(void) { UpdateData(); }
+    virtual void ResetObservers(void);
 
   private:
     virtual bool IsSelectedButton(CGUIMessage &message) const;
@@ -70,5 +71,6 @@ namespace PVR
     bool             m_bLastEpgView; /*!< true for radio, false for tv */
     bool             m_bGotInitialEpg;
     bool             m_bObservingEpg;
+    bool             m_bObservingTimers;
   };
 }

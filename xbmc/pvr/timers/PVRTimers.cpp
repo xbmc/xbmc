@@ -203,13 +203,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
     SetChanged();
     lock.Leave();
 
-    NotifyObservers("timers", false);
-
-    g_PVRManager.UpdateWindow(PVR_WINDOW_TIMERS, bAddedOrDeleted);
-    g_PVRManager.UpdateWindow(PVR_WINDOW_EPG, false);
-    g_PVRManager.UpdateWindow(PVR_WINDOW_RECORDINGS, bAddedOrDeleted);
-    g_PVRManager.UpdateWindow(PVR_WINDOW_CHANNELS_TV, false);
-    g_PVRManager.UpdateWindow(PVR_WINDOW_CHANNELS_RADIO, false);
+    NotifyObservers(bAddedOrDeleted ? "timers-reset" : "timers", false);
   }
 
   return bChanged;
@@ -478,7 +472,7 @@ bool CPVRTimers::AddTimer(const CFileItem &item)
 
 bool CPVRTimers::AddTimer(CPVRTimerInfoTag &item)
 {
-  if (!g_PVRClients->GetClientProperties(item.m_iClientId)->bSupportsTimers)
+  if (!g_PVRClients->GetAddonCapabilities(item.m_iClientId)->bSupportsTimers)
   {
     CGUIDialogOK::ShowAndGetInput(19033,0,19215,0);
     return false;

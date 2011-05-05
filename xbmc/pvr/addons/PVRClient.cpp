@@ -76,14 +76,13 @@ CPVRClient::~CPVRClient(void)
 {
 }
 
-bool CPVRClient::Create(int iClientId, IPVRClientCallback *pvrCB)
+bool CPVRClient::Create(int iClientId)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
   CLog::Log(LOGDEBUG, "PVR - %s - creating PVR add-on instance '%s'", __FUNCTION__, Name().c_str());
 
   /* initialise members */
-  m_manager              = pvrCB;
   if (!m_pInfo)
     m_pInfo              = new PVR_PROPERTIES;
   m_pInfo->iClienId      = iClientId;
@@ -126,11 +125,9 @@ void CPVRClient::Destroy(void)
 
 bool CPVRClient::ReCreate(void)
 {
-  long clientID             = m_pInfo->iClienId;
-  IPVRClientCallback *pvrCB = m_manager;
-
+  int clientID = m_pInfo->iClienId;
   Destroy();
-  return Create(clientID, pvrCB);
+  return Create(clientID);
 }
 
 bool CPVRClient::ReadyToUse(void) const

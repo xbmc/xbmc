@@ -59,6 +59,7 @@ namespace PVR
     virtual void OnWindowUnload(void);
     virtual void UpdateWindow(PVRWindow window, bool bResetContents = true);
     virtual void InitializeEpgCache(void);
+    virtual void ResetObservers(void);
 
     void UnlockWindow();
 

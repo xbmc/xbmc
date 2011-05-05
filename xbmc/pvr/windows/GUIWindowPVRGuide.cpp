@@ -52,13 +52,20 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
 
 CGUIWindowPVRGuide::~CGUIWindowPVRGuide()
 {
-  g_PVREpg->RemoveObserver(this);
   delete m_epgData;
+}
+
+void CGUIWindowPVRGuide::ResetObservers(void)
+{
+  CSingleLock lock(m_critSection);
+
+  m_bObservingEpg = true;
+  g_PVREpg->AddObserver(this);
 }
 
 void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
 {
-  if (msg.Equals("epg"))
+  if (msg.Equals("epg") || msg.Equals("timers-reset") || msg.Equals("timers"))
   {
     UpdateEpgCache(m_bLastEpgView, true);
 
@@ -193,26 +200,27 @@ void CGUIWindowPVRGuide::UpdateViewNext(void)
 void CGUIWindowPVRGuide::UpdateViewTimeline(void)
 {
   CPVRChannel CurrentChannel;
+  CPVREpgContainer *epg = g_PVREpg;
+
   bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(&CurrentChannel);
   bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
+  CDateTime gridStart = CDateTime::GetCurrentDateTime();
+  CDateTime firstDate = epg->GetFirstEPGDate(bRadio);
+  CDateTime lastDate = epg->GetLastEPGDate(bRadio);
 
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
 
-  CSingleLock lock(m_critSection);
-
-  UpdateEpgCache(bRadio, false);
-
-  if (m_epgData->Size() <= 0)
+  m_parent->m_guideGrid = (CGUIEPGGridContainer*) m_parent->GetControl(CONTROL_LIST_TIMELINE);
+  if (!m_parent->m_guideGrid)
     return;
 
-  m_parent->m_guideGrid = (CGUIEPGGridContainer*) m_parent->GetControl(CONTROL_LIST_TIMELINE);
-  if (m_parent->m_guideGrid)
-  {
-    CDateTime gridStart = CDateTime::GetCurrentDateTime();
-    CDateTime firstDate = g_PVREpg->GetFirstEPGDate(bRadio);
-    CDateTime lastDate = g_PVREpg->GetLastEPGDate(bRadio);
+  /* cache data if needed */
+  UpdateEpgCache(bRadio, false);
 
+  CSingleLock lock(m_critSection);
+  if (m_epgData->Size() > 0)
+  {
     /* copy over the cached epg data */
     for (int iEpgPtr = 0; iEpgPtr < m_epgData->Size(); iEpgPtr++)
       m_parent->m_vecItems->Add(m_epgData->Get(iEpgPtr));
@@ -451,16 +459,31 @@ void CGUIWindowPVRGuide::UpdateEpgCache(bool bRadio /* = false */, bool bForceUp
   /* start observing the EPG for changes, so our cache becomes updated in the background */
   if (!m_bObservingEpg)
   {
-    g_PVREpg->AddObserver(this);
     m_bObservingEpg = true;
+    g_PVREpg->AddObserver(this);
+  }
+
+  if (!m_bObservingTimers)
+  {
+    m_bObservingTimers = true;
+    g_PVRTimers->AddObserver(this);
   }
 
   if (!m_bGotInitialEpg || m_bLastEpgView != bRadio || bForceUpdate)
   {
     CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - updating EPG cache", __FUNCTION__);
 
-    m_epgData->Clear();
-    g_PVREpg->GetEPGAll(m_epgData, bRadio);
+    if (IsActive() && m_iGuideView == GUIDE_VIEW_TIMELINE)
+    {
+      CSingleLock graphicsLock(g_graphicsContext);
+      m_epgData->Clear();
+      g_PVREpg->GetEPGAll(m_epgData, bRadio);
+    }
+    else
+    {
+      m_epgData->Clear();
+      g_PVREpg->GetEPGAll(m_epgData, bRadio);
+    }
   }
   m_bGotInitialEpg = true;
   m_bLastEpgView = bRadio;

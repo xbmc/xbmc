@@ -99,7 +99,7 @@ int CPVRChannelGroup::Load(void)
 
   m_bUsingBackendChannelOrder = g_guiSettings.GetBool("pvrmanager.backendchannelorder");
 
-  int iChannelCount = LoadFromDb();
+  int iChannelCount = m_iGroupId > 0 ? LoadFromDb() : 0;
   CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels loaded from the database for group '%s'",
         __FUNCTION__, iChannelCount, m_strGroupName.c_str());
 
@@ -569,9 +569,10 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
        new channels were added at the back, so they'll get the highest numbers */
     bool bRenumbered = Renumber();
 
+    SetChanged();
     lock.Leave();
 
-    g_PVRManager.UpdateWindow(m_bRadio ? PVR_WINDOW_CHANNELS_RADIO : PVR_WINDOW_CHANNELS_TV, HasNewChannels() || bRemoved || bRenumbered);
+    NotifyObservers(HasNewChannels() || bRemoved || bRenumbered ? "channelgroup-reset" : "channelgroup");
 
     bReturn = Persist();
   }

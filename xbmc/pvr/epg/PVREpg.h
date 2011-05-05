@@ -63,8 +63,9 @@ namespace PVR
     /*!
      * @brief Create a new EPG instance for a channel.
      * @param channel The channel to create the EPG for.
+     * @param bLoadedFromDb True if this table was loaded from the database, false otherwise.
      */
-    CPVREpg(CPVRChannel *channel);
+    CPVREpg(CPVRChannel *channel, bool bLoadedFromDb = false);
 
     /*!
      * @brief Check whether this EPG contains valid entries.

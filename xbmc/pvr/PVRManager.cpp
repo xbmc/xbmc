@@ -232,6 +232,11 @@ void CPVRManager::Process(void)
     return;
   }
 
+  /* reset observers that are observing pvr related data in the pvr windows, or updates won't work after a reload */
+  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
+  if (pWindow)
+    pWindow->ResetObservers();
+
   /* start the other pvr related update threads */
   m_addons->Start();
   m_guiInfo->Start();
@@ -246,7 +251,6 @@ void CPVRManager::Process(void)
   ShowBusyDialog(false);
 
   /* signal to window that clients are loaded */
-  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
   if (pWindow)
     pWindow->UnlockWindow();
 
@@ -336,14 +340,6 @@ bool CPVRManager::ContinueLastChannel(void)
   }
 
   return bReturn;
-}
-
-void CPVRManager::UpdateWindow(PVRWindow window, bool bResetContents /* = true */)
-{
-  /* TODO use an observable for this! */
-  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
-  if (pWindow)
-    pWindow->UpdateWindow(window, bResetContents);
 }
 
 void CPVRManager::ResetProperties(void)
@@ -971,7 +967,7 @@ bool CPVRManager::IsRunningChannelScan(void) const
 
 PVR_ADDON_CAPABILITIES *CPVRManager::GetCurrentClientProperties(void)
 {
-  return m_addons->GetCurrentClientProperties();
+  return m_addons->GetCurrentAddonCapabilities();
 }
 
 void CPVRManager::StartChannelScan(void)

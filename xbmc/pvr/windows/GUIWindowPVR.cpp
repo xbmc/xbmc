@@ -314,3 +314,16 @@ void CGUIWindowPVR::UnlockWindow(void)
     }
   }
 }
+
+void CGUIWindowPVR::ResetObservers(void)
+{
+  CSingleLock lock(m_critSection);
+
+  CreateViews();
+
+  m_windowChannelsRadio->ResetObservers();
+  m_windowChannelsTV->ResetObservers();
+  m_windowGuide->ResetObservers();
+  m_windowRecordings->ResetObservers();
+  m_windowTimers->ResetObservers();
+}

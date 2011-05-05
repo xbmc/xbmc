@@ -78,7 +78,7 @@ void cHTSPSession::Close(bool bForce /* = false */)
   }
 }
 
-bool cHTSPSession::Connect(const std::string &strHostname, int iPortnumber, long iTimeout)
+bool cHTSPSession::Connect(const std::string &strHostname, int iPortnumber, int iTimeout)
 {
   ++m_iRefCount;
 
