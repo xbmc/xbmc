@@ -3,7 +3,7 @@
   <color name="Focused">FFFCFCFC</color>
   <color name="Unfocused">FF909090</color>
   <color name="Selected">FFFCFCFC</color>
-  <color name="Highlighted">FFFF9900</color>
+  <color name="Highlighted">FFd1801c</color>
   <color name="Disabled">FF000000</color>
   <color name="VeryDark">FF141414</color>
 
@@ -17,5 +17,7 @@
   <color name="Dark">FF10758E</color>
   <color name="Medium">FF94C6CC</color>
   <color name="Light">FFCCCCCC</color>
+  <!-- New Colors -->
+  <color name="orange">FFd1801c</color>
   
 </colors>

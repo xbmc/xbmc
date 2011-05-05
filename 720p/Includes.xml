@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <includes>
 	<include name="Search_Label">
 		<posx>15</posx>
@@ -15,7 +16,6 @@
 		<width>278</width>
 		<height>30</height>
 	</include>
-	
 	<include name="Search_Result">
 		<posx>0</posx>
 		<posy>0</posy>
@@ -68,7 +68,6 @@
 				<wrapmultiline>false</wrapmultiline>
 			</control>
 		</itemlayout>
-
 		<focusedlayout width="140" height="200">
 			<control type="image">
 				<posx>15</posx>
@@ -153,7 +152,6 @@
 		<texturefocus>button_kb_on.png</texturefocus>
 		<textureclick>button_kb_click.png</textureclick>
 	</include>
-
 	<include file="Defaults.xml"/>
 	<include file="IncludesDims.xml"/>
 	<include file="revision.xml"/>
@@ -836,17 +834,17 @@
 		<textcolor>HomeMain</textcolor>
 		<shadowcolor>HomeShadow</shadowcolor>
 	</include>
-  <include name="HomeMainMenuFOCaption2">
-    <posx>797</posx>
-    <posy>74</posy>
-    <width>250</width>
-    <height>20</height>
-    <info>ListItem.Label2</info>
-    <align>right</align>
-    <aligny>center</aligny>
-    <font>HomeMenuInfoFont</font>
-    <textcolor>HomeMain</textcolor>
-  </include>
+	<include name="HomeMainMenuFOCaption2">
+		<posx>797</posx>
+		<posy>74</posy>
+		<width>250</width>
+		<height>20</height>
+		<info>ListItem.Label2</info>
+		<align>right</align>
+		<aligny>center</aligny>
+		<font>HomeMenuInfoFont</font>
+		<textcolor>HomeMain</textcolor>
+	</include>
 	<include name="HomeMainMenuOverFade">
 		<visible>![Container(300).OnPrevious | Container(300).OnNext] + ![Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)]</visible>
 		<animation effect="fade" start="0" end="100" time="0" delay="500" reversible="false">Visible</animation>
@@ -854,7 +852,7 @@
 		<animation effect="fade" start="0" end="100" time="0" delay="1000">WindowOpen</animation>
 	</include>
 	<include name="HomeBladeSubTexture">
-		<texture border="0,0,13,0">HomeBladeSub.png</texture>
+		<texture border="0,0,13,0">HomeBladeMiddle.png</texture>
 	</include>
 	<include name="HomeSubMenuBlade">
 		<include>HomeSubMenuBladeDims</include>
@@ -872,9 +870,10 @@
 	<include name="HomeSubMenuBackground">
 		<control type="image">
 			<description>Submenu Background Image</description>
-			<posx>44</posx>
+			<posx>45</posx>
 			<posy>-331</posy>
 			<include>HomeSubMenuBlade</include>
+			<animation effect="fade" start="0" end="97" time="0" condition="true">Conditional</animation>
 			<animation effect="fade" time="300" condition="Window.Next(0)">WindowClose</animation>
 		</control>
 	</include>
@@ -913,7 +912,7 @@
 	</include>
 	<include name="HomeSideMenuFOBGLabel">
 		<textcolor>HomeSubFocus</textcolor>
-		<shadowcolor>HomeShadow</shadowcolor>
+		<!--<shadowcolor>HomeShadow</shadowcolor>-->
 		<include>HomeSideMenuNFBGLabel</include>
 	</include>
 	<!-- Backgrounds -->
@@ -1271,7 +1270,6 @@
 			<height>720</height>
 			<texture>Black.png</texture>
 			<aspectratio>stretch</aspectratio>
-
 			<include condition="Skin.HasSetting(Background_0)">opacity_0</include>
 			<include condition="Skin.HasSetting(Background_10)">opacity_10</include>
 			<include condition="Skin.HasSetting(Background_20)">opacity_20</include>
@@ -1285,7 +1283,6 @@
 			<include condition="Skin.HasSetting(Background_100)">opacity_100</include>
 		</control>
 	</include>
-	
 	<!-- Developer BG Dimming -->
 	<include name="opacity_reset">
 		<onclick>Skin.Reset(Background_0)</onclick>
@@ -1300,8 +1297,6 @@
 		<onclick>Skin.Reset(Background_90)</onclick>
 		<onclick>Skin.Reset(Background_100)</onclick>
 	</include>
-	
-	
 	<include name="opacity_0">
 		<animation effect="fade" end="0" time="0" condition="true">conditional</animation>
 	</include>
@@ -1335,9 +1330,6 @@
 	<include name="opacity_100">
 		<animation effect="fade" end="100" time="0" condition="true">conditional</animation>
 	</include>
-	
-	
-	
 	<include name="CustomBGMultiImage">
 		<timeperimage>15000</timeperimage>
 		<fadetime>1000</fadetime>
@@ -1544,7 +1536,7 @@
 	<include name="ClockText">
 		<height>32</height>
 		<font>MediumAltDefaultFont</font>
-		<align>left</align>
+		<align>right</align>
 		<aligny>center</aligny>
 		<posx>-1</posx>
 	</include>
@@ -1603,16 +1595,18 @@
 	<include name="MediaCountLabel">
 		<posx>12</posx>
 		<posy>3</posy>
+		<width min="1" max="200">auto</width>
 		<font>SmallTitleCapsFont</font>
 		<textcolor>Unfocused</textcolor>
 	</include>
 	<include name="MediaCountNumLabel">
-		<posy>-1</posy>
+		<!--<posy>-1</posy>-->
 		<height>28</height>
 		<font>MediumAltDefaultFont</font>
 		<textcolor>FFFF9900</textcolor>
-		<align>right</align>
-		<aligny>center</aligny>
+		<width min="1" max="200">auto</width>
+		<!--<align>right</align>
+		<aligny>center</aligny>-->
 	</include>
 	<include name="MediaCount">
 		<control type="group">
@@ -1624,6 +1618,10 @@
 				<include>MediaCountBGDims</include>
 				<texture border="12,0,26,0">MediaCountBackground.png</texture>
 			</control>
+			<!-- horiz auto width list -->
+			<control type="grouplist">
+				<orientation>horizontal</orientation>
+				<itemgap>10</itemgap>
 			<control type="label">
 				<description>Objects</description>
 				<include>MediaCountLabel</include>
@@ -1701,6 +1699,7 @@
 				<include>MediaCountNumberPos</include>
 				<info>Container.NumItems</info>
 				<include>MediaCountNumLabel</include>
+			</control>
 			</control>
 		</control>
 	</include>
@@ -1974,16 +1973,24 @@
 	<constant name="PanelStreamDetailTextWidth">430</constant>
 	<constant name="PanelStreamEpisodeDetailTextWidth">480</constant>
 	<include name="PanelStreamImage">
-		<include>PanelStreamImageDims</include>
-		<info>ListItem.Icon</info>
-		<bordertexture>amt-blank-episode-nofocus.png</bordertexture>
+		<posx>18</posx>
+		<posy>3</posy>
+		<width>122</width>
+		<height>186</height>
+		<info background="true">ListItem.Thumb</info>
+		<aspectratio aligny="top">scale</aspectratio>
+		<texture diffuse="posterMaskSmall.png"/>
+		<bordertexture>posterFrameSmall.png</bordertexture>
 		<bordersize>3</bordersize>
+		<visible>ListItem.Type(movie)</visible>
 	</include>
 	<include name="PanelStreamImageFocus">
-		<include>PanelStreamImageDims</include>
+		<posx>18</posx>
+		<posy>3</posy>
+		<width>122</width>
+		<height>186</height>
 		<info>ListItem.Icon</info>
-		<bordertexture>amt-blank-episode-focus.png</bordertexture>
-		<bordersize>3</bordersize>
+		<aspectratio>scale</aspectratio>
 	</include>
 	<include name="PicturesImageFocus">
 		<info>ListItem.Icon</info>
@@ -2034,6 +2041,7 @@
 		<include>PanelStreamAlbumNoThumbDims</include>
 		<include>NoThumbLabel</include>
 	</include>
+	<!-- PanelStream -->
 	<include name="PanelStreamLayout">
 		<itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="158" height="241">
 			<control type="image">
@@ -2066,6 +2074,17 @@
 			</control>
 		</itemlayout>
 		<focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="158" height="241">
+			<!-- new bg border -->
+			<control type="image">
+				<posx>15</posx>
+				<posy>0</posy>
+				<width>128</width>
+				<height>192</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true">posterMaskSmall.png</texture>
+				<visible>ListItem.Type(movie)</visible>
+				<colordiffuse>FFd1801c</colordiffuse>
+			</control>
 			<control type="image">
 				<description>Poster image</description>
 				<include>PanelStreamImageFocus</include>
@@ -2119,7 +2138,6 @@
 				<include>PanelStreamAlbumNoThumb</include>
 			</control>
 		</focusedlayout>
-		
 		<!-- Episodes -->
 		<itemlayout condition="Container.content(episodes)" width="262" height="185">
 			<control type="image">
@@ -2150,7 +2168,7 @@
 		<focusedlayout condition="Container.content(episodes)" width="262" height="185">
 			<control type="image">
 				<description>Episode thumb</description>
-				<include>PanelStreamEpisodeImageFocus</include>			
+				<include>PanelStreamEpisodeImageFocus</include>
 			</control>
 			<control type="image">
 				<description>Overlay</description>
@@ -2172,7 +2190,6 @@
 				<textcolor>ffffffff</textcolor>
 				<scrollsuffix>...</scrollsuffix>
 			</control>
-
 		</focusedlayout>
 		<!-- Albums -->
 		<itemlayout condition="Container.content(albums) | Window.IsVisible(MyMusicFiles)" width="180" height="180">
@@ -2219,7 +2236,7 @@
 	<include name="WallStreamPoster">
 		<width>WallStreamPosterWidth</width>
 		<height>WallStreamPosterHeight</height>
-		<aspectratio>stretch</aspectratio>
+		<aspectratio>scale</aspectratio>
 		<info>ListItem.Icon</info>
 	</include>
 	<constant name="WallStreamCoverHeight">160</constant>
@@ -3006,8 +3023,12 @@
 		<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 	</include>
 	<include name="MediaPreviewThumb">
-		<include>MediaPreviewThumbDims</include>
+		<posx>7.5</posx>
+		<posy>29</posy>
+		<width>122</width>
+		<height>183</height>
 		<include>MediaPreviewThumbDetails</include>
+		<aspectratio>scale</aspectratio>
 	</include>
 	<include name="MediaPreviewEpThumb">
 		<include>MediaPreviewEpThumbDims</include>
@@ -4252,6 +4273,7 @@
 		<control type="group">
 			<posy>-20</posy>
 			<include>HomeSubMenuBackgroundSettings</include>
+			<animation effect="fade" start="0" end="95" time="0" condition="true">Conditional</animation>
 			<posx>35</posx>
 		</control>
 	</include>
@@ -4282,17 +4304,26 @@
 		<animation effect="fade" time="300" condition="Window.Next(0)">WindowClose</animation>
 	</include>
 	<include name="SettingsLeftBlade">
+		<control type="group">
+			<animation effect="slide" tween="cubic" start="0,0" end="180,0" time="300" delay="100" condition="Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001) + !Skin.HasSetting(HomeBladeCentre)">WindowClose</animation>
+			<animation effect="slide" tween="cubic" start="0,0" end="620,0" time="300" delay="100" condition="Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001) + Skin.HasSetting(HomeBladeCentre)">WindowClose</animation>
+			<animation effect="slide" tween="cubic" start="0,0" end="-670,0" time="700" delay="100" condition="!Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001) + !Skin.HasSetting(HomeBladeCentre)">WindowClose</animation>
+			<animation effect="slide" tween="cubic" start="0,0" end="-230,0" time="800" delay="100" condition="!Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001) + Skin.HasSetting(HomeBladeCentre)">WindowClose</animation>
 		<control type="image">
 			<description>Background Image Left Blade</description>
 			<posx>-620</posx>
 			<posy>0</posy>
 			<width>846</width>
 			<height>720</height>
-			<texture border="0,0,500,0">HomeBladeLeft.png</texture>
-			<animation effect="slide" tween="cubic" start="0,0" end="180,0" time="300" delay="100" condition="Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001) + !Skin.HasSetting(HomeBladeCentre)">WindowClose</animation>
-			<animation effect="slide" tween="cubic" start="0,0" end="620,0" time="300" delay="100" condition="Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001) + Skin.HasSetting(HomeBladeCentre)">WindowClose</animation>
-			<animation effect="slide" tween="cubic" start="0,0" end="-670,0" time="700" delay="100" condition="!Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001) + !Skin.HasSetting(HomeBladeCentre)">WindowClose</animation>
-			<animation effect="slide" tween="cubic" start="0,0" end="-230,0" time="800" delay="100" condition="!Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001) + Skin.HasSetting(HomeBladeCentre)">WindowClose</animation>
+			<texture border="0,0,500,0">HomeBladeLeft.png</texture>			
+		</control>
+		<control type="image">
+			<posx>-290</posx>
+			<posy>0</posy>
+			<width>500</width>
+			<height>720</height>
+			<texture diffuse="HomeMenuDiffuse.png">HomeBladeLeftMenuOverlay.png</texture>
+		</control>
 		</control>
 	</include>
 	<include name="SettingsCentreBladeBG">
@@ -4304,20 +4335,22 @@
 		<include>SettingsCentreBladeDims</include>
 		<include>HomeBladeSubTexture</include>
 	</include>
+	<!-- settings center blade -->
 	<include name="SettingsTextArea">
 		<control type="group">
-			<!--
-      <animation effect="fade" time="200" condition="!Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001)">WindowClose</animation>
-      <animation effect="fade" time="200" delay="800" condition="Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001)">WindowClose</animation>
--->
 			<animation effect="zoom" tween="linear" center="411,0" start="100,100" end="0,100" time="200" delay="100" condition="Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001) + !Skin.HasSetting(HomeBladeCentre)">WindowClose</animation>
 			<animation effect="zoom" tween="linear" center="851,0" start="100,100" end="0,100" time="200" delay="100" condition="Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001) + Skin.HasSetting(HomeBladeCentre)">WindowClose</animation>
-			<control type="image">
+			<animation effect="fade" start="0" end="99" time="0" condition="true">Conditional</animation>
+			<!--<control type="image">
 				<include>SettingsCentreBladeBG</include>
-			</control>
+			</control>-->
 			<control type="image">
-				<description>Submenu Background Image</description>
-				<include>SettingsCentreBlade</include>
+				<description>Settings center blade</description>
+				<posx>210</posx>
+				<posy>0</posy>
+				<width>630</width>
+				<height>720</height>
+				<texture border="0,0,13,0">HomeBladeMiddle.png</texture>
 			</control>
 		</control>
 	</include>

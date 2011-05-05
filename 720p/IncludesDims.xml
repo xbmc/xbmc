@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <includes>
 	<!-- Common Stuff -->
 	<!-- ============ -->
@@ -12,9 +13,10 @@
 	<include name="MediaCountPos">
 		<posx>1050</posx>
 		<posy>11</posy>
+		<align>right</align>
 	</include>
 	<include name="MediaCountBGDims">
-		<posx>1</posx>
+		<posx>-20</posx>
 		<posy>1</posy>
 		<width>160</width>
 		<height>28</height>
@@ -100,9 +102,9 @@
 	</include>
 	<include name="HomeSideMenuFOBGImageDims">
 		<posx>-4</posx>
-		<posy>1</posy>
+		<posy>0</posy>
 		<width>299</width>
-		<height>44</height>
+		<height>43</height>
 	</include>
 	<include name="HomeSubSubMenuGroupDims">
 		<posx>534</posx>
@@ -1420,7 +1422,7 @@
 	<include name="MediaPreviewThumbDims">
 		<posx>7.5</posx>
 		<posy>29</posy>
-		<width>124</width>
+		<width>122</width>
 		<height>183</height>
 	</include>
 	<include name="MediaPreviewEpThumbDims">

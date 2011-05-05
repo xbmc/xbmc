@@ -1,180 +1,167 @@
+<?xml version="1.0"?>
 <includes>
-  <default type="label">
-    <description>Default Label</description>
-    <font>DefaultFont</font>
-    <textcolor>Focused</textcolor>
-    <selectedcolor>Selected</selectedcolor>
-  </default>
-
-  <default type="fadelabel">
-    <description>Default Fade Label</description>
-    <font>DefaultFont</font>
-    <textcolor>Focused</textcolor>
-    <selectedcolor>Selected</selectedcolor>
-    <scrollout>false</scrollout>
-    <pauseatend>10000</pauseatend>
-  </default>
-
-  <default type="button">
-    <description>Default Button</description>
-    <width>140</width>
-    <height>26</height>
-    <font>DefaultFont</font>
-    <textcolor>Focused</textcolor>
-    <align>center</align>
-    <aligny>top</aligny>
-    <textoffsety>1</textoffsety>
-    <texturefocus>ButtonOverlay.png</texturefocus>
-    <texturenofocus>-</texturenofocus>
-  </default>
-
-  <default type="togglebutton">
-    <description>Default Togglebutton</description>
-    <width>16</width>
-    <height>16</height>
-    <font>DefaultFont</font>
-    <textcolor>Focused</textcolor>
-    <align>center</align>
-    <texturefocus>ArrowUpFO.png</texturefocus>
-    <texturenofocus>ArrowUpNF.png</texturenofocus>
-    <alttexturefocus>ArrowDownFO.png</alttexturefocus>
-    <alttexturenofocus>ArrowDownNF.png</alttexturenofocus>
-  </default>
-
-  <default type="radiobutton">
-    <description>Default Radiobutton</description>
-    <width>120</width>
-    <font>DefaultFont</font>
-    <textcolor>Focused</textcolor>
-    <align>left</align>
-    <aligny>top</aligny>
-    <textoffsetx>4</textoffsetx>
-    <textoffsety>1</textoffsety>
-    <texturenofocus>-</texturenofocus>
-    <texturefocus>ButtonOverlay.png</texturefocus>
-    <textureradiofocus>LEDOn.png</textureradiofocus>
-    <textureradionofocus>LEDOff.png</textureradionofocus>
-    <radiowidth>27</radiowidth>
-    <radioheight>27</radioheight>
-  </default>
-
-  <default type="multiimage">
-    <timeperimage>15000</timeperimage>
+	<default type="label">
+		<description>Default Label</description>
+		<font>DefaultFont</font>
+		<textcolor>Focused</textcolor>
+		<selectedcolor>Selected</selectedcolor>
+	</default>
+	<default type="fadelabel">
+		<description>Default Fade Label</description>
+		<font>DefaultFont</font>
+		<textcolor>Focused</textcolor>
+		<selectedcolor>Selected</selectedcolor>
+		<scrollout>false</scrollout>
+		<pauseatend>10000</pauseatend>
+	</default>
+	<default type="button">
+		<description>Default Button</description>
+		<width>140</width>
+		<height>26</height>
+		<font>DefaultFont</font>
+		<textcolor>Focused</textcolor>
+		<align>center</align>
+		<aligny>top</aligny>
+		<textoffsety>1</textoffsety>
+		<texturefocus>ButtonOverlay.png</texturefocus>
+		<texturenofocus>-</texturenofocus>
+	</default>
+	<default type="togglebutton">
+		<description>Default Togglebutton</description>
+		<width>16</width>
+		<height>16</height>
+		<font>DefaultFont</font>
+		<textcolor>Focused</textcolor>
+		<align>center</align>
+		<texturefocus>ArrowUpFO.png</texturefocus>
+		<texturenofocus>ArrowUpNF.png</texturenofocus>
+		<alttexturefocus>ArrowDownFO.png</alttexturefocus>
+		<alttexturenofocus>ArrowDownNF.png</alttexturenofocus>
+	</default>
+	<default type="radiobutton">
+		<description>Default Radiobutton</description>
+		<width>120</width>
+		<font>DefaultFont</font>
+		<textcolor>Focused</textcolor>
+		<align>left</align>
+		<aligny>top</aligny>
+		<textoffsetx>4</textoffsetx>
+		<textoffsety>1</textoffsety>
+		<texturenofocus>-</texturenofocus>
+		<texturefocus>ButtonOverlay.png</texturefocus>
+		<textureradiofocus>LEDOn.png</textureradiofocus>
+		<textureradionofocus>LEDOff.png</textureradionofocus>
+		<radiowidth>27</radiowidth>
+		<radioheight>27</radioheight>
+	</default>
+	<default type="multiimage">
+		<timeperimage>15000</timeperimage>
 		<fadetime>1000</fadetime>
 		<randomize>true</randomize>
-  </default>
-
-  <default type="textbox">
-    <description>Default Text Box</description>
-    <width>220</width>
-    <height>190</height>
-    <align>left</align>
-    <aligny>top</aligny>
-    <font>DefaultFont</font>
-    <textcolor>Focused</textcolor>
-    <textureup>-</textureup>
-    <textureupfocus>-</textureupfocus>
-    <texturedown>-</texturedown>
-    <texturedownfocus>-</texturedownfocus>
-    <autoscroll delay="10000" time="3000" repeat="10000">true</autoscroll>
-  </default>
-
-  <default type="spincontrol">
-    <description>Default Spin Control</description>
-    <align>center</align>
-    <width>16</width>
-    <height>16</height>
-    <align>center</align>
-    <font>DefaultFont</font>
-    <textcolor>Focused</textcolor>
-    <textoffsetx>70</textoffsetx>
-    <texturefocus>ButtonOverlay.png</texturefocus>
-    <texturenofocus>-</texturenofocus>
-    <textureup>ArrowUpNF.png</textureup>
-    <textureupfocus>ArrowUpFO.png</textureupfocus>
-    <texturedown>ArrowDownNF.png</texturedown>
-    <texturedownfocus>ArrowDownFO.png</texturedownfocus>
-    <reverse>yes</reverse>
-  </default>
-
-  <default type="spincontrolex">
-    <width>200</width>
-    <height>17</height>
-    <font>DefaultFont</font>
-    <textcolor>Focused</textcolor>
-    <align>center</align>
-    <aligny>center</aligny>
-    <texturenofocus>-</texturenofocus>
-    <texturefocus>-</texturefocus>
-    <textureup>ArrowUpNF.png</textureup>
-    <textureupfocus>ArrowUpFO.png</textureupfocus>
-    <texturedown>ArrowDownNF.png</texturedown>
-    <texturedownfocus>ArrowDownFO.png</texturedownfocus>
-    <spinwidth>16</spinwidth>
-    <spinheight>16</spinheight>
-    <reverse>yes</reverse>
-  </default>
-
-  <default type="listcontrol">
-    <description>Default List Control</description>
-    <texturenofocus>-</texturenofocus>
-    <texturefocus>ButtonOverlay.png</texturefocus>
-    <font>DefaultFont</font>
-    <textcolor>Focused</textcolor>
-  </default>
-
-  <default type="progress">
-    <description>Default Progress Bar</description>
-    <visible>true</visible>
-    <width>474</width>
-    <height>24</height>
-    <texturebg border="14,0,14,0">OSDProgressBack.png</texturebg>
-    <midtexture border="14,0,14,0">OSDProgressMid.png</midtexture>
-    <overlaytexture>-</overlaytexture>
-  </default>
-
-  <default type="slider">
-    <description>Seek Slider</description>
-    <visible>true</visible>
-    <width>474</width>
-    <height>24</height>
-    <texturesliderbar>SeekSliderBack.png</texturesliderbar>
-    <textureslidernib>ScrollBarNibFO.png</textureslidernib>
-    <textureslidernibfocus>ScrollBarNibFO.png</textureslidernibfocus>
-  </default>
-
-  <default type="sliderex">
-    <description>Default Slider</description>
-    <posx>530</posx>
-    <posy>150</posy>
-    <height>31</height>
-    <width>300</width>
-    <texturenofocus>-</texturenofocus>
-    <sliderwidth>100</sliderwidth>
-    <sliderheight>24</sliderheight>
-    <texturesliderbar>SliderBackground.png</texturesliderbar>
-    <textureslidernib>SliderNibNF.png</textureslidernib>
-    <textureslidernibfocus>SliderNibFO.png</textureslidernibfocus>
-    <font>DefaultFont</font>
-    <textcolor>Focused</textcolor>
-    <textoffsetx>12</textoffsetx>
-  </default>
-
-  <default type="scrollbar">
-    <description>Scroll Bar</description>
-    <posx>0</posx>
-    <posy>0</posy>
-    <width>24</width>
-    <height>504</height>
-    <orientation>vertical</orientation>
-    <texturesliderbackground border="10,12,8,14">OSDProgressBackV.png</texturesliderbackground>
-    <texturesliderbar border="10,12,8,14">ScrollBarV.png</texturesliderbar>
-    <texturesliderbarfocus border="10,12,8,14">ScrollBarV.png</texturesliderbarfocus>
-    <textureslidernib>ScrollBarNibVNF.png</textureslidernib>
-    <textureslidernibfocus>ScrollBarNibVFO.png</textureslidernibfocus>
-    <pulseonselect>true</pulseonselect>
-    <showonepage>false</showonepage>
-    <visible allowhiddenfocus="true">true</visible>
-  </default>
-
+	</default>
+	<default type="textbox">
+		<description>Default Text Box</description>
+		<width>220</width>
+		<height>190</height>
+		<align>left</align>
+		<aligny>top</aligny>
+		<font>DefaultFont</font>
+		<textcolor>Focused</textcolor>
+		<textureup>-</textureup>
+		<textureupfocus>-</textureupfocus>
+		<texturedown>-</texturedown>
+		<texturedownfocus>-</texturedownfocus>
+		<autoscroll delay="10000" time="3000" repeat="10000">true</autoscroll>
+	</default>
+	<default type="spincontrol">
+		<description>Default Spin Control</description>
+		<align>center</align>
+		<width>16</width>
+		<height>16</height>
+		<align>center</align>
+		<font>DefaultFont</font>
+		<textcolor>Focused</textcolor>
+		<textoffsetx>70</textoffsetx>
+		<texturefocus>ButtonOverlay.png</texturefocus>
+		<texturenofocus>-</texturenofocus>
+		<textureup>ArrowUpNF.png</textureup>
+		<textureupfocus>ArrowUpFO.png</textureupfocus>
+		<texturedown>ArrowDownNF.png</texturedown>
+		<texturedownfocus>ArrowDownFO.png</texturedownfocus>
+		<reverse>yes</reverse>
+	</default>
+	<default type="spincontrolex">
+		<width>200</width>
+		<height>17</height>
+		<font>DefaultFont</font>
+		<textcolor>Focused</textcolor>
+		<align>center</align>
+		<aligny>center</aligny>
+		<texturenofocus>-</texturenofocus>
+		<texturefocus>-</texturefocus>
+		<textureup>ArrowUpNF.png</textureup>
+		<textureupfocus>ArrowUpFO.png</textureupfocus>
+		<texturedown>ArrowDownNF.png</texturedown>
+		<texturedownfocus>ArrowDownFO.png</texturedownfocus>
+		<spinwidth>16</spinwidth>
+		<spinheight>16</spinheight>
+		<reverse>yes</reverse>
+	</default>
+	<default type="listcontrol">
+		<description>Default List Control</description>
+		<texturenofocus>-</texturenofocus>
+		<texturefocus>ButtonOverlay.png</texturefocus>
+		<font>DefaultFont</font>
+		<textcolor>Focused</textcolor>
+	</default>
+	<default type="progress">
+		<description>Default Progress Bar</description>
+		<visible>true</visible>
+		<width>474</width>
+		<height>24</height>
+		<texturebg border="14,0,14,0">OSDProgressBack.png</texturebg>
+		<midtexture border="14,0,14,0">OSDProgressMid.png</midtexture>
+		<overlaytexture>-</overlaytexture>
+	</default>
+	<default type="slider">
+		<description>Seek Slider</description>
+		<visible>true</visible>
+		<width>474</width>
+		<height>24</height>
+		<texturesliderbar>SeekSliderBack.png</texturesliderbar>
+		<textureslidernib>ScrollBarNibFO.png</textureslidernib>
+		<textureslidernibfocus>ScrollBarNibFO.png</textureslidernibfocus>
+	</default>
+	<default type="sliderex">
+		<description>Default Slider</description>
+		<posx>530</posx>
+		<posy>150</posy>
+		<height>31</height>
+		<width>300</width>
+		<texturenofocus>-</texturenofocus>
+		<sliderwidth>100</sliderwidth>
+		<sliderheight>24</sliderheight>
+		<texturesliderbar>SliderBackground.png</texturesliderbar>
+		<textureslidernib>SliderNibNF.png</textureslidernib>
+		<textureslidernibfocus>SliderNibFO.png</textureslidernibfocus>
+		<font>DefaultFont</font>
+		<textcolor>Focused</textcolor>
+		<textoffsetx>12</textoffsetx>
+	</default>
+	<default type="scrollbar">
+		<description>Scroll Bar</description>
+		<posx>0</posx>
+		<posy>0</posy>
+		<width>24</width>
+		<height>504</height>
+		<orientation>vertical</orientation>
+		<texturesliderbackground border="10,12,8,14">OSDProgressBackV.png</texturesliderbackground>
+		<texturesliderbar border="10,12,8,14">ScrollBarV.png</texturesliderbar>
+		<texturesliderbarfocus border="10,12,8,14">ScrollBarV.png</texturesliderbarfocus>
+		<textureslidernib>ScrollBarNibVNF.png</textureslidernib>
+		<textureslidernibfocus>ScrollBarNibVFO.png</textureslidernibfocus>
+		<pulseonselect>true</pulseonselect>
+		<showonepage>false</showonepage>
+		<visible allowhiddenfocus="true">true</visible>
+	</default>
 </includes>

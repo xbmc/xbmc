@@ -1,116 +1,97 @@
+<?xml version="1.0"?>
 <window id="12">
-  <defaultcontrol>3</defaultcontrol>
-  <allowoverlay>no</allowoverlay>
-
-  <controls>
-    <include>Background</include>
-    <include>HomeRightOverlay</include>
-
-
-<!-- Submenu blade -->
-    <control type="group" id="302">
-      <include>SettingsSubBlade</include>
-
-      <control type="grouplist" id="3">
-        <description>main menu</description>
-        <orientation>vertical</orientation>
-        <posx>72</posx>
-        <width>SettingsCategoryBtnWidth</width>
-        <onleft>301</onleft>
-        <onright>3</onright>
-        <onup>3</onup>
-        <ondown>3</ondown>
-        <itemgap>0</itemgap>
-      </control>
-      <control type="button" id="10">
-        <description>menu buttons</description>
-        <include>SettingsCategoryButton</include>
-      </control>
-    </control>
-
-
-<!-- Main control area -->
-    <include>SettingsTextArea</include>
-
-    <control type="group" id="301">
-      <description>Control Area</description>
-      <include>SettingsOptionsArea</include>
-
-      <control type="label">
-        <description>Title label</description>
-        <label>$LOCALIZE[31606]</label>
-        <include>SettingsUpperTitle</include>
-      </control>
-
-      <control type="label" id="2">
-        <description>Title label2</description>
-        <include>SettingsLowerTitle</include>
-        <visible>!Control.HasFocus(1000)</visible>
-      </control>
-
-      <control type="grouplist" id="5">
-        <description>control_area</description>
-        <include>SettingsCatListDims</include>
-        <onup>1000</onup>
-        <ondown>5</ondown>
-        <onleft>5</onleft>
-        <onright>302</onright>
-        <itemgap>0</itemgap>
-        <pagecontrol>61</pagecontrol>
-      </control>
-
-      <control type="button" id="7">
-        <description>default_button</description>
-        <include>SettingsCatBtnDims</include>
-        <include>MenuItemNFTextureNF</include>
-        <texturefocus aspectratio="stretch">MenuItemFO.png</texturefocus>
-        <textcolor>Focused</textcolor>
-        <disabledcolor>Unfocused</disabledcolor>
-        <font>MediumDefaultFont</font>
-      </control>
-
-      <control type="radiobutton" id="8">
-        <description>default_radio_button</description>
-        <include>SettingsCatRadioBtnDims</include>
-        <textcolor>Focused</textcolor>
-        <disabledcolor>Unfocused</disabledcolor>
-        <include>MenuItemNFTextureNF</include>
-        <texturefocus aspectratio="stretch">MenuItemFO.png</texturefocus>
-        <font>MediumDefaultFont</font>
-        <aligny>center</aligny>
-      </control>
-
-      <control type="spincontrolex" id="9">
-        <description>default_spincontrol</description>
-        <include>SettingsCatSpinCtlDims</include>
-        <textcolor>Focused</textcolor>
-        <disabledcolor>Unfocused</disabledcolor>
-        <include>MenuItemNFTextureNF</include>
-        <texturefocus aspectratio="stretch">MenuItemFO.png</texturefocus>
-        <font>MediumDefaultFont</font>
-        <aligny>center</aligny>
-        <align>left</align>
-      </control>
-
-      <control type="scrollbar" id="61">
-        <onup>61</onup>
-        <ondown>61</ondown>
-        <include>SettingsOptionsScrollbarDims</include>
-      </control>
-
-    </control>
-
-
-<!-- Settings Menu -->
-    <include>SettingsCategoryMenu</include>
-
-
-<!-- Blades -->
-    <include>SettingsLeftBlade</include>
-
-
-<!-- Widgets -->
-    <include>Clock</include>
-
-  </controls>
+	<defaultcontrol>3</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>Background</include>
+		<include>HomeRightOverlay</include>
+		<!-- Submenu blade -->
+		<control type="group" id="302">
+			<include>SettingsSubBlade</include>
+			<control type="grouplist" id="3">
+				<description>main menu</description>
+				<orientation>vertical</orientation>
+				<posx>72</posx>
+				<width>SettingsCategoryBtnWidth</width>
+				<onleft>301</onleft>
+				<onright>3</onright>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<itemgap>0</itemgap>
+			</control>
+			<control type="button" id="10">
+				<description>menu buttons</description>
+				<include>SettingsCategoryButton</include>
+			</control>
+		</control>
+		<!-- Main control area -->
+		<!-- Settings center blade bg -->
+		<include>SettingsTextArea</include>
+		<!-- END Settings center blade bg -->
+		<control type="group" id="301">
+			<description>Control Area</description>
+			<include>SettingsOptionsArea</include>
+			<control type="label">
+				<description>Title label</description>
+				<label>$LOCALIZE[31606]</label>
+				<include>SettingsUpperTitle</include>
+			</control>
+			<control type="label" id="2">
+				<description>Title label2</description>
+				<include>SettingsLowerTitle</include>
+				<visible>!Control.HasFocus(1000)</visible>
+			</control>
+			<control type="grouplist" id="5">
+				<description>control_area</description>
+				<include>SettingsCatListDims</include>
+				<onup>1000</onup>
+				<ondown>5</ondown>
+				<onleft>5</onleft>
+				<onright>302</onright>
+				<itemgap>0</itemgap>
+				<pagecontrol>61</pagecontrol>
+			</control>
+			<control type="button" id="7">
+				<description>default_button</description>
+				<include>SettingsCatBtnDims</include>
+				<include>MenuItemNFTextureNF</include>
+				<texturefocus aspectratio="stretch">MenuItemFO.png</texturefocus>
+				<textcolor>Focused</textcolor>
+				<disabledcolor>Unfocused</disabledcolor>
+				<font>MediumDefaultFont</font>
+			</control>
+			<control type="radiobutton" id="8">
+				<description>default_radio_button</description>
+				<include>SettingsCatRadioBtnDims</include>
+				<textcolor>Focused</textcolor>
+				<disabledcolor>Unfocused</disabledcolor>
+				<include>MenuItemNFTextureNF</include>
+				<texturefocus aspectratio="stretch">MenuItemFO.png</texturefocus>
+				<font>MediumDefaultFont</font>
+				<aligny>center</aligny>
+			</control>
+			<control type="spincontrolex" id="9">
+				<description>default_spincontrol</description>
+				<include>SettingsCatSpinCtlDims</include>
+				<textcolor>Focused</textcolor>
+				<disabledcolor>Unfocused</disabledcolor>
+				<include>MenuItemNFTextureNF</include>
+				<texturefocus aspectratio="stretch">MenuItemFO.png</texturefocus>
+				<font>MediumDefaultFont</font>
+				<aligny>center</aligny>
+				<align>left</align>
+			</control>
+			<control type="scrollbar" id="61">
+				<onup>61</onup>
+				<ondown>61</ondown>
+				<include>SettingsOptionsScrollbarDims</include>
+			</control>
+		</control>
+		<!-- Settings Menu -->
+		<include>SettingsCategoryMenu</include>
+		<!-- Blades -->
+		<include>SettingsLeftBlade</include>
+		<!-- Widgets -->
+		<include>Clock</include>
+	</controls>
 </window>
