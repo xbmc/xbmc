@@ -441,7 +441,6 @@ namespace PVR
   protected:
     bool                  m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
     CStdString            m_strHostName;          /*!< the host name */
-    CCriticalSection      m_critSection;          /*!< mutex for this class */
     PVR_MENUHOOKS         m_menuhooks;            /*!< the menu hooks for this add-on */
 
     /* cached data */
