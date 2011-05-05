@@ -27,9 +27,12 @@
 // The entries are in ascending order of sym; just for convenience.
 // scancode, sym, unicode, ascii, vkey, keyname
 static const XBMCKEYTABLE XBMCKeyTable[] =
-{ { 0x0E, 0x0008, 0x0000, 0x00, 0x08, "backspace" }
+{ { 0x0E, 0x0008, 0x0008, 0x08, 0x08, "backspace" }
+, { 0x23, 0x0068, 0x0008, 0x08, 0x48, NULL } // Distinguish ctrl-H from Backspace
 , { 0x0f, 0x0009, 0x0009, 0x09, 0x09, "tab" }
+, { 0x17, 0x0069, 0x0009, 0x09, 0x49, NULL } // Distinguish ctrl-I from Tab
 , { 0x1c, 0x000d, 0x000d, 0x0d, 0x0d, "return" }
+, { 0x32, 0x006d, 0x000d, 0x0d, 0x4d, NULL } // Distinguish ctrl-M from Return
 , { 0x0b, 0x001b, 0x001b, 0x1b, 0x1b, "escape" }
 , { 0x0b,      0,      0,    0, 0x1b, "esc" } // Allowed abbreviation for "escape"
 , { 0x45, 0x0013,      0,    0, 0x13, "pause" }
@@ -284,6 +287,25 @@ bool KeyTableLookupUnicode(uint16_t unicode, XBMCKEYTABLE* keytable)
   }
 
   // The name wasn't found
+  return false;
+}
+
+bool KeyTableLookupSymAndUnicode(uint16_t sym, uint16_t unicode, XBMCKEYTABLE* keytable)
+{
+  // If the sym being searched for is zero there will be no match (the
+  // unicode can be zero if the sym is non-zero)
+  if (sym == 0)
+    return false;
+
+  // Look up the sym and unicode in XBMCKeyTable
+  for (int i = 0; i < XBMCKeyTableSize; i++)
+  { if (sym == XBMCKeyTable[i].sym && unicode == XBMCKeyTable[i].unicode)
+    { *keytable = XBMCKeyTable[i];
+      return true;
+    }
+  }
+
+  // The sym and unicode weren't found
   return false;
 }
 

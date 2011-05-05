@@ -203,7 +203,6 @@ void CKeyboardStat::Initialize()
 
 const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
 { uint8_t vkey;
-  uint16_t sym;
   wchar_t unicode;
   char ascii;
   uint32_t modifiers;
@@ -227,22 +226,29 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
   // The keysym.unicode is usually valid, even if it is zero. A zero
   // unicode just means this is a non-printing keypress. The ascii and
   // vkey will be set below.
-  sym = keysym.sym;
   unicode = keysym.unicode;
   ascii = 0;
   vkey = 0;
   held = 0;
 
-  // There are inevitably a few special cases:
-  // On some European keyboards backslash is ctrl-alt-8 so it can't be
-  // looked up with the keysym.sym. Change the sym from XBMCK_8 to
-  // XBMCK_BACKSLASH so the lookup works.
-  if (keysym.unicode == 0x005c)
-    sym = XBMCK_BACKSLASH;
+  // Start by trying to match both the sym and unicode. This will identify
+  // the majority of keypresses
+  if (KeyTableLookupSymAndUnicode(keysym.sym, keysym.unicode, &keytable))
+  {
+    vkey = keytable.vkey;
+    ascii = keytable.ascii;
+  }
 
-  // Lookup the sym. The mapping of the sym to vkey is unique, but there
-  // may be multiple unicode and ascii values for a given sym.
-  if (KeyTableLookupSym(sym, &keytable))
+  // If we failed to match the sym and unicode try just the unicode. This
+  // will match keys like \ that are on different keys on regional keyboards.
+  else if (KeyTableLookupUnicode(keysym.unicode, &keytable))
+  {
+    vkey = keytable.vkey;
+    ascii = keytable.ascii;
+  }
+
+  // If there is still no match try the sym
+  else if (KeyTableLookupSym(keysym.sym, &keytable))
   {
     vkey = keytable.vkey;
 
@@ -251,12 +257,8 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
     // values.
     if (keytable.unicode == 0 && unicode != 0)
       unicode = 0;
-
-    // Else lookup the unicode. This is only required in case the ascii
-    // and unicode are different. At the moment there are no such keysyms
-    // but I'll leave the check in just in case.
-    else if (KeyTableLookupUnicode(keysym.unicode, &keytable))
-      ascii = keytable.ascii;
+    else
+      ascii = unicode & 0xFF;
   }
 
   // The keysym.sym is unknown ...
