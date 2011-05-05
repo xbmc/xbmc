@@ -22,7 +22,7 @@
  */
 
 #include "HTSPTypes.h"
-#include "threads/CriticalSection.h"
+#include "thread.h"
 
 extern "C" {
 #include "libhts/net.h"
@@ -77,7 +77,7 @@ private:
   std::string           m_strHostname;
   bool                  m_bIsConnected;
 
-  CCriticalSection      m_critSection;
+  cMutex                m_Mutex;
   std::deque<htsmsg_t*> m_queue;
   const unsigned int    m_iQueueSize;
 };

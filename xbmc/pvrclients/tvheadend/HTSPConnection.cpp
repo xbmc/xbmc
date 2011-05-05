@@ -21,7 +21,6 @@
 
 #include "HTSPConnection.h"
 #include "client.h"
-#include "threads/SingleLock.h"
 
 extern "C" {
 #include "libTcpSocket/os-dependent_socket.h"
@@ -244,8 +243,13 @@ bool CHTSPConnection::ReadSuccess(htsmsg_t* m, bool sequence, std::string action
 
 unsigned int CHTSPConnection::AddSequence()
 {
-  CSingleLock lock(m_critSection);
-  return ++m_iSequence;
+  int iReturn;
+
+  m_Mutex.Lock();
+  iReturn = ++m_iSequence;
+  m_Mutex.Unlock();
+
+  return iReturn;
 }
 
 bool CHTSPConnection::SendGreeting(void)
