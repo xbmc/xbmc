@@ -430,8 +430,21 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       pItem->UpdateInfo(item);
       pItem->SetLabel (label);
       pItem->SetLabel2(label);
-      if (CFile::Exists(item.GetCachedFanart()))
-        pItem->SetProperty("fanart_image", item.GetCachedFanart());
+      
+      if(g_settings.m_videoStacking)
+      {
+        pItem->m_strPath = item.m_strPath;
+        // if we switch from a file to a folder item it means we really shouldn't be sorting files and
+        // folders separately
+        if (pItem->m_bIsFolder != item.m_bIsFolder)
+          items.SetSortIgnoreFolders(true);
+        pItem->m_bIsFolder = item.m_bIsFolder;
+      }
+      else
+      {
+        if (CFile::Exists(item.GetCachedFanart()))
+          pItem->SetProperty("fanart_image", item.GetCachedFanart());
+      }
 
     }
     else
