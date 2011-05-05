@@ -203,6 +203,7 @@ void CKeyboardStat::Initialize()
 
 const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
 { uint8_t vkey;
+  uint16_t sym;
   wchar_t unicode;
   char ascii;
   uint32_t modifiers;
@@ -226,14 +227,22 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
   // The keysym.unicode is usually valid, even if it is zero. A zero
   // unicode just means this is a non-printing keypress. The ascii and
   // vkey will be set below.
+  sym = keysym.sym;
   unicode = keysym.unicode;
   ascii = 0;
   vkey = 0;
   held = 0;
 
+  // There are inevitably a few special cases:
+  // On some European keyboards backslash is ctrl-alt-8 so it can't be
+  // looked up with the keysym.sym. Change the sym from XBMCK_8 to
+  // XBMCK_BACKSLASH so the lookup works.
+  if (keysym.unicode == 0x005c)
+    sym = XBMCK_BACKSLASH;
+
   // Lookup the sym. The mapping of the sym to vkey is unique, but there
   // may be multiple unicode and ascii values for a given sym.
-  if (KeyTableLookupSym(keysym.sym, &keytable))
+  if (KeyTableLookupSym(sym, &keytable))
   {
     vkey = keytable.vkey;
 
