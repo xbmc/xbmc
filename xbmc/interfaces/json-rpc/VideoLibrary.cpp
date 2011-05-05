@@ -43,32 +43,25 @@ JSON_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLayer *
 
   /* select which video content to get genres from*/
   if (media.Equals("movie"))
-  {
-	   idContent = VIDEODB_CONTENT_MOVIES;
-  }
-  else if (media.Equals("tvshow"))
-  {
-	  idContent = VIDEODB_CONTENT_TVSHOWS;
-  }
-  else if (media.Equals("musicvideo"))
-  {
-	  idContent = VIDEODB_CONTENT_MUSICVIDEOS;
-  }
-
+ 	   idContent = VIDEODB_CONTENT_MOVIES;
+   else if (media.Equals("tvshow"))
+ 	  idContent = VIDEODB_CONTENT_TVSHOWS;
+   else if (media.Equals("musicvideo"))
+ 	  idContent = VIDEODB_CONTENT_MUSICVIDEOS;
+ 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
 
   CFileItemList items;
-  videodatabase.GetGenresNav("", items, idContent);
-
+  if (videodatabase.GetGenresNav("", items, idContent))
+  {
   /* need to set strGenre in each item*/
-  for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
-    {
-		items[i]->GetVideoInfoTag()->m_strGenre = items[i]->GetLabel();
-    }
-
-  HandleFileItemList("genreid", false, "genres", items, param, result);
+    for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
+		  items[i]->GetVideoInfoTag()->m_strGenre = items[i]->GetLabel();
+ 
+    HandleFileItemList("genreid", false, "genres", items, param, result);
+  }
 
   videodatabase.Close();
   return OK;
