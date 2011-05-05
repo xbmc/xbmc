@@ -20,12 +20,13 @@
  */
 
 #include "HTSPData.h"
-#include "threads/SingleLock.h"
 
 extern "C" {
 #include "libhts/htsmsg.h"
 #include "libhts/htsmsg_binary.h"
 }
+
+#define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
 
 CHTSPData::CHTSPData() :
     m_bSendNotifications(false)
@@ -47,18 +48,18 @@ bool CHTSPData::Open()
     return false;
   }
 
-  SetName("HTSP Data Listener");
-  Create();
+  SetDescription("HTSP Data Listener");
+  Start();
 
   m_started.WaitMSec(g_iConnectTimeout * 1000);
 
-  return !m_bStop;
+  return Running();
 }
 
 void CHTSPData::Close()
 {
   m_session->Close();
-  StopThread(true);
+  Cancel(1);
 }
 
 htsmsg_t* CHTSPData::ReadResult(htsmsg_t *m)
@@ -66,14 +67,14 @@ htsmsg_t* CHTSPData::ReadResult(htsmsg_t *m)
   if (!m_session->IsConnected())
     return NULL;
 
-  CSingleLock lock(m_critSection);
-  unsigned    seq (m_session->AddSequence());
+  m_Mutex.Lock();
+  unsigned    seq (m_session.AddSequence());
 
   SMessage &message(m_queue[seq]);
-  message.event = new CEvent();
+  message.event = new cCondWait();
   message.msg   = NULL;
 
-  lock.Leave();
+  m_Mutex.Unlock();
   htsmsg_add_u32(m, "seq", seq);
   if(!m_session->SendMessage(m))
   {
@@ -81,18 +82,19 @@ htsmsg_t* CHTSPData::ReadResult(htsmsg_t *m)
     return NULL;
   }
 
-  if(!message.event->WaitMSec(g_iResponseTimeout * 1000))
+  if(!message.event->Wait(g_iResponseTimeout * 1000))
   {
     XBMC->Log(LOG_ERROR, "%s - request timed out after %d seconds", __FUNCTION__, g_iResponseTimeout);
     m_session->Close();
   }
-  lock.Enter();
+  m_Mutex.Lock();
 
   m =    message.msg;
   delete message.event;
 
   m_queue.erase(seq);
 
+  m_Mutex.Unlock();
   return m;
 }
 
@@ -238,7 +240,7 @@ PVR_ERROR CHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_
 
 SRecordings CHTSPData::GetDVREntries(bool recorded, bool scheduled)
 {
-  CSingleLock lock(m_critSection);
+  CMD_LOCK;
   SRecordings recordings;
 
   for(SRecordings::const_iterator it = m_recordings.begin(); it != m_recordings.end(); ++it)
@@ -273,7 +275,7 @@ PVR_ERROR CHTSPData::GetRecordings(PVR_HANDLE handle)
 
     /* lock */
     {
-      CSingleLock lock(m_critSection);
+      CMD_LOCK;
       SChannels::const_iterator itr = m_channels.find(recording.channel);
       if (itr != m_channels.end())
         strChannelName = itr->second.name.c_str();
@@ -547,7 +549,7 @@ PVR_ERROR CHTSPData::RenameRecording(const PVR_RECORDING &recording, const char 
 }
 
 
-void CHTSPData::Process()
+void CHTSPData::Action()
 {
   XBMC->Log(LOG_DEBUG, "%s - starting", __FUNCTION__);
 
@@ -555,11 +557,11 @@ void CHTSPData::Process()
   if(!SendEnableAsync())
   {
     XBMC->Log(LOG_ERROR, "%s - couldn't send EnableAsync().", __FUNCTION__);
-    m_started.Set();
+    m_started.Signal();
     return;
   }
 
-  while (IsConnected() && !m_bStop)
+  while (IsConnected() && Running())
   {
     if((msg = m_session->ReadMessage()) == NULL)
       break;
@@ -567,12 +569,12 @@ void CHTSPData::Process()
     uint32_t seq;
     if(htsmsg_get_u32(msg, "seq", &seq) == 0)
     {
-      CSingleLock lock(m_critSection);
+      CMD_LOCK;
       SMessages::iterator it = m_queue.find(seq);
       if(it != m_queue.end())
       {
         it->second.msg = msg;
-        it->second.event->Set();
+        it->second.event->Signal();
         continue;
       }
     }
@@ -584,7 +586,7 @@ void CHTSPData::Process()
       continue;
     }
 
-    CSingleLock lock(m_critSection);
+    CMD_LOCK;
     if     (strstr(method, "channelAdd"))
       CHTSPConnection::ParseChannelUpdate(msg, m_channels);
     else if(strstr(method, "channelUpdate"))
@@ -598,7 +600,7 @@ void CHTSPData::Process()
     else if(strstr(method, "tagDelete"))
       CHTSPConnection::ParseTagRemove(msg, m_tags);
     else if(strstr(method, "initialSyncCompleted"))
-      m_started.Set();
+      m_started.Signal();
     else if(strstr(method, "dvrEntryAdd"))
       CHTSPConnection::ParseDVREntryUpdate(msg, m_recordings, SendNotifications());
     else if(strstr(method, "dvrEntryUpdate"))
@@ -611,7 +613,7 @@ void CHTSPData::Process()
     htsmsg_destroy(msg);
   }
 
-  m_started.Set();
+  m_started.Signal();
   XBMC->Log(LOG_DEBUG, "%s - exiting", __FUNCTION__);
 }
 
@@ -622,7 +624,7 @@ SChannels CHTSPData::GetChannels()
 
 SChannels CHTSPData::GetChannels(int tag)
 {
-  CSingleLock lock(m_critSection);
+  CMD_LOCK;
   if(tag == 0)
     return m_channels;
 
@@ -637,7 +639,7 @@ SChannels CHTSPData::GetChannels(int tag)
 
 SChannels CHTSPData::GetChannels(STag& tag)
 {
-  CSingleLock lock(m_critSection);
+  CMD_LOCK;
   SChannels channels;
 
   std::vector<int>::iterator it;
@@ -656,7 +658,7 @@ SChannels CHTSPData::GetChannels(STag& tag)
 
 STags CHTSPData::GetTags()
 {
-  CSingleLock lock(m_critSection);
+  CMD_LOCK;
   return m_tags;
 }
 
