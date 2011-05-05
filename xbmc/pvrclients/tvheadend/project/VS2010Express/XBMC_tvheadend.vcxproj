@@ -13,18 +13,18 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
     <ClCompile Include="..\..\client.cpp" />
+    <ClCompile Include="..\..\HTSPConnection.cpp" />
     <ClCompile Include="..\..\HTSPData.cpp" />
     <ClCompile Include="..\..\HTSPDemux.cpp" />
-    <ClCompile Include="..\..\HTSPSession.cpp" />
     <ClCompile Include="..\..\thread.cpp" />
     <ClCompile Include="..\..\tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.h" />
     <ClInclude Include="..\..\client.h" />
+    <ClInclude Include="..\..\HTSPConnection.h" />
     <ClInclude Include="..\..\HTSPData.h" />
     <ClInclude Include="..\..\HTSPDemux.h" />
-    <ClInclude Include="..\..\HTSPSession.h" />
     <ClInclude Include="..\..\thread.h" />
     <ClInclude Include="..\..\tools.h" />
   </ItemGroup>
