@@ -25,6 +25,8 @@ namespace JSONRPC
   private:
     CTCPServer(int port, bool nonlocal);
     bool Initialize();
+    bool InitializeBlue();
+    bool InitializeTCP();
     void Deinitialize();
 
     class CTCPClient : public IClient
@@ -55,7 +57,7 @@ namespace JSONRPC
     };
 
     std::vector<CTCPClient> m_connections;
-    int m_ServerSocket;
+    std::vector<SOCKET> m_servers;
     int m_port;
     bool m_nonlocal;
 

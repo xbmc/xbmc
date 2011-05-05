@@ -53,7 +53,6 @@ CTCPServer::CTCPServer(int port, bool nonlocal)
 {
   m_port = port;
   m_nonlocal = nonlocal;
-  m_ServerSocket = -1;
 }
 
 void CTCPServer::Process()
@@ -62,22 +61,26 @@ void CTCPServer::Process()
 
   while (!m_bStop)
   {
-    int             max_fd = 0;
+    SOCKET          max_fd = 0;
     fd_set          rfds;
     struct timeval  to     = {1, 0};
     FD_ZERO(&rfds);
 
-    FD_SET(m_ServerSocket, &rfds);
-    max_fd = m_ServerSocket;
+    for (std::vector<SOCKET>::iterator it = m_servers.begin(); it != m_servers.end(); it++)
+    {
+      FD_SET(*it, &rfds);
+      if ((intptr_t)*it > (intptr_t)max_fd)
+        max_fd = *it;
+    }
 
     for (unsigned int i = 0; i < m_connections.size(); i++)
     {
       FD_SET(m_connections[i].m_socket, &rfds);
-      if (m_connections[i].m_socket > max_fd)
+      if ((intptr_t)m_connections[i].m_socket > (intptr_t)max_fd)
         max_fd = m_connections[i].m_socket;
     }
 
-    int res = select(max_fd+1, &rfds, NULL, NULL, &to);
+    int res = select((intptr_t)max_fd+1, &rfds, NULL, NULL, &to);
     if (res < 0)
     {
       CLog::Log(LOGERROR, "JSONRPC Server: Select failed");
@@ -107,18 +110,21 @@ void CTCPServer::Process()
         }
       }
 
-      if (FD_ISSET(m_ServerSocket, &rfds))
+      for (std::vector<SOCKET>::iterator it = m_servers.begin(); it != m_servers.end(); it++)
       {
-        CLog::Log(LOGDEBUG, "JSONRPC Server: New connection detected");
-        CTCPClient newconnection;
-        newconnection.m_socket = accept(m_ServerSocket, &newconnection.m_cliaddr, &newconnection.m_addrlen);
-
-        if (newconnection.m_socket < 0)
-          CLog::Log(LOGERROR, "JSONRPC Server: Accept of new connection failed");
-        else
+        if (FD_ISSET(*it, &rfds))
         {
-          CLog::Log(LOGINFO, "JSONRPC Server: New connection added");
-          m_connections.push_back(newconnection);
+          CLog::Log(LOGDEBUG, "JSONRPC Server: New connection detected");
+          CTCPClient newconnection;
+          newconnection.m_socket = accept(*it, &newconnection.m_cliaddr, &newconnection.m_addrlen);
+
+          if (newconnection.m_socket == INVALID_SOCKET)
+            CLog::Log(LOGERROR, "JSONRPC Server: Accept of new connection failed");
+          else
+          {
+            CLog::Log(LOGINFO, "JSONRPC Server: New connection added");
+            m_connections.push_back(newconnection);
+          }
         }
       }
     }
@@ -162,6 +168,23 @@ bool CTCPServer::Initialize()
 {
   Deinitialize();
 
+  if(InitializeBlue() || InitializeTCP())
+  {
+    CAnnouncementManager::AddAnnouncer(this);
+    CLog::Log(LOGINFO, "JSONRPC Server: Successfully initialized");
+    return true;
+  }
+  return false;
+}
+
+bool CTCPServer::InitializeBlue()
+{
+  return false;
+}
+
+bool CTCPServer::InitializeTCP()
+{
+
   struct sockaddr_in myaddr;
   memset(&myaddr, 0, sizeof(myaddr));
 
@@ -173,9 +196,9 @@ bool CTCPServer::Initialize()
   else
     inet_pton(AF_INET, "127.0.0.1", &myaddr.sin_addr.s_addr);
 
-  m_ServerSocket = socket(PF_INET, SOCK_STREAM, 0);
+  SOCKET fd = socket(PF_INET, SOCK_STREAM, 0);
 
-  if (m_ServerSocket < 0)
+  if (fd == INVALID_SOCKET)
   {
 #ifdef _WIN32
     int ierr = WSAGetLastError();
@@ -193,23 +216,20 @@ bool CTCPServer::Initialize()
     return false;
   }
 
-  if (bind(m_ServerSocket, (struct sockaddr*)&myaddr, sizeof myaddr) < 0)
+  if (bind(fd, (struct sockaddr*)&myaddr, sizeof myaddr) < 0)
   {
     CLog::Log(LOGERROR, "JSONRPC Server: Failed to bind serversocket");
-    close(m_ServerSocket);
+    closesocket(fd);
     return false;
   }
 
-  if (listen(m_ServerSocket, 10) < 0)
+  if (listen(fd, 10) < 0)
   {
     CLog::Log(LOGERROR, "JSONRPC Server: Failed to set listen");
-    close(m_ServerSocket);
+    closesocket(fd);
     return false;
   }
-
-  CAnnouncementManager::AddAnnouncer(this);
-
-  CLog::Log(LOGINFO, "JSONRPC Server: Successfully initialized");
+  m_servers.push_back(fd);
   return true;
 }
 
@@ -220,20 +240,17 @@ void CTCPServer::Deinitialize()
 
   m_connections.clear();
 
-  if (m_ServerSocket > 0)
-  {
-    shutdown(m_ServerSocket, SHUT_RDWR);
-    close(m_ServerSocket);
-    m_ServerSocket = -1;
-  }
+  for (unsigned int i = 0; i < m_servers.size(); i++)
+    closesocket(m_servers[i]);
 
+  m_servers.clear();
   CAnnouncementManager::RemoveAnnouncer(this);
 }
 
 CTCPServer::CTCPClient::CTCPClient()
 {
   m_announcementflags = ANNOUNCE_ALL;
-  m_socket = -1;
+  m_socket = INVALID_SOCKET;
   m_beginBrackets = 0;
   m_endBrackets = 0;
   m_beginChar = 0;
@@ -311,8 +328,8 @@ void CTCPServer::CTCPClient::Disconnect()
   {
     CSingleLock lock (m_critSection);
     shutdown(m_socket, SHUT_RDWR);
-    close(m_socket);
-    m_socket = -1;
+    closesocket(m_socket);
+    m_socket = INVALID_SOCKET;
   }
 }
 
