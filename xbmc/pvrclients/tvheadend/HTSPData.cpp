@@ -27,64 +27,47 @@ extern "C" {
 #include "libhts/htsmsg_binary.h"
 }
 
-cHTSPData::cHTSPData()
+CHTSPData::CHTSPData() :
+    m_bSendNotifications(false)
 {
+  m_session = new CHTSPConnection();
 }
 
-cHTSPData::~cHTSPData()
+CHTSPData::~CHTSPData()
 {
   Close();
+  delete m_session;
 }
 
-bool cHTSPData::Open(const std::string &strHostname, unsigned int iPort, const std::string &strUsername, const std::string &strPassword, int iTimeout)
+bool CHTSPData::Open()
 {
-  if(!m_session.Connect(strHostname, iPort, iTimeout))
+  if(!m_session->Connect())
   {
     /* failed to connect */
     return false;
   }
 
-  if(m_session.GetProtocol() < 2)
-  {
-    XBMC->Log(LOG_ERROR, "%s - incompatible protocol version %d", __FUNCTION__, m_session.GetProtocol());
-    m_session.Close(true);
-    return false;
-  }
-
-  if(!strUsername.empty())
-  {
-    if (!m_session.Auth(strUsername, strPassword))
-    {
-      XBMC->Log(LOG_ERROR, "%s - failed to authenticate", __FUNCTION__);
-      m_session.Close(true);
-      return false;
-    }
-  }
-
   SetName("HTSP Data Listener");
   Create();
 
-  m_started.WaitMSec(iTimeout);
+  m_started.WaitMSec(g_iConnectTimeout * 1000);
 
   return !m_bStop;
 }
 
-void cHTSPData::Close()
+void CHTSPData::Close()
 {
-  if (IsConnected())
-    m_session.Abort();
-
+  m_session->Close();
   StopThread(true);
-  m_session.Close();
 }
 
-htsmsg_t* cHTSPData::ReadResult(htsmsg_t *m)
+htsmsg_t* CHTSPData::ReadResult(htsmsg_t *m)
 {
-  if (!CheckConnection())
+  if (!m_session->IsConnected())
     return NULL;
 
   CSingleLock lock(m_critSection);
-  unsigned    seq (m_session.AddSequence());
+  unsigned    seq (m_session->AddSequence());
 
   SMessage &message(m_queue[seq]);
   message.event = new CEvent();
@@ -92,7 +75,7 @@ htsmsg_t* cHTSPData::ReadResult(htsmsg_t *m)
 
   lock.Leave();
   htsmsg_add_u32(m, "seq", seq);
-  if(!m_session.SendMessage(m))
+  if(!m_session->SendMessage(m))
   {
     m_queue.erase(seq);
     return NULL;
@@ -101,7 +84,7 @@ htsmsg_t* cHTSPData::ReadResult(htsmsg_t *m)
   if(!message.event->WaitMSec(g_iResponseTimeout * 1000))
   {
     XBMC->Log(LOG_ERROR, "%s - request timed out after %d seconds", __FUNCTION__, g_iResponseTimeout);
-    m_session.Close();
+    m_session->Close();
   }
   lock.Enter();
 
@@ -113,7 +96,7 @@ htsmsg_t* cHTSPData::ReadResult(htsmsg_t *m)
   return m;
 }
 
-bool cHTSPData::GetDriveSpace(long long *total, long long *used)
+bool CHTSPData::GetDriveSpace(long long *total, long long *used)
 {
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "getDiskSpace");
@@ -136,7 +119,7 @@ bool cHTSPData::GetDriveSpace(long long *total, long long *used)
   return true;
 }
 
-bool cHTSPData::GetTime(time_t *localTime, int *gmtOffset)
+bool CHTSPData::GetTime(time_t *localTime, int *gmtOffset)
 {
   XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
 
@@ -164,12 +147,12 @@ bool cHTSPData::GetTime(time_t *localTime, int *gmtOffset)
   return true;
 }
 
-unsigned int cHTSPData::GetNumChannels()
+unsigned int CHTSPData::GetNumChannels()
 {
   return GetChannels().size();
 }
 
-PVR_ERROR cHTSPData::GetChannels(PVR_HANDLE handle, bool bRadio)
+PVR_ERROR CHTSPData::GetChannels(PVR_HANDLE handle, bool bRadio)
 {
   SChannels channels = GetChannels();
   for(SChannels::iterator it = channels.begin(); it != channels.end(); ++it)
@@ -197,7 +180,7 @@ PVR_ERROR cHTSPData::GetChannels(PVR_HANDLE handle, bool bRadio)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
+PVR_ERROR CHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
 {
   SChannels channels = GetChannels();
 
@@ -253,7 +236,7 @@ PVR_ERROR cHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_
   return PVR_ERROR_NO_ERROR;
 }
 
-SRecordings cHTSPData::GetDVREntries(bool recorded, bool scheduled)
+SRecordings CHTSPData::GetDVREntries(bool recorded, bool scheduled)
 {
   CSingleLock lock(m_critSection);
   SRecordings recordings;
@@ -270,15 +253,15 @@ SRecordings cHTSPData::GetDVREntries(bool recorded, bool scheduled)
   return recordings;
 }
 
-unsigned int cHTSPData::GetNumRecordings()
+unsigned int CHTSPData::GetNumRecordings()
 {
   SRecordings recordings = GetDVREntries(true, false);
   return recordings.size();
 }
 
-PVR_ERROR cHTSPData::GetRecordings(PVR_HANDLE handle)
+PVR_ERROR CHTSPData::GetRecordings(PVR_HANDLE handle)
 {
-  m_session.EnableNotifications(true);
+  EnableNotifications(true);
   SRecordings recordings = GetDVREntries(true, false);
 
   for(SRecordings::const_iterator it = recordings.begin(); it != recordings.end(); ++it)
@@ -331,7 +314,7 @@ PVR_ERROR cHTSPData::GetRecordings(PVR_HANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cHTSPData::DeleteRecording(const PVR_RECORDING &recording)
+PVR_ERROR CHTSPData::DeleteRecording(const PVR_RECORDING &recording)
 {
   XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
 
@@ -354,18 +337,18 @@ PVR_ERROR cHTSPData::DeleteRecording(const PVR_RECORDING &recording)
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
 }
 
-unsigned int cHTSPData::GetNumTimers()
+unsigned int CHTSPData::GetNumTimers()
 {
   SRecordings recordings = GetDVREntries(false, true);
   return recordings.size();
 }
 
-unsigned int cHTSPData::GetNumChannelGroups(void)
+unsigned int CHTSPData::GetNumChannelGroups(void)
 {
   return m_tags.size();
 }
 
-PVR_ERROR cHTSPData::GetChannelGroups(PVR_HANDLE handle)
+PVR_ERROR CHTSPData::GetChannelGroups(PVR_HANDLE handle)
 {
   for(unsigned int iTagPtr = 0; iTagPtr < m_tags.size(); iTagPtr++)
   {
@@ -381,7 +364,7 @@ PVR_ERROR cHTSPData::GetChannelGroups(PVR_HANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cHTSPData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
+PVR_ERROR CHTSPData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
 {
   XBMC->Log(LOG_DEBUG, "%s - group '%s'", __FUNCTION__, group.strGroupName);
 
@@ -413,7 +396,7 @@ PVR_ERROR cHTSPData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cHTSPData::GetTimers(PVR_HANDLE handle)
+PVR_ERROR CHTSPData::GetTimers(PVR_HANDLE handle)
 {
   SRecordings recordings = GetDVREntries(false, true);
 
@@ -450,7 +433,7 @@ PVR_ERROR cHTSPData::GetTimers(PVR_HANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR cHTSPData::DeleteTimer(const PVR_TIMER &timer, bool bForce)
+PVR_ERROR CHTSPData::DeleteTimer(const PVR_TIMER &timer, bool bForce)
 {
   XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
 
@@ -473,7 +456,7 @@ PVR_ERROR cHTSPData::DeleteTimer(const PVR_TIMER &timer, bool bForce)
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
 }
 
-PVR_ERROR cHTSPData::AddTimer(const PVR_TIMER &timer)
+PVR_ERROR CHTSPData::AddTimer(const PVR_TIMER &timer)
 {
   XBMC->Log(LOG_DEBUG, "%s - channelUid=%d title=%s epgid=%d", __FUNCTION__, timer.iClientChannelUid, timer.strTitle, timer.iEpgUid);
 
@@ -511,7 +494,7 @@ PVR_ERROR cHTSPData::AddTimer(const PVR_TIMER &timer)
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
 }
 
-PVR_ERROR cHTSPData::UpdateTimer(const PVR_TIMER &timer)
+PVR_ERROR CHTSPData::UpdateTimer(const PVR_TIMER &timer)
 {
   XBMC->Log(LOG_DEBUG, "%s - channelUid=%d title=%s epgid=%d", __FUNCTION__, timer.iClientChannelUid, timer.strTitle, timer.iEpgUid);
 
@@ -538,7 +521,7 @@ PVR_ERROR cHTSPData::UpdateTimer(const PVR_TIMER &timer)
   return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_SAVED;
 }
 
-PVR_ERROR cHTSPData::RenameRecording(const PVR_RECORDING &recording, const char *strNewName)
+PVR_ERROR CHTSPData::RenameRecording(const PVR_RECORDING &recording, const char *strNewName)
 {
   XBMC->Log(LOG_DEBUG, "%s - id=%d", __FUNCTION__, recording.iClientIndex);
 
@@ -564,12 +547,12 @@ PVR_ERROR cHTSPData::RenameRecording(const PVR_RECORDING &recording, const char 
 }
 
 
-void cHTSPData::Process()
+void CHTSPData::Process()
 {
   XBMC->Log(LOG_DEBUG, "%s - starting", __FUNCTION__);
 
   htsmsg_t* msg;
-  if(!m_session.SendEnableAsync())
+  if(!SendEnableAsync())
   {
     XBMC->Log(LOG_ERROR, "%s - couldn't send EnableAsync().", __FUNCTION__);
     m_started.Set();
@@ -578,7 +561,7 @@ void cHTSPData::Process()
 
   while (IsConnected() && !m_bStop)
   {
-    if((msg = m_session.ReadMessage()) == NULL)
+    if((msg = m_session->ReadMessage()) == NULL)
       break;
 
     uint32_t seq;
@@ -603,25 +586,25 @@ void cHTSPData::Process()
 
     CSingleLock lock(m_critSection);
     if     (strstr(method, "channelAdd"))
-      cHTSPSession::ParseChannelUpdate(msg, m_channels);
+      CHTSPConnection::ParseChannelUpdate(msg, m_channels);
     else if(strstr(method, "channelUpdate"))
-      cHTSPSession::ParseChannelUpdate(msg, m_channels);
+      CHTSPConnection::ParseChannelUpdate(msg, m_channels);
     else if(strstr(method, "channelDelete"))
-      cHTSPSession::ParseChannelRemove(msg, m_channels);
+      CHTSPConnection::ParseChannelRemove(msg, m_channels);
     else if(strstr(method, "tagAdd"))
-      cHTSPSession::ParseTagUpdate(msg, m_tags);
+      CHTSPConnection::ParseTagUpdate(msg, m_tags);
     else if(strstr(method, "tagUpdate"))
-      cHTSPSession::ParseTagUpdate(msg, m_tags);
+      CHTSPConnection::ParseTagUpdate(msg, m_tags);
     else if(strstr(method, "tagDelete"))
-      cHTSPSession::ParseTagRemove(msg, m_tags);
+      CHTSPConnection::ParseTagRemove(msg, m_tags);
     else if(strstr(method, "initialSyncCompleted"))
       m_started.Set();
     else if(strstr(method, "dvrEntryAdd"))
-      cHTSPSession::ParseDVREntryUpdate(msg, m_recordings, g_bShowTimerNotifications && m_session.SendNotifications());
+      CHTSPConnection::ParseDVREntryUpdate(msg, m_recordings, SendNotifications());
     else if(strstr(method, "dvrEntryUpdate"))
-      cHTSPSession::ParseDVREntryUpdate(msg, m_recordings, g_bShowTimerNotifications && m_session.SendNotifications());
+      CHTSPConnection::ParseDVREntryUpdate(msg, m_recordings, SendNotifications());
     else if(strstr(method, "dvrEntryDelete"))
-      cHTSPSession::ParseDVREntryDelete(msg, m_recordings, g_bShowTimerNotifications && m_session.SendNotifications());
+      CHTSPConnection::ParseDVREntryDelete(msg, m_recordings, SendNotifications());
     else
       XBMC->Log(LOG_DEBUG, "%s - Unmapped action recieved '%s'", __FUNCTION__, method);
 
@@ -632,12 +615,12 @@ void cHTSPData::Process()
   XBMC->Log(LOG_DEBUG, "%s - exiting", __FUNCTION__);
 }
 
-SChannels cHTSPData::GetChannels()
+SChannels CHTSPData::GetChannels()
 {
   return GetChannels(0);
 }
 
-SChannels cHTSPData::GetChannels(int tag)
+SChannels CHTSPData::GetChannels(int tag)
 {
   CSingleLock lock(m_critSection);
   if(tag == 0)
@@ -652,7 +635,7 @@ SChannels cHTSPData::GetChannels(int tag)
   return GetChannels(it->second);
 }
 
-SChannels cHTSPData::GetChannels(STag& tag)
+SChannels CHTSPData::GetChannels(STag& tag)
 {
   CSingleLock lock(m_critSection);
   SChannels channels;
@@ -671,13 +654,13 @@ SChannels cHTSPData::GetChannels(STag& tag)
   return channels;
 }
 
-STags cHTSPData::GetTags()
+STags CHTSPData::GetTags()
 {
   CSingleLock lock(m_critSection);
   return m_tags;
 }
 
-bool cHTSPData::GetEvent(SEvent& event, uint32_t id)
+bool CHTSPData::GetEvent(SEvent& event, uint32_t id)
 {
   if(id == 0)
   {
@@ -695,14 +678,24 @@ bool cHTSPData::GetEvent(SEvent& event, uint32_t id)
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "getEvent");
   htsmsg_add_u32(msg, "eventId", id);
-  if((msg = ReadResult(msg)) == NULL)
+  if((msg = m_session->ReadResult(msg, true)) == NULL)
   {
-    XBMC->Log(LOG_DEBUG, "%s - failed to get event %u", __FUNCTION__, id);
+    XBMC->Log(LOG_DEBUG, "%s - failed to get event %d", __FUNCTION__, id);
     return false;
   }
-  if(!cHTSPSession::ParseEvent(msg, id, event))
-    return false;
 
-  m_events[id] = event;
-  return true;
+  if (m_session->ParseEvent(msg, id, event))
+  {
+    m_events[id] = event;
+    return true;
+  }
+
+  return false;
+}
+
+bool CHTSPData::SendEnableAsync()
+{
+  htsmsg_t *m = htsmsg_create_map();
+  htsmsg_add_str(m, "method", "enableAsyncMetadata");
+  return m_session->ReadSuccess(m, true, "enableAsyncMetadata failed");
 }

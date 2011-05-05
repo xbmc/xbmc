@@ -22,42 +22,31 @@
  */
 
 #include "HTSPTypes.h"
+#include "threads/CriticalSection.h"
+
 extern "C" {
 #include "libhts/net.h"
 #include "libhts/htsmsg.h"
 }
 
-class cHTSPSession
+class CHTSPConnection
 {
 public:
-  cHTSPSession();
-  ~cHTSPSession();
+  CHTSPConnection();
+  ~CHTSPConnection();
 
-  bool      Connect(const std::string &strHostname, int iPort, int iTimeout);
-  bool      IsConnected(void) const { return m_bIsConnected; }
-  bool      CheckConnection(void);
-  void      Close(bool bForce = false);
-  void      Abort();
-  bool      Auth(const std::string& username, const std::string& password);
-
-  htsmsg_t* ReadMessage(int timeout = 10000);
-  bool      SendMessage(htsmsg_t* m);
-
-  htsmsg_t* ReadResult (htsmsg_t* m, bool sequence = true);
-  bool      ReadSuccess(htsmsg_t* m, bool sequence = true, std::string action = "");
-
-  bool      SendSubscribe  (int subscription, int channel);
-  bool      SendUnsubscribe(int subscription);
-  bool      SendEnableAsync();
-  bool      GetEvent(SEvent& event, uint32_t id);
-
+  bool        Connect(void);
+  void        Close();
+  bool        IsConnected(void) const { return m_bIsConnected; }
   int         GetProtocol() const { return m_iProtocol; }
-  const char* GetServerName() const { return m_strServerName.c_str(); }
-  const char* GetVersion() const { return m_strVersion.c_str(); }
-  unsigned    AddSequence() { return ++m_iSequence; }
+  const char *GetServerName() const { return m_strServerName.c_str(); }
+  const char *GetVersion() const { return m_strVersion.c_str(); }
 
-  void      EnableNotifications(bool bSetTo = true) { m_bSendNotifications = bSetTo; }
-  bool      SendNotifications(void) { return m_bSendNotifications; }
+  htsmsg_t *  ReadMessage(int timeout = 10000);
+  bool        SendMessage(htsmsg_t* m);
+  htsmsg_t *  ReadResult (htsmsg_t* m, bool sequence = true);
+  bool        ReadSuccess(htsmsg_t* m, bool sequence = true, std::string action = "");
+  unsigned    AddSequence();
 
   static bool ParseEvent         (htsmsg_t* msg, uint32_t id, SEvent &event);
   static void ParseChannelUpdate (htsmsg_t* msg, SChannels &channels);
@@ -71,23 +60,24 @@ public:
   static void ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings, bool bNotify = false);
 
 private:
-  bool ConnectInternal(void);
   bool SendGreeting(void);
+  bool Auth(void);
 
   SOCKET                m_fd;
   unsigned int          m_iSequence;
   void*                 m_challenge;
   int                   m_iChallengeLength;
   int                   m_iProtocol;
-  int                   m_iRefCount;
   int                   m_iPortnumber;
   int                   m_iConnectTimeout;
   std::string           m_strServerName;
+  std::string           m_strUsername;
+  std::string           m_strPassword;
   std::string           m_strVersion;
   std::string           m_strHostname;
   bool                  m_bIsConnected;
-  bool                  m_bSendNotifications;
 
+  CCriticalSection      m_critSection;
   std::deque<htsmsg_t*> m_queue;
   const unsigned int    m_iQueueSize;
 };

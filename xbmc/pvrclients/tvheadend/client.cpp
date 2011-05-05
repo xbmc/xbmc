@@ -47,8 +47,8 @@ std::string g_strClientPath           = "";
 
 CHelper_libXBMC_addon *XBMC           = NULL;
 CHelper_libXBMC_pvr   *PVR            = NULL;
-cHTSPDemux *           HTSPDemuxer    = NULL;
-cHTSPData *            HTSPData       = NULL;
+CHTSPDemux *           HTSPDemuxer    = NULL;
+CHTSPData *            HTSPData       = NULL;
 
 extern "C" {
 
@@ -125,8 +125,8 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 
   ADDON_ReadSettings();
 
-  HTSPData = new cHTSPData;
-  if (!HTSPData->Open(g_strHostname, g_iPortHTSP, g_strUsername, g_strPassword, g_iConnectTimeout * 1000))
+  HTSPData = new CHTSPData;
+  if (!HTSPData->Open())
   {
     m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
     return m_CurStatus;
@@ -140,7 +140,7 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 ADDON_STATUS ADDON_GetStatus()
 {
   /* check whether we're still connected */
-  if (m_CurStatus == ADDON_STATUS_OK && HTSPData->IsConnected())
+  if (m_CurStatus == ADDON_STATUS_OK && !HTSPData->IsConnected())
     m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
 
   return m_CurStatus;
@@ -150,8 +150,11 @@ void ADDON_Destroy()
 {
   if (m_bCreated)
   {
-    delete HTSPData;
-    HTSPData = NULL;
+    if (HTSPData)
+    {
+      delete HTSPData;
+      HTSPData = NULL;
+    }
   }
   m_CurStatus = ADDON_STATUS_UNKNOWN;
 }
@@ -256,7 +259,6 @@ void ADDON_Stop()
 
 void ADDON_FreeSettings()
 {
-
 }
 
 /***********************************************************
@@ -281,21 +283,13 @@ PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR GetStreamProperties(PVR_STREAM_PROPERTIES* pProperties)
-{
-  if (HTSPDemuxer && HTSPDemuxer->GetStreamProperties(pProperties))
-    return PVR_ERROR_NO_ERROR;
-
-  return PVR_ERROR_SERVER_ERROR;
-}
-
-const char * GetBackendName(void)
+const char *GetBackendName(void)
 {
   static const char *strBackendName = HTSPData ? HTSPData->GetServerName() : "unknown";
   return strBackendName;
 }
 
-const char * GetBackendVersion(void)
+const char *GetBackendVersion(void)
 {
   static CStdString strBackendVersion;
   if (HTSPData)
@@ -303,11 +297,11 @@ const char * GetBackendVersion(void)
   return strBackendVersion.c_str();
 }
 
-const char * GetConnectionString(void)
+const char *GetConnectionString(void)
 {
   static CStdString strConnectionString;
   if (HTSPData)
-    strConnectionString.Format("%s:%i%s", g_strHostname.c_str(), g_iPortHTSP, HTSPData->CheckConnection() ? "" : " (Not connected!)");
+    strConnectionString.Format("%s:%i%s", g_strHostname.c_str(), g_iPortHTSP, HTSPData->IsConnected() ? "" : " (Not connected!)");
   else
     strConnectionString.Format("%s:%i (addon error!)", g_strHostname.c_str(), g_iPortHTSP);
   return strConnectionString.c_str();
@@ -315,7 +309,10 @@ const char * GetConnectionString(void)
 
 PVR_ERROR GetDriveSpace(long long *iTotal, long long *iUsed)
 {
-  if (HTSPData && HTSPData->GetDriveSpace(iTotal, iUsed))
+  if (!HTSPData || !HTSPData->IsConnected())
+    return PVR_ERROR_SERVER_ERROR;
+
+  if (HTSPData->GetDriveSpace(iTotal, iUsed))
     return PVR_ERROR_NO_ERROR;
 
   return PVR_ERROR_SERVER_ERROR;
@@ -323,7 +320,7 @@ PVR_ERROR GetDriveSpace(long long *iTotal, long long *iUsed)
 
 PVR_ERROR GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
 {
-  if (!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
 
   return HTSPData->GetEpg(handle, channel, iStart, iEnd);
@@ -331,7 +328,7 @@ PVR_ERROR GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t
 
 int GetChannelsAmount(void)
 {
-  if (!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return 0;
 
   return HTSPData->GetNumChannels();
@@ -339,7 +336,7 @@ int GetChannelsAmount(void)
 
 PVR_ERROR GetChannels(PVR_HANDLE handle, bool bRadio)
 {
-  if (!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
 
   return HTSPData->GetChannels(handle, bRadio);
@@ -347,7 +344,7 @@ PVR_ERROR GetChannels(PVR_HANDLE handle, bool bRadio)
 
 int GetRecordingsAmount(void)
 {
-  if (!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return 0;
 
   return HTSPData->GetNumRecordings();
@@ -355,7 +352,7 @@ int GetRecordingsAmount(void)
 
 PVR_ERROR GetRecordings(PVR_HANDLE handle)
 {
-  if (!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
 
   return HTSPData->GetRecordings(handle);
@@ -363,7 +360,7 @@ PVR_ERROR GetRecordings(PVR_HANDLE handle)
 
 PVR_ERROR DeleteRecording(const PVR_RECORDING &recording)
 {
-  if (!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
 
   return HTSPData->DeleteRecording(recording);
@@ -371,7 +368,7 @@ PVR_ERROR DeleteRecording(const PVR_RECORDING &recording)
 
 PVR_ERROR RenameRecording(const PVR_RECORDING &recording)
 {
-  if(!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
 
   return HTSPData->RenameRecording(recording, recording.strTitle);
@@ -379,7 +376,7 @@ PVR_ERROR RenameRecording(const PVR_RECORDING &recording)
 
 int GetTimersAmount(void)
 {
-  if (!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return 0;
 
   return HTSPData->GetNumTimers();
@@ -387,7 +384,7 @@ int GetTimersAmount(void)
 
 PVR_ERROR GetTimers(PVR_HANDLE handle)
 {
-  if (!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
 
   return HTSPData->GetTimers(handle);
@@ -395,7 +392,7 @@ PVR_ERROR GetTimers(PVR_HANDLE handle)
 
 PVR_ERROR AddTimer(const PVR_TIMER &timer)
 {
-  if (!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
 
   return HTSPData->AddTimer(timer);
@@ -403,7 +400,7 @@ PVR_ERROR AddTimer(const PVR_TIMER &timer)
 
 PVR_ERROR DeleteTimer(const PVR_TIMER &timer, bool bForceDelete)
 {
-  if (!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
 
   return HTSPData->DeleteTimer(timer, bForceDelete);
@@ -411,7 +408,7 @@ PVR_ERROR DeleteTimer(const PVR_TIMER &timer, bool bForceDelete)
 
 PVR_ERROR UpdateTimer(const PVR_TIMER &timer)
 {
-  if(!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
 
   return HTSPData->UpdateTimer(timer);
@@ -421,7 +418,10 @@ bool OpenLiveStream(const PVR_CHANNEL &channel)
 {
   CloseLiveStream();
 
-  HTSPDemuxer = new cHTSPDemux;
+  if (!HTSPData || !HTSPData->IsConnected())
+    return false;
+
+  HTSPDemuxer = new CHTSPDemux;
   return HTSPDemuxer->Open(channel);
 }
 
@@ -451,6 +451,14 @@ bool SwitchChannel(const PVR_CHANNEL &channel)
   return false;
 }
 
+PVR_ERROR GetStreamProperties(PVR_STREAM_PROPERTIES* pProperties)
+{
+  if (HTSPDemuxer && HTSPDemuxer->GetStreamProperties(pProperties))
+    return PVR_ERROR_NO_ERROR;
+
+  return PVR_ERROR_SERVER_ERROR;
+}
+
 PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 {
   if (HTSPDemuxer && HTSPDemuxer->GetSignalStatus(signalStatus))
@@ -461,17 +469,21 @@ PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 
 void DemuxAbort(void)
 {
-  if (HTSPDemuxer) HTSPDemuxer->Abort();
+  if (HTSPDemuxer)
+    HTSPDemuxer->Abort();
 }
 
 DemuxPacket* DemuxRead(void)
 {
-  return HTSPDemuxer->Read();
+  if (HTSPDemuxer)
+    return HTSPDemuxer->Read();
+  else
+    return NULL;
 }
 
 int GetChannelGroupsAmount(void)
 {
-  if (!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
 
   return HTSPData->GetNumChannelGroups();
@@ -483,7 +495,7 @@ PVR_ERROR GetChannelGroups(PVR_HANDLE handle, bool bRadio)
   if (bRadio)
     return PVR_ERROR_NO_ERROR;
 
-  if (!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
 
   return HTSPData->GetChannelGroups(handle);
@@ -495,7 +507,7 @@ PVR_ERROR GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &gro
   if (group.bIsRadio)
     return PVR_ERROR_NO_ERROR;
 
-  if (!HTSPData)
+  if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
 
   return HTSPData->GetChannelGroupMembers(handle, group);
@@ -522,5 +534,4 @@ long long SeekLiveStream(long long iPosition, int iWhence /* = SEEK_SET */) { re
 long long PositionLiveStream(void) { return -1; }
 long long LengthLiveStream(void) { return -1; }
 const char * GetLiveStreamURL(const PVR_CHANNEL &channel) { return ""; }
-
 }

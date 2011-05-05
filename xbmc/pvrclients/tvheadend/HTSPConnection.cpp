@@ -19,8 +19,9 @@
  *
  */
 
-#include "HTSPSession.h"
+#include "HTSPConnection.h"
 #include "client.h"
+#include "threads/SingleLock.h"
 
 extern "C" {
 #include "libTcpSocket/os-dependent_socket.h"
@@ -30,39 +31,76 @@ extern "C" {
 
 using namespace std;
 
-cHTSPSession::cHTSPSession() :
+CHTSPConnection::CHTSPConnection() :
     m_fd(INVALID_SOCKET),
     m_iSequence(0),
     m_challenge(NULL),
     m_iChallengeLength(0),
     m_iProtocol(0),
-    m_iRefCount(0),
-    m_iPortnumber(0),
-    m_iConnectTimeout(0),
+    m_iPortnumber(g_iPortHTSP),
+    m_iConnectTimeout(g_iConnectTimeout * 1000),
+    m_strUsername(g_strUsername),
+    m_strPassword(g_strPassword),
+    m_strHostname(g_strHostname),
     m_bIsConnected(false),
-    m_bSendNotifications(false),
     m_iQueueSize(1000)
 {
 }
 
-cHTSPSession::~cHTSPSession()
+CHTSPConnection::~CHTSPConnection()
 {
-  Close(true);
+  Close();
 }
 
-void cHTSPSession::Abort()
+bool CHTSPConnection::Connect()
 {
-  if(m_bIsConnected)
-    shutdown(m_fd, SHUT_RDWR);
+  if (m_bIsConnected)
+    return true;
+
+  char errbuf[1024];
+  int  errlen = sizeof(errbuf);
+
+  XBMC->Log(LOG_DEBUG, "%s - connecting to '%s', port '%d'", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
+
+  m_fd = tcp_connect(m_strHostname.c_str(), m_iPortnumber, errbuf, errlen, m_iConnectTimeout);
+  if(m_fd == INVALID_SOCKET)
+  {
+    XBMC->Log(LOG_ERROR, "%s - failed to connect to the backend (%s)", __FUNCTION__, errbuf);
+    return false;
+  }
+
+  m_bIsConnected = true;
+  XBMC->Log(LOG_DEBUG, "%s - connected to '%s', port '%d'", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
+
+  if (!SendGreeting())
+  {
+    XBMC->Log(LOG_ERROR, "%s - failed to read greeting from the backend", __FUNCTION__);
+    Close();
+    return false;
+  }
+
+  if(m_iProtocol < 2)
+  {
+    XBMC->Log(LOG_ERROR, "%s - incompatible protocol version %d", __FUNCTION__, m_iProtocol);
+    Close();
+    return false;
+  }
+
+  if (!Auth())
+  {
+    XBMC->Log(LOG_ERROR, "%s - failed to authenticate", __FUNCTION__);
+    Close();
+    return false;
+  }
+
+  return true;
 }
 
-void cHTSPSession::Close(bool bForce /* = false */)
+void CHTSPConnection::Close()
 {
-  if (!bForce && (--m_iRefCount > 0 || !m_bIsConnected))
+  if (!m_bIsConnected)
     return;
-
   m_bIsConnected = false;
-  m_iRefCount = 0;
 
   if(m_fd != INVALID_SOCKET)
   {
@@ -78,124 +116,8 @@ void cHTSPSession::Close(bool bForce /* = false */)
   }
 }
 
-bool cHTSPSession::Connect(const std::string &strHostname, int iPortnumber, int iTimeout)
-{
-  ++m_iRefCount;
 
-  if (m_bIsConnected)
-    return true;
-
-  if (!strHostname.empty())
-    m_strHostname = strHostname;
-
-  if (iPortnumber > 0)
-    m_iPortnumber = iPortnumber;
-  if(m_iPortnumber <= 0)
-    m_iPortnumber = 9982;
-
-  if (iTimeout > 0)
-    m_iConnectTimeout = iTimeout;
-
-  return ConnectInternal();
-}
-
-bool cHTSPSession::CheckConnection(void)
-{
-  if (!m_bIsConnected)
-    ConnectInternal();
-
-  return m_bIsConnected;
-}
-
-bool cHTSPSession::SendGreeting(void)
-{
-  htsmsg_t *m;
-  const char *method, *server, *version;
-  const void * chall = NULL;
-  size_t chall_len = 0;
-  int32_t proto = 0;
-
-  /* send hello */
-  m = htsmsg_create_map();
-  htsmsg_add_str(m, "method", "hello");
-  htsmsg_add_str(m, "clientname", "XBMC Media Center");
-  htsmsg_add_u32(m, "htspversion", 1);
-
-  /* read welcome */
-  if((m = ReadResult(m)) == NULL)
-    return false;
-
-  method  = htsmsg_get_str(m, "method");
-            htsmsg_get_s32(m, "htspversion", &proto);
-  server  = htsmsg_get_str(m, "servername");
-  version = htsmsg_get_str(m, "serverversion");
-            htsmsg_get_bin(m, "challenge", &chall, &chall_len);
-
-  m_strServerName = server;
-  m_strVersion    = version;
-  m_iProtocol     = proto;
-
-  if(chall && chall_len)
-  {
-    m_challenge        = malloc(chall_len);
-    m_iChallengeLength = chall_len;
-    memcpy(m_challenge, chall, chall_len);
-  }
-
-  htsmsg_destroy(m);
-
-  return true;
-}
-
-bool cHTSPSession::ConnectInternal(void)
-{
-  char errbuf[1024];
-  int  errlen = sizeof(errbuf);
-
-  XBMC->Log(LOG_DEBUG, "%s - connecting to '%s', port '%d'\n", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
-
-  m_fd = tcp_connect(m_strHostname.c_str(), m_iPortnumber, errbuf, errlen, m_iConnectTimeout);
-  if(m_fd == INVALID_SOCKET)
-  {
-    XBMC->Log(LOG_ERROR, "%s - failed to connect to the backend (%s)\n", __FUNCTION__, errbuf);
-    return false;
-  }
-
-  if (SendGreeting())
-  {
-    m_bIsConnected = true;
-    XBMC->Log(LOG_DEBUG, "%s - connected to '%s', port '%d'\n", __FUNCTION__, m_strHostname.c_str(), m_iPortnumber);
-    return true;
-  }
-  else
-  {
-    XBMC->Log(LOG_ERROR, "%s - failed to read greeting from the backend", __FUNCTION__);
-    return false;
-  }
-}
-
-bool cHTSPSession::Auth(const std::string& username, const std::string& password)
-{
-  htsmsg_t *m = htsmsg_create_map();
-  htsmsg_add_str(m, "method"  , "authenticate");
-  htsmsg_add_str(m, "username", username.c_str());
-
-  if(password != "" && m_challenge)
-  {
-    struct HTSSHA1* shactx = (struct HTSSHA1*) malloc(hts_sha1_size);
-    uint8_t d[20];
-    hts_sha1_init(shactx);
-    hts_sha1_update(shactx, (const uint8_t *) password.c_str(), password.length());
-    hts_sha1_update(shactx, (const uint8_t *) m_challenge, m_iChallengeLength);
-    hts_sha1_final(shactx, d);
-    htsmsg_add_bin(m, "digest", d, 20);
-    free(shactx);
-  }
-
-  return ReadSuccess(m, false, "get reply from authentication with server");
-}
-
-htsmsg_t* cHTSPSession::ReadMessage(int timeout)
+htsmsg_t* CHTSPConnection::ReadMessage(int timeout)
 {
   void*    buf;
   uint32_t l;
@@ -214,8 +136,8 @@ htsmsg_t* cHTSPSession::ReadMessage(int timeout)
 
   if(x)
   {
-    XBMC->Log(LOG_ERROR, "%s - Failed to read packet size (%d)\n", __FUNCTION__, x);
-    Close(true);
+    XBMC->Log(LOG_ERROR, "%s - Failed to read packet size (%d)", __FUNCTION__, x);
+    Close();
     return NULL;
   }
 
@@ -228,16 +150,16 @@ htsmsg_t* cHTSPSession::ReadMessage(int timeout)
   x = tcp_read(m_fd, buf, l);
   if(x)
   {
-    XBMC->Log(LOG_ERROR, "%s - Failed to read packet (%d)\n", __FUNCTION__, x);
+    XBMC->Log(LOG_ERROR, "%s - Failed to read packet (%d)", __FUNCTION__, x);
     free(buf);
-    Close(true);
+    Close();
     return NULL;
   }
 
   return htsmsg_binary_deserialize(buf, l, buf); /* consumes 'buf' */
 }
 
-bool cHTSPSession::SendMessage(htsmsg_t* m)
+bool CHTSPConnection::SendMessage(htsmsg_t* m)
 {
   void*  buf;
   size_t len;
@@ -249,7 +171,7 @@ bool cHTSPSession::SendMessage(htsmsg_t* m)
   }
   htsmsg_destroy(m);
 
-  if(send(m_fd, (char*)buf, len, 0) < 0)
+  if(tcp_send(m_fd, (char*)buf, len, 0) < 0)
   {
     free(buf);
     Close();
@@ -259,7 +181,7 @@ bool cHTSPSession::SendMessage(htsmsg_t* m)
   return true;
 }
 
-htsmsg_t* cHTSPSession::ReadResult(htsmsg_t* m, bool sequence)
+htsmsg_t* CHTSPConnection::ReadResult(htsmsg_t* m, bool sequence)
 {
   if(sequence)
     htsmsg_add_u32(m, "seq", ++m_iSequence);
@@ -309,7 +231,7 @@ htsmsg_t* cHTSPSession::ReadResult(htsmsg_t* m, bool sequence)
   return m;
 }
 
-bool cHTSPSession::ReadSuccess(htsmsg_t* m, bool sequence, std::string action)
+bool CHTSPConnection::ReadSuccess(htsmsg_t* m, bool sequence, std::string action)
 {
   if((m = ReadResult(m, sequence)) == NULL)
   {
@@ -320,50 +242,77 @@ bool cHTSPSession::ReadSuccess(htsmsg_t* m, bool sequence, std::string action)
   return true;
 }
 
-bool cHTSPSession::SendSubscribe(int subscription, int channel)
+unsigned int CHTSPConnection::AddSequence()
 {
-  htsmsg_t *m = htsmsg_create_map();
-  htsmsg_add_str(m, "method"        , "subscribe");
-  htsmsg_add_s32(m, "channelId"     , channel);
-  htsmsg_add_s32(m, "subscriptionId", subscription);
-  return ReadSuccess(m, true, "subscribe to channel");
+  CSingleLock lock(m_critSection);
+  return ++m_iSequence;
 }
 
-bool cHTSPSession::SendUnsubscribe(int subscription)
+bool CHTSPConnection::SendGreeting(void)
 {
-  htsmsg_t *m = htsmsg_create_map();
-  htsmsg_add_str(m, "method"        , "unsubscribe");
-  htsmsg_add_s32(m, "subscriptionId", subscription);
-  return ReadSuccess(m, true, "unsubscribe from channel");
-}
+  htsmsg_t *m;
+  const char *method, *server, *version;
+  const void * chall = NULL;
+  size_t chall_len = 0;
+  int32_t proto = 0;
 
-bool cHTSPSession::SendEnableAsync()
-{
-  htsmsg_t *m = htsmsg_create_map();
-  htsmsg_add_str(m, "method", "enableAsyncMetadata");
-  return ReadSuccess(m, true, "enableAsyncMetadata failed");
-}
+  /* send hello */
+  m = htsmsg_create_map();
+  htsmsg_add_str(m, "method", "hello");
+  htsmsg_add_str(m, "clientname", "XBMC Media Center");
+  htsmsg_add_u32(m, "htspversion", 1);
 
-bool cHTSPSession::GetEvent(SEvent& event, uint32_t id)
-{
-  if(id == 0)
-  {
-    event.Clear();
+  /* read welcome */
+  if((m = ReadResult(m)) == NULL)
     return false;
+
+  method  = htsmsg_get_str(m, "method");
+            htsmsg_get_s32(m, "htspversion", &proto);
+  server  = htsmsg_get_str(m, "servername");
+  version = htsmsg_get_str(m, "serverversion");
+            htsmsg_get_bin(m, "challenge", &chall, &chall_len);
+
+  m_strServerName = server;
+  m_strVersion    = version;
+  m_iProtocol     = proto;
+
+  if(chall && chall_len)
+  {
+    m_challenge        = malloc(chall_len);
+    m_iChallengeLength = chall_len;
+    memcpy(m_challenge, chall, chall_len);
   }
 
-  htsmsg_t *msg = htsmsg_create_map();
-  htsmsg_add_str(msg, "method", "getEvent");
-  htsmsg_add_u32(msg, "eventId", id);
-  if((msg = ReadResult(msg, true)) == NULL)
-  {
-    XBMC->Log(LOG_DEBUG, "%s - failed to get event %d", __FUNCTION__, id);
-    return false;
-  }
-  return ParseEvent(msg, id, event);
+  htsmsg_destroy(m);
+
+  return true;
 }
 
-bool cHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
+bool CHTSPConnection::Auth(void)
+{
+  if (m_strUsername.empty())
+    return true;
+
+  htsmsg_t *m = htsmsg_create_map();
+  htsmsg_add_str(m, "method"  , "authenticate");
+  htsmsg_add_str(m, "username", m_strUsername.c_str());
+
+  if(m_strPassword != "" && m_challenge)
+  {
+    struct HTSSHA1* shactx = (struct HTSSHA1*) malloc(hts_sha1_size);
+    uint8_t d[20];
+    hts_sha1_init(shactx);
+    hts_sha1_update(shactx, (const uint8_t *) m_strPassword.c_str(), m_strPassword.length());
+    hts_sha1_update(shactx, (const uint8_t *) m_challenge, m_iChallengeLength);
+    hts_sha1_final(shactx, d);
+    htsmsg_add_bin(m, "digest", d, 20);
+    free(shactx);
+  }
+
+  return ReadSuccess(m, false, "get reply from authentication with server");
+}
+
+bool CHTSPConnection::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
 {
   uint32_t start, stop, next, chan_id, content;
   const char *title, *desc, *ext_desc;
@@ -426,7 +375,7 @@ bool cHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
   return true;
 }
 
-void cHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
+void CHTSPConnection::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
 {
   uint32_t id, event = 0, num = 0, caid = 0;
   const char *name, *icon;
@@ -502,7 +451,7 @@ void cHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
   PVR->TriggerChannelUpdate();
 }
 
-void cHTSPSession::ParseChannelRemove(htsmsg_t* msg, SChannels &channels)
+void CHTSPConnection::ParseChannelRemove(htsmsg_t* msg, SChannels &channels)
 {
   uint32_t id;
   if(htsmsg_get_u32(msg, "channelId", &id))
@@ -518,7 +467,7 @@ void cHTSPSession::ParseChannelRemove(htsmsg_t* msg, SChannels &channels)
   PVR->TriggerChannelUpdate();
 }
 
-void cHTSPSession::ParseTagUpdate(htsmsg_t* msg, STags &tags)
+void CHTSPConnection::ParseTagUpdate(htsmsg_t* msg, STags &tags)
 {
   uint32_t id;
   const char *name, *icon;
@@ -558,7 +507,7 @@ void cHTSPSession::ParseTagUpdate(htsmsg_t* msg, STags &tags)
   PVR->TriggerChannelGroupsUpdate();
 }
 
-void cHTSPSession::ParseTagRemove(htsmsg_t* msg, STags &tags)
+void CHTSPConnection::ParseTagRemove(htsmsg_t* msg, STags &tags)
 {
   uint32_t id;
   if(htsmsg_get_u32(msg, "tagId", &id))
@@ -574,7 +523,7 @@ void cHTSPSession::ParseTagRemove(htsmsg_t* msg, STags &tags)
   PVR->TriggerChannelGroupsUpdate();
 }
 
-bool cHTSPSession::ParseSignalStatus (htsmsg_t* msg, SQuality &quality)
+bool CHTSPConnection::ParseSignalStatus (htsmsg_t* msg, SQuality &quality)
 {
   if(htsmsg_get_u32(msg, "feSNR", &quality.fe_snr))
     quality.fe_snr = -2;
@@ -601,7 +550,7 @@ bool cHTSPSession::ParseSignalStatus (htsmsg_t* msg, SQuality &quality)
   return true;
 }
 
-bool cHTSPSession::ParseSourceInfo (htsmsg_t* msg, SSourceInfo &si)
+bool CHTSPConnection::ParseSourceInfo (htsmsg_t* msg, SSourceInfo &si)
 {
   htsmsg_t       *sourceinfo;
   if((sourceinfo = htsmsg_get_map(msg, "sourceinfo")) == NULL)
@@ -639,7 +588,7 @@ bool cHTSPSession::ParseSourceInfo (htsmsg_t* msg, SSourceInfo &si)
   return true;
 }
 
-bool cHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue)
+bool CHTSPConnection::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue)
 {
   if(htsmsg_get_u32(msg, "packets", &queue.packets)
   || htsmsg_get_u32(msg, "bytes",   &queue.bytes)
@@ -659,7 +608,7 @@ bool cHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue)
   return true;
 }
 
-void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings, bool bNotify /* = false */)
+void CHTSPConnection::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings, bool bNotify /* = false */)
 {
   SRecording recording;
   const char *state;
@@ -732,7 +681,7 @@ void cHTSPSession::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings, b
    PVR->TriggerRecordingUpdate();
 }
 
-void cHTSPSession::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings, bool bNotify /* = false */)
+void CHTSPConnection::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings, bool bNotify /* = false */)
 {
   uint32_t id;
 

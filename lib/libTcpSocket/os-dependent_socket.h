@@ -77,3 +77,5 @@ int tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout);
  * @param fdSock The socket to close.
  */
 void tcp_close(socket_t fdSock);
+
+ssize_t tcp_send(socket_t fdSock, __const void *buf, size_t len, int flags);

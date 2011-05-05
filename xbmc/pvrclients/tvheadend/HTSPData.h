@@ -24,18 +24,19 @@
 #include "client.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
-#include "HTSPSession.h"
+#include "HTSPConnection.h"
 
-class cHTSPData : public CThread
+class CHTSPData : public CThread
 {
 public:
-  cHTSPData();
-  ~cHTSPData();
+  CHTSPData();
+  ~CHTSPData();
 
-  bool Open(const std::string &strHostname, unsigned int iPort, const std::string &strUsername, const std::string &strPassword, int iTimeout);
+  bool Open();
   void Close();
-  bool CheckConnection(void)   { return m_session.CheckConnection(); }
-  bool IsConnected(void) const { return m_session.IsConnected(); }
+  bool IsConnected(void) const { return m_session->IsConnected(); }
+  void EnableNotifications(bool bSetTo = true) { m_bSendNotifications = bSetTo; }
+  bool SendNotifications(void) { return m_bSendNotifications && g_bShowTimerNotifications; }
 
   /*!
    * @brief Send a message to the backend and read the result.
@@ -43,9 +44,9 @@ public:
    * @return The returned message or NULL if an error occured or nothing was received.
    */
   htsmsg_t *   ReadResult(htsmsg_t *message);
-  int          GetProtocol(void) const   { return m_session.GetProtocol(); }
-  const char * GetServerName(void) const { return m_session.GetServerName(); }
-  const char * GetVersion(void) const    { return m_session.GetVersion(); }
+  int          GetProtocol(void) const   { return m_session->GetProtocol(); }
+  const char * GetServerName(void) const { return m_session->GetServerName(); }
+  const char * GetVersion(void) const    { return m_session->GetVersion(); }
   bool         GetDriveSpace(long long *total, long long *used);
   bool         GetTime(time_t *localTime, int *gmtOffset);
   unsigned int GetNumChannels(void);
@@ -80,9 +81,10 @@ private:
   SChannels GetChannels(STag &tag);
   STags GetTags();
   bool GetEvent(SEvent& event, uint32_t id);
+  bool SendEnableAsync();
   SRecordings GetDVREntries(bool recorded, bool scheduled);
 
-  cHTSPSession     m_session;
+  CHTSPConnection *m_session;
   CEvent           m_started;
   CCriticalSection m_critSection;
   SChannels        m_channels;
@@ -91,4 +93,5 @@ private:
   SMessages        m_queue;
   SRecordings      m_recordings;
   int              m_iReconnectRetries;
+  bool             m_bSendNotifications;
 };
