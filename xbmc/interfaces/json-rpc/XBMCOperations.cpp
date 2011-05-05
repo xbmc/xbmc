@@ -26,29 +26,28 @@
 #include "Util.h"
 #include "utils/log.h"
 
-using namespace Json;
 using namespace JSONRPC;
 
-JSON_STATUS CXBMCOperations::GetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CXBMCOperations::GetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  Value val = g_application.GetVolume();
+  CVariant val = g_application.GetVolume();
   result.swap(val);
   return OK;
 }
 
-JSON_STATUS CXBMCOperations::SetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CXBMCOperations::SetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  g_application.SetVolume(parameterObject["value"].asInt());
+  g_application.SetVolume(parameterObject["value"].asInteger());
   return GetVolume(method, transport, client, parameterObject, result);
 }
 
-JSON_STATUS CXBMCOperations::ToggleMute(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CXBMCOperations::ToggleMute(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().SendAction(CAction(ACTION_MUTE));
   return GetVolume(method, transport, client, parameterObject, result);
 }
 
-JSON_STATUS CXBMCOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CXBMCOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CFileItemList list;
   if (FillFileItemList(parameterObject, list) && list.Size() > 0)
@@ -60,18 +59,18 @@ JSON_STATUS CXBMCOperations::Play(const CStdString &method, ITransportLayer *tra
     return InvalidParams;
 }
 
-JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString exec = "slideShow(";
 
   exec += parameterObject["directory"].asString();
 
-  if (parameterObject["random"].asBool())
+  if (parameterObject["random"].asBoolean())
     exec += ", random";
   else
     exec += ", notrandom";
 
-  if (parameterObject["recursive"].asBool())
+  if (parameterObject["recursive"].asBoolean())
     exec += ", recursive";
 
   exec += ")";
@@ -81,7 +80,7 @@ JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransport
   return ACK;
 }
 
-JSON_STATUS CXBMCOperations::Log(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CXBMCOperations::Log(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString message = parameterObject["message"].asString();
   if (message.IsEmpty())
@@ -95,7 +94,7 @@ JSON_STATUS CXBMCOperations::Log(const CStdString &method, ITransportLayer *tran
   return ACK;
 }
 
-JSON_STATUS CXBMCOperations::Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CXBMCOperations::Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().Quit();
   return ACK;

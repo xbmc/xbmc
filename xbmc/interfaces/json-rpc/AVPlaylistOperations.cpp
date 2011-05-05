@@ -27,20 +27,19 @@
 #include "GUIUserMessages.h"
 #include "Application.h"
 
-using namespace Json;
 using namespace JSONRPC;
 using namespace PLAYLIST;
 using namespace std;
 
-JSON_STATUS CAVPlaylistOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CAVPlaylistOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   bool status = true;
   int playlist = GetPlaylist(method);
   if (g_playlistPlayer.GetCurrentPlaylist() != playlist)
     g_playlistPlayer.SetCurrentPlaylist(playlist);
 
-  int item = parameterObject["item"].asInt();
-  int songId = parameterObject["songid"].asInt();
+  int item = parameterObject["item"].asInteger();
+  int songId = parameterObject["songid"].asInteger();
 
   if (item >= 0)
     g_application.getApplicationMessenger().PlayListPlayerPlay(item);
@@ -54,7 +53,7 @@ JSON_STATUS CAVPlaylistOperations::Play(const CStdString &method, ITransportLaye
   return OK;
 }
 
-JSON_STATUS CAVPlaylistOperations::SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CAVPlaylistOperations::SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if (g_playlistPlayer.GetCurrentPlaylist() != GetPlaylist(method))
     return FailedToExecute;
@@ -65,7 +64,7 @@ JSON_STATUS CAVPlaylistOperations::SkipPrevious(const CStdString &method, ITrans
   return ACK;
 }
 
-JSON_STATUS CAVPlaylistOperations::SkipNext(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CAVPlaylistOperations::SkipNext(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if (g_playlistPlayer.GetCurrentPlaylist() != GetPlaylist(method))
     return FailedToExecute;
@@ -76,7 +75,7 @@ JSON_STATUS CAVPlaylistOperations::SkipNext(const CStdString &method, ITransport
   return ACK;
 }
 
-JSON_STATUS CAVPlaylistOperations::GetItems(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CAVPlaylistOperations::GetItems(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CFileItemList list;
   int playlist = GetPlaylist(method);
@@ -94,11 +93,11 @@ JSON_STATUS CAVPlaylistOperations::GetItems(const CStdString &method, ITransport
   return OK;
 }
 
-JSON_STATUS CAVPlaylistOperations::Add(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CAVPlaylistOperations::Add(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int playlist = GetPlaylist(method);
   CFileItemList list;
-  Value params = parameterObject;
+  CVariant params = parameterObject;
   if (playlist == PLAYLIST_VIDEO)
     params["item"]["media"] = "video";
   else if (playlist == PLAYLIST_MUSIC)
@@ -113,11 +112,11 @@ JSON_STATUS CAVPlaylistOperations::Add(const CStdString &method, ITransportLayer
   return ACK;
 }
 
-JSON_STATUS CAVPlaylistOperations::Insert(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CAVPlaylistOperations::Insert(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int playlist = GetPlaylist(method);
   CFileItemList list;
-  Value params = parameterObject;
+  CVariant params = parameterObject;
   if (playlist == PLAYLIST_VIDEO)
     params["item"]["media"] = "video";
   else if (playlist == PLAYLIST_MUSIC)
@@ -126,21 +125,21 @@ JSON_STATUS CAVPlaylistOperations::Insert(const CStdString &method, ITransportLa
   if (!FillFileItemList(params["item"], list))
     return InvalidParams;
 
-  g_application.getApplicationMessenger().PlayListPlayerInsert(GetPlaylist(method), list, parameterObject["index"].asInt());
+  g_application.getApplicationMessenger().PlayListPlayerInsert(GetPlaylist(method), list, parameterObject["index"].asInteger());
 
   NotifyAll();
   return ACK;
 }
 
-JSON_STATUS CAVPlaylistOperations::Remove(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CAVPlaylistOperations::Remove(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  g_application.getApplicationMessenger().PlayListPlayerRemove(GetPlaylist(method), parameterObject["item"].asInt());
+  g_application.getApplicationMessenger().PlayListPlayerRemove(GetPlaylist(method), parameterObject["item"].asInteger());
 
   NotifyAll();
   return ACK;
 }
 
-JSON_STATUS CAVPlaylistOperations::Clear(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CAVPlaylistOperations::Clear(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().PlayListPlayerClear(GetPlaylist(method));
 
@@ -148,7 +147,7 @@ JSON_STATUS CAVPlaylistOperations::Clear(const CStdString &method, ITransportLay
   return ACK;
 }
 
-JSON_STATUS CAVPlaylistOperations::Shuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CAVPlaylistOperations::Shuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().PlayListPlayerShuffle(GetPlaylist(method), true);
 
@@ -156,7 +155,7 @@ JSON_STATUS CAVPlaylistOperations::Shuffle(const CStdString &method, ITransportL
   return ACK;
 }
 
-JSON_STATUS CAVPlaylistOperations::UnShuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CAVPlaylistOperations::UnShuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().PlayListPlayerShuffle(GetPlaylist(method), false);
 

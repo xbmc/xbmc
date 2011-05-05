@@ -18,7 +18,6 @@ extern "C" int inet_pton(int af, const char *src, void *dst);
 using namespace JSONRPC;
 using namespace ANNOUNCEMENT;
 //using namespace std; On VS2010, bind conflicts with std::bind
-using namespace Json;
 
 #define RECEIVEBUFFER 1024
 
@@ -129,7 +128,7 @@ void CTCPServer::Process()
   Deinitialize();
 }
 
-bool CTCPServer::Download(const char *path, Json::Value *result)
+bool CTCPServer::Download(const char *path, CVariant &result)
 {
   return false;
 }

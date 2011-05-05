@@ -28,6 +28,7 @@
 #include "URL.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "threads/SingleLock.h"
 #include "XBDateTime.h"
 #include "addons/AddonManager.h"
@@ -515,7 +516,7 @@ void CWebServer::SetCredentials(const CStdString &username, const CStdString &pa
   m_needcredentials = !password.IsEmpty();
 }
 
-bool CWebServer::Download(const char *path, Json::Value *result)
+bool CWebServer::Download(const char *path, CVariant &result)
 {
   bool exists = false;
   CFile *file = new CFile();
@@ -531,7 +532,7 @@ bool CWebServer::Download(const char *path, Json::Value *result)
   {
     string str = "vfs/";
     str += path;
-    (*result)["path"] = str;
+    result["path"] = str;
   }
 
   return exists;
