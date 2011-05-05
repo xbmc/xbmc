@@ -43,11 +43,11 @@ JSON_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLayer *
 
   /* select which video content to get genres from*/
   if (media.Equals("movie"))
- 	   idContent = VIDEODB_CONTENT_MOVIES;
-   else if (media.Equals("tvshow"))
- 	  idContent = VIDEODB_CONTENT_TVSHOWS;
-   else if (media.Equals("musicvideo"))
- 	  idContent = VIDEODB_CONTENT_MUSICVIDEOS;
+    idContent = VIDEODB_CONTENT_MOVIES;
+  else if (media.Equals("tvshow"))
+    idContent = VIDEODB_CONTENT_TVSHOWS;
+  else if (media.Equals("musicvideo"))
+    idContent = VIDEODB_CONTENT_MUSICVIDEOS;
  
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
