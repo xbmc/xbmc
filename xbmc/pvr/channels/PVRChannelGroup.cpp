@@ -820,13 +820,6 @@ bool CPVRChannelGroup::HasChanges(void) const
   return m_bChanged || HasNewChannels() || HasChangedChannels();
 }
 
-void CPVRChannelGroup::CacheIcons(void)
-{
-  CSingleLock lock(m_critSection);
-  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
-    at(iChannelPtr).channel->CheckCachedIcon();
-}
-
 void CPVRChannelGroup::ResetChannelNumbers(void)
 {
   CSingleLock lock(m_critSection);

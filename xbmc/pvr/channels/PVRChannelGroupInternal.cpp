@@ -429,3 +429,10 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(void)
 
   return true;
 }
+
+void CPVRChannelGroupInternal::CacheIcons(void)
+{
+  CSingleLock lock(m_critSection);
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+    at(iChannelPtr).channel->CheckCachedIcon();
+}

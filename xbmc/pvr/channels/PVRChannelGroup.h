@@ -113,11 +113,6 @@ namespace PVR
      */
     bool Renumber(void);
 
-    /*!
-     * @return Cache all channel icons in this group if guisetting "pvrmenu.iconpath" is set.
-     */
-    void CacheIcons(void);
-
   public:
     /*!
      * @brief Create a new channel group instance.
