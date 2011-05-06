@@ -869,10 +869,5 @@ void CPVRChannelGroup::Notify(const Observable &obs, const CStdString& msg)
         Persist();
       }
     }
-    lock.Leave();
-
-    /* check whether cached icons are still valid */
-    if (IsInternalGroup())
-      CacheIcons();
   }
 }
