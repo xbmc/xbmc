@@ -15,7 +15,7 @@ AC_ARG_WITH([darwin],
 
 AC_ARG_WITH([arch],
   [AS_HELP_STRING([--with-arch],
-  [build depend libs for arch i386 (default), x86_64, ppc or arm7.])],
+  [build depend libs for arch i386 (default), x86_64, ppc or armv7.])],
   [use_arch=$withval],
   [use_arch="i386"])
 
@@ -29,7 +29,7 @@ OUTPUT_FILES="Makefile Makefile.include"
 AC_MSG_RESULT(configuring for darwin $use_darwin-$use_sdk-$use_arch)
 case $use_darwin in
   osx)
-     if test "$use_arch" = "arm7"; then
+     if test "$use_arch" = "armv7"; then
        AC_MSG_ERROR(error in configure of --with-arch=$use_arch)
      fi
      if test "$use_sdk" != "10.4"; then
@@ -39,7 +39,7 @@ case $use_darwin in
      MK_CONFIG_SITE=" [config.site.mk:config.site_osx.mk.in]"
      ;;
   ios)
-     if test "$use_arch" != "arm7"; then
+     if test "$use_arch" != "armv7"; then
        AC_MSG_ERROR(error in configure of --with-arch=$use_arch)
      fi
      if test "$use_sdk" != "4.2"; then
@@ -88,4 +88,6 @@ AC_OUTPUT
 AC_MSG_RESULT(setting up config.site files)
 cp config.site ${use_prefix}/share/config.site
 
+AC_MSG_RESULT(setting up python26 Makefile)
+cp python26/Makefile.${use_darwin} python26/Makefile
 

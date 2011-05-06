@@ -50,6 +50,7 @@ config.log
 /tools/darwin/depends/Makefile
 /tools/darwin/depends/Makefile.include
 /tools/darwin/depends/configure
+/tools/darwin/depends/python26/Makefile
 /tools/darwin/depends/**/.gitignore
 /tools/darwin/depends/**/.installed
 /tools/osx/osx-depends/**/.gitignore

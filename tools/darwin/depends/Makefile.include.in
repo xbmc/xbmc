@@ -1,6 +1,6 @@
 SDK=@use_sdk@
 ARCH=@use_arch@
-DAWRIN=@use_darwin@
+DARWIN=@use_darwin@
 PREFIX=@use_prefix@
 STAGING=@use_staging@
 TOOLCHAIN=@use_toolchain@
