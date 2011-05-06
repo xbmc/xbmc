@@ -321,6 +321,8 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
     m_epgInfo->SetTimer(this);
   }
 
+  UpdateSummary();
+
   return true;
 }
 
