@@ -459,9 +459,6 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\ADPCMCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\AIFFcodec.cpp">
-      <Filter>cores\paplayer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\ASAPCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
@@ -559,9 +556,6 @@
       <Filter>cores\DllLoader\exports</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\emu_msvcrt.cpp">
-      <Filter>cores\DllLoader\exports</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\exports_python_win32.cpp">
       <Filter>cores\DllLoader\exports</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\win32-dirent.cpp">
@@ -2438,7 +2432,6 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\JSONServiceDescription.cpp">
       <Filter>interfaces\json-rpc</Filter>
     </ClCompile>
@@ -2450,6 +2443,16 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\win32\win32env.cpp">
       <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\RecentlyAddedJob.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\json-rpc\InputOperations.cpp">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\XBMC_keytable.cpp">
+      <Filter>input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2778,9 +2781,6 @@
       <Filter>cores\dvdplayer\DVDSubtitles</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\ADPCMCodec.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\AIFFcodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\ASAPCodec.h">
@@ -4897,11 +4897,15 @@
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ServiceDescription.h">
       <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\interfaces\python\XBPythonDll.h">
-      <Filter>interfaces\python</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\XBDateTime.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\RecentlyAddedJob.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\InputOperations.h">
+      <Filter>interfaces\json-rpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\XBMC_keytable.h">
+      <Filter>input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -20,7 +20,7 @@
  */
 
 precision mediump float;
-varying   vec4    m_colour;
+varying lowp vec4 m_colour;
 
 // SM_DEFAULT shader
 void main ()

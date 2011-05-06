@@ -270,6 +270,7 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   CRect src, dst;
   g_renderManager.GetVideoRect(src, dst);
 
+  m_vertex = NULL;
   m_width  = 1.0;
   m_height = 1.0;
   m_align  = ALIGN_VIDEO;

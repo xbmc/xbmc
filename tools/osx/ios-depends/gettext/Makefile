@@ -39,6 +39,9 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); patch -p0 <../01-gettext-tools-Makefile.in.patch
+	if [ "$(platform_sdk_version)" != "4.2" ]; then \
+	cd $(SOURCE); patch -p1 <../02-gettext-tools-stpncpy.patch; \
+	fi
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)

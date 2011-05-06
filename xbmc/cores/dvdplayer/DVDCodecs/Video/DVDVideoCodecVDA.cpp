@@ -63,10 +63,20 @@
  *  }
  
  how to detect the interlacing used on an existing stream:
-- progressive is signalled by setting frame_mbs_only_flag: 1 in the SPS
-- interlaced is signalled by setting frame_mbs_only_flag: 0 in the SPS and field_pic_flag: 1 on all frames
-- paff is signalled by setting frame_mbs_only_flag: 0 in the SPS and field_pic_flag: 1 on all frames that get interlaced and field_pic_flag: 0 on all frames that get progressive
-- mbaff is signalled by setting frame_mbs_only_flag: 0 and mb_adaptive_frame_field_flag: 1 in the SPS and field_pic_flag: 0 on the frames (field_pic_flag: 1 would indicate a normal interlaced frame)
+- progressive is signalled by setting
+   frame_mbs_only_flag: 1 in the SPS.
+- interlaced is signalled by setting
+   frame_mbs_only_flag: 0 in the SPS and
+   field_pic_flag: 1 on all frames.
+- paff is signalled by setting
+   frame_mbs_only_flag: 0 in the SPS and
+   field_pic_flag: 1 on all frames that get interlaced and
+   field_pic_flag: 0 on all frames that get progressive.
+- mbaff is signalled by setting
+   frame_mbs_only_flag: 0 in the SPS and
+   mb_adaptive_frame_field_flag: 1 in the SPS and
+   field_pic_flag: 0 on the frames,
+   (field_pic_flag: 1 would indicate a normal interlaced frame).
 */
 
 // missing in 10.4/10.5 SDKs.
@@ -208,6 +218,223 @@ static void GetFrameDisplayTimeFromDictionary(
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
+// GStreamer h264 parser
+// Copyright (C) 2005 Michal Benes <michal.benes@itonis.tv>
+//           (C) 2008 Wim Taymans <wim.taymans@gmail.com>
+// gsth264parse.c:
+//  * License as published by the Free Software Foundation; either
+//  * version 2.1 of the License, or (at your option) any later version.
+typedef struct
+{
+  const uint8_t *data;
+  const uint8_t *end;
+  int head;
+  uint64_t cache;
+} nal_bitstream;
+
+static void
+nal_bs_init(nal_bitstream *bs, const uint8_t *data, size_t size)
+{
+  bs->data = data;
+  bs->end  = data + size;
+  bs->head = 0;
+  // fill with something other than 0 to detect
+  //  emulation prevention bytes
+  bs->cache = 0xffffffff;
+}
+
+static uint32_t
+nal_bs_read(nal_bitstream *bs, int n)
+{
+  uint32_t res = 0;
+  int shift;
+
+  if (n == 0)
+    return res;
+
+  // fill up the cache if we need to
+  while (bs->head < n)
+  {
+    uint8_t a_byte;
+    bool check_three_byte;
+
+    check_three_byte = TRUE;
+next_byte:
+    if (bs->data >= bs->end)
+    {
+      // we're at the end, can't produce more than head number of bits
+      n = bs->head;
+      break;
+    }
+    // get the byte, this can be an emulation_prevention_three_byte that we need
+    // to ignore.
+    a_byte = *bs->data++;
+    if (check_three_byte && a_byte == 0x03 && ((bs->cache & 0xffff) == 0))
+    {
+      // next byte goes unconditionally to the cache, even if it's 0x03
+      check_three_byte = FALSE;
+      goto next_byte;
+    }
+    // shift bytes in cache, moving the head bits of the cache left
+    bs->cache = (bs->cache << 8) | a_byte;
+    bs->head += 8;
+  }
+
+  // bring the required bits down and truncate
+  if ((shift = bs->head - n) > 0)
+    res = bs->cache >> shift;
+  else
+    res = bs->cache;
+
+  // mask out required bits
+  if (n < 32)
+    res &= (1 << n) - 1;
+
+  bs->head = shift;
+
+  return res;
+}
+
+static bool
+nal_bs_eos(nal_bitstream *bs)
+{
+  return (bs->data >= bs->end) && (bs->head == 0);
+}
+
+// read unsigned Exp-Golomb code
+static int
+nal_bs_read_ue(nal_bitstream *bs)
+{
+  int i = 0;
+
+  while (nal_bs_read(bs, 1) == 0 && !nal_bs_eos(bs) && i < 32)
+    i++;
+
+  return ((1 << i) - 1 + nal_bs_read(bs, i));
+}
+
+typedef struct
+{
+  int profile_idc;
+  int level_idc;
+  int sps_id;
+
+  int chroma_format_idc;
+  int separate_colour_plane_flag;
+  int bit_depth_luma_minus8;
+  int bit_depth_chroma_minus8;
+  int qpprime_y_zero_transform_bypass_flag;
+  int seq_scaling_matrix_present_flag;
+
+  int log2_max_frame_num_minus4;
+  int pic_order_cnt_type;
+  int log2_max_pic_order_cnt_lsb_minus4;
+
+  int max_num_ref_frames;
+  int gaps_in_frame_num_value_allowed_flag;
+  int pic_width_in_mbs_minus1;
+  int pic_height_in_map_units_minus1;
+
+  int frame_mbs_only_flag;
+  int mb_adaptive_frame_field_flag;
+
+  int direct_8x8_inference_flag;
+
+  int frame_cropping_flag;
+  int frame_crop_left_offset;
+  int frame_crop_right_offset;
+  int frame_crop_top_offset;
+  int frame_crop_bottom_offset;
+} sps_info_struct;
+
+static void
+parseh264_sps(uint8_t *sps, uint32_t sps_size, bool *interlaced, int32_t *max_ref_frames)
+{
+  nal_bitstream bs;
+  sps_info_struct sps_info;
+
+  nal_bs_init(&bs, sps, sps_size);
+
+  sps_info.profile_idc  = nal_bs_read(&bs, 8);
+  nal_bs_read(&bs, 1);  // constraint_set0_flag
+  nal_bs_read(&bs, 1);  // constraint_set1_flag
+  nal_bs_read(&bs, 1);  // constraint_set2_flag
+  nal_bs_read(&bs, 1);  // constraint_set3_flag
+  nal_bs_read(&bs, 4);  // reserved
+  sps_info.level_idc    = nal_bs_read(&bs, 8);
+  sps_info.sps_id       = nal_bs_read_ue(&bs);
+
+  if (sps_info.profile_idc == 100 ||
+      sps_info.profile_idc == 110 ||
+      sps_info.profile_idc == 122 ||
+      sps_info.profile_idc == 244 ||
+      sps_info.profile_idc == 44  ||
+      sps_info.profile_idc == 83  ||
+      sps_info.profile_idc == 86)
+  {
+    sps_info.chroma_format_idc                    = nal_bs_read_ue(&bs);
+    if (sps_info.chroma_format_idc == 3)
+      sps_info.separate_colour_plane_flag         = nal_bs_read(&bs, 1);
+    sps_info.bit_depth_luma_minus8                = nal_bs_read_ue(&bs);
+    sps_info.bit_depth_chroma_minus8              = nal_bs_read_ue(&bs);
+    sps_info.qpprime_y_zero_transform_bypass_flag = nal_bs_read(&bs, 1);
+
+    sps_info.seq_scaling_matrix_present_flag = nal_bs_read (&bs, 1);
+    if (sps_info.seq_scaling_matrix_present_flag)
+    {
+      /* TODO: unfinished */
+    }
+  }
+  sps_info.log2_max_frame_num_minus4 = nal_bs_read_ue(&bs);
+  if (sps_info.log2_max_frame_num_minus4 > 12)
+  { // must be between 0 and 12
+    return;
+  }
+
+  sps_info.pic_order_cnt_type = nal_bs_read_ue(&bs);
+  if (sps_info.pic_order_cnt_type == 0)
+  {
+    sps_info.log2_max_pic_order_cnt_lsb_minus4 = nal_bs_read_ue(&bs);
+  }
+  else if (sps_info.pic_order_cnt_type == 1)
+  { // TODO: unfinished
+    /*
+    delta_pic_order_always_zero_flag = gst_nal_bs_read (bs, 1);
+    offset_for_non_ref_pic = gst_nal_bs_read_se (bs);
+    offset_for_top_to_bottom_field = gst_nal_bs_read_se (bs);
+
+    num_ref_frames_in_pic_order_cnt_cycle = gst_nal_bs_read_ue (bs);
+    for( i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++ )
+    offset_for_ref_frame[i] = gst_nal_bs_read_se (bs);
+    */
+  }
+
+  sps_info.max_num_ref_frames             = nal_bs_read_ue(&bs);
+  sps_info.gaps_in_frame_num_value_allowed_flag = nal_bs_read(&bs, 1);
+  sps_info.pic_width_in_mbs_minus1        = nal_bs_read_ue(&bs);
+  sps_info.pic_height_in_map_units_minus1 = nal_bs_read_ue(&bs);
+
+  sps_info.frame_mbs_only_flag            = nal_bs_read(&bs, 1);
+  if (!sps_info.frame_mbs_only_flag)
+    sps_info.mb_adaptive_frame_field_flag = nal_bs_read(&bs, 1);
+
+  sps_info.direct_8x8_inference_flag      = nal_bs_read(&bs, 1);
+
+  sps_info.frame_cropping_flag            = nal_bs_read(&bs, 1);
+  if (sps_info.frame_cropping_flag)
+  {
+    sps_info.frame_crop_left_offset       = nal_bs_read_ue(&bs);
+    sps_info.frame_crop_right_offset      = nal_bs_read_ue(&bs);
+    sps_info.frame_crop_top_offset        = nal_bs_read_ue(&bs);
+    sps_info.frame_crop_bottom_offset     = nal_bs_read_ue(&bs);
+  }
+
+  *interlaced = !sps_info.frame_mbs_only_flag;
+  *max_ref_frames = sps_info.max_num_ref_frames;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
 // TODO: refactor this so as not to need these ffmpeg routines.
 // These are not exposed in ffmpeg's API so we dupe them here.
 // AVC helper functions for muxers,
@@ -215,6 +442,10 @@ static void GetFrameDisplayTimeFromDictionary(
 // This is part of FFmpeg
 //  * License as published by the Free Software Foundation; either
 //  * version 2.1 of the License, or (at your option) any later version.
+#define VDA_RB16(x)                          \
+  ((((const uint8_t*)(x))[0] <<  8) |        \
+   ((const uint8_t*)(x)) [1])
+
 #define VDA_RB24(x)                          \
   ((((const uint8_t*)(x))[0] << 16) |        \
    (((const uint8_t*)(x))[1] <<  8) |        \
@@ -347,6 +578,8 @@ const int isom_write_avcc(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
         {
           sps = buf + 4;
           sps_size = size;
+          
+          //parse_sps(sps+1, sps_size-1);
         }
         else if (nal_type == 8) /* PPS */
         {
@@ -381,6 +614,7 @@ const int isom_write_avcc(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
   }
   return 0;
 }
+
 
 static DllLibVDADecoder *g_DllLibVDADecoder = (DllLibVDADecoder*)-1;
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -513,6 +747,29 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       default:
         return false;
       break;
+    }
+
+    // check the avcC atom's sps for number of reference frames and
+    // bail if interlaced, VDA does not handle interlaced h264.
+    uint32_t avcc_len = CFDataGetLength(avcCData);
+    if (avcc_len < 8)
+    {
+      // avcc atoms with length less than 8 are borked.
+      CFRelease(avcCData);
+      return false;
+    }
+    else
+    {
+      bool interlaced = true;
+      uint8_t *spc = (uint8_t*)CFDataGetBytePtr(avcCData) + 6;
+      uint32_t sps_size = VDA_RB16(spc);
+      if (sps_size)
+        parseh264_sps(spc+3, sps_size-1, &interlaced, &m_max_ref_frames);
+      if (interlaced)
+      {
+        CFRelease(avcCData);
+        return false;
+      }
     }
 
     // input stream is qualified, now we can load dlls.
@@ -724,9 +981,7 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
     }
   }
 
-  // TODO: queue depth is related to the number of reference frames in encoded h.264.
-  // so we need to buffer until we get N ref frames + 1.
-  if (m_queue_depth < 4)
+  if (m_queue_depth < m_max_ref_frames)
   {
     return VC_BUFFER;
   }

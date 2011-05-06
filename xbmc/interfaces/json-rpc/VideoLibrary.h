@@ -32,6 +32,9 @@ namespace JSONRPC
     static JSON_STATUS GetMovies(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
     static JSON_STATUS GetMovieDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
 
+    static JSON_STATUS GetMovieSets(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
+    static JSON_STATUS GetMovieSetDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
+
     static JSON_STATUS GetTVShows(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
     static JSON_STATUS GetTVShowDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
     static JSON_STATUS GetSeasons(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
@@ -47,6 +50,10 @@ namespace JSONRPC
 
     static JSON_STATUS ScanForContent(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
 
+    static bool FillFileItem(const CStdString &strFilename, CFileItem &item);
     static bool FillFileItemList(const Json::Value &parameterObject, CFileItemList &list);
+
+  private:
+    static JSON_STATUS GetAdditionalMovieDetails(const Json::Value &parameterObject, CFileItemList &items, Json::Value &result);
   };
 }

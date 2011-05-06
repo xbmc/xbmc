@@ -202,6 +202,81 @@ void CMatrixGLES::Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
   MultMatrixf(matrix);
 }
 
+#if defined(__ARM_NEON__)
+// Sets length and stride to 0.
+#define VFP_VECTOR_LENGTH_ZERO \
+  "fmrx    r0, fpscr            \n\t" \
+  "bic     r0, r0, #0x00370000  \n\t" \
+  "fmxr    fpscr, r0            \n\t" 
+  
+// Set vector length. VEC_LENGTH has to be bitween 0 for length 1 and 3 for length 4.
+#define VFP_VECTOR_LENGTH(VEC_LENGTH) \
+  "fmrx    r0, fpscr                         \n\t" \
+  "bic     r0, r0, #0x00370000               \n\t" \
+  "orr     r0, r0, #0x000" #VEC_LENGTH "0000 \n\t" \
+  "fmxr    fpscr, r0                         \n\t"
+
+#define VFP_CLOBBER_S0_S31 \
+  "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8",   \
+  "s9", "s10", "s11", "s12", "s13", "s14", "s15", "s16",  \
+  "s17", "s18", "s19", "s20", "s21", "s22", "s23", "s24", \
+  "s25", "s26", "s27", "s28", "s29", "s30", "s31"
+
+inline void Matrix4Mul(const float* src_mat_1, const float* src_mat_2, float* dst_mat)
+{
+  asm volatile (VFP_VECTOR_LENGTH(3)
+
+	// Let A:=src_ptr_1, B:=src_ptr_2, then
+	// function computes A*B as (B^T * A^T)^T.
+
+	// Load first two columns to scalar bank.
+	"fldmias %1!, {s0-s7} \n\t"
+	// Load the whole matrix into memory.
+	"fldmias %2, {s16-s31} \n\t"
+
+	// First column times matrix.
+	"fmuls s8, s16, s0 \n\t"
+	"fmuls s12, s16, s4 \n\t"
+	"fmacs s8, s20, s1 \n\t"
+	"fmacs s12, s20, s5 \n\t"
+	"fmacs s8, s24, s2 \n\t"
+	"fmacs s12, s24, s6 \n\t"
+	"fmacs s8, s28, s3 \n\t"
+	"fmacs s12, s28, s7 \n\t"
+
+	// Load next two column to scalar bank.
+	"fldmias %1!, {s0-s7} \n\t"
+
+	// Save first column.
+	"fstmias %2!, {s8-s15} \n\t"
+
+	"fmuls s8, s16, s0 \n\t"
+	"fmuls s12, s16, s4 \n\t"
+	"fmacs s8, s20, s1 \n\t"
+	"fmacs s12, s20, s5 \n\t"
+	"fmacs s8, s24, s2 \n\t"
+	"fmacs s12, s24, s6 \n\t"
+	"fmacs s8, s28, s3 \n\t"
+	"fmacs s12, s28, s7 \n\t"
+
+	"fstmias %2!, {s8-s15} \n\t"
+
+	VFP_VECTOR_LENGTH_ZERO
+	: "=r" (dst_mat), "=r" (src_mat_2)
+	: "r" (src_mat_1), "0" (dst_mat), "1" (src_mat_2)
+	: "r0", "cc", "memory", VFP_CLOBBER_S0_S31
+    );
+}
+void CMatrixGLES::MultMatrixf(const GLfloat *matrix)
+{
+  if (m_pMatrix)
+  {
+    GLfloat m[16];
+    Matrix4Mul(m_pMatrix, matrix, m);
+  }
+}
+
+#else
 void CMatrixGLES::MultMatrixf(const GLfloat *matrix)
 {
   if (m_pMatrix)
@@ -228,6 +303,7 @@ void CMatrixGLES::MultMatrixf(const GLfloat *matrix)
     m_pMatrix[3] = d;  m_pMatrix[7] = h;  m_pMatrix[11] = l;  m_pMatrix[15] = p;
   }
 }
+#endif
 
 // gluLookAt implementation taken from Mesa3D
 void CMatrixGLES::LookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez, GLfloat centerx, GLfloat centery, GLfloat centerz, GLfloat upx, GLfloat upy, GLfloat upz)

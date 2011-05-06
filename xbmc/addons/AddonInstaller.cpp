@@ -156,7 +156,7 @@ bool CAddonInstaller::Cancel(const CStdString &addonID)
 bool CAddonInstaller::Install(const CStdString &addonID, bool force, const CStdString &referer, bool background)
 {
   AddonPtr addon;
-  bool addonInstalled = CAddonMgr::Get().GetAddon(addonID, addon);
+  bool addonInstalled = CAddonMgr::Get().GetAddon(addonID, addon, ADDON_UNKNOWN, false);
   if (addonInstalled && !force)
     return true;
 

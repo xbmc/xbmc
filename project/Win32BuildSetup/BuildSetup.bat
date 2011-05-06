@@ -32,8 +32,9 @@ FOR %%b in (%1, %2, %3, %4, %5) DO (
 	IF %%b==noprompt SET promptlevel=noprompt
 	IF %%b==nomingwlibs SET buildmingwlibs=false
 )
-SET buildconfig=Release (OpenGL)
-IF %target%==dx SET buildconfig=Release (DirectX)
+
+SET buildconfig=Release (DirectX)
+IF %target%==gl SET buildconfig=Release (OpenGL)
 
 IF %comp%==vs2010 (
   IF "%VS100COMNTOOLS%"=="" (

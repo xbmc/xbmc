@@ -29,9 +29,11 @@
 #include "AudioLibrary.h"
 #include "VideoLibrary.h"
 #include "SystemOperations.h"
+#include "InputOperations.h"
 #include "XBMCOperations.h"
 #include "settings/AdvancedSettings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/AnnouncementUtils.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include <string.h>
@@ -52,7 +54,7 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "JSONRPC.Ping",                                 CJSONRPC::Ping },
   { "JSONRPC.GetNotificationFlags",                 CJSONRPC::GetNotificationFlags },
   { "JSONRPC.SetNotificationFlags",                 CJSONRPC::SetNotificationFlags },
-  { "JSONRPC.Notify",                             CJSONRPC::Notify },
+  { "JSONRPC.NotifyAll",                            CJSONRPC::NotifyAll },
 
 // Player
   { "Player.GetActivePlayers",                      CPlayerOperations::GetActivePlayers },
@@ -166,6 +168,8 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
 // Video Library
   { "VideoLibrary.GetMovies",                       CVideoLibrary::GetMovies },
   { "VideoLibrary.GetMovieDetails",                 CVideoLibrary::GetMovieDetails },
+  { "VideoLibrary.GetMovieSets",                    CVideoLibrary::GetMovieSets },
+  { "VideoLibrary.GetMovieSetDetails",              CVideoLibrary::GetMovieSetDetails },
   { "VideoLibrary.GetTVShows",                      CVideoLibrary::GetTVShows },
   { "VideoLibrary.GetTVShowDetails",                CVideoLibrary::GetTVShowDetails },
   { "VideoLibrary.GetSeasons",                      CVideoLibrary::GetSeasons },
@@ -185,6 +189,15 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
   { "System.Reboot",                                CSystemOperations::Reboot },
   { "System.GetInfoLabels",                         CSystemOperations::GetInfoLabels },
   { "System.GetInfoBooleans",                       CSystemOperations::GetInfoBooleans },
+
+// Input operations
+  { "Input.Left",                                   CInputOperations::Left },
+  { "Input.Right",                                  CInputOperations::Right },
+  { "Input.Down",                                   CInputOperations::Down },
+  { "Input.Up",                                     CInputOperations::Up },
+  { "Input.Select",                                 CInputOperations::Select },
+  { "Input.Back",                                   CInputOperations::Back },
+  { "Input.Home",                                   CInputOperations::Home },
 
 // XBMC operations
   { "XBMC.GetVolume",                               CXBMCOperations::GetVolume },
@@ -250,7 +263,7 @@ JSON_STATUS CJSONRPC::GetNotificationFlags(const CStdString &method, ITransportL
   int flags = client->GetAnnouncementFlags();
 
   for (int i = 1; i <= ANNOUNCE_ALL; i *= 2)
-    result[NotificationFlagToString((EAnnouncementFlag)i)] = (flags & i) > 0;
+    result[CAnnouncementUtils::AnnouncementFlagToString((EAnnouncementFlag)i)] = (flags & i) > 0;
 
   return OK;
 }
@@ -259,14 +272,16 @@ JSON_STATUS CJSONRPC::SetNotificationFlags(const CStdString &method, ITransportL
 {
   int flags = 0;
 
-  if (parameterObject["Playback"].asBool())
-    flags |= Playback;
+  if (parameterObject["Player"].asBool())
+    flags |= Player;
   if (parameterObject["GUI"].asBool())
     flags |= GUI;
   if (parameterObject["System"].asBool())
     flags |= System;
-  if (parameterObject["Library"].asBool())
-    flags |= Library;
+  if (parameterObject["VideoLibrary"].asBool())
+    flags |= VideoLibrary;
+  if (parameterObject["AudioLibrary"].asBool())
+    flags |= AudioLibrary;
   if (parameterObject["Other"].asBool())
     flags |= Other;
 
@@ -276,7 +291,7 @@ JSON_STATUS CJSONRPC::SetNotificationFlags(const CStdString &method, ITransportL
   return BadPermission;
 }
 
-JSON_STATUS CJSONRPC::Notify(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CJSONRPC::NotifyAll(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   if (parameterObject["data"].isNull())
     CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(),  

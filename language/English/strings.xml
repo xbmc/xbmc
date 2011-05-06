@@ -2283,6 +2283,11 @@
   <string id="33082">Path to script</string>
   <string id="33083">Enable custom script button</string>
 
+  <string id="33100">Failed to start</string>
+  <string id="33101">Webserver</string>
+  <string id="33102">Event Server</string>
+  <string id="33103">Remote communication server</string>
+
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>

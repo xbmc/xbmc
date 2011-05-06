@@ -24,12 +24,8 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#if (defined WIN32)
-  #include "cdrip/oggvorbis/vorbisenc.h"
-#else
-  #include <vorbis/vorbisenc.h>
-  #include "utils/log.h"
-#endif
+#include <vorbis/vorbisenc.h>
+#include "utils/log.h"
 #include "DynamicDll.h"
 
 class DllVorbisEncInterface

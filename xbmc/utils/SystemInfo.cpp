@@ -88,7 +88,7 @@ CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
 
 CStdString CSysInfoJob::GetMACAddress()
 {
-#if defined(HAS_LINUX_NETWORK)
+#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
   CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
   if (iface)
     return iface->GetMacAddress();
@@ -607,7 +607,7 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
   return strRet;
 }
 
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(__APPLE__) && !defined(__FreeBSD__)
 CStdString CSysInfo::GetLinuxDistro()
 {
   static const char* release_file[] = { "/etc/debian_version",
@@ -677,6 +677,9 @@ CStdString CSysInfo::GetUserAgent()
 #else
   result += "Mac OS X; ";
 #endif
+  result += GetUnameVersion();
+#elif defined(__FreeBSD__)
+  result += "FreeBSD; ";
   result += GetUnameVersion();
 #elif defined(_LINUX)
   result += "Linux; ";

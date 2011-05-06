@@ -24,9 +24,11 @@
 #include <stdlib.h>
 #include "utils/StdString.h"
 #include "interfaces/IAnnouncer.h"
+#include "interfaces/AnnouncementUtils.h"
 #include "ITransportLayer.h"
+#include "jsoncpp/include/json/json.h"
+#include "utils/Variant.h"
 
-using namespace ANNOUNCEMENT;
 
 namespace JSONRPC
 {
@@ -70,11 +72,12 @@ namespace JSONRPC
     ControlPower = 0x8,
     Logging = 0x10,
     ScanLibrary = 0x20,
+    Navigate = 0x40
   };
 
-  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | Logging | ScanLibrary);
+  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | Logging | ScanLibrary | Navigate);
 
-  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | Logging | ScanLibrary);
+  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | Logging | ScanLibrary | Navigate);
 
   /*!
    \brief Possible value types of a parameter or return type
@@ -176,7 +179,7 @@ namespace JSONRPC
      \param permission Specific OperationPermission
      \return String representation of the given OperationPermission
      */
-    static inline std::string PermissionToString(const OperationPermission &permission)
+    static inline const char *PermissionToString(const OperationPermission &permission)
     {
       switch (permission)
       {
@@ -192,6 +195,8 @@ namespace JSONRPC
         return "Logging";
       case ScanLibrary:
         return "ScanLibrary";
+      case Navigate:
+        return "Navigate";
       default:
         return "Unknown";
       }
@@ -215,33 +220,10 @@ namespace JSONRPC
         return Logging;
       if (permission.compare("ScanLibrary") == 0)
         return ScanLibrary;
+      if (permission.compare("Navigate") == 0)
+        return Navigate;
 
       return ReadData;
-    }
-
-    /*!
-     \brief Returns a string representation for the 
-     given EAnnouncementFlag
-     \param notification Specific EAnnouncementFlag
-     \return String representation of the given EAnnouncementFlag
-     */
-    static inline std::string NotificationFlagToString(const EAnnouncementFlag &notification)
-    {
-      switch (notification)
-      {
-      case Playback:
-        return "Playback";
-      case GUI:
-        return "GUI";
-      case System:
-        return "System";
-      case Library:
-        return "Library";
-      case Other:
-        return "Other";
-      default:
-        return "Unknown";
-      }
     }
 
     /*!
@@ -366,7 +348,7 @@ namespace JSONRPC
         jsonObject = jsonObject[0];
     }
 
-    static inline std::string ValueTypeToString(Json::ValueType valueType)
+    static inline const char *ValueTypeToString(Json::ValueType valueType)
     {
       switch (valueType)
       {
@@ -527,6 +509,30 @@ namespace JSONRPC
       }
 
       return -1;  // unreachable
+    }
+
+    static std::string AnnouncementToJSON(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *method, const CVariant &data, bool compactOutput)
+    {
+      Json::Value root;
+      root["jsonrpc"] = "2.0";
+
+      CStdString namespaceMethod;
+      namespaceMethod.Format("%s.%s", ANNOUNCEMENT::CAnnouncementUtils::AnnouncementFlagToString(flag), method);
+      root["method"]  = namespaceMethod.c_str();
+
+      if (data.isObject())
+        data.toJsonValue(root["params"]);
+      root["params"]["sender"] = sender;
+
+      Json::Writer *writer;
+      if (compactOutput)
+        writer = new Json::FastWriter();
+      else
+        writer = new Json::StyledWriter();
+
+      std::string str = writer->write(root);
+      delete writer;
+      return str;
     }
   };
 }

@@ -61,7 +61,7 @@ using namespace std;
 #ifndef HAS_DVD_DRIVE
 extern "C"
 {
-  void cdio_warn(const char* msg, ...) { CLog::Log(LOGWARNING, msg); }
+  void cdio_warn(const char* msg, ...) { CLog::Log(LOGWARNING, "%s", msg); }
 }
 #endif
 
@@ -964,8 +964,6 @@ int64_t iso9660::Seek(HANDLE hFile, int64_t lOffset, int whence)
     // end += pos
     pContext->m_dwFilePos = pContext->m_dwFileSize + lOffset;
     break;
-  case SEEK_POSSIBLE:
-    return 1;
   default:
     return -1;
   }

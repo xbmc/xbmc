@@ -7,6 +7,7 @@ SRCS=Atomics.cpp \
      SharedSection.cpp \
      SingleLock.cpp \
      Thread.cpp \
+     XBMC_mutex.cpp \
 
 LIB=threads.a
 

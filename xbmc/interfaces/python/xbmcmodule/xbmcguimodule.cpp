@@ -22,7 +22,6 @@
 #include <Python.h>
 #include <structmember.h>
 
-#include "../XBPythonDll.h"
 #include "control.h"
 #include "window.h"
 #include "dialog.h"
@@ -92,7 +91,7 @@ namespace PYXBMC
     PyXBMCGUILock();
     int id = g_windowManager.GetActiveWindow();
     PyXBMCGUIUnlock();
-    return Py_BuildValue((char*)"l", id);
+    return Py_BuildValue((char*)"i", id);
   }
 
   // getCurrentWindowDialogId() method
@@ -107,7 +106,7 @@ namespace PYXBMC
     PyXBMCGUILock();
     int id = g_windowManager.GetTopMostModalDialogID();
     PyXBMCGUIUnlock();
-    return Py_BuildValue((char*)"l", id);
+    return Py_BuildValue((char*)"i", id);
   }
 
   // define c functions to be used in python here

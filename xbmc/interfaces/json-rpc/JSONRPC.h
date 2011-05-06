@@ -70,7 +70,7 @@ namespace JSONRPC
     static JSON_STATUS Ping(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS GetNotificationFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS SetNotificationFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS Notify(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS NotifyAll(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
   
   private:
     static void setup();

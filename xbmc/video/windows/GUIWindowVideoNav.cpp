@@ -425,13 +425,27 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
     CFileItem item;
     if (!content.IsEmpty() && m_database.GetItemForPath(content, pItem->m_strPath, item))
     { // copy info across
+      CStdString label (pItem->GetLabel ());
+      CStdString label2(pItem->GetLabel2());
       pItem->UpdateInfo(item);
-      pItem->m_strPath = item.m_strPath;
-      // if we switch from a file to a folder item it means we really shouldn't be sorting files and
-      // folders separately
-      if (pItem->m_bIsFolder != item.m_bIsFolder)
-        items.SetSortIgnoreFolders(true);
-      pItem->m_bIsFolder = item.m_bIsFolder;
+      pItem->SetLabel (label);
+      pItem->SetLabel2(label);
+      
+      if(g_settings.m_videoStacking)
+      {
+        pItem->m_strPath = item.m_strPath;
+        // if we switch from a file to a folder item it means we really shouldn't be sorting files and
+        // folders separately
+        if (pItem->m_bIsFolder != item.m_bIsFolder)
+          items.SetSortIgnoreFolders(true);
+        pItem->m_bIsFolder = item.m_bIsFolder;
+      }
+      else
+      {
+        if (CFile::Exists(item.GetCachedFanart()))
+          pItem->SetProperty("fanart_image", item.GetCachedFanart());
+      }
+
     }
     else
     { // grab the playcount and clean the label
@@ -1007,7 +1021,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
         // add "Set/Change content" to folders
-        if (item->m_bIsFolder && !item->IsPlayList() && !item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath())
+        if (item->m_bIsFolder && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath())
         {
           CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
           if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))

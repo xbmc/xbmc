@@ -145,6 +145,19 @@ XBMCEAGLView  *m_glView;
   [self.view addGestureRecognizer:swipeRight];
   [swipeRight release];
 
+  UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc]
+											initWithTarget:self action:@selector(handleSwipeUp:)];
+  swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
+  swipeUp.delaysTouchesBegan = YES;
+  [self.view addGestureRecognizer:swipeUp];
+  [swipeUp release];
+
+  UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc]
+										 initWithTarget:self action:@selector(handleSwipeDown:)];
+  swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
+  swipeDown.delaysTouchesBegan = YES;
+  [self.view addGestureRecognizer:swipeDown];
+  [swipeDown release];
 }
 //--------------------------------------------------------------
 - (IBAction)handleSwipeLeft:(UISwipeGestureRecognizer *)sender 
@@ -157,6 +170,18 @@ XBMCEAGLView  *m_glView;
 {
   //NSLog(@"%s swipeRight", __PRETTY_FUNCTION__);
   [self sendKey:XBMCK_TAB];
+}
+//--------------------------------------------------------------
+- (IBAction)handleSwipeUp:(UISwipeGestureRecognizer *)sender 
+{
+	//NSLog(@"%s swipeUp", __PRETTY_FUNCTION__);
+	[self sendKey:XBMCK_UP];
+}
+//--------------------------------------------------------------
+- (IBAction)handleSwipeDown:(UISwipeGestureRecognizer *)sender 
+{
+	//NSLog(@"%s swipeDown", __PRETTY_FUNCTION__);
+	[self sendKey:XBMCK_DOWN];
 }
 //--------------------------------------------------------------
 - (IBAction)handleSingleDoubleTap:(UIGestureRecognizer *)sender 

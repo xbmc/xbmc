@@ -43,9 +43,13 @@ BIN_DIRS=	\
 	xbmc/video/windows \
 	xbmc/windows \
 	xbmc/network \
+	xbmc/network/libscrobbler \
+	xbmc/network/linux \
+	xbmc/network/osx \
 	xbmc/playlists \
 	xbmc/powermanagement \
         xbmc/powermanagement/linux \
+	xbmc/rendering \
 	xbmc/storage \
 	xbmc/storage/linux \
 	xbmc/storage/osx \
@@ -56,7 +60,6 @@ BIN_DIRS=	\
 	xbmc/interfaces/python \
 	xbmc/interfaces/python/xbmcmodule \
 	lib/libRTV \
-	xbmc/network/libscrobbler \
 	lib/libUPnP \
 	lib/libXDAAP \
 	xbmc/dbwrappers \
@@ -127,10 +130,6 @@ LIB_DIRS=\
 	lib/xbmc-dll-symbols \
 	lib/jsoncpp/src/lib_json
 
-ifneq (@USE_EXTERNAL_PYTHON@,1)
-LIB_DIRS+=xbmc/interfaces/python/linux
-endif
-
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
 
@@ -142,11 +141,10 @@ VIS_DIRS+=\
 	xbmc/visualizations/XBMCProjectM \
 
 endif
-ifeq ($(findstring osx,@ARCH@), osx)
-VIS_DIRS+=xbmc/visualizations/iTunes \
-
+ifeq (($(findstring osx,@ARCH@), osx),(@USE_OPENGL@,1)) 
+VIS_DIRS+=xbmc/visualizations/iTunes
 endif
-ifneq (@BUILD_GOOM@,1)
+ifneq (@DISABLE_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom \
 
 endif
@@ -169,9 +167,6 @@ CLEAN_FILES=xbmc.bin xbmc-xrandr
 
 DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
         tools/Linux/xbmc-standalone.sh autom4te.cache config.h.in~ \
-        lib/python/Include/pyconfig.h \
-        lib/python/configure.lineno \
-        lib/python/libpython2.4.so.1.0 \
         system/libcpluff-@ARCH@.so \
         lib/libarchive/Makefile.in \
         lib/libarchive/aclocal.m4 \
@@ -189,12 +184,6 @@ DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
         lib/libarchive/build/autoconf/ltversion.m4 \
         lib/libarchive/build/autoconf/lt~obsolete.m4 \
         lib/libarchive/build/autoconf/missing \
-
-ifneq (@USE_EXTERNAL_PYTHON@,1)
-	PYTHON_TARGET=python
-else
-	PYTHON_TARGET=
-endif
 
 all : Makefile externals xbmc.bin xbmc-xrandr skins
 
@@ -219,7 +208,7 @@ configure: configure.in
 	@./bootstrap
 
 # skin textures
-ifneq ($(findstring arm,@ARCH@), arm)
+ifeq (@USE_TEXTUREPACKER@,1)
 skins: tools/TexturePacker/TexturePacker force
 	 $(MAKE) -C $(CONFLUENCE_MEDIA)
 else
@@ -393,14 +382,10 @@ lib/cpluff/libcpluff/.libs/libcpluff.a: force
 	$(MAKE) -C lib/cpluff/libcpluff
 system/libcpluff-@ARCH@.so: lib/cpluff/libcpluff/.libs/libcpluff.a
 ifeq ($(findstring osx,@ARCH@), osx)
-  ifeq (@ARCH@, powerpc-osx)
-	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -arch @ARCHTYPE@ -lexpat -lbundle1.o -o $@ $<
-  endif
-  ifeq (@ARCH@, x86-osx)
-	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -arch @ARCHTYPE@ -lexpat -o $@ $<
-  endif
   ifeq (@ARCH@, arm-osx)
 	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -read_only_relocs suppress -arch armv7 -o $@ $<
+  else
+	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -arch @ARCHTYPE@ -lexpat $(BUNDLE1_O) -o $@ $<
   endif
 else
 	cp lib/cpluff/libcpluff/.libs/libcpluff.so $@
@@ -415,30 +400,14 @@ exports:
 dllloader: exports
 	$(MAKE) xbmc/cores/DllLoader/dllloader.a
 visualizations: exports
-ifneq ($(findstring arm,@ARCH@), arm)
-	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
-	$(MAKE) -C xbmc/visualizations/WaveForm
-	$(MAKE) -C xbmc/visualizations/XBMCProjectM
-ifeq ($(findstring osx,@ARCH@), osx)
-	$(MAKE) -C xbmc/visualizations/iTunes
-endif
-ifneq (@BUILD_GOOM@,1)
-ifeq ($(or $(findstring powerpc-linux,@ARCH@),$(findstring powerpc64-linux,@ARCH@)),)
-	$(MAKE) -C xbmc/visualizations/Goom
-endif
-endif
-endif
+	for d in $(VIS_DIRS); do $(MAKE) -C $$d; done
 screensavers: exports
-ifneq ($(findstring arm,@ARCH@), arm)
+ifeq (@USE_OPENGL@,1)
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 endif
 libpython: dllloader
 	$(MAKE) -C xbmc/interfaces/python
 	$(MAKE) -C xbmc/interfaces/python/xbmcmodule
-ifneq (@USE_EXTERNAL_PYTHON@,1)
-python: dllloader
-	$(MAKE) -C xbmc/interfaces/python/linux
-endif
 dvdpcodecs: dllloader
 	$(MAKE) -C lib 
 	$(MAKE) -C lib/libdvd
@@ -480,11 +449,11 @@ imagelib: dllloader
 	$(MAKE) -C lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-libs: cmyth libhdhomerun libid3tag imagelib libexif  $(PYTHON_TARGET) system/libcpluff-@ARCH@.so
-externals: codecs libs $(PYTHON_TARGET) visualizations screensavers
+libs: cmyth libhdhomerun libid3tag imagelib libexif system/libcpluff-@ARCH@.so
+externals: codecs libs visualizations screensavers
 
 xcode_depends: \
-	codecs libs $(PYTHON_TARGET) visualizations screensavers eventclients skins \
+	codecs libs visualizations screensavers eventclients skins \
 	lib/libsquish/libsquish.a \
 	lib/libapetag/.libs/libapetag.a \
 	lib/libRTV/librtv.a \
@@ -604,14 +573,7 @@ DYNOBJSXBMC= \
 	xbmc/video/video.a \
 	xbmc/guilib/guilib.a # must be dynamic to avoid linker errors
 
-ifeq ($(findstring arm,@ARCH@), arm)
-# Force external python2.6 for now!
-LIBS +=-lpython2.6
-endif
-
-ifeq (@USE_EXTERNAL_PYTHON@,1)
 LIBS += @PYTHON_LDFLAGS@
-endif
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,@ARCH@), osx)
@@ -621,9 +583,8 @@ else
 endif
 
 xbmc-xrandr: xbmc-xrandr.c
-ifeq ($(findstring osx,@ARCH@), osx)
+ifneq (1,@USE_XRANDR@)
 	# xbmc-xrandr.c gets picked up by the default make rules
-	#  so only exclude it for osx builds
 	@echo "excluding xbmc-xrandr"
 else
 	$(CC) $(CFLAGS) $(LDFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lX11 
@@ -654,24 +615,24 @@ install-binaries: install-scripts
 	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/xbmc.bin"
 	@install -d $(DESTDIR)$(libdir)/xbmc
 	@install xbmc.bin $(DESTDIR)$(libdir)/xbmc/xbmc.bin
+ifeq (1,@USE_XRANDR@)
 	@install xbmc-xrandr $(DESTDIR)$(libdir)/xbmc/xbmc-xrandr
+endif
 	@echo "You can run XBMC with the command 'xbmc'"
 endif
 
 install-arch:
 	@# Arch dependent files
 ifeq ($(findstring freebsd,@ARCH@), freebsd)
-	@find -E system addons -type f -not -iregex ".*svn.*|.*script\.module\..*" \
-		-iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*python.*\.zip" \
+	@find -E system addons -type f -not -iregex ".*svn.*" \
+		-iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" \
 		-exec sh -c "install -d \"$(DESTDIR)$(libdir)/xbmc/\`dirname '{}'\`\"" \; \
 		-and \
 		-exec install "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
-	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*script\.module\..*" -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*python.*\.zip" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 endif
-	@cp -r addons/script.module.pil $(DESTDIR)$(libdir)/xbmc/addons/
-	@cp -r addons/script.module.pysqlite $(DESTDIR)$(libdir)/xbmc/addons/
 
 install-scripts:
 	@install -d $(DESTDIR)$(bindir)
@@ -693,13 +654,13 @@ install-datas: install-scripts
 	@# Arch independent files
 ifeq ($(findstring bsd,@ARCH@), bsd)
 	@find -E addons language media sounds userdata system -type f \
-		-not -iregex ".*script\.module\..*|.*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python.*\.zip" \
+		-not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll" \
 		-exec sh -c "install -d \"$(DESTDIR)$(datarootdir)/xbmc/\`dirname '{}'\`\"" \; \
 		-and \
 		-exec install -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; \
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
-	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*script\.module\..*|.*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python.*\.zip" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 endif	
 	@# Icons and links
 	@install -d $(DESTDIR)$(datarootdir)/applications

@@ -4,9 +4,18 @@
 	<controls>
 		<include>CommonSettingsBackground</include>
 		<include>CommonMediaPlayingBackground</include>
+		<control type="image">
+			<posx>0</posx>
+			<posy>100r</posy>
+			<width>1280</width>
+			<height>100</height>
+			<texture>floor.png</texture>
+			<animation effect="fade" time="250" condition="Window.Previous(Home)">WindowOpen</animation>
+			<animation effect="fade" time="250" condition="Window.Next(Home)">WindowClose</animation>
+		</control>
 		<control type="group">
 			<posx>90</posx>
-			<posy>50</posy>
+			<posy>30</posy>
 			<animation type="WindowOpen" reversible="false">
 				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
 				<effect type="fade" start="0" end="100" time="300" />
@@ -16,11 +25,35 @@
 				<effect type="fade" start="100" end="0" time="300" />
 			</animation>			
 			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>1100</width>
-				<height>640</height>
-				<texture border="20">DialogBack.png</texture>
+				<posx>5</posx>
+				<posy>5</posy>
+				<width>1090</width>
+				<height>630</height>
+				<texture border="15">ContentPanel.png</texture>
+			</control>
+			<control type="image">
+				<posx>5</posx>
+				<posy>625</posy>
+				<width>1090</width>
+				<height>64</height>
+				<texture border="15">ContentPanelMirror.png</texture>
+			</control>
+			<control type="button">
+				<description>Close Window button</description>
+				<posx>980</posx>
+				<posy>11</posy>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>1</onleft>
+				<onright>1</onright>
+				<onup>1</onup>
+				<ondown>1</ondown>
+				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="image">
 				<description>LOGO</description>
@@ -231,7 +264,7 @@
 					<font>font13</font>
 				</control>
 				<control type="label" id="52">
-					<description>XBMC XBE BUILD Version</description>
+					<description>XBMC BUILD Version</description>
 					<posx>750</posx>
 					<posy>400</posy>
 					<width>730</width>
@@ -285,6 +318,7 @@
 				</control>
 			</control>
 		</control>
+		<include>CommonNowPlaying</include>
 		<control type="group">
 			<posx>60</posx>
 			<posy>0</posy>

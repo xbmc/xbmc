@@ -21,7 +21,6 @@
 
 #include <Python.h>
 
-#include "../XBPythonDll.h"
 #include "listitem.h"
 #include "pyutil.h"
 #include "video/VideoInfoTag.h"
@@ -418,12 +417,12 @@ namespace PYXBMC
     }
 
     PyObject *key, *value;
-    int pos = 0;
+    Py_ssize_t pos = 0;
 
     PyXBMCGUILock();
 
     CStdString tmp;
-    while (PyDict_Next(pInfoLabels, (Py_ssize_t*)&pos, &key, &value)) {
+    while (PyDict_Next(pInfoLabels, &pos, &key, &value)) {
       if (strcmpi(cType, "video") == 0)
       {
         if (strcmpi(PyString_AsString(key), "year") == 0)

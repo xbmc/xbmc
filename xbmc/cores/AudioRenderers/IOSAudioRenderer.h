@@ -25,13 +25,9 @@
 #include "IOSCoreAudio.h"
 #include "PlatformDefs.h"
 #include "IAudioRenderer.h"
-#include "threads/CriticalSection.h"
 #include "threads/Event.h"
-#include "threads/LockFree.h"
 
-class DllAvUtil;
-struct AVFifoBuffer;
-
+class IOSAudioRingBuffer;
 class CIOSAudioRenderer : public IAudioRenderer
   {
   public:
@@ -82,7 +78,7 @@ class CIOSAudioRenderer : public IAudioRenderer
     int m_BitsPerChannel;
     int m_ChannelsPerFrame;
 
-    AVFifoBuffer *m_Buffer;
+    IOSAudioRingBuffer *m_Buffer;
     unsigned int m_BytesPerSec;
     unsigned int m_BufferLen; ///< must always be num_chunks * chunk_size
     unsigned int m_NumChunks;
@@ -97,9 +93,6 @@ class CIOSAudioRenderer : public IAudioRenderer
     unsigned int m_Channels;
     bool m_Passthrough;
 
-    DllAvUtil *m_dllAvUtil;
-
-    CCriticalSection m_critSection;
   };
 
 #endif

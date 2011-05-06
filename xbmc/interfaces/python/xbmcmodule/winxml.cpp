@@ -22,7 +22,6 @@
 #include <Python.h>
 
 #include "winxml.h"
-#include "../XBPythonDll.h"
 #include "pyutil.h"
 #include "GUIPythonWindowXML.h"
 #include "addons/Skin.h"
@@ -76,7 +75,7 @@ namespace PYXBMC
     if (pyRes) PyXBMCGetUnicodeString(resolution, pyRes);
 
     // Check to see if the XML file exists in current skin. If not use fallback path to find a skin for the script
-    RESOLUTION res = RES_INVALID;
+    RESOLUTION_INFO res;
     CStdString strSkinPath = g_SkinInfo->GetSkinPath(strXMLname, &res);
 
     if (!XFILE::CFile::Exists(strSkinPath))
@@ -91,11 +90,12 @@ namespace PYXBMC
         // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
         CStdString str("none");
         AddonProps props(str, ADDON_SKIN, "", "");
-        CSkinInfo skinInfo(props, CSkinInfo::TranslateResolution(resolution, RES_HDTV_720p));
-        basePath = URIUtils::AddFileToFolder(fallbackPath, strDefault);
-        
-        skinInfo.Start(basePath);
-        strSkinPath = skinInfo.GetSkinPath(strXMLname, &res, basePath);
+        props.path = URIUtils::AddFileToFolder(fallbackPath, strDefault);
+        CSkinInfo::TranslateResolution(resolution, res);
+        CSkinInfo skinInfo(props, res);
+
+        skinInfo.Start();
+        strSkinPath = skinInfo.GetSkinPath(strXMLname, &res);
         if (!XFILE::CFile::Exists(strSkinPath))
         {
           PyErr_SetString(PyExc_TypeError, "XML File for Window is missing");

@@ -1,17 +1,38 @@
 ARCH=@ARCH@
 
-SRCS=alpha.cpp clusterfit.cpp colourblock.cpp colourfit.cpp colourset.cpp maths.cpp rangefit.cpp singlecolourfit.cpp squish.cpp
+SRCS= \
+  alpha.cpp \
+  clusterfit.cpp \
+  colourblock.cpp \
+  colourfit.cpp \
+  colourset.cpp \
+  maths.cpp \
+  rangefit.cpp \
+  singlecolourfit.cpp \
+  squish.cpp
 
-ifeq ($(findstring powerpc,$(ARCH)),powerpc)
-CXXFLAGS+=-I. -DSQUISH_USE_ALTIVEC=1 -maltivec
-else
-ifeq ($(findstring arm,$(ARCH)), arm)
 CXXFLAGS+=-I.
-else
-CXXFLAGS+=-I. -DSQUISH_USE_SSE=2 -msse2
+ifeq ($(findstring powerpc,$(ARCH)),powerpc)
+  CXXFLAGS+=-DSQUISH_USE_ALTIVEC=1 -maltivec
+else ifeq ($(findstring x86,$(ARCH)), x86)
+  CXXFLAGS+=-DSQUISH_USE_SSE=2 -msse2
 endif
-endif
+
 LIB=libsquish.a
+
+ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
+NATIVE_LIB=libsquish-native.so
+CLEAN_FILES+=$(NATIVE_LIB)
+
+all: $(LIB) $(NATIVE_LIB)
+# TexturePacker links to libsquish and needs to run on build system, so make a native flavor.
+$(NATIVE_LIB): $(SRCS)
+ifeq ($(findstring osx,$(ARCH)),osx)
+	g++ -m32 -DSQUISH_USE_SSE=2 -msse2 -I. $(SRCS) -dynamiclib -install_name `pwd`/libsquish-native.so -o $@
+else
+	g++ -DSQUISH_USE_SSE=2 -msse2 -I. $(SRCS) -shared -fPIC -Wl,-soname,`pwd`/libsquish-native.so -o $@
+endif
+endif
 
 include ../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

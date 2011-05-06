@@ -46,24 +46,11 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /* Mutex functions                                               */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-/* The SDL mutex structure, defined in SDL_mutex.c */
-#if !defined(_WIN32)
-  #if !PTHREAD_MUTEX_RECURSIVE && \
-      !PTHREAD_MUTEX_RECURSIVE_NP
-  #define FAKE_RECURSIVE_MUTEX
-  #endif
-#endif
-
 typedef struct SDL_mutex {
 #if defined(_WIN32)
 	HANDLE id;
 #else
     pthread_mutex_t id;
-    #if defined(FAKE_RECURSIVE_MUTEX)
-      int recursive;
-      pthread_t owner;
-    #endif
 #endif
 } SDL_mutex;
 

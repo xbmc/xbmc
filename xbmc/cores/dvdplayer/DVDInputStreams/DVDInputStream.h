@@ -41,6 +41,8 @@ enum DVDStreamType
   DVDSTREAM_TYPE_BLURAY = 11,
 };
 
+#define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
+
 #define DVDSTREAM_BLOCK_SIZE_FILE (2048 * 16)
 #define DVDSTREAM_BLOCK_SIZE_DVD  2048
 
@@ -101,6 +103,12 @@ public:
    \return number of cached ahead data bytes (-1 if not available)
    */
   virtual __int64 GetCachedBytes() { return -1; }
+
+  /*! \brief Indicate expected read rate in bytes per second.
+   *  This could be used to throttle caching rate. Should
+   *  be seen as only a hint
+   */
+  virtual void SetReadRate(unsigned rate) {}
 
   bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
   virtual bool IsEOF() = 0;

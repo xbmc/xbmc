@@ -103,9 +103,9 @@ public:
 
   void StartServices();
   void StopServices();
-  void StartWebServer();
+  bool StartWebServer();
   void StopWebServer();
-  void StartJSONRPCServer();
+  bool StartJSONRPCServer();
   void StopJSONRPCServer(bool bWait);
   void StartUPnP();
   void StopUPnP(bool bWait);
@@ -113,7 +113,7 @@ public:
   void StopUPnPRenderer();
   void StartUPnPServer();
   void StopUPnPServer();
-  void StartEventServer();
+  bool StartEventServer();
   bool StopEventServer(bool bWait, bool promptuser);
   void RefreshEventServer();
   void StartDbusServer();
@@ -355,7 +355,7 @@ protected:
   
   CGUITextLayout *m_debugLayout;
 
-#if defined(HAS_SDL) || (defined(__APPLE__) && defined(__arm__))
+#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   int        m_frameCount;
   SDL_mutex* m_frameMutex;
   SDL_cond*  m_frameCond;

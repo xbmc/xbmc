@@ -375,7 +375,7 @@ int CBuiltins::Execute(const CStdString& execString)
       if (CAddonMgr::Get().GetAddon(params[0], script))
         scriptpath = script->LibPath();
 
-      g_pythonParser.evalFile(scriptpath, argv);
+      g_pythonParser.evalFile(scriptpath, argv,script);
     }
   }
 #endif
@@ -1135,7 +1135,8 @@ int CBuiltins::Execute(const CStdString& execString)
     g_settings.LoadMasterForLogin();
     g_passwordManager.bMasterUser = false;
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
-    g_application.StartEventServer(); // event server could be needed in some situations
+    if (!g_application.StartEventServer()) // event server could be needed in some situations
+      g_application.m_guiDialogKaiToast.QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
   }
   else if (execute.Equals("pagedown"))
   {

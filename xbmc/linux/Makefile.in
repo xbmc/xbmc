@@ -1,6 +1,6 @@
 ARCH=@ARCH@
 
-CXXFLAGS+=-fPIC #-DHAS_SDL
+CXXFLAGS+=-fPIC
 
 SRCS=ConvUtils.cpp \
      DBusUtil.cpp \

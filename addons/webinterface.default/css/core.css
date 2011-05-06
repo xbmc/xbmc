@@ -106,6 +106,7 @@ body {
 	display: table-cell;
 	vertical-align: middle;
 	text-align: center;
+	overflow: hidden;
 	}
 
 div.imgWrapper div.inner {

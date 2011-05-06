@@ -25,6 +25,8 @@
 #include "utils/URIUtils.h"
 #include "settings/Settings.h"
 #include "guilib/Key.h"
+#include "input/XBMC_keysym.h"
+#include "input/XBMC_keytable.h"
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "FileItem.h"
@@ -1035,106 +1037,47 @@ uint32_t CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
 uint32_t CButtonTranslator::TranslateKeyboardString(const char *szButton)
 {
   uint32_t buttonCode = 0;
-  if (strlen(szButton) == 1)
-  { // single character
-    buttonCode = (uint32_t)toupper(szButton[0]) | KEY_VKEY;
-    // FIXME It is a printable character, printable should be ASCII not VKEY! Till now it works, but how (long)?
-    // FIXME support unicode: additional parameter necessary since unicode can not be embedded into key/action-ID.
+  XBMCKEYTABLE keytable;
+
+  // Look up the key name
+  if (KeyTableLookupName(szButton, &keytable))
+  {
+    buttonCode = keytable.vkey;
   }
+
+  // The lookup failed i.e. the key name wasn't found
   else
-  { // for keys such as return etc. etc.
+  {
     CStdString strKey = szButton;
     strKey.ToLower();
 
-    if (strKey.Equals("return")) buttonCode = 0xF00D;
-    else if (strKey.Equals("enter")) buttonCode = 0xF06C;
-    else if (strKey.Equals("escape")) buttonCode = 0xF01B;
-    else if (strKey.Equals("esc")) buttonCode = 0xF01B;
-    else if (strKey.Equals("tab")) buttonCode = 0xF009;
-    else if (strKey.Equals("space")) buttonCode = 0xF020;
-    else if (strKey.Equals("left")) buttonCode = 0xF025;
-    else if (strKey.Equals("right")) buttonCode = 0xF027;
-    else if (strKey.Equals("up")) buttonCode = 0xF026;
-    else if (strKey.Equals("down")) buttonCode = 0xF028;
-    else if (strKey.Equals("insert")) buttonCode = 0xF02D;
-    else if (strKey.Equals("delete")) buttonCode = 0xF02E;
-    else if (strKey.Equals("home")) buttonCode = 0xF024;
-    else if (strKey.Equals("end")) buttonCode = 0xF023;
-    else if (strKey.Equals("f1")) buttonCode = 0xF070;
-    else if (strKey.Equals("f2")) buttonCode = 0xF071;
-    else if (strKey.Equals("f3")) buttonCode = 0xF072;
-    else if (strKey.Equals("f4")) buttonCode = 0xF073;
-    else if (strKey.Equals("f5")) buttonCode = 0xF074;
-    else if (strKey.Equals("f6")) buttonCode = 0xF075;
-    else if (strKey.Equals("f7")) buttonCode = 0xF076;
-    else if (strKey.Equals("f8")) buttonCode = 0xF077;
-    else if (strKey.Equals("f9")) buttonCode = 0xF078;
-    else if (strKey.Equals("f10")) buttonCode = 0xF079;
-    else if (strKey.Equals("f11")) buttonCode = 0xF07A;
-    else if (strKey.Equals("f12")) buttonCode = 0xF07B;
-    else if (strKey.Equals("numpadzero") || strKey.Equals("zero")) buttonCode = 0xF060;
-    else if (strKey.Equals("numpadone") || strKey.Equals("one")) buttonCode = 0xF061;
-    else if (strKey.Equals("numpadtwo") || strKey.Equals("two")) buttonCode = 0xF062;
-    else if (strKey.Equals("numpadthree") || strKey.Equals("three")) buttonCode = 0xF063;
-    else if (strKey.Equals("numpadfour") || strKey.Equals("four")) buttonCode = 0xF064;
-    else if (strKey.Equals("numpadfive") || strKey.Equals("five")) buttonCode = 0xF065;
-    else if (strKey.Equals("numpadsix") || strKey.Equals("six")) buttonCode = 0xF066;
-    else if (strKey.Equals("numpadseven") || strKey.Equals("seven")) buttonCode = 0xF067;
-    else if (strKey.Equals("numpadeight") || strKey.Equals("eight")) buttonCode = 0xF068;
-    else if (strKey.Equals("numpadnine") || strKey.Equals("nine")) buttonCode = 0xF069;
-    else if (strKey.Equals("numpadtimes")) buttonCode = 0xF06A;
-    else if (strKey.Equals("numpadplus")) buttonCode = 0xF06B;
-    else if (strKey.Equals("numpadminus")) buttonCode = 0xF06D;
-    else if (strKey.Equals("numpadperiod")) buttonCode = 0xF06E;
-    else if (strKey.Equals("numpaddivide")) buttonCode = 0xF06F;
-    else if (strKey.Equals("pageup")) buttonCode = 0xF021;
-    else if (strKey.Equals("pagedown")) buttonCode = 0xF022;
-    else if (strKey.Equals("printscreen")) buttonCode = 0xF02A;
-    else if (strKey.Equals("backspace")) buttonCode = 0xF008;
-    else if (strKey.Equals("menu")) buttonCode = 0xF05D;
-    else if (strKey.Equals("pause")) buttonCode = 0xF013;
-    else if (strKey.Equals("leftshift")) buttonCode = 0xF0A0;
-    else if (strKey.Equals("rightshift")) buttonCode = 0xF0A1;
-    else if (strKey.Equals("leftctrl")) buttonCode = 0xF0A2;
-    else if (strKey.Equals("rightctrl")) buttonCode = 0xF0A3;
-    else if (strKey.Equals("leftalt")) buttonCode = 0xF0A4;
-    else if (strKey.Equals("rightalt")) buttonCode = 0xF0A5;
-    else if (strKey.Equals("leftwindows")) buttonCode = 0xF05B;
-    else if (strKey.Equals("rightwindows")) buttonCode = 0xF05C;
-    else if (strKey.Equals("capslock")) buttonCode = 0xF020;
-    else if (strKey.Equals("numlock")) buttonCode = 0xF090;
-    else if (strKey.Equals("scrolllock")) buttonCode = 0xF091;
-    else if (strKey.Equals("semicolon") || strKey.Equals("colon")) buttonCode = 0xF0BA;
-    else if (strKey.Equals("equals") || strKey.Equals("plus")) buttonCode = 0xF0BB;
-    else if (strKey.Equals("comma") || strKey.Equals("lessthan")) buttonCode = 0xF0BC;
-    else if (strKey.Equals("minus") || strKey.Equals("underline")) buttonCode = 0xF0BD;
-    else if (strKey.Equals("period") || strKey.Equals("greaterthan")) buttonCode = 0xF0BE;
-    else if (strKey.Equals("forwardslash") || strKey.Equals("questionmark")) buttonCode = 0xF0BF;
-    else if (strKey.Equals("leftquote") || strKey.Equals("tilde")) buttonCode = 0xF0C0;
-    else if (strKey.Equals("opensquarebracket") || strKey.Equals("openbrace")) buttonCode = 0xF0EB;
-    else if (strKey.Equals("backslash") || strKey.Equals("pipe")) buttonCode = 0xF0EC;
-    else if (strKey.Equals("closesquarebracket") || strKey.Equals("closebrace")) buttonCode = 0xF0ED;
-    else if (strKey.Equals("quote") || strKey.Equals("doublequote")) buttonCode = 0xF0EE;
-    else if (strKey.Equals("launch_mail")) buttonCode = 0xF0B4;
-    else if (strKey.Equals("browser_home")) buttonCode = 0xF0AC;
-    else if (strKey.Equals("browser_favorites")) buttonCode = 0xF0AB;
-    else if (strKey.Equals("browser_refresh")) buttonCode = 0xF0A8;
-    else if (strKey.Equals("browser_search")) buttonCode = 0xF0AA;
-    else if (strKey.Equals("browser_forward")) buttonCode = 0xF0A7;
-    else if (strKey.Equals("launch_app1_pc_icon")) buttonCode = 0xF0B6;
-    else if (strKey.Equals("launch_media_select")) buttonCode = 0xF0B5;
-    else if (strKey.Equals("launch_file_browser")) buttonCode = 0xF0B8;
-    else if (strKey.Equals("launch_media_center")) buttonCode = 0xF0B9;
-    else if (strKey.Equals("play_pause")) buttonCode = 0xF0B3;
-    else if (strKey.Equals("stop")) buttonCode = 0xF0B2;
-    else if (strKey.Equals("volume_up")) buttonCode = 0xF0AF;
-    else if (strKey.Equals("volume_mute")) buttonCode = 0xF0AD;
-    else if (strKey.Equals("volume_down")) buttonCode = 0xF0AE;
-    else if (strKey.Equals("prev_track")) buttonCode = 0xF0B1;
-    else if (strKey.Equals("next_track")) buttonCode = 0xF0B0;
+    // Multimedia keys
+    if (strKey.Equals("browser_back"))        buttonCode = XBMCK_BROWSER_BACK;
+    else if (strKey.Equals("browser_forward"))     buttonCode = XBMCK_BROWSER_FORWARD;
+    else if (strKey.Equals("browser_refresh"))     buttonCode = XBMCK_BROWSER_REFRESH;
+    else if (strKey.Equals("browser_stop"))        buttonCode = XBMCK_BROWSER_STOP;
+    else if (strKey.Equals("browser_search"))      buttonCode = XBMCK_BROWSER_SEARCH;
+    else if (strKey.Equals("browser_favorites"))   buttonCode = XBMCK_BROWSER_FAVORITES;
+    else if (strKey.Equals("browser_home"))        buttonCode = XBMCK_BROWSER_HOME;
+    else if (strKey.Equals("volume_mute"))         buttonCode = XBMCK_VOLUME_MUTE;
+    else if (strKey.Equals("volume_down"))         buttonCode = XBMCK_VOLUME_DOWN;
+    else if (strKey.Equals("volume_up"))           buttonCode = XBMCK_VOLUME_UP;
+    else if (strKey.Equals("next_track"))          buttonCode = XBMCK_MEDIA_NEXT_TRACK;
+    else if (strKey.Equals("prev_track"))          buttonCode = XBMCK_MEDIA_PREV_TRACK;
+    else if (strKey.Equals("stop"))                buttonCode = XBMCK_MEDIA_STOP;
+    else if (strKey.Equals("play_pause"))          buttonCode = XBMCK_MEDIA_PLAY_PAUSE;
+    else if (strKey.Equals("launch_mail"))         buttonCode = XBMCK_LAUNCH_MAIL;
+    else if (strKey.Equals("launch_media_select")) buttonCode = XBMCK_LAUNCH_MEDIA_SELECT;
+    else if (strKey.Equals("launch_app1_pc_icon")) buttonCode = XBMCK_LAUNCH_APP1;
+    else if (strKey.Equals("launch_app2_pc_icon")) buttonCode = XBMCK_LAUNCH_APP2;
+    else if (strKey.Equals("launch_file_browser")) buttonCode = 0xB8;
+    else if (strKey.Equals("launch_media_center")) buttonCode = 0xB9;
     else
       CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", strKey.c_str());
   }
+
+  buttonCode |= KEY_VKEY;
+
   return buttonCode;
 }
 

@@ -241,7 +241,7 @@ void CRemoteControl::Update()
   if (!CheckDevice())
     return;
 
-  uint32_t now = SDL_GetTicks();
+  uint32_t now = CTimeUtils::GetTimeMS();
 
   // Read a line from the socket
   while (fgets(m_buf, sizeof(m_buf), m_file) != NULL)

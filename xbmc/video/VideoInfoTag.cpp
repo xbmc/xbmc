@@ -403,6 +403,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["mpaa"] = m_strMPAARating;
   value["filenameandpath"] = m_strFileNameAndPath;
   value["originaltitle"] = m_strOriginalTitle;
+  value["sorttitle"] = m_strSortTitle;
   value["episodeguide"] = m_strEpisodeGuide;
   value["premiered"] = m_strPremiered;
   value["status"] = m_strStatus;

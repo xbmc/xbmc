@@ -43,6 +43,7 @@
 		183FDF8B11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
 		184C472F1296BC6E0006DB3E /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
 		184C47301296BC6E0006DB3E /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
+		18ACF84313596C9B00B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */; };
 		18B4A0021152BFA5001AF8A6 /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF11152BFA5001AF8A6 /* Addon.cpp */; };
 		18B4A0031152BFA5001AF8A6 /* AddonManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF41152BFA5001AF8A6 /* AddonManager.cpp */; };
 		18B4A0041152BFA5001AF8A6 /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF91152BFA5001AF8A6 /* fft.cpp */; };
@@ -484,6 +485,13 @@
 		43BF09A31080D1E900E25290 /* RenderingControlSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF099F1080D1E900E25290 /* RenderingControlSCPD.cpp */; };
 		43BF09AA1080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF09A81080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp */; };
 		43BF09AB1080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF09A81080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp */; };
+		43EA4276136C04D9002C82A5 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
+		43EA4279136C079A002C82A5 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84BF7321349BB74006D6FC9 /* JSONServiceDescription.cpp */; };
+		43EA427E136C07BF002C82A5 /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
+		43EA4282136C0806002C82A5 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */; };
+		43EA4297136C1D9E002C82A5 /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
+		43EA429B136C1E2F002C82A5 /* xbmcvfsmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */; };
+		43EA42B0136C2274002C82A5 /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C807114B135DB5CC002F601B /* InputOperations.cpp */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		7C45DBEA10F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
@@ -573,11 +581,13 @@
 		8DD76F790486A8DE00D96B5E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
 		C80425711158A0DE00D158A6 /* controlslider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80425701158A0DE00D158A6 /* controlslider.cpp */; settings = {COMPILER_FLAGS = "-I$XBMC_DEPENDS/include/python2.6"; }; };
 		C80425721158A0DE00D158A6 /* controlslider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80425701158A0DE00D158A6 /* controlslider.cpp */; };
+		C807114D135DB5CC002F601B /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C807114B135DB5CC002F601B /* InputOperations.cpp */; };
 		C84BF7341349BB74006D6FC9 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C84BF7321349BB74006D6FC9 /* JSONServiceDescription.cpp */; };
 		C85EB75C1174614E0008E5A5 /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
 		C85EB75D1174614E0008E5A5 /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
 		C8D0B2AF1265A9A800F0C0AC /* SystemGlobals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */; };
 		C8D0B2B01265A9A800F0C0AC /* SystemGlobals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */; };
+		C8EC5D0E1369519D00CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
@@ -615,7 +625,6 @@
 		E38E1F580D25F9FD00618676 /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
 		E38E1F5A0D25F9FD00618676 /* emu_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */; };
 		E38E1F5C0D25F9FD00618676 /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */; };
-		E38E1F6A0D25F9FD00618676 /* exports_python_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14D90D25F9F900618676 /* exports_python_linux.cpp */; };
 		E38E1F6F0D25F9FD00618676 /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
 		E38E1F710D25F9FD00618676 /* wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E80D25F9F900618676 /* wrapper.c */; };
 		E38E1F720D25F9FD00618676 /* ldt_keeper.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14EB0D25F9F900618676 /* ldt_keeper.c */; };
@@ -666,7 +675,6 @@
 		E38E1FAE0D25F9FD00618676 /* DVDSubtitleParserSubrip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15940D25F9FA00618676 /* DVDSubtitleParserSubrip.cpp */; };
 		E38E1FAF0D25F9FD00618676 /* DVDSubtitleStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */; };
 		E38E1FC10D25F9FD00618676 /* ADPCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */; };
-		E38E1FC30D25F9FD00618676 /* AIFFcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */; };
 		E38E1FC50D25F9FD00618676 /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E30D25F9FA00618676 /* AudioDecoder.cpp */; };
 		E38E1FC60D25F9FD00618676 /* CDDAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E60D25F9FA00618676 /* CDDAcodec.cpp */; };
 		E38E1FC70D25F9FD00618676 /* CodecFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E80D25F9FA00618676 /* CodecFactory.cpp */; };
@@ -1149,30 +1157,8 @@
 		F56C8CF4131F5DFD000AD0F6 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CF2131F5DFD000AD0F6 /* libiconv.dylib */; };
 		F56C8CF6131F5E0B000AD0F6 /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CF5131F5E0B000AD0F6 /* libncurses.dylib */; };
 		F56C8CF7131F5E0B000AD0F6 /* libncurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CF5131F5E0B000AD0F6 /* libncurses.dylib */; };
-		F56C8D43131F5E85000AD0F6 /* liblzo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2A131F5E84000AD0F6 /* liblzo2.dylib */; };
-		F56C8D44131F5E85000AD0F6 /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2B131F5E84000AD0F6 /* libpcre.dylib */; };
-		F56C8D45131F5E85000AD0F6 /* libpcrecpp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2C131F5E84000AD0F6 /* libpcrecpp.dylib */; };
-		F56C8D51131F5E85000AD0F6 /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D38131F5E85000AD0F6 /* libsamplerate.dylib */; };
-		F56C8D53131F5E85000AD0F6 /* libsmbclient.dylib.0 in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3A131F5E85000AD0F6 /* libsmbclient.dylib.0 */; };
-		F56C8D55131F5E85000AD0F6 /* libfreetype.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3D131F5E85000AD0F6 /* libfreetype.dylib */; };
-		F56C8D56131F5E85000AD0F6 /* libfontconfig.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3E131F5E85000AD0F6 /* libfontconfig.dylib */; };
-		F56C8D58131F5E85000AD0F6 /* libpython2.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D40131F5E85000AD0F6 /* libpython2.6.dylib */; };
-		F56C8D59131F5E85000AD0F6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D41131F5E85000AD0F6 /* libsqlite3.dylib */; };
-		F56C8D5B131F5E85000AD0F6 /* liblzo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2A131F5E84000AD0F6 /* liblzo2.dylib */; };
-		F56C8D5C131F5E85000AD0F6 /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2B131F5E84000AD0F6 /* libpcre.dylib */; };
-		F56C8D5D131F5E85000AD0F6 /* libpcrecpp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D2C131F5E84000AD0F6 /* libpcrecpp.dylib */; };
-		F56C8D69131F5E85000AD0F6 /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D38131F5E85000AD0F6 /* libsamplerate.dylib */; };
-		F56C8D6B131F5E86000AD0F6 /* libsmbclient.dylib.0 in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3A131F5E85000AD0F6 /* libsmbclient.dylib.0 */; };
-		F56C8D6D131F5E86000AD0F6 /* libfreetype.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3D131F5E85000AD0F6 /* libfreetype.dylib */; };
-		F56C8D6E131F5E86000AD0F6 /* libfontconfig.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3E131F5E85000AD0F6 /* libfontconfig.dylib */; };
-		F56C8D70131F5E86000AD0F6 /* libpython2.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D40131F5E85000AD0F6 /* libpython2.6.dylib */; };
-		F56C8D71131F5E86000AD0F6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D41131F5E85000AD0F6 /* libsqlite3.dylib */; };
 		F57A1D1E1329B15300498CC7 /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F57A1D1D1329B15300498CC7 /* AutoPool.mm */; };
 		F57A1D1F1329B15300498CC7 /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F57A1D1D1329B15300498CC7 /* AutoPool.mm */; };
-		F57A1E3A132AAB0E00498CC7 /* libSDL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A1E39132AAB0E00498CC7 /* libSDL.dylib */; };
-		F57A1E3B132AAB0E00498CC7 /* libSDL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A1E39132AAB0E00498CC7 /* libSDL.dylib */; };
-		F57A1E3D132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */; };
-		F57A1E3E132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */; };
 		F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F57B6F811071B8B500079ACB /* JobManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F57B6F7E1071B8B500079ACB /* JobManager.cpp */; };
 		F584E1290F257BD800DB26A5 /* FileSpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */; };
@@ -1224,7 +1210,6 @@
 		F5A1C8D80F6B06CF00A96ABD /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
 		F5A1C8DA0F6B06CF00A96ABD /* emu_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */; };
 		F5A1C8DB0F6B06CF00A96ABD /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */; };
-		F5A1C8DE0F6B06CF00A96ABD /* exports_python_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14D90D25F9F900618676 /* exports_python_linux.cpp */; };
 		F5A1C8DF0F6B06CF00A96ABD /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
 		F5A1C8E00F6B06CF00A96ABD /* wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E80D25F9F900618676 /* wrapper.c */; };
 		F5A1C8E10F6B06CF00A96ABD /* ldt_keeper.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14EB0D25F9F900618676 /* ldt_keeper.c */; };
@@ -1275,7 +1260,6 @@
 		F5A1C9130F6B06CF00A96ABD /* DVDSubtitleParserSubrip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15940D25F9FA00618676 /* DVDSubtitleParserSubrip.cpp */; };
 		F5A1C9140F6B06CF00A96ABD /* DVDSubtitleStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */; };
 		F5A1C9190F6B06CF00A96ABD /* ADPCMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */; };
-		F5A1C91B0F6B06CF00A96ABD /* AIFFcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */; };
 		F5A1C91D0F6B06CF00A96ABD /* AudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E30D25F9FA00618676 /* AudioDecoder.cpp */; };
 		F5A1C91E0F6B06CF00A96ABD /* CDDAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E60D25F9FA00618676 /* CDDAcodec.cpp */; };
 		F5A1C91F0F6B06CF00A96ABD /* CodecFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15E80D25F9FA00618676 /* CodecFactory.cpp */; };
@@ -1806,16 +1790,6 @@
 		F5AE40B513415D9E0004BD79 /* XBMCOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE409A13415D9E0004BD79 /* XBMCOperations.cpp */; };
 		F5B13C8D1334056B0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13C8C1334056B0045076D /* DarwinUtils.mm */; };
 		F5B13C8E1334056B0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13C8C1334056B0045076D /* DarwinUtils.mm */; };
-		F5B5CFF0133AF993007A4B4C /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */; };
-		F5B5CFF1133AF994007A4B4C /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */; };
-		F5B5D008133AFA95007A4B4C /* libfribidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */; };
-		F5B5D009133AFA96007A4B4C /* libfribidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */; };
-		F5B5D00C133AFAC6007A4B4C /* libcdio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D37131F5E85000AD0F6 /* libcdio.dylib */; };
-		F5B5D00D133AFAC7007A4B4C /* libcdio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8D37131F5E85000AD0F6 /* libcdio.dylib */; };
-		F5B5D010133AFB02007A4B4C /* libGLEW.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24250D26317D00618676 /* libGLEW.dylib */; };
-		F5B5D011133AFB03007A4B4C /* libGLEW.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E24250D26317D00618676 /* libGLEW.dylib */; };
-		F5B5D014133AFB2D007A4B4C /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138641330811D0045076D /* libmicrohttpd.dylib */; };
-		F5B5D015133AFB2E007A4B4C /* libmicrohttpd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B138641330811D0045076D /* libmicrohttpd.dylib */; };
 		F5B5D64D133FC2C1007A4B4C /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish.a */; };
 		F5B5D64E133FC2E7007A4B4C /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv.a */; };
 		F5B5D650133FC312007A4B4C /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap.a */; };
@@ -1906,6 +1880,8 @@
 		184C472D1296BC6E0006DB3E /* Service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Service.cpp; sourceTree = "<group>"; };
 		184C472E1296BC6E0006DB3E /* Service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Service.h; sourceTree = "<group>"; };
 		189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xbmcvfsmodule.cpp; sourceTree = "<group>"; };
+		18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RecentlyAddedJob.cpp; sourceTree = "<group>"; };
+		18ACF84213596C9B00B67371 /* RecentlyAddedJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentlyAddedJob.h; sourceTree = "<group>"; };
 		18B49FF11152BFA5001AF8A6 /* Addon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Addon.cpp; sourceTree = "<group>"; };
 		18B49FF21152BFA5001AF8A6 /* Addon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Addon.h; sourceTree = "<group>"; };
 		18B49FF31152BFA5001AF8A6 /* AddonDll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonDll.h; sourceTree = "<group>"; };
@@ -2505,11 +2481,16 @@
 		88ECB6580DE013C4003396A7 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		C80425701158A0DE00D158A6 /* controlslider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlslider.cpp; sourceTree = "<group>"; };
+		C807114A135DB5BF002F601B /* AnnouncementUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnouncementUtils.h; sourceTree = "<group>"; };
+		C807114B135DB5CC002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
+		C807114C135DB5CC002F601B /* InputOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputOperations.h; sourceTree = "<group>"; };
 		C84BF7321349BB74006D6FC9 /* JSONServiceDescription.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONServiceDescription.cpp; sourceTree = "<group>"; };
 		C84BF7331349BB74006D6FC9 /* JSONServiceDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONServiceDescription.h; sourceTree = "<group>"; };
 		C85EB75A1174614E0008E5A5 /* Repository.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Repository.cpp; sourceTree = "<group>"; };
 		C85EB75B1174614E0008E5A5 /* Repository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Repository.h; sourceTree = "<group>"; };
 		C8D0B2AE1265A9A800F0C0AC /* SystemGlobals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemGlobals.cpp; sourceTree = "<group>"; };
+		C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_keytable.cpp; sourceTree = "<group>"; };
+		C8EC5D0D1369519D00CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxVobsub.cpp; sourceTree = "<group>"; };
@@ -2580,7 +2561,6 @@
 		E38E14BE0D25F9F900618676 /* emu_kernel32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_kernel32.h; sourceTree = "<group>"; };
 		E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = emu_msvcrt.cpp; sourceTree = "<group>"; };
 		E38E14C20D25F9F900618676 /* emu_msvcrt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_msvcrt.h; sourceTree = "<group>"; };
-		E38E14D90D25F9F900618676 /* exports_python_linux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = exports_python_linux.cpp; sourceTree = "<group>"; };
 		E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmuFileWrapper.cpp; sourceTree = "<group>"; };
 		E38E14E40D25F9F900618676 /* EmuFileWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuFileWrapper.h; sourceTree = "<group>"; };
 		E38E14E80D25F9F900618676 /* wrapper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wrapper.c; sourceTree = "<group>"; };
@@ -2711,8 +2691,6 @@
 		E38E15B60D25F9FA00618676 /* IPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPlayer.h; sourceTree = "<group>"; };
 		E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ADPCMCodec.cpp; sourceTree = "<group>"; };
 		E38E15DC0D25F9FA00618676 /* ADPCMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADPCMCodec.h; sourceTree = "<group>"; };
-		E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AIFFcodec.cpp; sourceTree = "<group>"; };
-		E38E15E00D25F9FA00618676 /* AIFFcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AIFFcodec.h; sourceTree = "<group>"; };
 		E38E15E30D25F9FA00618676 /* AudioDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioDecoder.cpp; sourceTree = "<group>"; };
 		E38E15E40D25F9FA00618676 /* AudioDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioDecoder.h; sourceTree = "<group>"; };
 		E38E15E50D25F9FA00618676 /* CachingCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CachingCodec.h; sourceTree = "<group>"; };
@@ -3143,7 +3121,6 @@
 		E38E1A080D25F9FB00618676 /* winxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = winxml.h; sourceTree = "<group>"; };
 		E38E1A0D0D25F9FB00618676 /* XBPython.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBPython.cpp; sourceTree = "<group>"; };
 		E38E1A0E0D25F9FB00618676 /* XBPython.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBPython.h; sourceTree = "<group>"; };
-		E38E1A100D25F9FB00618676 /* XBPythonDll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBPythonDll.h; sourceTree = "<group>"; };
 		E38E1A110D25F9FB00618676 /* XBPyThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBPyThread.cpp; sourceTree = "<group>"; };
 		E38E1A120D25F9FB00618676 /* XBPyThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBPyThread.h; sourceTree = "<group>"; };
 		E38E1A140D25F9FB00618676 /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
@@ -3528,7 +3505,6 @@
 		E38E238F0D2626E600618676 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		E38E23900D2626E600618676 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		E38E23910D2626E600618676 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
-		E38E24250D26317D00618676 /* libGLEW.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libGLEW.dylib"; sourceTree = "<absolute>"; };
 		E38E25330D26365C00618676 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		E38E25340D26365C00618676 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		E38E25680D2639F100618676 /* libxdaap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxdaap.a; path = lib/libXDAAP/libxdaap.a; sourceTree = "<group>"; };
@@ -3676,22 +3652,8 @@
 		F56C8CEF131F5DED000AD0F6 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		F56C8CF2131F5DFD000AD0F6 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		F56C8CF5131F5E0B000AD0F6 /* libncurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libncurses.dylib; path = usr/lib/libncurses.dylib; sourceTree = SDKROOT; };
-		F56C8D2A131F5E84000AD0F6 /* liblzo2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo2.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/liblzo2.dylib"; sourceTree = "<absolute>"; };
-		F56C8D2B131F5E84000AD0F6 /* libpcre.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libpcre.dylib"; sourceTree = "<absolute>"; };
-		F56C8D2C131F5E84000AD0F6 /* libpcrecpp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcrecpp.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libpcrecpp.dylib"; sourceTree = "<absolute>"; };
-		F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfribidi.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libfribidi.dylib"; sourceTree = "<absolute>"; };
-		F56C8D37131F5E85000AD0F6 /* libcdio.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcdio.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libcdio.dylib"; sourceTree = "<absolute>"; };
-		F56C8D38131F5E85000AD0F6 /* libsamplerate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsamplerate.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libsamplerate.dylib"; sourceTree = "<absolute>"; };
-		F56C8D3A131F5E85000AD0F6 /* libsmbclient.dylib.0 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsmbclient.dylib.0; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libsmbclient.dylib.0"; sourceTree = "<absolute>"; };
-		F56C8D3D131F5E85000AD0F6 /* libfreetype.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreetype.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libfreetype.dylib"; sourceTree = "<absolute>"; };
-		F56C8D3E131F5E85000AD0F6 /* libfontconfig.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfontconfig.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libfontconfig.dylib"; sourceTree = "<absolute>"; };
-		F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/mysql/libmysqlclient.dylib"; sourceTree = "<absolute>"; };
-		F56C8D40131F5E85000AD0F6 /* libpython2.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpython2.6.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libpython2.6.dylib"; sourceTree = "<absolute>"; };
-		F56C8D41131F5E85000AD0F6 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libsqlite3.dylib"; sourceTree = "<absolute>"; };
 		F57A1D1C1329B15300498CC7 /* AutoPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoPool.h; sourceTree = "<group>"; };
 		F57A1D1D1329B15300498CC7 /* AutoPool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AutoPool.mm; sourceTree = "<group>"; };
-		F57A1E39132AAB0E00498CC7 /* libSDL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libSDL.dylib"; sourceTree = "<absolute>"; };
-		F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSDL_mixer.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libSDL_mixer.dylib"; sourceTree = "<absolute>"; };
 		F57B6F7E1071B8B500079ACB /* JobManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JobManager.cpp; sourceTree = "<group>"; };
 		F57B6F7F1071B8B500079ACB /* JobManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JobManager.h; sourceTree = "<group>"; };
 		F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileSpecialProtocol.cpp; sourceTree = "<group>"; };
@@ -3779,7 +3741,6 @@
 		F5AE409913415D9E0004BD79 /* VideoLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoLibrary.h; sourceTree = "<group>"; };
 		F5AE409A13415D9E0004BD79 /* XBMCOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCOperations.cpp; sourceTree = "<group>"; };
 		F5AE409B13415D9E0004BD79 /* XBMCOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCOperations.h; sourceTree = "<group>"; };
-		F5B138641330811D0045076D /* libmicrohttpd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmicrohttpd.dylib; path = "/Users/Shared/xbmc-depends/osx-10.4_i386/lib/libmicrohttpd.dylib"; sourceTree = "<absolute>"; };
 		F5B13C8B1334056B0045076D /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
 		F5B13C8C1334056B0045076D /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
 		F5B413131065900C0035D105 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
@@ -3885,22 +3846,6 @@
 				F56C8CF0131F5DED000AD0F6 /* libxml2.dylib in Frameworks */,
 				F56C8CF3131F5DFD000AD0F6 /* libiconv.dylib in Frameworks */,
 				F56C8CF6131F5E0B000AD0F6 /* libncurses.dylib in Frameworks */,
-				F56C8D43131F5E85000AD0F6 /* liblzo2.dylib in Frameworks */,
-				F56C8D44131F5E85000AD0F6 /* libpcre.dylib in Frameworks */,
-				F56C8D45131F5E85000AD0F6 /* libpcrecpp.dylib in Frameworks */,
-				F56C8D51131F5E85000AD0F6 /* libsamplerate.dylib in Frameworks */,
-				F56C8D53131F5E85000AD0F6 /* libsmbclient.dylib.0 in Frameworks */,
-				F56C8D55131F5E85000AD0F6 /* libfreetype.dylib in Frameworks */,
-				F56C8D56131F5E85000AD0F6 /* libfontconfig.dylib in Frameworks */,
-				F56C8D58131F5E85000AD0F6 /* libpython2.6.dylib in Frameworks */,
-				F56C8D59131F5E85000AD0F6 /* libsqlite3.dylib in Frameworks */,
-				F57A1E3A132AAB0E00498CC7 /* libSDL.dylib in Frameworks */,
-				F57A1E3D132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */,
-				F5B5CFF0133AF993007A4B4C /* libmysqlclient.dylib in Frameworks */,
-				F5B5D008133AFA95007A4B4C /* libfribidi.dylib in Frameworks */,
-				F5B5D00C133AFAC6007A4B4C /* libcdio.dylib in Frameworks */,
-				F5B5D010133AFB02007A4B4C /* libGLEW.dylib in Frameworks */,
-				F5B5D014133AFB2D007A4B4C /* libmicrohttpd.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3932,22 +3877,6 @@
 				F56C8CF1131F5DED000AD0F6 /* libxml2.dylib in Frameworks */,
 				F56C8CF4131F5DFD000AD0F6 /* libiconv.dylib in Frameworks */,
 				F56C8CF7131F5E0B000AD0F6 /* libncurses.dylib in Frameworks */,
-				F56C8D5B131F5E85000AD0F6 /* liblzo2.dylib in Frameworks */,
-				F56C8D5C131F5E85000AD0F6 /* libpcre.dylib in Frameworks */,
-				F56C8D5D131F5E85000AD0F6 /* libpcrecpp.dylib in Frameworks */,
-				F56C8D69131F5E85000AD0F6 /* libsamplerate.dylib in Frameworks */,
-				F56C8D6B131F5E86000AD0F6 /* libsmbclient.dylib.0 in Frameworks */,
-				F56C8D6D131F5E86000AD0F6 /* libfreetype.dylib in Frameworks */,
-				F56C8D6E131F5E86000AD0F6 /* libfontconfig.dylib in Frameworks */,
-				F56C8D70131F5E86000AD0F6 /* libpython2.6.dylib in Frameworks */,
-				F56C8D71131F5E86000AD0F6 /* libsqlite3.dylib in Frameworks */,
-				F57A1E3B132AAB0E00498CC7 /* libSDL.dylib in Frameworks */,
-				F57A1E3E132AAB1A00498CC7 /* libSDL_mixer.dylib in Frameworks */,
-				F5B5CFF1133AF994007A4B4C /* libmysqlclient.dylib in Frameworks */,
-				F5B5D009133AFA96007A4B4C /* libfribidi.dylib in Frameworks */,
-				F5B5D00D133AFAC7007A4B4C /* libcdio.dylib in Frameworks */,
-				F5B5D011133AFB03007A4B4C /* libGLEW.dylib in Frameworks */,
-				F5B5D015133AFB2E007A4B4C /* libmicrohttpd.dylib in Frameworks */,
 				F5B5D64D133FC2C1007A4B4C /* libsquish.a in Frameworks */,
 				F5B5D64E133FC2E7007A4B4C /* librtv.a in Frameworks */,
 				F5B5D650133FC312007A4B4C /* libxdaap.a in Frameworks */,
@@ -3963,7 +3892,6 @@
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6859E96029091FE04C91782 /* Documentation */,
 				F57E1ED20E36E8FD00700C9D /* internal libs */,
-				F56C8CCD131F5BC3000AD0F6 /* External Libs */,
 				08FB779DFE84155DC02AAC07 /* System Libs and Frameworks */,
 				19C28FBDFE9D53C911CA2CBB /* Products */,
 			);
@@ -4343,6 +4271,8 @@
 				E38E1EAD0D25F9FD00618676 /* XBIRRemote.h */,
 				18B7C8D512942546009E7A26 /* XBMC_keyboard.h */,
 				7C779E31104A57E500F444C4 /* XBMC_keysym.h */,
+				C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */,
+				C8EC5D0D1369519D00CCC10D /* XBMC_keytable.h */,
 				18B7C8D612942546009E7A26 /* XBMC_mouse.h */,
 				7C779E34104A57E500F444C4 /* XBMC_vkeys.h */,
 			);
@@ -4698,6 +4628,7 @@
 				E38E19820D25F9FB00618676 /* python */,
 				F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */,
 				F5A7A701112893E50059D6AA /* AnnouncementManager.h */,
+				C807114A135DB5BF002F601B /* AnnouncementUtils.h */,
 				7CCF7F1B1069F3AE00992676 /* Builtins.cpp */,
 				7CCF7F1C1069F3AE00992676 /* Builtins.h */,
 				F5AE406E13415D8C0004BD79 /* http-api */,
@@ -5163,7 +5094,6 @@
 				E38E14BE0D25F9F900618676 /* emu_kernel32.h */,
 				E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */,
 				E38E14C20D25F9F900618676 /* emu_msvcrt.h */,
-				E38E14D90D25F9F900618676 /* exports_python_linux.cpp */,
 				E38E14E20D25F9F900618676 /* util */,
 				E38E14E80D25F9F900618676 /* wrapper.c */,
 			);
@@ -5448,8 +5378,6 @@
 				E36578870D3AA7B40033CC1C /* DVDPlayerCodec.h */,
 				E38E15DB0D25F9FA00618676 /* ADPCMCodec.cpp */,
 				E38E15DC0D25F9FA00618676 /* ADPCMCodec.h */,
-				E38E15DF0D25F9FA00618676 /* AIFFcodec.cpp */,
-				E38E15E00D25F9FA00618676 /* AIFFcodec.h */,
 				E38E15E30D25F9FA00618676 /* AudioDecoder.cpp */,
 				E38E15E40D25F9FA00618676 /* AudioDecoder.h */,
 				E38E15E50D25F9FA00618676 /* CachingCodec.h */,
@@ -5906,7 +5834,6 @@
 				E38E19DA0D25F9FB00618676 /* xbmcmodule */,
 				E38E1A0D0D25F9FB00618676 /* XBPython.cpp */,
 				E38E1A0E0D25F9FB00618676 /* XBPython.h */,
-				E38E1A100D25F9FB00618676 /* XBPythonDll.h */,
 				E38E1A110D25F9FB00618676 /* XBPyThread.cpp */,
 				E38E1A120D25F9FB00618676 /* XBPyThread.h */,
 			);
@@ -6790,6 +6717,8 @@
 				E38E1E700D25F9FD00618676 /* PerformanceSample.h */,
 				E38E1E710D25F9FD00618676 /* PerformanceStats.cpp */,
 				E38E1E720D25F9FD00618676 /* PerformanceStats.h */,
+				18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */,
+				18ACF84213596C9B00B67371 /* RecentlyAddedJob.h */,
 				E38E1E730D25F9FD00618676 /* RegExp.cpp */,
 				E38E1E740D25F9FD00618676 /* RegExp.h */,
 				F5DC87E1110A287400EE1B15 /* RingBuffer.cpp */,
@@ -6857,29 +6786,6 @@
 			path = libhts;
 			sourceTree = "<group>";
 		};
-		F56C8CCD131F5BC3000AD0F6 /* External Libs */ = {
-			isa = PBXGroup;
-			children = (
-				F56C8D2A131F5E84000AD0F6 /* liblzo2.dylib */,
-				F56C8D2B131F5E84000AD0F6 /* libpcre.dylib */,
-				F56C8D2C131F5E84000AD0F6 /* libpcrecpp.dylib */,
-				F56C8D36131F5E85000AD0F6 /* libfribidi.dylib */,
-				F56C8D37131F5E85000AD0F6 /* libcdio.dylib */,
-				F56C8D38131F5E85000AD0F6 /* libsamplerate.dylib */,
-				F56C8D3A131F5E85000AD0F6 /* libsmbclient.dylib.0 */,
-				F56C8D3D131F5E85000AD0F6 /* libfreetype.dylib */,
-				F56C8D3E131F5E85000AD0F6 /* libfontconfig.dylib */,
-				F56C8D3F131F5E85000AD0F6 /* libmysqlclient.dylib */,
-				F56C8D40131F5E85000AD0F6 /* libpython2.6.dylib */,
-				F56C8D41131F5E85000AD0F6 /* libsqlite3.dylib */,
-				F5B138641330811D0045076D /* libmicrohttpd.dylib */,
-				E38E24250D26317D00618676 /* libGLEW.dylib */,
-				F57A1E39132AAB0E00498CC7 /* libSDL.dylib */,
-				F57A1E3C132AAB1A00498CC7 /* libSDL_mixer.dylib */,
-			);
-			name = "External Libs";
-			sourceTree = "<group>";
-		};
 		F57E1ED20E36E8FD00700C9D /* internal libs */ = {
 			isa = PBXGroup;
 			children = (
@@ -6931,6 +6837,8 @@
 				F5AE408813415D9E0004BD79 /* FileOperations.cpp */,
 				F5AE408913415D9E0004BD79 /* FileOperations.h */,
 				F5AE408A13415D9E0004BD79 /* IClient.h */,
+				C807114B135DB5CC002F601B /* InputOperations.cpp */,
+				C807114C135DB5CC002F601B /* InputOperations.h */,
 				F5AE408B13415D9E0004BD79 /* ITransportLayer.h */,
 				F5AE408C13415D9E0004BD79 /* JSONRPC.cpp */,
 				F5AE408D13415D9E0004BD79 /* JSONRPC.h */,
@@ -7185,7 +7093,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude skin.confluence\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/osx/XBMCHelper\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${SYNC} \"$SRCROOT/tools/osx/org.xbmc.helper.plist\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${SYNC} \"$SRCROOT/tools/osx/preflight\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\n\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
+			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n# force TARGET_NAME on ppc\nTARGET_NAME=$PRODUCT_NAME\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -aq --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *arm-osx.* --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -aq --exclude .DS_Store* --exclude skin.confluence\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/osx/XBMCHelper\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${SYNC} \"$SRCROOT/tools/osx/org.xbmc.helper.plist\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${SYNC} \"$SRCROOT/tools/osx/preflight\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\n\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
 		};
 		F5A1CBDF0F6B0B4700A96ABD /* copy frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -7200,7 +7108,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources\"\n\ncp -f \"$TARGET_BUILD_DIR/XBMC\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/\"\ncp -f \"$SRCROOT/media/xbmc.icns\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\ncp -f \"$SRCROOT/xbmc/osx/Info.plist\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/\"\n\n# start clean so we don't keep old dylibs\nrm -f \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/*\"\n\n# Copy all of XBMC's dynamic dependencies and rename their locations to inside the Framework\nfor a in $(otool -L \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/XBMC\"  | grep opt | awk ' { print $1 } ') ; do \n\techo \"Processing $a\"\n\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\tinstall_name_tool -change \"$a\" @executable_path/../Frameworks/$(basename $a) \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/MacOS/XBMC\"\ndone\n\nREWIND=\"1\"\n# Copy all the *osx.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/system -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the system/python/Lib/*.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/system/python/Lib -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system/python/Lib/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the addon/*.so dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/addons -name \"*.so\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$b\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the addon/*.xbs dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in $(find \"$TARGET_BUILD_DIR/$TARGET_NAME\"/Contents/Resources/XBMC/addons -name \"*.xbs\" -print) ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$b\"\n\t\tdone \n\tdone\ndone\n\nREWIND=\"1\"\n# Copy all the dynamic dependencies and rename their locations to inside the Framework\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/\"*dylib ; do\n\t\techo \"Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep opt | awk ' { print $1 } ') ; do\n\t\t\techo \"    Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\" ]; then\n\t\t\t\techo \"        Copying $a to Frameworks\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks\"\n\t\t\t\tchmod u+w \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"@executable_path/../Frameworks/$(basename $a)\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Frameworks/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n\n";
+			shellScript = "#set -x\n\nfunction check_dyloaded_depends\n{\n  b=$(find \"$EXTERNAL_LIBS\" -name $1 -print)\n  if [ -f \"$b\" ]; then\n    #echo \"Processing $b\"\n    if [ ! -f  \"$TARGET_FRAMEWORKS/$(basename $b)\" ]; then\n      echo \"    Packaging $b\"\n      cp -f \"$b\" \"$TARGET_FRAMEWORKS/\"\n      chmod u+w \"$TARGET_FRAMEWORKS/$(basename $b)\"\n    fi\n    for a in $(otool -L \"$b\"  | grep \"$EXTERNAL_LIBS\" | awk ' { print $1 } ') ; do\n      if [ -f \"$a\" ]; then\n        if [ ! -f  \"$TARGET_FRAMEWORKS/$(basename $a)\" ]; then\n          echo \"    Packaging $a\"\n          cp -f \"$a\" \"$TARGET_FRAMEWORKS/\"\n          chmod u+w \"$TARGET_FRAMEWORKS/$(basename $a)\"\n          install_name_tool -change \"$a\" \"$DYLIB_NAMEPATH/$(basename $a)\" \"$TARGET_FRAMEWORKS/$(basename $b)\"\n        fi\n      fi\n    done \n  fi\n}\n\nfunction check_xbmc_dylib_depends\n{\n  REWIND=\"1\"\n  while [ $REWIND = \"1\" ]\n  do\n    let REWIND=\"0\"\n    for b in $(find \"$1\" -name \"$2\" -print) ; do\n      #echo \"Processing $b\"\n      for a in $(otool -L \"$b\"  | grep \"$EXTERNAL_LIBS\" | awk ' { print $1 } ') ; do\n        #echo \"    Packaging $a\"\n        if [ ! -f  \"$TARGET_FRAMEWORKS/$(basename $a)\" ]; then\n          echo \"    Packaging $a\"\n          cp -f \"$a\" \"$TARGET_FRAMEWORKS/\"\n          chmod u+w \"$TARGET_FRAMEWORKS/$(basename $a)\"\n          let REWIND=\"1\"\n        fi\n        install_name_tool -change \"$a\" \"$DYLIB_NAMEPATH/$(basename $a)\" \"$b\"\n      done\n    done\n  done\n}\n\nEXTERNAL_LIBS=/Users/Shared/xbmc-depends/osx-10.4_ppc\n\nTARGET_NAME=$PRODUCT_NAME\nTARGET_CONTENTS=$TARGET_BUILD_DIR/$TARGET_NAME/Contents\n\nTARGET_BINARY=$TARGET_CONTENTS/MacOS/XBMC\nTARGET_FRAMEWORKS=$TARGET_CONTENTS/Frameworks\nDYLIB_NAMEPATH=@executable_path/../Frameworks\nXBMC_HOME=$TARGET_CONTENTS/Resources/XBMC\n\nmkdir -p \"$TARGET_CONTENTS/MacOS\"\nmkdir -p \"$TARGET_CONTENTS/Resources\"\n# start clean so we don't keep old dylibs\nrm -rf \"$TARGET_CONTENTS/Frameworks\"\nmkdir -p \"$TARGET_CONTENTS/Frameworks\"\n\necho \"Package $TARGET_BUILD_DIR/XBMC\"\ncp -f \"$TARGET_BUILD_DIR/XBMC\" \"$TARGET_BINARY\"\ncp -f \"$SRCROOT/media/xbmc.icns\" \"$TARGET_CONTENTS/Resources/\"\ncp -f \"$SRCROOT/xbmc/osx/Info.plist\" \"$TARGET_CONTENTS/\"\n\n# Copy all of XBMC's dylib dependencies and rename their locations to inside the Framework\necho \"Checking $TARGET_BINARY dylib dependencies\"\nfor a in $(otool -L \"$TARGET_BINARY\"  | grep \"$EXTERNAL_LIBS\" | awk ' { print $1 } ') ; do \n\techo \"    Packaging $a\"\n\tcp -f \"$a\" \"$TARGET_FRAMEWORKS/\"\n\tchmod u+w \"$TARGET_FRAMEWORKS/$(basename $a)\"\n\tinstall_name_tool -change \"$a\" \"$DYLIB_NAMEPATH/$(basename $a)\" \"$TARGET_BINARY\"\ndone\n\necho \"Package $EXTERNAL_LIBS/lib/python2.6\"\nmkdir -p \"$TARGET_CONTENTS/Frameworks/lib\"\nPYTHONSYNC=\"rsync -aq --exclude .DS_Store --exclude *.a --exclude *.exe --exclude test --exclude tests\"\n${PYTHONSYNC} \"$EXTERNAL_LIBS/lib/python2.6\" \"$TARGET_FRAMEWORKS/lib/\"\nrm -rf \"$TARGET_FRAMEWORKS/lib/python2.6/config\"\n\necho \"Checking $TARGET_FRAMEWORKS/lib/python2.6 *.so for dylib dependencies\"\ncheck_xbmc_dylib_depends \"$TARGET_FRAMEWORKS\"/lib/python2.6 \"*.so\"\n\necho \"Checking $XBMC_HOME/system *.so for dylib dependencies\"\ncheck_xbmc_dylib_depends \"$XBMC_HOME\"/system \"*.so\"\n\necho \"Checking $XBMC_HOME/addons *.so for dylib dependencies\"\ncheck_xbmc_dylib_depends \"$XBMC_HOME\"/addons \"*.so\"\n\necho \"Checking $XBMC_HOME/addons *.xbs for dylib dependencies\"\ncheck_xbmc_dylib_depends \"$XBMC_HOME\"/addons \"*.xbs\"\n\necho \"Checking xbmc/DllPaths_generated.h for dylib dependencies\"\nfor a in $(grep .dylib \"$SRCROOT\"/xbmc/DllPaths_generated.h | awk '{print $3}' | sed s/\\\"//g) ; do\n  check_dyloaded_depends $a\ndone\n\necho \"Checking $TARGET_FRAMEWORKS for missing dylib dependencies\"\nREWIND=\"1\"\nwhile [ $REWIND = \"1\" ]\ndo\n\tlet REWIND=\"0\"\n\tfor b in \"$TARGET_FRAMEWORKS/\"*dylib* ; do\n\t\t#echo \"  Processing $b\"\n\t\tfor a in $(otool -L \"$b\"  | grep \"$EXTERNAL_LIBS\" | awk ' { print $1 } ') ; do\n\t\t\t#echo \"Processing $a\"\n\t\t\tif [ ! -f  \"$TARGET_FRAMEWORKS/$(basename $a)\" ]; then\n\t\t\t\techo \"    Packaging $a\"\n\t\t\t\tcp -f \"$a\" \"$TARGET_FRAMEWORKS/\"\n\t\t\t\tchmod u+w \"$TARGET_FRAMEWORKS/$(basename $a)\"\n\t\t\t\tlet REWIND=\"1\"\n\t\t\tfi\n\t\t\tinstall_name_tool -change \"$a\" \"$DYLIB_NAMEPATH/$(basename $a)\" \"$TARGET_FRAMEWORKS/$(basename $b)\"\n\t\tdone \n\tdone\ndone\n";
 		};
 		F5A1CBE00F6B0B4700A96ABD /* update version info */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -7260,7 +7168,6 @@
 				E38E1F580D25F9FD00618676 /* emu_dummy.cpp in Sources */,
 				E38E1F5A0D25F9FD00618676 /* emu_kernel32.cpp in Sources */,
 				E38E1F5C0D25F9FD00618676 /* emu_msvcrt.cpp in Sources */,
-				E38E1F6A0D25F9FD00618676 /* exports_python_linux.cpp in Sources */,
 				E38E1F6F0D25F9FD00618676 /* EmuFileWrapper.cpp in Sources */,
 				E38E1F710D25F9FD00618676 /* wrapper.c in Sources */,
 				E38E1F720D25F9FD00618676 /* ldt_keeper.c in Sources */,
@@ -7311,7 +7218,6 @@
 				E38E1FAE0D25F9FD00618676 /* DVDSubtitleParserSubrip.cpp in Sources */,
 				E38E1FAF0D25F9FD00618676 /* DVDSubtitleStream.cpp in Sources */,
 				E38E1FC10D25F9FD00618676 /* ADPCMCodec.cpp in Sources */,
-				E38E1FC30D25F9FD00618676 /* AIFFcodec.cpp in Sources */,
 				E38E1FC50D25F9FD00618676 /* AudioDecoder.cpp in Sources */,
 				E38E1FC60D25F9FD00618676 /* CDDAcodec.cpp in Sources */,
 				E38E1FC70D25F9FD00618676 /* CodecFactory.cpp in Sources */,
@@ -8118,6 +8024,9 @@
 				F5AE40A813415D9E0004BD79 /* XBMCOperations.cpp in Sources */,
 				C84BF7341349BB74006D6FC9 /* JSONServiceDescription.cpp in Sources */,
 				384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */,
+				18ACF84313596C9B00B67371 /* RecentlyAddedJob.cpp in Sources */,
+				C807114D135DB5CC002F601B /* InputOperations.cpp in Sources */,
+				C8EC5D0E1369519D00CCC10D /* XBMC_keytable.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8147,7 +8056,6 @@
 				F5A1C8D80F6B06CF00A96ABD /* emu_dummy.cpp in Sources */,
 				F5A1C8DA0F6B06CF00A96ABD /* emu_kernel32.cpp in Sources */,
 				F5A1C8DB0F6B06CF00A96ABD /* emu_msvcrt.cpp in Sources */,
-				F5A1C8DE0F6B06CF00A96ABD /* exports_python_linux.cpp in Sources */,
 				F5A1C8DF0F6B06CF00A96ABD /* EmuFileWrapper.cpp in Sources */,
 				F5A1C8E00F6B06CF00A96ABD /* wrapper.c in Sources */,
 				F5A1C8E10F6B06CF00A96ABD /* ldt_keeper.c in Sources */,
@@ -8198,7 +8106,6 @@
 				F5A1C9130F6B06CF00A96ABD /* DVDSubtitleParserSubrip.cpp in Sources */,
 				F5A1C9140F6B06CF00A96ABD /* DVDSubtitleStream.cpp in Sources */,
 				F5A1C9190F6B06CF00A96ABD /* ADPCMCodec.cpp in Sources */,
-				F5A1C91B0F6B06CF00A96ABD /* AIFFcodec.cpp in Sources */,
 				F5A1C91D0F6B06CF00A96ABD /* AudioDecoder.cpp in Sources */,
 				F5A1C91E0F6B06CF00A96ABD /* CDDAcodec.cpp in Sources */,
 				F5A1C91F0F6B06CF00A96ABD /* CodecFactory.cpp in Sources */,
@@ -8999,6 +8906,13 @@
 				F5AE40B313415D9E0004BD79 /* SystemOperations.cpp in Sources */,
 				F5AE40B413415D9E0004BD79 /* VideoLibrary.cpp in Sources */,
 				F5AE40B513415D9E0004BD79 /* XBMCOperations.cpp in Sources */,
+				43EA4276136C04D9002C82A5 /* XBDateTime.cpp in Sources */,
+				43EA4279136C079A002C82A5 /* JSONServiceDescription.cpp in Sources */,
+				43EA427E136C07BF002C82A5 /* XBMC_keytable.cpp in Sources */,
+				43EA4282136C0806002C82A5 /* RecentlyAddedJob.cpp in Sources */,
+				43EA4297136C1D9E002C82A5 /* RenderCapture.cpp in Sources */,
+				43EA429B136C1E2F002C82A5 /* xbmcvfsmodule.cpp in Sources */,
+				43EA42B0136C2274002C82A5 /* InputOperations.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9062,38 +8976,39 @@
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
-					"\"$(SRCROOT)\"",
+					"$(SRCROOT)",
+					"$(SRCROOT)/lib/libRTV",
+					"$(SRCROOT)/lib/libXDAAP",
+					"$(SRCROOT)/lib/cmyth/libcmyth",
+					"$(SRCROOT)/lib/cmyth/librefmem",
+					"$(SRCROOT)/lib/libapetag/.libs",
+					"$(SRCROOT)/lib/libsquish",
+					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
+					"$(SRCROOT)/xbmc/interfaces/http-api",
+					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$XBMC_DEPENDS/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$XBMC_DEPENDS/lib/mysql\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)/xbmc/interfaces/http-api\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\"$(SRCROOT)/xbmc/interfaces/json-rpc\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/lib/libRTV\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/lib/libXBMS\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libXDAAP\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/lib/cmyth/libcmyth\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/lib/cmyth/librefmem\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/lib/libapetag/.libs\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/lib/libsquish\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/lib/jsoncpp/src/lib_json\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
 					"-all_load",
+					"-L$XBMC_DEPENDS/lib",
+					"-llzo2",
+					"-lpcre",
+					"-lpcrecpp",
+					"-lfribidi",
+					"-lcdio",
+					"-lfreetype",
+					"-lfontconfig",
+					"-lsqlite3",
+					"-lsamplerate",
+					"-lmicrohttpd",
+					"-lGLEW",
+					"-lSDL",
+					"-lSDL_mixer",
+					"-lsmbclient",
+					"-lpython2.6",
+					"-L$XBMC_DEPENDS/lib/mysql",
+					"-lmysqlclient",
 				);
 				PRODUCT_NAME = XBMC;
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
@@ -9150,38 +9065,39 @@
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
-					"\"$(SRCROOT)\"",
+					"$(SRCROOT)",
+					"$(SRCROOT)/lib/libRTV",
+					"$(SRCROOT)/lib/libXDAAP",
+					"$(SRCROOT)/lib/cmyth/libcmyth",
+					"$(SRCROOT)/lib/cmyth/librefmem",
+					"$(SRCROOT)/lib/libapetag/.libs",
+					"$(SRCROOT)/lib/libsquish",
+					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
+					"$(SRCROOT)/xbmc/interfaces/http-api",
+					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$XBMC_DEPENDS/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$XBMC_DEPENDS/lib/mysql\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)/xbmc/interfaces/http-api\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\"$(SRCROOT)/xbmc/interfaces/json-rpc\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/lib/libRTV\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/lib/libXBMS\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libXDAAP\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/lib/cmyth/libcmyth\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/lib/cmyth/librefmem\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/lib/libapetag/.libs\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/lib/libsquish\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/lib/jsoncpp/src/lib_json\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
 					"-all_load",
+					"-L$XBMC_DEPENDS/lib",
+					"-llzo2",
+					"-lpcre",
+					"-lpcrecpp",
+					"-lfribidi",
+					"-lcdio",
+					"-lfreetype",
+					"-lfontconfig",
+					"-lsqlite3",
+					"-lsamplerate",
+					"-lmicrohttpd",
+					"-lGLEW",
+					"-lSDL",
+					"-lSDL_mixer",
+					"-lsmbclient",
+					"-lpython2.6",
+					"-L$XBMC_DEPENDS/lib/mysql",
+					"-lmysqlclient",
 				);
 				PRODUCT_NAME = XBMC;
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
@@ -9254,6 +9170,7 @@
 				ARCHS = ppc;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -9277,59 +9194,62 @@
 					HAS_SPC_CODEC,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = 4.0;
 				GENERATE_PROFILING_CODE = NO;
 				HEADER_SEARCH_PATHS = (
-					xbmc/osx,
 					$SRCROOT,
-					lib,
 					xbmc,
-					lib/ffmpeg,
+					xbmc/osx,
 					xbmc/linux,
 					xbmc/cores/dvdplayer,
-					"lib/darwin/libcurl-OSX/include",
+					lib,
+					lib/ffmpeg,
+					$XBMC_DEPENDS/include,
+					$XBMC_DEPENDS/include/mysql,
+					$XBMC_DEPENDS/include/freetype2,
+					$XBMC_DEPENDS/include/python2.6,
 				);
-				INFOPLIST_FILE = "/Users/Shared/xbmc/xbmc_svn/xbmc/osx/Info copy.plist";
+				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
-					lib/libRTV,
-					lib/libXBMS,
-					lib/libXDAAP,
-					lib/cmyth/libcmyth,
-					lib/cmyth/librefmem,
-					lib/libapetag/.libs,
-					lib/libsquish,
-					lib/jsoncpp/src/lib_json,
-					"xbmc/interfaces/http-api",
-					"xbmc/interfaces/json-rpc",
-					/opt/local/lib,
-					/opt/local/lib/mysql5/mysql,
-					/opt/local/lib/samba3,
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
-					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib/mysql\"",
-					"\"$(SRCROOT)/lib/libsquish\"",
-					"\"$(SRCROOT)/lib/libRTV\"",
-					"\"$(SRCROOT)/lib/libXBMS\"",
-					"\"$(SRCROOT)/lib/libXDAAP\"",
+					"$(SRCROOT)",
+					"$(SRCROOT)/lib/libRTV",
+					"$(SRCROOT)/lib/libXDAAP",
+					"$(SRCROOT)/lib/cmyth/libcmyth",
+					"$(SRCROOT)/lib/cmyth/librefmem",
+					"$(SRCROOT)/lib/libapetag/.libs",
+					"$(SRCROOT)/lib/libsquish",
+					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
+					"$(SRCROOT)/xbmc/interfaces/http-api",
+					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib/mysql\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
 					"-all_load",
+					"-L$XBMC_DEPENDS/lib",
+					"-llzo2",
+					"-lpcre",
+					"-lpcrecpp",
+					"-lfribidi",
+					"-lcdio",
+					"-lfreetype",
+					"-lfontconfig",
+					"-lsqlite3",
+					"-lsamplerate",
+					"-lmicrohttpd",
+					"-lGLEW",
+					"-lSDL",
+					"-lSDL_mixer",
+					"-lsmbclient",
+					"-lpython2.6",
+					"-L$XBMC_DEPENDS/lib/mysql",
+					"-lmysqlclient",
 				);
 				PRODUCT_NAME = XBMC;
-				USER_HEADER_SEARCH_PATHS = ". /opt/local/include /opt/local/include/freetype2 /opt/local/include/mysql5 /opt/local/include/glib-2.0 /opt/local/lib/glib-2.0/include /usr/X11R6/include";
+				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				VALID_ARCHS = ppc;
+				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/osx-10.4_ppc";
 				ZERO_LINK = NO;
 			};
 			name = Debug;
@@ -9340,7 +9260,7 @@
 				ARCHS = ppc;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -9365,58 +9285,61 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
-					xbmc/osx,
 					$SRCROOT,
-					lib,
 					xbmc,
-					lib/ffmpeg,
+					xbmc/osx,
 					xbmc/linux,
 					xbmc/cores/dvdplayer,
-					"lib/darwin/libcurl-OSX/include",
+					lib,
+					lib/ffmpeg,
+					$XBMC_DEPENDS/include,
+					$XBMC_DEPENDS/include/mysql,
+					$XBMC_DEPENDS/include/freetype2,
+					$XBMC_DEPENDS/include/python2.6,
 				);
-				INFOPLIST_FILE = "/Users/Shared/xbmc/xbmc_svn/xbmc/osx/Info copy.plist";
+				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
-					lib/libRTV,
-					lib/libXBMS,
-					lib/libXDAAP,
-					lib/cmyth/libcmyth,
-					lib/cmyth/librefmem,
-					lib/libapetag/.libs,
-					lib/libsquish,
-					lib/jsoncpp/src/lib_json,
-					"xbmc/interfaces/http-api",
-					"xbmc/interfaces/json-rpc",
-					/opt/local/lib,
-					/opt/local/lib/mysql5/mysql,
-					/opt/local/lib/samba3,
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
-					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib/mysql\"",
-					"\"$(SRCROOT)/lib/libsquish\"",
-					"\"$(SRCROOT)/lib/libRTV\"",
-					"\"$(SRCROOT)/lib/libXBMS\"",
-					"\"$(SRCROOT)/lib/libXDAAP\"",
+					"$(SRCROOT)",
+					"$(SRCROOT)/lib/libRTV",
+					"$(SRCROOT)/lib/libXDAAP",
+					"$(SRCROOT)/lib/cmyth/libcmyth",
+					"$(SRCROOT)/lib/cmyth/librefmem",
+					"$(SRCROOT)/lib/libapetag/.libs",
+					"$(SRCROOT)/lib/libsquish",
+					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
+					"$(SRCROOT)/xbmc/interfaces/http-api",
+					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../xbmc-depends/ios-4.2_arm7/lib/mysql\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../xbmc-depends/osx-10.4_i386/lib\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
 					"-all_load",
+					"-L$XBMC_DEPENDS/lib",
+					"-llzo2",
+					"-lpcre",
+					"-lpcrecpp",
+					"-lfribidi",
+					"-lcdio",
+					"-lfreetype",
+					"-lfontconfig",
+					"-lsqlite3",
+					"-lsamplerate",
+					"-lmicrohttpd",
+					"-lGLEW",
+					"-lSDL",
+					"-lSDL_mixer",
+					"-lsmbclient",
+					"-lpython2.6",
+					"-L$XBMC_DEPENDS/lib/mysql",
+					"-lmysqlclient",
 				);
 				PRODUCT_NAME = XBMC;
-				USER_HEADER_SEARCH_PATHS = ". /opt/local/include /opt/local/include/freetype2 /opt/local/include/mysql5 /opt/local/include/glib-2.0 /opt/local/lib/glib-2.0/include /usr/X11R6/include";
+				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				VALID_ARCHS = ppc;
+				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/osx-10.4_ppc";
 				ZERO_LINK = NO;
 			};
 			name = Release;

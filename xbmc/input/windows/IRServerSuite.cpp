@@ -36,6 +36,7 @@ CRemoteControl::CRemoteControl()
   m_socket = INVALID_SOCKET;
   m_bInitialized = false;
   m_isConnecting = false;
+  m_iAttempt     = 0;
   Reset();
 }
 
@@ -82,22 +83,26 @@ void CRemoteControl::Initialize()
 
 void CRemoteControl::Process()
 {
-  int iTries = 1;
   DWORD iMsRetryDelay = 5000;
   DWORD time = CTimeUtils::GetTimeMS() - iMsRetryDelay;
   // try to connect 60 times @ a 5 second interval (5 minutes)
   // multiple tries because irss service might be up and running a little later then xbmc on boot.
-  while (!m_bStop && iTries <= 60)
+  while (!m_bStop && m_iAttempt <= 60)
   {
     if (CTimeUtils::GetTimeMS() - time >= iMsRetryDelay)
     {
       time = CTimeUtils::GetTimeMS();
       if (Connect())
         break;
-      iTries++;
+
+      if(m_iAttempt == 0)
+        CLog::Log(LOGINFO, "CRemoteControl::Process - failed to connect to irss, will keep retrying every %d seconds", iMsRetryDelay / 1000);
+
+      m_iAttempt++;
     }
     Sleep(1000);
   }
+  m_iAttempt     = 0;
 }
 
 bool CRemoteControl::Connect()
@@ -116,7 +121,8 @@ bool CRemoteControl::Connect()
   res = getaddrinfo("localhost", service, &hints, &result);
   if(res)
   {
-    CLog::Log(LOGERROR, "CRemoteControl::Connect - failed: %s", __FUNCTION__, gai_strerror(res));
+    if(m_iAttempt == 0)
+      CLog::Log(LOGERROR, "CRemoteControl::Connect - failed: %s", __FUNCTION__, gai_strerror(res));
     return false;
   }
 
@@ -126,8 +132,10 @@ bool CRemoteControl::Connect()
     {
       strcpy(namebuf, "[unknown]");
       strcpy(portbuf, "[unknown]");
-	}
-    CLog::Log(LOGDEBUG, "CRemoteControl::Connect - connecting to: %s:%s ...", namebuf, portbuf);
+    }
+
+    if(m_iAttempt == 0)
+      CLog::Log(LOGDEBUG, "CRemoteControl::Connect - connecting to: %s:%s ...", namebuf, portbuf);
 
     m_socket = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
     if(m_socket == INVALID_SOCKET)
@@ -143,7 +151,8 @@ bool CRemoteControl::Connect()
   freeaddrinfo(result);
   if(m_socket == INVALID_SOCKET)
   {
-    CLog::Log(LOGERROR, "CRemoteControl::Connect - failed to connect");
+    if(m_iAttempt == 0)
+      CLog::Log(LOGERROR, "CRemoteControl::Connect - failed to connect");
     Close();
     return false;
   }
@@ -151,7 +160,8 @@ bool CRemoteControl::Connect()
   u_long iMode = 1; //non-blocking
   if (ioctlsocket(m_socket, FIONBIO, &iMode) == SOCKET_ERROR)
   {
-    CLog::Log(LOGERROR, "IRServerSuite: failed to set socket to non-blocking.");
+    if(m_iAttempt == 0)
+      CLog::Log(LOGERROR, "IRServerSuite: failed to set socket to non-blocking.");
     Close();
     return false;
   }
@@ -160,7 +170,8 @@ bool CRemoteControl::Connect()
   CIrssMessage mess(IRSSMT_RegisterClient, IRSSMF_Request);
   if (!SendPacket(mess))
   {
-    CLog::Log(LOGERROR, "IRServerSuite: failed to send RegisterClient packet.");
+    if(m_iAttempt == 0)
+      CLog::Log(LOGERROR, "IRServerSuite: failed to send RegisterClient packet.");
     return false;
   }
   m_isConnecting = true;

@@ -1,11 +1,6 @@
 SRCS=XBPython.cpp \
      XBPyThread.cpp
 
-ifneq (@USE_EXTERNAL_PYTHON@,1)
-SRCS+=XBPythonDllFuncs.S \
-     XBPythonDll.cpp
-endif
-
 LIB=python.a
 
 INCLUDES+= @PYTHON_CPPFLAGS@

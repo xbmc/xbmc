@@ -1,0 +1,5 @@
+using darwin : @platform_gcc_version@ : g++-@platform_gcc_version@ :
+  <cflags>"-isysroot @boost_flags@ -fvisibility=hidden -fvisibility-inlines-hidden -DBOOST_AC_USE_PTHREADS -DBOOST_SP_USE_PTHREADS"
+  <cxxflags>"-isysroot @boost_flags@ -fvisibility=hidden -fvisibility-inlines-hidden -DBOOST_AC_USE_PTHREADS -DBOOST_SP_USE_PTHREADS"
+  <linkflags>"-Wl,-syslibroot,@boost_flags@"
+;

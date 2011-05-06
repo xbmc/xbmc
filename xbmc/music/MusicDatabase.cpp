@@ -1445,7 +1445,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
   return false;
 }
 
-bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums)
+bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums, unsigned int limit)
 {
   try
   {
@@ -1454,7 +1454,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from albumview order by idAlbum desc limit %i", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
+    strSQL.Format("select * from albumview order by idAlbum desc limit %u", limit ? limit : g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
 
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -1482,7 +1482,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums)
   return false;
 }
 
-bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CFileItemList& items)
+bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CFileItemList& items, unsigned int limit)
 {
   try
   {
@@ -1490,7 +1490,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select songview.* from albumview join songview on (songview.idAlbum = albumview.idAlbum) where albumview.idAlbum in ( select idAlbum from albumview order by idAlbum desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
+    strSQL = PrepareSQL("SELECT songview.* FROM (SELECT idAlbum FROM albumview ORDER BY idAlbum DESC LIMIT %u) AS recentalbums JOIN songview ON songview.idAlbum=recentalbums.idAlbum", limit ? limit : g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyAddedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -3103,26 +3103,6 @@ bool CMusicDatabase::UpdateOldVersion(int version)
 
   try
   {
-    if (version < 15)
-    { // update for old scrapers
-      m_pDS->query("select strPath,strScraperPath from content");
-      set<CStdString> scrapers;
-      while (!m_pDS->eof())
-      {
-        // translate the addon
-        CStdString scraperID = ADDON::UpdateMusicScraper(m_pDS->fv(1).get_asString());
-        if (!scraperID.IsEmpty())
-        {
-          scrapers.insert(scraperID);
-          CStdString update = PrepareSQL("update content set strScraperPath='%s' where strPath='%s'", scraperID.c_str(), m_pDS->fv(0).get_asString().c_str());
-          m_pDS2->exec(update);
-        }
-        m_pDS->next();
-      }
-      m_pDS->close();
-      // ensure these scrapers are installed
-      CAddonInstaller::Get().InstallFromXBMCRepo(scrapers);
-    }
     if (version < 16)
     {
       // only if MySQL is used and default character set is not utf8
@@ -4778,7 +4758,7 @@ void CMusicDatabase::AnnounceRemove(std::string content, int id)
   CVariant data;
   data["content"] = content;
   data[content + "id"] = id;
-  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "RemoveAudio", data);
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "RemoveAudio", data);
 }
 
 void CMusicDatabase::AnnounceUpdate(std::string content, int id)
@@ -4786,5 +4766,5 @@ void CMusicDatabase::AnnounceUpdate(std::string content, int id)
   CVariant data;
   data["content"] = content;
   data[content + "id"] = id;
-  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::Library, "xbmc", "UpdateAudio", data);
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateAudio", data);
 }

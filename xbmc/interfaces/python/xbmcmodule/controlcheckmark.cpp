@@ -21,7 +21,6 @@
 
 #include <Python.h>
 
-#include "../XBPythonDll.h"
 #include "guilib/GUICheckMarkControl.h"
 #include "guilib/GUIFontManager.h"
 #include "control.h"

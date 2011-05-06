@@ -24,6 +24,11 @@
 #include <mach-o/dyld.h>
 #endif
 
+#if defined(__FreeBSD__)
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#endif
+
 #ifdef _LINUX
 #include <sys/types.h>
 #include <dirent.h>
@@ -91,6 +96,7 @@
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
 #include "windowing/WindowingFactory.h"
+#include "video/VideoInfoTag.h"
 
 using namespace std;
 using namespace XFILE;
@@ -755,7 +761,7 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
   return CThumbnailCache::GetThumbnailCache()->IsCached(strFileName);
 }
 
-void CUtil::PlayDVD(const CStdString& strProtocol)
+void CUtil::PlayDVD(const CStdString& strProtocol, bool restart)
 {
 #if defined(HAS_DVDPLAYER) && defined(HAS_DVD_DRIVE)
   CIoSupport::Dismount("Cdrom0");
@@ -764,7 +770,10 @@ void CUtil::PlayDVD(const CStdString& strProtocol)
   strPath.Format("%s://1", strProtocol.c_str());
   CFileItem item(strPath, false);
   item.SetLabel(g_mediaManager.GetDiskLabel());
-  g_application.PlayFile(item);
+  item.GetVideoInfoTag()->m_strFileNameAndPath = "removable://"; // need to put volume label for resume point in videoInfoTag
+  item.GetVideoInfoTag()->m_strFileNameAndPath += g_mediaManager.GetDiskLabel();
+  if (!restart) item.m_lStartOffset = STARTOFFSET_RESUME;
+  g_application.PlayFile(item, restart);
 #endif
 }
 
@@ -2175,6 +2184,21 @@ CStdString CUtil::ResolveExecutablePath()
 
   GetDarwinExecutablePath(given_path, &path_size);
   strExecutablePath = given_path;
+#elif defined(__FreeBSD__)                                                                                                                                                                   
+  char buf[PATH_MAX];
+  size_t buflen;
+  int mib[4];
+
+  mib[0] = CTL_KERN;
+  mib[1] = KERN_PROC;
+  mib[2] = KERN_PROC_PATHNAME;
+  mib[3] = getpid();
+
+  buflen = sizeof(buf) - 1;
+  if(sysctl(mib, 4, buf, &buflen, NULL, 0) < 0)
+    strExecutablePath = "";
+  else
+    strExecutablePath = buf;
 #else
   /* Get our PID and build the name of the link in /proc */
   pid_t pid = getpid();

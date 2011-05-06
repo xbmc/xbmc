@@ -91,4 +91,7 @@
       <Filter>refmem</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="libcmyth.def" />
+  </ItemGroup>
 </Project>

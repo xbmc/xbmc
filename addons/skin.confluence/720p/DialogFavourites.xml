@@ -118,6 +118,5 @@
 				<label>([COLOR=blue]$INFO[Container(450).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(450).CurrentPage]/$INFO[Container(450).NumPages][/COLOR])</label>
 			</control>
 		</control>
-		<include>SideBladeRight</include>
 	</controls>
 </window>

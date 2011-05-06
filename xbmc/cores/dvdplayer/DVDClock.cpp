@@ -154,6 +154,8 @@ void CDVDClock::Discontinuity(double currentPts)
 {
   CExclusiveLock lock(m_critSection);
   m_startClock = g_VideoReferenceClock.GetTime();
+  if(m_pauseClock)
+    m_pauseClock = m_startClock;
   m_iDisc = currentPts;
   m_bReset = false;
 }

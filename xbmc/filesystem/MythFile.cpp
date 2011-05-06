@@ -465,14 +465,6 @@ int64_t CMythFile::Seek(int64_t pos, int whence)
 {
   CLog::Log(LOGDEBUG, "%s - seek to pos %"PRId64", whence %d", __FUNCTION__, pos, whence);
 
-  if(whence == SEEK_POSSIBLE)
-  {
-    if(m_recorder)
-      return 0;
-    else
-      return 1;
-  }
-
   int64_t result;
   if(m_recorder)
     result = -1; //m_dll->livetv_seek(m_recorder, pos, whence);
@@ -714,4 +706,16 @@ bool CMythFile::GetCutList(cmyth_commbreaklist_t& commbreaklist)
     return true;
   }
   return false;
+}
+
+int CMythFile::IoControl(EIoControl request, void* param)
+{
+  if(request == IOCTRL_SEEK_POSSIBLE)
+  {
+    if(m_recorder)
+      return 0;
+    else
+      return 1;
+  }
+  return -1;
 }

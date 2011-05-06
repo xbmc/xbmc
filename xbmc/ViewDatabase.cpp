@@ -54,7 +54,7 @@ bool CViewDatabase::CreateTables()
     CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "create view table");
-    m_pDS->exec("CREATE TABLE view ( idView integer primary key, window integer, path text, viewMode integer, sortMethod integer, sortOrder integer)\n");
+    m_pDS->exec("CREATE TABLE view ( idView integer primary key, window integer, path text, viewMode integer, sortMethod integer, sortOrder integer, skin text)\n");
     CLog::Log(LOGINFO, "create view index");
     m_pDS->exec("CREATE INDEX idxViews ON view(path)");
     CLog::Log(LOGINFO, "create view - window index");
@@ -72,10 +72,12 @@ bool CViewDatabase::CreateTables()
 
 bool CViewDatabase::UpdateOldVersion(int version)
 {
+  if (version < 4)
+    m_pDS->exec("alter table view add skin text");
   return true;
 }
 
-bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState &state)
+bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState &state, const CStdString &skin)
 {
   try
   {
@@ -86,7 +88,11 @@ bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState 
     URIUtils::AddSlashAtEnd(path1);
     if (path1.IsEmpty()) path1 = "root://";
 
-    CStdString sql = PrepareSQL("select * from view where window = %i and path like '%s'", window, path1.c_str());
+    CStdString sql;
+    if (skin.IsEmpty())
+      sql = PrepareSQL("select * from view where window = %i and path like '%s'", window, path1.c_str());
+    else
+      sql = PrepareSQL("select * from view where window = %i and path like '%s' and skin='%s'", window, path1.c_str(), skin.c_str());
     m_pDS->query(sql.c_str());
 
     if (!m_pDS->eof())
@@ -106,7 +112,7 @@ bool CViewDatabase::GetViewState(const CStdString &path, int window, CViewState 
   return false;
 }
 
-bool CViewDatabase::SetViewState(const CStdString &path, int window, const CViewState &state)
+bool CViewDatabase::SetViewState(const CStdString &path, int window, const CViewState &state, const CStdString &skin)
 {
   try
   {
@@ -117,7 +123,7 @@ bool CViewDatabase::SetViewState(const CStdString &path, int window, const CView
     URIUtils::AddSlashAtEnd(path1);
     if (path1.IsEmpty()) path1 = "root://";
 
-    CStdString sql = PrepareSQL("select idView from view where window = %i and path like '%s'", window, path1.c_str());
+    CStdString sql = PrepareSQL("select idView from view where window = %i and path like '%s' and skin='%s'", window, path1.c_str(), skin.c_str());
     m_pDS->query(sql.c_str());
     if (!m_pDS->eof())
     { // update the view
@@ -129,7 +135,7 @@ bool CViewDatabase::SetViewState(const CStdString &path, int window, const CView
     else
     { // add the view
       m_pDS->close();
-      sql = PrepareSQL("insert into view (idView, path, window, viewMode, sortMethod, sortOrder) values(NULL, '%s', %i, %i, %i, %i)", path1.c_str(), window, state.m_viewMode, (int)state.m_sortMethod, (int)state.m_sortOrder);
+      sql = PrepareSQL("insert into view (idView, path, window, viewMode, sortMethod, sortOrder, skin) values(NULL, '%s', %i, %i, %i, %i, '%s')", path1.c_str(), window, state.m_viewMode, (int)state.m_sortMethod, (int)state.m_sortOrder, skin.c_str());
       m_pDS->exec(sql.c_str());
     }
   }

@@ -10,4 +10,7 @@ cd %TMP_PATH%
 xcopy include\FLAC "%CUR_PATH%\include\FLAC" /E /Q /I /Y
 copy lib\libFLAC.dll "%XBMC_PATH%\system\players\paplayer\" /Y
 
+IF EXIST "include\FLAC++" rmdir "include\FLAC++" /S /Q
+IF EXIST "include\ogg" rmdir "include\ogg" /S /Q
+
 cd %LOC_PATH%

@@ -4,10 +4,10 @@
 			<visible>Control.IsVisible(506)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="list" id="506">
-				<posx>460</posx>
-				<posy>60</posy>
-				<width>760</width>
-				<height>601</height>
+				<posx>70</posx>
+				<posy>75</posy>
+				<width>780</width>
+				<height>561</height>
 				<onleft>2</onleft>
 				<onright>60</onright>
 				<onup>506</onup>
@@ -16,11 +16,11 @@
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<visible>Window.IsVisible(MusicFiles) | Window.IsVisible(MusicPlaylist) |  Container.Content(Songs) | Container.Content(Albums)</visible>
-				<itemlayout height="40" width="760">
+				<itemlayout height="40" width="780">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>760</width>
+						<width>780</width>
 						<height>41</height>
 						<texture border="0,2,0,2">MenuItemNF.png</texture>
 					</control>
@@ -37,7 +37,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>750</posx>
+						<posx>760</posx>
 						<posy>0</posy>
 						<width>700</width>
 						<height>40</height>
@@ -62,14 +62,14 @@
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>760</width>
+						<width>780</width>
 						<height>41</height>
 						<texture border="0,2,0,2">MenuItemFO.png</texture>
 						<visible>Control.HasFocus(506)</visible>
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="image">
-						<posx>560</posx>
+						<posx>580</posx>
 						<posy>5</posy>
 						<width>200</width>
 						<height>31</height>
@@ -89,7 +89,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>750</posx>
+						<posx>760</posx>
 						<posy>0</posy>
 						<width>700</width>
 						<height>40</height>
@@ -102,57 +102,41 @@
 					</control>
 				</focusedlayout>
 			</control>
+			<control type="scrollbar" id="60">
+				<posx>850</posx>
+				<posy>78</posy>
+				<width>25</width>
+				<height>560</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>506</onleft>
+				<onright>2</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<visible>Control.IsVisible(506)</visible>
+			</control>
 			<control type="group">
 				<visible>Control.IsVisible(506)</visible>
-				<control type="scrollbar" id="60">
-					<posx>1220</posx>
-					<posy>60</posy>
-					<width>25</width>
-					<height>600</height>
-					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
-					<texturesliderbar border="2,16,2,16">ScrollBarV_bar.png</texturesliderbar>
-					<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
-					<textureslidernib>ScrollBarNib.png</textureslidernib>
-					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-					<onleft>506</onleft>
-					<onright>2</onright>
-					<showonepage>false</showonepage>
-					<orientation>vertical</orientation>
-					<visible>Control.IsVisible(506)</visible>
-				</control>
+				<posx>910</posx>
+				<posy>80</posy>
 				<control type="image">
-					<posx>40</posx>
-					<posy>60</posy>
-					<width>400</width>
-					<height>300</height>
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>290</width>
+					<height>290</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
 					<texture background="true">$INFO[ListItem.Icon]</texture>
 					<bordertexture border="8">ThumbShadow.png</bordertexture>
 					<bordersize>8</bordersize>
 				</control>
-				<control type="image">
-					<posx>40</posx>
-					<posy>350</posy>
-					<width>400</width>
-					<height>100</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>GlassTitleBar.png</texture>
-					<colordiffuse>AAFFFFFF</colordiffuse>
-				</control>
-				<control type="image">
-					<posx>48</posx>
-					<posy>352</posy>
-					<width>384</width>
-					<height>284</height>
-					<aspectratio aligny="top">keep</aspectratio>
-					<fadetime>IconCrossfadeTime</fadetime>
-					<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
-				</control>
 				<control type="label">
-					<posx>40</posx>
-					<posy>390</posy>
-					<width>400</width>
+					<posx>10</posx>
+					<posy>300</posy>
+					<width>290</width>
 					<height>25</height>
 					<label>$INFO[ListItem.Artist]</label>
 					<scroll>true</scroll>
@@ -163,22 +147,22 @@
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="label">
-					<posx>40</posx>
-					<posy>440</posy>
-					<width>400</width>
+					<posx>10</posx>
+					<posy>360</posy>
+					<width>290</width>
 					<height>25</height>
 					<label>$INFO[ListItem.Album]</label>
 					<wrapmultiline>true</wrapmultiline>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13caps</font>
+					<font>font13</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="label">
-					<posx>40</posx>
-					<posy>490</posy>
-					<width>400</width>
+					<posx>10</posx>
+					<posy>420</posy>
+					<width>290</width>
 					<height>25</height>
 					<label>$INFO[ListItem.Title]</label>
 					<scroll>true</scroll>
@@ -191,9 +175,9 @@
 					<visible>!Container.Content(Albums)</visible>
 				</control>
 				<control type="label">
-					<posx>40</posx>
-					<posy>490</posy>
-					<width>400</width>
+					<posx>10</posx>
+					<posy>420</posy>
+					<width>290</width>
 					<height>25</height>
 					<label>$INFO[ListItem.Genre]</label>
 					<scroll>true</scroll>
@@ -207,44 +191,37 @@
 				</control>
 				<control type="label">
 					<description>Trackno txt</description>
-					<posx>40</posx>
-					<posy>550</posy>
-					<width>400</width>
+					<posx>10</posx>
+					<posy>480</posy>
+					<width>290</width>
 					<height>25</height>
 					<label>$INFO[listitem.TrackNumber,[COLOR=blue]$LOCALIZE[31310]: [/COLOR]]</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13_title</font>
+					<font>font13</font>
 					<textcolor>white</textcolor>
 					<visible>!Container.Content(Albums)</visible>
 				</control>
 				<control type="label">
 					<description>Year txt</description>
-					<posx>40</posx>
-					<posy>580</posy>
-					<width>400</width>
+					<posx>10</posx>
+					<posy>505</posy>
+					<width>290</width>
 					<height>25</height>
 					<label>$INFO[listitem.Year,[COLOR=blue]$LOCALIZE[345]: [/COLOR]]</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13_title</font>
+					<font>font13</font>
 					<textcolor>white</textcolor>
 				</control>
 				<control type="image">
 					<description>Rating value</description>
-					<posx>165</posx>
-					<posy>610</posy>
+					<posx>80</posx>
+					<posy>535</posy>
 					<width>150</width>
 					<height>30</height>
+					<aspectratio>keep</aspectratio>
 					<texture>CenterRating/$INFO[ListItem.StarRating]</texture>
-				</control>
-				<control type="image">
-					<posx>440</posx>
-					<posy>60</posy>
-					<width>5</width>
-					<height>600</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>separator_vertical.png</texture>
 				</control>
 			</control>
 		</control>
@@ -254,7 +231,7 @@
 			<visible>Control.IsVisible(509)</visible>
 			<include>VisibleFadeEffect</include>
 			<posx>0</posx>
-			<posy>440</posy>
+			<posy>450</posy>
 			<control type="fixedlist" id="509">
 				<visible>Container.Content(Albums)</visible>
 				<posx>-80</posx>
@@ -337,23 +314,10 @@
 					</control>
 				</focusedlayout>
 			</control>
-			<control type="label">
-				<posx>40</posx>
-				<posy>195</posy>
-				<width>1200</width>
-				<height>30</height>
-				<font>font24_title</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scroll>true</scroll>
-				<align>center</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Label]</label>
-			</control>
 			<control type="scrollbar" id="60">
-				<posx>100</posx>
-				<posy>225</posy>
-				<width>1080</width>
+				<posx>310</posx>
+				<posy>195</posy>
+				<width>660</width>
 				<height>25</height>
 				<texturesliderbackground border="14,0,14,0">ScrollBarH.png</texturesliderbackground>
 				<texturesliderbar border="14,0,14,0">ScrollBarH_bar.png</texturesliderbar>
@@ -367,16 +331,137 @@
 				<visible>Control.IsVisible(509)</visible>
 			</control>
 		</control>
+		<control type="group">
+			<posx>180</posx>
+			<posy>40</posy>
+			<visible>Control.IsVisible(509)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>920</width>
+				<height>410</height>
+				<texture border="20">ContentPanel.png</texture>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>20</posy>
+				<width>840</width>
+				<height>20</height>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Property(Album_Artist)]</label>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>50</posy>
+				<width>840</width>
+				<height>20</height>
+				<font>font24_title</font>
+				<textcolor>blue</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="group">
+				<posx>40</posx>
+				<posy>80</posy>
+				<control type="label">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>400</width>
+					<height>30</height>
+					<font>font13_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<scroll>true</scroll>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>31331</label>
+				</control>
+				<control type="label">
+					<posx>0</posx>
+					<posy>35</posy>
+					<width>850</width>
+					<height>30</height>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<scroll>true</scroll>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[515]: $INFO[ListItem.Genre]</label>
+					<scroll>false</scroll>
+				</control>
+				<control type="label">
+					<posx>0</posx>
+					<posy>65</posy>
+					<width>850</width>
+					<height>30</height>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<scroll>true</scroll>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[562]: $INFO[ListItem.Year]</label>
+					<scroll>false</scroll>
+				</control>
+				<control type="fadelabel">
+					<posx>0</posx>
+					<posy>95</posy>
+					<width>400</width>
+					<height>30</height>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<scroll>true</scroll>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[563]:</label>
+					<scrollout>false</scrollout>
+					<pauseatend>2000</pauseatend>
+				</control>
+				<control type="image">
+					<description>Rating value</description>
+					<posx>100</posx>
+					<posy>95</posy>
+					<width>160</width>
+					<height>32</height>
+					<aspectratio>keep</aspectratio>
+					<texture>LeftRating/$INFO[ListItem.StarRating]</texture>
+				</control>
+				<control type="textbox">
+					<description>Description Value for Album</description>
+					<posx>0</posx>
+					<posy>150</posy>
+					<width>850</width>
+					<height>140</height>
+					<font>font12</font>
+					<align>justify</align>
+					<pagecontrol>-</pagecontrol>
+					<textcolor>white</textcolor>
+					<label>$INFO[ListItem.Property(Album_Description)]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+				</control>
+			</control>
+		</control>
 	</include>
 	<include name="MusicVideoInfoListView">
 		<control type="group">
 			<visible>Control.IsVisible(511)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="list" id="511">
-				<posx>460</posx>
-				<posy>60</posy>
+				<posx>70</posx>
+				<posy>75</posy>
 				<width>760</width>
-				<height>601</height>
+				<height>561</height>
 				<onleft>2</onleft>
 				<onright>60</onright>
 				<onup>511</onup>
@@ -485,57 +570,41 @@
 					</control>
 				</focusedlayout>
 			</control>
+			<control type="scrollbar" id="60">
+				<posx>850</posx>
+				<posy>78</posy>
+				<width>25</width>
+				<height>560</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>511</onleft>
+				<onright>2</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<visible>Control.IsVisible(511)</visible>
+			</control>
 			<control type="group">
-				<control type="scrollbar" id="60">
-					<posx>1220</posx>
-					<posy>60</posy>
-					<width>25</width>
-					<height>600</height>
-					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
-					<texturesliderbar border="2,16,2,16">ScrollBarV_bar.png</texturesliderbar>
-					<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
-					<textureslidernib>ScrollBarNib.png</textureslidernib>
-					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-					<onleft>511</onleft>
-					<onright>2</onright>
-					<showonepage>false</showonepage>
-					<orientation>vertical</orientation>
-					<visible>Control.IsVisible(511)</visible>
-				</control>
+				<posx>910</posx>
+				<posy>80</posy>
 				<control type="image">
-					<posx>40</posx>
-					<posy>60</posy>
-					<width>400</width>
-					<height>300</height>
-					<aspectratio aligny="bottom">keep</aspectratio>
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>290</width>
+					<height>230</height>
+					<aspectratio>keep</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
 					<texture background="true">$INFO[ListItem.Icon]</texture>
 					<bordertexture border="8">ThumbShadow.png</bordertexture>
 					<bordersize>8</bordersize>
 				</control>
-				<control type="image">
-					<posx>40</posx>
-					<posy>350</posy>
-					<width>400</width>
-					<height>100</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>GlassTitleBar.png</texture>
-					<colordiffuse>AAFFFFFF</colordiffuse>
-				</control>
-				<control type="image">
-					<posx>48</posx>
-					<posy>352</posy>
-					<width>384</width>
-					<height>284</height>
-					<aspectratio aligny="top">keep</aspectratio>
-					<fadetime>IconCrossfadeTime</fadetime>
-					<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
-				</control>
 				<control type="grouplist">
 					<description>Media Codec Flagging Images</description>
-					<posx>40</posx>
-					<posy>360</posy>
-					<width>400</width>
+					<posx>10</posx>
+					<posy>230</posy>
+					<width>290</width>
 					<align>center</align>
 					<itemgap>0</itemgap>
 					<orientation>horizontal</orientation>
@@ -543,9 +612,9 @@
 					<include>AudioCodecFlaggingConditions</include>
 				</control>
 				<control type="label">
-					<posx>40</posx>
-					<posy>410</posy>
-					<width>400</width>
+					<posx>10</posx>
+					<posy>290</posy>
+					<width>290</width>
 					<height>25</height>
 					<label>$INFO[ListItem.Artist]</label>
 					<scroll>true</scroll>
@@ -556,22 +625,22 @@
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="label">
-					<posx>40</posx>
-					<posy>470</posy>
-					<width>400</width>
+					<posx>10</posx>
+					<posy>350</posy>
+					<width>290</width>
 					<height>25</height>
 					<label>$INFO[ListItem.Album]</label>
 					<wrapmultiline>true</wrapmultiline>
 					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13caps</font>
+					<font>font13</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="label">
-					<posx>40</posx>
-					<posy>520</posy>
-					<width>400</width>
+					<posx>10</posx>
+					<posy>410</posy>
+					<width>290</width>
 					<height>25</height>
 					<label>$INFO[ListItem.Title]</label>
 					<scroll>true</scroll>
@@ -584,38 +653,30 @@
 					<visible>!Container.Content(Albums)</visible>
 				</control>
 				<control type="label">
-					<posx>40</posx>
-					<posy>580</posy>
-					<width>400</width>
+					<posx>10</posx>
+					<posy>470</posy>
+					<width>290</width>
 					<height>25</height>
 					<label>$INFO[ListItem.Studio]</label>
 					<scroll>true</scroll>
 					<align>center</align>
 					<aligny>top</aligny>
-					<font>font13caps</font>
+					<font>font13</font>
 					<textcolor>grey2</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
 				</control>
 				<control type="label">
 					<description>Year txt</description>
-					<posx>40</posx>
-					<posy>640</posy>
-					<width>400</width>
+					<posx>10</posx>
+					<posy>530</posy>
+					<width>290</width>
 					<height>25</height>
 					<label>$INFO[listitem.Year,[COLOR=blue]$LOCALIZE[345]: [/COLOR]]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
-				</control>
-				<control type="image">
-					<posx>440</posx>
-					<posy>60</posy>
-					<width>5</width>
-					<height>600</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>separator_vertical.png</texture>
 				</control>
 			</control>
 		</control>
@@ -625,10 +686,10 @@
 			<visible>Control.IsVisible(512)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="list" id="512">
-				<posx>660</posx>
-				<posy>60</posy>
+				<posx>70</posx>
+				<posy>78</posy>
 				<width>580</width>
-				<height>601</height>
+				<height>561</height>
 				<onleft>2</onleft>
 				<onright>60</onright>
 				<onup>512</onup>
@@ -691,90 +752,42 @@
 					</control>
 				</focusedlayout>
 			</control>
-			<control type="group">
-				<posx>50</posx>
-				<posy>60</posy>
-				<control type="scrollbar" id="60">
-					<posx>1180</posx>
-					<posy>10</posy>
-					<width>25</width>
-					<height>600</height>
-					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
-					<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
-					<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
-					<textureslidernib>ScrollBarNib.png</textureslidernib>
-					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-					<onleft>512</onleft>
-					<onright>2</onright>
-					<showonepage>false</showonepage>
-					<orientation>vertical</orientation>
-					<visible>Control.IsVisible(512)</visible>
-				</control>
+			<control type="scrollbar" id="60">
+				<posx>650</posx>
+				<posy>78</posy>
+				<width>25</width>
+				<height>560</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>512</onleft>
+				<onright>2</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<visible>Control.IsVisible(512)</visible>
 			</control>
 			<control type="group">
-				<posx>50</posx>
-				<posy>60</posy>
-				<control type="label">
-					<description>Artist Title txt</description>
+				<posx>710</posx>
+				<posy>70</posy>
+				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>600</width>
-					<height>15</height>
-					<label>$INFO[ListItem.Label]</label>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-					<wrapmultiline>true</wrapmultiline>
-				</control>
-				<control type="image">
-					<posx>0</posx>
-					<posy>30</posy>
-					<width>600</width>
-					<height>340</height>
-					<aspectratio aligny="top">keep</aspectratio>
-					<fadetime>IconCrossfadeTime</fadetime>
-					<texture background="true" fallback="Fanart_Fallback_Music_Small.jpg" >$INFO[ListItem.Property(fanart_image)]</texture>
-					<bordertexture border="8">ThumbShadow.png</bordertexture>
-					<bordersize>8</bordersize>
-					<visible>!Skin.HasSetting(MusicLibraryFanartView512)</visible>
-				</control>
-				<control type="image">
-					<posx>0</posx>
-					<posy>30</posy>
-					<width>600</width>
-					<height>340</height>
+					<width>510</width>
+					<height>300</height>
 					<aspectratio>keep</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
 					<texture background="true">$INFO[ListItem.Icon]</texture>
 					<bordertexture border="8">ThumbShadow.png</bordertexture>
 					<bordersize>8</bordersize>
-					<visible>Skin.HasSetting(MusicLibraryFanartView512)</visible>
-				</control>
-				<control type="image">
-					<posx>8</posx>
-					<posy>502</posy>
-					<width>584</width>
-					<height>324</height>
-					<aspectratio aligny="top">keep</aspectratio>
-					<fadetime>IconCrossfadeTime</fadetime>
-					<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
-					<visible>Skin.HasSetting(MusicLibraryFanartView512)</visible>
 				</control>
 				<control type="group">
-					<posy>200</posy>
-					<control type="image">
-						<posx>0</posx>
-						<posy>205</posy>
-						<width>600</width>
-						<height>4</height>
-						<texture>separator.png</texture>
-					</control>
+					<posy>310</posy>
 					<control type="label">
 						<description>Born txt</description>
 						<posx>140</posx>
-						<posy>215</posy>
+						<posy>0</posy>
 						<width>140</width>
 						<height>25</height>
 						<label>$LOCALIZE[21893]:</label>
@@ -787,8 +800,8 @@
 					<control type="label">
 						<description>Born Value</description>
 						<posx>150</posx>
-						<posy>215</posy>
-						<width>450</width>
+						<posy>0</posy>
+						<width>350</width>
 						<height>25</height>
 						<label>$INFO[ListItem.Property(Artist_Born)]</label>
 						<align>left</align>
@@ -800,7 +813,7 @@
 					<control type="label">
 						<description>Formed txt</description>
 						<posx>140</posx>
-						<posy>215</posy>
+						<posy>0</posy>
 						<width>140</width>
 						<height>25</height>
 						<label>$LOCALIZE[21894]:</label>
@@ -813,8 +826,8 @@
 					<control type="label">
 						<description>Formed Value</description>
 						<posx>150</posx>
-						<posy>215</posy>
-						<width>450</width>
+						<posy>0</posy>
+						<width>350</width>
 						<height>25</height>
 						<label>$INFO[ListItem.Property(Artist_Formed)]</label>
 						<align>left</align>
@@ -826,7 +839,7 @@
 					<control type="label">
 						<description>Genre txt</description>
 						<posx>140</posx>
-						<posy>240</posy>
+						<posy>30</posy>
 						<width>140</width>
 						<height>25</height>
 						<label>$LOCALIZE[515]:</label>
@@ -838,8 +851,8 @@
 					<control type="label">
 						<description>Genre Value</description>
 						<posx>150</posx>
-						<posy>240</posy>
-						<width>450</width>
+						<posy>30</posy>
+						<width>350</width>
 						<height>25</height>
 						<label fallback="416">$INFO[ListItem.Property(Artist_Genre)]</label>
 						<align>left</align>
@@ -849,17 +862,17 @@
 					</control>
 					<control type="image">
 						<posx>0</posx>
-						<posy>275</posy>
-						<width>550</width>
+						<posy>60</posy>
+						<width>510</width>
 						<height>4</height>
 						<texture>separator.png</texture>
 					</control>
 					<control type="textbox">
 						<description>Description Value for Artist</description>
-						<posx>0</posx>
-						<posy>290</posy>
-						<width>600</width>
-						<height>120</height>
+						<posx>10</posx>
+						<posy>65</posy>
+						<width>490</width>
+						<height>190</height>
 						<font>font12</font>
 						<align>justify</align>
 						<textcolor>white</textcolor>
@@ -875,10 +888,10 @@
 			<visible>Control.IsVisible(513)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="list" id="513">
-				<posx>460</posx>
-				<posy>60</posy>
-				<width>760</width>
-				<height>361</height>
+				<posx>70</posx>
+				<posy>75</posy>
+				<width>780</width>
+				<height>561</height>
 				<onleft>2</onleft>
 				<onright>51360</onright>
 				<onup>513</onup>
@@ -887,11 +900,11 @@
 				<pagecontrol>51360</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<visible>Container.Content(Albums)</visible>
-				<itemlayout height="40" width="760">
+				<itemlayout height="40" width="780">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>760</width>
+						<width>780</width>
 						<height>41</height>
 						<texture border="0,2,0,2">MenuItemNF.png</texture>
 					</control>
@@ -908,7 +921,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>750</posx>
+						<posx>760</posx>
 						<posy>0</posy>
 						<width>700</width>
 						<height>40</height>
@@ -920,11 +933,11 @@
 						<label>$INFO[ListItem.Label2]</label>
 					</control>
 				</itemlayout>
-				<focusedlayout height="40" width="760">
+				<focusedlayout height="40" width="780">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>760</width>
+						<width>780</width>
 						<height>41</height>
 						<texture border="0,2,0,2">MenuItemNF.png</texture>
 						<visible>!Control.HasFocus(513)</visible>
@@ -933,14 +946,14 @@
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>760</width>
+						<width>780</width>
 						<height>41</height>
 						<texture border="0,2,0,2">MenuItemFO.png</texture>
 						<visible>Control.HasFocus(513)</visible>
 						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="image">
-						<posx>560</posx>
+						<posx>580</posx>
 						<posy>5</posy>
 						<width>200</width>
 						<height>31</height>
@@ -960,7 +973,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>750</posx>
+						<posx>760</posx>
 						<posy>0</posy>
 						<width>700</width>
 						<height>40</height>
@@ -973,177 +986,61 @@
 					</control>
 				</focusedlayout>
 			</control>
+			<control type="scrollbar" id="51360">
+				<posx>850</posx>
+				<posy>78</posy>
+				<width>25</width>
+				<height>560</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>513</onleft>
+				<onright>2</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<visible>Control.IsVisible(513)</visible>
+			</control>
 			<control type="group">
-				<control type="scrollbar" id="51360">
-					<posx>1220</posx>
-					<posy>60</posy>
-					<width>25</width>
-					<height>360</height>
-					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
-					<texturesliderbar border="2,16,2,16">ScrollBarV_bar.png</texturesliderbar>
-					<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
-					<textureslidernib>ScrollBarNib.png</textureslidernib>
-					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-					<onleft>513</onleft>
-					<onright>51361</onright>
-					<showonepage>false</showonepage>
-					<orientation>vertical</orientation>
-					<visible>Control.IsVisible(513)</visible>
-				</control>
+				<posx>910</posx>
+				<posy>70</posy>
 				<control type="image">
-					<posx>40</posx>
-					<posy>60</posy>
-					<width>400</width>
-					<height>340</height>
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>290</width>
+					<height>240</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>IconCrossfadeTime</fadetime>
 					<texture background="true">$INFO[ListItem.Icon]</texture>
 					<bordertexture border="8">ThumbShadow.png</bordertexture>
 					<bordersize>8</bordersize>
 				</control>
-				<control type="image">
-					<posx>40</posx>
-					<posy>390</posy>
-					<width>400</width>
-					<height>100</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>GlassTitleBar.png</texture>
-					<colordiffuse>AAFFFFFF</colordiffuse>
-				</control>
-				<control type="image">
-					<posx>48</posx>
-					<posy>392</posy>
-					<width>384</width>
-					<height>324</height>
-					<aspectratio aligny="top">keep</aspectratio>
-					<fadetime>IconCrossfadeTime</fadetime>
-					<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
-				</control>
-				<control type="image">
-					<posx>440</posx>
-					<posy>60</posy>
-					<width>5</width>
-					<height>600</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>separator_vertical.png</texture>
-				</control>
-				<control type="image">
-					<posx>440</posx>
-					<posy>440</posy>
-					<width>800</width>
-					<height>4</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>separator.png</texture>
-				</control>
-				<control type="label">
-					<posx>40</posx>
-					<posy>450</posy>
-					<width>400</width>
-					<height>25</height>
-					<label>$INFO[ListItem.Artist]</label>
-					<scroll>true</scroll>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font24_title</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<posx>40</posx>
-					<posy>500</posy>
-					<width>400</width>
-					<height>25</height>
-					<label>$INFO[ListItem.Album]</label>
-					<wrapmultiline>true</wrapmultiline>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13caps</font>
-					<textcolor>grey2</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<posx>40</posx>
-					<posy>550</posy>
-					<width>400</width>
-					<height>25</height>
-					<label>$INFO[ListItem.Genre]</label>
-					<scroll>true</scroll>
-					<align>center</align>
-					<aligny>top</aligny>
-					<font>font13_title</font>
-					<textcolor>white</textcolor>
-					<shadowcolor>black</shadowcolor>
-					<wrapmultiline>true</wrapmultiline>
-				</control>
-				<control type="label">
-					<description>Year txt</description>
-					<posx>40</posx>
-					<posy>600</posy>
-					<width>400</width>
-					<height>25</height>
-					<label>$INFO[listitem.Year,[COLOR=blue]$LOCALIZE[345]: [/COLOR]]</label>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font13_title</font>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="image">
-					<description>Rating value</description>
-					<posx>165</posx>
-					<posy>630</posy>
-					<width>150</width>
-					<height>30</height>
-					<texture>CenterRating/$INFO[ListItem.StarRating]</texture>
-				</control>
-				<control type="image">
-					<posx>440</posx>
-					<posy>440</posy>
-					<width>800</width>
-					<height>4</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>separator.png</texture>
-				</control>
 				<control type="label">
 					<description>Description Header txt</description>
-					<posx>460</posx>
-					<posy>460</posy>
-					<width>750</width>
+					<posx>10</posx>
+					<posy>240</posy>
+					<width>290</width>
 					<height>25</height>
 					<label>21821</label>
-					<align>left</align>
+					<align>center</align>
 					<aligny>center</aligny>
-					<font>font13_title</font>
+					<font>font12_title</font>
 					<textcolor>blue</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="textbox">
 					<description>Description Value for Album</description>
-					<posx>460</posx>
-					<posy>490</posy>
-					<width>750</width>
-					<height>165</height>
+					<posx>10</posx>
+					<posy>270</posy>
+					<width>290</width>
+					<height>300</height>
 					<font>font12</font>
 					<align>justify</align>
-					<pagecontrol>51361</pagecontrol>
+					<pagecontrol>-</pagecontrol>
 					<textcolor>white</textcolor>
 					<label>$INFO[ListItem.Property(Album_Description)]</label>
 					<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
-				</control>
-				<control type="scrollbar" id="51361">
-					<posx>1220</posx>
-					<posy>495</posy>
-					<width>25</width>
-					<height>170</height>
-					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
-					<texturesliderbar border="2,16,2,16">ScrollBarV_bar.png</texturesliderbar>
-					<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
-					<textureslidernib>ScrollBarNib.png</textureslidernib>
-					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-					<onleft>51360</onleft>
-					<onright>2</onright>
-					<showonepage>false</showonepage>
-					<orientation>vertical</orientation>
-					<visible>Control.IsVisible(513)</visible>
 				</control>
 			</control>
 		</control>

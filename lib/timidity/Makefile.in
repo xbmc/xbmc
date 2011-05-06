@@ -1,5 +1,4 @@
 ARCH=@ARCH@
-SYSROOT=@SYSROOT@
 
 CFLAGS+=-D_LINUX -fPIC -DHAVE_GETTIMEOFDAY -I. -Itimidity -Ilibarc -Iutils
 ifeq ($(ARCH), powerpc-osx)
@@ -54,7 +53,7 @@ SLIB=@abs_top_srcdir@/system/players/paplayer/timidity-@ARCH@.so
 
 $(SLIB): $(OBJS) exports.def
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(SYSROOT) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias -bundle \
+	$(CXX) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias -bundle \
 	-undefined dynamic_lookup -read_only_relocs suppress -o $@ @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o $(OBJS) $(BUNDLE1_O)
 else
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(OBJS) `cat @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.def` @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o -Wl,--version-script=exports.def

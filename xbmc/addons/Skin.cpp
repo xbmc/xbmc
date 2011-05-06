@@ -27,7 +27,11 @@
 #include "utils/URIUtils.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "settings/GUISettings.h"
+
+// fallback for new skin resolution code
+#include "filesystem/Directory.h"
 
 using namespace std;
 using namespace XFILE;
@@ -39,16 +43,44 @@ boost::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;
 namespace ADDON
 {
 
-CSkinInfo::CSkinInfo(const AddonProps &props, RESOLUTION res)
-  : CAddon(props), m_DefaultResolution(res), m_DefaultResolutionWide(res)
+CSkinInfo::CSkinInfo(const AddonProps &props, const RESOLUTION_INFO &resolution)
+  : CAddon(props), m_defaultRes(resolution)
 {
 }
 
 CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   : CAddon(ext)
 {
-  m_DefaultResolution = TranslateResolution(CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultresolution"), RES_PAL_4x3);
-  m_DefaultResolutionWide = TranslateResolution(CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultresolutionwide"), RES_INVALID);
+  ELEMENTS elements;
+  if (CAddonMgr::Get().GetExtElements(ext->configuration, "res", elements))
+  {
+    for (ELEMENTS::iterator i = elements.begin(); i != elements.end(); ++i)
+    {
+      float width = (float)atof(CAddonMgr::Get().GetExtValue(*i, "@width"));
+      float height = (float)atof(CAddonMgr::Get().GetExtValue(*i, "@height"));
+      bool defRes = CAddonMgr::Get().GetExtValue(*i, "@default").Equals("true");
+      CStdString folder = CAddonMgr::Get().GetExtValue(*i, "@folder");
+      float aspect = 0;
+      CStdStringArray fracs;
+      StringUtils::SplitString(CAddonMgr::Get().GetExtValue(*i, "@aspect"), ":", fracs);
+      if (fracs.size() == 2)
+        aspect = (float)atof(fracs[0].c_str())/atof(fracs[1].c_str());
+      if (width > 0 && height > 0)
+      {
+        RESOLUTION_INFO res(width, height, aspect, folder);
+        if (defRes)
+          m_defaultRes = res;
+        m_resolutions.push_back(res);
+      }
+    }
+  }
+  else
+  { // no resolutions specified -> backward compatibility
+    CStdString defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultwideresolution");
+    if (defaultWide.IsEmpty())
+      defaultWide = CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultresolution");
+    TranslateResolution(defaultWide, m_defaultRes);
+  }
 
   CStdString str = CAddonMgr::Get().GetExtValue(ext->configuration, "@effectslowdown");
   if (!str.IsEmpty())
@@ -65,115 +97,75 @@ CSkinInfo::CSkinInfo(const cp_extension_t *ext)
 }
 
 CSkinInfo::~CSkinInfo()
-{}
-
-void CSkinInfo::Start(const CStdString& strSkinDir /* = "" */)
 {
-  CLog::Log(LOGINFO, "Default 4:3 resolution directory is %s", URIUtils::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)).c_str());
-  CLog::Log(LOGINFO, "Default 16:9 resolution directory is %s", URIUtils::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolutionWide)).c_str());
+}
+
+void CSkinInfo::Start(const CStdString &strBaseDir)
+{
+  if (!m_resolutions.size())
+  { // try falling back to whatever resolutions exist in the directory
+    CFileItemList items;
+    CDirectory::GetDirectory(Path(), items, "", false);
+    for (int i = 0; i < items.Size(); i++)
+    {
+      RESOLUTION_INFO res;
+      if (items[i]->m_bIsFolder && TranslateResolution(items[i]->GetLabel(), res))
+        m_resolutions.push_back(res);
+    }
+  }
   LoadIncludes();
 }
 
-CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, const CStdString& strBaseDir /* = "" */) const
+struct closestRes
 {
+  closestRes(const RESOLUTION_INFO &target) : m_target(target) { };
+  bool operator()(const RESOLUTION_INFO &i, const RESOLUTION_INFO &j)
+  {
+    float diff = fabs(i.DisplayRatio() - m_target.DisplayRatio()) - fabs(j.DisplayRatio() - m_target.DisplayRatio());
+    if (diff < 0) return true;
+    if (diff > 0) return false;
+    diff = fabs((float)i.iHeight - m_target.iHeight) - fabs((float)j.iHeight - m_target.iHeight);
+    if (diff < 0) return true;
+    if (diff > 0) return false;
+    return fabs((float)i.iWidth - m_target.iWidth) < fabs((float)j.iWidth - m_target.iWidth);
+  }
+  RESOLUTION_INFO m_target;
+};
+
+CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION_INFO *res, const CStdString& strBaseDir /* = "" */) const
+{
+  if (m_resolutions.empty())
+    return ""; // invalid skin
+
   CStdString strPathToUse = Path();
   if (!strBaseDir.IsEmpty())
     strPathToUse = strBaseDir;
 
   // if the caller doesn't care about the resolution just use a temporary
-  RESOLUTION tempRes = RES_INVALID;
+  RESOLUTION_INFO tempRes;
   if (!res)
     res = &tempRes;
 
-  // first try and load from the current resolution's directory
-  *res = g_graphicsContext.GetVideoResolution();
-  if (*res >= RES_WINDOW)
-  {
-    unsigned int pixels = g_settings.m_ResInfo[*res].iHeight * g_settings.m_ResInfo[*res].iWidth;
-    if (pixels >= 1600 * 900)
-    {
-      *res = RES_HDTV_1080i;
-    }
-    else if (pixels >= 900 * 600)
-    {
-      *res = RES_HDTV_720p;
-    }
-    else if (((float)g_settings.m_ResInfo[*res].iWidth) / ((float)g_settings.m_ResInfo[*res].iHeight) > 8.0f / (3.0f * sqrt(3.0f)))
-    {
-      *res = RES_PAL_16x9;
-    }
-    else
-    {
-      *res = RES_PAL_4x3;
-    }
-  }
-  CStdString strPath = URIUtils::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
+  // find the closest resolution
+  const RESOLUTION_INFO &target = g_graphicsContext.GetResInfo();
+  *res = *std::min_element(m_resolutions.begin(), m_resolutions.end(), closestRes(target));
+
+  CStdString strPath = URIUtils::AddFileToFolder(strPathToUse, res->strMode);
   strPath = URIUtils::AddFileToFolder(strPath, strFile);
   if (CFile::Exists(strPath))
     return strPath;
-  // if we're in 1080i mode, try 720p next
-  if (*res == RES_HDTV_1080i)
-  {
-    *res = RES_HDTV_720p;
-    strPath = URIUtils::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
-    strPath = URIUtils::AddFileToFolder(strPath, strFile);
-    if (CFile::Exists(strPath))
-      return strPath;
-  }
-  // that failed - drop to the default widescreen resolution if where in a widemode
-  if (*res == RES_PAL_16x9 || *res == RES_NTSC_16x9 || *res == RES_HDTV_480p_16x9 || *res == RES_HDTV_720p)
-  {
-    *res = m_DefaultResolutionWide;
-    strPath = URIUtils::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
-    strPath = URIUtils::AddFileToFolder(strPath, strFile);
-    if (CFile::Exists(strPath))
-      return strPath;
-  }
-  // that failed - drop to the default resolution
-  *res = m_DefaultResolution;
-  strPath = URIUtils::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
+
+  // use the default resolution
+  *res = m_defaultRes;
+
+  strPath = URIUtils::AddFileToFolder(strPathToUse, res->strMode);
   strPath = URIUtils::AddFileToFolder(strPath, strFile);
-  // check if we don't have any subdirectories
-  if (*res == RES_INVALID) *res = RES_PAL_4x3;
   return strPath;
 }
 
 bool CSkinInfo::HasSkinFile(const CStdString &strFile) const
 {
   return CFile::Exists(GetSkinPath(strFile));
-}
-
-CStdString CSkinInfo::GetDirFromRes(RESOLUTION res) const
-{
-  CStdString strRes;
-  switch (res)
-  {
-  case RES_PAL_4x3:
-    strRes = "PAL";
-    break;
-  case RES_PAL_16x9:
-    strRes = "PAL16x9";
-    break;
-  case RES_NTSC_4x3:
-  case RES_HDTV_480p_4x3:
-    strRes = "NTSC";
-    break;
-  case RES_NTSC_16x9:
-  case RES_HDTV_480p_16x9:
-    strRes = "ntsc16x9";
-    break;
-  case RES_HDTV_720p:
-    strRes = "720p";
-    break;
-  case RES_HDTV_1080i:
-    strRes = "1080i";
-    break;
-  case RES_INVALID:
-  default:
-    strRes = "";
-    break;
-  }
-  return strRes;
 }
 
 double CSkinInfo::GetMinVersion()
@@ -210,69 +202,45 @@ int CSkinInfo::GetStartWindow() const
 bool CSkinInfo::LoadStartupWindows(const cp_extension_t *ext)
 {
   m_startupWindows.clear();
-  /*{ // yay, run through and grab the startup windows
-    const TiXmlElement *window = startup->FirstChildElement("window");
-    while (window && window->FirstChild())
-    {
-      int id;
-      window->Attribute("id", &id);
-      CStdString name = window->FirstChild()->Value();
-      m_startupWindows.push_back(CStartupWindow(id + WINDOW_HOME, name));
-      window = window->NextSiblingElement("window");
-    }
-  }*/
-
-  // ok, now see if we have any startup windows
-  if (!m_startupWindows.size())
-  { // nope - add the default ones
-    m_startupWindows.push_back(CStartupWindow(WINDOW_HOME, "513"));
-    m_startupWindows.push_back(CStartupWindow(WINDOW_PROGRAMS, "0"));
-    m_startupWindows.push_back(CStartupWindow(WINDOW_PICTURES, "1"));
-    m_startupWindows.push_back(CStartupWindow(WINDOW_MUSIC, "2"));
-    m_startupWindows.push_back(CStartupWindow(WINDOW_VIDEOS, "3"));
-    m_startupWindows.push_back(CStartupWindow(WINDOW_FILES, "7"));
-    m_startupWindows.push_back(CStartupWindow(WINDOW_SETTINGS_MENU, "5"));
-    m_startupWindows.push_back(CStartupWindow(WINDOW_WEATHER, "8"));
-    m_onlyAnimateToHome = true;
-  }
-  else
-    m_onlyAnimateToHome = false;
+  m_startupWindows.push_back(CStartupWindow(WINDOW_HOME, "513"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_PROGRAMS, "0"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_PICTURES, "1"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_MUSIC, "2"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_VIDEOS, "3"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_FILES, "7"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_SETTINGS_MENU, "5"));
+  m_startupWindows.push_back(CStartupWindow(WINDOW_WEATHER, "8"));
+  m_onlyAnimateToHome = true;
   return true;
-}
-
-bool CSkinInfo::IsWide(RESOLUTION res) const
-{
-  return (res == RES_PAL_16x9 || res == RES_NTSC_16x9 || res == RES_HDTV_480p_16x9 || res == RES_HDTV_720p || res == RES_HDTV_1080i);
 }
 
 void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
 {
-  RESOLUTION resToUse = RES_INVALID;
-  GetSkinPath("Home.xml", &resToUse);
-  paths.push_back(URIUtils::AddFileToFolder(Path(), GetDirFromRes(resToUse)));
-  // see if we need to add other paths
-  if (resToUse != m_DefaultResolutionWide && IsWide(resToUse))
-    paths.push_back(URIUtils::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolutionWide)));
-  if (resToUse != m_DefaultResolution && (!IsWide(resToUse) || m_DefaultResolutionWide != m_DefaultResolution))
-    paths.push_back(URIUtils::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)));
+  RESOLUTION_INFO res;
+  GetSkinPath("Home.xml", &res);
+  if (!res.strMode.empty())
+    paths.push_back(URIUtils::AddFileToFolder(Path(), res.strMode));
+  if (res.strMode != m_defaultRes.strMode)
+    paths.push_back(URIUtils::AddFileToFolder(Path(), m_defaultRes.strMode));
 }
 
-RESOLUTION CSkinInfo::TranslateResolution(const CStdString &res, RESOLUTION def)
+bool CSkinInfo::TranslateResolution(const CStdString &name, RESOLUTION_INFO &res)
 {
-  if (res.Equals("pal"))
-    return RES_PAL_4x3;
-  else if (res.Equals("pal16x9"))
-    return RES_PAL_16x9;
-  else if (res.Equals("ntsc"))
-    return RES_NTSC_4x3;
-  else if (res.Equals("ntsc16x9"))
-    return RES_NTSC_16x9;
-  else if (res.Equals("720p"))
-    return RES_HDTV_720p;
-  else if (res.Equals("1080i"))
-    return RES_HDTV_1080i;
-  CLog::Log(LOGERROR, "%s invalid resolution specified for %s", __FUNCTION__, res.c_str());
-  return def;
+  if (name.Equals("pal"))
+    res = RESOLUTION_INFO(720, 576, 4.0f/3, "pal");
+  else if (name.Equals("pal16x9"))
+    res = RESOLUTION_INFO(720, 576, 16.0f/9, "pal16x9");
+  else if (name.Equals("ntsc"))
+    res = RESOLUTION_INFO(720, 480, 4.0f/3, "ntsc");
+  else if (name.Equals("ntsc16x9"))
+    res = RESOLUTION_INFO(720, 480, 16.0f/9, "ntsc16x9");
+  else if (name.Equals("720p"))
+    res = RESOLUTION_INFO(1280, 720, 0, "720p");
+  else if (name.Equals("1080i"))
+    res = RESOLUTION_INFO(1920, 1080, 0, "1080i");
+  else
+    return false;
+  return true;
 }
 
 int CSkinInfo::GetFirstWindow() const
