@@ -24,21 +24,17 @@
 #include <string.h>
 #include <map>
 #include <vector>
-
-namespace SOCKETS
-{
-
-#ifdef _LINUX
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+#ifdef _LINUX
 typedef int SOCKET;
-#else
-typedef int socklen_t;
 #endif
 
+namespace SOCKETS
+{
   // types of sockets
   enum SocketType
   {

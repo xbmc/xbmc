@@ -28,13 +28,8 @@
 #include <string>
 #include <vector>
 
-#if defined(_LINUX)
-#include <unistd.h>
+#include <sys/socket.h>
 #include <netdb.h>
-#elif defined(_WIN32)
-#include <Ws2tcpip.h>
-typedef int socklen_t;
-#endif
 
 //using namespace std; On VS2010, bind conflicts with std::bind
 

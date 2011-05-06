@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #include "settings/AdvancedSettings.h"
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "interfaces/AnnouncementManager.h"
@@ -9,11 +12,6 @@
 #include "utils/Variant.h"
 #include "threads/SingleLock.h"
 
-#ifdef _WIN32
-extern "C" int inet_pton(int af, const char *src, void *dst);
-#define close closesocket
-#define SHUT_RDWR SD_BOTH
-#endif
 
 using namespace JSONRPC;
 using namespace ANNOUNCEMENT;
