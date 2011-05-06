@@ -220,7 +220,7 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
   if (!file.empty() && !CDirectory::Exists(file) && (URIUtils::IsURL(file) || CFile::Exists(file)))
   {
     bool added = false;
-    for (unsigned int index = 0; index < list.Size(); index++)
+    for (int index = 0; index < list.Size(); index++)
     {
       if (list[index]->m_strPath == file)
       {
