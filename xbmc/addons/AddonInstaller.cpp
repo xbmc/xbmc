@@ -556,4 +556,10 @@ bool CAddonUnInstallJob::DoWork()
 
 void CAddonUnInstallJob::OnPostUnInstall()
 {
+  if (m_addon->Type() == ADDON_REPOSITORY)
+  {
+    CAddonDatabase database;
+    database.Open();
+    database.DeleteRepository(m_addon->ID());
+  }
 }
