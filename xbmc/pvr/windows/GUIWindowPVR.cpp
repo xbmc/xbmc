@@ -123,6 +123,8 @@ void CGUIWindowPVR::OnInitWindow(void)
 
   CreateViews();
 
+  SET_CONTROL_VISIBLE(10);
+
   CSingleLock lock(m_critSection);
   if (m_savedSubwindow)
     m_savedSubwindow->OnInitWindow();
