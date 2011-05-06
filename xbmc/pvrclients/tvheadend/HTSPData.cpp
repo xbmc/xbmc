@@ -680,7 +680,7 @@ bool CHTSPData::GetEvent(SEvent& event, uint32_t id)
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "getEvent");
   htsmsg_add_u32(msg, "eventId", id);
-  if((msg = m_session->ReadResult(msg, true)) == NULL)
+  if((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_DEBUG, "%s - failed to get event %d", __FUNCTION__, id);
     return false;

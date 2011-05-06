@@ -182,8 +182,12 @@ bool CHTSPConnection::SendMessage(htsmsg_t* m)
 
 htsmsg_t* CHTSPConnection::ReadResult(htsmsg_t* m, bool sequence)
 {
+  uint32_t iSequence = 0;
   if(sequence)
-    htsmsg_add_u32(m, "seq", ++m_iSequence);
+  {
+    iSequence = AddSequence();
+    htsmsg_add_u32(m, "seq", iSequence);
+  }
 
   if(!SendMessage(m))
     return NULL;
@@ -196,7 +200,7 @@ htsmsg_t* CHTSPConnection::ReadResult(htsmsg_t* m, bool sequence)
     uint32_t seq;
     if(!sequence)
       break;
-    if(!htsmsg_get_u32(m, "seq", &seq) && seq == m_iSequence)
+    if(!htsmsg_get_u32(m, "seq", &seq) && seq == iSequence)
       break;
 
     queue.push_back(m);
