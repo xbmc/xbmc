@@ -45,9 +45,15 @@ using namespace std;
 #pragma const_seg("PY_RDATA")
 #endif
 
-// This is a shortcut for grabbing the g_graphicsContext lock while not holding onto the GIL
-// It will only work once in method ... 
-#define GIL_SAFE_SINGLELOCK(x) CPyThreadState _tsg; CSingleLock lock(x); _tsg.Restore()
+/**
+ * A CSingleLock that will relinquish the GIL during the time
+ *  it takes to obtain the CriticalSection
+ */
+class GilSafeSingleLock : public CPyThreadState, public CSingleLock
+{
+public:
+  GilSafeSingleLock(const CCriticalSection& critSec) : CPyThreadState(true), CSingleLock(critSec) { CPyThreadState::Restore(); }
+};
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,7 +66,7 @@ namespace PYXBMC
   // used by Dialog to to create a new dialogWindow
   bool Window_CreateNewWindow(Window* pWindow, bool bAsDialog)
   {
-    GIL_SAFE_SINGLELOCK(g_graphicsContext);
+    GilSafeSingleLock lock(g_graphicsContext);
 
     if (pWindow->iWindowId != -1)
     {
@@ -139,7 +145,7 @@ namespace PYXBMC
     }
 
     // lock xbmc GUI before accessing data from it
-    GIL_SAFE_SINGLELOCK(g_graphicsContext);
+    GilSafeSingleLock lock(g_graphicsContext);
 
     // check if control exists
     CGUIControl* pGUIControl = (CGUIControl*)self->pWindow->GetControl(iControlId);
@@ -327,7 +333,7 @@ namespace PYXBMC
 
   void Window_Dealloc(Window* self)
   {
-    GIL_SAFE_SINGLELOCK(g_graphicsContext);
+    GilSafeSingleLock lock(g_graphicsContext);
     if (self->bIsPythonWindow)
     {
       // first change to an existing window
@@ -563,7 +569,7 @@ namespace PYXBMC
     }
 
     // lock xbmc GUI before accessing data from it
-    GIL_SAFE_SINGLELOCK(g_graphicsContext);
+    GilSafeSingleLock lock(g_graphicsContext);
     pControl->iParentId = self->iWindowId;
     // assign control id, if id is already in use, try next id
     do pControl->iControlId = ++self->iCurrentControlId;
@@ -712,7 +718,7 @@ namespace PYXBMC
 
   PyObject* Window_GetFocus(Window *self, PyObject *args)
   {
-    GIL_SAFE_SINGLELOCK(g_graphicsContext);
+    GilSafeSingleLock lock(g_graphicsContext);
 
     int iControlId = self->pWindow->GetFocusedControlID();
     if(iControlId == -1)
@@ -733,7 +739,7 @@ namespace PYXBMC
 
   PyObject* Window_GetFocusId(Window *self, PyObject *args)
   {
-    GIL_SAFE_SINGLELOCK(g_graphicsContext);
+    GilSafeSingleLock lock(g_graphicsContext);
     int iControlId = self->pWindow->GetFocusedControlID();
     if(iControlId == -1)
     {
@@ -762,7 +768,7 @@ namespace PYXBMC
       PyErr_SetString(PyExc_TypeError, "Object should be of type Control");
       return NULL;
     }
-    GIL_SAFE_SINGLELOCK(g_graphicsContext);
+    GilSafeSingleLock lock(g_graphicsContext);
     if(!self->pWindow->GetControl(pControl->iControlId))
     {
       PyErr_SetString(PyExc_RuntimeError, "Control does not exist in window");
@@ -857,7 +863,7 @@ namespace PYXBMC
       return NULL;
     }
 
-    GIL_SAFE_SINGLELOCK(g_graphicsContext);
+    GilSafeSingleLock lock(g_graphicsContext);
     self->pWindow->SetCoordsRes(g_settings.m_ResInfo[res]);
 
     Py_INCREF(Py_None);
@@ -901,7 +907,7 @@ namespace PYXBMC
     if (!PyXBMCGetUnicodeString(uText, value, 1))
       return NULL;
 
-    GIL_SAFE_SINGLELOCK(g_graphicsContext);
+    GilSafeSingleLock lock(g_graphicsContext);
     CStdString lowerKey = key;
 
     self->pWindow->SetProperty(lowerKey.ToLower(), uText);
@@ -938,7 +944,7 @@ namespace PYXBMC
       return NULL;    }
     if (!key) return NULL;
 
-    GIL_SAFE_SINGLELOCK(g_graphicsContext);
+    GilSafeSingleLock lock(g_graphicsContext);
     CStdString lowerKey = key;
     string value = self->pWindow->GetProperty(lowerKey.ToLower());
 
@@ -973,7 +979,7 @@ namespace PYXBMC
       return NULL;
     }
     if (!key) return NULL;
-    GIL_SAFE_SINGLELOCK(g_graphicsContext);
+    GilSafeSingleLock lock(g_graphicsContext);
 
     CStdString lowerKey = key;
     self->pWindow->SetProperty(lowerKey.ToLower(), "");
@@ -991,7 +997,7 @@ namespace PYXBMC
 
   PyObject* Window_ClearProperties(Window *self, PyObject *args)
   {
-    GIL_SAFE_SINGLELOCK(g_graphicsContext);
+    GilSafeSingleLock lock(g_graphicsContext);
     self->pWindow->ClearProperties();
 
     Py_INCREF(Py_None);
