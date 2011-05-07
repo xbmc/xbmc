@@ -114,7 +114,7 @@
 					<itemgap>5</itemgap>
 					<orientation>horizontal</orientation>
 					<control type="label">
-						<width min="10" max="710">auto</width>
+						<width min="10" max="700">auto</width>
 						<height>30</height>
 						<font>font30</font>
 						<align>left</align>
@@ -125,17 +125,33 @@
 					</control>
 					<control type="image">
 						<description>Audio Codec Image</description>
-						<width>90</width>
+						<width>80</width>
 						<height>35</height>
 						<aspectratio align="right">keep</aspectratio>
 						<texture>$INFO[MusicPlayer.Codec,flagging/audio/,.png]</texture>
 					</control>
-					<control type="image">
+					<control type="group">
 						<description>Rating</description>
 						<width>110</width>
 						<height>35</height>
-						<aspectratio align="center">keep</aspectratio>
-						<texture fallback="LeftRating/rating0.png">$INFO[Player.StarRating,LeftRating/]</texture>
+						<control type="image">
+							<description>rating back</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>110</width>
+							<height>35</height>
+							<aspectratio align="left">stretch</aspectratio>
+							<texture border="5">flagging/blank.png</texture>
+						</control>
+						<control type="image">
+							<description>Rating</description>
+							<posx>5</posx>
+							<posy>0</posy>
+							<width>100</width>
+							<height>35</height>
+							<aspectratio align="center">keep</aspectratio>
+							<texture fallback="LeftRating/rating0.png">$INFO[Player.StarRating,LeftRating/]</texture>
+						</control>
 					</control>
 				</control>
 				<control type="label">
