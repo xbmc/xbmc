@@ -3644,12 +3644,6 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     {
       m_State.canrecord = input->CanRecord();
       m_State.recording = input->IsRecording();
-
-      if(input->GetTotalTime() > 0)
-      {
-        m_State.time       = input->GetStartTime();
-        m_State.time_total = input->GetTotalTime();
-      }
     }
 
     m_State.file_position = m_pInputStream->Seek(0, SEEK_CUR);
