@@ -4804,8 +4804,14 @@ void CApplication::Process()
     ProcessSlow();
   }
 
+  unsigned int currentTime = CTimeUtils::GetFrameTime();
+
   // Process events and animate controls before rendering
-  g_windowManager.Process(CTimeUtils::GetFrameTime());
+  g_windowManager.Process(currentTime);
+
+  // Render the mouse pointer
+  if (g_Mouse.IsActive())
+    m_guiPointer.DoProcess(currentTime);
 }
 
 // We get called every 500ms
