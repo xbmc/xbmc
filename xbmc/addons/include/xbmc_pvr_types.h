@@ -287,7 +287,7 @@ extern "C" {
     const char *  strPlot;              /*!< @brief (optional) plot */
     const char *  strChannelName;       /*!< @brief (optional) channel name */
     time_t        recordingTime;        /*!< @brief (optional) start time of the recording */
-    int           iDuration;            /*!< @brief (optional) duration of the recording */
+    int           iDuration;            /*!< @brief (optional) duration of the recording in seconds */
     int           iPriority;            /*!< @brief (optional) priority of this recording (from 0 - 100) */
     int           iLifetime;            /*!< @brief (optional) life time in days of this recording */
     int           iGenreType;           /*!< @brief (optional) genre type */

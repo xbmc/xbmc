@@ -703,7 +703,7 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
   else if (g_PVRClients->GetPlayingRecording(&recording))
   {
     m_playingEpgTag = NULL;
-    m_iDuration = recording.GetDuration() * 60 * 1000;
+    m_iDuration = recording.GetDuration() * 1000;
   }
 }
 
