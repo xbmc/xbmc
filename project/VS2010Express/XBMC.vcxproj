@@ -2000,14 +2000,6 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
-    <ProjectReference Include="..\..\lib\win32\libcdio\libcdio.vcxproj">
-      <Project>{e465056a-c6f3-45ee-b791-caf8e0ce629d}</Project>
-      <Private>true</Private>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
     <ProjectReference Include="..\..\lib\win32\libiconv\libiconv_win32\libiconv_win32.vcxproj">
       <Project>{7a74ed4b-2bf5-47d7-b43e-c80f714417fb}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
