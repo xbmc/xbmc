@@ -649,7 +649,7 @@ bool CGUIWindow::Initialize()
 {
   if (!g_windowManager.Initialized())
     return false;     // can't load if we have no skin yet
-  return Load(GetProperty("xmlfile"));
+  return OnMessage(CGUIMessage(GUI_MSG_WINDOW_INIT, 0, 0));
 }
 
 void CGUIWindow::SetInitialVisibility()
