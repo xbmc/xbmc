@@ -154,11 +154,12 @@ void CGUIControl::DoProcess(unsigned int currentTime)
   if (IsVisible())
     Process(currentTime);
 
+  FlushDirtyRegion(false);
+
   if (m_hasCamera)
     g_graphicsContext.RestoreCameraPosition();
   g_graphicsContext.RemoveTransform();
 
-  FlushDirtyRegion();
   m_bInvalidated = false;
 }
 
@@ -499,19 +500,25 @@ void CGUIControl::SendFinalDirtyRegionToParent(const CRect &dirtyRegion, const C
     g_windowManager.MarkDirtyRegion(dirtyRegion);
 }
 
-void CGUIControl::FlushDirtyRegion()
+void CGUIControl::FlushDirtyRegion(bool setMatrixBeforeFlush)
 {
   if (!m_markedLocalRegion.IsEmpty())
   {
-    g_graphicsContext.AddTransform(m_transform);
-    if (m_hasCamera)
-      g_graphicsContext.SetCameraPosition(m_camera);
+    if (setMatrixBeforeFlush)
+    {
+      g_graphicsContext.AddTransform(m_transform);
+      if (m_hasCamera)
+        g_graphicsContext.SetCameraPosition(m_camera);
+    }
 
     CRect AABB = g_graphicsContext.generateAABB(m_markedLocalRegion);
 
-    if (m_hasCamera)
-      g_graphicsContext.RestoreCameraPosition();
-    g_graphicsContext.RemoveTransform();
+    if (setMatrixBeforeFlush)
+    {
+      if (m_hasCamera)
+        g_graphicsContext.RestoreCameraPosition();
+      g_graphicsContext.RemoveTransform();
+    }
 
     // When we have transformed to screen cordinates we send it to
     // the parent which may choose to ignore it or send it further down.
@@ -896,7 +903,7 @@ void CGUIControl::Animate(unsigned int currentTime)
   if (changed)
   {
     MarkDirtyRegion();
-    FlushDirtyRegion();
+    FlushDirtyRegion(true);
 
     m_transform = newTransform;
 

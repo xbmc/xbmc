@@ -165,7 +165,7 @@ public:
 
   void MarkDirtyRegion();
   virtual void SendFinalDirtyRegionToParent(const CRect &dirtyRegion, const CGUIControl *sender);
-  void FlushDirtyRegion();
+  void FlushDirtyRegion(bool setMatrixBeforeFlush);
   virtual CRect GetRenderRegion();
 
   virtual void SetNavigation(int up, int down, int left, int right);
