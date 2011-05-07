@@ -100,11 +100,6 @@ namespace PVR
      */
     void Unload();
 
-    /*!
-     * @return Cache all channel icons in this group if guisetting "pvrmenu.iconpath" is set.
-     */
-    void CacheIcons(void);
-
   public:
     /*!
      * @brief Create a new internal channel group.
@@ -186,5 +181,10 @@ namespace PVR
      * @return True if all tables were created successfully, false otherwise.
      */
     bool CreateChannelEpgs(void);
+
+    /*!
+     * @return Cache all channel icons in this group.
+     */
+    void CacheIcons(void);
   };
 }

@@ -47,7 +47,6 @@ int CPVRChannelGroupInternal::Load(void)
 {
   int iChannelCount = CPVRChannelGroup::Load();
   UpdateChannelPaths();
-  CacheIcons();
 
   return iChannelCount;
 }

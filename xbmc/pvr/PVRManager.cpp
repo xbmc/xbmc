@@ -254,6 +254,10 @@ void CPVRManager::Process(void)
   if (pWindow)
     pWindow->UnlockWindow();
 
+  /* check whether all channel icons are cached */
+  m_channelGroups->GetGroupAllRadio()->CacheIcons();
+  m_channelGroups->GetGroupAllTV()->CacheIcons();
+
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
 
   /* main loop */
