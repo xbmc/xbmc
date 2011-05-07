@@ -67,7 +67,7 @@ namespace PVR
     void Reset(void);
 
     /*!
-     * @brief The duration of this recording in minutes.
+     * @brief The duration of this recording in seconds.
      * @return The duration.
      */
     int GetDuration() const;
