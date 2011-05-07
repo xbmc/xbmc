@@ -1518,6 +1518,8 @@
   <string id="16318">Temporal/Spatial (Half)</string>
   <string id="16319">DXVA</string>
   <string id="16320">Auto - ION Optimized</string>
+  <string id="16321">Best available</string>
+  <string id="16322">Best available (inverted)</string>
 
   <string id="16400">Post-processing</string>
 

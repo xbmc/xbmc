@@ -20,6 +20,7 @@
  */
 #pragma once
 
+#include "settings/VideoSettings.h"
 #include "DllAvCodec.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "guilib/D3DResource.h"
@@ -89,6 +90,10 @@ protected:
   unsigned                     m_buffer_age;
   int                          m_refs;
 
+  EINTERLACEMETHOD             m_CurrInterlaceMethod;
+  unsigned                     m_SampleFormat;
+  unsigned                     m_StreamSampleFormat;
+
   struct dxva_context*         m_context;
 
   CProcessor*                  m_processor;
@@ -108,7 +113,7 @@ public:
   void           Close();
   void           HoldSurface(IDirect3DSurface9* surface);
   REFERENCE_TIME Add(IDirect3DSurface9* source);
-  bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time);
+  bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time, int fieldflag);
   int            Size() { return m_size; }
 
   CProcessor* Acquire();
@@ -122,6 +127,9 @@ public:
   IDirectXVideoProcessorService* m_service;
   IDirectXVideoProcessor*        m_process;
   GUID                           m_device;
+
+  unsigned                     m_SampleFormat;
+  int                          m_BFF;
 
   DXVA2_VideoProcessorCaps m_caps;
   DXVA2_VideoDesc  m_desc;
