@@ -1013,7 +1013,7 @@ void CApplication::CreateUserDirs()
 
 bool CApplication::Initialize()
 {
-#ifdef HAS_DVD_DRIVE
+#if defined(HAS_DVD_DRIVE) && !defined(_WIN32) // somehow this throws an "unresolved external symbol" on win32
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;
 #endif
