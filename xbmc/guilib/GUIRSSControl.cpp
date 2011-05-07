@@ -88,6 +88,14 @@ bool CGUIRSSControl::UpdateColors()
   return changed;
 }
 
+void CGUIRSSControl::Process(unsigned int currentTime)
+{
+  // TODO Proper processing which marks when its actually changed. Just mark always for now.
+  MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime);
+}
+
 void CGUIRSSControl::Render()
 {
   // only render the control if they are enabled
