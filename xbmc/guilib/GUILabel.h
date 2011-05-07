@@ -95,6 +95,11 @@ public:
   CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, OVER_FLOW overflow = OVER_FLOW_TRUNCATE);
   virtual ~CGUILabel(void);
 
+  /*! \brief Process the label
+   \return bool stating if process caused control to change
+   */
+  bool Process(unsigned int currentTime);
+
   /*! \brief Render the label on screen
    */
   void Render();
@@ -138,6 +143,9 @@ public:
    \param scrolling true if this label should scroll.
    */
   bool SetScrolling(bool scrolling);
+
+  
+  bool IsScrolling();
 
   /*! \brief Set this label invalid.  Forces an update of the control
    */
