@@ -237,7 +237,7 @@ tcp_close(socket_t fdSock)
 }
 
 ssize_t
-tcp_send(socket_t fdSock, __const void *buf, size_t len, int flags)
+tcp_send(socket_t fdSock, void *buf, int len, int flags)
 {
   if (fdSock != SOCKET_ERROR)
     return send(fdSock, buf, len, flags);

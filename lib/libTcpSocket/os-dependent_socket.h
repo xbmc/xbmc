@@ -78,8 +78,4 @@ int tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout);
  */
 void tcp_close(socket_t fdSock);
 
-#if defined(__WINDOWS__)
-int tcp_send(__in SOCKET fdSock, __in_bcount(len) const char FAR * buf, __in int len, __in int flags);
-#else
-ssize_t tcp_send(socket_t fdSock, __const void *buf, size_t len, int flags);
-#endif
+int tcp_send(socket_t fdSock, void *buf, int len, int flags);
