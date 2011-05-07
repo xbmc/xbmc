@@ -80,17 +80,13 @@ namespace PYXBMC
 
   void PyXBMCGUILock()
   {
-    if (iPyXBMCGUILockRef == 0) g_graphicsContext.Lock();
-    iPyXBMCGUILockRef++;
+    CPyThreadState tsg;
+    g_graphicsContext.Lock();
   }
 
   void PyXBMCGUIUnlock()
   {
-    if (iPyXBMCGUILockRef > 0)
-    {
-      iPyXBMCGUILockRef--;
-      if (iPyXBMCGUILockRef == 0) g_graphicsContext.Unlock();
-    }
+    g_graphicsContext.Unlock();
   }
 
   void PyXBMCWaitForThreadMessage(int message, int param1, int param2)
