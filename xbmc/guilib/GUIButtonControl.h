@@ -48,6 +48,7 @@ public:
   virtual ~CGUIButtonControl(void);
   virtual CGUIButtonControl *Clone() const { return new CGUIButtonControl(*this); };
 
+  virtual void Process(unsigned int currentTime);
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
@@ -86,7 +87,7 @@ protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   void OnFocus();
   void OnUnFocus();
-  virtual void RenderText();
+  virtual void ProcessText(unsigned int currentTime);
   CGUILabel::COLOR GetTextColor() const;
 
   CGUITexture m_imgFocus;
