@@ -44,7 +44,7 @@ void CGUIWindowPVRTimers::ResetObservers(void)
   CSingleLock lock(m_critSection);
 
   m_bObservingTimers = true;
-  g_PVRTimers->AddObserver(this);
+  g_PVRTimers->RegisterObserver(this);
 }
 
 void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &buttons) const
@@ -101,7 +101,7 @@ void CGUIWindowPVRTimers::UpdateData(void)
   if (!m_bObservingTimers)
   {
     m_bObservingTimers = true;
-    g_PVRTimers->AddObserver(this);
+    g_PVRTimers->RegisterObserver(this);
   }
 
   CLog::Log(LOGDEBUG, "CGUIWindowPVRTimers - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);

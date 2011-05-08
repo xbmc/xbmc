@@ -110,7 +110,7 @@ int CPVRChannelGroup::Load(void)
         __FUNCTION__, (int) size() - iChannelCount, m_strGroupName.c_str());
   }
 
-  g_guiSettings.AddObserver(this);
+  g_guiSettings.RegisterObserver(this);
   m_bLoaded = true;
 
   return size();
@@ -118,7 +118,7 @@ int CPVRChannelGroup::Load(void)
 
 void CPVRChannelGroup::Unload(void)
 {
-  g_guiSettings.RemoveObserver(this);
+  g_guiSettings.UnregisterObserver(this);
   clear();
 }
 
@@ -820,13 +820,6 @@ bool CPVRChannelGroup::HasChanges(void) const
   return m_bChanged || HasNewChannels() || HasChangedChannels();
 }
 
-void CPVRChannelGroup::CacheIcons(void)
-{
-  CSingleLock lock(m_critSection);
-  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
-    at(iChannelPtr).channel->CheckCachedIcon();
-}
-
 void CPVRChannelGroup::ResetChannelNumbers(void)
 {
   CSingleLock lock(m_critSection);
@@ -869,10 +862,10 @@ void CPVRChannelGroup::Notify(const Observable &obs, const CStdString& msg)
         Persist();
       }
     }
-    lock.Leave();
-
-    /* check whether cached icons are still valid */
-    if (IsInternalGroup())
-      CacheIcons();
   }
+}
+
+bool CPVRPersistGroupJob::DoWork(void)
+{
+  return m_group->Persist();
 }

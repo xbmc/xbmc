@@ -97,7 +97,7 @@ int CPVRRecording::GetDuration() const
   return (m_duration.GetDays() * 60*60*24 +
       m_duration.GetHours() * 60*60 +
       m_duration.GetMinutes() * 60 +
-      m_duration.GetSeconds()) / 60;
+      m_duration.GetSeconds());
 }
 
 bool CPVRRecording::Delete(void)

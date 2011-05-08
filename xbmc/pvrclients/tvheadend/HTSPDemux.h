@@ -22,13 +22,13 @@
  */
 
 #include "client.h"
-#include "HTSPSession.h"
+#include "HTSPConnection.h"
 
-class cHTSPDemux
+class CHTSPDemux
 {
 public:
-  cHTSPDemux();
-  ~cHTSPDemux();
+  CHTSPDemux();
+  ~CHTSPDemux();
 
   bool Open(const PVR_CHANNEL &channelinfo);
   void Close();
@@ -43,13 +43,15 @@ protected:
   void SubscriptionStart (htsmsg_t *m);
   void SubscriptionStop  (htsmsg_t *m);
   void SubscriptionStatus(htsmsg_t *m);
+  bool SendSubscribe  (int subscription, int channel);
+  bool SendUnsubscribe(int subscription);
   DemuxPacket *ParseMuxPacket(htsmsg_t *m);
 
 private:
+  CHTSPConnection      *m_session;
   bool                  m_bGotFirstIframe;
   bool                  m_bIsRadio;
   unsigned              m_subs;
-  cHTSPSession          m_session;
   int                   m_channel;
   int                   m_tag;
   int                   m_StatusCount;

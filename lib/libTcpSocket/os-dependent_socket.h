@@ -82,6 +82,9 @@ int tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout);
  */
 void tcp_close(socket_t fdSock);
 
+int tcp_send(socket_t fdSock, void *buf, int len, int flags);
+
+
 #ifdef __cplusplus
 } //extern C
 #endif

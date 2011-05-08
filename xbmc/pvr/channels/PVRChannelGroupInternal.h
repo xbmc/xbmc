@@ -181,5 +181,10 @@ namespace PVR
      * @return True if all tables were created successfully, false otherwise.
      */
     bool CreateChannelEpgs(void);
+
+    /*!
+     * @return Cache all channel icons in this group.
+     */
+    void CacheIcons(void);
   };
 }

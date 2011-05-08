@@ -223,8 +223,6 @@ int CEpgDatabase::Get(CEpg &epg)
 {
   int iReturn = -1;
 
-  CLog::Log(LOGDEBUG, "get table '%s' id %d", epg.Name().c_str(), epg.EpgID());
-
   CStdString strQuery = FormatSQL("SELECT * FROM epgtags WHERE idEpg = %u ORDER BY iStartTime ASC;", epg.EpgID());
   if (ResultQuery(strQuery))
   {

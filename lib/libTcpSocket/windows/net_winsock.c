@@ -48,7 +48,7 @@
 #define MSG_WAITALL 0x8
 #endif
 
-static int recv_fixed (SOCKET fdSock, char * szBuf, int nLen, int nFlags)
+static int recv_fixed (__in SOCKET fdSock, __out_bcount_part(len, return) __out_data_source(NETWORK) char FAR *szBuf, __in int nLen, __in int nFlags)
 {
   char* org = szBuf;
   int   nRes = 1;
@@ -69,8 +69,6 @@ static int recv_fixed (SOCKET fdSock, char * szBuf, int nLen, int nFlags)
   return szBuf - org;
 }
 
-#define recv(fdSock, szBuf, nLen, nFlags) recv_fixed(fdSock, szBuf, nLen, nFlags)
-
 int
 tcp_connect_poll(struct addrinfo* addr, socket_t fdSock, char *szErrbuf, size_t nErrbufSize,
     int nTimeout)
@@ -79,7 +77,7 @@ tcp_connect_poll(struct addrinfo* addr, socket_t fdSock, char *szErrbuf, size_t 
   socklen_t errlen = sizeof(int);
 
   /* switch to non blocking */
-  int nVal = 1;
+  u_long nVal = 1;
   ioctlsocket(fdSock, FIONBIO, &nVal);
 
   /* connect to the other side */
@@ -101,7 +99,7 @@ tcp_connect_poll(struct addrinfo* addr, socket_t fdSock, char *szErrbuf, size_t 
       FD_SET(fdSock, &fd_write);
       FD_SET(fdSock, &fd_except);
 
-      nRes = select((int)fdSock+1, NULL, &fd_write, &fd_except, &tv);
+      nRes = select(sizeof(fdSock)*8, NULL, &fd_write, &fd_except, &tv);
       if (nRes == 0)
       {
         _snprintf(szErrbuf, nErrbufSize, "attempt timed out after %d milliseconds", nTimeout);
@@ -115,7 +113,7 @@ tcp_connect_poll(struct addrinfo* addr, socket_t fdSock, char *szErrbuf, size_t 
       }
 
       /* check for errors */
-      getsockopt(fdSock, SOL_SOCKET, SO_ERROR, (void *)&nErr, &errlen);
+      getsockopt(fdSock, SOL_SOCKET, SO_ERROR, (char *)&nErr, &errlen);
     }
     else
     {
@@ -223,7 +221,7 @@ tcp_connect(const char *szHostname, int nPort, char *szErrbuf, size_t nErrbufSiz
 int
 tcp_read(socket_t fdSock, void *buf, size_t nLen)
 {
-  int x = recv(fdSock, buf, nLen, MSG_WAITALL);
+  int x = recv_fixed(fdSock, (char *)buf, nLen, MSG_WAITALL);
 
   if (x == -1)
     return WSAGetLastError();
@@ -236,8 +234,8 @@ tcp_read(socket_t fdSock, void *buf, size_t nLen)
 int
 tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout)
 {
-  int x, tot = 0;
-  int nVal, nErr;
+  int x, tot = 0, nErr;
+  u_long nVal;
   fd_set fd_read;
   struct timeval tv;
 
@@ -252,7 +250,7 @@ tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout)
     FD_ZERO(&fd_read);
     FD_SET(fdSock, &fd_read);
 
-    x = select((int)fdSock+1, &fd_read, NULL, NULL, &tv);
+    x = select(sizeof(fdSock)*8, &fd_read, NULL, NULL, &tv);
 
     if (x == 0)
       return ETIMEDOUT;
@@ -260,7 +258,7 @@ tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout)
     nVal = 1;
     ioctlsocket(fdSock, FIONBIO, &nVal);
 
-    x = recv(fdSock, (char *)buf + tot, nLen - tot, 0);
+    x = recv_fixed(fdSock, (char *)buf + tot, nLen - tot, 0);
     nErr = WSAGetLastError();
 
     nVal = 0;
@@ -286,4 +284,13 @@ tcp_close(socket_t fdSock)
 {
   if (fdSock != SOCKET_ERROR)
     closesocket(fdSock);
+}
+
+int
+tcp_send(__in SOCKET fdSock, __in_bcount(len) const char FAR * buf, __in int len, __in int flags)
+{
+  if (fdSock != SOCKET_ERROR)
+    return send(fdSock, buf, len, flags);
+  else
+    return -1;
 }

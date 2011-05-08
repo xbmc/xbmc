@@ -92,4 +92,3 @@ uint64_t cTimeMs::Elapsed(void)
 {
   return Now() - begin;
 }
-

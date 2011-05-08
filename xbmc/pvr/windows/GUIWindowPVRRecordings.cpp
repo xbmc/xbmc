@@ -47,10 +47,10 @@ void CGUIWindowPVRRecordings::ResetObservers(void)
   CSingleLock lock(m_critSection);
 
   m_bObservingRecordings = true;
-  g_PVRRecordings->AddObserver(this);
+  g_PVRRecordings->RegisterObserver(this);
 
   m_bObservingTimers = true;
-  g_PVRTimers->AddObserver(this);
+  g_PVRTimers->RegisterObserver(this);
 }
 
 void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons &buttons) const
@@ -123,13 +123,13 @@ void CGUIWindowPVRRecordings::UpdateData(void)
   if (!m_bObservingRecordings)
   {
     m_bObservingRecordings = true;
-    g_PVRRecordings->AddObserver(this);
+    g_PVRRecordings->RegisterObserver(this);
   }
 
   if (!m_bObservingTimers)
   {
     m_bObservingTimers = true;
-    g_PVRTimers->AddObserver(this);
+    g_PVRTimers->RegisterObserver(this);
   }
 
   CLog::Log(LOGDEBUG, "CGUIWindowPVRRecordings - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);

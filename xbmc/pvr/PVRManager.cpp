@@ -134,11 +134,11 @@ void CPVRManager::Stop(void)
   StopUpdateThreads();
 
   /* unload all data */
-  m_epg->RemoveObserver(this);
-  m_epg->Unload();
+  m_epg->UnregisterObserver(this);
 
   m_recordings->Unload();
   m_timers->Unload();
+  m_epg->Unload();
   m_channelGroups->Unload();
   m_addons->Unload();
 }
@@ -161,7 +161,7 @@ bool CPVRManager::StartUpdateThreads(void)
 void CPVRManager::StopUpdateThreads(void)
 {
   StopThread();
-  m_epg->RemoveObserver(this);
+  m_epg->UnregisterObserver(this);
   m_epg->Stop();
   m_guiInfo->Stop();
   m_addons->Stop();
@@ -235,12 +235,12 @@ void CPVRManager::Process(void)
   /* reset observers that are observing pvr related data in the pvr windows, or updates won't work after a reload */
   CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
   if (pWindow)
-    pWindow->ResetObservers();
+    pWindow->Reset();
 
   /* start the other pvr related update threads */
   m_addons->Start();
   m_guiInfo->Start();
-  m_epg->AddObserver(this);
+  m_epg->RegisterObserver(this);
   m_epg->Start();
 
   /* continue last watched channel after first startup */
@@ -253,6 +253,10 @@ void CPVRManager::Process(void)
   /* signal to window that clients are loaded */
   if (pWindow)
     pWindow->UnlockWindow();
+
+  /* check whether all channel icons are cached */
+  m_channelGroups->GetGroupAllRadio()->CacheIcons();
+  m_channelGroups->GetGroupAllTV()->CacheIcons();
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
 
@@ -375,6 +379,9 @@ bool CPVRManager::DisableIfNoClients(void)
 void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
 {
   CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the PVR database", __FUNCTION__);
+
+  /* close the epg progress dialog, or we'll get a deadlock */
+  g_PVREpg->CloseUpdateDialog();
 
   CGUIDialogProgress* pDlgProgress = NULL;
   if (bShowProgress)

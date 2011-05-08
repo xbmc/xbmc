@@ -58,6 +58,7 @@ namespace PVR
 
   public:
     CPVRTimers(void);
+    virtual ~CPVRTimers(void);
 
     /**
      * Load the timers from the clients.

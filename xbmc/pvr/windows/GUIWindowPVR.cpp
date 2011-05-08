@@ -123,10 +123,14 @@ void CGUIWindowPVR::OnInitWindow(void)
 
   CreateViews();
 
+  CSingleLock graphicsLock(g_graphicsContext);
+  SET_CONTROL_VISIBLE(CONTROL_LIST_TIMELINE);
+
   CSingleLock lock(m_critSection);
   if (m_savedSubwindow)
     m_savedSubwindow->OnInitWindow();
   lock.Leave();
+  graphicsLock.Leave();
 
   CGUIMediaWindow::OnInitWindow();
 }
@@ -172,53 +176,6 @@ void CGUIWindowPVR::OnWindowUnload(void)
 
   m_viewControl.Reset();
   CGUIMediaWindow::OnWindowUnload();
-}
-
-void CGUIWindowPVR::UpdateWindow(PVRWindow window, bool bResetContents /* = true */)
-{
-  CSingleLock lock(m_critSection);
-  if (!m_bViewsCreated)
-    return;
-
-  CGUIWindowPVRCommon *updateWindow = NULL;
-  switch (window)
-  {
-  case PVR_WINDOW_CHANNELS_TV :
-    updateWindow = m_windowChannelsTV;
-    break;
-  case PVR_WINDOW_CHANNELS_RADIO :
-    updateWindow = m_windowChannelsRadio;
-    break;
-  case PVR_WINDOW_EPG :
-    updateWindow = m_windowGuide;
-    break;
-  case PVR_WINDOW_RECORDINGS :
-    updateWindow = m_windowRecordings;
-    break;
-  case PVR_WINDOW_SEARCH :
-    updateWindow = m_windowSearch;
-    break;
-  case PVR_WINDOW_TIMERS :
-    updateWindow = m_windowTimers;
-    break;
-  default:
-    break;
-  }
-
-  if (updateWindow)
-  {
-    if (updateWindow->IsVisible())
-    {
-      if (bResetContents)
-        updateWindow->UpdateData();
-      else
-        updateWindow->SetInvalid();
-    }
-    else
-    {
-      updateWindow->m_bUpdateRequired = true;
-    }
-  }
 }
 
 void CGUIWindowPVR::SetLabel(int iControl, const CStdString &strLabel)
@@ -295,13 +252,6 @@ void CGUIWindowPVR::CreateViews(void)
   }
 }
 
-void CGUIWindowPVR::InitializeEpgCache(void)
-{
-  CreateViews();
-
-  m_windowGuide->UpdateEpgCache();
-}
-
 void CGUIWindowPVR::UnlockWindow(void)
 {
   if (m_bDialogOKActive)
@@ -315,9 +265,21 @@ void CGUIWindowPVR::UnlockWindow(void)
   }
 }
 
-void CGUIWindowPVR::ResetObservers(void)
+void CGUIWindowPVR::Reset(void)
 {
+  CSingleLock graphicsLock(g_graphicsContext);
   CSingleLock lock(m_critSection);
+
+  if (m_bViewsCreated)
+  {
+    delete m_windowChannelsRadio;
+    delete m_windowChannelsTV;
+    delete m_windowGuide;
+    delete m_windowRecordings;
+    delete m_windowSearch;
+    delete m_windowTimers;
+    m_bViewsCreated = false;
+  }
 
   CreateViews();
 

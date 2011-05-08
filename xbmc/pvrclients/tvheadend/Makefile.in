@@ -11,11 +11,11 @@ LIBDIR = ../../../addons/pvr.hts
 LIB    = ../../../addons/pvr.hts/XBMC_Tvheadend.pvr
 
 SRCS=client.cpp \
-	HTSPSession.cpp \
-	HTSPData.cpp \
-	HTSPDemux.cpp \
-	thread.cpp \
-	tools.cpp
+     HTSPConnection.cpp \
+     HTSPData.cpp \
+     HTSPDemux.cpp \
+     thread.cpp \
+     tools.cpp
 
 include ../Makefile.include
 

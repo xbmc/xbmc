@@ -11,9 +11,9 @@ all: $(LIB_SHARED)
 
 $(LIB_SHARED): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	@export MACOSX_DEPLOYMENT_TARGET=10.4
-	$(CXX) -bundle -shared -flat_namespace -undefined suppress -o $(LIB_SHARED) $(OBJS)
-	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	$(CXX) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias \
+	-bundle -undefined dynamic_lookup -read_only_relocs suppress -o $@ \
+	@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o $(OBJS)
 else
 	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(LIB_SHARED) $(OBJS)
 endif

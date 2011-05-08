@@ -60,7 +60,7 @@ void CGUIWindowPVRGuide::ResetObservers(void)
   CSingleLock lock(m_critSection);
 
   m_bObservingEpg = true;
-  g_PVREpg->AddObserver(this);
+  g_PVREpg->RegisterObserver(this);
 }
 
 void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
@@ -460,13 +460,13 @@ void CGUIWindowPVRGuide::UpdateEpgCache(bool bRadio /* = false */, bool bForceUp
   if (!m_bObservingEpg)
   {
     m_bObservingEpg = true;
-    g_PVREpg->AddObserver(this);
+    g_PVREpg->RegisterObserver(this);
   }
 
   if (!m_bObservingTimers)
   {
     m_bObservingTimers = true;
-    g_PVRTimers->AddObserver(this);
+    g_PVRTimers->RegisterObserver(this);
   }
 
   if (!m_bGotInitialEpg || m_bLastEpgView != bRadio || bForceUpdate)

@@ -30,6 +30,7 @@
 #include "EpgDatabase.h"
 
 class CFileItemList;
+class CGUIDialogExtendedProgressBar;
 
 namespace EPG
 {
@@ -60,7 +61,8 @@ namespace EPG
     time_t       m_iLastEpgActiveTagCheck; /*!< the time the EPG checked for active tag updates */
     //@}
 
-    CCriticalSection m_critSection;    /*!< a critical section for changes to this container */
+    CGUIDialogExtendedProgressBar *m_progressDialog; /*!< the progress dialog that is visible when updating the first time */
+    CCriticalSection               m_critSection;    /*!< a critical section for changes to this container */
 
     /*!
      * @brief Load the EPG settings.
@@ -113,7 +115,6 @@ namespace EPG
      */
     virtual CEpg *CreateEpg(int iEpgId);
 
-  protected:
     /*!
      * @brief EPG update thread
      */
@@ -236,5 +237,10 @@ namespace EPG
      * @brief Notify EPG table observers when the currently active tag changed.
      */
     virtual void CheckPlayingEvents(void);
+
+    /*!
+     * @brief Close the progress bar if it's visible.
+     */
+    virtual void CloseUpdateDialog(void);
   };
 }

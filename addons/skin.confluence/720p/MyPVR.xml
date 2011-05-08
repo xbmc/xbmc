@@ -58,7 +58,7 @@
 				<width>680</width>
 				<height>390</height>
 				<visible>Player.HasVideo</visible>
-				<animation effect="slide" start="0,0" end="-1000,0" time="0">WindowClose</animation>
+				<animation effect="slide" start="0,0" end="-2000,0" time="0">WindowClose</animation>
 			</control>
 			<control type="image">
 				<posx>1</posx>

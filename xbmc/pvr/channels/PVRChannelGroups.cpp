@@ -232,12 +232,12 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
   /* load the other groups from the database */
   int iSize = size();
   database->Get(*this);
-  CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d user defined groups %s fetched from the database",
+  CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d user defined %s channel groups fetched from the database",
       __FUNCTION__, (int) (size() - iSize), m_bRadio ? "radio" : "TV");
 
   iSize = size();
   GetGroupsFromClients();
-  CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d user defined groups %s fetched from clients",
+  CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d new user defined %s channel groups fetched from clients",
       __FUNCTION__, (int) (size() - iSize), m_bRadio ? "radio" : "TV");
 
   /* load group members */
