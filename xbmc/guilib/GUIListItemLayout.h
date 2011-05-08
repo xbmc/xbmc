@@ -35,7 +35,8 @@ public:
   CGUIListItemLayout(const CGUIListItemLayout &from);
   virtual ~CGUIListItemLayout();
   void LoadLayout(TiXmlElement *layout, bool focused);
-  void Render(CGUIListItem *item, int parentID, unsigned int time = 0);
+  void Process(CGUIListItem *item, int parentID, unsigned int currentTime);
+  void Render(CGUIListItem *item, int parentID);
   float Size(ORIENTATION orientation) const;
   unsigned int GetFocusedItem() const;
   void SetFocusedItem(unsigned int focus);
