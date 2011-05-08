@@ -60,6 +60,11 @@ void CGUIListLabel::SetFocus(bool focus)
     SetScrolling(false);
 }
 
+CRect CGUIListLabel::GetRenderRegion()
+{
+  return m_label.GetRenderRect();
+}
+
 bool CGUIListLabel::UpdateColors()
 {
   bool changed = m_label.UpdateColors();
