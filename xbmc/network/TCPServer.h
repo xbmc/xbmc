@@ -60,6 +60,7 @@ namespace JSONRPC
     std::vector<SOCKET> m_servers;
     int m_port;
     bool m_nonlocal;
+    void* m_sdpd;
 
     static CTCPServer *ServerInstance;
   };

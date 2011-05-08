@@ -17,6 +17,12 @@ static const char     bt_service_desc[] = "Interface for XBMC remote control ove
 static const char     bt_service_prov[] = "XBMC JSON-RPC Provider";
 static const uint32_t bt_service_guid[] = {0x65AE4CC0, 0x775D11E0, 0xBE16CE28, 0x4824019B};
 
+#ifdef HAVE_LIBBLUETOOTH
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/rfcomm.h>
+#include <bluetooth/sdp.h>
+#include <bluetooth/sdp_lib.h>
+#endif
 
 using namespace JSONRPC;
 using namespace ANNOUNCEMENT;
@@ -58,6 +64,7 @@ CTCPServer::CTCPServer(int port, bool nonlocal)
 {
   m_port = port;
   m_nonlocal = nonlocal;
+  m_sdpd = NULL;
 }
 
 void CTCPServer::Process()
@@ -250,6 +257,108 @@ bool CTCPServer::InitializeBlue()
 
   return true;
 #endif
+
+#ifdef HAVE_LIBBLUETOOTH
+
+  SOCKET fd = socket (AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+  if(fd == INVALID_SOCKET)
+  {
+    CLog::Log(LOGINFO, "JSONRPC Server: Unable to get bluetooth socket");
+    return false;
+  }
+  struct sockaddr_rc sa  = {0};
+  sa.rc_family  = AF_BLUETOOTH;
+  sa.rc_bdaddr  = *BDADDR_ANY;
+  sa.rc_channel = 0;
+
+  if(bind(fd, (struct sockaddr*)&sa, sizeof(sa)) < 0)
+  {
+    CLog::Log(LOGINFO, "JSONRPC Server: Unable to bind to bluetooth socket");
+    closesocket(fd);
+    return false;
+  }
+
+  socklen_t len = sizeof(sa);
+  if(getsockname(fd, (struct sockaddr*)&sa, &len) < 0)
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to get bluetooth port");
+
+  if (listen(fd, 10) < 0)
+  {
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to listen to bluetooth port %d", sa.rc_channel);
+    closesocket(fd);
+    return false;
+  }
+
+  m_servers.push_back(fd);
+
+  uint8_t rfcomm_channel = sa.rc_channel;
+
+  uuid_t root_uuid, l2cap_uuid, rfcomm_uuid, svc_uuid;
+  sdp_list_t *l2cap_list = 0,
+             *rfcomm_list = 0,
+             *root_list = 0,
+             *proto_list = 0,
+             *access_proto_list = 0,
+             *service_class = 0;
+
+  sdp_data_t *channel = 0;
+
+  sdp_record_t *record = sdp_record_alloc();
+
+  // set the general service ID
+  sdp_uuid128_create( &svc_uuid, &GUID_XBMC_RFCOMM );
+  sdp_set_service_id( record, svc_uuid );
+
+  // make the service record publicly browsable
+  sdp_uuid16_create(&root_uuid, PUBLIC_BROWSE_GROUP);
+  root_list = sdp_list_append(0, &root_uuid);
+  sdp_set_browse_groups( record, root_list );
+
+  // set l2cap information
+  sdp_uuid16_create(&l2cap_uuid, L2CAP_UUID);
+  l2cap_list = sdp_list_append( 0, &l2cap_uuid );
+  proto_list = sdp_list_append( 0, l2cap_list );
+
+  // set rfcomm information
+  sdp_uuid16_create(&rfcomm_uuid, RFCOMM_UUID);
+  channel = sdp_data_alloc(SDP_UINT8, &rfcomm_channel);
+  rfcomm_list = sdp_list_append( 0, &rfcomm_uuid );
+  sdp_list_append( rfcomm_list, channel );
+  sdp_list_append( proto_list, rfcomm_list );
+
+  // attach protocol information to service record
+  access_proto_list = sdp_list_append( 0, proto_list );
+  sdp_set_access_protos( record, access_proto_list );
+
+  // set the name, provider, and description
+  sdp_set_info_attr(record, bt_service_name, bt_service_prov, bt_service_desc);
+
+  // set the Service class ID
+  service_class = sdp_list_append(0, &svc_uuid);
+  sdp_set_service_classes( record, service_class);
+
+  // cleanup
+  sdp_data_free( channel );
+  sdp_list_free( l2cap_list, 0 );
+  sdp_list_free( rfcomm_list, 0 );
+  sdp_list_free( root_list, 0 );
+  sdp_list_free( access_proto_list, 0 );
+  sdp_list_free( service_class, 0 );
+
+  // connect to the local SDP server, register the service record
+  sdp_session_t *session = sdp_connect( BDADDR_ANY, BDADDR_LOCAL, SDP_RETRY_IF_BUSY );
+  if(session == NULL)
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to connect to sdpd");
+  else
+  {
+    if(sdp_record_register(session, record, 0) < 0)
+      CLog::Log(LOGERROR, "JSONRPC Server: Failed to register record with error %d", errno);
+    sdp_record_free(record);
+  }
+  m_sdpd = session;
+
+  return true;
+#endif
   return false;
 }
 
@@ -303,6 +412,13 @@ void CTCPServer::Deinitialize()
     closesocket(m_servers[i]);
 
   m_servers.clear();
+
+#ifdef HAVE_LIBBLUETOOTH
+  if(m_sdpd)
+    sdp_close( (sdp_session_t*)m_sdpd );
+  m_sdpd = NULL;
+#endif
+
   CAnnouncementManager::RemoveAnnouncer(this);
 }
 
