@@ -58,7 +58,7 @@ namespace PVR
     virtual void OnWindowLoaded(void);
     virtual void OnWindowUnload(void);
     virtual void InitializeEpgCache(void);
-    virtual void ResetObservers(void);
+    virtual void Reset(void);
 
     void UnlockWindow();
 

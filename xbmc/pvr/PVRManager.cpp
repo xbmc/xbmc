@@ -235,7 +235,7 @@ void CPVRManager::Process(void)
   /* reset observers that are observing pvr related data in the pvr windows, or updates won't work after a reload */
   CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
   if (pWindow)
-    pWindow->ResetObservers();
+    pWindow->Reset();
 
   /* start the other pvr related update threads */
   m_addons->Start();

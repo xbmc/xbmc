@@ -272,9 +272,20 @@ void CGUIWindowPVR::UnlockWindow(void)
   }
 }
 
-void CGUIWindowPVR::ResetObservers(void)
+void CGUIWindowPVR::Reset(void)
 {
+  CSingleLock graphicsLock(g_graphicsContext);
   CSingleLock lock(m_critSection);
+
+  if (m_bViewsCreated)
+  {
+    delete m_windowChannelsRadio;
+    delete m_windowChannelsTV;
+    delete m_windowGuide;
+    delete m_windowRecordings;
+    delete m_windowSearch;
+    delete m_windowTimers;
+  }
 
   CreateViews();
 
