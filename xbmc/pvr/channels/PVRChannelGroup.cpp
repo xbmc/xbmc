@@ -110,7 +110,7 @@ int CPVRChannelGroup::Load(void)
         __FUNCTION__, (int) size() - iChannelCount, m_strGroupName.c_str());
   }
 
-  g_guiSettings.AddObserver(this);
+  g_guiSettings.RegisterObserver(this);
   m_bLoaded = true;
 
   return size();
@@ -118,7 +118,7 @@ int CPVRChannelGroup::Load(void)
 
 void CPVRChannelGroup::Unload(void)
 {
-  g_guiSettings.RemoveObserver(this);
+  g_guiSettings.UnregisterObserver(this);
   clear();
 }
 

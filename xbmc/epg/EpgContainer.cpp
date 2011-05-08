@@ -111,7 +111,7 @@ void CEpgContainer::Start(void)
   CSingleLock lock(m_critSection);
 
   m_bStop = false;
-  g_guiSettings.AddObserver(this);
+  g_guiSettings.RegisterObserver(this);
   LoadSettings();
 
   Create();
@@ -124,7 +124,7 @@ bool CEpgContainer::Stop(void)
 {
   StopThread();
 
-  g_guiSettings.RemoveObserver(this);
+  g_guiSettings.UnregisterObserver(this);
 
   return true;
 }

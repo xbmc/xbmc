@@ -134,7 +134,7 @@ void CPVRManager::Stop(void)
   StopUpdateThreads();
 
   /* unload all data */
-  m_epg->RemoveObserver(this);
+  m_epg->UnregisterObserver(this);
   m_epg->Unload();
 
   m_recordings->Unload();
@@ -161,7 +161,7 @@ bool CPVRManager::StartUpdateThreads(void)
 void CPVRManager::StopUpdateThreads(void)
 {
   StopThread();
-  m_epg->RemoveObserver(this);
+  m_epg->UnregisterObserver(this);
   m_epg->Stop();
   m_guiInfo->Stop();
   m_addons->Stop();
@@ -240,7 +240,7 @@ void CPVRManager::Process(void)
   /* start the other pvr related update threads */
   m_addons->Start();
   m_guiInfo->Start();
-  m_epg->AddObserver(this);
+  m_epg->RegisterObserver(this);
   m_epg->Start();
 
   /* continue last watched channel after first startup */

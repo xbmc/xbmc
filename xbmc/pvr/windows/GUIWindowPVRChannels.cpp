@@ -57,7 +57,7 @@ void CGUIWindowPVRChannels::ResetObservers(void)
   CSingleLock lock(m_critSection);
 
   m_bObservingTimers = true;
-  g_PVRTimers->AddObserver(this);
+  g_PVRTimers->RegisterObserver(this);
 }
 
 void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &buttons) const
@@ -122,9 +122,9 @@ void CGUIWindowPVRChannels::SetSelectedGroup(CPVRChannelGroup *group)
     return;
 
   if (m_selectedGroup)
-    m_selectedGroup->RemoveObserver(this);
+    m_selectedGroup->UnregisterObserver(this);
   m_selectedGroup = group;
-  m_selectedGroup->AddObserver(this);
+  m_selectedGroup->RegisterObserver(this);
   g_PVRManager.SetPlayingGroup(m_selectedGroup);
 }
 
@@ -168,7 +168,7 @@ void CGUIWindowPVRChannels::UpdateData(void)
   if (!m_bObservingTimers)
   {
     m_bObservingTimers = true;
-    g_PVRTimers->AddObserver(this);
+    g_PVRTimers->RegisterObserver(this);
   }
 
   CLog::Log(LOGDEBUG, "CGUIWindowPVRChannels - %s - update window '%s'. set view to %d",

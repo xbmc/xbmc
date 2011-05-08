@@ -90,7 +90,7 @@ void CPVRGUIInfo::Start(void)
 void CPVRGUIInfo::Stop(void)
 {
   StopThread();
-  g_PVRTimers->RemoveObserver(this);
+  g_PVRTimers->UnregisterObserver(this);
 }
 
 void CPVRGUIInfo::Notify(const Observable &obs, const CStdString& msg)
@@ -168,7 +168,7 @@ void CPVRGUIInfo::Process(void)
   unsigned int mLoop(0);
 
   /* updated on request */
-  g_PVRTimers->AddObserver(this);
+  g_PVRTimers->RegisterObserver(this);
   UpdateTimersCache();
 
   while (!m_bStop)
