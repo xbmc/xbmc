@@ -38,6 +38,13 @@ CGUIVideoControl::CGUIVideoControl(int parentID, int controlID, float posX, floa
 CGUIVideoControl::~CGUIVideoControl(void)
 {}
 
+void CGUIVideoControl::Process(unsigned int currentTime)
+{
+  // TODO Proper processing which marks when its actually changed. Just mark always for now.
+  MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime);
+}
 
 void CGUIVideoControl::Render()
 {
