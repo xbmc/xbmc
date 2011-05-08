@@ -345,8 +345,6 @@ bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bSaveInDb /* =
     if (bSaveInDb)
       Persist();
 
-    CheckCachedIcon();
-
     bReturn = true;
   }
 
