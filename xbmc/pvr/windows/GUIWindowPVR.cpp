@@ -123,12 +123,14 @@ void CGUIWindowPVR::OnInitWindow(void)
 
   CreateViews();
 
-  SET_CONTROL_VISIBLE(10);
+  CSingleLock graphicsLock(g_graphicsContext);
+  SET_CONTROL_VISIBLE(CONTROL_LIST_TIMELINE);
 
   CSingleLock lock(m_critSection);
   if (m_savedSubwindow)
     m_savedSubwindow->OnInitWindow();
   lock.Leave();
+  graphicsLock.Leave();
 
   CGUIMediaWindow::OnInitWindow();
 }
