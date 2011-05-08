@@ -43,9 +43,9 @@ namespace JSONRPC
       void PushBuffer(CTCPServer *host, const char *buffer, int length);
       void Disconnect();
 
-      int m_socket;
-      struct sockaddr m_cliaddr;
-      socklen_t m_addrlen;
+      SOCKET           m_socket;
+      sockaddr_storage m_cliaddr;
+      socklen_t        m_addrlen;
       CCriticalSection m_critSection;
 
     private:
