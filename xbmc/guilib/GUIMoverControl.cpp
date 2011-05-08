@@ -46,6 +46,14 @@ CGUIMoverControl::CGUIMoverControl(int parentID, int controlID, float posX, floa
 CGUIMoverControl::~CGUIMoverControl(void)
 {}
 
+void CGUIMoverControl::Process(unsigned int currentTime)
+{
+  // TODO Proper processing which marks when its actually changed. Just mark always for now.
+  MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime);
+}
+
 void CGUIMoverControl::Render()
 {
   if (m_bInvalidated)
