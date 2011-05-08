@@ -252,13 +252,6 @@ void CGUIWindowPVR::CreateViews(void)
   }
 }
 
-void CGUIWindowPVR::InitializeEpgCache(void)
-{
-  CreateViews();
-
-  m_windowGuide->UpdateEpgCache();
-}
-
 void CGUIWindowPVR::UnlockWindow(void)
 {
   if (m_bDialogOKActive)

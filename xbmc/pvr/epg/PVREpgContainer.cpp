@@ -212,20 +212,6 @@ int PVR::CPVREpgContainer::GetEPGNext(CFileItemList* results, bool bRadio)
   return results->Size() - iInitialSize;
 }
 
-bool PVR::CPVREpgContainer::UpdateEPG(bool bShowProgress /* = false */)
-{
-  bool bReturn = CEpgContainer::UpdateEPG(bShowProgress);
-
-  if (bReturn)
-  {
-    CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
-    if (pWindow)
-      pWindow->InitializeEpgCache();
-  }
-
-  return bReturn;
-}
-
 bool PVR::CPVREpgContainer::InterruptUpdate(void) const
 {
   return (CEpgContainer::InterruptUpdate() ||

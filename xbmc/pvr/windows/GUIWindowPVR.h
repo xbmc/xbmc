@@ -57,7 +57,6 @@ namespace PVR
     virtual bool OnMessage(CGUIMessage& message);
     virtual void OnWindowLoaded(void);
     virtual void OnWindowUnload(void);
-    virtual void InitializeEpgCache(void);
     virtual void Reset(void);
 
     void UnlockWindow();

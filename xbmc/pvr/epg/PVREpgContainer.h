@@ -51,8 +51,6 @@ namespace PVR
      */
     EPG::CEpg *CreateEpg(int iEpgId);
 
-    bool UpdateEPG(bool bShowProgress = false);
-
     /*!
      * @return True if a running update should be interrupted, false otherwise.
      */
