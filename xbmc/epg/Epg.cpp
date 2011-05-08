@@ -221,8 +221,8 @@ void CEpg::RemoveTagsBetween(time_t start, time_t end, bool bRemoveFromDb /* = f
     if (tag)
     {
       bool bMatch(true);
-      tag->StartAsLocalTime().GetAsTime(tagBegin);
-      tag->EndAsLocalTime().GetAsTime(tagEnd);
+      tag->StartAsUTC().GetAsTime(tagBegin);
+      tag->EndAsUTC().GetAsTime(tagEnd);
 
       if (start > 0 && tagBegin < start)
         bMatch = false;
@@ -488,7 +488,7 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
   CSingleLock lock(m_critSection);
 
   /* remove tags from the current list that will be replaced */
-  RemoveTagsBetween(epg.GetFirstDate(), epg.GetLastDate(), bStoreInDb);
+  RemoveTagsBetween(epg.GetFirstDate().GetAsUTCDateTime(), epg.GetLastDate().GetAsUTCDateTime(), bStoreInDb);
 
   /* copy over tags */
   for (unsigned int iTagPtr = 0; iTagPtr < epg.size(); iTagPtr++)
