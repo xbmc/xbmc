@@ -1358,9 +1358,17 @@ void CDVDPlayer::HandlePlaySpeed()
   if (m_caching == CACHESTATE_PVR)
   {
     /* if all streams got at least g_advancedSettings.m_iPVRMinCacheLevel in their buffers, we're done */
-    if (m_dvdPlayerAudio.m_messageQueue.GetLevel() >= g_advancedSettings.m_iPVRMinCacheLevel &&
-        m_dvdPlayerVideo.m_messageQueue.GetLevel() >= g_advancedSettings.m_iPVRMinCacheLevel)
+    bool bGotAudio(m_pDemuxer->GetNrOfAudioStreams() > 0);
+    bool bGotVideo(m_pDemuxer->GetNrOfVideoStreams() > 0);
+
+    if ((bGotVideo || bGotAudio) &&
+        (!bGotAudio || m_dvdPlayerAudio.m_messageQueue.GetLevel() > g_advancedSettings.m_iPVRMinCacheLevel) &&
+        (!bGotVideo || m_dvdPlayerVideo.m_messageQueue.GetLevel() > g_advancedSettings.m_iPVRMinCacheLevel))
+    {
+      CLog::Log(LOGDEBUG, "set caching from pvr to done. audio (%d) = %d. video (%d) = %d", bGotAudio, m_dvdPlayerAudio.m_messageQueue.GetLevel(),
+                                                                                            bGotVideo, m_dvdPlayerVideo.m_messageQueue.GetLevel());
       SetCaching(CACHESTATE_DONE);
+    }
   }
 
   if(m_caching == CACHESTATE_PLAY)
