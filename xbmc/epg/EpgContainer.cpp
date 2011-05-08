@@ -39,6 +39,7 @@ using namespace EPG;
 
 CEpgContainer::CEpgContainer(void)
 {
+  m_progressDialog = NULL;
   m_bStop = true;
   Clear(false);
 }
@@ -329,6 +330,16 @@ bool CEpgContainer::UpdateSingleTable(CEpg *epg, const time_t start, const time_
   return bReturn;
 }
 
+void CEpgContainer::CloseUpdateDialog(void)
+{
+  CSingleLock lock(m_critSection);
+  if (m_progressDialog)
+  {
+    m_progressDialog->Close(true);
+    m_progressDialog = NULL;
+  }
+}
+
 bool CEpgContainer::InterruptUpdate(void) const
 {
   return m_bStop;
@@ -346,7 +357,6 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   bool bInterrupted(false);
   long iStartTime                         = CTimeUtils::GetTimeMS();
   bool bUpdateSuccess                     = true;
-  CGUIDialogExtendedProgressBar *progress = NULL;
 
   if (!m_bDatabaseLoaded)
     CLog::Log(LOGNOTICE, "EpgContainer - %s - loading EPG entries for %i tables from the database",
@@ -373,9 +383,9 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   /* show the progress bar */
   if (bShowProgress)
   {
-    progress = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
-    progress->Show();
-    progress->SetHeader(g_localizeStrings.Get(19004));
+    m_progressDialog = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+    m_progressDialog->Show();
+    m_progressDialog->SetHeader(g_localizeStrings.Get(19004));
   }
 
   int iUpdatedTables = 0;
@@ -400,13 +410,15 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     if (bCurrent)
       ++iUpdatedTables;
 
-    if (bShowProgress)
+    lock.Enter();
+    if (bShowProgress && m_progressDialog)
     {
       /* update the progress bar */
-      progress->SetProgress(iEpgPtr, iEpgCount);
-      progress->SetTitle(at(iEpgPtr)->Name());
-      progress->UpdateState();
+      m_progressDialog->SetProgress(iEpgPtr, iEpgCount);
+      m_progressDialog->SetTitle(at(iEpgPtr)->Name());
+      m_progressDialog->UpdateState();
     }
+    lock.Leave();
 
     if (m_bDatabaseLoaded)
       Sleep(50); /* give other threads a chance to get a lock on tables */
@@ -427,8 +439,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 
   m_database.Close();
 
-  if (bShowProgress)
-    progress->Close();
+  CloseUpdateDialog();
 
   long lUpdateTime = CTimeUtils::GetTimeMS() - iStartTime;
   CLog::Log(LOGINFO, "EpgContainer - %s - finished %s %d EPG tables after %li.%li seconds",
