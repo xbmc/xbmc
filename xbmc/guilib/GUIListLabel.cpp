@@ -73,6 +73,12 @@ bool CGUIListLabel::UpdateColors()
   return changed;
 }
 
+void CGUIListLabel::Process(unsigned int currentTime)
+{
+  m_label.Process(currentTime);
+  CGUIControl::Process(currentTime);
+}
+
 void CGUIListLabel::Render()
 {
   m_label.Render();
