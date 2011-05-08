@@ -79,6 +79,16 @@ void CGUIRenderingControl::UpdateVisibility(const CGUIListItem *item)
     FreeResources();
 }
 
+void CGUIRenderingControl::Process(unsigned int currentTime)
+{
+  // TODO Add processing to the addon so it could mark when actually changing
+  CSingleLock lock(m_rendering);
+  if (m_addon)
+    MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime);
+}
+
 void CGUIRenderingControl::Render()
 {
   CSingleLock lock(m_rendering);
