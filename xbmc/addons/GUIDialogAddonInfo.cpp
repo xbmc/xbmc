@@ -163,11 +163,8 @@ void CGUIDialogAddonInfo::OnUninstall()
   CAddonDatabase database;
   database.Open();
   database.DisableAddon(m_localAddon->ID(), false);
-
-  CFileItemList list;
-  list.Add(CFileItemPtr(new CFileItem(m_localAddon->Path(),true)));
-  list[0]->Select(true);
-  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""), &CAddonInstaller::Get());
+  CJobManager::GetInstance().AddJob(new CAddonUnInstallJob(m_localAddon),
+                                    &CAddonInstaller::Get());
   CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
   Close();
 }
@@ -243,21 +240,17 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
   *m_item = *item;
 
   // grab the local addon, if it's available
-  m_addon.reset();
-  if (CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID"), m_addon)) // sets m_addon if installed regardless of enabled state
+  m_localAddon.reset();
+  if (CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID"), m_localAddon)) // sets m_addon if installed regardless of enabled state
     m_item->SetProperty("Addon.Enabled", "true");
   else
     m_item->SetProperty("Addon.Enabled", "false");
   m_item->SetProperty("Addon.Installed", m_addon ? "true" : "false");
-  m_localAddon = m_addon;
 
-  if (!m_addon)
-  { // coming from a repository
-    CAddonDatabase database;
-    database.Open();
-    if (!database.GetAddon(item->GetProperty("Addon.ID"),m_addon))
-      return false; // can't find the addon
-  }
+  CAddonDatabase database;
+  database.Open();
+  database.GetAddon(item->GetProperty("Addon.ID"),m_addon);
+
   if (TranslateType(item->GetProperty("Addon.intType")) == ADDON_REPOSITORY)
   {
     CAddonDatabase database;

@@ -404,14 +404,10 @@ lib/cpluff/libcpluff/.libs/libcpluff.a: force
 	$(MAKE) -C lib/cpluff/libcpluff
 system/libcpluff-@ARCH@.so: lib/cpluff/libcpluff/.libs/libcpluff.a
 ifeq ($(findstring osx,@ARCH@), osx)
-  ifeq (@ARCH@, powerpc-osx)
-	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -arch @ARCHTYPE@ -lexpat -lbundle1.o -o $@ $<
-  endif
-  ifeq (@ARCH@, x86-osx)
-	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -arch @ARCHTYPE@ -lexpat -o $@ $<
-  endif
   ifeq (@ARCH@, arm-osx)
 	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -read_only_relocs suppress -arch armv7 -o $@ $<
+  else
+	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -arch @ARCHTYPE@ -lexpat $(BUNDLE1_O) -o $@ $<
   endif
 else
 	cp lib/cpluff/libcpluff/.libs/libcpluff.so $@

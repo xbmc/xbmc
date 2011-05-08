@@ -578,6 +578,9 @@ void CDVDPlayerAudio::Process()
     // we have succesfully decoded an audio frame, setup renderer to match
     if (!m_dvdAudio.IsValidFormat(audioframe))
     {
+      if(m_speed)
+        m_dvdAudio.Drain();
+
       m_dvdAudio.Destroy();
 
       if(m_speed)

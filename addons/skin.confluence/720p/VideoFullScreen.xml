@@ -181,10 +181,10 @@
 					<posy>60</posy>
 					<width>910</width>
 					<height>35</height>
-					<itemgap>0</itemgap>
+					<itemgap>5</itemgap>
 					<orientation>horizontal</orientation>
 					<control type="label" id="1">
-						<width min="10" max="680">auto</width>
+						<width min="10" max="710">auto</width>
 						<height>30</height>
 						<font>font30</font>
 						<align>left</align>
@@ -195,14 +195,14 @@
 					</control>
 					<control type="image" id="1">
 						<description>Video Resolution Image</description>
-						<width>90</width>
+						<width>50</width>
 						<height>35</height>
 						<aspectratio align="center">keep</aspectratio>
 						<texture>$INFO[VideoPlayer.VideoResolution,flagging/video/,.png]</texture>
 					</control>
 					<control type="image" id="1">
 						<description>Audio Codec Image</description>
-						<width>90</width>
+						<width>85</width>
 						<height>35</height>
 						<aspectratio align="center">keep</aspectratio>
 						<texture>$INFO[VideoPlayer.AudioCodec,flagging/audio/,.png]</texture>

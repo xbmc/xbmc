@@ -370,38 +370,61 @@ JSON_STATUS CVideoLibrary::ScanForContent(const CStdString &method, ITransportLa
   return ACK;
 }
 
+bool CVideoLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
+{
+  CVideoDatabase videodatabase;
+  bool status = false;
+  if (!strFilename.empty() && videodatabase.Open())
+  {
+    CVideoInfoTag details;
+    if (videodatabase.LoadVideoInfo(strFilename, details))
+    {
+      item = CFileItem(details);
+      status = true;
+    }
+
+    videodatabase.Close();
+  }
+
+  return status;
+}
+
 bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
   CVideoDatabase videodatabase;
   if (videodatabase.Open())
   {
-    int movieID       = parameterObject.get("movieid", -1).asInt();
-    int episodeID     = parameterObject.get("episodeid", -1).asInt();
-    int musicVideoID  = parameterObject.get("musicvideoid", -1).asInt();
+    CStdString file   = parameterObject["file"].asString();
+    int movieID       = parameterObject["movieid"].asInt();
+    int episodeID     = parameterObject["episodeid"].asInt();
+    int musicVideoID  = parameterObject["musicvideoid"].asInt();
 
-    bool success = true;
+    bool success = false;
+    CFileItem fileItem;
+    if (FillFileItem(file, fileItem))
+    {
+      success = true;
+      list.Add(CFileItemPtr(new CFileItem(fileItem)));
+    }
+
     if (movieID > 0)
     {
       CVideoInfoTag details;
       videodatabase.GetMovieInfo("", details, movieID);
       if (!details.IsEmpty())
       {
-        CFileItemPtr item = CFileItemPtr(new CFileItem(details));
-        list.Add(item);
-        success &= true;
+        list.Add(CFileItemPtr(new CFileItem(details)));
+        success = true;
       }
-      success = false;
     }
     if (episodeID > 0)
     {
       CVideoInfoTag details;
       if (videodatabase.GetEpisodeInfo("", details, episodeID) && !details.IsEmpty())
       {
-        CFileItemPtr item = CFileItemPtr(new CFileItem(details));
-        list.Add(item);
-        success &= true;
+        list.Add(CFileItemPtr(new CFileItem(details)));
+        success = true;
       }
-      success = false;
     }
     if (musicVideoID > 0)
     {
@@ -409,11 +432,9 @@ bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList
       videodatabase.GetMusicVideoInfo("", details, musicVideoID);
       if (!details.IsEmpty())
       {
-        CFileItemPtr item = CFileItemPtr(new CFileItem(details));
-        list.Add(item);
-        success &= true;
+        list.Add(CFileItemPtr(new CFileItem(details)));
+        success = true;
       }
-      success = false;
     }
 
     videodatabase.Close();

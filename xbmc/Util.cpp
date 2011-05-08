@@ -24,6 +24,11 @@
 #include <mach-o/dyld.h>
 #endif
 
+#if defined(__FreeBSD__)
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#endif
+
 #ifdef _LINUX
 #include <sys/types.h>
 #include <dirent.h>
@@ -2217,6 +2222,21 @@ CStdString CUtil::ResolveExecutablePath()
 
   GetDarwinExecutablePath(given_path, &path_size);
   strExecutablePath = given_path;
+#elif defined(__FreeBSD__)                                                                                                                                                                   
+  char buf[PATH_MAX];
+  size_t buflen;
+  int mib[4];
+
+  mib[0] = CTL_KERN;
+  mib[1] = KERN_PROC;
+  mib[2] = KERN_PROC_PATHNAME;
+  mib[3] = getpid();
+
+  buflen = sizeof(buf) - 1;
+  if(sysctl(mib, 4, buf, &buflen, NULL, 0) < 0)
+    strExecutablePath = "";
+  else
+    strExecutablePath = buf;
 #else
   /* Get our PID and build the name of the link in /proc */
   pid_t pid = getpid();

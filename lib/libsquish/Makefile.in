@@ -28,7 +28,7 @@ all: $(LIB) $(NATIVE_LIB)
 # TexturePacker links to libsquish and needs to run on build system, so make a native flavor.
 $(NATIVE_LIB): $(SRCS)
 ifeq ($(findstring osx,$(ARCH)),osx)
-	g++ -DSQUISH_USE_SSE=2 -msse2 -I. $(SRCS) -dynamiclib -install_name `pwd`/libsquish-native.so -o $@
+	g++ -m32 -DSQUISH_USE_SSE=2 -msse2 -I. $(SRCS) -dynamiclib -install_name `pwd`/libsquish-native.so -o $@
 else
 	g++ -DSQUISH_USE_SSE=2 -msse2 -I. $(SRCS) -shared -fPIC -Wl,-soname,`pwd`/libsquish-native.so -o $@
 endif

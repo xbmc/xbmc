@@ -363,6 +363,7 @@ public:
   CStdString GetMusicVideoAlbumById(int id);
   int GetTvShowForEpisode(int idEpisode);
 
+  bool LoadVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details);
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMovie = -1);
   void GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, int idTvShow = -1);
   bool GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idEpisode = -1);
