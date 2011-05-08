@@ -78,7 +78,11 @@ void CGUIFadeLabelControl::AddLabel(const string &label)
 
 void CGUIFadeLabelControl::Process(unsigned int currentTime)
 {
+  // TODO Proper processing which marks when its actually changed. Just mark always for now.
+  MarkDirtyRegion();
+
   m_renderTime = currentTime;
+
   CGUIControl::Process(currentTime);
 }
 
