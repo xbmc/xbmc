@@ -236,11 +236,11 @@ tcp_close(socket_t fdSock)
     shutdown(fdSock, SHUT_RDWR);
 }
 
-ssize_t
+int
 tcp_send(socket_t fdSock, void *buf, int len, int flags)
 {
   if (fdSock != SOCKET_ERROR)
-    return send(fdSock, buf, len, flags);
+    return (int) send(fdSock, buf, len, flags); // safe since "len" is an int
   else
     return -1;
 }
