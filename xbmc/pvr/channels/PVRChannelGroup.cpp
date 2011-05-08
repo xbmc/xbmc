@@ -864,3 +864,8 @@ void CPVRChannelGroup::Notify(const Observable &obs, const CStdString& msg)
     }
   }
 }
+
+bool CPVRPersistGroupJob::DoWork(void)
+{
+  return m_group->Persist();
+}

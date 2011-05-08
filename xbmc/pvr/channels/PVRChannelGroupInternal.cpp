@@ -431,7 +431,12 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(void)
 
 void CPVRChannelGroupInternal::CacheIcons(void)
 {
+  bool bUpdated(false);
   CSingleLock lock(m_critSection);
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
-    at(iChannelPtr).channel->CheckCachedIcon();
+    bUpdated = at(iChannelPtr).channel->CheckCachedIcon() || bUpdated;
+
+  /* persist channels after the icons have been cached */
+  if (bUpdated)
+    CJobManager::GetInstance().AddJob(new CPVRPersistGroupJob(this), this);
 }
