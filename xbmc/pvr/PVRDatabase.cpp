@@ -300,14 +300,13 @@ bool CPVRDatabase::Delete(const CPVRChannel &channel)
 int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
 {
   int iReturn = 0;
-
   CStdString strQuery = FormatSQL("SELECT channels.idChannel, channels.iUniqueId, channels.bIsRadio, channels.bIsHidden, "
       "channels.sIconPath, channels.sChannelName, channels.bIsVirtual, channels.bEPGEnabled, channels.sEPGScraper, channels.iLastWatched, channels.iClientId, "
       "channels.iClientChannelNumber, channels.sInputFormat, channels.sInputFormat, channels.sStreamURL, channels.iEncryptionSystem, map_channelgroups_channels.iChannelNumber, channels.idEpg "
       "FROM map_channelgroups_channels "
       "LEFT JOIN channels ON channels.idChannel = map_channelgroups_channels.idChannel "
-      "WHERE map_channelgroups_channels.idGroup = %u "
-      "ORDER BY map_channelgroups_channels.iChannelNumber ASC", results.IsRadio() ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV);
+      "WHERE map_channelgroups_channels.idGroup = %u AND channels.bIsRadio = %u"
+      "ORDER BY map_channelgroups_channels.iChannelNumber ASC", results.IsRadio() ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV, results.IsRadio());
   if (ResultQuery(strQuery))
   {
     try
