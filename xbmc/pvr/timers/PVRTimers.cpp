@@ -41,6 +41,11 @@ CPVRTimers::CPVRTimers(void)
   m_bIsUpdating = false;
 }
 
+CPVRTimers::~CPVRTimers(void)
+{
+  Unload();
+}
+
 int CPVRTimers::Load()
 {
   Unload();
