@@ -45,6 +45,14 @@ CGUIResizeControl::CGUIResizeControl(int parentID, int controlID, float posX, fl
 CGUIResizeControl::~CGUIResizeControl(void)
 {}
 
+void CGUIResizeControl::Process(unsigned int currentTime)
+{
+  // TODO Proper processing which marks when its actually changed. Just mark always for now.
+  MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime);
+}
+
 void CGUIResizeControl::Render()
 {
   if (m_bInvalidated)
