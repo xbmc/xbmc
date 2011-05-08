@@ -36,7 +36,7 @@
 				<font>-</font>
 				<texturefocus>OSDPrevTrackFO.png</texturefocus>
 				<texturenofocus>OSDPrevTrackNF.png</texturenofocus>
-				<onleft>704</onleft>
+				<onleft>705</onleft>
 				<onright>601</onright>
 				<onup>600</onup>
 				<ondown>600</ondown>

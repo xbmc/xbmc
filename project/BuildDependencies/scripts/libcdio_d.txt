@@ -1,0 +1,2 @@
+; filename                   mirror of the file
+libcdio-0.81-win32.zip       http://mirrors.xbmc.org/build-deps/win32/

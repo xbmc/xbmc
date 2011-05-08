@@ -23,9 +23,9 @@ export CPP=/usr/bin/cpp-${platform_gcc_version}
 export CXXCPP=${CPP}
 export CPPFLAGS=-no-cpp-precomp -I${PREFIX}/include
 export CC=/usr/bin/gcc-${platform_gcc_version}
-export CFLAGS=-std=gnu89 -no-cpp-precomp -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags} -I${platform_sdk_path}/usr/include
+export CFLAGS=-std=gnu89 -no-cpp-precomp -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}
 export LD=${platform_path}/usr/bin/ld
-export LDFLAGS=-m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_ldflags} -L${PREFIX}/lib -L${platform_sdk_path}/usr/lib
+export LDFLAGS=-m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_ldflags} -L${PREFIX}/lib
 export CXX=/usr/bin/g++-${platform_gcc_version}
 export CXXFLAGS=-m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}
 export AR=${platform_path}/usr/bin/ar

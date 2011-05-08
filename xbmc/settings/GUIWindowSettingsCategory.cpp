@@ -1067,6 +1067,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       if (g_weatherManager.GetSearchResults(strSearch, strResult))
       {
         ((CSettingString *)pSettingControl->GetSetting())->SetData(strResult);
+        // Update the labels on the location spinner
+        g_weatherManager.Reset();
+        // Refresh the weather using the new location
         g_weatherManager.Refresh();
       }
     }

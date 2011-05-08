@@ -391,8 +391,8 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
     {
       // This is Cocca Windowed FullScreen Mode
-      // Get the screen rect of our current display
-      NSScreen* pScreen = [[NSScreen screens] objectAtIndex:res.iScreen];
+      // Get the screen rect of our current display      
+      NSScreen* pScreen = [NSScreen mainScreen];
       NSRect    screenRect = [pScreen frame];
       
       // remove frame origin offset of orginal display
@@ -721,7 +721,7 @@ void CWinSystemOSX::GetScreenResolution(int* w, int* h, double* fps)
       window = [view window];
       if (window)
       {
-        display_id = GetDisplayIDFromScreen( [window screen] );      
+        display_id = GetDisplayIDFromScreen( [NSScreen mainScreen] );      
         mode  = CGDisplayCurrentMode(display_id);
       }
     }

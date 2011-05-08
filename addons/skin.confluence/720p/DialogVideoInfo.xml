@@ -48,7 +48,7 @@
 				</control>
 				<control type="grouplist">
 					<description>Media Codec Flagging Images</description>
-					<posx>210</posx>
+					<posx>200</posx>
 					<posy>480</posy>
 					<width>600</width>
 					<align>left</align>
@@ -58,7 +58,9 @@
 					<visible>!Control.IsVisible(50) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 					<include>VideoCodecFlaggingConditions</include>
 					<include>AudioCodecFlaggingConditions</include>
+					<include>AudioChannelsFlaggingConditions</include>
 					<include>AspectCodecFlaggingConditions</include>
+					<include>VideoTypeHackFlaggingConditions</include>
 				</control>
 				<control type="group">
 					<visible>Control.HasFocus(12)</visible>
