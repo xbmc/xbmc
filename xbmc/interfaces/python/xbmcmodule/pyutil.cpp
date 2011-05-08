@@ -32,7 +32,6 @@
 
 using namespace std;
 
-static int iPyXBMCGUILockRef = 0;
 static TiXmlDocument pySkinReferences;
 
 #ifndef __GNUC__
