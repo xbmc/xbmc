@@ -60,6 +60,7 @@ public:
   virtual ~CGUIMoverControl(void);
   virtual CGUIMoverControl *Clone() const { return new CGUIMoverControl(*this); };
 
+  virtual void Process(unsigned int currentTime);
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual void OnUp();
