@@ -448,6 +448,13 @@ PVR_ERROR CHTSPData::DeleteTimer(const PVR_TIMER &timer, bool bForce)
     return PVR_ERROR_SERVER_ERROR;
   }
 
+  const char *strError = NULL;
+  if ((strError = htsmsg_get_str(msg, "error")))
+  {
+    XBMC->Log(LOG_DEBUG, "%s - Error deleting timer: '%s'", __FUNCTION__, strError);
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
   unsigned int success;
   if (htsmsg_get_u32(msg, "success", &success) != 0)
   {
