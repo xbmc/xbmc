@@ -307,6 +307,10 @@ bool CGraphicContext::IsValidResolution(RESOLUTION res)
 
 void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
 {
+#if defined __APPLE__
+  /* Update the resolutions. XBMC window can be moved to another screen. */
+  g_Windowing.UpdateResolutions();
+#endif  
   RESOLUTION lastRes = m_Resolution;
 
   // If the user asked us to guess, go with desktop
