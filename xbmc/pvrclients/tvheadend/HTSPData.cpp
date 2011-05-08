@@ -471,7 +471,7 @@ PVR_ERROR CHTSPData::AddTimer(const PVR_TIMER &timer)
 
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method",      "addDvrEntry");
-  htsmsg_add_u32(msg, "eventId",     timer.iEpgUid);
+  htsmsg_add_u32(msg, "eventId",     -1); // XXX tvheadend doesn't correct epg tags with wrong start and end times, so we'll use xbmc's values
   htsmsg_add_str(msg, "title",       timer.strTitle);
   htsmsg_add_u32(msg, "start",       timer.startTime);
   htsmsg_add_u32(msg, "stop",        timer.endTime);
