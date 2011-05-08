@@ -135,10 +135,10 @@ void CPVRManager::Stop(void)
 
   /* unload all data */
   m_epg->UnregisterObserver(this);
-  m_epg->Unload();
 
   m_recordings->Unload();
   m_timers->Unload();
+  m_epg->Unload();
   m_channelGroups->Unload();
   m_addons->Unload();
 }
