@@ -278,6 +278,7 @@ void CGUIWindowPVR::Reset(void)
     delete m_windowRecordings;
     delete m_windowSearch;
     delete m_windowTimers;
+    m_bViewsCreated = false;
   }
 
   CreateViews();
