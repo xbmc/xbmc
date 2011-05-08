@@ -178,53 +178,6 @@ void CGUIWindowPVR::OnWindowUnload(void)
   CGUIMediaWindow::OnWindowUnload();
 }
 
-void CGUIWindowPVR::UpdateWindow(PVRWindow window, bool bResetContents /* = true */)
-{
-  CSingleLock lock(m_critSection);
-  if (!m_bViewsCreated)
-    return;
-
-  CGUIWindowPVRCommon *updateWindow = NULL;
-  switch (window)
-  {
-  case PVR_WINDOW_CHANNELS_TV :
-    updateWindow = m_windowChannelsTV;
-    break;
-  case PVR_WINDOW_CHANNELS_RADIO :
-    updateWindow = m_windowChannelsRadio;
-    break;
-  case PVR_WINDOW_EPG :
-    updateWindow = m_windowGuide;
-    break;
-  case PVR_WINDOW_RECORDINGS :
-    updateWindow = m_windowRecordings;
-    break;
-  case PVR_WINDOW_SEARCH :
-    updateWindow = m_windowSearch;
-    break;
-  case PVR_WINDOW_TIMERS :
-    updateWindow = m_windowTimers;
-    break;
-  default:
-    break;
-  }
-
-  if (updateWindow)
-  {
-    if (updateWindow->IsVisible())
-    {
-      if (bResetContents)
-        updateWindow->UpdateData();
-      else
-        updateWindow->SetInvalid();
-    }
-    else
-    {
-      updateWindow->m_bUpdateRequired = true;
-    }
-  }
-}
-
 void CGUIWindowPVR::SetLabel(int iControl, const CStdString &strLabel)
 {
   SET_CONTROL_LABEL(iControl, strLabel);
