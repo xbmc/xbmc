@@ -636,13 +636,11 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
     { // automatic change of visibility - queue the in effect
   //    CLog::Log(LOGDEBUG, "Visibility changed to visible for control id %i", m_controlID);
       QueueAnimation(ANIM_TYPE_VISIBLE);
-      MarkDirtyRegion();
     }
     else if (bWasVisible && !m_visibleFromSkinCondition)
     { // automatic change of visibility - do the out effect
   //    CLog::Log(LOGDEBUG, "Visibility changed to hidden for control id %i", m_controlID);
       QueueAnimation(ANIM_TYPE_HIDDEN);
-      MarkDirtyRegion();
     }
   }
   // check for conditional animations
@@ -762,6 +760,7 @@ bool CGUIControl::CheckAnimation(ANIMATION_TYPE animType)
 
 void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
 {
+  MarkDirtyRegion();
   if (!CheckAnimation(animType))
     return;
   CAnimation *reverseAnim = GetAnimation((ANIMATION_TYPE)-animType, false);
