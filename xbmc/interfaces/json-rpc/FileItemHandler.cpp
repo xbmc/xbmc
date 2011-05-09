@@ -232,6 +232,8 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
     if (!added)
     {
       CFileItemPtr item = CFileItemPtr(new CFileItem(file, false));
+      if (item->GetLabel().IsEmpty())
+        item->SetLabel(CUtil::GetTitleFromPath(file, false));
       list.Add(item);
     }
   }

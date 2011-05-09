@@ -1,14 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <!-- Misc labels -->
-  <string id="31000">Canvia el</string>
+  <string id="31000">Canvia la</string>
   <string id="31001">M'agrada</string>
   <string id="31002">No m'agrada</string>
   <string id="31003">Opcions d'energia</string>
   <string id="31004">Treballant...</string>
   <string id="31005">Amaga la informació</string>
-
+  <string id="31006">Veure les opcions</string>
   <string id="31007">Connectors</string>
+  <string id="31008">Pantalla completa</string>
 
   <string id="31020">Afegits recentment</string>
   <string id="31021">Fitxers - Vídeo</string>
@@ -38,6 +39,8 @@
   <string id="31047">Predefinit actual</string>
   <string id="31048">Visualitzacions predefinides</string>
   <string id="31049">Hora de finalització</string>
+  <string id="31050">Ordena: Ascendent</string>
+  <string id="31051">Ordena: Descendent</string>
 
 
   <!-- Playlist Editor labels -->
@@ -133,6 +136,7 @@
   <string id="31328">Afegits recentment</string>
   <string id="31329">[B]Temporitzador activat[/B] [COLOR=grey2] - El sistema s'apagarà automàticament en[/COLOR]</string>
   <string id="31330">Feu clic per reproduir[CR][CR]Trailer de la pel·lícula</string>
+  <string id="31331">Detalls de l'àlbum</string>
 
   <!-- Video and Music OSD Labels  -->
   <string id="31351">Pausa</string>
