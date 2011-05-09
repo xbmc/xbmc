@@ -495,6 +495,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   while (thumb)
   {
     m_strPictureURL.ParseElement(thumb);
+	sXmlAdd<<*thumb;
     thumb = thumb->NextSiblingElement("thumb");
   }
 
