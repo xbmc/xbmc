@@ -113,7 +113,6 @@ typedef std::vector<SubmissionJournalEntry>::iterator SCROBBLERJOURNALITERATOR;
 class CScrobbler : public CThread
 {
 protected:
-  bool m_bRunThread;
   bool m_bNotified;
   bool m_bSubmitting;
   bool m_bSubmitted;
