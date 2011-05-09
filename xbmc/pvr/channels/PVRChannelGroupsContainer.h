@@ -132,6 +132,13 @@ namespace PVR
     const CPVRChannel *GetChannelById(int iChannelId) const;
 
     /*!
+     * @brief Get a channel given it's EPG ID.
+     * @param iEpgId The EPG ID of the channel.
+     * @return The channel or NULL if it wasn't found.
+     */
+    const CPVRChannel *GetChannelByEpgId(int iEpgId) const;
+
+    /*!
      * @brief Get the groups list for a directory.
      * @param strBase The directory path.
      * @param results The file list to store the results in.

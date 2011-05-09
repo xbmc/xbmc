@@ -299,6 +299,13 @@ namespace PVR
     virtual const CPVRChannel *GetByChannelID(int iChannelID) const;
 
     /*!
+     * @brief Get a channel given it's EPG ID.
+     * @param iEpgID The channel EPG ID.
+     * @return The channel or NULL if it wasn't found.
+     */
+    virtual const CPVRChannel *GetByChannelEpgID(int iEpgID) const;
+
+    /*!
      * @brief Get a channel given it's unique ID.
      * @param iUniqueID The unique ID.
      * @return The channel or NULL if it wasn't found.

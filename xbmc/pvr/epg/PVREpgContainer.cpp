@@ -79,7 +79,7 @@ bool PVR::CPVREpgContainer::AutoCreateTablesHook(void)
 
 CEpg* PVR::CPVREpgContainer::CreateEpg(int iEpgId)
 {
-  CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups->GetChannelById(iEpgId);
+  CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups->GetChannelByEpgId(iEpgId);
   if (channel)
   {
     return new CPVREpg(channel, false);
