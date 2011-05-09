@@ -107,7 +107,7 @@ bool CHTSPDemux::GetStreamProperties(PVR_STREAM_PROPERTIES* props)
 void CHTSPDemux::Abort()
 {
   m_Streams.iStreamCount = 0;
-  m_session->Close();
+  m_session->Abort();
 }
 
 DemuxPacket* CHTSPDemux::Read()

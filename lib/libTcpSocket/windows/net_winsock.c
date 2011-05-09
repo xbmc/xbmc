@@ -284,8 +284,15 @@ tcp_close(socket_t fdSock)
     closesocket(fdSock);
 }
 
+void
+tcp_shutdown(socket_t fdSock)
+{
+  if (fdSock != SOCKET_ERROR)
+    shutdown(fdSock, SHUT_RDWR);
+}
+
 int
-tcp_send(__in SOCKET fdSock, __in_bcount(len) const char FAR * buf, __in int len, __in int flags)
+tcp_send(socket_t fdSock, char *buf, int len, int flags)
 {
   if (fdSock != SOCKET_ERROR)
     return send(fdSock, buf, len, flags);

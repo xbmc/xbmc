@@ -233,6 +233,13 @@ void
 tcp_close(socket_t fdSock)
 {
   if (fdSock != SOCKET_ERROR)
+    close(fdSock);
+}
+
+void
+tcp_shutdown(socket_t fdSock)
+{
+  if (fdSock != SOCKET_ERROR)
     shutdown(fdSock, SHUT_RDWR);
 }
 

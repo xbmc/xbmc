@@ -115,6 +115,14 @@ void CHTSPConnection::Close()
   }
 }
 
+void CHTSPConnection::Abort(void)
+{
+  if (!m_bIsConnected)
+	  return;
+  m_bIsConnected = false;
+
+  tcp_shutdown(m_fd);
+}
 
 htsmsg_t* CHTSPConnection::ReadMessage(int timeout)
 {

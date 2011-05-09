@@ -198,14 +198,14 @@ CHTSPSession::~CHTSPSession()
 
 void CHTSPSession::Abort()
 {
-  shutdown(m_fd, SHUT_RDWR);
+  tcp_shutdown(m_fd);
 }
 
 void CHTSPSession::Close()
 {
   if(m_fd != INVALID_SOCKET)
   {
-    closesocket(m_fd);
+    tcp_close(m_fd);
     m_fd = INVALID_SOCKET;
   }
 
@@ -350,7 +350,7 @@ bool CHTSPSession::SendMessage(htsmsg_t* m)
   }
   htsmsg_destroy(m);
 
-  if(send(m_fd, (char*)buf, len, 0) < 0)
+  if(tcp_send(m_fd, (char*)buf, len, 0) < 0)
   {
     free(buf);
     return false;
