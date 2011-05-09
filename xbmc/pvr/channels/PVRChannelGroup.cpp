@@ -297,6 +297,24 @@ const CPVRChannel *CPVRChannelGroup::GetByChannelID(int iChannelID) const
   return channel;
 }
 
+const CPVRChannel *CPVRChannelGroup::GetByChannelEpgID(int iEpgID) const
+{
+  CPVRChannel *channel = NULL;
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    PVRChannelGroupMember groupMember = at(ptr);
+    if (groupMember.channel->EpgID() == iEpgID)
+    {
+      channel = groupMember.channel;
+      break;
+    }
+  }
+
+  return channel;
+}
+
 const CPVRChannel *CPVRChannelGroup::GetByUniqueID(int iUniqueID) const
 {
   CPVRChannel *channel = NULL;

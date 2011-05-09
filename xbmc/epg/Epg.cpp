@@ -686,6 +686,7 @@ const CDateTime &CEpg::GetLastDate(void) const
 bool CEpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
 {
   bool bReturn = true;
+  CSingleLock lock(m_critSection);
 
   m_strName = epg.m_strName;
   m_strScraperName = epg.m_strScraperName;
