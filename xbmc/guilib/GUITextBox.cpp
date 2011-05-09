@@ -133,6 +133,9 @@ void CGUITextBox::DoProcess(unsigned int currentTime)
 
 void CGUITextBox::Process(unsigned int currentTime)
 {
+  // TODO Proper processing which marks when its actually changed. Just mark always for now.
+  MarkDirtyRegion();
+
   CGUIControl::Process(currentTime);
 }
 
