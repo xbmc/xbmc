@@ -467,7 +467,7 @@ elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
     SAVE_CFLAGS="$CFLAGS"
     CFLAGS="-mfpu=vfpv3-d16"
     AC_COMPILE_IFELSE(
-      [int foo;],
+      [AC_LANG_SOURCE([int foo;])],
       [ CFLAGS="$SAVE_CFLAGS -Wno-psabi -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
         CXXFLAGS="$CXXFLAGS -Wno-psabi -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
         FFMPEG_EXTRACFLAGS+=" -mtune=cortex-a9 -mfpu=vfpv3-d16"
@@ -895,8 +895,8 @@ if test "$use_external_ffmpeg" = "yes"; then
   if test "x$use_vdpau" != "xno"; then
     AC_LANG_PUSH([C++])
     AC_LINK_IFELSE(
-      [ #include <libavutil/pixfmt.h>
-        int main() { PixelFormat format = PIX_FMT_VDPAU_MPEG4; }],
+      [AC_LANG_SOURCE([ #include <libavutil/pixfmt.h>
+        int main() { PixelFormat format = PIX_FMT_VDPAU_MPEG4; }])],
       [AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1],
       [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])],)
     AC_LANG_POP([C++])
@@ -1002,10 +1002,10 @@ if test "x$use_crystalhd" != "xno"; then
       CFLAGS="-llibcrystalhd"
       # check for new crystalhd lib
       AC_COMPILE_IFELSE(
-        [ #define __LINUX_USER__
+        [AC_LANG_SOURCE([ #define __LINUX_USER__
           #include <libcrystalhd/bc_dts_types.h>
           #include <libcrystalhd/bc_dts_defs.h>
-          PBC_INFO_CRYSTAL bCrystalInfo;],
+          PBC_INFO_CRYSTAL bCrystalInfo;])],
         [ AC_DEFINE([HAVE_LIBCRYSTALHD], [2], [Define to 2 if you have the 'New Broadcom Crystal HD' library.]) ], 
         [ AC_DEFINE([HAVE_LIBCRYSTALHD], [1], [Define to 1 if you have the 'Old Broadcom Crystal HD' library.]) ])
       CFLAGS="$SAVE_CFLAGS"
