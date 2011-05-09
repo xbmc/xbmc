@@ -43,9 +43,14 @@ CGUICheckMarkControl::~CGUICheckMarkControl(void)
 
 void CGUICheckMarkControl::Process(unsigned int currentTime)
 {
-  m_imgCheckMark.Process(currentTime);
-  m_imgCheckMarkNoFocus.Process(currentTime);
-  m_label.Process(currentTime);
+  bool changed = false;
+
+  changed |= m_imgCheckMark.Process(currentTime);
+  changed |= m_imgCheckMarkNoFocus.Process(currentTime);
+  changed |= m_label.Process(currentTime);
+
+  if (changed)
+    MarkDirtyRegion();
 
   CGUIControl::Process(currentTime);
 }
