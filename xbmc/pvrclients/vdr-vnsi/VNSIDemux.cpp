@@ -235,6 +235,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
       m_Streams.iStreamCount++;
+
+      delete[] language;
     }
     else if(!strcmp(type, "MPEG2AUDIO"))
     {
@@ -250,6 +252,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
       m_Streams.iStreamCount++;
+
+      delete[] language;
     }
     else if(!strcmp(type, "AAC"))
     {
@@ -265,6 +269,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
       m_Streams.iStreamCount++;
+
+      delete[] language;
     }
     else if(!strcmp(type, "DTS"))
     {
@@ -280,6 +286,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
       m_Streams.iStreamCount++;
+
+      delete[] language;
     }
     else if(!strcmp(type, "EAC3"))
     {
@@ -295,6 +303,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
       m_Streams.iStreamCount++;
+
+      delete[] language;
     }
     else if(!strcmp(type, "MPEG2VIDEO"))
     {
@@ -348,6 +358,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
       m_Streams.iStreamCount++;
+
+      delete[] language;
     }
     else if(!strcmp(type, "TEXTSUB"))
     {
@@ -363,6 +375,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
       m_Streams.iStreamCount++;
+
+      delete[] language;
     }
     else if(!strcmp(type, "TELETEXT"))
     {
@@ -377,6 +391,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
       m_Streams.iStreamCount++;
     }
+
+    delete[] type;
 
     if (m_Streams.iStreamCount >= PVR_STREAM_MAX_STREAMS)
     {
@@ -423,6 +439,7 @@ void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
       if (m_Streams.stream[i].iCodecType == CODEC_TYPE_AUDIO)
       {
         const char *language = resp->extract_String();
+
         m_Streams.stream[i].iChannels          = resp->extract_U32();
         m_Streams.stream[i].iSampleRate        = resp->extract_U32();
         m_Streams.stream[i].iBlockAlign        = resp->extract_U32();
@@ -432,6 +449,8 @@ void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
         m_Streams.stream[i].strLanguage[1]       = language[1];
         m_Streams.stream[i].strLanguage[2]       = language[2];
         m_Streams.stream[i].strLanguage[3]       = 0;
+
+        delete[] language;
       }
       else if (m_Streams.stream[i].iCodecType == CODEC_TYPE_VIDEO)
       {
@@ -446,11 +465,14 @@ void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
         const char *language    = resp->extract_String();
         uint32_t composition_id = resp->extract_U32();
         uint32_t ancillary_id   = resp->extract_U32();
+
         m_Streams.stream[i].iIdentifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
         m_Streams.stream[i].strLanguage[0]= language[0];
         m_Streams.stream[i].strLanguage[1]= language[1];
         m_Streams.stream[i].strLanguage[2]= language[2];
         m_Streams.stream[i].strLanguage[3]= 0;
+
+        delete[] language;
       }
     }
   }
