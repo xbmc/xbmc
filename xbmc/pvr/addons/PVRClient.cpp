@@ -1103,7 +1103,6 @@ PVR_ERROR CPVRClient::SetAddonCapabilities(void)
     return PVR_ERROR_NO_ERROR;
 
   /* reset all properties to disabled */
-  m_addonCapabilities.bSupportsChannelLogo          = false;
   m_addonCapabilities.bSupportsChannelSettings      = false;
   m_addonCapabilities.bSupportsTimeshift            = false;
   m_addonCapabilities.bSupportsEPG                  = false;

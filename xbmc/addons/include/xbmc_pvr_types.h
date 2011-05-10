@@ -128,7 +128,6 @@ extern "C" {
    */
   typedef struct PVR_ADDON_CAPABILITIES
   {
-    bool bSupportsChannelLogo;          /*!< @brief (optional) true if this add-on supports channel logos */
     bool bSupportsChannelSettings;      /*!< @brief (optional) true if this add-on supports changing channel settings on the backend */
     bool bSupportsTimeshift;            /*!< @brief (optional) true if the backend will handle timeshift. false if XBMC should handle it. */
     bool bSupportsEPG;                  /*!< @brief (optional) true if the add-on provides EPG information */
