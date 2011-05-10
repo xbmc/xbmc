@@ -228,6 +228,8 @@ void CEpg::RemoveTagsBetween(time_t start, time_t end, bool bRemoveFromDb /* = f
         bMatch = false;
       if (end > 0 && tagEnd > end)
         bMatch = false;
+      if (!IsRemovableTag(tag))
+        bMatch = false;
 
       if (bMatch)
       {
@@ -239,13 +241,17 @@ void CEpg::RemoveTagsBetween(time_t start, time_t end, bool bRemoveFromDb /* = f
   }
 
   Sort();
+  UpdateFirstAndLastDates();
 
   if (bRemoveFromDb)
   {
     CEpgDatabase *database = g_EpgContainer.GetDatabase();
     if (database && database->Open())
     {
-      database->Delete(*this, start, end);
+      time_t newStart, newEnd;
+      GetFirstDate().GetAsTime(newStart);
+      GetLastDate().GetAsTime(newEnd);
+      database->Delete(*this, newStart, newEnd);
       database->Close();
     }
   }
