@@ -306,7 +306,7 @@ bool CTCPServer::InitializeBlue()
   sdp_record_t *record = sdp_record_alloc();
 
   // set the general service ID
-  sdp_uuid128_create( &svc_uuid, &GUID_XBMC_RFCOMM );
+  sdp_uuid128_create( &svc_uuid, &bt_service_guid );
   sdp_set_service_id( record, svc_uuid );
 
   // make the service record publicly browsable
