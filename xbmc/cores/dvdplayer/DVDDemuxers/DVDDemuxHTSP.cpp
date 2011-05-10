@@ -28,6 +28,7 @@
 #include "DVDClock.h"
 #include "Application.h"
 #include "utils/log.h"
+#include <arpa/inet.h>
 
 extern "C" {
 #include "lib/libhts/net.h"

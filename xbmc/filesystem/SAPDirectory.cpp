@@ -32,6 +32,7 @@
 #endif
 
 #include <sys/socket.h>
+#include <arpa/inet.h>
 #include <vector>
 
 //using namespace std; On VS2010, bind conflicts with std::bind

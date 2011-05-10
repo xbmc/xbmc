@@ -31,6 +31,8 @@
 #include "settings/Settings.h"
 #include "URL.h"
 
+#include <arpa/inet.h>
+
 using namespace std;
 using namespace XFILE;
 

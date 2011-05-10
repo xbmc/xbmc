@@ -30,6 +30,7 @@
 
 #include <sys/socket.h>
 #include <netdb.h>
+#include <arpa/inet.h>
 
 //using namespace std; On VS2010, bind conflicts with std::bind
 

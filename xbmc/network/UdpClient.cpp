@@ -28,6 +28,8 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
+#include <arpa/inet.h>
+
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
 
 CUdpClient::CUdpClient(void) : CThread()

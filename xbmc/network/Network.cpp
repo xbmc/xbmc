@@ -28,6 +28,8 @@
 #include "utils/log.h"
 #include "guilib/LocalizeStrings.h"
 
+#include <arpa/inet.h>
+
 using namespace std;
 
 /* slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot) */

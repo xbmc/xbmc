@@ -24,6 +24,9 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+#include <arpa/inet.h>
+#include <netdb.h>
+
 CDNSNameCache g_DNSCache;
 
 CCriticalSection CDNSNameCache::m_critical;
