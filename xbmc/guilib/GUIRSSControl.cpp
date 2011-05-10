@@ -80,10 +80,10 @@ void CGUIRSSControl::SetIntervals(const vector<int>& vecIntervals)
 
 bool CGUIRSSControl::UpdateColors()
 {
-  bool changed = m_label.UpdateColors();
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_label.UpdateColors();
   changed |= m_headlineColor.Update();
   changed |= m_channelColor.Update();
-  changed |= CGUIControl::UpdateColors();
 
   return changed;
 }

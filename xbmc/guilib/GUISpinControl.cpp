@@ -921,8 +921,8 @@ void CGUISpinControl::ChangePage(int amount)
 
 bool CGUISpinControl::UpdateColors()
 {
-  bool changed = m_label.UpdateColors();
-  changed |= CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_label.UpdateColors();
   changed |= m_imgspinDownFocus.SetDiffuseColor(m_diffuseColor);
   changed |= m_imgspinDown.SetDiffuseColor(m_diffuseColor);
   changed |= m_imgspinUp.SetDiffuseColor(m_diffuseColor);

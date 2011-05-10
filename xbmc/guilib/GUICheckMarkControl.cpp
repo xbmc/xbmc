@@ -192,8 +192,8 @@ void CGUICheckMarkControl::PythonSetDisabledColor(color_t disabledColor)
 
 bool CGUICheckMarkControl::UpdateColors()
 {
-  bool changed = m_label.UpdateColors();
-  changed |= CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_label.UpdateColors();
   changed |= m_imgCheckMark.SetDiffuseColor(m_diffuseColor);
   changed |= m_imgCheckMarkNoFocus.SetDiffuseColor(m_diffuseColor);
 
