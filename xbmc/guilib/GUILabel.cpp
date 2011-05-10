@@ -50,11 +50,6 @@ bool CGUILabel::SetScrolling(bool scrolling)
   return changed;
 }
 
-bool CGUILabel::IsScrolling()
-{
-  return m_scrolling;
-}
-
 bool CGUILabel::SetColor(CGUILabel::COLOR color)
 {
   bool changed = m_color != color;
