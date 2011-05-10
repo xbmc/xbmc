@@ -52,7 +52,7 @@ cTimer::cTimer()
 cTimer::cTimer(const PVR_TIMER& timerinfo)
 {
   m_index = timerinfo.iClientIndex;
-  m_active = timerinfo.bIsActive;
+  m_active = (timerinfo.state == PVR_TIMER_STATE_SCHEDULED || timerinfo.state == PVR_TIMER_STATE_RECORDING);
   if(!m_active)
   {
     time(&m_canceled);
@@ -70,7 +70,7 @@ cTimer::cTimer(const PVR_TIMER& timerinfo)
   m_starttime = timerinfo.startTime;
   m_endtime = timerinfo.endTime;
   //m_firstday = timerinfo.firstday;
-  m_isrecording = timerinfo.bIsRecording;
+  m_isrecording = timerinfo.state == PVR_TIMER_STATE_RECORDING;
   m_priority = XBMC2MepoPriority(timerinfo.iPriority);
 
   SetKeepMethod(timerinfo.iLifetime);
@@ -99,7 +99,12 @@ cTimer::~cTimer()
 void cTimer::GetPVRtimerinfo(PVR_TIMER &tag)
 {
   tag.iClientIndex      = m_index;
-  tag.bIsActive         = m_active;
+  if (m_active)
+    tag.state           = PVR_TIMER_STATE_SCHEDULED;
+  else if (IsRecording())
+    tag.state           = PVR_TIMER_STATE_RECORDING;
+  else
+    tag.state           = PVR_TIMER_STATE_CANCELLED;
   tag.iClientChannelUid = m_channel;
   tag.strTitle          = m_title.c_str();
   tag.strDirectory      = m_directory.c_str();
@@ -114,7 +119,6 @@ void cTimer::GetPVRtimerinfo(PVR_TIMER &tag)
   } else {
     tag.firstDay        = 0;
   }
-  tag.bIsRecording      = IsRecording();
   tag.iPriority         = Priority();
   tag.iLifetime         = GetLifetime();
   tag.bIsRepeating      = Repeat();

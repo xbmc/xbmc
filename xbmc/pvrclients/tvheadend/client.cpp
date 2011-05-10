@@ -410,7 +410,9 @@ PVR_ERROR UpdateTimer(const PVR_TIMER &timer)
   if (!HTSPData || !HTSPData->IsConnected())
     return PVR_ERROR_SERVER_ERROR;
 
-  return HTSPData->UpdateTimer(timer);
+  return timer.state == PVR_TIMER_STATE_CANCELLED || timer.state == PVR_TIMER_STATE_ABORTED ?
+      HTSPData->DeleteTimer(timer, false) :
+      HTSPData->UpdateTimer(timer);
 }
 
 bool OpenLiveStream(const PVR_CHANNEL &channel)

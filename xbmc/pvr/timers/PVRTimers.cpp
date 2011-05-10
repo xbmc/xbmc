@@ -413,7 +413,6 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
     newTimer = new CPVRTimerInfoTag;
     /* set the timer data */
     newTimer->m_iClientIndex      = -1;
-    newTimer->m_bIsActive         = true;
     newTimer->m_strTitle          = channel->ChannelName();
     newTimer->m_strSummary        = g_localizeStrings.Get(19056);
     newTimer->m_iChannelNumber    = channel->ChannelNumber();

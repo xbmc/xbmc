@@ -178,14 +178,14 @@ bool CGUIWindowPVRTimers::OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTO
 
     CPVRTimerInfoTag *timer = item->GetPVRTimerInfoTag();
     int iLabelId;
-    if (timer->m_bIsActive)
+    if (timer->IsActive())
     {
-      timer->m_bIsActive = false;
+      timer->m_state = PVR_TIMER_STATE_CANCELLED;
       iLabelId = 13106;
     }
     else
     {
-      timer->m_bIsActive = true;
+      timer->m_state = PVR_TIMER_STATE_SCHEDULED;
       iLabelId = 305;
     }
 

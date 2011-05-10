@@ -114,6 +114,19 @@ extern "C" {
   } PVR_ERROR;
 
   /*!
+   * @brief PVR timer states
+   */
+  typedef enum
+  {
+    PVR_TIMER_STATE_INVALID   = 0,
+    PVR_TIMER_STATE_SCHEDULED = 1, /*!< @brief the timer is scheduled for recording */
+    PVR_TIMER_STATE_RECORDING = 2, /*!< @brief the timer is currently recordings */
+    PVR_TIMER_STATE_COMPLETED = 3, /*!< @brief the recording completed successfully */
+    PVR_TIMER_STATE_ABORTED   = 4, /*!< @brief recording started, but was aborted */
+    PVR_TIMER_STATE_CANCELLED = 5  /*!< @brief the timer was scheduled, but was cancelled */
+  } PVR_TIMER_STATE;
+
+  /*!
    * @brief Properties passed to the Create() method of an add-on.
    */
   typedef struct PVR_PROPERTIES
@@ -253,25 +266,24 @@ extern "C" {
    * @brief Representation of a timer event.
    */
   typedef struct PVR_TIMER {
-    unsigned int  iClientIndex;        /*!< @brief (required) the index of this timer given by the client */
-    int           iClientChannelUid;   /*!< @brief (required) unique identifier of the channel to record on */
-    time_t        startTime;           /*!< @brief (required) start time of the recording in UTC */
-    time_t        endTime;             /*!< @brief (required) end time of the recording in UTC */
-    bool          bIsActive;           /*!< @brief (required) true if this timer is active, false if it's inactive */
-    const char *  strTitle;            /*!< @brief (optional) title of this timer */
-    const char *  strDirectory;        /*!< @brief (optional) the directory where the recording will be stored in */
-    const char *  strSummary;          /*!< @brief (optional) the summary for this timer */
-    bool          bIsRecording;        /*!< @brief (optional) true if this timer is currently recording, false otherwise */
-    int           iPriority;           /*!< @brief (optional) the priority of this timer */
-    int           iLifetime;           /*!< @brief (optional) lifetimer of this timer in days */
-    bool          bIsRepeating;        /*!< @brief (optional) true if this is a recurring timer */
-    time_t        firstDay;            /*!< @brief (optional) the first day this recording is active in case of a repeating event */
-    int           iWeekdays;           /*!< @brief (optional) weekday mask */
-    int           iEpgUid;             /*!< @brief (optional) epg event id */
-    unsigned int  iMarginStart;        /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
-    unsigned int  iMarginEnd;          /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
-    int           iGenreType;          /*!< @brief (optional) genre type */
-    int           iGenreSubType;       /*!< @brief (optional) genre sub type */
+    unsigned int    iClientIndex;      /*!< @brief (required) the index of this timer given by the client */
+    int             iClientChannelUid; /*!< @brief (required) unique identifier of the channel to record on */
+    time_t          startTime;         /*!< @brief (required) start time of the recording in UTC */
+    time_t          endTime;           /*!< @brief (required) end time of the recording in UTC */
+    PVR_TIMER_STATE state;             /*!< @brief (required) the state of this timer */
+    const char *    strTitle;          /*!< @brief (optional) title of this timer */
+    const char *    strDirectory;      /*!< @brief (optional) the directory where the recording will be stored in */
+    const char *    strSummary;        /*!< @brief (optional) the summary for this timer */
+    int             iPriority;         /*!< @brief (optional) the priority of this timer */
+    int             iLifetime;         /*!< @brief (optional) lifetimer of this timer in days */
+    bool            bIsRepeating;      /*!< @brief (optional) true if this is a recurring timer */
+    time_t          firstDay;          /*!< @brief (optional) the first day this recording is active in case of a repeating event */
+    int             iWeekdays;         /*!< @brief (optional) weekday mask */
+    int             iEpgUid;           /*!< @brief (optional) epg event id */
+    unsigned int    iMarginStart;      /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
+    unsigned int    iMarginEnd;        /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
+    int             iGenreType;        /*!< @brief (optional) genre type */
+    int             iGenreSubType;     /*!< @brief (optional) genre sub type */
   } ATTRIBUTE_PACKED PVR_TIMER;
 
   /*!

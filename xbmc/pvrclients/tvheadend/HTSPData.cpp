@@ -415,8 +415,7 @@ PVR_ERROR CHTSPData::GetTimers(PVR_HANDLE handle)
     tag.strTitle          = recording.title.c_str();
     tag.strDirectory      = "/";   // unused
     tag.strSummary        = recording.description.c_str();
-    tag.bIsActive         = recording.state == ST_SCHEDULED || recording.state == ST_RECORDING;
-    tag.bIsRecording      = recording.state == ST_RECORDING;
+    tag.state             = (PVR_TIMER_STATE) recording.state;
     tag.iPriority         = 0;     // unused
     tag.iLifetime         = 0;     // unused
     tag.bIsRepeating      = false; // unused

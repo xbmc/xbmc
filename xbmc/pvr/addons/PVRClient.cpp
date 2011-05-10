@@ -184,10 +184,9 @@ inline void PVRWriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIMER
   xbmcTimer.FirstDayAsUTC().GetAsTime(firstDay);
 
   addonTimer.iClientIndex      = xbmcTimer.m_iClientIndex;
-  addonTimer.bIsActive         = xbmcTimer.m_bIsActive;
+  addonTimer.state             = xbmcTimer.m_state;
   addonTimer.iClientIndex      = xbmcTimer.m_iClientIndex;
   addonTimer.iClientChannelUid = xbmcTimer.m_iClientChannelUid;
-  addonTimer.bIsRecording      = xbmcTimer.m_bIsRecording;
   addonTimer.strTitle          = xbmcTimer.m_strTitle;
   addonTimer.strDirectory      = xbmcTimer.m_strDirectory;
   addonTimer.iPriority         = xbmcTimer.m_iPriority;
