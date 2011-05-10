@@ -623,19 +623,11 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   const TiXmlElement *fanart = movie->FirstChildElement("fanart");
   if (fanart)
   {
-    if (!m_fanart.m_xml.IsEmpty())
-    {
-      // we need to replace the scraper results with the nfo results
-      // combining them does not work properly, as the scraper result
-      // might contain an url attribut which prevents to load a filesystem file
-      m_fanart.m_xml.clear();
-      m_fanart.m_xml << *fanart;
-    }
-    else
-    {
-      // This just works , if m_xml is empty, as otherwise we add a further <fanart> block
-      m_fanart.m_xml << *fanart;
-    }
+    // we need to replace the scraper results with the nfo results
+    // combining them does not work properly, as the scraper result
+    // might contain an url attribut which prevents to load a filesystem file
+    m_fanart.m_xml.clear();
+    m_fanart.m_xml << *fanart;
     m_fanart.Unpack();
   }
 }
