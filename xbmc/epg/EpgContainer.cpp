@@ -251,7 +251,7 @@ bool CEpgContainer::RemoveOldEntries(void)
   CLog::Log(LOGINFO, "EpgContainer - %s - removing old EPG entries",
       __FUNCTION__);
 
-  CDateTime now = CDateTime::GetCurrentDateTime();
+  CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
 
   if (!m_database.Open())
   {
