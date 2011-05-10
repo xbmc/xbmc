@@ -55,6 +55,7 @@ typedef struct struct_XBMCKEYTABLE
 bool KeyTableLookupName(const char* keyname, XBMCKEYTABLE* keytable);
 bool KeyTableLookupSym(uint16_t sym, XBMCKEYTABLE* keytable);
 bool KeyTableLookupUnicode(uint16_t unicode, XBMCKEYTABLE* keytable);
+bool KeyTableLookupSymAndUnicode(uint16_t sym, uint16_t unicode, XBMCKEYTABLE* keytable);
 bool KeyTableLookupVKeyName(uint32_t vkey, XBMCKEYTABLE* keytable);
 
 #endif /* _XBMC_keytable_h */
