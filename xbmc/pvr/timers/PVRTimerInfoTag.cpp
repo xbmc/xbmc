@@ -228,10 +228,7 @@ bool CPVRTimerInfoTag::AddToClient(void)
     return false;
   }
   else
-  {
-    g_PVRManager.TriggerTimersUpdate();
     return true;
-  }
 }
 
 bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */)
@@ -260,7 +257,6 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */)
     m_epgInfo = NULL;
   }
 
-  g_PVRManager.TriggerTimersUpdate();
   return true;
 }
 
@@ -275,10 +271,6 @@ bool CPVRTimerInfoTag::RenameOnClient(const CStdString &strNewName)
 
     DisplayError(error);
     return false;
-  }
-  else
-  {
-    g_PVRManager.TriggerTimersUpdate();
   }
 
   return true;
@@ -372,10 +364,7 @@ bool CPVRTimerInfoTag::UpdateOnClient()
     return false;
   }
   else
-  {
-    g_PVRManager.TriggerTimersUpdate();
     return true;
-  }
 }
 
 void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
