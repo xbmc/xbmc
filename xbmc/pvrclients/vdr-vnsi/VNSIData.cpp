@@ -106,32 +106,6 @@ cResponsePacket* cVNSIData::ReadResult(cRequestPacket* vrp)
   return vresp;
 }
 
-bool cVNSIData::GetTime(time_t *localTime, int *gmtOffset)
-{
-  cRequestPacket vrp;
-  if (!vrp.init(VDR_GETTIME))
-  {
-    XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
-    return false;
-  }
-
-  cResponsePacket* vresp = ReadResult(&vrp);
-  if (!vresp)
-  {
-    XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
-    return false;
-  }
-
-  uint32_t vdrTime       = vresp->extract_U32();
-  int32_t  vdrTimeOffset = vresp->extract_S32();
-
-  *localTime = vdrTime;
-  *gmtOffset = vdrTimeOffset;
-
-  delete vresp;
-  return true;
-}
-
 bool cVNSIData::GetDriveSpace(long long *total, long long *used)
 {
   cRequestPacket vrp;

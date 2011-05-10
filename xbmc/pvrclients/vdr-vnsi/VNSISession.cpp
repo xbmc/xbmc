@@ -116,7 +116,11 @@ bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
     m_protocol  = protocol;
 
     if (!name || strlen(name) <= 0)
-      XBMC->Log(LOG_NOTICE, "Logged in at '%lu+%lu' to '%s' Version: '%s' with protocol version '%lu'", vdrTime, vdrTimeOffset, ServerName, ServerVersion, protocol);
+      XBMC->Log(LOG_NOTICE, "Logged in at '%lu+%i' to '%s' Version: '%s' with protocol version '%lu'",
+        vdrTime, vdrTimeOffset, ServerName, ServerVersion, protocol);
+
+    delete[] ServerName;
+    delete[] ServerVersion;
 
     delete vresp;
   }
