@@ -352,17 +352,119 @@ PVR_ERROR cPVRClientForTheRecord::GetChannels(PVR_HANDLE handle, bool bRadio)
 
 int cPVRClientForTheRecord::GetChannelGroupsAmount(void)
 {
-  return PVR_ERROR_NOT_IMPLEMENTED;
+  Json::Value response;
+  int num = 0;
+  if (ForTheRecord::RequestTVChannelGroups(response) >= 0) num += response.size();
+  if (ForTheRecord::RequestRadioChannelGroups(response) >= 0) num += response.size();
+  return num;
 }
 
 PVR_ERROR cPVRClientForTheRecord::GetChannelGroups(PVR_HANDLE handle, bool bRadio)
 {
-  return PVR_ERROR_NOT_IMPLEMENTED;
+  Json::Value response;
+  int retval;
+  if (!bRadio)
+  {
+    retval = ForTheRecord::RequestTVChannelGroups(response);
+  }
+  else
+  {
+    retval = ForTheRecord::RequestRadioChannelGroups(response);
+  }
+  if (retval >= 0)
+  {
+    int size = response.size();
+
+    // parse channel group list
+    for (int index = 0; index < size; ++index)
+    {
+      std::string name = response[index]["GroupName"].asString();
+      std::string guid = response[index]["ChannelGroupId"].asString();
+      if (!bRadio)
+      {
+        XBMC->Log(LOG_DEBUG, "Found TV channel group %s: %s\n", guid.c_str(), name.c_str());
+      }
+      else
+      {
+        XBMC->Log(LOG_DEBUG, "Found Radio channel group %s: %s\n", guid.c_str(), name.c_str());
+      }
+      PVR_CHANNEL_GROUP tag;
+      memset(&tag, 0 , sizeof(PVR_CHANNEL_GROUP));
+
+      tag.bIsRadio     = bRadio;
+      tag.strGroupName = name.c_str();
+
+      PVR->TransferChannelGroup(handle, &tag);
+    }
+    return PVR_ERROR_NO_ERROR;
+  }
+  else
+  {
+    return PVR_ERROR_SERVER_ERROR;
+  }
 }
 
 PVR_ERROR cPVRClientForTheRecord::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
 {
-  return PVR_ERROR_NOT_IMPLEMENTED;
+  Json::Value response;
+  int retval;
+
+  // Step 1, find the GUID for this channelgroup
+  if (!group.bIsRadio)
+  {
+    retval = ForTheRecord::RequestTVChannelGroups(response);
+  }
+  else
+  {
+    retval = ForTheRecord::RequestRadioChannelGroups(response);
+  }
+  if (retval < 0)
+  {
+    XBMC->Log(LOG_ERROR, "Could not get Channelgroups from server.");
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
+  std::string guid = "";
+  std::string name = "";
+  int size = response.size();
+  for (int index = 0; index < size; ++index)
+  {
+    name = response[index]["GroupName"].asString();
+    guid = response[index]["ChannelGroupId"].asString();
+    if (name == group.strGroupName) break;
+  }
+  if (name != group.strGroupName)
+  {
+    XBMC->Log(LOG_ERROR, "Channelgroup %s was not found while trying to retrieve the channelgroup members.", group.strGroupName);
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
+  // Step 2 use the guid to retrieve the list of member channels
+  retval = ForTheRecord::RequestChannelGroupMembers(guid, response);
+  if (retval < 0)
+  {
+    XBMC->Log(LOG_ERROR, "Could not get members for Channelgroup \"%s\" (%s) from server.", name.c_str(), guid.c_str());
+    return PVR_ERROR_SERVER_ERROR;
+  }
+  size = response.size();
+  for (int index = 0; index < size; index++)
+  {
+    std::string channelId = response[index]["ChannelId"].asString();
+    cChannel* pChannel    = FetchChannel(channelId);
+
+    PVR_CHANNEL_GROUP_MEMBER tag;
+    memset(&tag,0 , sizeof(PVR_CHANNEL_GROUP_MEMBER));
+
+    tag.strGroupName     = group.strGroupName;
+    tag.iChannelUniqueId = pChannel->ID();
+    tag.iChannelNumber   = index+1;
+
+    XBMC->Log(LOG_DEBUG, "%s - add channel %s (%d) to group '%s' channel number %d",
+      __FUNCTION__, pChannel->Name(), tag.iChannelUniqueId, tag.strGroupName, tag.iChannelNumber);
+
+    PVR->TransferChannelGroupMember(handle, &tag);
+  }
+  return PVR_ERROR_NO_ERROR;
 }
 
 /************************************************************/

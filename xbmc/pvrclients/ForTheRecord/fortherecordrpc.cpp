@@ -222,49 +222,67 @@ namespace ForTheRecord
    * \brief Get the list with channel groups from 4TR
    * \param channelType The channel type (Television or Radio)
    */
-  int RequestChannelGroups(enum ChannelType channelType)
+  int RequestChannelGroups(enum ChannelType channelType, Json::Value& response)
   {
-    Json::Value root;
     int retval = -1;
         
     if (channelType == Television)
     {
-      retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/ChannelGroups/Television", "?visibleOnly=false", root);
+      retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/ChannelGroups/Television", "?visibleOnly=false", response);
     }
     else if (channelType == Radio)
     {
-      retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/ChannelGroups/Radio", "?visibleOnly=false", root);        
+      retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/ChannelGroups/Radio", "?visibleOnly=false", response);        
     }
         
     if(retval >= 0)
-    {
-      if( root.type() == Json::arrayValue)
+    {           
+      if( response.type() == Json::arrayValue)
       {
-        int size = root.size();
-
-        // parse channel group list
-        for ( int index =0; index < size; ++index )
-        {
-          std::string name = root[index]["GroupName"].asString();
-          std::string guid = root[index]["ChannelGroupId"].asString();
-          if (channelType == Television)
-          {
-            XBMC->Log(LOG_DEBUG, "Found TV channel group %s: %s\n", guid.c_str(), name.c_str());
-          }
-          else if (channelType == Radio)
-          {
-            XBMC->Log(LOG_DEBUG, "Found Radio channel group %s: %s\n", guid.c_str(), name.c_str());
-          }
-        }
+        int size = response.size();
         return size;
-      } else {
+      }
+      else
+      {
         XBMC->Log(LOG_DEBUG, "Unknown response format. Expected Json::arrayValue\n");
         return -1;
       }
     }
     else
     {
-      XBMC->Log(LOG_DEBUG, "RequestChannelList failed. Return value: %i\n", retval);
+      XBMC->Log(LOG_DEBUG, "RequestChannelGroups failed. Return value: %i\n", retval);
+    }
+        
+    return retval;
+  }
+    
+  /*
+   * \brief Get the list with channels for the given channel group from 4TR
+   * \param channelGroupId GUID of the channel group 
+   */
+  int RequestChannelGroupMembers(const std::string& channelGroupId, Json::Value& response)
+  {
+    int retval = -1;
+        
+    std::string command = "ForTheRecord/Scheduler/ChannelsInGroup/" + channelGroupId;
+    retval = ForTheRecordJSONRPC(command, "", response);
+        
+    if(retval >= 0)
+    {           
+      if( response.type() == Json::arrayValue)
+      {
+        int size = response.size();
+        return size;
+      }
+      else
+      {
+        XBMC->Log(LOG_DEBUG, "Unknown response format. Expected Json::arrayValue\n");
+        return -1;
+      }
+    }
+    else
+    {
+      XBMC->Log(LOG_ERROR, "RequestChannelGroupMembers failed. Return value: %i\n", retval);
     }
         
     return retval;
@@ -273,17 +291,17 @@ namespace ForTheRecord
   /*
    * \brief Get the list with TV channel groups from 4TR
    */
-  int RequestTVChannelGroups()
+  int RequestTVChannelGroups(Json::Value& response)
   {
-    return RequestChannelGroups(Television);
+    return RequestChannelGroups(Television, response);
   }
     
   /*
    * \brief Get the list with Radio channel groups from 4TR
    */
-  int RequestRadioChannelGroups()
+  int RequestRadioChannelGroups(Json::Value& response)
   {
-    return RequestChannelGroups(Radio);
+    return RequestChannelGroups(Radio, response);
   }
 
   /*
