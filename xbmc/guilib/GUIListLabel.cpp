@@ -60,7 +60,7 @@ void CGUIListLabel::SetFocus(bool focus)
     SetScrolling(false);
 }
 
-CRect CGUIListLabel::GetRenderRegion()
+CRect CGUIListLabel::GetRenderRegion() const
 {
   return m_label.GetRenderRect();
 }
