@@ -23,7 +23,7 @@
 #include <string.h>
 
 #include "responsepacket.h"
-#include "vdrcommand.h"
+#include "vnsicommand.h"
 #include "tools.h"
 
 extern "C" {
@@ -50,7 +50,7 @@ cResponsePacket::~cResponsePacket()
 
 void cResponsePacket::setResponse(uint32_t trequestID, uint8_t* tuserData, uint32_t tuserDataLength)
 {
-  channelID       = CHANNEL_REQUEST_RESPONSE;
+  channelID       = VNSI_CHANNEL_REQUEST_RESPONSE;
   requestID       = trequestID;
   userData        = tuserData;
   userDataLength  = tuserDataLength;
@@ -58,7 +58,7 @@ void cResponsePacket::setResponse(uint32_t trequestID, uint8_t* tuserData, uint3
 
 void cResponsePacket::setStream(uint32_t topcodeID, uint32_t tstreamID, uint32_t tduration, int64_t tdts, int64_t tpts, uint8_t* tuserData, uint32_t tuserDataLength)
 {
-  channelID       = CHANNEL_STREAM;
+  channelID       = VNSI_CHANNEL_STREAM;
   opcodeID        = topcodeID;
   streamID        = tstreamID;
   duration        = tduration;

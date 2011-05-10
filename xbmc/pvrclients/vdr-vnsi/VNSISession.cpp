@@ -29,7 +29,7 @@
 
 #include "responsepacket.h"
 #include "requestpacket.h"
-#include "vdrcommand.h"
+#include "vnsicommand.h"
 #include "tools.h"
 
 /* Needed on Mac OS/X */
@@ -88,9 +88,9 @@ bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
   try
   {
     cRequestPacket vrp;
-    if (!vrp.init(VDR_LOGIN))                 throw "Can't init cRequestPacket";
-    if (!vrp.add_U32(VNSIProtocolVersion))    throw "Can't add protocol version to RequestPacket";
-    if (!vrp.add_U8(false))                   throw "Can't add netlog flag";
+    if (!vrp.init(VNSI_LOGIN))                  throw "Can't init cRequestPacket";
+    if (!vrp.add_U32(VNSIPROTOCOLVERSION))      throw "Can't add protocol version to RequestPacket";
+    if (!vrp.add_U8(false))                     throw "Can't add netlog flag";
     if (name && strlen(name) > 0)
     {
       if (!vrp.add_String(name))                throw "Can't add client name to RequestPacket";
@@ -160,7 +160,7 @@ cResponsePacket* cVNSISession::ReadMessage()
   // Data was read
 
   channelID = ntohl(channelID);
-  if (channelID == CHANNEL_REQUEST_RESPONSE)
+  if (channelID == VNSI_CHANNEL_REQUEST_RESPONSE)
   {
     if (!readData((uint8_t*)&m_responsePacketHeader, sizeof(m_responsePacketHeader))) return NULL;
 
@@ -182,7 +182,7 @@ cResponsePacket* cVNSISession::ReadMessage()
     vresp = new cResponsePacket();
     vresp->setResponse(requestID, userData, userDataLength);
   }
-  else if (channelID == CHANNEL_STREAM)
+  else if (channelID == VNSI_CHANNEL_STREAM)
   {
     if (!readData((uint8_t*)&m_streamPacketHeader, sizeof(m_streamPacketHeader))) return NULL;
 
@@ -193,7 +193,7 @@ cResponsePacket* cVNSISession::ReadMessage()
     dts = ntohll(*(int64_t*)m_streamPacketHeader.dts);
     userDataLength = ntohl(m_streamPacketHeader.userDataLength);
 
-    if(opCodeID == VDR_STREAM_MUXPKT) {
+    if(opCodeID == VNSI_STREAM_MUXPKT) {
       DemuxPacket* p = PVR->AllocateDemuxPacket(userDataLength);
       userData = (uint8_t*)p;
       if (userDataLength > 0)
@@ -248,7 +248,7 @@ cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp)
   while((pkt = ReadMessage()))
   {
     /* Discard everything other as response packets until it is received */
-    if (pkt->getChannelID() == CHANNEL_REQUEST_RESPONSE && pkt->getRequestID() == vrp->getSerial())
+    if (pkt->getChannelID() == VNSI_CHANNEL_REQUEST_RESPONSE && pkt->getRequestID() == vrp->getSerial())
     {
       return pkt;
     }
@@ -270,7 +270,7 @@ bool cVNSISession::ReadSuccess(cRequestPacket* vrp)
   uint32_t retCode = pkt->extract_U32();
   delete pkt;
 
-  if(retCode != VDR_RET_OK)
+  if(retCode != VNSI_RET_OK)
   {
     XBMC->Log(LOG_ERROR, "%s - failed with error code '%i'", __FUNCTION__, retCode);
     return false;

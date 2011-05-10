@@ -22,7 +22,7 @@
 #include "VNSIData.h"
 #include "responsepacket.h"
 #include "requestpacket.h"
-#include "vdrcommand.h"
+#include "vnsicommand.h"
 
 extern "C" {
 #include "libTcpSocket/os-dependent_socket.h"
@@ -109,7 +109,7 @@ cResponsePacket* cVNSIData::ReadResult(cRequestPacket* vrp)
 bool cVNSIData::GetDriveSpace(long long *total, long long *used)
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_RECORDINGS_DISKSIZE))
+  if (!vrp.init(VNSI_RECORDINGS_DISKSIZE))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return false;
@@ -140,7 +140,7 @@ bool cVNSIData::GetDriveSpace(long long *total, long long *used)
 bool cVNSIData::SupportChannelScan()
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_SCAN_SUPPORTED))
+  if (!vrp.init(VNSI_SCAN_SUPPORTED))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return false;
@@ -155,13 +155,13 @@ bool cVNSIData::SupportChannelScan()
 
   uint32_t ret = vresp->extract_U32();
   delete vresp;
-  return ret == VDR_RET_OK ? true : false;
+  return ret == VNSI_RET_OK ? true : false;
 }
 
 bool cVNSIData::EnableStatusInterface(bool onOff)
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_ENABLESTATUSINTERFACE)) return false;
+  if (!vrp.init(VNSI_ENABLESTATUSINTERFACE)) return false;
   if (!vrp.add_U8(onOff)) return false;
 
   cResponsePacket* vresp = ReadResult(&vrp);
@@ -173,13 +173,13 @@ bool cVNSIData::EnableStatusInterface(bool onOff)
 
   uint32_t ret = vresp->extract_U32();
   delete vresp;
-  return ret == VDR_RET_OK ? true : false;
+  return ret == VNSI_RET_OK ? true : false;
 }
 
 bool cVNSIData::EnableOSDInterface(bool onOff)
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_ENABLEOSDINTERFACE)) return false;
+  if (!vrp.init(VNSI_ENABLEOSDINTERFACE)) return false;
   if (!vrp.add_U8(onOff)) return false;
 
   cResponsePacket* vresp = ReadResult(&vrp);
@@ -191,13 +191,13 @@ bool cVNSIData::EnableOSDInterface(bool onOff)
 
   uint32_t ret = vresp->extract_U32();
   delete vresp;
-  return ret == VDR_RET_OK ? true : false;
+  return ret == VNSI_RET_OK ? true : false;
 }
 
 int cVNSIData::GetChannelsCount()
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_CHANNELS_GETCOUNT))
+  if (!vrp.init(VNSI_CHANNELS_GETCOUNT))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return -1;
@@ -219,7 +219,7 @@ int cVNSIData::GetChannelsCount()
 bool cVNSIData::GetChannelsList(PVR_HANDLE handle, bool radio)
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_CHANNELS_GETCHANNELS))
+  if (!vrp.init(VNSI_CHANNELS_GETCHANNELS))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return false;
@@ -265,7 +265,7 @@ bool cVNSIData::GetChannelsList(PVR_HANDLE handle, bool radio)
 bool cVNSIData::GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end)
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_EPG_GETFORCHANNEL))
+  if (!vrp.init(VNSI_EPG_GETFORCHANNEL))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return false;
@@ -316,7 +316,7 @@ bool cVNSIData::GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, 
 int cVNSIData::GetTimersCount()
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_TIMER_GETCOUNT))
+  if (!vrp.init(VNSI_TIMER_GETCOUNT))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return -1;
@@ -338,7 +338,7 @@ int cVNSIData::GetTimersCount()
 PVR_ERROR cVNSIData::GetTimerInfo(unsigned int timernumber, PVR_TIMER &tag)
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_TIMER_GET))
+  if (!vrp.init(VNSI_TIMER_GET))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return PVR_ERROR_UNKOWN;
@@ -356,12 +356,12 @@ PVR_ERROR cVNSIData::GetTimerInfo(unsigned int timernumber, PVR_TIMER &tag)
   }
 
   uint32_t returnCode = vresp->extract_U32();
-  if (returnCode != VDR_RET_OK)
+  if (returnCode != VNSI_RET_OK)
   {
     delete vresp;
-    if (returnCode == VDR_RET_DATAUNKNOWN)
+    if (returnCode == VNSI_RET_DATAUNKNOWN)
       return PVR_ERROR_NOT_POSSIBLE;
-    else if (returnCode == VDR_RET_ERROR)
+    else if (returnCode == VNSI_RET_ERROR)
       return PVR_ERROR_SERVER_ERROR;
   }
 
@@ -395,7 +395,7 @@ PVR_ERROR cVNSIData::GetTimerInfo(unsigned int timernumber, PVR_TIMER &tag)
 bool cVNSIData::GetTimersList(PVR_HANDLE handle)
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_TIMER_GETLIST))
+  if (!vrp.init(VNSI_TIMER_GETLIST))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return false;
@@ -450,7 +450,7 @@ bool cVNSIData::GetTimersList(PVR_HANDLE handle)
 PVR_ERROR cVNSIData::AddTimer(const PVR_TIMER &timerinfo)
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_TIMER_ADD))
+  if (!vrp.init(VNSI_TIMER_ADD))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return PVR_ERROR_UNKOWN;
@@ -514,11 +514,11 @@ PVR_ERROR cVNSIData::AddTimer(const PVR_TIMER &timerinfo)
   }
   uint32_t returnCode = vresp->extract_U32();
   delete vresp;
-  if (returnCode == VDR_RET_DATALOCKED)
+  if (returnCode == VNSI_RET_DATALOCKED)
     return PVR_ERROR_ALREADY_PRESENT;
-  else if (returnCode == VDR_RET_DATAINVALID)
+  else if (returnCode == VNSI_RET_DATAINVALID)
     return PVR_ERROR_NOT_SAVED;
-  else if (returnCode == VDR_RET_ERROR)
+  else if (returnCode == VNSI_RET_ERROR)
     return PVR_ERROR_SERVER_ERROR;
 
   return PVR_ERROR_NO_ERROR;
@@ -527,7 +527,7 @@ PVR_ERROR cVNSIData::AddTimer(const PVR_TIMER &timerinfo)
 PVR_ERROR cVNSIData::DeleteTimer(const PVR_TIMER &timerinfo, bool force)
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_TIMER_DELETE))
+  if (!vrp.init(VNSI_TIMER_DELETE))
     return PVR_ERROR_UNKOWN;
 
   if (!vrp.add_U32(timerinfo.iClientIndex))
@@ -546,13 +546,13 @@ PVR_ERROR cVNSIData::DeleteTimer(const PVR_TIMER &timerinfo, bool force)
   uint32_t returnCode = vresp->extract_U32();
   delete vresp;
 
-  if (returnCode == VDR_RET_DATALOCKED)
+  if (returnCode == VNSI_RET_DATALOCKED)
     return PVR_ERROR_NOT_DELETED;
-  if (returnCode == VDR_RET_RECRUNNING)
+  if (returnCode == VNSI_RET_RECRUNNING)
     return PVR_ERROR_RECORDING_RUNNING;
-  else if (returnCode == VDR_RET_DATAINVALID)
+  else if (returnCode == VNSI_RET_DATAINVALID)
     return PVR_ERROR_NOT_POSSIBLE;
-  else if (returnCode == VDR_RET_ERROR)
+  else if (returnCode == VNSI_RET_ERROR)
     return PVR_ERROR_SERVER_ERROR;
 
   return PVR_ERROR_NO_ERROR;
@@ -576,7 +576,7 @@ PVR_ERROR cVNSIData::UpdateTimer(const PVR_TIMER &timerinfo)
   uint32_t endtime = timerinfo.endTime + timerinfo.iMarginEnd;
 
   cRequestPacket vrp;
-  if (!vrp.init(VDR_TIMER_UPDATE))        return PVR_ERROR_UNKOWN;
+  if (!vrp.init(VNSI_TIMER_UPDATE))        return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iClientIndex))      return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.state == PVR_TIMER_STATE_SCHEDULED))     return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iPriority))   return PVR_ERROR_UNKOWN;
@@ -597,11 +597,11 @@ PVR_ERROR cVNSIData::UpdateTimer(const PVR_TIMER &timerinfo)
   }
   uint32_t returnCode = vresp->extract_U32();
   delete vresp;
-  if (returnCode == VDR_RET_DATAUNKNOWN)
+  if (returnCode == VNSI_RET_DATAUNKNOWN)
     return PVR_ERROR_NOT_POSSIBLE;
-  else if (returnCode == VDR_RET_DATAINVALID)
+  else if (returnCode == VNSI_RET_DATAINVALID)
     return PVR_ERROR_NOT_SAVED;
-  else if (returnCode == VDR_RET_ERROR)
+  else if (returnCode == VNSI_RET_ERROR)
     return PVR_ERROR_SERVER_ERROR;
 
   return PVR_ERROR_NO_ERROR;
@@ -610,7 +610,7 @@ PVR_ERROR cVNSIData::UpdateTimer(const PVR_TIMER &timerinfo)
 int cVNSIData::GetRecordingsCount()
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_RECORDINGS_GETCOUNT))
+  if (!vrp.init(VNSI_RECORDINGS_GETCOUNT))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return -1;
@@ -632,7 +632,7 @@ int cVNSIData::GetRecordingsCount()
 PVR_ERROR cVNSIData::GetRecordingsList(PVR_HANDLE handle)
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_RECORDINGS_GETLIST))
+  if (!vrp.init(VNSI_RECORDINGS_GETLIST))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return PVR_ERROR_UNKOWN;
@@ -677,7 +677,7 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVR_HANDLE handle)
 PVR_ERROR cVNSIData::RenameRecording(const PVR_RECORDING& recinfo, const char* newname)
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_RECORDINGS_RENAME))
+  if (!vrp.init(VNSI_RECORDINGS_RENAME))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return PVR_ERROR_UNKOWN;
@@ -711,7 +711,7 @@ PVR_ERROR cVNSIData::RenameRecording(const PVR_RECORDING& recinfo, const char* n
 PVR_ERROR cVNSIData::DeleteRecording(const PVR_RECORDING& recinfo)
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_RECORDINGS_DELETE))
+  if (!vrp.init(VNSI_RECORDINGS_DELETE))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return PVR_ERROR_UNKOWN;
@@ -732,16 +732,16 @@ PVR_ERROR cVNSIData::DeleteRecording(const PVR_RECORDING& recinfo)
 
   switch(returnCode)
   {
-    case VDR_RET_DATALOCKED:
+    case VNSI_RET_DATALOCKED:
       return PVR_ERROR_NOT_DELETED;
 
-    case VDR_RET_RECRUNNING:
+    case VNSI_RET_RECRUNNING:
       return PVR_ERROR_RECORDING_RUNNING;
 
-    case VDR_RET_DATAINVALID:
+    case VNSI_RET_DATAINVALID:
       return PVR_ERROR_NOT_POSSIBLE;
 
-    case VDR_RET_ERROR:
+    case VNSI_RET_ERROR:
       return PVR_ERROR_SERVER_ERROR;
   }
 
@@ -758,7 +758,7 @@ void cVNSIData::SendPing()
   XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
 
   cRequestPacket vrp;
-  if (!vrp.init(VDR_PING))
+  if (!vrp.init(VNSI_PING))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
     return;
@@ -845,7 +845,7 @@ void cVNSIData::Action()
 
     // CHANNEL_REQUEST_RESPONSE
 
-    if (channelID == CHANNEL_REQUEST_RESPONSE)
+    if (channelID == VNSI_CHANNEL_REQUEST_RESPONSE)
     {
 
       CMD_LOCK;
@@ -863,9 +863,9 @@ void cVNSIData::Action()
 
     // CHANNEL_STATUS
 
-    else if (channelID == CHANNEL_STATUS)
+    else if (channelID == VNSI_CHANNEL_STATUS)
     {
-      if (requestID == VDR_STATUS_MESSAGE)
+      if (requestID == VNSI_STATUS_MESSAGE)
       {
         uint32_t type = vresp->extract_U32();
         char* msgstr  = vresp->extract_String();
@@ -883,7 +883,7 @@ void cVNSIData::Action()
 
         delete[] msgstr;
       }
-      else if (requestID == VDR_STATUS_RECORDING)
+      else if (requestID == VNSI_STATUS_RECORDING)
       {
                           vresp->extract_U32(); // device currently unused
         uint32_t on     = vresp->extract_U32();
@@ -896,16 +896,16 @@ void cVNSIData::Action()
         delete[] str1;
         delete[] str2;
       }
-      else if (requestID == VDR_STATUS_TIMERCHANGE)
+      else if (requestID == VNSI_STATUS_TIMERCHANGE)
       {
         PVR->TriggerTimerUpdate();
       }
-      else if (requestID == VDR_STATUS_CHANNELCHANGE)
+      else if (requestID == VNSI_STATUS_CHANNELCHANGE)
       {
         XBMC->Log(LOG_ERROR, "Server requested channel update");
         PVR->TriggerChannelUpdate();
       }
-      else if (requestID == VDR_STATUS_RECORDINGSCHANGE)
+      else if (requestID == VNSI_STATUS_RECORDINGSCHANGE)
       {
         XBMC->Log(LOG_ERROR, "Server requested recordings update");
         PVR->TriggerRecordingUpdate();

@@ -25,10 +25,9 @@
 #include "VNSIDemux.h"
 #include "responsepacket.h"
 #include "requestpacket.h"
-#include "vdrcommand.h"
+#include "vnsicommand.h"
 
 cVNSIDemux::cVNSIDemux()
-  : m_StatusCount(0)
 {
   m_Streams.iStreamCount = 0;
 }
@@ -50,15 +49,13 @@ bool cVNSIDemux::Open(const std::string& hostname, int port, const char *name)
     return false;
 
   cRequestPacket vrp;
-  if (!vrp.init(VDR_CHANNELSTREAM_OPEN) ||
+  if (!vrp.init(VNSI_CHANNELSTREAM_OPEN) ||
       !vrp.add_U32(m_channelinfo.iUniqueId) ||
       !ReadSuccess(&vrp))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't open channel %i - %s", __FUNCTION__, m_channelinfo.iChannelNumber, m_channelinfo.strChannelName);
     return false;
   }
-
-  m_StatusCount = 0;
 
   return SwitchChannel(m_channelinfo);
 }
@@ -102,25 +99,25 @@ DemuxPacket* cVNSIDemux::Read()
     return NULL;
   }
 
-  if (resp->getChannelID() != CHANNEL_STREAM)
+  if (resp->getChannelID() != VNSI_CHANNEL_STREAM)
   {
     delete resp;
     return NULL;
   }
 
-  if (resp->getOpCodeID() == VDR_STREAM_CHANGE)
+  if (resp->getOpCodeID() == VNSI_STREAM_CHANGE)
   {
     StreamChange(resp);
   }
-  else if (resp->getOpCodeID() == VDR_STREAM_STATUS)
+  else if (resp->getOpCodeID() == VNSI_STREAM_STATUS)
   {
     StreamStatus(resp);
   }
-  else if (resp->getOpCodeID() == VDR_STREAM_SIGNALINFO)
+  else if (resp->getOpCodeID() == VNSI_STREAM_SIGNALINFO)
   {
     StreamSignalInfo(resp);
   }
-  else if (resp->getOpCodeID() == VDR_STREAM_CONTENTINFO)
+  else if (resp->getOpCodeID() == VNSI_STREAM_CONTENTINFO)
   {
     StreamContentInfo(resp);
     DemuxPacket* pkt = PVR->AllocateDemuxPacket(sizeof(PVR_STREAM_PROPERTIES));
@@ -130,7 +127,7 @@ DemuxPacket* cVNSIDemux::Read()
     delete resp;
     return pkt;
   }
-  else if (resp->getOpCodeID() == VDR_STREAM_MUXPKT)
+  else if (resp->getOpCodeID() == VNSI_STREAM_MUXPKT)
   {
     DemuxPacket* p = (DemuxPacket*)resp->getUserData();
 
@@ -160,7 +157,7 @@ bool cVNSIDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
   XBMC->Log(LOG_DEBUG, "changing to channel %d", channelinfo.iChannelNumber);
 
   cRequestPacket vrp;
-  if (!vrp.init(VDR_CHANNELSTREAM_OPEN) || !vrp.add_U32(channelinfo.iUniqueId) || !ReadSuccess(&vrp))
+  if (!vrp.init(VNSI_CHANNELSTREAM_OPEN) || !vrp.add_U32(channelinfo.iUniqueId) || !ReadSuccess(&vrp))
   {
     XBMC->Log(LOG_ERROR, "%s - failed to set channel", __FUNCTION__);
   }
@@ -383,7 +380,7 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
 
     if (m_Streams.iStreamCount >= PVR_STREAM_MAX_STREAMS)
     {
-      XBMC->Log(LOG_ERROR, "cVNSIDemux::StreamChange - max amount of streams reached");
+      XBMC->Log(LOG_ERROR, "%s - max amount of streams reached", __FUNCTION__);
       break;
     }
   }
@@ -392,25 +389,28 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
 void cVNSIDemux::StreamStatus(cResponsePacket *resp)
 {
   const char* status = resp->extract_String();
-  if(status == NULL)
-    m_Status = "";
-  else
+  if(status != NULL)
   {
-    m_StatusCount++;
-    m_Status = status;
-    XBMC->Log(LOG_DEBUG, "cVNSIDemux::StreamStatus - %s", status);
+    XBMC->Log(LOG_DEBUG, "%s - %s", __FUNCTION__, status);
     XBMC->QueueNotification(QUEUE_INFO, status);
   }
+  delete[] status;
 }
 
 void cVNSIDemux::StreamSignalInfo(cResponsePacket *resp)
 {
-  m_Quality.fe_name   = resp->extract_String();
-  m_Quality.fe_status = resp->extract_String();
+  const char* name = resp->extract_String();
+  const char* status = resp->extract_String();
+
+  m_Quality.fe_name   = name;
+  m_Quality.fe_status = status;
   m_Quality.fe_snr    = resp->extract_U32();
   m_Quality.fe_signal = resp->extract_U32();
   m_Quality.fe_ber    = resp->extract_U32();
   m_Quality.fe_unc    = resp->extract_U32();
+
+  delete[] name;
+  delete[] status;
 }
 
 void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)

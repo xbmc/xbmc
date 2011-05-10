@@ -60,7 +60,6 @@ protected:
   void StreamContentInfo(cResponsePacket *resp);
 
 private:
-  int                   m_StatusCount;
   std::string           m_Status;
   PVR_STREAM_PROPERTIES m_Streams;
   PVR_CHANNEL           m_channelinfo;

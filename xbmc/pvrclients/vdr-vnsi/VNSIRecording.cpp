@@ -23,8 +23,8 @@
 #include "VNSIRecording.h"
 #include "responsepacket.h"
 #include "requestpacket.h"
-#include "vdrcommand.h"
-#include "client.h"
+#include "vnsicommand.h"
+//#include "client.h"
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
 
@@ -45,7 +45,7 @@ bool cVNSIRecording::Open(const PVR_RECORDING& recinfo)
     return ret;
 
   cRequestPacket vrp;
-  if (!vrp.init(VDR_RECSTREAM_OPEN) ||
+  if (!vrp.init(VNSI_RECSTREAM_OPEN) ||
       !vrp.add_U32(recinfo.iClientIndex))
   {
     return ret;
@@ -56,7 +56,7 @@ bool cVNSIRecording::Open(const PVR_RECORDING& recinfo)
     return ret;
 
   uint32_t returnCode = vresp->extract_U32();
-  if (returnCode == VDR_RET_OK)
+  if (returnCode == VNSI_RET_OK)
   {
     m_currentPlayingRecordFrames    = vresp->extract_U32();
     m_currentPlayingRecordBytes     = vresp->extract_U64();
@@ -77,7 +77,7 @@ bool cVNSIRecording::Open(const PVR_RECORDING& recinfo)
 void cVNSIRecording::Close()
 {
   cRequestPacket vrp;
-  vrp.init(VDR_RECSTREAM_CLOSE);
+  vrp.init(VNSI_RECSTREAM_CLOSE);
   m_session.ReadSuccess(&vrp);
   m_session.Close();
 }
@@ -88,7 +88,7 @@ int cVNSIRecording::Read(unsigned char* buf, uint32_t buf_size)
     return 0;
 
   cRequestPacket vrp;
-  if (!vrp.init(VDR_RECSTREAM_GETBLOCK) ||
+  if (!vrp.init(VNSI_RECSTREAM_GETBLOCK) ||
       !vrp.add_U64(m_currentPlayingRecordPosition) ||
       !vrp.add_U32(buf_size))
   {
