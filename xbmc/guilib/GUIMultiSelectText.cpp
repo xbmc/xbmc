@@ -60,8 +60,8 @@ CGUIMultiSelectTextControl::~CGUIMultiSelectTextControl(void)
 
 bool CGUIMultiSelectTextControl::UpdateColors()
 {
-  bool changed = m_label.UpdateColors();
-  changed |= CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_label.UpdateColors();
 
   return changed;
 }

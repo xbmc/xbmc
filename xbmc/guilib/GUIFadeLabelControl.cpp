@@ -88,8 +88,8 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime)
 
 bool CGUIFadeLabelControl::UpdateColors()
 {
-  bool changed = m_label.UpdateColors();
-  changed |= CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_label.UpdateColors();
 
   return changed;
 }
