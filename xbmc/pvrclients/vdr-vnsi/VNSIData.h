@@ -34,15 +34,13 @@ class cVNSIData : public cVNSISession, public cThread
 {
 public:
   cVNSIData();
-  ~cVNSIData();
+  virtual ~cVNSIData();
 
   bool Open(const std::string& hostname, int port, const char* name = NULL);
   void Close();
 
   cResponsePacket*  ReadResult(cRequestPacket* vrp);
-  /*int         GetProtocol()   { return m_session.GetProtocol(); }
-  const std::string& GetServerName() { return m_session.GetServerName(); }
-  const std::string& GetVersion()    { return m_session.GetVersion(); }*/
+
   bool        SupportChannelScan();
   bool        EnableStatusInterface(bool onOff);
   bool        EnableOSDInterface(bool onOff);
@@ -72,6 +70,11 @@ protected:
   virtual void Action(void);
 
   virtual bool onResponsePacket(cResponsePacket *pkt);
+
+  void OnDisconnect();
+  void OnReconnect();
+
+  void SendPing();
 
 private:
 

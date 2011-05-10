@@ -42,6 +42,7 @@ const static uint32_t VDR_LOGIN                 = 1;
 const static uint32_t VDR_GETTIME               = 2;
 const static uint32_t VDR_ENABLESTATUSINTERFACE = 3;
 const static uint32_t VDR_ENABLEOSDINTERFACE    = 4;
+const static uint32_t VDR_PING                  = 7;
 
 /* OPCODE 20 - 39: VNSI network functions for live streaming */
 const static uint32_t VDR_CHANNELSTREAM_OPEN    = 20;

@@ -38,7 +38,7 @@ public:
 
   virtual bool      Open(const std::string& hostname, int port, const char *name = NULL);
   virtual void      Close();
-  void              Abort();
+  virtual void      Abort();
 
   cResponsePacket*  ReadMessage();
   bool              SendMessage(cRequestPacket* vrp);
@@ -57,6 +57,8 @@ protected:
 
   virtual void OnDisconnect();
   virtual void OnReconnect();
+
+  void SignalConnectionLost();
 
   bool ConnectionLost() { return m_connectionLost; }
 

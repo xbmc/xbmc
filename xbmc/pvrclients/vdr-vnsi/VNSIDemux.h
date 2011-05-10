@@ -36,32 +36,35 @@ struct SQuality
   uint32_t    fe_unc;
 };
 
-class cVNSIDemux
+class cVNSIDemux : public cVNSISession
 {
 public:
   cVNSIDemux();
   ~cVNSIDemux();
 
   bool Open(const PVR_CHANNEL &channelinfo);
-  void Close();
   bool GetStreamProperties(PVR_STREAM_PROPERTIES* props);
   void Abort();
   DemuxPacket* Read();
   bool SwitchChannel(const PVR_CHANNEL &channelinfo);
-  int CurrentChannel() { return m_channel; }
+  int CurrentChannel() { return m_channelinfo.iChannelNumber; }
   bool GetSignalStatus(PVR_SIGNAL_STATUS &qualityinfo);
 
 protected:
+
+  bool Open(const std::string& hostname, int port, const char *name = "XBMC LiveStream Receiver");
+
+  void OnReconnect();
+
   void StreamChange(cResponsePacket *resp);
   void StreamStatus(cResponsePacket *resp);
   void StreamSignalInfo(cResponsePacket *resp);
   void StreamContentInfo(cResponsePacket *resp);
 
 private:
-  cVNSISession    m_session;
-  int             m_channel;
-  int             m_StatusCount;
-  std::string     m_Status;
+  int                   m_StatusCount;
+  std::string           m_Status;
   PVR_STREAM_PROPERTIES m_Streams;
-  SQuality        m_Quality;
+  PVR_CHANNEL           m_channelinfo;
+  SQuality              m_Quality;
 };

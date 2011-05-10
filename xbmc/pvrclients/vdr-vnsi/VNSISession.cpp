@@ -234,7 +234,10 @@ bool cVNSISession::SendMessage(cRequestPacket* vrp)
 cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp)
 {
   if(!SendMessage(vrp))
+  {
+    SignalConnectionLost();
     return NULL;
+  }
 
   cResponsePacket *pkt = NULL;
 
@@ -248,6 +251,8 @@ cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp)
     else
       delete pkt;
   }
+
+  SignalConnectionLost();
   return NULL;
 }
 
@@ -271,6 +276,15 @@ bool cVNSISession::ReadSuccess(cRequestPacket* vrp)
 
 int cVNSISession::sendData(void* bufR, size_t count)
 {
+  if(m_connectionLost) {
+    if(TryReconnect()) {
+      m_connectionLost = false;
+    }
+    else {
+      return -1;
+    }
+  }
+
   size_t bytes_sent = 0;
   int this_write;
 
@@ -290,13 +304,20 @@ int cVNSISession::sendData(void* bufR, size_t count)
 #endif
     if (this_write <= 0)
     {
-      return(this_write);
+      XBMC->Log(LOG_ERROR, "%s - this_write <= 0'", __FUNCTION__);
+      break;
     }
     bytes_sent += this_write;
     buf += this_write;
   }
 
-  return(count);
+  if (bytes_sent < count)
+  {
+    SignalConnectionLost();
+    return -1;
+  }
+
+  return bytes_sent;
 }
 
 void cVNSISession::OnReconnect() {
@@ -306,9 +327,6 @@ void cVNSISession::OnDisconnect() {
 }
 
 bool cVNSISession::TryReconnect() {
-  Abort();
-  Close();
-
   if(!Open(m_hostname, m_port)) {
     return false;
   }
@@ -318,6 +336,19 @@ bool cVNSISession::TryReconnect() {
   OnReconnect();
 
   return true;
+}
+
+void cVNSISession::SignalConnectionLost()
+{
+  if(m_connectionLost)
+    return;
+
+  XBMC->Log(LOG_ERROR, "%s - connection lost !!!", __FUNCTION__);
+  m_connectionLost = true;
+
+  Close();
+
+  OnDisconnect();
 }
 
 bool cVNSISession::readData(uint8_t* buffer, int totalBytes)
@@ -345,10 +376,13 @@ bool cVNSISession::readData(uint8_t* buffer, int totalBytes)
     timeout.tv_usec = 0;
 
     success = select(m_fd + 1, &readSet, NULL, NULL, &timeout);
-    if (success < 1)
+    if (success == -1)
     {
-      return false;  // error, or timeout
+      SignalConnectionLost();
+      return false;
     }
+    else if (success < 1)
+      return false;  // error, or timeout
 
 #ifdef __WINDOWS__
     thisRead = recv(m_fd, (char*)&buffer[bytesRead], totalBytes - bytesRead, 0);
@@ -359,16 +393,14 @@ bool cVNSISession::readData(uint8_t* buffer, int totalBytes)
     // if read returns 0 then connection is closed
     if(thisRead == 0)
     {
-      XBMC->Log(LOG_ERROR, "%s - connection lost !!!", __FUNCTION__);
-      m_connectionLost = true;
-      OnDisconnect();
-	  return false;
+      SignalConnectionLost();
+      return false;
     }
 
     // in non-blocking mode if read is called with no data available, it returns -1
     // and sets errno to EGAGAIN. but we use select so it wouldn't do that anyway.
-	if(thisRead == -1)
-	  continue;
+    if(thisRead == -1)
+      continue;
 
     bytesRead += thisRead;
   }
