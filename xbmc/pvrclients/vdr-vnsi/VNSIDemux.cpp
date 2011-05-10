@@ -54,27 +54,13 @@ bool cVNSIDemux::Open(const std::string& hostname, int port, const char *name)
       !vrp.add_U32(m_channelinfo.iUniqueId) ||
       !ReadSuccess(&vrp))
   {
-    XBMC->Log(LOG_ERROR, "cVNSIDemux::Open - Can't open channel %i - %s", m_channelinfo.iChannelNumber, m_channelinfo.strChannelName);
+    XBMC->Log(LOG_ERROR, "%s - Can't open channel %i - %s", __FUNCTION__, m_channelinfo.iChannelNumber, m_channelinfo.strChannelName);
     return false;
   }
 
   m_StatusCount = 0;
 
-  while (m_Streams.iStreamCount == 0 && !ConnectionLost())
-  {
-    DemuxPacket* pkg = Read();
-    if(!pkg)
-    {
-      Close();
-      return false;
-    }
-    PVR->FreeDemuxPacket(pkg);
-  }
-
-  if(ConnectionLost())
-    return false;
-
-  return true;
+  return SwitchChannel(m_channelinfo);
 }
 
 bool cVNSIDemux::GetStreamProperties(PVR_STREAM_PROPERTIES* props)
@@ -176,7 +162,7 @@ bool cVNSIDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
   cRequestPacket vrp;
   if (!vrp.init(VDR_CHANNELSTREAM_OPEN) || !vrp.add_U32(channelinfo.iUniqueId) || !ReadSuccess(&vrp))
   {
-    XBMC->Log(LOG_ERROR, "cVNSIDemux::SetChannel - failed to set channel");
+    XBMC->Log(LOG_ERROR, "%s - failed to set channel", __FUNCTION__);
   }
   else
   {
@@ -468,9 +454,4 @@ void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
       }
     }
   }
-}
-
-void cVNSIDemux::OnReconnect()
-{
-  SwitchChannel(m_channelinfo);
 }

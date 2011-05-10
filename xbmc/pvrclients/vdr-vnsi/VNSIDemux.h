@@ -54,8 +54,6 @@ protected:
 
   bool Open(const std::string& hostname, int port, const char *name = "XBMC LiveStream Receiver");
 
-  void OnReconnect();
-
   void StreamChange(cResponsePacket *resp);
   void StreamStatus(cResponsePacket *resp);
   void StreamSignalInfo(cResponsePacket *resp);
