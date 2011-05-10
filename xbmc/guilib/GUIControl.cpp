@@ -528,7 +528,7 @@ void CGUIControl::FlushDirtyRegion(bool setMatrixBeforeFlush)
   m_markedLocalRegion = CRect();
 }
 
-CRect CGUIControl::GetRenderRegion()
+CRect CGUIControl::GetRenderRegion() const
 {
   CPoint tl(GetXPosition(), GetYPosition());
   CPoint br(tl.x + GetWidth(), tl.y + GetHeight());
