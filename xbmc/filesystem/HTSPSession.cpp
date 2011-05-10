@@ -28,10 +28,6 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 
-#ifdef _MSC_VER
-#define ETIMEDOUT WSAETIMEDOUT
-#endif
-
 extern "C" {
 #include "libhts/net.h"
 #include "libhts/htsmsg.h"
