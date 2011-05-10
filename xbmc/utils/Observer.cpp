@@ -21,6 +21,7 @@
 
 #include "Observer.h"
 #include "threads/SingleLock.h"
+#include "utils/JobManager.h"
 
 using namespace std;
 using namespace ANNOUNCEMENT;
