@@ -65,7 +65,7 @@ void CGUIWindowPVRGuide::ResetObservers(void)
 
 void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
 {
-  if (msg.Equals("epg") || msg.Equals("timers-reset") || msg.Equals("timers"))
+  if (msg.Equals("epg"))
   {
     UpdateEpgCache(m_bLastEpgView, true);
 
@@ -461,12 +461,6 @@ void CGUIWindowPVRGuide::UpdateEpgCache(bool bRadio /* = false */, bool bForceUp
   {
     m_bObservingEpg = true;
     g_PVREpg->RegisterObserver(this);
-  }
-
-  if (!m_bObservingTimers)
-  {
-    m_bObservingTimers = true;
-    g_PVRTimers->RegisterObserver(this);
   }
 
   if (!m_bGotInitialEpg || m_bLastEpgView != bRadio || bForceUpdate)
