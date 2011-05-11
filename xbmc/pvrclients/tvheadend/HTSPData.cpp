@@ -23,6 +23,7 @@
 
 extern "C" {
 #include "libhts/htsmsg.h"
+#include "libhts/htsatomic.h"
 #include "libhts/htsmsg_binary.h"
 }
 
@@ -68,7 +69,7 @@ htsmsg_t* CHTSPData::ReadResult(htsmsg_t *m)
     return NULL;
 
   m_Mutex.Lock();
-  unsigned seq (m_session->AddSequence());
+  uint32_t seq = atomic_add(&g_iPacketSequence, 1);
 
   SMessage &message(m_queue[seq]);
   message.event = new cCondWait();

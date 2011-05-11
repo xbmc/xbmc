@@ -25,6 +25,7 @@
 extern "C" {
 #include "libTcpSocket/os-dependent_socket.h"
 #include "libhts/htsmsg_binary.h"
+#include "libhts/htsatomic.h"
 #include "libhts/sha1.h"
 }
 
@@ -32,7 +33,6 @@ using namespace std;
 
 CHTSPConnection::CHTSPConnection() :
     m_fd(INVALID_SOCKET),
-    m_iSequence(0),
     m_challenge(NULL),
     m_iChallengeLength(0),
     m_iProtocol(0),
@@ -193,7 +193,7 @@ htsmsg_t* CHTSPConnection::ReadResult(htsmsg_t* m, bool sequence)
   uint32_t iSequence = 0;
   if(sequence)
   {
-    iSequence = AddSequence();
+    iSequence = atomic_add(&g_iPacketSequence, 1);
     htsmsg_add_u32(m, "seq", iSequence);
   }
 
@@ -251,17 +251,6 @@ bool CHTSPConnection::ReadSuccess(htsmsg_t* m, bool sequence, std::string action
   }
   htsmsg_destroy(m);
   return true;
-}
-
-unsigned int CHTSPConnection::AddSequence()
-{
-  int iReturn;
-
-  m_Mutex.Lock();
-  iReturn = ++m_iSequence;
-  m_Mutex.Unlock();
-
-  return iReturn;
 }
 
 bool CHTSPConnection::SendGreeting(void)
