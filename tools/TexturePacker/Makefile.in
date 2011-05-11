@@ -1,3 +1,4 @@
+ARCH=@ARCH@
 DEFINES += -D_LINUX -DUSE_LZO_PACKING
 ifneq ($(or $(findstring powerpc,arm-osx),$(findstring ppc, arm-osx)),)
 DEFINES += -DHOST_BIGENDIAN
