@@ -216,8 +216,6 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
     modifiers |= CKey::MODIFIER_SHIFT;
   if (keysym.mod & XBMCKMOD_ALT)
     modifiers |= CKey::MODIFIER_ALT;
-  if (keysym.mod & XBMCKMOD_RALT)
-    modifiers |= CKey::MODIFIER_RALT;
   if (keysym.mod & XBMCKMOD_SUPER)
     modifiers |= CKey::MODIFIER_SUPER;
 
