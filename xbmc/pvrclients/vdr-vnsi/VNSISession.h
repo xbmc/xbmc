@@ -37,6 +37,7 @@ public:
   virtual ~cVNSISession();
 
   virtual bool      Open(const std::string& hostname, int port, const char *name = NULL);
+  virtual bool      Login();
   virtual void      Close();
   virtual void      Abort();
 
@@ -52,8 +53,12 @@ public:
 
 protected:
 
+  void SleepMs(int ms);
+
   int sendData(void* buf, size_t count);
   bool readData(uint8_t* buffer, int totalBytes);
+
+  bool TryReconnect();
 
   virtual void OnDisconnect();
   virtual void OnReconnect();
@@ -65,10 +70,9 @@ protected:
   bool            m_connectionLost;
   std::string     m_hostname;
   int             m_port;
+  std::string     m_name;
 
 private:
-
-  bool TryReconnect();
 
   socket_t    m_fd;
   int         m_protocol;

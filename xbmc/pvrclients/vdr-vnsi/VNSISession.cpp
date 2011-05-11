@@ -52,7 +52,7 @@ cVNSISession::~cVNSISession()
 
 void cVNSISession::Abort()
 {
-  shutdown(m_fd, SHUT_RDWR);
+  tcp_shutdown(m_fd);
 }
 
 void cVNSISession::Close()
@@ -66,18 +66,14 @@ void cVNSISession::Close()
 
 bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
 {
-  if(m_fd != INVALID_SOCKET)
-  {
-    return true;
-  }
+  Close();
+
   char errbuf[1024];
   int  errlen = sizeof(errbuf);
   if (port == 0)
     port = 34890;
 
-  m_fd = tcp_connect(	hostname.c_str()
-                        , port
-                        , errbuf, errlen, 3000);
+  m_fd = tcp_connect(hostname.c_str(), port, errbuf, errlen, 3000);
 
   if (m_fd == INVALID_SOCKET)
   {
@@ -85,15 +81,27 @@ bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
     return false;
   }
 
+  // store connection data
+  m_hostname = hostname;
+  m_port = port;
+
+  if(name != NULL)
+    m_name = name;
+
+  return true;
+}
+
+bool cVNSISession::Login()
+{
   try
   {
     cRequestPacket vrp;
     if (!vrp.init(VNSI_LOGIN))                  throw "Can't init cRequestPacket";
     if (!vrp.add_U32(VNSIPROTOCOLVERSION))      throw "Can't add protocol version to RequestPacket";
     if (!vrp.add_U8(false))                     throw "Can't add netlog flag";
-    if (name && strlen(name) > 0)
+    if (!m_name.empty())
     {
-      if (!vrp.add_String(name))                throw "Can't add client name to RequestPacket";
+      if (!vrp.add_String(m_name.c_str()))      throw "Can't add client name to RequestPacket";
     }
     else
     {
@@ -115,7 +123,7 @@ bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
     m_version   = ServerVersion;
     m_protocol  = protocol;
 
-    if (!name || strlen(name) <= 0)
+    if (!m_name.empty())
       XBMC->Log(LOG_NOTICE, "Logged in at '%lu+%i' to '%s' Version: '%s' with protocol version '%lu'",
         vdrTime, vdrTimeOffset, ServerName, ServerVersion, protocol);
 
@@ -131,10 +139,6 @@ bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
     m_fd = INVALID_SOCKET;
     return false;
   }
-
-  // store connection data for TryReconnect()
-  m_hostname = hostname;
-  m_port = port;
 
   return true;
 }
@@ -280,15 +284,6 @@ bool cVNSISession::ReadSuccess(cRequestPacket* vrp)
 
 int cVNSISession::sendData(void* bufR, size_t count)
 {
-  if(m_connectionLost) {
-    if(TryReconnect()) {
-      m_connectionLost = false;
-    }
-    else {
-      return -1;
-    }
-  }
-
   size_t bytes_sent = 0;
   int this_write;
 
@@ -317,7 +312,6 @@ int cVNSISession::sendData(void* bufR, size_t count)
 
   if (bytes_sent < count)
   {
-    SignalConnectionLost();
     return -1;
   }
 
@@ -331,11 +325,14 @@ void cVNSISession::OnDisconnect() {
 }
 
 bool cVNSISession::TryReconnect() {
-  if(!Open(m_hostname, m_port)) {
+  if(!Open(m_hostname, m_port))
     return false;
-  }
+
+  if(!Login())
+    return false;
 
   XBMC->Log(LOG_DEBUG, "%s - reconnected", __FUNCTION__);
+  m_connectionLost = false;
 
   OnReconnect();
 
@@ -348,8 +345,9 @@ void cVNSISession::SignalConnectionLost()
     return;
 
   XBMC->Log(LOG_ERROR, "%s - connection lost !!!", __FUNCTION__);
-  m_connectionLost = true;
 
+  m_connectionLost = true;
+  Abort();
   Close();
 
   OnDisconnect();
@@ -357,15 +355,6 @@ void cVNSISession::SignalConnectionLost()
 
 bool cVNSISession::readData(uint8_t* buffer, int totalBytes)
 {
-  if(m_connectionLost) {
-    if(TryReconnect()) {
-      m_connectionLost = false;
-    }
-    else {
-      return false;
-    }
-  }
-
   int bytesRead = 0;
   int thisRead;
   int success;
@@ -382,7 +371,6 @@ bool cVNSISession::readData(uint8_t* buffer, int totalBytes)
     success = select(m_fd + 1, &readSet, NULL, NULL, &timeout);
     if (success == -1)
     {
-      SignalConnectionLost();
       return false;
     }
     else if (success < 1)
@@ -397,16 +385,24 @@ bool cVNSISession::readData(uint8_t* buffer, int totalBytes)
     // if read returns 0 then connection is closed
     if(thisRead == 0)
     {
-      SignalConnectionLost();
       return false;
     }
 
     // in non-blocking mode if read is called with no data available, it returns -1
-    // and sets errno to EGAGAIN. but we use select so it wouldn't do that anyway.
+    // and sets errno to EAGAIN. but we use select so it wouldn't do that anyway.
     if(thisRead == -1)
       continue;
 
     bytesRead += thisRead;
   }
   return true;
+}
+
+void cVNSISession::SleepMs(int ms)
+{
+#ifdef __WINDOWS__
+  Sleep(ms);
+#else
+  usleep(ms * 1000);
+#endif
 }

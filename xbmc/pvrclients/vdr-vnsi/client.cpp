@@ -151,8 +151,17 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     return m_CurStatus;
   }
 
-  if (!VNSIData->EnableStatusInterface(g_bHandleMessages))
+  if (!VNSIData->Login())
+  {
+    m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
     return m_CurStatus;
+  }
+
+  if (!VNSIData->EnableStatusInterface(g_bHandleMessages))
+  {
+    m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
+    return m_CurStatus;
+  }
 
   m_CurStatus = ADDON_STATUS_OK;
   m_bCreated = true;
@@ -429,7 +438,7 @@ bool OpenLiveStream(const PVR_CHANNEL &channel)
   CloseLiveStream();
 
   VNSIDemuxer = new cVNSIDemux;
-  return VNSIDemuxer->Open(channel);
+  return VNSIDemuxer->OpenChannel(channel);
 }
 
 void CloseLiveStream(void)
@@ -499,9 +508,8 @@ bool OpenRecordedStream(const PVR_RECORDING &recording)
 
   CloseRecordedStream();
 
-  //const std::string& name = VNSIData->GetRecordingPath(recinfo.index);
   VNSIRecording = new cVNSIRecording;
-  return VNSIRecording->Open(recording);
+  return VNSIRecording->OpenRecording(recording);
 }
 
 void CloseRecordedStream(void)

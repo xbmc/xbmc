@@ -37,25 +37,14 @@ cVNSIDemux::~cVNSIDemux()
   Close();
 }
 
-bool cVNSIDemux::Open(const PVR_CHANNEL &channelinfo)
+bool cVNSIDemux::OpenChannel(const PVR_CHANNEL &channelinfo)
 {
   m_channelinfo = channelinfo;
-  return Open(g_szHostname, g_iPort);
-}
-
-bool cVNSIDemux::Open(const std::string& hostname, int port, const char *name)
-{
-  if(!cVNSISession::Open(hostname, port, name))
+  if(!cVNSISession::Open(g_szHostname, g_iPort))
     return false;
 
-  cRequestPacket vrp;
-  if (!vrp.init(VNSI_CHANNELSTREAM_OPEN) ||
-      !vrp.add_U32(m_channelinfo.iUniqueId) ||
-      !ReadSuccess(&vrp))
-  {
-    XBMC->Log(LOG_ERROR, "%s - Can't open channel %i - %s", __FUNCTION__, m_channelinfo.iChannelNumber, m_channelinfo.strChannelName);
+  if(!cVNSISession::Login())
     return false;
-  }
 
   return SwitchChannel(m_channelinfo);
 }
@@ -88,16 +77,16 @@ void cVNSIDemux::Abort()
 
 DemuxPacket* cVNSIDemux::Read()
 {
+  if(ConnectionLost() && !TryReconnect())
+  {
+    SleepMs(100);
+    return PVR->AllocateDemuxPacket(0);
+  }
+
   cResponsePacket *resp = ReadMessage();
 
-  if(ConnectionLost())
-    return PVR->AllocateDemuxPacket(0);
-
-
   if(resp == NULL)
-  {
     return NULL;
-  }
 
   if (resp->getChannelID() != VNSI_CHANNEL_STREAM)
   {
@@ -160,26 +149,21 @@ bool cVNSIDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
   if (!vrp.init(VNSI_CHANNELSTREAM_OPEN) || !vrp.add_U32(channelinfo.iUniqueId) || !ReadSuccess(&vrp))
   {
     XBMC->Log(LOG_ERROR, "%s - failed to set channel", __FUNCTION__);
+    return false;
   }
-  else
+
+  m_channelinfo = channelinfo;
+  m_Streams.iStreamCount  = 0;
+
+  while (m_Streams.iStreamCount == 0 && !ConnectionLost())
   {
-    m_channelinfo = channelinfo;
-    m_Streams.iStreamCount  = 0;
-
-    while (m_Streams.iStreamCount == 0 && !ConnectionLost())
-    {
-      DemuxPacket* pkg = Read();
-      if(!pkg)
-        return false;
-      PVR->FreeDemuxPacket(pkg);
-    }
-
-    if(ConnectionLost())
+    DemuxPacket* pkg = Read();
+    if(!pkg)
       return false;
-
-    return true;
+    PVR->FreeDemuxPacket(pkg);
   }
-  return false;
+
+  return !ConnectionLost();
 }
 
 bool cVNSIDemux::GetSignalStatus(PVR_SIGNAL_STATUS &qualityinfo)
@@ -476,4 +460,9 @@ void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
       }
     }
   }
+}
+
+void cVNSIDemux::OnReconnect()
+{
+  SwitchChannel(m_channelinfo);
 }

@@ -23,15 +23,13 @@
 #include "VNSISession.h"
 #include "client.h"
 
-class cResponsePacket;
-
-class cVNSIRecording
+class cVNSIRecording : public cVNSISession
 {
 public:
   cVNSIRecording();
   ~cVNSIRecording();
 
-  bool Open(const PVR_RECORDING& recinfo);
+  bool OpenRecording(const PVR_RECORDING& recinfo);
   void Close();
 
   int Read(unsigned char* buf, uint32_t buf_size);
@@ -39,8 +37,11 @@ public:
   long long Position(void);
   long long Length(void);
 
+protected:
+  void OnReconnect();
+
 private:
-  cVNSISession    m_session;
+  PVR_RECORDING   m_recinfo;
   uint64_t        m_currentPlayingRecordBytes;
   uint32_t        m_currentPlayingRecordFrames;
   uint64_t        m_currentPlayingRecordPosition;

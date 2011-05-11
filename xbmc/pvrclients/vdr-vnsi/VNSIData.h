@@ -37,7 +37,7 @@ public:
   virtual ~cVNSIData();
 
   bool Open(const std::string& hostname, int port, const char* name = NULL);
-  void Close();
+  bool Login();
 
   cResponsePacket*  ReadResult(cRequestPacket* vrp);
 
@@ -73,7 +73,7 @@ protected:
   void OnDisconnect();
   void OnReconnect();
 
-  void SendPing();
+  bool SendPing();
 
 private:
 

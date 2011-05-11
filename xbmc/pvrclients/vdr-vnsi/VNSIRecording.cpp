@@ -24,7 +24,6 @@
 #include "responsepacket.h"
 #include "requestpacket.h"
 #include "vnsicommand.h"
-//#include "client.h"
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
 
@@ -37,23 +36,26 @@ cVNSIRecording::~cVNSIRecording()
   Close();
 }
 
-bool cVNSIRecording::Open(const PVR_RECORDING& recinfo)
+bool cVNSIRecording::OpenRecording(const PVR_RECORDING& recinfo)
 {
-  bool ret = false;
+  m_recinfo = recinfo;
 
-  if(!m_session.Open(g_szHostname, g_iPort, "XBMC Recording stream receiver"))
-    return ret;
+  if(!cVNSISession::Open(g_szHostname, g_iPort, "XBMC RecordingStream Receiver"))
+    return false;
+
+  if(!cVNSISession::Login())
+    return false;
 
   cRequestPacket vrp;
   if (!vrp.init(VNSI_RECSTREAM_OPEN) ||
       !vrp.add_U32(recinfo.iClientIndex))
   {
-    return ret;
+    return false;
   }
 
-  cResponsePacket* vresp = m_session.ReadResult(&vrp);
+  cResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
-    return ret;
+    return false;
 
   uint32_t returnCode = vresp->extract_U32();
   if (returnCode == VNSI_RET_OK)
@@ -61,29 +63,31 @@ bool cVNSIRecording::Open(const PVR_RECORDING& recinfo)
     m_currentPlayingRecordFrames    = vresp->extract_U32();
     m_currentPlayingRecordBytes     = vresp->extract_U64();
     m_currentPlayingRecordPosition  = 0;
-
-    ret = true;
   }
   else
-  {
     XBMC->Log(LOG_ERROR, "%s - Can't open recording '%s'", __FUNCTION__, recinfo.strTitle);
-    ret = false;
-  }
 
   delete vresp;
-  return ret;
+  return (returnCode == VNSI_RET_OK);
 }
 
 void cVNSIRecording::Close()
 {
   cRequestPacket vrp;
   vrp.init(VNSI_RECSTREAM_CLOSE);
-  m_session.ReadSuccess(&vrp);
-  m_session.Close();
+  ReadSuccess(&vrp);
+  cVNSISession::Close();
 }
 
 int cVNSIRecording::Read(unsigned char* buf, uint32_t buf_size)
 {
+  if (ConnectionLost() && !TryReconnect())
+  {
+    *buf = 0;
+    SleepMs(100);
+    return 1;
+  }
+
   if (m_currentPlayingRecordPosition >= m_currentPlayingRecordBytes)
     return 0;
 
@@ -95,7 +99,7 @@ int cVNSIRecording::Read(unsigned char* buf, uint32_t buf_size)
     return 0;
   }
 
-  cResponsePacket* vresp = m_session.ReadResult(&vrp);
+  cResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
     return -1;
 
@@ -165,3 +169,7 @@ long long cVNSIRecording::Length(void)
   return m_currentPlayingRecordBytes;
 }
 
+void cVNSIRecording::OnReconnect()
+{
+  OpenRecording(m_recinfo);
+}

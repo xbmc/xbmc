@@ -36,6 +36,7 @@ cVNSIData::cVNSIData()
 
 cVNSIData::~cVNSIData()
 {
+  Abort();
   Cancel(3);
   Close();
 }
@@ -48,24 +49,29 @@ bool cVNSIData::Open(const std::string& hostname, int port, const char* name)
   if(name != NULL) {
     SetDescription(name);
   }
-  Start();
   return true;
 }
 
-void cVNSIData::Close()
+bool cVNSIData::Login()
 {
-  cVNSISession::Abort();
-  cVNSISession::Close();
+  if(!cVNSISession::Login())
+    return false;
+
+  Start();
+  return true;
 }
 
 void cVNSIData::OnDisconnect()
 {
   XBMC->QueueNotification(QUEUE_ERROR, "Lost connection to VDR Server");
+  PVR->TriggerTimerUpdate();
 }
 
 void cVNSIData::OnReconnect()
 {
   XBMC->QueueNotification(QUEUE_INFO, "Connection to VDR Server restored");
+
+  EnableStatusInterface(g_bHandleMessages);
 
   PVR->TriggerChannelUpdate();
   PVR->TriggerTimerUpdate();
@@ -85,7 +91,6 @@ cResponsePacket* cVNSIData::ReadResult(cRequestPacket* vrp)
   if(!cVNSISession::SendMessage(vrp))
   {
     m_queue.erase(vrp->getSerial());
-    SignalConnectionLost();
     return NULL;
   }
 
@@ -99,9 +104,6 @@ cResponsePacket* cVNSIData::ReadResult(cRequestPacket* vrp)
   m_queue.erase(vrp->getSerial());
 
   m_Mutex.Unlock();
-
-  if(vresp == NULL)
-    SignalConnectionLost();
 
   return vresp;
 }
@@ -753,7 +755,7 @@ bool cVNSIData::onResponsePacket(cResponsePacket* pkt)
   return false;
 }
 
-void cVNSIData::SendPing()
+bool cVNSIData::SendPing()
 {
   XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
 
@@ -761,11 +763,13 @@ void cVNSIData::SendPing()
   if (!vrp.init(VNSI_PING))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
-    return;
+    return false;
   }
 
   cResponsePacket* vresp = cVNSISession::ReadResult(&vrp);
   delete vresp;
+
+  return (vresp != NULL);
 }
 
 void cVNSIData::Action()
@@ -776,30 +780,26 @@ void cVNSIData::Action()
   uint8_t* userData;
   uint32_t lastPing = 0;
 
-  bool readSuccess;
-
   cResponsePacket* vresp;
 
   while (Running())
   {
-    // read channelID
-    readSuccess = readData((uint8_t*)&channelID, sizeof(uint32_t));
-
-    // just wait if we're currently not connected
-    if (ConnectionLost())
+    // try to reconnect
+    if(ConnectionLost() && !TryReconnect())
     {
-      usleep(1000 * 1000); // 1000 ms to relax
+      SleepMs(1000);
       continue;
-    }
+   }
 
-    // no data was read but the connection is ok.
-    if (!readSuccess) {
-      if(lastPing - time(NULL) > 5)
+    // read channelID or check if the connection is still up
+    if(!readData((uint8_t*)&channelID, sizeof(uint32_t)) && (time(NULL) - lastPing) > 5)
+    {
+      lastPing = time(NULL);
+      if(!SendPing())
       {
-        SendPing();
-        lastPing = time(NULL);
+        SignalConnectionLost();
+        continue;
       }
-      continue;
     }
 
     // Data was read
@@ -808,7 +808,6 @@ void cVNSIData::Action()
     // read requestID
     if (!readData((uint8_t*)&requestID, sizeof(uint32_t)))
     {
-      SignalConnectionLost();
       continue;
     }
     requestID = ntohl(requestID);
@@ -816,12 +815,10 @@ void cVNSIData::Action()
     // read userDataLength
     if (!readData((uint8_t*)&userDataLength, sizeof(uint32_t)))
     {
-      SignalConnectionLost();
       continue;
     }
     userDataLength = ntohl(userDataLength);
     if (userDataLength > 5000000) {
-      SignalConnectionLost();
       continue; // how big can these packets get?
     }
 
@@ -831,10 +828,9 @@ void cVNSIData::Action()
     {
       userData = (uint8_t*)malloc(userDataLength);
       if (!userData) continue;
-      if (!userData || !readData(userData, userDataLength))
+      if (!readData(userData, userDataLength))
       {
         free(userData);
-        SignalConnectionLost();
         continue;
       }
     }

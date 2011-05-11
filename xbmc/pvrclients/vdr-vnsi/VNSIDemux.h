@@ -42,9 +42,9 @@ public:
   cVNSIDemux();
   ~cVNSIDemux();
 
-  bool Open(const PVR_CHANNEL &channelinfo);
-  bool GetStreamProperties(PVR_STREAM_PROPERTIES* props);
+  bool OpenChannel(const PVR_CHANNEL &channelinfo);
   void Abort();
+  bool GetStreamProperties(PVR_STREAM_PROPERTIES* props);
   DemuxPacket* Read();
   bool SwitchChannel(const PVR_CHANNEL &channelinfo);
   int CurrentChannel() { return m_channelinfo.iChannelNumber; }
@@ -52,7 +52,7 @@ public:
 
 protected:
 
-  bool Open(const std::string& hostname, int port, const char *name = "XBMC LiveStream Receiver");
+  void OnReconnect();
 
   void StreamChange(cResponsePacket *resp);
   void StreamStatus(cResponsePacket *resp);
