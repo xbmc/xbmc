@@ -349,8 +349,6 @@ case $host in
      fi
      ARCH="arm-osx"
      SYSROOT="-miphoneos-version-min=4.1 -isysroot $SDKROOT"
-     ARCHTYPE=$HOSTTYPE
-     AC_SUBST([ARCHTYPE])
      AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
      PYTHON_VERSION="2.6"
      PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.6"
@@ -366,9 +364,6 @@ case $host in
      ARCH="x86-osx"
      export MACOSX_DEPLOYMENT_TARGET=10.4
      SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
-     # define i386 or x86_64, cannot use $HOSTTYPE as it reports x86_64 on 10.6 regardless of kernel flavor
-     ARCHTYPE=`uname -m`
-     AC_SUBST([ARCHTYPE])
      ;;
   powerpc-apple-darwin*)
      use_joystick=no
@@ -379,9 +374,6 @@ case $host in
      use_arch="ppc"
      export MACOSX_DEPLOYMENT_TARGET=10.4
      SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
-     # define ppc
-     ARCHTYPE="ppc"
-     AC_SUBST([ARCHTYPE])
      ;;
   powerpc-*-linux-gnu*)
      ARCH="powerpc-linux"
