@@ -50,7 +50,7 @@ public:
 protected:
   virtual void LoadAdditionalTags(TiXmlElement *root);
   CGUIControl *GetFirstFocusableControl(int id);
-  void SetupShares();
+  virtual void SetupShares();
   virtual void GoParentFolder();
   virtual bool OnClick(int iItem);
 

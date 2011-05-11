@@ -1,6 +1,5 @@
 
 ARCH=@ARCH@
-SYSROOT=@SYSROOT@
 CC=@CC@
 CXX=@CXX@
 
@@ -46,11 +45,11 @@ all: $(SLIB)
 ifeq ($(findstring osx,$(ARCH)), osx)
 
 $(SYSDIR)/libdvdcss-$(ARCH).so:  $($(WRAPPER)) libdvdcss/src/.libs/libdvdcss.a
-	$(CC) $(SYSROOT) $(LDFLAGS) -Wl,-alias_list,$(WRAPPER_MACH_ALIAS) -o $@ \
+	$(CC) $(LDFLAGS) -Wl,-alias_list,$(WRAPPER_MACH_ALIAS) -o $@ \
 		$(WRAPPER) libdvdcss/src/*.o $(BUNDLE1_O)
 
 $(SYSDIR)/libdvdnav-$(ARCH).so: $($(WRAPPER)) $(DVDCSS_A) libdvdread/obj/libdvdread.a libdvdnav/obj/libdvdnav.a
-	$(CC) $(SYSROOT) $(LDFLAGS) -Wl,-alias_list,$(WRAPPER_MACH_ALIAS) -o $@ \
+	$(CC) $(LDFLAGS) -Wl,-alias_list,$(WRAPPER_MACH_ALIAS) -o $@ \
 		$(WRAPPER) $(DVDCSS_O) libdvdread/obj/*.o libdvdnav/obj/*.o $(BUNDLE1_O)
 
 else

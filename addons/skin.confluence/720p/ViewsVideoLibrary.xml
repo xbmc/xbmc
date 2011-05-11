@@ -161,10 +161,11 @@
 				<posy>610</posy>
 				<width>1280</width>
 				<align>center</align>
-				<itemgap>0</itemgap>
+				<itemgap>2</itemgap>
 				<orientation>horizontal</orientation>
 				<include>VideoCodecFlaggingConditions</include>
 				<include>AudioCodecFlaggingConditions</include>
+				<include>AudioChannelsFlaggingConditions</include>
 				<include>AspectCodecFlaggingConditions</include>
 				<include>VideoTypeHackFlaggingConditions</include>
 			</control>
@@ -688,14 +689,15 @@
 			</control>
 			<control type="grouplist">
 				<description>Media Codec Flagging Images</description>
-				<posx>40</posx>
+				<posx>30</posx>
 				<posy>360</posy>
 				<width>800</width>
 				<align>left</align>
-				<itemgap>0</itemgap>
+				<itemgap>2</itemgap>
 				<orientation>horizontal</orientation>
 				<include>VideoCodecFlaggingConditions</include>
 				<include>AudioCodecFlaggingConditions</include>
+				<include>AudioChannelsFlaggingConditions</include>
 				<include>AspectCodecFlaggingConditions</include>
 				<include>VideoTypeHackFlaggingConditions</include>
 			</control>
@@ -749,7 +751,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>545</posx>
+						<posx>510</posx>
 						<posy>0</posy>
 						<width>500</width>
 						<height>40</height>
@@ -759,6 +761,16 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
+						<visible>Window.IsVisible(Videos)</visible>
+						<animation effect="slide" start="0,0" end="40,0" delay="0" time="0" condition="![Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]">conditional</animation>
+					</control>
+					<control type="image">
+						<posx>515</posx>
+						<posy>8</posy>
+						<width>40</width>
+						<height>26</height>
+						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 					</control>
 					<control type="image">
 						<posx>555</posx>
@@ -789,9 +801,9 @@
 					</control>
 					<control type="image">
 						<posx>380</posx>
-						<posy>5</posy>
+						<posy>4</posy>
 						<width>200</width>
-						<height>31</height>
+						<height>33</height>
 						<texture border="0,0,14,0">MediaItemDetailBG.png</texture>
 						<visible>Control.HasFocus(503) + !IsEmpty(ListItem.Label2)</visible>
 					</control>
@@ -808,7 +820,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>545</posx>
+						<posx>510</posx>
 						<posy>0</posy>
 						<width>500</width>
 						<height>40</height>
@@ -818,6 +830,16 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
+						<visible>Window.IsVisible(Videos)</visible>
+						<animation effect="slide" start="0,0" end="40,0" delay="0" time="0" condition="![Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]">conditional</animation>
+					</control>
+					<control type="image">
+						<posx>515</posx>
+						<posy>8</posy>
+						<width>40</width>
+						<height>26</height>
+						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 					</control>
 					<control type="image">
 						<posx>555</posx>
@@ -973,10 +995,11 @@
 					<posy>210</posy>
 					<width>530</width>
 					<align>center</align>
-					<itemgap>0</itemgap>
+					<itemgap>2</itemgap>
 					<orientation>horizontal</orientation>
 					<include>VideoCodecFlaggingConditions</include>
 					<include>AudioCodecFlaggingConditions</include>
+					<include>AudioChannelsFlaggingConditions</include>
 					<include>AspectCodecFlaggingConditions</include>
 					<include>VideoTypeHackFlaggingConditions</include>
 				</control>
@@ -1077,10 +1100,11 @@
 					<posy>365</posy>
 					<width>530</width>
 					<align>center</align>
-					<itemgap>0</itemgap>
+					<itemgap>2</itemgap>
 					<orientation>horizontal</orientation>
 					<include>VideoCodecFlaggingConditions</include>
 					<include>AudioCodecFlaggingConditions</include>
+					<include>AudioChannelsFlaggingConditions</include>
 					<include>AspectCodecFlaggingConditions</include>
 					<include>VideoTypeHackFlaggingConditions</include>
 				</control>
@@ -1137,7 +1161,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>545</posx>
+						<posx>510</posx>
 						<posy>0</posy>
 						<width>500</width>
 						<height>40</height>
@@ -1147,6 +1171,16 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
+						<visible>Window.IsVisible(Videos)</visible>
+						<animation effect="slide" start="0,0" end="40,0" delay="0" time="0" condition="![Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]">conditional</animation>
+					</control>
+					<control type="image">
+						<posx>515</posx>
+						<posy>8</posy>
+						<width>40</width>
+						<height>26</height>
+						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 					</control>
 					<control type="image">
 						<posx>555</posx>
@@ -1177,9 +1211,9 @@
 					</control>
 					<control type="image">
 						<posx>380</posx>
-						<posy>5</posy>
+						<posy>4</posy>
 						<width>200</width>
-						<height>31</height>
+						<height>33</height>
 						<texture border="0,0,14,0">MediaItemDetailBG.png</texture>
 						<visible>Control.HasFocus(504) + !IsEmpty(ListItem.Label2)</visible>
 					</control>
@@ -1196,7 +1230,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>545</posx>
+						<posx>510</posx>
 						<posy>0</posy>
 						<width>500</width>
 						<height>40</height>
@@ -1206,6 +1240,16 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
+						<visible>Window.IsVisible(Videos)</visible>
+						<animation effect="slide" start="0,0" end="40,0" delay="0" time="0" condition="![Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]">conditional</animation>
+					</control>
+					<control type="image">
+						<posx>515</posx>
+						<posy>8</posy>
+						<width>40</width>
+						<height>26</height>
+						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 					</control>
 					<control type="image">
 						<posx>555</posx>
@@ -1266,10 +1310,11 @@
 					<posy>290</posy>
 					<width>510</width>
 					<align>center</align>
-					<itemgap>0</itemgap>
+					<itemgap>2</itemgap>
 					<orientation>horizontal</orientation>
 					<include>VideoCodecFlaggingConditions</include>
 					<include>AudioCodecFlaggingConditions</include>
+					<include>AudioChannelsFlaggingConditions</include>
 					<include>AspectCodecFlaggingConditions</include>
 					<include>VideoTypeHackFlaggingConditions</include>
 				</control>
@@ -1370,10 +1415,11 @@
 					<posy>290</posy>
 					<width>510</width>
 					<align>center</align>
-					<itemgap>0</itemgap>
+					<itemgap>2</itemgap>
 					<orientation>horizontal</orientation>
 					<include>VideoCodecFlaggingConditions</include>
 					<include>AudioCodecFlaggingConditions</include>
+					<include>AudioChannelsFlaggingConditions</include>
 					<include>AspectCodecFlaggingConditions</include>
 					<include>VideoTypeHackFlaggingConditions</include>
 				</control>

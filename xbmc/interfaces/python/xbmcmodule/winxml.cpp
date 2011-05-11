@@ -90,12 +90,12 @@ namespace PYXBMC
         // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
         CStdString str("none");
         AddonProps props(str, ADDON_SKIN, "", "");
+        props.path = URIUtils::AddFileToFolder(fallbackPath, strDefault);
         CSkinInfo::TranslateResolution(resolution, res);
         CSkinInfo skinInfo(props, res);
-        basePath = URIUtils::AddFileToFolder(fallbackPath, strDefault);
-        
-        skinInfo.Start(basePath);
-        strSkinPath = skinInfo.GetSkinPath(strXMLname, &res, basePath);
+
+        skinInfo.Start();
+        strSkinPath = skinInfo.GetSkinPath(strXMLname, &res);
         if (!XFILE::CFile::Exists(strSkinPath))
         {
           PyErr_SetString(PyExc_TypeError, "XML File for Window is missing");

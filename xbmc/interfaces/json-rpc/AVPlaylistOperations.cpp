@@ -96,11 +96,18 @@ JSON_STATUS CAVPlaylistOperations::GetItems(const CStdString &method, ITransport
 
 JSON_STATUS CAVPlaylistOperations::Add(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
+  int playlist = GetPlaylist(method);
   CFileItemList list;
-  if (!FillFileItemList(parameterObject["item"], list))
+  Value params = parameterObject;
+  if (playlist == PLAYLIST_VIDEO)
+    params["item"]["media"] = "video";
+  else if (playlist == PLAYLIST_MUSIC)
+    params["item"]["media"] = "music";
+
+  if (!FillFileItemList(params["item"], list))
     return InvalidParams;
 
-  g_application.getApplicationMessenger().PlayListPlayerAdd(GetPlaylist(method), list);
+  g_application.getApplicationMessenger().PlayListPlayerAdd(playlist, list);
 
   NotifyAll();
   return ACK;
@@ -108,8 +115,15 @@ JSON_STATUS CAVPlaylistOperations::Add(const CStdString &method, ITransportLayer
 
 JSON_STATUS CAVPlaylistOperations::Insert(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
+  int playlist = GetPlaylist(method);
   CFileItemList list;
-  if (!FillFileItemList(parameterObject["item"], list))
+  Value params = parameterObject;
+  if (playlist == PLAYLIST_VIDEO)
+    params["item"]["media"] = "video";
+  else if (playlist == PLAYLIST_MUSIC)
+    params["item"]["media"] = "music";
+
+  if (!FillFileItemList(params["item"], list))
     return InvalidParams;
 
   g_application.getApplicationMessenger().PlayListPlayerInsert(GetPlaylist(method), list, parameterObject["index"].asInt());
