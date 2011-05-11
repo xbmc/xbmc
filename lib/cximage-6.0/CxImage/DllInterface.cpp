@@ -596,6 +596,57 @@ extern "C"
     }
     return 0;
   };
+  /***Export this method for Encoding/Transforming an image on disk into a buffer. It uses cximage Encode() function***/
+  __declspec(dllexport) int EncodeImageToBuffer(const char *srcfile, BYTE *&buffer, long *size, int destwidth, int destheight, const char * format, unsigned int destquality)
+  {
+    if (!srcfile) return false;
+	DWORD dwImageType = GetImageType(srcfile);
+	DWORD dwDestImageType = CXIMAGE_FORMAT_JPG;
+	if (strcmp(format, "png")==0)
+	{
+	  dwDestImageType = CXIMAGE_FORMAT_PNG;
+	} else if (strcmp(format, "bmp")==0)
+	{
+	  dwDestImageType = CXIMAGE_FORMAT_BMP;
+	}
+	CxImage image(dwImageType);
+	try
+	{
+	  if (!image.Load(srcfile, dwImageType) || !image.IsValid())
+	  {
+	    printf("PICTURE::EncodeImageToBuffer: Unable to open image: %s Error:%s\n", srcfile, image.GetLastError());
+		return 7;
+	  }
+	}
+	catch (...)
+	{
+	  printf("PICTURE::EncodeImageToBuffer: Unable to open image: %s\n", srcfile);
+	  return 2;
+	}
+	if (destwidth!=-1 || destheight!=-1)
+	{
+	  if (destheight==-1)
+	  {
+	    destheight = (int) ((float)destwidth * ((float)image.GetHeight()/ (float)image.GetWidth())) ;
+	  }
+	  if (destwidth==-1)
+	    destwidth = (int) ((float)destheight * ((float)image.GetWidth()/(float)image.GetHeight())) ;
+	  if (!image.Resample(destwidth, destheight, RESAMPLE_QUALITY) || !image.IsValid())
+	  {
+	    printf("PICTURE::EncodeImageToBuffer: Unable to resample picture: Error:%s\n", image.GetLastError());
+		return 3;
+	  }
+	}
+	if (dwDestImageType==CXIMAGE_FORMAT_JPG)
+	  image.SetJpegQuality(destquality);
+    buffer = NULL;
+	if (!image.Encode(buffer, *size, dwDestImageType))
+	{
+	  printf("PICTURE::EncodeImageToBuffer: Unable to encode image. Error:%s\n", image.GetLastError());
+	  return 5;
+	}
+	return 0;
+  };
 }
 
 #endif
