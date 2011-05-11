@@ -40,6 +40,10 @@
 #include <emmintrin.h>
 #endif
 
+#ifdef __ARM_NEON__
+#include <arm_neon.h>
+#endif
+
 #define CLAMP(x) std::min(-1.0f, std::max(1.0f, (float)(x)))
 
 #ifndef INT24_MAX
@@ -776,7 +780,31 @@ unsigned int CAEConvert::Float_S32LE(float *data, const unsigned int samples, ui
     }
   }
   _mm_empty();
-  #else /* no SSE */
+
+  #elif defined(__ARM_NEON__)
+
+  uint32_t i;
+  for(i = 0; i < (samples / 4) * 4; i += 4, data += 4, dst += 4)
+  {
+    float32x4_t val = vmulq_n_f32(vld1q_f32(data), INT32_MAX);
+    int32x4_t   ret = vcvtq_s32_f32(val);
+    #ifdef __BIG_ENDIAN__
+    ret = vrev64q_s32(ret);
+    #endif
+    vst1q_s32(dst, ret);
+  }
+
+  for(; i < samples; ++i, ++data, ++dst)
+  {
+    dst[0] = safeRound(data[0] * (float)INT32_MAX);
+    #ifdef __BIG_ENDIAN__
+    dst[0] = Endian_Swap32(dst[0]);
+    #endif
+  }
+
+  #else
+
+  /* no SIMD */
   for(uint32_t i = 0; i < samples; ++i, ++data, ++dst)
   {
     dst[0] = safeRound(data[0] * (float)INT32_MAX);
@@ -859,7 +887,31 @@ unsigned int CAEConvert::Float_S32BE(float *data, const unsigned int samples, ui
     }
   }
   _mm_empty();
-  #else /* no SSE */
+
+  #elif defined(__ARM_NEON__)
+
+  uint32_t i;
+  for(i = 0; i < (samples / 4) * 4; i += 4, data += 4, dst += 4)
+  {
+    float32x4_t val = vmulq_n_f32(vld1q_f32(data), INT32_MAX);
+    int32x4_t   ret = vcvtq_s32_f32(val);
+    #ifndef __BIG_ENDIAN__
+    ret = vrev64q_s32(ret);
+    #endif
+    vst1q_s32(dst, ret);
+  }
+
+  for(; i < samples; ++i, ++data, ++dst)
+  {
+    dst[0] = safeRound(data[0] * (float)INT32_MAX);
+    #ifndef __BIG_ENDIAN__
+    dst[0] = Endian_Swap32(dst[0]);
+    #endif
+  }
+
+  #else
+
+  /* no SIMD */
   for(uint32_t i = 0; i < samples; ++i, ++data, ++dst)
   {
     dst[0] = safeRound(data[0] * (float)INT32_MAX);
