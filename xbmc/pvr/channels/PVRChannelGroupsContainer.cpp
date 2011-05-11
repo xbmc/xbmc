@@ -29,13 +29,12 @@
 
 using namespace PVR;
 
-CPVRChannelGroupsContainer::CPVRChannelGroupsContainer(void)
+CPVRChannelGroupsContainer::CPVRChannelGroupsContainer(void) :
+    m_groupsRadio(new CPVRChannelGroups(true)),
+    m_groupsTV(new CPVRChannelGroups(false)),
+    m_bUpdateChannelsOnly(false),
+    m_bIsUpdating(false)
 {
-
-  m_groupsRadio         = new CPVRChannelGroups(true);
-  m_groupsTV            = new CPVRChannelGroups(false);
-  m_bUpdateChannelsOnly = false;
-  m_bIsUpdating         = false;
 }
 
 CPVRChannelGroupsContainer::~CPVRChannelGroupsContainer(void)
@@ -44,7 +43,7 @@ CPVRChannelGroupsContainer::~CPVRChannelGroupsContainer(void)
   delete m_groupsTV;
 }
 
-bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */, bool bAsyncUpdate /* = false */)
+bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
 {
   CSingleLock lock(m_critSection);
   if (m_bIsUpdating)
@@ -53,36 +52,15 @@ bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */, bool b
   m_bUpdateChannelsOnly = bChannelsOnly;
   lock.Leave();
 
-  if (bAsyncUpdate)
-  {
-    StopThread();
-    Create();
-    SetName("XBMC PVR channels update");
-    SetPriority(-1);
-    return false;
-  }
-  else
-  {
-    return ExecuteUpdate(bChannelsOnly);
-  }
-}
-
-bool CPVRChannelGroupsContainer::ExecuteUpdate(bool bChannelsOnly)
-{
   CLog::Log(LOGDEBUG, "CPVRChannelGroupsContainer - %s - updating %s", __FUNCTION__, bChannelsOnly ? "channels" : "channel groups");
   bool bReturn = m_groupsRadio->Update(bChannelsOnly) &&
        m_groupsTV->Update(bChannelsOnly);
 
-  CSingleLock lock(m_critSection);
+  lock.Enter();
   m_bIsUpdating = false;
   lock.Leave();
 
   return bReturn;
-}
-
-void CPVRChannelGroupsContainer::Process(void)
-{
-  ExecuteUpdate(m_bUpdateChannelsOnly);
 }
 
 bool CPVRChannelGroupsContainer::Load(void)
