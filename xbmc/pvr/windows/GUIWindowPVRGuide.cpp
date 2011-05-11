@@ -47,7 +47,6 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
   m_epgData        = new CFileItemList();
   m_bLastEpgView   = false;
   m_bGotInitialEpg = false;
-  m_bObservingEpg  = false;
 }
 
 CGUIWindowPVRGuide::~CGUIWindowPVRGuide()
@@ -58,8 +57,6 @@ CGUIWindowPVRGuide::~CGUIWindowPVRGuide()
 void CGUIWindowPVRGuide::ResetObservers(void)
 {
   CSingleLock lock(m_critSection);
-
-  m_bObservingEpg = true;
   g_PVREpg->RegisterObserver(this);
 }
 
@@ -455,13 +452,7 @@ void CGUIWindowPVRGuide::UpdateButtons(void)
 void CGUIWindowPVRGuide::UpdateEpgCache(bool bRadio /* = false */, bool bForceUpdate /* = false */)
 {
   CSingleLock lock(m_critSection);
-
-  /* start observing the EPG for changes, so our cache becomes updated in the background */
-  if (!m_bObservingEpg)
-  {
-    m_bObservingEpg = true;
-    g_PVREpg->RegisterObserver(this);
-  }
+  g_PVREpg->RegisterObserver(this);
 
   if (!m_bGotInitialEpg || m_bLastEpgView != bRadio || bForceUpdate)
   {

@@ -53,7 +53,5 @@ namespace PVR
     virtual bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
 
     CStdString m_strSelectedPath;
-    bool       m_bObservingRecordings;
-    bool       m_bObservingTimers;
   };
 }

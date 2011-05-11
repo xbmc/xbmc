@@ -50,7 +50,5 @@ namespace PVR
     virtual bool OnContextButtonDelete(CFileItem *item, CONTEXT_BUTTON button);
     virtual bool OnContextButtonEdit(CFileItem *item, CONTEXT_BUTTON button);
     virtual bool OnContextButtonRename(CFileItem *item, CONTEXT_BUTTON button);
-
-    bool m_bObservingTimers;
   };
 }
