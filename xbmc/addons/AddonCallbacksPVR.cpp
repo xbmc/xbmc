@@ -100,7 +100,7 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const PV
   CPVRClient* client      = (CPVRClient*) handle->callerAddress;
   CPVRChannelGroup *group = (CPVRChannelGroup *) handle->dataAddress;
   CPVRChannel *channel    = (CPVRChannel *) g_PVRChannelGroups->GetByUniqueID(member->iChannelUniqueId, client->GetClientID());
-  if (group != NULL && channel != NULL)
+  if (group != NULL && channel != NULL && group->IsRadio() == channel->IsRadio())
   {
     /* transfer this entry to the group */
     group->AddToGroup(channel, member->iChannelNumber, false);
