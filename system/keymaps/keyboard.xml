@@ -88,6 +88,8 @@
       <numpadeight>Number8</numpadeight>
       <numpadnine>Number9</numpadnine>
       <backslash>ToggleFullScreen</backslash>
+      <!-- On a French keyboard backslash is alt gr 8 -->
+      <backslash mod="ctrl,alt">ToggleFullScreen</backslash>
       <browser_home>XBMC.ActivateWindow(Home)</browser_home>
       <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
       <browser_refresh/>
