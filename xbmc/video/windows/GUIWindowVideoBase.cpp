@@ -930,6 +930,11 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
   default:
     break;
   }
+  if (item->m_bIsFolder)
+  {
+    PlayItem(iItem);
+    return true;
+  }
   return OnClick(iItem);
 }
 
