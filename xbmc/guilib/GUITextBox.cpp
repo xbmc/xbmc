@@ -23,6 +23,7 @@
 #include "utils/CharsetConverter.h"
 #include "GUIInfoManager.h"
 #include "tinyXML/tinyxml.h"
+#include "utils/MathUtils.h"
 
 using namespace std;
 
@@ -210,7 +211,7 @@ void CGUITextBox::Render()
 
   if (m_pageControl)
   {
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, offset);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, MathUtils::round_int(m_scrollOffset / m_itemHeight));
     SendWindowMessage(msg);
   }
   CGUIControl::Render();
