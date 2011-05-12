@@ -29,7 +29,7 @@ using namespace std;
 bool         m_bCreated  = false;
 ADDON_STATUS m_CurStatus = ADDON_STATUS_UNKNOWN;
 int          g_iClientId = -1;
-int          g_iPacketSequence = 0;
+unsigned int g_iPacketSequence = 0;
 
 /* User adjustable settings are saved here.
  * Default values are defined inside client.h

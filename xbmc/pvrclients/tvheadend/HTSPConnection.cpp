@@ -24,8 +24,8 @@
 
 extern "C" {
 #include "libTcpSocket/os-dependent_socket.h"
+#include "cmyth/include/refmem/atomic.h"
 #include "libhts/htsmsg_binary.h"
-#include "libhts/htsatomic.h"
 #include "libhts/sha1.h"
 }
 
@@ -193,7 +193,7 @@ htsmsg_t* CHTSPConnection::ReadResult(htsmsg_t* m, bool sequence)
   uint32_t iSequence = 0;
   if(sequence)
   {
-    iSequence = atomic_add(&g_iPacketSequence, 1);
+    iSequence = mvp_atomic_inc(&g_iPacketSequence);
     htsmsg_add_u32(m, "seq", iSequence);
   }
 
