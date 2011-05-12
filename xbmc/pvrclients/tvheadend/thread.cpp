@@ -78,16 +78,21 @@ void cCondWait::SleepMs(int TimeoutMs)
 bool cCondWait::Wait(int TimeoutMs)
 {
   pthread_mutex_lock(&mutex);
-  if (!signaled) {
-     if (TimeoutMs) {
-        struct timespec abstime;
-        if (GetAbsTime(&abstime, TimeoutMs)) {
-           while (!signaled) {
-                 if (pthread_cond_timedwait(&cond, &mutex, &abstime) == ETIMEDOUT)
-                    break;
-                 }
-           }
+  if (!signaled)
+  {
+    if (TimeoutMs)
+	{
+      struct timespec abstime;
+      if (GetAbsTime(&abstime, TimeoutMs))
+	  {
+        while (!signaled)
+        {
+		  int iResult = pthread_cond_timedwait(&cond, &mutex, &abstime);
+		  if (iResult == ETIMEDOUT || iResult == EINVAL || iResult == EPERM)
+            break;
         }
+      }
+     }
      else
         pthread_cond_wait(&cond, &mutex);
      }
