@@ -3,7 +3,7 @@
 	<coordinates>
 		<system>1</system>
 		<posx>185</posx>
-		<posy>125</posy>
+		<posy>105</posy>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
@@ -15,28 +15,34 @@
 				<posx>0</posx>
 				<posy>0</posy>
 				<width>910</width>
-				<height>470</height>
+				<height>510</height>
 				<texture border="40">DialogBack.png</texture>
 			</control>
 			<control type="image">
-				<posx>260</posx>
-				<posy>10</posy>
-				<width>620</width>
-				<height>448</height>
-				<texture border="5">black-back2.png</texture>
+				<description>Dialog Header image</description>
+				<posx>40</posx>
+				<posy>16</posy>
+				<width>830</width>
+				<height>40</height>
+				<texture>dialogheader.png</texture>
 			</control>
-			<control type="image">
-				<posx>260</posx>
-				<posy>10</posy>
-				<width>610</width>
-				<height>100</height>
-				<aspectratio>stretch</aspectratio>
-				<texture>GlassTitleBar.png</texture>
+			<control type="label">
+				<description>header label</description>
+				<posx>40</posx>
+				<posy>20</posy>
+				<width>830</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$LOCALIZE[658]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>selected</textcolor>
+				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>810</posx>
-				<posy>9</posy>
+				<posx>820</posx>
+				<posy>14</posy>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -51,308 +57,297 @@
 				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="label">
-				<description>header label</description>
-				<posx>280</posx>
-				<posy>20</posy>
-				<width>580</width>
+				<description>Song Title value</description>
+				<posx>40</posx>
+				<posy>60</posy>
+				<width>830</width>
 				<height>30</height>
-				<font>font30_title</font>
-				<label>$LOCALIZE[658]</label>
-				<align>left</align>
+				<align>center</align>
 				<aligny>center</aligny>
+				<font>font13</font>
+				<label>[B]$INFO[ListItem.Title][/B]</label>
 				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
 			</control>
 			<control type="image">
-				<posx>35</posx>
-				<posy>40</posy>
+				<posx>40</posx>
+				<posy>120</posy>
 				<width>200</width>
 				<height>200</height>
 				<aspectratio aligny="bottom">keep</aspectratio>
 				<texture>$INFO[ListItem.Icon]</texture>
 			</control>
 			<control type="image">
-				<posx>35</posx>
-				<posy>240</posy>
+				<posx>40</posx>
+				<posy>320</posy>
 				<width>200</width>
 				<height>200</height>
 				<aspectratio aligny="top">keep</aspectratio>
 				<texture flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
 			</control>
-			<control type="label">
-				<description>Song Title value</description>
-				<posx>280</posx>
-				<posy>80</posy>
-				<width>580</width>
-				<height>30</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font13caps</font>
-				<label>[B]$INFO[ListItem.Title][/B]</label>
-				<textcolor>white</textcolor>
-				<scroll>true</scroll>
-			</control>
-			<control type="label">
-				<description>Artist Title</description>
-				<posx>400</posx>
-				<posy>140</posy>
-				<width>130</width>
-				<height>25</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font13_title</font>
-				<textcolor>blue</textcolor>
-				<label>$LOCALIZE[557]:</label>
-			</control>
-			<control type="fadelabel">
-				<description>Artist Value</description>
-				<posx>410</posx>
-				<posy>140</posy>
-				<width>460</width>
-				<height>25</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font13</font>
-				<textcolor>white</textcolor>
-				<label fallback="161">$INFO[ListItem.Artist]</label>
-			</control>
-			<control type="label">
-				<description>Album Title</description>
-				<posx>400</posx>
-				<posy>175</posy>
-				<width>130</width>
-				<height>25</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font13_title</font>
-				<textcolor>blue</textcolor>
-				<label>$LOCALIZE[558]:</label>
-			</control>
-			<control type="fadelabel">
-				<description>Album Value</description>
-				<posx>410</posx>
-				<posy>175</posy>
-				<width>460</width>
-				<height>25</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font13</font>
-				<textcolor>white</textcolor>
-				<label fallback="161">$INFO[ListItem.Album]$INFO[listitem.discnumber, - $LOCALIZE[427] ]</label>
-			</control>
-			<control type="label">
-				<description>Genre Title</description>
-				<posx>400</posx>
-				<posy>210</posy>
-				<width>130</width>
-				<height>25</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font13_title</font>
-				<textcolor>blue</textcolor>
-				<label>$LOCALIZE[515]:</label>
-			</control>
-			<control type="fadelabel">
-				<description>Genre Value</description>
-				<posx>410</posx>
-				<posy>210</posy>
-				<width>460</width>
-				<height>25</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font13</font>
-				<textcolor>white</textcolor>
-				<label fallback="161">$INFO[ListItem.Genre]</label>
-			</control>
-			<control type="label">
-				<description>Year Title</description>
-				<posx>400</posx>
-				<posy>245</posy>
-				<width>130</width>
-				<height>25</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font13_title</font>
-				<textcolor>blue</textcolor>
-				<label>$LOCALIZE[562]:</label>
-			</control>
-			<control type="fadelabel">
-				<description>Year Value</description>
-				<posx>410</posx>
-				<posy>245</posy>
-				<width>460</width>
-				<height>25</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font13</font>
-				<textcolor>white</textcolor>
-				<label fallback="161">$INFO[ListItem.Year]</label>
-			</control>
-			<control type="label">
-				<description>Track Number Title</description>
-				<posx>400</posx>
-				<posy>280</posy>
-				<width>130</width>
-				<height>25</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font13_title</font>
-				<textcolor>blue</textcolor>
-				<label>$LOCALIZE[554]:</label>
-			</control>
-			<control type="fadelabel">
-				<description>Track Number Value</description>
-				<posx>410</posx>
-				<posy>280</posy>
-				<width>460</width>
-				<height>25</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font13</font>
-				<textcolor>white</textcolor>
-				<label fallback="161">$INFO[ListItem.TrackNumber]</label>
-			</control>
-			<control type="label">
-				<description>Rating Title</description>
-				<posx>400</posx>
-				<posy>315</posy>
-				<width>130</width>
-				<height>25</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font13_title</font>
-				<textcolor>blue</textcolor>
-				<label>$LOCALIZE[563]:</label>
-			</control>
 			<control type="group">
-				<posx>410</posx>
-				<posy>313</posy>
-				<control type="image">
-					<description>Rating value</description>
-					<posx>0</posx>
+				<posx>250</posx>
+				<posy>120</posy>
+				<control type="label">
+					<description>Artist Title</description>
+					<posx>150</posx>
 					<posy>0</posy>
-					<width>160</width>
-					<height>32</height>
-					<aspectratio align="left">keep</aspectratio>
-					<texture>LeftRating/$INFO[ListItem.StarRating]</texture>
+					<width>150</width>
+					<height>25</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>blue</textcolor>
+					<label>$LOCALIZE[557]:</label>
 				</control>
-				<control type="button" id="14">
-					<description>Decrease Rating</description>
-					<posx>170</posx>
-					<posy>5</posy>
-					<width>33</width>
-					<height>22</height>
-					<onclick>DecreaseRating</onclick>
-					<texturenofocus>scroll-down-2.png</texturenofocus>
-					<texturefocus>scroll-down-focus-2.png</texturefocus>
-					<onleft>9000</onleft>
-					<onright>15</onright>
-					<ondown>14</ondown>
-					<onup>14</onup>
+				<control type="fadelabel">
+					<description>Artist Value</description>
+					<posx>160</posx>
+					<posy>0</posy>
+					<width>460</width>
+					<height>25</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+					<label fallback="161">$INFO[ListItem.Artist]</label>
+					<scrollout>false</scrollout>
+					<pauseatend>2000</pauseatend>
 				</control>
-				<control type="button" id="15">
-					<description>Increase Rating</description>
-					<posx>203</posx>
-					<posy>5</posy>
-					<width>33</width>
-					<height>22</height>
-					<onclick>IncreaseRating</onclick>
-					<texturenofocus>scroll-up-2.png</texturenofocus>
-					<texturefocus>scroll-up-focus-2.png</texturefocus>
-					<onleft>14</onleft>
-					<onright>15</onright>
-					<ondown>15</ondown>
-					<onup>15</onup>
+				<control type="label">
+					<description>Album Title</description>
+					<posx>150</posx>
+					<posy>30</posy>
+					<width>150</width>
+					<height>25</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>blue</textcolor>
+					<label>$LOCALIZE[558]:</label>
 				</control>
-			</control>
-			<control type="label">
-				<description>Comment Title</description>
-				<posx>400</posx>
-				<posy>350</posy>
-				<width>130</width>
-				<height>25</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font13_title</font>
-				<textcolor>blue</textcolor>
-				<label>$LOCALIZE[569]:</label>
-			</control>
-			<control type="textbox">
-				<description>Comment value</description>
-				<posx>410</posx>
-				<posy>345</posy>
-				<width>460</width>
-				<height>100</height>
-				<font>font13</font>
-				<pagecontrol>-</pagecontrol>
-				<label fallback="161">$INFO[ListItem.Comment]</label>
+				<control type="fadelabel">
+					<description>Album Value</description>
+					<posx>160</posx>
+					<posy>30</posy>
+					<width>460</width>
+					<height>25</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+					<label fallback="161">$INFO[ListItem.Album]$INFO[listitem.discnumber, - $LOCALIZE[427] ]</label>
+					<scrollout>false</scrollout>
+					<pauseatend>2000</pauseatend>
+				</control>
+				<control type="label">
+					<description>Genre Title</description>
+					<posx>150</posx>
+					<posy>60</posy>
+					<width>150</width>
+					<height>25</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>blue</textcolor>
+					<label>$LOCALIZE[515]:</label>
+					<scrollout>false</scrollout>
+					<pauseatend>2000</pauseatend>
+				</control>
+				<control type="fadelabel">
+					<description>Genre Value</description>
+					<posx>160</posx>
+					<posy>60</posy>
+					<width>460</width>
+					<height>25</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+					<label fallback="161">$INFO[ListItem.Genre]</label>
+				</control>
+				<control type="label">
+					<description>Year Title</description>
+					<posx>150</posx>
+					<posy>90</posy>
+					<width>150</width>
+					<height>25</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>blue</textcolor>
+					<label>$LOCALIZE[562]:</label>
+				</control>
+				<control type="fadelabel">
+					<description>Year Value</description>
+					<posx>160</posx>
+					<posy>90</posy>
+					<width>460</width>
+					<height>25</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+					<label fallback="161">$INFO[ListItem.Year]</label>
+				</control>
+				<control type="label">
+					<description>Track Number Title</description>
+					<posx>150</posx>
+					<posy>120</posy>
+					<width>150</width>
+					<height>25</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>blue</textcolor>
+					<label>$LOCALIZE[554]:</label>
+				</control>
+				<control type="fadelabel">
+					<description>Track Number Value</description>
+					<posx>160</posx>
+					<posy>120</posy>
+					<width>460</width>
+					<height>25</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+					<label fallback="161">$INFO[ListItem.TrackNumber]</label>
+				</control>
+				<control type="label">
+					<description>Rating Title</description>
+					<posx>150</posx>
+					<posy>150</posy>
+					<width>150</width>
+					<height>25</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>blue</textcolor>
+					<label>$LOCALIZE[563]:</label>
+				</control>
+				<control type="group">
+					<posx>160</posx>
+					<posy>148</posy>
+					<control type="image">
+						<description>Rating value</description>
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>150</width>
+						<height>32</height>
+						<aspectratio align="left">keep</aspectratio>
+						<texture>LeftRating/$INFO[ListItem.StarRating]</texture>
+					</control>
+					<control type="button" id="14">
+						<description>Decrease Rating</description>
+						<posx>160</posx>
+						<posy>5</posy>
+						<width>33</width>
+						<height>22</height>
+						<onclick>DecreaseRating</onclick>
+						<texturenofocus>scroll-down-2.png</texturenofocus>
+						<texturefocus>scroll-down-focus-2.png</texturefocus>
+						<onleft>15</onleft>
+						<onright>15</onright>
+						<ondown>9000</ondown>
+						<onup>9000</onup>
+					</control>
+					<control type="button" id="15">
+						<description>Increase Rating</description>
+						<posx>193</posx>
+						<posy>5</posy>
+						<width>33</width>
+						<height>22</height>
+						<onclick>IncreaseRating</onclick>
+						<texturenofocus>scroll-up-2.png</texturenofocus>
+						<texturefocus>scroll-up-focus-2.png</texturefocus>
+						<onleft>14</onleft>
+						<onright>14</onright>
+						<ondown>9000</ondown>
+						<onup>9000</onup>
+					</control>
+				</control>
+				<control type="label">
+					<description>Comment Title</description>
+					<posx>150</posx>
+					<posy>180</posy>
+					<width>150</width>
+					<height>25</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>blue</textcolor>
+					<label>$LOCALIZE[569]:</label>
+				</control>
+				<control type="textbox">
+					<description>Comment value</description>
+					<posx>160</posx>
+					<posy>177</posy>
+					<width>460</width>
+					<height>140</height>
+					<font>font13</font>
+					<pagecontrol>-</pagecontrol>
+					<label fallback="161">$INFO[ListItem.Comment]</label>
+				</control>
 			</control>
 			<control type="group" id="9000">
-				<posx>10</posx>
-				<posy>280</posy>
+				<posx>40</posx>
+				<posy>445</posy>
 				<control type="button" id ="10">
 					<description>Ok button</description>
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>240</width>
-					<height>41</height>
+					<width>200</width>
+					<height>40</height>
 					<label>186</label>
-					<font>font13_title</font>
-					<align>right</align>
-					<texturenofocus>MenuItemNF.png</texturenofocus>
-					<texturefocus>MenuItemFO.png</texturefocus>
-					<onleft>10</onleft>
-					<onright>14</onright>
-					<onup>13</onup>
-					<ondown>11</ondown>
+					<font>font12_title</font>
+					<align>center</align>
+					<onleft>13</onleft>
+					<onright>11</onright>
+					<onup>14</onup>
+					<ondown>14</ondown>
 				</control>
 				<control type="button" id="11">
 					<description>Cancel button</description>
-					<posx>0</posx>
-					<posy>40</posy>
-					<width>240</width>
-					<height>41</height>
+					<posx>210</posx>
+					<posy>0</posy>
+					<width>200</width>
+					<height>40</height>
 					<label>222</label>
-					<font>font13_title</font>
-					<align>right</align>
-					<texturenofocus>MenuItemNF.png</texturenofocus>
-					<texturefocus>MenuItemFO.png</texturefocus>
-					<onleft>11</onleft>
-					<onright>14</onright>
-					<onup>10</onup>
-					<ondown>12</ondown>
+					<font>font12_title</font>
+					<align>center</align>
+					<onleft>10</onleft>
+					<onright>12</onright>
+					<onup>14</onup>
+					<ondown>14</ondown>
 				</control>
 				<control type="button" id="12">
 					<description>Album Info button</description>
-					<posx>0</posx>
-					<posy>80</posy>
-					<width>240</width>
-					<height>41</height>
+					<posx>420</posx>
+					<posy>0</posy>
+					<width>200</width>
+					<height>40</height>
 					<label>10523</label>
-					<font>font13_title</font>
-					<align>right</align>
-					<texturenofocus>MenuItemNF.png</texturenofocus>
-					<texturefocus>MenuItemFO.png</texturefocus>
-					<onleft>12</onleft>
-					<onright>14</onright>
-					<onup>11</onup>
-					<ondown>13</ondown>
+					<font>font12_title</font>
+					<align>center</align>
+					<onleft>11</onleft>
+					<onright>13</onright>
+					<onup>14</onup>
+					<ondown>14</ondown>
 				</control>
 				<control type="button" id ="13">
 					<description>Get Thumb button</description>
-					<posx>0</posx>
-					<posy>120</posy>
-					<width>240</width>
-					<height>41</height>
+					<posx>630</posx>
+					<posy>0</posy>
+					<width>200</width>
+					<height>40</height>
 					<label>13405</label>
-					<font>font13_title</font>
-					<align>right</align>
-					<texturenofocus>MenuItemNF.png</texturenofocus>
-					<texturefocus>MenuItemFO.png</texturefocus>
-					<onleft>13</onleft>
-					<onright>14</onright>
-					<onup>12</onup>
-					<ondown>10</ondown>
+					<font>font12_title</font>
+					<align>center</align>
+					<onleft>12</onleft>
+					<onright>10</onright>
+					<onup>14</onup>
+					<ondown>14</ondown>
 				</control>
 			</control>
 		</control>

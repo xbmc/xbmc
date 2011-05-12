@@ -20,24 +20,30 @@
 				<texture border="40">DialogBack.png</texture>
 			</control>
 			<control type="image">
-				<posx>260</posx>
-				<posy>10</posy>
-				<width>620</width>
-				<height>578</height>
-				<texture border="5">black-back2.png</texture>
+				<description>Dialog Header image</description>
+				<posx>40</posx>
+				<posy>16</posy>
+				<width>840</width>
+				<height>40</height>
+				<texture>dialogheader.png</texture>
 			</control>
-			<control type="image">
-				<posx>260</posx>
-				<posy>10</posy>
-				<width>610</width>
-				<height>100</height>
-				<aspectratio>stretch</aspectratio>
-				<texture>GlassTitleBar.png</texture>
+			<control type="label">
+				<description>header label</description>
+				<posx>40</posx>
+				<posy>20</posy>
+				<width>840</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$LOCALIZE[24003]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>selected</textcolor>
+				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>810</posx>
-				<posy>9</posy>
+				<posx>830</posx>
+				<posy>15</posy>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -51,26 +57,15 @@
 				<ondown>3</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
-			<control type="label">
-				<description>header label</description>
-				<posx>280</posx>
-				<posy>20</posy>
-				<width>580</width>
-				<height>30</height>
-				<font>font30_title</font>
-				<label>24003</label>
-				<align>left</align>
-				<aligny>center</aligny>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-			</control>
 			<control type="image">
-				<posx>35</posx>
-				<posy>40</posy>
-				<width>200</width>
-				<height>200</height>
+				<posx>30</posx>
+				<posy>70</posy>
+				<width>220</width>
+				<height>220</height>
 				<aspectratio>keep</aspectratio>
 				<texture>$INFO[ListItem.Icon]</texture>
+				<bordertexture border="8">ThumbShadow.png</bordertexture>
+				<bordersize>8</bordersize>
 			</control>
 			<control type="label">
 				<description>Addon Title value</description>
@@ -97,7 +92,7 @@
 					<label>$LOCALIZE[146]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font13_title</font>
+					<font>font13</font>
 					<textcolor>blue</textcolor>
 				</control>
 				<control type="label">
@@ -121,7 +116,7 @@
 					<label>$LOCALIZE[21863]:</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font13_title</font>
+					<font>font13</font>
 					<textcolor>blue</textcolor>
 				</control>
 				<control type="label">
@@ -145,7 +140,7 @@
 					<label>$LOCALIZE[24051]</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font13_title</font>
+					<font>font13</font>
 					<textcolor>blue</textcolor>
 				</control>
 				<control type="label">
@@ -169,7 +164,7 @@
 					<label>$LOCALIZE[563]:</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font13_title</font>
+					<font>font13</font>
 					<textcolor>blue</textcolor>
 				</control>
 				<control type="image">
@@ -190,7 +185,7 @@
 					<label>$LOCALIZE[20037]:</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<font>font13_title</font>
+					<font>font13</font>
 					<textcolor>blue</textcolor>
 				</control>
 				<control type="fadelabel">
@@ -229,7 +224,7 @@
 					<visible>!IsEmpty(ListItem.Property(Addon.Disclaimer))</visible>
 					<control type="label">
 						<description>Description Page Count</description>
-						<posx>600</posx>
+						<posx>610</posx>
 						<posy>170</posy>
 						<width>300</width>
 						<height>25</height>
@@ -243,10 +238,10 @@
 						<description>Description</description>
 						<posx>10</posx>
 						<posy>195</posy>
-						<width>580</width>
+						<width>600</width>
 						<height>160</height>
 						<font>font12</font>
-						<align>-</align>
+						<align>justify</align>
 						<textcolor>white</textcolor>
 						<label>$INFO[ListItem.Property(Addon.Description)]</label>
 						<pagecontrol>60</pagecontrol>
@@ -282,10 +277,10 @@
 						<description>Disclaimer</description>
 						<posx>10</posx>
 						<posy>395</posy>
-						<width>580</width>
+						<width>600</width>
 						<height>40</height>
 						<font>font12</font>
-						<align>-</align>
+						<align>justify</align>
 						<textcolor>white</textcolor>
 						<label>$INFO[ListItem.Property(Addon.Disclaimer)]</label>
 						<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
@@ -295,7 +290,7 @@
 					<visible>IsEmpty(ListItem.Property(Addon.Disclaimer))</visible>
 					<control type="label">
 						<description>Description Page Count</description>
-						<posx>600</posx>
+						<posx>610</posx>
 						<posy>170</posy>
 						<width>300</width>
 						<height>25</height>
@@ -309,10 +304,10 @@
 						<description>Description</description>
 						<posx>10</posx>
 						<posy>195</posy>
-						<width>580</width>
+						<width>600</width>
 						<height>250</height>
 						<font>font12</font>
-						<align>-</align>
+						<align>justify</align>
 						<textcolor>white</textcolor>
 						<label>$INFO[ListItem.Property(Addon.Description)]</label>
 						<pagecontrol>61</pagecontrol>
@@ -335,20 +330,17 @@
 				</control>
 			</control>
 			<control type="group" id="9000">
-				<posx>10</posx>
-				<posy>280</posy>
+				<posx>30</posx>
+				<posy>310</posy>
 				<control type="button" id ="6">
 					<description>Enable Addon button</description>
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>255</width>
-					<height>51</height>
-					<textoffsetx>20</textoffsetx>
+					<width>220</width>
+					<height>45</height>
 					<label>24022</label>
-					<font>font13_title</font>
-					<align>right</align>
-					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<align>center</align>
+					<font>font12_title</font>
 					<onleft>60</onleft>
 					<onright>60</onright>
 					<onup>10</onup>
@@ -358,14 +350,11 @@
 					<description>Disable Addon button</description>
 					<posx>0</posx>
 					<posy>50</posy>
-					<width>255</width>
-					<height>51</height>
-					<textoffsetx>20</textoffsetx>
+					<width>220</width>
+					<height>45</height>
 					<label>24021</label>
-					<font>font13_title</font>
-					<align>right</align>
-					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<align>center</align>
+					<font>font12_title</font>
 					<onleft>60</onleft>
 					<onright>60</onright>
 					<onup>6</onup>
@@ -375,14 +364,11 @@
 					<description>Addon Settings</description>
 					<posx>0</posx>
 					<posy>100</posy>
-					<width>255</width>
-					<height>51</height>
-					<textoffsetx>20</textoffsetx>
+					<width>220</width>
+					<height>45</height>
 					<label>24020</label>
-					<font>font13_title</font>
-					<align>right</align>
-					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<align>center</align>
+					<font>font12_title</font>
 					<onleft>60</onleft>
 					<onright>60</onright>
 					<onup>7</onup>
@@ -392,14 +378,11 @@
 					<description>Update Addon button</description>
 					<posx>0</posx>
 					<posy>150</posy>
-					<width>255</width>
-					<height>51</height>
-					<textoffsetx>20</textoffsetx>
+					<width>220</width>
+					<height>45</height>
 					<label>24069</label>
-					<font>font13_title</font>
-					<align>right</align>
-					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<align>center</align>
+					<font>font12_title</font>
 					<onleft>60</onleft>
 					<onright>60</onright>
 					<onup>9</onup>
@@ -409,14 +392,11 @@
 					<description>Changelog button</description>
 					<posx>0</posx>
 					<posy>200</posy>
-					<width>255</width>
-					<height>51</height>
-					<textoffsetx>20</textoffsetx>
+					<width>220</width>
+					<height>45</height>
 					<label>24036</label>
-					<font>font13_title</font>
-					<align>right</align>
-					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<align>center</align>
+					<font>font12_title</font>
 					<onleft>60</onleft>
 					<onright>60</onright>
 					<onup>8</onup>
@@ -437,10 +417,10 @@
 				</control>
 				<control type="image">
 					<description>Icon image</description>
-					<posx>18</posx>
-					<posy>18</posy>
-					<width>64</width>
-					<height>64</height>
+					<posx>20</posx>
+					<posy>20</posy>
+					<width>60</width>
+					<height>60</height>
 					<texture>DefaultIconError.png</texture>
 				</control>
 				<control type="label">
@@ -449,7 +429,7 @@
 					<posy>15</posy>
 					<width>800</width>
 					<height>25</height>
-					<font>font13_title</font>
+					<font>font12_title</font>
 					<label>24096</label>
 					<align>left</align>
 					<aligny>center</aligny>
