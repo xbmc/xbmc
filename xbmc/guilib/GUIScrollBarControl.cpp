@@ -94,45 +94,51 @@ bool CGUIScrollBar::OnAction(const CAction &action)
   case ACTION_MOVE_LEFT:
     if (m_orientation == HORIZONTAL)
     {
-      Move( -1);
-      return true;
+      if(Move( -1))
+        return true;
     }
     break;
 
   case ACTION_MOVE_RIGHT:
     if (m_orientation == HORIZONTAL)
     {
-      Move(1);
-      return true;
+      if(Move(1))
+        return true;
     }
     break;
   case ACTION_MOVE_UP:
     if (m_orientation == VERTICAL)
     {
-      Move(-1);
-      return true;
+      if(Move(-1))
+        return true;
     }
     break;
 
   case ACTION_MOVE_DOWN:
     if (m_orientation == VERTICAL)
     {
-      Move(1);
-      return true;
+      if(Move(1))
+        return true;
     }
     break;
   }
   return CGUIControl::OnAction(action);
 }
 
-void CGUIScrollBar::Move(int numSteps)
+bool CGUIScrollBar::Move(int numSteps)
 {
+  if (numSteps < 0 && m_offset == 0) // we are at the beginning - can't scroll up/left anymore
+    return false;
+  if (numSteps > 0 && m_offset == m_numItems - m_pageSize) // we are at the end - we can't scroll down/right anymore
+    return false;
+
   m_offset += numSteps * m_pageSize;
   if (m_offset > m_numItems - m_pageSize) m_offset = m_numItems - m_pageSize;
   if (m_offset < 0) m_offset = 0;
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, m_offset);
   SendWindowMessage(message);
   SetInvalid();
+  return true;
 }
 
 void CGUIScrollBar::SetRange(int pageSize, int numItems)
