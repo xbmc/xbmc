@@ -69,6 +69,14 @@ echo "   chmod 755 /var/tmp/AppleTV-nosb"               >> $PACKAGE/DEBIAN/posti
 echo "   mv -f /Applications/AppleTV.app/AppleTV /Applications/AppleTV.app/AppleTV_org" >> $PACKAGE/DEBIAN/postinst
 echo "   mv /var/tmp/AppleTV-nosb /Applications/AppleTV.app/AppleTV" >> $PACKAGE/DEBIAN/postinst
 echo "   killall AppleTV ;;"                            >> $PACKAGE/DEBIAN/postinst
+echo " 42d00865f281bb662b6ce447c9815e59 )"              >> $PACKAGE/DEBIAN/postinst
+echo "   echo \"Found 4.3.2 (8F305):Removing seatbelt profile key from AppleTV\"" >> $PACKAGE/DEBIAN/postinst
+echo "   bspatch /Applications/AppleTV.app/AppleTV /var/tmp/AppleTV-nosb /var/tmp/42d00865f281bb662b6ce447c9815e59.patch" >> $PACKAGE/DEBIAN/postinst
+echo "   rm /var/tmp/42d00865f281bb662b6ce447c9815e59.patch" >> $PACKAGE/DEBIAN/postinst
+echo "   chmod 755 /var/tmp/AppleTV-nosb"               >> $PACKAGE/DEBIAN/postinst
+echo "   mv -f /Applications/AppleTV.app/AppleTV /Applications/AppleTV.app/AppleTV_org" >> $PACKAGE/DEBIAN/postinst
+echo "   mv /var/tmp/AppleTV-nosb /Applications/AppleTV.app/AppleTV" >> $PACKAGE/DEBIAN/postinst
+echo "   killall AppleTV ;;"                            >> $PACKAGE/DEBIAN/postinst
 echo " * )"                                             >> $PACKAGE/DEBIAN/postinst
 echo "   echo \"Frontrow app md5sum is unknown, not patching\" ;;" >> $PACKAGE/DEBIAN/postinst
 echo "esac"                                             >> $PACKAGE/DEBIAN/postinst
