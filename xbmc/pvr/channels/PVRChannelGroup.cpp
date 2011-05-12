@@ -547,8 +547,13 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
           __FUNCTION__, m_bRadio ? "radio" : "TV", channel->ChannelName().c_str(), GroupName().c_str());
 
       /* remove this channel from all non-system groups if this is the internal group */
-      if (IsInternalGroup())
+      if (IsInternalGroup()) {
         g_PVRChannelGroups->Get(m_bRadio)->RemoveFromAllGroups(channel);
+        CPVRChannelGroup::RemoveFromGroup(channel);
+
+        /* since it was not found in the internal group, it was deleted from the backend */
+        channel->Delete();
+      }
       else
         RemoveFromGroup(channel);
 

@@ -313,6 +313,8 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &chan
       /* if it's present, update the current tag */
       if (existingChannel->UpdateFromClient(*member.channel))
       {
+        existingChannel->Persist(!m_bLoaded);
+
         bReturn = true;
         CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - updated %s channel '%s'",
             __FUNCTION__, m_bRadio ? "radio" : "TV", member.channel->ChannelName().c_str());
