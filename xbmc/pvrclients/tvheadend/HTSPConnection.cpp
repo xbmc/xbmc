@@ -31,6 +31,8 @@ extern "C" {
 
 using namespace std;
 
+#define RW_LOCK cMutexLock RWLock((cMutex*)&m_Mutex)
+
 CHTSPConnection::CHTSPConnection() :
     m_fd(INVALID_SOCKET),
     m_challenge(NULL),
@@ -139,6 +141,7 @@ htsmsg_t* CHTSPConnection::ReadMessage(int timeout)
     return m;
   }
 
+  RW_LOCK;
   x = tcp_read_timeout(m_fd, &l, 4, timeout);
   if(x == ETIMEDOUT)
     return htsmsg_create_map();
@@ -180,6 +183,7 @@ bool CHTSPConnection::SendMessage(htsmsg_t* m)
   }
   htsmsg_destroy(m);
 
+  RW_LOCK;
   if(tcp_send(m_fd, (char*)buf, len, 0) < 0)
   {
     free(buf);

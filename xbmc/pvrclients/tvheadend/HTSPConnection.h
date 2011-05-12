@@ -78,4 +78,5 @@ private:
 
   std::deque<htsmsg_t*> m_queue;
   const unsigned int    m_iQueueSize;
+  cMutex                m_Mutex;
 };
