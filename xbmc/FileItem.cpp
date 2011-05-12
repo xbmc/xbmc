@@ -270,6 +270,12 @@ CFileItem::CFileItem(const CPVRTimerInfoTag& timer)
   *GetPVRTimerInfoTag() = timer;
   SetLabel(timer.m_strTitle);
   m_strLabel2 = timer.m_strSummary;
+
+  if (!timer.ChannelIcon().IsEmpty())
+  {
+    SetThumbnailImage(timer.ChannelIcon());
+    SetIconImage(timer.ChannelIcon());
+  }
 }
 
 CFileItem::CFileItem(const CArtist& artist)
