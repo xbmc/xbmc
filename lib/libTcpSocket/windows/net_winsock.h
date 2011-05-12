@@ -34,7 +34,7 @@
 #define SHUT_RDWR SD_BOTH
 
 #ifndef ETIMEDOUT
-#define ETIMEDOUT WSAETIMEDOUT
+#define ETIMEDOUT 138
 #endif
 
 typedef SOCKET socket_t;
