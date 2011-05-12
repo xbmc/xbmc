@@ -819,7 +819,7 @@ bool CPVRClient::OpenLiveStream(const CPVRChannel &channel)
 
   if ((!m_addonCapabilities.bSupportsTV && !channel.IsRadio()) ||
       (!m_addonCapabilities.bSupportsRadio && channel.IsRadio()))
-    return PVR_ERROR_NOT_IMPLEMENTED;
+    return bReturn;
 
   try
   {

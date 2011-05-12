@@ -154,9 +154,10 @@ const CPVRChannel *CPVRChannelGroupsContainer::GetByPath(const CStdString &strPa
   CStdString strCheckPath;
   for (unsigned int bRadio = 0; bRadio <= 1; bRadio++)
   {
-    for (unsigned int iGroupPtr = 0; iGroupPtr < Get(bRadio)->size(); iGroupPtr++)
+    const CPVRChannelGroups *groups = Get(bRadio == 1);
+    for (unsigned int iGroupPtr = 0; iGroupPtr < groups->size(); iGroupPtr++)
     {
-      const CPVRChannelGroup *group = Get(bRadio)->at(iGroupPtr);
+      const CPVRChannelGroup *group = groups->at(iGroupPtr);
       strCheckPath.Format("channels/%s/%s/", group->IsRadio() ? "radio" : "tv", group->GroupName().c_str());
 
       if (strFileName.Left(strCheckPath.length()) == strCheckPath)
