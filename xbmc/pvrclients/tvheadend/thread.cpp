@@ -88,7 +88,7 @@ bool cCondWait::Wait(int TimeoutMs)
         while (!signaled)
         {
 		  int iResult = pthread_cond_timedwait(&cond, &mutex, &abstime);
-		  if (iResult == ETIMEDOUT || iResult == EINVAL || iResult == EPERM)
+		  if (iResult != 0)
             break;
         }
       }
