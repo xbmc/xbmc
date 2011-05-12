@@ -12,7 +12,7 @@ fi
 PACKAGE=org.xbmc.xbmc-seatbeltunlock
 
 VERSION=1.0
-REVISION=3
+REVISION=4
 ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_iphoneos-arm.deb
 
 echo Creating $PACKAGE package version $VERSION revision $REVISION
@@ -87,6 +87,7 @@ mkdir -p $PACKAGE/var/tmp
 cp 12313417e3afeba6531255af58cb5283.patch               $PACKAGE/var/tmp/
 cp 5a28620a15c15d41e1ae836dd1f95f8d.patch               $PACKAGE/var/tmp/
 cp 03e48c66a9cae1ff768eb3fe7981c499.patch               $PACKAGE/var/tmp/
+cp 42d00865f281bb662b6ce447c9815e59.patch               $PACKAGE/var/tmp/
 
 # set ownership to root:root
 ${SUDO} chown -R 0:0 $PACKAGE
