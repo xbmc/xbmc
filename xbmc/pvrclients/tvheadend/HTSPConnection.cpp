@@ -192,9 +192,6 @@ bool CHTSPConnection::SendMessage(htsmsg_t* m)
 
 htsmsg_t* CHTSPConnection::ReadResult(htsmsg_t* m, bool sequence)
 {
-  if (!m_bIsConnected)
-    return NULL;
-
   uint32_t iSequence = 0;
   if(sequence)
   {

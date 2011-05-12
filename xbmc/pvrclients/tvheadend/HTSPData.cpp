@@ -63,11 +63,47 @@ void CHTSPData::Close()
   Cancel(1);
 }
 
+htsmsg_t* CHTSPData::ReadResult(htsmsg_t *m)
+{
+  if (!m_session->IsConnected())
+    return NULL;
+
+  m_Mutex.Lock();
+  uint32_t seq = mvp_atomic_inc(&g_iPacketSequence);
+
+  SMessage &message(m_queue[seq]);
+  message.event = new cCondWait();
+  message.msg   = NULL;
+
+  m_Mutex.Unlock();
+  htsmsg_add_u32(m, "seq", seq);
+  if(!m_session->SendMessage(m))
+  {
+    m_queue.erase(seq);
+    return NULL;
+  }
+
+  if(!message.event->Wait(g_iResponseTimeout * 1000))
+  {
+    XBMC->Log(LOG_ERROR, "%s - request timed out after %d seconds", __FUNCTION__, g_iResponseTimeout);
+    m_session->Close();
+  }
+  m_Mutex.Lock();
+
+  m =    message.msg;
+  delete message.event;
+
+  m_queue.erase(seq);
+
+  m_Mutex.Unlock();
+  return m;
+}
+
 bool CHTSPData::GetDriveSpace(long long *total, long long *used)
 {
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "getDiskSpace");
-  if ((msg = m_session->ReadResult(msg)) == NULL)
+  if ((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_DEBUG, "%s - failed to get getDiskSpace", __FUNCTION__);
     return false;
@@ -90,7 +126,7 @@ bool CHTSPData::GetBackendTime(time_t *utcTime, int *gmtOffset)
 {
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "getSysTime");
-  if ((msg = m_session->ReadResult(msg)) == NULL)
+  if ((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_ERROR, "%s - failed to get sysTime", __FUNCTION__);
     return false;
@@ -287,7 +323,7 @@ PVR_ERROR CHTSPData::DeleteRecording(const PVR_RECORDING &recording)
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "deleteDvrEntry");
   htsmsg_add_u32(msg, "id", recording.iClientIndex);
-  if ((msg = m_session->ReadResult(msg)) == NULL)
+  if ((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get deleteDvrEntry", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
@@ -405,7 +441,7 @@ PVR_ERROR CHTSPData::DeleteTimer(const PVR_TIMER &timer, bool bForce)
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "cancelDvrEntry");
   htsmsg_add_u32(msg, "id", timer.iClientIndex);
-  if ((msg = m_session->ReadResult(msg)) == NULL)
+  if ((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get cancelDvrEntry", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
@@ -450,7 +486,7 @@ PVR_ERROR CHTSPData::AddTimer(const PVR_TIMER &timer)
   htsmsg_add_str(msg, "description", timer.strSummary);
   htsmsg_add_str(msg, "creator",     "XBMC");
 
-  if ((msg = m_session->ReadResult(msg)) == NULL)
+  if ((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get addDvrEntry", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
@@ -484,7 +520,7 @@ PVR_ERROR CHTSPData::UpdateTimer(const PVR_TIMER &timer)
   htsmsg_add_u32(msg, "start",  timer.startTime);
   htsmsg_add_u32(msg, "stop",   timer.endTime);
   
-  if ((msg = m_session->ReadResult(msg)) == NULL)
+  if ((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get updateDvrEntry", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
@@ -509,7 +545,7 @@ PVR_ERROR CHTSPData::RenameRecording(const PVR_RECORDING &recording, const char 
   htsmsg_add_u32(msg, "id",     recording.iClientIndex);
   htsmsg_add_str(msg, "title",  recording.strTitle);
   
-  if ((msg = m_session->ReadResult(msg)) == NULL)
+  if ((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get updateDvrEntry", __FUNCTION__);
     return PVR_ERROR_SERVER_ERROR;
@@ -657,7 +693,7 @@ bool CHTSPData::GetEvent(SEvent& event, uint32_t id)
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "getEvent");
   htsmsg_add_u32(msg, "eventId", id);
-  if((msg = m_session->ReadResult(msg)) == NULL)
+  if((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_DEBUG, "%s - failed to get event %d", __FUNCTION__, id);
     return false;
