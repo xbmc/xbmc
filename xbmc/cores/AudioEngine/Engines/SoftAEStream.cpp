@@ -443,7 +443,7 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
   }
 
   if (m_refillBuffer)
-    m_refillBuffer = std::max((unsigned int)m_refillBuffer - frames, (unsigned int)0);
+    m_refillBuffer = (unsigned int)std::max((int)m_refillBuffer - (int)frames, 0);
 
   return consumed;
 }
