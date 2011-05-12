@@ -21,6 +21,7 @@
 
 #include <stdint.h>
 #include <limits.h>
+#include <string.h>
 #include <libavcodec/avcodec.h> // For codec id's
 #include "VNSIDemux.h"
 #include "responsepacket.h"
@@ -97,6 +98,10 @@ DemuxPacket* cVNSIDemux::Read()
   if (resp->getOpCodeID() == VNSI_STREAM_CHANGE)
   {
     StreamChange(resp);
+    DemuxPacket* pkt = PVR->AllocateDemuxPacket(0);
+    pkt->iStreamId  = DMX_SPECIALID_STREAMCHANGE;
+    delete resp;
+    return pkt;
   }
   else if (resp->getOpCodeID() == VNSI_STREAM_STATUS)
   {
@@ -108,33 +113,46 @@ DemuxPacket* cVNSIDemux::Read()
   }
   else if (resp->getOpCodeID() == VNSI_STREAM_CONTENTINFO)
   {
-    StreamContentInfo(resp);
-    DemuxPacket* pkt = PVR->AllocateDemuxPacket(sizeof(PVR_STREAM_PROPERTIES));
-    memcpy(pkt->pData, &m_Streams, sizeof(PVR_STREAM_PROPERTIES));
-    pkt->iStreamId  = DMX_SPECIALID_STREAMINFO;
-    pkt->iSize      = sizeof(PVR_STREAM_PROPERTIES);
-    delete resp;
-    return pkt;
+    // send stream updates only if there are changes
+    if(StreamContentInfo(resp))
+    {
+      DemuxPacket* pkt = PVR->AllocateDemuxPacket(sizeof(PVR_STREAM_PROPERTIES));
+      memcpy(pkt->pData, &m_Streams, sizeof(PVR_STREAM_PROPERTIES));
+      pkt->iStreamId  = DMX_SPECIALID_STREAMINFO;
+      pkt->iSize      = sizeof(PVR_STREAM_PROPERTIES);
+      delete resp;
+      return pkt;
+    }
   }
   else if (resp->getOpCodeID() == VNSI_STREAM_MUXPKT)
   {
-    DemuxPacket* p = (DemuxPacket*)resp->getUserData();
-
-    p->iSize      = resp->getUserDataLength();
-    p->duration   = (double)resp->getDuration() * DVD_TIME_BASE / 1000000;
-    p->dts        = (double)resp->getDTS() * DVD_TIME_BASE / 1000000;
-    p->pts        = (double)resp->getPTS() * DVD_TIME_BASE / 1000000;
-    p->iStreamId  = -1;
+    // figure out the stream id for this packet
+    int iStreamId = -1;
     for(unsigned int i = 0; i < m_Streams.iStreamCount; i++)
     {
       if(m_Streams.stream[i].iPhysicalId == (unsigned int)resp->getStreamID())
       {
-            p->iStreamId = i;
+            iStreamId = i;
             break;
       }
     }
-    delete resp;
-    return p;
+
+    // stream found ?
+    if(iStreamId != -1)
+    {
+      DemuxPacket* p = (DemuxPacket*)resp->getUserData();
+      p->iSize      = resp->getUserDataLength();
+      p->duration   = (double)resp->getDuration() * DVD_TIME_BASE / 1000000;
+      p->dts        = (double)resp->getDTS() * DVD_TIME_BASE / 1000000;
+      p->pts        = (double)resp->getPTS() * DVD_TIME_BASE / 1000000;
+      p->iStreamId  = iStreamId;
+      delete resp;
+      return p;
+    }
+    else
+    {
+      XBMC->Log(LOG_DEBUG, "stream id %i not found", resp->getStreamID());
+    }
   }
 
   delete resp;
@@ -413,8 +431,10 @@ void cVNSIDemux::StreamSignalInfo(cResponsePacket *resp)
   delete[] status;
 }
 
-void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
+bool cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
 {
+  PVR_STREAM_PROPERTIES old = m_Streams;
+
   for (unsigned int i = 0; i < m_Streams.iStreamCount && !resp->end(); i++)
   {
     uint32_t index = resp->extract_U32();
@@ -460,6 +480,8 @@ void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
       }
     }
   }
+
+  return (memcmp(&old, &m_Streams, sizeof(m_Streams)) != 0);
 }
 
 void cVNSIDemux::OnReconnect()

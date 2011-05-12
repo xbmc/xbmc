@@ -57,7 +57,7 @@ protected:
   void StreamChange(cResponsePacket *resp);
   void StreamStatus(cResponsePacket *resp);
   void StreamSignalInfo(cResponsePacket *resp);
-  void StreamContentInfo(cResponsePacket *resp);
+  bool StreamContentInfo(cResponsePacket *resp);
 
 private:
   std::string           m_Status;
