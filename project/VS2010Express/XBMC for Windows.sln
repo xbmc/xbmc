@@ -26,8 +26,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXDAAP", "..\..\lib\libXD
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libenca", "..\..\lib\enca\libenca_win32\libenca_win32.vcxproj", "{22B25AEC-7223-46FC-8356-4418327EFDE1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libiconv", "..\..\lib\win32\libiconv\libiconv_win32\libiconv_win32.vcxproj", "{7A74ED4B-2BF5-47D7-B43E-C80F714417FB}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLib_dll", "..\..\lib\cximage-6.0\ImageLib.vcxproj", "{3B424C94-2005-44CC-BFB1-4B6C89090732}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLib_jasper", "..\..\lib\cximage-6.0\jasper\jasper.vcxproj", "{3843C3D4-E5A6-4030-87EC-E7EE57242106}"
@@ -170,14 +168,6 @@ Global
 		{22B25AEC-7223-46FC-8356-4418327EFDE1}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{22B25AEC-7223-46FC-8356-4418327EFDE1}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{22B25AEC-7223-46FC-8356-4418327EFDE1}.Release (OpenGL)|Win32.Build.0 = Release|Win32
-		{7A74ED4B-2BF5-47D7-B43E-C80F714417FB}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
-		{7A74ED4B-2BF5-47D7-B43E-C80F714417FB}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
-		{7A74ED4B-2BF5-47D7-B43E-C80F714417FB}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
-		{7A74ED4B-2BF5-47D7-B43E-C80F714417FB}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
-		{7A74ED4B-2BF5-47D7-B43E-C80F714417FB}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
-		{7A74ED4B-2BF5-47D7-B43E-C80F714417FB}.Release (DirectX)|Win32.Build.0 = Release|Win32
-		{7A74ED4B-2BF5-47D7-B43E-C80F714417FB}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
-		{7A74ED4B-2BF5-47D7-B43E-C80F714417FB}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{3B424C94-2005-44CC-BFB1-4B6C89090732}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{3B424C94-2005-44CC-BFB1-4B6C89090732}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{3B424C94-2005-44CC-BFB1-4B6C89090732}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32

@@ -41,6 +41,10 @@
 #include "ass_utils.h"
 #include "ass_library.h"
 
+#ifdef _WIN32
+#pragma comment(lib, "libiconv.lib")
+#endif
+
 #define ass_atof(STR) (ass_strtod((STR),NULL))
 
 typedef enum {
