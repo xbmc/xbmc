@@ -577,7 +577,11 @@ void CHTSPData::Action()
   while (IsConnected() && Running())
   {
     if((msg = m_session->ReadMessage()) == NULL)
-      break;
+    {
+      if (!IsConnected() && Running())
+        m_session->Connect();
+      continue;
+    }
 
     uint32_t seq;
     if(htsmsg_get_u32(msg, "seq", &seq) == 0)
