@@ -33,7 +33,7 @@ public:
 
   bool Open();
   void Close();
-  bool IsConnected(void) const { return m_session->IsConnected(); }
+  bool IsConnected(void) const { return m_session->IsConnected() || (m_bCreated && m_session->Connect()); }
   void EnableNotifications(bool bSetTo = true) { m_bSendNotifications = bSetTo; }
   bool SendNotifications(void) { return m_bSendNotifications && g_bShowTimerNotifications; }
 

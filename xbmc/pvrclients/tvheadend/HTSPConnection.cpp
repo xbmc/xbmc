@@ -113,6 +113,8 @@ void CHTSPConnection::Close()
     m_challenge     = NULL;
     m_iChallengeLength = 0;
   }
+
+  XBMC->QueueNotification(QUEUE_INFO, "Disconnected from %s", m_strHostname.c_str());
 }
 
 void CHTSPConnection::Abort(void)
