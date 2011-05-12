@@ -257,7 +257,7 @@ unsigned int CAEConvert::S32LE_Float(uint8_t *data, const unsigned int samples, 
     val = vrev64q_s32(val);
     #endif
     float32x4_t ret = vmulq_n_f32(vcvtq_f32_s32(val), factor);
-    vst1q_f32(dest, ret);
+    vst1q_f32((float32_t *)dest, ret);
   }
 
   /* if there are >= 2 remaining samples */
@@ -268,7 +268,7 @@ unsigned int CAEConvert::S32LE_Float(uint8_t *data, const unsigned int samples, 
     val = vrev64_s32(val);
     #endif
     float32x2_t ret = vmul_n_f32(vcvt_f32_s32(val), factor);
-    vst1_f32(dest, ret);
+    vst1_f32((float32_t *)dest, ret);
     src  += 2;
     dest += 2;
   }
@@ -325,7 +325,7 @@ unsigned int CAEConvert::S32BE_Float(uint8_t *data, const unsigned int samples, 
     val = vrev64q_s32(val);
     #endif
     float32x4_t ret = vmulq_n_f32(vcvtq_f32_s32(val), factor);
-    vst1q_f32(dest, ret);
+    vst1q_f32((float32_t *)dest, ret);
   }
 
   /* if there are >= 2 remaining samples */
@@ -336,7 +336,7 @@ unsigned int CAEConvert::S32BE_Float(uint8_t *data, const unsigned int samples, 
     val = vrev64_s32(val);
     #endif
     float32x2_t ret = vmul_n_f32(vcvt_f32_s32(val), factor);
-    vst1_f32(dest, ret);
+    vst1_f32((float32_t *)dest, ret);
     src  += 2;
     dest += 2;
   }
@@ -889,10 +889,9 @@ unsigned int CAEConvert::Float_S32LE(float *data, const unsigned int samples, ui
 
   #elif defined(__ARM_NEON__)
 
-  uint32_t i;
-  for(i = 0; i < (samples / 4) * 4; i += 4, data += 4, dst += 4)
+  for(float *end = data + (samples & ~0x3); data < end; data += 4, dst += 4)
   {
-    float32x4_t val = vmulq_n_f32(vld1q_f32(data), INT32_MAX);
+    float32x4_t val = vmulq_n_f32(vld1q_f32((const float32_t *)data), INT32_MAX);
     int32x4_t   ret = vcvtq_s32_f32(val);
     #ifdef __BIG_ENDIAN__
     ret = vrev64q_s32(ret);
@@ -900,7 +899,19 @@ unsigned int CAEConvert::Float_S32LE(float *data, const unsigned int samples, ui
     vst1q_s32(dst, ret);
   }
 
-  for(; i < samples; ++i, ++data, ++dst)
+  if (samples & 0x2)
+  {
+    float32x2_t val = vmul_n_f32(vld1_f32((const float32_t *)data), INT32_MAX);
+    int32x2_t   ret = vcvt_s32_f32(val);
+    #ifdef __BIG_ENDIAN__
+    ret = vrev64_s32(ret);
+    #endif
+    vst1_s32(dst, ret);
+    data += 2;
+    dst  += 2;
+  }
+
+  if (samples & 0x1)
   {
     dst[0] = safeRound(data[0] * (float)INT32_MAX);
     #ifdef __BIG_ENDIAN__
@@ -996,10 +1007,9 @@ unsigned int CAEConvert::Float_S32BE(float *data, const unsigned int samples, ui
 
   #elif defined(__ARM_NEON__)
 
-  uint32_t i;
-  for(i = 0; i < (samples / 4) * 4; i += 4, data += 4, dst += 4)
+  for(float *end = data + (samples & ~0x3); data < end; data += 4, dst += 4)
   {
-    float32x4_t val = vmulq_n_f32(vld1q_f32(data), INT32_MAX);
+    float32x4_t val = vmulq_n_f32(vld1q_f32((const float32_t *)data), INT32_MAX);
     int32x4_t   ret = vcvtq_s32_f32(val);
     #ifndef __BIG_ENDIAN__
     ret = vrev64q_s32(ret);
@@ -1007,7 +1017,19 @@ unsigned int CAEConvert::Float_S32BE(float *data, const unsigned int samples, ui
     vst1q_s32(dst, ret);
   }
 
-  for(; i < samples; ++i, ++data, ++dst)
+  if (samples & 0x2)
+  {
+    float32x2_t val = vmul_n_f32(vld1_f32((const float32_t *)data), INT32_MAX);
+    int32x2_t   ret = vcvt_s32_f32(val);
+    #ifndef __BIG_ENDIAN__
+    ret = vrev64_s32(ret);
+    #endif
+    vst1_s32(dst, ret);
+    data += 2;
+    dst  += 2;
+  }
+
+  if (samples & 0x1)
   {
     dst[0] = safeRound(data[0] * (float)INT32_MAX);
     #ifndef __BIG_ENDIAN__
