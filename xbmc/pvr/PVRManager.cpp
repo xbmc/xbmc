@@ -145,6 +145,8 @@ void CPVRManager::Stop(void)
 
 bool CPVRManager::StartUpdateThreads(void)
 {
+  if (m_bLoaded)
+    StopUpdateThreads();
   CLog::Log(LOGNOTICE, "PVRManager - starting up");
 
   /* show the busy dialog while loading */
