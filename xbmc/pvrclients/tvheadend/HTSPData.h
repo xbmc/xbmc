@@ -37,12 +37,6 @@ public:
   void EnableNotifications(bool bSetTo = true) { m_bSendNotifications = bSetTo; }
   bool SendNotifications(void) { return m_bSendNotifications && g_bShowTimerNotifications; }
 
-  /*!
-   * @brief Send a message to the backend and read the result.
-   * @param message The message to send.
-   * @return The returned message or NULL if an error occured or nothing was received.
-   */
-  htsmsg_t *   ReadResult(htsmsg_t *message);
   int          GetProtocol(void) const   { return m_session->GetProtocol(); }
   const char * GetServerName(void) const { return m_session->GetServerName(); }
   const char * GetVersion(void) const    { return m_session->GetVersion(); }
