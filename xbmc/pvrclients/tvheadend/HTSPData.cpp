@@ -576,7 +576,7 @@ void CHTSPData::Action()
 
   while (IsConnected() && Running())
   {
-    if((msg = m_session->ReadMessage()) == NULL)
+    if((msg = m_session->ReadMessage(250)) == NULL)
     {
       if (!IsConnected() && Running())
         m_session->Connect();
