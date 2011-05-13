@@ -118,6 +118,7 @@
 					<description>PartyMode</description>
 					<label>589</label>
 					<include>ButtonCommonValues</include>
+					<visible>Container.Content(MusicVideos)</visible>
 				</control>
 				<control type="radiobutton" id="11">
 					<description>Unlock Shares</description>
