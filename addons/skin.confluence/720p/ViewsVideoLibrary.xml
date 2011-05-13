@@ -731,7 +731,7 @@
 			</control>
 			<control type="grouplist">
 				<description>MPAA Rating Flagging Images</description>
-				<posx>80</posx>
+				<posx>95</posx>
 				<posy>360</posy>
 				<width>800</width>
 				<align>right</align>
