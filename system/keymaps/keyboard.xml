@@ -88,8 +88,6 @@
       <numpadeight>Number8</numpadeight>
       <numpadnine>Number9</numpadnine>
       <backslash>ToggleFullScreen</backslash>
-      <!-- On some keyboards backslash is reached via AltGr -->
-      <backslash mod="ctrl,alt">ToggleFullScreen</backslash>
       <home>FirstPage</home>
       <end>LastPage</end>
       <!-- Multimedia keyboard keys -->
