@@ -82,6 +82,7 @@ private:
   float                   m_volume;
   float                   m_replayGain;
   double                  m_resampleRatio;
+  double                  m_streamRatio;
   IAudioCallback         *m_callback;
   std::list<IAEPostProc*> m_postproc;
   AECBFunc               *m_dataCallback;
