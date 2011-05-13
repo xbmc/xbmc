@@ -28,7 +28,6 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 #include "utils/BitstreamStats.h"
-#include "DVDPlayerAudioResampler.h"
 
 #include "cores/AudioEngine/AE.h"
 #include "cores/AudioEngine/AEAudioFormat.h"
@@ -40,6 +39,12 @@
 class CDVDPlayer;
 class CDVDAudioCodec;
 class CDVDAudioCodec;
+
+#define PROPORTIONAL 20.0
+#define PROPREF       0.01
+#define PROPDIVMIN    2.0
+#define PROPDIVMAX   40.0
+#define INTEGRAL    200.0
 
 enum CodecID;
 
@@ -181,8 +186,6 @@ protected:
   bool    m_started;
   double  m_duration; // last packets duration
   bool    m_silence;
-
-  CDVDPlayerResampler m_resampler;
 
   bool OutputPacket(DVDAudioFrame &audioframe);
 

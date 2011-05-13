@@ -24,7 +24,7 @@
 #include <initguid.h>
 #include <Mmreg.h>
 #include <list>
-#include "SingleLock.h"
+#include "threads/SingleLock.h"
 #include "SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "CharsetConverter.h"

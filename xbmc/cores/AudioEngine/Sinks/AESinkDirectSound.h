@@ -24,7 +24,7 @@
 #include <stdint.h>
 #include <dsound.h>
 
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 class CAESinkDirectSound : public IAESink
 {

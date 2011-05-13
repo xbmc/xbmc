@@ -58,7 +58,7 @@ public:
   void SetVolume(float volume);
   void Pause();
   void Resume();
-  bool Create(const DVDAudioFrame &audioframe, CodecID codec);
+  bool Create(const DVDAudioFrame &audioframe, CodecID codec, bool needresampler);
   bool IsValidFormat(const DVDAudioFrame &audioframe);
   void Destroy();
   DWORD AddPackets(const DVDAudioFrame &audioframe);
@@ -70,6 +70,7 @@ public:
   void Drain();
 
   void SetSpeed(int iSpeed);
+  void SetResampleRatio(double ratio);
 
   IAEStream *m_pAudioStream;
 protected:

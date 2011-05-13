@@ -87,7 +87,8 @@ int CDVDAudioCodecPassthrough::GetSampleRate()
 {
   int rate = m_info.GetSampleRate();
 
-  if(m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+  if(m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD ||
+     m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_EAC3)
   {
     if (rate == 48000 || rate == 96000 || rate == 192000)
       return 192000;

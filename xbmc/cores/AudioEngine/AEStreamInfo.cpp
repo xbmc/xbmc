@@ -335,7 +335,6 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
 
       m_fsize        = framesize << 1;
       m_repeat       = MAX_EAC3_BLOCKS / blocks;
-      m_sampleRate <<= 2; /* E-AC-3 uses 4x samplerate */
 
       if (m_dataType == STREAM_TYPE_EAC3 && m_hasSync && skip == 0)
         return 0;
@@ -346,7 +345,7 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       m_dataType = STREAM_TYPE_EAC3;
       m_packFunc = &CAEPackIEC958::PackEAC3;
 
-      CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - E-AC3 stream detected (%dHz)", m_sampleRate >> 2);
+      CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - E-AC3 stream detected (%dHz)", m_sampleRate);
       return skip;
     }
   }

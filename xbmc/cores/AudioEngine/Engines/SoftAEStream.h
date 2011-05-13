@@ -95,6 +95,7 @@ public:
 
 private:
   void InternalFlush();
+  void CheckResampleBuffers();
 
   CCriticalSection  m_critSection;
   enum AEDataFormat m_initDataFormat;

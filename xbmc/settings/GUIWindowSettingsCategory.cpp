@@ -88,6 +88,7 @@
 
 #ifdef _WIN32
 #include "WIN32Util.h"
+#include "utils/SystemInfo.h"
 #endif
 #include <map>
 #include "Settings.h"

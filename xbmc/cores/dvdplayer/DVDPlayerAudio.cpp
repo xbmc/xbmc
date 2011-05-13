@@ -226,7 +226,6 @@ void CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints, CDVDAudioCodec* codec )
   m_synctype = SYNC_DISCON;
   m_setsynctype = g_guiSettings.GetInt("videoplayer.synctype");
   m_prevsynctype = -1;
-  m_resampler.SetQuality(g_guiSettings.GetInt("videoplayer.resamplequality"));
 
   m_error = 0;
   m_errorbuff = 0;
@@ -277,7 +276,6 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 
   // flush any remaining pts values
   m_ptsOutput.Flush();
-  m_resampler.Flush();
 }
 
 // decode one audio frame and returns its uncompressed size
@@ -444,7 +442,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       m_dvdAudio.Flush();
       m_ptsOutput.Flush();
       m_ptsInput.Flush();
-      m_resampler.Flush();
       m_syncclock = true;
       m_stalled   = true;
       m_started   = false;
@@ -490,7 +487,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       else
       {
         m_ptsOutput.Flush();
-        m_resampler.Flush();
         m_syncclock = true;
         if (m_speed != DVD_PLAYSPEED_PAUSE)
           m_dvdAudio.Flush();
@@ -592,7 +588,7 @@ void CDVDPlayerAudio::Process()
       else
         m_dvdAudio.Pause();
 
-      if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec))
+      if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec, m_setsynctype == SYNC_RESAMPLE))
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
     }
 
@@ -712,7 +708,6 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     m_integral = 0;
     m_skipdupcount = 0;
     m_error = 0;
-    m_resampler.Flush();
     m_errortime = CurrentHostCounter();
     return;
   }
@@ -825,19 +820,10 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
 
       proportional = m_error / DVD_TIME_BASE / proportionaldiv;
     }
-    m_resampleratio = 1.0 / g_VideoReferenceClock.GetSpeed() + proportional + m_integral;
-    m_resampler.SetRatio(m_resampleratio);
 
-    //add to the resampler
-    m_resampler.Add(audioframe, audioframe.pts);
-    //give any packets from the resampler to the audiorenderer
-    bool packetadded = false;
-    while(m_resampler.Retrieve(audioframe, audioframe.pts))
-    {
-      m_dvdAudio.AddPackets(audioframe);
-      packetadded = true;
-    }
-    return packetadded;
+    m_resampleratio = 1.0 / g_VideoReferenceClock.GetSpeed() + proportional + m_integral;
+    m_dvdAudio.SetResampleRatio(m_resampleratio);
+    m_dvdAudio.AddPackets(audioframe);
   }
 
   return true;
