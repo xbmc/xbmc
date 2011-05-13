@@ -308,14 +308,25 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
   // Set the modifier bitmap
 
   mod = (uint16_t) XBMCKMOD_NONE;
-  if (keystate[VK_LSHIFT]   & 0x80) mod |= XBMCKMOD_LSHIFT;
-  if (keystate[VK_RSHIFT]   & 0x80) mod |= XBMCKMOD_RSHIFT;
-  if (keystate[VK_LCONTROL] & 0x80) mod |= XBMCKMOD_LCTRL;
-  if (keystate[VK_RCONTROL] & 0x80) mod |= XBMCKMOD_RCTRL;
-  if (keystate[VK_LMENU]    & 0x80) mod |= XBMCKMOD_LALT;
-  if (keystate[VK_RMENU]    & 0x80) mod |= XBMCKMOD_RALT;
-  if (keystate[VK_LWIN]     & 0x80) mod |= XBMCKMOD_LSUPER;
-  if (keystate[VK_RWIN]     & 0x80) mod |= XBMCKMOD_LSUPER;
+
+  // If left control and right alt are down this usually means that
+  // AltGr is down
+  if ((keystate[VK_LCONTROL] & 0x80) && (keystate[VK_RMENU] & 0x80))
+  {
+    mod |= XBMCKMOD_MODE;
+  }
+  else
+  {
+    if (keystate[VK_LSHIFT]   & 0x80) mod |= XBMCKMOD_LSHIFT;
+    if (keystate[VK_RSHIFT]   & 0x80) mod |= XBMCKMOD_RSHIFT;
+    if (keystate[VK_LCONTROL] & 0x80) mod |= XBMCKMOD_LCTRL;
+    if (keystate[VK_RCONTROL] & 0x80) mod |= XBMCKMOD_RCTRL;
+    if (keystate[VK_LMENU]    & 0x80) mod |= XBMCKMOD_LALT;
+    if (keystate[VK_RMENU]    & 0x80) mod |= XBMCKMOD_RALT;
+    if (keystate[VK_LWIN]     & 0x80) mod |= XBMCKMOD_LSUPER;
+    if (keystate[VK_RWIN]     & 0x80) mod |= XBMCKMOD_LSUPER;
+  }
+
   keysym->mod = (XBMCMod) mod;
 
 /* Ignore these modifiers for now; we may handle these in the future.
