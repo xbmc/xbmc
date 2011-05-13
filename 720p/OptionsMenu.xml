@@ -1,982 +1,562 @@
+<?xml version="1.0"?>
 <includes>
-  <include name="OptionsMenuFade">
-    <animation effect="fade" time="400" start="0" end="100">Visible</animation>
-    <animation effect="fade" time="200" start="100" end="0">Hidden</animation>
-  </include>
-
-  <include name="OptionsMenu">
-    <control type="group">
-      <visible>!Control.IsVisible(9009)</visible>
-      <include>OptionsMenuFade</include>
-
-      <control type="image" id="9007">
-        <description>Options menu (Press Up)</description>
-        <posx>1210</posx>
-        <posy>9</posy>
-        <width>64</width>
-        <height>34</height>
-        <texture>OMIndicUp.png</texture>
-        <visible>!Control.IsVisible(9008)</visible>
-        <include>OptionsMenuFade</include>
-      </control>
-
-      <control type="image" id="9008">
-        <description>Options menu (Press Right)</description>
-        <posx>1210</posx>
-        <posy>9</posy>
-        <width>64</width>
-        <height>34</height>
-        <texture>OMIndicRight.png</texture>
-        <visible>Control.IsVisible(50) | Control.IsVisible(52) | Control.IsVisible(53) | Control.IsVisible(56) | Control.IsVisible(53) | [[Control.IsVisible(54) | Control.IsVisible(57)] + Window.IsActive(24)] | [[Control.IsVisible(51) | Control.IsVisible(57)] + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary)]] | [Control.IsVisible(51) + Window.IsVisible(MyPictures)]</visible>
-        <include>OptionsMenuFade</include>
-      </control>
-    </control>
-
-    <include>OptionsMenuUI</include>
-  </include>
-
-  <include name="OptionsMenuVisible">
-    <visible allowhiddenfocus="true">ControlGroup(9009).HasFocus()</visible>
-  </include>
-
-  <include name="OMTitleItem">
-    <width>OMTextWidth</width>
-    <height>24</height>
-    <font>MediumTitleCapsFont</font>
-  </include>
-
-  <include name="OMViewThumb">
-    <include>OMViewThumbDims</include>
-    <aspectratio>keep</aspectratio>
-    <bordertexture>Grey.png</bordertexture>
-    <bordersize>1</bordersize>
-    <visible>!Skin.HasSetting(HideOptionMenuThumbs)</visible>
-  </include>
-
-  <include name="OMNoViewThumbSlide">
-    <animation effect="slide" time="0" start="0,0" end="0,-130" condition="Skin.HasSetting(HideOptionMenuThumbs)">Conditional</animation>
-  </include>
-
-  <include name="OMViewLabelItem">
-    <posy>132</posy>
-    <width>OMTextWidth</width>
-    <height>30</height>
-    <font>DefaultCapsFont</font>
-    <align>center</align>
-    <textcolor>Selected</textcolor>
-  </include>
-
-  <include name="OMButtonItem">
-    <width>OMTextWidth</width>
-    <font>DefaultCapsFont</font>
-    <textoffsetx>10</textoffsetx>
-    <textoffsety>2</textoffsety>
-    <include>DialogTextControl</include>
-  </include>
-
-  <include name="OMViewLargeThumb">
-    <include>OMViewLargeThumbDims</include>
-    <aspectratio aligny="bottom">keep</aspectratio>
-    <bordertexture border="14">ThumbShadow2.png</bordertexture>
-    <bordersize>10</bordersize>
-  </include>
-
-  <include name="OptionsMenuUI">
-    <control type="group">
-      <include>OptionsMenuUIDims</include>
-      <visible>!Skin.HasSetting(HideOptionMenuThumbs) + ControlGroup(9009).HasFocus() + [Control.HasFocus(911) | Control.HasFocus(912) | Control.HasFocus(915) | Control.HasFocus(916) | Control.HasFocus(925) | Control.HasFocus(926) | Control.HasFocus(927) | Control.HasFocus(951) | Control.HasFocus(952)| Control.HasFocus(953)| Control.HasFocus(955) | Control.HasFocus(956) | Control.HasFocus(957) | Control.HasFocus(958) | Control.HasFocus(959) | Control.HasFocus(960)]</visible>
-
-      <control type="group">
-        <posy>12</posy>
-        <posx>16</posx>
-
-        <control type="image">
-          <description>List Thumb</description>
-          <include>OMViewLargeThumb</include>
-          <texture>ViewThumbList.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(911)</visible>
-          <include>VideoOSDSlideLeft</include>
-        </control>
-
-        <control type="image">
-          <description>Info List Thumb</description>
-          <include>OMViewLargeThumb</include>
-          <texture>ViewThumbInfoList.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(912)</visible>
-          <include>VideoOSDSlideLeft</include>
-        </control>
-
-        <control type="image">
-          <description>Media Preview Thumb</description>
-          <include>OMViewLargeThumb</include>
-          <texture>ViewThumbMediaPreview.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(915)</visible>
-          <include>VideoOSDSlideLeft</include>
-        </control>
-<!--
-        <control type="image">
-          <description>Showcase Thumb</description>
-          <include>OMViewLargeThumb</include>
-          <texture>ViewThumbShowcase.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(916)</visible>
-          <include>VideoOSDSlideLeft</include>
-        </control>
--->
-        <control type="image">
-          <description>TV Wide Thumb</description>
-          <include>OMViewLargeThumb</include>
-          <texture>ViewThumbTVWide.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(925)</visible>
-          <include>VideoOSDSlideLeft</include>
-        </control>
-
-        <control type="image">
-          <description>TV Seasons Thumb</description>
-          <include>OMViewLargeThumb</include>
-          <texture>ViewThumbSeasons.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(926)</visible>
-          <include>VideoOSDSlideLeft</include>
-        </control>
-
-        <control type="image">
-          <description>TV Episodes Thumb</description>
-          <include>OMViewLargeThumb</include>
-          <texture>ViewThumbEpisodes.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(927)</visible>
-          <include>VideoOSDSlideLeft</include>
-        </control>
-
-        <control type="image">
-          <description>Albums Thumb</description>
-          <include>OMViewLargeThumb</include>
-          <texture>ViewThumbAlbums.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(951)</visible>
-          <include>VideoOSDSlideLeft</include>
-        </control>
-
-        <control type="image">
-          <description>Songs Thumb</description>
-          <include>OMViewLargeThumb</include>
-          <texture>ViewThumbSongs.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(952)</visible>
-          <include>VideoOSDSlideLeft</include>
-        </control>
-
-        <control type="image">
-          <description>Coverflow Thumb</description>
-          <include>OMViewLargeThumb</include>
-          <texture>ViewThumbCoverflow.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(953)</visible>
-          <include>VideoOSDSlideLeft</include>
-        </control>
-
-        <control type="image">
-          <description>Pictures Thumb</description>
-          <include>OMViewLargeThumb</include>
-          <texture>ViewThumbPictures.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(955)</visible>
-          <include>VideoOSDSlideLeft</include>
-        </control>
-
-        <control type="image">
-          <description>Image Stream Thumb</description>
-          <include>OMViewLargeThumb</include>
-          <texture>ViewThumbImageStream.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(956)</visible>
-          <include>VideoOSDSlideLeft</include>
-        </control>
-
-        <control type="image">
-          <description>Panel Stream Thumb</description>
-          <include>OMViewLargeThumb</include>
-          <texture>ViewThumbPanelStream.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + [Control.HasFocus(957) | Control.HasFocus(958) | Control.HasFocus(960)]</visible>
-          <include>VideoOSDSlideLeft</include>
-        </control>
-
-        <control type="image">
-          <description>Wall Stream Thumb</description>
-          <include>OMViewLargeThumb</include>
-          <texture>ViewThumbWallStream.png</texture>
-          <visible>ControlGroup(9009).HasFocus() + Control.HasFocus(959)</visible>
-          <include>VideoOSDSlideLeft</include>
-        </control>
-      </control>
-    </control>
-
-    <control type="group" id="9009">
-      <include>OptionsMenuPos</include>
-      <include>OptionsMenuVisible</include>
-      <include>VideoOSDSlideLeft</include>
-
-      <control type="image">
-        <description>Background Image</description>
-        <posx>-24</posx>
-        <posy>0</posy>
-        <include>OptionsMenuBGDims</include>
-        <texture>Black.png</texture>
-        <colordiffuse>99666666</colordiffuse>
-      </control>
-      <control type="image">
-        <description>Background Image</description>
-        <posx>-38</posx>
-        <posy>0</posy>
-        <include>OptionsMenuBGDims</include>
-        <texture flipx="true" border="22,0,0,0">VisOsdPanel.png</texture>
-      </control>
-
-      <control type="label" id="900">
-        <description>View Options</description>
-        <posy>10</posy>
-        <label>$LOCALIZE[14018]</label>
-        <include>OMTitleItem</include>
-      </control>
-
-
-<!-- Current View Details -->
-      <control type="group" id="9010">
-        <posy>36</posy>
-        <width>OMTextWidth</width>
-        <include>OMNoViewThumbSlide</include>
-
-        <control type="image" id="9100">
-          <description>List Thumb</description>
-          <texture>ViewThumbList.png</texture>
-          <visible>Control.IsVisible(50)</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9100">
-          <description>List view selected</description>
-          <label>$LOCALIZE[535]</label>
-          <visible>Control.IsVisible(50)</visible>
-          <include>OMViewLabelItem</include>
-        </control>
-
-        <control type="image" id="9101">
-          <description>Media Preview Thumb</description>
-          <texture>ViewThumbMediaPreview.png</texture>
-          <visible>Control.IsVisible(51) + Window.IsActive(24)</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9101">
-          <description>Media Preview selected</description>
-          <label>$LOCALIZE[31707]</label>
-          <visible>Control.IsVisible(51) + Window.IsActive(24)</visible>
-          <include>OMViewLabelItem</include>
-        </control>
-<!--
-        <control type="image" id="9102">
-          <description>Showcase Thumb</description>
-          <texture>ViewThumbShowcase.png</texture>
-          <visible>Control.IsVisible(58) + Window.IsActive(24)</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9102">
-          <description>Showcase view button</description>
-          <label>$LOCALIZE[31702]</label>
-          <visible>Control.IsVisible(58) + Window.IsActive(24)</visible>
-          <include>OMViewLabelItem</include>
-        </control>
--->
-        <control type="image" id="9103">
-          <description>TV Wide Thumb</description>
-          <texture>ViewThumbTVWide.png</texture>
-          <visible>Control.IsVisible(57) + Window.IsActive(24) + Container.Content(tvshows)</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9103">
-          <description>TV Wide view button</description>
-          <label>$LOCALIZE[539]</label>
-          <visible>Control.IsVisible(57) + Window.IsActive(24) + Container.Content(tvshows)</visible>
-          <include>OMViewLabelItem</include>
-        </control>
-
-        <control type="image" id="9104">
-          <description>TV Seasons Thumb</description>
-          <texture>ViewThumbSeasons.png</texture>
-          <visible>Control.IsVisible(57) + Window.IsActive(24) + Container.Content(seasons)</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9104">
-          <description>TV Seasons view button</description>
-          <label>$LOCALIZE[31703]</label>
-          <visible>Control.IsVisible(57) + Window.IsActive(24) + Container.Content(seasons)</visible>
-          <include>OMViewLabelItem</include>
-        </control>
-
-        <control type="image" id="9105">
-          <description>TV Episodes Thumb</description>
-          <texture>ViewThumbEpisodes.png</texture>
-          <visible>Control.IsVisible(56) + Container.Content(episodes)</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9105">
-          <description>Episodes view button</description>
-          <label>$LOCALIZE[31721]</label>
-          <visible>Control.IsVisible(56) + Container.Content(episodes)</visible>
-          <include>OMViewLabelItem</include>
-        </control>
-
-        <control type="image" id="9106">
-          <description>Albums Thumb</description>
-          <texture>ViewThumbAlbums.png</texture>
-          <visible>Control.IsVisible(51) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary)]</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9106">
-          <description>Albums view button</description>
-          <visible>Control.IsVisible(51) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary)]</visible>
-          <label>$LOCALIZE[132]</label>
-          <include>OMViewLabelItem</include>
-        </control>
-
-        <control type="image" id="9107">
-          <description>Songs Thumb</description>
-          <texture>ViewThumbSongs.png</texture>
-          <visible>Control.IsVisible(57) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9107">
-          <description>Songs view button</description>
-          <label>$LOCALIZE[134]</label>
-          <visible>Control.IsVisible(57) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
-          <include>OMViewLabelItem</include>
-        </control>
-
-        <control type="image" id="9108">
-          <description>Pictures Thumb</description>
-          <texture>ViewThumbPictures.png</texture>
-          <visible>Control.IsVisible(51) + [Window.IsVisible(MyPictures)]</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9108">
-          <description>Pictures view button</description>
-          <visible>Control.IsVisible(51) + [Window.IsVisible(MyPictures)]</visible>
-          <label>$LOCALIZE[1]</label>
-          <include>OMViewLabelItem</include>
-        </control>
-
-        <control type="image" id="9109">
-          <description>Info List Thumb</description>
-          <texture>ViewThumbInfoList.png</texture>
-          <visible>Control.IsVisible(56) + !Container.Content(episodes)</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9109">
-          <description>Info List view selected</description>
-          <label>$LOCALIZE[31711]</label>
-          <visible>Control.IsVisible(56) + !Container.Content(episodes)</visible>
-          <include>OMViewLabelItem</include>
-        </control>
-        <control type="image" id="9110">
-          <description>Image Stream Thumb</description>
-          <texture>ViewThumbImageStream.png</texture>
-          <visible>Control.IsVisible(57) + [Window.IsVisible(MyPictures)]</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9110">
-          <description>Image Stream view button</description>
-          <visible>Control.IsVisible(57) + [Window.IsVisible(MyPictures)]</visible>
-          <label>$LOCALIZE[31712]</label>
-          <include>OMViewLabelItem</include>
-        </control>
-
-        <control type="image" id="9112">
-          <description>Panel Stream Thumb</description>
-          <texture>ViewThumbPanelStream.png</texture>
-          <visible>Control.IsVisible(52)</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9112">
-          <description>Panel Stream view button</description>
-          <visible>Control.IsVisible(52)</visible>
-          <label>$LOCALIZE[31715]</label>
-          <include>OMViewLabelItem</include>
-        </control>
-
-        <control type="image" id="9113">
-          <description>Coverflow Thumb</description>
-          <texture>ViewThumbCoverflow.png</texture>
-          <visible>Control.IsVisible(55)</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9113">
-          <description>Coverflow view button</description>
-          <label>$LOCALIZE[31716]</label>
-          <visible>Control.IsVisible(55)</visible>
-          <include>OMViewLabelItem</include>
-        </control>
-
-        <control type="image" id="9114">
-          <description>Wall Stream Thumb</description>
-          <texture>ViewThumbWallStream.png</texture>
-          <visible>Control.IsVisible(53)</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9114">
-          <description>Wall Stream view button</description>
-          <label>$LOCALIZE[31714]</label>
-          <visible>Control.IsVisible(53)</visible>
-          <include>OMViewLabelItem</include>
-        </control>
-
-        <control type="image" id="9115">
-          <description>Plugin Stream Thumb</description>
-          <texture>ViewThumbWallStream.png</texture>
-          <visible>Control.IsVisible(59)</visible>
-          <include>OMViewThumb</include>
-        </control>
-        <control type="label" id="9115">
-          <description>Plugin Stream view button</description>
-          <label>$LOCALIZE[31722]</label>
-          <visible>Control.IsVisible(59) + !Container.Content(Songs) + !Container.Content(Albums) + !Container.Content(Artists)</visible>
-          <include>OMViewLabelItem</include>
-        </control>
-        <control type="label" id="9115">
-          <description>Plugin Stream view button</description>
-          <label>$LOCALIZE[31715]</label>
-          <visible>Control.IsVisible(59) + [Container.Content(Songs) | Container.Content(Albums) | Container.Content(Artists)]</visible>
-          <include>OMViewLabelItem</include>
-        </control>
-      </control>
-
-      <control type="grouplist" id="9011">
-        <posy>190</posy>
-        <width>OMTextWidth</width>
-        <height>522</height>
-        <orientation>vertical</orientation>
-        <itemgap>2</itemgap>
-        <onleft>50</onleft>
-        <include>OMNoViewThumbSlide</include>
-
-<!-- Possible View Options -->
-        <control type="button" id="911">
-          <description>List view button</description>
-          <visible>!Control.IsVisible(50) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(Movies) + !Container.Content(Artists) + !Container.Content(Albums) + !Container.Content(Songs)  + !Window.IsVisible(MyPictures) + !Container.Content(Secondary)</visible>
-          <label>$LOCALIZE[535]</label>
-          <onclick>Container.SetViewMode(50)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="912">
-          <description>Info List view button</description>
-          <visible>[!Control.IsVisible(56) + !Container.Content(Plugins)] | [Control.IsVisible(56) + Container.Content(Secondary)]</visible>
-          <label>$LOCALIZE[31711]</label>
-          <onclick>Container.SetViewMode(56)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="915">
-          <description>Media Preview button</description>
-          <visible>!Control.IsVisible(51) + !Container.Content(Seasons) + !Container.Content(Albums)  + !Container.Content(Artists) + !Container.Content(Songs) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
-          <label>$LOCALIZE[31707]</label>
-          <onclick>Container.SetViewMode(51)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-<!--
-        <control type="button" id="916">
-          <description>Showcase view button</description>
-          <visible>!Control.IsVisible(58) + !Container.Content(movies) + !Container.Content(Episodes)  + !Container.Content(Albums) + !Container.Content(Artists) + !Container.Content(Songs) + [!Window.IsVisible(MyPictures)]</visible>
-          <label>$LOCALIZE[31702]</label>
-          <onclick>Container.SetViewMode(58)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
--->
-        <control type="button" id="925">
-          <description>TV Wide view button</description>
-          <visible>!Control.IsVisible(57) + [Container.Content(tvshows) + !Container.Content(Plugins)]</visible>
-          <label>$LOCALIZE[539]</label>
-          <onclick>Container.SetViewMode(57)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="926">
-          <description>TV Seasons view button</description>
-          <visible>!Control.IsVisible(57) + [Container.Content(seasons) + !Container.Content(Plugins)]</visible>
-          <label>$LOCALIZE[31703]</label>
-          <onclick>Container.SetViewMode(57)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="927">
-          <description>Episodes view button</description>
-          <visible>!Control.IsVisible(56) + [Container.Content(episodes) + !Container.Content(Plugins)]</visible>
-          <label>$LOCALIZE[31721]</label>
-          <onclick>Container.SetViewMode(56)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="950">
-          <description>Photo view button</description>
-          <visible>!Control.IsVisible(51) + Control.IsVisible(9814)</visible>
-          <label>$LOCALIZE[31704]</label>
-          <onclick>Container.SetViewMode(51)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-		<!--
-        <control type="button" id="951">
-          <description>Albums view button</description>
-          <visible>!Control.IsVisible(51) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary)] + !Container.Content(Songs)</visible>
-          <label>$LOCALIZE[132]</label>
-          <onclick>Container.SetViewMode(51)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="952">
-          <description>Songs view button</description>
-          <visible>!Control.IsVisible(57) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)] + !Container.Content(Albums)</visible>
-          <label>$LOCALIZE[134]</label>
-          <onclick>Container.SetViewMode(57)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-		-->
-
-        <control type="button" id="953">
-          <description>Coverflow view button</description>
-          <visible>!Control.IsVisible(55) + !Container.Content(Episodes) + !Container.Content(Songs) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
-          <label>$LOCALIZE[31716]</label>
-          <onclick>Container.SetViewMode(55)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="955">
-          <description>Pictures view button</description>
-          <visible>!Control.IsVisible(51) + [Window.IsVisible(MyPictures)] + !Container.Content(Secondary)</visible>
-          <label>$LOCALIZE[1]</label>
-          <onclick>Container.SetViewMode(51)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="956">
-          <description>Image Stream view button</description>
-          <visible>!Control.IsVisible(57) + [Window.IsVisible(MyPictures)] + !Container.Content(Secondary)</visible>
-          <label>$LOCALIZE[31712]</label>
-          <onclick>Container.SetViewMode(57)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="957">
-          <description>Panel Stream view button</description>
-          <visible>!Control.IsVisible(52) + !Container.Content(Songs) + !Container.Content(Albums) + !Container.Content(Artists) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
-          <label>$LOCALIZE[31715]</label>
-          <onclick>Container.SetViewMode(52)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
- 
-        <control type="button" id="958">
-          <description>Panel Stream view button</description>
-          <visible>!Control.IsVisible(59) + [Container.Content(Songs) | Container.Content(Albums) | Container.Content(Artists)]</visible>
-          <label>$LOCALIZE[31715]</label>
-          <onclick>Container.SetViewMode(59)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="959">
-          <description>Wall Stream view button</description>
-          <visible>!Control.IsVisible(53) + !Container.Content(Seasons) + !Container.Content(Songs) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
-          <label>$LOCALIZE[31714]</label>
-          <onclick>Container.SetViewMode(53)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-		<control type="button" id="960">
-          <description>Plugin Stream view button</description>
-          <visible>!Control.IsVisible(59) + Container.Content(Plugins)</visible>
-          <label>$LOCALIZE[31722]</label>
-          <onclick>Container.SetViewMode(59)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-        
-
-<!-- Setup Options -->
-        <control type="label" id="1000">
-          <description>Setup Options</description>
-          <label>$LOCALIZE[31713]</label>
-          <include>OMTitleItem</include>
-          <visible>Window.IsVisible(MyVideoPlaylist) | Window.IsVisible(MyMusicPlaylist) | Window.IsVisible(MyPictures)</visible>
-        </control>
-
-<!--
-        <control type="button" id="2000">
-          <description>Library button</description>
-          <visible>False</visible>
-          <label>14022</label>
-          <onclick>ReplaceWindow(MyVideoLibrary)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
--->
-
-<!--
-        <control type="button" id="2001">
-          <description>Library button</description>
-          <visible>Window.IsVisible(MyMusicFiles)</visible>
-          <label>14022</label>
-          <onclick>ReplaceWindow(MyMusicLibrary)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
--->
-
-<!--
-        <control type="button" id="2002">
-          <description>Files button</description>
-          <visible>Window.IsActive(24)</visible>
-          <label>744</label>
-          <onclick>ReplaceWindow(MyVideoFiles)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
--->
-<!--
-        <control type="button" id="2003">
-          <description>Files button</description>
-          <visible>Window.IsVisible(MyMusicLibrary)</visible>
-          <label>744</label>
-          <onclick>ReplaceWindow(MyMusicFiles)</onclick>
-          <onclick>SetFocus(50)</onclick>
-          <include>OMButtonItem</include>
-        </control>
--->
-<!--
-        <control type="button" id="6">
-          <description>Slideshow button</description>
-          <visible>Window.IsVisible(MyPictures)</visible>
-          <label>108</label>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="7">
-          <description>Recursive Slideshow button</description>
-          <visible>Window.IsVisible(MyPictures)</visible>
-          <label>13318</label>
-          <include>OMButtonItem</include>
-        </control>
--->
-
-<!--
-        <control type="button" id="8">
-          <description>Search button</description>
-          <visible>Window.IsActive(24) | Window.IsVisible(MyMusicLibrary)</visible>
-          <label>137</label>
-          <include>OMButtonItem</include>
-        </control>
--->
-        
-        <!--
-        <control type="button" id="9">
-          <description>IMDb button</description>
-          <visible>False | Window.IsActive(24)</visible>
-          <label>368</label>
-          <include>OMButtonItem</include>
-        </control>
-        -->
-
-        <control type="button" id="26">
-          <description>Repeat button</description>
-          <visible>Window.IsVisible(MyVideoPlaylist) | Window.IsVisible(MyMusicPlaylist)</visible>
-          <label>486</label>
-          <onclick>PlayerControls(Repeat)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="21">
-          <description>Save button</description>
-          <visible>Window.IsVisible(MyVideoPlaylist) | Window.IsVisible(MyMusicPlaylist)</visible>
-          <label>190</label>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="22">
-          <description>Clear button</description>
-          <visible>Window.IsVisible(MyVideoPlaylist) | Window.IsVisible(MyMusicPlaylist) | Window.IsVisible(MyScripts)</visible>
-          <label>192</label>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="radiobutton" id="10">
-          <description>Randomize button</description>
-          <visible>Window.IsVisible(MyPictures)</visible>
-          <label>13319</label>
-          <include>OMButtonItem</include>
-        </control>
-
-<!--
-        <control type="radiobutton" id="14">
-          <description>Watched Toggle</description>
-          <visible>Window.IsActive(24)</visible>
-          <label>20367</label>
-          <include>OMButtonItem</include>
-        </control>
--->
-<!--
-        <control type="radiobutton" id="16">
-          <description>PartyMode</description>
-          <visible>Window.IsActive(24) | Window.IsVisible(MyMusicLibrary)</visible>
-          <label>589</label>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="radiobutton" id="17">
-          <description>Flatten</description>
-          <visible>Window.IsActive(24)</visible>
-          <label>20411</label>
-          <include>OMButtonItem</include>
-        </control>
--->
-<!--
-        <control type="radiobutton" id="19">
-          <description>Filter</description>
-          <visible>Window.IsActive(24) | Window.IsVisible(MyMusicLibrary)</visible>
-          <label>587</label>
-          <include>OMButtonItem</include>
-        </control>
--->
-        <control type="radiobutton" id="20">
-          <description>Shuffle Toggle</description>
-          <visible>Window.IsVisible(MyVideoPlaylist) | Window.IsVisible(MyMusicPlaylist)</visible>
-          <label>191</label>
-          <onclick>PlayerControls(Random)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-<!-- View specific Setup Options -->
-<!--
-        <control type="radiobutton" id="3500">
-          <description>Show Fanart on TV Show List</description>
-  				<label>$LOCALIZE[31670]</label>
-          <onclick>Skin.ToggleSetting(ShowFanartOnTVList)</onclick>
-          <selected>Skin.HasSetting(ShowFanartOnTVList)</selected>
-          <visible>Control.IsVisible(57) + [Window.IsActive(24) + Container.Content(tvshows)]</visible>
-          <include>OMButtonItem</include>
-        </control>
--->
-        <control type="radiobutton" id="3501">
-          <description>Display Rotated Season Thumb</description>
-          <label>$LOCALIZE[31678]</label>
-          <onclick>Skin.ToggleSetting(ShowSeasonThumbInEps)</onclick>
-          <selected>Skin.HasSetting(ShowSeasonThumbInEps)</selected>
-          <visible>Control.IsVisible(54) + [Window.IsActive(24)]</visible>
-          <include>OMButtonItem</include>
-        </control>
-
-<!--
-        <control type="radiobutton" id="3502">
-          <description>Hide Info in Media Preview view</description>
-          <label>$LOCALIZE[31672]</label>
-          <onclick>Skin.ToggleSetting(HideInfoInMediaPreview)</onclick>
-          <onclick>Skin.Reset(ShowAnimMediaPreview)</onclick>
-          <selected>Skin.HasSetting(HideInfoInMediaPreview)</selected>
-          <visible>Control.IsVisible(51) + [Window.IsActive(24)]</visible>
-          <include>OMButtonItem</include>
-        </control>
--->
-<!--
-        <control type="radiobutton" id="3503">
-          <description>Hide Fanart with Movies Views</description>
-          <label>$LOCALIZE[31674]</label>
-          <onclick>Skin.ToggleSetting(HideFanartForMovies)</onclick>
-          <selected>Skin.HasSetting(HideFanartForMovies)</selected>
-          <visible>Container.Content(movies)</visible>
-          <include>OMButtonItem</include>
-        </control>
--->
-
-<!-- Sort Options -->
-<!--
-        <control type="label" id="969">
-          <description>Sort By</description>
-          <label>$LOCALIZE[31023]</label>
-          <include>OMTitleItem</include>
-        </control>
-
-        <control type="button" id="970">
-          <description>Sort by Name button</description>
-          <visible>!Container.Content(albums)</visible>
-          <label>551</label>
-          <onclick>Container.SetSortMethod(1)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="972">
-          <description>Sort by Rating button</description>
-          <visible>Container.Content(movies) | Container.Content(episodes) | Container.Content(songs)</visible>
-          <label>563</label>
-          <onclick>Container.SetSortMethod(17)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="973">
-          <description>Sort by Year button</description>
-          <visible>Container.Content(movies) | Container.Content(tvshows)</visible>
-          <label>345</label>
-          <onclick>Container.SetSortMethod(16)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="974">
-          <description>Sort by Episodes button</description>
-          <visible>Container.Content(tvshows)</visible>
-          <label>20360</label>
-          <onclick>Container.SetSortMethod(7)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="975">
-          <description>Sort by Episode button</description>
-          <visible>Container.Content(episodes)</visible>
-          <label>20359</label>
-          <onclick>Container.SetSortMethod(20)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="976">
-          <description>Sort by Prod Code button</description>
-          <visible>Container.Content(episode)</visible>
-          <label>20368</label>
-          <onclick>Container.SetSortMethod(22)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="977">
-          <description>Sort by Date button</description>
-          <visible>Container.Content(episode) | Container.Content(scripts) | Window.IsVisible(MyPictures) | Window.IsVisible(MyPrograms) | Container.Content(files)</visible>
-          <label>552</label>
-          <onclick>Container.SetSortMethod(3)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="978">
-          <description>Sort by Album button</description>
-          <visible>Container.Content(albums) | Container.Content(songs)</visible>
-          <label>558</label>
-          <onclick>Container.SetSortMethod(13)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="979">
-          <description>Sort by Artist button</description>
-          <visible>Container.Content(albums) | Container.Content(songs)</visible>
-          <label>557</label>
-          <onclick>Container.SetSortMethod(11)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="980">
-          <description>Sort by Time button</description>
-          <visible>Container.Content(songs)</visible>
-          <label>555</label>
-          <onclick>Container.SetSortMethod(8)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="981">
-          <description>Sort by Track button</description>
-          <visible>Container.Content(songs)</visible>
-          <label>554</label>
-          <onclick>Container.SetSortMethod(7)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="982">
-          <description>Sort by Title button</description>
-          <visible>Container.Content(songs)</visible>
-          <label>556</label>
-          <onclick>Container.SetSortMethod(9)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="983">
-          <description>Sort by Size button</description>
-          <visible>Container.Content(scripts) | Window.IsVisible(MyPictures) | Window.IsVisible(MyPrograms) | Container.Content(files)</visible>
-          <label>553</label>
-          <onclick>Container.SetSortMethod(4)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="984">
-          <description>Sort by File button</description>
-          <visible>Container.Content(scripts) | Window.IsVisible(MyPictures) | Window.IsVisible(MyPrograms) | Container.Content(files)</visible>
-          <label>561</label>
-          <onclick>Container.SetSortMethod(5)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="button" id="985">
-          <description>Sort by Usage button</description>
-          <visible>Window.IsVisible(MyPrograms)</visible>
-          <label>565</label>
-          <onclick>Container.SetSortMethod(18)</onclick>
-          <include>OMButtonItem</include>
-        </control>
-
-        <control type="label" id="990">
-          <description>Sort Direction</description>
-          <label>$LOCALIZE[31024]</label>
-          <visible>!Container.SortDirection(None)</visible>
-          <include>OMTitleItem</include>
-        </control>
-
-        <control type="togglebutton" id="994">
-          <description>Sort Direction</description>
-          <width>20</width>
-          <height>24</height>
-          <label>584</label>
-          <altlabel>585</altlabel>
-          <font>DefaultCapsFont</font>
-          <align>left</align>
-          <textoffsetx>24</textoffsetx>
-          <textoffsety>0</textoffsety>
-          <onclick>Container.SortDirection()</onclick>
-          <visible>!Container.SortDirection(None)</visible>
-          <include>DialogTextColors</include>
-        </control>
-		-->
-        <control type="label" id="995">
-          <description>Developer Items</description>
-          <label>Developer</label>
-          <visible>Skin.HasSetting(Developer)</visible>
-          <include>OMTitleItem</include>
-        </control>
-
-
-		<control type="button" id="996">
-			<description>Developer Refresh Button</description>
-         	<visible>Skin.HasSetting(Developer)</visible>
-          	<label>Refresh</label>
-          	<onclick>XBMC.ReloadSkin()</onclick>
-          	<include>OMButtonItem</include>
+	<include name="OptionsMenuFade">
+		<animation effect="fade" time="400" start="0" end="100">Visible</animation>
+		<animation effect="fade" time="200" start="100" end="0">Hidden</animation>
+	</include>
+	<include name="OptionsMenu">
+		<control type="group">
+			<visible>!Control.IsVisible(9009)</visible>
+			<include>OptionsMenuFade</include>
+			<control type="image" id="9007">
+				<description>Options menu (Press Up)</description>
+				<posx>1210</posx>
+				<posy>9</posy>
+				<width>64</width>
+				<height>34</height>
+				<texture>OMIndicUp.png</texture>
+				<visible>!Control.IsVisible(9008)</visible>
+				<include>OptionsMenuFade</include>
+			</control>
+			<control type="image" id="9008">
+				<description>Options menu (Press Right)</description>
+				<posx>1210</posx>
+				<posy>9</posy>
+				<width>64</width>
+				<height>34</height>
+				<texture>OMIndicRight.png</texture>
+				<visible>Control.IsVisible(50) | Control.IsVisible(52) | Control.IsVisible(53) | Control.IsVisible(56) | Control.IsVisible(53) | [[Control.IsVisible(54) | Control.IsVisible(57)] + Window.IsActive(24)] | [[Control.IsVisible(51) | Control.IsVisible(57)] + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary)]] | [Control.IsVisible(51) + Window.IsVisible(MyPictures)]</visible>
+				<include>OptionsMenuFade</include>
+			</control>
 		</control>
-		<control type="radiobutton" id="997">
-          	<description>Dev Background</description>
-			<visible>Skin.HasSetting(Developer)</visible>
-          	<label>Dev Background</label>
-			<onclick>Skin.ToggleSetting(Developer_Background_Visible)</onclick>
-			<selected>Skin.HasSetting(Developer_Background_Visible)</selected>
-          	<include>OMButtonItem</include>
-        </control>
-		
-		
-      </control>
-
-    </control>
-  </include>
-
+		<include>OptionsMenuUI</include>
+	</include>
+	<include name="OptionsMenuVisible">
+		<visible allowhiddenfocus="true">ControlGroup(9009).HasFocus()</visible>
+	</include>
+	<include name="OMTitleItem">
+		<width>OMTextWidth</width>
+		<height>24</height>
+		<font>MediumTitleCapsFont</font>
+	</include>
+	<include name="OMViewThumb">
+		<include>OMViewThumbDims</include>
+		<aspectratio>keep</aspectratio>
+		<bordertexture>Grey.png</bordertexture>
+		<bordersize>1</bordersize>
+		<visible>!Skin.HasSetting(HideOptionMenuThumbs)</visible>
+	</include>
+	<include name="OMNoViewThumbSlide">
+		<animation effect="slide" time="0" start="0,0" end="0,-130" condition="Skin.HasSetting(HideOptionMenuThumbs)">Conditional</animation>
+	</include>
+	<include name="OMViewLabelItem">
+		<posy>132</posy>
+		<width>OMTextWidth</width>
+		<height>30</height>
+		<font>DefaultCapsFont</font>
+		<align>center</align>
+		<textcolor>Selected</textcolor>
+	</include>
+	<include name="OMButtonItem">
+		<width>OMTextWidth</width>
+		<font>DefaultCapsFont</font>
+		<textoffsetx>10</textoffsetx>
+		<textoffsety>2</textoffsety>
+		<include>DialogTextControl</include>
+	</include>
+	<include name="OMViewLargeThumb">
+		<include>OMViewLargeThumbDims</include>
+		<aspectratio aligny="bottom">keep</aspectratio>
+		<bordertexture border="14">ThumbShadow2.png</bordertexture>
+		<bordersize>10</bordersize>
+	</include>
+	<include name="OptionsMenuUI">
+		<control type="group">
+			<include>OptionsMenuUIDims</include>
+			<visible>!Skin.HasSetting(HideOptionMenuThumbs) + ControlGroup(9009).HasFocus() + [Control.HasFocus(911) | Control.HasFocus(912) | Control.HasFocus(915) | Control.HasFocus(916) | Control.HasFocus(925) | Control.HasFocus(926) | Control.HasFocus(927) | Control.HasFocus(951) | Control.HasFocus(952)| Control.HasFocus(953)| Control.HasFocus(955) | Control.HasFocus(956) | Control.HasFocus(957) | Control.HasFocus(958) | Control.HasFocus(959) | Control.HasFocus(960)]</visible>
+			<control type="group">
+				<posy>12</posy>
+				<posx>16</posx>
+				<control type="image">
+					<description>List Thumb</description>
+					<include>OMViewLargeThumb</include>
+					<texture>ViewThumbList.png</texture>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(911)</visible>
+					<include>VideoOSDSlideLeft</include>
+				</control>
+				<control type="image">
+					<description>Info List Thumb</description>
+					<include>OMViewLargeThumb</include>
+					<texture>ViewThumbInfoList.png</texture>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(912)</visible>
+					<include>VideoOSDSlideLeft</include>
+				</control>
+				<control type="image">
+					<description>Media Preview Thumb</description>
+					<include>OMViewLargeThumb</include>
+					<texture>ViewThumbMediaPreview.png</texture>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(915)</visible>
+					<include>VideoOSDSlideLeft</include>
+				</control>
+				<control type="image">
+					<description>TV Wide Thumb</description>
+					<include>OMViewLargeThumb</include>
+					<texture>ViewThumbTVWide.png</texture>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(925)</visible>
+					<include>VideoOSDSlideLeft</include>
+				</control>
+				<control type="image">
+					<description>TV Seasons Thumb</description>
+					<include>OMViewLargeThumb</include>
+					<texture>ViewThumbSeasons.png</texture>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(926)</visible>
+					<include>VideoOSDSlideLeft</include>
+				</control>
+				<control type="image">
+					<description>TV Episodes Thumb</description>
+					<include>OMViewLargeThumb</include>
+					<texture>ViewThumbEpisodes.png</texture>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(927)</visible>
+					<include>VideoOSDSlideLeft</include>
+				</control>
+				<control type="image">
+					<description>Albums Thumb</description>
+					<include>OMViewLargeThumb</include>
+					<texture>ViewThumbAlbums.png</texture>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(951)</visible>
+					<include>VideoOSDSlideLeft</include>
+				</control>
+				<control type="image">
+					<description>Songs Thumb</description>
+					<include>OMViewLargeThumb</include>
+					<texture>ViewThumbSongs.png</texture>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(952)</visible>
+					<include>VideoOSDSlideLeft</include>
+				</control>
+				<control type="image">
+					<description>Coverflow Thumb</description>
+					<include>OMViewLargeThumb</include>
+					<texture>ViewThumbCoverflow.png</texture>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(953)</visible>
+					<include>VideoOSDSlideLeft</include>
+				</control>
+				<control type="image">
+					<description>Pictures Thumb</description>
+					<include>OMViewLargeThumb</include>
+					<texture>ViewThumbPictures.png</texture>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(955)</visible>
+					<include>VideoOSDSlideLeft</include>
+				</control>
+				<control type="image">
+					<description>Image Stream Thumb</description>
+					<include>OMViewLargeThumb</include>
+					<texture>ViewThumbImageStream.png</texture>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(956)</visible>
+					<include>VideoOSDSlideLeft</include>
+				</control>
+				<control type="image">
+					<description>Panel Stream Thumb</description>
+					<include>OMViewLargeThumb</include>
+					<texture>ViewThumbPanelStream.png</texture>
+					<visible>ControlGroup(9009).HasFocus() + [Control.HasFocus(957) | Control.HasFocus(958) | Control.HasFocus(960)]</visible>
+					<include>VideoOSDSlideLeft</include>
+				</control>
+				<control type="image">
+					<description>Wall Stream Thumb</description>
+					<include>OMViewLargeThumb</include>
+					<texture>ViewThumbWallStream.png</texture>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(959)</visible>
+					<include>VideoOSDSlideLeft</include>
+				</control>
+			</control>
+		</control>
+		<control type="group" id="9009">
+			<include>OptionsMenuPos</include>
+			<include>OptionsMenuVisible</include>
+			<include>VideoOSDSlideLeft</include>
+			<control type="image">
+				<description>Background Image</description>
+				<posx>-24</posx>
+				<posy>0</posy>
+				<include>OptionsMenuBGDims</include>
+				<texture>Black.png</texture>
+				<colordiffuse>99666666</colordiffuse>
+			</control>
+			<control type="image">
+				<description>Background Image</description>
+				<posx>-38</posx>
+				<posy>0</posy>
+				<include>OptionsMenuBGDims</include>
+				<texture flipx="true" border="22,0,0,0">VisOsdPanel.png</texture>
+			</control>
+			<control type="label" id="900">
+				<description>View Options</description>
+				<posy>10</posy>
+				<label>$LOCALIZE[14018]</label>
+				<include>OMTitleItem</include>
+			</control>
+			<!-- Current View Details -->
+			<control type="group" id="9010">
+				<posy>36</posy>
+				<width>OMTextWidth</width>
+				<include>OMNoViewThumbSlide</include>
+				<control type="image" id="9100">
+					<description>List Thumb</description>
+					<texture>ViewThumbList.png</texture>
+					<visible>Control.IsVisible(50)</visible>
+					<include>OMViewThumb</include>
+				</control>
+				<control type="label" id="9100">
+					<description>List view selected</description>
+					<label>$LOCALIZE[535]</label>
+					<visible>Control.IsVisible(50)</visible>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="image" id="9101">
+					<description>Media Preview Thumb</description>
+					<texture>ViewThumbMediaPreview.png</texture>
+					<visible>Control.IsVisible(51) + Window.IsActive(24)</visible>
+					<include>OMViewThumb</include>
+				</control>
+				<control type="label" id="9101">
+					<description>Media Preview selected</description>
+					<label>$LOCALIZE[31707]</label>
+					<visible>Control.IsVisible(51) + Window.IsActive(24)</visible>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="image" id="9103">
+					<description>TV Wide Thumb</description>
+					<texture>ViewThumbTVWide.png</texture>
+					<visible>Control.IsVisible(57) + Window.IsActive(24) + Container.Content(tvshows)</visible>
+					<include>OMViewThumb</include>
+				</control>
+				<control type="label" id="9103">
+					<description>TV Wide view button</description>
+					<label>$LOCALIZE[539]</label>
+					<visible>Control.IsVisible(57) + Window.IsActive(24) + Container.Content(tvshows)</visible>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="image" id="9104">
+					<description>TV Seasons Thumb</description>
+					<texture>ViewThumbSeasons.png</texture>
+					<visible>Control.IsVisible(57) + Window.IsActive(24) + Container.Content(seasons)</visible>
+					<include>OMViewThumb</include>
+				</control>
+				<control type="label" id="9104">
+					<description>TV Seasons view button</description>
+					<label>$LOCALIZE[31703]</label>
+					<visible>Control.IsVisible(57) + Window.IsActive(24) + Container.Content(seasons)</visible>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="image" id="9105">
+					<description>TV Episodes Thumb</description>
+					<texture>ViewThumbEpisodes.png</texture>
+					<visible>Control.IsVisible(56) + Container.Content(episodes)</visible>
+					<include>OMViewThumb</include>
+				</control>
+				<control type="label" id="9105">
+					<description>Episodes view button</description>
+					<label>$LOCALIZE[31721]</label>
+					<visible>Control.IsVisible(56) + Container.Content(episodes)</visible>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="image" id="9106">
+					<description>Albums Thumb</description>
+					<texture>ViewThumbAlbums.png</texture>
+					<visible>Control.IsVisible(51) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary)]</visible>
+					<include>OMViewThumb</include>
+				</control>
+				<control type="label" id="9106">
+					<description>Albums view button</description>
+					<visible>Control.IsVisible(51) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary)]</visible>
+					<label>$LOCALIZE[132]</label>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="image" id="9107">
+					<description>Songs Thumb</description>
+					<texture>ViewThumbSongs.png</texture>
+					<visible>Control.IsVisible(57) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
+					<include>OMViewThumb</include>
+				</control>
+				<control type="label" id="9107">
+					<description>Songs view button</description>
+					<label>$LOCALIZE[134]</label>
+					<visible>Control.IsVisible(57) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="image" id="9108">
+					<description>Pictures Thumb</description>
+					<texture>ViewThumbPictures.png</texture>
+					<visible>Control.IsVisible(51) + [Window.IsVisible(MyPictures)]</visible>
+					<include>OMViewThumb</include>
+				</control>
+				<control type="label" id="9108">
+					<description>Pictures view button</description>
+					<visible>Control.IsVisible(51) + [Window.IsVisible(MyPictures)]</visible>
+					<label>$LOCALIZE[1]</label>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="image" id="9109">
+					<description>Info List Thumb</description>
+					<texture>ViewThumbInfoList.png</texture>
+					<visible>Control.IsVisible(56) + !Container.Content(episodes)</visible>
+					<include>OMViewThumb</include>
+				</control>
+				<control type="label" id="9109">
+					<description>Info List view selected</description>
+					<label>$LOCALIZE[31711]</label>
+					<visible>Control.IsVisible(56) + !Container.Content(episodes)</visible>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="image" id="9110">
+					<description>Image Stream Thumb</description>
+					<texture>ViewThumbImageStream.png</texture>
+					<visible>Control.IsVisible(57) + [Window.IsVisible(MyPictures)]</visible>
+					<include>OMViewThumb</include>
+				</control>
+				<control type="label" id="9110">
+					<description>Image Stream view button</description>
+					<visible>Control.IsVisible(57) + [Window.IsVisible(MyPictures)]</visible>
+					<label>$LOCALIZE[31712]</label>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="image" id="9112">
+					<description>Panel Stream Thumb</description>
+					<texture>ViewThumbPanelStream.png</texture>
+					<visible>Control.IsVisible(52)</visible>
+					<include>OMViewThumb</include>
+				</control>
+				<control type="label" id="9112">
+					<description>Panel Stream view button</description>
+					<visible>Control.IsVisible(52)</visible>
+					<label>$LOCALIZE[31715]</label>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="image" id="9113">
+					<description>Coverflow Thumb</description>
+					<texture>ViewThumbCoverflow.png</texture>
+					<visible>Control.IsVisible(55)</visible>
+					<include>OMViewThumb</include>
+				</control>
+				<control type="label" id="9113">
+					<description>Coverflow view button</description>
+					<label>$LOCALIZE[31716]</label>
+					<visible>Control.IsVisible(55)</visible>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="image" id="9114">
+					<description>Wall Stream Thumb</description>
+					<texture>ViewThumbWallStream.png</texture>
+					<visible>Control.IsVisible(53)</visible>
+					<include>OMViewThumb</include>
+				</control>
+				<control type="label" id="9114">
+					<description>Wall Stream view button</description>
+					<label>$LOCALIZE[31714]</label>
+					<visible>Control.IsVisible(53)</visible>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="image" id="9115">
+					<description>Plugin Stream Thumb</description>
+					<texture>ViewThumbWallStream.png</texture>
+					<visible>Control.IsVisible(59)</visible>
+					<include>OMViewThumb</include>
+				</control>
+				<control type="label" id="9115">
+					<description>Plugin Stream view button</description>
+					<label>$LOCALIZE[31722]</label>
+					<visible>Control.IsVisible(59) + !Container.Content(Songs) + !Container.Content(Albums) + !Container.Content(Artists)</visible>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="label" id="9115">
+					<description>Plugin Stream view button</description>
+					<label>$LOCALIZE[31715]</label>
+					<visible>Control.IsVisible(59) + [Container.Content(Songs) | Container.Content(Albums) | Container.Content(Artists)]</visible>
+					<include>OMViewLabelItem</include>
+				</control>
+			</control>
+			<control type="grouplist" id="9011">
+				<posy>190</posy>
+				<width>OMTextWidth</width>
+				<height>522</height>
+				<orientation>vertical</orientation>
+				<itemgap>2</itemgap>
+				<onleft>50</onleft>
+				<include>OMNoViewThumbSlide</include>
+				<!-- Possible View Options -->
+				<control type="button" id="911">
+					<description>List view button</description>
+					<visible>!Control.IsVisible(50) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(Movies) + !Container.Content(Artists) + !Container.Content(Albums) + !Container.Content(Songs)  + !Window.IsVisible(MyPictures) + !Container.Content(Secondary)</visible>
+					<label>$LOCALIZE[535]</label>
+					<onclick>Container.SetViewMode(50)</onclick>
+					<onclick>SetFocus(50)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="button" id="912">
+					<description>Info List view button</description>
+					<visible>[!Control.IsVisible(56) + !Container.Content(Plugins)] | [Control.IsVisible(56) + Container.Content(Secondary)]</visible>
+					<label>$LOCALIZE[31711]</label>
+					<onclick>Container.SetViewMode(56)</onclick>
+					<onclick>SetFocus(50)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="button" id="915">
+					<description>Media Preview button</description>
+					<visible>!Control.IsVisible(51) + !Container.Content(Seasons) + !Container.Content(Albums)  + !Container.Content(Artists) + !Container.Content(Songs) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
+					<label>$LOCALIZE[31707]</label>
+					<onclick>Container.SetViewMode(51)</onclick>
+					<onclick>SetFocus(50)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="button" id="925">
+					<description>TV Wide view button</description>
+					<visible>!Control.IsVisible(57) + [Container.Content(tvshows) + !Container.Content(Plugins)]</visible>
+					<label>$LOCALIZE[539]</label>
+					<onclick>Container.SetViewMode(57)</onclick>
+					<onclick>SetFocus(50)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="button" id="926">
+					<description>TV Seasons view button</description>
+					<visible>!Control.IsVisible(57) + [Container.Content(seasons) + !Container.Content(Plugins)]</visible>
+					<label>$LOCALIZE[31703]</label>
+					<onclick>Container.SetViewMode(57)</onclick>
+					<onclick>SetFocus(50)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="button" id="927">
+					<description>Episodes view button</description>
+					<visible>!Control.IsVisible(56) + [Container.Content(episodes) + !Container.Content(Plugins)]</visible>
+					<label>$LOCALIZE[31721]</label>
+					<onclick>Container.SetViewMode(56)</onclick>
+					<onclick>SetFocus(50)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="button" id="950">
+					<description>Photo view button</description>
+					<visible>!Control.IsVisible(51) + Control.IsVisible(9814)</visible>
+					<label>$LOCALIZE[31704]</label>
+					<onclick>Container.SetViewMode(51)</onclick>
+					<onclick>SetFocus(50)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="button" id="955">
+					<description>Pictures view button</description>
+					<visible>!Control.IsVisible(51) + [Window.IsVisible(MyPictures)] + !Container.Content(Secondary)</visible>
+					<label>$LOCALIZE[1]</label>
+					<onclick>Container.SetViewMode(51)</onclick>
+					<onclick>SetFocus(50)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="button" id="956">
+					<description>Image Stream view button</description>
+					<visible>!Control.IsVisible(57) + [Window.IsVisible(MyPictures)] + !Container.Content(Secondary)</visible>
+					<label>$LOCALIZE[31712]</label>
+					<onclick>Container.SetViewMode(57)</onclick>
+					<onclick>SetFocus(50)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="button" id="957">
+					<description>Panel Stream view button</description>
+					<visible>!Control.IsVisible(52) + !Container.Content(Songs) + !Container.Content(Albums) + !Container.Content(Artists) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
+					<label>$LOCALIZE[31715]</label>
+					<onclick>Container.SetViewMode(52)</onclick>
+					<onclick>SetFocus(50)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="button" id="958">
+					<description>Panel Stream view button</description>
+					<visible>!Control.IsVisible(59) + [Container.Content(Songs) | Container.Content(Albums) | Container.Content(Artists)]</visible>
+					<label>$LOCALIZE[31715]</label>
+					<onclick>Container.SetViewMode(59)</onclick>
+					<onclick>SetFocus(50)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="button" id="959">
+					<description>Wall Stream view button</description>
+					<visible>!Control.IsVisible(53) + !Container.Content(Seasons) + !Container.Content(Songs) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
+					<label>$LOCALIZE[31714]</label>
+					<onclick>Container.SetViewMode(53)</onclick>
+					<onclick>SetFocus(50)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="button" id="960">
+					<description>Plugin Stream view button</description>
+					<visible>!Control.IsVisible(59) + Container.Content(Plugins)</visible>
+					<label>$LOCALIZE[31722]</label>
+					<onclick>Container.SetViewMode(59)</onclick>
+					<onclick>SetFocus(50)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<!-- Setup Options -->
+				<control type="label" id="1000">
+					<description>Setup Options</description>
+					<label>$LOCALIZE[31713]</label>
+					<include>OMTitleItem</include>
+					<visible>Window.IsVisible(MyVideoPlaylist) | Window.IsVisible(MyMusicPlaylist) | Window.IsVisible(MyPictures)</visible>
+				</control>
+				<control type="button" id="26">
+					<description>Repeat button</description>
+					<visible>Window.IsVisible(MyVideoPlaylist) | Window.IsVisible(MyMusicPlaylist)</visible>
+					<label>486</label>
+					<onclick>PlayerControls(Repeat)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="button" id="21">
+					<description>Save button</description>
+					<visible>Window.IsVisible(MyVideoPlaylist) | Window.IsVisible(MyMusicPlaylist)</visible>
+					<label>190</label>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="button" id="22">
+					<description>Clear button</description>
+					<visible>Window.IsVisible(MyVideoPlaylist) | Window.IsVisible(MyMusicPlaylist) | Window.IsVisible(MyScripts)</visible>
+					<label>192</label>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="radiobutton" id="10">
+					<description>Randomize button</description>
+					<visible>Window.IsVisible(MyPictures)</visible>
+					<label>13319</label>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="radiobutton" id="20">
+					<description>Shuffle Toggle</description>
+					<visible>Window.IsVisible(MyVideoPlaylist) | Window.IsVisible(MyMusicPlaylist)</visible>
+					<label>191</label>
+					<onclick>PlayerControls(Random)</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="radiobutton" id="3501">
+					<description>Display Rotated Season Thumb</description>
+					<label>$LOCALIZE[31678]</label>
+					<onclick>Skin.ToggleSetting(ShowSeasonThumbInEps)</onclick>
+					<selected>Skin.HasSetting(ShowSeasonThumbInEps)</selected>
+					<visible>Control.IsVisible(54) + [Window.IsActive(24)]</visible>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="label" id="995">
+					<description>Developer Items</description>
+					<label>Developer</label>
+					<visible>Skin.HasSetting(Developer)</visible>
+					<include>OMTitleItem</include>
+				</control>
+				<control type="button" id="996">
+					<description>Developer Refresh Button</description>
+					<visible>Skin.HasSetting(Developer)</visible>
+					<label>Refresh</label>
+					<onclick>XBMC.ReloadSkin()</onclick>
+					<include>OMButtonItem</include>
+				</control>
+				<control type="radiobutton" id="997">
+					<description>Dev Background</description>
+					<visible>Skin.HasSetting(Developer)</visible>
+					<label>Dev Background</label>
+					<onclick>Skin.ToggleSetting(Developer_Background_Visible)</onclick>
+					<selected>Skin.HasSetting(Developer_Background_Visible)</selected>
+					<include>OMButtonItem</include>
+				</control>
+			</control>
+		</control>
+	</include>
 </includes>

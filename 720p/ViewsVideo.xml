@@ -47,14 +47,36 @@
 					<include>TVWideVisible</include>
 					<posy>187</posy>
 					<visible>!IsEmpty(ListItem.Banner) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+					<!-- shadow -->
+					<control type="image">
+						<description>Shadow Border</description>
+						<posy>43</posy>
+						<posx>-7</posx>
+						<width>687</width>
+						<height>146</height>
+						<aspectratio>stretch</aspectratio>
+						<texture border="50">bannerFrameShadow.png</texture>
+					</control>
+					<!-- border -->
+					<control type="image">
+						<description>Shadow Border</description>
+						<posy>40</posy>
+						<posx>-10</posx>
+						<width>693</width>
+						<height>152</height>
+						<aspectratio>stretch</aspectratio>
+						<texture border="50">bannerFrameShadow.png</texture>
+						<colordiffuse>orange</colordiffuse>
+						<visible>!Skin.HasSetting(hideposterborders)</visible>
+					</control>
 					<control type="image">
 						<description>Wide icon</description>
-						<include>TVWideIconDims</include>
-						<texture>DefaultWideIcon.png</texture>
-						<info>ListItem.Banner</info>
-						<aspectratio align="left">keep</aspectratio>
-						<bordertexture border="7">ThumbBorder.png</bordertexture>
-						<bordersize>4</bordersize>
+						<posy>51</posy>
+						<posx>1</posx>
+						<width>670</width>
+						<height>128</height>
+						<texture diffuse="bannerMask.png">$INFO[ListItem.Banner]</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="center">scale</aspectratio>
 					</control>
 					<control type="label">
 						<posy>30</posy>
@@ -70,7 +92,7 @@
 				<posx>-34</posx>
 				<posy>235</posy>
 				<width>640</width>
-				<height>454</height>
+				<height>450</height>
 				<scrolltime>200</scrolltime>
 				<pagecontrol>61</pagecontrol>
 				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
@@ -78,12 +100,12 @@
 				<onup>57</onup>
 				<ondown>57</ondown>
 				<include>TVSeasonsListAnim</include>
-				<itemlayout condition="!Container.Content(Seasons)" height="42" width="530">
+				<itemlayout condition="!Container.Content(Seasons)" height="45" width="530">
 					<control type="image">
 						<posx>0</posx>
-						<posy>-6</posy>
-						<width>679</width>
-						<height>54</height>
+						<posy>0</posy>
+						<width>600</width>
+						<height>45</height>
 						<texture>MediaItemBG.png</texture>
 					</control>
 					<control type="label">
@@ -117,7 +139,7 @@
 						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 					</control>
 				</itemlayout>
-				<focusedlayout condition="!Container.Content(Seasons)" height="42" width="530">
+				<focusedlayout condition="!Container.Content(Seasons)" height="45" width="530">
 					<control type="image">
 						<posx>35</posx>
 						<posy>2</posy>
@@ -150,34 +172,6 @@
 						<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
 					</control>
 					<control type="group">
-						<control type="label">
-							<description>shadow</description>
-							<posx>61</posx>
-							<posy>2</posy>
-							<width>446</width>
-							<height>42</height>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-							<font>MediumSmallDefaultCapsFont</font>
-							<textcolor>6D000000</textcolor>
-							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
-							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
-						</control>
-						<control type="label">
-							<description>shadow</description>
-							<posx>60</posx>
-							<posy>1</posy>
-							<width>446</width>
-							<height>42</height>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-							<font>MediumSmallDefaultCapsFont</font>
-							<textcolor>25000000</textcolor>
-							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
-							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
-						</control>
 						<control type="label">
 							<posx>60</posx>
 							<width>446</width>
@@ -323,6 +317,7 @@
 					</control>
 				</focusedlayout>
 			</control>
+			<!-- scrollbar -->
 			<control type="group">
 				<posx>558</posx>
 				<include>TVWideVisible</include>
@@ -338,23 +333,7 @@
 					<showonepage>true</showonepage>
 				</control>
 			</control>
-			<!--
-		<control type="group">
-			<posx>708</posx>
-			<include>TVSeasonsVisible</include>
-			<include>MediaViewFade</include>
-			<control type="scrollbar" id="61">
-				<posx>3</posx>
-				<posy>230</posy>
-				<height>465</height>
-				<onup>61</onup>
-				<ondown>61</ondown>
-				<onleft>50</onleft>
-				<onright>9009</onright>
-   			    <showonepage>false</showonepage>
-			</control>
-		</control>
--->
+			<!-- Right Side -->
 			<control type="group">
 				<posx>592</posx>
 				<posy>237</posy>

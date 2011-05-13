@@ -1036,11 +1036,13 @@
 					</control>
 					<include>CustomMoviesBackground</include>
 				</control>
-				<control type="largeimage">
+				<!-- bg fanart -->
+				<control type="multiimage">
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
-					<info>ListItem.Property(fanart_image)</info>
+					<info background="true">ListItem.Property(fanart_image)</info>
 					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
+					<fadetime>300</fadetime>
 					<include>BackgroundFade</include>
 				</control>
 			</control>
@@ -1075,11 +1077,12 @@
 					<visible>!IsEmpty(FanArt.Image)</visible>
 					<include>BackgroundFade</include>
 				</control>
-				<control type="largeimage">
+				<control type="multiimage">
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
-					<info>ListItem.Property(fanart_image)</info>
+					<info background="true">ListItem.Property(fanart_image)</info>
 					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
+					<fadetime>300</fadetime>
 					<include>BackgroundFade</include>
 				</control>
 			</control>
@@ -1113,11 +1116,12 @@
 					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
 					<include>BackgroundFade</include>
 				</control>
-				<control type="largeimage">
+				<control type="multiimage">
 					<description>Fanart background (from directory)</description>
 					<include>FullScreenBGImage</include>
 					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
-					<info>FanArt.Image</info>
+					<info background="true">FanArt.Image</info>
+					<fadetime>300</fadetime>
 					<include>BackgroundFade</include>
 				</control>
 			</control>
@@ -1151,11 +1155,12 @@
 					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
 					<include>BackgroundFade</include>
 				</control>
-				<control type="largeimage">
+				<control type="multiimage">
 					<description>Fanart background (from directory)</description>
 					<include>FullScreenBGImage</include>
 					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
-					<info>FanArt.Image</info>
+					<info background="true">FanArt.Image</info>
+					<fadetime>300</fadetime>
 					<include>BackgroundFade</include>
 				</control>
 			</control>
@@ -1527,7 +1532,7 @@
 		<animation effect="fade" start="100" end="0" time="200" delay="0" condition="Window.Next(home)">Conditional</animation>
 	</include>
 	<!-- Common Content -->
-	<include name="ClockBG">
+	<!--<include name="ClockBG">
 		<posx>0</posx>
 		<posy>1</posy>
 		<include>ClockBGDims</include>
@@ -1549,27 +1554,30 @@
 	<include name="ClockFGText">
 		<info>System.Time(short_no_meridian)</info>
 		<include>ClockText</include>
-	</include>
+	</include>-->
 	<include name="Clock">
 		<control type="group" id="1">
-			<posx>6</posx>
+			<posx>30</posx>
 			<posy>9</posy>
 			<visible>!Window.IsVisible(2003) + !Skin.HasSetting(Clock)</visible>
 			<control type="group" id="1">
 				<visible>!Skin.HasSetting(LargeClock)</visible>
-				<control type="image" id="1">
-					<include>ClockBG</include>
-				</control>
-				<control type="group" id="1">
-					<posx>40</posx>
-					<posy>-1</posy>
-					<control type="label" id="1">
-						<include>ClockBGText</include>
+				<control type="grouplist">
+					<orientation>horizontal</orientation>
+					<itemgap>20</itemgap>
+					<control type="label">
+						<height>32</height>
+						<font>MediumAltDefaultFont</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<info>System.Time(short_no_meridian)</info>
+						<width min="1" max="90">auto</width>
 					</control>
-					<control type="label" id="1">
-						<include>ClockFGText</include>
+					<control type="image">
+						<texture>ClockBackground2.png</texture>						
+						<align>right</align>
 					</control>
-				</control>
+				</control>								
 			</control>
 			<control type="group" id="1">
 				<visible>Skin.HasSetting(LargeClock)</visible>
@@ -1989,7 +1997,7 @@
 		<posy>3</posy>
 		<width>122</width>
 		<height>186</height>
-		<info>ListItem.Icon</info>
+		<info background="true">ListItem.Thumb</info>
 		<aspectratio>scale</aspectratio>
 	</include>
 	<include name="PicturesImageFocus">
@@ -2052,7 +2060,7 @@
 				<description>No Thumb label</description>
 				<include>PanelStreamNoThumb</include>
 			</control>
-			<control type="label">
+			<!--<control type="label">
 				<posx>81</posx>
 				<posy>206</posy>
 				<width>132</width>
@@ -2063,7 +2071,7 @@
 				<font>MediumSmallTitleFont</font>
 				<textcolor>FFffffff</textcolor>
 				<wrapmultiline>false</wrapmultiline>
-			</control>
+			</control>-->
 			<control type="image">
 				<description>Overlay</description>
 				<posx>121</posx>
@@ -2092,7 +2100,7 @@
 			<control type="label">
 				<include>PanelStreamNoThumb</include>
 			</control>
-			<control type="label">
+			<!--<control type="label">
 				<posx>81</posx>
 				<posy>206</posy>
 				<width>132</width>
@@ -2104,7 +2112,7 @@
 				<textcolor>FFffffff</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 				<scrollspeed>30</scrollspeed>
-			</control>
+			</control>-->
 			<control type="image">
 				<description>Overlay</description>
 				<posx>121</posx>
@@ -2618,17 +2626,17 @@
 		<animation effect="fade" start="30" end="30" time="0" condition="true">Conditional</animation>
 	</include>
 	<include name="MediaItemBG">
-		<posx>0</posx>
-		<posy>-6</posy>
+		<posx>43</posx>
+		<posy>0</posy>
 		<width>679</width>
-		<height>54</height>
+		<height>45</height>
 		<texture>MediaItemBG.png</texture>
 	</include>
 	<include name="MediaItemBGWide">
-		<posx>0</posx>
-		<posy>-6</posy>
+		<posx>43</posx>
+		<posy>0</posy>
 		<width>879</width>
-		<height>54</height>
+		<height>45</height>
 		<texture>MediaItemBG.png</texture>
 	</include>
 	<include name="MediaItemBGSuperWide">

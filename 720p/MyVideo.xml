@@ -1,5 +1,5 @@
 <window id="6">
-	<defaultcontrol>50</defaultcontrol>
+	<defaultcontrol>56</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
 		<include>Background</include>
@@ -11,7 +11,7 @@
 		<!-- <include>Showcase</include> -->
 		<include>MediaPreview</include>
 		<include>PanelStream</include>
-		<include>Coverflow</include>
+		<!--<include>Coverflow</include>-->
 		<include>WallStream</include>
 		<include>PluginStream</include>
 		<!--<include>GridView</include>-->

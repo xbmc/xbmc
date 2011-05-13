@@ -1,114 +1,107 @@
+<?xml version="1.0"?>
 <window id="106">
-  <defaultcontrol>1000</defaultcontrol>
-  <coordinates>
-    <system>1</system>
-    <posx>0</posx>
-    <posy>0</posy>
-  </coordinates>
-
-  <controls>
-    <control type="group">
-      <description>Default Context menu</description>
-      <visible>!Window.IsVisible(Favourites)</visible>
-      <include condition="Skin.HasSetting(HideListViewIcons) | Skin.HasSetting(HideListViewIconsVideos) | Skin.HasSetting(HideListViewIconsMusic)">NoIconsListContextMenuPos</include>
-      <include>DialogQuickFade</include>
-
-      <control type="image" id="997">
-        <description>Top Image</description>
-        <posx>0</posx>
-        <posy>-48</posy>
-        <width>ContextMenuWidth</width>
-        <height>48</height>
-        <include>ContextDialogTopTexture</include>
-      </control>
-      <control type="image" id="999">
-        <description>Middle Image</description>
-        <posx>-2</posx>
-        <width>339</width>
-        <include>ContextDialogMiddleTexture</include>
-      </control>
-      <control type="image" id="998">
-        <description>Bottom Image</description>
-        <width>ContextMenuWidth</width>
-        <height>16</height>
-        <include>ContextDialogBottomTexture</include>
-      </control>
-
-      <control type="label">
-       <posy>-38</posy>
-       <width>ContextMenuWidth</width>
-       <align>center</align>
-       <font>TitleCapsFont</font>
-       <label>$LOCALIZE[31018]</label>
-      </control>
-
-      <control type="button" id="1000">
-        <description>Buttons</description>
-        <include condition="Skin.HasSetting(HideListViewIcons) | Skin.HasSetting(HideListViewIconsVideos) | Skin.HasSetting(HideListViewIconsMusic)">NoIconsListContextMenuPos</include>
-        <posx>2</posx>
-        <posy>0</posy>
-        <width>330</width>
-        <height>43</height>
-        <texturefocus>HomeBladeSubFO2.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <label>-</label>
-        <font>MediumSmallDefaultCapsFont</font>
-        <align>center</align>
-        <aligny>center</aligny>
-        <textoffsetx>-</textoffsetx>
-        <textoffsety>6</textoffsety>
-        <pulseonselect>no</pulseonselect>
-        <onfocus>-</onfocus>
-        <onup>1000</onup>
-        <ondown>1000</ondown>
-        <onleft>-</onleft>
-        <onright>-</onright>
-        <include>DialogTextColors</include>
-        <include>DialogQuickFade</include>
-      </control>
-    </control>
-
-    <control type="group">
-      <description>Context menu for Favourites dialog</description>
-      <include>FavouritesDialogContextMenuPos</include>
-      <visible>Window.IsVisible(Favourites)</visible>
-      <include>DialogFade</include>
-
-      <control type="label">
-        <description>Modify label</description>
-        <width>FavouriteTextWidth</width>
-        <label>$LOCALIZE[31040]</label>
-        <font>MediumDefaultCapsFont</font>
-      </control>
-      <control type="label">
-        <description>Settings label</description>
-        <posy>18</posy>
-        <width>FavouriteTextWidth</width>
-        <label>$LOCALIZE[5]</label>
-        <font>LargeTitleCapsFont</font>
-      </control>
-
-      <control type="button" id="1000">
-        <description>Buttons</description>
-        <include>FavouritesDialogContextBtnDims</include>
-        <texturefocus>HomeBladeSubFO2.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <label>-</label>
-        <font>MediumSmallDefaultCapsFont</font>
-        <align>left</align>
-        <aligny>center</aligny>
-        <textoffsetx>12</textoffsetx>
-        <textoffsety>6</textoffsety>
-        <pulseonselect>no</pulseonselect>
-        <onfocus>-</onfocus>
-        <onup>1000</onup>
-        <ondown>1000</ondown>
-        <onleft>-</onleft>
-        <onright>-</onright>
-        <include>DialogTextColors</include>
-        <include>DialogFade</include>
-      </control>
-    </control>
-
-  </controls>
+	<defaultcontrol>1000</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<description>Default Context menu</description>
+			<visible>!Window.IsVisible(Favourites)</visible>
+			<include condition="Skin.HasSetting(HideListViewIcons) | Skin.HasSetting(HideListViewIconsVideos) | Skin.HasSetting(HideListViewIconsMusic)">NoIconsListContextMenuPos</include>
+			<include>DialogQuickFade</include>
+			<control type="image" id="997">
+				<description>Top Image</description>
+				<posx>0</posx>
+				<posy>-48</posy>
+				<width>ContextMenuWidth</width>
+				<height>48</height>
+				<include>ContextDialogTopTexture</include>
+			</control>
+			<control type="image" id="999">
+				<description>Middle Image</description>
+				<posx>1</posx>
+				<width>330</width>
+				<include>ContextDialogMiddleTexture</include>
+			</control>
+			<control type="image" id="998">
+				<description>Bottom Image</description>
+				<width>ContextMenuWidth</width>
+				<height>16</height>
+				<include>ContextDialogBottomTexture</include>
+			</control>
+			<control type="label">
+				<posy>-38</posy>
+				<width>ContextMenuWidth</width>
+				<align>center</align>
+				<font>TitleCapsFont</font>
+				<label>$LOCALIZE[31018]</label>
+			</control>
+			<control type="button" id="1000">
+				<description>Buttons</description>
+				<include condition="Skin.HasSetting(HideListViewIcons) | Skin.HasSetting(HideListViewIconsVideos) | Skin.HasSetting(HideListViewIconsMusic)">NoIconsListContextMenuPos</include>
+				<posx>2</posx>
+				<posy>0</posy>
+				<width>330</width>
+				<height>43</height>
+				<texturefocus>HomeBladeSubFO2.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<label>-</label>
+				<font>MediumSmallDefaultCapsFont</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textoffsetx>-</textoffsetx>
+				<textoffsety>6</textoffsety>
+				<pulseonselect>no</pulseonselect>
+				<onfocus>-</onfocus>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
+				<onleft>-</onleft>
+				<onright>-</onright>
+				<include>DialogTextColors</include>
+				<include>DialogQuickFade</include>
+			</control>
+		</control>
+		<control type="group">
+			<description>Context menu for Favourites dialog</description>
+			<include>FavouritesDialogContextMenuPos</include>
+			<visible>Window.IsVisible(Favourites)</visible>
+			<include>DialogFade</include>
+			<control type="label">
+				<description>Modify label</description>
+				<width>FavouriteTextWidth</width>
+				<label>$LOCALIZE[31040]</label>
+				<font>MediumDefaultCapsFont</font>
+			</control>
+			<control type="label">
+				<description>Settings label</description>
+				<posy>18</posy>
+				<width>FavouriteTextWidth</width>
+				<label>$LOCALIZE[5]</label>
+				<font>LargeTitleCapsFont</font>
+			</control>
+			<control type="button" id="1000">
+				<description>Buttons</description>
+				<include>FavouritesDialogContextBtnDims</include>
+				<texturefocus>HomeBladeSubFO2.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<label>-</label>
+				<font>MediumSmallDefaultCapsFont</font>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textoffsetx>12</textoffsetx>
+				<textoffsety>6</textoffsety>
+				<pulseonselect>no</pulseonselect>
+				<onfocus>-</onfocus>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
+				<onleft>-</onleft>
+				<onright>-</onright>
+				<include>DialogTextColors</include>
+				<include>DialogFade</include>
+			</control>
+		</control>
+	</controls>
 </window>
