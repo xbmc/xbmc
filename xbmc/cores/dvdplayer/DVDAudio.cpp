@@ -55,7 +55,7 @@ CDVDAudio::~CDVDAudio()
   free(m_pBuffer);
 }
 
-bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
+bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec, bool needresampler)
 {
   CLog::Log(LOGNOTICE,
     "Creating audio stream (codec id: %i, channels: %i, sample rate: %i, %s)",
@@ -71,7 +71,8 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
     audioframe.data_format,
     audioframe.passthrough ? audioframe.encoded_sample_rate   : audioframe.sample_rate,
     audioframe.passthrough ? audioframe.encoded_channel_count : audioframe.channel_count,
-    audioframe.channel_layout
+    audioframe.channel_layout,
+    needresampler && !audioframe.passthrough ? AESTREAM_FORCE_RESAMPLE : 0
   );
   if (!m_pAudioStream) return false;
 
@@ -293,6 +294,14 @@ bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)
   //FIXME: compare channel layout
 
   return true;
+}
+
+void CDVDAudio::SetResampleRatio(double ratio)
+{
+  CSingleLock lock (m_critSection);
+
+  if(m_pAudioStream)
+    m_pAudioStream->SetResampleRatio(ratio);
 }
 
 double CDVDAudio::GetCacheTime()

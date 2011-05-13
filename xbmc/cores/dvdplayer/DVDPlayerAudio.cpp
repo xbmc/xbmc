@@ -592,7 +592,7 @@ void CDVDPlayerAudio::Process()
       else
         m_dvdAudio.Pause();
 
-      if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec))
+      if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec, m_setsynctype == SYNC_RESAMPLE))
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
     }
 
@@ -825,19 +825,10 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
 
       proportional = m_error / DVD_TIME_BASE / proportionaldiv;
     }
-    m_resampleratio = 1.0 / g_VideoReferenceClock.GetSpeed() + proportional + m_integral;
-    m_resampler.SetRatio(m_resampleratio);
 
-    //add to the resampler
-    m_resampler.Add(audioframe, audioframe.pts);
-    //give any packets from the resampler to the audiorenderer
-    bool packetadded = false;
-    while(m_resampler.Retrieve(audioframe, audioframe.pts))
-    {
-      m_dvdAudio.AddPackets(audioframe);
-      packetadded = true;
-    }
-    return packetadded;
+    m_resampleratio = 1.0 / g_VideoReferenceClock.GetSpeed() + proportional + m_integral;
+    m_dvdAudio.SetResampleRatio(m_resampleratio);
+    m_dvdAudio.AddPackets(audioframe);
   }
 
   return true;
