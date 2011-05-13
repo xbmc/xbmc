@@ -684,8 +684,18 @@ void CSoftAEStream::SetResampleRatio(double ratio)
     return;
 
   CSingleLock lock(m_critSection);
+
+  int oldRatioInt = MathUtils::ceil_int(m_ssrcData.src_ratio);
+
   src_set_ratio(m_ssrc, ratio);
   m_ssrcData.src_ratio = ratio;
+
+  //Check the resample buffer size and resize if necessary.
+  if(oldRatioInt < MathUtils::ceil_int(m_ssrcData.src_ratio))
+  {
+    m_ssrcData.data_out      = (float*)_aligned_realloc(m_ssrcData.data_out, m_format.m_frameSamples * MathUtils::ceil_int(m_ssrcData.src_ratio) * sizeof(float), 16);
+    m_ssrcData.output_frames = m_format.m_frames * MathUtils::ceil_int(m_ssrcData.src_ratio);
+  }
 }
 
 void CSoftAEStream::RegisterAudioCallback(IAudioCallback* pCallback)
