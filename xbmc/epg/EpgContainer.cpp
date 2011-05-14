@@ -167,7 +167,7 @@ void CEpgContainer::Process(void)
       RemoveOldEntries();
 
     /* check for updated active tag */
-    if (!m_bStop && iNow > m_iLastEpgActiveTagCheck + g_advancedSettings.m_iEpgActiveTagCheckInterval)
+    if (!m_bStop)
       CheckPlayingEvents();
 
     /* call the update hook */
@@ -418,6 +418,10 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
       m_progressDialog->SetTitle(at(iEpgPtr)->Name());
       m_progressDialog->UpdateState();
     }
+
+    /* We don't want to miss active epg tags updates if this process it taking long */
+    CheckPlayingEvents();
+
     lock.Leave();
 
     if (m_bDatabaseLoaded)
@@ -532,10 +536,27 @@ int CEpgContainer::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &f
   return results->Size();
 }
 
-void CEpgContainer::CheckPlayingEvents(void)
+bool CEpgContainer::CheckPlayingEvents(void)
 {
-  CSingleLock lock(m_critSection);
-  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
-    at(iEpgPtr)->CheckPlayingEvent();
-  CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgActiveTagCheck);
+  time_t iNow;
+
+  CDateTime::GetCurrentDateTime().GetAsTime(iNow);
+  if (iNow >= m_iLastEpgActiveTagCheck + g_advancedSettings.m_iEpgActiveTagCheckInterval)
+  {
+  	bool bFoundChanges(false);
+  	CSingleLock lock(m_critSection);
+
+    for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+      if (at(iEpgPtr)->CheckPlayingEvent())
+        bFoundChanges = true;
+    CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgActiveTagCheck);
+
+    if (bFoundChanges)
+    {
+      SetChanged();
+      NotifyObservers("epg-now", true);
+    }
+    return true;
+  }
+  return false;
 }

@@ -20,6 +20,7 @@
  */
 
 #include "threads/SingleLock.h"
+#include "settings/AdvancedSettings.h"
 #include "PVREpgContainer.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -218,4 +219,14 @@ bool PVR::CPVREpgContainer::InterruptUpdate(void) const
       (g_guiSettings.GetBool("epg.preventupdateswhileplayingtv") &&
        g_PVRManager.IsStarted() &&
        g_PVRManager.IsPlaying()));
+}
+
+bool CPVREpgContainer::CheckPlayingEvents(void)
+{
+	if (CEpgContainer::CheckPlayingEvents())
+	{
+    m_iLastEpgActiveTagCheck -= m_iLastEpgActiveTagCheck % 60;
+    return true;
+	}
+	return false;
 }

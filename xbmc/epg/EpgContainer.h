@@ -235,8 +235,9 @@ namespace EPG
 
     /*!
      * @brief Notify EPG table observers when the currently active tag changed.
+     * @return True if the check was done, false if it was not the right time to check
      */
-    virtual void CheckPlayingEvents(void);
+    virtual bool CheckPlayingEvents(void);
 
     /*!
      * @brief Close the progress bar if it's visible.
