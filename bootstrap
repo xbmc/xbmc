@@ -3,6 +3,9 @@
 set -e
 
 autoreconf -vif
+autoreconf -vif lib/libid3tag/libid3tag
+audoreconf -vif xbmc/screensavers/rsxs-0.9
+autoreconf -vif lib/libapetag
 autoreconf -vif lib/cpluff
 # order matters with libdvd and friends
 [ -d lib/libdvd/libdvdcss ] && \
