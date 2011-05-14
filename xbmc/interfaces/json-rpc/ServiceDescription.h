@@ -1646,7 +1646,7 @@ namespace JSONRPC
         "\"permission\": \"ReadData\","
         "\"params\": ["
             "{ \"name\": \"tvshowid\", \"$ref\": \"Library.Id\", \"required\": true },"
-            "{ \"name\": \"season\", \"type\": \"Integer\", \"required\": true, \"minimum\": 0 },"
+            "{ \"name\": \"season\", \"type\": \"integer\", \"minimum\": 0, \"default\": -1 },"
             "{ \"name\": \"fields\", \"type\": \"array\", \"id\": \"Library.Fields.Episode\", \"uniqueItems\": true,"
                 "\"items\": { \"type\": \"string\","
                     "\"description\": \"Requesting the cast field will result in increased response times\","
