@@ -70,7 +70,8 @@ bool CPVRFile::Open(const CURL& url)
     const CPVRChannel *tag = g_PVRChannelGroups->GetByPath(strURL);
     if (tag)
     {
-      if (!g_PVRManager.OpenLiveStream(*tag))
+      CPVRChannel *newTag = new CPVRChannel(*tag);
+      if (!g_PVRManager.OpenLiveStream(*newTag))
         return false;
 
       m_isPlayRecording = false;
@@ -84,10 +85,11 @@ bool CPVRFile::Open(const CURL& url)
   }
   else if (strURL.Left(17) == "pvr://recordings/")
   {
-    CPVRRecording *tag = g_PVRRecordings->GetByPath(strURL);
+    const CPVRRecording *tag = g_PVRRecordings->GetByPath(strURL);
     if (tag)
     {
-      if (!g_PVRManager.OpenRecordedStream(*tag))
+      CPVRRecording *newTag = new CPVRRecording(*tag);
+      if (!g_PVRManager.OpenRecordedStream(*newTag))
         return false;
 
       m_isPlayRecording = true;
