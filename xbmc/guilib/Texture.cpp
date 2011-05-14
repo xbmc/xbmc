@@ -39,7 +39,7 @@ CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int
  : m_hasAlpha( true )
 {
 #ifndef HAS_DX 
-  m_texture = NULL; 
+  m_texture = 0; 
 #endif
   m_pixels = NULL;
   m_loadedToGPU = false;
