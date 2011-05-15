@@ -458,7 +458,6 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   CDateTime newStart = tag.StartAsUTC();
   CDateTime newEnd = tag.EndAsUTC();
   newTag->m_iClientIndex      = -1;
-  newTag->m_strTitle          = tag.Title().IsEmpty() ? channel->ChannelName() : tag.Title();
   newTag->m_iChannelNumber    = channel->ChannelNumber();
   newTag->m_iClientChannelUid = channel->UniqueID();
   newTag->m_iClientId         = channel->ClientID();
@@ -466,17 +465,23 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   newTag->SetStartFromUTC(newStart);
   newTag->SetEndFromUTC(newEnd);
 
+  if (tag.Plot().IsEmpty())
+  {
+    newTag->m_strSummary.Format("%s %s %s %s %s",
+        newTag->StartAsLocalTime().GetAsLocalizedDate(),
+        g_localizeStrings.Get(19159),
+        newTag->StartAsLocalTime().GetAsLocalizedTime("", false),
+        g_localizeStrings.Get(19160),
+        newTag->EndAsLocalTime().GetAsLocalizedTime("", false));
+  }
+  else
+  {
+    newTag->m_strSummary = tag.Plot();
+  }
+
   /* we might have a copy of the tag here, so get the real one from the pvrmanager */
   const CPVREpg *epgTable = channel->GetEPG();
   newTag->m_epgInfo = epgTable ? (CPVREpgInfoTag *) epgTable->GetTag(tag.UniqueBroadcastID(), tag.StartAsUTC()) : NULL;
-
-  /* generate summary string */
-  newTag->m_strSummary.Format("%s %s %s %s %s",
-      newTag->StartAsLocalTime().GetAsLocalizedDate(),
-      g_localizeStrings.Get(19159),
-      newTag->StartAsLocalTime().GetAsLocalizedTime("", false),
-      g_localizeStrings.Get(19160),
-      newTag->EndAsLocalTime().GetAsLocalizedTime("", false));
 
   /* unused only for reference */
   newTag->m_strFileNameAndPath = "pvr://timers/new";
