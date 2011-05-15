@@ -904,23 +904,27 @@ PVR_ERROR cPVRClientMediaPortal::GetTimers(PVR_HANDLE handle)
 
   result = SendCommand("ListSchedules:\n");
 
-  Tokenize(result, lines, ",");
-
-  memset(&tag, 0, sizeof(PVR_TIMER));
-
-  for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
+  if(result.length() > 0)
   {
-    string& data(*it);
-    uri::decode(data);
+    Tokenize(result, lines, ",");
 
-    XBMC->Log(LOG_DEBUG, "SCHEDULED: %s", data.c_str() );
+    memset(&tag, 0, sizeof(PVR_TIMER));
 
-    cTimer timer;
+    for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
+    {
+      string& data(*it);
+      uri::decode(data);
 
-    timer.ParseLine(data.c_str());
-    timer.GetPVRtimerinfo(tag);
+      XBMC->Log(LOG_DEBUG, "SCHEDULED: %s", data.c_str() );
 
-    PVR->TransferTimerEntry(handle, &tag);
+      cTimer timer;
+
+      if(timer.ParseLine(data.c_str()) == true)
+      {
+        timer.GetPVRtimerinfo(tag);
+        PVR->TransferTimerEntry(handle, &tag);
+      }
+    }
   }
 
   return PVR_ERROR_NO_ERROR;
@@ -941,9 +945,13 @@ PVR_ERROR cPVRClientMediaPortal::GetTimerInfo(unsigned int timernumber, PVR_TIME
   result = SendCommand(command);
 
   cTimer timer;
-  timer.ParseLine(result.c_str());
-  timer.GetPVRtimerinfo(timerinfo);
+  if( timer.ParseLine(result.c_str()) == false )
+  {
+    XBMC->Log(LOG_DEBUG, "GetTimerInfo(%i) parsing server response failed. Response: %s", timernumber, result.c_str());
+    return PVR_ERROR_UNKOWN;
+  }
 
+  timer.GetPVRtimerinfo(timerinfo);
   return PVR_ERROR_NO_ERROR;
 }
 
