@@ -47,18 +47,6 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { 0x09, 0x0038,    '8',  '8', 0x38, "eight" }
 , { 0x0a, 0x0039,    '9',  '9', 0x39, "nine" }
 
-// Shifted number keys on a US keyboard
-, { 0x0b, 0x0030,    ')',  ')', 0x30, "zero" }
-, { 0x02, 0x0031,    '!',  '!', 0x31, "one" }
-, { 0x03, 0x0032,    '@',  '@', 0x32, "two" }
-, { 0x04, 0x0033,    '#',  '#', 0x33, "three" }
-, { 0x05, 0x0034,    '$',  '$', 0x34, "four" }
-, { 0x06, 0x0035,    '%',  '%', 0x35, "five" }
-, { 0x07, 0x0036,    '^',  '^', 0x36, "six" }
-, { 0x08, 0x0037,    '&',  '&', 0x37, "seven" }
-, { 0x09, 0x0038,    '*',  '*', 0x38, "eight" }
-, { 0x0a, 0x0039,    '(',  '(', 0x39, "nine" }
-
 // A to Z - note that upper case A-Z don't have a matching name or
 // vkey. Only the lower case a-z are used in key mappings.
 , { 0x1e, 0x0061,    'A',  'A', 0x41, NULL }
