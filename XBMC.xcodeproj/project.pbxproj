@@ -797,7 +797,6 @@
 		E38E20720D25F9FD00618676 /* QueryParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17880D25F9FA00618676 /* QueryParams.cpp */; };
 		E38E20730D25F9FD00618676 /* VideoDatabaseDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E178A0D25F9FA00618676 /* VideoDatabaseDirectory.cpp */; };
 		E38E20740D25F9FD00618676 /* VirtualDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E178C0D25F9FA00618676 /* VirtualDirectory.cpp */; };
-		E38E20750D25F9FD00618676 /* VirtualPathDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E178E0D25F9FA00618676 /* VirtualPathDirectory.cpp */; };
 		E38E20770D25F9FD00618676 /* ZipDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17930D25F9FA00618676 /* ZipDirectory.cpp */; };
 		E38E20780D25F9FD00618676 /* ZipManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17950D25F9FA00618676 /* ZipManager.cpp */; };
 		E38E207B0D25F9FD00618676 /* GUIDialogBoxBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E179C0D25F9FA00618676 /* GUIDialogBoxBase.cpp */; };
@@ -1382,7 +1381,6 @@
 		F5A1C9A10F6B06CF00A96ABD /* QueryParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17880D25F9FA00618676 /* QueryParams.cpp */; };
 		F5A1C9A20F6B06CF00A96ABD /* VideoDatabaseDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E178A0D25F9FA00618676 /* VideoDatabaseDirectory.cpp */; };
 		F5A1C9A30F6B06CF00A96ABD /* VirtualDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E178C0D25F9FA00618676 /* VirtualDirectory.cpp */; };
-		F5A1C9A40F6B06CF00A96ABD /* VirtualPathDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E178E0D25F9FA00618676 /* VirtualPathDirectory.cpp */; };
 		F5A1C9A50F6B06CF00A96ABD /* ZipDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17930D25F9FA00618676 /* ZipDirectory.cpp */; };
 		F5A1C9A60F6B06CF00A96ABD /* ZipManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17950D25F9FA00618676 /* ZipManager.cpp */; };
 		F5A1C9A90F6B06CF00A96ABD /* GUIDialogBoxBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E179C0D25F9FA00618676 /* GUIDialogBoxBase.cpp */; };
@@ -2954,8 +2952,6 @@
 		E38E178B0D25F9FA00618676 /* VideoDatabaseDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDatabaseDirectory.h; sourceTree = "<group>"; };
 		E38E178C0D25F9FA00618676 /* VirtualDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VirtualDirectory.cpp; sourceTree = "<group>"; };
 		E38E178D0D25F9FA00618676 /* VirtualDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VirtualDirectory.h; sourceTree = "<group>"; };
-		E38E178E0D25F9FA00618676 /* VirtualPathDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VirtualPathDirectory.cpp; sourceTree = "<group>"; };
-		E38E178F0D25F9FA00618676 /* VirtualPathDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VirtualPathDirectory.h; sourceTree = "<group>"; };
 		E38E17920D25F9FA00618676 /* zconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zconf.h; sourceTree = "<group>"; };
 		E38E17930D25F9FA00618676 /* ZipDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZipDirectory.cpp; sourceTree = "<group>"; };
 		E38E17940D25F9FA00618676 /* ZipDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipDirectory.h; sourceTree = "<group>"; };
@@ -5654,8 +5650,6 @@
 				E38E178B0D25F9FA00618676 /* VideoDatabaseDirectory.h */,
 				E38E178C0D25F9FA00618676 /* VirtualDirectory.cpp */,
 				E38E178D0D25F9FA00618676 /* VirtualDirectory.h */,
-				E38E178E0D25F9FA00618676 /* VirtualPathDirectory.cpp */,
-				E38E178F0D25F9FA00618676 /* VirtualPathDirectory.h */,
 				E49ACD8A100745C400A86ECD /* ZeroconfDirectory.h */,
 				E49ACD8B100745C400A86ECD /* ZeroconfDirectory.cpp */,
 				E38E17920D25F9FA00618676 /* zconf.h */,
@@ -7340,7 +7334,6 @@
 				E38E20720D25F9FD00618676 /* QueryParams.cpp in Sources */,
 				E38E20730D25F9FD00618676 /* VideoDatabaseDirectory.cpp in Sources */,
 				E38E20740D25F9FD00618676 /* VirtualDirectory.cpp in Sources */,
-				E38E20750D25F9FD00618676 /* VirtualPathDirectory.cpp in Sources */,
 				E38E20770D25F9FD00618676 /* ZipDirectory.cpp in Sources */,
 				E38E20780D25F9FD00618676 /* ZipManager.cpp in Sources */,
 				E38E207B0D25F9FD00618676 /* GUIDialogBoxBase.cpp in Sources */,
@@ -8228,7 +8221,6 @@
 				F5A1C9A10F6B06CF00A96ABD /* QueryParams.cpp in Sources */,
 				F5A1C9A20F6B06CF00A96ABD /* VideoDatabaseDirectory.cpp in Sources */,
 				F5A1C9A30F6B06CF00A96ABD /* VirtualDirectory.cpp in Sources */,
-				F5A1C9A40F6B06CF00A96ABD /* VirtualPathDirectory.cpp in Sources */,
 				F5A1C9A50F6B06CF00A96ABD /* ZipDirectory.cpp in Sources */,
 				F5A1C9A60F6B06CF00A96ABD /* ZipManager.cpp in Sources */,
 				F5A1C9A90F6B06CF00A96ABD /* GUIDialogBoxBase.cpp in Sources */,
