@@ -81,7 +81,6 @@ public:
   static bool IsVideoDb(const CStdString& strFile);
   static bool IsVirtualPath(const CStdString& strFile);
   static bool IsVTP(const CStdString& strFile);
-  static bool IsXBMS(const CStdString& strFile);
   static bool IsZIP(const CStdString& strFile);
 
   static void AddSlashAtEnd(CStdString& strFolder);
