@@ -754,11 +754,22 @@ void CGUISettings::Initialize()
   AddString(loc, "locale.language",248,"english", SPIN_CONTROL_TEXT);
   AddString(loc, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
   AddString(loc, "locale.charset", 14091, "DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
-#if defined(_LINUX) && !defined(__APPLE__)
-  AddSeparator(loc, "locale.sep1");
-  AddString(loc, "locale.timezonecountry", 14079, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
-  AddString(loc, "locale.timezone", 14080, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
+  
+  bool use_timezone = false;
+  
+#if defined(_LINUX) && !defined(__APPLE__) 
+  use_timezone = true;
+#else
+  if (g_sysinfo.IsAppleTV2())
+    use_timezone = true;  
 #endif
+  
+  if (use_timezone)
+  {  
+    AddSeparator(loc, "locale.sep1");
+    AddString(loc, "locale.timezonecountry", 14079, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
+    AddString(loc, "locale.timezone", 14080, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
+  }	
 #ifdef HAS_TIME_SERVER
   AddSeparator(loc, "locale.sep2");
   AddBool(loc, "locale.timeserver", 168, false);
@@ -1147,16 +1158,26 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");
   m_replayGain.iType = GetInt("musicplayer.replaygaintype");
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
-
-#if defined(_LINUX) && !defined(__APPLE__)
-  CStdString timezone = GetString("locale.timezone");
-  if(timezone == "0" || timezone.IsEmpty())
-  {
-    timezone = g_timezone.GetOSConfiguredTimezone();
-    SetString("locale.timezone", timezone);
-  }
-  g_timezone.SetTimezone(timezone);
+  
+  bool use_timezone = false;
+  
+#if defined(_LINUX) && !defined(__APPLE__) 
+  use_timezone = true;
+#else
+  if (g_sysinfo.IsAppleTV2())
+    use_timezone = true;  
 #endif
+  
+  if (use_timezone)
+  {  
+    CStdString timezone = GetString("locale.timezone");
+    if(timezone == "0" || timezone.IsEmpty())
+    {
+      timezone = g_timezone.GetOSConfiguredTimezone();
+      SetString("locale.timezone", timezone);
+    }
+    g_timezone.SetTimezone(timezone);	
+  }
 }
 
 void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced /* = false */)
