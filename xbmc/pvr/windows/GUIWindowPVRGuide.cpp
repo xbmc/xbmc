@@ -70,6 +70,10 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
       UpdateData();
     }
   }
+  else if (msg.Equals("epg-now")) {
+      if (IsVisible() && m_iGuideView != GUIDE_VIEW_TIMELINE)
+        SetInvalid();
+  }
 }
 
 void CGUIWindowPVRGuide::GetContextButtons(int itemNumber, CContextButtons &buttons) const
