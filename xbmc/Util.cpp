@@ -56,9 +56,6 @@
 #ifdef HAS_UPNP
 #include "filesystem/UPnPDirectory.h"
 #endif
-#ifdef HAS_CREDITS
-#include "Credits.h"
-#endif
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
