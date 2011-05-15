@@ -482,9 +482,15 @@ bool CPVRClients::OpenLiveStream(const CPVRChannel &tag)
   CSingleLock lock(m_critSection);
 
   if (m_currentChannel)
+  {
     delete m_currentChannel;
+    m_currentChannel = NULL;
+  }
   if (m_currentRecording)
+  {
     delete m_currentRecording;
+    m_currentRecording = NULL;
+  }
 
   ResetQualityData();
 
@@ -524,6 +530,8 @@ bool CPVRClients::CloseLiveStream(void)
     bReturn = true;
   }
 
+  delete m_currentChannel;
+  m_currentChannel = NULL;
   return bReturn;
 }
 
@@ -598,9 +606,15 @@ bool CPVRClients::OpenRecordedStream(const CPVRRecording &tag)
   CSingleLock lock(m_critSection);
 
   if (m_currentChannel)
+  {
     delete m_currentChannel;
+    m_currentChannel = NULL;
+  }
   if (m_currentRecording)
+  {
     delete m_currentRecording;
+    m_currentRecording = NULL;
+  }
 
   /* try to open the recording stream on the client */
   if (m_clientMap[tag.m_iClientId]->OpenRecordedStream(tag))
@@ -628,6 +642,8 @@ bool CPVRClients::CloseRecordedStream(void)
     bReturn = true;
   }
 
+  delete m_currentRecording;
+  m_currentRecording = NULL;
   return bReturn;
 }
 
