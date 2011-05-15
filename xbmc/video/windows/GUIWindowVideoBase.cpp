@@ -850,15 +850,18 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
   }
   else if (!item->IsNFO() && !item->IsPlayList())
   {
-    CBookmark bookmark;
-    CStdString strPath = item->m_strPath;
-    if ((item->IsVideoDb() || item->IsDVD()) && item->HasVideoInfoTag())
+    if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0.0)
+      startoffset = (long)(item->GetVideoInfoTag()->m_resumePoint.timeInSeconds*75);
+    else
     {
-      if (item->GetVideoInfoTag()->m_resumePoint.timeInSeconds > 0.0)
-        startoffset = (long)(item->GetVideoInfoTag()->m_resumePoint.timeInSeconds*75);
+      CBookmark bookmark;
+      CStdString strPath = item->m_strPath;
+      if ((item->IsVideoDb() || item->IsDVD()) && item->HasVideoInfoTag())
+        strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
+
+      if (db.GetResumeBookMark(strPath, bookmark))
+        startoffset = (long)(bookmark.timeInSeconds*75);
     }
-    else if (db.GetResumeBookMark(strPath, bookmark))
-      startoffset = (long)(bookmark.timeInSeconds*75);
   }
   db.Close();
 

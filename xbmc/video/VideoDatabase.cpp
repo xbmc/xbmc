@@ -2811,15 +2811,12 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag) const
 
   try
   {
-    CStdString strSQL=PrepareSQL("select * from bookmark where idFile=%i and type=%i order by timeInSeconds", tag.m_iFileId, CBookmark::RESUME);
+    CStdString strSQL=PrepareSQL("select timeInSeconds, totalTimeInSeconds from bookmark where idFile=%i and type=%i order by timeInSeconds", tag.m_iFileId, CBookmark::RESUME);
     m_pDS2->query( strSQL.c_str() );
     if (!m_pDS2->eof())
     {
-      tag.m_resumePoint.timeInSeconds = m_pDS2->fv("timeInSeconds").get_asDouble();
-      tag.m_resumePoint.totalTimeInSeconds = m_pDS2->fv("totalTimeInSeconds").get_asDouble();
-      tag.m_resumePoint.thumbNailImage = m_pDS2->fv("thumbNailImage").get_asString();
-      tag.m_resumePoint.playerState = m_pDS2->fv("playerState").get_asString();
-      tag.m_resumePoint.player = m_pDS2->fv("player").get_asString();
+      tag.m_resumePoint.timeInSeconds = m_pDS2->fv(0).get_asDouble();
+      tag.m_resumePoint.totalTimeInSeconds = m_pDS2->fv(1).get_asDouble();
       tag.m_resumePoint.type = CBookmark::RESUME;
 
       match = true;
