@@ -458,6 +458,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTag &tag)
   CDateTime newStart = tag.StartAsUTC();
   CDateTime newEnd = tag.EndAsUTC();
   newTag->m_iClientIndex      = -1;
+  newTag->m_strSummary        = newTag->m_epgInfo->Plot();
   newTag->m_iChannelNumber    = channel->ChannelNumber();
   newTag->m_iClientChannelUid = channel->UniqueID();
   newTag->m_iClientId         = channel->ClientID();
