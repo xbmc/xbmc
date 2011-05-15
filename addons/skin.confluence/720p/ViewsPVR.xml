@@ -845,8 +845,21 @@
 				<posx>80</posx>
 				<posy>60</posy>
 				<control type="label">
-					<description>Title header label</description>
+					<description>Channel header label</description>
 					<posx>0</posx>
+					<posy>20</posy>
+					<width>220</width>
+					<height>20</height>
+					<font>font13_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>19029</label>
+				</control>
+				<control type="label">
+					<description>Title header label</description>
+					<posx>220</posx>
 					<posy>20</posy>
 					<width>300</width>
 					<height>20</height>
@@ -859,9 +872,9 @@
 				</control>
 				<control type="label">
 					<description>Schedule Time header label</description>
-					<posx>300</posx>
+					<posx>580</posx>
 					<posy>20</posy>
-					<width>600</width>
+					<width>300</width>
 					<height>20</height>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
@@ -872,9 +885,9 @@
 				</control>
 				<control type="label">
 					<description>Status header label</description>
-					<posx>900</posx>
+					<posx>940</posx>
 					<posy>20</posy>
-					<width>200</width>
+					<width>150</width>
 					<height>20</height>
 					<font>font13_title</font>
 					<textcolor>white</textcolor>
@@ -912,7 +925,7 @@
 							<texture border="5">MenuItemNF.png</texture>
 						</control>
 						<control type="image">
-							<posx>0</posx>
+							<posx>220</posx>
 							<posy>0</posy>
 							<width>300</width>
 							<height>40</height>
@@ -920,15 +933,34 @@
 							<texture border="5">StackFO.png</texture>
 						</control>
 						<control type="image">
-							<posx>900</posx>
+							<posx>940</posx>
 							<posy>0</posy>
-							<width>200</width>
+							<width>155</width>
 							<height>40</height>
 							<colordiffuse>33FFFFFF</colordiffuse>
 							<texture border="5">StackFO.png</texture>
 						</control>
+						<control type="image">
+							<posx>0</posx>
+							<posy>8</posy>
+							<width>50</width>
+							<height>26</height>
+							<visible>!IsEmpty(ListItem.Date)</visible>
+							<texture border="1">$INFO[ListItem.Icon]</texture>
+						</control>
 						<control type="label">
-							<posx>150</posx>
+							<posx>50</posx>
+							<posy>0</posy>
+							<width>150</width>
+							<height>40</height>
+							<font>font12</font>
+							<align>left</align>
+							<aligny>center</aligny>
+							<selectedcolor>selected</selectedcolor>
+							<info>ListItem.ChannelName</info>
+						</control>
+						<control type="label">
+							<posx>370</posx>
 							<posy>0</posy>
 							<width>290</width>
 							<height>40</height>
@@ -939,9 +971,9 @@
 							<info>ListItem.Label</info>
 						</control>
 						<control type="label">
-							<posx>600</posx>
+							<posx>730</posx>
 							<posy>0</posy>
-							<width>590</width>
+							<width>400</width>
 							<height>40</height>
 							<font>font12</font>
 							<align>center</align>
@@ -950,9 +982,9 @@
 							<info>ListItem.Date</info>
 						</control>
 						<control type="label">
-							<posx>1000</posx>
+							<posx>1018</posx>
 							<posy>0</posy>
-							<width>190</width>
+							<width>170</width>
 							<height>40</height>
 							<font>font12</font>
 							<align>center</align>
@@ -970,7 +1002,7 @@
 							<texture border="5">MenuItemNF.png</texture>
 						</control>
 						<control type="image">
-							<posx>0</posx>
+							<posx>220</posx>
 							<posy>0</posy>
 							<width>300</width>
 							<height>40</height>
@@ -979,16 +1011,16 @@
 							<visible>!Control.HasFocus(14)</visible>
 						</control>
 						<control type="image">
-							<posx>900</posx>
+							<posx>980</posx>
 							<posy>0</posy>
-							<width>200</width>
+							<width>120</width>
 							<height>40</height>
 							<colordiffuse>33FFFFFF</colordiffuse>
 							<texture border="5">StackFO.png</texture>
 							<visible>!Control.HasFocus(14)</visible>
 						</control>
 						<control type="image">
-							<posx>0</posx>
+							<posx>220</posx>
 							<posy>0</posy>
 							<width>300</width>
 							<height>40</height>
@@ -997,16 +1029,35 @@
 							<visible>Control.HasFocus(14)</visible>
 						</control>
 						<control type="image">
-							<posx>900</posx>
+							<posx>940</posx>
 							<posy>0</posy>
-							<width>200</width>
+							<width>155</width>
 							<height>40</height>
 							<colordiffuse>88FFFFFF</colordiffuse>
 							<texture border="5">StackFO.png</texture>
 							<visible>Control.HasFocus(14)</visible>
+						</control>
+						<control type="image">
+							<posx>0</posx>
+							<posy>8</posy>
+							<width>50</width>
+							<height>26</height>
+							<visible>!IsEmpty(ListItem.Date)</visible>
+							<texture border="1">$INFO[ListItem.Icon]</texture>
 						</control>
 						<control type="label">
-							<posx>150</posx>
+							<posx>50</posx>
+							<posy>0</posy>
+							<width>150</width>
+							<height>40</height>
+							<font>font12</font>
+							<align>left</align>
+							<aligny>center</aligny>
+							<selectedcolor>selected</selectedcolor>
+							<info>ListItem.ChannelName</info>
+						</control>
+						<control type="label">
+							<posx>370</posx>
 							<posy>0</posy>
 							<width>290</width>
 							<height>40</height>
@@ -1017,9 +1068,9 @@
 							<info>ListItem.Label</info>
 						</control>
 						<control type="label">
-							<posx>600</posx>
+							<posx>730</posx>
 							<posy>0</posy>
-							<width>590</width>
+							<width>400</width>
 							<height>40</height>
 							<font>font12</font>
 							<align>center</align>
@@ -1028,9 +1079,9 @@
 							<info>ListItem.Date</info>
 						</control>
 						<control type="label">
-							<posx>1000</posx>
+							<posx>1018</posx>
 							<posy>0</posy>
-							<width>190</width>
+							<width>150</width>
 							<height>40</height>
 							<font>font12</font>
 							<align>center</align>
