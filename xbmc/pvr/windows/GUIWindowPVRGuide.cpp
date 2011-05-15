@@ -41,17 +41,9 @@ using namespace EPG;
 
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_EPG, CONTROL_BTNGUIDE, CONTROL_LIST_GUIDE_NOW_NEXT),
-  Observer()
+  Observer(),
+  m_iGuideView(g_guiSettings.GetInt("pvrmenu.defaultguideview"))
 {
-  m_iGuideView     = g_guiSettings.GetInt("pvrmenu.defaultguideview");
-  m_epgData        = new CFileItemList();
-  m_bLastEpgView   = false;
-  m_bGotInitialEpg = false;
-}
-
-CGUIWindowPVRGuide::~CGUIWindowPVRGuide()
-{
-  delete m_epgData;
 }
 
 void CGUIWindowPVRGuide::ResetObservers(void)
@@ -64,10 +56,8 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
 {
   if (msg.Equals("epg"))
   {
-    UpdateEpgCache(m_bLastEpgView, true);
-
-    /* update the current window if the EPG timeline view is active */
-    if (IsActive() && m_iGuideView == GUIDE_VIEW_TIMELINE)
+    /* update the current window if the EPG timeline view is visible */
+    if (IsVisible() && m_iGuideView == GUIDE_VIEW_TIMELINE)
       UpdateData();
   }
 }
@@ -198,33 +188,21 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
 {
   CPVRChannel CurrentChannel;
   CPVREpgContainer *epg = g_PVREpg;
-
   bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(&CurrentChannel);
   bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
   CDateTime gridStart = CDateTime::GetCurrentDateTime();
   CDateTime firstDate = epg->GetFirstEPGDate(bRadio);
   CDateTime lastDate = epg->GetLastEPGDate(bRadio);
-
-  m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
-  m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
-
   m_parent->m_guideGrid = (CGUIEPGGridContainer*) m_parent->GetControl(CONTROL_LIST_TIMELINE);
   if (!m_parent->m_guideGrid)
     return;
 
-  /* cache data if needed */
-  UpdateEpgCache(bRadio, false);
+  m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
+  m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
 
-  CSingleLock lock(m_critSection);
-  if (m_epgData->Size() > 0)
-  {
-    /* copy over the cached epg data */
-    for (int iEpgPtr = 0; iEpgPtr < m_epgData->Size(); iEpgPtr++)
-      m_parent->m_vecItems->Add(m_epgData->Get(iEpgPtr));
-
-    m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
-    m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
-  }
+  g_PVREpg->GetEPGAll(m_parent->m_vecItems, bRadio);
+  m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
+  m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
 //m_viewControl.SetSelectedItem(m_iSelected_GUIDE);
 }
 
@@ -235,6 +213,7 @@ void CGUIWindowPVRGuide::UpdateData(void)
     return;
   CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
 
+  g_PVREpg->RegisterObserver(this);
   m_bIsFocusing = true;
   m_bUpdateRequired = false;
 
@@ -447,29 +426,4 @@ void CGUIWindowPVRGuide::UpdateButtons(void)
     m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19031));
   else if (m_iGuideView == GUIDE_VIEW_TIMELINE)
     m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
-}
-
-void CGUIWindowPVRGuide::UpdateEpgCache(bool bRadio /* = false */, bool bForceUpdate /* = false */)
-{
-  CSingleLock lock(m_critSection);
-  g_PVREpg->RegisterObserver(this);
-
-  if (!m_bGotInitialEpg || m_bLastEpgView != bRadio || bForceUpdate)
-  {
-    CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - updating EPG cache", __FUNCTION__);
-
-    if (IsActive() && m_iGuideView == GUIDE_VIEW_TIMELINE)
-    {
-      CSingleLock graphicsLock(g_graphicsContext);
-      m_epgData->Clear();
-      g_PVREpg->GetEPGAll(m_epgData, bRadio);
-    }
-    else
-    {
-      m_epgData->Clear();
-      g_PVREpg->GetEPGAll(m_epgData, bRadio);
-    }
-  }
-  m_bGotInitialEpg = true;
-  m_bLastEpgView = bRadio;
 }

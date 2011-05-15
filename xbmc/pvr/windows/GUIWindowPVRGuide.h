@@ -36,7 +36,7 @@ namespace PVR
 
   public:
     CGUIWindowPVRGuide(CGUIWindowPVR *parent);
-    virtual ~CGUIWindowPVRGuide(void);
+    virtual ~CGUIWindowPVRGuide(void) {};
 
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
@@ -64,11 +64,7 @@ namespace PVR
     virtual void UpdateViewNow(void);
     virtual void UpdateViewNext(void);
     virtual void UpdateViewTimeline(void);
-    virtual void UpdateEpgCache(bool bRadio = false, bool bForceUpdate = false);
 
     int              m_iGuideView;
-    CFileItemList *  m_epgData;
-    bool             m_bLastEpgView; /*!< true for radio, false for tv */
-    bool             m_bGotInitialEpg;
   };
 }

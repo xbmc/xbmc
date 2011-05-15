@@ -92,7 +92,8 @@ const char *CGUIWindowPVRCommon::GetName(void) const
 
 bool CGUIWindowPVRCommon::IsVisible(void) const
 {
-  return g_windowManager.GetActiveWindow() == WINDOW_PVR &&
+  return !g_application.IsPlayingFullScreenVideo() &&
+      g_windowManager.GetActiveWindow() == WINDOW_PVR &&
       IsActive();
 }
 
