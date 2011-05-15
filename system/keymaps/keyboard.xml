@@ -179,6 +179,7 @@
     <keyboard>
       <space>Playlist</space>
       <q>Queue</q>
+      <delete>Delete</delete>
     </keyboard>
   </MyMusicFiles>
   <MyMusicLibrary>
@@ -421,6 +422,11 @@
       <d>MoveItemDown</d>
     </keyboard>
   </MyVideoPlaylist>
+  <MyPictures>
+    <keyboard>
+      <delete>Delete</delete>
+    </keyboard>
+  </MyPictures>
   <ContextMenu>
     <keyboard>
       <c>Close</c>
