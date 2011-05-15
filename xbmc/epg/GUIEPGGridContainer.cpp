@@ -107,6 +107,9 @@ void CGUIEPGGridContainer::Render()
 
   UpdateScrollOffset();
 
+  if (!m_programmeScrollOffset || !m_channelScrollOffset)
+    return;
+
   int chanOffset  = (int)floorf(m_channelScrollOffset / m_programmeLayout->Size(m_orientation));
   int blockOffset = (int)floorf(m_programmeScrollOffset / m_blockSize);
   int rulerOffset = (int)floorf(m_programmeScrollOffset / m_blockSize);
@@ -1260,6 +1263,9 @@ int CGUIEPGGridContainer::GetItemSize(GridItemsPtr *item)
 
 int CGUIEPGGridContainer::GetBlock(const CGUIListItemPtr &item, const int &channel)
 {
+  if (!item)
+    return 0;
+
   return GetRealBlock(item, channel) - m_blockOffset;
 }
 
