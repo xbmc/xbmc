@@ -53,8 +53,12 @@ bool CPVRFile::Open(const CURL& url)
     const CPVRChannel *tag = g_PVRChannelGroups->GetByPath(strURL);
     if (tag)
     {
-      if (!g_PVRManager.OpenLiveStream(*tag))
+      CPVRChannel *newTag = new CPVRChannel(*tag);
+      if (!g_PVRManager.OpenLiveStream(*newTag))
+      {
+        delete newTag;
         return false;
+      }
 
       m_isPlayRecording = false;
       CLog::Log(LOGDEBUG, "%s - TV Channel has started on filename %s", __FUNCTION__, strURL.c_str());
@@ -72,7 +76,10 @@ bool CPVRFile::Open(const CURL& url)
     {
       CPVRChannel *newTag = new CPVRChannel(*tag);
       if (!g_PVRManager.OpenLiveStream(*newTag))
+      {
+        delete newTag;
         return false;
+      }
 
       m_isPlayRecording = false;
       CLog::Log(LOGDEBUG, "%s - Radio Channel has started on filename %s", __FUNCTION__, strURL.c_str());
@@ -90,7 +97,10 @@ bool CPVRFile::Open(const CURL& url)
     {
       CPVRRecording *newTag = new CPVRRecording(*tag);
       if (!g_PVRManager.OpenRecordedStream(*newTag))
+      {
+        delete newTag;
         return false;
+      }
 
       m_isPlayRecording = true;
       CLog::Log(LOGDEBUG, "%s - Recording has started on filename %s", __FUNCTION__, strURL.c_str());
