@@ -3623,10 +3623,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
     OutputDebugString("new file set audiostream:0\n");
     // Switch to default options
-    // PVR channel settings are stored later
-    // default settings would overwrite changed settings for pvr channels
-    if (!item.IsPVR())
-      g_settings.m_currentVideoSettings = g_settings.m_defaultVideoSettings;
+    g_settings.m_currentVideoSettings = g_settings.m_defaultVideoSettings;
     // see if we have saved options in the database
 
     m_iPlaySpeed = 1;
@@ -4158,12 +4155,15 @@ bool CApplication::IsPlayingFullScreenVideo() const
 
 void CApplication::SaveFileState()
 {
-  if (!g_settings.GetCurrentProfile().canWriteDatabases())
-    return;
-  CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
-      m_progressTrackingVideoResumeBookmark,
-      m_progressTrackingPlayCountUpdate);
-  CJobManager::GetInstance().AddJob(job, NULL);
+  if (!m_progressTrackingItem->IsPVRChannel())
+  {
+    if (!g_settings.GetCurrentProfile().canWriteDatabases())
+      return;
+    CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
+        m_progressTrackingVideoResumeBookmark,
+        m_progressTrackingPlayCountUpdate);
+    CJobManager::GetInstance().AddJob(job, NULL);
+  }
 }
 
 void CApplication::UpdateFileState()
@@ -5426,7 +5426,7 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
 void CApplication::SaveCurrentFileSettings()
 {
   // don't store settings for PVR in video database
-  if (m_itemCurrentFile->IsVideo() && !m_itemCurrentFile->IsPVR())
+  if (m_itemCurrentFile->IsVideo() && !m_itemCurrentFile->IsPVRChannel())
   {
     // save video settings
     if (g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings)
