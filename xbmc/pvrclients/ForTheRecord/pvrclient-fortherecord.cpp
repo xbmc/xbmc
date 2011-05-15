@@ -640,7 +640,6 @@ PVR_ERROR cPVRClientForTheRecord::GetTimers(PVR_HANDLE handle)
     if (upcomingrecording.Parse(response[i]))
     {
       tag.iClientIndex      = iNumberOfTimers;
-      tag.bIsActive         = true;
       cChannel* pChannel    = FetchChannel(upcomingrecording.ChannelId());
       tag.iClientChannelUid = pChannel->ID();
       tag.firstDay          = 0;
@@ -648,7 +647,6 @@ PVR_ERROR cPVRClientForTheRecord::GetTimers(PVR_HANDLE handle)
       tag.iMarginEnd        = upcomingrecording.PostRecordSeconds() / 60;
       tag.startTime         = upcomingrecording.StartTime();
       tag.endTime           = upcomingrecording.StopTime();
-      tag.bIsRecording      = upcomingrecording.IsRecording();
       tag.strTitle          = upcomingrecording.Title().c_str();
       tag.strDirectory      = "";
       tag.iPriority         = 0;
