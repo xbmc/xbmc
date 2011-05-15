@@ -3767,9 +3767,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\ILiveTV.h">
       <Filter>filesystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\zconf.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ZeroconfDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>

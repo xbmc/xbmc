@@ -179,6 +179,22 @@ namespace ForTheRecord
    */
   int AddOneTimeSchedule(const std::string& channelid, const time_t starttime, const std::string& title, int prerecordseconds, int postrecordseconds);
 
+  /*
+   * \brief Get the list with TV channel groups from 4TR
+   */
+  int RequestTVChannelGroups(Json::Value& response);
+
+    /*
+   * \brief Get the list with Radio channel groups from 4TR
+   */
+  int RequestRadioChannelGroups(Json::Value& response);
+
+  /*
+   * \brief Get the list with channels for the given channel group from 4TR
+   * \param channelGroupId GUID of the channel group 
+   */
+  int RequestChannelGroupMembers(const std::string& channelGroupId, Json::Value& response);
+
   time_t WCFDateToTimeT(const std::string& wcfdate, int& offset);
   std::string TimeTToWCFDate(const time_t thetime);
 
