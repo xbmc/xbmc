@@ -43,7 +43,6 @@
 #include "addons/Addon.h"
 #include "storage/IoSupport.h"
 #include "filesystem/StackDirectory.h"
-#include "filesystem/VirtualPathDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/SpecialProtocol.h"

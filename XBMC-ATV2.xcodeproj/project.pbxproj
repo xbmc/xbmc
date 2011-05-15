@@ -376,7 +376,6 @@
 		F56C79E8131EC154000AD0F6 /* QueryParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C748E131EC152000AD0F6 /* QueryParams.cpp */; };
 		F56C79E9131EC154000AD0F6 /* VideoDatabaseDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7490131EC152000AD0F6 /* VideoDatabaseDirectory.cpp */; };
 		F56C79EA131EC154000AD0F6 /* VirtualDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7492131EC152000AD0F6 /* VirtualDirectory.cpp */; };
-		F56C79EB131EC154000AD0F6 /* VirtualPathDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7494131EC152000AD0F6 /* VirtualPathDirectory.cpp */; };
 		F56C79ED131EC154000AD0F6 /* ZeroconfDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7499131EC152000AD0F6 /* ZeroconfDirectory.cpp */; };
 		F56C79EE131EC154000AD0F6 /* ZipDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C749B131EC152000AD0F6 /* ZipDirectory.cpp */; };
 		F56C79EF131EC154000AD0F6 /* ZipManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C749D131EC152000AD0F6 /* ZipManager.cpp */; };
@@ -1769,8 +1768,6 @@
 		F56C7491131EC152000AD0F6 /* VideoDatabaseDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDatabaseDirectory.h; sourceTree = "<group>"; };
 		F56C7492131EC152000AD0F6 /* VirtualDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VirtualDirectory.cpp; sourceTree = "<group>"; };
 		F56C7493131EC152000AD0F6 /* VirtualDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VirtualDirectory.h; sourceTree = "<group>"; };
-		F56C7494131EC152000AD0F6 /* VirtualPathDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VirtualPathDirectory.cpp; sourceTree = "<group>"; };
-		F56C7495131EC152000AD0F6 /* VirtualPathDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VirtualPathDirectory.h; sourceTree = "<group>"; };
 		F56C7498131EC152000AD0F6 /* ZeroconfDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfDirectory.h; sourceTree = "<group>"; };
 		F56C7499131EC152000AD0F6 /* ZeroconfDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfDirectory.cpp; sourceTree = "<group>"; };
 		F56C749A131EC152000AD0F6 /* zconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zconf.h; sourceTree = "<group>"; };
@@ -4127,8 +4124,6 @@
 				F56C7491131EC152000AD0F6 /* VideoDatabaseDirectory.h */,
 				F56C7492131EC152000AD0F6 /* VirtualDirectory.cpp */,
 				F56C7493131EC152000AD0F6 /* VirtualDirectory.h */,
-				F56C7494131EC152000AD0F6 /* VirtualPathDirectory.cpp */,
-				F56C7495131EC152000AD0F6 /* VirtualPathDirectory.h */,
 				F56C7498131EC152000AD0F6 /* ZeroconfDirectory.h */,
 				F56C7499131EC152000AD0F6 /* ZeroconfDirectory.cpp */,
 				F56C749A131EC152000AD0F6 /* zconf.h */,
@@ -6233,7 +6228,6 @@
 				F56C79E8131EC154000AD0F6 /* QueryParams.cpp in Sources */,
 				F56C79E9131EC154000AD0F6 /* VideoDatabaseDirectory.cpp in Sources */,
 				F56C79EA131EC154000AD0F6 /* VirtualDirectory.cpp in Sources */,
-				F56C79EB131EC154000AD0F6 /* VirtualPathDirectory.cpp in Sources */,
 				F56C79ED131EC154000AD0F6 /* ZeroconfDirectory.cpp in Sources */,
 				F56C79EE131EC154000AD0F6 /* ZipDirectory.cpp in Sources */,
 				F56C79EF131EC154000AD0F6 /* ZipManager.cpp in Sources */,
