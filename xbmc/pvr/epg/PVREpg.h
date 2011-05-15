@@ -59,6 +59,8 @@ namespace PVR
      */
     bool Update(const CEpg &epg, bool bUpdateDb = false);
 
+    bool IsRemovableTag(const EPG::CEpgInfoTag *tag) const;
+
   public:
     /*!
      * @brief Create a new EPG instance for a channel.
@@ -72,13 +74,6 @@ namespace PVR
      * @return True if it has valid entries, false if not.
      */
     bool HasValidEntries(void) const;
-
-    /*!
-     * @brief Remove all entries from this EPG that finished before the given time
-     *        and that have no timers set.
-     * @param Time Delete entries with an end time before this time.
-     */
-    void Cleanup(const CDateTime &Time);
 
     /*!
      * @brief Remove all entries from this EPG.

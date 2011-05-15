@@ -66,11 +66,10 @@ namespace PVR
     CStdString            m_strTitle;           /*!< @brief name of this timer */
     CStdString            m_strDirectory;       /*!< @brief directory where the recording must be stored */
     CStdString            m_strSummary;         /*!< @brief summary string with the time to show inside a GUI list */
-    bool                  m_bIsActive;          /*!< @brief active flag, if it is false backend ignore the timer */
+    PVR_TIMER_STATE       m_state;              /*!< @brief the state of this timer */
     int                   m_iClientId;          /*!< @brief ID of the backend */
     int                   m_iClientIndex;       /*!< @brief index number of the tag, given by the backend, -1 for new */
     int                   m_iClientChannelUid;  /*!< @brief channel uid */
-    bool                  m_bIsRecording;       /*!< @brief is this timer recording? */
     int                   m_iPriority;          /*!< @brief priority of the timer */
     int                   m_iLifetime;          /*!< @brief lifetime of the timer in days */
     bool                  m_bIsRepeating;       /*!< @brief repeating timer if true, use the m_FirstDay and repeat flags */
@@ -112,8 +111,8 @@ namespace PVR
 
     void UpdateEpgEvent(bool bClear = false);
 
-    bool IsActive(void) const { return m_bIsActive && EndAsLocalTime() > CDateTime::GetCurrentDateTime(); }
-    bool IsRecording(void) const { return IsActive() && StartAsLocalTime() < CDateTime::GetCurrentDateTime(); }
+    bool IsActive(void) const { return m_state == PVR_TIMER_STATE_SCHEDULED || m_state == PVR_TIMER_STATE_RECORDING; }
+    bool IsRecording(void) const { return m_state == PVR_TIMER_STATE_RECORDING; }
 
     const CDateTime &StartAsUTC(void) const { return m_StartTime; }
     const CDateTime &StartAsLocalTime(void) const;

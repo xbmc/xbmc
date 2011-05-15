@@ -23,7 +23,6 @@
 
 #include "StdString.h"
 #include "threads/CriticalSection.h"
-#include "utils/JobManager.h"
 #include "interfaces/AnnouncementManager.h"
 
 class Observable;

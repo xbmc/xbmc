@@ -60,8 +60,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageLib_zlib", "..\..\lib\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libexif_dll", "..\..\lib\libexif\libexif.vcxproj", "{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcdio", "..\..\lib\win32\libcdio\libcdio.vcxproj", "{E465056A-C6F3-45EE-B791-CAF8E0CE629D}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visDirectxSpectrum", "..\..\xbmc\visualizations\DirectXSpectrum\directx_spectrum.vcxproj", "{0D91724A-E6F6-4708-AF47-9F88BBE2114C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmodplug_2010", "..\..\lib\libmodplug\libmodplug_2010.vcxproj", "{C15B374E-7126-48FF-B618-A375D7B17FCF}"
@@ -316,14 +314,6 @@ Global
 		{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}.Release (DirectX)|Win32.Build.0 = Release (DLL)|Win32
 		{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}.Release (OpenGL)|Win32.ActiveCfg = Release (DLL)|Win32
 		{AD20A3E2-09CB-42DB-9A70-27F7CDC886CE}.Release (OpenGL)|Win32.Build.0 = Release (DLL)|Win32
-		{E465056A-C6F3-45EE-B791-CAF8E0CE629D}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
-		{E465056A-C6F3-45EE-B791-CAF8E0CE629D}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
-		{E465056A-C6F3-45EE-B791-CAF8E0CE629D}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
-		{E465056A-C6F3-45EE-B791-CAF8E0CE629D}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
-		{E465056A-C6F3-45EE-B791-CAF8E0CE629D}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
-		{E465056A-C6F3-45EE-B791-CAF8E0CE629D}.Release (DirectX)|Win32.Build.0 = Release|Win32
-		{E465056A-C6F3-45EE-B791-CAF8E0CE629D}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
-		{E465056A-C6F3-45EE-B791-CAF8E0CE629D}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug (DirectX)|Win32.ActiveCfg = Debug (DirectX)|Win32
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug (DirectX)|Win32.Build.0 = Debug (DirectX)|Win32
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Debug (OpenGL)|Win32.ActiveCfg = Debug (DirectX)|Win32

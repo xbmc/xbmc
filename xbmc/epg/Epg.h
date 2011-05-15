@@ -126,6 +126,8 @@ namespace EPG
      */
     virtual void UpdateFirstAndLastDates(void);
 
+    virtual bool IsRemovableTag(const EPG::CEpgInfoTag *tag) const { return true; }
+
   public:
     /*!
      * @brief Update this table's info with the given info. Doesn't change the EpgID.

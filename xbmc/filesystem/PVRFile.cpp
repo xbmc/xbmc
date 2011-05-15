@@ -48,47 +48,38 @@ bool CPVRFile::Open(const CURL& url)
 
   CStdString strURL = url.Get();
 
-  if (strURL.Left(18) == "pvr://channels/tv/")
+  if (strURL.Left(18) == "pvr://channels/tv/" || strURL.Left(21) == "pvr://channels/radio/")
   {
     const CPVRChannel *tag = g_PVRChannelGroups->GetByPath(strURL);
     if (tag)
     {
-      if (!g_PVRManager.OpenLiveStream(*tag))
+      CPVRChannel *newTag = new CPVRChannel(*tag);
+      if (!g_PVRManager.OpenLiveStream(*newTag))
+      {
+        delete newTag;
         return false;
+      }
 
       m_isPlayRecording = false;
-      CLog::Log(LOGDEBUG, "%s - TV Channel has started on filename %s", __FUNCTION__, strURL.c_str());
+      CLog::Log(LOGDEBUG, "PVRFile - %s - playback has started on filename %s", __FUNCTION__, strURL.c_str());
     }
     else
     {
-      CLog::Log(LOGERROR, "PVRFile - TV Channel not found with filename %s", strURL.c_str());
-      return false;
-    }
-  }
-  else if (strURL.Left(21) == "pvr://channels/radio/")
-  {
-    const CPVRChannel *tag = g_PVRChannelGroups->GetByPath(strURL);
-    if (tag)
-    {
-      if (!g_PVRManager.OpenLiveStream(*tag))
-        return false;
-
-      m_isPlayRecording = false;
-      CLog::Log(LOGDEBUG, "%s - Radio Channel has started on filename %s", __FUNCTION__, strURL.c_str());
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "PVRFile - Radio Channel not found with filename %s", strURL.c_str());
+      CLog::Log(LOGERROR, "PVRFile - %s - channel not found with filename %s", __FUNCTION__, strURL.c_str());
       return false;
     }
   }
   else if (strURL.Left(17) == "pvr://recordings/")
   {
-    CPVRRecording *tag = g_PVRRecordings->GetByPath(strURL);
+    const CPVRRecording *tag = g_PVRRecordings->GetByPath(strURL);
     if (tag)
     {
-      if (!g_PVRManager.OpenRecordedStream(*tag))
+      CPVRRecording *newTag = new CPVRRecording(*tag);
+      if (!g_PVRManager.OpenRecordedStream(*newTag))
+      {
+        delete newTag;
         return false;
+      }
 
       m_isPlayRecording = true;
       CLog::Log(LOGDEBUG, "%s - Recording has started on filename %s", __FUNCTION__, strURL.c_str());

@@ -37,6 +37,7 @@ public:
 
   bool        Connect(void);
   void        Close();
+  void        Abort();
   bool        IsConnected(void) const { return m_bIsConnected; }
   int         GetProtocol() const { return m_iProtocol; }
   const char *GetServerName() const { return m_strServerName.c_str(); }
@@ -46,7 +47,6 @@ public:
   bool        SendMessage(htsmsg_t* m);
   htsmsg_t *  ReadResult (htsmsg_t* m, bool sequence = true);
   bool        ReadSuccess(htsmsg_t* m, bool sequence = true, std::string action = "");
-  unsigned    AddSequence();
 
   static bool ParseEvent         (htsmsg_t* msg, uint32_t id, SEvent &event);
   static void ParseChannelUpdate (htsmsg_t* msg, SChannels &channels);
@@ -64,7 +64,6 @@ private:
   bool Auth(void);
 
   SOCKET                m_fd;
-  unsigned int          m_iSequence;
   void*                 m_challenge;
   int                   m_iChallengeLength;
   int                   m_iProtocol;
@@ -77,7 +76,6 @@ private:
   std::string           m_strHostname;
   bool                  m_bIsConnected;
 
-  cMutex                m_Mutex;
   std::deque<htsmsg_t*> m_queue;
   const unsigned int    m_iQueueSize;
 };

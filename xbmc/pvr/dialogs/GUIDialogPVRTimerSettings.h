@@ -53,6 +53,7 @@ namespace PVR
     CStdString      timerEndTimeStr;
     int             m_tmp_iFirstDay;;
     int             m_tmp_day;
+    bool            m_bTimerActive;
 
     CFileItem      *m_timerItem;
     bool            m_cancelled;

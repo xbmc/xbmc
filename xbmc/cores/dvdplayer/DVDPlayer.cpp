@@ -948,7 +948,8 @@ void CDVDPlayer::Process()
   m_ready.Set();
 
   // make sure all selected stream have data on startup
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)
+      && !g_PVRManager.IsPlayingRecording())
     SetCaching(CACHESTATE_PVR);
   else
     SetCaching(CACHESTATE_INIT);
@@ -1358,9 +1359,17 @@ void CDVDPlayer::HandlePlaySpeed()
   if (m_caching == CACHESTATE_PVR)
   {
     /* if all streams got at least g_advancedSettings.m_iPVRMinCacheLevel in their buffers, we're done */
-    if (m_dvdPlayerAudio.m_messageQueue.GetLevel() >= g_advancedSettings.m_iPVRMinCacheLevel &&
-        m_dvdPlayerVideo.m_messageQueue.GetLevel() >= g_advancedSettings.m_iPVRMinCacheLevel)
+    bool bGotAudio(m_pDemuxer->GetNrOfAudioStreams() > 0);
+    bool bGotVideo(m_pDemuxer->GetNrOfVideoStreams() > 0);
+
+    if ((bGotVideo || bGotAudio) &&
+        (!bGotAudio || m_dvdPlayerAudio.m_messageQueue.GetLevel() > g_advancedSettings.m_iPVRMinCacheLevel) &&
+        (!bGotVideo || m_dvdPlayerVideo.m_messageQueue.GetLevel() > g_advancedSettings.m_iPVRMinCacheLevel))
+    {
+      CLog::Log(LOGDEBUG, "set caching from pvr to done. audio (%d) = %d. video (%d) = %d", bGotAudio, m_dvdPlayerAudio.m_messageQueue.GetLevel(),
+                                                                                            bGotVideo, m_dvdPlayerVideo.m_messageQueue.GetLevel());
       SetCaching(CACHESTATE_DONE);
+    }
   }
 
   if(m_caching == CACHESTATE_PLAY)
@@ -1422,7 +1431,8 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
   if((current.type == STREAM_AUDIO && m_dvdPlayerAudio.IsStalled())
   || (current.type == STREAM_VIDEO && m_dvdPlayerVideo.IsStalled()))
   {
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)
+        && !g_PVRManager.IsPlayingRecording())
     {
       SetCaching(CACHESTATE_PVR);
       return true;
@@ -1951,12 +1961,14 @@ void CDVDPlayer::HandleMessages()
             {
               m_dvd.iSelectedAudioStream = -1;
               CloseAudioStream(false);
+              m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true));
             }
           }
           else
           {
             CloseAudioStream(false);
             OpenAudioStream(st.id, st.source);
+            m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true));
           }
         }
       }
@@ -3645,7 +3657,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
       m_State.canrecord = input->CanRecord();
       m_State.recording = input->IsRecording();
 
-      if(input->GetTotalTime() > 0)
+      if(input->GetTotalTime() > 0 && input->GetStartTime() > 0)
       {
         m_State.time       = input->GetStartTime();
         m_State.time_total = input->GetTotalTime();

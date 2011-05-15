@@ -36,14 +36,11 @@ using namespace PVR;
 CGUIWindowPVRTimers::CGUIWindowPVRTimers(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_TIMERS, CONTROL_BTNTIMERS, CONTROL_LIST_TIMERS)
 {
-  m_bObservingTimers = false;
 }
 
 void CGUIWindowPVRTimers::ResetObservers(void)
 {
   CSingleLock lock(m_critSection);
-
-  m_bObservingTimers = true;
   g_PVRTimers->RegisterObserver(this);
 }
 
@@ -98,15 +95,11 @@ void CGUIWindowPVRTimers::UpdateData(void)
   if (m_bIsFocusing)
     return;
 
-  if (!m_bObservingTimers)
-  {
-    m_bObservingTimers = true;
-    g_PVRTimers->RegisterObserver(this);
-  }
-
   CLog::Log(LOGDEBUG, "CGUIWindowPVRTimers - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
   m_bIsFocusing = true;
   m_bUpdateRequired = false;
+
+  g_PVRTimers->RegisterObserver(this);
 
   /* lock the graphics context while updating */
   CSingleLock graphicsLock(g_graphicsContext);
@@ -178,14 +171,14 @@ bool CGUIWindowPVRTimers::OnContextButtonActivate(CFileItem *item, CONTEXT_BUTTO
 
     CPVRTimerInfoTag *timer = item->GetPVRTimerInfoTag();
     int iLabelId;
-    if (timer->m_bIsActive)
+    if (timer->IsActive())
     {
-      timer->m_bIsActive = false;
+      timer->m_state = PVR_TIMER_STATE_CANCELLED;
       iLabelId = 13106;
     }
     else
     {
-      timer->m_bIsActive = true;
+      timer->m_state = PVR_TIMER_STATE_SCHEDULED;
       iLabelId = 305;
     }
 

@@ -33,7 +33,7 @@ public:
 
   bool Open();
   void Close();
-  bool IsConnected(void) const { return m_session->IsConnected(); }
+  bool IsConnected(void) const { return m_session->IsConnected() || (m_bCreated && m_session->Connect()); }
   void EnableNotifications(bool bSetTo = true) { m_bSendNotifications = bSetTo; }
   bool SendNotifications(void) { return m_bSendNotifications && g_bShowTimerNotifications; }
 
@@ -47,7 +47,7 @@ public:
   const char * GetServerName(void) const { return m_session->GetServerName(); }
   const char * GetVersion(void) const    { return m_session->GetVersion(); }
   bool         GetDriveSpace(long long *total, long long *used);
-  bool         GetTime(time_t *localTime, int *gmtOffset);
+  bool         GetBackendTime(time_t *utcTime, int *gmtOffset);
   unsigned int GetNumChannels(void);
   PVR_ERROR    GetChannels(PVR_HANDLE handle, bool bRadio);
   PVR_ERROR    GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd);

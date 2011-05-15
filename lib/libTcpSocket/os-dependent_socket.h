@@ -82,8 +82,22 @@ int tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout);
  */
 void tcp_close(socket_t fdSock);
 
-int tcp_send(socket_t fdSock, void *buf, int len, int flags);
+/*!
+ * @brief Shutdown a socket connection opened with tcp_connect.
+ * @param fdSock The socket to shutdown.
+ */
+void tcp_shutdown(socket_t fdSock);
 
+/*!
+ * @brief Send data over a tcp socket opened with tcp_connect.
+ * @param fdSock The socket to write to.
+ * @param buf The buffer to write to the socket.
+ * @param len The length of the buffer.
+ * @param flags The flags to provide to send().
+ * @return The number of bytes written.
+ */
+int tcp_send(socket_t fdSock, void *buf, int len, int flags);
+int tcp_send(socket_t fdSock, void *buf, int len, int flags);
 
 #ifdef __cplusplus
 } //extern C

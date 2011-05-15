@@ -250,7 +250,7 @@ tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout)
     FD_ZERO(&fd_read);
     FD_SET(fdSock, &fd_read);
 
-    x = select(sizeof(fdSock)*8, &fd_read, NULL, NULL, &tv);
+    x = select(fdSock + 1, &fd_read, NULL, NULL, &tv);
 
     if (x == 0)
       return ETIMEDOUT;
@@ -260,9 +260,11 @@ tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout)
 
     x = recv_fixed(fdSock, (char *)buf + tot, nLen - tot, 0);
     nErr = WSAGetLastError();
-
     nVal = 0;
     ioctlsocket(fdSock, FIONBIO, &nVal);
+
+	if (nErr == WSAETIMEDOUT)
+      nErr = ETIMEDOUT;
 
     if (x == -1)
     {
@@ -286,8 +288,15 @@ tcp_close(socket_t fdSock)
     closesocket(fdSock);
 }
 
+void
+tcp_shutdown(socket_t fdSock)
+{
+  if (fdSock != SOCKET_ERROR)
+    shutdown(fdSock, SHUT_RDWR);
+}
+
 int
-tcp_send(__in SOCKET fdSock, __in_bcount(len) const char FAR * buf, __in int len, __in int flags)
+tcp_send(socket_t fdSock, char *buf, int len, int flags)
 {
   if (fdSock != SOCKET_ERROR)
     return send(fdSock, buf, len, flags);

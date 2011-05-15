@@ -1135,7 +1135,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
           m_fmt_desc = CreateFormatDescriptionFromCodecData(
             kVTFormatH264, width, height, extradata, extrasize, 'avcC');
 
-          CLog::Log(LOGNOTICE, "%s - using avcC atom of size(%d)", __FUNCTION__, extrasize);
+          CLog::Log(LOGNOTICE, "%s - using avcC atom of size(%d), ref_frames(%d)", __FUNCTION__, extrasize, m_max_ref_frames);
         }
         else
         {
@@ -1191,6 +1191,9 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       m_pFormatName = "";
       return false;
     }
+    if (m_max_ref_frames == 0)
+      m_max_ref_frames = 2;
+
     CreateVTSession(width, height, m_fmt_desc);
     if (m_vt_session == NULL)
     {
@@ -1219,7 +1222,7 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     m_videobuffer.iDisplayHeight = hints.height;
 
     m_DropPictures = false;
-    m_max_ref_frames = std::min(m_max_ref_frames, 4);
+    m_max_ref_frames = std::min(m_max_ref_frames, 5);
     m_sort_time_offset = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
 
     return true;
@@ -1367,7 +1370,7 @@ int CDVDVideoCodecVideoToolBox::Decode(BYTE* pData, int iSize, double dts, doubl
 
   // TODO: queue depth is related to the number of reference frames in encoded h.264.
   // so we need to buffer until we get N ref frames + 1.
-  if (m_queue_depth < m_max_ref_frames)
+  if (!m_queue_depth || m_queue_depth < m_max_ref_frames)
     return VC_BUFFER;
 
   return VC_PICTURE | VC_BUFFER;

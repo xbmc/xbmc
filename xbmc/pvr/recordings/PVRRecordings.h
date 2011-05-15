@@ -28,7 +28,6 @@
 namespace PVR
 {
   class CPVRRecordings : public std::vector<CPVRRecording *>,
-                         private CThread,
                          public Observable
   {
   private:
@@ -42,9 +41,6 @@ namespace PVR
     virtual void GetContents(const CStdString &strDirectory, CFileItemList *results) const;
     virtual void GetSubDirectories(const CStdString &strBase, CFileItemList *results, bool bAutoSkip = true) const;
 
-    virtual void ExecuteUpdate(void);
-    virtual void Process(void);
-
   public:
     CPVRRecordings(void);
     virtual ~CPVRRecordings(void) { Clear(); };
@@ -57,9 +53,8 @@ namespace PVR
 
     /**
      * @brief refresh the recordings list from the clients.
-     * @param bAsyncUpdate Try to update the recordings async.
      */
-    void Update(bool bAsyncUpdate = false);
+    void Update(void);
 
     int GetNumRecordings();
     int GetRecordings(CFileItemList* results);

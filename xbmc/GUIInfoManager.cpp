@@ -3586,26 +3586,11 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
   if (!m_currentFile->HasPVRChannelInfoTag())
   {
     CVideoDatabase dbs;
-    dbs.Open();
-    if (dbs.HasMovieInfo(item.m_strPath))
+    if (dbs.Open())
     {
-      dbs.GetMovieInfo(item.m_strPath, *m_currentFile->GetVideoInfoTag());
-      CLog::Log(LOGDEBUG,"%s, got movie info!", __FUNCTION__);
-      CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile->GetVideoInfoTag()->m_strTitle.c_str());
+      dbs.LoadVideoInfo(item.m_strPath, *m_currentFile->GetVideoInfoTag());
+      dbs.Close();
     }
-    else if (dbs.HasEpisodeInfo(item.m_strPath))
-    {
-      dbs.GetEpisodeInfo(item.m_strPath, *m_currentFile->GetVideoInfoTag());
-      CLog::Log(LOGDEBUG,"%s, got episode info!", __FUNCTION__);
-      CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile->GetVideoInfoTag()->m_strTitle.c_str());
-    }
-    else if (dbs.HasMusicVideoInfo(item.m_strPath))
-    {
-      dbs.GetMusicVideoInfo(item.m_strPath, *m_currentFile->GetVideoInfoTag());
-      CLog::Log(LOGDEBUG,"%s, got music video info!", __FUNCTION__);
-      CLog::Log(LOGDEBUG,"  Title = %s", m_currentFile->GetVideoInfoTag()->m_strTitle.c_str());
-    }
-    dbs.Close();
   }
 
   // Find a thumb for this file.

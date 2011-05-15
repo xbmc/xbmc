@@ -297,6 +297,24 @@ const CPVRChannel *CPVRChannelGroup::GetByChannelID(int iChannelID) const
   return channel;
 }
 
+const CPVRChannel *CPVRChannelGroup::GetByChannelEpgID(int iEpgID) const
+{
+  CPVRChannel *channel = NULL;
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int ptr = 0; ptr < size(); ptr++)
+  {
+    PVRChannelGroupMember groupMember = at(ptr);
+    if (groupMember.channel->EpgID() == iEpgID)
+    {
+      channel = groupMember.channel;
+      break;
+    }
+  }
+
+  return channel;
+}
+
 const CPVRChannel *CPVRChannelGroup::GetByUniqueID(int iUniqueID) const
 {
   CPVRChannel *channel = NULL;
@@ -530,7 +548,13 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
 
       /* remove this channel from all non-system groups if this is the internal group */
       if (IsInternalGroup())
+      {
         g_PVRChannelGroups->Get(m_bRadio)->RemoveFromAllGroups(channel);
+        CPVRChannelGroup::RemoveFromGroup(channel);
+
+        /* since it was not found in the internal group, it was deleted from the backend */
+        channel->Delete();
+      }
       else
         RemoveFromGroup(channel);
 

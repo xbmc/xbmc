@@ -83,7 +83,7 @@ void CPVRTimers::Sort(void)
   sort(begin(), end(), sortByStartTime());
 }
 
-bool CPVRTimers::Update(bool bAsyncUpdate /* = false */)
+bool CPVRTimers::Update(void)
 {
   CSingleLock lock(m_critSection);
   if (m_bIsUpdating)
@@ -91,32 +91,11 @@ bool CPVRTimers::Update(bool bAsyncUpdate /* = false */)
   m_bIsUpdating = true;
   lock.Leave();
 
-  if (bAsyncUpdate)
-  {
-    StopThread();
-    Create();
-    SetName("XBMC PVR timers update");
-    SetPriority(-1);
-    return false;
-  }
-  else
-  {
-    return ExecuteUpdate();
-  }
-}
-
-bool CPVRTimers::ExecuteUpdate(void)
-{
   CLog::Log(LOGDEBUG, "CPVRTimers - %s - updating timers", __FUNCTION__);
   CPVRTimers PVRTimers_tmp;
   PVRTimers_tmp.LoadFromClients();
 
   return UpdateEntries(&PVRTimers_tmp);
-}
-
-void CPVRTimers::Process(void)
-{
-  ExecuteUpdate();
 }
 
 bool CPVRTimers::IsRecording(void)
@@ -403,14 +382,7 @@ bool CPVRTimers::DeleteTimersOnChannel(const CPVRChannel &channel, bool bDeleteR
 CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTimer /* = true */)
 {
   if (!channel)
-  {
-    if (!g_PVRManager.GetCurrentChannel(channel))
-      channel = (CPVRChannel *) g_PVRChannelGroups->GetGroupAllTV()->GetFirstChannel();
-
-    /* no channels present */
-    if (!channel)
-      return NULL;
-  }
+    return NULL;
 
   const CPVREpgInfoTag *epgTag = channel->GetEPGNow();
 
@@ -420,7 +392,6 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
     newTimer = new CPVRTimerInfoTag;
     /* set the timer data */
     newTimer->m_iClientIndex      = -1;
-    newTimer->m_bIsActive         = true;
     newTimer->m_strTitle          = channel->ChannelName();
     newTimer->m_strSummary        = g_localizeStrings.Get(19056);
     newTimer->m_iChannelNumber    = channel->ChannelNumber();
@@ -437,12 +408,13 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
         newTimer->EndAsLocalTime().GetAsLocalizedTime("", false));
   }
 
-  CDateTime time;
-  newTimer->SetStartFromUTC(time);
+  CDateTime startTime;
+  newTimer->SetStartFromUTC(startTime);
   newTimer->m_iMarginStart = 0; /* set the start margin to 0 for instant timers */
 
   int iDuration = g_guiSettings.GetInt("pvrrecord.instantrecordtime");
-  newTimer->SetDuration(iDuration ? iDuration : 120); /* use 120 minutes as default */
+  CDateTime endTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() + CDateTimeSpan(0, 0, iDuration ? iDuration : 120, 0);
+  newTimer->SetEndFromUTC(endTime);
 
   /* unused only for reference */
   newTimer->m_strFileNameAndPath = "pvr://timers/new";

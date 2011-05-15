@@ -86,15 +86,15 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
   else if (fileName.Left(10) == "recordings")
   {
-    return g_PVRRecordings->GetDirectory(strPath, items) > 0;
+    return g_PVRRecordings->GetDirectory(strPath, items);
   }
   else if (fileName.Left(8) == "channels")
   {
-    return g_PVRChannelGroups->GetDirectory(strPath, items) > 0;
+    return g_PVRChannelGroups->GetDirectory(strPath, items);
   }
   else if (fileName.Left(6) == "timers")
   {
-    return g_PVRTimers->GetDirectory(strPath, items) > 0;
+    return g_PVRTimers->GetDirectory(strPath, items);
   }
 
   return false;

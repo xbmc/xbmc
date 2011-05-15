@@ -163,7 +163,7 @@ void CPVRRecordings::Unload()
   Clear();
 }
 
-void CPVRRecordings::Update(bool bAsyncUpdate /* = false */)
+void CPVRRecordings::Update(void)
 {
   CSingleLock lock(m_critSection);
   if (m_bIsUpdating)
@@ -171,35 +171,15 @@ void CPVRRecordings::Update(bool bAsyncUpdate /* = false */)
   m_bIsUpdating = true;
   lock.Leave();
 
-  if (bAsyncUpdate)
-  {
-    StopThread();
-    Create();
-    SetName("XBMC PVR recordings update");
-    SetPriority(-1);
-  }
-  else
-  {
-    ExecuteUpdate();
-  }
-}
-
-void CPVRRecordings::ExecuteUpdate(void)
-{
   CLog::Log(LOGDEBUG, "CPVRRecordings - %s - updating recordings", __FUNCTION__);
   UpdateFromClients();
 
-  CSingleLock lock(m_critSection);
+  lock.Enter();
   m_bIsUpdating = false;
   SetChanged();
   lock.Leave();
 
   NotifyObservers("recordings-reset");
-}
-
-void CPVRRecordings::Process(void)
-{
-  ExecuteUpdate();
 }
 
 int CPVRRecordings::GetNumRecordings()

@@ -221,12 +221,14 @@ void CEpg::RemoveTagsBetween(time_t start, time_t end, bool bRemoveFromDb /* = f
     if (tag)
     {
       bool bMatch(true);
-      tag->StartAsLocalTime().GetAsTime(tagBegin);
-      tag->EndAsLocalTime().GetAsTime(tagEnd);
+      tag->StartAsUTC().GetAsTime(tagBegin);
+      tag->EndAsUTC().GetAsTime(tagEnd);
 
       if (start > 0 && tagBegin < start)
         bMatch = false;
       if (end > 0 && tagEnd > end)
+        bMatch = false;
+      if (!IsRemovableTag(tag))
         bMatch = false;
 
       if (bMatch)
@@ -239,13 +241,17 @@ void CEpg::RemoveTagsBetween(time_t start, time_t end, bool bRemoveFromDb /* = f
   }
 
   Sort();
+  UpdateFirstAndLastDates();
 
   if (bRemoveFromDb)
   {
     CEpgDatabase *database = g_EpgContainer.GetDatabase();
     if (database && database->Open())
     {
-      database->Delete(*this, start, end);
+      time_t newStart, newEnd;
+      GetFirstDate().GetAsTime(newStart);
+      GetLastDate().GetAsTime(newEnd);
+      database->Delete(*this, newStart, newEnd);
       database->Close();
     }
   }
@@ -488,7 +494,7 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
   CSingleLock lock(m_critSection);
 
   /* remove tags from the current list that will be replaced */
-  RemoveTagsBetween(epg.GetFirstDate(), epg.GetLastDate(), bStoreInDb);
+  RemoveTagsBetween(epg.GetFirstDate().GetAsUTCDateTime(), epg.GetLastDate().GetAsUTCDateTime(), bStoreInDb);
 
   /* copy over tags */
   for (unsigned int iTagPtr = 0; iTagPtr < epg.size(); iTagPtr++)
@@ -686,6 +692,7 @@ const CDateTime &CEpg::GetLastDate(void) const
 bool CEpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
 {
   bool bReturn = true;
+  CSingleLock lock(m_critSection);
 
   m_strName = epg.m_strName;
   m_strScraperName = epg.m_strScraperName;

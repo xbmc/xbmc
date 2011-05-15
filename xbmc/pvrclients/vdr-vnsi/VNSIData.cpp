@@ -394,9 +394,15 @@ PVR_ERROR cVNSIData::GetTimerInfo(unsigned int timernumber, PVR_TIMER &tag)
   }
 
   tag.iClientIndex      = vresp->extract_U32();
-  tag.bIsActive         = vresp->extract_U32();
-                          vresp->extract_U32(); // uint32_t recording - currently unused
-                          vresp->extract_U32(); // uint32_t pending - currently unused
+  int iActive           = vresp->extract_U32();
+  int iRecording        = vresp->extract_U32();
+  int iPending          = vresp->extract_U32();
+  if (iRecording)
+    tag.state = PVR_TIMER_STATE_RECORDING;
+  else if (iPending || iActive)
+    tag.state = PVR_TIMER_STATE_SCHEDULED;
+  else
+    tag.state = PVR_TIMER_STATE_CANCELLED;
   tag.iPriority         = vresp->extract_U32();
   tag.iLifetime         = vresp->extract_U32();
                           vresp->extract_U32(); // channel number - unused
@@ -438,9 +444,15 @@ bool cVNSIData::GetTimersList(PVR_HANDLE handle)
     {
       PVR_TIMER tag;
       tag.iClientIndex      = vresp->extract_U32();
-      tag.bIsActive         = vresp->extract_U32();
-                              vresp->extract_U32(); // uint32_t recording - currently unused
-                              vresp->extract_U32(); // uint32_t pending - currently unused
+      int iActive           = vresp->extract_U32();
+      int iRecording        = vresp->extract_U32();
+      int iPending          = vresp->extract_U32();
+      if (iRecording)
+        tag.state = PVR_TIMER_STATE_RECORDING;
+      else if (iPending || iActive)
+        tag.state = PVR_TIMER_STATE_SCHEDULED;
+      else
+        tag.state = PVR_TIMER_STATE_CANCELLED;
       tag.iPriority         = vresp->extract_U32();
       tag.iLifetime         = vresp->extract_U32();
                               vresp->extract_U32(); // channel number - unused
@@ -510,7 +522,7 @@ PVR_ERROR cVNSIData::AddTimer(const PVR_TIMER &timerinfo)
   uint32_t starttime = timerinfo.startTime - timerinfo.iMarginStart;
   uint32_t endtime = timerinfo.endTime + timerinfo.iMarginEnd;
 
-  if (!vrp.add_U32(timerinfo.bIsActive))     return PVR_ERROR_UNKOWN;
+  if (!vrp.add_U32(timerinfo.state == PVR_TIMER_STATE_SCHEDULED))     return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iPriority))   return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iLifetime))   return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iClientChannelUid)) return PVR_ERROR_UNKOWN;
@@ -594,7 +606,7 @@ PVR_ERROR cVNSIData::UpdateTimer(const PVR_TIMER &timerinfo)
   cRequestPacket vrp;
   if (!vrp.init(VDR_TIMER_UPDATE))        return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iClientIndex))      return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.bIsActive))     return PVR_ERROR_UNKOWN;
+  if (!vrp.add_U32(timerinfo.state == PVR_TIMER_STATE_SCHEDULED))     return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iPriority))   return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iLifetime))   return PVR_ERROR_UNKOWN;
   if (!vrp.add_U32(timerinfo.iClientChannelUid)) return PVR_ERROR_UNKOWN;

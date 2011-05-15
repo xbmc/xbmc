@@ -376,10 +376,11 @@ case $host in
      use_vtbdecoder=no
      use_crystalhd=no
      ARCH="powerpc-osx"
+     use_arch="ppc"
      export MACOSX_DEPLOYMENT_TARGET=10.4
      SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
      # define ppc
-     ARCHTYPE=`arch`
+     ARCHTYPE="ppc"
      AC_SUBST([ARCHTYPE])
      ;;
   powerpc-*-linux-gnu*)
@@ -1419,6 +1420,7 @@ OUTPUT_FILES="Makefile \
     lib/libsquish/Makefile \
     lib/libid3tag/Makefile \
     lib/cximage-6.0/Makefile \
+    lib/addons/script.module.pil/Makefile \
     xbmc/interfaces/python/Makefile \
     xbmc/interfaces/python/xbmcmodule/Makefile \
     lib/libUPnP/Makefile \
@@ -1543,7 +1545,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
     ./configure \
       --extra-cflags="$CFLAGS $FFMPEG_EXTRACFLAGS -w -D_DARWIN_C_SOURCE -Dattribute_deprecated=" \
-      `if test "$cross_compiling" = "yes"; then echo --enable-cross-compile; fi` \
+      `if test "$use_arch" != "no"; then echo --enable-cross-compile; fi` \
       `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
       `if test "$use_cpu" != "no"; then echo --cpu=$use_cpu; fi`\
       --target-os=$(tolower $(uname -s)) \
@@ -1577,6 +1579,10 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
     sed -i "" -e "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak &&
     sed -i "" -e "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak &&
     sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
+    if test "$use_arch" = "ppc"; then
+      sed -i "" -e "s/HAVE_GNU_AS 1/HAVE_GNU_AS 0/" config.h
+      sed -i "" -e "s/^HAVE_GNU_AS=yes/!HAVE_GNU_AS=yes/" config.mak
+    fi
   else
     CFLAGS="" \
     LDFLAGS="$(echo "$LDFLAGS" | sed "s/-Wl,-Bsymbolic-functions//g")" \

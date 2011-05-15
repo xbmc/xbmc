@@ -24,6 +24,7 @@
 
 extern "C" {
 #include "libTcpSocket/os-dependent_socket.h"
+#include "cmyth/include/refmem/atomic.h"
 #include "libhts/htsmsg_binary.h"
 #include "libhts/sha1.h"
 }
@@ -32,7 +33,6 @@ using namespace std;
 
 CHTSPConnection::CHTSPConnection() :
     m_fd(INVALID_SOCKET),
-    m_iSequence(0),
     m_challenge(NULL),
     m_iChallengeLength(0),
     m_iProtocol(0),
@@ -113,8 +113,18 @@ void CHTSPConnection::Close()
     m_challenge     = NULL;
     m_iChallengeLength = 0;
   }
+
+  XBMC->QueueNotification(QUEUE_INFO, "Disconnected from %s", m_strHostname.c_str());
 }
 
+void CHTSPConnection::Abort(void)
+{
+  if (!m_bIsConnected)
+	  return;
+  m_bIsConnected = false;
+
+  tcp_shutdown(m_fd);
+}
 
 htsmsg_t* CHTSPConnection::ReadMessage(int timeout)
 {
@@ -185,7 +195,7 @@ htsmsg_t* CHTSPConnection::ReadResult(htsmsg_t* m, bool sequence)
   uint32_t iSequence = 0;
   if(sequence)
   {
-    iSequence = AddSequence();
+    iSequence = mvp_atomic_inc(&g_iPacketSequence);
     htsmsg_add_u32(m, "seq", iSequence);
   }
 
@@ -243,17 +253,6 @@ bool CHTSPConnection::ReadSuccess(htsmsg_t* m, bool sequence, std::string action
   }
   htsmsg_destroy(m);
   return true;
-}
-
-unsigned int CHTSPConnection::AddSequence()
-{
-  int iReturn;
-
-  m_Mutex.Lock();
-  iReturn = ++m_iSequence;
-  m_Mutex.Unlock();
-
-  return iReturn;
 }
 
 bool CHTSPConnection::SendGreeting(void)
@@ -385,41 +384,46 @@ bool CHTSPConnection::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
 
 void CHTSPConnection::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
 {
-  uint32_t id, event = 0, num = 0, caid = 0;
-  const char *name, *icon;
-  if(htsmsg_get_u32(msg, "channelId", &id))
+  bool bChanged(false);
+  uint32_t iChannelId, iEventId = 0, iChannelNumber = 0, iCaid = 0;
+  const char *strName, *strIconPath;
+  if(htsmsg_get_u32(msg, "channelId", &iChannelId))
   {
     XBMC->Log(LOG_ERROR, "%s - malformed message received", __FUNCTION__);
     htsmsg_print(msg);
     return;
   }
 
-  SChannel &channel = channels[id];
-  channel.id = id;
+  SChannel &channel = channels[iChannelId];
+  channel.id = iChannelId;
 
-  if(htsmsg_get_u32(msg, "eventId", &event) == 0)
-    channel.event = event;
+  if(htsmsg_get_u32(msg, "eventId", &iEventId) == 0)
+    channel.event = iEventId;
 
-  if((name = htsmsg_get_str(msg, "channelName")))
-    channel.name = name;
-
-  if((icon = htsmsg_get_str(msg, "channelIcon")))
-    channel.icon = icon;
-
-  if(htsmsg_get_u32(msg, "channelNumber", &num) == 0)
+  if((strName = htsmsg_get_str(msg, "channelName")))
   {
-    if(num == 0)
-      channel.num = id + 1000;
-    else
-      channel.num = num;
+    bChanged = (channel.name != strName);
+    channel.name = strName;
   }
-  else
-    channel.num = -1;
+
+  if((strIconPath = htsmsg_get_str(msg, "channelIcon")))
+  {
+    bChanged = (channel.icon != strIconPath);
+    channel.icon = strIconPath;
+  }
+
+  if(htsmsg_get_u32(msg, "channelNumber", &iChannelNumber) == 0)
+  {
+    int iNewChannelNumber = (iChannelNumber == 0) ? iChannelId + 1000 : iChannelNumber;
+    bChanged = (channel.num != iNewChannelNumber);
+    channel.num = iNewChannelNumber;
+  }
 
   htsmsg_t *tags;
 
   if((tags = htsmsg_get_list(msg, "tags")))
   {
+    bChanged = true;
     channel.tags.clear();
 
     htsmsg_field_t *f;
@@ -435,6 +439,7 @@ void CHTSPConnection::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
   
   if((services = htsmsg_get_list(msg, "services")))
   {
+    bChanged = true;
     htsmsg_field_t *f;
     HTSMSG_FOREACH(f, services)
     {
@@ -448,15 +453,16 @@ void CHTSPConnection::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
         channel.radio = !strcmp(service_type, "Radio");
       }
 
-      if(!htsmsg_get_u32(service, "caid", &caid))
-        channel.caid = (int) caid;
+      if(!htsmsg_get_u32(service, "caid", &iCaid))
+        channel.caid = (int) iCaid;
     }
   }
   
-  XBMC->Log(LOG_DEBUG, "%s - id:%u, name:'%s', icon:'%s', event:%u"
-      , __FUNCTION__, id, name ? name : "(null)", icon ? icon : "(null)", event);
+  XBMC->Log(LOG_DEBUG, "%s - id:%u, name:'%s', icon:'%s', event:%u",
+      __FUNCTION__, iChannelId, strName ? strName : "(null)", strIconPath ? strIconPath : "(null)", iEventId);
 
-  PVR->TriggerChannelUpdate();
+  if (bChanged)
+    PVR->TriggerChannelUpdate();
 }
 
 void CHTSPConnection::ParseChannelRemove(htsmsg_t* msg, SChannels &channels)

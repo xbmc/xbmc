@@ -64,6 +64,5 @@ namespace PVR
     CPVRChannelGroup *m_selectedGroup;
     bool              m_bShowHiddenChannels;
     bool              m_bRadio;
-    bool              m_bObservingTimers;
   };
 }

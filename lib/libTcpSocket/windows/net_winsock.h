@@ -27,9 +27,12 @@
 #include <winsock2.h>
 #pragma warning(default:4005)
 #include <io.h>
-#include <errno.h> //for ETIMEDOUT
 
 #define SHUT_RDWR SD_BOTH
+
+#ifndef ETIMEDOUT
+#define ETIMEDOUT 138
+#endif
 
 typedef SOCKET socket_t;
 typedef int socklen_t;
