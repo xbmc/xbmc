@@ -954,6 +954,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("lastplayed")) return LISTITEM_LASTPLAYED;
   else if (info.Equals("playcount")) return LISTITEM_PLAYCOUNT;
   else if (info.Equals("discnumber")) return LISTITEM_DISC_NUMBER;
+  else if (info.Equals("playbackstarted")) return LISTITEM_PLAYBACK_STARTED;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -3732,6 +3733,17 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetPlayCount() > 0)
         strPlayCount.Format("%i", item->GetMusicInfoTag()->GetPlayCount());
       return strPlayCount;
+    }
+  case LISTITEM_PLAYBACK_STARTED:
+    {
+      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0)
+      {
+        CStdString strPlaybackStarted;
+        strPlaybackStarted.Format("%.0f",
+          100 * item->GetVideoInfoTag()->m_resumePoint.timeInSeconds / item->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
+        return strPlaybackStarted;
+      }
+      break;
     }
   case LISTITEM_LASTPLAYED:
     {

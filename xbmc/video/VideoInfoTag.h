@@ -25,6 +25,7 @@
 #include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
 #include "utils/StreamDetails.h"
+#include "video/Bookmark.h"
 
 class CArchive;
 class TiXmlNode;
@@ -100,6 +101,7 @@ public:
   int m_iBookmarkId;
   CFanart m_fanart;
   CStreamDetails m_streamDetails;
+  CBookmark m_resumePoint;
 
 private:
   void ParseNative(const TiXmlElement* movie);

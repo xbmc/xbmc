@@ -2805,6 +2805,35 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
   return retVal;
 }
 
+bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag) const
+{
+  bool match = false;
+
+  try
+  {
+    CStdString strSQL=PrepareSQL("select * from bookmark where idFile=%i and type=%i order by timeInSeconds", tag.m_iFileId, CBookmark::RESUME);
+    m_pDS2->query( strSQL.c_str() );
+    if (!m_pDS2->eof())
+    {
+      tag.m_resumePoint.timeInSeconds = m_pDS2->fv("timeInSeconds").get_asDouble();
+      tag.m_resumePoint.totalTimeInSeconds = m_pDS2->fv("totalTimeInSeconds").get_asDouble();
+      tag.m_resumePoint.thumbNailImage = m_pDS2->fv("thumbNailImage").get_asString();
+      tag.m_resumePoint.playerState = m_pDS2->fv("playerState").get_asString();
+      tag.m_resumePoint.player = m_pDS2->fv("player").get_asString();
+      tag.m_resumePoint.type = CBookmark::RESUME;
+
+      match = true;
+    }
+    m_pDS2->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, tag.m_strFileNameAndPath.c_str());
+  }
+
+  return match;
+}
+
 CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
 {
   CVideoInfoTag details;
@@ -2820,6 +2849,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
   movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
 
   GetStreamDetails(details);
+  GetResumePoint(details);
 
   if (needsCast)
   {
@@ -2926,6 +2956,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   details.m_strPremiered = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString();
 
   GetStreamDetails(details);
+  GetResumePoint(details);
 
   if (needsCast)
   {
@@ -2990,6 +3021,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS)
   movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
 
   GetStreamDetails(details);
+  GetResumePoint(details);
 
   details.m_strPictureURL.Parse();
   return details;
