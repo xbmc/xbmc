@@ -185,7 +185,7 @@
 	 	<font>
 			<name>font50caps_title</name>
 			<filename>DejaVuSans-Bold.ttf</filename>
-			<size>43</size>
+			<size>35</size>
 		</font>
 
 	 	<font>
@@ -278,7 +278,7 @@
 	 	<font>
 			<name>font50caps_title</name>
 			<filename>Arial.ttf</filename>
-			<size>43</size>
+			<size>35</size>
 		</font>
 	 	<font>
 			<name>font45caps_title</name>
