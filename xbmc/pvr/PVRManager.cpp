@@ -72,9 +72,9 @@ CPVRManager::~CPVRManager(void)
 {
   Stop();
 
+  delete m_timers;
   delete m_epg;
   delete m_recordings;
-  delete m_timers;
   delete m_channelGroups;
   delete m_addons;
   delete m_guiInfo;
