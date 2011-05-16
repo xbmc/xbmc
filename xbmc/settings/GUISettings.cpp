@@ -757,12 +757,11 @@ void CGUISettings::Initialize()
   
   bool use_timezone = false;
   
-#if defined(_LINUX) && !defined(__APPLE__) 
-  use_timezone = true;
-#else
+#if defined(_LINUX)
+#if defined(__APPLE__)
   if (g_sysinfo.IsAppleTV2())
-    use_timezone = true;  
 #endif
+    use_timezone = true;  
   
   if (use_timezone)
   {  
@@ -770,6 +769,7 @@ void CGUISettings::Initialize()
     AddString(loc, "locale.timezonecountry", 14079, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
     AddString(loc, "locale.timezone", 14080, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
   }	
+#endif
 #ifdef HAS_TIME_SERVER
   AddSeparator(loc, "locale.sep2");
   AddBool(loc, "locale.timeserver", 168, false);
@@ -1161,12 +1161,11 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   
   bool use_timezone = false;
   
-#if defined(_LINUX) && !defined(__APPLE__) 
-  use_timezone = true;
-#else
+#if defined(_LINUX)
+#if defined(__APPLE__) 
   if (g_sysinfo.IsAppleTV2())
-    use_timezone = true;  
 #endif
+    use_timezone = true;
   
   if (use_timezone)
   {  
@@ -1178,6 +1177,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     }
     g_timezone.SetTimezone(timezone);	
   }
+#endif
 }
 
 void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool advanced /* = false */)
