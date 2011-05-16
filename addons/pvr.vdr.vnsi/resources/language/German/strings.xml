@@ -45,4 +45,6 @@
     <string id="30041">Fertig</string>
     <string id="30042">Kanalsuche - Abgebrochen</string>
     <string id="30043">Kanalsuche - Fehler</string>
+    <string id="30044">Verbindung zum VDR Server unterbrochen</string>
+    <string id="30045">Verbindung zum VDR Server wiederhergestellt</string>
 </strings>

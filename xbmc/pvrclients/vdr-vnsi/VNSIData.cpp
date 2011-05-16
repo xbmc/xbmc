@@ -63,13 +63,13 @@ bool cVNSIData::Login()
 
 void cVNSIData::OnDisconnect()
 {
-  XBMC->QueueNotification(QUEUE_ERROR, "Lost connection to VDR Server");
+  XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(30044));
   PVR->TriggerTimerUpdate();
 }
 
 void cVNSIData::OnReconnect()
 {
-  XBMC->QueueNotification(QUEUE_INFO, "Connection to VDR Server restored");
+  XBMC->QueueNotification(QUEUE_INFO, XBMC->GetLocalizedString(30045));
 
   EnableStatusInterface(g_bHandleMessages);
 
