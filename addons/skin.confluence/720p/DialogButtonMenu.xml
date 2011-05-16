@@ -135,6 +135,7 @@
 					<pulseonselect>no</pulseonselect>
 					<font>-</font>
 					<label>$LOCALIZE[13012]</label>
+					<visible>System.ShowExitButton</visible>
 				</control>
 				<control type="group" id="13">
 					<width>90</width>
@@ -225,7 +226,8 @@
 				</control>
 			</control>
 			<control type="group">
-				<posx>270</posx>
+				<include condition="System.ShowExitButton">ExitButtonOffset</include>
+				<include condition="!System.ShowExitButton">NoExitButtonOffset</include>
 				<posy>70</posy>
 				<visible>ControlGroup(13).HasFocus</visible>
 				<include>VisibleFadeEffect</include>
