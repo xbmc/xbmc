@@ -774,10 +774,6 @@ bool cVNSIData::SendPing()
 
 void cVNSIData::Action()
 {
-  uint32_t channelID;
-  uint32_t requestID;
-  uint32_t userDataLength;
-  uint8_t* userData;
   uint32_t lastPing = 0;
 
   cResponsePacket* vresp;
@@ -791,61 +787,29 @@ void cVNSIData::Action()
       continue;
    }
 
-    // read channelID or check if the connection is still up
-    if(!readData((uint8_t*)&channelID, sizeof(uint32_t)) && (time(NULL) - lastPing) > 5)
+    // read message
+    vresp = cVNSISession::ReadMessage();
+
+    // check if the connection is still up
+    if (vresp == NULL)
     {
-      lastPing = time(NULL);
-      if(!SendPing())
+      if(time(NULL) - lastPing > 5)
       {
-        SignalConnectionLost();
-        continue;
+        lastPing = time(NULL);
+
+        if(!SendPing())
+          SignalConnectionLost();
       }
-    }
-
-    // Data was read
-    channelID = ntohl(channelID);
-
-    // read requestID
-    if (!readData((uint8_t*)&requestID, sizeof(uint32_t)))
-    {
       continue;
     }
-    requestID = ntohl(requestID);
-
-    // read userDataLength
-    if (!readData((uint8_t*)&userDataLength, sizeof(uint32_t)))
-    {
-      continue;
-    }
-    userDataLength = ntohl(userDataLength);
-    if (userDataLength > 5000000) {
-      continue; // how big can these packets get?
-    }
-
-    // read userData
-    userData = NULL;
-    if (userDataLength > 0)
-    {
-      userData = (uint8_t*)malloc(userDataLength);
-      if (!userData) continue;
-      if (!readData(userData, userDataLength))
-      {
-        free(userData);
-        continue;
-      }
-    }
-
-    // assemble response packet
-    vresp = new cResponsePacket();
-    vresp->setResponse(requestID, userData, userDataLength);
 
     // CHANNEL_REQUEST_RESPONSE
 
-    if (channelID == VNSI_CHANNEL_REQUEST_RESPONSE)
+    if (vresp->getChannelID() == VNSI_CHANNEL_REQUEST_RESPONSE)
     {
 
       CMD_LOCK;
-      SMessages::iterator it = m_queue.find(requestID);
+      SMessages::iterator it = m_queue.find(vresp->getRequestID());
       if (it != m_queue.end())
       {
         it->second.pkt = vresp;
@@ -859,9 +823,9 @@ void cVNSIData::Action()
 
     // CHANNEL_STATUS
 
-    else if (channelID == VNSI_CHANNEL_STATUS)
+    else if (vresp->getChannelID() == VNSI_CHANNEL_STATUS)
     {
-      if (requestID == VNSI_STATUS_MESSAGE)
+      if (vresp->getRequestID() == VNSI_STATUS_MESSAGE)
       {
         uint32_t type = vresp->extract_U32();
         char* msgstr  = vresp->extract_String();
@@ -879,7 +843,7 @@ void cVNSIData::Action()
 
         delete[] msgstr;
       }
-      else if (requestID == VNSI_STATUS_RECORDING)
+      else if (vresp->getRequestID() == VNSI_STATUS_RECORDING)
       {
                           vresp->extract_U32(); // device currently unused
         uint32_t on     = vresp->extract_U32();
@@ -892,16 +856,16 @@ void cVNSIData::Action()
         delete[] str1;
         delete[] str2;
       }
-      else if (requestID == VNSI_STATUS_TIMERCHANGE)
+      else if (vresp->getRequestID() == VNSI_STATUS_TIMERCHANGE)
       {
         PVR->TriggerTimerUpdate();
       }
-      else if (requestID == VNSI_STATUS_CHANNELCHANGE)
+      else if (vresp->getRequestID() == VNSI_STATUS_CHANNELCHANGE)
       {
         XBMC->Log(LOG_ERROR, "Server requested channel update");
         PVR->TriggerChannelUpdate();
       }
-      else if (requestID == VNSI_STATUS_RECORDINGSCHANGE)
+      else if (vresp->getRequestID() == VNSI_STATUS_RECORDINGSCHANGE)
       {
         XBMC->Log(LOG_ERROR, "Server requested recordings update");
         PVR->TriggerRecordingUpdate();
@@ -914,7 +878,7 @@ void cVNSIData::Action()
 
     else if (!onResponsePacket(vresp))
     {
-      XBMC->Log(LOG_ERROR, "%s - Rxd a response packet on channel %lu !!", __FUNCTION__, channelID);
+      XBMC->Log(LOG_ERROR, "%s - Rxd a response packet on channel %lu !!", __FUNCTION__, vresp->getChannelID());
       delete vresp;
     }
   }

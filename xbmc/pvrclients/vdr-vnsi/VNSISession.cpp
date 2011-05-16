@@ -157,36 +157,13 @@ cResponsePacket* cVNSISession::ReadMessage()
 
   cResponsePacket* vresp = NULL;
 
-  bool readSuccess = readData((uint8_t*)&channelID, sizeof(uint32_t)) > 0;
-  if (!readSuccess)
+  if(!readData((uint8_t*)&channelID, sizeof(uint32_t)))
     return NULL;
 
   // Data was read
 
   channelID = ntohl(channelID);
-  if (channelID == VNSI_CHANNEL_REQUEST_RESPONSE)
-  {
-    if (!readData((uint8_t*)&m_responsePacketHeader, sizeof(m_responsePacketHeader))) return NULL;
-
-    requestID = ntohl(m_responsePacketHeader.requestID);
-    userDataLength = ntohl(m_responsePacketHeader.userDataLength);
-
-    if (userDataLength > 5000000) return NULL; // how big can these packets get?
-    userData = NULL;
-    if (userDataLength > 0)
-    {
-      userData = (uint8_t*)malloc(userDataLength);
-      if (!userData) return NULL;
-      if (!readData(userData, userDataLength)) {
-        free(userData);
-        return NULL;
-      }
-    }
-
-    vresp = new cResponsePacket();
-    vresp->setResponse(requestID, userData, userDataLength);
-  }
-  else if (channelID == VNSI_CHANNEL_STREAM)
+  if (channelID == VNSI_CHANNEL_STREAM)
   {
     if (!readData((uint8_t*)&m_streamPacketHeader, sizeof(m_streamPacketHeader))) return NULL;
 
@@ -225,7 +202,25 @@ cResponsePacket* cVNSISession::ReadMessage()
   }
   else
   {
-    XBMC->Log(LOG_ERROR, "%s - Rxd a response packet on channel %lu !!", __FUNCTION__, channelID);
+    if (!readData((uint8_t*)&m_responsePacketHeader, sizeof(m_responsePacketHeader))) return NULL;
+
+    requestID = ntohl(m_responsePacketHeader.requestID);
+    userDataLength = ntohl(m_responsePacketHeader.userDataLength);
+
+    if (userDataLength > 5000000) return NULL; // how big can these packets get?
+    userData = NULL;
+    if (userDataLength > 0)
+    {
+      userData = (uint8_t*)malloc(userDataLength);
+      if (!userData) return NULL;
+      if (!readData(userData, userDataLength)) {
+        free(userData);
+        return NULL;
+      }
+    }
+
+    vresp = new cResponsePacket();
+    vresp->setResponse(requestID, userData, userDataLength);
   }
 
   return vresp;
