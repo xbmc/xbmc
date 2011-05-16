@@ -209,11 +209,6 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
   unsigned int held;
   XBMCKEYTABLE keytable;
 
-  ascii = 0;
-  vkey = 0;
-  unicode = 0;
-  held = 0;
-
   modifiers = 0;
   if (keysym.mod & XBMCKMOD_CTRL)
     modifiers |= CKey::MODIFIER_CTRL;
@@ -228,30 +223,45 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
 
   CLog::Log(LOGDEBUG, "SDLKeyboard: scancode: %02x, sym: %04x, unicode: %04x, modifier: %x", keysym.scancode, keysym.sym, keysym.unicode, keysym.mod);
 
-  // For control key combinations, e.g. ctrl-P, the UNICODE gets set
-  // to 1 for ctrl-A, 2 for ctrl-B etc. To get round this, if the
-  // control key is down lookup by sym
-  if (modifiers & CKey::MODIFIER_CTRL && KeyTableLookupSym(keysym.sym, &keytable))
+  // The keysym.unicode is usually valid, even if it is zero. A zero
+  // unicode just means this is a non-printing keypress. The ascii and
+  // vkey will be set below.
+  unicode = keysym.unicode;
+  ascii = 0;
+  vkey = 0;
+  held = 0;
+
+  // Start by trying to match both the sym and unicode. This will identify
+  // the majority of keypresses
+  if (KeyTableLookupSymAndUnicode(keysym.sym, keysym.unicode, &keytable))
   {
-    unicode = keytable.unicode;
-    ascii   = keytable.ascii;
-    vkey    = keytable.vkey;
+    vkey = keytable.vkey;
+    ascii = keytable.ascii;
   }
 
-  // For printing keys look up the unicode
+  // If we failed to match the sym and unicode try just the unicode. This
+  // will match keys like \ that are on different keys on regional keyboards.
   else if (KeyTableLookupUnicode(keysym.unicode, &keytable))
   {
-    unicode = keytable.unicode;
-    ascii = keytable.ascii;
     vkey = keytable.vkey;
+    ascii = keytable.ascii;
   }
 
-  // For non-printing keys look up the sym
+  // If there is still no match try the sym
   else if (KeyTableLookupSym(keysym.sym, &keytable))
   {
     vkey = keytable.vkey;
+
+    // Occasionally we get non-printing keys that have a non-zero value in
+    // the keysym.unicode. Check for this here and replace any rogue unicode
+    // values.
+    if (keytable.unicode == 0 && unicode != 0)
+      unicode = 0;
+    else
+      ascii = unicode & 0xFF;
   }
 
+  // The keysym.sym is unknown ...
   else
   {
     if (!vkey && !ascii)
@@ -284,7 +294,6 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
   }
 
   // At this point update the key hold time
-  // If XBMC_keysym was a class we could use == but memcmp it is :-(
   if (memcmp(&keysym, &m_lastKeysym, sizeof(XBMC_keysym)) == 0)
   {
     held = CTimeUtils::GetFrameTime() - m_lastKeyTime;

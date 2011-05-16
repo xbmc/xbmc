@@ -12,7 +12,7 @@ fi
 PACKAGE=org.xbmc.xbmc-seatbeltunlock
 
 VERSION=1.0
-REVISION=2
+REVISION=4
 ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_iphoneos-arm.deb
 
 echo Creating $PACKAGE package version $VERSION revision $REVISION
@@ -69,6 +69,14 @@ echo "   chmod 755 /var/tmp/AppleTV-nosb"               >> $PACKAGE/DEBIAN/posti
 echo "   mv -f /Applications/AppleTV.app/AppleTV /Applications/AppleTV.app/AppleTV_org" >> $PACKAGE/DEBIAN/postinst
 echo "   mv /var/tmp/AppleTV-nosb /Applications/AppleTV.app/AppleTV" >> $PACKAGE/DEBIAN/postinst
 echo "   killall AppleTV ;;"                            >> $PACKAGE/DEBIAN/postinst
+echo " 42d00865f281bb662b6ce447c9815e59 )"              >> $PACKAGE/DEBIAN/postinst
+echo "   echo \"Found 4.3.2 (8F305):Removing seatbelt profile key from AppleTV\"" >> $PACKAGE/DEBIAN/postinst
+echo "   bspatch /Applications/AppleTV.app/AppleTV /var/tmp/AppleTV-nosb /var/tmp/42d00865f281bb662b6ce447c9815e59.patch" >> $PACKAGE/DEBIAN/postinst
+echo "   rm /var/tmp/42d00865f281bb662b6ce447c9815e59.patch" >> $PACKAGE/DEBIAN/postinst
+echo "   chmod 755 /var/tmp/AppleTV-nosb"               >> $PACKAGE/DEBIAN/postinst
+echo "   mv -f /Applications/AppleTV.app/AppleTV /Applications/AppleTV.app/AppleTV_org" >> $PACKAGE/DEBIAN/postinst
+echo "   mv /var/tmp/AppleTV-nosb /Applications/AppleTV.app/AppleTV" >> $PACKAGE/DEBIAN/postinst
+echo "   killall AppleTV ;;"                            >> $PACKAGE/DEBIAN/postinst
 echo " * )"                                             >> $PACKAGE/DEBIAN/postinst
 echo "   echo \"Frontrow app md5sum is unknown, not patching\" ;;" >> $PACKAGE/DEBIAN/postinst
 echo "esac"                                             >> $PACKAGE/DEBIAN/postinst
@@ -79,6 +87,7 @@ mkdir -p $PACKAGE/var/tmp
 cp 12313417e3afeba6531255af58cb5283.patch               $PACKAGE/var/tmp/
 cp 5a28620a15c15d41e1ae836dd1f95f8d.patch               $PACKAGE/var/tmp/
 cp 03e48c66a9cae1ff768eb3fe7981c499.patch               $PACKAGE/var/tmp/
+cp 42d00865f281bb662b6ce447c9815e59.patch               $PACKAGE/var/tmp/
 
 # set ownership to root:root
 ${SUDO} chown -R 0:0 $PACKAGE

@@ -22,6 +22,8 @@
 
 #include "utils/StdString.h"
 #include "threads/Thread.h"
+#include <sys/socket.h>
+#include <netinet/in.h>
 
 class CUdpClient : CThread
 {

@@ -405,9 +405,9 @@ lib/cpluff/libcpluff/.libs/libcpluff.a: force
 system/libcpluff-@ARCH@.so: lib/cpluff/libcpluff/.libs/libcpluff.a
 ifeq ($(findstring osx,@ARCH@), osx)
   ifeq (@ARCH@, arm-osx)
-	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -read_only_relocs suppress -arch armv7 -o $@ $<
+	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -read_only_relocs suppress -o $@ $<
   else
-	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -arch @ARCHTYPE@ -lexpat $(BUNDLE1_O) -o $@ $<
+	$(CXX) $(LDFLAGS) -all_load -bundle -flat_namespace -undefined dynamic_lookup -lexpat $(BUNDLE1_O) -o $@ $<
   endif
 else
 	cp lib/cpluff/libcpluff/.libs/libcpluff.so $@

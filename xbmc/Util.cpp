@@ -44,7 +44,6 @@
 #include "storage/IoSupport.h"
 #include "filesystem/PVRDirectory.h"
 #include "filesystem/StackDirectory.h"
-#include "filesystem/VirtualPathDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/SpecialProtocol.h"
@@ -56,9 +55,6 @@
 #include "filesystem/MythDirectory.h"
 #ifdef HAS_UPNP
 #include "filesystem/UPnPDirectory.h"
-#endif
-#ifdef HAS_CREDITS
-#include "Credits.h"
 #endif
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"

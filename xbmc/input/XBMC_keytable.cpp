@@ -20,15 +20,17 @@
  */
 
 #include "system.h"
+#include "utils/StdString.h"
 #include "input/XBMC_keytable.h"
 
 // The array of XBMCKEYTABLEs used in XBMC.
+// The entries are in ascending order of sym; just for convenience.
 // scancode, sym, unicode, ascii, vkey, keyname
 static const XBMCKEYTABLE XBMCKeyTable[] =
-{ { 0x0E, 0x0008, 0x0000, 0x00, 0x08, "backspace" }
-, { 0x0f, 0x0009, 0x0009, 0x09, 0x09, "tab" }
-, { 0x1c, 0x000d, 0x000d, 0x0d, 0x0d, "return" }
-, { 0x0b, 0x001b, 0x001b, 0x1b, 0x1b, "escape" }
+{ { 0x0E, 0x0008,      0,    0, 0x08, "backspace" }
+, { 0x0f, 0x0009,      0,    0, 0x09, "tab" }
+, { 0x1c, 0x000d,      0,    0, 0x0d, "return" }
+, { 0x0b, 0x001b,      0,    0, 0x1b, "escape" }
 , { 0x0b,      0,      0,    0, 0x1b, "esc" } // Allowed abbreviation for "escape"
 , { 0x45, 0x0013,      0,    0, 0x13, "pause" }
 , { 0x39, 0x0020, 0x0020, 0x20, 0x20, "space" }
@@ -144,16 +146,40 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { 0x35, 0x002f,    '?',  '?', 0xBF, "questionmark" }
 , { 0x27, 0x003b,    ';',  ';', 0xBA, "semicolon" }
 , { 0x27, 0x003b,    ':',  ':', 0xBA, "colon" }
-, { 0x56, 0x003c,   '\\', '\\', 0xEC, "backslash" }
-, { 0x56, 0x003c,    '|',  '|', 0xEC, "pipe" }
 , { 0x0d, 0x003d,    '=',  '=', 0xBB, "equals" }
 , { 0x0d, 0x003d,    '+',  '+', 0xBB, "plus" }
+, { 0x56, 0x005c,   '\\', '\\', 0xEC, "backslash" }
+, { 0x56, 0x005c,    '|',  '|', 0xEC, "pipe" }
 , { 0x1a, 0x005b,    '[',  '[', 0xEB, "opensquarebracket" }
 , { 0x1a, 0x005b,    '{',  '{', 0xEB, "openbrace" }
 , { 0x1b, 0x005d,    ']',  ']', 0xED, "closesquarebracket" }
 , { 0x1b, 0x005d,    '}',  '}', 0xED, "closebrace" }
 , { 0x29, 0x0060,    '`',  '`', 0xC0, "leftquote" }
 , { 0x29, 0x0060,    '~',  '~', 0xC0, "tilde" }
+
+// Multimedia keys
+// The scan codes depend on the OS so the codes in this section of the
+// table aren't used.
+, { 0x00, 0x00A6,      0,    0, 0xA6, "browser_back" }
+, { 0x00, 0x00A7,      0,    0, 0xA7, "browser_forward" }
+, { 0x00, 0x00A8,      0,    0, 0xA8, "browser_refresh" }
+, { 0x00, 0x00A9,      0,    0, 0xA9, "browser_stop" }
+, { 0x00, 0x00AA,      0,    0, 0xAA, "browser_search" }
+, { 0x00, 0x00AB,      0,    0, 0xAB, "browser_favorites" }
+, { 0x00, 0x00AC,      0,    0, 0xAC, "browser_home" }
+, { 0x00, 0x00AD,      0,    0, 0xAD, "volume_mute" }
+, { 0x00, 0x00AE,      0,    0, 0xAE, "volume_down" }
+, { 0x00, 0x00AF,      0,    0, 0xAF, "volume_up" }
+, { 0x00, 0x00B0,      0,    0, 0xB0, "next_track" }
+, { 0x00, 0x00B1,      0,    0, 0xB1, "prev_track" }
+, { 0x00, 0x00B2,      0,    0, 0xB2, "stop" }
+, { 0x00, 0x00B3,      0,    0, 0xB3, "play_pause" }
+, { 0x00, 0x00B4,      0,    0, 0xB4, "launch_mail" }
+, { 0x00, 0x00B5,      0,    0, 0xB5, "launch_media_select" }
+, { 0x00, 0x00B6,      0,    0, 0xB6, "launch_app1_pc_icon" }
+, { 0x00, 0x00B7,      0,    0, 0xB7, "launch_app2_pc_icon" }
+, { 0x00, 0x00B8,      0,    0, 0xB8, "launch_file_browser" }
+, { 0x00, 0x00B9,      0,    0, 0xB9, "launch_media_center" }
 
 // Function keys
 , { 0x3b, 0x011a,      0,    0, 0x70, "f1"}
@@ -207,10 +233,14 @@ bool KeyTableLookupName(const char* keyname, XBMCKEYTABLE* keytable)
   if (keyname[0] == '\0')
     return false;
 
+  // We need the button name to be in lowercase
+  CStdString lkeyname = keyname;
+  lkeyname.ToLower();
+
   // Look up the key name in XBMCKeyTable
   for (int i = 0; i < XBMCKeyTableSize; i++)
   { if (XBMCKeyTable[i].keyname)
-    { if (strcmp(keyname, XBMCKeyTable[i].keyname) == 0)
+    { if (strcmp(lkeyname.c_str(), XBMCKeyTable[i].keyname) == 0)
       { *keytable = XBMCKeyTable[i];
         return true;
       }
@@ -254,6 +284,25 @@ bool KeyTableLookupUnicode(uint16_t unicode, XBMCKEYTABLE* keytable)
   }
 
   // The name wasn't found
+  return false;
+}
+
+bool KeyTableLookupSymAndUnicode(uint16_t sym, uint16_t unicode, XBMCKEYTABLE* keytable)
+{
+  // If the sym being searched for is zero there will be no match (the
+  // unicode can be zero if the sym is non-zero)
+  if (sym == 0)
+    return false;
+
+  // Look up the sym and unicode in XBMCKeyTable
+  for (int i = 0; i < XBMCKeyTableSize; i++)
+  { if (sym == XBMCKeyTable[i].sym && unicode == XBMCKeyTable[i].unicode)
+    { *keytable = XBMCKeyTable[i];
+      return true;
+    }
+  }
+
+  // The sym and unicode weren't found
   return false;
 }
 

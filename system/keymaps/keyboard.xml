@@ -75,6 +75,18 @@
       <seven>Number7</seven>
       <eight>Number8</eight>
       <nine>Number9</nine>
+      <numpadminus>VolumeDown</numpadminus>
+      <numpadplus>VolumeUp</numpadplus>
+      <numpadzero>Number0</numpadzero>
+      <numpadone>Number1</numpadone>
+      <numpadtwo>Number2</numpadtwo>
+      <numpadthree>Number3</numpadthree>
+      <numpadfour>Number4</numpadfour>
+      <numpadfive>Number5</numpadfive>
+      <numpadsix>Number6</numpadsix>
+      <numpadseven>Number7</numpadseven>
+      <numpadeight>Number8</numpadeight>
+      <numpadnine>Number9</numpadnine>
       <backslash>ToggleFullScreen</backslash>
       <browser_home>XBMC.ActivateWindow(Home)</browser_home>
       <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
@@ -174,6 +186,7 @@
     <keyboard>
       <space>Playlist</space>
       <q>Queue</q>
+      <delete>Delete</delete>
     </keyboard>
   </MyMusicFiles>
   <MyMusicLibrary>
@@ -419,6 +432,11 @@
       <d>MoveItemDown</d>
     </keyboard>
   </MyVideoPlaylist>
+  <MyPictures>
+    <keyboard>
+      <delete>Delete</delete>
+    </keyboard>
+  </MyPictures>
   <ContextMenu>
     <keyboard>
       <c>Close</c>

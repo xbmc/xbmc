@@ -17,17 +17,30 @@
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
-			<posx>80</posx>
-			<posy>10</posy>
-			<width>640</width>
-			<height>90</height>
-			<aspectratio>stretch</aspectratio>
-			<texture>GlassTitleBar.png</texture>
+			<description>Dialog Header image</description>
+			<posx>40</posx>
+			<posy>16</posy>
+			<width>720</width>
+			<height>40</height>
+			<texture>dialogheader.png</texture>
+		</control>
+		<control type="label">
+			<description>header label</description>
+			<posx>40</posx>
+			<posy>20</posy>
+			<width>720</width>
+			<height>30</height>
+			<font>font13_title</font>
+			<label>$LOCALIZE[21421]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<textcolor>selected</textcolor>
+			<shadowcolor>black</shadowcolor>
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
 			<posx>710</posx>
-			<posy>9</posy>
+			<posy>15</posy>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>
@@ -42,19 +55,6 @@
 			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
 		<control type="label">
-			<description>header label</description>
-			<posx>20</posx>
-			<posy>18</posy>
-			<width>760</width>
-			<height>30</height>
-			<font>font13_title</font>
-			<label>$LOCALIZE[21421]</label>
-			<align>center</align>
-			<aligny>center</aligny>
-			<textcolor>white</textcolor>
-			<shadowcolor>black</shadowcolor>
-		</control>
-		<control type="label">
 			<description>Rule match label</description>
 			<posx>40</posx>
 			<posy>60</posy>
@@ -62,7 +62,7 @@
 			<height>35</height>
 			<align>center</align>
 			<aligny>center</aligny>
-			<font>font12caps</font>
+			<font>font12</font>
 			<textcolor>blue</textcolor>
 			<shadowcolor>black</shadowcolor>
 			<label>21422</label>
@@ -70,12 +70,12 @@
 		<control type="group" id="9001">
 			<control type="spincontrolex" id="15">
 				<description>Rule Field</description>
-				<posx>20</posx>
+				<posx>30</posx>
 				<posy>100</posy>
-				<width>375</width>
+				<width>365</width>
 				<height>40</height>
 				<font>-</font>
-				<texturefocus border="3">button-focus.png</texturefocus>
+				<texturefocus border="3">button-focus2.png</texturefocus>
 				<texturenofocus border="3">button-nofocus.png</texturenofocus>
 				<onright>16</onright>
 				<onleft>16</onleft>
@@ -84,7 +84,7 @@
 			</control>
 			<control type="label">
 				<description>Rule Field label</description>
-				<posx>25</posx>
+				<posx>35</posx>
 				<posy>100</posy>
 				<width>300</width>
 				<height>40</height>
@@ -99,10 +99,10 @@
 				<description>Rule operator</description>
 				<posx>405</posx>
 				<posy>100</posy>
-				<width>375</width>
+				<width>365</width>
 				<height>40</height>
 				<font>-</font>
-				<texturefocus border="3">button-focus.png</texturefocus>
+				<texturefocus border="3">button-focus2.png</texturefocus>
 				<texturenofocus border="3">button-nofocus.png</texturenofocus>
 				<onright>15</onright>
 				<onleft>15</onleft>
@@ -125,13 +125,13 @@
 		</control>
 		<control type="button" id="17">
 			<description>Value Button</description>
-			<posx>20</posx>
+			<posx>30</posx>
 			<posy>145</posy>
-			<width>585</width>
+			<width>565</width>
 			<height>40</height>
 			<font>font13</font>
 			<aligny>center</aligny>
-			<texturefocus border="3">button-focus.png</texturefocus>
+			<texturefocus border="3">button-focus2.png</texturefocus>
 			<texturenofocus border="3">button-nofocus.png</texturenofocus>
 			<label>-</label>
 			<onup>9001</onup>
@@ -141,7 +141,7 @@
 		</control>
 		<control type="button" id="20">
 			<description>Browse Button</description>
-			<posx>610</posx>
+			<posx>600</posx>
 			<posy>145</posy>
 			<width>170</width>
 			<height>40</height>
@@ -166,8 +166,6 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<font>font12_title</font>
-				<texturefocus border="3">button-focus.png</texturefocus>
-				<texturenofocus border="3">MenuItemNF.png</texturenofocus>
 				<label>186</label>
 				<onup>17</onup>
 				<onleft>19</onleft>
@@ -183,8 +181,6 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<font>font12_title</font>
-				<texturefocus border="3">button-focus.png</texturefocus>
-				<texturenofocus border="3">MenuItemNF.png</texturenofocus>
 				<label>222</label>
 				<onup>17</onup>
 				<onleft>18</onleft>

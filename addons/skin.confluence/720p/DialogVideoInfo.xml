@@ -52,7 +52,7 @@
 					<posy>480</posy>
 					<width>600</width>
 					<align>left</align>
-					<itemgap>0</itemgap>
+					<itemgap>2</itemgap>
 					<orientation>horizontal</orientation>
 					<include>VisibleFadeEffect</include>
 					<visible>!Control.IsVisible(50) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>

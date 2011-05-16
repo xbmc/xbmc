@@ -16,17 +16,30 @@
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
-			<posx>80</posx>
-			<posy>10</posy>
-			<width>640</width>
-			<height>90</height>
-			<aspectratio>stretch</aspectratio>
-			<texture>GlassTitleBar.png</texture>
+			<description>Dialog Header image</description>
+			<posx>40</posx>
+			<posy>16</posy>
+			<width>720</width>
+			<height>40</height>
+			<texture>dialogheader.png</texture>
+		</control>
+		<control type="label" id="2">
+			<description>header label</description>
+			<posx>40</posx>
+			<posy>20</posy>
+			<width>720</width>
+			<height>30</height>
+			<font>font13_title</font>
+			<label>$LOCALIZE[13406]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<textcolor>selected</textcolor>
+			<shadowcolor>black</shadowcolor>
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
 			<posx>710</posx>
-			<posy>9</posy>
+			<posy>15</posy>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>
@@ -40,28 +53,15 @@
 			<ondown>10</ondown>
 			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
-		<control type="label" id="2">
-			<description>header label</description>
-			<posx>20</posx>
-			<posy>18</posy>
-			<width>760</width>
-			<height>30</height>
-			<font>font13_title</font>
-			<label>$LOCALIZE[13406]</label>
-			<align>center</align>
-			<aligny>center</aligny>
-			<textcolor>white</textcolor>
-			<shadowcolor>black</shadowcolor>
-		</control>
 		<control type="label">
 			<description>path label</description>
 			<posx>20</posx>
-			<posy>60</posy>
+			<posy>65</posy>
 			<width>760</width>
 			<height>30</height>
 			<align>center</align>
 			<aligny>center</aligny>
-			<font>font12caps</font>
+			<font>font12</font>
 			<label>1021</label>
 			<textcolor>blue</textcolor>
 			<shadowcolor>black</shadowcolor>
@@ -69,21 +69,21 @@
 		<control type="list" id="10">
 			<posx>30</posx>
 			<posy>105</posy>
-			<width>500</width>
-			<height>201</height>
+			<width>525</width>
+			<height>225</height>
 			<onup>9001</onup>
 			<onleft>9000</onleft>
 			<onright>60</onright>
 			<ondown>12</ondown>
 			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
-			<itemlayout height="40">
+			<itemlayout height="45">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>500</width>
-					<height>41</height>
-					<texture>MenuItemNF.png</texture>
+					<width>525</width>
+					<height>40</height>
+					<texture border="5">button-nofocus.png</texture>
 				</control>
 				<control type="label">
 					<posx>10</posx>
@@ -98,22 +98,22 @@
 					<info>ListItem.Label</info>
 				</control>
 			</itemlayout>
-			<focusedlayout height="40">
+			<focusedlayout height="45">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>500</width>
-					<height>41</height>
+					<width>525</width>
+					<height>40</height>
 					<visible>!Control.HasFocus(10)</visible>
-					<texture>MenuItemNF.png</texture>
+					<texture border="5">button-nofocus.png</texture>
 				</control>
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>500</width>
+					<width>525</width>
 					<height>41</height>
 					<visible>Control.HasFocus(10)</visible>
-					<texture>MenuItemFO.png</texture>
+					<texture border="5">button-focus2.png</texture>
 				</control>
 				<control type="label">
 					<posx>10</posx>
@@ -132,7 +132,7 @@
 			<posx>555</posx>
 			<posy>105</posy>
 			<width>25</width>
-			<height>200</height>
+			<height>225</height>
 			<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
 			<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
 			<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
@@ -150,13 +150,13 @@
 				<description>Browse Button</description>
 				<posx>0</posx>
 				<posy>0</posy>
-				<width>200</width>
-				<height>41</height>
+				<width>190</width>
+				<height>40</height>
 				<label>1024</label>
 				<font>font12_title</font>
 				<align>center</align>
 				<aligny>center</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<onup>18</onup>
 				<onleft>60</onleft>
@@ -166,14 +166,14 @@
 			<control type="button" id="13">
 				<description>Add Path Button</description>
 				<posx>0</posx>
-				<posy>40</posy>
-				<width>200</width>
-				<height>41</height>
+				<posy>45</posy>
+				<width>190</width>
+				<height>40</height>
 				<label>15019</label>
 				<font>font12_title</font>
 				<align>center</align>
 				<aligny>center</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<onup>11</onup>
 				<onleft>60</onleft>
@@ -183,14 +183,14 @@
 			<control type="button" id="14">
 				<description>Remove Path Button</description>
 				<posx>0</posx>
-				<posy>80</posy>
-				<width>200</width>
-				<height>41</height>
+				<posy>90</posy>
+				<width>190</width>
+				<height>40</height>
 				<label>1210</label>
 				<font>font12_title</font>
 				<align>center</align>
 				<aligny>center</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<onup>13</onup>
 				<onleft>60</onleft>
@@ -200,85 +200,68 @@
 		</control>
 		<control type="label">
 			<description>Name label</description>
-			<posx>20</posx>
+			<posx>30</posx>
 			<posy>335</posy>
-			<width>760</width>
+			<width>740</width>
 			<height>30</height>
 			<align>center</align>
 			<aligny>center</aligny>
-			<font>font12caps</font>
+			<font>font12</font>
 			<label>1022</label>
 			<textcolor>blue</textcolor>
 			<shadowcolor>black</shadowcolor>
 		</control>
 		<control type="button" id="12">
 			<description>Name Button</description>
-			<posx>20</posx>
+			<posx>30</posx>
 			<posy>370</posy>
-			<width>760</width>
+			<width>740</width>
 			<height>40</height>
 			<align>center</align>
 			<aligny>center</aligny>
 			<label>-</label>
 			<font>font13</font>
-			<texturefocus>MenuItemFO.png</texturefocus>
-			<texturenofocus>MenuItemNF.png</texturenofocus>
+			<texturefocus border="5">button-focus2.png</texturefocus>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>
 			<onup>10</onup>
 			<onleft>12</onleft>
 			<onright>19</onright>
 			<ondown>9001</ondown>
 		</control>
 		<control type="group" id="9001">
+			<posx>190</posx>
+			<posy>435</posy>
 			<control type="button" id="18">
 				<description>Ok Button</description>
-				<posx>300</posx>
-				<posy>435</posy>
+				<posx>0</posx>
+				<posy>0</posy>
 				<width>200</width>
 				<height>40</height>
 				<align>center</align>
 				<aligny>center</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<label>186</label>
 				<font>font12_title</font>
 				<onup>12</onup>
-				<onleft>20</onleft>
+				<onleft>19</onleft>
 				<onright>19</onright>
 				<ondown>10</ondown>
-				<animation effect="slide" start="0,0" end="-102,0" time="0" condition="!Control.IsVisible(20)">Conditional</animation>
 			</control>
 			<control type="button" id="19">
 				<description>Cancel Button</description>
-				<posx>510</posx>
-				<posy>435</posy>
+				<posx>210</posx>
+				<posy>0</posy>
 				<width>200</width>
 				<height>40</height>
 				<align>center</align>
 				<aligny>center</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<label>222</label>
 				<font>font12_title</font>
 				<onup>12</onup>
 				<onleft>18</onleft>
-				<onright>20</onright>
-				<ondown>10</ondown>
-				<animation effect="slide" start="0,0" end="-102,0" time="0" condition="!Control.IsVisible(20)">Conditional</animation>
-			</control>
-			<control type="button" id="20">
-				<description>Set Content Button</description>
-				<posx>90</posx>
-				<posy>435</posy>
-				<width>200</width>
-				<height>40</height>
-				<align>center</align>
-				<aligny>center</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-				<texturefocus border="5">button-focus.png</texturefocus>
-				<label>20333</label>
-				<font>font12_title</font>
-				<onup>12</onup>
-				<onleft>19</onleft>
 				<onright>18</onright>
 				<ondown>10</ondown>
 			</control>

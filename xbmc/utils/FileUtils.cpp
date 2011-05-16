@@ -15,7 +15,7 @@ using namespace std;
 
 bool CFileUtils::DeleteItem(const CFileItemPtr &item, bool force)
 {
-  if (!item)
+  if (!item || item->IsParentFolder())
     return false;
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);

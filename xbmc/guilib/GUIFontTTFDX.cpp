@@ -30,7 +30,7 @@
 #include "utils/log.h"
 
 // stuff for freetype
-#include "ft2build.h"
+#include <ft2build.h>
 
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
