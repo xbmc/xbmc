@@ -23,24 +23,22 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <errno.h>
 
 #include "../os-dependent_socket.h"
 
-#ifndef EINPROGRESS
-#define EINPROGRESS WSAEINPROGRESS
-#endif
-
-#ifndef ECONNRESET
-#define ECONNRESET  WSAECONNRESET
-#endif
-
-#ifndef EAGAIN
-#define EAGAIN      WSAEWOULDBLOCK
-#endif
-
-#ifndef EINVAL
-#define EINVAL      WSAEINVAL
-#endif
+static int socket_errno()
+{
+  int error = WSAGetLastError();
+  switch(error)
+  {
+    case WSAEINPROGRESS: return EINPROGRESS;
+    case WSAECONNRESET : return ECONNRESET;
+    case WSAETIMEDOUT  : return ETIMEDOUT;
+    case WSAEWOULDBLOCK: return EAGAIN;
+    default            : return error;
+  }
+}
 
 #ifndef MSG_WAITALL
 #define MSG_WAITALL 0x8
@@ -84,8 +82,8 @@ tcp_connect_poll(struct addrinfo* addr, socket_t fdSock, char *szErrbuf, size_t 
   /* poll until a connection is established */
   if (nRes == -1)
   {
-    if (WSAGetLastError() == EINPROGRESS ||
-       WSAGetLastError() == EAGAIN)
+    if (socket_errno() == EINPROGRESS ||
+        socket_errno() == EAGAIN)
     {
       fd_set fd_write, fd_except;
       struct timeval tv;
@@ -106,7 +104,7 @@ tcp_connect_poll(struct addrinfo* addr, socket_t fdSock, char *szErrbuf, size_t 
 
       else if (nRes == -1)
       {
-        _snprintf(szErrbuf, nErrbufSize, "select() error: %s", strerror(WSAGetLastError()));
+        _snprintf(szErrbuf, nErrbufSize, "select() error: %s", strerror(socket_errno()));
         return SOCKET_ERROR;
       }
 
@@ -115,7 +113,7 @@ tcp_connect_poll(struct addrinfo* addr, socket_t fdSock, char *szErrbuf, size_t 
     }
     else
     {
-      nErr = WSAGetLastError();
+      nErr = socket_errno();
     }
   }
 
@@ -142,7 +140,7 @@ tcp_connect_addr(struct addrinfo* addr, char *szErrbuf, size_t nErrbufSize,
   fdSock = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
   if (fdSock == -1)
   {
-    _snprintf(szErrbuf, nErrbufSize, "Unable to create socket: %s", strerror(WSAGetLastError()));
+    _snprintf(szErrbuf, nErrbufSize, "Unable to create socket: %s", strerror(socket_errno()));
     return SOCKET_ERROR;
   }
 
@@ -222,7 +220,7 @@ tcp_read(socket_t fdSock, void *buf, size_t nLen)
   int x = recv_fixed(fdSock, (char *)buf, nLen, MSG_WAITALL);
 
   if (x == -1)
-    return WSAGetLastError();
+    return socket_errno();
   if (x != (int)nLen)
     return ECONNRESET;
 
@@ -257,12 +255,9 @@ tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout)
     ioctlsocket(fdSock, FIONBIO, &nVal);
 
     x = recv_fixed(fdSock, (char *)buf + tot, nLen - tot, 0);
-    nErr = WSAGetLastError();
+    nErr = socket_errno();
     nVal = 0;
     ioctlsocket(fdSock, FIONBIO, &nVal);
-
-	if (nErr == WSAETIMEDOUT)
-      nErr = ETIMEDOUT;
 
     if (x == -1)
     {
