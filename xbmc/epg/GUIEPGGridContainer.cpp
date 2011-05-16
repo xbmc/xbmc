@@ -102,13 +102,10 @@ void CGUIEPGGridContainer::Render()
   if (m_bInvalidated)
     UpdateLayout();
 
-  if (!m_focusedChannelLayout || !m_channelLayout || !m_rulerLayout || !m_focusedProgrammeLayout || !m_programmeLayout || m_rulerItems.empty() || (m_gridEnd - m_gridStart) == CDateTimeSpan(0, 0, 0, 0))
+  if (!m_focusedChannelLayout || !m_channelLayout || !m_rulerLayout || !m_focusedProgrammeLayout || !m_programmeLayout || m_rulerItems.size()<=1 || (m_gridEnd - m_gridStart) == CDateTimeSpan(0, 0, 0, 0))
     return;
 
   UpdateScrollOffset();
-
-  if (!m_programmeScrollOffset || !m_channelScrollOffset)
-    return;
 
   int chanOffset  = (int)floorf(m_channelScrollOffset / m_programmeLayout->Size(m_orientation));
   int blockOffset = (int)floorf(m_programmeScrollOffset / m_blockSize);
@@ -926,7 +923,7 @@ bool CGUIEPGGridContainer::MoveChannel(bool direction)
 
 bool CGUIEPGGridContainer::MoveProgrammes(bool direction)
 {
-  if (!m_gridIndex)
+  if (!m_gridIndex || !m_item)
     return false;
 
   if (direction)
@@ -1098,15 +1095,21 @@ void CGUIEPGGridContainer::SetChannel(int channel)
   if (m_blockCursor + m_blockOffset == 0 || m_blockOffset + m_blockCursor + GetItemSize(m_item) == m_blocks)
   {
     m_item          = GetItem(channel);
-    m_blockCursor   = GetBlock(m_item->item, channel);
-    m_channelCursor = channel;
+    if (m_item)
+    {
+      m_blockCursor   = GetBlock(m_item->item, channel);
+      m_channelCursor = channel;
+    }
     return;
   }
 
   /* basic checks failed, need to correctly identify nearest item */
   m_item          = GetClosestItem(channel);
-  m_channelCursor = channel;
-  m_blockCursor   = GetBlock(m_item->item, m_channelCursor);
+  if (m_item)
+  {
+    m_channelCursor = channel;
+    m_blockCursor   = GetBlock(m_item->item, m_channelCursor);
+  }
 }
 
 void CGUIEPGGridContainer::SetBlock(int block)
@@ -1226,6 +1229,10 @@ CGUIListItemPtr CGUIEPGGridContainer::GetListItem(int offset) const
 GridItemsPtr *CGUIEPGGridContainer::GetClosestItem(const int &channel)
 {
   GridItemsPtr *closest = GetItem(channel);
+
+  if(!closest)
+    return NULL;
+
   int block = GetBlock(closest->item, channel);
   int left;   // num blocks to start of previous item
   int right;  // num blocks to start of next item
