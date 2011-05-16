@@ -228,10 +228,7 @@ cResponsePacket* cVNSISession::ReadMessage()
 
 bool cVNSISession::SendMessage(cRequestPacket* vrp)
 {
-  if (sendData(vrp->getPtr(), vrp->getLen()) != (int)vrp->getLen())
-    return false;
-
-  return true;
+  return (tcp_send(m_fd, vrp->getPtr(), vrp->getLen(), 0) == vrp->getLen());
 }
 
 cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp)
@@ -277,42 +274,6 @@ bool cVNSISession::ReadSuccess(cRequestPacket* vrp)
   return true;
 }
 
-int cVNSISession::sendData(void* bufR, size_t count)
-{
-  size_t bytes_sent = 0;
-  int this_write;
-
-  unsigned char* buf = (unsigned char*)bufR;
-
-  while (bytes_sent < count)
-  {
-#ifdef __WINDOWS__
-    do
-    {
-      this_write = send(m_fd,(char*) buf, count- bytes_sent,0);
-    } while ( (this_write == SOCKET_ERROR) && (WSAGetLastError() == WSAEINTR) );
-#else
-    {
-      this_write = write(m_fd, buf, count - bytes_sent);
-    } while ( (this_write < 0) && (errno == EINTR) );
-#endif
-    if (this_write <= 0)
-    {
-      XBMC->Log(LOG_ERROR, "%s - this_write <= 0'", __FUNCTION__);
-      break;
-    }
-    bytes_sent += this_write;
-    buf += this_write;
-  }
-
-  if (bytes_sent < count)
-  {
-    return -1;
-  }
-
-  return bytes_sent;
-}
-
 void cVNSISession::OnReconnect() {
 }
 
@@ -350,47 +311,7 @@ void cVNSISession::SignalConnectionLost()
 
 bool cVNSISession::readData(uint8_t* buffer, int totalBytes)
 {
-  int bytesRead = 0;
-  int thisRead;
-  int success;
-  fd_set readSet;
-  struct timeval timeout;
-
-  while(bytesRead < totalBytes)
-  {
-    FD_ZERO(&readSet);
-    FD_SET(m_fd, &readSet);
-    timeout.tv_sec = g_iConnectTimeout;
-    timeout.tv_usec = 0;
-
-    success = select(m_fd + 1, &readSet, NULL, NULL, &timeout);
-    if (success == -1)
-    {
-      return false;
-    }
-    else if (success < 1)
-      return false;  // error, or timeout
-
-#ifdef __WINDOWS__
-    thisRead = recv(m_fd, (char*)&buffer[bytesRead], totalBytes - bytesRead, 0);
-#else
-    thisRead = read(m_fd, &buffer[bytesRead], totalBytes - bytesRead);
-#endif
-
-    // if read returns 0 then connection is closed
-    if(thisRead == 0)
-    {
-      return false;
-    }
-
-    // in non-blocking mode if read is called with no data available, it returns -1
-    // and sets errno to EAGAIN. but we use select so it wouldn't do that anyway.
-    if(thisRead == -1)
-      continue;
-
-    bytesRead += thisRead;
-  }
-  return true;
+  return (tcp_read_timeout(m_fd, buffer, totalBytes, g_iConnectTimeout * 1000) == 0);
 }
 
 void cVNSISession::SleepMs(int ms)

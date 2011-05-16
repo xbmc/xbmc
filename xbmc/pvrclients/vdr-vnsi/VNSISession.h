@@ -55,7 +55,6 @@ protected:
 
   void SleepMs(int ms);
 
-  int sendData(void* buf, size_t count);
   bool readData(uint8_t* buffer, int totalBytes);
 
   bool TryReconnect();
