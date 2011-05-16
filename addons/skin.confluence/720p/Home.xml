@@ -386,6 +386,8 @@
 			<control type="group" id="9001">
 				<posx>0</posx>
 				<posy>70</posy>
+				<onup>9000</onup>
+				<ondown>9002</ondown>
 				<control type="grouplist" id="9010">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9010</onleft>
