@@ -35,27 +35,27 @@
 				<control type="label">
 					<description>header label</description>
 					<posx>160</posx>
-					<posy>50</posy>
+					<posy>40</posy>
 					<width>1080</width>
 					<height>30</height>
 					<font>font24_title</font>
 					<label>19143</label>
 					<align>center</align>
 					<aligny>center</aligny>
-					<textcolor>white</textcolor>
+					<textcolor>selected</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="group">
 					<description>Group list</description>
 					<posx>160</posx>
-					<posy>90</posy>
+					<posy>80</posy>
 					<control type="label">
 						<description>name label</description>
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>340</width>
 						<height>70</height>
-						<font>font13_title</font>
+						<font>font13</font>
 						<label>31506</label>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -70,22 +70,22 @@
 					</control>
 					<control type="list" id="13">
 						<posx>5</posx>
-						<posy>85</posy>
+						<posy>80</posy>
 						<width>330</width>
-						<height>440</height>
+						<height>450</height>
 						<onup>13</onup>
 						<ondown>13</ondown>
 						<onleft>29</onleft>
 						<onright>73</onright>
 						<pagecontrol>73</pagecontrol>
 						<scrolltime>200</scrolltime>
-						<itemlayout height="40">
+						<itemlayout height="45">
 							<control type="image">
 								<posx>0</posx>
 								<posy>0</posy>
 								<width>330</width>
-								<height>41</height>
-								<texture border="3">MenuItemNF.png</texture>
+								<height>40</height>
+								<texture border="5">button-nofocus.png</texture>
 							</control>
 							<control type="label">
 								<posx>10</posx>
@@ -100,22 +100,22 @@
 								<info>ListItem.Label</info>
 							</control>
 						</itemlayout>
-						<focusedlayout height="40">
+						<focusedlayout height="45">
 							<control type="image">
 								<posx>0</posx>
 								<posy>0</posy>
 								<width>330</width>
-								<height>41</height>
+								<height>40</height>
+								<texture border="5">button-nofocus.png</texture>
 								<visible>!Control.HasFocus(13)</visible>
-								<texture border="3">MenuItemNF.png</texture>
 							</control>
 							<control type="image">
 								<posx>0</posx>
 								<posy>0</posy>
 								<width>330</width>
-								<height>41</height>
+								<height>40</height>
+								<texture border="5">button-focus2.png</texture>
 								<visible>Control.HasFocus(13)</visible>
-								<texture border="3">MenuItemFO.png</texture>
 							</control>
 							<control type="label">
 								<posx>10</posx>
@@ -152,15 +152,14 @@
 				<control type="group">
 					<description>Channels list</description>
 					<posx>525</posx>
-					<posy>90</posy>
+					<posy>80</posy>
 					<control type="label" id="21">
 						<description>name label</description>
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>340</width>
 						<height>70</height>
-						<font>font13_title</font>
-						<label>19219</label>
+						<font>font13</font>
 						<align>center</align>
 						<aligny>center</aligny>
 						<textcolor>blue</textcolor>
@@ -176,20 +175,20 @@
 						<posx>5</posx>
 						<posy>85</posy>
 						<width>330</width>
-						<height>440</height>
+						<height>450</height>
 						<onup>11</onup>
 						<ondown>11</ondown>
 						<onleft>73</onleft>
 						<onright>71</onright>
 						<pagecontrol>71</pagecontrol>
 						<scrolltime>200</scrolltime>
-						<itemlayout height="40">
+						<itemlayout height="45">
 							<control type="image">
 								<posx>0</posx>
 								<posy>0</posy>
 								<width>330</width>
-								<height>41</height>
-								<texture border="3">MenuItemNF.png</texture>
+								<height>40</height>
+								<texture border="5">button-nofocus.png</texture>
 							</control>
 							<control type="image">
 								<width>32</width>
@@ -211,22 +210,22 @@
 								<label>$INFO[ListItem.ChannelNumber,(,) - ]$INFO[ListItem.ChannelName]</label>
 							</control>
 						</itemlayout>
-						<focusedlayout height="40">
+						<focusedlayout height="45">
 							<control type="image">
 								<posx>0</posx>
 								<posy>0</posy>
 								<width>330</width>
-								<height>41</height>
+								<height>40</height>
+								<texture border="5">button-nofocus.png</texture>
 								<visible>!Control.HasFocus(11)</visible>
-								<texture border="3">MenuItemNF.png</texture>
 							</control>
 							<control type="image">
 								<posx>0</posx>
 								<posy>0</posy>
 								<width>330</width>
-								<height>41</height>
+								<height>40</height>
+								<texture border="5">button-focus2.png</texture>
 								<visible>Control.HasFocus(11)</visible>
-								<texture border="3">MenuItemFO.png</texture>
 							</control>
 							<control type="image">
 								<width>32</width>
@@ -270,15 +269,14 @@
 				<control type="group">
 					<description>Grouped Channels list</description>
 					<posx>890</posx>
-					<posy>90</posy>
+					<posy>80</posy>
 					<control type="label" id="22">
 						<description>name label</description>
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>340</width>
 						<height>70</height>
-						<font>font13_title</font>
-						<label>$LOCALIZE[19220][CR]$INFO[Control.GetLabel(20)]</label>
+						<font>font13</font>
 						<align>center</align>
 						<aligny>center</aligny>
 						<textcolor>blue</textcolor>
@@ -294,20 +292,20 @@
 						<posx>5</posx>
 						<posy>85</posy>
 						<width>330</width>
-						<height>440</height>
+						<height>450</height>
 						<onup>12</onup>
 						<ondown>12</ondown>
 						<onleft>71</onleft>
 						<onright>72</onright>
 						<pagecontrol>72</pagecontrol>
 						<scrolltime>200</scrolltime>
-						<itemlayout height="40">
+						<itemlayout height="45">
 							<control type="image">
 								<posx>0</posx>
 								<posy>0</posy>
 								<width>330</width>
-								<height>41</height>
-								<texture border="3">MenuItemNF.png</texture>
+								<height>40</height>
+								<texture border="5">button-nofocus.png</texture>
 							</control>
 							<control type="image">
 								<width>32</width>
@@ -329,22 +327,22 @@
 								<label>$INFO[ListItem.ChannelNumber,(,) - ]$INFO[ListItem.ChannelName]</label>
 							</control>
 						</itemlayout>
-						<focusedlayout height="40">
+						<focusedlayout height="45">
 							<control type="image">
 								<posx>0</posx>
 								<posy>0</posy>
 								<width>330</width>
-								<height>41</height>
+								<height>40</height>
+								<texture border="5">button-nofocus.png</texture>
 								<visible>!Control.HasFocus(12)</visible>
-								<texture border="3">MenuItemNF.png</texture>
 							</control>
 							<control type="image">
 								<posx>0</posx>
 								<posy>0</posy>
 								<width>330</width>
-								<height>41</height>
+								<height>40</height>
+								<texture border="5">button-focus2.png</texture>
 								<visible>Control.HasFocus(12)</visible>
-								<texture border="3">MenuItemFO.png</texture>
 							</control>
 							<control type="image">
 								<width>32</width>
@@ -399,25 +397,25 @@
 					<ondown>9000</ondown>
 					<control type="button" id="26">
 						<description>Add Group</description>
-						<width>210</width>
+						<width>230</width>
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>31503</label>
 					</control>
 					<control type="button" id="27">
 						<description>Rename Group</description>
-						<width>210</width>
+						<width>230</width>
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>31504</label>
 					</control>
 					<control type="button" id="28">
 						<description>Delete Group</description>
-						<width>210</width>
+						<width>230</width>
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>31505</label>
 					</control>
 					<control type="button" id="29">
 						<description>OK</description>
-						<width>210</width>
+						<width>230</width>
 						<include>ButtonInfoDialogsCommonValues</include>
 						<label>186</label>
 					</control>

@@ -16,30 +16,31 @@
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
-			<posx>80</posx>
-			<posy>10</posy>
-			<width>700</width>
-			<height>90</height>
-			<aspectratio>stretch</aspectratio>
-			<texture>GlassTitleBar.png</texture>
+			<description>Dialog Header image</description>
+			<posx>40</posx>
+			<posy>16</posy>
+			<width>785</width>
+			<height>40</height>
+			<texture>dialogheader.png</texture>
 		</control>
 		<control type="label">
 			<description>header label</description>
-			<posx>80</posx>
-			<posy>18</posy>
-			<width>700</width>
+			<posx>40</posx>
+			<posy>20</posy>
+			<width>785</width>
 			<height>30</height>
 			<font>font13_title</font>
 			<label>$LOCALIZE[19142]</label>
 			<align>center</align>
 			<aligny>center</aligny>
-			<textcolor>white</textcolor>
+			<textcolor>selected</textcolor>
 			<shadowcolor>black</shadowcolor>
+			<visible>!pvr.IsPlayingRadio</visible>
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<posx>770</posx>
-			<posy>9</posy>
+			<posx>775</posx>
+			<posy>15</posy>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>
@@ -115,7 +116,7 @@
 				<textcolor>white</textcolor>
 				<focusedcolor>white</focusedcolor>
 				<shadowcolor>black</shadowcolor>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<align>left</align>
 				<aligny>center</aligny>
@@ -135,7 +136,7 @@
 				<textcolor>white</textcolor>
 				<focusedcolor>white</focusedcolor>
 				<shadowcolor>black</shadowcolor>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<align>left</align>
 				<aligny>center</aligny>
@@ -155,7 +156,7 @@
 				<textcolor>white</textcolor>
 				<focusedcolor>white</focusedcolor>
 				<shadowcolor>black</shadowcolor>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<label>19128</label>
 				<onright>16</onright>
@@ -173,7 +174,7 @@
 				<textcolor>white</textcolor>
 				<focusedcolor>white</focusedcolor>
 				<shadowcolor>black</shadowcolor>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<label>19129</label>
 				<onright>17</onright>
@@ -188,7 +189,7 @@
 				<width>400</width>
 				<height>35</height>
 				<font>font12</font>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<label>515</label>
 				<onright>19</onright>
@@ -208,7 +209,7 @@
 				<shadowcolor>black</shadowcolor>
 				<align>left</align>
 				<aligny>center</aligny>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<pulseonselect>no</pulseonselect>
 				<label>19132</label>
@@ -229,7 +230,7 @@
 				<shadowcolor>black</shadowcolor>
 				<align>left</align>
 				<aligny>center</aligny>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<pulseonselect>no</pulseonselect>
 				<label>19123</label>
@@ -250,7 +251,7 @@
 				<shadowcolor>black</shadowcolor>
 				<align>left</align>
 				<aligny>center</aligny>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<pulseonselect>no</pulseonselect>
 				<label>19124</label>
@@ -270,7 +271,7 @@
 				<width>400</width>
 				<height>35</height>
 				<font>font12</font>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<label>19130</label>
 				<onright>10</onright>
@@ -285,7 +286,7 @@
 				<width>400</width>
 				<height>35</height>
 				<font>font12</font>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<label>19131</label>
 				<onright>11</onright>
@@ -303,7 +304,7 @@
 				<textcolor>white</textcolor>
 				<focusedcolor>white</focusedcolor>
 				<shadowcolor>black</shadowcolor>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<label>19126</label>
 				<onright>14</onright>
@@ -321,7 +322,7 @@
 				<textcolor>white</textcolor>
 				<focusedcolor>white</focusedcolor>
 				<shadowcolor>black</shadowcolor>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<label>19127</label>
 				<onright>15</onright>
@@ -341,7 +342,7 @@
 				<shadowcolor>black</shadowcolor>
 				<align>left</align>
 				<aligny>center</aligny>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<pulseonselect>no</pulseonselect>
 				<label>19121</label>
@@ -357,7 +358,7 @@
 				<width>400</width>
 				<height>35</height>
 				<font>font12</font>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<label>19141</label>
 				<onright>20</onright>
@@ -372,7 +373,7 @@
 				<width>400</width>
 				<height>35</height>
 				<font>font12</font>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<label>19148</label>
 				<onleft>22</onleft>
@@ -392,7 +393,7 @@
 				<shadowcolor>black</shadowcolor>
 				<align>left</align>
 				<aligny>center</aligny>
-				<texturefocus border="5">button-focus.png</texturefocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<pulseonselect>no</pulseonselect>
 				<label>19125</label>
@@ -413,8 +414,6 @@
 				<height>40</height>
 				<align>center</align>
 				<aligny>center</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-				<texturefocus border="5">button-focus.png</texturefocus>
 				<font>font12_title</font>
 				<label>409</label>
 				<onleft>26</onleft>
@@ -430,8 +429,6 @@
 				<height>40</height>
 				<align>center</align>
 				<aligny>center</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-				<texturefocus border="5">button-focus.png</texturefocus>
 				<font>font12_title</font>
 				<label>222</label>
 				<onleft>28</onleft>
@@ -447,8 +444,6 @@
 				<height>40</height>
 				<align>center</align>
 				<aligny>center</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-				<texturefocus border="5">button-focus.png</texturefocus>
 				<font>font12_title</font>
 				<label>137</label>
 				<onleft>25</onleft>

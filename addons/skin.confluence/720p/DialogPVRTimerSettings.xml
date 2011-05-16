@@ -2,8 +2,8 @@
 	<defaultcontrol>29</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>240</posx>
-		<posy>55</posy>
+		<posx>275</posx>
+		<posy>30</posy>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
@@ -11,22 +11,35 @@
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>800</width>
-			<height>620</height>
+			<width>730</width>
+			<height>660</height>
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
-			<posx>80</posx>
-			<posy>10</posy>
-			<width>640</width>
-			<height>90</height>
-			<aspectratio>stretch</aspectratio>
-			<texture>GlassTitleBar.png</texture>
+			<description>Dialog Header image</description>
+			<posx>40</posx>
+			<posy>16</posy>
+			<width>650</width>
+			<height>40</height>
+			<texture>dialogheader.png</texture>
+		</control>
+		<control type="label" id="2">
+			<description>header label</description>
+			<posx>40</posx>
+			<posy>20</posy>
+			<width>650</width>
+			<height>30</height>
+			<font>font13_title</font>
+			<label>-</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<textcolor>selected</textcolor>
+			<shadowcolor>black</shadowcolor>
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<posx>710</posx>
-			<posy>9</posy>
+			<posx>640</posx>
+			<posy>15</posy>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>
@@ -34,36 +47,57 @@
 			<onclick>PreviousMenu</onclick>
 			<texturefocus>DialogCloseButton-focus.png</texturefocus>
 			<texturenofocus>DialogCloseButton.png</texturenofocus>
-			<onleft>2</onleft>
-			<onright>2</onright>
-			<onup>2</onup>
-			<ondown>2</ondown>
+			<onleft>10</onleft>
+			<onright>10</onright>
+			<onup>10</onup>
+			<ondown>10</ondown>
 			<visible>system.getbool(input.enablemouse)</visible>
-		</control>
-		<control type="label" id="2">
-			<description>header label</description>
-			<posx>20</posx>
-			<posy>18</posy>
-			<width>760</width>
-			<height>30</height>
-			<font>font13_title</font>
-			<label>-</label>
-			<align>center</align>
-			<aligny>center</aligny>
-			<textcolor>white</textcolor>
-			<shadowcolor>black</shadowcolor>
 		</control>
 		<control type="grouplist" id="5">
 			<description>control area</description>
 			<posx>30</posx>
-			<posy>80</posy>
-			<width>740</width>
-			<height>440</height>
-			<itemgap>-1</itemgap>
+			<posy>70</posy>
+			<width>670</width>
+			<height>510</height>
+			<itemgap>5</itemgap>
 			<onup>9001</onup>
 			<ondown>9001</ondown>
 			<onleft>9001</onleft>
 			<onright>9001</onright>
+		</control>
+		<control type="group" id="9001">
+			<posx>160</posx>
+			<posy>590</posy>
+			<control type="button" id="28">
+				<description>OK Button</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font12_title</font>
+				<label>186</label>
+				<onleft>29</onleft>
+				<onright>29</onright>
+				<onup>5</onup>
+				<ondown>5</ondown>
+			</control>
+			<control type="button" id="29">
+				<description>Cancel Button</description>
+				<posx>210</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font12_title</font>
+				<label>222</label>
+				<onleft>28</onleft>
+				<onright>28</onright>
+				<onup>5</onup>
+				<ondown>5</ondown>
+			</control>
 		</control>
 		<control type="button" id="7">
 			<description>Default Button</description>
@@ -71,8 +105,8 @@
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
-			<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
-			<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+			<texturefocus border="5">button-focus2.png</texturefocus>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>
 		</control>
 		<control type="radiobutton" id="8">
 			<description>Default RadioButton</description>
@@ -80,16 +114,16 @@
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
-			<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
-			<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+			<texturefocus border="5">button-focus2.png</texturefocus>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>
 		</control>
 		<control type="spincontrolex" id="9">
 			<description>Default spincontrolex</description>
 			<height>40</height>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
-			<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
-			<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+			<texturefocus border="5">button-focus2.png</texturefocus>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>
 			<font>font13</font>
 			<aligny>center</aligny>
 			<reverse>yes</reverse>
@@ -97,8 +131,8 @@
 		<control type="sliderex" id="10">
 			<description>Default Slider</description>
 			<height>40</height>
-			<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
-			<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+			<texturefocus border="5">button-focus2.png</texturefocus>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
@@ -114,46 +148,8 @@
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
-			<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
-			<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
-		</control>
-		<control type="group" id="9001">
-			<posx>200</posx>
-			<posy>550</posy>
-			<control type="button" id="28">
-				<description>OK Button</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>200</width>
-				<height>40</height>
-				<align>center</align>
-				<aligny>center</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-				<texturefocus border="5">button-focus.png</texturefocus>
-				<font>font12_title</font>
-				<label>186</label>
-				<onleft>29</onleft>
-				<onright>29</onright>
-				<onup>5</onup>
-				<ondown>5</ondown>
-			</control>
-			<control type="button" id="29">
-				<description>Cancel Button</description>
-				<posx>200</posx>
-				<posy>0</posy>
-				<width>200</width>
-				<height>40</height>
-				<align>center</align>
-				<aligny>center</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-				<texturefocus border="5">button-focus.png</texturefocus>
-				<font>font12_title</font>
-				<label>222</label>
-				<onleft>28</onleft>
-				<onright>28</onright>
-				<onup>5</onup>
-				<ondown>5</ondown>
-			</control>
+			<texturefocus border="5">button-focus2.png</texturefocus>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>
 		</control>
 	</controls>
 </window>
