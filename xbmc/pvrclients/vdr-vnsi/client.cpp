@@ -151,8 +151,17 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     return m_CurStatus;
   }
 
-  if (!VNSIData->EnableStatusInterface(g_bHandleMessages))
+  if (!VNSIData->Login())
+  {
+    m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
     return m_CurStatus;
+  }
+
+  if (!VNSIData->EnableStatusInterface(g_bHandleMessages))
+  {
+    m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
+    return m_CurStatus;
+  }
 
   m_CurStatus = ADDON_STATUS_OK;
   m_bCreated = true;
@@ -303,18 +312,10 @@ PVR_ERROR GetDriveSpace(long long *iTotal, long long *iUsed)
   return (VNSIData->GetDriveSpace(iTotal, iUsed) ? PVR_ERROR_NO_ERROR : PVR_ERROR_SERVER_ERROR);
 }
 
-PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
-{
-  if (!VNSIData)
-    return PVR_ERROR_SERVER_ERROR;
-
-  return (VNSIData->GetTime(localTime, gmtOffset) ? PVR_ERROR_NO_ERROR : PVR_ERROR_SERVER_ERROR);
-}
-
 PVR_ERROR DialogChannelScan(void)
 {
   cVNSIChannelScan scanner;
-  scanner.Open();
+  scanner.Open(g_szHostname, g_iPort);
   return PVR_ERROR_NO_ERROR;
 }
 
@@ -437,7 +438,7 @@ bool OpenLiveStream(const PVR_CHANNEL &channel)
   CloseLiveStream();
 
   VNSIDemuxer = new cVNSIDemux;
-  return VNSIDemuxer->Open(channel);
+  return VNSIDemuxer->OpenChannel(channel);
 }
 
 void CloseLiveStream(void)
@@ -507,9 +508,8 @@ bool OpenRecordedStream(const PVR_RECORDING &recording)
 
   CloseRecordedStream();
 
-  //const std::string& name = VNSIData->GetRecordingPath(recinfo.index);
   VNSIRecording = new cVNSIRecording;
-  return VNSIRecording->Open(recording);
+  return VNSIRecording->OpenRecording(recording);
 }
 
 void CloseRecordedStream(void)

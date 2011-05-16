@@ -29,7 +29,7 @@
 
 #include "responsepacket.h"
 #include "requestpacket.h"
-#include "vdrcommand.h"
+#include "vnsicommand.h"
 #include "tools.h"
 
 /* Needed on Mac OS/X */
@@ -39,7 +39,8 @@
 #endif
 
 cVNSISession::cVNSISession()
-  : m_fd(INVALID_SOCKET)
+  : m_connectionLost(false)
+  , m_fd(INVALID_SOCKET)
   , m_protocol(0)
 {
 }
@@ -51,7 +52,7 @@ cVNSISession::~cVNSISession()
 
 void cVNSISession::Abort()
 {
-  shutdown(m_fd, SHUT_RDWR);
+  tcp_shutdown(m_fd);
 }
 
 void cVNSISession::Close()
@@ -65,18 +66,14 @@ void cVNSISession::Close()
 
 bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
 {
-  if(m_fd != INVALID_SOCKET)
-  {
-    return true;
-  }
+  Close();
+
   char errbuf[1024];
   int  errlen = sizeof(errbuf);
   if (port == 0)
     port = 34890;
 
-  m_fd = tcp_connect(	hostname.c_str()
-                        , port
-                        , errbuf, errlen, 3000);
+  m_fd = tcp_connect(hostname.c_str(), port, errbuf, errlen, 3000);
 
   if (m_fd == INVALID_SOCKET)
   {
@@ -84,15 +81,27 @@ bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
     return false;
   }
 
+  // store connection data
+  m_hostname = hostname;
+  m_port = port;
+
+  if(name != NULL)
+    m_name = name;
+
+  return true;
+}
+
+bool cVNSISession::Login()
+{
   try
   {
     cRequestPacket vrp;
-    if (!vrp.init(VDR_LOGIN))                 throw "Can't init cRequestPacket";
-    if (!vrp.add_U32(VNSIProtocolVersion))    throw "Can't add protocol version to RequestPacket";
-    if (!vrp.add_U8(false))                   throw "Can't add netlog flag";
-    if (name && strlen(name) > 0)
+    if (!vrp.init(VNSI_LOGIN))                  throw "Can't init cRequestPacket";
+    if (!vrp.add_U32(VNSIPROTOCOLVERSION))      throw "Can't add protocol version to RequestPacket";
+    if (!vrp.add_U8(false))                     throw "Can't add netlog flag";
+    if (!m_name.empty())
     {
-      if (!vrp.add_String(name))                throw "Can't add client name to RequestPacket";
+      if (!vrp.add_String(m_name.c_str()))      throw "Can't add client name to RequestPacket";
     }
     else
     {
@@ -114,14 +123,18 @@ bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
     m_version   = ServerVersion;
     m_protocol  = protocol;
 
-    if (!name || strlen(name) <= 0)
-      XBMC->Log(LOG_NOTICE, "Logged in at '%lu+%lu' to '%s' Version: '%s' with protocol version '%lu'", vdrTime, vdrTimeOffset, ServerName, ServerVersion, protocol);
+    if (!m_name.empty())
+      XBMC->Log(LOG_NOTICE, "Logged in at '%lu+%i' to '%s' Version: '%s' with protocol version '%lu'",
+        vdrTime, vdrTimeOffset, ServerName, ServerVersion, protocol);
+
+    delete[] ServerName;
+    delete[] ServerVersion;
 
     delete vresp;
   }
   catch (const char * str)
   {
-    XBMC->Log(LOG_ERROR, "cVNSISession::Open - %s", str);
+    XBMC->Log(LOG_ERROR, "%s - %s", __FUNCTION__,str);
     tcp_close(m_fd);
     m_fd = INVALID_SOCKET;
     return false;
@@ -144,36 +157,13 @@ cResponsePacket* cVNSISession::ReadMessage()
 
   cResponsePacket* vresp = NULL;
 
-  bool readSuccess = readData((uint8_t*)&channelID, sizeof(uint32_t)) > 0;
-  if (!readSuccess)
+  if(!readData((uint8_t*)&channelID, sizeof(uint32_t)))
     return NULL;
 
   // Data was read
 
   channelID = ntohl(channelID);
-  if (channelID == CHANNEL_REQUEST_RESPONSE)
-  {
-    if (!readData((uint8_t*)&m_responsePacketHeader, sizeof(m_responsePacketHeader))) return NULL;
-
-    requestID = ntohl(m_responsePacketHeader.requestID);
-    userDataLength = ntohl(m_responsePacketHeader.userDataLength);
-
-    if (userDataLength > 5000000) return NULL; // how big can these packets get?
-    userData = NULL;
-    if (userDataLength > 0)
-    {
-      userData = (uint8_t*)malloc(userDataLength);
-      if (!userData) return NULL;
-      if (!readData(userData, userDataLength)) {
-        free(userData);
-        return NULL;
-      }
-    }
-
-    vresp = new cResponsePacket();
-    vresp->setResponse(requestID, userData, userDataLength);
-  }
-  else if (channelID == CHANNEL_STREAM)
+  if (channelID == VNSI_CHANNEL_STREAM)
   {
     if (!readData((uint8_t*)&m_streamPacketHeader, sizeof(m_streamPacketHeader))) return NULL;
 
@@ -184,7 +174,7 @@ cResponsePacket* cVNSISession::ReadMessage()
     dts = ntohll(*(int64_t*)m_streamPacketHeader.dts);
     userDataLength = ntohl(m_streamPacketHeader.userDataLength);
 
-    if(opCodeID == VDR_STREAM_MUXPKT) {
+    if(opCodeID == VNSI_STREAM_MUXPKT) {
       DemuxPacket* p = PVR->AllocateDemuxPacket(userDataLength);
       userData = (uint8_t*)p;
       if (userDataLength > 0)
@@ -212,7 +202,25 @@ cResponsePacket* cVNSISession::ReadMessage()
   }
   else
   {
-    XBMC->Log(LOG_ERROR, "cVNSISession::ReadMessage() - Rxd a response packet on channel %lu !!", channelID);
+    if (!readData((uint8_t*)&m_responsePacketHeader, sizeof(m_responsePacketHeader))) return NULL;
+
+    requestID = ntohl(m_responsePacketHeader.requestID);
+    userDataLength = ntohl(m_responsePacketHeader.userDataLength);
+
+    if (userDataLength > 5000000) return NULL; // how big can these packets get?
+    userData = NULL;
+    if (userDataLength > 0)
+    {
+      userData = (uint8_t*)malloc(userDataLength);
+      if (!userData) return NULL;
+      if (!readData(userData, userDataLength)) {
+        free(userData);
+        return NULL;
+      }
+    }
+
+    vresp = new cResponsePacket();
+    vresp->setResponse(requestID, userData, userDataLength);
   }
 
   return vresp;
@@ -220,118 +228,97 @@ cResponsePacket* cVNSISession::ReadMessage()
 
 bool cVNSISession::SendMessage(cRequestPacket* vrp)
 {
-  if (sendData(vrp->getPtr(), vrp->getLen()) != vrp->getLen())
-    return false;
-
-  return true;
+  return (tcp_send(m_fd, vrp->getPtr(), vrp->getLen(), 0) == vrp->getLen());
 }
 
-cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp, bool sequence)
+cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp)
 {
   if(!SendMessage(vrp))
+  {
+    SignalConnectionLost();
     return NULL;
+  }
 
   cResponsePacket *pkt = NULL;
 
   while((pkt = ReadMessage()))
   {
     /* Discard everything other as response packets until it is received */
-    if (pkt->getChannelID() == CHANNEL_REQUEST_RESPONSE
-        && (!sequence || pkt->getRequestID() == vrp->getSerial()))
+    if (pkt->getChannelID() == VNSI_CHANNEL_REQUEST_RESPONSE && pkt->getRequestID() == vrp->getSerial())
     {
       return pkt;
     }
     else
       delete pkt;
   }
+
+  SignalConnectionLost();
   return NULL;
 }
 
-bool cVNSISession::ReadSuccess(cRequestPacket* vrp, bool sequence)
+bool cVNSISession::ReadSuccess(cRequestPacket* vrp)
 {
   cResponsePacket *pkt = NULL;
-  if((pkt = ReadResult(vrp, sequence)) == NULL)
+  if((pkt = ReadResult(vrp)) == NULL)
   {
     return false;
   }
   uint32_t retCode = pkt->extract_U32();
   delete pkt;
 
-  if(retCode != VDR_RET_OK)
+  if(retCode != VNSI_RET_OK)
   {
-    XBMC->Log(LOG_ERROR, "cVNSISession::ReadSuccess - failed with error code '%i'", retCode);
+    XBMC->Log(LOG_ERROR, "%s - failed with error code '%i'", __FUNCTION__, retCode);
     return false;
   }
   return true;
 }
 
-int cVNSISession::sendData(void* bufR, size_t count)
-{
-  size_t bytes_sent = 0;
-  int this_write;
-  int temp_write;
-
-  unsigned char* buf = (unsigned char*)bufR;
-
-  while (bytes_sent < count)
-  {
-#ifdef __WINDOWS__
-    do
-    {
-      temp_write = this_write = send(m_fd,(char*) buf, count- bytes_sent,0);
-    } while ( (this_write == SOCKET_ERROR) && (WSAGetLastError() == WSAEINTR) );
-#else
-    {
-      temp_write = this_write = write(m_fd, buf, count - bytes_sent);
-    } while ( (this_write < 0) && (errno == EINTR) );
-#endif
-    if (this_write <= 0)
-    {
-      return(this_write);
-    }
-    bytes_sent += this_write;
-    buf += this_write;
-  }
-
-  return(count);
+void cVNSISession::OnReconnect() {
 }
 
-int cVNSISession::readData(uint8_t* buffer, int totalBytes)
-{
-  int bytesRead = 0;
-  int thisRead;
-  int success;
-  fd_set readSet;
-  struct timeval timeout;
+void cVNSISession::OnDisconnect() {
+}
 
-  while(1)
-  {
-    FD_ZERO(&readSet);
-    FD_SET(m_fd, &readSet);
-    timeout.tv_sec = g_iConnectTimeout;
-    timeout.tv_usec = 0;
-    success = select(m_fd + 1, &readSet, NULL, NULL, &timeout);
-    if (success < 1)
-    {
-      return 0;  // error, or timeout
-    }
+bool cVNSISession::TryReconnect() {
+  if(!Open(m_hostname, m_port))
+    return false;
+
+  if(!Login())
+    return false;
+
+  XBMC->Log(LOG_DEBUG, "%s - reconnected", __FUNCTION__);
+  m_connectionLost = false;
+
+  OnReconnect();
+
+  return true;
+}
+
+void cVNSISession::SignalConnectionLost()
+{
+  if(m_connectionLost)
+    return;
+
+  XBMC->Log(LOG_ERROR, "%s - connection lost !!!", __FUNCTION__);
+
+  m_connectionLost = true;
+  Abort();
+  Close();
+
+  OnDisconnect();
+}
+
+bool cVNSISession::readData(uint8_t* buffer, int totalBytes)
+{
+  return (tcp_read_timeout(m_fd, buffer, totalBytes, g_iConnectTimeout * 1000) == 0);
+}
+
+void cVNSISession::SleepMs(int ms)
+{
 #ifdef __WINDOWS__
-    thisRead = recv(m_fd, (char*)&buffer[bytesRead], totalBytes - bytesRead, 0);
+  Sleep(ms);
 #else
-    thisRead = read(m_fd, &buffer[bytesRead], totalBytes - bytesRead);
+  usleep(ms * 1000);
 #endif
-    if (!thisRead)
-    {
-      // if read returns 0 then connection is closed
-      // in non-blocking mode if read is called with no data available, it returns -1
-      // and sets errno to EGAGAIN. but we use select so it wouldn't do that anyway.
-      XBMC->Log(LOG_ERROR, "cVNSISession::readData - Detected connection closed");
-      return -1;
-    }
-    bytesRead += thisRead;
-    if (bytesRead == totalBytes)
-    {
-      return 1;
-    }
-  }
 }

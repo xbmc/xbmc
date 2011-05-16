@@ -30,23 +30,20 @@
 class cResponsePacket;
 class cRequestPacket;
 
-class cVNSIData : public cThread
+class cVNSIData : public cVNSISession, public cThread
 {
 public:
   cVNSIData();
-  ~cVNSIData();
+  virtual ~cVNSIData();
 
-  bool Open(const std::string& hostname, int port);
-  void Close();
+  bool Open(const std::string& hostname, int port, const char* name = NULL);
+  bool Login();
 
   cResponsePacket*  ReadResult(cRequestPacket* vrp);
-  int         GetProtocol()   { return m_session.GetProtocol(); }
-  const std::string& GetServerName() { return m_session.GetServerName(); }
-  const std::string& GetVersion()    { return m_session.GetVersion(); }
+
   bool        SupportChannelScan();
   bool        EnableStatusInterface(bool onOff);
   bool        EnableOSDInterface(bool onOff);
-  bool        GetTime(time_t *localTime, int *gmtOffset);
   bool        GetDriveSpace(long long *total, long long *used);
 
   int         GetChannelsCount();
@@ -63,17 +60,22 @@ public:
 
   int         GetRecordingsCount();
   PVR_ERROR   GetRecordingsList(PVR_HANDLE handle);
-  //const std::string& GetRecordingPath(uint32_t index);
   PVR_ERROR   RenameRecording(const PVR_RECORDING& recinfo, const char* newname);
   PVR_ERROR   DeleteRecording(const PVR_RECORDING& recinfo);
 
 
 protected:
-  bool TryReconnect();
+
   virtual void Action(void);
 
+  virtual bool onResponsePacket(cResponsePacket *pkt);
+
+  void OnDisconnect();
+  void OnReconnect();
+
+  bool SendPing();
+
 private:
-  bool readData(uint8_t* buffer, int totalBytes);
 
   struct SMessage
   {
@@ -82,11 +84,8 @@ private:
   };
   typedef std::map<int, SMessage> SMessages;
 
-  cVNSISession    m_session;
+  //cVNSISession    m_session;
   cMutex          m_Mutex;
   SMessages       m_queue;
   std::string     m_videodir;
-  bool            m_connectionLost;
-  std::string     m_hostname;
-  int             m_port;
 };

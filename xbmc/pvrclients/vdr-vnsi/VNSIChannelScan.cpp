@@ -23,7 +23,7 @@
 #include "VNSIChannelScan.h"
 #include "responsepacket.h"
 #include "requestpacket.h"
-#include "vdrcommand.h"
+#include "vnsicommand.h"
 
 #include <sstream>
 
@@ -58,8 +58,6 @@ extern "C" {
 #define PROGRESS_SIGNAL                 35
 #define LABEL_STATUS                    36
 
-#define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
-
 cVNSIChannelScan::cVNSIChannelScan()
 {
 }
@@ -68,7 +66,7 @@ cVNSIChannelScan::~cVNSIChannelScan()
 {
 }
 
-bool cVNSIChannelScan::Open()
+bool cVNSIChannelScan::Open(const std::string& hostname, int port, const char* name)
 {
   m_running         = false;
   m_Canceled        = false;
@@ -76,11 +74,8 @@ bool cVNSIChannelScan::Open()
   m_progressDone    = NULL;
   m_progressSignal  = NULL;
 
-  if(!m_session.Open(g_szHostname, g_iPort, "XBMC channel scanner"))
+  if(!cVNSIData::Open(hostname, port, "XBMC channel scanner"))
     return false;
-
-  SetDescription("VNSI channel scan listener");
-  Start();
 
   /* Load the Window as Dialog */
   m_window = GUI->Window_create("ChannelScan.xml", "Confluence", false, true);
@@ -92,8 +87,7 @@ bool cVNSIChannelScan::Open()
   m_window->DoModal();
 
   GUI->Window_destroy(m_window);
-  Cancel(1);
-  m_session.Close();
+  Close();
 
   return true;
 }
@@ -130,8 +124,8 @@ void cVNSIChannelScan::StartScan()
 
   cRequestPacket vrp;
   cResponsePacket* vresp = NULL;
-  uint32_t retCode = VDR_RET_ERROR;
-  if (!vrp.init(VDR_SCAN_START))                          goto SCANError;
+  uint32_t retCode = VNSI_RET_ERROR;
+  if (!vrp.init(VNSI_SCAN_START))                          goto SCANError;
   if (!vrp.add_U32(source))                               goto SCANError;
   if (!vrp.add_U8(m_radioButtonTV->IsSelected()))         goto SCANError;
   if (!vrp.add_U8(m_radioButtonRadio->IsSelected()))      goto SCANError;
@@ -151,13 +145,13 @@ void cVNSIChannelScan::StartScan()
     goto SCANError;
 
   retCode = vresp->extract_U32();
-  if (retCode != VDR_RET_OK)
+  if (retCode != VNSI_RET_OK)
     goto SCANError;
 
   return;
 
 SCANError:
-  XBMC->Log(LOG_ERROR, "cVNSIChannelScan::StartScan() - Return error after start (%i)", retCode);
+  XBMC->Log(LOG_ERROR, "%s - Return error after start (%i)", __FUNCTION__, retCode);
   m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(24071));
   m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024));
   m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30043));
@@ -167,7 +161,7 @@ SCANError:
 void cVNSIChannelScan::StopScan()
 {
   cRequestPacket vrp;
-  if (!vrp.init(VDR_SCAN_STOP))
+  if (!vrp.init(VNSI_SCAN_STOP))
     return;
 
   cResponsePacket* vresp = ReadResult(&vrp);
@@ -175,9 +169,9 @@ void cVNSIChannelScan::StopScan()
     return;
 
   uint32_t retCode = vresp->extract_U32();
-  if (retCode != VDR_RET_OK)
+  if (retCode != VNSI_RET_OK)
   {
-    XBMC->Log(LOG_ERROR, "cVNSIChannelScan::StopScan() - Return error after stop (%i)", retCode);
+    XBMC->Log(LOG_ERROR, "%s - Return error after stop (%i)", __FUNCTION__, retCode);
     m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(24071));
     m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024));
     m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30043));
@@ -422,7 +416,7 @@ bool cVNSIChannelScan::ReadCountries()
   //dvdlang = dvdlang.ToUpper();
 
   cRequestPacket vrp;
-  if (!vrp.init(VDR_SCAN_GETCOUNTRIES))
+  if (!vrp.init(VNSI_SCAN_GETCOUNTRIES))
     return false;
 
   cResponsePacket* vresp = ReadResult(&vrp);
@@ -431,7 +425,7 @@ bool cVNSIChannelScan::ReadCountries()
 
   int startIndex = -1;
   uint32_t retCode = vresp->extract_U32();
-  if (retCode == VDR_RET_OK)
+  if (retCode == VNSI_RET_OK)
   {
     while (!vresp->end())
     {
@@ -450,10 +444,10 @@ bool cVNSIChannelScan::ReadCountries()
   }
   else
   {
-    XBMC->Log(LOG_ERROR, "cVNSIChannelScan::ReadCountries() - Return error after reading countries (%i)", retCode);
+    XBMC->Log(LOG_ERROR, "%s - Return error after reading countries (%i)", __FUNCTION__, retCode);
   }
   delete vresp;
-  return retCode == VDR_RET_OK;
+  return retCode == VNSI_RET_OK;
 }
 
 bool cVNSIChannelScan::ReadSatellites()
@@ -462,7 +456,7 @@ bool cVNSIChannelScan::ReadSatellites()
   m_spinSatellites->Clear();
 
   cRequestPacket vrp;
-  if (!vrp.init(VDR_SCAN_GETSATELLITES))
+  if (!vrp.init(VNSI_SCAN_GETSATELLITES))
     return false;
 
   cResponsePacket* vresp = ReadResult(&vrp);
@@ -470,7 +464,7 @@ bool cVNSIChannelScan::ReadSatellites()
     return false;
 
   uint32_t retCode = vresp->extract_U32();
-  if (retCode == VDR_RET_OK)
+  if (retCode == VNSI_RET_OK)
   {
     while (!vresp->end())
     {
@@ -485,10 +479,10 @@ bool cVNSIChannelScan::ReadSatellites()
   }
   else
   {
-    XBMC->Log(LOG_ERROR, "cVNSIChannelScan::ReadSatellites() - Return error after reading satellites (%i)", retCode);
+    XBMC->Log(LOG_ERROR, "%s - Return error after reading satellites (%i)", __FUNCTION__, retCode);
   }
   delete vresp;
-  return retCode == VDR_RET_OK;
+  return retCode == VNSI_RET_OK;
 }
 
 void cVNSIChannelScan::SetControlsVisible(scantype_t type)
@@ -507,211 +501,99 @@ void cVNSIChannelScan::SetControlsVisible(scantype_t type)
   m_radioButtonHD->SetVisible(type == DVB_TERR || type == DVB_CABLE || type == DVB_SAT || type == DVB_ATSC);
 }
 
-void cVNSIChannelScan::Action()
+bool cVNSIChannelScan::onResponsePacket(cResponsePacket* resp)
 {
-  uint32_t channelID;
-  uint32_t requestID;
-  uint32_t userDataLength;
-  uint8_t* userData;
+  uint32_t requestID = resp->getRequestID();
 
-  bool readSuccess;
-
-  cResponsePacket* vresp;
-
-  while (Running())
+  if (requestID == VNSI_SCANNER_PERCENTAGE)
   {
-    readSuccess = readData((uint8_t*)&channelID, sizeof(uint32_t));
-    if (!readSuccess)
-      return; // return to stop this thread
+    uint32_t percent = resp->extract_U32();
+    if (percent >= 0 && percent <= 100)
+      SetProgress(percent);
+  }
+  else if (requestID == VNSI_SCANNER_SIGNAL)
+  {
+    uint32_t strength = resp->extract_U32();
+    uint32_t locked   = resp->extract_U32();
+    SetSignal(strength, locked);
+  }
+  else if (requestID == VNSI_SCANNER_DEVICE)
+  {
+    char* str = resp->extract_String();
+    m_window->SetControlLabel(LABEL_DEVICE, str);
+    delete[] str;
+  }
+  else if (requestID == VNSI_SCANNER_TRANSPONDER)
+  {
+    char* str = resp->extract_String();
+    m_window->SetControlLabel(LABEL_TRANSPONDER, str);
+    delete[] str;
+  }
+  else if (requestID == VNSI_SCANNER_NEWCHANNEL)
+  {
+    uint32_t isRadio      = resp->extract_U32();
+    uint32_t isEncrypted  = resp->extract_U32();
+    uint32_t isHD         = resp->extract_U32();
+    char* str             = resp->extract_String();
 
-    if (!readSuccess) continue; // no data was read but the connection is ok.
+    CAddonListItem* item = GUI->ListItem_create(str, NULL, NULL, NULL, NULL);
+    if (isEncrypted)
+      item->SetProperty("IsEncrypted", "yes");
+    if (isRadio)
+      item->SetProperty("IsRadio", "yes");
+    if (isHD)
+      item->SetProperty("IsHD", "yes");
 
-    // Data was read
-    channelID = ntohl(channelID);
-    if (channelID == CHANNEL_REQUEST_RESPONSE)
+    m_window->AddItem(item, 0);
+    GUI->ListItem_destroy(item);
+
+    delete[] str;
+  }
+  else if (requestID == VNSI_SCANNER_FINISHED)
+  {
+    if (!m_Canceled)
     {
-      if (!readData((uint8_t*)&requestID, sizeof(uint32_t))) break;
-      requestID = ntohl(requestID);
-      if (!readData((uint8_t*)&userDataLength, sizeof(uint32_t))) break;
-      userDataLength = ntohl(userDataLength);
-      if (userDataLength > 5000000) break; // how big can these packets get?
-      userData = NULL;
-      if (userDataLength > 0)
-      {
-        userData = (uint8_t*)malloc(userDataLength);
-        if (!userData) break;
-        if (!readData(userData, userDataLength)) break;
-      }
-
-      vresp = new cResponsePacket();
-      vresp->setResponse(requestID, userData, userDataLength);
-
-      CMD_LOCK;
-      SMessages::iterator it = m_queue.find(requestID);
-      if (it != m_queue.end())
-      {
-        it->second.pkt = vresp;
-        it->second.event->Signal();
-      }
-      else
-      {
-        delete vresp;
-      }
-    }
-    else if (channelID == CHANNEL_SCAN)
-    {
-      if (!readData((uint8_t*)&requestID, sizeof(uint32_t))) break;
-      requestID = ntohl(requestID);
-      if (!readData((uint8_t*)&userDataLength, sizeof(uint32_t))) break;
-      userDataLength = ntohl(userDataLength);
-      if (userDataLength > 5000000) break; // how big can these packets get?
-      userData = NULL;
-      if (userDataLength > 0)
-      {
-        userData = (uint8_t*)malloc(userDataLength);
-        if (!userData) break;
-        if (!readData(userData, userDataLength)) break;
-      }
-
-      if (requestID == VDR_SCANNER_PERCENTAGE)
-      {
-        uint32_t percent = ntohl(*(uint32_t*)&userData[0]);
-        if (percent >= 0 && percent <= 100)
-          SetProgress(percent);
-      }
-      else if (requestID == VDR_SCANNER_SIGNAL)
-      {
-        uint32_t strength = ntohl(*(uint32_t*)&userData[0]);
-        uint32_t locked   = ntohl(*(uint32_t*)&userData[4]);
-        SetSignal(strength, locked);
-      }
-      else if (requestID == VDR_SCANNER_DEVICE)
-      {
-        int length = strlen((char*)&userData[0]);
-        char* str = new char[length + 1];
-        strcpy(str, (char*)&userData[0]);
-        m_window->SetControlLabel(LABEL_DEVICE, str);
-        delete[] str;
-      }
-      else if (requestID == VDR_SCANNER_TRANSPONDER)
-      {
-        int length = strlen((char*)&userData[0]);
-        char* str = new char[length + 1];
-        strcpy(str, (char*)&userData[0]);
-        m_window->SetControlLabel(LABEL_TRANSPONDER, str);
-        delete[] str;
-      }
-      else if (requestID == VDR_SCANNER_NEWCHANNEL)
-      {
-        uint32_t isRadio      = ntohl(*(uint32_t*)&userData[0]);
-        uint32_t isEncrypted  = ntohl(*(uint32_t*)&userData[4]);
-        uint32_t isHD         = ntohl(*(uint32_t*)&userData[8]);
-        int length = strlen((char*)&userData[12]);
-        char* str = new char[length + 1];
-        strcpy(str, (char*)&userData[12]);
-
-        CAddonListItem* item = GUI->ListItem_create(str, NULL, NULL, NULL, NULL);
-        if (isEncrypted)
-          item->SetProperty("IsEncrypted", "yes");
-        if (isRadio)
-          item->SetProperty("IsRadio", "yes");
-        if (isHD)
-          item->SetProperty("IsHD", "yes");
-        m_window->AddItem(item, 0);
-        GUI->ListItem_destroy(item);
-
-        delete[] str;
-      }
-      else if (requestID == VDR_SCANNER_FINISHED)
-      {
-        if (!m_Canceled)
-        {
-          m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30036));
-          m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024));
-          m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30041));
-        }
-        else
-        {
-          m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30042));
-        }
-      }
-      else if (requestID == VDR_SCANNER_STATUS)
-      {
-        uint32_t status = ntohl(*(uint32_t*)&userData[0]);
-        if (status == 0)
-        {
-          if (m_Canceled)
-            m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(16200));
-          else
-            m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30040));
-          m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024));
-          m_stopped = true;
-        }
-        else if (status == 1)
-        {
-          m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30039));
-        }
-        else if (status == 2)
-        {
-          m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30037));
-          m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024));
-          m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30043));
-          m_stopped = true;
-        }
-        else if (status == 3)
-        {
-          m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30038));
-        }
-      }
-
-      if (userData)
-        free(userData);
+      m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30036));
+      m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024));
+      m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30041));
     }
     else
     {
-      XBMC->Log(LOG_ERROR, "cVNSIChannelScan::Action() - Rxd a wrong response packet on channel %lu !!", channelID);
-      break;
+      m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30042));
     }
   }
-}
-
-cResponsePacket* cVNSIChannelScan::ReadResult(cRequestPacket* vrp)
-{
-  m_Mutex.Lock();
-
-  SMessage &message(m_queue[vrp->getSerial()]);
-  message.event = new cCondWait();
-  message.pkt   = NULL;
-
-  m_Mutex.Unlock();
-
-  if(!m_session.SendMessage(vrp))
+  else if (requestID == VNSI_SCANNER_STATUS)
   {
-    m_queue.erase(vrp->getSerial());
-    return NULL;
+    uint32_t status = resp->extract_U32();
+    if (status == 0)
+    {
+      if (m_Canceled)
+        m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(16200));
+      else
+        m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30040));
+
+      m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024));
+      m_stopped = true;
+    }
+    else if (status == 1)
+    {
+      m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30039));
+    }
+    else if (status == 2)
+    {
+      m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30037));
+      m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(30024));
+      m_window->SetControlLabel(HEADER_LABEL, XBMC->GetLocalizedString(30043));
+      m_stopped = true;
+    }
+    else if (status == 3)
+    {
+      m_window->SetControlLabel(LABEL_STATUS, XBMC->GetLocalizedString(30038));
+    }
+  }
+  else {
+    return false;
   }
 
-  message.event->Wait(2000);
-
-  m_Mutex.Lock();
-
-  cResponsePacket* vresp = message.pkt;
-  delete message.event;
-
-  m_queue.erase(vrp->getSerial());
-
-  m_Mutex.Unlock();
-
-  return vresp;
-}
-
-bool cVNSIChannelScan::readData(uint8_t* buffer, int totalBytes)
-{
-  int ret = m_session.readData(buffer, totalBytes);
-  if (ret == 1)
-    return true;
-  else if (ret == 0)
-    return false;
-
-  return false;
+  return true;
 }
