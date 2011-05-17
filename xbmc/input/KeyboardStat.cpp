@@ -255,8 +255,8 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
     // values.
     if (keytable.unicode == 0 && unicode != 0)
       unicode = 0;
-    else
-      ascii = unicode & 0xFF;
+    else if (keysym.unicode > 32 && keysym.unicode < 128)
+      ascii = unicode & 0x7f;
   }
 
   // The keysym.sym is unknown ...
