@@ -671,12 +671,15 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
   return CGUIControlGroup::IsAnimating(animType);
 }
 
-void CGUIWindow::Animate(unsigned int currentTime)
+bool CGUIWindow::Animate(unsigned int currentTime)
 {
   if (m_animationsEnabled)
-    CGUIControlGroup::Animate(currentTime);
+    return CGUIControlGroup::Animate(currentTime);
   else
+  {
     m_transform.Reset();
+    return false;
+  }
 }
 
 void CGUIWindow::DisableAnimations()
