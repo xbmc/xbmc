@@ -68,12 +68,12 @@ bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
 {
   Close();
 
-  char errbuf[1024];
-  int  errlen = sizeof(errbuf);
+  char errbuf[128];
+
   if (port == 0)
     port = 34890;
 
-  m_fd = tcp_connect(hostname.c_str(), port, errbuf, errlen, 3000);
+  m_fd = tcp_connect(hostname.c_str(), port, errbuf, sizeof(errbuf), g_iConnectTimeout * 1000);
 
   if (m_fd == INVALID_SOCKET)
   {
@@ -228,7 +228,7 @@ cResponsePacket* cVNSISession::ReadMessage()
 
 bool cVNSISession::SendMessage(cRequestPacket* vrp)
 {
-  return (tcp_send(m_fd, vrp->getPtr(), vrp->getLen(), 0) == vrp->getLen());
+  return (tcp_send(m_fd, vrp->getPtr(), vrp->getLen(), 0) == (int)vrp->getLen());
 }
 
 cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp)
