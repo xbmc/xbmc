@@ -208,6 +208,21 @@ static const ActionMapping windows[] =
         {"videos"                   , WINDOW_VIDEO_NAV},
         {"tv"                       , WINDOW_PVR}, // backward compat
         {"pvr"                      , WINDOW_PVR},
+
+        {"pvrguideinfo"             , WINDOW_DIALOG_PVR_GUIDE_INFO},
+        {"pvrrecordinginfo"         , WINDOW_DIALOG_PVR_RECORDING_INFO},
+        {"pvrtimersetting"          , WINDOW_DIALOG_PVR_TIMER_SETTING},
+        {"pvrgroupmanager"          , WINDOW_DIALOG_PVR_GROUP_MANAGER},
+        {"pvrchannelmanager"        , WINDOW_DIALOG_PVR_CHANNEL_MANAGER},
+        {"pvrguidesearch"           , WINDOW_DIALOG_PVR_GUIDE_SEARCH},
+        {"pvrchannelscan"           , WINDOW_DIALOG_PVR_CHANNEL_SCAN},
+        {"pvrupdateprogress"        , WINDOW_DIALOG_PVR_UPDATE_PROGRESS},
+        {"pvrosdchannels"           , WINDOW_DIALOG_PVR_OSD_CHANNELS},
+        {"pvrosdguide"              , WINDOW_DIALOG_PVR_OSD_GUIDE},
+        {"pvrosddirector"           , WINDOW_DIALOG_PVR_OSD_DIRECTOR},
+        {"pvrosdcutter"             , WINDOW_DIALOG_PVR_OSD_CUTTER},
+        {"pvrosdteletext"           , WINDOW_DIALOG_OSD_TELETEXT},
+
         {"systeminfo"               , WINDOW_SYSTEM_INFORMATION},
         {"testpattern"              , WINDOW_TEST_PATTERN},
         {"screencalibration"        , WINDOW_SCREEN_CALIBRATION},
