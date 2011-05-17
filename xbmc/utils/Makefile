@@ -22,6 +22,7 @@ SRCS=AlarmClock.cpp \
      HttpHeader.cpp \
      InfoLoader.cpp \
      JobManager.cpp \
+     JSONVariantParser.cpp \
      LabelFormatter.cpp \
      LangCodeExpander.cpp \
      LCD.cpp \
