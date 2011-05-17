@@ -864,7 +864,7 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
   }
 }
 
-void CGUIControl::Animate(unsigned int currentTime)
+bool CGUIControl::Animate(unsigned int currentTime)
 {
   // check visible state outside the loop, as it could change
   GUIVISIBLE visible = m_visible;
@@ -908,6 +908,8 @@ void CGUIControl::Animate(unsigned int currentTime)
 
     MarkDirtyRegion();
   }
+
+  return changed;
 }
 
 bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
