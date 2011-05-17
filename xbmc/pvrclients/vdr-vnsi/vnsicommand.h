@@ -39,7 +39,6 @@
 #define VNSI_LOGIN                 1
 #define VNSI_GETTIME               2
 #define VNSI_ENABLESTATUSINTERFACE 3
-#define VNSI_ENABLEOSDINTERFACE    4
 #define VNSI_PING                  7
 
 /* OPCODE 20 - 39: VNSI network functions for live streaming */

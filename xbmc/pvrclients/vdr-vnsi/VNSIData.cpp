@@ -198,24 +198,6 @@ bool cVNSIData::EnableStatusInterface(bool onOff)
   return ret == VNSI_RET_OK ? true : false;
 }
 
-bool cVNSIData::EnableOSDInterface(bool onOff)
-{
-  cRequestPacket vrp;
-  if (!vrp.init(VNSI_ENABLEOSDINTERFACE)) return false;
-  if (!vrp.add_U8(onOff)) return false;
-
-  cResponsePacket* vresp = ReadResult(&vrp);
-  if (!vresp)
-  {
-    XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
-    return false;
-  }
-
-  uint32_t ret = vresp->extract_U32();
-  delete vresp;
-  return ret == VNSI_RET_OK ? true : false;
-}
-
 int cVNSIData::GetChannelsCount()
 {
   cRequestPacket vrp;
