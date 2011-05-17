@@ -1080,6 +1080,8 @@ void CPVRManager::ExecutePendingJobs(void)
 
     job->DoWork();
     delete job;
+
+    lock.Enter();
   }
 
   ResetEvent(m_triggerEvent);
