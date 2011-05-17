@@ -553,6 +553,8 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
 
 void CPVRManager::SaveCurrentChannelSettings(void)
 {
+  CSingleLock lock(m_critSection);
+
   CPVRChannel channel;
   if (!m_addons->GetPlayingChannel(&channel))
     return;
@@ -714,6 +716,12 @@ bool CPVRChannelGroupsUpdateJob::DoWork(void)
   return g_PVRChannelGroups->Update(false);
 }
 
+bool CPVRChannelSettingsSaveJob::DoWork(void)
+{
+  g_PVRManager.SaveCurrentChannelSettings();
+  return true;
+}
+
 bool CPVRManager::OpenLiveStream(const CPVRChannel &tag)
 {
   bool bReturn = false;
@@ -766,9 +774,6 @@ void CPVRManager::CloseStream(void)
       time_t tNow;
       CDateTime::GetCurrentDateTime().GetAsTime(tNow);
       channel.SetLastWatched(tNow, true);
-
-      /* Store current settings inside Database */
-      SaveCurrentChannelSettings();
     }
   }
 
@@ -879,7 +884,6 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
   CLog::Log(LOGDEBUG, "PVRManager - %s - switching to channel '%s'",
       __FUNCTION__, channel.ChannelName().c_str());
 
-  SaveCurrentChannelSettings();
   if (m_currentFile)
   {
     delete m_currentFile;
@@ -1063,6 +1067,21 @@ void CPVRManager::TriggerChannelGroupsUpdate(void)
     return;
 
   m_pendingUpdates.push_back(new CPVRChannelGroupsUpdateJob());
+
+  lock.Leave();
+  SetEvent(m_triggerEvent);
+}
+
+void CPVRManager::TriggerSaveChannelSettings(void)
+{
+  CSingleLock lock(m_critSectionTriggers);
+  if (!m_bLoaded)
+    return;
+
+  if (IsJobPending("pvr-save-channelsettings"))
+    return;
+
+  m_pendingUpdates.push_back(new CPVRChannelSettingsSaveJob());
 
   lock.Leave();
   SetEvent(m_triggerEvent);
