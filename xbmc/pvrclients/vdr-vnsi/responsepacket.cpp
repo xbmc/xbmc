@@ -146,4 +146,3 @@ uint8_t* cResponsePacket::getUserData()
   ownBlock = false;
   return userData;
 }
-

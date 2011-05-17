@@ -33,14 +33,13 @@ class cRequestPacket;
 class cVNSIData : public cVNSISession, public cThread
 {
 public:
+
   cVNSIData();
   virtual ~cVNSIData();
 
-  bool Open(const std::string& hostname, int port, const char* name = NULL);
-  bool Login();
-  void Abort();
-
-  cResponsePacket*  ReadResult(cRequestPacket* vrp);
+  bool        Open(const std::string& hostname, int port, const char* name = NULL);
+  bool        Login();
+  void        Abort();
 
   bool        SupportChannelScan();
   bool        EnableStatusInterface(bool onOff);
@@ -63,20 +62,20 @@ public:
   PVR_ERROR   RenameRecording(const PVR_RECORDING& recinfo, const char* newname);
   PVR_ERROR   DeleteRecording(const PVR_RECORDING& recinfo);
 
+  cResponsePacket*  ReadResult(cRequestPacket* vrp);
 
 protected:
 
   virtual void Action(void);
-
-  virtual bool onResponsePacket(cResponsePacket *pkt);
+  virtual bool OnResponsePacket(cResponsePacket *pkt);
 
   void SignalConnectionLost();
   void OnDisconnect();
   void OnReconnect();
 
-  bool SendPing();
-
 private:
+
+  bool SendPing();
 
   struct SMessage
   {
@@ -85,7 +84,6 @@ private:
   };
   typedef std::map<int, SMessage> SMessages;
 
-  //cVNSISession    m_session;
   cMutex          m_Mutex;
   SMessages       m_queue;
   std::string     m_videodir;

@@ -5,7 +5,7 @@
 # how to reach the author.
 #
 
-LIBS   = ../../../lib/libTcpSocket/libTcpSocket.a -ldl
+LIBS   = ../../../lib/libTcpSocket/libTcpSocket.a -ldl -lpthread
 LIBDIR = ../../../addons/pvr.vdr.vnsi
 LIB    = ../../../addons/pvr.vdr.vnsi/XBMC_VDR_vnsi.pvr
 

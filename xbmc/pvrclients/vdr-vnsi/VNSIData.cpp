@@ -752,7 +752,7 @@ PVR_ERROR cVNSIData::DeleteRecording(const PVR_RECORDING& recinfo)
   return PVR_ERROR_NO_ERROR;
 }
 
-bool cVNSIData::onResponsePacket(cResponsePacket* pkt)
+bool cVNSIData::OnResponsePacket(cResponsePacket* pkt)
 {
   return false;
 }
@@ -878,7 +878,7 @@ void cVNSIData::Action()
 
     // UNKOWN CHANNELID
 
-    else if (!onResponsePacket(vresp))
+    else if (!OnResponsePacket(vresp))
     {
       XBMC->Log(LOG_ERROR, "%s - Rxd a response packet on channel %lu !!", __FUNCTION__, vresp->getChannelID());
       delete vresp;

@@ -39,9 +39,9 @@
 #endif
 
 cVNSISession::cVNSISession()
-  : m_connectionLost(false)
-  , m_fd(INVALID_SOCKET)
+  : m_fd(INVALID_SOCKET)
   , m_protocol(0)
+  , m_connectionLost(false)
 {
 }
 
@@ -69,10 +69,6 @@ bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
   Close();
 
   char errbuf[128];
-
-  if (port == 0)
-    port = 34890;
-
   m_fd = tcp_connect(hostname.c_str(), port, errbuf, sizeof(errbuf), g_iConnectTimeout * 1000);
 
   if (m_fd == INVALID_SOCKET)
