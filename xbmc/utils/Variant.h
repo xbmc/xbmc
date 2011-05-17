@@ -89,6 +89,8 @@ public:
   void push_back(CVariant variant);
   void append(CVariant variant);
 
+  const char *c_str() const;
+
   void swap(CVariant &rhs);
 
 private:

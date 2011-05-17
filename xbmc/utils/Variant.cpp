@@ -405,6 +405,14 @@ void CVariant::append(CVariant variant)
   push_back(variant);
 }
 
+const char *CVariant::c_str() const
+{
+  if (m_type == VariantTypeString)
+    return m_data.string->c_str();
+  else
+    return NULL;
+}
+
 void CVariant::swap(CVariant &rhs)
 {
   VariantType  temp_type = m_type;
@@ -487,6 +495,8 @@ unsigned int CVariant::size() const
     return m_data.map->size();
   else if (m_type == VariantTypeArray)
     return m_data.array->size();
+  else if (m_type == VariantTypeString)
+    return m_data.string->size();
   else
     return 0;
 }
