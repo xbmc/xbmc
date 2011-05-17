@@ -31,18 +31,21 @@ extern "C" {
 #define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
 
 cVNSIData::cVNSIData()
+ : m_aborting(false)
 {
 }
 
 cVNSIData::~cVNSIData()
 {
   Abort();
-  Cancel(3);
+  Cancel(1);
   Close();
 }
 
 bool cVNSIData::Open(const std::string& hostname, int port, const char* name)
 {
+  m_aborting = false;
+
   if(!cVNSISession::Open(hostname, port, name))
     return false;
 
@@ -59,6 +62,23 @@ bool cVNSIData::Login()
 
   Start();
   return true;
+}
+
+void cVNSIData::Abort()
+{
+  CMD_LOCK;
+  m_aborting = true;
+  cVNSISession::Abort();
+}
+
+void cVNSIData::SignalConnectionLost()
+{
+  CMD_LOCK;
+
+  if(m_aborting)
+    return;
+
+  cVNSISession::SignalConnectionLost();
 }
 
 void cVNSIData::OnDisconnect()

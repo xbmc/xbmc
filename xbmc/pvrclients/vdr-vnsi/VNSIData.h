@@ -38,6 +38,7 @@ public:
 
   bool Open(const std::string& hostname, int port, const char* name = NULL);
   bool Login();
+  void Abort();
 
   cResponsePacket*  ReadResult(cRequestPacket* vrp);
 
@@ -70,6 +71,7 @@ protected:
 
   virtual bool onResponsePacket(cResponsePacket *pkt);
 
+  void SignalConnectionLost();
   void OnDisconnect();
   void OnReconnect();
 
@@ -88,4 +90,5 @@ private:
   cMutex          m_Mutex;
   SMessages       m_queue;
   std::string     m_videodir;
+  bool            m_aborting;
 };

@@ -35,7 +35,6 @@ cVNSIDemux::cVNSIDemux()
 
 cVNSIDemux::~cVNSIDemux()
 {
-  Close();
 }
 
 bool cVNSIDemux::OpenChannel(const PVR_CHANNEL &channelinfo)

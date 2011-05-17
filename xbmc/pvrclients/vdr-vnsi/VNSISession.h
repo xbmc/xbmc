@@ -58,11 +58,12 @@ protected:
   bool readData(uint8_t* buffer, int totalBytes);
 
   bool TryReconnect();
+  bool IsOpen() { return m_fd != INVALID_SOCKET; }
 
   virtual void OnDisconnect();
   virtual void OnReconnect();
 
-  void SignalConnectionLost();
+  virtual void SignalConnectionLost();
 
   bool ConnectionLost() { return m_connectionLost; }
 

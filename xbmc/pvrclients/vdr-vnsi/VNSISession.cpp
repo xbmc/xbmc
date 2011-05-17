@@ -57,11 +57,11 @@ void cVNSISession::Abort()
 
 void cVNSISession::Close()
 {
-  if(m_fd != INVALID_SOCKET)
-  {
-    tcp_close(m_fd);
-    m_fd = INVALID_SOCKET;
-  }
+  if(!IsOpen())
+    return;
+
+  tcp_close(m_fd);
+  m_fd = INVALID_SOCKET;
 }
 
 bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
@@ -123,7 +123,7 @@ bool cVNSISession::Login()
     m_version   = ServerVersion;
     m_protocol  = protocol;
 
-    if (!m_name.empty())
+    if (m_name.empty())
       XBMC->Log(LOG_NOTICE, "Logged in at '%lu+%i' to '%s' Version: '%s' with protocol version '%lu'",
         vdrTime, vdrTimeOffset, ServerName, ServerVersion, protocol);
 
