@@ -112,15 +112,15 @@ void CGUIViewControl::SetCurrentView(int viewMode)
     previousView->OnMessage(msg);
   }
 
+  // Update it with the contents
+  UpdateContents(pNewView, item);
+
   // and focus if necessary
   if (hasFocus)
   {
     CGUIMessage msg(GUI_MSG_SETFOCUS, m_parentWindow, pNewView->GetID(), 0);
     g_windowManager.SendMessage(msg);
   }
-
-  // Update it with the contents
-  UpdateContents(pNewView, item);
 
   // Update our view control
   UpdateViewAsControl(((CGUIBaseContainer *)pNewView)->GetLabel());
