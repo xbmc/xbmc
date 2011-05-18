@@ -40,6 +40,7 @@ typedef enum scantype
 class cVNSIChannelScan : public cVNSIData
 {
 public:
+
   cVNSIChannelScan();
   ~cVNSIChannelScan();
 
@@ -57,9 +58,10 @@ public:
 
 protected:
 
-  bool onResponsePacket(cResponsePacket* resp);
+  bool OnResponsePacket(cResponsePacket* resp);
 
 private:
+
   bool ReadCountries();
   bool ReadSatellites();
   void SetControlsVisible(scantype_t type);
@@ -91,5 +93,4 @@ private:
   CAddonGUIRadioButton *m_radioButtonHD;
   CAddonGUIProgressControl *m_progressDone;
   CAddonGUIProgressControl *m_progressSignal;
-
 };

@@ -33,10 +33,7 @@
 using namespace std;
 
 bool m_bCreated               = false;
-bool m_connected              = false;
-int  m_retries                = 0;
 ADDON_STATUS m_CurStatus      = ADDON_STATUS_UNKNOWN;
-int g_clientID                = -1;
 
 /* User adjustable settings are saved here.
  * Default values are defined inside client.h
@@ -48,11 +45,11 @@ bool          g_bCharsetConv            = DEFAULT_CHARCONV;     ///< Convert VDR
 bool          g_bHandleMessages         = DEFAULT_HANDLE_MSG;   ///< Send VDR's OSD status messages to XBMC OSD
 int           g_iConnectTimeout         = DEFAULT_TIMEOUT;      ///< The Socket connection timeout
 int           g_iPriority               = DEFAULT_PRIORITY;     ///< The Priority this client have in response to other clients
-std::string   g_szUserPath              = "";
-std::string   g_szClientPath            = "";
+
 CHelper_libXBMC_addon *XBMC   = NULL;
 CHelper_libXBMC_gui   *GUI    = NULL;
 CHelper_libXBMC_pvr   *PVR    = NULL;
+
 cVNSIDemux      *VNSIDemuxer       = NULL;
 cVNSIData       *VNSIData          = NULL;
 cVNSIRecording  *VNSIRecording     = NULL;
@@ -67,8 +64,6 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 {
   if (!hdl || !props)
     return ADDON_STATUS_UNKNOWN;
-
-  PVR_PROPERTIES* pvrprops = (PVR_PROPERTIES*)props;
 
   XBMC = new CHelper_libXBMC_addon;
   if (!XBMC->RegisterMe(hdl))
@@ -85,13 +80,9 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   XBMC->Log(LOG_DEBUG, "Creating VDR VNSI PVR-Client");
 
   m_CurStatus    = ADDON_STATUS_UNKNOWN;
-  g_clientID     = pvrprops->iClienId;
-  g_szUserPath   = pvrprops->strUserPath;
-  g_szClientPath = pvrprops->strClientPath;
 
   /* Read setting "host" from settings.xml */
-  char * buffer;
-  buffer = (char*) malloc (1024);
+  char * buffer = (char*) malloc(128);
   buffer[0] = 0; /* Set the end of string */
 
   if (XBMC->GetSetting("host", buffer))
@@ -102,7 +93,7 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     XBMC->Log(LOG_ERROR, "Couldn't get 'host' setting, falling back to '%s' as default", DEFAULT_HOST);
     g_szHostname = DEFAULT_HOST;
   }
-  buffer[0] = 0; /* Set the end of string */
+  free(buffer);
 
   /* Read setting "port" from settings.xml */
   if (!XBMC->GetSetting("port", &g_iPort))

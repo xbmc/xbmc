@@ -31,18 +31,21 @@ extern "C" {
 #define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
 
 cVNSIData::cVNSIData()
+ : m_aborting(false)
 {
 }
 
 cVNSIData::~cVNSIData()
 {
   Abort();
-  Cancel(3);
+  Cancel(1);
   Close();
 }
 
 bool cVNSIData::Open(const std::string& hostname, int port, const char* name)
 {
+  m_aborting = false;
+
   if(!cVNSISession::Open(hostname, port, name))
     return false;
 
@@ -59,6 +62,23 @@ bool cVNSIData::Login()
 
   Start();
   return true;
+}
+
+void cVNSIData::Abort()
+{
+  CMD_LOCK;
+  m_aborting = true;
+  cVNSISession::Abort();
+}
+
+void cVNSIData::SignalConnectionLost()
+{
+  CMD_LOCK;
+
+  if(m_aborting)
+    return;
+
+  cVNSISession::SignalConnectionLost();
 }
 
 void cVNSIData::OnDisconnect()
@@ -164,24 +184,6 @@ bool cVNSIData::EnableStatusInterface(bool onOff)
 {
   cRequestPacket vrp;
   if (!vrp.init(VNSI_ENABLESTATUSINTERFACE)) return false;
-  if (!vrp.add_U8(onOff)) return false;
-
-  cResponsePacket* vresp = ReadResult(&vrp);
-  if (!vresp)
-  {
-    XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
-    return false;
-  }
-
-  uint32_t ret = vresp->extract_U32();
-  delete vresp;
-  return ret == VNSI_RET_OK ? true : false;
-}
-
-bool cVNSIData::EnableOSDInterface(bool onOff)
-{
-  cRequestPacket vrp;
-  if (!vrp.init(VNSI_ENABLEOSDINTERFACE)) return false;
   if (!vrp.add_U8(onOff)) return false;
 
   cResponsePacket* vresp = ReadResult(&vrp);
@@ -750,7 +752,7 @@ PVR_ERROR cVNSIData::DeleteRecording(const PVR_RECORDING& recinfo)
   return PVR_ERROR_NO_ERROR;
 }
 
-bool cVNSIData::onResponsePacket(cResponsePacket* pkt)
+bool cVNSIData::OnResponsePacket(cResponsePacket* pkt)
 {
   return false;
 }
@@ -876,7 +878,7 @@ void cVNSIData::Action()
 
     // UNKOWN CHANNELID
 
-    else if (!onResponsePacket(vresp))
+    else if (!OnResponsePacket(vresp))
     {
       XBMC->Log(LOG_ERROR, "%s - Rxd a response packet on channel %lu !!", __FUNCTION__, vresp->getChannelID());
       delete vresp;

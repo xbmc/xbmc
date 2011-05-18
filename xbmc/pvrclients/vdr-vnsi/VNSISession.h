@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2010 Alwin Esch (Team XBMC)
  *      http://www.xbmc.org
@@ -19,7 +20,6 @@
  *
  */
 
-#pragma once
 #include <stdint.h>
 #include <string>
 
@@ -55,28 +55,28 @@ protected:
 
   void SleepMs(int ms);
 
-  bool readData(uint8_t* buffer, int totalBytes);
-
   bool TryReconnect();
+  bool IsOpen() { return m_fd != INVALID_SOCKET; }
 
   virtual void OnDisconnect();
   virtual void OnReconnect();
 
-  void SignalConnectionLost();
-
+  virtual void SignalConnectionLost();
   bool ConnectionLost() { return m_connectionLost; }
 
-  bool            m_connectionLost;
   std::string     m_hostname;
   int             m_port;
   std::string     m_name;
 
 private:
 
+  bool readData(uint8_t* buffer, int totalBytes);
+
   socket_t    m_fd;
   int         m_protocol;
   std::string m_server;
   std::string m_version;
+  bool        m_connectionLost;
 
   struct {
         uint32_t opCodeID;
@@ -91,4 +91,5 @@ private:
         uint32_t requestID;
         uint32_t userDataLength;
   } m_responsePacketHeader;
+
 };

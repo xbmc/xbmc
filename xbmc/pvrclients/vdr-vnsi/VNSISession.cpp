@@ -39,9 +39,9 @@
 #endif
 
 cVNSISession::cVNSISession()
-  : m_connectionLost(false)
-  , m_fd(INVALID_SOCKET)
+  : m_fd(INVALID_SOCKET)
   , m_protocol(0)
+  , m_connectionLost(false)
 {
 }
 
@@ -57,23 +57,19 @@ void cVNSISession::Abort()
 
 void cVNSISession::Close()
 {
-  if(m_fd != INVALID_SOCKET)
-  {
-    tcp_close(m_fd);
-    m_fd = INVALID_SOCKET;
-  }
+  if(!IsOpen())
+    return;
+
+  tcp_close(m_fd);
+  m_fd = INVALID_SOCKET;
 }
 
 bool cVNSISession::Open(const std::string& hostname, int port, const char *name)
 {
   Close();
 
-  char errbuf[1024];
-  int  errlen = sizeof(errbuf);
-  if (port == 0)
-    port = 34890;
-
-  m_fd = tcp_connect(hostname.c_str(), port, errbuf, errlen, 3000);
+  char errbuf[128];
+  m_fd = tcp_connect(hostname.c_str(), port, errbuf, sizeof(errbuf), g_iConnectTimeout * 1000);
 
   if (m_fd == INVALID_SOCKET)
   {
@@ -123,7 +119,7 @@ bool cVNSISession::Login()
     m_version   = ServerVersion;
     m_protocol  = protocol;
 
-    if (!m_name.empty())
+    if (m_name.empty())
       XBMC->Log(LOG_NOTICE, "Logged in at '%lu+%i' to '%s' Version: '%s' with protocol version '%lu'",
         vdrTime, vdrTimeOffset, ServerName, ServerVersion, protocol);
 
@@ -228,7 +224,7 @@ cResponsePacket* cVNSISession::ReadMessage()
 
 bool cVNSISession::SendMessage(cRequestPacket* vrp)
 {
-  return (tcp_send(m_fd, vrp->getPtr(), vrp->getLen(), 0) == vrp->getLen());
+  return (tcp_send(m_fd, vrp->getPtr(), vrp->getLen(), 0) == (int)vrp->getLen());
 }
 
 cResponsePacket* cVNSISession::ReadResult(cRequestPacket* vrp)

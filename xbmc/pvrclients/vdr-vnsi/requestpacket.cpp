@@ -82,15 +82,6 @@ bool cRequestPacket::init(uint32_t topcode, bool stream, bool setUserDataLength,
   return true;
 }
 
-bool cRequestPacket::copyin(const uint8_t* src, uint32_t len)
-{
-  if (!checkExtend(len)) return false;
-  memcpy(buffer + bufUsed, src, len);
-  bufUsed += len;
-  if (!lengthSet) *(uint32_t*)&buffer[userDataLenPos] = htonl(bufUsed - headerLength);
-  return true;
-}
-
 bool cRequestPacket::add_String(const char* string)
 {
   uint32_t len = strlen(string) + 1;

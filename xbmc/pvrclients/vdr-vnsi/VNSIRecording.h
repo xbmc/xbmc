@@ -26,6 +26,7 @@
 class cVNSIRecording : public cVNSISession
 {
 public:
+
   cVNSIRecording();
   ~cVNSIRecording();
 
@@ -38,12 +39,13 @@ public:
   long long Length(void);
 
 protected:
+
   void OnReconnect();
 
 private:
+
   PVR_RECORDING   m_recinfo;
   uint64_t        m_currentPlayingRecordBytes;
   uint32_t        m_currentPlayingRecordFrames;
   uint64_t        m_currentPlayingRecordPosition;
-
 };

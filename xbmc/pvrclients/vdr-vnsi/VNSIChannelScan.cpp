@@ -501,7 +501,7 @@ void cVNSIChannelScan::SetControlsVisible(scantype_t type)
   m_radioButtonHD->SetVisible(type == DVB_TERR || type == DVB_CABLE || type == DVB_SAT || type == DVB_ATSC);
 }
 
-bool cVNSIChannelScan::onResponsePacket(cResponsePacket* resp)
+bool cVNSIChannelScan::OnResponsePacket(cResponsePacket* resp)
 {
   uint32_t requestID = resp->getRequestID();
 

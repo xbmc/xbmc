@@ -39,6 +39,7 @@ struct SQuality
 class cVNSIDemux : public cVNSISession
 {
 public:
+
   cVNSIDemux();
   ~cVNSIDemux();
 
@@ -60,7 +61,7 @@ protected:
   bool StreamContentInfo(cResponsePacket *resp);
 
 private:
-  std::string           m_Status;
+
   PVR_STREAM_PROPERTIES m_Streams;
   PVR_CHANNEL           m_channelinfo;
   SQuality              m_Quality;
