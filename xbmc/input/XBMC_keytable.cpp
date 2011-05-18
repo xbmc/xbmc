@@ -103,24 +103,6 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { 0x15, 0x0079,    'y',  'y', 0x59, "y" }
 , { 0x2c, 0x007a,    'z',  'z', 0x5a, "z" }
 
-// Numeric keypad
-, { 0x52, 0x0100,    '0',  '0', 0x60, "numpadzero"}
-, { 0x4f, 0x0101,    '1',  '1', 0x61, "numpadone"}
-, { 0x50, 0x0102,    '2',  '2', 0x62, "numpadtwo"}
-, { 0x51, 0x0103,    '3',  '3', 0x63, "numpadthree"}
-, { 0x4b, 0x0104,    '4',  '4', 0x64, "numpadfour"}
-, { 0x4c, 0x0105,    '5',  '5', 0x65, "numpadfive"}
-, { 0x4d, 0x0106,    '6',  '6', 0x66, "numpadsix"}
-, { 0x47, 0x0107,    '7',  '7', 0x67, "numpadseven"}
-, { 0x48, 0x0108,    '8',  '8', 0x68, "numpadeight"}
-, { 0x49, 0x0109,    '9',  '9', 0x69, "numpadnine"}
-, { 0x53, 0x010a,    '.',  '.', 0x6e, "numpadperiod"}
-, { 0x35, 0x010b,    '/',  '/', 0x6f, "numpaddivide"}
-, { 0x37, 0x010c,    '*',  '*', 0x6a, "numpadtimes"}
-, { 0x4a, 0x010d,    '-',  '-', 0x6d, "numpadminus"}
-, { 0x4e, 0x010e,    '+',  '+', 0x6b, "numpadplus"}
-, { 0x1c, 0x010f,      0,    0, 0x6c, "enter"}
-
 // Misc printing characters
 , { 0x28, 0x0027,   '\'', '\'', 0xEE, "quote" }
 , { 0x28, 0x0027,    '"',  '"', 0xEE, "doublequote" }
@@ -144,6 +126,24 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { 0x1b, 0x005d,    '}',  '}', 0xED, "closebrace" }
 , { 0x29, 0x0060,    '`',  '`', 0xC0, "leftquote" }
 , { 0x29, 0x0060,    '~',  '~', 0xC0, "tilde" }
+
+// Numeric keypad
+, { 0x52, 0x0100,    '0',  '0', 0x60, "numpadzero"}
+, { 0x4f, 0x0101,    '1',  '1', 0x61, "numpadone"}
+, { 0x50, 0x0102,    '2',  '2', 0x62, "numpadtwo"}
+, { 0x51, 0x0103,    '3',  '3', 0x63, "numpadthree"}
+, { 0x4b, 0x0104,    '4',  '4', 0x64, "numpadfour"}
+, { 0x4c, 0x0105,    '5',  '5', 0x65, "numpadfive"}
+, { 0x4d, 0x0106,    '6',  '6', 0x66, "numpadsix"}
+, { 0x47, 0x0107,    '7',  '7', 0x67, "numpadseven"}
+, { 0x48, 0x0108,    '8',  '8', 0x68, "numpadeight"}
+, { 0x49, 0x0109,    '9',  '9', 0x69, "numpadnine"}
+, { 0x53, 0x010a,    '.',  '.', 0x6e, "numpadperiod"}
+, { 0x35, 0x010b,    '/',  '/', 0x6f, "numpaddivide"}
+, { 0x37, 0x010c,    '*',  '*', 0x6a, "numpadtimes"}
+, { 0x4a, 0x010d,    '-',  '-', 0x6d, "numpadminus"}
+, { 0x4e, 0x010e,    '+',  '+', 0x6b, "numpadplus"}
+, { 0x1c, 0x010f,      0,    0, 0x6c, "enter"}
 
 // Multimedia keys
 // The scan codes depend on the OS so the codes in this section of the
