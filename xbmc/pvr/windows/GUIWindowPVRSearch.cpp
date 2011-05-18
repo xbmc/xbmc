@@ -85,7 +85,6 @@ bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   CFileItemPtr pItem = m_parent->m_vecItems->Get(itemNumber);
 
   return OnContextButtonClear(pItem.get(), button) ||
-      OnContextButtonFind(pItem.get(), button) ||
       OnContextButtonInfo(pItem.get(), button) ||
       OnContextButtonStopRecord(pItem.get(), button) ||
       OnContextButtonStartRecord(pItem.get(), button) ||
@@ -207,31 +206,6 @@ bool CGUIWindowPVRSearch::OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON b
     m_searchfilter.Reset();
 
     UpdateData();
-  }
-
-  return bReturn;
-}
-
-bool CGUIWindowPVRSearch::OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_FIND)
-  {
-    bReturn = true;
-
-    m_searchfilter.Reset();
-    if (item->IsEPG())
-      m_searchfilter.m_strSearchTerm = "\"" + item->GetEPGInfoTag()->Title() + "\"";
-    else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
-      m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRChannelInfoTag()->GetEPGNow()->Title() + "\"";
-    else if (item->IsPVRRecording())
-      m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRRecordingInfoTag()->m_strTitle + "\"";
-
-    m_bSearchConfirmed = true;
-    m_parent->SetLabel(m_iControlButton, 0);
-    UpdateData();
-    m_parent->SetLabel(m_iControlList, 0);
   }
 
   return bReturn;

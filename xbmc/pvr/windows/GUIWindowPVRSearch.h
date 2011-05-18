@@ -31,6 +31,7 @@ namespace PVR
   class CGUIWindowPVRSearch : public CGUIWindowPVRCommon
   {
     friend class CGUIWindowPVR;
+    friend class CGUIWindowPVRCommon;
 
   public:
     CGUIWindowPVRSearch(CGUIWindowPVR *parent);
@@ -46,7 +47,6 @@ namespace PVR
     virtual bool OnClickList(CGUIMessage &message);
 
     virtual bool OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON button);
-    virtual bool OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON button);
     virtual bool OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button);
     virtual bool OnContextButtonStartRecord(CFileItem *item, CONTEXT_BUTTON button);
     virtual bool OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUTTON button);
