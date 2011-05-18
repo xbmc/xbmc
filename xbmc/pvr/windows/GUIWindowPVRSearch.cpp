@@ -72,7 +72,7 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
     buttons.Add(CONTEXT_BUTTON_SORTBY_CHANNEL, 19062);    /* Sort by channel */
     buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);         /* Sort by Name */
     buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);         /* Sort by Date */
-    buttons.Add(CONTEXT_BUTTON_CLEAR, 20375);             /* Clear search results */
+    buttons.Add(CONTEXT_BUTTON_CLEAR, 19232);             /* Clear search results */
     if (g_PVRClients->HasMenuHooks(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ClientID()))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
   }
