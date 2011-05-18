@@ -29,6 +29,7 @@ namespace JSONRPC
   class CVideoLibrary : public CFileItemHandler
   {
   public:
+    static JSON_STATUS GetGenres(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
     static JSON_STATUS GetMovies(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
     static JSON_STATUS GetMovieDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
 
