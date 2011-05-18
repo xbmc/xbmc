@@ -47,4 +47,5 @@
     <string id="30043">Channel search - Error</string>
     <string id="30044">Lost connection to VDR Server</string>
     <string id="30045">Connection to VDR Server restored</string>
+    <string id="30046">Create channel groups automatically on the server</string>
 </strings>
