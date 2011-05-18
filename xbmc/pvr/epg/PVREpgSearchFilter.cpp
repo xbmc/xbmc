@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,59 +20,124 @@
  */
 
 #include "guilib/LocalizeStrings.h"
-#include "utils/TextSearch.h"
 
 #include "PVREpgSearchFilter.h"
-#include "pvr/PVRManager.h"
 #include "PVREpgContainer.h"
+#include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/recordings/PVRRecordings.h"
+#include "pvr/timers/PVRTimers.h"
 
 using namespace std;
 using namespace PVR;
 using namespace EPG;
 
-void PVR::PVREpgSearchFilter::Reset()
+void PVR::PVREpgSearchFilter::Reset(void)
 {
   EpgSearchFilter::Reset();
-  m_iChannelNumber           = -1;
+  m_iChannelNumber           = EPG_SEARCH_UNSET;
   m_bFTAOnly                 = false;
-  m_iChannelGroup            = -1;
+  m_iChannelGroup            = EPG_SEARCH_UNSET;
   m_bIgnorePresentTimers     = true;
   m_bIgnorePresentRecordings = true;
+  m_startDateTime            = g_PVREpg->GetFirstEPGDate();
+  m_endDateTime              = g_PVREpg->GetLastEPGDate();
+}
+
+bool PVR::PVREpgSearchFilter::MatchChannelNumber(const CPVREpgInfoTag &tag) const
+{
+  bool bReturn(true);
+
+  if (m_iChannelNumber != EPG_SEARCH_UNSET)
+  {
+    const CPVRChannelGroup *group = (m_iChannelGroup != EPG_SEARCH_UNSET) ? g_PVRChannelGroups->GetByIdFromAll(m_iChannelGroup) : g_PVRChannelGroups->GetGroupAllTV();
+    if (!group)
+      group = g_PVRChannelGroups->GetGroupAllTV();
+
+    bReturn = (m_iChannelNumber == (int) group->GetChannelNumber(*tag.ChannelTag()));
+  }
+
+  return bReturn;
+}
+
+bool PVR::PVREpgSearchFilter::MatchChannelGroup(const CPVREpgInfoTag &tag) const
+{
+  bool bReturn(true);
+
+  if (m_iChannelGroup != EPG_SEARCH_UNSET)
+  {
+    const CPVRChannelGroup *group = g_PVRChannelGroups->GetByIdFromAll(m_iChannelGroup);
+    bReturn = (group && group->IsGroupMember(tag.ChannelTag()));
+  }
+
+  return bReturn;
 }
 
 bool PVR::PVREpgSearchFilter::FilterEntry(const CPVREpgInfoTag &tag) const
 {
-  bool bReturn = EpgSearchFilter::FilterEntry(tag);
+  return EpgSearchFilter::FilterEntry(tag) &&
+      MatchChannelNumber(tag) &&
+      MatchChannelGroup(tag) &&
+      (!m_bFTAOnly || !tag.ChannelTag()->IsEncrypted());
+}
 
-  if (bReturn)
+int PVR::PVREpgSearchFilter::FilterRecordings(CFileItemList *results)
+{
+  int iRemoved(0);
+  CPVRRecordings *recordings = g_PVRRecordings;
+
+  // TODO not thread safe and inefficient!
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < recordings->size(); iRecordingPtr++)
   {
-    if (m_iChannelNumber != -1)
+    CPVRRecording *recording = recordings->at(iRecordingPtr);
+    if (!recording)
+      continue;
+
+    for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
     {
-      if (m_iChannelNumber == -2)
-      {
-        if (tag.ChannelTag()->IsRadio())
-          bReturn = false;
-      }
-      else if (m_iChannelNumber == -3)
-      {
-        if (!tag.ChannelTag()->IsRadio())
-          bReturn = false;
-      }
-      else if (tag.ChannelTag()->ChannelNumber() != m_iChannelNumber)
-        bReturn = false;
-    }
-    if (m_bFTAOnly && tag.ChannelTag()->IsEncrypted())
-    {
-      bReturn = false;
-    }
-    if (m_iChannelGroup != -1)
-    {
-      const CPVRChannelGroup *group = g_PVRChannelGroups->GetById(tag.ChannelTag()->IsRadio(), m_iChannelGroup);
-      if (!group || !group->IsGroupMember(tag.ChannelTag()))
-        bReturn = false;
+      const CPVREpgInfoTag *epgentry  = (CPVREpgInfoTag *) results->Get(iResultPtr)->GetEPGInfoTag();
+
+      /* no match */
+      if (!epgentry ||
+          epgentry->Title()       != recording->m_strTitle ||
+          epgentry->Plot()        != recording->m_strPlot)
+        continue;
+
+      results->Remove(iResultPtr);
+      iResultPtr--;
+      ++iRemoved;
     }
   }
 
-  return bReturn;
+  return iRemoved;
+}
+
+int PVR::PVREpgSearchFilter::FilterTimers(CFileItemList *results)
+{
+  int iRemoved(0);
+  CPVRTimers *timers = g_PVRTimers;
+
+  // TODO not thread safe and inefficient!
+  for (unsigned int iTimerPtr = 0; iTimerPtr < timers->size(); iTimerPtr++)
+  {
+    CPVRTimerInfoTag *timer = timers->at(iTimerPtr);
+    if (!timer)
+      continue;
+
+    for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
+    {
+      const CPVREpgInfoTag *epgentry = (CPVREpgInfoTag *) results->Get(iResultPtr)->GetEPGInfoTag();
+      if (!epgentry ||
+          *epgentry->ChannelTag() != *timer->m_channel ||
+          epgentry->StartAsUTC()   <  timer->StartAsUTC() ||
+          epgentry->EndAsUTC()     >  timer->EndAsUTC())
+        continue;
+
+      results->Remove(iResultPtr);
+      iResultPtr--;
+      ++iRemoved;
+    }
+  }
+
+  return iRemoved;
 }

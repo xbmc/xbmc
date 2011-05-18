@@ -502,6 +502,7 @@ const CDateTime CEpgContainer::GetLastEPGDate(void) const
 
 int CEpgContainer::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &filter)
 {
+  /* get filtered results from all tables */
   CSingleLock lock(m_critSection);
   for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
     at(iEpgPtr)->Get(results, filter);
@@ -509,29 +510,7 @@ int CEpgContainer::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &f
 
   /* remove duplicate entries */
   if (filter.m_bPreventRepeats)
-  {
-    unsigned int iSize = results->Size();
-    for (unsigned int iResultPtr = 0; iResultPtr < iSize; iResultPtr++)
-    {
-      const CEpgInfoTag *epgentry_1 = results->Get(iResultPtr)->GetEPGInfoTag();
-      for (unsigned int iTagPtr = 0; iTagPtr < iSize; iTagPtr++)
-      {
-        const CEpgInfoTag *epgentry_2 = results->Get(iTagPtr)->GetEPGInfoTag();
-        if (iResultPtr == iTagPtr)
-          continue;
-
-        if (epgentry_1->Title()       != epgentry_2->Title() ||
-            epgentry_1->Plot()        != epgentry_2->Plot() ||
-            epgentry_1->PlotOutline() != epgentry_2->PlotOutline())
-          continue;
-
-        results->Remove(iTagPtr);
-        iSize = results->Size();
-        iResultPtr--;
-        iTagPtr--;
-      }
-    }
-  }
+    EpgSearchFilter::RemoveDuplicates(results);
 
   return results->Size();
 }

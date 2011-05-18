@@ -27,6 +27,7 @@
 
 namespace PVR
 {
+  struct PVREpgSearchFilter;
   class CPVREpgContainer;
 
   /** PVR EPG class */
@@ -94,5 +95,15 @@ namespace PVR
      * @return True if this is a table for a radio channel, false if it's for TV.
      */
     bool IsRadio(void) const;
+
+    /*!
+     * @brief Get all EPG entries that and apply a filter.
+     * @param results The file list to store the results in.
+     * @param filter The filter to apply.
+     * @return The amount of entries that were added.
+     */
+    int Get(CFileItemList *results, const PVREpgSearchFilter &filter) const;
+
+    int Get(CFileItemList *results) const { return CEpg::Get(results); };
   };
 }

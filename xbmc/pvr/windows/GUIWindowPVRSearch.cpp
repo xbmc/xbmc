@@ -36,10 +36,10 @@
 using namespace PVR;
 
 CGUIWindowPVRSearch::CGUIWindowPVRSearch(CGUIWindowPVR *parent) :
-  CGUIWindowPVRCommon(parent, PVR_WINDOW_SEARCH, CONTROL_BTNSEARCH, CONTROL_LIST_SEARCH)
+  CGUIWindowPVRCommon(parent, PVR_WINDOW_SEARCH, CONTROL_BTNSEARCH, CONTROL_LIST_SEARCH),
+  m_bSearchStarted(false),
+  m_bSearchConfirmed(false)
 {
-  m_bSearchStarted   = false;
-  m_bSearchConfirmed = false;
 }
 
 void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &buttons) const
@@ -90,17 +90,6 @@ bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnContextButtonStopRecord(pItem.get(), button) ||
       OnContextButtonStartRecord(pItem.get(), button) ||
       CGUIWindowPVRCommon::OnContextButton(itemNumber, button);
-}
-
-void CGUIWindowPVRSearch::OnInitWindow(void)
-{
-  if (!m_bSearchStarted)
-  {
-    m_bSearchStarted = true;
-    m_searchfilter.Reset();
-  }
-
-  CGUIWindowPVRCommon::OnInitWindow();
 }
 
 void CGUIWindowPVRSearch::UpdateData(void)
@@ -307,6 +296,12 @@ void CGUIWindowPVRSearch::ShowSearchResults()
 
   if (!pDlgInfo)
     return;
+
+  if (!m_bSearchStarted)
+  {
+    m_bSearchStarted = true;
+    m_searchfilter.Reset();
+  }
 
   pDlgInfo->SetFilterData(&m_searchfilter);
 

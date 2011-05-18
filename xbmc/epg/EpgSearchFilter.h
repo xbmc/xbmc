@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,9 +23,13 @@
 
 #include "XBDateTime.h"
 
+class CFileItemList;
+
 namespace EPG
 {
   class CEpgInfoTag;
+
+  #define EPG_SEARCH_UNSET (-1)
 
   /** Filter to apply with on a CEpgInfoTag */
 
@@ -43,6 +47,13 @@ namespace EPG
      */
     virtual bool FilterEntry(const CEpgInfoTag &tag) const;
 
+    bool MatchGenre(const CEpgInfoTag &tag) const;
+    bool MatchDuration(const CEpgInfoTag &tag) const;
+    bool MatchStartAndEndTimes(const CEpgInfoTag &tag) const;
+    bool MatchSearchTerm(const CEpgInfoTag &tag) const;
+
+    static int RemoveDuplicates(CFileItemList *results);
+
     CStdString    m_strSearchTerm;            /*!< The term to search for */
     bool          m_bIsCaseSensitive;         /*!< Do a case sensitive search */
     bool          m_bSearchInDescription;     /*!< Search for strSearchTerm in the description too */
@@ -50,10 +61,8 @@ namespace EPG
     int           m_iGenreSubType;            /*!< The genre subtype for an entry */
     int           m_iMinimumDuration;         /*!< The minimum duration for an entry */
     int           m_iMaximumDuration;         /*!< The maximum duration for an entry */
-    SYSTEMTIME    m_startTime;                /*!< The minimum start time for an entry */
-    SYSTEMTIME    m_endTime;                  /*!< The maximum end time for an entry */
-    SYSTEMTIME    m_startDate;                /*!< The minimum start date for an entry */
-    SYSTEMTIME    m_endDate;                  /*!< The maximum end date for an entry */
+    CDateTime     m_startDateTime;            /*!< The minimum start time for an entry */
+    CDateTime     m_endDateTime;              /*!< The maximum end time for an entry */
     bool          m_bIncludeUnknownGenres;    /*!< Include unknown genres or not */
     bool          m_bIgnorePresentTimers;     /*!< True to ignore currently present timers (future recordings), false if not */
     bool          m_bIgnorePresentRecordings; /*!< True to ignore currently active recordings, false if not */
