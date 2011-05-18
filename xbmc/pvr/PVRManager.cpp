@@ -613,6 +613,7 @@ void CPVRManager::LoadCurrentChannelSettings()
     g_settings.m_currentVideoSettings.m_CropBottom          = loadedChannelSettings.m_CropBottom;
     g_settings.m_currentVideoSettings.m_CustomPixelRatio    = loadedChannelSettings.m_CustomPixelRatio;
     g_settings.m_currentVideoSettings.m_CustomZoomAmount    = loadedChannelSettings.m_CustomZoomAmount;
+    g_settings.m_currentVideoSettings.m_CustomVerticalShift = loadedChannelSettings.m_CustomVerticalShift;
     g_settings.m_currentVideoSettings.m_NoiseReduction      = loadedChannelSettings.m_NoiseReduction;
     g_settings.m_currentVideoSettings.m_Sharpness           = loadedChannelSettings.m_Sharpness;
     g_settings.m_currentVideoSettings.m_InterlaceMethod     = loadedChannelSettings.m_InterlaceMethod;
