@@ -51,37 +51,28 @@ using namespace std;
 using namespace MUSIC_INFO;
 using namespace PVR;
 
-CPVRManager::CPVRManager(void)
+CPVRManager::CPVRManager(void) :
+    m_channelGroups(NULL),
+    m_epg(NULL),
+    m_recordings(NULL),
+    m_timers(NULL),
+    m_addons(NULL),
+    m_guiInfo(NULL),
+    m_currentFile(NULL),
+    m_database(NULL),
+    m_bFirstStart(true),
+    m_bLoaded(false),
+    m_loadingBusyDialog(NULL),
+    m_currentRadioGroup(NULL),
+    m_currentTVGroup(NULL)
 {
-  m_bFirstStart   = true;
-  m_bLoaded       = false;
-
-  m_database      = new CPVRDatabase;
-  m_addons        = new CPVRClients;
-  m_channelGroups = new CPVRChannelGroupsContainer;
-  m_epg           = new CPVREpgContainer;
-  m_recordings    = new CPVRRecordings;
-  m_timers        = new CPVRTimers;
-  m_guiInfo       = new CPVRGUIInfo;
-  m_triggerEvent  = CreateEvent(NULL, TRUE, TRUE, NULL);
-
   ResetProperties();
 }
 
 CPVRManager::~CPVRManager(void)
 {
   Stop();
-
-  delete m_timers;
-  delete m_epg;
-  delete m_recordings;
-  delete m_channelGroups;
-  delete m_addons;
-  delete m_guiInfo;
-  delete m_database;
-
-  if (m_triggerEvent)
-    CloseHandle(m_triggerEvent);
+  Cleanup();
 
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
@@ -167,6 +158,18 @@ void CPVRManager::StopUpdateThreads(void)
   m_epg->Stop();
   m_guiInfo->Stop();
   m_addons->Stop();
+}
+
+void CPVRManager::Cleanup(void)
+{
+  delete m_guiInfo;            m_guiInfo = NULL;
+  delete m_timers;             m_timers = NULL;
+  delete m_epg;                m_epg = NULL;
+  delete m_recordings;         m_recordings = NULL;
+  delete m_channelGroups;      m_channelGroups = NULL;
+  delete m_addons;             m_addons = NULL;
+  delete m_database;           m_database = NULL;
+  CloseHandle(m_triggerEvent); m_triggerEvent = NULL;
 }
 
 bool CPVRManager::Load(void)
@@ -350,6 +353,15 @@ bool CPVRManager::ContinueLastChannel(void)
 
 void CPVRManager::ResetProperties(void)
 {
+  if (!m_triggerEvent)  m_triggerEvent  = CreateEvent(NULL, TRUE, TRUE, NULL);
+  if (!m_database)      m_database      = new CPVRDatabase;
+  if (!m_addons)        m_addons        = new CPVRClients;
+  if (!m_channelGroups) m_channelGroups = new CPVRChannelGroupsContainer;
+  if (!m_epg)           m_epg           = new CPVREpgContainer;
+  if (!m_recordings)    m_recordings    = new CPVRRecordings;
+  if (!m_timers)        m_timers        = new CPVRTimers;
+  if (!m_guiInfo)       m_guiInfo       = new CPVRGUIInfo;
+
   m_currentFile           = NULL;
   m_currentRadioGroup     = NULL;
   m_currentTVGroup        = NULL;
@@ -459,6 +471,8 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
 
     m_database->Close();
   }
+
+  Cleanup();
 
   CLog::Log(LOGNOTICE,"PVRManager - %s - PVR database cleared. restarting the PVRManager", __FUNCTION__);
 
