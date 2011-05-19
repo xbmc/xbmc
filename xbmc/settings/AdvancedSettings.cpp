@@ -45,8 +45,6 @@ CAdvancedSettings::CAdvancedSettings()
 
 void CAdvancedSettings::Initialize()
 {
-  m_useMultipaths = true;
-
   m_audioHeadRoom = 0;
   m_ac3Gain = 12.0f;
   m_audioApplyDrc = true;
@@ -642,7 +640,6 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
 
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", m_noDVDROM);
-  XMLUtils::GetBoolean(pRootElement, "usemultipaths", m_useMultipaths);
 #ifdef HAS_SDL
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif

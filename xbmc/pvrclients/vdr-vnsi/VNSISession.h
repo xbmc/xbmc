@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2010 Alwin Esch (Team XBMC)
  *      http://www.xbmc.org
@@ -19,7 +20,6 @@
  *
  */
 
-#pragma once
 #include <stdint.h>
 #include <string>
 
@@ -34,28 +34,49 @@ class cVNSISession
 {
 public:
   cVNSISession();
-  ~cVNSISession();
+  virtual ~cVNSISession();
 
-  bool              Open(const std::string& hostname, int port, const char *name = NULL);
-  void              Close();
-  void              Abort();
+  virtual bool      Open(const std::string& hostname, int port, const char *name = NULL);
+  virtual bool      Login();
+  virtual void      Close();
+  virtual void      Abort();
 
   cResponsePacket*  ReadMessage();
   bool              SendMessage(cRequestPacket* vrp);
-  int               sendData(void* bufR, size_t count);
-  int               readData(uint8_t* buffer, int totalBytes);
 
-  cResponsePacket*  ReadResult(cRequestPacket* vrp, bool sequence = true);
-  bool              ReadSuccess(cRequestPacket* m, bool sequence = true);
-  int               GetProtocol()   { return m_protocol; }
+  cResponsePacket*  ReadResult(cRequestPacket* vrp);
+  bool              ReadSuccess(cRequestPacket* m);
+
+  int                GetProtocol()   { return m_protocol; }
   const std::string& GetServerName() { return m_server; }
   const std::string& GetVersion()    { return m_version; }
 
+protected:
+
+  void SleepMs(int ms);
+
+  bool TryReconnect();
+  bool IsOpen() { return m_fd != INVALID_SOCKET; }
+
+  virtual void OnDisconnect();
+  virtual void OnReconnect();
+
+  virtual void SignalConnectionLost();
+  bool ConnectionLost() { return m_connectionLost; }
+
+  std::string     m_hostname;
+  int             m_port;
+  std::string     m_name;
+
 private:
+
+  bool readData(uint8_t* buffer, int totalBytes);
+
   socket_t    m_fd;
   int         m_protocol;
   std::string m_server;
   std::string m_version;
+  bool        m_connectionLost;
 
   struct {
         uint32_t opCodeID;
@@ -70,4 +91,5 @@ private:
         uint32_t requestID;
         uint32_t userDataLength;
   } m_responsePacketHeader;
+
 };

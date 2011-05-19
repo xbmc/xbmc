@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -35,7 +35,7 @@ namespace PVR
     /*!
      * @brief Clear this filter.
      */
-    void Reset();
+    void Reset(void);
 
     /*!
      * @brief Check if a tag will be filtered or not.
@@ -44,7 +44,13 @@ namespace PVR
      */
     bool FilterEntry(const CPVREpgInfoTag &tag) const;
 
-    int           m_iChannelNumber;           /*!< The channel number in XBMC */
+    bool MatchChannelNumber(const CPVREpgInfoTag &tag) const;
+    bool MatchChannelGroup(const CPVREpgInfoTag &tag) const;
+
+    static int FilterRecordings(CFileItemList *results);
+    static int FilterTimers(CFileItemList *results);
+
+    int           m_iChannelNumber;           /*!< The channel number in the selected channel group */
     bool          m_bFTAOnly;                 /*!< Free to air only or not */
     int           m_iChannelGroup;            /*!< The group this channel belongs to */
     bool          m_bIgnorePresentTimers;     /*!< True to ignore currently present timers (future recordings), false if not */

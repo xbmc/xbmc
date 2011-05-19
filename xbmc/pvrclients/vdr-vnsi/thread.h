@@ -116,11 +116,7 @@ public:
        ///< the thread starts and stops. The Start() function must be called
        ///< to actually start the thread.
   virtual ~cThread();
-#ifdef __WINDOWS__
   void SetDescription(const char *Description, ...);
-#else
-  void SetDescription(const char *Description, ...) __attribute__ ((format (printf, 2, 3)));
-#endif
   bool Start(void);
        ///< Actually starts the thread.
        ///< If the thread is already running, nothing happens.

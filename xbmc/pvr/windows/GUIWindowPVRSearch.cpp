@@ -36,10 +36,10 @@
 using namespace PVR;
 
 CGUIWindowPVRSearch::CGUIWindowPVRSearch(CGUIWindowPVR *parent) :
-  CGUIWindowPVRCommon(parent, PVR_WINDOW_SEARCH, CONTROL_BTNSEARCH, CONTROL_LIST_SEARCH)
+  CGUIWindowPVRCommon(parent, PVR_WINDOW_SEARCH, CONTROL_BTNSEARCH, CONTROL_LIST_SEARCH),
+  m_bSearchStarted(false),
+  m_bSearchConfirmed(false)
 {
-  m_bSearchStarted   = false;
-  m_bSearchConfirmed = false;
 }
 
 void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &buttons) const
@@ -72,7 +72,7 @@ void CGUIWindowPVRSearch::GetContextButtons(int itemNumber, CContextButtons &but
     buttons.Add(CONTEXT_BUTTON_SORTBY_CHANNEL, 19062);    /* Sort by channel */
     buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);         /* Sort by Name */
     buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);         /* Sort by Date */
-    buttons.Add(CONTEXT_BUTTON_CLEAR, 20375);             /* Clear search results */
+    buttons.Add(CONTEXT_BUTTON_CLEAR, 19232);             /* Clear search results */
     if (g_PVRClients->HasMenuHooks(((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->ClientID()))
       buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);      /* PVR client specific action */
   }
@@ -85,22 +85,10 @@ bool CGUIWindowPVRSearch::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   CFileItemPtr pItem = m_parent->m_vecItems->Get(itemNumber);
 
   return OnContextButtonClear(pItem.get(), button) ||
-      OnContextButtonFind(pItem.get(), button) ||
       OnContextButtonInfo(pItem.get(), button) ||
       OnContextButtonStopRecord(pItem.get(), button) ||
       OnContextButtonStartRecord(pItem.get(), button) ||
       CGUIWindowPVRCommon::OnContextButton(itemNumber, button);
-}
-
-void CGUIWindowPVRSearch::OnInitWindow(void)
-{
-  if (!m_bSearchStarted)
-  {
-    m_bSearchStarted = true;
-    m_searchfilter.Reset();
-  }
-
-  CGUIWindowPVRCommon::OnInitWindow();
 }
 
 void CGUIWindowPVRSearch::UpdateData(void)
@@ -223,31 +211,6 @@ bool CGUIWindowPVRSearch::OnContextButtonClear(CFileItem *item, CONTEXT_BUTTON b
   return bReturn;
 }
 
-bool CGUIWindowPVRSearch::OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON button)
-{
-  bool bReturn = false;
-
-  if (button == CONTEXT_BUTTON_FIND)
-  {
-    bReturn = true;
-
-    m_searchfilter.Reset();
-    if (item->IsEPG())
-      m_searchfilter.m_strSearchTerm = "\"" + item->GetEPGInfoTag()->Title() + "\"";
-    else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
-      m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRChannelInfoTag()->GetEPGNow()->Title() + "\"";
-    else if (item->IsPVRRecording())
-      m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRRecordingInfoTag()->m_strTitle + "\"";
-
-    m_bSearchConfirmed = true;
-    m_parent->SetLabel(m_iControlButton, 0);
-    UpdateData();
-    m_parent->SetLabel(m_iControlList, 0);
-  }
-
-  return bReturn;
-}
-
 bool CGUIWindowPVRSearch::OnContextButtonInfo(CFileItem *item, CONTEXT_BUTTON button)
 {
   bool bReturn = false;
@@ -307,6 +270,12 @@ void CGUIWindowPVRSearch::ShowSearchResults()
 
   if (!pDlgInfo)
     return;
+
+  if (!m_bSearchStarted)
+  {
+    m_bSearchStarted = true;
+    m_searchfilter.Reset();
+  }
 
   pDlgInfo->SetFilterData(&m_searchfilter);
 

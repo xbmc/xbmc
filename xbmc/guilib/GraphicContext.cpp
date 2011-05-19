@@ -307,8 +307,8 @@ bool CGraphicContext::IsValidResolution(RESOLUTION res)
 
 void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
 {
-#if defined __APPLE__
-  /* Update the resolutions. XBMC window can be moved to another screen. */
+#if defined(__APPLE__) && !defined(__arm__)
+  /* Update the resolutions. XBMC window can be moved to another screen (except ios/atv2). */
   g_Windowing.UpdateResolutions();
 #endif  
   RESOLUTION lastRes = m_Resolution;

@@ -66,7 +66,7 @@ protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UpdateColors();
   void UpdateBarSize();
-  virtual void Move(int iNumSteps);
+  bool Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);
 
   CGUITexture m_guiBackground;

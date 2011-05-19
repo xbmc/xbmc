@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -56,11 +56,119 @@ using namespace PVR;
 #define CONTROL_BTN_IGNORE_REC    27
 #define CONTROL_BTN_DEFAULTS      28
 
-CGUIDialogPVRGuideSearch::CGUIDialogPVRGuideSearch(void)
-  : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_SEARCH, "DialogPVRGuideSearch.xml")
+CGUIDialogPVRGuideSearch::CGUIDialogPVRGuideSearch(void) :
+    CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_SEARCH, "DialogPVRGuideSearch.xml"),
+    m_bConfirmed(false),
+    m_bCanceled(false),
+    m_searchFilter(NULL)
 {
-  m_bConfirmed   = false;
-  m_searchfilter = NULL;
+}
+
+void CGUIDialogPVRGuideSearch::UpdateChannelSpin(void)
+{
+  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_CHANNELS);
+  CGUISpinControlEx *pSpinGroups = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GROUPS);
+  if (!pSpin || !pSpinGroups)
+    return;
+
+  int iChannelGroup = pSpin->GetValue();
+
+  pSpin->Clear();
+  pSpin->AddLabel(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET);
+
+  int iGroupId = (iChannelGroup == EPG_SEARCH_UNSET) ?
+      XBMC_INTERNAL_GROUP_TV :
+      iChannelGroup;
+  const CPVRChannelGroup *group = g_PVRChannelGroups->GetByIdFromAll(iGroupId);
+  if (!group)
+    group = g_PVRChannelGroups->GetGroupAllTV();
+
+  for (int iChannelPtr = 0; iChannelPtr < group->Size(); iChannelPtr++)
+  {
+    const CPVRChannel *channel = group->GetByIndex(iChannelPtr);
+    if (!channel)
+      continue;
+
+    int iChannelNumber = group->GetChannelNumber(*channel);
+    pSpin->AddLabel(channel->ChannelName().c_str(), iChannelNumber);
+  }
+}
+
+void CGUIDialogPVRGuideSearch::UpdateGroupsSpin(void)
+{
+  CFileItemList groups;
+  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GROUPS);
+  if (!pSpin)
+    return;
+
+  /* tv groups */
+  g_PVRChannelGroups->GetTV()->GetGroupList(&groups);
+  for (int iGroupPtr = 0; iGroupPtr < groups.Size(); iGroupPtr++)
+    pSpin->AddLabel(groups[iGroupPtr]->GetLabel(), atoi(groups[iGroupPtr]->m_strPath));
+
+  /* radio groups */
+  groups.ClearItems();
+  g_PVRChannelGroups->GetRadio()->GetGroupList(&groups);
+  for (int iGroupPtr = 0; iGroupPtr < groups.Size(); iGroupPtr++)
+    pSpin->AddLabel(groups[iGroupPtr]->GetLabel(), atoi(groups[iGroupPtr]->m_strPath));
+
+  pSpin->SetValue(m_searchFilter->m_iChannelGroup);
+}
+
+void CGUIDialogPVRGuideSearch::UpdateGenreSpin(void)
+{
+  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GENRE);
+  if (!pSpin)
+    return;
+
+  pSpin->Clear();
+  pSpin->AddLabel(g_localizeStrings.Get(593), EPG_SEARCH_UNSET);
+  pSpin->AddLabel(g_localizeStrings.Get(19500), EPG_EVENT_CONTENTMASK_MOVIEDRAMA);
+  pSpin->AddLabel(g_localizeStrings.Get(19516), EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS);
+  pSpin->AddLabel(g_localizeStrings.Get(19532), EPG_EVENT_CONTENTMASK_SHOW);
+  pSpin->AddLabel(g_localizeStrings.Get(19548), EPG_EVENT_CONTENTMASK_SPORTS);
+  pSpin->AddLabel(g_localizeStrings.Get(19564), EPG_EVENT_CONTENTMASK_CHILDRENYOUTH);
+  pSpin->AddLabel(g_localizeStrings.Get(19580), EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE);
+  pSpin->AddLabel(g_localizeStrings.Get(19596), EPG_EVENT_CONTENTMASK_ARTSCULTURE);
+  pSpin->AddLabel(g_localizeStrings.Get(19612), EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS);
+  pSpin->AddLabel(g_localizeStrings.Get(19628), EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE);
+  pSpin->AddLabel(g_localizeStrings.Get(19644), EPG_EVENT_CONTENTMASK_LEISUREHOBBIES);
+  pSpin->AddLabel(g_localizeStrings.Get(19660), EPG_EVENT_CONTENTMASK_SPECIAL);
+  pSpin->AddLabel(g_localizeStrings.Get(19499), EPG_EVENT_CONTENTMASK_USERDEFINED);
+  pSpin->SetValue(m_searchFilter->m_iGenreType);
+}
+
+void CGUIDialogPVRGuideSearch::UpdateDurationSpin(void)
+{
+  /* minimum duration */
+  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_MIN_DURATION);
+  if (!pSpin)
+    return;
+
+  pSpin->Clear();
+  pSpin->AddLabel("-", EPG_SEARCH_UNSET);
+  for (int i = 1; i < 12*60/5; i++)
+  {
+    CStdString string;
+    string.Format(g_localizeStrings.Get(14044), i*5);
+    pSpin->AddLabel(string, i*5);
+  }
+  pSpin->SetValue(m_searchFilter->m_iMinimumDuration);
+
+  /* maximum duration */
+  pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_MAX_DURATION);
+  if (!pSpin)
+    return;
+
+  pSpin->Clear();
+  pSpin->AddLabel("-", EPG_SEARCH_UNSET);
+  for (int i = 1; i < 12*60/5; i++)
+  {
+    CStdString string;
+    string.Format(g_localizeStrings.Get(14044),i*5);
+    pSpin->AddLabel(string, i*5);
+  }
+  pSpin->SetValue(m_searchFilter->m_iMaximumDuration);
 }
 
 bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
@@ -82,6 +190,7 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
       if (iControl == CONTROL_BTN_SEARCH)
       {
         OnSearch();
+        m_bConfirmed = true;
         m_bCanceled = false;
         Close();
         return true;
@@ -94,9 +203,9 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_DEFAULTS)
       {
-        if (m_searchfilter)
+        if (m_searchFilter)
         {
-          m_searchfilter->Reset();
+          m_searchFilter->Reset();
           Update();
         }
 
@@ -104,28 +213,7 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_SPIN_GROUPS)
       {
-        /* Set Channel list spin */
-        CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_CHANNELS);
-        if (pSpin)
-        {
-          CFileItemList channelslist_tv;
-          const CPVRChannelGroup *group = g_PVRChannelGroups->GetById(false, m_searchfilter->m_iChannelGroup);
-          if (group)
-            group->GetMembers(&channelslist_tv);
-
-          pSpin->Clear();
-          pSpin->AddLabel(g_localizeStrings.Get(19217), -1);
-          pSpin->AddLabel(g_localizeStrings.Get(19023), -2);
-          pSpin->AddLabel(g_localizeStrings.Get(19024), -3);
-
-          for (int i = 0; i < channelslist_tv.Size(); i++)
-          {
-            int chanNumber = channelslist_tv[i]->GetPVRChannelInfoTag()->ChannelNumber();
-            CStdString string;
-            string.Format("%i %s", chanNumber, channelslist_tv[i]->GetPVRChannelInfoTag()->ChannelName().c_str());
-            pSpin->AddLabel(string, chanNumber);
-          }
-        }
+        UpdateChannelSpin();
         return true;
       }
     }
@@ -141,240 +229,141 @@ void CGUIDialogPVRGuideSearch::OnWindowLoaded()
   return CGUIDialog::OnWindowLoaded();
 }
 
+void CGUIDialogPVRGuideSearch::ReadDateTime(const CStdString &strDate, const CStdString &strTime, CDateTime &dateTime) const
+{
+  int iHours, iMinutes;
+  sscanf(strTime, "%d:%d", &iHours, &iMinutes);
+  dateTime.SetFromDBDate(strDate);
+  dateTime.SetDateTime(dateTime.GetYear(), dateTime.GetMonth(), dateTime.GetDay(), iHours, iMinutes, 0);
+}
+
 void CGUIDialogPVRGuideSearch::OnSearch()
 {
+  CStdString              strTmp;
   CGUISpinControlEx      *pSpin;
   CGUIEditControl        *pEdit;
   CGUIRadioButtonControl *pRadioButton;
-  CDateTime               dateTime;
 
-  if (!m_searchfilter)
+  if (!m_searchFilter)
     return;
 
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_SEARCH);
-  if (pEdit) m_searchfilter->m_strSearchTerm = pEdit->GetLabel2();
+  if (pEdit) m_searchFilter->m_strSearchTerm = pEdit->GetLabel2();
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_INC_DESC);
-  if (pRadioButton) m_searchfilter->m_bSearchInDescription = pRadioButton->IsSelected();
+  if (pRadioButton) m_searchFilter->m_bSearchInDescription = pRadioButton->IsSelected();
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_CASE_SENS);
-  if (pRadioButton) m_searchfilter->m_bIsCaseSensitive = pRadioButton->IsSelected();
+  if (pRadioButton) m_searchFilter->m_bIsCaseSensitive = pRadioButton->IsSelected();
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_FTA_ONLY);
-  if (pRadioButton) m_searchfilter->m_bFTAOnly = pRadioButton->IsSelected();
+  if (pRadioButton) m_searchFilter->m_bFTAOnly = pRadioButton->IsSelected();
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_UNK_GENRE);
-  if (pRadioButton) m_searchfilter->m_bIncludeUnknownGenres = pRadioButton->IsSelected();
+  if (pRadioButton) m_searchFilter->m_bIncludeUnknownGenres = pRadioButton->IsSelected();
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_IGNORE_REC);
-  if (pRadioButton) m_searchfilter->m_bIgnorePresentRecordings = pRadioButton->IsSelected();
+  if (pRadioButton) m_searchFilter->m_bIgnorePresentRecordings = pRadioButton->IsSelected();
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_IGNORE_TMR);
-  if (pRadioButton) m_searchfilter->m_bIgnorePresentTimers = pRadioButton->IsSelected();
+  if (pRadioButton) m_searchFilter->m_bIgnorePresentTimers = pRadioButton->IsSelected();
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_SPIN_NO_REPEATS);
-  if (pRadioButton) m_searchfilter->m_bPreventRepeats = pRadioButton->IsSelected();
+  if (pRadioButton) m_searchFilter->m_bPreventRepeats = pRadioButton->IsSelected();
 
   pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GENRE);
-  if (pSpin) m_searchfilter->m_iGenreType = pSpin->GetValue();
+  if (pSpin) m_searchFilter->m_iGenreType = pSpin->GetValue();
 
   pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_MIN_DURATION);
-  if (pSpin) m_searchfilter->m_iMinimumDuration = pSpin->GetValue();
+  if (pSpin) m_searchFilter->m_iMinimumDuration = pSpin->GetValue();
 
   pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_MAX_DURATION);
-  if (pSpin) m_searchfilter->m_iMaximumDuration = pSpin->GetValue();
+  if (pSpin) m_searchFilter->m_iMaximumDuration = pSpin->GetValue();
 
   pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_CHANNELS);
-  if (pSpin) m_searchfilter->m_iChannelNumber = pSpin->GetValue();
+  if (pSpin) m_searchFilter->m_iChannelNumber = pSpin->GetValue();
 
   pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GROUPS);
-  if (pSpin) m_searchfilter->m_iChannelGroup = pSpin->GetValue();
+  if (pSpin) m_searchFilter->m_iChannelGroup = pSpin->GetValue();
 
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_START_TIME);
-  if (pEdit)
-  {
-    dateTime.SetFromDBTime(pEdit->GetLabel2());
-    dateTime.GetAsSystemTime(m_searchfilter->m_startTime);
-  }
-
-  pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_STOP_TIME);
-  if (pEdit)
-  {
-    dateTime.SetFromDBTime(pEdit->GetLabel2());
-    dateTime.GetAsSystemTime(m_searchfilter->m_endTime);
-  }
+  if (pEdit) strTmp = pEdit->GetLabel2();
 
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_START_DATE);
-  if (pEdit)
-  {
-    dateTime.SetFromDBDate(pEdit->GetLabel2());
-    dateTime.GetAsSystemTime(m_searchfilter->m_startDate);
-  }
+  if (pEdit) ReadDateTime(pEdit->GetLabel2(), strTmp, m_searchFilter->m_startDateTime);
+  strTmp.clear();
+
+  pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_STOP_TIME);
+  if (pEdit) strTmp = pEdit->GetLabel2();
 
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_STOP_DATE);
-  if (pEdit)
-  {
-    dateTime.SetFromDBDate(pEdit->GetLabel2());
-    dateTime.GetAsSystemTime(m_searchfilter->m_endDate);
-  }
-
-  m_bConfirmed = true;
+  if (pEdit) ReadDateTime(pEdit->GetLabel2(), strTmp, m_searchFilter->m_endDateTime);
 }
 
 void CGUIDialogPVRGuideSearch::Update()
 {
-  CGUISpinControlEx      *pSpin;
   CGUIEditControl        *pEdit;
   CGUIRadioButtonControl *pRadioButton;
 
-  if (!m_searchfilter)
+  if (!m_searchFilter)
     return;
 
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_SEARCH);
   if (pEdit)
   {
-    pEdit->SetLabel2(m_searchfilter->m_strSearchTerm);
+    pEdit->SetLabel2(m_searchFilter->m_strSearchTerm);
     pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TEXT, 16017);
   }
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_CASE_SENS);
-  if (pRadioButton) pRadioButton->SetSelected(m_searchfilter->m_bIsCaseSensitive);
+  if (pRadioButton) pRadioButton->SetSelected(m_searchFilter->m_bIsCaseSensitive);
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_INC_DESC);
-  if (pRadioButton) pRadioButton->SetSelected(m_searchfilter->m_bSearchInDescription);
+  if (pRadioButton) pRadioButton->SetSelected(m_searchFilter->m_bSearchInDescription);
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_FTA_ONLY);
-  if (pRadioButton) pRadioButton->SetSelected(m_searchfilter->m_bFTAOnly);
+  if (pRadioButton) pRadioButton->SetSelected(m_searchFilter->m_bFTAOnly);
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_UNK_GENRE);
-  if (pRadioButton) pRadioButton->SetSelected(m_searchfilter->m_bIncludeUnknownGenres);
+  if (pRadioButton) pRadioButton->SetSelected(m_searchFilter->m_bIncludeUnknownGenres);
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_IGNORE_REC);
-  if (pRadioButton) pRadioButton->SetSelected(m_searchfilter->m_bIgnorePresentRecordings);
+  if (pRadioButton) pRadioButton->SetSelected(m_searchFilter->m_bIgnorePresentRecordings);
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_BTN_IGNORE_TMR);
-  if (pRadioButton) pRadioButton->SetSelected(m_searchfilter->m_bIgnorePresentTimers);
+  if (pRadioButton) pRadioButton->SetSelected(m_searchFilter->m_bIgnorePresentTimers);
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_SPIN_NO_REPEATS);
-  if (pRadioButton) pRadioButton->SetSelected(m_searchfilter->m_bPreventRepeats);
-
-  /* Set duration list spin */
-  pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_MIN_DURATION);
-  if (pSpin)
-  {
-    pSpin->Clear();
-    pSpin->AddLabel("-", -1);
-    for (int i = 1; i < 12*60/5; i++)
-    {
-      CStdString string;
-      string.Format(g_localizeStrings.Get(14044),i*5);
-      pSpin->AddLabel(string, i*5);
-    }
-    pSpin->SetValue(m_searchfilter->m_iMinimumDuration);
-  }
-
-  pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_MAX_DURATION);
-  if (pSpin)
-  {
-    pSpin->Clear();
-    pSpin->AddLabel("-", -1);
-    for (int i = 1; i < 12*60/5; i++)
-    {
-      CStdString string;
-      string.Format(g_localizeStrings.Get(14044),i*5);
-      pSpin->AddLabel(string, i*5);
-    }
-    pSpin->SetValue(m_searchfilter->m_iMaximumDuration);
-  }
+  if (pRadioButton) pRadioButton->SetSelected(m_searchFilter->m_bPreventRepeats);
 
   /* Set time fields */
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_START_TIME);
   if (pEdit)
   {
-    CDateTime time = m_searchfilter->m_startTime;
-    pEdit->SetLabel2(time.GetAsLocalizedTime("", false));
+    pEdit->SetLabel2(m_searchFilter->m_endDateTime.GetAsLocalizedTime("", false));
     pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TIME, 14066);
   }
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_STOP_TIME);
   if (pEdit)
   {
-    CDateTime time = m_searchfilter->m_endTime;
-    pEdit->SetLabel2(time.GetAsLocalizedTime("", false));
+    pEdit->SetLabel2(m_searchFilter->m_startDateTime.GetAsLocalizedTime("", false));
     pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TIME, 14066);
   }
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_START_DATE);
   if (pEdit)
   {
-    CDateTime date = m_searchfilter->m_startDate;
-    pEdit->SetLabel2(date.GetAsDBDate());
+    pEdit->SetLabel2(m_searchFilter->m_startDateTime.GetAsDBDate());
     pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_DATE, 14067);
   }
   pEdit = (CGUIEditControl *)GetControl(CONTROL_EDIT_STOP_DATE);
   if (pEdit)
   {
-    CDateTime date = m_searchfilter->m_endDate;
-    pEdit->SetLabel2(date.GetAsDBDate());
+    pEdit->SetLabel2(m_searchFilter->m_endDateTime.GetAsDBDate());
     pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_DATE, 14067);
   }
 
-  /* Set Channel list spin */
-  pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_CHANNELS);
-  if (pSpin)
-  {
-    CFileItemList channelslist_tv;
-    const CPVRChannelGroup *group = g_PVRChannelGroups->GetById(false, m_searchfilter->m_iChannelGroup);
-    if (group)
-      group->GetMembers(&channelslist_tv);
-
-    pSpin->Clear();
-    pSpin->AddLabel(g_localizeStrings.Get(19217), -1);
-    pSpin->AddLabel(g_localizeStrings.Get(19023), -2);
-    pSpin->AddLabel(g_localizeStrings.Get(19024), -3);
-
-    for (int i = 0; i < channelslist_tv.Size(); i++)
-    {
-      int chanNumber = channelslist_tv[i]->GetPVRChannelInfoTag()->ChannelNumber();
-      CStdString string;
-      string.Format("%i %s", chanNumber, channelslist_tv[i]->GetPVRChannelInfoTag()->ChannelName().c_str());
-      pSpin->AddLabel(string, chanNumber);
-    }
-    pSpin->SetValue(m_searchfilter->m_iChannelNumber);
-  }
-
-  /* Set Group list spin */
-  pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GROUPS);
-  if (pSpin)
-  {
-    CFileItemList grouplist;
-    g_PVRChannelGroups->GetTV()->GetGroupList(&grouplist);
-
-    pSpin->Clear();
-    pSpin->AddLabel(g_localizeStrings.Get(593), -1);
-
-    for (int i = 0; i < grouplist.Size(); i++)
-      pSpin->AddLabel(grouplist[i]->GetLabel(), atoi(grouplist[i]->m_strPath));
-
-    pSpin->SetValue(m_searchfilter->m_iChannelGroup);
-  }
-
-  /* Set Genre list spin */
-  pSpin = (CGUISpinControlEx *)GetControl(CONTROL_SPIN_GENRE);
-  if (pSpin)
-  {
-    pSpin->Clear();
-    pSpin->AddLabel(g_localizeStrings.Get(593), -1);
-    pSpin->AddLabel(g_localizeStrings.Get(19500), EPG_EVENT_CONTENTMASK_MOVIEDRAMA);
-    pSpin->AddLabel(g_localizeStrings.Get(19516), EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS);
-    pSpin->AddLabel(g_localizeStrings.Get(19532), EPG_EVENT_CONTENTMASK_SHOW);
-    pSpin->AddLabel(g_localizeStrings.Get(19548), EPG_EVENT_CONTENTMASK_SPORTS);
-    pSpin->AddLabel(g_localizeStrings.Get(19564), EPG_EVENT_CONTENTMASK_CHILDRENYOUTH);
-    pSpin->AddLabel(g_localizeStrings.Get(19580), EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE);
-    pSpin->AddLabel(g_localizeStrings.Get(19596), EPG_EVENT_CONTENTMASK_ARTSCULTURE);
-    pSpin->AddLabel(g_localizeStrings.Get(19612), EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS);
-    pSpin->AddLabel(g_localizeStrings.Get(19628), EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE);
-    pSpin->AddLabel(g_localizeStrings.Get(19644), EPG_EVENT_CONTENTMASK_LEISUREHOBBIES);
-    pSpin->AddLabel(g_localizeStrings.Get(19660), EPG_EVENT_CONTENTMASK_SPECIAL);
-    pSpin->AddLabel(g_localizeStrings.Get(19499), EPG_EVENT_CONTENTMASK_USERDEFINED);
-    pSpin->SetValue(m_searchfilter->m_iGenreType);
-  }
+  UpdateDurationSpin();
+  UpdateGroupsSpin();
+  UpdateChannelSpin();
+  UpdateGenreSpin();
 }

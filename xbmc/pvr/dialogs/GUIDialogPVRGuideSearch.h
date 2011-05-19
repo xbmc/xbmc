@@ -21,6 +21,7 @@
  */
 
 #include "guilib/GUIDialog.h"
+#include "XBDateTime.h"
 
 namespace PVR
 {
@@ -34,16 +35,21 @@ namespace PVR
     virtual bool OnMessage(CGUIMessage& message);
     virtual void OnWindowLoaded();
 
-    void SetFilterData(PVREpgSearchFilter *searchfilter) { m_searchfilter = searchfilter; }
+    void SetFilterData(PVREpgSearchFilter *searchFilter) { m_searchFilter = searchFilter; }
     bool IsConfirmed() const { return m_bConfirmed; }
     bool IsCanceled() const { return m_bCanceled; }
     void OnSearch();
 
   protected:
+    void UpdateChannelSpin(void);
+    void UpdateGroupsSpin(void);
+    void UpdateGenreSpin(void);
+    void UpdateDurationSpin(void);
+    void ReadDateTime(const CStdString &strDate, const CStdString &strTime, CDateTime &dateTime) const;
     void Update();
 
     bool m_bConfirmed;
     bool m_bCanceled;
-    PVREpgSearchFilter *m_searchfilter;
+    PVREpgSearchFilter *m_searchFilter;
   };
 }

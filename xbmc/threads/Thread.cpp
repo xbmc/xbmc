@@ -41,7 +41,7 @@ using namespace __cxxabiv1;
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__FreeBSD__)
 //
 // Use pthread's built-in support for TLS, it's more portable.
 //
@@ -64,7 +64,7 @@ static void MakeTlsKeys()
 
 CThread::CThread(const char* ThreadName)
 {
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__FreeBSD__)
   // Initialize thread local storage and local thread pointer.
   pthread_once(&keyOnce, MakeTlsKeys);
 #endif
@@ -87,7 +87,7 @@ CThread::CThread(const char* ThreadName)
 
 CThread::CThread(IRunnable* pRunnable, const char* ThreadName)
 {
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__FreeBSD__)
   // Initialize thread local storage and local thread pointer.
   pthread_once(&keyOnce, MakeTlsKeys);
 #endif
@@ -121,7 +121,7 @@ CThread::~CThread()
 }
 
 #ifdef _LINUX
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__FreeBSD__)
 // Use pthread-based TLS.
 #define LOCAL_THREAD ((CThread* )pthread_getspecific(tlsLocalThread))
 #else
@@ -165,7 +165,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   /* install win32 exception translator */
   win32_exception::install_handler();
 #else
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(__FreeBSD__)
   pLocalThread = pThread;
 #endif
   struct sigaction action;
@@ -177,7 +177,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 #endif
 
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__FreeBSD__)
   // Set the TLS.
   pthread_setspecific(tlsLocalThread, (void*)pThread);
 #endif

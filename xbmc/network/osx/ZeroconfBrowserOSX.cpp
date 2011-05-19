@@ -26,6 +26,9 @@
 #include <guilib/GUIMessage.h>
 #include <GUIUserMessages.h>
 
+#include <arpa/inet.h>
+#include <netinet/in.h>
+
 namespace
 {
   CStdString CFStringToCStdString(const CFStringRef cfstr)

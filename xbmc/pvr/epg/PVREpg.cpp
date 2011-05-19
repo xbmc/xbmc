@@ -31,6 +31,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "epg/EpgContainer.h"
 #include "epg/EpgDatabase.h"
+#include "PVREpgSearchFilter.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -146,4 +147,27 @@ bool PVR::CPVREpg::LoadFromClients(time_t start, time_t end)
   }
 
   return bReturn;
+}
+
+int PVR::CPVREpg::Get(CFileItemList *results, const PVREpgSearchFilter &filter) const
+{
+  int iInitialSize = results->Size();
+
+  if (!HasValidEntries())
+    return -1;
+
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
+  {
+    CPVREpgInfoTag *tag = (CPVREpgInfoTag *) at(iTagPtr);
+    if (filter.FilterEntry(*tag))
+    {
+      CFileItemPtr entry(new CFileItem(*at(iTagPtr)));
+      entry->SetLabel2(at(iTagPtr)->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
+      results->Add(entry);
+    }
+  }
+
+  return size() - iInitialSize;
 }

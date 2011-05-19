@@ -45,4 +45,6 @@
     <string id="30041">Finished</string>
     <string id="30042">Channel search - Canceled</string>
     <string id="30043">Channel search - Error</string>
+    <string id="30044">Lost connection to VDR Server</string>
+    <string id="30045">Connection to VDR Server restored</string>
 </strings>

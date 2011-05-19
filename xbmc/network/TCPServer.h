@@ -1,14 +1,6 @@
 #pragma once
-#ifdef _WIN32
-#include "WS2tcpip.h"
-#else
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#endif
-#include <string>
 #include <vector>
+#include <sys/socket.h>
 #include "interfaces/IAnnouncer.h"
 #include "interfaces/json-rpc/ITransportLayer.h"
 #include "threads/Thread.h"
@@ -33,6 +25,8 @@ namespace JSONRPC
   private:
     CTCPServer(int port, bool nonlocal);
     bool Initialize();
+    bool InitializeBlue();
+    bool InitializeTCP();
     void Deinitialize();
 
     class CTCPClient : public IClient
@@ -49,9 +43,9 @@ namespace JSONRPC
       void PushBuffer(CTCPServer *host, const char *buffer, int length);
       void Disconnect();
 
-      int m_socket;
-      struct sockaddr m_cliaddr;
-      socklen_t m_addrlen;
+      SOCKET           m_socket;
+      sockaddr_storage m_cliaddr;
+      socklen_t        m_addrlen;
       CCriticalSection m_critSection;
 
     private:
@@ -63,9 +57,10 @@ namespace JSONRPC
     };
 
     std::vector<CTCPClient> m_connections;
-    int m_ServerSocket;
+    std::vector<SOCKET> m_servers;
     int m_port;
     bool m_nonlocal;
+    void* m_sdpd;
 
     static CTCPServer *ServerInstance;
   };

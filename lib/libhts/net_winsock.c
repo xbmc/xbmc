@@ -30,11 +30,6 @@
 #include "msvc.h"
 #include "net.h"
 
-//#define EINPROGRESS WSAEINPROGRESS
-//#define ECONNRESET  WSAECONNRESET
-//#define ETIMEDOUT   WSAETIMEDOUT
-//#define EAGAIN      WSAEWOULDBLOCK
-
 #ifndef MSG_WAITALL
 #define MSG_WAITALL 0x8
 #endif
@@ -101,7 +96,7 @@ tcp_fill_htsbuf_from_fd(socket_t fd, htsbuf_queue_t *hq)
 
       c = recv(fd, hd->hd_data + hd->hd_data_len, c, MSG_WAITALL);
       if(c < 1)
-	return -1;
+        return -1;
 
       hd->hd_data_len += c;
       hq->hq_size += c;
@@ -141,7 +136,7 @@ htsp_tcp_read_line(socket_t fd, char *buf, const size_t bufsize, htsbuf_queue_t 
 
     if(len == -1) {
       if(tcp_fill_htsbuf_from_fd(fd, spill) < 0)
-	return -1;
+        return -1;
       continue;
     }
 

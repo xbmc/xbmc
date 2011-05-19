@@ -2,7 +2,8 @@
 	<defaultcontrol>-</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
-		<control type="visualisation">
+		<control type="visualisation" id="2">
+			<!-- FIX ME Music Visualization needs to have an id of 2 in this window to be able to lock or change preset -->
 			<description>visualisation</description>
 			<posx>0</posx>
 			<posy>0</posy>
@@ -93,6 +94,7 @@
 					<label>$LOCALIZE[31040]</label>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
+					<animation effect="slide" start="0,0" end="0,25" time="0" condition="IsEmpty(MusicPlayer.Artist) + IsEmpty(MusicPlayer.Album)">conditional</animation>
 				</control>
 				<control type="label" id="1">
 					<description>Artist label</description>

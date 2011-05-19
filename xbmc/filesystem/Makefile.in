@@ -81,7 +81,6 @@ SRCS=AddonsDirectory.cpp \
      UPnPDirectory.cpp \
      VideoDatabaseDirectory.cpp \
      VirtualDirectory.cpp \
-     VirtualPathDirectory.cpp \
      VTPDirectory.cpp \
      VTPFile.cpp \
      VTPSession.cpp \

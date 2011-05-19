@@ -20,6 +20,7 @@
  */
 
 #include "threads/SingleLock.h"
+#include "settings/AdvancedSettings.h"
 #include "PVREpgContainer.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -29,6 +30,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "settings/GUISettings.h"
 #include "utils/log.h"
+#include "FileItem.h"
 
 using namespace std;
 using namespace PVR;
@@ -106,54 +108,23 @@ const CDateTime PVR::CPVREpgContainer::GetLastEPGDate(bool bRadio /* = false */)
 
 int PVR::CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &filter)
 {
-  CEpgContainer::GetEPGSearch(results, filter);
+  /* get filtered results from all tables */
+  CSingleLock lock(m_critSection);
+  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+    ((CPVREpg *)at(iEpgPtr))->Get(results, filter);
+  lock.Leave();
+
+  /* remove duplicate entries */
+  if (filter.m_bPreventRepeats)
+    EpgSearchFilter::RemoveDuplicates(results);
 
   /* filter recordings */
-  if (filter.m_bIgnorePresentRecordings && g_PVRRecordings->size() > 0)
-  {
-    for (unsigned int iRecordingPtr = 0; iRecordingPtr < g_PVRRecordings->size(); iRecordingPtr++)
-    {
-      for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
-      {
-        const CPVREpgInfoTag *epgentry  = (CPVREpgInfoTag *) results->Get(iResultPtr)->GetEPGInfoTag();
-        CPVRRecording *recording = g_PVRRecordings->at(iRecordingPtr);
-        if (epgentry)
-        {
-          if (epgentry->Title()       != recording->m_strTitle ||
-              epgentry->PlotOutline() != recording->m_strPlotOutline ||
-              epgentry->Plot()        != recording->m_strPlot)
-            continue;
-
-          results->Remove(iResultPtr);
-          iResultPtr--;
-        }
-      }
-    }
-  }
+  if (filter.m_bIgnorePresentRecordings)
+    PVREpgSearchFilter::FilterRecordings(results);
 
   /* filter timers */
   if (filter.m_bIgnorePresentTimers)
-  {
-    CPVRTimers *timers = g_PVRTimers;
-    for (unsigned int iTimerPtr = 0; iTimerPtr < timers->size(); iTimerPtr++)
-    {
-      for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
-      {
-        const CPVREpgInfoTag *epgentry = (CPVREpgInfoTag *) results->Get(iResultPtr)->GetEPGInfoTag();
-        CPVRTimerInfoTag *timer        = timers->at(iTimerPtr);
-        if (epgentry)
-        {
-          if (epgentry->ChannelTag()->ChannelNumber() != timer->ChannelNumber() ||
-              epgentry->StartAsUTC()                   <  timer->StartAsUTC() ||
-              epgentry->EndAsUTC()                     >  timer->EndAsUTC())
-            continue;
-
-          results->Remove(iResultPtr);
-          iResultPtr--;
-        }
-      }
-    }
-  }
+    PVREpgSearchFilter::FilterRecordings(results);
 
   return results->Size();
 }
@@ -218,4 +189,14 @@ bool PVR::CPVREpgContainer::InterruptUpdate(void) const
       (g_guiSettings.GetBool("epg.preventupdateswhileplayingtv") &&
        g_PVRManager.IsStarted() &&
        g_PVRManager.IsPlaying()));
+}
+
+bool CPVREpgContainer::CheckPlayingEvents(void)
+{
+  if (CEpgContainer::CheckPlayingEvents())
+  {
+    m_iLastEpgActiveTagCheck -= m_iLastEpgActiveTagCheck % 60;
+    return true;
+  }
+  return false;
 }

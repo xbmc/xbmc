@@ -42,8 +42,15 @@ using namespace EPG;
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_EPG, CONTROL_BTNGUIDE, CONTROL_LIST_GUIDE_NOW_NEXT),
   Observer(),
-  m_iGuideView(g_guiSettings.GetInt("pvrmenu.defaultguideview"))
+  m_bEpgCacheUpdateRequired(true),
+  m_iGuideView(g_guiSettings.GetInt("pvrmenu.defaultguideview")),
+  m_localItems(new CFileItemList)
 {
+}
+
+CGUIWindowPVRGuide::~CGUIWindowPVRGuide()
+{
+  delete m_localItems;
 }
 
 void CGUIWindowPVRGuide::ResetObservers(void)
@@ -58,7 +65,14 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
   {
     /* update the current window if the EPG timeline view is visible */
     if (IsVisible() && m_iGuideView == GUIDE_VIEW_TIMELINE)
+    {
+      m_bEpgCacheUpdateRequired = true;
       UpdateData();
+    }
+  }
+  else if (msg.Equals("epg-now")) {
+      if (IsVisible() && m_iGuideView != GUIDE_VIEW_TIMELINE)
+        SetInvalid();
   }
 }
 
@@ -200,9 +214,18 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
 
-  g_PVREpg->GetEPGAll(m_parent->m_vecItems, bRadio);
+  if (m_bEpgCacheUpdateRequired)
+  {
+    m_localItems->ClearItems();
+    g_PVREpg->GetEPGAll(m_localItems, bRadio);
+    m_bEpgCacheUpdateRequired = false;
+  }
+  m_parent->m_vecItems->ClearItems();
+  m_parent->m_vecItems->Copy(*m_localItems);
+
   m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
+  m_bEpgCacheUpdateRequired = false;
 //m_viewControl.SetSelectedItem(m_iSelected_GUIDE);
 }
 

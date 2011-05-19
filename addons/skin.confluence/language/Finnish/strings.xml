@@ -9,8 +9,9 @@
   <string id="31003">Virta-asetukset</string>
   <string id="31004">Suoritetaan...</string>
   <string id="31005">Piilota tiedot</string>
-
+  <string id="31006">Näkymän asetukset</string>
   <string id="31007">Lisäosat</string>
+  <string id="31008">Kokoruutu</string>
 
   <string id="31020">Viimeksi lisätyt</string>
   <string id="31021">Video - Tiedostot</string>
@@ -40,6 +41,8 @@
   <string id="31047">Nykyinen esiasetus</string>
   <string id="31048">Visualisoinnin esiasetukset</string>
   <string id="31049">Päättymisaika</string>
+  <string id="31050">Järjestä: Nousevasti</string>
+  <string id="31051">Järjestä: Laskevasti</string>
 
 
   <!-- Playlist Editor labels -->
@@ -70,7 +73,7 @@
   <string id="31115">Mukautus</string>
   <string id="31116"></string>
   <string id="31117">Näytä viimeksi lisätyt videot</string>
-  <string id="31118">Päävalikon alivalikko</string>
+  <string id="31118">Päävalikon Ohjelmat-alivalikko</string>
   <string id="31119">Piilota taustan fanitaide</string>
   <string id="31120">PAINIKKEEN TEKSTI</string>
   <string id="31121"></string>
@@ -135,6 +138,7 @@
   <string id="31328">Viimeksi lisätty</string>
   <string id="31329">[B]Ajastus[/B] [COLOR=grey2] - Aikaa järjestelmän sammuttamiseen[/COLOR]</string>
   <string id="31330">Paina painiketta katsoaksesi[CR][CR]elokuvaesittelyn</string>
+  <string id="31331">Albumin tiedot</string>
 
   <!-- Video and Music OSD Labels  -->
   <string id="31351">Tauko</string>
@@ -166,12 +170,13 @@
 
   <!-- Extra Unified PVR labels -->
   <string id="31500">Nauhoitusajastukset</string>
-  <string id="31501">Ajastettu aika</string>
+  <string id="31501">Kellonaika</string>
   <string id="31502">TV-lähetys</string>
   <string id="31503">Lisää ryhmä</string>
-  <string id="31504">Uudelleennimeä ryhmä</string>
+  <string id="31504">Muuta ryhmän nimeä</string>
   <string id="31505">Poista ryhmä</string>
   <string id="31506">Saatavilla olevat[CR]ryhmät</string>
   <string id="31509">Kanavaryhmä</string>
   <string id="31510">Ajastus asetettu</string>
+  <string id="31511">Kanavan valinnat</string>
 </strings>

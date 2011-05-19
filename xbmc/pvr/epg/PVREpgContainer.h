@@ -109,5 +109,11 @@ namespace PVR
       * @return The end time.
       */
     const CDateTime GetLastEPGDate(bool bRadio = false);
+
+    /*!
+     * @brief Notify EPG table observers when the currently active tag changed.
+     * @return True if the check was done, false if it was not the right time to check
+     */
+    bool CheckPlayingEvents(void);
   };
 }

@@ -105,7 +105,7 @@ void DIB_InitOSKeymap()
   VK_keymap[VK_EQUALS] = XBMCK_EQUALS;
   VK_keymap[VK_LBRACKET] = XBMCK_LEFTBRACKET;
   VK_keymap[VK_BACKSLASH] = XBMCK_BACKSLASH;
-  VK_keymap[VK_OEM_102] = XBMCK_LESS;
+  VK_keymap[VK_OEM_102] = XBMCK_BACKSLASH;
   VK_keymap[VK_RBRACKET] = XBMCK_RIGHTBRACKET;
   VK_keymap[VK_GRAVE] = XBMCK_BACKQUOTE;
   VK_keymap[VK_BACKTICK] = XBMCK_BACKQUOTE;
@@ -226,7 +226,11 @@ void DIB_InitOSKeymap()
 
 static int XBMC_MapVirtualKey(int scancode, int vkey)
 {
-  int mvke = MapVirtualKeyEx(scancode & 0xFF, 1, hLayoutUS);
+// It isn't clear why the US keyboard layout was being used. This causes
+// problems with e.g. the \ key. I have provisionally switched the code
+// to use the Windows layout.
+// int mvke = MapVirtualKeyEx(scancode & 0xFF, 1, hLayoutUS);
+  int mvke = MapVirtualKeyEx(scancode & 0xFF, 1, NULL);
 
   switch(vkey)
   { /* These are always correct */

@@ -23,6 +23,7 @@
 #include "IFile.h"
 #include "ILiveTV.h"
 
+#include <sys/socket.h>
 
 class CVTPSession;
 

@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #include "settings/AdvancedSettings.h"
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "interfaces/AnnouncementManager.h"
@@ -9,10 +12,16 @@
 #include "utils/Variant.h"
 #include "threads/SingleLock.h"
 
-#ifdef _WIN32
-extern "C" int inet_pton(int af, const char *src, void *dst);
-#define close closesocket
-#define SHUT_RDWR SD_BOTH
+static const char     bt_service_name[] = "XBMC JSON-RPC";
+static const char     bt_service_desc[] = "Interface for XBMC remote control over bluetooth";
+static const char     bt_service_prov[] = "XBMC JSON-RPC Provider";
+static const uint32_t bt_service_guid[] = {0x65AE4CC0, 0x775D11E0, 0xBE16CE28, 0x4824019B};
+
+#ifdef HAVE_LIBBLUETOOTH
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/rfcomm.h>
+#include <bluetooth/sdp.h>
+#include <bluetooth/sdp_lib.h>
 #endif
 
 using namespace JSONRPC;
@@ -55,7 +64,7 @@ CTCPServer::CTCPServer(int port, bool nonlocal)
 {
   m_port = port;
   m_nonlocal = nonlocal;
-  m_ServerSocket = -1;
+  m_sdpd = NULL;
 }
 
 void CTCPServer::Process()
@@ -64,22 +73,26 @@ void CTCPServer::Process()
 
   while (!m_bStop)
   {
-    int             max_fd = 0;
+    SOCKET          max_fd = 0;
     fd_set          rfds;
     struct timeval  to     = {1, 0};
     FD_ZERO(&rfds);
 
-    FD_SET(m_ServerSocket, &rfds);
-    max_fd = m_ServerSocket;
+    for (std::vector<SOCKET>::iterator it = m_servers.begin(); it != m_servers.end(); it++)
+    {
+      FD_SET(*it, &rfds);
+      if ((intptr_t)*it > (intptr_t)max_fd)
+        max_fd = *it;
+    }
 
     for (unsigned int i = 0; i < m_connections.size(); i++)
     {
       FD_SET(m_connections[i].m_socket, &rfds);
-      if (m_connections[i].m_socket > max_fd)
+      if ((intptr_t)m_connections[i].m_socket > (intptr_t)max_fd)
         max_fd = m_connections[i].m_socket;
     }
 
-    int res = select(max_fd+1, &rfds, NULL, NULL, &to);
+    int res = select((intptr_t)max_fd+1, &rfds, NULL, NULL, &to);
     if (res < 0)
     {
       CLog::Log(LOGERROR, "JSONRPC Server: Select failed");
@@ -109,18 +122,21 @@ void CTCPServer::Process()
         }
       }
 
-      if (FD_ISSET(m_ServerSocket, &rfds))
+      for (std::vector<SOCKET>::iterator it = m_servers.begin(); it != m_servers.end(); it++)
       {
-        CLog::Log(LOGDEBUG, "JSONRPC Server: New connection detected");
-        CTCPClient newconnection;
-        newconnection.m_socket = accept(m_ServerSocket, &newconnection.m_cliaddr, &newconnection.m_addrlen);
-
-        if (newconnection.m_socket < 0)
-          CLog::Log(LOGERROR, "JSONRPC Server: Accept of new connection failed");
-        else
+        if (FD_ISSET(*it, &rfds))
         {
-          CLog::Log(LOGINFO, "JSONRPC Server: New connection added");
-          m_connections.push_back(newconnection);
+          CLog::Log(LOGDEBUG, "JSONRPC Server: New connection detected");
+          CTCPClient newconnection;
+          newconnection.m_socket = accept(*it, (sockaddr*)&newconnection.m_cliaddr, &newconnection.m_addrlen);
+
+          if (newconnection.m_socket == INVALID_SOCKET)
+            CLog::Log(LOGERROR, "JSONRPC Server: Accept of new connection failed");
+          else
+          {
+            CLog::Log(LOGINFO, "JSONRPC Server: New connection added");
+            m_connections.push_back(newconnection);
+          }
         }
       }
     }
@@ -164,6 +180,191 @@ bool CTCPServer::Initialize()
 {
   Deinitialize();
 
+  if(InitializeBlue() || InitializeTCP())
+  {
+    CAnnouncementManager::AddAnnouncer(this);
+    CLog::Log(LOGINFO, "JSONRPC Server: Successfully initialized");
+    return true;
+  }
+  return false;
+}
+
+bool CTCPServer::InitializeBlue()
+{
+  if(!m_nonlocal)
+    return false;
+
+#ifdef _WIN32
+
+  SOCKET fd = socket (AF_BTH, SOCK_STREAM, BTHPROTO_RFCOMM);
+  if(fd == INVALID_SOCKET)
+  {
+    CLog::Log(LOGINFO, "JSONRPC Server: Unable to get bluetooth socket");
+    return false;
+  }
+  SOCKADDR_BTH sa  = {};
+  sa.addressFamily = AF_BTH;
+  sa.port          = BT_PORT_ANY;
+
+  if(bind(fd, (SOCKADDR*)&sa, sizeof(sa)) < 0)
+  {
+    CLog::Log(LOGINFO, "JSONRPC Server: Unable to bind to bluetooth socket");
+    closesocket(fd);
+    return false;
+  }
+
+  ULONG optval = TRUE;
+  if(setsockopt(fd, SOL_RFCOMM, SO_BTH_AUTHENTICATE, (const char*)&optval, sizeof(optval)) == SOCKET_ERROR)
+  {
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to force authentication for bluetooth socket");
+    closesocket(fd);
+    return false;
+  }
+
+  int len = sizeof(sa);
+  if(getsockname(fd, (SOCKADDR*)&sa, &len) < 0)
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to get bluetooth port");
+
+  if (listen(fd, 10) < 0)
+  {
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to listen to bluetooth port");
+    closesocket(fd);
+    return false;
+  }
+
+  m_servers.push_back(fd);
+
+  CSADDR_INFO addrinfo;
+  addrinfo.iProtocol   = BTHPROTO_RFCOMM;
+  addrinfo.iSocketType = SOCK_STREAM;
+  addrinfo.LocalAddr.lpSockaddr       = (SOCKADDR*)&sa;
+  addrinfo.LocalAddr.iSockaddrLength  = sizeof(sa);
+  addrinfo.RemoteAddr.lpSockaddr      = (SOCKADDR*)&sa;
+  addrinfo.RemoteAddr.iSockaddrLength = sizeof(sa);
+
+  WSAQUERYSET service = {};
+  service.dwSize = sizeof(service);
+  service.lpszServiceInstanceName = (LPSTR)bt_service_name;
+  service.lpServiceClassId        = (LPGUID)&bt_service_guid;
+  service.lpszComment             = (LPSTR)bt_service_desc;
+  service.dwNameSpace             = NS_BTH;
+  service.lpNSProviderId          = NULL; /* RFCOMM? */
+  service.lpcsaBuffer             = &addrinfo;
+  service.dwNumberOfCsAddrs       = 1;
+
+  if(WSASetService(&service, RNRSERVICE_REGISTER, 0) == SOCKET_ERROR)
+    CLog::Log(LOGERROR, "JSONRPC Server: failed to register bluetooth service error %d",  WSAGetLastError());
+
+  return true;
+#endif
+
+#ifdef HAVE_LIBBLUETOOTH
+
+  SOCKET fd = socket (AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+  if(fd == INVALID_SOCKET)
+  {
+    CLog::Log(LOGINFO, "JSONRPC Server: Unable to get bluetooth socket");
+    return false;
+  }
+  struct sockaddr_rc sa  = {0};
+  sa.rc_family  = AF_BLUETOOTH;
+  sa.rc_bdaddr  = *BDADDR_ANY;
+  sa.rc_channel = 0;
+
+  if(bind(fd, (struct sockaddr*)&sa, sizeof(sa)) < 0)
+  {
+    CLog::Log(LOGINFO, "JSONRPC Server: Unable to bind to bluetooth socket");
+    closesocket(fd);
+    return false;
+  }
+
+  socklen_t len = sizeof(sa);
+  if(getsockname(fd, (struct sockaddr*)&sa, &len) < 0)
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to get bluetooth port");
+
+  if (listen(fd, 10) < 0)
+  {
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to listen to bluetooth port %d", sa.rc_channel);
+    closesocket(fd);
+    return false;
+  }
+
+  m_servers.push_back(fd);
+
+  uint8_t rfcomm_channel = sa.rc_channel;
+
+  uuid_t root_uuid, l2cap_uuid, rfcomm_uuid, svc_uuid;
+  sdp_list_t *l2cap_list = 0,
+             *rfcomm_list = 0,
+             *root_list = 0,
+             *proto_list = 0,
+             *access_proto_list = 0,
+             *service_class = 0;
+
+  sdp_data_t *channel = 0;
+
+  sdp_record_t *record = sdp_record_alloc();
+
+  // set the general service ID
+  sdp_uuid128_create( &svc_uuid, &bt_service_guid );
+  sdp_set_service_id( record, svc_uuid );
+
+  // make the service record publicly browsable
+  sdp_uuid16_create(&root_uuid, PUBLIC_BROWSE_GROUP);
+  root_list = sdp_list_append(0, &root_uuid);
+  sdp_set_browse_groups( record, root_list );
+
+  // set l2cap information
+  sdp_uuid16_create(&l2cap_uuid, L2CAP_UUID);
+  l2cap_list = sdp_list_append( 0, &l2cap_uuid );
+  proto_list = sdp_list_append( 0, l2cap_list );
+
+  // set rfcomm information
+  sdp_uuid16_create(&rfcomm_uuid, RFCOMM_UUID);
+  channel = sdp_data_alloc(SDP_UINT8, &rfcomm_channel);
+  rfcomm_list = sdp_list_append( 0, &rfcomm_uuid );
+  sdp_list_append( rfcomm_list, channel );
+  sdp_list_append( proto_list, rfcomm_list );
+
+  // attach protocol information to service record
+  access_proto_list = sdp_list_append( 0, proto_list );
+  sdp_set_access_protos( record, access_proto_list );
+
+  // set the name, provider, and description
+  sdp_set_info_attr(record, bt_service_name, bt_service_prov, bt_service_desc);
+
+  // set the Service class ID
+  service_class = sdp_list_append(0, &svc_uuid);
+  sdp_set_service_classes( record, service_class);
+
+  // cleanup
+  sdp_data_free( channel );
+  sdp_list_free( l2cap_list, 0 );
+  sdp_list_free( rfcomm_list, 0 );
+  sdp_list_free( root_list, 0 );
+  sdp_list_free( access_proto_list, 0 );
+  sdp_list_free( service_class, 0 );
+
+  // connect to the local SDP server, register the service record
+  sdp_session_t *session = sdp_connect( BDADDR_ANY, BDADDR_LOCAL, SDP_RETRY_IF_BUSY );
+  if(session == NULL)
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to connect to sdpd");
+  else
+  {
+    if(sdp_record_register(session, record, 0) < 0)
+      CLog::Log(LOGERROR, "JSONRPC Server: Failed to register record with error %d", errno);
+    sdp_record_free(record);
+  }
+  m_sdpd = session;
+
+  return true;
+#endif
+  return false;
+}
+
+bool CTCPServer::InitializeTCP()
+{
+
   struct sockaddr_in myaddr;
   memset(&myaddr, 0, sizeof(myaddr));
 
@@ -175,43 +376,28 @@ bool CTCPServer::Initialize()
   else
     inet_pton(AF_INET, "127.0.0.1", &myaddr.sin_addr.s_addr);
 
-  m_ServerSocket = socket(PF_INET, SOCK_STREAM, 0);
+  SOCKET fd = socket(PF_INET, SOCK_STREAM, 0);
 
-  if (m_ServerSocket < 0)
+  if (fd == INVALID_SOCKET)
   {
-#ifdef _WIN32
-    int ierr = WSAGetLastError();
-    CLog::Log(LOGERROR, "JSONRPC Server: Failed to create serversocket %d", ierr);
-    // hack for broken third party libs
-    if(ierr == WSANOTINITIALISED)
-    {
-      WSADATA wd;
-      if (WSAStartup(MAKEWORD(2,2), &wd) != 0)
-        CLog::Log(LOGERROR, "JSONRPC Server: WSAStartup failed");
-    }
-#else
     CLog::Log(LOGERROR, "JSONRPC Server: Failed to create serversocket");
-#endif
     return false;
   }
 
-  if (bind(m_ServerSocket, (struct sockaddr*)&myaddr, sizeof myaddr) < 0)
+  if (bind(fd, (struct sockaddr*)&myaddr, sizeof myaddr) < 0)
   {
     CLog::Log(LOGERROR, "JSONRPC Server: Failed to bind serversocket");
-    close(m_ServerSocket);
+    closesocket(fd);
     return false;
   }
 
-  if (listen(m_ServerSocket, 10) < 0)
+  if (listen(fd, 10) < 0)
   {
     CLog::Log(LOGERROR, "JSONRPC Server: Failed to set listen");
-    close(m_ServerSocket);
+    closesocket(fd);
     return false;
   }
-
-  CAnnouncementManager::AddAnnouncer(this);
-
-  CLog::Log(LOGINFO, "JSONRPC Server: Successfully initialized");
+  m_servers.push_back(fd);
   return true;
 }
 
@@ -222,12 +408,16 @@ void CTCPServer::Deinitialize()
 
   m_connections.clear();
 
-  if (m_ServerSocket > 0)
-  {
-    shutdown(m_ServerSocket, SHUT_RDWR);
-    close(m_ServerSocket);
-    m_ServerSocket = -1;
-  }
+  for (unsigned int i = 0; i < m_servers.size(); i++)
+    closesocket(m_servers[i]);
+
+  m_servers.clear();
+
+#ifdef HAVE_LIBBLUETOOTH
+  if(m_sdpd)
+    sdp_close( (sdp_session_t*)m_sdpd );
+  m_sdpd = NULL;
+#endif
 
   CAnnouncementManager::RemoveAnnouncer(this);
 }
@@ -235,13 +425,13 @@ void CTCPServer::Deinitialize()
 CTCPServer::CTCPClient::CTCPClient()
 {
   m_announcementflags = ANNOUNCE_ALL;
-  m_socket = -1;
+  m_socket = INVALID_SOCKET;
   m_beginBrackets = 0;
   m_endBrackets = 0;
   m_beginChar = 0;
   m_endChar = 0;
 
-  m_addrlen = sizeof(struct sockaddr);
+  m_addrlen = sizeof(m_cliaddr);
 }
 
 CTCPServer::CTCPClient::CTCPClient(const CTCPClient& client)
@@ -313,8 +503,8 @@ void CTCPServer::CTCPClient::Disconnect()
   {
     CSingleLock lock (m_critSection);
     shutdown(m_socket, SHUT_RDWR);
-    close(m_socket);
-    m_socket = -1;
+    closesocket(m_socket);
+    m_socket = INVALID_SOCKET;
   }
 }
 

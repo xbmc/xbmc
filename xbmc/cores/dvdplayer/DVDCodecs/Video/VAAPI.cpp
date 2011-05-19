@@ -115,8 +115,8 @@ CDecoder::CDecoder()
 {
   m_refs            = 0;
   m_surfaces_count  = 0;
-  m_config          = NULL;
-  m_context         = NULL;
+  m_config          = 0;
+  m_context         = 0;
   m_hwaccel         = (vaapi_context*)calloc(1, sizeof(vaapi_context));
 }
 
@@ -212,11 +212,11 @@ void CDecoder::Close()
 { 
   if(m_context)
     WARN(vaDestroyContext(m_display->get(), m_context))
-  m_context = NULL;
+  m_context = 0;
 
   if(m_config)
     WARN(vaDestroyConfig(m_display->get(), m_config))
-  m_config = NULL;
+  m_config = 0;
   
   m_surfaces_free.clear();
   m_surfaces_used.clear();
@@ -384,7 +384,7 @@ bool CDecoder::EnsureSurfaces(AVCodecContext *avctx, unsigned n_surfaces_count)
 
   if(m_context)
     WARN(vaDestroyContext(m_display->get(), m_context))
-  m_context = NULL;
+  m_context = 0;
 
   CHECK(vaCreateContext(m_display->get()
                       , m_config

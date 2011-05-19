@@ -766,8 +766,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   hitRect.SetRect(posX, posY, posX + width, posY + height);
   GetHitRect(pControlNode, hitRect);
 
-  if (!GetNavigation(pControlNode, "onup", up, upActions)) up = id - 1;
-  if (!GetNavigation(pControlNode, "ondown", down, downActions)) down = id + 1;
+  if (!GetNavigation(pControlNode, "onup", up, upActions)) up = id;
+  if (!GetNavigation(pControlNode, "ondown", down, downActions)) down = id;
   if (!GetNavigation(pControlNode, "onleft", left, leftActions)) left = id;
   if (!GetNavigation(pControlNode, "onright", right, rightActions)) right = id;
   if (!GetNavigation(pControlNode, "onnext", next, nextActions)) next = id;

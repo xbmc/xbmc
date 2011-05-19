@@ -225,7 +225,7 @@ bool CVideoReferenceClock::SetupGLX()
 
   m_vInfo = NULL;
   m_Context = NULL;
-  m_Window = NULL;
+  m_Window = 0;
 
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up GLX");
 
@@ -443,7 +443,7 @@ void CVideoReferenceClock::CleanupGLX()
   if (m_Window)
   {
     XDestroyWindow(m_Dpy, m_Window);
-    m_Window = NULL;
+    m_Window = 0;
   }
 
   //ati saves the Display* in their libGL, if we close it here, we crash

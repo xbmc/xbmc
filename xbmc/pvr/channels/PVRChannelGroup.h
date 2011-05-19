@@ -146,6 +146,8 @@ namespace PVR
     virtual bool operator ==(const CPVRChannelGroup &right) const;
     virtual bool operator !=(const CPVRChannelGroup &right) const;
 
+    int Size(void) const { return size(); }
+
     /*!
      * @brief Refresh the channel list from the clients.
      */

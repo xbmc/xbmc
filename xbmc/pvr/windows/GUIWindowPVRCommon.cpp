@@ -36,6 +36,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/windows/GUIWindowPVR.h"
+#include "pvr/windows/GUIWindowPVRSearch.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
@@ -187,6 +188,7 @@ bool CGUIWindowPVRCommon::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnContextButtonSortByChannel(pItem.get(), button) ||
       OnContextButtonSortByName(pItem.get(), button) ||
       OnContextButtonSortByDate(pItem.get(), button) ||
+      OnContextButtonFind(pItem.get(), button) ||
       OnContextButtonMenuHooks(pItem.get(), button));
 }
 
@@ -744,4 +746,32 @@ void CGUIWindowPVRCommon::ShowRecordingInfo(CFileItem *item)
 
   pDlgInfo->SetRecording(item);
   pDlgInfo->DoModal();
+}
+
+bool CGUIWindowPVRCommon::OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON button)
+{
+  bool bReturn = false;
+
+  if (button == CONTEXT_BUTTON_FIND)
+  {
+    bReturn = true;
+    if (m_parent->m_windowSearch)
+    {
+      m_parent->m_windowSearch->m_searchfilter.Reset();
+      if (item->IsEPG())
+        m_parent->m_windowSearch->m_searchfilter.m_strSearchTerm = "\"" + item->GetEPGInfoTag()->Title() + "\"";
+      else if (item->IsPVRChannel() && item->GetPVRChannelInfoTag()->GetEPGNow())
+        m_parent->m_windowSearch->m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRChannelInfoTag()->GetEPGNow()->Title() + "\"";
+      else if (item->IsPVRRecording())
+        m_parent->m_windowSearch->m_searchfilter.m_strSearchTerm = "\"" + item->GetPVRRecordingInfoTag()->m_strTitle + "\"";
+
+      m_parent->m_windowSearch->m_bSearchConfirmed = true;
+      m_parent->SetLabel(m_iControlButton, 0);
+      m_parent->SetActiveView(m_parent->m_windowSearch);
+      m_parent->m_windowSearch->UpdateData();
+      m_parent->SetLabel(m_iControlList, 0);
+    }
+  }
+
+  return bReturn;
 }

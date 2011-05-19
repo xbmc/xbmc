@@ -301,17 +301,20 @@ const CEpgInfoTag *CEpg::InfoTagNext(void) const
   return NULL;
 }
 
-void CEpg::CheckPlayingEvent(void)
+bool CEpg::CheckPlayingEvent(void)
 {
+  bool bChanged(false);
   CSingleLock lock(m_critSection);
   const CEpgInfoTag *currentEvent = m_nowActive;
   const CEpgInfoTag *updatedEvent = InfoTagNow();
 
-  if (!currentEvent || !updatedEvent || *currentEvent != *updatedEvent)
+  if ((!currentEvent && updatedEvent) || (currentEvent && !updatedEvent) || (currentEvent && *currentEvent != *updatedEvent))
   {
     SetChanged();
-    NotifyObservers("epg");
+    NotifyObservers("epg-current-event");
+    bChanged = true;
   }
+  return bChanged;
 }
 
 const CEpgInfoTag *CEpg::GetTag(int uniqueID, const CDateTime &StartTime) const

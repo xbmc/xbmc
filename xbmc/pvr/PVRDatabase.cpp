@@ -154,7 +154,8 @@ bool CPVRDatabase::CreateTables()
           "iCropTop             integer, "
           "iCropBottom          integer, "
           "fSharpness           float, "
-          "fNoiseReduction      float"
+          "fNoiseReduction      float, "
+          "fCustomVerticalShift float"
         ");"
     );
 
@@ -191,6 +192,9 @@ bool CPVRDatabase::UpdateOldVersion(int iVersion)
 
       if (iVersion < 13)
         m_pDS->exec("ALTER TABLE channels ADD idEpg integer;");
+
+      if (iVersion < 14)
+        m_pDS->exec("ALTER TABLE channelsettings ADD fCustomVerticalShift float DEFAULT 0;");
     }
   }
   catch (...)
@@ -405,6 +409,7 @@ bool CPVRDatabase::GetChannelSettings(const CPVRChannel &channel, CVideoSettings
         settings.m_SubtitleOn           = m_pDS->fv("bSubtitles").get_asBool();
         settings.m_SubtitleStream       = m_pDS->fv("iSubtitleStream").get_asInt();
         settings.m_ViewMode             = m_pDS->fv("iViewMode").get_asInt();
+        settings.m_CustomVerticalShift  = m_pDS->fv("fCustomVerticalShift").get_asFloat();
         settings.m_Crop                 = m_pDS->fv("bCrop").get_asBool();
         settings.m_CropLeft             = m_pDS->fv("iCropLeft").get_asInt();
         settings.m_CropRight            = m_pDS->fv("iCropRight").get_asInt();
@@ -444,13 +449,13 @@ bool CPVRDatabase::PersistChannelSettings(const CPVRChannel &channel, const CVid
       "REPLACE INTO channelsettings "
         "(idChannel, iInterlaceMethod, iViewMode, fCustomZoomAmount, fPixelRatio, iAudioStream, iSubtitleStream, fSubtitleDelay, "
          "bSubtitles, fBrightness, fContrast, fGamma, fVolumeAmplification, fAudioDelay, bOutputToAllSpeakers, bCrop, iCropLeft, "
-         "iCropRight, iCropTop, iCropBottom, fSharpness, fNoiseReduction) VALUES "
-         "(%i, %i, %i, %f, %f, %i, %i, %f, %i, %f, %f, %f, %f, %f, %i, %i, %i, %i, %i, %i, %f, %f);",
+         "iCropRight, iCropTop, iCropBottom, fSharpness, fNoiseReduction, fCustomVerticalShift) VALUES "
+         "(%i, %i, %i, %f, %f, %i, %i, %f, %i, %f, %f, %f, %f, %f, %i, %i, %i, %i, %i, %i, %f, %f, %f);",
        channel.ChannelID(), settings.m_InterlaceMethod, settings.m_ViewMode, settings.m_CustomZoomAmount, settings.m_CustomPixelRatio,
        settings.m_AudioStream, settings.m_SubtitleStream, settings.m_SubtitleDelay, settings.m_SubtitleOn,
        settings.m_Brightness, settings.m_Contrast, settings.m_Gamma, settings.m_VolumeAmplification, settings.m_AudioDelay,
        settings.m_OutputToAllSpeakers, settings.m_Crop, settings.m_CropLeft, settings.m_CropRight, settings.m_CropTop,
-       settings.m_CropBottom, settings.m_Sharpness, settings.m_NoiseReduction);
+       settings.m_CropBottom, settings.m_Sharpness, settings.m_NoiseReduction, settings.m_CustomVerticalShift);
 
   return ExecuteQuery(strQuery);
 }

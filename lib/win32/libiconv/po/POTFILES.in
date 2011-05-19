@@ -1,4 +1,0 @@
-# List of files which contain translatable strings.
-# Copyright (C) 2002 Free Software Foundation, Inc.
-
-src/iconv.c

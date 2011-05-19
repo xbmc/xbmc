@@ -167,7 +167,7 @@ void CEpgContainer::Process(void)
       RemoveOldEntries();
 
     /* check for updated active tag */
-    if (!m_bStop && iNow > m_iLastEpgActiveTagCheck + g_advancedSettings.m_iEpgActiveTagCheckInterval)
+    if (!m_bStop)
       CheckPlayingEvents();
 
     /* call the update hook */
@@ -418,6 +418,10 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
       m_progressDialog->SetTitle(at(iEpgPtr)->Name());
       m_progressDialog->UpdateState();
     }
+
+    /* We don't want to miss active epg tags updates if this process it taking long */
+    CheckPlayingEvents();
+
     lock.Leave();
 
     if (m_bDatabaseLoaded)
@@ -498,6 +502,7 @@ const CDateTime CEpgContainer::GetLastEPGDate(void) const
 
 int CEpgContainer::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &filter)
 {
+  /* get filtered results from all tables */
   CSingleLock lock(m_critSection);
   for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
     at(iEpgPtr)->Get(results, filter);
@@ -505,37 +510,32 @@ int CEpgContainer::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &f
 
   /* remove duplicate entries */
   if (filter.m_bPreventRepeats)
-  {
-    unsigned int iSize = results->Size();
-    for (unsigned int iResultPtr = 0; iResultPtr < iSize; iResultPtr++)
-    {
-      const CEpgInfoTag *epgentry_1 = results->Get(iResultPtr)->GetEPGInfoTag();
-      for (unsigned int iTagPtr = 0; iTagPtr < iSize; iTagPtr++)
-      {
-        const CEpgInfoTag *epgentry_2 = results->Get(iTagPtr)->GetEPGInfoTag();
-        if (iResultPtr == iTagPtr)
-          continue;
-
-        if (epgentry_1->Title()       != epgentry_2->Title() ||
-            epgentry_1->Plot()        != epgentry_2->Plot() ||
-            epgentry_1->PlotOutline() != epgentry_2->PlotOutline())
-          continue;
-
-        results->Remove(iTagPtr);
-        iSize = results->Size();
-        iResultPtr--;
-        iTagPtr--;
-      }
-    }
-  }
+    EpgSearchFilter::RemoveDuplicates(results);
 
   return results->Size();
 }
 
-void CEpgContainer::CheckPlayingEvents(void)
+bool CEpgContainer::CheckPlayingEvents(void)
 {
-  CSingleLock lock(m_critSection);
-  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
-    at(iEpgPtr)->CheckPlayingEvent();
-  CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgActiveTagCheck);
+  time_t iNow;
+
+  CDateTime::GetCurrentDateTime().GetAsTime(iNow);
+  if (iNow >= m_iLastEpgActiveTagCheck + g_advancedSettings.m_iEpgActiveTagCheckInterval)
+  {
+  	bool bFoundChanges(false);
+  	CSingleLock lock(m_critSection);
+
+    for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
+      if (at(iEpgPtr)->CheckPlayingEvent())
+        bFoundChanges = true;
+    CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgActiveTagCheck);
+
+    if (bFoundChanges)
+    {
+      SetChanged();
+      NotifyObservers("epg-now", true);
+    }
+    return true;
+  }
+  return false;
 }

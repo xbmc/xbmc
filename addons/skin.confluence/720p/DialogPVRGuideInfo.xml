@@ -15,13 +15,43 @@
 				<posy>0</posy>
 				<width>730</width>
 				<height>660</height>
-				<colordiffuse>EEFFFFFF</colordiffuse>
+				<texture border="40">DialogBack2.png</texture>
+				<visible>Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)</visible>
+			</control>
+			<control type="image">
+				<description>background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>730</width>
+				<height>660</height>
 				<texture border="40">DialogBack.png</texture>
+				<visible>![Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)]</visible>
+			</control>
+			<control type="image">
+				<description>Dialog Header image</description>
+				<posx>40</posx>
+				<posy>16</posy>
+				<width>650</width>
+				<height>40</height>
+				<texture>dialogheader.png</texture>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>40</posx>
+				<posy>20</posy>
+				<width>650</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$LOCALIZE[19047]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>selected</textcolor>
+				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>650</posx>
-				<posy>9</posy>
+				<posx>640</posx>
+				<posy>15</posy>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -29,32 +59,11 @@
 				<onclick>PreviousMenu</onclick>
 				<texturefocus>DialogCloseButton-focus.png</texturefocus>
 				<texturenofocus>DialogCloseButton.png</texturenofocus>
-				<onleft>2</onleft>
-				<onright>2</onright>
-				<onup>2</onup>
-				<ondown>2</ondown>
+				<onleft>10</onleft>
+				<onright>10</onright>
+				<onup>10</onup>
+				<ondown>10</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
-			</control>
-			<control type="image">
-				<posx>80</posx>
-				<posy>10</posy>
-				<width>570</width>
-				<height>90</height>
-				<aspectratio>stretch</aspectratio>
-				<texture>GlassTitleBar.png</texture>
-			</control>
-			<control type="label">
-				<description>header label</description>
-				<posx>40</posx>
-				<posy>18</posy>
-				<width>650</width>
-				<height>30</height>
-				<font>font13_title</font>
-				<label>$LOCALIZE[19047]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="label">
 				<description>Title label</description>
@@ -62,11 +71,11 @@
 				<posy>70</posy>
 				<width>650</width>
 				<height>30</height>
-				<font>font13caps</font>
+				<font>font13_title</font>
 				<label>$INFO[ListItem.Title]</label>
 				<align>center</align>
 				<aligny>center</aligny>
-				<textcolor>white</textcolor>
+				<textcolor>blue</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="group">
@@ -81,7 +90,7 @@
 						<height>25</height>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13_title</font>
+						<font>font13</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[552]:</label>
 					</control>
@@ -105,7 +114,7 @@
 						<height>25</height>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13_title</font>
+						<font>font13</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[142]</label>
 					</control>
@@ -129,7 +138,7 @@
 						<height>25</height>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13_title</font>
+						<font>font13</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[19148]:</label>
 					</control>
@@ -153,7 +162,7 @@
 						<height>25</height>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13_title</font>
+						<font>font13</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[180]:</label>
 					</control>
@@ -175,7 +184,7 @@
 						<height>25</height>
 						<align>right</align>
 						<aligny>center</aligny>
-						<font>font13_title</font>
+						<font>font13</font>
 						<textcolor>blue</textcolor>
 						<label>$LOCALIZE[135]:</label>
 					</control>
@@ -196,7 +205,7 @@
 						<width>650</width>
 						<label>$INFO[ListItem.PlotOutline]</label>
 						<align>center</align>
-						<font>font13caps</font>
+						<font>font13</font>
 						<textcolor>blue</textcolor>
 						<scroll>true</scroll>
 						<visible>!IsEmpty(ListItem.PlotOutline)</visible>
@@ -207,8 +216,8 @@
 					<posy>370</posy>
 					<width>400</width>
 					<height>30</height>
-					<font>font13_title</font>
-					<textcolor>grey2</textcolor>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
 					<align>right</align>
@@ -242,7 +251,7 @@
 				<control type="grouplist" id="9000">
 					<posx>40</posx>
 					<posy>590</posy>
-					<width>650</width>
+					<width>640</width>
 					<height>40</height>
 					<itemgap>5</itemgap>
 					<align>center</align>

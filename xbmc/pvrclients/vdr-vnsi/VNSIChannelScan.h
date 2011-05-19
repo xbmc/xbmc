@@ -20,7 +20,7 @@
  *
  */
 
-#include "VNSISession.h"
+#include "VNSIData.h"
 #include "thread.h"
 #include "client.h"
 #include <string>
@@ -37,13 +37,14 @@ typedef enum scantype
 } scantype_t;
 
 
-class cVNSIChannelScan : public cThread
+class cVNSIChannelScan : public cVNSIData
 {
 public:
+
   cVNSIChannelScan();
   ~cVNSIChannelScan();
 
-  bool Open();
+  bool Open(const std::string& hostname, int port, const char* name = "XBMC channel scanner");
 
   bool OnClick(int controlId);
   bool OnFocus(int controlId);
@@ -56,9 +57,11 @@ public:
   static bool OnActionCB(GUIHANDLE cbhdl, int actionId);
 
 protected:
-  virtual void Action(void);
+
+  bool OnResponsePacket(cResponsePacket* resp);
 
 private:
+
   bool ReadCountries();
   bool ReadSatellites();
   void SetControlsVisible(scantype_t type);
@@ -68,18 +71,6 @@ private:
   void SetProgress(int procent);
   void SetSignal(int procent, bool locked);
 
-  cResponsePacket* ReadResult(cRequestPacket* vrp);
-  bool readData(uint8_t* buffer, int totalBytes);
-
-  struct SMessage
-  {
-    cCondWait       *event;
-    cResponsePacket *pkt;
-  };
-  typedef std::map<int, SMessage> SMessages;
-  SMessages       m_queue;
-  cMutex          m_Mutex;
-  cVNSISession    m_session;
   std::string     m_header;
   std::string     m_Signal;
   bool            m_running;
@@ -102,5 +93,4 @@ private:
   CAddonGUIRadioButton *m_radioButtonHD;
   CAddonGUIProgressControl *m_progressDone;
   CAddonGUIProgressControl *m_progressSignal;
-
 };

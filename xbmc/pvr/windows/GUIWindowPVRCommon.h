@@ -124,6 +124,7 @@ namespace PVR
     virtual bool OnContextButtonSortByDate(CFileItem *item, CONTEXT_BUTTON button);
     virtual bool OnContextButtonSortByName(CFileItem *item, CONTEXT_BUTTON button);
     virtual bool OnContextButtonSortByChannel(CFileItem *item, CONTEXT_BUTTON button);
+    virtual bool OnContextButtonFind(CFileItem *item, CONTEXT_BUTTON button);
 
     CGUIWindowPVR *  m_parent;
     PVRWindow        m_window;

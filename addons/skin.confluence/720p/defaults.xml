@@ -23,8 +23,8 @@
 		<posy>200</posy>
 		<width>300</width>
 		<height>42</height>
-		<texturefocus>button-focus.png</texturefocus>
-		<texturenofocus>button-nofocus.png</texturenofocus>
+		<texturefocus border="5">button-focus.png</texturefocus>
+		<texturenofocus border="5">button-nofocus.png</texturenofocus>
 		<font>font13</font>
 		<textcolor>white</textcolor>
 		<disabledcolor>grey3</disabledcolor>
@@ -115,8 +115,8 @@
 		<radioheight>24</radioheight>
 		<textureradiofocus>radiobutton-focus.png</textureradiofocus>
 		<textureradionofocus>radiobutton-nofocus.png</textureradionofocus>
-		<texturefocus>button-focus.png</texturefocus>
-		<texturenofocus>button-nofocus.png</texturenofocus>
+		<texturefocus border="5">button-focus.png</texturefocus>
+		<texturenofocus border="5">button-nofocus.png</texturenofocus>
 		<label>215</label>
 		<font>font13</font>
 		<textcolor>white</textcolor>
@@ -166,22 +166,22 @@
 	<default type="mover">
 		<posx>60</posx>
 		<posy>192</posy>
-		<texturefocus>button-focus.png</texturefocus>
-		<texturenofocus>button-nofocus.png</texturenofocus>
+		<texturefocus border="5">button-focus.png</texturefocus>
+		<texturenofocus border="5">button-nofocus.png</texturenofocus>
 	</default>
 	<default type="resize">
 		<posx>60</posx>
 		<posy>192</posy>
-		<texturefocus>button-focus.png</texturefocus>
-		<texturenofocus>button-nofocus.png</texturenofocus>
+		<texturefocus border="5">button-focus.png</texturefocus>
+		<texturenofocus border="5">button-nofocus.png</texturenofocus>
 	</default>
 	<default type="edit">
 		<posx>300</posx>
 		<posy>200</posy>
 		<width>300</width>
 		<height>42</height>
-		<texturefocus>button-focus.png</texturefocus>
-		<texturenofocus>button-nofocus.png</texturenofocus>
+		<texturefocus border="5">button-focus.png</texturefocus>
+		<texturenofocus border="5">button-nofocus.png</texturenofocus>
 		<font>font13</font>
 		<textcolor>white</textcolor>
 		<disabledcolor>grey3</disabledcolor>

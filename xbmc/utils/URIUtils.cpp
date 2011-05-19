@@ -26,10 +26,11 @@
 #include "filesystem/MythDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
-#include "filesystem/VirtualPathDirectory.h"
 #include "network/DNSNameCache.h"
 #include "settings/Settings.h"
 #include "URL.h"
+
+#include <arpa/inet.h>
 
 using namespace std;
 using namespace XFILE;
@@ -326,18 +327,6 @@ bool URIUtils::IsRemote(const CStdString& strFile)
   if(IsStack(strFile))
     return IsRemote(CStackDirectory::GetFirstStackedFile(strFile));
 
-  if (IsVirtualPath(strFile))
-  { // virtual paths need to be checked separately
-    CVirtualPathDirectory dir;
-    vector<CStdString> paths;
-    if (dir.GetPathes(strFile, paths))
-    {
-      for (unsigned int i = 0; i < paths.size(); i++)
-        if (IsRemote(paths[i])) return true;
-    }
-    return false;
-  }
-
   if(IsMultiPath(strFile))
   { // virtual paths need to be checked separately
     vector<CStdString> paths;
@@ -488,11 +477,6 @@ bool URIUtils::IsDVD(const CStdString& strFile)
 #endif
 
   return false;
-}
-
-bool URIUtils::IsVirtualPath(const CStdString& strFile)
-{
-  return strFile.Left(12).Equals("virtualpath:");
 }
 
 bool URIUtils::IsStack(const CStdString& strFile)

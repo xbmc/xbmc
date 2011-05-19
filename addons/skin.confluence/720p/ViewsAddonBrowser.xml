@@ -270,6 +270,33 @@
 						<fadetime>100</fadetime>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
 					</control>
+					<control type="image">
+						<posx>1</posx>
+						<posy>0</posy>
+						<width>191</width>
+						<height>160</height>
+						<bordertexture border="5">button-nofocus.png</bordertexture>
+						<bordersize>5</bordersize>
+						<fadetime>100</fadetime>
+						<colordiffuse>ff333333</colordiffuse>
+						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
+					</control>
+					<control type="label">
+						<posx>96</posx>
+						<posy>70</posy>
+						<width>190</width>
+						<height>25</height>
+						<font>font13_title</font>
+						<textcolor>ffaa0000</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<selectedcolor>red</selectedcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<angle>45</angle>
+						<label>24098</label>
+						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
+					</control>
 					<control type="label">
 						<posx>96</posx>
 						<posy>160</posy>
@@ -293,6 +320,33 @@
 						<bordersize>5</bordersize>
 						<fadetime>100</fadetime>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
+					</control>
+					<control type="image">
+						<posx>1</posx>
+						<posy>0</posy>
+						<width>191</width>
+						<height>160</height>
+						<bordertexture border="5">button-nofocus.png</bordertexture>
+						<bordersize>5</bordersize>
+						<fadetime>100</fadetime>
+						<colordiffuse>ff333333</colordiffuse>
+						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
+					</control>
+					<control type="label">
+						<posx>96</posx>
+						<posy>70</posy>
+						<width>190</width>
+						<height>25</height>
+						<font>font13_title</font>
+						<textcolor>ffaa0000</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<selectedcolor>red</selectedcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<angle>45</angle>
+						<label>24098</label>
+						<visible>!IsEmpty(ListItem.Property(Addon.broken))</visible>
 					</control>
 					<control type="label">
 						<posx>96</posx>

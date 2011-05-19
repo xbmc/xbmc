@@ -30,12 +30,9 @@
 #ifdef __APPLE__
 #include "OSXGNUReplacements.h" // strnlen
 #endif
-#ifdef _MSC_VER
-#include <Ws2tcpip.h>
-#else
+
 #include <sys/socket.h>
-#define SD_BOTH SHUT_RDWR
-#endif
+#include <arpa/inet.h>
 #include <vector>
 
 //using namespace std; On VS2010, bind conflicts with std::bind
@@ -287,7 +284,7 @@ void CSAPSessions::StopThread(bool bWait /*= true*/)
 {
   if(m_socket != INVALID_SOCKET)
   {
-    if(shutdown(m_socket, SD_BOTH) == SOCKET_ERROR)
+    if(shutdown(m_socket, SHUT_RDWR) == SOCKET_ERROR)
       CLog::Log(LOGERROR, "s - failed to shutdown socket");
 #ifdef WINSOCK_VERSION
     closesocket(m_socket);

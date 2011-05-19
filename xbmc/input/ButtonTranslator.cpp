@@ -208,6 +208,21 @@ static const ActionMapping windows[] =
         {"videos"                   , WINDOW_VIDEO_NAV},
         {"tv"                       , WINDOW_PVR}, // backward compat
         {"pvr"                      , WINDOW_PVR},
+
+        {"pvrguideinfo"             , WINDOW_DIALOG_PVR_GUIDE_INFO},
+        {"pvrrecordinginfo"         , WINDOW_DIALOG_PVR_RECORDING_INFO},
+        {"pvrtimersetting"          , WINDOW_DIALOG_PVR_TIMER_SETTING},
+        {"pvrgroupmanager"          , WINDOW_DIALOG_PVR_GROUP_MANAGER},
+        {"pvrchannelmanager"        , WINDOW_DIALOG_PVR_CHANNEL_MANAGER},
+        {"pvrguidesearch"           , WINDOW_DIALOG_PVR_GUIDE_SEARCH},
+        {"pvrchannelscan"           , WINDOW_DIALOG_PVR_CHANNEL_SCAN},
+        {"pvrupdateprogress"        , WINDOW_DIALOG_PVR_UPDATE_PROGRESS},
+        {"pvrosdchannels"           , WINDOW_DIALOG_PVR_OSD_CHANNELS},
+        {"pvrosdguide"              , WINDOW_DIALOG_PVR_OSD_GUIDE},
+        {"pvrosddirector"           , WINDOW_DIALOG_PVR_OSD_DIRECTOR},
+        {"pvrosdcutter"             , WINDOW_DIALOG_PVR_OSD_CUTTER},
+        {"pvrosdteletext"           , WINDOW_DIALOG_OSD_TELETEXT},
+
         {"systeminfo"               , WINDOW_SYSTEM_INFORMATION},
         {"testpattern"              , WINDOW_TEST_PATTERN},
         {"screencalibration"        , WINDOW_SCREEN_CALIBRATION},
@@ -1057,32 +1072,7 @@ uint32_t CButtonTranslator::TranslateKeyboardString(const char *szButton)
   // The lookup failed i.e. the key name wasn't found
   else
   {
-    CStdString strKey = szButton;
-    strKey.ToLower();
-
-    // Multimedia keys
-    if (strKey.Equals("browser_back"))        buttonCode = XBMCK_BROWSER_BACK;
-    else if (strKey.Equals("browser_forward"))     buttonCode = XBMCK_BROWSER_FORWARD;
-    else if (strKey.Equals("browser_refresh"))     buttonCode = XBMCK_BROWSER_REFRESH;
-    else if (strKey.Equals("browser_stop"))        buttonCode = XBMCK_BROWSER_STOP;
-    else if (strKey.Equals("browser_search"))      buttonCode = XBMCK_BROWSER_SEARCH;
-    else if (strKey.Equals("browser_favorites"))   buttonCode = XBMCK_BROWSER_FAVORITES;
-    else if (strKey.Equals("browser_home"))        buttonCode = XBMCK_BROWSER_HOME;
-    else if (strKey.Equals("volume_mute"))         buttonCode = XBMCK_VOLUME_MUTE;
-    else if (strKey.Equals("volume_down"))         buttonCode = XBMCK_VOLUME_DOWN;
-    else if (strKey.Equals("volume_up"))           buttonCode = XBMCK_VOLUME_UP;
-    else if (strKey.Equals("next_track"))          buttonCode = XBMCK_MEDIA_NEXT_TRACK;
-    else if (strKey.Equals("prev_track"))          buttonCode = XBMCK_MEDIA_PREV_TRACK;
-    else if (strKey.Equals("stop"))                buttonCode = XBMCK_MEDIA_STOP;
-    else if (strKey.Equals("play_pause"))          buttonCode = XBMCK_MEDIA_PLAY_PAUSE;
-    else if (strKey.Equals("launch_mail"))         buttonCode = XBMCK_LAUNCH_MAIL;
-    else if (strKey.Equals("launch_media_select")) buttonCode = XBMCK_LAUNCH_MEDIA_SELECT;
-    else if (strKey.Equals("launch_app1_pc_icon")) buttonCode = XBMCK_LAUNCH_APP1;
-    else if (strKey.Equals("launch_app2_pc_icon")) buttonCode = XBMCK_LAUNCH_APP2;
-    else if (strKey.Equals("launch_file_browser")) buttonCode = 0xB8;
-    else if (strKey.Equals("launch_media_center")) buttonCode = 0xB9;
-    else
-      CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", strKey.c_str());
+    CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", szButton);
   }
 
   buttonCode |= KEY_VKEY;

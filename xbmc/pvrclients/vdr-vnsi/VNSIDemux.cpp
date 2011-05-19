@@ -21,62 +21,32 @@
 
 #include <stdint.h>
 #include <limits.h>
+#include <string.h>
 #include <libavcodec/avcodec.h> // For codec id's
 #include "VNSIDemux.h"
 #include "responsepacket.h"
 #include "requestpacket.h"
-#include "vdrcommand.h"
+#include "vnsicommand.h"
 
 cVNSIDemux::cVNSIDemux()
-  : m_startup(false)
-  , m_channel(0)
-  , m_StatusCount(0)
 {
   m_Streams.iStreamCount = 0;
 }
 
 cVNSIDemux::~cVNSIDemux()
 {
-  Close();
 }
 
-bool cVNSIDemux::Open(const PVR_CHANNEL &channelinfo)
+bool cVNSIDemux::OpenChannel(const PVR_CHANNEL &channelinfo)
 {
-  m_channel = channelinfo.iChannelNumber;
-
-  if(!m_session.Open(g_szHostname, g_iPort, "XBMC Live stream receiver"))
+  m_channelinfo = channelinfo;
+  if(!cVNSISession::Open(g_szHostname, g_iPort))
     return false;
 
-  cRequestPacket vrp;
-  if (!vrp.init(VDR_CHANNELSTREAM_OPEN) ||
-      !vrp.add_U32(m_channel) ||
-      !m_session.ReadSuccess(&vrp))
-  {
-    XBMC->Log(LOG_ERROR, "cVNSIDemux::Open - Can't open channel %i - %s", m_channel, channelinfo.strChannelName);
+  if(!cVNSISession::Login())
     return false;
-  }
 
-  m_StatusCount = 0;
-  m_startup = true;
-
-  while (m_Streams.iStreamCount == 0 && m_StatusCount == 0)
-  {
-    DemuxPacket* pkg = Read();
-    if(!pkg)
-    {
-      Close();
-      return false;
-    }
-    PVR->FreeDemuxPacket(pkg);
-  }
-
-  return true;
-}
-
-void cVNSIDemux::Close()
-{
-  cRequestPacket vrp;
-  m_session.Close();
+  return SwitchChannel(m_channelinfo);
 }
 
 bool cVNSIDemux::GetStreamProperties(PVR_STREAM_PROPERTIES* props)
@@ -102,74 +72,86 @@ bool cVNSIDemux::GetStreamProperties(PVR_STREAM_PROPERTIES* props)
 void cVNSIDemux::Abort()
 {
   m_Streams.iStreamCount = 0;
-  m_session.Abort();
+  cVNSISession::Abort();
 }
 
 DemuxPacket* cVNSIDemux::Read()
 {
-  cResponsePacket *resp = m_session.ReadMessage();
-
-  if(resp == NULL)
+  if(ConnectionLost() && !TryReconnect())
   {
-    return NULL;
+    SleepMs(100);
+    return PVR->AllocateDemuxPacket(0);
   }
 
-  if (resp->getChannelID() != CHANNEL_STREAM)
+  cResponsePacket *resp = ReadMessage();
+
+  if(resp == NULL)
+    return NULL;
+
+  if (resp->getChannelID() != VNSI_CHANNEL_STREAM)
   {
     delete resp;
     return NULL;
   }
 
-  if (resp->getOpCodeID() == VDR_STREAM_CHANGE)
+  if (resp->getOpCodeID() == VNSI_STREAM_CHANGE)
   {
     StreamChange(resp);
-    if (!m_startup)
-    {
-      DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
-      pkt->iStreamId    = DMX_SPECIALID_STREAMCHANGE;
-      delete resp;
-      return pkt;
-    }
-    else
-      m_startup = false;
-  }
-  else if (resp->getOpCodeID() == VDR_STREAM_STATUS)
-  {
-    StreamStatus(resp);
-  }
-  else if (resp->getOpCodeID() == VDR_STREAM_SIGNALINFO)
-  {
-    StreamSignalInfo(resp);
-  }
-  else if (resp->getOpCodeID() == VDR_STREAM_CONTENTINFO)
-  {
-    StreamContentInfo(resp);
-    DemuxPacket* pkt = PVR->AllocateDemuxPacket(sizeof(PVR_STREAM_PROPERTIES));
-    memcpy(pkt->pData, &m_Streams, sizeof(PVR_STREAM_PROPERTIES));
-    pkt->iStreamId  = DMX_SPECIALID_STREAMINFO;
-    pkt->iSize      = sizeof(PVR_STREAM_PROPERTIES);
+    DemuxPacket* pkt = PVR->AllocateDemuxPacket(0);
+    pkt->iStreamId  = DMX_SPECIALID_STREAMCHANGE;
     delete resp;
     return pkt;
   }
-  else if (resp->getOpCodeID() == VDR_STREAM_MUXPKT)
+  else if (resp->getOpCodeID() == VNSI_STREAM_STATUS)
   {
-    DemuxPacket* p = (DemuxPacket*)resp->getUserData();
-
-    p->iSize      = resp->getUserDataLength();
-    p->duration   = (double)resp->getDuration() * DVD_TIME_BASE / 1000000;
-    p->dts        = (double)resp->getDTS() * DVD_TIME_BASE / 1000000;
-    p->pts        = (double)resp->getPTS() * DVD_TIME_BASE / 1000000;
-    p->iStreamId  = -1;
+    StreamStatus(resp);
+  }
+  else if (resp->getOpCodeID() == VNSI_STREAM_SIGNALINFO)
+  {
+    StreamSignalInfo(resp);
+  }
+  else if (resp->getOpCodeID() == VNSI_STREAM_CONTENTINFO)
+  {
+    // send stream updates only if there are changes
+    if(StreamContentInfo(resp))
+    {
+      DemuxPacket* pkt = PVR->AllocateDemuxPacket(sizeof(PVR_STREAM_PROPERTIES));
+      memcpy(pkt->pData, &m_Streams, sizeof(PVR_STREAM_PROPERTIES));
+      pkt->iStreamId  = DMX_SPECIALID_STREAMINFO;
+      pkt->iSize      = sizeof(PVR_STREAM_PROPERTIES);
+      delete resp;
+      return pkt;
+    }
+  }
+  else if (resp->getOpCodeID() == VNSI_STREAM_MUXPKT)
+  {
+    // figure out the stream id for this packet
+    int iStreamId = -1;
     for(unsigned int i = 0; i < m_Streams.iStreamCount; i++)
     {
       if(m_Streams.stream[i].iPhysicalId == (unsigned int)resp->getStreamID())
       {
-            p->iStreamId = i;
+            iStreamId = i;
             break;
       }
     }
-    delete resp;
-    return p;
+
+    // stream found ?
+    if(iStreamId != -1)
+    {
+      DemuxPacket* p = (DemuxPacket*)resp->getUserData();
+      p->iSize      = resp->getUserDataLength();
+      p->duration   = (double)resp->getDuration() * DVD_TIME_BASE / 1000000;
+      p->dts        = (double)resp->getDTS() * DVD_TIME_BASE / 1000000;
+      p->pts        = (double)resp->getPTS() * DVD_TIME_BASE / 1000000;
+      p->iStreamId  = iStreamId;
+      delete resp;
+      return p;
+    }
+    else
+    {
+      XBMC->Log(LOG_DEBUG, "stream id %i not found", resp->getStreamID());
+    }
   }
 
   delete resp;
@@ -181,25 +163,24 @@ bool cVNSIDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
   XBMC->Log(LOG_DEBUG, "changing to channel %d", channelinfo.iChannelNumber);
 
   cRequestPacket vrp;
-  if (!vrp.init(VDR_CHANNELSTREAM_OPEN) || !vrp.add_U32(channelinfo.iChannelNumber) || !m_session.ReadSuccess(&vrp))
+  if (!vrp.init(VNSI_CHANNELSTREAM_OPEN) || !vrp.add_U32(channelinfo.iUniqueId) || !ReadSuccess(&vrp))
   {
-    XBMC->Log(LOG_ERROR, "cVNSIDemux::SetChannel - failed to set channel");
+    XBMC->Log(LOG_ERROR, "%s - failed to set channel", __FUNCTION__);
+    return false;
   }
-  else
+
+  m_channelinfo = channelinfo;
+  m_Streams.iStreamCount  = 0;
+
+  while (m_Streams.iStreamCount == 0 && !ConnectionLost())
   {
-    m_channel           = channelinfo.iChannelNumber;
-    m_Streams.iStreamCount  = 0;
-    m_startup           = true;
-    while (m_Streams.iStreamCount == 0 && m_StatusCount == 0)
-    {
-      DemuxPacket* pkg = Read();
-      if(!pkg)
-        return false;
-      PVR->FreeDemuxPacket(pkg);
-    }
-    return true;
+    DemuxPacket* pkg = Read();
+    if(!pkg)
+      return false;
+    PVR->FreeDemuxPacket(pkg);
   }
-  return false;
+
+  return !ConnectionLost();
 }
 
 bool cVNSIDemux::GetSignalStatus(PVR_SIGNAL_STATUS &qualityinfo)
@@ -255,6 +236,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
       m_Streams.iStreamCount++;
+
+      delete[] language;
     }
     else if(!strcmp(type, "MPEG2AUDIO"))
     {
@@ -270,6 +253,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
       m_Streams.iStreamCount++;
+
+      delete[] language;
     }
     else if(!strcmp(type, "AAC"))
     {
@@ -285,6 +270,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
       m_Streams.iStreamCount++;
+
+      delete[] language;
     }
     else if(!strcmp(type, "DTS"))
     {
@@ -300,6 +287,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
       m_Streams.iStreamCount++;
+
+      delete[] language;
     }
     else if(!strcmp(type, "EAC3"))
     {
@@ -315,6 +304,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
       m_Streams.iStreamCount++;
+
+      delete[] language;
     }
     else if(!strcmp(type, "MPEG2VIDEO"))
     {
@@ -368,6 +359,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
       m_Streams.iStreamCount++;
+
+      delete[] language;
     }
     else if(!strcmp(type, "TEXTSUB"))
     {
@@ -383,6 +376,8 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[3]= 0;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = -1;
       m_Streams.iStreamCount++;
+
+      delete[] language;
     }
     else if(!strcmp(type, "TELETEXT"))
     {
@@ -398,9 +393,11 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
       m_Streams.iStreamCount++;
     }
 
+    delete[] type;
+
     if (m_Streams.iStreamCount >= PVR_STREAM_MAX_STREAMS)
     {
-      XBMC->Log(LOG_ERROR, "cVNSIDemux::StreamChange - max amount of streams reached");
+      XBMC->Log(LOG_ERROR, "%s - max amount of streams reached", __FUNCTION__);
       break;
     }
   }
@@ -409,37 +406,43 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
 void cVNSIDemux::StreamStatus(cResponsePacket *resp)
 {
   const char* status = resp->extract_String();
-  if(status == NULL)
-    m_Status = "";
-  else
+  if(status != NULL)
   {
-    m_StatusCount++;
-    m_Status = status;
-    XBMC->Log(LOG_DEBUG, "cVNSIDemux::StreamStatus - %s", status);
+    XBMC->Log(LOG_DEBUG, "%s - %s", __FUNCTION__, status);
     XBMC->QueueNotification(QUEUE_INFO, status);
   }
+  delete[] status;
 }
 
 void cVNSIDemux::StreamSignalInfo(cResponsePacket *resp)
 {
-  m_Quality.fe_name   = resp->extract_String();
-  m_Quality.fe_status = resp->extract_String();
+  const char* name = resp->extract_String();
+  const char* status = resp->extract_String();
+
+  m_Quality.fe_name   = name;
+  m_Quality.fe_status = status;
   m_Quality.fe_snr    = resp->extract_U32();
   m_Quality.fe_signal = resp->extract_U32();
   m_Quality.fe_ber    = resp->extract_U32();
   m_Quality.fe_unc    = resp->extract_U32();
+
+  delete[] name;
+  delete[] status;
 }
 
-void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
+bool cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
 {
+  PVR_STREAM_PROPERTIES old = m_Streams;
+
   for (unsigned int i = 0; i < m_Streams.iStreamCount && !resp->end(); i++)
   {
-    int32_t index = resp->extract_U32();
+    uint32_t index = resp->extract_U32();
     if (index == m_Streams.stream[i].iPhysicalId)
     {
       if (m_Streams.stream[i].iCodecType == CODEC_TYPE_AUDIO)
       {
         const char *language = resp->extract_String();
+
         m_Streams.stream[i].iChannels          = resp->extract_U32();
         m_Streams.stream[i].iSampleRate        = resp->extract_U32();
         m_Streams.stream[i].iBlockAlign        = resp->extract_U32();
@@ -449,6 +452,8 @@ void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
         m_Streams.stream[i].strLanguage[1]       = language[1];
         m_Streams.stream[i].strLanguage[2]       = language[2];
         m_Streams.stream[i].strLanguage[3]       = 0;
+
+        delete[] language;
       }
       else if (m_Streams.stream[i].iCodecType == CODEC_TYPE_VIDEO)
       {
@@ -463,12 +468,22 @@ void cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
         const char *language    = resp->extract_String();
         uint32_t composition_id = resp->extract_U32();
         uint32_t ancillary_id   = resp->extract_U32();
+
         m_Streams.stream[i].iIdentifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
         m_Streams.stream[i].strLanguage[0]= language[0];
         m_Streams.stream[i].strLanguage[1]= language[1];
         m_Streams.stream[i].strLanguage[2]= language[2];
         m_Streams.stream[i].strLanguage[3]= 0;
+
+        delete[] language;
       }
     }
   }
+
+  return (memcmp(&old, &m_Streams, sizeof(m_Streams)) != 0);
+}
+
+void cVNSIDemux::OnReconnect()
+{
+  SwitchChannel(m_channelinfo);
 }
