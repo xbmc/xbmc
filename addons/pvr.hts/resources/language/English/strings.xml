@@ -9,4 +9,8 @@
     <string id="30006">Connect timeout in seconds</string>
     <string id="30007">Response timeout in seconds</string>
     <string id="30008">Display a notification on timer updates</string>
+
+    <!-- notifications -->
+    <string id="30500">Disconnected from '%s'</string>
+    <string id="30501">Reconnected to '%s'</string>
 </strings>
