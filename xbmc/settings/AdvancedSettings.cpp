@@ -91,6 +91,10 @@ void CAdvancedSettings::Initialize()
   m_videoAllowMpeg4VDPAU = false;
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
+  m_DXVADeintQuickSwitch = true;
+  m_DXVADeintAutoMaxWidth = 9999;
+  m_DXVADeintAutoMaxHeight = 9999;
+  m_DXVADeintAutoMaxFps = 99.9f;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -521,6 +525,14 @@ bool CAdvancedSettings::Load()
 
     m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
 
+    TiXmlElement* pDXVADeint = pElement->FirstChildElement("dxvadeinterlace");
+    if (pDXVADeint)
+    {
+      XMLUtils::GetBoolean(pDXVADeint,"enablequickswitch", m_DXVADeintQuickSwitch);
+      XMLUtils::GetUInt(pDXVADeint, "automaxhqwidth", m_DXVADeintAutoMaxWidth);
+      XMLUtils::GetUInt(pDXVADeint, "automaxhqheight", m_DXVADeintAutoMaxHeight);
+      XMLUtils::GetFloat(pDXVADeint, "automaxhqfps", m_DXVADeintAutoMaxFps);
+    }
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");

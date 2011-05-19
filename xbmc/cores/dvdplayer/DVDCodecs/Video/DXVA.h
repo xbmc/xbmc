@@ -90,9 +90,7 @@ protected:
   unsigned                     m_buffer_age;
   int                          m_refs;
 
-  EINTERLACEMETHOD             m_CurrInterlaceMethod;
   unsigned                     m_SampleFormat;
-  unsigned                     m_StreamSampleFormat;
 
   struct dxva_context*         m_context;
 
@@ -110,6 +108,11 @@ public:
  ~CProcessor();
 
   bool           Open(const DXVA2_VideoDesc& dsc);
+  bool           FindProcessors();
+  bool           SelectProcessor();
+  void           SetStreamSampleFormat(unsigned sformat) { m_StreamSampleFormat = sformat; };
+  unsigned       GetStreamSampleFormat() { return m_StreamSampleFormat; };
+  bool           IsInited() { return m_deviceinited; };
   void           Close();
   void           HoldSurface(IDirect3DSurface9* surface);
   REFERENCE_TIME Add(IDirect3DSurface9* source);
@@ -124,11 +127,18 @@ public:
   virtual void OnLostDevice()    { CSingleLock lock(m_section); Close(); }
   virtual void OnResetDevice()   { CSingleLock lock(m_section); Close(); }
 
+  GUID                           m_progdevice;
+  GUID                           m_bobdevice;
+  GUID                           m_hqdevice;
+
   IDirectXVideoProcessorService* m_service;
   IDirectXVideoProcessor*        m_process;
   GUID                           m_device;
+  bool                           m_deviceinited;
 
+  EINTERLACEMETHOD             m_CurrInterlaceMethod;
   unsigned                     m_SampleFormat;
+  unsigned                     m_StreamSampleFormat;
   int                          m_BFF;
 
   DXVA2_VideoProcessorCaps m_caps;

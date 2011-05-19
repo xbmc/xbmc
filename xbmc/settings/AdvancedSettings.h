@@ -124,6 +124,11 @@ class CAdvancedSettings
     bool m_DXVACheckCompatibility;
     bool m_DXVACheckCompatibilityPresent;
 
+    bool m_DXVADeintQuickSwitch;
+    unsigned m_DXVADeintAutoMaxWidth;
+    unsigned m_DXVADeintAutoMaxHeight;
+    float m_DXVADeintAutoMaxFps;
+
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
     float m_videoPlayCountMinimumPercent;
