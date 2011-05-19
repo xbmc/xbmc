@@ -45,4 +45,6 @@
     <string id="30041">Valmis</string>
     <string id="30042">Kanavahaku peruutettu</string>
     <string id="30043">Kanavahaku virhe</string>
+    <string id="30044">Yhteys VDR-palvelimeen menetetty</string>
+    <string id="30045">Yhteys VDR-palvelimeen palautettu</string>
 </strings>
