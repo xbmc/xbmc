@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,247 +19,146 @@
  *
  */
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
-
 #include "TextSearch.h"
 
 using namespace std;
 
-cTextSearch::cTextSearch(void)
+CTextSearch::CTextSearch(const CStdString &strSearchTerms, bool bCaseSensitive /* = false */, TextSearchDefault defaultSearchMode /* = SEARCH_DEFAULT_OR */)
 {
-  m_text          = "";
-  m_searchText    = "";
-  m_CaseSensitive = false;
+  m_bCaseSensitive = bCaseSensitive;
+  ExtractSearchTerms(strSearchTerms, defaultSearchMode);
 }
 
-cTextSearch::cTextSearch(CStdString text, CStdString searchText, bool caseSensitive)
-{
-  m_CaseSensitive = caseSensitive;
-  m_text          = text;
-  m_searchText    = searchText;
-}
-
-cTextSearch::~cTextSearch(void)
+CTextSearch::~CTextSearch(void)
 {
   m_AND.clear();
   m_OR.clear();
   m_NOT.clear();
 }
 
-void cTextSearch::SetText(CStdString text, CStdString searchText, bool caseSensitive)
+bool CTextSearch::IsValid(void) const
 {
-  m_CaseSensitive = caseSensitive;
-  m_text          = text;
-  m_searchText    = searchText;
+  return m_AND.size() > 0 || m_OR.size() > 0 || m_NOT.size() > 0;
 }
 
-bool cTextSearch::DoSearch()
+bool CTextSearch::Search(const CStdString &strHaystack) const
 {
-  m_AND.clear();
-  m_OR.clear();
-  m_NOT.clear();
-
-  CStdString text       = m_text;
-  CStdString searchStr  = m_searchText;
-
-  if (text == "")
+  if (strHaystack.IsEmpty() || !IsValid())
     return false;
 
-  if (searchStr == "")
-    return true;
+  CStdString strSearch(strHaystack);
+  if (!m_bCaseSensitive)
+    strSearch = strSearch.ToLower();
 
-  if (!m_CaseSensitive)
-    text.ToLower();
-
-  /* Only one word search */
-  if (searchStr.Find(" ") == CStdString::npos)
+  /* check whether any of the NOT terms matches and return false if there's a match */
+  for (unsigned int iNotPtr = 0; iNotPtr < m_NOT.size(); iNotPtr++)
   {
-    if (searchStr[0] == '"')
-      searchStr.erase(0, 1);
-    if (searchStr[searchStr.size()-1] == '"')
-      searchStr.erase(searchStr.size()-1, 1);
-
-    if (!m_CaseSensitive)
-      searchStr.ToLower();
-
-    if (text.Find(searchStr) == CStdString::npos)
+    if (strSearch.Find(m_NOT.at(iNotPtr)) != -1)
       return false;
-    else
-      return true;
+  }
+
+  /* check whether at least one of the OR terms matches and return false if there's no match found */
+  bool bFound(m_OR.size() == 0);
+  for (unsigned int iOrPtr = 0; iOrPtr < m_OR.size(); iOrPtr++)
+  {
+    if (strSearch.Find(m_OR.at(iOrPtr)) != -1)
+    {
+      bFound = true;
+      break;
+    }
+  }
+  if (!bFound)
+    return false;
+
+  /* check whether all of the AND terms match and return false if one of them wasn't found */
+  for (unsigned int iAndPtr = 0; iAndPtr < m_AND.size(); iAndPtr++)
+  {
+    if (strSearch.Find(m_AND[iAndPtr]) == -1)
+      return false;
+  }
+
+  /* all ok, return true */
+  return true;
+}
+
+void CTextSearch::GetAndCutNextTerm(CStdString &strSearchTerm, CStdString &strNextTerm)
+{
+  CStdString strFindNext(" ");
+
+  if (strSearchTerm.Left(1).Equals("\""))
+  {
+    strSearchTerm.erase(0, 1);
+    strFindNext = "\"";
+  }
+
+  int iNextPos = strSearchTerm.Find(strFindNext);
+  if (iNextPos != -1)
+  {
+    strNextTerm = strSearchTerm.Left(iNextPos);
+    strSearchTerm.erase(0, iNextPos + 1);
   }
   else
   {
-    while (searchStr.length() > 3)
+    strNextTerm = strSearchTerm;
+    strSearchTerm.clear();
+  }
+}
+
+void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearchDefault defaultSearchMode)
+{
+  CStdString strParsedSearchTerm(strSearchTerm);
+  strParsedSearchTerm = strParsedSearchTerm.Trim();
+
+  if (!m_bCaseSensitive)
+    strParsedSearchTerm = strParsedSearchTerm.ToLower();
+
+  bool bNextAND(defaultSearchMode == SEARCH_DEFAULT_AND);
+  bool bNextOR(defaultSearchMode == SEARCH_DEFAULT_OR);
+  bool bNextNOT(defaultSearchMode == SEARCH_DEFAULT_NOT);
+
+  while (strParsedSearchTerm.length() > 0)
+  {
+    if (strParsedSearchTerm.Left(1).Equals("!") || strParsedSearchTerm.Left(4).Equals("NOT"))
     {
-      /* Remove white spaces and begin of search line */
-      if (searchStr[0] == ' ')
+      CStdString strDummy;
+      GetAndCutNextTerm(strParsedSearchTerm, strDummy);
+      bNextNOT = true;
+    }
+    else if (strParsedSearchTerm.Left(1).Equals("+") || strParsedSearchTerm.Left(3).Equals("AND"))
+    {
+      CStdString strDummy;
+      GetAndCutNextTerm(strParsedSearchTerm, strDummy);
+      bNextAND = true;
+    }
+    else if (strParsedSearchTerm.Left(1).Equals("|") || strParsedSearchTerm.Left(2).Equals("OR"))
+    {
+      CStdString strDummy;
+      GetAndCutNextTerm(strParsedSearchTerm, strDummy);
+      bNextOR = true;
+    }
+    else
+    {
+      CStdString strTerm;
+      GetAndCutNextTerm(strParsedSearchTerm, strTerm);
+      if (strTerm.length() > 0)
       {
-        searchStr.erase(0, 1);
-      }
-      /* Search for AND */
-      else if (searchStr.Find("AND") != CStdString::npos || searchStr.Find("+") != CStdString::npos)
-      {
-        size_t firstPos     = searchStr.Find("AND");
-        size_t lastPos      = CStdString::npos;
-
-        if (firstPos != CStdString::npos)
-          searchStr.erase(firstPos, 3);
+        if (bNextAND)
+          m_AND.push_back(strTerm);
+        else if (bNextOR)
+          m_OR.push_back(strTerm);
         else
-        {
-          firstPos = searchStr.Find("+");
-          searchStr.erase(firstPos, 1);
-        }
-
-        ClearBlankCharacter(&searchStr, firstPos);
-
-        if (searchStr[firstPos] == '"')
-        {
-          firstPos++; // Remove the phrase
-          lastPos = searchStr.Find("\"", firstPos);
-        }
-        else
-          lastPos = searchStr.Find(" ");
-
-        size_t strSize = CStdString::npos;
-        if (lastPos != CStdString::npos)
-          strSize = lastPos-firstPos;
-
-        m_AND.push_back(searchStr.substr(firstPos, strSize));
-        searchStr.erase(firstPos, lastPos-firstPos);
-      }
-      /* Search for OR */
-      else if (searchStr.Find("OR") != CStdString::npos || searchStr.Find("|") != CStdString::npos)
-      {
-        size_t firstPos     = searchStr.Find("OR");
-        size_t lastPos      = CStdString::npos;
-
-        if (firstPos != CStdString::npos)
-          searchStr.erase(firstPos, 2);
-        else
-        {
-          firstPos = searchStr.Find("|");
-          searchStr.erase(firstPos, 1);
-        }
-
-        ClearBlankCharacter(&searchStr, firstPos);
-
-        if (searchStr[firstPos] == '"')
-        {
-          firstPos++; // Remove the phrase
-          lastPos = searchStr.Find("\"", firstPos);
-        }
-        else
-          lastPos = searchStr.Find(" ");
-
-        size_t strSize = CStdString::npos;
-        if (lastPos != CStdString::npos)
-          strSize = lastPos-firstPos;
-
-        m_OR.push_back(searchStr.substr(firstPos, strSize));
-        searchStr.erase(firstPos, lastPos-firstPos);
-      }
-      /* Search for OR */
-      else if (searchStr.Find("NOT") != CStdString::npos || searchStr.Find("-") != CStdString::npos)
-      {
-        size_t firstPos     = searchStr.Find("NOT");
-        size_t lastPos      = CStdString::npos;
-
-        if (firstPos != CStdString::npos)
-          searchStr.erase(firstPos, 3);
-        else
-        {
-          firstPos = searchStr.Find("-");
-          searchStr.erase(firstPos, 1);
-        }
-
-        ClearBlankCharacter(&searchStr, firstPos);
-
-        if (searchStr[firstPos] == '"')
-        {
-          firstPos++; // Remove the phrase
-          lastPos = searchStr.Find("\"", firstPos);
-        }
-        else
-          lastPos = searchStr.Find(" ");
-
-        size_t strSize = CStdString::npos;
-        if (lastPos != CStdString::npos)
-          strSize = lastPos-firstPos;
-
-        m_NOT.push_back(searchStr.substr(firstPos, strSize));
-        searchStr.erase(firstPos, lastPos-firstPos);
+          m_NOT.push_back(strTerm);
       }
       else
       {
-        size_t lastPos = CStdString::npos;
-
-        if (searchStr[0] == '"')
-        {
-          searchStr.erase(0, 1);
-          lastPos = searchStr.Find("\"");
-        }
-        else
-        {
-          lastPos = searchStr.Find(" ");
-        }
-
-        m_AND.push_back(searchStr.substr(0, lastPos));
-        searchStr.erase(0, lastPos);
+        break;
       }
+
+      bNextAND = (defaultSearchMode == SEARCH_DEFAULT_AND);
+      bNextOR  = (defaultSearchMode == SEARCH_DEFAULT_OR);
+      bNextNOT = (defaultSearchMode == SEARCH_DEFAULT_NOT);
     }
 
-    /* If no search words are present everything is true */
-    if (m_AND.size() == 0 && m_OR.size() == 0 && m_NOT.size() == 0)
-      return true;
-
-    for (unsigned int i = 0; i < m_NOT.size(); i++)
-    {
-      CStdString word = m_NOT[i];
-      if (!m_CaseSensitive)
-        word.ToLower();
-
-      if (text.Find(word) != CStdString::npos)
-        return false;
-    }
-
-    for (unsigned int i = 0; i < m_OR.size(); i++)
-    {
-      CStdString word = m_OR[i];
-      if (!m_CaseSensitive)
-        word.ToLower();
-
-      if (text.Find(word) != CStdString::npos)
-        return true;
-    }
-
-    for (unsigned int i = 0; i < m_AND.size(); i++)
-    {
-      CStdString word = m_AND[i];
-      if (!m_CaseSensitive)
-        word.ToLower();
-
-      if (text.Find(word) == CStdString::npos)
-        return false;
-    }
-
-    return true;
+    strParsedSearchTerm = strParsedSearchTerm.TrimLeft();
   }
-  return false;
-}
-
-bool cTextSearch::SearchText(CStdString text, CStdString searchText, bool caseSensitive)
-{
-  cTextSearch search(text, searchText, caseSensitive);
-  return search.DoSearch();
-}
-
-void cTextSearch::ClearBlankCharacter(CStdString *text, int pos)
-{
-  if (text->at(pos) > ' ')
-    return;
-  while (text->length() > 0 && text->at(pos) == ' ')
-    text->erase(pos, 1);
 }
