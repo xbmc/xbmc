@@ -41,6 +41,9 @@
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #include "utils/PCMRemap.h"
 #include "guilib/GUIFont.h" // for FONT_STYLE_* definitions
+#if defined(__APPLE__)
+  #include "osx/DarwinUtils.h"
+#endif
 
 using namespace std;
 using namespace ADDON;
@@ -759,7 +762,7 @@ void CGUISettings::Initialize()
   
 #if defined(_LINUX)
 #if defined(__APPLE__)
-  if (g_sysinfo.IsAppleTV2())
+  if (g_sysinfo.IsAppleTV2() && GetIOSVersion() < 4.3)
 #endif
     use_timezone = true;  
   
@@ -1163,7 +1166,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   
 #if defined(_LINUX)
 #if defined(__APPLE__) 
-  if (g_sysinfo.IsAppleTV2())
+  if (g_sysinfo.IsAppleTV2() && GetIOSVersion() < 4.3)
 #endif
     use_timezone = true;
   
