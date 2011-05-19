@@ -1044,7 +1044,6 @@
     <ClCompile Include="..\..\xbmc\FileSystem\UPnPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VirtualDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\FileSystem\VirtualPathDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VTPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VTPFile.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\VTPSession.cpp" />
@@ -1894,7 +1893,6 @@
     <ClInclude Include="..\..\xbmc\FileSystem\SourcesDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\UPnPDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory.h" />
-    <ClInclude Include="..\..\xbmc\FileSystem\VirtualPathDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VTPDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VTPFile.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VTPSession.h" />
@@ -2041,4 +2039,5 @@
       <UserProperties RESOURCE_FILE="XBMC_PC.rc" />
     </VisualStudio>
   </ProjectExtensions>
+ <Import Project="$(SolutionDir)\$(ProjectFileName).targets.user" Condition="Exists('$(SolutionDir)\$(ProjectFileName).targets.user')" />
 </Project>

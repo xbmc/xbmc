@@ -47,18 +47,6 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { 0x09, 0x0038,    '8',  '8', 0x38, "eight" }
 , { 0x0a, 0x0039,    '9',  '9', 0x39, "nine" }
 
-// Shifted number keys on a US keyboard
-, { 0x0b, 0x0030,    ')',  ')', 0x30, "zero" }
-, { 0x02, 0x0031,    '!',  '!', 0x31, "one" }
-, { 0x03, 0x0032,    '@',  '@', 0x32, "two" }
-, { 0x04, 0x0033,    '#',  '#', 0x33, "three" }
-, { 0x05, 0x0034,    '$',  '$', 0x34, "four" }
-, { 0x06, 0x0035,    '%',  '%', 0x35, "five" }
-, { 0x07, 0x0036,    '^',  '^', 0x36, "six" }
-, { 0x08, 0x0037,    '&',  '&', 0x37, "seven" }
-, { 0x09, 0x0038,    '*',  '*', 0x38, "eight" }
-, { 0x0a, 0x0039,    '(',  '(', 0x39, "nine" }
-
 // A to Z - note that upper case A-Z don't have a matching name or
 // vkey. Only the lower case a-z are used in key mappings.
 , { 0x1e, 0x0061,    'A',  'A', 0x41, NULL }
@@ -115,24 +103,6 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { 0x15, 0x0079,    'y',  'y', 0x59, "y" }
 , { 0x2c, 0x007a,    'z',  'z', 0x5a, "z" }
 
-// Numeric keypad
-, { 0x52, 0x0100,    '0',  '0', 0x60, "numpadzero"}
-, { 0x4f, 0x0101,    '1',  '1', 0x61, "numpadone"}
-, { 0x50, 0x0102,    '2',  '2', 0x62, "numpadtwo"}
-, { 0x51, 0x0103,    '3',  '3', 0x63, "numpadthree"}
-, { 0x4b, 0x0104,    '4',  '4', 0x64, "numpadfour"}
-, { 0x4c, 0x0105,    '5',  '5', 0x65, "numpadfive"}
-, { 0x4d, 0x0106,    '6',  '6', 0x66, "numpadsix"}
-, { 0x47, 0x0107,    '7',  '7', 0x67, "numpadseven"}
-, { 0x48, 0x0108,    '8',  '8', 0x68, "numpadeight"}
-, { 0x49, 0x0109,    '9',  '9', 0x69, "numpadnine"}
-, { 0x53, 0x010a,    '.',  '.', 0x6e, "numpadperiod"}
-, { 0x35, 0x010b,    '/',  '/', 0x6f, "numpaddivide"}
-, { 0x37, 0x010c,    '*',  '*', 0x6a, "numpadtimes"}
-, { 0x4a, 0x010d,    '-',  '-', 0x6d, "numpadminus"}
-, { 0x4e, 0x010e,    '+',  '+', 0x6b, "numpadplus"}
-, { 0x1c, 0x010f,      0,    0, 0x6c, "enter"}
-
 // Misc printing characters
 , { 0x28, 0x0027,   '\'', '\'', 0xEE, "quote" }
 , { 0x28, 0x0027,    '"',  '"', 0xEE, "doublequote" }
@@ -156,6 +126,24 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { 0x1b, 0x005d,    '}',  '}', 0xED, "closebrace" }
 , { 0x29, 0x0060,    '`',  '`', 0xC0, "leftquote" }
 , { 0x29, 0x0060,    '~',  '~', 0xC0, "tilde" }
+
+// Numeric keypad
+, { 0x52, 0x0100,    '0',  '0', 0x60, "numpadzero"}
+, { 0x4f, 0x0101,    '1',  '1', 0x61, "numpadone"}
+, { 0x50, 0x0102,    '2',  '2', 0x62, "numpadtwo"}
+, { 0x51, 0x0103,    '3',  '3', 0x63, "numpadthree"}
+, { 0x4b, 0x0104,    '4',  '4', 0x64, "numpadfour"}
+, { 0x4c, 0x0105,    '5',  '5', 0x65, "numpadfive"}
+, { 0x4d, 0x0106,    '6',  '6', 0x66, "numpadsix"}
+, { 0x47, 0x0107,    '7',  '7', 0x67, "numpadseven"}
+, { 0x48, 0x0108,    '8',  '8', 0x68, "numpadeight"}
+, { 0x49, 0x0109,    '9',  '9', 0x69, "numpadnine"}
+, { 0x53, 0x010a,    '.',  '.', 0x6e, "numpadperiod"}
+, { 0x35, 0x010b,    '/',  '/', 0x6f, "numpaddivide"}
+, { 0x37, 0x010c,    '*',  '*', 0x6a, "numpadtimes"}
+, { 0x4a, 0x010d,    '-',  '-', 0x6d, "numpadminus"}
+, { 0x4e, 0x010e,    '+',  '+', 0x6b, "numpadplus"}
+, { 0x1c, 0x010f,      0,    0, 0x6c, "enter"}
 
 // Multimedia keys
 // The scan codes depend on the OS so the codes in this section of the
@@ -210,7 +198,7 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { 0x49, 0x0118,      0,    0, 0x21, "pageup" }
 , { 0x51, 0x0119,      0,    0, 0x22, "pagedown" }
 , { 0x45, 0x012c,      0,    0, 0x90, "numlock" }
-, { 0x3a, 0x012d,      0,    0, 0x20, "capslock" }
+, { 0x3a, 0x012d,      0,    0, 0x14, "capslock" }
 , { 0x46, 0x012e,      0,    0, 0x91, "scrolllock" }
 , { 0x36, 0x012f,      0,    0, 0xA1, "rightshift" }
 , { 0x2a, 0x0130,      0,    0, 0xA0, "leftshift" }

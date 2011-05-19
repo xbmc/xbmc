@@ -9,7 +9,7 @@ SUBDIRS = \
 	libvorbis libflac libmad fribidi libwavpack libmpeg2 \
 	faad2 libass libcdio libsamplerate librtmp libcrystalhd \
 	libGLEW libsdl libsdl_mixer libsdl_image \
-	libmicrohttpd libmodplug libbluray \
+	libmicrohttpd libmodplug libbluray libyajl \
 	samba python26 mysqlclient boost \
 
 .PHONY: setup $(SUBDIRS)

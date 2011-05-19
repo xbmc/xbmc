@@ -26,7 +26,6 @@
 #include "FactoryDirectory.h"
 #include "HDDirectory.h"
 #include "SpecialProtocolDirectory.h"
-#include "VirtualPathDirectory.h"
 #include "MultiPathDirectory.h"
 #include "StackDirectory.h"
 #include "FactoryFileDirectory.h"
@@ -129,7 +128,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #ifdef HAS_FILESYSTEM_RAR
   if (strProtocol == "rar") return new CRarDirectory();
 #endif
-  if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
   if (strProtocol == "multipath") return new CMultiPathDirectory();
   if (strProtocol == "stack") return new CStackDirectory();
   if (strProtocol == "playlistmusic") return new CPlaylistDirectory();

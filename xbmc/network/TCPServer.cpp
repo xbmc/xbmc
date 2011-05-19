@@ -22,6 +22,11 @@ static const uint32_t bt_service_guid[] = {0x65AE4CC0, 0x775D11E0, 0xBE16CE28, 0
 #include <bluetooth/rfcomm.h>
 #include <bluetooth/sdp.h>
 #include <bluetooth/sdp_lib.h>
+
+ /* The defines BDADDR_ANY and BDADDR_LOCAL are broken so use our own structs */
+static const bdaddr_t bt_bdaddr_any   = {{0, 0, 0, 0, 0, 0}};
+static const bdaddr_t bt_bdaddr_local = {{0, 0, 0, 0xff, 0xff, 0xff}};
+
 #endif
 
 using namespace JSONRPC;
@@ -268,7 +273,7 @@ bool CTCPServer::InitializeBlue()
   }
   struct sockaddr_rc sa  = {0};
   sa.rc_family  = AF_BLUETOOTH;
-  sa.rc_bdaddr  = *BDADDR_ANY;
+  sa.rc_bdaddr  = bt_bdaddr_any;
   sa.rc_channel = 0;
 
   if(bind(fd, (struct sockaddr*)&sa, sizeof(sa)) < 0)
@@ -346,7 +351,7 @@ bool CTCPServer::InitializeBlue()
   sdp_list_free( service_class, 0 );
 
   // connect to the local SDP server, register the service record
-  sdp_session_t *session = sdp_connect( BDADDR_ANY, BDADDR_LOCAL, SDP_RETRY_IF_BUSY );
+  sdp_session_t *session = sdp_connect( &bt_bdaddr_any, &bt_bdaddr_local, SDP_RETRY_IF_BUSY );
   if(session == NULL)
     CLog::Log(LOGERROR, "JSONRPC Server: Failed to connect to sdpd");
   else

@@ -7,6 +7,26 @@
 		<posy>0</posy>
 	</coordinates>
 	<controls>
+		<control type="button" id="1000">
+			<description>Close Window button</description>
+			<posx>84r</posx>
+			<posy>0</posy>
+			<width>64</width>
+			<height>32</height>
+			<label>-</label>
+			<font>-</font>
+			<onclick>Dialog.Close(MusicOSD,true)</onclick>
+			<onclick>FullScreen</onclick>
+			<texturefocus>DialogCloseButton-focus.png</texturefocus>
+			<texturenofocus>DialogCloseButton.png</texturenofocus>
+			<onleft>1000</onleft>
+			<onright>1000</onright>
+			<onup>100</onup>
+			<ondown>100</ondown>
+			<visible>system.getbool(input.enablemouse)</visible>
+			<animation effect="fade" time="200">VisibleChange</animation>
+			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList)]</visible>
+		</control>
 		<control type="slider" id="87">
 			<description>Seek Slider</description>
 			<posx>430</posx>
@@ -38,8 +58,8 @@
 				<texturenofocus>OSDPrevTrackNF.png</texturenofocus>
 				<onleft>704</onleft>
 				<onright>601</onright>
-				<onup>600</onup>
-				<ondown>600</ondown>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
 				<onclick>PlayerControl(Previous)</onclick>
 			</control>
 			<control type="button" id="601">
@@ -53,8 +73,8 @@
 				<texturenofocus>OSDRewindNF.png</texturenofocus>
 				<onleft>600</onleft>
 				<onright>602</onright>
-				<onup>601</onup>
-				<ondown>601</ondown>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
 				<onclick>PlayerControl(Rewind)</onclick>
 			</control>
 			<control type="togglebutton" id="602">
@@ -72,8 +92,8 @@
 				<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
 				<onleft>601</onleft>
 				<onright>603</onright>
-				<onup>602</onup>
-				<ondown>602</ondown>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
 				<onclick>PlayerControl(Play)</onclick>
 			</control>
 			<control type="button" id="603">
@@ -87,8 +107,8 @@
 				<texturenofocus>OSDStopNF.png</texturenofocus>
 				<onleft>602</onleft>
 				<onright>604</onright>
-				<onup>603</onup>
-				<ondown>603</ondown>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
 				<onclick>PlayerControl(Stop)</onclick>
 			</control>
 			<control type="button" id="604">
@@ -102,8 +122,8 @@
 				<texturenofocus>OSDForwardNF.png</texturenofocus>
 				<onleft>603</onleft>
 				<onright>605</onright>
-				<onup>604</onup>
-				<ondown>604</ondown>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
 				<onclick>PlayerControl(Forward)</onclick>
 			</control>
 			<control type="button" id="605">
@@ -117,8 +137,8 @@
 				<texturenofocus>OSDNextTrackNF.png</texturenofocus>
 				<onleft>604</onleft>
 				<onright>606</onright>
-				<onup>605</onup>
-				<ondown>605</ondown>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
 				<onclick>PlayerControl(Next)</onclick>
 			</control>
 			<control type="button" id="606">
@@ -133,8 +153,8 @@
 				<onclick>XBMC.PlayerControl(Repeat)</onclick>
 				<onleft>605</onleft>
 				<onright>607</onright>
-				<onup>606</onup>
-				<ondown>606</ondown>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
 			</control>
 			<control type="image">
 				<posx>270</posx>
@@ -205,8 +225,8 @@
 				<onclick>XBMC.PlayerControl(Random)</onclick>
 				<onleft>606</onleft>
 				<onright>701</onright>
-				<onup>607</onup>
-				<ondown>607</ondown>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
 			</control>
 		</control>
 		<control type="group">
@@ -227,8 +247,8 @@
 				<alttexturenofocus>OSDLyricsNF.png</alttexturenofocus>
 				<onleft>607</onleft>
 				<onright>500</onright>
-				<onup>701</onup>
-				<ondown>701</ondown>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
 				<onclick>Close</onclick>
 				<onclick>XBMC.RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>
 				<altclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</altclick>
@@ -247,8 +267,8 @@
 				<texturenofocus>OSDVizNF.png</texturenofocus>
 				<onleft>701</onleft>
 				<onright>702</onright>
-				<onup>500</onup>
-				<ondown>500</ondown>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
 			</control>
 			<control type="button" id="702">
 				<posx>90</posx>
@@ -261,8 +281,8 @@
 				<texturenofocus>OSDPresetSettingsNF.png</texturenofocus>
 				<onleft>500</onleft>
 				<onright>703</onright>
-				<onup>702</onup>
-				<ondown>702</ondown>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
 				<onclick>Addon.Default.OpenSettings(xbmc.player.musicviz)</onclick>
 			</control>
 			<control type="button" id="703">
@@ -276,8 +296,8 @@
 				<texturenofocus>OSDPreNF.png</texturenofocus>
 				<onleft>702</onleft>
 				<onright>704</onright>
-				<onup>703</onup>
-				<ondown>703</ondown>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
 				<onclick>ActivateWindow(122)</onclick>
 			</control>
 			<control type="button" id="704">
@@ -291,8 +311,8 @@
 				<texturenofocus>OSDRecordNF.png</texturenofocus>
 				<onleft>703</onleft>
 				<onright>600</onright>
-				<onup>704</onup>
-				<ondown>704</ondown>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
 				<onclick>XBMC.PlayerControl(record)</onclick>
 				<enable>Player.CanRecord</enable>
 				<animation effect="fade" start="100" end="50" time="100" condition="!Player.CanRecord">Conditional</animation>

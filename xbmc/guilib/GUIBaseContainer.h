@@ -50,6 +50,7 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual bool OnMouseOver(const CPoint &point);
+  virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
   virtual void AllocResources();

@@ -779,4 +779,10 @@
 		<animation effect="fade" time="300">Visible</animation>
 		<animation effect="fade" time="300">Hidden</animation>
 	</include>
+	<include name="ExitButtonOffset">
+		<posx>270</posx>
+	</include>
+	<include name="NoExitButtonOffset">
+		<posx>215</posx>
+	</include>
 </includes>

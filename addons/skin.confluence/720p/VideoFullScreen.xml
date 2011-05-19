@@ -38,6 +38,7 @@
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 				<label>$INFO[System.Time]</label>
+				<animation effect="slide" start="0,0" end="-70,0" time="0" condition="Window.IsVisible(VideoOSD)">conditional</animation>
 			</control>
 			<control type="image" id="1">
 				<posx>0</posx>

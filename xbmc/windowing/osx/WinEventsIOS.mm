@@ -75,7 +75,7 @@ bool CWinEventsIOS::MessagePump()
     if (pumpEvent.type == XBMC_USEREVENT)
     {
       // On ATV2, we push in events as a XBMC_USEREVENT,
-      // the user.code will be the keyID to translate using JoyStick.AppleRemote.xml
+      // the user.code will be the keyID to translate using joystick.AppleRemote.xml
       std::string joystickName = "AppleRemote";
       bool isAxis = false;
       float fAmount = 0.0;
