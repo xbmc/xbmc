@@ -885,3 +885,96 @@ void cVNSIData::Action()
     }
   }
 }
+
+int cVNSIData::GetChannelGroupCount(bool automatic)
+{
+  cRequestPacket vrp;
+  if (!vrp.init(VNSI_CHANNELGROUP_GETCOUNT))
+  {
+    XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
+    return 0;
+  }
+
+  if (!vrp.add_U32(automatic))
+  {
+    return 0;
+  }
+
+  cResponsePacket* vresp = ReadResult(&vrp);
+  if (vresp == NULL || vresp->noResponse())
+  {
+    delete vresp;
+    return 0;
+  }
+
+  uint32_t count = vresp->extract_U32();
+
+  delete vresp;
+  return count;
+}
+
+bool cVNSIData::GetChannelGroupList(PVR_HANDLE handle, bool bRadio)
+{
+  cRequestPacket vrp;
+  if (!vrp.init(VNSI_CHANNELGROUP_LIST))
+  {
+    XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
+    return false;
+  }
+
+  vrp.add_U8(bRadio);
+
+  cResponsePacket* vresp = ReadResult(&vrp);
+  if (vresp == NULL || vresp->noResponse())
+  {
+    delete vresp;
+    return false;
+  }
+
+  while (!vresp->end())
+  {
+    PVR_CHANNEL_GROUP tag;
+
+    tag.strGroupName = vresp->extract_String();
+    tag.bIsRadio = vresp->extract_U8();
+    PVR->TransferChannelGroup(handle, &tag);
+
+    delete[] tag.strGroupName;
+  }
+
+  delete vresp;
+  return true;
+}
+
+bool cVNSIData::GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
+{
+  cRequestPacket vrp;
+  if (!vrp.init(VNSI_CHANNELGROUP_MEMBERS))
+  {
+    XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
+    return false;
+  }
+
+  vrp.add_String(group.strGroupName);
+  vrp.add_U8(group.bIsRadio);
+
+  cResponsePacket* vresp = ReadResult(&vrp);
+  if (vresp == NULL || vresp->noResponse())
+  {
+    delete vresp;
+    return false;
+  }
+
+  while (!vresp->end())
+  {
+    PVR_CHANNEL_GROUP_MEMBER tag;
+    tag.strGroupName = group.strGroupName;
+    tag.iChannelUniqueId = vresp->extract_U32();
+    tag.iChannelNumber = vresp->extract_U32();
+
+    PVR->TransferChannelGroupMember(handle, &tag);
+  }
+
+  delete vresp;
+  return true;
+}

@@ -47,4 +47,5 @@
     <string id="30043">Kanalsuche - Fehler</string>
     <string id="30044">Verbindung zum VDR Server unterbrochen</string>
     <string id="30045">Verbindung zum VDR Server wiederhergestellt</string>
+    <string id="30046">Kanalgruppen automatisch am Server erzeugen</string>
 </strings>

@@ -30,6 +30,7 @@
 #define DEFAULT_HANDLE_MSG    true
 #define DEFAULT_PRIORITY      99
 #define DEFAULT_TIMEOUT       3
+#define DEFAULT_AUTOGROUPS    false
 
 extern bool         m_bCreated;
 extern std::string  g_szHostname;         ///< hostname or ip-address of the server

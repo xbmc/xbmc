@@ -56,6 +56,9 @@
 /* OPCODE 60 - 79: VNSI network functions for channel access */
 #define VNSI_CHANNELS_GETCOUNT     61
 #define VNSI_CHANNELS_GETCHANNELS  63
+#define VNSI_CHANNELGROUP_GETCOUNT 65
+#define VNSI_CHANNELGROUP_LIST     66
+#define VNSI_CHANNELGROUP_MEMBERS  67
 
 /* OPCODE 80 - 99: VNSI network functions for timer access */
 #define VNSI_TIMER_GETCOUNT        80
