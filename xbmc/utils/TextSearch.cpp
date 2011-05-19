@@ -120,7 +120,7 @@ void CTextSearch::ExtractSearchTerms(const CStdString &strSearchTerm, TextSearch
   {
     strParsedSearchTerm = strParsedSearchTerm.TrimLeft();
 
-    if (strParsedSearchTerm.Left(1).Equals("!") || strParsedSearchTerm.Left(4).Equals("NOT"))
+    if (strParsedSearchTerm.Left(1).Equals("!") || strParsedSearchTerm.Left(3).Equals("NOT"))
     {
       CStdString strDummy;
       GetAndCutNextTerm(strParsedSearchTerm, strDummy);
