@@ -299,8 +299,6 @@ bool CTCPServer::InitializeBlue()
     return false;
   }
 
-  m_servers.push_back(fd);
-
   uint8_t rfcomm_channel = sa.rc_channel;
 
   uuid_t root_uuid, l2cap_uuid, rfcomm_uuid, svc_uuid;
@@ -358,14 +356,24 @@ bool CTCPServer::InitializeBlue()
   // connect to the local SDP server, register the service record
   sdp_session_t *session = sdp_connect( &bt_bdaddr_any, &bt_bdaddr_local, SDP_RETRY_IF_BUSY );
   if(session == NULL)
-    CLog::Log(LOGERROR, "JSONRPC Server: Failed to connect to sdpd");
-  else
   {
-    if(sdp_record_register(session, record, 0) < 0)
-      CLog::Log(LOGERROR, "JSONRPC Server: Failed to register record with error %d", errno);
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to connect to sdpd");
+    closesocket(fd);
     sdp_record_free(record);
+    return false;
   }
+
+  if(sdp_record_register(session, record, 0) < 0)
+  {
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to register record with error %d", errno);
+    closesocket(fd);
+    sdp_close(session);
+    sdp_record_free(record);
+    return false;
+  }
+
   m_sdpd = session;
+  m_servers.push_back(fd);
 
   return true;
 #endif
