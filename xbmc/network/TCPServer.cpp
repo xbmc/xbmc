@@ -185,7 +185,12 @@ bool CTCPServer::Initialize()
 {
   Deinitialize();
 
-  if(InitializeBlue() || InitializeTCP())
+  bool started = false;
+
+  started |= InitializeBlue();
+  started |= InitializeTCP();
+
+  if(started)
   {
     CAnnouncementManager::AddAnnouncer(this);
     CLog::Log(LOGINFO, "JSONRPC Server: Successfully initialized");
