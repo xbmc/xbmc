@@ -159,7 +159,7 @@ JSON_STATUS CAVPlayerOperations::SeekTime(const CStdString &method, ITransportLa
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
 
-  g_application.SeekTime(parameterObject["value"].asInteger());
+  g_application.SeekTime((int)parameterObject["value"].asInteger());
   return ACK;
 }
 

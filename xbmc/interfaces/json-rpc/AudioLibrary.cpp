@@ -39,7 +39,7 @@ JSON_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLayer 
   if (!musicdatabase.Open())
     return InternalError;
 
-  int genreID = parameterObject["genreid"].asInteger();
+  int genreID = (int)parameterObject["genreid"].asInteger();
 
   // Add "artist" to "fields" array by default
   CVariant param = parameterObject;
@@ -61,10 +61,10 @@ JSON_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLayer *
   if (!musicdatabase.Open())
     return InternalError;
 
-  int artistID = parameterObject["artistid"].asInteger();
-  int genreID  = parameterObject["genreid"].asInteger();
-  int start = parameterObject["limits"]["start"].asInteger();
-  int end = parameterObject["limits"]["end"].asInteger();
+  int artistID  = (int)parameterObject["artistid"].asInteger();
+  int genreID   = (int)parameterObject["genreid"].asInteger();
+  int start     = (int)parameterObject["limits"]["start"].asInteger();
+  int end       = (int)parameterObject["limits"]["end"].asInteger();
   if (end == 0)
     end = -1;
 
@@ -78,7 +78,7 @@ JSON_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLayer *
 
 JSON_STATUS CAudioLibrary::GetAlbumDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int albumID = parameterObject["albumid"].asInteger();
+  int albumID = (int)parameterObject["albumid"].asInteger();
 
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
@@ -113,9 +113,9 @@ JSON_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer *t
   if (!musicdatabase.Open())
     return InternalError;
 
-  int artistID = parameterObject["artistid"].asInteger();
-  int albumID  = parameterObject["albumid"].asInteger();
-  int genreID  = parameterObject["genreid"].asInteger();
+  int artistID = (int)parameterObject["artistid"].asInteger();
+  int albumID  = (int)parameterObject["albumid"].asInteger();
+  int genreID  = (int)parameterObject["genreid"].asInteger();
 
   CFileItemList items;
   if (musicdatabase.GetSongsNav("", items, genreID, artistID, albumID))
@@ -127,7 +127,7 @@ JSON_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer *t
 
 JSON_STATUS CAudioLibrary::GetSongDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int idSong = parameterObject["songid"].asInteger();
+  int idSong = (int)parameterObject["songid"].asInteger();
 
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
@@ -201,9 +201,9 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   if (musicdatabase.Open())
   {
     CStdString file       = parameterObject["file"].asString();
-    int artistID          = parameterObject["artistid"].asInteger();
-    int albumID           = parameterObject["albumid"].asInteger();
-    int genreID           = parameterObject["genreid"].asInteger();
+    int artistID          = (int)parameterObject["artistid"].asInteger();
+    int albumID           = (int)parameterObject["albumid"].asInteger();
+    int genreID           = (int)parameterObject["genreid"].asInteger();
 
     CFileItem fileItem;
     if (FillFileItem(file, fileItem))
@@ -215,7 +215,7 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
     if (artistID != -1 || albumID != -1 || genreID != -1)
       success |= musicdatabase.GetSongsNav("", list, genreID, artistID, albumID);
 
-    int songID = parameterObject["songid"].asInteger(-1);
+    int songID = (int)parameterObject["songid"].asInteger(-1);
     if (songID != -1)
     {
       CSong song;

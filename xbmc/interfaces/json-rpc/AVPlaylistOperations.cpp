@@ -38,8 +38,8 @@ JSON_STATUS CAVPlaylistOperations::Play(const CStdString &method, ITransportLaye
   if (g_playlistPlayer.GetCurrentPlaylist() != playlist)
     g_playlistPlayer.SetCurrentPlaylist(playlist);
 
-  int item = parameterObject["item"].asInteger();
-  int songId = parameterObject["songid"].asInteger();
+  int item    = (int)parameterObject["item"].asInteger();
+  int songId  = (int)parameterObject["songid"].asInteger();
 
   if (item >= 0)
     g_application.getApplicationMessenger().PlayListPlayerPlay(item);
@@ -125,7 +125,7 @@ JSON_STATUS CAVPlaylistOperations::Insert(const CStdString &method, ITransportLa
   if (!FillFileItemList(params["item"], list))
     return InvalidParams;
 
-  g_application.getApplicationMessenger().PlayListPlayerInsert(GetPlaylist(method), list, parameterObject["index"].asInteger());
+  g_application.getApplicationMessenger().PlayListPlayerInsert(GetPlaylist(method), list, (int)parameterObject["index"].asInteger());
 
   NotifyAll();
   return ACK;
@@ -133,7 +133,7 @@ JSON_STATUS CAVPlaylistOperations::Insert(const CStdString &method, ITransportLa
 
 JSON_STATUS CAVPlaylistOperations::Remove(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  g_application.getApplicationMessenger().PlayListPlayerRemove(GetPlaylist(method), parameterObject["item"].asInteger());
+  g_application.getApplicationMessenger().PlayListPlayerRemove(GetPlaylist(method), (int)parameterObject["item"].asInteger());
 
   NotifyAll();
   return ACK;

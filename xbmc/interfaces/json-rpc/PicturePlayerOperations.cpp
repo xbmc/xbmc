@@ -77,7 +77,7 @@ JSON_STATUS CPicturePlayerOperations::ZoomIn(const CStdString &method, ITranspor
 
 JSON_STATUS CPicturePlayerOperations::Zoom(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return SendAction(ACTION_ZOOM_LEVEL_NORMAL + (parameterObject["value"].asInteger() - 1));
+  return SendAction(ACTION_ZOOM_LEVEL_NORMAL + ((int)parameterObject["value"].asInteger() - 1));
 }
 
 JSON_STATUS CPicturePlayerOperations::Rotate(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

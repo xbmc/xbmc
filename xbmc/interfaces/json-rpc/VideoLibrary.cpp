@@ -44,7 +44,7 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
 
 JSON_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int id = parameterObject["movieid"].asInteger();
+  int id = (int)parameterObject["movieid"].asInteger();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -82,7 +82,7 @@ JSON_STATUS CVideoLibrary::GetMovieSets(const CStdString &method, ITransportLaye
 
 JSON_STATUS CVideoLibrary::GetMovieSetDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int id = parameterObject["setid"].asInteger();
+  int id = (int)parameterObject["setid"].asInteger();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -146,7 +146,7 @@ JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer 
 
 JSON_STATUS CVideoLibrary::GetTVShowDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int id = parameterObject["tvshowid"].asInteger();
+  int id = (int)parameterObject["tvshowid"].asInteger();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -170,7 +170,7 @@ JSON_STATUS CVideoLibrary::GetTVShowDetails(const CStdString &method, ITransport
 
 JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int tvshowID = parameterObject["tvshowid"].asInteger();
+  int tvshowID = (int)parameterObject["tvshowid"].asInteger();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -186,8 +186,8 @@ JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer 
 
 JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int tvshowID = parameterObject["tvshowid"].asInteger();
-  int season   = parameterObject["season"].asInteger();
+  int tvshowID = (int)parameterObject["tvshowid"].asInteger();
+  int season   = (int)parameterObject["season"].asInteger();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -220,7 +220,7 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
 
 JSON_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int id = parameterObject["episodeid"].asInteger();
+  int id = (int)parameterObject["episodeid"].asInteger();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -244,8 +244,8 @@ JSON_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITranspor
 
 JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int artistID = parameterObject["artistid"].asInteger();
-  int albumID  = parameterObject["albumid"].asInteger();
+  int artistID = (int)parameterObject["artistid"].asInteger();
+  int albumID  = (int)parameterObject["albumid"].asInteger();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -261,7 +261,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLa
 
 JSON_STATUS CVideoLibrary::GetMusicVideoDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int id = parameterObject["musicvideoid"].asInteger();
+  int id = (int)parameterObject["musicvideoid"].asInteger();
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -390,9 +390,9 @@ bool CVideoLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   if (videodatabase.Open())
   {
     CStdString file   = parameterObject["file"].asString();
-    int movieID       = parameterObject["movieid"].asInteger();
-    int episodeID     = parameterObject["episodeid"].asInteger();
-    int musicVideoID  = parameterObject["musicvideoid"].asInteger();
+    int movieID       = (int)parameterObject["movieid"].asInteger();
+    int episodeID     = (int)parameterObject["episodeid"].asInteger();
+    int musicVideoID  = (int)parameterObject["musicvideoid"].asInteger();
 
     bool success = false;
     CFileItem fileItem;

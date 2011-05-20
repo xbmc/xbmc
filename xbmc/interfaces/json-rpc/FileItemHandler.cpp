@@ -101,8 +101,8 @@ void CFileItemHandler::MakeFieldsList(const CVariant &parameterObject, CVariant 
 void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result)
 {
   int size  = items.Size();
-  int start = parameterObject["limits"]["start"].asInteger();
-  int end   = parameterObject["limits"]["end"].asInteger();
+  int start = (int)parameterObject["limits"]["start"].asInteger();
+  int end   = (int)parameterObject["limits"]["end"].asInteger();
   end = (end <= 0 || end > size) ? size : end;
   start = start > end ? end : start;
 

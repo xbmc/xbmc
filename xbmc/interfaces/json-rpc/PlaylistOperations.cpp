@@ -132,7 +132,7 @@ JSON_STATUS CPlaylistOperations::Remove(const CStdString &method, ITransportLaye
   if (playlist)
   {
     if (parameterObject["item"].isInteger())
-      playlist->Remove(parameterObject["item"].asInteger());
+      playlist->Remove((int)parameterObject["item"].asInteger());
     else if (parameterObject["item"].isString())
       playlist->Remove(parameterObject["item"].asString());
 
@@ -147,7 +147,7 @@ JSON_STATUS CPlaylistOperations::Swap(const CStdString &method, ITransportLayer 
   CSingleLock lock(VirtualCriticalSection);
   CPlayListPtr playlist = GetPlaylist(parameterObject);
 
-  if (playlist && playlist->Swap(parameterObject["item1"].asInteger(), parameterObject["item2"].asInteger()))
+  if (playlist && playlist->Swap((int)parameterObject["item1"].asInteger(), (int)parameterObject["item2"].asInteger()))
     return ACK;
 
   return InvalidParams;

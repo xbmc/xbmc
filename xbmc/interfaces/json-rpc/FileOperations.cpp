@@ -141,14 +141,14 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
     {
       result["files"][index]["filetype"] = "directory";
     }
-    int count = result["limits"]["total"].asInteger();
+    int count = (int)result["limits"]["total"].asInteger();
 
     HandleFileItemList("id", true, "files", filteredFiles, param, result);
     for (unsigned int index = count; index < result["files"].size(); index++)
     {
       result["files"][index]["filetype"] = "file";
     }
-    count += result["limits"]["total"].asInteger();
+    count += (int)result["limits"]["total"].asInteger();
 
     result["limits"]["end"] = count;
     result["limits"]["total"] = count;
