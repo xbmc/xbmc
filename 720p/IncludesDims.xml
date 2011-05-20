@@ -16,7 +16,7 @@
 		<align>right</align>
 	</include>
 	<include name="MediaCountBGDims">
-		<posx>-20</posx>
+		<posx>-15</posx>
 		<posy>1</posy>
 		<width>160</width>
 		<height>28</height>
@@ -1205,12 +1205,12 @@
 		<width>352</width>
 	</include>
 	<include name="TopOverlaySecondTitleAreaBGDims">
-		<posx>300</posx>
+		<posx>360</posx>
 		<width>310</width>
 	</include>
 	<include name="TopOverlaySecondTitleAreaTextDims">
-		<posx>588</posx>
-		<width>164</width>
+		<posx>650</posx>
+		<width>250</width>
 	</include>
 	<include name="MediaInfoCaptionDims">
 		<posx>0</posx>
@@ -1395,7 +1395,7 @@
 		<height>25</height>
 	</include>
 	<include name="TVEpisodeItemOverlayDimsWide">
-		<posx>557</posx>
+		<posx>740</posx>
 		<posy>4</posy>
 		<width>35</width>
 		<height>35</height>

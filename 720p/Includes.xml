@@ -1,157 +1,5 @@
 <?xml version="1.0"?>
 <includes>
-	<include name="Search_Label">
-		<posx>15</posx>
-		<font>MediaPreviewDetailsHeader</font>
-		<textcolor>HomeMain</textcolor>
-		<shadowcolor>FF222222</shadowcolor>
-		<width>278</width>
-		<height>30</height>
-	</include>
-	<include name="Search_Label_Unfocused">
-		<posx>15</posx>
-		<font>MediaPreviewDetailsHeader</font>
-		<textcolor>Unfocused</textcolor>
-		<shadowcolor>FF222222</shadowcolor>
-		<width>278</width>
-		<height>30</height>
-	</include>
-	<include name="Search_Result">
-		<posx>0</posx>
-		<posy>0</posy>
-		<width>880</width>
-		<itemlayout width="140" height="200">
-			<control type="image">
-				<posx>15</posx>
-				<posy>10</posy>
-				<width>128</width>
-				<height>140</height>
-				<info>ListItem.Thumb</info>
-				<aspectratio aligny="bottom">keep</aspectratio>
-			</control>
-			<control type="label">
-				<visible>ListItem.Type(episode)</visible>
-				<posx>81</posx>
-				<posy>160</posy>
-				<width>130</width>
-				<align>center</align>
-				<aligny>center</aligny>
-				<scroll>false</scroll>
-				<label>$INFO[ListItem.tvshowtitle]</label>
-				<font>MediumSmallTitleFont</font>
-				<textcolor>FF999999</textcolor>
-				<wrapmultiline>false</wrapmultiline>
-			</control>
-			<control type="label">
-				<visible>ListItem.Type(album) | ListItem.Type(track)</visible>
-				<posx>81</posx>
-				<posy>160</posy>
-				<width>130</width>
-				<align>center</align>
-				<aligny>center</aligny>
-				<scroll>false</scroll>
-				<label>$INFO[ListItem.artist]</label>
-				<font>MediumSmallTitleFont</font>
-				<textcolor>FF999999</textcolor>
-				<wrapmultiline>false</wrapmultiline>
-			</control>
-			<control type="label">
-				<posx>81</posx>
-				<posy>180</posy>
-				<width>130</width>
-				<align>center</align>
-				<aligny>center</aligny>
-				<scroll>false</scroll>
-				<label>$INFO[ListItem.Title]</label>
-				<font>MediumSmallTitleFont</font>
-				<textcolor>FF999999</textcolor>
-				<wrapmultiline>false</wrapmultiline>
-			</control>
-		</itemlayout>
-		<focusedlayout width="140" height="200">
-			<control type="image">
-				<posx>15</posx>
-				<posy>10</posy>
-				<width>128</width>
-				<height>140</height>
-				<info>ListItem.Thumb</info>
-				<aspectratio aligny="bottom">keep</aspectratio>
-			</control>
-			<control type="label">
-				<visible>ListItem.Type(episode)</visible>
-				<posx>81</posx>
-				<posy>160</posy>
-				<width>130</width>
-				<align>center</align>
-				<aligny>center</aligny>
-				<scroll>false</scroll>
-				<label>$INFO[ListItem.tvshowtitle]</label>
-				<font>MediumSmallTitleFont</font>
-				<textcolor>FFFFFFFF</textcolor>
-				<wrapmultiline>false</wrapmultiline>
-			</control>
-			<control type="label">
-				<visible>ListItem.Type(album) | ListItem.Type(track)</visible>
-				<posx>81</posx>
-				<posy>160</posy>
-				<width>130</width>
-				<align>center</align>
-				<aligny>center</aligny>
-				<scroll>false</scroll>
-				<label>$INFO[ListItem.artist]</label>
-				<font>MediumSmallTitleFont</font>
-				<textcolor>FFFFFFFF</textcolor>
-				<wrapmultiline>false</wrapmultiline>
-			</control>
-			<control type="label">
-				<posx>81</posx>
-				<posy>180</posy>
-				<width>130</width>
-				<align>center</align>
-				<aligny>center</aligny>
-				<scroll>false</scroll>
-				<label>$INFO[ListItem.Title]</label>
-				<font>MediumSmallTitleFont</font>
-				<textcolor>FFFFFFFF</textcolor>
-				<wrapmultiline>false</wrapmultiline>
-			</control>
-		</focusedlayout>
-	</include>
-	<include name="Search_Keyboard_Button">
-		<width>45</width>
-		<height>40</height>
-		<font>LargeSearchFont</font>
-		<textcolor>HomeMain</textcolor>
-		<focusedcolor>Focused</focusedcolor>
-		<align>center</align>
-		<aligny>center</aligny>
-		<texturefocus>plex-search-button.png</texturefocus>
-		<textureclick border="10">-</textureclick>
-	</include>
-	<include name="Search_Keyboard_ToggleButton">
-		<width>36</width>
-		<height>36</height>
-		<font>LargeDefaultFont</font>
-		<textcolor>HomeMain</textcolor>
-		<focusedcolor>Focused</focusedcolor>
-		<align>center</align>
-		<aligny>center</aligny>
-		<texturenofocus border="18" diffuse="grey.png">button_keyboard.png</texturenofocus>
-		<texturefocus border="18" diffuse="masks/10b9f2.png">button_keyboard.png</texturefocus>
-		<textureclick border="18">-</textureclick>
-	</include>
-	<include name="Search_Keyboard_Big_Button">
-		<width>80</width>
-		<height>80</height>
-		<font>LargeDefaultFont</font>
-		<textcolor>HomeMain</textcolor>
-		<focusedcolor>Focused</focusedcolor>
-		<align>center</align>
-		<aligny>center</aligny>
-		<texturenofocus>button_kb.png</texturenofocus>
-		<texturefocus>button_kb_on.png</texturefocus>
-		<textureclick>button_kb_click.png</textureclick>
-	</include>
 	<include file="Defaults.xml"/>
 	<include file="IncludesDims.xml"/>
 	<include file="revision.xml"/>
@@ -603,9 +451,6 @@
 	</include>
 	<include name="StarRatingDetails">
 		<control type="group">
-			<!--
-      <visible>!IsEmpty(ListItem.Rating)</visible>
--->
 			<control type="label">
 				<description>Star Rating caption</description>
 				<font>DefaultCapsFont</font>
@@ -1531,30 +1376,6 @@
 		<animation effect="fade" start="0" end="100" time="500" delay="0" condition="Window.Previous(home)">Conditional</animation>
 		<animation effect="fade" start="100" end="0" time="200" delay="0" condition="Window.Next(home)">Conditional</animation>
 	</include>
-	<!-- Common Content -->
-	<!--<include name="ClockBG">
-		<posx>0</posx>
-		<posy>1</posy>
-		<include>ClockBGDims</include>
-		<texture border="36,0,12,0">ClockBackground.png</texture>
-	</include>
-	<include name="ClockText">
-		<height>32</height>
-		<font>MediumAltDefaultFont</font>
-		<align>right</align>
-		<aligny>center</aligny>
-		<posx>-1</posx>
-	</include>
-	<include name="ClockBGText">
-		<info>System.Time(short)</info>
-		<textcolor>FFFF9900</textcolor>
-		<include>ClockText</include>
-		<visible>true</visible>
-	</include>
-	<include name="ClockFGText">
-		<info>System.Time(short_no_meridian)</info>
-		<include>ClockText</include>
-	</include>-->
 	<include name="Clock">
 		<control type="group" id="1">
 			<posx>30</posx>
@@ -1604,8 +1425,8 @@
 		<posx>12</posx>
 		<posy>3</posy>
 		<width min="1" max="200">auto</width>
-		<font>SmallTitleCapsFont</font>
-		<textcolor>Unfocused</textcolor>
+		<font>MediumAltDefaultFont</font>
+		<!--<textcolor>Unfocused</textcolor>-->
 	</include>
 	<include name="MediaCountNumLabel">
 		<!--<posy>-1</posy>-->
@@ -1778,12 +1599,6 @@
 	<include name="ListViewVisible">
 		<visible>Control.IsVisible(50)</visible>
 	</include>
-	<!--
-    <include name="NoScrollbarsListView">
-    	<pagecontrol>-</pagecontrol>
-    	<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-  	</include>
-	-->
 	<include name="NoIconsListView">
 		<posx>-470</posx>
 		<width>1280</width>
@@ -1929,12 +1744,6 @@
 	<include name="InfoListVisible">
 		<visible>Control.IsVisible(56)</visible>
 	</include>
-	<!--
-	<include name="InfoListNoScrollbars">
-    	<pagecontrol>-</pagecontrol>
-    	<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-	</include>
-	-->
 	<constant name="InfoListTitleWidth">380</constant>
 	<include name="InfoListItemDetailInfo">
 		<posx>456</posx>
@@ -1973,11 +1782,6 @@
 	<include name="PanelStreamVisible">
 		<visible>Control.IsVisible(52)</visible>
 	</include>
-	<!--
-	<include name="GridViewVisible">
-		<visible>Control.IsVisible(59)</visible>
-	</include>
-	-->
 	<constant name="PanelStreamDetailTextWidth">430</constant>
 	<constant name="PanelStreamEpisodeDetailTextWidth">480</constant>
 	<include name="PanelStreamImage">
@@ -2005,12 +1809,6 @@
 		<bordertexture>amt-blank-poster-focus.png</bordertexture>
 		<bordersize>3</bordersize>
 	</include>
-	<!--
-	<include name="PanelStreamNoThumb">
-    	<include>PanelStreamNoThumbDims</include>
-    	<include>NoThumbLabel</include>
-    </include>
-	-->
 	<include name="PanelStreamNoThumbFade">
 		<animation effect="fade" start="70" end="70" time="0" condition="true">Conditional</animation>
 	</include>
@@ -4800,5 +4598,166 @@
 		<height>140</height>
 		<info>ListItem.Icon</info>
 		<aspectratio>keep</aspectratio>
+	</include>
+	<!-- Search -->	
+	<include name="Search_Header_background">
+		<posx>1</posx>
+		<texture>plex-search-header.png</texture>
+		<width>910</width>
+	</include>
+	<include name="Search_Label">
+		<posy>7</posy>
+		<posx>880</posx>
+		<align>right</align>
+		<font>MediaPreviewDetailsHeader</font>
+		<textcolor>orange</textcolor>
+		<width>278</width>
+		<height>30</height>
+	</include>
+	<include name="Search_Label_Unfocused">
+		<posy>7</posy>
+		<posx>880</posx>
+		<align>right</align>
+		<font>MediaPreviewDetailsHeader</font>
+		<textcolor>Unfocused</textcolor>
+		<width>278</width>
+		<height>30</height>
+	</include>
+	<include name="Search_Result">
+		<posx>0</posx>
+		<posy>0</posy>
+		<width>880</width>
+		<itemlayout width="140" height="200">
+			<control type="image">
+				<posx>15</posx>
+				<posy>10</posy>
+				<width>128</width>
+				<height>140</height>
+				<info>ListItem.Thumb</info>
+				<aspectratio aligny="bottom">keep</aspectratio>
+			</control>
+			<control type="label">
+				<visible>ListItem.Type(episode)</visible>
+				<posx>81</posx>
+				<posy>160</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.tvshowtitle]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FF999999</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+			<control type="label">
+				<visible>ListItem.Type(album) | ListItem.Type(track)</visible>
+				<posx>81</posx>
+				<posy>160</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.artist]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FF999999</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+			<control type="label">
+				<posx>81</posx>
+				<posy>180</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.Title]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FF999999</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+		</itemlayout>
+		<focusedlayout width="140" height="200">
+			<control type="image">
+				<posx>15</posx>
+				<posy>10</posy>
+				<width>128</width>
+				<height>140</height>
+				<info>ListItem.Thumb</info>
+				<aspectratio aligny="bottom">keep</aspectratio>
+			</control>
+			<control type="label">
+				<visible>ListItem.Type(episode)</visible>
+				<posx>81</posx>
+				<posy>160</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.tvshowtitle]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+			<control type="label">
+				<visible>ListItem.Type(album) | ListItem.Type(track)</visible>
+				<posx>81</posx>
+				<posy>160</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.artist]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+			<control type="label">
+				<posx>81</posx>
+				<posy>180</posy>
+				<width>130</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.Title]</label>
+				<font>MediumSmallTitleFont</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+		</focusedlayout>
+	</include>
+	<include name="Search_Keyboard_Button">
+		<width>45</width>
+		<height>45</height>
+		<font>LargeSearchFont</font>
+		<textcolor>FF999999</textcolor>
+		<focusedcolor>Focused</focusedcolor>
+		<align>center</align>
+		<aligny>center</aligny>
+		<texturefocus border="10">plex-search-button.png</texturefocus>
+		<textureclick border="10">-</textureclick>
+		<colordiffuse>orange</colordiffuse>
+	</include>
+	<include name="Search_Keyboard_ToggleButton">
+		<width>36</width>
+		<height>36</height>
+		<font>LargeDefaultFont</font>
+		<textcolor>HomeMain</textcolor>
+		<focusedcolor>Focused</focusedcolor>
+		<align>center</align>
+		<aligny>center</aligny>
+		<texturenofocus border="18" diffuse="grey.png">button_keyboard.png</texturenofocus>
+		<texturefocus border="18" diffuse="masks/10b9f2.png">button_keyboard.png</texturefocus>
+		<textureclick border="18">-</textureclick>
+	</include>
+	<include name="Search_Keyboard_Big_Button">
+		<width>80</width>
+		<height>80</height>
+		<font>LargeDefaultFont</font>
+		<textcolor>HomeMain</textcolor>
+		<focusedcolor>Focused</focusedcolor>
+		<align>center</align>
+		<aligny>center</aligny>
+		<texturenofocus>button_kb.png</texturenofocus>
+		<texturefocus>button_kb_on.png</texturefocus>
+		<textureclick>button_kb_click.png</textureclick>
 	</include>
 </includes>

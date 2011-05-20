@@ -14,8 +14,8 @@
 		<control type="group">
 			<control type="image">
 				<visible>true</visible>
-				<posx>820</posx>
-				<posy>530</posy>
+				<posx>930</posx>
+				<posy>382</posy>
 				<height>60</height>
 				<info>Listitem.Property(mediaTag::contentRating)</info>
 				<aspectratio>keep</aspectratio>
@@ -23,11 +23,12 @@
 			</control>
 			<control type="image">
 				<visible>true</visible>
-				<posx>930</posx>
-				<posy>530</posy>
+				<posx>210r</posx>
+				<posy>382</posy>
 				<height>60</height>
 				<info>Listitem.Property(mediaTag::Studio)</info>
 				<aspectratio>keep</aspectratio>
+				<align>right</align>
 				<aligny>center</aligny>
 			</control>
 		</control>
@@ -45,8 +46,8 @@
 			<visible>!Container.Content(tvshows)</visible>
 		</control>
 		<control type="image">
-			<posy>-335</posy>
-			<posx>300</posx>
+			<posy>-20</posy>
+			<posx>400</posx>
 			<height>60</height>
 			<width min="1" max="95">auto</width>
 			<info>Listitem.Property(mediaTag::contentRating)</info>
@@ -98,10 +99,11 @@
 		</control>
 		<control type="image">
 			<visible>!IsEmpty(Listitem.Property(mediaTag::studio)) + Container.Content(tvshows)</visible>
-			<posx>500</posx>
+			<posx>530</posx>
 			<posy>-25</posy>
 			<height>80</height>
-			<width min="1" max="135">auto</width>
+			<width>100</width>
+			<align>right</align>
 			<info>Listitem.Property(mediaTag::studio)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
