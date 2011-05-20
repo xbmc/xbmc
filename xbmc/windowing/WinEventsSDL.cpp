@@ -138,7 +138,7 @@ static uint16_t SymMappingsUbuntu[][2] =
 };
 
 // Called once. Checks whether evdev is loaded and sets m_bEvdev accordingly.
-void InitEvdev(void)
+static void InitEvdev(void)
 {
   // Set m_bEvdevInit to indicate we have been initialised
   m_bEvdevInit = true;
@@ -180,7 +180,7 @@ void InitEvdev(void)
 
 // Check the scan code and return the matching sym, or zero if the scan code
 // is unknown.
-uint16_t SymFromScancode(uint16_t scancode)
+static uint16_t SymFromScancode(uint16_t scancode)
 {
   int i;
 
