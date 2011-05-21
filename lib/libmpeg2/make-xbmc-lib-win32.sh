@@ -5,7 +5,7 @@ then
 rm -r libmpeg2/.libs
 fi
 
-if [ -f config.log ]
+if [ "$1" == "clean" ]
 then
 make distclean
 fi

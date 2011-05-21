@@ -5,7 +5,7 @@ then
 rm -r .libs
 fi
 
-if [ -f config.mak ]
+if [ "$1" == "clean" ]
 then
 make distclean
 fi
