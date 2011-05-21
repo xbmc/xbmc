@@ -350,7 +350,7 @@ VECSOURCES& CGUIViewState::GetSources()
 
 void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString &label, const CStdString &thumb)
 {
-  if (!g_advancedSettings.m_bVirtualShares)
+  if (!g_advancedSettings.CanUseVirtualShares())
     return;
 
   CFileItemList items;

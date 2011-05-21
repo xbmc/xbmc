@@ -97,7 +97,7 @@ bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
 
-  m_useD3D9Ex = (g_advancedSettings.m_AllowD3D9Ex && g_sysinfo.IsVistaOrHigher() && LoadD3D9Ex());
+  m_useD3D9Ex = (g_advancedSettings.AllowD3D9Ex() && g_sysinfo.IsVistaOrHigher() && LoadD3D9Ex());
   m_pD3D = NULL;
 
   if (m_useD3D9Ex)
@@ -114,7 +114,7 @@ bool CRenderSystemDX::InitRenderSystem()
       memset(&caps, 0, sizeof(caps));
       m_pD3D->GetDeviceCaps(D3DADAPTER_DEFAULT, m_devType, &caps);
       // Evaluate if the driver is WDDM - this detection method is not guaranteed 100%
-      if (!g_advancedSettings.m_ForceD3D9Ex && (!(caps.Caps2 & D3DCAPS2_CANSHARERESOURCE) || !(caps.DevCaps2 & D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES)))
+      if (!g_advancedSettings.ForceD3D9Ex() && (!(caps.Caps2 & D3DCAPS2_CANSHARERESOURCE) || !(caps.DevCaps2 & D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES)))
       {
         CLog::Log(LOGDEBUG, __FUNCTION__" - driver looks like XPDM or earlier, falling back to D3D9");
         m_useD3D9Ex = false;
@@ -450,7 +450,7 @@ bool CRenderSystemDX::CreateDevice()
 
   m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
 
-  if (g_advancedSettings.m_AllowDynamicTextures && m_useD3D9Ex && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
+  if (g_advancedSettings.AllowDynamicTextures() && m_useD3D9Ex && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
   {
     m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
     m_defaultD3DPool  = D3DPOOL_DEFAULT;

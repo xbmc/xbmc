@@ -379,8 +379,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       g_application.ProcessMouse();
       break;
     case XBMC_VIDEORESIZE:
-      if (!g_application.m_bInitializing &&
-          !g_advancedSettings.m_fullScreen)
+      if (!g_application.m_bInitializing && !g_advancedSettings.IsInFullScreen())
       {
         g_Windowing.SetWindowResolution(newEvent.resize.w, newEvent.resize.h);
         g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
@@ -664,7 +663,7 @@ bool CApplication::Create()
   // update the window resolution
   g_Windowing.SetWindowResolution(g_guiSettings.GetInt("window.width"), g_guiSettings.GetInt("window.height"));
 
-  if (g_advancedSettings.m_startFullScreen && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)
+  if (g_advancedSettings.StartFullScreen() && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)
     g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
 
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
@@ -701,7 +700,7 @@ bool CApplication::Create()
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
 
-  if (g_advancedSettings.m_splashImage)
+  if (g_advancedSettings.ShowSplash())
   {
     CStdString strUserSplash = "special://home/media/Splash.png";
     if (CFile::Exists(strUserSplash))
@@ -1130,7 +1129,7 @@ bool CApplication::Initialize()
       FatalErrorHandler(true, true, true);
   }
 
-  if (g_advancedSettings.m_splashImage)
+  if (g_advancedSettings.ShowSplash())
     SAFE_DELETE(m_splash);
 
   if (g_guiSettings.GetBool("masterlock.startuplock") &&

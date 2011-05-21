@@ -2241,7 +2241,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 
   __int64 seek;
-  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
+  if (g_advancedSettings.CanVideoUseTimeSeeking() && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
   {
     if (bLargeStep)
       seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;

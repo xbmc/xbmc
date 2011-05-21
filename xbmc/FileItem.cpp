@@ -607,7 +607,7 @@ bool CFileItem::IsFileFolder() const
 {
   return (
     IsSmartPlayList() ||
-   (IsPlayList() && g_advancedSettings.m_playlistAsFolders) ||
+   (IsPlayList() && g_advancedSettings.ShowPlaylistAsFolders()) ||
     IsZIP() ||
     IsRAR() ||
     IsRSS() ||
