@@ -237,7 +237,6 @@ void CAdvancedSettings::Initialize()
                                   //with ipv6.
 
   m_fullScreen = m_startFullScreen = false;
-  m_showExitButton = true;
   m_splashImage = true;
 
   m_playlistRetries = 100;
@@ -634,7 +633,6 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif
   XMLUtils::GetBoolean(pRootElement, "splash", m_splashImage);
-  XMLUtils::GetBoolean(pRootElement, "showexitbutton", m_showExitButton);
 
   XMLUtils::GetInt(pRootElement, "songinfoduration", m_songInfoDuration, 0, INT_MAX);
   XMLUtils::GetInt(pRootElement, "busydialogdelay", m_busyDialogDelay, 0, 5000);
