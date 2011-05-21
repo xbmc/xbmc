@@ -5160,12 +5160,6 @@ double CApplication::GetTotalTime() const
   return rc;
 }
 
-void CApplication::ResetPlayTime()
-{
-  if (IsPlaying() && m_pPlayer)
-    m_pPlayer->ResetTime();
-}
-
 void CApplication::StopShutdownTimer()
 {
   if (m_shutdownTimer.IsRunning())

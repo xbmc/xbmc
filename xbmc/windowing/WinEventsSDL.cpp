@@ -31,9 +31,183 @@
 #include "osx/CocoaInterface.h"
 #endif
 
+#if defined(_LINUX) && !defined(__APPLE__)
+#include <X11/Xlib.h>
+#include <X11/XKBlib.h>
+#include "input/XBMC_keysym.h"
+#include "utils/log.h"
+#endif
+
 #ifdef HAS_SDL_WIN_EVENTS
 
 PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
+
+#if defined(_LINUX) && !defined(__APPLE__)
+// The following chunk of code is Linux specific. For keys that have
+// with keysym.sym set to zero it checks the scan code, and sets the sym
+// for some known scan codes. This is mostly the multimedia keys.
+// Note that the scan code to sym mapping is different with and without
+// the evdev driver so we need to check if evdev is loaded.
+
+// m_bEvdev == true if evdev is loaded
+static bool m_bEvdev = true;
+// We need to initialise some local storage once. Set m_bEvdevInit to true
+// once the initialisation has been done
+static bool m_bEvdevInit = false;
+
+// Mappings of scancodes to syms for the evdev driver
+static uint16_t SymMappingsEvdev[][2] =
+{ { 121, XBMCK_VOLUME_MUTE }         // Volume mute
+, { 122, XBMCK_VOLUME_DOWN }         // Volume down
+, { 123, XBMCK_VOLUME_UP }           // Volume up
+, { 127, XBMCK_SPACE }               // Pause
+, { 135, XBMCK_MENU }                // Right click
+, { 136, XBMCK_MEDIA_STOP }          // Stop
+, { 138, 0x49 /* 'I' */}             // Info
+, { 147, 0x4d /* 'M' */}             // Menu
+, { 148, XBMCK_LAUNCH_APP2 }         // Launch app 2
+, { 150, 0x9f }                      // Sleep
+, { 152, XBMCK_LAUNCH_APP1 }         // Launch app 1
+, { 163, XBMCK_LAUNCH_MAIL }         // Launch Mail
+, { 164, XBMCK_BROWSER_FAVORITES }   // Browser favorites
+, { 166, XBMCK_BROWSER_BACK }        // Back
+, { 167, XBMCK_BROWSER_FORWARD }     // Browser forward
+, { 171, XBMCK_MEDIA_NEXT_TRACK }    // Next track
+, { 172, XBMCK_MEDIA_PLAY_PAUSE }    // Play_Pause
+, { 173, XBMCK_MEDIA_PREV_TRACK }    // Prev track
+, { 174, XBMCK_MEDIA_STOP }          // Stop
+, { 176, 0x52 /* 'R' */}             // Rewind
+, { 179, XBMCK_LAUNCH_MEDIA_SELECT } // Launch media select
+, { 180, XBMCK_BROWSER_HOME }        // Browser home
+, { 181, XBMCK_BROWSER_REFRESH }     // Browser refresh
+, { 214, XBMCK_ESCAPE }              // Close
+, { 215, XBMCK_MEDIA_PLAY_PAUSE }    // Play_Pause
+, { 216, 0x46 /* 'F' */}             // Forward
+//, {167, 0xb3 } // Record
+};
+
+// The non-evdev mappings need to be checked. At the moment XBMC will never
+// use them anyway.
+static uint16_t SymMappingsUbuntu[][2] =
+{ { 0xf5, XBMCK_F13 } // F13 Launch help browser
+, { 0x87, XBMCK_F14 } // F14 undo
+, { 0x8a, XBMCK_F15 } // F15 redo
+, { 0x89, 0x7f } // F16 new
+, { 0xbf, 0x80 } // F17 open
+, { 0xaf, 0x81 } // F18 close
+, { 0xe4, 0x82 } // F19 reply
+, { 0x8e, 0x83 } // F20 forward
+, { 0xda, 0x84 } // F21 send
+//, { 0x, 0x85 } // F22 check spell (doesn't work for me with ubuntu)
+, { 0xd5, 0x86 } // F23 save
+, { 0xb9, 0x87 } // 0x2a?? F24 print
+        // end of special keys above F1 till F12
+
+, { 234,  XBMCK_BROWSER_BACK } // Browser back
+, { 233,  XBMCK_BROWSER_FORWARD } // Browser forward
+, { 231,  XBMCK_BROWSER_REFRESH } // Browser refresh
+//, { , XBMCK_BROWSER_STOP } // Browser stop
+, { 122,  XBMCK_BROWSER_SEARCH } // Browser search
+, { 0xe5, XBMCK_BROWSER_SEARCH } // Browser search
+, { 230,  XBMCK_BROWSER_FAVORITES } // Browser favorites
+, { 130,  XBMCK_BROWSER_HOME } // Browser home
+, { 0xa0, XBMCK_VOLUME_MUTE } // Volume mute
+, { 0xae, XBMCK_VOLUME_DOWN } // Volume down
+, { 0xb0, XBMCK_VOLUME_UP } // Volume up
+, { 0x99, XBMCK_MEDIA_NEXT_TRACK } // Next track
+, { 0x90, XBMCK_MEDIA_PREV_TRACK } // Prev track
+, { 0xa4, XBMCK_MEDIA_STOP } // Stop
+, { 0xa2, XBMCK_MEDIA_PLAY_PAUSE } // Play_Pause
+, { 0xec, XBMCK_LAUNCH_MAIL } // Launch mail
+, { 129,  XBMCK_LAUNCH_MEDIA_SELECT } // Launch media_select
+, { 198,  XBMCK_LAUNCH_APP1 } // Launch App1/PC icon
+, { 0xa1, XBMCK_LAUNCH_APP2 } // Launch App2/Calculator
+, { 34, 0x3b /* vkey 0xba */} // OEM 1: [ on us keyboard
+, { 51, 0x2f /* vkey 0xbf */} // OEM 2: additional key on european keyboards between enter and ' on us keyboards
+, { 47, 0x60 /* vkey 0xc0 */} // OEM 3: ; on us keyboards
+, { 20, 0xdb } // OEM 4: - on us keyboards (between 0 and =)
+, { 49, 0xdc } // OEM 5: ` on us keyboards (below ESC)
+, { 21, 0xdd } // OEM 6: =??? on us keyboards (between - and backspace)
+, { 48, 0xde } // OEM 7: ' on us keyboards (on right side of ;)
+//, { 0, 0xdf } // OEM 8
+, { 94, 0xe2 } // OEM 102: additional key on european keyboards between left shift and z on us keyboards
+//, { 0xb2, 0x } // Ubuntu default setting for launch browser
+//, { 0x76, 0x } // Ubuntu default setting for launch music player
+//, { 0xcc, 0x } // Ubuntu default setting for eject
+, { 117, 0x5d } // right click
+};
+
+// Called once. Checks whether evdev is loaded and sets m_bEvdev accordingly.
+static void InitEvdev(void)
+{
+  // Set m_bEvdevInit to indicate we have been initialised
+  m_bEvdevInit = true;
+
+  Display* dpy = XOpenDisplay(NULL);
+  if (!dpy)
+  {
+    CLog::Log(LOGERROR, "CWinEventsSDL::CWinEventsSDL - XOpenDisplay failed");
+    return;
+  }
+
+  XkbDescPtr desc;
+  char* symbols;
+
+  desc = XkbGetKeyboard(dpy, XkbAllComponentsMask, XkbUseCoreKbd);
+  if(!desc)
+  {
+    XCloseDisplay(dpy);
+    CLog::Log(LOGERROR, "CWinEventsSDL::CWinEventsSDL - XkbGetKeyboard failed");
+    return;
+  }
+
+  symbols = XGetAtomName(dpy, desc->names->symbols);
+  if(symbols)
+  {
+    CLog::Log(LOGDEBUG, "CWinEventsSDL::CWinEventsSDL - XKb symbols %s", symbols);
+    if(strstr(symbols, "(evdev)"))
+      m_bEvdev = true;
+    else
+      m_bEvdev = false;
+  }
+
+  XFree(symbols);
+  XkbFreeKeyboard(desc, XkbAllComponentsMask, True);
+  XCloseDisplay(dpy);
+
+  CLog::Log(LOGDEBUG, "CWinEventsSDL::CWinEventsSDL - m_bEvdev = %d", m_bEvdev);
+}
+
+// Check the scan code and return the matching sym, or zero if the scan code
+// is unknown.
+static uint16_t SymFromScancode(uint16_t scancode)
+{
+  int i;
+
+  // We need to initialise m_bEvdev once
+  if (!m_bEvdevInit)
+    InitEvdev();
+
+  // If evdev is loaded look up the scan code in SymMappingsEvdev
+  if (m_bEvdev)
+  {
+    for (i = 0; i < sizeof(SymMappingsEvdev)/4; i++)
+      if (scancode == SymMappingsEvdev[i][0])
+        return SymMappingsEvdev[i][1];
+  }
+
+  // If evdev is not loaded look up the scan code in SymMappingsUbuntu
+  else
+  {
+    for (i = 0; i < sizeof(SymMappingsUbuntu)/4; i++)
+      if (scancode == SymMappingsUbuntu[i][0])
+        return SymMappingsUbuntu[i][1];
+  }
+
+  // Scan code wasn't found, return zero
+  return 0;
+}
+#endif // End of checks for keysym.sym == 0
 
 bool CWinEventsSDL::MessagePump()
 {
@@ -93,6 +267,12 @@ bool CWinEventsSDL::MessagePump()
         newEvent.key.state = event.key.state;
         newEvent.key.type = event.key.type;
         newEvent.key.which = event.key.which;
+
+#if defined(_LINUX) && !defined(__APPLE__)
+        // If the keysym.sym is zero try to get it from the scan code
+        if (newEvent.key.keysym.sym == 0)
+          newEvent.key.keysym.sym = (XBMCKey) SymFromScancode(newEvent.key.keysym.scancode);
+#endif
 
         // don't handle any more messages in the queue until we've handled keydown,
         // if a keyup is in the queue it will reset the keypress before it is handled.

@@ -759,11 +759,6 @@ bool PAPlayer::ProcessPAP()
   return true;
 }
 
-void PAPlayer::ResetTime()
-{
-  m_bytesSentOut = 0;
-}
-
 __int64 PAPlayer::GetTime()
 {
   __int64  timeplus = m_BytesPerSecond ? (__int64)(((float) m_bytesSentOut / (float) m_BytesPerSecond ) * 1000.0) : 0;

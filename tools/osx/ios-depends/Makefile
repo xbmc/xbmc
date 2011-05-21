@@ -9,7 +9,7 @@ SUBDIRS = \
 	jpeg tiff libpng libogg \
 	libvorbis libflac libmad fribidi libwavpack libmpeg2 \
 	libass libcdio libsamplerate librtmp \
-	libmicrohttpd libmodplug libbluray \
+	libmicrohttpd libmodplug libbluray libyajl \
 	samba python26 mysqlclient boost
 
 .PHONY: setup $(SUBDIRS)

@@ -88,25 +88,29 @@
       <numpadeight>Number8</numpadeight>
       <numpadnine>Number9</numpadnine>
       <backslash>ToggleFullScreen</backslash>
-      <browser_home>XBMC.ActivateWindow(Home)</browser_home>
-      <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
-      <browser_refresh/>
-      <browser_search/>
-      <launch_app1_pc_icon>ActivateWindow(MyPrograms)</launch_app1_pc_icon>
-      <launch_media_select>XBMC.ActivateWindow(MyMusic)</launch_media_select>
-      <play_pause>Pause</play_pause>
-      <stop>Stop</stop>
-      <volume_up>VolumeUp</volume_up>
-      <volume_mute>Mute</volume_mute>
-      <volume_down>VolumeDown</volume_down>
-      <next_track>SkipNext</next_track>
-      <prev_track>SkipPrevious</prev_track>
-      <launch_mail></launch_mail>
-      <key id='61620'></key>      <!-- same as above, launch_mail, but using button code (based on vkey id) -->
       <home>FirstPage</home>
       <end>LastPage</end>
-      <key id='65446'>ParentDir</key>
-      <key id='65459'>Play</key>
+      <!-- Multimedia keyboard keys -->
+      <browser_back>ParentDir</browser_back>
+      <browser_forward/>
+      <browser_refresh/>
+      <browser_stop/>
+      <browser_search/>
+      <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
+      <browser_home>XBMC.ActivateWindow(Home)</browser_home>
+      <volume_mute>Mute</volume_mute>
+      <volume_down>VolumeDown</volume_down>
+      <volume_up>VolumeUp</volume_up>
+      <next_track>SkipNext</next_track>
+      <prev_track>SkipPrevious</prev_track>
+      <stop>Stop</stop>
+      <play_pause>Play</play_pause>
+      <launch_mail></launch_mail>
+      <launch_media_select>XBMC.ActivateWindow(MyMusic)</launch_media_select>
+      <launch_app1_pc_icon>ActivateWindow(MyPrograms)</launch_app1_pc_icon>
+      <launch_app2_pc_icon>ActivateWindow(MyPrograms)</launch_app2_pc_icon>
+      <launch_file_browser/>
+      <launch_media_center/>
       <!-- ****************************************************** -->
       <!-- MS Media Center keyboard shortcuts sent by MCE remotes -->
       <!-- See http://msdn.microsoft.com/en-us/library/bb189249.aspx -->

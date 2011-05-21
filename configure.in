@@ -638,7 +638,8 @@ AS_CASE([x$use_libbluray],
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([mpeg2dec/mpeg2.h],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library), AC_INCLUDES_DEFAULT()
+    [#include <mpeg2dec/mpeg2.h>])
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   if test "$use_arch" != "arm"; then
     AC_CHECK_LIB([SDL_mixer],[main],, AC_MSG_ERROR($missing_library))

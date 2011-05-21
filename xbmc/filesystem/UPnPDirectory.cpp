@@ -55,13 +55,16 @@ static CStdString GetContentMapping(NPT_String& objectClass)
         const char* Content;
     };
     static const SClassMapping mapping[] = {
-          { "object.item.videoItem.videoBroadcast", "tvshows"      }
+          { "object.item.videoItem.videoBroadcast", "episodes"      }
         , { "object.item.videoItem.musicVideoClip", "musicvideos"  }
         , { "object.item.videoItem"               , "movies"       }
-        , { "object.item.audioItem.musicTrack"    , "music"        }
-        , { "object.item.audioItem"               , "music"        }
+        , { "object.item.audioItem.musicTrack"    , "songs"        }
+        , { "object.item.audioItem"               , "songs"        }
         , { "object.item.imageItem.photo"         , "photos"       }
         , { "object.item.imageItem"               , "photos"       }
+        , { "object.container.album.videoAlbum"   , "tvshows"      }
+        , { "object.container.album.musicAlbum"   , "albums"       }
+        , { "object.container.album.photoAlbum"   , "photos"       }
         , { "object.container.album"              , "albums"       }
         , { "object.container.person"             , "artists"      }
         , { NULL                                  , NULL           }
@@ -368,6 +371,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                 }
             }
 
+            NPT_String ObjectClass = (*entry)->m_ObjectClass.type.ToLowercase();
+
             // keep count of classes
             classes[(*entry)->m_ObjectClass.type]++;
 
@@ -385,15 +390,28 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                 CStdString id = (char*) (*entry)->m_ObjectID;
                 CURL::Encode(id);
                 pItem->m_strPath += "/";
+
+                // look for metadata
+                if( ObjectClass.StartsWith("object.container.album.videoalbum") ) {
+                    pItem->SetLabelPreformated(false);
+                    CUPnP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), NULL);
+
+                } else if( ObjectClass.StartsWith("object.container.album.photoalbum")) {
+                  //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
+
+                } else if( ObjectClass.StartsWith("object.container.album") ) {
+                    pItem->SetLabelPreformated(false);
+                    CUPnP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), NULL);
+                }
+
             } else {
 
                 // set a general content type
-                CStdString type = (const char*)(*entry)->m_ObjectClass.type.Left(21);
-                if (type.Equals("object.item.videoitem"))
+                if (ObjectClass.StartsWith("object.item.videoitem"))
                     pItem->SetMimeType("video/octet-stream");
-                else if(type.Equals("object.item.audioitem"))
+                else if(ObjectClass.StartsWith("object.item.audioitem"))
                     pItem->SetMimeType("audio/octet-stream");
-                else if(type.Equals("object.item.imageitem"))
+                else if(ObjectClass.StartsWith("object.item.imageitem"))
                     pItem->SetMimeType("image/octet-stream");
 
                 if ((*entry)->m_Resources.GetItemCount()) {
@@ -405,14 +423,17 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     }
 
                     // look for metadata
-                    if( (*entry)->m_ObjectClass.type.CompareN("object.item.videoitem", 21,true) == 0 ) {
+                    if( ObjectClass.StartsWith("object.item.videoitem") ) {
                         pItem->SetLabelPreformated(false);
                         CUPnP::PopulateTagFromObject(*pItem->GetVideoInfoTag(), *(*entry), &resource);
-                    } else if( (*entry)->m_ObjectClass.type.CompareN("object.item.audioitem", 21,true) == 0 ) {
+
+                    } else if( ObjectClass.StartsWith("object.item.audioitem") ) {
                         pItem->SetLabelPreformated(false);
                         CUPnP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *(*entry), &resource);
-                    } else if( (*entry)->m_ObjectClass.type.CompareN("object.item.imageitem", 21,true) == 0 ) {
+
+                    } else if( ObjectClass.StartsWith("object.item.imageitem") ) {
                       //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
+
                     }
                 }
             }

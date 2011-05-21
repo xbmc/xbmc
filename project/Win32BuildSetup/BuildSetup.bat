@@ -116,6 +116,7 @@ IF %comp%==vs2010 (
   )
   ECHO Done!
   ECHO ------------------------------------------------------------
+  set buildmode=clean
   GOTO MAKE_BUILD_EXE
   
 :COMPILE_NO_CLEAN_EXE
@@ -136,6 +137,9 @@ IF %comp%==vs2010 (
     ECHO Compiling mingw libs
     ECHO bla>noprompt
     IF EXIST errormingw del errormingw > NUL
+	IF %buildmode%==clean (
+	  ECHO bla>makeclean
+	)
     call buildmingwlibs.bat
     IF EXIST errormingw (
     	set DIETEXT="failed to build mingw libs"

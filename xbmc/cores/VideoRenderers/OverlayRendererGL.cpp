@@ -281,7 +281,7 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   int width  = MathUtils::round_int(dst.Width());
   int height = MathUtils::round_int(dst.Height());
 
-  m_texture = ~(GLuint)0;
+  m_texture = 0;
 
   SQuads quads;
   if(!convert_quad(o, pts, width, height, quads))
@@ -391,7 +391,7 @@ COverlayGlyphGL::~COverlayGlyphGL()
 
 void COverlayGlyphGL::Render(SRenderState& state)
 {
-  if (m_texture == ~GLuint(0))
+  if (m_texture == 0)
     return;
 
   glEnable(GL_TEXTURE_2D);
