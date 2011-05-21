@@ -9,6 +9,10 @@ then
   make distclean
 fi
 
+if [! -d .libs ]; then
+  mkdir .libs
+fi
+
 OPTIONS="
 --enable-shared \
 --enable-memalign-hack \
@@ -36,8 +40,7 @@ OPTIONS="
 
 ./configure --extra-cflags="-fno-common -Iinclude-xbmc-win32/dxva2" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
  
-make && 
-mkdir .libs &&
+make &&
 cp lib*/*.dll .libs/ &&
 mv .libs/swscale-0.dll .libs/swscale-0.6.1.dll &&
 cp .libs/avcodec-52.dll /xbmc/system/players/dvdplayer/ &&
