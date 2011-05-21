@@ -655,6 +655,6 @@ void CGUIControlGroup::SendFinalDirtyRegionToParent(const CRect &dirtyRegion, co
 {
   // If the controlgroup has been marked there is no point in allowing
   // the children to mark since the parent should fully confine the children.
-  if (m_markedLocalRegion.IsEmpty() || sender == this)
+  if (!m_controlIsDirty || sender == this)
     CGUIControl::SendFinalDirtyRegionToParent(dirtyRegion, sender);
 }
