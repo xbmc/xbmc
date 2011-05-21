@@ -1,6 +1,6 @@
 <window id="115">
 	<defaultcontrol>1</defaultcontrol>
-	<visible>[Player.Seeking | Player.DisplayAfterSeek | Player.Paused | Player.Forwarding | Player.Rewinding] + ![Window.IsVisible(VideoOSD) | Window.IsVisible(MusicOSD)]</visible>
+	<visible>[Player.Seeking | Player.DisplayAfterSeek | Player.Paused | Player.Forwarding | Player.Rewinding] + ![Window.IsVisible(VideoOSD) | Window.IsVisible(MusicOSD) | pvr.IsPlayingRadio | pvr.IsPlayingTV]</visible>
 	<animation effect="fade" start="0" end="100" time="200">WindowOpen</animation>
 	<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 	<controls>
