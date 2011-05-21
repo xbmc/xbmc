@@ -22,8 +22,8 @@
 			</control>
 			<control type="image" id="999">
 				<description>Middle Image</description>
-				<posx>1</posx>
-				<width>330</width>
+				<posx>0</posx>
+				<width>ContextMenuWidth</width>
 				<include>ContextDialogMiddleTexture</include>
 			</control>
 			<control type="image" id="998">
@@ -42,9 +42,9 @@
 			<control type="button" id="1000">
 				<description>Buttons</description>
 				<include condition="Skin.HasSetting(HideListViewIcons) | Skin.HasSetting(HideListViewIconsVideos) | Skin.HasSetting(HideListViewIconsMusic)">NoIconsListContextMenuPos</include>
-				<posx>2</posx>
+				<posx>1</posx>
 				<posy>0</posy>
-				<width>330</width>
+				<width>332</width>
 				<height>43</height>
 				<texturefocus>HomeBladeSubFO2.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
