@@ -27,7 +27,7 @@ class CApplianceSettings
 {
   public:
     static CApplianceSettings* getInstance();
-    bool Load();
+    bool Load(CStdString profileName);
     void Clear();
 
     CApplianceSettings();
