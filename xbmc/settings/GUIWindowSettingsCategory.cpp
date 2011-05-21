@@ -796,7 +796,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE);
     }
-    else if (!strSetting.Equals("pvr.enabled") && strSetting.Left(4).Equals("pvrmanager."))
+    else if (strSetting.Equals("pvrmanager.enabled"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));
