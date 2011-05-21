@@ -299,7 +299,10 @@ bool CHTSPConnection::SendGreeting(void)
 bool CHTSPConnection::Auth(void)
 {
   if (m_strUsername.empty())
+  {
+    XBMC->Log(LOG_DEBUG, "CHTSPConnection - %s - no username set. not authenticating", __FUNCTION__);
     return true;
+  }
 
   htsmsg_t *m = htsmsg_create_map();
   htsmsg_add_str(m, "method"  , "authenticate");
@@ -307,6 +310,8 @@ bool CHTSPConnection::Auth(void)
 
   if(m_strPassword != "" && m_challenge)
   {
+    XBMC->Log(LOG_DEBUG, "CHTSPConnection - %s - authenticating as user '%s' with a password", __FUNCTION__, m_strUsername.c_str());
+
     struct HTSSHA1* shactx = (struct HTSSHA1*) malloc(hts_sha1_size);
     uint8_t d[20];
     hts_sha1_init(shactx);
@@ -315,6 +320,10 @@ bool CHTSPConnection::Auth(void)
     hts_sha1_final(shactx, d);
     htsmsg_add_bin(m, "digest", d, 20);
     free(shactx);
+  }
+  else
+  {
+    XBMC->Log(LOG_DEBUG, "CHTSPConnection - %s - authenticating as user '%s' without a password", __FUNCTION__, m_strUsername.c_str());
   }
 
   return ReadSuccess(m, false, "get reply from authentication with server");
