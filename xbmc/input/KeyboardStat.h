@@ -57,10 +57,6 @@ public:
 private:
   XBMC_keysym m_lastKeysym;
   unsigned int m_lastKeyTime;
-
-  // In Linux the codes (numbers) for multimedia keys differ depending on
-  // what driver is used and the evdev bool switches between the two.
-  bool m_bEvdev;
 };
 
 extern CKeyboardStat g_Keyboard;
