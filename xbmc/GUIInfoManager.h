@@ -481,8 +481,6 @@ class CDateTime;
 #define PVR_ACTUAL_STREAM_DOLBY_BR  1153
 #define PVR_ACTUAL_STREAM_CRYPTION  1154
 
-#define ADDON_STAR_RATING           1200
-
 #define WINDOW_PROPERTY             9993
 #define WINDOW_IS_TOPMOST           9994
 #define WINDOW_IS_VISIBLE           9995

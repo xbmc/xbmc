@@ -296,10 +296,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("pvr.actstreamisencrypted")) ret = PVR_ACTUAL_STREAM_ENCRYPTED;
     else if (strTest.Equals("pvr.actstreamencryptionname")) ret = PVR_ACTUAL_STREAM_CRYPTION;
   }
-  else if (strCategory.Equals("addon"))
-  {
-    if (strTest.Equals("addon.rating")) ret = ADDON_STAR_RATING;
-  }
   else if (strCategory.Equals("bar"))
   {
     if (strTest.Equals("bar.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
@@ -4501,14 +4497,6 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
       { // song rating.
         rating.Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
       }
-      return rating;
-    }
-    break;
-  case ADDON_STAR_RATING:
-    {
-      CStdString rating;
-      //TODO need to check item is an addon
-      rating.Format("rating%d.png", item->GetPropertyInt("Addon.Rating"));
       return rating;
     }
     break;
