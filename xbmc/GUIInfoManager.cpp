@@ -1122,14 +1122,14 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 
   switch (info)
   {
-  case PVR_NOW_RECORDING_CHANNEL:
-  case PVR_NOW_RECORDING_CHAN_ICO:
-  case PVR_NOW_RECORDING_DATETIME:
-  case PVR_NOW_RECORDING_TITLE:
   case PVR_NEXT_RECORDING_CHANNEL:
   case PVR_NEXT_RECORDING_CHAN_ICO:
   case PVR_NEXT_RECORDING_DATETIME:
   case PVR_NEXT_RECORDING_TITLE:
+  case PVR_NOW_RECORDING_CHANNEL:
+  case PVR_NOW_RECORDING_CHAN_ICO:
+  case PVR_NOW_RECORDING_DATETIME:
+  case PVR_NOW_RECORDING_TITLE:
   case PVR_BACKEND_NAME:
   case PVR_BACKEND_VERSION:
   case PVR_BACKEND_HOST:
@@ -1140,19 +1140,22 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case PVR_BACKEND_NUMBER:
   case PVR_TOTAL_DISKSPACE:
   case PVR_NEXT_TIMER:
-  case PVR_PLAYING_TIME:
   case PVR_PLAYING_DURATION:
+  case PVR_PLAYING_TIME:
+  case PVR_PLAYING_PROGRESS:
   case PVR_ACTUAL_STREAM_CLIENT:
   case PVR_ACTUAL_STREAM_DEVICE:
   case PVR_ACTUAL_STREAM_STATUS:
+  case PVR_ACTUAL_STREAM_SIG:
+  case PVR_ACTUAL_STREAM_SNR:
+  case PVR_ACTUAL_STREAM_SIG_PROGR:
+  case PVR_ACTUAL_STREAM_SNR_PROGR:
   case PVR_ACTUAL_STREAM_BER:
   case PVR_ACTUAL_STREAM_UNC:
   case PVR_ACTUAL_STREAM_VIDEO_BR:
   case PVR_ACTUAL_STREAM_AUDIO_BR:
   case PVR_ACTUAL_STREAM_DOLBY_BR:
   case PVR_ACTUAL_STREAM_CRYPTION:
-  case PVR_ACTUAL_STREAM_SIG:
-  case PVR_ACTUAL_STREAM_SNR:
     g_PVRManager.TranslateCharInfo(info, strLabel);
     break;
   case WEATHER_CONDITIONS:
@@ -1968,7 +1971,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_settings.UsingLoginScreen();
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
-  else if (condition >= PVR_IS_RECORDING && condition <= PVR_IS_RECORDING+20)
+  else if (condition >= PVR_CONDITIONS_START && condition <= PVR_CONDITIONS_END)
     bReturn = g_PVRManager.TranslateBoolInfo(condition);
 
   else if (condition == SYSTEM_INTERNET_STATE)
@@ -4136,7 +4139,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       }
       else if (item->HasVideoInfoTag())
       {
-        duration = item->GetVideoInfoTag()->m_strRuntime;
         if (item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() > 0)
           duration.Format("%i", item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() / 60);
         else if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
