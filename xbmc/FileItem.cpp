@@ -2659,8 +2659,8 @@ bool CFileItemList::AlwaysCache() const
     return CMusicDatabaseDirectory::CanCache(m_strPath);
   if (IsVideoDb())
     return CVideoDatabaseDirectory::CanCache(m_strPath);
-//  if (IsEPG())
-//    return true; // always cache
+  if (IsEPG())
+    return true; // always cache
   return false;
 }
 
