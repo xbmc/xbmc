@@ -183,6 +183,7 @@ CFileItem::CFileItem(const CEpgInfoTag& tag)
   *GetEPGInfoTag() = tag;
   SetLabel(tag.Title());
   m_strLabel2 = tag.Plot();
+  m_dateTime = tag.StartAsLocalTime();
 
   if (!tag.Icon().IsEmpty())
   {
@@ -270,6 +271,7 @@ CFileItem::CFileItem(const CPVRTimerInfoTag& timer)
   *GetPVRTimerInfoTag() = timer;
   SetLabel(timer.m_strTitle);
   m_strLabel2 = timer.m_strSummary;
+  m_dateTime = timer.StartAsLocalTime();
 
   if (!timer.ChannelIcon().IsEmpty())
   {
