@@ -1051,13 +1051,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(addon->HasSettings());
       }
     }
-    else if (!strSetting.Equals("pvrmanager.enabled")
-             && !strSetting.Equals("pvrmanager.resetdb")
-             && strSetting.Left(3).Equals("pvr"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));
-    }
 #if defined(_LINUX) && !defined(__APPLE__)
     else if (strSetting.Equals("audiooutput.custompassthrough"))
     {
