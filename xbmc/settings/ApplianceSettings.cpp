@@ -45,7 +45,8 @@ CApplianceSettings::CApplianceSettings()
 
 void CApplianceSettings::Initialize()
 {
-
+  m_canQuit = true;
+  m_canWindowed = true;
 }
 
 bool CApplianceSettings::Load(CStdString profileName)
@@ -73,11 +74,37 @@ bool CApplianceSettings::Load(CStdString profileName)
   }
 
   //Process Appliance.xml document
+  TiXmlElement *pElement = pRootElement->FirstChildElement("system");
+  if (pElement && ProfileMatch(pElement, profileName))
+  {
+    XMLUtils::GetBoolean(pElement, "canquit", m_canQuit);
+  }
 
+  pElement = pRootElement->FirstChildElement("video");
+  if (pElement && ProfileMatch(pElement, profileName))
+  {
+    XMLUtils::GetBoolean(pElement, "canwindowed", m_canWindowed);
+  }
+  
   return true;
+}
+
+const char *CApplianceSettings::GetProfileRestrictions(TiXmlElement *pElement)
+{
+  const char *profileRestrictions = pElement->Attribute("profile");
+  return profileRestrictions != NULL ? profileRestrictions : "all";
 }
 
 void CApplianceSettings::Clear()
 {
+}
 
+bool CApplianceSettings::ProfileMatch(TiXmlElement *pElement, CStdString profileName)
+{
+  CStdStringArray profiles;
+  StringUtils::SplitString(GetProfileRestrictions(pElement), ",", profiles);
+  for (int i=0; i<(int)profiles.size(); ++i)
+    if (profiles[i] == profileName || profiles[i] == "all")
+      return true;
+  return false;
 }
