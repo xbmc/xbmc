@@ -48,8 +48,32 @@ void CApplianceSettings::Initialize()
 
 }
 
-bool CApplianceSettings::Load()
+bool CApplianceSettings::Load(CStdString profileName)
 {
+  Initialize();
+  CStdString applianceSettingsXML = g_settings.GetUserDataItem("Appliance.xml");
+  TiXmlDocument applianceXML;
+  if (!CFile::Exists(applianceSettingsXML))
+  {
+    CLog::Log(LOGNOTICE, "No Appliance.xml to load (%s)", applianceSettingsXML.c_str());
+    return false;
+  }
+
+  if (!applianceXML.LoadFile(applianceSettingsXML))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", applianceSettingsXML.c_str(), applianceXML.ErrorRow(), applianceXML.ErrorDesc());
+    return false;
+  }
+
+  TiXmlElement *pRootElement = applianceXML.RootElement();
+  if (!pRootElement || strcmpi(pRootElement->Value(),"appliance") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading %s, no <appliance> node", applianceSettingsXML.c_str());
+    return false;
+  }
+
+  //Process Appliance.xml document
+
   return true;
 }
 
