@@ -52,7 +52,7 @@ void CApplianceSettings::Initialize()
 bool CApplianceSettings::Load(CStdString profileName)
 {
   Initialize();
-  CStdString applianceSettingsXML = g_settings.GetUserDataItem("Appliance.xml");
+  CStdString applianceSettingsXML = g_settings.GetUserDataItem("appliance.xml");
   TiXmlDocument applianceXML;
   if (!CFile::Exists(applianceSettingsXML))
   {
