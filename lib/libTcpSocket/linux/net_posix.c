@@ -200,7 +200,7 @@ tcp_read_timeout(socket_t fdSock, void *buf, size_t nLen, int nTimeout)
   int x, tot = 0;
   struct pollfd fds;
 
-  if (nTimeout <= 0)
+  if (nTimeout <= 0 || fdSock == INVALID_SOCKET)
     return EINVAL;
 
   fds.fd = fdSock;
