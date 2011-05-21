@@ -116,6 +116,7 @@ IF %comp%==vs2010 (
   )
   ECHO Done!
   ECHO ------------------------------------------------------------
+  set buildmode=clean
   GOTO MAKE_BUILD_EXE
   
 :COMPILE_NO_CLEAN_EXE
