@@ -78,7 +78,7 @@ echo "##### building of libmpeg2 dlls done #####"
 
 echo "##### building timidity dlls #####"
 cd /xbmc/lib/timidity/
-if  [ $MAKECLEAN == "clean" ]; then
+if  [ "$MAKECLEAN" == "clean" ]; then
   make -f Makefile.win32 clean
 fi
 make -f Makefile.win32
