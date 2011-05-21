@@ -140,6 +140,12 @@ htsmsg_t* CHTSPConnection::ReadMessage(int timeout)
     return m;
   }
 
+  if (!IsConnected() || m_fd == INVALID_SOCKET)
+  {
+    XBMC->Log(LOG_ERROR, "%s - not connected", __FUNCTION__);
+    return NULL;
+  }
+
   x = tcp_read_timeout(m_fd, &l, 4, timeout);
   if(x == ETIMEDOUT)
     return htsmsg_create_map();
