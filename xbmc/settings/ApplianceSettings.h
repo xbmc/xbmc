@@ -19,9 +19,10 @@
  *
  */
 
-#include <vector>
 #include "utils/StdString.h"
 #include "utils/GlobalsHandling.h"
+
+class TiXmlElement;
 
 class CApplianceSettings
 {
@@ -32,6 +33,14 @@ class CApplianceSettings
 
     CApplianceSettings();
     void Initialize();
+
+    bool CanQuit() { return m_canQuit; };
+    bool CanWindowed() { return m_canWindowed; };
+  private:
+    const char *GetProfileRestrictions(TiXmlElement *pElement);
+    bool ProfileMatch(TiXmlElement *pElement, CStdString profileName);
+    bool m_canQuit;
+    bool m_canWindowed;
 };
 
 XBMC_GLOBAL(CApplianceSettings,g_applianceSettings);
