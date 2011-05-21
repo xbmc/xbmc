@@ -48,8 +48,9 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
 {
 }
 
-CGUIWindowPVRGuide::~CGUIWindowPVRGuide()
+CGUIWindowPVRGuide::~CGUIWindowPVRGuide(void)
 {
+  g_PVREpg->UnregisterObserver(this);
   delete m_localItems;
 }
 

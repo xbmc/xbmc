@@ -34,6 +34,7 @@ namespace PVR
 
   public:
     CGUIWindowPVRRecordings(CGUIWindowPVR *parent);
+    virtual ~CGUIWindowPVRRecordings(void);
 
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
     virtual bool OnAction(const CAction &action);
