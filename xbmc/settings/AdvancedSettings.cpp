@@ -284,8 +284,7 @@ bool CAdvancedSettings::Load()
   //       it should instead use the versions of GetString/Integer/Float that
   //       don't take defaults in.  Defaults are set in the constructor above
   Initialize(); // In case of profile switch.
-  CStdString advancedSettingsXML;
-  advancedSettingsXML  = g_settings.GetUserDataItem("advancedsettings.xml");
+  CStdString advancedSettingsXML = g_settings.GetUserDataItem("advancedsettings.xml");
   TiXmlDocument advancedXML;
   if (!CFile::Exists(advancedSettingsXML))
   { // tell the user it doesn't exist
