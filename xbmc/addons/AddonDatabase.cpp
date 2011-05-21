@@ -104,7 +104,7 @@ bool CAddonDatabase::UpdateOldVersion(int version)
   
   try
   {
-    if (version < 13)
+    if (version < 13) // XXX this will have to get a different version when pvr is merged to master
     {
       m_pDS->exec("CREATE TABLE pvrenabled (id integer primary key, addonID text)\n");
       m_pDS->exec("CREATE INDEX idxPVREnabled ON pvrenabled(addonID)");
@@ -620,37 +620,22 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
   return false;
 }
 
-bool CAddonDatabase::EnableSystemPVRAddon(const CStdString &addonID, bool enable)
+bool CAddonDatabase::EnableSystemPVRAddon(const CStdString &addonID, bool bEnable)
 {
-  try
+  if (bEnable)
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (!IsSystemPVRAddonEnabled(addonID))
+    {
+      CStdString strQuery = PrepareSQL("INSERT INTO pvrenabled(id, addonID) VALUES (NULL, '%s')", addonID.c_str());
+      return ExecuteQuery(strQuery);
+    }
+  }
+  else
+  {
+    CStdString strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
+    return DeleteValues("pvrenabled", strWhereClause);
+  }
 
-    if (enable)
-    {
-      CStdString sql = PrepareSQL("select id from pvrenabled where addonID='%s'", addonID.c_str());
-      m_pDS->query(sql.c_str());
-      if (m_pDS->eof()) // not found
-      {
-        m_pDS->close();
-        sql = PrepareSQL("insert into pvrenabled(id, addonID) values(NULL, '%s')", addonID.c_str());
-        m_pDS->exec(sql);
-        return true;
-      }
-      return false; // already enabled or failed query
-    }
-    else
-    {
-      CStdString sql = PrepareSQL("delete from pvrenabled where addonID='%s'", addonID.c_str());
-      m_pDS->exec(sql);
-    }
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonID.c_str());
-  }
   return false;
 }
 
@@ -700,22 +685,10 @@ bool CAddonDatabase::IsAddonDisabled(const CStdString &addonID)
 
 bool CAddonDatabase::IsSystemPVRAddonEnabled(const CStdString &addonID)
 {
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+  CStdString strWhereClause = PrepareSQL("addonID = '%s'", addonID.c_str());
+  CStdString strEnabled = GetSingleValue("pvrenabled", "id", strWhereClause);
 
-    CStdString sql = PrepareSQL("select id from pvrenabled where addonID='%s'", addonID.c_str());
-    m_pDS->query(sql.c_str());
-    bool ret = !m_pDS->eof(); // in the pvrenabled table -> enabled
-    m_pDS->close();
-    return ret;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonID.c_str());
-  }
-  return false;
+  return !strEnabled.IsEmpty();
 }
 
 CStdString CAddonDatabase::IsAddonBroken(const CStdString &addonID)
