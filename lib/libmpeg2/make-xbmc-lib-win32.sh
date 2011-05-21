@@ -1,13 +1,12 @@
 #!/bin/bash 
 
-if [ -d libmpeg2/.libs ]
-then
-rm -r libmpeg2/.libs
-fi
-
 if [ "$1" == "clean" ]
 then
-make distclean
+  if [ -d libmpeg2/.libs ]
+  then
+    rm -r libmpeg2/.libs
+  fi
+  make distclean
 fi
 
 ./configure \

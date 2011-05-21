@@ -1,13 +1,12 @@
 #!/bin/bash
 
-if [ -d .libs ]
-then
-rm -r .libs
-fi
-
 if [ "$1" == "clean" ]
 then
-make distclean
+  if [ -d .libs ]
+  then
+    rm -r .libs
+  fi
+  make distclean
 fi
 
 OPTIONS="
