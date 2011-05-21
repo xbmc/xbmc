@@ -83,12 +83,12 @@ void CPVRRecording::Reset(void)
   m_iClientId          = g_PVRClients->GetFirstID(); // Temporary until we support multiple backends
   m_strChannelName     = "";
   m_strDirectory       = "";
-  m_recordingTime      = NULL;
   m_strStreamURL       = "";
   m_iPriority          = -1;
   m_iLifetime          = -1;
   m_strFileNameAndPath = "";
 
+  m_recordingTime.Reset();
   CVideoInfoTag::Reset();
 }
 
