@@ -29,8 +29,9 @@
 #include "guideprogram.h"
 
 #ifdef TSREADER
-#include "lib/tsreader/TSReader.h"
+//#include "lib/tsreader/TSReader.h"
 #include "KeepAliveThread.h"
+class CTsReader;
 #endif
 
 class cPVRClientForTheRecord

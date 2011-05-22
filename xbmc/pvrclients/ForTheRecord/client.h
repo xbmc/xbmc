@@ -23,7 +23,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "pvrclient-fortherecord.h"
+#include "utils/StdString.h"
 #include "libXBMC_addon.h"
 #include "libXBMC_pvr.h"
 

@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include "curl/curl.h"
 #include "client.h"
+#include "pvrclient-fortherecord.h"
 #include "utils.h"
 #include "fortherecordrpc.h"
 

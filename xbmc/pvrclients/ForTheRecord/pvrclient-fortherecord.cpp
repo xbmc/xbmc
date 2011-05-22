@@ -28,6 +28,10 @@
 #include "pvrclient-fortherecord.h"
 #include "fortherecordrpc.h"
 
+#ifdef TSREADER
+#include "lib/tsreader/TSReader.h"
+#endif
+
 using namespace std;
 
 /************************************************************/
