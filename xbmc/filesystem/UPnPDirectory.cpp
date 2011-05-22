@@ -452,6 +452,14 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             else if((*entry)->m_Description.icon_uri.GetLength())
                 pItem->SetThumbnailImage((const char*) (*entry)->m_Description.icon_uri);
 
+            PLT_ProtocolInfo fanart_mask("xbmc.org", "*", "fanart", "*");
+            for(unsigned i = 0; i < (*entry)->m_Resources.GetItemCount(); ++i) {
+                PLT_MediaItemResource& res = (*entry)->m_Resources[i];
+                if(res.m_ProtocolInfo.Match(fanart_mask)) {
+                    pItem->SetProperty("fanart_image", (const char*)res.m_Uri);
+                    break;
+                }
+            }
             items.Add(pItem);
 
             ++entry;
