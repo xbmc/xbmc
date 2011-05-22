@@ -192,9 +192,9 @@ bool cPVRClientMediaPortal::Connect()
         XBMC->Log(LOG_INFO, "Your TVServerXBMC version is '%s'", fields[1].c_str());
         
         // Advice to upgrade:
-        if( g_iTVServerXBMCBuild < 102 )
+        if( g_iTVServerXBMCBuild < 104 )
         {
-          XBMC->Log(LOG_INFO, "It is adviced to upgrade your TVServerXBMC version '%s' to 1.1.3.102 or higher!", fields[1].c_str());
+          XBMC->Log(LOG_INFO, "It is adviced to upgrade your TVServerXBMC version '%s' to 1.1.3.104 or higher!", fields[1].c_str());
         }
       }
     } else {
