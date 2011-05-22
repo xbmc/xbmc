@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@
 
 using namespace std;
 
-//#include "libPlatform/os-dependent.h"
 #include "os-dependent.h" //needed for snprintf
 #include "client.h"
 #include "timers.h"
@@ -57,7 +56,9 @@ cTimer::cTimer(const PVR_TIMER& timerinfo)
   if(!m_active)
   {
     time(&m_canceled);
-  } else {
+  }
+  else
+  {
     // Don't know when it was cancelled, so assume that it was canceled now...
     // backend (TVServerXBMC) will only update the canceled date time when
     // this schedule was just canceled
@@ -65,7 +66,6 @@ cTimer::cTimer(const PVR_TIMER& timerinfo)
   }
  
   m_title = timerinfo.strTitle;
-  //m_title.Replace(",","");  //Remove commas from title field => still needed?
   m_directory = timerinfo.strDirectory;
   m_channel = timerinfo.iClientChannelUid;
   m_starttime = timerinfo.startTime;
@@ -94,8 +94,8 @@ cTimer::~cTimer()
 }
 
 /**
- * @brief Fills the PVR_TIMERINFO_OLD struct with information from this timer
- * @param tag A reference to the PVR_TIMERINFO_OLD struct
+ * @brief Fills the PVR_TIMER struct with information from this timer
+ * @param tag A reference to the PVR_TIMER struct
  */
 void cTimer::GetPVRtimerinfo(PVR_TIMER &tag)
 {
@@ -181,7 +181,6 @@ bool cTimer::ParseLine(const char *s)
     if(count != 6)
       return false;
 
-    //timeinfo = *localtime ( &rawtime );
     timeinfo.tm_hour = hour;
     timeinfo.tm_min = minute;
     timeinfo.tm_sec = second;
@@ -203,7 +202,6 @@ bool cTimer::ParseLine(const char *s)
     if( count != 6)
       return false;
 
-    //timeinfo2 = *localtime ( &rawtime );
     timeinfo.tm_hour = hour;
     timeinfo.tm_min = minute;
     timeinfo.tm_sec = second;
@@ -231,7 +229,8 @@ bool cTimer::ParseLine(const char *s)
     m_directory = schedulefields[10];
     
     if(schedulefields.size() >= 18)
-    { //TVServerXBMC build >= 100
+    {
+      //TVServerXBMC build >= 100
       m_keepmethod = (KeepMethodType) atoi(schedulefields[11].c_str());
 
       count = sscanf(schedulefields[12].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
@@ -239,7 +238,6 @@ bool cTimer::ParseLine(const char *s)
       if(count != 6)
         return false;
 
-      //timeinfo = *localtime ( &rawtime );
       timeinfo.tm_hour = hour;
       timeinfo.tm_min = minute;
       timeinfo.tm_sec = second;
@@ -272,7 +270,6 @@ bool cTimer::ParseLine(const char *s)
         if(count != 6)
           return false;
 
-        //timeinfo = *localtime ( &rawtime );
         timeinfo.tm_hour = hour;
         timeinfo.tm_min = minute;
         timeinfo.tm_sec = second;
@@ -290,7 +287,9 @@ bool cTimer::ParseLine(const char *s)
       m_series = stringtobool(schedulefields[16]);
       m_isrecording = stringtobool(schedulefields[17]);
 
-    } else {
+    }
+    else
+    {
       m_keepmethod = UntilSpaceNeeded;
       m_keepdate = cUndefinedDate;
       m_prerecordinterval = -1;
@@ -490,17 +489,15 @@ std::string cTimer::UpdateScheduleCommand()
             endtime.tm_hour, endtime.tm_min, endtime.tm_sec);                  //End time
   }
 
-  //result = command;
-
   return command;
 }
 
 
 int cTimer::XBMC2MepoPriority(int xbmcprio)
 {
-  //From XBMC side: 0.99 where 0=lowest and 99=highest priority (like VDR). Default value: 50
-  //Meaning of the MediaPortal field is unknown to me. Default seems to be 0.
-  //TODO: figure out the mapping
+  // From XBMC side: 0.99 where 0=lowest and 99=highest priority (like VDR). Default value: 50
+  // Meaning of the MediaPortal field is unknown to me. Default seems to be 0.
+  // TODO: figure out the mapping
   return 0;
 }
 
@@ -510,7 +507,7 @@ int cTimer::Mepo2XBMCPriority(int mepoprio)
 }
 
 
-/**
+/*
  * @brief Convert a XBMC Lifetime value to MediaPortals keepMethod+keepDate settings
  * @param lifetime the XBMC lifetime value (in days) (following the VDR syntax)
  * Should be called after setting m_starttime !!
@@ -528,11 +525,13 @@ void cTimer::SetKeepMethod(int lifetime)
   {
     m_keepmethod = UntilSpaceNeeded;
     m_keepdate = cUndefinedDate;
-  } else if (lifetime == 99)
+  }
+  else if (lifetime == 99)
   {
     m_keepmethod = Forever;
     m_keepdate = cUndefinedDate;
-  } else
+  }
+  else
   {
     m_keepmethod = UntilKeepDate;
     m_keepdate = m_starttime + (lifetime * cSecsInDay);

@@ -106,9 +106,6 @@
     <ClInclude Include="..\..\Socket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\StdString.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\timers.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -157,7 +157,9 @@ bool cRecording::ParseLine(const std::string& data)
     if (fields.size() == 10) // Since 1.0.8.0
     {
       m_originalurl = fields[9];
-    } else {
+    }
+    else
+    {
       m_originalurl = fields[6];
     }
 

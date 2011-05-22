@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -22,15 +22,16 @@
 
 using namespace std;
 
+#include "xbmc_pvr_types.h"
 #include "epg.h"
 #include "utils.h"
 #include "client.h"
 
-//Copied from PVREpg.h:
-//subtypes derived from English strings.xml and CPVREpgInfoTag::ConvertGenreIdToString
-//TODO: Finish me... This list is not yet complete
-#define EPG_EVENT_CONTENTMASK_MOVIEDRAMA                     0x10
-//Subtypes MOVIE/DRAMA
+// For the main EPG event types, see xbmc_pvr_types.h
+// Subtypes below are derived from English strings.xml and CEpg::ConvertGenreIdToString()
+// TODO: Finish me... This list is not yet complete
+// EPG_EVENT_CONTENTMASK_MOVIEDRAMA                  0x10
+// Subtypes MOVIE/DRAMA
 #define DETECTIVE_THRILLER                           0x01
 #define ADVENTURE_WESTERN_WAR                        0x02
 #define SF_FANTASY_HORROR                            0x03
@@ -40,32 +41,32 @@ using namespace std;
 #define SERIOUS_CLASSICAL_RELIGIOUS_HISTORICAL_DRAMA 0x07
 #define ADULTMOVIE_DRAMA                             0x08
 
-#define EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS             0x20
-//subtypes:
+// EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS          0x20
+// subtypes:
 #define NEWS_WEATHER_REPORT                          0x01
 #define NEWS_MAGAZINE                                0x02
 #define DOCUMENTARY                                  0x03
 #define DISCUSSION_INTERVIEW_DEBATE                  0x04
 
-#define EPG_EVENT_CONTENTMASK_SHOW                           0x30
-//subtypes:
+// EPG_EVENT_CONTENTMASK_SHOW                        0x30
+// subtypes:
 #define GAMESHOW_QUIZ_CONTEST                        0x01
 #define VARIETY_SHOW                                 0x02
 #define TALK_SHOW                                    0x03
 
-#define EPG_EVENT_CONTENTMASK_SPORTS                         0x40
+// EPG_EVENT_CONTENTMASK_SPORTS                      0x40
 
-#define EPG_EVENT_CONTENTMASK_CHILDRENYOUTH                  0x50
-//subtypes
+// EPG_EVENT_CONTENTMASK_CHILDRENYOUTH               0x50
+// subtypes
 #define PRESCHOOL_CHILD_PROGRAM                      0x01
 #define ENTERTAINMENT_6TO14                          0x02
 #define ENTERTAINMENT_10TO16                         0x03
 #define INFO_EDUC_SCHOOL_PROGRAM                     0x04
 #define CARTOONS_PUPPETS                             0x05
 
-#define EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE               0x60
-#define EPG_EVENT_CONTENTMASK_ARTSCULTURE                    0x70
-//subtypes
+// EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE            0x60
+// EPG_EVENT_CONTENTMASK_ARTSCULTURE                 0x70
+// subtypes
 #define PERFORMING_ARTS                              0x01
 #define FINE_ARTS                                    0x02
 #define RELIGION                                     0x03
@@ -78,14 +79,14 @@ using namespace std;
 #define ARTS_CULTURE_MAGAZINES                       0x10
 #define FASHION                                      0x11
 
-#define EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS       0x80
-//subtype
+// EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS    0x80
+// subtype
 #define MAGAZINES_REPORTS_DOCUMENTARY                0x01
 #define ECONOMICS_SOCIAL_ADVISORY                    0x02
 #define REMARKABLE_PEOPLE                            0x03
 
-#define EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE             0x90
-//subtypes
+// EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE          0x90
+// subtypes
 #define NATURE_ANIMALS_ENVIRONMENT                   0x01
 #define TECHNOLOGY_NATURAL_SCIENCES                  0x02
 #define MEDICINE_PHYSIOLOGY_PSYCHOLOGY               0x03
@@ -94,9 +95,9 @@ using namespace std;
 #define FURTHER_EDUCATION                            0x06
 #define LANGUAGES                                    0x07
 
-#define EPG_EVENT_CONTENTMASK_LEISUREHOBBIES                 0xA0
-#define EPG_EVENT_CONTENTMASK_SPECIAL                        0xB0
-#define EPG_EVENT_CONTENTMASK_USERDEFINED                    0xF0
+// EPG_EVENT_CONTENTMASK_LEISUREHOBBIES              0xA0
+// EPG_EVENT_CONTENTMASK_SPECIAL                     0xB0
+// EPG_EVENT_CONTENTMASK_USERDEFINED                 0xF0
 
 cEpg::cEpg()
 {

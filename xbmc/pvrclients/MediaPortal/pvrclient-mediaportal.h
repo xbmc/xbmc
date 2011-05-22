@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -17,10 +17,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
-/*
-* for DESCRIPTION see 'PVRClient-MediaPortal.cpp'
-*/
 
 #include <vector>
 
@@ -88,6 +84,7 @@ public:
   int GetCurrentClientChannel();
   bool SwitchChannel(const PVR_CHANNEL &channel);
   PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus);
+  const char* GetLiveStreamURL(const PVR_CHANNEL &channel);
 
   /* Record stream handling */
   bool OpenRecordedStream(const PVR_RECORDING &recording);
@@ -95,9 +92,6 @@ public:
   int ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize);
   long long SeekRecordedStream(long long iPosition, int iWhence = SEEK_SET);
   long long LengthRecordedStream(void);
-
-  //MG: Added for MediaPortal streaming
-  const char* GetLiveStreamURL(const PVR_CHANNEL &channel);
 
 protected:
   MPTV::Socket           *m_tcpclient;

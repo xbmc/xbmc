@@ -160,7 +160,6 @@
     <ClInclude Include="..\..\pvrclient-mediaportal.h" />
     <ClInclude Include="..\..\recordings.h" />
     <ClInclude Include="..\..\Socket.h" />
-    <ClInclude Include="..\..\StdString.h" />
     <ClInclude Include="..\..\timers.h" />
     <ClInclude Include="..\..\utils.h" />
   </ItemGroup>

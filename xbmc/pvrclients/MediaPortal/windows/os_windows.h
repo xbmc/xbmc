@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,29 +20,6 @@
 
 #define WIN32_LEAN_AND_MEAN           // Enable LEAN_AND_MEAN support
 #include <windows.h>
-
-//#ifndef _WINSOCKAPI_
-//#define _WINSOCKAPI_
-//#endif
-//#pragma warning(disable:4005) // Disable "warning C4005: '_WINSOCKAPI_' : macro redefinition"
-//#include <winsock2.h>
-//#pragma warning(default:4005)
-//#include <stdlib.h>
-//#include <stdio.h>
-//#include <stdarg.h>
-//#include <signal.h>
-//#include <time.h>
-//#include <sys/types.h>
-//#include <sys/timeb.h>
-
-//#if defined(DLL_IMPORT)
-//#define LIBTYPE __declspec( dllexport )
-//#elif  defined(DLL_EXPORT)
-//#define LIBTYPE __declspec( dllimport )
-//#else
-//#define LIBTYPE
-//#endif
-
 
 typedef HANDLE wait_event_t;
 typedef CRITICAL_SECTION criticalsection_t;
