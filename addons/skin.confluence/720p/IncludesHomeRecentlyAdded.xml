@@ -38,7 +38,7 @@
 					<onleft>SetFocus(8001,3)</onleft>
 					<onright>SetFocus(8001,3)</onright>
 					<onup>20</onup>
-					<ondown>9000</ondown>
+					<ondown>600</ondown>
 					<viewtype label="535">list</viewtype>
 					<pagecontrol>-</pagecontrol>
 					<scrolltime>200</scrolltime>
@@ -188,7 +188,7 @@
 					<onleft>SetFocus(8000,0)</onleft>
 					<onright>SetFocus(8000,0)</onright>
 					<onup>20</onup>
-					<ondown>9000</ondown>
+					<ondown>600</ondown>
 					<viewtype label="535">list</viewtype>
 					<pagecontrol>-</pagecontrol>
 					<scrolltime>0</scrolltime>
