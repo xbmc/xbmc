@@ -980,6 +980,11 @@ PVR_ERROR cPVRClientMediaPortal::AddTimer(const PVR_TIMER &timerinfo)
       return PVR_ERROR_NOT_SAVED;
     }
     XBMC->Log(LOG_DEBUG, "AddTimer for channel: %i [done]", timerinfo.iClientChannelUid);
+
+    // Although XBMC adds this timer, we still have to trigger XBMC to update its timer list to
+    // see this new timer at the XBMC side
+    PVR->TriggerTimerUpdate();
+
   //}
   //else
   //{
@@ -1017,10 +1022,9 @@ PVR_ERROR cPVRClientMediaPortal::DeleteTimer(const PVR_TIMER &timer, bool bForce
 
   }
 
-  //  return PVR_ERROR_SERVER_ERROR;
-  //  return PVR_ERROR_NOT_SYNC;
-  //    return PVR_ERROR_RECORDING_RUNNING;
-  //    return PVR_ERROR_NOT_DELETED;
+  // Although XBMC deletes this timer, we still have to trigger XBMC to update its timer list to
+  // remove the timer from the XBMC list
+  PVR->TriggerTimerUpdate();
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -1047,6 +1051,10 @@ PVR_ERROR cPVRClientMediaPortal::UpdateTimer(const PVR_TIMER &timerinfo)
     return PVR_ERROR_NOT_SAVED;
   }
   XBMC->Log(LOG_DEBUG, "UpdateTimer for channel: %i [done]", timerinfo.iClientChannelUid);
+
+  // Although XBMC changes this timer, we still have to trigger XBMC to update its timer list to
+  // see the timer changes at the XBMC side
+  PVR->TriggerTimerUpdate();
 
   return PVR_ERROR_NO_ERROR;
 }
