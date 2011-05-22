@@ -858,6 +858,9 @@
     <ClCompile Include="..\..\xbmc\FileSystem\VirtualDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\FileSystem\VirtualPathDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\VTPDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -3183,6 +3186,9 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\FileSystem\VirtualPathDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\VTPDirectory.h">
