@@ -49,6 +49,10 @@ public:
   bool        GetChannelsList(PVR_HANDLE handle, bool radio = false);
   bool        GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
 
+  int         GetChannelGroupCount(bool automatic);
+  bool        GetChannelGroupList(PVR_HANDLE handle, bool bRadio);
+  bool        GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group);
+
   bool        GetTimersList(PVR_HANDLE handle);
   int         GetTimersCount();
   PVR_ERROR   AddTimer(const PVR_TIMER &timerinfo);

@@ -86,11 +86,9 @@ bool EpgSearchFilter::MatchSearchTerm(const CEpgInfoTag &tag) const
 
   if (!m_strSearchTerm.IsEmpty())
   {
-    cTextSearch search(tag.Title(), m_strSearchTerm, m_bIsCaseSensitive);
-    bool bTitleMatch = search.DoSearch();
-
-    search.SetText(tag.PlotOutline(), m_strSearchTerm, m_bIsCaseSensitive);
-    bReturn = bTitleMatch || (m_bSearchInDescription && search.DoSearch());
+    CTextSearch search(m_strSearchTerm, m_bIsCaseSensitive, SEARCH_DEFAULT_OR);
+    bReturn = search.Search(tag.Title()) ||
+        search.Search(tag.PlotOutline());
   }
 
   return bReturn;

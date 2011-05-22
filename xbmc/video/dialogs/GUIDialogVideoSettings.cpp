@@ -220,7 +220,8 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     }
   }
 
-  g_PVRManager.TriggerSaveChannelSettings();
+  if (g_PVRManager.IsPlayingRadio() || g_PVRManager.IsPlayingTV())
+    g_PVRManager.TriggerSaveChannelSettings();
 }
 
 CStdString CGUIDialogVideoSettings::FormatInteger(float value, float minimum)

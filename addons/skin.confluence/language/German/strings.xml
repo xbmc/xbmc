@@ -6,7 +6,9 @@
   <string id="31003">Power Optionen</string>
   <string id="31004">In Arbeit...</string>
   <string id="31005">Verberge Info</string>
+  <string id="31006">Ansichtsoptionen</string>
 
+  <string id="31008">Vollbild</string>
   <string id="31007">Plugins</string>
 
   <string id="31020">Kürzlich hinzugefügt</string>
@@ -35,6 +37,8 @@
   <string id="31047">Aktuelle Einstellung</string>
   <string id="31048">Visualisierungs Einstellungen</string>
   <string id="31049">Schluss Zeit</string>
+  <string id="31050">Sortiere: Aufsteigend</string>
+  <string id="31051">Sortiere: Absteigend</string>
 
   <string id="31055">Öffne Wiedergabeliste</string>
   <string id="31056">Sichere Wiedergabeliste</string>
@@ -63,7 +67,7 @@
   <string id="31116"></string>
   <string id="31117">Zeige kürzlich hinzugefüge Videos</string>
   <string id="31118">Hauptfenster Programme-Untermenü</string>
-  <string id="31119"></string>
+  <string id="31119">Verberge Hintegrund Fanart</string>
   <string id="31120">BUTTON BESCHRIFTUNG</string>
   <string id="31121"></string>
   <string id="31122">Wetter Seite</string>
@@ -76,6 +80,8 @@
   <string id="31129"></string>
   <string id="31130"></string>
   <string id="31131"></string>
+
+  <string id="31133">Untertitel Add-on</string>
 
   <string id="31140">Musik OSD</string>
   <string id="31141">Video OSD</string>
@@ -153,4 +159,5 @@
   <string id="31506">Verfügbare[CR]Gruppen</string>
   <string id="31509">Kanalgruppe</string>
   <string id="31510">Timer Set</string>
+  <string id="31511">Kanal Optionen</string>
 </strings>

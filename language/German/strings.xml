@@ -1018,6 +1018,7 @@
   <string id="13013">Neustart</string>
   <string id="13014">Minimieren</string>
   <string id="13015">Power-Button Aktion</string>
+  <string id="13016">Herunterfahren</string>
 
   <string id="13020">Ist noch eine weitere Sitzung aktiv (evtl. SSH)? </string>
   <string id="13021">Wechselfestplatte wurde angeschlossen</string>
@@ -1565,6 +1566,9 @@
 
   <string id="17500">Bildschirm Sleep Timeout</string>
 
+  <string id="17998">%i Stunden</string>
+  <string id="17999">%i Tage</string>
+
   <!-- strings 19000 thru 19999 used for tv interface -->
   <string id="19000">Zum Kanal wechseln</string>
   <string id="19001">Benutzen Sie AND, OR und NOT in Verbindung mit Ihren Suchbegriffen, um detaillierter zu suchen.</string>
@@ -1780,9 +1784,23 @@
   <string id="19213">Wählen Sie die Kanalquelle</string>
   <string id="19214">Bitte geben Sie eine URL für den Kanal ein</string>
   <string id="19215">Der PVR-Server unterstützt keine Timer!</string>
-
   <string id="19216">Alle Radio Kanäle</string>
   <string id="19217">Alle TV Kanäle</string>
+
+  <string id="19219">Ungruppierte Kanäle</string>
+  <string id="19220">Kanäle in</string>
+  <string id="19221">Synchronisiere Kanalgruppen mit den Backends</string>
+
+  <string id="19223">Es konnte kein PVR Add-on aktiviert werden. Überprüfen Sie Ihre Einstellungen und das Log.</string>
+  <string id="19224">Aufnahme abgebrochen</string>
+  <string id="19225">Aufnahme geplant</string>
+  <string id="19226">Aufnahme gestartet</string>
+  <string id="19227">Aufnahme beendet</string>
+  <string id="19228">Aufnahme gelöscht</string>
+  <string id="19229">Schließe das Kanal-OSD nach einem Kanalwechsel</string>
+  <string id="19230">Deaktiviere EPG Aktualisierungen während der TV Wiedergabe</string>
+  <string id="19231">Immer die Kanalreihenfolge der Backends verwenden</string>
+
 
   <string id="19499">Andere/Unbekannt</string>
   <string id="19500">Movie/Drama</string>
@@ -2729,6 +2747,7 @@
   <string id="33081">Diese Datei ist gestapelt, wähle den Teil der abgespielt werden soll.</string>
   <string id="33082">Skriptpfad</string>
   <string id="33083">Benutzerdefinierten Skript Button aktivieren</string>
+  <string id="33100">Start fehlgeschlagen</string>
 
   <string id="34100">Lautsprecherkonfiguration</string>
 </strings>

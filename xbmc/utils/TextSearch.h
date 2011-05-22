@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,26 +23,28 @@
 #include <vector>
 #include "StringUtils.h"
 
-class cTextSearch
+typedef enum TextSearchDefault
+{
+  SEARCH_DEFAULT_AND = 0,
+  SEARCH_DEFAULT_OR,
+  SEARCH_DEFAULT_NOT
+} TextSearchDefault;
+
+class CTextSearch
 {
 public:
-  cTextSearch(void);
-  cTextSearch(CStdString text, CStdString searchText, bool caseSensitive);
-  virtual ~cTextSearch(void);
+  CTextSearch(const CStdString &strSearchTerms, bool bCaseSensitive = false, TextSearchDefault defaultSearchMode = SEARCH_DEFAULT_OR);
+  virtual ~CTextSearch(void);
 
-  void SetText(CStdString text, CStdString searchText, bool caseSensitive);
-  bool DoSearch();
-
-  static bool SearchText(CStdString text, CStdString searchText, bool caseSensitive);
+  bool Search(const CStdString &strHaystack) const;
+  bool IsValid(void) const;
 
 private:
-  void ClearBlankCharacter(CStdString *text, int pos);
+  void GetAndCutNextTerm(CStdString &strSearchTerm, CStdString &strNextTerm);
+  void ExtractSearchTerms(const CStdString &strSearchTerm, TextSearchDefault defaultSearchMode);
 
-  CStdString m_text;
-  CStdString m_searchText;
+  bool                     m_bCaseSensitive;
   std::vector<CStdString>  m_AND;
   std::vector<CStdString>  m_OR;
   std::vector<CStdString>  m_NOT;
-  bool m_CaseSensitive;
 };
-

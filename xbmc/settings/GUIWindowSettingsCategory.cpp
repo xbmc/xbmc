@@ -796,7 +796,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE);
     }
-    else if (!strSetting.Equals("pvr.enabled") && strSetting.Left(4).Equals("pvrmanager."))
+    else if (!strSetting.Equals("pvrmanager.enabled"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));
@@ -1050,13 +1050,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         if (pControl)
           pControl->SetEnabled(addon->HasSettings());
       }
-    }
-    else if (!strSetting.Equals("pvrmanager.enabled")
-             && !strSetting.Equals("pvrmanager.resetdb")
-             && strSetting.Left(3).Equals("pvr"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));
     }
 #if defined(_LINUX) && !defined(__APPLE__)
     else if (strSetting.Equals("audiooutput.custompassthrough"))

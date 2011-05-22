@@ -114,7 +114,8 @@ void CHTSPConnection::Close()
     m_iChallengeLength = 0;
   }
 
-  XBMC->QueueNotification(QUEUE_INFO, "Disconnected from %s", m_strHostname.c_str());
+  CStdString strNotification(XBMC->GetLocalizedString(30500));
+  XBMC->QueueNotification(QUEUE_ERROR, strNotification, m_strServerName.c_str());
 }
 
 void CHTSPConnection::Abort(void)
@@ -137,6 +138,12 @@ htsmsg_t* CHTSPConnection::ReadMessage(int timeout)
     htsmsg_t* m = m_queue.front();
     m_queue.pop_front();
     return m;
+  }
+
+  if (!IsConnected() || m_fd == INVALID_SOCKET)
+  {
+    XBMC->Log(LOG_ERROR, "%s - not connected", __FUNCTION__);
+    return NULL;
   }
 
   x = tcp_read_timeout(m_fd, &l, 4, timeout);
@@ -298,7 +305,10 @@ bool CHTSPConnection::SendGreeting(void)
 bool CHTSPConnection::Auth(void)
 {
   if (m_strUsername.empty())
+  {
+    XBMC->Log(LOG_DEBUG, "CHTSPConnection - %s - no username set. not authenticating", __FUNCTION__);
     return true;
+  }
 
   htsmsg_t *m = htsmsg_create_map();
   htsmsg_add_str(m, "method"  , "authenticate");
@@ -306,6 +316,8 @@ bool CHTSPConnection::Auth(void)
 
   if(m_strPassword != "" && m_challenge)
   {
+    XBMC->Log(LOG_DEBUG, "CHTSPConnection - %s - authenticating as user '%s' with a password", __FUNCTION__, m_strUsername.c_str());
+
     struct HTSSHA1* shactx = (struct HTSSHA1*) malloc(hts_sha1_size);
     uint8_t d[20];
     hts_sha1_init(shactx);
@@ -314,6 +326,10 @@ bool CHTSPConnection::Auth(void)
     hts_sha1_final(shactx, d);
     htsmsg_add_bin(m, "digest", d, 20);
     free(shactx);
+  }
+  else
+  {
+    XBMC->Log(LOG_DEBUG, "CHTSPConnection - %s - authenticating as user '%s' without a password", __FUNCTION__, m_strUsername.c_str());
   }
 
   return ReadSuccess(m, false, "get reply from authentication with server");

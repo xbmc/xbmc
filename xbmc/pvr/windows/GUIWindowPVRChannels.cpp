@@ -52,6 +52,12 @@ CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio)
   m_bShowHiddenChannels = false;
 }
 
+CGUIWindowPVRChannels::~CGUIWindowPVRChannels(void)
+{
+  g_PVREpg->UnregisterObserver(this);
+  g_PVRTimers->UnregisterObserver(this);
+}
+
 void CGUIWindowPVRChannels::ResetObservers(void)
 {
   CSingleLock lock(m_critSection);
