@@ -30,8 +30,8 @@
 // 6) testing... bugfixing... code cleanup...
 // 7) Make code cross platform. Original MediaPortal code is Windows only.
 
-#include "client.h" //for XBMC->Log
 #include "TSReader.h"
+#include "client.h" //for XBMC->Log
 #include "MultiFileReader.h"
 #include "utils.h"
 #include "MemoryReader.h"

@@ -18,9 +18,9 @@
  */
 #ifdef TSREADER
 
+#include "RTSPClient.h"
 #include "client.h"
 #include "FileReader.h"
-#include "RTSPClient.h"
 #include "MemoryBuffer.h"
 #include "utils/StdString.h"
 

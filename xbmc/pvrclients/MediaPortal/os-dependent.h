@@ -18,8 +18,11 @@
  *
  */
 
+#if defined(__WINDOWS__)
 // I don't want pthread_win32 stuff to be included
 #define PTHREAD_H
+#endif
+
 #include "libPlatform/os-dependent.h"
 
 #if defined(__WINDOWS__)

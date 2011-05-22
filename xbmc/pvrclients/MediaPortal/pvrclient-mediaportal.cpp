@@ -31,6 +31,9 @@
 #include "utils.h"
 #include "pvrclient-mediaportal.h"
 
+#ifdef TSREADER
+#include "lib/tsreader/TSReader.h"
+#endif
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
 

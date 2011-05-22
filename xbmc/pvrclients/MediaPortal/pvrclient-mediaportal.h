@@ -30,9 +30,8 @@
 /* Local includes */
 #include "Socket.h"
 
-#ifdef TSREADER
-#include "lib/tsreader/TSReader.h"
-#endif
+/* Use a forward declaration here. Including RTSPClient.h via TSReader.h at this point gives compile errors */
+class CTsReader;
 
 class cPVRClientMediaPortal
 {

@@ -19,14 +19,14 @@
 
 #if defined TSREADER && defined LIVE555
 
-#include "os-dependent.h"
+//#include "os-dependent.h"
+#include "TSThread.h"
 
 #include "liveMedia.hh"
 #include "BasicUsageEnvironment.hh"
 #include "GroupsockHelper.hh"
 
 #include "MemoryBuffer.h"
-#include "TSThread.h"
 
 class CRTSPClient: public TSThread
 {
