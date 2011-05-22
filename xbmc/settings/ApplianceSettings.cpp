@@ -20,22 +20,12 @@
  */
 
 #include "ApplianceSettings.h"
-
 #include <limits.h>
-
-#include "system.h"
-#include "Application.h"
 #include "filesystem/File.h"
-#include "utils/LangCodeExpander.h"
-#include "LangInfo.h"
-#include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
-#include "utils/SystemInfo.h"
-#include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
-#include "filesystem/SpecialProtocol.h"
 
 using namespace XFILE;
 
