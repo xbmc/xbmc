@@ -441,17 +441,10 @@ CUPnPServer::PopulateObjectFromTag(CMusicInfoTag&         tag,
                                    PLT_MediaItemResource* resource,  /* = NULL */
                                    EClientQuirks          quirks)
 {
-    // some usefull buffers
-    CStdStringArray strings;
-
     if (!tag.GetURL().IsEmpty() && file_path)
       *file_path = tag.GetURL();
 
-    StringUtils::SplitString(tag.GetGenre(), " / ", strings);
-    for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
-        object.m_Affiliation.genre.Add((*it).c_str());
-    }
-
+    object.m_Affiliation.genre = NPT_String(tag.GetGenre().c_str()).Split(" / ");
     object.m_Title = tag.GetTitle();
     object.m_Affiliation.album = tag.GetAlbum();
     object.m_People.artists.Add(tag.GetArtist().c_str());
@@ -520,10 +513,7 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
     if(object.m_ReferenceID == object.m_ObjectID)
         object.m_ReferenceID = "";
 
-    StringUtils::SplitString(tag.m_strGenre, " / ", strings);
-    for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
-        object.m_Affiliation.genre.Add((*it).c_str());
-    }
+    object.m_Affiliation.genre = NPT_String(tag.m_strGenre.c_str()).Split(" / ");
 
     for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
         object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
@@ -740,11 +730,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                   container->m_Date  = tag.m_strFirstAired;
                   container->m_Title = tag.m_strTitle;
                   container->m_Date  = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
-
-                  StringUtils::SplitString(tag.m_strGenre, " / ", strings);
-                  for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
-                      container->m_Affiliation.genre.Add((*it).c_str());
-                  }
+                  container->m_Affiliation.genre = NPT_String(tag.m_strGenre.c_str()).Split(" / ");
 
                   for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
                       container->m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
