@@ -796,7 +796,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE);
     }
-    else if (!strSetting.Equals("pvrmanager.enabled"))
+    else if (!strSetting.Equals("pvrmanager.enabled") &&
+        (strSetting.Equals("pvrmanager.channelscan") || strSetting.Equals("pvrmanager.channelmanager") ||
+         strSetting.Equals("pvrmenu.searchicons")))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));
@@ -1946,7 +1948,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
-  else if (strSetting.Equals("pvrmenu.searchicons"))
+  else if (strSetting.Equals("pvrmenu.searchicons") && g_PVRManager.IsStarted())
   {
     g_PVRManager.SearchMissingChannelIcons();
   }
@@ -1960,12 +1962,12 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188, 750, 0))
       g_PVRManager.ResetEPG();
   }
-  else if (strSetting.Equals("pvrmanager.channelscan"))
+  else if (strSetting.Equals("pvrmanager.channelscan") && g_PVRManager.IsStarted())
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19118, 19194, 0))
       g_PVRManager.StartChannelScan();
   }
-  else if (strSetting.Equals("pvrmanager.channelmanager"))
+  else if (strSetting.Equals("pvrmanager.channelmanager") && g_PVRManager.IsStarted())
   {
     CGUIDialogPVRChannelManager *dialog = (CGUIDialogPVRChannelManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
     if (dialog)

@@ -420,7 +420,9 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   }
 
   /* stop the thread */
-  Stop();
+  if (g_guiSettings.GetBool("pvrmanager.enabled"))
+    Stop();
+
   if (bShowProgress)
   {
     pDlgProgress->SetPercentage(20);
@@ -471,11 +473,14 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
     m_database->Close();
   }
 
-  Cleanup();
+  CLog::Log(LOGNOTICE,"PVRManager - %s - PVR database cleared", __FUNCTION__);
 
-  CLog::Log(LOGNOTICE,"PVRManager - %s - PVR database cleared. restarting the PVRManager", __FUNCTION__);
-
-  Start();
+  if (g_guiSettings.GetBool("pvrmanager.enabled"))
+  {
+    CLog::Log(LOGNOTICE,"PVRManager - %s - restarting the PVRManager", __FUNCTION__);
+    Cleanup();
+    Start();
+  }
 
   if (bShowProgress)
   {
@@ -490,7 +495,9 @@ void CPVRManager::ResetEPG(void)
 
   StopUpdateThreads();
   m_epg->Reset();
-  StartUpdateThreads();
+
+  if (g_guiSettings.GetBool("pvrmanager.enabled"))
+    StartUpdateThreads();
 }
 
 bool CPVRManager::IsPlaying(void) const
@@ -923,37 +930,44 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
 
 int CPVRManager::GetTotalTime(void) const
 {
-  return m_guiInfo->GetDuration();
+  CSingleLock lock(m_critSection);
+  return !m_guiInfo ? 0 : m_guiInfo->GetDuration();
 }
 
 int CPVRManager::GetStartTime(void) const
 {
-  return m_guiInfo->GetStartTime();
+  CSingleLock lock(m_critSection);
+  return !m_guiInfo ? 0 : m_guiInfo->GetStartTime();
 }
 
 bool CPVRManager::TranslateBoolInfo(DWORD dwInfo) const
 {
-  return m_guiInfo->TranslateBoolInfo(dwInfo);
+  CSingleLock lock(m_critSection);
+  return !m_guiInfo ? false : m_guiInfo->TranslateBoolInfo(dwInfo);
 }
 
 bool CPVRManager::TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const
 {
-  return m_guiInfo->TranslateCharInfo(dwInfo, strValue);
+  CSingleLock lock(m_critSection);
+  return !m_guiInfo ? false : m_guiInfo->TranslateCharInfo(dwInfo, strValue);
 }
 
 int CPVRManager::TranslateIntInfo(DWORD dwInfo) const
 {
-  return m_guiInfo->TranslateIntInfo(dwInfo);
+  CSingleLock lock(m_critSection);
+  return !m_guiInfo ? 0 : m_guiInfo->TranslateIntInfo(dwInfo);
 }
 
 bool CPVRManager::HasTimer(void) const
 {
-  return m_guiInfo->HasTimers();
+  CSingleLock lock(m_critSection);
+  return !m_guiInfo ? false : m_guiInfo->HasTimers();
 }
 
 bool CPVRManager::IsRecording(void) const
 {
-  return m_guiInfo->IsRecording();
+  CSingleLock lock(m_critSection);
+  return !m_guiInfo ? false : m_guiInfo->IsRecording();
 }
 
 void CPVRManager::LocalizationChanged(void)

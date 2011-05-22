@@ -604,6 +604,7 @@
   <string id="727">Webserver</string>
   <string id="728">FTP-server</string>
   <string id="730">- Poort</string>
+  <string id="731">- Host</string>
   <string id="732">Opslaan en toepassen</string>
   <string id="733">- Wachtwoord</string>
   <string id="734">Geen wachtwoord</string>
@@ -1311,6 +1312,7 @@
   <string id="15283">Onlangs door %name% afgespeelde nummers</string>
   <string id="15284">Beluister de aanbevelingen van %name% op Last.FM-radio</string>
   <string id="15285">Top tags van %name%</string>
+  <string id="15286">Beluister %name%'s Last.FM afspeellijst radio</string>
   <string id="15287">Wilt u dit nummer toevoegen aan uw favoriete nummers?</string>
   <string id="15288">Wilt u dit nummer verbannen?</string>
   <string id="15289">Toegevoegd aan favoriete nummers: %s</string>
@@ -1396,6 +1398,9 @@
   <string id="16319">DXVA</string>
   <string id="16320">Auto - ION geoptimaliseerd</string>
   <string id="16400">Kwaliteitsverbetering video</string>
+  <string id="16401">Uitgeschakeld</string>
+  <string id="16402">Ingeschakeld voor SD beelden</string>
+  <string id="16403">Altijd ingeschakeld</string>
   <string id="17500">Uitschakeltijd beeldscherm</string>
   <string id="17997">%i MB</string>
   <string id="17998">%i uren</string>
@@ -2650,3 +2655,4 @@
   <string id="34109">7.0</string>
   <string id="34110">7.1</string>
 </strings>
+

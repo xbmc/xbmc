@@ -133,6 +133,8 @@ typedef enum {
   XBMCK_LAUNCH_MEDIA_SELECT  = 0xB5,
   XBMCK_LAUNCH_APP1          = 0xB6,
   XBMCK_LAUNCH_APP2          = 0xB7,
+  XBMCK_LAUNCH_FILE_BROWSER  = 0xB8,
+  XBMCK_LAUNCH_MEDIA_CENTER  = 0xB9,
 
   // Numeric keypad
   XBMCK_KP0         = 0x100,

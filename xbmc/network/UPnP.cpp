@@ -670,6 +670,8 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         container->m_ObjectClass.type = "object.container";
         container->m_ChildrenCount = -1;
 
+        CStdStringArray strings;
+
         /* this might be overkill, but hey */
         if (item.IsMusicDb()) {
             MUSICDATABASEDIRECTORY::NODE_TYPE node = CMusicDatabaseDirectory::GetDirectoryType(item.m_strPath);
@@ -717,23 +719,54 @@ CUPnPServer::BuildObject(const CFileItem&              item,
             }
         } else if (item.IsVideoDb()) {
             VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryType(item.m_strPath);
-            if(quirks & ECLIENTQUIRKS_ONLYSTORAGEFOLDER) {
-                container->m_ObjectClass.type += ".storageFolder";
-            } else {
-                switch(node) {
-                    case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
-                      container->m_ObjectClass.type += ".genre.movieGenre";
-                      break;
-                    case VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR:
-                      container->m_ObjectClass.type += ".person";
-                      break;
-                    default:
-                      container->m_ObjectClass.type += ".storageFolder";
-                      break;
-                }
+            CVideoInfoTag &tag = *(CVideoInfoTag*)item.GetVideoInfoTag();
+            switch(node) {
+                case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
+                  container->m_ObjectClass.type += ".genre.movieGenre";
+                  break;
+                case VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR:
+                  container->m_ObjectClass.type += ".person.videoArtist";
+                  container->m_Creator = tag.m_strArtist;
+                  container->m_Title   = tag.m_strTitle;
+                  break;
+                case VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_TVSHOWS:
+                  container->m_ObjectClass.type += ".album.videoAlbum";
+                  container->m_Recorded.program_title  = "S" + ("0" + NPT_String::FromInteger(tag.m_iSeason)).Right(2);
+                  container->m_Recorded.program_title += "E" + ("0" + NPT_String::FromInteger(tag.m_iEpisode)).Right(2);
+                  container->m_Recorded.program_title += " : " + tag.m_strTitle;
+                  container->m_Recorded.series_title = tag.m_strShowTitle;
+                  container->m_Recorded.episode_number = tag.m_iSeason * 100 + tag.m_iEpisode;
+                  container->m_Title = container->m_Recorded.series_title + " - " + container->m_Recorded.program_title;
+                  container->m_Date  = tag.m_strFirstAired;
+                  container->m_Title = tag.m_strTitle;
+                  container->m_Date  = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
+
+                  StringUtils::SplitString(tag.m_strGenre, " / ", strings);
+                  for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
+                      container->m_Affiliation.genre.Add((*it).c_str());
+                  }
+
+                  for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
+                      container->m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
+                  }
+
+                  container->m_People.director = tag.m_strDirector;
+                  container->m_People.authors.Add(tag.m_strWritingCredits.c_str());
+
+                  container->m_Description.description = tag.m_strTagLine;
+                  container->m_Description.long_description = tag.m_strPlot;
+
+                  break;
+                default:
+                  container->m_ObjectClass.type += ".storageFolder";
+                  break;
             }
         } else if (item.IsPlayList()) {
             container->m_ObjectClass.type += ".playlistContainer";
+        }
+
+        if(quirks & ECLIENTQUIRKS_ONLYSTORAGEFOLDER) {
+          container->m_ObjectClass.type = "object.container.storageFolder";
         }
 
         /* Get the number of children for this container */

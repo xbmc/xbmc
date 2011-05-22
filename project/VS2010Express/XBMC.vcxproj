@@ -2149,4 +2149,5 @@
       <UserProperties RESOURCE_FILE="XBMC_PC.rc" />
     </VisualStudio>
   </ProjectExtensions>
+ <Import Project="$(SolutionDir)\$(ProjectFileName).targets.user" Condition="Exists('$(SolutionDir)\$(ProjectFileName).targets.user')" />
 </Project>

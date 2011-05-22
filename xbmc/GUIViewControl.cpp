@@ -81,6 +81,8 @@ void CGUIViewControl::SetCurrentView(int viewMode)
     newView = GetView(type, 0);
   if (newView < 0 && type == VIEW_TYPE_BIG_ICON) // try icon view if they want big icon
     newView = GetView(VIEW_TYPE_ICON, 0);
+  if (newView < 0 && type == VIEW_TYPE_BIG_INFO)
+    newView = GetView(VIEW_TYPE_INFO, 0);
   if (newView < 0) // try a list view
     newView = GetView(VIEW_TYPE_LIST, 0);
   if (newView < 0) // try anything!
@@ -112,15 +114,15 @@ void CGUIViewControl::SetCurrentView(int viewMode)
     previousView->OnMessage(msg);
   }
 
+  // Update it with the contents
+  UpdateContents(pNewView, item);
+
   // and focus if necessary
   if (hasFocus)
   {
     CGUIMessage msg(GUI_MSG_SETFOCUS, m_parentWindow, pNewView->GetID(), 0);
     g_windowManager.SendMessage(msg);
   }
-
-  // Update it with the contents
-  UpdateContents(pNewView, item);
 
   // Update our view control only if we are not in the TV Window
   if (m_parentWindow != WINDOW_PVR)

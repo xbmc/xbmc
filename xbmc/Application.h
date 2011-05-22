@@ -193,7 +193,6 @@ public:
 
   void SeekPercentage(float percent);
   void SeekTime( double dTime = 0.0 );
-  void ResetPlayTime();
 
   void StopShutdownTimer();
   void ResetShutdownTimers();
