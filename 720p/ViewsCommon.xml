@@ -65,7 +65,7 @@
 					<posy>-7</posy>
 					<width>237</width>
 					<height>355</height>
-					<texture diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+					<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
 					<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 				</control>
 				<!-- mirror -->
@@ -121,7 +121,7 @@
 					<posy>-7</posy>
 					<width>355</width>
 					<height>237</height>
-					<texture diffuse="bigPosterHorizMask.png">$INFO[ListItem.Thumb]</texture>
+					<texture background="true" diffuse="bigPosterHorizMask.png">$INFO[ListItem.Thumb]</texture>
 					<aspectratio scalediffuse="false" align="center" aligny="center">scale</aspectratio>
 				</control>
 				<!-- mirror -->
@@ -639,7 +639,7 @@
 						<posx>28</posx>
 						<width>238</width>
 						<height>360</height>
-						<texture diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+						<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
 						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 					</control>
 					<!-- plugins -->
