@@ -79,7 +79,7 @@ bool CApplianceSettings::Load(CStdString profileName)
   return true;
 }
 
-const char *CApplianceSettings::GetProfileRestrictions(TiXmlElement *pElement)
+const char *CApplianceSettings::GetProfileRestrictions(const TiXmlElement *pElement)
 {
   const char *profileRestrictions = pElement->Attribute("profile");
   return profileRestrictions != NULL ? profileRestrictions : "all";
@@ -89,11 +89,11 @@ void CApplianceSettings::Clear()
 {
 }
 
-bool CApplianceSettings::ProfileMatch(TiXmlElement *pElement, CStdString profileName)
+bool CApplianceSettings::ProfileMatch(const TiXmlElement *pElement, const CStdString profileName)
 {
   CStdStringArray profiles;
   StringUtils::SplitString(GetProfileRestrictions(pElement), ",", profiles);
-  for (int i=0; i<(int)profiles.size(); ++i)
+  for (unsigned i=0; i<profiles.size(); ++i)
     if (profiles[i] == profileName || profiles[i] == "all")
       return true;
   return false;
