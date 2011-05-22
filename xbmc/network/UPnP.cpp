@@ -2330,6 +2330,9 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
                                  PLT_MediaObject&       object,
                                  PLT_MediaItemResource* resource /* = NULL */)
 {
+    CDateTime date;
+    date.SetFromDateString((const char*)object.m_Date);
+
     if(!object.m_Recorded.program_title.IsEmpty())
     {
         int episode;
@@ -2344,9 +2347,14 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
             tag.m_iSeason  = object.m_Recorded.episode_number / 100;
             tag.m_iEpisode = object.m_Recorded.episode_number % 100;
         }
+        tag.m_strFirstAired = date.GetAsLocalizedDate();
     }
     else
-        tag.m_strTitle = object.m_Title;
+    {
+        tag.m_strTitle     = object.m_Title;
+        tag.m_strPremiered = date.GetAsLocalizedDate();
+    }
+    tag.m_iYear       = date.GetYear();
     tag.m_strGenre    = JoinString(object.m_Affiliation.genre, " / ");
     tag.m_strDirector = object.m_People.director;
     tag.m_strTagLine  = object.m_Description.description;
