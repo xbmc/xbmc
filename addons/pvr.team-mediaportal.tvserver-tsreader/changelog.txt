@@ -1,3 +1,19 @@
+v1.1.3.103:
+- Fixed: trigger timer and recording list update on changes from XBMC side
+- Fixed: check for empty recordings list
+- Fixed: check for empty timer list
+- Fixed: limit EPG request to the requested period
+- Fixed: use tuning details to retrieve the channel number from the backend
+- Added: support for TVServerXBMC v1.1.x.104
+- Changed: sources adapted for PVR API changes
+- Changed: move to end of the timeshift buffer on channel change to speed-up channnel switching
+
+v1.1.2.102:
+- Added: Channel group support
+- Fixed: live stream playback
+- Fixed: recording retrieval
+- Changed: sources adapted for PVR API changes
+
 v1.1.2.101:
 - Fixed: "Include radio" setting
 - Fixed: missing defaults for settings "sleeponrtspurl" and "resolvertsphostname"
