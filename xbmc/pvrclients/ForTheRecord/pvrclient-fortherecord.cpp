@@ -214,12 +214,12 @@ PVR_ERROR cPVRClientForTheRecord::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &c
     }
     else
     {
-      XBMC->Log(LOG_ERROR, "GetEPGData failed for channel id:%i", channel.iChannelNumber);
+      XBMC->Log(LOG_ERROR, "GetEPGData failed for channel id:%i", channel.iUniqueId);
     }
   }
   else
   {
-    XBMC->Log(LOG_ERROR, "Channel (%i) did not return a channel class.", channel.iChannelNumber);
+    XBMC->Log(LOG_ERROR, "Channel (%i) did not return a channel class.", channel.iUniqueId);
   }
 
   return PVR_ERROR_NO_ERROR;
@@ -772,21 +772,21 @@ cChannel* cPVRClientForTheRecord::FetchChannel(std::string channelid)
 
 bool cPVRClientForTheRecord::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
-  XBMC->Log(LOG_DEBUG, "->OpenLiveStream(%i)", channelinfo.iChannelNumber);
+  XBMC->Log(LOG_DEBUG, "->OpenLiveStream(%i)", channelinfo.iUniqueId);
 
   cChannel* channel = FetchChannel(channelinfo.iUniqueId);
 
   if (channel)
   {
     std::string filename;
-    XBMC->Log(LOG_INFO, "Tune XBMC channel: %i", channelinfo.iChannelNumber);
+    XBMC->Log(LOG_INFO, "Tune XBMC channel: %i", channelinfo.iUniqueId);
     XBMC->Log(LOG_INFO, "Corresponding ForTheRecord channel: %s", channel->Guid().c_str());
 
     ForTheRecord::TuneLiveStream(channel->Guid(), channel->Type(), filename);
 
     if (filename.length() == 0)
     {
-      XBMC->Log(LOG_ERROR, "Could not start the timeshift for channel %i (%s)", channelinfo.iChannelNumber, channel->Guid().c_str());
+      XBMC->Log(LOG_ERROR, "Could not start the timeshift for channel %i (%s)", channelinfo.iUniqueId, channel->Guid().c_str());
       return false;
     }
 
