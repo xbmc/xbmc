@@ -37,8 +37,8 @@ class CApplianceSettings
     bool CanQuit() { return m_canQuit; };
     bool CanWindowed() { return m_canWindowed; };
   private:
-    const char *GetProfileRestrictions(TiXmlElement *pElement);
-    bool ProfileMatch(TiXmlElement *pElement, CStdString profileName);
+    const char *GetProfileRestrictions(const TiXmlElement *pElement);
+    bool ProfileMatch(const TiXmlElement *pElement, const CStdString profileName);
     bool m_canQuit;
     bool m_canWindowed;
 };
