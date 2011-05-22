@@ -59,9 +59,7 @@ JSON_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITransportL
     return InvalidParams;
   }
 
-  Json::Value validFields = Value(arrayValue);
-  MakeFieldsList(parameterObject, validFields);
-  HandleFileItem("movieid", true, "moviedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, validFields, result, false);
+  HandleFileItem("movieid", true, "moviedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["fields"], result, false);
 
   videodatabase.Close();
   return OK;
@@ -98,9 +96,7 @@ JSON_STATUS CVideoLibrary::GetMovieSetDetails(const CStdString &method, ITranspo
     return InvalidParams;
   }
 
-  Value validFields = Value(arrayValue);
-  MakeFieldsList(parameterObject, validFields);
-  HandleFileItem("setid", false, "setdetails", CFileItemPtr(new CFileItem(infos)), parameterObject, validFields, result, false);
+  HandleFileItem("setid", false, "setdetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["fields"], result, false);
 
   // Get movies from the set
   CFileItemList items;
@@ -162,9 +158,7 @@ JSON_STATUS CVideoLibrary::GetTVShowDetails(const CStdString &method, ITransport
     return InvalidParams;
   }
 
-  Json::Value validFields = Value(arrayValue);
-  MakeFieldsList(parameterObject, validFields);
-  HandleFileItem("tvshowid", true, "tvshowdetails", CFileItemPtr(new CFileItem(infos)), parameterObject, validFields, result, false);
+  HandleFileItem("tvshowid", true, "tvshowdetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["fields"], result, false);
 
   videodatabase.Close();
   return OK;
@@ -237,9 +231,7 @@ JSON_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITranspor
     return InvalidParams;
   }
 
-  Json::Value validFields = Value(arrayValue);
-  MakeFieldsList(parameterObject, validFields);
-  HandleFileItem("episodeid", true, "episodedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, validFields, result, false);
+  HandleFileItem("episodeid", true, "episodedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["fields"], result, false);
 
   videodatabase.Close();
   return OK;
@@ -278,9 +270,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideoDetails(const CStdString &method, ITrans
     return InvalidParams;
   }
 
-  Json::Value validFields = Value(arrayValue);
-  MakeFieldsList(parameterObject, validFields);
-  HandleFileItem("musicvideoid", true, "musicvideodetails", CFileItemPtr(new CFileItem(infos)), parameterObject, validFields, result, false);
+  HandleFileItem("musicvideoid", true, "musicvideodetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["fields"], result, false);
 
   videodatabase.Close();
   return OK;
