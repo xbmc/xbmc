@@ -2377,10 +2377,22 @@ bool CApplication::OnKey(const CKey& key)
   // key modifiers like shift, ctrl etc.
   if (key.GetUnicode())
   {
-    action = CAction(key.GetAscii() | KEY_ASCII, key.GetUnicode());
-    CLog::Log(LOGDEBUG, "%s: %s pressed, trying fallback action %i", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetID());
-    if (OnAction(action))
-      return true;
+    iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+    window = g_windowManager.GetWindow(iWin);
+    if (window)
+    {
+      CGUIControl *control = window->GetFocusedControl();
+      if (control)
+      {
+        if (control->IsContainer())
+        {
+          action = CAction(key.GetAscii() | KEY_ASCII, key.GetUnicode());
+          CLog::Log(LOGDEBUG, "%s: %s pressed, trying list navigation action %i", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetID());
+          if (OnAction(action))
+            return true;
+        }
+      }
+    }
   }
 
   // Give up, the key has no useful action
