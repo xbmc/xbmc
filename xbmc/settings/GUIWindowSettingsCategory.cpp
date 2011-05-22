@@ -796,7 +796,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE);
     }
-    else if (!strSetting.Equals("pvrmanager.enabled"))
+    else if (!strSetting.Equals("pvrmanager.enabled") &&
+        (strSetting.Equals("pvrmanager.channelscan") || strSetting.Equals("pvrmanager.channelmanager") ||
+         strSetting.Equals("pvrmenu.searchicons")))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));
