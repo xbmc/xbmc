@@ -6,7 +6,7 @@ VERSION=1_44_0
 SOURCE=$(LIBNAME)_$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
-LIBDYLIB=$(PREFIX)/lib/libboost_thread.dylib
+LIBDYLIB=$(PREFIX)/lib/libboost_thread.a
 
 all: $(LIBDYLIB)
 
