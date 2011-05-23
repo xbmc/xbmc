@@ -1277,7 +1277,7 @@
 				<posy>127</posy>
 				<posx>1</posx>
 				<visible>Control.IsVisible(11001)</visible>
-				<animation effect="fade" start="0" end="100" time="800" delay="200">Visible</animation>
+				<animation effect="fade" start="0" end="100" time="500" delay="0">Visible</animation>
 				<animation effect="fade" end="0" time="0" delay="0">Hidden</animation>
 			<control type="image">	
 				<height>488</height>
@@ -1294,7 +1294,7 @@
 				<posy>235</posy>
 				<posx>1</posx>
 				<visible>!Control.IsVisible(11001) | Control.IsVisible(11003)</visible>
-				<animation effect="fade" start="0" end="100" time="800" delay="200">Visible</animation>
+				<animation effect="fade" start="0" end="100" time="500" delay="0">Visible</animation>
 				<animation effect="fade" end="0" time="0" delay="0">Hidden</animation>
 			<control type="image">
 				<texture background="true">newlistsinglebgunfocused.png</texture>
@@ -1913,8 +1913,9 @@
 								<visible>ListItem.Type(album)</visible>
 							</control>
 							</control>
-							<!-- tv show episode -->
+							<!-- tv show episode when both lists are visible -->
 							<control type="group">
+								<visible>ListItem.Type(episode) + Control.IsVisible(11001)</visible>
 								<!-- drop shadow -->
 								<control type="image">
 									<posx>27</posx>
@@ -1923,7 +1924,6 @@
 									<height>96</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
 									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
-									<visible>ListItem.Type(episode)</visible>
 								</control>
 								<control type="image">
 									<posx>35</posx>
@@ -1932,7 +1932,7 @@
 									<height>80</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
 									<texture background="true">posterMaskSmall.png</texture>
-									<visible>ListItem.Type(episode) + !Skin.HasSetting(hideposterborders) + Control.IsVisible(11001)</visible>
+									<visible>!Skin.HasSetting(hideposterborders)</visible>
 									<colordiffuse>FF3d3d3d</colordiffuse>
 								</control>
 							<control type="image">
@@ -1942,7 +1942,6 @@
 								<height>76</height>
 								<aspectratio scalediffuse="false" align="top">scale</aspectratio>
 								<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
-								<visible>ListItem.Type(episode)</visible>
 							</control>
 							<!-- dimming mask when list not selected -->
 							<control type="image">
@@ -1953,7 +1952,7 @@
 								<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 								<texture diffuse="posterMaskSmall.png" background="true">posterMaskSmall.png</texture>
 								<colordiffuse>FF000000</colordiffuse>
-								<visible>ListItem.Type(episode) + ControlGroup(7002).HasFocus + Control.IsVisible(11001)</visible>
+								<visible>ControlGroup(7002).HasFocus</visible>
 								<animation effect="fade" start="0" end="50" time="400" condition="true">Visible</animation>
 								<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
 							</control>
@@ -1965,7 +1964,6 @@
 									<texture border="10">whitewiderounded.png</texture>
 									<colordiffuse>FF000000</colordiffuse>
 									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-									<visible>ListItem.Type(episode)</visible>
 								</control>
 								<control type="image">
 									<posx>35</posx>
@@ -1975,7 +1973,97 @@
 									<texture border="10">whitewiderounded.png</texture>
 									<colordiffuse>FF000000</colordiffuse>
 									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-									<visible>ListItem.Type(episode)</visible>
+								</control>
+							<control type="label">
+								<posx>95</posx>
+								<posy>250</posy>
+								<width>100</width>
+								<align>center</align>
+								<aligny>center</aligny>
+								<scroll>false</scroll>
+								<label>$INFO[ListItem.TVShowTitle]</label>
+								<font>SearchResultSmaller</font>
+								<textcolor>FFdddddd</textcolor>
+								<wrapmultiline>true</wrapmultiline>
+								<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
+								<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
+							</control>
+							<control type="label">
+								<posx>95</posx>
+								<posy>286</posy>
+								<width>100</width>
+								<align>center</align>
+								<aligny>center</aligny>
+								<scroll>false</scroll>
+								<label>Season $INFO[ListItem.Season]</label>
+								<font>SearchResultSmaller</font>
+								<textcolor>FFdddddd</textcolor>
+								<wrapmultiline>true</wrapmultiline>
+								<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
+								<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
+							</control>
+							<control type="label">
+								<posx>95</posx>
+								<posy>310</posy>
+								<width>100</width>
+								<align>center</align>
+								<aligny>center</aligny>
+								<scroll>false</scroll>
+								<label>Episode $INFO[ListItem.Episode]</label>
+								<font>SearchResultSmaller</font>
+								<textcolor>FFdddddd</textcolor>
+								<wrapmultiline>false</wrapmultiline>
+								<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
+							</control>
+							</control>
+							<!-- tv show episode when only this list is visible -->
+							<control type="group">
+								<posy>-100</posy>
+								<visible>ListItem.Type(episode) + !Control.IsVisible(11001)</visible>
+								<!-- drop shadow -->
+								<control type="image">
+									<posx>27</posx>
+									<posy>142</posy>
+									<width>134</width>
+									<height>96</height>
+									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
+								</control>
+								<control type="image">
+									<posx>35</posx>
+									<posy>150</posy>
+									<width>120</width>
+									<height>80</height>
+									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+									<texture background="true">posterMaskSmall.png</texture>
+									<visible>!Skin.HasSetting(hideposterborders)</visible>
+									<colordiffuse>FF3d3d3d</colordiffuse>
+								</control>
+							<control type="image">
+								<posx>37</posx>
+								<posy>152</posy>
+								<width>116</width>
+								<height>76</height>
+								<aspectratio scalediffuse="false" align="top">scale</aspectratio>
+								<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+							</control>
+								<control type="image">
+									<posx>35</posx>
+									<posy>238</posy>
+									<width>120</width>
+									<height>27</height>
+									<texture border="10">whitewiderounded.png</texture>
+									<colordiffuse>FF000000</colordiffuse>
+									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="image">
+									<posx>35</posx>
+									<posy>270</posy>
+									<width>120</width>
+									<height>59</height>
+									<texture border="10">whitewiderounded.png</texture>
+									<colordiffuse>FF000000</colordiffuse>
+									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
 								</control>
 								<!--<control type="image">
 									<posx>35</posx>
@@ -1998,7 +2086,7 @@
 								<font>SearchResultSmaller</font>
 								<textcolor>FFdddddd</textcolor>
 								<wrapmultiline>true</wrapmultiline>
-								<visible>!IsEmpty(ListItem.TVShowTitle) + ListItem.Type(episode)</visible>
+								<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
 								<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
 							</control>
 							<control type="label">
@@ -2012,7 +2100,7 @@
 								<font>SearchResultSmaller</font>
 								<textcolor>FFdddddd</textcolor>
 								<wrapmultiline>true</wrapmultiline>
-								<visible>!IsEmpty(ListItem.TVShowTitle) + ListItem.Type(episode)</visible>
+								<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
 								<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
 							</control>
 							<control type="label">
@@ -2026,7 +2114,7 @@
 								<font>SearchResultSmaller</font>
 								<textcolor>FFdddddd</textcolor>
 								<wrapmultiline>false</wrapmultiline>
-								<visible>!IsEmpty(ListItem.TVShowTitle) + ListItem.Type(episode)</visible>
+								<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
 							</control>
 							</control>
 							<!-- movie when both lists are visible -->
@@ -2205,8 +2293,9 @@
 								<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
 							</control>
 							</control>
-							<!-- tv show episode -->
+							<!-- tv show episode when both lists are visible -->
 							<control type="group">
+								<visible>ListItem.Type(episode) + Control.IsVisible(11001)</visible>
 								<!-- drop shadow -->
 								<control type="image">
 									<posx>27</posx>
@@ -2215,7 +2304,6 @@
 									<height>98</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
 									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
-									<visible>ListItem.Type(episode)</visible>
 								</control>
 								<control type="image">
 									<posx>34</posx>
@@ -2224,7 +2312,6 @@
 									<height>82</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
 									<texture background="true">posterMaskSmall.png</texture>
-									<visible>ListItem.Type(episode) + Control.IsVisible(11001)</visible>
 									<colordiffuse>orange</colordiffuse>
 								</control>
 							<control type="image">
@@ -2234,7 +2321,6 @@
 								<height>76</height>
 								<aspectratio scalediffuse="false" align="top">scale</aspectratio>
 								<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
-								<visible>ListItem.Type(episode)</visible>
 							</control>
 							<control type="image">
 								<posx>35</posx>
@@ -2244,7 +2330,6 @@
 								<texture border="10">whitewiderounded.png</texture>
 								<colordiffuse>FF000000</colordiffuse>
 								<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-								<visible>ListItem.Type(episode)</visible>
 							</control>
 							<control type="image">
 								<posx>35</posx>
@@ -2254,18 +2339,7 @@
 								<texture border="10">whitewiderounded.png</texture>
 								<colordiffuse>FF000000</colordiffuse>
 								<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-								<visible>ListItem.Type(episode)</visible>
 							</control>
-							<!--<control type="image">
-								<posx>35</posx>
-								<posy>302</posy>
-								<width>120</width>
-								<height>27</height>
-								<texture border="10">whitewiderounded.png</texture>
-								<colordiffuse>FF000000</colordiffuse>
-								<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-								<visible>ListItem.Type(episode)</visible>
-							</control>-->
 						<control type="label">
 							<posx>95</posx>
 							<posy>250</posy>
@@ -2277,7 +2351,7 @@
 							<font>SearchResultSmaller</font>
 							<textcolor>FF3d3d3d</textcolor>
 							<wrapmultiline>true</wrapmultiline>
-							<visible>!IsEmpty(ListItem.TVShowTitle) + ListItem.Type(episode)</visible>
+							<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
 							<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
 						</control>
 						<control type="label">
@@ -2291,7 +2365,7 @@
 							<font>SearchResultSmaller</font>
 							<textcolor>orange</textcolor>
 							<wrapmultiline>true</wrapmultiline>
-							<visible>!IsEmpty(ListItem.TVShowTitle) + ListItem.Type(episode)</visible>
+							<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
 							<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
 						</control>
 						<control type="label">
@@ -2305,7 +2379,97 @@
 							<font>SearchResultSmaller</font>
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>
-							<visible>!IsEmpty(ListItem.TVShowTitle) + ListItem.Type(episode)</visible>
+							<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
+						</control>
+							</control>
+							<!-- tv show episode when  only this list is visible -->
+							<control type="group">
+								<posy>-100</posy>
+								<visible>ListItem.Type(episode) + !Control.IsVisible(11001)</visible>
+								<!-- drop shadow -->
+								<control type="image">
+									<posx>27</posx>
+									<posy>141</posy>
+									<width>137</width>
+									<height>98</height>
+									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
+								</control>
+								<control type="image">
+									<posx>34</posx>
+									<posy>149</posy>
+									<width>122</width>
+									<height>82</height>
+									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+									<texture background="true">posterMaskSmall.png</texture>
+									<colordiffuse>orange</colordiffuse>
+								</control>
+							<control type="image">
+								<posx>37</posx>
+								<posy>152</posy>
+								<width>116</width>
+								<height>76</height>
+								<aspectratio scalediffuse="false" align="top">scale</aspectratio>
+								<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+							</control>
+							<control type="image">
+								<posx>35</posx>
+								<posy>238</posy>
+								<width>120</width>
+								<height>27</height>
+								<texture border="10">whitewiderounded.png</texture>
+								<colordiffuse>FF000000</colordiffuse>
+								<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+							</control>
+							<control type="image">
+								<posx>35</posx>
+								<posy>270</posy>
+								<width>120</width>
+								<height>59</height>
+								<texture border="10">whitewiderounded.png</texture>
+								<colordiffuse>FF000000</colordiffuse>
+								<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+							</control>
+						<control type="label">
+							<posx>95</posx>
+							<posy>250</posy>
+							<width>100</width>
+							<align>center</align>
+							<aligny>center</aligny>
+							<scroll>false</scroll>
+							<label>$INFO[ListItem.TVShowTitle]</label>
+							<font>SearchResultSmaller</font>
+							<textcolor>FF3d3d3d</textcolor>
+							<wrapmultiline>true</wrapmultiline>
+							<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
+							<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
+						</control>
+						<control type="label">
+							<posx>95</posx>
+							<posy>286</posy>
+							<width>100</width>
+							<align>center</align>
+							<aligny>center</aligny>
+							<scroll>false</scroll>
+							<label>Season $INFO[ListItem.Season]</label>
+							<font>SearchResultSmaller</font>
+							<textcolor>orange</textcolor>
+							<wrapmultiline>true</wrapmultiline>
+							<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
+							<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
+						</control>
+						<control type="label">
+							<posx>95</posx>
+							<posy>310</posy>
+							<width>100</width>
+							<align>center</align>
+							<aligny>center</aligny>
+							<scroll>false</scroll>
+							<label>Episode $INFO[ListItem.Episode]</label>
+							<font>SearchResultSmaller</font>
+							<textcolor>orange</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
 						</control>
 							</control>
 							<!-- movie when both lists are visible-->
