@@ -729,6 +729,12 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
 
   Tokenize(result, lines, ",");
 
+  if( result.length() == 0 )
+  {
+    XBMC->Log(LOG_DEBUG, "Backend returned no recordings" );
+    return PVR_ERROR_NO_ERROR;
+  }
+
   memset(&tag, NULL, sizeof(PVR_RECORDING));
 
   for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
