@@ -931,43 +931,81 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
 int CPVRManager::GetTotalTime(void) const
 {
   CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return 0;
+  lock.Leave();
+
   return !m_guiInfo ? 0 : m_guiInfo->GetDuration();
 }
 
 int CPVRManager::GetStartTime(void) const
 {
   CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return 0;
+  lock.Leave();
+
   return !m_guiInfo ? 0 : m_guiInfo->GetStartTime();
 }
 
 bool CPVRManager::TranslateBoolInfo(DWORD dwInfo) const
 {
   CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return false;
+  lock.Leave();
+
   return !m_guiInfo ? false : m_guiInfo->TranslateBoolInfo(dwInfo);
 }
 
 bool CPVRManager::TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const
 {
   CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return false;
+  lock.Leave();
+
   return !m_guiInfo ? false : m_guiInfo->TranslateCharInfo(dwInfo, strValue);
 }
 
 int CPVRManager::TranslateIntInfo(DWORD dwInfo) const
 {
   CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return 0;
+  lock.Leave();
+
   return !m_guiInfo ? 0 : m_guiInfo->TranslateIntInfo(dwInfo);
 }
 
 bool CPVRManager::HasTimer(void) const
 {
   CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return false;
+  lock.Leave();
+
   return !m_guiInfo ? false : m_guiInfo->HasTimers();
 }
 
 bool CPVRManager::IsRecording(void) const
 {
   CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return false;
+  lock.Leave();
+
   return !m_guiInfo ? false : m_guiInfo->IsRecording();
+}
+
+void CPVRManager::ShowPlayerInfo(int iTimeout)
+{
+  CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return;
+  lock.Leave();
+
+  m_guiInfo->ShowPlayerInfo(iTimeout);
 }
 
 void CPVRManager::LocalizationChanged(void)
@@ -988,36 +1026,71 @@ bool CPVRManager::IsRunning(void) const
 
 bool CPVRManager::IsPlayingTV(void) const
 {
+  CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return false;
+  lock.Leave();
+
   return m_addons->IsPlayingTV();
 }
 
 bool CPVRManager::IsPlayingRadio(void) const
 {
+  CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return false;
+  lock.Leave();
+
   return m_addons->IsPlayingRadio();
 }
 
 bool CPVRManager::IsPlayingRecording(void) const
 {
+  CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return false;
+  lock.Leave();
+
   return m_addons->IsPlayingRecording();
 }
 
 bool CPVRManager::IsRunningChannelScan(void) const
 {
+  CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return false;
+  lock.Leave();
+
   return m_addons->IsRunningChannelScan();
 }
 
 PVR_ADDON_CAPABILITIES *CPVRManager::GetCurrentClientProperties(void)
 {
+  CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return NULL;
+  lock.Leave();
+
   return m_addons->GetCurrentAddonCapabilities();
 }
 
 void CPVRManager::StartChannelScan(void)
 {
+  CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return;
+  lock.Leave();
+
   return m_addons->StartChannelScan();
 }
 
 void CPVRManager::SearchMissingChannelIcons(void)
 {
+  CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+    return;
+  lock.Leave();
+
   return m_channelGroups->SearchMissingChannelIcons();
 }
 
@@ -1132,9 +1205,4 @@ void CPVRManager::ExecutePendingJobs(void)
   }
 
   ResetEvent(m_triggerEvent);
-}
-
-void CPVRManager::ShowPlayerInfo(int iTimeout)
-{
-  m_guiInfo->ShowPlayerInfo(iTimeout);
 }
