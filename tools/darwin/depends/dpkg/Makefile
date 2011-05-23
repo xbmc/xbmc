@@ -8,13 +8,13 @@ SOURCE_DEBIAN=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 export LIBTOOL=builds/unix/libtool
-export PATH:=$(PREFIX)/bin:$(PATH)
-CONFIGURE=./configure --prefix=$(PREFIX) \
+export PATH:=$(TOOLCHAIN)/bin:$(PATH)
+CONFIGURE=./configure --prefix=$(TOOLCHAIN) \
   --enable-static --disable-shared
 
-CLEAN_FILES=$(ARCHIVE) $(SOURCE_DEBIAN)
+APPBIN=$(TOOLCHAIN)/bin/dpkg-deb
 
-all: $(APPNAME) .installed
+all: $(APPBIN)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
 	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
@@ -31,14 +31,13 @@ $(APPNAME): $(SOURCE_DEBIAN)
 	make -C $(SOURCE_DEBIAN)/src CFLAGS="" LDFLAGS=""
 	make -C $(SOURCE_DEBIAN)/dpkg-deb CFLAGS="" LDFLAGS=""
 
-.installed:
+$(APPBIN):
+	make $(APPNAME)
 	make -C $(SOURCE_DEBIAN)/dpkg-deb install
-	touch $@
 
 clean:
 	make -C $(SOURCE_DEBIAN) clean
-	rm -f .installed
 
 distclean::
-	rm -rf $(SOURCE_DEBIAN) .installed
+	rm -rf $(SOURCE_DEBIAN)
 
