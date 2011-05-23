@@ -799,6 +799,10 @@ PVR_ERROR cPVRClientMediaPortal::DeleteRecording(const PVR_RECORDING &recording)
     return PVR_ERROR_NOT_DELETED;
   }
 
+  // Although XBMC initiates the deletion of this recording, we still have to trigger XBMC to update its
+  // recordings list to remove the recording at the XBMC side
+  PVR->TriggerRecordingUpdate();
+
   return PVR_ERROR_NO_ERROR;
 }
 
@@ -811,7 +815,7 @@ PVR_ERROR cPVRClientMediaPortal::RenameRecording(const PVR_RECORDING &recording)
     return PVR_ERROR_SERVER_ERROR;
 
   snprintf(command, 512, "UpdateRecording:%i|%s\n",
-      recording.iClientIndex,
+    recording.iClientIndex,
     uri::encode(uri::PATH_TRAITS, recording.strTitle).c_str());
 
   result = SendCommand(command);
@@ -822,6 +826,10 @@ PVR_ERROR cPVRClientMediaPortal::RenameRecording(const PVR_RECORDING &recording)
     return PVR_ERROR_NOT_DELETED;
   }
   XBMC->Log(LOG_DEBUG, "RenameRecording(%i) to %s [done]", recording.iClientIndex, recording.strTitle);
+
+  // Although XBMC initiates the rename of this recording, we still have to trigger XBMC to update its
+  // recordings list to see the renamed recording at the XBMC side
+  PVR->TriggerRecordingUpdate();
 
   return PVR_ERROR_NO_ERROR;
 }
