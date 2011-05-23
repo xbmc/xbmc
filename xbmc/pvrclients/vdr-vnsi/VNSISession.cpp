@@ -216,7 +216,10 @@ cResponsePacket* cVNSISession::ReadMessage()
     }
 
     vresp = new cResponsePacket();
-    vresp->setResponse(requestID, userData, userDataLength);
+    if (channelID == VNSI_CHANNEL_STATUS)
+      vresp->setStatus(requestID, userData, userDataLength);
+    else
+      vresp->setResponse(requestID, userData, userDataLength);
   }
 
   return vresp;

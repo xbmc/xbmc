@@ -860,6 +860,7 @@ void cVNSIData::Action()
       }
       else if (vresp->getRequestID() == VNSI_STATUS_TIMERCHANGE)
       {
+        XBMC->Log(LOG_DEBUG, "Server requested timer update");
         PVR->TriggerTimerUpdate();
       }
       else if (vresp->getRequestID() == VNSI_STATUS_CHANNELCHANGE)
