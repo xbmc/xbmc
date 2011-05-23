@@ -159,18 +159,20 @@ CPVRChannel &CPVRChannel::operator=(const CPVRChannel &channel)
 
 bool CPVRChannel::CheckCachedIcon(void)
 {
+  bool bReturn(false);
   CSingleLock lock(m_critSection);
 
   if (m_bIsCachingIcon)
-    return false;
+    return bReturn;
 
   if (URIUtils::IsInternetStream(m_strIconPath, true))
   {
     m_bIsCachingIcon = true;
     CJobManager::GetInstance().AddJob(new CPVRChannelIconCacheJob(this), this);
+    bReturn = true;
   }
 
-  return true;
+  return false;
 }
 
 bool CPVRChannel::CacheIcon(void)
