@@ -795,6 +795,9 @@ void CPVRManager::CloseStream(void)
       time_t tNow;
       CDateTime::GetCurrentDateTime().GetAsTime(tNow);
       channel.SetLastWatched(tNow, true);
+
+      /* make sure that channel settings are persisted */
+      SaveCurrentChannelSettings();
     }
   }
 
@@ -904,6 +907,9 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - switching to channel '%s'",
       __FUNCTION__, channel.ChannelName().c_str());
+
+  /* make sure that channel settings are persisted */
+  SaveCurrentChannelSettings();
 
   if (m_currentFile)
   {
