@@ -865,12 +865,12 @@ void cVNSIData::Action()
       }
       else if (vresp->getRequestID() == VNSI_STATUS_CHANNELCHANGE)
       {
-        XBMC->Log(LOG_ERROR, "Server requested channel update");
+        XBMC->Log(LOG_DEBUG, "Server requested channel update");
         PVR->TriggerChannelUpdate();
       }
       else if (vresp->getRequestID() == VNSI_STATUS_RECORDINGSCHANGE)
       {
-        XBMC->Log(LOG_ERROR, "Server requested recordings update");
+        XBMC->Log(LOG_DEBUG, "Server requested recordings update");
         PVR->TriggerRecordingUpdate();
       }
 
