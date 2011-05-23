@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -46,7 +46,6 @@ cTimer::cTimer()
   m_postrecordinterval = -1; // Use MediaPortal setting instead
   m_canceled           = cUndefinedDate;
   m_series             = false;
-  m_UTCdiff            = GetUTCdifftime();
 }
 
 cTimer::cTimer(const PVR_TIMER& timerinfo)
@@ -83,8 +82,6 @@ cTimer::cTimer(const PVR_TIMER& timerinfo)
 
   m_prerecordinterval = timerinfo.iMarginStart;
   m_postrecordinterval = timerinfo.iMarginEnd;
-
-  m_UTCdiff = GetUTCdifftime();
 }
 
 

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -43,7 +43,6 @@ private:
   string m_title;             // Title of this event
   string m_shortText;         // Short description of this event (typically the episode name in case of a series)
   string m_description;       // Description of this event
-  time_t m_UTCdiff;
 
 public:
   cRecording(const PVR_RECORDING *Recording);
