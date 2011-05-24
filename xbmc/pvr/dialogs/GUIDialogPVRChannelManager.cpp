@@ -109,15 +109,18 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction &action)
       CStdString strNumber;
       CGUIDialog::OnAction(action);
 
-      unsigned int iLines = (iActionId == ACTION_PAGE_UP || iActionId == ACTION_PAGE_DOWN) ?
-          abs(m_iSelected - m_viewControl.GetSelectedItem()) :
-          1;
+      bool bMoveUp        = iActionId == ACTION_PAGE_UP || iActionId == ACTION_MOVE_UP;
+      unsigned int iLines = bMoveUp ? abs(m_iSelected - m_viewControl.GetSelectedItem()) : 1;
+      bool bOutOfBounds   = bMoveUp ? m_iSelected <= 0  : m_iSelected >= m_channelItems->Size() - 1;
+      if (bOutOfBounds)
+      {
+        bMoveUp = !bMoveUp;
+        iLines  = m_channelItems->Size() - 1;
+      }
 
       for (unsigned int iLine = 0; iLine < iLines; iLine++)
       {
-        unsigned int iNewSelect = (iActionId == ACTION_PAGE_UP || iActionId == ACTION_MOVE_UP) ?
-            (m_iSelected == 0 ? m_channelItems->Size() - 1 : m_iSelected == 0 ? m_iSelected : m_iSelected - 1) :
-            (m_iSelected >= m_channelItems->Size() - 1 ? 0 : m_iSelected + 1);
+        unsigned int iNewSelect = bMoveUp ? m_iSelected - 1 : m_iSelected + 1;
         if (m_channelItems->Get(iNewSelect)->GetProperty("Number") != "-")
         {
           strNumber.Format("%i", m_iSelected+1);
