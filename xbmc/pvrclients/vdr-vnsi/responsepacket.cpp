@@ -56,6 +56,14 @@ void cResponsePacket::setResponse(uint32_t trequestID, uint8_t* tuserData, uint3
   userDataLength  = tuserDataLength;
 }
 
+void cResponsePacket::setStatus(uint32_t trequestID, uint8_t* tuserData, uint32_t tuserDataLength)
+{
+  channelID       = VNSI_CHANNEL_STATUS;
+  requestID       = trequestID;
+  userData        = tuserData;
+  userDataLength  = tuserDataLength;
+}
+
 void cResponsePacket::setStream(uint32_t topcodeID, uint32_t tstreamID, uint32_t tduration, int64_t tdts, int64_t tpts, uint8_t* tuserData, uint32_t tuserDataLength)
 {
   channelID       = VNSI_CHANNEL_STREAM;

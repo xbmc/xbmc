@@ -30,6 +30,8 @@ class cResponsePacket
     ~cResponsePacket();
 
     void setResponse(uint32_t requestID, uint8_t* packet, uint32_t packetLength);
+    void setStatus(uint32_t requestID, uint8_t* packet, uint32_t packetLength);
+
     void setStream(uint32_t opcodeID, uint32_t streamID, uint32_t duration, int64_t dts, int64_t pts, uint8_t* packet, uint32_t packetLength);
 
     bool noResponse() { return (userData == NULL); };
