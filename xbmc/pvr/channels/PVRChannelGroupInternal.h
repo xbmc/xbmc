@@ -154,7 +154,7 @@ namespace PVR
     /*!
      * @see CPVRChannelGroup::AddToGroup
      */
-    bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0);
+    bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
 
     /*!
      * @see CPVRChannelGroup::RemoveFromGroup
