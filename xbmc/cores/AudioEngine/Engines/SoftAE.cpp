@@ -688,6 +688,19 @@ void CSoftAE::RemoveStream(IAEStream *stream)
     }
 }
 
+IAEStream *CSoftAE::FreeStream(IAEStream *stream)
+{
+  CSingleLock lock(m_streamLock);
+
+  RemoveStream(stream);
+
+  CSoftAEStream *istream = (CSoftAEStream *)stream;
+	
+  delete istream;
+  
+  return NULL;
+}
+
 float CSoftAE::GetDelay()
 {
   if (!m_running)
