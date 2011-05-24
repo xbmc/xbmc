@@ -1791,10 +1791,10 @@
 		<height>186</height>
 		<info background="true">ListItem.Thumb</info>
 		<aspectratio aligny="top">scale</aspectratio>
-		<texture diffuse="posterMaskSmall.png"/>
-		<bordertexture>posterFrameSmall.png</bordertexture>
-		<bordersize>3</bordersize>
-		<visible>ListItem.Type(movie)</visible>
+		<!--<texture diffuse="posterMaskSmall.png"/>
+		<bordertexture>posterMaskSmall.png</bordertexture>
+		<bordersize>3</bordersize>-->
+		<!--<visible>ListItem.Type(movie)</visible>-->
 	</include>
 	<include name="PanelStreamImageFocus">
 		<posx>18</posx>
@@ -1850,6 +1850,25 @@
 	<!-- PanelStream -->
 	<include name="PanelStreamLayout">
 		<itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="158" height="241">
+			<!-- drop shadow -->
+			<control type="image">
+				<posx>9</posx>
+				<posy>-7</posy>
+				<width>140</width>
+				<height>205</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="40">posterFrameSmallShadow.png</texture>
+			</control>
+			<control type="image">
+				<posx>15</posx>
+				<posy>0</posy>
+				<width>128</width>
+				<height>192</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true">posterMaskSmall.png</texture>
+				<visible>!Skin.HasSetting(hideposterborders)</visible>
+				<colordiffuse>FF3d3d3d</colordiffuse>
+			</control>
 			<control type="image">
 				<description>Poster image</description>
 				<include>PanelStreamImage</include>
@@ -1880,6 +1899,15 @@
 			</control>
 		</itemlayout>
 		<focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="158" height="241">
+			<!-- drop shadow -->
+			<control type="image">
+				<posx>9</posx>
+				<posy>-7</posy>
+				<width>140</width>
+				<height>205</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="40">posterFrameSmallShadow.png</texture>
+			</control>
 			<!-- new bg border -->
 			<control type="image">
 				<posx>15</posx>
@@ -1888,7 +1916,7 @@
 				<height>192</height>
 				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
 				<texture background="true">posterMaskSmall.png</texture>
-				<visible>ListItem.Type(movie)</visible>
+				<!--<visible>ListItem.Type(movie)</visible>-->
 				<colordiffuse>FFd1801c</colordiffuse>
 			</control>
 			<control type="image">

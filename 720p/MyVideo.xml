@@ -12,7 +12,7 @@
 		<include>MediaPreview</include>
 		<include>PanelStream</include>
 		<!--<include>Coverflow</include>-->
-		<include>WallStream</include>
+		<!--<include>WallStream</include>-->
 		<include>PluginStream</include>
 		<!--<include>GridView</include>-->
 		<!-- -->

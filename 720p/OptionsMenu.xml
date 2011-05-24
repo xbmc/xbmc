@@ -161,13 +161,13 @@
 					<visible>ControlGroup(9009).HasFocus() + [Control.HasFocus(957) | Control.HasFocus(958) | Control.HasFocus(960)]</visible>
 					<include>VideoOSDSlideLeft</include>
 				</control>
-				<control type="image">
+				<!--<control type="image">
 					<description>Wall Stream Thumb</description>
 					<include>OMViewLargeThumb</include>
 					<texture>ViewThumbWallStream.png</texture>
 					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(959)</visible>
 					<include>VideoOSDSlideLeft</include>
-				</control>
+				</control>-->
 			</control>
 		</control>
 		<control type="group" id="9009">
@@ -472,14 +472,14 @@
 					<onclick>SetFocus(50)</onclick>
 					<include>OMButtonItem</include>
 				</control>
-				<control type="button" id="959">
+				<!--<control type="button" id="959">
 					<description>Wall Stream view button</description>
 					<visible>!Control.IsVisible(53) + !Container.Content(Seasons) + !Container.Content(Songs) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
 					<label>$LOCALIZE[31714]</label>
 					<onclick>Container.SetViewMode(53)</onclick>
 					<onclick>SetFocus(50)</onclick>
 					<include>OMButtonItem</include>
-				</control>
+				</control>-->
 				<control type="button" id="960">
 					<description>Plugin Stream view button</description>
 					<visible>!Control.IsVisible(59) + Container.Content(Plugins)</visible>
