@@ -387,6 +387,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonGroupManager(CGUIMessage &message
   /* Open dialog window */
   pDlgInfo->DoModal();
 
+  Update();
   return true;
 }
 
