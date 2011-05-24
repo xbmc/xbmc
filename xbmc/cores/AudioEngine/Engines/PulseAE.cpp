@@ -181,6 +181,33 @@ IAEStream *CPulseAE::AlterStream(IAEStream *stream, enum AEDataFormat dataFormat
   return GetStream(dataFormat, sampleRate, channelCount, channelLayout, options);
 }
 
+void CPulseAE::RemoveStream(IAEStream *stream)
+{
+  std::list<CPulseAEStream*>::iterator itt;
+  
+	m_streams.remove((CPulseAEStream *)stream);
+	
+  for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+  {
+    if (*itt == stream)
+    {
+      m_streams.erase(itt);
+      return;
+    }
+  }
+}
+
+IAEStream *CPulseAE::FreeStream(IAEStream *stream)
+{
+  RemoveStream(stream);
+
+  CPulseAEStream *istream = (CPulseAEStream *)stream;
+	
+  delete istream;
+  
+  return NULL;
+}
+
 IAESound *CPulseAE::GetSound(CStdString file)
 {
   CSingleLock lock(m_lock);
