@@ -50,7 +50,8 @@ CDVDAudio::~CDVDAudio()
   CSingleLock lock (m_critSection);
   if (m_pAudioStream)
   {
-    m_pAudioStream->Destroy();
+    //m_pAudioStream->Destroy();
+    AE.FreeStream(m_pAudioStream);
   }
   free(m_pBuffer);
 }
