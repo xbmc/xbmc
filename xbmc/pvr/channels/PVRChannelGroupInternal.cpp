@@ -178,14 +178,19 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(CPVRChannel *channel)
     return false;
 
   /* switch the hidden flag */
-  realChannel->SetHidden(true, true);
-  ++m_iHiddenChannels;
+  if (!realChannel->IsHidden())
+  {
+    realChannel->SetHidden(true, true);
+    ++m_iHiddenChannels;
 
-  /* renumber this list */
-  Renumber();
+    /* renumber this list */
+    Renumber();
 
-  /* and persist */
-  return Persist();
+    /* and persist */
+    return Persist();
+  }
+
+  return true;
 }
 
 bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb /* = true */)
