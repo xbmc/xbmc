@@ -1185,7 +1185,7 @@ bool CApplication::Initialize()
   CCrystalHD::GetInstance();
 #endif
 
-  CAddonMgr::Get().StartServices();
+  CAddonMgr::Get().StartServices(false);
 
   CLog::Log(LOGNOTICE, "initialize done");
 
@@ -3366,7 +3366,7 @@ void CApplication::Stop(int exitCode)
   g_mediaManager.Stop();
 
   // Stop services before unloading Python
-  CAddonMgr::Get().StopServices();
+  CAddonMgr::Get().StopServices(false);
 
 /* Python resource freeing must be done after skin has been unloaded, not before
    some windows still need it when deinitializing during skin unloading. */
