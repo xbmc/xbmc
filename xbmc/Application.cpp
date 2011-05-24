@@ -2220,37 +2220,41 @@ void CApplication::RenderMemoryStatus()
 bool CApplication::OnKey(const CKey& key)
 {
 
-  // Turn the mouse off, as we've just got a keypress from controller or remote
+  // Reset the idle timer and turn the mouse off, as we've just got a
+  // keypress from controller or remote
   g_Mouse.SetActive(false);
-
-  // get the current active window
-  int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
-
-  // this will be checked for certain keycodes that need
-  // special handling if the screensaver is active
-  CAction action = CButtonTranslator::GetInstance().GetAction(iWin, key);
-
-  // a key has been pressed.
-  // reset Idle Timer
   m_idleTimer.StartZero();
+
+  // AlwaysProcess returns true if this is an action that must be processed
+  // even if the screensaver is on e.g. shutdown.
+  int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+  CAction action = CButtonTranslator::GetInstance().GetAction(iWin, key);
   bool processKey = AlwaysProcess(action);
 
+  // This resets the screen save timers but does not deactive the screen saver
   ResetScreenSaver();
 
-  // allow some keys to be processed while the screensaver is active
+  // If the screen saver was on, and this is not one of the actions that must
+  // always be processed, deactivate the screen server and return without
+  // processing the action.
   if (WakeUpScreenSaverAndDPMS() && !processKey)
   {
     CLog::Log(LOGDEBUG, "%s: %s pressed, screen saver/dpms woken up", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str());
     return true;
   }
 
-  // change this if we have a dialog up
+  // If a modal dialog is open reset iWin to be the dialog rather than
+  // the parent window
   if (g_windowManager.HasModalDialog())
-  {
     iWin = g_windowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
-  }
+
+  // If we are playing a video full screen, and the Info dialog is open,
+  // try and process the keypress using an <fullscreeninfo> mapping. If
+  // there is no mapping reset iWin to be the full screen video window.
+  // This ensures actions like stop, pause, etc still work when the Info
+  // dialog is open.
   if (iWin == WINDOW_DIALOG_FULLSCREEN_INFO)
-  { // fullscreen info dialog - special case
+  {
     action = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
     if (!key.IsAnalogButton())
@@ -2259,105 +2263,142 @@ bool CApplication::OnKey(const CKey& key)
     if (OnAction(action))
       return true;
 
-    // fallthrough to the main window
+    // Reset iWin to be the full screen video window - we'll process
+    // the action below
     iWin = WINDOW_FULLSCREEN_VIDEO;
   }
+
+  // If we are playing a video full screen process the key immediately
   if (iWin == WINDOW_FULLSCREEN_VIDEO)
   {
-    // current active window is full screen video.
+    // If we have a menu open the mapping comes from the <videomenu>
+    // section, otherwise it comes from the <fullscreenvideo> section.
     if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
-    {
-      // if player is in some sort of menu, (ie DVDMENU) map buttons differently
       action = CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_MENU, key);
-    }
     else
+      action = CButtonTranslator::GetInstance().GetAction(WINDOW_FULLSCREEN_VIDEO, key);
+
+    // Log the key
+    if (!key.IsAnalogButton())
+      CLog::Log(LOGDEBUG, "%s: %s pressed, trying fullscreen action %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
+
+    // Play a sound based on the action
+    g_audioManager.PlayActionSound(action);
+
+    // Execute the action and return indicating if it was successful
+    return OnAction(action);
+  }
+
+  // At this point we need to know whether to treat the keypress as a
+  // command or as text entry. It's text entry if a virtual keyboard is
+  // open or if we're typing into an edit control.
+  bool isTextEntry = key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC);
+  CGUIWindow *window = g_windowManager.GetWindow(iWin);
+  if (window)
+  {
+    CGUIControl *control = window->GetFocusedControl();
+    if (control)
+      if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT)
+        isTextEntry = true;
+  }
+
+  if (isTextEntry)
+  {
+    action = CAction(0); // reset our action
+    if (g_guiSettings.GetBool("input.remoteaskeyboard"))
     {
-      // no then use the fullscreen window section of keymap.xml to map key->action
-      action = CButtonTranslator::GetInstance().GetAction(iWin, key);
+      // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
+      // and send those rather than actual keyboard presses.  Only for navigation-type commands though
+      action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key);
+      if (!(action.GetID() == ACTION_MOVE_LEFT ||
+            action.GetID() == ACTION_MOVE_RIGHT ||
+            action.GetID() == ACTION_MOVE_UP ||
+            action.GetID() == ACTION_MOVE_DOWN ||
+            action.GetID() == ACTION_SELECT_ITEM ||
+            action.GetID() == ACTION_ENTER ||
+            action.GetID() == ACTION_PREVIOUS_MENU ||
+            action.GetID() == ACTION_CLOSE_DIALOG))
+      {
+        // the action isn't plain navigation - check for a keyboard-specific keymap
+        action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, false);
+        if (!(action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9) ||
+              action.GetID() == ACTION_BACKSPACE ||
+              action.GetID() == ACTION_SHIFT ||
+              action.GetID() == ACTION_SYMBOLS ||
+              action.GetID() == ACTION_CURSOR_LEFT ||
+              action.GetID() == ACTION_CURSOR_RIGHT)
+          action = CAction(0); // don't bother with this action
+      }
     }
+    if (!action.GetID())
+    {
+      // keyboard entry - pass the keys through directly
+      if (key.GetFromHttpApi())
+        action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0, key.GetUnicode());
+      else
+      { // see if we've got an ascii key
+        if (key.GetUnicode())
+          action = CAction(key.GetAscii() | KEY_ASCII, key.GetUnicode());
+        else
+          action = CAction(key.GetVKey() | KEY_VKEY);
+      }
+    }
+
+    CLog::Log(LOGDEBUG, "%s: %s pressed, trying text input action %i", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetID());
+
+    if (OnAction(action))
+      return true;
+  }
+
+  // If we've got this far the keypress isn't text entry so we just need
+  // to map it to an action and see if the action is executed.
+  // If it's from the HTTP API sanity check the key to make sure it's valid.
+  if (key.GetFromHttpApi())
+  {
+    if (key.GetButtonCode() != KEY_INVALID)
+      action = CButtonTranslator::GetInstance().GetAction(iWin, key);
   }
   else
-  {
-    // current active window isnt the fullscreen window
-    // just use corresponding section from keymap.xml
-    // to map key->action
+    action = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
-    // first determine if we should use keyboard input directly
-    bool useKeyboard = key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC);
-    CGUIWindow *window = g_windowManager.GetWindow(iWin);
+  // Log the keypress and the action we're about to attempt
+  if (!key.IsAnalogButton())
+    CLog::Log(LOGDEBUG, "%s: %s pressed, trying action %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
+
+  //  Play a sound based on the action
+  g_audioManager.PlayActionSound(action);
+
+  // Attempt the action
+  if (OnAction(action))
+    return true;
+
+  // If we reach this point it means the keypress has no matching action.
+  // Instead try and use it to jump in a list. Note that this ignores any
+  // key modifiers like shift, ctrl etc.
+  if (key.GetUnicode())
+  {
+    iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+    window = g_windowManager.GetWindow(iWin);
     if (window)
     {
       CGUIControl *control = window->GetFocusedControl();
       if (control)
       {
-        if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
-           (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT)) // shift and no other modifiers
-          useKeyboard = true;
-      }
-    }
-    if (useKeyboard)
-    {
-      action = CAction(0); // reset our action
-      if (g_guiSettings.GetBool("input.remoteaskeyboard"))
-      {
-        // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
-        // and send those rather than actual keyboard presses.  Only for navigation-type commands though
-        action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key);
-        if (!(action.GetID() == ACTION_MOVE_LEFT ||
-              action.GetID() == ACTION_MOVE_RIGHT ||
-              action.GetID() == ACTION_MOVE_UP ||
-              action.GetID() == ACTION_MOVE_DOWN ||
-              action.GetID() == ACTION_SELECT_ITEM ||
-              action.GetID() == ACTION_ENTER ||
-              action.GetID() == ACTION_PREVIOUS_MENU ||
-              action.GetID() == ACTION_CLOSE_DIALOG))
+        if (control->IsContainer())
         {
-          // the action isn't plain navigation - check for a keyboard-specific keymap
-          action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, false);
-          if (!(action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9) ||
-                action.GetID() == ACTION_BACKSPACE ||
-                action.GetID() == ACTION_SHIFT ||
-                action.GetID() == ACTION_SYMBOLS ||
-                action.GetID() == ACTION_CURSOR_LEFT ||
-                action.GetID() == ACTION_CURSOR_RIGHT)
-            action = CAction(0); // don't bother with this action
+          action = CAction(key.GetAscii() | KEY_ASCII, key.GetUnicode());
+          CLog::Log(LOGDEBUG, "%s: %s pressed, trying list navigation action %i", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetID());
+          if (OnAction(action))
+            return true;
         }
       }
-      if (!action.GetID())
-      {
-        // keyboard entry - pass the keys through directly
-        if (key.GetFromHttpApi())
-          action = CAction(key.GetButtonCode() != KEY_INVALID ? key.GetButtonCode() : 0, key.GetUnicode());
-        else
-        { // see if we've got an ascii key
-          if (key.GetUnicode())
-            action = CAction(key.GetAscii() | KEY_ASCII, key.GetUnicode());
-          else
-            action = CAction(key.GetVKey() | KEY_VKEY);
-        }
-      }
-
-      CLog::Log(LOGDEBUG, "%s: %s pressed, trying keyboard action %i", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetID());
-
-      if (OnAction(action))
-        return true;
-      // failed to handle the keyboard action, drop down through to standard action
     }
-    if (key.GetFromHttpApi())
-    {
-      if (key.GetButtonCode() != KEY_INVALID)
-        action = CButtonTranslator::GetInstance().GetAction(iWin, key);
-    }
-    else
-      action = CButtonTranslator::GetInstance().GetAction(iWin, key);
   }
-  if (!key.IsAnalogButton())
-    CLog::Log(LOGDEBUG, "%s: %s pressed, action is %s", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
 
-  //  Play a sound based on the action
-  g_audioManager.PlayActionSound(action);
+  // Give up, the key has no useful action
+  CLog::Log(LOGDEBUG, "%s: %s pressed, no action available", __FUNCTION__, g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str());
 
-  return OnAction(action);
+  return false;
 }
 
 // OnAppCommand is called in response to a XBMC_APPCOMMAND event.
