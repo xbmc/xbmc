@@ -99,6 +99,8 @@ void PAPlayer::StopStream(StreamInfo *si)
   si->m_stream->DisableCallbacks(false);
   si->m_stream->Drain();
   si->m_stream->Flush();
+
+  AE.FreeStream(si->m_stream);
 }
 
 void PAPlayer::RegisterAudioCallback(IAudioCallback* pCallback)

@@ -99,7 +99,8 @@ void CDVDAudio::Destroy()
 
   if (m_pAudioStream)
   {
-    m_pAudioStream->Destroy();
+    //m_pAudioStream->Destroy();
+    AE.FreeStream(m_pAudioStream);
   }
   free(m_pBuffer);
   m_pBuffer = NULL;
