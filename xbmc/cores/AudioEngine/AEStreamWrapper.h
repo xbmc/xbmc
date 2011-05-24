@@ -35,6 +35,7 @@ protected:
   virtual ~CAEStreamWrapper();
 
   void AlterStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options);
+  void FreeStream();
 
   /* used by the wrapper to signal fetching a new stream */
   void UnInitialize();

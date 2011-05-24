@@ -140,6 +140,15 @@ void CAEStreamWrapper::AlterStream(enum AEDataFormat dataFormat, unsigned int sa
     m_stream = ae->AlterStream(m_stream, dataFormat, sampleRate, channelCount, channelLayout, options);
 }
 
+void CAEStreamWrapper::FreeStream()
+{
+  CExclusiveLock lock(m_lock);
+
+  IAE* ae = AE.GetEngine();
+  if (m_stream)
+    m_stream = ae->FreeStream(m_stream);
+}
+
 void CAEStreamWrapper::Destroy()
 {
   CSharedLock lock(m_lock);

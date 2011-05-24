@@ -127,6 +127,14 @@ IAEStream* CAEWrapper::AlterStream(IAEStream *stream, enum AEDataFormat dataForm
   return wrapper;
 }
 
+IAEStream *CAEWrapper::FreeStream(IAEStream *stream)
+{
+  CSharedLock lock(m_lock);
+  CAEStreamWrapper *wrapper = (CAEStreamWrapper*)stream;
+	wrapper->FreeStream();
+  return wrapper;
+}
+
 IAESound* CAEWrapper::GetSound(CStdString file)
 {
   CAESoundWrapper *s = NULL;

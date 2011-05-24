@@ -99,6 +99,14 @@ public:
   virtual IAEStream *AlterStream(IAEStream *stream, enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options = 0) = 0;
 
   /**
+   * This method will remove the specifyed stream from the engine.
+   * For OSX/IOS this is essential to reconfigure the audio output.
+   * @param stream The stream to be altered
+   * @return NULL
+   */
+  virtual IAEStream *FreeStream(IAEStream *stream) = 0;
+
+  /**
    * Creates a new IAESound that is ready to play the specified file
    * @param file The WAV file to load, this supports XBMC's VFS
    * @return A new IAESound if the file could be loaded, otherwise NULL

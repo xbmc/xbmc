@@ -50,6 +50,7 @@ public:
   virtual void  SetVolume(float volume);
   virtual IAEStream *GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options = 0);
   virtual IAEStream *AlterStream(IAEStream *stream, enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options = 0);
+  virtual IAEStream *FreeStream(IAEStream *stream);
   virtual IAESound *GetSound(CStdString file);
   virtual void FreeSound(IAESound *sound);
   virtual void GarbageCollect();
