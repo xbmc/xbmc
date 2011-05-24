@@ -393,12 +393,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       g_application.getApplicationMessenger().UserEvent(newEvent.user.code);
       break;
     case XBMC_APPCOMMAND:
-      {
-        // Special media keys are mapped to WM_APPCOMMAND on Windows (and to DBUS events on Linux?)
-        // XBMC translates WM_APPCOMMAND to XBMC_APPCOMMAND events.
-        g_application.OnAppCommand(CAction(newEvent.appcommand.action));
-      }
-      break;
+      return g_application.OnAppCommand(newEvent.appcommand.action);
   }
   return true;
 }
@@ -2361,7 +2356,7 @@ bool CApplication::OnKey(const CKey& key)
 }
 
 // OnAppCommand is called in response to a XBMC_APPCOMMAND event.
-
+// This needs to return 1 if it processed the appcommand or zero if it didn't
 bool CApplication::OnAppCommand(const CAction &action)
 {
   // Reset the screen saver
@@ -2369,12 +2364,30 @@ bool CApplication::OnAppCommand(const CAction &action)
 
   // If we were currently in the screen saver wake up and don't process the appcommand
   if (WakeUpScreenSaverAndDPMS())
-  {
     return true;
+
+  // The action ID is the APPCOMMAND code. We need to retrieve the action
+  // associated with this appcommand from the mapping table.
+  uint32_t appcmd = action.GetID();
+  CKey key(appcmd | KEY_APPCOMMAND, (unsigned int) 0);
+  int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+  CAction appcmdaction = CButtonTranslator::GetInstance().GetAction(iWin, key);
+
+  // If we couldn't find an action return zero to indicate we have not
+  // handled this appcommand
+  if (!appcmdaction.GetID())
+  {
+    CLog::Log(LOGDEBUG, "%s: unknown appcommand %d", __FUNCTION__, appcmd);
+    return 0;
   }
 
   // Process the appcommand
-  return OnAction(action);
+  CLog::Log(LOGDEBUG, "%s: appcommand %d, trying action %s", __FUNCTION__, appcmd, appcmdaction.GetName().c_str());
+  OnAction(appcmdaction);
+
+  // Always return 1 regardless of whether the action succeeded or not.
+  // This stops Windows handling the appcommand itself.
+  return 1;
 }
 
 bool CApplication::OnAction(const CAction &action)

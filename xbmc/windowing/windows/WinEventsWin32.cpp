@@ -500,47 +500,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     {
       CLog::Log(LOGDEBUG, "WinEventsWin32.cpp: APPCOMMAND %d", GET_APPCOMMAND_LPARAM(lParam));
       newEvent.appcommand.type = XBMC_APPCOMMAND;
-      newEvent.appcommand.action = 0;
-
-      switch (GET_APPCOMMAND_LPARAM(lParam))
-      {
-        case APPCOMMAND_MEDIA_PLAY:
-          newEvent.appcommand.action = ACTION_PLAYER_PLAY;
-          break;
-        case APPCOMMAND_MEDIA_PLAY_PAUSE:
-          newEvent.appcommand.action = ACTION_PLAYER_PLAYPAUSE;
-          break;
-        case APPCOMMAND_MEDIA_PAUSE:
-          newEvent.appcommand.action = ACTION_PAUSE;
-          break;
-        case APPCOMMAND_BROWSER_BACKWARD:
-          newEvent.appcommand.action = ACTION_PARENT_DIR;
-          break;
-        case APPCOMMAND_MEDIA_STOP:
-          newEvent.appcommand.action = ACTION_STOP;
-          break;
-        case APPCOMMAND_MEDIA_PREVIOUSTRACK:
-          newEvent.appcommand.action = ACTION_PREV_ITEM;
-          break;
-        case APPCOMMAND_MEDIA_NEXTTRACK:
-          newEvent.appcommand.action = ACTION_NEXT_ITEM;
-          break;
-        case APPCOMMAND_MEDIA_REWIND:
-          newEvent.appcommand.action = ACTION_PLAYER_REWIND;
-          break;
-        case APPCOMMAND_MEDIA_FAST_FORWARD:
-          newEvent.appcommand.action = ACTION_PLAYER_FORWARD;
-          break;
-        case APPCOMMAND_LAUNCH_MEDIA_SELECT:
-          // disable launch of external media players
-          return 1;
-      }
-      if (newEvent.appcommand.action != 0)
-      {
-        m_pEventFunc(newEvent);
-        return 1; // should return TRUE if application handled the event
-      }
-      break;
+      newEvent.appcommand.action = GET_APPCOMMAND_LPARAM(lParam);
+      return m_pEventFunc(newEvent);
     }
     case WM_GESTURENOTIFY:
     {
