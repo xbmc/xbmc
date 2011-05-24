@@ -818,12 +818,16 @@ bool CPVRChannelGroup::Renumber(void)
   }
 
   SortByChannelNumber();
+  ResetChannelNumberCache();
 
+  return bReturn;
+}
+
+void CPVRChannelGroup::ResetChannelNumberCache(void)
+{
   /* reset the channel number cache */
   if (g_PVRManager.IsSelectedGroup(*this))
     SetSelectedGroup();
-
-  return bReturn;
 }
 
 bool CPVRChannelGroup::HasChangedChannels(void) const

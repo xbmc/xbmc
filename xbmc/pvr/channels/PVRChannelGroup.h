@@ -399,6 +399,11 @@ namespace PVR
 
     //@}
 
+    /*!
+     * @brief Reset the channel number cache if this is the selected group in the UI.
+     */
+    void ResetChannelNumberCache(void);
+
     void OnJobComplete(unsigned int jobID, bool success, CJob* job) {}
   };
 
