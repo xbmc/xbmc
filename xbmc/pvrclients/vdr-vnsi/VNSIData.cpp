@@ -345,18 +345,18 @@ PVR_ERROR cVNSIData::GetTimerInfo(unsigned int timernumber, PVR_TIMER &tag)
   if (!vrp.init(VNSI_TIMER_GET))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
   }
 
   if (!vrp.add_U32(timernumber))
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
     XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
     delete vresp;
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
   }
 
   uint32_t returnCode = vresp->extract_U32();
@@ -457,7 +457,7 @@ PVR_ERROR cVNSIData::AddTimer(const PVR_TIMER &timerinfo)
   if (!vrp.init(VNSI_TIMER_ADD))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
   }
 
   // add directory in front of the title
@@ -491,30 +491,30 @@ PVR_ERROR cVNSIData::AddTimer(const PVR_TIMER &timerinfo)
 
   if(path.empty()) {
     XBMC->Log(LOG_ERROR, "%s - Empty filename !", __FUNCTION__);
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
   }
 
   // use timer margin to calculate start/end times
   uint32_t starttime = timerinfo.startTime - timerinfo.iMarginStart;
   uint32_t endtime = timerinfo.endTime + timerinfo.iMarginEnd;
 
-  if (!vrp.add_U32(timerinfo.state == PVR_TIMER_STATE_SCHEDULED))     return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.iPriority))   return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.iLifetime))   return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.iClientChannelUid)) return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(starttime))  return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(endtime))    return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.bIsRepeating ? timerinfo.firstDay : 0))   return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.iWeekdays))return PVR_ERROR_UNKOWN;
-  if (!vrp.add_String(path.c_str()))      return PVR_ERROR_UNKOWN;
-  if (!vrp.add_String(""))                return PVR_ERROR_UNKOWN;
+  if (!vrp.add_U32(timerinfo.state == PVR_TIMER_STATE_SCHEDULED))     return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(timerinfo.iPriority))   return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(timerinfo.iLifetime))   return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(timerinfo.iClientChannelUid)) return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(starttime))  return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(endtime))    return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(timerinfo.bIsRepeating ? timerinfo.firstDay : 0))   return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(timerinfo.iWeekdays))return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_String(path.c_str()))      return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_String(""))                return PVR_ERROR_UNKNOWN;
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
     XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
   }
   uint32_t returnCode = vresp->extract_U32();
   delete vresp;
@@ -532,19 +532,19 @@ PVR_ERROR cVNSIData::DeleteTimer(const PVR_TIMER &timerinfo, bool force)
 {
   cRequestPacket vrp;
   if (!vrp.init(VNSI_TIMER_DELETE))
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
 
   if (!vrp.add_U32(timerinfo.iClientIndex))
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
 
   if (!vrp.add_U32(force))
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
   }
 
   uint32_t returnCode = vresp->extract_U32();
@@ -580,24 +580,24 @@ PVR_ERROR cVNSIData::UpdateTimer(const PVR_TIMER &timerinfo)
   uint32_t endtime = timerinfo.endTime + timerinfo.iMarginEnd;
 
   cRequestPacket vrp;
-  if (!vrp.init(VNSI_TIMER_UPDATE))        return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.iClientIndex))      return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.state == PVR_TIMER_STATE_SCHEDULED))     return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.iPriority))   return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.iLifetime))   return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.iClientChannelUid)) return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(starttime))  return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(endtime))    return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.bIsRepeating ? timerinfo.firstDay : 0))   return PVR_ERROR_UNKOWN;
-  if (!vrp.add_U32(timerinfo.iWeekdays))return PVR_ERROR_UNKOWN;
-  if (!vrp.add_String(timerinfo.strTitle))   return PVR_ERROR_UNKOWN;
-  if (!vrp.add_String(""))                return PVR_ERROR_UNKOWN;
+  if (!vrp.init(VNSI_TIMER_UPDATE))        return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(timerinfo.iClientIndex))      return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(timerinfo.state == PVR_TIMER_STATE_SCHEDULED))     return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(timerinfo.iPriority))   return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(timerinfo.iLifetime))   return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(timerinfo.iClientChannelUid)) return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(starttime))  return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(endtime))    return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(timerinfo.bIsRepeating ? timerinfo.firstDay : 0))   return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_U32(timerinfo.iWeekdays))return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_String(timerinfo.strTitle))   return PVR_ERROR_UNKNOWN;
+  if (!vrp.add_String(""))                return PVR_ERROR_UNKNOWN;
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
   }
   uint32_t returnCode = vresp->extract_U32();
   delete vresp;
@@ -639,14 +639,14 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVR_HANDLE handle)
   if (!vrp.init(VNSI_RECORDINGS_GETLIST))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
   }
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (!vresp)
   {
     XBMC->Log(LOG_ERROR, "%s - Can't get response packed", __FUNCTION__);
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
   }
 
   while (!vresp->end())
@@ -684,17 +684,17 @@ PVR_ERROR cVNSIData::RenameRecording(const PVR_RECORDING& recinfo, const char* n
   if (!vrp.init(VNSI_RECORDINGS_RENAME))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
   }
 
   // add uid
   XBMC->Log(LOG_DEBUG, "%s - uid: %u", __FUNCTION__, recinfo.iClientIndex);
   if (!vrp.add_U32(recinfo.iClientIndex))
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
 
   // add new title
   if (!vrp.add_String(newname))
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (vresp == NULL || vresp->noResponse())
@@ -718,17 +718,17 @@ PVR_ERROR cVNSIData::DeleteRecording(const PVR_RECORDING& recinfo)
   if (!vrp.init(VNSI_RECORDINGS_DELETE))
   {
     XBMC->Log(LOG_ERROR, "%s - Can't init cRequestPacket", __FUNCTION__);
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
   }
 
   if (!vrp.add_U32(recinfo.iClientIndex))
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
 
   cResponsePacket* vresp = ReadResult(&vrp);
   if (vresp == NULL || vresp->noResponse())
   {
     delete vresp;
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
   }
 
   uint32_t returnCode = vresp->extract_U32();

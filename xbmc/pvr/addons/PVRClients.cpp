@@ -732,7 +732,7 @@ int CPVRClients::GetTimers(CPVRTimers *timers)
 
 bool CPVRClients::AddTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
 {
-  *error = PVR_ERROR_UNKOWN;
+  *error = PVR_ERROR_UNKNOWN;
   boost::shared_ptr<CPVRClient> client;
   if (HasTimerSupport(timer.m_iClientId) && GetValidClient(timer.m_iClientId, client))
     *error = client->AddTimer(timer);
@@ -744,7 +744,7 @@ bool CPVRClients::AddTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
 
 bool CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
 {
-  *error = PVR_ERROR_UNKOWN;
+  *error = PVR_ERROR_UNKNOWN;
   boost::shared_ptr<CPVRClient> client;
   if (HasTimerSupport(timer.m_iClientId) && GetValidClient(timer.m_iClientId, client))
     *error = client->UpdateTimer(timer);
@@ -756,7 +756,7 @@ bool CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
 
 bool CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, PVR_ERROR *error)
 {
-  *error = PVR_ERROR_UNKOWN;
+  *error = PVR_ERROR_UNKNOWN;
   boost::shared_ptr<CPVRClient> client;
   if (HasTimerSupport(timer.m_iClientId) && GetValidClient(timer.m_iClientId, client))
     *error = client->DeleteTimer(timer, bForce);
@@ -768,7 +768,7 @@ bool CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, PVR_ER
 
 bool CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &strNewName, PVR_ERROR *error)
 {
-  *error = PVR_ERROR_UNKOWN;
+  *error = PVR_ERROR_UNKNOWN;
   boost::shared_ptr<CPVRClient> client;
   if (HasTimerSupport(timer.m_iClientId) && GetValidClient(timer.m_iClientId, client))
     *error = client->RenameTimer(timer, strNewName);
@@ -805,7 +805,7 @@ int CPVRClients::GetRecordings(CPVRRecordings *recordings)
 
 bool CPVRClients::RenameRecording(const CPVRRecording &recording, PVR_ERROR *error)
 {
-  *error = PVR_ERROR_UNKOWN;
+  *error = PVR_ERROR_UNKNOWN;
   boost::shared_ptr<CPVRClient> client;
   if (HasRecordingsSupport(recording.m_iClientId) && GetValidClient(recording.m_iClientId, client))
     *error = client->RenameRecording(recording);
@@ -817,7 +817,7 @@ bool CPVRClients::RenameRecording(const CPVRRecording &recording, PVR_ERROR *err
 
 bool CPVRClients::DeleteRecording(const CPVRRecording &recording, PVR_ERROR *error)
 {
-  *error = PVR_ERROR_UNKOWN;
+  *error = PVR_ERROR_UNKNOWN;
   boost::shared_ptr<CPVRClient> client;
   if (HasRecordingsSupport(recording.m_iClientId) && GetValidClient(recording.m_iClientId, client))
     *error = client->DeleteRecording(recording);
@@ -846,7 +846,7 @@ bool CPVRClients::HasEPGSupport(int iClientId)
 
 bool CPVRClients::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end, PVR_ERROR *error)
 {
-  *error = PVR_ERROR_UNKOWN;
+  *error = PVR_ERROR_UNKNOWN;
   boost::shared_ptr<CPVRClient> client;
   if (HasEPGSupport(channel.ClientID()) && GetValidClient(channel.ClientID(), client))
     *error = client->GetEPGForChannel(channel, epg, start, end);
@@ -891,7 +891,7 @@ bool CPVRClients::HasChannelGroupSupport(int iClientId)
 
 int CPVRClients::GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error)
 {
-  *error = PVR_ERROR_UNKOWN;
+  *error = PVR_ERROR_UNKNOWN;
   int iCurSize = groups->size();
   CLIENTMAP clients;
   GetActiveClients(&clients);
