@@ -501,7 +501,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       CLog::Log(LOGDEBUG, "WinEventsWin32.cpp: APPCOMMAND %d", GET_APPCOMMAND_LPARAM(lParam));
       newEvent.appcommand.type = XBMC_APPCOMMAND;
       newEvent.appcommand.action = GET_APPCOMMAND_LPARAM(lParam);
-      return m_pEventFunc(newEvent);
+      return m_pEventFunc(newEvent) ? 1 : 0;
     }
     case WM_GESTURENOTIFY:
     {

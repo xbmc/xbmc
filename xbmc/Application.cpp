@@ -2356,7 +2356,7 @@ bool CApplication::OnKey(const CKey& key)
 }
 
 // OnAppCommand is called in response to a XBMC_APPCOMMAND event.
-// This needs to return 1 if it processed the appcommand or zero if it didn't
+// This needs to return true if it processed the appcommand or false if it didn't
 bool CApplication::OnAppCommand(const CAction &action)
 {
   // Reset the screen saver
@@ -2373,21 +2373,21 @@ bool CApplication::OnAppCommand(const CAction &action)
   int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
   CAction appcmdaction = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
-  // If we couldn't find an action return zero to indicate we have not
+  // If we couldn't find an action return false to indicate we have not
   // handled this appcommand
   if (!appcmdaction.GetID())
   {
     CLog::Log(LOGDEBUG, "%s: unknown appcommand %d", __FUNCTION__, appcmd);
-    return 0;
+    return false;
   }
 
   // Process the appcommand
   CLog::Log(LOGDEBUG, "%s: appcommand %d, trying action %s", __FUNCTION__, appcmd, appcmdaction.GetName().c_str());
   OnAction(appcmdaction);
 
-  // Always return 1 regardless of whether the action succeeded or not.
+  // Always return true regardless of whether the action succeeded or not.
   // This stops Windows handling the appcommand itself.
-  return 1;
+  return true;
 }
 
 bool CApplication::OnAction(const CAction &action)
