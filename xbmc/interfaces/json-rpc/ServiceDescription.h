@@ -1646,7 +1646,7 @@ namespace JSONRPC
       "\"transport\": \"Response\","
       "\"permission\": \"ReadData\","
       "\"params\": ["
-        "{ \"name\": \"tvshowid\", \"$ref\": \"Library.Id\", \"required\": true },"
+        "{ \"name\": \"tvshowid\", \"$ref\": \"Library.Id\" },"
         "{ \"name\": \"season\", \"type\": \"integer\", \"minimum\": 0, \"default\": -1 },"
         "{ \"name\": \"fields\", \"type\": \"array\", \"id\": \"Library.Fields.Episode\", \"uniqueItems\": true,"
           "\"items\": { \"type\": \"string\","
