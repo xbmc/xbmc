@@ -40,8 +40,8 @@ int g_iTVServerXBMCBuild = 0;
 /* TVServerXBMC plugin supported versions */
 #define TVSERVERXBMC_MIN_VERSION_STRING         "1.1.0.70"
 #define TVSERVERXBMC_MIN_VERSION_BUILD          70
-#define TVSERVERXBMC_RECOMMENDED_VERSION_STRING "1.1.x.100"
-#define TVSERVERXBMC_RECOMMENDED_VERSION_BUILD  100
+#define TVSERVERXBMC_RECOMMENDED_VERSION_STRING "1.1.x.102"
+#define TVSERVERXBMC_RECOMMENDED_VERSION_BUILD  102
 
 /************************************************************/
 /** Class interface */
@@ -530,7 +530,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
     if( channel.Parse(data) )
     {
       tag.iUniqueId = channel.UID();
-      tag.iChannelNumber = channel.UID(); //channel.ExternalID();
+      tag.iChannelNumber = g_iTVServerXBMCBuild >= 102 ? channel.ExternalID() : channel.UID();
       tag.strChannelName = channel.Name();
       tag.strIconPath = "";
       tag.iEncryptionSystem = channel.Encrypted();
@@ -663,7 +663,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroupMembers(PVR_HANDLE handle, const
     if( channel.Parse(data) )
     {
       tag.iChannelUniqueId = channel.UID();
-      tag.iChannelNumber = channel.UID(); //channel.ExternalID();
+      tag.iChannelNumber = g_iTVServerXBMCBuild >= 102 ? channel.ExternalID() : channel.UID();
       tag.strGroupName = group.strGroupName;
 
       XBMC->Log(LOG_DEBUG, "%s - add channel %s (%d) to group '%s' channel number %d",
