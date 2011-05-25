@@ -85,15 +85,30 @@
 		<pulseonselect>false</pulseonselect>
 	</include>
 	<include name="ButtonHomeSubCommonValues">
-		<height>40</height>
-		<width>220</width>
-		<textoffsetx>20</textoffsetx>
+		<height>35</height>
+		<width>180</width>
 		<textwidth>195</textwidth>
+		<align>center</align>
 		<aligny>center</aligny>
-		<font>font12_title</font>
-		<texturefocus border="5">button-focus.png</texturefocus>
-		<texturenofocus border="5">button-nofocus.png</texturenofocus>
+		<font>font12</font>
+		<textcolor>grey2</textcolor>
+		<focusedcolor>white</focusedcolor>
+		<texturefocus border="5">HomeSubFO.png</texturefocus>
+		<texturenofocus border="5">HomeSubNF.png</texturenofocus>
 		<pulseonselect>false</pulseonselect>
+	</include>
+	<include name="HomeSubMenuCommonValues">
+		<posx>0</posx>
+		<posy>0</posy>
+		<width>1280</width>
+		<height>35</height>
+		<align>center</align>
+		<onup>9000</onup>
+		<ondown>9002</ondown>
+		<itemgap>0</itemgap>
+		<orientation>Horizontal</orientation>
+		<animation effect="slide" start="0,-40" end="0,0" delay="200" time="200" tween="quadratic" easing="out">Visible</animation>
+		<animation effect="slide" start="0,0" end="0,-40" time="200" tween="quadratic" easing="out">Hidden</animation>
 	</include>
 	<include name="ButtonInfoDialogsCommonValues">
 		<height>40</height>
