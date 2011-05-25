@@ -451,13 +451,6 @@ void PAPlayer::ToFFRW(int iSpeed)
   m_callback.OnPlayBackSpeedChanged(m_iSpeed);
 }
 
-void PAPlayer::ResetTime()
-{
-  if (!m_current) return;
-  m_current->m_sent       = 0;
-  m_current->m_snippetEnd = 0;
-}
-
 __int64 PAPlayer::GetTime()
 {
   if (!m_current) return 0;
