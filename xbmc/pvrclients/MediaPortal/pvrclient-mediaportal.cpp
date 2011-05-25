@@ -391,12 +391,12 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
   cEpg           epg;
   EPG_TAG        broadcast;
 
-  XBMC->Log(LOG_DEBUG, "->RequestEPGForChannel(%i)", channel.iChannelNumber);
+  XBMC->Log(LOG_DEBUG, "->RequestEPGForChannel(%i)", channel.iUniqueId);
 
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
 
-  snprintf(command, 256, "GetEPG:%i\n", channel.iChannelNumber);
+  snprintf(command, 256, "GetEPG:%i\n", channel.iUniqueId);
 
   result = SendCommand(command);
 
@@ -408,7 +408,7 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
 
       Tokenize(result, lines, ",");
 
-      XBMC->Log(LOG_DEBUG, "Found %i EPG items for channel %i\n", lines.size(), channel.iChannelNumber);
+      XBMC->Log(LOG_DEBUG, "Found %i EPG items for channel %i\n", lines.size(), channel.iUniqueId);
 
       for (vector<string>::iterator it = lines.begin(); it < lines.end(); it++)
       {
@@ -448,10 +448,10 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
         }
       }
     } else {
-      XBMC->Log(LOG_DEBUG, "No EPG items found for channel %i", channel.iChannelNumber);
+      XBMC->Log(LOG_DEBUG, "No EPG items found for channel %i", channel.iUniqueId);
     }
   } else {
-    XBMC->Log(LOG_DEBUG, "RequestEPGForChannel(%i) %s", channel.iChannelNumber, result.c_str());
+    XBMC->Log(LOG_DEBUG, "RequestEPGForChannel(%i) %s", channel.iUniqueId, result.c_str());
   }
 
   return PVR_ERROR_NO_ERROR;
@@ -1070,7 +1070,7 @@ int cPVRClientMediaPortal::ReadRecordedStream(unsigned char *pBuffer, unsigned i
  */
 const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
 {
-  unsigned int channel = channelinfo.iChannelNumber;
+  unsigned int channel = channelinfo.iUniqueId;
 
   string result;
   char   command[256] = "";
