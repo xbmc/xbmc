@@ -105,7 +105,7 @@ void DIB_InitOSKeymap()
   VK_keymap[VK_EQUALS] = XBMCK_EQUALS;
   VK_keymap[VK_LBRACKET] = XBMCK_LEFTBRACKET;
   VK_keymap[VK_BACKSLASH] = XBMCK_BACKSLASH;
-  VK_keymap[VK_OEM_102] = XBMCK_LESS;
+  VK_keymap[VK_OEM_102] = XBMCK_BACKSLASH;
   VK_keymap[VK_RBRACKET] = XBMCK_RIGHTBRACKET;
   VK_keymap[VK_GRAVE] = XBMCK_BACKQUOTE;
   VK_keymap[VK_BACKTICK] = XBMCK_BACKQUOTE;
@@ -226,7 +226,11 @@ void DIB_InitOSKeymap()
 
 static int XBMC_MapVirtualKey(int scancode, int vkey)
 {
-  int mvke = MapVirtualKeyEx(scancode & 0xFF, 1, hLayoutUS);
+// It isn't clear why the US keyboard layout was being used. This causes
+// problems with e.g. the \ key. I have provisionally switched the code
+// to use the Windows layout.
+// int mvke = MapVirtualKeyEx(scancode & 0xFF, 1, hLayoutUS);
+  int mvke = MapVirtualKeyEx(scancode & 0xFF, 1, NULL);
 
   switch(vkey)
   { /* These are always correct */
@@ -304,23 +308,27 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
   // Set the modifier bitmap
 
   mod = (uint16_t) XBMCKMOD_NONE;
+
+  // If left control and right alt are down this usually means that
+  // AltGr is down
+  if ((keystate[VK_LCONTROL] & 0x80) && (keystate[VK_RMENU] & 0x80))
+  {
+    mod |= XBMCKMOD_MODE;
+  }
+  else
+  {
+    if (keystate[VK_LCONTROL] & 0x80) mod |= XBMCKMOD_LCTRL;
+    if (keystate[VK_RMENU]    & 0x80) mod |= XBMCKMOD_RALT;
+  }
+
+  // Check the remaining modifiers
   if (keystate[VK_LSHIFT]   & 0x80) mod |= XBMCKMOD_LSHIFT;
   if (keystate[VK_RSHIFT]   & 0x80) mod |= XBMCKMOD_RSHIFT;
-  if (keystate[VK_LCONTROL] & 0x80) mod |= XBMCKMOD_LCTRL;
   if (keystate[VK_RCONTROL] & 0x80) mod |= XBMCKMOD_RCTRL;
   if (keystate[VK_LMENU]    & 0x80) mod |= XBMCKMOD_LALT;
-  if (keystate[VK_RMENU]    & 0x80) mod |= XBMCKMOD_RALT;
   if (keystate[VK_LWIN]     & 0x80) mod |= XBMCKMOD_LSUPER;
   if (keystate[VK_RWIN]     & 0x80) mod |= XBMCKMOD_LSUPER;
   keysym->mod = (XBMCMod) mod;
-
-/* Ignore these modifiers for now; we may handle these in the future.
-	XBMCKMOD_LMETA = 0x0400
-	XBMCKMOD_RMETA = 0x0800
-	XBMCKMOD_NUM   = 0x1000
-	XBMCKMOD_CAPS  = 0x2000
-	XBMCKMOD_MODE  = 0x4000
-*/  
 
   // Return the updated keysym
   return(keysym);

@@ -45,8 +45,6 @@ CAdvancedSettings::CAdvancedSettings()
 
 void CAdvancedSettings::Initialize()
 {
-  m_useMultipaths = true;
-
   m_audioForceRAWPassthrough = false;
   m_audioHeadRoom = 0;
   m_ac3Gain = 12.0f;
@@ -241,6 +239,7 @@ void CAdvancedSettings::Initialize()
                                   //with ipv6.
 
   m_fullScreen = m_startFullScreen = false;
+  m_showExitButton = true;
   m_splashImage = true;
 
   m_playlistRetries = 100;
@@ -637,11 +636,11 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
 
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", m_noDVDROM);
-  XMLUtils::GetBoolean(pRootElement, "usemultipaths", m_useMultipaths);
 #ifdef HAS_SDL
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif
   XMLUtils::GetBoolean(pRootElement, "splash", m_splashImage);
+  XMLUtils::GetBoolean(pRootElement, "showexitbutton", m_showExitButton);
 
   XMLUtils::GetInt(pRootElement, "songinfoduration", m_songInfoDuration, 0, INT_MAX);
   XMLUtils::GetInt(pRootElement, "busydialogdelay", m_busyDialogDelay, 0, 5000);

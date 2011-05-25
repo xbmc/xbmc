@@ -20,299 +20,224 @@
     slouken@libsdl.org
 */
 
-#ifndef _XBMC_keysym_h
-#define _XBMC_keysym_h
+#ifndef XBMC_keysym_h
+#define XBMC_keysym_h
 
-/* What we really want is a mapping of every raw key on the keyboard.
-   To support international keyboards, we use the range 0xA1 - 0xFF
-   as international virtual keycodes.  We'll follow in the footsteps of X11...
-   The names of the keys
- */
- 
+// The XBMC_keysym identifies a physical key on the keyboard i.e. it is
+// analogous to a scan code but is hardware independant.
+// These values are bazsed on the SDL_keysym standards, see:
+//
+//   http://www.libsdl.org/tmp/SDL-1.3-docs/SDL__keysym_8h.html
+//
+// On SDL_KEYDOWN messages the keysym.sym will be one of these values.
+//
+// On OSs that don't support SDL (i.e. Windows) the OS dependant key
+// handling code converts keypresses to an XBMC_keysym value.
+
 typedef enum {
-	/* The keyboard syms have been cleverly chosen to map to ASCII */
-	XBMCK_UNKNOWN		= 0,
-	XBMCK_FIRST		= 0,
-	XBMCK_BACKSPACE		= 8,
-	XBMCK_TAB		= 9,
-	XBMCK_CLEAR		= 12,
-	XBMCK_RETURN		= 13,
-	XBMCK_PAUSE		= 19,
-	XBMCK_ESCAPE		= 27,
-	XBMCK_SPACE		= 32,
-	XBMCK_EXCLAIM		= 33,
-	XBMCK_QUOTEDBL		= 34,
-	XBMCK_HASH		= 35,
-	XBMCK_DOLLAR		= 36,
-	XBMCK_AMPERSAND		= 38,
-	XBMCK_QUOTE		= 39,
-	XBMCK_LEFTPAREN		= 40,
-	XBMCK_RIGHTPAREN		= 41,
-	XBMCK_ASTERISK		= 42,
-	XBMCK_PLUS		= 43,
-	XBMCK_COMMA		= 44,
-	XBMCK_MINUS		= 45,
-	XBMCK_PERIOD		= 46,
-	XBMCK_SLASH		= 47,
-	XBMCK_0			= 48,
-	XBMCK_1			= 49,
-	XBMCK_2			= 50,
-	XBMCK_3			= 51,
-	XBMCK_4			= 52,
-	XBMCK_5			= 53,
-	XBMCK_6			= 54,
-	XBMCK_7			= 55,
-	XBMCK_8			= 56,
-	XBMCK_9			= 57,
-	XBMCK_COLON		= 58,
-	XBMCK_SEMICOLON		= 59,
-	XBMCK_LESS		= 60,
-	XBMCK_EQUALS		= 61,
-	XBMCK_GREATER		= 62,
-	XBMCK_QUESTION		= 63,
-	XBMCK_AT			= 64,
-	/* 
-	   Skip uppercase letters
-	 */
-	XBMCK_LEFTBRACKET	= 91,
-	XBMCK_BACKSLASH		= 92,
-	XBMCK_RIGHTBRACKET	= 93,
-	XBMCK_CARET		= 94,
-	XBMCK_UNDERSCORE		= 95,
-	XBMCK_BACKQUOTE		= 96,
-	XBMCK_a			= 97,
-	XBMCK_b			= 98,
-	XBMCK_c			= 99,
-	XBMCK_d			= 100,
-	XBMCK_e			= 101,
-	XBMCK_f			= 102,
-	XBMCK_g			= 103,
-	XBMCK_h			= 104,
-	XBMCK_i			= 105,
-	XBMCK_j			= 106,
-	XBMCK_k			= 107,
-	XBMCK_l			= 108,
-	XBMCK_m			= 109,
-	XBMCK_n			= 110,
-	XBMCK_o			= 111,
-	XBMCK_p			= 112,
-	XBMCK_q			= 113,
-	XBMCK_r			= 114,
-	XBMCK_s			= 115,
-	XBMCK_t			= 116,
-	XBMCK_u			= 117,
-	XBMCK_v			= 118,
-	XBMCK_w			= 119,
-	XBMCK_x			= 120,
-	XBMCK_y			= 121,
-	XBMCK_z			= 122,
-	XBMCK_DELETE		= 127,
-	/* End of ASCII mapped keysyms */
+  // The keyboard syms have been cleverly chosen to map to ASCII
+  XBMCK_UNKNOWN     = 0x00,
+  XBMCK_FIRST       = 0x00,
+  XBMCK_BACKSPACE   = 0x08,
+  XBMCK_TAB         = 0x09,
+  XBMCK_CLEAR       = 0x0C,
+  XBMCK_RETURN      = 0x0D,
+  XBMCK_PAUSE       = 0x13,
+  XBMCK_ESCAPE      = 0x1B,
+  XBMCK_SPACE       = 0x20,
+  XBMCK_EXCLAIM     = 0x21,
+  XBMCK_QUOTEDBL    = 0x22,
+  XBMCK_HASH        = 0x23,
+  XBMCK_DOLLAR      = 0x24,
+  XBMCK_AMPERSAND   = 0x26,
+  XBMCK_QUOTE       = 0x27,
+  XBMCK_LEFTPAREN   = 0x28,
+  XBMCK_RIGHTPAREN  = 0x29,
+  XBMCK_ASTERISK    = 0x2A,
+  XBMCK_PLUS        = 0x2B,
+  XBMCK_COMMA       = 0x2C,
+  XBMCK_MINUS       = 0x2D,
+  XBMCK_PERIOD      = 0x2E,
+  XBMCK_SLASH       = 0x2F,
+  XBMCK_0           = 0x30,
+  XBMCK_1           = 0x31,
+  XBMCK_2           = 0x32,
+  XBMCK_3           = 0x33,
+  XBMCK_4           = 0x34,
+  XBMCK_5           = 0x35,
+  XBMCK_6           = 0x36,
+  XBMCK_7           = 0x37,
+  XBMCK_8           = 0x38,
+  XBMCK_9           = 0x39,
+  XBMCK_COLON       = 0x3A,
+  XBMCK_SEMICOLON   = 0x3B,
+  XBMCK_LESS        = 0x3C,
+  XBMCK_EQUALS      = 0x3D,
+  XBMCK_GREATER     = 0x3E,
+  XBMCK_QUESTION    = 0x3F,
+  XBMCK_AT          = 0x40,
+  // Skip uppercase letters
+  XBMCK_LEFTBRACKET = 0x5B,
+  XBMCK_BACKSLASH   = 0x5C,
+  XBMCK_RIGHTBRACKET = 0x5D,
+  XBMCK_CARET       = 0x5E,
+  XBMCK_UNDERSCORE  = 0x5F,
+  XBMCK_BACKQUOTE   = 0x60,
+  XBMCK_a           = 0x61,
+  XBMCK_b           = 0x62,
+  XBMCK_c           = 0x63,
+  XBMCK_d           = 0x64,
+  XBMCK_e           = 0x65,
+  XBMCK_f           = 0x66,
+  XBMCK_g           = 0x67,
+  XBMCK_h           = 0x68,
+  XBMCK_i           = 0x69,
+  XBMCK_j           = 0x6A,
+  XBMCK_k           = 0x6B,
+  XBMCK_l           = 0x6C,
+  XBMCK_m           = 0x6D,
+  XBMCK_n           = 0x6E,
+  XBMCK_o           = 0x6F,
+  XBMCK_p           = 0x70,
+  XBMCK_q           = 0x71,
+  XBMCK_r           = 0x72,
+  XBMCK_s           = 0x73,
+  XBMCK_t           = 0x74,
+  XBMCK_u           = 0x75,
+  XBMCK_v           = 0x76,
+  XBMCK_w           = 0x77,
+  XBMCK_x           = 0x78,
+  XBMCK_y           = 0x79,
+  XBMCK_z           = 0x7A,
+  XBMCK_DELETE = 0x7F,
+  // End of ASCII mapped keysyms
 
-	/* International keyboard syms */
-	XBMCK_WORLD_0		= 160,		/* 0xA0 */
-	XBMCK_WORLD_1		= 161,
-	XBMCK_WORLD_2		= 162,
-	XBMCK_WORLD_3		= 163,
-	XBMCK_WORLD_4		= 164,
-	XBMCK_WORLD_5		= 165,
+  // Multimedia keys
+  // These are the Windows VK_ codes. SDL doesn't define codes for
+  // these keys.
+  XBMCK_BROWSER_BACK         = 0xA6,
+  XBMCK_BROWSER_FORWARD      = 0xA7,
+  XBMCK_BROWSER_REFRESH      = 0xA8,
+  XBMCK_BROWSER_STOP         = 0xA9,
+  XBMCK_BROWSER_SEARCH       = 0xAA,
+  XBMCK_BROWSER_FAVORITES    = 0xAB,
+  XBMCK_BROWSER_HOME         = 0xAC,
+  XBMCK_VOLUME_MUTE          = 0xAD,
+  XBMCK_VOLUME_DOWN          = 0xAE,
+  XBMCK_VOLUME_UP            = 0xAF,
+  XBMCK_MEDIA_NEXT_TRACK     = 0xB0,
+  XBMCK_MEDIA_PREV_TRACK     = 0xB1,
+  XBMCK_MEDIA_STOP           = 0xB2,
+  XBMCK_MEDIA_PLAY_PAUSE     = 0xB3,
+  XBMCK_LAUNCH_MAIL          = 0xB4,
+  XBMCK_LAUNCH_MEDIA_SELECT  = 0xB5,
+  XBMCK_LAUNCH_APP1          = 0xB6,
+  XBMCK_LAUNCH_APP2          = 0xB7,
+  XBMCK_LAUNCH_FILE_BROWSER  = 0xB8,
+  XBMCK_LAUNCH_MEDIA_CENTER  = 0xB9,
 
-	// Multimedia keys
-	XBMCK_BROWSER_BACK        = 0xA6,
-	XBMCK_BROWSER_FORWARD     = 0xA7,
-	XBMCK_BROWSER_REFRESH     = 0xA8,
-	XBMCK_BROWSER_STOP        = 0xA9,
-	XBMCK_BROWSER_SEARCH      = 0xAA,
-	XBMCK_BROWSER_FAVORITES   = 0xAB,
-	XBMCK_BROWSER_HOME        = 0xAC,
-	XBMCK_VOLUME_MUTE         = 0xAD,
-	XBMCK_VOLUME_DOWN         = 0xAE,
-	XBMCK_VOLUME_UP           = 0xAF,
-	XBMCK_MEDIA_NEXT_TRACK    = 0xB0,
-	XBMCK_MEDIA_PREV_TRACK    = 0xB1,
-	XBMCK_MEDIA_STOP          = 0xB2,
-	XBMCK_MEDIA_PLAY_PAUSE    = 0xB3,
-	XBMCK_LAUNCH_MAIL         = 0xB4,
-	XBMCK_LAUNCH_MEDIA_SELECT = 0xB5,
-	XBMCK_LAUNCH_APP1         = 0xB6,
-	XBMCK_LAUNCH_APP2         = 0xB7,
+  // Numeric keypad
+  XBMCK_KP0         = 0x100,
+  XBMCK_KP1         = 0x101,
+  XBMCK_KP2         = 0x102,
+  XBMCK_KP3         = 0x103,
+  XBMCK_KP4         = 0x104,
+  XBMCK_KP5         = 0x105,
+  XBMCK_KP6         = 0x106,
+  XBMCK_KP7         = 0x107,
+  XBMCK_KP8         = 0x108,
+  XBMCK_KP9         = 0x109,
+  XBMCK_KP_PERIOD   = 0x10A,
+  XBMCK_KP_DIVIDE   = 0x10B,
+  XBMCK_KP_MULTIPLY = 0x10C,
+  XBMCK_KP_MINUS    = 0x10D,
+  XBMCK_KP_PLUS     = 0x10E,
+  XBMCK_KP_ENTER    = 0x10F,
+  XBMCK_KP_EQUALS   = 0x110,
 
-	/* International keyboard syms */
-	XBMCK_WORLD_24		= 184,
-	XBMCK_WORLD_25		= 185,
-	XBMCK_WORLD_26		= 186,
-	XBMCK_WORLD_27		= 187,
-	XBMCK_WORLD_28		= 188,
-	XBMCK_WORLD_29		= 189,
-	XBMCK_WORLD_30		= 190,
-	XBMCK_WORLD_31		= 191,
-	XBMCK_WORLD_32		= 192,
-	XBMCK_WORLD_33		= 193,
-	XBMCK_WORLD_34		= 194,
-	XBMCK_WORLD_35		= 195,
-	XBMCK_WORLD_36		= 196,
-	XBMCK_WORLD_37		= 197,
-	XBMCK_WORLD_38		= 198,
-	XBMCK_WORLD_39		= 199,
-	XBMCK_WORLD_40		= 200,
-	XBMCK_WORLD_41		= 201,
-	XBMCK_WORLD_42		= 202,
-	XBMCK_WORLD_43		= 203,
-	XBMCK_WORLD_44		= 204,
-	XBMCK_WORLD_45		= 205,
-	XBMCK_WORLD_46		= 206,
-	XBMCK_WORLD_47		= 207,
-	XBMCK_WORLD_48		= 208,
-	XBMCK_WORLD_49		= 209,
-	XBMCK_WORLD_50		= 210,
-	XBMCK_WORLD_51		= 211,
-	XBMCK_WORLD_52		= 212,
-	XBMCK_WORLD_53		= 213,
-	XBMCK_WORLD_54		= 214,
-	XBMCK_WORLD_55		= 215,
-	XBMCK_WORLD_56		= 216,
-	XBMCK_WORLD_57		= 217,
-	XBMCK_WORLD_58		= 218,
-	XBMCK_WORLD_59		= 219,
-	XBMCK_WORLD_60		= 220,
-	XBMCK_WORLD_61		= 221,
-	XBMCK_WORLD_62		= 222,
-	XBMCK_WORLD_63		= 223,
-	XBMCK_WORLD_64		= 224,
-	XBMCK_WORLD_65		= 225,
-	XBMCK_WORLD_66		= 226,
-	XBMCK_WORLD_67		= 227,
-	XBMCK_WORLD_68		= 228,
-	XBMCK_WORLD_69		= 229,
-	XBMCK_WORLD_70		= 230,
-	XBMCK_WORLD_71		= 231,
-	XBMCK_WORLD_72		= 232,
-	XBMCK_WORLD_73		= 233,
-	XBMCK_WORLD_74		= 234,
-	XBMCK_WORLD_75		= 235,
-	XBMCK_WORLD_76		= 236,
-	XBMCK_WORLD_77		= 237,
-	XBMCK_WORLD_78		= 238,
-	XBMCK_WORLD_79		= 239,
-	XBMCK_WORLD_80		= 240,
-	XBMCK_WORLD_81		= 241,
-	XBMCK_WORLD_82		= 242,
-	XBMCK_WORLD_83		= 243,
-	XBMCK_WORLD_84		= 244,
-	XBMCK_WORLD_85		= 245,
-	XBMCK_WORLD_86		= 246,
-	XBMCK_WORLD_87		= 247,
-	XBMCK_WORLD_88		= 248,
-	XBMCK_WORLD_89		= 249,
-	XBMCK_WORLD_90		= 250,
-	XBMCK_WORLD_91		= 251,
-	XBMCK_WORLD_92		= 252,
-	XBMCK_WORLD_93		= 253,
-	XBMCK_WORLD_94		= 254,
-	XBMCK_WORLD_95		= 255,		/* 0xFF */
+  // Arrows + Home/End pad
+  XBMCK_UP          = 0x111,
+  XBMCK_DOWN        = 0x112,
+  XBMCK_RIGHT       = 0x113,
+  XBMCK_LEFT        = 0x114,
+  XBMCK_INSERT      = 0x115,
+  XBMCK_HOME        = 0x116,
+  XBMCK_END         = 0x117,
+  XBMCK_PAGEUP      = 0x118,
+  XBMCK_PAGEDOWN    = 0x119,
 
-	/* Numeric keypad */
-	XBMCK_KP0		= 256,
-	XBMCK_KP1		= 257,
-	XBMCK_KP2		= 258,
-	XBMCK_KP3		= 259,
-	XBMCK_KP4		= 260,
-	XBMCK_KP5		= 261,
-	XBMCK_KP6		= 262,
-	XBMCK_KP7		= 263,
-	XBMCK_KP8		= 264,
-	XBMCK_KP9		= 265,
-	XBMCK_KP_PERIOD		= 266,
-	XBMCK_KP_DIVIDE		= 267,
-	XBMCK_KP_MULTIPLY	= 268,
-	XBMCK_KP_MINUS		= 269,
-	XBMCK_KP_PLUS		= 270,
-	XBMCK_KP_ENTER		= 271,
-	XBMCK_KP_EQUALS		= 272,
+  // Function keys
+  XBMCK_F1          = 0x11A,
+  XBMCK_F2          = 0x11B,
+  XBMCK_F3          = 0x11C,
+  XBMCK_F4          = 0x11D,
+  XBMCK_F5          = 0x11E,
+  XBMCK_F6          = 0x11F,
+  XBMCK_F7          = 0x120,
+  XBMCK_F8          = 0x121,
+  XBMCK_F9          = 0x122,
+  XBMCK_F10         = 0x123,
+  XBMCK_F11         = 0x124,
+  XBMCK_F12         = 0x125,
+  XBMCK_F13         = 0x126,
+  XBMCK_F14         = 0x127,
+  XBMCK_F15         = 0x128,
 
-	/* Arrows + Home/End pad */
-	XBMCK_UP			= 273,
-	XBMCK_DOWN		= 274,
-	XBMCK_RIGHT		= 275,
-	XBMCK_LEFT		= 276,
-	XBMCK_INSERT		= 277,
-	XBMCK_HOME		= 278,
-	XBMCK_END		= 279,
-	XBMCK_PAGEUP		= 280,
-	XBMCK_PAGEDOWN		= 281,
+  // Key state modifier keys
+  XBMCK_NUMLOCK     = 0x12C,
+  XBMCK_CAPSLOCK    = 0x12D,
+  XBMCK_SCROLLOCK   = 0x12E,
+  XBMCK_RSHIFT      = 0x12F,
+  XBMCK_LSHIFT      = 0x130,
+  XBMCK_RCTRL       = 0x131,
+  XBMCK_LCTRL       = 0x132,
+  XBMCK_RALT        = 0x133,
+  XBMCK_LALT        = 0x134,
+  XBMCK_RMETA       = 0x135,
+  XBMCK_LMETA       = 0x136,
+  XBMCK_LSUPER      = 0x137,    // Left "Windows" key
+  XBMCK_RSUPER      = 0x138,    // Right "Windows" key
+  XBMCK_MODE        = 0x139,    // "Alt Gr" key
+  XBMCK_COMPOSE     = 0x13A,    // Multi-key compose key
 
-	/* Function keys */
-	XBMCK_F1			= 282,
-	XBMCK_F2			= 283,
-	XBMCK_F3			= 284,
-	XBMCK_F4			= 285,
-	XBMCK_F5			= 286,
-	XBMCK_F6			= 287,
-	XBMCK_F7			= 288,
-	XBMCK_F8			= 289,
-	XBMCK_F9			= 290,
-	XBMCK_F10		= 291,
-	XBMCK_F11		= 292,
-	XBMCK_F12		= 293,
-	XBMCK_F13		= 294,
-	XBMCK_F14		= 295,
-	XBMCK_F15		= 296,
+  // Miscellaneous function keys
+  XBMCK_HELP        = 0x13B,
+  XBMCK_PRINT       = 0x13C,
+  XBMCK_SYSREQ      = 0x13D,
+  XBMCK_BREAK       = 0x13E,
+  XBMCK_MENU        = 0x13F,
+  XBMCK_POWER       = 0x140,    // Power Macintosh power key
+  XBMCK_EURO        = 0x141,    // Some european keyboards
+  XBMCK_UNDO        = 0x142,    // Atari keyboard has Undo
 
-	/* Key state modifier keys */
-	XBMCK_NUMLOCK		= 300,
-	XBMCK_CAPSLOCK		= 301,
-	XBMCK_SCROLLOCK		= 302,
-	XBMCK_RSHIFT		= 303,
-	XBMCK_LSHIFT		= 304,
-	XBMCK_RCTRL		= 305,
-	XBMCK_LCTRL		= 306,
-	XBMCK_RALT		= 307,
-	XBMCK_LALT		= 308,
-	XBMCK_RMETA		= 309,
-	XBMCK_LMETA		= 310,
-	XBMCK_LSUPER		= 311,		/* Left "Windows" key */
-	XBMCK_RSUPER		= 312,		/* Right "Windows" key */
-	XBMCK_MODE		= 313,		/* "Alt Gr" key */
-	XBMCK_COMPOSE		= 314,		/* Multi-key compose key */
+  // Add any other keys here
 
-	/* Miscellaneous function keys */
-	XBMCK_HELP		= 315,
-	XBMCK_PRINT		= 316,
-	XBMCK_SYSREQ		= 317,
-	XBMCK_BREAK		= 318,
-	XBMCK_MENU		= 319,
-	XBMCK_POWER		= 320,		/* Power Macintosh power key */
-	XBMCK_EURO		= 321,		/* Some european keyboards */
-	XBMCK_UNDO		= 322,		/* Atari keyboard has Undo */
-
-	/* Add any other keys here */
-
-	XBMCK_LAST
+  XBMCK_LAST
 } XBMCKey;
 
-/* Enumeration of valid key mods (possibly OR'd together) */
+// Enumeration of valid key mods (possibly OR'd together)
 typedef enum {
-	XBMCKMOD_NONE  = 0x0000,
-	XBMCKMOD_LSHIFT= 0x0001,
-	XBMCKMOD_RSHIFT= 0x0002,
-	XBMCKMOD_LSUPER= 0x0010,
-	XBMCKMOD_RSUPER= 0x0020,
-	XBMCKMOD_LCTRL = 0x0040,
-	XBMCKMOD_RCTRL = 0x0080,
-	XBMCKMOD_LALT  = 0x0100,
-	XBMCKMOD_RALT  = 0x0200,
-	XBMCKMOD_LMETA = 0x0400,
-	XBMCKMOD_RMETA = 0x0800,
-	XBMCKMOD_NUM   = 0x1000,
-	XBMCKMOD_CAPS  = 0x2000,
-	XBMCKMOD_MODE  = 0x4000,
-	XBMCKMOD_RESERVED = 0x8000
+  XBMCKMOD_NONE     = 0x0000,
+  XBMCKMOD_LSHIFT   = 0x0001,
+  XBMCKMOD_RSHIFT   = 0x0002,
+  XBMCKMOD_LSUPER   = 0x0010,
+  XBMCKMOD_RSUPER   = 0x0020,
+  XBMCKMOD_LCTRL    = 0x0040,
+  XBMCKMOD_RCTRL    = 0x0080,
+  XBMCKMOD_LALT     = 0x0100,
+  XBMCKMOD_RALT     = 0x0200,
+  XBMCKMOD_LMETA    = 0x0400,
+  XBMCKMOD_RMETA    = 0x0800,
+  XBMCKMOD_NUM      = 0x1000,
+  XBMCKMOD_CAPS     = 0x2000,
+  XBMCKMOD_MODE     = 0x4000,
+  XBMCKMOD_RESERVED = 0x8000
 } XBMCMod;
 
-#define XBMCKMOD_CTRL	(XBMCKMOD_LCTRL|XBMCKMOD_RCTRL)
-#define XBMCKMOD_SHIFT	(XBMCKMOD_LSHIFT|XBMCKMOD_RSHIFT)
-#define XBMCKMOD_ALT	(XBMCKMOD_LALT|XBMCKMOD_RALT)
-#define XBMCKMOD_META	(XBMCKMOD_LMETA|XBMCKMOD_RMETA)
-#define XBMCKMOD_SUPER	(XBMCKMOD_LSUPER|XBMCKMOD_RSUPER)
+#define XBMCKMOD_CTRL  (XBMCKMOD_LCTRL  | XBMCKMOD_RCTRL)
+#define XBMCKMOD_SHIFT (XBMCKMOD_LSHIFT | XBMCKMOD_RSHIFT)
+#define XBMCKMOD_ALT   (XBMCKMOD_LALT   | XBMCKMOD_RALT)
+#define XBMCKMOD_META  (XBMCKMOD_LMETA  | XBMCKMOD_RMETA)
+#define XBMCKMOD_SUPER (XBMCKMOD_LSUPER | XBMCKMOD_RSUPER)
 
-#endif /* _XBMC_keysym_h */
+#endif // XBMC_keysym_h

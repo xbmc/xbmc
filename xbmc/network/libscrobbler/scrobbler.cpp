@@ -48,7 +48,6 @@
 CScrobbler::CScrobbler(const CStdString &strHandshakeURL, const CStdString &strLogPrefix)
   : CThread()
 { 
-  m_bRunThread      = false;
   m_bBanned         = false;
   m_bBadAuth        = false;
   m_pHttp           = NULL;
@@ -72,14 +71,12 @@ void CScrobbler::Init()
   ResetState();
   LoadCredentials();
   LoadJournal();
-  if (!m_bRunThread)
+  if (!ThreadHandle())
     Create();
 }
 
 void CScrobbler::Term()
 {
-  m_bRunThread = false;
-  SetEvent(m_hEvent);
   StopThread();
   SaveJournal();
 }
@@ -643,11 +640,10 @@ void CScrobbler::Process()
     if (!(m_pHttp = new XFILE::CFileCurl))
       return;
   }
-  m_bRunThread = true;
-  while (1)
+  while (!m_bStop)
   {
     WaitForSingleObject(m_hEvent, INFINITE);
-    if (!m_bRunThread)
+	if (m_bStop)
       break;
     
     if (m_strSessionID.IsEmpty())

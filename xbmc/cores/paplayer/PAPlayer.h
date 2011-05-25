@@ -91,7 +91,6 @@ public:
   virtual int GetSampleRate();
   virtual CStdString GetAudioCodecName();
   virtual __int64 GetTime();
-  virtual void ResetTime();
   virtual void SeekTime(__int64 iTime = 0);
   virtual bool SkipNext();
 

@@ -1,14 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Bence Nádas and Attila Jakosa-->
 <!--Email: attila.jakosa@gmail.com-->
-<!--Date of translation: 05/01/2011-->
-<!--Based on English 1ee638d8b22a3a5440e5-->
+<!--Based on English 282f5a5b809ab387129f (10.04.2011)-->
 <!--$Revision$-->
 <strings>
-  <string id="0">Program</string>
+  <string id="0">Programok</string>
   <string id="1">Képek</string>
   <string id="2">Zene</string>
-  <string id="3">Videó</string>
+  <string id="3">Videók</string>
   <string id="4">TV Műsor kalauz</string>
   <string id="5">Beállítások</string>
   <string id="6">XBMC SVN</string>
@@ -197,7 +196,7 @@
   <string id="221">Hálózat nem elérhető</string>
   <string id="222">Mégsem</string>
   <string id="224">Sebesség</string>
-
+  <string id="225">Függőleges eltolás</string>
   <string id="226">Teszt minták...</string>
   <string id="227">Zenei CD-k keresése a freedb.org-on</string>
   <string id="228">Lejátszáslista keverése betöltéskor</string>
@@ -217,7 +216,7 @@
   <string id="242">Ablak mód</string>
   <string id="243">Képfrissítési frekvencia</string>
   <string id="244">Teljes képernyő</string>
-  <string id="245">Méretezés: (%i,%i)->(%i,%i) (Nagyítás: x%2.2f) Arány:%2.2f:1 (Képpontarány: %2.2f:1)</string>
+  <string id="245">Méretezés: (%i,%i)->(%i,%i) (Nagyítás: x%2.2f) Arány:%2.2f:1 (Képpontarány: %2.2f:1) (Függőleges Eltolás: %2.2f)</string>
 
   <string id="247">Programok</string>
   <string id="248">Nyelv</string>
@@ -391,7 +390,7 @@
   <string id="426">CD információ nem található</string>
   <string id="427">Lemez</string>
   <string id="428">Hibás CD/DVD</string>
-  <string id="429">Helyezze be a következő CD/DVD-t</string>
+  <string id="429">Helyezze be a következő lemezt:</string>
   <string id="430">DVD# szerint</string>
   <string id="431">Nincs gyorsítótár</string>
   <string id="432">Film eltávolítása a médiatárból</string>
@@ -529,6 +528,7 @@
   <string id="573">Elérési út</string>
   <string id="574">Ország</string>
   <string id="575">Folyamatban</string>
+  <string id="576">Ennyiszer játszva</string>
 
   <string id="580">Rendezés iránya</string>
   <string id="581">Rendezés módja</string>
@@ -709,6 +709,8 @@
   <string id="851">Érvényes porttartomány: 1-65535</string>
   <string id="852">Érvényes porttartomány: 1024-65535</string>
 
+  <string id="998">Zene hozzáadása...</string>
+  <string id="999">Videó hozzáadása...</string>
   <string id="1000">- Előnézet</string>
   <string id="1001">Kapcsolódás sikertelen</string>
   <string id="1002">Sikertelen csatlakozás a hálózati helyhez.</string>
@@ -1202,7 +1204,7 @@
   <string id="13409">Top 250</string>
   <string id="13410">Hangolás a Last.fm-en</string>
   <string id="13411">Minimum ventilátor-sebesség</string>
-
+  <string id="13412">Lejátszás innen</string>
   <string id="13413">Letöltés folyamatban</string>
   <string id="13414">Válogatáslemezen lévők szerepeltetése az előadólistán</string>
   <string id="13415">Renderelés módja</string>
@@ -1222,7 +1224,7 @@
   <string id="13429">Hardveres gyorsítás engedélyezése (VDADecoder)</string>
   <string id="13430">Hardveres gyorsítás engedélyezése (OpenMax)</string>
   <string id="13431">Pixel árnyékolók (PS)</string>
-
+  <string id="13432">Hardveres gyorsítás engedélyezése (VideoToolbox)</string>
   <string id="13500">Hang/Kép szinkron ehhez</string>
   <string id="13501">Hang-órajel (hang érintetlen)</string>
   <string id="13502">Kép-órajel (hang duplázás/kiejtés)</string>
@@ -1468,7 +1470,7 @@
   <string id="16020">De-interlace</string>
   <string id="16021">Bob</string>
   <string id="16022">Bob (fordított)</string>
-  <string id="16023">Interlace kezelés</string>
+  <string id="16023">Váltottsorosság (Interlace) kezelés</string>
   <string id="16024">Megszakítás...</string>
   <string id="16025">Előadó neve</string>
   <string id="16026">Lejátszás sikertelen</string>
@@ -2166,6 +2168,8 @@
   <string id="24041">Telepítés zip fájlból</string>
   <string id="24042">Letöltve %i%%</string>
   <string id="24043">Elérhető frissítések</string>
+  <string id="24044">Előfeltételek nem teljesülnek</string>
+  <string id="24045">A kiegészítőnek nem megfelelő a felépítése</string>
 
   <string id="24050">Elérhető kiegészítők</string>
   <string id="24051">Verzió:</string>
@@ -2281,6 +2285,11 @@
   <string id="33081">Ez egy egyesített fájl, melyik részt akarod játszani?</string>
   <string id="33082">Program útvonal</string>
   <string id="33083">Egyedi program gomb engedélyezése</string>
+
+  <string id="33100">Elindítás meghiúsult</string>
+  <string id="33101">Webkiszolgáló</string>
+  <string id="33102">Eseménykiszolgáló</string>
+  <string id="33103">Távoli kommunikációs kiszolgáló</string>
 
   <string id="34100">Hangfalkiépítés</string>
 </strings>

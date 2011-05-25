@@ -91,17 +91,6 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
   }
 }
 
-void CFileItemHandler::MakeFieldsList(const Json::Value &parameterObject, Json::Value &validFields)
-{
-  const Json::Value fields = parameterObject.isMember("fields") && parameterObject["fields"].isArray() ? parameterObject["fields"] : Value(arrayValue);
-
-  for (unsigned int i = 0; i < fields.size(); i++)
-  {
-    if (fields[i].isString())
-      validFields.append(fields[i]);
-  }
-}
-
 void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const Value &parameterObject, Value &result)
 {
   int size  = items.Size();
@@ -116,14 +105,11 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
   result["limits"]["end"]   = end;
   result["limits"]["total"] = size;
 
-  Json::Value validFields = Value(arrayValue);
-  MakeFieldsList(parameterObject, validFields);
-
   for (int i = start; i < end; i++)
   {
     Value object;
     CFileItemPtr item = items.Get(i);
-    HandleFileItem(ID, allowFile, resultname, item, parameterObject, validFields, result);
+    HandleFileItem(ID, allowFile, resultname, item, parameterObject, parameterObject["fields"], result);
   }
 }
 
@@ -232,6 +218,8 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
     if (!added)
     {
       CFileItemPtr item = CFileItemPtr(new CFileItem(file, false));
+      if (item->GetLabel().IsEmpty())
+        item->SetLabel(CUtil::GetTitleFromPath(file, false));
       list.Add(item);
     }
   }

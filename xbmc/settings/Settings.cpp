@@ -55,6 +55,7 @@
 #include "utils/URIUtils.h"
 #include "input/MouseStat.h"
 #include "filesystem/File.h"
+#include "addons/AddonManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -280,7 +281,7 @@ bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, C
       strPath = CSpecialProtocol::ReplaceOldPath(strPath, pathVersion);
       // make sure there are no virtualpaths or stack paths defined in xboxmediacenter.xml
       //CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
-      if (!URIUtils::IsVirtualPath(strPath) && !URIUtils::IsStack(strPath))
+      if (!URIUtils::IsStack(strPath))
       {
         // translate special tags
         if (!strPath.IsEmpty() && strPath.at(0) == '$')
@@ -358,16 +359,6 @@ bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, C
 
     share.FromNameAndPaths(category, strName, verifiedPaths);
 
-/*    CLog::Log(LOGDEBUG,"      Adding source:");
-    CLog::Log(LOGDEBUG,"        Name: %s", share.strName.c_str());
-    if (URIUtils::IsVirtualPath(share.strPath) || URIUtils::IsMultiPath(share.strPath))
-    {
-      for (int i = 0; i < (int)share.vecPaths.size(); ++i)
-        CLog::Log(LOGDEBUG,"        Path (%02i): %s", i+1, share.vecPaths.at(i).c_str());
-    }
-    else
-      CLog::Log(LOGDEBUG,"        Path: %s", share.strPath.c_str());
-*/
     share.m_iBadPwdCount = 0;
     if (pLockMode)
     {
@@ -955,6 +946,8 @@ bool CSettings::LoadProfile(unsigned int index)
     CUtil::DeleteMusicDatabaseDirectoryCache();
     CUtil::DeleteVideoDatabaseDirectoryCache();
 
+    ADDON::CAddonMgr::Get().StartServices(false);
+
     return true;
   }
 
@@ -1163,10 +1156,6 @@ bool CSettings::UpdateSource(const CStdString &strType, const CStdString strOldN
   VECSOURCES *pShares = GetSourcesFromType(strType);
 
   if (!pShares) return false;
-
-  // disallow virtual paths
-  if (strUpdateElement.Equals("path") && URIUtils::IsVirtualPath(strUpdateText))
-    return false;
 
   for (IVECSOURCES it = pShares->begin(); it != pShares->end(); it++)
   {

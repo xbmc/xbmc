@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -f xbmc_asap.dll ]
+if [ "$1" == "clean" ]
 then
 make clean
 fi

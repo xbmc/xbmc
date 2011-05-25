@@ -1024,19 +1024,24 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem)
   if (iItem < 0 || iItem >= m_vecItems->Size()) return true;
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (!item->m_bIsFolder)
+  if (item->m_bIsFolder)
   {
-    CStdString resumeString = GetResumeString(*item);
-    if (!resumeString.IsEmpty())
-    {
-      CContextButtons choices;
-      choices.Add(SELECT_ACTION_RESUME, resumeString);
-      choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
-      int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-      if (value < 0)
-        return true;
-      return OnFileAction(iItem, value);
-    }
+    // resuming directories isn't supported yet. play.
+    PlayItem(iItem);
+    return true;
+  }
+
+  CStdString resumeString = GetResumeString(*item);
+
+  if (!resumeString.IsEmpty())
+  {
+    CContextButtons choices;
+    choices.Add(SELECT_ACTION_RESUME, resumeString);
+    choices.Add(SELECT_ACTION_PLAY, 12021);   // Start from beginning
+    int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+    if (value < 0)
+      return true;
+    return OnFileAction(iItem, value);
   }
 
   return OnFileAction(iItem, SELECT_ACTION_PLAY);

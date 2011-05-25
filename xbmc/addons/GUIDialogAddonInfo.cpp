@@ -127,7 +127,8 @@ void CGUIDialogAddonInfo::UpdateControls()
   // TODO: System addons should be able to be disabled
   bool canDisable = isInstalled && !isSystem && !m_localAddon->IsInUse();
   bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").IsEmpty();
-                     
+  bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
+
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canDisable || canInstall);
   SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, isInstalled ? 24037 : 24038);
 
@@ -136,7 +137,7 @@ void CGUIDialogAddonInfo::UpdateControls()
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_UPDATE, isUpdatable);
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && m_localAddon->HasSettings());
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_CHANGELOG, m_addon->Type() != ADDON_REPOSITORY);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_CHANGELOG, !isRepo);
 }
 
 void CGUIDialogAddonInfo::OnUpdate()
@@ -247,7 +248,10 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
     CAddonDatabase database;
     database.Open();
     VECADDONS addons;
-    database.GetRepository(m_addon->ID(), addons);
+    if (m_addon)
+      database.GetRepository(m_addon->ID(), addons);
+    else if (m_localAddon) // sanity
+      database.GetRepository(m_localAddon->ID(), addons);
     int tot=0;
     for (int i = ADDON_UNKNOWN+1;i<ADDON_VIZ_LIBRARY;++i)
     {

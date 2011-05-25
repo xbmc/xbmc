@@ -112,7 +112,6 @@ const BUILT_IN commands[] = {
   { "Suspend",                    false,  "Suspends the system" },
   { "RestartApp",                 false,  "Restart XBMC" },
   { "Minimize",                   false,  "Minimize XBMC" },
-  { "Credits",                    false,  "Run XBMCs Credits" },
   { "Reset",                      false,  "Reset the xbox (warm reboot)" },
   { "Mastermode",                 false,  "Control master mode" },
   { "ActivateWindow",             true,   "Activate the specified window" },
@@ -304,12 +303,6 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("takescreenshot"))
   {
     CUtil::TakeScreenshot();
-  }
-  else if (execute.Equals("credits"))
-  {
-#ifdef HAS_CREDITS
-    CUtil::RunCredits();
-#endif
   }
   else if (execute.Equals("reset")) //Will reset the xbox, aka soft reset
   {
@@ -1130,6 +1123,8 @@ int CBuiltins::Execute(const CStdString& execString)
       videoScan->StopScanning();
       videoScan->Close(true);
     }
+
+    ADDON::CAddonMgr::Get().StopServices(true);
 
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_settings.LoadMasterForLogin();

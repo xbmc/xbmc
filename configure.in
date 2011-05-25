@@ -347,6 +347,10 @@ case $host in
      use_joystick=no
      use_vdadecoder=no
      use_vtbdecoder=yes
+     use_optical_drive=no
+     use_dvdcss=no
+     use_gles=yes
+     use_cpu=cortex-a8
      check_sdl_arch=[`file /opt/local/lib/libSDL_image.dylib | awk '{V=7; print $V}'`]
      if test "x$check_sdl_arch" = "xi386"; then
        use_texturepacker_native=yes
@@ -355,9 +359,8 @@ case $host in
        use_texturepacker=no
      fi
      ARCH="arm-osx"
+     use_arch="arm"
      SYSROOT="-miphoneos-version-min=4.1 -isysroot $SDKROOT"
-     ARCHTYPE=$HOSTTYPE
-     AC_SUBST([ARCHTYPE])
      AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
      PYTHON_VERSION="2.6"
      PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.6"
@@ -373,9 +376,6 @@ case $host in
      ARCH="x86-osx"
      export MACOSX_DEPLOYMENT_TARGET=10.4
      SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
-     # define i386 or x86_64, cannot use $HOSTTYPE as it reports x86_64 on 10.6 regardless of kernel flavor
-     ARCHTYPE=`uname -m`
-     AC_SUBST([ARCHTYPE])
      ;;
   powerpc-apple-darwin*)
      use_joystick=no
@@ -386,9 +386,6 @@ case $host in
      use_arch="ppc"
      export MACOSX_DEPLOYMENT_TARGET=10.4
      SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
-     # define ppc
-     ARCHTYPE="ppc"
-     AC_SUBST([ARCHTYPE])
      ;;
   powerpc-*-linux-gnu*)
      ARCH="powerpc-linux"
@@ -401,6 +398,7 @@ case $host in
   arm*-*-linux-gnu*)
      use_texturepacker=no
      ARCH="arm"
+     use_arch="arm"
      AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
      ;;
   *)
@@ -445,9 +443,7 @@ fi
 if test "$host_vendor" = "apple" ; then
   # standard xbmc paths
   INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc/osx"
-  if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
-    use_arch=arm
-  else
+  if test "$use_arch" != "arm"; then
     LIBS="$LIBS -framework IOKit"
     LIBS="$LIBS -framework Cocoa"
     LIBS="$LIBS -framework AppKit"
@@ -464,8 +460,7 @@ if test "$host_vendor" = "apple" ; then
     LIBS="$LIBS -framework DiskArbitration"
     LIBS="$LIBS -framework ApplicationServices"
   fi
-elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
-  use_arch=arm
+elif test "$use_arch" = "arm"; then
   CFLAGS="$CFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
   CXXFLAGS="$CXXFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
   FFMPEG_EXTRACFLAGS="-mfloat-abi=softfp"
@@ -594,6 +589,7 @@ AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
 AC_CHECK_LIB([smbclient],   [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
   [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -652,7 +648,8 @@ AS_CASE([x$use_libbluray],
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([mpeg2dec/mpeg2.h],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library), AC_INCLUDES_DEFAULT()
+    [#include <mpeg2dec/mpeg2.h>])
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   if test "$use_arch" != "arm"; then
     AC_CHECK_LIB([SDL_mixer],[main],, AC_MSG_ERROR($missing_library))

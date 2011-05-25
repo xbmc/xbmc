@@ -7,11 +7,14 @@ SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 export LIBTOOL=builds/unix/libtool
-export PATH:=$(PREFIX)/bin:$(PATH)
-CONFIGURE=./configure --prefix=$(PREFIX) \
+export PATH:=$(TOOLCHAIN)/bin:$(PATH)
+CONFIGURE=./configure --prefix=$(TOOLCHAIN) \
 --program-transform-name=s/tar/gtar/ --disable-dependency-tracking
 
-all: $(SOURCE)/src/tar .installed
+APP=$(SOURCE)/src/tar
+APPBIN=$(TOOLCHAIN)/bin/gtar
+
+all: $(APPBIN)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
 	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
@@ -22,18 +25,17 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); $(CONFIGURE)
 
-$(SOURCE)/src/tar: $(SOURCE)
-	cd $(SOURCE); make
+$(APP): $(SOURCE)
+	make -C $(SOURCE)
 
-.installed:
+$(APPBIN):
+	make $(APP)
 	make -C $(SOURCE) install
-	cd $(PREFIX)/bin; ln -s gtar tar; ln -s gtar gnutar
-	touch $@
+	cd $(TOOLCHAIN)/bin; ln -s gtar tar; ln -s gtar gnutar
 
 clean:
 	make -C $(SOURCE) clean
-	rm -f .installed
 
 distclean::
-	rm -rf $(SOURCE) .installed
+	rm -rf $(SOURCE)
 

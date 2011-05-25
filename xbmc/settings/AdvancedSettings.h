@@ -77,9 +77,6 @@ class CAdvancedSettings
     static void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
     static void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
 
-    // multipath testing
-    bool m_useMultipaths;
-
     bool m_audioForceRAWPassthrough;
     int m_audioHeadRoom;
     float m_ac3Gain;
@@ -254,6 +251,7 @@ class CAdvancedSettings
 
     bool m_fullScreen;
     bool m_startFullScreen;
+	bool m_showExitButton; /* Ideal for appliances to hide a 'useless' button */
     bool m_splashImage;
     bool m_alwaysOnTop;  /* makes xbmc to run always on top .. osx/win32 only .. */
     int m_playlistRetries;

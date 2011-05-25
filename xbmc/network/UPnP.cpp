@@ -272,6 +272,17 @@ public:
     NPT_String BuildSafeResourceUri(const char*        host,
                                     const char*        file_path);
 
+    void AddSafeResourceUri(PLT_MediaObject* object, NPT_List<NPT_IpAddress> ips, const char* file_path, const NPT_String& info)
+    {
+        PLT_MediaItemResource res;
+        for(NPT_List<NPT_IpAddress>::Iterator ip = ips.GetFirstItem(); ip; ++ip) {
+            res.m_ProtocolInfo = PLT_ProtocolInfo(info);
+            res.m_Uri          = BuildSafeResourceUri((*ip).ToString(), file_path);
+            object->m_Resources.Add(res);
+        }
+    }
+
+
     static const char* GetMimeTypeFromExtension(const char* extension, const PLT_HttpRequestContext* context = NULL);
     static NPT_String  GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* context = NULL);
     static NPT_String  GetMimeType(const char* filename, const PLT_HttpRequestContext* context = NULL);
@@ -298,9 +309,9 @@ private:
 
         return file_path.Left(index);
     }
-    static NPT_String GetProtocolInfo(const CFileItem& item,
-                                      const char* protocol,
-                                      const PLT_HttpRequestContext* context = NULL);
+    static const NPT_String GetProtocolInfo(const CFileItem& item,
+                                            const char* protocol,
+                                            const PLT_HttpRequestContext* context = NULL);
 
     NPT_Mutex                       m_FileMutex;
     NPT_Map<NPT_String, NPT_String> m_FileMap;
@@ -402,7 +413,7 @@ CUPnPServer::GetMimeType(const CFileItem& item,
 /*----------------------------------------------------------------------
 |   CUPnPServer::GetProtocolInfo
 +---------------------------------------------------------------------*/
-NPT_String
+const NPT_String
 CUPnPServer::GetProtocolInfo(const CFileItem&              item,
                              const char*                   protocol,
                              const PLT_HttpRequestContext* context /* = NULL */)
@@ -441,17 +452,10 @@ CUPnPServer::PopulateObjectFromTag(CMusicInfoTag&         tag,
                                    PLT_MediaItemResource* resource,  /* = NULL */
                                    EClientQuirks          quirks)
 {
-    // some usefull buffers
-    CStdStringArray strings;
-
     if (!tag.GetURL().IsEmpty() && file_path)
       *file_path = tag.GetURL();
 
-    StringUtils::SplitString(tag.GetGenre(), " / ", strings);
-    for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
-        object.m_Affiliation.genre.Add((*it).c_str());
-    }
-
+    object.m_Affiliation.genre = NPT_String(tag.GetGenre().c_str()).Split(" / ");
     object.m_Title = tag.GetTitle();
     object.m_Affiliation.album = tag.GetAlbum();
     object.m_People.artists.Add(tag.GetArtist().c_str());
@@ -520,10 +524,7 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
     if(object.m_ReferenceID == object.m_ObjectID)
         object.m_ReferenceID = "";
 
-    StringUtils::SplitString(tag.m_strGenre, " / ", strings);
-    for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
-        object.m_Affiliation.genre.Add((*it).c_str());
-    }
+    object.m_Affiliation.genre = NPT_String(tag.m_strGenre.c_str()).Split(" / ");
 
     for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
         object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
@@ -631,21 +632,12 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         }
 
         if (upnp_server) {
-            // iterate through ip addresses and build list of resources
-            // through http file server
-            NPT_List<NPT_IpAddress>::Iterator ip = ips.GetFirstItem();
-            while (ip) {
-                resource.m_ProtocolInfo = PLT_ProtocolInfo(GetProtocolInfo(item, "http", context));
-                resource.m_Uri = upnp_server->BuildSafeResourceUri((*ip).ToString(), file_path);
-                object->m_Resources.Add(resource);
-                ++ip;
-            }
+            upnp_server->AddSafeResourceUri(object, ips, file_path, GetProtocolInfo(item, "http", context));
         }
 
         // if the item is remote, add a direct link to the item
         if (URIUtils::IsRemote((const char*)file_path)) {
-            resource.m_ProtocolInfo = PLT_ProtocolInfo(
-                CUPnPServer::GetProtocolInfo(item, item.GetAsUrl().GetProtocol(), context));
+            resource.m_ProtocolInfo = PLT_ProtocolInfo(CUPnPServer::GetProtocolInfo(item, item.GetAsUrl().GetProtocol(), context));
             resource.m_Uri = file_path;
 
             // if the direct link can be served directly using http, then push it in front
@@ -669,6 +661,8 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         container->m_ObjectID = item.m_strPath;
         container->m_ObjectClass.type = "object.container";
         container->m_ChildrenCount = -1;
+
+        CStdStringArray strings;
 
         /* this might be overkill, but hey */
         if (item.IsMusicDb()) {
@@ -717,23 +711,53 @@ CUPnPServer::BuildObject(const CFileItem&              item,
             }
         } else if (item.IsVideoDb()) {
             VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryType(item.m_strPath);
-            if(quirks & ECLIENTQUIRKS_ONLYSTORAGEFOLDER) {
-                container->m_ObjectClass.type += ".storageFolder";
-            } else {
-                switch(node) {
-                    case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
-                      container->m_ObjectClass.type += ".genre.movieGenre";
-                      break;
-                    case VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR:
-                      container->m_ObjectClass.type += ".person";
-                      break;
-                    default:
-                      container->m_ObjectClass.type += ".storageFolder";
-                      break;
-                }
+            CVideoInfoTag &tag = *(CVideoInfoTag*)item.GetVideoInfoTag();
+            switch(node) {
+                case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
+                  container->m_ObjectClass.type += ".genre.movieGenre";
+                  break;
+                case VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR:
+                  container->m_ObjectClass.type += ".person.videoArtist";
+                  container->m_Creator = tag.m_strArtist;
+                  container->m_Title   = tag.m_strTitle;
+                  break;
+                case VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_TVSHOWS:
+                  container->m_ObjectClass.type += ".album.videoAlbum";
+                  container->m_Recorded.program_title  = "S" + ("0" + NPT_String::FromInteger(tag.m_iSeason)).Right(2);
+                  container->m_Recorded.program_title += "E" + ("0" + NPT_String::FromInteger(tag.m_iEpisode)).Right(2);
+                  container->m_Recorded.program_title += " : " + tag.m_strTitle;
+                  container->m_Recorded.series_title = tag.m_strShowTitle;
+                  container->m_Recorded.episode_number = tag.m_iSeason * 100 + tag.m_iEpisode;
+                  container->m_Title = container->m_Recorded.series_title + " - " + container->m_Recorded.program_title;
+                  container->m_Title = tag.m_strTitle;
+                  if(tag.m_strFirstAired.IsEmpty() && tag.m_iYear)
+                    container->m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
+                  else
+                    container->m_Date = tag.m_strFirstAired;
+
+                  container->m_Affiliation.genre = NPT_String(tag.m_strGenre.c_str()).Split(" / ");
+
+                  for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
+                      container->m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
+                  }
+
+                  container->m_People.director = tag.m_strDirector;
+                  container->m_People.authors.Add(tag.m_strWritingCredits.c_str());
+
+                  container->m_Description.description = tag.m_strTagLine;
+                  container->m_Description.long_description = tag.m_strPlot;
+
+                  break;
+                default:
+                  container->m_ObjectClass.type += ".storageFolder";
+                  break;
             }
         } else if (item.IsPlayList()) {
             container->m_ObjectClass.type += ".playlistContainer";
+        }
+
+        if(quirks & ECLIENTQUIRKS_ONLYSTORAGEFOLDER) {
+          container->m_ObjectClass.type = "object.container.storageFolder";
         }
 
         /* Get the number of children for this container */
@@ -773,6 +797,13 @@ CUPnPServer::BuildObject(const CFileItem&              item,
             object->m_ExtraInfo.album_art_uri_dlna_profile = "PNG_TN";
         } else {
             object->m_ExtraInfo.album_art_uri_dlna_profile = "JPEG_TN";
+        }
+    }
+
+    if (upnp_server) {
+        CStdString fanart(item.GetCachedFanart());
+        if (CFile::Exists(fanart)) {
+            upnp_server->AddSafeResourceUri(object, ips, fanart, "xbmc.org:*:fanart:*");
         }
     }
 
@@ -2309,6 +2340,9 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
                                  PLT_MediaObject&       object,
                                  PLT_MediaItemResource* resource /* = NULL */)
 {
+    CDateTime date;
+    date.SetFromDateString((const char*)object.m_Date);
+
     if(!object.m_Recorded.program_title.IsEmpty())
     {
         int episode;
@@ -2323,9 +2357,14 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
             tag.m_iSeason  = object.m_Recorded.episode_number / 100;
             tag.m_iEpisode = object.m_Recorded.episode_number % 100;
         }
+        tag.m_strFirstAired = date.GetAsLocalizedDate();
     }
     else
-        tag.m_strTitle = object.m_Title;
+    {
+        tag.m_strTitle     = object.m_Title;
+        tag.m_strPremiered = date.GetAsLocalizedDate();
+    }
+    tag.m_iYear       = date.GetYear();
     tag.m_strGenre    = JoinString(object.m_Affiliation.genre, " / ");
     tag.m_strDirector = object.m_People.director;
     tag.m_strTagLine  = object.m_Description.description;

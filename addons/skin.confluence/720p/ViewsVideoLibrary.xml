@@ -275,12 +275,40 @@
 	</include>
 	<include name="PosterWrapView2_Fanart">
 		<control type="group">
+			<posx>0</posx>
+			<posy>350</posy>
+			<visible>Control.IsVisible(508) + [[ListItem.IsFolder + Container.Content(Movies)] | Skin.HasSetting(View508HideInfo)]</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>270</height>
+				<texture>HomeNowPlayingBack.png</texture>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>70</posy>
+				<width>1200</width>
+				<height>20</height>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+				<animation effect="slide" start="0,0" end="0,25" time="200" condition="!Control.HasFocus(508)">conditional</animation>
+			</control>
+		</control>
+		<control type="group">
 			<visible>Control.IsVisible(508)</visible>
 			<include>VisibleFadeEffect</include>
 			<posx>0</posx>
 			<posy>460</posy>
 			<control type="fixedlist" id="508">
 				<visible>Container.Content(Movies) | [Container.Content(TVShows) + Skin.HasSetting(TVShowsUsePosters)]</visible>
+				<hitrect x="0" y="-10" w="1280" h="190" />
 				<posx>-20</posx>
 				<posy>0</posy>
 				<width>1320</width>
@@ -381,7 +409,7 @@
 		<control type="group">
 			<posx>180</posx>
 			<posy>40</posy>
-			<visible>Control.IsVisible(508) + ![ListItem.IsFolder + Container.Content(Movies)]</visible>
+			<visible>Control.IsVisible(508) + ![ListItem.IsFolder + Container.Content(Movies)] + !Skin.HasSetting(View508HideInfo)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="image">
 				<posx>0</posx>
@@ -703,7 +731,7 @@
 			</control>
 			<control type="grouplist">
 				<description>MPAA Rating Flagging Images</description>
-				<posx>80</posx>
+				<posx>95</posx>
 				<posy>360</posy>
 				<width>800</width>
 				<align>right</align>

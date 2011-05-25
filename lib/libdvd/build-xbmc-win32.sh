@@ -1,9 +1,16 @@
 #!/bin/sh
 
+MAKECLEAN=0
+
+if [ "$1" == "clean" ]
+then
+MAKECLEAN=1
+fi
+
 #libdvdcss
 cd libdvdcss
 echo "***** Cleaning libdvdcss *****"
-if [ -f Makefile ]
+if [ $MAKECLEAN == 1 ]
 then
 make distclean
 fi
@@ -24,7 +31,7 @@ cp libdvdcss/src/.libs/libdvdcss-2.dll /xbmc/system/players/dvdplayer/
 #libdvdread
 cd libdvdread
 echo "***** Cleaning libdvdread *****"
-if [ -f config.mak ]
+if [ $MAKECLEAN == 1 ]
 then
 make distclean
 fi
@@ -42,7 +49,7 @@ cd ..
 #libdvdnav
 cd libdvdnav
 echo "***** Cleaning libdvdnav *****"
-if [ -f config.mak ]
+if [ $MAKECLEAN == 1 ]
 then
 make distclean
 fi

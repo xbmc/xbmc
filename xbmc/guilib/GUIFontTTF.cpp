@@ -32,17 +32,17 @@
 #include <math.h>
 
 // stuff for freetype
-#ifndef _LINUX
-#include "ft2build.h"
-#else
 #include <ft2build.h>
-#endif
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include FT_OUTLINE_H
 #include FT_STROKER_H
 
 #define USE_RELEASE_LIBS
+
+#ifdef _WIN32
+#pragma comment(lib, "freetype244MT.lib")
+#endif
 
 using namespace std;
 

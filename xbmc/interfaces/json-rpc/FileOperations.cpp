@@ -176,7 +176,11 @@ bool CFileOperations::FillFileItem(const CStdString &strFilename, CFileItem &ite
       status |= CAudioLibrary::FillFileItem(strFilename, item);
 
     if (!status)
+    {
       item = CFileItem(strFilename, false);
+      if (item.GetLabel().IsEmpty())
+        item.SetLabel(CUtil::GetTitleFromPath(strFilename, false));
+    }
 
     status = true;
   }
