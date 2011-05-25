@@ -27,6 +27,7 @@
 #include "utils/log.h"
 #include "system.h" // for GetLastError()
 #include "mysql/errmsg.h"
+#include "settings/GUISettings.h"
 #ifdef _WIN32
 #pragma comment(lib, "mysqlclient.lib")
 #endif
@@ -158,6 +159,8 @@ int MysqlDatabase::connect(bool create_new) {
 
     CLog::Log(LOGERROR, "Unable to open database: %s [%d](%s)",
               db.c_str(), mysql_errno(conn), mysql_error(conn));
+    
+    g_guiSettings.SetInt("videolibrary.type", 0); //we cant connect, go back to sqlite
     return DB_CONNECTION_NONE;
   }
   catch(...)
@@ -165,6 +168,7 @@ int MysqlDatabase::connect(bool create_new) {
     CLog::Log(LOGERROR, "Unable to open database: %s (%u)",
               db.c_str(), GetLastError());
   }
+  g_guiSettings.SetInt("videolibrary.type", 0); //we cant connect, go back to sqlite
   return DB_CONNECTION_NONE;
 }
 
