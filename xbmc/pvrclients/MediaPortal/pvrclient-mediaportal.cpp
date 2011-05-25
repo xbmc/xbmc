@@ -37,6 +37,12 @@ using namespace std;
 //Globals
 int g_iTVServerXBMCBuild = 0;
 
+/* TVServerXBMC plugin supported versions */
+#define TVSERVERXBMC_MIN_VERSION_STRING         "1.1.0.70"
+#define TVSERVERXBMC_MIN_VERSION_BUILD          70
+#define TVSERVERXBMC_RECOMMENDED_VERSION_STRING "1.1.x.100"
+#define TVSERVERXBMC_RECOMMENDED_VERSION_BUILD  100
+
 /************************************************************/
 /** Class interface */
 
@@ -170,9 +176,9 @@ bool cPVRClientMediaPortal::Connect()
         return false;
       }
       // Check for the minimal requirement: 1.1.0.70
-      if( g_iTVServerXBMCBuild < 70 ) //major < 1 || minor < 1 || revision < 0 || build < 70
+      if( g_iTVServerXBMCBuild < TVSERVERXBMC_MIN_VERSION_BUILD ) //major < 1 || minor < 1 || revision < 0 || build < 70
       {
-        XBMC->Log(LOG_ERROR, "Your TVServerXBMC version '%s' is too old. Please upgrade to 1.1.0.70 or higher!", fields[1].c_str());
+        XBMC->Log(LOG_ERROR, "Your TVServerXBMC version v%s is too old. Please upgrade to v%s or higher!", fields[1].c_str(), TVSERVERXBMC_MIN_VERSION_STRING);
         return false;
       }
       else
@@ -180,13 +186,13 @@ bool cPVRClientMediaPortal::Connect()
         XBMC->Log(LOG_INFO, "Your TVServerXBMC version is '%s'", fields[1].c_str());
         
         // Advice to upgrade:
-        if( g_iTVServerXBMCBuild < 100 )
+        if( g_iTVServerXBMCBuild < TVSERVERXBMC_RECOMMENDED_VERSION_BUILD )
         {
-          XBMC->Log(LOG_INFO, "It is adviced to upgrade your TVServerXBMC version '%s' to 1.1.0.100 or higher!", fields[1].c_str());
+          XBMC->Log(LOG_INFO, "It is adviced to upgrade your TVServerXBMC version v%s to v%s or higher!", fields[1].c_str(), TVSERVERXBMC_RECOMMENDED_VERSION_STRING);
         }
       }
     } else {
-      XBMC->Log(LOG_ERROR, "Your TVServerXBMC version is too old. Please upgrade.");
+      XBMC->Log(LOG_ERROR, "Your TVServerXBMC version is too old. Please upgrade to v%s or higher!", TVSERVERXBMC_MIN_VERSION_STRING);
       return false;
     }
   }
