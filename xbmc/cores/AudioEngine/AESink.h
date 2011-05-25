@@ -23,7 +23,7 @@
 #include "threads/Thread.h"
 #include "AE.h"
 #include "AEAudioFormat.h"
-#include "StdString.h"
+#include "utils/StdString.h"
 #include <stdint.h>
 
 class IAESink

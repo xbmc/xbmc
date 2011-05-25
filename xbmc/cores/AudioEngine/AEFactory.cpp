@@ -21,17 +21,29 @@
 #include "system.h"
 
 #include "AEFactory.h"
-#include "Engines/SoftAE.h"
+#ifdef __APPLE__
+# include "Engines/CoreAudioAE.h"
+#else
+# include "Engines/SoftAE.h"
+#endif
 #ifdef HAS_PULSEAUDIO
-#include "Engines/PulseAE.h"
+# include "Engines/PulseAE.h"
 #endif
 
 bool CAEFactory::LoadEngine(enum AEEngine engine)
 {
   switch(engine)
   {
+#ifndef __APPLE__
     case AE_ENGINE_NULL : return AE.SetEngine(NULL);
+#endif
+      
+#ifdef __APPLE__
+    case AE_ENGINE_COREAUDIO : return AE.SetEngine(new CCoreAudioAE ());
+#else
     case AE_ENGINE_SOFT : return AE.SetEngine(new CSoftAE ());
+#endif
+
 #ifdef HAS_PULSEAUDIO
     case AE_ENGINE_PULSE: return AE.SetEngine(new CPulseAE());
 #endif

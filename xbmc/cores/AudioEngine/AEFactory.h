@@ -27,7 +27,8 @@ enum AEEngine
 {
   AE_ENGINE_NULL ,
   AE_ENGINE_SOFT ,
-  AE_ENGINE_PULSE
+  AE_ENGINE_PULSE , 
+  AE_ENGINE_COREAUDIO
 };
 
 class CAEWrapper;

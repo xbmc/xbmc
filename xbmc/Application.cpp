@@ -239,6 +239,7 @@
 #if !defined(__arm__)
 #include "CocoaInterface.h"
 #include "XBMCHelper.h"
+#include <osx/CoreAudio.h>
 #endif
 #endif
 
@@ -1021,6 +1022,28 @@ bool CApplication::Initialize()
     CDirectory::Create("special://xbmc/sounds");
   }
 
+#if defined(__APPLE__) && !defined(__arm__)
+  SInt32 major,  minor;
+  Gestalt(gestaltSystemVersionMajor, &major);
+  Gestalt(gestaltSystemVersionMinor, &minor);
+
+  // By default, kAudioHardwarePropertyRunLoop points at the process's main thread on SnowLeopard,
+  // If your process lacks such a run loop, you can set kAudioHardwarePropertyRunLoop to NULL which
+  // tells the HAL to run it's own thread for notifications (which was the default prior to SnowLeopard).
+  // So tell the HAL to use its own thread for similar behavior under all supported versions of OSX.
+	// kAudioObjectSystemObject must be set very early in the application
+  if (major == 10 && minor >=6)
+  {
+    CFRunLoopRef theRunLoop =  NULL;
+    AudioObjectPropertyAddress theAddress = { kAudioHardwarePropertyRunLoop, kAudioObjectPropertyScopeGlobal, kAudioObjectPropertyElementMaster };
+    OSStatus theError = AudioObjectSetPropertyData(kAudioObjectSystemObject, &theAddress, 0, NULL, sizeof(CFRunLoopRef), &theRunLoop);
+    if (theError != noErr)
+      CLog::Log(LOGERROR, "CApplication::Initialize: kAudioHardwarePropertyRunLoop error.");
+    else 
+      CLog::Log(LOGINFO, "CApplication::Initialize: kAudioHardwarePropertyRunLoop set.");
+  }
+#endif
+
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
@@ -1121,7 +1144,11 @@ bool CApplication::Initialize()
   /* window id's 3000 - 3100 are reserved for python */
 
   /* start the audio engine */
+#ifdef __APPLE__
+  CAEFactory::LoadEngine(AE_ENGINE_COREAUDIO);
+#else
   CAEFactory::LoadEngine(AE_ENGINE_SOFT);
+#endif
   SetHardwareVolume(AE.GetVolume());
 
   // Make sure we have at least the default skin
@@ -3358,7 +3385,9 @@ void CApplication::Stop(int exitCode)
     g_Windowing.DestroyWindowSystem();
 
     // shutdown the AudioEngine
+#ifndef  __APPLE__
     CAEFactory::LoadEngine(AE_ENGINE_NULL);
+#endif
 
     CLog::Log(LOGNOTICE, "stopped");
   }

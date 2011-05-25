@@ -33,6 +33,8 @@ CAEWrapper::CAEWrapper() :
 
 CAEWrapper::~CAEWrapper()
 {
+  if(m_ae)
+    delete m_ae;
 }
 
 bool CAEWrapper::Initialize()

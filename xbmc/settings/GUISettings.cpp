@@ -41,6 +41,9 @@
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #include "cores/AudioEngine/AEAudioFormat.h"
 #include "guilib/GUIFont.h" // for FONT_STYLE_* definitions
+#if defined __APPLE__ && !defined __arm__
+#include "CoreAudio.h"
+#endif
 #if defined(__APPLE__)
   #include "osx/DarwinUtils.h"
 #endif
@@ -459,11 +462,24 @@ void CGUISettings::Initialize()
   AddBool(NULL, "audiooutput.passthroughmp2", 301, false);
   AddBool(NULL, "audiooutput.passthroughmp3", 302, false);
 
+#if defined __APPLE__
+  AddBool(NULL, "audiooutput.multichannellpcm", 348, false);
+  AddBool(NULL, "audiooutput.truehdpassthrough", 349, false);
+#else
   AddBool(ao, "audiooutput.multichannellpcm", 348, true);
   AddBool(ao, "audiooutput.truehdpassthrough", 349, true);
+#endif
 
-#ifdef __APPLE__
-  AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+#if defined __APPLE__
+#if defined __arm__
+  CStdString defaultDeviceName = "Default";
+#else
+  CStdString defaultDeviceName;
+  CCoreAudioHardware::GetOutputDeviceName(defaultDeviceName);
+#endif
+  
+  AddString(ao, "audiooutput.audiodevice", 545, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
+  AddString(NULL, "audiooutput.passthroughdevice", 546, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
 #elif defined(_LINUX)
   AddSeparator(ao, "audiooutput.sep1");
   AddString(ao, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);

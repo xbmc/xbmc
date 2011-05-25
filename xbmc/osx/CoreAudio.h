@@ -29,6 +29,9 @@
 #include <list>
 #include <vector>
 
+#define kOutputBus 0
+#define kInputBus 1
+
 // Forward declarations
 class CCoreAudioHardware;
 class CCoreAudioDevice;
@@ -48,11 +51,14 @@ typedef std::list<AudioDeviceID> CoreAudioDeviceList;
 class CCoreAudioHardware
 {
 public:
+  static AudioStreamBasicDescription *CCoreAudioHardware::FormatsList(AudioStreamID stream);
+  static AudioStreamID *StreamsList(AudioDeviceID device);
+  static void ResetAudioDevices();
+  static void ResetStream(AudioStreamID stream);
   static AudioDeviceID FindAudioDevice(CStdString deviceName);
   static AudioDeviceID GetDefaultOutputDevice();
+  static void GetOutputDeviceName(CStdString& name);
   static UInt32 GetOutputDevices(CoreAudioDeviceList* pList);
-  static bool GetAutoHogMode();
-  static void SetAutoHogMode(bool enable);
 };
 
 // Not yet implemented
@@ -79,6 +85,8 @@ public:
   
   void Start();
   void Stop();
+  void RemoveObjectListenerProc(AudioObjectPropertyListenerProc callback, void* pClientData);
+  bool SetObjectListenerProc(AudioObjectPropertyListenerProc callback, void* pClientData);
   bool AddIOProc(AudioDeviceIOProc ioProc, void* pCallbackData);
   void RemoveIOProc();
   
@@ -87,11 +95,29 @@ public:
   UInt32 GetTotalOutputChannels();
   bool GetStreams(AudioStreamIdList* pList);
   bool IsRunning();
-  bool SetHogStatus(bool hog);
-  pid_t GetHogStatus();
-  bool SetMixingSupport(bool mix);
+	Boolean IsAudioPropertySettable(AudioObjectID id,
+																	AudioObjectPropertySelector selector,
+																	Boolean *outData);
+	UInt32 GetAudioPropertyArray(AudioObjectID id,
+															 AudioObjectPropertySelector selector,
+															 AudioObjectPropertyScope scope,
+															 void **outData);
+	UInt32 GetGlobalAudioPropertyArray(AudioObjectID id,
+																		 AudioObjectPropertySelector selector,
+																		 void **outData);
+	OSStatus GetAudioPropertyString(AudioObjectID id,
+																	AudioObjectPropertySelector selector,
+																	char **outData);
+  OSStatus SetAudioProperty(AudioObjectID id,
+														AudioObjectPropertySelector selector,
+														UInt32 inDataSize, void *inData);
+	OSStatus GetAudioProperty(AudioObjectID id,
+														AudioObjectPropertySelector selector,
+														UInt32 outSize, void *outData);
+	bool SetHogStatus(bool hog);
+  bool SetMixingSupport(UInt32 mix);
   bool GetMixingSupport();
-  bool GetPreferredChannelLayout(CoreAudioChannelList* pChannelMap);
+  bool GetPreferredChannelLayout(CoreAudioChannelList *pChannelMap);
   bool GetDataSources(CoreAudioDataSourceList* pList);
   Float64 GetNominalSampleRate();
   bool SetNominalSampleRate(Float64 sampleRate);
@@ -99,10 +125,12 @@ public:
 protected:
   AudioDeviceID m_DeviceId;
   bool m_Started;
-  pid_t m_Hog;
   int m_MixerRestore;
   AudioDeviceIOProc m_IoProc;
+  AudioObjectPropertyListenerProc m_ObjectListenerProc;
+  
   Float64 m_SampleRateRestore;
+	pid_t m_HogPid;
 };
 
 typedef std::list<AudioStreamRangedDescription> StreamFormatList;
@@ -147,10 +175,8 @@ public:
   bool Initialize();
   bool IsInitialized() {return m_Initialized;}
   bool SetRenderProc(AURenderCallback callback, void* pClientData);
-  bool GetInputFormat(AudioStreamBasicDescription* pDesc);
-  bool GetOutputFormat(AudioStreamBasicDescription* pDesc);    
-  bool SetInputFormat(AudioStreamBasicDescription* pDesc);
-  bool SetOutputFormat(AudioStreamBasicDescription* pDesc);
+  bool GetFormat(AudioStreamBasicDescription* pDesc, AudioUnitScope scope, AudioUnitElement bus);    
+  bool SetFormat(AudioStreamBasicDescription* pDesc, AudioUnitScope scope, AudioUnitElement bus);
   bool SetMaxFramesPerSlice(UInt32 maxFrames);
 protected:
   AudioUnit m_Component;
@@ -163,9 +189,11 @@ public:
   CAUOutputDevice();
   virtual ~CAUOutputDevice();
   bool SetCurrentDevice(AudioDeviceID deviceId);
-  bool GetInputChannelMap(CoreAudioChannelList* pChannelMap);
-  bool SetInputChannelMap(CoreAudioChannelList* pChannelMap);
+  bool GetInputChannelMap(std::list<SInt32> &pChannelMap);
+  bool SetInputChannelMap(std::list<SInt32> &pChannelMap);
+  bool SetOutputChannelMap(std::list<SInt32> &pChannelMap);
   UInt32 GetBufferFrameSize();
+  UInt32 SetBufferFrameSize(UInt32 frames);
   
   void Start();
   void Stop();
@@ -174,6 +202,7 @@ public:
   Float32 GetCurrentVolume();
   bool SetCurrentVolume(Float32 vol);  
 protected:
+  AudioDeviceID m_DeviceId;
 };
 
 class CAUMatrixMixer : public CCoreAudioUnit

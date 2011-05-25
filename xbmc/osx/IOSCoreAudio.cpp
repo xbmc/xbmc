@@ -321,6 +321,11 @@ void CIOSCoreAudioDevice::Close()
     return;
  
   Stop();
+ 
+  if(m_Passthrough)
+    SetRenderProc(m_AudioUnit, kOutputBus, nil, nil);
+  else
+    SetRenderProc(m_MixerUnit, kOutputBus, nil, nil);
   
   OSStatus ret = AudioUnitUninitialize(m_AudioUnit);
   
@@ -345,6 +350,7 @@ void CIOSCoreAudioDevice::Close()
       CLog::Log(LOGERROR, "CIOSCoreAudioDevice::Close: Unable to dispose Mixer device. Error = 0x%08x (%4.4s).", (uint32_t)ret, CONVERT_OSSTATUS(ret));
     
     m_MixerUnit = 0;
+    
   }
 }
 

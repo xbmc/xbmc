@@ -79,33 +79,42 @@ void CAESoundWrapper::StaticSoundOnFree(IAESound *sender, void *arg)
 void CAESoundWrapper::Play()
 {
   CSharedLock lock(m_lock);
-  m_sound->Play();
+  IAE *ae = AE.GetEngine();
+  if (ae && m_sound)
+    ae->PlaySound(m_sound);
 }
 
 void CAESoundWrapper::Stop()
 {
   CSharedLock lock(m_lock);
-  m_sound->Stop();
+
+  IAE *ae = AE.GetEngine();
+  if (ae && m_sound)
+    ae->StopSound(m_sound);
 }
 
 bool CAESoundWrapper::IsPlaying()
 {
+  bool play = false;
+
   CSharedLock lock(m_lock);
-  bool play = m_sound->IsPlaying();
+  if(m_sound) play = m_sound->IsPlaying();
   return play;
 }
 
 void CAESoundWrapper::SetVolume(float volume)
 {
   CSharedLock lock(m_lock);
-  m_sound->SetVolume(volume);
+  if(m_sound) m_sound->SetVolume(volume);
   m_volume = volume;
 }
 
 float CAESoundWrapper::GetVolume()
 {
+  float volume = 0.0f;
+
   CSharedLock lock(m_lock);
-  float volume = m_sound->GetVolume();
+  if(m_sound) m_sound->GetVolume();
   return volume;
 }
 
