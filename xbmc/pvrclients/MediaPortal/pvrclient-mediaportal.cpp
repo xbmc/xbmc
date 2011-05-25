@@ -179,6 +179,7 @@ bool cPVRClientMediaPortal::Connect()
       if( g_iTVServerXBMCBuild < TVSERVERXBMC_MIN_VERSION_BUILD ) //major < 1 || minor < 1 || revision < 0 || build < 70
       {
         XBMC->Log(LOG_ERROR, "Your TVServerXBMC version v%s is too old. Please upgrade to v%s or higher!", fields[1].c_str(), TVSERVERXBMC_MIN_VERSION_STRING);
+        XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(30050), fields[1].c_str(), TVSERVERXBMC_MIN_VERSION_STRING);
         return false;
       }
       else
@@ -193,6 +194,7 @@ bool cPVRClientMediaPortal::Connect()
       }
     } else {
       XBMC->Log(LOG_ERROR, "Your TVServerXBMC version is too old. Please upgrade to v%s or higher!", TVSERVERXBMC_MIN_VERSION_STRING);
+      XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(30051), TVSERVERXBMC_MIN_VERSION_STRING);
       return false;
     }
   }
@@ -1119,6 +1121,16 @@ const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelin
   if (result.find("ERROR") != std::string::npos || result.length() == 0)
   {
     XBMC->Log(LOG_ERROR, "Could not stream channel %i. %s", channel, result.c_str());
+    if (result.find("[ERROR]: TVServer answer: ") != std::string::npos)
+    {
+      // Skip first part: "[ERROR]: TVServer answer: "
+      XBMC->QueueNotification(QUEUE_ERROR, "TVServer: %s", result.substr(26).c_str());
+    }
+    else
+    {
+      // Skip first part: "[ERROR]: "
+      XBMC->QueueNotification(QUEUE_ERROR, result.substr(7).c_str());
+    }
     return "";
   }
   else
