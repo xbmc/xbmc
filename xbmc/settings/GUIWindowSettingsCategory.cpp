@@ -821,13 +821,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                          g_guiSettings.GetString("audiooutput.audiodevice").find("wasapi:") == CStdString::npos);
     }
 #ifdef HAS_WEB_SERVER
-    else if (strSetting.Equals("services.webserverusername"))
-    {
-      CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
-      if (pControl)
-        pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
-    }
-    else if (strSetting.Equals("services.webserverpassword"))
+    else if (strSetting.Equals("services.webserverport") ||
+             strSetting.Equals("services.webserverusername") ||
+             strSetting.Equals("services.webserverpassword"))
     {
       CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
       if (pControl)
