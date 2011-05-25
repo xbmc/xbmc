@@ -484,7 +484,7 @@
 				<posy>0</posy>
 				<width>1480</width>
 				<height>75</height>
-				<texture border="0,6,0,6">Homeback.png</texture>
+				<texture border="0,6,0,6">HomeBack.png</texture>
 			</control>
 			<control type="image">
 				<posx>0</posx>
