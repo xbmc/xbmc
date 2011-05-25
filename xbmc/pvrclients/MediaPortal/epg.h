@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -34,15 +34,20 @@ private:
   string m_title;
   string m_shortText;
   string m_description;
-  //string m_aux;
   time_t m_StartTime;
   time_t m_EndTime;
+  time_t m_originalAirDate;
   int m_Duration;
   string m_genre;
   int m_genre_type;
   int m_genre_subtype;
-  //time_t m_vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
-  time_t m_UTCdiff;
+  int m_episodeNumber;
+  string m_episodePart;
+  string m_episodeName;
+  int m_seriesNumber;
+  int m_starRating;
+  int m_parentalRating;
+  void SetGenre(string& Genre, int genreType, int genreSubType);
 
 public:
   cEpg();
@@ -50,26 +55,23 @@ public:
   void Reset();
 
   bool ParseLine(string& data);
-  //bool ParseEntryLine(const char *s);
-  //const char *Aux(void) const { return m_aux; }
   int UniqueId(void) const { return m_uid; }
   time_t StartTime(void) const { return m_StartTime; }
   time_t EndTime(void) const { return m_EndTime; }
   time_t Duration(void) const { return m_Duration; }
-  //time_t Vps(void) const { return m_vps; }
-  //void SetVps(time_t Vps);
+  time_t OriginalAirDate(void) const { return m_originalAirDate; }
   const char *Title(void) const { return m_title.c_str(); }
   const char *ShortText(void) const { return m_shortText.c_str(); }
   const char *Description(void) const { return m_description.c_str(); }
   const char *Genre(void) const { return m_genre.c_str(); }
   int GenreType(void) const { return m_genre_type; }
   int GenreSubType(void) const { return m_genre_subtype; }
-  //void SetTitle(const char *Title);
-  //void SetShortText(const char *ShortText);
-  //void SetDescription(const char *Description);
-  void SetGenre(string& Genre, int genreType, int genreSubType);
-
-
+  int SeriesNumber(void) const { return m_seriesNumber; };
+  int EpisodeNumber(void) const { return m_episodeNumber; };
+  const char* EpisodeName(void) const { return m_episodeName.c_str(); };
+  const char* EpisodePart(void) const { return m_episodePart.c_str(); };
+  int StarRating(void) const { return m_starRating; };
+  int ParentalRating(void) const { return m_parentalRating; };
 };
 
 #endif //__EPG_H

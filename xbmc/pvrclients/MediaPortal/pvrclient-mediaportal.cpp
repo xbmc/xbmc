@@ -40,8 +40,8 @@ int g_iTVServerXBMCBuild = 0;
 /* TVServerXBMC plugin supported versions */
 #define TVSERVERXBMC_MIN_VERSION_STRING         "1.1.0.70"
 #define TVSERVERXBMC_MIN_VERSION_BUILD          70
-#define TVSERVERXBMC_RECOMMENDED_VERSION_STRING "1.1.x.102"
-#define TVSERVERXBMC_RECOMMENDED_VERSION_BUILD  102
+#define TVSERVERXBMC_RECOMMENDED_VERSION_STRING "1.1.x.104"
+#define TVSERVERXBMC_RECOMMENDED_VERSION_BUILD  104
 
 /************************************************************/
 /** Class interface */
@@ -398,13 +398,31 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
   string         result;
   cEpg           epg;
   EPG_TAG        broadcast;
+  struct tm      starttime;
+  struct tm      endtime;
 
+  starttime = *gmtime( &iStart );
+  endtime = *gmtime( &iEnd );
   XBMC->Log(LOG_DEBUG, "->RequestEPGForChannel(%i)", channel.iUniqueId);
 
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
 
-  snprintf(command, 256, "GetEPG:%i\n", channel.iUniqueId);
+  if (g_iTVServerXBMCBuild >= 104)
+  {
+    // Request (extended) EPG data for the given period
+    snprintf(command, 256, "GetEPG:%i|%04d-%02d-%02dT%02d:%02d:%02d.0Z|%04d-%02d-%02dT%02d:%02d:%02d.0Z\n",
+            channel.iUniqueId,                                                 //Channel id
+            starttime.tm_year + 1900, starttime.tm_mon + 1, starttime.tm_mday, //Start date     [2..4]
+            starttime.tm_hour, starttime.tm_min, starttime.tm_sec,             //Start time     [5..7]
+            endtime.tm_year + 1900, endtime.tm_mon + 1, endtime.tm_mday,       //End date       [8..10]
+            endtime.tm_hour, endtime.tm_min, endtime.tm_sec);                  //End time       [11..13]
+  }
+  else
+  {
+    // This version does not yet return all EPG fields
+    snprintf(command, 256, "GetEPG:%i\n", channel.iUniqueId);
+  }
 
   result = SendCommand(command);
 
@@ -441,14 +459,14 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
             broadcast.iGenreType         = epg.GenreType();
             broadcast.iGenreSubType      = epg.GenreSubType();
             //broadcast.genre_text       = epg.Genre();
-            broadcast.firstAired         = 0;
-            broadcast.iParentalRating    = 0;
-            broadcast.iStarRating        = 0;
+            broadcast.firstAired         = epg.OriginalAirDate();
+            broadcast.iParentalRating    = epg.ParentalRating();
+            broadcast.iStarRating        = epg.StarRating();
             broadcast.bNotify            = false;
-            broadcast.iSeriesNumber      = 0;
-            broadcast.iEpisodeNumber     = 0;
-            broadcast.iEpisodePartNumber = 0;
-            broadcast.strEpisodeName     = "";
+            broadcast.iSeriesNumber      = epg.SeriesNumber();
+            broadcast.iEpisodeNumber     = epg.EpisodeNumber();
+            broadcast.iEpisodePartNumber = atoi(epg.EpisodePart());
+            broadcast.strEpisodeName     = epg.EpisodeName();
 
             PVR->TransferEpgEntry(handle, &broadcast);
           }
