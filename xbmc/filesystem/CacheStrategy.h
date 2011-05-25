@@ -57,6 +57,7 @@ public:
   virtual void EndOfInput(); // mark the end of the input stream so that Read will know when to return EOF
   virtual bool IsEndOfInput();
   virtual void ClearEndOfInput();
+  virtual int64_t GetCacheStart() = 0;
 
   CEvent m_space;
 protected:
@@ -80,6 +81,8 @@ public:
   virtual int64_t Seek(int64_t iFilePosition);
   virtual void Reset(int64_t iSourcePosition);
   virtual void EndOfInput();
+
+  virtual int64_t GetCacheStart() { return m_nStartPosition; }
 
   int64_t  GetAvailableRead();
 

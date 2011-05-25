@@ -47,6 +47,7 @@ public:
 
     virtual int64_t Seek(int64_t iFilePosition) ;
     virtual void Reset(int64_t iSourcePosition) ;
+    virtual int64_t GetCacheStart() { return m_nStartPosition; }
 
 protected:
     int64_t m_nStartPosition;
