@@ -26,16 +26,6 @@
 
 class TiXmlElement;
 
-struct DatabaseSettings
-{
-  CStdString type;
-  CStdString host;
-  CStdString port;
-  CStdString user;
-  CStdString pass;
-  CStdString name;
-};
-
 struct TVShowRegexp
 {
   bool byDate;
@@ -282,9 +272,6 @@ class CAdvancedSettings
 
     bool m_measureRefreshrate; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
                                //otherwise it will use the windows refreshrate
-
-    DatabaseSettings m_databaseMusic; // advanced music database setup
-    DatabaseSettings m_databaseVideo; // advanced video database setup
 
     bool m_guiVisualizeDirtyRegions;
     int  m_guiAlgorithmDirtyRegions;

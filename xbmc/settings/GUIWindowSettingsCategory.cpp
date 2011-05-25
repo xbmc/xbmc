@@ -1036,6 +1036,18 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(enabled);
       }
     }
+    else if (strSetting.Equals("videolibrary.host") || strSetting.Equals("videolibrary.port") || strSetting.Equals("videolibrary.test") ||
+             strSetting.Equals("videolibrary.user") || strSetting.Equals("videolibrary.pass") || strSetting.Equals("videolibrary.name"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetVisible(g_guiSettings.GetInt("videolibrary.type") > 0);
+    }
+    else if (strSetting.Equals("musiclibrary.host") || strSetting.Equals("musiclibrary.port") || strSetting.Equals("musiclibrary.test") ||
+             strSetting.Equals("musiclibrary.user") || strSetting.Equals("musiclibrary.pass") || strSetting.Equals("musiclibrary.name"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetVisible(g_guiSettings.GetInt("musiclibrary.type") > 0);
+    }
     else if (strSetting.Equals("weather.scriptsettings"))
     {
       AddonPtr addon;
@@ -1124,7 +1136,42 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     else
       return;
   }
-
+  else if (strSetting.Equals("videolibrary.test"))
+  {
+    int msgLine = 799;
+    CVideoDatabase videoDatabase;
+    if (!videoDatabase.Open())
+    {  
+      msgLine = 800;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting("videolibrary.type")->GetID());
+      pControl->SetValue(0);
+    }
+    CGUIDialogOK::ShowAndGetInput(805, 20022, msgLine, 20022);
+  }
+  else if (strSetting.Equals("musiclibrary.test"))
+  {
+    int msgLine = 799;
+    CMusicDatabase musicDatabase;
+    if (!musicDatabase.Open())
+    {  
+      msgLine = 800;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting("musiclibrary.type")->GetID());
+      pControl->SetValue(0);
+    }
+    CGUIDialogOK::ShowAndGetInput(805, 20022, msgLine, 20022);
+  }
+  else if (strSetting.Equals("videolibrary.type"))
+  {
+    CVideoDatabase videoDatabase;
+    videoDatabase.Close();
+    videoDatabase.Open();
+  }  
+  else if (strSetting.Equals("musiclibrary.type"))
+  {
+    CMusicDatabase musicDatabase;
+    musicDatabase.Close();
+    musicDatabase.Open();
+  }  
   // if OnClick() returns false, the setting hasn't changed or doesn't
   // require immediate update
   if (!pSettingControl->OnClick())
