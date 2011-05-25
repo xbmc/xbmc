@@ -1302,7 +1302,6 @@
     <ClInclude Include="..\..\xbmc\FileSystem\UDFDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.h" />
     <ClInclude Include="..\..\xbmc\filesystem\VirtualDirectory.h" />
-    <ClInclude Include="..\..\xbmc\filesystem\zconf.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ZeroconfDirectory.h" />
     <ClInclude Include="..\..\xbmc\GUIInfoManager.h" />
     <ClInclude Include="..\..\xbmc\GUILargeTextureManager.h" />
@@ -2150,5 +2149,5 @@
       <UserProperties RESOURCE_FILE="XBMC_PC.rc" />
     </VisualStudio>
   </ProjectExtensions>
- <Import Project="$(SolutionDir)\$(ProjectFileName).targets.user" Condition="Exists('$(SolutionDir)\$(ProjectFileName).targets.user')" />
+  <Import Project="$(SolutionDir)\$(ProjectFileName).targets.user" Condition="Exists('$(SolutionDir)\$(ProjectFileName).targets.user')" />
 </Project>

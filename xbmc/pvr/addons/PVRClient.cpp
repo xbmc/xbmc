@@ -262,7 +262,7 @@ const char *CPVRClient::GetFriendlyName(void)
 PVR_ERROR CPVRClient::GetDriveSpace(long long *iTotal, long long *iUsed)
 {
   if (!m_bReadyToUse)
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
 
   try
   {
@@ -284,7 +284,7 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long *iTotal, long long *iUsed)
 //PVR_ERROR CPVRClient::GetBackendTime(time_t *localTime, int *iGmtOffset)
 //{
 //  if (!m_bReadyToUse)
-//    return PVR_ERROR_UNKOWN;
+//    return PVR_ERROR_UNKNOWN;
 //
 //  try
 //  {
@@ -306,7 +306,7 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long *iTotal, long long *iUsed)
 PVR_ERROR CPVRClient::StartChannelScan(void)
 {
   if (!m_bReadyToUse)
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_UNKNOWN;
 
   if (!m_addonCapabilities.bSupportsChannelScan)
     return PVR_ERROR_NOT_IMPLEMENTED;
@@ -342,7 +342,7 @@ void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook)
 
 PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start /* = 0 */, time_t end /* = 0 */, bool bSaveInDb /* = false*/)
 {
-  PVR_ERROR retVal = PVR_ERROR_UNKOWN;
+  PVR_ERROR retVal = PVR_ERROR_UNKNOWN;
   if (!m_bReadyToUse)
     return retVal;
 
@@ -402,7 +402,7 @@ int CPVRClient::GetChannelGroupsAmount(void)
 
 PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups *groups)
 {
-  PVR_ERROR retVal = PVR_ERROR_UNKOWN;
+  PVR_ERROR retVal = PVR_ERROR_UNKNOWN;
   if (!m_bReadyToUse)
     return retVal;
 
@@ -433,7 +433,7 @@ PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups *groups)
 
 PVR_ERROR CPVRClient::GetChannelGroupMembers(CPVRChannelGroup *group)
 {
-  PVR_ERROR retVal = PVR_ERROR_UNKOWN;
+  PVR_ERROR retVal = PVR_ERROR_UNKNOWN;
   if (!m_bReadyToUse)
     return retVal;
 
@@ -489,7 +489,7 @@ int CPVRClient::GetChannelsAmount(void)
 
 PVR_ERROR CPVRClient::GetChannels(CPVRChannelGroup &channels, bool radio)
 {
-  PVR_ERROR retVal = PVR_ERROR_UNKOWN;
+  PVR_ERROR retVal = PVR_ERROR_UNKNOWN;
   if (!m_bReadyToUse)
     return retVal;
 
@@ -543,7 +543,7 @@ int CPVRClient::GetRecordingsAmount(void)
 
 PVR_ERROR CPVRClient::GetRecordings(CPVRRecordings *results)
 {
-  PVR_ERROR retVal = PVR_ERROR_UNKOWN;
+  PVR_ERROR retVal = PVR_ERROR_UNKNOWN;
   if (!m_bReadyToUse)
     return retVal;
 
@@ -574,7 +574,7 @@ PVR_ERROR CPVRClient::GetRecordings(CPVRRecordings *results)
 
 PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording &recording)
 {
-  PVR_ERROR retVal = PVR_ERROR_UNKOWN;
+  PVR_ERROR retVal = PVR_ERROR_UNKNOWN;
   if (!m_bReadyToUse)
     return retVal;
 
@@ -605,7 +605,7 @@ PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording &recording)
 
 PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording &recording)
 {
-  PVR_ERROR retVal = PVR_ERROR_UNKOWN;
+  PVR_ERROR retVal = PVR_ERROR_UNKNOWN;
   if (!m_bReadyToUse)
     return retVal;
 
@@ -658,7 +658,7 @@ int CPVRClient::GetTimersAmount(void)
 
 PVR_ERROR CPVRClient::GetTimers(CPVRTimers *results)
 {
-  PVR_ERROR retVal = PVR_ERROR_UNKOWN;
+  PVR_ERROR retVal = PVR_ERROR_UNKNOWN;
   if (!m_bReadyToUse)
     return retVal;
 
@@ -689,7 +689,7 @@ PVR_ERROR CPVRClient::GetTimers(CPVRTimers *results)
 
 PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timer)
 {
-  PVR_ERROR retVal = PVR_ERROR_UNKOWN;
+  PVR_ERROR retVal = PVR_ERROR_UNKNOWN;
   if (!m_bReadyToUse)
     return retVal;
 
@@ -720,7 +720,7 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag &timer)
 
 PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* = false */)
 {
-  PVR_ERROR retVal = PVR_ERROR_UNKOWN;
+  PVR_ERROR retVal = PVR_ERROR_UNKNOWN;
   if (!m_bReadyToUse)
     return retVal;
 
@@ -751,7 +751,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce /* 
 
 PVR_ERROR CPVRClient::RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &strNewName)
 {
-  PVR_ERROR retVal = PVR_ERROR_UNKOWN;
+  PVR_ERROR retVal = PVR_ERROR_UNKNOWN;
   if (!m_bReadyToUse)
     return retVal;
 
@@ -782,7 +782,7 @@ PVR_ERROR CPVRClient::RenameTimer(const CPVRTimerInfoTag &timer, const CStdStrin
 
 PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timer)
 {
-  PVR_ERROR retVal = PVR_ERROR_UNKOWN;
+  PVR_ERROR retVal = PVR_ERROR_UNKNOWN;
   if (!m_bReadyToUse)
     return retVal;
 
@@ -981,7 +981,7 @@ PVR_ERROR CPVRClient::GetStreamProperties(PVR_STREAM_PROPERTIES *props)
 
     /* Set all properties in a case of exception to not supported */
   }
-  return PVR_ERROR_UNKOWN;
+  return PVR_ERROR_UNKNOWN;
 }
 
 void CPVRClient::DemuxReset(void)

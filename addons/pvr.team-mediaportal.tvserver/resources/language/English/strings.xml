@@ -14,4 +14,8 @@
     <string id="30010">Wait time after tuning a channel (ms)</string>
     <string id="30011">Play recordings directly (no streaming)</string>
     <string id="30012">Mediaportal recordings directory</string>
+
+    <!-- on-screen error messages -->
+    <string id="30050">Your TVServerXBMC version v%s is too old. Please upgrade to v%s or higher!</string>
+    <string id="30051">Your TVServerXBMC version is too old. Please upgrade to v%s or higher!</string>
 </strings>
