@@ -156,7 +156,9 @@ bool cRecording::ParseLine(const std::string& data)
     if (fields.size() == 10) // Since 1.0.8.0
     {
       m_originalurl = fields[9];
-    } else {
+    }
+    else
+    {
       m_originalurl = fields[6];
     }
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -346,7 +346,7 @@ bool Socket::ReadResponse (int &code, vector<string> &lines)
     if (result < 0)
     {
       XBMC->Log(LOG_DEBUG, "CVTPTransceiver::ReadResponse - select failed");
-      lines.push_back("ERROR: select failed");
+      lines.push_back("ERROR: Select failed");
       code = 1; //error
       _sd = INVALID_SOCKET;
       return false;
@@ -361,7 +361,7 @@ bool Socket::ReadResponse (int &code, vector<string> &lines)
         continue;
       } else {
          XBMC->Log(LOG_DEBUG, "CVTPTransceiver::ReadResponse - timeout waiting for response. Failed after 10 retries.");
-         lines.push_back("ERROR: failed after 10 retries");
+         lines.push_back("ERROR: Failed after 10 retries");
          code = 1; //error
         _sd = INVALID_SOCKET;
          return false;
@@ -372,7 +372,7 @@ bool Socket::ReadResponse (int &code, vector<string> &lines)
     if (result < 0)
     {
       XBMC->Log(LOG_DEBUG, "CVTPTransceiver::ReadResponse - recv failed");
-      lines.push_back("ERROR: recv failed");
+      lines.push_back("ERROR: Recv failed");
       code = 1; //error
       _sd = INVALID_SOCKET;
       return false;
