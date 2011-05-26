@@ -1007,8 +1007,9 @@ void CDVDPlayer::Process()
       {
         m_ChannelEntryTimeOut = 0;
         CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
-        CPVRChannel channel;
-        if(pStream->GetSelectedChannel(&channel) && pStream->SelectChannel(channel))
+        CFileItem currentFile(g_application.CurrentFileItem());
+        CPVRChannel *currentChannel = currentFile.GetPVRChannelInfoTag();
+        if(currentChannel && pStream->SelectChannel(*currentChannel))
         {
           FlushBuffers(false);
           SAFE_DELETE(m_pDemuxer);
