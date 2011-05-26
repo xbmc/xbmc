@@ -349,6 +349,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_item     = file;
     m_mimetype  = file.GetMimeType();
     m_filename = file.m_strPath;
+    m_scanStart = 0;
 
     m_ready.Reset();
     Create();
@@ -950,7 +951,10 @@ void CDVDPlayer::Process()
   // make sure all selected stream have data on startup
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)
       && !g_PVRManager.IsPlayingRecording())
+  {
     SetCaching(CACHESTATE_PVR);
+    m_scanStart = CTimeUtils::GetTimeMS();
+  }
   else
     SetCaching(CACHESTATE_INIT);
 
@@ -1107,9 +1111,15 @@ void CDVDPlayer::Process()
       else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
       {
         CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
-
         if (pStream->IsEOF())
           break;
+
+        if (m_scanStart && CTimeUtils::GetTimeMS() - m_scanStart >= (unsigned int) g_guiSettings.GetInt("pvrplayback.scantime")*1000)
+        {
+          CLog::Log(LOGERROR,"CDVDPlayer - %s - no video or audio data available after %i seconds, playback stopped",
+              __FUNCTION__, g_guiSettings.GetInt("pvrplayback.scantime"));
+          break;
+        }
 
         Sleep(100);
         continue;
@@ -2157,6 +2167,9 @@ void CDVDPlayer::SetCaching(ECacheState state)
     m_dvdPlayerAudio.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
     m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
+
+    if (state == CACHESTATE_PVR)
+      m_scanStart = CTimeUtils::GetTimeMS();
   }
 
   if(state == CACHESTATE_PLAY
@@ -2165,6 +2178,7 @@ void CDVDPlayer::SetCaching(ECacheState state)
     m_clock.SetSpeed(m_playSpeed);
     m_dvdPlayerAudio.SetSpeed(m_playSpeed);
     m_dvdPlayerVideo.SetSpeed(m_playSpeed);
+    m_scanStart = 0;
   }
   m_caching = state;
 }
