@@ -41,13 +41,13 @@ private:
   string m_genre;
   int m_genre_type;
   int m_genre_subtype;
-  //time_t m_vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
   int m_episodeNumber;
   string m_episodePart;
   string m_episodeName;
   int m_seriesNumber;
   int m_starRating;
   int m_parentalRating;
+  void SetGenre(string& Genre, int genreType, int genreSubType);
 
 public:
   cEpg();
@@ -60,14 +60,11 @@ public:
   time_t EndTime(void) const { return m_EndTime; }
   time_t Duration(void) const { return m_Duration; }
   time_t OriginalAirDate(void) const { return m_originalAirDate; }
-  //time_t Vps(void) const { return m_vps; }
-  const char *Title(void) const { return m_title.c_str(); }
-  const char *ShortText(void) const { return m_shortText.c_str(); }
+  const char *Title(void) const { return m_title.c_str(); }  const char *ShortText(void) const { return m_shortText.c_str(); }
   const char *Description(void) const { return m_description.c_str(); }
   const char *Genre(void) const { return m_genre.c_str(); }
   int GenreType(void) const { return m_genre_type; }
   int GenreSubType(void) const { return m_genre_subtype; }
-  void SetGenre(string& Genre, int genreType, int genreSubType);
   int SeriesNumber(void) const { return m_seriesNumber; };
   int EpisodeNumber(void) const { return m_episodeNumber; };
   const char* EpisodeName(void) const { return m_episodeName.c_str(); };

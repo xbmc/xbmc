@@ -99,8 +99,6 @@ class cTimer
     int XBMC2MepoPriority(int xbmcprio);
     int Mepo2XBMCPriority(int mepoprio);
 
-    //time_t      m_UTCdiff;
-
     // MediaPortal database fields:
     int         m_index;               ///> MediaPortal id_Schedule
     int         m_channel;             ///> MediaPortal idChannel

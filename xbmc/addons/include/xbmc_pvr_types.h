@@ -101,7 +101,7 @@ extern "C" {
   typedef enum
   {
     PVR_ERROR_NO_ERROR          = 0,
-    PVR_ERROR_UNKOWN            = -1,
+    PVR_ERROR_UNKNOWN           = -1,
     PVR_ERROR_NOT_IMPLEMENTED   = -2,
     PVR_ERROR_SERVER_ERROR      = -3,
     PVR_ERROR_SERVER_TIMEOUT    = -4,

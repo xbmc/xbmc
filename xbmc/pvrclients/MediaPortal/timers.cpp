@@ -46,9 +46,7 @@ cTimer::cTimer()
   m_postrecordinterval = -1; // Use MediaPortal setting instead
   m_canceled           = cUndefinedDate;
   m_series             = false;
-  //m_UTCdiff            = GetUTCdifftime();
 }
-
 cTimer::cTimer(const PVR_TIMER& timerinfo)
 {
   m_index = timerinfo.iClientIndex;
@@ -84,8 +82,6 @@ cTimer::cTimer(const PVR_TIMER& timerinfo)
 
   m_prerecordinterval = timerinfo.iMarginStart;
   m_postrecordinterval = timerinfo.iMarginEnd;
-
-  //m_UTCdiff = GetUTCdifftime();
 }
 
 

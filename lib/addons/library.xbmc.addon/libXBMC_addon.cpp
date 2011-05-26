@@ -112,8 +112,7 @@ DLLEXPORT const char* XBMC_get_localized_string(int dwCode)
   if (m_cb == NULL)
     return "";
 
-  string buffer = m_cb->GetLocalizedString(m_Handle->addonData, dwCode);
-  return buffer.c_str();
+  return m_cb->GetLocalizedString(m_Handle->addonData, dwCode);
 }
 
 DLLEXPORT const char* XBMC_get_dvd_menu_language()

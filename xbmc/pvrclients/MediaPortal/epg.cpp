@@ -218,7 +218,7 @@ bool cEpg::ParseLine(string& data)
 
       if( epgfields.size() >= 15 )
       {
-        //Since TVServerXBMC v1.x.x.104
+        // Since TVServerXBMC v1.x.x.104
         m_uid = (unsigned int) atol(epgfields[5].c_str());
         m_seriesNumber = atoi(epgfields[7].c_str());
         m_episodeNumber = atoi(epgfields[8].c_str());

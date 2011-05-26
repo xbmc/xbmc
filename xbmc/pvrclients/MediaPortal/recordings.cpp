@@ -30,7 +30,6 @@ cRecording::cRecording()
   m_StartTime       = 0;
   m_Duration        = 0;
   m_Index           = -1;
-  //m_UTCdiff = GetUTCdifftime();
 }
 
 cRecording::cRecording(const PVR_RECORDING *Recording)
@@ -86,7 +85,7 @@ bool cRecording::ParseLine(const std::string& data)
     timeinfo.tm_wday = 0;
     timeinfo.tm_yday = 0;
 
-    m_StartTime = mktime (&timeinfo); // + m_UTCdiff; //Start time in localtime
+    m_StartTime = mktime (&timeinfo);
 
     if (m_StartTime < 0)
       return false;
@@ -107,7 +106,7 @@ bool cRecording::ParseLine(const std::string& data)
     timeinfo.tm_wday = 0;
     timeinfo.tm_yday = 0;
 
-    endtime = mktime (&timeinfo); // + m_UTCdiff; //Start time in localtime
+    endtime = mktime (&timeinfo);
 
     if (endtime < 0)
       return false;

@@ -143,6 +143,28 @@ bool CPVRChannelGroup::Update(const CPVRChannelGroup &group)
   return true;
 }
 
+bool CPVRChannelGroup::SetChannelNumber(CPVRChannel *channel, unsigned int iChannelNumber)
+{
+  bool bReturn(false);
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    if (*at(iChannelPtr).channel == *channel)
+    {
+      if (at(iChannelPtr).iChannelNumber != iChannelNumber)
+      {
+        m_bChanged = true;
+        bReturn = true;
+        at(iChannelPtr).iChannelNumber = iChannelNumber;
+      }
+      break;
+    }
+  }
+
+  return bReturn;
+}
+
 bool CPVRChannelGroup::MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb /* = true */)
 {
   if (iOldChannelNumber == iNewChannelNumber)
@@ -796,12 +818,16 @@ bool CPVRChannelGroup::Renumber(void)
   }
 
   SortByChannelNumber();
+  ResetChannelNumberCache();
 
+  return bReturn;
+}
+
+void CPVRChannelGroup::ResetChannelNumberCache(void)
+{
   /* reset the channel number cache */
   if (g_PVRManager.IsSelectedGroup(*this))
     SetSelectedGroup();
-
-  return bReturn;
 }
 
 bool CPVRChannelGroup::HasChangedChannels(void) const

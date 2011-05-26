@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -26,6 +26,8 @@
 
 namespace PVR
 {
+  class CPVRChannelGroup;
+
   class CGUIDialogPVRChannelManager : public CGUIDialog
   {
   public:
@@ -33,8 +35,8 @@ namespace PVR
     virtual ~CGUIDialogPVRChannelManager(void);
     virtual bool OnMessage(CGUIMessage& message);
     virtual bool OnAction(const CAction& action);
-    virtual void OnWindowLoaded();
-    virtual void OnWindowUnload();
+    virtual void OnWindowLoaded(void);
+    virtual void OnWindowUnload(void);
     virtual bool HasListItems() const { return true; };
     virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
@@ -42,11 +44,35 @@ namespace PVR
     virtual bool OnPopupMenu(int iItem);
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 
+    virtual bool OnActionClose(const CAction &action);
+    virtual bool OnActionMove(const CAction &action);
+
+    virtual bool OnMessageInit(CGUIMessage &message);
+    virtual bool OnMessageClick(CGUIMessage &message);
+
+    virtual bool OnClickListChannels(CGUIMessage &message);
+    virtual bool OnClickButtonOK(CGUIMessage &message);
+    virtual bool OnClickButtonApply(CGUIMessage &message);
+    virtual bool OnClickButtonCancel(CGUIMessage &message);
+    virtual bool OnClickButtonRadioTV(CGUIMessage &message);
+    virtual bool OnClickButtonRadioActive(CGUIMessage &message);
+    virtual bool OnClickButtonEditName(CGUIMessage &message);
+    virtual bool OnClickButtonChannelLogo(CGUIMessage &message);
+    virtual bool OnClickButtonUseEPG(CGUIMessage &message);
+    virtual bool OnClickEPGSourceSpin(CGUIMessage &message);
+    virtual bool OnClickButtonGroupManager(CGUIMessage &message);
+    virtual bool OnClickButtonEditChannel(CGUIMessage &message);
+    virtual bool OnClickButtonDeleteChannel(CGUIMessage &message);
+    virtual bool OnClickButtonNewChannel(CGUIMessage &message);
+
+    virtual bool PersistChannel(CFileItemPtr pItem, CPVRChannelGroup *group, unsigned int *iChannelNumber);
+    virtual void SetItemsUnchanged(void);
+
   private:
-    void Clear();
-    void Update();
-    void SaveList();
-    void Renumber();
+    void Clear(void);
+    void Update(void);
+    void SaveList(void);
+    void Renumber(void);
     void SetData(int iItem);
     bool m_bIsRadio;
     bool m_bMovingMode;

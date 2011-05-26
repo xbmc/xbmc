@@ -126,30 +126,35 @@ bool CPVRChannelGroupInternal::UpdateTimers(void)
   return true;
 }
 
-bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */)
+bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */, bool bSortAndRenumber /* = true */)
 {
   CSingleLock lock(m_critSection);
+
+  bool bReturn(false);
+  if (!channel)
+    return bReturn;
 
   /* get the actual channel since this is called from a fileitemlist copy */
   CPVRChannel *realChannel = (CPVRChannel *) GetByChannelID(channel->ChannelID());
   if (!realChannel)
-    return false;
+    return bReturn;
 
   /* switch the hidden flag */
   if (realChannel->IsHidden())
   {
     realChannel->SetHidden(false, true);
     m_iHiddenChannels--;
+
+    if (bSortAndRenumber)
+      Renumber();
   }
 
-  /* renumber this list */
-  Renumber();
-
   /* move this channel and persist */
-  if (iChannelNumber > 0)
-    return MoveChannel(realChannel->ChannelNumber(), iChannelNumber, true);
-  else
-    return MoveChannel(realChannel->ChannelNumber(), size() - m_iHiddenChannels, true);
+  bReturn = (iChannelNumber > 0) ?
+    MoveChannel(realChannel->ChannelNumber(), iChannelNumber, true) :
+    MoveChannel(realChannel->ChannelNumber(), size() - m_iHiddenChannels, true);
+
+  return bReturn;
 }
 
 bool CPVRChannelGroupInternal::RemoveFromGroup(CPVRChannel *channel)
@@ -173,14 +178,19 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(CPVRChannel *channel)
     return false;
 
   /* switch the hidden flag */
-  realChannel->SetHidden(true, true);
-  ++m_iHiddenChannels;
+  if (!realChannel->IsHidden())
+  {
+    realChannel->SetHidden(true, true);
+    ++m_iHiddenChannels;
 
-  /* renumber this list */
-  Renumber();
+    /* renumber this list */
+    Renumber();
 
-  /* and persist */
-  return Persist();
+    /* and persist */
+    return Persist();
+  }
+
+  return true;
 }
 
 bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb /* = true */)

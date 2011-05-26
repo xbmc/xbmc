@@ -369,6 +369,11 @@ namespace PVR
 
     void SetCachedChannelNumber(unsigned int iChannelNumber);
     bool CacheIcon(void);
+
+    /*!
+     * @brief Check whether an icon needs to be cached.
+     * @return True when a cache job has been scheduled, false otherwise.
+     */
     bool CheckCachedIcon(void);
 
   public:

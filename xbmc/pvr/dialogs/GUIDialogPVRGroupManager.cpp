@@ -191,10 +191,9 @@ bool CGUIDialogPVRGroupManager::ActionButtonUngroupedChannels(CGUIMessage &messa
       }
       else if (m_ungroupedChannels->GetFileCount() > 0)
       {
-        CFileItemPtr pItemGroup   = m_channelGroups->Get(m_iSelectedChannelGroup);
         CFileItemPtr pItemChannel = m_ungroupedChannels->Get(m_iSelectedUngroupedChannel);
-        ((CPVRChannelGroups *) g_PVRChannelGroups->Get(m_bIsRadio))->AddChannelToGroup(pItemChannel->GetPVRChannelInfoTag(), atoi(pItemGroup->m_strPath.c_str()));
-        Update();
+        if (m_selectedGroup->AddToGroup(pItemChannel->GetPVRChannelInfoTag()))
+          Update();
       }
     }
     bReturn = true;

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,31 +20,26 @@
  */
 
 #include "GUIDialogPVRChannelManager.h"
-#include "Application.h"
-#include "settings/GUISettings.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
-#include "storage/MediaManager.h"
-#include "pictures/Picture.h"
-#include "settings/Settings.h"
-#include "utils/log.h"
-#include "guilib/GUISpinControlEx.h"
-#include "guilib/GUIEditControl.h"
-#include "guilib/GUIRadioButtonControl.h"
-#include "guilib/GUIImage.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "dialogs/GUIDialogFileBrowser.h"
+
+#include "FileItem.h"
 #include "GUIDialogPVRGroupManager.h"
+#include "dialogs/GUIDialogFileBrowser.h"
+#include "dialogs/GUIDialogKeyboard.h"
+#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "dialogs/GUIDialogOK.h"
-#include "dialogs/GUIDialogKeyboard.h"
-
+#include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIEditControl.h"
+#include "guilib/GUIRadioButtonControl.h"
+#include "guilib/GUISpinControlEx.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
-#include "pvr/PVRDatabase.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/epg/PVREpgContainer.h"
 #include "pvr/addons/PVRClients.h"
+#include "settings/GUISettings.h"
+#include "settings/Settings.h"
+#include "storage/MediaManager.h"
 
 #define BUTTON_OK                 4
 #define BUTTON_APPLY              5
@@ -65,490 +60,515 @@
 using namespace std;
 using namespace PVR;
 
-CGUIDialogPVRChannelManager::CGUIDialogPVRChannelManager()
-    : CGUIDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER, "DialogPVRChannelManager.xml")
+CGUIDialogPVRChannelManager::CGUIDialogPVRChannelManager(void) :
+    CGUIDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER, "DialogPVRChannelManager.xml"),
+    m_bIsRadio(false),
+    m_channelItems(new CFileItemList)
 {
-  m_channelItems  = new CFileItemList;
-  m_bIsRadio      = false;
 }
 
-CGUIDialogPVRChannelManager::~CGUIDialogPVRChannelManager()
+CGUIDialogPVRChannelManager::~CGUIDialogPVRChannelManager(void)
 {
   delete m_channelItems;
 }
 
-bool CGUIDialogPVRChannelManager::OnAction(const CAction& action)
+bool CGUIDialogPVRChannelManager::OnActionClose(const CAction &action)
 {
-  int actionID = action.GetID();
-  if (actionID == ACTION_PREVIOUS_MENU || actionID == ACTION_CLOSE_DIALOG)
+  bool bReturn(false);
+  int iActionId = action.GetID();
+  if (iActionId == ACTION_PREVIOUS_MENU || iActionId == ACTION_CLOSE_DIALOG)
   {
     Close();
-    return true;
+    bReturn = true;
   }
-  else if (actionID == ACTION_MOVE_DOWN || actionID == ACTION_MOVE_UP ||
-           actionID == ACTION_PAGE_DOWN || actionID == ACTION_PAGE_UP)
+
+  return bReturn;
+}
+
+bool CGUIDialogPVRChannelManager::OnActionMove(const CAction &action)
+{
+  bool bReturn(false);
+  int iActionId = action.GetID();
+  if (GetFocusedControlID() == CONTROL_LIST_CHANNELS &&
+      (iActionId == ACTION_MOVE_DOWN || iActionId == ACTION_MOVE_UP ||
+       iActionId == ACTION_PAGE_DOWN || iActionId == ACTION_PAGE_UP))
   {
-    if (GetFocusedControlID() == CONTROL_LIST_CHANNELS)
+    bReturn = true;
+    if (!m_bMovingMode)
     {
-      if (!m_bMovingMode)
+      CGUIDialog::OnAction(action);
+      int iSelected = m_viewControl.GetSelectedItem();
+      if (iSelected != m_iSelected)
       {
-        CGUIDialog::OnAction(action);
-        int iSelected = m_viewControl.GetSelectedItem();
-        if (iSelected != m_iSelected)
-        {
-          m_iSelected = iSelected;
-          SetData(m_iSelected);
-        }
-        return true;
+        m_iSelected = iSelected;
+        SetData(m_iSelected);
       }
-      else
+    }
+    else
+    {
+      CStdString strNumber;
+      CGUIDialog::OnAction(action);
+
+      bool bMoveUp        = iActionId == ACTION_PAGE_UP || iActionId == ACTION_MOVE_UP;
+      unsigned int iLines = bMoveUp ? abs(m_iSelected - m_viewControl.GetSelectedItem()) : 1;
+      bool bOutOfBounds   = bMoveUp ? m_iSelected <= 0  : m_iSelected >= m_channelItems->Size() - 1;
+      if (bOutOfBounds)
       {
-        CStdString number;
-        CGUIDialog::OnAction(action);
-        if (actionID == ACTION_MOVE_UP)
-        {
-          unsigned int newSelect = m_iSelected == 0 ? m_channelItems->Size()-1 : m_iSelected == 0 ? m_iSelected : m_iSelected-1;
-          if (m_channelItems->Get(newSelect)->GetProperty("Number") != "-")
-          {
-            number.Format("%i", m_iSelected+1);
-            m_channelItems->Get(newSelect)->SetProperty("Number", number);
-            number.Format("%i", newSelect+1);
-            m_channelItems->Get(m_iSelected)->SetProperty("Number", number);
-          }
-          m_channelItems->Swap(newSelect, m_iSelected);
-          m_iSelected = newSelect;
-        }
-        else if (actionID == ACTION_MOVE_DOWN)
-        {
-          int newSelect = m_iSelected >= m_channelItems->Size()-1 ? 0 : m_iSelected+1;
-          if (m_channelItems->Get(newSelect)->GetProperty("Number") != "-")
-          {
-            number.Format("%i", m_iSelected+1);
-            m_channelItems->Get(newSelect)->SetProperty("Number", number);
-            number.Format("%i", newSelect+1);
-            m_channelItems->Get(m_iSelected)->SetProperty("Number", number);
-          }
-          m_channelItems->Swap(newSelect, m_iSelected);
-          m_iSelected = newSelect;
-        }
-        else if (actionID == ACTION_PAGE_UP)
-        {
-          unsigned int lines = m_iSelected-m_viewControl.GetSelectedItem();
-          for (unsigned int i = 0; i < lines; i++)
-          {
-            unsigned int newSelect = m_iSelected == 0 ? m_channelItems->Size()-1 : m_iSelected == 0 ? m_iSelected : m_iSelected-1;
-            if (m_channelItems->Get(newSelect)->GetProperty("Number") != "-")
-            {
-              number.Format("%i", m_iSelected+1);
-              m_channelItems->Get(newSelect)->SetProperty("Number", number);
-              number.Format("%i", newSelect+1);
-              m_channelItems->Get(m_iSelected)->SetProperty("Number", number);
-            }
-            m_channelItems->Swap(newSelect, m_iSelected);
-            m_iSelected = newSelect;
-          }
-        }
-        else if (actionID == ACTION_PAGE_DOWN)
-        {
-          unsigned int lines = m_viewControl.GetSelectedItem()-m_iSelected;
-          for (unsigned int i = 0; i < lines; i++)
-          {
-            int newSelect = m_iSelected >= m_channelItems->Size()-1 ? 0 : m_iSelected+1;
-            if (m_channelItems->Get(newSelect)->GetProperty("Number") != "-")
-            {
-              number.Format("%i", m_iSelected+1);
-              m_channelItems->Get(newSelect)->SetProperty("Number", number);
-              number.Format("%i", newSelect+1);
-              m_channelItems->Get(m_iSelected)->SetProperty("Number", number);
-            }
-            m_channelItems->Swap(newSelect, m_iSelected);
-            m_iSelected = newSelect;
-          }
-        }
-        m_viewControl.SetItems(*m_channelItems);
-        m_viewControl.SetSelectedItem(m_iSelected);
-        return true;
+        bMoveUp = !bMoveUp;
+        iLines  = m_channelItems->Size() - 1;
       }
+
+      for (unsigned int iLine = 0; iLine < iLines; iLine++)
+      {
+        unsigned int iNewSelect = bMoveUp ? m_iSelected - 1 : m_iSelected + 1;
+        if (m_channelItems->Get(iNewSelect)->GetProperty("Number") != "-")
+        {
+          strNumber.Format("%i", m_iSelected+1);
+          m_channelItems->Get(iNewSelect)->SetProperty("Number", strNumber);
+          strNumber.Format("%i", iNewSelect+1);
+          m_channelItems->Get(m_iSelected)->SetProperty("Number", strNumber);
+        }
+        m_channelItems->Swap(iNewSelect, m_iSelected);
+        m_iSelected = iNewSelect;
+      }
+
+      m_viewControl.SetItems(*m_channelItems);
+      m_viewControl.SetSelectedItem(m_iSelected);
     }
   }
 
-  return CGUIDialog::OnAction(action);
+  return bReturn;
+}
+
+bool CGUIDialogPVRChannelManager::OnAction(const CAction& action)
+{
+  return OnActionClose(action) ||
+      OnActionMove(action) ||
+      CGUIDialog::OnAction(action);
+}
+
+bool CGUIDialogPVRChannelManager::OnMessageInit(CGUIMessage &message)
+{
+  CGUIWindow::OnMessage(message);
+  m_iSelected = 0;
+  m_bIsRadio = false;
+  m_bMovingMode = false;
+  m_bContainsChanges = false;
+  SetProperty("IsRadio", "");
+  Update();
+  SetData(m_iSelected);
+
+  return true;
+}
+
+bool CGUIDialogPVRChannelManager::OnClickListChannels(CGUIMessage &message)
+{
+  if (!m_bMovingMode)
+  {
+    int iAction = message.GetParam1();
+    int iItem = m_viewControl.GetSelectedItem();
+
+    /* Check file item is in list range and get his pointer */
+    if (iItem < 0 || iItem >= (int)m_channelItems->Size()) return true;
+
+    /* Process actions */
+    if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
+    {
+      /* Show Contextmenu */
+      OnPopupMenu(iItem);
+
+      return true;
+    }
+  }
+  else
+  {
+    CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
+    if (pItem)
+    {
+      pItem->SetProperty("Changed", true);
+      pItem->Select(false);
+      m_bMovingMode = false;
+      m_bContainsChanges = true;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool CGUIDialogPVRChannelManager::OnClickButtonOK(CGUIMessage &message)
+{
+  SaveList();
+  Close();
+  return true;
+}
+
+bool CGUIDialogPVRChannelManager::OnClickButtonApply(CGUIMessage &message)
+{
+  SaveList();
+  return true;
+}
+
+bool CGUIDialogPVRChannelManager::OnClickButtonCancel(CGUIMessage &message)
+{
+  Close();
+  return true;
+}
+
+bool CGUIDialogPVRChannelManager::OnClickButtonRadioTV(CGUIMessage &message)
+{
+  if (m_bContainsChanges)
+  {
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    if (!pDialog)
+      return true;
+
+    pDialog->SetHeading(20052);
+    pDialog->SetLine(0, "");
+    pDialog->SetLine(1, 19212);
+    pDialog->SetLine(2, 20103);
+    pDialog->DoModal();
+
+    if (pDialog->IsConfirmed())
+      SaveList();
+  }
+
+  m_iSelected = 0;
+  m_bMovingMode = false;
+  m_bContainsChanges = false;
+  m_bIsRadio = !m_bIsRadio;
+  SetProperty("IsRadio", m_bIsRadio ? "true" : "");
+  Update();
+  SetData(m_iSelected);
+  return true;
+}
+
+bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive(CGUIMessage &message)
+{
+  CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_ACTIVE);
+  if (pRadioButton)
+  {
+    CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
+    if (pItem)
+    {
+      pItem->SetProperty("Changed", true);
+      pItem->SetProperty("ActiveChannel", pRadioButton->IsSelected());
+      m_bContainsChanges = true;
+      Renumber();
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool CGUIDialogPVRChannelManager::OnClickButtonEditName(CGUIMessage &message)
+{
+  CGUIEditControl *pEdit = (CGUIEditControl *)GetControl(EDIT_NAME);
+  if (pEdit)
+  {
+    CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
+    if (pItem)
+    {
+      pItem->SetProperty("Changed", true);
+      pItem->SetProperty("Name", pEdit->GetLabel2());
+      m_bContainsChanges = true;
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
+{
+  CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
+  if (!pItem)
+    return false;
+  if (g_settings.GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+    return false;
+  else if (!g_passwordManager.IsMasterLockUnlocked(true))
+    return false;
+
+  // setup our thumb list
+  CFileItemList items;
+
+  // add the current thumb, if available
+  if (!pItem->GetProperty("Icon").IsEmpty())
+  {
+    CFileItemPtr current(new CFileItem("thumb://Current", false));
+    current->SetThumbnailImage(pItem->GetPVRChannelInfoTag()->IconPath());
+    current->SetLabel(g_localizeStrings.Get(20016));
+    items.Add(current);
+  }
+  else if (pItem->HasThumbnail())
+  { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
+    CFileItemPtr current(new CFileItem("thumb://Current", false));
+    current->SetThumbnailImage(pItem->GetThumbnailImage());
+    current->SetLabel(g_localizeStrings.Get(20016));
+    items.Add(current);
+  }
+
+  // and add a "no thumb" entry as well
+  CFileItemPtr nothumb(new CFileItem("thumb://None", false));
+  nothumb->SetIconImage(pItem->GetIconImage());
+  nothumb->SetLabel(g_localizeStrings.Get(20018));
+  items.Add(nothumb);
+
+  CStdString strThumb;
+  VECSOURCES shares;
+  if (g_guiSettings.GetString("pvrmenu.iconpath") != "")
+  {
+    CMediaSource share1;
+    share1.strPath = g_guiSettings.GetString("pvrmenu.iconpath");
+    share1.strName = g_localizeStrings.Get(19018);
+    shares.push_back(share1);
+  }
+  g_mediaManager.GetLocalDrives(shares);
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(1030), strThumb))
+    return false;
+
+  if (strThumb == "thumb://Current")
+    return true;
+
+  if (strThumb == "thumb://None")
+    strThumb = "";
+
+  pItem->SetProperty("Icon", strThumb);
+  pItem->SetProperty("Changed", true);
+  m_bContainsChanges = true;
+  return true;
+}
+
+bool CGUIDialogPVRChannelManager::OnClickButtonUseEPG(CGUIMessage &message)
+{
+  CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_USEEPG);
+  if (pRadioButton)
+  {
+    CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
+    if (pItem)
+    {
+      pItem->SetProperty("Changed", true);
+      pItem->SetProperty("UseEPG", pRadioButton->IsSelected());
+      m_bContainsChanges = true;
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool CGUIDialogPVRChannelManager::OnClickEPGSourceSpin(CGUIMessage &message)
+{
+  // TODO: Add EPG scraper support
+  return true;
+//  CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);
+//  if (pSpin)
+//  {
+//    CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
+//    if (pItem)
+//    {
+//      pItem->SetProperty("EPGSource", (int)0);
+//      pItem->SetProperty("Changed", true);
+//      m_bContainsChanges = true;
+//      return true;
+//    }
+//  }
+}
+
+bool CGUIDialogPVRChannelManager::OnClickButtonGroupManager(CGUIMessage &message)
+{
+  /* Load group manager dialog */
+  CGUIDialogPVRGroupManager* pDlgInfo = (CGUIDialogPVRGroupManager*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GROUP_MANAGER);
+  if (!pDlgInfo)
+    return false;
+
+  pDlgInfo->SetRadio(m_bIsRadio);
+
+  /* Open dialog window */
+  pDlgInfo->DoModal();
+
+  Update();
+  return true;
+}
+
+bool CGUIDialogPVRChannelManager::OnClickButtonEditChannel(CGUIMessage &message)
+{
+  CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
+  if (!pItem)
+    return false;
+
+  if (pItem->GetPropertyBOOL("Virtual"))
+  {
+    CStdString strURL = pItem->GetProperty("StreamURL");
+    if (CGUIDialogKeyboard::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
+      pItem->SetProperty("StreamURL", strURL);
+    return true;
+  }
+
+  CGUIDialogOK::ShowAndGetInput(19033,19038,0,0);
+  return true;
+}
+
+bool CGUIDialogPVRChannelManager::OnClickButtonDeleteChannel(CGUIMessage &message)
+{
+  CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
+  if (!pItem)
+    return false;
+
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  if (!pDialog)
+    return true;
+
+  pDialog->SetHeading(19211);
+  pDialog->SetLine(0, "");
+  pDialog->SetLine(1, 750);
+  pDialog->SetLine(2, "");
+  pDialog->DoModal();
+
+  if (pDialog->IsConfirmed())
+  {
+    if (pItem->GetPropertyBOOL("Virtual"))
+    {
+      pItem->GetPVRChannelInfoTag()->SetVirtual(true, true);
+      m_channelItems->Remove(m_iSelected);
+      m_viewControl.SetItems(*m_channelItems);
+      Renumber();
+      return true;
+    }
+    CGUIDialogOK::ShowAndGetInput(19033,19038,0,0);
+  }
+  return true;
+}
+
+bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
+{
+  std::vector<long> clients;
+
+  CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (!pDlgSelect)
+    return false;
+
+  pDlgSelect->SetHeading(19213); // Select Client
+  pDlgSelect->Add(g_localizeStrings.Get(19209));
+  clients.push_back(XBMC_VIRTUAL_CLIENTID);
+
+  CLIENTMAP clientMap;
+  if (g_PVRClients->GetActiveClients(&clientMap) > 0)
+  {
+    CLIENTMAPITR itr;
+    for (itr = clientMap.begin() ; itr != clientMap.end(); itr++)
+    {
+      clients.push_back((*itr).first);
+      pDlgSelect->Add((*itr).second->Name());
+    }
+  }
+  pDlgSelect->DoModal();
+
+  int selection = pDlgSelect->GetSelectedLabel();
+  if (selection >= 0 && selection <= (int) clients.size())
+  {
+    int clientID = clients[selection];
+    if (clientID == XBMC_VIRTUAL_CLIENTID)
+    {
+      CStdString strURL = "";
+      if (CGUIDialogKeyboard::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
+      {
+        if (!strURL.IsEmpty())
+        {
+          CPVRChannel *newchannel = new CPVRChannel(m_bIsRadio);
+          newchannel->SetChannelName(g_localizeStrings.Get(19204));
+          newchannel->SetEPGEnabled(false);
+          newchannel->SetVirtual(true);
+          newchannel->SetStreamURL(strURL);
+          newchannel->SetClientID(XBMC_VIRTUAL_CLIENTID);
+          g_PVRChannelGroups->GetGroupAll(m_bIsRadio)->AddToGroup(newchannel);
+          newchannel->Persist();
+
+          CFileItemPtr channel(new CFileItem(newchannel));
+          if (channel)
+          {
+            channel->SetProperty("ActiveChannel", true);
+            channel->SetProperty("Name", g_localizeStrings.Get(19204));
+            channel->SetProperty("UseEPG", false);
+            channel->SetProperty("Icon", newchannel->IconPath());
+            channel->SetProperty("EPGSource", (int)0);
+            channel->SetProperty("ClientName", g_localizeStrings.Get(19209));
+
+            m_channelItems->AddFront(channel, m_iSelected);
+            m_viewControl.SetItems(*m_channelItems);
+            Renumber();
+          }
+        }
+      }
+    }
+    else
+    {
+      CGUIDialogOK::ShowAndGetInput(19033,19038,0,0);
+    }
+  }
+  return true;
+}
+
+bool CGUIDialogPVRChannelManager::OnMessageClick(CGUIMessage &message)
+{
+  int iControl = message.GetSenderId();
+  switch(iControl)
+  {
+  case CONTROL_LIST_CHANNELS:
+    return OnClickListChannels(message);
+  case BUTTON_OK:
+    return OnClickButtonOK(message);
+  case BUTTON_APPLY:
+    return OnClickButtonApply(message);
+  case BUTTON_CANCEL:
+    return OnClickButtonCancel(message);
+  case BUTTON_RADIO_TV:
+    return OnClickButtonRadioTV(message);
+  case RADIOBUTTON_ACTIVE:
+    return OnClickButtonRadioActive(message);
+  case EDIT_NAME:
+    return OnClickButtonEditName(message);
+  case BUTTON_CHANNEL_LOGO:
+    return OnClickButtonChannelLogo(message);
+  case RADIOBUTTON_USEEPG:
+    return OnClickButtonUseEPG(message);
+  case SPIN_EPGSOURCE_SELECTION:
+    return OnClickEPGSourceSpin(message);
+  case BUTTON_GROUP_MANAGER:
+    return OnClickButtonGroupManager(message);
+  case BUTTON_EDIT_CHANNEL:
+    return OnClickButtonEditChannel(message);
+  case BUTTON_DELETE_CHANNEL:
+    return OnClickButtonDeleteChannel(message);
+  case BUTTON_NEW_CHANNEL:
+    return OnClickButtonNewChannel(message);
+  default:
+    return false;
+  }
 }
 
 bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
 {
-  unsigned int iControl = 0;
   unsigned int iMessage = message.GetMessage();
 
   switch (iMessage)
   {
     case GUI_MSG_WINDOW_DEINIT:
-    {
       Clear();
-    }
-    break;
-
+      break;
     case GUI_MSG_WINDOW_INIT:
-    {
-      CGUIWindow::OnMessage(message);
-      m_iSelected = 0;
-      m_bIsRadio = false;
-      m_bMovingMode = false;
-      m_bContainsChanges = false;
-      SetProperty("IsRadio", "");
-      Update();
-      SetData(m_iSelected);
-      return true;
-    }
-    break;
-
+      return OnMessageInit(message);
     case GUI_MSG_CLICKED:
-    {
-      iControl = message.GetSenderId();
-      if (iControl == CONTROL_LIST_CHANNELS)
-      {
-        if (!m_bMovingMode)
-        {
-          int iAction = message.GetParam1();
-          int iItem = m_viewControl.GetSelectedItem();
-
-          /* Check file item is in list range and get his pointer */
-          if (iItem < 0 || iItem >= (int)m_channelItems->Size()) return true;
-
-          /* Process actions */
-          if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
-          {
-            /* Show Contextmenu */
-            OnPopupMenu(iItem);
-          }
-        }
-        else
-        {
-          CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
-          if (pItem)
-          {
-            pItem->SetProperty("Changed", true);
-            pItem->Select(false);
-            m_bMovingMode = false;
-            m_bContainsChanges = true;
-            return true;
-          }
-          else
-            return false;
-        }
-      }
-      else if (iControl == BUTTON_OK)
-      {
-        SaveList();
-        Close();
-        return true;
-      }
-      else if (iControl == BUTTON_APPLY)
-      {
-        SaveList();
-        return true;
-      }
-      else if (iControl == BUTTON_CANCEL)
-      {
-        Close();
-        return true;
-      }
-      else if (iControl == BUTTON_RADIO_TV)
-      {
-        if (m_bContainsChanges)
-        {
-          // prompt user for confirmation of channel record
-          CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-          if (!pDialog)
-            return true;
-
-          pDialog->SetHeading(20052);
-          pDialog->SetLine(0, "");
-          pDialog->SetLine(1, 19212);
-          pDialog->SetLine(2, 20103);
-          pDialog->DoModal();
-
-          if (pDialog->IsConfirmed())
-            SaveList();
-        }
-
-        m_iSelected = 0;
-        m_bMovingMode = false;
-        m_bContainsChanges = false;
-        m_bIsRadio = !m_bIsRadio;
-        SetProperty("IsRadio", m_bIsRadio ? "true" : "");
-        Update();
-        SetData(m_iSelected);
-        return true;
-      }
-      else if (iControl == RADIOBUTTON_ACTIVE)
-      {
-        CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_ACTIVE);
-        if (pRadioButton)
-        {
-          CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
-          if (pItem)
-          {
-            pItem->SetProperty("Changed", true);
-            pItem->SetProperty("ActiveChannel", pRadioButton->IsSelected());
-            m_bContainsChanges = true;
-            Renumber();
-          }
-        }
-      }
-      else if (iControl == EDIT_NAME)
-      {
-        CGUIEditControl *pEdit = (CGUIEditControl *)GetControl(EDIT_NAME);
-        if (pEdit)
-        {
-          CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
-          if (pItem)
-          {
-            pItem->SetProperty("Changed", true);
-            pItem->SetProperty("Name", pEdit->GetLabel2());
-            m_bContainsChanges = true;
-          }
-        }
-      }
-      else if (iControl == BUTTON_CHANNEL_LOGO)
-      {
-        CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
-
-        if (!pItem)
-          return false;
-        if (g_settings.GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
-          return false;
-        else if (!g_passwordManager.IsMasterLockUnlocked(true))
-          return false;
-
-        // setup our thumb list
-        CFileItemList items;
-
-        // add the current thumb, if available
-        if (!pItem->GetProperty("Icon").IsEmpty())
-        {
-          CFileItemPtr current(new CFileItem("thumb://Current", false));
-          current->SetThumbnailImage(pItem->GetPVRChannelInfoTag()->IconPath());
-          current->SetLabel(g_localizeStrings.Get(20016));
-          items.Add(current);
-        }
-        else if (pItem->HasThumbnail())
-        { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
-          CFileItemPtr current(new CFileItem("thumb://Current", false));
-          current->SetThumbnailImage(pItem->GetThumbnailImage());
-          current->SetLabel(g_localizeStrings.Get(20016));
-          items.Add(current);
-        }
-
-        // and add a "no thumb" entry as well
-        CFileItemPtr nothumb(new CFileItem("thumb://None", false));
-        nothumb->SetIconImage(pItem->GetIconImage());
-        nothumb->SetLabel(g_localizeStrings.Get(20018));
-        items.Add(nothumb);
-
-        CStdString strThumb;
-        VECSOURCES shares;
-        if (g_guiSettings.GetString("pvrmenu.iconpath") != "")
-        {
-          CMediaSource share1;
-          share1.strPath = g_guiSettings.GetString("pvrmenu.iconpath");
-          share1.strName = g_localizeStrings.Get(19018);
-          shares.push_back(share1);
-        }
-        g_mediaManager.GetLocalDrives(shares);
-        if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(1030), strThumb))
-          return false;
-
-        if (strThumb == "thumb://Current")
-          return true;
-
-        if (strThumb == "thumb://None")
-          strThumb = "";
-
-        pItem->SetProperty("Icon", strThumb);
-        pItem->SetProperty("Changed", true);
-        m_bContainsChanges = true;
-        return true;
-      }
-      else if (iControl == RADIOBUTTON_USEEPG)
-      {
-        CGUIRadioButtonControl *pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_USEEPG);
-        if (pRadioButton)
-        {
-          CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
-          if (pItem)
-          {
-            pItem->SetProperty("Changed", true);
-            pItem->SetProperty("UseEPG", pRadioButton->IsSelected());
-            m_bContainsChanges = true;
-          }
-        }
-      }
-      else if (iControl == SPIN_EPGSOURCE_SELECTION)
-      {
-        /// TODO: Add EPG scraper support
-        return true;
-        CGUISpinControlEx *pSpin = (CGUISpinControlEx *)GetControl(SPIN_EPGSOURCE_SELECTION);
-        if (pSpin)
-        {
-          CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
-          if (pItem)
-          {
-            pItem->SetProperty("EPGSource", (int)0);
-            pItem->SetProperty("Changed", true);
-            m_bContainsChanges = true;
-            return true;
-          }
-        }
-      }
-      else if (iControl == BUTTON_GROUP_MANAGER)
-      {
-        /* Load group manager dialog */
-        CGUIDialogPVRGroupManager* pDlgInfo = (CGUIDialogPVRGroupManager*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GROUP_MANAGER);
-        if (!pDlgInfo)
-          return false;
-
-        pDlgInfo->SetRadio(m_bIsRadio);
-
-        /* Open dialog window */
-        pDlgInfo->DoModal();
-
-        return true;
-      }
-      else if (iControl == BUTTON_EDIT_CHANNEL)
-      {
-        CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
-        if (!pItem)
-          return false;
-
-        if (pItem->GetPropertyBOOL("Virtual"))
-        {
-          CStdString strURL = pItem->GetProperty("StreamURL");
-          if (CGUIDialogKeyboard::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
-            pItem->SetProperty("StreamURL", strURL);
-          return true;
-        }
-
-        CGUIDialogOK::ShowAndGetInput(19033,19038,0,0);
-        return true;
-      }
-      else if (iControl == BUTTON_DELETE_CHANNEL)
-      {
-        CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
-        if (!pItem)
-          return false;
-
-        // prompt user for confirmation of channel record
-        CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-        if (!pDialog)
-          return true;
-
-        pDialog->SetHeading(19211);
-        pDialog->SetLine(0, "");
-        pDialog->SetLine(1, 750);
-        pDialog->SetLine(2, "");
-        pDialog->DoModal();
-
-        if (pDialog->IsConfirmed())
-        {
-          if (pItem->GetPropertyBOOL("Virtual"))
-          {
-            if (CPVRDatabase *database = OpenPVRDatabase())
-            {
-              database->Delete(*pItem->GetPVRChannelInfoTag());
-              database->Close();
-            }
-
-            m_channelItems->Remove(m_iSelected);
-            m_viewControl.SetItems(*m_channelItems);
-            Renumber();
-            return true;
-          }
-          CGUIDialogOK::ShowAndGetInput(19033,19038,0,0);
-        }
-        return true;
-      }
-      else if (iControl == BUTTON_NEW_CHANNEL)
-      {
-        std::vector<long> clients;
-
-        CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
-        if (!pDlgSelect)
-          return false;
-
-        pDlgSelect->SetHeading(19213); // Select Client
-        pDlgSelect->Add(g_localizeStrings.Get(19209));
-        clients.push_back(XBMC_VIRTUAL_CLIENTID);
-
-        CLIENTMAP clientMap;
-        if (g_PVRClients->GetActiveClients(&clientMap) > 0)
-        {
-          CLIENTMAPITR itr;
-          for (itr = clientMap.begin() ; itr != clientMap.end(); itr++)
-          {
-            clients.push_back((*itr).first);
-            pDlgSelect->Add((*itr).second->Name());
-          }
-        }
-        pDlgSelect->DoModal();
-
-        int selection = pDlgSelect->GetSelectedLabel();
-        if (selection >= 0 && selection <= (int) clients.size())
-        {
-          int clientID = clients[selection];
-          if (clientID == XBMC_VIRTUAL_CLIENTID)
-          {
-            CStdString strURL = "";
-            if (CGUIDialogKeyboard::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
-            {
-              if (!strURL.IsEmpty())
-              {
-                CPVRChannel newchannel(m_bIsRadio);
-                newchannel.SetChannelName(g_localizeStrings.Get(19204));
-                newchannel.SetEPGEnabled(false);
-                newchannel.SetVirtual(true);
-                newchannel.SetStreamURL(strURL);
-                newchannel.SetClientID(XBMC_VIRTUAL_CLIENTID);
-
-                CPVRDatabase *database = OpenPVRDatabase();
-                if (!database)
-                  return false;
-
-                database->Persist(newchannel);
-                database->Close();
-
-                CFileItemPtr channel(new CFileItem(newchannel));
-                if (channel)
-                {
-                  channel->SetProperty("ActiveChannel", true);
-                  channel->SetProperty("Name", g_localizeStrings.Get(19204));
-                  channel->SetProperty("UseEPG", false);
-                  channel->SetProperty("Icon", newchannel.IconPath());
-                  channel->SetProperty("EPGSource", (int)0);
-                  channel->SetProperty("ClientName", g_localizeStrings.Get(19209));
-
-                  m_channelItems->AddFront(channel, m_iSelected);
-                  m_viewControl.SetItems(*m_channelItems);
-                  Renumber();
-                }
-              }
-            }
-          }
-          else
-          {
-            CGUIDialogOK::ShowAndGetInput(19033,19038,0,0);
-          }
-        }
-        return true;
-      }
-    }
-    break;
+      return OnMessageClick(message);
   }
 
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogPVRChannelManager::OnWindowLoaded()
+void CGUIDialogPVRChannelManager::OnWindowLoaded(void)
 {
   CGUIDialog::OnWindowLoaded();
 
@@ -557,7 +577,7 @@ void CGUIDialogPVRChannelManager::OnWindowLoaded()
   m_viewControl.AddView(GetControl(CONTROL_LIST_CHANNELS));
 }
 
-void CGUIDialogPVRChannelManager::OnWindowUnload()
+void CGUIDialogPVRChannelManager::OnWindowUnload(void)
 {
   CGUIDialog::OnWindowUnload();
   m_viewControl.Reset();
@@ -634,7 +654,6 @@ void CGUIDialogPVRChannelManager::SetData(int iItem)
   CFileItemPtr pItem = m_channelItems->Get(iItem);
   if (!pItem)
     return;
-//  CPVRChannel *infotag = pItem->GetPVRChannelInfoTag();
 
   pEdit = (CGUIEditControl *)GetControl(EDIT_NAME);
   if (pEdit)
@@ -708,21 +727,59 @@ void CGUIDialogPVRChannelManager::Update()
   g_graphicsContext.Unlock();
 }
 
-void CGUIDialogPVRChannelManager::Clear()
+void CGUIDialogPVRChannelManager::Clear(void)
 {
   m_viewControl.Clear();
   m_channelItems->Clear();
 }
 
-void CGUIDialogPVRChannelManager::SaveList() // XXX investigate: renumbering doesn't work
+bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannelGroup *group, unsigned int *iChannelNumber)
+{
+  if (!pItem || !pItem->HasPVRChannelInfoTag())
+    return false;
+
+  /* get the real channel from the group */
+  CPVRChannel *channel = (CPVRChannel *) group->GetByUniqueID(pItem->GetPVRChannelInfoTag()->UniqueID());
+  if (!channel)
+    return false;
+
+  /* get values from the form */
+  bool bHidden              = !pItem->GetPropertyBOOL("ActiveChannel");
+  bool bVirtual             = pItem->GetPropertyBOOL("Virtual");
+  bool bEPGEnabled          = pItem->GetPropertyBOOL("UseEPG");
+  int iEPGSource            = pItem->GetPropertyInt("EPGSource");
+  CStdString strChannelName = pItem->GetProperty("Name");
+  CStdString strIconPath    = pItem->GetProperty("Icon");
+  CStdString strStreamURL   = pItem->GetProperty("StreamURL");
+
+  channel->SetChannelName(strChannelName);
+  channel->SetHidden(bHidden);
+  channel->SetIconPath(strIconPath);
+  if (bVirtual)
+    channel->SetStreamURL(strStreamURL);
+  if (iEPGSource == 0)
+    channel->SetEPGScraper("client");
+  // TODO add other scrapers
+  channel->SetEPGEnabled(bEPGEnabled);
+
+  /* set new values in the channel tag */
+  if (bHidden)
+  {
+    group->SortByChannelNumber(); // or previous changes will be overwritten
+    group->RemoveFromGroup(channel);
+  }
+  else
+    group->SetChannelNumber(channel, ++(*iChannelNumber));
+
+  return true;
+}
+
+void CGUIDialogPVRChannelManager::SaveList(void)
 {
   if (!m_bContainsChanges)
    return;
 
-  CPVRDatabase *database = OpenPVRDatabase();
-  if (!database)
-    return;
-
+  /* display the progress dialog */
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   pDlgProgress->SetHeading(190);
   pDlgProgress->SetLine(0, "");
@@ -732,90 +789,48 @@ void CGUIDialogPVRChannelManager::SaveList() // XXX investigate: renumbering doe
   pDlgProgress->Progress();
   pDlgProgress->SetPercentage(0);
 
-  int iActiveChannels = 0;
+  /* persist all channels */
+  unsigned int iNextChannelNumber(0);
+  CPVRChannelGroup *group = g_PVRChannelGroups->GetGroupAll(m_bIsRadio);
+  if (!group)
+    return;
   for (int iListPtr = 0; iListPtr < m_channelItems->Size(); iListPtr++)
   {
-    if (m_channelItems->Get(iListPtr)->GetPropertyBOOL("ActiveChannel"))
-      ++iActiveChannels;
-  }
-
-//  int iNextChannelNumber = 1;
-//  int iNextHiddenChannelNumber = iActiveChannels + 1;
-  bool bHasChangedItems = false;
-
-  for (int iListPtr = 0; iListPtr < m_channelItems->Size(); iListPtr++)
-  {
-    bool bChanged = false;
     CFileItemPtr pItem = m_channelItems->Get(iListPtr);
-    if (!pItem)
-      continue;
-    CPVRChannel *channel = pItem->GetPVRChannelInfoTag();
+    PersistChannel(pItem, group, &iNextChannelNumber);
 
-    if (!channel)
-    {
-      //TODO add new channel
-      continue;
-    }
-
-    /* get values from the form */
-    bool bHidden              = !pItem->GetPropertyBOOL("ActiveChannel");
-    bool bVirtual             = pItem->GetPropertyBOOL("Virtual");
-    bool bEPGEnabled          = pItem->GetPropertyBOOL("UseEPG");
-    int iEPGSource            = pItem->GetPropertyInt("EPGSource");
-    CStdString strChannelName = pItem->GetProperty("Name");
-    CStdString strIconPath    = pItem->GetProperty("Icon");
-    CStdString strStreamURL   = pItem->GetProperty("StreamURL");
-
-    /* set new values in the channel tag */
-// TODO
-//    if (bHidden)
-//      bChanged = channel->SetChannelNumber(iNextHiddenChannelNumber++) || bChanged;
-//    else
-//      bChanged = channel->SetChannelNumber(iNextChannelNumber++) || bChanged;
-    bChanged = channel->SetChannelName(strChannelName) || bChanged;
-    bChanged = channel->SetHidden(bHidden) || bChanged;
-    bChanged = channel->SetIconPath(strIconPath) || bChanged;
-    if (bVirtual)
-      bChanged = channel->SetStreamURL(strStreamURL) || bChanged;
-
-    if (iEPGSource == 0)
-      bChanged = channel->SetEPGScraper("client") || bChanged;
-    // TODO add other scrapers
-    bChanged = channel->SetEPGEnabled(bEPGEnabled) || bChanged;
-
-    if (bChanged)
-    {
-      bHasChangedItems = true;
-      channel->Persist(true);
-    }
-
-    pItem->SetProperty("Changed", false);
     pDlgProgress->SetPercentage(iListPtr * 100 / m_channelItems->Size());
   }
 
-  if (bHasChangedItems)
-  {
-    database->CommitInsertQueries();
-    g_PVRManager.Start(); // XXX not a nice way to refresh the channels, but works for now
-  }
-
-  database->Close();
-
+  group->SortByChannelNumber();
+  group->Persist();
+  group->ResetChannelNumberCache();
   m_bContainsChanges = false;
+  SetItemsUnchanged();
   pDlgProgress->Close();
 }
 
-void CGUIDialogPVRChannelManager::Renumber()
+void CGUIDialogPVRChannelManager::SetItemsUnchanged(void)
 {
-  int number = 1;
+  for (int iItemPtr = 0; iItemPtr < m_channelItems->Size(); iItemPtr++)
+  {
+    CFileItemPtr pItem = m_channelItems->Get(iItemPtr);
+    if (pItem)
+      pItem->SetProperty("Changed", false);
+  }
+}
+
+void CGUIDialogPVRChannelManager::Renumber(void)
+{
+  int iNextChannelNumber(0);
   CStdString strNumber;
   CFileItemPtr pItem;
-  for (int i = 0; i < m_channelItems->Size(); i++)
+  for (int iChannelPtr = 0; iChannelPtr < m_channelItems->Size(); iChannelPtr++)
   {
-    pItem = m_channelItems->Get(i);
+    pItem = m_channelItems->Get(iChannelPtr);
     if (pItem->GetPropertyBOOL("ActiveChannel"))
     {
-      strNumber.Format("%i", number++);
+      strNumber.Format("%i", ++iNextChannelNumber);
       pItem->SetProperty("Number", strNumber);
     }
     else

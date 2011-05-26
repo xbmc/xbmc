@@ -45,22 +45,6 @@ void Tokenize(const string& str, vector<string>& tokens, const string& delimiter
   }
 }
 
-//time_t GetUTCdifftime(void)
-//{
-//  // Determine time difference between UTC and localtime
-//  time_t rawtime;
-//  struct tm* timeinfo;
-//  time_t local;
-//  time_t gm;
-//
-//  time( &rawtime ); // this is already localtime???
-//  timeinfo = localtime ( &rawtime );
-//  local = mktime(timeinfo);
-//  timeinfo = gmtime ( &rawtime );
-//  gm = mktime(timeinfo);
-//
-//  return(local - gm);
-//}
 
 std::string WStringToString(const std::wstring& s)
 {

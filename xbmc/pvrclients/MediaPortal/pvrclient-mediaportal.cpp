@@ -42,6 +42,12 @@ using namespace std;
 /* Globals */
 int g_iTVServerXBMCBuild = 0;
 
+/* TVServerXBMC plugin supported versions */
+#define TVSERVERXBMC_MIN_VERSION_STRING         "1.1.0.70"
+#define TVSERVERXBMC_MIN_VERSION_BUILD          70
+#define TVSERVERXBMC_RECOMMENDED_VERSION_STRING "1.1.x.104"
+#define TVSERVERXBMC_RECOMMENDED_VERSION_BUILD  104
+
 /************************************************************/
 /** Class interface */
 
@@ -185,9 +191,10 @@ bool cPVRClientMediaPortal::Connect()
       }
 
       // Check for the minimal requirement: 1.1.0.70
-      if( g_iTVServerXBMCBuild < 70 ) //major < 1 || minor < 1 || revision < 0 || build < 70
+      if( g_iTVServerXBMCBuild < TVSERVERXBMC_MIN_VERSION_BUILD ) //major < 1 || minor < 1 || revision < 0 || build < 70
       {
-        XBMC->Log(LOG_ERROR, "Your TVServerXBMC version '%s' is too old. Please upgrade to 1.1.0.70 or higher!", fields[1].c_str());
+        XBMC->Log(LOG_ERROR, "Your TVServerXBMC version v%s is too old. Please upgrade to v%s or higher!", fields[1].c_str(), TVSERVERXBMC_MIN_VERSION_STRING);
+        XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(30050), fields[1].c_str(), TVSERVERXBMC_MIN_VERSION_STRING);
         XBMC->QueueNotification(QUEUE_ERROR, "Your TVServerXBMC version '%s' is too old. Please upgrade to 1.1.0.70 or higher!", fields[1].c_str());
         return false;
       }
@@ -196,15 +203,16 @@ bool cPVRClientMediaPortal::Connect()
         XBMC->Log(LOG_INFO, "Your TVServerXBMC version is '%s'", fields[1].c_str());
         
         // Advice to upgrade:
-        if( g_iTVServerXBMCBuild < 104 )
+        if( g_iTVServerXBMCBuild < TVSERVERXBMC_RECOMMENDED_VERSION_BUILD )
         {
-          XBMC->Log(LOG_INFO, "It is adviced to upgrade your TVServerXBMC version '%s' to 1.1.3.104 or higher!", fields[1].c_str());
+          XBMC->Log(LOG_INFO, "It is adviced to upgrade your TVServerXBMC version v%s to v%s or higher!", fields[1].c_str(), TVSERVERXBMC_RECOMMENDED_VERSION_STRING);
         }
       }
     }
     else
     {
-      XBMC->Log(LOG_ERROR, "Your TVServerXBMC version is too old. Please upgrade.");
+      XBMC->Log(LOG_ERROR, "Your TVServerXBMC version is too old. Please upgrade to v%s or higher!", TVSERVERXBMC_MIN_VERSION_STRING);
+      XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(30051), TVSERVERXBMC_MIN_VERSION_STRING);
       XBMC->QueueNotification(QUEUE_ERROR, "Your TVServerXBMC version is too old. Please upgrade to 1.1.0.70 or higher!");
       return false;
     }
@@ -564,16 +572,8 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
     if( channel.Parse(data) )
     {
       tag.iUniqueId = channel.UID();
-      if (g_iTVServerXBMCBuild >= 102)
-      {
-        tag.iChannelNumber = channel.ExternalID();
-      }
-      else
-      {
-        tag.iChannelNumber = channel.UID(); //channel.ExternalID();
-      }
-      tag.strChannelName = channel.Name();
-      tag.strIconPath = "";
+      tag.iChannelNumber = g_iTVServerXBMCBuild >= 102 ? channel.ExternalID() : channel.UID();
+      tag.strChannelName = channel.Name();      tag.strIconPath = "";
       tag.iEncryptionSystem = channel.Encrypted();
       tag.bIsRadio = bRadio; //TODO:(channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
       tag.bIsHidden = false;
@@ -723,14 +723,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroupMembers(PVR_HANDLE handle, const
     if( channel.Parse(data) )
     {
       tag.iChannelUniqueId = channel.UID();
-      if( g_iTVServerXBMCBuild >= 102 )
-      {
-        tag.iChannelNumber = channel.ExternalID();
-      }
-      else
-      {
-        tag.iChannelNumber = channel.UID(); //channel.ExternalID();
-      }
+      tag.iChannelNumber = g_iTVServerXBMCBuild >= 102 ? channel.ExternalID() : channel.UID();
       tag.strGroupName = group.strGroupName;
 
       XBMC->Log(LOG_DEBUG, "%s - add channel %s (%d) to group '%s' channel number %d",
@@ -979,7 +972,7 @@ PVR_ERROR cPVRClientMediaPortal::GetTimerInfo(unsigned int timernumber, PVR_TIME
   if( timer.ParseLine(result.c_str()) == false )
   {
     XBMC->Log(LOG_DEBUG, "GetTimerInfo(%i) parsing server response failed. Response: %s", timernumber, result.c_str());
-    return PVR_ERROR_UNKOWN;
+    return PVR_ERROR_SERVER_ERROR;
   }
 
   timer.GetPVRtimerinfo(timerinfo);
@@ -1543,12 +1536,12 @@ const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelin
     XBMC->Log(LOG_ERROR, "Could not stream channel %i. %s", channel, result.c_str());
     if (result.find("[ERROR]: TVServer answer: ") != std::string::npos)
     {
-      //Skip first part: "[ERROR]: TVServer answer: "
+      // Skip first part: "[ERROR]: TVServer answer: "
       XBMC->QueueNotification(QUEUE_ERROR, "TVServer: %s", result.substr(26).c_str());
     }
     else
     {
-      //Skip first part: "[ERROR]: "
+      // Skip first part: "[ERROR]: "
       XBMC->QueueNotification(QUEUE_ERROR, result.substr(7).c_str());
     }
     return "";
