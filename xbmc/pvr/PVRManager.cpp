@@ -311,14 +311,14 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannelNumber)
 bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, bool bUp)
 {
   bool bReturn = false;
-
-  CPVRChannel currentChannel;
-  if (m_addons->GetPlayingChannel(&currentChannel))
+  if (IsPlayingTV() || IsPlayingRadio())
   {
-    const CPVRChannelGroup *group = GetPlayingGroup(currentChannel.IsRadio());
+    CFileItem currentFile(g_application.CurrentFileItem());
+    CPVRChannel *currentChannel = currentFile.GetPVRChannelInfoTag();
+    const CPVRChannelGroup *group = GetPlayingGroup(currentChannel->IsRadio());
     if (group)
     {
-      const CPVRChannel *newChannel = bUp ? group->GetByChannelUp(currentChannel) : group->GetByChannelDown(currentChannel);
+      const CPVRChannel *newChannel = bUp ? group->GetByChannelUp(*currentChannel) : group->GetByChannelDown(*currentChannel);
       if (PerformChannelSwitch(*newChannel, bPreview))
       {
         *iNewChannelNumber = newChannel->ChannelNumber();
