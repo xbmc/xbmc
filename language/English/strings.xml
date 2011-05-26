@@ -1601,7 +1601,7 @@
   <string id="19070">EPG scan timeout</string>
   <string id="19071">EPG update interval</string>
   <string id="19072">Do not store the EPG in the database</string>
-  <string id="19073">Switch channels if no stream received within</string>
+  <string id="19073">Delay channel switch</string>
   <string id="19074">Active:</string>
   <string id="19075">Name:</string>
   <string id="19076">Folder:</string>
