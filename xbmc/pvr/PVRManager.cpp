@@ -912,7 +912,8 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
       __FUNCTION__, channel.ChannelName().c_str());
 
   /* make sure that channel settings are persisted */
-  SaveCurrentChannelSettings();
+  if (!bPreview)
+    SaveCurrentChannelSettings();
 
   if (m_currentFile)
   {
@@ -920,7 +921,7 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     m_currentFile = NULL;
   }
 
-  if (channel.ClientID() < 0 || !m_addons->SwitchChannel(channel))
+  if (!bPreview && (channel.ClientID() < 0 || !m_addons->SwitchChannel(channel)))
   {
     CLog::Log(LOGERROR, "PVRManager - %s - failed to switch to channel '%s'",
         __FUNCTION__, channel.ChannelName().c_str());
@@ -929,10 +930,14 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
   }
 
   m_currentFile = new CFileItem(channel);
-  LoadCurrentChannelSettings();
 
-  CLog::Log(LOGNOTICE, "PVRManager - %s - switched to channel '%s'",
-      __FUNCTION__, channel.ChannelName().c_str());
+  if (!bPreview)
+  {
+    LoadCurrentChannelSettings();
+
+    CLog::Log(LOGNOTICE, "PVRManager - %s - switched to channel '%s'",
+        __FUNCTION__, channel.ChannelName().c_str());
+  }
 
   return true;
 }
