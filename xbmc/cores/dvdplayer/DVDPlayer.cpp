@@ -2088,17 +2088,17 @@ void CDVDPlayer::HandleMessages()
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
         if(input)
         {
-          bool result;
-          bool fastSwitch = g_guiSettings.GetInt("pvrplayback.channelentrytimeout") > 0;
+          bool bSwitchSuccessful(false);
+          bool bShowPreview(g_guiSettings.GetInt("pvrplayback.channelentrytimeout") > 0);
 
           if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
-            result = input->NextChannel(fastSwitch);
+            bSwitchSuccessful = input->NextChannel(bShowPreview);
           else
-            result = input->PrevChannel(fastSwitch);
+            bSwitchSuccessful = input->PrevChannel(bShowPreview);
 
-          if(result)
+          if(bSwitchSuccessful)
           {
-            if (fastSwitch)
+            if (bShowPreview)
             {
               CFileItem item(g_application.CurrentFileItem());
               if(input->UpdateItem(item))
@@ -2113,8 +2113,8 @@ void CDVDPlayer::HandleMessages()
               m_ChannelEntryTimeOut = 0;
               FlushBuffers(false);
               SAFE_DELETE(m_pDemuxer);
+              SetCaching(CACHESTATE_PVR);
             }
-            SetCaching(CACHESTATE_PVR);
           }
         }
       }
