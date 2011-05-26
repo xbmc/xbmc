@@ -1111,15 +1111,16 @@ void CDVDPlayer::Process()
       else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
       {
         CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
-        if (pStream->IsEOF())
-          break;
-
-        if (m_scanStart && CTimeUtils::GetTimeMS() - m_scanStart >= (unsigned int) g_guiSettings.GetInt("pvrplayback.scantime")*1000)
+        unsigned int iTimeout = (unsigned int) g_guiSettings.GetInt("pvrplayback.scantime");
+        if (m_scanStart && CTimeUtils::GetTimeMS() - m_scanStart >= iTimeout*1000)
         {
           CLog::Log(LOGERROR,"CDVDPlayer - %s - no video or audio data available after %i seconds, playback stopped",
-              __FUNCTION__, g_guiSettings.GetInt("pvrplayback.scantime"));
+              __FUNCTION__, iTimeout);
           break;
         }
+
+        if (pStream->IsEOF())
+          break;
 
         Sleep(100);
         continue;
