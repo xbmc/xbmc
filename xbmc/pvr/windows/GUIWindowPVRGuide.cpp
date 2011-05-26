@@ -227,7 +227,15 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
   m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
   m_bEpgCacheUpdateRequired = false;
-//m_viewControl.SetSelectedItem(m_iSelected_GUIDE);
+  SelectPlayingFile();
+}
+
+bool CGUIWindowPVRGuide::SelectPlayingFile(void)
+{
+  bool bReturn(false);
+  // TODO
+
+  return bReturn;
 }
 
 void CGUIWindowPVRGuide::UpdateData(void)

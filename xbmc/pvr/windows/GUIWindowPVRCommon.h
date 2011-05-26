@@ -96,6 +96,7 @@ namespace PVR
     virtual void OnWindowUnload(void);
 
   protected:
+    virtual bool SelectPlayingFile(void);
     virtual bool OnMessageFocus(CGUIMessage &message);
 
     virtual bool OnClickButton(CGUIMessage &message) = 0;
