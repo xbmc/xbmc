@@ -1,7 +1,7 @@
 <keymap>
   <global>
     <appcommand>
-      <browser_backward>ParentDir</browser_backward>
+      <browser_back>ParentDir</browser_back>
       <browser_forward/>
       <browser_refresh/>
       <browser_stop>Stop</browser_stop>
@@ -11,10 +11,10 @@
       <volume_mute/>
       <volume_down/>
       <volume_up/>
-      <media_nexttrack>SkipNext</media_nexttrack>
-      <media_previoustrack>SkipPrevious</media_previoustrack>
-      <media_stop>Stop</media_stop>
-      <media_play_pause>Play</media_play_pause>
+      <next_track>SkipNext</next_track>
+      <prev_track>SkipPrevious</prev_track>
+      <stop>Stop</stop>
+      <play_pause>Play</play_pause>
       <launch_mail/>
       <launch_media_select>XBMC.ActivateWindow(MyMusic)</launch_media_select>
       <launch_app1>ActivateWindow(MyPrograms)</launch_app1>
