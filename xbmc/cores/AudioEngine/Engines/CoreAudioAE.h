@@ -33,9 +33,9 @@
 #include "threads/XBMC_mutex.h"
 
 #ifdef __arm__
-#include "osx/IOSCoreAudio.h"
+#include "CoreAudioAEHALIOS.h"
 #else
-#include "osx/CoreAudio.h"
+#include "CoreAudioAEHALOSX.h"
 #endif
 
 #define kOutputBus 0
@@ -45,9 +45,19 @@
 
 class CCoreAudioAEStream;
 class CCoreAudioAESound;
-class CCoreAudioAEEventThread;
+
 class CCoreAudioAE : public IAE
 {
+protected:
+	/* Give the HAL access to the engine */
+#ifdef __arm__
+	friend class CCoreAudioAEHALIOS;
+	CCoreAudioAEHALIOS	*HAL;
+#else
+	friend class CCoreAudioAEHALOSX;
+	CCoreAudioAEHALOSX	*HAL;
+#endif
+	
 public:
   /* this should NEVER be called directly, use CAEFactory */
   CCoreAudioAE();
@@ -112,8 +122,6 @@ private:
   SDL_mutex *m_Mutex;
   SDL_cond*  m_callbackCond;
   
-  CCoreAudioAEEventThread *m_reinitTrigger;
-  
   std::list<CCoreAudioAEStream*> m_streams;
   std::list<CCoreAudioAESound* > m_sounds;
   /* currently playing sounds */
@@ -124,12 +132,14 @@ private:
   } SoundState;
   std::list<SoundState> m_playing_sounds;
   
-  unsigned int m_BytesPerSec;
-  unsigned int m_BytesPerFrame;
+  //unsigned int m_BytesPerSec;
+  //unsigned int m_BytesPerFrame;
   
   bool              m_Initialized; // Prevent multiple init/deinit
+	
+	/*
 #ifdef __arm__
-  CIOSCoreAudioDevice m_AudioDevice;
+  CIOSCoreAudioDevice *m_AudioDevice;
 #else
   CAUOutputDevice   m_AUOutput;
   CCoreAudioUnit    m_MixerUnit;
@@ -137,7 +147,8 @@ private:
   CCoreAudioStream  m_OutputStream;
 #endif
   UInt32            m_OutputBufferIndex;
-
+	*/
+	
   AEAudioFormat     m_format;
   bool              m_rawPassthrough;
   
@@ -148,18 +159,20 @@ private:
   
   enum AEChannel    *m_RemapChannelLayout;
   
-  UInt32            m_DeviceIsRunning;
+  //UInt32            m_DeviceIsRunning;
   
-  UInt32            m_NumLatencyFrames;
+  //UInt32            m_NumLatencyFrames;
   
   bool OpenCoreAudio(unsigned int sampleRate = 44100, bool forceRaw = false, enum AEDataFormat rawFormat = AE_FMT_AC3);
+	/*
 #ifndef __arm__
   bool InitializePCM (AEAudioFormat &format, CStdString &device, unsigned int bps);
   bool InitializePCMEncoded  (AEAudioFormat &format, CStdString &device, unsigned int bps);
   bool InitializeEncoded  (AudioDeviceID outputDevice, AEAudioFormat &format, unsigned int bps);
 #endif
   bool InitializeAudioDevice(AEAudioFormat &format, CStdString &device);
-
+	*/
+	
   void Deinitialize();
   void Start();
   void Stop();
@@ -198,5 +211,11 @@ private:
 #endif  
   float m_volume;
 };
+
+// Helper Functions
+char* UInt32ToFourCC(UInt32* val);
+const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdString& str);
+
+#define CONVERT_OSSTATUS(x) UInt32ToFourCC((UInt32*)&ret)
 
 #endif

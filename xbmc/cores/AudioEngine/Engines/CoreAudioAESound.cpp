@@ -162,10 +162,8 @@ void CCoreAudioAESound::SetFreeCallback(AECBFunc *callback, void *arg)
 
 void CCoreAudioAESound::Play()
 {
-  //AE.PlaySound(this);
 }
 
 void CCoreAudioAESound::Stop()
 {
-  //AE.StopSound(this);
 }

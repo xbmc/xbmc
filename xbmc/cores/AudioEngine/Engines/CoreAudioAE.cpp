@@ -50,11 +50,8 @@ static enum AEChannel CoreAudioChannelMap[] = {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_
 
 CCoreAudioAE::CCoreAudioAE() :
   m_Initialized(false),
-  m_OutputBufferIndex(0),
-  m_BytesPerSec(0),
   m_rawPassthrough(false),
   m_RemapChannelLayout(NULL),
-  m_DeviceIsRunning(false),
   m_volume(1.0f),
   m_EngineLock(false)
 {
@@ -69,6 +66,12 @@ CCoreAudioAE::CCoreAudioAE() :
   
   m_volume            = g_settings.m_fVolumeLevel;
   
+#ifdef __arm__
+	HAL = new CCoreAudioAEHALIOS();
+#else
+	HAL = new CCoreAudioAEHALOSX();
+#endif
+	
 }
 
 CCoreAudioAE::~CCoreAudioAE()
@@ -112,6 +115,8 @@ CCoreAudioAE::~CCoreAudioAE()
 #ifndef __arm__
   CCoreAudioHardware::ResetAudioDevices();
 #endif
+	
+	delete HAL;
 }
 
 void CCoreAudioAE::LockEngine()
@@ -153,8 +158,9 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
   if (!m_streams.empty())
     sampleRate = m_streams.front()->GetSampleRate();
     
-  /* remove any deleted streams */
   std::list<CCoreAudioAEStream*>::iterator itt_streams;
+  /* remove any deleted streams */
+  /*
   for(itt_streams = m_streams.begin(); itt_streams != m_streams.end();)
   {
     if ((*itt_streams)->IsDestroyed() && !(*itt_streams)->IsBusy())
@@ -167,6 +173,7 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
     }
     ++itt_streams;
   }
+  */
   /* Remove all playing sounds */
   std::list<SoundState>::iterator itt_sound;
   for(itt_sound = m_playing_sounds.begin(); itt_sound != m_playing_sounds.end(); )
@@ -244,7 +251,7 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
     m_outputDevice = "default";
   
   AEAudioFormat initformat = m_format;
-  m_Initialized = InitializeAudioDevice(initformat, m_outputDevice);
+  m_Initialized = HAL->Initialize(this, m_rawPassthrough, initformat, m_outputDevice);
   
   m_format.m_frameSize     = initformat.m_frameSize;
   m_format.m_frames        = (unsigned int)(((float)m_format.m_sampleRate / 1000.0f) * (float)DELAY_FRAME_TIME);
@@ -312,7 +319,10 @@ void CCoreAudioAE::Deinitialize()
 {
   if(!m_Initialized)
     return;
-    
+	
+	HAL->Deinitialize();
+	
+	/*
 #ifndef __arm__
   if (m_rawPassthrough)
     m_AudioDevice.RemoveIOProc();
@@ -327,7 +337,8 @@ void CCoreAudioAE::Deinitialize()
   Sleep(100);
   
   m_BytesPerSec = 0;
-  
+  */
+	
   if(m_RemapChannelLayout)
     delete[] m_RemapChannelLayout;
   m_RemapChannelLayout = NULL;
@@ -390,7 +401,8 @@ AEAudioFormat CCoreAudioAE::GetAudioFormat()
 }
 
 float CCoreAudioAE::GetDelay()
-{   
+{  
+	/*
 #ifdef __arm__
 
   return 0.0f;
@@ -398,10 +410,13 @@ float CCoreAudioAE::GetDelay()
 #else
   float delay;
     
-  delay += (float)(m_NumLatencyFrames * m_BytesPerFrame) / m_BytesPerSec;
+  delay += (float)(HAL.m_NumLatencyFrames * HAL.m_BytesPerFrame) / HAL.m_BytesPerSec;
 
   return delay;
 #endif
+	 */
+	
+	return HAL->GetDelay();
 }
 
 float CCoreAudioAE::GetVolume()
@@ -413,25 +428,10 @@ void CCoreAudioAE::SetVolume(float volume)
 {
   g_settings.m_fVolumeLevel = volume;
   m_volume = volume;
-  
-/*
-#ifndef __arm__
-  if(!m_rawPassthrough)
-  {
-    m_AUOutput.SetCurrentVolume(m_volume);
-  }  
-#endif
-*/
 }
 
 bool CCoreAudioAE::SupportsRaw()
 {
-  /* if we are going to encode, we dont do raw */
-  /*
-  if (!m_streams.empty())
-    return false;
-  */
-  
   return true;
 }
 
@@ -641,21 +641,10 @@ void CCoreAudioAE::MixSounds(float *buffer, unsigned int samples)
     
     unsigned int mixSamples = std::min(ss->sampleCount, samples);
 
-//#ifdef __arm__
     float volume = ss->owner->GetVolume() * m_volume;
-//#endif
-
     
-//#ifdef __SSE__
-//    CAEUtil::SSEMulAddArray(buffer, ss->samples, 1, mixSamples);
-//#else
     for(unsigned int i = 0; i < mixSamples; ++i)
-//#ifdef __arm__
       buffer[i] = (buffer[i] + ss->samples[i]) * volume;
-//#else
-//      buffer[i] = buffer[i] + ss->samples[i];
-//#endif
-//#endif
     
     ss->sampleCount -= mixSamples;
     ss->samples     += mixSamples;
@@ -670,12 +659,12 @@ void CCoreAudioAE::GarbageCollect()
 
 void CCoreAudioAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 {
+	/*
 #ifdef __arm__
 	IOSCoreAudioDeviceList deviceList;
 	CIOSCoreAudioHardware::GetOutputDevices(&deviceList);
 	
-	/* Add default output device if GetOutputDevices return nothing */
-	//if (CCoreAudioHardware::GetDefaultOutputDevice() && deviceList.empty())
+	// Add default output device if GetOutputDevices return nothing
 	devices.push_back(AEDevice("Default", "IOSCoreAudio:default"));
 	
 	CStdString deviceName;
@@ -690,197 +679,14 @@ void CCoreAudioAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthroug
 		deviceList.pop_front();
 		
 	}
-#else  
-  CoreAudioDeviceList deviceList;
-  CCoreAudioHardware::GetOutputDevices(&deviceList);
-  
-  /* Add default output device if GetOutputDevices return nothing */
-  //if (CCoreAudioHardware::GetDefaultOutputDevice() && deviceList.empty())
-  //devices.push_back(AEDevice("Default", "CoreAudio:default"));
-  CStdString defaultDeviceName;
-  CCoreAudioHardware::GetOutputDeviceName(defaultDeviceName);
-  
-  CStdString deviceName;
-  for (int i = 0; !deviceList.empty(); i++)
-  {
-    CCoreAudioDevice device(deviceList.front());
-    device.GetName(deviceName);
-    
-    CStdString deviceName_Internal = CStdString("CoreAudio:") + deviceName;
-    devices.push_back(AEDevice(deviceName, deviceName_Internal));
-    
-    printf("deviceName_Internal %s\n", deviceName_Internal.c_str());
-
-    deviceList.pop_front();
-  }
 #endif  
+	*/
+	HAL->EnumerateOutputDevices(devices, passthrough);
 }
 
-#ifndef __arm__
-bool CCoreAudioAE::InitializePCM(AEAudioFormat &format, CStdString &device, unsigned int bps)
-{ 
-  // Create the MatrixMixer AudioUnit Component
-  if (!m_MixerUnit.Open(kAudioUnitType_Mixer, kAudioUnitSubType_MatrixMixer, kAudioUnitManufacturer_Apple))
-    return false;
-  
-  // Set the input stream format for the AudioUnit (this is what is being sent to us)
-  AudioStreamBasicDescription inputFormat;
-  inputFormat.mFormatID = kAudioFormatLinearPCM;                  //  Data encoding format
-  inputFormat.mFormatFlags = /*kAudioFormatFlagsNativeEndian | */ kLinearPCMFormatFlagIsPacked;
-  
-  switch(format.m_dataFormat) {
-    case AE_FMT_FLOAT:
-      inputFormat.mFormatFlags |= kAudioFormatFlagIsFloat;
-      break;
-    default:
-      inputFormat.mFormatFlags |= kAudioFormatFlagIsSignedInteger;
-      break;
-  }
-  
-#ifdef __BIG_ENDIAN__
-  inputFormat.mFormatFlags |= kLinearPCMFormatFlagIsBigEndian;
-#endif
-  
-  inputFormat.mChannelsPerFrame = format.m_channelCount;          // Number of interleaved audiochannels
-  inputFormat.mSampleRate = (Float64)format.m_sampleRate;         //  the sample rate of the audio stream
-  inputFormat.mBitsPerChannel =  bps;                             // Number of bits per sample, per channel
-  inputFormat.mBytesPerFrame = (bps>>3) * format.m_channelCount;    // Size of a frame == 1 sample per channel    
-  inputFormat.mFramesPerPacket = 1;                               // The smallest amount of indivisible data. Always 1 for uncompressed audio   
-  inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket;
-  inputFormat.mReserved = 0;
-  
-  AudioStreamBasicDescription inputDesc_end;
-  CStdString formatString;
-
-  m_AUOutput.GetFormat(&inputDesc_end, kAudioUnitScope_Output, kInputBus);
- 
-  if (!m_AUOutput.SetFormat(&inputFormat, kAudioUnitScope_Input, kOutputBus))
-    return false;
-
-  if (!m_AUOutput.SetFormat(&inputFormat, kAudioUnitScope_Output, kInputBus))
-    return false;
-    
-  m_BytesPerFrame = inputFormat.mBytesPerFrame;
-  m_BytesPerSec = inputFormat.mSampleRate * inputFormat.mBytesPerFrame;      // 1 sample per channel per frame
-  
-  return true;
-}
-
-bool CCoreAudioAE::InitializePCMEncoded(AEAudioFormat &format, CStdString &device, unsigned int bps)
-{
-  m_AudioDevice.SetHogStatus(true); // Prevent any other application from using this device.
-  m_AudioDevice.SetMixingSupport(false); // Try to disable mixing support. Effectiveness depends on the device.
-  
-  // Set the Sample Rate as defined by the spec.
-  m_AudioDevice.SetNominalSampleRate((float)format.m_sampleRate);
-  
-  if (!InitializePCM(format, device, bps))
-    return false;
-  
-  return true;  
-}
-
-bool CCoreAudioAE::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFormat &format, unsigned int bps)
-{
-  //return false; // un-comment to force PCM Spoofing (DD-Wav). For testing use only.
-  
-  CStdString formatString;
-  AudioStreamBasicDescription outputFormat = {0};
-  AudioStreamID outputStream = 0;
-  bool bFound = false;
-  
-  // Fetch a list of the streams defined by the output device
-  AudioStreamIdList streams;
-  UInt32  streamIndex = 0;
-  m_AudioDevice.GetStreams(&streams);
-  
-  m_OutputBufferIndex = 0;
-  
-  while (!streams.empty())
-  {
-    // Get the next stream
-    CCoreAudioStream stream;
-    stream.Open(streams.front());
-    streams.pop_front(); // We copied it, now we are done with it
-    
-    CLog::Log(LOGDEBUG, "CCoreAudioAE::InitializeEncoded: Found %s stream - id: 0x%04X, Terminal Type: 0x%04lX",
-              stream.GetDirection() ? "Input" : "Output",
-              stream.GetId(),
-              stream.GetTerminalType());
-    
-    // Probe physical formats
-    StreamFormatList physicalFormats;
-    stream.GetAvailablePhysicalFormats(&physicalFormats);
-    while (!physicalFormats.empty())
-    {
-      AudioStreamRangedDescription& desc = physicalFormats.front();
-      CLog::Log(LOGDEBUG, "CCoreAudioAE::InitializeEncoded:    Considering Physical Format: %s", StreamDescriptionToString(desc.mFormat, formatString));
-      if (desc.mFormat.mFormatID == kAudioFormat60958AC3 || desc.mFormat.mFormatID == 'IAC3')
-      {
-        outputFormat = desc.mFormat; // Select this format
-        m_OutputBufferIndex = streamIndex;
-        outputStream = stream.GetId();
-        
-        /* Adjust samplerate */
-        outputFormat.mChannelsPerFrame = format.m_channelCount;
-        outputFormat.mSampleRate = (Float64)format.m_sampleRate;
-        stream.SetPhysicalFormat(&outputFormat);
-
-        m_AUOutput.SetFormat(&outputFormat, kAudioUnitScope_Input, kOutputBus);
-        
-        bFound = true;
-        
-        break;
-      }
-      physicalFormats.pop_front();
-    }
-    
-    if (bFound)
-      break; // We found a suitable format. No need to continue.
-
-    streamIndex++;
-  }
-  
-  if (!bFound) // No match found
-  {
-    CLog::Log(LOGDEBUG, "CCoreAudioAE::InitializeEncoded: Unable to identify suitable output format.");
-    return false;
-  }
-  
-  m_BytesPerSec = outputFormat.mChannelsPerFrame * (outputFormat.mBitsPerChannel>>3) * outputFormat.mSampleRate; // mBytesPerFrame is 0 for a cac3 stream  
-  m_BytesPerFrame = outputFormat.mChannelsPerFrame * (outputFormat.mBitsPerChannel>>3);
-  
-  CLog::Log(LOGDEBUG, "CCoreAudioAE::InitializeEncoded: Selected stream[%lu] - id: 0x%04lX, Physical Format: %s (%lu Bytes/sec.)", m_OutputBufferIndex, outputStream, StreamDescriptionToString(outputFormat, formatString), m_BytesPerSec);
-  
-  // Lock down the device.  This MUST be done PRIOR to switching to a non-mixable format, if it is done at all
-  // If it is attempted after the format change, there is a high likelihood of a deadlock
-  // We may need to do this sooner to enable mix-disable (i.e. before setting the stream format)
-  
-  m_AudioDevice.SetHogStatus(true); // Hog the device if it is not set to be done automatically
-  m_AudioDevice.SetMixingSupport(false); // Try to disable mixing. If we cannot, it may not be a problem
-  
-  m_NumLatencyFrames = m_AudioDevice.GetNumLatencyFrames();
-  
-  // Configure the output stream object
-  m_OutputStream.Open(outputStream); // This is the one we will keep
-  AudioStreamBasicDescription previousFormat;
-  m_OutputStream.GetPhysicalFormat(&previousFormat);
-  CLog::Log(LOGDEBUG, "CCoreAudioAE::InitializeEncoded: Previous Physical Format: %s (%lu Bytes/sec.)", StreamDescriptionToString(previousFormat, formatString), m_BytesPerSec);
-  m_OutputStream.SetPhysicalFormat(&outputFormat); // Set the active format (the old one will be reverted when we close)
-  m_NumLatencyFrames += m_OutputStream.GetNumLatencyFrames();
-  
-  // Register for data request callbacks from the driver
-  m_AudioDevice.AddIOProc(RenderCallbackDirect, this);
-  
-  return true;
-}
-#endif
-
+/*
 bool CCoreAudioAE::InitializeAudioDevice(AEAudioFormat &format, CStdString &device)
 { 
-#ifndef __arm__
-  int bPassthrough = m_rawPassthrough;
-#endif
   unsigned int bps = CAEUtil::DataFormatToBits(format.m_dataFormat);;
   
   if (format.m_channelCount == 0)
@@ -913,7 +719,7 @@ bool CCoreAudioAE::InitializeAudioDevice(AEAudioFormat &format, CStdString &devi
   audioFormat.mReserved = 0;
 	
   // Attach our output object to the device
-  if(!m_AudioDevice.Init(/*m_Passthrough*/ true, &audioFormat, RenderCallback, this))
+  if(!m_AudioDevice.Init(true, &audioFormat, RenderCallback, this))
   {
     CLog::Log(LOGDEBUG, "CCoreAudioAE::Init failed");
     return false;
@@ -928,109 +734,6 @@ bool CCoreAudioAE::InitializeAudioDevice(AEAudioFormat &format, CStdString &devi
 	if (!m_AudioDevice.Open())
 		return false;
   
-#else
-  
-  // Reset all the devices to a default 'non-hog' and mixable format.
-  // If we don't do this we may be unable to find the Default Output device.
-  // (e.g. if we crashed last time leaving it stuck in AC-3 mode)
-  CCoreAudioHardware::ResetAudioDevices();
-  
-  device.Replace("CoreAudio:", "");
-  
-  AudioDeviceID outputDevice = CCoreAudioHardware::FindAudioDevice(device);
-  
-  if (!outputDevice) // Fall back to the default device if no match is found
-  {
-    CLog::Log(LOGWARNING, "CCoreAudioAE::Initialize: Unable to locate configured device, falling-back to the system default.");
-    outputDevice = CCoreAudioHardware::GetDefaultOutputDevice();
-    if (!outputDevice) // Not a lot to be done with no device. TODO: Should we just grab the first existing device?
-      return false;
-  }
-  
-  // Attach our output object to the device
-  m_AudioDevice.Open(outputDevice);
-  
-  // If this is a passthrough (AC3/DTS) stream, attempt to handle it natively
-  if (bPassthrough)
-  {
-    m_rawPassthrough = InitializeEncoded(outputDevice, format, bps);
-    Sleep(100);
-  }
-  
-  // If this is a PCM stream, or we failed to handle a passthrough stream natively,
-  // prepare the standard interleaved PCM interface
-  if (!m_rawPassthrough)
-  {    
-    // Create the Output AudioUnit Component
-    if (!m_AUOutput.Open(kAudioUnitType_Output, kAudioUnitSubType_HALOutput, kAudioUnitManufacturer_Apple))
-      return false;
-    
-    // Hook the Ouput AudioUnit to the selected device
-    if (!m_AUOutput.SetCurrentDevice(outputDevice))
-      return false;
-    
-    // If we are here and this is a passthrough stream, native handling failed.
-    // Try to handle it as IEC61937 data over straight PCM (DD-Wav)
-    bool configured = false;
-    if (bPassthrough)
-    {
-      CLog::Log(LOGDEBUG, "CCoreAudioAE::Initialize: No suitable AC3 output format found. Attempting DD-Wav.");
-      configured = InitializePCMEncoded(format, device, bps);
-      // TODO: wait for audio device startup
-      Sleep(100);
-    }
-    else
-    {
-      // Standard PCM data
-      configured = InitializePCM(format, device, bps);
-      // TODO: wait for audio device startup
-      Sleep(100);
-    }
-    
-    if (!configured) // No suitable output format was able to be configured
-      return false;
-    
-    // Configure the maximum number of frames that the AudioUnit will ask to process at one time.
-    // If this is not called, there is no guarantee that the callback will ever be called.
-    m_AUOutput.SetBufferFrameSize(512);
-    
-    // Setup the callback function that the AudioUnit will use to request data  
-    if (!m_AUOutput.SetRenderProc(RenderCallback, this))
-      return false;
-
-    // Initialize the Output AudioUnit
-    if (!m_AUOutput.Initialize())
-      return false;
-    
-    // Initialize the Output AudioUnit
-    //if (!m_MixerUnit.Initialize())
-    //  return false;
-    
-    // Log some information about the stream
-    AudioStreamBasicDescription inputDesc_end, outputDesc_end;
-    CStdString formatString;
-    m_AUOutput.GetFormat(&inputDesc_end, kAudioUnitScope_Output, kInputBus);
-
-    if(inputDesc_end.mChannelsPerFrame != format.m_channelCount) {
-      CLog::Log(LOGERROR, "CCoreAudioAE::Initialize: Output channel count does not match input channel count. in %d : out %d. Please Correct your speaker layout setting.", 
-                format.m_channelCount, inputDesc_end.mChannelsPerFrame);      
-      format.m_channelCount = inputDesc_end.mChannelsPerFrame;
-      if(!InitializePCM(format, device, bps))
-      {
-        CLog::Log(LOGERROR, "CCoreAudioAE::Initialize: Reinit with right channel count failed"); 
-        return false;
-      }
-      Sleep(100);
-    }
-
-    m_AUOutput.GetFormat(&inputDesc_end, kAudioUnitScope_Output, kInputBus);
-    m_AUOutput.GetFormat(&outputDesc_end, kAudioUnitScope_Input, kOutputBus);
-    CLog::Log(LOGDEBUG, "CCoreAudioAE::Initialize: Input Stream Format %s", StreamDescriptionToString(inputDesc_end, formatString));
-    CLog::Log(LOGDEBUG, "CCoreAudioAE::Initialize: Output Stream Format % s", StreamDescriptionToString(outputDesc_end, formatString));    
-    
-  }
-
-  m_NumLatencyFrames = m_AudioDevice.GetNumLatencyFrames();
 #endif
   
   // set the format parameters
@@ -1038,21 +741,15 @@ bool CCoreAudioAE::InitializeAudioDevice(AEAudioFormat &format, CStdString &devi
   
   return true;
 }
+*/
 
 void CCoreAudioAE::Start()
 {
   if(!m_Initialized)
     return;
   
-#ifndef __arm__
-  if (m_rawPassthrough)
-#endif
-    m_AudioDevice.Start();
-#ifndef __arm__
-  else
-    m_AUOutput.Start();
-#endif
-
+	HAL->Start();
+	
 }
 
 void CCoreAudioAE::Stop()
@@ -1060,14 +757,7 @@ void CCoreAudioAE::Stop()
   if(!m_Initialized)
     return;
 
-#ifndef __arm__
-  if (m_rawPassthrough)
-#endif
-    m_AudioDevice.Stop();
-#ifndef __arm__
-  else
-    m_AUOutput.Stop();
-#endif
+	HAL->Stop();
 
 }
 
@@ -1124,9 +814,8 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
   SDL_mutexP(m_Mutex);  
   
   unsigned int rSamples = inNumberFrames * m_format.m_channelCount;
-  int size = inNumberFrames * m_BytesPerFrame;
+  int size = inNumberFrames * HAL->m_BytesPerFrame;
   unsigned int readframes = inNumberFrames;
-  //bool  reinit = false;
   
   if(!m_Initialized || m_EngineLock)
   {
@@ -1150,7 +839,7 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
   {
     if (m_streams.empty())
     {
-      ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
+      ioData->mBuffers[HAL->m_OutputBufferIndex].mDataByteSize = 0;
       
       //reinit = true;
 
@@ -1158,7 +847,7 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
     }
     
     CCoreAudioAEStream *stream = m_streams.front();
-    if (stream->IsDestroyed() || !stream->IsRaw())
+    if (!stream->IsRaw())
     {
       ioData->mBuffers[0].mDataByteSize = 0;
       
@@ -1185,6 +874,7 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
         CCoreAudioAEStream *stream = *itt;
         
         /* skip streams that are flagged for deletion */
+        /*
         if (stream->IsDestroyed())
         {
           if (!stream->IsBusy())
@@ -1198,7 +888,8 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
           
           continue;
         }
-        
+        */
+         
         /* dont process streams that are paused */
         if (stream->IsPaused())
         {
@@ -1208,7 +899,7 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
         
         size = stream->GetFrames((uint8_t *)m_StreamBuffer, size);
         
-        readframes = size / m_BytesPerFrame;
+        readframes = size / HAL->m_BytesPerFrame;
         
         if (!readframes)
         {
@@ -1260,7 +951,7 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
   }
 
   if(!m_rawPassthrough && m_format.m_channelCount == 8)
-    ReorderSmpteToCA(m_OutputBuffer, size / m_BytesPerFrame, m_format.m_dataFormat);
+    ReorderSmpteToCA(m_OutputBuffer, size / HAL->m_BytesPerFrame, m_format.m_dataFormat);
 
   memcpy((unsigned char *)ioData->mBuffers[0].mData, (uint8_t *)m_OutputBuffer, size);
   ioData->mBuffers[0].mDataByteSize = size;
@@ -1269,9 +960,6 @@ out:
   SDL_CondBroadcast(m_callbackCond);
   SDL_mutexV(m_Mutex);
 
-  //if(reinit)
-  //  m_reinitTrigger->Trigger();
-  
   return noErr;
 }
 
@@ -1295,19 +983,17 @@ OSStatus CCoreAudioAE::OnRenderCallbackDirect( AudioDeviceID inDevice,
                                                   const AudioTimeStamp * inOutputTime,
                                                   void * threadGlobals )
 {
-  //bool reinit = false;
-  
   SDL_mutexP(m_Mutex);
 
   if(!m_Initialized || m_EngineLock)
   {
-    outOutputData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
+    outOutputData->mBuffers[HAL->m_OutputBufferIndex].mDataByteSize = 0;
     goto out;
   }
   
   if (m_streams.empty())
   {
-    outOutputData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
+    outOutputData->mBuffers[HAL->m_OutputBufferIndex].mDataByteSize = 0;
     
     //reinit = true;
     
@@ -1316,9 +1002,9 @@ OSStatus CCoreAudioAE::OnRenderCallbackDirect( AudioDeviceID inDevice,
 
   /* if the stream is to be deleted, or is not raw */
   CCoreAudioAEStream *stream = m_streams.front();
-  if(stream->IsDestroyed() || !stream->IsRaw())
+  if(!stream->IsRaw())
   {
-    outOutputData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
+    outOutputData->mBuffers[HAL->m_OutputBufferIndex].mDataByteSize = 0;
    
     RemoveStream(stream);
     delete stream;
@@ -1326,14 +1012,14 @@ OSStatus CCoreAudioAE::OnRenderCallbackDirect( AudioDeviceID inDevice,
     goto out;
   }
   
-  int size = outOutputData->mBuffers[m_OutputBufferIndex].mDataByteSize;
+  int size = outOutputData->mBuffers[HAL->m_OutputBufferIndex].mDataByteSize;
   int readsize;
   
   CheckOutputBufferSize((void **)&m_OutputBuffer, &m_OutputBufferSize, size);
   
   if(!m_OutputBuffer)
   {
-    outOutputData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
+    outOutputData->mBuffers[HAL->m_OutputBufferIndex].mDataByteSize = 0;
     goto out;
   }
   
@@ -1343,22 +1029,19 @@ OSStatus CCoreAudioAE::OnRenderCallbackDirect( AudioDeviceID inDevice,
   
   if(readsize == size)
   {    
-    memcpy((unsigned char *)outOutputData->mBuffers[m_OutputBufferIndex].mData, m_OutputBuffer, size);
-    outOutputData->mBuffers[m_OutputBufferIndex].mDataByteSize = size;
+    memcpy((unsigned char *)outOutputData->mBuffers[HAL->m_OutputBufferIndex].mData, m_OutputBuffer, size);
+    outOutputData->mBuffers[HAL->m_OutputBufferIndex].mDataByteSize = size;
     
   }
   else 
   {
-    outOutputData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
+    outOutputData->mBuffers[HAL->m_OutputBufferIndex].mDataByteSize = 0;
   }
   
 out:
   SDL_CondBroadcast(m_callbackCond);
   SDL_mutexV(m_Mutex);
 
-  //if(reinit)
-  //  m_reinitTrigger->Trigger();
-  
   return noErr;    
 }
 
@@ -1374,3 +1057,50 @@ OSStatus CCoreAudioAE::RenderCallbackDirect(AudioDeviceID inDevice,
   return ((CCoreAudioAE*)inClientData)->OnRenderCallbackDirect(inDevice, inNow, inInputData, inInputTime, outOutputData, inOutputTime, inClientData);
 }
 #endif
+
+// Helper Functions
+char* UInt32ToFourCC(UInt32* pVal) // NOT NULL TERMINATED! Modifies input value.
+{
+  UInt32 inVal = *pVal;
+  char* pIn = (char*)&inVal;
+  char* fourCC = (char*)pVal;
+  fourCC[3] = pIn[0];
+  fourCC[2] = pIn[1];
+  fourCC[1] = pIn[2];
+  fourCC[0] = pIn[3];
+  return fourCC;
+}
+
+const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdString& str)
+{
+  UInt32 formatId = desc.mFormatID;
+  char* fourCC = UInt32ToFourCC(&formatId);
+  
+  switch (desc.mFormatID)
+  {
+    case kAudioFormatLinearPCM:
+      str.Format("[%4.4s] %s%u Channel %u-bit %s %s (%uHz)",
+                 fourCC,
+                 (desc.mFormatFlags & kAudioFormatFlagIsNonMixable) ? "" : "Mixable ",
+                 desc.mChannelsPerFrame,
+                 desc.mBitsPerChannel,
+                 (desc.mFormatFlags & kAudioFormatFlagIsFloat) ? "Floating Point" : "Signed Integer",
+                 (desc.mFormatFlags & kAudioFormatFlagIsBigEndian) ? "BE" : "LE",
+                 (UInt32)desc.mSampleRate);
+      break;
+    case kAudioFormatAC3:
+      str.Format("[%4.4s] AC-3/DTS (%uHz)", fourCC, (UInt32)desc.mSampleRate);
+      break;
+    case kAudioFormat60958AC3:
+      str.Format("[%4.4s] AC-3/DTS for S/PDIF %s (%uHz)",
+                 fourCC,
+                 (desc.mFormatFlags & kAudioFormatFlagIsBigEndian) ? "BE" : "LE",
+                 (UInt32)desc.mSampleRate);
+      break;
+    default:
+      str.Format("[%4.4s]", fourCC);
+      break;
+  }
+  return str.c_str();
+}
+
