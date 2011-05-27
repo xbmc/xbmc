@@ -294,7 +294,7 @@ static const ActionMapping windows[] =
 #ifdef WIN32
 static const ActionMapping appcommands[] =
 {
-  { "browser_backward",    APPCOMMAND_BROWSER_BACKWARD },
+  { "browser_back",        APPCOMMAND_BROWSER_BACKWARD },
   { "browser_forward",     APPCOMMAND_BROWSER_FORWARD },
   { "browser_refresh",     APPCOMMAND_BROWSER_REFRESH },
   { "browser_stop",        APPCOMMAND_BROWSER_STOP },
@@ -304,10 +304,10 @@ static const ActionMapping appcommands[] =
   { "volume_mute",         APPCOMMAND_VOLUME_MUTE },
   { "volume_down",         APPCOMMAND_VOLUME_DOWN },
   { "volume_up",           APPCOMMAND_VOLUME_UP },
-  { "media_nexttrack",     APPCOMMAND_MEDIA_NEXTTRACK },
-  { "media_previoustrack", APPCOMMAND_MEDIA_PREVIOUSTRACK },
-  { "media_stop",          APPCOMMAND_MEDIA_STOP },
-  { "media_play_pause",    APPCOMMAND_MEDIA_PLAY_PAUSE },
+  { "next_track",          APPCOMMAND_MEDIA_NEXTTRACK },
+  { "prev_track",          APPCOMMAND_MEDIA_PREVIOUSTRACK },
+  { "stop",                APPCOMMAND_MEDIA_STOP },
+  { "play_pause",          APPCOMMAND_MEDIA_PLAY_PAUSE },
   { "launch_mail",         APPCOMMAND_LAUNCH_MAIL },
   { "launch_media_select", APPCOMMAND_LAUNCH_MEDIA_SELECT },
   { "launch_app1",         APPCOMMAND_LAUNCH_APP1 },
