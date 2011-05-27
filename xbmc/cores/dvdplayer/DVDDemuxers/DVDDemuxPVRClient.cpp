@@ -19,6 +19,7 @@
  *
  */
 
+#include "Application.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDDemuxPVRClient.h"
 #include "DVDDemuxUtils.h"
@@ -71,7 +72,9 @@ void CDemuxStreamSubtitlePVRClient::GetStreamInfo(std::string& strInfo)
 {
 }
 
-CDVDDemuxPVRClient::CDVDDemuxPVRClient() : CDVDDemux()
+CDVDDemuxPVRClient::CDVDDemuxPVRClient() :
+    CDVDDemux(),
+    m_fLastVideoAspect(-1)
 {
   m_pInput = NULL;
   for (int i = 0; i < MAX_STREAMS; i++) m_streams[i] = NULL;
@@ -212,6 +215,7 @@ void CDVDDemuxPVRClient::RequestStreams()
 void CDVDDemuxPVRClient::UpdateStreams(PVR_STREAM_PROPERTIES *props)
 {
   bool bGotVideoStream(false);
+  bool bResetNeeded(false);
 
   for (unsigned int i = 0; i < props->iStreamCount; ++i)
   {
@@ -252,6 +256,8 @@ void CDVDDemuxPVRClient::UpdateStreams(PVR_STREAM_PROPERTIES *props)
       st->iWidth          = props->stream[i].iWidth;
       st->fAspect         = props->stream[i].fAspect;
       bGotVideoStream = true;
+      bResetNeeded = (m_fLastVideoAspect > 0 && m_fLastVideoAspect != st->fAspect);
+      m_fLastVideoAspect = st->fAspect;
     }
     else if (m_streams[props->stream[i].iStreamIndex]->type == STREAM_SUBTITLE)
     {
@@ -268,6 +274,16 @@ void CDVDDemuxPVRClient::UpdateStreams(PVR_STREAM_PROPERTIES *props)
         m_streams[props->stream[i].iStreamIndex]->iId,
         m_streams[props->stream[i].iStreamIndex]->iPhysicalId,
         m_streams[props->stream[i].iStreamIndex]->codec);
+  }
+
+  if (bResetNeeded)
+  {
+    CLog::Log(LOGDEBUG, "CDVDDemuxPVRClient - %s - aspect ratio changed. reopening the stream", __FUNCTION__);
+    CFileItemPtr item;
+    *item = g_application.CurrentFileItem();
+    g_application.StopPlaying();
+    Flush();
+    g_application.PlayFile(*item.get(), true);
   }
 }
 

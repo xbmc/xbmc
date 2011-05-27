@@ -96,8 +96,8 @@ public:
 
 protected:
   CDVDInputStream* m_pInput;
-
   CDemuxStream* m_streams[MAX_STREAMS]; // maximum number of streams that ffmpeg can handle
+  int m_fLastVideoAspect;
 
 private:
   void RequestStreams();
