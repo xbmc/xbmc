@@ -132,7 +132,7 @@
 			<posy>0</posy>
 			<width>1280</width>
 			<height>720</height>
-			<imagepath background="true">$INFO[Skin.String(WeatherFanartDir)]$INFO[Weather.FanartCode]</imagepath>
+			<imagepath background="true">$INFO[Skin.String(WeatherFanartDir)]$INFO[Window(Weather).Property(Current.FanartCode)]</imagepath>
 			<timeperimage>10000</timeperimage>
 			<randomize>true</randomize>
 			<fadetime>1000</fadetime>

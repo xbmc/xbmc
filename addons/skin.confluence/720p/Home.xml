@@ -971,7 +971,7 @@
 				<width>25</width>
 				<height>25</height>
 				<aspectratio>keep</aspectratio>
-				<texture>$INFO[Weather.Conditions]</texture>
+				<texture>$INFO[Window(Weather).Property(Current.ConditionIcon)]</texture>
 			</control>
 			<control type="label">
 				<description>time label</description>
