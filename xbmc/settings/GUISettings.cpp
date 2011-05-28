@@ -42,7 +42,7 @@
 #include "cores/AudioEngine/AEAudioFormat.h"
 #include "guilib/GUIFont.h" // for FONT_STYLE_* definitions
 #if defined __APPLE__ && !defined __arm__
-#include "CoreAudio.h"
+#include "CoreAudioAEHALOSX.h"
 #endif
 #if defined(__APPLE__)
   #include "osx/DarwinUtils.h"
