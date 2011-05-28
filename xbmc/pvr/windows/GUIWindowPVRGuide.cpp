@@ -43,7 +43,7 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_EPG, CONTROL_BTNGUIDE, CONTROL_LIST_GUIDE_NOW_NEXT),
   Observer(),
   m_bEpgCacheUpdateRequired(true),
-  m_iGuideView(g_guiSettings.GetInt("pvrmenu.defaultguideview")),
+  m_iGuideView(g_guiSettings.GetInt("epg.defaultguideview")),
   m_localItems(new CFileItemList)
 {
 }

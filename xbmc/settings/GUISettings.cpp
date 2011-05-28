@@ -809,8 +809,10 @@ void CGUISettings::Initialize()
   AddGroup(8, 19180);
   CSettingsCategory* pvr = AddCategory(8, "pvrmanager", 128);
   AddBool(pvr, "pvrmanager.enabled", 449, false);
+  AddSeparator(pvr, "pvrmanager.sep1");
   AddBool(pvr, "pvrmanager.syncchannelgroups", 19221, true);
   AddBool(pvr, "pvrmanager.backendchannelorder", 19231, false);
+  AddSeparator(pvr, "pvrmanager.sep2");
   AddString(pvr, "pvrmanager.channelmanager", 19199, "", BUTTON_CONTROL_STANDARD);
   AddString(pvr, "pvrmanager.channelscan", 19117, "", BUTTON_CONTROL_STANDARD);
   AddString(pvr, "pvrmanager.resetdb", 19185, "", BUTTON_CONTROL_STANDARD);
@@ -818,30 +820,30 @@ void CGUISettings::Initialize()
   CSettingsCategory* pvrm = AddCategory(8, "pvrmenu", 19181);
   AddBool(pvrm, "pvrmenu.infoswitch", 19178, true);
   AddBool(pvrm, "pvrmenu.infotimeout", 19179, true);
+  AddBool(pvrm, "pvrmenu.closechannelosdonswitch", 19229, false);
   AddInt(pvrm, "pvrmenu.infotime", 19184, 5, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddBool(pvrm, "pvrmenu.hidevideolength", 19169, true);
   AddSeparator(pvrm, "pvrmenu.sep1");
   AddString(pvrm, "pvrmenu.iconpath", 19018, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddString(pvrm, "pvrmenu.searchicons", 19167, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(pvrm, "pvrmenu.sep2");
-  AddInt(pvrm, "pvrmenu.defaultguideview", 19065, GUIDE_VIEW_NOW, GUIDE_VIEW_CHANNEL, 1, GUIDE_VIEW_TIMELINE, SPIN_CONTROL_TEXT);
-  AddBool(pvrm, "pvrmenu.closechannelosdonswitch", 19229, false);
 
   CSettingsCategory* pvre = AddCategory(8, "epg", 19069);
+  AddInt(pvre, "epg.defaultguideview", 19065, GUIDE_VIEW_NOW, GUIDE_VIEW_CHANNEL, 1, GUIDE_VIEW_TIMELINE, SPIN_CONTROL_TEXT);
   AddInt(pvre, "epg.daystodisplay", 19182, 2, 1, 1, 14, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+  AddSeparator(pvre, "epg.sep1");
   AddInt(pvre, "epg.epgupdate", 19071, 120, 15, 15, 480, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddBool(pvre, "epg.preventupdateswhileplayingtv", 19230, false);
   AddBool(pvre, "epg.ignoredbforclient", 19072, false);
   AddString(pvre, "epg.resetepg", 19187, "", BUTTON_CONTROL_STANDARD);
-  AddBool(pvre, "epg.preventupdateswhileplayingtv", 19230, false);
 
   CSettingsCategory* pvrp = AddCategory(8, "pvrplayback", 19177);
-  AddBool(pvrp, "pvrplayback.switchautoclose", 19168, true);
   AddBool(pvrp, "pvrplayback.playminimized", 19171, true);
+  AddInt(pvrp, "pvrplayback.startlast", 19189, START_LAST_CHANNEL_OFF, START_LAST_CHANNEL_OFF, 1, START_LAST_CHANNEL_ON, SPIN_CONTROL_TEXT);
+  AddBool(pvrp, "pvrplayback.switchautoclose", 19168, true);
+  AddBool(pvrp, "pvrplayback.signalquality", 19037, true);
+  AddSeparator(pvrp, "pvrplayback.sep1");
   AddInt(pvrp, "pvrplayback.scantime", 19170, 15, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddInt(pvrp, "pvrplayback.channelentrytimeout", 19073, 0, 0, 250, 2000, SPIN_CONTROL_INT_PLUS, MASK_MS);
-  AddSeparator(pvrp, "pvrplayback.sep1");
-  AddBool(pvrp, "pvrplayback.signalquality", 19037, true);
-  AddInt(pvrp, "pvrplayback.startlast", 19189, START_LAST_CHANNEL_OFF, START_LAST_CHANNEL_OFF, 1, START_LAST_CHANNEL_ON, SPIN_CONTROL_TEXT);
 
   CSettingsCategory* pvrr = AddCategory(8, "pvrrecord", 19043);
   AddInt(pvrr, "pvrrecord.instantrecordtime", 19172, 180, 1, 1, 720, SPIN_CONTROL_INT_PLUS, MASK_MINS);
@@ -849,6 +851,7 @@ void CGUISettings::Initialize()
   AddInt(pvrr, "pvrrecord.defaultlifetime", 19174, 99, 1, 1, 365, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
   AddInt(pvrr, "pvrrecord.marginstart", 19175, 2, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddInt(pvrr, "pvrrecord.marginend", 19176, 10, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddSeparator(pvrr, "pvrrecord.sep1");
   AddBool(pvr, "pvrrecord.timernotifications", 19233, true);
 }
 
