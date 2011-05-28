@@ -20,17 +20,6 @@
  */
 
 #include "JSONRPC.h"
-#include "PlayerOperations.h"
-#include "AVPlayerOperations.h"
-#include "PicturePlayerOperations.h"
-#include "AVPlaylistOperations.h"
-#include "PlaylistOperations.h"
-#include "FileOperations.h"
-#include "AudioLibrary.h"
-#include "VideoLibrary.h"
-#include "SystemOperations.h"
-#include "InputOperations.h"
-#include "XBMCOperations.h"
 #include "settings/AdvancedSettings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/AnnouncementUtils.h"
@@ -45,181 +34,25 @@ using namespace std;
 
 bool CJSONRPC::m_initialized = false;
 
-JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
-// JSON-RPC
-  { "JSONRPC.Introspect",                           CJSONRPC::Introspect },
-  { "JSONRPC.Version",                              CJSONRPC::Version },
-  { "JSONRPC.Permission",                           CJSONRPC::Permission },
-  { "JSONRPC.Ping",                                 CJSONRPC::Ping },
-  { "JSONRPC.GetNotificationFlags",                 CJSONRPC::GetNotificationFlags },
-  { "JSONRPC.SetNotificationFlags",                 CJSONRPC::SetNotificationFlags },
-  { "JSONRPC.NotifyAll",                            CJSONRPC::NotifyAll },
-
-// Player
-  { "Player.GetActivePlayers",                      CPlayerOperations::GetActivePlayers },
-
-// Music player
-  { "AudioPlayer.State",                            CAVPlayerOperations::State },
-  { "AudioPlayer.PlayPause",                        CAVPlayerOperations::PlayPause },
-  { "AudioPlayer.Stop",                             CAVPlayerOperations::Stop },
-  { "AudioPlayer.SkipPrevious",                     CAVPlayerOperations::SkipPrevious },
-  { "AudioPlayer.SkipNext",                         CAVPlayerOperations::SkipNext },
-
-  { "AudioPlayer.BigSkipBackward",                  CAVPlayerOperations::BigSkipBackward },
-  { "AudioPlayer.BigSkipForward",                   CAVPlayerOperations::BigSkipForward },
-  { "AudioPlayer.SmallSkipBackward",                CAVPlayerOperations::SmallSkipBackward },
-  { "AudioPlayer.SmallSkipForward",                 CAVPlayerOperations::SmallSkipForward },
-
-  { "AudioPlayer.Rewind",                           CAVPlayerOperations::Rewind },
-  { "AudioPlayer.Forward",                          CAVPlayerOperations::Forward },
-
-  { "AudioPlayer.GetTime",                          CAVPlayerOperations::GetTime },
-  { "AudioPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage },
-  { "AudioPlayer.SeekTime",                         CAVPlayerOperations::SeekTime },
-  { "AudioPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage },
-
-// Video player
-  { "VideoPlayer.State",                            CAVPlayerOperations::State },
-  { "VideoPlayer.PlayPause",                        CAVPlayerOperations::PlayPause },
-  { "VideoPlayer.Stop",                             CAVPlayerOperations::Stop },
-  { "VideoPlayer.SkipPrevious",                     CAVPlayerOperations::SkipPrevious },
-  { "VideoPlayer.SkipNext",                         CAVPlayerOperations::SkipNext },
-
-  { "VideoPlayer.BigSkipBackward",                  CAVPlayerOperations::BigSkipBackward },
-  { "VideoPlayer.BigSkipForward",                   CAVPlayerOperations::BigSkipForward },
-  { "VideoPlayer.SmallSkipBackward",                CAVPlayerOperations::SmallSkipBackward },
-  { "VideoPlayer.SmallSkipForward",                 CAVPlayerOperations::SmallSkipForward },
-
-  { "VideoPlayer.Rewind",                           CAVPlayerOperations::Rewind },
-  { "VideoPlayer.Forward",                          CAVPlayerOperations::Forward },
-
-  { "VideoPlayer.GetTime",                          CAVPlayerOperations::GetTime },
-  { "VideoPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage },
-  { "VideoPlayer.SeekTime",                         CAVPlayerOperations::SeekTime },
-  { "VideoPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage },
-
-// Picture player
-  { "PicturePlayer.PlayPause",                      CPicturePlayerOperations::PlayPause },
-  { "PicturePlayer.Stop",                           CPicturePlayerOperations::Stop },
-  { "PicturePlayer.SkipPrevious",                   CPicturePlayerOperations::SkipPrevious },
-  { "PicturePlayer.SkipNext",                       CPicturePlayerOperations::SkipNext },
-
-  { "PicturePlayer.MoveLeft",                       CPicturePlayerOperations::MoveLeft },
-  { "PicturePlayer.MoveRight",                      CPicturePlayerOperations::MoveRight },
-  { "PicturePlayer.MoveDown",                       CPicturePlayerOperations::MoveDown },
-  { "PicturePlayer.MoveUp",                         CPicturePlayerOperations::MoveUp },
-
-  { "PicturePlayer.ZoomOut",                        CPicturePlayerOperations::ZoomOut },
-  { "PicturePlayer.ZoomIn",                         CPicturePlayerOperations::ZoomIn },
-  { "PicturePlayer.Zoom",                           CPicturePlayerOperations::Zoom },
-  { "PicturePlayer.Rotate",                         CPicturePlayerOperations::Rotate },
-
-// Video Playlist
-  { "VideoPlaylist.Play",                           CAVPlaylistOperations::Play },
-  { "VideoPlaylist.SkipPrevious",                   CAVPlaylistOperations::SkipPrevious },
-  { "VideoPlaylist.SkipNext",                       CAVPlaylistOperations::SkipNext },
-  { "VideoPlaylist.GetItems",                       CAVPlaylistOperations::GetItems },
-  { "VideoPlaylist.Add",                            CAVPlaylistOperations::Add },
-  { "VideoPlaylist.Insert",                         CAVPlaylistOperations::Insert },
-  { "VideoPlaylist.Clear",                          CAVPlaylistOperations::Clear },
-  { "VideoPlaylist.Shuffle",                        CAVPlaylistOperations::Shuffle },
-  { "VideoPlaylist.UnShuffle",                      CAVPlaylistOperations::UnShuffle },
-  { "VideoPlaylist.Remove",                         CAVPlaylistOperations::Remove },
-
-// AudioPlaylist
-  { "AudioPlaylist.Play",                           CAVPlaylistOperations::Play },
-  { "AudioPlaylist.SkipPrevious",                   CAVPlaylistOperations::SkipPrevious },
-  { "AudioPlaylist.SkipNext",                       CAVPlaylistOperations::SkipNext },
-  { "AudioPlaylist.GetItems",                       CAVPlaylistOperations::GetItems },
-  { "AudioPlaylist.Add",                            CAVPlaylistOperations::Add },
-  { "AudioPlaylist.Insert",                         CAVPlaylistOperations::Insert },
-  { "AudioPlaylist.Clear",                          CAVPlaylistOperations::Clear },
-  { "AudioPlaylist.Shuffle",                        CAVPlaylistOperations::Shuffle },
-  { "AudioPlaylist.UnShuffle",                      CAVPlaylistOperations::UnShuffle },
-  { "AudioPlaylist.Remove",                         CAVPlaylistOperations::Remove },
-
-// Playlist
-  { "Playlist.Create",                              CPlaylistOperations::Create },
-  { "Playlist.Destroy",                             CPlaylistOperations::Destroy },
-
-  { "Playlist.GetItems",                            CPlaylistOperations::GetItems },
-  { "Playlist.Add",                                 CPlaylistOperations::Add },
-  { "Playlist.Remove",                              CPlaylistOperations::Remove },
-  { "Playlist.Swap",                                CPlaylistOperations::Swap },
-  { "Playlist.Clear",                               CPlaylistOperations::Clear },
-  { "Playlist.Shuffle",                             CPlaylistOperations::Shuffle },
-  { "Playlist.UnShuffle",                           CPlaylistOperations::UnShuffle },
-
-// Files
-  { "Files.GetSources",                             CFileOperations::GetRootDirectory },
-  { "Files.Download",                               CFileOperations::Download },
-  { "Files.GetDirectory",                           CFileOperations::GetDirectory },
-
-// Music Library
-  { "AudioLibrary.GetArtists",                      CAudioLibrary::GetArtists },
-  { "AudioLibrary.GetArtistDetails",                CAudioLibrary::GetArtistDetails },
-  { "AudioLibrary.GetAlbums",                       CAudioLibrary::GetAlbums },
-  { "AudioLibrary.GetAlbumDetails",                 CAudioLibrary::GetAlbumDetails },
-  { "AudioLibrary.GetSongs",                        CAudioLibrary::GetSongs },
-  { "AudioLibrary.GetSongDetails",                  CAudioLibrary::GetSongDetails },
-  { "AudioLibrary.GetGenres",                       CAudioLibrary::GetGenres },
-  { "AudioLibrary.ScanForContent",                  CAudioLibrary::ScanForContent },
-
-// Video Library
-  { "VideoLibrary.GetGenres",                       CVideoLibrary::GetGenres },
-  { "VideoLibrary.GetMovies",                       CVideoLibrary::GetMovies },
-  { "VideoLibrary.GetMovieDetails",                 CVideoLibrary::GetMovieDetails },
-  { "VideoLibrary.GetMovieSets",                    CVideoLibrary::GetMovieSets },
-  { "VideoLibrary.GetMovieSetDetails",              CVideoLibrary::GetMovieSetDetails },
-  { "VideoLibrary.GetTVShows",                      CVideoLibrary::GetTVShows },
-  { "VideoLibrary.GetTVShowDetails",                CVideoLibrary::GetTVShowDetails },
-  { "VideoLibrary.GetSeasons",                      CVideoLibrary::GetSeasons },
-  { "VideoLibrary.GetEpisodes",                     CVideoLibrary::GetEpisodes },
-  { "VideoLibrary.GetEpisodeDetails",               CVideoLibrary::GetEpisodeDetails },
-  { "VideoLibrary.GetMusicVideos",                  CVideoLibrary::GetMusicVideos },
-  { "VideoLibrary.GetMusicVideoDetails",            CVideoLibrary::GetMusicVideoDetails },
-  { "VideoLibrary.GetRecentlyAddedMovies",          CVideoLibrary::GetRecentlyAddedMovies },
-  { "VideoLibrary.GetRecentlyAddedEpisodes",        CVideoLibrary::GetRecentlyAddedEpisodes },
-  { "VideoLibrary.GetRecentlyAddedMusicVideos",     CVideoLibrary::GetRecentlyAddedMusicVideos },
-  { "VideoLibrary.ScanForContent",                  CVideoLibrary::ScanForContent },
-
-// System operations
-  { "System.Shutdown",                              CSystemOperations::Shutdown },
-  { "System.Suspend",                               CSystemOperations::Suspend },
-  { "System.Hibernate",                             CSystemOperations::Hibernate },
-  { "System.Reboot",                                CSystemOperations::Reboot },
-  { "System.GetInfoLabels",                         CSystemOperations::GetInfoLabels },
-  { "System.GetInfoBooleans",                       CSystemOperations::GetInfoBooleans },
-
-// Input operations
-  { "Input.Left",                                   CInputOperations::Left },
-  { "Input.Right",                                  CInputOperations::Right },
-  { "Input.Down",                                   CInputOperations::Down },
-  { "Input.Up",                                     CInputOperations::Up },
-  { "Input.Select",                                 CInputOperations::Select },
-  { "Input.Back",                                   CInputOperations::Back },
-  { "Input.Home",                                   CInputOperations::Home },
-
-// XBMC operations
-  { "XBMC.GetVolume",                               CXBMCOperations::GetVolume },
-  { "XBMC.SetVolume",                               CXBMCOperations::SetVolume },
-  { "XBMC.ToggleMute",                              CXBMCOperations::ToggleMute },
-  { "XBMC.Play",                                    CXBMCOperations::Play },
-  { "XBMC.StartSlideshow",                          CXBMCOperations::StartSlideshow },
-  { "XBMC.Log",                                     CXBMCOperations::Log },
-  { "XBMC.Quit",                                    CXBMCOperations::Quit }
-};
-
 void CJSONRPC::Initialize()
 {
   if (m_initialized)
     return;
 
-  unsigned int size = sizeof(m_methodMaps) / sizeof(JsonRpcMethodMap);
-  if (!CJSONServiceDescription::Parse(m_methodMaps, size))
-    CLog::Log(LOGSEVERE, "JSONRPC: Error while parsing the json rpc service description");
-  else
-    CLog::Log(LOGINFO, "JSONRPC: json rpc service description successfully loaded");
+  unsigned int size = sizeof(JSONRPC_SERVICE_TYPES) / sizeof(char*);
+
+  for (unsigned int index = 0; index < size; index++)
+    CJSONServiceDescription::AddType(JSONRPC_SERVICE_TYPES[index]);
+
+  size = sizeof(JSONRPC_SERVICE_METHODS) / sizeof(char*);
+
+  for (unsigned int index = 0; index < size; index++)
+    CJSONServiceDescription::AddMethod(JSONRPC_SERVICE_METHODS[index]);
+
+  size = sizeof(JSONRPC_SERVICE_NOTIFICATIONS) / sizeof(char*);
+
+  for (unsigned int index = 0; index < size; index++)
+    CJSONServiceDescription::AddNotification(JSONRPC_SERVICE_NOTIFICATIONS[index]);
   
   m_initialized = true;
 }

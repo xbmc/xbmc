@@ -78,7 +78,6 @@ namespace JSONRPC
 
     inline static void BuildResponse(const CVariant& request, JSON_STATUS code, const CVariant& result, CVariant& response);
 
-    static JsonRpcMethodMap m_methodMaps[];
     static bool m_initialized;
   };
 }
