@@ -4153,7 +4153,7 @@ bool CApplication::IsPlayingFullScreenVideo() const
 
 void CApplication::SaveFileState()
 {
-  if (!m_progressTrackingItem->IsPVRChannel() || g_settings.GetCurrentProfile().canWriteDatabases())
+  if (m_progressTrackingItem->IsPVRChannel() || !g_settings.GetCurrentProfile().canWriteDatabases())
     return;
   CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
       m_progressTrackingVideoResumeBookmark,
@@ -4234,6 +4234,9 @@ void CApplication::StopPlaying()
     if( m_pKaraokeMgr )
       m_pKaraokeMgr->Stop();
 #endif
+
+    if (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio())
+      g_PVRManager.SaveCurrentChannelSettings();
 
     if (m_pPlayer)
       m_pPlayer->CloseFile();
@@ -5425,6 +5428,10 @@ void CApplication::SaveCurrentFileSettings()
       dbs.SetVideoSettings(m_itemCurrentFile->m_strPath, g_settings.m_currentVideoSettings);
       dbs.Close();
     }
+  }
+  else if (m_itemCurrentFile->IsPVRChannel())
+  {
+    g_PVRManager.SaveCurrentChannelSettings();
   }
 }
 
