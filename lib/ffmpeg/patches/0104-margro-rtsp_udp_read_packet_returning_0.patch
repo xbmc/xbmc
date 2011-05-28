@@ -1,0 +1,30 @@
+ffmpeg | branch: master | Martin Storsj? <martin at martin.st> | Wed Feb 16 14:35:47 2011 +0200| [09e22efc7e0d98a90e99c9c2047a203c89d9dcd9] | committer: Michael Niedermayer
+
+rtsp: udp_read_packet returning 0 doesn't mean success
+
+If udp_read_packet returns 0, rtsp_st isn't set and we shouldn't
+treat it as a successfully received packet (which is counted and
+possibly triggers a RTCP receiver report).
+
+This fixes issue 2612.
+(cherry picked from commit 2c35a6bde95a382e2d48570255deb67a7633fa46)
+
+> http://git.videolan.org/gitweb.cgi/ffmpeg.git/?a=commit;h=09e22efc7e0d98a90e99c9c2047a203c89d9dcd9
+---
+
+ libavformat/rtsp.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/ffmpeg/libavformat/rtsp.c b/lib/ffmpeg/libavformat/rtsp.c
+index 78300d6..04aab9e 100644
+--- a/lib/ffmpeg/libavformat/rtsp.c
++++ b/lib/ffmpeg/libavformat/rtsp.c
+@@ -1688,7 +1688,7 @@ int ff_rtsp_fetch_packet(AVFormatContext *s, AVPacket *pkt)
+     case RTSP_LOWER_TRANSPORT_UDP:
+     case RTSP_LOWER_TRANSPORT_UDP_MULTICAST:
+         len = udp_read_packet(s, &rtsp_st, rt->recvbuf, RECVBUF_SIZE, wait_end);
+-        if (len >=0 && rtsp_st->transport_priv && rt->transport == RTSP_TRANSPORT_RTP)
++        if (len > 0 && rtsp_st->transport_priv && rt->transport == RTSP_TRANSPORT_RTP)
+             rtp_check_and_send_back_rr(rtsp_st->transport_priv, len);
+         break;
+     }
