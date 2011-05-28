@@ -410,12 +410,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       g_application.getApplicationMessenger().UserEvent(newEvent.user.code);
       break;
     case XBMC_APPCOMMAND:
-      {
-        // Special media keys are mapped to WM_APPCOMMAND on Windows (and to DBUS events on Linux?)
-        // XBMC translates WM_APPCOMMAND to XBMC_APPCOMMAND events.
-        g_application.OnAppCommand(CAction(newEvent.appcommand.action));
-      }
-      break;
+      return g_application.OnAppCommand(newEvent.appcommand.action);
   }
   return true;
 }
@@ -1217,7 +1212,7 @@ bool CApplication::Initialize()
   CCrystalHD::GetInstance();
 #endif
 
-  CAddonMgr::Get().StartServices();
+  CAddonMgr::Get().StartServices(false);
 
   CLog::Log(LOGNOTICE, "initialize done");
 
@@ -2406,7 +2401,7 @@ bool CApplication::OnKey(const CKey& key)
 }
 
 // OnAppCommand is called in response to a XBMC_APPCOMMAND event.
-
+// This needs to return true if it processed the appcommand or false if it didn't
 bool CApplication::OnAppCommand(const CAction &action)
 {
   // Reset the screen saver
@@ -2414,12 +2409,30 @@ bool CApplication::OnAppCommand(const CAction &action)
 
   // If we were currently in the screen saver wake up and don't process the appcommand
   if (WakeUpScreenSaverAndDPMS())
-  {
     return true;
+
+  // The action ID is the APPCOMMAND code. We need to retrieve the action
+  // associated with this appcommand from the mapping table.
+  uint32_t appcmd = action.GetID();
+  CKey key(appcmd | KEY_APPCOMMAND, (unsigned int) 0);
+  int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+  CAction appcmdaction = CButtonTranslator::GetInstance().GetAction(iWin, key);
+
+  // If we couldn't find an action return false to indicate we have not
+  // handled this appcommand
+  if (!appcmdaction.GetID())
+  {
+    CLog::Log(LOGDEBUG, "%s: unknown appcommand %d", __FUNCTION__, appcmd);
+    return false;
   }
 
   // Process the appcommand
-  return OnAction(action);
+  CLog::Log(LOGDEBUG, "%s: appcommand %d, trying action %s", __FUNCTION__, appcmd, appcmdaction.GetName().c_str());
+  OnAction(appcmdaction);
+
+  // Always return true regardless of whether the action succeeded or not.
+  // This stops Windows handling the appcommand itself.
+  return true;
 }
 
 bool CApplication::OnAction(const CAction &action)
@@ -3428,7 +3441,7 @@ void CApplication::Stop(int exitCode)
   g_mediaManager.Stop();
 
   // Stop services before unloading Python
-  CAddonMgr::Get().StopServices();
+  CAddonMgr::Get().StopServices(false);
 
 /* Python resource freeing must be done after skin has been unloaded, not before
    some windows still need it when deinitializing during skin unloading. */

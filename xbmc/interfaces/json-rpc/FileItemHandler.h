@@ -33,7 +33,6 @@ namespace JSONRPC
     static void FillDetails(ISerializable* info, CFileItemPtr item, const Json::Value& fields, Json::Value &result);
     static void HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const Json::Value &parameterObject, Json::Value &result);
     static void HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const Json::Value &parameterObject, const Json::Value &validFields, Json::Value &result, bool append = true);
-    static void MakeFieldsList(const Json::Value &parameterObject, Json::Value &validFields);
 
     static bool FillFileItemList(const Json::Value &parameterObject, CFileItemList &list);
   private:

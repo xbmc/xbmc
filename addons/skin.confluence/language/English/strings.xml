@@ -177,4 +177,17 @@
   <string id="31509">Channel Group</string>
   <string id="31510">Timer Set</string>
   <string id="31511">Channel Options</string>
+  
+  <!-- Weather plugin -->
+  <string id="31900">Weather Maps</string>
+  <string id="31901">36 Hour Forecast</string>
+  <string id="31902">Hourly Forecast</string>
+  <string id="31903">Weekend Forecast</string>
+  <string id="31904">10 Day Forecast</string>
+  <string id="31905">Forecast</string>
+  <string id="31906">Maps &amp; Video</string>
+  <string id="31907">Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]</string>
+  <string id="31908">Chance of Precipitation</string>
+  <string id="31909">Fetching forecast info...</string>
+
 </strings>

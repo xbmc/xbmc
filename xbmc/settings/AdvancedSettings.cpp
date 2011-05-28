@@ -287,6 +287,8 @@ void CAdvancedSettings::Initialize()
 
   m_jsonOutputCompact = true;
   m_jsonTcpPort = 9090;
+
+  m_enableMultimediaKeys = false;
 }
 
 bool CAdvancedSettings::Load()
@@ -925,6 +927,12 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetString(pDatabase, "user", m_databaseEpg.user);
     XMLUtils::GetString(pDatabase, "pass", m_databaseEpg.pass);
     XMLUtils::GetString(pDatabase, "name", m_databaseEpg.name);
+  }
+
+  pElement = pRootElement->FirstChildElement("enablemultimediakeys");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pRootElement, "enablemultimediakeys", m_enableMultimediaKeys);
   }
 
   // load in the GUISettings overrides:

@@ -21,7 +21,19 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
+	if test "$(DARWIN)" = "ios"; then \
+		cd $(SOURCE); patch -p1 < ../01-mysqlclient-cross-compile.patch; \
+		autoreconf -vif; \
+	fi
 	cd $(SOURCE); $(CONFIGURE)
+	if test "$(DARWIN)" = "ios"; then \
+		sed -i "" -e "s|#define HAVE_CURSES_H 1|/* & */|" \
+			-e "s|#define HAVE_FDATASYNC 1|/* & */|" \
+			-e "s|#define HAVE_TERMCAP_H 1|/* & */|" \
+			-e "s|#define HAVE_TERM_H 1|/* & */|" \
+			$(SOURCE)/include/config.h; \
+		cd $(SOURCE); patch -p1 < ../02-mysqlclient-ios.patch; \
+	fi
 
 $(LIBDYLIB): $(SOURCE)
 	make -C $(SOURCE)
