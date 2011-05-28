@@ -39,6 +39,7 @@ public:
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
   static void LoadProfile(unsigned int profile);
+  static void FastLoadProfile(unsigned int profile);
 
 protected:
   virtual void OnInitWindow();

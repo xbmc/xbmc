@@ -181,6 +181,7 @@ const BUILT_IN commands[] = {
   { "Control.Message",            true,   "Send a given message to a control within a given window" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
+  { "LoadProfileFast",            true,   "Load the specified profile without cleaning playlist and keeping current window active(note; if locks are active it won't work)" },
   { "SetProperty",                true,   "Sets a window property for the current focused window/dialog (key,value)" },
   { "ClearProperty",              true,   "Clears a window property for the current focused window/dialog (key,value)" },
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
@@ -279,6 +280,19 @@ int CBuiltins::Execute(const CStdString& execString)
     {
 
       CGUIWindowLoginScreen::LoadProfile(index);
+    }
+  }
+  else if (execute.Equals("loadprofilefast"))
+  {
+    int index = g_settings.GetProfileIndex(parameter);
+    bool prompt = (params.size() == 2 && params[1].Equals("prompt"));
+    bool bCanceled;
+    if (index >= 0
+        && (g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
+            || g_passwordManager.IsProfileLockUnlocked(index,bCanceled,prompt)))
+    {
+
+      CGUIWindowLoginScreen::FastLoadProfile(index);
     }
   }
   else if (execute.Equals("mastermode"))

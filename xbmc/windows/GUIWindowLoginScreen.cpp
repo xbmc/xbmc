@@ -294,3 +294,30 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   g_application.UpdateLibraries();
 }
+
+
+void CGUIWindowLoginScreen::FastLoadProfile(unsigned int profile)
+{
+  if (profile != 0 || !g_settings.IsMasterUser())
+  {
+    g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
+    g_settings.LoadProfile(profile);
+  }
+  else
+  {
+    CGUIWindow* pWindow = g_windowManager.GetWindow(WINDOW_HOME);
+    if (pWindow)
+      pWindow->ResetControlStates();
+  }
+  g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
+
+  g_settings.UpdateCurrentProfileDate();
+  g_settings.SaveProfiles(PROFILES_FILE);
+  
+  g_weatherManager.Refresh();
+#ifdef HAS_PYTHON
+  g_pythonParser.m_bLogin = true;
+#endif
+
+  g_application.UpdateLibraries();
+}
