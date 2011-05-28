@@ -45,6 +45,8 @@
       <right>Right</right>
       <up>Up</up>
       <down>Down</down>
+      <left mod="ctrl">analogseekback</left>
+      <right mod="ctrl">analogseekforward</right>
       <pageup>PageUp</pageup>
       <pagedown>PageDown</pagedown>
       <return>Select</return>
