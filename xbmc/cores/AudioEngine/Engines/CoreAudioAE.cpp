@@ -646,18 +646,6 @@ void CCoreAudioAE::Stop()
 
 }
 
-/* Check buffersize and allocate buffer new if desired */
-void CCoreAudioAE::CheckOutputBufferSize(void **buffer, int *oldSize, int newSize)
-{
-  if(newSize > *oldSize) 
-  {
-    if(*buffer)
-      _aligned_free(*buffer);
-    *buffer = _aligned_malloc(newSize, 16);
-    *oldSize = newSize;
-  }
-}
-
 template <class AudioDataType>
 static inline void _ReorderSmpteToCA(AudioDataType *buf, uint frames)
 {
@@ -972,4 +960,18 @@ const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdStri
   }
   return str.c_str();
 }
+
+/* Check buffersize and allocate buffer new if desired */
+void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize)
+{
+  if(newSize > *oldSize) 
+  {
+    if(*buffer)
+      _aligned_free(*buffer);
+    *buffer = _aligned_malloc(newSize, 16);
+    *oldSize = newSize;
+  }
+  memset(*buffer, 0x0, *oldSize); 
+}
+
 

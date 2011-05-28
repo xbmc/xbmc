@@ -129,23 +129,8 @@ private:
   } SoundState;
   std::list<SoundState> m_playing_sounds;
   
-  //unsigned int m_BytesPerSec;
-  //unsigned int m_BytesPerFrame;
-  
   bool              m_Initialized; // Prevent multiple init/deinit
-	
-	/*
-#ifdef __arm__
-  CIOSCoreAudioDevice *m_AudioDevice;
-#else
-  CAUOutputDevice   m_AUOutput;
-  CCoreAudioUnit    m_MixerUnit;
-  CCoreAudioDevice  m_AudioDevice;
-  CCoreAudioStream  m_OutputStream;
-#endif
-  UInt32            m_OutputBufferIndex;
-	*/
-	
+		
   AEAudioFormat     m_format;
   bool              m_rawPassthrough;
   
@@ -156,24 +141,11 @@ private:
   
   enum AEChannel    *m_RemapChannelLayout;
   
-  //UInt32            m_DeviceIsRunning;
-  
-  //UInt32            m_NumLatencyFrames;
-  
   bool OpenCoreAudio(unsigned int sampleRate = 44100, bool forceRaw = false, enum AEDataFormat rawFormat = AE_FMT_AC3);
-	/*
-#ifndef __arm__
-  bool InitializePCM (AEAudioFormat &format, CStdString &device, unsigned int bps);
-  bool InitializePCMEncoded  (AEAudioFormat &format, CStdString &device, unsigned int bps);
-  bool InitializeEncoded  (AudioDeviceID outputDevice, AEAudioFormat &format, unsigned int bps);
-#endif
-  bool InitializeAudioDevice(AEAudioFormat &format, CStdString &device);
-	*/
 	
   void Deinitialize();
   void Start();
   void Stop();
-  void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize);
   
   void ReorderSmpteToCA(void *buf, uint frames, AEDataFormat dataFormat);
 
@@ -212,6 +184,7 @@ private:
 // Helper Functions
 char* UInt32ToFourCC(UInt32* val);
 const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdString& str);
+void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize);
 
 #define CONVERT_OSSTATUS(x) UInt32ToFourCC((UInt32*)&ret)
 

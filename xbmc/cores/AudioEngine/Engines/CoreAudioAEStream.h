@@ -52,7 +52,6 @@ public:
   virtual void SetFreeCallback (AECBFunc *cbFunc, void *arg); /* called when the stream is deleted */
 
   virtual unsigned int GetFrameSize();
-  void CheckOutputBufferSize(void **buffer, int *oldSize, int newSize);
   virtual unsigned int AddData(void *data, unsigned int size);
   unsigned int GetFrames(uint8_t *buffer, unsigned int size);
   virtual float GetDelay();

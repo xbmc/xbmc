@@ -74,10 +74,10 @@ CCoreAudioAEStream::CCoreAudioAEStream(enum AEDataFormat dataFormat, unsigned in
   m_paused                        = (options & AESTREAM_PAUSED) != 0;
 
   m_vizRemapBufferSize            = m_remapBufferSize = m_resampleBufferSize = m_convertBufferSize = 16*1024;
-  m_convertBuffer                 = (float*)malloc(m_convertBufferSize);
-  m_resampleBuffer                = (float*)malloc(m_resampleBufferSize);
-  m_remapBuffer                   = (uint8_t *)malloc(m_remapBufferSize); 
-  m_vizRemapBuffer                = (uint8_t*)malloc(m_vizRemapBufferSize); 
+  m_convertBuffer                 = (float*)_aligned_malloc(m_convertBufferSize,16);
+  m_resampleBuffer                = (float*)_aligned_malloc(m_resampleBufferSize,16);
+  m_remapBuffer                   = (uint8_t *)_aligned_malloc(m_remapBufferSize,16); 
+  m_vizRemapBuffer                = (uint8_t*)_aligned_malloc(m_vizRemapBufferSize,16); 
   m_MutexStream                   = SDL_CreateMutex();
 }
 
@@ -202,10 +202,10 @@ CCoreAudioAEStream::~CCoreAudioAEStream()
 
   //InternalFlush();
   
-  free(m_convertBuffer);
-  free(m_resampleBuffer);
-  free(m_remapBuffer);
-  free(m_vizRemapBuffer);
+  _aligned_free(m_convertBuffer);
+  _aligned_free(m_resampleBuffer);
+  _aligned_free(m_remapBuffer);
+  _aligned_free(m_vizRemapBuffer);
   
   if (m_cbFreeFunc)
     m_cbFreeFunc(this, m_cbFreeArg, 0);
@@ -264,16 +264,6 @@ unsigned int CCoreAudioAEStream::GetFrameSize()
 {
   return (m_OutputFormat.m_frameSize > m_StreamFormat.m_frameSize) ? m_OutputFormat.m_frameSize : m_StreamFormat.m_frameSize;
   //return m_OutputFormat.m_frameSize;
-}
-
-/* Check buffersize and allocate buffer new if desired */
-void CCoreAudioAEStream::CheckOutputBufferSize(void **buffer, int *oldSize, int newSize)
-{
-  if(newSize > *oldSize) 
-  {
-    *buffer = realloc(*buffer, newSize);
-    *oldSize = newSize;
-  }
 }
 
 unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
