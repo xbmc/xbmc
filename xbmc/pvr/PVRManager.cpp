@@ -798,9 +798,6 @@ void CPVRManager::CloseStream(void)
       time_t tNow;
       CDateTime::GetCurrentDateTime().GetAsTime(tNow);
       channel.SetLastWatched(tNow, true);
-
-      /* make sure that channel settings are persisted */
-      SaveCurrentChannelSettings();
     }
   }
 
