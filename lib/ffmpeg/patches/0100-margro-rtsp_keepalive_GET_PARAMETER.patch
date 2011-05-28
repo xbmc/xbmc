@@ -1,0 +1,72 @@
+ffmpeg | branch: master | Martin Storsjö <martin at martin.st> | Mon May  9 20:11:16 2011 +0300| [0b4949b51816bc2fd23ba4c4de183b877b58aa25] | committer: Martin Storsjö
+
+rtsp: Only do keepalive using GET_PARAMETER if the server supports it
+
+This is more like what VLC does. If the server doesn't mention
+supporting GET_PARAMETER in response to an OPTIONS request,
+VLC doesn't send any keepalive requests at all. After this patch,
+libavformat will still send OPTIONS keepalives if GET_PARAMETER
+isn't explicitly said to be supported.
+
+Some RTSP cameras don't support GET_PARAMETER, and will
+close the connection if this is sent as keepalive request
+(but support OPTIONS just fine, but probably don't need any
+keepalive at all). Some other cameras don't support using
+OPTIONS as keepalive, but require GET_PARAMETER instead.
+
+Signed-off-by: Martin Storsjö <martin at martin.st>
+
+> http://git.videolan.org/gitweb.cgi/ffmpeg.git/?a=commit;h=0b4949b51816bc2fd23ba4c4de183b877b58aa25
+---
+
+ libavformat/rtsp.c    |    4 ++++
+ libavformat/rtsp.h    |    5 +++++
+ libavformat/rtspdec.c |    4 +++-
+ 3 files changed, 12 insertions(+), 1 deletions(-)
+
+diff --git a/lib/ffmpeg/libavformat/rtsp.c b/lib/ffmpeg/libavformat/rtsp.c
+index e1d7503..3fa1a55 100644
+--- a/lib/ffmpeg/libavformat/rtsp.c
++++ b/lib/ffmpeg/libavformat/rtsp.c
+@@ -808,6 +808,10 @@ void ff_rtsp_parse_line(RTSPMessageHeader *reply, const char *buf,
+         p += strspn(p, SPACE_CHARS);
+         if (method && !strcmp(method, "PLAY"))
+             rtsp_parse_rtp_info(rt, p);
++    } else if (av_stristart(p, "Public:", &p) && rt) {
++        if (strstr(p, "GET_PARAMETER") &&
++            method && !strcmp(method, "OPTIONS"))
++            rt->get_parameter_supported = 1;
+     }
+ }
+ 
+diff --git a/lib/ffmpeg/libavformat/rtsp.h b/lib/ffmpeg/libavformat/rtsp.h
+index 14d3f41..8c2c102 100644
+--- a/lib/ffmpeg/libavformat/rtsp.h
++++ b/lib/ffmpeg/libavformat/rtsp.h
+@@ -331,6 +331,11 @@ typedef struct RTSPState {
+      * Polling array for udp
+      */
+     struct pollfd *p;
++
++    /**
++     * Whether the server supports the GET_PARAMETER method.
++     */
++    int get_parameter_supported;
+ } RTSPState;
+ 
+ /**
+diff --git a/lib/ffmpeg/libavformat/rtspdec.c b/lib/ffmpeg/libavformat/rtspdec.c
+index 45ed7bb..4f926e4 100644
+--- a/lib/ffmpeg/libavformat/rtspdec.c
++++ b/lib/ffmpeg/libavformat/rtspdec.c
+@@ -339,7 +339,9 @@ retry:
+ 
+     /* send dummy request to keep TCP connection alive */
+     if ((av_gettime() - rt->last_cmd_time) / 1000000 >= rt->timeout / 2) {
+-        if (rt->server_type == RTSP_SERVER_WMS) {
++        if (rt->server_type == RTSP_SERVER_WMS ||
++           (rt->server_type != RTSP_SERVER_REAL &&
++            rt->get_parameter_supported)) {
+             ff_rtsp_send_cmd_async(s, "GET_PARAMETER", rt->control_uri, NULL);
+         } else {
+             ff_rtsp_send_cmd_async(s, "OPTIONS", "*", NULL);
