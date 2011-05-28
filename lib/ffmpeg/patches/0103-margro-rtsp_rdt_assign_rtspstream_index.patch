@@ -1,0 +1,95 @@
+ffmpeg | branch: master | Martin Storsj? <martin at martin.st> | Fri Feb 11 23:36:47 2011 +0200| [ae9c5ea2addf54a4b5d0a39f0728801e55226dfa] | committer: Michael Niedermayer
+
+rtsp/rdt: Assign the RTSPStream index to AVStream->id
+
+This is used for mapping AVStreams back to their corresponding
+RTSPStream. Since d9c0510, the RTSPStream pointer isn't stored in
+AVStream->priv_data any longer, breaking this mapping from AVStreams
+to RTSPStreams.
+
+Also, we don't need to clear the priv_data in rdt cleanup any longer,
+since it isn't set to duplicate pointers.
+
+Signed-off-by: Ronald S. Bultje <rsbultje at gmail.com>
+(cherry picked from commit b2dd842d21a0b441bb9f7092357f479beb6b6f69)
+
+> http://git.videolan.org/gitweb.cgi/ffmpeg.git/?a=commit;h=ae9c5ea2addf54a4b5d0a39f0728801e55226dfa
+---
+
+ libavformat/rdt.c     |   12 +++---------
+ libavformat/rtsp.c    |    2 +-
+ libavformat/rtspdec.c |    2 +-
+ 3 files changed, 5 insertions(+), 11 deletions(-)
+
+diff --git a/lib/ffmpeg/libavformat/rdt.c b/lib/ffmpeg/libavformat/rdt.c
+index 3428b4d..c7b35f7 100644
+--- a/lib/ffmpeg/libavformat/rdt.c
++++ b/lib/ffmpeg/libavformat/rdt.c
+@@ -63,7 +63,7 @@ ff_rdt_parse_open(AVFormatContext *ic, int first_stream_of_set_idx,
+     do {
+         s->n_streams++;
+     } while (first_stream_of_set_idx + s->n_streams < ic->nb_streams &&
+-             s->streams[s->n_streams]->priv_data == s->streams[0]->priv_data);
++             s->streams[s->n_streams]->id == s->streams[0]->id);
+     s->prev_set_id    = -1;
+     s->prev_stream_id = -1;
+     s->prev_timestamp = -1;
+@@ -76,11 +76,6 @@ ff_rdt_parse_open(AVFormatContext *ic, int first_stream_of_set_idx,
+ void
+ ff_rdt_parse_close(RDTDemuxContext *s)
+ {
+-    int i;
+-
+-    for (i = 1; i < s->n_streams; i++)
+-        s->streams[i]->priv_data = NULL;
+-
+     av_free(s);
+ }
+ 
+@@ -422,7 +417,7 @@ rdt_parse_sdp_line (AVFormatContext *s, int st_index,
+         int n, first = -1;
+ 
+         for (n = 0; n < s->nb_streams; n++)
+-            if (s->streams[n]->priv_data == stream->priv_data) {
++            if (s->streams[n]->id == stream->id) {
+                 int count = s->streams[n]->index + 1;
+                 if (first == -1) first = n;
+                 if (rdt->nb_rmst < count) {
+@@ -463,10 +458,9 @@ add_dstream(AVFormatContext *s, AVStream *orig_st)
+ {
+     AVStream *st;
+ 
+-    if (!(st = av_new_stream(s, 0)))
++    if (!(st = av_new_stream(s, orig_st->id)))
+         return NULL;
+     st->codec->codec_type = orig_st->codec->codec_type;
+-    st->priv_data         = orig_st->priv_data;
+     st->first_dts         = orig_st->first_dts;
+ 
+     return st;
+diff --git a/lib/ffmpeg/libavformat/rtsp.c b/lib/ffmpeg/libavformat/rtsp.c
+index fbdce88..78300d6 100644
+--- a/lib/ffmpeg/libavformat/rtsp.c
++++ b/lib/ffmpeg/libavformat/rtsp.c
+@@ -322,7 +322,7 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
+         if (!strcmp(ff_rtp_enc_name(rtsp_st->sdp_payload_type), "MP2T")) {
+             /* no corresponding stream */
+         } else {
+-            st = av_new_stream(s, 0);
++            st = av_new_stream(s, rt->nb_rtsp_streams - 1);
+             if (!st)
+                 return;
+             rtsp_st->stream_index = st->index;
+diff --git a/lib/ffmpeg/libavformat/rtspdec.c b/lib/ffmpeg/libavformat/rtspdec.c
+index f619256..4638001 100644
+--- a/lib/ffmpeg/libavformat/rtspdec.c
++++ b/lib/ffmpeg/libavformat/rtspdec.c
+@@ -284,7 +284,7 @@ retry:
+             for (i = 0; i < rt->nb_rtsp_streams; i++) {
+                 rule_nr = 0;
+                 for (r = 0; r < s->nb_streams; r++) {
+-                    if (s->streams[r]->priv_data == rt->rtsp_streams[i]) {
++                    if (s->streams[r]->id == i) {
+                         if (s->streams[r]->discard != AVDISCARD_ALL) {
+                             if (!first)
+                                 av_strlcat(rt->last_subscription, ",",
