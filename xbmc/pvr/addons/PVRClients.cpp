@@ -116,9 +116,8 @@ bool CPVRClients::TryLoadClients(int iMaxTime /* = 0 */)
       if (elapsed.GetSeconds() >= iMaxTime)
         break;
     }
-
     /* break if there are no activated clients */
-    if (m_clientMap.empty())
+    else if (m_clientMap.empty())
       break;
 
     lock.Leave();
