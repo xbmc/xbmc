@@ -9,8 +9,6 @@
 
     <string id="30006">Verbindungszeit Überschreitung in Sekunden</string>
     <string id="30007">Antwortzeit Überschreitung in Sekunden</string>
-    <string id="30008">Zeige eine Benachrichtigung bei Timer Aktualisierungen</string>
-
 
     <!-- notifications -->
     <string id="30500">Getrennt von '%s'</string>

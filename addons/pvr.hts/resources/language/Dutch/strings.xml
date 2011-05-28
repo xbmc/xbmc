@@ -8,7 +8,6 @@
     <string id="30004">Wachtwoord</string>
     <string id="30006">Verbinding timeout in seconden</string>
     <string id="30007">Antwoord timeout in seconden</string>
-    <string id="30008">Toon een melding bij timer updates</string>
 
     <!-- notifications -->
     <string id="30500">Verbinding met '%s' verbroken</string>

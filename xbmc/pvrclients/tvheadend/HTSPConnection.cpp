@@ -638,7 +638,7 @@ bool CHTSPConnection::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue)
   return true;
 }
 
-void CHTSPConnection::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings, bool bNotify /* = false */)
+void CHTSPConnection::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings)
 {
   SRecording recording;
   const char *state;
@@ -687,18 +687,6 @@ void CHTSPConnection::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings
     recording.error.clear();
   }
 
-  if (bNotify)
-  {
-    if (recording.state == ST_ABORTED)
-      XBMC->QueueNotification(QUEUE_INFO, "%s: '%s'", XBMC->GetLocalizedString(19224), recording.title.c_str());
-    else if (recording.state == ST_SCHEDULED)
-      XBMC->QueueNotification(QUEUE_INFO, "%s: '%s'", XBMC->GetLocalizedString(19225), recording.title.c_str());
-    else if (recording.state == ST_RECORDING)
-      XBMC->QueueNotification(QUEUE_INFO, "%s: '%s'", XBMC->GetLocalizedString(19226), recording.title.c_str());
-    else if (recording.state == ST_COMPLETED)
-      XBMC->QueueNotification(QUEUE_INFO, "%s: '%s'", XBMC->GetLocalizedString(19227), recording.title.c_str());
-  }
-
   XBMC->Log(LOG_DEBUG, "%s - id:%u, state:'%s', title:'%s', description: '%s'"
       , __FUNCTION__, recording.id, state, recording.title.c_str()
       , recording.description.c_str());
@@ -711,7 +699,7 @@ void CHTSPConnection::ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings
    PVR->TriggerRecordingUpdate();
 }
 
-void CHTSPConnection::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings, bool bNotify /* = false */)
+void CHTSPConnection::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings)
 {
   uint32_t id;
 
@@ -723,9 +711,6 @@ void CHTSPConnection::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings
   }
 
   XBMC->Log(LOG_DEBUG, "%s - Recording %i was deleted", __FUNCTION__, id);
-
-  if (bNotify)
-    XBMC->QueueNotification(QUEUE_INFO, "%s: '%s'", XBMC->GetLocalizedString(19228), recordings[id].title.c_str());
 
   recordings.erase(id);
 

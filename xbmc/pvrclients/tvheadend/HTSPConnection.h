@@ -56,8 +56,8 @@ public:
   static bool ParseQueueStatus   (htsmsg_t* msg, SQueueStatus &queue);
   static bool ParseSignalStatus  (htsmsg_t* msg, SQuality &quality);
   static bool ParseSourceInfo    (htsmsg_t* msg, SSourceInfo &si);
-  static void ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings, bool bNotify = false);
-  static void ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings, bool bNotify = false);
+  static void ParseDVREntryUpdate(htsmsg_t* msg, SRecordings &recordings);
+  static void ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings);
 
 private:
   bool SendGreeting(void);
