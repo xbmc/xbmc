@@ -1,0 +1,24 @@
+ffmpeg | branch: master | Baptiste Coudurier <baptiste.coudurier at gmail.com> | Sun Feb 27 16:19:50 2011 -0800| [4ea02a9a71865d0e8b31b22e9bb68654c4800951] | committer: Baptiste Coudurier
+
+In mpegts demuxer, do not output known sized packet if an unbounded packet
+is already queued. Fix issue #2624.
+
+> http://git.videolan.org/gitweb.cgi/ffmpeg.git/?a=commit;h=4ea02a9a71865d0e8b31b22e9bb68654c4800951
+---
+
+ libavformat/mpegts.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/ffmpeg/libavformat/mpegts.c b/lib/ffmpeg/libavformat/mpegts.c
+index 2dbd07e..003b173 100644
+--- a/lib/ffmpeg/libavformat/mpegts.c
++++ b/lib/ffmpeg/libavformat/mpegts.c
+@@ -827,7 +827,7 @@ static int mpegts_push_data(MpegTSFilter *filter,
+              * a couple of seconds to milliseconds for properly muxed files.
+              * total_size is the number of bytes following pes_packet_length
+              * in the pes header, i.e. not counting the first 6 bytes */
+-            if (pes->total_size < MAX_PES_PAYLOAD &&
++            if (!ts->stop_parse && pes->total_size < MAX_PES_PAYLOAD &&
+                 pes->pes_header_size + pes->data_index == pes->total_size + 6) {
+                 ts->stop_parse = 1;
+                 new_pes_packet(pes, ts->pkt);
