@@ -1,9 +1,9 @@
 include Makefile.include
 
-BUILDTOOLS = help2man autoconf automake libtool pkg-config yasm cmake
+BUILDTOOLS = gas-preprocessor help2man autoconf automake libtool pkg-config yasm cmake tar dpkg
 
-SUBDIRS = \
-	pcre expat gettext readline sqlite3 \
+SUBDIRS := \
+	Backrow pcre expat gettext readline sqlite3 \
 	liblzo2 freetype2 fontconfig \
 	openssl libssh2 curl \
 	jpeg tiff libpng libogg \
@@ -12,6 +12,13 @@ SUBDIRS = \
 	libGLEW libsdl libsdl_mixer libsdl_image \
 	libmicrohttpd libmodplug libbluray libyajl \
 	samba python26 mysqlclient boost \
+
+ifeq ($(DARWIN), ios)
+  EXCLUDED = libcrystalhd libGLEW libsdl libsdl_mixer libsdl_image
+else
+  EXCLUDED = Backrow
+endif
+SUBDIRS := $(filter-out $(EXCLUDED),$(SUBDIRS))
 
 .PHONY: $(BUILDTOOLS) $(SUBDIRS)
 

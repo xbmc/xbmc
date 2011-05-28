@@ -29,8 +29,7 @@ extern "C" {
 
 #define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
 
-CHTSPData::CHTSPData() :
-    m_bSendNotifications(false)
+CHTSPData::CHTSPData()
 {
   m_session = new CHTSPConnection();
 }
@@ -75,7 +74,6 @@ bool CHTSPData::CheckConnection(void)
 
   if (!m_session->IsConnected() && m_bCreated)
   {
-    EnableNotifications(false);
     if ((bReturn = m_session->Connect() && SendEnableAsync()))
     {
       /* notify the user that the connection has been restored */
@@ -635,16 +633,13 @@ void CHTSPData::Action()
     else if(strstr(method, "tagDelete"))
       CHTSPConnection::ParseTagRemove(msg, m_tags);
     else if(strstr(method, "initialSyncCompleted"))
-    {
-      EnableNotifications(true);
       m_started.Signal();
-    }
     else if(strstr(method, "dvrEntryAdd"))
-      CHTSPConnection::ParseDVREntryUpdate(msg, m_recordings, SendNotifications());
+      CHTSPConnection::ParseDVREntryUpdate(msg, m_recordings);
     else if(strstr(method, "dvrEntryUpdate"))
-      CHTSPConnection::ParseDVREntryUpdate(msg, m_recordings, SendNotifications());
+      CHTSPConnection::ParseDVREntryUpdate(msg, m_recordings);
     else if(strstr(method, "dvrEntryDelete"))
-      CHTSPConnection::ParseDVREntryDelete(msg, m_recordings, SendNotifications());
+      CHTSPConnection::ParseDVREntryDelete(msg, m_recordings);
     else
       XBMC->Log(LOG_DEBUG, "%s - Unmapped action recieved '%s'", __FUNCTION__, method);
 

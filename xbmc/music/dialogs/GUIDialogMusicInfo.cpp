@@ -230,50 +230,49 @@ void CGUIDialogMusicInfo::Update()
   if (m_bArtistInfo)
   {
     CONTROL_ENABLE(CONTROL_BTN_GET_FANART);
-    if (m_bViewReview)
+
+    SetLabel(CONTROL_TEXTAREA, m_artist.strBiography);
+    CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs);
+    OnMessage(message);
+
+    if (GetControl(CONTROL_BTN_TRACKS)) // if no CONTROL_BTN_TRACKS found - allow skinner full visibility control over CONTROL_TEXTAREA and CONTROL_LIST
     {
-      SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
-      SET_CONTROL_HIDDEN(CONTROL_LIST);
-      SetLabel(CONTROL_TEXTAREA, m_artist.strBiography);
-      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 21888);
-    }
-    else
-    {
-      SET_CONTROL_VISIBLE(CONTROL_LIST);
-      if (GetControl(CONTROL_LIST))
+      if (m_bViewReview)
       {
-        SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
-        CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs);
-        OnMessage(message);
+        SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
+        SET_CONTROL_HIDDEN(CONTROL_LIST);
+        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 21888);
       }
       else
-        CLog::Log(LOGERROR, "Out of date skin - needs list with id %i", CONTROL_LIST);
-      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 21887);
+      {
+        SET_CONTROL_VISIBLE(CONTROL_LIST);
+        SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
+        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 21887);
+      }
     }
   }
   else
   {
     CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
 
-    if (m_bViewReview)
+    SetLabel(CONTROL_TEXTAREA, m_album.strReview);
+    CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs);
+    OnMessage(message);
+
+    if (GetControl(CONTROL_BTN_TRACKS)) // if no CONTROL_BTN_TRACKS found - allow skinner full visibility control over CONTROL_TEXTAREA and CONTROL_LIST
     {
-      SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
-      SET_CONTROL_HIDDEN(CONTROL_LIST);
-      SetLabel(CONTROL_TEXTAREA, m_album.strReview);
-      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 182);
-    }
-    else
-    {
-      SET_CONTROL_VISIBLE(CONTROL_LIST);
-      if (GetControl(CONTROL_LIST))
+      if (m_bViewReview)
       {
-        SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
-        CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs);
-        OnMessage(message);
+        SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
+        SET_CONTROL_HIDDEN(CONTROL_LIST);
+        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 182);
       }
       else
-        CLog::Log(LOGERROR, "Out of date skin - needs list with id %i", CONTROL_LIST);
-      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 183);
+      {
+        SET_CONTROL_VISIBLE(CONTROL_LIST);
+        SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
+        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 183);
+      }
     }
   }
   // update the thumbnail

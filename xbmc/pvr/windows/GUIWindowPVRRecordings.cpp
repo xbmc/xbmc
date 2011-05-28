@@ -137,7 +137,8 @@ void CGUIWindowPVRRecordings::UpdateData(void)
   m_parent->m_vecItems->m_strPath = "pvr://recordings/";
   m_parent->Update(m_strSelectedPath);
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
-  m_parent->m_viewControl.SetSelectedItem(m_iSelected);
+  if (!SelectPlayingFile())
+    m_parent->m_viewControl.SetSelectedItem(m_iSelected);
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(19017));
   m_parent->SetLabel(CONTROL_LABELGROUP, "");

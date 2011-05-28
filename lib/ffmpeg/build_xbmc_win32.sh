@@ -9,7 +9,7 @@ then
   make distclean
 fi
 
-if [! -d .libs ]; then
+if [ ! -d .libs ]; then
   mkdir .libs
 fi
 

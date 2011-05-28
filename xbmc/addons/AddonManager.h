@@ -160,10 +160,10 @@ namespace ADDON
     /*! \brief Start all services addons.
         \return True is all addons are started, false otherwise
     */
-    bool StartServices();
+    bool StartServices(const bool beforelogin);
     /*! \brief Stop all services addons.
     */
-    void StopServices();
+    void StopServices(const bool onlylogin);
 
   private:
     void LoadAddons(const CStdString &path, 

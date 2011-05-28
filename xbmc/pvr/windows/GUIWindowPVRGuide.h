@@ -46,6 +46,7 @@ namespace PVR
     virtual void ResetObservers(void);
 
   private:
+    virtual bool SelectPlayingFile(void);
     virtual bool IsSelectedButton(CGUIMessage &message) const;
     virtual bool IsSelectedList(CGUIMessage &message) const;
     virtual bool OnClickButton(CGUIMessage &message);

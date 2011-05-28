@@ -1603,7 +1603,7 @@
   <string id="19070">EPG scan timeout</string>
   <string id="19071">EPG update interval</string>
   <string id="19072">Do not store the EPG in the database</string>
-  <string id="19073">Switch channels if no stream received within</string>
+  <string id="19073">Delay channel switch</string>
   <string id="19074">Active:</string>
   <string id="19075">Name:</string>
   <string id="19076">Folder:</string>
@@ -1761,6 +1761,7 @@
   <string id="19230">Prevent EPG updates while playing a TV stream</string>
   <string id="19231">Always use the channel order from the backend(s)</string>
   <string id="19232">Clear search results</string>
+  <string id="19233">Display a notification on timer updates</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>

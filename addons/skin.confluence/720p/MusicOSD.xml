@@ -23,7 +23,6 @@
 			<onright>1000</onright>
 			<onup>100</onup>
 			<ondown>100</ondown>
-			<visible>system.getbool(input.enablemouse)</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(AddonSettings) | Window.IsVisible(SelectDialog) | Window.IsVisible(VisualisationPresetList)]</visible>
 		</control>

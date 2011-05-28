@@ -19,8 +19,10 @@
  *
  */
 
+#include "Application.h"
 #include "FileItem.h"
 #include "settings/GUISettings.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -132,9 +134,13 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
     if (existingTimer)
     {
       /* if it's present, update the current tag */
+      bool bStateChanged(existingTimer->m_state != timer->m_state);
       if (existingTimer->UpdateEntry(*timer))
       {
         bChanged = true;
+
+        if (bStateChanged && g_PVRManager.IsStarted())
+          existingTimer->QueueNotification();
 
         CLog::Log(LOGINFO,"PVRTimers - %s - updated timer %d on client %d",
             __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
@@ -148,6 +154,9 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
       push_back(newTimer);
       bChanged = true;
       bAddedOrDeleted = true;
+
+      if (g_PVRManager.IsStarted())
+        newTimer->QueueNotification();
 
       CLog::Log(LOGINFO,"PVRTimers - %s - added timer %d on client %d",
           __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
@@ -166,6 +175,13 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
       /* timer was not found */
       CLog::Log(LOGINFO,"PVRTimers - %s - deleted timer %d on client %d",
           __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
+
+      if (g_PVRManager.IsStarted() && g_guiSettings.GetBool("pvrrecord.timernotifications"))
+      {
+        CStdString strMessage;
+        strMessage.Format("%s: '%s'", g_localizeStrings.Get(19228), timer->m_strTitle.c_str());
+        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), strMessage);
+      }
 
       CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *) at(iTimerPtr)->m_epgInfo;
       if (epgTag)

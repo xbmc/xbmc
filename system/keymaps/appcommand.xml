@@ -1,0 +1,24 @@
+<keymap>
+  <global>
+    <appcommand>
+      <browser_back>ParentDir</browser_back>
+      <browser_forward/>
+      <browser_refresh/>
+      <browser_stop>Stop</browser_stop>
+      <browser_search/>
+      <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
+      <browser_home>FirstPage</browser_home>
+      <volume_mute/>
+      <volume_down/>
+      <volume_up/>
+      <next_track>SkipNext</next_track>
+      <prev_track>SkipPrevious</prev_track>
+      <stop>Stop</stop>
+      <play_pause>Play</play_pause>
+      <launch_mail/>
+      <launch_media_select>XBMC.ActivateWindow(MyMusic)</launch_media_select>
+      <launch_app1>ActivateWindow(MyPrograms)</launch_app1>
+      <launch_app2>ActivateWindow(MyPrograms)</launch_app2>
+    </appcommand>
+  </global>
+</keymap>

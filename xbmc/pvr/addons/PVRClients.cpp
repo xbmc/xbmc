@@ -116,9 +116,8 @@ bool CPVRClients::TryLoadClients(int iMaxTime /* = 0 */)
       if (elapsed.GetSeconds() >= iMaxTime)
         break;
     }
-
     /* break if there are no activated clients */
-    if (m_clientMap.empty())
+    else if (m_clientMap.empty())
       break;
 
     lock.Leave();
@@ -152,7 +151,6 @@ void CPVRClients::Unload(void)
   m_bAllClientsLoaded    = false;
   m_currentChannel       = NULL;
   m_currentRecording     = NULL;
-  m_scanStart            = 0;
   m_strPlayingClientName = "";
 
   m_clientsProps.clear();
@@ -355,22 +353,6 @@ int CPVRClients::ReadStream(void* lpBuf, int64_t uiBufSize)
 {
   CSingleLock lock(m_critSection);
 
-  /* Check stream for available video or audio data, if after the scantime no stream
-     is present playback is canceled and returns to the window */
-  if (m_scanStart)
-  {
-    if (CTimeUtils::GetTimeMS() - m_scanStart > (unsigned int) g_guiSettings.GetInt("pvrplayback.scantime")*1000)
-    {
-      CLog::Log(LOGERROR,"PVRManager - %s - no video or audio data available after %i seconds, playback stopped",
-          __FUNCTION__, g_guiSettings.GetInt("pvrplayback.scantime"));
-      {
-        return 0;
-      }
-    }
-    else if (g_application.IsPlayingVideo() || g_application.IsPlayingAudio())
-      m_scanStart = 0;
-  }
-
   if (m_currentChannel)
     return m_clientMap[m_currentChannel->ClientID()]->ReadLiveStream(lpBuf, uiBufSize);
   else if (m_currentRecording)
@@ -507,7 +489,6 @@ bool CPVRClients::OpenLiveStream(const CPVRChannel &tag)
     else
       m_strPlayingClientName = g_localizeStrings.Get(13205);
 
-    m_scanStart = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
     bReturn = true;
   }
 
@@ -564,7 +545,6 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
     if (client->SwitchChannel(channel))
     {
       m_currentChannel = &channel;
-      m_scanStart = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
       ResetQualityData();
 
       bReturn = true;
@@ -621,7 +601,6 @@ bool CPVRClients::OpenRecordedStream(const CPVRRecording &tag)
   {
     m_currentRecording = &tag;
     m_strPlayingClientName = GetClientName(tag.m_iClientId);
-    m_scanStart = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
     bReturn = true;
   }
 

@@ -64,7 +64,7 @@ echo "##### building of ffmpeg dlls done #####"
 
 echo "##### building libdvd dlls #####"
 cd /xbmc/lib/libdvd/
-sh ./build-xbmc-win32.sh
+sh ./build-xbmc-win32.sh $MAKECLEAN
 setfilepath /xbmc/system/players/dvdplayer
 checkfiles libdvdcss-2.dll libdvdnav.dll
 echo "##### building of libdvd dlls done #####"

@@ -40,7 +40,6 @@ int         g_iPortHTSP               = DEFAULT_HTSP_PORT;
 int         g_iPortHTTP               = DEFAULT_HTTP_PORT;
 int         g_iConnectTimeout         = DEFAULT_CONNECT_TIMEOUT;
 int         g_iResponseTimeout        = DEFAULT_RESPONSE_TIMEOUT;
-bool        g_bShowTimerNotifications = true;
 std::string g_strUsername             = "";
 std::string g_strPassword             = "";
 std::string g_strUserPath             = "";
@@ -96,10 +95,6 @@ void ADDON_ReadSettings(void)
   /* read setting "read_timeout" from settings.xml */
   if (!XBMC->GetSetting("response_timeout", &g_iResponseTimeout))
     g_iResponseTimeout = DEFAULT_RESPONSE_TIMEOUT;
-
-  /* read setting "notifications_timers" from settings.xml */
-  if (!XBMC->GetSetting("notifications_timers", &g_bShowTimerNotifications))
-    g_bShowTimerNotifications = true;
 }
 
 ADDON_STATUS ADDON_Create(void* hdl, void* props)
@@ -240,17 +235,6 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
       return ADDON_STATUS_OK;
     }
   }
-  else if (str == "notifications_timers")
-  {
-    bool bNewValue = *(bool*) settingValue;
-    if (g_bShowTimerNotifications != bNewValue)
-    {
-      XBMC->Log(LOG_INFO, "%s - Changed Setting 'notifications_timers' from %u to %u", __FUNCTION__, g_bShowTimerNotifications, bNewValue);
-      g_bShowTimerNotifications = bNewValue;
-      return ADDON_STATUS_OK;
-    }
-  }
-
   return ADDON_STATUS_OK;
 }
 

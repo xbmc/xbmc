@@ -12,8 +12,9 @@ CONFIGURE=./configure --prefix=$(TOOLCHAIN) \
   --program-prefix=g
 
 APP=$(SOURCE)/bin/$(APPNAME)
+APPBIN=$(TOOLCHAIN)/bin/glibtool
 
-all: $(APP) .installed
+all: $(APPBIN)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
 	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
@@ -27,13 +28,12 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 $(APP): $(SOURCE)
 	make -C $(SOURCE)
 
-.installed:
+$(APPBIN):
+	make $(APP)
 	make -C $(SOURCE) install
-	touch $@
 
 clean:
 	make -C $(SOURCE) clean
-	rm -f .installed
 
 distclean::
-	rm -rf $(SOURCE) .installed
+	rm -rf $(SOURCE)

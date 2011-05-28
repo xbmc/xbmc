@@ -6,15 +6,15 @@ We support drawn cross-compiles for OSX and iOS with selection of SDK.
 Options are;
 --with-staging  depends build location (/Users/Shared/xbmc-depends).
 --with-darwin   build depend libs for darwin osx (default) or ios.
---with-arch     build depend libs for arch i386 (default), ppc or arm7.
+--with-arch     build depend libs for arch i386 (default), ppc or armv7.
 --with-sdk      build depend libs using sdk 10.4 (default) or 4.2.
 
 Unfortunately some libraries do not use a configure based setup/compile so we must keep both a config.site seed and duplicate config.site.mk for including in the Makefile. It is very important to keep both files in sync and note their syntax differences as config.site runs under the shell and config.site.mk runs under make.
 
 For OSX, see;
-osx-config.site.in
-osx-config.site.mk.in
+config.site_osx.in
+config.site_osx.mk.in
 
 For iOS, see;
-ios-config.site.in
-ios-config.site.mk.in
+config.site_ios.in
+config.site_ios.mk.in

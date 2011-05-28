@@ -22,6 +22,9 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); patch -p1 < ../01-libmpeg2-add-asm-leading-underscores.patch
+	if test "$(DARWIN)" = "ios"; then \
+		cd $(SOURCE); patch -p0 < ../02-neon.patch; \
+	fi
 	cd $(SOURCE); patch -p1 < ../03-config-fix.patch
 	cd $(SOURCE); $(CONFIGURE)
 

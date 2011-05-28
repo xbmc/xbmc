@@ -19,7 +19,9 @@
  *
  */
 
+#include "Application.h"
 #include "settings/GUISettings.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "settings/AdvancedSettings.h"
@@ -512,4 +514,34 @@ const CDateTime &CPVRTimerInfoTag::FirstDayAsLocalTime(void) const
   tmp.SetFromUTCDateTime(m_FirstDay);
 
   return tmp;
+}
+
+void CPVRTimerInfoTag::QueueNotification(void) const
+{
+  if (g_guiSettings.GetBool("pvrrecord.timernotifications"))
+  {
+    CStdString strMessage;
+
+    switch (m_state)
+    {
+    case PVR_TIMER_STATE_ABORTED:
+    case PVR_TIMER_STATE_CANCELLED:
+      strMessage.Format("%s: '%s'", g_localizeStrings.Get(19224), m_strTitle.c_str());
+      break;
+    case PVR_TIMER_STATE_SCHEDULED:
+      strMessage.Format("%s: '%s'", g_localizeStrings.Get(19225), m_strTitle.c_str());
+      break;
+    case PVR_TIMER_STATE_RECORDING:
+      strMessage.Format("%s: '%s'", g_localizeStrings.Get(19226), m_strTitle.c_str());
+      break;
+    case PVR_TIMER_STATE_COMPLETED:
+      strMessage.Format("%s: '%s'", g_localizeStrings.Get(19227), m_strTitle.c_str());
+      break;
+    default:
+      break;
+    }
+
+    if (!strMessage.IsEmpty())
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), strMessage);
+  }
 }

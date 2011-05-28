@@ -716,7 +716,7 @@ bool CAddonMgr::LoadAddonDescriptionFromMemory(const TiXmlElement *root, AddonPt
   return addon != NULL;
 }
 
-bool CAddonMgr::StartServices()
+bool CAddonMgr::StartServices(const bool beforelogin)
 {
   CLog::Log(LOGDEBUG, "ADDON: Starting service addons.");
 
@@ -729,13 +729,17 @@ bool CAddonMgr::StartServices()
   {
     boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(*it);
     if (service)
-      ret &= service->Start();
+    {
+      if ( (beforelogin && service->GetStartOption() == CService::STARTUP)
+        || (!beforelogin && service->GetStartOption() == CService::LOGIN) )
+        ret &= service->Start();
+    }
   }
 
   return ret;
 }
 
-void CAddonMgr::StopServices()
+void CAddonMgr::StopServices(const bool onlylogin)
 {
   CLog::Log(LOGDEBUG, "ADDON: Stopping service addons.");
 
@@ -747,7 +751,11 @@ void CAddonMgr::StopServices()
   {
     boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(*it);
     if (service)
-      service->Stop();
+    {
+      if ( (onlylogin && service->GetStartOption() == CService::LOGIN)
+        || (!onlylogin) )
+        service->Stop();
+    }
   }
 }
 

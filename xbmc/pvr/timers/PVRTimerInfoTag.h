@@ -135,6 +135,11 @@ namespace PVR
     unsigned int MarginEnd(void) const { return m_iMarginEnd; }
     void SetMarginEnd(unsigned int iMinutes) { m_iMarginEnd = iMinutes; }
 
+    /*!
+     * @brief Show a notification for this timer in the UI
+     */
+    void QueueNotification(void) const;
+
     /* Client control functions */
     bool AddToClient();
     bool DeleteFromClient(bool bForce = false);

@@ -136,6 +136,19 @@ void CGUIWindowPVRCommon::OnInitWindow()
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
 }
 
+bool CGUIWindowPVRCommon::SelectPlayingFile(void)
+{
+  bool bReturn(false);
+
+  if (g_PVRManager.IsPlaying())
+  {
+    m_parent->m_viewControl.SetSelectedItem(g_application.CurrentFile());
+    bReturn = true;
+  }
+
+  return bReturn;
+}
+
 bool CGUIWindowPVRCommon::OnMessageFocus(CGUIMessage &message)
 {
   bool bReturn = false;

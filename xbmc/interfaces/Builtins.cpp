@@ -1124,6 +1124,8 @@ int CBuiltins::Execute(const CStdString& execString)
       videoScan->Close(true);
     }
 
+    ADDON::CAddonMgr::Get().StopServices(true);
+
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_settings.LoadMasterForLogin();
     g_passwordManager.bMasterUser = false;

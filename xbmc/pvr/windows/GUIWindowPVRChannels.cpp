@@ -217,7 +217,8 @@ void CGUIWindowPVRChannels::UpdateData(void)
   }
 
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
-  m_parent->m_viewControl.SetSelectedItem(m_iSelected);
+  if (!SelectPlayingFile())
+    m_parent->m_viewControl.SetSelectedItem(m_iSelected);
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(m_bRadio ? 19024 : 19023));
   if (m_bShowHiddenChannels)

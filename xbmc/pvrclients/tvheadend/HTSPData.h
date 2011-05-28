@@ -35,8 +35,6 @@ public:
   void Close();
   bool CheckConnection(void);
   bool IsConnected(void) const { return m_session->IsConnected(); }
-  void EnableNotifications(bool bSetTo = true) { m_bSendNotifications = bSetTo; }
-  bool SendNotifications(void) { return m_bSendNotifications && g_bShowTimerNotifications; }
 
   /*!
    * @brief Send a message to the backend and read the result.
@@ -93,6 +91,5 @@ private:
   SMessages        m_queue;
   SRecordings      m_recordings;
   int              m_iReconnectRetries;
-  bool             m_bSendNotifications;
 };
 

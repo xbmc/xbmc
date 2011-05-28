@@ -26,11 +26,15 @@
 #include "pictures/DllImageLib.h"
 #include "DDSImage.h"
 #include "filesystem/SpecialProtocol.h"
-#if defined(__APPLE__) && defined(__arm__)
+#ifdef __APPLE__ 
+#ifdef __arm__
 #include <ImageIO/ImageIO.h>
+#else
+#include <ApplicationServices/ApplicationServices.h>
+#endif//__arm__
 #include "filesystem/File.h"
 #include "osx/DarwinUtils.h"
-#endif
+#endif//__APPLE__
 
 /************************************************************************/
 /*                                                                      */
@@ -170,7 +174,7 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     return false;
   }
 
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(__APPLE__)
   XFILE::CFile file;
   UInt8 *imageBuff      = NULL;
   int64_t imageBuffSize = 0;

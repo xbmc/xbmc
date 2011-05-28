@@ -296,11 +296,12 @@ protected:
 
   bool m_bAbortRequest;
 
-  std::string m_filename; // holds the actual filename
-  std::string m_mimetype;  // hold a hint to what content file contains (mime type)
-  ECacheState m_caching;
-  CFileItem   m_item;
-  long        m_ChannelEntryTimeOut;
+  std::string  m_filename; // holds the actual filename
+  std::string  m_mimetype;  // hold a hint to what content file contains (mime type)
+  ECacheState  m_caching;
+  CFileItem    m_item;
+  unsigned int m_scanStart;
+  long         m_ChannelEntryTimeOut;
 
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;
