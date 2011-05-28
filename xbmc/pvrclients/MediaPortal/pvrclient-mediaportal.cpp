@@ -769,8 +769,8 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
       tag.strRecordingId = strRecordingId.c_str();
       tag.strTitle       = recording.Title();
       tag.strDirectory   = ""; //used in XBMC as directory structure below "Server X - hostname"
-      tag.strPlotOutline = recording.Description();
-      tag.strPlot        = tag.strTitle;
+      tag.strPlotOutline = tag.strTitle;
+      tag.strPlot        = recording.Description();
       tag.strChannelName = recording.ChannelName();
       tag.recordingTime  = recording.StartTime();
       tag.iDuration      = (int) recording.Duration();
