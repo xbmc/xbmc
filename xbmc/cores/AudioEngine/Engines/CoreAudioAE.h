@@ -38,9 +38,6 @@
 #include "CoreAudioAEHALOSX.h"
 #endif
 
-#define kOutputBus 0
-#define kIputBus 0
-
 #define COREAUDIO_IS_RAW(x) ((x) == AE_FMT_AC3 || (x) == AE_FMT_DTS || (x) == AE_FMT_EAC3)
 
 class CCoreAudioAEStream;

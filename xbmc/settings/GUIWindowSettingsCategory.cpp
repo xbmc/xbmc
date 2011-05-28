@@ -70,12 +70,7 @@
 #endif
 #endif
 #if defined(__APPLE__) 
-#if defined(__arm__)
-#include "IOSCoreAudio.h"
-#else
-#include "CoreAudio.h"
 #include "XBMCHelper.h"
-#endif
 #endif
 #include "network/GUIDialogAccessPoints.h"
 #include "filesystem/Directory.h"

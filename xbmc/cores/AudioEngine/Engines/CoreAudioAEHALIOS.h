@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,10 +19,13 @@
  *
  */
 
-#ifndef __COREAUDIO_H__
-#define __COREAUDIO_H__
+#ifndef __COREAUDIOAEHALIOS_H__
+#define __COREAUDIOAEHALIOS_H__
 
-#if defined(__APPLE__)
+#ifdef __arm__
+
+#include "ICoreAudioAEHAL.h"
+
 #include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
 #include <AudioToolbox/AudioServices.h>
@@ -36,9 +39,7 @@
 #define kInputBus 1
 
 // Forward declarations
-class CIOSCoreAudioHardware;
-class CIOSCoreAudioDevice;
-class CIOSCoreAudioUnit;
+class CCoreAudioAE;
 
 typedef std::list<AudioComponentInstance> IOSCoreAudioDeviceList;
 
@@ -62,7 +63,7 @@ public:
   const char* GetName(CStdString& name);
   CIOSCoreAudioDevice(AudioComponentInstance deviceId);
   UInt32 GetTotalOutputChannels();
-
+  
   void Attach(AudioUnit audioUnit) {m_AudioUnit = audioUnit;}
   AudioComponentInstance GetComponent(){return m_AudioUnit;}
   
@@ -72,7 +73,7 @@ public:
   void Close();
   void Start();
   void Stop();
-
+  
   bool EnableInput(AudioComponentInstance componentInstance, AudioUnitElement bus);
   bool EnableOutput(AudioComponentInstance componentInstance, AudioUnitElement bus);
   bool GetFormat(AudioComponentInstance componentInstance, AudioUnitScope scope,
@@ -84,20 +85,40 @@ public:
   int  FramesPerSlice(int nSlices);
   void AudioChannelLayout(int layoutTag);
   bool SetRenderProc(AudioComponentInstance componentInstance, AudioUnitElement bus,
-                 AURenderCallback callback, void* pClientData);
+                     AURenderCallback callback, void* pClientData);
   bool SetSessionListener(AudioSessionPropertyID inID, 
-                 AudioSessionPropertyListener inProc, void* pClientData);
-
+                          AudioSessionPropertyListener inProc, void* pClientData);
+  
   AudioComponentInstance m_AudioUnit;
   AudioComponentInstance m_MixerUnit;
   bool m_Passthrough;
 };
 
-// Helper Functions
-char* IOSUInt32ToFourCC(UInt32* val);
-const char* IOSStreamDescriptionToString(AudioStreamBasicDescription desc, CStdString& str);
+class CCoreAudioAEHALIOS : public ICoreAudioAEHAL
+{
+protected:
+  CIOSCoreAudioDevice  *m_AudioDevice;
+	bool                  m_Initialized;
+	bool                  m_Passthrough;
+public:
 
-#define CONVERT_OSSTATUS(x) IOSUInt32ToFourCC((UInt32*)&ret)
+	AEAudioFormat			m_format;
+  unsigned int			m_BytesPerFrame;
+	unsigned int			m_BytesPerSec;
+	unsigned int			m_NumLatencyFrames;
+	unsigned int			m_OutputBufferIndex;
+	CCoreAudioAE		 *m_ae;
+
+	CCoreAudioAEHALIOS();
+  virtual ~CCoreAudioAEHALIOS();
+
+  virtual bool  Initialize(IAE *ae, bool passThrough, AEAudioFormat &format, CStdString &device);
+	virtual void	Deinitialize();
+	virtual void	EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
+	virtual void	Stop();
+	virtual bool	Start();
+	virtual float	GetDelay();
+};
 
 #endif
-#endif // __COREAUDIO_H__
+#endif

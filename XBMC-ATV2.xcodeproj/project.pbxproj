@@ -25,6 +25,7 @@
 		32243CCA138D8E2D000373C6 /* CoreAudioAEStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32243C9A138D8E2D000373C6 /* CoreAudioAEStream.cpp */; };
 		32243CD4138D8E2D000373C6 /* AEPPAnimationFade.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32243CAE138D8E2D000373C6 /* AEPPAnimationFade.cpp */; };
 		32243CDC138D8E5F000373C6 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32243CDA138D8E5F000373C6 /* DVDAudioCodecPassthrough.cpp */; };
+		32769663139048F80072F3DD /* CoreAudioAEHALIOS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32769660139048F80072F3DD /* CoreAudioAEHALIOS.cpp */; };
 		4D5D2E131301753F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E121301753F006ABC13 /* CFNetwork.framework */; };
 		7C99B73F133D372300FC2B16 /* CacheCircular.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B73D133D372300FC2B16 /* CacheCircular.cpp */; };
 		7C99B7AA134072CD00FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */; };
@@ -790,7 +791,6 @@
 		F56C7BCA131EC2DB000AD0F6 /* XBMCController.mm in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BC5131EC2DB000AD0F6 /* XBMCController.mm */; };
 		F56C7BCB131EC2DB000AD0F6 /* XBMCEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BC7131EC2DB000AD0F6 /* XBMCEAGLView.mm */; };
 		F56C7BD0131EC301000AD0F6 /* XBMC.png in Resources */ = {isa = PBXBuildFile; fileRef = F56C7BCD131EC301000AD0F6 /* XBMC.png */; };
-		F56C7BD6131EC332000AD0F6 /* IOSCoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BD2131EC332000AD0F6 /* IOSCoreAudio.cpp */; };
 		F56C7BDC131EC390000AD0F6 /* WinEventsIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BD9131EC390000AD0F6 /* WinEventsIOS.mm */; };
 		F56C7BDD131EC390000AD0F6 /* WinSystemIOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BDB131EC390000AD0F6 /* WinSystemIOS.mm */; };
 		F56C7BE3131EC3F3000AD0F6 /* RenderSystemGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BE0131EC3F3000AD0F6 /* RenderSystemGLES.cpp */; };
@@ -970,6 +970,9 @@
 		32243CBB138D8E2D000373C6 /* ThreadedAE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadedAE.h; sourceTree = "<group>"; };
 		32243CDA138D8E5F000373C6 /* DVDAudioCodecPassthrough.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecPassthrough.cpp; sourceTree = "<group>"; };
 		32243CDB138D8E5F000373C6 /* DVDAudioCodecPassthrough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecPassthrough.h; sourceTree = "<group>"; };
+		32769660139048F80072F3DD /* CoreAudioAEHALIOS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAEHALIOS.cpp; sourceTree = "<group>"; };
+		32769661139048F80072F3DD /* CoreAudioAEHALIOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAEHALIOS.h; sourceTree = "<group>"; };
+		32769662139048F80072F3DD /* ICoreAudioAEHAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICoreAudioAEHAL.h; sourceTree = "<group>"; };
 		4D5D2E121301753F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		7C99B73D133D372300FC2B16 /* CacheCircular.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CacheCircular.cpp; sourceTree = "<group>"; };
 		7C99B73E133D372300FC2B16 /* CacheCircular.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheCircular.h; sourceTree = "<group>"; };
@@ -2619,8 +2622,6 @@
 		F56C7BC8131EC2DB000AD0F6 /* XBMCDebugHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCDebugHelpers.h; sourceTree = "<group>"; };
 		F56C7BCD131EC301000AD0F6 /* XBMC.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = XBMC.png; sourceTree = "<group>"; };
 		F56C7BCE131EC301000AD0F6 /* XBMCATV2-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "XBMCATV2-Info.plist"; sourceTree = "<group>"; };
-		F56C7BD2131EC332000AD0F6 /* IOSCoreAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSCoreAudio.cpp; sourceTree = "<group>"; };
-		F56C7BD3131EC332000AD0F6 /* IOSCoreAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSCoreAudio.h; sourceTree = "<group>"; };
 		F56C7BD8131EC390000AD0F6 /* WinEventsIOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinEventsIOS.h; sourceTree = "<group>"; };
 		F56C7BD9131EC390000AD0F6 /* WinEventsIOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WinEventsIOS.mm; sourceTree = "<group>"; };
 		F56C7BDA131EC390000AD0F6 /* WinSystemIOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinSystemIOS.h; sourceTree = "<group>"; };
@@ -2992,6 +2993,9 @@
 		32243C95138D8E2D000373C6 /* Engines */ = {
 			isa = PBXGroup;
 			children = (
+				32769662139048F80072F3DD /* ICoreAudioAEHAL.h */,
+				32769660139048F80072F3DD /* CoreAudioAEHALIOS.cpp */,
+				32769661139048F80072F3DD /* CoreAudioAEHALIOS.h */,
 				32243C96138D8E2D000373C6 /* CoreAudioAE.cpp */,
 				32243C97138D8E2D000373C6 /* CoreAudioAE.h */,
 				32243C98138D8E2D000373C6 /* CoreAudioAESound.cpp */,
@@ -4854,8 +4858,6 @@
 				F5B13DFF13344F2A0045076D /* DarwinUtils.h */,
 				F5B13E0013344F310045076D /* DarwinUtils.mm */,
 				F56C7BAD131EC1ED000AD0F6 /* atv2 */,
-				F56C7BD2131EC332000AD0F6 /* IOSCoreAudio.cpp */,
-				F56C7BD3131EC332000AD0F6 /* IOSCoreAudio.h */,
 				F56C767E131EC153000AD0F6 /* OSXGNUReplacements.c */,
 				F56C767F131EC153000AD0F6 /* OSXGNUReplacements.h */,
 				F56C7680131EC153000AD0F6 /* posix-realtime-stub.c */,
@@ -6632,7 +6634,6 @@
 				F56C7BC9131EC2DB000AD0F6 /* XBMCAppliance.m in Sources */,
 				F56C7BCA131EC2DB000AD0F6 /* XBMCController.mm in Sources */,
 				F56C7BCB131EC2DB000AD0F6 /* XBMCEAGLView.mm in Sources */,
-				F56C7BD6131EC332000AD0F6 /* IOSCoreAudio.cpp in Sources */,
 				F56C7BDC131EC390000AD0F6 /* WinEventsIOS.mm in Sources */,
 				F56C7BDD131EC390000AD0F6 /* WinSystemIOS.mm in Sources */,
 				F56C7BE3131EC3F3000AD0F6 /* RenderSystemGLES.cpp in Sources */,
@@ -6768,6 +6769,7 @@
 				32243CCA138D8E2D000373C6 /* CoreAudioAEStream.cpp in Sources */,
 				32243CD4138D8E2D000373C6 /* AEPPAnimationFade.cpp in Sources */,
 				32243CDC138D8E5F000373C6 /* DVDAudioCodecPassthrough.cpp in Sources */,
+				32769663139048F80072F3DD /* CoreAudioAEHALIOS.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

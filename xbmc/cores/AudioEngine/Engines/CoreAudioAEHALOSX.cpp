@@ -1475,10 +1475,10 @@ CCoreAudioAEHALOSX::CCoreAudioAEHALOSX() :
 	m_NumLatencyFrames(0),
 	m_OutputBufferIndex(0)
 {
-	m_AUOutput      = new CAUOutputDevice();
-	m_MixerUnit			= new CCoreAudioUnit();
-	m_AudioDevice		= new CCoreAudioDevice();
-	m_OutputStream	= new CCoreAudioStream();	
+	m_AUOutput      = new CAUOutputDevice;
+	m_MixerUnit			= new CCoreAudioUnit;
+	m_AudioDevice		= new CCoreAudioDevice;
+	m_OutputStream	= new CCoreAudioStream;	
 }
 
 CCoreAudioAEHALOSX::~CCoreAudioAEHALOSX()

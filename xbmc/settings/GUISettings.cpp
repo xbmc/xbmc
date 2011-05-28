@@ -443,16 +443,16 @@ void CGUISettings::Initialize()
   AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
 
 #if (defined(__APPLE__) && defined(__arm__))
-  if (g_sysinfo.IsAppleTV2())
-  {
+  //if (g_sysinfo.IsAppleTV2())
+  //{
     AddBool(ao, "audiooutput.ac3passthrough", 364, false);
     AddBool(ao, "audiooutput.dtspassthrough", 254, false);
-  }
-  else
-  {
-    AddBool(NULL, "audiooutput.ac3passthrough", 364, false);
-    AddBool(NULL, "audiooutput.dtspassthrough", 254, false);
-  }
+  //}
+  //else
+  //{
+  //  AddBool(NULL, "audiooutput.ac3passthrough", 364, false);
+  //  AddBool(NULL, "audiooutput.dtspassthrough", 254, false);
+  //}
 #else
   AddBool(ao, "audiooutput.ac3passthrough", 364, true);
   AddBool(ao, "audiooutput.dtspassthrough", 254, true);
