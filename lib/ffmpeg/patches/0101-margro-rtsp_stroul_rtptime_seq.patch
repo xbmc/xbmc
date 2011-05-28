@@ -1,0 +1,31 @@
+ffmpeg | branch: master | Ilya <ilyaDOTilba at gmail.com> | Sat Mar 26 17:13:36 2011 +0100| [4515f9b58a51eb0af81c1ed1fd99889fcdc5ae91] | committer: Anton Khirnov
+
+rtsp: use strtoul to parse rtptime and seq values.
+
+strtol could return negative values, leading to various error messages,
+mainly "non-monotonically increasing dts".
+
+Signed-off-by: Anton Khirnov <anton at khirnov.net>
+
+> http://git.videolan.org/gitweb.cgi/ffmpeg.git/?a=commit;h=4515f9b58a51eb0af81c1ed1fd99889fcdc5ae91
+---
+
+ libavformat/rtsp.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+ diff --git a/lib/ffmpeg/libavformat/rtsp.c b/lib/ffmpeg/libavformat/rtsp.c
+index 3fa1a55..fbdce88 100644
+--- a/lib/ffmpeg/libavformat/rtsp.c
++++ b/lib/ffmpeg/libavformat/rtsp.c
+@@ -744,9 +744,9 @@ static void rtsp_parse_rtp_info(RTSPState *rt, const char *p)
+         if (!strcmp(key, "url"))
+             av_strlcpy(url, value, sizeof(url));
+         else if (!strcmp(key, "seq"))
+-            seq = strtol(value, NULL, 10);
++            seq = strtoul(value, NULL, 10);
+         else if (!strcmp(key, "rtptime"))
+-            rtptime = strtol(value, NULL, 10);
++            rtptime = strtoul(value, NULL, 10);
+         if (*p == ',') {
+             handle_rtp_info(rt, url, seq, rtptime);
+             url[0] = '\0';
