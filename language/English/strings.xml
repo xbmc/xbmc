@@ -1759,6 +1759,7 @@
   <string id="19230">Prevent EPG updates while playing a TV stream</string>
   <string id="19231">Always use the channel order from the backend(s)</string>
   <string id="19232">Clear search results</string>
+  <string id="19233">Display a notification on timer updates</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>
