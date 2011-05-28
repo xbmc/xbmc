@@ -110,6 +110,11 @@ public:
    */
   virtual void SetReadRate(unsigned rate) {}
 
+  /*! \briaf Current read speed from source
+   *  used to calculate caching time for startup
+   */
+  virtual unsigned GetReadRate() { return 0; }
+
   bool IsStreamType(DVDStreamType type) const { return m_streamType == type; }
   virtual bool IsEOF() = 0;
   virtual int GetCurrentGroupId() { return 0; }
