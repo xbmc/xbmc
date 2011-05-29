@@ -311,7 +311,11 @@ static const ActionMapping appcommands[] =
   { "launch_mail",         APPCOMMAND_LAUNCH_MAIL },
   { "launch_media_select", APPCOMMAND_LAUNCH_MEDIA_SELECT },
   { "launch_app1",         APPCOMMAND_LAUNCH_APP1 },
-  { "launch_app2",         APPCOMMAND_LAUNCH_APP2 }
+  { "launch_app2",         APPCOMMAND_LAUNCH_APP2 },
+  { "play",                APPCOMMAND_MEDIA_PLAY },
+  { "pause",               APPCOMMAND_MEDIA_PAUSE },
+  { "fastforward",         APPCOMMAND_MEDIA_FAST_FORWARD },
+  { "rewind",              APPCOMMAND_MEDIA_REWIND }
 };
 #endif
 
