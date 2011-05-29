@@ -18,7 +18,6 @@ DEFINES += -D_LINUX -fPIC -DUSE_DEMUX
 ## CXXFLAGS
 ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
 	CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses -dynamiclib -single_module -undefined dynamic_lookup
-	DEFINES += -D__APPLE__ -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common
 else
 	CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
 endif
