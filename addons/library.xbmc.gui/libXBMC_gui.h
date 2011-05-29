@@ -36,6 +36,8 @@ typedef void* GUIHANDLE;
 #if defined(__APPLE__)
 #if defined(__POWERPC__)
 #define GUI_HELPER_DLL "/library.xbmc.gui/libXBMC_gui-powerpc-osx.so"
+#elif defined(__arm__)
+#define GUI_HELPER_DLL "/library.xbmc.gui/libXBMC_gui-arm-osx.so"
 #else
 #define GUI_HELPER_DLL "/library.xbmc.gui/libXBMC_gui-x86-osx.so"
 #endif
