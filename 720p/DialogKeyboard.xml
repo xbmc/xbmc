@@ -1,1490 +1,1472 @@
+<?xml version="1.0"?>
 <window id="103">
-  <defaultcontrol always="true">65</defaultcontrol>
-  <allowoverlay>no</allowoverlay>
-  <zorder>1</zorder>
-    
-   <coordinates>
-    <system>1</system>
-    <posx>0</posx>
-    <posy>0</posy>
-  </coordinates>
-  
-  <include>DialogFade</include>
-    
-  <controls>
-    <include>DialogFadeBG</include>
-
-    <control type="group">
-      <posx>177</posx>
-      <posy>82</posy>
-
-      <control type="image">
-        <description>Background Image</description>
-        <posx>0</posx>
-        <posy>0</posy>
-        <width>926</width>
-        <height>556</height>
-        <include>DialogBGTexture</include>
-        <visible>Skin.HasTheme(lite)</visible>
-      </control>
-      <control type="image">
-        <description>Background Image</description>
-        <posx>0</posx>
-        <posy>0</posy>
-        <width>926</width>
-        <height>556</height>
-        <texture>Keyboard.png</texture>
-        <visible>!Skin.HasTheme(lite)</visible>
-      </control>
-
-      <control type="label" id="311">
-        <description>Heading Label</description>
-        <posx>0</posx>
-        <posy>30</posy>
-        <width>926</width>
-        <align>center</align>
-        <font>TitleCapsFont</font>
-      </control>
-    </control>
-  
-      <control type="label" id="310">
-        <description>Edit Text</description>
-        <posx>360</posx>
-        <posy>210</posy>
-        <width>570</width>
-        <height>30</height>
-        <font>LargeDefaultFont</font>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      
-      <!-- Row 1 -->
-      <control type="button" id="305">
-        <description>Previous button</description>
-        <posx>213</posx>
-        <posy>254</posy>
-        <width>165</width>
-        <height>134</height>
-        <hitrect x="259" y="293" w="71" h="46" />
-        <font>XLargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <label>&lt;</label>
-        <texturefocus>KeyboardArrows.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <onleft>306</onleft>
-        <onright>49</onright>
-        <onup>307</onup>
-        <ondown>303</ondown>
-        <align>center</align>
-        <aligny>top</aligny>
-				<textoffsety>40</textoffsety>
+	<defaultcontrol always="true">65</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<zorder>1</zorder>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<include>DialogFade</include>
+	<controls>
+		<include>DialogFadeBG</include>
+		<control type="group">
+			<posx>177</posx>
+			<posy>82</posy>
+			<control type="image">
+				<description>Background Image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>926</width>
+				<height>556</height>
+				<include>DialogBGTexture</include>
+				<visible>Skin.HasTheme(lite)</visible>
 			</control>
-      <control type="button" id="49">
-        <description>'1' button</description>
-        <posx>298</posx>
-        <posy>249</posy>
-        <width>132</width>
-        <height>132</height>
-        <hitrect x="335" y="293" w="56" h="46" />
-        <onleft>305</onleft>
-        <onright>50</onright>
-        <onup>307</onup>
-        <ondown>303</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardNumbers.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="50">
-        <description>'2' button</description>
-        <posx>360</posx>
-        <posy>249</posy>
-        <width>132</width>
-        <height>132</height>
-        <hitrect x="397" y="293" w="56" h="46" />
-        <onleft>49</onleft>
-        <onright>51</onright>
-        <onup>32</onup>
-        <ondown>65</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardNumbers.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="51">
-        <description>'3' button</description>
-        <posx>420</posx>
-        <posy>249</posy>
-        <width>132</width>
-        <height>132</height>
-				<hitrect x="459" y="293" w="56" h="46" />
-        <onleft>50</onleft>
-        <onright>52</onright>
-        <onup>32</onup>
-        <ondown>66</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardNumbers.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="52">
-        <description>'4' button</description>
-        <posx>482</posx>
-        <posy>249</posy>
-        <width>132</width>
-        <height>132</height>
-				<hitrect x="520" y="293" w="56" h="46" />
-        <onleft>51</onleft>
-        <onright>53</onright>
-        <onup>32</onup>
-        <ondown>67</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardNumbers.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="53">
-        <description>'5' button</description>
-        <posx>544</posx>
-        <posy>249</posy>
-        <width>132</width>
-        <height>132</height>
-				<hitrect x="582" y="293" w="56" h="46" />
-        <onleft>52</onleft>
-        <onright>54</onright>
-        <onup>32</onup>
-        <ondown>68</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardNumbers.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="54">
-        <description>'6' button</description>
-        <posx>604</posx>
-        <posy>249</posy>
-        <width>132</width>
-        <height>132</height>
-				<hitrect x="644" y="293" w="56" h="46" />
-        <onleft>53</onleft>
-        <onright>55</onright>
-        <onup>32</onup>
-        <ondown>68</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardNumbers.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="55">
-        <description>'7' button</description>
-        <posx>666</posx>
-        <posy>249</posy>
-        <width>132</width>
-        <height>132</height>
-				<hitrect x="705" y="293" w="56" h="46" />
-        <onleft>54</onleft>
-        <onright>56</onright>
-        <onup>32</onup>
-        <ondown>69</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardNumbers.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="56">
-        <description>'8' button</description>
-        <posx>728</posx>
-        <posy>249</posy>
-        <width>132</width>
-        <height>132</height>
-				<hitrect x="767" y="293" w="56" h="46" />
-        <onleft>55</onleft>
-        <onright>57</onright>
-        <onup>8</onup>
-        <ondown>70</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardNumbers.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="57">
-        <description>'9' button</description>
-        <posx>790</posx>
-        <posy>249</posy>
-        <width>132</width>
-        <height>132</height>
-				<hitrect x="828" y="293" w="56" h="46" />
-        <onleft>56</onleft>
-        <onright>48</onright>
-        <onup>8</onup>
-        <ondown>71</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardNumbers.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="48">
-        <description>'0' button</description>
-        <posx>852</posx>
-        <posy>249</posy>
-        <width>132</width>
-        <height>132</height>
-				<hitrect x="890" y="293" w="56" h="46" />
-        <onleft>57</onleft>
-        <onright>306</onright>
-        <onup>300</onup>
-        <ondown>72</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardNumbers.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="306">
-        <description>Next button</description>
-        <posx>905</posx>
-        <posy>254</posy>
-        <width>165</width>
-        <height>134</height>
-				<hitrect x="952" y="293" w="71" h="46" />
-        <label>&gt;</label>
-        <font>XLargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus flipx="true">KeyboardArrows.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <onleft>48</onleft>
-        <onright>305</onright>
-        <onup>300</onup>
-        <ondown>73</ondown>
-        <align>center</align>
-				<aligny>top</aligny>
-				<textoffsety>40</textoffsety>
-      </control>
-  
-      <!-- Row 2 -->
-			<control type="button">
-				<description>Focused Caps button</description>
-				<posx>220</posx>
-				<posy>305</posy>
-				<width>212</width>
-				<height>130</height>
-				<font>LargeDefaultCapsFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-				<texturefocus>-</texturefocus>
-				<texturenofocus>KeyboardCaps.png</texturenofocus>
+			<control type="image">
+				<description>Background Image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>926</width>
+				<height>556</height>
+				<texture>Keyboard.png</texture>
+				<visible>!Skin.HasTheme(lite)</visible>
+			</control>
+			<control type="label" id="311">
+				<description>Heading Label</description>
+				<posx>0</posx>
+				<posy>30</posy>
+				<width>926</width>
 				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(303)</visible>
+				<font>TitleCapsFont</font>
 			</control>
-			<control type="togglebutton" id="303">
-				<description>CAPS LOCK button</description>
-				<posx>365</posx>
-				<posy>342</posy>
-				<width>27</width>
-				<height>27</height>
-        <hitrect x="259" y="346" w="133" h="47" />
-				<onleft>73</onleft>
-				<onright>65</onright>
-				<onup>305</onup>
-				<ondown>302</ondown>
-				<font>LargeDefaultCapsFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-				<label>Caps</label>
-				<altlabel>CAPS</altlabel>
-				<alttexturenofocus>LEDOn.png</alttexturenofocus>
-				<alttexturefocus>LEDOn.png</alttexturefocus>
-				<texturefocus>LEDOff.png</texturefocus>
-				<texturenofocus>LEDOff.png</texturenofocus>
-				<align>right</align>
-				<aligny>top</aligny>
-				<textoffsetx>38</textoffsetx>
-				<textoffsety>12</textoffsety>
-				<pulseonselect>false</pulseonselect>
-			</control>
-      <control type="button" id="65">
-        <description>'A' button</description>
-        <posx>350</posx>
-        <posy>288</posy>
-        <width>161</width>
-        <height>156</height>
-				<hitrect x="399" y="346" w="63" h="46" />
-        <onleft>303</onleft>
-        <onright>66</onright>
-        <onup>50</onup>
-        <ondown>74</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="66">
-        <description>'B' button</description>
-        <posx>420</posx>
-        <posy>288</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="469" y="346" w="63" h="46" />
-        <onleft>65</onleft>
-        <onright>67</onright>
-        <onup>51</onup>
-        <ondown>75</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="67">
-        <description>'C' button</description>
-        <posx>490</posx>
-        <posy>288</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="539" y="346" w="63" h="46" />
-        <onleft>66</onleft>
-        <onright>68</onright>
-        <onup>52</onup>
-        <ondown>76</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="68">
-        <description>'D' button</description>
-        <posx>560</posx>
-        <posy>288</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="609" y="346" w="63" h="46" />
-        <onleft>67</onleft>
-        <onright>69</onright>
-        <onup>53</onup>
-        <ondown>77</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="69">
-        <description>'E' button</description>
-        <posx>630</posx>
-        <posy>288</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="679" y="346" w="63" h="46" />
-        <onleft>68</onleft>
-        <onright>70</onright>
-        <onup>55</onup>
-        <ondown>78</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="70">
-        <description>'F' button</description>
-        <posx>700</posx>
-        <posy>288</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="749" y="346" w="63" h="46" />
-        <onleft>69</onleft>
-        <onright>71</onright>
-        <onup>56</onup>
-        <ondown>79</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="71">
-        <description>'G' button</description>
-        <posx>770</posx>
-        <posy>288</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="819" y="346" w="63" h="46" />
-        <onleft>70</onleft>
-				<onright>72</onright>
-        <onup>57</onup>
-        <ondown>80</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="72">
-        <description>'H' button</description>
-        <posx>840</posx>
-        <posy>288</posy>
-        <width>163</width>
-        <height>156</height>
-				<hitrect x="889" y="346" w="63" h="46" />
-        <onleft>71</onleft>
-        <onright>73</onright>
-        <onup>48</onup>
-        <ondown>81</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="73">
-        <description>'I' button</description>
-        <posx>911</posx>
-        <posy>288</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="959" y="346" w="63" h="46" />
-        <onleft>72</onleft>
-        <onright>303</onright>
-        <onup>306</onup>
-        <ondown>82</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-  
-      <!-- Row 3 -->
-			<control type="button">
-				<description>Focused Shift button</description>
-				<posx>220</posx>
-				<posy>357</posy>
-				<width>212</width>
-				<height>130</height>
-				<font>LargeDefaultFont</font>
-				<texturefocus>-</texturefocus>
-				<focusedcolor>00FFFFFF</focusedcolor>
-				<texturenofocus>KeyboardCaps.png</texturenofocus>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(302)</visible>
-			</control>
-      <control type="togglebutton" id="302">
-        <description>SHIFT button</description>
-        <posx>365</posx>
-        <posy>395</posy>
-        <width>27</width>
-        <height>27</height>
-				<hitrect x="259" y="398" w="133" h="47" />
-        <onleft>82</onleft>
-        <onright>74</onright>
-        <onup>303</onup>
-        <ondown>304</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <label>$LOCALIZE[20178]</label>
-				<alttexturenofocus>LEDOn.png</alttexturenofocus>
-				<alttexturefocus>LEDOn.png</alttexturefocus>
-				<texturefocus>LEDOff.png</texturefocus>
-				<texturenofocus>LEDOff.png</texturenofocus>
-				<align>right</align>
-        <aligny>top</aligny>
-        <textoffsetx>42</textoffsetx>
-        <textoffsety>12</textoffsety>
-        <pulseonselect>false</pulseonselect>
-      </control>
-      <control type="button" id="74">
-        <description>'J' button</description>
-        <posx>350</posx>
-        <posy>341</posy>
-        <width>161</width>
-        <height>156</height>
-				<hitrect x="399" y="398" w="63" h="46" />
-        <onleft>302</onleft>
-        <onright>75</onright>
-        <onup>65</onup>
-        <ondown>83</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="75">
-        <description>'K' button</description>
-        <posx>420</posx>
-        <posy>341</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="469" y="398" w="63" h="46" />
-        <onleft>74</onleft>
-        <onright>76</onright>
-        <onup>66</onup>
-        <ondown>84</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="76">
-        <description>'L' button</description>
-        <posx>490</posx>
-        <posy>341</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="539" y="398" w="63" h="46" />
-        <onleft>75</onleft>
-        <onright>77</onright>
-        <onup>67</onup>
-        <ondown>85</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="77">
-        <description>'M' button</description>
-        <posx>560</posx>
-        <posy>341</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="609" y="398" w="63" h="46" />
-        <onleft>76</onleft>
-        <onright>78</onright>
-        <onup>68</onup>
-        <ondown>86</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="78">
-        <description>'N' button</description>
-        <posx>630</posx>
-        <posy>341</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="679" y="398" w="63" h="46" />
-        <onleft>77</onleft>
-        <onright>79</onright>
-        <onup>69</onup>
-        <ondown>87</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="79">
-        <description>'O' button</description>
-        <posx>700</posx>
-        <posy>341</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="749" y="398" w="63" h="46" />
-        <onleft>78</onleft>
-        <onright>80</onright>
-        <onup>70</onup>
-        <ondown>88</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="80">
-        <description>'P' button</description>
-        <posx>770</posx>
-        <posy>341</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="819" y="398" w="63" h="46" />
-        <onleft>79</onleft>
-        <onright>81</onright>
-        <onup>71</onup>
-        <ondown>89</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="81">
-        <description>'Q' button</description>
-        <posx>840</posx>
-        <posy>341</posy>
-        <width>163</width>
-        <height>156</height>
-				<hitrect x="889" y="398" w="63" h="46" />
-        <onleft>80</onleft>
-        <onright>82</onright>
-        <onup>72</onup>
-        <ondown>90</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="82">
-        <description>'R' button</description>
-        <posx>911</posx>
-        <posy>341</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="959" y="398" w="63" h="46" />
-        <onleft>81</onleft>
-        <onright>302</onright>
-        <onup>73</onup>
-        <ondown>300</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-  
-      <!-- Row 4 -->
-			<control type="button">
-				<description>Focused Symbols button</description>
-				<posx>220</posx>
-				<posy>409</posy>
-				<width>212</width>
-				<height>130</height>
-				<font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-				<texturefocus>-</texturefocus>
-				<texturenofocus>KeyboardCaps.png</texturenofocus>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(304)</visible>
-			</control>
-      <control type="togglebutton" id="304">
-        <description>Symbols button</description>
-        <posx>365</posx>
-        <posy>447</posy>
-        <width>27</width>
-        <height>27</height>
-				<hitrect x="259" y="451" w="133" h="47" />
-        <onleft>90</onleft>
-        <onright>83</onright>
-        <onup>302</onup>
-        <ondown>307</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <label>$LOCALIZE[20180]</label>
-				<alttexturenofocus>LEDOn.png</alttexturenofocus>
-				<alttexturefocus>LEDOn.png</alttexturefocus>
-				<texturefocus>LEDOff.png</texturefocus>
-				<texturenofocus>LEDOff.png</texturenofocus>
-				<align>right</align>
-        <aligny>top</aligny>
-        <textoffsetx>24</textoffsetx>
-        <textoffsety>12</textoffsety>
-        <pulseonselect>false</pulseonselect>
-      </control>
-      <control type="button" id="83">
-        <description>'S' button</description>
-        <posx>350</posx>
-        <posy>393</posy>
-        <width>161</width>
-        <height>156</height>
-				<hitrect x="399" y="451" w="63" h="46" />
-        <onleft>304</onleft>
-        <onright>84</onright>
-        <onup>74</onup>
-        <ondown>32</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="84">
-        <description>'T' button</description>
-        <posx>420</posx>
-        <posy>393</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="469" y="451" w="63" h="46" />
-        <onleft>83</onleft>
-        <onright>85</onright>
-        <onup>75</onup>
-        <ondown>32</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="85">
-        <description>'U' button</description>
-        <posx>490</posx>
-        <posy>393</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="539" y="451" w="63" h="46" />
-        <onleft>84</onleft>
-        <onright>86</onright>
-        <onup>76</onup>
-        <ondown>32</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="86">
-        <description>'V' button</description>
-        <posx>560</posx>
-        <posy>393</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="609" y="451" w="63" h="46" />
-        <onleft>85</onleft>
-        <onright>87</onright>
-        <onup>77</onup>
-        <ondown>32</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="87">
-        <description>'W' button</description>
-        <posx>630</posx>
-        <posy>393</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="679" y="451" w="63" h="46" />
-        <onleft>86</onleft>
-        <onright>88</onright>
-        <onup>78</onup>
-        <ondown>32</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="88">
-        <description>'X' button</description>
-        <posx>700</posx>
-        <posy>393</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="749" y="451" w="63" h="46" />
-        <onleft>87</onleft>
-        <onright>89</onright>
-        <onup>79</onup>
-        <ondown>8</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="89">
-        <description>'Y' button</description>
-        <posx>770</posx>
-        <posy>393</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="819" y="451" w="63" h="46" />
-        <onleft>88</onleft>
-        <onright>90</onright>
-        <onup>80</onup>
-        <ondown>8</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="90">
-        <description>'Z' button</description>
-        <posx>840</posx>
-        <posy>393</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="889" y="451" w="63" h="46" />
-        <onleft>89</onleft>
-        <onright>304</onright>
-        <onup>81</onup>
-        <ondown>300</ondown>
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <texturefocus>KeyboardLetters.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button">
-        <description>Blank button</description>
-        <posx>912</posx>
-        <posy>393</posy>
-        <width>162</width>
-        <height>156</height>
-				<hitrect x="959" y="451" w="63" h="46" />
-        <label>-</label>
-        <font>LargeDefaultFont</font>
-        <texturefocus>-</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-  
-      <!-- Row 5 -->
-      <control type="button" id="307">
-        <description>IP Input button</description>
-        <posx>217</posx>
-				<posy>460</posy>
-        <width>244</width>
-        <height>136</height>
-				<hitrect x="259" y="503" w="161" h="47" />
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <label>$LOCALIZE[1006]</label>
-        <texturefocus>KeyboardIPAddress.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <onleft>300</onleft>
-        <onright>32</onright>
-        <onup>304</onup>
-        <ondown>305</ondown>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="32">
-        <description>SPACE button</description>
-        <posx>382</posx>
-				<posy>460</posy>
-        <width>394</width>
-        <height>136</height>
-				<hitrect x="426" y="503" w="302" h="47" />
-        <font>LargeDefaultCapsFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <label>$LOCALIZE[20182]</label>
-        <onleft>307</onleft>
-        <onright>8</onright>
-        <onup>85</onup>
-        <ondown>53</ondown>
-        <texturefocus>KeyboardSpacebar.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="8">
-        <description>BACKSPACE button</description>
-        <posx>694</posx>
-				<posy>460</posy>
-        <width>230</width>
-        <height>136</height>
-				<hitrect x="734" y="503" w="148" h="47" />
-        <font>LargeDefaultFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <label>$LOCALIZE[20181]</label>
-        <onleft>32</onleft>
-        <onright>300</onright>
-        <onup>88</onup>
-        <ondown>56</ondown>
-        <texturefocus>KeyboardBackspace.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-      <control type="button" id="300">
-        <description>DONE button</description>
-        <posx>846</posx>
-				<posy>460</posy>
-				<width>226</width>
-        <height>138</height>
-				<hitrect x="889" y="503" w="134" h="47" />
-        <font>LargeDefaultCapsFont</font>
-				<focusedcolor>00FFFFFF</focusedcolor>
-        <label>$LOCALIZE[20177]</label>
-        <onleft>8</onleft>
-        <onright>307</onright>
-        <onup>90</onup>
-        <ondown>306</ondown>
-        <texturefocus>KeyboardDone.png</texturefocus>
-        <texturenofocus>-</texturenofocus>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-
-			<!-- Focused Row 1 -->
-			<control type="label" id="305">
-				<description>Previous button</description>
-				<posx>213</posx>
-				<posy>249</posy>
-				<width>165</width>
-				<height>134</height>
-				<font>KeyboardFocusFont</font>
-				<label>&lt;</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(305)</visible>
-			</control>
-			<control type="label" id="49">
-				<description>'1' button</description>
-				<posx>298</posx>
-				<posy>249</posy>
-				<width>132</width>
-				<height>132</height>
-				<font>KeyboardFocusFont</font>
-				<label>$INFO[Control.GetLabel(49)]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(49)</visible>
-			</control>
-			<control type="label" id="50">
-				<description>'2' button</description>
-				<posx>360</posx>
-				<posy>249</posy>
-				<width>132</width>
-				<height>132</height>
-				<font>KeyboardFocusFont</font>
-				<label></label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(50)</visible>
-			</control>
-			<control type="label" id="51">
-				<description>'3' button</description>
-				<posx>420</posx>
-				<posy>249</posy>
-				<width>132</width>
-				<height>132</height>
-				<font>KeyboardFocusFont</font>
-				<label></label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(51)</visible>
-			</control>
-			<control type="label" id="52">
-				<description>'4' button</description>
-				<posx>482</posx>
-				<posy>249</posy>
-				<width>132</width>
-				<height>132</height>
-				<font>KeyboardFocusFont</font>
-				<label></label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(52)</visible>
-			</control>
-			<control type="label" id="53">
-				<description>'5' button</description>
-				<posx>544</posx>
-				<posy>249</posy>
-				<width>132</width>
-				<height>132</height>
-				<font>KeyboardFocusFont</font>
-				<label></label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(53)</visible>
-			</control>
-			<control type="label" id="54">
-				<description>'6' button</description>
-				<posx>604</posx>
-				<posy>249</posy>
-				<width>132</width>
-				<height>132</height>
-				<font>KeyboardFocusFont</font>
-				<label></label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(54)</visible>
-			</control>
-			<control type="label" id="55">
-				<description>'7' button</description>
-				<posx>666</posx>
-				<posy>249</posy>
-				<width>132</width>
-				<height>132</height>
-				<font>KeyboardFocusFont</font>
-				<label></label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(55)</visible>
-			</control>
-			<control type="label" id="56">
-				<description>'8' button</description>
-				<posx>728</posx>
-				<posy>249</posy>
-				<width>132</width>
-				<height>132</height>
-				<font>KeyboardFocusFont</font>
-				<label></label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(56)</visible>
-			</control>
-			<control type="label" id="57">
-				<description>'9' button</description>
-				<posx>790</posx>
-				<posy>249</posy>
-				<width>132</width>
-				<height>132</height>
-				<font>KeyboardFocusFont</font>
-				<label></label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(57)</visible>
-			</control>
-			<control type="label" id="48">
-				<description>'0' button</description>
-				<posx>852</posx>
-				<posy>249</posy>
-				<width>132</width>
-				<height>132</height>
-				<font>KeyboardFocusFont</font>
-				<label></label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(48)</visible>
-			</control>
-			<control type="label" id="306">
-				<description>Next button</description>
-				<posx>905</posx>
-				<posy>249</posy>
-				<width>165</width>
-				<height>134</height>
-				<font>KeyboardFocusFont</font>
-				<label>&gt;</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(306)</visible>
-			</control>
-		
-			<!-- Focused Row 2 -->
-			<control type="label" id="303">
-				<description>CAPS LOCK button</description>
-				<posx>220</posx>
-				<posy>303</posy>
-				<width>212</width>
-				<height>130</height>
-				<label>Caps</label>
-				<font>KeyboardFocusCapsFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(303)</visible>
-			</control>
-			<control type="label" id="65">
-				<description>'A' button</description>
-				<posx>350</posx>
-				<posy>288</posy>
-				<width>161</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(65)</visible>
-			</control>
-			<control type="label" id="66">
-				<description>'B' button</description>
-				<posx>420</posx>
-				<posy>288</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(66)</visible>
-			</control>
-			<control type="label" id="67">
-				<description>'C' button</description>
-				<posx>490</posx>
-				<posy>288</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(67)</visible>
-			</control>
-			<control type="label" id="68">
-				<description>'D' button</description>
-				<posx>560</posx>
-				<posy>288</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(68)</visible>
-			</control>
-			<control type="label" id="69">
-				<description>'E' button</description>
-				<posx>630</posx>
-				<posy>288</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(69)</visible>
-			</control>
-			<control type="label" id="70">
-				<description>'F' button</description>
-				<posx>700</posx>
-				<posy>288</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(70)</visible>
-			</control>
-			<control type="label" id="71">
-				<description>'G' button</description>
-				<posx>770</posx>
-				<posy>288</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(71)</visible>
-			</control>
-			<control type="label" id="72">
-				<description>'H' button</description>
-				<posx>840</posx>
-				<posy>288</posy>
-				<width>163</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(72)</visible>
-			</control>
-			<control type="label" id="73">
-				<description>'I' button</description>
-				<posx>911</posx>
-				<posy>288</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(73)</visible>
-			</control>
-
-			<!-- Focused Row 3 -->
-			<control type="label" id="302">
-				<description>SHIFT button</description>
-				<posx>220</posx>
-				<posy>355</posy>
-				<width>212</width>
-				<height>130</height>
-				<font>KeyboardFocusFont</font>
-				<label>$LOCALIZE[20178]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(302)</visible>
-			</control>
-			<control type="label" id="74">
-				<description>'J' button</description>
-				<posx>350</posx>
-				<posy>341</posy>
-				<width>161</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(74)</visible>
-			</control>
-			<control type="label" id="75">
-				<description>'K' button</description>
-				<posx>420</posx>
-				<posy>341</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(75)</visible>
-			</control>
-			<control type="label" id="76">
-				<description>'L' button</description>
-				<posx>490</posx>
-				<posy>341</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(76)</visible>
-			</control>
-			<control type="label" id="77">
-				<description>'M' button</description>
-				<posx>560</posx>
-				<posy>341</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(77)</visible>
-			</control>
-			<control type="label" id="78">
-				<description>'N' button</description>
-				<posx>630</posx>
-				<posy>341</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(78)</visible>
-			</control>
-			<control type="label" id="79">
-				<description>'O' button</description>
-				<posx>700</posx>
-				<posy>341</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(79)</visible>
-			</control>
-			<control type="label" id="80">
-				<description>'P' button</description>
-				<posx>770</posx>
-				<posy>341</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(80)</visible>
-			</control>
-			<control type="label" id="81">
-				<description>'Q' button</description>
-				<posx>840</posx>
-				<posy>341</posy>
-				<width>163</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(81)</visible>
-			</control>
-			<control type="label" id="82">
-				<description>'R' button</description>
-				<posx>911</posx>
-				<posy>341</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(82)</visible>
-			</control>
-
-			<!-- Focused Row 4 -->
-			<control type="label" id="304">
-				<description>Symbols button</description>
-				<posx>220</posx>
-				<posy>407</posy>
-				<width>212</width>
-				<height>130</height>
-				<font>KeyboardFocusFont</font>
-				<label>$LOCALIZE[20180]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(304)</visible>
-			</control>
-			<control type="label" id="83">
-				<description>'S' button</description>
-				<posx>350</posx>
-				<posy>393</posy>
-				<width>161</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(83)</visible>
-			</control>
-			<control type="label" id="84">
-				<description>'T' button</description>
-				<posx>420</posx>
-				<posy>393</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(84)</visible>
-			</control>
-			<control type="label" id="85">
-				<description>'U' button</description>
-				<posx>490</posx>
-				<posy>393</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(85)</visible>
-			</control>
-			<control type="label" id="86">
-				<description>'V' button</description>
-				<posx>560</posx>
-				<posy>393</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(86)</visible>
-			</control>
-			<control type="label" id="87">
-				<description>'W' button</description>
-				<posx>630</posx>
-				<posy>393</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(87)</visible>
-			</control>
-			<control type="label" id="88">
-				<description>'X' button</description>
-				<posx>700</posx>
-				<posy>393</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(88)</visible>
-			</control>
-			<control type="label" id="89">
-				<description>'Y' button</description>
-				<posx>770</posx>
-				<posy>393</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(89)</visible>
-			</control>
-			<control type="label" id="90">
-				<description>'Z' button</description>
-				<posx>840</posx>
-				<posy>393</posy>
-				<width>162</width>
-				<height>156</height>
-				<font>KeyboardFocusFont</font>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(90)</visible>
-			</control>
-
-			<!-- Focused Row 5 -->
-			<control type="label" id="307">
-				<description>IP Input button</description>
-				<posx>217</posx>
-				<posy>458</posy>
-				<width>244</width>
-				<height>136</height>
-				<font>KeyboardFocusFont</font>
-				<label>$LOCALIZE[1006]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(307)</visible>
-			</control>
-			<control type="label" id="32">
-				<description>SPACE button</description>
-				<posx>382</posx>
-				<posy>458</posy>
-				<width>394</width>
-				<height>136</height>
-				<font>KeyboardFocusCapsFont</font>
-				<label>$LOCALIZE[20182]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(32)</visible>
-			</control>
-			<control type="label" id="8">
-				<description>BACKSPACE button</description>
-				<posx>694</posx>
-				<posy>458</posy>
-				<width>230</width>
-				<height>136</height>
-				<font>KeyboardFocusFont</font>
-				<label>$LOCALIZE[20181]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(8)</visible>
-			</control>
-			<control type="label" id="300">
-				<description>DONE button</description>
-				<posx>846</posx>
-				<posy>458</posy>
-				<width>226</width>
-				<height>138</height>
-				<font>KeyboardFocusCapsFont</font>
-				<label>$LOCALIZE[20177]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<visible>Control.HasFocus(300)</visible>
-			</control>
-		
+		</control>
+		<control type="label" id="310">
+			<description>Edit Text</description>
+			<posx>360</posx>
+			<posy>210</posy>
+			<width>570</width>
+			<height>30</height>
+			<font>LargeDefaultFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<!-- Row 1 -->
+		<control type="button" id="305">
+			<description>Previous button</description>
+			<posx>213</posx>
+			<posy>254</posy>
+			<width>165</width>
+			<height>134</height>
+			<hitrect x="259" y="293" w="71" h="46"/>
+			<font>XLargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<label>&lt;</label>
+			<texturefocus>KeyboardArrows.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<onleft>306</onleft>
+			<onright>49</onright>
+			<onup>307</onup>
+			<ondown>303</ondown>
+			<align>center</align>
+			<aligny>top</aligny>
+			<textoffsety>40</textoffsety>
+		</control>
+		<control type="button" id="49">
+			<description>'1' button</description>
+			<posx>298</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<hitrect x="335" y="293" w="56" h="46"/>
+			<onleft>305</onleft>
+			<onright>50</onright>
+			<onup>307</onup>
+			<ondown>303</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardNumbers.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="50">
+			<description>'2' button</description>
+			<posx>360</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<hitrect x="397" y="293" w="56" h="46"/>
+			<onleft>49</onleft>
+			<onright>51</onright>
+			<onup>32</onup>
+			<ondown>65</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardNumbers.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="51">
+			<description>'3' button</description>
+			<posx>420</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<hitrect x="459" y="293" w="56" h="46"/>
+			<onleft>50</onleft>
+			<onright>52</onright>
+			<onup>32</onup>
+			<ondown>66</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardNumbers.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="52">
+			<description>'4' button</description>
+			<posx>482</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<hitrect x="520" y="293" w="56" h="46"/>
+			<onleft>51</onleft>
+			<onright>53</onright>
+			<onup>32</onup>
+			<ondown>67</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardNumbers.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="53">
+			<description>'5' button</description>
+			<posx>544</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<hitrect x="582" y="293" w="56" h="46"/>
+			<onleft>52</onleft>
+			<onright>54</onright>
+			<onup>32</onup>
+			<ondown>68</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardNumbers.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="54">
+			<description>'6' button</description>
+			<posx>604</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<hitrect x="644" y="293" w="56" h="46"/>
+			<onleft>53</onleft>
+			<onright>55</onright>
+			<onup>32</onup>
+			<ondown>68</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardNumbers.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="55">
+			<description>'7' button</description>
+			<posx>666</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<hitrect x="705" y="293" w="56" h="46"/>
+			<onleft>54</onleft>
+			<onright>56</onright>
+			<onup>32</onup>
+			<ondown>69</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardNumbers.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="56">
+			<description>'8' button</description>
+			<posx>728</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<hitrect x="767" y="293" w="56" h="46"/>
+			<onleft>55</onleft>
+			<onright>57</onright>
+			<onup>8</onup>
+			<ondown>70</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardNumbers.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="57">
+			<description>'9' button</description>
+			<posx>790</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<hitrect x="828" y="293" w="56" h="46"/>
+			<onleft>56</onleft>
+			<onright>48</onright>
+			<onup>8</onup>
+			<ondown>71</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardNumbers.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="48">
+			<description>'0' button</description>
+			<posx>852</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<hitrect x="890" y="293" w="56" h="46"/>
+			<onleft>57</onleft>
+			<onright>306</onright>
+			<onup>300</onup>
+			<ondown>72</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardNumbers.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="306">
+			<description>Next button</description>
+			<posx>905</posx>
+			<posy>254</posy>
+			<width>165</width>
+			<height>134</height>
+			<hitrect x="952" y="293" w="71" h="46"/>
+			<label>&gt;</label>
+			<font>XLargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus flipx="true">KeyboardArrows.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<onleft>48</onleft>
+			<onright>305</onright>
+			<onup>300</onup>
+			<ondown>73</ondown>
+			<align>center</align>
+			<aligny>top</aligny>
+			<textoffsety>40</textoffsety>
+		</control>
+		<!-- Row 2 -->
+		<control type="button">
+			<description>Focused Caps button</description>
+			<posx>220</posx>
+			<posy>305</posy>
+			<width>212</width>
+			<height>130</height>
+			<font>LargeDefaultCapsFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>-</texturefocus>
+			<texturenofocus>KeyboardCaps.png</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(303)</visible>
+		</control>
+		<control type="togglebutton" id="303">
+			<description>CAPS LOCK button</description>
+			<posx>253</posx>
+			<posy>342</posy>
+			<width>27</width>
+			<height>27</height>
+			<hitrect x="259" y="346" w="133" h="47"/>
+			<onleft>73</onleft>
+			<onright>65</onright>
+			<onup>305</onup>
+			<ondown>302</ondown>
+			<font>LargeDefaultCapsFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<label>Caps</label>
+			<altlabel>CAPS</altlabel>
+			<alttexturenofocus>LEDOn.png</alttexturenofocus>
+			<alttexturefocus>LEDOn.png</alttexturefocus>
+			<texturefocus>LEDOff.png</texturefocus>
+			<texturenofocus>LEDOff.png</texturenofocus>
+			<align>right</align>
+			<aligny>top</aligny>
+			<textoffsetx>38</textoffsetx>
+			<textoffsety>12</textoffsety>
+			<pulseonselect>false</pulseonselect>
+		</control>
+		<control type="button" id="65">
+			<description>'A' button</description>
+			<posx>350</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="399" y="346" w="63" h="46"/>
+			<onleft>303</onleft>
+			<onright>66</onright>
+			<onup>50</onup>
+			<ondown>74</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="66">
+			<description>'B' button</description>
+			<posx>420</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="469" y="346" w="63" h="46"/>
+			<onleft>65</onleft>
+			<onright>67</onright>
+			<onup>51</onup>
+			<ondown>75</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="67">
+			<description>'C' button</description>
+			<posx>490</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="539" y="346" w="63" h="46"/>
+			<onleft>66</onleft>
+			<onright>68</onright>
+			<onup>52</onup>
+			<ondown>76</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="68">
+			<description>'D' button</description>
+			<posx>560</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="609" y="346" w="63" h="46"/>
+			<onleft>67</onleft>
+			<onright>69</onright>
+			<onup>53</onup>
+			<ondown>77</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="69">
+			<description>'E' button</description>
+			<posx>630</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="679" y="346" w="63" h="46"/>
+			<onleft>68</onleft>
+			<onright>70</onright>
+			<onup>55</onup>
+			<ondown>78</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="70">
+			<description>'F' button</description>
+			<posx>700</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="749" y="346" w="63" h="46"/>
+			<onleft>69</onleft>
+			<onright>71</onright>
+			<onup>56</onup>
+			<ondown>79</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="71">
+			<description>'G' button</description>
+			<posx>770</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="819" y="346" w="63" h="46"/>
+			<onleft>70</onleft>
+			<onright>72</onright>
+			<onup>57</onup>
+			<ondown>80</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="72">
+			<description>'H' button</description>
+			<posx>840</posx>
+			<posy>288</posy>
+			<width>163</width>
+			<height>156</height>
+			<hitrect x="889" y="346" w="63" h="46"/>
+			<onleft>71</onleft>
+			<onright>73</onright>
+			<onup>48</onup>
+			<ondown>81</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="73">
+			<description>'I' button</description>
+			<posx>911</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="959" y="346" w="63" h="46"/>
+			<onleft>72</onleft>
+			<onright>303</onright>
+			<onup>306</onup>
+			<ondown>82</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<!-- Row 3 -->
+		<control type="button">
+			<description>Focused Shift button</description>
+			<posx>220</posx>
+			<posy>357</posy>
+			<width>212</width>
+			<height>130</height>
+			<font>LargeDefaultFont</font>
+			<texturefocus>-</texturefocus>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturenofocus>KeyboardCaps.png</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(302)</visible>
+		</control>
+		<control type="togglebutton" id="302">
+			<description>SHIFT button</description>
+			<posx>253</posx>
+			<posy>395</posy>
+			<width>27</width>
+			<height>27</height>
+			<hitrect x="259" y="398" w="133" h="47"/>
+			<onleft>82</onleft>
+			<onright>74</onright>
+			<onup>303</onup>
+			<ondown>304</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<label>$LOCALIZE[20178]</label>
+			<alttexturenofocus>LEDOn.png</alttexturenofocus>
+			<alttexturefocus>LEDOn.png</alttexturefocus>
+			<texturefocus>LEDOff.png</texturefocus>
+			<texturenofocus>LEDOff.png</texturenofocus>
+			<align>right</align>
+			<aligny>top</aligny>
+			<textoffsetx>42</textoffsetx>
+			<textoffsety>12</textoffsety>
+			<pulseonselect>false</pulseonselect>
+		</control>
+		<control type="button" id="74">
+			<description>'J' button</description>
+			<posx>350</posx>
+			<posy>341</posy>
+			<width>161</width>
+			<height>156</height>
+			<hitrect x="399" y="398" w="63" h="46"/>
+			<onleft>302</onleft>
+			<onright>75</onright>
+			<onup>65</onup>
+			<ondown>83</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="75">
+			<description>'K' button</description>
+			<posx>420</posx>
+			<posy>341</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="469" y="398" w="63" h="46"/>
+			<onleft>74</onleft>
+			<onright>76</onright>
+			<onup>66</onup>
+			<ondown>84</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="76">
+			<description>'L' button</description>
+			<posx>490</posx>
+			<posy>341</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="539" y="398" w="63" h="46"/>
+			<onleft>75</onleft>
+			<onright>77</onright>
+			<onup>67</onup>
+			<ondown>85</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="77">
+			<description>'M' button</description>
+			<posx>560</posx>
+			<posy>341</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="609" y="398" w="63" h="46"/>
+			<onleft>76</onleft>
+			<onright>78</onright>
+			<onup>68</onup>
+			<ondown>86</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="78">
+			<description>'N' button</description>
+			<posx>630</posx>
+			<posy>341</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="679" y="398" w="63" h="46"/>
+			<onleft>77</onleft>
+			<onright>79</onright>
+			<onup>69</onup>
+			<ondown>87</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="79">
+			<description>'O' button</description>
+			<posx>700</posx>
+			<posy>341</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="749" y="398" w="63" h="46"/>
+			<onleft>78</onleft>
+			<onright>80</onright>
+			<onup>70</onup>
+			<ondown>88</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="80">
+			<description>'P' button</description>
+			<posx>770</posx>
+			<posy>341</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="819" y="398" w="63" h="46"/>
+			<onleft>79</onleft>
+			<onright>81</onright>
+			<onup>71</onup>
+			<ondown>89</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="81">
+			<description>'Q' button</description>
+			<posx>840</posx>
+			<posy>341</posy>
+			<width>163</width>
+			<height>156</height>
+			<hitrect x="889" y="398" w="63" h="46"/>
+			<onleft>80</onleft>
+			<onright>82</onright>
+			<onup>72</onup>
+			<ondown>90</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="82">
+			<description>'R' button</description>
+			<posx>911</posx>
+			<posy>341</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="959" y="398" w="63" h="46"/>
+			<onleft>81</onleft>
+			<onright>302</onright>
+			<onup>73</onup>
+			<ondown>300</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<!-- Row 4 -->
+		<control type="button">
+			<description>Focused Symbols button</description>
+			<posx>220</posx>
+			<posy>409</posy>
+			<width>212</width>
+			<height>130</height>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>-</texturefocus>
+			<texturenofocus>KeyboardCaps.png</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(304)</visible>
+		</control>
+		<control type="togglebutton" id="304">
+			<description>Symbols button</description>
+			<posx>253</posx>
+			<posy>447</posy>
+			<width>27</width>
+			<height>27</height>
+			<hitrect x="259" y="451" w="133" h="47"/>
+			<onleft>90</onleft>
+			<onright>83</onright>
+			<onup>302</onup>
+			<ondown>307</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<label>$LOCALIZE[20180]</label>
+			<alttexturenofocus>LEDOn.png</alttexturenofocus>
+			<alttexturefocus>LEDOn.png</alttexturefocus>
+			<texturefocus>LEDOff.png</texturefocus>
+			<texturenofocus>LEDOff.png</texturenofocus>
+			<align>right</align>
+			<aligny>top</aligny>
+			<textoffsetx>24</textoffsetx>
+			<textoffsety>12</textoffsety>
+			<pulseonselect>false</pulseonselect>
+		</control>
+		<control type="button" id="83">
+			<description>'S' button</description>
+			<posx>350</posx>
+			<posy>393</posy>
+			<width>161</width>
+			<height>156</height>
+			<hitrect x="399" y="451" w="63" h="46"/>
+			<onleft>304</onleft>
+			<onright>84</onright>
+			<onup>74</onup>
+			<ondown>32</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="84">
+			<description>'T' button</description>
+			<posx>420</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="469" y="451" w="63" h="46"/>
+			<onleft>83</onleft>
+			<onright>85</onright>
+			<onup>75</onup>
+			<ondown>32</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="85">
+			<description>'U' button</description>
+			<posx>490</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="539" y="451" w="63" h="46"/>
+			<onleft>84</onleft>
+			<onright>86</onright>
+			<onup>76</onup>
+			<ondown>32</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="86">
+			<description>'V' button</description>
+			<posx>560</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="609" y="451" w="63" h="46"/>
+			<onleft>85</onleft>
+			<onright>87</onright>
+			<onup>77</onup>
+			<ondown>32</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="87">
+			<description>'W' button</description>
+			<posx>630</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="679" y="451" w="63" h="46"/>
+			<onleft>86</onleft>
+			<onright>88</onright>
+			<onup>78</onup>
+			<ondown>32</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="88">
+			<description>'X' button</description>
+			<posx>700</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="749" y="451" w="63" h="46"/>
+			<onleft>87</onleft>
+			<onright>89</onright>
+			<onup>79</onup>
+			<ondown>8</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="89">
+			<description>'Y' button</description>
+			<posx>770</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="819" y="451" w="63" h="46"/>
+			<onleft>88</onleft>
+			<onright>90</onright>
+			<onup>80</onup>
+			<ondown>8</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="90">
+			<description>'Z' button</description>
+			<posx>840</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="889" y="451" w="63" h="46"/>
+			<onleft>89</onleft>
+			<onright>304</onright>
+			<onup>81</onup>
+			<ondown>300</ondown>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<texturefocus>KeyboardLetters.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button">
+			<description>Blank button</description>
+			<posx>912</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<hitrect x="959" y="451" w="63" h="46"/>
+			<label>-</label>
+			<font>LargeDefaultFont</font>
+			<texturefocus>-</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<!-- Row 5 -->
+		<control type="button" id="307">
+			<description>IP Input button</description>
+			<posx>217</posx>
+			<posy>460</posy>
+			<width>244</width>
+			<height>136</height>
+			<hitrect x="259" y="503" w="161" h="47"/>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<label>$LOCALIZE[1006]</label>
+			<texturefocus>KeyboardIPAddress.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<onleft>300</onleft>
+			<onright>32</onright>
+			<onup>304</onup>
+			<ondown>305</ondown>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="32">
+			<description>SPACE button</description>
+			<posx>382</posx>
+			<posy>460</posy>
+			<width>394</width>
+			<height>136</height>
+			<hitrect x="426" y="503" w="302" h="47"/>
+			<font>LargeDefaultCapsFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<label>$LOCALIZE[20182]</label>
+			<onleft>307</onleft>
+			<onright>8</onright>
+			<onup>85</onup>
+			<ondown>53</ondown>
+			<texturefocus>KeyboardSpacebar.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="8">
+			<description>BACKSPACE button</description>
+			<posx>694</posx>
+			<posy>460</posy>
+			<width>230</width>
+			<height>136</height>
+			<hitrect x="734" y="503" w="148" h="47"/>
+			<font>LargeDefaultFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<label>$LOCALIZE[20181]</label>
+			<onleft>32</onleft>
+			<onright>300</onright>
+			<onup>88</onup>
+			<ondown>56</ondown>
+			<texturefocus>KeyboardBackspace.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="button" id="300">
+			<description>DONE button</description>
+			<posx>846</posx>
+			<posy>460</posy>
+			<width>226</width>
+			<height>138</height>
+			<hitrect x="889" y="503" w="134" h="47"/>
+			<font>LargeDefaultCapsFont</font>
+			<focusedcolor>00FFFFFF</focusedcolor>
+			<label>$LOCALIZE[20177]</label>
+			<onleft>8</onleft>
+			<onright>307</onright>
+			<onup>90</onup>
+			<ondown>306</ondown>
+			<texturefocus>KeyboardDone.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<align>center</align>
+			<aligny>center</aligny>
+		</control>
+		<!-- Focused Row 1 -->
+		<control type="label" id="305">
+			<description>Previous button</description>
+			<posx>213</posx>
+			<posy>249</posy>
+			<width>165</width>
+			<height>134</height>
+			<font>KeyboardFocusFont</font>
+			<label>&lt;</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(305)</visible>
+		</control>
+		<control type="label" id="49">
+			<description>'1' button</description>
+			<posx>298</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<font>KeyboardFocusFont</font>
+			<label>$INFO[Control.GetLabel(49)]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(49)</visible>
+		</control>
+		<control type="label" id="50">
+			<description>'2' button</description>
+			<posx>360</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<font>KeyboardFocusFont</font>
+			<label/>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(50)</visible>
+		</control>
+		<control type="label" id="51">
+			<description>'3' button</description>
+			<posx>420</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<font>KeyboardFocusFont</font>
+			<label/>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(51)</visible>
+		</control>
+		<control type="label" id="52">
+			<description>'4' button</description>
+			<posx>482</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<font>KeyboardFocusFont</font>
+			<label/>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(52)</visible>
+		</control>
+		<control type="label" id="53">
+			<description>'5' button</description>
+			<posx>544</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<font>KeyboardFocusFont</font>
+			<label/>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(53)</visible>
+		</control>
+		<control type="label" id="54">
+			<description>'6' button</description>
+			<posx>604</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<font>KeyboardFocusFont</font>
+			<label/>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(54)</visible>
+		</control>
+		<control type="label" id="55">
+			<description>'7' button</description>
+			<posx>666</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<font>KeyboardFocusFont</font>
+			<label/>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(55)</visible>
+		</control>
+		<control type="label" id="56">
+			<description>'8' button</description>
+			<posx>728</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<font>KeyboardFocusFont</font>
+			<label/>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(56)</visible>
+		</control>
+		<control type="label" id="57">
+			<description>'9' button</description>
+			<posx>790</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<font>KeyboardFocusFont</font>
+			<label/>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(57)</visible>
+		</control>
+		<control type="label" id="48">
+			<description>'0' button</description>
+			<posx>852</posx>
+			<posy>249</posy>
+			<width>132</width>
+			<height>132</height>
+			<font>KeyboardFocusFont</font>
+			<label/>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(48)</visible>
+		</control>
+		<control type="label" id="306">
+			<description>Next button</description>
+			<posx>905</posx>
+			<posy>249</posy>
+			<width>165</width>
+			<height>134</height>
+			<font>KeyboardFocusFont</font>
+			<label>&gt;</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(306)</visible>
+		</control>
+		<!-- Focused Row 2 -->
+		<control type="label" id="303">
+			<description>CAPS LOCK button</description>
+			<posx>220</posx>
+			<posy>303</posy>
+			<width>212</width>
+			<height>130</height>
+			<label>Caps</label>
+			<font>KeyboardFocusCapsFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(303)</visible>
+		</control>
+		<control type="label" id="65">
+			<description>'A' button</description>
+			<posx>350</posx>
+			<posy>288</posy>
+			<width>161</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(65)</visible>
+		</control>
+		<control type="label" id="66">
+			<description>'B' button</description>
+			<posx>420</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(66)</visible>
+		</control>
+		<control type="label" id="67">
+			<description>'C' button</description>
+			<posx>490</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(67)</visible>
+		</control>
+		<control type="label" id="68">
+			<description>'D' button</description>
+			<posx>560</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(68)</visible>
+		</control>
+		<control type="label" id="69">
+			<description>'E' button</description>
+			<posx>630</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(69)</visible>
+		</control>
+		<control type="label" id="70">
+			<description>'F' button</description>
+			<posx>700</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(70)</visible>
+		</control>
+		<control type="label" id="71">
+			<description>'G' button</description>
+			<posx>770</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(71)</visible>
+		</control>
+		<control type="label" id="72">
+			<description>'H' button</description>
+			<posx>840</posx>
+			<posy>288</posy>
+			<width>163</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(72)</visible>
+		</control>
+		<control type="label" id="73">
+			<description>'I' button</description>
+			<posx>911</posx>
+			<posy>288</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(73)</visible>
+		</control>
+		<!-- Focused Row 3 -->
+		<control type="label" id="302">
+			<description>SHIFT button</description>
+			<posx>220</posx>
+			<posy>355</posy>
+			<width>212</width>
+			<height>130</height>
+			<font>KeyboardFocusFont</font>
+			<label>$LOCALIZE[20178]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(302)</visible>
+		</control>
+		<control type="label" id="74">
+			<description>'J' button</description>
+			<posx>350</posx>
+			<posy>341</posy>
+			<width>161</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(74)</visible>
+		</control>
+		<control type="label" id="75">
+			<description>'K' button</description>
+			<posx>420</posx>
+			<posy>341</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(75)</visible>
+		</control>
+		<control type="label" id="76">
+			<description>'L' button</description>
+			<posx>490</posx>
+			<posy>341</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(76)</visible>
+		</control>
+		<control type="label" id="77">
+			<description>'M' button</description>
+			<posx>560</posx>
+			<posy>341</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(77)</visible>
+		</control>
+		<control type="label" id="78">
+			<description>'N' button</description>
+			<posx>630</posx>
+			<posy>341</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(78)</visible>
+		</control>
+		<control type="label" id="79">
+			<description>'O' button</description>
+			<posx>700</posx>
+			<posy>341</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(79)</visible>
+		</control>
+		<control type="label" id="80">
+			<description>'P' button</description>
+			<posx>770</posx>
+			<posy>341</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(80)</visible>
+		</control>
+		<control type="label" id="81">
+			<description>'Q' button</description>
+			<posx>840</posx>
+			<posy>341</posy>
+			<width>163</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(81)</visible>
+		</control>
+		<control type="label" id="82">
+			<description>'R' button</description>
+			<posx>911</posx>
+			<posy>341</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(82)</visible>
+		</control>
+		<!-- Focused Row 4 -->
+		<control type="label" id="304">
+			<description>Symbols button</description>
+			<posx>220</posx>
+			<posy>407</posy>
+			<width>212</width>
+			<height>130</height>
+			<font>KeyboardFocusFont</font>
+			<label>$LOCALIZE[20180]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(304)</visible>
+		</control>
+		<control type="label" id="83">
+			<description>'S' button</description>
+			<posx>350</posx>
+			<posy>393</posy>
+			<width>161</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(83)</visible>
+		</control>
+		<control type="label" id="84">
+			<description>'T' button</description>
+			<posx>420</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(84)</visible>
+		</control>
+		<control type="label" id="85">
+			<description>'U' button</description>
+			<posx>490</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(85)</visible>
+		</control>
+		<control type="label" id="86">
+			<description>'V' button</description>
+			<posx>560</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(86)</visible>
+		</control>
+		<control type="label" id="87">
+			<description>'W' button</description>
+			<posx>630</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(87)</visible>
+		</control>
+		<control type="label" id="88">
+			<description>'X' button</description>
+			<posx>700</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(88)</visible>
+		</control>
+		<control type="label" id="89">
+			<description>'Y' button</description>
+			<posx>770</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(89)</visible>
+		</control>
+		<control type="label" id="90">
+			<description>'Z' button</description>
+			<posx>840</posx>
+			<posy>393</posy>
+			<width>162</width>
+			<height>156</height>
+			<font>KeyboardFocusFont</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(90)</visible>
+		</control>
+		<!-- Focused Row 5 -->
+		<control type="label" id="307">
+			<description>IP Input button</description>
+			<posx>217</posx>
+			<posy>458</posy>
+			<width>244</width>
+			<height>136</height>
+			<font>KeyboardFocusFont</font>
+			<label>$LOCALIZE[1006]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(307)</visible>
+		</control>
+		<control type="label" id="32">
+			<description>SPACE button</description>
+			<posx>382</posx>
+			<posy>458</posy>
+			<width>394</width>
+			<height>136</height>
+			<font>KeyboardFocusCapsFont</font>
+			<label>$LOCALIZE[20182]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(32)</visible>
+		</control>
+		<control type="label" id="8">
+			<description>BACKSPACE button</description>
+			<posx>694</posx>
+			<posy>458</posy>
+			<width>230</width>
+			<height>136</height>
+			<font>KeyboardFocusFont</font>
+			<label>$LOCALIZE[20181]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(8)</visible>
+		</control>
+		<control type="label" id="300">
+			<description>DONE button</description>
+			<posx>846</posx>
+			<posy>458</posy>
+			<width>226</width>
+			<height>138</height>
+			<font>KeyboardFocusCapsFont</font>
+			<label>$LOCALIZE[20177]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<visible>Control.HasFocus(300)</visible>
+		</control>
 	</controls>
 </window>
-	

@@ -1,524 +1,377 @@
+<?xml version="1.0"?>
 <window id="2003">
-  <defaultcontrol always="true">6</defaultcontrol>
-  <allowoverlay>no</allowoverlay>
-  <coordinates>
-    <system>1</system>
-    <posx>0</posx>
-    <posy>0</posy>
-  </coordinates>
-
-  <include>DialogFade</include>
-
-  <controls>
-    <include>DialogFadeBG</include>
-
-    <control type="group">
-      <include>InfoDialogPos</include>
-
-      <include>InfoDialogBG</include>
-
-      <control type="group">
-        <visible>Container.Content(movies)</visible>
-
-        <control type="group">
-          <posx>InfoDialogLargeThumbPosX</posx>
-          <posy>104</posy>
-          <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-          <control type="image">
-            <description>Poster</description>
-            <width>InfoDialogLargeThumbWidth</width>
-            <height>366</height>
-            <texture>amt-blank-poster.png</texture>
-            <info>ListItem.Thumb</info>
-            <aspectratio aligny="bottom">keep</aspectratio>
-            <bordertexture border="14">ThumbShadow.png</bordertexture>
-            <bordersize>8</bordersize>
-          </control>
-          <control type="label">
-            <posy>60</posy>
-            <width>InfoDialogLargeThumbWidth</width>
-            <font>TitleCapsFont</font>
-            <include>NoThumbLabel</include>
-          </control>
-          <control type="image">
-            <description>Poster reflection</description>
-            <posx>8</posx>
-            <posy>358</posy>
-            <width>InfoDialogLargeThumbTextWidth</width>
-            <height>350</height>
-            <texture flipy="true" diffuse="DiffuseMirror3.png">amt-blank-poster.png</texture>
-            <info>ListItem.Thumb</info>
-            <aspectratio aligny="top">keep</aspectratio>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>InfoDialogTitleXOffset</posx>
-
-					<!--- MOVIES --->
-          <control type="label">
-            <description>Movie title</description>
-            <label>$INFO[ListItem.Title] ($INFO[ListItem.Year])</label>
-            <include>InfoDialogTitle</include>
-          </control>
-
-          <control type="group">
-            <posx>28</posx>
-            <posy>InfoDialogTopButtonsPosY</posy>
-
-            <control type="group">
-              <description>Play</description>
-              <posx>0</posx>
-              <include>VideoInfoPlayBtn</include>
-            </control>
-
-            <control type="group">
-              <description>Resume</description>
-              <posx>0</posx>
-              <include>VideoInfoResumeBtn</include>
-            </control>
-
-            <control type="group">
-              <description>Plot/Cast</description>
-              <posx>MoviesInfoPlotCastBtnPosX</posx>
-              <include>VideoInfoPlotCastBtns</include>
-            </control>
-
-            <control type="button" id="6">
-              <description>Refresh</description>
-              <posx>MoviesInfoRefreshBtnPosX</posx>
-              <include>VideoInfoRefreshBtn</include>
-            </control>
-
-            <control type="button" id="10">
-              <description>Thumb</description>
-              <posx>MoviesInfoThumbBtnPosX</posx>
-              <visible>IsEmpty(ListItem.Trailer)</visible>
-              <include>VideoInfoThumbBtn</include>
-            </control>
-            <control type="button" id="10">
-              <description>Thumb</description>
-              <posx>MoviesInfoThumbBtnPosX</posx>
-              <visible>!IsEmpty(ListItem.Trailer)</visible>
-              <include>VideoInfoThumbBtn2</include>
-            </control>
-
-            <control type="button" id="12">
-              <description>Fanart</description>
-              <posx>MoviesInfoFanartBtnPosX</posx>
-              <include>VideoInfoFanartBtn</include>
-            </control>
-            <control type="button" id="12">
-              <description>Fanart</description>
-              <posx>MoviesInfoFanartBtnPosX</posx>
-              <include>VideoInfoFanartBtn2</include>
-            </control>
-
-          </control>
-
-          <control type="button" id="11">
-            <description>Trailer</description>
-            <posx>MoviesInfoTrailerBtnPosX</posx>
-            <include>VideoInfoTrailerBtn</include>
-          </control>
-          <control type="label">
-            <description>Trailer</description>
-            <posx>MoviesInfoTrailerBtnPosX</posx>
-            <include>VideoInfoTrailerLabel</include>
-          </control>
-
-          <control type="group">
-            <posx>10</posx>
-            <posy>104</posy>
-
-            <include>VideoInfoBasicDetails</include>
-
-            <control type="group">
-              <description>MPAA rating</description>
-              <posy>VideoInfoPosYAfterBasicDetails</posy>
-
-              <control type="label">
-                <description>Caption</description>
-                <label>$LOCALIZE[31123]</label>
-                <include>MediaInfoCaption</include>
-              </control>
-              <control type="label">
-                <description>Value</description>
-                <info>ListItem.MPAA</info>
-                <include>MediaInfoWideValue</include>
-              </control>
-          
-              <control type="group">
-                <description>Runtime</description>
-                <posy>VideoInfoDetailsGap</posy>
-          
-                <control type="label">
-                  <description>Caption</description>
-                  <label>$LOCALIZE[2050]</label>
-                  <include>MediaInfoCaption</include>
-                </control>
-                <control type="label">
-                  <description>Value</description>
-                  <info>ListItem.Duration</info>
-                  <include>MediaInfoWideValue</include>
-                </control>
-
-<!--
-                <control type="group">
-                  <description>Path</description>
-                  <posy>VideoInfoDetailsGap</posy>
-
-                  <control type="label">
-                    <description>Caption</description>
-                    <label>$LOCALIZE[21801]</label>
-                    <include>MediaInfoCaption</include>
-                  </control>
-                  <control type="label">
-                    <description>Value</description>
-                    <info>ListItem.filenameandpath</info>
-                    <scroll>true</scroll>
-                    <haspath>true</haspath>
-                    <include>MediaInfoWideValue</include>
-                  </control>
-                </control>
--->
-
-              </control>
-              <control type="group">
-                <description>Cast/Plot</description>
-                <posy>106</posy>
-
-                <control type="label">
-                  <description>Caption</description>
-                  <label>$LOCALIZE[206]</label>
-                  <include>MediaInfoCaption</include>
-                  <visible>Control.IsVisible(50)</visible>
-                </control>
-
-              </control>
-            </control>
-          </control>
-        </control>
-      </control>
-
-			<!-- TV SHOWS -->
-      <control type="group">
-        <visible>Container.Content(tvshows)</visible>
-
-        <control type="group">
-          <posx>InfoDialogLargeThumbPosX</posx>
-          <posy>120</posy>
-          <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-          <control type="image">
-            <description>Thumb</description>
-            <width>InfoDialogLargeThumbWidth</width>
-            <height>231</height>
-            <texture>DefaultWideIcon.png</texture>
-            <info>ListItem.Banner</info>
-            <aspectratio aligny="bottom">keep</aspectratio>
-            <bordertexture border="14">ThumbShadow.png</bordertexture>
-            <bordersize>8</bordersize>
-          </control>
-          <control type="label">
-            <posy>166</posy>
-            <width>260</width>
-            <font>TitleCapsFont</font>
-            <include>NoThumbLabel</include>
-          </control>
-          <control type="image">
-            <description>Thumb reflection</description>
-            <posx>8</posx>
-            <posy>223</posy>
-            <width>InfoDialogLargeThumbTextWidth</width>
-            <height>215</height>
-            <texture flipy="true" diffuse="DiffuseMirror4.png">DefaultWideIcon.png</texture>
-            <info>ListItem.Thumb</info>
-            <aspectratio aligny="top">keep</aspectratio>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>InfoDialogTitleXOffset</posx>
-
-          <control type="label">
-            <description>TV Show title</description>
-            <label>$INFO[ListItem.TVShowTitle]</label>
-            <include>InfoDialogTitle</include>
-          </control>
-
-          <control type="group">
-            <posx>28</posx>
-            <posy>InfoDialogTopButtonsPosY</posy>
-
-            <control type="group">
-              <include>VideoInfoPlotCastBtns</include>
-            </control>
-
-<!--
-            <control type="button" id="6">
-              <description>Refresh</description>
-              <posx>TVShowInfoRefreshBtnPosX</posx>
-              <include>VideoInfoRefreshBtn</include>
-            </control>
--->
-
-						<control type="button" id="13">
-						  <description>Banner</description>
-						  <posx>TVShowInfoBannerBtnPosX</posx>
-					    <onright>10</onright>
-					    <onleft>5</onleft>
-					    <label>$LOCALIZE[31128]</label>
-					    <include>VideoInfoButton</include>
+	<defaultcontrol always="true">6</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<include>DialogFade</include>
+	<controls>
+		<include>DialogFadeBG</include>
+		<control type="group">
+			<include>InfoDialogPos</include>
+			<include>InfoDialogBG</include>
+			<!-- MOVIES & TV SHOWS LEFT SIDE -->
+			<control type="group">
+				<visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(episodes)</visible>
+				<!-- POSTER MOVIES & SHOWS -->
+				<control type="group">
+					<posx>80</posx>
+					<posy>70</posy>
+					<visible>[!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)] + !Container.Content(episodes)</visible>
+					<!-- shadow -->
+					<control type="image">
+						<posy>-5</posy>
+						<posx>-5</posx>
+						<width>258</width>
+						<height>380</height>
+						<aspectratio align="center" aligny="top">stretch</aspectratio>
+						<texture border="50">bigPosterFrameShadow.png</texture>
+					</control>
+					<!-- border -->
+					<control type="image">
+						<posy>-3</posy>
+						<posx>-3</posx>
+						<width>250</width>
+						<height>372</height>
+						<aspectratio align="center" aligny="top">stretch</aspectratio>
+						<texture>bigPosterMask.png</texture>
+						<colordiffuse>FF222222</colordiffuse>
+						<visible>!Skin.HasSetting(hideposterborders)</visible>
+					</control>
+					<control type="image">
+						<description>Poster</description>
+						<width>244</width>
+						<height>366</height>
+						<texture background="true" diffuse="bigPosterMask.png">amt-blank-poster.png</texture>
+						<info>ListItem.Thumb</info>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+					</control>
+					<control type="image">
+						<description>Poster reflection</description>
+						<posx>0</posx>
+						<posy>370</posy>
+						<width>244</width>
+						<height>366</height>
+						<texture flipy="true" diffuse="DiffuseMirror3.png">amt-blank-poster.png</texture>
+						<info>ListItem.Thumb</info>
+						<aspectratio aligny="top">scale</aspectratio>
+					</control>
+				</control>
+				<!-- THUMB EPISODES -->
+				<control type="group">
+					<posx>50</posx>
+					<posy>200</posy>
+					<visible>[!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)] + Container.Content(episodes)</visible>
+					<!-- shadow -->
+					<control type="image">
+						<posy>-5</posy>
+						<posx>-5</posx>
+						<width>300</width>
+						<height>186</height>
+						<aspectratio align="center" aligny="top">stretch</aspectratio>
+						<texture border="50">bigPosterFrameShadow.png</texture>
+					</control>
+					<!-- border -->
+					<control type="image">
+						<posy>-3</posy>
+						<posx>-3</posx>
+						<width>310</width>
+						<height>176</height>
+						<aspectratio align="center" aligny="top">stretch</aspectratio>
+						<texture>bigPosterMask.png</texture>
+						<colordiffuse>FF222222</colordiffuse>
+						<visible>!Skin.HasSetting(hideposterborders)</visible>
+					</control>
+					<control type="image">
+						<description>Poster</description>
+						<width>304</width>
+						<height>170</height>
+						<texture background="true" diffuse="bigPosterMask.png">amt-blank-poster.png</texture>
+						<info>ListItem.Thumb</info>
+						<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+					</control>
+					<control type="image">
+						<description>Poster reflection</description>
+						<posx>0</posx>
+						<posy>172</posy>
+						<width>304</width>
+						<height>170</height>
+						<texture flipy="true" diffuse="DiffuseMirror3.png">amt-blank-poster.png</texture>
+						<info>ListItem.Thumb</info>
+						<aspectratio aligny="top">scale</aspectratio>
+					</control>
+				</control>
+				<!-- BUTTONS -->
+				<control type="group">
+					<visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(episodes)</visible>
+					<posy>15</posy>
+					<posx>420</posx>
+					<control type="label">
+						<description>Movie title</description>
+						<posy>20</posy>
+						<posx>10</posx>
+						<label>$INFO[ListItem.Title] ($INFO[ListItem.Year])</label>
+						<include>InfoDialogTitle</include>
+						<visible>!Container.Content(episodes)</visible>
+					</control>
+					<control type="grouplist" id="111">
+						<orientation>horizontal</orientation>
+						<itemgap>0</itemgap>
+						<posx>25</posx>
+						<posy>InfoDialogTopButtonsPosY</posy>
+						<control type="button" id="8">
+							<description>Play</description>
+							<width>95</width>
+							<onright>9</onright>
+							<onleft>12</onleft>
+							<label>$LOCALIZE[208]</label>
+							<disabledcolor>-</disabledcolor>
+							<textoffsety>5</textoffsety>
+							<include>VideoInfoButton</include>
+							<visible>!Control.IsEnabled(9) + [Container.Content(movies) | Container.Content(episodes)]</visible>
 						</control>
-
-            <control type="button" id="12">
-              <description>Fanart</description>
-              <posx>TVShowInfoFanartBtnPosX</posx>
-              <include>VideoInfoFanartBtn</include>
-            </control>
-            <control type="button" id="12">
-              <description>Fanart</description>
-              <posx>TVShowInfoFanartBtnPosX</posx>
-              <include>VideoInfoFanartBtn2</include>
-            </control>
-
-            <control type="button" id="11">
-              <description>Trailer</description>
-              <posx>TVShowInfoTrailerBtnPosX</posx>
-              <include>VideoInfoTrailerBtn</include>
-            </control>
-            <control type="label">
-              <description>Trailer</description>
-              <posx>TVShowInfoTrailerBtnPosX</posx>
-              <include>VideoInfoTrailerLabel</include>
-            </control>
-
-            <control type="button" id="10">
-              <description>Thumb</description>
-              <posx>TVShowInfoThumbBtnPosX</posx>
-              <visible>IsEmpty(ListItem.Trailer)</visible>
-              <include>VideoInfoThumbBtn</include>
-            </control>
-
-            <control type="button" id="10">
-              <description>Thumb</description>
-              <posx>TVShowInfoThumbBtnPosX</posx>
-              <visible>!IsEmpty(ListItem.Trailer)</visible>
-              <include>VideoInfoThumbBtn2</include>
-            </control>
-
-          </control>
-
-          <control type="group">
-            <posx>10</posx>
-            <posy>120</posy>
-
-            <include>VideoInfoBasicDetails</include>
-
-            <control type="group">
-              <description>First aired</description>
-              <posy>VideoInfoPosYAfterBasicDetails</posy>
-
-              <control type="label">
-                <description>Caption</description>
-                <label>$LOCALIZE[20416]</label>
-                <include>MediaInfoCaption</include>
-              </control>
-              <control type="label">
-                <description>Value</description>
-                <info>ListItem.Property(originallyAvailableAt)</info>
-                <include>MediaInfoWideValue</include>
-              </control>
-            </control>
-
-            <control type="group">
-              <include>TVShowInfoEpsDetailsPos</include>
-              <visible>!IsEmpty(ListItem.Property(unwatchedepisodes)) | !IsEmpty(ListItem.Property(watchedepisodes))</visible>
-
-              <control type="label">
-                <include>TVShowInfoEpsLabelDims</include>
-                <label>$LOCALIZE[20360]</label>
-                <include>MediaInfoCaption</include>
-              </control>
-
-              <control type="label">
-                <include>TVUnwatchedEpisodesDetailsFO</include>
-              </control>
-              <control type="image">
-                <include>TVUnwatchedEpisodesDetailsImage</include>
-              </control>
-              <control type="label">
-                <include>TVWatchedEpisodesDetailsFO</include>
-              </control>
-              <control type="image">
-                <include>TVWatchedEpisodesDetailsImage</include>
-              </control>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group">
-        <visible>Container.Content(episodes)</visible>
-
-        <control type="group">
-          <posx>InfoDialogLargeThumbPosX</posx>
-          <posy>180</posy>
-          <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-          <control type="image">
-            <description>Thumb</description>
-            <width>InfoDialogLargeThumbWidth</width>
-            <height>231</height>
-            <texture>bookmark-resume.png</texture>
-            <info>ListItem.Thumb</info>
-            <aspectratio aligny="bottom">keep</aspectratio>
-            <bordertexture border="14">ThumbShadow.png</bordertexture>
-            <bordersize>8</bordersize>
-          </control>
-          <control type="label">
-            <posy>104</posy>
-            <width>248</width>
-            <font>TitleCapsFont</font>
-            <include>NoThumbLabel</include>
-          </control>
-          <control type="image">
-            <description>Thumb reflection</description>
-            <posx>8</posx>
-            <posy>223</posy>
-            <width>InfoDialogLargeThumbTextWidth</width>
-            <height>215</height>
-            <texture flipy="true" diffuse="DiffuseMirror4.png">bookmark-resume.png</texture>
-            <info>ListItem.Thumb</info>
-            <aspectratio aligny="top">keep</aspectratio>
-          </control>
-
-        </control>
-
-        <control type="group">
-          <posx>InfoDialogTitleXOffset</posx>
-
-          <control type="label">
-            <description>TV Show title</description>
-            <label>$INFO[ListItem.TVShowTitle]</label>
-            <include>InfoDialogTitle</include>
-          </control>
-
-          <control type="group">
-            <posx>38</posx>
-            <posy>InfoDialogTopButtonsPosY</posy>
-
-            <include>VideoInfoPlayBtn</include>
-
-            <control type="group">
-              <posx>EpisodesInfoPlotCastBtnPosX</posx>
-
-              <include>VideoInfoPlotCastBtns</include>
-            </control>
-
-            <control type="button" id="6">
-              <description>Refresh</description>
-              <posx>EpisodesInfoRefreshBtnPosX</posx>
-              <include>VideoInfoRefreshBtn</include>
-            </control>
-
-            <control type="button" id="10">
-              <description>Thumb</description>
-              <posx>EpisodesInfoThumbBtnPosX</posx>
-              <include>VideoInfoThumbBtn</include>
-            </control>
-          </control>
-
-          <control type="group">
-            <posx>10</posx>
-            <posy>104</posy>
-
-            <control type="group">
-              <description>Episode Title</description>
-          
-              <control type="label">
-                <description>Caption</description>
-                <label>$LOCALIZE[556]</label>
-                <include>MediaInfoCaption</include>
-              </control>
-              <control type="label">
-                <description>Value</description>
-                <info>ListItem.Title</info>
-                <include>MediaInfoWideValue</include>
-              </control>
-          
-              <control type="group">
-                <description>Episode No.</description>
-                <posy>VideoInfoDetailsGap</posy>
-          
-                <control type="label">
-                  <description>Caption</description>
-                  <label>$LOCALIZE[31114]</label>
-                  <include>MediaInfoCaption</include>
-                </control>
-                <control type="label">
-                  <description>Value</description>
-                  <info>ListItem.Episode</info>
-                  <include>MediaInfoWideValue</include>
-                </control>
-          
-                <control type="group">
-                  <description>Season no.</description>
-                  <posy>VideoInfoDetailsGap</posy>
-          
-                  <control type="label">
-                    <description>Caption</description>
-                    <label>$LOCALIZE[20373]</label>
-                    <include>MediaInfoCaption</include>
-                  </control>
-                  <control type="label">
-                    <description>Value</description>
-                    <info>ListItem.Season</info>
-                    <include>MediaInfoWideValue</include>
-                  </control>
-          
-                  <control type="group">
-                    <description>Writer</description>
-                    <posy>VideoInfoDetailsGap</posy>
-          
-                    <control type="label">
-                      <description>Caption</description>
-                      <label>$LOCALIZE[20417]</label>
-                      <include>MediaInfoCaption</include>
-                    </control>
-                    <control type="label">
-                      <description>Value</description>
-                      <info>ListItem.Writer</info>
-                      <include>MediaInfoWideValue</include>
-                    </control>
-
-                    <control type="group">
-                      <description>Director</description>
-                      <posy>VideoInfoDetailsGap</posy>
-            
-                      <control type="label">
-                        <description>Caption</description>
-                        <label>$LOCALIZE[20339]</label>
-                        <include>MediaInfoCaption</include>
-                      </control>
-                      <control type="label">
-                        <description>Value</description>
-                        <info>ListItem.Director</info>
-                        <include>MediaInfoWideValue</include>
-                      </control>
-
-                      <control type="group">
-                        <description>Rating</description>
-                        <posy>VideoInfoDetailsGap</posy>
-
-                        <control type="label">
-                          <description>Caption</description>
-                          <label>$LOCALIZE[563]</label>
-                          <include>MediaInfoCaption</include>
-                        </control>
-								        <control type="image">
+						<control type="button" id="9">
+							<description>Resume</description>
+							<width>95</width>
+							<onright>5</onright>
+							<onleft>8</onleft>
+							<label>$LOCALIZE[13404]</label>
+							<disabledcolor>-</disabledcolor>
+							<textoffsety>5</textoffsety>
+							<include>VideoInfoButton</include>
+							<visible>[Container.Content(movies) | Container.Content(episodes)] + Control.IsEnabled(9)</visible>
+						</control>
+						<control type="button" id="5">
+							<description>Cast/Plot</description>
+							<width>95</width>
+							<onright>10</onright>
+							<onleft>8</onleft>
+							<label>$LOCALIZE[206]</label>
+							<textoffsety>5</textoffsety>
+							<include>VideoInfoButton</include>
+						</control>
+						<control type="button" id="6">
+							<description>Refresh</description>
+							<width>95</width>
+							<onright>10</onright>
+							<onleft>5</onleft>
+							<label>$LOCALIZE[184]</label>
+							<textoffsety>5</textoffsety>
+							<include>VideoInfoButton</include>
+						</control>
+						<control type="button" id="10">
+							<description>Thumb</description>
+							<width>95</width>
+							<onright>12</onright>
+							<onleft>6</onleft>
+							<label>$LOCALIZE[31117]</label>
+							<textoffsety>5</textoffsety>
+							<include>VideoInfoButton</include>
+						</control>
+						<control type="button" id="12">
+							<description>Fanart</description>
+							<width>95</width>
+							<onright>13</onright>
+							<onleft>10</onleft>
+							<textoffsety>5</textoffsety>
+							<include>VideoInfoFanart</include>
+							<visible>!Container.Content(episodes)</visible>
+						</control>
+						<control type="button" id="13">
+							<description>Banner</description>
+							<width>95</width>
+							<onright>8</onright>
+							<onleft>12</onleft>
+							<label>$LOCALIZE[31128]</label>
+							<textoffsety>5</textoffsety>
+							<include>VideoInfoButton</include>
+							<visible>Container.Content(tvshows)</visible>
+						</control>
+					</control>
+					<control type="group">
+						<visible>Container.Content(movies)</visible>
+						<posx>10</posx>
+						<posy>104</posy>
+						<include>VideoInfoBasicDetails</include>
+						<control type="group">
+							<description>MPAA rating</description>
+							<posy>VideoInfoPosYAfterBasicDetails</posy>
+							<control type="label">
+								<description>Caption</description>
+								<label>$LOCALIZE[31123]</label>
+								<include>MediaInfoCaption</include>
+							</control>
+							<control type="label">
+								<description>Value</description>
+								<info>ListItem.MPAA</info>
+								<include>MediaInfoWideValue</include>
+							</control>
+							<control type="group">
+								<description>Runtime</description>
+								<posy>VideoInfoDetailsGap</posy>
+								<control type="label">
+									<description>Caption</description>
+									<label>$LOCALIZE[2050]</label>
+									<include>MediaInfoCaption</include>
+								</control>
+								<control type="label">
+									<description>Value</description>
+									<info>ListItem.Duration</info>
+									<include>MediaInfoWideValue</include>
+								</control>
+							</control>
+							<control type="group">
+								<description>Cast/Plot</description>
+								<posy>91</posy>
+								<control type="label">
+									<description>Caption</description>
+									<label>$LOCALIZE[206]</label>
+									<include>MediaInfoCaption</include>
+									<visible>Control.IsVisible(50)</visible>
+								</control>
+							</control>
+						</control>
+					</control>
+				</control>
+			</control>
+			<!-- TV SHOWS -->
+			<control type="group">
+				<visible>Container.Content(tvshows)</visible>
+				<control type="group">
+					<control type="group">
+						<posx>430</posx>
+						<posy>120</posy>
+						<include>VideoInfoBasicDetails</include>
+						<control type="group">
+							<description>First aired</description>
+							<posy>VideoInfoPosYAfterBasicDetails</posy>
+							<control type="label">
+								<description>Caption</description>
+								<label>$LOCALIZE[20416]</label>
+								<include>MediaInfoCaption</include>
+							</control>
+							<control type="label">
+								<description>Value</description>
+								<info>ListItem.Property(originallyAvailableAt)</info>
+								<include>MediaInfoWideValue</include>
+							</control>
+						</control>
+						<control type="group">
+							<posx>-436</posx>
+							<posy>138</posy>
+							<visible>!IsEmpty(ListItem.Property(unwatchedepisodes)) | !IsEmpty(ListItem.Property(watchedepisodes))</visible>
+							<control type="label">
+								<include>TVShowInfoEpsLabelDims</include>
+								<label>$LOCALIZE[20360]</label>
+								<include>MediaInfoCaption</include>
+							</control>
+							<control type="label">
+								<include>TVUnwatchedEpisodesDetailsFO</include>
+							</control>
+							<control type="image">
+								<include>TVUnwatchedEpisodesDetailsImage</include>
+							</control>
+							<control type="label">
+								<include>TVWatchedEpisodesDetailsFO</include>
+							</control>
+							<control type="image">
+								<include>TVWatchedEpisodesDetailsImage</include>
+							</control>
+						</control>
+					</control>
+				</control>
+			</control>
+			<!-- EPISODES -->
+			<control type="group">
+				<visible>Container.Content(episodes)</visible>
+				<control type="group">
+					<posx>InfoDialogTitleXOffset</posx>
+					<control type="label">
+						<posx>-77</posx>
+						<posy>35</posy>
+						<description>TV Show title</description>
+						<label>$INFO[ListItem.TVShowTitle]</label>
+						<include>InfoDialogTitle</include>
+					</control>
+					<control type="group">
+						<posx>-77</posx>
+						<posy>120</posy>
+						<control type="group">
+							<description>Episode Title</description>
+							<control type="label">
+								<description>Caption</description>
+								<label>$LOCALIZE[556]</label>
+								<include>MediaInfoCaption</include>
+							</control>
+							<control type="label">
+								<description>Value</description>
+								<info>ListItem.Title</info>
+								<include>MediaInfoWideValue</include>
+							</control>
+							<control type="group">
+								<description>Episode No.</description>
+								<posy>VideoInfoDetailsGap</posy>
+								<control type="label">
+									<description>Caption</description>
+									<label>$LOCALIZE[31114]</label>
+									<include>MediaInfoCaption</include>
+								</control>
+								<control type="label">
+									<description>Value</description>
+									<info>ListItem.Episode</info>
+									<include>MediaInfoWideValue</include>
+								</control>
+								<control type="group">
+									<description>Season no.</description>
+									<posy>VideoInfoDetailsGap</posy>
+									<control type="label">
+										<description>Caption</description>
+										<label>$LOCALIZE[20373]</label>
+										<include>MediaInfoCaption</include>
+									</control>
+									<control type="label">
+										<description>Value</description>
+										<info>ListItem.Season</info>
+										<include>MediaInfoWideValue</include>
+									</control>
+									<control type="group">
+										<description>Writer</description>
+										<posy>VideoInfoDetailsGap</posy>
+										<control type="label">
+											<description>Caption</description>
+											<label>$LOCALIZE[20417]</label>
+											<include>MediaInfoCaption</include>
+										</control>
+										<control type="label">
+											<description>Value</description>
+											<info>ListItem.Writer</info>
+											<include>MediaInfoWideValue</include>
+										</control>
+										<control type="group">
+											<description>Director</description>
+											<posy>VideoInfoDetailsGap</posy>
+											<control type="label">
+												<description>Caption</description>
+												<label>$LOCALIZE[20339]</label>
+												<include>MediaInfoCaption</include>
+											</control>
+											<control type="label">
+												<description>Value</description>
+												<info>ListItem.Director</info>
+												<include>MediaInfoWideValue</include>
+											</control>
+											<control type="group">
+												<description>Rating</description>
+												<posy>VideoInfoDetailsGap</posy>
+												<control type="label">
+													<description>Caption</description>
+													<label>$LOCALIZE[563]</label>
+													<include>MediaInfoCaption</include>
+												</control>
+												<control type="image">
 													<description>Star Rating</description>
 													<align>left</align>
 													<info>ListItem.StarRating</info>
@@ -528,94 +381,68 @@
 													<posy>4</posy>
 													<posx>90</posx>
 													<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
-								        </control>
-
-<!--
-                        <control type="group">
-                          <description>Path</description>
-                          <posy>VideoInfoDetailsGap</posy>
-        
-                          <control type="label">
-                            <description>Caption</description>
-                            <label>$LOCALIZE[21801]</label>
-                            <include>MediaInfoCaption</include>
-                          </control>
-		                  		<control type="label">
-		                    		<description>Value</description>
-		                    		<info>ListItem.filenameandpath</info>
-		                    		<scroll>true</scroll>
-		                    		<haspath>true</haspath>
-		                    		<include>MediaInfoWideValue</include>
-                          </control>
 												</control>
-												-->
-                      </control>
-                    </control>
-                  </control>
-                </control>
-              </control>
-            </control>
-          </control>
-        </control>
-      </control>
-    </control>
-
-    <control type="group">
-      <posx>658</posx>
-      <posy>392</posy>
-
-      <control type="textbox" id="4">
-        <description>Plot</description>
-        <include>VideoInfoPlotDims</include>
-        <info>ListItem.Plot</info>
-      </control>
-
-      <control type="list" id="50">
-        <description>Cast</description>
-        <posy>0</posy>
-        <width>600</width>
-        <height>234</height>
-        <onup>5</onup>
-        <ondown>5</ondown>
-        <onleft>8</onleft>
-        <onright>10</onright>
-        <orientation>vertical</orientation>
-        <pagecontrol>6</pagecontrol>
-        <scrolltime>200</scrolltime>
-
-        <itemlayout width="345" height="29">
-          <control type="label">
-            <info>ListItem.Label</info>
-            <include>MediaInfoWideValue</include>
-          </control>
-        </itemlayout>
-
-        <focusedlayout width="345" height="29">
-          <control type="label">
-            <info>ListItem.Label</info>
-            <include>MediaInfoWideValue</include>
-            <visible>!Control.HasFocus(50)</visible>
-          </control>
-          <control type="label">
-            <info>ListItem.Label</info>
-            <include>MediaInfoWideValue</include>
-            <textcolor>Highlighted</textcolor>
-            <visible>Control.HasFocus(50)</visible>
-          </control>
-        </focusedlayout>
-      </control>
-
-      <control type="image">
-        <include>VideoInfoCastThumbDims</include>
-        <aspectratio>keep</aspectratio>
-        <bordertexture>Grey.png</bordertexture>
-        <bordersize>1</bordersize>
-        <info>Container(50).ListItem.Thumb</info>
-        <colordiffuse>ffcccccc</colordiffuse>
-        <visible>Control.HasFocus(50) + ![Container(50).OnNext | Container(50).OnPrevious]</visible>
-        <animation effect="fade" start="0" end="100" time="100" delay="100">Visible</animation>
-      </control>
-    </control>
-
-  </controls>
+											</control>
+										</control>
+									</control>
+								</control>
+							</control>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<posx>573</posx>
+			<posy>392</posy>
+			<control type="textbox" id="4">
+				<description>Plot</description>
+				<width>500</width>
+				<height>238</height>
+				<info>ListItem.Plot</info>
+			</control>
+			<control type="list" id="50">
+				<description>Cast</description>
+				<posy>0</posy>
+				<width>600</width>
+				<height>234</height>
+				<onup>5</onup>
+				<ondown>5</ondown>
+				<onleft>8</onleft>
+				<onright>10</onright>
+				<orientation>vertical</orientation>
+				<pagecontrol>6</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout width="345" height="29">
+					<control type="label">
+						<info>ListItem.Label</info>
+						<include>MediaInfoWideValue</include>
+					</control>
+				</itemlayout>
+				<focusedlayout width="345" height="29">
+					<control type="label">
+						<info>ListItem.Label</info>
+						<include>MediaInfoWideValue</include>
+						<visible>!Control.HasFocus(50)</visible>
+					</control>
+					<control type="label">
+						<info>ListItem.Label</info>
+						<include>MediaInfoWideValue</include>
+						<textcolor>Highlighted</textcolor>
+						<visible>Control.HasFocus(50)</visible>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="image">
+				<include>VideoInfoCastThumbDims</include>
+				<aspectratio>keep</aspectratio>
+				<bordertexture>Grey.png</bordertexture>
+				<bordersize>1</bordersize>
+				<info>Container(50).ListItem.Thumb</info>
+				<colordiffuse>ffcccccc</colordiffuse>
+				<visible>Control.HasFocus(50) + ![Container(50).OnNext | Container(50).OnPrevious]</visible>
+				<animation effect="fade" start="0" end="100" time="100" delay="100">Visible</animation>
+			</control>
+		</control>
+	</controls>
 </window>

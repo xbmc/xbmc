@@ -241,8 +241,8 @@
 	<include name="InfoDialogBGDims">
 		<posx>-1</posx>
 		<posy>-2</posy>
-		<width>1000</width>
-		<height>604</height>
+		<width>1005</width>
+		<height>601</height>
 	</include>
 	<constant name="InfoDialogTitleXOffset">506</constant>
 	<include name="InfoDialogTitleDims">
@@ -259,7 +259,7 @@
 		<textoffsety>0</textoffsety>
 	</include>
 	<include name="VideoInfoButtonDims">
-		<width>62</width>
+		<width>100</width>
 	</include>
 	<constant name="MoviesInfoPlotCastBtnPosX">62</constant>
 	<constant name="MoviesInfoRefreshBtnPosX">128</constant>
@@ -287,7 +287,7 @@
 		<width>345</width>
 	</include>
 	<include name="VideoInfoPlotDims">
-		<width>450</width>
+		<width>480</width>
 		<height>238</height>
 	</include>
 	<include name="MoviesInfoStarRatingDims">
