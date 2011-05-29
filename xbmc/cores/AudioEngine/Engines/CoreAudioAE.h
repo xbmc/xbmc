@@ -138,6 +138,7 @@ private:
   int               m_OutputBufferSize;
   uint8_t          *m_StreamBuffer;
   int               m_StreamBufferSize;
+  bool              m_guiSoundWhilePlayback;
   
   enum AEChannel    *m_RemapChannelLayout;
   

@@ -53,6 +53,7 @@ CCoreAudioAE::CCoreAudioAE() :
   m_rawPassthrough(false),
   m_RemapChannelLayout(NULL),
   m_volume(1.0f),
+  m_guiSoundWhilePlayback(true),
   m_EngineLock(false)
 {
   /* Allocate internal buffers */
@@ -195,6 +196,8 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
 
   CStdString m_outputDevice =  g_guiSettings.GetString("audiooutput.audiodevice");
   
+  m_guiSoundWhilePlayback = g_guiSettings.GetBool("audiooutput.guisoundwhileplayback");
+
   enum AEStdChLayout m_stdChLayout = AE_CH_LAYOUT_2_0;
   switch(g_guiSettings.GetInt("audiooutput.channellayout"))
   {
@@ -354,6 +357,9 @@ void CCoreAudioAE::OnSettingsChange(CStdString setting)
   {
     Initialize();
   }
+
+  if (setting =="audiooutput.guisoundwhileplayback")
+    m_guiSoundWhilePlayback = g_guiSettings.GetBool("audiooutput.guisoundwhileplayback");
 }
 
 unsigned int CCoreAudioAE::GetSampleRate()
@@ -732,8 +738,42 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
   }
   else
   {
-    MixSounds(m_OutputBuffer, rSamples);
-  
+
+    bool bPlayGuiSound = false;
+    
+    if(m_streams.empty())
+    {
+      bPlayGuiSound = true;
+    }
+    else
+    {
+      std::list<CCoreAudioAEStream*>::iterator itt;
+      for(itt = m_streams.begin(); itt != m_streams.end();)
+      {
+        CCoreAudioAEStream *stream = *itt;
+        
+        /* On first paused stream we enable the playback of GUI sound and asume player is in pause mode. */
+        if(stream->IsPaused())
+        {
+          bPlayGuiSound = true;
+          break;
+        }
+        
+        ++itt;
+      }
+    }
+
+    
+    if(m_guiSoundWhilePlayback)
+    {
+      MixSounds(m_OutputBuffer, rSamples);
+    }
+    else if(bPlayGuiSound) 
+    {
+      MixSounds(m_OutputBuffer, rSamples);      
+    }
+
+    
     if (!m_streams.empty()) 
     {
       std::list<CCoreAudioAEStream*>::iterator itt;
