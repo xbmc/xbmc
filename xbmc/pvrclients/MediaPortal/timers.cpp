@@ -28,9 +28,6 @@ using namespace std;
 #include "timers.h"
 #include "utils.h"
 
-const time_t cUndefinedDate = 946681200;   ///> 01-01-2000 00:00:00 in time_t
-const int    cSecsInDay  = 86400;          ///> Amount of seconds in one day
-
 cTimer::cTimer()
 {
   m_index              = -1;

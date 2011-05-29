@@ -45,8 +45,8 @@ int g_iTVServerXBMCBuild = 0;
 /* TVServerXBMC plugin supported versions */
 #define TVSERVERXBMC_MIN_VERSION_STRING         "1.1.0.70"
 #define TVSERVERXBMC_MIN_VERSION_BUILD          70
-#define TVSERVERXBMC_RECOMMENDED_VERSION_STRING "1.1.x.104"
-#define TVSERVERXBMC_RECOMMENDED_VERSION_BUILD  104
+#define TVSERVERXBMC_RECOMMENDED_VERSION_STRING "1.1.x.105"
+#define TVSERVERXBMC_RECOMMENDED_VERSION_BUILD  105
 
 /************************************************************/
 /** Class interface */
@@ -796,13 +796,13 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
       tag.iClientIndex   = recording.Index();
       tag.strTitle       = recording.Title();
       tag.strDirectory   = ""; //used in XBMC as directory structure below "Server X - hostname"
-      tag.strPlotOutline = tag.strTitle;
+      tag.strPlotOutline = g_iTVServerXBMCBuild >= 105 ? recording.EpisodeName() : tag.strTitle;
       tag.strPlot        = recording.Description();
       tag.strChannelName = recording.ChannelName();
       tag.recordingTime  = recording.StartTime();
       tag.iDuration      = (int) recording.Duration();
-      tag.iPriority      = 0; //TODO? recording.Priority();
-      tag.iLifetime      = MAXLIFETIME; //TODO: recording.Lifetime();
+      tag.iPriority      = 0; // only available for schedules, not for recordings
+      tag.iLifetime      = recording.Lifetime();
       tag.iGenreType     = 0; //TODO?
       tag.iGenreSubType  = 0; //TODO?
 

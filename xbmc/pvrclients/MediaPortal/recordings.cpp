@@ -24,6 +24,7 @@ using namespace std;
 
 #include "recordings.h"
 #include "utils.h"
+#include "timers.h"
 
 cRecording::cRecording()
 {
@@ -32,10 +33,10 @@ cRecording::cRecording()
   m_Index           = -1;
 }
 
-cRecording::cRecording(const PVR_RECORDING *Recording)
-{
-
-}
+//cRecording::cRecording(const PVR_RECORDING *Recording)
+//{
+//
+//}
 
 cRecording::~cRecording()
 {
@@ -64,8 +65,14 @@ bool cRecording::ParseLine(const std::string& data)
     //[5] description
     //[6] stream_url (resolved hostname if requested)
     //[7] filename (we can bypass rtsp streaming when XBMC and the TV server are on the same machine)
-    //[8] lifetime (mediaportal keep until?)
+    //[8] keepUntilDate (DateTime)
     //[9] (optional) original stream_url when resolve hostnames is enabled
+    //[10] keepUntil (int)
+    //[11] episodeName (string)
+    //[12] episodeNumber (string)
+    //[13] episodePart (string)
+    //[14] seriesNumber (string)
+    //[15] scheduleID (int)
 
     m_Index = atoi(fields[0].c_str());
 
@@ -130,7 +137,29 @@ bool cRecording::ParseLine(const std::string& data)
     // low disk space. The special value 99 means that this recording will live
     // forever, and a value of 0 means that this recording can be deleted any
     // time if a recording with a higher priority needs disk space."
-    m_lifetime = fields[8];
+    count = sscanf(fields[8].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
+
+    if (count != 6)
+      return false;
+
+    timeinfo.tm_hour = hour;
+    timeinfo.tm_min = minute;
+    timeinfo.tm_sec = second;
+    timeinfo.tm_year = year - 1900;
+    timeinfo.tm_mon = month - 1;
+    timeinfo.tm_mday = day;
+    // Make the other fields empty:
+    timeinfo.tm_isdst = 0;
+    timeinfo.tm_wday = 0;
+    timeinfo.tm_yday = 0;
+
+    m_keepUntilDate = mktime (&timeinfo);
+
+    if (m_keepUntilDate == -1)
+    {
+      // invalid date (or outside time_t boundaries)
+      m_keepUntilDate = cUndefinedDate;
+    }
 
     if( m_filePath.length() > 0 )
     {
@@ -153,13 +182,23 @@ bool cRecording::ParseLine(const std::string& data)
     }
 
 
-    if (fields.size() == 10) // Since 1.0.8.0
+    if (fields.size() >= 10) // Since 1.0.8.0
     {
       m_originalurl = fields[9];
     }
     else
     {
       m_originalurl = fields[6];
+    }
+
+    if (fields.size() >= 16) // Since 1.1.x.105
+    {
+      m_keepUntil = atoi( fields[10].c_str() );
+      m_episodeName = fields[11];
+      m_episodeNumber = fields[12];
+      m_episodePart = fields[13];
+      m_seriesNumber = fields[14];
+      m_scheduleID = atoi( fields[15].c_str() );
     }
 
     return true;
@@ -174,4 +213,47 @@ void cRecording::SetDirectory( string& directory )
 {
   m_directory = directory;
   m_filePath = m_directory + m_fileName;
+}
+
+int cRecording::Lifetime(void) const
+{
+  // margro: the meaning of the XBMC-PVR Lifetime field is undocumented.
+  // Assuming that VDR is the source for this field:
+  //  The guaranteed lifetime (in days) of a recording created by this
+  //  timer.  0 means that this recording may be automatically deleted
+  //  at  any  time  by a new recording with higher priority. 99 means
+  //  that this recording will never  be  automatically  deleted.  Any
+  //  number  in the range 1...98 means that this recording may not be
+  //  automatically deleted in favour of a new  recording,  until  the
+  //  given  number  of days since the start time of the recording has
+  //  passed by
+  KeepMethodType m_keepmethod = (KeepMethodType) m_keepUntil;
+
+  switch (m_keepmethod)
+  {
+    case UntilSpaceNeeded: //until space needed
+    case UntilWatched: //until watched
+      return 0;
+      break;
+    case UntilKeepDate: //until keepdate
+      {
+        double diffseconds = difftime(m_keepUntilDate, m_StartTime);
+        int daysremaining = (int)(diffseconds / cSecsInDay);
+        // Calculate value in the range 1...98, based on m_keepdate
+        if ((daysremaining < MAXLIFETIME) && (daysremaining >= 0))
+        {
+          return daysremaining;
+        }
+        else
+        {
+          // > 98 days => return forever
+          return MAXLIFETIME;
+        }
+      }
+      break;
+    case Forever: //forever
+      return MAXLIFETIME;
+    default:
+      return MAXLIFETIME;
+  }
 }

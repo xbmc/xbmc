@@ -37,14 +37,20 @@ private:
   string m_directory;
   string m_stream;
   string m_originalurl;
-  string m_lifetime;
   time_t m_StartTime;
   int m_Duration;
   string m_title;             // Title of this event
-  string m_shortText;         // Short description of this event (typically the episode name in case of a series)
   string m_description;       // Description of this event
+  string m_episodeName;       // Short description of this event (typically the episode name in case of a series)
+  string m_seriesNumber;
+  string m_episodeNumber;
+  string m_episodePart;
+  int m_scheduleID;
+  int m_keepUntil;
+  time_t m_keepUntilDate;     ///> MediaPortal keepUntilDate
+
 public:
-  cRecording(const PVR_RECORDING *Recording);
+  //cRecording(const PVR_RECORDING *Recording);
   cRecording();
   virtual ~cRecording();
 
@@ -55,6 +61,12 @@ public:
   time_t Duration(void) const { return m_Duration; }
   const char *Title(void) const { return m_title.c_str(); }
   const char *Description(void) const { return m_description.c_str(); }
+  const char *EpisodeName(void) const { return m_episodeName.c_str(); }
+  const char *SeriesNumber(void) const { return m_seriesNumber.c_str(); }
+  const char *EpisodeNumber(void) const { return m_episodeNumber.c_str(); }
+  const char *EpisodePart(void) const { return m_episodePart.c_str(); }
+  int ScheduleID(void) const { return m_scheduleID; }
+  int Lifetime(void) const;
 
   /**
    * \brief Filename of this recording with full path (at server side)
