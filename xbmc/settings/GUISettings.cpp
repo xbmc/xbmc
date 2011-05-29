@@ -496,6 +496,8 @@ void CGUISettings::Initialize()
   AddString(ao, "audiooutput.passthroughdevice", 546, "Default", SPIN_CONTROL_TEXT);
 #endif
 
+  AddBool(ao, "audiooutput.guisoundwhileplayback", 34120, true);
+
   CSettingsCategory* in = AddCategory(4, "input", 14094);
 #if defined(__APPLE__)
   map<int,int> remotemode;

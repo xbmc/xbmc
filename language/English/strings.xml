@@ -2310,6 +2310,8 @@
   <string id="34108">5.1</string>
   <string id="34109">7.0</string>
   <string id="34110">7.1</string>
-  <!-- 34112-34200 reserved for future use -->
+
+  <string id="34120">GUI Sounds on playback</string>
+  <!-- 34121-34200 reserved for future use -->
 
 </strings>
