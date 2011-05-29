@@ -93,7 +93,7 @@
 	<include name="InfoDialogTitle">
 		<include>InfoDialogTitleDims</include>
 		<font>TitleCapsFont</font>
-		<align>center</align>
+		<align>left</align>
 	</include>
 	<include name="DialogTopButton">
 		<onup>-</onup>

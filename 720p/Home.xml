@@ -1100,6 +1100,11 @@
 					</control>
 				</focusedlayout>
 				<content>
+					<item id="1">
+						<description>TEST</description>
+						<label>Seb TEST</label>
+						<onclick>ActivateWindow(103)</onclick>
+					</item>
 					<item id="6">
 						<description>Preferences Menu</description>
 						<label> $LOCALIZE[31955] </label>
@@ -3203,10 +3208,10 @@
 		</control>
 		<control type="group">
 			<description>RSS</description>
-			<posx>75</posx>
+			<posx>394</posx>
 			<posy>678</posy>
-			<!--<visible>System.GetBool(LookAndFeel.EnableRSSFeeds) + System.HasNetwork</visible>-->
-			<visible>False</visible>
+			<visible>System.GetBool(LookAndFeel.EnableRSSFeeds) + System.HasNetwork</visible>
+			<!--<visible>False</visible>-->
 			<animation type="WindowOpen">
 				<effect type="slide" start="0,50" time="700" delay="100"/>
 				<effect type="fade" time="700" delay="500"/>
@@ -3217,15 +3222,15 @@
 			</animation>
 			<control type="image">
 				<description>RSS Background</description>
-				<width>1253</width>
+				<width>890</width>
 				<height>43</height>
 				<texture border="30,30,0,0">HomeRSS.png</texture>
 			</control>
 			<control type="rss">
 				<description>Rss Feed</description>
-				<posx>30</posx>
+				<posx>0</posx>
 				<posy>10</posy>
-				<width>1210</width>
+				<width>890</width>
 				<font>RssFeedFont</font>
 				<urlset>1</urlset>
 				<textcolor>FFFF9900</textcolor>
@@ -3237,7 +3242,7 @@
 			<control type="group">
 				<description>Fades for RSS text</description>
 				<posy>4</posy>
-				<control type="image">
+				<!--<control type="image">
 					<description>Left hand fade for RSS</description>
 					<posx>29</posx>
 					<width>40</width>
@@ -3250,7 +3255,7 @@
 					<width>40</width>
 					<height>40</height>
 					<texture flipx="true">BlackGradient.png</texture>
-				</control>
+				</control>-->
 			</control>
 		</control>
 		<!-- Music Now Playing -->
