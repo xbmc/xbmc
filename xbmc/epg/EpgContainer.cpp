@@ -245,34 +245,33 @@ bool CEpgContainer::LoadSettings(void)
 
 bool CEpgContainer::RemoveOldEntries(void)
 {
-  bool bReturn = false;
-  CSingleLock lock(m_critSection);
-
   CLog::Log(LOGINFO, "EpgContainer - %s - removing old EPG entries",
       __FUNCTION__);
 
   CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
 
-  if (!m_database.Open())
-  {
-    CLog::Log(LOGERROR, "EpgContainer - %s - cannot open the database",
-        __FUNCTION__);
-    return bReturn;
-  }
-
   /* call Cleanup() on all known EPG tables */
   for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
   {
-    at(iEpgPtr)->Cleanup(now);
+    CEpg *epg = at(iEpgPtr);
+    if (epg)
+      at(iEpgPtr)->Cleanup(now);
   }
 
   /* remove the old entries from the database */
-  bReturn = m_database.DeleteOldEpgEntries();
+  if (!m_bIgnoreDbForClient)
+  {
+    if (m_database.Open())
+    {
+      m_database.DeleteOldEpgEntries();
+      m_database.Close();
+    }
+  }
 
-  if (bReturn)
-    CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgCleanup);
+  CSingleLock lock(m_critSection);
+  CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgCleanup);
 
-  return bReturn;
+  return true;
 }
 
 CEpg *CEpgContainer::CreateEpg(int iEpgId)
