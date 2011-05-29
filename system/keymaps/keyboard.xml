@@ -106,7 +106,7 @@
       <next_track>SkipNext</next_track>
       <prev_track>SkipPrevious</prev_track>
       <stop>Stop</stop>
-      <play_pause>Play</play_pause>
+      <play_pause>Pause</play_pause>
       <launch_mail></launch_mail>
       <launch_media_select>XBMC.ActivateWindow(MyMusic)</launch_media_select>
       <launch_app1_pc_icon>ActivateWindow(MyPrograms)</launch_app1_pc_icon>
