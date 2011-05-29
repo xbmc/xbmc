@@ -434,19 +434,19 @@ void CMythSession::Process()
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE", __FUNCTION__);
-      GetAllRecordedPrograms(true);
+      ResetAllRecordedPrograms();
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE_ADD:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_ADD: %s", __FUNCTION__, buf);
-      GetAllRecordedPrograms(true);
+      ResetAllRecordedPrograms();
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE_UPDATE:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_UPDATE", __FUNCTION__);
-      GetAllRecordedPrograms(true);
+      ResetAllRecordedPrograms();
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE_DELETE:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE_DELETE: %s", __FUNCTION__, buf);
-      GetAllRecordedPrograms(true);
+      ResetAllRecordedPrograms();
       break;
     case CMYTH_EVENT_SCHEDULE_CHANGE:
       CLog::Log(LOGDEBUG, "%s - MythTV event SCHEDULE_CHANGE", __FUNCTION__);
@@ -565,9 +565,9 @@ DllLibCMyth* CMythSession::GetLibrary()
   return NULL;
 }
 
-cmyth_proglist_t CMythSession::GetAllRecordedPrograms(bool force)
+cmyth_proglist_t CMythSession::GetAllRecordedPrograms()
 {
-  if (!m_all_recorded || force)
+  if (!m_all_recorded)
   {
     CSingleLock lock(m_section);
     if (m_all_recorded)
@@ -582,6 +582,17 @@ cmyth_proglist_t CMythSession::GetAllRecordedPrograms(bool force)
     m_all_recorded = m_dll->proglist_get_all_recorded(control);
   }
   return m_all_recorded;
+}
+
+void CMythSession::ResetAllRecordedPrograms()
+{
+  CSingleLock lock(m_section);
+  if (m_all_recorded)
+  {
+    m_dll->ref_release(m_all_recorded);
+    m_all_recorded = NULL;
+  }
+  return;
 }
 
 void CMythSession::LogCMyth(int level, char *msg)
