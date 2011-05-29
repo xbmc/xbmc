@@ -3220,7 +3220,7 @@
 								<!-- drop shadow -->
 								<control type="image">
 									<posx>27</posx>
-									<posy>42</posy>
+									<posy>37</posy>
 									<width>136</width>
 									<height>136</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
@@ -3229,7 +3229,7 @@
 								</control>
 								<control type="image">
 									<posx>35</posx>
-									<posy>50</posy>
+									<posy>45</posy>
 									<width>120</width>
 									<height>120</height>
 									<texture background="true">bigSquareMask.png</texture>
@@ -3239,7 +3239,7 @@
 								</control>
 								<control type="image">
 									<posx>37</posx>
-									<posy>52</posy>
+									<posy>47</posy>
 									<width>116</width>
 									<height>116</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
@@ -3250,7 +3250,7 @@
 									<posx>35</posx>
 									<posy>175</posy>
 									<width>120</width>
-									<height>25</height>
+									<height>30</height>
 									<texture border="10">whitewiderounded.png</texture>
 									<colordiffuse>FF000000</colordiffuse>
 									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
@@ -3258,7 +3258,7 @@
 								</control>
 								<control type="label">
 									<posx>95</posx>
-									<posy>186</posy>
+									<posy>188</posy>
 									<width>100</width>
 									<align>center</align>
 									<aligny>center</aligny>
@@ -3409,7 +3409,7 @@
 								<!-- drop shadow -->
 								<control type="image">
 									<posx>27</posx>
-									<posy>42</posy>
+									<posy>37</posy>
 									<width>136</width>
 									<height>136</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
@@ -3418,7 +3418,7 @@
 								</control>
 								<control type="image">
 									<posx>34</posx>
-									<posy>49</posy>
+									<posy>44</posy>
 									<width>122</width>
 									<height>122</height>
 									<texture background="true">bigSquareMask.png</texture>
@@ -3428,14 +3428,14 @@
 								</control>
 								<control type="image">
 									<posx>37</posx>
-									<posy>52</posy>
+									<posy>47</posy>
 									<width>116</width>
 									<height>116</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
 									<visible>ListItem.Type(channel)</visible>
 								</control>
-								<control type="image">
+								<!--<control type="image">
 									<posx>35</posx>
 									<posy>175</posy>
 									<width>120</width>
@@ -3458,7 +3458,7 @@
 									<wrapmultiline>false</wrapmultiline>
 									<visible>ListItem.Type(channel)</visible>
 									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-								</control>
+								</control>-->
 							</control>
 							<!-- album -->
 							<control type="image">
