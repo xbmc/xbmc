@@ -1938,7 +1938,7 @@
 		180184E9137440D90048F7F2 /* AddonCallbacksPVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksPVR.h; sourceTree = "<group>"; };
 		18018535137467810048F7F2 /* HTSPSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTSPSession.cpp; sourceTree = "<group>"; };
 		18018536137467810048F7F2 /* HTSPSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTSPSession.h; sourceTree = "<group>"; };
-		1801857513746BBC0048F7F2 /* libTcpSocket.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTcpSocket.a; sourceTree = "<group>"; };
+		1801857513746BBC0048F7F2 /* libTcpSocket.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTcpSocket.a; path = lib/libTcpSocket/libTcpSocket.a; sourceTree = "<group>"; };
 		18308CB41303370800AA309E /* stat_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stat_utf8.h; sourceTree = "<group>"; };
 		18308CB51303370800AA309E /* stdio_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_utf8.h; sourceTree = "<group>"; };
 		183FDF8811AF0B0500B81E9C /* PluginSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginSource.cpp; sourceTree = "<group>"; };
@@ -9339,6 +9339,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GENERATE_PROFILING_CODE = NO;
 				HEADER_SEARCH_PATHS = (
+					lib/libTcpSocket,
 					$SRCROOT,
 					xbmc,
 					xbmc/osx,
@@ -9354,6 +9355,7 @@
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/lib/libTcpSocket",
 					"$(SRCROOT)",
 					"$(SRCROOT)/lib/libRTV",
 					"$(SRCROOT)/lib/libXDAAP",
@@ -9428,6 +9430,7 @@
 				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
+					lib/libTcpSocket,
 					$SRCROOT,
 					xbmc,
 					xbmc/osx,
@@ -9443,6 +9446,7 @@
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/lib/libTcpSocket",
 					"$(SRCROOT)",
 					"$(SRCROOT)/lib/libRTV",
 					"$(SRCROOT)/lib/libXDAAP",
