@@ -16,6 +16,8 @@
 		4D5D2E1E1301758F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */; };
 		7C99B6E9133D36E200FC2B16 /* CacheCircular.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B6E7133D36E200FC2B16 /* CacheCircular.cpp */; };
 		7C99B7BE1340730000FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7BC1340730000FC2B16 /* GUIDialogPlayEject.cpp */; };
+		7CBC896A139385740046CB82 /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CBC8966139385740046CB82 /* DirtyRegionSolvers.cpp */; };
+		7CBC896B139385740046CB82 /* DirtyRegionTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CBC8968139385740046CB82 /* DirtyRegionTracker.cpp */; };
 		C80711AD135DB85F002F601B /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80711AB135DB85F002F601B /* InputOperations.cpp */; };
 		C8EC5D26136953E100CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D24136953E100CCC10D /* XBMC_keytable.cpp */; };
 		F54D9E8112B713F8006870F9 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8012B713F8006870F9 /* libc.dylib */; };
@@ -933,6 +935,11 @@
 		7C99B6E8133D36E200FC2B16 /* CacheCircular.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheCircular.h; sourceTree = "<group>"; };
 		7C99B7BC1340730000FC2B16 /* GUIDialogPlayEject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPlayEject.cpp; sourceTree = "<group>"; };
 		7C99B7BD1340730000FC2B16 /* GUIDialogPlayEject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPlayEject.h; sourceTree = "<group>"; };
+		7CBC8965139385740046CB82 /* DirtyRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegion.h; sourceTree = "<group>"; };
+		7CBC8966139385740046CB82 /* DirtyRegionSolvers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirtyRegionSolvers.cpp; sourceTree = "<group>"; };
+		7CBC8967139385740046CB82 /* DirtyRegionSolvers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegionSolvers.h; sourceTree = "<group>"; };
+		7CBC8968139385740046CB82 /* DirtyRegionTracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirtyRegionTracker.cpp; sourceTree = "<group>"; };
+		7CBC8969139385740046CB82 /* DirtyRegionTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegionTracker.h; sourceTree = "<group>"; };
 		8D576316048677EA00EA77CD /* XBMC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBMC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C80711AB135DB85F002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
 		C80711AC135DB85F002F601B /* InputOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputOperations.h; sourceTree = "<group>"; };
@@ -4552,6 +4559,11 @@
 				F56C8485131F42E9000AD0F6 /* D3DResource.h */,
 				F56C8486131F42E9000AD0F6 /* DDSImage.h */,
 				F56C8487131F42E9000AD0F6 /* DirectXGraphics.h */,
+				7CBC8965139385740046CB82 /* DirtyRegion.h */,
+				7CBC8966139385740046CB82 /* DirtyRegionSolvers.cpp */,
+				7CBC8967139385740046CB82 /* DirtyRegionSolvers.h */,
+				7CBC8968139385740046CB82 /* DirtyRegionTracker.cpp */,
+				7CBC8969139385740046CB82 /* DirtyRegionTracker.h */,
 				F56C8488131F42E9000AD0F6 /* FrameBufferObject.h */,
 				F56C8489131F42E9000AD0F6 /* Geometry.h */,
 				F56C848A131F42E9000AD0F6 /* GraphicContext.h */,
@@ -6699,6 +6711,8 @@
 				18404DD61396C3F300863BBA /* Slingbox.cpp in Sources */,
 				1840B77A1399616D007C848B /* JSONVariantParser.cpp in Sources */,
 				1840B77B1399616D007C848B /* JSONVariantWriter.cpp in Sources */,
+				7CBC896A139385740046CB82 /* DirtyRegionSolvers.cpp in Sources */,
+				7CBC896B139385740046CB82 /* DirtyRegionTracker.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
