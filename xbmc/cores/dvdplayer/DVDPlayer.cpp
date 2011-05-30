@@ -2112,12 +2112,7 @@ void CDVDPlayer::HandleMessages()
           {
             if (bShowPreview)
             {
-              CFileItem item(g_application.CurrentFileItem());
-              if(input->UpdateItem(item))
-              {
-                g_application.CurrentFileItem() = item;
-                g_infoManager.SetCurrentItem(item);
-              }
+              UpdateApplication(0);
               m_ChannelEntryTimeOut = CTimeUtils::GetTimeMS();
             }
             else
