@@ -170,6 +170,11 @@ namespace ForTheRecord
   int GetUpcomingPrograms(Json::Value& response);
 
   /**
+   * \brief Fetch the list of currently active recordings
+   */
+  int GetActiveRecordings(Json::Value& response);
+
+  /**
    * \brief Cancel an upcoming program
    */
   int CancelUpcomingProgram(const std::string& scheduleid, const std::string& channelid, const time_t starttime, const std::string& upcomingprogramid);

@@ -676,8 +676,8 @@ namespace ForTheRecord
 
     XBMC->Log(LOG_DEBUG, "GetUpcomingPrograms");
 
-    // http://madcat:49943/ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=false
-    retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=false", "", response);
+    // http://madcat:49943/ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=true
+    retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=true", "", response);
 
     if(retval >= 0)
     {           
@@ -699,6 +699,39 @@ namespace ForTheRecord
 
     return retval;
   }
+
+    /**
+   * \brief Fetch the list of currently active recordings
+   */
+  int GetActiveRecordings(Json::Value& response)
+  {
+    int retval = -1;
+
+    XBMC->Log(LOG_DEBUG, "GetActiveRecordings");
+
+    retval = ForTheRecordJSONRPC("ForTheRecord/Control/ActiveRecordings", "", response);
+
+    if(retval >= 0)
+    {           
+      if( response.type() == Json::arrayValue)
+      {
+        int size = response.size();
+        return size;
+      }
+      else
+      {
+        XBMC->Log(LOG_DEBUG, "Unknown response format. Expected Json::arrayValue\n");
+        return -1;
+      }
+    }
+    else
+    {
+      XBMC->Log(LOG_DEBUG, "GetActiveRecordings failed. Return value: %i\n", retval);
+    }
+
+    return retval;
+  }
+
 
   /**
    * \brief Cancel an upcoming program

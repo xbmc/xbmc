@@ -32,8 +32,7 @@ cUpcomingRecording::cUpcomingRecording(void)
   starttime = 0;
   stoptime = 0;
   title = "";
-  isactive = false;
-  isrecording = false;
+  iscancelled = false;
 }
 
 cUpcomingRecording::~cUpcomingRecording(void)
@@ -52,8 +51,7 @@ bool cUpcomingRecording::Parse(const Json::Value& data)
   prerecordseconds = data["PreRecordSeconds"].asInt();
   postrecordseconds = data["PostRecordSeconds"].asInt();
   title = data["Title"].asString();
-  isactive = true;
-  isrecording = false;
+  iscancelled = data["IsCancelled"].asBool();
   upcomingprogramid = data["UpcomingProgramId"].asString();
   scheduleid = data["ScheduleId"].asString();
 
