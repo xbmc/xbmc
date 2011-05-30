@@ -597,7 +597,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 
   CSingleLock lock(m_critSection);
   /* sort by client channel number if this is the first time or if pvrmanager.backendchannelorder is true */
-  bool bUseBackendChannelNumbers(size() == 0 || m_bUsingBackendChannelOrder);
+  bool bUseBackendChannelNumbers(m_bUsingBackendChannelOrder);
 
   CPVRDatabase *database = OpenPVRDatabase();
   if (!database)
