@@ -173,8 +173,8 @@ void CGUIImage::Render()
   if (!IsVisible()) return;
 
   if (m_fadingTextures.size())  // have some fading images
-  { // anything other than the last old texture needs to be faded out as per usual
-    for (vector<CFadingTexture *>::iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end() - 1;)
+  {
+    for (vector<CFadingTexture *>::iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end();)
     {
       (*itr)->m_texture->Render();
       itr++;
