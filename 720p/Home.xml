@@ -1100,11 +1100,6 @@
 					</control>
 				</focusedlayout>
 				<content>
-					<item id="1">
-						<description>TEST</description>
-						<label>Seb TEST</label>
-						<onclick>ActivateWindow(103)</onclick>
-					</item>
 					<item id="6">
 						<description>Preferences Menu</description>
 						<label> $LOCALIZE[31955] </label>
