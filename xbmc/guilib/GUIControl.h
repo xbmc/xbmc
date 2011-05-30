@@ -344,6 +344,7 @@ protected:
   CPoint m_camera;
   bool m_hasCamera;
   TransformMatrix m_transform;
+  TransformMatrix m_cachedTransform; // Contains the absolute transform the control
 
   bool  m_controlIsDirty;
   CRect m_previousDirtyRegion;

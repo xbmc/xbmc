@@ -143,7 +143,7 @@ void CGUIControl::DoProcess(unsigned int currentTime)
 
   changed |= Animate(currentTime);
 
-  g_graphicsContext.AddTransform(m_transform);
+  m_cachedTransform = g_graphicsContext.AddTransform(m_transform);
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
 
@@ -182,7 +182,7 @@ void CGUIControl::Process(unsigned int currentTime)
 // 3. reset the animation transform
 void CGUIControl::DoRender()
 {
-  g_graphicsContext.AddTransform(m_transform);
+  g_graphicsContext.SetTransform(m_cachedTransform);
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
   if (IsVisible())
