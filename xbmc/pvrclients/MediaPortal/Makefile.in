@@ -5,9 +5,9 @@
 # how to reach the author.
 #
 
-LIBS   = ../../../lib/libTcpSocket/libTcpSocket.a -ldl
-LIBDIR = ../../../addons/pvr.team-mediaportal.tvserver
-LIB    = ../../../addons/pvr.team-mediaportal.tvserver/XBMC_MPTV.pvr
+LIBS   = @abs_top_srcdir@/lib/libTcpSocket/libTcpSocket.a -ldl
+LIBDIR = @abs_top_srcdir@/addons/pvr.team-mediaportal.tvserver
+LIB    = @abs_top_srcdir@/addons/pvr.team-mediaportal.tvserver/XBMC_MPTV.pvr
 
 SRCS   = channels.cpp \
 	client.cpp \
@@ -23,12 +23,8 @@ include ../Makefile.include
 
 clean:
 	-rm -f $(OBJS) $(LIB) *.P *~
-	$(MAKE) -C ../../../lib/libTcpSocket clean
+	$(MAKE) -C @abs_top_srcdir@/lib/libTcpSocket clean
 
 $(LIB): $(OBJS)
-	${MAKE} -C ../../../lib/libTcpSocket
+	${MAKE} -C @abs_top_srcdir@/lib/libTcpSocket
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
-
-ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
-DEFINES += -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common
-endif
