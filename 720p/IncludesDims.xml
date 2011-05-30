@@ -40,6 +40,7 @@
 		<posy>0</posy>
 		<width>1280</width>
 		<height>720</height>
+		<aspectratio>scale</aspectratio>
 	</include>
 	<include name="FullScreenOverlayDims">
 		<include>FullScreenBGImageDims</include>

@@ -2378,6 +2378,17 @@
 			<include>FullScreenOverlayDims</include>
 			<texture>TVFanartOverlay.png</texture>
 		</control>
+		<!-- new "transparency" overlay for fanart -->
+		<control type="largeimage">
+			<posy>219</posy>
+			<posx>0</posx>
+			<width>1280</width>
+			<height>502</height>
+			<aspectratio aligny="bottom">scale</aspectratio>
+			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+			<visible>true</visible>
+			<animation effect="fade" start="0" end="5" time="0" condition="true">Conditional</animation>
+		</control>
 	</include>
 	<include name="MovieViewBGOverlay">
 		<include condition="Skin.HasTheme(lite)">MovieViewBGOverlayLite</include>

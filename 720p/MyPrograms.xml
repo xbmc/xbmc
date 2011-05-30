@@ -1,52 +1,44 @@
+<?xml version="1.0"?>
 <window id="1">
-  <defaultcontrol>50</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
-
-  <controls>
-    <include>Background</include>
-
-    <include>List</include>
-    <include>InfoList</include>
-    <include>PanelStream</include>
-    <include>Coverflow</include>
-    <include>WallStream</include>
-    <include>PluginStream</include>
-
-    <control type="group">
-      <include>TopOverlayTitlePos</include>
-
-	    <control type="group">
+	<defaultcontrol>50</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+		<include>Background</include>
+		<include>List</include>
+		<include>InfoList</include>
+		<include>PanelStream</include>
+		<include>Coverflow</include>
+		<include>WallStream</include>
+		<include>PluginStream</include>
+		<control type="group">
+			<include>TopOverlayTitlePos</include>
+			<control type="group">
 				<visible>!IsEmpty(Container.SecondTitle)</visible>
-	      <include>TopOverlaySecondTitleSlide</include>
-	      <include>TopOverlaySecondTitleAreaBG</include>
-
-	      <control type="label">
-	        <description>Second title</description>
-	        <label>$INFO[Container.SecondTitle]</label>
-	        <include>TopOverlaySecondTitleAreaText</include>
-	      </control>
-	    </control>
-
-      <include>TopOverlayFirstTitleAreaBG</include>
-
-      <control type="label">
-        <description>Programs label</description>
-				<visible>IsEmpty(Container.FirstTitle)</visible>
-        <include>TopOverlayFirstTitleAreaText</include>
-        <label>$LOCALIZE[0]</label>
-      </control>
+				<include>TopOverlaySecondTitleSlide</include>
+				<include>TopOverlaySecondTitleAreaBG</include>
+				<control type="label">
+					<description>Second title</description>
+					<label>$INFO[Container.SecondTitle]</label>
+					<include>TopOverlaySecondTitleAreaText</include>
+				</control>
+			</control>
+			<include>TopOverlayFirstTitleAreaBG</include>
 			<control type="label">
-        <description>First title for programs</description>
+				<description>Programs label</description>
+				<visible>IsEmpty(Container.FirstTitle)</visible>
+				<include>TopOverlayFirstTitleAreaText</include>
+				<label>$LOCALIZE[0]</label>
+			</control>
+			<control type="label">
+				<description>First title for programs</description>
 				<visible>!IsEmpty(Container.FirstTitle)</visible>
-        <include>TopOverlayFirstTitleAreaText</include>
-        <label>$INFO[Container.FirstTitle]</label>
-      </control>
-    </control>
-
-    <include>Clock</include>
-    <include condition="!Skin.HasSetting(HideOptionsMenu)">OptionsMenu</include>
-    <include>MediaCount</include>
-    <include>MusicNowPlayingIndicators</include>
-
-  </controls>
+				<include>TopOverlayFirstTitleAreaText</include>
+				<label>$INFO[Container.FirstTitle]</label>
+			</control>
+		</control>
+		<include>Clock</include>
+		<include condition="!Skin.HasSetting(HideOptionsMenu)">OptionsMenu</include>
+		<include>MediaCount</include>
+		<include>MusicNowPlayingIndicators</include>
+	</controls>
 </window>

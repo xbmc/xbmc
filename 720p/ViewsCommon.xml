@@ -285,16 +285,6 @@
 		<control type="group">
 			<include>InfoListVisible</include>
 			<include>MediaViewBGOverlay</include>
-			<!--<control type="largeimage">
-				<posy>219</posy>
-				<posx>0</posx>
-				<width>1280</width>
-				<height>502</height>
-				<aspectratio aligny="bottom">scale</aspectratio>
-				<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-				<visible>true</visible>
-				<animation effect="fade" start="0" end="5" time="0" condition="true">Conditional</animation>
-			</control>-->
 		</control>
 		<control type="group">
 			<include>InfoListVisible</include>
