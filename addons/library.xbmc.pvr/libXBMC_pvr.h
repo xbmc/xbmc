@@ -35,6 +35,8 @@
 #if defined(__APPLE__)
 #if defined(__POWERPC__)
 #define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-powerpc-osx.so"
+#elif defined(__arm__)
+#define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-arm-osx.so"
 #else
 #define PVR_HELPER_DLL "/library.xbmc.pvr/libXBMC_pvr-x86-osx.so"
 #endif

@@ -34,6 +34,8 @@
 #if defined(__APPLE__)
 #if defined(__POWERPC__)
 #define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-powerpc-osx.so"
+#elif defined(__arm__)
+#define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-arm-osx.so"
 #else
 #define ADDON_DLL "/library.xbmc.addon/libXBMC_addon-x86-osx.so"
 #endif
