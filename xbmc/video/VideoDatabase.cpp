@@ -7441,9 +7441,9 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
       if (XMLUtils::GetString(path,"content", content))
       { // check the scraper exists, if so store the path
         AddonPtr addon;
-        CStdString uuid;
-        XMLUtils::GetString(path,"scraperID",uuid);
-        if (CAddonMgr::Get().GetAddon(uuid, addon))
+        CStdString id;
+        XMLUtils::GetString(path,"scraperpath",id);
+        if (CAddonMgr::Get().GetAddon(id, addon))
         {
           SScanSettings settings;
           ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addon);
