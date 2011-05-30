@@ -91,7 +91,7 @@ bool CVideoDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create bookmark table");
     m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, totalTimeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
-    m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile)");
+    m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
 
     CLog::Log(LOGINFO, "create settings table");
     m_pDS->exec("CREATE TABLE settings ( idFile integer, Deinterlace bool,"
@@ -3511,6 +3511,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       UpdateBasePathID("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH, VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
       UpdateBasePathID("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH, VIDEODB_ID_EPISODE_PARENTPATHID);
       UpdateBasePathID("tvshow", "idShow", VIDEODB_ID_TV_BASEPATH, VIDEODB_ID_TV_PARENTPATHID);
+    }
+    if (iVersion < 53)
+    { // Change INDEX for bookmark table
+      m_pDS->dropIndex("bookmark", "ix_bookmark");
+      m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
     }
   }
   catch (...)
