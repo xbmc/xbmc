@@ -57,7 +57,7 @@ public:
     virtual bool NextChannel(bool preview = false) = 0;
     virtual bool PrevChannel(bool preview = false) = 0;
     virtual bool SelectChannelByNumber(unsigned int channel) = 0;
-    virtual bool SelectChannel(const PVR::CPVRChannel &channel) { return false; };
+    virtual bool SelectChannel(const PVR::CPVRChannel &channel, bool bShowPreview = false) { return false; };
     virtual bool GetSelectedChannel(PVR::CPVRChannel *) { return false; };
     virtual int GetTotalTime() = 0;
     virtual int GetStartTime() = 0;

@@ -22,6 +22,11 @@
 
 class CFileItem;
 
+namespace PVR
+{
+  class CPVRChannel;
+}
+
 namespace XFILE
 {
 class ILiveTVInterface
@@ -31,6 +36,7 @@ public:
   virtual bool           NextChannel(bool preview = false) = 0;
   virtual bool           PrevChannel(bool preview = false) = 0;
   virtual bool           SelectChannel(unsigned int channel) = 0;
+  virtual bool           SelectChannel(const PVR::CPVRChannel &channel, bool bShowPreview = false) { return false; };
 
   virtual int            GetTotalTime() = 0;
   virtual int            GetStartTime() = 0;

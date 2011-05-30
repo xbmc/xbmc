@@ -206,6 +206,28 @@ bool CPVRFile::SelectChannel(unsigned int channel)
   }
 }
 
+bool CPVRFile::SelectChannel(const CPVRChannel &channel, bool bShowPreview)
+{
+  if (m_isPlayRecording)
+  {
+    /* We are inside a recording, skip channelswitch */
+    /** TODO:
+     ** Add support for cutting keys (functions becomes the numeric keys as integer)
+     **/
+    return true;
+  }
+
+  if (g_PVRManager.PerformChannelSwitch(channel, bShowPreview))
+  {
+    m_playingItem = channel.ChannelNumber();
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 bool CPVRFile::UpdateItem(CFileItem& item)
 {
   return g_PVRManager.UpdateItem(item);

@@ -27,6 +27,11 @@
 
 class CPVRSession;
 
+namespace PVR
+{
+  class CPVRChannel;
+}
+
 namespace XFILE {
 
 class CPVRFile
@@ -56,6 +61,7 @@ public:
   virtual bool           NextChannel(bool preview = false);
   virtual bool           PrevChannel(bool preview = false);
   virtual bool           SelectChannel(unsigned int channel);
+  virtual bool           SelectChannel(const PVR::CPVRChannel &channel, bool bShowPreview);
 
   virtual int            GetTotalTime();
   virtual int            GetStartTime();
