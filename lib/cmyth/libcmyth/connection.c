@@ -1352,8 +1352,6 @@ cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* sett
 		return NULL;
 	}
 
-	pthread_mutex_lock(&mutex);
-
 	snprintf(msg, sizeof(msg), "QUERY_SETTING %s %s", hostname, setting);
 	if ((err = cmyth_send_message(conn, msg)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
@@ -1386,12 +1384,11 @@ cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* sett
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: odd left over data %s\n", __FUNCTION__, buffer);
 	}
 
-	pthread_mutex_unlock(&mutex);
 	return result;
 err:
 	if(result)
 		ref_release(result);
-	pthread_mutex_unlock(&mutex);
+
 	return NULL;
 }
 
