@@ -48,6 +48,11 @@ class CDemuxStreamVideo;
 class CDemuxStreamAudio;
 class CStreamInfo;
 
+namespace PVR
+{
+  class CPVRChannel;
+}
+
 #define DVDSTATE_NORMAL           0x00000001 // normal dvd state
 #define DVDSTATE_STILL            0x00000002 // currently displaying a still frame
 #define DVDSTATE_WAIT             0x00000003 // waiting for demuxer read error
@@ -218,6 +223,8 @@ public:
   virtual bool SetPlayerState(CStdString state);
 
   virtual CStdString GetPlayingTitle();
+
+  virtual bool SwitchChannel(const PVR::CPVRChannel &channel);
 
   enum ECacheState
   { CACHESTATE_DONE = 0

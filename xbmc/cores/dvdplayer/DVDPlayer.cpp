@@ -2095,6 +2095,16 @@ void CDVDPlayer::HandleMessages()
           SetCaching(CACHESTATE_PVR);
         }
       }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
+      {
+        CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+        if(input && input->SelectChannel(static_cast<CDVDMsgType <CPVRChannel> *>(pMsg)->m_value))
+        {
+          FlushBuffers(false);
+          SAFE_DELETE(m_pDemuxer);
+          SetCaching(CACHESTATE_PVR);
+        }
+      }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
       {
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
@@ -3827,4 +3837,14 @@ CStdString CDVDPlayer::GetPlayingTitle()
     return ttcache->line30;
 
   return "";
+}
+
+bool CDVDPlayer::SwitchChannel(const CPVRChannel &channel)
+{
+  g_PVRManager.PerformChannelSwitch(channel, true);
+  UpdateApplication(0);
+  UpdatePlayState(0);
+
+  m_messenger.Put(new CDVDMsgType<CPVRChannel>(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
+  return true;
 }
