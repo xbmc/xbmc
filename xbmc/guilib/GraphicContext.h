@@ -170,14 +170,13 @@ public:
       m_groupTransform.pop();
     m_groupTransform.push(m_guiTransform);
   }
-  inline void AddTransform(const TransformMatrix &matrix)
+  inline TransformMatrix AddTransform(const TransformMatrix &matrix)
   {
     ASSERT(m_groupTransform.size());
-    if (m_groupTransform.size())
-      m_groupTransform.push(m_groupTransform.top() * matrix);
-    else
-      m_groupTransform.push(matrix);
+    TransformMatrix absoluteMatrix = m_groupTransform.size() ? m_groupTransform.top() * matrix : matrix;
+    m_groupTransform.push(absoluteMatrix);
     UpdateFinalTransform(m_groupTransform.top());
+    return absoluteMatrix;
   }
   inline void RemoveTransform()
   {
