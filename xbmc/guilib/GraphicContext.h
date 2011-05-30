@@ -178,6 +178,12 @@ public:
     UpdateFinalTransform(m_groupTransform.top());
     return absoluteMatrix;
   }
+  inline void SetTransform(const TransformMatrix &matrix)
+  {
+    ASSERT(m_groupTransform.size());
+    m_groupTransform.push(matrix);
+    UpdateFinalTransform(m_groupTransform.top());
+  }
   inline void RemoveTransform()
   {
     ASSERT(m_groupTransform.size() > 1);
