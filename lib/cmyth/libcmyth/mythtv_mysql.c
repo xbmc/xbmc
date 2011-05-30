@@ -1189,7 +1189,9 @@ int cmyth_livetv_keep_recording(cmyth_recorder_t rec, cmyth_database_t db, int k
 
 	if(keep) {
 		char* str;
+	  pthread_mutex_lock(&mutex);
 		str = cmyth_conn_get_setting(rec->rec_conn, prog->proginfo_hostname, "AutoExpireDefault");
+		pthread_mutex_unlock(&mutex);
 		if(!str) {
 			cmyth_dbg(CMYTH_DBG_ERROR, "%s: failed to get AutoExpireDefault\n", __FUNCTION__);
 			ref_release(prog);
