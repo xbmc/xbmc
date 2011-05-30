@@ -8,7 +8,7 @@ include ../config.mk
 
 # lib name, version
 LIBNAME=openssl
-VERSION=1.0.0a
+VERSION=0.9.8r
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
