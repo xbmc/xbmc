@@ -3350,7 +3350,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
   {
     if (iVersion < 43)
     {
-      m_pDS->exec("ALTER table settings add VerticalShift float");
+      m_pDS->exec("ALTER TABLE settings ADD VerticalShift float");
     }
     if (iVersion < 44)
     {
@@ -3429,10 +3429,10 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     }
     if (iVersion < 45)
     {
-      m_pDS->exec("ALTER table movie add c22 text");
-      m_pDS->exec("ALTER table episode add c22 text");
-      m_pDS->exec("ALTER table musicvideo add c22 text");
-      m_pDS->exec("ALTER table tvshow add c22 text");
+      m_pDS->exec("ALTER TABLE movie ADD c22 text");
+      m_pDS->exec("ALTER TABLE episode ADD c22 text");
+      m_pDS->exec("ALTER TABLE musicvideo ADD c22 text");
+      m_pDS->exec("ALTER TABLE tvshow ADD c22 text");
       // Now update our tables
       UpdateBasePath("movie", "idMovie", VIDEODB_ID_BASEPATH);
       UpdateBasePath("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH);
@@ -3452,7 +3452,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     }
     if (iVersion < 50)
     {
-      m_pDS->exec("ALTER table settings add ScalingMethod integer");
+      m_pDS->exec("ALTER TABLE settings ADD ScalingMethod integer");
       m_pDS->exec(PrepareSQL("UPDATE settings set ScalingMethod=%i", g_settings.m_defaultVideoSettings.m_ScalingMethod));
     }
     if (iVersion < 51)
@@ -3465,10 +3465,10 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     }
     if (iVersion < 52)
     { // Add basepath link to path table for faster content retrieval, and indicies
-      m_pDS->exec("ALTER table movie add c23 text");
-      m_pDS->exec("ALTER table episode add c23 text");
-      m_pDS->exec("ALTER table musicvideo add c23 text");
-      m_pDS->exec("ALTER table tvshow add c23 text");
+      m_pDS->exec("ALTER TABLE movie ADD c23 text");
+      m_pDS->exec("ALTER TABLE episode ADD c23 text");
+      m_pDS->exec("ALTER TABLE musicvideo ADD c23 text");
+      m_pDS->exec("ALTER TABLE tvshow ADD c23 text");
       m_pDS->dropIndex("movie", "ixMovieBasePath");
       m_pDS->dropIndex("musicvideo", "ixMusicVideoBasePath");
       m_pDS->dropIndex("episode", "ixEpisodeBasePath");
