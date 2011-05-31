@@ -180,6 +180,8 @@ public:
   }
   inline void SetTransform(const TransformMatrix &matrix)
   {
+    // TODO: We only need to add it to the group transform as other transforms may be added on top of this one later on
+    //       Once all transforms are cached then this can be removed and UpdateFinalTransform can be called directly
     ASSERT(m_groupTransform.size());
     m_groupTransform.push(matrix);
     UpdateFinalTransform(m_groupTransform.top());
