@@ -221,7 +221,6 @@ void CFileCache::Process()
 
     while(m_writeRate)
     {
-      unsigned timestamp = CTimeUtils::GetTimeMS();
       if(m_writePos - m_readPos < m_writeRate)
       {
         limiter.Reset(m_writePos);
