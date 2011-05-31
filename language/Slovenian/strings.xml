@@ -79,7 +79,7 @@
   <string id="99">Pogled: Samodejna velikost</string>
   <string id="100">Pogled: Ikone</string>
   <string id="101">Pogled: Seznam</string>
-  <string id="102">Skeniraj</string>
+  <string id="102">Preišči</string>
   <string id="103">Razvrsti: Ime</string>
   <string id="104">Razvrsti: Datum</string>
   <string id="105">Razvrsti: Velikost</string>
@@ -168,7 +168,7 @@
   <string id="190">Shrani</string>
   <string id="191">Naključno</string>
   <string id="192">Počisti</string>
-  <string id="193">Skeniraj</string>
+  <string id="193">Preišči</string>
   <string id="194">Poizvedujem...</string>
   <string id="195">Ne najdem informacije!</string>
   <string id="196">Izberi film:</string>
@@ -402,10 +402,10 @@
   <string id="439">Začasni pomnilnik</string>
   <string id="440">Trdi disk</string>
   <string id="441">UDF</string>
-  <string id="442">Lokalno omrežje</string>
+  <string id="442">Krajevno omrežje</string>
   <string id="443">Internet</string>
   <string id="444">Video</string>
-  <string id="445">Audio</string>
+  <string id="445">Glasba</string>
   <string id="446">DVD</string>
   <string id="447">Samodejni zagon</string>
   <string id="448">LCD</string>
@@ -499,7 +499,7 @@
   <string id="544">Informacije o mediju</string>
   <string id="545">Zvočna izhodna naprava</string>
   <string id="546">Naprava za preusmeritev zvoka</string>
-  <string id="547">Ni biografije za tega avtorja</string>
+  <string id="547">Ni biografije za tega izvajalca</string>
   <string id="548">Pretvori večkanalni zvok v stereo</string>
 
   <string id="550">Razvrsti: %s</string>
@@ -611,7 +611,7 @@
 
   <string id="700">Čiščenje knjižnice</string>
   <string id="701">Odstrani stare pesmi iz knjižnice</string>
-  <string id="702">Ta pot je že bila skenirana</string>
+  <string id="702">Ta pot je že bila preiskana</string>
   <string id="705">Omrežje</string>
   <string id="706">- Strežnik</string>
 
@@ -651,7 +651,7 @@
   <string id="742">Bela</string>
   <string id="743">Rumena</string>
   <string id="744">Datoteke</string>
-  <string id="745">Ni skeniranih informacij za ta pogled</string>
+  <string id="745">Ni preiskanih informacij za ta pogled</string>
   <string id="746">Izključi način knjižnice</string>
   <string id="747">Napaka pri nalaganju slike</string>
   <string id="748">Uredi pot</string>
@@ -993,7 +993,7 @@
   <string id="13001">Takojšnja ustavitev trdega diska</string>
   <string id="13002">Samo slika</string>
   <string id="13003">- Zakasnitev</string>
-  <string id="13004">- Minimalno trajanje datoteke</string>
+  <string id="13004">- Najkrajše trajanje datoteke</string>
   <string id="13005">Ugasni</string>
 
   <string id="13008">Funkcija ugašanja</string>
@@ -1157,8 +1157,8 @@
   <string id="13349">Išči za nove vsebine</string>
   <string id="13350">Trenutno predvajam...</string>
   <string id="13351">Informacije o albumu</string>
-  <string id="13352">Skeniraj predmet v bazo</string>
-  <string id="13353">Ustavi skeniranje</string>
+  <string id="13352">Dodaj predmet v bazo</string>
+  <string id="13353">Ustavi iskanje</string>
   <string id="13354">Metoda izrisa</string>
   <string id="13355">Nizkokvalitetno senčenje</string>
   <string id="13356">Strojno prekrivanje</string>
@@ -1208,7 +1208,7 @@
   <string id="13413">Prenašam</string>
   <string id="13414">Vključi izvajalce, ki se pojavljajo le na kompilacijah</string>
   <string id="13415">Metoda izrisa</string>
-  <string id="13416">Avtomatsko zaznaj</string>
+  <string id="13416">Samodejno zaznaj</string>
   <string id="13417">Osnovni senčilniki (ARB)</string>
   <string id="13418">Napredni senčilniki (GLSL)</string>
   <string id="13419">Programska oprema</string>
@@ -1282,13 +1282,13 @@
   <string id="14024">Vnesi najbližje večje mesto</string>
   <string id="14025">Video/Glasba/DVD začasni pomnilnik - Trdi disk</string>
   <string id="14026">Video začasni pomnilnik - DVD-ROM</string>
-  <string id="14027">- Lokalno omrežje</string>
+  <string id="14027">- Krajevno omrežje</string>
   <string id="14028">- Internet</string>
   <string id="14030">Glasbeni začasni pomnilnik - DVD-ROM</string>
-  <string id="14031">- Lokalno omrežje</string>
+  <string id="14031">- Krajevno omrežje</string>
   <string id="14032">- Internet</string>
   <string id="14034">DVD začasni pomnilnik - DVD-ROM</string>
-  <string id="14035">- Lokalno omrežje</string>
+  <string id="14035">- Krajevno omrežje</string>
   <string id="14036">Storitve</string>
 
   <string id="14038">Omrežne nastavitve spremenjene</string>
@@ -1308,9 +1308,9 @@
   <string id="14052">Datumski zapis</string>
   <string id="14053">GUI filtri</string>
 
-  <string id="14055">Uporabi skeniranje v ozadju</string>
-  <string id="14056">Ustavi skeniranje</string>
-  <string id="14057">Ni mogoče med skeniranjem medijskih info.</string>
+  <string id="14055">Uporabi iskanje v ozadju</string>
+  <string id="14056">Ustavi iskanje</string>
+  <string id="14057">Ni mogoče med iskanjem medijskih info.</string>
   <string id="14058">Efekt zrnatosti filma</string>
   <string id="14059">Poizvedi za sličice na oddaljeni skupni rabi</string>
   <string id="14060">Nepoznan tip začasnega pomnilnika - Internet</string>
@@ -1334,7 +1334,7 @@
   <string id="14079">Država časovnega pasu</string>
   <string id="14080">Časovni pas</string>
   <string id="14081">Seznam datotek</string>
-  <string id="14082">Pokaži EXIF slikovne informacije</string>
+  <string id="14082">Prikaži EXIF slikovne informacije</string>
   <string id="14083">Uporabi celozaslonsko okno namesto pravega celozaslonskega načina</string>
   <string id="14084">Pesmi postavi v vrsto ob izboru</string>
   <string id="14085">Samodejno predvajaj zvočne CD-je</string>
@@ -1365,7 +1365,7 @@
 
   <string id="15107">Medpomnenje...</string>
   <string id="15108">Navigacijski zvoki</string>
-  <string id="15109">Privzeto za temo</string>
+  <string id="15109">Privzeto</string>
   <string id="15111">- Tema</string>
   <string id="15112">Privzeta tema</string>
 
@@ -1544,15 +1544,15 @@
   <string id="20014">Razporedi: Predvajalni seznam</string>
   <string id="20015">Oddaljena sličica</string>
   <string id="20016">Trenutna sličica</string>
-  <string id="20017">Lokalna sličica</string>
+  <string id="20017">Krajevna sličica</string>
   <string id="20018">Brez sličice</string>
   <string id="20019">Izberi sličico</string>
 
   <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
   <string id="20022"></string>
   <string id="20023">Konflikt</string>
-  <string id="20024">Novo skeniranje</string>
-  <string id="20025">Skeniraj vse</string>
+  <string id="20024">Novo iskanje</string>
+  <string id="20025">Preišči vse</string>
   <string id="20026">Regija</string>
 
   <!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)-->
@@ -1632,11 +1632,11 @@
   <string id="20109">- Povečava</string>
   <string id="20110">UPnP nastavitve</string>
   <string id="20111">Samodejni zagon odjemalca UPnP</string>
-  <string id="20112">Zadnji vpis: %s</string>
-  <string id="20113">Nikoli vpisan</string>
+  <string id="20112">Zadnja prijava: %s</string>
+  <string id="20113">Nikoli prijavljen</string>
   <string id="20114">Profil %i / %i</string>
-  <string id="20115">Uporabniški vpis / Izberi profil</string>
-  <string id="20116">Uporabi zaklepanje ob vpisu</string>
+  <string id="20115">Uporabniška prijava / Izberi profil</string>
+  <string id="20116">Uporabi zaklepanje ob prijavi</string>
   <string id="20117">Napačna zaščitno geslo.</string>
   <string id="20118">Dejanje potrebuje nastavitev glavnega gesla.</string>
   <string id="20119">Želite opraviti nastavitve sedaj?</string>
@@ -1654,7 +1654,7 @@
   <string id="20132">Ponovno zaženi video</string>
   <string id="20133">Uredi omrežno lokacijo</string>
   <string id="20134">Odstrani omrežno lokacijo</string>
-  <string id="20135">Želite preskenirati mapo?</string>
+  <string id="20135">Želite preiskati mapo?</string>
   <string id="20136">Spominska naprava</string>
   <string id="20137">Spominska naprava priključiti</string>
   <string id="20138">Spominske naprave ni mogoče priključiti</string>
@@ -1726,7 +1726,7 @@
   <string id="20252">Polnenje kozarcev (videi)</string>
   <string id="20253">WebDAV strežnik (HTTP)</string>
   <string id="20254">WebDAV strežnik (HTTPS)</string>
-  <string id="20255">Uredi profil ob prvem vpisu</string>
+  <string id="20255">Uredi profil ob prvi prijavi</string>
   <string id="20256">HTS Tvheadend odjemalec</string>
   <string id="20257">VDR Streamdev odjemalec</string>
   <string id="20258">MythTV odjemalec</string>
@@ -1770,14 +1770,14 @@
   <string id="20343">TV serije</string>
   <string id="20344">Ta mapa vsebuje</string>
   <string id="20345">Zaženi samodejno iskanje</string>
-  <string id="20346">Skeniraj tudi podmape</string>
+  <string id="20346">Preišči tudi podmape</string>
   <string id="20347">kot</string>
   <string id="20348">Režiserji</string>
   <string id="20349">Na tej poti ni nobenih video datotek!</string>
   <string id="20350">glasov</string>
   <string id="20351">Informacija o TV seriji</string>
   <string id="20352">Informacija o epizodi</string>
-  <string id="20353">Dalagam detajle za TV serijo</string>
+  <string id="20353">Dalagam podrobnosti o TV seriji</string>
   <string id="20354">Prenašam opis epizod</string>
   <string id="20355">Iščem epizode v mapi</string>
   <string id="20356">Izberi TV serijo:</string>
@@ -1785,7 +1785,7 @@
   <string id="20358">Sezona %i</string>
   <string id="20359">Epizoda</string>
   <string id="20360">Epizode</string>
-  <string id="20361">Nalagam detajle za epizodo</string>
+  <string id="20361">Nalagam podrobnosti o epizodi</string>
   <string id="20362">Odstrani epizode iz knjižnice</string>
   <string id="20363">Odstrani TV serijo iz knjižnice</string>
   <string id="20364">TV serija</string>
@@ -1860,7 +1860,7 @@
   <string id="20433">Izloči sličice in informacije o videu</string>
   <string id="20434">Zbirke</string>
   <string id="20435">Nastavi sličico filmske zbirke</string>
-  <string id="20436">Izvozi sličice avtorjev?</string>
+  <string id="20436">Izvozi sličice izvajalcev?</string>
   <string id="20437">Izberi ozadje</string>
   <string id="20438">Krajevno ozadje</string>
   <string id="20439">Brez ozadja</string>
@@ -2111,7 +2111,7 @@
 
   <string id="22079">Privzeta možnost izbire</string>
   <string id="22080">Izberi</string>
-  <string id="22081">Pokaži več informacij</string>
+  <string id="22081">Prikaži več informacij</string>
   <string id="22082">Več...</string>
   <string id="22083">Predvajaj vse</string>
 
@@ -2148,7 +2148,7 @@
   <string id="24017">Informacije o izvajalcih</string>
   <string id="24018">Storitve</string>
 
-  <string id="24020">Nastavi</string>
+  <string id="24020">Prilagodi</string>
   <string id="24021">Onemogoči</string>
   <string id="24022">Omogoči</string>
   <string id="24023">Dodatek je onemogočen</string>
