@@ -45,13 +45,11 @@ extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
     #include <libavcodec/avcodec.h>
-    #include <libavcodec/opt.h>
     #if (defined AVPACKET_IN_AVFORMAT)
       #include <libavformat/avformat.h>
     #endif
   #elif (defined HAVE_FFMPEG_AVCODEC_H)
     #include <ffmpeg/avcodec.h>
-    #include <ffmpeg/opt.h>
     #if (defined AVPACKET_IN_AVFORMAT)
       #include <ffmpeg/avformat.h>
     #endif
@@ -82,18 +80,6 @@ extern "C" {
 #undef CH_LAYOUT_7POINT1_WIDE
 #define CH_LAYOUT_7POINT1_WIDE      (CH_LAYOUT_5POINT1_BACK|\
                                            CH_FRONT_LEFT_OF_CENTER|CH_FRONT_RIGHT_OF_CENTER)
-#endif
-
-#if LIBAVCORE_VERSION_INT < AV_VERSION_INT(52,64,0)
-// API added on: 2010-03-31
-#define AVMediaType		CodecType
-#define AVMEDIA_TYPE_UNKNOWN    CODEC_TYPE_UNKNOWN
-#define AVMEDIA_TYPE_VIDEO      CODEC_TYPE_VIDEO
-#define AVMEDIA_TYPE_AUDIO      CODEC_TYPE_AUDIO
-#define AVMEDIA_TYPE_DATA       CODEC_TYPE_DATA
-#define AVMEDIA_TYPE_SUBTITLE   CODEC_TYPE_SUBTITLE
-#define AVMEDIA_TYPE_ATTACHMENT CODEC_TYPE_ATTACHMENT
-#define AVMEDIA_TYPE_NB         CODEC_TYPE_NB
 #endif
 
 #include "threads/SingleLock.h"
@@ -132,7 +118,6 @@ public:
   virtual void avpicture_free(AVPicture *picture)=0;
   virtual void av_free_packet(AVPacket *pkt)=0;
   virtual int avpicture_alloc(AVPicture *picture, PixelFormat pix_fmt, int width, int height)=0;
-  virtual const AVOption *av_set_string(void *obj, const char *name, const char *val)=0;
   virtual enum PixelFormat avcodec_default_get_format(struct AVCodecContext *s, const enum PixelFormat *fmt)=0;
   virtual int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic)=0;
   virtual void avcodec_default_release_buffer(AVCodecContext *s, AVFrame *pic)=0;
@@ -221,7 +206,6 @@ public:
   virtual void avpicture_free(AVPicture *picture) { ::avpicture_free(picture); }
   virtual void av_free_packet(AVPacket *pkt) { ::av_free_packet(pkt); }
   virtual int avpicture_alloc(AVPicture *picture, PixelFormat pix_fmt, int width, int height) { return ::avpicture_alloc(picture, pix_fmt, width, height); }
-  virtual const AVOption *av_set_string(void *obj, const char *name, const char *val) { return ::av_set_string(obj, name, val); }
   virtual int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic) { return ::avcodec_default_get_buffer(s, pic); }
   virtual void avcodec_default_release_buffer(AVCodecContext *s, AVFrame *pic) { ::avcodec_default_release_buffer(s, pic); }
   virtual enum PixelFormat avcodec_default_get_format(struct AVCodecContext *s, const enum PixelFormat *fmt) { return ::avcodec_default_get_format(s, fmt); }
@@ -298,7 +282,6 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD1(void, av_bitstream_filter_close, (AVBitStreamFilterContext *p1))
   DEFINE_METHOD1(void, av_free_packet, (AVPacket *p1))
   DEFINE_METHOD4(int, avpicture_alloc, (AVPicture *p1, PixelFormat p2, int p3, int p4))
-  DEFINE_METHOD3(const AVOption*, av_set_string, (void *p1, const char *p2, const char *p3))
   DEFINE_METHOD2(int, avcodec_default_get_buffer, (AVCodecContext *p1, AVFrame *p2))
   DEFINE_METHOD2(void, avcodec_default_release_buffer, (AVCodecContext *p1, AVFrame *p2))
   DEFINE_METHOD2(enum PixelFormat, avcodec_default_get_format, (struct AVCodecContext *p1, const enum PixelFormat *p2))
@@ -338,7 +321,6 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avpicture_free)
     RESOLVE_METHOD(avpicture_alloc)
     RESOLVE_METHOD(av_free_packet)
-    RESOLVE_METHOD(av_set_string)
     RESOLVE_METHOD(avcodec_default_get_buffer)
     RESOLVE_METHOD(avcodec_default_release_buffer)
     RESOLVE_METHOD(avcodec_default_get_format)
