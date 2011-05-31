@@ -496,9 +496,11 @@ void CGUIWindowManager::Process(unsigned int currentTime)
   assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
 
+  CDirtyRegionList dirtyregions;
+
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
-    pWindow->DoProcess(currentTime);
+    pWindow->DoProcess(currentTime, dirtyregions);
 
   // we process the dialogs based on their render order.
   vector<CGUIWindow *> renderList = m_activeDialogs;
@@ -507,7 +509,7 @@ void CGUIWindowManager::Process(unsigned int currentTime)
   for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
   {
     if ((*it)->IsDialogRunning())
-      (*it)->DoProcess(currentTime);
+      (*it)->DoProcess(currentTime, dirtyregions);
   }
 }
 

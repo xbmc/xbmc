@@ -42,7 +42,7 @@ public:
 
   virtual void AddControl(CGUIControl *control, int position = -1);
 
-  virtual void Process(unsigned int currentTime);
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual void ResetAnimation(ANIMATION_TYPE type);
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);

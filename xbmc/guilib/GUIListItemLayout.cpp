@@ -71,7 +71,7 @@ float CGUIListItemLayout::Size(ORIENTATION orientation) const
   return (orientation == HORIZONTAL) ? m_width : m_height;
 }
 
-void CGUIListItemLayout::Process(CGUIListItem *item, int parentID, unsigned int currentTime)
+void CGUIListItemLayout::Process(CGUIListItem *item, int parentID, unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   if (m_invalidated)
   { // need to update our item
@@ -90,7 +90,7 @@ void CGUIListItemLayout::Process(CGUIListItem *item, int parentID, unsigned int 
   // update visibility, and render
   m_group.SetState(item->IsSelected() || m_isPlaying, m_focused);
   m_group.UpdateVisibility(item);
-  m_group.DoProcess(currentTime);
+  m_group.DoProcess(currentTime, dirtyregions);
 }
 
 void CGUIListItemLayout::Render(CGUIListItem *item, int parentID)

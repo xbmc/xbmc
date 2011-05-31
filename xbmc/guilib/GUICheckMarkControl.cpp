@@ -41,7 +41,7 @@ CGUICheckMarkControl::CGUICheckMarkControl(int parentID, int controlID, float po
 CGUICheckMarkControl::~CGUICheckMarkControl(void)
 {}
 
-void CGUICheckMarkControl::Process(unsigned int currentTime)
+void CGUICheckMarkControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   bool changed = false;
 
@@ -52,7 +52,7 @@ void CGUICheckMarkControl::Process(unsigned int currentTime)
   if (changed)
     MarkDirtyRegion();
 
-  CGUIControl::Process(currentTime);
+  CGUIControl::Process(currentTime, dirtyregions);
 }
 
 void CGUICheckMarkControl::Render()

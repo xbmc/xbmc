@@ -109,7 +109,7 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
     MarkDirtyRegion();
 }
 
-void CGUILabelControl::Process(unsigned int currentTime)
+void CGUILabelControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   bool changed = false;
 
@@ -120,7 +120,7 @@ void CGUILabelControl::Process(unsigned int currentTime)
   if (changed)
     MarkDirtyRegion();
 
-  CGUIControl::Process(currentTime);
+  CGUIControl::Process(currentTime, dirtyregions);
 }
 
 void CGUILabelControl::Render()

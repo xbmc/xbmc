@@ -37,7 +37,7 @@ public:
   virtual ~CGUIMultiSelectTextControl(void);
   virtual CGUIMultiSelectTextControl *Clone() const { return new CGUIMultiSelectTextControl(*this); };
 
-  virtual void Process(unsigned int currentTime);
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
 
   virtual bool OnAction(const CAction &action);

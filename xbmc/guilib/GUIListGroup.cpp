@@ -61,9 +61,9 @@ void CGUIListGroup::AddControl(CGUIControl *control, int position /*= -1*/)
   CGUIControlGroup::AddControl(control, position);
 }
 
-void CGUIListGroup::Process(unsigned int currentTime)
+void CGUIListGroup::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  CGUIControlGroup::Process(currentTime);
+  CGUIControlGroup::Process(currentTime, dirtyregions);
   m_item = NULL;
 }
 

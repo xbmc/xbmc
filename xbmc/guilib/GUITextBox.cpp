@@ -106,7 +106,7 @@ void CGUITextBox::UpdateInfo(const CGUIListItem *item)
   UpdatePageControl();
 }
 
-void CGUITextBox::DoProcess(unsigned int currentTime)
+void CGUITextBox::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   m_renderTime = currentTime;
 
@@ -118,7 +118,7 @@ void CGUITextBox::DoProcess(unsigned int currentTime)
     g_graphicsContext.AddTransform(m_textMatrix);
   }
 
-  CGUIControl::DoProcess(currentTime);
+  CGUIControl::DoProcess(currentTime, dirtyregions);
 
   // if not visible, we reset the autoscroll timer and positioning
   if (!IsVisible() && m_autoScrollTime)
@@ -133,12 +133,12 @@ void CGUITextBox::DoProcess(unsigned int currentTime)
     g_graphicsContext.RemoveTransform();
 }
 
-void CGUITextBox::Process(unsigned int currentTime)
+void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // TODO Proper processing which marks when its actually changed. Just mark always for now.
   MarkDirtyRegion();
 
-  CGUIControl::Process(currentTime);
+  CGUIControl::Process(currentTime, dirtyregions);
 }
 
 void CGUITextBox::DoRender()
