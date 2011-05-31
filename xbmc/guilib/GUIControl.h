@@ -165,7 +165,6 @@ public:
   virtual float GetHeight() const;
 
   void MarkDirtyRegion();
-  virtual void SendFinalDirtyRegionToParent(const CRect &dirtyRegion, const CGUIControl *sender);
   virtual CRect GetRenderRegion() const;
 
   virtual void SetNavigation(int up, int down, int left, int right);

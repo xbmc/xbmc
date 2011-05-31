@@ -162,7 +162,7 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
   m_previousDirtyRegion = currentRenderRegion;
 
   if (changed)
-    SendFinalDirtyRegionToParent(dirtyRegion, this);
+    dirtyregions.push_back(dirtyRegion);
 
   if (m_hasCamera)
     g_graphicsContext.RestoreCameraPosition();
@@ -499,14 +499,6 @@ float CGUIControl::GetHeight() const
 void CGUIControl::MarkDirtyRegion()
 {
   m_controlIsDirty = true;
-}
-
-void CGUIControl::SendFinalDirtyRegionToParent(const CRect &dirtyRegion, const CGUIControl *sender)
-{
-  if (m_parentControl)
-    m_parentControl->SendFinalDirtyRegionToParent(dirtyRegion, sender);
-  else
-    g_windowManager.MarkDirtyRegion(dirtyRegion);
 }
 
 CRect CGUIControl::GetRenderRegion() const

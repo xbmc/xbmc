@@ -511,6 +511,9 @@ void CGUIWindowManager::Process(unsigned int currentTime)
     if ((*it)->IsDialogRunning())
       (*it)->DoProcess(currentTime, dirtyregions);
   }
+
+  for (CDirtyRegionList::iterator itr = dirtyregions.begin(); itr != dirtyregions.end(); itr++)
+    m_tracker.MarkDirtyRegion(*itr);
 }
 
 void CGUIWindowManager::RenderPass()
@@ -602,11 +605,6 @@ void CGUIWindowManager::FrameMove()
   vector<CGUIWindow *> dialogs = m_activeDialogs;
   for (iDialog it = dialogs.begin(); it != dialogs.end(); ++it)
     (*it)->FrameMove();
-}
-
-void CGUIWindowManager::MarkDirtyRegion(CRect region)
-{
-  m_tracker.MarkDirtyRegion(CDirtyRegion(region));
 }
 
 CGUIWindow* CGUIWindowManager::GetWindow(int id) const
