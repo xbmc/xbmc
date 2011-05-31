@@ -137,7 +137,7 @@ void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 // 1. animate and set animation transform
 // 2. if visible, process
 // 3. reset the animation transform
-void CGUIControl::DoProcess(unsigned int currentTime)
+void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   bool changed = m_bInvalidated;
 
@@ -152,7 +152,7 @@ void CGUIControl::DoProcess(unsigned int currentTime)
 //  GUIPROFILER_VISIBILITY_END(control);
 
   if (IsVisible())
-    Process(currentTime);
+    Process(currentTime, dirtyregions);
 
   changed |=  m_controlIsDirty;
 
@@ -172,7 +172,7 @@ void CGUIControl::DoProcess(unsigned int currentTime)
   m_controlIsDirty = false;
 }
 
-void CGUIControl::Process(unsigned int currentTime)
+void CGUIControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
 }
 

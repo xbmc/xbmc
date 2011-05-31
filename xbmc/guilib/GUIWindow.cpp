@@ -287,11 +287,11 @@ void CGUIWindow::CenterWindow()
   m_posY = (m_coordsRes.iHeight - GetHeight()) / 2;
 }
 
-void CGUIWindow::DoProcess(unsigned int currentTime)
+void CGUIWindow::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
   g_graphicsContext.ResetWindowTransform();
-  CGUIControlGroup::DoProcess(currentTime);
+  CGUIControlGroup::DoProcess(currentTime, dirtyregions);
 }
 
 void CGUIWindow::Render()

@@ -66,7 +66,7 @@ bool CGUIMultiSelectTextControl::UpdateColors()
   return changed;
 }
 
-void CGUIMultiSelectTextControl::Process(unsigned int currentTime)
+void CGUIMultiSelectTextControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   m_renderTime = currentTime;
 
@@ -98,12 +98,12 @@ void CGUIMultiSelectTextControl::Process(unsigned int currentTime)
   for (unsigned int i = 0; i < m_buttons.size(); i++)
   {
     m_buttons[i].SetFocus(HasFocus() && i == m_selectedItem);
-    m_buttons[i].DoProcess(currentTime);
+    m_buttons[i].DoProcess(currentTime, dirtyregions);
   }
 
   g_graphicsContext.RestoreOrigin();
 
-  CGUIControl::Process(currentTime);
+  CGUIControl::Process(currentTime, dirtyregions);
 }
 
 void CGUIMultiSelectTextControl::Render()

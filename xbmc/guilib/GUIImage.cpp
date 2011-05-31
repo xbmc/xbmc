@@ -93,7 +93,7 @@ void CGUIImage::AllocateOnDemand()
     AllocResources();
 }
 
-void CGUIImage::Process(unsigned int currentTime)
+void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // check whether our image failed to allocate, and if so drop back to the fallback image
   if (m_texture.FailedToAlloc() && !m_texture.GetFileName().Equals(m_info.GetFallback()))
@@ -165,7 +165,7 @@ void CGUIImage::Process(unsigned int currentTime)
   if (m_texture.Process(currentTime))
     MarkDirtyRegion();
 
-  CGUIControl::Process(currentTime);
+  CGUIControl::Process(currentTime, dirtyregions);
 }
 
 void CGUIImage::Render()

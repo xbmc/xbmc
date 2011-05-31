@@ -33,6 +33,7 @@
 #include "VisibleEffect.h"  // needed for the CAnimation members
 #include "GUIInfoTypes.h"   // needed for CGUIInfoColor to handle infolabel'ed colors
 #include "GUIActionDescriptor.h"
+#include "DirtyRegion.h"
 
 class CGUIListItem; // forward
 class CAction;
@@ -75,8 +76,8 @@ public:
   virtual ~CGUIControl(void);
   virtual CGUIControl *Clone() const=0;
 
-  virtual void DoProcess(unsigned int currentTime);
-  virtual void Process(unsigned int currentTime);
+  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void DoRender();
   virtual void Render();
 

@@ -38,7 +38,7 @@ CGUIPanelContainer::~CGUIPanelContainer(void)
 {
 }
 
-void CGUIPanelContainer::Process(unsigned int currentTime)
+void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   ValidateOffset();
 
@@ -75,9 +75,9 @@ void CGUIPanelContainer::Process(unsigned int currentTime)
       bool focused = (current == m_offset * m_itemsPerRow + m_cursor) && m_bHasFocus;
 
       if (m_orientation == VERTICAL)
-        ProcessItem(origin.x + col * m_layout->Size(HORIZONTAL), pos, item.get(), focused, currentTime);
+        ProcessItem(origin.x + col * m_layout->Size(HORIZONTAL), pos, item.get(), focused, currentTime, dirtyregions);
       else
-        ProcessItem(pos, origin.y + col * m_layout->Size(VERTICAL), item.get(), focused, currentTime);
+        ProcessItem(pos, origin.y + col * m_layout->Size(VERTICAL), item.get(), focused, currentTime, dirtyregions);
     }
     // increment our position
     if (col < m_itemsPerRow - 1)
@@ -92,7 +92,7 @@ void CGUIPanelContainer::Process(unsigned int currentTime)
 
   UpdatePageControl(offset);
 
-  CGUIControl::Process(currentTime);
+  CGUIControl::Process(currentTime, dirtyregions);
 }
 
 

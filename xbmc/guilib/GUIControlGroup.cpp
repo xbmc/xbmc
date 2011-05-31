@@ -94,7 +94,7 @@ void CGUIControlGroup::DynamicResourceAlloc(bool bOnOff)
   }
 }
 
-void CGUIControlGroup::Process(unsigned int currentTime)
+void CGUIControlGroup::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   CPoint pos(GetPosition());
   g_graphicsContext.SetOrigin(pos.x, pos.y);
@@ -102,11 +102,11 @@ void CGUIControlGroup::Process(unsigned int currentTime)
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *control = *it;
-    control->DoProcess(currentTime);
+    control->DoProcess(currentTime, dirtyregions);
   }
 
   g_graphicsContext.RestoreOrigin();
-  CGUIControl::Process(currentTime);
+  CGUIControl::Process(currentTime, dirtyregions);
 }
 
 void CGUIControlGroup::Render()

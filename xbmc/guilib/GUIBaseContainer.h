@@ -68,8 +68,8 @@ public:
   virtual void SaveStates(std::vector<CControlState> &states);
   virtual int GetSelectedItem() const;
 
-  virtual void DoProcess(unsigned int currentTime);
-  virtual void Process(unsigned int currentTime);
+  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
   void LoadLayout(TiXmlElement *layout);
   void LoadContent(TiXmlElement *content);
@@ -100,7 +100,7 @@ protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   bool OnClick(int actionID);
 
-  virtual void ProcessItem(float posX, float posY, CGUIListItem *item, bool focused, unsigned int currentTime);
+  virtual void ProcessItem(float posX, float posY, CGUIListItem *item, bool focused, unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
   virtual void Render();
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);

@@ -54,12 +54,12 @@ void CGUIProgressControl::SetPosition(float posX, float posY)
   m_guiBackground.SetPosition(posX, posY);
 }
 
-void CGUIProgressControl::Process(unsigned int currentTime)
+void CGUIProgressControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // TODO Proper processing which marks when its actually changed. Just mark always for now.
   MarkDirtyRegion();
 
-  CGUIControl::Process(currentTime);
+  CGUIControl::Process(currentTime, dirtyregions);
 }
 
 void CGUIProgressControl::Render()

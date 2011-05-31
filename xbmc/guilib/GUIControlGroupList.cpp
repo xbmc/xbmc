@@ -46,7 +46,7 @@ CGUIControlGroupList::~CGUIControlGroupList(void)
 {
 }
 
-void CGUIControlGroupList::Process(unsigned int currentTime)
+void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   if (m_scrollSpeed != 0)
   {
@@ -89,13 +89,13 @@ void CGUIControlGroupList::Process(unsigned int currentTime)
       g_graphicsContext.SetOrigin(m_posX, m_posY + pos - m_offset);
     else
       g_graphicsContext.SetOrigin(m_posX + pos - m_offset, m_posY);
-    control->DoProcess(currentTime);
+    control->DoProcess(currentTime, dirtyregions);
 
     if (control->IsVisible())
       pos += Size(control) + m_itemGap;
     g_graphicsContext.RestoreOrigin();
   }
-  CGUIControl::Process(currentTime);
+  CGUIControl::Process(currentTime, dirtyregions);
 }
 
 void CGUIControlGroupList::Render()
