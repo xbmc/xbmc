@@ -131,7 +131,7 @@
 					<item id="3">
 						<label>31502</label>
 						<label2>31409</label2>
-						<onclick>ActivateWindow(MyTVSettings)</onclick>
+						<onclick>ActivateWindow(PVRSettings)</onclick>
 						<icon>special://skin/backgrounds/tv.jpg</icon>
 					</item>
 					<item id="4">
