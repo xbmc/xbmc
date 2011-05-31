@@ -51,7 +51,7 @@ static CStdString CorrectPath(const CStdString path)
 
 CSFTPSession::CSFTPSession(const CStdString &host, unsigned int port, const CStdString &username, const CStdString &password)
 {
-  CLog::Log(LOGINFO, "SFTPSession: Creating new session on host '%s' with user '%s'", host.c_str(), username.c_str());
+  CLog::Log(LOGINFO, "SFTPSession: Creating new session on host '%s:%d' with user '%s'", host.c_str(), port, username.c_str());
   CSingleLock lock(m_critSect);
   if (!Connect(host, port, username, password))
     Disconnect();
@@ -412,6 +412,16 @@ void CSFTPSession::Disconnect()
 CCriticalSection CSFTPSessionManager::m_critSect;
 map<CStdString, CSFTPSessionPtr> CSFTPSessionManager::sessions;
 
+CSFTPSessionPtr CSFTPSessionManager::CreateSession(const CURL &url)
+{
+  string username = url.GetUserName().c_str();
+  string password = url.GetPassWord().c_str();
+  string hostname = url.GetHostName().c_str();
+  unsigned int port = url.HasPort() ? url.GetPort() : 22;
+
+  return CSFTPSessionManager::CreateSession(hostname, port, username, password);
+}
+
 CSFTPSessionPtr CSFTPSessionManager::CreateSession(const CStdString &host, unsigned int port, const CStdString &username, const CStdString &password)
 {
   // Convert port number to string
@@ -461,16 +471,10 @@ CFileSFTP::~CFileSFTP()
 
 bool CFileSFTP::Open(const CURL& url)
 {
-  string username = url.GetUserName().c_str();
-  string password = url.GetPassWord().c_str();
-  string filename = url.GetFileName().c_str();
-  string hostname = url.GetHostName().c_str();
-  unsigned int port = url.GetPort();
-
-  m_session = CSFTPSessionManager::CreateSession(hostname, port, username, password);
+  m_session = CSFTPSessionManager::CreateSession(url);
   if (m_session)
   {
-    m_file = filename.c_str();
+    m_file = url.GetFileName().c_str();
     m_sftp_handle = m_session->CreateFileHande(m_file);
 
     return (m_sftp_handle != NULL);
@@ -535,12 +539,7 @@ unsigned int CFileSFTP::Read(void* lpBuf, int64_t uiBufSize)
 
 bool CFileSFTP::Exists(const CURL& url)
 {
-  string hostname = url.GetHostName().c_str();
-  unsigned int port = url.GetPort();
-  string username = url.GetUserName().c_str();
-  string password = url.GetPassWord().c_str();
-
-  CSFTPSessionPtr session = CSFTPSessionManager::CreateSession(hostname, port, username, password);
+  CSFTPSessionPtr session = CSFTPSessionManager::CreateSession(url);
   if (session)
     return session->Exists(url.GetFileName().c_str());
   else
@@ -552,12 +551,7 @@ bool CFileSFTP::Exists(const CURL& url)
 
 int CFileSFTP::Stat(const CURL& url, struct __stat64* buffer)
 {
-  string hostname = url.GetHostName().c_str();
-  unsigned int port = url.GetPort();
-  string username = url.GetUserName().c_str();
-  string password = url.GetPassWord().c_str();
-
-  CSFTPSessionPtr session = CSFTPSessionManager::CreateSession(hostname, port, username, password);
+  CSFTPSessionPtr session = CSFTPSessionManager::CreateSession(url);
   if (session)
     return session->Stat(url.GetFileName().c_str(), buffer);
   else

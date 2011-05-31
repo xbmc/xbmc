@@ -78,6 +78,7 @@ typedef boost::shared_ptr<CSFTPSession> CSFTPSessionPtr;
 class CSFTPSessionManager
 {
 public:
+  static CSFTPSessionPtr CreateSession(const CURL &url);
   static CSFTPSessionPtr CreateSession(const CStdString &host, unsigned int port, const CStdString &username, const CStdString &password);
   static void ClearOutIdleSessions();
   static void DisconnectAllSessions();
