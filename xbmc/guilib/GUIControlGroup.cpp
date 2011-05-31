@@ -650,11 +650,3 @@ void CGUIControlGroup::DumpTextureUse()
     (*it)->DumpTextureUse();
 }
 #endif
-
-void CGUIControlGroup::SendFinalDirtyRegionToParent(const CRect &dirtyRegion, const CGUIControl *sender)
-{
-  // If the controlgroup has been marked there is no point in allowing
-  // the children to mark since the parent should fully confine the children.
-  if (!m_controlIsDirty || sender == this)
-    CGUIControl::SendFinalDirtyRegionToParent(dirtyRegion, sender);
-}

@@ -84,11 +84,6 @@ public:
    */
   void FrameMove();
 
-  /*! \brief Method used to mark selected region as dirty so next pass of rendering
-   contains said region.
-   */
-  void MarkDirtyRegion(CRect region);
-
   /*! \brief Return whether the window manager is initialized.
    The window manager is initialized on skin load - if the skin isn't yet loaded,
    no windows should be able to be initialized.
