@@ -315,7 +315,7 @@
 #define WINDOW_SETTINGS_MYVIDEOS          10017
 #define WINDOW_SETTINGS_NETWORK           10018
 #define WINDOW_SETTINGS_APPEARANCE        10019
-#define WINDOW_SETTINGS_MYTV              10020
+#define WINDOW_SETTINGS_MYPVR             10020
 
 #define WINDOW_VIDEO_FILES                10024
 #define WINDOW_VIDEO_NAV                  10025
