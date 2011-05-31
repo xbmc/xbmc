@@ -54,7 +54,7 @@ public:
   virtual bool    NextStream();
 
   bool            SelectChannelByNumber(unsigned int iChannel);
-  bool            SelectChannel(const PVR::CPVRChannel &channel, bool bShowPreview = false);
+  bool            SelectChannel(const PVR::CPVRChannel &channel);
   bool            NextChannel(bool preview = false);
   bool            PrevChannel(bool preview = false);
   bool            GetSelectedChannel(PVR::CPVRChannel *channel);

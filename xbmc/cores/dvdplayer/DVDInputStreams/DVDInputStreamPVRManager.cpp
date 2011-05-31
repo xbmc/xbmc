@@ -228,10 +228,10 @@ bool CDVDInputStreamPVRManager::SelectChannelByNumber(unsigned int channel)
   return false;
 }
 
-bool CDVDInputStreamPVRManager::SelectChannel(const CPVRChannel &channel, bool bShowPreview /* = false */)
+bool CDVDInputStreamPVRManager::SelectChannel(const CPVRChannel &channel)
 {
   if (m_pLiveTV)
-    return m_pLiveTV->SelectChannel(channel, bShowPreview);
+    return m_pLiveTV->SelectChannel(channel.ChannelNumber());
   return false;
 }
 
