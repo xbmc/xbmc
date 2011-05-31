@@ -69,12 +69,9 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
   CURL url(strPath);
 
   memset(&wfd, 0, sizeof(wfd));
-  if (!URIUtils::HasSlashAtEnd(strPath) )
+  URIUtils::AddSlashAtEnd(strRoot);
 #ifndef _LINUX
-    strRoot += "\\";
   strRoot.Replace("/", "\\");
-#else
-    strRoot += "/";
 #endif
   if (URIUtils::IsDVD(strRoot) && m_isoReader.IsScanned())
   {
@@ -155,12 +152,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 bool CHDDirectory::Create(const char* strPath)
 {
   CStdString strPath1 = strPath;
-  if (!URIUtils::HasSlashAtEnd(strPath1))
-#ifndef _LINUX
-    strPath1 += '\\';
-#else
-    strPath1 += '/';
-#endif
+  URIUtils::AddSlashAtEnd(strPath1);
 
 #ifndef _LINUX
   if (strPath1.size() == 3 && strPath1[1] == ':')
@@ -197,8 +189,7 @@ bool CHDDirectory::Exists(const char* strPath)
 #ifndef _LINUX
   CStdStringW strWReplaced;
   strReplaced.Replace("/","\\");
-  if (!URIUtils::HasSlashAtEnd(strReplaced))
-    strReplaced += '\\';
+  URIUtils::AddSlashAtEnd(strReplaced);
   g_charsetConverter.utf8ToW(strReplaced, strWReplaced, false);
   DWORD attributes = GetFileAttributesW(strWReplaced);
 #else
