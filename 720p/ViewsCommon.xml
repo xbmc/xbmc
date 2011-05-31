@@ -91,60 +91,29 @@
 					<aspectratio aligny="top">scale</aspectratio>
 				</control>
 				</control>
-				<!-- Clips -->
+				<!-- Plugins -->
 				<control type="group">
 					<posy>60</posy>
 					<posx>-60</posx>
-					<visible>Control(50).ListItem.Type(clip) + !Container.Content(plugincontent)</visible>
-				<!-- shadow -->
+					<visible>Container.Content(plugins) | Container.Content(plugincontent)</visible>
+				<!-- plugins -->
 				<control type="image">
-					<posy>-17</posy>
-					<posx>87</posx>
-					<width>375</width>
-					<height>257</height>
-					<aspectratio align="center" aligny="top">stretch</aspectratio>
-					<texture border="50">bigPosterFrameShadow.png</texture>
-				</control>
-				<!-- border -->
-				<control type="image">
-					<posy>-9</posy>
-					<posx>95</posx>
-					<width>359</width>
-					<height>241</height>
-					<aspectratio align="center" aligny="top">stretch</aspectratio>
-					<texture>bigPosterHorizMask.png</texture>
-					<colordiffuse>orange</colordiffuse>
-					<visible>!Skin.HasSetting(hideposterborders)</visible>
-				</control>
-				<control type="image">
-					<posx>97</posx>
-					<posy>-7</posy>
-					<width>355</width>
-					<height>237</height>
-					<texture background="true" diffuse="bigPosterHorizMask.png">$INFO[ListItem.Thumb]</texture>
-					<aspectratio scalediffuse="false" align="center" aligny="center">scale</aspectratio>
+					<posx>100</posx>
+					<posy>-55</posy>
+					<width>350</width>
+					<height>350</height>
+					<texture background="true">$INFO[ListItem.Thumb]</texture>
+					<aspectratio scalediffuse="false" align="center" aligny="bottom">keep</aspectratio>
 				</control>
 				<!-- mirror -->
-				<!-- border -->
 				<control type="image">
-					<posy>232</posy>
-					<posx>95</posx>
-					<width>359</width>
-					<height>241</height>
-					<aspectratio align="center" aligny="center">stretch</aspectratio>
-					<texture>bigPosterHorizMask.png</texture>
-					<colordiffuse>orange</colordiffuse>
-					<visible>!Skin.HasSetting(hideposterborders)</visible>
-					<animation effect="fade" start="0" end="5" time="400" condition="true">Conditional</animation>
-				</control>
-				<control type="image">
-					<posx>97</posx>
-					<posy>234</posy>
-					<width>355</width>
-					<height>237</height>
+					<posx>100</posx>
+					<posy>297</posy>
+					<width>350</width>
+					<height>350</height>
 					<info>ListItem.Icon</info>
 					<texture flipy="true" diffuse="DiffuseMirror.png"/>
-					<aspectratio aligny="top">scale</aspectratio>
+					<aspectratio aligny="top">keep</aspectratio>
 					<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
 				</control>
 				</control>
@@ -634,26 +603,72 @@
 					</control>
 					<!-- plugins -->
 					<control type="group">
-						<posx>-150</posx>
+						<posx>-280</posx>
 						<posy>50</posy>
 						<visible>Container.Content(plugincontent)</visible>
+						<!-- shadow -->
+						<!--<control type="image">
+							<description>Thumb image</description>
+							<visible>!Container.Content(Secondary) + !Container.Content(Episodes) + !Container.Content(plugincontent)</visible>
+							<posy>-5</posy>
+							<posx>20</posx>
+							<width>256</width>
+							<height>378</height>
+							<aspectratio align="center" aligny="top">stretch</aspectratio>
+							<texture border="50">bigPosterFrameShadow.png</texture>
+						</control>-->
+						<!-- border -->
+						<!--<control type="image">
+							<description>Thumb image</description>
+							<visible>!Container.Content(Secondary) + !Container.Content(Episodes) + !Container.Content(plugincontent)</visible>
+							<posy>1</posy>
+							<posx>26</posx>
+							<width>242</width>
+							<height>364</height>
+							<aspectratio align="center" aligny="top">stretch</aspectratio>
+							<texture>bigPosterMask.png</texture>
+							<colordiffuse>orange</colordiffuse>
+							<visible>!Skin.HasSetting(hideposterborders)</visible>
+						</control>-->
+						<!-- when no plot -->
 						<control type="image">
 							<posx>-3</posx>
 							<posy>-8</posy>
 							<width>436</width>
 							<height>364</height>
-							<info>ListItem.Icon</info>
-							<aspectratio aligny="bottom">keep</aspectratio>
-							<bordersize>8</bordersize>
-						</control>
+							<texture background="true">$INFO[ListItem.Thumb]</texture>
+							<aspectratio align="center" aligny="bottom">keep</aspectratio>
+							<visible>IsEmpty(ListItem.Plot)</visible>
+						</control>						
 						<control type="image">
-							<posx>5</posx>
-							<posy>348</posy>
-							<width>420</width>
-							<height>348</height>
+							<posx>-3</posx>
+							<posy>358</posy>
+							<width>436</width>
+							<height>364</height>
 							<info>ListItem.Icon</info>
 							<texture flipy="true" diffuse="DiffuseMirror.png"/>
 							<aspectratio aligny="top">keep</aspectratio>
+							<visible>IsEmpty(ListItem.Plot)</visible>
+						</control>
+						<!-- with plot -->
+						<control type="image">
+							<posx>-3</posx>
+							<posy>96</posy>
+							<width>436</width>
+							<height>260</height>
+							<texture background="true">$INFO[ListItem.Thumb]</texture>
+							<aspectratio align="center" aligny="bottom">keep</aspectratio>
+							<visible>!IsEmpty(ListItem.Plot)</visible>
+						</control>
+						<control type="image">
+							<posx>-3</posx>
+							<posy>358</posy>
+							<width>436</width>
+							<height>260</height>
+							<info>ListItem.Icon</info>
+							<texture flipy="true" diffuse="DiffuseMirror.png"/>
+							<aspectratio aligny="top">keep</aspectratio>
+							<visible>!IsEmpty(ListItem.Plot)</visible>
 						</control>
 					</control>
 					<!-- episode image -->
@@ -701,13 +716,20 @@
 						<width>InfoListTitleWidth</width>
 						<font>LargeTitleFont</font>
 						<label>$INFO[ListItem.Title]</label>
-						<visible>![Container.Content(albums) | Container.Content(artists)] | [Container.Content(albums) + IsEmpty(ListItem.Album)]</visible>
+						<visible>![Container.Content(albums) | Container.Content(artists) | Container.Content(plugincontent)] | [Container.Content(albums) + IsEmpty(ListItem.Album)]</visible>
+					</control>
+					<control type="label">
+						<description>Title</description>
+						<width>620</width>
+						<font>LargeTitleFont</font>
+						<label>$INFO[ListItem.Title]</label>
+						<visible>Container.Content(plugincontent)</visible>
 					</control>
 					<control type="label">
 						<posx>0</posx>
 						<posy>30</posy>
 						<description>Year</description>
-						<width>InfoListTitleWidth</width>
+						<width>500</width>
 						<font>MediumTitleFont</font>
 						<label>$INFO[ListItem.Year]</label>
 						<textcolor>orange</textcolor>
@@ -898,8 +920,8 @@
 						<control type="textbox">
 							<description>Plot</description>
 							<posy>-60</posy>
-							<height>320</height>
-							<width>250</width>
+							<height>67</height>
+							<width>620</width>
 							<label>$INFO[ListItem.Plot]</label>
 							<animation effect="slide" end="0,-23" time="0" condition="!Container.Content(movies)">Conditional</animation>
 							<visible>Container.Content(plugincontent)</visible>
