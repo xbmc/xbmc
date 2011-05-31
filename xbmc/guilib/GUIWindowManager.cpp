@@ -32,6 +32,7 @@
 #include "settings/AdvancedSettings.h"
 #include "addons/Skin.h"
 #include "GUITexture.h"
+#include "windowing/WindowingFactory.h"
 
 using namespace std;
 
@@ -552,17 +553,11 @@ void CGUIWindowManager::Render()
     {
       if (i->IsEmpty())
         continue;
-      GLint oldRegion[8];
-      glGetIntegerv(GL_SCISSOR_BOX, oldRegion);
 
-      glScissor(i->x1, g_graphicsContext.GetHeight() - i->y2, i->Width(), i->Height());
-      glEnable(GL_SCISSOR_TEST);
-
+      g_Windowing.SetScissors(*i);
       RenderPass();
-
-      // Reset scissorbox
-      glScissor(oldRegion[0], oldRegion[1], oldRegion[2], oldRegion[3]);
     }
+    g_Windowing.ResetScissors();
   }
 
   if (g_advancedSettings.m_guiVisualizeDirtyRegions)
