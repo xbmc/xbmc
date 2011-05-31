@@ -124,7 +124,7 @@ protected:
   void UpdateCurrentPTS();
 
   CRITICAL_SECTION m_critSection;
-  // #define MAX_STREAMS 42 // from avformat.h
+  #define MAX_STREAMS 100
   CDemuxStream* m_streams[MAX_STREAMS]; // maximum number of streams that ffmpeg can handle
 
   ByteIOContext* m_ioContext;
