@@ -261,7 +261,7 @@ CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)
   return m_vecItems->Get(item);
 }
 
-void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
+void CGUIWindowLoginScreen::LoadProfile(unsigned int profile, bool quick)
 {
   if (profile != 0 || !g_settings.IsMasterUser())
   {
@@ -279,7 +279,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   g_settings.UpdateCurrentProfileDate();
   g_settings.SaveProfiles(PROFILES_FILE);
 
-  if (g_settings.GetLastUsedProfileIndex() != profile)
+  if (g_settings.GetLastUsedProfileIndex() != profile && !quick)
   {
     g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
     g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
@@ -290,7 +290,10 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 #ifdef HAS_PYTHON
   g_pythonParser.m_bLogin = true;
 #endif
-  g_windowManager.ChangeActiveWindow(g_SkinInfo->GetFirstWindow());
+  if(!quick)
+  {
+    g_windowManager.ChangeActiveWindow(g_SkinInfo->GetFirstWindow());
+  }
 
   g_application.UpdateLibraries();
 }
