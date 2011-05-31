@@ -2460,7 +2460,9 @@
     <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-
+    <ClCompile Include="..\..\xbmc\rendering\gles\RenderSystemGLES.cpp">
+      <Filter>rendering\gl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4928,6 +4930,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionSolvers.h">
       <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\rendering\gles\RenderSystemGLES.h">
+      <Filter>rendering\gl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
