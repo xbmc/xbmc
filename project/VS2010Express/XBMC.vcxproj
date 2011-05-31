@@ -351,6 +351,8 @@
     <ClCompile Include="..\..\xbmc\guilib\D3DResource.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DDSImage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DirectXGraphics.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\DirtyRegionSolvers.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\FrameBufferObject.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GraphicContext.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIAudioManager.cpp" />
@@ -1244,6 +1246,9 @@
     <ClInclude Include="..\..\xbmc\guilib\D3DResource.h" />
     <ClInclude Include="..\..\xbmc\guilib\DDSImage.h" />
     <ClInclude Include="..\..\xbmc\guilib\DirectXGraphics.h" />
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegion.h" />
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegionSolvers.h" />
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h" />
     <ClInclude Include="..\..\xbmc\guilib\FrameBufferObject.h" />
     <ClInclude Include="..\..\xbmc\guilib\Geometry.h" />
     <ClInclude Include="..\..\xbmc\guilib\GraphicContext.h" />
