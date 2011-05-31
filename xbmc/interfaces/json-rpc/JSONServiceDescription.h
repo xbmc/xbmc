@@ -308,6 +308,7 @@ namespace JSONRPC
     static JSON_STATUS CheckCall(const char* const method, const CVariant &requestParameters, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters);
 
   private:
+    static bool prepareDescription(std::string &description, CVariant &descriptionObject, std::string &name);
     static void printType(const JSONSchemaTypeDefinition &type, bool isParameter, bool isGlobal, bool printDefault, bool printDescriptions, CVariant &output);
     static JSON_STATUS checkParameter(const CVariant &requestParameters, const JSONSchemaTypeDefinition &type, unsigned int position, CVariant &outputParameters, unsigned int &handled, CVariant &errorData);
     static JSON_STATUS checkType(const CVariant &value, const JSONSchemaTypeDefinition &type, CVariant &outputValue, CVariant &errorData);
