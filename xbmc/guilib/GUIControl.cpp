@@ -156,13 +156,14 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   changed |=  m_controlIsDirty;
 
-  CRect currentRenderRegion = g_graphicsContext.generateAABB(GetRenderRegion());
-  CRect dirtyRegion = currentRenderRegion;
-  dirtyRegion.Union(m_previousDirtyRegion);
-  m_previousDirtyRegion = currentRenderRegion;
-
   if (changed)
+  {
+    CRect currentRenderRegion = g_graphicsContext.generateAABB(GetRenderRegion());
+    CRect dirtyRegion = currentRenderRegion;
+    dirtyRegion.Union(m_previousDirtyRegion);
     dirtyregions.push_back(dirtyRegion);
+    m_previousDirtyRegion = currentRenderRegion;
+  }
 
   if (m_hasCamera)
     g_graphicsContext.RestoreCameraPosition();
