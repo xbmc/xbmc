@@ -541,24 +541,21 @@ void CGUIWindowManager::Render()
   assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
 
-  CDirtyRegionList markedRegions  = m_tracker.GetMarkedRegions(); 
-  CDirtyRegionList dirtyRegions   = m_tracker.GetDirtyRegions();
+  CDirtyRegionList dirtyRegions = m_tracker.GetDirtyRegions();
 
   // If we visualize the regions we will always render the entire viewport
   if (g_advancedSettings.m_guiVisualizeDirtyRegions || g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_NONE)
     RenderPass();
   else
   {
-    for (unsigned int i = 0; i < dirtyRegions.size(); i++)
+    for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); i++)
     {
-      CDirtyRegion currentRegion = dirtyRegions[i];
-      if (currentRegion.IsEmpty())
-          continue;
-
+      if (i->IsEmpty())
+        continue;
       GLint oldRegion[8];
       glGetIntegerv(GL_SCISSOR_BOX, oldRegion);
 
-      glScissor(currentRegion.x1, g_graphicsContext.GetHeight() - currentRegion.y2, currentRegion.Width(), currentRegion.Height());
+      glScissor(i->x1, g_graphicsContext.GetHeight() - i->y2, i->Width(), i->Height());
       glEnable(GL_SCISSOR_TEST);
 
       RenderPass();
@@ -571,10 +568,11 @@ void CGUIWindowManager::Render()
   if (g_advancedSettings.m_guiVisualizeDirtyRegions)
   {
     g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
-    for (unsigned int i = 0; i <markedRegions.size(); i++)
-      CGUITexture::DrawQuad(markedRegions[i], 0x4cff0000);
-    for (unsigned int i = 0; i <dirtyRegions.size(); i++)
-      CGUITexture::DrawQuad(dirtyRegions[i], 0x4c00ff00);
+    const CDirtyRegionList &markedRegions  = m_tracker.GetMarkedRegions(); 
+    for (CDirtyRegionList::const_iterator i = markedRegions.begin(); i != markedRegions.end(); i++)
+      CGUITexture::DrawQuad(*i, 0x4cff0000);
+    for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); i++)
+      CGUITexture::DrawQuad(*i, 0x4c00ff00);
   }
 
   m_tracker.CleanMarkedRegions();
