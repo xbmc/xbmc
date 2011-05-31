@@ -66,6 +66,7 @@
 #include "utils/StreamDetails.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/windows/GUIWindowPVR.h"
 #include "filesystem/PVRFile.h"
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogBusy.h"
@@ -3844,6 +3845,9 @@ bool CDVDPlayer::SwitchChannel(const CPVRChannel &channel)
   g_PVRManager.PerformChannelSwitch(channel, true);
   UpdateApplication(0);
   UpdatePlayState(0);
+  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
+  if (pWindow)
+    pWindow->SetInvalid();
 
   m_messenger.Put(new CDVDMsgType<CPVRChannel>(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
   return true;
