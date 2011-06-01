@@ -2933,7 +2933,9 @@ bool CApplication::ProcessMouse()
                                   (float)g_Mouse.GetY(), 
                                   (float)g_Mouse.GetDX(), 
                                   (float)g_Mouse.GetDY());
-  if (newmouseaction.GetID() != ACTION_MOUSE_MOVE)
+
+  // Log mouse actions except for move and noop
+  if (newmouseaction.GetID() != ACTION_MOUSE_MOVE && newmouseaction.GetID() != ACTION_NOOP)
     CLog::Log(LOGDEBUG, "%s: trying mouse action %s", __FUNCTION__, mouseaction.GetName().c_str());
 
   return OnAction(newmouseaction);

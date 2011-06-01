@@ -1185,8 +1185,6 @@ uint32_t CButtonTranslator::TranslateMouseCommand(const char *szButton)
   for (int i = 0; i < sizeof(mousecommands)/sizeof(mousecommands[0]); i++)
     if (strMouseCommand.Equals(mousecommands[i].name))
       return mousecommands[i].action | KEY_MOUSE;
-    else
-      CLog::Log(LOGDEBUG, "%s: mouse command %s != %d", __FUNCTION__, szButton, i);
 
   CLog::Log(LOGERROR, "%s: Can't find mouse command %s", __FUNCTION__, szButton);
 
