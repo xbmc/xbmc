@@ -709,16 +709,34 @@ PVR_ERROR cPVRClientForTheRecord::AddTimer(const PVR_TIMER &timerinfo)
 {
   XBMC->Log(LOG_DEBUG, "AddTimer()");
 
-  // re-synthesize the FTR startime, stoptime and channel GUID
-  time_t starttime = timerinfo.startTime;
+  // re-synthesize the FTR channel GUID
   cChannel* pChannel = FetchChannel(timerinfo.iClientChannelUid);
 
-  int retval = ForTheRecord::AddOneTimeSchedule(pChannel->Guid(), starttime, timerinfo.strTitle, timerinfo.iMarginStart * 60, timerinfo.iMarginEnd * 60);
+  Json::Value addScheduleResponse;
+  int retval = ForTheRecord::AddOneTimeSchedule(pChannel->Guid(), timerinfo.startTime, timerinfo.strTitle, timerinfo.iMarginStart * 60, timerinfo.iMarginEnd * 60, addScheduleResponse);
   if (retval < 0) 
   {
     return PVR_ERROR_SERVER_ERROR;
   }
 
+  std::string scheduleid = addScheduleResponse["ScheduleId"].asString();
+
+  // Ok, we created a schedule, but did that lead to an upcoming recording?
+  Json::Value upcomingProgramsResponse;
+  retval = ForTheRecord::GetUpcomingProgramsForSchedule(addScheduleResponse, upcomingProgramsResponse);
+
+  // We should have at least one upcoming program for this schedule, otherwise nothing will be recorded
+  if (retval <= 0)
+  {
+    // remove the added (now stale) schedule, ignore failure (what are we to do anyway?)
+    ForTheRecord::DeleteSchedule(scheduleid);
+
+    // TODO: remove the added (now stale) schedule and add a manual recording
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
+  // Trigger an update of the PVR timers
+  PVR->TriggerTimerUpdate();
   return PVR_ERROR_NO_ERROR;
 }
 
