@@ -2914,8 +2914,12 @@ bool CApplication::ProcessMouse()
   uint32_t mousecommand = g_Mouse.GetAction();
 
   // Retrieve the corresponding action
+  int iWin;
   CKey key(mousecommand | KEY_MOUSE, (unsigned int) 0);
-  int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+  if (g_windowManager.HasModalDialog())
+    iWin = g_windowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
+  else
+    iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
   CAction mouseaction = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
   // If we couldn't find an action return false to indicate we have not
