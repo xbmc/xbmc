@@ -57,10 +57,10 @@ void CGUIButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
 
   if (HasFocus())
   {
+    unsigned int alphaChannel = m_alpha;
     if (m_pulseOnSelect)
     {
       unsigned int alphaCounter = m_focusCounter + 2;
-      unsigned int alphaChannel;
       if ((alphaCounter % 128) >= 64)
         alphaChannel = alphaCounter % 64;
       else
@@ -68,8 +68,11 @@ void CGUIButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
 
       alphaChannel += 192;
       alphaChannel = (unsigned int)((float)m_alpha * (float)alphaChannel / 255.0f);
-      m_imgFocus.SetAlpha((unsigned char)alphaChannel);
+
+      if (m_imgFocus.SetAlpha((unsigned char)alphaChannel))
+        MarkDirtyRegion();
     }
+
     m_imgFocus.SetVisible(true);
     m_imgNoFocus.SetVisible(false);
     m_focusCounter++;
@@ -89,10 +92,8 @@ void CGUIButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
 
 void CGUIButtonControl::Render()
 {
-  if (HasFocus())
-    m_imgFocus.Render();
-  else
-    m_imgNoFocus.Render();
+  m_imgFocus.Render();
+  m_imgNoFocus.Render();
 
   m_label.Render();
   m_label2.Render();
@@ -224,9 +225,9 @@ void CGUIButtonControl::SetPosition(float posX, float posY)
 
 void CGUIButtonControl::SetAlpha(unsigned char alpha)
 {
+  if (m_alpha != alpha)
+    MarkDirtyRegion();
   m_alpha = alpha;
-  m_imgFocus.SetAlpha(alpha);
-  m_imgNoFocus.SetAlpha(alpha);
 }
 
 bool CGUIButtonControl::UpdateColors()
