@@ -43,6 +43,8 @@
 		183FDF8B11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
 		18404D9E1396C13500863BBA /* Slingbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18404D9C1396C13500863BBA /* Slingbox.cpp */; };
 		18404DA61396C31B00863BBA /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
+		18404E701396E05D00863BBA /* Slingbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18404D9C1396C13500863BBA /* Slingbox.cpp */; };
+		18404E711396E06C00863BBA /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
 		184C472F1296BC6E0006DB3E /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
 		184C47301296BC6E0006DB3E /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
 		18ACF84313596C9B00B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */; };
@@ -3882,6 +3884,7 @@
 				F5B5D64D133FC2C1007A4B4C /* libsquish.a in Frameworks */,
 				F5B5D64E133FC2E7007A4B4C /* librtv.a in Frameworks */,
 				F5B5D650133FC312007A4B4C /* libxdaap.a in Frameworks */,
+				18404E711396E06C00863BBA /* SlingboxLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8915,6 +8918,7 @@
 				43EA4297136C1D9E002C82A5 /* RenderCapture.cpp in Sources */,
 				43EA429B136C1E2F002C82A5 /* xbmcvfsmodule.cpp in Sources */,
 				43EA42B0136C2274002C82A5 /* InputOperations.cpp in Sources */,
+				18404E701396E05D00863BBA /* Slingbox.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9226,6 +9230,7 @@
 					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
+					"\"$(SRCROOT)/lib/SlingboxLib\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -9316,6 +9321,7 @@
 					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
+					"\"$(SRCROOT)/lib/SlingboxLib\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
