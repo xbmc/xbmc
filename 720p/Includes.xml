@@ -846,7 +846,7 @@
 				<control type="largeimage">
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
-					<info>ListItem.Property(fanart_image)</info>
+					<info background="true">ListItem.Property(fanart_image)</info>
 					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
 					<include>BackgroundFade</include>
 				</control>
@@ -882,13 +882,16 @@
 					<include>CustomMoviesBackground</include>
 				</control>
 				<!-- bg fanart -->
-				<control type="multiimage">
+				<control type="largeimage">
 					<description>Fanart background</description>
-					<include>FullScreenBGImage</include>
-					<info background="true">ListItem.Property(fanart_image)</info>
+					<aspectratio>scale</aspectratio>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>1280</width>
+					<height>720</height>
+					<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
 					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
-					<fadetime>300</fadetime>
-					<include>BackgroundFade</include>
+					<fadetime>100</fadetime>					
 				</control>
 			</control>
 			<control type="group">
@@ -927,7 +930,7 @@
 					<include>FullScreenBGImage</include>
 					<info background="true">ListItem.Property(fanart_image)</info>
 					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
-					<fadetime>300</fadetime>
+					<fadetime>100</fadetime>
 					<include>BackgroundFade</include>
 				</control>
 			</control>
@@ -1789,20 +1792,16 @@
 		<posy>3</posy>
 		<width>122</width>
 		<height>186</height>
-		<info background="true">ListItem.Thumb</info>
-		<aspectratio aligny="top">scale</aspectratio>
-		<!--<texture diffuse="posterMaskSmall.png"/>
-		<bordertexture>posterMaskSmall.png</bordertexture>
-		<bordersize>3</bordersize>-->
-		<!--<visible>ListItem.Type(movie)</visible>-->
+		<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+		<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 	</include>
 	<include name="PanelStreamImageFocus">
 		<posx>18</posx>
 		<posy>3</posy>
 		<width>122</width>
 		<height>186</height>
-		<info background="true">ListItem.Thumb</info>
-		<aspectratio>scale</aspectratio>
+		<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+		<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 	</include>
 	<include name="PicturesImageFocus">
 		<info>ListItem.Icon</info>
@@ -1849,7 +1848,7 @@
 	</include>
 	<!-- PanelStream -->
 	<include name="PanelStreamLayout">
-		<itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="158" height="241">
+		<itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="154" height="241">
 			<!-- drop shadow -->
 			<control type="image">
 				<posx>9</posx>
@@ -1857,9 +1856,9 @@
 				<width>140</width>
 				<height>205</height>
 				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-				<texture background="true" border="40">posterFrameSmallShadow.png</texture>
+				<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
 			</control>
-			<control type="image">
+			<!--<control type="image">
 				<posx>15</posx>
 				<posy>0</posy>
 				<width>128</width>
@@ -1868,7 +1867,7 @@
 				<texture background="true">posterMaskSmall.png</texture>
 				<visible>!Skin.HasSetting(hideposterborders)</visible>
 				<colordiffuse>FF3d3d3d</colordiffuse>
-			</control>
+			</control>-->
 			<control type="image">
 				<description>Poster image</description>
 				<include>PanelStreamImage</include>
@@ -1906,7 +1905,7 @@
 				<width>140</width>
 				<height>205</height>
 				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-				<texture background="true" border="40">posterFrameSmallShadow.png</texture>
+				<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
 			</control>
 			<!-- new bg border -->
 			<control type="image">

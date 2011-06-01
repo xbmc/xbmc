@@ -17,9 +17,9 @@
 	</include>
 	<include name="MediaCountBGDims">
 		<posx>-15</posx>
-		<posy>1</posy>
+		<posy>-1</posy>
 		<width>160</width>
-		<height>28</height>
+		<height>32</height>
 	</include>
 	<include name="MediaCountNumberPos">
 		<posx>134</posx>
@@ -40,7 +40,7 @@
 		<posy>0</posy>
 		<width>1280</width>
 		<height>720</height>
-		<aspectratio>scale</aspectratio>
+		<aspectratio>stretch</aspectratio>
 	</include>
 	<include name="FullScreenOverlayDims">
 		<include>FullScreenBGImageDims</include>
