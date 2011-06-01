@@ -68,6 +68,7 @@ SRCS=AddonsDirectory.cpp \
      SAPFile.cpp \
      SFTPDirectory.cpp \
      SIDFileDirectory.cpp \
+     Slingbox.cpp \
      SmartPlaylistDirectory.cpp \
      SMBDirectory.cpp \
      SourcesDirectory.cpp \
