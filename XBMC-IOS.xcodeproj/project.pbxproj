@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18404DD31396C3D200863BBA /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DD21396C3D200863BBA /* SlingboxLib.a */; };
+		18404DD61396C3F300863BBA /* Slingbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18404DD41396C3F300863BBA /* Slingbox.cpp */; };
 		18ACF8FD13597B5700B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF8FB13597B5700B67371 /* RecentlyAddedJob.cpp */; };
 		3255316612B2D02400837CD2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255316512B2D02400837CD2 /* CoreAudio.framework */; };
 		4D5D2E1E1301758F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */; };
@@ -916,6 +918,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		18404DD21396C3D200863BBA /* SlingboxLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = SlingboxLib.a; path = lib/SlingboxLib/SlingboxLib.a; sourceTree = "<group>"; };
+		18404DD41396C3F300863BBA /* Slingbox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Slingbox.cpp; sourceTree = "<group>"; };
+		18404DD51396C3F300863BBA /* Slingbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slingbox.h; sourceTree = "<group>"; };
 		18ACF8FB13597B5700B67371 /* RecentlyAddedJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RecentlyAddedJob.cpp; sourceTree = "<group>"; };
 		18ACF8FC13597B5700B67371 /* RecentlyAddedJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentlyAddedJob.h; sourceTree = "<group>"; };
 		3255316512B2D02400837CD2 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -2885,6 +2890,7 @@
 				F56C8C11131F4811000AD0F6 /* libsquish.a in Frameworks */,
 				F56C8C12131F4811000AD0F6 /* librtv.a in Frameworks */,
 				F56C8C14131F4811000AD0F6 /* libxdaap.a in Frameworks */,
+				18404DD31396C3D200863BBA /* SlingboxLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4421,6 +4427,8 @@
 				F56C8430131F42E8000AD0F6 /* SFTPDirectory.h */,
 				F56C8431131F42E8000AD0F6 /* SIDFileDirectory.cpp */,
 				F56C8432131F42E8000AD0F6 /* SIDFileDirectory.h */,
+				18404DD41396C3F300863BBA /* Slingbox.cpp */,
+				18404DD51396C3F300863BBA /* Slingbox.h */,
 				F56C8433131F42E8000AD0F6 /* SmartPlaylistDirectory.cpp */,
 				F56C8434131F42E8000AD0F6 /* SmartPlaylistDirectory.h */,
 				F56C8435131F42E8000AD0F6 /* SMBDirectory.h */,
@@ -5663,6 +5671,7 @@
 				F56C8C0D131F4811000AD0F6 /* libsquish.a */,
 				F56C8C0E131F4811000AD0F6 /* librtv.a */,
 				F56C8C10131F4811000AD0F6 /* libxdaap.a */,
+				18404DD21396C3D200863BBA /* SlingboxLib.a */,
 			);
 			name = "Internal Libs";
 			sourceTree = "<group>";
@@ -6707,6 +6716,7 @@
 				18ACF8FD13597B5700B67371 /* RecentlyAddedJob.cpp in Sources */,
 				C80711AD135DB85F002F601B /* InputOperations.cpp in Sources */,
 				C8EC5D26136953E100CCC10D /* XBMC_keytable.cpp in Sources */,
+				18404DD61396C3F300863BBA /* Slingbox.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6779,6 +6789,7 @@
 					"\"$(SRCROOT)/lib/jsoncpp/src/lib_json\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
+					"\"$(SRCROOT)/lib/SlingboxLib\"",
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-headerpad_max_install_names",
@@ -6864,6 +6875,7 @@
 					"\"$(SRCROOT)/lib/jsoncpp/src/lib_json\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
+					"\"$(SRCROOT)/lib/SlingboxLib\"",
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-headerpad_max_install_names",

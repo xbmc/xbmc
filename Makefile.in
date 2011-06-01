@@ -439,7 +439,8 @@ xcode_depends: \
 	lib/libapetag/.libs/libapetag.a \
 	lib/libRTV/librtv.a \
 	lib/libXDAAP/libxdaap.a \
-	lib/jsoncpp/src/lib_json/libjsoncpp.a
+	lib/jsoncpp/src/lib_json/libjsoncpp.a \
+	lib/SlingboxLib/SlingboxLib.a
 
 # platform independend objects
 OBJSXBMC=	\
