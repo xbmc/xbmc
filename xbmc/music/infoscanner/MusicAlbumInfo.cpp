@@ -23,19 +23,8 @@
 #include "addons/Scraper.h"
 #include "utils/log.h"
 
-using namespace MUSIC_GRABBER;
 using namespace std;
-
-CMusicAlbumInfo::CMusicAlbumInfo(void)
-{
-  m_strTitle2 = "";
-  m_bLoaded = false;
-  m_relevance = -1;
-}
-
-CMusicAlbumInfo::~CMusicAlbumInfo(void)
-{
-}
+using namespace MUSIC_GRABBER;
 
 CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbumInfo, const CScraperUrl& strAlbumURL)
 {
@@ -55,52 +44,12 @@ CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbum, const CStdString& s
   m_bLoaded = false;
 }
 
-const CAlbum& CMusicAlbumInfo::GetAlbum() const
-{
-  return m_album;
-}
-
-CAlbum& CMusicAlbumInfo::GetAlbum()
-{
-  return m_album;
-}
-
 void CMusicAlbumInfo::SetAlbum(CAlbum& album)
 {
   m_album = album;
   m_album.m_strDateOfRelease.Format("%i", album.iYear);
   m_strTitle2 = "";
   m_bLoaded = true;
-}
-
-const VECSONGS &CMusicAlbumInfo::GetSongs() const
-{
-  return m_album.songs;
-}
-
-void CMusicAlbumInfo::SetSongs(VECSONGS &songs)
-{
-  m_album.songs = songs;
-}
-
-void CMusicAlbumInfo::SetTitle(const CStdString& strTitle)
-{
-  m_album.strAlbum = strTitle;
-}
-
-const CScraperUrl& CMusicAlbumInfo::GetAlbumURL() const
-{
-  return m_albumURL;
-}
-
-const CStdString& CMusicAlbumInfo::GetTitle2() const
-{
-  return m_strTitle2;
-}
-
-const CStdString& CMusicAlbumInfo::GetDateOfRelease() const
-{
-  return m_album.m_strDateOfRelease;
 }
 
 bool CMusicAlbumInfo::Parse(const TiXmlElement* album, bool bChained)
@@ -111,11 +60,10 @@ bool CMusicAlbumInfo::Parse(const TiXmlElement* album, bool bChained)
   if (m_strTitle2.IsEmpty())
     m_strTitle2 = m_album.strAlbum;
 
-  SetLoaded(true);
+  SetLoaded();
 
   return true;
 }
-
 
 bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http,
                            const ADDON::ScraperPtr& scraper)
@@ -145,12 +93,3 @@ bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http,
   return ret;
 }
 
-void CMusicAlbumInfo::SetLoaded(bool bOnOff)
-{
-  m_bLoaded = bOnOff;
-}
-
-bool CMusicAlbumInfo::Loaded() const
-{
-  return m_bLoaded;
-}
