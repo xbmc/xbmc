@@ -81,7 +81,6 @@ private:
 private:
   char* m_doc;
   char* m_headofdoc;
-  int m_size;
   ADDON::ScraperPtr m_info;
   ADDON::TYPE       m_type;
   bool DoScrape(ADDON::ScraperPtr& scraper);
