@@ -689,7 +689,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
     m_scrollOffset -= (m_orientation == HORIZONTAL) ? event.m_offsetX : event.m_offsetY;
     float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
     int offset = (int)MathUtils::round_int(m_scrollOffset / size);
-    m_offset = offset;
+    SetOffset(offset);
     ValidateOffset();
     return EVENT_RESULT_HANDLED;
   }
@@ -702,9 +702,9 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
     float offset = m_scrollOffset / size;
     int toOffset = (int)MathUtils::round_int(offset);
     if (toOffset < offset)
-      m_offset = toOffset+1;
+      SetOffset(toOffset+1);
     else
-      m_offset = toOffset-1;
+      SetOffset(toOffset-1);
     ScrollToOffset(toOffset);
     return EVENT_RESULT_HANDLED;
   }
@@ -954,7 +954,7 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
     else
       m_scrollTimer.Stop();
   }
-  m_offset = offset;
+  SetOffset(offset);
 }
 
 void CGUIBaseContainer::SetContainerMoving(int direction)
@@ -965,6 +965,8 @@ void CGUIBaseContainer::SetContainerMoving(int direction)
 
 void CGUIBaseContainer::UpdateScrollOffset(unsigned int currentTime)
 {
+  if (m_scrollSpeed)
+    MarkDirtyRegion();
   m_scrollOffset += m_scrollSpeed * (currentTime - m_scrollLastTime);
   if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_layout->Size(m_orientation)) ||
       (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_layout->Size(m_orientation)))
@@ -986,6 +988,7 @@ void CGUIBaseContainer::Reset()
   m_wasReset = true;
   m_items.clear();
   m_lastItem = NULL;
+  MarkDirtyRegion();
 }
 
 void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
@@ -1204,6 +1207,20 @@ void CGUIBaseContainer::GetCacheOffsets(int &cacheBefore, int &cacheAfter)
     cacheBefore = m_cacheItems / 2;
     cacheAfter = m_cacheItems / 2;
   }
+}
+
+void CGUIBaseContainer::SetCursor(int cursor)
+{
+  if (m_cursor != cursor)
+    MarkDirtyRegion();
+  m_cursor = cursor;
+}
+
+void CGUIBaseContainer::SetOffset(int offset)
+{
+  if (m_offset != offset)
+    MarkDirtyRegion();
+  m_offset = offset;
 }
 
 bool CGUIBaseContainer::CanFocus() const

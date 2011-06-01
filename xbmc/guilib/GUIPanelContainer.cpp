@@ -388,12 +388,12 @@ void CGUIPanelContainer::ValidateOffset()
   if (!m_layout) return;
   if (m_offset > (int)GetRows() - m_itemsPerPage || m_scrollOffset > ((int)GetRows() - m_itemsPerPage) * m_layout->Size(m_orientation))
   {
-    m_offset = (int)GetRows() - m_itemsPerPage;
+    SetOffset(std::max(0, (int)GetRows() - m_itemsPerPage));
     m_scrollOffset = m_offset * m_layout->Size(m_orientation);
   }
   if (m_offset < 0 || m_scrollOffset < 0)
   {
-    m_offset = 0;
+    SetOffset(0);
     m_scrollOffset = 0;
   }
 }
@@ -405,7 +405,7 @@ void CGUIPanelContainer::SetCursor(int cursor)
   if (cursor < 0) cursor = 0;
   if (!m_wasReset)
     SetContainerMoving(cursor - m_cursor);
-  m_cursor = cursor;
+  CGUIBaseContainer::SetCursor(cursor);
 }
 
 void CGUIPanelContainer::CalculateLayout()

@@ -30,7 +30,7 @@ CGUIFixedListContainer::CGUIFixedListContainer(int parentID, int controlID, floa
   m_type = VIEW_TYPE_LIST;
   m_fixedCursor = fixedPosition;
   m_cursorRange = std::max(0, cursorRange);
-  m_cursor = m_fixedCursor;
+  SetCursor(m_fixedCursor);
 }
 
 CGUIFixedListContainer::~CGUIFixedListContainer(void)
@@ -123,12 +123,12 @@ void CGUIFixedListContainer::Scroll(int amount)
   if (offset < -minCursor)
   {
     offset = -minCursor;
-    m_cursor = minCursor;
+    SetCursor(minCursor);
   }
   if (offset > (int)m_items.size() - maxCursor)
   {
     offset = m_items.size() - maxCursor;
-    m_cursor = maxCursor;
+    SetCursor(maxCursor);
   }
   ScrollToOffset(offset);
 }
@@ -145,17 +145,17 @@ void CGUIFixedListContainer::ValidateOffset()
   int minCursor, maxCursor;
   GetCursorRange(minCursor, maxCursor);
   // assure our cursor is between these limits
-  m_cursor = std::max(m_cursor, minCursor);
-  m_cursor = std::min(m_cursor, maxCursor);
+  SetCursor(std::max(m_cursor, minCursor));
+  SetCursor(std::min(m_cursor, maxCursor));
   // and finally ensure our offset is valid
   if (m_offset + maxCursor >= (int)m_items.size() || m_scrollOffset > ((int)m_items.size() - maxCursor - 1) * m_layout->Size(m_orientation))
   {
-    m_offset = m_items.size() - maxCursor - 1;
+    SetOffset(std::max(-minCursor, (int)m_items.size() - maxCursor - 1));
     m_scrollOffset = m_offset * m_layout->Size(m_orientation);
   }
   if (m_offset < -minCursor || m_scrollOffset < -minCursor * m_layout->Size(m_orientation))
   {
-    m_offset = -minCursor;
+    SetOffset(-minCursor);
     m_scrollOffset = m_offset * m_layout->Size(m_orientation);
   }
 }
@@ -235,7 +235,7 @@ bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
     if (cursor < 0)
       return false;
     // calling SelectItem() here will focus the item and scroll, which isn't really what we're after
-    m_cursor = cursor;
+    SetCursor(cursor);
     return true;
   }
   return InsideLayout(m_focusedLayout, point);
@@ -262,7 +262,7 @@ void CGUIFixedListContainer::SelectItem(int item)
       cursor = m_fixedCursor;
     if (cursor != m_cursor)
       SetContainerMoving(cursor - m_cursor);
-    m_cursor = cursor;
+    SetCursor(cursor);
     ScrollToOffset(item - m_cursor);
   }
 }

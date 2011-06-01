@@ -177,6 +177,18 @@ protected:
   void OnJumpLetter(char letter);
   void OnJumpSMS(int letter);
   std::vector< std::pair<int, CStdString> > m_letterOffsets;
+
+  /*! \brief Set the cursor position
+   Should be used by all base classes rather than directly setting it, as
+   this also marks the control as dirty (if needed)
+   */
+  virtual void SetCursor(int cursor);
+
+  /*! \brief Set the container offset
+   Should be used by all base classes rather than directly setting it, as
+   this also marks the control as dirty (if needed)
+   */
+  void SetOffset(int offset);
 private:
   int m_cacheItems;
   float m_scrollSpeed;

@@ -27,7 +27,7 @@
 CGUIWrappingListContainer::CGUIWrappingListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems, int fixedPosition)
     : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scrollTime, preloadItems)
 {
-  m_cursor = fixedPosition;
+  SetCursor(fixedPosition);
   ControlType = GUICONTAINER_WRAPLIST;
   m_type = VIEW_TYPE_LIST;
   m_extraItems = 0;

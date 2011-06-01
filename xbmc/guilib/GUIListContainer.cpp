@@ -198,12 +198,12 @@ void CGUIListContainer::ValidateOffset()
   if (!m_layout) return;
   if (m_offset > (int)m_items.size() - m_itemsPerPage || m_scrollOffset > ((int)m_items.size() - m_itemsPerPage) * m_layout->Size(m_orientation))
   {
-    m_offset = m_items.size() - m_itemsPerPage;
+    SetOffset(std::max(0, (int)m_items.size() - m_itemsPerPage));
     m_scrollOffset = m_offset * m_layout->Size(m_orientation);
   }
   if (m_offset < 0 || m_scrollOffset < 0)
   {
-    m_offset = 0;
+    SetOffset(0);
     m_scrollOffset = 0;
   }
 }
@@ -214,7 +214,7 @@ void CGUIListContainer::SetCursor(int cursor)
   if (cursor < 0) cursor = 0;
   if (!m_wasReset)
     SetContainerMoving(cursor - m_cursor);
-  m_cursor = cursor;
+  CGUIBaseContainer::SetCursor(cursor);
 }
 
 void CGUIListContainer::SelectItem(int item)
@@ -274,8 +274,7 @@ bool CGUIListContainer::SelectItemFromPoint(const CPoint &point)
   if (row < 0)
     return false;
 
-  SetContainerMoving(row - m_cursor);
-  m_cursor = row;
+  SetCursor(row);
   CGUIListItemLayout *focusedLayout = GetFocusedLayout();
   if (focusedLayout)
     focusedLayout->SelectItemFromPoint(itemPoint);
