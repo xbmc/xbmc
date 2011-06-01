@@ -37,24 +37,9 @@
 
 #include <vector>
 
-using namespace XFILE;
 using namespace std;
+using namespace XFILE;
 using namespace ADDON;
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CNfoFile::CNfoFile()
-{
-  m_doc = NULL;
-  m_headofdoc = NULL;
-}
-
-CNfoFile::~CNfoFile()
-{
-  Close();
-}
 
 CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr& info, int episode, const CStdString& strPath2)
 {
