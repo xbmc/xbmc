@@ -174,9 +174,9 @@ void CGUIBaseContainer::ProcessItem(float posX, float posY, CGUIListItem *item, 
       CGUIListItemLayout *layout = new CGUIListItemLayout(*m_layout);
       item->SetLayout(layout);
     }
-    if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
+    if (item->GetFocusedLayout())
       item->GetFocusedLayout()->Process(item, m_parentID, currentTime, dirtyregions);
-    else if (item->GetLayout())
+    if (item->GetLayout())
       item->GetLayout()->Process(item, m_parentID, currentTime, dirtyregions);
   }
 
