@@ -424,22 +424,21 @@ const CPVRChannel *CPVRChannelGroup::GetByChannelNumber(unsigned int iChannelNum
 const CPVRChannel *CPVRChannelGroup::GetByChannelUp(const CPVRChannel &channel) const
 {
   CSingleLock lock(m_critSection);
-  unsigned int iChannelNumber = GetChannelNumber(channel) + 1;
-  if (iChannelNumber > size())
-    iChannelNumber = 1;
+  unsigned int iChannelIndex = GetIndex(channel) + 1;
+  if (iChannelIndex >= size())
+    iChannelIndex = 0;
 
-  return GetByChannelNumber(iChannelNumber);
+  return GetByIndex(iChannelIndex);
 }
 
 const CPVRChannel *CPVRChannelGroup::GetByChannelDown(const CPVRChannel &channel) const
 {
   CSingleLock lock(m_critSection);
+  unsigned int iChannelIndex = GetIndex(channel) - 1;
+  if (iChannelIndex < 0)
+    iChannelIndex = size();
 
-  int iChannelNumber = GetChannelNumber(channel) - 1;
-  if (iChannelNumber <= 0)
-    iChannelNumber = size();
-
-  return GetByChannelNumber(iChannelNumber);
+  return GetByIndex(iChannelIndex);
 }
 
 const CPVRChannel *CPVRChannelGroup::GetByIndex(unsigned int iIndex) const
@@ -448,6 +447,23 @@ const CPVRChannel *CPVRChannelGroup::GetByIndex(unsigned int iIndex) const
   return iIndex < size() ?
     at(iIndex).channel :
     NULL;
+}
+
+int CPVRChannelGroup::GetIndex(const CPVRChannel &channel) const
+{
+  int iIndex(-1);
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    if (*at(iChannelPtr).channel == channel)
+    {
+      iIndex = iChannelPtr;
+      break;
+    }
+  }
+
+  return iIndex;
 }
 
 int CPVRChannelGroup::GetMembers(CFileItemList *results, bool bGroupMembers /* = true */) const

@@ -363,6 +363,13 @@ namespace PVR
     virtual const CPVRChannel *GetByIndex(unsigned int index) const;
 
     /*!
+     * @brief Get the current index in this group of a channel.
+     * @param channel The channel to get the index for.
+     * @return The index or -1 if it wasn't found.
+     */
+    virtual int GetIndex(const CPVRChannel &channel) const;
+
+    /*!
      * @brief Get the list of channels in a group.
      * @param results The file list to store the results in.
      * @param bGroupMembers If true, get the channels that are in this group. Get the channels that are not in this group otherwise.
