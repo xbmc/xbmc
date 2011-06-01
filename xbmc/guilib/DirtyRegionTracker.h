@@ -23,10 +23,16 @@
 #include "IDirtyRegionSolver.h"
 #include "DirtyRegionSolvers.h"
 
+#ifdef _WIN32
+#define DEFAULT_BUFFERING 3
+#else
+#define DEFAULT_BUFFERING 2
+#endif
+
 class CDirtyRegionTracker
 {
 public:
-  CDirtyRegionTracker(int buffering = 2);
+  CDirtyRegionTracker(int buffering = DEFAULT_BUFFERING);
   ~CDirtyRegionTracker();
   void SelectAlgorithm();
   void MarkDirtyRegion(const CDirtyRegion &region);
