@@ -62,16 +62,22 @@ void CGUISpinControlEx::SetInvalid()
   m_buttonControl.SetInvalid();
 }
 
-void CGUISpinControlEx::Render()
+void CGUISpinControlEx::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // make sure the button has focus if it should have...
   m_buttonControl.SetFocus(HasFocus());
   m_buttonControl.SetPulseOnSelect(m_pulseOnSelect);
   m_buttonControl.SetEnabled(m_enabled);
-  m_buttonControl.Render();
   if (m_bInvalidated)
     SetPosition(GetXPosition(), GetYPosition());
 
+  m_buttonControl.Process(currentTime, dirtyregions);
+  CGUISpinControl::Process(currentTime, dirtyregions);
+}
+
+void CGUISpinControlEx::Render()
+{
+  m_buttonControl.Render();
   CGUISpinControl::Render();
 }
 
