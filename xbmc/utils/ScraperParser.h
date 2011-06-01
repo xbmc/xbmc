@@ -49,10 +49,10 @@ public:
 
   void Clear();
   const CStdString GetFilename() { return m_strFile; }
-  const CStdString GetSearchStringEncoding() { return m_SearchStringEncoding; }
+	CStdString GetSearchStringEncoding() const
+		{ return m_SearchStringEncoding; }
   const CStdString Parse(const CStdString& strTag,
                          ADDON::CScraper* scraper);
-  bool HasFunction(const CStdString& strTag);
 
   void AddDocument(const TiXmlDocument* doc);
 

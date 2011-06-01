@@ -43,9 +43,9 @@ public:
 	const CArtist& GetArtist() const { return m_artist; }
 	CArtist& GetArtist() { return m_artist; }
 	const CScraperUrl& GetArtistURL() const { return m_artistURL; }
-  bool Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper);
-  bool Parse(const TiXmlElement* artist, bool bChained=false);
-  CStdString m_strSearch;
+	bool Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper,
+		const CStdString &strSearch);
+
 protected:
   CArtist m_artist;
   CScraperUrl m_artistURL;
