@@ -35,30 +35,32 @@ namespace MUSIC_GRABBER
 class CMusicAlbumInfo
 {
 public:
-  CMusicAlbumInfo(void);
+  CMusicAlbumInfo() : m_bLoaded(false), m_relevance(-1) {}
   CMusicAlbumInfo(const CStdString& strAlbumInfo, const CScraperUrl& strAlbumURL);
   CMusicAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strAlbumInfo, const CScraperUrl& strAlbumURL);
-  virtual ~CMusicAlbumInfo(void);
-  bool Loaded() const;
-  void SetLoaded(bool bOnOff);
+	virtual ~CMusicAlbumInfo() {}
+
+	bool Loaded() const { return m_bLoaded; }
+	void SetLoaded() { m_bLoaded = true; }
+	const CAlbum &GetAlbum() const { return m_album; }
+	CAlbum& GetAlbum() { return m_album; }
   void SetAlbum(CAlbum& album);
-  const CAlbum &GetAlbum() const;
-  CAlbum& GetAlbum();
-  void SetSongs(VECSONGS &songs);
-  const VECSONGS &GetSongs() const;
-  const CStdString& GetTitle2() const;
-  const CStdString& GetDateOfRelease() const;
-  const CScraperUrl& GetAlbumURL() const;
+	const VECSONGS &GetSongs() const { return m_album.songs; }
+	const CStdString& GetTitle2() const { return m_strTitle2; }
+	void SetTitle(const CStdString& strTitle) { m_album.strAlbum = strTitle; }
+	const CScraperUrl& GetAlbumURL() const { return m_albumURL; }
   float GetRelevance() const { return m_relevance; }
-  void SetTitle(const CStdString& strTitle);
   void SetRelevance(float relevance) { m_relevance = relevance; }
+
   bool Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper);
   bool Parse(const TiXmlElement* album, bool bChained=false);
+
 protected:
+  bool m_bLoaded;
   CAlbum m_album;
   float m_relevance;
   CStdString m_strTitle2;
   CScraperUrl m_albumURL;
-  bool m_bLoaded;
 };
+
 }

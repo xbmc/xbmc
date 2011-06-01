@@ -817,7 +817,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
   if (idAlbum != -1)
     m_musicdatabase.GetAlbumInfo(idAlbum,album.GetAlbum(),&album.GetAlbum().songs);
 
-  album.SetLoaded(true);
+  album.SetLoaded();
   return true;
 }
 
