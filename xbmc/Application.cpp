@@ -4217,6 +4217,11 @@ void CApplication::ResetScreenSaverTimer()
   m_screenSaverTimer.StartZero();
 }
 
+void CApplication::StopScreenSaverTimer()
+{
+	m_screenSaverTimer.Stop();
+}
+
 bool CApplication::ToggleDPMS(bool manual)
 {
   if (manual || (m_dpmsIsManual == manual))
