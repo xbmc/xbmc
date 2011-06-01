@@ -56,6 +56,7 @@ public:
   static bool IsFTP(const CStdString& strFile);
   static bool IsHD(const CStdString& strFileName);
   static bool IsHDHomeRun(const CStdString& strFile);
+  static bool IsSlingbox(const CStdString& strFile);
   static bool IsHTSP(const CStdString& strFile);
   static bool IsInArchive(const CStdString& strFile);
   static bool IsInRAR(const CStdString& strFile);
