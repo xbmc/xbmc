@@ -26,7 +26,6 @@
 #include "VideoInfoDownloader.h"
 #include "XBDateTime.h"
 
-class CIMDB;
 class CRegExp;
 
 namespace VIDEO
