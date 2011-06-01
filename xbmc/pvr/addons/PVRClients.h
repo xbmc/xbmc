@@ -110,6 +110,11 @@ namespace PVR
     bool HasClients(void) const;
 
     /*!
+     * @return The amount of active clients.
+     */
+    int GetActiveClientsAmount(void) const;
+
+    /*!
      * @brief Stop a client.
      * @param addon The client to stop.
      * @param bRestart If true, restart the client.
