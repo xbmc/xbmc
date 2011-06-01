@@ -2919,7 +2919,7 @@ bool CApplication::ProcessMouse()
   CAction mouseaction = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
   // If we couldn't find an action return false to indicate we have not
-  // handled this appcommand
+  // handled this mouse action
   if (!mouseaction.GetID())
   {
     CLog::Log(LOGDEBUG, "%s: unknown mouse command %d", __FUNCTION__, mousecommand);

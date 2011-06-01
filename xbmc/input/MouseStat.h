@@ -78,11 +78,11 @@ public:
   MOUSE_STATE GetState() const { return m_pointerState; };
   uint32_t GetAction() const;
 
-  int GetHold(int ButtonID);
-  inline int GetX(void) { return m_mouseState.x; }
-  inline int GetY(void) { return m_mouseState.y; }
-  inline int GetDX(void) { return m_mouseState.dx; }
-  inline int GetDY(void) { return m_mouseState.dy; }
+  int GetHold(int ButtonID) const;
+  inline int GetX(void) const { return m_mouseState.x; }
+  inline int GetY(void) const { return m_mouseState.y; }
+  inline int GetDX(void) const { return m_mouseState.dx; }
+  inline int GetDY(void) const { return m_mouseState.dy; }
 
 private:
   /*! \brief Holds information regarding a particular mouse button state

@@ -276,7 +276,7 @@ uint32_t CMouseStat::GetAction() const
   return actionID;
 }
 
-int CMouseStat::GetHold(int ButtonID)
+int CMouseStat::GetHold(int ButtonID) const
 {
   switch (ButtonID)
   { case MOUSE_LEFT_BUTTON:
