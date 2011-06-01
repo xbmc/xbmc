@@ -223,10 +223,10 @@ int CNfoFile::Load(const CStdString& strFile)
   XFILE::CFile file;
   if (file.Open(strFile))
   {
-    m_size = (int)file.GetLength();
+    int size = (int)file.GetLength();
     try
     {
-      m_doc = new char[m_size+1];
+      m_doc = new char[size+1];
       m_headofdoc = m_doc;
     }
     catch (...)
@@ -239,8 +239,8 @@ int CNfoFile::Load(const CStdString& strFile)
       file.Close();
       return 1;
     }
-    file.Read(m_doc, m_size);
-    m_doc[m_size] = 0;
+    file.Read(m_doc, size);
+    m_doc[size] = 0;
     file.Close();
     return 0;
   }
@@ -257,7 +257,6 @@ void CNfoFile::Close()
 
   m_strImDbUrl = "";
   m_strImDbNr = "";
-  m_size = 0;
 }
 
 void CNfoFile::AddScrapers(VECADDONS& addons,
