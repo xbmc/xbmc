@@ -45,7 +45,8 @@ typedef struct
 } ActionMapping;
 
 static const ActionMapping actions[] =
-       {{"left"              , ACTION_MOVE_LEFT },
+{
+        {"left"              , ACTION_MOVE_LEFT },
         {"right"             , ACTION_MOVE_RIGHT},
         {"up"                , ACTION_MOVE_UP   },
         {"down"              , ACTION_MOVE_DOWN },
@@ -195,14 +196,19 @@ static const ActionMapping actions[] =
         {"blue"              , ACTION_TELETEXT_BLUE},
         {"increasepar"       , ACTION_INCREASE_PAR},
         {"decreasepar"       , ACTION_DECREASE_PAR},
-        { "leftclick"        , ACTION_MOUSE_LEFT_CLICK},
-        { "rightclick"       , ACTION_MOUSE_RIGHT_CLICK},
-        { "middleclick"      , ACTION_MOUSE_MIDDLE_CLICK},
-        { "doubleclick"      , ACTION_MOUSE_DOUBLE_CLICK},
-        { "wheelup"          , ACTION_MOUSE_WHEEL_UP},
-        { "wheeldown"        , ACTION_MOUSE_WHEEL_DOWN},
-        { "mousedrag"        , ACTION_MOUSE_DRAG},
-        { "mousemove"        , ACTION_MOUSE_MOVE}
+
+        // Mouse actions
+        {"leftclick"         , ACTION_MOUSE_LEFT_CLICK},
+        {"rightclick"        , ACTION_MOUSE_RIGHT_CLICK},
+        {"middleclick"       , ACTION_MOUSE_MIDDLE_CLICK},
+        {"doubleclick"       , ACTION_MOUSE_DOUBLE_CLICK},
+        {"wheelup"           , ACTION_MOUSE_WHEEL_UP},
+        {"wheeldown"         , ACTION_MOUSE_WHEEL_DOWN},
+        {"mousedrag"         , ACTION_MOUSE_DRAG},
+        {"mousemove"         , ACTION_MOUSE_MOVE},
+
+        // Do nothing action
+        { "noop"             , ACTION_NOOP}
 };
 
 static const ActionMapping windows[] =
@@ -900,9 +906,6 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
   strAction.ToLower();
   if (CBuiltins::HasCommand(strAction)) 
     action = ACTION_BUILT_IN_FUNCTION;
-
-  if (strAction.Equals("noop"))
-    return true;
 
   for (unsigned int index=0;index < sizeof(actions)/sizeof(actions[0]);++index)
   {

@@ -295,6 +295,11 @@
 
 #define ACTION_PLAYER_PLAYPAUSE       227 // Play/pause. If playing it pauses, if paused it plays.
 
+// The NOOP action can be specified to disable an input event. This is
+// useful in user keyboard.xml etc to disable actions specified in the
+// system mappings.
+#define ACTION_NOOP                   999
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000
