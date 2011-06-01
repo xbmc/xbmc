@@ -812,6 +812,7 @@ void CGUIBaseContainer::UpdateLayout(bool updateAllItems)
   // and recalculate the layout
   CalculateLayout();
   SetPageControlRange();
+  MarkDirtyRegion();
 }
 
 void CGUIBaseContainer::SetPageControlRange()
@@ -865,8 +866,9 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     for (unsigned int i = 0; i < m_staticItems.size(); ++i)
     {
       CGUIStaticItemPtr item = boost::static_pointer_cast<CGUIStaticItem>(m_staticItems[i]);
-      // m_idepth is used to store the visibility condition
-      if (!item->m_idepth || g_infoManager.GetBool(item->m_idepth, GetParentID()))
+      if (item->UpdateVisibility(GetParentID()))
+        MarkDirtyRegion();
+      if (item->IsVisible())
       {
         m_items.push_back(item);
         if (item.get() == lastItem)
@@ -988,7 +990,6 @@ void CGUIBaseContainer::Reset()
   m_wasReset = true;
   m_items.clear();
   m_lastItem = NULL;
-  MarkDirtyRegion();
 }
 
 void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
