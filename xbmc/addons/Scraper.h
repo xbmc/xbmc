@@ -21,7 +21,19 @@
  */
 #include "addons/Addon.h"
 #include "XBDateTime.h"
+#include "utils/ScraperUrl.h"
 #include "utils/ScraperParser.h"
+#include "utils/Episode.h"
+
+class CAlbum;
+class CArtist;
+class CVideoInfoTag;
+
+namespace MUSIC_GRABBER
+{
+class CMusicAlbumInfo;
+class CMusicArtistInfo;
+}
 
 typedef enum
 {
@@ -45,14 +57,29 @@ namespace ADDON
 class CScraper;
 typedef boost::shared_ptr<CScraper> ScraperPtr;
 
-const CStdString TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
+CStdString TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
 CONTENT_TYPE TranslateContent(const CStdString &string);
 TYPE ScraperTypeFromContent(const CONTENT_TYPE &content);
+
+// thrown as exception to show error dialog
+class CScraperError
+{
+public:
+	CScraperError(const CStdString &sTitle, const CStdString &sMessage) :
+		m_sTitle(sTitle), m_sMessage(sMessage) {}
+
+	const CStdString &Title() const { return m_sTitle; }
+	const CStdString &Message() const { return m_sMessage; }
+
+private:
+	CStdString m_sTitle;
+	CStdString m_sMessage;
+};
 
 class CScraper : public CAddon
 {
 public:
-	CScraper(const AddonProps &props) : CAddon(props) { }
+	CScraper(const AddonProps &props) : CAddon(props), m_fLoaded(false) {}
 	CScraper(const cp_extension_t *ext);
 	virtual ~CScraper() {}
 	virtual AddonPtr Clone(const AddonPtr &self) const;
@@ -80,31 +107,48 @@ public:
 	 cachepersistence.
 	 */
 	void ClearCache();
-	bool Load();
 
 	CONTENT_TYPE Content() const { return m_pathContent; }
-	const CStdString& Framework() const { return m_framework; }
 	const CStdString& Language() const { return m_language; }
 	bool RequiresSettings() const { return m_requiressettings; }
 	bool Supports(const CONTENT_TYPE &content) const;
 
-	std::vector<CStdString> Run(const CStdString& function,
-															const CScraperUrl& url,
-															XFILE::CFileCurl& http,
-															const std::vector<CStdString>* extras=NULL);
-	CScraperParser& GetParser() { return m_parser; }
-
 	bool IsInUse() const;
+
+  // scraper media functions
+	CScraperUrl NfoUrl(const CStdString &sNfoContent);
+
+	std::vector<CScraperUrl> FindMovie(XFILE::CFileCurl &fcurl,
+		const CStdString &sMovie, bool fFirst);
+	std::vector<MUSIC_GRABBER::CMusicAlbumInfo> FindAlbum(XFILE::CFileCurl &fcurl,
+		const CStdString &sAlbum, const CStdString &sArtist = "");
+	std::vector<MUSIC_GRABBER::CMusicArtistInfo> FindArtist(
+		XFILE::CFileCurl &fcurl, const CStdString &sArtist);
+	EPISODELIST GetEpisodeList(XFILE::CFileCurl &fcurl, const CScraperUrl &scurl);
+
+	bool GetVideoDetails(XFILE::CFileCurl &fcurl, const CScraperUrl &scurl,
+		bool fMovie/*else episode*/, CVideoInfoTag &video);
+	bool GetAlbumDetails(XFILE::CFileCurl &fcurl, const CScraperUrl &scurl,
+		CAlbum &album);
+	bool GetArtistDetails(XFILE::CFileCurl &fcurl, const CScraperUrl &scurl,
+		const CStdString &sSearch, CArtist &artist);
 
 private:
 	CScraper(const CScraper&, const AddonPtr&);
+  CStdString SearchStringEncoding() const
+		{ return m_parser.GetSearchStringEncoding(); }
 
-	CStdString InternalRun(const CStdString& function,
-												 const CScraperUrl& url,
-												 XFILE::CFileCurl& http,
-												 const std::vector<CStdString>* extras);
+  bool Load();
+  std::vector<CStdString> Run(const CStdString& function,
+                              const CScraperUrl& url,
+                              XFILE::CFileCurl& http,
+                              const std::vector<CStdString>* extras = NULL);
+  CStdString InternalRun(const CStdString& function,
+                         const CScraperUrl& url,
+                         XFILE::CFileCurl& http,
+                         const std::vector<CStdString>* extras);
 
-	CStdString m_framework;
+	bool m_fLoaded;
 	CStdString m_language;
 	bool m_requiressettings;
 	CDateTimeSpan m_persistence;
