@@ -263,38 +263,11 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
 
   if (focused)
   {
-    if (!item->GetFocusedLayout())
-    {
-      CGUIListItemLayout *layout = new CGUIListItemLayout(*m_focusedLayout);
-      item->SetFocusedLayout(layout);
-    }
     if (item->GetFocusedLayout())
-    {
-      if (item != m_lastItem || !HasFocus())
-      {
-        item->GetFocusedLayout()->SetFocusedItem(0);
-      }
-      if (item != m_lastItem && HasFocus())
-      {
-        item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);
-        unsigned int subItem = 1;
-        if (m_lastItem && m_lastItem->GetFocusedLayout())
-          subItem = m_lastItem->GetFocusedLayout()->GetFocusedItem();
-        item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
-      }
       item->GetFocusedLayout()->Render(item, m_parentID);
-    }
-    m_lastItem = item;
   }
   else
   {
-    if (item->GetFocusedLayout())
-      item->GetFocusedLayout()->SetFocusedItem(0);  // focus is not set
-    if (!item->GetLayout())
-    {
-      CGUIListItemLayout *layout = new CGUIListItemLayout(*m_layout);
-      item->SetLayout(layout);
-    }
     if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
       item->GetFocusedLayout()->Render(item, m_parentID);
     else if (item->GetLayout())
