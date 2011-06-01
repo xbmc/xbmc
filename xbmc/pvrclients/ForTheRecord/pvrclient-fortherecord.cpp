@@ -587,6 +587,8 @@ PVR_ERROR cPVRClientForTheRecord::DeleteRecording(const PVR_RECORDING &recinfo)
   std::string jsonval = writer.write(recordingname);
   if (ForTheRecord::DeleteRecording(jsonval) >= 0) 
   {
+    // Trigger XBMC to update it's list
+    PVR->TriggerRecordingUpdate();
     return PVR_ERROR_NO_ERROR;
   }
   else
