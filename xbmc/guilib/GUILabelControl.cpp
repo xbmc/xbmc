@@ -140,6 +140,8 @@ void CGUILabelControl::SetLabel(const string &strLabel)
   m_infoLabel.SetLabel(strLabel, "");
   if (m_iCursorPos > (int)strLabel.size())
     m_iCursorPos = strLabel.size();
+
+  SetInvalid();
 }
 
 void CGUILabelControl::SetWidthControl(float minWidth, bool bScroll)
