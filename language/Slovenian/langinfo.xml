@@ -21,4 +21,11 @@
       <timezone>CEST</timezone>
     </region>
   </regions>
+
+  <sorttokens>
+    <token>The</token>
+    <token>Der</token>
+    <token>Die</token>
+    <token>Das</token>
+  </sorttokens>
 </language>
