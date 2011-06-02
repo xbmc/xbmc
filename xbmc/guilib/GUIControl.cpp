@@ -139,6 +139,8 @@ void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 // 3. reset the animation transform
 void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  CRect dirtyRegion = m_renderRegion;
+
   bool changed = m_bInvalidated;
 
   changed |= Animate(currentTime);
@@ -158,11 +160,8 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   if (changed)
   {
-    CRect currentRenderRegion = g_graphicsContext.generateAABB(GetRenderRegion());
-    CRect dirtyRegion = currentRenderRegion;
-    dirtyRegion.Union(m_previousDirtyRegion);
+    dirtyRegion.Union(m_renderRegion);
     dirtyregions.push_back(dirtyRegion);
-    m_previousDirtyRegion = currentRenderRegion;
   }
 
   if (m_hasCamera)
@@ -175,6 +174,8 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
 void CGUIControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  // update our render region
+  m_renderRegion = g_graphicsContext.generateAABB(CalcRenderRegion());
 }
 
 // the main render routine.
@@ -502,7 +503,7 @@ void CGUIControl::MarkDirtyRegion()
   m_controlIsDirty = true;
 }
 
-CRect CGUIControl::GetRenderRegion() const
+CRect CGUIControl::CalcRenderRegion() const
 {
   CPoint tl(GetXPosition(), GetYPosition());
   CPoint br(tl.x + GetWidth(), tl.y + GetHeight());

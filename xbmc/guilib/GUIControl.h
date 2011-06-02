@@ -165,7 +165,14 @@ public:
   virtual float GetHeight() const;
 
   void MarkDirtyRegion();
-  virtual CRect GetRenderRegion() const;
+
+  /*! \brief return the render region in screen coordinates of this control
+   */
+  const CRect &GetRenderRegion() const { return m_renderRegion; };
+  /*! \brief calculate the render region in parentcontrol coordinates of this control
+   Called during process to update m_renderRegion
+   */
+  virtual CRect CalcRenderRegion() const;
 
   virtual void SetNavigation(int up, int down, int left, int right);
   virtual void SetTabNavigation(int next, int prev);
@@ -347,7 +354,7 @@ protected:
   TransformMatrix m_cachedTransform; // Contains the absolute transform the control
 
   bool  m_controlIsDirty;
-  CRect m_previousDirtyRegion;
+  CRect m_renderRegion;         // In screen coordinates
 };
 
 #endif
