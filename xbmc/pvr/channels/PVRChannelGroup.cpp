@@ -920,7 +920,6 @@ void CPVRChannelGroup::Notify(const Observable &obs, const CStdString& msg)
     CSingleLock lock(m_critSection);
     bool bUsingBackendChannelOrder   = g_guiSettings.GetBool("pvrmanager.backendchannelorder");
     bool bUsingBackendChannelNumbers = g_guiSettings.GetBool("pvrmanager.usebackendchannelnumbers");
-    bool bChannelOrderChanged        = m_bUsingBackendChannelOrder != bUsingBackendChannelNumbers;
     bool bChannelNumbersChanged      = m_bUsingBackendChannelNumbers != bUsingBackendChannelNumbers;
 
     m_bUsingBackendChannelOrder   = bUsingBackendChannelOrder;

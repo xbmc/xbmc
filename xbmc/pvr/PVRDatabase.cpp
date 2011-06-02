@@ -489,7 +489,18 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
   CStdString strWhereClause = FormatSQL("idChannel IN (SELECT map_channelgroups_channels.idChannel FROM map_channelgroups_channels LEFT JOIN channels on map_channelgroups_channels.idChannel = channels.idChannel WHERE channels.idChannel IS NULL)");
   bDelete = DeleteValues("map_channelgroups_channels", strWhereClause);
 
-  strWhereClause = FormatSQL("idGroup = %u AND iChannelNumber > %u", group.GroupID(), group.size());
+  if (group.size() > 0)
+  {
+    CStdString strTmpChannels;
+    for (unsigned int iChannelPtr = 0; iChannelPtr < group.size(); iChannelPtr++)
+      strTmpChannels.AppendFormat(", %d", group.at(iChannelPtr).iChannelNumber);
+    strTmpChannels = strTmpChannels.Right(strTmpChannels.length() - 2);
+
+    strWhereClause = FormatSQL("idGroup = %u AND iChannelNumber NOT IN (%s)", group.GroupID(), strTmpChannels.c_str());
+  }
+  else
+    strWhereClause = FormatSQL("idGroup = %u", group.GroupID());
+
   return bDelete && DeleteValues("map_channelgroups_channels", strWhereClause);
 }
 
@@ -629,8 +640,8 @@ bool CPVRDatabase::Persist(CPVRChannelGroup &group)
 
 bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
 {
-	bool bReturn = false;
-	bool bRemoveChannels = false;
+  bool bReturn = false;
+  bool bRemoveChannels = false;
   CStdString strQuery;
   CSingleLock lock(group.m_critSection);
 
@@ -641,10 +652,11 @@ bool CPVRDatabase::PersistGroupMembers(CPVRChannelGroup &group)
       PVRChannelGroupMember member = group.at(iChannelPtr);
 
       CStdString strWhereClause = FormatSQL("idChannel = %u AND idGroup = %u AND iChannelNumber = %u",
-      		member.channel->ChannelID(), group.GroupID(), member.iChannelNumber);
+          member.channel->ChannelID(), group.GroupID(), member.iChannelNumber);
 
       CStdString strValue = GetSingleValue("map_channelgroups_channels", "idChannel", strWhereClause);
-      if (strValue.IsEmpty()) {
+      if (strValue.IsEmpty())
+      {
         strQuery = FormatSQL("REPLACE INTO map_channelgroups_channels ("
             "idGroup, idChannel, iChannelNumber) "
             "VALUES (%i, %i, %i);",
