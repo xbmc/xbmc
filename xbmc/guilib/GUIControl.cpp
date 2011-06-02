@@ -449,7 +449,11 @@ bool CGUIControl::IsDisabled() const
 
 void CGUIControl::SetEnabled(bool bEnable)
 {
-  m_enabled = bEnable;
+  if (bEnable != m_enabled)
+  {
+    m_enabled = bEnable;
+    SetInvalid();
+  }
 }
 
 void CGUIControl::SetEnableCondition(int condition)
