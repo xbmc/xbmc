@@ -113,6 +113,9 @@
     <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\WaitEvent.cpp">
       <Filter>Source Files\tsreader</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\activerecording.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\channel.h">
@@ -195,6 +198,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\WaitEvent.h">
       <Filter>Header Files\tsreader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\activerecording.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

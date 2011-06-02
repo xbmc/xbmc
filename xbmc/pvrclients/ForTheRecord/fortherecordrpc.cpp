@@ -676,8 +676,8 @@ namespace ForTheRecord
 
     XBMC->Log(LOG_DEBUG, "GetUpcomingPrograms");
 
-    // http://madcat:49943/ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=false
-    retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=false", "", response);
+    // http://madcat:49943/ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=true
+    retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=true", "", response);
 
     if(retval >= 0)
     {           
@@ -699,6 +699,39 @@ namespace ForTheRecord
 
     return retval;
   }
+
+    /**
+   * \brief Fetch the list of currently active recordings
+   */
+  int GetActiveRecordings(Json::Value& response)
+  {
+    int retval = -1;
+
+    XBMC->Log(LOG_DEBUG, "GetActiveRecordings");
+
+    retval = ForTheRecordJSONRPC("ForTheRecord/Control/ActiveRecordings", "", response);
+
+    if(retval >= 0)
+    {           
+      if( response.type() == Json::arrayValue)
+      {
+        int size = response.size();
+        return size;
+      }
+      else
+      {
+        XBMC->Log(LOG_DEBUG, "Unknown response format. Expected Json::arrayValue\n");
+        return -1;
+      }
+    }
+    else
+    {
+      XBMC->Log(LOG_DEBUG, "GetActiveRecordings failed. Return value: %i\n", retval);
+    }
+
+    return retval;
+  }
+
 
   /**
    * \brief Cancel an upcoming program
@@ -733,13 +766,12 @@ namespace ForTheRecord
   /**
    * \brief Add a xbmc timer as a one time schedule
    */
-  int AddOneTimeSchedule(const std::string& channelid, const time_t starttime, const std::string& title, int prerecordseconds, int postrecordseconds)
+  int AddOneTimeSchedule(const std::string& channelid, const time_t starttime, const std::string& title, int prerecordseconds, int postrecordseconds, Json::Value& response)
   {
     int retval = -1;
-    Json::Value response;
-
+  
     XBMC->Log(LOG_DEBUG, "AddOneTimeSchedule");
-    struct tm* convert = gmtime(&starttime);
+    struct tm* convert = localtime(&starttime);
     struct tm tm_start = *convert;
 
     // Format: ForTheRecord/Scheduler/SaveSchedule
@@ -761,10 +793,78 @@ namespace ForTheRecord
 
     retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/SaveSchedule", arguments, response);
 
-    if (retval < 0)
+    if(retval >= 0)
+    {           
+      if( response.type() != Json::objectValue)
+      {
+        XBMC->Log(LOG_DEBUG, "Unknown response format. Expected Json::objectValue\n");
+        return -1;
+      }
+    }
+    else
     {
       XBMC->Log(LOG_DEBUG, "AddOneTimeSchedule failed. Return value: %i\n", retval);
     }
+
+    return retval;
+  }
+
+  /**
+   * \brief Delete a ForTheRecord schedule
+   */
+  int DeleteSchedule(const std::string& scheduleid)
+  {
+    int retval = -1;
+    std::string response;
+
+    XBMC->Log(LOG_DEBUG, "DeleteSchedule");
+
+    //Format: ForTheRecord/Scheduler/DeleteSchedule/d21ec04f-22e0-4bf8-accf-317ecc0fb0f9
+    char command[256];
+    snprintf(command, 256, "ForTheRecord/Scheduler/DeleteSchedule/%s" , scheduleid.c_str());
+    retval = ForTheRecordRPC(command, "", response);
+
+    if (retval < 0)
+    {
+      XBMC->Log(LOG_DEBUG, "DeleteSchedule failed. Return value: %i\n", retval);
+    }
+
+    return retval;
+  }
+
+  /**
+   * \brief Get the upcoming programs for a given schedule
+   */
+  int GetUpcomingProgramsForSchedule(const Json::Value& schedule, Json::Value& response)
+  {
+    int retval = -1;
+
+    XBMC->Log(LOG_DEBUG, "GetUpcomingProgramsForSchedule");
+
+    char arguments[1024];
+    Json::FastWriter writer;
+    snprintf( arguments, sizeof(arguments), "{\"IncludeCancelled\":true,\"Schedule\":%s}", writer.write(schedule).c_str());
+
+    retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/UpcomingProgramsForSchedule", arguments, response);
+
+    if(retval >= 0)
+    {           
+      if( response.type() == Json::arrayValue)
+      {
+        int size = response.size();
+        return size;
+      }
+      else
+      {
+        XBMC->Log(LOG_DEBUG, "Unknown response format. Expected Json::arrayValue\n");
+        return -1;
+      }
+    }
+    else
+    {
+      XBMC->Log(LOG_DEBUG, "GetUpcomingProgramsForSchedule failed. Return value: %i\n", retval);
+    }
+
     return retval;
   }
 

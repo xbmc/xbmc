@@ -170,6 +170,11 @@ namespace ForTheRecord
   int GetUpcomingPrograms(Json::Value& response);
 
   /**
+   * \brief Fetch the list of currently active recordings
+   */
+  int GetActiveRecordings(Json::Value& response);
+
+  /**
    * \brief Cancel an upcoming program
    */
   int CancelUpcomingProgram(const std::string& scheduleid, const std::string& channelid, const time_t starttime, const std::string& upcomingprogramid);
@@ -177,7 +182,17 @@ namespace ForTheRecord
   /**
    * \brief Add a xbmc timer as a one time schedule
    */
-  int AddOneTimeSchedule(const std::string& channelid, const time_t starttime, const std::string& title, int prerecordseconds, int postrecordseconds);
+  int AddOneTimeSchedule(const std::string& channelid, const time_t starttime, const std::string& title, int prerecordseconds, int postrecordseconds, Json::Value& response);
+
+  /**
+   * \brief Delete a ForTheRecord schedule
+   */
+  int DeleteSchedule(const std::string& scheduleid);
+
+  /**
+   * \brief Get the upcoming programs for a given schedule
+   */
+  int GetUpcomingProgramsForSchedule(const Json::Value& schedule, Json::Value& response);
 
   /*
    * \brief Get the list with TV channel groups from 4TR

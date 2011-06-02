@@ -127,6 +127,7 @@
     <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\TSReader.cpp" />
     <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\TSThread.cpp" />
     <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\WaitEvent.cpp" />
+    <ClCompile Include="..\..\activerecording.cpp" />
     <ClCompile Include="..\..\channel.cpp" />
     <ClCompile Include="..\..\client.cpp" />
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\TSReader.h" />
     <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\TSThread.h" />
     <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\WaitEvent.h" />
+    <ClInclude Include="..\..\activerecording.h" />
     <ClInclude Include="..\..\channel.h" />
     <ClInclude Include="..\..\client.h" />
     <ClInclude Include="..\..\epg.h" />

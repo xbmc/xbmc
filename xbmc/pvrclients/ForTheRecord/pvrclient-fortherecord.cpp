@@ -19,6 +19,7 @@
 #include "client.h"
 //#include "timers.h"
 #include "channel.h"
+#include "activerecording.h"
 #include "upcomingrecording.h"
 #include "recordinggroup.h"
 #include "recordingsummary.h"
@@ -586,6 +587,8 @@ PVR_ERROR cPVRClientForTheRecord::DeleteRecording(const PVR_RECORDING &recinfo)
   std::string jsonval = writer.write(recordingname);
   if (ForTheRecord::DeleteRecording(jsonval) >= 0) 
   {
+    // Trigger XBMC to update it's list
+    PVR->TriggerRecordingUpdate();
     return PVR_ERROR_NO_ERROR;
   }
   else
@@ -621,42 +624,75 @@ int cPVRClientForTheRecord::GetNumTimers(void)
 
 PVR_ERROR cPVRClientForTheRecord::GetTimers(PVR_HANDLE handle)
 {
-  Json::Value response;
+  Json::Value activeRecordingsResponse, upcomingProgramsResponse;
   int         iNumberOfTimers = 0;
   PVR_TIMER   tag;
   int         numberoftimers;
 
   XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
+  
+  // retrieve the currently active recordings
+  int retval = ForTheRecord::GetActiveRecordings(activeRecordingsResponse);
 
   // pick up the upcoming recordings
-  int retval = ForTheRecord::GetUpcomingPrograms(response);
+  retval = ForTheRecord::GetUpcomingPrograms(upcomingProgramsResponse);
   if (retval < 0) 
   {
     return PVR_ERROR_SERVER_ERROR;
   }
 
   memset(&tag, 0 , sizeof(tag));
-  numberoftimers = response.size();
+  numberoftimers = upcomingProgramsResponse.size();
 
   for (int i = 0; i < numberoftimers; i++)
   {
     cUpcomingRecording upcomingrecording;
-    if (upcomingrecording.Parse(response[i]))
+    if (upcomingrecording.Parse(upcomingProgramsResponse[i]))
     {
       tag.iClientIndex      = iNumberOfTimers;
       cChannel* pChannel    = FetchChannel(upcomingrecording.ChannelId());
       tag.iClientChannelUid = pChannel->ID();
-      tag.firstDay          = 0;
-      tag.iMarginStart      = upcomingrecording.PreRecordSeconds() / 60;
-      tag.iMarginEnd        = upcomingrecording.PostRecordSeconds() / 60;
       tag.startTime         = upcomingrecording.StartTime();
       tag.endTime           = upcomingrecording.StopTime();
+      // build the XBMC PVR State
+      if (upcomingrecording.IsCancelled())
+      {
+        tag.state             = PVR_TIMER_STATE_CANCELLED;
+      }
+      else
+      {
+        tag.state             = PVR_TIMER_STATE_SCHEDULED;
+        if (activeRecordingsResponse.size() > 0)
+        {
+          // Is the this upcoming program in the list of active recordings?
+          for (Json::Value::UInt j = 0; j < activeRecordingsResponse.size(); j++)
+          {
+            cActiveRecording activerecording;
+            if (activerecording.Parse(activeRecordingsResponse[j]))
+            {
+              if (upcomingrecording.UpcomingProgramId() == activerecording.UpcomingProgramId())
+              {
+                tag.state = PVR_TIMER_STATE_RECORDING;
+                break;
+              }
+            }
+          }
+        }
+      }
+
       tag.strTitle          = upcomingrecording.Title().c_str();
       tag.strDirectory      = "";
+      tag.strSummary        = "";
       tag.iPriority         = 0;
       tag.iLifetime         = 0;
       tag.bIsRepeating      = false;
+      tag.firstDay          = 0;
       tag.iWeekdays         = 0;
+      tag.iEpgUid           = 0;
+      tag.iMarginStart      = upcomingrecording.PreRecordSeconds() / 60;
+      tag.iMarginEnd        = upcomingrecording.PostRecordSeconds() / 60;
+      tag.iGenreType        = 0;
+      tag.iGenreSubType     = 0;
 
       PVR->TransferTimerEntry(handle, &tag);
       iNumberOfTimers++;
@@ -675,16 +711,34 @@ PVR_ERROR cPVRClientForTheRecord::AddTimer(const PVR_TIMER &timerinfo)
 {
   XBMC->Log(LOG_DEBUG, "AddTimer()");
 
-  // re-synthesize the FTR startime, stoptime and channel GUID
-  time_t starttime = timerinfo.startTime;
+  // re-synthesize the FTR channel GUID
   cChannel* pChannel = FetchChannel(timerinfo.iClientChannelUid);
 
-  int retval = ForTheRecord::AddOneTimeSchedule(pChannel->Guid(), starttime, timerinfo.strTitle, timerinfo.iMarginStart * 60, timerinfo.iMarginEnd * 60);
+  Json::Value addScheduleResponse;
+  int retval = ForTheRecord::AddOneTimeSchedule(pChannel->Guid(), timerinfo.startTime, timerinfo.strTitle, timerinfo.iMarginStart * 60, timerinfo.iMarginEnd * 60, addScheduleResponse);
   if (retval < 0) 
   {
     return PVR_ERROR_SERVER_ERROR;
   }
 
+  std::string scheduleid = addScheduleResponse["ScheduleId"].asString();
+
+  // Ok, we created a schedule, but did that lead to an upcoming recording?
+  Json::Value upcomingProgramsResponse;
+  retval = ForTheRecord::GetUpcomingProgramsForSchedule(addScheduleResponse, upcomingProgramsResponse);
+
+  // We should have at least one upcoming program for this schedule, otherwise nothing will be recorded
+  if (retval <= 0)
+  {
+    // remove the added (now stale) schedule, ignore failure (what are we to do anyway?)
+    ForTheRecord::DeleteSchedule(scheduleid);
+
+    // TODO: remove the added (now stale) schedule and add a manual recording
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
+  // Trigger an update of the PVR timers
+  PVR->TriggerTimerUpdate();
   return PVR_ERROR_NO_ERROR;
 }
 
