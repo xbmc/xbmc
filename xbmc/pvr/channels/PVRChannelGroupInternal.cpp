@@ -69,7 +69,7 @@ void CPVRChannelGroupInternal::UpdateChannelPaths(void)
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
     PVRChannelGroupMember member = at(iChannelPtr);
-    member.channel->UpdatePath(member.iChannelNumber);
+    member.channel->UpdatePath(iChannelPtr);
   }
 }
 
@@ -265,20 +265,15 @@ int CPVRChannelGroupInternal::LoadFromClients(void)
 
 void CPVRChannelGroupInternal::Renumber(void)
 {
-  int iChannelNumber = 0;
+  CPVRChannelGroup::Renumber();
+
   m_iHiddenChannels = 0;
-  for (unsigned int ptr = 0; ptr < size();  ptr++)
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size();  iChannelPtr++)
   {
-    if (at(ptr).channel->IsHidden())
-    {
-      at(ptr).iChannelNumber = 0;
+    if (at(iChannelPtr).channel->IsHidden())
       m_iHiddenChannels++;
-    }
     else
-    {
-      at(ptr).iChannelNumber = ++iChannelNumber;
-      at(ptr).channel->UpdatePath(iChannelNumber);
-    }
+      at(iChannelPtr).channel->UpdatePath(iChannelPtr);
   }
 }
 

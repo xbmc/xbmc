@@ -153,7 +153,7 @@ bool CPVRChannelGroupsContainer::GetGroupsDirectory(const CStdString &strBase, C
 const CPVRChannel *CPVRChannelGroupsContainer::GetByPath(const CStdString &strPath)
 {
   const CPVRChannelGroup *channels = NULL;
-  int iChannelNumber = -1;
+  int iChannelIndex(-1);
 
   /* get the filename from curl */
   CURL url(strPath);
@@ -173,13 +173,13 @@ const CPVRChannel *CPVRChannelGroupsContainer::GetByPath(const CStdString &strPa
       {
         strFileName.erase(0, strCheckPath.length());
         channels = group;
-        iChannelNumber = atoi(strFileName.c_str());
+        iChannelIndex = atoi(strFileName.c_str());
         break;
       }
     }
   }
 
-  return channels ? channels->GetByChannelNumber(iChannelNumber) : NULL;
+  return channels ? channels->GetByIndex(iChannelIndex) : NULL;
 }
 
 bool CPVRChannelGroupsContainer::GetDirectory(const CStdString& strPath, CFileItemList &results)

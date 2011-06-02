@@ -1801,7 +1801,7 @@
   <string id="19230">Deaktiviere EPG Aktualisierungen während der TV Wiedergabe</string>
   <string id="19231">Immer die Kanalreihenfolge der Backends verwenden</string>
   <string id="19233">Zeige eine Benachrichtigung bei Timer Aktualisierungen</string>
-
+  <string id="19234">Verwenden Backend Kanal Nummerierung (funktioniert nur mit 1 aktiv PVR Addons)</string>
 
   <string id="19499">Andere/Unbekannt</string>
   <string id="19500">Movie/Drama</string>
