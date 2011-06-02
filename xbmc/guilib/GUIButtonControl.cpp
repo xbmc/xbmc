@@ -68,10 +68,9 @@ void CGUIButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
 
       alphaChannel += 192;
       alphaChannel = (unsigned int)((float)m_alpha * (float)alphaChannel / 255.0f);
-
-      if (m_imgFocus.SetAlpha((unsigned char)alphaChannel))
-        MarkDirtyRegion();
     }
+    if (m_imgFocus.SetAlpha((unsigned char)alphaChannel))
+      MarkDirtyRegion();
 
     m_imgFocus.SetVisible(true);
     m_imgNoFocus.SetVisible(false);
@@ -209,11 +208,13 @@ void CGUIButtonControl::SetInvalid()
 void CGUIButtonControl::SetLabel(const string &label)
 { // NOTE: No fallback for buttons at this point
   m_info.SetLabel(label, "");
+  SetInvalid();
 }
 
 void CGUIButtonControl::SetLabel2(const string &label2)
 { // NOTE: No fallback for buttons at this point
   m_info2.SetLabel(label2, "");
+  SetInvalid();
 }
 
 void CGUIButtonControl::SetPosition(float posX, float posY)
