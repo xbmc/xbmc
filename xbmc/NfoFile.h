@@ -33,15 +33,12 @@
 #include "addons/Scraper.h"
 #include "utils/CharsetConverter.h"
 
-class CVideoInfoTag;
-class CScraperParser;
-class CScraperUrl;
-
 class CNfoFile
 {
 public:
-  CNfoFile();
-  virtual ~CNfoFile();
+	CNfoFile() : m_doc(NULL), m_headofdoc(NULL) {}
+	virtual ~CNfoFile() { Close(); }
+
   enum NFOResult
   {
     NO_NFO       = 0,
@@ -70,21 +67,20 @@ public:
     return details.Load(doc.RootElement(),true);
   }
 
-  CStdString m_strImDbUrl;
-  CStdString m_strImDbNr;
   void Close();
   void SetScraperInfo(const ADDON::ScraperPtr& info) { m_info = info; }
   const ADDON::ScraperPtr& GetScraperInfo() const { return m_info; }
-private:
-  int Load(const CStdString&);
-  int Scrape(ADDON::ScraperPtr& scraper, const CStdString& strURL="");
+	const CScraperUrl &ScraperUrl() const { return m_scurl; }
+
 private:
   char* m_doc;
   char* m_headofdoc;
-  int m_size;
   ADDON::ScraperPtr m_info;
-  ADDON::TYPE       m_type;
-  bool DoScrape(ADDON::ScraperPtr& scraper);
+	ADDON::TYPE m_type;
+	CScraperUrl m_scurl;
+
+  int Load(const CStdString&);
+	int Scrape(ADDON::ScraperPtr& scraper);
   void AddScrapers(ADDON::VECADDONS& addons,
                    std::vector<ADDON::ScraperPtr>& vecScrapers);
 };
