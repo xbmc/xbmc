@@ -99,14 +99,17 @@ void CGUIControlGroup::Process(unsigned int currentTime, CDirtyRegionList &dirty
   CPoint pos(GetPosition());
   g_graphicsContext.SetOrigin(pos.x, pos.y);
 
+  CRect rect;
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *control = *it;
     control->DoProcess(currentTime, dirtyregions);
+    rect.Union(control->GetRenderRegion());
   }
 
   g_graphicsContext.RestoreOrigin();
   CGUIControl::Process(currentTime, dirtyregions);
+  m_renderRegion = rect;
 }
 
 void CGUIControlGroup::Render()
