@@ -266,12 +266,9 @@ bool CJSONServiceDescription::prepareDescription(std::string &description, CVari
     return false;
   }
 
-  if (name.empty())
-  {
-    CVariant::const_iterator_map member = descriptionObject.begin_map();
-    if (member != descriptionObject.end_map())
-      name = member->first;
-  }
+  CVariant::const_iterator_map member = descriptionObject.begin_map();
+  if (member != descriptionObject.end_map())
+    name = member->first;
 
   if (name.empty() || !descriptionObject[name].isMember("type") || !descriptionObject[name]["type"].isString())
   {
@@ -282,40 +279,10 @@ bool CJSONServiceDescription::prepareDescription(std::string &description, CVari
   return true;
 }
 
-bool CJSONServiceDescription::AddType(std::string jsonType, std::string typeName /* = "" */)
+bool CJSONServiceDescription::addMethod(std::string &jsonMethod, MethodCall method)
 {
   CVariant descriptionObject;
-
-  if (!prepareDescription(jsonType, descriptionObject, typeName))
-  {
-    CLog::Log(LOGERROR, "JSONRPC: Invalid JSON Schema definition for type \"%s\"", typeName.c_str());
-    return false;
-  }
-
-  if (m_types.find(typeName) != m_types.end())
-  {
-    CLog::Log(LOGERROR, "JSONRPC: There already is a type with the name \"%s\"", typeName.c_str());
-    return false;
-  }
-
-  // Make sure the "id" attribute is correctly populated
-  descriptionObject[typeName]["id"] = typeName;
-
-  JSONSchemaTypeDefinition globalType;
-  globalType.name = typeName;
-
-  if (!parseTypeDefinition(descriptionObject[typeName], globalType, false))
-  {
-    CLog::Log(LOGERROR, "JSONRPC: Could not parse type \"%s\"", typeName.c_str());
-    return false;
-  }
-
-  return true;
-}
-
-bool CJSONServiceDescription::AddMethod(std::string jsonMethod, MethodCall method /* = NULL */, std::string methodName /* = "" */)
-{
-  CVariant descriptionObject;
+  std::string methodName;
 
   // Make sure the method description actually exists and represents an object
   if (!prepareDescription(jsonMethod, descriptionObject, methodName))
@@ -371,9 +338,58 @@ bool CJSONServiceDescription::AddMethod(std::string jsonMethod, MethodCall metho
   return true;
 }
 
-bool CJSONServiceDescription::AddNotification(std::string jsonNotification, std::string notificationName /* = "" */)
+bool CJSONServiceDescription::AddType(std::string jsonType)
 {
   CVariant descriptionObject;
+  std::string typeName;
+
+  if (!prepareDescription(jsonType, descriptionObject, typeName))
+  {
+    CLog::Log(LOGERROR, "JSONRPC: Invalid JSON Schema definition for type \"%s\"", typeName.c_str());
+    return false;
+  }
+
+  if (m_types.find(typeName) != m_types.end())
+  {
+    CLog::Log(LOGERROR, "JSONRPC: There already is a type with the name \"%s\"", typeName.c_str());
+    return false;
+  }
+
+  // Make sure the "id" attribute is correctly populated
+  descriptionObject[typeName]["id"] = typeName;
+
+  JSONSchemaTypeDefinition globalType;
+  globalType.name = typeName;
+
+  if (!parseTypeDefinition(descriptionObject[typeName], globalType, false))
+  {
+    CLog::Log(LOGERROR, "JSONRPC: Could not parse type \"%s\"", typeName.c_str());
+    return false;
+  }
+
+  return true;
+}
+
+bool CJSONServiceDescription::AddMethod(std::string jsonMethod, MethodCall method)
+{
+  if (method == NULL)
+  {
+    CLog::Log(LOGERROR, "JSONRPC: Invalid JSONRPC method implementation");
+    return false;
+  }
+
+  return addMethod(jsonMethod, method);
+}
+
+bool CJSONServiceDescription::AddBuiltinMethod(std::string jsonMethod)
+{
+  return addMethod(jsonMethod, NULL);
+}
+
+bool CJSONServiceDescription::AddNotification(std::string jsonNotification)
+{
+  CVariant descriptionObject;
+  std::string notificationName;
 
   // Make sure the notification description actually exists and represents an object
   if (!prepareDescription(jsonNotification, descriptionObject, notificationName))

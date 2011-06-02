@@ -47,7 +47,7 @@ void CJSONRPC::Initialize()
   size = sizeof(JSONRPC_SERVICE_METHODS) / sizeof(char*);
 
   for (unsigned int index = 0; index < size; index++)
-    CJSONServiceDescription::AddMethod(JSONRPC_SERVICE_METHODS[index]);
+    CJSONServiceDescription::AddBuiltinMethod(JSONRPC_SERVICE_METHODS[index]);
 
   size = sizeof(JSONRPC_SERVICE_NOTIFICATIONS) / sizeof(char*);
 

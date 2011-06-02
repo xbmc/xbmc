@@ -247,29 +247,34 @@ namespace JSONRPC
      \brief Parses the given json schema description and evaluates
      and stores the defined type
      \param jsonType json schema description to parse
-     \param typeName optional name of the type (if not defined in the json schema description)
      \return True if the json schema description has been parsed sucessfully otherwise false
      */
-    static bool AddType(std::string jsonType, std::string typeName = "");
+    static bool AddType(std::string jsonType);
 
     /*!
      \brief Parses the given json schema description and evaluates
      and stores the defined method
      \param jsonMethod json schema description to parse
-     \param method optional pointer to the implementation (if not part of the standard methods)
-     \param methodName optional name of the method (if not defined in the json schema description)
+     \param method pointer to the implementation
      \return True if the json schema description has been parsed sucessfully otherwise false
      */
-    static bool AddMethod(std::string jsonMethod, MethodCall method = NULL, std::string methodName = "");
+    static bool AddMethod(std::string jsonMethod, MethodCall method);
+
+    /*!
+     \brief Parses the given json schema description and evaluates
+     and stores the defined builtin method
+     \param jsonMethod json schema description to parse
+     \return True if the json schema description has been parsed sucessfully otherwise false
+     */
+    static bool AddBuiltinMethod(std::string jsonMethod);
 
     /*!
      \brief Parses the given json schema description and evaluates
      and stores the defined notification
      \param jsonNotification json schema description to parse
-     \param notificationName optional name of the notification (if not defined in the json schema description)
      \return True if the json schema description has been parsed sucessfully otherwise false
      */
-    static bool AddNotification(std::string jsonNotification, std::string notificationName = "");
+    static bool AddNotification(std::string jsonNotification);
 
     /*!
      \brief Gets the version of the json
@@ -309,6 +314,7 @@ namespace JSONRPC
 
   private:
     static bool prepareDescription(std::string &description, CVariant &descriptionObject, std::string &name);
+    static bool addMethod(std::string &jsonMethod, MethodCall method);
     static void printType(const JSONSchemaTypeDefinition &type, bool isParameter, bool isGlobal, bool printDefault, bool printDescriptions, CVariant &output);
     static JSON_STATUS checkParameter(const CVariant &requestParameters, const JSONSchemaTypeDefinition &type, unsigned int position, CVariant &outputParameters, unsigned int &handled, CVariant &errorData);
     static JSON_STATUS checkType(const CVariant &value, const JSONSchemaTypeDefinition &type, CVariant &outputValue, CVariant &errorData);
