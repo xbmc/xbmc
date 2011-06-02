@@ -181,6 +181,12 @@ bool CPVRClients::AllClientsLoaded(void) const
   return m_bAllClientsLoaded;
 }
 
+int CPVRClients::GetActiveClientsAmount(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_clientMap.size();
+}
+
 bool CPVRClients::HasClients(void) const
 {
   CSingleLock lock(m_critSection);

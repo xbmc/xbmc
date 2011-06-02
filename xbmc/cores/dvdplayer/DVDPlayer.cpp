@@ -66,6 +66,7 @@
 #include "utils/StreamDetails.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/windows/GUIWindowPVR.h"
 #include "filesystem/PVRFile.h"
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogBusy.h"
@@ -2085,10 +2086,20 @@ void CDVDPlayer::HandleMessages()
         if(m_pDemuxer)
           m_pDemuxer->SetSpeed(speed);
       }
-      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
+      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) == 0)
       {
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
         if(input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
+        {
+          FlushBuffers(false);
+          SAFE_DELETE(m_pDemuxer);
+          SetCaching(CACHESTATE_PVR);
+        }
+      }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
+      {
+        CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+        if(input && input->SelectChannel(static_cast<CDVDMsgType <CPVRChannel> *>(pMsg)->m_value))
         {
           FlushBuffers(false);
           SAFE_DELETE(m_pDemuxer);
@@ -2112,12 +2123,7 @@ void CDVDPlayer::HandleMessages()
           {
             if (bShowPreview)
             {
-              CFileItem item(g_application.CurrentFileItem());
-              if(input->UpdateItem(item))
-              {
-                g_application.CurrentFileItem() = item;
-                g_infoManager.SetCurrentItem(item);
-              }
+              UpdateApplication(0);
               m_ChannelEntryTimeOut = CTimeUtils::GetTimeMS();
             }
             else
@@ -3416,7 +3422,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       {
         // Offset from key codes back to button number
         int channel = action.GetAmount();
-        m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
+        m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER, channel));
         g_infoManager.SetDisplayAfterSeek();
         ShowPVRChannelInfo();
         return true;
@@ -3832,4 +3838,17 @@ CStdString CDVDPlayer::GetPlayingTitle()
     return ttcache->line30;
 
   return "";
+}
+
+bool CDVDPlayer::SwitchChannel(const CPVRChannel &channel)
+{
+  g_PVRManager.PerformChannelSwitch(channel, true);
+  UpdateApplication(0);
+  UpdatePlayState(0);
+  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
+  if (pWindow)
+    pWindow->SetInvalid();
+
+  m_messenger.Put(new CDVDMsgType<CPVRChannel>(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
+  return true;
 }

@@ -3266,7 +3266,7 @@ bool CApplication::Cleanup()
     g_windowManager.Remove(WINDOW_SETTINGS_MYVIDEOS);
     g_windowManager.Remove(WINDOW_SETTINGS_NETWORK);
     g_windowManager.Remove(WINDOW_SETTINGS_APPEARANCE);
-    g_windowManager.Remove(WINDOW_SETTINGS_MYTV);
+    g_windowManager.Remove(WINDOW_SETTINGS_MYPVR);
     g_windowManager.Remove(WINDOW_DIALOG_KAI_TOAST);
 
     g_windowManager.Remove(WINDOW_DIALOG_SEEK_BAR);

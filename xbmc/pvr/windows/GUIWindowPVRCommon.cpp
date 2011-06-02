@@ -656,8 +656,16 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
   }
   else
   {
-    /* Play Live TV */
-    if (!g_application.PlayFile(*item, false))
+    bool bSwitchSuccessful(false);
+
+    /* try a fast switch */
+    if (item->IsPVRChannel() && (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()))
+      bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(*item->GetPVRChannelInfoTag());
+
+    if (!bSwitchSuccessful)
+      bSwitchSuccessful = g_application.PlayFile(*item, false);
+
+    if (!bSwitchSuccessful)
     {
       CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
       return false;

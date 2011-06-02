@@ -1637,6 +1637,7 @@
   <string id="19231">Gebruik altijd de volgorde van kanalen van backend(s)</string>
   <string id="19232">Zoekresultaten wissen</string>
   <string id="19233">Toon een melding bij timer updates</string>
+  <string id="19234">Gebruik kanaalnummers van de backend (werkt alleen als 1 PVR addon actief is)</string>
 
   <string id="19499">Anders/Onbekend</string>
   <string id="19500">Film/Drama</string>

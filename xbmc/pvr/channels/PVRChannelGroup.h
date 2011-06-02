@@ -51,13 +51,14 @@ namespace PVR
     friend class CPVRDatabase;
 
   private:
-    bool             m_bRadio;                    /*!< true if this container holds radio channels, false if it holds TV channels */
-    int              m_iGroupId;                  /*!< The ID of this group in the database */
-    CStdString       m_strGroupName;              /*!< The name of this group */
-    int              m_iSortOrder;                /*!< The sort order to use */
-    bool             m_bLoaded;                   /*!< True if this container is loaded, false otherwise */
-    bool             m_bChanged;                  /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
-    bool             m_bUsingBackendChannelOrder; /*!< true to use the channel order from backends, false otherwise */
+    bool             m_bRadio;                      /*!< true if this container holds radio channels, false if it holds TV channels */
+    int              m_iGroupId;                    /*!< The ID of this group in the database */
+    CStdString       m_strGroupName;                /*!< The name of this group */
+    int              m_iSortOrder;                  /*!< The sort order to use */
+    bool             m_bLoaded;                     /*!< True if this container is loaded, false otherwise */
+    bool             m_bChanged;                    /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
+    bool             m_bUsingBackendChannelOrder;   /*!< true to use the channel order from backends, false otherwise */
+    bool             m_bUsingBackendChannelNumbers; /*!< true to use the channel numbers from 1 backend, false otherwise */
     CCriticalSection m_critSection;
 
     /*!
@@ -361,6 +362,13 @@ namespace PVR
      * @return The channel or NULL if it wasn't found.
      */
     virtual const CPVRChannel *GetByIndex(unsigned int index) const;
+
+    /*!
+     * @brief Get the current index in this group of a channel.
+     * @param channel The channel to get the index for.
+     * @return The index or -1 if it wasn't found.
+     */
+    virtual int GetIndex(const CPVRChannel &channel) const;
 
     /*!
      * @brief Get the list of channels in a group.

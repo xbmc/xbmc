@@ -235,7 +235,8 @@ static const ActionMapping windows[] =
         {"videossettings"           , WINDOW_SETTINGS_MYVIDEOS},
         {"networksettings"          , WINDOW_SETTINGS_NETWORK},
         {"appearancesettings"       , WINDOW_SETTINGS_APPEARANCE},
-        {"tvsettings"               , WINDOW_SETTINGS_MYTV},
+        {"pvrsettings"              , WINDOW_SETTINGS_MYPVR},
+        {"tvsettings"               , WINDOW_SETTINGS_MYPVR},  // backward compat
         {"scripts"                  , WINDOW_PROGRAMS}, // backward compat
         {"videofiles"               , WINDOW_VIDEO_FILES},
         {"videolibrary"             , WINDOW_VIDEO_NAV},

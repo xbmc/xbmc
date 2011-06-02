@@ -113,9 +113,15 @@ void CGUIDialogPVRChannelsOSD::Update()
 
   CPVRChannel channel;
   g_PVRManager.GetCurrentChannel(&channel);
-  g_PVRManager.GetPlayingGroup(channel.IsRadio())->GetMembers(m_vecItems);
-  m_viewControl.SetItems(*m_vecItems);
-  m_viewControl.SetSelectedItem(channel.ChannelNumber() - 1);
+  const CPVRChannelGroup *group = g_PVRManager.GetPlayingGroup(channel.IsRadio());
+
+  if (group)
+  {
+    group->GetMembers(m_vecItems);
+    m_viewControl.SetItems(*m_vecItems);
+    m_viewControl.SetSelectedItem(group->GetIndex(channel));
+  }
+
   g_graphicsContext.Unlock();
 }
 
