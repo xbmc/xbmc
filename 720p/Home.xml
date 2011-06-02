@@ -3782,7 +3782,7 @@
 			<description>RSS</description>
 			<posx>394</posx>
 			<posy>678</posy>
-			<visible>System.GetBool(LookAndFeel.EnableRSSFeeds) + System.HasNetwork</visible>
+			<visible>System.GetBool(RSS.EnableRSSFeeds) + System.HasNetwork</visible>
 			<!--<visible>False</visible>-->
 			<animation type="WindowOpen">
 				<effect type="slide" start="0,50" time="700" delay="100"/>
