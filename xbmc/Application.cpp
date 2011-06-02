@@ -2790,12 +2790,15 @@ void CApplication::FrameMove()
   ProcessEventServer(frameTime);
 
   // Process events and animate controls before rendering
-  unsigned int currentTime = CTimeUtils::GetFrameTime();
-  g_windowManager.Process(currentTime);
-  if (g_Mouse.IsActive())
+  if (!m_bStop)
   {
-    CDirtyRegionList dirtyregions;
-    m_guiPointer.DoProcess(currentTime, dirtyregions);
+    unsigned int currentTime = CTimeUtils::GetFrameTime();
+    g_windowManager.Process(currentTime);
+    if (g_Mouse.IsActive())
+    {
+      CDirtyRegionList dirtyregions;
+      m_guiPointer.DoProcess(currentTime, dirtyregions);
+    }
   }
   g_windowManager.FrameMove();
 }
