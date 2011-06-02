@@ -174,7 +174,11 @@ EVENT_RESULT CGUICheckMarkControl::OnMouseEvent(const CPoint &point, const CMous
 
 void CGUICheckMarkControl::SetLabel(const string &label)
 {
-  m_strLabel = label;
+  if (m_strLabel != label)
+  {
+    m_strLabel = label;
+    SetInvalid();
+  }
 }
 
 void CGUICheckMarkControl::PythonSetLabel(const CStdString &strFont, const string &strText, color_t textColor)
@@ -183,6 +187,7 @@ void CGUICheckMarkControl::PythonSetLabel(const CStdString &strFont, const strin
   m_label.GetLabelInfo().textColor = textColor;
   m_label.GetLabelInfo().focusedColor = textColor;
   m_strLabel = strText;
+  SetInvalid();
 }
 
 void CGUICheckMarkControl::PythonSetDisabledColor(color_t disabledColor)
