@@ -2904,6 +2904,9 @@ bool CApplication::ProcessMouse()
   if (!g_Mouse.IsActive() || !m_AppFocused)
     return false;
 
+  // Update the pointer position here so it gets updated even for ACTION_NOOP
+  m_guiPointer.SetPosition((float) g_Mouse.GetX(), (float) g_Mouse.GetY());
+
   // Reset the screensaver and idle timers
   m_idleTimer.StartZero();
   ResetScreenSaver();
