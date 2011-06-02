@@ -80,7 +80,7 @@ public:
 
   virtual bool UpdateColors();
 
-  virtual CRect GetRenderRegion() const;
+  virtual CRect CalcRenderRegion() const;
 
 protected:
   friend class CGUISpinControlEx;

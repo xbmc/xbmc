@@ -240,9 +240,9 @@ bool CGUIButtonControl::UpdateColors()
   return changed;
 }
 
-CRect CGUIButtonControl::GetRenderRegion() const
+CRect CGUIButtonControl::CalcRenderRegion() const
 {
-  CRect buttonRect = CGUIControl::GetRenderRegion();
+  CRect buttonRect = CGUIControl::CalcRenderRegion();
   CRect textRect = m_label.GetRenderRect();
   buttonRect.Union(textRect);
   return buttonRect;
