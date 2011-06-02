@@ -34,6 +34,11 @@ CGUISettingsSliderControl::~CGUISettingsSliderControl(void)
 {
 }
 
+void CGUISettingsSliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  m_buttonControl.Process(currentTime, dirtyregions);
+  CGUISliderControl::Process(currentTime, dirtyregions);
+}
 
 void CGUISettingsSliderControl::Render()
 {
