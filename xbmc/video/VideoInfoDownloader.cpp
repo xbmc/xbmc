@@ -138,7 +138,6 @@ int CVideoInfoDownloader::FindMovie(const CStdString &strMovie,
   }
 
   // unthreaded
-  bool sortList = true;
   int success = InternalFindMovie(strMovie, movieList);
   // NOTE: this might be improved by rescraping if the match quality isn't high?
   if (success && movieList.empty())
