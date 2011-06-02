@@ -60,7 +60,9 @@ void CGUISliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
 {
   // TODO Proper processing which marks when its actually changed. Just mark always for now.
   MarkDirtyRegion();
-
+  m_guiBackground.Process(currentTime);
+  m_guiMidFocus.Process(currentTime);
+  m_guiMid.Process(currentTime);
   CGUIControl::Process(currentTime, dirtyregions);
 }
 

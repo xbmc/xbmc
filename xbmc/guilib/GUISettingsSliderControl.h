@@ -48,6 +48,7 @@ public:
   virtual ~CGUISettingsSliderControl(void);
   virtual CGUISettingsSliderControl *Clone() const { return new CGUISettingsSliderControl(*this); };
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual void AllocResources();
