@@ -53,6 +53,8 @@ cPVRClientForTheRecord::cPVRClientForTheRecord()
 cPVRClientForTheRecord::~cPVRClientForTheRecord()
 {
   XBMC->Log(LOG_DEBUG, "->~cPVRClientForTheRecord()");
+  // Check if we are still reading a TV/Radio stream and close it here
+  CloseLiveStream();
 }
 
 
