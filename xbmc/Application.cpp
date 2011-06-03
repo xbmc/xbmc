@@ -2904,13 +2904,48 @@ bool CApplication::ProcessMouse()
   if (!g_Mouse.IsActive() || !m_AppFocused)
     return false;
 
+  // Update the pointer position here so it gets updated even for ACTION_NOOP
+  m_guiPointer.SetPosition((float) g_Mouse.GetX(), (float) g_Mouse.GetY());
+
   // Reset the screensaver and idle timers
   m_idleTimer.StartZero();
   ResetScreenSaver();
   if (WakeUpScreenSaverAndDPMS())
     return true;
 
-  return OnAction(g_Mouse.GetAction());
+  // Get the mouse command ID
+  uint32_t mousecommand = g_Mouse.GetAction();
+
+  // Retrieve the corresponding action
+  int iWin;
+  CKey key(mousecommand | KEY_MOUSE, (unsigned int) 0);
+  if (g_windowManager.HasModalDialog())
+    iWin = g_windowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
+  else
+    iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+  CAction mouseaction = CButtonTranslator::GetInstance().GetAction(iWin, key);
+
+  // If we couldn't find an action return false to indicate we have not
+  // handled this mouse action
+  if (!mouseaction.GetID())
+  {
+    CLog::Log(LOGDEBUG, "%s: unknown mouse command %d", __FUNCTION__, mousecommand);
+    return false;
+  }
+
+  // Process the appcommand
+  CAction newmouseaction = CAction(mouseaction.GetID(), 
+                                  g_Mouse.GetHold(MOUSE_LEFT_BUTTON), 
+                                  (float)g_Mouse.GetX(), 
+                                  (float)g_Mouse.GetY(), 
+                                  (float)g_Mouse.GetDX(), 
+                                  (float)g_Mouse.GetDY());
+
+  // Log mouse actions except for move and noop
+  if (newmouseaction.GetID() != ACTION_MOUSE_MOVE && newmouseaction.GetID() != ACTION_NOOP)
+    CLog::Log(LOGDEBUG, "%s: trying mouse action %s", __FUNCTION__, mouseaction.GetName().c_str());
+
+  return OnAction(newmouseaction);
 }
 
 void  CApplication::CheckForTitleChange()

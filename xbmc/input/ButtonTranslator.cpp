@@ -45,7 +45,8 @@ typedef struct
 } ActionMapping;
 
 static const ActionMapping actions[] =
-       {{"left"              , ACTION_MOVE_LEFT },
+{
+        {"left"              , ACTION_MOVE_LEFT },
         {"right"             , ACTION_MOVE_RIGHT},
         {"up"                , ACTION_MOVE_UP   },
         {"down"              , ACTION_MOVE_DOWN },
@@ -194,7 +195,21 @@ static const ActionMapping actions[] =
         {"yellow"            , ACTION_TELETEXT_YELLOW},
         {"blue"              , ACTION_TELETEXT_BLUE},
         {"increasepar"       , ACTION_INCREASE_PAR},
-        {"decreasepar"       , ACTION_DECREASE_PAR}};
+        {"decreasepar"       , ACTION_DECREASE_PAR},
+
+        // Mouse actions
+        {"leftclick"         , ACTION_MOUSE_LEFT_CLICK},
+        {"rightclick"        , ACTION_MOUSE_RIGHT_CLICK},
+        {"middleclick"       , ACTION_MOUSE_MIDDLE_CLICK},
+        {"doubleclick"       , ACTION_MOUSE_DOUBLE_CLICK},
+        {"wheelup"           , ACTION_MOUSE_WHEEL_UP},
+        {"wheeldown"         , ACTION_MOUSE_WHEEL_DOWN},
+        {"mousedrag"         , ACTION_MOUSE_DRAG},
+        {"mousemove"         , ACTION_MOUSE_MOVE},
+
+        // Do nothing action
+        { "noop"             , ACTION_NOOP}
+};
 
 static const ActionMapping windows[] =
        {{"home"                     , WINDOW_HOME},
@@ -290,6 +305,18 @@ static const ActionMapping windows[] =
         {"videooverlay"             , WINDOW_DIALOG_VIDEO_OVERLAY},
         {"startwindow"              , WINDOW_START},
         {"startup"                  , WINDOW_STARTUP_ANIM}};
+
+static const ActionMapping mousecommands[] =
+{
+  { "leftclick",   ACTION_MOUSE_LEFT_CLICK },
+  { "rightclick",  ACTION_MOUSE_RIGHT_CLICK },
+  { "middleclick", ACTION_MOUSE_MIDDLE_CLICK },
+  { "doubleclick", ACTION_MOUSE_DOUBLE_CLICK },
+  { "wheelup",     ACTION_MOUSE_WHEEL_UP },
+  { "wheeldown",   ACTION_MOUSE_WHEEL_DOWN },
+  { "mousedrag",   ACTION_MOUSE_DRAG },
+  { "mousemove",   ACTION_MOUSE_MOVE }
+};
 
 #ifdef WIN32
 static const ActionMapping appcommands[] =
@@ -826,7 +853,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
   }
   TiXmlNode* pDevice;
 
-  const char* types[] = {"gamepad", "remote", "universalremote", "keyboard", "appcommand", NULL};
+  const char* types[] = {"gamepad", "remote", "universalremote", "keyboard", "mouse", "appcommand", NULL};
   for (int i = 0; types[i]; ++i)
   {
     CStdString type(types[i]);
@@ -845,6 +872,8 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
             buttonCode = TranslateUniversalRemoteString(pButton->Value());
         else if (type == "keyboard")
             buttonCode = TranslateKeyboardButton(pButton);
+        else if (type == "mouse")
+            buttonCode = TranslateMouseCommand(pButton->Value());
         else if (type == "appcommand")
             buttonCode = TranslateAppCommand(pButton->Value());
 
@@ -877,9 +906,6 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
   strAction.ToLower();
   if (CBuiltins::HasCommand(strAction)) 
     action = ACTION_BUILT_IN_FUNCTION;
-
-  if (strAction.Equals("noop"))
-    return true;
 
   for (unsigned int index=0;index < sizeof(actions)/sizeof(actions[0]);++index)
   {
@@ -1145,6 +1171,22 @@ uint32_t CButtonTranslator::TranslateAppCommand(const char *szButton)
 
   CLog::Log(LOGERROR, "%s: Can't find appcommand %s", __FUNCTION__, szButton);
 #endif
+
+  return 0;
+}
+
+uint32_t CButtonTranslator::TranslateMouseCommand(const char *szButton)
+{
+  CStdString strMouseCommand = szButton;
+  strMouseCommand.ToLower();
+
+  int j = sizeof(mousecommands)/sizeof(mousecommands[0]);
+
+  for (int i = 0; i < sizeof(mousecommands)/sizeof(mousecommands[0]); i++)
+    if (strMouseCommand.Equals(mousecommands[i].name))
+      return mousecommands[i].action | KEY_MOUSE;
+
+  CLog::Log(LOGERROR, "%s: Can't find mouse command %s", __FUNCTION__, szButton);
 
   return 0;
 }
