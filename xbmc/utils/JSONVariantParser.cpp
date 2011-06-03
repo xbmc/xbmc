@@ -48,12 +48,12 @@ CJSONVariantParser::CJSONVariantParser(IParseCallback *callback)
 
 CJSONVariantParser::~CJSONVariantParser()
 {
-  yajl_status sta = yajl_parse_complete(m_handler);
+  yajl_parse_complete(m_handler);
 }
 
 void CJSONVariantParser::push_buffer(const unsigned char *buffer, unsigned int length)
 {
-  yajl_status sta = yajl_parse(m_handler, buffer, length);
+  yajl_parse(m_handler, buffer, length);
 }
 
 CVariant CJSONVariantParser::Parse(const unsigned char *json, unsigned int length)
