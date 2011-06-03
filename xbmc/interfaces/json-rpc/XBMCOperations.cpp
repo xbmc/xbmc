@@ -37,7 +37,7 @@ JSON_STATUS CXBMCOperations::GetVolume(const CStdString &method, ITransportLayer
 
 JSON_STATUS CXBMCOperations::SetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  g_application.SetVolume(parameterObject["value"].asInteger());
+  g_application.SetVolume((int)parameterObject["value"].asInteger());
   return GetVolume(method, transport, client, parameterObject, result);
 }
 

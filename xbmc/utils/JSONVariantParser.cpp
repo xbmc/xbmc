@@ -39,7 +39,6 @@ CJSONVariantParser::CJSONVariantParser(IParseCallback *callback)
 {
   m_callback = callback;
 
-  yajl_status stat;
   yajl_parser_config cfg = { 1, 1 };
 
   m_handler = yajl_alloc(&callbacks, &cfg, NULL, this);

@@ -463,6 +463,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
   // - check if they need to be unique ("uniqueItems")
   if (HasType(type.type, ArrayValue) && value.isArray())
   {
+    outputValue = CVariant(CVariant::VariantTypeArray);
     // Check the number of items against minItems and maxItems
     if ((type.minItems > 0 && value.size() < type.minItems) || (type.maxItems > 0 && value.size() > type.maxItems))
     {
@@ -488,7 +489,9 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
       // Loop through all array elements
       for (unsigned int arrayIndex = 0; arrayIndex < value.size(); arrayIndex++)
       {
-        JSON_STATUS status = checkType(value[arrayIndex], itemType, outputValue[arrayIndex], errorData["property"]);
+        CVariant temp;
+        JSON_STATUS status = checkType(value[arrayIndex], itemType, temp, errorData["property"]);
+        outputValue.push_back(temp);
         if (status != OK)
         {
           CLog::Log(LOGWARNING, "JSONRPC: Array element at index %u does not match in type %s", arrayIndex, type.name.c_str());
@@ -681,7 +684,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
 void CJSONServiceDescription::parseHeader(const CVariant &descriptionObject)
 {
   m_header.ID = GetString(descriptionObject["id"], "");
-  m_header.version = descriptionObject["version"].asInteger(0);
+  m_header.version = (int)descriptionObject["version"].asInteger(0);
   m_header.description = GetString(descriptionObject["description"], "");
 }
 
@@ -918,8 +921,8 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
         }
       }
 
-      type.minItems = value["minItems"].asInteger(0);
-      type.maxItems = value["maxItems"].asInteger(0);
+      type.minItems = (unsigned int)value["minItems"].asUnsignedInteger(0);
+      type.maxItems = (unsigned int)value["maxItems"].asUnsignedInteger(0);
     }
     // The type is whether an object nor an array
     else 
@@ -933,13 +936,13 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
         }
         else if ((type.type  & IntegerValue) == IntegerValue)
         {
-          type.minimum = value["minimum"].asInteger(numeric_limits<int>::min());
-          type.maximum = value["maximum"].asInteger(numeric_limits<int>::max());
+          type.minimum = (double)value["minimum"].asInteger(numeric_limits<int>::min());
+          type.maximum = (double)value["maximum"].asInteger(numeric_limits<int>::max());
         }
 
         type.exclusiveMinimum = value["exclusiveMinimum"].asBoolean(false);
         type.exclusiveMaximum = value["exclusiveMaximum"].asBoolean(false);
-        type.divisibleBy = value["divisibleBy"].asUnsignedInteger(0);
+        type.divisibleBy = (unsigned int)value["divisibleBy"].asUnsignedInteger(0);
       }
 
       // If the type definition is neither an
