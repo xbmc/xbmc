@@ -58,6 +58,7 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
   m_isDialog = false;
   m_needsScaling = true;
   m_windowLoaded = false;
+  m_windowInited = false;
   m_loadOnDemand = g_advancedSettings.m_bDestroyWindowControls;
   m_renderOrder = 0;
   m_dynamicResourceAlloc = true;
@@ -409,6 +410,8 @@ void CGUIWindow::OnInitWindow()
   {
     RunLoadActions();
   }
+
+  m_windowInited = true;
 }
 
 // Called on window close.
@@ -436,6 +439,8 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
     }
   }
   SaveControlStates();
+
+  m_windowInited = false;
 }
 
 bool CGUIWindow::OnMessage(CGUIMessage& message)
@@ -444,19 +449,25 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      CLog::Log(LOGDEBUG, "------ Window Init (%s) ------", GetProperty("xmlfile").c_str());
-      if (m_dynamicResourceAlloc || !m_bAllocated) AllocResources();
-      OnInitWindow();
+      if (!m_windowInited)
+      {
+        CLog::Log(LOGDEBUG, "------ Window Init (%s) ------", GetProperty("xmlfile").c_str());
+        if (m_dynamicResourceAlloc || !m_bAllocated) AllocResources();
+        OnInitWindow();
+      }
       return true;
     }
     break;
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CLog::Log(LOGDEBUG, "------ Window Deinit (%s) ------", GetProperty("xmlfile").c_str());
-      OnDeinitWindow(message.GetParam1());
-      // now free the window
-      if (m_dynamicResourceAlloc) FreeResources();
+      if (m_windowInited)
+      {
+        CLog::Log(LOGDEBUG, "------ Window Deinit (%s) ------", GetProperty("xmlfile").c_str());
+        OnDeinitWindow(message.GetParam1());
+        // now free the window
+        if (m_dynamicResourceAlloc) FreeResources();
+      }
       return true;
     }
     break;
