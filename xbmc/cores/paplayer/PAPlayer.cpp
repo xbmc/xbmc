@@ -28,7 +28,6 @@
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "music/tags/MusicInfoTag.h"
-#include "../AudioRenderers/AudioRendererFactory.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"

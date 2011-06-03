@@ -24,7 +24,6 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#include "cores/AudioRenderers/IAudioRenderer.h"
 #include "cores/IAudioCallback.h"
 #include "threads/CriticalSection.h"
 

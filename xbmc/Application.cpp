@@ -239,7 +239,7 @@
 #if !defined(__arm__)
 #include "CocoaInterface.h"
 #include "XBMCHelper.h"
-#include <osx/CoreAudio.h>
+#include "cores/AudioEngine/Engines/CoreAudioAE.h"
 #endif
 #endif
 
