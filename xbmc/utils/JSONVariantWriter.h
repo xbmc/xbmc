@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,27 +20,13 @@
  *
  */
 
-#include <string>
-#include "IClient.h"
+#include "Variant.h"
+#include <yajl/yajl_gen.h>
 
-class CVariant;
-
-namespace JSONRPC
+class CJSONVariantWriter
 {
-  enum TransportLayerCapability
-  {
-    Response = 0x1,
-    Announcing = 0x2,
-    FileDownload = 0x4,
-  };
-
-  #define TRANSPORT_LAYER_CAPABILITY_ALL (Response | Announcing | FileDownload)
-
-  class ITransportLayer
-  {
-  public:
-    virtual ~ITransportLayer() { };
-    virtual bool Download(const char *path, CVariant &result) = 0;
-    virtual int GetCapabilities() = 0;
-  };
-}
+public:
+  static std::string Write(const CVariant &value, bool compact);
+private:
+  static bool InternalWrite(yajl_gen g, const CVariant &value);
+};

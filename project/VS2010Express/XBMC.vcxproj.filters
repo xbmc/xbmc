@@ -199,9 +199,6 @@
     <Filter Include="libs\sqlite">
       <UniqueIdentifier>{c9d35dd5-e25d-4b76-bcbe-e8c855de58e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="libs\jsoncpp">
-      <UniqueIdentifier>{b27f9ce9-0b2e-4456-9bce-8313af739c2d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="libs\tinyxml">
       <UniqueIdentifier>{b084bece-821c-445c-951d-0aa4ea804076}</UniqueIdentifier>
     </Filter>
@@ -2210,15 +2207,6 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogCache.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_reader.cpp">
-      <Filter>libs\jsoncpp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_value.cpp">
-      <Filter>libs\jsoncpp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_writer.cpp">
-      <Filter>libs\jsoncpp</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\Builtins.cpp">
       <Filter>interfaces</Filter>
     </ClCompile>
@@ -2462,6 +2450,12 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\input\XBMC_keytable.cpp">
       <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\JSONVariantParser.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\JSONVariantWriter.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4921,6 +4915,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\XBMC_keytable.h">
       <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\JSONVariantParser.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\JSONVariantWriter.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
