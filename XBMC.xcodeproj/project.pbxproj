@@ -9006,7 +9006,6 @@
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
-					"-lyajl",
 					"-headerpad_max_install_names",
 					"-all_load",
 					"-L$XBMC_DEPENDS/lib",
@@ -9025,6 +9024,7 @@
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
+					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -9245,7 +9245,6 @@
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
-					"-lyajl",
 					"-headerpad_max_install_names",
 					"-all_load",
 					"-L$XBMC_DEPENDS/lib",
@@ -9264,6 +9263,7 @@
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
+					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);

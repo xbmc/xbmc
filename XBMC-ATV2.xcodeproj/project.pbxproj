@@ -6786,7 +6786,6 @@
 					"\"$(SRCROOT)/lib/SlingboxLib\"",
 				);
 				OTHER_LDFLAGS = (
-					"-lyajl",
 					"-Wl,-headerpad_max_install_names",
 					"-Wl,-undefined,dynamic_lookup",
 					"-Wl,-read_only_relocs,suppress",
@@ -6804,6 +6803,7 @@
 					"-lmicrohttpd",
 					"-lsmbclient",
 					"-lpython2.6",
+					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
