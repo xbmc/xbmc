@@ -4254,7 +4254,7 @@ void CApplication::ResetScreenSaverTimer()
 
 void CApplication::StopScreenSaverTimer()
 {
-	m_screenSaverTimer.Stop();
+  m_screenSaverTimer.Stop();
 }
 
 bool CApplication::ToggleDPMS(bool manual)
