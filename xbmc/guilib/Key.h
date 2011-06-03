@@ -76,6 +76,9 @@
 #define KEY_ASCII           0xF100 // a printable character in the range of TRUE ASCII (from 0 to 127) // FIXME make it clean and pure unicode! remove the need for KEY_ASCII
 #define KEY_UNICODE         0xF200 // another printable character whose range is not included in this KEY code
 
+// 0xE000 -> 0xE0FF is reserved for mouse actions
+#define KEY_MOUSE           0xE000
+
 // 0xD000 -> 0xD0FF is reserved for WM_APPCOMMAND messages
 #define KEY_APPCOMMAND      0xD000
 
@@ -291,6 +294,11 @@
 #define ACTION_VSHIFT_DOWN            228 // shift down video image in DVDPlayer
 
 #define ACTION_PLAYER_PLAYPAUSE       227 // Play/pause. If playing it pauses, if paused it plays.
+
+// The NOOP action can be specified to disable an input event. This is
+// useful in user keyboard.xml etc to disable actions specified in the
+// system mappings.
+#define ACTION_NOOP                   999
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
