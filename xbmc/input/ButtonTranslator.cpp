@@ -1180,9 +1180,7 @@ uint32_t CButtonTranslator::TranslateMouseCommand(const char *szButton)
   CStdString strMouseCommand = szButton;
   strMouseCommand.ToLower();
 
-  int j = sizeof(mousecommands)/sizeof(mousecommands[0]);
-
-  for (int i = 0; i < sizeof(mousecommands)/sizeof(mousecommands[0]); i++)
+  for (unsigned int i = 0; i < sizeof(mousecommands)/sizeof(mousecommands[0]); i++)
     if (strMouseCommand.Equals(mousecommands[i].name))
       return mousecommands[i].action | KEY_MOUSE;
 
