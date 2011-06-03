@@ -574,6 +574,24 @@ IAESound *CCoreAudioAE::GetSound(CStdString file)
   return sound;
 }
 
+void CCoreAudioAE::RemovePlayingSound(IAESound *sound)
+{
+  std::list<SoundState>::iterator itt;
+
+  for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
+  {
+    SoundState *ss = &(*itt);
+    
+    if(ss->owner == sound)
+    {
+      itt = m_playing_sounds.erase(itt);
+      return;
+    }
+    ++itt;
+  }
+  
+}
+
 void CCoreAudioAE::FreeSound(IAESound *sound)
 {
   if (!sound) return;
@@ -587,6 +605,8 @@ void CCoreAudioAE::FreeSound(IAESound *sound)
       break;
     }
 
+  RemovePlayingSound(sound);
+  
   delete (CCoreAudioAESound*)sound;
   SDL_mutexV(m_Mutex);
 }

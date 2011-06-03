@@ -95,6 +95,7 @@ public:
   
   /* returns a new sound object */
   virtual IAESound *GetSound(CStdString file);
+  virtual void RemovePlayingSound(IAESound *sound);
   virtual void FreeSound(IAESound *sound);
   virtual void PlaySound(IAESound *sound);
   virtual void StopSound(IAESound *sound);
