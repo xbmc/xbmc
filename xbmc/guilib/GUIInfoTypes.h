@@ -102,10 +102,13 @@ private:
   class CInfoPortion
   {
   public:
-    CInfoPortion(int info, const CStdString &prefix, const CStdString &postfix);
+    CInfoPortion(int info, const CStdString &prefix, const CStdString &postfix, bool escaped = false);
+    CStdString GetLabel(const CStdString &info) const;
     int m_info;
     CStdString m_prefix;
     CStdString m_postfix;
+  private:
+    bool m_escaped;
   };
 
   CStdString m_fallback;

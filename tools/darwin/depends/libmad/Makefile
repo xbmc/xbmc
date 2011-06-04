@@ -22,10 +22,13 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); patch -p1 < ../01-libmad-pkgconfig.patch
+	if test "$(DARWIN)" = "ios"; then \
+		cd $(SOURCE); patch -p1 < ../02-libmad-thumb-fix.patch; \
+	fi
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)
-	make -C $(SOURCE)
+	make -j $(MAKE_JOBS) -C $(SOURCE)
 
 .installed:
 	make -C $(SOURCE) install

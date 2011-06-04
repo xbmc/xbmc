@@ -7,7 +7,6 @@
 #include "threads/CriticalSection.h"
 #include "interfaces/json-rpc/JSONUtils.h"
 
-class CVariant;
 namespace JSONRPC
 {
   class CTCPServer : public ITransportLayer, public ANNOUNCEMENT::IAnnouncer, public CThread, protected CJSONUtils
@@ -16,7 +15,7 @@ namespace JSONRPC
     static bool StartServer(int port, bool nonlocal);
     static void StopServer(bool bWait);
 
-    virtual bool Download(const char *path, Json::Value *result);
+    virtual bool Download(const char *path, CVariant &result);
     virtual int GetCapabilities();
 
     virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);

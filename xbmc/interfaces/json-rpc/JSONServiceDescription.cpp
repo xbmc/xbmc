@@ -24,6 +24,7 @@
 #include "JSONServiceDescription.h"
 #include "utils/log.h"
 #include "utils/StdString.h"
+#include "utils/JSONVariantParser.h"
 
 using namespace std;
 using namespace JSONRPC;
@@ -60,7 +61,7 @@ unsigned int JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::size() const
   return m_propertiesmap.size();
 }
 
-Json::Value CJSONServiceDescription::m_notifications = Json::Value(Json::objectValue);
+CVariant CJSONServiceDescription::m_notifications = CVariant(CVariant::VariantTypeObject);
 CJSONServiceDescription::CJsonRpcMethodMap CJSONServiceDescription::m_actionMap;
 JsonRpcDescriptionHeader CJSONServiceDescription::m_header;
 std::map<std::string, JSONSchemaTypeDefinition> CJSONServiceDescription::m_types = std::map<std::string, JSONSchemaTypeDefinition>();
@@ -69,16 +70,15 @@ bool CJSONServiceDescription::m_newReferenceType = false;
 
 bool CJSONServiceDescription::Parse(JsonRpcMethodMap methodMap[], unsigned int size)
 {
-  Json::Value descriptionObject;
-  Json::Reader reader;
-
   // Read the json schema for notifications
-  if (!reader.parse(JSON_NOTIFICATION_DESCRIPTION, m_notifications))
+  m_notifications = CJSONVariantParser::Parse((const unsigned char *)JSON_NOTIFICATION_DESCRIPTION, strlen(JSON_NOTIFICATION_DESCRIPTION));
+  if (m_notifications.isNull())
     CLog::Log(LOGERROR, "JSONRPC: Unable to read the json schema notification description");
 
   // Read the json schema service descriptor and check if it represents
   // a json object and contains a "services" element for methods
-  if (!reader.parse(JSON_SERVICE_DESCRIPTION, descriptionObject))
+  CVariant descriptionObject = CJSONVariantParser::Parse((const unsigned char *)JSON_SERVICE_DESCRIPTION, strlen(JSON_SERVICE_DESCRIPTION));
+  if (descriptionObject.isNull())
   {
     CLog::Log(LOGERROR, "JSONRPC: Unable to read the json schema service description");
     return false;
@@ -142,24 +142,19 @@ bool CJSONServiceDescription::Parse(JsonRpcMethodMap methodMap[], unsigned int s
     m_unresolvedMethods = stillUnresolvedMethods;
   }
 
-  // Get all child elements
-  Json::Value::Members methodNames = descriptionObject.getMemberNames();
-
   // Parse
-  for (unsigned int index = 0; index < methodNames.size(); index++)
+  for (CVariant::const_iterator_map itr = descriptionObject.begin_map(); itr != descriptionObject.end_map(); itr++)
   {
-    std::string methodName = methodNames.at(index);
     // Make sure the method actually exists and represents an object
-    if (!descriptionObject.isMember(methodName) || !descriptionObject[methodName].isObject() || 
-        !descriptionObject[methodName].isMember("type") || !descriptionObject[methodName]["type"].isString())
+    if (!itr->second.isObject() || !itr->second.isMember("type") || !itr->second["type"].isString())
       continue;
 
-    std::string type = GetString(descriptionObject[methodName]["type"], "");
-    if (type.compare("method") != 0 && descriptionObject[methodName].isMember("id") && descriptionObject[methodName]["id"].isString())
+    std::string type = GetString(itr->second["type"], "");
+    if (type.compare("method") != 0 && itr->second.isMember("id") && itr->second["id"].isString())
     {
       JSONSchemaTypeDefinition globalType;
-      globalType.name = methodName;
-      parseTypeDefinition(descriptionObject[methodName], globalType, false);
+      globalType.name = itr->first;
+      parseTypeDefinition(itr->second, globalType, false);
     }
   }
 
@@ -176,7 +171,7 @@ int CJSONServiceDescription::GetVersion()
   return m_header.version;
 }
 
-void CJSONServiceDescription::Print(Json::Value &result, ITransportLayer *transport, IClient *client, bool printDescriptions, bool printMetadata, bool filterByTransport)
+void CJSONServiceDescription::Print(CVariant &result, ITransportLayer *transport, IClient *client, bool printDescriptions, bool printMetadata, bool filterByTransport)
 {
   // Print the header
   result["id"] = m_header.ID;
@@ -187,7 +182,7 @@ void CJSONServiceDescription::Print(Json::Value &result, ITransportLayer *transp
   std::map<std::string, JSONSchemaTypeDefinition>::const_iterator typeIteratorEnd = m_types.end();
   for (typeIterator = m_types.begin(); typeIterator != typeIteratorEnd; typeIterator++)
   {
-    Json::Value currentType = Json::Value(Json::objectValue);
+    CVariant currentType = CVariant(CVariant::VariantTypeObject);
     printType(typeIterator->second, false, true, true, printDescriptions, currentType);
 
     result["types"][typeIterator->first] = currentType;
@@ -204,7 +199,7 @@ void CJSONServiceDescription::Print(Json::Value &result, ITransportLayer *transp
     if ((clientPermissions & methodIterator->second.permission) == 0 || ((transportCapabilities & methodIterator->second.transportneed) == 0 && filterByTransport))
       continue;
 
-    Json::Value currentMethod = Json::Value(Json::objectValue);
+    CVariant currentMethod = CVariant(CVariant::VariantTypeObject);
 
     currentMethod["type"] = "method";
     if (printDescriptions && !methodIterator->second.description.empty())
@@ -214,10 +209,10 @@ void CJSONServiceDescription::Print(Json::Value &result, ITransportLayer *transp
       currentMethod["permission"] = PermissionToString(methodIterator->second.permission);
     }
 
-    currentMethod["params"] = Json::Value(Json::arrayValue);
+    currentMethod["params"] = CVariant(CVariant::VariantTypeArray);
     for (unsigned int paramIndex = 0; paramIndex < methodIterator->second.parameters.size(); paramIndex++)
     {
-      Json::Value param = Json::Value(Json::objectValue);
+      CVariant param = CVariant(CVariant::VariantTypeObject);
       printType(methodIterator->second.parameters.at(paramIndex), true, false, true, printDescriptions, param);
       currentMethod["params"].append(param);
     }
@@ -228,23 +223,21 @@ void CJSONServiceDescription::Print(Json::Value &result, ITransportLayer *transp
   }
 
   // Print notification description
-  Json::Value::Members notifications = m_notifications.getMemberNames();
-  for (unsigned int notifIndex = 0; notifIndex < notifications.size(); notifIndex++)
+  for (CVariant::const_iterator_map itr = m_notifications.begin_map(); itr != m_notifications.end_map(); itr++)
   {
-    if (!m_notifications.isMember(notifications.at(notifIndex)) ||
-        !m_notifications[notifications.at(notifIndex)].isObject() ||
-        !m_notifications[notifications.at(notifIndex)].isMember("type") ||
-        !m_notifications[notifications.at(notifIndex)]["type"].isString() ||
-         m_notifications[notifications.at(notifIndex)]["type"].asString().compare("notification") != 0)
+    if (!itr->second.isObject() ||
+        !itr->second.isMember("type") ||
+        !itr->second["type"].isString() ||
+         itr->second["type"] == CVariant("notification"))
     {
       continue;
     }
 
-    result["notifications"][notifications.at(notifIndex)] = m_notifications[notifications.at(notifIndex)];
+    result["notifications"][itr->first] = itr->second;
   }
 }
 
-JSON_STATUS CJSONServiceDescription::CheckCall(const char* const method, const Json::Value &requestParameters, IClient *client, bool notification, MethodCall &methodCall, Json::Value &outputParameters)
+JSON_STATUS CJSONServiceDescription::CheckCall(const char* const method, const CVariant &requestParameters, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters)
 {
   CJsonRpcMethodMap::JsonRpcMethodIterator iter = m_actionMap.find(method);
   if (iter != m_actionMap.end())
@@ -256,7 +249,7 @@ JSON_STATUS CJSONServiceDescription::CheckCall(const char* const method, const J
       // Count the number of actually handled (present)
       // parameters
       unsigned int handled = 0;
-      Json::Value errorData = Json::Value(Json::objectValue);
+      CVariant errorData = CVariant(CVariant::VariantTypeObject);
       errorData["method"] = iter->second.name;
 
       // Loop through all the parameters to check
@@ -289,7 +282,7 @@ JSON_STATUS CJSONServiceDescription::CheckCall(const char* const method, const J
     return MethodNotFound;
 }
 
-void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bool isParameter, bool isGlobal, bool printDefault, bool printDescriptions, Json::Value &output)
+void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bool isParameter, bool isGlobal, bool printDefault, bool printDescriptions, CVariant &output)
 {
   bool typeReference = false;
 
@@ -323,7 +316,7 @@ void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bo
     // Printing enum field
     if (type.enums.size() > 0)
     {
-      output["enums"] = Json::Value(Json::arrayValue);
+      output["enums"] = CVariant(CVariant::VariantTypeArray);
       for (unsigned int enumIndex = 0; enumIndex < type.enums.size(); enumIndex++)
         output["enums"].append(type.enums.at(enumIndex));
     }
@@ -363,10 +356,10 @@ void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bo
       }
       else if (type.items.size() > 1)
       {
-        output["items"] = Json::Value(Json::arrayValue);
+        output["items"] = CVariant(CVariant::VariantTypeArray);
         for (unsigned int itemIndex = 0; itemIndex < type.items.size(); itemIndex++)
         {
-          Json::Value item = Json::Value(Json::objectValue);
+          CVariant item = CVariant(CVariant::VariantTypeObject);
           printType(type.items.at(itemIndex), false, false, false, printDescriptions, item);
           output["items"].append(item);
         }
@@ -383,10 +376,10 @@ void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bo
       }
       else if (type.additionalItems.size() > 1)
       {
-        output["additionalItems"] = Json::Value(Json::arrayValue);
+        output["additionalItems"] = CVariant(CVariant::VariantTypeArray);
         for (unsigned int addItemIndex = 0; addItemIndex < type.additionalItems.size(); addItemIndex++)
         {
-          Json::Value item = Json::Value(Json::objectValue);
+          CVariant item = CVariant(CVariant::VariantTypeObject);
           printType(type.additionalItems.at(addItemIndex), false, false, false, printDescriptions, item);
           output["additionalItems"].append(item);
         }
@@ -399,7 +392,7 @@ void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bo
     // Print object fields
     if (HasType(type.type, ObjectValue) && type.properties.size() > 0)
     {
-      output["properties"] = Json::Value(Json::objectValue);
+      output["properties"] = CVariant(CVariant::VariantTypeObject);
 
       JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator propertiesEnd = type.properties.end();
       JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator propertiesIterator;
@@ -411,13 +404,13 @@ void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bo
   }
 }
 
-JSON_STATUS CJSONServiceDescription::checkParameter(const Json::Value &requestParameters, const JSONSchemaTypeDefinition &type, unsigned int position, Json::Value &outputParameters, unsigned int &handled, Json::Value &errorData)
+JSON_STATUS CJSONServiceDescription::checkParameter(const CVariant &requestParameters, const JSONSchemaTypeDefinition &type, unsigned int position, CVariant &outputParameters, unsigned int &handled, CVariant &errorData)
 {
   // Let's check if the parameter has been provided
   if (ParameterExists(requestParameters, type.name, position))
   {
     // Get the parameter
-    Json::Value parameterValue = GetParameter(requestParameters, type.name, position);
+    CVariant parameterValue = GetParameter(requestParameters, type.name, position);
 
     // Evaluate the type of the parameter
     JSON_STATUS status = checkType(parameterValue, type, outputParameters[type.name], errorData["stack"]);
@@ -443,7 +436,7 @@ JSON_STATUS CJSONServiceDescription::checkParameter(const Json::Value &requestPa
   return OK;
 }
 
-JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const JSONSchemaTypeDefinition &type, Json::Value &outputValue, Json::Value &errorData)
+JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSONSchemaTypeDefinition &type, CVariant &outputValue, CVariant &errorData)
 {
   if (!type.name.empty())
     errorData["name"] = type.name;
@@ -470,6 +463,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
   // - check if they need to be unique ("uniqueItems")
   if (HasType(type.type, ArrayValue) && value.isArray())
   {
+    outputValue = CVariant(CVariant::VariantTypeArray);
     // Check the number of items against minItems and maxItems
     if ((type.minItems > 0 && value.size() < type.minItems) || (type.maxItems > 0 && value.size() > type.maxItems))
     {
@@ -495,7 +489,9 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
       // Loop through all array elements
       for (unsigned int arrayIndex = 0; arrayIndex < value.size(); arrayIndex++)
       {
-        JSON_STATUS status = checkType(value[arrayIndex], itemType, outputValue[arrayIndex], errorData["property"]);
+        CVariant temp;
+        JSON_STATUS status = checkType(value[arrayIndex], itemType, temp, errorData["property"]);
+        outputValue.push_back(temp);
         if (status != OK)
         {
           CLog::Log(LOGWARNING, "JSONRPC: Array element at index %u does not match in type %s", arrayIndex, type.name.c_str());
@@ -548,7 +544,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
           bool ok = false;
           for (unsigned int additionalIndex = 0; additionalIndex < type.additionalItems.size(); additionalIndex++)
           {
-            Json::Value dummyError;
+            CVariant dummyError;
             if (checkType(value[arrayIndex], type.additionalItems.at(additionalIndex), outputValue[arrayIndex], dummyError) == OK)
             {
               ok = true;
@@ -575,7 +571,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
         for (unsigned int checkedIndex = checkingIndex + 1; checkedIndex < outputValue.size(); checkedIndex++)
         {
           // If two elements are the same they are not unique
-          if (Compare(outputValue[checkingIndex], outputValue[checkedIndex]) == 0)
+          if (outputValue[checkingIndex] == outputValue[checkedIndex])
           {
             CLog::Log(LOGWARNING, "JSONRPC: Not unique array element at index %u and %u in type %s", checkingIndex, checkedIndex, type.name.c_str());
             errorMessage.Format("Array element at index %u is not unique (same as array element at index %u)", checkingIndex, checkedIndex);
@@ -621,7 +617,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
     }
 
     // Additional properties are not allowed
-    if (handled < value.getMemberNames().size())
+    if (handled < value.size())
     {
       errorData["message"] = "Unexpected additional properties received";
       return InvalidParams;
@@ -637,9 +633,9 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
   if (type.enums.size() > 0)
   {
     bool valid = false;
-    for (unsigned int enumIndex = 0; enumIndex < type.enums.size(); enumIndex++)
+    for (std::vector<CVariant>::const_iterator enumItr = type.enums.begin(); enumItr != type.enums.end(); enumItr++)
     {
-      if (Compare(type.enums.at(enumIndex), value) == 0)
+      if (*enumItr == value)
       {
         valid = true;
         break;
@@ -656,7 +652,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
 
   // If we have a number or an integer type, we need
   // to check the minimum and maximum values
-  if ((HasType(type.type, NumberValue) || HasType(type.type, IntegerValue)) && value.isNumeric())
+  if ((HasType(type.type, NumberValue) || HasType(type.type, IntegerValue)) && value.isDouble())
   {
     double numberValue = value.asDouble();
     // Check minimum
@@ -685,14 +681,14 @@ JSON_STATUS CJSONServiceDescription::checkType(const Json::Value &value, const J
   return OK;
 }
 
-void CJSONServiceDescription::parseHeader(const Json::Value &descriptionObject)
+void CJSONServiceDescription::parseHeader(const CVariant &descriptionObject)
 {
   m_header.ID = GetString(descriptionObject["id"], "");
-  m_header.version = descriptionObject.get("version", 0).asInt();
+  m_header.version = (int)descriptionObject["version"].asInteger(0);
   m_header.description = GetString(descriptionObject["description"], "");
 }
 
-bool CJSONServiceDescription::parseMethod(const Json::Value &value, JsonRpcMethod &method)
+bool CJSONServiceDescription::parseMethod(const CVariant &value, JsonRpcMethod &method)
 {
   // Parse XBMC specific information about the method
   method.transportneed = StringToTransportLayer(value.isMember("transport") ? value["transport"].asString() : "");
@@ -705,7 +701,7 @@ bool CJSONServiceDescription::parseMethod(const Json::Value &value, JsonRpcMetho
     // Loop through all defined parameters
     for (unsigned int paramIndex = 0; paramIndex < value["params"].size(); paramIndex++)
     {
-      Json::Value parameter = value["params"][paramIndex];
+      CVariant parameter = value["params"][paramIndex];
       // If the parameter definition does not contain a valid "name" or
       // "type" element we will ignore it
       if (!parameter.isMember("name") || !parameter["name"].isString() ||
@@ -733,7 +729,7 @@ bool CJSONServiceDescription::parseMethod(const Json::Value &value, JsonRpcMetho
   return true;
 }
 
-bool CJSONServiceDescription::parseParameter(Json::Value &value, JSONSchemaTypeDefinition &parameter)
+bool CJSONServiceDescription::parseParameter(CVariant &value, JSONSchemaTypeDefinition &parameter)
 {
   parameter.name = GetString(value["name"], "");
 
@@ -741,7 +737,7 @@ bool CJSONServiceDescription::parseParameter(Json::Value &value, JSONSchemaTypeD
   return parseTypeDefinition(value, parameter, true);
 }
 
-bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSONSchemaTypeDefinition &type, bool isParameter)
+bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSchemaTypeDefinition &type, bool isParameter)
 {
   bool isReferenceType = false;
   bool hasReference = false;
@@ -773,7 +769,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
   }
 
   // Check if the "required" field has been defined
-  type.optional = value.isMember("required") && value["required"].isBool() ? !value["required"].asBool() : true;
+  type.optional = value.isMember("required") && value["required"].isBoolean() ? !value["required"].asBoolean() : true;
 
   // Get the "description"
   if (!hasReference || (value.isMember("description") && value["description"].isString()))
@@ -791,9 +787,9 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
       // sure that the default value is a valid enum value
       else
       {
-        for (unsigned int defIndex = 0; defIndex < type.enums.size(); defIndex++)
+        for (std::vector<CVariant>::const_iterator itr = type.enums.begin(); itr != type.enums.end(); itr++)
         {
-          if (Compare(value["default"], type.enums.at(defIndex)) == 0)
+          if (value["default"] == *itr)
           {
             ok = true;
             break;
@@ -842,22 +838,17 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
     {
       // Get all child elements of the "properties"
       // object and loop through them
-      Json::Value::Members properties = value["properties"].getMemberNames();
-      for (unsigned int propertyIndex = 0; propertyIndex < properties.size(); propertyIndex++)
+      for (CVariant::const_iterator_map itr = value["properties"].begin_map(); itr != value["properties"].end_map(); itr++)
       {
-        std::string propertyName = properties.at(propertyIndex);
-        if (!value["properties"].isMember(propertyName))
-          continue;
-
         // Create a new type definition, store the name
         // of the current property into it, parse it
         // recursively and add its default value
         // to the current type's default value
         JSONSchemaTypeDefinition propertyType;
-        propertyType.name = propertyName;
-        if (!parseTypeDefinition(value["properties"][propertyName], propertyType, false))
+        propertyType.name = itr->first;
+        if (!parseTypeDefinition(itr->second, propertyType, false))
           return false;
-        type.defaultValue[propertyName] = propertyType.defaultValue;
+        type.defaultValue[itr->first] = propertyType.defaultValue;
         type.properties.add(propertyType);
       }
     }
@@ -870,8 +861,8 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
     if (type.type == ArrayValue)
     {
       // Check for "uniqueItems" field
-      if (value.isMember("uniqueItems") && value["uniqueItems"].isBool())
-        type.uniqueItems = value["uniqueItems"].asBool();
+      if (value.isMember("uniqueItems") && value["uniqueItems"].isBoolean())
+        type.uniqueItems = value["uniqueItems"].asBoolean();
       else
         type.uniqueItems = false;
 
@@ -899,7 +890,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
         }
         // If it is not a (array of) schema and not a bool (default value is false)
         // it has an invalid value
-        else if (!value["additionalItems"].isBool())
+        else if (!value["additionalItems"].isBoolean())
           CLog::Log(LOGWARNING, "Invalid \"additionalItems\" value for type %s", type.name.c_str());
       }
 
@@ -919,19 +910,19 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
         // parse all elements and store them
         else if (value["items"].isArray())
         {
-          for (unsigned int itemIndex = 0; itemIndex < value["items"].size(); itemIndex++)
+          for (CVariant::const_iterator_array itemItr = value["items"].begin_array(); itemItr != value["items"].end_array(); itemItr++)
           {
             JSONSchemaTypeDefinition item;
 
-            if (!parseTypeDefinition(value["items"][itemIndex], item, false))
+            if (!parseTypeDefinition(*itemItr, item, false))
               return false;
             type.items.push_back(item);
           }
         }
       }
 
-      type.minItems = value.get("minItems", 0).asInt();
-      type.maxItems = value.get("maxItems", 0).asInt();
+      type.minItems = (unsigned int)value["minItems"].asUnsignedInteger(0);
+      type.maxItems = (unsigned int)value["maxItems"].asUnsignedInteger(0);
     }
     // The type is whether an object nor an array
     else 
@@ -940,18 +931,18 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
       {
         if ((type.type & NumberValue) == NumberValue)
         {
-          type.minimum = value.get("minimum", -numeric_limits<double>::max()).asDouble();
-          type.maximum = value.get("maximum", numeric_limits<double>::max()).asDouble();
+          type.minimum = value["minimum"].asDouble(-numeric_limits<double>::max());
+          type.maximum = value["maximum"].asDouble(numeric_limits<double>::max());
         }
         else if ((type.type  & IntegerValue) == IntegerValue)
         {
-          type.minimum = value.get("minimum", numeric_limits<int>::min()).asInt();
-          type.maximum = value.get("maximum", numeric_limits<int>::max()).asInt();
+          type.minimum = (double)value["minimum"].asInteger(numeric_limits<int>::min());
+          type.maximum = (double)value["maximum"].asInteger(numeric_limits<int>::max());
         }
 
-        type.exclusiveMinimum = value.get("exclusiveMinimum", false).asBool();
-        type.exclusiveMaximum = value.get("exclusiveMaximum", false).asBool();
-        type.divisibleBy = value.get("divisibleBy", 0).asUInt();
+        type.exclusiveMinimum = value["exclusiveMinimum"].asBoolean(false);
+        type.exclusiveMaximum = value["exclusiveMaximum"].asBoolean(false);
+        type.divisibleBy = (unsigned int)value["divisibleBy"].asUnsignedInteger(0);
       }
 
       // If the type definition is neither an
@@ -960,13 +951,13 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
       if (value.isMember("enum") && value["enum"].isArray())
       {
         // Loop through all elements in the "enum" array
-        for (unsigned int enumIndex = 0; enumIndex < value["enum"].size(); enumIndex++)
+        for (CVariant::const_iterator_array enumItr = value["enum"].begin_array(); enumItr != value["enum"].end_array(); enumItr++)
         {
           // Check for duplicates and eliminate them
           bool approved = true;
           for (unsigned int approvedIndex = 0; approvedIndex < type.enums.size(); approvedIndex++)
           {
-            if (Compare(value["enum"][enumIndex], type.enums.at(approvedIndex)) == 0)
+            if (*enumItr == type.enums.at(approvedIndex))
             {
               approved = false;
               break;
@@ -976,7 +967,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
           // Only add the current item to the enum value 
           // list if it is not duplicate
           if (approved)
-            type.enums.push_back(value["enum"][enumIndex]);
+            type.enums.push_back(*enumItr);
         }
       }
     }
@@ -992,9 +983,9 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
       // sure that the default value is a valid enum value
       else
       {
-        for (unsigned int defIndex = 0; defIndex < type.enums.size(); defIndex++)
+        for (std::vector<CVariant>::const_iterator itr = type.enums.begin(); itr != type.enums.end(); itr++)
         {
-          if (Compare(value["default"], type.enums.at(defIndex)) == 0)
+          if (value["default"] == *itr)
           {
             ok = true;
             break;
@@ -1028,7 +1019,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const Json::Value &value, JSON
   return true;
 }
 
-void CJSONServiceDescription::parseReturn(const Json::Value &value, Json::Value &returns)
+void CJSONServiceDescription::parseReturn(const CVariant &value, CVariant &returns)
 {
   // Only parse the "returns" definition if there is one
   if (value.isMember("returns"))

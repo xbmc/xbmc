@@ -135,6 +135,7 @@ public:
   bool IsTuxBox() const;
   bool IsMythTV() const;
   bool IsHDHomeRun() const;
+  bool IsSlingbox() const;
   bool IsVTP() const;
   bool IsLiveTV() const;
   bool IsRSS() const;

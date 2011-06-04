@@ -15,42 +15,57 @@ AC_ARG_WITH([darwin],
 
 AC_ARG_WITH([arch],
   [AS_HELP_STRING([--with-arch],
-  [build depend libs for arch i386 (default), x86_64, ppc or arm7.])],
-  [use_arch=$withval],
-  [use_arch="i386"])
+  [build depend libs for arch i386 (default osx), x86_64, ppc or armv7 (default ios).])],
+  [use_arch=$withval],)
 
 AC_ARG_WITH([sdk],
   [AS_HELP_STRING([--with-sdk],
-  [build depend libs using sdk 10.4 (default) or 4.2.])],
-  [use_sdk=$withval],
-  [use_sdk="10.4"])
+  [build depend libs using sdk 10.4 (default osx) or 4.2 (default ios).])],
+  [use_sdk=$withval],)
 
 OUTPUT_FILES="Makefile Makefile.include"
-AC_MSG_RESULT(configuring for darwin $use_darwin-$use_sdk-$use_arch)
 case $use_darwin in
   osx)
-     if test "$use_arch" = "arm7"; then
+     use_arch="${use_arch:-i386}"
+     use_sdk="${use_sdk:-10.4}"
+     use_prefix=${use_staging}/${use_darwin}-${use_sdk}_${use_arch}
+     if test "$use_arch" = "armv7"; then
        AC_MSG_ERROR(error in configure of --with-arch=$use_arch)
      fi
-     if test "$use_sdk" != "10.4"; then
+     case $use_sdk in
+     10.*);;
+     *)
        AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
-     fi
+     esac
      CONFIG_SITE=" [config.site:config.site_osx.in]"
      MK_CONFIG_SITE=" [config.site.mk:config.site_osx.mk.in]"
      ;;
   ios)
-     if test "$use_arch" != "arm7"; then
+     found_sdk=`xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{ print $2}'`
+     use_arch="${use_arch:-armv7}"
+     use_sdk="${use_sdk:-$found_sdk}"
+     # this is an issue. if we set prefix according to ${use_sdk}_${use_arch}, 
+     # then XBMC_DEPENDS prefix location in xcode must match but xcode uses its
+     # own defines for build. So just hardcode to 4.2_arm7 for now until we
+     # can figure out a better way.
+     use_prefix=${use_staging}/${use_darwin}-4.2_arm7
+     if test "$use_arch" != "armv7"; then
        AC_MSG_ERROR(error in configure of --with-arch=$use_arch)
      fi
-     if test "$use_sdk" != "4.2"; then
+     case $use_sdk in
+     4.*);;
+     *)
        AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
-     fi
+     esac
      CONFIG_SITE=" [config.site:config.site_ios.in]"
      MK_CONFIG_SITE=" [config.site.mk:config.site_ios.mk.in]"
      ;;
   *)
      AC_MSG_ERROR(error in configure of ($host))
 esac
+
+AC_MSG_RESULT(configuring for darwin $use_darwin-$use_sdk-$use_arch)
+AC_MSG_RESULT(creating hostroot at $use_staging)
 
 OUTPUT_FILES+=${CONFIG_SITE}
 OUTPUT_FILES+=${MK_CONFIG_SITE}
@@ -59,13 +74,10 @@ use_toolchain=${use_staging}/toolchain
 AC_MSG_RESULT(creating build toolchain at $use_toolchain)
 mkdir -p ${use_toolchain}
 
-AC_MSG_RESULT(creating tarball storage at $use_staging)
+AC_MSG_RESULT(creating tarball storage at $use_staging/tarballs)
 mkdir -p ${use_staging}/tarballs
 
-use_prefix=${use_staging}/${use_darwin}-${use_sdk}_${use_arch}
-AC_MSG_RESULT(creating hostroot at $use_staging)
-
-AC_MSG_RESULT(creating hostroot dirs at $use_prefix)
+AC_MSG_RESULT(creating hostroot directories at $use_prefix)
 mkdir -p ${use_prefix}/bin
 mkdir -p ${use_prefix}/lib
 mkdir -p ${use_prefix}/slib
@@ -88,4 +100,6 @@ AC_OUTPUT
 AC_MSG_RESULT(setting up config.site files)
 cp config.site ${use_prefix}/share/config.site
 
+AC_MSG_RESULT(setting up python26 Makefile)
+cp python26/Makefile.${use_darwin} python26/Makefile
 

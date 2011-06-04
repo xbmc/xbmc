@@ -22,7 +22,6 @@
 
 #include <string>
 #include <vector>
-#include "jsoncpp/include/json/json.h"
 #include "JSONUtils.h"
 
 namespace JSONRPC
@@ -105,7 +104,7 @@ namespace JSONRPC
      \brief Default value of the parameter
      (only needed when it is optional)
      */
-    Json::Value defaultValue;
+    CVariant defaultValue;
 
     /*!
      \brief Minimum value for Integer
@@ -140,7 +139,7 @@ namespace JSONRPC
      \brief (Optional) List of allowed values
      for the type
      */
-    std::vector<Json::Value> enums;
+    std::vector<CVariant> enums;
 
     /*!
      \brief List of possible values in an array
@@ -238,7 +237,7 @@ namespace JSONRPC
     /*!
      \brief Definition of the return value
      */
-    Json::Value returns;
+    CVariant returns;
   } JsonRpcMethod;
 
   /*! 
@@ -302,7 +301,7 @@ namespace JSONRPC
      \param printMetadata Whether to print XBMC specific data or not
      \param filterByTransport Whether to filter by transport or not
      */
-    static void Print(Json::Value &result, ITransportLayer *transport, IClient *client, bool printDescriptions, bool printMetadata, bool filterByTransport);
+    static void Print(CVariant &result, ITransportLayer *transport, IClient *client, bool printDescriptions, bool printMetadata, bool filterByTransport);
 
     /*!
      \brief Checks the given parameters from the request against the
@@ -320,17 +319,17 @@ namespace JSONRPC
      actual C/C++ implementation of the method to the "methodCall" parameter and checks the
      given parameters from the request against the json schema description for the given method.
      */
-    static JSON_STATUS CheckCall(const char* const method, const Json::Value &requestParameters, IClient *client, bool notification, MethodCall &methodCall, Json::Value &outputParameters);
+    static JSON_STATUS CheckCall(const char* const method, const CVariant &requestParameters, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters);
 
   private:
-    static void printType(const JSONSchemaTypeDefinition &type, bool isParameter, bool isGlobal, bool printDefault, bool printDescriptions, Json::Value &output);
-    static JSON_STATUS checkParameter(const Json::Value &requestParameters, const JSONSchemaTypeDefinition &type, unsigned int position, Json::Value &outputParameters, unsigned int &handled, Json::Value &errorData);
-    static JSON_STATUS checkType(const Json::Value &value, const JSONSchemaTypeDefinition &type, Json::Value &outputValue, Json::Value &errorData);
-    static void parseHeader(const Json::Value &descriptionObject);
-    static bool parseMethod(const Json::Value &value, JsonRpcMethod &method);
-    static bool parseParameter(Json::Value &value, JSONSchemaTypeDefinition &parameter);
-    static bool parseTypeDefinition(const Json::Value &value, JSONSchemaTypeDefinition &type, bool isParameter);
-    static void parseReturn(const Json::Value &value, Json::Value &returns);
+    static void printType(const JSONSchemaTypeDefinition &type, bool isParameter, bool isGlobal, bool printDefault, bool printDescriptions, CVariant &output);
+    static JSON_STATUS checkParameter(const CVariant &requestParameters, const JSONSchemaTypeDefinition &type, unsigned int position, CVariant &outputParameters, unsigned int &handled, CVariant &errorData);
+    static JSON_STATUS checkType(const CVariant &value, const JSONSchemaTypeDefinition &type, CVariant &outputValue, CVariant &errorData);
+    static void parseHeader(const CVariant &descriptionObject);
+    static bool parseMethod(const CVariant &value, JsonRpcMethod &method);
+    static bool parseParameter(CVariant &value, JSONSchemaTypeDefinition &parameter);
+    static bool parseTypeDefinition(const CVariant &value, JSONSchemaTypeDefinition &type, bool isParameter);
+    static void parseReturn(const CVariant &value, CVariant &returns);
     static void addReferenceTypeDefinition(JSONSchemaTypeDefinition &typeDefinition);
 
     class CJsonRpcMethodMap
@@ -348,7 +347,7 @@ namespace JSONRPC
       std::map<std::string, JsonRpcMethod> m_actionmap;
     };
 
-    static Json::Value m_notifications;
+    static CVariant m_notifications;
     static JsonRpcDescriptionHeader m_header;
     static CJsonRpcMethodMap m_actionMap;
     static std::map<std::string, JSONSchemaTypeDefinition> m_types;

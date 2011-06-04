@@ -345,26 +345,29 @@ void CGUIDialogVideoInfo::Update()
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_castList);
   OnMessage(msg);
 
-  if (m_bViewReview)
+  if (GetControl(CONTROL_BTN_TRACKS)) // if no CONTROL_BTN_TRACKS found - allow skinner full visibility control over CONTROL_TEXTAREA and CONTROL_LIST
   {
-    if (!m_movieItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
+    if (m_bViewReview)
     {
-      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 133);
+      if (!m_movieItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
+      {
+        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 133);
+      }
+      else
+      {
+        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 206);
+      }
+
+      SET_CONTROL_HIDDEN(CONTROL_LIST);
+      SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
     }
     else
     {
-      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 206);
+      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 207);
+
+      SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
+      SET_CONTROL_VISIBLE(CONTROL_LIST);
     }
-
-    SET_CONTROL_HIDDEN(CONTROL_LIST);
-    SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
-  }
-  else
-  {
-    SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 207);
-
-    SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
-    SET_CONTROL_VISIBLE(CONTROL_LIST);
   }
 
   // Check for resumability
