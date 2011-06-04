@@ -50,7 +50,8 @@ static const char *StreamStateToString(pa_stream_state s)
 
 CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) :
   m_AudioDataThread (NULL),
-  m_AudioDrainThread(NULL)
+  m_AudioDrainThread(NULL),
+  m_AudioFreeThread(NULL)
 {
   m_Destroyed = false;
   m_Initialized = false;
