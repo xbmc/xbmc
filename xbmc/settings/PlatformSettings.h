@@ -24,23 +24,21 @@
 
 class TiXmlElement;
 
-class CApplianceSettings
+class CPlatformSettings
 {
   public:
-    static CApplianceSettings* getInstance();
-    bool Load(CStdString profileName);
+    static CPlatformSettings* getInstance();
+    bool Load();
     void Clear();
 
-    CApplianceSettings();
+    CPlatformSettings();
     void Initialize();
 
     bool CanQuit() { return m_canQuit; };
     bool CanWindowed() { return m_canWindowed; };
   private:
-    const char *GetProfileRestrictions(const TiXmlElement *pElement);
-    bool ProfileMatch(const TiXmlElement *pElement, const CStdString profileName);
     bool m_canQuit;
     bool m_canWindowed;
 };
 
-XBMC_GLOBAL(CApplianceSettings,g_applianceSettings);
+XBMC_GLOBAL(CPlatformSettings,g_platformSettings);

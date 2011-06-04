@@ -83,7 +83,7 @@
 #include "powermanagement/DPMSSupport.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/ApplianceSettings.h"
+#include "settings/PlatformSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
 
@@ -3283,7 +3283,7 @@ bool CApplication::Cleanup()
     g_settings.Clear();
     g_guiSettings.Clear();
     g_advancedSettings.Clear();
-    g_applianceSettings.Clear();
+    g_platformSettings.Clear();
 
 #ifdef _LINUX
     CXHandle::DumpObjectTracker();

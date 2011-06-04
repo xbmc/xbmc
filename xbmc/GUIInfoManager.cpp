@@ -56,7 +56,7 @@
 #include "windowing/WindowingFactory.h"
 #include "powermanagement/PowerManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/ApplianceSettings.h"
+#include "settings/PlatformSettings.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
@@ -1823,7 +1823,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_LOGGEDON)
     bReturn = !(g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
   else if (condition == SYSTEM_SHOW_EXIT_BUTTON)
-    bReturn = g_applianceSettings.CanQuit();
+    bReturn = g_platformSettings.CanQuit();
   else if (condition == SYSTEM_HAS_LOGINSCREEN)
     bReturn = g_settings.UsingLoginScreen();
   else if (condition == WEATHER_IS_FETCHED)
