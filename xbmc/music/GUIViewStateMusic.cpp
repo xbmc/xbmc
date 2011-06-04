@@ -553,7 +553,7 @@ void CGUIViewStateWindowMusicNav::SaveViewState()
 
 void CGUIViewStateWindowMusicNav::AddOnlineShares()
 {
-  if (!g_advancedSettings.m_bVirtualShares) return;
+  if (!g_advancedSettings.CanUseVirtualShares()) return;
   for (int i = 0; i < (int)g_settings.m_musicSources.size(); ++i)
   {
     CMediaSource share = g_settings.m_musicSources.at(i);

@@ -29,7 +29,6 @@
 
 #include "system.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/PlatformSettings.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
@@ -77,7 +76,6 @@ int main(int argc, char* argv[])
 #endif
   setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
-  g_platformSettings.Initialize();
   bool testmode = 0;
   if (argc > 1)
   {
@@ -85,7 +83,7 @@ int main(int argc, char* argv[])
     {
       if (strnicmp(argv[i], "-fs", 3) == 0 || strnicmp(argv[i], "--fullscreen", 12) == 0)
       {
-        g_advancedSettings.m_startFullScreen = true;
+        g_advancedSettings.SetStartFullScreen(true);
       }
       else if (strnicmp(argv[i], "-h", 2) == 0 || strnicmp(argv[i], "--help", 6) == 0)
       {

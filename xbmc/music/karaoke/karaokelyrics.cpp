@@ -46,7 +46,7 @@ CKaraokeLyrics::~CKaraokeLyrics()
 void CKaraokeLyrics::Shutdown()
 {
   // Update the song-specific delay in the database
-  if ( m_idSong && m_avOrigDelay != m_avDelay && g_advancedSettings.m_karaokeKeepDelay )
+  if ( m_idSong && m_avOrigDelay != m_avDelay && g_advancedSettings.KaraokeKeepDelay() )
   {
     // If the song is in karaoke db, get the delay
     CMusicDatabase musicdatabase;
@@ -80,7 +80,7 @@ void CKaraokeLyrics::initData( const CStdString & songPath )
   CMusicDatabase musicdatabase;
 
   // Get song-specific delay from the database
-  if ( g_advancedSettings.m_karaokeKeepDelay && musicdatabase.Open() )
+  if ( g_advancedSettings.KaraokeKeepDelay() && musicdatabase.Open() )
   {
     CSong song;
     if ( musicdatabase.GetSongByFileName( songPath, song) )

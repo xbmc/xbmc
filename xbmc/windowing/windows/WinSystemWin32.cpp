@@ -377,7 +377,7 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
   else
   {
     dwStyle |= WS_OVERLAPPEDWINDOW;
-    windowAfter = g_advancedSettings.m_alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
+    windowAfter = g_advancedSettings.AlwaysOnTop() ? HWND_TOPMOST : HWND_NOTOPMOST;
 
     if(m_nTop <= 0 || m_nLeft <= 0)
       CenterWindow();
@@ -665,7 +665,7 @@ bool CWinSystemWin32::Show(bool raise)
     if (m_bFullScreen)
       windowAfter = HWND_TOP;
     else
-      windowAfter = g_advancedSettings.m_alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
+      windowAfter = g_advancedSettings.AlwaysOnTop() ? HWND_TOPMOST : HWND_NOTOPMOST;
   }
 
   SetWindowPos(m_hWnd, windowAfter, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
