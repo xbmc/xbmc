@@ -247,7 +247,7 @@ void CAdvancedSettings::Initialize()
   m_AllowDynamicTextures = true;
   m_RestrictCapsMask = 0;
   m_sleepBeforeFlip = 0;
-  m_bVirtualShares = true;
+  m_useVirtualShares = true;
 
 //caused lots of jerks
 //#ifdef _WIN32
@@ -276,6 +276,10 @@ void CAdvancedSettings::Initialize()
   m_jsonTcpPort = 9090;
 
   m_enableMultimediaKeys = false;
+
+  m_canQuit = true;
+  m_canWindowed = true;
+  m_showSplash = true;
 }
 
 bool CAdvancedSettings::Load()
@@ -633,7 +637,9 @@ bool CAdvancedSettings::Load()
 #ifdef HAS_SDL
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif
-
+  XMLUtils::GetBoolean(pRootElement, "showsplash", m_showSplash);
+  XMLUtils::GetBoolean(pRootElement, "canquit", m_canQuit);
+  XMLUtils::GetBoolean(pRootElement, "canwindowed", m_canWindowed);
   XMLUtils::GetInt(pRootElement, "songinfoduration", m_songInfoDuration, 0, INT_MAX);
   XMLUtils::GetInt(pRootElement, "busydialogdelay", m_busyDialogDelay, 0, 5000);
   XMLUtils::GetInt(pRootElement, "playlistretries", m_playlistRetries, -1, 5000);
@@ -649,7 +655,7 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetBoolean(pRootElement,"allowdynamictextures", m_AllowDynamicTextures);
   XMLUtils::GetUInt(pRootElement,"restrictcapsmask", m_RestrictCapsMask);
   XMLUtils::GetFloat(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip, 0.0f, 1.0f);
-  XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
+  XMLUtils::GetBoolean(pRootElement,"virtualshares", m_useVirtualShares);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");

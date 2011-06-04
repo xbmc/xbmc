@@ -22,7 +22,6 @@
 #include "system.h"
 #include "Settings.h"
 #include "AdvancedSettings.h"
-#include "PlatformSettings.h"
 #include "Application.h"
 #include "input/KeyboardLayoutConfiguration.h"
 #include "Util.h"
@@ -720,8 +719,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 
   // Advanced settings
   g_advancedSettings.Load();
-  if (g_application.IsStandAlone())
-    g_platformSettings.Load();
 
   // Add the list of disc stub extensions (if any) to the list of video extensions
   if (!m_discStubExtensions.IsEmpty())

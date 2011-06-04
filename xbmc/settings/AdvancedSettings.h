@@ -81,14 +81,16 @@ class CAdvancedSettings
     float m_ac3Gain;
     CStdString m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
-    bool m_dvdplayerIgnoreDTSinWAV;
+    bool DVDPlayerIgnoreDTSInWav() { return m_dvdplayerIgnoreDTSinWAV; };
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
     int m_videoSmallStepBackSeconds;
     int m_videoSmallStepBackTries;
     int m_videoSmallStepBackDelay;
-    bool m_videoUseTimeSeeking;
+
+    bool CanVideoUseTimeSeeking() { return m_videoUseTimeSeeking; };
+
     int m_videoTimeSeekForward;
     int m_videoTimeSeekBackward;
     int m_videoTimeSeekForwardBig;
@@ -99,7 +101,9 @@ class CAdvancedSettings
     int m_videoPercentSeekBackwardBig;
     CStdString m_videoPPFFmpegDeint;
     CStdString m_videoPPFFmpegPostProc;
-    bool m_musicUseTimeSeeking;
+    bool CanMusicUseTimeSeeking() { return m_musicUseTimeSeeking; };
+
+
     int m_musicTimeSeekForward;
     int m_musicTimeSeekBackward;
     int m_musicTimeSeekForwardBig;
@@ -138,9 +142,9 @@ class CAdvancedSettings
     int m_lcdAddress2;
     int m_lcdAddress3;
     int m_lcdAddress4;
-    bool m_lcdHeartbeat;
     bool m_lcdDimOnScreenSave;
     int m_lcdScrolldelay;
+    bool m_lcdHeartbeat;
     CStdString m_lcdHostName;
 
     int m_autoDetectPingTime;
@@ -173,12 +177,12 @@ class CAdvancedSettings
     int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     float m_controllerDeadzone;
 
-    bool m_playlistAsFolders;
+    bool ShowPlaylistAsFolders() { return m_playlistAsFolders; };
     bool m_detectAsUdf;
 
     int m_thumbSize;
     int m_fanartHeight;
-    bool m_useDDSFanart;
+    bool UseDDSFanArt() { return m_useDDSFanart; };
 
     int m_sambaclienttimeout;
     CStdString m_sambadoscodepage;
@@ -246,28 +250,28 @@ class CAdvancedSettings
     int m_curlretries;
     bool m_curlDisableIPV6;
 
-    bool m_fullScreen;
-    bool m_startFullScreen;
-    bool m_alwaysOnTop;  /* makes xbmc to run always on top .. osx/win32 only .. */
+
+    bool AlwaysOnTop() { return m_alwaysOnTop; };  /* makes xbmc to run always on top .. osx/win32 only .. */
     int m_playlistRetries;
     int m_playlistTimeout;
-    bool m_GLRectangleHack;
+    bool UseGLRectangeHack() { return m_GLRectangleHack; };
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
 
-    bool m_AllowD3D9Ex;
-    bool m_ForceD3D9Ex;
-    bool m_AllowDynamicTextures;
+    bool AllowD3D9Ex() { return m_AllowD3D9Ex; };
+    bool ForceD3D9Ex() { return m_ForceD3D9Ex; };
+    bool AllowDynamicTextures() { return m_AllowDynamicTextures; };
     unsigned int m_RestrictCapsMask;
     float m_sleepBeforeFlip; ///< if greather than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
-    bool m_bVirtualShares;
+
+    bool CanUseVirtualShares() { return m_useVirtualShares; };
 
     float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s
     float m_karaokeSyncDelayLRC;
     bool m_karaokeChangeGenreForKaraokeSongs;
-    bool m_karaokeKeepDelay; // store user-changed song delay in the database
+    bool KaraokeKeepDelay() { return m_karaokeKeepDelay; }; // store user-changed song delay in the database
     int m_karaokeStartIndex; // auto-assign numbering start from this value
-    bool m_karaokeAlwaysEmptyOnCdgs; // always have empty background on CDG files
+    bool KaraokeAlwaysEmptyOnCDGs() { return m_karaokeAlwaysEmptyOnCdgs; }; // always have empty background on CDG files
     bool m_karaokeUseSongSpecificBackground; // use song-specific video or image if available instead of default
     CStdString m_karaokeDefaultBackgroundType; // empty string or "vis", "image" or "video"
     CStdString m_karaokeDefaultBackgroundFilePath; // only for "image" or "video" types above
@@ -276,18 +280,47 @@ class CAdvancedSettings
     CStdString m_gpuTempCmd;
     int m_bgInfoLoaderMaxThreads;
 
-    bool m_measureRefreshrate; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
-                               //otherwise it will use the windows refreshrate
+    bool MeasureRefreshRate() { return m_measureRefreshrate; }; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
+                                                                //otherwise it will use the windows refreshrate
 
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
 
     unsigned int m_cacheMemBufferSize;
-
-    bool m_jsonOutputCompact;
     unsigned int m_jsonTcpPort;
 
+    bool IsInFullScreen() { return m_fullScreen; };
+    void SetFullScreenState(bool isFullScreen) { m_fullScreen = isFullScreen; };
+    bool StartFullScreen() { return m_startFullScreen; };
+    void SetStartFullScreen(bool startFullScreen) { m_startFullScreen = startFullScreen; };
+    bool OutputCompactJSON() { return m_jsonOutputCompact; };
+    bool EnableMultimediaKeys() { return m_enableMultimediaKeys; };
+    bool CanQuit() { return m_canQuit; };
+    bool CanWindowed() { return m_canWindowed; };
+    bool ShowSplash() { return m_showSplash; };
+  private:
+    bool m_videoUseTimeSeeking;
+    bool m_musicUseTimeSeeking;
+    bool m_measureRefreshrate;
+    bool m_fullScreen;
+    bool m_startFullScreen;
+    bool m_jsonOutputCompact;
     bool m_enableMultimediaKeys;
+    bool m_canQuit;
+    bool m_canWindowed;
+    bool m_showSplash;
+    bool m_useVirtualShares;
+    bool m_alwaysOnTop;
+    bool m_GLRectangleHack;
+    bool m_AllowD3D9Ex;
+    bool m_ForceD3D9Ex;
+    bool m_AllowDynamicTextures;
+    bool m_playlistAsFolders;
+    bool m_useDDSFanart;
+    bool m_dvdplayerIgnoreDTSinWAV;
+    /* Karaoke Settings */
+    bool m_karaokeAlwaysEmptyOnCdgs;
+    bool m_karaokeKeepDelay;
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

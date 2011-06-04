@@ -143,7 +143,7 @@ bool CDummyVideoPlayer::CanSeek()
 
 void CDummyVideoPlayer::Seek(bool bPlus, bool bLargeStep)
 {
-  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
+  if (g_advancedSettings.CanVideoUseTimeSeeking() && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
   {
     int seek = 0;
     if (bLargeStep)

@@ -20,7 +20,6 @@
  */
 
 #include "settings/AdvancedSettings.h"
-#include "settings/PlatformSettings.h"
 #include "utils/log.h"
 #include "WIN32Util.h"
 #include "shellapi.h"
@@ -151,7 +150,6 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 
   setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
-  g_platformSettings.Initialize();
   szArglist = CommandLineToArgvW(strcl.c_str(), &nArgs);
   if(szArglist != NULL)
   {
@@ -159,7 +157,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     {
       CStdStringW strArgW(szArglist[i]);
       if(strArgW.Equals(L"-fs"))
-        g_advancedSettings.m_startFullScreen = true;
+        g_advancedSettings.SetStartFullScreen(true);
       else if(strArgW.Equals(L"-p") || strArgW.Equals(L"--portable"))
         g_application.EnablePlatformDirectories(false);
       else if(strArgW.Equals(L"-d"))
