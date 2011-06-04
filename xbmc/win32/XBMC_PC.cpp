@@ -20,7 +20,7 @@
  */
 
 #include "settings/AdvancedSettings.h"
-#include "settings/ApplianceSettings.h"
+#include "settings/PlatformSettings.h"
 #include "utils/log.h"
 #include "WIN32Util.h"
 #include "shellapi.h"
@@ -151,7 +151,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 
   setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
-  g_applianceSettings.Initialize();
+  g_platformSettings.Initialize();
   szArglist = CommandLineToArgvW(strcl.c_str(), &nArgs);
   if(szArglist != NULL)
   {

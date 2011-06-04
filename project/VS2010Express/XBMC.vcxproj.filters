@@ -2457,7 +2457,7 @@
     <ClCompile Include="..\..\xbmc\utils\JSONVariantWriter.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\ApplianceSettings.cpp">
+    <ClCompile Include="..\..\xbmc\settings\PlatformSettings.cpp">
       <Filter>settings</Filter>
     </ClCompile>
   </ItemGroup>
@@ -4925,7 +4925,7 @@
     <ClInclude Include="..\..\xbmc\utils\JSONVariantWriter.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\ApplianceSettings.h">
+    <ClInclude Include="..\..\xbmc\settings\PlatformSettings.h">
       <Filter>settings</Filter>
     </ClInclude>
   </ItemGroup>

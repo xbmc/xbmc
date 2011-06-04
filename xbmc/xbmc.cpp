@@ -29,7 +29,7 @@
 
 #include "system.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/ApplianceSettings.h"
+#include "settings/PlatformSettings.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 #endif
   setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
-  g_applianceSettings.Initialize();
+  g_platformSettings.Initialize();
   bool testmode = 0;
   if (argc > 1)
   {
