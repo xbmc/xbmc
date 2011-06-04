@@ -2451,9 +2451,6 @@
     <ClCompile Include="..\..\xbmc\input\XBMC_keytable.cpp">
       <Filter>input</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\ApplianceSettings.cpp">
-      <Filter>settings</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\JSONVariantParser.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -4921,9 +4918,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\XBMC_keytable.h">
       <Filter>input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\ApplianceSettings.h">
-      <Filter>settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\JSONVariantParser.h">
       <Filter>utils</Filter>
