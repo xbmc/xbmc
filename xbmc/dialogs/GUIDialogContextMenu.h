@@ -147,7 +147,7 @@ protected:
   void SetupButtons();
 
   /*! \brief Position the context menu in the middle of the focused control.
-   If no control is available it is positioned in the middle of the screen.
+   If no control is available it is positioned in the middle of th escreen.
    */
   void PositionAtCurrentFocus();
 
@@ -155,13 +155,14 @@ protected:
   float GetHeight();
   virtual void OnInitWindow();
   virtual void OnWindowLoaded();
-  virtual void OnWindowUnload();
+  virtual void OnDeinitWindow(int nextWindowID);
   static CStdString GetDefaultShareNameByType(const CStdString &strType);
   static void SetDefault(const CStdString &strType, const CStdString &strDefault);
   static void ClearDefault(const CStdString &strType);
   static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
 
 private:
+  float m_coordX, m_coordY;
   int m_clickedButton;
   CContextButtons m_buttons;
 };
