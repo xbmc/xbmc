@@ -36,9 +36,11 @@ class CPlatformSettings
 
     bool CanQuit() { return m_canQuit; };
     bool CanWindowed() { return m_canWindowed; };
+    bool ShowSplash() { return m_showSplash; };
   private:
     bool m_canQuit;
     bool m_canWindowed;
+    bool m_showSplash;
 };
 
 XBMC_GLOBAL(CPlatformSettings,g_platformSettings);
