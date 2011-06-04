@@ -248,7 +248,6 @@ class CAdvancedSettings
 
     bool m_fullScreen;
     bool m_startFullScreen;
-    bool m_splashImage;
     bool m_alwaysOnTop;  /* makes xbmc to run always on top .. osx/win32 only .. */
     int m_playlistRetries;
     int m_playlistTimeout;

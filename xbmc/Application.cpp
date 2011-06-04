@@ -702,7 +702,7 @@ bool CApplication::Create()
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
 
-  if (g_advancedSettings.m_splashImage)
+  if (g_platformSettings.ShowSplash())
   {
     CStdString strUserSplash = "special://home/media/Splash.png";
     if (CFile::Exists(strUserSplash))
@@ -1131,7 +1131,7 @@ bool CApplication::Initialize()
       FatalErrorHandler(true, true, true);
   }
 
-  if (g_advancedSettings.m_splashImage)
+  if (g_platformSettings.ShowSplash())
     SAFE_DELETE(m_splash);
 
   if (g_guiSettings.GetBool("masterlock.startuplock") &&

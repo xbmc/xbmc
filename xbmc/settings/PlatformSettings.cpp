@@ -38,6 +38,7 @@ void CPlatformSettings::Initialize()
 {
   m_canQuit = true;
   m_canWindowed = true;
+  m_showSplash = true;
 }
 
 bool CPlatformSettings::Load()
@@ -68,6 +69,7 @@ bool CPlatformSettings::Load()
   TiXmlElement *pElement = pRootElement->FirstChildElement("system");
   if (pElement)
   {
+    XMLUtils::GetBoolean(pElement, "showsplash", m_showSplash);
     XMLUtils::GetBoolean(pElement, "canquit", m_canQuit);
   }
 
