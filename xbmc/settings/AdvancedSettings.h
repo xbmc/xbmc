@@ -68,7 +68,7 @@ class CAdvancedSettings
     static CAdvancedSettings* getInstance();
 
     void Initialize();
-
+    void AddSettingsFile(CStdString filename);
     bool Load();
     void Clear();
 
@@ -321,6 +321,9 @@ class CAdvancedSettings
     /* Karaoke Settings */
     bool m_karaokeAlwaysEmptyOnCdgs;
     bool m_karaokeKeepDelay;
+
+    std::vector<CStdString> m_settingsFiles;
+    void ParseSettingsFile(CStdString file);
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);
