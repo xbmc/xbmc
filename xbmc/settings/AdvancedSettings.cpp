@@ -237,8 +237,6 @@ void CAdvancedSettings::Initialize()
                                   //with ipv6.
 
   m_fullScreen = m_startFullScreen = false;
-  m_showExitButton = true;
-  m_splashImage = true;
 
   m_playlistRetries = 100;
   m_playlistTimeout = 20; // 20 seconds timeout
@@ -249,7 +247,7 @@ void CAdvancedSettings::Initialize()
   m_AllowDynamicTextures = true;
   m_RestrictCapsMask = 0;
   m_sleepBeforeFlip = 0;
-  m_bVirtualShares = true;
+  m_useVirtualShares = true;
 
 //caused lots of jerks
 //#ifdef _WIN32
@@ -278,6 +276,10 @@ void CAdvancedSettings::Initialize()
   m_jsonTcpPort = 9090;
 
   m_enableMultimediaKeys = false;
+
+  m_canQuit = true;
+  m_canWindowed = true;
+  m_showSplash = true;
 }
 
 bool CAdvancedSettings::Load()
@@ -286,37 +288,45 @@ bool CAdvancedSettings::Load()
   //       it should instead use the versions of GetString/Integer/Float that
   //       don't take defaults in.  Defaults are set in the constructor above
   Initialize(); // In case of profile switch.
-  CStdString advancedSettingsXML;
-  advancedSettingsXML  = g_settings.GetUserDataItem("advancedsettings.xml");
+  CStdString advancedSettingsXML = g_settings.GetUserDataItem("advancedsettings.xml");
+  ParseSettingsFile("special://xbmc/system/advancedsettings.xml");
+  ParseSettingsFile(advancedSettingsXML);
+  for (unsigned int i = 0; i < m_settingsFiles.size(); i++)
+    ParseSettingsFile(m_settingsFiles[i]);
+  return true;
+}
+
+void CAdvancedSettings::ParseSettingsFile(CStdString file)
+{
   TiXmlDocument advancedXML;
-  if (!CFile::Exists(advancedSettingsXML))
-  { // tell the user it doesn't exist
-    CLog::Log(LOGNOTICE, "No advancedsettings.xml to load (%s)", advancedSettingsXML.c_str());
-    return false;
+  if (!CFile::Exists(file))
+  {
+    CLog::Log(LOGNOTICE, "No settings file to load to load (%s)", file.c_str());
+    return;
   }
 
-  if (!advancedXML.LoadFile(advancedSettingsXML))
+  if (!advancedXML.LoadFile(file))
   {
-    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", advancedSettingsXML.c_str(), advancedXML.ErrorRow(), advancedXML.ErrorDesc());
-    return false;
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", file.c_str(), advancedXML.ErrorRow(), advancedXML.ErrorDesc());
+    return;
   }
 
   TiXmlElement *pRootElement = advancedXML.RootElement();
   if (!pRootElement || strcmpi(pRootElement->Value(),"advancedsettings") != 0)
   {
-    CLog::Log(LOGERROR, "Error loading %s, no <advancedsettings> node", advancedSettingsXML.c_str());
-    return false;
+    CLog::Log(LOGERROR, "Error loading %s, no <advancedsettings> node", file.c_str());
+    return;
   }
 
   // succeeded - tell the user it worked
-  CLog::Log(LOGNOTICE, "Loaded advancedsettings.xml from %s", advancedSettingsXML.c_str());
+  CLog::Log(LOGNOTICE, "Loaded settings file from %s", file.c_str());
 
   // Dump contents of AS.xml to debug log
   TiXmlPrinter printer;
   printer.SetLineBreak("\n");
   printer.SetIndent("  ");
   advancedXML.Accept(&printer);
-  CLog::Log(LOGNOTICE, "Contents of %s are...\n%s", advancedSettingsXML.c_str(), printer.CStr());
+  CLog::Log(LOGNOTICE, "Contents of %s are...\n%s", file.c_str(), printer.CStr());
 
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
@@ -636,9 +646,9 @@ bool CAdvancedSettings::Load()
 #ifdef HAS_SDL
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif
-  XMLUtils::GetBoolean(pRootElement, "splash", m_splashImage);
-  XMLUtils::GetBoolean(pRootElement, "showexitbutton", m_showExitButton);
-
+  XMLUtils::GetBoolean(pRootElement, "showsplash", m_showSplash);
+  XMLUtils::GetBoolean(pRootElement, "canquit", m_canQuit);
+  XMLUtils::GetBoolean(pRootElement, "canwindowed", m_canWindowed);
   XMLUtils::GetInt(pRootElement, "songinfoduration", m_songInfoDuration, 0, INT_MAX);
   XMLUtils::GetInt(pRootElement, "busydialogdelay", m_busyDialogDelay, 0, 5000);
   XMLUtils::GetInt(pRootElement, "playlistretries", m_playlistRetries, -1, 5000);
@@ -654,7 +664,7 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetBoolean(pRootElement,"allowdynamictextures", m_AllowDynamicTextures);
   XMLUtils::GetUInt(pRootElement,"restrictcapsmask", m_RestrictCapsMask);
   XMLUtils::GetFloat(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip, 0.0f, 1.0f);
-  XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
+  XMLUtils::GetBoolean(pRootElement,"virtualshares", m_useVirtualShares);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
@@ -884,8 +894,6 @@ bool CAdvancedSettings::Load()
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
-
-  return true;
 }
 
 void CAdvancedSettings::Clear()
@@ -1007,3 +1015,7 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdStri
   }
 }
 
+void CAdvancedSettings::AddSettingsFile(CStdString filename)
+{
+  m_settingsFiles.push_back("special://xbmc/system/" + filename);
+}
