@@ -17,5 +17,5 @@
 
     <!-- on-screen error messages -->
     <string id="30050">Uw TVServerXBMC plugin v%s is te oud. U heeft minimaal versie v%s of nieuwer nodig!</string>
-    <string id="30050">Uw TVServerXBMC plugin is te oud. U heeft minimaal versie v%s of nieuwer nodig!</string>	
+    <string id="30051">Uw TVServerXBMC plugin is te oud. U heeft minimaal versie v%s of nieuwer nodig!</string>
 </strings>

@@ -15,4 +15,8 @@
     <string id="30011">Opnames direct afspelen (niet streamen)</string>
     <string id="30012">Mediaportal directory met opnames</string>
     <string id="30013">Direct afspelen uit Timeshift buffer (niet streamen)</string>
+
+    <!-- on-screen error messages -->
+    <string id="30050">Uw TVServerXBMC plugin v%s is te oud. U heeft minimaal versie v%s of nieuwer nodig!</string>
+    <string id="30051">Uw TVServerXBMC plugin is te oud. U heeft minimaal versie v%s of nieuwer nodig!</string>
 </strings>
