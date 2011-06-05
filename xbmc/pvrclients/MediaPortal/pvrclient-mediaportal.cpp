@@ -195,7 +195,6 @@ bool cPVRClientMediaPortal::Connect()
       {
         XBMC->Log(LOG_ERROR, "Your TVServerXBMC version v%s is too old. Please upgrade to v%s or higher!", fields[1].c_str(), TVSERVERXBMC_MIN_VERSION_STRING);
         XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(30050), fields[1].c_str(), TVSERVERXBMC_MIN_VERSION_STRING);
-        XBMC->QueueNotification(QUEUE_ERROR, "Your TVServerXBMC version '%s' is too old. Please upgrade to 1.1.0.70 or higher!", fields[1].c_str());
         return false;
       }
       else
@@ -213,7 +212,6 @@ bool cPVRClientMediaPortal::Connect()
     {
       XBMC->Log(LOG_ERROR, "Your TVServerXBMC version is too old. Please upgrade to v%s or higher!", TVSERVERXBMC_MIN_VERSION_STRING);
       XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(30051), TVSERVERXBMC_MIN_VERSION_STRING);
-      XBMC->QueueNotification(QUEUE_ERROR, "Your TVServerXBMC version is too old. Please upgrade to 1.1.0.70 or higher!");
       return false;
     }
   }
@@ -542,6 +540,13 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
   if(bRadio)
   {
     XBMC->Log(LOG_DEBUG, "RequestChannelList for Radio group:%s", g_szRadioGroup.c_str());
+
+    if(!g_bRadioEnabled)
+    {
+      XBMC->Log(LOG_INFO, "Fetching radio channels is disabled.");
+      return PVR_ERROR_NO_ERROR;
+    }
+
     command.Format("ListRadioChannels:%s\n", uri::encode(uri::PATH_TRAITS, g_szRadioGroup).c_str());
   }
   else
@@ -573,7 +578,8 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
     {
       tag.iUniqueId = channel.UID();
       tag.iChannelNumber = g_iTVServerXBMCBuild >= 102 ? channel.ExternalID() : channel.UID();
-      tag.strChannelName = channel.Name();      tag.strIconPath = "";
+      tag.strChannelName = channel.Name();
+      tag.strIconPath = "";
       tag.iEncryptionSystem = channel.Encrypted();
       tag.bIsRadio = bRadio; //TODO:(channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
       tag.bIsHidden = false;
@@ -785,10 +791,6 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
     uri::decode(data);
 
     XBMC->Log(LOG_DEBUG, "RECORDING: %s", data.c_str() );
-
-    ///* Convert to UTF8 string format */
-    //if (m_bCharsetConv)
-    //  XBMC_unknown_to_utf8(str_result);
 
     cRecording recording;
     if (recording.ParseLine(data))
