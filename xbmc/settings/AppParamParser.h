@@ -22,6 +22,8 @@
 #ifdef _WIN32
 #include "WIN32Util.h"
 #endif
+#include "PlayListPlayer.h"
+#include "FileItem.h"
 
 class CAppParamParser
 {
@@ -30,12 +32,16 @@ class CAppParamParser
 #ifdef _WIN32
     void Parse(LPWSTR *szArglist, int nArgs);
 #else
-    void Parse(char* argv[]);
+    void Parse(char* argv[], int nArgs);
 #endif
   private:
+    bool m_testmode;
+    CFileItemList m_playlist;
+    void ParseArg(CStdString arg);
     void DisplayHelp();
     void EnableDebugMode();
     void SetStartFullScreen();
     void SetIsStandalone();
     void SetPortable();
+    void PlayPlaylist();
 };
