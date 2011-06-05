@@ -179,6 +179,17 @@ IF %comp%==vs2010 (
   Echo Lircmap.xml>>exclude.txt
   
   md BUILD_WIN32\Xbmc
+  rem Additions by margro:
+  Echo addons\pvr.fortherecord.argus\libcurld.dll >>exclude.txt
+  Echo userdata\addon_data\ >>exclude.txt
+  Echo userdata\keymaps\ >>exclude.txt
+  Echo userdata\masterprofile\ >>exclude.txt
+  Echo *fmScrobbler.xml >>exclude.txt
+  Echo .ilk>>exclude.txt
+  Echo .exp>>exclude.txt
+  Echo .def>>exclude.txt
+  Echo .pdb>>exclude.txt
+  Echo .lib>>exclude.txt
 
   xcopy %EXE% BUILD_WIN32\Xbmc > NUL
   xcopy ..\..\userdata BUILD_WIN32\Xbmc\userdata /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
@@ -254,7 +265,10 @@ IF %comp%==vs2010 (
     rem try with space delim instead of tab
     FOR /F "tokens=3* delims= " %%A IN ('REG QUERY "HKLM\Software\Wow6432Node\NSIS" /ve') DO SET NSISExePath=%%B
   )
-
+  rem Compress the executable if we can find upx
+  upx -V 2> NUL && upx "%CD%\BUILD_WIN32\Xbmc\xbmc.exe"
+  echo Just before creating setup. You can check BUILD_WIN32 for unnecessary files and remove them now. Press enter to continue
+  pause
   SET NSISExe=%NSISExePath%\makensis.exe
   "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dxbmc_root="%CD%\BUILD_WIN32" /Dxbmc_revision="%GIT_REV%" /Dxbmc_target="%target%" "XBMC for Windows.nsi"
   IF NOT EXIST "%XBMC_SETUPFILE%" (
