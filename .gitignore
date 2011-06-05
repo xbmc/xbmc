@@ -40,7 +40,7 @@ config.log
 *.obj
 *.idb
 *ReSharper*
-*.idb
+*.exe
 
 # osx specifics
 /build/
@@ -1242,16 +1242,29 @@ project/Win32BuildSetup/dependencies/libcdio-10.dll
 /addons/library.xbmc.pvr/libXBMC_pvr.lib
 
 /addons/pvr.team-mediaportal.tvserver/XBMC_MPTV.lib
+/addons/pvr.team-mediaportal.tvserver-tsreader/XBMC_MPTV.lib
+/addons/pvr.fortherecord.argus/XBMC_ForTheRecord.lib
+/addons/pvr.fortherecord.argus/libcurl.dll
+/addons/pvr.fortherecord.argus/libcurld.dll
 /addons/pvr.hts/XBMC_Tvheadend_win32.lib
-/addons/pvr.vdr.streamdev/XBMC_VDR_win32.lib
+/addons/pvr.vdr.vnsi/XBMC_VDR_vnsi_win32.lib
 
 /xbmc/pvrclients/MediaPortal/project/VS2010Express/Debug
 /xbmc/pvrclients/MediaPortal/project/VS2010Express/Release
+
 /xbmc/pvrclients/tvheadend/project/VS2010Express/Debug
 /xbmc/pvrclients/tvheadend/project/VS2010Express/Release
-/xbmc/pvrclients/vdr-streamdev/project/VS2010Express/Debug
-/xbmc/pvrclients/vdr-streamdev/project/VS2010Express/Release
+/xbmc/pvrclients/vdr-vnsi/project/VS2010Express/Debug
+/xbmc/pvrclients/vdr-vnsi/project/VS2010Express/Release
 
 /xbmc/pvrclients/MediaPortal/lib/live555/obj
 /xbmc/pvrclients/MediaPortal/lib/live555/shared
 /xbmc/pvrclients/MediaPortal/project/VS2010Express/Debug-tsreader
+/xbmc/pvrclients/MediaPortal/project/VS2010Express/Release-tsreader
+
+/xbmc/pvrclients/ForTheRecord/project/VS2010Express/Debug
+/xbmc/pvrclients/ForTheRecord/project/VS2010Express/Release
+/xbmc/pvrclients/ForTheRecord/lib/curl-7.21.4/lib/Debug
+/xbmc/pvrclients/ForTheRecord/lib/curl-7.21.4/lib/Release
+/xbmc/pvrclients/ForTheRecord/lib/libcurl.*
+/xbmc/pvrclients/ForTheRecord/lib/libcurld.*
