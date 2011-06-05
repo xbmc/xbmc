@@ -233,11 +233,11 @@ namespace ForTheRecord
     }
     else if (channelType == Radio)
     {
-      retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/ChannelGroups/Radio", "?visibleOnly=false", response);        
+      retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/ChannelGroups/Radio", "?visibleOnly=false", response);
     }
         
     if(retval >= 0)
-    {           
+    {
       if( response.type() == Json::arrayValue)
       {
         int size = response.size();
@@ -253,23 +253,23 @@ namespace ForTheRecord
     {
       XBMC->Log(LOG_DEBUG, "RequestChannelGroups failed. Return value: %i\n", retval);
     }
-        
+
     return retval;
   }
-    
+
   /*
    * \brief Get the list with channels for the given channel group from 4TR
-   * \param channelGroupId GUID of the channel group 
+   * \param channelGroupId GUID of the channel group
    */
   int RequestChannelGroupMembers(const std::string& channelGroupId, Json::Value& response)
   {
     int retval = -1;
-        
+
     std::string command = "ForTheRecord/Scheduler/ChannelsInGroup/" + channelGroupId;
     retval = ForTheRecordJSONRPC(command, "", response);
-        
+
     if(retval >= 0)
-    {           
+    {
       if( response.type() == Json::arrayValue)
       {
         int size = response.size();
@@ -647,7 +647,7 @@ namespace ForTheRecord
     retval = ForTheRecordJSONRPC(command, "", response);
 
     if(retval >= 0)
-    {           
+    {
       if( response.type() == Json::arrayValue)
       {
         int size = response.size();
@@ -680,7 +680,7 @@ namespace ForTheRecord
     retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/UpcomingPrograms/82?includeCancelled=true", "", response);
 
     if(retval >= 0)
-    {           
+    {
       if( response.type() == Json::arrayValue)
       {
         int size = response.size();
@@ -745,7 +745,6 @@ namespace ForTheRecord
     struct tm* convert = gmtime(&starttime);
     struct tm tm_start = *convert;
 
-    
     //Format: ForTheRecord/Scheduler/CancelUpcomingProgram/{scheduleId}/{channelId}/{startTime}?guideProgramId={guideProgramId}
     char command[256];
     snprintf(command, 256, "ForTheRecord/Scheduler/CancelUpcomingProgram/%s/%s/%i-%02i-%02iT%02i:%02i:%02i%?guideProgramId=%s" ,
@@ -769,7 +768,7 @@ namespace ForTheRecord
   int AddOneTimeSchedule(const std::string& channelid, const time_t starttime, const std::string& title, int prerecordseconds, int postrecordseconds, Json::Value& response)
   {
     int retval = -1;
-  
+
     XBMC->Log(LOG_DEBUG, "AddOneTimeSchedule");
     struct tm* convert = localtime(&starttime);
     struct tm tm_start = *convert;
@@ -794,7 +793,7 @@ namespace ForTheRecord
     retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/SaveSchedule", arguments, response);
 
     if(retval >= 0)
-    {           
+    {
       if( response.type() != Json::objectValue)
       {
         XBMC->Log(LOG_DEBUG, "Unknown response format. Expected Json::objectValue\n");
@@ -848,7 +847,7 @@ namespace ForTheRecord
     retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/UpcomingProgramsForSchedule", arguments, response);
 
     if(retval >= 0)
-    {           
+    {
       if( response.type() == Json::arrayValue)
       {
         int size = response.size();

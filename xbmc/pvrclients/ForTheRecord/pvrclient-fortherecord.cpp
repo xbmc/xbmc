@@ -632,7 +632,7 @@ PVR_ERROR cPVRClientForTheRecord::GetTimers(PVR_HANDLE handle)
   int         numberoftimers;
 
   XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
-  
+
   // retrieve the currently active recordings
   int retval = ForTheRecord::GetActiveRecordings(activeRecordingsResponse);
 

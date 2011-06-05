@@ -206,7 +206,7 @@ namespace ForTheRecord
 
   /*
    * \brief Get the list with channels for the given channel group from 4TR
-   * \param channelGroupId GUID of the channel group 
+   * \param channelGroupId GUID of the channel group
    */
   int RequestChannelGroupMembers(const std::string& channelGroupId, Json::Value& response);
 
