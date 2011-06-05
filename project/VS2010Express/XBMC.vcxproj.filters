@@ -2455,7 +2455,8 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\settings\AppParamParser.cpp">
-      <Filter>settings</Filter>    </ClCompile>
+      <Filter>settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4919,7 +4920,8 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\AppParamParser.h">
-      <Filter>settings</Filter>    </ClInclude>
+      <Filter>settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">
