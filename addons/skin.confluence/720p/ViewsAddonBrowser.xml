@@ -217,7 +217,7 @@
 						<width>160</width>
 						<height>32</height>
 						<aspectratio align="left">keep</aspectratio>
-					<texture fallback="LeftRating/rating0.png">$INFO[ListItem.Property(Addon.StarRating),LeftRating/]</texture>
+						<texture fallback="LeftRating/rating0.png">$INFO[ListItem.Property(Addon.StarRating),LeftRating/]</texture>
 					</control>
 					<control type="image">
 						<posx>0</posx>
