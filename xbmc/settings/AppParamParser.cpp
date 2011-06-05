@@ -21,14 +21,20 @@
 
 #include "AppParamParser.h"
 #include "AdvancedSettings.h"
+#include "PlayListPlayer.h"
+#include "FileItem.h"
 #include "Application.h"
 #include "log.h"
 #ifdef _WIN32
 #include "WIN32Util.h"
 #endif
+#ifdef HAS_LIRC
+#include "input/linux/LIRC.h"
+#endif
 
 CAppParamParser::CAppParamParser()
 {
+  m_testmode = false;
 }
 
 #ifdef _WIN32
@@ -39,15 +45,8 @@ void CAppParamParser::Parse(LPWSTR *szArglist, int nArgs)
     for(int i=0;i<nArgs;i++)
     {
       CStdStringW strArgW(szArglist[i]);
-      if(strArgW.Equals(L"-fs") || strArgW.Equals(L"--fullscreen"))
-        SetStartFullScreen();
-      else if(strArgW.Equals(L"-h") || strArgW.Equals(L"--help"))
-        DisplayHelp();
-      else if (strArgW.Equals(L"--standalone"))
-        SetIsStandalone();
-      else if(strArgW.Equals(L"-p") || strArgW.Equals(L"--portable"))
-        SetPortable();
-      else if(strArgW.Equals(L"-d"))
+      ParseArg(strArgW.c_str());
+      if(strArgW.Equals(L"-d") )
       {
         if(++i < nArgs)
         {
@@ -58,37 +57,25 @@ void CAppParamParser::Parse(LPWSTR *szArglist, int nArgs)
             --i;
         }
       }
-      else if(strArgW.Equals(L"--debug"))
-        EnableDebugMode();
     }
     LocalFree(szArglist);
   }
+  PlayPlaylist();
 }
 #else
-void CAppParamParser::Parse(char* argv[])
+void CAppParamParser::Parse(char* argv[], int nArgs)
 {
-  if (argc > 1)
+  if (nArgs > 1)
   {
-    for (int i = 1; i < argc; i++)
+    for (int i = 1; i < nArgs; i++)
     {
-      if (strnicmp(argv[i], "-fs", 3) == 0 || strnicmp(argv[i], "--fullscreen", 12) == 0)
-        SetStartFullScreen();
-      else if (strnicmp(argv[i], "-h", 2) == 0 || strnicmp(argv[i], "--help", 6) == 0)
-        DisplayHelp();
-      else if (strnicmp(argv[i], "--standalone", 12) == 0)
-        SetIsStandalone();
-      else if (strnicmp(argv[i], "-p", 2) == 0 || strnicmp(argv[i], "--portable", 10) == 0)
-        SetPortable();
-      else if (strnicmp(argv[i], "--legacy-res", 12) == 0)
-        g_application.SetEnableLegacyRes(true);
-      else if (strnicmp(argv[i], "--test", 6) == 0)
-        testmode=1;
+      ParseArg(argv[i]);
 #ifdef HAS_LIRC
-      else if (strnicmp(argv[i], "-l", 2) == 0 || strnicmp(argv[i], "--lircdev", 9) == 0)
+      if (strnicmp(argv[i], "-l", 2) == 0 || strnicmp(argv[i], "--lircdev", 9) == 0)
       {
         // check the next arg with the proper value.
         int next=i+1;
-        if (next < argc)
+        if (next < nArgs)
         {
           if ((argv[next][0] != '-' ) && (argv[next][0] == '/' ))
           {
@@ -100,18 +87,9 @@ void CAppParamParser::Parse(char* argv[])
       else if (strnicmp(argv[i], "-n", 2) == 0 || strnicmp(argv[i], "--nolirc", 8) == 0)
          g_RemoteControl.setUsed(false);
 #endif
-      else if (strnicmp(argv[i], "--debug", 7) == 0)
-        EnableDebugMode();
-      else if (strlen(argv[i]) != 0 && argv[i][0] != '-')
-      {
-        CFileItemPtr pItem(new CFileItem(argv[i]));
-        pItem->m_strPath = argv[i];
-        if (testmode) 
-          g_application.SetEnableTestMode(true);
-        playlist.Add(pItem);
-      }
     }
   }
+  PlayPlaylist();
 }
 #endif
 
@@ -127,7 +105,7 @@ void CAppParamParser::DisplayHelp()
   printf("  --legacy-res\t\tEnables screen resolutions such as PAL, NTSC, etc.\n");
 #ifdef HAS_LIRC
   printf("  -l or --lircdev\tLircDevice to use default is "LIRC_DEVICE" .\n");
-  printf("  -n or --nolirc\tdo not use Lirc, aka no remote input.\n");
+  printf("  -n or --nolirc\tdo not use Lirc, i.e. no remote input.\n");
 #endif
   printf("  --debug\t\tEnable debug logging\n");
   printf("  --test\t\tEnable test mode. [FILE] required.\n");
@@ -156,4 +134,42 @@ void CAppParamParser::SetIsStandalone()
 void CAppParamParser::SetPortable()
 {
   g_application.EnablePlatformDirectories(false);
+}
+
+void CAppParamParser::ParseArg(CStdString arg)
+{
+  if (arg == "-fs" || arg == "--fullscreen")
+    SetStartFullScreen();
+  else if (arg == "-h" || arg == "--help")
+    DisplayHelp();
+  else if (arg == "--standalone")
+    SetIsStandalone();
+  else if (arg == "-p" || arg  == "--portable")
+    SetPortable();
+  else if (arg == "--debug")
+    EnableDebugMode();
+  else if (arg == "--legacy-res")
+    g_application.SetEnableLegacyRes(true);
+  else if (arg == "--test")
+    m_testmode = true;
+  else if (arg.length() != 0 && arg[0] != '-')
+  {
+    if (m_testmode)
+      g_application.SetEnableTestMode(true);
+    CFileItemPtr pItem(new CFileItem(arg));
+    pItem->m_strPath = arg;
+    m_playlist.Add(pItem);
+  }
+}
+
+void CAppParamParser::PlayPlaylist()
+{
+  if (m_playlist.Size() > 0)
+  {
+    g_playlistPlayer.Add(0, m_playlist);
+    g_playlistPlayer.SetCurrentPlaylist(0);
+  }
+
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (DWORD) -1};
+  g_application.getApplicationMessenger().SendMessage(tMsg, false);
 }

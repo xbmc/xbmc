@@ -59,7 +59,6 @@ int main(int argc, char* argv[])
 #endif
   CLog::SetLogLevel(g_advancedSettings.m_logLevel);
 
-  CFileItemList playlist;
 #ifdef _LINUX
 #if defined(DEBUG)
   struct rlimit rlim;
@@ -77,7 +76,7 @@ int main(int argc, char* argv[])
 #endif
   setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
-  bool testmode = 0;
+  
 #ifndef _WIN32
   CAppParamParser appParamParser = CAppParamParser();
   appParamParser.Parse(argv);
@@ -88,15 +87,6 @@ int main(int argc, char* argv[])
     fprintf(stderr, "ERROR: Unable to create application. Exiting\n");
     return status;
   }
-
-  if (playlist.Size() > 0)
-  {
-    g_playlistPlayer.Add(0,playlist);
-    g_playlistPlayer.SetCurrentPlaylist(0);
-  }
-
-  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_PLAY, (DWORD) -1};
-  g_application.getApplicationMessenger().SendMessage(tMsg, false);
 
   try
   {
