@@ -430,7 +430,7 @@ class CAction
 public:
   CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const CStdString &name = "");
   CAction(int actionID, wchar_t unicode);
-  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY);
+  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const CStdString &name = "");
   CAction(int actionID, const CStdString &name, const CKey &key);
 
   /*! \brief Identifier of the action
