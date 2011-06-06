@@ -68,7 +68,7 @@ class CAdvancedSettings
     static CAdvancedSettings* getInstance();
 
     void Initialize();
-
+    void AddSettingsFile(const CStdString &filename);
     bool Load();
     void Clear();
 
@@ -290,6 +290,8 @@ class CAdvancedSettings
     unsigned int m_jsonTcpPort;
 
     bool m_enableMultimediaKeys;
+    std::vector<CStdString> m_settingsFiles;
+    void ParseSettingsFile(const CStdString &file);
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);
