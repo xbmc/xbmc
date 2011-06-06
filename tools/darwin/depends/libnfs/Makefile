@@ -3,7 +3,7 @@ include ../config.site.mk
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=77c23b4
+VERSION=a05b17e
 SOURCE=Memphiz-$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -45,6 +45,7 @@ $(LIBDYLIB): $(SOURCE)
 clean:
 	make -C $(SOURCE) clean
 	rm -r .installed
+	rm -rf $(SOURCE)
 
 distclean::
 	rm -rf $(SOURCE) .installed
