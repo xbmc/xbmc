@@ -3680,9 +3680,19 @@ void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CStdSt
 
     m_pDS->exec(strSQL.c_str());
 
-    CVariant data;
-    data["playcount"] = count;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(item)), data);
+    // We only need to announce changes to video items in the library
+    if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId > 0)
+    {
+      // Only provide the "playcount" value if it has actually changed
+      if (item.GetVideoInfoTag()->m_playCount != count)
+      {
+        CVariant data;
+        data["playcount"] = count;
+        ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(item)), data);
+      }
+      else
+        ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(item)));
+    }
   }
   catch (...)
   {
