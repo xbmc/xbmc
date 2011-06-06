@@ -417,6 +417,14 @@ bool CButtonTranslator::Load()
 
 #endif
 
+  // FOR TESTING: list all the key mappings to the debug log
+  CLog::Log(LOGDEBUG, "TESTING: Listing all the key mappings");
+  std::vector<CStdString> keylist;
+  int numkeys = GetKeyList(-1, keylist);
+  for (unsigned int i = 0; i < keylist.size(); i++)
+    CLog::Log(LOGDEBUG, "TESTING: %s", keylist[i].c_str());
+  CLog::Log(LOGDEBUG, "TESTING: End of key mappings");
+
   // Done!
   return true;
 }
@@ -1201,4 +1209,99 @@ void CButtonTranslator::Clear()
   m_joystickAxisMap.clear();
   m_joystickHatMap.clear();
 #endif
+}
+
+// return a vector of the key mappings for the requested window id and
+// all the global key mappings
+int CButtonTranslator::GetKeyList(int window, std::vector<CStdString>& keylist)
+{
+  int numkeys = 0;
+  uint32_t vkey;
+  CStdString windowname, keyname;
+  map<int, buttonMap>::iterator it_win;
+  buttonMap::iterator it_button;
+  std::vector<CStdString>::iterator itv;
+
+  keylist.clear();
+
+  // Find the map for the requested window ID
+  if (window != -1)
+  { it_win = translatorMap.find(window);
+    if (it_win != translatorMap.end())
+    { 
+      keylist.reserve((*it_win).second.size());
+      itv = keylist.end();
+
+      // Get the mappings for this window
+      for (buttonMap::iterator it_button = (*it_win).second.begin(); it_button != (*it_win).second.end(); it_button++)
+      {
+        vkey = (*it_button).first;
+        if ((vkey & KEY_VKEY) == KEY_VKEY)
+        {
+          keyname = GetKeyName(vkey);
+          keyname.append(" ");
+          keyname.append((*it_button).second.strID);
+          itv = keylist.insert(itv, keyname);
+          itv++;
+          numkeys++;
+        }
+      }
+    }
+  }
+
+  // Now list the keys in the global map
+  it_win = translatorMap.find(-1);
+  if (it_win != translatorMap.end())
+  { 
+    keylist.reserve((*it_win).second.size());
+    itv = keylist.end();
+
+    for (buttonMap::iterator it_button = (*it_win).second.begin(); it_button != (*it_win).second.end(); it_button++)
+    {
+      vkey = (*it_button).first;
+      if ((vkey & KEY_VKEY) == KEY_VKEY)
+      {
+        keyname = GetKeyName(vkey);
+        keyname.append(" ");
+        keyname.append((*it_button).second.strID);
+        itv = keylist.insert(itv, keyname);
+        itv++;
+        numkeys++;
+      }
+    }
+  }
+
+  // Return the number of key mappings found
+  return numkeys;
+}
+
+// Convert a keypress buttoncode to a text representation of the key
+CStdString CButtonTranslator::GetKeyName(int buttonCode)
+{
+  XBMCKEYTABLE keytable;
+  CStdString keyname;
+
+  keyname.clear();
+
+  // Check this is a keypress and not some other input event
+  if ((buttonCode & KEY_VKEY) != KEY_VKEY)
+    return keyname;
+
+  // Check the modifiers
+  if (buttonCode & CKey::MODIFIER_CTRL)
+    keyname.append("ctrl-");
+  if (buttonCode & CKey::MODIFIER_SHIFT)
+    keyname.append("shift-");
+  if (buttonCode & CKey::MODIFIER_ALT)
+    keyname.append("alt-");
+  if (buttonCode & CKey::MODIFIER_SUPER)
+    keyname.append("win-");
+
+  // Get the key name
+  if (KeyTableLookupVKeyName(buttonCode & 0xFF, &keytable))
+    keyname.append(keytable.keyname);
+  else
+    keyname.AppendFormat("key=%x", buttonCode);
+
+  return keyname;
 }

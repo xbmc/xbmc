@@ -94,6 +94,9 @@ public:
                                bool &fullrange);
 #endif
 
+  int GetKeyList(int window, std::vector<CStdString>& keylist);
+  CStdString GetKeyName(int buttonCode);
+
 private:
   typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
   std::map<int, buttonMap> translatorMap;       // mapping of windows to button maps
