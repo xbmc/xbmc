@@ -483,6 +483,7 @@ public:
   ReplayGainSettings m_replayGain;
 
   void Clear();
+  void ChangeLanguage(const CStdString &strLanguage);
 
 private:
   typedef std::map<CStdString, CSetting*>::iterator mapIter;
