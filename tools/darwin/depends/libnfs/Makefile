@@ -1,0 +1,50 @@
+include ../Makefile.include
+include ../config.site.mk
+
+# lib name, version
+LIBNAME=libnfs
+VERSION=77c23b4
+SOURCE=Memphiz-$(LIBNAME)-$(VERSION)
+ARCHIVE=$(SOURCE).tar.gz
+
+BASE_URL=http://githubredir.debian.net/github/memphiz/libnfs
+
+# configuration settings
+CONFIGURE=./configure --prefix=$(PREFIX)
+
+RPC_HEADERS=rpcinc/auth.h rpcinc/auth_unix.h rpcinc/clnt.h rpcinc/pmap_clnt.h rpcinc/pmap_prot.h rpcinc/pmap_rmt.h rpcinc/rpc.h rpcinc/rpc_msg.h rpcinc/svc.h rpcinc/svc_auth.h rpcinc/types.h rpcinc/xdr.h
+
+LIBDYLIB=$(SOURCE)/lib/libnfs.1.0.0.dylib
+
+CLEAN_FILES=$(ARCHIVE) $(SOURCE)
+
+all: $(LIBDYLIB) .installed
+
+$(TARBALLS_LOCATION)/$(ARCHIVE):
+	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
+
+$(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
+	-rm -rf $(SOURCE)
+	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	echo $(SOURCE) > .gitignore
+	mkdir -p $(PREFIX)/include/rpc
+	install -c -m 644  $(RPC_HEADERS) $(PREFIX)/include/rpc/
+	patch -d $(SOURCE) -p0 < Makefile.in.patch
+	patch -d $(SOURCE) -p0 < nfs.x.patch
+	sed -i bak -e "s|EXAMPLES=|#EXAMPLES=|"  $(SOURCE)/Makefile.in
+	cd $(SOURCE); ./autogen.sh
+	cd $(SOURCE); $(CONFIGURE)
+
+$(LIBDYLIB): $(SOURCE)
+	make -C $(SOURCE)
+
+.installed:
+	make -C $(SOURCE) install
+	touch $@
+
+clean:
+	make -C $(SOURCE) clean
+	rm -r .installed
+
+distclean::
+	rm -rf $(SOURCE) .installed

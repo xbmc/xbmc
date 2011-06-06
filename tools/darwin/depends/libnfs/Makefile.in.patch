@@ -1,0 +1,102 @@
+--- Makefile.in	2011-06-01 13:31:40.000000000 +0200
++++ Makefile.in	2011-06-01 18:39:44.000000000 +0200
+@@ -6,13 +6,14 @@
+ 
+ INSTALLCMD = @install@ -c
+ 
+-CC=gcc
+-CFLAGS=-g -O0 -fPIC -Wall -W -I. -Iinclude -Imount -Infs -Iportmap -Irquota "-D_U_=__attribute__((unused))" -D_FILE_OFFSET_BITS=64
++CC=@CC@
++CFLAGS=@CFLAGS@ -g -O0 -fPIC -Wall -W -I. -Iinclude -Imount -Infs -Iportmap -Irquota "-D_U_=__attribute__((unused))"
++LDFLAGS+=@CFLAGS@
+ 
+ LIBNFS_A=lib/libnfs.a
+-LIBNFS_SO_NAME=libnfs.so.1
++LIBNFS_SO_NAME=libnfs.1.dylib
+ VERSION=1.0.0
+-LIBNFS_SO=lib/libnfs.so.$(VERSION)
++LIBNFS_SO=lib/libnfs.$(VERSION).dylib
+ 
+ LIB_OBJS = lib/pdu.o lib/init.o lib/socket.o \
+ lib/libnfs.o lib/libnfs-sync.o
+@@ -46,7 +47,7 @@
+ 
+ $(LIBNFS_SO): $(LIBNFS_OBJS) $(LIB_OBJS)
+ 	@echo Creating shared library $@
+-	$(CC) -shared -Wl,-soname=$(LIBNFS_SO_NAME) -o $@ $(LIBNFS_OBJS) $(LIB_OBJS)
++	$(CC) $(LDFLAGS) -dynamiclib -o $@ $(LIBNFS_OBJS) $(LIB_OBJS)
+ 
+ portmap/libnfs-raw-portmap.h: portmap/portmap.x
+ 	@echo Generating $@
+@@ -54,7 +54,7 @@
+ 
+ portmap/libnfs-raw-portmap.c: portmap/portmap.x
+ 	@echo Generating $@
+-	rpcgen -c portmap/portmap.x | sed -e "s/#include \"portmap\/portmap.h\"/#include \"libnfs-raw-portmap.h\"/" > portmap/libnfs-raw-portmap.c
++	rpcgen -c portmap/portmap.x | sed -e "s/#include \"portmap.h\"/#include \"libnfs-raw-portmap.h\"/" > portmap/libnfs-raw-portmap.c
+ 
+ portmap/libnfs-raw-portmap.o: portmap/libnfs-raw-portmap.c portmap/libnfs-raw-portmap.h
+ 	@echo Compiling $@
+@@ -66,7 +66,7 @@
+ 
+ mount/libnfs-raw-mount.c: mount/mount.x
+ 	@echo Generating $@
+-	rpcgen -c mount/mount.x | sed -e "s/#include \"mount\/mount.h\"/#include \"libnfs-raw-mount.h\"/" > mount/libnfs-raw-mount.c
++	rpcgen -c mount/mount.x | sed -e "s/#include \"mount.h\"/#include \"libnfs-raw-mount.h\"/" > mount/libnfs-raw-mount.c
+ 
+ mount/libnfs-raw-mount.o: mount/libnfs-raw-mount.c mount/libnfs-raw-mount.h
+ 	@echo Compiling $@
+@@ -78,7 +78,7 @@
+ 
+ nfs/libnfs-raw-nfs.c: nfs/nfs.x
+ 	@echo Generating $@
+-	rpcgen -c nfs/nfs.x | sed -e "s/#include \"nfs\/nfs.h\"/#include \"libnfs-raw-nfs.h\"/" > nfs/libnfs-raw-nfs.c
++	rpcgen -c nfs/nfs.x | sed -e "s/#include \"nfs.h\"/#include \"libnfs-raw-nfs.h\"/" > nfs/libnfs-raw-nfs.c
+ 
+ nfs/libnfs-raw-nfs.o: nfs/libnfs-raw-nfs.c nfs/libnfs-raw-nfs.h
+ 	@echo Compiling $@
+@@ -90,7 +90,7 @@
+ 
+ rquota/libnfs-raw-rquota.c: rquota/rquota.x
+ 	@echo Generating $@
+-	rpcgen -c rquota/rquota.x | sed -e "s/#include \"rquota\/rquota.h\"/#include \"libnfs-raw-rquota.h\"/" > rquota/libnfs-raw-rquota.c
++	rpcgen -c rquota/rquota.x | sed -e "s/#include \"rquota.h\"/#include \"libnfs-raw-rquota.h\"/" > rquota/libnfs-raw-rquota.c
+ 
+ rquota/libnfs-raw-rquota.o: rquota/libnfs-raw-rquota.c rquota/libnfs-raw-rquota.h
+ 	@echo Compiling $@
+@@ -98,25 +99,27 @@
+ 
+ install: $(LIBNFS_A) $(LIBNFS_SO)
+ ifeq ("$(LIBDIR)x","x")
++	mkdir -p $(libdir)
+ 	$(INSTALLCMD) -m 755 $(LIBNFS_SO) $(libdir)
+ 	$(INSTALLCMD) -m 755 $(LIBNFS_A) $(libdir)
+-	@ldconfig@
+ else
++	mkdir -p $(LIBDIR)
+ 	$(INSTALLCMD) -m 755 $(LIBISCSI_SO) $(LIBDIR)
+ 	$(INSTALLCMD) -m 755 $(LIBNFS_A) $(LIBDIR)
+ endif
+-	mkdir -p $(DESTDIR)/usr/include/nfsc
+-	$(INSTALLCMD) -m 644 include/libnfs.h $(DESTDIR)/usr/include/nfsc
+-	$(INSTALLCMD) -m 644 include/libnfs-private.h $(DESTDIR)/usr/include/nfsc
+-	$(INSTALLCMD) -m 644 mount/libnfs-raw-mount.h $(DESTDIR)/usr/include/nfsc
+-	$(INSTALLCMD) -m 644 nfs/libnfs-raw-nfs.h $(DESTDIR)/usr/include/nfsc
+-	$(INSTALLCMD) -m 644 portmap/libnfs-raw-portmap.h $(DESTDIR)/usr/include/nfsc
++	mkdir -p $(prefix)/include/nfsc
++	$(INSTALLCMD) -m 644 include/libnfs.h $(prefix)/include/nfsc
++	$(INSTALLCMD) -m 644 include/libnfs-private.h $(prefix)/include/nfsc
++	$(INSTALLCMD) -m 644 mount/libnfs-raw-mount.h $(prefix)/include/nfsc
++	$(INSTALLCMD) -m 644 nfs/libnfs-raw-nfs.h $(prefix)/include/nfsc
++	$(INSTALLCMD) -m 644 portmap/libnfs-raw-portmap.h $(prefix)/include/nfsc
+ 
+ distclean: clean
+ 	rm -f config.h config.log config.status configure Makefile
+ 
+ clean:
+-	rm -f bin/* lib/*.o lib/*.a $(LIBNFS_SO)
++	rm -r -f bin/* 
++	rm -f lib/*.o lib/*.a $(LIBNFS_SO)
+ 	rm -f mount/*.o mount/libnfs-raw-mount.h mount/libnfs-raw-mount.c
+ 	rm -f nfs/*.o nfs/libnfs-raw-nfs.h nfs/libnfs-raw-nfs.c
+ 	rm -f portmap/*.o portmap/libnfs-raw-portmap.h portmap/libnfs-raw-portmap.c
