@@ -103,6 +103,7 @@ void CGUIControlGroup::Process(unsigned int currentTime, CDirtyRegionList &dirty
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *control = *it;
+    control->UpdateVisibility();
     control->DoProcess(currentTime, dirtyregions);
     rect.Union(control->GetRenderRegion());
   }
