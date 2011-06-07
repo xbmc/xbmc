@@ -104,8 +104,10 @@ void CGUIControlGroup::Process(unsigned int currentTime, CDirtyRegionList &dirty
   {
     CGUIControl *control = *it;
     control->UpdateVisibility();
+    unsigned int oldDirty = dirtyregions.size();
     control->DoProcess(currentTime, dirtyregions);
-    rect.Union(control->GetRenderRegion());
+    if (control->IsVisible() || (oldDirty != dirtyregions.size())) // visible or dirty (was visible?)
+      rect.Union(control->GetRenderRegion());
   }
 
   g_graphicsContext.RestoreOrigin();
