@@ -395,14 +395,25 @@ namespace ForTheRecord
 
   int TuneLiveStream(const std::string& channel_id, ChannelType channeltype, std::string& stream)
   {
-    // Send only a channel object in json format, no LiveStream object.
+    // Send the channel object in json format, *and* a LiveStream object when there is a current 
+    // LiveStream present.
     // FTR will answer with a LiveStream object.
+    stream = "";
 
     char command[512];
       
-    snprintf(command, 512, "{\"Channel\":{\"BroadcastStart\":\"\",\"BroadcastStop\":\"\",\"ChannelId\":\"%s\",\"ChannelType\":%i,\"DefaultPostRecordSeconds\":0,\"DefaultPreRecordSeconds\":0,\"DisplayName\":\"\",\"GuideChannelId\":\"00000000-0000-0000-0000-000000000000\",\"LogicalChannelNumber\":0,\"Sequence\":0,\"Version\":0,\"VisibleInGuide\":true}}",
+    snprintf(command, 512, "{\"Channel\":{\"BroadcastStart\":\"\",\"BroadcastStop\":\"\",\"ChannelId\":\"%s\",\"ChannelType\":%i,\"DefaultPostRecordSeconds\":0,\"DefaultPreRecordSeconds\":0,\"DisplayName\":\"\",\"GuideChannelId\":\"00000000-0000-0000-0000-000000000000\",\"LogicalChannelNumber\":0,\"Sequence\":0,\"Version\":0,\"VisibleInGuide\":true},\"LiveStream\":",
       channel_id.c_str(), channeltype);
     std::string arguments = command;
+    if (!g_current_livestream.empty())
+    {
+      Json::FastWriter writer;
+      arguments.append(writer.write(g_current_livestream)).append("}");
+    }
+    else
+    {
+      arguments.append("null}");
+    }
 
     XBMC->Log(LOG_DEBUG, "ForTheRecord/Control/TuneLiveStream, body [%s]", arguments.c_str());
 
@@ -413,12 +424,39 @@ namespace ForTheRecord
     {
       if (response.type() == Json::objectValue)
       {
-        //printValueTree(response);
-        g_current_livestream = response["LiveStream"];
+        // First analyse the return code from the server
+        ForTheRecord::LiveStreamResult livestreamresult = (ForTheRecord::LiveStreamResult) response["LiveStreamResult"].asInt();
+        XBMC->Log(LOG_DEBUG, "TuneLiveStream result %d.", livestreamresult);
+        if (livestreamresult != ForTheRecord::Succeed)
+        {
+          XBMC->Log(LOG_ERROR, "TuneLiveStream result %d.", livestreamresult);
+          return E_FAILED;
+        }
+
+        // Ok, pick up the returned LiveStream object
+        Json::Value livestream = response["LiveStream"];
+        if (livestream != Json::nullValue)
+        {
+          g_current_livestream = livestream;
+        }
+        else
+        {
+          XBMC->Log(LOG_DEBUG, "No LiveStream received from server.");
+          return E_FAILED;
+        }
         stream = g_current_livestream["TimeshiftFile"].asString();
         //stream = g_current_livestream["RtspUrl"].asString();
         XBMC->Log(LOG_DEBUG, "Tuned live stream: %s\n", stream.c_str());
       }
+      else
+      {
+        XBMC->Log(LOG_DEBUG, "Unknown response format. Expected Json::objectValue");
+        return E_FAILED;
+      }
+    }
+    else
+    {
+      XBMC->Log(LOG_ERROR, "TuneLiveStream failed");
     }
     return retval;
   }

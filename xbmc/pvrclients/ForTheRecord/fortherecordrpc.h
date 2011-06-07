@@ -71,6 +71,15 @@ namespace ForTheRecord
     Widescreen = 2
   };
 
+  enum LiveStreamResult {
+    Succeed = 0,
+    NoFreeCardFound = 1,
+    ChannelTuneFailed = 2,
+    NoReTunePossible = 3,
+    UnknownError = 4,
+    NotSupported = 5
+  };
+
   /**
    * \brief Send a REST command to 4TR and return the JSON response string
    * \param command       The command string url (starting from "ForTheRecord/")

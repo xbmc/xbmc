@@ -842,9 +842,13 @@ bool cPVRClientForTheRecord::OpenLiveStream(const PVR_CHANNEL &channelinfo)
     XBMC->Log(LOG_INFO, "Tune XBMC channel: %i", channelinfo.iUniqueId);
     XBMC->Log(LOG_INFO, "Corresponding ForTheRecord channel: %s", channel->Guid().c_str());
 
-    ForTheRecord::TuneLiveStream(channel->Guid(), channel->Type(), filename);
+    if (m_keepalive.IsThreadRunning())
+    {
+      m_keepalive.StopThread();
+    }
+    int retval = ForTheRecord::TuneLiveStream(channel->Guid(), channel->Type(), filename);
 
-    if (filename.length() == 0)
+    if (retval < 0 || filename.length() == 0)
     {
       XBMC->Log(LOG_ERROR, "Could not start the timeshift for channel %i (%s)", channelinfo.iUniqueId, channel->Guid().c_str());
       return false;
@@ -856,7 +860,7 @@ bool cPVRClientForTheRecord::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 #ifdef TSREADER
     if (m_tsreader != NULL)
     {
-      m_keepalive.StopThread(0);
+      XBMC->Log(LOG_DEBUG, "Close TsReader");
       m_tsreader->Close();
       delete m_tsreader;
       m_tsreader = new CTsReader();
@@ -866,6 +870,7 @@ bool cPVRClientForTheRecord::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 
     // Open Timeshift buffer
     // TODO: rtsp support
+    XBMC->Log(LOG_DEBUG, "Open TsReader");
     m_tsreader->Open(filename.c_str());
     m_keepalive.StartThread();
 #endif
@@ -923,15 +928,20 @@ void cPVRClientForTheRecord::CloseLiveStream()
 {
   string result;
 
+  if (m_keepalive.IsThreadRunning())
+  {
+    m_keepalive.StopThread();
+  } 
+
   if (m_bTimeShiftStarted)
   {
 #ifdef TSREADER
     if (m_tsreader)
     {
+      XBMC->Log(LOG_DEBUG, "Close TsReader");
       m_tsreader->Close();
       delete_null(m_tsreader);
     }
-    m_keepalive.StopThread();
 #endif
     ForTheRecord::StopLiveStream();
     XBMC->Log(LOG_INFO, "CloseLiveStream");
@@ -944,6 +954,9 @@ void cPVRClientForTheRecord::CloseLiveStream()
 
 bool cPVRClientForTheRecord::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
+  XBMC->Log(LOG_DEBUG, "->SwitchChannel(%i)", channelinfo.iUniqueId);
+
+  CloseLiveStream();
   return OpenLiveStream(channelinfo);
 }
 
