@@ -113,6 +113,16 @@ void CGUIListGroup::UpdateInfo(const CGUIListItem *item)
   }
 }
 
+void CGUIListGroup::SetInvalid()
+{
+  if (!m_bInvalidated)
+  { // this can be triggered by an item change, so all children need invalidating rather than just the group
+    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+      (*it)->SetInvalid();
+    CGUIControlGroup::SetInvalid();
+  }
+}
+
 void CGUIListGroup::SetFocusedItem(unsigned int focus)
 {
   for (iControls it = m_children.begin(); it != m_children.end(); it++)

@@ -47,6 +47,7 @@ public:
   virtual void ResetAnimation(ANIMATION_TYPE type);
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual void UpdateInfo(const CGUIListItem *item);
+  virtual void SetInvalid();
 
   void SetFocusedItem(unsigned int subfocus);
   unsigned int GetFocusedItem() const;

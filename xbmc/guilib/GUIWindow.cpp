@@ -554,7 +554,8 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       {
         if (message.GetParam1() == GUI_MSG_PAGE_CHANGE ||
             message.GetParam1() == GUI_MSG_REFRESH_THUMBS ||
-            message.GetParam1() == GUI_MSG_REFRESH_LIST)
+            message.GetParam1() == GUI_MSG_REFRESH_LIST ||
+            message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
         { // alter the message accordingly, and send to all controls
           for (iControls it = m_children.begin(); it != m_children.end(); ++it)
           {
@@ -562,12 +563,6 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
             CGUIMessage msg(message.GetParam1(), message.GetControlId(), control->GetID(), message.GetParam2());
             control->OnMessage(msg);
           }
-        }
-        if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
-        {
-          // invalidate controls to get them to recalculate sizing information
-          SetInvalid();
-          return true;
         }
       }
     }

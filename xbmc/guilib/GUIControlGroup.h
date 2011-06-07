@@ -65,7 +65,6 @@ public:
 
   virtual bool HasID(int id) const;
   virtual bool HasVisibleID(int id) const;
-  virtual void SetInvalid();
 
   int GetFocusedControlID() const;
   CGUIControl *GetFocusedControl() const;
