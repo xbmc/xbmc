@@ -102,7 +102,7 @@
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\win32\;..\..\xbmc\cores\dvdplayer;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\boost;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\libwavpack;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\win32\;..\..\xbmc\cores\dvdplayer;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\boost;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;NTDDI_VERSION=0x05010300;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -146,7 +146,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores;..\..\xbmc\cores\dvdplayer;..\..\xbmc\dialogs;..\..\xbmc\FileSystem;..\..\xbmc\guilib\;..\..\xbmc\utils;..\..\xbmc\win32;..\..\xbmc\windowing;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\libflac\flac-1.2.1\include;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\boost;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\libwavpack;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores;..\..\xbmc\cores\dvdplayer;..\..\xbmc\dialogs;..\..\xbmc\FileSystem;..\..\xbmc\guilib\;..\..\xbmc\utils;..\..\xbmc\win32;..\..\xbmc\windowing;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\libflac\flac-1.2.1\include;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\boost;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;NTDDI_VERSION=0x05010300;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -192,7 +192,7 @@
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\win32\;..\..\xbmc\cores\dvdplayer;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\boost;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\libwavpack;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\win32\;..\..\xbmc\cores\dvdplayer;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\boost;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;NTDDI_VERSION=0x05010300;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
@@ -235,7 +235,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\win32\;..\..\xbmc\cores\dvdplayer;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\boost;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\libwavpack;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\win32\;..\..\xbmc\cores\dvdplayer;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\boost;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;NTDDI_VERSION=0x05010300;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -917,7 +917,6 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\TimidityCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\VGMCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\WAVcodec.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\paplayer\WAVPackcodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\YMCodec.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DllLoader\coff.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DllLoader\dll.cpp" />
@@ -1777,7 +1776,6 @@
     <ClInclude Include="..\..\lib\DllStSound.h" />
     <ClInclude Include="..\..\lib\DllTimidity.h" />
     <ClInclude Include="..\..\lib\DllVorbisfile.h" />
-    <ClInclude Include="..\..\lib\DllWAVPack.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\FLACcodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ICodec.h" />
@@ -1793,7 +1791,6 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\TimidityCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\VGMCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\WAVcodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\WAVPackcodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\YMCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\DllLoader\coff.h" />
     <ClInclude Include="..\..\xbmc\cores\DllLoader\coffldr.h" />
