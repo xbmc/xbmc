@@ -978,6 +978,24 @@ namespace PYXBMC
     
     return Py_BuildValue((char*)"ss",strSize.c_str(), strHash.c_str());
   } 
+ 
+  // setLanguage function
+  PyDoc_STRVAR(setLanguage__doc__,
+    "setLanguage(language)\n"
+    "\n"
+    "language       : string or unicode - Language string\n"
+    "\n"
+    "example:\n"
+    "  xbmc.setLanguage('English')");
+
+  PyObject* XBMC_SetLanguage(PyObject *self, PyObject *args)
+  {
+    char *cLine = NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
+    g_guiSettings.ChangeLanguage(cLine);
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
 
   // define c functions to be used in python here
   PyMethodDef xbmcMethods[] = {
@@ -1026,6 +1044,8 @@ namespace PYXBMC
 
     {(char*)"skinHasImage", (PyCFunction)XBMC_SkinHasImage, METH_VARARGS|METH_KEYWORDS, skinHasImage__doc__},
     {(char*)"subHashAndFileSize", (PyCFunction)XBMC_subHashAndFileSize, METH_VARARGS, subHashAndFileSize__doc__},
+   
+    {(char*)"setLanguage", (PyCFunction)XBMC_SetLanguage, METH_VARARGS, setLanguage__doc__},
 
     {NULL, NULL, 0, NULL}
   };

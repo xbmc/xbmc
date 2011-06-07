@@ -1508,30 +1508,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CStdString strLanguage = pControl->GetCurrentLabel();
     if (strLanguage != ".svn" && strLanguage != pSettingString->GetData())
     {
-      CStdString strLangInfoPath;
-      strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
-      g_langInfo.Load(strLangInfoPath);
-
-      if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
-      {
-        CLog::Log(LOGINFO, "Language needs a ttf font, loading first ttf font available");
-        CStdString strFontSet;
-        if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
-          strLanguage = strFontSet;
-        else
-          CLog::Log(LOGERROR, "No ttf font found but needed: %s", strFontSet.c_str());
-      }
-      g_guiSettings.SetString("locale.language", strLanguage);
-
-      g_charsetConverter.reset();
-
-      CStdString strLanguagePath;
-      strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
-      g_localizeStrings.Load(strLanguagePath);
-
-      // also tell our weather and skin to reload as these are localized
-      g_weatherManager.Refresh();
-      g_application.ReloadSkin();
+      g_guiSettings.ChangeLanguage(strLanguage);
     }
   }
   else if (strSetting.Equals("lookandfeel.skintheme"))

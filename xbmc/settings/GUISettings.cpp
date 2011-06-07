@@ -40,6 +40,8 @@
 #include "powermanagement/PowerManager.h"
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #include "utils/PCMRemap.h"
+#include "utils/Weather.h"
+#include "LangInfo.h"
 #include "guilib/GUIFont.h" // for FONT_STYLE_* definitions
 #if defined(__APPLE__)
   #include "osx/DarwinUtils.h"
@@ -1257,6 +1259,25 @@ void CGUISettings::Clear()
   for (unsigned int i = 0; i < settingsGroups.size(); i++)
     delete settingsGroups[i];
   settingsGroups.clear();
+}
+
+void CGUISettings::ChangeLanguage(const CStdString &strLanguage)
+{
+  CStdString strLangInfoPath;
+  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
+  g_langInfo.Load(strLangInfoPath);
+  
+  SetString("locale.language", strLanguage);
+  
+  g_charsetConverter.reset();
+  
+  CStdString strLanguagePath;
+  strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
+  g_localizeStrings.Load(strLanguagePath);
+  
+  // also tell our weather and skin to reload as these are localized
+  g_weatherManager.Refresh();
+  g_application.getApplicationMessenger().ExecBuiltIn("ReloadSkin");
 }
 
 float square_error(float x, float y)
