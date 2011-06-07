@@ -232,6 +232,7 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
   case GUI_MSG_PAGE_CHANGE:
   case GUI_MSG_REFRESH_THUMBS:
   case GUI_MSG_REFRESH_LIST:
+  case GUI_MSG_WINDOW_RESIZE:
     { // send to all child controls (make sure the target is the control id)
       for (iControls it = m_children.begin(); it != m_children.end(); ++it)
       {
@@ -643,16 +644,6 @@ void CGUIControlGroup::GetContainers(vector<CGUIControl *> &containers) const
       containers.push_back(*it);
     else if ((*it)->IsGroup())
       ((CGUIControlGroup *)(*it))->GetContainers(containers);
-  }
-}
-
-void CGUIControlGroup::SetInvalid()
-{
-  if (!m_bInvalidated)
-  {
-    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
-      (*it)->SetInvalid();
-    CGUIControl::SetInvalid();
   }
 }
 

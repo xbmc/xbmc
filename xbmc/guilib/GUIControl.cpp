@@ -420,6 +420,11 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
     case GUI_MSG_DISABLED:
       SetEnabled(false);
       return true;
+
+    case GUI_MSG_WINDOW_RESIZE:
+      // invalidate controls to get them to recalculate sizing information
+      SetInvalid();
+      return true;
     }
   }
   return false;
