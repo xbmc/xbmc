@@ -47,7 +47,6 @@
 #define DLL_PATH_SID_CODEC     "special://xbmcbin/system/players/paplayer/libsidplay2.dll"
 #define DLL_PATH_SPC_CODEC     "special://xbmcbin/system/players/paplayer/SNESAPU.dll"
 #define DLL_PATH_VGM_CODEC     "special://xbmcbin/system/players/paplayer/vgmstream.dll"
-#define DLL_PATH_WAVPACK_CODEC "special://xbmcbin/system/players/paplayer/wavpack.dll"
 #define DLL_PATH_YM_CODEC      "special://xbmcbin/system/players/paplayer/stsoundlibrary.dll"
 #define DLL_PATH_MODPLUG_CODEC "special://xbmcbin/system/players/paplayer/libmodplug.dll"
 
