@@ -149,10 +149,6 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
 
-//  GUIPROFILER_VISIBILITY_BEGIN(control);
-  UpdateVisibility();
-//  GUIPROFILER_VISIBILITY_END(control);
-
   if (IsVisible())
     Process(currentTime, dirtyregions);
 
