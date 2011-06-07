@@ -12,4 +12,12 @@
     <string id="30006">Pehmeä esiasetettu kesto</string>
     <string id="30007">Esiasetettu kesto</string>
     <string id="30008">Rytmiherkkyys</string>
+    <string id="30009">Esiasetuspaketti</string>
+    <string id="30010">Oletuspaketti</string>
+    <string id="30011">Käyttäjän määrittämä esiasetuskansio</string>
+    <string id="30012">Esiasetuskansio</string>
+
+    <!-- setting value formats -->
+    <string id="30050">%2.0f s</string>
+    <string id="30051">%2.0f %%</string>
 </strings>

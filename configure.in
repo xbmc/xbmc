@@ -340,6 +340,10 @@ case $host in
      use_joystick=no
      use_vdadecoder=no
      use_vtbdecoder=yes
+     use_optical_drive=no
+     use_dvdcss=no
+     use_gles=yes
+     use_cpu=cortex-a8
      check_sdl_arch=[`file /opt/local/lib/libSDL_image.dylib | awk '{V=7; print $V}'`]
      if test "x$check_sdl_arch" = "xi386"; then
        use_texturepacker_native=yes
@@ -348,9 +352,8 @@ case $host in
        use_texturepacker=no
      fi
      ARCH="arm-osx"
+     use_arch="arm"
      SYSROOT="-miphoneos-version-min=4.1 -isysroot $SDKROOT"
-     ARCHTYPE=$HOSTTYPE
-     AC_SUBST([ARCHTYPE])
      AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
      PYTHON_VERSION="2.6"
      PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.6"
@@ -366,9 +369,6 @@ case $host in
      ARCH="x86-osx"
      export MACOSX_DEPLOYMENT_TARGET=10.4
      SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
-     # define i386 or x86_64, cannot use $HOSTTYPE as it reports x86_64 on 10.6 regardless of kernel flavor
-     ARCHTYPE=`uname -m`
-     AC_SUBST([ARCHTYPE])
      ;;
   powerpc-apple-darwin*)
      use_joystick=no
@@ -379,9 +379,6 @@ case $host in
      use_arch="ppc"
      export MACOSX_DEPLOYMENT_TARGET=10.4
      SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
-     # define ppc
-     ARCHTYPE="ppc"
-     AC_SUBST([ARCHTYPE])
      ;;
   powerpc-*-linux-gnu*)
      ARCH="powerpc-linux"
@@ -394,6 +391,7 @@ case $host in
   arm*-*-linux-gnu*)
      use_texturepacker=no
      ARCH="arm"
+     use_arch="arm"
      AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
      ;;
   *)
@@ -438,9 +436,7 @@ fi
 if test "$host_vendor" = "apple" ; then
   # standard xbmc paths
   INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/xbmc/osx"
-  if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
-    use_arch=arm
-  else
+  if test "$use_arch" != "arm"; then
     LIBS="$LIBS -framework IOKit"
     LIBS="$LIBS -framework Cocoa"
     LIBS="$LIBS -framework AppKit"
@@ -457,8 +453,7 @@ if test "$host_vendor" = "apple" ; then
     LIBS="$LIBS -framework DiskArbitration"
     LIBS="$LIBS -framework ApplicationServices"
   fi
-elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
-  use_arch=arm
+elif test "$use_arch" = "arm"; then
   CFLAGS="$CFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
   CXXFLAGS="$CXXFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
   FFMPEG_EXTRACFLAGS="-mfloat-abi=softfp"
@@ -467,7 +462,7 @@ elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
     SAVE_CFLAGS="$CFLAGS"
     CFLAGS="-mfpu=vfpv3-d16"
     AC_COMPILE_IFELSE(
-      [int foo;],
+      [AC_LANG_SOURCE([int foo;])],
       [ CFLAGS="$SAVE_CFLAGS -Wno-psabi -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
         CXXFLAGS="$CXXFLAGS -Wno-psabi -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
         FFMPEG_EXTRACFLAGS+=" -mtune=cortex-a9 -mfpu=vfpv3-d16"
@@ -567,6 +562,11 @@ if test $MYSQL_CONFIG = "yes"; then
 else
   AC_MSG_ERROR($missing_program)
 fi
+AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([mpeg2dec/mpeg2.h],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library),
+  AC_INCLUDES_DEFAULT()
+  [#include <mpeg2dec/mpeg2.h>])
 AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
@@ -575,6 +575,7 @@ AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([wavpack/wavpack.h],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([curl/curl.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
@@ -591,6 +592,8 @@ AC_CHECK_LIB([acl],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([lzma],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([xml2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([attr],        [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
+AC_CHECK_LIB([yajl],        [main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
   [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -620,9 +623,6 @@ PKG_CHECK_MODULES([SAMPLERATE], [samplerate],
 PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
   [INCLUDES="$INCLUDES $FREETYPE2_CFLAGS"; LIBS="$LIBS $FREETYPE2_LIBS"],
   AC_MSG_ERROR($missing_library))
-PKG_CHECK_MODULES([CURL],       [libcurl],
-  [INCLUDES="$INCLUDES $CURL_CFLAGS"; LIBS="$LIBS $CURL_LIBS"],
-  AC_MSG_ERROR($missing_library))
 
 # check for libbluray
 AS_CASE([x$use_libbluray],
@@ -647,26 +647,18 @@ AS_CASE([x$use_libbluray],
 
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
-  AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_HEADER([mpeg2dec/mpeg2.h],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   if test "$use_arch" != "arm"; then
     AC_CHECK_LIB([SDL_mixer],[main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
   fi
 else
-  AC_CHECK_LIB([ass],        [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer],  [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dl],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
   AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image],  [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([modplug],    [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([wavpack],    [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([mpeg2],       [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
 
   PKG_CHECK_MODULES([ALSA],  [alsa],
     [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"],
@@ -689,24 +681,6 @@ else
   PKG_CHECK_MODULES([SDL],   [sdl],
     [INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"],
     AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([MAD],   [mad],
-    [INCLUDES="$INCLUDES $MAD_CFLAGS"; LIBS="$LIBS $MAD_LIBS"],
-    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([OGG],   [ogg],
-    [INCLUDES="$INCLUDES $OGG_CFLAGS"; LIBS="$LIBS $OGG_LIBS"],
-    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([VORBIS],[vorbis],
-    [INCLUDES="$INCLUDES $VORBIS_CFLAGS"; LIBS="$LIBS $VORBIS_LIBS"],
-    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([VORBISENC],[vorbisenc],
-    [INCLUDES="$INCLUDES $VORBISENC_CFLAGS"; LIBS="$LIBS $VORBISENC_LIBS"],
-    AC_MSG_ERROR($missing_library))
-fi
-
-# This is used to skip some submodule configuration on non-Apple hardware
-HOST_NOT_APPLE=1
-if [[ "$host_vendor" = "apple" ]]; then
-  HOST_NOT_APPLE=0
 fi
 
 XB_FIND_SONAME([MAD],         [mad])
@@ -717,11 +691,9 @@ XB_FIND_SONAME([VORBIS],      [vorbis])
 XB_FIND_SONAME([VORBISENC],   [vorbisenc])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([MODPLUG],     [modplug])
-if test "$host_vendor" = "apple"; then
-  XB_FIND_SONAME([ASS],       [ass])
-  XB_FIND_SONAME([MPEG2],     [mpeg2])
-  XB_FIND_SONAME([WAVPACK],   [wavpack])
-fi
+XB_FIND_SONAME([ASS],         [ass])
+XB_FIND_SONAME([MPEG2],       [mpeg2])
+XB_FIND_SONAME([WAVPACK],     [wavpack])
 
 # WebServer
 if test "$use_webserver" = "yes"; then
@@ -899,8 +871,8 @@ if test "$use_external_ffmpeg" = "yes"; then
   if test "x$use_vdpau" != "xno"; then
     AC_LANG_PUSH([C++])
     AC_LINK_IFELSE(
-      [ #include <libavutil/pixfmt.h>
-        int main() { PixelFormat format = PIX_FMT_VDPAU_MPEG4; }],
+      [AC_LANG_SOURCE([ #include <libavutil/pixfmt.h>
+        int main() { PixelFormat format = PIX_FMT_VDPAU_MPEG4; }])],
       [AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1],
       [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])],)
     AC_LANG_POP([C++])
@@ -1006,10 +978,10 @@ if test "x$use_crystalhd" != "xno"; then
       CFLAGS="-llibcrystalhd"
       # check for new crystalhd lib
       AC_COMPILE_IFELSE(
-        [ #define __LINUX_USER__
+        [AC_LANG_SOURCE([ #define __LINUX_USER__
           #include <libcrystalhd/bc_dts_types.h>
           #include <libcrystalhd/bc_dts_defs.h>
-          PBC_INFO_CRYSTAL bCrystalInfo;],
+          PBC_INFO_CRYSTAL bCrystalInfo;])],
         [ AC_DEFINE([HAVE_LIBCRYSTALHD], [2], [Define to 2 if you have the 'New Broadcom Crystal HD' library.]) ], 
         [ AC_DEFINE([HAVE_LIBCRYSTALHD], [1], [Define to 1 if you have the 'Old Broadcom Crystal HD' library.]) ])
       CFLAGS="$SAVE_CFLAGS"
@@ -1420,7 +1392,6 @@ OUTPUT_FILES="Makefile \
     lib/libXDAAP/Makefile \
     lib/cmyth/Makefile \
     lib/libhdhomerun/Makefile \
-    lib/jsoncpp/src/lib_json/Makefile \
     lib/libsquish/Makefile \
     lib/libid3tag/Makefile \
     lib/cximage-6.0/Makefile \

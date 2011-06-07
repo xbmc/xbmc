@@ -1,5 +1,5 @@
 DEFINES += -D_LINUX -DUSE_LZO_PACKING
-ifneq ($(or $(findstring powerpc,arm-osx),$(findstring ppc, arm-osx)),)
+ifneq ($(or $(findstring powerpc,@ARCH@),$(findstring ppc, @ARCH@)),)
 DEFINES += -DHOST_BIGENDIAN
 endif
 
@@ -12,6 +12,9 @@ CXXFLAGS+= \
 ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
 NATIVE_ROOT_PATH=@USE_TEXTUREPACKER_NATIVE_ROOT@
 ifdef NATIVE_ROOT_PATH
+ifeq ($(findstring osx,@ARCH@),osx)
+CXXFLAGS+= -m32
+endif
 CXXFLAGS+= -I$(NATIVE_ROOT_PATH)/include
 LIBS    += -L$(NATIVE_ROOT_PATH)/lib
 endif
@@ -38,7 +41,7 @@ all: $(TARGET)
 ifeq (@USE_TEXTUREPACKER_NATIVE@,1)
 # TexturePacker run native on build system, build it with native tools
 $(TARGET): $(SRCS)
-	g++ -m32 $(DEFINES) $(CXXFLAGS) $(SRCS) $(LIBS) -o $(TARGET)
+	g++ $(DEFINES) $(CXXFLAGS) $(SRCS) $(LIBS) -o $(TARGET)
 clean:
 	rm -f $(TARGET)
 else

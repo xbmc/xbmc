@@ -393,12 +393,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       g_application.getApplicationMessenger().UserEvent(newEvent.user.code);
       break;
     case XBMC_APPCOMMAND:
-      {
-        // Special media keys are mapped to WM_APPCOMMAND on Windows (and to DBUS events on Linux?)
-        // XBMC translates WM_APPCOMMAND to XBMC_APPCOMMAND events.
-        g_application.OnAppCommand(CAction(newEvent.appcommand.action));
-      }
-      break;
+      return g_application.OnAppCommand(newEvent.appcommand.action);
   }
   return true;
 }
@@ -1013,7 +1008,7 @@ void CApplication::CreateUserDirs()
 
 bool CApplication::Initialize()
 {
-#ifdef HAS_DVD_DRIVE
+#if defined(HAS_DVD_DRIVE) && !defined(_WIN32) // somehow this throws an "unresolved external symbol" on win32
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;
 #endif
@@ -1185,7 +1180,7 @@ bool CApplication::Initialize()
   CCrystalHD::GetInstance();
 #endif
 
-  CAddonMgr::Get().StartServices();
+  CAddonMgr::Get().StartServices(false);
 
   CLog::Log(LOGNOTICE, "initialize done");
 
@@ -2361,7 +2356,7 @@ bool CApplication::OnKey(const CKey& key)
 }
 
 // OnAppCommand is called in response to a XBMC_APPCOMMAND event.
-
+// This needs to return true if it processed the appcommand or false if it didn't
 bool CApplication::OnAppCommand(const CAction &action)
 {
   // Reset the screen saver
@@ -2369,12 +2364,30 @@ bool CApplication::OnAppCommand(const CAction &action)
 
   // If we were currently in the screen saver wake up and don't process the appcommand
   if (WakeUpScreenSaverAndDPMS())
-  {
     return true;
+
+  // The action ID is the APPCOMMAND code. We need to retrieve the action
+  // associated with this appcommand from the mapping table.
+  uint32_t appcmd = action.GetID();
+  CKey key(appcmd | KEY_APPCOMMAND, (unsigned int) 0);
+  int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+  CAction appcmdaction = CButtonTranslator::GetInstance().GetAction(iWin, key);
+
+  // If we couldn't find an action return false to indicate we have not
+  // handled this appcommand
+  if (!appcmdaction.GetID())
+  {
+    CLog::Log(LOGDEBUG, "%s: unknown appcommand %d", __FUNCTION__, appcmd);
+    return false;
   }
 
   // Process the appcommand
-  return OnAction(action);
+  CLog::Log(LOGDEBUG, "%s: appcommand %d, trying action %s", __FUNCTION__, appcmd, appcmdaction.GetName().c_str());
+  OnAction(appcmdaction);
+
+  // Always return true regardless of whether the action succeeded or not.
+  // This stops Windows handling the appcommand itself.
+  return true;
 }
 
 bool CApplication::OnAction(const CAction &action)
@@ -2891,13 +2904,49 @@ bool CApplication::ProcessMouse()
   if (!g_Mouse.IsActive() || !m_AppFocused)
     return false;
 
+  // Update the pointer position here so it gets updated even for ACTION_NOOP
+  m_guiPointer.SetPosition((float) g_Mouse.GetX(), (float) g_Mouse.GetY());
+
   // Reset the screensaver and idle timers
   m_idleTimer.StartZero();
   ResetScreenSaver();
   if (WakeUpScreenSaverAndDPMS())
     return true;
 
-  return OnAction(g_Mouse.GetAction());
+  // Get the mouse command ID
+  uint32_t mousecommand = g_Mouse.GetAction();
+
+  // Retrieve the corresponding action
+  int iWin;
+  CKey key(mousecommand | KEY_MOUSE, (unsigned int) 0);
+  if (g_windowManager.HasModalDialog())
+    iWin = g_windowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
+  else
+    iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+  CAction mouseaction = CButtonTranslator::GetInstance().GetAction(iWin, key);
+
+  // If we couldn't find an action return false to indicate we have not
+  // handled this mouse action
+  if (!mouseaction.GetID())
+  {
+    CLog::Log(LOGDEBUG, "%s: unknown mouse command %d", __FUNCTION__, mousecommand);
+    return false;
+  }
+
+  // Process the appcommand
+  CAction newmouseaction = CAction(mouseaction.GetID(), 
+                                  g_Mouse.GetHold(MOUSE_LEFT_BUTTON), 
+                                  (float)g_Mouse.GetX(), 
+                                  (float)g_Mouse.GetY(), 
+                                  (float)g_Mouse.GetDX(), 
+                                  (float)g_Mouse.GetDY(),
+                                  mouseaction.GetName());
+
+  // Log mouse actions except for move and noop
+  if (newmouseaction.GetID() != ACTION_MOUSE_MOVE && newmouseaction.GetID() != ACTION_NOOP)
+    CLog::Log(LOGDEBUG, "%s: trying mouse action %s", __FUNCTION__, newmouseaction.GetName().c_str());
+
+  return OnAction(newmouseaction);
 }
 
 void  CApplication::CheckForTitleChange()
@@ -3366,7 +3415,7 @@ void CApplication::Stop(int exitCode)
   g_mediaManager.Stop();
 
   // Stop services before unloading Python
-  CAddonMgr::Get().StopServices();
+  CAddonMgr::Get().StopServices(false);
 
 /* Python resource freeing must be done after skin has been unloaded, not before
    some windows still need it when deinitializing during skin unloading. */
@@ -4202,6 +4251,11 @@ void CApplication::ResetScreenSaverTimer()
   Cocoa_UpdateSystemActivity();
 #endif
   m_screenSaverTimer.StartZero();
+}
+
+void CApplication::StopScreenSaverTimer()
+{
+  m_screenSaverTimer.Stop();
 }
 
 bool CApplication::ToggleDPMS(bool manual)
@@ -5091,12 +5145,6 @@ double CApplication::GetTotalTime() const
   }
 
   return rc;
-}
-
-void CApplication::ResetPlayTime()
-{
-  if (IsPlaying() && m_pPlayer)
-    m_pPlayer->ResetTime();
 }
 
 void CApplication::StopShutdownTimer()

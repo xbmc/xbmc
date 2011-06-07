@@ -40,6 +40,7 @@
   #define WCHAR_CHARSET "UTF-16LE"
   #define UTF8_SOURCE "UTF-8"
   #pragma comment(lib, "libfribidi.lib")
+  #pragma comment(lib, "libiconv.lib")
 #else
   #define WCHAR_CHARSET "WCHAR_T"
   #define UTF8_SOURCE "UTF-8"

@@ -419,39 +419,52 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
                 !items.IsVirtualDirectoryRoot() &&
                 m_stackingAvailable);
 
+  CFileItemList dbItems;
+  if (content.IsEmpty())
+    m_database.GetPlayCounts(items);
+  else
+  {
+    m_database.GetItemsForPath(content, items.m_strPath, dbItems);
+    dbItems.SetFastLookup(true);
+  }
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
-    CFileItem item;
-    if (!content.IsEmpty() && m_database.GetItemForPath(content, pItem->m_strPath, item))
-    { // copy info across
+    CFileItemPtr match;
+    if (!content.IsEmpty())
+      match = dbItems.Get(pItem->m_strPath);
+    if (match)
+    {
       CStdString label (pItem->GetLabel ());
       CStdString label2(pItem->GetLabel2());
-      pItem->UpdateInfo(item);
-      pItem->SetLabel (label);
-      pItem->SetLabel2(label);
-      
-      if(g_settings.m_videoStacking)
+      pItem->UpdateInfo(*match);
+
+      if(g_settings.m_videoStacking && m_stackingAvailable)
       {
-        pItem->m_strPath = item.m_strPath;
+        if (match->m_bIsFolder)
+          pItem->m_strPath = match->GetVideoInfoTag()->m_strPath;
+        else
+          pItem->m_strPath = match->GetVideoInfoTag()->m_strFileNameAndPath;
         // if we switch from a file to a folder item it means we really shouldn't be sorting files and
         // folders separately
-        if (pItem->m_bIsFolder != item.m_bIsFolder)
+        if (pItem->m_bIsFolder != match->m_bIsFolder)
           items.SetSortIgnoreFolders(true);
-        pItem->m_bIsFolder = item.m_bIsFolder;
+        pItem->m_bIsFolder = match->m_bIsFolder;
       }
       else
       {
-        if (CFile::Exists(item.GetCachedFanart()))
-          pItem->SetProperty("fanart_image", item.GetCachedFanart());
+        if (CFile::Exists(match->GetCachedFanart()))
+          pItem->SetProperty("fanart_image", match->GetCachedFanart());
+        pItem->SetLabel (label);
+        pItem->SetLabel2(label);
       }
-
     }
     else
-    { // grab the playcount and clean the label
-      int playCount = m_database.GetPlayCount(*pItem);
-      if (playCount >= 0)
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, playCount > 0);
+    { // set the watched overlay (note: items in a folder with content set that aren't in the db
+      //                                won't get picked up here - in the future all items will be returned)
+      // and clean the label
+      if (pItem->HasVideoInfoTag())
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
       if (clean)
         pItem->CleanString();
     }

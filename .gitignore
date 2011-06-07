@@ -3,6 +3,9 @@
 # commonly used editors
 # vim
 *.swp
+# Eclipse
+*.project
+*.cproject
 
 # generated files etc
 config.cache
@@ -50,6 +53,7 @@ config.log
 /tools/darwin/depends/Makefile
 /tools/darwin/depends/Makefile.include
 /tools/darwin/depends/configure
+/tools/darwin/depends/python26/Makefile
 /tools/darwin/depends/**/.gitignore
 /tools/darwin/depends/**/.installed
 /tools/osx/osx-depends/**/.gitignore
@@ -296,6 +300,7 @@ lib/cmyth/Makefile
 /project/Win32BuildSetup/dependencies/pcre.dll
 /project/Win32BuildSetup/dependencies/pcrecpp.dll
 /project/Win32BuildSetup/dependencies/python26.dll
+project/Win32BuildSetup/dependencies/libcdio-10.dll
 
 # /project/Win32BuildSetup/
 /project/Win32BuildSetup/BuildLog.htm
@@ -988,6 +993,21 @@ lib/cmyth/Makefile
 /lib/libapetag/config.h
 /lib/libapetag/Debug
 /lib/libapetag/Release
+/lib/libapetag/aclocal.m4
+/lib/libapetag/config.guess
+/lib/libapetag/config.h.in
+/lib/libapetag/config.h.in~
+/lib/libapetag/config.sub
+/lib/libapetag/configure
+/lib/libapetag/depcomp
+/lib/libapetag/INSTALL
+/lib/libapetag/ltmain.sh
+/lib/libapetag/m4/libtool.m4
+/lib/libapetag/m4/ltoptions.m4
+/lib/libapetag/m4/ltsugar.m4
+/lib/libapetag/m4/ltversion.m4
+/lib/libapetag/Makefile.in
+/lib/libapetag/missing
 
 # /lib/cmyth/
 /lib/cmyth/Makefile.depend
@@ -1035,6 +1055,20 @@ lib/cmyth/Makefile
 /lib/libid3tag/libid3tag/msvc++/libid3tag.lib
 /lib/libid3tag/libid3tag/msvc++/Debug
 /lib/libid3tag/libid3tag/msvc++/Release
+/lib/libid3tag/libid3tag/aclocal.m4
+/lib/libid3tag/libid3tag/config.guess
+/lib/libid3tag/libid3tag/config.h.in
+/lib/libid3tag/libid3tag/config.h.in~
+/lib/libid3tag/libid3tag/config.sub
+/lib/libid3tag/libid3tag/depcomp
+/lib/libid3tag/libid3tag/INSTALL
+/lib/libid3tag/libid3tag/install-sh
+/lib/libid3tag/libid3tag/ltmain.sh
+/lib/libid3tag/libid3tag/Makefile.in
+/lib/libid3tag/libid3tag/missing
+/lib/libid3tag/libid3tag/mkinstalldirs
+/lib/libid3tag/libid3tag/msvc++/Makefile.in
+
 
 # /xbmc/interfaces/
 /xbmc/interfaces/Makefile
@@ -1115,6 +1149,32 @@ lib/cmyth/Makefile
 /xbmc/screensavers/rsxs-0.9/src/plasma/rs-plasma
 /xbmc/screensavers/rsxs-0.9/src/solarwinds/rs-solarwinds
 /xbmc/screensavers/rsxs-0.9/stamp-h1
+/xbmc/screensavers/rsxs-0.9/aclocal.m4
+/xbmc/screensavers/rsxs-0.9/compile
+/xbmc/screensavers/rsxs-0.9/config.guess
+/xbmc/screensavers/rsxs-0.9/config.h.in
+/xbmc/screensavers/rsxs-0.9/config.h.in~
+/xbmc/screensavers/rsxs-0.9/config.sub
+/xbmc/screensavers/rsxs-0.9/config/Makefile.in
+/xbmc/screensavers/rsxs-0.9/depcomp
+/xbmc/screensavers/rsxs-0.9/INSTALL
+/xbmc/screensavers/rsxs-0.9/install-sh
+/xbmc/screensavers/rsxs-0.9/lib/Makefile.in
+/xbmc/screensavers/rsxs-0.9/libltdl/Makefile.in
+/xbmc/screensavers/rsxs-0.9/Makefile.in
+/xbmc/screensavers/rsxs-0.9/missing
+/xbmc/screensavers/rsxs-0.9/src/cyclone/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/euphoria/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/fieldlines/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/flocks/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/flux/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/helios/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/hyperspace/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/lattice/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/plasma/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/skyrocket/Makefile.in
+/xbmc/screensavers/rsxs-0.9/src/solarwinds/Makefile.in
 
 /xbmc/visualizations/DirectXSpectrum/Debug (DirectX)
 /xbmc/visualizations/DirectXSpectrum/Release (DirectX)

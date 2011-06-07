@@ -348,7 +348,7 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {  
-  static NSWindow* windowedFullScreenwindow = NULL;
+  static NSWindow* windowedFullScreenwindow = NULL;  
   static NSScreen* last_window_screen = NULL;
   static NSPoint last_window_origin;
   static NSView* last_view = NULL;
@@ -373,6 +373,13 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   if (!cur_context)
     return false;
   
+  if(windowedFullScreenwindow != NULL)
+  {
+    [windowedFullScreenwindow close];
+    [windowedFullScreenwindow release];
+    windowedFullScreenwindow = NULL;
+  }
+  
   if (m_bFullScreen)
   {
     // FullScreen Mode
@@ -391,7 +398,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
     {
       // This is Cocca Windowed FullScreen Mode
-      // Get the screen rect of our current display
+      // Get the screen rect of our current display      
       NSScreen* pScreen = [[NSScreen screens] objectAtIndex:res.iScreen];
       NSRect    screenRect = [pScreen frame];
       
@@ -507,9 +514,12 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       [[last_view window] setLevel:NSNormalWindowLevel];
       
       // Get rid of the new window we created.
-      [windowedFullScreenwindow close];
-      [windowedFullScreenwindow release];
-      windowedFullScreenwindow = NULL;
+      if(windowedFullScreenwindow != NULL)
+      {
+        [windowedFullScreenwindow close];
+        [windowedFullScreenwindow release];
+        windowedFullScreenwindow = NULL;
+      }
       
       // Unblank.
       // Force the unblank when returning from fullscreen, we get called with blankOtherDisplays set false.

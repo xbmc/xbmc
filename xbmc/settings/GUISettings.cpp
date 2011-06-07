@@ -41,6 +41,9 @@
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #include "utils/PCMRemap.h"
 #include "guilib/GUIFont.h" // for FONT_STYLE_* definitions
+#if defined(__APPLE__)
+  #include "osx/DarwinUtils.h"
+#endif
 
 using namespace std;
 using namespace ADDON;
@@ -754,10 +757,21 @@ void CGUISettings::Initialize()
   AddString(loc, "locale.language",248,"english", SPIN_CONTROL_TEXT);
   AddString(loc, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
   AddString(loc, "locale.charset", 14091, "DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
-#if defined(_LINUX) && !defined(__APPLE__)
-  AddSeparator(loc, "locale.sep1");
-  AddString(loc, "locale.timezonecountry", 14079, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
-  AddString(loc, "locale.timezone", 14080, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
+  
+  bool use_timezone = false;
+  
+#if defined(_LINUX)
+#if defined(__APPLE__)
+  if (g_sysinfo.IsAppleTV2() && GetIOSVersion() < 4.3)
+#endif
+    use_timezone = true;  
+  
+  if (use_timezone)
+  {  
+    AddSeparator(loc, "locale.sep1");
+    AddString(loc, "locale.timezonecountry", 14079, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
+    AddString(loc, "locale.timezone", 14080, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
+  }	
 #endif
 #ifdef HAS_TIME_SERVER
   AddSeparator(loc, "locale.sep2");
@@ -1147,15 +1161,25 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");
   m_replayGain.iType = GetInt("musicplayer.replaygaintype");
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
-
-#if defined(_LINUX) && !defined(__APPLE__)
-  CStdString timezone = GetString("locale.timezone");
-  if(timezone == "0" || timezone.IsEmpty())
-  {
-    timezone = g_timezone.GetOSConfiguredTimezone();
-    SetString("locale.timezone", timezone);
+  
+  bool use_timezone = false;
+  
+#if defined(_LINUX)
+#if defined(__APPLE__) 
+  if (g_sysinfo.IsAppleTV2() && GetIOSVersion() < 4.3)
+#endif
+    use_timezone = true;
+  
+  if (use_timezone)
+  {  
+    CStdString timezone = GetString("locale.timezone");
+    if(timezone == "0" || timezone.IsEmpty())
+    {
+      timezone = g_timezone.GetOSConfiguredTimezone();
+      SetString("locale.timezone", timezone);
+    }
+    g_timezone.SetTimezone(timezone);	
   }
-  g_timezone.SetTimezone(timezone);
 #endif
 }
 

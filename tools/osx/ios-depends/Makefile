@@ -2,14 +2,14 @@ BUILDDIR=/Users/Shared/xbmc-depends/ios-4.2_arm7
 
 SUBDIRS = \
 	Backrow \
-	gas-preprocessor help2man autoconf automake pkg-config tar dpkg \
+	gas-preprocessor help2man autoconf automake pkg-config tar dpkg cmake \
 	pcre expat gettext readline sqlite3 \
 	liblzo2 freetype2 fontconfig \
 	openssl libssh2 curl \
 	jpeg tiff libpng libogg \
 	libvorbis libflac libmad fribidi libwavpack libmpeg2 \
 	libass libcdio libsamplerate librtmp \
-	libmicrohttpd libmodplug libbluray \
+	libmicrohttpd libmodplug libbluray libyajl \
 	samba python26 mysqlclient boost
 
 .PHONY: setup $(SUBDIRS)

@@ -3,7 +3,7 @@
 	<coordinates>
 		<system>1</system>
 		<posx>415</posx>
-		<posy>225</posy>
+		<posy>275</posy>
 	</coordinates>
 	<controls>
 		<control type="group">
@@ -11,38 +11,63 @@
 				<posx>0</posx>
 				<posy>0</posy>
 				<width>450</width>
-				<height>150</height>
-				<texture border="20">OverlayDialogBackground.png</texture>
+				<height>170</height>
+				<texture border="40">DialogBack.png</texture>
+			</control>
+			<control type="image">
+				<description>Dialog Header image</description>
+				<posx>40</posx>
+				<posy>16</posy>
+				<width>370</width>
+				<height>40</height>
+				<texture>dialogheader.png</texture>
 			</control>
 			<control type="label" id="1">
 				<description>header label</description>
-				<posx>20</posx>
-				<posy>18</posy>
-				<width>410</width>
+				<posx>40</posx>
+				<posy>20</posy>
+				<width>370</width>
 				<height>30</height>
 				<font>font13_title</font>
-				<label>31321</label>
+				<label>$LOCALIZE[31321]</label>
 				<align>center</align>
 				<aligny>center</aligny>
-				<textcolor>white</textcolor>
+				<textcolor>selected</textcolor>
 				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="button">
+				<description>Close Window button</description>
+				<posx>360</posx>
+				<posy>15</posy>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>10</onleft>
+				<onright>10</onright>
+				<onup>10</onup>
+				<ondown>10</ondown>
+				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="label" id="401">
 				<description>Song Number Label</description>
-				<posx>20</posx>
-				<posy>65</posy>
-				<width>410</width>
+				<posx>30</posx>
+				<posy>70</posy>
+				<width>390</width>
 				<height>30</height>
 				<font>font28_title</font>
-				<textcolor>selected</textcolor>
+				<textcolor>white</textcolor>
 				<align>center</align>
 				<aligny>center</aligny>
 			</control>
 			<control type="label" id="402">
 				<description>Song Name Label</description>
-				<posx>20</posx>
-				<posy>105</posy>
-				<width>410</width>
+				<posx>30</posx>
+				<posy>120</posy>
+				<width>390</width>
 				<height>20</height>
 				<font>font24</font>
 				<align>center</align>

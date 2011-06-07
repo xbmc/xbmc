@@ -179,6 +179,7 @@ public:
   int GetAudioDelay() const;
   void SetPlaySpeed(int iSpeed);
   void ResetScreenSaverTimer();
+  void StopScreenSaverTimer();
   // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
   bool WakeUpScreenSaverAndDPMS();
   bool WakeUpScreenSaver();
@@ -191,7 +192,6 @@ public:
 
   void SeekPercentage(float percent);
   void SeekTime( double dTime = 0.0 );
-  void ResetPlayTime();
 
   void StopShutdownTimer();
   void ResetShutdownTimers();

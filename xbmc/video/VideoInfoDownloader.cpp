@@ -165,12 +165,18 @@ int CVideoInfoDownloader::InternalFindMovie(const CStdString &strMovie,
         CStdString compareYear;
         if (year && year->FirstChild())
           compareYear = year->FirstChild()->Value();
+
+        /*
+         * Identify the best match by performing a fuzzy string compare on the search term and
+         * the result. Additionally, use the year (if available) to further refine the best match.
+         * An exact match scores 1, a match off by a year scores 0.5 (release dates can vary between
+         * countries), otherwise it scores 0.
+         */
+        double yearScore = 0;
         if (!movieYear.IsEmpty() && !compareYear.IsEmpty())
-        {
-          matchTitle.AppendFormat(" (%s)", movieYear.c_str());
-          compareTitle.AppendFormat(" (%s)", compareYear.c_str());
-        }
-        url.relevance = fstrcmp(matchTitle.c_str(), compareTitle.c_str(), 0);
+          yearScore = std::max(0.0, 1-0.5*abs(atoi(movieYear)-atoi(compareYear)));
+        url.relevance = fstrcmp(matchTitle.c_str(), compareTitle.c_str(), 0.0) + yearScore;
+
         // reconstruct a title for the user
         CStdString title = url.strTitle;
         if (!compareYear.IsEmpty())

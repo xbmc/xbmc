@@ -24,8 +24,10 @@ $(LIBDYLIB): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE)/source3; ./autogen.sh
 	cd $(SOURCE)/source3; $(CONFIGURE)
-	#cp -f /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator$(platform_sdk_version).sdk/usr/include/crt_externs.h $(PREFIX)/include/
-	cd $(SOURCE)/source3; make bin/libsmbclient.dylib
+	if test "$(DARWIN)" = "ios"; then \
+		cp -f /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator$(SDK).sdk/usr/include/crt_externs.h $(PREFIX)/include/; \
+	fi
+	cd $(SOURCE)/source3; make -j 1 bin/libsmbclient.dylib
 
 .installed:
 	cp -f $(SOURCE)/source3/include/libsmbclient.h $(PREFIX)/include/

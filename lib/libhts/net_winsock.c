@@ -23,16 +23,26 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <errno.h>
 
 #include <winsock2.h>
 #include <Ws2tcpip.h>
 #include "msvc.h"
 #include "net.h"
 
-#define EINPROGRESS WSAEINPROGRESS
-#define ECONNRESET  WSAECONNRESET
-#define ETIMEDOUT   WSAETIMEDOUT
-#define EAGAIN      WSAEWOULDBLOCK
+
+static int socket_errno()
+{
+  int error = WSAGetLastError();
+  switch(error)
+  {
+    case WSAEINPROGRESS: return EINPROGRESS;
+    case WSAECONNRESET : return ECONNRESET;
+    case WSAETIMEDOUT  : return ETIMEDOUT;
+    case WSAEWOULDBLOCK: return EAGAIN;
+    default            : return error;
+  }
+}
 
 #ifndef MSG_WAITALL
 #define MSG_WAITALL 0x8
@@ -74,7 +84,7 @@ htsp_tcp_connect_addr(struct addrinfo* addr, char *errbuf, size_t errbufsize,
   fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
   if(fd == -1) {
     snprintf(errbuf, errbufsize, "Unable to create socket: %s",
-	     strerror(WSAGetLastError()));
+	     strerror(socket_errno()));
     return -1;
   }
 
@@ -87,8 +97,8 @@ htsp_tcp_connect_addr(struct addrinfo* addr, char *errbuf, size_t errbufsize,
   r = connect(fd, addr->ai_addr, addr->ai_addrlen);
 
   if(r == -1) {
-    if(WSAGetLastError() == EINPROGRESS ||
-       WSAGetLastError() == EAGAIN) {
+    if(socket_errno() == EINPROGRESS ||
+       socket_errno() == EAGAIN) {
       fd_set fd_write, fd_except;
       struct timeval tv;
 
@@ -111,14 +121,14 @@ htsp_tcp_connect_addr(struct addrinfo* addr, char *errbuf, size_t errbufsize,
       }
 
       if(r == -1) {
-        snprintf(errbuf, errbufsize, "select() error: %s", strerror(WSAGetLastError()));
+        snprintf(errbuf, errbufsize, "select() error: %s", strerror(socket_errno()));
         closesocket(fd);
         return -1;
       }
 
       getsockopt(fd, SOL_SOCKET, SO_ERROR, (void *)&err, &errlen);
     } else {
-      err = WSAGetLastError();
+      err = socket_errno();
     }
   } else {
     err = 0;
@@ -316,7 +326,7 @@ htsp_tcp_read(socket_t fd, void *buf, size_t len)
   int x = recv(fd, buf, len, MSG_WAITALL);
 
   if(x == -1)
-    return WSAGetLastError();
+    return socket_errno();
   if(x != len)
     return ECONNRESET;
   return 0;
@@ -352,7 +362,7 @@ htsp_tcp_read_timeout(socket_t fd, char *buf, size_t len, int timeout)
     ioctlsocket(fd, FIONBIO, &val);
 
     x   = recv(fd, buf + tot, len - tot, 0);
-    err = WSAGetLastError();
+    err = socket_errno();
 
     val = 0;
     ioctlsocket(fd, FIONBIO, &val);

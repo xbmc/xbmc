@@ -159,6 +159,16 @@ void CLangInfo::CRegion::SetGlobalLocale()
   // decimal separator is changed depending of the current language
   // (ie. "," in French or Dutch instead of "."). This breaks atof() and
   // others similar functions.
+#if defined(__FreeBSD__)
+  // on FreeBSD libstdc++ is compiled with "generic" locale support
+  if (setlocale(LC_COLLATE, strLocale.c_str()) == NULL
+  || setlocale(LC_CTYPE, strLocale.c_str()) == NULL)
+  {
+    strLocale = "C";
+    setlocale(LC_COLLATE, strLocale.c_str());
+    setlocale(LC_CTYPE, strLocale.c_str());
+  }
+#else
   locale current_locale = locale::classic(); // C-Locale
   try
   {
@@ -174,6 +184,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
   }
 
   locale::global(current_locale);
+#endif
   CLog::Log(LOGINFO, "global locale set to %s", strLocale.c_str());
 }
 

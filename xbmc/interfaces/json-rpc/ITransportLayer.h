@@ -23,10 +23,7 @@
 #include <string>
 #include "IClient.h"
 
-namespace Json
-{
-  class Value;
-}
+class CVariant;
 
 namespace JSONRPC
 {
@@ -43,7 +40,7 @@ namespace JSONRPC
   {
   public:
     virtual ~ITransportLayer() { };
-    virtual bool Download(const char *path, Json::Value *result) = 0;
+    virtual bool Download(const char *path, CVariant &result) = 0;
     virtual int GetCapabilities() = 0;
   };
 }

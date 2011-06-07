@@ -35,20 +35,16 @@
 #include "filesystem/File.h"
 
 using namespace MUSIC_INFO;
-using namespace Json;
 using namespace JSONRPC;
 using namespace XFILE;
 
-void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const Value& fields, Value &result)
+void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const CVariant& fields, CVariant &result)
 {
   if (info == NULL || fields.size() == 0)
     return;
 
-  CVariant data;
-  info->Serialize(data);
-
-  Value serialization;
-  data.toJsonValue(serialization);
+  CVariant serialization;
+  info->Serialize(serialization);
 
   for (unsigned int i = 0; i < fields.size(); i++)
   {
@@ -91,22 +87,11 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
   }
 }
 
-void CFileItemHandler::MakeFieldsList(const Json::Value &parameterObject, Json::Value &validFields)
-{
-  const Json::Value fields = parameterObject.isMember("fields") && parameterObject["fields"].isArray() ? parameterObject["fields"] : Value(arrayValue);
-
-  for (unsigned int i = 0; i < fields.size(); i++)
-  {
-    if (fields[i].isString())
-      validFields.append(fields[i]);
-  }
-}
-
-void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const Value &parameterObject, Value &result)
+void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const char *resultname, CFileItemList &items, const CVariant &parameterObject, CVariant &result)
 {
   int size  = items.Size();
-  int start = parameterObject["limits"]["start"].asInt();
-  int end   = parameterObject["limits"]["end"].asInt();
+  int start = (int)parameterObject["limits"]["start"].asInteger();
+  int end   = (int)parameterObject["limits"]["end"].asInteger();
   end = (end <= 0 || end > size) ? size : end;
   start = start > end ? end : start;
 
@@ -116,20 +101,17 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
   result["limits"]["end"]   = end;
   result["limits"]["total"] = size;
 
-  Json::Value validFields = Value(arrayValue);
-  MakeFieldsList(parameterObject, validFields);
-
   for (int i = start; i < end; i++)
   {
-    Value object;
+    CVariant object;
     CFileItemPtr item = items.Get(i);
-    HandleFileItem(ID, allowFile, resultname, item, parameterObject, validFields, result);
+    HandleFileItem(ID, allowFile, resultname, item, parameterObject, parameterObject["fields"], result);
   }
 }
 
-void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const Json::Value &parameterObject, const Json::Value &validFields, Json::Value &result, bool append /* = true */)
+void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char *resultname, CFileItemPtr item, const CVariant &parameterObject, const CVariant &validFields, CVariant &result, bool append /* = true */)
 {
-  Value object;
+  CVariant object;
   bool hasFileField = false;
   bool hasThumbnailField = false;
 
@@ -209,7 +191,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
   }
 }
 
-bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemList &list)
+bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileItemList &list)
 {
   CPlaylistOperations::FillFileItemList(parameterObject, list);
   CAudioLibrary::FillFileItemList(parameterObject, list);
@@ -220,7 +202,7 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
   if (!file.empty() && !CDirectory::Exists(file) && (URIUtils::IsURL(file) || CFile::Exists(file)))
   {
     bool added = false;
-    for (unsigned int index = 0; index < list.Size(); index++)
+    for (int index = 0; index < list.Size(); index++)
     {
       if (list[index]->m_strPath == file)
       {
@@ -232,6 +214,8 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
     if (!added)
     {
       CFileItemPtr item = CFileItemPtr(new CFileItem(file, false));
+      if (item->GetLabel().IsEmpty())
+        item->SetLabel(CUtil::GetTitleFromPath(file, false));
       list.Add(item);
     }
   }
@@ -312,7 +296,7 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ig
   return true;
 }
 
-void CFileItemHandler::Sort(CFileItemList &items, const Value &parameterObject)
+void CFileItemHandler::Sort(CFileItemList &items, const CVariant &parameterObject)
 {
   CStdString method = parameterObject["method"].asString();
   CStdString order  = parameterObject["order"].asString();
@@ -323,6 +307,6 @@ void CFileItemHandler::Sort(CFileItemList &items, const Value &parameterObject)
   SORT_METHOD sortmethod = SORT_METHOD_NONE;
   SORT_ORDER  sortorder  = SORT_ORDER_ASC;
 
-  if (ParseSortMethods(method, parameterObject["ignorearticle"].asBool(), order, sortmethod, sortorder))
+  if (ParseSortMethods(method, parameterObject["ignorearticle"].asBoolean(), order, sortmethod, sortorder))
     items.Sort(sortmethod, sortorder);
 }

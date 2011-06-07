@@ -1,11 +1,12 @@
 SDK=@use_sdk@
 ARCH=@use_arch@
-DAWRIN=@use_darwin@
+DARWIN=@use_darwin@
 PREFIX=@use_prefix@
 STAGING=@use_staging@
 TOOLCHAIN=@use_toolchain@
 TARBALLS_LOCATION=@use_staging@/tarballs
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
+MAKE_JOBS=$(shell sysctl hw.ncpu | awk '{print $$2}')
 
 RETRIEVE_TOOL=/usr/bin/curl
 RETRIEVE_TOOL_FLAGS=-Ls --create-dirs --output $(TARBALLS_LOCATION)/$(ARCHIVE)

@@ -11,8 +11,10 @@ export PATH:=$(TOOLCHAIN)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(TOOLCHAIN)
 
 APP=$(SOURCE)/$(APPNAME)
+APPBIN=$(TOOLCHAIN)/bin/$(APPNAME)
+YASM=$(PREFIX)/bin/$(APPNAME)
 
-all: $(APP) .installed
+all: $(APPBIN) $(YASM)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
 	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
@@ -24,18 +26,19 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); $(CONFIGURE)
 
 $(APP): $(SOURCE)
-	make -C $(SOURCE)
+	make -j $(MAKE_JOBS) -C $(SOURCE)
 
-.installed:
+$(APPBIN):
+	make $(APP)
 	make -C $(SOURCE) install
-	rm -f $(PREFIX)/bin/yasm
-	ln -s $(TOOLCHAIN)/bin/yasm $(PREFIX)/bin/yasm
-	touch $@
+
+$(YASM): $(APPBIN)
+	ln -s $(APPBIN) $(YASM)
 
 clean:
 	make -C $(SOURCE) clean
-	rm -f .installed $(TOOLCHAIN)/bin/yasm $(PREFIX)/bin/yasm 
+	rm -f $(APPBIN) $(YASM)
 
 distclean::
-	rm -rf $(SOURCE) .installed $(TOOLCHAIN)/bin/yasm $(PREFIX)/bin/yasm
+	rm -rf $(SOURCE) $(APPBIN) $(YASM)
 

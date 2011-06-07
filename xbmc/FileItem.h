@@ -120,7 +120,6 @@ public:
   bool IsHD() const;
   bool IsRemote() const;
   bool IsSmb() const;
-  bool IsXBMS() const;
   bool IsURL() const;
   bool IsDAAP() const;
   bool IsStack() const;
@@ -138,6 +137,7 @@ public:
   bool IsTuxBox() const;
   bool IsMythTV() const;
   bool IsHDHomeRun() const;
+  bool IsSlingbox() const;
   bool IsVTP() const;
   bool IsLiveTV() const;
   bool IsRSS() const;

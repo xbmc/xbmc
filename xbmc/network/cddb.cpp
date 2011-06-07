@@ -42,13 +42,8 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 
-#ifdef _MSC_VER
-#include <winsock2.h>
-#include <Ws2tcpip.h>
-#else
 #include <sys/socket.h>
 #include <netdb.h>
-#endif
 
 using namespace std;
 using namespace MUSIC_INFO;

@@ -2,20 +2,28 @@
 	<defaultcontrol always="true">10</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>340</posx>
-		<posy>235</posy>
+		<posx>335</posx>
+		<posy>230</posy>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>600</width>
-			<height>230</height>
-			<texture border="20">OverlayDialogBackground.png</texture>
+			<width>610</width>
+			<height>240</height>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<description>Dialog Header image</description>
+			<posx>40</posx>
+			<posy>16</posy>
+			<width>530</width>
+			<height>40</height>
+			<texture>dialogheader.png</texture>
 		</control>
 		<control type="label" id="1">
-			<description>heading label</description>
+			<description>fake heading label</description>
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>0</width>
@@ -25,22 +33,39 @@
 		</control>
 		<control type="label">
 			<description>header label</description>
-			<posx>20</posx>
-			<posy>18</posy>
-			<width>560</width>
+			<posx>40</posx>
+			<posy>20</posy>
+			<width>530</width>
 			<height>30</height>
 			<font>font13_title</font>
 			<label>$INFO[Control.GetLabel(1)] $INFO[System.Progressbar,- ,%]</label>
-			<align>left</align>
+			<align>center</align>
 			<aligny>center</aligny>
-			<textcolor>white</textcolor>
+			<textcolor>selected</textcolor>
 			<shadowcolor>black</shadowcolor>
+		</control>
+		<control type="button">
+			<description>Close Window button</description>
+			<posx>520</posx>
+			<posy>15</posy>
+			<width>64</width>
+			<height>32</height>
+			<label>-</label>
+			<font>-</font>
+			<onclick>PreviousMenu</onclick>
+			<texturefocus>DialogCloseButton-focus.png</texturefocus>
+			<texturenofocus>DialogCloseButton.png</texturenofocus>
+			<onleft>10</onleft>
+			<onright>10</onright>
+			<onup>10</onup>
+			<ondown>10</ondown>
+			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
 		<control type="label" id="2">
 			<description>dialog line 1</description>
-			<posx>20</posx>
+			<posx>30</posx>
 			<posy>60</posy>
-			<width>560</width>
+			<width>550</width>
 			<height>30</height>
 			<align>left</align>
 			<aligny>center</aligny>
@@ -50,9 +75,9 @@
 		</control>
 		<control type="label" id="3">
 			<description>dialog line 2</description>
-			<posx>20</posx>
+			<posx>30</posx>
 			<posy>85</posy>
-			<width>560</width>
+			<width>550</width>
 			<height>30</height>
 			<align>left</align>
 			<aligny>center</aligny>
@@ -62,9 +87,9 @@
 		</control>
 		<control type="label" id="4">
 			<description>dialog line 3</description>
-			<posx>20</posx>
+			<posx>30</posx>
 			<posy>110</posy>
-			<width>560</width>
+			<width>550</width>
 			<height>30</height>
 			<align>left</align>
 			<aligny>center</aligny>
@@ -74,16 +99,16 @@
 		</control>
 		<control type="progress">
 			<description>Progressbar</description>
-			<posx>20</posx>
-			<posy>142</posy>
-			<width>560</width>
+			<posx>30</posx>
+			<posy>148</posy>
+			<width>550</width>
 			<height>16</height>
 			<info>System.Progressbar</info>
 		</control>
 		<control type="button" id="10">
 			<description>Cancel button</description>
-			<posx>200</posx>
-			<posy>170</posy>
+			<posx>205</posx>
+			<posy>175</posy>
 			<width>200</width>
 			<height>40</height>
 			<label>222</label>
@@ -91,8 +116,6 @@
 			<textcolor>white</textcolor>
 			<focusedcolor>white</focusedcolor>
 			<align>center</align>
-			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-			<texturefocus border="5">button-focus.png</texturefocus>
 			<onleft>10</onleft>
 			<onright>10</onright>
 			<onup>10</onup>

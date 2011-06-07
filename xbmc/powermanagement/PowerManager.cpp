@@ -207,6 +207,7 @@ void CPowerManager::OnSleep()
 
   g_application.StopPlaying();
   g_application.StopShutdownTimer();
+  g_application.StopScreenSaverTimer();
 }
 
 void CPowerManager::OnWake()

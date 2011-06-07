@@ -46,11 +46,11 @@
 					<posy>40</posy>
 					<width>630</width>
 					<height>30</height>
-					<font>font30_title</font>
+					<font>font13_title</font>
 					<label>1023</label>
 					<align>right</align>
 					<aligny>center</aligny>
-					<textcolor>white</textcolor>
+					<textcolor>selected</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="label" id="412">
@@ -59,7 +59,7 @@
 					<posy>70</posy>
 					<width>630</width>
 					<height>30</height>
-					<font>font13caps</font>
+					<font>font13</font>
 					<haspath>true</haspath>
 					<align>right</align>
 					<aligny>center</aligny>
@@ -71,7 +71,7 @@
 					<posy>460</posy>
 					<width>221</width>
 					<height>225</height>
-					<itemgap>-1</itemgap>
+					<itemgap>5</itemgap>
 					<orientation>vertical</orientation>
 					<onleft>450</onleft>
 					<onright>450</onright>
@@ -79,33 +79,29 @@
 					<ondown>9000</ondown>
 					<control type="button" id="413">
 						<description>OK button</description>
-						<height>52</height>
+						<height>48</height>
 						<align>center</align>
-						<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>186</label>
 					</control>
 					<control type="button" id="414">
 						<description>Cancel button</description>
-						<height>52</height>
+						<height>48</height>
 						<align>center</align>
-						<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>222</label>
 					</control>
 					<control type="button" id="415">
 						<description>Create folder button</description>
-						<height>52</height>
+						<height>48</height>
 						<align>center</align>
-						<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>119</label>
 					</control>
 					<control type="radiobutton" id="416">
 						<description>Flip Image button</description>
-						<height>52</height>
+						<height>48</height>
 						<align>center</align>
-						<texturenofocus border="5">MenuItemNF.png</texturenofocus>
 						<include>ButtonMediaSubCommonValues</include>
 						<label>749</label>
 					</control>
