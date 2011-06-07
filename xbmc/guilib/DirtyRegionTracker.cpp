@@ -80,10 +80,11 @@ CDirtyRegionList CDirtyRegionTracker::GetDirtyRegions()
 
 void CDirtyRegionTracker::CleanMarkedRegions()
 {
+  int buffering = g_advancedSettings.m_guiVisualizeDirtyRegions ? 20 : m_buffering;
   int i = m_markedRegions.size() - 1;
   while (i >= 0)
 	{
-    if (m_markedRegions[i].UpdateAge() >= m_buffering)
+    if (m_markedRegions[i].UpdateAge() >= buffering)
       m_markedRegions.erase(m_markedRegions.begin() + i);
 
     i--;

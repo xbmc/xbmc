@@ -570,7 +570,7 @@ void CGUIWindowManager::Render()
     g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
     const CDirtyRegionList &markedRegions  = m_tracker.GetMarkedRegions(); 
     for (CDirtyRegionList::const_iterator i = markedRegions.begin(); i != markedRegions.end(); i++)
-      CGUITexture::DrawQuad(*i, 0x4cff0000);
+      CGUITexture::DrawQuad(*i, 0x0fff0000);
     for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); i++)
       CGUITexture::DrawQuad(*i, 0x4c00ff00);
   }
