@@ -118,7 +118,6 @@ private:
   SDL_mutex *m_MutexLockEngine;
   bool       m_EngineLock;
   SDL_mutex *m_Mutex;
-  SDL_cond*  m_callbackCond;
   
   std::list<CCoreAudioAEStream*> m_streams;
   std::list<CCoreAudioAESound* > m_sounds;

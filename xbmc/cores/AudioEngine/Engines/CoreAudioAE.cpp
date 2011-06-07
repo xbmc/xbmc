@@ -63,7 +63,6 @@ CCoreAudioAE::CCoreAudioAE() :
   
   m_Mutex             = SDL_CreateMutex();
   m_MutexLockEngine   = SDL_CreateMutex();
-  m_callbackCond      = SDL_CreateCond();
   
   m_volume            = g_settings.m_fVolumeLevel;
   
@@ -108,9 +107,6 @@ CCoreAudioAE::~CCoreAudioAE()
   if (m_MutexLockEngine)
     SDL_DestroyMutex(m_MutexLockEngine);  
 
-  if(m_callbackCond)
-    SDL_DestroyCond(m_callbackCond);
-  
 #ifndef __arm__
   CCoreAudioHardware::ResetAudioDevices();
 #endif
@@ -428,8 +424,6 @@ IAEStream *CCoreAudioAE::GetStream(enum AEDataFormat dataFormat,
   Stop();
   
   SDL_mutexP(m_Mutex);
-
-  SDL_CondWaitTimeout(m_callbackCond, m_Mutex, 1000);
   
   bool wasEmpty = m_streams.empty();
   
@@ -877,7 +871,6 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
   ioData->mBuffers[0].mDataByteSize = size;
 
 out:
-  SDL_CondBroadcast(m_callbackCond);
   SDL_mutexV(m_Mutex);
 
   return noErr;
@@ -956,7 +949,6 @@ OSStatus CCoreAudioAE::OnRenderCallbackDirect( AudioDeviceID inDevice,
   }
   
 out:
-  SDL_CondBroadcast(m_callbackCond);
   SDL_mutexV(m_Mutex);
 
   return noErr;    
