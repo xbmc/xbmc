@@ -573,7 +573,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     if (!Update(iList, strPath))
       ShowShareErrorMessage(pItem.get());
   }
-  else if (pItem->IsArchive() || pItem->IsCBT()) // mount archive
+  else if (pItem->IsArchive() || pItem->IsCBArchive()) // mount archive
   {
     CStdString strArchivedPath;
     URIUtils::CreateArchivePath(strArchivedPath, "archive", pItem->m_strPath, "");

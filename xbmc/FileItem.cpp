@@ -711,7 +711,7 @@ bool CFileItem::IsZIP() const
   return URIUtils::IsZIP(m_strPath);
 }
 
-bool CFileItem::IsCBT() const
+bool CFileItem::IsCBArchive() const
 {
   return URIUtils::GetExtension(m_strPath).Equals(".cbt", false);
 }

@@ -109,7 +109,7 @@ public:
   bool IsArchive() const;
   bool IsRAR() const;
   bool IsZIP() const;
-  bool IsCBT() const;
+  bool IsCBArchive() const;
   bool IsCBZ() const;
   bool IsCBR() const;
   bool IsISO9660() const;
