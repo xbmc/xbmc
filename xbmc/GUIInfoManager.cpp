@@ -3960,7 +3960,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return path;
     }
   case LISTITEM_PICTURE_PATH:
-    if (item->IsPicture() && (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
+    if (item->IsPicture() && !(item->IsArchive() || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
       return item->m_strPath;
     break;
   case LISTITEM_PICTURE_DATETIME:

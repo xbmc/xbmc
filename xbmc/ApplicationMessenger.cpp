@@ -340,11 +340,13 @@ case TMSG_POWERDOWN:
         pSlideShow->Reset();
         if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
           g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
-        if (URIUtils::IsZIP(pMsg->strParam) || URIUtils::IsRAR(pMsg->strParam)) // actually a cbz/cbr
+        if (URIUtils::IsArchive(pMsg->strParam) || URIUtils::IsZIP(pMsg->strParam) || URIUtils::IsRAR(pMsg->strParam)) // actually a cbz/cbr
         {
           CFileItemList items;
           CStdString strPath;
-          if (URIUtils::IsZIP(pMsg->strParam))
+          if (URIUtils::IsArchive(pMsg->strParam))
+            URIUtils::CreateArchivePath(strPath, "archive", pMsg->strParam.c_str(), "");
+          else if (URIUtils::IsZIP(pMsg->strParam))
             URIUtils::CreateArchivePath(strPath, "zip", pMsg->strParam.c_str(), "");
           else
             URIUtils::CreateArchivePath(strPath, "rar", pMsg->strParam.c_str(), "");

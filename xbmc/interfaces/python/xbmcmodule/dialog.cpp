@@ -185,7 +185,7 @@ namespace PYXBMC
     if (!shares) return NULL;
 
     if (useFileDirectories && !utf8Line[2].size() == 0)
-      utf8Line[2] += "|.rar|.zip";
+      utf8Line[2] += "|.tar|.gz|.bz|.bz2|.rar|.zip";
 
     value = cDefault;
 

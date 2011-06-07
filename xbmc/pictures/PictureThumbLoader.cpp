@@ -61,12 +61,12 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   }
 
   CStdString thumb;
-  if (pItem->IsPicture() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
+  if (pItem->IsPicture() && !pItem->IsArchive() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBT() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
   { // load the thumb from the image file
     CStdString image = pItem->HasThumbnail() ? pItem->GetThumbnailImage() : CTextureCache::GetWrappedThumbURL(pItem->m_strPath);
     thumb = CTextureCache::Get().CheckAndCacheImage(image);
   }
-  else if (pItem->IsVideo() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
+  else if (pItem->IsVideo() && !pItem->IsArchive() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBT() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
   { // video
     thumb = pItem->GetCachedVideoThumb();
     if (CFile::Exists(thumb))
@@ -150,6 +150,11 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     // first check for a folder.jpg
     CStdString thumb = "folder.jpg";
     CStdString strPath = pItem->m_strPath;
+    if (pItem->IsCBT())
+    {
+      URIUtils::CreateArchivePath(strPath,"archive",pItem->m_strPath,"");
+      thumb = "cover.jpg";
+    }
     if (pItem->IsCBR())
     {
       URIUtils::CreateArchivePath(strPath,"rar",pItem->m_strPath,"");
@@ -183,7 +188,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       // count the number of images
       for (int i=0; i < items.Size();)
       {
-        if (!items[i]->IsPicture() || items[i]->IsZIP() || items[i]->IsRAR() || items[i]->IsPlayList())
+        if (!items[i]->IsPicture() || items[i]->IsArchive() || items[i]->IsZIP() || items[i]->IsRAR() || items[i]->IsPlayList())
         {
           items.Remove(i);
         }

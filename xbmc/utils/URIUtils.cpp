@@ -213,7 +213,9 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   CURL url(strPath);
   CStdString strFile = url.GetFileName();
-  if ( ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) && strFile.IsEmpty())
+  if ( ((url.GetProtocol() == "archive")
+    || (url.GetProtocol() == "rar")
+    || (url.GetProtocol() == "zip")) && strFile.IsEmpty())
   {
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
@@ -224,14 +226,18 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     CFileItemList items;
     dir.GetDirectory(strPath,items);
     GetDirectory(items[0]->m_strPath,items[0]->m_strDVDLabel);
-    if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+    if (items[0]->m_strDVDLabel.Mid(0,10).Equals("archive://")
+      || items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://")
+      || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
       GetParentPath(items[0]->m_strDVDLabel, strParent);
     else
       strParent = items[0]->m_strDVDLabel;
     for( int i=1;i<items.Size();++i)
     {
       GetDirectory(items[i]->m_strPath,items[i]->m_strDVDLabel);
-      if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
+      if (items[0]->m_strDVDLabel.Mid(0,10).Equals("archive://")
+        || items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://")
+        || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
         GetParentPath(items[i]->m_strDVDLabel, items[i]->m_strPath);
       else
         items[i]->m_strPath = items[i]->m_strDVDLabel;
@@ -500,6 +506,20 @@ bool URIUtils::IsStack(const CStdString& strFile)
   return strFile.Left(6).Equals("stack:");
 }
 
+bool URIUtils::IsArchive(const CStdString& strFile)
+{
+  CStdString strExtension;
+  GetExtension(strFile,strExtension);
+
+  if (strExtension.CompareNoCase(".tar") == 0
+    || strExtension.CompareNoCase(".gz") == 0
+    || strExtension.CompareNoCase(".bz") == 0
+    || strExtension.CompareNoCase(".bz2") == 0)
+    return true;
+
+  return false;
+}
+
 bool URIUtils::IsRAR(const CStdString& strFile)
 {
   CStdString strExtension;
@@ -519,7 +539,9 @@ bool URIUtils::IsRAR(const CStdString& strFile)
 
 bool URIUtils::IsInArchive(const CStdString &strFile)
 {
-  return IsInZIP(strFile) || IsInRAR(strFile);
+  CURL url(strFile);
+
+  return url.GetProtocol() == "archive" && url.GetFileName() != "";
 }
 
 bool URIUtils::IsInZIP(const CStdString& strFile)

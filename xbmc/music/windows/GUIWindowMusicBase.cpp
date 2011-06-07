@@ -628,7 +628,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   // add item 2 playlist (make a copy as we alter the queuing state)
   CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
 
-  if (item->IsRAR() || item->IsZIP())
+  if (item->IsArchive() || item->IsRAR() || item->IsZIP())
     return;
 
   //  Allow queuing of unqueueable items
@@ -666,7 +666,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
 /// \param pItem The file item to add
 void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems)
 {
-  if (!pItem->CanQueue() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enques thank you!
+  if (!pItem->CanQueue() || pItem->IsArchive() || pItem->IsRAR() || pItem->IsZIP() || pItem->IsParentFolder()) // no zip/rar enques thank you!
     return;
 
   // fast lookup is needed here

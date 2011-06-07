@@ -35,6 +35,7 @@ SRCS=AddonsDirectory.cpp \
      FileSpecialProtocol.cpp \
      FileTuxBox.cpp \
      FileUDF.cpp \
+     FileArchive.cpp \
      FileZip.cpp \
      FTPDirectory.cpp \
      FTPParse.cpp \
@@ -84,6 +85,8 @@ SRCS=AddonsDirectory.cpp \
      VTPFile.cpp \
      VTPSession.cpp \
      ZeroconfDirectory.cpp \
+     ArchiveDirectory.cpp \
+     ArchiveManager.cpp \
      ZipDirectory.cpp \
      ZipManager.cpp \
 
@@ -98,7 +101,8 @@ INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
           -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Platinum \
           -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Devices/MediaServer \
           -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/System/Posix \
-          -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/Core
+          -I@abs_top_srcdir@/lib/libUPnP/Neptune/Source/Core \
+          -I@abs_top_srcdir@/lib/libarchive/libarchive
 
 LIB=filesystem.a
 

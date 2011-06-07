@@ -54,7 +54,7 @@ bool CPictureInfoLoader::LoadItem(CFileItem* pItem)
   if (m_pProgressCallback && !pItem->m_bIsFolder)
     m_pProgressCallback->SetProgressAdvance();
 
-  if (!pItem->IsPicture() || pItem->IsZIP() || pItem->IsRAR() || pItem->IsCBR() || pItem->IsCBZ() || pItem->IsInternetStream() || pItem->IsVideo())
+  if (!pItem->IsPicture() || pItem->IsArchive() || pItem->IsZIP() || pItem->IsRAR() || pItem->IsCBT() || pItem->IsCBR() || pItem->IsCBZ() || pItem->IsInternetStream() || pItem->IsVideo())
     return false;
 
   if (pItem->HasPictureInfoTag())

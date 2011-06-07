@@ -81,6 +81,7 @@ private:
 #define _P(x)     CSpecialProtocol::TranslatePath(x)
 #define PTH_IC(x) CSpecialProtocol::TranslatePathConvertCase(x)
 
+/* TODO: Should move this from SpecialProtocol.h */
 #ifdef _WIN32
 #define PATH_SEPARATOR_CHAR '\\'
 #define PATH_SEPARATOR_STRING "\\"
