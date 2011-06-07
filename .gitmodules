@@ -1,3 +1,0 @@
-[submodule "lib/libarchive"]
-	path = lib/libarchive
-	url = git://github.com/ceros/libarchive.git
