@@ -245,6 +245,13 @@ bool CArchiveManager::libarchive_extract(const CStdString &strArchive,
 bool CArchiveManager::libarchive_list(const CStdString &strPath,
                                       deque<CArchiveEntry> &items)
 {
+  map<CStdString,deque<CArchiveEntry> >::iterator it = m_archiveMap.find(strPath);
+  if (it != m_archiveMap.end())
+  {
+    items = (*it).second;
+    return true;
+  }
+
   struct archive *a;
   struct archive_entry *entry;
   int r;
