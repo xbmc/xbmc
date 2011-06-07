@@ -99,26 +99,26 @@ public:
   UInt32 GetTotalOutputChannels();
   bool GetStreams(AudioStreamIdList* pList);
   bool IsRunning();
-	Boolean IsAudioPropertySettable(AudioObjectID id,
-																	AudioObjectPropertySelector selector,
-																	Boolean *outData);
-	UInt32 GetAudioPropertyArray(AudioObjectID id,
-															 AudioObjectPropertySelector selector,
-															 AudioObjectPropertyScope scope,
-															 void **outData);
-	UInt32 GetGlobalAudioPropertyArray(AudioObjectID id,
-																		 AudioObjectPropertySelector selector,
-																		 void **outData);
-	OSStatus GetAudioPropertyString(AudioObjectID id,
-																	AudioObjectPropertySelector selector,
-																	char **outData);
+  Boolean IsAudioPropertySettable(AudioObjectID id,
+                                  AudioObjectPropertySelector selector,
+                                  Boolean *outData);
+  UInt32 GetAudioPropertyArray(AudioObjectID id,
+                               AudioObjectPropertySelector selector,
+                               AudioObjectPropertyScope scope,
+                               void **outData);
+  UInt32 GetGlobalAudioPropertyArray(AudioObjectID id,
+                                     AudioObjectPropertySelector selector,
+                                     void **outData);
+  OSStatus GetAudioPropertyString(AudioObjectID id,
+                                  AudioObjectPropertySelector selector,
+                                  char **outData);
   OSStatus SetAudioProperty(AudioObjectID id,
-														AudioObjectPropertySelector selector,
-														UInt32 inDataSize, void *inData);
-	OSStatus GetAudioProperty(AudioObjectID id,
-														AudioObjectPropertySelector selector,
-														UInt32 outSize, void *outData);
-	bool SetHogStatus(bool hog);
+                            AudioObjectPropertySelector selector,
+                            UInt32 inDataSize, void *inData);
+  OSStatus GetAudioProperty(AudioObjectID id,
+                            AudioObjectPropertySelector selector,
+                            UInt32 outSize, void *outData);
+  bool SetHogStatus(bool hog);
   bool SetMixingSupport(UInt32 mix);
   bool GetMixingSupport();
   bool GetPreferredChannelLayout(CoreAudioChannelList *pChannelMap);
@@ -134,7 +134,7 @@ protected:
   AudioObjectPropertyListenerProc m_ObjectListenerProc;
   
   Float64 m_SampleRateRestore;
-	pid_t m_HogPid;
+  pid_t m_HogPid;
 };
 
 typedef std::list<AudioStreamRangedDescription> StreamFormatList;
@@ -158,7 +158,7 @@ public:
   bool SetPhysicalFormat(AudioStreamBasicDescription* pDesc);
   bool GetAvailableVirtualFormats(StreamFormatList* pList);
   bool GetAvailablePhysicalFormats(StreamFormatList* pList);
-	
+  
 protected:
   AudioStreamID m_StreamId;
   AudioStreamBasicDescription m_OriginalVirtualFormat;  
@@ -202,7 +202,7 @@ public:
   void Start();
   void Stop();
   bool IsRunning();
-	
+  
   Float32 GetCurrentVolume();
   bool SetCurrentVolume(Float32 vol);  
 protected:
@@ -220,33 +220,33 @@ protected:
 class CCoreAudioAEHALOSX : public ICoreAudioAEHAL
 {
 protected:
-	CAUOutputDevice  *m_AUOutput;
+  CAUOutputDevice  *m_AUOutput;
   CCoreAudioUnit   *m_MixerUnit;
   CCoreAudioDevice *m_AudioDevice;
   CCoreAudioStream *m_OutputStream;
-	bool              m_Initialized;
-	bool							m_Passthrough;
+  bool              m_Initialized;
+  bool              m_Passthrough;
 public:
 
-	AEAudioFormat			m_format;
-  unsigned int			m_BytesPerFrame;
-	unsigned int			m_BytesPerSec;
-	unsigned int			m_NumLatencyFrames;
-	unsigned int			m_OutputBufferIndex;
-	CCoreAudioAE		 *m_ae;
+  AEAudioFormat     m_format;
+  unsigned int      m_BytesPerFrame;
+  unsigned int      m_BytesPerSec;
+  unsigned int      m_NumLatencyFrames;
+  unsigned int      m_OutputBufferIndex;
+  CCoreAudioAE     *m_ae;
 
-	CCoreAudioAEHALOSX();
+  CCoreAudioAEHALOSX();
   virtual ~CCoreAudioAEHALOSX();
 
-	virtual bool	InitializePCM(AEAudioFormat &format, CStdString &device, unsigned int bps);
-	virtual bool	InitializePCMEncoded(AEAudioFormat &format, CStdString &device, unsigned int bps);
-	virtual bool	InitializeEncoded(AudioDeviceID outputDevice, AEAudioFormat &format, unsigned int bps);
+  virtual bool  InitializePCM(AEAudioFormat &format, CStdString &device, unsigned int bps);
+  virtual bool  InitializePCMEncoded(AEAudioFormat &format, CStdString &device, unsigned int bps);
+  virtual bool  InitializeEncoded(AudioDeviceID outputDevice, AEAudioFormat &format, unsigned int bps);
   virtual bool  Initialize(IAE *ae, bool passThrough, AEAudioFormat &format, CStdString &device);
-	virtual void	Deinitialize();
-	virtual void	EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
-	virtual void	Stop();
-	virtual bool	Start();
-	virtual float	GetDelay();
+  virtual void  Deinitialize();
+  virtual void  EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
+  virtual void  Stop();
+  virtual bool  Start();
+  virtual float GetDelay();
 };
 
 #endif

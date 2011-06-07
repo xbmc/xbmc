@@ -208,7 +208,7 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(CStdString searchName)
   UInt32 size = 0;
   AudioDeviceID deviceId = 0;
   OSStatus ret;
-	
+  
   if (searchName.Equals("default"))
   {
     AudioDeviceID defaultDevice = GetDefaultOutputDevice();
@@ -288,7 +288,7 @@ void CCoreAudioHardware::GetOutputDeviceName(CStdString& name)
   {
     name = "Default";
   }
-	
+  
   
 }
 
@@ -470,7 +470,7 @@ void CCoreAudioDevice::RemoveIOProc()
     return;
   
   Stop();
-	
+  
   OSStatus ret = AudioDeviceRemoveIOProc(m_DeviceId, m_IoProc);  
   if (ret)
     CLog::Log(LOGERROR, "CCoreAudioDevice::RemoveIOProc: Unable to remove IOProc. Error = 0x%08x (%4.4s).", ret, CONVERT_OSSTATUS(ret));
@@ -483,7 +483,7 @@ const char* CCoreAudioDevice::GetName(CStdString& name)
 {
   if (!m_DeviceId)
     return NULL;
-	
+  
   UInt32 size = 0;
   AudioDeviceGetPropertyInfo(m_DeviceId,0, false, kAudioDevicePropertyDeviceName, &size, NULL); // TODO: Change to kAudioObjectPropertyObjectName
   OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyDeviceName, &size, name.GetBufferSetLength(size));  
@@ -500,7 +500,7 @@ UInt32 CCoreAudioDevice::GetTotalOutputChannels()
   if (!m_DeviceId)
     return 0;
   UInt32 channels = 0;
-	UInt32 size = 0;
+  UInt32 size = 0;
   AudioDeviceGetPropertyInfo(m_DeviceId, 0, false, kAudioDevicePropertyStreamConfiguration, &size, NULL);
   AudioBufferList* pList = (AudioBufferList*)malloc(size);
   OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyStreamConfiguration, &size, pList); 
@@ -511,7 +511,7 @@ UInt32 CCoreAudioDevice::GetTotalOutputChannels()
     CLog::Log(LOGERROR, "CCoreAudioDevice::GetTotalOutputChannels: Unable to get total device output channels - id: 0x%04x Error = 0x%08x (%4.4s)", m_DeviceId, ret, CONVERT_OSSTATUS(ret));
   CLog::Log(LOGDEBUG, "CCoreAudioDevice::GetTotalOutputChannels: Found %u channels in %u buffers", channels, pList->mNumberBuffers);
   free(pList);
-	return channels;  
+  return channels;  
 }
 
 bool CCoreAudioDevice::GetStreams(AudioStreamIdList* pList)
@@ -548,135 +548,135 @@ bool CCoreAudioDevice::IsRunning()
 }
 
 OSStatus CCoreAudioDevice::SetAudioProperty(AudioObjectID id,
-																						AudioObjectPropertySelector selector,
-																						UInt32 inDataSize, void *inData)
+                                            AudioObjectPropertySelector selector,
+                                            UInt32 inDataSize, void *inData)
 {
-	AudioObjectPropertyAddress property_address;
-	
-	property_address.mSelector = selector;
-	property_address.mScope    = kAudioObjectPropertyScopeGlobal;
-	property_address.mElement  = kAudioObjectPropertyElementMaster;
-	
-	return AudioObjectSetPropertyData(id, &property_address, 0, NULL, inDataSize, inData);
+  AudioObjectPropertyAddress property_address;
+  
+  property_address.mSelector = selector;
+  property_address.mScope    = kAudioObjectPropertyScopeGlobal;
+  property_address.mElement  = kAudioObjectPropertyElementMaster;
+  
+  return AudioObjectSetPropertyData(id, &property_address, 0, NULL, inDataSize, inData);
 }
 
 Boolean CCoreAudioDevice::IsAudioPropertySettable(AudioObjectID id,
-																									AudioObjectPropertySelector selector,
-																									Boolean *outData)
+                                                  AudioObjectPropertySelector selector,
+                                                  Boolean *outData)
 {
-	AudioObjectPropertyAddress property_address;
-	
-	property_address.mSelector = selector;
-	property_address.mScope    = kAudioObjectPropertyScopeGlobal;
-	property_address.mElement  = kAudioObjectPropertyElementMaster;
-	
-	return AudioObjectIsPropertySettable(id, &property_address, outData);
+  AudioObjectPropertyAddress property_address;
+  
+  property_address.mSelector = selector;
+  property_address.mScope    = kAudioObjectPropertyScopeGlobal;
+  property_address.mElement  = kAudioObjectPropertyElementMaster;
+  
+  return AudioObjectIsPropertySettable(id, &property_address, outData);
 }
 
 UInt32 CCoreAudioDevice::GetAudioPropertyArray(AudioObjectID id,
-																							 AudioObjectPropertySelector selector,
-																							 AudioObjectPropertyScope scope,
-																							 void **outData)
+                                               AudioObjectPropertySelector selector,
+                                               AudioObjectPropertyScope scope,
+                                               void **outData)
 {
-	OSStatus err;
-	AudioObjectPropertyAddress property_address;
-	UInt32 i_param_size;
-	
-	property_address.mSelector = selector;
-	property_address.mScope    = scope;
-	property_address.mElement  = kAudioObjectPropertyElementMaster;
-	
-	err = AudioObjectGetPropertyDataSize(id, &property_address, 0, NULL, &i_param_size);
-	
-	if (err != noErr)
-		return 0;
-	
-	*outData = malloc(i_param_size);
-	
-	
-	err = AudioObjectGetPropertyData(id, &property_address, 0, NULL, &i_param_size, *outData);
-	
-	if (err != noErr) {
-		free(*outData);
-		return 0;
-	}
-	
-	return i_param_size;
+  OSStatus err;
+  AudioObjectPropertyAddress property_address;
+  UInt32 i_param_size;
+  
+  property_address.mSelector = selector;
+  property_address.mScope    = scope;
+  property_address.mElement  = kAudioObjectPropertyElementMaster;
+  
+  err = AudioObjectGetPropertyDataSize(id, &property_address, 0, NULL, &i_param_size);
+  
+  if (err != noErr)
+    return 0;
+  
+  *outData = malloc(i_param_size);
+  
+  
+  err = AudioObjectGetPropertyData(id, &property_address, 0, NULL, &i_param_size, *outData);
+  
+  if (err != noErr) {
+    free(*outData);
+    return 0;
+  }
+  
+  return i_param_size;
 }
 
 UInt32 CCoreAudioDevice::GetGlobalAudioPropertyArray(AudioObjectID id,
-																										 AudioObjectPropertySelector selector,
-																										 void **outData)
+                                                     AudioObjectPropertySelector selector,
+                                                     void **outData)
 {
-	return GetAudioPropertyArray(id, selector, kAudioObjectPropertyScopeGlobal, outData);
+  return GetAudioPropertyArray(id, selector, kAudioObjectPropertyScopeGlobal, outData);
 }
 
 OSStatus CCoreAudioDevice::GetAudioPropertyString(AudioObjectID id,
-																									AudioObjectPropertySelector selector,
-																									char **outData)
+                                                  AudioObjectPropertySelector selector,
+                                                  char **outData)
 {
-	OSStatus err;
-	AudioObjectPropertyAddress property_address;
-	UInt32 i_param_size;
-	CFStringRef string;
-	CFIndex string_length;
-	
-	property_address.mSelector = selector;
-	property_address.mScope    = kAudioObjectPropertyScopeGlobal;
-	property_address.mElement  = kAudioObjectPropertyElementMaster;
-	
-	i_param_size = sizeof(CFStringRef);
-	err = AudioObjectGetPropertyData(id, &property_address, 0, NULL, &i_param_size, &string);
-	if (err != noErr)
-		return err;
-	
-	string_length = CFStringGetMaximumSizeForEncoding(CFStringGetLength(string),
-																										kCFStringEncodingASCII);
-	*outData = (char *)malloc(string_length + 1);
-	CFStringGetCString(string, *outData, string_length + 1, kCFStringEncodingASCII);
-	
-	CFRelease(string);
-	
-	return err;
+  OSStatus err;
+  AudioObjectPropertyAddress property_address;
+  UInt32 i_param_size;
+  CFStringRef string;
+  CFIndex string_length;
+  
+  property_address.mSelector = selector;
+  property_address.mScope    = kAudioObjectPropertyScopeGlobal;
+  property_address.mElement  = kAudioObjectPropertyElementMaster;
+  
+  i_param_size = sizeof(CFStringRef);
+  err = AudioObjectGetPropertyData(id, &property_address, 0, NULL, &i_param_size, &string);
+  if (err != noErr)
+    return err;
+  
+  string_length = CFStringGetMaximumSizeForEncoding(CFStringGetLength(string),
+                                                    kCFStringEncodingASCII);
+  *outData = (char *)malloc(string_length + 1);
+  CFStringGetCString(string, *outData, string_length + 1, kCFStringEncodingASCII);
+  
+  CFRelease(string);
+  
+  return err;
 }
 
 OSStatus CCoreAudioDevice::GetAudioProperty(AudioObjectID id,
-																						AudioObjectPropertySelector selector,
-																						UInt32 outSize, void *outData)
+                                            AudioObjectPropertySelector selector,
+                                            UInt32 outSize, void *outData)
 {
-	AudioObjectPropertyAddress property_address;
-	
-	property_address.mSelector = selector;
-	property_address.mScope    = kAudioObjectPropertyScopeGlobal;
-	property_address.mElement  = kAudioObjectPropertyElementMaster;
-	
-	return AudioObjectGetPropertyData(id, &property_address, 0, NULL, &outSize, outData);
+  AudioObjectPropertyAddress property_address;
+  
+  property_address.mSelector = selector;
+  property_address.mScope    = kAudioObjectPropertyScopeGlobal;
+  property_address.mElement  = kAudioObjectPropertyElementMaster;
+  
+  return AudioObjectGetPropertyData(id, &property_address, 0, NULL, &outSize, outData);
 }
 
 bool CCoreAudioDevice::SetHogStatus(bool hog)
 {
-	OSStatus ret;
-	
+  OSStatus ret;
+  
   if (!m_DeviceId)
     return false;
   
-	if(!hog && (m_HogPid != -1)) 
-	{
-		CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Releas 'hog' mode on device 0x%04x", m_DeviceId);
-		
-		m_HogPid = -1;
-		ret = SetAudioProperty(m_DeviceId, kAudioDevicePropertyHogMode, sizeof(m_HogPid), &m_HogPid);
-		
-		if(ret) {
-			CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable relese 'hog' mode. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
-			return false;
-		}
-	} 
-	
-	if(hog)
-	{
-		CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Set 'hog' mode on device 0x%04x", m_DeviceId);
-		
+  if(!hog && (m_HogPid != -1)) 
+  {
+    CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Releas 'hog' mode on device 0x%04x", m_DeviceId);
+    
+    m_HogPid = -1;
+    ret = SetAudioProperty(m_DeviceId, kAudioDevicePropertyHogMode, sizeof(m_HogPid), &m_HogPid);
+    
+    if(ret) {
+      CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable relese 'hog' mode. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
+      return false;
+    }
+  } 
+  
+  if(hog)
+  {
+    CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Set 'hog' mode on device 0x%04x", m_DeviceId);
+    
     ret = GetAudioProperty(m_DeviceId, kAudioDevicePropertyHogMode, sizeof(pid_t), &m_HogPid);
     
     if (ret != noErr) {
@@ -688,54 +688,54 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
       CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Device used by another process.");
       return false;
     }
-		
-		m_HogPid = getpid();
     
-		ret = SetAudioProperty(m_DeviceId, kAudioDevicePropertyHogMode, sizeof(pid_t), &m_HogPid);
-		
-		if(ret) {
-			CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable set 'hog' mode. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
-			m_HogPid = -1;
-			return false;
-		}
-	}
-	
+    m_HogPid = getpid();
+    
+    ret = SetAudioProperty(m_DeviceId, kAudioDevicePropertyHogMode, sizeof(pid_t), &m_HogPid);
+    
+    if(ret) {
+      CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable set 'hog' mode. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
+      m_HogPid = -1;
+      return false;
+    }
+  }
+  
   return true;
 }
 
 bool CCoreAudioDevice::SetMixingSupport(UInt32 mix)
 {
-	OSStatus ret;
-	Boolean writeable = false;
-	
+  OSStatus ret;
+  Boolean writeable = false;
+  
   if (!m_DeviceId)
     return false;
-	
-	ret = IsAudioPropertySettable(m_DeviceId, kAudioDevicePropertySupportsMixing, &writeable);	
-	
-	if(!writeable) {
-		CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetMixingSupport: Mixing not writable on device 0x%04x", m_DeviceId);
-		return false;
-	}
-	
-	ret = GetAudioProperty(m_DeviceId, kAudioDevicePropertySupportsMixing, sizeof(UInt32), &mix);	
-	
-	if (ret != noErr) {
-		
-		m_MixerRestore = (GetMixingSupport() ? 1 : 0);
-		
-		ret = SetAudioProperty(m_DeviceId, kAudioDevicePropertySupportsMixing, sizeof(UInt32), &mix);
-		
-	}
-	
-	if(ret != noErr) {
-		m_MixerRestore = -1;
+  
+  ret = IsAudioPropertySettable(m_DeviceId, kAudioDevicePropertySupportsMixing, &writeable);  
+  
+  if(!writeable) {
+    CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetMixingSupport: Mixing not writable on device 0x%04x", m_DeviceId);
+    return false;
+  }
+  
+  ret = GetAudioProperty(m_DeviceId, kAudioDevicePropertySupportsMixing, sizeof(UInt32), &mix); 
+  
+  if (ret != noErr) {
+    
+    m_MixerRestore = (GetMixingSupport() ? 1 : 0);
+    
+    ret = SetAudioProperty(m_DeviceId, kAudioDevicePropertySupportsMixing, sizeof(UInt32), &mix);
+    
+  }
+  
+  if(ret != noErr) {
+    m_MixerRestore = -1;
     CLog::Log(LOGERROR, "CCoreAudioDevice::SetMixingSupport: Unable to set MixingSupport to %s. Error = 0x%08x (%4.4s)", mix ? "'On'" : "'Off'", ret, CONVERT_OSSTATUS(ret));
-		return false;
-	}
-	
-	CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetMixingSupport: %sabling mixing for device 0x%04x",mix ? "En" : "Dis",  m_DeviceId);		
-	return true;
+    return false;
+  }
+  
+  CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetMixingSupport: %sabling mixing for device 0x%04x",mix ? "En" : "Dis",  m_DeviceId);   
+  return true;
 }
 
 bool CCoreAudioDevice::GetMixingSupport()
@@ -743,12 +743,12 @@ bool CCoreAudioDevice::GetMixingSupport()
   if (!m_DeviceId)
     return false;
   UInt32 mix = 0;
-	
+  
   OSStatus ret = GetAudioProperty(m_DeviceId, kAudioDevicePropertySupportsMixing, sizeof(UInt32), &mix);
-	
+  
   if (ret == noErr)
     return false;
-	
+  
   return (mix > 0);
 }
 
@@ -756,7 +756,7 @@ bool CCoreAudioDevice::GetPreferredChannelLayout(CoreAudioChannelList* pChannelM
 {
   if (!pChannelMap || !m_DeviceId)
     return false;
-	
+  
   UInt32 propertySize = 0;
   Boolean writable = false;
   OSStatus ret = AudioDeviceGetPropertyInfo(m_DeviceId, 0, false, kAudioDevicePropertyPreferredChannelLayout, &propertySize, &writable);
@@ -793,7 +793,7 @@ bool CCoreAudioDevice::GetPreferredChannelLayout(CoreAudioChannelList* pChannelM
       return false;
     }
   } 
-	
+  
   free(pLayout);
   return (ret == noErr);  
 }
@@ -842,7 +842,7 @@ bool CCoreAudioDevice::SetNominalSampleRate(Float64 sampleRate)
   Float64 currentRate = GetNominalSampleRate();
   if (currentRate == sampleRate)
     return true; //No need to change
-	
+  
   UInt32 size = sizeof(Float64);
   OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyNominalSampleRate, size, &sampleRate);
   if (ret)
@@ -862,27 +862,27 @@ UInt32 CCoreAudioDevice::GetNumLatencyFrames()
   UInt32 i_param, i_param_size, num_latency_frames = 0;
   if (!m_DeviceId)
     return 0;  
-	
+  
   i_param_size = sizeof(uint32_t);
-	
+  
   // number of frames of latency in the AudioDevice
   if (noErr == AudioDeviceGetProperty(m_DeviceId, 0, false, 
-																			kAudioDevicePropertyLatency, &i_param_size, &i_param))
+                                      kAudioDevicePropertyLatency, &i_param_size, &i_param))
   {
     num_latency_frames += i_param;
   }
-	
+  
   // number of frames in the IO buffers
   if (noErr == AudioDeviceGetProperty(m_DeviceId, 0, false,
-																			kAudioDevicePropertyBufferFrameSize, &i_param_size, &i_param))
+                                      kAudioDevicePropertyBufferFrameSize, &i_param_size, &i_param))
   {
     num_latency_frames += i_param;
   }
-	
+  
   // number for frames in ahead the current hardware position that is safe to do IO
   if (noErr == AudioDeviceGetProperty(m_DeviceId, 0, false, 
-																			kAudioDevicePropertySafetyOffset, &i_param_size, &i_param))
- 	{
+                                      kAudioDevicePropertySafetyOffset, &i_param_size, &i_param))
+  {
     num_latency_frames += i_param;
   }
   
@@ -964,16 +964,16 @@ UInt32 CCoreAudioStream::GetNumLatencyFrames()
   UInt32 i_param, i_param_size, num_latency_frames = 0;
   if (!m_StreamId)
     return 0;
-	
+  
   i_param_size = sizeof(uint32_t);
-	
+  
   // number of frames of latency in the AudioStream
   if (noErr == AudioStreamGetProperty(m_StreamId, 0, 
-																			kAudioStreamPropertyLatency, &i_param_size, &i_param))
+                                      kAudioStreamPropertyLatency, &i_param_size, &i_param))
   {
     num_latency_frames += i_param;
   }
-	
+  
   return(num_latency_frames);
 }
 
@@ -1106,21 +1106,21 @@ bool CCoreAudioUnit::Open(ComponentDescription desc)
     Close();
   
   // Find the required Component
-	Component outputComp = FindNextComponent(NULL, &desc);
-	if (outputComp == NULL)  // Unable to find the AudioUnit we requested
+  Component outputComp = FindNextComponent(NULL, &desc);
+  if (outputComp == NULL)  // Unable to find the AudioUnit we requested
   { 
     CLog::Log(LOGERROR, "CCoreAudioUnit::Open: Unable to locate AudioUnit Component.");
     return false;
   }
-	
+  
   // Create an instance of the AudioUnit Component
-	OSStatus ret = OpenAComponent(outputComp, &m_Component);
-	if (ret) // Unable to open AudioUnit
+  OSStatus ret = OpenAComponent(outputComp, &m_Component);
+  if (ret) // Unable to open AudioUnit
   { 
     CLog::Log(LOGERROR, "CCoreAudioUnit::Open: Unable to open AudioUnit Component. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
     return false; 
   }
-	
+  
   return true;
 }
 
@@ -1140,7 +1140,7 @@ void CCoreAudioUnit::Close()
 {
   if (m_Initialized && m_Component)
   {
-		
+    
     AudioUnitUninitialize(m_Component);
     AudioUnitReset(m_Component, kAudioUnitScope_Input, NULL);
     CloseComponent(m_Component);
@@ -1201,9 +1201,9 @@ bool CCoreAudioUnit::SetRenderProc(AURenderCallback callback, void* pClientData)
     return false;
   
   AURenderCallbackStruct callbackInfo;
-	callbackInfo.inputProc = callback; // Function to be called each time the AudioUnit needs data
-	callbackInfo.inputProcRefCon = pClientData; // Pointer to be returned in the callback proc
-	OSStatus ret = AudioUnitSetProperty(m_Component, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, 0, &callbackInfo, sizeof(AURenderCallbackStruct));
+  callbackInfo.inputProc = callback; // Function to be called each time the AudioUnit needs data
+  callbackInfo.inputProcRefCon = pClientData; // Pointer to be returned in the callback proc
+  OSStatus ret = AudioUnitSetProperty(m_Component, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, 0, &callbackInfo, sizeof(AURenderCallbackStruct));
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::SetRenderProc: Unable to set AudioUnit render callback. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
@@ -1217,7 +1217,7 @@ bool CCoreAudioUnit::SetMaxFramesPerSlice(UInt32 maxFrames)
   if (!m_Component)
     return false;
   
-	OSStatus ret = AudioUnitSetProperty(m_Component, kAudioUnitProperty_MaximumFramesPerSlice, kAudioUnitScope_Global, 0, &maxFrames, sizeof(UInt32));
+  OSStatus ret = AudioUnitSetProperty(m_Component, kAudioUnitProperty_MaximumFramesPerSlice, kAudioUnitScope_Global, 0, &maxFrames, sizeof(UInt32));
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioUnit::SetMaxFramesPerSlice: Unable to set AudioUnit max frames per slice. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
@@ -1247,15 +1247,15 @@ bool CAUOutputDevice::SetCurrentDevice(AudioDeviceID deviceId)
     return false;
   
   OSStatus ret;
-	
+  
   m_DeviceId = 0;
   
-	ret = AudioUnitSetProperty(m_Component, 
-														 kAudioOutputUnitProperty_CurrentDevice, 
-														 kAudioUnitScope_Global, 
-														 kOutputBus, 
-														 &deviceId, 
-														 sizeof(deviceId));
+  ret = AudioUnitSetProperty(m_Component, 
+                             kAudioOutputUnitProperty_CurrentDevice, 
+                             kAudioUnitScope_Global, 
+                             kOutputBus, 
+                             &deviceId, 
+                             sizeof(deviceId));
   if (ret)
   { 
     CLog::Log(LOGERROR, "CCoreAudioUnit::SetCurrentDevice: Unable to set current device. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
@@ -1274,38 +1274,38 @@ bool CAUOutputDevice::GetInputChannelMap(std::list<SInt32> &pChannelMap)
   UInt32 size = 0;
   Boolean writable = false;
   
-	AudioUnitGetPropertyInfo(m_Component, kAudioOutputUnitProperty_ChannelMap, kAudioUnitScope_Input, 0, &size, &writable);
+  AudioUnitGetPropertyInfo(m_Component, kAudioOutputUnitProperty_ChannelMap, kAudioUnitScope_Input, 0, &size, &writable);
   
-	UInt32 channels = size/sizeof(SInt32);
+  UInt32 channels = size/sizeof(SInt32);
   SInt32* pMap = new SInt32[channels];
-	
+  
   OSStatus ret = AudioUnitGetProperty(m_Component, kAudioOutputUnitProperty_ChannelMap, kAudioUnitScope_Input, 0, pMap, &size);
   if (ret)
     CLog::Log(LOGERROR, "CCoreAudioUnit::GetInputChannelMap: Unable to retrieve AudioUnit input channel map. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
   else
     for (UInt32 i = 0; i < channels; i++)
       pChannelMap.push_back(pMap[i]); 
-	
+  
   delete[] pMap;
   return (!ret);
 }
 
 bool CAUOutputDevice::SetInputChannelMap(std::list<SInt32> &pChannelMap)
 {
-	// The number of array elements must match the number of output channels provided by the device
+  // The number of array elements must match the number of output channels provided by the device
   if (!m_Component)
     return false;
-	
+  
   UInt32 channels = pChannelMap.size();
   UInt32 size = sizeof(SInt32) * channels;
   SInt32* pMap = new SInt32[channels];
-	int i = 0;
-	
-	for(std::list<SInt32>::iterator itt = pChannelMap.begin(); itt != pChannelMap.end(); ++itt) {
-		pMap[i] = *itt;
-		i++;
-	}
-	
+  int i = 0;
+  
+  for(std::list<SInt32>::iterator itt = pChannelMap.begin(); itt != pChannelMap.end(); ++itt) {
+    pMap[i] = *itt;
+    i++;
+  }
+  
   OSStatus ret = AudioUnitSetProperty(m_Component, kAudioOutputUnitProperty_ChannelMap, kAudioUnitScope_Input, 0, pMap, size);
   if (ret)
     CLog::Log(LOGERROR, "CCoreAudioUnit::SetInputChannelMap: Unable to set AudioUnit input channel map. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
@@ -1315,20 +1315,20 @@ bool CAUOutputDevice::SetInputChannelMap(std::list<SInt32> &pChannelMap)
 
 bool CAUOutputDevice::SetOutputChannelMap(std::list<SInt32> &pChannelMap)
 {
-	// The number of array elements must match the number of output channels provided by the device
+  // The number of array elements must match the number of output channels provided by the device
   if (!m_Component)
     return false;
-	
+  
   UInt32 channels = pChannelMap.size();
   UInt32 size = sizeof(SInt32) * channels;
   SInt32* pMap = new SInt32[channels];
-	int i = 0;
-	
-	for(std::list<SInt32>::iterator itt = pChannelMap.begin(); itt != pChannelMap.end(); ++itt) {
-		pMap[i] = *itt;
-		i++;
-	}
-	
+  int i = 0;
+  
+  for(std::list<SInt32>::iterator itt = pChannelMap.begin(); itt != pChannelMap.end(); ++itt) {
+    pMap[i] = *itt;
+    i++;
+  }
+  
   OSStatus ret = AudioUnitSetProperty(m_Component, kAudioOutputUnitProperty_ChannelMap, kAudioUnitScope_Global, 1, pMap, size);
   if (ret)
     CLog::Log(LOGERROR, "CCoreAudioUnit::SetOutputChannelMap: Unable to set AudioUnit ouput channel map. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
@@ -1369,19 +1369,19 @@ bool CAUOutputDevice::SetCurrentVolume(Float32 vol)
 {
   if (!m_Component && !m_DeviceId)
     return false;
-	
+  
   OSStatus    ret;
   UInt32      size;
-	Boolean			canset	= false;
+  Boolean     canset  = false;
   
   size = sizeof canset;
-	
+  
   ret = AudioDeviceGetPropertyInfo(m_DeviceId, 0, false, kAudioDevicePropertyVolumeScalar, &size, &canset);
   
-	if(ret == noErr && canset==true) {
-		size = sizeof vol;
-		ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyVolumeScalar, size, &vol);
-		
+  if(ret == noErr && canset==true) {
+    size = sizeof vol;
+    ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyVolumeScalar, size, &vol);
+    
     if(!ret)
     {
       CLog::Log(LOGDEBUG, "CCoreAudioUnit::SetCurrentVolume: Set AudioUnit Device[0x%04x] volume to %f using kAudioDevicePropertyVolumeScalar", m_Component, vol);
@@ -1396,7 +1396,7 @@ bool CAUOutputDevice::SetCurrentVolume(Float32 vol)
     return false;
   }
   CLog::Log(LOGDEBUG, "CCoreAudioUnit::SetCurrentVolume: Set AudioUnit Device[0x%04x] volume to %f uing kHALOutputParam_Volume", m_Component, vol);
-	
+  
   return true;
 }
 
@@ -1418,7 +1418,7 @@ UInt32 CAUOutputDevice::GetBufferFrameSize()
   
   UInt32 size = sizeof(UInt32);
   UInt32 bufferSize = 0;
-	
+  
   OSStatus ret = AudioUnitGetProperty(m_Component, kAudioDevicePropertyBufferFrameSize, kAudioUnitScope_Input, 0, &bufferSize, &size);
   if (ret)
   {
@@ -1435,7 +1435,7 @@ UInt32 CAUOutputDevice::SetBufferFrameSize(UInt32 frames)
   
   UInt32 size = sizeof(UInt32);
   UInt32 bufferSize = 0;
-	
+  
   OSStatus ret = AudioUnitSetProperty(m_Component, kAudioDevicePropertyBufferFrameSize, kAudioUnitScope_Input, 0, 
                                       &frames, size);
   if (ret)
@@ -1468,25 +1468,25 @@ CAUMatrixMixer::~CAUMatrixMixer()
 
 
 CCoreAudioAEHALOSX::CCoreAudioAEHALOSX() :
-	m_Initialized(false),
-	m_Passthrough(false),
-	m_BytesPerFrame(0),
-	m_BytesPerSec(0),
-	m_NumLatencyFrames(0),
-	m_OutputBufferIndex(0)
+  m_Initialized(false),
+  m_Passthrough(false),
+  m_BytesPerFrame(0),
+  m_BytesPerSec(0),
+  m_NumLatencyFrames(0),
+  m_OutputBufferIndex(0)
 {
-	m_AUOutput      = new CAUOutputDevice;
-	m_MixerUnit			= new CCoreAudioUnit;
-	m_AudioDevice		= new CCoreAudioDevice;
-	m_OutputStream	= new CCoreAudioStream;	
+  m_AUOutput      = new CAUOutputDevice;
+  m_MixerUnit     = new CCoreAudioUnit;
+  m_AudioDevice   = new CCoreAudioDevice;
+  m_OutputStream  = new CCoreAudioStream; 
 }
 
 CCoreAudioAEHALOSX::~CCoreAudioAEHALOSX()
 {
   delete m_AUOutput;
-	delete m_MixerUnit;
-	delete m_AudioDevice;
-	delete m_OutputStream;
+  delete m_MixerUnit;
+  delete m_AudioDevice;
+  delete m_OutputStream;
 }
 
 bool CCoreAudioAEHALOSX::InitializePCM(AEAudioFormat &format, CStdString &device, unsigned int bps)
@@ -1523,15 +1523,15 @@ bool CCoreAudioAEHALOSX::InitializePCM(AEAudioFormat &format, CStdString &device
   
   AudioStreamBasicDescription inputDesc_end;
   CStdString formatString;
-	
+  
   m_AUOutput->GetFormat(&inputDesc_end, kAudioUnitScope_Output, kInputBus);
-	
+  
   if (!m_AUOutput->SetFormat(&inputFormat, kAudioUnitScope_Input, kOutputBus))
     return false;
-	
+  
   if (!m_AUOutput->SetFormat(&inputFormat, kAudioUnitScope_Output, kInputBus))
     return false;
-	
+  
   m_BytesPerFrame = inputFormat.mBytesPerFrame;
   m_BytesPerSec = inputFormat.mSampleRate * inputFormat.mBytesPerFrame;      // 1 sample per channel per frame
   
@@ -1595,7 +1595,7 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
         outputFormat.mChannelsPerFrame = format.m_channelCount;
         outputFormat.mSampleRate = (Float64)format.m_sampleRate;
         stream.SetPhysicalFormat(&outputFormat);
-				
+        
         m_AUOutput->SetFormat(&outputFormat, kAudioUnitScope_Input, kOutputBus);
         
         bFound = true;
@@ -1607,7 +1607,7 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
     
     if (bFound)
       break; // We found a suitable format. No need to continue.
-		
+    
     streamIndex++;
   }
   
@@ -1647,13 +1647,13 @@ bool CCoreAudioAEHALOSX::InitializeEncoded(AudioDeviceID outputDevice, AEAudioFo
 
 bool CCoreAudioAEHALOSX::Initialize(IAE *ae, bool passThrough, AEAudioFormat &format, CStdString &device)
 { 
-	m_ae = (CCoreAudioAE *)ae;
+  m_ae = (CCoreAudioAE *)ae;
 
-	if(!m_ae)
-		return false;
-	
-	m_Passthrough = passThrough;
-	
+  if(!m_ae)
+    return false;
+  
+  m_Passthrough = passThrough;
+  
   int bPassthrough = m_Passthrough;
   unsigned int bps = CAEUtil::DataFormatToBits(format.m_dataFormat);;
   
@@ -1730,7 +1730,7 @@ bool CCoreAudioAEHALOSX::Initialize(IAE *ae, bool passThrough, AEAudioFormat &fo
     // Setup the callback function that the AudioUnit will use to request data  
     if (!m_AUOutput->SetRenderProc(m_ae->RenderCallback, m_ae))
       return false;
-		
+    
     // Initialize the Output AudioUnit
     if (!m_AUOutput->Initialize())
       return false;
@@ -1743,7 +1743,7 @@ bool CCoreAudioAEHALOSX::Initialize(IAE *ae, bool passThrough, AEAudioFormat &fo
     AudioStreamBasicDescription inputDesc_end, outputDesc_end;
     CStdString formatString;
     m_AUOutput->GetFormat(&inputDesc_end, kAudioUnitScope_Output, kInputBus);
-		
+    
     if(inputDesc_end.mChannelsPerFrame != format.m_channelCount) {
       CLog::Log(LOGERROR, "CCoreAudioAEHALOSX::Initialize: Output channel count does not match input channel count. in %d : out %d. Please Correct your speaker layout setting.", 
                 format.m_channelCount, inputDesc_end.mChannelsPerFrame);      
@@ -1755,21 +1755,21 @@ bool CCoreAudioAEHALOSX::Initialize(IAE *ae, bool passThrough, AEAudioFormat &fo
       }
       Sleep(100);
     }
-		
+    
     m_AUOutput->GetFormat(&inputDesc_end, kAudioUnitScope_Output, kInputBus);
     m_AUOutput->GetFormat(&outputDesc_end, kAudioUnitScope_Input, kOutputBus);
     CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::Initialize: Input Stream Format %s", StreamDescriptionToString(inputDesc_end, formatString));
     CLog::Log(LOGDEBUG, "CCoreAudioAEHALOSX::Initialize: Output Stream Format % s", StreamDescriptionToString(outputDesc_end, formatString));    
     
   }
-	
+  
   m_NumLatencyFrames = m_AudioDevice->GetNumLatencyFrames();
   
   // set the format parameters
   format.m_frameSize    = m_BytesPerFrame;
   
-	m_Initialized = true;
-	
+  m_Initialized = true;
+  
   return true;
 }
 
@@ -1777,12 +1777,12 @@ void CCoreAudioAEHALOSX::Deinitialize()
 {
   if(!m_Initialized)
     return;
-	
+  
   if (m_Passthrough)
     m_AudioDevice->RemoveIOProc();
   else
     m_AUOutput->SetRenderProc(nil, nil);
-	
+  
   m_AUOutput->Close();
   m_OutputStream->Close();
   Sleep(10);
@@ -1791,14 +1791,14 @@ void CCoreAudioAEHALOSX::Deinitialize()
   
   m_BytesPerSec = 0;
   m_BytesPerFrame = 0;
-	m_BytesPerSec = 0;
-	m_NumLatencyFrames = 0;
-	m_OutputBufferIndex = 0;
-	
+  m_BytesPerSec = 0;
+  m_NumLatencyFrames = 0;
+  m_OutputBufferIndex = 0;
+  
   m_BytesPerSec = 0;
   
   m_Initialized = false;
-	m_Passthrough = false;
+  m_Passthrough = false;
   
   CLog::Log(LOGINFO, "CCoreAudioAEHALOSX::Deinitialize: Audio device has been closed.");
 }
@@ -1821,16 +1821,16 @@ void CCoreAudioAEHALOSX::EnumerateOutputDevices(AEDeviceList &devices, bool pass
     devices.push_back(AEDevice(deviceName, deviceName_Internal));
 
     printf("deviceName_Internal %s\n", deviceName_Internal.c_str());
-		
+    
     deviceList.pop_front();
-  }	
+  } 
 }
 
 void CCoreAudioAEHALOSX::Stop()
 {
   if(!m_Initialized)
     return;
-	
+  
   if (m_Passthrough)
     m_AudioDevice->Stop();
   else
@@ -1847,15 +1847,15 @@ bool CCoreAudioAEHALOSX::Start()
   else
     m_AUOutput->Start();
 
-	return true;
+  return true;
 }
 
 float CCoreAudioAEHALOSX::GetDelay()
 {   
   float delay;
-	
+  
   delay += (float)(m_NumLatencyFrames * m_BytesPerFrame) / m_BytesPerSec;
-	
+  
   return delay;
 }
 

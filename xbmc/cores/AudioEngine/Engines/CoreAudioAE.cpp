@@ -67,11 +67,11 @@ CCoreAudioAE::CCoreAudioAE() :
   m_volume            = g_settings.m_fVolumeLevel;
   
 #ifdef __arm__
-	HAL = new CCoreAudioAEHALIOS;
+  HAL = new CCoreAudioAEHALIOS;
 #else
-	HAL = new CCoreAudioAEHALOSX;
+  HAL = new CCoreAudioAEHALOSX;
 #endif
-	
+  
 }
 
 CCoreAudioAE::~CCoreAudioAE()
@@ -110,8 +110,8 @@ CCoreAudioAE::~CCoreAudioAE()
 #ifndef __arm__
   CCoreAudioHardware::ResetAudioDevices();
 #endif
-	
-	delete HAL;
+  
+  delete HAL;
 }
 
 void CCoreAudioAE::LockEngine()
@@ -316,9 +316,9 @@ void CCoreAudioAE::Deinitialize()
 {
   if(!m_Initialized)
     return;
-	
-	HAL->Deinitialize();
-		
+  
+  HAL->Deinitialize();
+    
   if(m_RemapChannelLayout)
     delete[] m_RemapChannelLayout;
   m_RemapChannelLayout = NULL;
@@ -385,7 +385,7 @@ AEAudioFormat CCoreAudioAE::GetAudioFormat()
 
 float CCoreAudioAE::GetDelay()
 {  
-	return HAL->GetDelay();
+  return HAL->GetDelay();
 }
 
 float CCoreAudioAE::GetVolume()
@@ -478,8 +478,8 @@ void CCoreAudioAE::RemoveStream(IAEStream *stream)
 {
   std::list<CCoreAudioAEStream*>::iterator itt;
   
-	m_streams.remove((CCoreAudioAEStream *)stream);
-	
+  m_streams.remove((CCoreAudioAEStream *)stream);
+  
   for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     if (*itt == stream)
@@ -492,30 +492,30 @@ void CCoreAudioAE::RemoveStream(IAEStream *stream)
 
 IAEStream *CCoreAudioAE::FreeStream(IAEStream *stream)
 {
-	SDL_mutexV(m_MutexLockEngine);	
-	m_EngineLock = true;
-	SDL_mutexP(m_Mutex);
+  SDL_mutexV(m_MutexLockEngine);  
+  m_EngineLock = true;
+  SDL_mutexP(m_Mutex);
 
-	RemoveStream(stream);
+  RemoveStream(stream);
 
-	CCoreAudioAEStream *istream = (CCoreAudioAEStream *)stream;
+  CCoreAudioAEStream *istream = (CCoreAudioAEStream *)stream;
 
-	delete istream;
+  delete istream;
 
-	SDL_mutexV(m_Mutex);
+  SDL_mutexV(m_Mutex);
 
-	m_EngineLock = false;
+  m_EngineLock = false;
 
-	SDL_mutexV(m_MutexLockEngine);
+  SDL_mutexV(m_MutexLockEngine);
 
-	/* When we have been in passthrough mode, reinit the hardware to come back to anlog out */
-	if(m_streams.empty()/* && m_rawPassthrough*/)
-	{
-		Initialize();
-		CLog::Log(LOGINFO, "CCoreAudioAE::FreeStream Reinit, no streams left" );
-	}
+  /* When we have been in passthrough mode, reinit the hardware to come back to anlog out */
+  if(m_streams.empty()/* && m_rawPassthrough*/)
+  {
+    Initialize();
+    CLog::Log(LOGINFO, "CCoreAudioAE::FreeStream Reinit, no streams left" );
+  }
 
-	return NULL;
+  return NULL;
 }
 
 void CCoreAudioAE::PlaySound(IAESound *sound)
@@ -645,7 +645,7 @@ void CCoreAudioAE::GarbageCollect()
 
 void CCoreAudioAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 {
-	HAL->EnumerateOutputDevices(devices, passthrough);
+  HAL->EnumerateOutputDevices(devices, passthrough);
 }
 
 void CCoreAudioAE::Start()
@@ -653,8 +653,8 @@ void CCoreAudioAE::Start()
   if(!m_Initialized)
     return;
   
-	HAL->Start();
-	
+  HAL->Start();
+  
 }
 
 void CCoreAudioAE::Stop()
@@ -662,7 +662,7 @@ void CCoreAudioAE::Stop()
   if(!m_Initialized)
     return;
 
-	HAL->Stop();
+  HAL->Stop();
 
 }
 

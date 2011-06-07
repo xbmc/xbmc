@@ -41,7 +41,7 @@
 class CoreAudioRingBuffer {
 
 public:
-	CoreAudioRingBuffer() :
+  CoreAudioRingBuffer() :
     m_iReadPos(0),
     m_iWritePos(0),
     m_iRead(0),
@@ -51,7 +51,7 @@ public:
   {
   }
 
-	CoreAudioRingBuffer(unsigned int size) :
+  CoreAudioRingBuffer(unsigned int size) :
     m_iReadPos(0),
     m_iWritePos(0),
     m_iRead(0),
@@ -62,7 +62,7 @@ public:
     Create(size);
   }
 
-	~CoreAudioRingBuffer()
+  ~CoreAudioRingBuffer()
   {
 #ifdef RING_BUFFER_DEBUG
     CLog::Log(LOGDEBUG, "CoreAudioRingBuffer::~CoereAudioRingBuffer: Deleting buffer.");
@@ -108,7 +108,7 @@ public:
    *
    * @return RING_BUFFER_OK on success, otherwise an error code
    */
-	int Write(unsigned char *src, unsigned int size)
+  int Write(unsigned char *src, unsigned int size)
   {
     unsigned int space = GetWriteSize();
 
@@ -154,7 +154,7 @@ public:
    *
    * @return RING_BUFFER_OK on success, otherwise an error code
    */
-	int Read(unsigned char *dest, unsigned int size)
+  int Read(unsigned char *dest, unsigned int size)
   {
     unsigned int space = GetReadSize();
 
@@ -206,7 +206,7 @@ public:
   /**
    * Dumps the buffer.
    */
-	void Dump()
+  void Dump()
   {
     unsigned char* bufferContents = new unsigned char[m_iSize + 1];
     for (unsigned int i=0; i<m_iSize; i++) {
@@ -224,7 +224,7 @@ public:
    * Returns available space for writing to buffer.
    * Attempt to write more bytes than available results in RING_BUFFER_FULL.
    */
-	unsigned int GetWriteSize()
+  unsigned int GetWriteSize()
   {
     return m_iSize - ( m_iWritten - m_iRead );
   }
@@ -233,7 +233,7 @@ public:
    * Returns available space for reading from buffer.
    * Attempt to read more bytes than available results in RING_BUFFER_EMPTY.
    */
-	unsigned int GetReadSize()
+  unsigned int GetReadSize()
   {
     return m_iWritten - m_iRead;
   }
@@ -241,17 +241,17 @@ public:
   /**
    * Returns the buffer size.
    */
-	unsigned int GetMaxSize()
+  unsigned int GetMaxSize()
   {
     return m_iSize;
   }
 
 private:
-	unsigned int m_iReadPos;
-	unsigned int m_iWritePos;
-	unsigned int m_iRead;
-	unsigned int m_iWritten;
-	unsigned int m_iSize;
-	unsigned char *m_Buffer;
+  unsigned int m_iReadPos;
+  unsigned int m_iWritePos;
+  unsigned int m_iRead;
+  unsigned int m_iWritten;
+  unsigned int m_iSize;
+  unsigned char *m_Buffer;
 };
 #endif //#define COREAUDIORINGBUFFER_H_

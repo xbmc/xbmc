@@ -46,15 +46,15 @@ class CCoreAudioAESound;
 class CCoreAudioAE : public IAE
 {
 protected:
-	/* Give the HAL access to the engine */
+  /* Give the HAL access to the engine */
 #ifdef __arm__
-	friend class CCoreAudioAEHALIOS;
-	CCoreAudioAEHALIOS	*HAL;
+  friend class CCoreAudioAEHALIOS;
+  CCoreAudioAEHALIOS  *HAL;
 #else
-	friend class CCoreAudioAEHALOSX;
-	CCoreAudioAEHALOSX	*HAL;
+  friend class CCoreAudioAEHALOSX;
+  CCoreAudioAEHALOSX  *HAL;
 #endif
-	
+  
 public:
   /* this should NEVER be called directly, use CAEFactory */
   CCoreAudioAE();
@@ -89,8 +89,8 @@ public:
                                  AEChLayout channelLayout, 
                                  unsigned int options = 0);
 
-	virtual void RemoveStream(IAEStream *stream);
-	
+  virtual void RemoveStream(IAEStream *stream);
+  
   virtual IAEStream *FreeStream(IAEStream *stream);
   
   /* returns a new sound object */
@@ -130,7 +130,7 @@ private:
   std::list<SoundState> m_playing_sounds;
   
   bool              m_Initialized; // Prevent multiple init/deinit
-		
+    
   AEAudioFormat     m_format;
   bool              m_rawPassthrough;
   
@@ -143,7 +143,7 @@ private:
   enum AEChannel    *m_RemapChannelLayout;
   
   bool OpenCoreAudio(unsigned int sampleRate = 44100, bool forceRaw = false, enum AEDataFormat rawFormat = AE_FMT_AC3);
-	
+  
   void Deinitialize();
   void Start();
   void Stop();

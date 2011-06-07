@@ -497,9 +497,9 @@ bool CIOSCoreAudioDevice::SetRenderProc(AudioComponentInstance componentInstance
     return false;
   
   AURenderCallbackStruct callbackInfo;
-	callbackInfo.inputProc = callback; // Function to be called each time the AudioUnit needs data
-	callbackInfo.inputProcRefCon = pClientData; // Pointer to be returned in the callback proc
-	OSStatus ret = AudioUnitSetProperty(componentInstance, kAudioUnitProperty_SetRenderCallback, 
+  callbackInfo.inputProc = callback; // Function to be called each time the AudioUnit needs data
+  callbackInfo.inputProcRefCon = pClientData; // Pointer to be returned in the callback proc
+  OSStatus ret = AudioUnitSetProperty(componentInstance, kAudioUnitProperty_SetRenderCallback, 
                                       kAudioUnitScope_Global, bus, &callbackInfo, 
                                       sizeof(AURenderCallbackStruct));
   
@@ -515,7 +515,7 @@ bool CIOSCoreAudioDevice::SetRenderProc(AudioComponentInstance componentInstance
 bool CIOSCoreAudioDevice::SetSessionListener(AudioSessionPropertyID inID,
                                              AudioSessionPropertyListener inProc, void* pClientData)
 {
-	OSStatus ret = AudioSessionAddPropertyListener(inID, inProc, pClientData);
+  OSStatus ret = AudioSessionAddPropertyListener(inID, inProc, pClientData);
   
   if (ret)
   {
@@ -532,30 +532,30 @@ bool CIOSCoreAudioDevice::SetSessionListener(AudioSessionPropertyID inID,
 
 
 CCoreAudioAEHALIOS::CCoreAudioAEHALIOS() :
-	m_Initialized(false),
-	m_Passthrough(false),
-	m_BytesPerFrame(0),
-	m_BytesPerSec(0),
-	m_NumLatencyFrames(0),
-	m_OutputBufferIndex(0)
+  m_Initialized(false),
+  m_Passthrough(false),
+  m_BytesPerFrame(0),
+  m_BytesPerSec(0),
+  m_NumLatencyFrames(0),
+  m_OutputBufferIndex(0)
 {
-	m_AudioDevice		= new CIOSCoreAudioDevice;
+  m_AudioDevice   = new CIOSCoreAudioDevice;
 }
 
 CCoreAudioAEHALIOS::~CCoreAudioAEHALIOS()
 {
-	delete m_AudioDevice;
+  delete m_AudioDevice;
 }
 
 bool CCoreAudioAEHALIOS::Initialize(IAE *ae, bool passThrough, AEAudioFormat &format, CStdString &device)
 { 
-	m_ae = (CCoreAudioAE *)ae;
+  m_ae = (CCoreAudioAE *)ae;
 
-	if(!m_ae)
-		return false;
-	
-	m_Passthrough = passThrough;
-	
+  if(!m_ae)
+    return false;
+  
+  m_Passthrough = passThrough;
+  
   unsigned int bps = CAEUtil::DataFormatToBits(format.m_dataFormat);;
   
   if (format.m_channelCount == 0)
@@ -568,39 +568,39 @@ bool CCoreAudioAEHALIOS::Initialize(IAE *ae, bool passThrough, AEAudioFormat &fo
   // We use the default DefaultOuput AudioUnit, so we only can set the input stream format.
   // The autput format is automaticaly set to the input format.
   AudioStreamBasicDescription audioFormat;
-  audioFormat.mFormatID = kAudioFormatLinearPCM;						//  Data encoding format
+  audioFormat.mFormatID = kAudioFormatLinearPCM;            //  Data encoding format
   audioFormat.mFormatFlags = kAudioFormatFlagsNativeEndian | kLinearPCMFormatFlagIsPacked;
-	switch(format.m_dataFormat) {
+  switch(format.m_dataFormat) {
     case AE_FMT_FLOAT:
       audioFormat.mFormatFlags |= kAudioFormatFlagIsFloat;
       break;
     default:
       audioFormat.mFormatFlags |= kAudioFormatFlagIsSignedInteger;
       break;
-	}
-  audioFormat.mChannelsPerFrame = format.m_channelCount;		// Number of interleaved audiochannels
-  audioFormat.mSampleRate = (Float64)format.m_sampleRate;		//  the sample rate of the audio stream
-  audioFormat.mBitsPerChannel = bps;						// Number of bits per sample, per channel
+  }
+  audioFormat.mChannelsPerFrame = format.m_channelCount;    // Number of interleaved audiochannels
+  audioFormat.mSampleRate = (Float64)format.m_sampleRate;   //  the sample rate of the audio stream
+  audioFormat.mBitsPerChannel = bps;            // Number of bits per sample, per channel
   audioFormat.mBytesPerFrame = (bps>>3) * format.m_channelCount; // Size of a frame == 1 sample per channel   
-  audioFormat.mFramesPerPacket = 1;													// The smallest amount of indivisible data. Always 1 for uncompressed audio   
+  audioFormat.mFramesPerPacket = 1;                         // The smallest amount of indivisible data. Always 1 for uncompressed audio   
   audioFormat.mBytesPerPacket = audioFormat.mBytesPerFrame * audioFormat.mFramesPerPacket;
   audioFormat.mReserved = 0;
-	
+  
   // Attach our output object to the device
   if(!m_AudioDevice->Init(/*m_Passthrough*/ true, &audioFormat, m_ae->RenderCallback, m_ae))
   {
     CLog::Log(LOGDEBUG, "CCoreAudioAEHALIOS::Init failed");
     return false;
   }
-	
-	UInt32 m_PacketSize = 64;
-	m_AudioDevice->FramesPerSlice(m_PacketSize);
+  
+  UInt32 m_PacketSize = 64;
+  m_AudioDevice->FramesPerSlice(m_PacketSize);
   
   // set the format parameters
   m_BytesPerFrame = audioFormat.mBytesPerFrame;
-	
-	if (!m_AudioDevice->Open())
-		return false;
+  
+  if (!m_AudioDevice->Open())
+    return false;
 
   // set the format parameters
   format.m_frameSize    = m_BytesPerFrame;
@@ -614,52 +614,52 @@ void CCoreAudioAEHALIOS::Deinitialize()
 {
   if(!m_Initialized)
     return;
-	
+  
   Sleep(10);
   m_AudioDevice->Close();
   Sleep(100);
   
   m_BytesPerSec = 0;
   m_BytesPerFrame = 0;
-	m_BytesPerSec = 0;
-	m_NumLatencyFrames = 0;
-	m_OutputBufferIndex = 0;
-	
+  m_BytesPerSec = 0;
+  m_NumLatencyFrames = 0;
+  m_OutputBufferIndex = 0;
+  
   m_BytesPerSec = 0;
   
   m_Initialized = false;
-	m_Passthrough = false;
+  m_Passthrough = false;
   
   CLog::Log(LOGINFO, "CCoreAudioAEHALIOS::Deinitialize: Audio device has been closed.");
 }
 
 void CCoreAudioAEHALIOS::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 {
-	IOSCoreAudioDeviceList deviceList;
-	CIOSCoreAudioHardware::GetOutputDevices(&deviceList);
-	
-	// Add default output device if GetOutputDevices return nothing
-	devices.push_back(AEDevice("Default", "IOSCoreAudio:default"));
-	
-	CStdString deviceName;
-	for (int i = 0; !deviceList.empty(); i++)
-	{
-		CIOSCoreAudioDevice device(deviceList.front());
-		device.GetName(deviceName);
-		
-		CStdString deviceName_Internal = CStdString("IOSCoreAudio:") + deviceName;
-		devices.push_back(AEDevice(deviceName, deviceName_Internal));
-		
-		deviceList.pop_front();
-		
-	}
+  IOSCoreAudioDeviceList deviceList;
+  CIOSCoreAudioHardware::GetOutputDevices(&deviceList);
+  
+  // Add default output device if GetOutputDevices return nothing
+  devices.push_back(AEDevice("Default", "IOSCoreAudio:default"));
+  
+  CStdString deviceName;
+  for (int i = 0; !deviceList.empty(); i++)
+  {
+    CIOSCoreAudioDevice device(deviceList.front());
+    device.GetName(deviceName);
+    
+    CStdString deviceName_Internal = CStdString("IOSCoreAudio:") + deviceName;
+    devices.push_back(AEDevice(deviceName, deviceName_Internal));
+    
+    deviceList.pop_front();
+    
+  }
 }
 
 void CCoreAudioAEHALIOS::Stop()
 {
   if(!m_Initialized)
     return;
-	
+  
   m_AudioDevice->Stop();
 }
 
@@ -670,7 +670,7 @@ bool CCoreAudioAEHALIOS::Start()
   
   m_AudioDevice->Start();
 
-	return true;
+  return true;
 }
 
 float CCoreAudioAEHALIOS::GetDelay()

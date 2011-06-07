@@ -98,26 +98,26 @@ class CCoreAudioAEHALIOS : public ICoreAudioAEHAL
 {
 protected:
   CIOSCoreAudioDevice  *m_AudioDevice;
-	bool                  m_Initialized;
-	bool                  m_Passthrough;
+  bool                  m_Initialized;
+  bool                  m_Passthrough;
 public:
 
-	AEAudioFormat			m_format;
-  unsigned int			m_BytesPerFrame;
-	unsigned int			m_BytesPerSec;
-	unsigned int			m_NumLatencyFrames;
-	unsigned int			m_OutputBufferIndex;
-	CCoreAudioAE		 *m_ae;
+  AEAudioFormat     m_format;
+  unsigned int      m_BytesPerFrame;
+  unsigned int      m_BytesPerSec;
+  unsigned int      m_NumLatencyFrames;
+  unsigned int      m_OutputBufferIndex;
+  CCoreAudioAE     *m_ae;
 
-	CCoreAudioAEHALIOS();
+  CCoreAudioAEHALIOS();
   virtual ~CCoreAudioAEHALIOS();
 
   virtual bool  Initialize(IAE *ae, bool passThrough, AEAudioFormat &format, CStdString &device);
-	virtual void	Deinitialize();
-	virtual void	EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
-	virtual void	Stop();
-	virtual bool	Start();
-	virtual float	GetDelay();
+  virtual void  Deinitialize();
+  virtual void  EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
+  virtual void  Stop();
+  virtual bool  Start();
+  virtual float GetDelay();
 };
 
 #endif
