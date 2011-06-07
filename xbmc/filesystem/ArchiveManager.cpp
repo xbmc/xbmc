@@ -27,6 +27,7 @@
 #include "utils/URIUtils.h"
 #include "SpecialProtocol.h"
 #include "Util.h"
+#include "XFileUtils.h"
 
 #include <archive.h>
 #include <archive_entry.h>
@@ -45,7 +46,16 @@ CArchiveEntry::CArchiveEntry()
   m_file_stat = NULL;
   m_cache_path.clear();
 }
-CArchiveEntry::~CArchiveEntry(){}
+CArchiveEntry::~CArchiveEntry()
+{
+  CStdString strCachedDir;
+  if (m_cache_path.length() > 0)
+  {
+    CFile::Delete(m_cache_path);
+    URIUtils::GetDirectory(m_cache_path, strCachedDir);
+    RemoveDirectory(strCachedDir.c_str());
+  }
+}
 void CArchiveEntry::get_file(CStdString &file)
 {
   file = m_file;
