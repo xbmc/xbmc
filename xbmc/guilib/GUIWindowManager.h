@@ -72,6 +72,12 @@ public:
    */
   void Process(unsigned int currentTime);
 
+  /*! \brief Mark a region of the screen as dirty - used by the mouse and dim/black screensavers currently
+      Ideally this would be removed and a technique for marking the screen as dirty implemented for ssavers
+      in addition to moving the mouse rendering into the manager.
+   */
+  void MarkDirty(const CDirtyRegion &rect);
+
   /*! \brief Rendering of the current window and any dialogs
    Render is called every frame to draw the current window and any dialogs.
    It should only be called from the application thread.
@@ -157,7 +163,6 @@ private:
   bool m_initialized;
 
   CDirtyRegionTracker m_tracker;
-  std::vector<CRect> m_DirtyRegion;
 };
 
 /*!
