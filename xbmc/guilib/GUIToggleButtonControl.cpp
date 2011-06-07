@@ -39,11 +39,17 @@ CGUIToggleButtonControl::~CGUIToggleButtonControl(void)
 {
 }
 
-void CGUIToggleButtonControl::Render()
+void CGUIToggleButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // ask our infoManager whether we are selected or not...
+  bool selected = m_bSelected;
   if (m_toggleSelect)
-    m_bSelected = g_infoManager.GetBool(m_toggleSelect, m_parentID);
+    selected = g_infoManager.GetBool(m_toggleSelect, m_parentID);
+  if (selected != m_bSelected)
+  {
+    MarkDirtyRegion();
+    m_bSelected = selected;
+  }
 
   if (m_bSelected)
   {
@@ -52,6 +58,15 @@ void CGUIToggleButtonControl::Render()
     m_selectButton.SetVisible(IsVisible());
     m_selectButton.SetEnabled(!IsDisabled());
     m_selectButton.SetPulseOnSelect(m_pulseOnSelect);
+    m_selectButton.Process(currentTime, dirtyregions);
+  }
+  CGUIButtonControl::Process(currentTime, dirtyregions);
+}
+
+void CGUIToggleButtonControl::Render()
+{
+  if (m_bSelected)
+  {
     m_selectButton.Render();
     CGUIControl::Render();
   }
