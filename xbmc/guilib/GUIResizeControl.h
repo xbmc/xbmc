@@ -69,7 +69,7 @@ public:
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool UpdateColors();
-  void SetAlpha(unsigned char alpha);
+  bool SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Resize(float x, float y);
   CGUITexture m_imgFocus;
