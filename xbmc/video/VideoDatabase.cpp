@@ -4960,25 +4960,33 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
 
 bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idActor, int idDirector, int idShow, int idSeason)
 {
-  CStdString strIn = PrepareSQL("= %i", idShow);
-  GetStackedTvShowList(idShow, strIn);
-  CStdString where = PrepareSQL("where idShow %s",strIn.c_str());
-  if (idGenre != -1)
-    where = PrepareSQL("join genrelinktvshow on genrelinktvshow.idShow=episodeview.idShow where episodeview.idShow=%i and genrelinktvshow.idGenre=%i",idShow,idGenre);
-  else if (idDirector != -1)
-    where = PrepareSQL("join directorlinktvshow on directorlinktvshow.idShow=episodeview.idShow where episodeview.idShow=%i and directorlinktvshow.idDirector=%i",idShow,idDirector);
-  else if (idYear !=-1)
-    where=PrepareSQL("where idShow=%i and premiered like '%%%i%%'",idShow,idYear);
-  else if (idActor != -1)
-    where = PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow=episodeview.idShow where episodeview.idShow=%i and actorlinktvshow.idActor=%i",idShow,idActor);
-
-  if (idSeason != -1)
+  CStdString where, strIn;
+  if (idShow != -1)
   {
-    if (idSeason != 0) // season = 0 indicates a special - we grab all specials here (see below)
-      where += PrepareSQL(" and (c%02d=%i or (c%02d=0 and (c%02d=0 or c%02d=%i)))",VIDEODB_ID_EPISODE_SEASON,idSeason,VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_SORTSEASON, VIDEODB_ID_EPISODE_SORTSEASON,idSeason);
+    strIn = PrepareSQL("= %i", idShow);
+    GetStackedTvShowList(idShow, strIn);
+
+    if (idGenre != -1)
+      where = PrepareSQL("join genrelinktvshow on genrelinktvshow.idShow=episodeview.idShow where episodeview.idShow=%i and genrelinktvshow.idGenre=%i",idShow,idGenre);
+    else if (idDirector != -1)
+      where = PrepareSQL("join directorlinktvshow on directorlinktvshow.idShow=episodeview.idShow where episodeview.idShow=%i and directorlinktvshow.idDirector=%i",idShow,idDirector);
+    else if (idYear !=-1)
+      where = PrepareSQL("where idShow=%i and premiered like '%%%i%%'", idShow, idYear);
+    else if (idActor != -1)
+      where = PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow=episodeview.idShow where episodeview.idShow=%i and actorlinktvshow.idActor=%i",idShow,idActor);
     else
-      where += PrepareSQL(" and c%02d=%i",VIDEODB_ID_EPISODE_SEASON,idSeason);
+      where = PrepareSQL("where idShow %s",strIn.c_str());
+
+    if (idSeason != -1)
+    {
+      if (idSeason == 0) // season = 0 indicates a special - we grab all specials here (see below)
+        where += PrepareSQL(" and c%02d=%i",VIDEODB_ID_EPISODE_SEASON,idSeason);
+      else
+        where += PrepareSQL(" and (c%02d=%i or (c%02d=0 and (c%02d=0 or c%02d=%i)))",VIDEODB_ID_EPISODE_SEASON,idSeason,VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_SORTSEASON, VIDEODB_ID_EPISODE_SORTSEASON,idSeason);
+    }
   }
+  else if (idYear !=-1)
+    where=PrepareSQL("where premiered like '%%%i%%'", idYear);
 
   // we always append show, season + episode in GetEpisodesByWhere
   CStdString parent, grandParent;
@@ -4987,7 +4995,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
 
   bool ret = GetEpisodesByWhere(grandParent, where, items);
 
-  if (idSeason == -1)
+  if (idSeason == -1 && idShow != -1)
   { // add any linked movies
     CStdString where = PrepareSQL("join movielinktvshow on movielinktvshow.idMovie=movieview.idMovie where movielinktvshow.idShow %s", strIn.c_str());
     GetMoviesByWhere("videodb://1/2/", where, "", items);
