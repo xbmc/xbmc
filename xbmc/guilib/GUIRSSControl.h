@@ -64,6 +64,7 @@ public:
   virtual void OnFeedUpdate(const vecText &feed);
   virtual void OnFeedRelease();
   virtual bool CanFocus() const { return false; };
+  virtual CRect CalcRenderRegion() const;
 
   void SetIntervals(const std::vector<int>& vecIntervals);
   void SetUrls(const std::vector<std::string>& vecUrl, bool rtl);
