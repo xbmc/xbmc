@@ -19,7 +19,6 @@
 		C80711AD135DB85F002F601B /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80711AB135DB85F002F601B /* InputOperations.cpp */; };
 		C8EC5D26136953E100CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D24136953E100CCC10D /* XBMC_keytable.cpp */; };
 		F54D9E8112B713F8006870F9 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8012B713F8006870F9 /* libc.dylib */; };
-		F558EAB813A0202F00631E12 /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558EAB613A0202F00631E12 /* AppParamParser.cpp */; };
 		F56B143412CAF279009B4C96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B143312CAF279009B4C96 /* CoreVideo.framework */; };
 		F56B14A512CAF523009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B14A412CAF523009B4C96 /* AudioToolbox.framework */; };
 		F56B15D512CD67A9009B4C96 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15D412CD67A9009B4C96 /* CoreGraphics.framework */; };
@@ -941,8 +940,6 @@
 		C8EC5D24136953E100CCC10D /* XBMC_keytable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_keytable.cpp; sourceTree = "<group>"; };
 		C8EC5D25136953E100CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
 		F54D9E8012B713F8006870F9 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
-		F558EAB613A0202F00631E12 /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
-		F558EAB713A0202F00631E12 /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
 		F56B143312CAF279009B4C96 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		F56B14A412CAF523009B4C96 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		F56B15D412CD67A9009B4C96 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -5262,10 +5259,6 @@
 		F56C86B1131F42EB000AD0F6 /* settings */ = {
 			isa = PBXGroup;
 			children = (
-				F56C86BE131F42EB000AD0F6 /* AdvancedSettings.cpp */,
-				F56C86BF131F42EB000AD0F6 /* AdvancedSettings.h */,
-				F558EAB613A0202F00631E12 /* AppParamParser.cpp */,
-				F558EAB713A0202F00631E12 /* AppParamParser.h */,
 				F56C86B2131F42EB000AD0F6 /* GUIDialogContentSettings.cpp */,
 				F56C86B3131F42EB000AD0F6 /* GUIDialogContentSettings.h */,
 				F56C86B4131F42EB000AD0F6 /* GUIDialogLockSettings.cpp */,
@@ -5278,6 +5271,8 @@
 				F56C86BB131F42EB000AD0F6 /* GUIWindowTestPattern.h */,
 				F56C86BC131F42EB000AD0F6 /* GUISettings.cpp */,
 				F56C86BD131F42EB000AD0F6 /* GUISettings.h */,
+				F56C86BE131F42EB000AD0F6 /* AdvancedSettings.cpp */,
+				F56C86BF131F42EB000AD0F6 /* AdvancedSettings.h */,
 				F56C86C0131F42EB000AD0F6 /* GUIWindowSettings.cpp */,
 				F56C86C1131F42EB000AD0F6 /* GUIWindowSettings.h */,
 				F56C86C2131F42EB000AD0F6 /* GUIWindowSettingsCategory.cpp */,
@@ -6704,7 +6699,6 @@
 				18404DD61396C3F300863BBA /* Slingbox.cpp in Sources */,
 				1840B77A1399616D007C848B /* JSONVariantParser.cpp in Sources */,
 				1840B77B1399616D007C848B /* JSONVariantWriter.cpp in Sources */,
-				F558EAB813A0202F00631E12 /* AppParamParser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

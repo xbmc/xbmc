@@ -19,7 +19,6 @@
 		C8EC5D51136954E400CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D4F136954E400CCC10D /* XBMC_keytable.cpp */; };
 		F54D9E0712B65FFF006870F9 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E0612B65FFF006870F9 /* libc.dylib */; };
 		F54D9E8E12B71457006870F9 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8D12B71457006870F9 /* CoreAudio.framework */; };
-		F558EAC813A0204400631E12 /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558EAC613A0204400631E12 /* AppParamParser.cpp */; };
 		F56B15FB12CD6922009B4C96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15FA12CD6922009B4C96 /* CoreVideo.framework */; };
 		F56B15FD12CD6930009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15FC12CD6930009B4C96 /* AudioToolbox.framework */; };
 		F56B15FF12CD695C009B4C96 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15FE12CD695C009B4C96 /* CoreGraphics.framework */; };
@@ -942,8 +941,6 @@
 		C8EC5D50136954E400CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
 		F54D9E0612B65FFF006870F9 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		F54D9E8D12B71457006870F9 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
-		F558EAC613A0204400631E12 /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
-		F558EAC713A0204400631E12 /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
 		F56B15FA12CD6922009B4C96 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		F56B15FC12CD6930009B4C96 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		F56B15FE12CD695C009B4C96 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -4892,10 +4889,6 @@
 		F56C76C6131EC153000AD0F6 /* settings */ = {
 			isa = PBXGroup;
 			children = (
-				F56C76D3131EC153000AD0F6 /* AdvancedSettings.cpp */,
-				F56C76D4131EC153000AD0F6 /* AdvancedSettings.h */,
-				F558EAC613A0204400631E12 /* AppParamParser.cpp */,
-				F558EAC713A0204400631E12 /* AppParamParser.h */,
 				F56C76C7131EC153000AD0F6 /* GUIDialogContentSettings.cpp */,
 				F56C76C8131EC153000AD0F6 /* GUIDialogContentSettings.h */,
 				F56C76C9131EC153000AD0F6 /* GUIDialogLockSettings.cpp */,
@@ -4908,6 +4901,8 @@
 				F56C76D0131EC153000AD0F6 /* GUIWindowTestPattern.h */,
 				F56C76D1131EC153000AD0F6 /* GUISettings.cpp */,
 				F56C76D2131EC153000AD0F6 /* GUISettings.h */,
+				F56C76D3131EC153000AD0F6 /* AdvancedSettings.cpp */,
+				F56C76D4131EC153000AD0F6 /* AdvancedSettings.h */,
 				F56C76D5131EC153000AD0F6 /* GUIWindowSettings.cpp */,
 				F56C76D6131EC153000AD0F6 /* GUIWindowSettings.h */,
 				F56C76D7131EC153000AD0F6 /* GUIWindowSettingsCategory.cpp */,
@@ -6687,7 +6682,6 @@
 				18404DFB1396C43B00863BBA /* Slingbox.cpp in Sources */,
 				1840B796139968DB007C848B /* JSONVariantParser.cpp in Sources */,
 				1840B797139968DB007C848B /* JSONVariantWriter.cpp in Sources */,
-				F558EAC813A0204400631E12 /* AppParamParser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
