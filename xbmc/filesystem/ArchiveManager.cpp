@@ -183,9 +183,12 @@ bool CArchiveManager::libarchive_extract(const CStdString &strArchive,
   archive_write_disk_set_options(ext, flags);
   archive_write_disk_set_standard_lookup(ext);
 
-  if ((r = archive_read_open_file(a, strArchive.c_str(),
-                                  LIBARCHIVE_BLOCK_SIZE)))
+  r = archive_read_open_filename(a, strArchive.c_str(), LIBARCHIVE_BLOCK_SIZE);
+  if (r != ARCHIVE_OK)
+  {
+    CLog::Log(LOGERROR,"%s", archive_error_string(a));
     return false;
+  }
   while (1)
   {
     r = archive_read_next_header(a, &entry);
