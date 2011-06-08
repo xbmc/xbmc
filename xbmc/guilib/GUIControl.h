@@ -197,7 +197,7 @@ public:
   virtual void SetFocus(bool focus);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
-  virtual void SetVisible(bool bVisible);
+  virtual void SetVisible(bool bVisible, bool setVisState = false);
   void SetVisibleCondition(int visible, const CGUIInfoBool &allowHiddenFocus);
   int GetVisibleCondition() const { return m_visibleCondition; };
   void SetEnableCondition(int condition);
