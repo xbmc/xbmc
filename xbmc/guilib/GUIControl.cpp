@@ -393,23 +393,12 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       break;
 
     case GUI_MSG_VISIBLE:
-      if (m_visibleCondition)
-        m_visible = g_infoManager.GetBool(m_visibleCondition, m_parentID) ? VISIBLE : HIDDEN;
-      else
-        m_visible = VISIBLE;
-      m_forceHidden = false;
+      SetVisible(true, true);
       return true;
       break;
 
     case GUI_MSG_HIDDEN:
-      m_forceHidden = true;
-      // reset any visible animations that are in process
-      if (IsAnimating(ANIM_TYPE_VISIBLE))
-      {
-//        CLog::Log(LOGDEBUG, "Resetting visible animation on control %i (we are %s)", m_controlID, m_visible ? "visible" : "hidden");
-        CAnimation *visibleAnim = GetAnimation(ANIM_TYPE_VISIBLE);
-        if (visibleAnim) visibleAnim->ResetAnimation();
-      }
+      SetVisible(false);
       return true;
 
       // Note that the skin <enable> tag will override these messages
@@ -561,19 +550,36 @@ void CGUIControl::SetHeight(float height)
   }
 }
 
-void CGUIControl::SetVisible(bool bVisible)
+void CGUIControl::SetVisible(bool bVisible, bool setVisState)
 {
-  // just force to hidden if necessary
-  m_forceHidden = !bVisible;
-/*
-  if (m_visibleCondition)
-    bVisible = g_infoManager.GetBool(m_visibleCondition, m_parentID);
-  if (m_bVisible != bVisible)
+  if (bVisible && setVisState)
+  {  // TODO: currently we only update m_visible from GUI_MSG_VISIBLE (SET_CONTROL_VISIBLE)
+     //       otherwise we just set m_forceHidden
+    GUIVISIBLE visible = m_visible;
+    if (m_visibleCondition)
+      visible = g_infoManager.GetBool(m_visibleCondition, m_parentID) ? VISIBLE : HIDDEN;
+    else
+      visible = VISIBLE;
+    if (visible != m_visible)
+    {
+      m_visible = visible;
+      SetInvalid();
+    }
+  }
+  if (m_forceHidden == bVisible)
   {
-    m_visible = bVisible;
-    m_visibleFromSkinCondition = bVisible;
+    m_forceHidden = !bVisible;
     SetInvalid();
-  }*/
+  }
+  if (m_forceHidden)
+  { // reset any visible animations that are in process
+    if (IsAnimating(ANIM_TYPE_VISIBLE))
+    {
+//        CLog::Log(LOGDEBUG, "Resetting visible animation on control %i (we are %s)", m_controlID, m_visible ? "visible" : "hidden");
+      CAnimation *visibleAnim = GetAnimation(ANIM_TYPE_VISIBLE);
+      if (visibleAnim) visibleAnim->ResetAnimation();
+    }
+  }
 }
 
 bool CGUIControl::HitTest(const CPoint &point) const
