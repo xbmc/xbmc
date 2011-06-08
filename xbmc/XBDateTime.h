@@ -37,7 +37,9 @@ enum TIME_FORMAT { TIME_FORMAT_GUESS     =  0,
                    TIME_FORMAT_HH_MM     =  6,
                    TIME_FORMAT_HH_MM_SS  =  7,
                    TIME_FORMAT_XX        =  8, // AM/PM
-                   TIME_FORMAT_HH_MM_XX  = 14};
+                   TIME_FORMAT_HH_MM_XX  = 14,
+                   TIME_FORMAT_H         = 16,
+                   TIME_FORMAT_H_MM_SS   = 19};
 
 class CDateTime;
 
