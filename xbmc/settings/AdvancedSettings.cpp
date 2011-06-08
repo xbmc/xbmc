@@ -64,6 +64,10 @@ void CAdvancedSettings::Initialize()
   m_lcdHostName = "localhost";
 
   m_controllerDeadzone = 0.2f;
+
+  m_canQuit = true;
+  m_canWindowed = true;
+  m_showSplash = true;
 }
 
 bool CAdvancedSettings::Load()
