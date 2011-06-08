@@ -91,7 +91,7 @@ bool CVideoDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create bookmark table");
     m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, totalTimeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
-    m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile)");
+    m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
 
     CLog::Log(LOGINFO, "create settings table");
     m_pDS->exec("CREATE TABLE settings ( idFile integer, Deinterlace bool,"
@@ -2805,6 +2805,32 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
   return retVal;
 }
 
+bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag) const
+{
+  bool match = false;
+
+  try
+  {
+    CStdString strSQL=PrepareSQL("select timeInSeconds, totalTimeInSeconds from bookmark where idFile=%i and type=%i order by timeInSeconds", tag.m_iFileId, CBookmark::RESUME);
+    m_pDS2->query( strSQL.c_str() );
+    if (!m_pDS2->eof())
+    {
+      tag.m_resumePoint.timeInSeconds = m_pDS2->fv(0).get_asDouble();
+      tag.m_resumePoint.totalTimeInSeconds = m_pDS2->fv(1).get_asDouble();
+      tag.m_resumePoint.type = CBookmark::RESUME;
+
+      match = true;
+    }
+    m_pDS2->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, tag.m_strFileNameAndPath.c_str());
+  }
+
+  return match;
+}
+
 CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
 {
   CVideoInfoTag details;
@@ -2820,6 +2846,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
   movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
 
   GetStreamDetails(details);
+  GetResumePoint(details);
 
   if (needsCast)
   {
@@ -2926,6 +2953,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   details.m_strPremiered = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString();
 
   GetStreamDetails(details);
+  GetResumePoint(details);
 
   if (needsCast)
   {
@@ -2990,6 +3018,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS)
   movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
 
   GetStreamDetails(details);
+  GetResumePoint(details);
 
   details.m_strPictureURL.Parse();
   return details;
@@ -3482,6 +3511,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       UpdateBasePathID("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH, VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
       UpdateBasePathID("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH, VIDEODB_ID_EPISODE_PARENTPATHID);
       UpdateBasePathID("tvshow", "idShow", VIDEODB_ID_TV_BASEPATH, VIDEODB_ID_TV_PARENTPATHID);
+    }
+    if (iVersion < 53)
+    { // Change INDEX for bookmark table
+      m_pDS->dropIndex("bookmark", "ix_bookmark");
+      m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
     }
   }
   catch (...)
