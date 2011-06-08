@@ -2623,7 +2623,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     AddonPtr addon;
     if (info.GetData2() == 0)
       CAddonMgr::Get().GetAddon(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow),addon);
-    else 
+    else
       CAddonMgr::Get().GetAddon(m_stringParameters[info.GetData1()],addon);
     if (addon && info.m_info == SYSTEM_ADDON_TITLE)
       return addon->Name();
@@ -2806,7 +2806,7 @@ CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT form
   case TIME_FORMAT_HH_MM:
     return time.GetAsLocalizedTime(use12hourclock ? "h:mm" : "HH:mm", false);
   case TIME_FORMAT_HH_MM_XX:
-      return time.GetAsLocalizedTime(use12hourclock ? "h:mm xx" : "HH:mm", false);      
+      return time.GetAsLocalizedTime(use12hourclock ? "h:mm xx" : "HH:mm", false);
   case TIME_FORMAT_HH_MM_SS:
     return time.GetAsLocalizedTime("", true);
   default:
@@ -3055,9 +3055,9 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
   case MUSICPLAYER_GENRE:
     if (tag.GetGenre().size()) { return tag.GetGenre(); }
     break;
-  case MUSICPLAYER_LYRICS: 
-    if (tag.GetLyrics().size()) { return tag.GetLyrics(); } 
-   	break;
+  case MUSICPLAYER_LYRICS:
+    if (tag.GetLyrics().size()) { return tag.GetLyrics(); }
+  break;
   case MUSICPLAYER_TRACK_NUMBER:
     {
       CStdString strTrack;
@@ -3171,7 +3171,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
         CStdString strYear;
         if (m_currentFile->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
           strYear.Format("S%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
-        else if(m_currentFile->GetVideoInfoTag()->m_iEpisode > 0) 
+        else if(m_currentFile->GetVideoInfoTag()->m_iEpisode > 0)
           strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
         return strYear;
       }
@@ -3939,7 +3939,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       else if (item->IsVideoDb() && item->HasVideoInfoTag())
       {
         if( item->m_bIsFolder )
-	  path = item->GetVideoInfoTag()->m_strPath;
+          path = item->GetVideoInfoTag()->m_strPath;
         else
           URIUtils::GetParentPath(item->GetVideoInfoTag()->m_strFileNameAndPath, path);
       }
