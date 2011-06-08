@@ -101,12 +101,6 @@ void CGUISpinControlEx::SetHeight(float height)
   SetPosition(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition());
 }
 
-void CGUISpinControlEx::SetVisible(bool bVisible)
-{
-  m_buttonControl.SetVisible(bVisible);
-  CGUISpinControl::SetVisible(bVisible);
-}
-
 bool CGUISpinControlEx::UpdateColors()
 {
   bool changed = CGUISpinControl::UpdateColors();
