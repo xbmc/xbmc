@@ -142,6 +142,13 @@ void CGUIRSSControl::Render()
   CGUIControl::Render();
 }
 
+CRect CGUIRSSControl::CalcRenderRegion() const
+{
+  if (m_label.font)
+    return CRect(m_posX, m_posY, m_posX + m_width, m_posY + m_label.font->GetTextHeight(1));
+  return CGUIControl::CalcRenderRegion();
+}
+
 void CGUIRSSControl::OnFeedUpdate(const vecText &feed)
 {
   CSingleLock lock(m_criticalSection);
