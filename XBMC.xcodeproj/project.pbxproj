@@ -1147,6 +1147,8 @@
 		F551107F0F5C424700955236 /* htsmsg_binary.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110730F5C424700955236 /* htsmsg_binary.c */; };
 		F55110800F5C424700955236 /* htsstr.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110760F5C424700955236 /* htsstr.c */; };
 		F55110820F5C424700955236 /* net_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = F551107B0F5C424700955236 /* net_posix.c */; };
+		F558EAA813A0200800631E12 /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558EAA613A0200800631E12 /* AppParamParser.cpp */; };
+		F558EAA913A0200800631E12 /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558EAA613A0200800631E12 /* AppParamParser.cpp */; };
 		F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
 		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F56C8CE2131F5DAF000AD0F6 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CE1131F5DAF000AD0F6 /* libc.dylib */; };
@@ -3639,6 +3641,8 @@
 		F55110770F5C424700955236 /* htsstr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = htsstr.h; sourceTree = "<group>"; };
 		F551107A0F5C424700955236 /* net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = net.h; sourceTree = "<group>"; };
 		F551107B0F5C424700955236 /* net_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = net_posix.c; sourceTree = "<group>"; };
+		F558EAA613A0200800631E12 /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
+		F558EAA713A0200800631E12 /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
 		F56579AD13060D1E0085ED7F /* RenderCapture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderCapture.cpp; sourceTree = "<group>"; };
 		F56579AE13060D1E0085ED7F /* RenderCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderCapture.h; sourceTree = "<group>"; };
 		F56A08490F4A18FB003F9F87 /* karaokewindowbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokewindowbackground.h; sourceTree = "<group>"; };
@@ -6588,6 +6592,10 @@
 		E38E1E000D25F9FD00618676 /* settings */ = {
 			isa = PBXGroup;
 			children = (
+				18B7C3A612942132009E7A26 /* AdvancedSettings.cpp */,
+				18B7C3A712942132009E7A26 /* AdvancedSettings.h */,
+				F558EAA613A0200800631E12 /* AppParamParser.cpp */,
+				F558EAA713A0200800631E12 /* AppParamParser.h */,
 				18B7C903129427A6009E7A26 /* GUIDialogContentSettings.cpp */,
 				18B7C904129427A6009E7A26 /* GUIDialogContentSettings.h */,
 				18B7C905129427A6009E7A26 /* GUIDialogLockSettings.cpp */,
@@ -6600,8 +6608,6 @@
 				F5F95D9E0E4E203700C3FA5C /* GUIWindowTestPattern.h */,
 				18B7C8C212942451009E7A26 /* GUISettings.cpp */,
 				18B7C8C312942451009E7A26 /* GUISettings.h */,
-				18B7C3A612942132009E7A26 /* AdvancedSettings.cpp */,
-				18B7C3A712942132009E7A26 /* AdvancedSettings.h */,
 				18B7C39612942114009E7A26 /* GUIWindowSettings.cpp */,
 				18B7C39712942114009E7A26 /* GUIWindowSettings.h */,
 				18B7C39812942114009E7A26 /* GUIWindowSettingsCategory.cpp */,
@@ -8012,6 +8018,7 @@
 				18404D9E1396C13500863BBA /* Slingbox.cpp in Sources */,
 				1840B74D13993D8A007C848B /* JSONVariantParser.cpp in Sources */,
 				1840B75313993DA0007C848B /* JSONVariantWriter.cpp in Sources */,
+				F558EAA813A0200800631E12 /* AppParamParser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8899,6 +8906,7 @@
 				18404E701396E05D00863BBA /* Slingbox.cpp in Sources */,
 				1840B74E13993D8A007C848B /* JSONVariantParser.cpp in Sources */,
 				1840B75413993DA0007C848B /* JSONVariantWriter.cpp in Sources */,
+				F558EAA913A0200800631E12 /* AppParamParser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
