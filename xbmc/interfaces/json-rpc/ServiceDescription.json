@@ -531,7 +531,7 @@
                     "plotoutline", "originaltitle", "lastplayed", "writer", "studio",
                     "mpaa", "cast", "country", "imdbnumber", "premiered", "productioncode",
                     "runtime", "set", "showlink", "streamDetails", "top250", "votes",
-                    "writingcredits", "firstaired", "season", "episode", "showtitle",
+                    "firstaired", "season", "episode", "showtitle",
                     "thumbnail", "file" ]
         }
       },
@@ -588,7 +588,6 @@
               "streamDetails": { "$ref": "Video.Streams" },
               "top250": { "type": "integer" },
               "votes": { "type": "string" },
-              "writingcredits": { "type": "string" },
               "firstaired": { "type": "string" },
               "season": { "type": "integer" },
               "episode": { "type": "integer" },
@@ -706,7 +705,7 @@
                     "plotoutline", "originaltitle", "lastplayed", "writer", "studio",
                     "mpaa", "country", "imdbnumber", "premiered", "productioncode",
                     "runtime", "showlink", "streamDetails", "top250", "votes",
-                    "writingcredits", "firstaired", "season", "episode", "showtitle",
+                    "firstaired", "season", "episode", "showtitle",
                     "thumbnail", "file", "sorttitle", "episodeguide" ]
         }
       },
@@ -760,7 +759,6 @@
               "streamDetails": { "$ref": "Video.Streams" },
               "top250": { "type": "integer" },
               "votes": { "type": "string" },
-              "writingcredits": { "type": "string" },
               "firstaired": { "type": "string" },
               "season": { "type": "integer" },
               "episode": { "type": "integer" },
@@ -1102,7 +1100,6 @@
               "streamDetails": { "$ref": "Video.StreamDetails" },
               "top250": { "type": "integer" },
               "votes": { "type": "string" },
-              "writingcredits": { "type": "string" },
               "firstaired": { "type": "string" },
               "season": { "type": "integer" },
               "episode": { "type": "integer" },
@@ -1359,7 +1356,7 @@
                     "tagline", "plot", "plotoutline", "originaltitle", "lastplayed",
                     "playcount", "writer", "studio", "mpaa", "cast", "country",
                     "imdbnumber", "premiered", "productioncode", "runtime", "set",
-                    "showlink", "streamDetails", "top250", "votes", "writingcredits",
+                    "showlink", "streamDetails", "top250", "votes",
                     "fanart", "thumbnail", "file", "sorttitle" ]
         }
       },
@@ -1439,8 +1436,7 @@
                 }
               },
               "top250": { "type": "integer" },
-              "votes": { "type": "string" },
-              "writingcredits": { "type": "string" }
+              "votes": { "type": "string" }
             }
           }
         }
@@ -1641,7 +1637,7 @@
       { "name": "fields", "type": "array", "id": "Library.Fields.Episode", "uniqueItems": true,
         "items": { "type": "string",
           "description": "Requesting the cast field will result in increased response times",
-          "enum": [ "title", "plot", "votes", "rating", "writingcredits",
+          "enum": [ "title", "plot", "votes", "rating", "writer",
                     "firstaired", "playcount", "runtime", "director",
                     "productioncode", "season", "episode", "originaltitle",
                     "showtitle", "cast", "streamDetails", "lastplayed", "fanart",
@@ -1666,7 +1662,7 @@
               "plot": { "type": "string" },
               "votes": { "type": "string" },
               "rating": { "type": "number" },
-              "writingcredits": { "type": "string" },
+              "writer": { "type": "string" },
               "firstaired": { "type": "string" },
               "playcount": { "type": "integer" },
               "runtime": { "type": "string" },

@@ -4007,7 +4007,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_WRITER:
     if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strWritingCredits;;
+      return item->GetVideoInfoTag()->m_strWritingCredits;
     break;
   case LISTITEM_TAGLINE:
     if (item->HasVideoInfoTag())
