@@ -837,7 +837,7 @@ bool PAPlayer::CanSeek()
 void PAPlayer::Seek(bool bPlus, bool bLargeStep)
 {
   __int64 seek;
-  if (g_advancedSettings.CanMusicUseTimeSeeking() && GetTotalTime() > 2*g_advancedSettings.m_musicTimeSeekForwardBig)
+  if (g_advancedSettings.m_musicUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_musicTimeSeekForwardBig)
   {
     if (bLargeStep)
       seek = bPlus ? g_advancedSettings.m_musicTimeSeekForwardBig : g_advancedSettings.m_musicTimeSeekBackwardBig;

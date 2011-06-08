@@ -145,7 +145,7 @@ void CGUIWindowKaraokeLyrics::newSong(CKaraokeLyrics * lyrics)
     m_Lyrics->GetVideoParameters( path, offset );
     m_Background->StartVideo( path, offset );
   }
-  else if ( m_Lyrics->HasBackground() && g_advancedSettings.KaraokeAlwaysEmptyOnCDGs() )
+  else if ( m_Lyrics->HasBackground() && g_advancedSettings.m_karaokeAlwaysEmptyOnCdgs )
   {
     m_Background->StartEmpty();
   }

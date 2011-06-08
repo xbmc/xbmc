@@ -855,6 +855,9 @@
     <ClCompile Include="..\..\xbmc\FileSystem\VirtualDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\FileSystem\VirtualPathDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\VTPDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -2451,8 +2454,6 @@
     <ClCompile Include="..\..\xbmc\utils\JSONVariantWriter.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\settings\AppParamParser.cpp">
-      <Filter>settings</Filter>    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -3176,6 +3177,9 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\FileSystem\VirtualPathDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\VTPDirectory.h">
@@ -4909,8 +4913,6 @@
     <ClInclude Include="..\..\xbmc\utils\JSONVariantWriter.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\settings\AppParamParser.h">
-      <Filter>settings</Filter>    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">
