@@ -41,6 +41,12 @@ using namespace XFILE;
 
 CAdvancedSettings::CAdvancedSettings()
 {
+  KaraokeSettings = new CKaraokeSettings();
+}
+
+CAdvancedSettings::~CAdvancedSettings()
+{
+  delete KaraokeSettings;
 }
 
 void CAdvancedSettings::Initialize()
@@ -49,14 +55,6 @@ void CAdvancedSettings::Initialize()
   m_ac3Gain = 12.0f;
   m_audioApplyDrc = true;
   m_dvdplayerIgnoreDTSinWAV = false;
-
-  m_karaokeSyncDelayCDG = 0.0f;
-  m_karaokeSyncDelayLRC = 0.0f;
-  m_karaokeChangeGenreForKaraokeSongs = false;
-  m_karaokeKeepDelay = true;
-  m_karaokeStartIndex = 1;
-  m_karaokeAlwaysEmptyOnCdgs = 1;
-  m_karaokeUseSongSpecificBackground = 0;
 
   m_audioDefaultPlayer = "paplayer";
   m_audioPlayCountMinimumPercent = 90.0f;
@@ -328,7 +326,12 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
   advancedXML.Accept(&printer);
   CLog::Log(LOGNOTICE, "Contents of %s are...\n%s", file.c_str(), printer.CStr());
 
+  delete KaraokeSettings;
+
+  KaraokeSettings = new CKaraokeSettings(pRootElement);
+
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
+
   if (pElement)
   {
     XMLUtils::GetFloat(pElement, "ac3downmixgain", m_ac3Gain, -96.0f, 96.0f);
@@ -361,30 +364,6 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
     XMLUtils::GetString(pElement, "audiohost", m_audioHost);
     XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);
     XMLUtils::GetBoolean(pElement, "dvdplayerignoredtsinwav", m_dvdplayerIgnoreDTSinWAV);
-  }
-
-  pElement = pRootElement->FirstChildElement("karaoke");
-  if (pElement)
-  {
-    XMLUtils::GetFloat(pElement, "syncdelaycdg", m_karaokeSyncDelayCDG, -3.0f, 3.0f); // keep the old name for comp
-    XMLUtils::GetFloat(pElement, "syncdelaylrc", m_karaokeSyncDelayLRC, -3.0f, 3.0f);
-    XMLUtils::GetBoolean(pElement, "alwaysreplacegenre", m_karaokeChangeGenreForKaraokeSongs );
-    XMLUtils::GetBoolean(pElement, "storedelay", m_karaokeKeepDelay );
-    XMLUtils::GetInt(pElement, "autoassignstartfrom", m_karaokeStartIndex, 1, 2000000000);
-    XMLUtils::GetBoolean(pElement, "nocdgbackground", m_karaokeAlwaysEmptyOnCdgs );
-    XMLUtils::GetBoolean(pElement, "lookupsongbackground", m_karaokeUseSongSpecificBackground );
-
-    TiXmlElement* pKaraokeBackground = pElement->FirstChildElement("defaultbackground");
-    if (pKaraokeBackground)
-    {
-      const char* attr = pKaraokeBackground->Attribute("type");
-      if ( attr )
-        m_karaokeDefaultBackgroundType = attr;
-
-      attr = pKaraokeBackground->Attribute("path");
-      if ( attr )
-        m_karaokeDefaultBackgroundFilePath = attr;
-    }
   }
 
   pElement = pRootElement->FirstChildElement("video");

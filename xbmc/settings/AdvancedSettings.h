@@ -23,6 +23,7 @@
 #include <vector>
 #include "utils/StdString.h"
 #include "utils/GlobalsHandling.h"
+#include "KaraokeSettings.h"
 
 class TiXmlElement;
 
@@ -64,7 +65,7 @@ class CAdvancedSettings
 {
   public:
     CAdvancedSettings();
-
+    ~CAdvancedSettings();
     static CAdvancedSettings* getInstance();
 
     void Initialize();
@@ -76,6 +77,8 @@ class CAdvancedSettings
     static void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
     static void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
     static void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
+
+    CKaraokeSettings *KaraokeSettings;
 
     int m_audioHeadRoom;
     float m_ac3Gain;
@@ -266,16 +269,6 @@ class CAdvancedSettings
 
     bool CanUseVirtualShares() { return m_useVirtualShares; };
 
-    float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s
-    float m_karaokeSyncDelayLRC;
-    bool m_karaokeChangeGenreForKaraokeSongs;
-    bool KaraokeKeepDelay() { return m_karaokeKeepDelay; }; // store user-changed song delay in the database
-    int m_karaokeStartIndex; // auto-assign numbering start from this value
-    bool KaraokeAlwaysEmptyOnCDGs() { return m_karaokeAlwaysEmptyOnCdgs; }; // always have empty background on CDG files
-    bool m_karaokeUseSongSpecificBackground; // use song-specific video or image if available instead of default
-    CStdString m_karaokeDefaultBackgroundType; // empty string or "vis", "image" or "video"
-    CStdString m_karaokeDefaultBackgroundFilePath; // only for "image" or "video" types above
-
     CStdString m_cpuTempCmd;
     CStdString m_gpuTempCmd;
     int m_bgInfoLoaderMaxThreads;
@@ -318,9 +311,6 @@ class CAdvancedSettings
     bool m_playlistAsFolders;
     bool m_useDDSFanart;
     bool m_dvdplayerIgnoreDTSinWAV;
-    /* Karaoke Settings */
-    bool m_karaokeAlwaysEmptyOnCdgs;
-    bool m_karaokeKeepDelay;
 
     std::vector<CStdString> m_settingsFiles;
     void ParseSettingsFile(CStdString file);

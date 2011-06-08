@@ -702,6 +702,7 @@
     <ClCompile Include="..\..\xbmc\settings\GUIWindowSettingsProfile.cpp" />
     <ClCompile Include="..\..\xbmc\settings\GUIWindowSettingsScreenCalibration.cpp" />
     <ClCompile Include="..\..\xbmc\settings\GUIWindowTestPattern.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\KaraokeSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\Profile.cpp" />
     <ClCompile Include="..\..\xbmc\settings\Settings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SettingsControls.cpp" />
@@ -1534,6 +1535,7 @@
     <ClInclude Include="..\..\xbmc\settings\GUIWindowSettingsProfile.h" />
     <ClInclude Include="..\..\xbmc\settings\GUIWindowSettingsScreenCalibration.h" />
     <ClInclude Include="..\..\xbmc\settings\GUIWindowTestPattern.h" />
+    <ClInclude Include="..\..\xbmc\settings\KaraokeSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\Profile.h" />
     <ClInclude Include="..\..\xbmc\settings\Settings.h" />
     <ClInclude Include="..\..\xbmc\settings\SettingsControls.h" />

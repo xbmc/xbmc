@@ -256,7 +256,7 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
 #endif
 
     // If this is karaoke song, change the genre to 'Karaoke' (and add it if it's not there)
-    if ( bHasKaraoke && g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs )
+    if (bHasKaraoke && g_advancedSettings.KaraokeSettings->ChangeGenreForSongs())
       idGenre = AddGenre( "Karaoke" );
 
     if (bCheck)
@@ -4345,7 +4345,7 @@ void CMusicDatabase::AddKaraokeData(const CSong& song)
     strSQL=PrepareSQL( "SELECT MAX(iKaraNumber) FROM karaokedata" );
     if (!m_pDS->query(strSQL.c_str())) return;
 
-    int iKaraokeNumber = g_advancedSettings.m_karaokeStartIndex;
+    int iKaraokeNumber = g_advancedSettings.KaraokeSettings->StartIndex();
 
     if ( m_pDS->num_rows() == 1 )
       iKaraokeNumber = m_pDS->fv("MAX(iKaraNumber)").get_asInt() + 1;
