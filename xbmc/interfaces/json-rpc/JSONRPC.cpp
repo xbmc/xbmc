@@ -157,6 +157,7 @@ JsonRpcMethodMap CJSONRPC::m_methodMaps[] = {
 
 // Music Library
   { "AudioLibrary.GetArtists",                      CAudioLibrary::GetArtists },
+  { "AudioLibrary.GetArtistDetails",                CAudioLibrary::GetArtistDetails },
   { "AudioLibrary.GetAlbums",                       CAudioLibrary::GetAlbums },
   { "AudioLibrary.GetAlbumDetails",                 CAudioLibrary::GetAlbumDetails },
   { "AudioLibrary.GetSongs",                        CAudioLibrary::GetSongs },
