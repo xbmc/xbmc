@@ -70,6 +70,8 @@ protected:
   CGUITexture m_guiMid;
   CGUITexture m_guiRight;
   CGUITexture m_guiOverlay;
+  CRect m_guiMidClipRect;
+
   int m_iInfoCode;
   float m_fPercent;
   bool m_bReveal;
