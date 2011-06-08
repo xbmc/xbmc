@@ -3680,9 +3680,19 @@ void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CStdSt
 
     m_pDS->exec(strSQL.c_str());
 
-    CVariant data;
-    data["playcount"] = count;
-    ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "NewPlayCount", CFileItemPtr(new CFileItem(item)), data);
+    // We only need to announce changes to video items in the library
+    if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId > 0)
+    {
+      // Only provide the "playcount" value if it has actually changed
+      if (item.GetVideoInfoTag()->m_playCount != count)
+      {
+        CVariant data;
+        data["playcount"] = count;
+        ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(item)), data);
+      }
+      else
+        ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(item)));
+    }
   }
   catch (...)
   {
@@ -7752,17 +7762,17 @@ CStdString CVideoDatabase::GetSafeFile(const CStdString &dir, const CStdString &
 void CVideoDatabase::AnnounceRemove(std::string content, int id)
 {
   CVariant data;
-  data["content"] = content;
-  data[content + "id"] = id;
-  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "RemoveVideo", data);
+  data["type"] = content;
+  data["id"] = id;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnRemove", data);
 }
 
 void CVideoDatabase::AnnounceUpdate(std::string content, int id)
 {
   CVariant data;
-  data["content"] = content;
-  data[content + "id"] = id;
-  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "UpdateVideo", data);
+  data["type"] = content;
+  data["id"] = id;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
 }
 
 bool CVideoDatabase::GetItemForPath(const CStdString &content, const CStdString &strPath, CFileItem &item)

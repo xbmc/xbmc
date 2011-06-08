@@ -129,41 +129,24 @@ void CPowerManager::SetDefaults()
 
 bool CPowerManager::Powerdown()
 {
-
-  bool success = CanPowerdown() ? m_instance->Powerdown() : false;
-  if (success)
-    CAnnouncementManager::Announce(System, "xbmc", "Shutdown");
-
-  return success;
+  return CanPowerdown() ? m_instance->Powerdown() : false;
 }
+
 bool CPowerManager::Suspend()
 {
-  bool success = false;
-  if (CanSuspend())
-    success = m_instance->Suspend();
-  
-  if (success)
-    CAnnouncementManager::Announce(System, "xbmc", "Suspend");
-
-  return success;
+  return CanSuspend() ? m_instance->Suspend() : false;
 }
+
 bool CPowerManager::Hibernate()
 {
-  bool success = false;
-  if (CanHibernate())
-    success = m_instance->Hibernate();
-
-  if (success)
-    CAnnouncementManager::Announce(System, "xbmc", "Hibernate");
-
-  return success;
+  return CanHibernate() ? m_instance->Hibernate() : false;
 }
 bool CPowerManager::Reboot()
 {
   bool success = CanReboot() ? m_instance->Reboot() : false;
 
   if (success)
-    CAnnouncementManager::Announce(System, "xbmc", "Reboot");
+    CAnnouncementManager::Announce(System, "xbmc", "OnRestart");
 
   return success;
 }
@@ -192,7 +175,7 @@ void CPowerManager::ProcessEvents()
 
 void CPowerManager::OnSleep()
 {
-  CAnnouncementManager::Announce(System, "xbmc", "Sleep");
+  CAnnouncementManager::Announce(System, "xbmc", "OnSleep");
   CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
 
 #ifdef HAS_LCD
@@ -250,7 +233,7 @@ void CPowerManager::OnWake()
   g_application.UpdateLibraries();
   g_weatherManager.Refresh();
 
-  CAnnouncementManager::Announce(System, "xbmc", "Wake");
+  CAnnouncementManager::Announce(System, "xbmc", "OnWake");
 }
 
 void CPowerManager::OnLowBattery()
@@ -259,5 +242,5 @@ void CPowerManager::OnLowBattery()
 
   g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13050), "");
 
-  CAnnouncementManager::Announce(System, "xbmc", "LowBattery");
+  CAnnouncementManager::Announce(System, "xbmc", "OnLowBattery");
 }
