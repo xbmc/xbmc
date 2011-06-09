@@ -44,6 +44,7 @@ class CAdvancedSettings
     bool Load();
     void Clear();
     CAudioSettings *AudioSettings;
+    CAudioSettings *AudioSettings;
     CKaraokeSettings *KaraokeSettings;
     CLibrarySettings *LibrarySettings;
     CMediaProviderSettings *MediaProviderSettings;
