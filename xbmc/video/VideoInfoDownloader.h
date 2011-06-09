@@ -24,23 +24,15 @@
 #include "threads/Thread.h"
 #include "VideoInfoTag.h"
 #include "addons/Scraper.h"
+#include "Episode.h"
 #include "XBDateTime.h"
 #include "filesystem/FileCurl.h"
 
-// forward definitions
+// forward declarations
 class TiXmlDocument;
 class CGUIDialogProgress;
 
 typedef std::vector<CScraperUrl> MOVIELIST;
-
-typedef struct
-{
-  std::pair<int,int> key;
-  CDateTime cDate;
-  CScraperUrl cScraperUrl;
-} EPISODE;
-
-typedef std::vector<EPISODE> EPISODELIST;
 
 class CVideoInfoDownloader : public CThread
 {
