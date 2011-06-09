@@ -380,7 +380,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
 void CVideoInfoTag::Serialize(CVariant& value)
 {
   value["director"] = m_strDirector;
-  value["writingcredits"] = m_strWritingCredits;
+  value["writer"] = m_strWritingCredits;
   value["genre"] = m_strGenre;
   value["country"] = m_strCountry;
   value["tagline"] = m_strTagLine;

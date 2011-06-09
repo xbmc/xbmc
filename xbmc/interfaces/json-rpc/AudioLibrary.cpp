@@ -26,8 +26,10 @@
 #include "utils/URIUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/Song.h"
+#include "music/Artist.h"
 #include "Application.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
@@ -50,6 +52,33 @@ JSON_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLayer 
   CFileItemList items;
   if (musicdatabase.GetArtistsNav("", items, genreID, false))
     HandleFileItemList("artistid", false, "artists", items, param, result);
+
+  musicdatabase.Close();
+  return OK;
+}
+
+JSON_STATUS CAudioLibrary::GetArtistDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int artistID = (int)parameterObject["artistid"].asInteger();
+
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return InternalError;
+
+  CArtist artist;
+  if (!musicdatabase.GetArtistInfo(artistID, artist))
+  {
+    musicdatabase.Close();
+    return InvalidParams;
+  }
+
+  CFileItemPtr m_artistItem(new CFileItem(artist));
+  m_artistItem->GetMusicInfoTag()->SetArtist(m_artistItem->GetLabel());
+  m_artistItem->GetMusicInfoTag()->SetDatabaseId(artistID);
+  CMusicDatabase::SetPropertiesFromArtist(*m_artistItem, artist);
+  if (CFile::Exists(m_artistItem->GetCachedArtistThumb()))
+    m_artistItem->SetThumbnailImage(m_artistItem->GetCachedArtistThumb());
+  HandleFileItem("artistid", false, "artistdetails", m_artistItem, parameterObject, parameterObject["fields"], result, false);
 
   musicdatabase.Close();
   return OK;

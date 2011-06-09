@@ -531,7 +531,7 @@
                     "plotoutline", "originaltitle", "lastplayed", "writer", "studio",
                     "mpaa", "cast", "country", "imdbnumber", "premiered", "productioncode",
                     "runtime", "set", "showlink", "streamDetails", "top250", "votes",
-                    "writingcredits", "firstaired", "season", "episode", "showtitle",
+                    "firstaired", "season", "episode", "showtitle",
                     "thumbnail", "file" ]
         }
       },
@@ -588,7 +588,6 @@
               "streamDetails": { "$ref": "Video.Streams" },
               "top250": { "type": "integer" },
               "votes": { "type": "string" },
-              "writingcredits": { "type": "string" },
               "firstaired": { "type": "string" },
               "season": { "type": "integer" },
               "episode": { "type": "integer" },
@@ -706,7 +705,7 @@
                     "plotoutline", "originaltitle", "lastplayed", "writer", "studio",
                     "mpaa", "country", "imdbnumber", "premiered", "productioncode",
                     "runtime", "showlink", "streamDetails", "top250", "votes",
-                    "writingcredits", "firstaired", "season", "episode", "showtitle",
+                    "firstaired", "season", "episode", "showtitle",
                     "thumbnail", "file", "sorttitle", "episodeguide" ]
         }
       },
@@ -760,7 +759,6 @@
               "streamDetails": { "$ref": "Video.Streams" },
               "top250": { "type": "integer" },
               "votes": { "type": "string" },
-              "writingcredits": { "type": "string" },
               "firstaired": { "type": "string" },
               "season": { "type": "integer" },
               "episode": { "type": "integer" },
@@ -1102,7 +1100,6 @@
               "streamDetails": { "$ref": "Video.StreamDetails" },
               "top250": { "type": "integer" },
               "votes": { "type": "string" },
-              "writingcredits": { "type": "string" },
               "firstaired": { "type": "string" },
               "season": { "type": "integer" },
               "episode": { "type": "integer" },
@@ -1120,7 +1117,7 @@
     "permission": "ReadData",
     "params": [
       { "name": "genreid", "id": "Library.Id", "type": "integer", "default": -1, "minimum": 1 },
-      { "name": "fields", "type": "array", "uniqueItems": true,
+      { "name": "fields", "type": "array", "id": "Library.Fields.Artist", "uniqueItems": true,
         "items": { "type": "string",
           "enum": [ "instrument", "style", "mood", "born", "formed",
                     "description", "genre", "died", "disbanded",
@@ -1136,7 +1133,7 @@
       "properties": {
         "limits": { "$ref": "List.LimitsReturned", "required": true },
         "artists": { "type": "array",
-          "items": { "type": "object",
+          "items": { "type": "object", "id": "Audio.ArtistDetails",
             "properties": {
               "artistid": { "$ref": "Library.Id", "required": true },
               "label": { "type": "string", "required": true },
@@ -1157,6 +1154,21 @@
             }
           }
         }
+      }
+    }
+  },
+  "AudioLibrary.GetArtistDetails": {
+    "type": "method",
+    "description": "Retrieve details about a specific artist",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "artistid", "$ref": "Library.Id", "required": true },
+      { "name": "fields", "$ref": "Library.Fields.Artist" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "artistdetails": { "$ref": "Audio.ArtistDetails" }
       }
     }
   },
@@ -1344,7 +1356,7 @@
                     "tagline", "plot", "plotoutline", "originaltitle", "lastplayed",
                     "playcount", "writer", "studio", "mpaa", "cast", "country",
                     "imdbnumber", "premiered", "productioncode", "runtime", "set",
-                    "showlink", "streamDetails", "top250", "votes", "writingcredits",
+                    "showlink", "streamDetails", "top250", "votes",
                     "fanart", "thumbnail", "file", "sorttitle" ]
         }
       },
@@ -1424,8 +1436,7 @@
                 }
               },
               "top250": { "type": "integer" },
-              "votes": { "type": "string" },
-              "writingcredits": { "type": "string" }
+              "votes": { "type": "string" }
             }
           }
         }
@@ -1621,12 +1632,12 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "tvshowid", "$ref": "Library.Id", "required": true },
+      { "name": "tvshowid", "$ref": "Library.Id" },
       { "name": "season", "type": "integer", "minimum": 0, "default": -1 },
       { "name": "fields", "type": "array", "id": "Library.Fields.Episode", "uniqueItems": true,
         "items": { "type": "string",
           "description": "Requesting the cast field will result in increased response times",
-          "enum": [ "title", "plot", "votes", "rating", "writingcredits",
+          "enum": [ "title", "plot", "votes", "rating", "writer",
                     "firstaired", "playcount", "runtime", "director",
                     "productioncode", "season", "episode", "originaltitle",
                     "showtitle", "cast", "streamDetails", "lastplayed", "fanart",
@@ -1651,7 +1662,7 @@
               "plot": { "type": "string" },
               "votes": { "type": "string" },
               "rating": { "type": "number" },
-              "writingcredits": { "type": "string" },
+              "writer": { "type": "string" },
               "firstaired": { "type": "string" },
               "playcount": { "type": "integer" },
               "runtime": { "type": "string" },
@@ -1802,6 +1813,33 @@
         "limits": { "$ref": "List.LimitsReturned", "required": true },
         "musicvideos": { "type": "array",
           "items": { "$ref": "Library.Details.MusicVideo" }
+        }
+      }
+    }
+  },
+  "VideoLibrary.GetGenres": {
+    "type": "method",
+    "description": "Retrieve all genres",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "type", "type": "string", "required": true, "enum": [ "movie", "tvshow", "musicvideo"] },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "genres": {"type": "array",
+          "items": { "type": "object",
+            "properties": {
+              "genreid": { "$ref": "Library.Id", "required": true },
+              "genre": { "type": "string", "required": true },
+              "label": { "type": "string", "required": true },
+              "thumbnail": { "type": "string" }
+            }
+          }
         }
       }
     }

@@ -24,6 +24,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
+#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 

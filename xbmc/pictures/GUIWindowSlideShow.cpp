@@ -673,8 +673,10 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
     }
     break;
     case GUI_MSG_PLAYBACK_STARTED:
-    {
-      g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+    {     
+      //only bring the fullscreen on front if we are not in a slideshow
+      if(!m_bSlideShow)
+        g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
     }
     break;
     case GUI_MSG_PLAYBACK_STOPPED:

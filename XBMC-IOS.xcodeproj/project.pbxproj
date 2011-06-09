@@ -311,7 +311,6 @@
 		F56C8931131F42ED000AD0F6 /* SPCCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C832A131F42E7000AD0F6 /* SPCCodec.cpp */; };
 		F56C8932131F42ED000AD0F6 /* TimidityCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C832C131F42E7000AD0F6 /* TimidityCodec.cpp */; };
 		F56C8933131F42ED000AD0F6 /* WAVcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C832E131F42E7000AD0F6 /* WAVcodec.cpp */; };
-		F56C8934131F42ED000AD0F6 /* WAVPackcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8330131F42E7000AD0F6 /* WAVPackcodec.cpp */; };
 		F56C8935131F42ED000AD0F6 /* YMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8332131F42E7000AD0F6 /* YMCodec.cpp */; };
 		F56C8936131F42ED000AD0F6 /* PlayerCoreFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8336131F42E7000AD0F6 /* PlayerCoreFactory.cpp */; };
 		F56C8937131F42ED000AD0F6 /* PlayerSelectionRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8338131F42E7000AD0F6 /* PlayerSelectionRule.cpp */; };
@@ -953,7 +952,6 @@
 		F56C803B131F42E5000AD0F6 /* DllStSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllStSound.h; sourceTree = "<group>"; };
 		F56C803C131F42E5000AD0F6 /* DllTimidity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllTimidity.h; sourceTree = "<group>"; };
 		F56C803D131F42E5000AD0F6 /* DllVorbisfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllVorbisfile.h; sourceTree = "<group>"; };
-		F56C803E131F42E5000AD0F6 /* DllWAVPack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllWAVPack.h; sourceTree = "<group>"; };
 		F56C8040131F42E5000AD0F6 /* tinystr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinystr.cpp; sourceTree = "<group>"; };
 		F56C8041131F42E5000AD0F6 /* tinystr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinystr.h; sourceTree = "<group>"; };
 		F56C8042131F42E5000AD0F6 /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
@@ -1358,10 +1356,6 @@
 		F56C81F4131F42E6000AD0F6 /* EncoderWav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncoderWav.h; sourceTree = "<group>"; };
 		F56C81F6131F42E6000AD0F6 /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
 		F56C81F8131F42E6000AD0F6 /* codec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = codec.h; sourceTree = "<group>"; };
-		F56C81F9131F42E6000AD0F6 /* ogg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ogg.h; sourceTree = "<group>"; };
-		F56C81FA131F42E6000AD0F6 /* os_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = os_types.h; sourceTree = "<group>"; };
-		F56C81FB131F42E6000AD0F6 /* vorbisenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vorbisenc.h; sourceTree = "<group>"; };
-		F56C81FC131F42E6000AD0F6 /* vorbisfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vorbisfile.h; sourceTree = "<group>"; };
 		F56C81FF131F42E6000AD0F6 /* IOSAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IOSAudioRenderer.cpp; path = AudioRenderers/IOSAudioRenderer.cpp; sourceTree = "<group>"; };
 		F56C8200131F42E6000AD0F6 /* IOSAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSAudioRenderer.h; path = AudioRenderers/IOSAudioRenderer.h; sourceTree = "<group>"; };
 		F56C8201131F42E6000AD0F6 /* IAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IAudioRenderer.h; path = AudioRenderers/IAudioRenderer.h; sourceTree = "<group>"; };
@@ -1644,8 +1638,6 @@
 		F56C832D131F42E7000AD0F6 /* TimidityCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimidityCodec.h; sourceTree = "<group>"; };
 		F56C832E131F42E7000AD0F6 /* WAVcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WAVcodec.cpp; sourceTree = "<group>"; };
 		F56C832F131F42E7000AD0F6 /* WAVcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WAVcodec.h; sourceTree = "<group>"; };
-		F56C8330131F42E7000AD0F6 /* WAVPackcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WAVPackcodec.cpp; sourceTree = "<group>"; };
-		F56C8331131F42E7000AD0F6 /* WAVPackcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WAVPackcodec.h; sourceTree = "<group>"; };
 		F56C8332131F42E7000AD0F6 /* YMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = YMCodec.cpp; sourceTree = "<group>"; };
 		F56C8333131F42E7000AD0F6 /* YMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YMCodec.h; sourceTree = "<group>"; };
 		F56C8335131F42E7000AD0F6 /* PlayerCoreConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayerCoreConfig.h; path = playercorefactory/PlayerCoreConfig.h; sourceTree = "<group>"; };
@@ -1965,7 +1957,6 @@
 		F56C8476131F42E8000AD0F6 /* VirtualDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VirtualDirectory.h; sourceTree = "<group>"; };
 		F56C847B131F42E9000AD0F6 /* ZeroconfDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfDirectory.h; sourceTree = "<group>"; };
 		F56C847C131F42E9000AD0F6 /* ZeroconfDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfDirectory.cpp; sourceTree = "<group>"; };
-		F56C847D131F42E9000AD0F6 /* zconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zconf.h; sourceTree = "<group>"; };
 		F56C847E131F42E9000AD0F6 /* ZipDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZipDirectory.cpp; sourceTree = "<group>"; };
 		F56C847F131F42E9000AD0F6 /* ZipDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipDirectory.h; sourceTree = "<group>"; };
 		F56C8480131F42E9000AD0F6 /* ZipManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZipManager.cpp; sourceTree = "<group>"; };
@@ -2939,7 +2930,6 @@
 				F56C803B131F42E5000AD0F6 /* DllStSound.h */,
 				F56C803C131F42E5000AD0F6 /* DllTimidity.h */,
 				F56C803D131F42E5000AD0F6 /* DllVorbisfile.h */,
-				F56C803E131F42E5000AD0F6 /* DllWAVPack.h */,
 				F56C803F131F42E5000AD0F6 /* tinyXML */,
 				F56C8046131F42E5000AD0F6 /* libexif */,
 				F56C8048131F42E5000AD0F6 /* libhdhomerun */,
@@ -2948,7 +2938,6 @@
 				F56C8063131F42E5000AD0F6 /* libRTV */,
 				F56C806E131F42E5000AD0F6 /* libsquish */,
 				F56C8070131F42E5000AD0F6 /* libUPnP */,
-				F56C8145131F42E6000AD0F6 /* libXBMS */,
 				F56C8146131F42E6000AD0F6 /* libXDAAP */,
 				F56C814C131F42E6000AD0F6 /* UnrarXLib */,
 			);
@@ -3405,13 +3394,6 @@
 			path = TextToHeader;
 			sourceTree = "<group>";
 		};
-		F56C8145131F42E6000AD0F6 /* libXBMS */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = libXBMS;
-			sourceTree = "<group>";
-		};
 		F56C8146131F42E6000AD0F6 /* libXDAAP */ = {
 			isa = PBXGroup;
 			children = (
@@ -3724,10 +3706,6 @@
 			isa = PBXGroup;
 			children = (
 				F56C81F8131F42E6000AD0F6 /* codec.h */,
-				F56C81F9131F42E6000AD0F6 /* ogg.h */,
-				F56C81FA131F42E6000AD0F6 /* os_types.h */,
-				F56C81FB131F42E6000AD0F6 /* vorbisenc.h */,
-				F56C81FC131F42E6000AD0F6 /* vorbisfile.h */,
 			);
 			path = oggvorbis;
 			sourceTree = "<group>";
@@ -4187,8 +4165,6 @@
 				F56C832D131F42E7000AD0F6 /* TimidityCodec.h */,
 				F56C832E131F42E7000AD0F6 /* WAVcodec.cpp */,
 				F56C832F131F42E7000AD0F6 /* WAVcodec.h */,
-				F56C8330131F42E7000AD0F6 /* WAVPackcodec.cpp */,
-				F56C8331131F42E7000AD0F6 /* WAVPackcodec.h */,
 				F56C8332131F42E7000AD0F6 /* YMCodec.cpp */,
 				F56C8333131F42E7000AD0F6 /* YMCodec.h */,
 			);
@@ -4456,7 +4432,6 @@
 				F56C8476131F42E8000AD0F6 /* VirtualDirectory.h */,
 				F56C847B131F42E9000AD0F6 /* ZeroconfDirectory.h */,
 				F56C847C131F42E9000AD0F6 /* ZeroconfDirectory.cpp */,
-				F56C847D131F42E9000AD0F6 /* zconf.h */,
 				F56C847E131F42E9000AD0F6 /* ZipDirectory.cpp */,
 				F56C847F131F42E9000AD0F6 /* ZipDirectory.h */,
 				F56C8480131F42E9000AD0F6 /* ZipManager.cpp */,
@@ -6130,7 +6105,6 @@
 				F56C8931131F42ED000AD0F6 /* SPCCodec.cpp in Sources */,
 				F56C8932131F42ED000AD0F6 /* TimidityCodec.cpp in Sources */,
 				F56C8933131F42ED000AD0F6 /* WAVcodec.cpp in Sources */,
-				F56C8934131F42ED000AD0F6 /* WAVPackcodec.cpp in Sources */,
 				F56C8935131F42ED000AD0F6 /* YMCodec.cpp in Sources */,
 				F56C8936131F42ED000AD0F6 /* PlayerCoreFactory.cpp in Sources */,
 				F56C8937131F42ED000AD0F6 /* PlayerSelectionRule.cpp in Sources */,

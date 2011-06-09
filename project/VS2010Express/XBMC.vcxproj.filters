@@ -513,9 +513,6 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\WAVcodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\WAVPackcodec.cpp">
-      <Filter>cores\paplayer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\YMCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
@@ -2822,9 +2819,6 @@
     <ClInclude Include="..\..\lib\DllVorbisfile.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\DllWAVPack.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
@@ -2868,9 +2862,6 @@
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\WAVcodec.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\WAVPackcodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\YMCodec.h">
