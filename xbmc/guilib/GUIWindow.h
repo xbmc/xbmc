@@ -252,6 +252,7 @@ protected:
   RESOLUTION_INFO m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
   bool m_windowLoaded;  // true if the window's xml file has been loaded
+  bool m_windowInited;  // true if the window is inited
   bool m_loadOnDemand;  // true if the window should be loaded only as needed
   bool m_isDialog;      // true if we have a dialog, false otherwise.
   bool m_dynamicResourceAlloc;
@@ -289,6 +290,8 @@ protected:
   bool m_manualRunActions;
 
   int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE
+
+  std::map<int, bool> m_xmlIncludeConditions; ///< \brief used to store conditions used to resolve includes for this window
 };
 
 #endif

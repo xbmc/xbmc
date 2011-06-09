@@ -28,6 +28,7 @@
 #include "GUIControlGroup.h"
 #include "GUIControlProfiler.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
 #include "GUIEditControl.h"
 #endif
@@ -37,6 +38,7 @@
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
+#include "utils/SystemInfo.h"
 #include "input/ButtonTranslator.h"
 #include "utils/XMLUtils.h"
 
@@ -56,7 +58,8 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
   m_isDialog = false;
   m_needsScaling = true;
   m_windowLoaded = false;
-  m_loadOnDemand = true;
+  m_windowInited = false;
+  m_loadOnDemand = g_advancedSettings.m_bDestroyWindowControls;
   m_renderOrder = 0;
   m_dynamicResourceAlloc = true;
   m_previousWindow = WINDOW_INVALID;
@@ -133,8 +136,8 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
   // be done with respect to the correct aspect ratio
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
 
-  // Resolve any includes that may be present
-  g_SkinInfo->ResolveIncludes(pRootElement);
+  // Resolve any includes that may be present and save conditions used to do it
+  g_SkinInfo->ResolveIncludes(pRootElement, &m_xmlIncludeConditions);
   // now load in the skin file
   SetDefaults();
 
@@ -407,6 +410,8 @@ void CGUIWindow::OnInitWindow()
   {
     RunLoadActions();
   }
+
+  m_windowInited = true;
 }
 
 // Called on window close.
@@ -434,6 +439,8 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
     }
   }
   SaveControlStates();
+
+  m_windowInited = false;
 }
 
 bool CGUIWindow::OnMessage(CGUIMessage& message)
@@ -442,19 +449,25 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      CLog::Log(LOGDEBUG, "------ Window Init (%s) ------", GetProperty("xmlfile").c_str());
-      if (m_dynamicResourceAlloc || !m_bAllocated) AllocResources();
-      OnInitWindow();
+      if (!m_windowInited)
+      {
+        CLog::Log(LOGDEBUG, "------ Window Init (%s) ------", GetProperty("xmlfile").c_str());
+        if (m_dynamicResourceAlloc || !m_bAllocated) AllocResources();
+        OnInitWindow();
+      }
       return true;
     }
     break;
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CLog::Log(LOGDEBUG, "------ Window Deinit (%s) ------", GetProperty("xmlfile").c_str());
-      OnDeinitWindow(message.GetParam1());
-      // now free the window
-      if (m_dynamicResourceAlloc) FreeResources();
+      if (m_windowInited)
+      {
+        CLog::Log(LOGDEBUG, "------ Window Deinit (%s) ------", GetProperty("xmlfile").c_str());
+        OnDeinitWindow(message.GetParam1());
+        // now free the window
+        if (m_dynamicResourceAlloc) FreeResources();
+      }
       return true;
     }
     break;
@@ -581,13 +594,28 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   int64_t start;
   start = CurrentHostCounter();
 #endif
-  // load skin xml fil
-  CStdString xmlFile = GetProperty("xmlfile");
-  bool bHasPath=false;
-  if (xmlFile.Find("\\") > -1 || xmlFile.Find("/") > -1 )
-    bHasPath = true;
-  if (xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded))
-    Load(xmlFile,bHasPath);
+  // use forceLoad to determine if xml file need loading
+  forceLoad |= m_loadOnDemand;
+
+  // if window is loaded (not cleared before) and we aren't forced to load
+  // we will have to load it only if include conditions values were changed
+  if (m_windowLoaded && !forceLoad)
+    forceLoad = !g_infoManager.ValidateConditions(m_xmlIncludeConditions);
+
+  // if window is loaded and load is forced we have to free window resources first
+  if (m_windowLoaded && forceLoad)
+    FreeResources(true);
+
+  // load skin xml file only if we are forced to load (forceLoad) or window isn't loaded yet
+  if (forceLoad || !m_windowLoaded)
+  {
+    CStdString xmlFile = GetProperty("xmlfile");
+    if (xmlFile.size())
+    {
+      bool bHasPath = xmlFile.Find("\\") > -1 || xmlFile.Find("/") > -1;
+      Load(xmlFile,bHasPath);
+    }
+  }
 
   int64_t slend;
   slend = CurrentHostCounter();
@@ -610,7 +638,8 @@ void CGUIWindow::FreeResources(bool forceUnload /*= FALSE */)
   CGUIControlGroup::FreeResources();
   //g_TextureManager.Dump();
   // unload the skin
-  if (m_loadOnDemand || forceUnload) ClearAll();
+  if (m_loadOnDemand || forceUnload || !CSysInfo::FreeMemoryTest())
+    ClearAll();
 }
 
 void CGUIWindow::DynamicResourceAlloc(bool bOnOff)
@@ -631,7 +660,7 @@ bool CGUIWindow::Initialize()
 {
   if (!g_windowManager.Initialized())
     return false;     // can't load if we have no skin yet
-  return Load(GetProperty("xmlfile"));
+  return OnMessage(CGUIMessage(GUI_MSG_WINDOW_INIT, 0, 0));
 }
 
 void CGUIWindow::SetInitialVisibility()

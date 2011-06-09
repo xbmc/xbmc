@@ -91,6 +91,9 @@ bool CGUIDialogContextMenu::OnMessage(CGUIMessage &message)
 
 void CGUIDialogContextMenu::OnInitWindow()
 {
+  m_posX = m_coordX;
+  m_posY = m_coordY;
+  SetupButtons();
   m_clickedButton = -1;
   // set initial control focus
   m_lastControlID = BUTTON_START;
@@ -604,15 +607,24 @@ CMediaSource *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFil
 
 void CGUIDialogContextMenu::OnWindowLoaded()
 {
+  m_coordX = m_posX;
+  m_coordY = m_posY;
   CGUIDialog::OnWindowLoaded();
-  SetInitialVisibility();
-  SetupButtons();
 }
 
-void CGUIDialogContextMenu::OnWindowUnload()
+void CGUIDialogContextMenu::OnDeinitWindow(int nextWindowID)
 {
+  //we can't be sure that controls are removed on window unload
+  //we have to remove them to be sure that they won't stay for next use of context menu
+  for (unsigned int i = 0; i < m_buttons.size(); i++)
+  {
+    const CGUIControl *control = GetControl(BUTTON_START + i);
+    if (control)
+      RemoveControl(control);
+  }
+
   m_buttons.clear();
-  CGUIDialog::OnWindowUnload();
+  CGUIDialog::OnDeinitWindow(nextWindowID);
 }
 
 CStdString CGUIDialogContextMenu::GetDefaultShareNameByType(const CStdString &strType)

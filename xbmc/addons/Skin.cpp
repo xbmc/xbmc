@@ -181,9 +181,12 @@ void CSkinInfo::LoadIncludes()
   m_includes.LoadIncludes(includesPath);
 }
 
-void CSkinInfo::ResolveIncludes(TiXmlElement *node)
+void CSkinInfo::ResolveIncludes(TiXmlElement *node, std::map<int, bool>* xmlIncludeConditions /* = NULL */)
 {
-  m_includes.ResolveIncludes(node);
+  if(xmlIncludeConditions)
+    xmlIncludeConditions->clear();
+
+  m_includes.ResolveIncludes(node, xmlIncludeConditions);
 }
 
 int CSkinInfo::GetStartWindow() const

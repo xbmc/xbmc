@@ -192,6 +192,9 @@ class CAdvancedSettings
     CStdString m_dvdThumbs;
     CStdString m_fanartImages;
 
+    bool m_bDestroyWindowControls;
+    unsigned int m_iFreeMemoryThreshold;
+
     bool m_bMusicLibraryHideAllItems;
     int m_iMusicLibraryRecentlyAddedItems;
     bool m_bMusicLibraryAllItemsOnBottom;
