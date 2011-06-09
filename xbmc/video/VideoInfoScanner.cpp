@@ -1704,10 +1704,7 @@ namespace VIDEO
       }
       else if (result != CNfoFile::NO_NFO && result != CNfoFile::ERROR_NFO)
       {
-        CScraperUrl url(m_nfoReader.m_strImDbUrl);
-        scrUrl = url;
-
-        scrUrl.strId  = m_nfoReader.m_strImDbNr;
+        scrUrl = m_nfoReader.ScraperUrl();
         info = m_nfoReader.GetScraperInfo();
 
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '%s' using %s scraper (content: '%s')",
