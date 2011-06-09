@@ -3046,7 +3046,7 @@ CStdString CFileItem::FindTrailer() const
   // Precompile our REs
   VECCREGEXP matchRegExps;
   CRegExp tmpRegExp(true);
-  const CStdStringArray& strMatchRegExps = g_advancedSettings.m_trailerMatchRegExps;
+  const CStdStringArray& strMatchRegExps = g_advancedSettings.VideoSettings->TrailerMatchRegExps();
 
   CStdStringArray::const_iterator strRegExp = strMatchRegExps.begin();
   while (strRegExp != strMatchRegExps.end())

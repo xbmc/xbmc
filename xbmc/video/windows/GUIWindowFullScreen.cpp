@@ -314,62 +314,62 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_SUBTITLE_DELAY_MIN:
     g_settings.m_currentVideoSettings.m_SubtitleDelay -= 0.1f;
-    if (g_settings.m_currentVideoSettings.m_SubtitleDelay < -g_advancedSettings.m_videoSubsDelayRange)
-      g_settings.m_currentVideoSettings.m_SubtitleDelay = -g_advancedSettings.m_videoSubsDelayRange;
+    if (g_settings.m_currentVideoSettings.m_SubtitleDelay < -g_advancedSettings.VideoSettings->SubsDelayRange())
+      g_settings.m_currentVideoSettings.m_SubtitleDelay = -g_advancedSettings.VideoSettings->SubsDelayRange();
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
 
     ShowSlider(action.GetID(), 22006, g_settings.m_currentVideoSettings.m_SubtitleDelay,
-                                      -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
-                                       g_advancedSettings.m_videoSubsDelayRange);
+                                      -g_advancedSettings.VideoSettings->SubsDelayRange(), 0.1f,
+                                       g_advancedSettings.VideoSettings->SubsDelayRange());
     return true;
     break;
   case ACTION_SUBTITLE_DELAY_PLUS:
     g_settings.m_currentVideoSettings.m_SubtitleDelay += 0.1f;
-    if (g_settings.m_currentVideoSettings.m_SubtitleDelay > g_advancedSettings.m_videoSubsDelayRange)
-      g_settings.m_currentVideoSettings.m_SubtitleDelay = g_advancedSettings.m_videoSubsDelayRange;
+    if (g_settings.m_currentVideoSettings.m_SubtitleDelay > g_advancedSettings.VideoSettings->SubsDelayRange())
+      g_settings.m_currentVideoSettings.m_SubtitleDelay = g_advancedSettings.VideoSettings->SubsDelayRange();
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
 
     ShowSlider(action.GetID(), 22006, g_settings.m_currentVideoSettings.m_SubtitleDelay,
-                                      -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
-                                       g_advancedSettings.m_videoSubsDelayRange);
+                                      -g_advancedSettings.VideoSettings->SubsDelayRange(), 0.1f,
+                                       g_advancedSettings.VideoSettings->SubsDelayRange());
     return true;
     break;
   case ACTION_SUBTITLE_DELAY:
     ShowSlider(action.GetID(), 22006, g_settings.m_currentVideoSettings.m_SubtitleDelay,
-                                      -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
-                                       g_advancedSettings.m_videoSubsDelayRange, true);
+                                      -g_advancedSettings.VideoSettings->SubsDelayRange(), 0.1f,
+                                       g_advancedSettings.VideoSettings->SubsDelayRange(), true);
     return true;
     break;
   case ACTION_AUDIO_DELAY:
     ShowSlider(action.GetID(), 297, g_settings.m_currentVideoSettings.m_AudioDelay,
-                                    -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
-                                     g_advancedSettings.m_videoAudioDelayRange, true);
+                                    -g_advancedSettings.VideoSettings->AudioDelayRange(), 0.025f,
+                                     g_advancedSettings.VideoSettings->AudioDelayRange(), true);
     return true;
     break;
   case ACTION_AUDIO_DELAY_MIN:
     g_settings.m_currentVideoSettings.m_AudioDelay -= 0.025f;
-    if (g_settings.m_currentVideoSettings.m_AudioDelay < -g_advancedSettings.m_videoAudioDelayRange)
-      g_settings.m_currentVideoSettings.m_AudioDelay = -g_advancedSettings.m_videoAudioDelayRange;
+    if (g_settings.m_currentVideoSettings.m_AudioDelay < -g_advancedSettings.VideoSettings->AudioDelayRange())
+      g_settings.m_currentVideoSettings.m_AudioDelay = -g_advancedSettings.VideoSettings->AudioDelayRange();
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
 
     ShowSlider(action.GetID(), 297, g_settings.m_currentVideoSettings.m_AudioDelay,
-                                    -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
-                                     g_advancedSettings.m_videoAudioDelayRange);
+                                    -g_advancedSettings.VideoSettings->AudioDelayRange(), 0.025f,
+                                     g_advancedSettings.VideoSettings->AudioDelayRange());
     return true;
     break;
   case ACTION_AUDIO_DELAY_PLUS:
     g_settings.m_currentVideoSettings.m_AudioDelay += 0.025f;
-    if (g_settings.m_currentVideoSettings.m_AudioDelay > g_advancedSettings.m_videoAudioDelayRange)
-      g_settings.m_currentVideoSettings.m_AudioDelay = g_advancedSettings.m_videoAudioDelayRange;
+    if (g_settings.m_currentVideoSettings.m_AudioDelay > g_advancedSettings.VideoSettings->AudioDelayRange())
+      g_settings.m_currentVideoSettings.m_AudioDelay = g_advancedSettings.VideoSettings->AudioDelayRange();
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
 
     ShowSlider(action.GetID(), 297, g_settings.m_currentVideoSettings.m_AudioDelay,
-                                    -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
-                                     g_advancedSettings.m_videoAudioDelayRange);
+                                    -g_advancedSettings.VideoSettings->AudioDelayRange(), 0.025f,
+                                     g_advancedSettings.VideoSettings->AudioDelayRange());
     return true;
     break;
   case ACTION_AUDIO_NEXT_LANGUAGE:
@@ -437,7 +437,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     else
     {
       int orgpos = (int)g_application.GetTime();
-      int jumpsize = g_advancedSettings.m_videoSmallStepBackSeconds; // secs
+      int jumpsize = g_advancedSettings.VideoSettings->SmallStepBackSeconds(); // secs
       int setpos = (orgpos > jumpsize) ? orgpos - jumpsize : 0;
       g_application.SeekTime((double)setpos);
     }

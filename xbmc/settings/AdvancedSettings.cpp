@@ -43,46 +43,18 @@ CAdvancedSettings::CAdvancedSettings()
 {
   AudioSettings = new CAudioSettings();
   KaraokeSettings = new CKaraokeSettings();
+  VideoSettings = new CVideoAdvancedSettings();
 }
 
 CAdvancedSettings::~CAdvancedSettings()
 {
   delete AudioSettings;
   delete KaraokeSettings;
+  delete VideoSettings;
 }
 
 void CAdvancedSettings::Initialize()
 {
-  m_videoSubsDelayRange = 10;
-  m_videoAudioDelayRange = 10;
-  m_videoSmallStepBackSeconds = 7;
-  m_videoSmallStepBackTries = 3;
-  m_videoSmallStepBackDelay = 300;
-  m_videoUseTimeSeeking = true;
-  m_videoTimeSeekForward = 30;
-  m_videoTimeSeekBackward = -30;
-  m_videoTimeSeekForwardBig = 600;
-  m_videoTimeSeekBackwardBig = -600;
-  m_videoPercentSeekForward = 2;
-  m_videoPercentSeekBackward = -2;
-  m_videoPercentSeekForwardBig = 10;
-  m_videoPercentSeekBackwardBig = -10;
-  m_videoBlackBarColour = 0;
-  m_videoPPFFmpegDeint = "linblenddeint";
-  m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
-  m_videoDefaultPlayer = "dvdplayer";
-  m_videoDefaultDVDPlayer = "dvdplayer";
-  m_videoIgnoreSecondsAtStart = 3*60;
-  m_videoIgnorePercentAtEnd   = 8.0f;
-  m_videoPlayCountMinimumPercent = 90.0f;
-  m_videoVDPAUScaling = false;
-  m_videoNonLinStretchRatio = 0.5f;
-  m_videoAllowLanczos3 = false;
-  m_videoAutoScaleMaxFps = 30.0f;
-  m_videoAllowMpeg4VDPAU = false;
-  m_DXVACheckCompatibility = false;
-  m_DXVACheckCompatibilityPresent = false;
-
   m_slideshowPanAmount = 2.5f;
   m_slideshowZoomAmount = 5.0f;
   m_slideshowBlackBarCompensation = 20.0f;
@@ -107,18 +79,10 @@ void CAdvancedSettings::Initialize()
 
   m_handleMounting = g_application.IsStandAlone();
 
-  m_fullScreenOnMovieStart = true;
   m_noDVDROM = false;
   m_cachePath = "special://temp/";
 
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
-
-  m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|remastered|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|3d|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
-  m_videoCleanStringRegExps.push_back("(\\[.*\\])");
-
-  m_moviesExcludeFromScanRegExps.push_back("-trailer");
-  m_moviesExcludeFromScanRegExps.push_back("[-._ \\\\/]sample[-._ \\\\/]");
-  m_tvshowExcludeFromScanRegExps.push_back("[-._ \\\\/]sample[-._ \\\\/]");
 
   m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
   m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
@@ -268,9 +232,8 @@ bool CAdvancedSettings::Load()
   //       it should instead use the versions of GetString/Integer/Float that
   //       don't take defaults in.  Defaults are set in the constructor above
   Initialize(); // In case of profile switch.
-  CStdString advancedSettingsXML = g_settings.GetUserDataItem("advancedsettings.xml");
   ParseSettingsFile("special://xbmc/system/advancedsettings.xml");
-  ParseSettingsFile(advancedSettingsXML);
+  ParseSettingsFile(g_settings.GetUserDataItem("advancedsettings.xml"));
   for (unsigned int i = 0; i < m_settingsFiles.size(); i++)
     ParseSettingsFile(m_settingsFiles[i]);
   return true;
@@ -313,147 +276,9 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
 
   AudioSettings = new CAudioSettings(pRootElement);
   KaraokeSettings = new CKaraokeSettings(pRootElement);
+  VideoSettings = new CVideoAdvancedSettings(pRootElement);
 
-  TiXmlElement *pElement = pRootElement->FirstChildElement("video");
-  if (pElement)
-  {
-    XMLUtils::GetFloat(pElement, "subsdelayrange", m_videoSubsDelayRange, 10, 600);
-    XMLUtils::GetFloat(pElement, "audiodelayrange", m_videoAudioDelayRange, 10, 600);
-    XMLUtils::GetInt(pElement, "blackbarcolour", m_videoBlackBarColour, 0, 255);
-    XMLUtils::GetString(pElement, "defaultplayer", m_videoDefaultPlayer);
-    XMLUtils::GetString(pElement, "defaultdvdplayer", m_videoDefaultDVDPlayer);
-    XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", m_fullScreenOnMovieStart);
-    // 101 on purpose - can be used to never automark as watched
-    XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_videoPlayCountMinimumPercent, 0.0f, 101.0f);
-    XMLUtils::GetInt(pElement, "ignoresecondsatstart", m_videoIgnoreSecondsAtStart, 0, 900);
-    XMLUtils::GetFloat(pElement, "ignorepercentatend", m_videoIgnorePercentAtEnd, 0, 100.0f);
-
-    XMLUtils::GetInt(pElement, "smallstepbackseconds", m_videoSmallStepBackSeconds, 1, INT_MAX);
-    XMLUtils::GetInt(pElement, "smallstepbacktries", m_videoSmallStepBackTries, 1, 10);
-    XMLUtils::GetInt(pElement, "smallstepbackdelay", m_videoSmallStepBackDelay, 100, 5000); //MS
-
-    XMLUtils::GetBoolean(pElement, "usetimeseeking", m_videoUseTimeSeeking);
-    XMLUtils::GetInt(pElement, "timeseekforward", m_videoTimeSeekForward, 0, 6000);
-    XMLUtils::GetInt(pElement, "timeseekbackward", m_videoTimeSeekBackward, -6000, 0);
-    XMLUtils::GetInt(pElement, "timeseekforwardbig", m_videoTimeSeekForwardBig, 0, 6000);
-    XMLUtils::GetInt(pElement, "timeseekbackwardbig", m_videoTimeSeekBackwardBig, -6000, 0);
-
-    XMLUtils::GetInt(pElement, "percentseekforward", m_videoPercentSeekForward, 0, 100);
-    XMLUtils::GetInt(pElement, "percentseekbackward", m_videoPercentSeekBackward, -100, 0);
-    XMLUtils::GetInt(pElement, "percentseekforwardbig", m_videoPercentSeekForwardBig, 0, 100);
-    XMLUtils::GetInt(pElement, "percentseekbackwardbig", m_videoPercentSeekBackwardBig, -100, 0);
-
-    TiXmlElement* pVideoExcludes = pElement->FirstChildElement("excludefromlisting");
-    if (pVideoExcludes)
-      GetCustomRegexps(pVideoExcludes, m_videoExcludeFromListingRegExps);
-
-    pVideoExcludes = pElement->FirstChildElement("excludefromscan");
-    if (pVideoExcludes)
-      GetCustomRegexps(pVideoExcludes, m_moviesExcludeFromScanRegExps);
-
-    pVideoExcludes = pElement->FirstChildElement("excludetvshowsfromscan");
-    if (pVideoExcludes)
-      GetCustomRegexps(pVideoExcludes, m_tvshowExcludeFromScanRegExps);
-
-    pVideoExcludes = pElement->FirstChildElement("cleanstrings");
-    if (pVideoExcludes)
-      GetCustomRegexps(pVideoExcludes, m_videoCleanStringRegExps);
-
-    XMLUtils::GetString(pElement,"cleandatetime", m_videoCleanDateTimeRegExp);
-    XMLUtils::GetString(pElement,"ppffmpegdeinterlacing",m_videoPPFFmpegDeint);
-    XMLUtils::GetString(pElement,"ppffmpegpostprocessing",m_videoPPFFmpegPostProc);
-    XMLUtils::GetBoolean(pElement,"vdpauscaling",m_videoVDPAUScaling);
-    XMLUtils::GetFloat(pElement, "nonlinearstretchratio", m_videoNonLinStretchRatio, 0.01f, 1.0f);
-    XMLUtils::GetBoolean(pElement,"allowlanczos3",m_videoAllowLanczos3);
-    XMLUtils::GetFloat(pElement,"autoscalemaxfps",m_videoAutoScaleMaxFps, 0.0f, 1000.0f);
-    XMLUtils::GetBoolean(pElement,"allowmpeg4vdpau",m_videoAllowMpeg4VDPAU);
-
-    TiXmlElement* pAdjustRefreshrate = pElement->FirstChildElement("adjustrefreshrate");
-    if (pAdjustRefreshrate)
-    {
-      TiXmlElement* pRefreshOverride = pAdjustRefreshrate->FirstChildElement("override");
-      while (pRefreshOverride)
-      {
-        RefreshOverride override = {0};
-
-        float fps;
-        if (XMLUtils::GetFloat(pRefreshOverride, "fps", fps))
-        {
-          override.fpsmin = fps - 0.01f;
-          override.fpsmax = fps + 0.01f;
-        }
-
-        float fpsmin, fpsmax;
-        if (XMLUtils::GetFloat(pRefreshOverride, "fpsmin", fpsmin) &&
-            XMLUtils::GetFloat(pRefreshOverride, "fpsmax", fpsmax))
-        {
-          override.fpsmin = fpsmin;
-          override.fpsmax = fpsmax;
-        }
-
-        float refresh;
-        if (XMLUtils::GetFloat(pRefreshOverride, "refresh", refresh))
-        {
-          override.refreshmin = refresh - 0.01f;
-          override.refreshmax = refresh + 0.01f;
-        }
-
-        float refreshmin, refreshmax;
-        if (XMLUtils::GetFloat(pRefreshOverride, "refreshmin", refreshmin) &&
-            XMLUtils::GetFloat(pRefreshOverride, "refreshmax", refreshmax))
-        {
-          override.refreshmin = refreshmin;
-          override.refreshmax = refreshmax;
-        }
-
-        bool fpsCorrect     = (override.fpsmin > 0.0f && override.fpsmax >= override.fpsmin);
-        bool refreshCorrect = (override.refreshmin > 0.0f && override.refreshmax >= override.refreshmin);
-
-        if (fpsCorrect && refreshCorrect)
-          m_videoAdjustRefreshOverrides.push_back(override);
-        else
-          CLog::Log(LOGWARNING, "Ignoring malformed refreshrate override, fpsmin:%f fpsmax:%f refreshmin:%f refreshmax:%f",
-              override.fpsmin, override.fpsmax, override.refreshmin, override.refreshmax);
-
-        pRefreshOverride = pRefreshOverride->NextSiblingElement("override");
-      }
-
-      TiXmlElement* pRefreshFallback = pAdjustRefreshrate->FirstChildElement("fallback");
-      while (pRefreshFallback)
-      {
-        RefreshOverride fallback = {0};
-        fallback.fallback = true;
-
-        float refresh;
-        if (XMLUtils::GetFloat(pRefreshFallback, "refresh", refresh))
-        {
-          fallback.refreshmin = refresh - 0.01f;
-          fallback.refreshmax = refresh + 0.01f;
-        }
-
-        float refreshmin, refreshmax;
-        if (XMLUtils::GetFloat(pRefreshFallback, "refreshmin", refreshmin) &&
-            XMLUtils::GetFloat(pRefreshFallback, "refreshmax", refreshmax))
-        {
-          fallback.refreshmin = refreshmin;
-          fallback.refreshmax = refreshmax;
-        }
-
-        if (fallback.refreshmin > 0.0f && fallback.refreshmax >= fallback.refreshmin)
-          m_videoAdjustRefreshOverrides.push_back(fallback);
-        else
-          CLog::Log(LOGWARNING, "Ignoring malformed refreshrate fallback, fpsmin:%f fpsmax:%f refreshmin:%f refreshmax:%f",
-              fallback.fpsmin, fallback.fpsmax, fallback.refreshmin, fallback.refreshmax);
-
-        pRefreshFallback = pRefreshFallback->NextSiblingElement("fallback");
-      }
-    }
-
-    m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
-
-  }
-
-  pElement = pRootElement->FirstChildElement("musiclibrary");
+  TiXmlElement *pElement = pRootElement->FirstChildElement("musiclibrary");
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "hideallitems", m_bMusicLibraryHideAllItems);
@@ -665,16 +490,6 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
 
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
 
-  // trailer matching regexps
-  TiXmlElement* pTrailerMatching = pRootElement->FirstChildElement("trailermatching");
-  if (pTrailerMatching)
-    GetCustomRegexps(pTrailerMatching, m_trailerMatchRegExps);
-
-  //everything thats a trailer is not a movie
-  m_moviesExcludeFromScanRegExps.insert(m_moviesExcludeFromScanRegExps.end(),
-                                        m_trailerMatchRegExps.begin(),
-                                        m_trailerMatchRegExps.end());
-
   // stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
   if (pVideoStacking)
@@ -825,12 +640,9 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
 
 void CAdvancedSettings::Clear()
 {
-  m_videoCleanStringRegExps.clear();
-  m_moviesExcludeFromScanRegExps.clear();
-  m_tvshowExcludeFromScanRegExps.clear();
-  m_videoExcludeFromListingRegExps.clear();
   m_videoStackRegExps.clear();
   AudioSettings->Clear();
+  VideoSettings->Clear();
   m_pictureExcludeFromListingRegExps.clear();
 }
 

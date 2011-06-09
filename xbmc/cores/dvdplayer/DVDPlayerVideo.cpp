@@ -592,7 +592,7 @@ void CDVDPlayerVideo::Process()
             {
               if (!sPostProcessType.empty())
                 sPostProcessType += ",";
-              sPostProcessType += g_advancedSettings.m_videoPPFFmpegDeint;
+              sPostProcessType += g_advancedSettings.VideoSettings->PPFFMPEGDeint();
             }
 
             if (g_settings.m_currentVideoSettings.m_PostProcess)
@@ -600,7 +600,7 @@ void CDVDPlayerVideo::Process()
               if (!sPostProcessType.empty())
                 sPostProcessType += ",";
               // This is what mplayer uses for its "high-quality filter combination"
-              sPostProcessType += g_advancedSettings.m_videoPPFFmpegPostProc;
+              sPostProcessType += g_advancedSettings.VideoSettings->PPFFMPEGPostProc();
             }
 
             if (!sPostProcessType.empty())

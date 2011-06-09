@@ -143,13 +143,13 @@ bool CDummyVideoPlayer::CanSeek()
 
 void CDummyVideoPlayer::Seek(bool bPlus, bool bLargeStep)
 {
-  if (g_advancedSettings.CanVideoUseTimeSeeking() && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
+  if (g_advancedSettings.VideoSettings->CanVideoUseTimeSeeking() && GetTotalTime() > 2*g_advancedSettings.VideoSettings->TimeSeekForwardBig())
   {
     int seek = 0;
     if (bLargeStep)
-      seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
+      seek = bPlus ? g_advancedSettings.VideoSettings->TimeSeekForwardBig() : g_advancedSettings.VideoSettings->TimeSeekBackwardBig();
     else
-      seek = bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
+      seek = bPlus ? g_advancedSettings.VideoSettings->TimeSeekForward() : g_advancedSettings.VideoSettings->TimeSeekBackward();
     // do the seek
     SeekTime(GetTime() + seek * 1000);
   }
@@ -157,9 +157,9 @@ void CDummyVideoPlayer::Seek(bool bPlus, bool bLargeStep)
   {
     float percent = GetPercentage();
     if (bLargeStep)
-      percent += bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig;
+      percent += bPlus ? g_advancedSettings.VideoSettings->PercentSeekForwardBig() : g_advancedSettings.VideoSettings->PercentSeekBackwardBig();
     else
-      percent += bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
+      percent += bPlus ? g_advancedSettings.VideoSettings->PercentSeekForward() : g_advancedSettings.VideoSettings->PercentSeekBackward();
 
     if (percent >= 0 && percent <= 100)
     {

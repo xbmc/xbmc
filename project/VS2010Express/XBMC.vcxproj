@@ -707,6 +707,7 @@
     <ClCompile Include="..\..\xbmc\settings\Profile.cpp" />
     <ClCompile Include="..\..\xbmc\settings\Settings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\SettingsControls.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\VideoAdvancedSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\VideoSettings.cpp" />
     <ClCompile Include="..\..\xbmc\SortFileItem.cpp" />
     <ClCompile Include="..\..\xbmc\storage\AutorunMediaJob.cpp" />
@@ -1541,6 +1542,7 @@
     <ClInclude Include="..\..\xbmc\settings\Profile.h" />
     <ClInclude Include="..\..\xbmc\settings\Settings.h" />
     <ClInclude Include="..\..\xbmc\settings\SettingsControls.h" />
+    <ClInclude Include="..\..\xbmc\settings\VideoAdvancedSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\VideoSettings.h" />
     <ClInclude Include="..\..\xbmc\SortFileItem.h" />
     <ClInclude Include="..\..\xbmc\storage\AutorunMediaJob.h" />

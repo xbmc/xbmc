@@ -25,6 +25,7 @@
 #include "utils/GlobalsHandling.h"
 #include "AudioSettings.h"
 #include "KaraokeSettings.h"
+#include "VideoAdvancedSettings.h"
 
 class TiXmlElement;
 
@@ -49,17 +50,6 @@ struct TVShowRegexp
   }
 };
 
-struct RefreshOverride
-{
-  float fpsmin;
-  float fpsmax;
-
-  float refreshmin;
-  float refreshmax;
-
-  bool  fallback;
-};
-
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
 class CAdvancedSettings
@@ -81,42 +71,7 @@ class CAdvancedSettings
 
     CAudioSettings *AudioSettings;
     CKaraokeSettings *KaraokeSettings;
-
-    float m_videoSubsDelayRange;
-    float m_videoAudioDelayRange;
-    int m_videoSmallStepBackSeconds;
-    int m_videoSmallStepBackTries;
-    int m_videoSmallStepBackDelay;
-
-    bool CanVideoUseTimeSeeking() { return m_videoUseTimeSeeking; };
-
-    int m_videoTimeSeekForward;
-    int m_videoTimeSeekBackward;
-    int m_videoTimeSeekForwardBig;
-    int m_videoTimeSeekBackwardBig;
-    int m_videoPercentSeekForward;
-    int m_videoPercentSeekBackward;
-    int m_videoPercentSeekForwardBig;
-    int m_videoPercentSeekBackwardBig;
-    CStdString m_videoPPFFmpegDeint;
-    CStdString m_videoPPFFmpegPostProc;
-
-    int m_videoBlackBarColour;
-    int m_videoIgnoreSecondsAtStart;
-    float m_videoIgnorePercentAtEnd;
-
-    bool  m_videoVDPAUScaling;
-    float m_videoNonLinStretchRatio;
-    bool  m_videoAllowLanczos3;
-    float m_videoAutoScaleMaxFps;
-    bool  m_videoAllowMpeg4VDPAU;
-    std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
-    bool m_DXVACheckCompatibility;
-    bool m_DXVACheckCompatibilityPresent;
-
-    CStdString m_videoDefaultPlayer;
-    CStdString m_videoDefaultDVDPlayer;
-    float m_videoPlayCountMinimumPercent;
+    CVideoAdvancedSettings *VideoSettings;
 
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
@@ -143,17 +98,11 @@ class CAdvancedSettings
 
     bool m_handleMounting;
 
-    bool m_fullScreenOnMovieStart;
     bool m_noDVDROM;
     CStdString m_cachePath;
     CStdString m_videoCleanDateTimeRegExp;
-    CStdStringArray m_videoCleanStringRegExps;
-    CStdStringArray m_videoExcludeFromListingRegExps;
-    CStdStringArray m_moviesExcludeFromScanRegExps;
-    CStdStringArray m_tvshowExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
-    CStdStringArray m_trailerMatchRegExps;
     SETTINGS_TVSHOWLIST m_tvshowEnumRegExps;
     CStdString m_tvshowMultiPartEnumRegExp;
     typedef std::vector< std::pair<CStdString, CStdString> > StringMapping;
@@ -273,7 +222,6 @@ class CAdvancedSettings
     bool CanWindowed() { return m_canWindowed; };
     bool ShowSplash() { return m_showSplash; };
   private:
-    bool m_videoUseTimeSeeking;
     bool m_measureRefreshrate;
     bool m_fullScreen;
     bool m_startFullScreen;

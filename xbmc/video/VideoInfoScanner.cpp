@@ -204,8 +204,8 @@ namespace VIDEO
     CONTENT_TYPE content = info ? info->Content() : CONTENT_NONE;
 
     // exclude folders that match our exclude regexps
-    CStdStringArray regexps = content == CONTENT_TVSHOWS ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
-                                                         : g_advancedSettings.m_moviesExcludeFromScanRegExps;
+    CStdStringArray regexps = content == CONTENT_TVSHOWS ? g_advancedSettings.VideoSettings->TVShowExcludeFromScanRegExps()
+                                                         : g_advancedSettings.VideoSettings->MoviesExcludeFromScanRegExps();
 
     if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
       return true;
@@ -366,8 +366,8 @@ namespace VIDEO
         continue;
 
       // Discard all exclude files defined by regExExclude
-      if (CUtil::ExcludeFileOrFolder(pItem->m_strPath, (content == CONTENT_TVSHOWS) ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
-                                                                                    : g_advancedSettings.m_moviesExcludeFromScanRegExps))
+      if (CUtil::ExcludeFileOrFolder(pItem->m_strPath, (content == CONTENT_TVSHOWS) ? g_advancedSettings.VideoSettings->TVShowExcludeFromScanRegExps()
+                                                                                    : g_advancedSettings.VideoSettings->MoviesExcludeFromScanRegExps()))
         continue;
 
       if (info2->Content() == CONTENT_MOVIES || info2->Content() == CONTENT_MUSICVIDEOS)
@@ -750,7 +750,7 @@ namespace VIDEO
     }
 
     // enumerate
-    CStdStringArray regexps = g_advancedSettings.m_tvshowExcludeFromScanRegExps;
+    CStdStringArray regexps = g_advancedSettings.VideoSettings->TVShowExcludeFromScanRegExps();
 
     for (int i=0;i<items.Size();++i)
     {

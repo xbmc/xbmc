@@ -3760,20 +3760,20 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (playlist == PLAYLIST_VIDEO && g_playlistPlayer.GetPlaylist(playlist).size() > 1)
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
-    options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile() && g_advancedSettings.m_fullScreenOnMovieStart && !g_settings.m_bStartVideoWindowed;
+    options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile() && g_advancedSettings.VideoSettings->FullScreenOnMovieStart() && !g_settings.m_bStartVideoWindowed;
   }
   else if(m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
   {
     // TODO - this will fail if user seeks back to first file in stack
     if(m_currentStackPosition == 0 || m_itemCurrentFile->m_lStartOffset == STARTOFFSET_RESUME)
-      options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !g_settings.m_bStartVideoWindowed;
+      options.fullscreen = g_advancedSettings.VideoSettings->FullScreenOnMovieStart() && !g_settings.m_bStartVideoWindowed;
     else
       options.fullscreen = false;
     // reset this so we don't think we are resuming on seek
     m_itemCurrentFile->m_lStartOffset = 0;
   }
   else
-    options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !g_settings.m_bStartVideoWindowed;
+    options.fullscreen = g_advancedSettings.VideoSettings->FullScreenOnMovieStart() && !g_settings.m_bStartVideoWindowed;
 
   // reset m_bStartVideoWindowed as it's a temp setting
   g_settings.m_bStartVideoWindowed = false;
@@ -4177,8 +4177,8 @@ void CApplication::UpdateFileState()
 
       if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.AudioSettings->PlayCountMinimumPercent() > 0 &&
           GetPercentage() >= g_advancedSettings.AudioSettings->PlayCountMinimumPercent()) ||
-          (m_progressTrackingItem->IsVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
-          GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
+          (m_progressTrackingItem->IsVideo() && g_advancedSettings.VideoSettings->PlayCountMinimumPercent() > 0 &&
+          GetPercentage() >= g_advancedSettings.VideoSettings->PlayCountMinimumPercent()))
       {
         m_progressTrackingPlayCountUpdate = true;
       }
@@ -4195,14 +4195,14 @@ void CApplication::UpdateFileState()
         m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
         m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
 
-        if (g_advancedSettings.m_videoIgnorePercentAtEnd > 0 &&
-            GetTotalTime() - GetTime() < 0.01f * g_advancedSettings.m_videoIgnorePercentAtEnd * GetTotalTime())
+        if (g_advancedSettings.VideoSettings->IgnorePercentAtEnd() > 0 &&
+            GetTotalTime() - GetTime() < 0.01f * g_advancedSettings.VideoSettings->IgnorePercentAtEnd() * GetTotalTime())
         {
           // Delete the bookmark
           m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
         }
         else
-        if (GetTime() > g_advancedSettings.m_videoIgnoreSecondsAtStart)
+        if (GetTime() > g_advancedSettings.VideoSettings->IgnoreSecondsAtStart())
         {
           // Update the bookmark
           m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
@@ -4618,7 +4618,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       
       // In case playback ended due to user eg. skipping over the end, clear
       // our resume bookmark here
-      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.m_videoIgnorePercentAtEnd > 0)
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.VideoSettings->IgnorePercentAtEnd() > 0)
       {
         // Delete the bookmark
         m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
@@ -5088,13 +5088,13 @@ int CApplication::GetVolume() const
 int CApplication::GetSubtitleDelay() const
 {
   // converts subtitle delay to a percentage
-  return int(((float)(g_settings.m_currentVideoSettings.m_SubtitleDelay + g_advancedSettings.m_videoSubsDelayRange)) / (2 * g_advancedSettings.m_videoSubsDelayRange)*100.0f + 0.5f);
+  return int(((float)(g_settings.m_currentVideoSettings.m_SubtitleDelay + g_advancedSettings.VideoSettings->SubsDelayRange())) / (2 * g_advancedSettings.VideoSettings->SubsDelayRange())*100.0f + 0.5f);
 }
 
 int CApplication::GetAudioDelay() const
 {
   // converts subtitle delay to a percentage
-  return int(((float)(g_settings.m_currentVideoSettings.m_AudioDelay + g_advancedSettings.m_videoAudioDelayRange)) / (2 * g_advancedSettings.m_videoAudioDelayRange)*100.0f + 0.5f);
+  return int(((float)(g_settings.m_currentVideoSettings.m_AudioDelay + g_advancedSettings.VideoSettings->AudioDelayRange())) / (2 * g_advancedSettings.VideoSettings->AudioDelayRange())*100.0f + 0.5f);
 }
 
 void CApplication::SetPlaySpeed(int iSpeed)

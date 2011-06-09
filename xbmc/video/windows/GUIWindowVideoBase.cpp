@@ -283,7 +283,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
         CFileItemPtr item2 = items[i];
 
         if (item2->IsVideo() && !item2->IsPlayList() &&
-            !CUtil::ExcludeFileOrFolder(item2->m_strPath, g_advancedSettings.m_moviesExcludeFromScanRegExps))
+            !CUtil::ExcludeFileOrFolder(item2->m_strPath, g_advancedSettings.VideoSettings->MoviesExcludeFromScanRegExps()))
         {
           item.m_strPath = item2->m_strPath;
           item.m_bIsFolder = false;

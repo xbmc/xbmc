@@ -725,8 +725,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
  	g_settings.m_videoExtensions += "|" + m_discStubExtensions;
 
   // Default players?
-  CLog::Log(LOGNOTICE, "Default DVD Player: %s", g_advancedSettings.m_videoDefaultDVDPlayer.c_str());
-  CLog::Log(LOGNOTICE, "Default Video Player: %s", g_advancedSettings.m_videoDefaultPlayer.c_str());
+  CLog::Log(LOGNOTICE, "Default DVD Player: %s", g_advancedSettings.VideoSettings->DefaultDVDPlayer().c_str());
+  CLog::Log(LOGNOTICE, "Default Video Player: %s", g_advancedSettings.VideoSettings->DefaultPlayer().c_str());
   CLog::Log(LOGNOTICE, "Default Audio Player: %s", g_advancedSettings.AudioSettings->DefaultPlayer().c_str());
 
   // setup any logging...

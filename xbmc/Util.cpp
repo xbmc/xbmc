@@ -330,7 +330,7 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
   if (strFileName.Equals(".."))
    return;
 
-  const CStdStringArray &regexps = g_advancedSettings.m_videoCleanStringRegExps;
+  const CStdStringArray &regexps = g_advancedSettings.VideoSettings->CleanStringRegExps();
 
   CRegExp reTags(true);
   CRegExp reYear;
