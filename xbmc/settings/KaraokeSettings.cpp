@@ -59,3 +59,48 @@ CKaraokeSettings::CKaraokeSettings(TiXmlElement *pRootElement)
     }
   }
 }
+
+bool CKaraokeSettings::AlwaysEmptyOnCDGs()
+{ 
+  return m_alwaysEmptyOnCdgs; 
+}
+
+bool CKaraokeSettings::KeepDelay()
+{
+  return m_keepDelay;
+}
+
+bool CKaraokeSettings::ChangeGenreForSongs()
+{
+  return m_changeGenreForSongs;
+}
+
+bool CKaraokeSettings::UseSongSpecificBackground()
+{ 
+  return m_useSongSpecificBackground;
+}
+
+float CKaraokeSettings::SyncDelayCDG()
+{ 
+  return m_syncDelayCDG; 
+}
+
+float CKaraokeSettings::SyncDelayLRC()
+{
+  return m_syncDelayLRC;
+}
+
+int CKaraokeSettings::StartIndex()
+{
+  return m_startIndex;
+}
+
+CStdString CKaraokeSettings::DefaultBackgroundFilePath()
+{
+  return m_defaultBackgroundType;
+}
+
+CStdString CKaraokeSettings::DefaultBackgroundType()
+{ 
+  return m_defaultBackgroundFilePath;
+}

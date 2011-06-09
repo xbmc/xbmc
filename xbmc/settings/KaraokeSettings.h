@@ -26,15 +26,15 @@ class CKaraokeSettings
   public:
     CKaraokeSettings();
     CKaraokeSettings(TiXmlElement *pRootElement);
-    bool AlwaysEmptyOnCDGs() { return m_alwaysEmptyOnCdgs; };                 // always have empty background on CDG files
-    bool KeepDelay() { return m_keepDelay; };                                 // store user-changed song delay in the database
-    bool ChangeGenreForSongs() { return m_changeGenreForSongs; };
-    bool UseSongSpecificBackground() { return m_useSongSpecificBackground; }; // use song-specific video or image if available instead of default
-    float SyncDelayCDG() { return m_syncDelayCDG; };                          // seems like different delay is needed for CDG and MP3s
-    float SyncDelayLRC() { return m_syncDelayLRC; };
-    int StartIndex() { return m_startIndex; };                                // auto-assign numbering start from this value
-    CStdString DefaultBackgroundType() { return m_defaultBackgroundType; };   // empty string or "vis", "image" or "video"
-    CStdString DefaultBackgroundFilePath() { return m_defaultBackgroundFilePath; }; // only for "image" or "video" types above
+    bool AlwaysEmptyOnCDGs();                 // always have empty background on CDG files
+    bool KeepDelay();                         // store user-changed song delay in the database
+    bool ChangeGenreForSongs();
+    bool UseSongSpecificBackground();         // use song-specific video or image if available instead of default
+    float SyncDelayCDG();                     // seems like different delay is needed for CDG and MP3s
+    float SyncDelayLRC();
+    int StartIndex();                         // auto-assign numbering start from this value
+    CStdString DefaultBackgroundType();       // empty string or "vis", "image" or "video"
+    CStdString DefaultBackgroundFilePath();   // only for "image" or "video" types above
   private:
     bool m_alwaysEmptyOnCdgs;
     bool m_keepDelay;
