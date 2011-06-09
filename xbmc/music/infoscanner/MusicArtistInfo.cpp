@@ -40,43 +40,9 @@ void CMusicArtistInfo::SetArtist(const CArtist& artist)
   m_bLoaded = true;
 }
 
-bool CMusicArtistInfo::Parse(const TiXmlElement* artist, bool bChained)
+bool CMusicArtistInfo::Load(CFileCurl& http, const ADDON::ScraperPtr& scraper,
+  const CStdString &strSearch)
 {
-  if (!m_artist.Load(artist,bChained))
-    return false;
-
-  SetLoaded();
-
-  return true;
-}
-
-bool CMusicArtistInfo::Load(CFileCurl& http, const ADDON::ScraperPtr& scraper)
-{
-  // load our scraper xml
-  if (!scraper->Load())
-    return false;
-
-  vector<CStdString> extras;
-  extras.push_back(m_strSearch);
-
-  vector<CStdString> xml = scraper->Run("GetArtistDetails",GetArtistURL(),http,&extras);
-
-  bool ret=true;
-  for (vector<CStdString>::iterator it  = xml.begin();
-                                    it != xml.end(); ++it)
-  {
-    // ok, now parse the xml file
-    TiXmlDocument doc;
-    doc.Parse(it->c_str(),0,TIXML_ENCODING_UTF8);
-    if (!doc.RootElement())
-    {
-      CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
-      return false;
-    }
-
-    ret = Parse(doc.RootElement(),it!=xml.begin());
-  }
-
-  return ret;
+  return m_bLoaded = scraper->GetArtistDetails(http, m_artistURL, strSearch, m_artist);
 }
 

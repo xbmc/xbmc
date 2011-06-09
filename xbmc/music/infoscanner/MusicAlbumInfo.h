@@ -41,7 +41,7 @@ public:
   virtual ~CMusicAlbumInfo() {}
 
   bool Loaded() const { return m_bLoaded; }
-  void SetLoaded() { m_bLoaded = true; }
+  void SetLoaded(bool bLoaded) { m_bLoaded = bLoaded; }
   const CAlbum &GetAlbum() const { return m_album; }
   CAlbum& GetAlbum() { return m_album; }
   void SetAlbum(CAlbum& album);
@@ -53,7 +53,6 @@ public:
   void SetRelevance(float relevance) { m_relevance = relevance; }
 
   bool Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper);
-  bool Parse(const TiXmlElement* album, bool bChained=false);
 
 protected:
   bool m_bLoaded;

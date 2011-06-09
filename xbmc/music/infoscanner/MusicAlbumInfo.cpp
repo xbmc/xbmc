@@ -34,7 +34,8 @@ CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbumInfo, const CScraperU
   m_bLoaded = false;
 }
 
-CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, const CStdString& strAlbumInfo, const CScraperUrl& strAlbumURL)
+CMusicAlbumInfo::CMusicAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist,
+  const CStdString& strAlbumInfo, const CScraperUrl& strAlbumURL)
 {
   m_album.strAlbum = strAlbum;
   m_album.strArtist = strArtist;
@@ -52,44 +53,12 @@ void CMusicAlbumInfo::SetAlbum(CAlbum& album)
   m_bLoaded = true;
 }
 
-bool CMusicAlbumInfo::Parse(const TiXmlElement* album, bool bChained)
+bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper)
 {
-  if (!m_album.Load(album,bChained))
-    return false;
-
-  if (m_strTitle2.IsEmpty())
+  bool fSuccess = scraper->GetAlbumDetails(http, m_albumURL, m_album);
+  if (fSuccess && m_strTitle2.empty())
     m_strTitle2 = m_album.strAlbum;
-
-  SetLoaded();
-
-  return true;
-}
-
-bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http,
-                           const ADDON::ScraperPtr& scraper)
-{
-  // load our scraper xml
-  if (!scraper->Load())
-    return false;
-
-  vector<CStdString> xml = scraper->Run("GetAlbumDetails",GetAlbumURL(),http);
-
-  bool ret=true;
-  for (vector<CStdString>::iterator it  = xml.begin();
-                                    it != xml.end(); ++it)
-  {
-    // ok, now parse the xml file
-    TiXmlDocument doc;
-    doc.Parse(it->c_str(),0,TIXML_ENCODING_UTF8);
-    if (!doc.RootElement())
-    {
-      CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
-      return false;
-    }
-
-    ret = Parse(doc.RootElement(),it!=xml.begin());
-  }
-
-  return ret;
+  SetLoaded(fSuccess);
+  return fSuccess;
 }
 
