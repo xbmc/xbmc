@@ -58,12 +58,12 @@ public:
   bool CacheArchivedPath(const CStdString &strArchive,
                          CArchiveEntry &item);
 private:
+  std::map<CStdString,std::deque<CArchiveEntry> > m_archiveMap;
   bool libarchive_extract(const CStdString &strArchive,
                           const CStdString &strPath,
                           const CStdString &strPathInArchive);
   bool libarchive_list(const CStdString &strPath,
                        std::deque<CArchiveEntry> &items);
-  std::map<CStdString,std::deque<CArchiveEntry> > m_archiveMap;
 };
 
 extern CArchiveManager g_archiveManager;
