@@ -495,13 +495,15 @@ JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *tr
       for (typeIterator = types.begin(); typeIterator != typeIteratorEnd; typeIterator++)
         getReferencedTypes(typeIterator->second, referencedTypes);
 
-      // Loop through all printed method's parameters to get all referenced types
+      // Loop through all printed method's parameters and return value to get all referenced types
       CJsonRpcMethodMap::JsonRpcMethodIterator methodIterator;
       CJsonRpcMethodMap::JsonRpcMethodIterator methodIteratorEnd = methods.end();
       for (methodIterator = methods.begin(); methodIterator != methodIteratorEnd; methodIterator++)
       {
         for (unsigned int index = 0; index < methodIterator->second.parameters.size(); index++)
           getReferencedTypes(methodIterator->second.parameters.at(index), referencedTypes);
+
+        getReferencedTypes(methodIterator->second.returns, referencedTypes);
       }
 
       for (unsigned int index = 0; index < referencedTypes.size(); index++)
@@ -560,7 +562,7 @@ JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *tr
       currentMethod["params"].append(param);
     }
 
-    currentMethod["returns"] = methodIterator->second.returns;
+    printType(methodIterator->second.returns, false, false, false, printDescriptions, currentMethod["returns"]);
 
     result["methods"][methodIterator->second.name] = currentMethod;
   }
@@ -1135,29 +1137,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
   }
 
   // Get the defined type of the parameter
-  if (value["type"].isArray())
-  {
-    int parsedType = 0;
-    // If the defined type is an array, we have
-    // to handle a union type
-    for (unsigned int typeIndex = 0; typeIndex < value["type"].size(); typeIndex++)
-    {
-      // If the type is a string try to parse it
-      if (value["type"][typeIndex].isString())
-        parsedType |= StringToSchemaValueType(value["type"][typeIndex].asString());
-      else
-        CLog::Log(LOGWARNING, "JSONRPC: Invalid type in union type definition of type %s", type.name.c_str());
-    }
-
-    type.type = (JSONSchemaType)parsedType;
-
-    // If the type has not been set yet
-    // set it to "any"
-    if (type.type == 0)
-      type.type = AnyValue;
-  }
-  else
-    type.type = value["type"].isString() ? StringToSchemaValueType(value["type"].asString()) : AnyValue;
+  type.type = parseJSONSchemaType(value["type"]);
 
   if (type.type == ObjectValue)
   {
@@ -1349,11 +1329,49 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
   return true;
 }
 
-void CJSONServiceDescription::parseReturn(const CVariant &value, CVariant &returns)
+void CJSONServiceDescription::parseReturn(const CVariant &value, JSONSchemaTypeDefinition &returns)
 {
   // Only parse the "returns" definition if there is one
-  if (value.isMember("returns"))
-    returns = value["returns"];
+  if (!value.isMember("returns"))
+  {
+    returns.type = NullValue;
+    return;
+  }
+  
+  // If the type of the return value is defined as a simple string we can parse it directly
+  if (value["returns"].isString())
+  {
+    returns.type = parseJSONSchemaType(value["returns"]);
+  }
+  // otherwise we have to parse the whole type definition
+  else
+    parseTypeDefinition(value["returns"], returns, false);
+}
+
+JSONSchemaType CJSONServiceDescription::parseJSONSchemaType(const CVariant &value)
+{
+  if (value.isArray())
+  {
+    int parsedType = 0;
+    // If the defined type is an array, we have
+    // to handle a union type
+    for (unsigned int typeIndex = 0; typeIndex < value.size(); typeIndex++)
+    {
+      // If the type is a string try to parse it
+      if (value[typeIndex].isString())
+        parsedType |= StringToSchemaValueType(value[typeIndex].asString());
+      else
+        CLog::Log(LOGWARNING, "JSONRPC: Invalid type in union type definition");
+    }
+
+    // If the type has not been set yet set it to "any"
+    if (parsedType == 0)
+      return AnyValue;
+
+    return (JSONSchemaType)parsedType;
+  }
+  else
+    return value.isString() ? StringToSchemaValueType(value.asString()) : AnyValue;
 }
 
 void CJSONServiceDescription::addReferenceTypeDefinition(JSONSchemaTypeDefinition &typeDefinition)

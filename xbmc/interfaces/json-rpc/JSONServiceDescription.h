@@ -205,7 +205,7 @@ namespace JSONRPC
     /*!
      \brief Definition of the return value
      */
-    CVariant returns;
+    JSONSchemaTypeDefinition returns;
   } JsonRpcMethod;
 
   /*! 
@@ -322,7 +322,8 @@ namespace JSONRPC
     static bool parseMethod(const CVariant &value, JsonRpcMethod &method);
     static bool parseParameter(CVariant &value, JSONSchemaTypeDefinition &parameter);
     static bool parseTypeDefinition(const CVariant &value, JSONSchemaTypeDefinition &type, bool isParameter);
-    static void parseReturn(const CVariant &value, CVariant &returns);
+    static void parseReturn(const CVariant &value, JSONSchemaTypeDefinition &returns);
+    static JSONSchemaType parseJSONSchemaType(const CVariant &value);
     static void addReferenceTypeDefinition(JSONSchemaTypeDefinition &typeDefinition);
 
     static void getReferencedTypes(const JSONSchemaTypeDefinition &type, std::vector<std::string> &referencedTypes);
