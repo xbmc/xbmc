@@ -59,13 +59,9 @@ void CJSONRPC::Initialize()
 
 JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
 {
-  bool getDescriptions = parameterObject["getdescriptions"].asBoolean();
-  bool getMetadata = parameterObject["getmetadata"].asBoolean();
-  bool filterByTransport = parameterObject["filterbytransport"].asBoolean();
-
-  CJSONServiceDescription::Print(result, transport, client, getDescriptions, getMetadata, filterByTransport);
-
-  return OK;
+  return CJSONServiceDescription::Print(result, transport, client,
+    parameterObject["getdescriptions"].asBoolean(), parameterObject["getmetadata"].asBoolean(), parameterObject["filterbytransport"].asBoolean(),
+    parameterObject["filter"]["id"].asString(), parameterObject["filter"]["type"].asString(), parameterObject["filter"]["getreferences"].asBoolean());
 }
 
 JSON_STATUS CJSONRPC::Version(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)

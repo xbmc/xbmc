@@ -292,7 +292,7 @@ namespace JSONRPC
      \param printMetadata Whether to print XBMC specific data or not
      \param filterByTransport Whether to filter by transport or not
      */
-    static void Print(CVariant &result, ITransportLayer *transport, IClient *client, bool printDescriptions, bool printMetadata, bool filterByTransport);
+    static JSON_STATUS Print(CVariant &result, ITransportLayer *transport, IClient *client, bool printDescriptions = true, bool printMetadata = false, bool filterByTransport = true, std::string filterByName = "", std::string filterByType = "", bool printReferences = true);
 
     /*!
      \brief Checks the given parameters from the request against the
@@ -325,12 +325,14 @@ namespace JSONRPC
     static void parseReturn(const CVariant &value, CVariant &returns);
     static void addReferenceTypeDefinition(JSONSchemaTypeDefinition &typeDefinition);
 
+    static void getReferencedTypes(const JSONSchemaTypeDefinition &type, std::vector<std::string> &referencedTypes);
+
     class CJsonRpcMethodMap
     {
     public:
       CJsonRpcMethodMap();
 
-      void add(JsonRpcMethod &method);
+      void add(const JsonRpcMethod &method);
 
       typedef std::map<std::string, JsonRpcMethod>::const_iterator JsonRpcMethodIterator;
       JsonRpcMethodIterator begin() const;

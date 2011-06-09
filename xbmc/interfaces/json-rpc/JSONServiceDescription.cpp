@@ -421,16 +421,112 @@ int CJSONServiceDescription::GetVersion()
   return JSONRPC_SERVICE_VERSION;
 }
 
-void CJSONServiceDescription::Print(CVariant &result, ITransportLayer *transport, IClient *client, bool printDescriptions, bool printMetadata, bool filterByTransport)
+JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *transport, IClient *client,
+  bool printDescriptions /* = true */, bool printMetadata /* = false */, bool filterByTransport /* = true */,
+  std::string filterByName /* = "" */, std::string filterByType /* = "" */, bool printReferences /* = true */)
 {
+  std::map<std::string, JSONSchemaTypeDefinition> types;
+  CJsonRpcMethodMap methods;
+  std::map<std::string, CVariant> notifications;
+
+  int clientPermissions = client->GetPermissionFlags();
+  int transportCapabilities = transport->GetCapabilities();
+
+  if (filterByName.size() > 0)
+  {
+    CStdString name = filterByName;
+
+    if (filterByType == "method")
+    {
+      name = name.ToLower();
+
+      CJsonRpcMethodMap::JsonRpcMethodIterator methodIterator = m_actionMap.find(name);
+      if (methodIterator != m_actionMap.end() &&
+         (clientPermissions & methodIterator->second.permission) != 0 && ((transportCapabilities & methodIterator->second.transportneed) != 0 || !filterByTransport))
+        methods.add(methodIterator->second);
+      else
+        return InvalidParams;
+    }
+    else if (filterByType == "namespace")
+    {
+      // append a . delimiter to make sure we check for a namespace
+      name = name.ToLower().append(".");
+
+      CJsonRpcMethodMap::JsonRpcMethodIterator methodIterator;
+      CJsonRpcMethodMap::JsonRpcMethodIterator methodIteratorEnd = m_actionMap.end();
+      for (methodIterator = m_actionMap.begin(); methodIterator != methodIteratorEnd; methodIterator++)
+      {
+        // Check if the given name is at the very beginning of the method name
+        if (methodIterator->first.find(name) == 0 &&
+           (clientPermissions & methodIterator->second.permission) != 0 && ((transportCapabilities & methodIterator->second.transportneed) != 0 || !filterByTransport))
+          methods.add(methodIterator->second);
+      }
+
+      if (methods.begin() == methods.end())
+        return InvalidParams;
+    }
+    else if (filterByType == "type")
+    {
+      std::map<std::string, JSONSchemaTypeDefinition>::const_iterator typeIterator = m_types.find(name);
+      if (typeIterator != m_types.end())
+        types[typeIterator->first] = typeIterator->second;
+      else
+        return InvalidParams;
+    }
+    else if (filterByType == "notification")
+    {
+      std::map<std::string, CVariant>::const_iterator notificationIterator = m_notifications.find(name);
+      if (notificationIterator != m_notifications.end())
+        notifications[notificationIterator->first] = notificationIterator->second;
+      else
+        return InvalidParams;
+    }
+    else
+      return InvalidParams;
+
+    // If we need to print all referenced types we have to go through all parameters etc
+    if (printReferences)
+    {
+      std::vector<std::string> referencedTypes;
+
+      // Loop through all printed types to get all referenced types
+      std::map<std::string, JSONSchemaTypeDefinition>::const_iterator typeIterator;
+      std::map<std::string, JSONSchemaTypeDefinition>::const_iterator typeIteratorEnd = types.end();
+      for (typeIterator = types.begin(); typeIterator != typeIteratorEnd; typeIterator++)
+        getReferencedTypes(typeIterator->second, referencedTypes);
+
+      // Loop through all printed method's parameters to get all referenced types
+      CJsonRpcMethodMap::JsonRpcMethodIterator methodIterator;
+      CJsonRpcMethodMap::JsonRpcMethodIterator methodIteratorEnd = methods.end();
+      for (methodIterator = methods.begin(); methodIterator != methodIteratorEnd; methodIterator++)
+      {
+        for (unsigned int index = 0; index < methodIterator->second.parameters.size(); index++)
+          getReferencedTypes(methodIterator->second.parameters.at(index), referencedTypes);
+      }
+
+      for (unsigned int index = 0; index < referencedTypes.size(); index++)
+      {
+        std::map<std::string, JSONSchemaTypeDefinition>::const_iterator typeIterator = m_types.find(referencedTypes.at(index));
+        if (typeIterator != m_types.end())
+          types[typeIterator->first] = typeIterator->second;
+      }
+    }
+  }
+  else
+  {
+    types = m_types;
+    methods = m_actionMap;
+    notifications = m_notifications;
+  }
+
   // Print the header
   result["id"] = JSONRPC_SERVICE_ID;
   result["version"] = JSONRPC_SERVICE_VERSION;
   result["description"] = JSONRPC_SERVICE_DESCRIPTION;
 
   std::map<std::string, JSONSchemaTypeDefinition>::const_iterator typeIterator;
-  std::map<std::string, JSONSchemaTypeDefinition>::const_iterator typeIteratorEnd = m_types.end();
-  for (typeIterator = m_types.begin(); typeIterator != typeIteratorEnd; typeIterator++)
+  std::map<std::string, JSONSchemaTypeDefinition>::const_iterator typeIteratorEnd = types.end();
+  for (typeIterator = types.begin(); typeIterator != typeIteratorEnd; typeIterator++)
   {
     CVariant currentType = CVariant(CVariant::VariantTypeObject);
     printType(typeIterator->second, false, true, true, printDescriptions, currentType);
@@ -439,12 +535,9 @@ void CJSONServiceDescription::Print(CVariant &result, ITransportLayer *transport
   }
 
   // Iterate through all json rpc methods
-  int clientPermissions = client->GetPermissionFlags();
-  int transportCapabilities = transport->GetCapabilities();
-
   CJsonRpcMethodMap::JsonRpcMethodIterator methodIterator;
-  CJsonRpcMethodMap::JsonRpcMethodIterator methodIteratorEnd = m_actionMap.end();
-  for (methodIterator = m_actionMap.begin(); methodIterator != methodIteratorEnd; methodIterator++)
+  CJsonRpcMethodMap::JsonRpcMethodIterator methodIteratorEnd = methods.end();
+  for (methodIterator = methods.begin(); methodIterator != methodIteratorEnd; methodIterator++)
   {
     if ((clientPermissions & methodIterator->second.permission) == 0 || ((transportCapabilities & methodIterator->second.transportneed) == 0 && filterByTransport))
       continue;
@@ -474,9 +567,11 @@ void CJSONServiceDescription::Print(CVariant &result, ITransportLayer *transport
 
   // Print notification description
   std::map<std::string, CVariant>::const_iterator notificationIterator;
-  std::map<std::string, CVariant>::const_iterator notificationIteratorEnd = m_notifications.end();
-  for (notificationIterator = m_notifications.begin(); notificationIterator != notificationIteratorEnd; notificationIterator++)
+  std::map<std::string, CVariant>::const_iterator notificationIteratorEnd = notifications.end();
+  for (notificationIterator = notifications.begin(); notificationIterator != notificationIteratorEnd; notificationIterator++)
     result["notifications"][notificationIterator->first] = notificationIterator->second;
+
+  return OK;
 }
 
 JSON_STATUS CJSONServiceDescription::CheckCall(const char* const method, const CVariant &requestParameters, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters)
@@ -1276,12 +1371,47 @@ void CJSONServiceDescription::addReferenceTypeDefinition(JSONSchemaTypeDefinitio
   m_types[typeDefinition.ID] = typeDefinition;
 }
 
+void CJSONServiceDescription::getReferencedTypes(const JSONSchemaTypeDefinition &type, std::vector<std::string> &referencedTypes)
+{
+  // If the current type is a referenceable object, we can add it to the list
+  if (type.ID.size() > 0)
+  {
+    for (unsigned int index = 0; index < referencedTypes.size(); index++)
+    {
+      // The referenceable object has already been added to the list so we can just skip it
+      if (type.ID == referencedTypes.at(index))
+        return;
+    }
+
+    referencedTypes.push_back(type.ID);
+  }
+
+  // If the current type is an object we need to check its properties
+  if (HasType(type.type, ObjectValue))
+  {
+    JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator iter;
+    JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator iterEnd = type.properties.end();
+    for (iter = type.properties.begin(); iter != iterEnd; iter++)
+      getReferencedTypes(iter->second, referencedTypes);
+  }
+  // If the current type is an array we need to check its items
+  if (HasType(type.type, ArrayValue))
+  {
+    unsigned int index;
+    for (index = 0; index < type.items.size(); index++)
+      getReferencedTypes(type.items.at(index), referencedTypes);
+
+    for (index = 0; index < type.additionalItems.size(); index++)
+      getReferencedTypes(type.additionalItems.at(index), referencedTypes);
+  }
+}
+
 CJSONServiceDescription::CJsonRpcMethodMap::CJsonRpcMethodMap()
 {
   m_actionmap = std::map<std::string, JsonRpcMethod>();
 }
 
-void CJSONServiceDescription::CJsonRpcMethodMap::add(JsonRpcMethod &method)
+void CJSONServiceDescription::CJsonRpcMethodMap::add(const JsonRpcMethod &method)
 {
   CStdString name = method.name;
   name = name.ToLower();
