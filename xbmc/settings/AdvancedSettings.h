@@ -23,6 +23,7 @@
 #include <vector>
 #include "utils/StdString.h"
 #include "utils/GlobalsHandling.h"
+#include "AudioSettings.h"
 #include "KaraokeSettings.h"
 
 class TiXmlElement;
@@ -78,13 +79,8 @@ class CAdvancedSettings
     static void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
     static void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
 
+    CAudioSettings *AudioSettings;
     CKaraokeSettings *KaraokeSettings;
-
-    int m_audioHeadRoom;
-    float m_ac3Gain;
-    CStdString m_audioDefaultPlayer;
-    float m_audioPlayCountMinimumPercent;
-    bool DVDPlayerIgnoreDTSInWav() { return m_dvdplayerIgnoreDTSinWAV; };
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
@@ -104,23 +100,10 @@ class CAdvancedSettings
     int m_videoPercentSeekBackwardBig;
     CStdString m_videoPPFFmpegDeint;
     CStdString m_videoPPFFmpegPostProc;
-    bool CanMusicUseTimeSeeking() { return m_musicUseTimeSeeking; };
 
-
-    int m_musicTimeSeekForward;
-    int m_musicTimeSeekBackward;
-    int m_musicTimeSeekForwardBig;
-    int m_musicTimeSeekBackwardBig;
-    int m_musicPercentSeekForward;
-    int m_musicPercentSeekBackward;
-    int m_musicPercentSeekForwardBig;
-    int m_musicPercentSeekBackwardBig;
-    int m_musicResample;
     int m_videoBlackBarColour;
     int m_videoIgnoreSecondsAtStart;
     float m_videoIgnorePercentAtEnd;
-    CStdString m_audioHost;
-    bool m_audioApplyDrc;
 
     bool  m_videoVDPAUScaling;
     float m_videoNonLinStretchRatio;
@@ -168,8 +151,6 @@ class CAdvancedSettings
     CStdStringArray m_videoExcludeFromListingRegExps;
     CStdStringArray m_moviesExcludeFromScanRegExps;
     CStdStringArray m_tvshowExcludeFromScanRegExps;
-    CStdStringArray m_audioExcludeFromListingRegExps;
-    CStdStringArray m_audioExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
     CStdStringArray m_trailerMatchRegExps;
@@ -293,7 +274,6 @@ class CAdvancedSettings
     bool ShowSplash() { return m_showSplash; };
   private:
     bool m_videoUseTimeSeeking;
-    bool m_musicUseTimeSeeking;
     bool m_measureRefreshrate;
     bool m_fullScreen;
     bool m_startFullScreen;

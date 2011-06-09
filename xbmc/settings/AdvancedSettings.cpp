@@ -41,25 +41,18 @@ using namespace XFILE;
 
 CAdvancedSettings::CAdvancedSettings()
 {
+  AudioSettings = new CAudioSettings();
   KaraokeSettings = new CKaraokeSettings();
 }
 
 CAdvancedSettings::~CAdvancedSettings()
 {
+  delete AudioSettings;
   delete KaraokeSettings;
 }
 
 void CAdvancedSettings::Initialize()
 {
-  m_audioHeadRoom = 0;
-  m_ac3Gain = 12.0f;
-  m_audioApplyDrc = true;
-  m_dvdplayerIgnoreDTSinWAV = false;
-
-  m_audioDefaultPlayer = "paplayer";
-  m_audioPlayCountMinimumPercent = 90.0f;
-  m_audioHost = "default";
-
   m_videoSubsDelayRange = 10;
   m_videoAudioDelayRange = 10;
   m_videoSmallStepBackSeconds = 7;
@@ -89,17 +82,6 @@ void CAdvancedSettings::Initialize()
   m_videoAllowMpeg4VDPAU = false;
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
-
-  m_musicUseTimeSeeking = true;
-  m_musicTimeSeekForward = 10;
-  m_musicTimeSeekBackward = -10;
-  m_musicTimeSeekForwardBig = 60;
-  m_musicTimeSeekBackwardBig = -60;
-  m_musicPercentSeekForward = 1;
-  m_musicPercentSeekBackward = -1;
-  m_musicPercentSeekForwardBig = 10;
-  m_musicPercentSeekBackwardBig = -10;
-  m_musicResample = 0;
 
   m_slideshowPanAmount = 2.5f;
   m_slideshowZoomAmount = 5.0f;
@@ -326,47 +308,13 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
   advancedXML.Accept(&printer);
   CLog::Log(LOGNOTICE, "Contents of %s are...\n%s", file.c_str(), printer.CStr());
 
+  delete AudioSettings;
   delete KaraokeSettings;
 
+  AudioSettings = new CAudioSettings(pRootElement);
   KaraokeSettings = new CKaraokeSettings(pRootElement);
 
-  TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
-
-  if (pElement)
-  {
-    XMLUtils::GetFloat(pElement, "ac3downmixgain", m_ac3Gain, -96.0f, 96.0f);
-    XMLUtils::GetInt(pElement, "headroom", m_audioHeadRoom, 0, 12);
-    XMLUtils::GetString(pElement, "defaultplayer", m_audioDefaultPlayer);
-    // 101 on purpose - can be used to never automark as watched
-    XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_audioPlayCountMinimumPercent, 0.0f, 101.0f);
-
-    XMLUtils::GetBoolean(pElement, "usetimeseeking", m_musicUseTimeSeeking);
-    XMLUtils::GetInt(pElement, "timeseekforward", m_musicTimeSeekForward, 0, 6000);
-    XMLUtils::GetInt(pElement, "timeseekbackward", m_musicTimeSeekBackward, -6000, 0);
-    XMLUtils::GetInt(pElement, "timeseekforwardbig", m_musicTimeSeekForwardBig, 0, 6000);
-    XMLUtils::GetInt(pElement, "timeseekbackwardbig", m_musicTimeSeekBackwardBig, -6000, 0);
-
-    XMLUtils::GetInt(pElement, "percentseekforward", m_musicPercentSeekForward, 0, 100);
-    XMLUtils::GetInt(pElement, "percentseekbackward", m_musicPercentSeekBackward, -100, 0);
-    XMLUtils::GetInt(pElement, "percentseekforwardbig", m_musicPercentSeekForwardBig, 0, 100);
-    XMLUtils::GetInt(pElement, "percentseekbackwardbig", m_musicPercentSeekBackwardBig, -100, 0);
-
-    XMLUtils::GetInt(pElement, "resample", m_musicResample, 0, 192000);
-
-    TiXmlElement* pAudioExcludes = pElement->FirstChildElement("excludefromlisting");
-    if (pAudioExcludes)
-      GetCustomRegexps(pAudioExcludes, m_audioExcludeFromListingRegExps);
-
-    pAudioExcludes = pElement->FirstChildElement("excludefromscan");
-    if (pAudioExcludes)
-      GetCustomRegexps(pAudioExcludes, m_audioExcludeFromScanRegExps);
-
-    XMLUtils::GetString(pElement, "audiohost", m_audioHost);
-    XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);
-    XMLUtils::GetBoolean(pElement, "dvdplayerignoredtsinwav", m_dvdplayerIgnoreDTSinWAV);
-  }
-
-  pElement = pRootElement->FirstChildElement("video");
+  TiXmlElement *pElement = pRootElement->FirstChildElement("video");
   if (pElement)
   {
     XMLUtils::GetFloat(pElement, "subsdelayrange", m_videoSubsDelayRange, 10, 600);
@@ -882,8 +830,7 @@ void CAdvancedSettings::Clear()
   m_tvshowExcludeFromScanRegExps.clear();
   m_videoExcludeFromListingRegExps.clear();
   m_videoStackRegExps.clear();
-  m_audioExcludeFromScanRegExps.clear();
-  m_audioExcludeFromListingRegExps.clear();
+  AudioSettings->Clear();
   m_pictureExcludeFromListingRegExps.clear();
 }
 

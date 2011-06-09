@@ -2457,6 +2457,9 @@
     <ClCompile Include="..\..\xbmc\settings\KaraokeSettings.cpp">
       <Filter>settings</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\AudioSettings.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4917,6 +4920,9 @@
       <Filter>settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\KaraokeSettings.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\AudioSettings.h">
       <Filter>settings</Filter>
     </ClInclude>
   </ItemGroup>

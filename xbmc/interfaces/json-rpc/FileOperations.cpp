@@ -83,7 +83,7 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
   }
   else if (media.Equals("music"))
   {
-    regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+    regexps = g_advancedSettings.AudioSettings->ExcludeFromListingRegExps();
     extensions = g_settings.m_musicExtensions;
   }
   else if (media.Equals("pictures"))
@@ -210,7 +210,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
         }
         else if (media.Equals("music"))
         {
-          regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+          regexps = g_advancedSettings.AudioSettings->ExcludeFromListingRegExps();
           extensions = g_settings.m_musicExtensions;
         }
         else if (media.Equals("pictures"))

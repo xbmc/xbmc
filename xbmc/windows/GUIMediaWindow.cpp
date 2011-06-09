@@ -663,7 +663,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   if (iWindow == WINDOW_VIDEO_FILES)
     regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
   if (iWindow == WINDOW_MUSIC_FILES)
-    regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+    regexps = g_advancedSettings.AudioSettings->ExcludeFromListingRegExps();
   if (iWindow == WINDOW_PICTURES)
     regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
 

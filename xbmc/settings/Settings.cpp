@@ -727,7 +727,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   // Default players?
   CLog::Log(LOGNOTICE, "Default DVD Player: %s", g_advancedSettings.m_videoDefaultDVDPlayer.c_str());
   CLog::Log(LOGNOTICE, "Default Video Player: %s", g_advancedSettings.m_videoDefaultPlayer.c_str());
-  CLog::Log(LOGNOTICE, "Default Audio Player: %s", g_advancedSettings.m_audioDefaultPlayer.c_str());
+  CLog::Log(LOGNOTICE, "Default Audio Player: %s", g_advancedSettings.AudioSettings->DefaultPlayer().c_str());
 
   // setup any logging...
   if (g_guiSettings.GetBool("debug.showloginfo"))

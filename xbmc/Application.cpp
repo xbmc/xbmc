@@ -4175,8 +4175,8 @@ void CApplication::UpdateFileState()
         m_progressTrackingPlayCountUpdate = false;
       }
 
-      if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
-          GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
+      if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.AudioSettings->PlayCountMinimumPercent() > 0 &&
+          GetPercentage() >= g_advancedSettings.AudioSettings->PlayCountMinimumPercent()) ||
           (m_progressTrackingItem->IsVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
           GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
       {

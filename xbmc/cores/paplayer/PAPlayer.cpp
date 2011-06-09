@@ -357,7 +357,7 @@ void PAPlayer::DrainStream(int stream)
 
 bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int samplerate, unsigned int bitspersample, CStdString codec)
 {
-  unsigned int outputSampleRate = (channels <= 2 && g_advancedSettings.m_musicResample) ? g_advancedSettings.m_musicResample : samplerate;
+  unsigned int outputSampleRate = (channels <= 2 && g_advancedSettings.AudioSettings->MusicResample()) ? g_advancedSettings.AudioSettings->MusicResample() : samplerate;
 
   if (m_pAudioDecoder[num] != NULL && m_channelCount[num] == channels && m_sampleRate[num] == outputSampleRate /* && m_bitsPerSample[num] == bitspersample */)
   {
@@ -605,7 +605,7 @@ bool PAPlayer::ProcessPAP()
             unsigned int channels2, samplerate2, bitspersample2;
             m_decoder[1 - m_currentDecoder].GetDataFormat(&channels2, &samplerate2, &bitspersample2);
             // change of channels - reinitialize our speaker configuration
-            if (channels != channels2 || (g_advancedSettings.m_musicResample == 0 && (samplerate != samplerate2 || bitspersample != bitspersample2)))
+            if (channels != channels2 || (g_advancedSettings.AudioSettings->MusicResample() == 0 && (samplerate != samplerate2 || bitspersample != bitspersample2)))
             {
               CLog::Log(LOGINFO, "PAPlayer: Stream properties have changed, restarting stream");
               FreeStream(m_currentStream);
@@ -620,7 +620,7 @@ bool PAPlayer::ProcessPAP()
             {
               CLog::Log(LOGINFO, "PAPlayer: Restarting resampler due to a change in data format");
               m_resampler[m_currentStream].DeInitialize();
-              if (!m_resampler[m_currentStream].InitConverter(samplerate2, bitspersample2, channels2, g_advancedSettings.m_musicResample, 16, PACKET_SIZE))
+              if (!m_resampler[m_currentStream].InitConverter(samplerate2, bitspersample2, channels2, g_advancedSettings.AudioSettings->MusicResample(), 16, PACKET_SIZE))
               {
                 CLog::Log(LOGERROR, "PAPlayer: Error initializing resampler!");
                 return false;
@@ -837,12 +837,12 @@ bool PAPlayer::CanSeek()
 void PAPlayer::Seek(bool bPlus, bool bLargeStep)
 {
   __int64 seek;
-  if (g_advancedSettings.CanMusicUseTimeSeeking() && GetTotalTime() > 2*g_advancedSettings.m_musicTimeSeekForwardBig)
+  if (g_advancedSettings.AudioSettings->CanMusicUseTimeSeeking() && GetTotalTime() > 2*g_advancedSettings.AudioSettings->MusicTimeSeekForwardBig())
   {
     if (bLargeStep)
-      seek = bPlus ? g_advancedSettings.m_musicTimeSeekForwardBig : g_advancedSettings.m_musicTimeSeekBackwardBig;
+      seek = bPlus ? g_advancedSettings.AudioSettings->MusicTimeSeekForwardBig() : g_advancedSettings.AudioSettings->MusicTimeSeekBackwardBig();
     else
-      seek = bPlus ? g_advancedSettings.m_musicTimeSeekForward : g_advancedSettings.m_musicTimeSeekBackward;
+      seek = bPlus ? g_advancedSettings.AudioSettings->MusicTimeSeekForward() : g_advancedSettings.AudioSettings->MusicTimeSeekBackward();
     seek *= 1000;
     seek += GetTime();
   }
@@ -850,9 +850,9 @@ void PAPlayer::Seek(bool bPlus, bool bLargeStep)
   {
     float percent;
     if (bLargeStep)
-      percent = bPlus ? (float)g_advancedSettings.m_musicPercentSeekForwardBig : (float)g_advancedSettings.m_musicPercentSeekBackwardBig;
+      percent = bPlus ? (float)g_advancedSettings.AudioSettings->MusicPercentSeekForwardBig() : (float)g_advancedSettings.AudioSettings->MusicPercentSeekBackwardBig();
     else
-      percent = bPlus ? (float)g_advancedSettings.m_musicPercentSeekForward : (float)g_advancedSettings.m_musicPercentSeekBackward;
+      percent = bPlus ? (float)g_advancedSettings.AudioSettings->MusicPercentSeekForward() : (float)g_advancedSettings.AudioSettings->MusicPercentSeekBackward();
     seek = (__int64)(GetTotalTime64()*(GetPercentage()+percent)/100);
   }
 

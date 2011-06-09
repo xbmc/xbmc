@@ -344,7 +344,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
   // Discard all excluded files defined by m_musicExcludeRegExps
 
-  CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+  CStdStringArray regexps = g_advancedSettings.AudioSettings->ExcludeFromScanRegExps();
 
   if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
     return true;
@@ -431,7 +431,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 
   VECSONGS songsToAdd;
 
-  CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+  CStdStringArray regexps = g_advancedSettings.AudioSettings->ExcludeFromScanRegExps();
 
   // for every file found, but skip folder
   for (int i = 0; i < items.Size(); ++i)
