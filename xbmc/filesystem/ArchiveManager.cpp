@@ -61,7 +61,9 @@ file_skip(struct archive *a, void *client_data, int64_t request)
 {
   struct mydata *data = (struct mydata*)client_data;
   CFile *file = data->file;
-  file->Seek(request, SEEK_CUR);
+  int64_t result = file->Seek(request, SEEK_CUR);
+  if (result >= 0)
+    return result;
 
   /* Let libarchive recover with read+discard. */
   if (errno == ESPIPE)
