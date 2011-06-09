@@ -36,6 +36,7 @@ class CKaraokeSettings
     CStdString DefaultBackgroundType();       // empty string or "vis", "image" or "video"
     CStdString DefaultBackgroundFilePath();   // only for "image" or "video" types above
   private:
+    void Initialise();
     bool m_alwaysEmptyOnCdgs;
     bool m_keepDelay;
     bool m_changeGenreForSongs;

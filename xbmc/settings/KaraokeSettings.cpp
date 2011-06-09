@@ -24,17 +24,12 @@
 
 CKaraokeSettings::CKaraokeSettings()
 {
-  m_keepDelay = true;
-  m_alwaysEmptyOnCdgs = true;
-  m_syncDelayCDG = 0.0f;
-  m_syncDelayLRC = 0.0f;
-  m_changeGenreForSongs = false;
-  m_startIndex = 1;
-  m_useSongSpecificBackground = 0;
+  Initialise();
 }
 
 CKaraokeSettings::CKaraokeSettings(TiXmlElement *pRootElement)
 {
+  Initialise();
   TiXmlElement *pElement = pRootElement->FirstChildElement("karaoke");
   if (pElement)
   {
@@ -103,4 +98,15 @@ CStdString CKaraokeSettings::DefaultBackgroundFilePath()
 CStdString CKaraokeSettings::DefaultBackgroundType()
 { 
   return m_defaultBackgroundFilePath;
+}
+
+void CKaraokeSettings::Initialise()
+{
+  m_keepDelay = true;
+  m_alwaysEmptyOnCdgs = true;
+  m_syncDelayCDG = 0.0f;
+  m_syncDelayLRC = 0.0f;
+  m_changeGenreForSongs = false;
+  m_startIndex = 1;
+  m_useSongSpecificBackground = 0;
 }
