@@ -27,6 +27,7 @@ typedef int socklen_t;
 #include <stdio.h>
 #include <unistd.h>
 #include <time.h>
+#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #define INVALID_SOCKET (SOCKET)(~0)
