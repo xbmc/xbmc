@@ -42,75 +42,75 @@ class CScraperUrl;
 
 namespace ADDON
 {
-  class CScraper;
-  typedef boost::shared_ptr<CScraper> ScraperPtr;
+class CScraper;
+typedef boost::shared_ptr<CScraper> ScraperPtr;
 
-  const CStdString   TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
-        CONTENT_TYPE TranslateContent(const CStdString &string);
-        TYPE         ScraperTypeFromContent(const CONTENT_TYPE &content);
+const CStdString TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
+CONTENT_TYPE TranslateContent(const CStdString &string);
+TYPE ScraperTypeFromContent(const CONTENT_TYPE &content);
 
-  class CScraper : public CAddon
-  {
-  public:
-    CScraper(const AddonProps &props) : CAddon(props) { }
-    CScraper(const cp_extension_t *ext);
-    virtual ~CScraper() {}
-    virtual AddonPtr Clone(const AddonPtr &self) const;
+class CScraper : public CAddon
+{
+public:
+  CScraper(const AddonProps &props) : CAddon(props) { }
+  CScraper(const cp_extension_t *ext);
+  virtual ~CScraper() {}
+  virtual AddonPtr Clone(const AddonPtr &self) const;
 
-    /*! \brief Set the scraper settings for a particular path from an XML string
-     Loads the default and user settings (if not already loaded) and, if the given XML string is non-empty,
-     overrides the user settings with the XML.
-     \param content Content type of the path
-     \param xml string of XML with the settings.  If non-empty this overrides any saved user settings.
-     \return true if settings are available, false otherwise
-     \sa GetPathSettings
-     */
-    bool SetPathSettings(CONTENT_TYPE content, const CStdString& xml);
+  /*! \brief Set the scraper settings for a particular path from an XML string
+   Loads the default and user settings (if not already loaded) and, if the given XML string is non-empty,
+   overrides the user settings with the XML.
+   \param content Content type of the path
+   \param xml string of XML with the settings.  If non-empty this overrides any saved user settings.
+   \return true if settings are available, false otherwise
+   \sa GetPathSettings
+   */
+  bool SetPathSettings(CONTENT_TYPE content, const CStdString& xml);
 
-    /*! \brief Get the scraper settings for a particular path in the form of an XML string
-     Loads the default and user settings (if not already loaded) and returns the user settings in the
-     form or an XML string
-     \return a string containing the XML settings
-     \sa SetPathSettings
-     */
-    CStdString GetPathSettings();
+  /*! \brief Get the scraper settings for a particular path in the form of an XML string
+   Loads the default and user settings (if not already loaded) and returns the user settings in the
+   form or an XML string
+   \return a string containing the XML settings
+   \sa SetPathSettings
+   */
+  CStdString GetPathSettings();
 
-    /*! \brief Clear any previously cached results for this scraper
-     Any previously cached files are cleared if they have been cached for longer than the specified
-     cachepersistence.
-     */
-    void ClearCache();
-    bool Load();
+  /*! \brief Clear any previously cached results for this scraper
+   Any previously cached files are cleared if they have been cached for longer than the specified
+   cachepersistence.
+   */
+  void ClearCache();
+  bool Load();
 
-    CONTENT_TYPE Content() const { return m_pathContent; }
-    const CStdString& Framework() const { return m_framework; }
-    const CStdString& Language() const { return m_language; }
-    bool RequiresSettings() const { return m_requiressettings; }
-    bool Supports(const CONTENT_TYPE &content) const;
+  CONTENT_TYPE Content() const { return m_pathContent; }
+  const CStdString& Framework() const { return m_framework; }
+  const CStdString& Language() const { return m_language; }
+  bool RequiresSettings() const { return m_requiressettings; }
+  bool Supports(const CONTENT_TYPE &content) const;
 
-    std::vector<CStdString> Run(const CStdString& function,
-                                const CScraperUrl& url,
-                                XFILE::CFileCurl& http,
-                                const std::vector<CStdString>* extras=NULL);
-    CScraperParser& GetParser() { return m_parser; }
+  std::vector<CStdString> Run(const CStdString& function,
+                              const CScraperUrl& url,
+                              XFILE::CFileCurl& http,
+                              const std::vector<CStdString>* extras=NULL);
+  CScraperParser& GetParser() { return m_parser; }
 
-    bool IsInUse() const;
+  bool IsInUse() const;
 
-  private:
-    CScraper(const CScraper&, const AddonPtr&);
+private:
+  CScraper(const CScraper&, const AddonPtr&);
 
-    CStdString InternalRun(const CStdString& function,
-                           const CScraperUrl& url,
-                           XFILE::CFileCurl& http,
-                           const std::vector<CStdString>* extras);
+  CStdString InternalRun(const CStdString& function,
+                         const CScraperUrl& url,
+                         XFILE::CFileCurl& http,
+                         const std::vector<CStdString>* extras);
 
-    CStdString m_framework;
-    CStdString m_language;
-    bool m_requiressettings;
-    CDateTimeSpan m_persistence;
-    CONTENT_TYPE m_pathContent;
-    CScraperParser m_parser;
-  };
+  CStdString m_framework;
+  CStdString m_language;
+  bool m_requiressettings;
+  CDateTimeSpan m_persistence;
+  CONTENT_TYPE m_pathContent;
+  CScraperParser m_parser;
+};
 
-}; /* namespace ADDON */
+}
 
