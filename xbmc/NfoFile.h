@@ -40,8 +40,9 @@ class CScraperUrl;
 class CNfoFile
 {
 public:
-  CNfoFile();
-  virtual ~CNfoFile();
+  CNfoFile() : m_doc(NULL), m_headofdoc(NULL) {}
+  virtual ~CNfoFile() { Close(); }
+
   enum NFOResult
   {
     NO_NFO       = 0,
