@@ -194,6 +194,11 @@ namespace ForTheRecord
   int AddOneTimeSchedule(const std::string& channelid, const time_t starttime, const std::string& title, int prerecordseconds, int postrecordseconds, Json::Value& response);
 
   /**
+   * \brief Add a xbmc timer as a manual schedule
+   */
+  int AddManualSchedule(const std::string& channelid, const time_t starttime, const time_t duration, const std::string& title, int prerecordseconds, int postrecordseconds, Json::Value& response);
+
+  /**
    * \brief Delete a ForTheRecord schedule
    */
   int DeleteSchedule(const std::string& scheduleid);

@@ -847,6 +847,60 @@ namespace ForTheRecord
   }
 
   /**
+   * \brief Add a xbmc timer as a manual schedule
+   */
+  int AddManualSchedule(const std::string& channelid, const time_t starttime, const time_t duration, const std::string& title, int prerecordseconds, int postrecordseconds, Json::Value& response)
+  {
+    int retval = -1;
+
+    XBMC->Log(LOG_DEBUG, "AddManualSchedule");
+    struct tm* convert = localtime(&starttime);
+    struct tm tm_start = *convert;
+    time_t recordingduration = duration;
+    int duration_sec = recordingduration % 60;
+    recordingduration /= 60;
+    int duration_min = recordingduration % 60;
+    recordingduration /= 60;
+    int duration_hrs = recordingduration;
+
+    // Format: ForTheRecord/Scheduler/SaveSchedule
+    // argument: {"ChannelType":0,"IsActive":true,"IsOneTime":true,"KeepUntilMode":0,"KeepUntilValue":null,
+    //    "LastModifiedTime":"\/Date(1307645182000+0100)\/","Name":"XBMC (manual) - blup","PostRecordSeconds":600,
+    //    "PreRecordSeconds":120,"ProcessingCommands":[],"RecordingFileFormatId":null,
+    //    "Rules":[{"Arguments":["2011-06-11T22:10:00", "01:13:00"],"Type":"ManualSchedule"},{"Arguments":["6a14caaf-5e39-4750-b7b7-eae8c741c094"],"Type":"Channels"}],
+    //    "ScheduleId":"00000000-0000-0000-0000-000000000000","SchedulePriority":0,"ScheduleType":82,"Version":0}
+
+    time_t now = time(NULL);
+    std::string modifiedtime = TimeTToWCFDate(mktime(localtime(&now)));
+    char arguments[1024];
+    snprintf( arguments, sizeof(arguments),
+      "{\"ChannelType\":0,\"IsActive\":true,\"IsOneTime\":true,\"KeepUntilMode\":0,\"KeepUntilValue\":null,\"LastModifiedTime\":\"%s\",\"Name\":\"XBMC (manual) - %s\",\"PostRecordSeconds\":%i,\"PreRecordSeconds\":%i,\"ProcessingCommands\":[],\"RecordingFileFormatId\":null,"
+      "\"Rules\":[{\"Arguments\":[\"%i-%02i-%02iT%02i:%02i:%02i\", \"%02i:%02i:%02i\"],\"Type\":\"ManualSchedule\"},{\"Arguments\":[\"%s\"],\"Type\":\"Channels\"}],\"ScheduleId\":\"00000000-0000-0000-0000-000000000000\",\"SchedulePriority\":0,\"ScheduleType\":82,\"Version\":0}",
+      modifiedtime.c_str(), title.c_str(), postrecordseconds, prerecordseconds,
+      tm_start.tm_year + 1900, tm_start.tm_mon + 1, tm_start.tm_mday,
+      tm_start.tm_hour, tm_start.tm_min, tm_start.tm_sec,
+      duration_hrs, duration_min, duration_sec,
+      channelid.c_str());
+
+    retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/SaveSchedule", arguments, response);
+
+    if(retval >= 0)
+    {
+      if( response.type() != Json::objectValue)
+      {
+        XBMC->Log(LOG_DEBUG, "Unknown response format. Expected Json::objectValue\n");
+        return -1;
+      }
+    }
+    else
+    {
+      XBMC->Log(LOG_DEBUG, "AddManualSchedule failed. Return value: %i\n", retval);
+    }
+
+    return retval;
+  }
+
+  /**
    * \brief Delete a ForTheRecord schedule
    */
   int DeleteSchedule(const std::string& scheduleid)

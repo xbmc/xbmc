@@ -732,11 +732,19 @@ PVR_ERROR cPVRClientForTheRecord::AddTimer(const PVR_TIMER &timerinfo)
   // We should have at least one upcoming program for this schedule, otherwise nothing will be recorded
   if (retval <= 0)
   {
+    XBMC->Log(LOG_INFO, "The new schedule does not lead to an upcoming program, removing schedule and adding a manual one.");
     // remove the added (now stale) schedule, ignore failure (what are we to do anyway?)
     ForTheRecord::DeleteSchedule(scheduleid);
 
-    // TODO: remove the added (now stale) schedule and add a manual recording
-    return PVR_ERROR_SERVER_ERROR;
+    // Okay, add a manual schedule (forced recording) but now we need to add pre- and post-recording ourselves
+    time_t manualStartTime = timerinfo.startTime - (timerinfo.iMarginStart * 60);
+    time_t manualEndTime = timerinfo.endTime + (timerinfo.iMarginEnd * 60);
+    retval = ForTheRecord::AddManualSchedule(pChannel->Guid(), manualStartTime, manualEndTime - manualStartTime, timerinfo.strTitle, timerinfo.iMarginStart * 60, timerinfo.iMarginEnd * 60, addScheduleResponse);
+    if (retval < 0)
+    {
+      XBMC->Log(LOG_ERROR, "A manual schedule could not be added.");
+      return PVR_ERROR_SERVER_ERROR;
+    }
   }
 
   // Trigger an update of the PVR timers
