@@ -49,7 +49,6 @@ public:
 protected:
   CArtist m_artist;
   CScraperUrl m_artistURL;
-  CScraperParser m_parser;
   bool m_bLoaded;
 };
 }
