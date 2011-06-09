@@ -34,15 +34,15 @@ namespace MUSIC_GRABBER
 class CMusicArtistInfo
 {
 public:
-  CMusicArtistInfo(void);
+  CMusicArtistInfo() : m_bLoaded(false) {}
   CMusicArtistInfo(const CStdString& strArtist, const CScraperUrl& strArtistURL);
-  virtual ~CMusicArtistInfo(void);
-  bool Loaded() const;
-  void SetLoaded(bool bOnOff);
+  virtual ~CMusicArtistInfo() {}
+  bool Loaded() const { return m_bLoaded; }
+  void SetLoaded() { m_bLoaded = true; }
   void SetArtist(const CArtist& artist);
-  const CArtist& GetArtist() const;
-  CArtist& GetArtist();
-  const CScraperUrl& GetArtistURL() const;
+  const CArtist& GetArtist() const { return m_artist; }
+  CArtist& GetArtist() { return m_artist; }
+  const CScraperUrl& GetArtistURL() const { return m_artistURL; }
   bool Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper);
   bool Parse(const TiXmlElement* artist, bool bChained=false);
   CStdString m_strSearch;

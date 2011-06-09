@@ -23,18 +23,9 @@
 #include "addons/Scraper.h"
 #include "utils/log.h"
 
-using namespace MUSIC_GRABBER;
-using namespace XFILE;
 using namespace std;
-
-CMusicArtistInfo::CMusicArtistInfo(void)
-{
-  m_bLoaded = false;
-}
-
-CMusicArtistInfo::~CMusicArtistInfo(void)
-{
-}
+using namespace XFILE;
+using namespace MUSIC_GRABBER;
 
 CMusicArtistInfo::CMusicArtistInfo(const CStdString& strArtist, const CScraperUrl& strArtistURL)
 {
@@ -43,25 +34,10 @@ CMusicArtistInfo::CMusicArtistInfo(const CStdString& strArtist, const CScraperUr
   m_bLoaded = false;
 }
 
-const CArtist& CMusicArtistInfo::GetArtist() const
-{
-  return m_artist;
-}
-
-CArtist& CMusicArtistInfo::GetArtist()
-{
-  return m_artist;
-}
-
 void CMusicArtistInfo::SetArtist(const CArtist& artist)
 {
   m_artist = artist;
   m_bLoaded = true;
-}
-
-const CScraperUrl& CMusicArtistInfo::GetArtistURL() const
-{
-  return m_artistURL;
 }
 
 bool CMusicArtistInfo::Parse(const TiXmlElement* artist, bool bChained)
@@ -69,7 +45,7 @@ bool CMusicArtistInfo::Parse(const TiXmlElement* artist, bool bChained)
   if (!m_artist.Load(artist,bChained))
     return false;
 
-  SetLoaded(true);
+  SetLoaded();
 
   return true;
 }
@@ -104,12 +80,3 @@ bool CMusicArtistInfo::Load(CFileCurl& http, const ADDON::ScraperPtr& scraper)
   return ret;
 }
 
-void CMusicArtistInfo::SetLoaded(bool bOnOff)
-{
-  m_bLoaded = bOnOff;
-}
-
-bool CMusicArtistInfo::Loaded() const
-{
-  return m_bLoaded;
-}

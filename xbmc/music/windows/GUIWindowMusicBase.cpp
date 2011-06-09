@@ -861,7 +861,7 @@ bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArti
   while (needsRefresh || bCanceled);
 
   m_musicdatabase.GetArtistInfo(idArtist,artist.GetArtist());
-  artist.SetLoaded(true);
+  artist.SetLoaded();
   return true;
 }
 
