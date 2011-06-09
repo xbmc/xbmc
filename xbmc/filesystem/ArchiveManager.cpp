@@ -38,6 +38,48 @@
 using namespace XFILE;
 using namespace std;
 
+struct mydata
+{
+  CFile *file;
+  void *buffer;
+};
+
+static int  file_close(struct archive *, void *);
+static ssize_t  file_read(struct archive *, void *, const void **buff);
+static int64_t  file_skip(struct archive *, void *, int64_t request);
+
+static ssize_t file_read(struct archive *a, void *client_data, const void **buff)
+{
+  struct mydata *data = (struct mydata*)client_data;
+  CFile *file = data->file;
+  *buff = data->buffer;
+  return file->Read(data->buffer, LIBARCHIVE_BLOCK_SIZE);
+}
+
+static int64_t
+file_skip(struct archive *a, void *client_data, int64_t request)
+{
+  struct mydata *data = (struct mydata*)client_data;
+  CFile *file = data->file;
+  file->Seek(request, SEEK_CUR);
+
+  /* Let libarchive recover with read+discard. */
+  if (errno == ESPIPE)
+    return 0;
+  archive_set_error(a, errno, "Error seeking");
+  return -1;
+}
+
+static int
+file_close(struct archive *a, void *client_data)
+{
+  struct mydata *data = (struct mydata*)client_data;
+  CFile *file = data->file;
+  free(data->buffer);
+  file->Close();
+  return ARCHIVE_OK;
+}
+
 CArchiveManager g_archiveManager;
 
 CArchiveEntry::CArchiveEntry()
@@ -183,7 +225,17 @@ bool CArchiveManager::libarchive_extract(const CStdString &strArchive,
   archive_write_disk_set_options(ext, flags);
   archive_write_disk_set_standard_lookup(ext);
 
-  r = archive_read_open_filename(a, strArchive.c_str(), LIBARCHIVE_BLOCK_SIZE);
+  CFile file;
+  if (!file.Open(strArchive))
+  {
+    CLog::Log(LOGERROR,"%s: Unable to open file '%s'.", __FUNCTION__,
+              strPath.c_str());
+    return false;
+  }
+  struct mydata data;
+  data.file = &file;
+  data.buffer = calloc(1, LIBARCHIVE_BLOCK_SIZE);
+  r = archive_read_open2(a, &data, NULL, file_read, file_skip, file_close);
   if (r != ARCHIVE_OK)
   {
     CLog::Log(LOGERROR,"%s", archive_error_string(a));
@@ -262,7 +314,18 @@ bool CArchiveManager::libarchive_list(const CStdString &strPath,
   a = archive_read_new();
   archive_read_support_compression_all(a);
   archive_read_support_format_all(a);
-  r = archive_read_open_filename(a, strPath.c_str(), LIBARCHIVE_BLOCK_SIZE);
+
+  CFile file;
+  if (!file.Open(strPath))
+  {
+    CLog::Log(LOGERROR,"%s: Unable to open file '%s'.", __FUNCTION__,
+              strPath.c_str());
+    return false;
+  }
+  struct mydata data;
+  data.file = &file;
+  data.buffer = calloc(1, LIBARCHIVE_BLOCK_SIZE);
+  r = archive_read_open2(a, &data, NULL, file_read, file_skip, file_close);
   if (r != ARCHIVE_OK)
   {
     CLog::Log(LOGERROR,"%s", archive_error_string(a));
