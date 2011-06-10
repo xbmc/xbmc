@@ -914,6 +914,48 @@
       }
     }
   },
+  "AudioLibrary.GetRecentlyAddedAlbums": {
+    "type": "method",
+    "description": "Retrieve recently added albums",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "albums", "$ref": "List.Amount" },
+      { "name": "fields", "$ref": "Audio.Fields.Album" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "albums": { "type": "array",
+          "items": { "$ref": "Audio.Details.Album" }
+        }
+      }
+    }
+  },
+  "AudioLibrary.GetRecentlyAddedSongs": {
+    "type": "method",
+    "description": "Retrieve recently added songs",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "albums", "$ref": "List.Amount", "description": "The amount of recently added albums from which to return the songs" },
+      { "name": "fields", "$ref": "Audio.Fields.Song" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "songs": { "type": "array",
+          "items": { "$ref": "Audio.Details.Song" }
+        }
+      }
+    }
+  },
   "AudioLibrary.GetGenres": {
     "type": "method",
     "description": "Retrieve all genres",
