@@ -23,6 +23,7 @@
 #include "GUIWindowManager.h"
 #include "GUILabelControl.h"
 #include "GUIAudioManager.h"
+#include "GUIInfoManager.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "Application.h"
@@ -32,6 +33,7 @@ CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
 {
   m_bModal = true;
   m_bRunning = false;
+  m_wasRunning = false;
   m_dialogClosing = false;
   m_renderOrder = 1;
   m_autoClosing = false;
@@ -110,6 +112,31 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
   }
 
   return CGUIWindow::OnMessage(message);
+}
+
+void CGUIDialog::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  UpdateVisibility();
+
+  // if we were running but now we're not, mark us dirty
+  if (!m_bRunning && m_wasRunning)
+    dirtyregions.push_back(m_renderRegion);
+
+  if (m_bRunning)
+    CGUIWindow::DoProcess(currentTime, dirtyregions);
+
+  m_wasRunning = m_bRunning;
+}
+
+void CGUIDialog::UpdateVisibility()
+{
+  if (m_visibleCondition)
+  {
+    if (g_infoManager.GetBool(m_visibleCondition, g_windowManager.GetActiveWindow()))
+      Show();
+    else
+      Close();
+  }
 }
 
 void CGUIDialog::Close_Internal(bool forceClose /*= false*/)

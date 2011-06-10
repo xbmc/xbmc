@@ -115,7 +115,6 @@ public:
   int GetFocusedWindow() const;
   bool HasModalDialog() const;
   bool HasDialogOnScreen() const;
-  void UpdateModelessVisibility();
   bool IsWindowActive(int id, bool ignoreClosing = true) const;
   bool IsWindowVisible(int id) const;
   bool IsWindowTopMost(int id) const;
