@@ -44,11 +44,6 @@ class CAdvancedSettings
     bool Load();
     void Clear();
 
-    static void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
-    static void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
-    static void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
-    static void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
-
     CAudioSettings *AudioSettings;
     CKaraokeSettings *KaraokeSettings;
     CLibrarySettings *LibrarySettings;
