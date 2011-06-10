@@ -21,7 +21,6 @@
 
 #include "SystemSettings.h"
 #include "filesystem/SpecialProtocol.h"
-#include "network/DNSNameCache.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
 #include "utils/LangCodeExpander.h"
@@ -143,23 +142,6 @@ CSystemSettings::CSystemSettings(bool isStandalone, TiXmlElement *pRootElement)
 
       // get next one
       pSubstitute = pSubstitute->NextSiblingElement("substitute");
-    }
-  }
-
-  TiXmlElement* pHostEntries = pRootElement->FirstChildElement("hosts");
-  if (pHostEntries)
-  {
-    TiXmlElement* element = pHostEntries->FirstChildElement("entry");
-    while(element)
-    {
-      CStdString name  = element->Attribute("name");
-      CStdString value;
-      if(element->GetText())
-        value = element->GetText();
-
-      if(name.length() > 0 && value.length() > 0)
-        CDNSNameCache::Add(name, value);
-      element = element->NextSiblingElement("entry");
     }
   }
 
