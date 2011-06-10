@@ -607,7 +607,7 @@ bool CFileItem::IsFileFolder() const
 {
   return (
     IsSmartPlayList() ||
-   (IsPlayList() && g_advancedSettings.ShowPlaylistAsFolders()) ||
+   (IsPlayList() && g_advancedSettings.LibrarySettings->ShowPlaylistAsFolders()) ||
     IsZIP() ||
     IsRAR() ||
     IsRSS() ||
@@ -2093,7 +2093,7 @@ void CFileItemList::Stack()
   // Precompile our REs
   VECCREGEXP stackRegExps;
   CRegExp tmpRegExp(true);
-  const CStdStringArray& strStackRegExps = g_advancedSettings.m_videoStackRegExps;
+  const CStdStringArray& strStackRegExps = g_advancedSettings.LibrarySettings->VideoStackRegExps();
   CStdStringArray::const_iterator strRegExp = strStackRegExps.begin();
   while (strRegExp != strStackRegExps.end())
   {
@@ -2456,7 +2456,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) co
   if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
   {
     CStdStringArray thumbs;
-    StringUtils::SplitString(g_advancedSettings.m_musicThumbs, "|", thumbs);
+    StringUtils::SplitString(g_advancedSettings.LibrarySettings->MusicThumbs(), "|", thumbs);
     for (unsigned int i = 0; i < thumbs.size(); ++i)
     {
       CStdString folderThumb(GetFolderThumb(thumbs[i]));
@@ -2618,7 +2618,7 @@ CStdString CFileItem::GetUserVideoThumb() const
   if (m_bIsFolder && !IsFileFolder())
   {
     CStdStringArray thumbs;
-    StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
+    StringUtils::SplitString(g_advancedSettings.LibrarySettings->DVDThumbs(), "|", thumbs);
     for (unsigned int i = 0; i < thumbs.size(); ++i)
     {
       CStdString folderThumb(GetFolderThumb(thumbs[i]));
@@ -2784,7 +2784,7 @@ CStdString CFileItem::GetLocalFanart() const
   CDirectory::GetDirectory(strDir, items, g_settings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false, true);
 
   CStdStringArray fanarts;
-  StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
+  StringUtils::SplitString(g_advancedSettings.LibrarySettings->FanartImages(), "|", fanarts);
 
   strFile = URIUtils::ReplaceExtension(strFile, "-fanart");
   fanarts.insert(m_bIsFolder ? fanarts.end() : fanarts.begin(), URIUtils::GetFileName(strFile));
@@ -2931,9 +2931,9 @@ bool CFileItem::LoadMusicTag()
   {
     CStdString fileName = URIUtils::GetFileName(m_strPath);
     URIUtils::RemoveExtension(fileName);
-    for (unsigned int i = 0; i < g_advancedSettings.m_musicTagsFromFileFilters.size(); i++)
+    for (unsigned int i = 0; i < g_advancedSettings.LibrarySettings->MusicTagsFromFileFilters().size(); i++)
     {
-      CLabelFormatter formatter(g_advancedSettings.m_musicTagsFromFileFilters[i], "");
+      CLabelFormatter formatter(g_advancedSettings.LibrarySettings->MusicTagsFromFileFilters()[i], "");
       if (formatter.FillMusicTag(fileName, GetMusicInfoTag()))
       {
         GetMusicInfoTag()->SetLoaded(true);

@@ -152,7 +152,7 @@ namespace VIDEO
     {
       m_pathsToScan.insert(strDirectory);
     }
-    m_bClean = g_advancedSettings.m_bVideoLibraryCleanOnUpdate;
+    m_bClean = g_advancedSettings.LibrarySettings->VideoLibraryCleanOnUpdate();
 
     StopThread();
     Create();
@@ -871,7 +871,7 @@ namespace VIDEO
 
   bool CVideoInfoScanner::EnumerateEpisodeItem(const CFileItemPtr item, EPISODES& episodeList)
   {
-    SETTINGS_TVSHOWLIST expression = g_advancedSettings.m_tvshowEnumRegExps;
+    SETTINGS_TVSHOWLIST expression = g_advancedSettings.LibrarySettings->TVShowEnumRegExps();
 
     CStdString strLabel=item->m_strPath;
     // URLDecode in case an episode is on a http/https/dav/davs:// source and URL-encoded like foo%201x01%20bar.avi
@@ -950,7 +950,7 @@ namespace VIDEO
 
       CRegExp reg2;
       // check the remainder of the string for any further episodes.
-      if (!byDate && reg2.RegComp(g_advancedSettings.m_tvshowMultiPartEnumRegExp))
+      if (!byDate && reg2.RegComp(g_advancedSettings.LibrarySettings->TVShowMultiPartEnumRegExp()))
       {
         int offset = 0;
 
@@ -964,7 +964,7 @@ namespace VIDEO
 
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new season %u, multipart episode %u [%s]",
                       episode.iSeason, episode.iEpisode,
-                      g_advancedSettings.m_tvshowMultiPartEnumRegExp.c_str());
+                      g_advancedSettings.LibrarySettings->TVShowMultiPartEnumRegExp().c_str());
 
             episodeList.push_back(episode);
             free(remainder);
@@ -978,7 +978,7 @@ namespace VIDEO
             episode.iEpisode = atoi(ep);
             free(ep);
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding multipart episode %u [%s]",
-                      episode.iEpisode, g_advancedSettings.m_tvshowMultiPartEnumRegExp.c_str());
+                      episode.iEpisode, g_advancedSettings.LibrarySettings->TVShowMultiPartEnumRegExp().c_str());
             episodeList.push_back(episode);
             offset += regexp2pos + reg2.GetFindLen();
           }
@@ -1078,7 +1078,7 @@ namespace VIDEO
       if (!movieDetails.m_strShowLink.IsEmpty())
       {
         CStdStringArray list;
-        StringUtils::SplitString(movieDetails.m_strShowLink, g_advancedSettings.m_videoItemSeparator,list);
+        StringUtils::SplitString(movieDetails.m_strShowLink, g_advancedSettings.LibrarySettings->VideoItemSeparator(),list);
         for (unsigned int i=0; i < list.size(); ++i)
         {
           CFileItemList items;
@@ -1121,7 +1121,7 @@ namespace VIDEO
       movieDetails.m_iDbId = lResult;
     }
 
-    if (g_advancedSettings.m_bVideoLibraryImportWatchedState)
+    if (g_advancedSettings.LibrarySettings->VideoLibraryImportWatchedState())
       m_database.SetPlayCount(*pItem, movieDetails.m_playCount, movieDetails.m_lastPlayed);
 
     m_database.Close();
@@ -1722,7 +1722,7 @@ namespace VIDEO
 
   bool CVideoInfoScanner::DownloadFailed(CGUIDialogProgress* pDialog)
   {
-    if (g_advancedSettings.m_bVideoScannerIgnoreErrors)
+    if (g_advancedSettings.LibrarySettings->VideoScannerIgnoreErrors())
       return true;
 
     if (pDialog)

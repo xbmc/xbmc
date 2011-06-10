@@ -25,33 +25,11 @@
 #include "utils/GlobalsHandling.h"
 #include "AudioSettings.h"
 #include "KaraokeSettings.h"
+#include "LibrarySettings.h"
 #include "SystemSettings.h"
 #include "VideoAdvancedSettings.h"
 
 class TiXmlElement;
-
-struct DatabaseSettings
-{
-  CStdString type;
-  CStdString host;
-  CStdString port;
-  CStdString user;
-  CStdString pass;
-  CStdString name;
-};
-
-struct TVShowRegexp
-{
-  bool byDate;
-  CStdString regexp;
-  TVShowRegexp(bool d, const CStdString& r)
-  {
-    byDate = d;
-    regexp = r;
-  }
-};
-
-typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
 class CAdvancedSettings
 {
@@ -72,6 +50,7 @@ class CAdvancedSettings
 
     CAudioSettings *AudioSettings;
     CKaraokeSettings *KaraokeSettings;
+    CLibrarySettings *LibrarySettings;
     CSystemSettings *SystemSettings;
     CVideoAdvancedSettings *VideoSettings;
 
@@ -95,53 +74,14 @@ class CAdvancedSettings
 
     CStdString m_cddbAddress;
 
-
-    
     CStdString m_videoCleanDateTimeRegExp;
     CStdStringArray m_pictureExcludeFromListingRegExps;
-    CStdStringArray m_videoStackRegExps;
-    SETTINGS_TVSHOWLIST m_tvshowEnumRegExps;
-    CStdString m_tvshowMultiPartEnumRegExp;
-    
+
+
     
     int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     float m_controllerDeadzone;
 
-    bool ShowPlaylistAsFolders() { return m_playlistAsFolders; };
-    bool m_detectAsUdf;
-
-    int m_thumbSize;
-    int m_fanartHeight;
-    bool UseDDSFanArt() { return m_useDDSFanart; };
-
-    CStdString m_musicThumbs;
-    CStdString m_dvdThumbs;
-    CStdString m_fanartImages;
-
-    bool m_bMusicLibraryHideAllItems;
-    int m_iMusicLibraryRecentlyAddedItems;
-    bool m_bMusicLibraryAllItemsOnBottom;
-    bool m_bMusicLibraryAlbumsSortByArtistThenYear;
-    CStdString m_strMusicLibraryAlbumFormat;
-    CStdString m_strMusicLibraryAlbumFormatRight;
-    bool m_prioritiseAPEv2tags;
-    CStdString m_musicItemSeparator;
-    CStdString m_videoItemSeparator;
-    std::vector<CStdString> m_musicTagsFromFileFilters;
-
-    bool m_bVideoLibraryHideAllItems;
-    bool m_bVideoLibraryAllItemsOnBottom;
-    int m_iVideoLibraryRecentlyAddedItems;
-    bool m_bVideoLibraryHideRecentlyAddedItems;
-    bool m_bVideoLibraryHideEmptySeries;
-    bool m_bVideoLibraryCleanOnUpdate;
-    bool m_bVideoLibraryExportAutoThumbs;
-    bool m_bVideoLibraryImportWatchedState;
-
-    bool m_bVideoScannerIgnoreErrors;
-
-    
-    std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
     //TuxBox
     int m_iTuxBoxStreamtsPort;
     bool m_bTuxBoxSubMenuSelection;
@@ -168,8 +108,7 @@ class CAdvancedSettings
 
     bool m_bFirstLoop;
 
-    int m_playlistRetries;
-    int m_playlistTimeout;
+
     bool UseGLRectangeHack() { return m_GLRectangleHack; };
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
@@ -182,8 +121,7 @@ class CAdvancedSettings
     bool MeasureRefreshRate() { return m_measureRefreshrate; }; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
                                                                 //otherwise it will use the windows refreshrate
 
-    DatabaseSettings m_databaseMusic; // advanced music database setup
-    DatabaseSettings m_databaseVideo; // advanced video database setup
+
 
     bool IsInFullScreen() { return m_fullScreen; };
     void SetFullScreenState(bool isFullScreen) { m_fullScreen = isFullScreen; };
@@ -194,9 +132,6 @@ class CAdvancedSettings
     bool m_AllowD3D9Ex;
     bool m_ForceD3D9Ex;
     bool m_AllowDynamicTextures;
-    bool m_playlistAsFolders;
-    bool m_useDDSFanart;
-    bool m_dvdplayerIgnoreDTSinWAV;
 
     std::vector<CStdString> m_settingsFiles;
     void ParseSettingsFile(CStdString file);

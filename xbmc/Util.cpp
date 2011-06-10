@@ -239,7 +239,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
 
 bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber)
 {
-  const CStdStringArray &regexps = g_advancedSettings.m_videoStackRegExps;
+  const CStdStringArray &regexps = g_advancedSettings.LibrarySettings->VideoStackRegExps();
 
   CStdString strFileNameTemp = strFileName;
 

@@ -1086,12 +1086,12 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         }
 
         // allow a folder to be ad-hoc queued and played by the default player
-        if (item->m_bIsFolder || (item->IsPlayList() && !g_advancedSettings.ShowPlaylistAsFolders()))
+        if (item->m_bIsFolder || (item->IsPlayList() && !g_advancedSettings.LibrarySettings->ShowPlaylistAsFolders()))
         {
           buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
         }
       }
-      if (!item->m_bIsFolder && !(item->IsPlayList() && !g_advancedSettings.ShowPlaylistAsFolders()))
+      if (!item->m_bIsFolder && !(item->IsPlayList() && !g_advancedSettings.LibrarySettings->ShowPlaylistAsFolders()))
       { // get players
         VECPLAYERCORES vecCores;
         if (item->IsVideoDb())

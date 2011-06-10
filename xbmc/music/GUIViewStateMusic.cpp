@@ -76,10 +76,10 @@ CGUIViewStateMusicSearch::CGUIViewStateMusicSearch(const CFileItemList& items) :
   if (strTrackRight.IsEmpty())
     strTrackRight = g_guiSettings.GetString("musicfiles.trackformatright");
 
-  CStdString strAlbumLeft = g_advancedSettings.m_strMusicLibraryAlbumFormat;
+  CStdString strAlbumLeft = g_advancedSettings.LibrarySettings->MusicLibraryAlbumFormat();
   if (strAlbumLeft.IsEmpty())
     strAlbumLeft = "%B"; // album
-  CStdString strAlbumRight = g_advancedSettings.m_strMusicLibraryAlbumFormatRight;
+  CStdString strAlbumRight = g_advancedSettings.LibrarySettings->MusicLibraryAlbumFormatRight();
   if (strAlbumRight.IsEmpty())
     strAlbumRight = "%A"; // artist
 
@@ -118,10 +118,10 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   if (strTrackRight.IsEmpty())
     strTrackRight = g_guiSettings.GetString("musicfiles.trackformatright");
 
-  CStdString strAlbumLeft = g_advancedSettings.m_strMusicLibraryAlbumFormat;
+  CStdString strAlbumLeft = g_advancedSettings.LibrarySettings->MusicLibraryAlbumFormat();
   if (strAlbumLeft.IsEmpty())
     strAlbumLeft = "%B"; // album
-  CStdString strAlbumRight = g_advancedSettings.m_strMusicLibraryAlbumFormatRight;
+  CStdString strAlbumRight = g_advancedSettings.LibrarySettings->MusicLibraryAlbumFormatRight();
   if (strAlbumRight.IsEmpty())
     strAlbumRight = "%A"; // artist
 
@@ -413,10 +413,10 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
   } 
   else if (items.GetContent() == "albums") 
   {
-    CStdString strAlbumLeft = g_advancedSettings.m_strMusicLibraryAlbumFormat;
+    CStdString strAlbumLeft = g_advancedSettings.LibrarySettings->MusicLibraryAlbumFormat();
     if (strAlbumLeft.IsEmpty())
       strAlbumLeft = "%B"; // album
-    CStdString strAlbumRight = g_advancedSettings.m_strMusicLibraryAlbumFormatRight;
+    CStdString strAlbumRight = g_advancedSettings.LibrarySettings->MusicLibraryAlbumFormatRight();
     if (strAlbumRight.IsEmpty())
       strAlbumRight = "%A"; // artist
 

@@ -281,7 +281,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
   CFileItemPtr pItem;
 
   // always hide "all" items
-  if (g_advancedSettings.m_bVideoLibraryHideAllItems)
+  if (g_advancedSettings.LibrarySettings->VideoLibraryHideAllItems())
     return;
 
   // no need for "all" item when only one item
@@ -330,7 +330,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
   if (pItem)
   {
     pItem->m_bIsFolder = true;
-    pItem->SetSpecialSort(g_advancedSettings.m_bVideoLibraryAllItemsOnBottom ? SORT_ON_BOTTOM : SORT_ON_TOP);
+    pItem->SetSpecialSort(g_advancedSettings.LibrarySettings->VideoLibraryAllItemsOnBottom() ? SORT_ON_BOTTOM : SORT_ON_TOP);
     pItem->SetCanQueue(false);
     items.Add(pItem);
   }

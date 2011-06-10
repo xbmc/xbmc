@@ -694,7 +694,7 @@ bool CMusicInfoTagLoaderMP3::GetReplayGain(CReplayGain &info) const
 
 bool CMusicInfoTagLoaderMP3::PrioritiseAPETags() const
 {
-  return g_advancedSettings.m_prioritiseAPEv2tags;
+  return g_advancedSettings.LibrarySettings->PrioritiseAPEv2tags();
 }
 
 // \brief Check to see if the specified buffer contains an ID3v2 tag header

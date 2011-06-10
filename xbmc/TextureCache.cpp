@@ -186,7 +186,7 @@ CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnD
       CStdString ddsPath = URIUtils::ReplaceExtension(path, ".dds");
       if (CFile::Exists(ddsPath))
         return ddsPath;
-      if (g_advancedSettings.UseDDSFanArt())
+      if (g_advancedSettings.LibrarySettings->UseDDSFanArt())
         AddJob(new CDDSJob(path));
     }
     return path;
@@ -240,7 +240,7 @@ CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnD
   if (!hash.IsEmpty())
   {
     AddCachedTexture(url, originalFile, hash);
-    if (g_advancedSettings.UseDDSFanArt())
+    if (g_advancedSettings.LibrarySettings->UseDDSFanArt())
       AddJob(new CDDSJob(GetCachedPath(originalFile)));
     return GetCachedPath(originalFile);
   }
@@ -328,7 +328,7 @@ void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     CCacheJob *cacheJob = (CCacheJob *)job;
     AddCachedTexture(cacheJob->m_url, cacheJob->m_original, cacheJob->m_hash);
     // TODO: call back to the UI indicating that it can update it's image...
-    if (g_advancedSettings.UseDDSFanArt())
+    if (g_advancedSettings.LibrarySettings->UseDDSFanArt())
       AddJob(new CDDSJob(GetCachedPath(cacheJob->m_original)));
   }
   return CJobQueue::OnJobComplete(jobID, success, job);

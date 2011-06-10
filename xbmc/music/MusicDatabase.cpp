@@ -86,7 +86,7 @@ CMusicDatabase::~CMusicDatabase(void)
 
 bool CMusicDatabase::Open()
 {
-  return CDatabase::Open(g_advancedSettings.m_databaseMusic);
+  return CDatabase::Open(g_advancedSettings.LibrarySettings->DatabaseMusic());
 }
 
 bool CMusicDatabase::CreateTables()
@@ -1413,7 +1413,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idAlbum in (select distinct albumview.idAlbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
+    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idAlbum in (select distinct albumview.idAlbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.LibrarySettings->MusicLibraryRecentlyAddedItems());
     CLog::Log(LOGDEBUG,"GetRecentlyPlayedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1454,7 +1454,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums, unsigned int limi
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from albumview order by idAlbum desc limit %u", limit ? limit : g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
+    strSQL.Format("select * from albumview order by idAlbum desc limit %u", limit ? limit : g_advancedSettings.LibrarySettings->MusicLibraryRecentlyAddedItems());
 
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -1490,7 +1490,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL = PrepareSQL("SELECT songview.* FROM (SELECT idAlbum FROM albumview ORDER BY idAlbum DESC LIMIT %u) AS recentalbums JOIN songview ON songview.idAlbum=recentalbums.idAlbum", limit ? limit : g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
+    strSQL = PrepareSQL("SELECT songview.* FROM (SELECT idAlbum FROM albumview ORDER BY idAlbum DESC LIMIT %u) AS recentalbums JOIN songview ON songview.idAlbum=recentalbums.idAlbum", limit ? limit : g_advancedSettings.LibrarySettings->MusicLibraryRecentlyAddedItems());
     CLog::Log(LOGDEBUG,"GetRecentlyAddedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -3679,9 +3679,9 @@ bool CMusicDatabase::GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, 
 
 void CMusicDatabase::SplitString(const CStdString &multiString, vector<CStdString> &vecStrings, CStdString &extraStrings)
 {
-  int numStrings = StringUtils::SplitString(multiString, g_advancedSettings.m_musicItemSeparator, vecStrings);
+  int numStrings = StringUtils::SplitString(multiString, g_advancedSettings.LibrarySettings->MusicItemSeparator(), vecStrings);
   for (int i = 1; i < numStrings; i++)
-    extraStrings += g_advancedSettings.m_musicItemSeparator + vecStrings[i];
+    extraStrings += g_advancedSettings.LibrarySettings->MusicItemSeparator() + vecStrings[i];
 }
 
 bool CMusicDatabase::SetPathHash(const CStdString &path, const CStdString &hash)

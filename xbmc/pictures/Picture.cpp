@@ -37,7 +37,7 @@ bool CPicture::CreateThumbnail(const CStdString& file, const CStdString& thumbFi
   if (checkExistence && CFile::Exists(thumbFile))
     return true;
 
-  return CacheImage(file, thumbFile, g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize);
+  return CacheImage(file, thumbFile, g_advancedSettings.LibrarySettings->ThumbSize(), g_advancedSettings.LibrarySettings->ThumbSize());
 }
 
 bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFile, int width, int height)
@@ -81,12 +81,12 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
 
 bool CPicture::CacheThumb(const CStdString& sourceUrl, const CStdString& destFile)
 {
-  return CacheImage(sourceUrl, destFile, g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize);
+  return CacheImage(sourceUrl, destFile, g_advancedSettings.LibrarySettings->ThumbSize(), g_advancedSettings.LibrarySettings->ThumbSize());
 }
 
 bool CPicture::CacheFanart(const CStdString& sourceUrl, const CStdString& destFile)
 {
-  int height = g_advancedSettings.m_fanartHeight;
+  int height = g_advancedSettings.LibrarySettings->FanartHeight();
   // Assume 16:9 size
   int width = height * 16 / 9;
 
@@ -98,7 +98,7 @@ bool CPicture::CreateThumbnailFromMemory(const unsigned char* buffer, int bufSiz
   CLog::Log(LOGINFO, "Creating album thumb from memory: %s", thumbFile.c_str());
   DllImageLib dll;
   if (!dll.Load()) return false;
-  if (!dll.CreateThumbnailFromMemory((BYTE *)buffer, bufSize, extension.c_str(), thumbFile.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
+  if (!dll.CreateThumbnailFromMemory((BYTE *)buffer, bufSize, extension.c_str(), thumbFile.c_str(), g_advancedSettings.LibrarySettings->ThumbSize(), g_advancedSettings.LibrarySettings->ThumbSize()))
   {
     CLog::Log(LOGERROR, "%s: exception with fileType: %s", __FUNCTION__, extension.c_str());
     return false;
@@ -114,7 +114,7 @@ void CPicture::CreateFolderThumb(const CStdString *thumbs, const CStdString &fol
 
   DllImageLib dll;
   if (!dll.Load()) return;
-  if (!dll.CreateFolderThumbnail(szThumbs, folderThumb.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
+  if (!dll.CreateFolderThumbnail(szThumbs, folderThumb.c_str(), g_advancedSettings.LibrarySettings->ThumbSize(), g_advancedSettings.LibrarySettings->ThumbSize()))
   {
     CLog::Log(LOGERROR, "%s failed for folder thumb %s", __FUNCTION__, folderThumb.c_str());
   }
