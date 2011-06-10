@@ -24,7 +24,6 @@
 #include "system.h"
 #include "AdvancedSettings.h"
 #include "Application.h"
-#include "network/DNSNameCache.h"
 #include "filesystem/File.h"
 #include "utils/LangCodeExpander.h"
 #include "LangInfo.h"
@@ -43,6 +42,7 @@ CAdvancedSettings::CAdvancedSettings()
 {
   AudioSettings = new CAudioSettings();
   KaraokeSettings = new CKaraokeSettings();
+  SystemSettings = new CSystemSettings(g_application.IsStandAlone());
   VideoSettings = new CVideoAdvancedSettings();
 }
 
@@ -70,17 +70,10 @@ void CAdvancedSettings::Initialize()
   m_lcdScrolldelay = 1;
   m_lcdHostName = "localhost";
 
-  m_autoDetectPingTime = 30;
-
   m_songInfoDuration = 10;
   m_busyDialogDelay = 2000;
 
   m_cddbAddress = "freedb.freedb.org";
-
-  m_handleMounting = g_application.IsStandAlone();
-
-  m_noDVDROM = false;
-  m_cachePath = "special://temp/";
 
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
 
@@ -118,14 +111,6 @@ void CAdvancedSettings::Initialize()
   m_fanartHeight = DEFAULT_FANART_HEIGHT;
   m_useDDSFanart = false;
 
-  m_sambaclienttimeout = 10;
-  m_sambadoscodepage = "";
-  m_sambastatfiles = true;
-
-  m_bHTTPDirectoryStatFilesize = false;
-
-  m_bFTPThumbs = false;
-
   m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg|thumb.jpg|Thumb.jpg|thumb.JPG|Thumb.JPG";
   m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
   m_fanartImages = "fanart.jpg|fanart.png";
@@ -150,7 +135,7 @@ void CAdvancedSettings::Initialize()
   m_bVideoLibraryImportWatchedState = false;
   m_bVideoScannerIgnoreErrors = false;
 
-  m_bUseEvilB = true;
+
 
   m_iTuxBoxStreamtsPort = 31339;
   m_bTuxBoxAudioChannelSelection = false;
@@ -174,13 +159,9 @@ void CAdvancedSettings::Initialize()
   m_iEdlCommBreakAutowait = 0;             // Off by default
   m_iEdlCommBreakAutowind = 0;             // Off by default
 
-  m_curlconnecttimeout = 10;
-  m_curllowspeedtime = 20;
-  m_curlretries = 2;
-  m_curlDisableIPV6 = false;      //Certain hardware/OS combinations have trouble
-                                  //with ipv6.
 
-  m_fullScreen = m_startFullScreen = false;
+
+  m_fullScreen = false;
 
   m_playlistRetries = 100;
   m_playlistTimeout = 20; // 20 seconds timeout
@@ -189,9 +170,7 @@ void CAdvancedSettings::Initialize()
   m_AllowD3D9Ex = true;
   m_ForceD3D9Ex = false;
   m_AllowDynamicTextures = true;
-  m_RestrictCapsMask = 0;
-  m_sleepBeforeFlip = 0;
-  m_useVirtualShares = true;
+
 
 //caused lots of jerks
 //#ifdef _WIN32
@@ -200,30 +179,7 @@ void CAdvancedSettings::Initialize()
   m_ForcedSwapTime = 0.0;
 //#endif
 
-  m_cpuTempCmd = "";
-  m_gpuTempCmd = "";
-#ifdef __APPLE__
-  // default for osx is fullscreen always on top
-  m_alwaysOnTop = true;
-#else
-  // default for windows is not always on top
-  m_alwaysOnTop = false;
-#endif
-
-  m_bgInfoLoaderMaxThreads = 5;
-
   m_measureRefreshrate = false;
-
-  m_cacheMemBufferSize = 1024 * 1024 * 20;
-
-  m_jsonOutputCompact = true;
-  m_jsonTcpPort = 9090;
-
-  m_enableMultimediaKeys = false;
-
-  m_canQuit = true;
-  m_canWindowed = true;
-  m_showSplash = true;
 }
 
 bool CAdvancedSettings::Load()
@@ -273,9 +229,12 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
 
   delete AudioSettings;
   delete KaraokeSettings;
+  delete SystemSettings;
+  delete VideoSettings;
 
   AudioSettings = new CAudioSettings(pRootElement);
   KaraokeSettings = new CKaraokeSettings(pRootElement);
+  SystemSettings = new CSystemSettings(g_application.IsStandAlone(), pRootElement);
   VideoSettings = new CVideoAdvancedSettings(pRootElement);
 
   TiXmlElement *pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -311,12 +270,6 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
     XMLUtils::GetBoolean(pElement, "ignoreerrors", m_bVideoScannerIgnoreErrors);
   }
 
-  // Backward-compatibility of ExternalPlayer config
-  pElement = pRootElement->FirstChildElement("externalplayer");
-  if (pElement)
-  {
-    CLog::Log(LOGWARNING, "External player configuration has been removed from advancedsettings.xml.  It can now be configed in userdata/playercorefactory.xml");
-  }
   pElement = pRootElement->FirstChildElement("slideshow");
   if (pElement)
   {
@@ -339,74 +292,14 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
     XMLUtils::GetInt(pElement, "scrolldelay", m_lcdScrolldelay, -8, 8);
     XMLUtils::GetString(pElement, "hostname", m_lcdHostName);
   }
-  pElement = pRootElement->FirstChildElement("network");
-  if (pElement)
-  {
-    XMLUtils::GetInt(pElement, "autodetectpingtime", m_autoDetectPingTime, 1, 240);
-    XMLUtils::GetInt(pElement, "curlclienttimeout", m_curlconnecttimeout, 1, 1000);
-    XMLUtils::GetInt(pElement, "curllowspeedtime", m_curllowspeedtime, 1, 1000);
-    XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
-    XMLUtils::GetBoolean(pElement,"disableipv6", m_curlDisableIPV6);
-    XMLUtils::GetUInt(pElement, "cachemembuffersize", m_cacheMemBufferSize);
-  }
 
-  pElement = pRootElement->FirstChildElement("jsonrpc");
-  if (pElement)
-  {
-    XMLUtils::GetBoolean(pElement, "compactoutput", m_jsonOutputCompact);
-    XMLUtils::GetUInt(pElement, "tcpport", m_jsonTcpPort);
-  }
-
-  pElement = pRootElement->FirstChildElement("samba");
-  if (pElement)
-  {
-    XMLUtils::GetString(pElement,  "doscodepage",   m_sambadoscodepage);
-    XMLUtils::GetInt(pElement, "clienttimeout", m_sambaclienttimeout, 5, 100);
-    XMLUtils::GetBoolean(pElement, "statfiles", m_sambastatfiles);
-  }
-
-  pElement = pRootElement->FirstChildElement("httpdirectory");
-  if (pElement)
-    XMLUtils::GetBoolean(pElement, "statfilesize", m_bHTTPDirectoryStatFilesize);
-
-  pElement = pRootElement->FirstChildElement("ftp");
-  if (pElement)
-  {
-    XMLUtils::GetBoolean(pElement, "remotethumbs", m_bFTPThumbs);
-  }
-
-  pElement = pRootElement->FirstChildElement("loglevel");
-  if (pElement)
-  { // read the loglevel setting, so set the setting advanced to hide it in GUI
-    // as altering it will do nothing - we don't write to advancedsettings.xml
-    XMLUtils::GetInt(pRootElement, "loglevel", m_logLevelHint, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
-    CSettingBool *setting = (CSettingBool *)g_guiSettings.GetSetting("debug.showloginfo");
-    if (setting)
-    {
-      const char* hide;
-      if (!((hide = pElement->Attribute("hide")) && strnicmp("false", hide, 4) == 0))
-        setting->SetAdvanced();
-    }
-    g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
-    CLog::SetLogLevel(g_advancedSettings.m_logLevel);
-  }
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
 
-  XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
-
-  XMLUtils::GetBoolean(pRootElement, "nodvdrom", m_noDVDROM);
-#ifdef HAS_SDL
-  XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
-#endif
-  XMLUtils::GetBoolean(pRootElement, "showsplash", m_showSplash);
-  XMLUtils::GetBoolean(pRootElement, "canquit", m_canQuit);
-  XMLUtils::GetBoolean(pRootElement, "canwindowed", m_canWindowed);
   XMLUtils::GetInt(pRootElement, "songinfoduration", m_songInfoDuration, 0, INT_MAX);
   XMLUtils::GetInt(pRootElement, "busydialogdelay", m_busyDialogDelay, 0, 5000);
   XMLUtils::GetInt(pRootElement, "playlistretries", m_playlistRetries, -1, 5000);
   XMLUtils::GetInt(pRootElement, "playlisttimeout", m_playlistTimeout, 0, 5000);
 
-  XMLUtils::GetBoolean(pRootElement,"rootovershoot",m_bUseEvilB);
   XMLUtils::GetBoolean(pRootElement,"glrectanglehack", m_GLRectangleHack);
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
@@ -414,9 +307,7 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
   XMLUtils::GetBoolean(pRootElement,"allowd3d9ex", m_AllowD3D9Ex);
   XMLUtils::GetBoolean(pRootElement,"forced3d9ex", m_ForceD3D9Ex);
   XMLUtils::GetBoolean(pRootElement,"allowdynamictextures", m_AllowDynamicTextures);
-  XMLUtils::GetUInt(pRootElement,"restrictcapsmask", m_RestrictCapsMask);
-  XMLUtils::GetFloat(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip, 0.0f, 1.0f);
-  XMLUtils::GetBoolean(pRootElement,"virtualshares", m_useVirtualShares);
+
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");
@@ -483,12 +374,9 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
   m_vecTokens.clear();
   CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"),m_vecTokens);
 
-  // TODO: Should cache path be given in terms of our predefined paths??
-  //       Are we even going to have predefined paths??
-  CSettings::GetPath(pRootElement, "cachepath", m_cachePath);
-  URIUtils::AddSlashAtEnd(m_cachePath);
 
-  g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
+
+
 
   // stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
@@ -503,43 +391,6 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
   //tv multipart enumeration regexp
   XMLUtils::GetString(pRootElement, "tvmultipartmatching", m_tvshowMultiPartEnumRegExp);
 
-  // path substitutions
-  TiXmlElement* pPathSubstitution = pRootElement->FirstChildElement("pathsubstitution");
-  if (pPathSubstitution)
-  {
-    m_pathSubstitutions.clear();
-    CLog::Log(LOGDEBUG,"Configuring path substitutions");
-    TiXmlNode* pSubstitute = pPathSubstitution->FirstChildElement("substitute");
-    while (pSubstitute)
-    {
-      CStdString strFrom, strTo;
-      TiXmlNode* pFrom = pSubstitute->FirstChild("from");
-      if (pFrom)
-        strFrom = _P(pFrom->FirstChild()->Value()).c_str();
-      TiXmlNode* pTo = pSubstitute->FirstChild("to");
-      if (pTo)
-        strTo = pTo->FirstChild()->Value();
-
-      if (!strFrom.IsEmpty() && !strTo.IsEmpty())
-      {
-        CLog::Log(LOGDEBUG,"  Registering substition pair:");
-        CLog::Log(LOGDEBUG,"    From: [%s]", strFrom.c_str());
-        CLog::Log(LOGDEBUG,"    To:   [%s]", strTo.c_str());
-        m_pathSubstitutions.push_back(make_pair(strFrom,strTo));
-      }
-      else
-      {
-        // error message about missing tag
-        if (strFrom.IsEmpty())
-          CLog::Log(LOGERROR,"  Missing <from> tag");
-        else
-          CLog::Log(LOGERROR,"  Missing <to> tag");
-      }
-
-      // get next one
-      pSubstitute = pSubstitute->NextSiblingElement("substitute");
-    }
-  }
 
   XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 1, 20);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
@@ -549,7 +400,7 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", m_playlistAsFolders);
   XMLUtils::GetBoolean(pRootElement, "detectasudf", m_detectAsUdf);
-
+  XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
   // music thumbs
   TiXmlElement* pThumbs = pRootElement->FirstChildElement("musicthumbs");
   if (pThumbs)
@@ -578,32 +429,7 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
     }
   }
 
-  TiXmlElement* pHostEntries = pRootElement->FirstChildElement("hosts");
-  if (pHostEntries)
-  {
-    TiXmlElement* element = pHostEntries->FirstChildElement("entry");
-    while(element)
-    {
-      CStdString name  = element->Attribute("name");
-      CStdString value;
-      if(element->GetText())
-        value = element->GetText();
 
-      if(name.length() > 0 && value.length() > 0)
-        CDNSNameCache::Add(name, value);
-      element = element->NextSiblingElement("entry");
-    }
-  }
-
-  XMLUtils::GetString(pRootElement, "cputempcommand", m_cpuTempCmd);
-  XMLUtils::GetString(pRootElement, "gputempcommand", m_gpuTempCmd);
-
-  XMLUtils::GetBoolean(pRootElement, "alwaysontop", m_alwaysOnTop);
-
-  XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", m_bgInfoLoaderMaxThreads);
-  m_bgInfoLoaderMaxThreads = std::max(1, m_bgInfoLoaderMaxThreads);
-
-  XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
 
   TiXmlElement* pDatabase = pRootElement->FirstChildElement("videodatabase");
   if (pDatabase)
@@ -626,12 +452,6 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
     XMLUtils::GetString(pDatabase, "user", m_databaseMusic.user);
     XMLUtils::GetString(pDatabase, "pass", m_databaseMusic.pass);
     XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
-  }
-
-  pElement = pRootElement->FirstChildElement("enablemultimediakeys");
-  if (pElement)
-  {
-    XMLUtils::GetBoolean(pRootElement, "enablemultimediakeys", m_enableMultimediaKeys);
   }
 
   // load in the GUISettings overrides:

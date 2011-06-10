@@ -2440,7 +2440,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) co
    || m_bIsShareOrDrive
    || IsInternetStream()
    || URIUtils::IsUPnP(m_strPath)
-   || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
+   || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.SystemSettings->FTPThumbs())
    || IsPlugin()
    || IsAddonsPath()
    || IsParentFolder()
@@ -2591,7 +2591,7 @@ CStdString CFileItem::GetUserVideoThumb() const
    || m_bIsShareOrDrive
    || IsInternetStream()
    || URIUtils::IsUPnP(m_strPath)
-   || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
+   || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.SystemSettings->FTPThumbs())
    || IsPlugin()
    || IsAddonsPath()
    || IsParentFolder()
@@ -2770,7 +2770,7 @@ CStdString CFileItem::GetLocalFanart() const
    || IsLiveTV()
    || IsPlugin()
    || IsAddonsPath()
-   || (URIUtils::IsFTP(strFile) && !g_advancedSettings.m_bFTPThumbs)
+   || (URIUtils::IsFTP(strFile) && !g_advancedSettings.SystemSettings->FTPThumbs())
    || m_strPath.IsEmpty())
     return "";
 

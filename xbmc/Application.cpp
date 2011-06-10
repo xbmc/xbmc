@@ -663,7 +663,7 @@ bool CApplication::Create()
   // update the window resolution
   g_Windowing.SetWindowResolution(g_guiSettings.GetInt("window.width"), g_guiSettings.GetInt("window.height"));
 
-  if (g_advancedSettings.StartFullScreen() && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)
+  if (g_advancedSettings.SystemSettings->StartFullScreen() && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)
     g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
 
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
@@ -700,7 +700,7 @@ bool CApplication::Create()
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
 
-  if (g_advancedSettings.ShowSplash())
+  if (g_advancedSettings.SystemSettings->ShowSplash())
   {
     CStdString strUserSplash = "special://home/media/Splash.png";
     if (CFile::Exists(strUserSplash))
@@ -1129,7 +1129,7 @@ bool CApplication::Initialize()
       FatalErrorHandler(true, true, true);
   }
 
-  if (g_advancedSettings.ShowSplash())
+  if (g_advancedSettings.SystemSettings->ShowSplash())
     SAFE_DELETE(m_splash);
 
   if (g_guiSettings.GetBool("masterlock.startuplock") &&
@@ -1258,9 +1258,9 @@ bool CApplication::StartJSONRPCServer()
   {
     CJSONRPC::Initialize();
 
-    if (CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, g_guiSettings.GetBool("services.esallinterfaces")))
+    if (CTCPServer::StartServer(g_advancedSettings.SystemSettings->JSONTCPPort(), g_guiSettings.GetBool("services.esallinterfaces")))
     {
-      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", g_advancedSettings.m_jsonTcpPort);
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", g_advancedSettings.SystemSettings->JSONTCPPort());
       return true;
     }
     else
@@ -2111,7 +2111,8 @@ void CApplication::Render()
 
 void CApplication::SetStandAlone(bool value)
 {
-  g_advancedSettings.m_handleMounting = m_bStandalone = value;
+  g_advancedSettings.SystemSettings->SetHandleMounting(value);
+  m_bStandalone = value;
 }
 
 void CApplication::RenderMemoryStatus()
@@ -2146,7 +2147,7 @@ void CApplication::RenderMemoryStatus()
   if (!m_debugLayout)
     return;
 
-  if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
+  if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.SystemSettings->LogLevel())
   {
     CStdString info;
     MEMORYSTATUS stat;

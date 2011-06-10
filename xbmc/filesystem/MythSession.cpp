@@ -373,9 +373,9 @@ CMythSession::CMythSession(const CURL& url)
   if (m_dll->IsLoaded())
   {
     m_dll->set_dbg_msgcallback(&CMythSession::LogCMyth);
-    if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
+    if (g_advancedSettings.SystemSettings->LogLevel() >= LOG_LEVEL_DEBUG_SAMBA)
       m_dll->dbg_level(CMYTH_DBG_ALL);
-    else if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG)
+    else if (g_advancedSettings.SystemSettings->LogLevel() >= LOG_LEVEL_DEBUG)
       m_dll->dbg_level(CMYTH_DBG_DETAIL);
     else
       m_dll->dbg_level(CMYTH_DBG_ERROR);

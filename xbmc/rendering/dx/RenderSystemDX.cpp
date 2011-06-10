@@ -483,8 +483,8 @@ bool CRenderSystemDX::CreateDevice()
   }
 
   // Temporary - allow limiting the caps to debug a texture problem
-  if (g_advancedSettings.m_RestrictCapsMask != 0)
-    m_renderCaps &= ~g_advancedSettings.m_RestrictCapsMask;
+  if (g_advancedSettings.SystemSettings->RestrictCapsMask() != 0)
+    m_renderCaps &= ~g_advancedSettings.SystemSettings->RestrictCapsMask();
 
   if (m_renderCaps & RENDER_CAPS_DXT)
     CLog::Log(LOGDEBUG, __FUNCTION__" - RENDER_CAPS_DXT");
@@ -551,7 +551,7 @@ bool CRenderSystemDX::PresentRenderImpl()
 
   //CVideoReferenceClock polls GetRasterStatus too,
   //polling it from two threads at the same time is bad
-  if (g_advancedSettings.m_sleepBeforeFlip > 0 && g_VideoReferenceClock.ThreadHandle() == NULL)
+  if (g_advancedSettings.SystemSettings->SleepBeforeSlip() > 0 && g_VideoReferenceClock.ThreadHandle() == NULL)
   {
     //save current thread priority and set thread priority to THREAD_PRIORITY_TIME_CRITICAL
     int priority = GetThreadPriority(GetCurrentThread());
@@ -564,7 +564,7 @@ bool CRenderSystemDX::PresentRenderImpl()
     while (SUCCEEDED(m_pD3DDevice->GetRasterStatus(0, &rasterStatus)))
     {
       //wait for the scanline to go over the given proportion of m_screenHeight mark
-      if (!rasterStatus.InVBlank && rasterStatus.ScanLine >= g_advancedSettings.m_sleepBeforeFlip * m_screenHeight)
+      if (!rasterStatus.InVBlank && rasterStatus.ScanLine >= g_advancedSettings.SystemSettings->SleepBeforeSlip() * m_screenHeight)
         break;
 
       //in theory it's possible this loop never exits, so don't let it run for longer than 100 ms

@@ -246,7 +246,7 @@ bool CAddonMgr::Init()
   }
 
   status = m_cpluff->register_logger(m_cp_context, cp_logger,
-      &CAddonMgr::Get(), clog_to_cp(g_advancedSettings.m_logLevel));
+      &CAddonMgr::Get(), clog_to_cp(g_advancedSettings.SystemSettings->LogLevel()));
   if (status != CP_OK)
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_logger() returned status: %i", status);

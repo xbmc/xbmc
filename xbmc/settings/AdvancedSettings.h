@@ -25,6 +25,7 @@
 #include "utils/GlobalsHandling.h"
 #include "AudioSettings.h"
 #include "KaraokeSettings.h"
+#include "SystemSettings.h"
 #include "VideoAdvancedSettings.h"
 
 class TiXmlElement;
@@ -71,6 +72,7 @@ class CAdvancedSettings
 
     CAudioSettings *AudioSettings;
     CKaraokeSettings *KaraokeSettings;
+    CSystemSettings *SystemSettings;
     CVideoAdvancedSettings *VideoSettings;
 
     float m_slideshowBlackBarCompensation;
@@ -88,25 +90,20 @@ class CAdvancedSettings
     bool m_lcdHeartbeat;
     CStdString m_lcdHostName;
 
-    int m_autoDetectPingTime;
-
     int m_songInfoDuration;
     int m_busyDialogDelay;
-    int m_logLevel;
-    int m_logLevelHint;
+
     CStdString m_cddbAddress;
 
-    bool m_handleMounting;
 
-    bool m_noDVDROM;
-    CStdString m_cachePath;
+    
     CStdString m_videoCleanDateTimeRegExp;
     CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
     SETTINGS_TVSHOWLIST m_tvshowEnumRegExps;
     CStdString m_tvshowMultiPartEnumRegExp;
-    typedef std::vector< std::pair<CStdString, CStdString> > StringMapping;
-    StringMapping m_pathSubstitutions;
+    
+    
     int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     float m_controllerDeadzone;
 
@@ -116,14 +113,6 @@ class CAdvancedSettings
     int m_thumbSize;
     int m_fanartHeight;
     bool UseDDSFanArt() { return m_useDDSFanart; };
-
-    int m_sambaclienttimeout;
-    CStdString m_sambadoscodepage;
-    bool m_sambastatfiles;
-
-    bool m_bHTTPDirectoryStatFilesize;
-
-    bool m_bFTPThumbs;
 
     CStdString m_musicThumbs;
     CStdString m_dvdThumbs;
@@ -151,7 +140,7 @@ class CAdvancedSettings
 
     bool m_bVideoScannerIgnoreErrors;
 
-    bool m_bUseEvilB;
+    
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
     //TuxBox
     int m_iTuxBoxStreamtsPort;
@@ -178,13 +167,7 @@ class CAdvancedSettings
     int m_iEdlCommBreakAutowind;    // seconds
 
     bool m_bFirstLoop;
-    int m_curlconnecttimeout;
-    int m_curllowspeedtime;
-    int m_curlretries;
-    bool m_curlDisableIPV6;
 
-
-    bool AlwaysOnTop() { return m_alwaysOnTop; };  /* makes xbmc to run always on top .. osx/win32 only .. */
     int m_playlistRetries;
     int m_playlistTimeout;
     bool UseGLRectangeHack() { return m_GLRectangleHack; };
@@ -194,14 +177,7 @@ class CAdvancedSettings
     bool AllowD3D9Ex() { return m_AllowD3D9Ex; };
     bool ForceD3D9Ex() { return m_ForceD3D9Ex; };
     bool AllowDynamicTextures() { return m_AllowDynamicTextures; };
-    unsigned int m_RestrictCapsMask;
-    float m_sleepBeforeFlip; ///< if greather than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
 
-    bool CanUseVirtualShares() { return m_useVirtualShares; };
-
-    CStdString m_cpuTempCmd;
-    CStdString m_gpuTempCmd;
-    int m_bgInfoLoaderMaxThreads;
 
     bool MeasureRefreshRate() { return m_measureRefreshrate; }; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
                                                                 //otherwise it will use the windows refreshrate
@@ -209,29 +185,11 @@ class CAdvancedSettings
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
 
-    unsigned int m_cacheMemBufferSize;
-    unsigned int m_jsonTcpPort;
-
     bool IsInFullScreen() { return m_fullScreen; };
     void SetFullScreenState(bool isFullScreen) { m_fullScreen = isFullScreen; };
-    bool StartFullScreen() { return m_startFullScreen; };
-    void SetStartFullScreen(bool startFullScreen) { m_startFullScreen = startFullScreen; };
-    bool OutputCompactJSON() { return m_jsonOutputCompact; };
-    bool EnableMultimediaKeys() { return m_enableMultimediaKeys; };
-    bool CanQuit() { return m_canQuit; };
-    bool CanWindowed() { return m_canWindowed; };
-    bool ShowSplash() { return m_showSplash; };
   private:
     bool m_measureRefreshrate;
     bool m_fullScreen;
-    bool m_startFullScreen;
-    bool m_jsonOutputCompact;
-    bool m_enableMultimediaKeys;
-    bool m_canQuit;
-    bool m_canWindowed;
-    bool m_showSplash;
-    bool m_useVirtualShares;
-    bool m_alwaysOnTop;
     bool m_GLRectangleHack;
     bool m_AllowD3D9Ex;
     bool m_ForceD3D9Ex;

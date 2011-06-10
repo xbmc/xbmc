@@ -93,7 +93,7 @@ bool CPlayListWPL::LoadData(istream& stream)
     CStdString strFileName = pMediaElement->Attribute("src");
     if (strFileName.size())
     {
-      if (URIUtils::IsRemote(m_strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
+      if (URIUtils::IsRemote(m_strBasePath) && g_advancedSettings.SystemSettings->PathSubstitutions().size() > 0)
         strFileName = CUtil::SubstitutePath(strFileName);
       CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
       CStdString strDescription = URIUtils::GetFileName(strFileName);

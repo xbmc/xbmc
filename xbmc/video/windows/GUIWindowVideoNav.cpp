@@ -1085,7 +1085,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       // Grab the thumbnails from the web
       CStdString strPath;
       CFileItemList items;
-      URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath,"imdbthumbs",strPath);
+      URIUtils::AddFileToFolder(g_advancedSettings.SystemSettings->CachePath(),"imdbthumbs",strPath);
       CFileItemPtr cacheItem(new CFileItem(strPath,true));
       CFileUtils::DeleteItem(cacheItem,true);
       XFILE::CDirectory::Create(strPath);

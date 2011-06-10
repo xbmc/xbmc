@@ -149,7 +149,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
         if (bShoutCast && !item.IsAudio())
           strValue.Replace("http:", "shout:");
 
-        if (URIUtils::IsRemote(m_strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
+        if (URIUtils::IsRemote(m_strBasePath) && g_advancedSettings.SystemSettings->PathSubstitutions().size() > 0)
           strValue = CUtil::SubstitutePath(strValue);
         CUtil::GetQualifiedFilename(m_strBasePath, strValue);
         g_charsetConverter.unknownToUTF8(strValue);

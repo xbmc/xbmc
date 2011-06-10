@@ -364,7 +364,7 @@ bool CRemoteControl::HandleRemoteEvent(CIrssMessage& message)
     keycode[keycodelength] = '\0';
     //translate to a buttoncode xbmc understands
     m_button = CButtonTranslator::GetInstance().TranslateLircRemoteString(deviceName, keycode);
-    if (g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_FREEMEM)
+    if (g_advancedSettings.SystemSettings->LogLevel() == LOG_LEVEL_DEBUG_FREEMEM)
     {
       CLog::Log(LOGINFO, "IRServerSuite, RemoteEvent: %s %s", deviceName, keycode);
     }

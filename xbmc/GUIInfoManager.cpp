@@ -1824,7 +1824,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_LOGGEDON)
     bReturn = !(g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
   else if (condition == SYSTEM_SHOW_EXIT_BUTTON)
-    bReturn = g_advancedSettings.CanQuit();
+    bReturn = g_advancedSettings.SystemSettings->CanQuit();
   else if (condition == SYSTEM_HAS_LOGINSCREEN)
     bReturn = g_settings.UsingLoginScreen();
   else if (condition == WEATHER_IS_FETCHED)
@@ -3432,7 +3432,7 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
 
 CTemperature CGUIInfoManager::GetGPUTemperature()
 {
-  CStdString  cmd   = g_advancedSettings.m_gpuTempCmd;
+  CStdString  cmd   = g_advancedSettings.SystemSettings->GPUTempCMD();
   int         value = 0,
               ret   = 0;
   char        scale = 0;

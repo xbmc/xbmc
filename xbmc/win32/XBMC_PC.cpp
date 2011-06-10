@@ -107,13 +107,11 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
   //the loglevel set with the --debug flag
 #ifdef _DEBUG
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
+  g_advancedSettings.SystemSettings->SetLogLevelAndHint(LOG_LEVEL_DEBUG);
 #else
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
+  g_advancedSettings.SystemSettings->SetLogLevelAndHint(LOG_LEVEL_NORMAL);
 #endif
-  CLog::SetLogLevel(g_advancedSettings.m_logLevel);
+  CLog::SetLogLevel(g_advancedSettings.SystemSettings->LogLevel());
 
   // Initializes CreateMiniDump to handle exceptions.
   SetUnhandledExceptionFilter( CreateMiniDump );
