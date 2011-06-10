@@ -179,6 +179,12 @@ CVideoAdvancedSettings::CVideoAdvancedSettings(TiXmlElement *pRootElement)
   m_moviesExcludeFromScanRegExps.insert(m_moviesExcludeFromScanRegExps.end(),
                                         m_trailerMatchRegExps.begin(),
                                         m_trailerMatchRegExps.end());
+
+  XMLUtils::GetBoolean(pRootElement,"allowd3d9ex", m_allowD3D9Ex);
+  XMLUtils::GetBoolean(pRootElement,"forced3d9ex", m_forceD3D9Ex);
+  XMLUtils::GetBoolean(pRootElement,"allowdynamictextures", m_allowDynamicTextures);
+  XMLUtils::GetBoolean(pRootElement,"glrectanglehack", m_GLRectangleHack);
+  XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
 }
 
 void CVideoAdvancedSettings::Clear()
@@ -319,6 +325,41 @@ bool CVideoAdvancedSettings::FullScreenOnMovieStart()
   return m_fullScreenOnMovieStart;
 }
 
+bool CVideoAdvancedSettings::AllowD3D9Ex()
+{
+  return m_allowD3D9Ex;
+}
+
+bool CVideoAdvancedSettings::ForceD3D9Ex()
+{
+  return m_forceD3D9Ex;
+}
+
+bool CVideoAdvancedSettings::AllowDynamicTextures()
+{
+  return m_allowDynamicTextures;
+}
+
+bool CVideoAdvancedSettings::UseGLRectangeHack()
+{
+  return m_GLRectangleHack;
+}
+
+bool CVideoAdvancedSettings::MeasureRefreshRate()
+{
+  return m_measureRefreshrate;
+}
+
+bool CVideoAdvancedSettings::IsInFullScreen()
+{
+  return m_fullScreen;
+}
+
+void CVideoAdvancedSettings::SetFullScreenState(bool isFullScreen)
+{
+  m_fullScreen = isFullScreen;
+}
+
 std::vector<RefreshOverride> CVideoAdvancedSettings::AdjustRefreshOverrides()
 {
   return m_adjustRefreshOverrides;
@@ -406,6 +447,12 @@ void CVideoAdvancedSettings::Initialise()
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
   m_fullScreenOnMovieStart = true;
+  m_allowD3D9Ex = true;
+  m_forceD3D9Ex = false;
+  m_allowDynamicTextures = true;
+  m_fullScreen = false;
+  m_GLRectangleHack = false;
+  m_measureRefreshrate = false;
   m_cleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
   m_cleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|remastered|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|3d|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
   m_cleanStringRegExps.push_back("(\\[.*\\])");

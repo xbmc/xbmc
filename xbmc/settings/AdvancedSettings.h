@@ -96,28 +96,12 @@ class CAdvancedSettings
 
     bool m_bFirstLoop;
 
-    bool UseGLRectangeHack() { return m_GLRectangleHack; };
+
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
 
-    bool AllowD3D9Ex() { return m_AllowD3D9Ex; };
-    bool ForceD3D9Ex() { return m_ForceD3D9Ex; };
-    bool AllowDynamicTextures() { return m_AllowDynamicTextures; };
 
-
-    bool MeasureRefreshRate() { return m_measureRefreshrate; }; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
-                                                                //otherwise it will use the windows refreshrate
-
-    bool IsInFullScreen() { return m_fullScreen; };
-    void SetFullScreenState(bool isFullScreen) { m_fullScreen = isFullScreen; };
   private:
-    bool m_measureRefreshrate;
-    bool m_fullScreen;
-    bool m_GLRectangleHack;
-    bool m_AllowD3D9Ex;
-    bool m_ForceD3D9Ex;
-    bool m_AllowDynamicTextures;
-
     std::vector<CStdString> m_settingsFiles;
     void ParseSettingsFile(CStdString file);
 };

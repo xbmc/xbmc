@@ -63,6 +63,14 @@ class CVideoAdvancedSettings
     bool DXVACheckCompatibilityPresent();
     bool CanVideoUseTimeSeeking();
     bool FullScreenOnMovieStart();
+    bool AllowD3D9Ex();
+    bool ForceD3D9Ex();
+    bool AllowDynamicTextures();
+    bool UseGLRectangeHack();
+    bool MeasureRefreshRate(); //when true the videoreferenceclock will measure the refreshrate when direct3d is used
+                               //otherwise it will use the windows refreshrate
+    bool IsInFullScreen();
+    void SetFullScreenState(bool isFullScreen);
     std::vector<RefreshOverride> AdjustRefreshOverrides();
     CStdString PPFFMPEGDeint();
     CStdString PPFFMPEGPostProc();
@@ -103,6 +111,12 @@ class CVideoAdvancedSettings
     bool m_DXVACheckCompatibilityPresent;
     bool m_useTimeSeeking;
     bool m_fullScreenOnMovieStart;
+    bool m_allowD3D9Ex;
+    bool m_forceD3D9Ex;
+    bool m_allowDynamicTextures;
+    bool m_measureRefreshrate;
+    bool m_fullScreen;
+    bool m_GLRectangleHack;
     std::vector<RefreshOverride> m_adjustRefreshOverrides;
     CStdString m_PPFFmpegDeint;
     CStdString m_PPFFmpegPostProc;

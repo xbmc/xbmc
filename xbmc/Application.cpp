@@ -379,7 +379,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       g_application.ProcessMouse();
       break;
     case XBMC_VIDEORESIZE:
-      if (!g_application.m_bInitializing && !g_advancedSettings.IsInFullScreen())
+      if (!g_application.m_bInitializing && !g_advancedSettings.VideoSettings->IsInFullScreen())
       {
         g_Windowing.SetWindowResolution(newEvent.resize.w, newEvent.resize.h);
         g_graphicsContext.SetVideoResolution(RES_WINDOW, true);

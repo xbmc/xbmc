@@ -314,7 +314,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
     res = RES_DESKTOP;
 
   // If we are switching to the same resolution and same window/full-screen, no need to do anything
-  if (!forceUpdate && res == lastRes && m_bFullScreenRoot == g_advancedSettings.IsInFullScreen())
+  if (!forceUpdate && res == lastRes && m_bFullScreenRoot == g_advancedSettings.VideoSettings->IsInFullScreen())
     return;
 
   //only pause when switching monitor resolution/refreshrate,
@@ -332,7 +332,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
     }
   }
 
-  g_advancedSettings.SetFullScreenState(res >= RES_DESKTOP);
+  g_advancedSettings.VideoSettings->SetFullScreenState(res >= RES_DESKTOP);
   m_bFullScreenRoot = res >= RES_DESKTOP;
 
   Lock();
@@ -345,7 +345,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   //tell the videoreferenceclock that we're about to change the refreshrate
   g_VideoReferenceClock.RefreshChanged();
 
-  if (g_advancedSettings.IsInFullScreen())
+  if (g_advancedSettings.VideoSettings->IsInFullScreen())
   {
 #if defined (__APPLE__) || defined (_WIN32)
     bool blankOtherDisplays = g_guiSettings.GetBool("videoscreen.blankdisplays");

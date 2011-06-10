@@ -101,20 +101,8 @@ void CAdvancedSettings::Initialize()
   m_iEdlCommBreakAutowait = 0;             // Off by default
   m_iEdlCommBreakAutowind = 0;             // Off by default
 
-
-
-  m_fullScreen = false;
-
-
-  m_GLRectangleHack = false;
   m_iSkipLoopFilter = 0;
-  m_AllowD3D9Ex = true;
-  m_ForceD3D9Ex = false;
-  m_AllowDynamicTextures = true;
-
   m_ForcedSwapTime = 0.0;
-
-  m_measureRefreshrate = false;
 }
 
 bool CAdvancedSettings::Load()
@@ -196,14 +184,8 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
   XMLUtils::GetInt(pRootElement, "songinfoduration", m_songInfoDuration, 0, INT_MAX);
   XMLUtils::GetInt(pRootElement, "busydialogdelay", m_busyDialogDelay, 0, 5000);
 
-
-  XMLUtils::GetBoolean(pRootElement,"glrectanglehack", m_GLRectangleHack);
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
-
-  XMLUtils::GetBoolean(pRootElement,"allowd3d9ex", m_AllowD3D9Ex);
-  XMLUtils::GetBoolean(pRootElement,"forced3d9ex", m_ForceD3D9Ex);
-  XMLUtils::GetBoolean(pRootElement,"allowdynamictextures", m_AllowDynamicTextures);
 
 
   //Tuxbox
@@ -245,7 +227,7 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
 
   XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 1, 20);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
-  XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
+
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
