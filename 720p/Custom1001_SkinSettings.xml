@@ -77,13 +77,6 @@
 				<pagecontrol>61</pagecontrol>
 				<visible allowhiddenfocus="false">Container(101).HasFocus(1) | ControlGroup(201).HasFocus()</visible>
 				<include>CustomSettingsList</include>
-				<control type="radiobutton" id="999">
-					<description>Show borders for images</description>
-					<label>Hide Poster Borders (dev Setting)</label>
-					<onclick>Skin.ToggleSetting(hideposterborders)</onclick>
-					<selected>Skin.HasSetting(hideposterborders)</selected>
-					<include>GeneralSkinOption</include>
-				</control>
 				<control type="radiobutton" id="210">
 					<description>Show Thumbs in List View (All)</description>
 					<label>$LOCALIZE[31981]</label>

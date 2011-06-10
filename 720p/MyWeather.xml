@@ -1,484 +1,465 @@
+<?xml version="1.0"?>
 <window id="2600">
-  <defaultcontrol always="true">3</defaultcontrol>
-  <allowoverlay>no</allowoverlay>
-
-  <controls>
-    <include>Background</include>
-    
-    <control type="group">
-      <include>BackgroundOverlayFade</include>
-      <include>MediaViewBGOverlay</include>
-    </control>
-    
-    <control type="group">
-      <include>MediaViewFade</include>
-
-      <control type="group">
-        <include>TopOverlayTitlePos</include>
-
-        <include>TopOverlayFirstTitleAreaBG</include>
-
-        <control type="label">
-          <description>Weather label</description>
-          <include>TopOverlayFirstTitleAreaText</include>
-          <label>$LOCALIZE[8]</label>
-        </control>
-      </control>
-
-      <control type="group">
-        <posx>25</posx>
-        <posy>240</posy>
-
-        <control type="spincontrol" id="3">
-          <description>Location Select</description>
-          <align>right</align>
-          <posx>20</posx>
-          <posy>1</posy>
-          <font>-</font>
-          <reverse>yes</reverse>
-          <onup>2</onup>
-          <ondown>2</ondown>
-          <onleft>3</onleft>
-          <onright>2</onright>
-        </control>
-
-        <control type="group">
-          <posx>68</posx>
-
-          <control type="label">
-            <description>Location</description>
-            <posy>-20</posy>
-            <width>600</width>
-            <height>45</height>
-            <align>left</align>
-            <aligny>center</aligny>
-            <info>Weather.Location</info>
-          </control>
-  
-          <control type="button" id="2">
-            <description>Refresh button</description>
-            <posx>-6</posx>
-            <label>184</label>
-            <onleft>3</onleft>
-            <onright>4</onright>
-            <onup>3</onup>
-            <include>WeatherButton</include>
-          </control>
-
-          <control type="button" id="4">
-            <description>Settings button</description>
-            <posx>172</posx>
-            <label>5</label>
-            <onclick>ActivateWindow(MyWeatherSettings)</onclick>
-            <onleft>2</onleft>
-            <onright>2</onright>
-            <onup>3</onup>
-            <include>WeatherButton</include>
-          </control>
-
-          <control type="group">
-            <description>Last Refreshed</description>
-            <posy>58</posy>
-
-            <control type="label">
-              <description>Caption</description>
-              <width>190</width>
-              <label>$LOCALIZE[31033]: </label>
-              <visible>Weather.IsFetched</visible>
-            </control>
-
-            <control type="label" id="11">
-              <description>Value</description>
-              <posx>200</posx>
-              <width>400</width>
-              <height>45</height>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group">
-        <description>Forecasts</description>
-        <posx>20</posx>
-        <posy>350</posy>
-
-        <control type="group">
-          <description>day 1</description>
-  
-          <control type="image" id="45">
-            <description>day icon</description>
-            <posx>30</posx>
-            <posy>5</posy>
-            <height>110</height>
-            <width>110</width>
-            <texture>-</texture>
-            <aspectratio>keep</aspectratio>
-          </control>
-  
-          <control type="label" id="41">
-            <description>day label</description>
-            <include>WeatherDayTitle</include>
-          </control>
-  
-          <control type="group">
-            <posy>WeatherDayVerticalGap</posy>
-  
-            <control type="grouplist">
-              <posx>160</posx>
-              <orientation>horizontal</orientation>
-  
-              <control type="label">
-                <description>high label</description>
-                <label>$LOCALIZE[393] :</label>
-                <include>WeatherDayCaption</include>
-              </control>
-  
-              <control type="label" id="42">
-                <description>high value</description>
-                <include>WeatherDayLabel</include>
-              </control>
-  
-              <control type="label">
-                <description>low label</description>
-                <label>$LOCALIZE[391] :</label>
-                <include>WeatherDayCaption</include>
-              </control>
-  
-              <control type="label" id="43">
-                <description>low value</description>
-                <include>WeatherDayLabel</include>
-              </control>
-            </control>
-  
-            <control type="group">
-              <posy>WeatherDayVerticalGap</posy>
-  
-              <control type="label" id="44">
-                <description>conditions label</description>
-                <include>WeatherDayConditions</include>
-              </control>
-            </control>
-          </control>
-
-          <control type="group">
-            <description>day 2</description>
-            <posy>WeatherDayHeight</posy>
-    
-            <control type="image" id="55">
-              <description>day icon</description>
-              <posx>30</posx>
-              <posy>5</posy>
-              <height>110</height>
-              <width>110</width>
-              <texture>-</texture>
-              <aspectratio>keep</aspectratio>
-            </control>
-
-            <control type="label" id="51">
-              <description>day label</description>
-              <include>WeatherDayTitle</include>
-            </control>
-
-            <control type="group">
-              <posy>WeatherDayVerticalGap</posy>
-
-              <control type="grouplist">
-                <posx>160</posx>
-                <orientation>horizontal</orientation>
-
-                <control type="label">
-                  <description>high label</description>
-                  <label>$LOCALIZE[393] :</label>
-                  <include>WeatherDayCaption</include>
-                </control>
-
-                <control type="label" id="52">
-                  <description>high value</description>
-                  <include>WeatherDayLabel</include>
-                </control>
-
-                <control type="label">
-                  <description>low label</description>
-                  <label>$LOCALIZE[391] :</label>
-                  <include>WeatherDayCaption</include>
-                </control>
-
-                <control type="label" id="53">
-                  <description>low value</description>
-                  <include>WeatherDayLabel</include>
-                </control>
-              </control>
-
-              <control type="group">
-                <posy>WeatherDayVerticalGap</posy>
-
-                <control type="label" id="54">
-                  <description>conditions label</description>
-                  <include>WeatherDayConditions</include>
-                </control>
-              </control>
-            </control>
-
-            <control type="group">
-              <description>day 3</description>
-              <posy>WeatherDayHeight</posy>
-
-              <control type="image" id="65">
-                <description>day icon</description>
-                <posx>30</posx>
-                <posy>5</posy>
-                <height>110</height>
-                <width>110</width>
-                <texture>-</texture>
-                <aspectratio>keep</aspectratio>
-              </control>
-      
-              <control type="label" id="61">
-                <description>day label</description>
-                <include>WeatherDayTitle</include>
-              </control>
-      
-              <control type="group">
-                <posy>WeatherDayVerticalGap</posy>
-      
-                <control type="grouplist">
-                  <posx>160</posx>
-                  <orientation>horizontal</orientation>
-      
-                  <control type="label">
-                    <description>high label</description>
-                    <label>$LOCALIZE[393] :</label>
-                    <include>WeatherDayCaption</include>
-                  </control>
-      
-                  <control type="label" id="62">
-                    <description>high value</description>
-                    <include>WeatherDayLabel</include>
-                  </control>
-      
-                  <control type="label">
-                    <description>low label</description>
-                    <label>$LOCALIZE[391] :</label>
-                    <include>WeatherDayCaption</include>
-                  </control>
-      
-                  <control type="label" id="63">
-                    <description>low value</description>
-                    <include>WeatherDayLabel</include>
-                  </control>
-                </control>
-      
-                <control type="group">
-                  <posy>WeatherDayVerticalGap</posy>
-        
-                  <control type="label" id="64">
-                    <description>conditions label</description>
-                    <include>WeatherDayConditions</include>
-                  </control>
-                </control>
-              </control>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group">
-        <description>Current Weather</description>
-        <posx>600</posx>
-        <posy>246</posy>
-
-        <control type="group">
-          <description>day 0</description>
-          <posy>0</posy>
-
-          <control type="image" id="35">
-            <description>day icon</description>
-            <posx>30</posx>
-            <posy>5</posy>
-            <height>110</height>
-            <width>110</width>
-            <texture>-</texture>
-            <aspectratio>keep</aspectratio>
-          </control>
-
-          <control type="label" id="31">
-            <description>day label</description>
-            <include>WeatherDayTitle</include>
-          </control>
-
-          <control type="group">
-            <posy>WeatherDayVerticalGap</posy>
-
-            <control type="grouplist">
-              <posx>160</posx>
-              <orientation>horizontal</orientation>
-
-              <control type="label">
-                <description>high label</description>
-                <label>$LOCALIZE[393] :</label>
-                <include>WeatherDayCaption</include>
-              </control>
-
-              <control type="label" id="32">
-                <description>high value</description>
-                <include>WeatherDayLabel</include>
-              </control>
-
-              <control type="label">
-                <description>low label</description>
-                <label>$LOCALIZE[391] :</label>
-                <include>WeatherDayCaption</include>
-              </control>
-
-              <control type="label" id="33">
-                <description>low value</description>
-                <include>WeatherDayLabel</include>
-              </control>
-            </control>
-
-            <control type="group">
-              <posy>WeatherDayVerticalGap</posy>
-
-              <control type="label" id="34">
-                <description>conditions label</description>
-                <include>WeatherDayConditions</include>
-              </control>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posy>130</posy>
-
-          <control type="group">
-            <posx>400</posx>
-
-            <control type="image" id="21">
-              <description>current weather icon</description>
-              <height>230</height>
-              <width>230</width>
-              <texture>-</texture>
-              <aspectratio>keep</aspectratio>
-            </control>
-    
-            <control type="label" id="22">
-              <description>current condition label</description>
-              <posy>236</posy>
-              <width>200</width>
-              <wrapmultiline>true</wrapmultiline>
-              <label>-</label>
-              <align>center</align>
-              <font>SmallTitleCapsFont</font>
-            </control>
-          </control>
-  
-          <control type="group">
-            <posy>20</posy>
-
-            <control type="group">
-              <description>Current Temp</description>
-
-              <control type="label">
-                <description>Caption</description>
-                <label>401</label>
-                <include>WeatherCurrentCaption</include>
-              </control>
-              <control type="label" id="23">
-                <description>Value</description>
-                <include>WeatherCurrentValue</include>
-              </control>
-
-              <control type="group">
-                <description>Current Feels Like Temp</description>
-                <posy>WeatherCurrentVerticalGap</posy>
-
-                <control type="label">
-                  <description>Caption</description>
-                  <label>402</label>
-                  <include>WeatherCurrentCaption</include>
-                </control>
-                <control type="label" id="24">
-                  <description>Value</description>
-                  <include>WeatherCurrentValue</include>
-                </control>
-
-                <control type="group">
-                  <description>Dew Point</description>
-                  <posy>WeatherCurrentVerticalGap</posy>
-
-                  <control type="label">
-                    <description>Caption</description>
-                    <label>405</label>
-                    <include>WeatherCurrentCaption</include>
-                  </control>
-                  <control type="label" id="27">
-                    <description>Value</description>
-                    <include>WeatherCurrentValue</include>
-                  </control>
-
-                  <control type="group">
-                    <description>Humidity</description>
-                    <posy>WeatherCurrentVerticalGap</posy>
-
-                    <control type="label">
-                      <description>Caption</description>
-                      <label>406</label>
-                      <include>WeatherCurrentCaption</include>
-                    </control>
-                    <control type="label" id="28">
-                      <description>Value</description>
-                      <include>WeatherCurrentValue</include>
-                    </control>
-
-                    <control type="group">
-                      <description>UV Index</description>
-                      <posy>WeatherCurrentVerticalGap</posy>
-
-                      <control type="label">
-                        <description>Caption</description>
-                        <label>403</label>
-                        <include>WeatherCurrentCaption</include>
-                      </control>
-                      <control type="label" id="25">
-                        <description>Value</description>
-                        <include>WeatherCurrentValue</include>
-                      </control>
-
-                      <control type="group">
-                        <description>Wind</description>
-                        <posy>WeatherCurrentVerticalGap</posy>
-
-                        <control type="label">
-                          <description>Caption</description>
-                          <label>404</label>
-                          <include>WeatherCurrentCaption</include>
-                        </control>
-                        <control type="label" id="26">
-                          <description>Value</description>
-                          <include>WeatherCurrentValue</include>
-                        </control>
-                      </control>
-                    </control>
-                  </control>
-                </control>
-              </control>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <include>Clock</include>
-
-      <control type="group">
-        <include>MusicOverlayNowPlayingDims</include>
-        <visible>Player.HasAudio</visible>
-        <include>HomeSlideLeft</include>
-
-        <include>MusicNowPlaying</include>
-      </control>
-    
-      <include>MusicNowPlayingIndicators</include>
-    </control>
-
-  </controls>
+	<defaultcontrol always="true">3</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>Background</include>
+		<control type="group">
+			<include>BackgroundOverlayFade</include>
+			<include>MediaViewBGOverlay</include>
+		</control>
+		<control type="group">
+			<include>MediaViewFade</include>
+			<control type="group">
+				<posy>9</posy>
+				<include>TopOverlayTitlePos</include>
+				<control type="group">
+					<visible>!IsEmpty(Container.SecondTitle)</visible>
+					<include>TopOverlayFirstTitleSlide</include>
+					<control type="grouplist">
+						<orientation>horizontal</orientation>
+						<itemgap>7</itemgap>
+						<control type="label">
+							<height>32</height>
+							<font>LargeTitleFont</font>
+							<align>right</align>
+							<aligny>center</aligny>
+							<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
+							<width>10</width>
+						</control>
+						<control type="label">
+							<description>First title</description>
+							<include>TopOverlayFirstTitleAreaText</include>
+							<label>$INFO[Container.FirstTitle]</label>
+						</control>
+						<control type="label">
+							<description>Second title</description>
+							<label>: $INFO[Container.SecondTitle]</label>
+							<include>TopOverlaySecondTitleAreaText</include>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<visible>IsEmpty(Container.SecondTitle) + !IsEmpty(Container.FirstTitle)</visible>
+					<include>TopOverlayFirstTitleSlide</include>
+					<control type="grouplist">
+						<orientation>horizontal</orientation>
+						<itemgap>7</itemgap>
+						<control type="label">
+							<height>32</height>
+							<font>LargeTitleFont</font>
+							<align>right</align>
+							<aligny>center</aligny>
+							<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
+							<width>10</width>
+						</control>
+						<control type="label">
+							<description>First title</description>
+							<include>TopOverlayFirstTitleAreaText</include>
+							<label>$INFO[Container.FirstTitle]</label>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<visible>IsEmpty(Container.FirstTitle) + IsEmpty(Container.SecondTitle)</visible>
+					<include>TopOverlayFirstTitleSlide</include>
+					<control type="grouplist">
+						<orientation>horizontal</orientation>
+						<itemgap>7</itemgap>
+						<control type="label">
+							<height>32</height>
+							<font>LargeTitleFont</font>
+							<align>right</align>
+							<aligny>center</aligny>
+							<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
+							<width>10</width>
+						</control>
+						<control type="label">
+							<description>Weather label</description>
+							<include>TopOverlayFirstTitleAreaText</include>
+							<label>$LOCALIZE[8]</label>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group">
+				<posx>25</posx>
+				<posy>240</posy>
+				<control type="spincontrol" id="3">
+					<description>Location Select</description>
+					<align>right</align>
+					<posx>20</posx>
+					<posy>1</posy>
+					<font>-</font>
+					<reverse>yes</reverse>
+					<onup>2</onup>
+					<ondown>2</ondown>
+					<onleft>3</onleft>
+					<onright>2</onright>
+				</control>
+				<control type="group">
+					<posx>68</posx>
+					<control type="label">
+						<description>Location</description>
+						<posy>-20</posy>
+						<width>600</width>
+						<height>45</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<info>Weather.Location</info>
+					</control>
+					<control type="button" id="2">
+						<description>Refresh button</description>
+						<posx>-6</posx>
+						<label>184</label>
+						<onleft>3</onleft>
+						<onright>4</onright>
+						<onup>3</onup>
+						<include>WeatherButton</include>
+					</control>
+					<control type="button" id="4">
+						<description>Settings button</description>
+						<posx>172</posx>
+						<label>5</label>
+						<onclick>ActivateWindow(MyWeatherSettings)</onclick>
+						<onleft>2</onleft>
+						<onright>2</onright>
+						<onup>3</onup>
+						<include>WeatherButton</include>
+					</control>
+					<control type="group">
+						<description>Last Refreshed</description>
+						<posy>58</posy>
+						<control type="label">
+							<description>Caption</description>
+							<width>190</width>
+							<label>$LOCALIZE[31033]: </label>
+							<visible>Weather.IsFetched</visible>
+						</control>
+						<control type="label" id="11">
+							<description>Value</description>
+							<posx>200</posx>
+							<width>400</width>
+							<height>45</height>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group">
+				<description>Forecasts</description>
+				<posx>20</posx>
+				<posy>350</posy>
+				<control type="group">
+					<description>day 1</description>
+					<control type="image" id="45">
+						<description>day icon</description>
+						<posx>30</posx>
+						<posy>5</posy>
+						<height>110</height>
+						<width>110</width>
+						<texture>-</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+					<control type="label" id="41">
+						<description>day label</description>
+						<include>WeatherDayTitle</include>
+					</control>
+					<control type="group">
+						<posy>WeatherDayVerticalGap</posy>
+						<control type="grouplist">
+							<posx>160</posx>
+							<orientation>horizontal</orientation>
+							<control type="label">
+								<description>high label</description>
+								<label>$LOCALIZE[393] :</label>
+								<include>WeatherDayCaption</include>
+							</control>
+							<control type="label" id="42">
+								<description>high value</description>
+								<include>WeatherDayLabel</include>
+							</control>
+							<control type="label">
+								<description>low label</description>
+								<label>$LOCALIZE[391] :</label>
+								<include>WeatherDayCaption</include>
+							</control>
+							<control type="label" id="43">
+								<description>low value</description>
+								<include>WeatherDayLabel</include>
+							</control>
+						</control>
+						<control type="group">
+							<posy>WeatherDayVerticalGap</posy>
+							<control type="label" id="44">
+								<description>conditions label</description>
+								<include>WeatherDayConditions</include>
+							</control>
+						</control>
+					</control>
+					<control type="group">
+						<description>day 2</description>
+						<posy>WeatherDayHeight</posy>
+						<control type="image" id="55">
+							<description>day icon</description>
+							<posx>30</posx>
+							<posy>5</posy>
+							<height>110</height>
+							<width>110</width>
+							<texture>-</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+						<control type="label" id="51">
+							<description>day label</description>
+							<include>WeatherDayTitle</include>
+						</control>
+						<control type="group">
+							<posy>WeatherDayVerticalGap</posy>
+							<control type="grouplist">
+								<posx>160</posx>
+								<orientation>horizontal</orientation>
+								<control type="label">
+									<description>high label</description>
+									<label>$LOCALIZE[393] :</label>
+									<include>WeatherDayCaption</include>
+								</control>
+								<control type="label" id="52">
+									<description>high value</description>
+									<include>WeatherDayLabel</include>
+								</control>
+								<control type="label">
+									<description>low label</description>
+									<label>$LOCALIZE[391] :</label>
+									<include>WeatherDayCaption</include>
+								</control>
+								<control type="label" id="53">
+									<description>low value</description>
+									<include>WeatherDayLabel</include>
+								</control>
+							</control>
+							<control type="group">
+								<posy>WeatherDayVerticalGap</posy>
+								<control type="label" id="54">
+									<description>conditions label</description>
+									<include>WeatherDayConditions</include>
+								</control>
+							</control>
+						</control>
+						<control type="group">
+							<description>day 3</description>
+							<posy>WeatherDayHeight</posy>
+							<control type="image" id="65">
+								<description>day icon</description>
+								<posx>30</posx>
+								<posy>5</posy>
+								<height>110</height>
+								<width>110</width>
+								<texture>-</texture>
+								<aspectratio>keep</aspectratio>
+							</control>
+							<control type="label" id="61">
+								<description>day label</description>
+								<include>WeatherDayTitle</include>
+							</control>
+							<control type="group">
+								<posy>WeatherDayVerticalGap</posy>
+								<control type="grouplist">
+									<posx>160</posx>
+									<orientation>horizontal</orientation>
+									<control type="label">
+										<description>high label</description>
+										<label>$LOCALIZE[393] :</label>
+										<include>WeatherDayCaption</include>
+									</control>
+									<control type="label" id="62">
+										<description>high value</description>
+										<include>WeatherDayLabel</include>
+									</control>
+									<control type="label">
+										<description>low label</description>
+										<label>$LOCALIZE[391] :</label>
+										<include>WeatherDayCaption</include>
+									</control>
+									<control type="label" id="63">
+										<description>low value</description>
+										<include>WeatherDayLabel</include>
+									</control>
+								</control>
+								<control type="group">
+									<posy>WeatherDayVerticalGap</posy>
+									<control type="label" id="64">
+										<description>conditions label</description>
+										<include>WeatherDayConditions</include>
+									</control>
+								</control>
+							</control>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group">
+				<description>Current Weather</description>
+				<posx>600</posx>
+				<posy>246</posy>
+				<control type="group">
+					<description>day 0</description>
+					<posy>0</posy>
+					<control type="image" id="35">
+						<description>day icon</description>
+						<posx>30</posx>
+						<posy>5</posy>
+						<height>110</height>
+						<width>110</width>
+						<texture>-</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+					<control type="label" id="31">
+						<description>day label</description>
+						<include>WeatherDayTitle</include>
+					</control>
+					<control type="group">
+						<posy>WeatherDayVerticalGap</posy>
+						<control type="grouplist">
+							<posx>160</posx>
+							<orientation>horizontal</orientation>
+							<control type="label">
+								<description>high label</description>
+								<label>$LOCALIZE[393] :</label>
+								<include>WeatherDayCaption</include>
+							</control>
+							<control type="label" id="32">
+								<description>high value</description>
+								<include>WeatherDayLabel</include>
+							</control>
+							<control type="label">
+								<description>low label</description>
+								<label>$LOCALIZE[391] :</label>
+								<include>WeatherDayCaption</include>
+							</control>
+							<control type="label" id="33">
+								<description>low value</description>
+								<include>WeatherDayLabel</include>
+							</control>
+						</control>
+						<control type="group">
+							<posy>WeatherDayVerticalGap</posy>
+							<control type="label" id="34">
+								<description>conditions label</description>
+								<include>WeatherDayConditions</include>
+							</control>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posy>130</posy>
+					<control type="group">
+						<posx>400</posx>
+						<control type="image" id="21">
+							<description>current weather icon</description>
+							<height>230</height>
+							<width>230</width>
+							<texture>-</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+						<control type="label" id="22">
+							<description>current condition label</description>
+							<posy>236</posy>
+							<width>200</width>
+							<wrapmultiline>true</wrapmultiline>
+							<label>-</label>
+							<align>center</align>
+							<font>SmallTitleCapsFont</font>
+						</control>
+					</control>
+					<control type="group">
+						<posy>20</posy>
+						<control type="group">
+							<description>Current Temp</description>
+							<control type="label">
+								<description>Caption</description>
+								<label>401</label>
+								<include>WeatherCurrentCaption</include>
+							</control>
+							<control type="label" id="23">
+								<description>Value</description>
+								<include>WeatherCurrentValue</include>
+							</control>
+							<control type="group">
+								<description>Current Feels Like Temp</description>
+								<posy>WeatherCurrentVerticalGap</posy>
+								<control type="label">
+									<description>Caption</description>
+									<label>402</label>
+									<include>WeatherCurrentCaption</include>
+								</control>
+								<control type="label" id="24">
+									<description>Value</description>
+									<include>WeatherCurrentValue</include>
+								</control>
+								<control type="group">
+									<description>Dew Point</description>
+									<posy>WeatherCurrentVerticalGap</posy>
+									<control type="label">
+										<description>Caption</description>
+										<label>405</label>
+										<include>WeatherCurrentCaption</include>
+									</control>
+									<control type="label" id="27">
+										<description>Value</description>
+										<include>WeatherCurrentValue</include>
+									</control>
+									<control type="group">
+										<description>Humidity</description>
+										<posy>WeatherCurrentVerticalGap</posy>
+										<control type="label">
+											<description>Caption</description>
+											<label>406</label>
+											<include>WeatherCurrentCaption</include>
+										</control>
+										<control type="label" id="28">
+											<description>Value</description>
+											<include>WeatherCurrentValue</include>
+										</control>
+										<control type="group">
+											<description>UV Index</description>
+											<posy>WeatherCurrentVerticalGap</posy>
+											<control type="label">
+												<description>Caption</description>
+												<label>403</label>
+												<include>WeatherCurrentCaption</include>
+											</control>
+											<control type="label" id="25">
+												<description>Value</description>
+												<include>WeatherCurrentValue</include>
+											</control>
+											<control type="group">
+												<description>Wind</description>
+												<posy>WeatherCurrentVerticalGap</posy>
+												<control type="label">
+													<description>Caption</description>
+													<label>404</label>
+													<include>WeatherCurrentCaption</include>
+												</control>
+												<control type="label" id="26">
+													<description>Value</description>
+													<include>WeatherCurrentValue</include>
+												</control>
+											</control>
+										</control>
+									</control>
+								</control>
+							</control>
+						</control>
+					</control>
+				</control>
+			</control>
+			<include>Clock</include>
+			<control type="group">
+				<include>MusicOverlayNowPlayingDims</include>
+				<visible>Player.HasAudio</visible>
+				<include>HomeSlideLeft</include>
+				<include>MusicNowPlaying</include>
+			</control>
+			<include>MusicNowPlayingIndicators</include>
+		</control>
+	</controls>
 </window>

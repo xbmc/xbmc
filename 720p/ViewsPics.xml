@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <includes>
 	<include name="Pictures">
 		<control type="group">
@@ -20,22 +21,41 @@
 				<onright>9009</onright>
 				<orientation>vertical</orientation>
 				<itemlayout width="114" height="110">
-					<!--
-          <control type="image">
-            <include>PicturesThumbBG</include>
-          </control>
-		  -->
 					<control type="image">
-						<include>PicturesThumbImg</include>
-						<include>PicturesImageNoFocus</include>
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>108</width>
+						<height>109</height>
+						<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+						<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+					</control>
+					<control type="image">
+						<posx>4</posx>
+						<posy>4</posy>
+						<width>96</width>
+						<height>96</height>
+						<aspectratio scalediffuse="false" align="top">scale</aspectratio>
+						<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
 					</control>
 				</itemlayout>
 				<focusedlayout width="114" height="110">
 					<control type="image">
-						<include>PicturesThumbBG</include>
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>111</width>
+						<height>112</height>
+						<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+						<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 					</control>
 					<control type="image">
-						<include>PicturesThumbImg</include>
+						<posx>1</posx>
+						<posy>1</posy>
+						<width>102</width>
+						<height>102</height>
+						<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+						<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+						<bordertexture border="10">frameOrange.png</bordertexture>
+						<bordersize>3</bordersize>
 					</control>
 				</focusedlayout>
 			</control>
@@ -57,7 +77,23 @@
 					<posy>-8</posy>
 					<visible>![Container(51).OnNext | Container(51).OnPrevious]</visible>
 					<include>MediaListSelectDelay</include>
+					
+					<!--<control type="image">
+						<description>Thumb image</description>
+						<width>656</width>
+						<height>376</height>
+						<aspectratio align="left" aligny="top">keep</aspectratio>
+						<texture border="13">bigPosterFrameShadow.png</texture>
+					</control>
 					<control type="image">
+						<description>Thumb image</description>
+						<width>656</width>
+						<height>376</height>
+						<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+						<aspectratio scalediffuse="false" align="center" aligny="top">keep</aspectratio>
+					</control>-->
+					
+					<!--<control type="image">
 						<description>Preview thumb</description>
 						<width>656</width>
 						<height>376</height>
@@ -66,17 +102,18 @@
 						<bordersize>8</bordersize>
 						<info>ListItem.Icon</info>
 						<visible>IsEmpty(ListItem.Thumb)</visible>
-					</control>
+					</control>-->
 					<control type="image">
 						<description>Preview thumb</description>
 						<width>656</width>
-						<height>376</height>
-						<aspectratio align="left" aligny="top">keep</aspectratio>
-						<bordertexture border="14">ThumbShadow2.png</bordertexture>
-						<bordersize>8</bordersize>
+						<height>406</height>
+						<aspectratio>keep</aspectratio>
+						<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
+						<bordersize>9</bordersize>
 						<info>ListItem.Thumb</info>
+						<align>center</align>
 					</control>
-					<control type="largeimage">
+					<!--<control type="largeimage">
 						<description>Preview thumb</description>
 						<posx>8</posx>
 						<posy>8</posy>
@@ -84,29 +121,19 @@
 						<height>360</height>
 						<aspectratio align="left" aligny="top">keep</aspectratio>
 						<info>ListItem.FileNameAndPath</info>
-					</control>
-					<!--
-          <control type="image">
-            <description>Glass overlay</description>
-            <posx>8</posx>
-            <posy>8</posy>
-            <width>270</width>
-            <height>270</height>
-            <include>GlassTextureOverlay</include>
-            <visible>!IsEmpty(ListItem.Thumb)</visible>
-          </control>
-          -->
+					</control>-->
 				</control>
 				<control type="group">
 					<posx>12</posx>
-					<posy>380</posy>
+					<posy>410</posy>
 					<control type="label">
 						<description>Name</description>
-						<width>PicturesInfoTextWidth</width>
+						<width>656</width>
+						<align>center</align>
 						<font>MediumSmallTitleCapsFont</font>
 						<info>ListItem.Label</info>
 					</control>
-					<control type="label">
+					<!--<control type="label">
 						<description>Date</description>
 						<posy>22</posy>
 						<width>PicturesInfoTextWidth</width>
@@ -128,7 +155,7 @@
 						<width>PicturesInfoTextWidth</width>
 						<font>MediumSmallDefaultCapsFont</font>
 						<label>$INFO[ListItem.PictureResolution]</label>
-					</control>
+					</control>-->
 				</control>
 			</control>
 		</control>
@@ -138,6 +165,12 @@
 			<include>ImageStreamVisible</include>
 			<include>BackgroundOverlayFade</include>
 			<include>MovieViewBGOverlay</include>
+			<control type="image">
+				<description>Movie view background</description>
+				<include>FullScreenOverlayDims</include>
+				<texture>PhotoViewBG2.png</texture>
+				<visible>!Skin.HasSetting(HideInfoInMediaPreview) + !Skin.HasSetting(ShowAnimMediaPreview)</visible>
+			</control>
 			<control type="group">
 				<visible>!Container.OnNext + !Container.OnPrevious</visible>
 				<animation effect="fade" start="0" end="100" time="800" delay="200">Visible</animation>
@@ -153,19 +186,25 @@
 					<info>ListItem.FileNameAndPath</info>
 				</control>
 			</control>
+			<control type="image">
+				<description>Movie view background</description>
+				<include>FullScreenOverlayDims</include>
+				<texture>PhotoViewBG.png</texture>
+				<visible>!Skin.HasSetting(HideInfoInMediaPreview) + !Skin.HasSetting(ShowAnimMediaPreview)</visible>
+			</control>
 		</control>
 		<control type="group">
 			<posy>500</posy>
 			<include>ImageStreamVisible</include>
 			<include>MediaViewFade</include>
-			<animation effect="slide" start="0,0" end="0,300" time="1000" delay="3000" reversible="false" tween="quadratic" condition="![Container.OnNext | Container.OnPrevious]">Conditional</animation>
-			<control type="image">
+			<!--<animation effect="slide" start="0,0" end="0,300" time="1000" delay="3000" reversible="false" tween="quadratic" condition="![Container.OnNext | Container.OnPrevious]">Conditional</animation>-->
+			<!--<control type="image">
 				<description>Thumbs Strip BG</description>
 				<posy>-10</posy>
 				<width>1280</width>
 				<height>200</height>
 				<texture>ImageStreamBar.png</texture>
-			</control>
+			</control>-->
 			<control type="wraplist" id="57">
 				<viewtype label="Image Stream">wraplist</viewtype>
 				<posx>10</posx>
@@ -181,7 +220,12 @@
 				<focusposition>3</focusposition>
 				<itemlayout width="180" height="180">
 					<control type="image">
-						<include>ImageStreamThumbBG</include>
+						<posx>11</posx>
+						<posy>11</posy>
+						<width>160</width>
+						<height>158</height>
+						<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+						<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 					</control>
 					<control type="image">
 						<include>ImageStreamThumb</include>
@@ -189,48 +233,22 @@
 				</itemlayout>
 				<focusedlayout width="180" height="180">
 					<control type="image">
-						<include>ImageStreamThumbBGFocus</include>
-						<!--
-            <animation type="focus">
-              <effect type="zoom" tween="quadratic" start="10,10,160,160" end="-18,-44,216,216" time="600" delay="200"/>
-            </animation>
-            <animation type="unfocus">
-              <effect type="zoom" tween="quadratic" start="-18,-44,216,216" end="10,10,160,160" time="350"/>
-            </animation>
--->
+						<posx>11</posx>
+						<posy>11</posy>
+						<width>160</width>
+						<height>158</height>
+						<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+						<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 					</control>
 					<control type="image">
 						<include>ImageStreamThumb</include>
-						<!--
-            <animation type="focus">
-              <effect type="zoom" tween="quadratic" start="21,21,138,138" end="-1,-31,184,188" time="600" delay="200"/>
-            </animation>
-            <animation type="unfocus">
-              <effect type="zoom" tween="quadratic" start="-1,-31,184,188" end="21,21,138,138" time="350"/>
-            </animation>
--->
 					</control>
 				</focusedlayout>
 			</control>
 			<control type="group">
-				<posy>176</posy>
-				<control type="image">
-					<description>BG for Image Name</description>
-					<posy>-1</posy>
-					<width>1280</width>
-					<height>34</height>
-					<texture>White.png</texture>
-					<colordiffuse>66999999</colordiffuse>
-				</control>
-				<control type="image">
-					<description>BG for Image Name</description>
-					<width>1280</width>
-					<height>32</height>
-					<texture>Black.png</texture>
-					<colordiffuse>cc999999</colordiffuse>
-				</control>
+				<posy>184</posy>
 				<control type="label">
-					<posy>3</posy>
+					<posy>0</posy>
 					<width>1280</width>
 					<align>center</align>
 					<font>MediumTitleCapsFont</font>

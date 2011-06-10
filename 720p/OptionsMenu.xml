@@ -256,7 +256,7 @@
 				</control>
 				<control type="label" id="9105">
 					<description>Episodes view button</description>
-					<label>$LOCALIZE[31721]</label>
+					<label>$LOCALIZE[31711]</label>
 					<visible>Control.IsVisible(56) + Container.Content(episodes)</visible>
 					<include>OMViewLabelItem</include>
 				</control>
@@ -424,14 +424,14 @@
 					<onclick>SetFocus(50)</onclick>
 					<include>OMButtonItem</include>
 				</control>
-				<control type="button" id="927">
+				<!--<control type="button" id="927">
 					<description>Episodes view button</description>
 					<visible>!Control.IsVisible(56) + [Container.Content(episodes) + !Container.Content(Plugins)]</visible>
 					<label>$LOCALIZE[31721]</label>
 					<onclick>Container.SetViewMode(56)</onclick>
 					<onclick>SetFocus(50)</onclick>
 					<include>OMButtonItem</include>
-				</control>
+				</control>-->
 				<control type="button" id="950">
 					<description>Photo view button</description>
 					<visible>!Control.IsVisible(51) + Control.IsVisible(9814)</visible>
@@ -458,20 +458,20 @@
 				</control>
 				<control type="button" id="957">
 					<description>Panel Stream view button</description>
-					<visible>!Control.IsVisible(52) + !Container.Content(Songs) + !Container.Content(Albums) + !Container.Content(Artists) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
+					<visible>!Control.IsVisible(52) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary)</visible>
 					<label>$LOCALIZE[31715]</label>
 					<onclick>Container.SetViewMode(52)</onclick>
 					<onclick>SetFocus(50)</onclick>
 					<include>OMButtonItem</include>
 				</control>
-				<control type="button" id="958">
+				<!--<control type="button" id="958">
 					<description>Panel Stream view button</description>
-					<visible>!Control.IsVisible(59) + [Container.Content(Songs) | Container.Content(Albums) | Container.Content(Artists)]</visible>
+					<visible>!Control.IsVisible(59) + [Container.Content(Songs) | Container.Content(Albums) | Container.Content(Artists) | Container.Content(Plugins)]</visible>
 					<label>$LOCALIZE[31715]</label>
 					<onclick>Container.SetViewMode(59)</onclick>
 					<onclick>SetFocus(50)</onclick>
 					<include>OMButtonItem</include>
-				</control>
+				</control>-->
 				<!--<control type="button" id="959">
 					<description>Wall Stream view button</description>
 					<visible>!Control.IsVisible(53) + !Container.Content(Seasons) + !Container.Content(Songs) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
@@ -480,14 +480,14 @@
 					<onclick>SetFocus(50)</onclick>
 					<include>OMButtonItem</include>
 				</control>-->
-				<control type="button" id="960">
+				<!--<control type="button" id="960">
 					<description>Plugin Stream view button</description>
 					<visible>!Control.IsVisible(59) + Container.Content(Plugins)</visible>
 					<label>$LOCALIZE[31722]</label>
 					<onclick>Container.SetViewMode(59)</onclick>
 					<onclick>SetFocus(50)</onclick>
 					<include>OMButtonItem</include>
-				</control>
+				</control>-->
 				<!-- Setup Options -->
 				<control type="label" id="1000">
 					<description>Setup Options</description>

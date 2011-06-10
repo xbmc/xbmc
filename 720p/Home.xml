@@ -597,6 +597,7 @@
 				<posy>0</posy>
 				<width>1280</width>
 				<height>720</height>
+				<aspectratio>scale</aspectratio>
 				<visible>true</visible>
 			</control>
 		</control>
@@ -604,6 +605,7 @@
 			<visible>Skin.String(Developer_Background) + Skin.HasSetting(Developer) + Skin.HasSetting(Developer_Background_Visible)</visible>
 			<width>1280</width>
 			<height>720</height>
+			<aspectratio>scale</aspectratio>
 			<texture>$INFO[Skin.String(Developer_Background)]</texture>
 		</control>
 		<control type="image">
@@ -1189,6 +1191,10 @@
 						<visible>!Skin.HasSetting(HideWeather)</visible>
 						<visible>System.HasNetwork</visible>
 					</item>
+					<!--<item id="14">
+						<label>DIALOG TEST</label>
+						<onclick>ActivateWindow(132)</onclick>
+					</item>-->
 				</content>
 			</control>
 			<control type="group">
@@ -1337,7 +1343,7 @@
 						<posy>166</posy>
 						<posx>-2</posx>
 						<visible>ControlGroup(7002).HasFocus</visible>
-						<texture flipy="true">newlistselector2.png</texture>
+						<texture flipy="true">newlistselector.png</texture>
 						<animation effect="fade" start="0" end="100" time="400" condition="true">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="0" condition="true">Hidden</animation>
 					</control>
@@ -1371,22 +1377,12 @@
 								<visible>ListItem.Type(episode)</visible>
 								<!-- drop shadow -->
 								<control type="image">
-									<posx>27</posx>
-									<posy>40</posy>
-									<width>135</width>
-									<height>96</height>
+									<posx>28</posx>
+									<posy>41</posy>
+									<width>133</width>
+									<height>94</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
-								</control>
-								<control type="image">
-									<posx>35</posx>
-									<posy>48</posy>
-									<width>120</width>
-									<height>80</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterMaskSmall.png</texture>
-									<visible>!Skin.HasSetting(hideposterborders)</visible>
-									<colordiffuse>FF3d3d3d</colordiffuse>
+									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 								</control>
 								<control type="image">
 									<posx>37</posx>
@@ -1484,16 +1480,6 @@
 									<visible>ListItem.Type(movie)</visible>
 								</control>
 								<control type="image">
-									<posx>35</posx>
-									<posy>48</posy>
-									<width>120</width>
-									<height>180</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterMaskSmall.png</texture>
-									<visible>ListItem.Type(movie) + !Skin.HasSetting(hideposterborders)</visible>
-									<colordiffuse>FF3d3d3d</colordiffuse>
-								</control>
-								<control type="image">
 									<posx>37</posx>
 									<posy>50</posy>
 									<width>116</width>
@@ -1535,32 +1521,15 @@
 							<!-- tv show episode -->
 							<control type="group">
 								<visible>ListItem.Type(episode)</visible>
-								<!-- drop shadow -->
-								<control type="image">
-									<posx>27</posx>
-									<posy>40</posy>
-									<width>135</width>
-									<height>96</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
-								</control>
 								<control type="image">
 									<posx>34</posx>
 									<posy>47</posy>
 									<width>122</width>
 									<height>82</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterMaskSmall.png</texture>
-									<visible>!Skin.HasSetting(hideposterborders)</visible>
-									<colordiffuse>orange</colordiffuse>
-								</control>
-								<control type="image">
-									<posx>37</posx>
-									<posy>50</posy>
-									<width>116</width>
-									<height>76</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
 									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<bordertexture border="10">frameOrange.png</bordertexture>
+									<bordersize>3</bordersize>
 								</control>
 								<!-- dimming mask when list not selected -->
 								<control type="image">
@@ -1643,19 +1612,11 @@
 								<posy>47</posy>
 								<width>122</width>
 								<height>182</height>
-								<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-								<texture background="true">posterMaskSmall.png</texture>
-								<visible>ListItem.Type(movie)</visible>
-								<colordiffuse>orange</colordiffuse>
-							</control>
-							<control type="image">
-								<posx>37</posx>
-								<posy>50</posy>
-								<width>116</width>
-								<height>176</height>
 								<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 								<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
 								<visible>ListItem.Type(movie)</visible>
+								<bordertexture border="10">frameOrange.png</bordertexture>
+								<bordersize>3</bordersize>
 							</control>
 						</focusedlayout>
 						<height>200</height>
@@ -1785,10 +1746,10 @@
 					</control>
 					<!-- select arrow if only this list is visible -->
 					<control type="image">
-						<posy>33</posy>
+						<posy>34</posy>
 						<posx>-2</posx>
 						<visible>Control.HasFocus(11000) + !Control.IsVisible(11001)</visible>
-						<texture background="true">newlistselector2.png</texture>
+						<texture background="true">newlistselector.png</texture>
 						<animation effect="fade" start="0" end="100" time="400" condition="true">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="0" condition="true">Hidden</animation>
 					</control>
@@ -1797,7 +1758,7 @@
 						<posy>137</posy>
 						<posx>-2</posx>
 						<visible>Control.HasFocus(11000) + Control.IsVisible(11001)</visible>
-						<texture background="true">newlistselector2.png</texture>
+						<texture background="true">newlistselector.png</texture>
 						<animation effect="fade" start="0" end="100" time="400" condition="true">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="0" condition="true">Hidden</animation>
 					</control>
@@ -1817,22 +1778,12 @@
 							<control type="group">
 								<!-- drop shadow -->
 								<control type="image">
-									<posx>27</posx>
-									<posy>42</posy>
-									<width>136</width>
-									<height>136</height>
+									<posx>28</posx>
+									<posy>43</posy>
+									<width>134</width>
+									<height>134</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
-									<visible>ListItem.Type(album)</visible>
-								</control>
-								<control type="image">
-									<posx>35</posx>
-									<posy>50</posy>
-									<width>120</width>
-									<height>120</height>
-									<texture background="true">bigSquareMask.png</texture>
-									<aspectratio aligny="top">stretch</aspectratio>
-									<colordiffuse>FF3d3d3d</colordiffuse>
+									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 									<visible>ListItem.Type(album)</visible>
 								</control>
 								<control type="image">
@@ -1897,22 +1848,12 @@
 								<visible>ListItem.Type(episode) + Control.IsVisible(11001)</visible>
 								<!-- drop shadow -->
 								<control type="image">
-									<posx>27</posx>
-									<posy>142</posy>
-									<width>134</width>
-									<height>96</height>
+									<posx>28</posx>
+									<posy>143</posy>
+									<width>132</width>
+									<height>94</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
-								</control>
-								<control type="image">
-									<posx>35</posx>
-									<posy>150</posy>
-									<width>120</width>
-									<height>80</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterMaskSmall.png</texture>
-									<visible>!Skin.HasSetting(hideposterborders)</visible>
-									<colordiffuse>FF3d3d3d</colordiffuse>
+									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 								</control>
 								<control type="image">
 									<posx>37</posx>
@@ -2001,22 +1942,12 @@
 								<visible>ListItem.Type(episode) + !Control.IsVisible(11001)</visible>
 								<!-- drop shadow -->
 								<control type="image">
-									<posx>27</posx>
-									<posy>142</posy>
-									<width>134</width>
-									<height>96</height>
+									<posx>29</posx>
+									<posy>144</posy>
+									<width>130</width>
+									<height>92</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
-								</control>
-								<control type="image">
-									<posx>35</posx>
-									<posy>150</posy>
-									<width>120</width>
-									<height>80</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterMaskSmall.png</texture>
-									<visible>!Skin.HasSetting(hideposterborders)</visible>
-									<colordiffuse>FF3d3d3d</colordiffuse>
+									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 								</control>
 								<control type="image">
 									<posx>37</posx>
@@ -2044,16 +1975,6 @@
 									<colordiffuse>FF000000</colordiffuse>
 									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
 								</control>
-								<!--<control type="image">
-									<posx>35</posx>
-									<posy>302</posy>
-									<width>120</width>
-									<height>27</height>
-									<texture border="10">whitewiderounded.png</texture>
-									<colordiffuse>FF000000</colordiffuse>
-									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-									<visible>ListItem.Type(episode)</visible>
-								</control>-->
 								<control type="label">
 									<posx>95</posx>
 									<posy>250</posy>
@@ -2103,21 +2024,11 @@
 								<control type="image">
 									<posx>29</posx>
 									<posy>0</posy>
-									<width>132</width>
-									<height>192</height>
+									<width>130</width>
+									<height>190</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterFrameSmallShadow3.png</texture>
+									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 									<visible>ListItem.Type(movie) + Control.IsVisible(11001)</visible>
-								</control>
-								<control type="image">
-									<posx>35</posx>
-									<posy>6</posy>
-									<width>120</width>
-									<height>180</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterMaskSmall.png</texture>
-									<visible>ListItem.Type(movie) + !Skin.HasSetting(hideposterborders) + Control.IsVisible(11001)</visible>
-									<colordiffuse>FF3d3d3d</colordiffuse>
 								</control>
 								<control type="image">
 									<posx>37</posx>
@@ -2153,18 +2064,8 @@
 									<width>132</width>
 									<height>192</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterFrameSmallShadow3.png</texture>
+									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 									<visible>ListItem.Type(movie) + !Control.IsVisible(11001)</visible>
-								</control>
-								<control type="image">
-									<posx>35</posx>
-									<posy>6</posy>
-									<width>120</width>
-									<height>180</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterMaskSmall.png</texture>
-									<visible>ListItem.Type(movie) + !Skin.HasSetting(hideposterborders) + !Control.IsVisible(11001)</visible>
-									<colordiffuse>FF3d3d3d</colordiffuse>
 								</control>
 								<control type="image">
 									<posx>37</posx>
@@ -2196,12 +2097,12 @@
 							<control type="group">
 								<!-- drop shadow -->
 								<control type="image">
-									<posx>27</posx>
-									<posy>42</posy>
-									<width>136</width>
-									<height>136</height>
+									<posx>28</posx>
+									<posy>43</posy>
+									<width>134</width>
+									<height>134</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
+									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 									<visible>ListItem.Type(album)</visible>
 								</control>
 								<control type="image">
@@ -2209,19 +2110,11 @@
 									<posy>49</posy>
 									<width>122</width>
 									<height>122</height>
-									<texture background="true">bigSquareMask.png</texture>
-									<aspectratio aligny="top">stretch</aspectratio>
-									<colordiffuse>orange</colordiffuse>
-									<visible>ListItem.Type(album)</visible>
-								</control>
-								<control type="image">
-									<posx>37</posx>
-									<posy>52</posy>
-									<width>116</width>
-									<height>116</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
 									<visible>ListItem.Type(album)</visible>
+									<bordertexture border="10">frameOrange.png</bordertexture>
+									<bordersize>3</bordersize>
 								</control>
 								<control type="image">
 									<posx>35</posx>
@@ -2275,31 +2168,15 @@
 							<!-- tv show episode when both lists are visible -->
 							<control type="group">
 								<visible>ListItem.Type(episode) + Control.IsVisible(11001)</visible>
-								<!-- drop shadow -->
-								<control type="image">
-									<posx>27</posx>
-									<posy>141</posy>
-									<width>137</width>
-									<height>98</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="40">posterFrameSmallShadow.png</texture>
-								</control>
 								<control type="image">
 									<posx>34</posx>
 									<posy>149</posy>
 									<width>122</width>
 									<height>82</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterMaskSmall.png</texture>
-									<colordiffuse>orange</colordiffuse>
-								</control>
-								<control type="image">
-									<posx>37</posx>
-									<posy>152</posy>
-									<width>116</width>
-									<height>76</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
 									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<bordertexture border="10">frameOrange.png</bordertexture>
+									<bordersize>3</bordersize>
 								</control>
 								<control type="image">
 									<posx>35</posx>
@@ -2365,31 +2242,15 @@
 							<control type="group">
 								<posy>-100</posy>
 								<visible>ListItem.Type(episode) + !Control.IsVisible(11001)</visible>
-								<!-- drop shadow -->
-								<control type="image">
-									<posx>27</posx>
-									<posy>141</posy>
-									<width>137</width>
-									<height>98</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
-								</control>
 								<control type="image">
 									<posx>34</posx>
 									<posy>149</posy>
 									<width>122</width>
 									<height>82</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterMaskSmall.png</texture>
-									<colordiffuse>orange</colordiffuse>
-								</control>
-								<control type="image">
-									<posx>37</posx>
-									<posy>152</posy>
-									<width>116</width>
-									<height>76</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
 									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<bordertexture border="10">frameOrange.png</bordertexture>
+									<bordersize>3</bordersize>
 								</control>
 								<control type="image">
 									<posx>35</posx>
@@ -2460,17 +2321,10 @@
 									<posy>0</posy>
 									<width>122</width>
 									<height>182</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterMaskSmall.png</texture>
-									<colordiffuse>orange</colordiffuse>
-								</control>
-								<control type="image">
-									<posx>37</posx>
-									<posy>3</posy>
-									<width>116</width>
-									<height>176</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<bordertexture border="10">frameOrange.png</bordertexture>
+									<bordersize>3</bordersize>
 								</control>
 							</control>
 							<!-- movie when only this list is visible-->
@@ -2482,17 +2336,10 @@
 									<posy>0</posy>
 									<width>122</width>
 									<height>182</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterMaskSmall.png</texture>
-									<colordiffuse>orange</colordiffuse>
-								</control>
-								<control type="image">
-									<posx>37</posx>
-									<posy>3</posy>
-									<width>116</width>
-									<height>176</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<bordertexture border="10">frameOrange.png</bordertexture>
+									<bordersize>3</bordersize>
 								</control>
 							</control>
 						</focusedlayout>
@@ -2722,10 +2569,10 @@
 					<control type="group">
 						<visible allowhiddenfocus="false">true</visible>
 						<control type="image">
-							<posy>268</posy>
+							<posy>269</posy>
 							<posx>-2</posx>
 							<visible>ControlGroup(7003).HasFocus</visible>
-							<texture background="true">newlistselector2.png</texture>
+							<texture background="true">newlistselector.png</texture>
 							<animation effect="fade" start="0" end="100" time="400" condition="true">Visible</animation>
 							<animation effect="fade" start="100" end="0" time="0" condition="true">Hidden</animation>
 						</control>
@@ -2811,23 +2658,13 @@
 								<posy>0</posy>
 								<!-- drop shadow -->
 								<control type="image">
-									<posx>27</posx>
-									<posy>29</posy>
-									<width>136</width>
-									<height>130</height>
+									<posx>28</posx>
+									<posy>30</posy>
+									<width>134</width>
+									<height>128</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
+									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 									<visible>ListItem.Type(clip)</visible>
-								</control>
-								<control type="image">
-									<posx>35</posx>
-									<posy>37</posy>
-									<width>120</width>
-									<height>114</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterMaskSmall.png</texture>
-									<visible>ListItem.Type(clip) + !Skin.HasSetting(hideposterborders) + Control.IsVisible(11003)</visible>
-									<colordiffuse>FF3d3d3d</colordiffuse>
 								</control>
 								<control type="image">
 									<posx>37</posx>
@@ -2942,34 +2779,16 @@
 							<!-- clip -->
 							<control type="group">
 								<posy>0</posy>
-								<!-- drop shadow -->
-								<control type="image">
-									<posx>27</posx>
-									<posy>29</posy>
-									<width>136</width>
-									<height>130</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
-									<visible>ListItem.Type(clip)</visible>
-								</control>
 								<control type="image">
 									<posx>34</posx>
 									<posy>36</posy>
 									<width>122</width>
 									<height>116</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true">posterMaskSmall.png</texture>
-									<visible>ListItem.Type(clip) + Control.IsVisible(11003)</visible>
-									<colordiffuse>orange</colordiffuse>
-								</control>
-								<control type="image">
-									<posx>37</posx>
-									<posy>39</posy>
-									<width>116</width>
-									<height>110</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
 									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
 									<visible>ListItem.Type(clip)</visible>
+									<bordertexture border="10">frameOrange.png</bordertexture>
+									<bordersize>3</bordersize>
 								</control>
 								<control type="image">
 									<posx>35</posx>
@@ -3159,7 +2978,7 @@
 					</control>
 				</control>
 			</control>
-			<!-- "Recently Accessed" -->
+			<!-- "Recently Used" -->
 			<control type="grouplist" id="5300">
 				<visible>true</visible>
 				<posx>0</posx>
@@ -3177,10 +2996,10 @@
 					<control type="group">
 						<visible allowhiddenfocus="false">true</visible>
 						<control type="image">
-							<posy>268</posy>
+							<posy>269</posy>
 							<posx>-2</posx>
 							<visible>ControlGroup(7004).HasFocus</visible>
-							<texture background="true">newlistselector2.png</texture>
+							<texture background="true">newlistselector.png</texture>
 							<animation effect="fade" start="0" end="100" time="400" condition="true">Visible</animation>
 							<animation effect="fade" start="100" end="0" time="0" condition="true">Hidden</animation>
 						</control>
@@ -3219,17 +3038,7 @@
 									<width>136</width>
 									<height>136</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
-									<visible>ListItem.Type(channel)</visible>
-								</control>
-								<control type="image">
-									<posx>35</posx>
-									<posy>45</posy>
-									<width>120</width>
-									<height>120</height>
-									<texture background="true">bigSquareMask.png</texture>
-									<aspectratio aligny="top">stretch</aspectratio>
-									<colordiffuse>FF3d3d3d</colordiffuse>
+									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 									<visible>ListItem.Type(channel)</visible>
 								</control>
 								<control type="image">
@@ -3330,7 +3139,7 @@
 									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
 									<visible>ListItem.Type(clip)</visible>
 								</control>
-								<control type="image">
+								<!--<control type="image">
 									<posx>35</posx>
 									<posy>37</posy>
 									<width>120</width>
@@ -3339,7 +3148,7 @@
 									<texture background="true">posterMaskSmall.png</texture>
 									<visible>ListItem.Type(clip) + !Skin.HasSetting(hideposterborders) + Control.IsVisible(11002)</visible>
 									<colordiffuse>FF3d3d3d</colordiffuse>
-								</control>
+								</control>-->
 								<control type="image">
 									<posx>37</posx>
 									<posy>39</posy>
@@ -3401,59 +3210,17 @@
 						<focusedlayout width="160" height="250">
 							<!-- channel -->
 							<control type="group">
-								<!-- drop shadow -->
-								<control type="image">
-									<posx>27</posx>
-									<posy>37</posy>
-									<width>136</width>
-									<height>136</height>
-									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-									<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
-									<visible>ListItem.Type(channel)</visible>
-								</control>
 								<control type="image">
 									<posx>34</posx>
 									<posy>44</posy>
 									<width>122</width>
 									<height>122</height>
-									<texture background="true">bigSquareMask.png</texture>
-									<aspectratio aligny="top">stretch</aspectratio>
-									<colordiffuse>orange</colordiffuse>
-									<visible>ListItem.Type(channel)</visible>
-								</control>
-								<control type="image">
-									<posx>37</posx>
-									<posy>47</posy>
-									<width>116</width>
-									<height>116</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
 									<visible>ListItem.Type(channel)</visible>
+									<bordertexture border="10">frameOrange.png</bordertexture>
+									<bordersize>3</bordersize>
 								</control>
-								<!--<control type="image">
-									<posx>35</posx>
-									<posy>175</posy>
-									<width>120</width>
-									<height>25</height>
-									<texture border="10">whitewiderounded.png</texture>
-									<colordiffuse>FF000000</colordiffuse>
-									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-									<visible>ListItem.Type(channel)</visible>
-								</control>
-								<control type="label">
-									<posx>95</posx>
-									<posy>186</posy>
-									<width>100</width>
-									<align>center</align>
-									<aligny>center</aligny>
-									<scroll>false</scroll>
-									<label>$INFO[ListItem.Artist]</label>
-									<font>SearchResultSmaller</font>
-									<textcolor>FFdddddd</textcolor>
-									<wrapmultiline>false</wrapmultiline>
-									<visible>ListItem.Type(channel)</visible>
-									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-								</control>-->
 							</control>
 							<!-- album -->
 							<control type="image">
@@ -3780,8 +3547,8 @@
 		</control>
 		<control type="group">
 			<description>RSS</description>
-			<posx>394</posx>
-			<posy>678</posy>
+			<posx>0</posx>
+			<posy>670</posy>
 			<visible>System.GetBool(RSS.EnableRSSFeeds) + System.HasNetwork</visible>
 			<!--<visible>False</visible>-->
 			<animation type="WindowOpen">
@@ -3794,15 +3561,15 @@
 			</animation>
 			<control type="image">
 				<description>RSS Background</description>
-				<width>890</width>
-				<height>43</height>
-				<texture border="30,30,0,0">HomeRSS.png</texture>
+				<width>1280</width>
+				<height>50</height>
+				<texture>HomeRSS.png</texture>
 			</control>
 			<control type="rss">
 				<description>Rss Feed</description>
 				<posx>0</posx>
-				<posy>10</posy>
-				<width>890</width>
+				<posy>18</posy>
+				<width>1280</width>
 				<font>RssFeedFont</font>
 				<urlset>1</urlset>
 				<textcolor>FFFF9900</textcolor>
