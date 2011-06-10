@@ -74,10 +74,7 @@ class CAdvancedSettings
 
     CStdString m_cddbAddress;
 
-    CStdString m_videoCleanDateTimeRegExp;
     CStdStringArray m_pictureExcludeFromListingRegExps;
-
-
     
     int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     float m_controllerDeadzone;

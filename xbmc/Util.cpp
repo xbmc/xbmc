@@ -337,9 +337,9 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
   CStdString strExtension;
   URIUtils::GetExtension(strFileName, strExtension);
 
-  if (!reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp))
+  if (!reYear.RegComp(g_advancedSettings.VideoSettings->CleanDateTimeRegExp()))
   {
-    CLog::Log(LOGERROR, "%s: Invalid datetime clean RegExp:'%s'", __FUNCTION__, g_advancedSettings.m_videoCleanDateTimeRegExp.c_str());
+    CLog::Log(LOGERROR, "%s: Invalid datetime clean RegExp:'%s'", __FUNCTION__, g_advancedSettings.VideoSettings->CleanDateTimeRegExp().c_str());
   }
   else
   {

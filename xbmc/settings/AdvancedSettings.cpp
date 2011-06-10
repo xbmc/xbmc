@@ -76,8 +76,6 @@ void CAdvancedSettings::Initialize()
 
   m_cddbAddress = "freedb.freedb.org";
 
-  m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
-
   m_remoteDelay = 3;
   m_controllerDeadzone = 0.2f;
 
