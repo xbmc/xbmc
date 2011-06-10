@@ -88,7 +88,7 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
   }
   else if (media.Equals("pictures"))
   {
-    regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+    regexps = g_advancedSettings.PictureSettings->ExcludeFromListingRegExps();
     extensions = g_settings.m_pictureExtensions;
   }
 
@@ -215,7 +215,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
         }
         else if (media.Equals("pictures"))
         {
-          regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+          regexps = g_advancedSettings.PictureSettings->ExcludeFromListingRegExps();
           extensions = g_settings.m_pictureExtensions;
         }
       }

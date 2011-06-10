@@ -43,6 +43,7 @@ CAdvancedSettings::CAdvancedSettings()
   AudioSettings = new CAudioSettings();
   KaraokeSettings = new CKaraokeSettings();
   LibrarySettings = new CLibrarySettings();
+  PictureSettings = new CPictureSettings();
   SystemSettings = new CSystemSettings(g_application.IsStandAlone());
   VideoSettings = new CVideoAdvancedSettings();
 }
@@ -51,15 +52,14 @@ CAdvancedSettings::~CAdvancedSettings()
 {
   delete AudioSettings;
   delete KaraokeSettings;
+  delete LibrarySettings;
+  delete PictureSettings;
+  delete SystemSettings;
   delete VideoSettings;
 }
 
 void CAdvancedSettings::Initialize()
 {
-  m_slideshowPanAmount = 2.5f;
-  m_slideshowZoomAmount = 5.0f;
-  m_slideshowBlackBarCompensation = 20.0f;
-
   m_lcdRows = 4;
   m_lcdColumns = 20;
   m_lcdAddress1 = 0;
@@ -112,13 +112,7 @@ void CAdvancedSettings::Initialize()
   m_ForceD3D9Ex = false;
   m_AllowDynamicTextures = true;
 
-
-//caused lots of jerks
-//#ifdef _WIN32
-//  m_ForcedSwapTime = 2.0;
-//#else
   m_ForcedSwapTime = 0.0;
-//#endif
 
   m_measureRefreshrate = false;
 }
@@ -171,24 +165,18 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
   delete AudioSettings;
   delete KaraokeSettings;
   delete LibrarySettings;
+  delete PictureSettings;
   delete SystemSettings;
   delete VideoSettings;
 
   AudioSettings = new CAudioSettings(pRootElement);
   KaraokeSettings = new CKaraokeSettings(pRootElement);
   LibrarySettings = new CLibrarySettings(pRootElement);
+  PictureSettings = new CPictureSettings(pRootElement);
   SystemSettings = new CSystemSettings(g_application.IsStandAlone(), pRootElement);
   VideoSettings = new CVideoAdvancedSettings(pRootElement);
 
-  TiXmlElement *pElement = pRootElement->FirstChildElement("slideshow");
-  if (pElement)
-  {
-    XMLUtils::GetFloat(pElement, "panamount", m_slideshowPanAmount, 0.0f, 20.0f);
-    XMLUtils::GetFloat(pElement, "zoomamount", m_slideshowZoomAmount, 0.0f, 20.0f);
-    XMLUtils::GetFloat(pElement, "blackbarcompensation", m_slideshowBlackBarCompensation, 0.0f, 50.0f);
-  }
-
-  pElement = pRootElement->FirstChildElement("lcd");
+  TiXmlElement *pElement = pRootElement->FirstChildElement("lcd");
   if (pElement)
   {
     XMLUtils::GetInt(pElement, "rows", m_lcdRows, 1, 4);
@@ -255,20 +243,9 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
     XMLUtils::GetInt(pElement, "commbreakautowind", m_iEdlCommBreakAutowind, 0, 10);        // Between 0 and 10 seconds
   }
 
-  // picture exclude regexps
-  TiXmlElement* pPictureExcludes = pRootElement->FirstChildElement("pictureexcludes");
-  if (pPictureExcludes)
-    GetCustomRegexps(pPictureExcludes, m_pictureExcludeFromListingRegExps);
-
-  // picture extensions
-  TiXmlElement* pExts = pRootElement->FirstChildElement("pictureextensions");
-  if (pExts)
-    GetCustomExtensions(pExts,g_settings.m_pictureExtensions);
-
   XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 1, 20);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
   XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
-
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
@@ -278,70 +255,8 @@ void CAdvancedSettings::Clear()
 {
   AudioSettings->Clear();
   LibrarySettings->Clear();
+  PictureSettings->Clear();
   VideoSettings->Clear();
-  m_pictureExcludeFromListingRegExps.clear();
-}
-
-void CAdvancedSettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings)
-{
-  TiXmlElement *pElement = pRootElement;
-  while (pElement)
-  {
-    int iAction = 0; // overwrite
-    // for backward compatibility
-    const char* szAppend = pElement->Attribute("append");
-    if ((szAppend && stricmp(szAppend, "yes") == 0))
-      iAction = 1;
-    // action takes precedence if both attributes exist
-    const char* szAction = pElement->Attribute("action");
-    if (szAction)
-    {
-      iAction = 0; // overwrite
-      if (stricmp(szAction, "append") == 0)
-        iAction = 1; // append
-      else if (stricmp(szAction, "prepend") == 0)
-        iAction = 2; // prepend
-    }
-    if (iAction == 0)
-      settings.clear();
-    TiXmlNode* pRegExp = pElement->FirstChild("regexp");
-    int i = 0;
-    while (pRegExp)
-    {
-      if (pRegExp->FirstChild())
-      {
-        CStdString regExp = pRegExp->FirstChild()->Value();
-        if (iAction == 2)
-          settings.insert(settings.begin() + i++, 1, regExp);
-        else
-          settings.push_back(regExp);
-      }
-      pRegExp = pRegExp->NextSibling("regexp");
-    }
-
-    pElement = pElement->NextSiblingElement(pRootElement->Value());
-  }
-}
-
-void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions)
-{
-  CStdString extraExtensions;
-  CSettings::GetString(pRootElement,"add",extraExtensions,"");
-  if (extraExtensions != "")
-    extensions += "|" + extraExtensions;
-  CSettings::GetString(pRootElement,"remove",extraExtensions,"");
-  if (extraExtensions != "")
-  {
-    CStdStringArray exts;
-    StringUtils::SplitString(extraExtensions,"|",exts);
-    for (unsigned int i=0;i<exts.size();++i)
-    {
-      int iPos = extensions.Find(exts[i]);
-      if (iPos == -1)
-        continue;
-      extensions.erase(iPos,exts[i].size()+1);
-    }
-  }
 }
 
 void CAdvancedSettings::AddSettingsFile(CStdString filename)

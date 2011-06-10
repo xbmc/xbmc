@@ -26,6 +26,7 @@
 #include "AudioSettings.h"
 #include "KaraokeSettings.h"
 #include "LibrarySettings.h"
+#include "PictureSettings.h"
 #include "SystemSettings.h"
 #include "VideoAdvancedSettings.h"
 
@@ -51,12 +52,9 @@ class CAdvancedSettings
     CAudioSettings *AudioSettings;
     CKaraokeSettings *KaraokeSettings;
     CLibrarySettings *LibrarySettings;
+    CPictureSettings *PictureSettings;
     CSystemSettings *SystemSettings;
     CVideoAdvancedSettings *VideoSettings;
-
-    float m_slideshowBlackBarCompensation;
-    float m_slideshowZoomAmount;
-    float m_slideshowPanAmount;
 
     int m_lcdRows;
     int m_lcdColumns;
@@ -74,8 +72,6 @@ class CAdvancedSettings
 
     CStdString m_cddbAddress;
 
-    CStdStringArray m_pictureExcludeFromListingRegExps;
-    
     int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     float m_controllerDeadzone;
 
@@ -105,7 +101,6 @@ class CAdvancedSettings
 
     bool m_bFirstLoop;
 
-
     bool UseGLRectangeHack() { return m_GLRectangleHack; };
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
@@ -117,8 +112,6 @@ class CAdvancedSettings
 
     bool MeasureRefreshRate() { return m_measureRefreshrate; }; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
                                                                 //otherwise it will use the windows refreshrate
-
-
 
     bool IsInFullScreen() { return m_fullScreen; };
     void SetFullScreenState(bool isFullScreen) { m_fullScreen = isFullScreen; };

@@ -128,15 +128,15 @@ void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY
     // Calculate start and end positions
     // choose a random direction
     float angle = (rand() % 1000) / 1000.0f * 2 * (float)M_PI;
-    m_fPosX = cos(angle) * g_advancedSettings.m_slideshowPanAmount * m_iTotalFrames * 0.00005f;
-    m_fPosY = sin(angle) * g_advancedSettings.m_slideshowPanAmount * m_iTotalFrames * 0.00005f;
+    m_fPosX = cos(angle) * g_advancedSettings.PictureSettings->SlideshowPanAmount() * m_iTotalFrames * 0.00005f;
+    m_fPosY = sin(angle) * g_advancedSettings.PictureSettings->SlideshowPanAmount() * m_iTotalFrames * 0.00005f;
     m_fVelocityX = -m_fPosX * 2.0f / m_iTotalFrames;
     m_fVelocityY = -m_fPosY * 2.0f / m_iTotalFrames;
   }
   else if (m_displayEffect == EFFECT_ZOOM)
   {
     m_fPosZ = 1.0f;
-    m_fVelocityZ = 0.0001f * g_advancedSettings.m_slideshowZoomAmount;
+    m_fVelocityZ = 0.0001f * g_advancedSettings.PictureSettings->SlideshowZoomAmount();
   }
 
   m_bIsFinished = false;
@@ -246,7 +246,7 @@ void CSlideShowPic::Process()
     {
       m_fPosX += m_fVelocityX;
       m_fPosY += m_fVelocityY;
-      float fMoveAmount = g_advancedSettings.m_slideshowPanAmount * m_iTotalFrames * 0.0001f;
+      float fMoveAmount = g_advancedSettings.PictureSettings->SlideshowPanAmount() * m_iTotalFrames * 0.0001f;
       if (m_fPosX > fMoveAmount)
       {
         m_fPosX = fMoveAmount;
@@ -444,7 +444,7 @@ void CSlideShowPic::Render()
   float fScaleInv = fScreenWidth / m_fHeight;
 
   bool bFillScreen = false;
-  float fComp = 1.0f + 0.01f * g_advancedSettings.m_slideshowBlackBarCompensation;
+  float fComp = 1.0f + 0.01f * g_advancedSettings.PictureSettings->SlideshowBlackBarCompensation();
   float fScreenRatio = fScreenWidth / fScreenHeight * fPixelRatio;
   // work out if we should be compensating the zoom to minimize blackbars
   // we should compute this based on the % of black bars on screen perhaps??
@@ -462,7 +462,7 @@ void CSlideShowPic::Render()
   float fScale = si * si * (fScaleInv - fScaleNorm) + fScaleNorm;
   // scale if we need to due to the effect we're using
   if (m_displayEffect == EFFECT_FLOAT)
-    fScale *= (1.0f + g_advancedSettings.m_slideshowPanAmount * m_iTotalFrames * 0.0001f);
+    fScale *= (1.0f + g_advancedSettings.PictureSettings->SlideshowPanAmount() * m_iTotalFrames * 0.0001f);
   if (m_displayEffect == EFFECT_ZOOM)
     fScale *= m_fPosZ;
   // zoom image
