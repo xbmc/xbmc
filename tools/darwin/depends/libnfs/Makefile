@@ -3,14 +3,14 @@ include ../config.site.mk
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=a05b17e
+VERSION=0977fbb
 SOURCE=Memphiz-$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 BASE_URL=http://githubredir.debian.net/github/memphiz/libnfs
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX)
+CONFIGURE=./configure --prefix=$(PREFIX) --without-examples
 
 RPC_HEADERS=rpcinc/auth.h rpcinc/auth_unix.h rpcinc/clnt.h rpcinc/pmap_clnt.h rpcinc/pmap_prot.h rpcinc/pmap_rmt.h rpcinc/rpc.h rpcinc/rpc_msg.h rpcinc/svc.h rpcinc/svc_auth.h rpcinc/types.h rpcinc/xdr.h
 
@@ -29,9 +29,6 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	mkdir -p $(PREFIX)/include/rpc
 	install -c -m 644  $(RPC_HEADERS) $(PREFIX)/include/rpc/
-	patch -d $(SOURCE) -p0 < Makefile.in.patch
-	patch -d $(SOURCE) -p0 < nfs.x.patch
-	sed -i bak -e "s|EXAMPLES=|#EXAMPLES=|"  $(SOURCE)/Makefile.in
 	cd $(SOURCE); ./autogen.sh
 	cd $(SOURCE); $(CONFIGURE)
 
