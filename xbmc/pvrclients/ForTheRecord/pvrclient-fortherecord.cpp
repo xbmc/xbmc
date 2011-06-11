@@ -48,13 +48,17 @@ cPVRClientForTheRecord::cPVRClientForTheRecord()
   m_tsreader               = NULL;
   m_channel_id_offset      = 0;
   m_epg_id_offset          = 0;
+  m_iCurrentChannel        = 0;
 }
 
 cPVRClientForTheRecord::~cPVRClientForTheRecord()
 {
   XBMC->Log(LOG_DEBUG, "->~cPVRClientForTheRecord()");
   // Check if we are still reading a TV/Radio stream and close it here
-  CloseLiveStream();
+  if (m_bTimeShiftStarted)
+  {
+    CloseLiveStream();
+  }
 }
 
 
@@ -852,7 +856,11 @@ bool cPVRClientForTheRecord::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 
     if (m_keepalive.IsThreadRunning())
     {
-      m_keepalive.StopThread();
+      long hr = m_keepalive.StopThread();
+      if (hr != S_OK && hr != S_FALSE)
+      {
+        XBMC->Log(LOG_ERROR, "Stop keepalive thread failed with %x.", hr);
+      }
     }
     int retval = ForTheRecord::TuneLiveStream(channel->Guid(), channel->Type(), filename);
 
@@ -864,25 +872,33 @@ bool cPVRClientForTheRecord::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 
     XBMC->Log(LOG_INFO, "Live stream file: %s", filename.c_str());
     m_bTimeShiftStarted = true;
+    m_iCurrentChannel = channelinfo.iUniqueId;
+    if (m_keepalive.StartThread() != S_OK)
+    {
+      XBMC->Log(LOG_ERROR, "Start keepalive thread failed.");
+    }
 
 #ifdef TSREADER
     if (m_tsreader != NULL)
     {
-      XBMC->Log(LOG_DEBUG, "Close TsReader");
-      m_tsreader->Close();
-      delete m_tsreader;
-      m_tsreader = new CTsReader();
+      XBMC->Log(LOG_DEBUG, "Re-using existing TsReader...");
+      m_tsreader->OnZap();
+      usleep(100000);
     } else {
       m_tsreader = new CTsReader();
+      // Open Timeshift buffer
+      // TODO: rtsp support
+      XBMC->Log(LOG_DEBUG, "Open TsReader");
+      m_tsreader->Open(filename.c_str());
     }
 
-    // Open Timeshift buffer
-    // TODO: rtsp support
-    XBMC->Log(LOG_DEBUG, "Open TsReader");
-    m_tsreader->Open(filename.c_str());
-    m_keepalive.StartThread();
 #endif
     return true;
+  }
+  else
+  {
+    XBMC->Log(LOG_ERROR, "Could not get ForTheRecord channel guid for channel %i.", channelinfo.iUniqueId);
+    return false;
   }
 
   return false;
@@ -897,16 +913,17 @@ int cPVRClientForTheRecord::ReadLiveStream(unsigned char* pBuffer, unsigned int 
   unsigned char* bufptr = pBuffer;
 
   //XBMC->Log(LOG_DEBUG, "->ReadLiveStream(buf_size=%i)", buf_size);
+  if (!m_tsreader)
+    return -1;
 
   while (read_done < (unsigned long) iBufferSize)
   {
     read_wanted = iBufferSize - read_done;
-    if (!m_tsreader)
-      return -1;
 
-    if (m_tsreader->Read(bufptr, read_wanted, &read_wanted) > 0)
+    long lRc = 0;
+    if ((lRc = m_tsreader->Read(bufptr, read_wanted, &read_wanted)) > 0)
     {
-      usleep(20000);
+      usleep(400000);
       read_timeouts++;
       return read_wanted;
     }
@@ -914,7 +931,7 @@ int cPVRClientForTheRecord::ReadLiveStream(unsigned char* pBuffer, unsigned int 
 
     if ( read_done < (unsigned long) iBufferSize )
     {
-      if (read_timeouts > 50)
+      if (read_timeouts > 25)
       {
         XBMC->Log(LOG_INFO, "No data in 1 second");
         read_timeouts = 0;
@@ -922,7 +939,7 @@ int cPVRClientForTheRecord::ReadLiveStream(unsigned char* pBuffer, unsigned int 
       }
       bufptr += read_wanted;
       read_timeouts++;
-      usleep(20000);
+      usleep(40000);
     }
   }
   read_timeouts = 0;
@@ -935,10 +952,15 @@ int cPVRClientForTheRecord::ReadLiveStream(unsigned char* pBuffer, unsigned int 
 void cPVRClientForTheRecord::CloseLiveStream()
 {
   string result;
+  XBMC->Log(LOG_INFO, "CloseLiveStream");
 
   if (m_keepalive.IsThreadRunning())
   {
-    m_keepalive.StopThread();
+    long hr = m_keepalive.StopThread();
+    if (hr != S_OK && hr != S_FALSE)
+    {
+      XBMC->Log(LOG_ERROR, "Stop keepalive thread failed with %x.", hr);
+    }
   } 
 
   if (m_bTimeShiftStarted)
@@ -952,8 +974,8 @@ void cPVRClientForTheRecord::CloseLiveStream()
     }
 #endif
     ForTheRecord::StopLiveStream();
-    XBMC->Log(LOG_INFO, "CloseLiveStream");
     m_bTimeShiftStarted = false;
+    m_iCurrentChannel = 0;
   } else {
     XBMC->Log(LOG_DEBUG, "CloseLiveStream: Nothing to do.");
   }
@@ -964,14 +986,14 @@ bool cPVRClientForTheRecord::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
   XBMC->Log(LOG_DEBUG, "->SwitchChannel(%i)", channelinfo.iUniqueId);
 
-  CloseLiveStream();
+  //CloseLiveStream();
   return OpenLiveStream(channelinfo);
 }
 
 
 int cPVRClientForTheRecord::GetCurrentClientChannel()
 {
-  return 0;
+  return m_iCurrentChannel;
 }
 
 PVR_ERROR cPVRClientForTheRecord::SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
