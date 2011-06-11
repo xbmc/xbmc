@@ -43,14 +43,13 @@ class CAdvancedSettings
     void AddSettingsFile(CStdString filename);
     bool Load();
     void Clear();
-    CAudioSettings *AudioSettings;
-    CAudioSettings *AudioSettings;
-    CKaraokeSettings *KaraokeSettings;
-    CLibrarySettings *LibrarySettings;
-    CMediaProviderSettings *MediaProviderSettings;
-    CPictureSettings *PictureSettings;
-    CSystemSettings *SystemSettings;
-    CVideoAdvancedSettings *VideoSettings;
+    CAudioSettings *AudioSettings() { return m_audioSettings; };
+    CKaraokeSettings *KaraokeSettings() { return m_karaokeSettings; };
+    CLibrarySettings *LibrarySettings() { return m_librarySettings; };
+    CMediaProviderSettings *MediaProviderSettings() { return m_mediaProviderSettings; };
+    CPictureSettings *PictureSettings() { return m_pictureSettings; };
+    CSystemSettings *SystemSettings() { return m_systemSettings; };
+    CVideoAdvancedSettings *VideoSettings() { return m_videoSettings; };
     int m_lcdRows;
     int m_lcdColumns;
     int m_lcdAddress1;
@@ -65,6 +64,13 @@ class CAdvancedSettings
   private:
     void ParseSettingsFile(CStdString file);
     std::vector<CStdString> m_settingsFiles;
+    CAudioSettings *m_audioSettings;
+    CKaraokeSettings *m_karaokeSettings;
+    CLibrarySettings *m_librarySettings;
+    CMediaProviderSettings *m_mediaProviderSettings;
+    CPictureSettings *m_pictureSettings;
+    CSystemSettings *m_systemSettings;
+    CVideoAdvancedSettings *m_videoSettings;
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

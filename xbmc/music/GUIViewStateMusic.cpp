@@ -76,10 +76,10 @@ CGUIViewStateMusicSearch::CGUIViewStateMusicSearch(const CFileItemList& items) :
   if (strTrackRight.IsEmpty())
     strTrackRight = g_guiSettings.GetString("musicfiles.trackformatright");
 
-  CStdString strAlbumLeft = g_advancedSettings.LibrarySettings->MusicLibraryAlbumFormat();
+  CStdString strAlbumLeft = g_advancedSettings.LibrarySettings()->MusicLibraryAlbumFormat();
   if (strAlbumLeft.IsEmpty())
     strAlbumLeft = "%B"; // album
-  CStdString strAlbumRight = g_advancedSettings.LibrarySettings->MusicLibraryAlbumFormatRight();
+  CStdString strAlbumRight = g_advancedSettings.LibrarySettings()->MusicLibraryAlbumFormatRight();
   if (strAlbumRight.IsEmpty())
     strAlbumRight = "%A"; // artist
 
@@ -118,10 +118,10 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   if (strTrackRight.IsEmpty())
     strTrackRight = g_guiSettings.GetString("musicfiles.trackformatright");
 
-  CStdString strAlbumLeft = g_advancedSettings.LibrarySettings->MusicLibraryAlbumFormat();
+  CStdString strAlbumLeft = g_advancedSettings.LibrarySettings()->MusicLibraryAlbumFormat();
   if (strAlbumLeft.IsEmpty())
     strAlbumLeft = "%B"; // album
-  CStdString strAlbumRight = g_advancedSettings.LibrarySettings->MusicLibraryAlbumFormatRight();
+  CStdString strAlbumRight = g_advancedSettings.LibrarySettings()->MusicLibraryAlbumFormatRight();
   if (strAlbumRight.IsEmpty())
     strAlbumRight = "%A"; // artist
 
@@ -413,10 +413,10 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
   } 
   else if (items.GetContent() == "albums") 
   {
-    CStdString strAlbumLeft = g_advancedSettings.LibrarySettings->MusicLibraryAlbumFormat();
+    CStdString strAlbumLeft = g_advancedSettings.LibrarySettings()->MusicLibraryAlbumFormat();
     if (strAlbumLeft.IsEmpty())
       strAlbumLeft = "%B"; // album
-    CStdString strAlbumRight = g_advancedSettings.LibrarySettings->MusicLibraryAlbumFormatRight();
+    CStdString strAlbumRight = g_advancedSettings.LibrarySettings()->MusicLibraryAlbumFormatRight();
     if (strAlbumRight.IsEmpty())
       strAlbumRight = "%A"; // artist
 
@@ -553,7 +553,7 @@ void CGUIViewStateWindowMusicNav::SaveViewState()
 
 void CGUIViewStateWindowMusicNav::AddOnlineShares()
 {
-  if (!g_advancedSettings.SystemSettings->UseVirtualShares()) return;
+  if (!g_advancedSettings.SystemSettings()->UseVirtualShares()) return;
   for (int i = 0; i < (int)g_settings.m_musicSources.size(); ++i)
   {
     CMediaSource share = g_settings.m_musicSources.at(i);

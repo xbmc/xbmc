@@ -255,7 +255,7 @@ void CGUIDialogSongInfo::OnGetThumb()
   }
   if (CFile::Exists(localThumb))
   {
-    URIUtils::AddFileToFolder(g_advancedSettings.SystemSettings->CachePath(), "localthumb.jpg", cachedLocalThumb);
+    URIUtils::AddFileToFolder(g_advancedSettings.SystemSettings()->CachePath(), "localthumb.jpg", cachedLocalThumb);
     if (CPicture::CreateThumbnail(localThumb, cachedLocalThumb))
     {
       CFileItemPtr item(new CFileItem("thumb://Local", false));

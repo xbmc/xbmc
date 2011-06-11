@@ -129,8 +129,8 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   if (nThreads == -1)
     nThreads = (m_vecItems.size() / (ITEMS_PER_THREAD+1)) + 1;
 
-  if (nThreads > g_advancedSettings.SystemSettings->BGInfoLoaderMaxThreads())
-    nThreads = g_advancedSettings.SystemSettings->BGInfoLoaderMaxThreads();
+  if (nThreads > g_advancedSettings.SystemSettings()->BGInfoLoaderMaxThreads())
+    nThreads = g_advancedSettings.SystemSettings()->BGInfoLoaderMaxThreads();
 
   m_nActiveThreads = nThreads;
   for (int i=0; i < nThreads; i++)

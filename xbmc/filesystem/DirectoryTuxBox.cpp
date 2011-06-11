@@ -200,24 +200,24 @@ void CDirectoryTuxBox::GetRootAndChildStringEnigma2(CStdString& strBQRequest, CS
 bool CDirectoryTuxBox::GetRootAndChildString(const CStdString strPath, CStdString& strBQRequest, CStdString& strXMLRootString, CStdString& strXMLChildString )
 {
   //Advanced Settings: RootMode! Movies:
-  if(g_advancedSettings.MediaProviderSettings->TuxBoxDefaultRootMenu() == 3) //Movies! Fixed-> mode=3&submode=4
+  if(g_advancedSettings.MediaProviderSettings()->TuxBoxDefaultRootMenu() == 3) //Movies! Fixed-> mode=3&submode=4
   {
     CLog::Log(LOGDEBUG, "%s - Default defined RootMenu : (3) Movies", __FUNCTION__);
     strBQRequest = "xml/services?mode=3&submode=4";
     strXMLRootString.Format("movies");
     strXMLChildString.Format("service");
   }
-  else if(g_advancedSettings.MediaProviderSettings->TuxBoxDefaultRootMenu() <= 0 || g_advancedSettings.MediaProviderSettings->TuxBoxDefaultRootMenu() == 1 ||
-    g_advancedSettings.MediaProviderSettings->TuxBoxDefaultRootMenu() > 4 )
+  else if(g_advancedSettings.MediaProviderSettings()->TuxBoxDefaultRootMenu() <= 0 || g_advancedSettings.MediaProviderSettings()->TuxBoxDefaultRootMenu() == 1 ||
+    g_advancedSettings.MediaProviderSettings()->TuxBoxDefaultRootMenu() > 4 )
   {
     //Falling Back to the Default RootMenu => 0 Bouquets
-    if(g_advancedSettings.MediaProviderSettings->TuxBoxDefaultRootMenu() < 0 || g_advancedSettings.MediaProviderSettings->TuxBoxDefaultRootMenu() > 4)
+    if(g_advancedSettings.MediaProviderSettings()->TuxBoxDefaultRootMenu() < 0 || g_advancedSettings.MediaProviderSettings()->TuxBoxDefaultRootMenu() > 4)
     {
-      g_advancedSettings.MediaProviderSettings->SetTuxBoxDefaultRootMenu(0);
+      g_advancedSettings.MediaProviderSettings()->SetTuxBoxDefaultRootMenu(0);
     }
 
     //Advanced Settings: SubMenu!
-    if(g_advancedSettings.MediaProviderSettings->TuxBoxSubMenuSelection())
+    if(g_advancedSettings.MediaProviderSettings()->TuxBoxSubMenuSelection())
     {
       CLog::Log(LOGDEBUG, "%s SubMenu Channel Selection is Enabled! Requesting Submenu!", __FUNCTION__);
       // DeActivated: Timing Problems, bug in TuxBox.. etc.!
@@ -232,7 +232,7 @@ bool CDirectoryTuxBox::GetRootAndChildString(const CStdString strPath, CStdStrin
       if(bReqMoRe)
       {
         //PopUp Context and Request SubMode with root and child string
-        strBQRequest = g_tuxbox.GetSubMode(g_advancedSettings.MediaProviderSettings->TuxBoxDefaultRootMenu(), strXMLRootString, strXMLChildString);
+        strBQRequest = g_tuxbox.GetSubMode(g_advancedSettings.MediaProviderSettings()->TuxBoxDefaultRootMenu(), strXMLRootString, strXMLChildString);
         if(strBQRequest.IsEmpty())
         {
           strBQRequest = "xml/services?mode=0&submode=4"; //Bouquets
@@ -244,21 +244,21 @@ bool CDirectoryTuxBox::GetRootAndChildString(const CStdString strPath, CStdStrin
     else
     {
       //Advanced Settings: Set Default Subemnu
-      if(g_advancedSettings.MediaProviderSettings->TuxBoxDefaultSubMenu() == 1)
+      if(g_advancedSettings.MediaProviderSettings()->TuxBoxDefaultSubMenu() == 1)
       {
         CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (1) Services", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=1"; //Services
         strXMLRootString.Format("services");
         strXMLChildString.Format("service");
       }
-      else if(g_advancedSettings.MediaProviderSettings->TuxBoxDefaultSubMenu() == 2)
+      else if(g_advancedSettings.MediaProviderSettings()->TuxBoxDefaultSubMenu() == 2)
       {
         CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (2) Satellites", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=2"; //Satellites
         strXMLRootString.Format("satellites");
         strXMLChildString.Format("satellite");
       }
-      else if(g_advancedSettings.MediaProviderSettings->TuxBoxDefaultSubMenu() == 3)
+      else if(g_advancedSettings.MediaProviderSettings()->TuxBoxDefaultSubMenu() == 3)
       {
         CLog::Log(LOGDEBUG, "%s - Default defined SubMenu : (3) Providers", __FUNCTION__);
         strBQRequest = "xml/services?mode=0&submode=3"; //Providers

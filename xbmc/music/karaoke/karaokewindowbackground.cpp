@@ -73,7 +73,7 @@ void CKaraokeWindowBackground::Init(CGUIWindow * wnd)
   m_ImgControl = (CGUIImage*) wnd->GetControl( CONTROL_ID_IMG );
 
   // Init visialisation variables
-  CStdString defBkgType = g_advancedSettings.KaraokeSettings->DefaultBackgroundType();
+  CStdString defBkgType = g_advancedSettings.KaraokeSettings()->DefaultBackgroundType();
 
   if ( defBkgType.IsEmpty() || defBkgType == "none" )
   {
@@ -85,17 +85,17 @@ void CKaraokeWindowBackground::Init(CGUIWindow * wnd)
     CLog::Log( LOGDEBUG, "Karaoke default background is visualisation" );
     m_defaultMode = BACKGROUND_VISUALISATION;
   }
-  else if ( defBkgType == "image" && !g_advancedSettings.KaraokeSettings->DefaultBackgroundFilePath().IsEmpty() )
+  else if ( defBkgType == "image" && !g_advancedSettings.KaraokeSettings()->DefaultBackgroundFilePath().IsEmpty() )
   {
-    CLog::Log( LOGDEBUG, "Karaoke default background is image %s", g_advancedSettings.KaraokeSettings->DefaultBackgroundFilePath().c_str() );
+    CLog::Log( LOGDEBUG, "Karaoke default background is image %s", g_advancedSettings.KaraokeSettings()->DefaultBackgroundFilePath().c_str() );
     m_defaultMode = BACKGROUND_IMAGE;
-    m_path = g_advancedSettings.KaraokeSettings->DefaultBackgroundFilePath();
+    m_path = g_advancedSettings.KaraokeSettings()->DefaultBackgroundFilePath();
   }
-  else if ( defBkgType == "video" && !g_advancedSettings.KaraokeSettings->DefaultBackgroundFilePath().IsEmpty() )
+  else if ( defBkgType == "video" && !g_advancedSettings.KaraokeSettings()->DefaultBackgroundFilePath().IsEmpty() )
   {
-    CLog::Log( LOGDEBUG, "Karaoke default background is video %s", g_advancedSettings.KaraokeSettings->DefaultBackgroundFilePath().c_str() );
+    CLog::Log( LOGDEBUG, "Karaoke default background is video %s", g_advancedSettings.KaraokeSettings()->DefaultBackgroundFilePath().c_str() );
     m_defaultMode = BACKGROUND_VIDEO;
-    m_path = g_advancedSettings.KaraokeSettings->DefaultBackgroundFilePath();
+    m_path = g_advancedSettings.KaraokeSettings()->DefaultBackgroundFilePath();
   }
 }
 

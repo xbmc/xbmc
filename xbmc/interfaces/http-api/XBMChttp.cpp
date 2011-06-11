@@ -2996,7 +2996,7 @@ int CXbmcHttp::xbmcRecordStatus(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcGetLogLevel()
 {
   CStdString level;
-  level.Format("%i", g_advancedSettings.SystemSettings->LogLevel());
+  level.Format("%i", g_advancedSettings.SystemSettings()->LogLevel());
   return SetResponse(openTag+level);
 }
 
@@ -3006,7 +3006,7 @@ int CXbmcHttp::xbmcSetLogLevel(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Must have one parameter");
   else
   {
-    g_advancedSettings.SystemSettings->SetLogLevel(atoi(paras[0]));
+    g_advancedSettings.SystemSettings()->SetLogLevel(atoi(paras[0]));
      return SetResponse(openTag+"OK");
   }
 }

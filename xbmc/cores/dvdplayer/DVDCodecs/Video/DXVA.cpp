@@ -347,10 +347,10 @@ static bool CheckCompatibility(AVCodecContext *avctx)
   // The advanced setting lets the user override the autodetection (in case of false positive or negative)
 
   bool checkcompat;
-  if (!g_advancedSettings.VideoSettings->DXVACheckCompatibilityPresent())
+  if (!g_advancedSettings.VideoSettings()->DXVACheckCompatibilityPresent())
     checkcompat = IsL41LimitedATI();  // ATI UVD and UVD+ cards can only do L4.1 - corresponds roughly to series 3xxx
   else
-    checkcompat = g_advancedSettings.VideoSettings->DXVACheckCompatibility();
+    checkcompat = g_advancedSettings.VideoSettings()->DXVACheckCompatibility();
 
   if (checkcompat && !CheckH264L41(avctx))
   {

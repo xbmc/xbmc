@@ -30,24 +30,24 @@ using namespace XFILE;
 
 CAdvancedSettings::CAdvancedSettings()
 {
-  AudioSettings = new CAudioSettings();
-  KaraokeSettings = new CKaraokeSettings();
-  LibrarySettings = new CLibrarySettings();
-  MediaProviderSettings = new CMediaProviderSettings();
-  PictureSettings = new CPictureSettings();
-  SystemSettings = new CSystemSettings(g_application.IsStandAlone());
-  VideoSettings = new CVideoAdvancedSettings();
+  m_audioSettings = new CAudioSettings();
+  m_karaokeSettings = new CKaraokeSettings();
+  m_librarySettings = new CLibrarySettings();
+  m_mediaProviderSettings = new CMediaProviderSettings();
+  m_pictureSettings = new CPictureSettings();
+  m_systemSettings = new CSystemSettings(g_application.IsStandAlone());
+  m_videoSettings = new CVideoAdvancedSettings();
 }
 
 CAdvancedSettings::~CAdvancedSettings()
 {
-  delete AudioSettings;
-  delete KaraokeSettings;
-  delete LibrarySettings;
-  delete MediaProviderSettings;
-  delete PictureSettings;
-  delete SystemSettings;
-  delete VideoSettings;
+  delete m_audioSettings;
+  delete m_karaokeSettings;
+  delete m_librarySettings;
+  delete m_mediaProviderSettings;
+  delete m_pictureSettings;
+  delete m_systemSettings;
+  delete m_videoSettings;
 }
 
 void CAdvancedSettings::Initialize()
@@ -64,10 +64,6 @@ void CAdvancedSettings::Initialize()
   m_lcdHostName = "localhost";
 
   m_controllerDeadzone = 0.2f;
-
-  m_canQuit = true;
-  m_canWindowed = true;
-  m_showSplash = true;
 }
 
 bool CAdvancedSettings::Load()
@@ -114,21 +110,21 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
   advancedXML.Accept(&printer);
   CLog::Log(LOGNOTICE, "Contents of %s are...\n%s", file.c_str(), printer.CStr());
 
-  delete AudioSettings;
-  delete KaraokeSettings;
-  delete LibrarySettings;
-  delete MediaProviderSettings;
-  delete PictureSettings;
-  delete SystemSettings;
-  delete VideoSettings;
+  delete m_audioSettings;
+  delete m_karaokeSettings;
+  delete m_librarySettings;
+  delete m_mediaProviderSettings;
+  delete m_pictureSettings;
+  delete m_systemSettings;
+  delete m_videoSettings;
 
-  AudioSettings = new CAudioSettings(pRootElement);
-  KaraokeSettings = new CKaraokeSettings(pRootElement);
-  LibrarySettings = new CLibrarySettings(pRootElement);
-  MediaProviderSettings = new CMediaProviderSettings(pRootElement);
-  PictureSettings = new CPictureSettings(pRootElement);
-  SystemSettings = new CSystemSettings(g_application.IsStandAlone(), pRootElement);
-  VideoSettings = new CVideoAdvancedSettings(pRootElement);
+  m_audioSettings = new CAudioSettings(pRootElement);
+  m_karaokeSettings = new CKaraokeSettings(pRootElement);
+  m_librarySettings = new CLibrarySettings(pRootElement);
+  m_mediaProviderSettings = new CMediaProviderSettings(pRootElement);
+  m_pictureSettings = new CPictureSettings(pRootElement);
+  m_systemSettings = new CSystemSettings(g_application.IsStandAlone(), pRootElement);
+  m_videoSettings = new CVideoAdvancedSettings(pRootElement);
 
   TiXmlElement *pElement = pRootElement->FirstChildElement("lcd");
   if (pElement)
@@ -153,10 +149,10 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
 
 void CAdvancedSettings::Clear()
 {
-  AudioSettings->Clear();
-  LibrarySettings->Clear();
-  PictureSettings->Clear();
-  VideoSettings->Clear();
+  m_audioSettings->Clear();
+  m_librarySettings->Clear();
+  m_pictureSettings->Clear();
+  m_videoSettings->Clear();
 }
 
 void CAdvancedSettings::AddSettingsFile(CStdString filename)

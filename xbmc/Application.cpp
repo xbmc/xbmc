@@ -379,7 +379,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       g_application.ProcessMouse();
       break;
     case XBMC_VIDEORESIZE:
-      if (!g_application.m_bInitializing && !g_advancedSettings.VideoSettings->IsInFullScreen())
+      if (!g_application.m_bInitializing && !g_advancedSettings.VideoSettings()->IsInFullScreen())
       {
         g_Windowing.SetWindowResolution(newEvent.resize.w, newEvent.resize.h);
         g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
@@ -663,7 +663,7 @@ bool CApplication::Create()
   // update the window resolution
   g_Windowing.SetWindowResolution(g_guiSettings.GetInt("window.width"), g_guiSettings.GetInt("window.height"));
 
-  if (g_advancedSettings.SystemSettings->StartFullScreen() && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)
+  if (g_advancedSettings.SystemSettings()->StartFullScreen() && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)
     g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
 
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
@@ -700,7 +700,7 @@ bool CApplication::Create()
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
 
-  if (g_advancedSettings.SystemSettings->ShowSplash())
+  if (g_advancedSettings.SystemSettings()->ShowSplash())
   {
     CStdString strUserSplash = "special://home/media/Splash.png";
     if (CFile::Exists(strUserSplash))
@@ -1129,7 +1129,7 @@ bool CApplication::Initialize()
       FatalErrorHandler(true, true, true);
   }
 
-  if (g_advancedSettings.SystemSettings->ShowSplash())
+  if (g_advancedSettings.SystemSettings()->ShowSplash())
     SAFE_DELETE(m_splash);
 
   if (g_guiSettings.GetBool("masterlock.startuplock") &&
@@ -1258,9 +1258,9 @@ bool CApplication::StartJSONRPCServer()
   {
     CJSONRPC::Initialize();
 
-    if (CTCPServer::StartServer(g_advancedSettings.SystemSettings->JSONTCPPort(), g_guiSettings.GetBool("services.esallinterfaces")))
+    if (CTCPServer::StartServer(g_advancedSettings.SystemSettings()->JSONTCPPort(), g_guiSettings.GetBool("services.esallinterfaces")))
     {
-      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", g_advancedSettings.SystemSettings->JSONTCPPort());
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", g_advancedSettings.SystemSettings()->JSONTCPPort());
       return true;
     }
     else
@@ -2111,7 +2111,7 @@ void CApplication::Render()
 
 void CApplication::SetStandAlone(bool value)
 {
-  g_advancedSettings.SystemSettings->SetHandleMounting(value);
+  g_advancedSettings.SystemSettings()->SetHandleMounting(value);
   m_bStandalone = value;
 }
 
@@ -2147,7 +2147,7 @@ void CApplication::RenderMemoryStatus()
   if (!m_debugLayout)
     return;
 
-  if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.SystemSettings->LogLevel())
+  if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.SystemSettings()->LogLevel())
   {
     CStdString info;
     MEMORYSTATUS stat;
@@ -3761,20 +3761,20 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (playlist == PLAYLIST_VIDEO && g_playlistPlayer.GetPlaylist(playlist).size() > 1)
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
-    options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile() && g_advancedSettings.VideoSettings->FullScreenOnMovieStart() && !g_settings.m_bStartVideoWindowed;
+    options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile() && g_advancedSettings.VideoSettings()->FullScreenOnMovieStart() && !g_settings.m_bStartVideoWindowed;
   }
   else if(m_itemCurrentFile->IsStack() && m_currentStack->Size() > 0)
   {
     // TODO - this will fail if user seeks back to first file in stack
     if(m_currentStackPosition == 0 || m_itemCurrentFile->m_lStartOffset == STARTOFFSET_RESUME)
-      options.fullscreen = g_advancedSettings.VideoSettings->FullScreenOnMovieStart() && !g_settings.m_bStartVideoWindowed;
+      options.fullscreen = g_advancedSettings.VideoSettings()->FullScreenOnMovieStart() && !g_settings.m_bStartVideoWindowed;
     else
       options.fullscreen = false;
     // reset this so we don't think we are resuming on seek
     m_itemCurrentFile->m_lStartOffset = 0;
   }
   else
-    options.fullscreen = g_advancedSettings.VideoSettings->FullScreenOnMovieStart() && !g_settings.m_bStartVideoWindowed;
+    options.fullscreen = g_advancedSettings.VideoSettings()->FullScreenOnMovieStart() && !g_settings.m_bStartVideoWindowed;
 
   // reset m_bStartVideoWindowed as it's a temp setting
   g_settings.m_bStartVideoWindowed = false;
@@ -4176,10 +4176,10 @@ void CApplication::UpdateFileState()
         m_progressTrackingPlayCountUpdate = false;
       }
 
-      if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.AudioSettings->PlayCountMinimumPercent() > 0 &&
-          GetPercentage() >= g_advancedSettings.AudioSettings->PlayCountMinimumPercent()) ||
-          (m_progressTrackingItem->IsVideo() && g_advancedSettings.VideoSettings->PlayCountMinimumPercent() > 0 &&
-          GetPercentage() >= g_advancedSettings.VideoSettings->PlayCountMinimumPercent()))
+      if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.AudioSettings()->PlayCountMinimumPercent() > 0 &&
+          GetPercentage() >= g_advancedSettings.AudioSettings()->PlayCountMinimumPercent()) ||
+          (m_progressTrackingItem->IsVideo() && g_advancedSettings.VideoSettings()->PlayCountMinimumPercent() > 0 &&
+          GetPercentage() >= g_advancedSettings.VideoSettings()->PlayCountMinimumPercent()))
       {
         m_progressTrackingPlayCountUpdate = true;
       }
@@ -4196,14 +4196,14 @@ void CApplication::UpdateFileState()
         m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
         m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
 
-        if (g_advancedSettings.VideoSettings->IgnorePercentAtEnd() > 0 &&
-            GetTotalTime() - GetTime() < 0.01f * g_advancedSettings.VideoSettings->IgnorePercentAtEnd() * GetTotalTime())
+        if (g_advancedSettings.VideoSettings()->IgnorePercentAtEnd() > 0 &&
+            GetTotalTime() - GetTime() < 0.01f * g_advancedSettings.VideoSettings()->IgnorePercentAtEnd() * GetTotalTime())
         {
           // Delete the bookmark
           m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
         }
         else
-        if (GetTime() > g_advancedSettings.VideoSettings->IgnoreSecondsAtStart())
+        if (GetTime() > g_advancedSettings.VideoSettings()->IgnoreSecondsAtStart())
         {
           // Update the bookmark
           m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
@@ -4619,7 +4619,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       
       // In case playback ended due to user eg. skipping over the end, clear
       // our resume bookmark here
-      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.VideoSettings->IgnorePercentAtEnd() > 0)
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED && m_progressTrackingPlayCountUpdate && g_advancedSettings.VideoSettings()->IgnorePercentAtEnd() > 0)
       {
         // Delete the bookmark
         m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
@@ -5089,13 +5089,13 @@ int CApplication::GetVolume() const
 int CApplication::GetSubtitleDelay() const
 {
   // converts subtitle delay to a percentage
-  return int(((float)(g_settings.m_currentVideoSettings.m_SubtitleDelay + g_advancedSettings.VideoSettings->SubsDelayRange())) / (2 * g_advancedSettings.VideoSettings->SubsDelayRange())*100.0f + 0.5f);
+  return int(((float)(g_settings.m_currentVideoSettings.m_SubtitleDelay + g_advancedSettings.VideoSettings()->SubsDelayRange())) / (2 * g_advancedSettings.VideoSettings()->SubsDelayRange())*100.0f + 0.5f);
 }
 
 int CApplication::GetAudioDelay() const
 {
   // converts subtitle delay to a percentage
-  return int(((float)(g_settings.m_currentVideoSettings.m_AudioDelay + g_advancedSettings.VideoSettings->AudioDelayRange())) / (2 * g_advancedSettings.VideoSettings->AudioDelayRange())*100.0f + 0.5f);
+  return int(((float)(g_settings.m_currentVideoSettings.m_AudioDelay + g_advancedSettings.VideoSettings()->AudioDelayRange())) / (2 * g_advancedSettings.VideoSettings()->AudioDelayRange())*100.0f + 0.5f);
 }
 
 void CApplication::SetPlaySpeed(int iSpeed)

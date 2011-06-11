@@ -219,7 +219,7 @@ void CGUIWindowVisualisation::FrameMove()
     m_initTimer.StartZero();
     g_infoManager.SetShowInfo(true);
   }
-  if (m_initTimer.IsRunning() && m_initTimer.GetElapsedSeconds() > (float)g_advancedSettings.LibrarySettings->SongInfoDuration())
+  if (m_initTimer.IsRunning() && m_initTimer.GetElapsedSeconds() > (float)g_advancedSettings.LibrarySettings()->SongInfoDuration())
   {
     m_initTimer.Stop();
     if (!g_settings.m_bMyMusicSongThumbInVis)

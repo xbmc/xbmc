@@ -83,7 +83,7 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_PARENT_DIR)
   {
-    if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.SystemSettings->UseEvilB())
+    if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.SystemSettings()->UseEvilB())
       Close();
     else
       GoParentFolder();

@@ -170,7 +170,7 @@ bool CFavourites::TestParamify()
 CStdString CFavourites::GetExecutePath(const CFileItem *item, int contextWindow)
 {
   CStdString execute;
-  if (item->m_bIsFolder && (g_advancedSettings.LibrarySettings->ShowPlaylistAsFolders() || !(item->IsSmartPlayList() || item->IsPlayList())))
+  if (item->m_bIsFolder && (g_advancedSettings.LibrarySettings()->ShowPlaylistAsFolders() || !(item->IsSmartPlayList() || item->IsPlayList())))
     execute.Format("ActivateWindow(%i,%s)", contextWindow, Paramify(item->m_strPath));
   else if (item->m_strPath.Left(9).Equals("script://"))
     execute.Format("RunScript(%s)", Paramify(item->m_strPath.Mid(9)));

@@ -161,7 +161,7 @@ int CTCPServer::GetCapabilities()
 
 void CTCPServer::Announce(EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  std::string str = AnnouncementToJSON(flag, sender, message, data, g_advancedSettings.SystemSettings->OutputCompactJSON());
+  std::string str = AnnouncementToJSON(flag, sender, message, data, g_advancedSettings.SystemSettings()->OutputCompactJSON());
 
   for (unsigned int i = 0; i < m_connections.size(); i++)
   {

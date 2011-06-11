@@ -481,9 +481,9 @@ void CMusicInfoTag::AppendArtist(const CStdString &artist)
     return SetArtist(artist);
   std::vector<CStdString> values;
   CStdString value(Trim(artist));
-  StringUtils::SplitString(m_strArtist, g_advancedSettings.LibrarySettings->MusicItemSeparator(), values);
+  StringUtils::SplitString(m_strArtist, g_advancedSettings.LibrarySettings()->MusicItemSeparator(), values);
   if (std::find(values.begin(), values.end(), value) == values.end())
-    m_strArtist += g_advancedSettings.LibrarySettings->MusicItemSeparator() + value;
+    m_strArtist += g_advancedSettings.LibrarySettings()->MusicItemSeparator() + value;
 }
 
 void CMusicInfoTag::AppendAlbumArtist(const CStdString &albumArtist)
@@ -492,9 +492,9 @@ void CMusicInfoTag::AppendAlbumArtist(const CStdString &albumArtist)
     return SetAlbumArtist(albumArtist);
   std::vector<CStdString> values;
   CStdString value(Trim(albumArtist));
-  StringUtils::SplitString(m_strAlbumArtist, g_advancedSettings.LibrarySettings->MusicItemSeparator(), values);
+  StringUtils::SplitString(m_strAlbumArtist, g_advancedSettings.LibrarySettings()->MusicItemSeparator(), values);
   if (std::find(values.begin(), values.end(), value) == values.end())
-    m_strAlbumArtist += g_advancedSettings.LibrarySettings->MusicItemSeparator() + value;
+    m_strAlbumArtist += g_advancedSettings.LibrarySettings()->MusicItemSeparator() + value;
 }
 
 void CMusicInfoTag::AppendGenre(const CStdString &genre)
@@ -503,9 +503,9 @@ void CMusicInfoTag::AppendGenre(const CStdString &genre)
     return SetGenre(genre);
   std::vector<CStdString> values;
   CStdString value(Trim(genre));
-  StringUtils::SplitString(m_strGenre, g_advancedSettings.LibrarySettings->MusicItemSeparator(), values);
+  StringUtils::SplitString(m_strGenre, g_advancedSettings.LibrarySettings()->MusicItemSeparator(), values);
   if (std::find(values.begin(), values.end(), value) == values.end())
-    m_strGenre += g_advancedSettings.LibrarySettings->MusicItemSeparator() + value;
+    m_strGenre += g_advancedSettings.LibrarySettings()->MusicItemSeparator() + value;
 }
 
 CStdString CMusicInfoTag::Trim(const CStdString &value) const

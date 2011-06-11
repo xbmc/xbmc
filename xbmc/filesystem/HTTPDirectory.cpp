@@ -89,7 +89,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         url.SetFileName(pItem->m_strPath);
         pItem->m_strPath = url.Get();
 
-        if (!pItem->m_bIsFolder && g_advancedSettings.SystemSettings->HTTPDirectoryStatFilesize())
+        if (!pItem->m_bIsFolder && g_advancedSettings.SystemSettings()->HTTPDirectoryStatFilesize())
         {
           CFileCurl file;
           file.Open(url);

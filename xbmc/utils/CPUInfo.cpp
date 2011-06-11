@@ -350,7 +350,7 @@ CTemperature CCPUInfo::getTemperature()
               ret   = 0;
   char        scale = 0;
   FILE        *p    = NULL;
-  CStdString  cmd   = g_advancedSettings.SystemSettings->CPUTempCMD();
+  CStdString  cmd   = g_advancedSettings.SystemSettings()->CPUTempCMD();
 
   if (cmd.IsEmpty() && m_fProcTemperature == NULL)
     return CTemperature();

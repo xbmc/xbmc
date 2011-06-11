@@ -283,7 +283,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
         CFileItemPtr item2 = items[i];
 
         if (item2->IsVideo() && !item2->IsPlayList() &&
-            !CUtil::ExcludeFileOrFolder(item2->m_strPath, g_advancedSettings.VideoSettings->MoviesExcludeFromScanRegExps()))
+            !CUtil::ExcludeFileOrFolder(item2->m_strPath, g_advancedSettings.VideoSettings()->MoviesExcludeFromScanRegExps()))
         {
           item.m_strPath = item2->m_strPath;
           item.m_bIsFolder = false;
@@ -1086,12 +1086,12 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         }
 
         // allow a folder to be ad-hoc queued and played by the default player
-        if (item->m_bIsFolder || (item->IsPlayList() && !g_advancedSettings.LibrarySettings->ShowPlaylistAsFolders()))
+        if (item->m_bIsFolder || (item->IsPlayList() && !g_advancedSettings.LibrarySettings()->ShowPlaylistAsFolders()))
         {
           buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
         }
       }
-      if (!item->m_bIsFolder && !(item->IsPlayList() && !g_advancedSettings.LibrarySettings->ShowPlaylistAsFolders()))
+      if (!item->m_bIsFolder && !(item->IsPlayList() && !g_advancedSettings.LibrarySettings()->ShowPlaylistAsFolders()))
       { // get players
         VECPLAYERCORES vecCores;
         if (item->IsVideoDb())

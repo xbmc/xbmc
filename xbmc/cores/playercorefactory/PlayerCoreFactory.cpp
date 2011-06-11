@@ -85,9 +85,9 @@ PLAYERCOREID CPlayerCoreFactory::GetPlayerCore(const CStdString& strCoreName)
   {
     // Dereference "*default*player" aliases
     CStdString strRealCoreName;
-    if (strCoreName.Equals("audiodefaultplayer", false)) strRealCoreName = g_advancedSettings.AudioSettings->DefaultPlayer();
-    else if (strCoreName.Equals("videodefaultplayer", false)) strRealCoreName = g_advancedSettings.VideoSettings->DefaultPlayer();
-    else if (strCoreName.Equals("videodefaultdvdplayer", false)) strRealCoreName = g_advancedSettings.VideoSettings->DefaultDVDPlayer();
+    if (strCoreName.Equals("audiodefaultplayer", false)) strRealCoreName = g_advancedSettings.AudioSettings()->DefaultPlayer();
+    else if (strCoreName.Equals("videodefaultplayer", false)) strRealCoreName = g_advancedSettings.VideoSettings()->DefaultPlayer();
+    else if (strCoreName.Equals("videodefaultdvdplayer", false)) strRealCoreName = g_advancedSettings.VideoSettings()->DefaultDVDPlayer();
     else strRealCoreName = strCoreName;
 
     for(PLAYERCOREID i = 0; i < s_vecCoreConfigs.size(); i++)

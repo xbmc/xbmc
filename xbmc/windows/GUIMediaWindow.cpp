@@ -154,7 +154,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_PARENT_DIR)
   {
-    if ((m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->m_strPath == m_startDirectory) && g_advancedSettings.SystemSettings->UseEvilB())
+    if ((m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->m_strPath == m_startDirectory) && g_advancedSettings.SystemSettings()->UseEvilB())
       g_windowManager.PreviousWindow();
     else
       GoParentFolder();
@@ -661,11 +661,11 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   CStdStringArray regexps;
 
   if (iWindow == WINDOW_VIDEO_FILES)
-    regexps = g_advancedSettings.VideoSettings->ExcludeFromListingRegExps();
+    regexps = g_advancedSettings.VideoSettings()->ExcludeFromListingRegExps();
   if (iWindow == WINDOW_MUSIC_FILES)
-    regexps = g_advancedSettings.AudioSettings->ExcludeFromListingRegExps();
+    regexps = g_advancedSettings.AudioSettings()->ExcludeFromListingRegExps();
   if (iWindow == WINDOW_PICTURES)
-    regexps = g_advancedSettings.PictureSettings->ExcludeFromListingRegExps();
+    regexps = g_advancedSettings.PictureSettings()->ExcludeFromListingRegExps();
 
   if (regexps.size())
   {

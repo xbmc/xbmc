@@ -122,13 +122,13 @@ void CAppParamParser::DisplayHelp()
 
 void CAppParamParser::EnableDebugMode()
 {
-  g_advancedSettings.SystemSettings->SetLogLevelAndHint(LOG_LEVEL_DEBUG);
-  CLog::SetLogLevel(g_advancedSettings.SystemSettings->LogLevel());
+  g_advancedSettings.SystemSettings()->SetLogLevelAndHint(LOG_LEVEL_DEBUG);
+  CLog::SetLogLevel(g_advancedSettings.SystemSettings()->LogLevel());
 }
 
 void CAppParamParser::SetStartFullScreen()
 {
-  g_advancedSettings.SystemSettings->SetStartFullScreen(true);
+  g_advancedSettings.SystemSettings()->SetStartFullScreen(true);
 }
 
 void CAppParamParser::SetIsStandalone()

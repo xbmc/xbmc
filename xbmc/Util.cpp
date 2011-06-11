@@ -239,7 +239,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
 
 bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber)
 {
-  const CStdStringArray &regexps = g_advancedSettings.LibrarySettings->VideoStackRegExps();
+  const CStdStringArray &regexps = g_advancedSettings.LibrarySettings()->VideoStackRegExps();
 
   CStdString strFileNameTemp = strFileName;
 
@@ -330,16 +330,16 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
   if (strFileName.Equals(".."))
    return;
 
-  const CStdStringArray &regexps = g_advancedSettings.VideoSettings->CleanStringRegExps();
+  const CStdStringArray &regexps = g_advancedSettings.VideoSettings()->CleanStringRegExps();
 
   CRegExp reTags(true);
   CRegExp reYear;
   CStdString strExtension;
   URIUtils::GetExtension(strFileName, strExtension);
 
-  if (!reYear.RegComp(g_advancedSettings.VideoSettings->CleanDateTimeRegExp()))
+  if (!reYear.RegComp(g_advancedSettings.VideoSettings()->CleanDateTimeRegExp()))
   {
-    CLog::Log(LOGERROR, "%s: Invalid datetime clean RegExp:'%s'", __FUNCTION__, g_advancedSettings.VideoSettings->CleanDateTimeRegExp().c_str());
+    CLog::Log(LOGERROR, "%s: Invalid datetime clean RegExp:'%s'", __FUNCTION__, g_advancedSettings.VideoSettings()->CleanDateTimeRegExp().c_str());
   }
   else
   {
@@ -1810,8 +1810,8 @@ double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& 
 
 CStdString CUtil::SubstitutePath(const CStdString& strFileName)
 {
-  for (CSystemSettings::StringMapping::iterator i = g_advancedSettings.SystemSettings->PathSubstitutions().begin(); 
-                                                  i != g_advancedSettings.SystemSettings->PathSubstitutions().end(); i++)
+  for (CSystemSettings::StringMapping::iterator i = g_advancedSettings.SystemSettings()->PathSubstitutions().begin(); 
+                                                  i != g_advancedSettings.SystemSettings()->PathSubstitutions().end(); i++)
   {
     if (strncmp(strFileName.c_str(), i->first.c_str(), i->first.size()) == 0)
       return URIUtils::AddFileToFolder(i->second, strFileName.Mid(i->first.size()));

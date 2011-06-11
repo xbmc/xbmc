@@ -87,7 +87,7 @@ bool CKaraokeLyricsTextLRC::Load()
   file.Close();
 
   // Parse the correction value
-  int timing_correction = MathUtils::round_int(g_advancedSettings.KaraokeSettings->SyncDelayLRC() * 10);
+  int timing_correction = MathUtils::round_int(g_advancedSettings.KaraokeSettings()->SyncDelayLRC() * 10);
 
   unsigned int offset = 0;
 

@@ -344,7 +344,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
   // Discard all excluded files defined by m_musicExcludeRegExps
 
-  CStdStringArray regexps = g_advancedSettings.AudioSettings->ExcludeFromScanRegExps();
+  CStdStringArray regexps = g_advancedSettings.AudioSettings()->ExcludeFromScanRegExps();
 
   if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
     return true;
@@ -431,7 +431,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 
   VECSONGS songsToAdd;
 
-  CStdStringArray regexps = g_advancedSettings.AudioSettings->ExcludeFromScanRegExps();
+  CStdStringArray regexps = g_advancedSettings.AudioSettings()->ExcludeFromScanRegExps();
 
   // for every file found, but skip folder
   for (int i = 0; i < items.Size(); ++i)
@@ -646,8 +646,8 @@ void CMusicInfoScanner::CheckForVariousArtists(VECSONGS &songsToCheck)
         CSong *song1 = songs[i];
         CSong *song2 = songs[i+1];
         CStdStringArray vecArtists1, vecArtists2;
-        StringUtils::SplitString(song1->strArtist, g_advancedSettings.LibrarySettings->MusicItemSeparator(), vecArtists1);
-        StringUtils::SplitString(song2->strArtist, g_advancedSettings.LibrarySettings->MusicItemSeparator(), vecArtists2);
+        StringUtils::SplitString(song1->strArtist, g_advancedSettings.LibrarySettings()->MusicItemSeparator(), vecArtists1);
+        StringUtils::SplitString(song2->strArtist, g_advancedSettings.LibrarySettings()->MusicItemSeparator(), vecArtists2);
         CStdString primaryArtist1 = vecArtists1[0]; primaryArtist1.TrimRight();
         CStdString primaryArtist2 = vecArtists2[0]; primaryArtist2.TrimRight();
         if (primaryArtist1 != primaryArtist2)
@@ -672,7 +672,7 @@ void CMusicInfoScanner::CheckForVariousArtists(VECSONGS &songsToCheck)
       else if (singleArtistWithFeaturedArtists)
       { // have an album where all the first artists agree - make this the album artist
         CStdStringArray vecArtists;
-        StringUtils::SplitString(songs[0]->strArtist, g_advancedSettings.LibrarySettings->MusicItemSeparator(), vecArtists);
+        StringUtils::SplitString(songs[0]->strArtist, g_advancedSettings.LibrarySettings()->MusicItemSeparator(), vecArtists);
         CStdString albumArtist(vecArtists[0]);
         for (unsigned int i = 0; i < songs.size(); i++)
         {

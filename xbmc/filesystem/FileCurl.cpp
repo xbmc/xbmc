@@ -60,7 +60,7 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
     return 0;
 
   // Only shown cURL debug into with loglevel DEBUG_SAMBA or higher
-  if( g_advancedSettings.SystemSettings->LogLevel() < LOG_LEVEL_DEBUG_SAMBA )
+  if( g_advancedSettings.SystemSettings()->LogLevel() < LOG_LEVEL_DEBUG_SAMBA )
     return 0;
 
   CStdString strLine;
@@ -363,7 +363,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
 
   g_curlInterface.easy_setopt(h, CURLOPT_DEBUGFUNCTION, debug_callback);
 
-  if( g_advancedSettings.SystemSettings->LogLevel() >= LOG_LEVEL_DEBUG )
+  if( g_advancedSettings.SystemSettings()->LogLevel() >= LOG_LEVEL_DEBUG )
     g_curlInterface.easy_setopt(h, CURLOPT_VERBOSE, TRUE);
   else
     g_curlInterface.easy_setopt(h, CURLOPT_VERBOSE, FALSE);
@@ -391,7 +391,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
 
   // Enable cookie engine for current handle to re-use them in future requests
   CStdString strCookieFile;
-  CStdString strTempPath = CSpecialProtocol::TranslatePath(g_advancedSettings.SystemSettings->CachePath());
+  CStdString strTempPath = CSpecialProtocol::TranslatePath(g_advancedSettings.SystemSettings()->CachePath());
   URIUtils::AddFileToFolder(strTempPath, "cookies.dat", strCookieFile);
 
   g_curlInterface.easy_setopt(h, CURLOPT_COOKIEFILE, strCookieFile.c_str());
@@ -492,7 +492,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   else
     SetRequestHeader("Connection", "keep-alive");
 
-  if (g_advancedSettings.SystemSettings->CurlDisableIPV6())
+  if (g_advancedSettings.SystemSettings()->CurlDisableIPV6())
     g_curlInterface.easy_setopt(h, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
   if (m_proxy.length() > 0)
@@ -506,7 +506,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
     g_curlInterface.easy_setopt(h, CURLOPT_CUSTOMREQUEST, m_customrequest.c_str());
 
   if (m_connecttimeout == 0)
-    m_connecttimeout = g_advancedSettings.SystemSettings->CurlConnectTimeout();
+    m_connecttimeout = g_advancedSettings.SystemSettings()->CurlConnectTimeout();
 
   // set our timeouts, we abort connection after m_timeout, and reads after no data for m_timeout seconds
   g_curlInterface.easy_setopt(h, CURLOPT_CONNECTTIMEOUT, m_connecttimeout);
@@ -515,7 +515,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_LIMIT, 1);
 
   if (m_lowspeedtime == 0)
-    m_lowspeedtime = g_advancedSettings.SystemSettings->CurlLowSpeedTime();
+    m_lowspeedtime = g_advancedSettings.SystemSettings()->CurlLowSpeedTime();
 
   // Set the lowspeed time very low as it seems Curl takes much longer to detect a lowspeed condition
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, m_lowspeedtime);
@@ -1259,7 +1259,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         m_overflowSize = 0;
 
         // If we got here something is wrong
-        if (++retry > g_advancedSettings.SystemSettings->CurlRetries())
+        if (++retry > g_advancedSettings.SystemSettings()->CurlRetries())
         {
           CLog::Log(LOGWARNING, "%s: Reconnect failed!", __FUNCTION__);
           // Reset the rest of the variables like we would in Disconnect()

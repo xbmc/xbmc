@@ -72,7 +72,7 @@ void CBaseRenderer::ChooseBestResolution(float fps)
 bool CBaseRenderer::FindResolutionFromOverride(float fps, float& weight, bool fallback)
 {
   //try to find a refreshrate from the override
-  std::vector<RefreshOverride> refreshOverrides = g_advancedSettings.VideoSettings->AdjustRefreshOverrides();
+  std::vector<RefreshOverride> refreshOverrides = g_advancedSettings.VideoSettings()->AdjustRefreshOverrides();
 
   for (int i = 0; i < (int)refreshOverrides.size(); i++)
   {

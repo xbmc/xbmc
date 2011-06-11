@@ -102,7 +102,7 @@ void CKaraokeLyricsCDG::setPixel( int x, int y, BYTE color )
 bool CKaraokeLyricsCDG::InitGraphics()
 {
   // set the background to be completely transparent if we use visualisations, or completely solid if not
-  m_bgAlpha = g_advancedSettings.KaraokeSettings->AlwaysEmptyOnCDGs() ? 0xff000000 : 0;
+  m_bgAlpha = g_advancedSettings.KaraokeSettings()->AlwaysEmptyOnCDGs() ? 0xff000000 : 0;
   if (!m_pCdgTexture)
     m_pCdgTexture = new CTexture( CDG_FULL_WIDTH, CDG_FULL_HEIGHT, XB_FMT_A8R8G8B8 );
   
@@ -134,7 +134,7 @@ void CKaraokeLyricsCDG::Render()
     return;
 
   // Time to update?
-  unsigned int songTime = (unsigned int) MathUtils::round_int( (getSongTime() + g_advancedSettings.KaraokeSettings->SyncDelayCDG()) * 1000 );
+  unsigned int songTime = (unsigned int) MathUtils::round_int( (getSongTime() + g_advancedSettings.KaraokeSettings()->SyncDelayCDG()) * 1000 );
   unsigned int packets_due = songTime * 300 / 1000;
 
   if ( UpdateBuffer( packets_due ) )

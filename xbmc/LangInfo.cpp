@@ -323,7 +323,7 @@ bool CLangInfo::Load(const CStdString& strFileName)
     SetCurrentRegion(strName);
   }
 
-  LoadTokens(pRootElement->FirstChild("sorttokens"),g_advancedSettings.LibrarySettings->VecTokens());
+  LoadTokens(pRootElement->FirstChild("sorttokens"),g_advancedSettings.LibrarySettings()->VecTokens());
 
   return true;
 }

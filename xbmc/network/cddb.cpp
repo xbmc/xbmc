@@ -57,7 +57,7 @@ Xcddb::Xcddb()
     : m_cddb_socket(INVALID_SOCKET)
 {
   m_lastError = 0;
-  m_cddb_ip_adress = g_advancedSettings.LibrarySettings->CDDBAddress();
+  m_cddb_ip_adress = g_advancedSettings.LibrarySettings()->CDDBAddress();
   cCacheDir = "";
   m_strNull = "";
 }

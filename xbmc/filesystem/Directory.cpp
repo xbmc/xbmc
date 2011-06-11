@@ -334,7 +334,7 @@ void CDirectory::FilterFileDirectories(CFileItemList &items, const CStdString &m
 
 CStdString CDirectory::Translate(const CStdString &path)
 {
-  CSystemSettings::StringMapping pathSubstitutions = g_advancedSettings.SystemSettings->PathSubstitutions();
+  CSystemSettings::StringMapping pathSubstitutions = g_advancedSettings.SystemSettings()->PathSubstitutions();
   for (CSystemSettings::StringMapping::iterator i = pathSubstitutions.begin(); i != pathSubstitutions.end(); i++)
   {
     if (strncmp(path.c_str(), i->first.c_str(), i->first.size()) == 0)

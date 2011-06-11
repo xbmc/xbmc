@@ -179,7 +179,7 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *
     hasResponse = true;
   }
 
-  CStdString str = hasResponse ? CJSONVariantWriter::Write(outputroot, g_advancedSettings.SystemSettings->OutputCompactJSON()) : "";
+  CStdString str = hasResponse ? CJSONVariantWriter::Write(outputroot, g_advancedSettings.SystemSettings()->OutputCompactJSON()) : "";
   return str;
 }
 

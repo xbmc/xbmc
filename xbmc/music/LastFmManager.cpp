@@ -435,7 +435,7 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
         Crc32 crc;
         crc.ComputeFromLowerCase(coverUrl);
         crcFile.Format("%08x.tbn", (__int32)crc);
-        URIUtils::AddFileToFolder(g_advancedSettings.SystemSettings->CachePath(), crcFile, cachedFile);
+        URIUtils::AddFileToFolder(g_advancedSettings.SystemSettings()->CachePath(), crcFile, cachedFile);
         URIUtils::AddFileToFolder(g_settings.GetLastFMThumbFolder(), crcFile, thumbFile);
         item->SetThumbnailImage("");
         try

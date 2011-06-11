@@ -2241,12 +2241,12 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 
   __int64 seek;
-  if (g_advancedSettings.VideoSettings->CanVideoUseTimeSeeking() && GetTotalTime() > 2*g_advancedSettings.VideoSettings->TimeSeekForwardBig())
+  if (g_advancedSettings.VideoSettings()->CanVideoUseTimeSeeking() && GetTotalTime() > 2*g_advancedSettings.VideoSettings()->TimeSeekForwardBig())
   {
     if (bLargeStep)
-      seek = bPlus ? g_advancedSettings.VideoSettings->TimeSeekForwardBig() : g_advancedSettings.VideoSettings->TimeSeekBackwardBig();
+      seek = bPlus ? g_advancedSettings.VideoSettings()->TimeSeekForwardBig() : g_advancedSettings.VideoSettings()->TimeSeekBackwardBig();
     else
-      seek = bPlus ? g_advancedSettings.VideoSettings->TimeSeekForward() : g_advancedSettings.VideoSettings->TimeSeekBackward();
+      seek = bPlus ? g_advancedSettings.VideoSettings()->TimeSeekForward() : g_advancedSettings.VideoSettings()->TimeSeekBackward();
     seek *= 1000;
     seek += GetTime();
   }
@@ -2254,9 +2254,9 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
   {
     float percent;
     if (bLargeStep)
-      percent = bPlus ? g_advancedSettings.VideoSettings->PercentSeekForwardBig() : g_advancedSettings.VideoSettings->PercentSeekBackwardBig();
+      percent = bPlus ? g_advancedSettings.VideoSettings()->PercentSeekForwardBig() : g_advancedSettings.VideoSettings()->PercentSeekBackwardBig();
     else
-      percent = bPlus ? g_advancedSettings.VideoSettings->PercentSeekForward() : g_advancedSettings.VideoSettings->PercentSeekBackward();
+      percent = bPlus ? g_advancedSettings.VideoSettings()->PercentSeekForward() : g_advancedSettings.VideoSettings()->PercentSeekBackward();
     seek = (__int64)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
   }
 

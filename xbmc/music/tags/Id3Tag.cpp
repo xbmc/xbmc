@@ -294,7 +294,7 @@ CStdString CID3Tag::GetGenre() const
       if (!strGenre.IsEmpty())
       {
         if (!genre.IsEmpty())
-          genre += g_advancedSettings.LibrarySettings->MusicItemSeparator();
+          genre += g_advancedSettings.LibrarySettings()->MusicItemSeparator();
         genre += ParseMP3Genre(strGenre);
       }
     }
@@ -559,7 +559,7 @@ CStdString CID3Tag::ParseMP3Genre(const CStdString& str) const
   {
     CStdString strTemp = *it;
     if (!strGenre.IsEmpty())
-      strGenre += g_advancedSettings.LibrarySettings->MusicItemSeparator();
+      strGenre += g_advancedSettings.LibrarySettings()->MusicItemSeparator();
     strGenre += strTemp;
   }
   return strGenre;

@@ -40,7 +40,7 @@ bool CGUIStandardWindow::OnAction(const CAction &action)
     return true;
   }
 
-  if (action.GetID() == ACTION_PARENT_DIR && g_advancedSettings.SystemSettings->UseEvilB())
+  if (action.GetID() == ACTION_PARENT_DIR && g_advancedSettings.SystemSettings()->UseEvilB())
   {
     g_windowManager.PreviousWindow();
     return true;

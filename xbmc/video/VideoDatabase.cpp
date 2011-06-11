@@ -68,7 +68,7 @@ CVideoDatabase::~CVideoDatabase(void)
 //********************************************************************************************************************************
 bool CVideoDatabase::Open()
 {
-  return CDatabase::Open(g_advancedSettings.LibrarySettings->DatabaseVideo());
+  return CDatabase::Open(g_advancedSettings.LibrarySettings()->DatabaseVideo());
 }
 
 bool CVideoDatabase::CreateTables()
@@ -1653,7 +1653,7 @@ void CVideoDatabase::AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details
   if (!details.m_strDirector.IsEmpty())
   {
     CStdStringArray directors;
-    StringUtils::SplitString(details.m_strDirector, g_advancedSettings.LibrarySettings->VideoItemSeparator(), directors);
+    StringUtils::SplitString(details.m_strDirector, g_advancedSettings.LibrarySettings()->VideoItemSeparator(), directors);
     for (unsigned int i = 0; i < directors.size(); i++)
     {
       CStdString strDirector(directors[i]);
@@ -1667,7 +1667,7 @@ void CVideoDatabase::AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details
   if (!details.m_strGenre.IsEmpty())
   {
     CStdStringArray genres;
-    StringUtils::SplitString(details.m_strGenre, g_advancedSettings.LibrarySettings->VideoItemSeparator(), genres);
+    StringUtils::SplitString(details.m_strGenre, g_advancedSettings.LibrarySettings()->VideoItemSeparator(), genres);
     for (unsigned int i = 0; i < genres.size(); i++)
     {
       CStdString strGenre(genres[i]);
@@ -1680,7 +1680,7 @@ void CVideoDatabase::AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details
   if (!details.m_strStudio.IsEmpty())
   {
     CStdStringArray studios;
-    StringUtils::SplitString(details.m_strStudio, g_advancedSettings.LibrarySettings->VideoItemSeparator(), studios);
+    StringUtils::SplitString(details.m_strStudio, g_advancedSettings.LibrarySettings()->VideoItemSeparator(), studios);
     for (unsigned int i = 0; i < studios.size(); i++)
     {
       CStdString strStudio(studios[i]);
@@ -1763,7 +1763,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     if (!info.m_strWritingCredits.IsEmpty())
     {
       CStdStringArray writers;
-      StringUtils::SplitString(info.m_strWritingCredits, g_advancedSettings.LibrarySettings->VideoItemSeparator(), writers);
+      StringUtils::SplitString(info.m_strWritingCredits, g_advancedSettings.LibrarySettings()->VideoItemSeparator(), writers);
       for (unsigned int i = 0; i < writers.size(); i++)
       {
         CStdString writer(writers[i]);
@@ -1785,7 +1785,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     if (!info.m_strSet.IsEmpty())
     {
       CStdStringArray sets;
-      StringUtils::SplitString(info.m_strSet, g_advancedSettings.LibrarySettings->VideoItemSeparator(), sets);
+      StringUtils::SplitString(info.m_strSet, g_advancedSettings.LibrarySettings()->VideoItemSeparator(), sets);
       for (unsigned int i = 0; i < sets.size(); i++)
       {
         CStdString set(sets[i]);
@@ -1799,7 +1799,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     if (!info.m_strCountry.IsEmpty())
     {
       CStdStringArray countries;
-      StringUtils::SplitString(info.m_strCountry, g_advancedSettings.LibrarySettings->VideoItemSeparator(), countries);
+      StringUtils::SplitString(info.m_strCountry, g_advancedSettings.LibrarySettings()->VideoItemSeparator(), countries);
       for (unsigned int i = 0; i < countries.size(); i++)
       {
         CStdString country(countries[i]);
@@ -1929,7 +1929,7 @@ int CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, c
     if (!details.m_strWritingCredits.IsEmpty())
     {
       CStdStringArray writers;
-      StringUtils::SplitString(details.m_strWritingCredits, g_advancedSettings.LibrarySettings->VideoItemSeparator(), writers);
+      StringUtils::SplitString(details.m_strWritingCredits, g_advancedSettings.LibrarySettings()->VideoItemSeparator(), writers);
       for (unsigned int i = 0; i < writers.size(); i++)
       {
         CStdString writer(writers[i]);
@@ -1996,7 +1996,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
     if (!details.m_strArtist.IsEmpty())
     {
       CStdStringArray vecArtists;
-      StringUtils::SplitString(details.m_strArtist, g_advancedSettings.LibrarySettings->VideoItemSeparator(), vecArtists);
+      StringUtils::SplitString(details.m_strArtist, g_advancedSettings.LibrarySettings()->VideoItemSeparator(), vecArtists);
       for (unsigned int i = 0; i < vecArtists.size(); i++)
       {
         CStdString artist = vecArtists[i];
@@ -2845,7 +2845,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
     {
       CStdString setName = m_pDS2->fv("sets.strSet").get_asString();
       if (!details.m_strSet.IsEmpty())
-        details.m_strSet += g_advancedSettings.LibrarySettings->VideoItemSeparator();
+        details.m_strSet += g_advancedSettings.LibrarySettings()->VideoItemSeparator();
       details.m_strSet += setName;
       m_pDS2->next();
     }
@@ -2861,7 +2861,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
       if (!m_pDS2->eof())
       {
         if (!details.m_strShowLink.IsEmpty())
-          details.m_strShowLink += g_advancedSettings.LibrarySettings->VideoItemSeparator();
+          details.m_strShowLink += g_advancedSettings.LibrarySettings()->VideoItemSeparator();
         details.m_strShowLink += m_pDS2->fv(0).get_asString();
       }
     }
@@ -4759,7 +4759,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
       int numSeasons = m_pDS->fv(VIDEODB_DETAILS_TVSHOW_NUM_SEASONS).get_asInt();
 
       CVideoInfoTag movie = GetDetailsForTvShow(m_pDS, false);
-      if (!g_advancedSettings.LibrarySettings->VideoLibraryHideEmptySeries() || movie.m_iEpisode > 0)
+      if (!g_advancedSettings.LibrarySettings()->VideoLibraryHideEmptySeries() || movie.m_iEpisode > 0)
       {
         CFileItemPtr pItem(new CFileItem(movie));
         pItem->m_strPath.Format("%s%ld/", strBaseDir.c_str(), idShow);
@@ -5088,19 +5088,19 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
 
 bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items, unsigned int limit)
 {
-  CStdString order = PrepareSQL("order by idMovie desc limit %u", limit ? limit : g_advancedSettings.LibrarySettings->VideoLibraryRecentlyAddedItems());
+  CStdString order = PrepareSQL("order by idMovie desc limit %u", limit ? limit : g_advancedSettings.LibrarySettings()->VideoLibraryRecentlyAddedItems());
   return GetMoviesByWhere(strBaseDir, "", order, items);
 }
 
 bool CVideoDatabase::GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, unsigned int limit)
 {
-  CStdString where = PrepareSQL("order by idEpisode desc limit %u", limit ? limit : g_advancedSettings.LibrarySettings->VideoLibraryRecentlyAddedItems());
+  CStdString where = PrepareSQL("order by idEpisode desc limit %u", limit ? limit : g_advancedSettings.LibrarySettings()->VideoLibraryRecentlyAddedItems());
   return GetEpisodesByWhere(strBaseDir, where, items, false);
 }
 
 bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, unsigned int limit)
 {
-  CStdString where = PrepareSQL("order by idMVideo desc limit %u", limit ? limit : g_advancedSettings.LibrarySettings->VideoLibraryRecentlyAddedItems());
+  CStdString where = PrepareSQL("order by idMVideo desc limit %u", limit ? limit : g_advancedSettings.LibrarySettings()->VideoLibraryRecentlyAddedItems());
   return GetMusicVideosByWhere(strBaseDir, where, items);
 }
 
@@ -7366,7 +7366,7 @@ void CVideoDatabase::ExportActorThumbs(const CStdString &strDir, const CVideoInf
 CStdString CVideoDatabase::GetCachedThumb(const CFileItem& item) const
 {
   CStdString cachedThumb(item.GetCachedVideoThumb());
-  if (!CFile::Exists(cachedThumb) && g_advancedSettings.LibrarySettings->VideoLibraryExportAutoThumbs())
+  if (!CFile::Exists(cachedThumb) && g_advancedSettings.LibrarySettings()->VideoLibraryExportAutoThumbs())
   {
     CStdString strPath, strFileName;
     URIUtils::Split(cachedThumb, strPath, strFileName);

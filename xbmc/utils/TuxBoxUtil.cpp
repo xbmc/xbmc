@@ -63,7 +63,7 @@ CTuxBoxUtil::~CTuxBoxUtil(void)
 }
 bool CTuxBoxService::Start()
 {
-  if(g_advancedSettings.MediaProviderSettings->TuxBoxEpgRequestTime() != 0)
+  if(g_advancedSettings.MediaProviderSettings()->TuxBoxEpgRequestTime() != 0)
   {
     StopThread();
     Create(false);
@@ -101,7 +101,7 @@ void CTuxBoxService::Process()
     if(!URIUtils::IsTuxBox(strURL))
       break;
 
-    int iRequestTimer = g_advancedSettings.MediaProviderSettings->TuxBoxEpgRequestTime() * 1000; //seconds
+    int iRequestTimer = g_advancedSettings.MediaProviderSettings()->TuxBoxEpgRequestTime() * 1000; //seconds
     Sleep(iRequestTimer);
 
     CURL url(strURL);
@@ -461,7 +461,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
     }
 
     // PMT Not Valid? Try Time 10 reached, checking for advancedSettings m_iTuxBoxZapWaitTime
-    if(sStrmInfo.pmt.Equals("ffffffffh") && g_advancedSettings.MediaProviderSettings->TuxBoxZapWaitTime() > 0 )
+    if(sStrmInfo.pmt.Equals("ffffffffh") && g_advancedSettings.MediaProviderSettings()->TuxBoxZapWaitTime() > 0 )
     {
       iRetry = 0;
       CLog::Log(LOGDEBUG, "%s - Starting TuxBox ZapWaitTimer!", __FUNCTION__);
@@ -473,8 +473,8 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
         if(sStrmInfo.pmt.Equals("ffffffffh"))
         {
           CLog::Log(LOGERROR, "%s - STREAMINFO ERROR! Could not receive all data, TryCount: %i!", __FUNCTION__,iRetry);
-          CLog::Log(LOGERROR, "%s - PMT is: %s (not a Valid Value)! Waiting %i sec.", __FUNCTION__,sStrmInfo.pmt.c_str(), g_advancedSettings.MediaProviderSettings->TuxBoxZapWaitTime());
-          Sleep(g_advancedSettings.MediaProviderSettings->TuxBoxZapWaitTime()*1000);
+          CLog::Log(LOGERROR, "%s - PMT is: %s (not a Valid Value)! Waiting %i sec.", __FUNCTION__,sStrmInfo.pmt.c_str(), g_advancedSettings.MediaProviderSettings()->TuxBoxZapWaitTime());
+          Sleep(g_advancedSettings.MediaProviderSettings()->TuxBoxZapWaitTime()*1000);
         }
       }
     }
@@ -541,7 +541,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
 
       if (!GetGUIRequestedAudioChannel(sRequestedAudioChannel))
       {
-        if (g_advancedSettings.MediaProviderSettings->TuxBoxSendAllAPids() && sCurSrvData.audio_channels.size() > 1)
+        if (g_advancedSettings.MediaProviderSettings()->TuxBoxSendAllAPids() && sCurSrvData.audio_channels.size() > 1)
         {
           for (vector<sAudioChannel>::iterator sChannel = sCurSrvData.audio_channels.begin(); sChannel!=sCurSrvData.audio_channels.end(); ++sChannel)
           {
@@ -558,7 +558,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       else
         strVideoStream.Format("0,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), strAudioChannelPid.Left(4).c_str());
 
-      strStreamURL.Format("http://%s:%s@%s:%i/%s",url.GetUserName().c_str(),url.GetPassWord().c_str(), url.GetHostName().c_str(),g_advancedSettings.MediaProviderSettings->TuxBoxStreamtsPort(),strVideoStream.c_str());
+      strStreamURL.Format("http://%s:%s@%s:%i/%s",url.GetUserName().c_str(),url.GetPassWord().c_str(), url.GetHostName().c_str(),g_advancedSettings.MediaProviderSettings()->TuxBoxStreamtsPort(),strVideoStream.c_str());
 
       if (!g_tuxbox.sZapstream.initialized)
         g_tuxbox.InitZapstream(strPath);
@@ -575,7 +575,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
               CLog::Log(LOGDEBUG, "%s - Zapstream: Requested audio channel is %s, pid %s.", __FUNCTION__, sSelectedAudioChannel.name.c_str(), sSelectedAudioChannel.pid.c_str());
           }
         }
-        strStreamURL.Format("http://%s:%s@%s:%i/", url.GetUserName().c_str(), url.GetPassWord().c_str(), url.GetHostName().c_str(), g_advancedSettings.MediaProviderSettings->TuxBoxZapstreamPort());
+        strStreamURL.Format("http://%s:%s@%s:%i/", url.GetUserName().c_str(), url.GetPassWord().c_str(), url.GetHostName().c_str(), g_advancedSettings.MediaProviderSettings()->TuxBoxZapstreamPort());
       }
 
       if (g_application.IsPlaying() && !g_tuxbox.sZapstream.available)
@@ -617,7 +617,7 @@ bool CTuxBoxUtil::InitZapstream(const CStdString& strPath)
 
   g_tuxbox.sZapstream.initialized = true;
 
-  if (!g_advancedSettings.MediaProviderSettings->TuxBoxZapstream())
+  if (!g_advancedSettings.MediaProviderSettings()->TuxBoxZapstream())
   {
     CLog::Log(LOGDEBUG, "%s - Zapstream is disabled in advancedsettings.xml.", __FUNCTION__);
     return g_tuxbox.sZapstream.available = false;
@@ -626,7 +626,7 @@ bool CTuxBoxUtil::InitZapstream(const CStdString& strPath)
   url.SetProtocol("http");
   url.SetFileName("");
   url.SetOptions("");
-  url.SetPort(g_advancedSettings.MediaProviderSettings->TuxBoxZapstreamPort());
+  url.SetPort(g_advancedSettings.MediaProviderSettings()->TuxBoxZapstreamPort());
 
   while (iTryConnect < 3)
   {
@@ -640,7 +640,7 @@ bool CTuxBoxUtil::InitZapstream(const CStdString& strPath)
 
       if (strValue.Find("zapstream") >= 0 )
       {
-        CLog::Log(LOGDEBUG, "%s - Zapstream is available on port %i.", __FUNCTION__, g_advancedSettings.MediaProviderSettings->TuxBoxZapstreamPort());
+        CLog::Log(LOGDEBUG, "%s - Zapstream is available on port %i.", __FUNCTION__, g_advancedSettings.MediaProviderSettings()->TuxBoxZapstreamPort());
         return g_tuxbox.sZapstream.available = true;
       }
     }
@@ -649,7 +649,7 @@ bool CTuxBoxUtil::InitZapstream(const CStdString& strPath)
     iTimeout+=5;
   }
 
-  CLog::Log(LOGDEBUG, "%s - Zapstream is not available on port %i.", __FUNCTION__, g_advancedSettings.MediaProviderSettings->TuxBoxZapstreamPort());
+  CLog::Log(LOGDEBUG, "%s - Zapstream is not available on port %i.", __FUNCTION__, g_advancedSettings.MediaProviderSettings()->TuxBoxZapstreamPort());
   return false;
 }
 bool CTuxBoxUtil::SetAudioChannel( const CStdString& strPath, const AUDIOCHANNEL& sAC )
@@ -1398,7 +1398,7 @@ bool CTuxBoxUtil::GetGUIRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC)
   sRequestedAC = sCurSrvData.audio_channels[0];
 
   // Audio Selection is Disabled! Return false to use default values!
-  if(!g_advancedSettings.MediaProviderSettings->TuxBoxAudioChannelSelection())
+  if(!g_advancedSettings.MediaProviderSettings()->TuxBoxAudioChannelSelection())
   {
     CLog::Log(LOGDEBUG, "%s - Audio Channel Selection is Disabled! Returning False to use the default values!", __FUNCTION__);
     return false;
@@ -1465,7 +1465,7 @@ bool CTuxBoxUtil::GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdSt
 //Output: picon url (on ERROR the default icon path will be returned)
 CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
 {
-  if(!g_advancedSettings.MediaProviderSettings->TuxBoxPictureIcon())
+  if(!g_advancedSettings.MediaProviderSettings()->TuxBoxPictureIcon())
   {
     CLog::Log(LOGDEBUG, "%s PictureIcon Detection is Disabled! Using default icon", __FUNCTION__);
     return "";
