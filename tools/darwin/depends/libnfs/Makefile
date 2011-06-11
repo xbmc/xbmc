@@ -14,7 +14,8 @@ CONFIGURE=./configure --prefix=$(PREFIX) --without-examples
 
 RPC_HEADERS=rpcinc/auth.h rpcinc/auth_unix.h rpcinc/clnt.h rpcinc/pmap_clnt.h rpcinc/pmap_prot.h rpcinc/pmap_rmt.h rpcinc/rpc.h rpcinc/rpc_msg.h rpcinc/svc.h rpcinc/svc_auth.h rpcinc/types.h rpcinc/xdr.h
 
-LIBDYLIB=$(SOURCE)/lib/libnfs.1.0.0.dylib
+DYLIBNAME=libnfs.1.0.0.dylib
+LIBDYLIB=$(SOURCE)/lib/$(DYLIBNAME)
 
 CLEAN_FILES=$(ARCHIVE) $(SOURCE)
 
@@ -38,6 +39,7 @@ $(LIBDYLIB): $(SOURCE)
 .installed:
 	make -C $(SOURCE) install
 	touch $@
+	ln -s $(PREFIX)/lib/$(DYLIBNAME) $(PREFIX)/lib/libnfs.dylib
 
 clean:
 	make -C $(SOURCE) clean
