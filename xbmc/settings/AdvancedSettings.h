@@ -60,8 +60,6 @@ class CAdvancedSettings
     bool m_lcdDimOnScreenSave;
     bool m_lcdHeartbeat;
     CStdString m_lcdHostName;
-    int m_songInfoDuration;
-    int m_busyDialogDelay;
     float m_controllerDeadzone;
     bool m_bFirstLoop;
     int m_iSkipLoopFilter;

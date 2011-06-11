@@ -70,6 +70,7 @@ class CLibrarySettings
     int PlaylistRetries();
     int VideoLibraryRecentlyAddedItems();
     int MusicLibraryRecentlyAddedItems();
+    int SongInfoDuration();
     CStdString MusicItemSeparator();
     CStdString VideoItemSeparator();
     CStdString FanartImages();
@@ -106,6 +107,7 @@ class CLibrarySettings
     int m_playlistTimeout;
     int m_thumbSize;
     int m_fanartHeight;
+    int m_songInfoDuration;
     bool m_prioritiseAPEv2tags;
     bool m_bMusicLibraryHideAllItems;
     int m_iMusicLibraryRecentlyAddedItems;

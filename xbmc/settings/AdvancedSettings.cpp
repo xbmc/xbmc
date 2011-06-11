@@ -73,11 +73,7 @@ void CAdvancedSettings::Initialize()
   m_lcdScrolldelay = 1;
   m_lcdHostName = "localhost";
 
-  m_songInfoDuration = 10;
-  m_busyDialogDelay = 2000;
-
   m_controllerDeadzone = 0.2f;
-
   m_iSkipLoopFilter = 0;
   m_ForcedSwapTime = 0.0;
 }
@@ -157,9 +153,6 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
     XMLUtils::GetInt(pElement, "scrolldelay", m_lcdScrolldelay, -8, 8);
     XMLUtils::GetString(pElement, "hostname", m_lcdHostName);
   }
-
-  XMLUtils::GetInt(pRootElement, "songinfoduration", m_songInfoDuration, 0, INT_MAX);
-  XMLUtils::GetInt(pRootElement, "busydialogdelay", m_busyDialogDelay, 0, 5000);
 
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);

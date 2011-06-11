@@ -156,6 +156,7 @@ CLibrarySettings::CLibrarySettings(TiXmlElement *pRootElement)
     XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
   }
 
+  XMLUtils::GetInt(pRootElement, "songinfoduration", m_songInfoDuration, 0, INT_MAX);
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
 }
 
@@ -262,6 +263,11 @@ int CLibrarySettings::VideoLibraryRecentlyAddedItems()
 int CLibrarySettings::MusicLibraryRecentlyAddedItems()
 {
   return m_iMusicLibraryRecentlyAddedItems;
+}
+
+int CLibrarySettings::SongInfoDuration()
+{
+  return m_songInfoDuration;
 }
 
 CStdString CLibrarySettings::MusicItemSeparator()
@@ -383,6 +389,7 @@ void CLibrarySettings::Initialise()
 
   m_tvshowMultiPartEnumRegExp = "^[-_EeXx]+([0-9]+)";
   m_cddbAddress = "freedb.freedb.org";
+  m_songInfoDuration = 10;
 }
 
 void CLibrarySettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings)
