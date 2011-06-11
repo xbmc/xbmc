@@ -7,9 +7,9 @@
 # lib name, version
 LIBNAME=libnfs
 VERSION=0977fbb
-SOURCE=Memphiz-$(LIBNAME)-$(VERSION)
+SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
-BASE_URL=http://githubredir.debian.net/github/memphiz/libnfs
+BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
 ARCHIVE=$(SOURCE).tar.gz
 TARBALLS_LOCATION=.
 RETRIEVE_TOOL=/usr/bin/curl
