@@ -98,6 +98,6 @@ bool CFileUtils::SubtitleFileSizeAndHash(const CStdString &path, CStdString &str
   
   file.Close(); //close file
   strHash.Format("%"PRIx64"", hash); //format hash
-  strSize.Format("%d", fileSize);  // format size
+  strSize.Format("%"PRIu64"", fileSize);  // format size
   return true;
 }
