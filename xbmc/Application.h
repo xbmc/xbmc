@@ -58,9 +58,6 @@ namespace ADDON
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
 #endif
-#ifdef _LINUX
-#include "linux/LinuxResourceCounter.h"
-#endif
 #include "windowing/XBMC_events.h"
 #include "threads/Thread.h"
 
@@ -74,7 +71,6 @@ class CKaraokeLyricsManager;
 class CApplicationMessenger;
 class DPMSSupport;
 class CSplash;
-class CGUITextLayout;
 
 class CBackgroundPlayer : public CThread
 {
@@ -158,7 +154,6 @@ public:
   bool OnKey(const CKey& key);
   bool OnAppCommand(const CAction &action);
   bool OnAction(const CAction &action);
-  void RenderMemoryStatus();
   void CheckShutdown();
   // Checks whether the screensaver and / or DPMS should become active.
   void CheckScreenSaverAndDPMS();
@@ -351,8 +346,6 @@ protected:
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
   
-  CGUITextLayout *m_debugLayout;
-
 #if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   int        m_frameCount;
   SDL_mutex* m_frameMutex;
@@ -392,9 +385,6 @@ protected:
 #endif
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats m_perfStats;
-#endif
-#ifdef _LINUX
-  CLinuxResourceCounter m_resourceCounter;
 #endif
 
 #ifdef HAS_EVENT_SERVER

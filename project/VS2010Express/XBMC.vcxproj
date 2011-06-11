@@ -1145,6 +1145,7 @@
     <ClCompile Include="..\..\xbmc\windowing\WinEventsSDL.cpp" />
     <ClCompile Include="..\..\xbmc\windowing\WinSystem.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIMediaWindow.cpp" />
+    <ClCompile Include="..\..\xbmc\windows\GUIWindowDebugInfo.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowFileManager.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowHome.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowLoginScreen.cpp" />
@@ -1980,6 +1981,7 @@
     <ClInclude Include="..\..\xbmc\windowing\WinSystem.h" />
     <ClInclude Include="..\..\xbmc\windowing\XBMC_events.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIMediaWindow.h" />
+    <ClInclude Include="..\..\xbmc\windows\GUIWindowDebugInfo.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowFileManager.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowHome.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowLoginScreen.h" />
