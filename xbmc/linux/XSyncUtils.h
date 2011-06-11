@@ -22,7 +22,7 @@
  *
  */
 
-#include "XCriticalSection.h"
+#include "PlatformDefs.h"
 #include "XHandlePublic.h"
 
 #ifdef _LINUX

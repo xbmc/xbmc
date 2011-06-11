@@ -26,6 +26,7 @@
 #include <stdio.h>
 
 #include "system.h"
+#include "threads/CriticalSection.h"
 
 class CMutex;
 
@@ -77,7 +78,7 @@ public:
   bool StreamIsEmulatedFile(FILE* stream);
 private:
   EmuFileObject m_files[MAX_EMULATED_FILES];
-  CRITICAL_SECTION m_criticalSection;
+  CCriticalSection m_criticalSection;
   bool m_initialized;
 };
 

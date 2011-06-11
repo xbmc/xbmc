@@ -454,15 +454,15 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
   CLog::Log(LOGDEBUG, "%s - waiting on the %s plugin...", __FUNCTION__, scriptName.c_str());
   while (true)
   {
-    CSingleExit ex(g_graphicsContext);
-    // check if the python script is finished
-    if (WaitForSingleObject(m_fetchComplete, 20) == WAIT_OBJECT_0)
-    { // python has returned
-      CLog::Log(LOGDEBUG, "%s- plugin returned %s", __FUNCTION__, m_success ? "successfully" : "failure");
-      break;
+    {
+      CSingleExit ex(g_graphicsContext);
+      // check if the python script is finished
+      if (WaitForSingleObject(m_fetchComplete, 20) == WAIT_OBJECT_0)
+      { // python has returned
+        CLog::Log(LOGDEBUG, "%s- plugin returned %s", __FUNCTION__, m_success ? "successfully" : "failure");
+        break;
+      }
     }
-    ex.Restore();
-
     // check our script is still running
 #ifdef HAS_PYTHON
     if (!g_pythonParser.isRunning(g_pythonParser.getScriptId(scriptPath.c_str())))

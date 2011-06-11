@@ -333,10 +333,6 @@ typedef struct _TIME_ZONE_INFORMATION {
 
 typedef int SOCKET;
 
-class CCriticalSection;
-#define CRITICAL_SECTION     XCriticalSection
-#define LPCRITICAL_SECTION   XCriticalSection*
-
 // Thread
 typedef int (*LPTHREAD_START_ROUTINE)(void *);
 

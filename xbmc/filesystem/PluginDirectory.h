@@ -29,6 +29,7 @@
 #include <vector>
 #include "threads/CriticalSection.h"
 #include "addons/IAddon.h"
+#include "PlatformDefs.h"
 
 class CURL;
 class CFileItemList;

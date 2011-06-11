@@ -26,42 +26,36 @@
 
 #include "DVDVideoCodec.h"
 #include "cores/dvdplayer/DVDStreamInfo.h"
+#include "threads/SingleLock.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 template <class T>
 class CSyncPtrQueue
 {
 public:
-  CSyncPtrQueue()
-  {
-    InitializeCriticalSection(&m_Lock);
-  }
-  virtual ~CSyncPtrQueue()
-  {
-    DeleteCriticalSection(&m_Lock);
-  }
+  CSyncPtrQueue() { }
+  virtual ~CSyncPtrQueue() { }
   void Push(T* p)
   {
-    EnterCriticalSection(&m_Lock);
+    CSingleLock lock(m_Lock);
     m_Queue.push_back(p);
-    LeaveCriticalSection(&m_Lock);
   }
+
   T* Pop()
   {
     T* p = NULL;
-    EnterCriticalSection(&m_Lock);
+    CSingleLock lock(m_Lock);
     if (m_Queue.size())
     {
       p = m_Queue.front();
       m_Queue.pop_front();
     }
-    LeaveCriticalSection(&m_Lock);
     return p;
   }
   unsigned int Count(){return m_Queue.size();}
 protected:
   std::deque<T*> m_Queue;
-  CRITICAL_SECTION m_Lock;
+  CCriticalSection m_Lock;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////

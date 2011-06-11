@@ -279,13 +279,15 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       result = m_dll.dvdnav_get_next_cache_block(m_dvdnav, &buf, &m_lastevent, &len);
 
   }
+  // this appears to be impossible as nothing in the try ever throws
+  // TODO: validate the above
   catch (...)
   {
     CLog::Log(LOGERROR, "CDVDInputStreamNavigator::ProcessBlock - exception thrown in dvdnav_get_next_cache_block.");
 
     // okey, we are probably holding a vm_lock here so leave it.. this could potentialy cause problems if we aren't holding it
     // but it's more likely that we do
-    LeaveCriticalSection((LPCRITICAL_SECTION)&(m_dvdnav->vm_lock));
+//    LeaveCriticalSection((LPCRITICAL_SECTION)&(m_dvdnav->vm_lock));
     m_bEOF = true;
     return NAVRESULT_ERROR;
   }
