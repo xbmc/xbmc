@@ -21,7 +21,7 @@
 
 #include "GUIWindowPointer.h"
 #include "input/MouseStat.h"
-
+#include <climits>
 #define ID_POINTER 10
 
 CGUIWindowPointer::CGUIWindowPointer(void)
@@ -31,6 +31,7 @@ CGUIWindowPointer::CGUIWindowPointer(void)
   m_loadOnDemand = false;
   m_needsScaling = false;
   m_active = false;
+  m_renderOrder = INT_MAX;
 }
 
 CGUIWindowPointer::~CGUIWindowPointer(void)
@@ -71,6 +72,7 @@ void CGUIWindowPointer::OnWindowLoaded()
   CGUIWindow::OnWindowLoaded();
   DynamicResourceAlloc(false);
   m_pointer = 0;
+  m_renderOrder = INT_MAX;
 }
 
 void CGUIWindowPointer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
