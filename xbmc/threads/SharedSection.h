@@ -21,71 +21,48 @@
  *
  */
 
-#include "system.h" // for HANDLE, CRITICALSECTION
+#include "threads/CriticalSection.h"
+#include <boost/thread/shared_mutex.hpp>
 
-class CSharedSection
+/**
+ * A CSharedSection is a CountingLockable whose implementation is a boost
+ *  shared_mutex.
+ *
+ * It implemented boost's shared Locakable concept which requires the 
+ *  additional implementation of:
+ *
+ * lock_shared()
+ * try_lock_shared()
+ * unlock_shared()
+ */
+class CSharedSection : public CountingLockable<boost::shared_mutex>
 {
-
 public:
-  CSharedSection();
-  CSharedSection(const CSharedSection& src);
-  CSharedSection& operator=(const CSharedSection& src);
-  virtual ~CSharedSection();
 
-  void EnterExclusive();
-  void LeaveExclusive();
-
-  void EnterShared();
-  void LeaveShared();
-
-private:
-
-  CRITICAL_SECTION m_critSection;
-
-  HANDLE m_eventFree;
-  bool m_exclusive;
-  long m_sharedLock;
+  inline void lock_shared() { m.lock_shared(); }
+  inline bool try_lock_shared() { return m.try_lock_shared(); }
+  inline void unlock_shared() { return m.unlock_shared(); }
 };
 
-class CSharedLock
+class CSharedLock : public boost::shared_lock<CSharedSection>
 {
 public:
-  CSharedLock(CSharedSection& cs);
-  CSharedLock(const CSharedSection& cs);
-  virtual ~CSharedLock();
+  inline CSharedLock(CSharedSection& cs) : boost::shared_lock<CSharedSection>(cs) {}
+  inline CSharedLock(const CSharedSection& cs) : boost::shared_lock<CSharedSection>((CSharedSection&)cs) {}
 
-  bool IsOwner() const;
-  bool Enter();
-  void Leave();
-
-protected:
-  CSharedLock(const CSharedLock& src);
-  CSharedLock& operator=(const CSharedLock& src);
-
-  // Reference to critical section object
-  CSharedSection& m_cs;
-  // Ownership flag
-  bool m_bIsOwner;
+  inline bool IsOwner() const { return owns_lock(); }
+  inline void Enter() { lock(); }
+  inline void Leave() { unlock(); }
 };
 
-class CExclusiveLock
+class CExclusiveLock : public boost::unique_lock<CSharedSection>
 {
 public:
-  CExclusiveLock(CSharedSection& cs);
-  CExclusiveLock(const CSharedSection& cs);
-  virtual ~CExclusiveLock();
+  inline CExclusiveLock(CSharedSection& cs) : boost::unique_lock<CSharedSection>(cs) {}
+  inline CExclusiveLock(const CSharedSection& cs) : boost::unique_lock<CSharedSection> ((CSharedSection&)cs) {}
 
-  bool IsOwner() const;
-  bool Enter();
-  void Leave();
-
-protected:
-  CExclusiveLock(const CExclusiveLock& src);
-  CExclusiveLock& operator=(const CExclusiveLock& src);
-
-  // Reference to critical section object
-  CSharedSection& m_cs;
-  // Ownership flag
-  bool m_bIsOwner;
+  inline bool IsOwner() const { return owns_lock(); }
+  inline void Leave() { unlock(); }
+  inline void Enter() { lock(); }
 };
 

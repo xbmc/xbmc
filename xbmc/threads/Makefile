@@ -1,11 +1,8 @@
 SRCS=Atomics.cpp \
-     CriticalSection.cpp \
      Event.cpp \
-     LockFree.cpp \
      Mutex.cpp \
+     LockFree.cpp \
      Semaphore.cpp \
-     SharedSection.cpp \
-     SingleLock.cpp \
      Thread.cpp \
      XBMC_mutex.cpp \
 

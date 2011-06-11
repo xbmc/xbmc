@@ -598,10 +598,6 @@ extern "C" BOOL WINAPI dllFindClose(HANDLE hFile);
 extern "C" UINT WINAPI dllGetAtomNameA( ATOM nAtom, LPTSTR lpBuffer, int nSize);
 extern "C" ATOM WINAPI dllFindAtomA( LPCTSTR lpString);
 extern "C" ATOM WINAPI dllAddAtomA( LPCTSTR lpString);
-extern "C" HANDLE WINAPI dllCreateThread(LPSECURITY_ATTRIBUTES lpThreadAttributes, DWORD dwStackSize, LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId);
-extern "C" BOOL WINAPI dllTerminateThread(HANDLE tHread, DWORD dwExitCode);
-extern "C" HANDLE WINAPI dllGetCurrentThread(void);
-extern "C" DWORD WINAPI dllGetCurrentThreadId(VOID);
 extern "C" DWORD WINAPI dllGetCurrentProcessId(void);
 extern "C" BOOL WINAPI dllDisableThreadLibraryCalls(HMODULE);
 
@@ -620,11 +616,6 @@ extern "C" void WINAPI dllGetSystemInfo(LPSYSTEM_INFO lpSystemInfo);
 //Current just a dummy function
 extern "C" UINT WINAPI dllGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR lpKeyName,
       INT nDefault, LPCSTR lpFileName);
-
-extern "C" void WINAPI dllDeleteCriticalSection(LPCRITICAL_SECTION cs);
-extern "C" void WINAPI dllInitializeCriticalSection(LPCRITICAL_SECTION cs);
-extern "C" void WINAPI dllLeaveCriticalSection(LPCRITICAL_SECTION cs);
-extern "C" void WINAPI dllEnterCriticalSection(LPCRITICAL_SECTION cs);
 
 extern "C" BOOL WINAPI dllGetVersionExA(LPOSVERSIONINFO lpVersionInfo);
 extern "C" BOOL WINAPI dllGetVersionExW(LPOSVERSIONINFOW lpVersionInfo);

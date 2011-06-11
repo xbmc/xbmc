@@ -1705,22 +1705,6 @@ extern "C"
     return 0;
   }
 
-  uintptr_t dll_beginthread(
-    void( *start_address )( void * ),
-    unsigned stack_size,
-    void *arglist
-  )
-  {
-    return _beginthread(start_address, stack_size, arglist);
-  }
-
-  HANDLE dll_beginthreadex(LPSECURITY_ATTRIBUTES lpThreadAttributes, DWORD dwStackSize,
-                           LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags,
-                           LPDWORD lpThreadId)
-  {
-    return dllCreateThread(lpThreadAttributes, dwStackSize, lpStartAddress, lpParameter, dwCreationFlags, lpThreadId);
-  }
-
   //SLOW CODE SHOULD BE REVISED
   int dll_stat(const char *path, struct stat *buffer)
   {
