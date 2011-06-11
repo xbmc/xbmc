@@ -395,14 +395,25 @@ namespace ForTheRecord
 
   int TuneLiveStream(const std::string& channel_id, ChannelType channeltype, std::string& stream)
   {
-    // Send only a channel object in json format, no LiveStream object.
+    // Send the channel object in json format, *and* a LiveStream object when there is a current 
+    // LiveStream present.
     // FTR will answer with a LiveStream object.
+    stream = "";
 
     char command[512];
       
-    snprintf(command, 512, "{\"Channel\":{\"BroadcastStart\":\"\",\"BroadcastStop\":\"\",\"ChannelId\":\"%s\",\"ChannelType\":%i,\"DefaultPostRecordSeconds\":0,\"DefaultPreRecordSeconds\":0,\"DisplayName\":\"\",\"GuideChannelId\":\"00000000-0000-0000-0000-000000000000\",\"LogicalChannelNumber\":0,\"Sequence\":0,\"Version\":0,\"VisibleInGuide\":true}}",
+    snprintf(command, 512, "{\"Channel\":{\"BroadcastStart\":\"\",\"BroadcastStop\":\"\",\"ChannelId\":\"%s\",\"ChannelType\":%i,\"DefaultPostRecordSeconds\":0,\"DefaultPreRecordSeconds\":0,\"DisplayName\":\"\",\"GuideChannelId\":\"00000000-0000-0000-0000-000000000000\",\"LogicalChannelNumber\":0,\"Sequence\":0,\"Version\":0,\"VisibleInGuide\":true},\"LiveStream\":",
       channel_id.c_str(), channeltype);
     std::string arguments = command;
+    if (!g_current_livestream.empty())
+    {
+      Json::FastWriter writer;
+      arguments.append(writer.write(g_current_livestream)).append("}");
+    }
+    else
+    {
+      arguments.append("null}");
+    }
 
     XBMC->Log(LOG_DEBUG, "ForTheRecord/Control/TuneLiveStream, body [%s]", arguments.c_str());
 
@@ -413,12 +424,39 @@ namespace ForTheRecord
     {
       if (response.type() == Json::objectValue)
       {
-        //printValueTree(response);
-        g_current_livestream = response["LiveStream"];
+        // First analyse the return code from the server
+        ForTheRecord::LiveStreamResult livestreamresult = (ForTheRecord::LiveStreamResult) response["LiveStreamResult"].asInt();
+        XBMC->Log(LOG_DEBUG, "TuneLiveStream result %d.", livestreamresult);
+        if (livestreamresult != ForTheRecord::Succeed)
+        {
+          XBMC->Log(LOG_ERROR, "TuneLiveStream result %d.", livestreamresult);
+          return E_FAILED;
+        }
+
+        // Ok, pick up the returned LiveStream object
+        Json::Value livestream = response["LiveStream"];
+        if (livestream != Json::nullValue)
+        {
+          g_current_livestream = livestream;
+        }
+        else
+        {
+          XBMC->Log(LOG_DEBUG, "No LiveStream received from server.");
+          return E_FAILED;
+        }
         stream = g_current_livestream["TimeshiftFile"].asString();
         //stream = g_current_livestream["RtspUrl"].asString();
         XBMC->Log(LOG_DEBUG, "Tuned live stream: %s\n", stream.c_str());
       }
+      else
+      {
+        XBMC->Log(LOG_DEBUG, "Unknown response format. Expected Json::objectValue");
+        return E_FAILED;
+      }
+    }
+    else
+    {
+      XBMC->Log(LOG_ERROR, "TuneLiveStream failed");
     }
     return retval;
   }
@@ -803,6 +841,60 @@ namespace ForTheRecord
     else
     {
       XBMC->Log(LOG_DEBUG, "AddOneTimeSchedule failed. Return value: %i\n", retval);
+    }
+
+    return retval;
+  }
+
+  /**
+   * \brief Add a xbmc timer as a manual schedule
+   */
+  int AddManualSchedule(const std::string& channelid, const time_t starttime, const time_t duration, const std::string& title, int prerecordseconds, int postrecordseconds, Json::Value& response)
+  {
+    int retval = -1;
+
+    XBMC->Log(LOG_DEBUG, "AddManualSchedule");
+    struct tm* convert = localtime(&starttime);
+    struct tm tm_start = *convert;
+    time_t recordingduration = duration;
+    int duration_sec = recordingduration % 60;
+    recordingduration /= 60;
+    int duration_min = recordingduration % 60;
+    recordingduration /= 60;
+    int duration_hrs = recordingduration;
+
+    // Format: ForTheRecord/Scheduler/SaveSchedule
+    // argument: {"ChannelType":0,"IsActive":true,"IsOneTime":true,"KeepUntilMode":0,"KeepUntilValue":null,
+    //    "LastModifiedTime":"\/Date(1307645182000+0100)\/","Name":"XBMC (manual) - blup","PostRecordSeconds":600,
+    //    "PreRecordSeconds":120,"ProcessingCommands":[],"RecordingFileFormatId":null,
+    //    "Rules":[{"Arguments":["2011-06-11T22:10:00", "01:13:00"],"Type":"ManualSchedule"},{"Arguments":["6a14caaf-5e39-4750-b7b7-eae8c741c094"],"Type":"Channels"}],
+    //    "ScheduleId":"00000000-0000-0000-0000-000000000000","SchedulePriority":0,"ScheduleType":82,"Version":0}
+
+    time_t now = time(NULL);
+    std::string modifiedtime = TimeTToWCFDate(mktime(localtime(&now)));
+    char arguments[1024];
+    snprintf( arguments, sizeof(arguments),
+      "{\"ChannelType\":0,\"IsActive\":true,\"IsOneTime\":true,\"KeepUntilMode\":0,\"KeepUntilValue\":null,\"LastModifiedTime\":\"%s\",\"Name\":\"XBMC (manual) - %s\",\"PostRecordSeconds\":%i,\"PreRecordSeconds\":%i,\"ProcessingCommands\":[],\"RecordingFileFormatId\":null,"
+      "\"Rules\":[{\"Arguments\":[\"%i-%02i-%02iT%02i:%02i:%02i\", \"%02i:%02i:%02i\"],\"Type\":\"ManualSchedule\"},{\"Arguments\":[\"%s\"],\"Type\":\"Channels\"}],\"ScheduleId\":\"00000000-0000-0000-0000-000000000000\",\"SchedulePriority\":0,\"ScheduleType\":82,\"Version\":0}",
+      modifiedtime.c_str(), title.c_str(), postrecordseconds, prerecordseconds,
+      tm_start.tm_year + 1900, tm_start.tm_mon + 1, tm_start.tm_mday,
+      tm_start.tm_hour, tm_start.tm_min, tm_start.tm_sec,
+      duration_hrs, duration_min, duration_sec,
+      channelid.c_str());
+
+    retval = ForTheRecordJSONRPC("ForTheRecord/Scheduler/SaveSchedule", arguments, response);
+
+    if(retval >= 0)
+    {
+      if( response.type() != Json::objectValue)
+      {
+        XBMC->Log(LOG_DEBUG, "Unknown response format. Expected Json::objectValue\n");
+        return -1;
+      }
+    }
+    else
+    {
+      XBMC->Log(LOG_DEBUG, "AddManualSchedule failed. Return value: %i\n", retval);
     }
 
     return retval;

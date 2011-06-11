@@ -71,6 +71,15 @@ namespace ForTheRecord
     Widescreen = 2
   };
 
+  enum LiveStreamResult {
+    Succeed = 0,
+    NoFreeCardFound = 1,
+    ChannelTuneFailed = 2,
+    NoReTunePossible = 3,
+    UnknownError = 4,
+    NotSupported = 5
+  };
+
   /**
    * \brief Send a REST command to 4TR and return the JSON response string
    * \param command       The command string url (starting from "ForTheRecord/")
@@ -183,6 +192,11 @@ namespace ForTheRecord
    * \brief Add a xbmc timer as a one time schedule
    */
   int AddOneTimeSchedule(const std::string& channelid, const time_t starttime, const std::string& title, int prerecordseconds, int postrecordseconds, Json::Value& response);
+
+  /**
+   * \brief Add a xbmc timer as a manual schedule
+   */
+  int AddManualSchedule(const std::string& channelid, const time_t starttime, const time_t duration, const std::string& title, int prerecordseconds, int postrecordseconds, Json::Value& response);
 
   /**
    * \brief Delete a ForTheRecord schedule

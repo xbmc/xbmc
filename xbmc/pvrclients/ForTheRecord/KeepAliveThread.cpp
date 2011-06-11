@@ -27,33 +27,25 @@
 
 CKeepAliveThread::CKeepAliveThread()
 {
-  m_stopthread = false;
-  m_running = false;
 }
 
 CKeepAliveThread::~CKeepAliveThread()
 {
-  m_stopthread = true;
-  while(m_running)
-  {
-    usleep(10000);
-  }
+  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: destructor");
 }
 
 void CKeepAliveThread::ThreadProc()
 {
   bool retval;
-  m_running = true;
 
   XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread started:%d", GetCurrentThreadId());
-  while (!ThreadIsStopping(0) && (!m_stopthread))
+  while (!ThreadIsStopping(0))
   {
     retval = ForTheRecord::KeepLiveStreamAlive();
     XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: KeepLiveStreamAlive returned %i", (int) retval);
     usleep(20000000); //15 sec
   }
   XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread stopped:%d", GetCurrentThreadId());
-  m_running = false;
   return;
 }
 #endif

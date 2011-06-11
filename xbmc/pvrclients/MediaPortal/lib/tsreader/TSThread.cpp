@@ -56,8 +56,8 @@ bool TSThread::IsThreadRunning()
 long TSThread::StartThread()
 {
   ResetEvent(m_hStopEvent);
-  unsigned long m_threadHandle = _beginthread(&TSThread::thread_function, 0, (void *) this);
-  if (m_threadHandle == (unsigned long)INVALID_HANDLE_VALUE)
+  m_threadHandle = (HANDLE) _beginthread(&TSThread::thread_function, 0, (void *) this);
+  if (m_threadHandle == INVALID_HANDLE_VALUE)
     return E_FAIL;
 
   return S_OK;

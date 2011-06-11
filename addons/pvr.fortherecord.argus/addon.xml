@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="pvr.fortherecord.argus"
-  version="0.0.1.115"
+  version="0.0.1.116--"
   name="ForTheRecord PVR client"
   provider-name="Marcel Groothuis, Fred Hoogduin">
   <requires>
