@@ -1820,6 +1820,9 @@
     <ClCompile Include="..\..\xbmc\settings\VideoSettings.cpp">
       <Filter>settings</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\WIN32USBScan.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\storage\AutorunMediaJob.cpp">
       <Filter>storage</Filter>
     </ClCompile>
@@ -4287,6 +4290,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\VideoSettings.h">
       <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\win32\WIN32USBScan.h">
+      <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\storage\AutorunMediaJob.h">
       <Filter>storage</Filter>
