@@ -38,9 +38,9 @@ $(LIBDYLIB): $(SOURCE)
 
 .installed:
 	make -C $(SOURCE) install
-	touch $@
+	rm -f $(PREFIX)/lib/libnfs.dylib
 	ln -s $(PREFIX)/lib/$(DYLIBNAME) $(PREFIX)/lib/libnfs.dylib
-
+	touch $@
 clean:
 	make -C $(SOURCE) clean
 	rm -r .installed
