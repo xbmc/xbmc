@@ -25,6 +25,8 @@
 #include "FileItem.h"
 #include "Application.h"
 #include "log.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "utils/CharsetConverter.h"
 #ifdef _WIN32
 #include "WIN32Util.h"
@@ -32,6 +34,8 @@
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"
 #endif
+
+using namespace XFILE;
 
 CAppParamParser::CAppParamParser()
 {
@@ -161,6 +165,8 @@ void CAppParamParser::ParseArg(CStdString arg)
   {
     if (m_testmode)
       g_application.SetEnableTestMode(true);
+    if (arg.Find(".exe") >= 0 || !(!CDirectory::Exists(arg) && CFile::Exists(arg)))
+      return;
     CFileItemPtr pItem(new CFileItem(arg));
     pItem->m_strPath = arg;
     m_playlist.Add(pItem);
