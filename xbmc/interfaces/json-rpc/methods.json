@@ -40,7 +40,9 @@
         "ControlNotify": { "type": "boolean", "required": true },
         "ControlPower": { "type": "boolean", "required": true },
         "Logging": { "type": "boolean", "required": true },
-        "ScanLibrary": { "type": "boolean", "required": true }
+        "UpdateData": { "type": "boolean", "required": true },
+        "RemoveData": { "type": "boolean", "required": true },
+        "WriteFile": { "type": "boolean", "required": true }
       }
     }
   },
@@ -980,7 +982,7 @@
     "type": "method",
     "description": "Scans the audio sources for new library items",
     "transport": "Response",
-    "permission": "ScanLibrary",
+    "permission": "UpdateData",
     "params": [],
     "returns": "string"
   },
@@ -988,7 +990,7 @@
     "type": "method",
     "description": "Exports all items from the audio library",
     "transport": "Response",
-    "permission": "ExportLibrary",
+    "permission": "WriteFile",
     "params": [
       { "name": "singlefile", "type": "boolean", "default": true, "description": "Whether to export the data into one or multiple files" },
       { "name": "images", "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" },
@@ -1001,7 +1003,7 @@
     "type": "method",
     "description": "Cleans the audio library from non-existent items",
     "transport": "Response",
-    "permission": "ScanLibrary",
+    "permission": "RemoveData",
     "params": [ ],
     "returns": "string"
   },
@@ -1289,7 +1291,7 @@
     "type": "method",
     "description": "Scans the video sources for new library items",
     "transport": "Response",
-    "permission": "ScanLibrary",
+    "permission": "UpdateData",
     "params": [],
     "returns": "string"
   },
@@ -1297,7 +1299,7 @@
     "type": "method",
     "description": "Exports all items from the video library",
     "transport": "Response",
-    "permission": "ExportLibrary",
+    "permission": "WriteFile",
     "params": [
       { "name": "singlefile", "type": "boolean", "default": true, "description": "Whether to export the data into one or multiple files" },
       { "name": "images", "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" },
@@ -1311,7 +1313,7 @@
     "type": "method",
     "description": "Cleans the video library from non-existent items",
     "transport": "Response",
-    "permission": "ScanLibrary",
+    "permission": "RemoveData",
     "params": [ ],
     "returns": "string"
   },
