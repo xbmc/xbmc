@@ -22,9 +22,12 @@ public:
   size_t            GetMaxReadChunkSize(){return m_readChunkSize;}
   size_t            GetMaxWriteChunkSize(){return m_writeChunkSize;} 
   DllLibNfs        *GetImpl(){return &m_libNfs;}
+  
   void AddActiveConnection();
   void AddIdleConnection();
-  
+  void CheckIfIdle();
+  void SetActivityTime();
+  void Deinit();
   
 private:
   struct nfs_context *m_pNfsContext;    
@@ -33,6 +36,7 @@ private:
   size_t m_readChunkSize;
   size_t m_writeChunkSize;
   int m_OpenConnections;
+  unsigned int m_IdleTimeout;
   DllLibNfs m_libNfs;
   void resetContext();  
 };

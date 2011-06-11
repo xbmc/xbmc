@@ -50,6 +50,7 @@ CNfsConnection::CNfsConnection()
 , m_readChunkSize(0)
 , m_writeChunkSize(0)
 , m_OpenConnections(0)
+, m_IdleTimeout(0)
 {
 }
 
@@ -59,6 +60,15 @@ CNfsConnection::~CNfsConnection()
 
 void CNfsConnection::resetContext()
 {
+  
+  if(!m_libNfs.IsLoaded())
+  {
+    if(!m_libNfs.Load())
+    {
+      CLog::Log(LOGERROR,"NFS: Error loading libnfs (%s).",__FUNCTION__);    
+      return;//FATAL!
+    }    
+  }
   
   if(m_pNfsContext)
   {
@@ -108,18 +118,54 @@ bool CNfsConnection::Connect(const CURL& url)
   return true; 
 }
 
+void CNfsConnection::Deinit()
+{
+  if(m_pNfsContext)
+  {
+    m_libNfs.nfs_destroy_context(m_pNfsContext);
+  }        
+  m_pNfsContext = NULL;
+  m_shareName.clear();
+  m_hostName.clear();
+  m_libNfs.Unload();
+}
+
+/* This is called from CApplication::ProcessSlow() and is used to tell if nfs have been idle for too long */
+void CNfsConnection::CheckIfIdle()
+{
+  /* We check if there are open connections. This is done without a lock to not halt the mainthread. It should be thread safe as
+   worst case scenario is that m_OpenConnections could read 0 and then changed to 1 if this happens it will enter the if wich will lead to another check, wich is locked.  */
+  if (m_OpenConnections == 0 && m_pNfsContext != NULL)
+  { /* I've set the the maxiumum IDLE time to be 1 min and 30 sec. */
+    CSingleLock lock(*this);
+    if (m_OpenConnections == 0 /* check again - when locked */)
+    {
+      if (m_IdleTimeout > 0)
+      {
+        m_IdleTimeout--;
+      }
+      else
+      {
+        CLog::Log(LOGNOTICE, "NFS is idle. Closing the remaining connections.");
+        gNfsConnection.Deinit();
+      }
+    }
+  }
+}
+
+void CNfsConnection::SetActivityTime()
+{
+  /* Since we get called every 500ms from ProcessSlow we limit the tick count to 180 */
+  /* That means we have 2 ticks per second which equals 180/2 == 90 seconds */
+  m_IdleTimeout = 180;
+}
+
+
 /* The following two function is used to keep track on how many Opened files/directories there are.
 needed for unloading the dylib*/
 void CNfsConnection::AddActiveConnection()
 {
   CSingleLock lock(*this);
-  if(m_OpenConnections == 0 && !m_libNfs.IsLoaded())
-  {
-    if(!m_libNfs.Load())
-    {
-      CLog::Log(LOGERROR,"NFS: Error loading libnfs (%s).",__FUNCTION__);    
-    }
-  } 
   m_OpenConnections++;
 }
 
@@ -127,18 +173,9 @@ void CNfsConnection::AddIdleConnection()
 {
   CSingleLock lock(*this);
   m_OpenConnections--;
-  
-  if(m_OpenConnections==0)
-  {
-    if(m_pNfsContext)
-    {
-      m_libNfs.nfs_destroy_context(m_pNfsContext);
-    }    
-    m_pNfsContext = NULL;
-    m_shareName.clear();
-    m_hostName.clear();
-    m_libNfs.Unload();
-  }
+  /* If we close a file we reset the idle timer so that we don't have any wierd behaviours if a user
+   leaves the movie paused for a long while and then press stop */
+  m_IdleTimeout = 180;
 }
 
 
