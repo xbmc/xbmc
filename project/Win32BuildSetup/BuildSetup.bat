@@ -180,11 +180,8 @@ IF %comp%==vs2010 (
   
   md BUILD_WIN32\Xbmc
   rem Additions by margro:
+  rem Exclude the following PVR/DLL addon related files
   Echo addons\pvr.fortherecord.argus\libcurld.dll >>exclude.txt
-  Echo userdata\addon_data\ >>exclude.txt
-  Echo userdata\keymaps\ >>exclude.txt
-  Echo userdata\masterprofile\ >>exclude.txt
-  Echo *fmScrobbler.xml >>exclude.txt
   Echo .ilk>>exclude.txt
   Echo .exp>>exclude.txt
   Echo .def>>exclude.txt
