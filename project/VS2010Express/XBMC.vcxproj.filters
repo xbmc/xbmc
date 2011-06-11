@@ -2472,6 +2472,9 @@
     <ClCompile Include="..\..\xbmc\settings\PictureSettings.cpp">
       <Filter>settings</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\MediaProviderSettings.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4947,6 +4950,9 @@
       <Filter>settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\settings\PictureSettings.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\MediaProviderSettings.h">
       <Filter>settings</Filter>
     </ClInclude>
   </ItemGroup>

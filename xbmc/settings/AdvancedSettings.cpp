@@ -43,6 +43,7 @@ CAdvancedSettings::CAdvancedSettings()
   AudioSettings = new CAudioSettings();
   KaraokeSettings = new CKaraokeSettings();
   LibrarySettings = new CLibrarySettings();
+  MediaProviderSettings = new CMediaProviderSettings();
   PictureSettings = new CPictureSettings();
   SystemSettings = new CSystemSettings(g_application.IsStandAlone());
   VideoSettings = new CVideoAdvancedSettings();
@@ -53,6 +54,7 @@ CAdvancedSettings::~CAdvancedSettings()
   delete AudioSettings;
   delete KaraokeSettings;
   delete LibrarySettings;
+  delete MediaProviderSettings;
   delete PictureSettings;
   delete SystemSettings;
   delete VideoSettings;
@@ -76,28 +78,6 @@ void CAdvancedSettings::Initialize()
 
   m_remoteDelay = 3;
   m_controllerDeadzone = 0.2f;
-
-  m_iTuxBoxStreamtsPort = 31339;
-  m_bTuxBoxAudioChannelSelection = false;
-  m_bTuxBoxSubMenuSelection = false;
-  m_bTuxBoxPictureIcon= true;
-  m_bTuxBoxSendAllAPids= false;
-  m_iTuxBoxEpgRequestTime = 10; //seconds
-  m_iTuxBoxDefaultSubMenu = 4;
-  m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
-  m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
-  m_bTuxBoxZapstream = true;
-  m_iTuxBoxZapstreamPort = 31344;
-
-  m_iMythMovieLength = 0; // 0 == Off
-
-  m_bEdlMergeShortCommBreaks = false;      // Off by default
-  m_iEdlMaxCommBreakLength = 8 * 30 + 10;  // Just over 8 * 30 second commercial break.
-  m_iEdlMinCommBreakLength = 3 * 30;       // 3 * 30 second commercial breaks.
-  m_iEdlMaxCommBreakGap = 4 * 30;          // 4 * 30 second commercial breaks.
-  m_iEdlMaxStartGap = 5 * 60;              // 5 minutes.
-  m_iEdlCommBreakAutowait = 0;             // Off by default
-  m_iEdlCommBreakAutowind = 0;             // Off by default
 
   m_iSkipLoopFilter = 0;
   m_ForcedSwapTime = 0.0;
@@ -151,6 +131,7 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
   delete AudioSettings;
   delete KaraokeSettings;
   delete LibrarySettings;
+  delete MediaProviderSettings;
   delete PictureSettings;
   delete SystemSettings;
   delete VideoSettings;
@@ -158,6 +139,7 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
   AudioSettings = new CAudioSettings(pRootElement);
   KaraokeSettings = new CKaraokeSettings(pRootElement);
   LibrarySettings = new CLibrarySettings(pRootElement);
+  MediaProviderSettings = new CMediaProviderSettings(pRootElement);
   PictureSettings = new CPictureSettings(pRootElement);
   SystemSettings = new CSystemSettings(g_application.IsStandAlone(), pRootElement);
   VideoSettings = new CVideoAdvancedSettings(pRootElement);
@@ -183,47 +165,8 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
 
-
-  //Tuxbox
-  pElement = pRootElement->FirstChildElement("tuxbox");
-  if (pElement)
-  {
-    XMLUtils::GetInt(pElement, "streamtsport", m_iTuxBoxStreamtsPort, 0, 65535);
-    XMLUtils::GetBoolean(pElement, "audiochannelselection", m_bTuxBoxAudioChannelSelection);
-    XMLUtils::GetBoolean(pElement, "submenuselection", m_bTuxBoxSubMenuSelection);
-    XMLUtils::GetBoolean(pElement, "pictureicon", m_bTuxBoxPictureIcon);
-    XMLUtils::GetBoolean(pElement, "sendallaudiopids", m_bTuxBoxSendAllAPids);
-    XMLUtils::GetInt(pElement, "epgrequesttime", m_iTuxBoxEpgRequestTime, 0, 3600);
-    XMLUtils::GetInt(pElement, "defaultsubmenu", m_iTuxBoxDefaultSubMenu, 1, 4);
-    XMLUtils::GetInt(pElement, "defaultrootmenu", m_iTuxBoxDefaultRootMenu, 0, 4);
-    XMLUtils::GetInt(pElement, "zapwaittime", m_iTuxBoxZapWaitTime, 0, 120);
-    XMLUtils::GetBoolean(pElement, "zapstream", m_bTuxBoxZapstream);
-    XMLUtils::GetInt(pElement, "zapstreamport", m_iTuxBoxZapstreamPort, 0, 65535);
-  }
-
-  // Myth TV
-  pElement = pRootElement->FirstChildElement("myth");
-  if (pElement)
-  {
-    XMLUtils::GetInt(pElement, "movielength", m_iMythMovieLength);
-  }
-
-  // EDL commercial break handling
-  pElement = pRootElement->FirstChildElement("edl");
-  if (pElement)
-  {
-    XMLUtils::GetBoolean(pElement, "mergeshortcommbreaks", m_bEdlMergeShortCommBreaks);
-    XMLUtils::GetInt(pElement, "maxcommbreaklength", m_iEdlMaxCommBreakLength, 0, 10 * 60); // Between 0 and 10 minutes
-    XMLUtils::GetInt(pElement, "mincommbreaklength", m_iEdlMinCommBreakLength, 0, 5 * 60);  // Between 0 and 5 minutes
-    XMLUtils::GetInt(pElement, "maxcommbreakgap", m_iEdlMaxCommBreakGap, 0, 5 * 60);        // Between 0 and 5 minutes.
-    XMLUtils::GetInt(pElement, "maxstartgap", m_iEdlMaxStartGap, 0, 10 * 60);               // Between 0 and 10 minutes
-    XMLUtils::GetInt(pElement, "commbreakautowait", m_iEdlCommBreakAutowait, 0, 10);        // Between 0 and 10 seconds
-    XMLUtils::GetInt(pElement, "commbreakautowind", m_iEdlCommBreakAutowind, 0, 10);        // Between 0 and 10 seconds
-  }
-
   XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 1, 20);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
-
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in

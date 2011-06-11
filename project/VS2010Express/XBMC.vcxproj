@@ -705,6 +705,7 @@
     <ClCompile Include="..\..\xbmc\settings\GUIWindowTestPattern.cpp" />
     <ClCompile Include="..\..\xbmc\settings\KaraokeSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\LibrarySettings.cpp" />
+    <ClCompile Include="..\..\xbmc\settings\MediaProviderSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\PictureSettings.cpp" />
     <ClCompile Include="..\..\xbmc\settings\Profile.cpp" />
     <ClCompile Include="..\..\xbmc\settings\Settings.cpp" />
@@ -1543,6 +1544,7 @@
     <ClInclude Include="..\..\xbmc\settings\GUIWindowTestPattern.h" />
     <ClInclude Include="..\..\xbmc\settings\KaraokeSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\LibrarySettings.h" />
+    <ClInclude Include="..\..\xbmc\settings\MediaProviderSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\PictureSettings.h" />
     <ClInclude Include="..\..\xbmc\settings\Profile.h" />
     <ClInclude Include="..\..\xbmc\settings\Settings.h" />

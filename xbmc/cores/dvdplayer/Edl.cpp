@@ -631,8 +631,8 @@ bool CEdl::AddCut(Cut& cut)
      * the start (autowait) and automatically rewind by a bit (autowind) at the end of the commercial
      * break.
      */
-    int autowait = g_advancedSettings.m_iEdlCommBreakAutowait * 1000; // seconds -> ms
-    int autowind = g_advancedSettings.m_iEdlCommBreakAutowind * 1000; // seconds -> ms
+    int autowait = g_advancedSettings.MediaProviderSettings->EdlCommBreakAutowait() * 1000; // seconds -> ms
+    int autowind = g_advancedSettings.MediaProviderSettings->EdlCommBreakAutowind() * 1000; // seconds -> ms
 
     if (cut.start > 0) // Only autowait if not at the start.
      cut.start += autowait;
@@ -1006,13 +1006,13 @@ void CEdl::MergeShortCommBreaks()
     m_vecCuts.erase(m_vecCuts.begin());
   }
 
-  if (g_advancedSettings.m_bEdlMergeShortCommBreaks)
+  if (g_advancedSettings.MediaProviderSettings->EdlMergeShortCommBreaks())
   {
     for (int i = 0; i < (int)m_vecCuts.size() - 1; i++)
     {
       if ((m_vecCuts[i].action == COMM_BREAK && m_vecCuts[i + 1].action == COMM_BREAK)
-      &&  (m_vecCuts[i + 1].end - m_vecCuts[i].start < g_advancedSettings.m_iEdlMaxCommBreakLength * 1000) // s to ms
-      &&  (m_vecCuts[i + 1].start - m_vecCuts[i].end < g_advancedSettings.m_iEdlMaxCommBreakGap * 1000)) // s to ms
+      &&  (m_vecCuts[i + 1].end - m_vecCuts[i].start < g_advancedSettings.MediaProviderSettings->EdlMaxCommBreakLength() * 1000) // s to ms
+      &&  (m_vecCuts[i + 1].start - m_vecCuts[i].end < g_advancedSettings.MediaProviderSettings->EdlMaxCommBreakGap() * 1000)) // s to ms
       {
         Cut commBreak;
         commBreak.action = COMM_BREAK;
@@ -1042,7 +1042,7 @@ void CEdl::MergeShortCommBreaks()
      */
     if (!m_vecCuts.empty()
     &&  m_vecCuts[0].action == COMM_BREAK
-    &&  m_vecCuts[0].start < g_advancedSettings.m_iEdlMaxStartGap * 1000)
+    &&  m_vecCuts[0].start < g_advancedSettings.MediaProviderSettings->EdlMaxStartGap() * 1000)
     {
       CLog::Log(LOGDEBUG, "%s - Expanding first commercial break back to start [%s - %s].", __FUNCTION__,
                 MillisecondsToTimeString(m_vecCuts[0].start).c_str(), MillisecondsToTimeString(m_vecCuts[0].end).c_str());
@@ -1056,11 +1056,11 @@ void CEdl::MergeShortCommBreaks()
     {
       if (m_vecCuts[i].action == COMM_BREAK
       &&  m_vecCuts[i].start > 0
-      && (m_vecCuts[i].end - m_vecCuts[i].start) < g_advancedSettings.m_iEdlMinCommBreakLength * 1000)
+      && (m_vecCuts[i].end - m_vecCuts[i].start) < g_advancedSettings.MediaProviderSettings->EdlMinCommBreakLength() * 1000)
       {
         CLog::Log(LOGDEBUG, "%s - Removing short commercial break [%s - %s]. Minimum length: %i seconds", __FUNCTION__,
                   MillisecondsToTimeString(m_vecCuts[i].start).c_str(), MillisecondsToTimeString(m_vecCuts[i].end).c_str(),
-                  g_advancedSettings.m_iEdlMinCommBreakLength);
+                  g_advancedSettings.MediaProviderSettings->EdlMinCommBreakLength());
         m_vecCuts.erase(m_vecCuts.begin() + i);
 
         i--;
