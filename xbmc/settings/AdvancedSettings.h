@@ -63,7 +63,6 @@ class CAdvancedSettings
     float m_controllerDeadzone;
     bool m_bFirstLoop;
     int m_iSkipLoopFilter;
-    float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
   private:
     void ParseSettingsFile(CStdString file);
     std::vector<CStdString> m_settingsFiles;

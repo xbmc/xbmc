@@ -329,7 +329,7 @@ void CRenderSystemGL::SetVSync(bool enable)
   if (!enable)
     return;
 
-  if (g_advancedSettings.m_ForcedSwapTime != 0.0)
+  if (g_advancedSettings.VideoSettings->ForcedSwapTime() != 0.0)
   {
     /* some hardware busy wait on swap/glfinish, so we must manually sleep to avoid 100% cpu */
     double rate = g_graphicsContext.GetFPS();
@@ -343,7 +343,7 @@ void CRenderSystemGL::SetVSync(bool enable)
       int64_t freq;
       freq = CurrentHostFrequency();
       m_iSwapRate   = (int64_t)((double)freq / rate);
-      m_iSwapTime   = (int64_t)(0.001 * g_advancedSettings.m_ForcedSwapTime * freq);
+      m_iSwapTime   = (int64_t)(0.001 * g_advancedSettings.VideoSettings->ForcedSwapTime() * freq);
       m_iSwapStamp  = 0;
       CLog::Log(LOGINFO, "GL: Using artificial vsync sleep with rate %f", rate);
       if(!m_iVSyncMode)

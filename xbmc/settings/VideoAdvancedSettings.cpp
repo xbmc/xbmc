@@ -185,6 +185,7 @@ CVideoAdvancedSettings::CVideoAdvancedSettings(TiXmlElement *pRootElement)
   XMLUtils::GetBoolean(pRootElement,"allowdynamictextures", m_allowDynamicTextures);
   XMLUtils::GetBoolean(pRootElement,"glrectanglehack", m_GLRectangleHack);
   XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
+  XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
 }
 
 void CVideoAdvancedSettings::Clear()
@@ -288,6 +289,11 @@ float CVideoAdvancedSettings::AutoScaleMaxFPS()
 float CVideoAdvancedSettings::PlayCountMinimumPercent()
 {
   return m_playCountMinimumPercent;
+}
+
+float CVideoAdvancedSettings::ForcedSwapTime()
+{
+  return m_ForcedSwapTime;
 }
 
 bool CVideoAdvancedSettings::AllowLanczos3()
@@ -443,6 +449,7 @@ void CVideoAdvancedSettings::Initialise()
   m_nonLinStretchRatio = 0.5f;
   m_allowLanczos3 = false;
   m_autoScaleMaxFps = 30.0f;
+  m_ForcedSwapTime = 0.0;
   m_allowMpeg4VDPAU = false;
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;

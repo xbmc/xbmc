@@ -65,7 +65,6 @@ void CAdvancedSettings::Initialize()
 
   m_controllerDeadzone = 0.2f;
   m_iSkipLoopFilter = 0;
-  m_ForcedSwapTime = 0.0;
 }
 
 bool CAdvancedSettings::Load()
@@ -144,8 +143,6 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
   }
 
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
-  XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
-
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
 
   // load in the GUISettings overrides:

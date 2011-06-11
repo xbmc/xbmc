@@ -56,6 +56,7 @@ class CVideoAdvancedSettings
     float NonLinStretchRatio();
     float AutoScaleMaxFPS();
     float PlayCountMinimumPercent();
+    float ForcedSwapTime(); // if nonzero, set's the explicit time in ms to allocate for buffer swap
     bool AllowLanczos3();
     bool VDPAUScaling();
     bool AllowMPEG4VDPAU();
@@ -104,6 +105,7 @@ class CVideoAdvancedSettings
     float m_nonLinStretchRatio;
     float m_autoScaleMaxFps;
     float m_playCountMinimumPercent;
+    float m_ForcedSwapTime;
     bool m_allowLanczos3;
     bool m_VDPAUScaling;
     bool m_allowMpeg4VDPAU;
