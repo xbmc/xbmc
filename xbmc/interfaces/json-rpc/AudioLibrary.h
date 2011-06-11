@@ -39,6 +39,7 @@ namespace JSONRPC
     static JSON_STATUS GetRecentlyAddedSongs(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSON_STATUS GetGenres(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSON_STATUS ScanForContent(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSON_STATUS Export(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
     static bool FillFileItem(const CStdString &strFilename, CFileItem &item);
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
