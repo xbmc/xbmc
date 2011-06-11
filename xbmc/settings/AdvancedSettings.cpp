@@ -74,8 +74,6 @@ void CAdvancedSettings::Initialize()
   m_songInfoDuration = 10;
   m_busyDialogDelay = 2000;
 
-  m_cddbAddress = "freedb.freedb.org";
-
   m_remoteDelay = 3;
   m_controllerDeadzone = 0.2f;
 
@@ -178,8 +176,6 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
     XMLUtils::GetInt(pElement, "scrolldelay", m_lcdScrolldelay, -8, 8);
     XMLUtils::GetString(pElement, "hostname", m_lcdHostName);
   }
-
-  XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
 
   XMLUtils::GetInt(pRootElement, "songinfoduration", m_songInfoDuration, 0, INT_MAX);
   XMLUtils::GetInt(pRootElement, "busydialogdelay", m_busyDialogDelay, 0, 5000);

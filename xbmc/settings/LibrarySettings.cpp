@@ -155,6 +155,8 @@ CLibrarySettings::CLibrarySettings(TiXmlElement *pRootElement)
     XMLUtils::GetString(pDatabase, "pass", m_databaseMusic.pass);
     XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
   }
+
+  XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
 }
 
 void CLibrarySettings::Clear()
@@ -302,6 +304,11 @@ CStdString CLibrarySettings::TVShowMultiPartEnumRegExp()
   return m_tvshowMultiPartEnumRegExp;
 }
 
+CStdString CLibrarySettings::CDDBAddress()
+{
+  return m_cddbAddress;
+}
+
 CStdStringArray CLibrarySettings::VideoStackRegExps()
 {
   return m_videoStackRegExps;
@@ -375,6 +382,7 @@ void CLibrarySettings::Initialise()
   m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\/._ -]p(?:ar)?t[_. -]()([ivx]+)([._ -][^\\/]*)$"));
 
   m_tvshowMultiPartEnumRegExp = "^[-_EeXx]+([0-9]+)";
+  m_cddbAddress = "freedb.freedb.org";
 }
 
 void CLibrarySettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings)

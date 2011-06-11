@@ -65,8 +65,6 @@ class CAdvancedSettings
     int m_songInfoDuration;
     int m_busyDialogDelay;
 
-    CStdString m_cddbAddress;
-
     int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     float m_controllerDeadzone;
 
@@ -95,7 +93,6 @@ class CAdvancedSettings
     int m_iEdlCommBreakAutowind;    // seconds
 
     bool m_bFirstLoop;
-
 
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */

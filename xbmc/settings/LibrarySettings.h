@@ -78,6 +78,7 @@ class CLibrarySettings
     CStdString MusicLibraryAlbumFormat();
     CStdString MusicLibraryAlbumFormatRight();
     CStdString TVShowMultiPartEnumRegExp();
+    CStdString CDDBAddress();
     CStdStringArray VideoStackRegExps();
     DatabaseSettings DatabaseMusic() { return m_databaseMusic; };
     DatabaseSettings DatabaseVideo() { return m_databaseVideo; };
@@ -118,6 +119,7 @@ class CLibrarySettings
     CStdString m_dvdThumbs;
     CStdString m_fanartImages;
     CStdString m_tvshowMultiPartEnumRegExp;
+    CStdString m_cddbAddress;
     CStdStringArray m_videoStackRegExps;
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
