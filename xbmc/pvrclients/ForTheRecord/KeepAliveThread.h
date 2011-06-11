@@ -28,8 +28,6 @@ class CKeepAliveThread: public TSThread
 
   private:
     virtual void ThreadProc();
-    bool m_stopthread;
-    bool m_running;
 };
 
 #endif
