@@ -51,6 +51,8 @@ static XBMCKey VK_keymap[XBMCK_LAST];
 static HKL hLayoutUS = NULL;
 static XBMCKey Arrows_keymap[4];
 
+static GUID USB_HID_GUID = { 0x4D1E55B2, 0xF16F, 0x11CF, { 0x88, 0xCB, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30 } };
+
 uint32_t g_uQueryCancelAutoPlay = 0;
 
 int XBMC_TranslateUNICODE = 1;
@@ -355,6 +357,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 {
   XBMC_Event newEvent;
   ZeroMemory(&newEvent, sizeof(newEvent));
+  static HDEVNOTIFY hDeviceNotify;
 
   if (uMsg == WM_CREATE)
   {
@@ -365,6 +368,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     shcne.fRecursive = TRUE;
     long fEvents = SHCNE_DRIVEADD | SHCNE_DRIVEREMOVED | SHCNE_MEDIAREMOVED | SHCNE_MEDIAINSERTED;
     SHChangeNotifyRegister(hWnd, SHCNRF_ShellLevel | SHCNRF_NewDelivery, fEvents, WM_MEDIA_CHANGE, 1, &shcne);
+    RegisterDeviceInterfaceToHwnd(USB_HID_GUID, hWnd, &hDeviceNotify);
     return 0;
   }
 
@@ -643,9 +647,40 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         CWin32PowerSyscall::SetOnResume();
       }
       break;
-
+    case WM_DEVICECHANGE:
+      PDEV_BROADCAST_DEVICEINTERFACE b = (PDEV_BROADCAST_DEVICEINTERFACE) lParam;
+      switch (wParam)
+      {
+        case DBT_DEVICEARRIVAL:
+          CLog::Log(LOGDEBUG, "HID Device Arrived");
+          break;
+        case DBT_DEVICEREMOVECOMPLETE:
+          CLog::Log(LOGDEBUG, "HID Device Removed");
+          break;
+        case DBT_DEVNODES_CHANGED:
+          //CLog::Log(LOGDEBUG, "HID Device Changed");
+          //We generally don't care about Change notifications, only need to know if a device is removed or added to rescan the device list
+          break;
+      }
+      break;
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
+}
+
+void CWinEventsWin32::RegisterDeviceInterfaceToHwnd(GUID InterfaceClassGuid, HWND hWnd, HDEVNOTIFY *hDeviceNotify)
+{
+  DEV_BROADCAST_DEVICEINTERFACE NotificationFilter;
+
+  ZeroMemory( &NotificationFilter, sizeof(NotificationFilter) );
+  NotificationFilter.dbcc_size = sizeof(DEV_BROADCAST_DEVICEINTERFACE);
+  NotificationFilter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
+  NotificationFilter.dbcc_classguid = InterfaceClassGuid;
+
+  *hDeviceNotify = RegisterDeviceNotification( 
+      hWnd,                       // events recipient
+      &NotificationFilter,        // type of device
+      DEVICE_NOTIFY_WINDOW_HANDLE // type of recipient handle
+      );
 }
 
 void CWinEventsWin32::WindowFromScreenCoords(HWND hWnd, POINT *point)
