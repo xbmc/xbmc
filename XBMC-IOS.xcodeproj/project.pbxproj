@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18404DD31396C3D200863BBA /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DD21396C3D200863BBA /* SlingboxLib.a */; };
+		18404DD61396C3F300863BBA /* Slingbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18404DD41396C3F300863BBA /* Slingbox.cpp */; };
+		1840B77A1399616D007C848B /* JSONVariantParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B7761399616D007C848B /* JSONVariantParser.cpp */; };
+		1840B77B1399616D007C848B /* JSONVariantWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B7781399616D007C848B /* JSONVariantWriter.cpp */; };
 		18ACF8FD13597B5700B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF8FB13597B5700B67371 /* RecentlyAddedJob.cpp */; };
 		3255316612B2D02400837CD2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255316512B2D02400837CD2 /* CoreAudio.framework */; };
 		4D5D2E1E1301758F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */; };
@@ -361,7 +365,6 @@
 		F56C8931131F42ED000AD0F6 /* SPCCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C832A131F42E7000AD0F6 /* SPCCodec.cpp */; };
 		F56C8932131F42ED000AD0F6 /* TimidityCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C832C131F42E7000AD0F6 /* TimidityCodec.cpp */; };
 		F56C8933131F42ED000AD0F6 /* WAVcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C832E131F42E7000AD0F6 /* WAVcodec.cpp */; };
-		F56C8934131F42ED000AD0F6 /* WAVPackcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8330131F42E7000AD0F6 /* WAVPackcodec.cpp */; };
 		F56C8935131F42ED000AD0F6 /* YMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8332131F42E7000AD0F6 /* YMCodec.cpp */; };
 		F56C8936131F42ED000AD0F6 /* PlayerCoreFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8336131F42E7000AD0F6 /* PlayerCoreFactory.cpp */; };
 		F56C8937131F42ED000AD0F6 /* PlayerSelectionRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8338131F42E7000AD0F6 /* PlayerSelectionRule.cpp */; };
@@ -934,7 +937,6 @@
 		F56C8BAB131F4466000AD0F6 /* XBMCEAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = F56C8BA5131F4466000AD0F6 /* XBMCEAGLView.mm */; };
 		F56C8BB9131F44AA000AD0F6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F56C8BB7131F44AA000AD0F6 /* InfoPlist.strings */; };
 		F56C8C09131F47EA000AD0F6 /* libapetag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C03131F47EA000AD0F6 /* libapetag.a */; };
-		F56C8C0C131F47EA000AD0F6 /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C06131F47EA000AD0F6 /* libjsoncpp.a */; };
 		F56C8C11131F4811000AD0F6 /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C0D131F4811000AD0F6 /* libsquish.a */; };
 		F56C8C12131F4811000AD0F6 /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C0E131F4811000AD0F6 /* librtv.a */; };
 		F56C8C14131F4811000AD0F6 /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8C10131F4811000AD0F6 /* libxdaap.a */; };
@@ -970,6 +972,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		18404DD21396C3D200863BBA /* SlingboxLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = SlingboxLib.a; path = lib/SlingboxLib/SlingboxLib.a; sourceTree = "<group>"; };
+		18404DD41396C3F300863BBA /* Slingbox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Slingbox.cpp; sourceTree = "<group>"; };
+		18404DD51396C3F300863BBA /* Slingbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slingbox.h; sourceTree = "<group>"; };
+		1840B7761399616D007C848B /* JSONVariantParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONVariantParser.cpp; sourceTree = "<group>"; };
+		1840B7771399616D007C848B /* JSONVariantParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONVariantParser.h; sourceTree = "<group>"; };
+		1840B7781399616D007C848B /* JSONVariantWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONVariantWriter.cpp; sourceTree = "<group>"; };
+		1840B7791399616D007C848B /* JSONVariantWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONVariantWriter.h; sourceTree = "<group>"; };
 		18ACF8FB13597B5700B67371 /* RecentlyAddedJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RecentlyAddedJob.cpp; sourceTree = "<group>"; };
 		18ACF8FC13597B5700B67371 /* RecentlyAddedJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentlyAddedJob.h; sourceTree = "<group>"; };
 		3255316512B2D02400837CD2 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -1104,7 +1113,6 @@
 		F56C803B131F42E5000AD0F6 /* DllStSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllStSound.h; sourceTree = "<group>"; };
 		F56C803C131F42E5000AD0F6 /* DllTimidity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllTimidity.h; sourceTree = "<group>"; };
 		F56C803D131F42E5000AD0F6 /* DllVorbisfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllVorbisfile.h; sourceTree = "<group>"; };
-		F56C803E131F42E5000AD0F6 /* DllWAVPack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllWAVPack.h; sourceTree = "<group>"; };
 		F56C8040131F42E5000AD0F6 /* tinystr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinystr.cpp; sourceTree = "<group>"; };
 		F56C8041131F42E5000AD0F6 /* tinystr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinystr.h; sourceTree = "<group>"; };
 		F56C8042131F42E5000AD0F6 /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
@@ -1509,10 +1517,6 @@
 		F56C81F4131F42E6000AD0F6 /* EncoderWav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncoderWav.h; sourceTree = "<group>"; };
 		F56C81F6131F42E6000AD0F6 /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
 		F56C81F8131F42E6000AD0F6 /* codec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = codec.h; sourceTree = "<group>"; };
-		F56C81F9131F42E6000AD0F6 /* ogg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ogg.h; sourceTree = "<group>"; };
-		F56C81FA131F42E6000AD0F6 /* os_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = os_types.h; sourceTree = "<group>"; };
-		F56C81FB131F42E6000AD0F6 /* vorbisenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vorbisenc.h; sourceTree = "<group>"; };
-		F56C81FC131F42E6000AD0F6 /* vorbisfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vorbisfile.h; sourceTree = "<group>"; };
 		F56C81FF131F42E6000AD0F6 /* IOSAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IOSAudioRenderer.cpp; path = AudioRenderers/IOSAudioRenderer.cpp; sourceTree = "<group>"; };
 		F56C8200131F42E6000AD0F6 /* IOSAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSAudioRenderer.h; path = AudioRenderers/IOSAudioRenderer.h; sourceTree = "<group>"; };
 		F56C8201131F42E6000AD0F6 /* IAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IAudioRenderer.h; path = AudioRenderers/IAudioRenderer.h; sourceTree = "<group>"; };
@@ -1795,8 +1799,6 @@
 		F56C832D131F42E7000AD0F6 /* TimidityCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimidityCodec.h; sourceTree = "<group>"; };
 		F56C832E131F42E7000AD0F6 /* WAVcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WAVcodec.cpp; sourceTree = "<group>"; };
 		F56C832F131F42E7000AD0F6 /* WAVcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WAVcodec.h; sourceTree = "<group>"; };
-		F56C8330131F42E7000AD0F6 /* WAVPackcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WAVPackcodec.cpp; sourceTree = "<group>"; };
-		F56C8331131F42E7000AD0F6 /* WAVPackcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WAVPackcodec.h; sourceTree = "<group>"; };
 		F56C8332131F42E7000AD0F6 /* YMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = YMCodec.cpp; sourceTree = "<group>"; };
 		F56C8333131F42E7000AD0F6 /* YMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YMCodec.h; sourceTree = "<group>"; };
 		F56C8335131F42E7000AD0F6 /* PlayerCoreConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayerCoreConfig.h; path = playercorefactory/PlayerCoreConfig.h; sourceTree = "<group>"; };
@@ -2116,7 +2118,6 @@
 		F56C8476131F42E8000AD0F6 /* VirtualDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VirtualDirectory.h; sourceTree = "<group>"; };
 		F56C847B131F42E9000AD0F6 /* ZeroconfDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfDirectory.h; sourceTree = "<group>"; };
 		F56C847C131F42E9000AD0F6 /* ZeroconfDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfDirectory.cpp; sourceTree = "<group>"; };
-		F56C847D131F42E9000AD0F6 /* zconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zconf.h; sourceTree = "<group>"; };
 		F56C847E131F42E9000AD0F6 /* ZipDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZipDirectory.cpp; sourceTree = "<group>"; };
 		F56C847F131F42E9000AD0F6 /* ZipDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipDirectory.h; sourceTree = "<group>"; };
 		F56C8480131F42E9000AD0F6 /* ZipManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZipManager.cpp; sourceTree = "<group>"; };
@@ -2961,7 +2962,6 @@
 		F56C8BA6131F4466000AD0F6 /* XBMCIOS-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "XBMCIOS-Info.plist"; sourceTree = "<group>"; };
 		F56C8BB8131F44AA000AD0F6 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = InfoPlist.strings; sourceTree = "<group>"; };
 		F56C8C03131F47EA000AD0F6 /* libapetag.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libapetag.a; path = lib/libapetag/.libs/libapetag.a; sourceTree = "<group>"; };
-		F56C8C06131F47EA000AD0F6 /* libjsoncpp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjsoncpp.a; path = lib/jsoncpp/src/lib_json/libjsoncpp.a; sourceTree = "<group>"; };
 		F56C8C0D131F4811000AD0F6 /* libsquish.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsquish.a; path = lib/libsquish/libsquish.a; sourceTree = "<group>"; };
 		F56C8C0E131F4811000AD0F6 /* librtv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librtv.a; path = lib/libRTV/librtv.a; sourceTree = "<group>"; };
 		F56C8C10131F4811000AD0F6 /* libxdaap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libxdaap.a; path = lib/libXDAAP/libxdaap.a; sourceTree = "<group>"; };
@@ -3042,10 +3042,10 @@
 				F56B160812CD6999009B4C96 /* ImageIO.framework in Frameworks */,
 				4D5D2E1E1301758F006ABC13 /* CFNetwork.framework in Frameworks */,
 				F56C8C09131F47EA000AD0F6 /* libapetag.a in Frameworks */,
-				F56C8C0C131F47EA000AD0F6 /* libjsoncpp.a in Frameworks */,
 				F56C8C11131F4811000AD0F6 /* libsquish.a in Frameworks */,
 				F56C8C12131F4811000AD0F6 /* librtv.a in Frameworks */,
 				F56C8C14131F4811000AD0F6 /* libxdaap.a in Frameworks */,
+				18404DD31396C3D200863BBA /* SlingboxLib.a in Frameworks */,
 				C8AD42C51392475000A75578 /* libTcpSocket.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3246,7 +3246,6 @@
 				F56C803B131F42E5000AD0F6 /* DllStSound.h */,
 				F56C803C131F42E5000AD0F6 /* DllTimidity.h */,
 				F56C803D131F42E5000AD0F6 /* DllVorbisfile.h */,
-				F56C803E131F42E5000AD0F6 /* DllWAVPack.h */,
 				F56C803F131F42E5000AD0F6 /* tinyXML */,
 				F56C8046131F42E5000AD0F6 /* libexif */,
 				F56C8048131F42E5000AD0F6 /* libhdhomerun */,
@@ -3255,7 +3254,6 @@
 				F56C8063131F42E5000AD0F6 /* libRTV */,
 				F56C806E131F42E5000AD0F6 /* libsquish */,
 				F56C8070131F42E5000AD0F6 /* libUPnP */,
-				F56C8145131F42E6000AD0F6 /* libXBMS */,
 				F56C8146131F42E6000AD0F6 /* libXDAAP */,
 				F56C814C131F42E6000AD0F6 /* UnrarXLib */,
 			);
@@ -3712,13 +3710,6 @@
 			path = TextToHeader;
 			sourceTree = "<group>";
 		};
-		F56C8145131F42E6000AD0F6 /* libXBMS */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = libXBMS;
-			sourceTree = "<group>";
-		};
 		F56C8146131F42E6000AD0F6 /* libXDAAP */ = {
 			isa = PBXGroup;
 			children = (
@@ -4041,10 +4032,6 @@
 			isa = PBXGroup;
 			children = (
 				F56C81F8131F42E6000AD0F6 /* codec.h */,
-				F56C81F9131F42E6000AD0F6 /* ogg.h */,
-				F56C81FA131F42E6000AD0F6 /* os_types.h */,
-				F56C81FB131F42E6000AD0F6 /* vorbisenc.h */,
-				F56C81FC131F42E6000AD0F6 /* vorbisfile.h */,
 			);
 			path = oggvorbis;
 			sourceTree = "<group>";
@@ -4508,8 +4495,6 @@
 				F56C832D131F42E7000AD0F6 /* TimidityCodec.h */,
 				F56C832E131F42E7000AD0F6 /* WAVcodec.cpp */,
 				F56C832F131F42E7000AD0F6 /* WAVcodec.h */,
-				F56C8330131F42E7000AD0F6 /* WAVPackcodec.cpp */,
-				F56C8331131F42E7000AD0F6 /* WAVPackcodec.h */,
 				F56C8332131F42E7000AD0F6 /* YMCodec.cpp */,
 				F56C8333131F42E7000AD0F6 /* YMCodec.h */,
 			);
@@ -4757,6 +4742,8 @@
 				F56C8430131F42E8000AD0F6 /* SFTPDirectory.h */,
 				F56C8431131F42E8000AD0F6 /* SIDFileDirectory.cpp */,
 				F56C8432131F42E8000AD0F6 /* SIDFileDirectory.h */,
+				18404DD41396C3F300863BBA /* Slingbox.cpp */,
+				18404DD51396C3F300863BBA /* Slingbox.h */,
 				F56C8433131F42E8000AD0F6 /* SmartPlaylistDirectory.cpp */,
 				F56C8434131F42E8000AD0F6 /* SmartPlaylistDirectory.h */,
 				F56C8435131F42E8000AD0F6 /* SMBDirectory.h */,
@@ -4781,7 +4768,6 @@
 				F56C8476131F42E8000AD0F6 /* VirtualDirectory.h */,
 				F56C847B131F42E9000AD0F6 /* ZeroconfDirectory.h */,
 				F56C847C131F42E9000AD0F6 /* ZeroconfDirectory.cpp */,
-				F56C847D131F42E9000AD0F6 /* zconf.h */,
 				F56C847E131F42E9000AD0F6 /* ZipDirectory.cpp */,
 				F56C847F131F42E9000AD0F6 /* ZipDirectory.h */,
 				F56C8480131F42E9000AD0F6 /* ZipManager.cpp */,
@@ -5774,6 +5760,10 @@
 				F56C8734131F42EC000AD0F6 /* JobManager.cpp */,
 				F56C8735131F42EC000AD0F6 /* JobManager.h */,
 				F56C8736131F42EC000AD0F6 /* Job.h */,
+				1840B7761399616D007C848B /* JSONVariantParser.cpp */,
+				1840B7771399616D007C848B /* JSONVariantParser.h */,
+				1840B7781399616D007C848B /* JSONVariantWriter.cpp */,
+				1840B7791399616D007C848B /* JSONVariantWriter.h */,
 				F56C8737131F42EC000AD0F6 /* LCD.cpp */,
 				F56C8738131F42EC000AD0F6 /* LCD.h */,
 				F56C8739131F42EC000AD0F6 /* log.cpp */,
@@ -6000,10 +5990,10 @@
 			children = (
 				C8AD42C41392475000A75578 /* libTcpSocket.a */,
 				F56C8C03131F47EA000AD0F6 /* libapetag.a */,
-				F56C8C06131F47EA000AD0F6 /* libjsoncpp.a */,
 				F56C8C0D131F4811000AD0F6 /* libsquish.a */,
 				F56C8C0E131F4811000AD0F6 /* librtv.a */,
 				F56C8C10131F4811000AD0F6 /* libxdaap.a */,
+				18404DD21396C3D200863BBA /* SlingboxLib.a */,
 			);
 			name = "Internal Libs";
 			sourceTree = "<group>";
@@ -6456,7 +6446,6 @@
 				F56C8931131F42ED000AD0F6 /* SPCCodec.cpp in Sources */,
 				F56C8932131F42ED000AD0F6 /* TimidityCodec.cpp in Sources */,
 				F56C8933131F42ED000AD0F6 /* WAVcodec.cpp in Sources */,
-				F56C8934131F42ED000AD0F6 /* WAVPackcodec.cpp in Sources */,
 				F56C8935131F42ED000AD0F6 /* YMCodec.cpp in Sources */,
 				F56C8936131F42ED000AD0F6 /* PlayerCoreFactory.cpp in Sources */,
 				F56C8937131F42ED000AD0F6 /* PlayerSelectionRule.cpp in Sources */,
@@ -7048,6 +7037,9 @@
 				18ACF8FD13597B5700B67371 /* RecentlyAddedJob.cpp in Sources */,
 				C80711AD135DB85F002F601B /* InputOperations.cpp in Sources */,
 				C8EC5D26136953E100CCC10D /* XBMC_keytable.cpp in Sources */,
+				18404DD61396C3F300863BBA /* Slingbox.cpp in Sources */,
+				1840B77A1399616D007C848B /* JSONVariantParser.cpp in Sources */,
+				1840B77B1399616D007C848B /* JSONVariantWriter.cpp in Sources */,
 				C8AD4321139247F900A75578 /* PVRClient.cpp in Sources */,
 				C8AD4322139247F900A75578 /* PVRClients.cpp in Sources */,
 				C8AD4324139247F900A75578 /* PVRChannel.cpp in Sources */,
@@ -7173,6 +7165,7 @@
 					"\"$(SRCROOT)/lib/jsoncpp/src/lib_json\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
+					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/lib/libTcpSocket\"",
 				);
 				OTHER_LDFLAGS = (
@@ -7191,6 +7184,7 @@
 					"-lmicrohttpd",
 					"-lsmbclient",
 					"-lpython2.6",
+					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -7259,6 +7253,7 @@
 					"\"$(SRCROOT)/lib/jsoncpp/src/lib_json\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
+					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/lib/libTcpSocket\"",
 				);
 				OTHER_LDFLAGS = (
@@ -7277,6 +7272,7 @@
 					"-lmicrohttpd",
 					"-lsmbclient",
 					"-lpython2.6",
+					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);

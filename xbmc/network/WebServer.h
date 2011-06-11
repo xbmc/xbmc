@@ -47,7 +47,7 @@ public:
   bool Stop();
   bool IsStarted();
   void SetCredentials(const CStdString &username, const CStdString &password);
-  virtual bool Download(const char *path, Json::Value *result);
+  virtual bool Download(const char *path, CVariant &result);
   virtual int GetCapabilities();
 private:
   enum HTTPMethod

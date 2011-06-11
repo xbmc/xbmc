@@ -447,7 +447,14 @@ enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChann
   m_channelLayout  = (enum PCMLayout)g_guiSettings.GetInt("audiooutput.channellayout");
   if (m_channelLayout >= PCM_MAX_LAYOUT) m_channelLayout = PCM_LAYOUT_2_0;
 
-  CLog::Log(LOGINFO, "CPCMRemap: Configured speaker layout: %s\n", PCMLayoutStr(m_channelLayout).c_str());
+  //spdif only has 2 pcm channels, so don't try to use more
+  if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958)
+  {
+    CLog::Log(LOGINFO, "CPCMRemap: Configured speaker layout: %s (iec958)\n", PCMLayoutStr(m_channelLayout).c_str());
+    m_channelLayout = PCM_LAYOUT_2_0;
+  }
+  else
+    CLog::Log(LOGINFO, "CPCMRemap: Configured speaker layout: %s\n", PCMLayoutStr(m_channelLayout).c_str());
 
   
   DumpMap("I", channels, channelMap);

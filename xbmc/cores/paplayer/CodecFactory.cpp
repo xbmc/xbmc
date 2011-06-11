@@ -26,7 +26,6 @@
 #include "OGGcodec.h"
 #include "FLACcodec.h"
 #include "WAVcodec.h"
-#include "WAVPackcodec.h"
 #include "ModplugCodec.h"
 #include "NSFCodec.h"
 #ifdef HAS_SPC_CODEC
@@ -64,7 +63,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
            strFileType.Equals("pvr"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("wv"))
-    return new WAVPackCodec();
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("669")  ||  strFileType.Equals("abc") ||
            strFileType.Equals("amf")  ||  strFileType.Equals("ams") ||
            strFileType.Equals("dbm")  ||  strFileType.Equals("dmf") ||

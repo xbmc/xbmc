@@ -27,6 +27,7 @@
 #include "utils/TimeUtils.h"
 #include "Util.h"
 #include <fcntl.h>
+#include <sstream>
 
 #ifdef _WIN32
 #pragma comment(lib, "ssh.lib")
@@ -48,11 +49,11 @@ static CStdString CorrectPath(const CStdString path)
     return "/" + path;
 }
 
-CSFTPSession::CSFTPSession(const CStdString &host, const CStdString &username, const CStdString &password)
+CSFTPSession::CSFTPSession(const CStdString &host, unsigned int port, const CStdString &username, const CStdString &password)
 {
-  CLog::Log(LOGINFO, "SFTPSession: Creating new session on host '%s' with user '%s'", host.c_str(), username.c_str());
+  CLog::Log(LOGINFO, "SFTPSession: Creating new session on host '%s:%d' with user '%s'", host.c_str(), port, username.c_str());
   CSingleLock lock(m_critSect);
-  if (!Connect(host, username, password))
+  if (!Connect(host, port, username, password))
     Disconnect();
 
   m_LastActive = CTimeUtils::GetTimeMS();
@@ -279,7 +280,7 @@ bool CSFTPSession::VerifyKnownHost(ssh_session session)
   return false;
 }
 
-bool CSFTPSession::Connect(const CStdString &host, const CStdString &username, const CStdString &password)
+bool CSFTPSession::Connect(const CStdString &host, unsigned int port, const CStdString &username, const CStdString &password)
 {
   m_connected     = false;
   m_session       = NULL;
@@ -305,6 +306,12 @@ bool CSFTPSession::Connect(const CStdString &host, const CStdString &username, c
     return false;
   }
 
+  if (ssh_options_set(m_session, SSH_OPTIONS_PORT, &port) < 0)
+  {
+    CLog::Log(LOGERROR, "SFTPSession: Failed to set port '%d' for session", port);
+    return false;
+  }
+
   ssh_options_set(m_session, SSH_OPTIONS_LOG_VERBOSITY, 0);
 
 #else
@@ -319,6 +326,12 @@ bool CSFTPSession::Connect(const CStdString &host, const CStdString &username, c
   if (ssh_options_set_host(options, host.c_str()) < 0)
   {
     CLog::Log(LOGERROR, "SFTPSession: Failed to set host '%s' for session", host.c_str());
+    return false;
+  }
+
+  if (ssh_options_set_port(options, port) < 0)
+  {
+    CLog::Log(LOGERROR, "SFTPSession: Failed to set port '%d' for session", port);
     return false;
   }
 
@@ -399,14 +412,29 @@ void CSFTPSession::Disconnect()
 CCriticalSection CSFTPSessionManager::m_critSect;
 map<CStdString, CSFTPSessionPtr> CSFTPSessionManager::sessions;
 
-CSFTPSessionPtr CSFTPSessionManager::CreateSession(const CStdString &host, const CStdString &username, const CStdString &password)
+CSFTPSessionPtr CSFTPSessionManager::CreateSession(const CURL &url)
 {
+  string username = url.GetUserName().c_str();
+  string password = url.GetPassWord().c_str();
+  string hostname = url.GetHostName().c_str();
+  unsigned int port = url.HasPort() ? url.GetPort() : 22;
+
+  return CSFTPSessionManager::CreateSession(hostname, port, username, password);
+}
+
+CSFTPSessionPtr CSFTPSessionManager::CreateSession(const CStdString &host, unsigned int port, const CStdString &username, const CStdString &password)
+{
+  // Convert port number to string
+  stringstream itoa;
+  itoa << port;
+  CStdString portstr = itoa.str();
+
   CSingleLock lock(m_critSect);
-  CStdString key = username + ":" + password + "@" + host;
+  CStdString key = username + ":" + password + "@" + host + ":" + portstr;
   CSFTPSessionPtr ptr = sessions[key];
   if (ptr == NULL)
   {
-    ptr = CSFTPSessionPtr(new CSFTPSession(host, username, password));
+    ptr = CSFTPSessionPtr(new CSFTPSession(host, port, username, password));
     sessions[key] = ptr;
   }
 
@@ -443,15 +471,10 @@ CFileSFTP::~CFileSFTP()
 
 bool CFileSFTP::Open(const CURL& url)
 {
-  string username = url.GetUserName().c_str();
-  string password = url.GetPassWord().c_str();
-  string filename = url.GetFileName().c_str();
-  string hostname = url.GetHostName().c_str();
-
-  m_session = CSFTPSessionManager::CreateSession(hostname, username, password);
+  m_session = CSFTPSessionManager::CreateSession(url);
   if (m_session)
   {
-    m_file = filename.c_str();
+    m_file = url.GetFileName().c_str();
     m_sftp_handle = m_session->CreateFileHande(m_file);
 
     return (m_sftp_handle != NULL);
@@ -516,7 +539,7 @@ unsigned int CFileSFTP::Read(void* lpBuf, int64_t uiBufSize)
 
 bool CFileSFTP::Exists(const CURL& url)
 {
-  CSFTPSessionPtr session = CSFTPSessionManager::CreateSession(url.GetHostName().c_str(), url.GetUserName().c_str(), url.GetPassWord().c_str());
+  CSFTPSessionPtr session = CSFTPSessionManager::CreateSession(url);
   if (session)
     return session->Exists(url.GetFileName().c_str());
   else
@@ -528,7 +551,7 @@ bool CFileSFTP::Exists(const CURL& url)
 
 int CFileSFTP::Stat(const CURL& url, struct __stat64* buffer)
 {
-  CSFTPSessionPtr session = CSFTPSessionManager::CreateSession(url.GetHostName().c_str(), url.GetUserName().c_str(), url.GetPassWord().c_str());
+  CSFTPSessionPtr session = CSFTPSessionManager::CreateSession(url);
   if (session)
     return session->Stat(url.GetFileName().c_str(), buffer);
   else

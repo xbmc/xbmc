@@ -79,6 +79,7 @@ void CVideoInfoTag::Reset()
   m_playCount = 0;
   m_fEpBookmark = 0;
   m_basePath = "";
+  m_parentPathID = -1;
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo)
@@ -305,6 +306,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_strShowLink;
     ar << m_fEpBookmark;
     ar << m_basePath;
+    ar << m_parentPathID;
   }
   else
   {
@@ -371,13 +373,14 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_strShowLink;
     ar >> m_fEpBookmark;
     ar >> m_basePath;
+    ar >> m_parentPathID;
   }
 }
 
 void CVideoInfoTag::Serialize(CVariant& value)
 {
   value["director"] = m_strDirector;
-  value["writingcredits"] = m_strWritingCredits;
+  value["writer"] = m_strWritingCredits;
   value["genre"] = m_strGenre;
   value["country"] = m_strCountry;
   value["tagline"] = m_strTagLine;

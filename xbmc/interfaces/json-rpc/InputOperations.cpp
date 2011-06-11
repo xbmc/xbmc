@@ -22,46 +22,45 @@
 #include "InputOperations.h"
 #include "Application.h"
 
-using namespace Json;
 using namespace JSONRPC;
 
-JSON_STATUS CInputOperations::Left(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CInputOperations::Left(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().SendAction(CAction(ACTION_MOVE_LEFT), WINDOW_INVALID, false);
   return ACK;
 }
 
-JSON_STATUS CInputOperations::Right(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CInputOperations::Right(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().SendAction(CAction(ACTION_MOVE_RIGHT), WINDOW_INVALID, false);
   return ACK;
 }
 
-JSON_STATUS CInputOperations::Down(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CInputOperations::Down(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().SendAction(CAction(ACTION_MOVE_DOWN), WINDOW_INVALID, false);
   return ACK;
 }
 
-JSON_STATUS CInputOperations::Up(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CInputOperations::Up(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().SendAction(CAction(ACTION_MOVE_UP), WINDOW_INVALID, false);
   return ACK;
 }
 
-JSON_STATUS CInputOperations::Select(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CInputOperations::Select(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().SendAction(CAction(ACTION_SELECT_ITEM), WINDOW_INVALID, false);
   return ACK;
 }
 
-JSON_STATUS CInputOperations::Back(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CInputOperations::Back(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().SendAction(CAction(ACTION_PARENT_DIR), WINDOW_INVALID, false);
   return ACK;
 }
 
-JSON_STATUS CInputOperations::Home(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CInputOperations::Home(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().ActivateWindow(WINDOW_HOME, std::vector<CStdString>(), false);
   return ACK;

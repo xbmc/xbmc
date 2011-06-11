@@ -34,6 +34,14 @@ extern "C" {
 #include "DynamicDll.h"
 #include "utils/log.h"
 
+#ifndef LIBASS_VERSION /* Legacy version. */
+typedef struct ass_library_s ASS_Library;
+typedef struct render_priv_s ASS_Renderer;
+typedef ass_image_t ASS_Image;
+typedef ass_track_t ASS_Track;
+typedef ass_event_t ASS_Event;
+#endif
+
 class DllLibassInterface
 {
 public:

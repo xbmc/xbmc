@@ -10,4 +10,4 @@ $(GASBIN):
 
 clean:
 distclean::
-	rm $(GASBIN)
+	rm -f $(GASBIN)

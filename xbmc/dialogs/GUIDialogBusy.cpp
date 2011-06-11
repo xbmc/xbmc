@@ -30,22 +30,3 @@ CGUIDialogBusy::CGUIDialogBusy(void)
 CGUIDialogBusy::~CGUIDialogBusy(void)
 {
 }
-
-bool CGUIDialogBusy::OnMessage(CGUIMessage& message)
-{
-  switch ( message.GetMessage() )
-  {
-  case GUI_MSG_WINDOW_INIT:
-    {
-      CGUIDialog::OnMessage(message);
-      return true;
-    }
-    break;
-
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-    }
-    break;
-  }
-  return CGUIDialog::OnMessage(message);
-}

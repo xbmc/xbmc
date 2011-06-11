@@ -30,6 +30,7 @@
 #include "settings/Settings.h"
 #include "URL.h"
 
+#include <netinet/in.h>
 #include <arpa/inet.h>
 
 using namespace std;
@@ -646,6 +647,11 @@ bool URIUtils::IsHDHomeRun(const CStdString& strFile)
   return strFile.Left(10).Equals("hdhomerun:");
 }
 
+bool URIUtils::IsSlingbox(const CStdString& strFile)
+{
+  return strFile.Left(6).Equals("sling:");
+}
+
 bool URIUtils::IsVTP(const CStdString& strFile)
 {
   return strFile.Left(4).Equals("vtp:");
@@ -673,6 +679,7 @@ bool URIUtils::IsLiveTV(const CStdString& strFile)
   return IsTuxBox(strFileWithoutSlash) ||
       IsVTP(strFileWithoutSlash) ||
       IsHDHomeRun(strFileWithoutSlash) ||
+      IsSlingbox(strFile) ||
       IsHTSP(strFileWithoutSlash) ||
       strFileWithoutSlash.Left(4).Equals("sap:") ||
       (strFileWithoutSlash.Right(4).Equals(".pvr") && !strFileWithoutSlash.Left(16).Equals("pvr://recordings")) ||

@@ -187,6 +187,10 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   else if (url.GetProtocol() == "hdhomerun" && strFilename.IsEmpty())
     strFilename = "HDHomerun Devices";
 
+  // Slingbox Devices
+  else if (url.GetProtocol() == "sling")
+    strFilename = "Slingbox";
+
   // ReplayTV Devices
   else if (url.GetProtocol() == "rtv")
     strFilename = "ReplayTV Devices";
@@ -1338,6 +1342,9 @@ bool CUtil::TestSplitExec()
   CUtil::SplitExecFunction("SetProperty(Foo,\"\")", function, params);
   if (function != "SetProperty" || params.size() != 2 || params[0] != "Foo" || params[1] != "")
    return false;
+  CUtil::SplitExecFunction("SetProperty(foo,ba(\"ba black )\",sheep))", function, params);
+  if (function != "SetProperty" || params.size() != 2 || params[0] != "foo" || params[1] != "ba(\"ba black )\",sheep)")
+    return false;
   return true;
 }
 #endif
@@ -1378,7 +1385,6 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
       if (ch == '\"' && !escaped)
       { // finished a quote - no need to add the end quote to our string
         inQuotes = false;
-        continue;
       }
     }
     else
@@ -1386,7 +1392,6 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
       if (ch == '\"' && !escaped)
       { // start of quote - no need to add the quote to our string
         inQuotes = true;
-        continue;
       }
       if (inFunction && ch == ')')
       { // end of a function
@@ -1400,6 +1405,9 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
       { // not in a function, so a comma signfies the end of this parameter
         if (whiteSpacePos)
           parameter = parameter.Left(whiteSpacePos);
+        // trim off start and end quotes
+        if (parameter.GetLength() > 1 && parameter[0] == '\"' && parameter[parameter.GetLength() - 1] == '\"')
+          parameter = parameter.Mid(1,parameter.GetLength() - 2);
         parameters.push_back(parameter);
         parameter.Empty();
         whiteSpacePos = 0;
@@ -1427,6 +1435,9 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
     CLog::Log(LOGWARNING, "%s(%s) - end of string while searching for ) or \"", __FUNCTION__, execString.c_str());
   if (whiteSpacePos)
     parameter = parameter.Left(whiteSpacePos);
+  // trim off start and end quotes
+  if (parameter.GetLength() > 1 && parameter[0] == '\"' && parameter[parameter.GetLength() - 1] == '\"')
+    parameter = parameter.Mid(1,parameter.GetLength() - 2);
   if (!parameter.IsEmpty() || parameters.size())
     parameters.push_back(parameter);
 }
@@ -2287,6 +2298,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   CFileItem item(strMovie, false);
   if (item.IsInternetStream()) return ;
   if (item.IsHDHomeRun()) return ;
+  if (item.IsSlingbox()) return ;
   if (item.IsPlayList()) return ;
   if (!item.IsVideo()) return ;
   

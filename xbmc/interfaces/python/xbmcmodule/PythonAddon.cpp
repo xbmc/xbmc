@@ -40,7 +40,8 @@ namespace PYXBMC
     // Extract a reference to the function "func_name"
     // from the global dictionary
     PyObject* pyid = PyDict_GetItemString(global_dict, "__xbmcaddonid__");
-    id = PyString_AsString(pyid);
+    if(pyid)
+      id = PyString_AsString(pyid);
     return id;
   }
 

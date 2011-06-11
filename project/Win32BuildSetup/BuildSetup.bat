@@ -179,7 +179,6 @@ IF %comp%==vs2010 (
   Echo Lircmap.xml>>exclude.txt
   
   md BUILD_WIN32\Xbmc
-  rem Additions by margro:
   rem Exclude the following PVR/DLL addon related files
   Echo addons\pvr.fortherecord.argus\libcurld.dll >>exclude.txt
   Echo .ilk>>exclude.txt

@@ -4756,15 +4756,15 @@ int CMusicDatabase::GetVariousArtistsAlbumsCount()
 void CMusicDatabase::AnnounceRemove(std::string content, int id)
 {
   CVariant data;
-  data["content"] = content;
-  data[content + "id"] = id;
-  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "RemoveAudio", data);
+  data["type"] = content;
+  data["id"] = id;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnRemove", data);
 }
 
 void CMusicDatabase::AnnounceUpdate(std::string content, int id)
 {
   CVariant data;
-  data["content"] = content;
-  data[content + "id"] = id;
-  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "UpdateAudio", data);
+  data["type"] = content;
+  data["id"] = id;
+  ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnUpdate", data);
 }

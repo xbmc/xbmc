@@ -1086,6 +1086,8 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
   else if (format.Equals("(hh:mm)")) return TIME_FORMAT_HH_MM;
   else if (format.Equals("(mm:ss)")) return TIME_FORMAT_MM_SS;
   else if (format.Equals("(hh:mm:ss)")) return TIME_FORMAT_HH_MM_SS;
+  else if (format.Equals("(h)")) return TIME_FORMAT_H;
+  else if (format.Equals("(h:mm:ss)")) return TIME_FORMAT_H_MM_SS;
   return TIME_FORMAT_GUESS;
 }
 
@@ -2773,7 +2775,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     AddonPtr addon;
     if (info.GetData2() == 0)
       CAddonMgr::Get().GetAddon(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow),addon);
-    else 
+    else
       CAddonMgr::Get().GetAddon(m_stringParameters[info.GetData1()],addon);
     if (addon && info.m_info == SYSTEM_ADDON_TITLE)
       return addon->Name();
@@ -2956,9 +2958,13 @@ CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT form
   case TIME_FORMAT_HH_MM:
     return time.GetAsLocalizedTime(use12hourclock ? "h:mm" : "HH:mm", false);
   case TIME_FORMAT_HH_MM_XX:
-      return time.GetAsLocalizedTime(use12hourclock ? "h:mm xx" : "HH:mm", false);      
+      return time.GetAsLocalizedTime(use12hourclock ? "h:mm xx" : "HH:mm", false);
   case TIME_FORMAT_HH_MM_SS:
     return time.GetAsLocalizedTime("", true);
+  case TIME_FORMAT_H:
+    return time.GetAsLocalizedTime("h", false);
+  case TIME_FORMAT_H_MM_SS:
+    return time.GetAsLocalizedTime("h:mm:ss", true);
   default:
     break;
   }
@@ -3205,9 +3211,9 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
   case MUSICPLAYER_GENRE:
     if (tag.GetGenre().size()) { return tag.GetGenre(); }
     break;
-  case MUSICPLAYER_LYRICS: 
-    if (tag.GetLyrics().size()) { return tag.GetLyrics(); } 
-   	break;
+  case MUSICPLAYER_LYRICS:
+    if (tag.GetLyrics().size()) { return tag.GetLyrics(); }
+  break;
   case MUSICPLAYER_TRACK_NUMBER:
     {
       CStdString strTrack;
@@ -3418,7 +3424,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
         CStdString strYear;
         if (m_currentFile->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
           strYear.Format("S%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
-        else if(m_currentFile->GetVideoInfoTag()->m_iEpisode > 0) 
+        else if(m_currentFile->GetVideoInfoTag()->m_iEpisode > 0)
           strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
         return strYear;
       }
@@ -3574,6 +3580,11 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
   }
   else
     m_currentFile->SetMusicThumb();
+    if (!m_currentFile->HasProperty("fanart_image"))
+    {
+      if (m_currentFile->CacheLocalFanart())
+        m_currentFile->SetProperty("fanart_image", m_currentFile->GetCachedFanart());
+    }
   m_currentFile->FillInDefaultIcon();
 
   CMusicInfoLoader::LoadAdditionalTagInfo(m_currentFile);
@@ -4236,7 +4247,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       else if (item->IsVideoDb() && item->HasVideoInfoTag())
       {
         if( item->m_bIsFolder )
-	  path = item->GetVideoInfoTag()->m_strPath;
+          path = item->GetVideoInfoTag()->m_strPath;
         else
           URIUtils::GetParentPath(item->GetVideoInfoTag()->m_strFileNameAndPath, path);
       }
@@ -4298,7 +4309,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_WRITER:
     if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strWritingCredits;;
+      return item->GetVideoInfoTag()->m_strWritingCredits;
     break;
   case LISTITEM_TAGLINE:
     if (item->HasVideoInfoTag())

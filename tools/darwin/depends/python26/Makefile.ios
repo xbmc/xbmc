@@ -40,7 +40,7 @@ $(LIBDYLIB): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); make distclean
 	cd $(SOURCE); patch -p1 <../Python-2.6.5-xcompile.patch
 	cd $(SOURCE); $(CONFIGURE)
-	cd $(SOURCE); make HOSTPYTHON=./hostpython HOSTPGEN=./Parser/hostpgen CROSS_COMPILE_TARGET=yes
+	cd $(SOURCE); make -j $(MAKE_JOBS) HOSTPYTHON=./hostpython HOSTPGEN=./Parser/hostpgen CROSS_COMPILE_TARGET=yes
 
 .installed:
 	cd $(SOURCE); make install HOSTPYTHON=./hostpython CROSS_COMPILE_TARGET=yes

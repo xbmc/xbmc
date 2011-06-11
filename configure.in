@@ -90,6 +90,9 @@ openmax_not_found="== Could not find libnvomx. OpenMax support disabled. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
 librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
+libnfs_not_found="== Could not find libnfs. NFS support disabled. =="
+libnfs_disabled="== NFS support disabled. =="
+
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -221,6 +224,13 @@ AC_ARG_ENABLE([rtmp],
   [enable RTMP support via librtmp (default is auto)])],
   [use_librtmp=$enableval],
   [use_librtmp=auto])
+
+AC_ARG_ENABLE([nfs],
+  [AS_HELP_STRING([--enable-nfs],
+  [enable NFS support via libnfs (default is auto)])],
+  [use_libnfs=$enableval],
+  [use_libnfs=auto])
+
 
 AC_ARG_ENABLE([ffmpeg_libvorbis],
   [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
@@ -574,7 +584,6 @@ AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([wavpack/wavpack.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([curl/curl.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
@@ -589,6 +598,7 @@ AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
 AC_CHECK_LIB([smbclient],   [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
+AC_CHECK_LIB([yajl],        [main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
   [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -688,7 +698,6 @@ XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([MODPLUG],     [modplug])
 XB_FIND_SONAME([ASS],         [ass])
 XB_FIND_SONAME([MPEG2],       [mpeg2])
-XB_FIND_SONAME([WAVPACK],     [wavpack])
 
 # WebServer
 if test "$use_webserver" = "yes"; then
@@ -809,6 +818,26 @@ if test "$use_librtmp" != "no"; then
   fi
 else
   AC_MSG_NOTICE($librtmp_disabled)
+fi
+
+# libnfs
+if test "$use_libnfs" != "no"; then
+  AC_CHECK_HEADERS([nfsc/libnfs.h],,
+   [if test "$use_libnfs" = "yes"; then
+      AC_MSG_ERROR($libnfs_not_found)
+    elif test "$use_libnfs" != "no"; then
+      AC_MSG_NOTICE($libnfs_not_found)
+      use_libnfs="no"
+    fi
+   ])
+  if test "$use_libnfs" != "no"; then
+    XB_FIND_SONAME([NFS], [nfs], [use_libnfs])
+  fi
+  if test "$use_libnfs" != "no"; then
+    AC_DEFINE([HAVE_LIBNFS], [1], [Whether to use libnfs library.])
+  fi
+else
+  AC_MSG_NOTICE($libnfs_disabled)
 fi
 
 ### External libraries checks
@@ -1336,6 +1365,13 @@ else
   final_message="$final_message\n  libRTMP support:\tNo"
 fi
 
+if test "$use_libnfs" != "no"; then
+  final_message="$final_message\n  libnfs support:\tYes"
+else
+  final_message="$final_message\n  libnfs support:\tNo"
+fi
+
+
 if test "$use_optical_drive" = "yes"; then
   final_message="$final_message\n  Optical drive:\tYes"
 else
@@ -1387,7 +1423,6 @@ OUTPUT_FILES="Makefile \
     lib/libXDAAP/Makefile \
     lib/cmyth/Makefile \
     lib/libhdhomerun/Makefile \
-    lib/jsoncpp/src/lib_json/Makefile \
     lib/libsquish/Makefile \
     lib/libid3tag/Makefile \
     lib/cximage-6.0/Makefile \
@@ -1445,7 +1480,6 @@ AC_SUBST(LIBMAD_BASENAME)
 AC_SUBST(LIBOGG_BASENAME)
 AC_SUBST(LIBVORBISENC_BASENAME)
 AC_SUBST(LIBVORBIS_BASENAME)
-AC_SUBST(LIBWAVPACK_BASENAME)
 AC_SUBST(LIBASS_BASENAME)
 AC_SUBST(LIBMEPG2_BASENAME)
 AC_SUBST_FILE(XBMC_STANDALONE_SH_PULSE)

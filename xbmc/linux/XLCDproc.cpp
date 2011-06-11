@@ -26,6 +26,9 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include <netdb.h>
 
 #define SCROLL_SPEED_IN_MSEC 250

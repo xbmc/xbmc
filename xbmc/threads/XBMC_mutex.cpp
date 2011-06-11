@@ -38,7 +38,7 @@
 #include "utils/log.h"
 
 #if defined(__APPLE__) || defined(_LINUX)
-#define XBCM_PTHREAD_MUTEX_RECURSIVE
+#define XBMC_PTHREAD_MUTEX_RECURSIVE
 #endif
 
 SDL_mutex *SDL_CreateMutex (void)

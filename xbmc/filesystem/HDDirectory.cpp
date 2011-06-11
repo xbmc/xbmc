@@ -69,12 +69,9 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
   CURL url(strPath);
 
   memset(&wfd, 0, sizeof(wfd));
-  if (!URIUtils::HasSlashAtEnd(strPath) )
-#ifndef _LINUX
-    strRoot += "\\";
+  URIUtils::AddSlashAtEnd(strRoot);
+#ifdef _WIN32
   strRoot.Replace("/", "\\");
-#else
-    strRoot += "/";
 #endif
   if (URIUtils::IsDVD(strRoot) && m_isoReader.IsScanned())
   {
@@ -86,7 +83,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
     CIoSupport::RemapDriveLetter('D', "Cdrom0");
   }
 
-#ifndef _LINUX
+#ifdef _WIN32
   CStdStringW strSearchMask;
   g_charsetConverter.utf8ToW(strRoot, strSearchMask, false);
   strSearchMask += "*.*";
@@ -108,7 +105,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
       if (wfd.cFileName[0] != 0)
       {
         CStdString strLabel;
-#ifndef _LINUX
+#ifdef _WIN32
         g_charsetConverter.wToUTF8(wfd.cFileName,strLabel);
 #else
         strLabel = wfd.cFileName;
@@ -155,14 +152,9 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 bool CHDDirectory::Create(const char* strPath)
 {
   CStdString strPath1 = strPath;
-  if (!URIUtils::HasSlashAtEnd(strPath1))
-#ifndef _LINUX
-    strPath1 += '\\';
-#else
-    strPath1 += '/';
-#endif
+  URIUtils::AddSlashAtEnd(strPath1);
 
-#ifndef _LINUX
+#ifdef _WIN32
   if (strPath1.size() == 3 && strPath1[1] == ':')
     return Exists(strPath);  // A drive - we can't "create" a drive
   CStdStringW strWPath1;
@@ -180,7 +172,7 @@ bool CHDDirectory::Create(const char* strPath)
 
 bool CHDDirectory::Remove(const char* strPath)
 {
-#ifndef _LINUX
+#ifdef _WIN32
   CStdStringW strWPath;
   g_charsetConverter.utf8ToW(strPath, strWPath, false);
   return (::RemoveDirectoryW(strWPath) || GetLastError() == ERROR_PATH_NOT_FOUND) ? true : false;
@@ -194,11 +186,10 @@ bool CHDDirectory::Exists(const char* strPath)
   if (!strPath || !*strPath)
     return false;
   CStdString strReplaced=strPath;
-#ifndef _LINUX
+#ifdef _WIN32
   CStdStringW strWReplaced;
   strReplaced.Replace("/","\\");
-  if (!URIUtils::HasSlashAtEnd(strReplaced))
-    strReplaced += '\\';
+  URIUtils::AddSlashAtEnd(strReplaced);
   g_charsetConverter.utf8ToW(strReplaced, strWReplaced, false);
   DWORD attributes = GetFileAttributesW(strWReplaced);
 #else
