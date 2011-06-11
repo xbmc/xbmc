@@ -2713,6 +2713,18 @@ bool CApplication::OnAction(const CAction &action)
     CGUIControlProfiler::Instance().Start();
     return true;
   }
+  if (action.GetID() == ACTION_SHOW_PLAYLIST)
+  {
+    if (!g_windowManager.OnAction(CAction(ACTION_SHOW_PLAYLIST)))
+    {
+      int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
+      if (iPlaylist == PLAYLIST_VIDEO)
+        g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+      else if (iPlaylist == PLAYLIST_MUSIC)
+        g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+    }
+    return true;
+  }
   return false;
 }
 
