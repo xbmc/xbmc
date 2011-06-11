@@ -13,6 +13,7 @@
 		1840B797139968DB007C848B /* JSONVariantWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B794139968DB007C848B /* JSONVariantWriter.cpp */; };
 		18ACF8E313597B0000B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF8E113597B0000B67371 /* RecentlyAddedJob.cpp */; };
 		4D5D2E131301753F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E121301753F006ABC13 /* CFNetwork.framework */; };
+		7C0A7D4013A3539700AFC2BD /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7D3E13A3539700AFC2BD /* GUIWindowDebugInfo.cpp */; };
 		7C99B73F133D372300FC2B16 /* CacheCircular.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B73D133D372300FC2B16 /* CacheCircular.cpp */; };
 		7C99B7AA134072CD00FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */; };
 		7CBC8954139385470046CB82 /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CBC8950139385470046CB82 /* DirtyRegionSolvers.cpp */; };
@@ -930,6 +931,8 @@
 		18ACF8E113597B0000B67371 /* RecentlyAddedJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RecentlyAddedJob.cpp; sourceTree = "<group>"; };
 		18ACF8E213597B0000B67371 /* RecentlyAddedJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentlyAddedJob.h; sourceTree = "<group>"; };
 		4D5D2E121301753F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		7C0A7D3E13A3539700AFC2BD /* GUIWindowDebugInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowDebugInfo.cpp; sourceTree = "<group>"; };
+		7C0A7D3F13A3539700AFC2BD /* GUIWindowDebugInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowDebugInfo.h; sourceTree = "<group>"; };
 		7C99B73D133D372300FC2B16 /* CacheCircular.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CacheCircular.cpp; sourceTree = "<group>"; };
 		7C99B73E133D372300FC2B16 /* CacheCircular.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheCircular.h; sourceTree = "<group>"; };
 		7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPlayEject.cpp; sourceTree = "<group>"; };
@@ -5216,6 +5219,8 @@
 			children = (
 				F56C77B9131EC154000AD0F6 /* GUIMediaWindow.cpp */,
 				F56C77BA131EC154000AD0F6 /* GUIMediaWindow.h */,
+				7C0A7D3E13A3539700AFC2BD /* GUIWindowDebugInfo.cpp */,
+				7C0A7D3F13A3539700AFC2BD /* GUIWindowDebugInfo.h */,
 				F56C77BB131EC154000AD0F6 /* GUIWindowFileManager.cpp */,
 				F56C77BC131EC154000AD0F6 /* GUIWindowFileManager.h */,
 				F56C77BD131EC154000AD0F6 /* GUIWindowHome.cpp */,
@@ -6696,6 +6701,7 @@
 				1840B797139968DB007C848B /* JSONVariantWriter.cpp in Sources */,
 				7CBC8954139385470046CB82 /* DirtyRegionSolvers.cpp in Sources */,
 				7CBC8955139385470046CB82 /* DirtyRegionTracker.cpp in Sources */,
+				7C0A7D4013A3539700AFC2BD /* GUIWindowDebugInfo.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

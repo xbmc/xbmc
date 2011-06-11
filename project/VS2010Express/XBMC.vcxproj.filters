@@ -2216,6 +2216,9 @@
     <ClCompile Include="..\..\xbmc\windows\GUIMediaWindow.cpp">
       <Filter>windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\windows\GUIWindowDebugInfo.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\windows\GUIWindowFileManager.cpp">
       <Filter>windows</Filter>
     </ClCompile>
@@ -4673,6 +4676,9 @@
       <Filter>powermanagement</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\windows\GUIMediaWindow.h">
+      <Filter>windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\windows\GUIWindowDebugInfo.h">
       <Filter>windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\windows\GUIWindowFileManager.h">
