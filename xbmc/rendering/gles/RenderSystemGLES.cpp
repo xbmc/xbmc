@@ -476,7 +476,7 @@ void CRenderSystemGLES::GetViewPort(CRect& viewPort)
     return;
   
   GLint glvp[4];
-  glGetIntegerv(GL_SCISSOR_BOX, glvp);
+  glGetIntegerv(GL_VIEWPORT, glvp);
   
   viewPort.x1 = glvp[0];
   viewPort.y1 = m_height - glvp[1] - glvp[3];
