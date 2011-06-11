@@ -186,6 +186,7 @@ CVideoAdvancedSettings::CVideoAdvancedSettings(TiXmlElement *pRootElement)
   XMLUtils::GetBoolean(pRootElement,"glrectanglehack", m_GLRectangleHack);
   XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
+  XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
 }
 
 void CVideoAdvancedSettings::Clear()
@@ -259,6 +260,11 @@ int CVideoAdvancedSettings::BlackBarColour()
 int CVideoAdvancedSettings::IgnoreSecondsAtStart()
 {
   return m_ignoreSecondsAtStart;
+}
+
+int CVideoAdvancedSettings::SkipLoopFilter()
+{
+  return m_iSkipLoopFilter;
 }
 
 float CVideoAdvancedSettings::IgnorePercentAtEnd()
@@ -450,6 +456,7 @@ void CVideoAdvancedSettings::Initialise()
   m_allowLanczos3 = false;
   m_autoScaleMaxFps = 30.0f;
   m_ForcedSwapTime = 0.0;
+  m_iSkipLoopFilter = 0;
   m_allowMpeg4VDPAU = false;
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;

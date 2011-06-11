@@ -62,7 +62,6 @@ class CAdvancedSettings
     CStdString m_lcdHostName;
     float m_controllerDeadzone;
     bool m_bFirstLoop;
-    int m_iSkipLoopFilter;
   private:
     void ParseSettingsFile(CStdString file);
     std::vector<CStdString> m_settingsFiles;

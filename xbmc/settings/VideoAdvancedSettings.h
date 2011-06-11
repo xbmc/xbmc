@@ -50,6 +50,7 @@ class CVideoAdvancedSettings
     int SmallStepBackDelay();
     int BlackBarColour();
     int IgnoreSecondsAtStart();
+    int SkipLoopFilter();
     float IgnorePercentAtEnd();
     float SubsDelayRange();
     float AudioDelayRange();
@@ -99,6 +100,7 @@ class CVideoAdvancedSettings
     int m_smallStepBackDelay;
     int m_blackBarColour;
     int m_ignoreSecondsAtStart;
+    int m_iSkipLoopFilter;
     float m_ignorePercentAtEnd;
     float m_subsDelayRange;
     float m_audioDelayRange;

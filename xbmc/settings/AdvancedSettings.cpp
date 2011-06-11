@@ -64,7 +64,6 @@ void CAdvancedSettings::Initialize()
   m_lcdHostName = "localhost";
 
   m_controllerDeadzone = 0.2f;
-  m_iSkipLoopFilter = 0;
 }
 
 bool CAdvancedSettings::Load()
@@ -142,7 +141,6 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
     XMLUtils::GetString(pElement, "hostname", m_lcdHostName);
   }
 
-  XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
 
   // load in the GUISettings overrides:
