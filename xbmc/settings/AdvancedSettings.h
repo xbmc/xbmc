@@ -61,7 +61,6 @@ class CAdvancedSettings
     bool m_lcdHeartbeat;
     CStdString m_lcdHostName;
     float m_controllerDeadzone;
-    bool m_bFirstLoop;
   private:
     void ParseSettingsFile(CStdString file);
     std::vector<CStdString> m_settingsFiles;
