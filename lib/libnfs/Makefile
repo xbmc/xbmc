@@ -41,7 +41,8 @@ $(SO_NAME): $(SOURCE)
 
 install:
 	make -C $(SOURCE) install
-	ln -s /usr/lib/libnfs.so.1.0.0 /usr/lib/libnfs.so
+	ln -s $(prefix)/lib/libnfs.so.1.0.0 $(prefix)/lib/libnfs.so
+	ln -s $(prefix)/lib/libnfs.so.1.0.0 $(prefix)/lib/libnfs.so.1
 clean:
 	make -C $(SOURCE) clean
 	rm  -f .installed
