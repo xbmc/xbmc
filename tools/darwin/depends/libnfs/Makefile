@@ -4,10 +4,8 @@ include ../config.site.mk
 # lib name, version
 LIBNAME=libnfs
 VERSION=0977fbb
-SOURCE=Memphiz-$(LIBNAME)-$(VERSION)
+SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-
-BASE_URL=http://githubredir.debian.net/github/memphiz/libnfs
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --without-examples
