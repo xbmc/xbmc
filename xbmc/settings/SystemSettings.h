@@ -38,10 +38,11 @@ class CSystemSettings
     void SetLogLevelAndHint(int logLevelHint);
     int LogLevelHint();
     int BGInfoLoaderMaxThreads();
+    int RemoteDelay();        ///< brief number of remote messages to ignore before repeating
     unsigned int CacheMemBufferSize();
     unsigned int JSONTCPPort();
     unsigned int RestrictCapsMask();
-    float SleepBeforeSlip(); ///< if greater than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
+    float SleepBeforeSlip();  ///< if greater than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
     bool CurlDisableIPV6();
     bool OutputCompactJSON();
     bool SambaStatFiles();
@@ -74,6 +75,7 @@ class CSystemSettings
     int m_logLevel;
     int m_logLevelHint;
     int m_bgInfoLoaderMaxThreads;
+    int m_remoteDelay;
     unsigned int m_cacheMemBufferSize;
     unsigned int m_jsonTcpPort;
     unsigned int m_restrictCapsMask;

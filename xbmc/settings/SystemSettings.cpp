@@ -149,7 +149,7 @@ CSystemSettings::CSystemSettings(bool isStandalone, TiXmlElement *pRootElement)
   XMLUtils::GetString(pRootElement, "gputempcommand", m_gpuTempCmd);
 
   XMLUtils::GetBoolean(pRootElement, "alwaysontop", m_alwaysOnTop);
-
+  XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 1, 20);
   XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", m_bgInfoLoaderMaxThreads);
   m_bgInfoLoaderMaxThreads = std::max(1, m_bgInfoLoaderMaxThreads);
 
@@ -209,6 +209,11 @@ int CSystemSettings::LogLevelHint()
 int CSystemSettings::BGInfoLoaderMaxThreads()
 {
   return m_bgInfoLoaderMaxThreads;
+}
+
+int CSystemSettings::RemoteDelay()
+{
+  return m_remoteDelay;
 }
 
 unsigned int CSystemSettings::CacheMemBufferSize()
@@ -366,7 +371,7 @@ void CSystemSettings::Initialise(bool isStandalone)
   m_curlRetries = 2;
   m_curlDisableIPV6 = false;      //Certain hardware/OS combinations have trouble
                                   //with ipv6.
-
+  m_remoteDelay = 3;
   m_useEvilB = true;
   m_sambaClientTimeout = 10;
   m_sambaDOSCodePage = "";

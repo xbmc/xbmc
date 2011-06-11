@@ -76,7 +76,6 @@ void CAdvancedSettings::Initialize()
   m_songInfoDuration = 10;
   m_busyDialogDelay = 2000;
 
-  m_remoteDelay = 3;
   m_controllerDeadzone = 0.2f;
 
   m_iSkipLoopFilter = 0;
@@ -165,7 +164,6 @@ void CAdvancedSettings::ParseSettingsFile(CStdString file)
   XMLUtils::GetInt(pRootElement,"skiploopfilter", m_iSkipLoopFilter, -16, 48);
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
 
-  XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 1, 20);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
 
   // load in the GUISettings overrides:

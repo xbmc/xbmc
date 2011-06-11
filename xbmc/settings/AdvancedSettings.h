@@ -62,7 +62,6 @@ class CAdvancedSettings
     CStdString m_lcdHostName;
     int m_songInfoDuration;
     int m_busyDialogDelay;
-    int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     float m_controllerDeadzone;
     bool m_bFirstLoop;
     int m_iSkipLoopFilter;
