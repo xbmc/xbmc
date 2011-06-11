@@ -640,10 +640,24 @@
 					<scrollout>false</scrollout>
 					<pauseatend>1000</pauseatend>
 				</control>
+				<control type="fadelabel">
+					<posx>10</posx>
+					<posy>250</posy>
+					<width>290</width>
+					<height>25</height>
+					<label>$INFO[Container(13).ListItem.PlotOutline]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<scrollout>false</scrollout>
+					<pauseatend>1000</pauseatend>
+				</control>
 				<control type="textbox">
 					<description>Description Value for TV Show</description>
 					<posx>10</posx>
-					<posy>270</posy>
+					<posy>280</posy>
 					<width>290</width>
 					<height>280</height>
 					<font>font12</font>
