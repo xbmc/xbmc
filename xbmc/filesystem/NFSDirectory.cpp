@@ -22,6 +22,7 @@
 #include "system.h"
 
 #ifdef HAS_FILESYSTEM_NFS
+#include "DllLibNfs.h"
 #include "NFSDirectory.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"

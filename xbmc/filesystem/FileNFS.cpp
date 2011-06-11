@@ -25,6 +25,7 @@
 #include "system.h"
 
 #ifdef HAS_FILESYSTEM_NFS
+#include "DllLibNfs.h"
 #include "FileNFS.h"
 #include "NFSDirectory.h"
 #include "Util.h"
@@ -51,19 +52,21 @@ CNfsConnection::CNfsConnection()
 , m_writeChunkSize(0)
 , m_OpenConnections(0)
 , m_IdleTimeout(0)
+, m_pLibNfs(new DllLibNfs())
 {
 }
 
 CNfsConnection::~CNfsConnection()
 {
+  delete m_pLibNfs;
 }
 
 void CNfsConnection::resetContext()
 {
   
-  if(!m_libNfs.IsLoaded())
+  if(!m_pLibNfs->IsLoaded())
   {
-    if(!m_libNfs.Load())
+    if(!m_pLibNfs->Load())
     {
       CLog::Log(LOGERROR,"NFS: Error loading libnfs (%s).",__FUNCTION__);    
       return;//FATAL!
@@ -72,10 +75,10 @@ void CNfsConnection::resetContext()
   
   if(m_pNfsContext)
   {
-    m_libNfs.nfs_destroy_context(m_pNfsContext);
+    m_pLibNfs->nfs_destroy_context(m_pNfsContext);
   }
   
-  m_pNfsContext = m_libNfs.nfs_init_context();
+  m_pNfsContext = m_pLibNfs->nfs_init_context();
   
   if (!m_pNfsContext) 
   {
@@ -101,17 +104,17 @@ bool CNfsConnection::Connect(const CURL& url)
     
     //we connect to the directory of the path. This will be the "root" path of this connection then.
     //So all fileoperations are relative to this mountpoint...
-    ret = m_libNfs.nfs_mount_sync(m_pNfsContext, url.GetHostName().c_str(), share.c_str());
+    ret = m_pLibNfs->nfs_mount_sync(m_pNfsContext, url.GetHostName().c_str(), share.c_str());
 
     if  (ret != 0) 
     {
-      CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s\n", m_libNfs.nfs_get_error(m_pNfsContext));
+      CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s\n", m_pLibNfs->nfs_get_error(m_pNfsContext));
       return false;
     }
     m_shareName = share;
     m_hostName = url.GetHostName();
-    m_readChunkSize = m_libNfs.nfs_get_readmax(m_pNfsContext);
-    m_writeChunkSize = m_libNfs.nfs_get_writemax(m_pNfsContext);   
+    m_readChunkSize = m_pLibNfs->nfs_get_readmax(m_pNfsContext);
+    m_writeChunkSize = m_pLibNfs->nfs_get_writemax(m_pNfsContext);   
     CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s (chunks: r/w %i/%i)\n", url.GetHostName().c_str(), url.GetShareName().c_str(),m_readChunkSize,m_writeChunkSize);
   }
 
@@ -122,12 +125,12 @@ void CNfsConnection::Deinit()
 {
   if(m_pNfsContext)
   {
-    m_libNfs.nfs_destroy_context(m_pNfsContext);
+    m_pLibNfs->nfs_destroy_context(m_pNfsContext);
   }        
   m_pNfsContext = NULL;
   m_shareName.clear();
   m_hostName.clear();
-  m_libNfs.Unload();
+  m_pLibNfs->Unload();
 }
 
 /* This is called from CApplication::ProcessSlow() and is used to tell if nfs have been idle for too long */

@@ -7,9 +7,9 @@
 #include "URL.h"
 #include "threads/CriticalSection.h"
 
-#include "DllLibNfs.h"
-
 CStdString URLEncode(CStdString str);
+
+class DllLibNfs;
 
 class CNfsConnection : public CCriticalSection
 {     
@@ -21,7 +21,7 @@ public:
   struct nfs_context *GetNfsContext(){return m_pNfsContext;}
   size_t            GetMaxReadChunkSize(){return m_readChunkSize;}
   size_t            GetMaxWriteChunkSize(){return m_writeChunkSize;} 
-  DllLibNfs        *GetImpl(){return &m_libNfs;}
+  DllLibNfs        *GetImpl(){return m_pLibNfs;}
   
   void AddActiveConnection();
   void AddIdleConnection();
@@ -37,7 +37,7 @@ private:
   size_t m_writeChunkSize;
   int m_OpenConnections;
   unsigned int m_IdleTimeout;
-  DllLibNfs m_libNfs;
+  DllLibNfs *m_pLibNfs;
   void resetContext();  
 };
 
