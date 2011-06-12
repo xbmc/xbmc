@@ -24,12 +24,7 @@
 #ifdef HAS_FILESYSTEM_NFS
 #include "DllLibNfs.h"
 #include "NFSDirectory.h"
-#include "Util.h"
-#include "guilib/LocalizeStrings.h"
-#include "Application.h"
 #include "FileItem.h"
-#include "settings/AdvancedSettings.h"
-#include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "threads/SingleLock.h"
@@ -49,7 +44,7 @@ CNFSDirectory::~CNFSDirectory(void)
 
 bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  // We accept nfs://server/share/path[/file]]]]
+  // We accept nfs://server/path[/file]]]]
   int ret = 0;
   FILETIME fileTime, localTime;    
   CSingleLock lock(gNfsConnection);
@@ -142,16 +137,13 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 bool CNFSDirectory::Create(const char* strPath)
 {
   int ret = 0;
-  int newFolderLen = 0;
   
   CSingleLock lock(gNfsConnection);
-
-  CURL url(URIUtils::GetParentPath(strPath)); 
   CStdString folderName(strPath);
-  newFolderLen = folderName.length() - URIUtils::GetParentPath(strPath).length();
-  folderName = "//" + folderName.Right(newFolderLen);
-  
   URIUtils::RemoveSlashAtEnd(folderName);//mkdir fails if a slash is at the end!!!
+  
+  CURL url(folderName); 
+  folderName = "//" + URIUtils::GetFileName(folderName);  
   
   if(!gNfsConnection.Connect(url))
     return false;
@@ -166,17 +158,13 @@ bool CNFSDirectory::Create(const char* strPath)
 bool CNFSDirectory::Remove(const char* strPath)
 {
   int ret = 0;
-  int delFolderLen = 0;
 
   CSingleLock lock(gNfsConnection);
-  
-  CURL url(URIUtils::GetParentPath(strPath));
   CStdString folderName(strPath);
-  delFolderLen = folderName.length() - URIUtils::GetParentPath(strPath).length();
-  folderName = "//" + folderName.Right(delFolderLen);
-  
   URIUtils::RemoveSlashAtEnd(folderName);//rmdir fails if a slash is at the end!!!  
   
+  CURL url(folderName);
+  folderName = "//" + URIUtils::GetFileName(folderName); 
   
   if(!gNfsConnection.Connect(url))
     return false;
@@ -194,13 +182,13 @@ bool CNFSDirectory::Remove(const char* strPath)
 bool CNFSDirectory::Exists(const char* strPath)
 {
   int ret = 0;
-  int existFolderLen = 0;
-  CSingleLock lock(gNfsConnection);
-  
-  CURL url(URIUtils::GetParentPath(strPath));
-  CStdString folderName(strPath);
-  existFolderLen = folderName.length() - URIUtils::GetParentPath(strPath).length();
-  folderName = "//" + folderName.Right(existFolderLen);
+
+  CSingleLock lock(gNfsConnection); 
+  CStdString folderName(strPath);  
+  URIUtils::RemoveSlashAtEnd(folderName);//remove slash at end or URIUtils::GetFileName won't return what we want...
+
+  CURL url(folderName);
+  folderName = "//" + URIUtils::GetFileName(folderName);
   
   if(!gNfsConnection.Connect(url))
     return false;

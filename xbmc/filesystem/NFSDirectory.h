@@ -22,7 +22,6 @@
 
 #include "IDirectory.h"
 #include "FileNFS.h"
-#include "MediaSource.h"
 
 namespace XFILE
 {

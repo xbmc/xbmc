@@ -27,23 +27,11 @@
 #ifdef HAS_FILESYSTEM_NFS
 #include "DllLibNfs.h"
 #include "FileNFS.h"
-#include "NFSDirectory.h"
-#include "Util.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/GUISettings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace XFILE;
-
-CStdString URLEncode(const CStdString value)
-{
-  CStdString encoded(value);
-  CURL::Encode(encoded);
-  return encoded;
-}
 
 CNfsConnection::CNfsConnection()
 : m_pNfsContext(NULL)
@@ -232,7 +220,7 @@ bool CFileNFS::Open(const CURL& url)
     return false;
   }
   
-  CStdString filename = "/" + URIUtils::GetFileName(url.GetFileName());
+  CStdString filename = "//" + URIUtils::GetFileName(url.GetFileName());
    
   CSingleLock lock(gNfsConnection);
   
@@ -270,11 +258,7 @@ bool CFileNFS::Open(const CURL& url)
 
 bool CFileNFS::Exists(const CURL& url)
 {
-  CURL oldurl = m_url;
-  m_url = url;
-  bool ret = Stat(NULL) == 0;
-  m_url = oldurl;
-  return ret;
+  return Stat(url,NULL) == 0;
 }
 
 int CFileNFS::Stat(struct __stat64* buffer)
@@ -291,7 +275,7 @@ int CFileNFS::Stat(const CURL& url, struct __stat64* buffer)
   if(!gNfsConnection.Connect(url))
     return -1;
    
-  CStdString filename = "/" + URIUtils::GetFileName(url.GetFileName());
+  CStdString filename = "//" + URIUtils::GetFileName(url.GetFileName());
 
   struct stat tmpBuffer = {0};
 
@@ -360,7 +344,7 @@ unsigned int CFileNFS::Read(void *lpBuf, int64_t uiBufSize)
     }
     
   }
-    return (unsigned int)numberOfBytesRead;
+  return (unsigned int)numberOfBytesRead;
 }
 
 int64_t CFileNFS::Seek(int64_t iFilePosition, int iWhence)

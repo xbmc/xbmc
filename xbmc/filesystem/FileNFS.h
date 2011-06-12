@@ -7,8 +7,6 @@
 #include "URL.h"
 #include "threads/CriticalSection.h"
 
-CStdString URLEncode(CStdString str);
-
 class DllLibNfs;
 
 class CNfsConnection : public CCriticalSection
