@@ -146,9 +146,10 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       pDirectory->SetExtFileInfo(extFileInfo);
 
       bool result = false;
+
       while (!result)
-      {
-        if (g_application.IsCurrentThread() && allowThreads && !URIUtils::IsSpecial(strPath))
+	{      
+    if (g_application.IsCurrentThread() && allowThreads && !URIUtils::IsSpecial(strPath) && strPath.Left(18) != "musicdb://spotify/")
         {
           CSingleExit ex(g_graphicsContext);
 

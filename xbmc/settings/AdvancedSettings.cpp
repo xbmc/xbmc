@@ -58,9 +58,20 @@ void CAdvancedSettings::Initialize()
   m_karaokeAlwaysEmptyOnCdgs = 1;
   m_karaokeUseSongSpecificBackground = 0;
 
-  m_audioDefaultPlayer = "paplayer";
-  m_audioPlayCountMinimumPercent = 90.0f;
-  m_audioHost = "default";
+
+  //spotify
+  m_spotifyEnable = true;
+  m_spotifyUseHighBitrate = true;
+  m_spotifyUsername = "";
+  m_spotifyPassword = "";
+  m_spotifyCacheFolder = "/tmp/spotify/";
+  m_spotifyMaxSearchArtists = 50;
+  m_spotifyMaxSearchAlbums = 50;
+  m_spotifyMaxSearchTracks = 100;
+
+   m_audioDefaultPlayer = "paplayer";
+   m_audioPlayCountMinimumPercent = 90.0f;
+   m_audioHost = "default";
 
   m_videoSubsDelayRange = 10;
   m_videoAudioDelayRange = 10;
@@ -679,6 +690,21 @@ bool CAdvancedSettings::Load()
   {
     XMLUtils::GetInt(pElement, "movielength", m_iMythMovieLength);
   }
+
+  //spotify
+  pElement = pRootElement->FirstChildElement("spotify");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "enable", m_spotifyEnable);
+    XMLUtils::GetBoolean(pElement, "highbitrate", m_spotifyUseHighBitrate);
+    XMLUtils::GetString(pElement, "username", m_spotifyUsername);
+    XMLUtils::GetString(pElement, "password", m_spotifyPassword);
+    XMLUtils::GetString(pElement, "cachefolder", m_spotifyCacheFolder);
+    XMLUtils::GetInt(pElement, "maxsearchartists", m_spotifyMaxSearchArtists, 0, 500);
+    XMLUtils::GetInt(pElement, "maxsearchalbums", m_spotifyMaxSearchAlbums,0,500);
+    XMLUtils::GetInt(pElement, "maxsearchtracks", m_spotifyMaxSearchTracks,0,1000);
+  }
+
 
   // EDL commercial break handling
   pElement = pRootElement->FirstChildElement("edl");

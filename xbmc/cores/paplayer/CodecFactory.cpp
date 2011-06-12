@@ -19,6 +19,10 @@
  *
  */
 
+//spotify
+#include "spotifyCodec.h"
+#include "../utils/log.h"
+
 #include "system.h"
 #include "CodecFactory.h"
 #include "MP3codec.h"
@@ -41,10 +45,16 @@
 #endif
 #include "URL.h"
 #include "DVDPlayerCodec.h"
+#include "Util.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
-  if (strFileType.Equals("mp3") || strFileType.Equals("mp2"))
+  CLog::Log(LOGERROR, "Spotifylog: createcodec: %s", strFileType.c_str());
+  //spotify
+  if (strFileType.Equals("spotify"))
+    return new SpotifyCodec();
+
+  else if (strFileType.Equals("mp3") || strFileType.Equals("mp2"))
     return new MP3Codec();
   else if (strFileType.Equals("ape") || strFileType.Equals("mac"))
     return new DVDPlayerCodec();
@@ -112,7 +122,11 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdString& strContent, unsigned int filecache)
 {
   CURL urlFile(strFile);
-  if( strContent.Equals("audio/mpeg")
+
+  //spotify
+  if ( strFile.Right(7).Equals("spotify") )
+    return new SpotifyCodec();
+  else if( strContent.Equals("audio/mpeg")
   ||  strContent.Equals("audio/mp3") )
     return new MP3Codec();
   else if( strContent.Equals("audio/aac")

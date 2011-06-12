@@ -19,6 +19,7 @@
  *
  */
 
+#include "spotifyCodec.h"
 #include "PAPlayer.h"
 #include "CodecFactory.h"
 #include "GUIInfoManager.h"
@@ -542,9 +543,15 @@ bool PAPlayer::ProcessPAP()
       return false;
 
     UpdateCacheLevel();
-
+    
     // check whether we should queue the next file up
-    if ((GetTotalTime64() > 0) && GetTotalTime64() - GetTime() < TIME_TO_CACHE_NEXT_FILE + m_crossFading * 1000L && !m_cachingNextFile)
+    //spotify, we can only get the new file if the old one is done reading
+    bool isSpotifyFree = true;
+    if (m_decoder[m_currentDecoder].GetCodec()->m_CodecName == "spotify")
+    {
+       isSpotifyFree = SpotifyCodec::spotifyPlayerIsFree();
+    }
+    if (isSpotifyFree && (GetTotalTime64() > 0) && GetTotalTime64() - GetTime() < TIME_TO_CACHE_NEXT_FILE + m_crossFading * 1000L && !m_cachingNextFile)
     { // request the next file from our application
       m_callback.OnQueueNextItem();
       m_cachingNextFile = true;

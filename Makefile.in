@@ -16,7 +16,7 @@ BIN_DIRS=	\
 	xbmc/cores/dvdplayer/DVDCodecs/Video \
 	xbmc/cores/dvdplayer/DVDDemuxers/ \
 	xbmc/cores/dvdplayer/DVDInputStreams/ \
-	xbmc/cores/dvdplayer/DVDSubtitles/ \
+	xbmc/cores/ddplayer/DVDSubtitles/ \
 	xbmc/cores/paplayer \
 	xbmc/cores/AudioRenderers \
 	xbmc/cores/VideoRenderers \

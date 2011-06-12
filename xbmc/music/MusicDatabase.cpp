@@ -1590,6 +1590,33 @@ void CMusicDatabase::EmptyCache()
   m_thumbCache.erase(m_thumbCache.begin(), m_thumbCache.end());
 }
 
+//spotify
+bool CMusicDatabase::RemoveAlbum(CStdString albumPath)
+{
+  albumPath.Delete(0,12);
+  URIUtils::RemoveSlashAtEnd(albumPath);
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL;
+    strSQL=FormatSQL("delete from song where idAlbum=%s", albumPath.c_str());
+    m_pDS->exec(strSQL.c_str());
+    strSQL=FormatSQL("delete from album where idAlbum=%s", albumPath.c_str());
+    m_pDS->exec(strSQL.c_str());
+    this->CleanupSongs();
+    this->CleanupAlbums();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+
+  return false;
+}
+
 bool CMusicDatabase::Search(const CStdString& search, CFileItemList &items)
 {
   unsigned int time = CTimeUtils::GetTimeMS();
@@ -1857,7 +1884,8 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
         URIUtils::RemoveSlashAtEnd(strFileName);
       }
 
-      if (!CFile::Exists(strFileName))
+      //spotify, dont delete it if its a spotify song
+      if (URIUtils::GetExtension(strFileName) !=".spotify" && !CFile::Exists(strFileName))
       { // file no longer exists, so add to deletion list
         strSongsToDelete += m_pDS->fv("song.idSong").get_asString() + ",";
       }
