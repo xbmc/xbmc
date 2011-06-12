@@ -1823,6 +1823,9 @@
     <ClCompile Include="..\..\xbmc\win32\WIN32USBScan.cpp">
       <Filter>win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\KeymapLoader.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\storage\AutorunMediaJob.cpp">
       <Filter>storage</Filter>
     </ClCompile>
@@ -4293,6 +4296,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\WIN32USBScan.h">
       <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\KeymapLoader.h">
+      <Filter>input</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\storage\AutorunMediaJob.h">
       <Filter>storage</Filter>
