@@ -1,4 +1,5 @@
 SRCS=Atomics.cpp \
+     Condition.cpp \
      Event.cpp \
      LockFree.cpp \
      Semaphore.cpp \
