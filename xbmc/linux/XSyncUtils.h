@@ -46,19 +46,6 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer);
 DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds );
 DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWaitAll,  DWORD dwMilliseconds);
 
-LONG InterlockedIncrement(  LONG * Addend );
-LONG InterlockedDecrement(  LONG * Addend );
-LONG InterlockedCompareExchange(
-  LONG * Destination,
-  LONG Exchange,
-  LONG Comparand
-);
-
-LONG InterlockedExchange(
-  LONG volatile* Target,
-  LONG Value
-);
-
 #endif
 
 #endif
