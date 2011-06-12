@@ -16,6 +16,9 @@
     <Filter Include="cores\dvdplayer\DVDCodecs\Audio">
       <UniqueIdentifier>{5bee29f5-b152-4416-9413-0bed2a669575}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cores\dvdplayer\DVDCodecs\Audio\Encoders">
+      <UniqueIdentifier>{950294bc-2e98-414e-8bf4-57c43fb73b31}</UniqueIdentifier>
+    </Filter>
     <Filter Include="cores\dvdplayer\DVDCodecs\Video">
       <UniqueIdentifier>{09e9057e-7017-4f3d-b5d3-2f5e9a23a53c}</UniqueIdentifier>
     </Filter>
@@ -57,6 +60,9 @@
     </Filter>
     <Filter Include="cores\VideoRenderers\Shaders">
       <UniqueIdentifier>{041be182-9ec3-4c1b-abfc-d92f6802e7ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\AudioRenderers">
+      <UniqueIdentifier>{6ec3ce08-d27a-460f-abd8-3ccd43a05470}</UniqueIdentifier>
     </Filter>
     <Filter Include="cores\ExternalPlayer">
       <UniqueIdentifier>{f98cb00a-d64b-4af9-a386-78bb2be8213d}</UniqueIdentifier>
@@ -193,9 +199,6 @@
     <Filter Include="libs\sqlite">
       <UniqueIdentifier>{c9d35dd5-e25d-4b76-bcbe-e8c855de58e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="libs\jsoncpp">
-      <UniqueIdentifier>{b27f9ce9-0b2e-4456-9bce-8313af739c2d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="libs\tinyxml">
       <UniqueIdentifier>{b084bece-821c-445c-951d-0aa4ea804076}</UniqueIdentifier>
     </Filter>
@@ -223,20 +226,8 @@
     <Filter Include="guilib\Rendering\GL">
       <UniqueIdentifier>{9592a005-d33b-48d1-8462-d95c42c383c2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="audioengine">
-      <UniqueIdentifier>{d6f01d2f-1b5d-4226-8a1d-154a1dd8adde}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="audioengine\sinks">
-      <UniqueIdentifier>{8a1f0886-39f2-4a25-bd2e-7584b39c9ae2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="audioengine\postproc">
-      <UniqueIdentifier>{8de10589-36cc-4e6f-bedd-4e63fe5aff6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="audioengine\engines">
-      <UniqueIdentifier>{52c7e553-cb0d-43e5-b0de-70c977409f88}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="audioengine\encoders">
-      <UniqueIdentifier>{d59b6b26-6a76-488d-b66b-04a7f4481d3a}</UniqueIdentifier>
+    <Filter Include="libs\SlingboxLib">
+      <UniqueIdentifier>{dfa70c36-927b-4540-b505-35919e64eb3d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -348,8 +339,14 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLPcm.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthroughFFmpeg.cpp">
+      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPcm.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\DVDAudioEncoderFFmpeg.cpp">
+      <Filter>cores\dvdplayer\DVDCodecs\Audio\Encoders</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoCodecCrystalHD.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
@@ -462,9 +459,6 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\ADPCMCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\AIFFcodec.cpp">
-      <Filter>cores\paplayer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\ASAPCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
@@ -517,9 +511,6 @@
       <Filter>cores\paplayer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\WAVcodec.cpp">
-      <Filter>cores\paplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\WAVPackcodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\YMCodec.cpp">
@@ -614,6 +605,24 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.cpp">
       <Filter>cores\VideoRenderers\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.cpp">
+      <Filter>cores\AudioRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioRenderers\NullDirectSound.cpp">
+      <Filter>cores\AudioRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\PCMRemap.cpp">
+      <Filter>cores\AudioRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioRenderers\PulseAudioDirectSound.cpp">
+      <Filter>cores\AudioRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.cpp">
+      <Filter>cores\AudioRenderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioRenderers\Win32WASAPI.cpp">
+      <Filter>cores\AudioRenderers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.cpp">
       <Filter>cores\ExternalPlayer</Filter>
@@ -1220,6 +1229,9 @@
     <ClCompile Include="..\..\xbmc\guilib\AnimatedGif.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\AudioContext.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\D3DResource.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -1356,6 +1368,9 @@
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUISliderControl.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUISound.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUISpinControl.cpp">
@@ -2189,15 +2204,6 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogCache.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_reader.cpp">
-      <Filter>libs\jsoncpp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_value.cpp">
-      <Filter>libs\jsoncpp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_writer.cpp">
-      <Filter>libs\jsoncpp</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\Builtins.cpp">
       <Filter>interfaces</Filter>
     </ClCompile>
@@ -2411,6 +2417,12 @@
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.cpp">
       <Filter>cores\VideoRenderers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\lib\SlingboxLib\SlingboxLib.cpp">
+      <Filter>libs\SlingboxLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\Slingbox.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
@@ -2433,62 +2445,14 @@
     <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEConvert.cpp">
-      <Filter>audioengine</Filter>
+    <ClCompile Include="..\..\xbmc\input\XBMC_keytable.cpp">
+      <Filter>input</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEFactory.cpp">
-      <Filter>audioengine</Filter>
+    <ClCompile Include="..\..\xbmc\utils\JSONVariantParser.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEPackIEC958.cpp">
-      <Filter>audioengine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AERemap.cpp">
-      <Filter>audioengine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AESinkFactory.cpp">
-      <Filter>audioengine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AESoundWrapper.cpp">
-      <Filter>audioengine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEStreamInfo.cpp">
-      <Filter>audioengine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEStreamWrapper.cpp">
-      <Filter>audioengine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEUtil.cpp">
-      <Filter>audioengine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEWAVLoader.cpp">
-      <Filter>audioengine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\AEWrapper.cpp">
-      <Filter>audioengine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkDirectSound.cpp">
-      <Filter>audioengine\sinks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkWASAPI.cpp">
-      <Filter>audioengine\sinks</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\PostProc\AEPPAnimationFade.cpp">
-      <Filter>audioengine\postproc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\SoftAE.cpp">
-      <Filter>audioengine\engines</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\SoftAESound.cpp">
-      <Filter>audioengine\engines</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\SoftAEStream.cpp">
-      <Filter>audioengine\engines</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Encoders\AEEncoderFFmpeg.cpp">
-      <Filter>audioengine\encoders</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
+    <ClCompile Include="..\..\xbmc\utils\JSONVariantWriter.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2615,8 +2579,17 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecLPcm.h">
       <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthroughFFmpeg.h">
+      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPcm.h">
       <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\DVDAudioEncoderFFmpeg.h">
+      <Filter>cores\dvdplayer\DVDCodecs\Audio\Encoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\IDVDAudioEncoder.h">
+      <Filter>cores\dvdplayer\DVDCodecs\Audio\Encoders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DllLibMpeg2.h">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
@@ -2810,9 +2783,6 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\ADPCMCodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\AIFFcodec.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\ASAPCodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
@@ -2847,9 +2817,6 @@
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\DllVorbisfile.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\DllWAVPack.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.h">
@@ -2895,9 +2862,6 @@
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\WAVcodec.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\WAVPackcodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\YMCodec.h">
@@ -2995,6 +2959,24 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.h">
       <Filter>cores\VideoRenderers\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioRenderers\AudioRendererFactory.h">
+      <Filter>cores\AudioRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioRenderers\NullDirectSound.h">
+      <Filter>cores\AudioRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\PCMRemap.h">
+      <Filter>cores\AudioRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioRenderers\PulseAudioDirectSound.h">
+      <Filter>cores\AudioRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioRenderers\Win32DirectSound.h">
+      <Filter>cores\AudioRenderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\AudioRenderers\Win32WASAPI.h">
+      <Filter>cores\AudioRenderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h">
       <Filter>cores\ExternalPlayer</Filter>
@@ -3601,6 +3583,9 @@
     <ClInclude Include="..\..\xbmc\guilib\AnimatedGif.h">
       <Filter>guilib</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\AudioContext.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\D3DResource.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -3749,6 +3734,9 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUISliderControl.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUISound.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUISpinControl.h">
@@ -4891,6 +4879,12 @@
     <ClInclude Include="..\..\xbmc\utils\GlobalsHandling.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\lib\SlingboxLib\SlingboxLib.h">
+      <Filter>libs\SlingboxLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\Slingbox.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\CacheCircular.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -4910,86 +4904,14 @@
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\InputOperations.h">
       <Filter>interfaces\json-rpc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AE.h">
-      <Filter>audioengine</Filter>
+    <ClInclude Include="..\..\xbmc\input\XBMC_keytable.h">
+      <Filter>input</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEAudioFormat.h">
-      <Filter>audioengine</Filter>
+    <ClInclude Include="..\..\xbmc\utils\JSONVariantParser.h">
+      <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEConvert.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEEncoder.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEFactory.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEPackIEC958.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEPostProc.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AERemap.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AESink.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AESinkFactory.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AESound.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AESoundWrapper.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEStream.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEStreamInfo.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEStreamWrapper.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEUtil.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEWAVLoader.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\AEWrapper.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\ThreadedAE.h">
-      <Filter>audioengine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkDirectSound.h">
-      <Filter>audioengine\sinks</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkWASAPI.h">
-      <Filter>audioengine\sinks</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\PostProc\AEPPAnimationFade.h">
-      <Filter>audioengine\postproc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\SoftAE.h">
-      <Filter>audioengine\engines</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\SoftAESound.h">
-      <Filter>audioengine\engines</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\SoftAEStream.h">
-      <Filter>audioengine\engines</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\AudioEngine\Encoders\AEEncoderFFmpeg.h">
-      <Filter>audioengine\encoders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthrough.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Audio</Filter>
+    <ClInclude Include="..\..\xbmc\utils\JSONVariantWriter.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

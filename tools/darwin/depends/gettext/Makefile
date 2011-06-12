@@ -28,10 +28,13 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); patch -p0 <../01-gettext-tools-Makefile.in.patch
+	if [ "$(DARWIN)" = "ios" ] && [ "$(SDK)" != "4.2" ]; then \
+	cd $(SOURCE); patch -p1 <../02-gettext-tools-stpncpy.patch; \
+	fi
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)
-	make -C $(SOURCE)
+	make -j 1 -C $(SOURCE)
 
 .installed:
 	make -C $(SOURCE) install

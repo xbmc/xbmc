@@ -32,10 +32,9 @@
 #include "URL.h"
 
 using namespace XFILE;
-using namespace Json;
 using namespace JSONRPC;
 
-JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString media = parameterObject["media"].asString();
   media = media.ToLower();
@@ -56,8 +55,8 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
       }
     }
 
-    Value param = parameterObject["fields"];
-    param["fields"] = Value(arrayValue);
+    CVariant param = parameterObject["fields"];
+    param["fields"] = CVariant(CVariant::VariantTypeArray);
     param["fields"].append("file");
 
     HandleFileItemList(NULL, true, "shares", items, param, result);
@@ -66,7 +65,7 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
   return OK;
 }
 
-JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CStdString media = parameterObject["media"].asString();
   media = media.ToLower();
@@ -120,14 +119,14 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
     // Check if the "fields" list exists
     // and make sure it contains the "file"
     // field
-    Value param = parameterObject;
+    CVariant param = parameterObject;
     if (!param.isMember("fields"))
-      param["fields"] = Value(arrayValue);
+      param["fields"] = CVariant(CVariant::VariantTypeArray);
 
     bool hasFileField = false;
-    for (unsigned int i = 0; i < param["fields"].size(); i++)
+    for (CVariant::const_iterator_array itr = param["fields"].begin_array(); itr != param["fields"].end_array(); itr++)
     {
-      if (param["fields"][i].asString().compare("file") == 0)
+      if (*itr == CVariant("file"))
       {
         hasFileField = true;
         break;
@@ -142,14 +141,14 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
     {
       result["files"][index]["filetype"] = "directory";
     }
-    int count = result["limits"]["total"].asInt();
+    int count = (int)result["limits"]["total"].asInteger();
 
     HandleFileItemList("id", true, "files", filteredFiles, param, result);
     for (unsigned int index = count; index < result["files"].size(); index++)
     {
       result["files"][index]["filetype"] = "file";
     }
-    count += result["limits"]["total"].asInt();
+    count += (int)result["limits"]["total"].asInteger();
 
     result["limits"]["end"] = count;
     result["limits"]["total"] = count;
@@ -160,9 +159,9 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
   return InvalidParams;
 }
 
-JSON_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return transport->Download(parameterObject["path"].asString().c_str(), &result) ? OK : InvalidParams;
+  return transport->Download(parameterObject["path"].asString(), result) ? OK : InvalidParams;
 }
 
 bool CFileOperations::FillFileItem(const CStdString &strFilename, CFileItem &item, CStdString media /* = "" */)
@@ -188,11 +187,11 @@ bool CFileOperations::FillFileItem(const CStdString &strFilename, CFileItem &ite
   return status;
 }
 
-bool CFileOperations::FillFileItemList(const Value &parameterObject, CFileItemList &list)
+bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileItemList &list)
 {
   if (parameterObject.isMember("directory"))
   {
-    CStdString media =  parameterObject.get("media", "").asString();
+    CStdString media =  parameterObject["media"].asString();
     media = media.ToLower();
 
     CStdString strPath = parameterObject["directory"].asString();
@@ -240,11 +239,11 @@ bool CFileOperations::FillFileItemList(const Value &parameterObject, CFileItemLi
           }
         }
 
-        if (parameterObject.isMember("recursive") && parameterObject["recursive"].isBool())
+        if (parameterObject.isMember("recursive") && parameterObject["recursive"].isBoolean())
         {
           for (int i = 0; i < filteredDirectories.Size(); i++)
           {
-            Value val = parameterObject;
+            CVariant val = parameterObject;
             val["directory"] = filteredDirectories[i]->m_strPath;
             FillFileItemList(val, list);
           }

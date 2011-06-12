@@ -1060,7 +1060,9 @@ namespace VIDEO
     long lResult = -1;
 
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
-    movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
+    if (movieDetails.m_basePath.IsEmpty())
+      movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
+    movieDetails.m_parentPathID = m_database.AddPath(URIUtils::GetParentPath(movieDetails.m_basePath));
 
     if (content == CONTENT_MOVIES)
     {
@@ -1702,10 +1704,7 @@ namespace VIDEO
       }
       else if (result != CNfoFile::NO_NFO && result != CNfoFile::ERROR_NFO)
       {
-        CScraperUrl url(m_nfoReader.m_strImDbUrl);
-        scrUrl = url;
-
-        scrUrl.strId  = m_nfoReader.m_strImDbNr;
+        scrUrl = m_nfoReader.ScraperUrl();
         info = m_nfoReader.GetScraperInfo();
 
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '%s' using %s scraper (content: '%s')",

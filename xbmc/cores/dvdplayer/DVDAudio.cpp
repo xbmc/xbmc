@@ -219,7 +219,7 @@ void CDVDAudio::Finish()
   if(silence > 0 && m_iBufferSize > 0)
   {
     CLog::Log(LOGDEBUG, "CDVDAudio::Drain - adding %d bytes of silence, buffer size: %d, chunk size: %d", silence, m_iBufferSize, m_dwPacketSize);
-    m_pBuffer = (BYTE*)realloc(m_pBuffer, m_dwPacketSize);
+    m_pBuffer = (BYTE*)realloc(m_pBuffer, m_iBufferSize + silence);
     memset(m_pBuffer+m_iBufferSize, 0, silence);
     m_iBufferSize += silence;
   }

@@ -291,6 +291,8 @@ class CAdvancedSettings
 
     bool m_jsonOutputCompact;
     unsigned int m_jsonTcpPort;
+
+    bool m_enableMultimediaKeys;
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

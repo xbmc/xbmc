@@ -52,8 +52,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visWaveform", "..\..\xbmc\v
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "squish", "..\..\lib\libsquish\vs7\squish\squish_2010.vcxproj", "{6A8518C3-D81A-4428-BD7F-C37933088AC1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libwavpack_dll", "..\..\lib\win32\libwavpack\wavpackdll.vcxproj", "{CDC43FFE-1BED-44C6-BAB9-5A7E84D6D9FE}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libStSoundLibrary_dll", "..\..\lib\stsound\StSoundLibrary\StSoundLibrary.vcxproj", "{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmad_dll", "..\..\lib\libmad\msvc++\libmad.vcxproj", "{AF6C8945-5DDC-4F62-A48C-86B11B7ED996}"

@@ -27,7 +27,7 @@ $(LIBDYLIB): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	# this forces python2.6 hashlib to be compatible with osx 10.4 boxes.
 	sed -ie "s|openssl_ver >= 0x00907000)|openssl_ver >= 0x00907000 and False)|" "$(SOURCE)/setup.py"
 	sed -ie "s|(openssl_ver < 0x00908000)|(True or openssl_ver < 0x00908000)|" "$(SOURCE)/setup.py"
-	cd $(SOURCE); make
+	cd $(SOURCE); make -j $(MAKE_JOBS)
 
 .installed:
 	cd $(SOURCE); make install

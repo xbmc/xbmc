@@ -62,6 +62,7 @@ BIN_DIRS=	\
 	xbmc/dbwrappers \
 	lib/UnrarXLib \
 	lib/libsquish \
+	lib/SlingboxLib \
 	xbmc/visualizations \
 	xbmc/screensavers \
 	xbmc/utils \
@@ -123,8 +124,7 @@ LIB_DIRS=\
 	lib/libid3tag \
 	lib/libapetag \
 	lib/cpluff \
-	lib/xbmc-dll-symbols \
-	lib/jsoncpp/src/lib_json
+	lib/xbmc-dll-symbols
 
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
@@ -328,8 +328,6 @@ lib/libUPnP/libupnp.a: force
 	$(MAKE) -C lib/libUPnP
 lib/libXDAAP/libxdaap.a: force
 	$(MAKE) -C lib/libXDAAP
-lib/jsoncpp/src/lib_json/libjsoncpp.a: force
-	$(MAKE) -C lib/jsoncpp/src/lib_json
 xbmc/interfaces/http-api/http-api.a: force
 	$(MAKE) -C xbmc/interfaces/http-api
 xbmc/interfaces/json-rpc/json-rpc.a: force
@@ -340,6 +338,8 @@ lib/UnrarXLib/UnrarXLib.a: force
 	$(MAKE) -C lib/UnrarXLib
 lib/libsquish/libsquish.a: force
 	$(MAKE) -C lib/libsquish
+lib/SlingboxLib/SlingboxLib.a: force
+	$(MAKE) -C lib/SlingboxLib
 xbmc/linux/linux.a: force
 	$(MAKE) -C xbmc/linux
 xbmc/threads/posix/threads_posix.a: force
@@ -436,7 +436,7 @@ xcode_depends: \
 	lib/libapetag/.libs/libapetag.a \
 	lib/libRTV/librtv.a \
 	lib/libXDAAP/libxdaap.a \
-	lib/jsoncpp/src/lib_json/libjsoncpp.a
+	lib/SlingboxLib/SlingboxLib.a
 
 # platform independend objects
 OBJSXBMC=	\
@@ -487,10 +487,10 @@ OBJSXBMC=	\
 	xbmc/interfaces/interfaces.a \
 	xbmc/cdrip/cdrip.a \
 	xbmc/interfaces/json-rpc/json-rpc.a \
-	lib/jsoncpp/src/lib_json/libjsoncpp.a \
 	xbmc/interfaces/http-api/http-api.a \
 	xbmc/dbwrappers/dbwrappers.a \
 	lib/libsquish/libsquish.a \
+	lib/SlingboxLib/SlingboxLib.a \
 	lib/libapetag/.libs/libapetag.a \
 	lib/xbmc-dll-symbols/dll-symbols.a \
         xbmc/rendering/rendering.a \

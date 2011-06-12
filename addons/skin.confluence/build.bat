@@ -1,7 +1,7 @@
 @echo off
 ECHO ----------------------------------------
 echo Creating Confluence Build Folder
-rmdir ..\..\project\Win32BuildSetup\BUILD_WIN32\Xbmc\addons\skin.confluence\ /S /Q
+IF Exist ..\..\project\Win32BuildSetup\BUILD_WIN32\Xbmc\addons\skin.confluence rmdir ..\..\project\Win32BuildSetup\BUILD_WIN32\Xbmc\addons\skin.confluence /S /Q
 md ..\..\project\Win32BuildSetup\BUILD_WIN32\Xbmc\addons\skin.confluence\media\
 
 Echo .svn>exclude.txt

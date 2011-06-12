@@ -3,6 +3,9 @@
 # commonly used editors
 # vim
 *.swp
+# Eclipse
+*.project
+*.cproject
 
 # generated files etc
 config.cache
@@ -382,7 +385,6 @@ project/Win32BuildSetup/dependencies/libcdio-10.dll
 /system/players/dvdplayer/libmad.dll
 
 # /system/players/paplayer
-/system/players/paplayer/wavpack.dll
 /system/players/paplayer/libmodplug.dll
 /system/players/paplayer/StSoundLibrary.dll
 /system/players/paplayer/vorbisfile.dll
@@ -877,11 +879,6 @@ project/Win32BuildSetup/dependencies/libcdio-10.dll
 # /lib/win32/libsamplerate
 /lib/win32/libsamplerate/libsamplerate_win32/Debug
 /lib/win32/libsamplerate/libsamplerate_win32/Release
-
-# /lib/win32/libwavpack/
-/lib/win32/libwavpack/Makefile
-/lib/win32/libwavpack/Debug
-/lib/win32/libwavpack/Release
 
 # /lib/win32/sqlite
 /lib/win32/sqlite/libsqlite_win32/Debug

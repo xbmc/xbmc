@@ -182,7 +182,7 @@ static void InitEvdev(void)
 // is unknown.
 static uint16_t SymFromScancode(uint16_t scancode)
 {
-  int i;
+  unsigned int i;
 
   // We need to initialise m_bEvdev once
   if (!m_bEvdevInit)

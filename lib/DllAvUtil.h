@@ -27,6 +27,11 @@
 #include "DynamicDll.h"
 #include "utils/log.h"
 
+#ifndef __GNUC__
+#pragma warning(push)
+#pragma warning(disable:4244)
+#endif
+
 extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVUTIL_AVUTIL_H)
@@ -56,6 +61,10 @@ extern "C" {
   #include "libavutil/fifo.h"
 #endif
 }
+
+#ifndef __GNUC__
+#pragma warning(pop)
+#endif
 
 // calback used for logging
 void ff_avutil_log(void* ptr, int level, const char* format, va_list va);

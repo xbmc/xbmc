@@ -41,6 +41,14 @@
 		183C454D130C4D55006AA317 /* xbmcvfsmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */; settings = {COMPILER_FLAGS = "-I$XBMC_DEPENDS/include/python2.6"; }; };
 		183FDF8A11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
 		183FDF8B11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
+		18404D9E1396C13500863BBA /* Slingbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18404D9C1396C13500863BBA /* Slingbox.cpp */; };
+		18404DA61396C31B00863BBA /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
+		18404E701396E05D00863BBA /* Slingbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18404D9C1396C13500863BBA /* Slingbox.cpp */; };
+		18404E711396E06C00863BBA /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DA51396C31B00863BBA /* SlingboxLib.a */; };
+		1840B74D13993D8A007C848B /* JSONVariantParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B74B13993D8A007C848B /* JSONVariantParser.cpp */; };
+		1840B74E13993D8A007C848B /* JSONVariantParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B74B13993D8A007C848B /* JSONVariantParser.cpp */; };
+		1840B75313993DA0007C848B /* JSONVariantWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B75113993DA0007C848B /* JSONVariantWriter.cpp */; };
+		1840B75413993DA0007C848B /* JSONVariantWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B75113993DA0007C848B /* JSONVariantWriter.cpp */; };
 		184C472F1296BC6E0006DB3E /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
 		184C47301296BC6E0006DB3E /* Service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 184C472D1296BC6E0006DB3E /* Service.cpp */; };
 		18ACF84313596C9B00B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */; };
@@ -713,7 +721,6 @@
 		E38E1FDA0D25F9FD00618676 /* SPCCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16350D25F9FA00618676 /* SPCCodec.cpp */; };
 		E38E1FDB0D25F9FD00618676 /* TimidityCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16370D25F9FA00618676 /* TimidityCodec.cpp */; };
 		E38E1FDC0D25F9FD00618676 /* WAVcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16390D25F9FA00618676 /* WAVcodec.cpp */; };
-		E38E1FDD0D25F9FD00618676 /* WAVPackcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E163D0D25F9FA00618676 /* WAVPackcodec.cpp */; };
 		E38E1FDF0D25F9FD00618676 /* YMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16410D25F9FA00618676 /* YMCodec.cpp */; };
 		E38E1FE50D25F9FD00618676 /* ssrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16560D25F9FA00618676 /* ssrc.cpp */; };
 		E38E1FE70D25F9FD00618676 /* LinuxRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E165B0D25F9FA00618676 /* LinuxRenderer.cpp */; };
@@ -1295,7 +1302,6 @@
 		F5A1C92A0F6B06CF00A96ABD /* SPCCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16350D25F9FA00618676 /* SPCCodec.cpp */; };
 		F5A1C92B0F6B06CF00A96ABD /* TimidityCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16370D25F9FA00618676 /* TimidityCodec.cpp */; };
 		F5A1C92C0F6B06CF00A96ABD /* WAVcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16390D25F9FA00618676 /* WAVcodec.cpp */; };
-		F5A1C92D0F6B06CF00A96ABD /* WAVPackcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E163D0D25F9FA00618676 /* WAVPackcodec.cpp */; };
 		F5A1C92F0F6B06CF00A96ABD /* YMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16410D25F9FA00618676 /* YMCodec.cpp */; };
 		F5A1C9310F6B06CF00A96ABD /* ssrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16560D25F9FA00618676 /* ssrc.cpp */; };
 		F5A1C9320F6B06CF00A96ABD /* LinuxRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E165B0D25F9FA00618676 /* LinuxRenderer.cpp */; };
@@ -1761,8 +1767,6 @@
 		F5A2BD0F0F7AD92C0006ABA0 /* Zeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C280F77217400C25D29 /* Zeroconf.cpp */; };
 		F5A7A6211127980A0059D6AA /* posix-realtime-stub.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */; };
 		F5A7A6221127980A0059D6AA /* posix-realtime-stub.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */; };
-		F5A7A6F1112893330059D6AA /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F0112893330059D6AA /* libjsoncpp.a */; };
-		F5A7A6F2112893330059D6AA /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F0112893330059D6AA /* libjsoncpp.a */; };
 		F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
 		F5A7A703112893E50059D6AA /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
 		F5A7A85B112908F00059D6AA /* WebServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A859112908F00059D6AA /* WebServer.cpp */; };
@@ -1893,6 +1897,13 @@
 		18308CB51303370800AA309E /* stdio_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_utf8.h; sourceTree = "<group>"; };
 		183FDF8811AF0B0500B81E9C /* PluginSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginSource.cpp; sourceTree = "<group>"; };
 		183FDF8911AF0B0500B81E9C /* PluginSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginSource.h; sourceTree = "<group>"; };
+		18404D9C1396C13500863BBA /* Slingbox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Slingbox.cpp; sourceTree = "<group>"; };
+		18404D9D1396C13500863BBA /* Slingbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slingbox.h; sourceTree = "<group>"; };
+		18404DA51396C31B00863BBA /* SlingboxLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = SlingboxLib.a; path = lib/SlingboxLib/SlingboxLib.a; sourceTree = "<group>"; };
+		1840B74B13993D8A007C848B /* JSONVariantParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONVariantParser.cpp; sourceTree = "<group>"; };
+		1840B74C13993D8A007C848B /* JSONVariantParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONVariantParser.h; sourceTree = "<group>"; };
+		1840B75113993DA0007C848B /* JSONVariantWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONVariantWriter.cpp; sourceTree = "<group>"; };
+		1840B75213993DA0007C848B /* JSONVariantWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONVariantWriter.h; sourceTree = "<group>"; };
 		184C472D1296BC6E0006DB3E /* Service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Service.cpp; sourceTree = "<group>"; };
 		184C472E1296BC6E0006DB3E /* Service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Service.h; sourceTree = "<group>"; };
 		189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xbmcvfsmodule.cpp; sourceTree = "<group>"; };
@@ -2754,7 +2765,6 @@
 		E38E15FC0D25F9FA00618676 /* DllStSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllStSound.h; sourceTree = "<group>"; };
 		E38E15FD0D25F9FA00618676 /* DllTimidity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllTimidity.h; sourceTree = "<group>"; };
 		E38E15FE0D25F9FA00618676 /* DllVorbisfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllVorbisfile.h; sourceTree = "<group>"; };
-		E38E15FF0D25F9FA00618676 /* DllWAVPack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllWAVPack.h; sourceTree = "<group>"; };
 		E38E160A0D25F9FA00618676 /* FLACcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FLACcodec.cpp; sourceTree = "<group>"; };
 		E38E160B0D25F9FA00618676 /* FLACcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLACcodec.h; sourceTree = "<group>"; };
 		E38E160E0D25F9FA00618676 /* ICodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICodec.h; sourceTree = "<group>"; };
@@ -2774,8 +2784,6 @@
 		E38E16380D25F9FA00618676 /* TimidityCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimidityCodec.h; sourceTree = "<group>"; };
 		E38E16390D25F9FA00618676 /* WAVcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WAVcodec.cpp; sourceTree = "<group>"; };
 		E38E163A0D25F9FA00618676 /* WAVcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WAVcodec.h; sourceTree = "<group>"; };
-		E38E163D0D25F9FA00618676 /* WAVPackcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WAVPackcodec.cpp; sourceTree = "<group>"; };
-		E38E163E0D25F9FA00618676 /* WAVPackcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WAVPackcodec.h; sourceTree = "<group>"; };
 		E38E16410D25F9FA00618676 /* YMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = YMCodec.cpp; sourceTree = "<group>"; };
 		E38E16420D25F9FA00618676 /* YMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YMCodec.h; sourceTree = "<group>"; };
 		E38E16560D25F9FA00618676 /* ssrc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ssrc.cpp; sourceTree = "<group>"; };
@@ -3729,7 +3737,6 @@
 		F5A1CBD20F6B06CF00A96ABD /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "posix-realtime-stub.c"; sourceTree = "<group>"; };
 		F5A7A6201127980A0059D6AA /* posix-realtime-stub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "posix-realtime-stub.h"; sourceTree = "<group>"; };
-		F5A7A6F0112893330059D6AA /* libjsoncpp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjsoncpp.a; path = lib/jsoncpp/src/lib_json/libjsoncpp.a; sourceTree = "<group>"; };
 		F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnnouncementManager.cpp; sourceTree = "<group>"; };
 		F5A7A701112893E50059D6AA /* AnnouncementManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnouncementManager.h; sourceTree = "<group>"; };
 		F5A7A859112908F00059D6AA /* WebServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WebServer.cpp; sourceTree = "<group>"; };
@@ -3872,7 +3879,6 @@
 				F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
 				43352CEE1071634600706B8A /* libsquish.a in Frameworks */,
 				F5DC888B110A654000EE1B15 /* libapetag.a in Frameworks */,
-				F5A7A6F1112893330059D6AA /* libjsoncpp.a in Frameworks */,
 				F56C8CE2131F5DAF000AD0F6 /* libc.dylib in Frameworks */,
 				F56C8CE7131F5DC6000AD0F6 /* libz.dylib in Frameworks */,
 				F56C8CEA131F5DCC000AD0F6 /* libm.dylib in Frameworks */,
@@ -3880,6 +3886,7 @@
 				F56C8CF0131F5DED000AD0F6 /* libxml2.dylib in Frameworks */,
 				F56C8CF3131F5DFD000AD0F6 /* libiconv.dylib in Frameworks */,
 				F56C8CF6131F5E0B000AD0F6 /* libncurses.dylib in Frameworks */,
+				18404DA61396C31B00863BBA /* SlingboxLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3903,7 +3910,6 @@
 				F5A1CBBB0F6B06CF00A96ABD /* DiskArbitration.framework in Frameworks */,
 				F59879090FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
 				F5DC888C110A654000EE1B15 /* libapetag.a in Frameworks */,
-				F5A7A6F2112893330059D6AA /* libjsoncpp.a in Frameworks */,
 				F56C8CE3131F5DAF000AD0F6 /* libc.dylib in Frameworks */,
 				F56C8CE8131F5DC6000AD0F6 /* libz.dylib in Frameworks */,
 				F56C8CEB131F5DCC000AD0F6 /* libm.dylib in Frameworks */,
@@ -3914,6 +3920,7 @@
 				F5B5D64D133FC2C1007A4B4C /* libsquish.a in Frameworks */,
 				F5B5D64E133FC2E7007A4B4C /* librtv.a in Frameworks */,
 				F5B5D650133FC312007A4B4C /* libxdaap.a in Frameworks */,
+				18404E711396E06C00863BBA /* SlingboxLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5515,8 +5522,6 @@
 				E38E16380D25F9FA00618676 /* TimidityCodec.h */,
 				E38E16390D25F9FA00618676 /* WAVcodec.cpp */,
 				E38E163A0D25F9FA00618676 /* WAVcodec.h */,
-				E38E163D0D25F9FA00618676 /* WAVPackcodec.cpp */,
-				E38E163E0D25F9FA00618676 /* WAVPackcodec.h */,
 				E38E16410D25F9FA00618676 /* YMCodec.cpp */,
 				E38E16420D25F9FA00618676 /* YMCodec.h */,
 			);
@@ -5730,6 +5735,8 @@
 				F5A7B37D113AFB900059D6AA /* SFTPDirectory.h */,
 				E38E17510D25F9FA00618676 /* SIDFileDirectory.cpp */,
 				E38E17520D25F9FA00618676 /* SIDFileDirectory.h */,
+				18404D9C1396C13500863BBA /* Slingbox.cpp */,
+				18404D9D1396C13500863BBA /* Slingbox.h */,
 				E38E17530D25F9FA00618676 /* SmartPlaylistDirectory.cpp */,
 				E38E17540D25F9FA00618676 /* SmartPlaylistDirectory.h */,
 				E38E17560D25F9FA00618676 /* SMBDirectory.h */,
@@ -5877,7 +5884,6 @@
 				E38E15FC0D25F9FA00618676 /* DllStSound.h */,
 				E38E15FD0D25F9FA00618676 /* DllTimidity.h */,
 				E38E15FE0D25F9FA00618676 /* DllVorbisfile.h */,
-				E38E15FF0D25F9FA00618676 /* DllWAVPack.h */,
 				18B7CA0212944A8E009E7A26 /* tinyXML */,
 				E38E18820D25F9FA00618676 /* libexif */,
 				E38E196D0D25F9FB00618676 /* libhdhomerun */,
@@ -5886,7 +5892,6 @@
 				E38E1A130D25F9FB00618676 /* libRTV */,
 				F5E55E601076B34F006E788A /* libsquish */,
 				E38E1A550D25F9FB00618676 /* libUPnP */,
-				E38E1C780D25F9FC00618676 /* libXBMS */,
 				E38E1C840D25F9FC00618676 /* libXDAAP */,
 				E38E1CE40D25F9FC00618676 /* UnrarXLib */,
 			);
@@ -6523,13 +6528,6 @@
 			path = Xml1;
 			sourceTree = "<group>";
 		};
-		E38E1C780D25F9FC00618676 /* libXBMS */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = libXBMS;
-			sourceTree = "<group>";
-		};
 		E38E1C840D25F9FC00618676 /* libXDAAP */ = {
 			isa = PBXGroup;
 			children = (
@@ -6797,6 +6795,10 @@
 				F57B6F7E1071B8B500079ACB /* JobManager.cpp */,
 				F57B6F7F1071B8B500079ACB /* JobManager.h */,
 				7CAA205B107AFC280096DE39 /* Job.h */,
+				1840B74B13993D8A007C848B /* JSONVariantParser.cpp */,
+				1840B74C13993D8A007C848B /* JSONVariantParser.h */,
+				1840B75113993DA0007C848B /* JSONVariantWriter.cpp */,
+				1840B75213993DA0007C848B /* JSONVariantWriter.h */,
 				E38E1E550D25F9FD00618676 /* LCD.cpp */,
 				E38E1E560D25F9FD00618676 /* LCD.h */,
 				E38E1E5B0D25F9FD00618676 /* log.cpp */,
@@ -6882,10 +6884,10 @@
 			isa = PBXGroup;
 			children = (
 				F5DC888A110A654000EE1B15 /* libapetag.a */,
-				F5A7A6F0112893330059D6AA /* libjsoncpp.a */,
 				43352CED1071634600706B8A /* libsquish.a */,
 				E38E256C0D263A1C00618676 /* librtv.a */,
 				E38E25680D2639F100618676 /* libxdaap.a */,
+				18404DA51396C31B00863BBA /* SlingboxLib.a */,
 			);
 			name = "internal libs";
 			sourceTree = "<group>";
@@ -7298,7 +7300,6 @@
 				E38E1FDA0D25F9FD00618676 /* SPCCodec.cpp in Sources */,
 				E38E1FDB0D25F9FD00618676 /* TimidityCodec.cpp in Sources */,
 				E38E1FDC0D25F9FD00618676 /* WAVcodec.cpp in Sources */,
-				E38E1FDD0D25F9FD00618676 /* WAVPackcodec.cpp in Sources */,
 				E38E1FDF0D25F9FD00618676 /* YMCodec.cpp in Sources */,
 				E38E1FE50D25F9FD00618676 /* ssrc.cpp in Sources */,
 				E38E1FE70D25F9FD00618676 /* LinuxRenderer.cpp in Sources */,
@@ -8085,6 +8086,9 @@
 				18ACF84313596C9B00B67371 /* RecentlyAddedJob.cpp in Sources */,
 				C807114D135DB5CC002F601B /* InputOperations.cpp in Sources */,
 				C8EC5D0E1369519D00CCC10D /* XBMC_keytable.cpp in Sources */,
+				18404D9E1396C13500863BBA /* Slingbox.cpp in Sources */,
+				1840B74D13993D8A007C848B /* JSONVariantParser.cpp in Sources */,
+				1840B75313993DA0007C848B /* JSONVariantWriter.cpp in Sources */,
 				326E0DF2138D800F002DA457 /* AEConvert.cpp in Sources */,
 				326E0DF3138D800F002DA457 /* AEFactory.cpp in Sources */,
 				326E0DF4138D800F002DA457 /* AEPackIEC958.cpp in Sources */,
@@ -8194,7 +8198,6 @@
 				F5A1C92A0F6B06CF00A96ABD /* SPCCodec.cpp in Sources */,
 				F5A1C92B0F6B06CF00A96ABD /* TimidityCodec.cpp in Sources */,
 				F5A1C92C0F6B06CF00A96ABD /* WAVcodec.cpp in Sources */,
-				F5A1C92D0F6B06CF00A96ABD /* WAVPackcodec.cpp in Sources */,
 				F5A1C92F0F6B06CF00A96ABD /* YMCodec.cpp in Sources */,
 				F5A1C9310F6B06CF00A96ABD /* ssrc.cpp in Sources */,
 				F5A1C9320F6B06CF00A96ABD /* LinuxRenderer.cpp in Sources */,
@@ -8979,6 +8982,9 @@
 				43EA4297136C1D9E002C82A5 /* RenderCapture.cpp in Sources */,
 				43EA429B136C1E2F002C82A5 /* xbmcvfsmodule.cpp in Sources */,
 				43EA42B0136C2274002C82A5 /* InputOperations.cpp in Sources */,
+				18404E701396E05D00863BBA /* Slingbox.cpp in Sources */,
+				1840B74E13993D8A007C848B /* JSONVariantParser.cpp in Sources */,
+				1840B75413993DA0007C848B /* JSONVariantWriter.cpp in Sources */,
 				326E0E10138D800F002DA457 /* AEConvert.cpp in Sources */,
 				326E0E11138D800F002DA457 /* AEFactory.cpp in Sources */,
 				326E0E12138D800F002DA457 /* AEPackIEC958.cpp in Sources */,
@@ -9070,6 +9076,7 @@
 					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
+					"\"$(SRCROOT)/lib/SlingboxLib\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -9091,6 +9098,7 @@
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
+					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -9159,6 +9167,7 @@
 					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
+					"\"$(SRCROOT)/lib/SlingboxLib\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -9180,6 +9189,7 @@
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
+					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -9306,6 +9316,7 @@
 					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
+					"\"$(SRCROOT)/lib/SlingboxLib\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -9327,6 +9338,7 @@
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
+					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -9396,6 +9408,7 @@
 					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
+					"\"$(SRCROOT)/lib/SlingboxLib\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -9417,6 +9430,7 @@
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
+					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);

@@ -27,7 +27,6 @@
 #include <iostream>
 #include "ITransportLayer.h"
 #include "interfaces/IAnnouncer.h"
-#include "jsoncpp/include/json/json.h"
 #include "JSONUtils.h"
 #include "JSONServiceDescription.h"
 
@@ -64,22 +63,21 @@ namespace JSONRPC
      */
     static CStdString MethodCall(const CStdString &inputString, ITransportLayer *transport, IClient *client);
 
-    static JSON_STATUS Introspect(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS Version(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS Permission(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS Ping(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS GetNotificationFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS SetNotificationFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS NotifyAll(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS Introspect(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
+    static JSON_STATUS Version(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
+    static JSON_STATUS Permission(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
+    static JSON_STATUS Ping(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
+    static JSON_STATUS GetNotificationFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
+    static JSON_STATUS SetNotificationFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
+    static JSON_STATUS NotifyAll(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
   
   private:
     static void setup();
-    static bool HandleMethodCall(Json::Value& request, Json::Value& response, ITransportLayer *transport, IClient *client);
-    static inline bool IsProperJSONRPC(const Json::Value& inputroot);
+    static bool HandleMethodCall(const CVariant& request, CVariant& response, ITransportLayer *transport, IClient *client);
+    static inline bool IsProperJSONRPC(const CVariant& inputroot);
 
-    inline static void BuildResponse(const Json::Value& request, JSON_STATUS code, const Json::Value& result, Json::Value& response);
+    inline static void BuildResponse(const CVariant& request, JSON_STATUS code, const CVariant& result, CVariant& response);
 
-    static JsonRpcMethodMap m_methodMaps[];
     static bool m_initialized;
   };
 }

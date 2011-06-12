@@ -91,6 +91,9 @@ openmax_not_found="== Could not find libnvomx. OpenMax support disabled. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
 librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
+libnfs_not_found="== Could not find libnfs. NFS support disabled. =="
+libnfs_disabled="== NFS support disabled. =="
+
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -228,6 +231,13 @@ AC_ARG_ENABLE([rtmp],
   [enable RTMP support via librtmp (default is auto)])],
   [use_librtmp=$enableval],
   [use_librtmp=auto])
+
+AC_ARG_ENABLE([nfs],
+  [AS_HELP_STRING([--enable-nfs],
+  [enable NFS support via libnfs (default is auto)])],
+  [use_libnfs=$enableval],
+  [use_libnfs=auto])
+
 
 AC_ARG_ENABLE([ffmpeg_libvorbis],
   [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
@@ -469,7 +479,7 @@ elif test "$use_arch" = "arm"; then
     SAVE_CFLAGS="$CFLAGS"
     CFLAGS="-mfpu=vfpv3-d16"
     AC_COMPILE_IFELSE(
-      [int foo;],
+      [AC_LANG_SOURCE([int foo;])],
       [ CFLAGS="$SAVE_CFLAGS -Wno-psabi -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
         CXXFLAGS="$CXXFLAGS -Wno-psabi -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
         FFMPEG_EXTRACFLAGS+=" -mtune=cortex-a9 -mfpu=vfpv3-d16"
@@ -569,6 +579,11 @@ if test $MYSQL_CONFIG = "yes"; then
 else
   AC_MSG_ERROR($missing_program)
 fi
+AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([mpeg2dec/mpeg2.h],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library),
+  AC_INCLUDES_DEFAULT()
+  [#include <mpeg2dec/mpeg2.h>])
 AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
@@ -576,7 +591,7 @@ AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([wavpack/wavpack.h],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([curl/curl.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
@@ -590,6 +605,7 @@ AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
 AC_CHECK_LIB([smbclient],   [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
+AC_CHECK_LIB([yajl],        [main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
   [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -619,9 +635,6 @@ PKG_CHECK_MODULES([SAMPLERATE], [samplerate],
 PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
   [INCLUDES="$INCLUDES $FREETYPE2_CFLAGS"; LIBS="$LIBS $FREETYPE2_LIBS"],
   AC_MSG_ERROR($missing_library))
-PKG_CHECK_MODULES([CURL],       [libcurl],
-  [INCLUDES="$INCLUDES $CURL_CFLAGS"; LIBS="$LIBS $CURL_LIBS"],
-  AC_MSG_ERROR($missing_library))
 
 # check for libbluray
 AS_CASE([x$use_libbluray],
@@ -646,27 +659,18 @@ AS_CASE([x$use_libbluray],
 
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
-  AC_CHECK_HEADER([ass/ass.h],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_HEADER([mpeg2dec/mpeg2.h],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_HEADER([mpeg2dec/mpeg2convert.h],, AC_MSG_ERROR($missing_library), AC_INCLUDES_DEFAULT()
-    [#include <mpeg2dec/mpeg2.h>])
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   if test "$use_arch" != "arm"; then
     AC_CHECK_LIB([SDL_mixer],[main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
   fi
 else
-  AC_CHECK_LIB([ass],        [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer],  [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dl],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
   AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image],  [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([modplug],    [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([wavpack],    [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([mpeg2],       [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
 
   PKG_CHECK_MODULES([ENCA],  [enca],
     [INCLUDES="$INCLUDES $ENCA_CFLAGS"; LIBS="$LIBS $ENCA_LIBS"],
@@ -686,24 +690,6 @@ else
   PKG_CHECK_MODULES([SDL],   [sdl],
     [INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"],
     AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([MAD],   [mad],
-    [INCLUDES="$INCLUDES $MAD_CFLAGS"; LIBS="$LIBS $MAD_LIBS"],
-    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([OGG],   [ogg],
-    [INCLUDES="$INCLUDES $OGG_CFLAGS"; LIBS="$LIBS $OGG_LIBS"],
-    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([VORBIS],[vorbis],
-    [INCLUDES="$INCLUDES $VORBIS_CFLAGS"; LIBS="$LIBS $VORBIS_LIBS"],
-    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([VORBISENC],[vorbisenc],
-    [INCLUDES="$INCLUDES $VORBISENC_CFLAGS"; LIBS="$LIBS $VORBISENC_LIBS"],
-    AC_MSG_ERROR($missing_library))
-fi
-
-# This is used to skip some submodule configuration on non-Apple hardware
-HOST_NOT_APPLE=1
-if [[ "$host_vendor" = "apple" ]]; then
-  HOST_NOT_APPLE=0
 fi
 
 XB_FIND_SONAME([MAD],         [mad])
@@ -714,11 +700,8 @@ XB_FIND_SONAME([VORBIS],      [vorbis])
 XB_FIND_SONAME([VORBISENC],   [vorbisenc])
 XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([MODPLUG],     [modplug])
-if test "$host_vendor" = "apple"; then
-  XB_FIND_SONAME([ASS],       [ass])
-  XB_FIND_SONAME([MPEG2],     [mpeg2])
-  XB_FIND_SONAME([WAVPACK],   [wavpack])
-fi
+XB_FIND_SONAME([ASS],         [ass])
+XB_FIND_SONAME([MPEG2],       [mpeg2])
 
 # WebServer
 if test "$use_webserver" = "yes"; then
@@ -852,6 +835,26 @@ else
   AC_MSG_NOTICE($librtmp_disabled)
 fi
 
+# libnfs
+if test "$use_libnfs" != "no"; then
+  AC_CHECK_HEADERS([nfsc/libnfs.h],,
+   [if test "$use_libnfs" = "yes"; then
+      AC_MSG_ERROR($libnfs_not_found)
+    elif test "$use_libnfs" != "no"; then
+      AC_MSG_NOTICE($libnfs_not_found)
+      use_libnfs="no"
+    fi
+   ])
+  if test "$use_libnfs" != "no"; then
+    XB_FIND_SONAME([NFS], [nfs], [use_libnfs])
+  fi
+  if test "$use_libnfs" != "no"; then
+    AC_DEFINE([HAVE_LIBNFS], [1], [Whether to use libnfs library.])
+  fi
+else
+  AC_MSG_NOTICE($libnfs_disabled)
+fi
+
 ### External libraries checks
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
@@ -907,8 +910,8 @@ if test "$use_external_ffmpeg" = "yes"; then
   if test "x$use_vdpau" != "xno"; then
     AC_LANG_PUSH([C++])
     AC_LINK_IFELSE(
-      [ #include <libavutil/pixfmt.h>
-        int main() { PixelFormat format = PIX_FMT_VDPAU_MPEG4; }],
+      [AC_LANG_SOURCE([ #include <libavutil/pixfmt.h>
+        int main() { PixelFormat format = PIX_FMT_VDPAU_MPEG4; }])],
       [AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1],
       [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])],)
     AC_LANG_POP([C++])
@@ -1014,10 +1017,10 @@ if test "x$use_crystalhd" != "xno"; then
       CFLAGS="-llibcrystalhd"
       # check for new crystalhd lib
       AC_COMPILE_IFELSE(
-        [ #define __LINUX_USER__
+        [AC_LANG_SOURCE([ #define __LINUX_USER__
           #include <libcrystalhd/bc_dts_types.h>
           #include <libcrystalhd/bc_dts_defs.h>
-          PBC_INFO_CRYSTAL bCrystalInfo;],
+          PBC_INFO_CRYSTAL bCrystalInfo;])],
         [ AC_DEFINE([HAVE_LIBCRYSTALHD], [2], [Define to 2 if you have the 'New Broadcom Crystal HD' library.]) ], 
         [ AC_DEFINE([HAVE_LIBCRYSTALHD], [1], [Define to 1 if you have the 'Old Broadcom Crystal HD' library.]) ])
       CFLAGS="$SAVE_CFLAGS"
@@ -1383,6 +1386,13 @@ else
   final_message="$final_message\n  libRTMP support:\tNo"
 fi
 
+if test "$use_libnfs" != "no"; then
+  final_message="$final_message\n  libnfs support:\tYes"
+else
+  final_message="$final_message\n  libnfs support:\tNo"
+fi
+
+
 if test "$use_optical_drive" = "yes"; then
   final_message="$final_message\n  Optical drive:\tYes"
 else
@@ -1434,7 +1444,6 @@ OUTPUT_FILES="Makefile \
     lib/libXDAAP/Makefile \
     lib/cmyth/Makefile \
     lib/libhdhomerun/Makefile \
-    lib/jsoncpp/src/lib_json/Makefile \
     lib/libsquish/Makefile \
     lib/libid3tag/Makefile \
     lib/cximage-6.0/Makefile \
@@ -1484,7 +1493,6 @@ AC_SUBST(LIBMAD_BASENAME)
 AC_SUBST(LIBOGG_BASENAME)
 AC_SUBST(LIBVORBISENC_BASENAME)
 AC_SUBST(LIBVORBIS_BASENAME)
-AC_SUBST(LIBWAVPACK_BASENAME)
 AC_SUBST(LIBASS_BASENAME)
 AC_SUBST(LIBMEPG2_BASENAME)
 AC_SUBST_FILE(XBMC_STANDALONE_SH_PULSE)

@@ -23,7 +23,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); patch -p1 < ../01-make_shared_lib_for_darwin-tag2.3.patch
 
 $(LIBDYLIB): $(SOURCE)
-	make SYS=darwin prefix=$(PREFIX) XCFLAGS="$(CFLAGS)" XLDFLAGS="$(LDFLAGS)" -C $(SOURCE)/librtmp
+	make SYS=darwin prefix=$(PREFIX) XCFLAGS="$(CFLAGS)" XLDFLAGS="$(LDFLAGS)" -j $(MAKE_JOBS) -C $(SOURCE)/librtmp
 
 .installed:
 	make SYS=darwin prefix=$(PREFIX) -C $(SOURCE)/librtmp install

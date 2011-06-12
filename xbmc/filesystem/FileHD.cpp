@@ -111,6 +111,7 @@ bool CFileHD::Exists(const CURL& url)
 
 #ifdef _WIN32
   CStdStringW strWFile;
+  URIUtils::RemoveSlashAtEnd(strFile);
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
   return (_wstat64(strWFile.c_str(), &buffer)==0);
 #else

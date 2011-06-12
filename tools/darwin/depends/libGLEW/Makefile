@@ -28,7 +28,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); patch -p0 < ../02-Makefile.darwin.patch
 
 $(LIBDYLIB): $(SOURCE)
-	make -C $(SOURCE)
+	make -j $(MAKE_JOBS) -C $(SOURCE)
 
 .installed:
 	make -C $(SOURCE) install

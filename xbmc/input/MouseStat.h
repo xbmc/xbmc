@@ -76,7 +76,13 @@ public:
   void SetState(MOUSE_STATE state) { m_pointerState = state; };
   void SetEnabled(bool enabled = true);
   MOUSE_STATE GetState() const { return m_pointerState; };
-  CAction GetAction() const;
+  uint32_t GetAction() const;
+
+  int GetHold(int ButtonID) const;
+  inline int GetX(void) const { return m_mouseState.x; }
+  inline int GetY(void) const { return m_mouseState.y; }
+  inline int GetDX(void) const { return m_mouseState.dx; }
+  inline int GetDY(void) const { return m_mouseState.dy; }
 
 private:
   /*! \brief Holds information regarding a particular mouse button state
