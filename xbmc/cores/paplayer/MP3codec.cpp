@@ -341,7 +341,7 @@ int MP3Codec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     return READ_ERROR;
 
   int move;
-  if (m_eof && !m_Decoding || m_OutputBufferPos < OUTPUTFRAMESIZE)
+  if ((m_eof && !m_Decoding) || m_OutputBufferPos < OUTPUTFRAMESIZE)
     move = m_OutputBufferPos;
   else
     move = m_OutputBufferPos - OUTPUTFRAMESIZE;
