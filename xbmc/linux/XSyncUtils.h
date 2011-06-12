@@ -36,11 +36,6 @@
 #define WAIT_ABANDONED         ((STATUS_ABANDONED_WAIT_0 ) + 0 )
 #define WAIT_ABANDONED_0       ((STATUS_ABANDONED_WAIT_0 ) + 0 )
 
-HANDLE  WINAPI CreateMutex( LPSECURITY_ATTRIBUTES lpMutexAttributes,  BOOL bInitialOwner,  LPCTSTR lpName );
-bool  InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner);
-bool  DestroyRecursiveMutex(HANDLE hMutex);
-bool  WINAPI ReleaseMutex( HANDLE hMutex );
-
 void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer);
 
 DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds );

@@ -4,7 +4,6 @@ SRCS=Atomics.cpp \
      LockFree.cpp \
      Semaphore.cpp \
      Thread.cpp \
-     XBMC_mutex.cpp \
 
 LIB=threads.a
 
