@@ -27,6 +27,7 @@
 #include "Application.h"
 #include "input/XBMC_vkeys.h"
 #include "input/MouseStat.h"
+#include "input/KeymapLoader.h"
 #include "storage/MediaManager.h"
 #include "windowing/WindowingFactory.h"
 #include <dbt.h>
@@ -36,6 +37,7 @@
 #include "guilib/GUIControl.h"       // for EVENT_RESULT
 #include "powermanagement/windows/Win32PowerSyscall.h"
 #include "Shlobj.h"
+#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 
 #ifdef _WIN32
@@ -649,13 +651,15 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       break;
     case WM_DEVICECHANGE:
       PDEV_BROADCAST_DEVICEINTERFACE b = (PDEV_BROADCAST_DEVICEINTERFACE) lParam;
+      CStdString dbcc_name(b->dbcc_name);
+      dbcc_name = dbcc_name.Mid(dbcc_name.find_last_of('\\')+1, dbcc_name.find_last_of('#') - dbcc_name.find_last_of('\\'));
       switch (wParam)
       {
         case DBT_DEVICEARRIVAL:
-          CLog::Log(LOGDEBUG, "HID Device Arrived");
+          CKeymapLoader().DeviceAdded(dbcc_name);
           break;
         case DBT_DEVICEREMOVECOMPLETE:
-          CLog::Log(LOGDEBUG, "HID Device Removed");
+          CKeymapLoader().DeviceRemoved(dbcc_name);
           break;
         case DBT_DEVNODES_CHANGED:
           //CLog::Log(LOGDEBUG, "HID Device Changed");

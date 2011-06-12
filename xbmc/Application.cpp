@@ -466,7 +466,6 @@ bool CApplication::Create()
    * can now be caught using c++ try catch */
   win32_exception::install_handler();
 
-  CWIN32USBScan();
 #endif
 
   // only the InitDirectories* for the current platform should return true
@@ -600,6 +599,10 @@ bool CApplication::Create()
   }
 
   g_powerManager.Initialize();
+
+#ifdef _WIN32
+  CWIN32USBScan();
+#endif
 
   CLog::Log(LOGNOTICE, "load settings...");
 
