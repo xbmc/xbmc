@@ -1,6 +1,5 @@
 SRCS=Atomics.cpp \
      Event.cpp \
-     Mutex.cpp \
      LockFree.cpp \
      Semaphore.cpp \
      Thread.cpp \
