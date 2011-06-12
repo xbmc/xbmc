@@ -205,7 +205,7 @@ namespace JSONRPC
     /*!
      \brief Definition of the return value
      */
-    CVariant returns;
+    JSONSchemaTypeDefinition returns;
   } JsonRpcMethod;
 
   /*! 
@@ -292,7 +292,7 @@ namespace JSONRPC
      \param printMetadata Whether to print XBMC specific data or not
      \param filterByTransport Whether to filter by transport or not
      */
-    static void Print(CVariant &result, ITransportLayer *transport, IClient *client, bool printDescriptions, bool printMetadata, bool filterByTransport);
+    static JSON_STATUS Print(CVariant &result, ITransportLayer *transport, IClient *client, bool printDescriptions = true, bool printMetadata = false, bool filterByTransport = true, std::string filterByName = "", std::string filterByType = "", bool printReferences = true);
 
     /*!
      \brief Checks the given parameters from the request against the
@@ -322,15 +322,18 @@ namespace JSONRPC
     static bool parseMethod(const CVariant &value, JsonRpcMethod &method);
     static bool parseParameter(CVariant &value, JSONSchemaTypeDefinition &parameter);
     static bool parseTypeDefinition(const CVariant &value, JSONSchemaTypeDefinition &type, bool isParameter);
-    static void parseReturn(const CVariant &value, CVariant &returns);
+    static void parseReturn(const CVariant &value, JSONSchemaTypeDefinition &returns);
+    static JSONSchemaType parseJSONSchemaType(const CVariant &value);
     static void addReferenceTypeDefinition(JSONSchemaTypeDefinition &typeDefinition);
+
+    static void getReferencedTypes(const JSONSchemaTypeDefinition &type, std::vector<std::string> &referencedTypes);
 
     class CJsonRpcMethodMap
     {
     public:
       CJsonRpcMethodMap();
 
-      void add(JsonRpcMethod &method);
+      void add(const JsonRpcMethod &method);
 
       typedef std::map<std::string, JsonRpcMethod>::const_iterator JsonRpcMethodIterator;
       JsonRpcMethodIterator begin() const;

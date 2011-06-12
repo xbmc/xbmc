@@ -481,6 +481,8 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     pItem->SetIconImage("DefaultAddSource.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformated(true);
+    pItem->m_bIsFolder = true;
+    pItem->SetSpecialSort(SORT_ON_BOTTOM);
     m_vecItems[iList]->Add(pItem);
   }
   else if (items.IsEmpty() || g_guiSettings.GetBool("filelists.showparentdiritems"))
