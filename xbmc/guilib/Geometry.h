@@ -27,7 +27,7 @@
 #else
 #define XBMC_FORCE_INLINE
 #endif
-
+#include <algorithm>
 
 class CPoint
 {
@@ -126,11 +126,11 @@ public:
       *this = rect;
     else if (!rect.IsEmpty())
     {
-      x1 = x1 < rect.x1 ? x1 : rect.x1;
-      y1 = y1 < rect.y1 ? y1 : rect.y1;
+      x1 = std::min(x1,rect.x1);
+      y1 = std::min(y1,rect.y1);
 
-      x2 = x2 > rect.x2 ? x2 : rect.x2;
-      y2 = y2 > rect.y2 ? y2 : rect.y2;
+      x2 = std::max(x2,rect.x2);
+      y2 = std::max(y2,rect.y2);
     }
 
     return *this;
