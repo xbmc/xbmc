@@ -51,6 +51,7 @@ void CVideoInfoTag::Reset()
   m_strVotes = "";
   m_cast.clear();
   m_strSet = "";
+  m_strSetId = "";
   m_strFile = "";
   m_strPath = "";
   m_strIMDBNumber = "";
@@ -85,6 +86,7 @@ void CVideoInfoTag::Reset()
   m_parentPathID = -1;
   m_resumePoint.Reset();
   m_resumePoint.type = CBookmark::RESUME;
+  m_iIdShow = -1;
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo)
@@ -321,6 +323,8 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_parentPathID;
     ar << m_resumePoint.timeInSeconds;
     ar << m_resumePoint.totalTimeInSeconds;
+    ar << m_strSetId;
+    ar << m_iIdShow;
   }
   else
   {
@@ -390,6 +394,8 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_parentPathID;
     ar >> m_resumePoint.timeInSeconds;
     ar >> m_resumePoint.totalTimeInSeconds;
+    ar >> m_strSetId;
+    ar >> m_iIdShow;
   }
 }
 
@@ -450,6 +456,8 @@ void CVideoInfoTag::Serialize(CVariant& value)
   resume["position"] = (float)m_resumePoint.timeInSeconds;
   resume["total"] = (float)m_resumePoint.totalTimeInSeconds;
   value["resume"] = resume;
+  value["setid"] = m_strSetId;
+  value["tvshowid"] = m_iIdShow;
 }
 
 const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
