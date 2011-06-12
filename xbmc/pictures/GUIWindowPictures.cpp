@@ -254,10 +254,12 @@ bool CGUIWindowPictures::OnClick(int iItem)
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return true;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
-  if (pItem->IsCBZ() || pItem->IsCBR())
+  if (pItem->IsCBArchive() || pItem->IsCBZ() || pItem->IsCBR())
   {
     CStdString strComicPath;
-    if (pItem->IsCBZ())
+    if (pItem->IsCBArchive())
+      URIUtils::CreateArchivePath(strComicPath, "archive", pItem->m_strPath, "");
+    else if (pItem->IsCBZ())
       URIUtils::CreateArchivePath(strComicPath, "zip", pItem->m_strPath, "");
     else
       URIUtils::CreateArchivePath(strComicPath, "rar", pItem->m_strPath, "");
@@ -315,7 +317,8 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   for (int i = 0; i < (int)m_vecItems->Size();++i)
   {
     CFileItemPtr pItem = m_vecItems->Get(i);
-    if (!pItem->m_bIsFolder && !(URIUtils::IsRAR(pItem->m_strPath) || 
+    if (!pItem->m_bIsFolder && !(URIUtils::IsArchive(pItem->m_strPath) ||
+          URIUtils::IsRAR(pItem->m_strPath) ||
           URIUtils::IsZIP(pItem->m_strPath)) && (pItem->IsPicture() || (
                                 g_guiSettings.GetBool("pictures.showvideos") &&
                                 pItem->IsVideo())))
@@ -428,7 +431,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       if (item)
       {
-        if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
+        if (!(item->m_bIsFolder || item->IsArchive() || item->IsZIP() || item->IsRAR() || item->IsCBArchive() || item->IsCBZ() || item->IsCBR()))
           buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
         buttons.Add(CONTEXT_BUTTON_VIEW_SLIDESHOW, item->m_bIsFolder ? 13317 : 13422);      // View Slideshow
         if (item->m_bIsFolder)
@@ -539,7 +542,7 @@ void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
     {
       CFileItemPtr pItem = playlist[i];
       //CLog::Log(LOGDEBUG,"-- playlist item: %s", pItem->m_strPath.c_str());
-      if (pItem->IsPicture() && !(pItem->IsZIP() || pItem->IsRAR() || pItem->IsCBZ() || pItem->IsCBR()))
+      if (pItem->IsPicture() && !(pItem->IsArchive() || pItem->IsZIP() || pItem->IsRAR() || pItem->IsCBArchive() || pItem->IsCBZ() || pItem->IsCBR()))
         pSlideShow->Add(pItem.get());
     }
 
@@ -553,7 +556,7 @@ void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
 void CGUIWindowPictures::OnInfo(int itemNumber)
 {
   CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
-  if (!item || item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() || !item->IsPicture())
+  if (!item || item->m_bIsFolder || item->IsArchive() || item->IsZIP() || item->IsRAR() || item->IsCBArchive() || item->IsCBZ() || item->IsCBR() || !item->IsPicture())
     return;
   CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)g_windowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
   if (pictureInfo)

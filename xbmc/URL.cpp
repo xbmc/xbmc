@@ -312,7 +312,10 @@ void CURL::Parse(const CStdString& strURL1)
   SetFileName(m_strFileName);
 
   /* decode urlencoding on this stuff */
-  if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") || m_strProtocol.Equals("musicsearch"))
+  if( m_strProtocol.Equals("archive")
+    || m_strProtocol.Equals("rar")
+    || m_strProtocol.Equals("zip")
+    || m_strProtocol.Equals("musicsearch"))
   {
     Decode(m_strHostName);
     // Validate it as it is likely to contain a filename
@@ -466,7 +469,7 @@ const CStdString& CURL::GetProtocolOptions() const
 const CStdString CURL::GetFileNameWithoutPath() const
 {
   // *.zip and *.rar store the actual zip/rar path in the hostname of the url
-  if ((m_strProtocol == "rar" || m_strProtocol == "zip") && m_strFileName.IsEmpty())
+  if ((m_strProtocol == "archive" || m_strProtocol == "rar" || m_strProtocol == "zip") && m_strFileName.IsEmpty())
     return URIUtils::GetFileName(m_strHostName);
 
   // otherwise, we've already got the filepath, so just grab the filename portion
@@ -554,7 +557,9 @@ CStdString CURL::GetWithoutUserDetails() const
 
   if (m_strHostName != "")
   {
-    if (m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip"))
+    if (m_strProtocol.Equals("archive")
+      || m_strProtocol.Equals("rar")
+      || m_strProtocol.Equals("zip"))
       strURL += CURL(m_strHostName).GetWithoutUserDetails();
     else
       strURL += m_strHostName;
@@ -616,7 +621,10 @@ CStdString CURL::GetWithoutFilename() const
 
   if (m_strHostName != "")
   {
-    if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") || m_strProtocol.Equals("musicsearch"))
+    if( m_strProtocol.Equals("archive")
+      || m_strProtocol.Equals("rar")
+      || m_strProtocol.Equals("zip")
+      || m_strProtocol.Equals("musicsearch"))
       strURL += URLEncodeInline(m_strHostName);
     else
       strURL += m_strHostName;

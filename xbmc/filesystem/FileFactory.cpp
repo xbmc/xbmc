@@ -55,6 +55,7 @@
 #ifdef HAS_FILESYSTEM_VTP
 #include "VTPFile.h"
 #endif
+#include "FileArchive.h"
 #include "FileZip.h"
 #ifdef HAS_FILESYSTEM_RAR
 #include "FileRar.h"
@@ -95,7 +96,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   CStdString strProtocol = url.GetProtocol();
   strProtocol.MakeLower();
 
-  if (strProtocol == "zip") return new CFileZip();
+  if (strProtocol == "archive") return new CFileArchive();
+  else if (strProtocol == "zip") return new CFileZip();
 #ifdef HAS_FILESYSTEM_RAR
   else if (strProtocol == "rar") return new CFileRar();
 #endif

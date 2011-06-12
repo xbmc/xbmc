@@ -704,7 +704,7 @@ int CXbmcHttp::xbmcGetMediaLocation(int numParas, CStdString paras[])
   // special locations
   bool bSpecial = false;
   CURL url(strLocation);
-  if (url.GetProtocol() == "rar" || url.GetProtocol() == "zip")
+  if (url.GetProtocol() == "archive" || url.GetProtocol() == "rar" || url.GetProtocol() == "zip")
     bSpecial = true;
   if (strType.Equals("music"))
   {

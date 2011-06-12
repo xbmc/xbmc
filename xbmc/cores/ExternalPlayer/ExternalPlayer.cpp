@@ -144,7 +144,7 @@ void CExternalPlayer::Process()
     // Unwind archive names
     CURL url(m_launchFilename);
     CStdString protocol = url.GetProtocol();
-    if (protocol == "zip" || protocol == "rar"/* || protocol == "iso9660" ??*/)
+    if (protocol == "archive" || protocol == "zip" || protocol == "rar"/* || protocol == "iso9660" ??*/)
     {
       mainFile = url.GetHostName();
       archiveContent = url.GetFileName();
