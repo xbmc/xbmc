@@ -709,12 +709,6 @@ extern "C" void WINAPI dllSleep(DWORD dwTime);
 extern "C" PVOID WINAPI dllEncodePointer(PVOID ptr);
 extern "C" PVOID WINAPI dllDecodePointer(PVOID ptr);
 
-typedef VOID (WINAPI *PFLS_CALLBACK_FUNCTION) (IN PVOID lpFlsData);
-
-extern "C" DWORD WINAPI dllFlsAlloc(PFLS_CALLBACK_FUNCTION lpCallback);
-extern "C" BOOL WINAPI dllFlsSetValue(DWORD dwFlsIndex, PVOID lpFlsData);
-extern "C" PVOID WINAPI dllFlsGetValue(DWORD dwFlsIndex);
-extern "C" BOOL WINAPI dllFlsFree(DWORD dwFlsIndex);
 extern "C" int WINAPI dllMultiByteToWideChar(UINT CodePage, DWORD dwFlags, LPCSTR lpMultiByteStr, int cbMultiByte, LPWSTR lpWideCharStr, int cchWideChar);
 extern "C" int WINAPI dllWideCharToMultiByte(UINT CodePage, DWORD dwFlags, LPCWSTR lpWideCharStr, int cchWideChar, LPSTR lpMultiByteStr, int cbMultiByte, LPCSTR lpDefaultChar, LPBOOL lpUsedDefaultChar);
 
