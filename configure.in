@@ -1079,6 +1079,11 @@ else
   fi
 fi
 
+# yajl version check (yajl_version.h was added in yajl 2.0)
+AC_CHECK_HEADERS([yajl/yajl_version.h], [], [
+AC_DEFINE(YAJL_MAJOR, 1, [yajl version 1])
+], [])
+
 # platform specific bin utilities
 if test "$host_vendor" != "apple" ; then
   AC_CHECK_PROG(HAVE_GAWK,gawk,"yes","no",)

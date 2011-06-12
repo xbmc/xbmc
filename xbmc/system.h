@@ -93,6 +93,7 @@
 #define HAS_LIBRTMP
 #define HAVE_LIBBLURAY
 #define HAS_ASAP_CODEC
+#define HAVE_YAJL_YAJL_VERSION_H
 #endif
 
 /*****************
