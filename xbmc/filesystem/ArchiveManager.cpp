@@ -29,8 +29,6 @@
 #include "Util.h"
 #include "XFileUtils.h"
 
-#include <archive.h>
-#include <archive_entry.h>
 #include <sys/stat.h>
 
 #define LIBARCHIVE_BLOCK_SIZE 10240
@@ -68,7 +66,7 @@ file_skip(struct archive *a, void *client_data, int64_t request)
   /* Let libarchive recover with read+discard. */
   if (errno == ESPIPE)
     return 0;
-  archive_set_error(a, errno, "Error seeking");
+  CLog::Log(LOGERROR, "CArchiveManager - %s: Error seeking", __FUNCTION__);
   return -1;
 }
 
@@ -133,6 +131,8 @@ CArchiveManager::CArchiveManager()
 CArchiveManager::~CArchiveManager()
 {
   m_archiveMap.clear();
+  if (m_dllLibArchive.IsLoaded())
+    m_dllLibArchive.Unload();
 }
 
 bool CArchiveManager::GetArchiveList(const CStdString &strPath,
@@ -206,6 +206,13 @@ bool CArchiveManager::CacheArchivedPath(const CStdString &strArchive,
   return true;
 }
 
+bool CArchiveManager::Load()
+{
+  if (!m_dllLibArchive.IsLoaded())
+    return m_dllLibArchive.Load();
+  return true;
+}
+
 bool CArchiveManager::libarchive_extract(const CStdString &strArchive,
                                          const CStdString &strPath,
                                          const CStdString &strPathInArchive)
@@ -220,12 +227,17 @@ bool CArchiveManager::libarchive_extract(const CStdString &strArchive,
 
   int flags = ARCHIVE_EXTRACT_PERM | ARCHIVE_EXTRACT_TIME;
 
-  a = archive_read_new();
-  archive_read_support_format_all(a);
-  archive_read_support_compression_all(a);
-  ext = archive_write_disk_new();
-  archive_write_disk_set_options(ext, flags);
-  archive_write_disk_set_standard_lookup(ext);
+  if (!Load())
+  {
+    CLog::Log(LOGERROR, "%s: Unable to load DllLibArchive.", __FUNCTION__);
+    return false;
+  }
+  a = m_dllLibArchive.archive_read_new();
+  m_dllLibArchive.archive_read_support_format_all(a);
+  m_dllLibArchive.archive_read_support_compression_all(a);
+  ext = m_dllLibArchive.archive_write_disk_new();
+  m_dllLibArchive.archive_write_disk_set_options(ext, flags);
+  m_dllLibArchive.archive_write_disk_set_standard_lookup(ext);
 
   CFile file;
   if (!file.Open(strArchive))
@@ -237,21 +249,21 @@ bool CArchiveManager::libarchive_extract(const CStdString &strArchive,
   struct mydata data;
   data.file = &file;
   data.buffer = calloc(1, LIBARCHIVE_BLOCK_SIZE);
-  r = archive_read_open2(a, &data, NULL, file_read, file_skip, file_close);
+  r = m_dllLibArchive.archive_read_open2(a, &data, NULL, file_read, file_skip, file_close);
   if (r != ARCHIVE_OK)
   {
-    CLog::Log(LOGERROR,"%s", archive_error_string(a));
+    CLog::Log(LOGERROR,"%s", m_dllLibArchive.archive_error_string(a));
     return false;
   }
   while (1)
   {
-    r = archive_read_next_header(a, &entry);
+    r = m_dllLibArchive.archive_read_next_header(a, &entry);
     if (r == ARCHIVE_EOF)
       break;
 
     /* Extract single file specified by strPathInArchive if defined */
     if (strPathInArchive.length() > 0 &&
-      strPathInArchive.compare(archive_entry_pathname(entry)) != 0)
+      strPathInArchive.compare(m_dllLibArchive.archive_entry_pathname(entry)) != 0)
       continue;
 
     /* Extract to path if strPath specified, otherwise extract to current
@@ -261,41 +273,41 @@ bool CArchiveManager::libarchive_extract(const CStdString &strArchive,
     {
       CStdString destpath(strPath);
       URIUtils::AddSlashAtEnd(destpath);
-      destpath.append(archive_entry_pathname(entry));
-      archive_entry_set_pathname(entry, destpath);
+      destpath.append(m_dllLibArchive.archive_entry_pathname(entry));
+      m_dllLibArchive.archive_entry_set_pathname(entry, destpath);
     }
     if (r != ARCHIVE_OK)
-      CLog::Log(LOGERROR,"%s", archive_error_string(a));
+      CLog::Log(LOGERROR,"%s", m_dllLibArchive.archive_error_string(a));
     if (r < ARCHIVE_WARN)
       return false;
-    r = archive_write_header(ext, entry);
+    r = m_dllLibArchive.archive_write_header(ext, entry);
     if (r != ARCHIVE_OK)
-      CLog::Log(LOGERROR,"%s", archive_error_string(ext));
-    else if (archive_entry_size(entry) > 0) {
+      CLog::Log(LOGERROR,"%s", m_dllLibArchive.archive_error_string(ext));
+    else if (m_dllLibArchive.archive_entry_size(entry) > 0) {
       while (1) {
-        r = archive_read_data_block(a, &buff, &size, &offset);
+        r = m_dllLibArchive.archive_read_data_block(a, &buff, &size, &offset);
         if (r == ARCHIVE_EOF)
           break;
-        r = archive_write_data_block(ext, buff, size, offset);
+        r = m_dllLibArchive.archive_write_data_block(ext, buff, size, offset);
         if (r != ARCHIVE_OK) {
-          CLog::Log(LOGERROR,"%s", archive_error_string(ext));
+          CLog::Log(LOGERROR,"%s", m_dllLibArchive.archive_error_string(ext));
           break;
         }
       }
       if (r < ARCHIVE_WARN)
         return false;
     }
-    r = archive_write_finish_entry(ext);
+    r = m_dllLibArchive.archive_write_finish_entry(ext);
     if (r != ARCHIVE_OK)
-      CLog::Log(LOGERROR,"%s", archive_error_string(ext));
+      CLog::Log(LOGERROR,"%s", m_dllLibArchive.archive_error_string(ext));
     if (r < ARCHIVE_WARN)
       return false;
     if (strPathInArchive.length() > 0)
       break;
   }
 
-  archive_read_close(a);
-  archive_write_close(ext);
+  m_dllLibArchive.archive_read_close(a);
+  m_dllLibArchive.archive_write_close(ext);
   return true;
 }
 
@@ -313,9 +325,14 @@ bool CArchiveManager::libarchive_list(const CStdString &strPath,
   struct archive_entry *entry;
   int r;
 
-  a = archive_read_new();
-  archive_read_support_compression_all(a);
-  archive_read_support_format_all(a);
+  if (!Load())
+  {
+    CLog::Log(LOGERROR, "%s: Unable to load DllLibArchive.", __FUNCTION__);
+    return false;
+  }
+  a = m_dllLibArchive.archive_read_new();
+  m_dllLibArchive.archive_read_support_compression_all(a);
+  m_dllLibArchive.archive_read_support_format_all(a);
 
   CFile file;
   if (!file.Open(strPath))
@@ -327,20 +344,20 @@ bool CArchiveManager::libarchive_list(const CStdString &strPath,
   struct mydata data;
   data.file = &file;
   data.buffer = calloc(1, LIBARCHIVE_BLOCK_SIZE);
-  r = archive_read_open2(a, &data, NULL, file_read, file_skip, file_close);
+  r = m_dllLibArchive.archive_read_open2(a, &data, NULL, file_read, file_skip, file_close);
   if (r != ARCHIVE_OK)
   {
-    CLog::Log(LOGERROR,"%s", archive_error_string(a));
+    CLog::Log(LOGERROR,"%s", m_dllLibArchive.archive_error_string(a));
     return false;
   }
-  while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
+  while (m_dllLibArchive.archive_read_next_header(a, &entry) == ARCHIVE_OK) {
     CArchiveEntry e;
-    CStdString file(archive_entry_pathname(entry));
+    CStdString file(m_dllLibArchive.archive_entry_pathname(entry));
     e.set_file(file);
-    e.set_file_stat(archive_entry_stat(entry));
+    e.set_file_stat(m_dllLibArchive.archive_entry_stat(entry));
     items.push_back(e);
   }
-  r = archive_read_close(a);
+  r = m_dllLibArchive.archive_read_close(a);
   if (r != ARCHIVE_OK)
   {
     CLog::Log(LOGERROR,"Error closing archive file '%s'",

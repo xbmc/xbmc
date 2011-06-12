@@ -699,6 +699,7 @@ XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([MODPLUG],     [modplug])
 XB_FIND_SONAME([ASS],         [ass])
 XB_FIND_SONAME([MPEG2],       [mpeg2])
+XB_FIND_SONAME([ARCHIVE],     [archive])
 
 # WebServer
 if test "$use_webserver" = "yes"; then

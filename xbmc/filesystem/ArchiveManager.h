@@ -23,6 +23,7 @@
 #define ARCHIVE_MANAGER_H_
 
 #include  "utils/StdString.h"
+#include "DllLibArchive.h"
 
 #include <deque>
 #include <map>
@@ -59,6 +60,8 @@ public:
                          CArchiveEntry &item);
 private:
   std::map<CStdString,std::deque<CArchiveEntry> > m_archiveMap;
+  DllLibArchive m_dllLibArchive;
+  bool Load();
   bool libarchive_extract(const CStdString &strArchive,
                           const CStdString &strPath,
                           const CStdString &strPathInArchive);

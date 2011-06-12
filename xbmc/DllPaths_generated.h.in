@@ -36,6 +36,7 @@
 
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
 #define DLL_PATH_LIBNFS        "@NFS_SONAME@"
+#define DLL_PATH_LIBARCHIVE    "@ARCHIVE_SONAME@"
 
 #ifndef DLL_PATH_LIBCURL
 #define DLL_PATH_LIBCURL       "@CURL_SONAME@"
