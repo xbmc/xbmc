@@ -92,6 +92,12 @@ void SpotifyInterface::cb_loggedIn(sp_session *session, sp_error error)
   g_spotifyInterface->hideReconectingDialog();
 }
 
+void SpotifyInterface::cb_loggedOut(sp_session *session)
+{
+  CLog::Log( LOGDEBUG, "Spotifylog: Logged out");
+  g_spotifyInterface->m_isWaitingForLogout = false; 
+}
+
 void SpotifyInterface::cb_notifyMainThread(sp_session *session)
 {
   //spotify needs to advance itself, set it to do so the next tick
@@ -682,9 +688,10 @@ SpotifyInterface::SpotifyInterface()
   m_toplistTracksBrowse = 0;
   m_isSearching = false;
   m_noWaitingThumbs = 0;
+  m_isWaitingForLogout = false;
 
   m_callbacks.connection_error = &cb_connectionError;
-  m_callbacks.logged_out = 0;
+  m_callbacks.logged_out = &cb_loggedOut;
   m_callbacks.message_to_user = 0;
   m_callbacks.logged_in = &cb_loggedIn;
   m_callbacks.notify_main_thread = &cb_notifyMainThread;
@@ -693,6 +700,7 @@ SpotifyInterface::SpotifyInterface()
   m_callbacks.play_token_lost = 0;
   m_callbacks.log_message = &cb_logMessage;
   m_callbacks.end_of_track = &SpotifyCodec::cb_endOfTrack;
+
 
   m_thumbDir.Format("special://temp/spotify/thumbs/");
   m_playlistsThumbDir.Format("special://temp/spotify/playlistthumbs/");
@@ -784,6 +792,14 @@ bool SpotifyInterface::disconnect()
   if (SP_ERROR_OK != m_error) {
     CLog::Log( LOGERROR, "Spotifylog: failed to logout %s\n", sp_error_message(m_error));
     return false;
+  }
+  m_isWaitingForLogout = false;
+  int i = 1000;
+  while(m_isWaitingForLogout && i > 0){
+    clock_t goal = 100 + clock();
+    while (goal > clock());
+    processEvents();
+    i--;
   }
   return true;
 }

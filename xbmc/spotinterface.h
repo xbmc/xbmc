@@ -78,6 +78,7 @@ public:
   //callback functions definied in api.h
   static void SP_CALLCONV cb_connectionError(sp_session *session, sp_error error);
   static void SP_CALLCONV cb_loggedIn(sp_session *session, sp_error error);
+  static void SP_CALLCONV cb_loggedOut(sp_session *session);
   static void SP_CALLCONV cb_notifyMainThread(sp_session *session);
   static void SP_CALLCONV cb_logMessage(sp_session *session, const char *data);
   static void SP_CALLCONV cb_searchComplete(sp_search *search, void *userdata);
@@ -94,6 +95,7 @@ public:
 
 private:
   sp_session *m_session;
+  bool m_isWaitingForLogout;
   CGUIDialogProgress *searchProgress;
   sp_session_config m_config;
   sp_error m_error;
