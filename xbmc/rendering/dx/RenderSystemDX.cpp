@@ -924,7 +924,7 @@ void CRenderSystemDX::SetScissors(const CRect& rect)
   scissor.left = MathUtils::round_int(rect.x1);
   scissor.top = MathUtils::round_int(rect.y1);
   scissor.right = MathUtils::round_int(rect.x2);
-  scissor.bottom = MathUtils::rount_int(rect.y2);
+  scissor.bottom = MathUtils::round_int(rect.y2);
   m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
   m_pD3DDevice->SetScissorRect(&scissor);
 }
