@@ -12,7 +12,7 @@ CONFIGURE=./configure --prefix=$(TOOLCHAIN) \
 --program-transform-name=s/tar/gtar/ --disable-dependency-tracking
 
 APP=$(SOURCE)/src/tar
-APPBIN=$(TOOLCHAIN)/bin/gtar
+APPBIN=$(TOOLCHAIN)/bin/tar
 
 all: $(APPBIN)
 
@@ -31,6 +31,7 @@ $(APP): $(SOURCE)
 $(APPBIN):
 	make $(APP)
 	make -C $(SOURCE) install
+	rm -f $(TOOLCHAIN)/bin/tar $(TOOLCHAIN)/bin/gnutar
 	cd $(TOOLCHAIN)/bin; ln -s gtar tar; ln -s gtar gnutar
 
 clean:
