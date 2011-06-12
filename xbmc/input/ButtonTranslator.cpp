@@ -782,15 +782,19 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   return action;
 }
 
+std::map<CStdString, std::map<int, CButtonTranslator::buttonMap>>::iterator CButtonTranslator::GetActiveButtonMap()
+{
+  std::map<CStdString, std::map<int, buttonMap>>::iterator activeMapIt = deviceMappings.find(g_settings.m_activeKeyboardMapping);
+  if (activeMapIt == deviceMappings.end())
+    return deviceMappings.find("default");
+  return activeMapIt;
+}
+
 int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &strAction)
 {
   uint32_t code = key.GetButtonCode();
 
-  map<CStdString, std::map<int, buttonMap>>::iterator activeMapIt = deviceMappings.find(g_settings.m_activeKeyboardMapping);
-  if (activeMapIt == deviceMappings.end())
-    return 0;
-
-  std::map<int, buttonMap> deviceMap = (*activeMapIt).second;
+  std::map<int, buttonMap> deviceMap = (*GetActiveButtonMap()).second;
   map<int, buttonMap>::iterator it = deviceMap.find(window);
   if (it == deviceMap.end())
     return 0;
