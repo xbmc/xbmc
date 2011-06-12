@@ -81,6 +81,8 @@ void SpotifyInterface::cb_loggedIn(sp_session *session, sp_error error)
 {
   if (SP_ERROR_OK != error) {
     CLog::Log( LOGERROR, "Spotifylog: failed to log in to Spotify: %s\n", sp_error_message(error));
+    sp_session_release(g_spotifyInterface->m_session);
+    g_spotifyInterface->m_session = 0;
     g_spotifyInterface->showConnectionErrorDialog(error);
     return;
   }
@@ -94,7 +96,7 @@ void SpotifyInterface::cb_loggedIn(sp_session *session, sp_error error)
 
 void SpotifyInterface::cb_loggedOut(sp_session *session)
 {
-  CLog::Log( LOGDEBUG, "Spotifylog: Logged out");
+    CLog::Log( LOGNOTICE, "Spotifylog: disconnected to Spotify!");
   g_spotifyInterface->m_isWaitingForLogout = false; 
 }
 
@@ -786,15 +788,15 @@ bool SpotifyInterface::connect(bool forceNewUser)
 
 bool SpotifyInterface::disconnect()
 {
-  CLog::Log( LOGNOTICE, "Spotifylog: disconnected to Spotify!");
+  CLog::Log( LOGNOTICE, "Spotifylog: disconnecting to Spotify!");
   sp_session_logout( m_session);
   //session_terminated();
   if (SP_ERROR_OK != m_error) {
     CLog::Log( LOGERROR, "Spotifylog: failed to logout %s\n", sp_error_message(m_error));
     return false;
   }
-  m_isWaitingForLogout = false;
-  int i = 1000;
+  m_isWaitingForLogout = true;
+  int i = 100;
   while(m_isWaitingForLogout && i > 0){
     clock_t goal = 100 + clock();
     while (goal > clock());
