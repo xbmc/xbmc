@@ -22,7 +22,7 @@
 #ifndef ARCHIVE_MANAGER_H_
 #define ARCHIVE_MANAGER_H_
 
-#include  "utils/StdString.h"
+#include "utils/StdString.h"
 #include "DllLibArchive.h"
 
 #include <deque>
