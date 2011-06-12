@@ -278,6 +278,8 @@ void CAdvancedSettings::Initialize()
   m_jsonTcpPort = 9090;
 
   m_enableMultimediaKeys = false;
+
+  m_canWindowed = true;
 }
 
 bool CAdvancedSettings::Load()
@@ -645,6 +647,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 #endif
   XMLUtils::GetBoolean(pRootElement, "splash", m_splashImage);
   XMLUtils::GetBoolean(pRootElement, "showexitbutton", m_showExitButton);
+  XMLUtils::GetBoolean(pRootElement, "canwindowed", m_canWindowed);
 
   XMLUtils::GetInt(pRootElement, "songinfoduration", m_songInfoDuration, 0, INT_MAX);
   XMLUtils::GetInt(pRootElement, "busydialogdelay", m_busyDialogDelay, 0, 5000);
