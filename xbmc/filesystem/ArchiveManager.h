@@ -24,6 +24,7 @@
 
 #include "utils/StdString.h"
 #include "DllLibArchive.h"
+#include "threads/CriticalSection.h"
 
 #include <deque>
 #include <map>
@@ -61,6 +62,7 @@ public:
 private:
   std::map<CStdString,std::deque<CArchiveEntry> > m_archiveMap;
   DllLibArchive m_dllLibArchive;
+  CCriticalSection m_CritSection;
   bool Load();
   bool libarchive_extract(const CStdString &strArchive,
                           const CStdString &strPath,

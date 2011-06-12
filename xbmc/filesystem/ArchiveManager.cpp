@@ -28,6 +28,7 @@
 #include "SpecialProtocol.h"
 #include "Util.h"
 #include "XFileUtils.h"
+#include "threads/SingleLock.h"
 
 #include <sys/stat.h>
 
@@ -314,6 +315,7 @@ bool CArchiveManager::libarchive_extract(const CStdString &strArchive,
 bool CArchiveManager::libarchive_list(const CStdString &strPath,
                                       deque<CArchiveEntry> &items)
 {
+  CSingleLock lock(m_CritSection);
   map<CStdString,deque<CArchiveEntry> >::iterator it = m_archiveMap.find(strPath);
   if (it != m_archiveMap.end())
   {
