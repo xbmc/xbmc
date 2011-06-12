@@ -283,6 +283,7 @@
     <ClCompile Include="..\..\lib\tinyXML\tinyxmlparser.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonInstaller.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\AddonVersion.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonInfo.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIDialogAddonSettings.cpp" />
     <ClCompile Include="..\..\xbmc\addons\GUIViewStateAddonBrowser.cpp" />
@@ -1163,6 +1164,7 @@
     <ClInclude Include="..\..\lib\tinyXML\tinyxml.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonDatabase.h" />
     <ClInclude Include="..\..\xbmc\addons\AddonInstaller.h" />
+    <ClInclude Include="..\..\xbmc\addons\AddonVersion.h" />
     <ClInclude Include="..\..\xbmc\addons\DllLibCPluff.h" />
     <ClInclude Include="..\..\xbmc\addons\GUIDialogAddonInfo.h" />
     <ClInclude Include="..\..\xbmc\addons\GUIDialogAddonSettings.h" />
