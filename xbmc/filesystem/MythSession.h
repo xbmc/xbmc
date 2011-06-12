@@ -60,7 +60,7 @@ public:
   cmyth_conn_t     GetControl();
   cmyth_database_t GetDatabase();
   DllLibCMyth*     GetLibrary();
-  cmyth_proglist_t GetAllRecordedPrograms(bool force = false);
+  cmyth_proglist_t GetAllRecordedPrograms();
 
   void             SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program);
 
@@ -77,6 +77,8 @@ private:
   void             Disconnect();
 
   void             SetSeasonAndEpisode(const cmyth_proginfo_t &program, int *season, int *epsiode);
+
+  void             ResetAllRecordedPrograms();
 
   IEventListener*  m_listener;
   cmyth_conn_t     m_control;
