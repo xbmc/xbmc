@@ -40,8 +40,19 @@ bool lastLockedStatus = false;
 // Sets a new preset file or directory and make it active. Also recovers last state of the preset if it is the same as last time
 void SetPresetDir(const char *pack)
 {
+  /* TODO: code below needs refactoring */
   int len = strlen(pack);
-  if (len >= 4 && strcmp(pack + len - 4, ".zip") == 0)
+  if ((len >= 4 && strcmp(pack + len - 4, ".tar") == 0)
+    || (len >= 3 && strcmp(pack + len - 3, ".gz") == 0)
+    || (len >= 3 && strcmp(pack + len - 3, ".bz") == 0)
+    || (len >= 4 && strcmp(pack + len - 4, ".bz2") == 0))
+  {
+    // Archive file
+    strcpy(g_plugin->m_szPresetDir, PRESETS_DIR);
+    strcat(g_plugin->m_szPresetDir,  pack);
+    strcat(g_plugin->m_szPresetDir, "/");
+  }
+  else if (len >= 4 && strcmp(pack + len - 4, ".zip") == 0)
   {
     // Zip file
     strcpy(g_plugin->m_szPresetDir, PRESETS_DIR);

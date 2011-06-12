@@ -575,6 +575,12 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     if (!Update(iList, strPath))
       ShowShareErrorMessage(pItem.get());
   }
+  else if (pItem->IsArchive() || pItem->IsCBArchive()) // mount archive
+  {
+    CStdString strArchivedPath;
+    URIUtils::CreateArchivePath(strArchivedPath, "archive", pItem->m_strPath, "");
+    Update(iList, strArchivedPath);
+  }
   else if (pItem->IsZIP() || pItem->IsCBZ()) // mount zip archive
   {
     CStdString strArcivedPath;
@@ -829,7 +835,7 @@ int CGUIWindowFileManager::GetSelectedItem(int iControl)
 void CGUIWindowFileManager::GoParentFolder(int iList)
 {
   CURL url(m_Directory[iList]->m_strPath);
-  if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
+  if ((url.GetProtocol() == "archive") || (url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
   {
     // check for step-below, if, unmount rar
     if (url.GetFileName().IsEmpty())

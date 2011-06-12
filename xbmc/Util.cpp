@@ -222,7 +222,9 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   else if (path.Left(24).Equals("special://videoplaylists"))
     strFilename = g_localizeStrings.Get(136);
 
-  else if ((url.GetProtocol() == "rar" || url.GetProtocol() == "zip") && strFilename.IsEmpty())
+  else if ((url.GetProtocol() == "rar"
+    || url.GetProtocol() == "zip"
+    || url.GetProtocol() == "archive") && strFilename.IsEmpty())
     strFilename = URIUtils::GetFileName(url.GetHostName());
 
   // now remove the extension if needed
@@ -1236,6 +1238,7 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
   // recurse and crash XBMC
   if (URIUtils::IsURL(path) && 
      (path.Find('%') >= 0 ||
+      path.Left(8).Equals("archive:") ||
       path.Left(4).Equals("zip:") ||
       path.Left(4).Equals("rar:") ||
       path.Left(6).Equals("stack:") ||
@@ -1543,7 +1546,9 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
 
     // rar:// and zip://
     // if archive wasn't mounted, look for a matching share for the archive instead
-    if( strPath.Left(6).Equals("rar://") || strPath.Left(6).Equals("zip://") )
+    if( strPath.Left(10).Equals("archive://")
+      || strPath.Left(6).Equals("rar://")
+      || strPath.Left(6).Equals("zip://") )
     {
       // get the hostname portion of the url since it contains the archive file
       strPath = checkURL.GetHostName();
@@ -2365,15 +2370,15 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     {
       CFileItemList items;
       
-      CDirectory::GetDirectory(strLookInPaths[step], items,".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip",false);
+      CDirectory::GetDirectory(strLookInPaths[step], items,".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip|.tar|.gz|.bz2",false);
       int fnl = strMovieFileNameNoExt.size();
       
       for (int j = 0; j < items.Size(); j++)
       {
         URIUtils::Split(items[j]->m_strPath, strPath, strItem);
         
-        // is this a rar or zip-file
-        if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
+        // is this some archive file
+        if (URIUtils::IsArchive(strItem) || URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
         {
           ScanArchiveForSubtitles( items[j]->m_strPath, strMovieFileNameNoExt, vecSubtitles );
         }
@@ -2450,22 +2455,24 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
   }
   for (int it= 0 ; it <ItemList.Size();++it)
   {
-   CStdString strPathInRar = ItemList[it]->m_strPath;
-   CStdString strExt = URIUtils::GetExtension(strPathInRar);
+   CStdString strPathInArchive = ItemList[it]->m_strPath;
+   CStdString strExt = URIUtils::GetExtension(strPathInArchive);
    
-   CLog::Log(LOGDEBUG, "ScanArchiveForSubtitles:: Found file %s", strPathInRar.c_str());
-   // always check any embedded rar archives
-   // checking for embedded rars, I moved this outside the sub_ext[] loop. We only need to check this once for each file.
-   if (URIUtils::IsRAR(strPathInRar) || URIUtils::IsZIP(strPathInRar))
+   CLog::Log(LOGDEBUG, "ScanArchiveForSubtitles:: Found file %s", strPathInArchive.c_str());
+   // always check any embedded archive files
+   // checking for embedded archives, I moved this outside the sub_ext[] loop. We only need to check this once for each file.
+   if (URIUtils::IsArchive(strPathInArchive) || URIUtils::IsRAR(strPathInArchive) || URIUtils::IsZIP(strPathInArchive))
    {
-    CStdString strRarInRar;
-    if (URIUtils::GetExtension(strPathInRar).Equals(".rar"))
-      URIUtils::CreateArchivePath(strRarInRar, "rar", strArchivePath, strPathInRar);
+    CStdString strEmbeddedArchive;
+    if (URIUtils::GetExtension(strPathInArchive).Equals(".rar"))
+      URIUtils::CreateArchivePath(strEmbeddedArchive, "rar", strArchivePath, strPathInArchive);
+    else if (URIUtils::GetExtension(strPathInArchive).Equals(".zip"))
+      URIUtils::CreateArchivePath(strEmbeddedArchive, "zip", strArchivePath, strPathInArchive);
     else
-      URIUtils::CreateArchivePath(strRarInRar, "zip", strArchivePath, strPathInRar);
-    ScanArchiveForSubtitles(strRarInRar,strMovieFileNameNoExt,vecSubtitles);
+      URIUtils::CreateArchivePath(strEmbeddedArchive, "archive", strArchivePath, strPathInArchive);
+    ScanArchiveForSubtitles(strEmbeddedArchive,strMovieFileNameNoExt,vecSubtitles);
    }
-   // done checking if this is a rar-in-rar
+   // done checking if this is an embedded archive
    
    int iPos=0;
     while (sub_exts[iPos])
@@ -2474,9 +2481,9 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
      {
       CStdString strSourceUrl;
       if (URIUtils::GetExtension(strArchivePath).Equals(".rar"))
-       URIUtils::CreateArchivePath(strSourceUrl, "rar", strArchivePath, strPathInRar);
+       URIUtils::CreateArchivePath(strSourceUrl, "rar", strArchivePath, strPathInArchive);
       else
-       strSourceUrl = strPathInRar;
+       strSourceUrl = strPathInArchive;
       
        CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, strSourceUrl.c_str() );
        vecSubtitles.push_back( strSourceUrl );

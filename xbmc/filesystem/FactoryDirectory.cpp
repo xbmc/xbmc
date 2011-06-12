@@ -76,6 +76,7 @@
 #ifdef HAS_FILESYSTEM_HTSP
 #include "HTSPDirectory.h"
 #endif
+#include "ArchiveDirectory.h"
 #include "ZipDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
@@ -125,6 +126,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
   if (strProtocol == "udf") return new CUDFDirectory();
   if (strProtocol == "plugin") return new CPluginDirectory();
+  if (strProtocol == "archive") return new CArchiveDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
 #ifdef HAS_FILESYSTEM_RAR
   if (strProtocol == "rar") return new CRarDirectory();
