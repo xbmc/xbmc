@@ -33,16 +33,13 @@ static bool parsedMappings = false;
 
 CKeymapLoader::CKeymapLoader()
 {
-  if (!parsedMappings)
-  {
-    ParseDeviceMappings();
-  }
 }
 
 void CKeymapLoader::DeviceAdded(const CStdString& deviceId)
 {
+  ParseDeviceMappings();
   CStdString keymapName;
-  if (FindMappedDevice(deviceId, keymapName))
+  if (CKeymapLoader::FindMappedDevice(deviceId, keymapName))
   {
     CLog::Log(LOGDEBUG, "Switching Active Keymapping to: %s", keymapName.c_str());
     g_settings.m_activeKeyboardMapping = keymapName;
@@ -51,6 +48,7 @@ void CKeymapLoader::DeviceAdded(const CStdString& deviceId)
 
 void CKeymapLoader::DeviceRemoved(const CStdString& deviceId)
 {
+  ParseDeviceMappings();
   CStdString keymapName;
   if (FindMappedDevice(deviceId, keymapName))
   {
@@ -61,24 +59,27 @@ void CKeymapLoader::DeviceRemoved(const CStdString& deviceId)
 
 void CKeymapLoader::ParseDeviceMappings()
 {
-  parsedMappings = true;
-  CStdString file("special://xbmc/system/deviceidmappings.xml");
-  TiXmlDocument deviceXML;
-  if (!CFile::Exists(file) || !deviceXML.LoadFile(file))
-    return;
-
-  TiXmlElement *pRootElement = deviceXML.RootElement();
-  if (!pRootElement || strcmpi(pRootElement->Value(), "devicemappings") != 0)
-    return;
-  
-  TiXmlElement *pDevice = pRootElement->FirstChildElement("device");
-  while (pDevice)
+  if (!parsedMappings)
   {
-    CStdString deviceId(pDevice->Attribute("id"));
-    CStdString keymap(pDevice->Attribute("keymap"));
-    if (!deviceId.empty() && !keymap.empty())
-      deviceMappings.insert(pair<CStdString, CStdString>(deviceId.ToUpper(), keymap));
-    pDevice = pDevice->NextSiblingElement("device");
+    parsedMappings = true;
+    CStdString file("special://xbmc/system/deviceidmappings.xml");
+    TiXmlDocument deviceXML;
+    if (!CFile::Exists(file) || !deviceXML.LoadFile(file))
+      return;
+
+    TiXmlElement *pRootElement = deviceXML.RootElement();
+    if (!pRootElement || strcmpi(pRootElement->Value(), "devicemappings") != 0)
+      return;
+  
+    TiXmlElement *pDevice = pRootElement->FirstChildElement("device");
+    while (pDevice)
+    {
+      CStdString deviceId(pDevice->Attribute("id"));
+      CStdString keymap(pDevice->Attribute("keymap"));
+      if (!deviceId.empty() && !keymap.empty())
+        deviceMappings.insert(pair<CStdString, CStdString>(deviceId.ToUpper(), keymap));
+      pDevice = pDevice->NextSiblingElement("device");
+    }
   }
 }
 

@@ -65,7 +65,7 @@ CWIN32USBScan::CWIN32USBScan()
 
     detailResult = SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, devicedetailData, nBufferSize , &required, NULL);
 
-    CKeymapLoader().DeviceAdded(CKeymapLoader::ParseWin32HIDName(devicedetailData->DevicePath));
+    CKeymapLoader::DeviceAdded(CKeymapLoader::ParseWin32HIDName(devicedetailData->DevicePath));
 
     if(!detailResult)
         continue;

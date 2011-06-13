@@ -28,11 +28,11 @@ class CKeymapLoader
 {
   public:
     CKeymapLoader();
-    void DeviceRemoved(const CStdString& deviceID);
-    void DeviceAdded(const CStdString& deviceID);
+    static void DeviceRemoved(const CStdString& deviceID);
+    static void DeviceAdded(const CStdString& deviceID);
     static CStdString ParseWin32HIDName(CStdString deviceLongName);
+    static void ParseDeviceMappings();
   private:
-    void ParseDeviceMappings();
-    bool FindMappedDevice(const CStdString& deviceId, CStdString& keymapName);
+    static bool FindMappedDevice(const CStdString& deviceId, CStdString& keymapName);
 };
 #endif
