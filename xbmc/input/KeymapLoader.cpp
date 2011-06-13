@@ -28,6 +28,9 @@
 using namespace std;
 using namespace XFILE;
 
+static std::map<CStdString, CStdString> deviceMappings;
+static bool parsedMappings = false;
+
 CKeymapLoader::CKeymapLoader()
 {
   if (!parsedMappings)
