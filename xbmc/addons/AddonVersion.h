@@ -20,8 +20,11 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include <iostream>
 #include <boost/operators.hpp>
+#include "utils/StdString.h"
+
 #include "utils/StdString.h"
 
 namespace ADDON
