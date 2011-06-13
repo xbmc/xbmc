@@ -24,7 +24,7 @@
 #include "PlayListPlayer.h"
 #include "FileItem.h"
 #include "Application.h"
-#include "log.h"
+#include "utils/log.h"
 #ifdef _WIN32
 #include "WIN32Util.h"
 #endif

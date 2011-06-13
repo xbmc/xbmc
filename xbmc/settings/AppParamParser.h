@@ -19,7 +19,7 @@
  *
  */
 
-#include "StdString.h"
+#include "utils/StdString.h"
 #include "FileItem.h"
 
 class CAppParamParser
