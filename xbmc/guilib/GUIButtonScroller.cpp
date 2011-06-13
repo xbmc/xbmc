@@ -308,6 +308,14 @@ void CGUIButtonScroller::SetInvalid()
   m_imgNoFocus.SetInvalid();
 }
 
+void CGUIButtonScroller::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  // TODO Proper processing which marks when its actually changed. Just mark always for now.
+  MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime, dirtyregions);
+}
+
 void CGUIButtonScroller::Render()
 {
   if (m_bInvalidated)
@@ -667,10 +675,12 @@ void CGUIButtonScroller::DoDown()
   }
 }
 
-void CGUIButtonScroller::UpdateColors()
+bool CGUIButtonScroller::UpdateColors()
 {
-  m_label.UpdateColors();
-  CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_label.UpdateColors();
+
+  return changed;
 }
 
 void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool bText)

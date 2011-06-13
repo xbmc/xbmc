@@ -44,7 +44,7 @@ public:
   virtual ~CGUIFadeLabelControl(void);
   virtual CGUIFadeLabelControl *Clone() const { return new CGUIFadeLabelControl(*this); };
 
-  virtual void DoRender(unsigned int currentTime);
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
@@ -52,7 +52,7 @@ public:
   void SetInfo(const std::vector<CGUIInfoLabel> &vecInfo);
 
 protected:
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
   virtual CStdString GetDescription() const;
   void AddLabel(const std::string &label);
 

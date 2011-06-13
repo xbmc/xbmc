@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,28 +20,17 @@
  *
  */
 
-#include "guilib/GUIWindow.h"
+#include "DirtyRegion.h"
 
-class CGUIWindowSettingsScreenCalibration : public CGUIWindow
+#define DIRTYREGION_SOLVER_NONE 0
+#define DIRTYREGION_SOLVER_UNION 1
+#define DIRTYREGION_SOLVER_COST_REDUCTION 2
+
+class IDirtyRegionSolver
 {
 public:
-  CGUIWindowSettingsScreenCalibration(void);
-  virtual ~CGUIWindowSettingsScreenCalibration(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
-  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void FrameMove();
-  virtual void Render();
-  virtual void AllocResources(bool forceLoad = false);
-  virtual void FreeResources(bool forceUnLoad = false);
+  virtual ~IDirtyRegionSolver() { }
 
-protected:
-  void NextControl();
-  void ResetControls();
-  void EnableControl(int iControl);
-  void UpdateFromControl(int iControl);
-  UINT m_iCurRes;
-  std::vector<RESOLUTION> m_Res;
-  int m_iControl;
-  float m_fPixelRatioBoxHeight;
+  // Takes a number of dirty regions which will become a number of needed rendering passes.
+  virtual void Solve(const CDirtyRegionList &input, CDirtyRegionList &output) = 0;
 };

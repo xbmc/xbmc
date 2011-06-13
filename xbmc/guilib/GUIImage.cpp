@@ -93,10 +93,8 @@ void CGUIImage::AllocateOnDemand()
     AllocResources();
 }
 
-void CGUIImage::Render()
+void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  if (!IsVisible()) return;
-
   // check whether our image failed to allocate, and if so drop back to the fallback image
   if (m_texture.FailedToAlloc() && !m_texture.GetFileName().Equals(m_info.GetFallback()))
     m_texture.SetFileName(m_info.GetFallback());
@@ -108,7 +106,6 @@ void CGUIImage::Render()
 
     // compute the frame time
     unsigned int frameTime = 0;
-    unsigned int currentTime = CTimeUtils::GetFrameTime();
     if (m_lastRenderTime)
       frameTime = currentTime - m_lastRenderTime;
     m_lastRenderTime = currentTime;
@@ -117,7 +114,7 @@ void CGUIImage::Render()
     { // anything other than the last old texture needs to be faded out as per usual
       for (vector<CFadingTexture *>::iterator i = m_fadingTextures.begin(); i != m_fadingTextures.end() - 1;)
       {
-        if (!RenderFading(*i, frameTime))
+        if (!ProcessFading(*i, frameTime))
           i = m_fadingTextures.erase(i);
         else
           i++;
@@ -125,7 +122,7 @@ void CGUIImage::Render()
 
       if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
       { // fade out the last one as well
-        if (!RenderFading(m_fadingTextures[m_fadingTextures.size() - 1], frameTime))
+        if (!ProcessFading(m_fadingTextures[m_fadingTextures.size() - 1], frameTime))
           m_fadingTextures.erase(m_fadingTextures.end() - 1);
       }
       else
@@ -134,9 +131,11 @@ void CGUIImage::Render()
         texture->m_fadeTime += frameTime;
         if (texture->m_fadeTime > m_crossFadeTime)
           texture->m_fadeTime = m_crossFadeTime;
-        texture->m_texture->SetAlpha(GetFadeLevel(texture->m_fadeTime));
-        texture->m_texture->SetDiffuseColor(m_diffuseColor);
-        texture->m_texture->Render();
+
+        if (texture->m_texture->SetAlpha(GetFadeLevel(texture->m_fadeTime)))
+          MarkDirtyRegion();
+        if (texture->m_texture->SetDiffuseColor(m_diffuseColor))
+          MarkDirtyRegion();
       }
     }
 
@@ -146,16 +145,48 @@ void CGUIImage::Render()
       if (m_currentFadeTime > m_crossFadeTime || frameTime == 0) // for if we allocate straight away on creation
         m_currentFadeTime = m_crossFadeTime;
     }
-    m_texture.SetAlpha(GetFadeLevel(m_currentFadeTime));
+    if (m_texture.SetAlpha(GetFadeLevel(m_currentFadeTime)))
+      MarkDirtyRegion();
   }
 
-  m_texture.SetDiffuseColor(m_diffuseColor);
+  if (m_texture.SetDiffuseColor(m_diffuseColor))
+    MarkDirtyRegion();
+
+  if (m_fadingTextures.size())  // have some fading images
+  { // anything other than the last old texture needs to be faded out as per usual
+    for (vector<CFadingTexture *>::iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end() - 1;)
+    {
+      if ((*itr)->m_texture->Process(currentTime))
+        MarkDirtyRegion();
+      itr++;
+    }
+  }
+
+  if (m_texture.Process(currentTime))
+    MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime, dirtyregions);
+}
+
+void CGUIImage::Render()
+{
+  if (!IsVisible()) return;
+
+  if (m_fadingTextures.size())  // have some fading images
+  {
+    for (vector<CFadingTexture *>::iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end();)
+    {
+      (*itr)->m_texture->Render();
+      itr++;
+    }
+  }
+
   m_texture.Render();
 
   CGUIControl::Render();
 }
 
-bool CGUIImage::RenderFading(CGUIImage::CFadingTexture *texture, unsigned int frameTime)
+bool CGUIImage::ProcessFading(CGUIImage::CFadingTexture *texture, unsigned int frameTime)
 {
   assert(texture);
   if (texture->m_fadeTime <= frameTime)
@@ -165,9 +196,12 @@ bool CGUIImage::RenderFading(CGUIImage::CFadingTexture *texture, unsigned int fr
   }
   // render this texture
   texture->m_fadeTime -= frameTime;
-  texture->m_texture->SetAlpha(GetFadeLevel(texture->m_fadeTime));
-  texture->m_texture->SetDiffuseColor(m_diffuseColor);
-  texture->m_texture->Render();
+
+  if (texture->m_texture->SetAlpha(GetFadeLevel(texture->m_fadeTime)))
+    MarkDirtyRegion();
+  if (texture->m_texture->SetDiffuseColor(m_diffuseColor))
+    MarkDirtyRegion();
+
   return true;
 }
 
@@ -248,6 +282,22 @@ float CGUIImage::GetTextureHeight() const
   return m_texture.GetTextureHeight();
 }
 
+CRect CGUIImage::CalcRenderRegion() const
+{
+  CRect region = m_texture.GetRenderRect();
+
+  if (m_fadingTextures.size())  // have some fading images
+  {
+    for (vector<CFadingTexture *>::const_iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end();)
+    {
+      region.Union( (*itr)->m_texture->GetRenderRect() );
+      itr++;
+    }
+  }
+
+  return CGUIControl::CalcRenderRegion().Intersect(region);
+}
+
 const CStdString &CGUIImage::GetFileName() const
 {
   return m_texture.GetFileName();
@@ -279,6 +329,7 @@ void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant)
     if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
     { // save the current image
       m_fadingTextures.push_back(new CFadingTexture(m_texture, m_currentFadeTime));
+      MarkDirtyRegion();
     }
     m_currentFadeTime = 0;
   }
@@ -286,7 +337,8 @@ void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant)
   { // texture is changing - attempt to load it, and save the name in m_currentTexture.
     // we'll check whether it loaded or not in Render()
     m_currentTexture = strFileName;
-    m_texture.SetFileName(m_currentTexture);
+    if (m_texture.SetFileName(m_currentTexture))
+      MarkDirtyRegion();
   }
 }
 

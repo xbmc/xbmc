@@ -2213,6 +2213,9 @@
     <ClCompile Include="..\..\xbmc\windows\GUIMediaWindow.cpp">
       <Filter>windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\windows\GUIWindowDebugInfo.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\windows\GUIWindowFileManager.cpp">
       <Filter>windows</Filter>
     </ClCompile>
@@ -2450,6 +2453,15 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\JSONVariantWriter.cpp">
       <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\DirtyRegionSolvers.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\rendering\gles\RenderSystemGLES.cpp">
+      <Filter>rendering\gl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4660,6 +4672,9 @@
     <ClInclude Include="..\..\xbmc\windows\GUIMediaWindow.h">
       <Filter>windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\windows\GUIWindowDebugInfo.h">
+      <Filter>windows</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\windows\GUIWindowFileManager.h">
       <Filter>windows</Filter>
     </ClInclude>
@@ -4906,6 +4921,18 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\JSONVariantWriter.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegion.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegionSolvers.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\rendering\gles\RenderSystemGLES.h">
+      <Filter>rendering\gl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

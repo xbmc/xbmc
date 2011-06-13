@@ -284,6 +284,9 @@ class CAdvancedSettings
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
 
+    bool m_guiVisualizeDirtyRegions;
+    int  m_guiAlgorithmDirtyRegions;
+
     unsigned int m_cacheMemBufferSize;
 
     bool m_jsonOutputCompact;

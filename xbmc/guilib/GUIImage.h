@@ -67,6 +67,7 @@ public:
   virtual ~CGUIImage(void);
   virtual CGUIImage *Clone() const { return new CGUIImage(*this); };
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual bool OnAction(const CAction &action) ;
@@ -92,6 +93,8 @@ public:
   float GetTextureWidth() const;
   float GetTextureHeight() const;
 
+  virtual CRect CalcRenderRegion() const;
+
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif
@@ -100,7 +103,7 @@ protected:
   virtual void FreeTextures(bool immediately = false);
   void FreeResourcesButNotAnims();
   unsigned char GetFadeLevel(unsigned int time) const;
-  bool RenderFading(CFadingTexture *texture, unsigned int frameTime);
+  bool ProcessFading(CFadingTexture *texture, unsigned int frameTime);
 
   bool m_bDynamicResourceAlloc;
 

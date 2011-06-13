@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,28 +20,29 @@
  *
  */
 
-#include "guilib/GUIWindow.h"
+#include "IDirtyRegionSolver.h"
+#include "DirtyRegionSolvers.h"
 
-class CGUIWindowSettingsScreenCalibration : public CGUIWindow
+#ifdef _WIN32
+#define DEFAULT_BUFFERING 3
+#else
+#define DEFAULT_BUFFERING 2
+#endif
+
+class CDirtyRegionTracker
 {
 public:
-  CGUIWindowSettingsScreenCalibration(void);
-  virtual ~CGUIWindowSettingsScreenCalibration(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
-  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void FrameMove();
-  virtual void Render();
-  virtual void AllocResources(bool forceLoad = false);
-  virtual void FreeResources(bool forceUnLoad = false);
+  CDirtyRegionTracker(int buffering = DEFAULT_BUFFERING);
+  ~CDirtyRegionTracker();
+  void SelectAlgorithm();
+  void MarkDirtyRegion(const CDirtyRegion &region);
 
-protected:
-  void NextControl();
-  void ResetControls();
-  void EnableControl(int iControl);
-  void UpdateFromControl(int iControl);
-  UINT m_iCurRes;
-  std::vector<RESOLUTION> m_Res;
-  int m_iControl;
-  float m_fPixelRatioBoxHeight;
+  const CDirtyRegionList &GetMarkedRegions() const;
+  CDirtyRegionList GetDirtyRegions();
+  void CleanMarkedRegions();
+
+private:
+  CDirtyRegionList m_markedRegions;
+  int m_buffering;
+  IDirtyRegionSolver *m_solver;
 };

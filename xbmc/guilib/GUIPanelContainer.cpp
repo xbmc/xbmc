@@ -38,7 +38,7 @@ CGUIPanelContainer::~CGUIPanelContainer(void)
 {
 }
 
-void CGUIPanelContainer::Render()
+void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   ValidateOffset();
 
@@ -47,7 +47,58 @@ void CGUIPanelContainer::Render()
 
   if (!m_layout || !m_focusedLayout) return;
 
-  UpdateScrollOffset();
+  UpdateScrollOffset(currentTime);
+
+  int offset = (int)(m_scrollOffset / m_layout->Size(m_orientation));
+
+  int cacheBefore, cacheAfter;
+  GetCacheOffsets(cacheBefore, cacheAfter);
+
+  // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
+  FreeMemory(CorrectOffset(offset - cacheBefore, 0), CorrectOffset(offset + cacheAfter + m_itemsPerPage + 1, 0));
+
+  CPoint origin = CPoint(m_posX, m_posY) + m_renderOffset;
+  float pos = (m_orientation == VERTICAL) ? origin.y : origin.x;
+  float end = (m_orientation == VERTICAL) ? m_posY + m_height : m_posX + m_width;
+  pos += (offset - cacheBefore) * m_layout->Size(m_orientation) - m_scrollOffset;
+  end += cacheAfter * m_layout->Size(m_orientation);
+
+  int current = (offset - cacheBefore) * m_itemsPerRow;
+  int col = 0;
+  while (pos < end && m_items.size())
+  {
+    if (current >= (int)m_items.size())
+      break;
+    if (current >= 0)
+    {
+      CGUIListItemPtr item = m_items[current];
+      bool focused = (current == m_offset * m_itemsPerRow + m_cursor) && m_bHasFocus;
+
+      if (m_orientation == VERTICAL)
+        ProcessItem(origin.x + col * m_layout->Size(HORIZONTAL), pos, item.get(), focused, currentTime, dirtyregions);
+      else
+        ProcessItem(pos, origin.y + col * m_layout->Size(VERTICAL), item.get(), focused, currentTime, dirtyregions);
+    }
+    // increment our position
+    if (col < m_itemsPerRow - 1)
+      col++;
+    else
+    {
+      pos += m_layout->Size(m_orientation);
+      col = 0;
+    }
+    current++;
+  }
+
+  UpdatePageControl(offset);
+
+  CGUIControl::Process(currentTime, dirtyregions);
+}
+
+
+void CGUIPanelContainer::Render()
+{
+  if (!m_layout || !m_focusedLayout) return;
 
   int offset = (int)(m_scrollOffset / m_layout->Size(m_orientation));
 
@@ -112,8 +163,6 @@ void CGUIPanelContainer::Render()
   }
 
   g_graphicsContext.RestoreClipRegion();
-
-  UpdatePageControl(offset);
 
   CGUIControl::Render();
 }
@@ -339,12 +388,12 @@ void CGUIPanelContainer::ValidateOffset()
   if (!m_layout) return;
   if (m_offset > (int)GetRows() - m_itemsPerPage || m_scrollOffset > ((int)GetRows() - m_itemsPerPage) * m_layout->Size(m_orientation))
   {
-    m_offset = (int)GetRows() - m_itemsPerPage;
+    SetOffset(std::max(0, (int)GetRows() - m_itemsPerPage));
     m_scrollOffset = m_offset * m_layout->Size(m_orientation);
   }
   if (m_offset < 0 || m_scrollOffset < 0)
   {
-    m_offset = 0;
+    SetOffset(0);
     m_scrollOffset = 0;
   }
 }
@@ -356,7 +405,7 @@ void CGUIPanelContainer::SetCursor(int cursor)
   if (cursor < 0) cursor = 0;
   if (!m_wasReset)
     SetContainerMoving(cursor - m_cursor);
-  m_cursor = cursor;
+  CGUIBaseContainer::SetCursor(cursor);
 }
 
 void CGUIPanelContainer::CalculateLayout()

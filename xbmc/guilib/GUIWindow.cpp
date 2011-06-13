@@ -287,6 +287,13 @@ void CGUIWindow::CenterWindow()
   m_posY = (m_coordsRes.iHeight - GetHeight()) / 2;
 }
 
+void CGUIWindow::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
+  g_graphicsContext.ResetWindowTransform();
+  CGUIControlGroup::DoProcess(currentTime, dirtyregions);
+}
+
 void CGUIWindow::Render()
 {
   // If we're rendering from a different thread, then we should wait for the main
@@ -297,14 +304,7 @@ void CGUIWindow::Render()
 
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
 
-  m_renderTime = CTimeUtils::GetFrameTime();
-  // render our window animation - returns false if it needs to stop rendering
-  if (!RenderAnimation(m_renderTime))
-    return;
-
-  if (m_hasCamera)
-    g_graphicsContext.SetCameraPosition(m_camera);
-
+  g_graphicsContext.ResetWindowTransform();
   CGUIControlGroup::Render();
 
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
@@ -429,7 +429,11 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
       QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
       while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
       {
-        g_windowManager.Process(true);
+        // TODO This shouldn't be handled like this
+        // The processing should be done from WindowManager and deinit
+        // should probably be called from there.
+        g_windowManager.Process(CTimeUtils::GetFrameTime());
+        g_windowManager.ProcessRenderLoop(true);
       }
     }
   }
@@ -550,7 +554,8 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       {
         if (message.GetParam1() == GUI_MSG_PAGE_CHANGE ||
             message.GetParam1() == GUI_MSG_REFRESH_THUMBS ||
-            message.GetParam1() == GUI_MSG_REFRESH_LIST)
+            message.GetParam1() == GUI_MSG_REFRESH_LIST ||
+            message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
         { // alter the message accordingly, and send to all controls
           for (iControls it = m_children.begin(); it != m_children.end(); ++it)
           {
@@ -558,12 +563,6 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
             CGUIMessage msg(message.GetParam1(), message.GetControlId(), control->GetID(), message.GetParam2());
             control->OnMessage(msg);
           }
-        }
-        if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
-        {
-          // invalidate controls to get them to recalculate sizing information
-          SetInvalid();
-          return true;
         }
       }
     }
@@ -667,14 +666,15 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
   return CGUIControlGroup::IsAnimating(animType);
 }
 
-bool CGUIWindow::RenderAnimation(unsigned int time)
+bool CGUIWindow::Animate(unsigned int currentTime)
 {
-  g_graphicsContext.ResetWindowTransform();
   if (m_animationsEnabled)
-    CGUIControlGroup::Animate(time);
+    return CGUIControlGroup::Animate(currentTime);
   else
+  {
     m_transform.Reset();
-  return true;
+    return false;
+  }
 }
 
 void CGUIWindow::DisableAnimations()

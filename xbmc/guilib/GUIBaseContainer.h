@@ -68,7 +68,9 @@ public:
   virtual void SaveStates(std::vector<CControlState> &states);
   virtual int GetSelectedItem() const;
 
-  virtual void DoRender(unsigned int currentTime);
+  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+
   void LoadLayout(TiXmlElement *layout);
   void LoadContent(TiXmlElement *content);
 
@@ -97,6 +99,9 @@ public:
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   bool OnClick(int actionID);
+
+  virtual void ProcessItem(float posX, float posY, CGUIListItem *item, bool focused, unsigned int currentTime, CDirtyRegionList &dirtyregions);
+
   virtual void Render();
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
   virtual void Scroll(int amount);
@@ -138,8 +143,6 @@ protected:
 
   int m_pageControl;
 
-  unsigned int m_renderTime;
-
   std::vector<CGUIListItemLayout> m_layouts;
   std::vector<CGUIListItemLayout> m_focusedLayouts;
 
@@ -148,7 +151,7 @@ protected:
 
   void ScrollToOffset(int offset);
   void SetContainerMoving(int direction);
-  void UpdateScrollOffset();
+  void UpdateScrollOffset(unsigned int currentTime);
 
   unsigned int m_scrollLastTime;
   int          m_scrollTime;
@@ -174,6 +177,18 @@ protected:
   void OnJumpLetter(char letter);
   void OnJumpSMS(int letter);
   std::vector< std::pair<int, CStdString> > m_letterOffsets;
+
+  /*! \brief Set the cursor position
+   Should be used by all base classes rather than directly setting it, as
+   this also marks the control as dirty (if needed)
+   */
+  virtual void SetCursor(int cursor);
+
+  /*! \brief Set the container offset
+   Should be used by all base classes rather than directly setting it, as
+   this also marks the control as dirty (if needed)
+   */
+  void SetOffset(int offset);
 private:
   int m_cacheItems;
   float m_scrollSpeed;

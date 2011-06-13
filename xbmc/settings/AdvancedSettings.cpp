@@ -278,6 +278,8 @@ void CAdvancedSettings::Initialize()
   m_jsonTcpPort = 9090;
 
   m_enableMultimediaKeys = false;
+  m_guiVisualizeDirtyRegions = false;
+  m_guiAlgorithmDirtyRegions = 0;
 }
 
 bool CAdvancedSettings::Load()
@@ -880,6 +882,13 @@ bool CAdvancedSettings::Load()
   if (pElement)
   {
     XMLUtils::GetBoolean(pRootElement, "enablemultimediakeys", m_enableMultimediaKeys);
+  }
+  
+  pElement = pRootElement->FirstChildElement("gui");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "visualizedirtyregions", m_guiVisualizeDirtyRegions);
+    XMLUtils::GetInt(pElement, "algorithmdirtyregions",     m_guiAlgorithmDirtyRegions);
   }
 
   // load in the GUISettings overrides:

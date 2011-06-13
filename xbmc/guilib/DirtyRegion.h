@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,28 +20,19 @@
  *
  */
 
-#include "guilib/GUIWindow.h"
+#include "Geometry.h"
+#include <vector>
 
-class CGUIWindowSettingsScreenCalibration : public CGUIWindow
+class CDirtyRegion : public CRect
 {
 public:
-  CGUIWindowSettingsScreenCalibration(void);
-  virtual ~CGUIWindowSettingsScreenCalibration(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
-  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void FrameMove();
-  virtual void Render();
-  virtual void AllocResources(bool forceLoad = false);
-  virtual void FreeResources(bool forceUnLoad = false);
+  CDirtyRegion(const CRect &rect) : CRect(rect) { m_age = 0; }
+  CDirtyRegion(float left, float top, float right, float bottom) : CRect(left, top, right, bottom) { m_age = 0; }
+  CDirtyRegion() : CRect() { m_age = 0; }
 
-protected:
-  void NextControl();
-  void ResetControls();
-  void EnableControl(int iControl);
-  void UpdateFromControl(int iControl);
-  UINT m_iCurRes;
-  std::vector<RESOLUTION> m_Res;
-  int m_iControl;
-  float m_fPixelRatioBoxHeight;
+  int UpdateAge() { return ++m_age; }
+private:
+  int m_age;
 };
+
+typedef std::vector<CDirtyRegion> CDirtyRegionList;
