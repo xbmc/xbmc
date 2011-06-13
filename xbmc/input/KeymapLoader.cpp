@@ -92,3 +92,8 @@ bool CKeymapLoader::FindMappedDevice(const CStdString& deviceId, CStdString& key
   keymapName = deviceIdIt->second;
   return true;
 }
+
+CStdString CKeymapLoader::ParseWin32HIDName(CStdString deviceLongName)
+{
+  return deviceLongName.Mid(deviceLongName.find_last_of('\\')+1, deviceLongName.find_last_of('#') - deviceLongName.find_last_of('\\'));
+}

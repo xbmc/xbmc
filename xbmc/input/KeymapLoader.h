@@ -22,13 +22,17 @@
 #include <map>
 #include "utils/StdString.h"
 
+#ifndef KEYMAP_LOADER
+#define KEYMAP_LOADER
 class CKeymapLoader
 {
   public:
     CKeymapLoader();
     void DeviceRemoved(const CStdString& deviceID);
     void DeviceAdded(const CStdString& deviceID);
+    static CStdString ParseWin32HIDName(CStdString deviceLongName);
   private:
     void ParseDeviceMappings();
     bool FindMappedDevice(const CStdString& deviceId, CStdString& keymapName);
 };
+#endif
