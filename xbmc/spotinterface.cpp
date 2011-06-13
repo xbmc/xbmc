@@ -177,7 +177,6 @@ bool SpotifyInterface::getPlaylistTracks(CFileItemList &items, int playlist)
       items.Add(pItem);
     }
   }
-  waitForThumbs();
   return true;
 }
 
