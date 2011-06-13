@@ -38,9 +38,9 @@ CacheMemBuffer::CacheMemBuffer()
  : CCacheStrategy()
 {
   m_nStartPosition = 0;
-  m_buffer.Create(g_advancedSettings.m_cacheMemBufferSize + 1);
-  m_HistoryBuffer.Create(g_advancedSettings.m_cacheMemBufferSize + 1);
-  m_forwardBuffer.Create(g_advancedSettings.m_cacheMemBufferSize + 1);
+  m_buffer.Create(g_advancedSettings.SystemSettings()->CacheMemBufferSize() + 1);
+  m_HistoryBuffer.Create(g_advancedSettings.SystemSettings()->CacheMemBufferSize() + 1);
+  m_forwardBuffer.Create(g_advancedSettings.SystemSettings()->CacheMemBufferSize() + 1);
 }
 
 

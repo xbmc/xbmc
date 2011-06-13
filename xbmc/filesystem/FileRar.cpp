@@ -506,7 +506,7 @@ void CFileRar::Flush()
 
 void CFileRar::InitFromUrl(const CURL& url)
 {
-  m_strCacheDir = g_advancedSettings.m_cachePath;//url.GetDomain();
+  m_strCacheDir = g_advancedSettings.SystemSettings()->CachePath();//url.GetDomain();
   URIUtils::AddSlashAtEnd(m_strCacheDir);
   m_strRarPath = url.GetHostName();
   m_strPassword = url.GetUserName();

@@ -200,9 +200,9 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
         if (iDecoderState & VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
         {
           {
-            int nWidth = g_advancedSettings.m_thumbSize;
+            int nWidth = g_advancedSettings.LibrarySettings()->ThumbSize();
             double aspect = (double)picture.iWidth / (double)picture.iHeight;
-            int nHeight = (int)((double)g_advancedSettings.m_thumbSize / aspect);
+            int nHeight = (int)((double)g_advancedSettings.LibrarySettings()->ThumbSize() / aspect);
 
             DllSwScale dllSwScale;
             dllSwScale.Load();

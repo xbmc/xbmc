@@ -205,7 +205,7 @@ CStdString CScraper::GetPathSettings()
 
 void CScraper::ClearCache()
 {
-  CStdString strCachePath = URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath, "scrapers");
+  CStdString strCachePath = URIUtils::AddFileToFolder(g_advancedSettings.SystemSettings()->CachePath(), "scrapers");
 
   // create scraper cache dir if needed
   if (!CDirectory::Exists(strCachePath))

@@ -1148,16 +1148,16 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     if (g_guiSettings.GetBool("debug.showloginfo"))
     {
-      int level = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
-      g_advancedSettings.m_logLevel = level;
+      int level = std::max(g_advancedSettings.SystemSettings()->LogLevelHint(), LOG_LEVEL_DEBUG_FREEMEM);
+      g_advancedSettings.SystemSettings()->SetLogLevel(level);
       CLog::SetLogLevel(level);
       CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting. Level %d.", level);
     }
     else
     {
-      int level = std::min(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
+      int level = std::min(g_advancedSettings.SystemSettings()->LogLevelHint(), LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
       CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", level);
-      g_advancedSettings.m_logLevel = level;
+      g_advancedSettings.SystemSettings()->SetLogLevel(level);
       CLog::SetLogLevel(level);
     }
   }
@@ -2322,7 +2322,8 @@ DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RES
   pControl->Clear();
 
   CStdString strScreen;
-  pControl->AddLabel(g_localizeStrings.Get(242), -1);
+  if (g_advancedSettings.SystemSettings()->CanWindowed())
+    pControl->AddLabel(g_localizeStrings.Get(242), -1);
 
   for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
   {

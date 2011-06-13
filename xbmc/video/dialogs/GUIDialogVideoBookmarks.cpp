@@ -43,7 +43,7 @@
 
 using namespace std;
 
-#define BOOKMARK_THUMB_WIDTH g_advancedSettings.m_thumbSize
+#define BOOKMARK_THUMB_WIDTH g_advancedSettings.LibrarySettings()->ThumbSize()
 
 #define CONTROL_ADD_BOOKMARK           2
 #define CONTROL_CLEAR_BOOKMARKS        3

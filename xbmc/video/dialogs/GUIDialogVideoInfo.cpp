@@ -219,7 +219,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   if (type == VIDEODB_CONTENT_MUSICVIDEOS)
   { // music video
     CStdStringArray artists;
-    StringUtils::SplitString(m_movieItem->GetVideoInfoTag()->m_strArtist, g_advancedSettings.m_videoItemSeparator, artists);
+    StringUtils::SplitString(m_movieItem->GetVideoInfoTag()->m_strArtist, g_advancedSettings.LibrarySettings()->VideoItemSeparator(), artists);
     for (std::vector<CStdString>::const_iterator it = artists.begin(); it != artists.end(); ++it)
     {
       CFileItemPtr item(new CFileItem(*it));

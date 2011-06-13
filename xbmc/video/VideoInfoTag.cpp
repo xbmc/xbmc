@@ -157,21 +157,21 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
 
   XMLUtils::SetString(movie, "id", m_strIMDBNumber);
   XMLUtils::SetAdditiveString(movie, "genre",
-                          g_advancedSettings.m_videoItemSeparator, m_strGenre);
+                          g_advancedSettings.LibrarySettings()->VideoItemSeparator(), m_strGenre);
   XMLUtils::SetAdditiveString(movie, "country",
-                          g_advancedSettings.m_videoItemSeparator, m_strCountry);
+                          g_advancedSettings.LibrarySettings()->VideoItemSeparator(), m_strCountry);
   XMLUtils::SetAdditiveString(movie, "set",
-                          g_advancedSettings.m_videoItemSeparator, m_strSet);
+                          g_advancedSettings.LibrarySettings()->VideoItemSeparator(), m_strSet);
   XMLUtils::SetAdditiveString(movie, "credits",
-                          g_advancedSettings.m_videoItemSeparator, m_strWritingCredits);
+                          g_advancedSettings.LibrarySettings()->VideoItemSeparator(), m_strWritingCredits);
   XMLUtils::SetAdditiveString(movie, "director",
-                          g_advancedSettings.m_videoItemSeparator, m_strDirector);
+                          g_advancedSettings.LibrarySettings()->VideoItemSeparator(), m_strDirector);
   XMLUtils::SetString(movie, "premiered", m_strPremiered);
   XMLUtils::SetString(movie, "status", m_strStatus);
   XMLUtils::SetString(movie, "code", m_strProductionCode);
   XMLUtils::SetString(movie, "aired", m_strFirstAired);
   XMLUtils::SetAdditiveString(movie, "studio",
-                          g_advancedSettings.m_videoItemSeparator, m_strStudio);
+                          g_advancedSettings.LibrarySettings()->VideoItemSeparator(), m_strStudio);
   XMLUtils::SetString(movie, "trailer", m_strTrailer);
 
   if (m_streamDetails.HasItems())
@@ -227,9 +227,9 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     thumbNode->InsertEndChild(th);
   }
   XMLUtils::SetAdditiveString(movie, "artist",
-                         g_advancedSettings.m_videoItemSeparator, m_strArtist);
+                         g_advancedSettings.LibrarySettings()->VideoItemSeparator(), m_strArtist);
   XMLUtils::SetAdditiveString(movie, "showlink",
-                         g_advancedSettings.m_videoItemSeparator, m_strShowLink);
+                         g_advancedSettings.LibrarySettings()->VideoItemSeparator(), m_strShowLink);
 
   return true;
 }
@@ -498,11 +498,11 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
     thumb = thumb->NextSiblingElement("thumb");
   }
 
-  XMLUtils::GetAdditiveString(movie,"genre",g_advancedSettings.m_videoItemSeparator,m_strGenre);
-  XMLUtils::GetAdditiveString(movie,"country",g_advancedSettings.m_videoItemSeparator,m_strCountry);
-  XMLUtils::GetAdditiveString(movie,"credits",g_advancedSettings.m_videoItemSeparator,m_strWritingCredits);
-  XMLUtils::GetAdditiveString(movie,"director",g_advancedSettings.m_videoItemSeparator,m_strDirector);
-  XMLUtils::GetAdditiveString(movie,"showlink",g_advancedSettings.m_videoItemSeparator,m_strShowLink);
+  XMLUtils::GetAdditiveString(movie,"genre",g_advancedSettings.LibrarySettings()->VideoItemSeparator(),m_strGenre);
+  XMLUtils::GetAdditiveString(movie,"country",g_advancedSettings.LibrarySettings()->VideoItemSeparator(),m_strCountry);
+  XMLUtils::GetAdditiveString(movie,"credits",g_advancedSettings.LibrarySettings()->VideoItemSeparator(),m_strWritingCredits);
+  XMLUtils::GetAdditiveString(movie,"director",g_advancedSettings.LibrarySettings()->VideoItemSeparator(),m_strDirector);
+  XMLUtils::GetAdditiveString(movie,"showlink",g_advancedSettings.LibrarySettings()->VideoItemSeparator(),m_strShowLink);
 
   // cast
   const TiXmlElement* node = movie->FirstChildElement("actor");
@@ -529,8 +529,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
     }
     node = node->NextSiblingElement("actor");
   }
-  XMLUtils::GetAdditiveString(movie,"set",g_advancedSettings.m_videoItemSeparator,m_strSet);
-  XMLUtils::GetAdditiveString(movie,"studio",g_advancedSettings.m_videoItemSeparator,m_strStudio);
+  XMLUtils::GetAdditiveString(movie,"set",g_advancedSettings.LibrarySettings()->VideoItemSeparator(),m_strSet);
+  XMLUtils::GetAdditiveString(movie,"studio",g_advancedSettings.LibrarySettings()->VideoItemSeparator(),m_strStudio);
   // artists
   node = movie->FirstChildElement("artist");
   while (node)
@@ -547,7 +547,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
       if (m_strArtist.IsEmpty() || (clear && stricmp(clear,"true")==0))
         m_strArtist += pValue;
       else
-        m_strArtist += g_advancedSettings.m_videoItemSeparator + pValue;
+        m_strArtist += g_advancedSettings.LibrarySettings()->VideoItemSeparator() + pValue;
     }
     node = node->NextSiblingElement("artist");
   }

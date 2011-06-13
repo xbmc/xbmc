@@ -32,10 +32,10 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained)
     Reset();
 
   XMLUtils::GetString(artist,"name",strArtist);
-  XMLUtils::GetAdditiveString(artist,"genre",g_advancedSettings.m_musicItemSeparator,strGenre);
-  XMLUtils::GetAdditiveString(artist,"style",g_advancedSettings.m_musicItemSeparator,strStyles);
-  XMLUtils::GetAdditiveString(artist,"mood",g_advancedSettings.m_musicItemSeparator,strMoods);
-  XMLUtils::GetAdditiveString(artist,"yearsactive",g_advancedSettings.m_musicItemSeparator,strYearsActive);
+  XMLUtils::GetAdditiveString(artist,"genre",g_advancedSettings.LibrarySettings()->MusicItemSeparator(),strGenre);
+  XMLUtils::GetAdditiveString(artist,"style",g_advancedSettings.LibrarySettings()->MusicItemSeparator(),strStyles);
+  XMLUtils::GetAdditiveString(artist,"mood",g_advancedSettings.LibrarySettings()->MusicItemSeparator(),strMoods);
+  XMLUtils::GetAdditiveString(artist,"yearsactive",g_advancedSettings.LibrarySettings()->MusicItemSeparator(),strYearsActive);
 
   XMLUtils::GetString(artist,"born",strBorn);
   XMLUtils::GetString(artist,"formed",strFormed);
@@ -89,13 +89,13 @@ bool CArtist::Save(TiXmlNode *node, const CStdString &tag, const CStdString& str
 
   XMLUtils::SetString(artist,       "name", strArtist);
   XMLUtils::SetAdditiveString(artist,       "genre",
-                            g_advancedSettings.m_musicItemSeparator, strGenre);
+                            g_advancedSettings.LibrarySettings()->MusicItemSeparator(), strGenre);
   XMLUtils::SetAdditiveString(artist,      "style",
-                            g_advancedSettings.m_musicItemSeparator, strStyles);
+                            g_advancedSettings.LibrarySettings()->MusicItemSeparator(), strStyles);
   XMLUtils::SetAdditiveString(artist,      "mood",
-                            g_advancedSettings.m_musicItemSeparator, strMoods);
+                            g_advancedSettings.LibrarySettings()->MusicItemSeparator(), strMoods);
   XMLUtils::SetAdditiveString(artist, "yearsactive",
-                            g_advancedSettings.m_musicItemSeparator, strYearsActive);
+                            g_advancedSettings.LibrarySettings()->MusicItemSeparator(), strYearsActive);
   XMLUtils::SetString(artist,        "born", strBorn);
   XMLUtils::SetString(artist,      "formed", strFormed);
   XMLUtils::SetString(artist, "instruments", strInstruments);

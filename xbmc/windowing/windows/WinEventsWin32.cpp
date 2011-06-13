@@ -202,7 +202,7 @@ void DIB_InitOSKeymap()
 
   // Only include the multimedia keys if they have been enabled in the
   // advanced settings
-  if (g_advancedSettings.m_enableMultimediaKeys)
+  if (g_advancedSettings.SystemSettings()->EnableMultimediaKeys())
   {
     VK_keymap[VK_BROWSER_BACK]        = XBMCK_BROWSER_BACK;
     VK_keymap[VK_BROWSER_FORWARD]     = XBMCK_BROWSER_FORWARD;

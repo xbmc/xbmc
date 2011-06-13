@@ -659,7 +659,7 @@ bool CVideoReferenceClock::SetupD3D()
   //forced update of windows refreshrate
   UpdateRefreshrate(true);
 
-  if (g_advancedSettings.m_measureRefreshrate)
+  if (g_advancedSettings.VideoSettings()->MeasureRefreshRate())
   {
     //measure the refreshrate a couple times
     list<double> Measures;

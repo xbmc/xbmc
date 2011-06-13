@@ -91,7 +91,7 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
     else
       vec.push_back(make_pair("3", 20389)); // Music Videos
   }
-  if (!g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems)
+  if (!g_advancedSettings.LibrarySettings()->VideoLibraryHideRecentlyAddedItems())
   {
     if (hasMovies)
       vec.push_back(make_pair("4", 20386));  // Recently Added Movies

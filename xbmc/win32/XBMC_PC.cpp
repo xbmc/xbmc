@@ -20,6 +20,7 @@
  */
 
 #include "settings/AdvancedSettings.h"
+#include "settings/AppParamParser.h"
 #include "utils/log.h"
 #include "WIN32Util.h"
 #include "shellapi.h"
@@ -106,13 +107,11 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
   //the loglevel set with the --debug flag
 #ifdef _DEBUG
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
+  g_advancedSettings.SystemSettings()->SetLogLevelAndHint(LOG_LEVEL_DEBUG);
 #else
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
+  g_advancedSettings.SystemSettings()->SetLogLevelAndHint(LOG_LEVEL_NORMAL);
 #endif
-  CLog::SetLogLevel(g_advancedSettings.m_logLevel);
+  CLog::SetLogLevel(g_advancedSettings.SystemSettings()->LogLevel());
 
   // Initializes CreateMiniDump to handle exceptions.
   SetUnhandledExceptionFilter( CreateMiniDump );
@@ -151,35 +150,10 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
   szArglist = CommandLineToArgvW(strcl.c_str(), &nArgs);
-  if(szArglist != NULL)
-  {
-    for(int i=0;i<nArgs;i++)
-    {
-      CStdStringW strArgW(szArglist[i]);
-      if(strArgW.Equals(L"-fs"))
-        g_advancedSettings.m_startFullScreen = true;
-      else if(strArgW.Equals(L"-p") || strArgW.Equals(L"--portable"))
-        g_application.EnablePlatformDirectories(false);
-      else if(strArgW.Equals(L"-d"))
-      {
-        if(++i < nArgs)
-        {
-          int iSleep = _wtoi(szArglist[i]);
-          if(iSleep > 0 && iSleep < 360)
-            Sleep(iSleep*1000);
-          else
-            --i;
-        }
-      }
-      else if(strArgW.Equals(L"--debug"))
-      {
-        g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
-        g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
-        CLog::SetLogLevel(g_advancedSettings.m_logLevel);
-      }
-    }
-    LocalFree(szArglist);
-  }
+#ifdef _WIN32
+  CAppParamParser appParamParser = CAppParamParser();
+  appParamParser.Parse(szArglist, nArgs);
+#endif
 
   WSADATA wd;
   WSAStartup(MAKEWORD(2,2), &wd);

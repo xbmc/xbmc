@@ -412,7 +412,7 @@ unsigned int CWinRenderer::PreInit()
   m_resolution = RES_PAL_4x3;
 
   // setup the background colour
-  m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
+  m_clearColour = (g_advancedSettings.VideoSettings()->BlackBarColour() & 0xff) * 0x010101;
 
   g_Windowing.Get3DDevice()->GetDeviceCaps(&m_deviceCaps);
 
@@ -531,7 +531,7 @@ void CWinRenderer::SelectPSVideoFilter()
   {
     bool scaleSD = m_sourceHeight < 720 && m_sourceWidth < 1280;
     bool scaleUp = (int)m_sourceHeight < g_graphicsContext.GetHeight() && (int)m_sourceWidth < g_graphicsContext.GetWidth();
-    bool scaleFps = m_fps < (g_advancedSettings.m_videoAutoScaleMaxFps + 0.01f);
+    bool scaleFps = m_fps < (g_advancedSettings.VideoSettings()->AutoScaleMaxFPS() + 0.01f);
 
     if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD && scaleUp && scaleFps)
     {
@@ -1092,7 +1092,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
         return true;
 
       //lanczos3 is only allowed through advancedsettings.xml because it's very slow
-      if (g_advancedSettings.m_videoAllowLanczos3 && method == VS_SCALINGMETHOD_LANCZOS3)
+      if (g_advancedSettings.VideoSettings()->AllowLanczos3() && method == VS_SCALINGMETHOD_LANCZOS3)
         return true;
     }
   }

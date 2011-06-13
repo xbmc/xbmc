@@ -334,8 +334,8 @@ void CDirectory::FilterFileDirectories(CFileItemList &items, const CStdString &m
 
 CStdString CDirectory::Translate(const CStdString &path)
 {
-  for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin(); 
-      i != g_advancedSettings.m_pathSubstitutions.end(); i++)
+  CSystemSettings::StringMapping pathSubstitutions = g_advancedSettings.SystemSettings()->PathSubstitutions();
+  for (CSystemSettings::StringMapping::iterator i = pathSubstitutions.begin(); i != pathSubstitutions.end(); i++)
   {
     if (strncmp(path.c_str(), i->first.c_str(), i->first.size()) == 0)
       return URIUtils::AddFileToFolder(i->second, path.Mid(i->first.size()));

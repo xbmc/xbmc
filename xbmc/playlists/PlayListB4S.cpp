@@ -98,7 +98,7 @@ bool CPlayListB4S::LoadData(istream& stream)
       if (pNodeInfo)
       {
         CStdString strInfo = pNodeInfo->FirstChild()->Value();
-        if (URIUtils::IsRemote(m_strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
+        if (URIUtils::IsRemote(m_strBasePath) && g_advancedSettings.SystemSettings()->PathSubstitutions().size() > 0)
           strFileName = CUtil::SubstitutePath(strFileName);
         CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
         CFileItemPtr newItem(new CFileItem(strInfo));

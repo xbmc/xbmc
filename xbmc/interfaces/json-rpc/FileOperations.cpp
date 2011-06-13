@@ -78,17 +78,17 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
   CStdString extensions = "";
   if (media.Equals("video"))
   {
-    regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
+    regexps = g_advancedSettings.VideoSettings()->ExcludeFromListingRegExps();
     extensions = g_settings.m_videoExtensions;
   }
   else if (media.Equals("music"))
   {
-    regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+    regexps = g_advancedSettings.AudioSettings()->ExcludeFromListingRegExps();
     extensions = g_settings.m_musicExtensions;
   }
   else if (media.Equals("pictures"))
   {
-    regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+    regexps = g_advancedSettings.PictureSettings()->ExcludeFromListingRegExps();
     extensions = g_settings.m_pictureExtensions;
   }
 
@@ -205,17 +205,17 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
       {
         if (media.Equals("video"))
         {
-          regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
+          regexps = g_advancedSettings.VideoSettings()->ExcludeFromListingRegExps();
           extensions = g_settings.m_videoExtensions;
         }
         else if (media.Equals("music"))
         {
-          regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+          regexps = g_advancedSettings.AudioSettings()->ExcludeFromListingRegExps();
           extensions = g_settings.m_musicExtensions;
         }
         else if (media.Equals("pictures"))
         {
-          regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+          regexps = g_advancedSettings.PictureSettings()->ExcludeFromListingRegExps();
           extensions = g_settings.m_pictureExtensions;
         }
       }

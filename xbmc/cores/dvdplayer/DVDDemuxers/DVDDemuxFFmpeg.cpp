@@ -99,9 +99,9 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 
   AVClass* avc= ptr ? *(AVClass**)ptr : NULL;
 
-  if(level >= AV_LOG_DEBUG && g_advancedSettings.m_logLevel <= LOG_LEVEL_DEBUG_SAMBA)
+  if(level >= AV_LOG_DEBUG && g_advancedSettings.SystemSettings()->LogLevel() <= LOG_LEVEL_DEBUG_SAMBA)
     return;
-  else if(g_advancedSettings.m_logLevel <= LOG_LEVEL_NORMAL)
+  else if(g_advancedSettings.SystemSettings()->LogLevel() <= LOG_LEVEL_NORMAL)
     return;
 
   int type;
@@ -359,7 +359,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         // the advancedsetting is for allowing the user to force outputting the
         // 44.1 kHz DTS wav file as PCM, so that an A/V receiver can decode
         // it (this is temporary until we handle 44.1 kHz passthrough properly)
-        if (trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0 && !g_advancedSettings.m_dvdplayerIgnoreDTSinWAV))
+        if (trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0 && !g_advancedSettings.AudioSettings()->DVDPlayerIgnoreDTSInWav()))
         {
           // check for spdif and dts
           // This is used with wav files and audio CDs that may contain

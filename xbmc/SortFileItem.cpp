@@ -32,11 +32,11 @@
 
 CStdString SSortFileItem::RemoveArticles(const CStdString &label)
 {
-  for (unsigned int i=0;i<g_advancedSettings.m_vecTokens.size();++i)
+  for (unsigned int i=0;i<g_advancedSettings.LibrarySettings()->VecTokens().size();++i)
   {
-    if (g_advancedSettings.m_vecTokens[i].size() < label.size() &&
-        strnicmp(g_advancedSettings.m_vecTokens[i].c_str(), label.c_str(), g_advancedSettings.m_vecTokens[i].size()) == 0)
-      return label.Mid(g_advancedSettings.m_vecTokens[i].size());
+    if (g_advancedSettings.LibrarySettings()->VecTokens()[i].size() < label.size() &&
+        strnicmp(g_advancedSettings.LibrarySettings()->VecTokens()[i].c_str(), label.c_str(), g_advancedSettings.LibrarySettings()->VecTokens()[i].size()) == 0)
+      return label.Mid(g_advancedSettings.LibrarySettings()->VecTokens()[i].size());
   }
   return label;
 }
@@ -265,7 +265,7 @@ void SSortFileItem::BySongArtist(CFileItemPtr &item)
   else if (item->HasVideoInfoTag())
     label = item->GetVideoInfoTag()->m_strArtist;
 
-  if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear)
+  if (g_advancedSettings.LibrarySettings()->MusicLibraryAlbumsSortByArtistThenYear())
   {
     int year = 0;
     if (item->HasMusicInfoTag())
@@ -299,7 +299,7 @@ void SSortFileItem::BySongArtistNoThe(CFileItemPtr &item)
     label = item->GetVideoInfoTag()->m_strArtist;
   label = RemoveArticles(label);
 
-  if (g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear)
+  if (g_advancedSettings.LibrarySettings()->MusicLibraryAlbumsSortByArtistThenYear())
   {
     int year = 0;
     if (item->HasMusicInfoTag())

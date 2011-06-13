@@ -91,8 +91,8 @@ void CKaraokeLyricsCDG::setPixel( int x, int y, BYTE color )
 
   if ( x < 0 || y < 0 || offset > CDG_FULL_HEIGHT * CDG_FULL_WIDTH )
   {
-	CLog::Log( LOGERROR, "CDG renderer: set pixel (%d,%d) is out of boundary", x, y );
-	return;
+	  CLog::Log( LOGERROR, "CDG renderer: set pixel (%d,%d) is out of boundary", x, y );
+	  return;
   }
 
   m_cdgScreen[offset] = color;
@@ -102,18 +102,12 @@ void CKaraokeLyricsCDG::setPixel( int x, int y, BYTE color )
 bool CKaraokeLyricsCDG::InitGraphics()
 {
   // set the background to be completely transparent if we use visualisations, or completely solid if not
-  if ( g_advancedSettings.m_karaokeAlwaysEmptyOnCdgs )
-    m_bgAlpha = 0xff000000;
-  else
-    m_bgAlpha = 0;
-
+  m_bgAlpha = g_advancedSettings.KaraokeSettings()->AlwaysEmptyOnCDGs() ? 0xff000000 : 0;
   if (!m_pCdgTexture)
-  {
-	m_pCdgTexture = new CTexture( CDG_FULL_WIDTH, CDG_FULL_HEIGHT, XB_FMT_A8R8G8B8 );
-  }
-
-  if ( !m_pCdgTexture )
-  {
+    m_pCdgTexture = new CTexture( CDG_FULL_WIDTH, CDG_FULL_HEIGHT, XB_FMT_A8R8G8B8 );
+  
+  if (!m_pCdgTexture)
+  {  
     CLog::Log(LOGERROR, "CDG renderer: failed to create texture" );
     return false;
   }
@@ -140,7 +134,7 @@ void CKaraokeLyricsCDG::Render()
     return;
 
   // Time to update?
-  unsigned int songTime = (unsigned int) MathUtils::round_int( (getSongTime() + g_advancedSettings.m_karaokeSyncDelayCDG) * 1000 );
+  unsigned int songTime = (unsigned int) MathUtils::round_int( (getSongTime() + g_advancedSettings.KaraokeSettings()->SyncDelayCDG()) * 1000 );
   unsigned int packets_due = songTime * 300 / 1000;
 
   if ( UpdateBuffer( packets_due ) )
