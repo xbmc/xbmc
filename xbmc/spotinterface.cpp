@@ -75,7 +75,7 @@ void SpotifyInterface::cb_connectionError(sp_session *session, sp_error error)
   CLog::Log( LOGERROR, "Spotifylog: connection to Spotify failed: %s\n", message.c_str());
   //sp_session_release(g_spotifyInterface->m_session);
   //g_spotifyInterface->m_session = 0;
-  g_spotifyInterface->hideReconectingDialog();
+  //g_spotifyInterface->hideReconectingDialog();
   g_spotifyInterface->showConnectionErrorDialog(error);
 }
 
@@ -83,8 +83,8 @@ void SpotifyInterface::cb_loggedIn(sp_session *session, sp_error error)
 {
   if (SP_ERROR_OK != error) {
     CLog::Log( LOGERROR, "Spotifylog: failed to log in to Spotify: %s\n", sp_error_message(error));
-    sp_session_release(g_spotifyInterface->m_session);
-    g_spotifyInterface->m_session = 0;
+    //sp_session_release(g_spotifyInterface->m_session);
+    //g_spotifyInterface->m_session = 0;
     g_spotifyInterface->showConnectionErrorDialog(error);
     return;
   }
@@ -98,7 +98,7 @@ void SpotifyInterface::cb_loggedIn(sp_session *session, sp_error error)
 
 void SpotifyInterface::cb_loggedOut(sp_session *session)
 {
-    CLog::Log( LOGNOTICE, "Spotifylog: disconnected to Spotify!");
+  CLog::Log( LOGNOTICE, "Spotifylog: disconnected to Spotify!");
   g_spotifyInterface->m_isWaitingForLogout = false; 
 }
 
@@ -708,6 +708,12 @@ SpotifyInterface::SpotifyInterface()
   m_callbacks.play_token_lost = 0;
   m_callbacks.log_message = &cb_logMessage;
   m_callbacks.end_of_track = &SpotifyCodec::cb_endOfTrack;
+  m_callbacks.streaming_error = 0;
+  m_callbacks.userinfo_updated = 0;
+  m_callbacks.start_playback = 0;
+  m_callbacks.stop_playback = 0;
+  m_callbacks.get_audio_buffer_stats = 0;
+  m_callbacks.offline_status_updated = 0;
 
 
   m_thumbDir.Format("special://temp/spotify/thumbs/");
@@ -761,9 +767,14 @@ bool SpotifyInterface::connect(bool forceNewUser)
     m_config.callbacks = &m_callbacks;
 
     m_error = sp_session_create(&m_config, &m_session);
+    
     //set high bitrate
     if (g_advancedSettings.m_spotifyUseHighBitrate)
       sp_session_preferred_bitrate(m_session, SP_BITRATE_320k);
+    
+    sp_session_set_connection_type(m_session, SP_CONNECTION_TYPE_WIRED);
+    sp_session_set_connection_rules(m_session, SP_CONNECTION_RULE_NETWORK);
+    
     if (SP_ERROR_OK != m_error) {
       CLog::Log( LOGERROR, "Spotifylog: failed to create session: error: %s", sp_error_message(m_error));
       m_session = NULL;
@@ -778,16 +789,16 @@ bool SpotifyInterface::connect(bool forceNewUser)
     g_advancedSettings.m_spotifyPassword = "";
   }
   //are we logged in?
-  if (sp_session_connectionstate(m_session) != SP_CONNECTION_STATE_LOGGED_IN || forceNewUser)
+  if (sp_session_connectionstate(m_session) != SP_CONNECTION_STATE_LOGGED_IN )
   {
     CLog::Log( LOGNOTICE, "Spotifylog: logging in \n");
     CStdString username = getUsername();
     CStdString password = getPassword();
     sp_session_login(m_session, username.c_str(), password.c_str() );
-    if (sp_session_user(m_session) == 0 ) {
-      CLog::Log( LOGERROR, "Spotifylog: failed to login %s\n", sp_error_message(m_error));
-      return false;
-    }
+    //if (sp_session_user(m_session) == 0 ) {
+    //  CLog::Log( LOGERROR, "Spotifylog: failed to login %s\n", sp_error_message(m_error));
+    return false;
+    //}
   }
   return true;
 }
@@ -817,7 +828,7 @@ bool SpotifyInterface::reconnect(bool forceNewUser)
   if(m_session)
   {
     if (forceNewUser)
-      sp_session_logout(m_session);
+      disconnect();
     if (forceNewUser || sp_session_connectionstate(m_session) != SP_CONNECTION_STATE_LOGGED_IN )
     {
       showReconectingDialog();
@@ -928,6 +939,7 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
       m_toplistWaitingThumbs.pop_back();
     }*/
 
+    
     if (m_toplistArtistsBrowse)
       sp_toplistbrowse_release(m_toplistArtistsBrowse);
     m_toplistArtistsBrowse = 0;
@@ -1395,11 +1407,12 @@ void SpotifyInterface::getPlaylistItems(CFileItemList &items)
   //get the playlists
   CMediaSource share;
   sp_playlistcontainer *pc = sp_session_playlistcontainer(m_session);
+
   for (int i=0; i < sp_playlistcontainer_num_playlists(pc); i++)
   {
     sp_playlist* pl = sp_playlistcontainer_playlist(pc, i);
     while(!sp_playlist_is_loaded(pl)){
-      clock_t goal = 100 + clock();
+      clock_t goal = 10 + clock();
       while (goal > clock());
       //CLog::Log( LOGNOTICE, "Spotifylog: waiting for playlists" );
       processEvents();
@@ -1590,7 +1603,7 @@ bool SpotifyInterface::getBrowseToplistArtists(CFileItemList &items)
       m_toplistArtistsBrowse = 
         sp_toplistbrowse_create(m_session, 
                                 SP_TOPLIST_TYPE_ARTISTS,
-                                SP_TOPLIST_REGION_EVERYWHERE,
+                                (sp_toplistregion)sp_session_user_country(m_session),
                                 getUsername(),
                                 &cb_topListAritstsComplete,
                                 0);
@@ -1617,7 +1630,7 @@ bool SpotifyInterface::getBrowseToplistAlbums(CFileItemList &items)
       m_toplistAlbumsBrowse = 
         sp_toplistbrowse_create(m_session,
                                 SP_TOPLIST_TYPE_ALBUMS,
-                                SP_TOPLIST_REGION_EVERYWHERE,
+                                (sp_toplistregion)sp_session_user_country(m_session),
                                 getUsername(),
                                 &cb_topListAlbumsComplete,
                                 0);
@@ -1644,7 +1657,7 @@ bool SpotifyInterface::getBrowseToplistTracks(CFileItemList &items)
       m_toplistTracksBrowse =
       sp_toplistbrowse_create(m_session,
                               SP_TOPLIST_TYPE_TRACKS,
-                              SP_TOPLIST_REGION_EVERYWHERE,
+                              (sp_toplistregion)sp_session_user_country(m_session),
                               getUsername(),
                               &cb_topListTracksComplete,
                               0);

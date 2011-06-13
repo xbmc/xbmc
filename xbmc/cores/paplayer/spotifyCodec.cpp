@@ -131,7 +131,7 @@ bool SpotifyCodec::loadPlayer()
               CLog::Log( LOGDEBUG, "Spotifylog: music load, play" );
               m_isPlayerLoaded = true;
               return true;
-            }
+            }//0101133603
           }
         }
       }else
@@ -173,7 +173,7 @@ __int64 SpotifyCodec::Seek(__int64 iSeekTime)
 
   if (m_isPlayerLoaded)
   {
-    sp_session_player_seek (getSession(), iSeekTime / 1000 );
+    sp_session_player_seek (getSession(), iSeekTime * 1000 );
     {
       CLog::Log( LOGDEBUG, "Spotifylog: player seek, offset %i", (int)iSeekTime);
       m_bufferPos = 0;
@@ -188,7 +188,7 @@ __int64 SpotifyCodec::Seek(__int64 iSeekTime)
 //music delivery callbacks
 int SpotifyCodec::cb_musicDelivery(sp_session *session, const sp_audioformat *format, const void *frames, int num_frames)
 {
-  //CLog::Log( LOGDEBUG, "Spotifylog: music delivery");
+  CLog::Log( LOGDEBUG, "Spotifylog: music delivery");
   if (!m_currentPlayer)
   {
     sp_session_player_play (g_spotifyInterface->getSession(), false);
