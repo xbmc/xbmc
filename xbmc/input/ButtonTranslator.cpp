@@ -782,9 +782,9 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   return action;
 }
 
-std::map<CStdString, std::map<int, CButtonTranslator::buttonMap>>::iterator CButtonTranslator::GetActiveButtonMap()
+std::map<CStdString, std::map<int, CButtonTranslator::buttonMap> >::iterator CButtonTranslator::GetActiveButtonMap()
 {
-  std::map<CStdString, std::map<int, buttonMap>>::iterator activeMapIt = deviceMappings.find(g_settings.m_activeKeyboardMapping);
+  std::map<CStdString, std::map<int, buttonMap> >::iterator activeMapIt = deviceMappings.find(g_settings.m_activeKeyboardMapping);
   if (activeMapIt == deviceMappings.end())
     return deviceMappings.find("default");
   return activeMapIt;
@@ -871,11 +871,11 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
       if (deviceName.empty())
         deviceName = "default";
 
-      std::map<CStdString, std::map<int, buttonMap>>::iterator deviceMapIt = deviceMappings.find(deviceName);
+      std::map<CStdString, std::map<int, buttonMap> >::iterator deviceMapIt = deviceMappings.find(deviceName);
       if (deviceMapIt == deviceMappings.end())
       {
         //First time encountering this device, lets initialise the buttonMap for it.
-        deviceMapIt = deviceMappings.insert(pair<CStdString, std::map<int, buttonMap>>(deviceName, std::map<int, buttonMap>())).first;
+        deviceMapIt = deviceMappings.insert(pair<CStdString, std::map<int, buttonMap> >(deviceName, std::map<int, buttonMap>())).first;
       }
       
       std::map<int, buttonMap>::iterator windowIt = deviceMapIt->second.find(windowID);

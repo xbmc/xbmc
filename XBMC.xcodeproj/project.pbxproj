@@ -64,6 +64,8 @@
 		18B4A00B1152BFA5001AF8A6 /* Scraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFC1152BFA5001AF8A6 /* Scraper.cpp */; };
 		18B4A00C1152BFA5001AF8A6 /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFE1152BFA5001AF8A6 /* ScreenSaver.cpp */; };
 		18B4A00D1152BFA5001AF8A6 /* Visualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B4A0001152BFA5001AF8A6 /* Visualisation.cpp */; };
+		18B7006113A697270009C1AF /* KeymapLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7005F13A697270009C1AF /* KeymapLoader.cpp */; };
+		18B7006213A697270009C1AF /* KeymapLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7005F13A697270009C1AF /* KeymapLoader.cpp */; };
 		18B7C3841294203F009E7A26 /* AddonDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C3821294203F009E7A26 /* AddonDatabase.cpp */; };
 		18B7C3851294203F009E7A26 /* AddonDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C3821294203F009E7A26 /* AddonDatabase.cpp */; };
 		18B7C38A12942090009E7A26 /* GUIDialogAddonInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7C38612942090009E7A26 /* GUIDialogAddonInfo.cpp */; };
@@ -1908,6 +1910,8 @@
 		18B49FFF1152BFA5001AF8A6 /* ScreenSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenSaver.h; sourceTree = "<group>"; };
 		18B4A0001152BFA5001AF8A6 /* Visualisation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Visualisation.cpp; sourceTree = "<group>"; };
 		18B4A0011152BFA5001AF8A6 /* Visualisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Visualisation.h; sourceTree = "<group>"; };
+		18B7005F13A697270009C1AF /* KeymapLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeymapLoader.cpp; sourceTree = "<group>"; };
+		18B7006013A697270009C1AF /* KeymapLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeymapLoader.h; sourceTree = "<group>"; };
 		18B7C3821294203F009E7A26 /* AddonDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonDatabase.cpp; sourceTree = "<group>"; };
 		18B7C3831294203F009E7A26 /* AddonDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonDatabase.h; sourceTree = "<group>"; };
 		18B7C38612942090009E7A26 /* GUIDialogAddonInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogAddonInfo.cpp; sourceTree = "<group>"; };
@@ -4263,6 +4267,8 @@
 				18B7C8CE12942546009E7A26 /* KeyboardLayoutConfiguration.h */,
 				18B7C8CF12942546009E7A26 /* KeyboardStat.cpp */,
 				18B7C8D012942546009E7A26 /* KeyboardStat.h */,
+				18B7005F13A697270009C1AF /* KeymapLoader.cpp */,
+				18B7006013A697270009C1AF /* KeymapLoader.h */,
 				18B7C8D112942546009E7A26 /* MouseStat.cpp */,
 				18B7C8D212942546009E7A26 /* MouseStat.h */,
 				18B7C8D312942546009E7A26 /* SDLJoystick.cpp */,
@@ -8019,6 +8025,7 @@
 				1840B74D13993D8A007C848B /* JSONVariantParser.cpp in Sources */,
 				1840B75313993DA0007C848B /* JSONVariantWriter.cpp in Sources */,
 				7C0A7EC013A5DBCE00AFC2BD /* AppParamParser.cpp in Sources */,
+				18B7006113A697270009C1AF /* KeymapLoader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8907,6 +8914,7 @@
 				1840B74E13993D8A007C848B /* JSONVariantParser.cpp in Sources */,
 				1840B75413993DA0007C848B /* JSONVariantWriter.cpp in Sources */,
 				7C0A7EC113A5DBCE00AFC2BD /* AppParamParser.cpp in Sources */,
+				18B7006213A697270009C1AF /* KeymapLoader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8977,7 +8985,6 @@
 					"$(SRCROOT)/lib/cmyth/librefmem",
 					"$(SRCROOT)/lib/libapetag/.libs",
 					"$(SRCROOT)/lib/libsquish",
-					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
 					"\"$(SRCROOT)/lib/SlingboxLib\"",

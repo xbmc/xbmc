@@ -19,6 +19,9 @@
  *
  */
 
+#include <map>
+#include "utils/StdString.h"
+
 static std::map<CStdString, CStdString> deviceMappings;
 static bool parsedMappings;
 
