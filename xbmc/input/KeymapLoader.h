@@ -26,9 +26,9 @@ class CKeymapLoader
 {
   public:
     CKeymapLoader();
-    void DeviceRemoved(CStdString deviceID);
-    void DeviceAdded(CStdString deviceID);
+    void DeviceRemoved(const CStdString& deviceID);
+    void DeviceAdded(const CStdString& deviceID);
   private:
     void ParseDeviceMappings();
-    bool FindMappedDevice(CStdString deviceId, CStdString& keymapName);
+    bool FindMappedDevice(const CStdString& deviceId, CStdString& keymapName);
 };

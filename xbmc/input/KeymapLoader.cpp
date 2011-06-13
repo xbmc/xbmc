@@ -39,7 +39,7 @@ CKeymapLoader::CKeymapLoader()
   }
 }
 
-void CKeymapLoader::DeviceAdded(CStdString deviceId)
+void CKeymapLoader::DeviceAdded(const CStdString& deviceId)
 {
   CStdString keymapName;
   if (FindMappedDevice(deviceId, keymapName))
@@ -49,7 +49,7 @@ void CKeymapLoader::DeviceAdded(CStdString deviceId)
   }
 }
 
-void CKeymapLoader::DeviceRemoved(CStdString deviceId)
+void CKeymapLoader::DeviceRemoved(const CStdString& deviceId)
 {
   CStdString keymapName;
   if (FindMappedDevice(deviceId, keymapName))
@@ -82,9 +82,10 @@ void CKeymapLoader::ParseDeviceMappings()
   }
 }
 
-bool CKeymapLoader::FindMappedDevice(CStdString deviceId, CStdString& keymapName)
+bool CKeymapLoader::FindMappedDevice(const CStdString& deviceId, CStdString& keymapName)
 {
-  std::map<CStdString, CStdString>::iterator deviceIdIt = deviceMappings.find(deviceId.ToUpper());
+  CStdString deviceIdTemp = deviceId;
+  std::map<CStdString, CStdString>::iterator deviceIdIt = deviceMappings.find(deviceIdTemp.ToUpper());
   if (deviceIdIt == deviceMappings.end())
     return false;
 
