@@ -111,24 +111,26 @@ CGUILabel::COLOR CGUIButtonControl::GetTextColor() const
 
 void CGUIButtonControl::ProcessText(unsigned int currentTime)
 {
-  m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
-  m_label.SetText(m_info.GetLabel(m_parentID));
-  m_label.SetScrolling(HasFocus());
+  bool changed = m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
+  changed |= m_label.SetText(m_info.GetLabel(m_parentID));
+  changed |= m_label.SetScrolling(HasFocus());
 
   // render the second label if it exists
   CStdString label2(m_info2.GetLabel(m_parentID));
   if (!label2.IsEmpty())
   {
-    m_label2.SetMaxRect(m_posX, m_posY, m_width, m_height);
-    m_label2.SetText(label2);
-    m_label2.SetAlign(XBFONT_RIGHT | (m_label.GetLabelInfo().align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED);
-    m_label2.SetScrolling(HasFocus());
+    changed |= m_label2.SetMaxRect(m_posX, m_posY, m_width, m_height);
+    changed |= m_label2.SetText(label2);
+    changed |= m_label2.SetAlign(XBFONT_RIGHT | (m_label.GetLabelInfo().align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED);
+    changed |= m_label2.SetScrolling(HasFocus());
 
-    CGUILabel::CheckAndCorrectOverlap(m_label, m_label2);
+    changed |= CGUILabel::CheckAndCorrectOverlap(m_label, m_label2);
 
-    m_label2.SetColor(GetTextColor());
+    changed |= m_label2.SetColor(GetTextColor());
   }
-  m_label.SetColor(GetTextColor());
+  changed |= m_label.SetColor(GetTextColor());
+  if (changed)
+    MarkDirtyRegion();
 }
 
 bool CGUIButtonControl::OnAction(const CAction &action)

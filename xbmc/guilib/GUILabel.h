@@ -201,7 +201,7 @@ public:
    \param label1 First label to check
    \param label2 Second label to check
    */
-  static void CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2);
+  static bool CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2);
   
 protected:
   color_t GetColor() const;

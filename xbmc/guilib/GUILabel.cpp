@@ -192,11 +192,11 @@ float CGUILabel::GetMaxWidth() const
   return m_maxRect.Width() - 2*m_label.offsetX;
 }
 
-void CGUILabel::CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2)
+bool CGUILabel::CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2)
 {
   CRect rect(label1.m_renderRect);
   if (rect.Intersect(label2.m_renderRect).IsEmpty())
-    return; // nothing to do (though it could potentially encroach on the min_space requirement)
+    return false; // nothing to do (though it could potentially encroach on the min_space requirement)
   
   static const float min_space = 10;
   // overlap vertically and horizontally - check alignment
@@ -214,5 +214,7 @@ void CGUILabel::CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2)
       chopPoint = left.m_renderRect.x2 + min_space;
     left.m_renderRect.x2 = chopPoint - min_space;
     right.m_renderRect.x1 = chopPoint + min_space;
+    return true;
   }
+  return false;
 }
