@@ -865,9 +865,8 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     {
       pDevice = pWindow->FirstChild(type);
       TiXmlElement *pDeviceElement = pDevice->ToElement();
-      CStdString deviceName;
       //check if exists, if not use "default"
-      deviceName = pDeviceElement->Attribute("name");
+      CStdString deviceName = pDeviceElement->Attribute("name");
       if (deviceName.empty())
         deviceName = "default";
 
