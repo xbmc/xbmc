@@ -30,6 +30,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	install -c -m 644  $(RPC_HEADERS) $(PREFIX)/include/rpc/
 	cd $(SOURCE); ./autogen.sh
 	cd $(SOURCE); $(CONFIGURE)
+	cd $(SOURCE); patch -p0 < ../printf.patch
 
 $(LIBDYLIB): $(SOURCE)
 	make -C $(SOURCE)

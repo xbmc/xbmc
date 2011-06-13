@@ -13,6 +13,7 @@ CONFIGURE=./configure --prefix=$(TOOLCHAIN) \
 
 APP=$(SOURCE)/src/tar
 APPBIN=$(TOOLCHAIN)/bin/tar
+TAR=$(PREFIX)/bin/$(APPNAME)
 
 all: $(APPBIN)
 
@@ -33,6 +34,8 @@ $(APPBIN):
 	make -C $(SOURCE) install
 	rm -f $(TOOLCHAIN)/bin/tar $(TOOLCHAIN)/bin/gnutar
 	cd $(TOOLCHAIN)/bin; ln -s gtar tar; ln -s gtar gnutar
+	# remove this once we change over to darwin/depends
+	rm -f $(TAR); ln -s $(TOOLCHAIN)/bin/gtar $(TAR)
 
 clean:
 	make -C $(SOURCE) clean

@@ -33,8 +33,7 @@ $(APPBIN):
 	make -C $(SOURCE) install
 
 $(YASM): $(APPBIN)
-	rm -f $(YASM)
-	ln -s $(APPBIN) $(YASM)
+	rm -f $(YASM); ln -s $(APPBIN) $(YASM)
 
 clean:
 	make -C $(SOURCE) clean
