@@ -25,8 +25,6 @@
 #include <boost/operators.hpp>
 #include "utils/StdString.h"
 
-#include "utils/StdString.h"
-
 namespace ADDON
 {
   class AddonVersion : public boost::totally_ordered<AddonVersion> {
