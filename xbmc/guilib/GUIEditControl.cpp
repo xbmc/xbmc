@@ -363,7 +363,7 @@ void CGUIEditControl::RecalcLabelPosition()
     m_textOffset = 0;
 }
 
-void CGUIEditControl::RenderText()
+void CGUIEditControl::ProcessText(unsigned int currentTime)
 {
   if (m_smsTimer.GetElapsedMilliseconds() > smsDelay)
     UpdateText();
@@ -375,6 +375,7 @@ void CGUIEditControl::RenderText()
     RecalcLabelPosition();
   }
 
+  bool changed = false;
 
   float posX = m_label.GetRenderRect().x1;
   float maxTextWidth = m_label.GetMaxWidth();
@@ -384,8 +385,8 @@ void CGUIEditControl::RenderText()
   if (leftTextWidth > 0)
   {
     // render the text on the left
-    m_label.SetColor(GetTextColor());
-    m_label.Render();
+    changed |= m_label.SetColor(GetTextColor());
+    changed |= m_label.Process(currentTime);
     
     posX += leftTextWidth + spaceWidth;
     maxTextWidth -= leftTextWidth + spaceWidth;
@@ -417,13 +418,20 @@ void CGUIEditControl::RenderText()
       text.Insert(m_cursorPos, col);
     }
 
-    m_label2.SetMaxRect(posX + m_textOffset, m_posY, maxTextWidth - m_textOffset, m_height);
-    m_label2.SetTextW(text);
-    m_label2.SetAlign(align);
-    m_label2.SetColor(GetTextColor());
-    m_label2.Render();
+    changed |= m_label2.SetMaxRect(posX + m_textOffset, m_posY, maxTextWidth - m_textOffset, m_height);
+    if (text != m_lastRenderedText)
+    {
+      m_label2.SetTextW(text);
+      m_lastRenderedText = text;
+      changed = true;
+    }
+    changed |= m_label2.SetAlign(align);
+    changed |= m_label2.SetColor(GetTextColor());
+    changed |= m_label2.Process(currentTime);
     g_graphicsContext.RestoreClipRegion();
   }
+  if (changed)
+    MarkDirtyRegion();
 }
 
 CStdStringW CGUIEditControl::GetDisplayedText() const
