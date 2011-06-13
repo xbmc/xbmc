@@ -178,15 +178,15 @@ JSON_STATUS CAudioLibrary::GetGenres(const CStdString &method, ITransportLayer *
   if (!musicdatabase.Open())
     return InternalError;
 
-  // Add "genre" to "fields" array by default
-  CVariant param = parameterObject;
-  if (!param.isMember("fields"))
-    param["fields"] = CVariant(CVariant::VariantTypeArray);
-  param["fields"].append("genre");
-
   CFileItemList items;
   if (musicdatabase.GetGenresNav("", items))
-    HandleFileItemList("genreid", false, "genres", items, param, result);
+  {
+    /* need to set strTitle in each item*/
+    for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
+      items[i]->GetMusicInfoTag()->SetTitle(items[i]->GetLabel());
+
+    HandleFileItemList("genreid", false, "genres", items, parameterObject, result);
+  }
 
   musicdatabase.Close();
   return OK;
