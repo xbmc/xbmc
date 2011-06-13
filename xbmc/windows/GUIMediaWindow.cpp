@@ -921,7 +921,8 @@ bool CGUIMediaWindow::OnClick(int iItem)
       items.RemoveDiscCache(GetID());
 
     CFileItem directory(*pItem);
-    if (!Update(directory.m_strPath))
+    //spotify, why? well not a very good way but it works, now we can perform operations without changing directory
+    if (!Update(directory.m_strPath) && directory.m_strPath.Left(26) !="musicdb://spotify/command/")
       ShowShareErrorMessage(&directory);
 
     return true;

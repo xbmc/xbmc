@@ -177,6 +177,7 @@ bool SpotifyInterface::getPlaylistTracks(CFileItemList &items, int playlist)
       items.Add(pItem);
     }
   }
+  waitForThumbs();
   return true;
 }
 
@@ -864,7 +865,8 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
       imageItemPair pair = m_artistWaitingThumbs.back();
       CFileItemPtr pItem = pair.second;
       //sp_image_remove_load_callback(pair.first,&cb_imageLoaded, pItem.get());
-      sp_image_release(pair.first);
+      if (pair.first)
+        sp_image_release(pair.first);
       m_artistWaitingThumbs.pop_back();
     }
 
@@ -895,7 +897,8 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
       imageItemPair pair = m_playlistWaitingThumbs.back();
       CFileItemPtr pItem = pair.second;
       //sp_image_remove_load_callback(pair.first,&cb_imageLoaded, pItem.get());
-      sp_image_release(pair.first);
+      if (pair.first)
+        sp_image_release(pair.first);
       m_playlistWaitingThumbs.pop_back();
     }
 
@@ -910,7 +913,8 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
       imageItemPair pair = m_toplistWaitingThumbs.back();
       CFileItemPtr pItem = pair.second;
       //sp_image_remove_load_callback(pair.first,&cb_imageLoaded, pItem.get());
-      sp_image_release(pair.first);
+      if (pair.first)
+        sp_image_release(pair.first);
       m_toplistWaitingThumbs.pop_back();
     }
 
@@ -1380,32 +1384,44 @@ void SpotifyInterface::getPlaylistItems(CFileItemList &items)
   for (int i=0; i < sp_playlistcontainer_num_playlists(pc); i++)
   {
     sp_playlist* pl = sp_playlistcontainer_playlist(pc, i);
-    if (sp_playlist_is_loaded(pl))
-    {
-      share.strPath.Format("musicdb://spotify/tracks/playlist/%ld/", i);
-      share.strName.Format("%s",sp_playlist_name(pl));
-    }else
-    {
-      share.strPath.Format("musicdb://spotify/menu/playlists/");
-      share.strName.Format("Loading playlist...");
+    while(!sp_playlist_is_loaded(pl)){
+      clock_t goal = 100 + clock();
+      while (goal > clock());
+      //CLog::Log( LOGNOTICE, "Spotifylog: waiting for playlists" );
+      processEvents();
     }
+
+    share.strPath.Format("musicdb://spotify/tracks/playlist/%ld/", i);
+    share.strName.Format("%s",sp_playlist_name(pl));
+
     CFileItemPtr pItem(new CFileItem(share));
     CStdString thumb = "DefaultPlaylist.png";
     //ask for a thumbnail
-    pItem->SetThumbnailImage("DefaultMusicPlaylists.png");
-    if (sp_playlist_is_loaded(pl) && sp_playlist_num_tracks(pl) > 0)
-    {
-      sp_track *spTrack = sp_playlist_track(pl,0);
-      sp_album *spAlbum = sp_track_album(spTrack);
-      sp_link *spLink  = sp_link_create_from_album(spAlbum);
-      CStdString Uri = "";
-      char spotify_uri[256];
-      sp_link_as_string (spLink,spotify_uri,256);
-      sp_link_release(spLink);
-      Uri.Format("%s", spotify_uri);
-      CLog::Log( LOGDEBUG, "Spotifylog: searchmenu thumb:%s", Uri.c_str());
-      requestThumb((unsigned char*)sp_album_cover(spAlbum),Uri, pItem, PLAYLIST_TRACK);
+    byte image[20]; 
+  
+    if (sp_playlist_get_image(pl, image)){
+      char no[10];
+      itoa(i,no,10);
+      requestThumb((unsigned char*)image,no,pItem, PLAYLIST_TRACK);
+    }else{
+      pItem->SetThumbnailImage("DefaultMusicPlaylists.png"); 
+      if ( sp_playlist_num_tracks(pl) > 0)
+      {
+        sp_track *spTrack = sp_playlist_track(pl,0);
+        if (!sp_track_is_local(m_session, spTrack)){
+          sp_album *spAlbum = sp_track_album(spTrack);
+          sp_link *spLink  = sp_link_create_from_album(spAlbum);
+          CStdString Uri = "";
+          char spotify_uri[256];
+          sp_link_as_string (spLink,spotify_uri,256);
+          sp_link_release(spLink);
+          Uri.Format("%s", spotify_uri);
+          CLog::Log( LOGDEBUG, "Spotifylog: searchmenu thumb:%s", Uri.c_str());
+          requestThumb((unsigned char*)sp_album_cover(spAlbum),Uri, pItem, PLAYLIST_TRACK);
+        }
+      }
     }
+    waitForThumbs();
     items.Add(pItem);
   }
 }
@@ -1902,8 +1918,8 @@ void SpotifyInterface::showProgressDialog(CStdString message)
 {
   m_progressDialog = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   m_progressDialog->SetHeading("Spotify");
-  m_progressDialog->SetLine(0, "");
-  m_progressDialog->SetLine(1, message.c_str());
+  m_progressDialog->SetLine(0, message.c_str());
+  m_progressDialog->SetLine(1, "");
   m_progressDialog->SetLine(2, "");
   m_progressDialog->SetCanCancel(false);
   m_progressDialog->SetPercentage(0);
