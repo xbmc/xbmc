@@ -387,7 +387,7 @@ bool CSlingboxFile::PrevChannel()
 bool CSlingboxFile::SelectChannel(unsigned int uiChannel)
 {
   // Check if a channel change is required
-  if (m_pSlingbox->GetChannel() == uiChannel)
+  if (m_pSlingbox->GetChannel() == (int)uiChannel)
     return false;
 
   // Prepare variables
@@ -426,7 +426,7 @@ bool CSlingboxFile::SelectChannel(unsigned int uiChannel)
         CLog::Log(LOGDEBUG, "%s - Unable to confirm change to channel %i on Slingbox: %s",
           __FUNCTION__, uiChannel, m_sSlingboxSettings.strHostname.c_str());
       }
-      else if (m_pSlingbox->GetChannel() == uiChannel)
+      else if (m_pSlingbox->GetChannel() == (int)uiChannel)
       {
         CLog::Log(LOGDEBUG, "%s - Confirmed change to channel %i on Slingbox: %s",
           __FUNCTION__, uiChannel, m_sSlingboxSettings.strHostname.c_str());
@@ -604,8 +604,8 @@ void CSlingboxFile::LoadSettings(const CStdString& strHostname)
   // setup things accordingly
   for (unsigned int i = 0; i < 11; i++)
   {
-    if (m_sSlingboxSettings.iVideoWidth == m_resolutionMap[i].uiWidth &&
-      m_sSlingboxSettings.iVideoHeight == m_resolutionMap[i].uiHeight)
+    if (m_sSlingboxSettings.iVideoWidth == (int)m_resolutionMap[i].uiWidth &&
+      m_sSlingboxSettings.iVideoHeight == (int)m_resolutionMap[i].uiHeight)
     {
       m_sSlingboxSettings.iVideoResolution = (int)m_resolutionMap[i].eEnum;
       return;
