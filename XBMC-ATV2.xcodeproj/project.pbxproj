@@ -12,6 +12,8 @@
 		1840B796139968DB007C848B /* JSONVariantParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B792139968DB007C848B /* JSONVariantParser.cpp */; };
 		1840B797139968DB007C848B /* JSONVariantWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B794139968DB007C848B /* JSONVariantWriter.cpp */; };
 		18ACF8E313597B0000B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF8E113597B0000B67371 /* RecentlyAddedJob.cpp */; };
+		18B7013C13A6ABBA0009C1AF /* AddonVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7013A13A6ABBA0009C1AF /* AddonVersion.cpp */; };
+		18B7013F13A6ABD20009C1AF /* KeymapLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7013D13A6ABD20009C1AF /* KeymapLoader.cpp */; };
 		4D5D2E131301753F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E121301753F006ABC13 /* CFNetwork.framework */; };
 		7C0A7ECD13A5DBF900AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7ECB13A5DBF900AFC2BD /* AppParamParser.cpp */; };
 		7C99B73F133D372300FC2B16 /* CacheCircular.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B73D133D372300FC2B16 /* CacheCircular.cpp */; };
@@ -928,6 +930,10 @@
 		1840B795139968DB007C848B /* JSONVariantWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONVariantWriter.h; sourceTree = "<group>"; };
 		18ACF8E113597B0000B67371 /* RecentlyAddedJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RecentlyAddedJob.cpp; sourceTree = "<group>"; };
 		18ACF8E213597B0000B67371 /* RecentlyAddedJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentlyAddedJob.h; sourceTree = "<group>"; };
+		18B7013A13A6ABBA0009C1AF /* AddonVersion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonVersion.cpp; sourceTree = "<group>"; };
+		18B7013B13A6ABBA0009C1AF /* AddonVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonVersion.h; sourceTree = "<group>"; };
+		18B7013D13A6ABD20009C1AF /* KeymapLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeymapLoader.cpp; sourceTree = "<group>"; };
+		18B7013E13A6ABD20009C1AF /* KeymapLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeymapLoader.h; sourceTree = "<group>"; };
 		4D5D2E121301753F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		7C0A7ECB13A5DBF900AFC2BD /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
 		7C0A7ECC13A5DBF900AFC2BD /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
@@ -3294,6 +3300,8 @@
 				F56C71EF131EC151000AD0F6 /* AddonManager.h */,
 				F56C71F0131EC151000AD0F6 /* AddonStatusHandler.cpp */,
 				F56C71F1131EC151000AD0F6 /* AddonStatusHandler.h */,
+				18B7013A13A6ABBA0009C1AF /* AddonVersion.cpp */,
+				18B7013B13A6ABBA0009C1AF /* AddonVersion.h */,
 				F56C71F2131EC151000AD0F6 /* DllAddon.h */,
 				F56C71F5131EC151000AD0F6 /* IAddon.h */,
 				F56C71F6131EC151000AD0F6 /* Scraper.cpp */,
@@ -4381,6 +4389,8 @@
 				F56C7557131EC152000AD0F6 /* KeyboardLayoutConfiguration.h */,
 				F56C7558131EC152000AD0F6 /* KeyboardStat.cpp */,
 				F56C7559131EC152000AD0F6 /* KeyboardStat.h */,
+				18B7013D13A6ABD20009C1AF /* KeymapLoader.cpp */,
+				18B7013E13A6ABD20009C1AF /* KeymapLoader.h */,
 				F56C755A131EC152000AD0F6 /* MouseStat.cpp */,
 				F56C755B131EC152000AD0F6 /* MouseStat.h */,
 				F56C755C131EC152000AD0F6 /* SDLJoystick.cpp */,
@@ -6688,6 +6698,8 @@
 				1840B796139968DB007C848B /* JSONVariantParser.cpp in Sources */,
 				1840B797139968DB007C848B /* JSONVariantWriter.cpp in Sources */,
 				7C0A7ECD13A5DBF900AFC2BD /* AppParamParser.cpp in Sources */,
+				18B7013C13A6ABBA0009C1AF /* AddonVersion.cpp in Sources */,
+				18B7013F13A6ABD20009C1AF /* KeymapLoader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
