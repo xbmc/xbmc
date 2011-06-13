@@ -73,6 +73,8 @@ void SpotifyInterface::cb_connectionError(sp_session *session, sp_error error)
   CStdString message;
   message.Format("%s",sp_error_message(error));
   CLog::Log( LOGERROR, "Spotifylog: connection to Spotify failed: %s\n", message.c_str());
+  //sp_session_release(g_spotifyInterface->m_session);
+  //g_spotifyInterface->m_session = 0;
   g_spotifyInterface->hideReconectingDialog();
   g_spotifyInterface->showConnectionErrorDialog(error);
 }
@@ -125,11 +127,12 @@ void SpotifyInterface::cb_imageLoaded(sp_image *image, void *userdata)
       if (XFILE::CFile::Exists(fileName)) 
       {
         item->SetThumbnailImage(fileName);
-	
+	g_spotifyInterface->m_noWaitingThumbs--;  
         return;
       }
       if (fileName.Left(10) != "special://")
       {
+        g_spotifyInterface->m_noWaitingThumbs--;  
         return; //without a new thumb!
       }
 
@@ -836,15 +839,15 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
   if (search)
   {
     //stop the thumb downloading and release the images
-    while (!m_searchWaitingThumbs.empty())
+  /*  while (!m_searchWaitingThumbs.empty())
     {
       imageItemPair pair = m_searchWaitingThumbs.back();
       CFileItemPtr pItem = pair.second;
       //sp_image_remove_load_callback(pair.first,&cb_imageLoaded, pItem.get());
-      if (pair.first)
-        sp_image_release(pair.first);
+     // if (pair.first)
+      //  sp_image_release(pair.first);
       m_searchWaitingThumbs.pop_back();
-    }
+    }*/
 
     if (m_search)
       sp_search_release(m_search);
@@ -857,17 +860,17 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
   }
 
   if (artistbrowse)
-  {
+  {/*
     //stop the thumb downloading and release the images
     while (!m_artistWaitingThumbs.empty())
     {
       imageItemPair pair = m_artistWaitingThumbs.back();
       CFileItemPtr pItem = pair.second;
       //sp_image_remove_load_callback(pair.first,&cb_imageLoaded, pItem.get());
-      if (pair.first)
-        sp_image_release(pair.first);
+      //if (pair.first)
+      //  sp_image_release(pair.first);
       m_artistWaitingThumbs.pop_back();
-    }
+    }*/
 
     if (m_artistBrowse)
       sp_artistbrowse_release(m_artistBrowse);
@@ -891,15 +894,15 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
   if (playlists)
   {
     //stop the thumb downloading and release the images
-    while (!m_playlistWaitingThumbs.empty())
+    /*while (!m_playlistWaitingThumbs.empty())
     {
       imageItemPair pair = m_playlistWaitingThumbs.back();
       CFileItemPtr pItem = pair.second;
       //sp_image_remove_load_callback(pair.first,&cb_imageLoaded, pItem.get());
-      if (pair.first)
-        sp_image_release(pair.first);
+      //if (pair.first)
+      //  sp_image_release(pair.first);
       m_playlistWaitingThumbs.pop_back();
-    }
+    }*/
 
     m_playlistItems.Clear();
   }
@@ -907,15 +910,15 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
   if (toplists)
   {
     //stop the thumb downloading and release the images
-    while (!m_toplistWaitingThumbs.empty())
+    /*while (!m_toplistWaitingThumbs.empty())
     {
       imageItemPair pair = m_toplistWaitingThumbs.back();
       CFileItemPtr pItem = pair.second;
       //sp_image_remove_load_callback(pair.first,&cb_imageLoaded, pItem.get());
-      if (pair.first)
-        sp_image_release(pair.first);
+      //if (pair.first)
+      //  sp_image_release(pair.first);
       m_toplistWaitingThumbs.pop_back();
-    }
+    }*/
 
     if (m_toplistArtistsBrowse)
       sp_toplistbrowse_release(m_toplistArtistsBrowse);
@@ -1770,7 +1773,7 @@ bool SpotifyInterface::requestThumb(unsigned char *imageId, CStdString Uri, CFil
       sp_image_add_load_callback(spImage, &cb_imageLoaded, pItem.get());
 	
       //we need to remember what we ask for so we can unload their callbacks if we need to
-      imageItemPair pair(spImage, pItem);
+    /*  imageItemPair pair(spImage, pItem);
       switch(type){
       case PLAYLIST_TRACK:
         m_playlistWaitingThumbs.push_back(pair);
@@ -1785,7 +1788,7 @@ bool SpotifyInterface::requestThumb(unsigned char *imageId, CStdString Uri, CFil
       default:
         m_searchWaitingThumbs.push_back(pair);
         break;
-      }
+      }*/
       return true;
     }
   }
@@ -1852,8 +1855,8 @@ bool SpotifyInterface::addAlbumToLibrary()
         }
       }*/
       db.Close();
-      dialog->SetLine(0 ,"");
-      dialog->SetLine(1 ,"Added album to library");
+      dialog->SetLine(0 ,"Added album to library");
+      dialog->SetLine(1 ,"");
       dialog->SetLine(2 ,"");
       dialog->DoModal();
           
@@ -1864,8 +1867,8 @@ bool SpotifyInterface::addAlbumToLibrary()
       return true;
     }
   }
-  dialog->SetLine(0 ,"");
-  dialog->SetLine(1 ,"Failed to add album to library");
+  dialog->SetLine(0 ,"Failed to add album to library");
+  dialog->SetLine(1 ,"");
   dialog->SetLine(2 ,"");
   dialog->DoModal();
   return false;
@@ -1942,14 +1945,20 @@ void SpotifyInterface::showDisclaimer()
 }
 
 void SpotifyInterface::waitForThumbs(){
-int i = 100;
+  int i = 300;
+  int startThumbs = m_noWaitingThumbs;
   while(m_noWaitingThumbs > 0 && i > 0){
-    clock_t goal = 100 + clock();
+    clock_t goal = 1000 + clock();
     while (goal > clock());
-    CLog::Log( LOGNOTICE, "Spotifylog: waiting for thumbs: %i",m_noWaitingThumbs );
+    //CLog::Log( LOGNOTICE, "Spotifylog: waiting for thumbs: %i",m_noWaitingThumbs );
+    m_progressDialog->SetPercentage(100 - ((m_noWaitingThumbs * 100) / startThumbs));
+    m_progressDialog->SetLine(0,"Fetching thumbs" );
+    m_progressDialog->Progress();
     processEvents();
     i--;
   }
+  if (i < 1)
+   CLog::Log( LOGNOTICE, "Spotifylog: waiting for thumbs timed out");
 }
 
 void SpotifyInterface::showConnectionErrorDialog(sp_error error)
