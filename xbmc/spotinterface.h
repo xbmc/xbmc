@@ -157,7 +157,6 @@ private:
   void showConnectionErrorDialog(sp_error error);
 
   //search
-  sp_search *m_search;
   CStdString m_searchStr;
   bool m_isSearching;
   CFileItemList m_searchArtistVector;

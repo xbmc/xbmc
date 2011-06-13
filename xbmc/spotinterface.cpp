@@ -577,8 +577,8 @@ void SpotifyInterface::cb_searchComplete(sp_search *search, void *userdata)
       message.Format("Did you mean %s?",newSearch.c_str());
       CGUIDialogYesNo* m_yesNoDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
       m_yesNoDialog->SetHeading("Spotify");
-      m_yesNoDialog->SetLine(0, "" );
-      m_yesNoDialog->SetLine(1, message );
+      m_yesNoDialog->SetLine(0, message );
+      m_yesNoDialog->SetLine(1, "" );
       m_yesNoDialog->SetLine(2, "" );
       m_yesNoDialog->DoModal();
       if (m_yesNoDialog->IsConfirmed())
@@ -591,14 +591,13 @@ void SpotifyInterface::cb_searchComplete(sp_search *search, void *userdata)
         CStdString message;
         message.Format("Searching for %s", spInt->m_searchStr);
         spInt->showProgressDialog(message);
-        spInt->m_progressDialog->SetPercentage(50);
-        spInt->m_progressDialog->Progress();
       }
     }
 
     spInt->m_progressDialog->SetPercentage(50);
     spInt->m_progressDialog->Progress();
 
+CLog::Log( LOGDEBUG, "Spotifylog: search 1");
     //get the artists
     for (int index=0; index < sp_search_num_artists(search); index++)
     {
@@ -610,6 +609,7 @@ void SpotifyInterface::cb_searchComplete(sp_search *search, void *userdata)
     spInt->m_progressDialog->SetPercentage(60);
     spInt->m_progressDialog->Progress();
 
+CLog::Log( LOGDEBUG, "Spotifylog: search 2");
     //albums
     CMusicDatabase *musicdatabase = new CMusicDatabase;
     musicdatabase->Open();
@@ -646,7 +646,7 @@ void SpotifyInterface::cb_searchComplete(sp_search *search, void *userdata)
       }
     }
     delete musicdatabase;
-
+CLog::Log( LOGDEBUG, "Spotifylog: search 3");
     spInt->m_progressDialog->SetPercentage(80);
     spInt->m_progressDialog->Progress();
 
@@ -662,10 +662,14 @@ void SpotifyInterface::cb_searchComplete(sp_search *search, void *userdata)
         spInt->m_searchTrackVector.Add(pItem);
       }
     }
-
+CLog::Log( LOGDEBUG, "Spotifylog: search 4");
     spInt->m_progressDialog->SetPercentage(99);
     spInt->m_progressDialog->Progress();
     spInt->m_isSearching = false;
+
+    //this crashes libspotify sometimes, ignore and let the memmory fill up for now!
+    //if (sp_search_is_loaded(search))
+    //  sp_search_release(search);
 
     spInt->waitForThumbs();
 
@@ -685,7 +689,6 @@ SpotifyInterface::SpotifyInterface()
   m_showDisclaimer = true;
   m_isShowingReconnect = false;
   m_searchStr = "";
-  m_search = 0;
   m_artistBrowse = 0;
   m_albumBrowse = 0;
   m_toplistArtistsBrowse = 0;
@@ -835,7 +838,7 @@ void SpotifyInterface::clean()
 
 void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, bool playlists, bool toplists, bool searchthumbs, bool playliststhumbs, bool toplistthumbs, bool currentplayingthumbs)
 {
-  CLog::Log(LOGNOTICE, "Spotifylog: clean");
+  CLog::Log(LOGDEBUG, "Spotifylog: clean search");
   if (search)
   {
     //stop the thumb downloading and release the images
@@ -849,16 +852,19 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
       m_searchWaitingThumbs.pop_back();
     }*/
 
-    if (m_search)
-      sp_search_release(m_search);
-    m_search = 0;
+ //   if (m_search && sp_search_is_loaded(m_search))
+ //     sp_search_release(m_search);
+ //   m_search = 0;
+
+  CLog::Log(LOGDEBUG, "Spotifylog: clean search2");
 
     //clear the result vectors
     m_searchArtistVector.Clear();
     m_searchAlbumVector.Clear();
     m_searchTrackVector.Clear();
   }
-
+  
+  CLog::Log(LOGDEBUG, "Spotifylog: clean artistbrowse");
   if (artistbrowse)
   {/*
     //stop the thumb downloading and release the images
@@ -872,7 +878,7 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
       m_artistWaitingThumbs.pop_back();
     }*/
 
-    if (m_artistBrowse)
+    if (m_artistBrowse && sp_artistbrowse_is_loaded(m_artistBrowse))
       sp_artistbrowse_release(m_artistBrowse);
     m_artistBrowse = 0;
     m_artistBrowseStr = "";
@@ -881,9 +887,10 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
     m_browseArtistSimilarArtistsVector.Clear();
   }
 
+  CLog::Log(LOGDEBUG, "Spotifylog: clean albumbrowse");
   if (albumbrowse)
   {
-    if (m_albumBrowse)
+    if (m_albumBrowse && sp_albumbrowse_is_loaded(m_albumBrowse))
       sp_albumbrowse_release(m_albumBrowse);
     m_albumBrowse = 0;
 
@@ -907,6 +914,7 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
     m_playlistItems.Clear();
   }
 
+  CLog::Log(LOGDEBUG, "Spotifylog: clean toplists");
   if (toplists)
   {
     //stop the thumb downloading and release the images
@@ -931,11 +939,14 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
     if (m_toplistTracksBrowse)
       sp_toplistbrowse_release(m_toplistTracksBrowse);
     m_toplistTracksBrowse = 0;
+
     m_browseToplistArtistsVector.Clear();
     m_browseToplistAlbumVector.Clear();
     m_browseToplistTracksVector.Clear();
   }
 
+  CLog::Log(LOGDEBUG, "Spotifylog: clean removing files");
+  
   if (searchthumbs)
   {
     CDirectory::Remove(m_thumbDir);
@@ -959,6 +970,8 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
     CDirectory::Remove(m_currentPlayingDir);
     CDirectory::Create(m_currentPlayingDir);
   }
+
+  CLog::Log(LOGDEBUG, "Spotifylog: clean done");
 }
 
 
@@ -1272,16 +1285,15 @@ void SpotifyInterface::getSearchMenuItems(CFileItemList &items)
 {
   CMediaSource share;
   CStdString thumb;
-  CStdString query = sp_search_query(m_search);
   //artists
   if (!m_searchArtistVector.IsEmpty())
   {
     share.strPath.Format("musicdb://spotify/artists/search/");
-    share.strName.Format("%s, %i artists",query.c_str(), m_searchArtistVector.Size());
+    share.strName.Format("%s, %i artists",m_searchStr.c_str(), m_searchArtistVector.Size());
   }else
   {
     share.strPath.Format("musicdb://spotify/menu/search/");
-    share.strName.Format("%s, no artists found", query.c_str());
+    share.strName.Format("%s, no artists found", m_searchStr.c_str());
   }
   CFileItemPtr pItem3(new CFileItem(share));
   pItem3->SetThumbnailImage("DefaultMusicArtists.png");
@@ -1291,11 +1303,11 @@ void SpotifyInterface::getSearchMenuItems(CFileItemList &items)
   if (!m_searchAlbumVector.IsEmpty())
   {
     share.strPath.Format("musicdb://spotify/albums/search/");
-    share.strName.Format("%s, %i albums",query.c_str(), m_searchAlbumVector.Size());
+    share.strName.Format("%s, %i albums",m_searchStr.c_str(), m_searchAlbumVector.Size());
   }else
   {
     share.strPath.Format("musicdb://spotify/menu/search/");
-    share.strName.Format("%s, no albums found", query.c_str());
+    share.strName.Format("%s, no albums found", m_searchStr.c_str());
   }
   CFileItemPtr pItem4(new CFileItem(share));
 
@@ -1317,11 +1329,11 @@ void SpotifyInterface::getSearchMenuItems(CFileItemList &items)
   if (!m_searchTrackVector.IsEmpty())
   {
     share.strPath.Format("musicdb://spotify/tracks/search/");
-    share.strName.Format("%s, %i tracks",query.c_str(), m_searchTrackVector.Size());
+    share.strName.Format("%s, %i tracks",m_searchStr.c_str(), m_searchTrackVector.Size());
   }else
   {
     share.strPath.Format("musicdb://spotify/menu/search/");
-    share.strName.Format("%s, no tracks found", query.c_str());
+    share.strName.Format("%s, no tracks found", m_searchStr.c_str());
   }
   CFileItemPtr pItem5(new CFileItem(share));
 
@@ -1441,7 +1453,7 @@ bool SpotifyInterface::search(CStdString searchstring)
   m_searchStr = searchstring;
   CLog::Log(LOGDEBUG, "Spotifylog: search");
   clean(true,true,true,false,false,true,false,false,false);
-  m_search = sp_search_create(m_session, searchstring, 0, g_advancedSettings.m_spotifyMaxSearchTracks, 0, g_advancedSettings.m_spotifyMaxSearchAlbums, 0, g_advancedSettings.m_spotifyMaxSearchArtists, &cb_searchComplete, NULL);
+  sp_search_create(m_session, searchstring, 0, g_advancedSettings.m_spotifyMaxSearchTracks, 0, g_advancedSettings.m_spotifyMaxSearchAlbums, 0, g_advancedSettings.m_spotifyMaxSearchArtists, &cb_searchComplete, NULL);
   CStdString message;
   message.Format("Searching for %s", searchstring.c_str());
   showProgressDialog(message);
