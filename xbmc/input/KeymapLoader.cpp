@@ -29,11 +29,7 @@ using namespace std;
 using namespace XFILE;
 
 static std::map<CStdString, CStdString> deviceMappings;
-static bool parsedMappings = false;
-
-CKeymapLoader::CKeymapLoader()
-{
-}
+bool CKeymapLoader::parsedMappings = false;
 
 void CKeymapLoader::DeviceAdded(const CStdString& deviceId)
 {
@@ -94,7 +90,7 @@ bool CKeymapLoader::FindMappedDevice(const CStdString& deviceId, CStdString& key
   return true;
 }
 
-CStdString CKeymapLoader::ParseWin32HIDName(CStdString deviceLongName)
+CStdString CKeymapLoader::ParseWin32HIDName(const CStdString& deviceLongName)
 {
   return deviceLongName.Mid(deviceLongName.find_last_of('\\')+1, deviceLongName.find_last_of('#') - deviceLongName.find_last_of('\\'));
 }

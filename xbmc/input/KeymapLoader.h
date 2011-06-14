@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2011 Team XBMC
  *      http://xbmc.org
@@ -22,17 +23,14 @@
 #include <map>
 #include "utils/StdString.h"
 
-#ifndef KEYMAP_LOADER
-#define KEYMAP_LOADER
 class CKeymapLoader
 {
   public:
-    CKeymapLoader();
     static void DeviceRemoved(const CStdString& deviceID);
     static void DeviceAdded(const CStdString& deviceID);
-    static CStdString ParseWin32HIDName(CStdString deviceLongName);
-    static void ParseDeviceMappings();
+    static CStdString ParseWin32HIDName(const CStdString& deviceLongName);
   private:
+    static void ParseDeviceMappings();
     static bool FindMappedDevice(const CStdString& deviceId, CStdString& keymapName);
+    static bool parsedMappings;
 };
-#endif
