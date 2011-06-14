@@ -164,14 +164,8 @@ void CGUIImage::Render()
 {
   if (!IsVisible()) return;
 
-  if (m_fadingTextures.size())  // have some fading images
-  {
-    for (vector<CFadingTexture *>::iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end();)
-    {
-      (*itr)->m_texture->Render();
-      itr++;
-    }
-  }
+  for (vector<CFadingTexture *>::iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end(); itr++)
+    (*itr)->m_texture->Render();
 
   m_texture.Render();
 
