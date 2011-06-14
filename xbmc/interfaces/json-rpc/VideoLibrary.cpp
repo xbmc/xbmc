@@ -353,7 +353,7 @@ JSON_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLayer *
 {
    CStdString media = parameterObject["type"].asString();
   media = media.ToLower();
-  int idContent;
+  int idContent = -1;
 
   /* select which video content to get genres from*/
   if (media.Equals("movie"))
