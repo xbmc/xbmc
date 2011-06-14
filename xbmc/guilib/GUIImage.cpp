@@ -136,6 +136,8 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
           MarkDirtyRegion();
         if (texture->m_texture->SetDiffuseColor(m_diffuseColor))
           MarkDirtyRegion();
+        if (texture->m_texture->Process(currentTime))
+          MarkDirtyRegion();
       }
     }
 
