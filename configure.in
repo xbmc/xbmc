@@ -475,11 +475,13 @@ case $host in
      ARCH="x86-freebsd"
      MAKE="gmake"
      use_external_ffmpeg="yes"
+     AC_SUBST(ARCH_DEFINES, "-D_LINUX")
      ;;
   amd64-*-freebsd*)
      ARCH="x86_64-freebsd"
      MAKE="gmake"
      use_external_ffmpeg="yes"
+     AC_SUBST(ARCH_DEFINES, "-D_LINUX")
      ;;
   arm-apple-darwin*)
      use_joystick=no
