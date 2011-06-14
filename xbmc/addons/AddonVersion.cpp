@@ -29,12 +29,12 @@
 
 namespace ADDON
 {
-  AddonVersion::AddonVersion(CStdString version)
+  AddonVersion::AddonVersion(const CStdString& version)
   {
     m_originalVersion = version;
-    const char *epoch_end = strchr(version, ':');
+    const char *epoch_end = strchr(m_originalVersion.c_str(), ':');
     if (epoch_end != NULL) {
-      mEpoch = atoi(version);
+      mEpoch = atoi(m_originalVersion.c_str());
     } else {
       mEpoch = 0;
     }
@@ -43,7 +43,7 @@ namespace ADDON
     if (epoch_end) {
       upstream_start = epoch_end + 1;
     } else {
-      upstream_start = version;
+      upstream_start = m_originalVersion.c_str();
     }
 
     const char *upstream_end = strrchr(upstream_start, '-');

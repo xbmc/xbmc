@@ -175,8 +175,13 @@ void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)
   if (!plugin)
     return;
   for (unsigned int i = 0; i < plugin->num_imports; ++i)
+  {
+    CStdString version = plugin->imports[i].version;
+    if (version.IsEmpty())
+      version = "0.0.0";
     dependencies.insert(make_pair(CStdString(plugin->imports[i].plugin_id),
-                        make_pair(AddonVersion(plugin->imports[i].version), plugin->imports[i].optional != 0)));
+                        make_pair(AddonVersion(version), plugin->imports[i].optional != 0)));
+  }
 }
 
 /**
