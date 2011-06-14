@@ -164,18 +164,37 @@ void SpotifyInterface::cb_imageLoaded(sp_image *image, void *userdata)
   g_spotifyInterface->m_noWaitingThumbs--;  
 }
 
+void SpotifyInterface::pl_state_change(sp_playlist *pl, void *userdata)
+{
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+    CStdString dir;
+    dir.Format("%s","musicdb://spotify/menu/playlists/");
+    message.SetStringParam(dir);
+    g_windowManager.SendThreadMessage(message);
+    CLog::Log( LOGDEBUG, "Spotifylog: playlist state changed");
+}
+
 //load the tracks from a playlist
 bool SpotifyInterface::getPlaylistTracks(CFileItemList &items, int playlist)
 {
   CLog::Log( LOGDEBUG, "Spotifylog: loading playlist: %i", playlist);
   sp_playlistcontainer *pc = sp_session_playlistcontainer (m_session);
-  sp_playlist *pl = sp_playlistcontainer_playlist(pc, playlist);
+  sp_playlist* pl = sp_playlistcontainer_playlist(pc, playlist);
+
   if (pl)
   {
     for (int index=0; index < sp_playlist_num_tracks(pl); index++)
     {
+      sp_track *spTrack = sp_playlist_track(pl,index);
+      
+      while (!sp_track_is_loaded(spTrack)){
+        clock_t goal = 10 + clock();
+        while (goal > clock());
+        processEvents();
+      }
+	
       CFileItemPtr pItem;
-      pItem = spTrackToItem(sp_playlist_track(pl,index), PLAYLIST_TRACK, sp_track_index(sp_playlist_track(pl,index)),true);
+      pItem = spTrackToItem(spTrack, PLAYLIST_TRACK, sp_track_index(sp_playlist_track(pl,index)),true);
 //      pItem->SetContentType("audio/spotify");
       items.Add(pItem);
     }
@@ -714,6 +733,20 @@ SpotifyInterface::SpotifyInterface()
   m_pcCallbacks.playlist_added = 0;
   m_pcCallbacks.playlist_removed = 0;
   m_pcCallbacks.container_loaded =  0;
+
+  m_plCallbacks.tracks_added = 0;
+  m_plCallbacks.tracks_removed = 0;
+  m_plCallbacks.tracks_moved = 0;
+  m_plCallbacks.playlist_renamed = &pl_state_change;
+  m_plCallbacks.playlist_state_changed = &pl_state_change;
+  m_plCallbacks.playlist_update_in_progress = 0;
+  m_plCallbacks.playlist_metadata_updated = 0;
+  m_plCallbacks.track_created_changed = 0;
+  m_plCallbacks.track_seen_changed = 0;
+  m_plCallbacks.description_changed = 0;
+  m_plCallbacks.image_changed = 0;
+  m_plCallbacks.track_message_changed = 0;
+  m_plCallbacks.subscribers_changed = 0;
 
 
   m_thumbDir.Format("special://temp/spotify/thumbs/");
@@ -1410,27 +1443,26 @@ void SpotifyInterface::getPlaylistItems(CFileItemList &items)
   CMediaSource share;
   sp_playlistcontainer *pc = sp_session_playlistcontainer(m_session);
 
-  while(!sp_playlistcontainer_is_loaded(pc)){
-    clock_t goal = 10 + clock();     
-    while (goal > clock());
-    CLog::Log( LOGDEBUG, "Spotifylog: waiting for playlistscontainer" );
-    processEvents();
-  }
+  if(!sp_playlistcontainer_is_loaded(pc))
+    return;
+
+  sp_playlistcontainer_add_ref(pc);
 
   for (int i=0; i < sp_playlistcontainer_num_playlists(pc); i++)
   {
     sp_playlist* pl = sp_playlistcontainer_playlist(pc, i);
-    while(!sp_playlist_is_loaded(pl)){
-      clock_t goal = 10 + clock();
-      while (goal > clock());
-      CLog::Log( LOGDEBUG, "Spotifylog: waiting for playlists" );
-      processEvents();
+    sp_playlist_add_callbacks(pl,&m_plCallbacks,0);
+    if (sp_playlist_is_loaded(pl))
+    {
+      share.strPath.Format("musicdb://spotify/tracks/playlist/%ld/", i);
+      share.strName.Format("%s",sp_playlist_name(pl));
+    }else
+    {
+      share.strPath.Format("musicdb://spotify/menu/playlists/");
+      share.strName.Format("Loading playlist...");
     }
-
-    share.strPath.Format("musicdb://spotify/tracks/playlist/%ld/", i);
-    share.strName.Format("%s",sp_playlist_name(pl));
-
     CFileItemPtr pItem(new CFileItem(share));
+    CStdString thumb = "DefaultPlaylist.png";
 
     //ask for a thumbnail
     byte image[20];   
@@ -1438,25 +1470,22 @@ void SpotifyInterface::getPlaylistItems(CFileItemList &items)
       char no[10];
       itoa(i,no,10);
       requestThumb((unsigned char*)image,no,pItem, PLAYLIST_TRACK);
-    }else{
-      //disable for now, seems to be some kind of problem with spotify servers at the moment
-      /*if ( sp_playlist_num_tracks(pl) > 0)
-      {
-        sp_track *spTrack = sp_playlist_track(pl,0);
-        if (!sp_track_is_local(m_session, spTrack)){
-          sp_album *spAlbum = sp_track_album(spTrack);
-          sp_link *spLink  = sp_link_create_from_album(spAlbum);
-          CStdString Uri = "";
-          char spotify_uri[256];
-          sp_link_as_string (spLink,spotify_uri,256);
-          sp_link_release(spLink);
-          Uri.Format("%s", spotify_uri);
-          CLog::Log( LOGDEBUG, "Spotifylog: playlist thumb from album:%s", Uri.c_str());
-          requestThumb((unsigned char*)sp_album_cover(spAlbum),Uri, pItem, PLAYLIST_TRACK);
-        }
-      }else*/
-	pItem->SetThumbnailImage("DefaultMusicPlaylists.png"); 
-    }
+    }else if ( sp_playlist_num_tracks(pl) > 0){
+      sp_track *spTrack = sp_playlist_track(pl,0);
+      if (sp_track_is_loaded(spTrack) && !sp_track_is_local(m_session, spTrack)){
+        sp_album *spAlbum = sp_track_album(spTrack);
+        sp_link *spLink  = sp_link_create_from_album(spAlbum);
+        CStdString Uri = "";
+        char spotify_uri[256];
+        sp_link_as_string (spLink,spotify_uri,256);
+        sp_link_release(spLink);
+        Uri.Format("%s", spotify_uri);
+        CLog::Log( LOGDEBUG, "Spotifylog: playlist thumb from album:%s", Uri.c_str());
+        requestThumb((unsigned char*)sp_album_cover(spAlbum),Uri, pItem, PLAYLIST_TRACK);
+      }
+    }else
+      pItem->SetThumbnailImage("DefaultMusicPlaylists.png"); 
+    
     waitForThumbs();
     items.Add(pItem);
   }

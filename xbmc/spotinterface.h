@@ -90,6 +90,8 @@ public:
   static int SP_CALLCONV cb_musicDelivery(sp_session *session, const sp_audioformat *format, const void *frames, int num_frames);
   static void SP_CALLCONV cb_imageLoaded(sp_image *image, void *userdata);
 
+  static void SP_CALLCONV pl_state_change(sp_playlist *pl, void *userdata);
+
   bool getDirectory(const CStdString &strPath, CFileItemList &items);
   XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE getChildType(const CStdString &strPath);
 
@@ -101,6 +103,7 @@ private:
   sp_error m_error;
   sp_session_callbacks m_callbacks;
   sp_playlistcontainer_callbacks m_pcCallbacks;
+  sp_playlist_callbacks m_plCallbacks;
   bool m_showDisclaimer;
   int m_nextEvent;
   const char *m_uri;

@@ -131,7 +131,7 @@ bool SpotifyCodec::loadPlayer()
               CLog::Log( LOGDEBUG, "Spotifylog: music load, play" );
               m_isPlayerLoaded = true;
               return true;
-            }//0101133603
+            }
           }
         }
       }else
