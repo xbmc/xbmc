@@ -41,7 +41,7 @@ void CGUIWrappingListContainer::UpdatePageControl(int offset)
 {
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update (offset it by our cursor position)
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, CorrectOffset(offset, m_cursor));
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, CorrectOffset(offset, GetCursor()));
     SendWindowMessage(msg);
   }
 }
@@ -95,7 +95,7 @@ bool CGUIWrappingListContainer::OnMessage(CGUIMessage& message)
     {
       if (message.GetSenderId() == m_pageControl && IsVisible())
       { // offset by our cursor position
-        message.SetParam1(message.GetParam1() - m_cursor);
+        message.SetParam1(message.GetParam1() - GetCursor());
       }
     }
   }
@@ -117,7 +117,7 @@ bool CGUIWrappingListContainer::MoveDown(bool wrapAround)
 // scrolls the said amount
 void CGUIWrappingListContainer::Scroll(int amount)
 {
-  ScrollToOffset(m_offset + amount);
+  ScrollToOffset(GetOffset() + amount);
 }
 
 void CGUIWrappingListContainer::ValidateOffset()
@@ -159,7 +159,7 @@ int CGUIWrappingListContainer::GetSelectedItem() const
   if (m_items.size() > m_extraItems)
   {
     int numItems = (int)(m_items.size() - m_extraItems);
-    int correctOffset = (m_offset + m_cursor) % numItems;
+    int correctOffset = (GetOffset() + GetCursor()) % numItems;
     if (correctOffset < 0) correctOffset += numItems;
     return correctOffset;
   }
@@ -175,7 +175,7 @@ bool CGUIWrappingListContainer::SelectItemFromPoint(const CPoint &point)
   const float mouse_max_amount = 1.0f;   // max speed: 1 item per frame
   float sizeOfItem = m_layout->Size(m_orientation);
   // see if the point is either side of our focused item
-  float start = m_cursor * sizeOfItem;
+  float start = GetCursor() * sizeOfItem;
   float end = start + m_focusedLayout->Size(m_orientation);
   float pos = (m_orientation == VERTICAL) ? point.y : point.x;
   if (pos < start - 0.5f * sizeOfItem)
@@ -211,7 +211,7 @@ bool CGUIWrappingListContainer::SelectItemFromPoint(const CPoint &point)
 void CGUIWrappingListContainer::SelectItem(int item)
 {
   if (item >= 0 && item < (int)m_items.size())
-    ScrollToOffset(item - m_cursor);
+    ScrollToOffset(item - GetCursor());
 }
 
 void CGUIWrappingListContainer::ResetExtraItems()
@@ -230,8 +230,8 @@ void CGUIWrappingListContainer::Reset()
 
 int CGUIWrappingListContainer::GetCurrentPage() const
 {
-  int offset = CorrectOffset(m_offset, m_cursor);
-  if (offset + m_itemsPerPage - m_cursor >= (int)GetRows())  // last page
+  int offset = CorrectOffset(GetOffset(), GetCursor());
+  if (offset + m_itemsPerPage - GetCursor() >= (int)GetRows())  // last page
     return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
   return offset / m_itemsPerPage + 1;
 }
