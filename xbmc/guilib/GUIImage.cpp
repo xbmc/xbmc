@@ -114,7 +114,7 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
     { // anything other than the last old texture needs to be faded out as per usual
       for (vector<CFadingTexture *>::iterator i = m_fadingTextures.begin(); i != m_fadingTextures.end() - 1;)
       {
-        if (!ProcessFading(*i, frameTime))
+        if (!ProcessFading(*i, frameTime, currentTime))
           i = m_fadingTextures.erase(i);
         else
           i++;
@@ -122,7 +122,7 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
 
       if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
       { // fade out the last one as well
-        if (!ProcessFading(m_fadingTextures[m_fadingTextures.size() - 1], frameTime))
+        if (!ProcessFading(m_fadingTextures[m_fadingTextures.size() - 1], frameTime, currentTime))
           m_fadingTextures.erase(m_fadingTextures.end() - 1);
       }
       else
@@ -154,16 +154,6 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
   if (m_texture.SetDiffuseColor(m_diffuseColor))
     MarkDirtyRegion();
 
-  if (m_fadingTextures.size())  // have some fading images
-  { // anything other than the last old texture needs to be faded out as per usual
-    for (vector<CFadingTexture *>::iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end() - 1;)
-    {
-      if ((*itr)->m_texture->Process(currentTime))
-        MarkDirtyRegion();
-      itr++;
-    }
-  }
-
   if (m_texture.Process(currentTime))
     MarkDirtyRegion();
 
@@ -188,7 +178,7 @@ void CGUIImage::Render()
   CGUIControl::Render();
 }
 
-bool CGUIImage::ProcessFading(CGUIImage::CFadingTexture *texture, unsigned int frameTime)
+bool CGUIImage::ProcessFading(CGUIImage::CFadingTexture *texture, unsigned int frameTime, unsigned int currentTime)
 {
   assert(texture);
   if (texture->m_fadeTime <= frameTime)
@@ -202,6 +192,8 @@ bool CGUIImage::ProcessFading(CGUIImage::CFadingTexture *texture, unsigned int f
   if (texture->m_texture->SetAlpha(GetFadeLevel(texture->m_fadeTime)))
     MarkDirtyRegion();
   if (texture->m_texture->SetDiffuseColor(m_diffuseColor))
+    MarkDirtyRegion();
+  if (texture->m_texture->Process(currentTime))
     MarkDirtyRegion();
 
   return true;
