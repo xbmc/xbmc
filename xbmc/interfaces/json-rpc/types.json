@@ -57,15 +57,18 @@
     "default": -1,
     "minimum": 1
   },
-  "Library.Genres": {
+  "Library.Fields.Genre": {
     "type": "array",
-    "items": { "type": "object",
-      "properties": {
-        "genreid": { "$ref": "Library.Id", "required": true },
-        "genre": { "type": "string", "required": true },
-        "label": { "type": "string", "required": true },
-        "thumbnail": { "type": "string" }
-      }
+    "uniqueItems": true,
+    "items": { "type": "string", "enum": [ "title", "thumbnail" ] }
+  },
+  "Library.Details.Genres": {
+    "type": "object",
+    "properties": {
+      "genreid": { "$ref": "Library.Id", "required": true },
+      "label": { "type": "string", "required": true },
+      "title": { "type": "string" },
+      "thumbnail": { "type": "string" }
     }
   },
   "Audio.Fields.Artist": {
@@ -98,11 +101,6 @@
                 "musicbrainzalbumid", "musicbrainzalbumartistid",
                 "playcount", "fanart", "thumbnail", "file" ]
     }
-  },
-  "Audio.Fields.Genre": {
-    "type": "array",
-    "uniqueItems": true,
-    "items": { "type": "string", "enum": [ "thumbnail" ] }
   },
   "Audio.Details.Artist": {
     "type": "object",
@@ -424,15 +422,6 @@
       "track": { "type": "integer" },
       "streamDetails": { "$ref": "Video.Streams" },
       "lastplayed": { "type": "string" }
-    }
-  },
-  "Video.Details.Genre": {
-    "type": "object",
-    "properties": {
-      "genreid": { "$ref": "Library.Id", "required": true },
-      "genre": { "type": "string", "required": true },
-      "label": { "type": "string", "required": true },
-      "thumbnail": { "type": "string" }
     }
   },
   "Playlist.Id": {
