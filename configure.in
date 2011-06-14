@@ -342,7 +342,7 @@ MAKE="${MAKE:-make}"
 case $host in
   i*86*-linux-gnu*)
      ARCH="i486-linux"
-     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_POWERPC")
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
      ;;
   x86_64-*-linux-gnu*)
      ARCH="x86_64-linux"
