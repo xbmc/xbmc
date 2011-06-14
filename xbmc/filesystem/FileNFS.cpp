@@ -103,7 +103,7 @@ bool CNfsConnection::Connect(const CURL& url)
     m_hostName = url.GetHostName();
     m_readChunkSize = m_pLibNfs->nfs_get_readmax(m_pNfsContext);
     m_writeChunkSize = m_pLibNfs->nfs_get_writemax(m_pNfsContext);   
-    CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s (chunks: r/w %i/%i)\n", url.GetHostName().c_str(), url.GetShareName().c_str(),m_readChunkSize,m_writeChunkSize);
+    CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s (chunks: r/w %i/%i)\n", url.GetHostName().c_str(), url.GetShareName().c_str(),(int)m_readChunkSize,(int)m_writeChunkSize);
   }
 
   return true; 
